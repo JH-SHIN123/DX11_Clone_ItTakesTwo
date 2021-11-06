@@ -4,6 +4,7 @@
 *.o
 *.obj
 *.vs
+*.suo
 *.db
 *.opendb
 
