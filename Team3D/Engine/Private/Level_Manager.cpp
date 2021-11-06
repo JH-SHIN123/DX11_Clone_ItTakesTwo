@@ -1,0 +1,37 @@
+#include "..\public\Level_Manager.h"
+#include "Level.h"
+
+IMPLEMENT_SINGLETON(CLevel_Manager)
+
+HRESULT CLevel_Manager::Change_CurrentLevel(CLevel * pCurrentLevel)
+{
+	NULL_CHECK_RETURN(pCurrentLevel, E_FAIL);
+
+	Safe_Release(m_pCurrentLevel);
+	m_pCurrentLevel = pCurrentLevel;
+
+	return S_OK;
+}
+
+_int CLevel_Manager::Tick(_double dTimedelta)
+{
+	NULL_CHECK_RETURN(m_pCurrentLevel, EVENT_ERROR);
+	return m_pCurrentLevel->Tick(dTimedelta);
+}
+
+HRESULT CLevel_Manager::Render()
+{
+	NULL_CHECK_RETURN(m_pCurrentLevel, S_OK);
+	return m_pCurrentLevel->Render();
+}
+
+HRESULT CLevel_Manager::Clear_Level()
+{
+	Safe_Release(m_pCurrentLevel);
+	return S_OK;
+}
+
+void CLevel_Manager::Free()
+{
+	Safe_Release(m_pCurrentLevel);
+}
