@@ -28,14 +28,14 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 
 _int CMainCamera::Tick(_double dTimeDelta)
 {
-	if (m_pGameInstance->Key_Pressing(DIK_W))
-		m_pTransformCom->Go_Straight(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_A))
-		m_pTransformCom->Go_Left(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_S))
-		m_pTransformCom->Go_Backward(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_D))
-		m_pTransformCom->Go_Right(dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_W))
+	//	m_pTransformCom->Go_Straight(dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_A))
+	//	m_pTransformCom->Go_Left(dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_S))
+	//	m_pTransformCom->Go_Backward(dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_D))
+	//	m_pTransformCom->Go_Right(dTimeDelta);
 
 	_long	MouseMove = 0;
 

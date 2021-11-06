@@ -159,7 +159,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 
 	vector vMtrlDiffuse = g_vBaseColor;
 
-	Out.vDiffuse	= vMtrlDiffuse;
+	Out.vDiffuse	= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f); // TEST¿ë
 	//Out.vDiffuse	= g_vBaseColor;
 	Out.vNormal		= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth		= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);

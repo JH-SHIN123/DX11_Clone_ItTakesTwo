@@ -179,7 +179,9 @@
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\Public\ActionTask.h" />
+    <ClInclude Include="..\Public\ActionTask_Cody.h" />
     <ClInclude Include="..\Public\BehaviorTree.h" />
+    <ClInclude Include="..\Public\BehaviorTree_Cody.h" />
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
@@ -201,7 +203,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\ActionTask.cpp" />
+    <ClCompile Include="..\Private\ActionTask_Cody.cpp" />
     <ClCompile Include="..\Private\BehaviorTree.cpp" />
+    <ClCompile Include="..\Private\BehaviorTree_Cody.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
     <ClCompile Include="..\Private\CompositeTask.cpp" />

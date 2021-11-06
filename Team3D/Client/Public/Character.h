@@ -22,6 +22,8 @@ public:
 	const _int Get_CurState() const { return m_iCurState; }
 	const _int Get_NextState() const { return m_iNextState; }
 
+	void Set_NextState(_int iState) { m_iNextState = iState; }
+
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;

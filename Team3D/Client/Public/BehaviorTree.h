@@ -3,28 +3,33 @@
 #include "Client_Defines.h"
 #include "Base.h"
 
+BEGIN(Engine)
+class CGameObject;
+END
+
 BEGIN(Client)
 class CCompositeTask;
-class CCharacter;
-class CBehaviorTree : public CBase
+class CBehaviorTree abstract : public CBase
 {
-private:
-	explicit CBehaviorTree(CCharacter* pCharacter);
+protected:
+	explicit CBehaviorTree(CGameObject* pSubject);
 	virtual ~CBehaviorTree() = default;
 
 public:
-	HRESULT NativeConstruct();
-	_uint	Running(_double TimeDelta);
+	class CGameObject* Get_Subject() const { return m_pSubject; };
 
+public:
+	virtual HRESULT NativeConstruct() = 0;
+
+	_uint	Running(_double TimeDelta);
 	void	BroadcastMessage(void* pArg); /* Service : BroadcastMessage (모든 Task들에게 메시지를 전송한다.) */
 
 public:
-	static CBehaviorTree* Create(CCharacter* pCharacter);
 	virtual void Free() override;
 
-private:
+protected:
 	CCompositeTask* m_pRootTask = nullptr;
-	CCharacter*		m_pCharacter = nullptr;
+	CGameObject*	m_pSubject	= nullptr;
 };
 END
 

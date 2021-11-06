@@ -94,6 +94,12 @@
     <Filter Include="02.GameObject\00.Public\03.Character\BehaviorTree\Task\Composite">
       <UniqueIdentifier>{454a1c8b-2fdd-4686-9df5-cc80ebea861d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\00.Public\03.Character\Cody\BehaviorTree">
+      <UniqueIdentifier>{2ed6de5b-8570-447e-8002-0b004cae5cc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\03.Character\Cody\BehaviorTree\ActionTask">
+      <UniqueIdentifier>{653f28a9-7285-4caa-97aa-c11e3cbad32b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -159,6 +165,12 @@
     <ClInclude Include="..\Public\CompositeTask.h">
       <Filter>02.GameObject\00.Public\03.Character\BehaviorTree\Task\Composite</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BehaviorTree_Cody.h">
+      <Filter>02.GameObject\00.Public\03.Character\Cody\BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ActionTask_Cody.h">
+      <Filter>02.GameObject\00.Public\03.Character\Cody\BehaviorTree\ActionTask</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -208,6 +220,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\CompositeTask.cpp">
       <Filter>02.GameObject\00.Public\03.Character\BehaviorTree\Task\Composite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BehaviorTree_Cody.cpp">
+      <Filter>02.GameObject\00.Public\03.Character\Cody\BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ActionTask_Cody.cpp">
+      <Filter>02.GameObject\00.Public\03.Character\Cody\BehaviorTree\ActionTask</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

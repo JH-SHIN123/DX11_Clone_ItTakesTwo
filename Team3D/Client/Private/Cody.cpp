@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Cody.h"
 #include "GameInstance.h"
+#include "BehaviorTree_Cody.h"
 
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
@@ -10,6 +11,12 @@ CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 CCody::CCody(const CCody& rhs)
 	: CCharacter(rhs)
 {
+}
+
+_bool CCody::IsFinish_CurAnimation()
+{
+
+	return _bool();
 }
 
 HRESULT CCody::NativeConstruct_Prototype()
@@ -25,8 +32,10 @@ HRESULT CCody::NativeConstruct(void* pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pModelCom->Set_Animation(0, m_pTransformCom);
-	m_pModelCom->Set_NextAnimIndex(0);
+	m_pModelCom->Set_Animation(MH, m_pTransformCom); // 바로 변경
+	m_pModelCom->Set_NextAnimIndex(MH); // 끝난다음 변경
+
+	m_pBehaviorTree = CBehaviorTree_Cody::Create(this);
 
 	return S_OK;
 }
@@ -36,6 +45,10 @@ _int CCody::Tick(_double dTimeDelta)
 	CCharacter::Tick(dTimeDelta);
 
 	KeyProcess(dTimeDelta);
+
+	//m_pBehaviorTree->Running(dTimeDelta);
+
+	//StateCheck();
 
 	m_pModelCom->Update_NodeMatrices(dTimeDelta, m_pTransformCom);
 
@@ -67,16 +80,39 @@ HRESULT CCody::Render()
 void CCody::KeyProcess(_double TimeDelta)
 {
 	_bool bJog = false;
-	if (m_pGameInstance->Key_Pressing(DIK_W))
-		bJog = true;
-	if (m_pGameInstance->Key_Pressing(DIK_A))
+	if (m_pGameInstance->Key_Pressing(DIK_W)) 
 		bJog = true;
 	if (m_pGameInstance->Key_Pressing(DIK_S))
 		bJog = true;
-	if (m_pGameInstance->Key_Pressing(DIK_D))
+	if (m_pGameInstance->Key_Pressing(DIK_A)) {
 		bJog = true;
+		m_bJog_Left = bJog;
+	}
+	if (m_pGameInstance->Key_Pressing(DIK_D)) {
+		bJog = true;
+		m_bJog_Right = bJog;
+	}
 
-	//m_bJog = bJog;
+	m_bJog = bJog;
+
+	if (false == m_bJog) {
+		m_bJog_Left = false;
+		m_bJog_Right = false;
+	}
+}
+
+void CCody::StateCheck()
+{
+	if (m_iCurState != m_iNextState)
+	{
+		switch (m_iNextState)
+		{
+		}
+
+		//m_pModelCom->Set_Animation(m_iNextState,m_pTransformCom);
+		m_pModelCom->Set_NextAnimIndex(m_iNextState);
+		m_iCurState = m_iNextState;
+	}
 }
 
 CCody* CCody::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -107,5 +143,6 @@ CGameObject* CCody::Clone_GameObject(void* pArg)
 
 void CCody::Free()
 {
+	Safe_Release(m_pBehaviorTree);
 	CCharacter::Free();
 }
