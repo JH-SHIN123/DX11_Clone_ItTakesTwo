@@ -12,6 +12,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 {
 	CLevel::NativeConstruct();
 
+	FAILED_CHECK_RETURN(Ready_Lights(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Camera(TEXT("Layer_Camera")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Terrain(TEXT("Layer_Terrain")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Player(TEXT("Layer_Player")), E_FAIL);
@@ -26,8 +27,8 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	if (m_pGameInstance->Key_Down(DIK_Q))
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
-	//if (m_pGameInstance->Key_Down(DIK_D))
-	//	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_D))
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
 
 	return NO_EVENT;
 }
@@ -73,6 +74,45 @@ HRESULT CLevel_Stage::Ready_Layer_Terrain(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_Player(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Cody")), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Stage::Ready_Lights()
+{
+	m_pGameInstance->Reserve_Container_Light(3);
+	LIGHT_DESC			LightDesc;
+
+	/* For.Directional */
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
+	LightDesc.vDiffuse = XMFLOAT4(1.f, 0.1f, 0.1f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.f);
+	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+
+	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+		return E_FAIL;
+
+	/* For.Point */
+	LightDesc.eType = tagLightDesc::TYPE_POINT;
+	LightDesc.vPosition = XMFLOAT3(10.f, 5.f, 10.f);
+	LightDesc.fRadius = 10.f;
+	LightDesc.vDiffuse = XMFLOAT4(1.f, 0.3f, 0.3f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+
+	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+		return E_FAIL;
+
+	LightDesc.eType = tagLightDesc::TYPE_POINT;
+	LightDesc.vPosition = XMFLOAT3(20.f, 5.f, 10.f);
+	LightDesc.fRadius = 10.f;
+	LightDesc.vDiffuse = XMFLOAT4(0.3f, 1.f, 0.3f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+
+	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

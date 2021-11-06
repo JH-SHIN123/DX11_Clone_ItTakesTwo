@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Client.h"
 #include "MainApp.h"
+#include "GameInstance.h"
 
 #define MAX_LOADSTRING 100
 
