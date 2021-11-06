@@ -43,8 +43,17 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Specular"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Specular"), TEXT("MRT_LightAcc")), E_FAIL);
 
+
+	/* Target_DOF*/
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_DOF"), iWidth, iHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_DOF"), TEXT("MRT_DOF")), E_FAIL);
+
 	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width, ViewportDesc.Height, TEXT("../Bin/ShaderFiles/Shader_Blend.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
+
+	m_pDOFBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width / 2.f, ViewportDesc.Height / 2.f, TEXT("../Bin/ShaderFiles/Shader_DOF.hlsl"), "DefaultTechnique");
+	NULL_CHECK_RETURN(m_pDOFBuffer, E_FAIL);
+
 
 #ifdef _DEBUG
 	_float fWidth	= ViewportDesc.Width / 10.f;
@@ -82,10 +91,9 @@ HRESULT CRenderer::Draw_Renderer()
 {
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonAlpha(), E_FAIL);
-
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
-
+	FAILED_CHECK_RETURN(Render_DOF(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
@@ -171,10 +179,22 @@ HRESULT CRenderer::Render_Blend()
 	m_pVIBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Diffuse")));
 	m_pVIBuffer->Set_ShaderResourceView("g_ShadeTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Shade")));
 	m_pVIBuffer->Set_ShaderResourceView("g_SpecularTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Specular")));
+	m_pVIBuffer->Set_ShaderResourceView("g_DOFTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_DOF")));
+	m_pVIBuffer->Set_ShaderResourceView("g_DepthTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Depth")));
 
 	m_pVIBuffer->Render(0);
 
 	return S_OK;
+}
+
+HRESULT CRenderer::Render_DOF()
+{
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_DOF")), E_FAIL);
+
+	m_pDOFBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Diffuse")));
+	m_pDOFBuffer->Render(0);
+
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_DOF")), E_FAIL);
 }
 
 void CRenderer::Sort_GameObjects(RENDER_OBJECTS & GameObjects)
@@ -212,6 +232,7 @@ void CRenderer::Free()
 	}
 
 	Safe_Release(m_pRenderTarget_Manager);
+	Safe_Release(m_pDOFBuffer);
 	Safe_Release(m_pVIBuffer);
 
 	CComponent::Free();

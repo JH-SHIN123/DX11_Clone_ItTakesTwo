@@ -267,6 +267,7 @@ call WinCmd_UpdateLib.bat</Command>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\bin\ShaderFiles\Shader_Blend.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_DOF.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_LightAcc.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_RenderTarget.hlsl" />
   </ItemGroup>

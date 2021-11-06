@@ -3,6 +3,20 @@
 texture2D	g_DiffuseTexture;
 texture2D	g_ShadeTexture;
 texture2D	g_SpecularTexture;
+texture2D   g_DepthTexture;
+texture2D   g_DOFTexture;
+
+sampler DOFSampler = sampler_state
+{
+	AddressU = wrap;
+	AddressV = wrap;
+};
+
+sampler DepthSampler = sampler_state
+{
+	AddressU = wrap;
+	AddressV = wrap;
+};
 
 sampler DiffuseSampler = sampler_state
 {
@@ -66,11 +80,15 @@ PS_OUT PS_MAIN(PS_IN In)
 	vector	vDiffuseDesc	= g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 	vector	vShadeDesc		= g_ShadeTexture.Sample(ShadeSampler, In.vTexUV);
 	vector	vSpecularDesc	= g_SpecularTexture.Sample(SpecularSampler, In.vTexUV);
+	vector	vDOFDesc        = g_DOFTexture.Sample(DOFSampler, In.vTexUV / 2.f);
+	vector	vDepthDesc      = g_DepthTexture.Sample(DepthSampler, In.vTexUV);
 
 	Out.vColor = vDiffuseDesc * vShadeDesc + vSpecularDesc;
 
 	if (Out.vColor.a == 0.f)
 		discard;
+
+	Out.vColor = lerp(Out.vColor, vDOFDesc, saturate(5.f * abs(vDepthDesc.x)));
 
 	return Out;
 }
