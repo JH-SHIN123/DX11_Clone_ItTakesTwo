@@ -24,6 +24,7 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
+	virtual HRESULT Render_ShadowMap(_uint iPassIndex) override;
 
 private:
 	/* For.Component */

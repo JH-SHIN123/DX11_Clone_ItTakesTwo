@@ -51,7 +51,7 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 
 
 	/* Target_ShadowMap*/
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_ShadowMap"), iWidth, iHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_ShadowMap"), iWidth, iHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_ShadowMap"), TEXT("MRT_ShadowMap")), E_FAIL);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,8 +75,7 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Depth"), 0.f, fHeight * 2.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shade"), fWidth, 0.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
-
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_ShadowMap"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_ShadowMap"), 0.f, 400.f, fWidth * 2.f, fHeight * 2.f), E_FAIL);
 #endif
 
 	return S_OK;
@@ -204,34 +203,17 @@ HRESULT CRenderer::Render_Blend()
 
 HRESULT CRenderer::Render_ShadowMap()
 {
-	//  카메라위치를 광원위치로 바꿔치기 하고 
-	// -> 그 위치에서 바라본 오브젝트들의 깊이값을 쉐도우맵 텍스쳐에 그린다. ( 오브젝트들이 Shader_Mesh.hlsl 써서 렌더하고 있는데 
-	// -> Shader_Shadow.hlsl 써서 깊이만 렌더하게 할 수 있는지. )
-	// -> 그 쉐도우맵 텍스쳐랑 디퍼드에서 뽑아낸 Depth 텍스쳐의 깊이 값을 비교 해서 그림자 그릴지 말지를 판별!
-	/////////////////////////////////////////////////////////////////////
-	// 쉐도우맵 렌더타겟에 광원의 위치에서 본 오브젝트들의 깊이값을 그려라! //
-	////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////쉐도우 맵 그리기 시작 ///////////////////////////////////////////
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_ShadowMap")), E_FAIL);
 	for (auto& pGameObject : m_RenderObjects[RENDER_SHADOWTARGET])
 	{
-		_matrix			WorldMatrix, LightViewMatrix, LightProjMatrix = XMMatrixIdentity();
-
-		WorldMatrix = ((CTransform*)pGameObject->Get_Component(L"Com_Transform"))->Get_WorldMatrix();
-		_vector vLightPos = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-		LightViewMatrix = XMMatrixLookAtLH(vLightPos, XMVectorSet(-1.f, 1.f, 0.f, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
-		LightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(45.f), 1.f, 0.2f, 300.f);
-
-		m_pShadowMapBuffer->Set_Variable("WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
-		m_pShadowMapBuffer->Set_Variable("LightPos", &vLightPos, sizeof(_vector));
-		m_pShadowMapBuffer->Set_Variable("LightViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-		m_pShadowMapBuffer->Set_Variable("LightProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-
-		// 렌더 ?????????????????????????????????????
-
+		pGameObject->Render_ShadowMap(2); // Shader_Mesh 4번 패스를 이용해서 그려라.
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_SHADOWTARGET].clear();
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_ShadowMap")), E_FAIL);
+	//////////////////////////////////////쉐도우 맵 그리기 끝 ///////////////////////////////////////////
+
 	return S_OK;
 }
 

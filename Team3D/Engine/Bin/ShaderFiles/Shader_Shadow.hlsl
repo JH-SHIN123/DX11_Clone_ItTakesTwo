@@ -1,7 +1,10 @@
 
 
-matrix		WorldMatrix, LightViewMatrix, LightProjMatrix;
-vector		LightPos;
+cbuffer TransformDesc
+{
+	matrix		WorldMatrix, LightViewMatrix, LightProjMatrix;
+	vector		LightPos;
+};
 
 int g_iScreenX = 1280;
 int g_iScreenY = 720;
@@ -100,6 +103,7 @@ technique11		DefaultTechnique
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
+
 };
 
 

@@ -62,6 +62,29 @@ HRESULT CPlayer::Render()
 	for (_uint iIndex = 0; iIndex < iMeshCount; ++iIndex)
 		m_pModelCom->Render_Model(iIndex, 0);
 
+
+	return S_OK;
+}
+
+HRESULT CPlayer::Render_ShadowMap(_uint iPassIndex)
+{
+	_matrix			WorldMatrix, LightViewMatrix, LightProjMatrix = XMMatrixIdentity();
+
+	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	_vector vLightPos = XMVectorSet(-1.f, 1.f, -1.f, 1.f);
+	LightViewMatrix = XMMatrixLookAtLH(vLightPos, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	LightProjMatrix = XMMatrixOrthographicLH(1280.f, 720.f, 0.2f, 300.f);
+
+	m_pModelCom->Set_Variable("WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+	m_pModelCom->Set_Variable("LightPos", &vLightPos, sizeof(_vector));
+	m_pModelCom->Set_Variable("LightViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+	m_pModelCom->Set_Variable("LightProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+
+	_uint iMeshCount = m_pModelCom->Get_MeshCount();
+
+	for (_uint iIndex = 0; iIndex < iMeshCount; ++iIndex)
+		m_pModelCom->Render_Model(iIndex, iPassIndex);
+	
 	return S_OK;
 }
 

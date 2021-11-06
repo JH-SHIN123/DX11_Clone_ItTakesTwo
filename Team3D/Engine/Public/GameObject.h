@@ -25,6 +25,7 @@ public:
 	virtual _int	Tick(_double dTimeDelta);
 	virtual _int	Late_Tick(_double dTimeDelta);
 	virtual HRESULT	Render();
+	virtual HRESULT Render_ShadowMap(_uint iPassIndex);
 
 protected: /* Typedef */
 	typedef unordered_map<const _tchar*, CComponent*>	COMPONENTS;
