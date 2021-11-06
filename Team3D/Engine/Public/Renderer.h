@@ -12,7 +12,7 @@ private:
 	virtual ~CRenderer() = default;
 
 public: /* Enum */
-	enum RENDER_GROUP { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_ALPHA, RENDER_UI, RENDER_END };
+	enum RENDER_GROUP { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_SHADOWTARGET, RENDER_ALPHA, RENDER_UI, RENDER_END };
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype();
@@ -27,6 +27,8 @@ private:
 	class CRenderTarget_Manager*	m_pRenderTarget_Manager = nullptr;
 	class CVIBuffer_RectRHW*		m_pVIBuffer = nullptr;
 	class CVIBuffer_RectRHW*		m_pDOFBuffer = nullptr;
+	class CVIBuffer_RectRHW*		m_pShadowMapBuffer = nullptr;
+
 
 
 private:
@@ -36,6 +38,10 @@ private:
 	HRESULT	Render_UI();
 	HRESULT Render_LightAcc();
 	HRESULT Render_Blend();
+
+
+	//ShadowMap
+	HRESULT Render_ShadowMap();
 
 	//Post Processing
 	HRESULT Render_DOF();

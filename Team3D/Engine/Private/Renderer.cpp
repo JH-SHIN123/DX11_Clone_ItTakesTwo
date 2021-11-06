@@ -48,11 +48,21 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_DOF"), iWidth, iHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_DOF"), TEXT("MRT_DOF")), E_FAIL);
 
+
+	/* Target_ShadowMap*/
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_ShadowMap"), iWidth, iHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_ShadowMap"), TEXT("MRT_ShadowMap")), E_FAIL);
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width, ViewportDesc.Height, TEXT("../Bin/ShaderFiles/Shader_Blend.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
 
 	m_pDOFBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width / 2.f, ViewportDesc.Height / 2.f, TEXT("../Bin/ShaderFiles/Shader_DOF.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pDOFBuffer, E_FAIL);
+
+	m_pShadowMapBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width, ViewportDesc.Height, TEXT("../Bin/ShaderFiles/Shader_ShadowMap.hlsl"), "DefaultTechnique");
+	NULL_CHECK_RETURN(m_pShadowMapBuffer, E_FAIL);
 
 
 #ifdef _DEBUG
@@ -64,6 +74,8 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Depth"), 0.f, fHeight * 2.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shade"), fWidth, 0.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_ShadowMap"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
 #endif
 
 	return S_OK;
@@ -100,6 +112,7 @@ HRESULT CRenderer::Draw_Renderer()
 #ifdef _DEBUG
 	m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Deferred"));
 	m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_LightAcc"));
+	m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_ShadowMap"));
 #endif
 
 	return S_OK;
@@ -183,6 +196,22 @@ HRESULT CRenderer::Render_Blend()
 	m_pVIBuffer->Set_ShaderResourceView("g_DepthTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Depth")));
 
 	m_pVIBuffer->Render(0);
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_ShadowMap()
+{
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_ShadowMap")), E_FAIL);
+
+	for (auto& pGameObject : m_RenderObjects[RENDER_SHADOWTARGET])
+	{
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[RENDER_SHADOWTARGET].clear();
+
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_ShadowMap")), E_FAIL);
 
 	return S_OK;
 }
