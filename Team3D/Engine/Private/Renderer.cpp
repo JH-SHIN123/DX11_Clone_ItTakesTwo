@@ -206,7 +206,9 @@ HRESULT CRenderer::Render_ShadowMap()
 
 	for (auto& pGameObject : m_RenderObjects[RENDER_SHADOWTARGET])
 	{
-
+		///////////////////////////////
+		// ½¦µµ¿ì¸Ê ·»´õÅ¸°Ù¿¡ ±×·Á¶ó! //
+		///////////////////////////////
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_SHADOWTARGET].clear();
