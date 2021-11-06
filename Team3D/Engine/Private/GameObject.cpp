@@ -22,6 +22,11 @@ CGameObject::CGameObject(const CGameObject & rhs)
 	Safe_AddRef(m_pGameInstance);
 }
 
+CComponent * CGameObject::Get_Component(const _tchar * pComponentTag)
+{
+	return Find_Component(pComponentTag);
+}
+
 _float CGameObject::Get_DistanceFromCamera()
 {
 	return 0.f;

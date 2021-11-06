@@ -12,6 +12,7 @@ protected:
 	virtual ~CGameObject() = default;
 
 public: /* Getter */
+	class CComponent * Get_Component(const _tchar * pComponentTag);
 	virtual _float	Get_DistanceFromCamera();
 	const _bool		Is_Dead() const { return m_isDead; }
 

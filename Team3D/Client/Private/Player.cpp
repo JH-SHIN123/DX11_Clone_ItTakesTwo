@@ -46,6 +46,7 @@ _int CPlayer::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_SHADOWTARGET, this);
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
 

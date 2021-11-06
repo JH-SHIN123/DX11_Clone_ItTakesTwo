@@ -270,6 +270,7 @@ call WinCmd_UpdateLib.bat</Command>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_DOF.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_LightAcc.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_RenderTarget.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Shadow.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

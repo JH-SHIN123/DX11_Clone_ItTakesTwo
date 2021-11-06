@@ -4,6 +4,7 @@
 #include "RenderTarget_Manager.h"
 #include "VIBuffer_RectRHW.h"
 #include "Graphic_Device.h"
+#include "Transform.h"
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)
@@ -61,7 +62,7 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	m_pDOFBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width / 2.f, ViewportDesc.Height / 2.f, TEXT("../Bin/ShaderFiles/Shader_DOF.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pDOFBuffer, E_FAIL);
 
-	m_pShadowMapBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width, ViewportDesc.Height, TEXT("../Bin/ShaderFiles/Shader_ShadowMap.hlsl"), "DefaultTechnique");
+	m_pShadowMapBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width, ViewportDesc.Height, TEXT("../Bin/ShaderFiles/Shader_Shadow.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pShadowMapBuffer, E_FAIL);
 
 
@@ -103,6 +104,7 @@ HRESULT CRenderer::Draw_Renderer()
 {
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonAlpha(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_ShadowMap(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_DOF(), E_FAIL);
@@ -202,19 +204,34 @@ HRESULT CRenderer::Render_Blend()
 
 HRESULT CRenderer::Render_ShadowMap()
 {
+	//  카메라위치를 광원위치로 바꿔치기 하고 
+	// -> 그 위치에서 바라본 오브젝트들의 깊이값을 쉐도우맵 텍스쳐에 그린다. ( 오브젝트들이 Shader_Mesh.hlsl 써서 렌더하고 있는데 
+	// -> Shader_Shadow.hlsl 써서 깊이만 렌더하게 할 수 있는지. )
+	// -> 그 쉐도우맵 텍스쳐랑 디퍼드에서 뽑아낸 Depth 텍스쳐의 깊이 값을 비교 해서 그림자 그릴지 말지를 판별!
+	/////////////////////////////////////////////////////////////////////
+	// 쉐도우맵 렌더타겟에 광원의 위치에서 본 오브젝트들의 깊이값을 그려라! //
+	////////////////////////////////////////////////////////////////////
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_ShadowMap")), E_FAIL);
-
 	for (auto& pGameObject : m_RenderObjects[RENDER_SHADOWTARGET])
 	{
-		///////////////////////////////
-		// 쉐도우맵 렌더타겟에 그려라! //
-		///////////////////////////////
+		_matrix			WorldMatrix, LightViewMatrix, LightProjMatrix = XMMatrixIdentity();
+
+		WorldMatrix = ((CTransform*)pGameObject->Get_Component(L"Com_Transform"))->Get_WorldMatrix();
+		_vector vLightPos = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		LightViewMatrix = XMMatrixLookAtLH(vLightPos, XMVectorSet(-1.f, 1.f, 0.f, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
+		LightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(45.f), 1.f, 0.2f, 300.f);
+
+		m_pShadowMapBuffer->Set_Variable("WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+		m_pShadowMapBuffer->Set_Variable("LightPos", &vLightPos, sizeof(_vector));
+		m_pShadowMapBuffer->Set_Variable("LightViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+		m_pShadowMapBuffer->Set_Variable("LightProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+
+		// 렌더 ?????????????????????????????????????
+
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_SHADOWTARGET].clear();
-
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_ShadowMap")), E_FAIL);
-
 	return S_OK;
 }
 
@@ -226,6 +243,7 @@ HRESULT CRenderer::Render_DOF()
 	m_pDOFBuffer->Render(0);
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_DOF")), E_FAIL);
+	return S_OK;
 }
 
 void CRenderer::Sort_GameObjects(RENDER_OBJECTS & GameObjects)
