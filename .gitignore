@@ -4,6 +4,8 @@
 *.o
 *.obj
 *.vs
+*.db
+*.opendb
 
 # Compiled Dynamic libraries
 *.so
