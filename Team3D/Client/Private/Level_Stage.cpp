@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "Camera.h"
 
+#include "GameEffect.h"
+
 CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
 {
@@ -15,6 +17,9 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Camera(TEXT("Layer_Camera")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Terrain(TEXT("Layer_Terrain")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Player(TEXT("Layer_Player")), E_FAIL);
+
+	Test_Layer_Effect(L"Layer_Effect");
+
 
 	return S_OK;
 }
@@ -73,6 +78,17 @@ HRESULT CLevel_Stage::Ready_Layer_Terrain(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_Player(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Cody")), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Stage::Test_Layer_Effect(const _tchar * pLayerTag)
+{
+	EFFECT_DESC_CLONE Data;
+
+	
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("Prototype_ItTakesTwo")), E_FAIL);
 
 	return S_OK;
 }
