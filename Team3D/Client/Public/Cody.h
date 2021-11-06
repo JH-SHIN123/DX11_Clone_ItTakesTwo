@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "Character.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -10,13 +10,15 @@ class CModel;
 END
 
 BEGIN(Client)
-
-class CPlayer : public CGameObject
+class CCody final : public CCharacter
 {
+public:
+	enum STATE { STATE_END };
+
 protected:
-	explicit CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CPlayer(const CPlayer& rhs);
-	virtual ~CPlayer() = default;
+	explicit CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CCody(const CCody& rhs);
+	virtual ~CCody() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -26,17 +28,16 @@ public:
 	virtual HRESULT	Render() override;
 
 protected:
-	/* For.Component */
-	CRenderer*	m_pRendererCom = nullptr;
-	CTransform*	m_pTransformCom = nullptr;
 	CModel*		m_pModelCom = nullptr;
-	/* For.Camera */
-	_float4		m_vAdjustedPos = _float4(0.f, 0.f, 0.f, 0.f);
+	CCamera*	m_pCamera = nullptr;
+
+protected:
+	// Behaviour Tree
+	// Controller
 
 public:
-	static CPlayer*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CCody* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
-
 END

@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "..\public\Loading.h"
 #include "Terrain.h"
-#include "MainCamera.h"
 #include "..\..\Engine\public\Model.h"
 #include "Player.h"
+#include "MainCamera.h"
 #include "SubCamera.h"
+
+#include "Cody.h"
 
 CLoading::CLoading(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice			(pDevice)
@@ -106,7 +108,7 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		WaitForSingleObject(m_arrThreads[1], INFINITE);
 		_matrix	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Mesh/", "Test.fbx", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Cody"), CPlayer::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Cody"), CCody::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	}
 
 	return S_OK;
