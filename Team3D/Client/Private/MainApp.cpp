@@ -19,6 +19,8 @@ HRESULT CMainApp::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Prototype_ForStatic(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
 
+	// Test Ä¿¹Ô
+
 	return S_OK;
 }
 
