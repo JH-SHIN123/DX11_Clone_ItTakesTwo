@@ -37,6 +37,9 @@ _int CPlayer::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	if(m_pGameInstance->Key_Pressing(DIK_L))
+		m_pTransformCom->Go_Straight(dTimeDelta);
+
 	m_pModelCom->Update_NodeMatrices(dTimeDelta, m_pTransformCom);
 
 	return NO_EVENT;
@@ -70,15 +73,18 @@ HRESULT CPlayer::Render_ShadowMap(_uint iPassIndex)
 {
 	_matrix			WorldMatrix, LightViewMatrix, LightProjMatrix = XMMatrixIdentity();
 
+	_vector vCamPosition = CPipeline::GetInstance()->Get_MainCamPosition();
 	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	_vector vLightPos = XMVectorSet(-1.f, 1.f, -1.f, 1.f);
+	_vector vLightPos = XMVectorSet(-100.f, 100.f, 100.f, 1.f);
 	LightViewMatrix = XMMatrixLookAtLH(vLightPos, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
-	LightProjMatrix = XMMatrixOrthographicLH(1280.f, 720.f, 0.2f, 300.f);
+	LightProjMatrix = XMMatrixOrthographicLH(1280.f / 12.f, 720.f / 12.f, 0.3f, 300.f);
 
-	m_pModelCom->Set_Variable("WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+	//m_pModelCom->Set_Variable("WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
 	m_pModelCom->Set_Variable("LightPos", &vLightPos, sizeof(_vector));
 	m_pModelCom->Set_Variable("LightViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
 	m_pModelCom->Set_Variable("LightProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+
+	m_pModelCom->Bind_VIBuffer();
 
 	_uint iMeshCount = m_pModelCom->Get_MeshCount();
 

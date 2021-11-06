@@ -256,10 +256,9 @@ HRESULT CModel::Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON
 HRESULT CModel::Set_Variable(const char * pConstantName, void * pData, _uint iByteSize)
 {
 	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
-
 	ID3DX11EffectVariable*	pVariable = m_pEffect->GetVariableByName(pConstantName);
 	NULL_CHECK_RETURN(pVariable, E_FAIL);
-
+	
 	return pVariable->SetRawValue(pData, 0, iByteSize);
 }
 

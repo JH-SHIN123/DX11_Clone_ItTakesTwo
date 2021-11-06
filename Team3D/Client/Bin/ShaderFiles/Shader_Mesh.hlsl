@@ -103,9 +103,7 @@ VS_OUT_SHADOWMAP VS_SHADOWMAP(VS_IN In)
 {
 	VS_OUT_SHADOWMAP	Out = (VS_OUT_SHADOWMAP)0;
 
-	Out.vPosition = mul(float4(In.vPosition, 1.f), WorldMatrix);
-	Out.vPosition = mul(Out.vPosition, LightViewMatrix);
-	Out.vPosition = mul(Out.vPosition, LightProjMatrix);
+	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 	Out.mClipPosition = Out.vPosition;
 
 	return Out;
@@ -120,12 +118,29 @@ struct GS_IN
 	float2 vTexUV			: TEXCOORD0;
 };
 
+struct GS_IN_SHADOWMAP
+{
+	float4 vPosition : SV_POSITION;
+	float4 vNormal		: NORMAL;
+	float2 vTexUV		: TEXCOORD0;
+	float4 mClipPosition : TEXCOORD1;
+};
+
 struct GS_OUT
 {
 	float4 vPosition		: SV_POSITION;
 	float4 vNormal			: NORMAL;
 	float2 vTexUV			: TEXCOORD0;
 	float4 vProjPosition	: TEXCOORD1;
+	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
+};
+
+struct GS_OUT_SHADOWMAP
+{
+	float4 vPosition		: SV_POSITION;
+	float4 vNormal			: NORMAL;
+	float2 vTexUV			: TEXCOORD0;
+	float4 mClipPosition	: TEXCOORD1;
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 };
 
@@ -165,7 +180,45 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 	TriStream.RestartStrip();
 }
 
-////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+
+[maxvertexcount(6)]
+void GS_SHADOWMAP(triangle GS_IN_SHADOWMAP In[3], inout TriangleStream<GS_OUT_SHADOWMAP> TriStream)
+{
+	GS_OUT_SHADOWMAP Out = (GS_OUT_SHADOWMAP)0;
+
+	for (uint i = 0; i < 3; i++)
+	{
+		matrix matVP = mul(LightViewMatrix, LightProjMatrix);
+
+		Out.vPosition = mul(In[i].vPosition, matVP);
+		Out.vNormal = In[i].vNormal;
+		Out.vTexUV = In[i].vTexUV;
+		Out.mClipPosition = Out.vPosition;
+		Out.iViewportIndex = 1;
+
+		TriStream.Append(Out);
+	}
+
+	TriStream.RestartStrip();
+
+	for (uint j = 0; j < 3; j++)
+	{
+		matrix matVP = mul(LightViewMatrix, LightProjMatrix);
+
+		Out.vPosition = mul(In[j].vPosition, matVP);
+		Out.vNormal = In[j].vNormal;
+		Out.vTexUV = In[j].vTexUV;
+		Out.mClipPosition = Out.vPosition;
+		Out.iViewportIndex = 2;
+
+		TriStream.Append(Out);
+	}
+
+	TriStream.RestartStrip();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 struct PS_IN
 {
@@ -185,7 +238,7 @@ struct PS_IN_SHADOWMAP
 
 struct PS_OUT_SHADOWMAP
 {
-	vector	vDepth		: SV_TARGET0;
+	vector	vDepth		: SV_TARGET0;  // 조명에서 바라본 오브젝트들의 깊이 값. 
 };
 
 struct PS_OUT
@@ -213,8 +266,9 @@ PS_OUT_SHADOWMAP PS_SHADOWMAP(PS_IN_SHADOWMAP In)
 {
 	PS_OUT_SHADOWMAP Out = (PS_OUT_SHADOWMAP)0;
 
-	float depth = In.mClipPosition.z / In.mClipPosition.w;
-	Out.vDepth = vector(depth.xxx, 1.f);
+	Out.vDepth = vector(In.mClipPosition.w / g_fMainCamFar, In.mClipPosition.z / In.mClipPosition.w, 0.f, 0.f);
+	//float depth = In.mClipPosition.z / In.mClipPosition.w;
+	//Out.vDepth = vector(depth.xxx, 1.f);
 
 	return Out;
 }
@@ -251,7 +305,7 @@ technique11 DefaultTechnique
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_SHADOWMAP();
-		GeometryShader = NULL;/*compile gs_5_0 GS_SHADOWMAP();*/
+		GeometryShader = compile gs_5_0 GS_SHADOWMAP();
 		PixelShader = compile ps_5_0 PS_SHADOWMAP();
 	}
 

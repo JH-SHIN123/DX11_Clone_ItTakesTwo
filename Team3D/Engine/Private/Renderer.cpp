@@ -207,12 +207,14 @@ HRESULT CRenderer::Render_ShadowMap()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_ShadowMap")), E_FAIL);
 	for (auto& pGameObject : m_RenderObjects[RENDER_SHADOWTARGET])
 	{
-		pGameObject->Render_ShadowMap(2); // Shader_Mesh 4번 패스를 이용해서 그려라.
+		pGameObject->Render_ShadowMap(2); // Shader_Mesh 2번 패스를 이용해서 그려라.
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_SHADOWTARGET].clear();
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_ShadowMap")), E_FAIL);
 	//////////////////////////////////////쉐도우 맵 그리기 끝 ///////////////////////////////////////////
+	
+
 
 	return S_OK;
 }
@@ -265,6 +267,7 @@ void CRenderer::Free()
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pDOFBuffer);
 	Safe_Release(m_pVIBuffer);
+	Safe_Release(m_pShadowMapBuffer);
 
 	CComponent::Free();
 }
