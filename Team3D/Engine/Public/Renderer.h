@@ -1,5 +1,5 @@
 #pragma once
-//Git Test
+
 #include "Component.h"
 
 BEGIN(Engine)

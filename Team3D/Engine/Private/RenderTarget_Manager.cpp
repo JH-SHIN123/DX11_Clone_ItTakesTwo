@@ -48,6 +48,10 @@ HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, c
 	MULTIPLE_RENDER_TARGET* pMRT = Find_MRT(pMRTTag);
 	NULL_CHECK_RETURN(pMRT, E_FAIL);
 
+	// Clear Textures
+	ID3D11ShaderResourceView* pSRV[8] = { nullptr };
+	pDeviceContext->PSSetShaderResources(0, 8, pSRV);
+
 	pDeviceContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
 	m_pBackBufferView->Release();
 	m_pDepthStencilView->Release();
@@ -70,8 +74,13 @@ HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, c
 HRESULT CRenderTarget_Manager::End_MRT(ID3D11DeviceContext * pDeviceContext, const _tchar * pMRTTag)
 {
 	NULL_CHECK_RETURN(pDeviceContext, E_FAIL);
+	
+	// Clear Textures
+	ID3D11ShaderResourceView* pSRV[8] = { nullptr };
+	pDeviceContext->PSSetShaderResources(0, 8, pSRV);
 
 	pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferView, m_pDepthStencilView);
+
 
 	return S_OK;
 }

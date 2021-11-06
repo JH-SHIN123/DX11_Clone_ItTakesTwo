@@ -46,16 +46,16 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width, ViewportDesc.Height, TEXT("../Bin/ShaderFiles/Shader_Blend.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
 
-//#ifdef _DEBUG
-//	_float fWidth	= ViewportDesc.Width / 10.f;
-//	_float fHeight	= ViewportDesc.Height / 10.f;
-//
-//	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Diffuse"), 0.f, 0.f, fWidth, fHeight), E_FAIL);
-//	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Normal"), 0.f, fHeight, fWidth, fHeight), E_FAIL);
-//	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Depth"), 0.f, fHeight * 2.f, fWidth, fHeight), E_FAIL);
-//	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shade"), fWidth, 0.f, fWidth, fHeight), E_FAIL);
-//	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
-//#endif
+#ifdef _DEBUG
+	_float fWidth	= ViewportDesc.Width / 10.f;
+	_float fHeight	= ViewportDesc.Height / 10.f;
+
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Diffuse"), 0.f, 0.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Normal"), 0.f, fHeight, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Depth"), 0.f, fHeight * 2.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shade"), fWidth, 0.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
+#endif
 
 	return S_OK;
 }
@@ -83,16 +83,16 @@ HRESULT CRenderer::Draw_Renderer()
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonAlpha(), E_FAIL);
 
-	//FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
-	//FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
-//#ifdef _DEBUG
-//	m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Deferred"));
-//	m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_LightAcc"));
-//#endif
+#ifdef _DEBUG
+	m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Deferred"));
+	m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_LightAcc"));
+#endif
 
 	return S_OK;
 }
@@ -111,7 +111,7 @@ HRESULT CRenderer::Render_Priority()
 
 HRESULT CRenderer::Render_NonAlpha()
 {
-	//m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Deferred"));
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Deferred"));
 
 	for (auto& pGameObject : m_RenderObjects[RENDER_NONALPHA])
 	{
@@ -120,7 +120,7 @@ HRESULT CRenderer::Render_NonAlpha()
 	}
 	m_RenderObjects[RENDER_NONALPHA].clear();
 
-	//m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Deferred"));
+	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Deferred"));
 
 	return S_OK;
 }
