@@ -178,10 +178,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
+    <ClInclude Include="..\Public\ActionTask.h" />
+    <ClInclude Include="..\Public\BehaviorTree.h" />
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\Cody.h" />
+    <ClInclude Include="..\Public\CompositeTask.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
     <ClInclude Include="..\public\Loading.h" />
@@ -189,6 +192,7 @@
     <ClInclude Include="..\Public\MainCamera.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
+    <ClInclude Include="..\Public\Task.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -196,8 +200,11 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\ActionTask.cpp" />
+    <ClCompile Include="..\Private\BehaviorTree.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
+    <ClCompile Include="..\Private\CompositeTask.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />
@@ -205,6 +212,7 @@
     <ClCompile Include="..\Private\MainCamera.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
+    <ClCompile Include="..\Private\Task.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">

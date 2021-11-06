@@ -35,6 +35,8 @@ _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
 
+	KeyProcess(dTimeDelta);
+
 	m_pModelCom->Update_NodeMatrices(dTimeDelta, m_pTransformCom);
 
 	return NO_EVENT;
@@ -60,6 +62,21 @@ HRESULT CCody::Render()
 		m_pModelCom->Render_Model(iIndex, 0);
 
 	return S_OK;
+}
+
+void CCody::KeyProcess(_double TimeDelta)
+{
+	_bool bJog = false;
+	if (m_pGameInstance->Key_Pressing(DIK_W))
+		bJog = true;
+	if (m_pGameInstance->Key_Pressing(DIK_A))
+		bJog = true;
+	if (m_pGameInstance->Key_Pressing(DIK_S))
+		bJog = true;
+	if (m_pGameInstance->Key_Pressing(DIK_D))
+		bJog = true;
+
+	//m_bJog = bJog;
 }
 
 CCody* CCody::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -90,7 +107,5 @@ CGameObject* CCody::Clone_GameObject(void* pArg)
 
 void CCody::Free()
 {
-	Safe_Release(m_pModelCom);
-
 	CCharacter::Free();
 }

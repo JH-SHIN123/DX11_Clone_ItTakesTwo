@@ -10,12 +10,13 @@ class CModel;
 END
 
 BEGIN(Client)
+class CBehaviorTree;
 class CCody final : public CCharacter
 {
 public:
 	enum STATE { STATE_END };
 
-protected:
+private:
 	explicit CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CCody(const CCody& rhs);
 	virtual ~CCody() = default;
@@ -27,13 +28,13 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
 
-protected:
-	CModel*		m_pModelCom = nullptr;
-	CCamera*	m_pCamera = nullptr;
+private:
+	virtual void KeyProcess(_double TimeDelta) override;
+	//void StateCheck();
 
-protected:
-	// Behaviour Tree
-	// Controller
+private:
+	CCamera*		m_pCamera = nullptr;
+	CBehaviorTree*	m_pBehaviorTree = nullptr;
 
 public:
 	static CCody* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext);

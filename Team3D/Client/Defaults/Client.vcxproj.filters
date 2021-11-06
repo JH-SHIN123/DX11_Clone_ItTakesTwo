@@ -82,6 +82,18 @@
     <Filter Include="02.GameObject\99.Stage%28Test%29\01.Player">
       <UniqueIdentifier>{b134e824-3c41-4f85-8703-7c00321fcce5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\00.Public\03.Character\BehaviorTree">
+      <UniqueIdentifier>{c3a3a29d-efa8-47ad-ad01-5b4d894e2ed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\03.Character\BehaviorTree\Task">
+      <UniqueIdentifier>{014ede96-4b1c-4f43-96c7-bda539c2b190}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\03.Character\BehaviorTree\Task\Action">
+      <UniqueIdentifier>{65722b49-3fdc-4d7c-85c1-2f7221b300f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\03.Character\BehaviorTree\Task\Composite">
+      <UniqueIdentifier>{454a1c8b-2fdd-4686-9df5-cc80ebea861d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -135,6 +147,18 @@
     <ClInclude Include="..\Public\Character.h">
       <Filter>02.GameObject\00.Public\03.Character</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BehaviorTree.h">
+      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Task.h">
+      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ActionTask.h">
+      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree\Task\Action</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CompositeTask.h">
+      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree\Task\Composite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -172,6 +196,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObject\00.Public\03.Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BehaviorTree.cpp">
+      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Task.cpp">
+      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ActionTask.cpp">
+      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree\Task\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CompositeTask.cpp">
+      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree\Task\Composite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

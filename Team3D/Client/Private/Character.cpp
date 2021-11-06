@@ -46,6 +46,7 @@ HRESULT CCharacter::Render()
 
 void CCharacter::Free()
 {
+	Safe_Release(m_pModelCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 
