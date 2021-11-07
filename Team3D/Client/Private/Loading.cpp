@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "..\public\Loading.h"
-#include "Terrain.h"
+#include "GameInstance.h"
 #include "MainCamera.h"
-#include "..\..\Engine\public\Model.h"
-#include "Player.h"
 #include "SubCamera.h"
+#include "Player.h"
+#include "Terrain.h"
 
 CLoading::CLoading(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice			(pDevice)
