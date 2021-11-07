@@ -219,40 +219,6 @@ HRESULT CRenderer::Render_ShadowMap()
 	m_RenderObjects[RENDER_SHADOWTARGET].clear();
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_ShadowMap")), E_FAIL);
 	//////////////////////////////////////쉐도우 맵 그리기 끝 ///////////////////////////////////////////
-	
-	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Shadow")), E_FAIL);
-
-	//_float fOffsetX = 0.5f + (0.5f / 1600);
-	//_float fOffsetY = 0.5f + (0.5f / 900);
-
-	//_matrix matScaleBias = XMMatrixIdentity();
-	//matScaleBias.r[0].m128_f32[0] = 0.5f;
-	//matScaleBias.r[1].m128_f32[1] = -0.5f;
-	//matScaleBias.r[2].m128_f32[2] = 1.f;
-	//matScaleBias.r[3].m128_f32[0] = fOffsetX;
-	//matScaleBias.r[3].m128_f32[1] = fOffsetY;
-	//matScaleBias.r[3].m128_f32[3] = 1.f;
-	//m_pShadowMapBuffer->Set_Variable("g_matBias", &XMMatrixTranspose(matScaleBias), sizeof(_matrix));
-
-	//_matrix matWorld, matView, matProj, matLightVP;
-
-	//matView = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_MAINVIEW);
-	//matProj = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_MAINPROJ);
-
-	//m_pShadowMapBuffer->Set_Variable("g_matView", &XMMatrixTranspose(matView), sizeof(_matrix));
-	//m_pShadowMapBuffer->Set_Variable("g_matProj", &XMMatrixTranspose(matProj), sizeof(_matrix));
-
-	//_vector vCamPosition = CPipeline::GetInstance()->Get_MainCamPosition();
-	//_vector vLightPos = XMVectorSet(-100.f, 100.f, 100.f, 1.f);
-	//matLightVP = XMMatrixLookAtLH(vLightPos, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)) * XMMatrixPerspectiveFovLH((_float)XM_PI / 2.f, 1.f, 0.3f, 300.f);
-
-
-	//m_pShadowMapBuffer->Set_ShaderResourceView("g_DepthTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Depth")));
-	//m_pShadowMapBuffer->Set_ShaderResourceView("g_ShadowMapTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_ShadowMap")));
-
-	//m_pShadowMapBuffer->Render(0); // Blend 에서 쓸 Shadow 텍스쳐 그려라.
-
-	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Shadow")), E_FAIL);
 
 	return S_OK;
 }
