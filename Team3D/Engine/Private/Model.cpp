@@ -100,20 +100,21 @@ HRESULT CModel::Set_Animation(_uint iAnimIndex, CTransform * pTransform)
 
 	NULL_CHECK_RETURN(iAnimIndex < m_iAnimCount, E_FAIL);
 
-	m_dCurrentTime = 0.0;
-	m_iCurAnimIndex = iAnimIndex;
-
-	m_iPreAnimIndex = m_iCurAnimIndex;
-	m_iCurAnimIndex = iAnimIndex;
-
-	m_iPreAnimFrame = m_iCurAnimFrame;
-	m_iCurAnimFrame = 0;
-
-	m_AnimTransformations.assign(m_BaseTransformations.begin(), m_BaseTransformations.end());
-
+	/* For.Lerp */
 	m_fLerpRatio = 1.f;
 	m_PreAnimKeyFrames.assign(m_iNodeCount, nullptr);
-	m_Anims[m_iPreAnimIndex]->Get_PreAnimKeyFrames(m_iPreAnimFrame, m_PreAnimKeyFrames); /* 이전 애니메이션의 키프레임 정보들 저장 */
+	m_Anims[m_iCurAnimIndex]->Get_PreAnimKeyFrames(m_iCurAnimFrame, m_PreAnimKeyFrames);
+
+	/* For.FinishCheck */
+	m_IsAnimFinished.assign(m_iAnimCount, false);
+	m_IsAnimFinished[m_iCurAnimIndex] = true;
+
+	/* For.Update */
+	m_dCurrentTime = 0.0;
+
+	m_iCurAnimIndex = iAnimIndex;
+	m_iCurAnimFrame = 0;
+	m_AnimTransformations.assign(m_BaseTransformations.begin(), m_BaseTransformations.end());
 
 	return S_OK;
 }
@@ -255,24 +256,21 @@ HRESULT CModel::Update_Animation(_double dTimeDelta, CTransform * pTransform)
 
 	if (m_dCurrentTime >= dDuration)
 	{
-		m_dCurrentTime -= dDuration;
-
-		m_iPreAnimIndex = m_iCurAnimIndex;
-		m_iCurAnimIndex	= m_iNextAnimIndex;
-
-		m_iPreAnimFrame = m_iCurAnimFrame;
-		m_iCurAnimFrame = 0;
-
-		m_AnimTransformations.assign(m_BaseTransformations.begin(), m_BaseTransformations.end());
-
 		/* For.Lerp */
 		m_fLerpRatio = 1.f;
 		m_PreAnimKeyFrames.assign(m_iNodeCount, nullptr);
-		m_Anims[m_iPreAnimIndex]->Get_PreAnimKeyFrames(m_iPreAnimFrame, m_PreAnimKeyFrames); /* 이전 애니메이션의 키프레임 정보들 저장 */
+		m_Anims[m_iCurAnimIndex]->Get_PreAnimKeyFrames(m_iCurAnimFrame, m_PreAnimKeyFrames);
 
 		/* For.FinishCheck */
 		m_IsAnimFinished.assign(m_iAnimCount, false);
-		m_IsAnimFinished[m_iPreAnimIndex] = true;
+		m_IsAnimFinished[m_iCurAnimIndex] = true;
+
+		/* For.Update */
+		m_dCurrentTime -= dDuration;
+
+		m_iCurAnimIndex	= m_iNextAnimIndex;
+		m_iCurAnimFrame = 0;
+		m_AnimTransformations.assign(m_BaseTransformations.begin(), m_BaseTransformations.end());
 	}
 
 	/* Update_AnimTransformations */

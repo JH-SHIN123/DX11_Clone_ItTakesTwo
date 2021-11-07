@@ -59,10 +59,8 @@ private:
 	_float4x4					m_CombinedPivotMatrix;
 	/* For.Animating */
 	_double						m_dCurrentTime				= 0.0;		// 현재 애니메이션 진행시간
-	_uint						m_iPreAnimIndex				= 0;		// 이전 애니메이션 인덱스
 	_uint						m_iCurAnimIndex				= 0;		// 현재 애니메이션 인덱스
 	_uint						m_iNextAnimIndex			= 0;		// 다음 애니메이션 인덱스
-	_uint						m_iPreAnimFrame				= 0;		// 이전 애니메이션 프레임
 	_uint						m_iCurAnimFrame				= 0;		// 현재 애니메이션 프레임
 	TRANSFORMATIONS				m_BaseTransformations;					// 원래 노드의 TransformationMatrix, 바뀌면 안됨.
 	TRANSFORMATIONS				m_AnimTransformations;					// 채널의 Transformation이 채워진 TransformationMatrix

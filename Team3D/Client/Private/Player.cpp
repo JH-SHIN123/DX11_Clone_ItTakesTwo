@@ -37,6 +37,19 @@ _int CPlayer::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Pressing(DIK_1))
+		m_pModelCom->Set_Animation(1, m_pTransformCom);
+	if (m_pGameInstance->Key_Pressing(DIK_2))
+		m_pModelCom->Set_Animation(2, m_pTransformCom);
+	if (m_pGameInstance->Key_Pressing(DIK_3))
+		m_pModelCom->Set_Animation(4, m_pTransformCom);
+	if (m_pGameInstance->Key_Pressing(DIK_4))
+		m_pModelCom->Set_Animation(5, m_pTransformCom);
+	if (m_pGameInstance->Key_Pressing(DIK_5))
+		m_pModelCom->Set_Animation(6, m_pTransformCom);
+	if (m_pGameInstance->Key_Pressing(DIK_6))
+		m_pModelCom->Set_Animation(7, m_pTransformCom);
+
 	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
 
 	return NO_EVENT;
