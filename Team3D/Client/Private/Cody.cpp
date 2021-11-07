@@ -55,7 +55,7 @@ _int CCody::Tick(_double dTimeDelta)
 
 	StateCheck();
 
-	m_pModelCom->Update_NodeMatrices(dTimeDelta, m_pTransformCom);
+	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
 
 	return NO_EVENT;
 }
@@ -72,12 +72,7 @@ HRESULT CCody::Render()
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Bind_VIBuffer();
-
-	_uint iMeshCount = m_pModelCom->Get_MeshCount();
-
-	for (_uint iIndex = 0; iIndex < iMeshCount; ++iIndex)
-		m_pModelCom->Render_Model(iIndex, 0);
+	m_pModelCom->Render_Model(0);
 
 	return S_OK;
 }

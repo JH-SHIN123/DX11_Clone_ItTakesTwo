@@ -28,11 +28,6 @@ cbuffer BoneMatrixDesc
 	BONEMATRICES	g_BoneMatrices;
 };
 
-cbuffer Diffuse
-{
-	float4	g_vBaseColor;
-};
-
 cbuffer Effect
 {
 	float	g_fAlpha;
@@ -59,25 +54,25 @@ struct VS_OUT
 
 VS_OUT	VS_MAIN(VS_IN In)
 {
-	VS_OUT	Out = (VS_OUT)0;
+	VS_OUT Out = (VS_OUT)0;
 
 	matrix	BoneMatrix	= (g_BoneMatrices.Matrices[In.vBlendIndex.x] * In.vBlendWeight.x) + (g_BoneMatrices.Matrices[In.vBlendIndex.y] * In.vBlendWeight.y) + (g_BoneMatrices.Matrices[In.vBlendIndex.z] * In.vBlendWeight.z) + (g_BoneMatrices.Matrices[In.vBlendIndex.w] * In.vBlendWeight.w);
 	matrix	matBW		= mul(BoneMatrix, g_WorldMatrix);
 
 	Out.vPosition	= mul(vector(In.vPosition, 1.f), matBW);
 	Out.vNormal		= normalize(mul(vector(In.vNormal, 0.f), matBW));
-	Out.vTexUV		= In.vTexUV / 2.f;
+	Out.vTexUV		= In.vTexUV;
 
 	return Out;
 }
 
 VS_OUT VS_MAIN_NO_BONE(VS_IN In)
 {
-	VS_OUT	Out = (VS_OUT)0;
+	VS_OUT Out = (VS_OUT)0;
 
 	Out.vPosition	= mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 	Out.vNormal		= normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
-	Out.vTexUV		= In.vTexUV / 2.f;
+	Out.vTexUV		= In.vTexUV;
 
 	return Out;
 }
@@ -86,9 +81,9 @@ VS_OUT VS_MAIN_NO_BONE(VS_IN In)
 
 struct GS_IN
 {
-	float4 vPosition		: SV_POSITION;
-	float4 vNormal			: NORMAL;
-	float2 vTexUV			: TEXCOORD0;
+	float4 vPosition	: SV_POSITION;
+	float4 vNormal		: NORMAL;
+	float2 vTexUV		: TEXCOORD0;
 };
 
 struct GS_OUT
@@ -157,10 +152,10 @@ PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector vMtrlDiffuse = g_vBaseColor;
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	Out.vDiffuse	= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f); // TEST¿ë
-	//Out.vDiffuse	= g_vBaseColor;
+	Out.vDiffuse	= vMtrlDiffuse;
+
 	Out.vNormal		= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth		= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 

@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "..\public\Loading.h"
-#include "Terrain.h"
-#include "..\..\Engine\public\Model.h"
-#include "Player.h"
+#include "GameInstance.h"
 #include "MainCamera.h"
 #include "SubCamera.h"
+#include "Player.h"
+#include "Terrain.h"
 
 #include "Cody.h"
 
