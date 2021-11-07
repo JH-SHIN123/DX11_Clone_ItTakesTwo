@@ -103,7 +103,11 @@ VS_OUT_SHADOWMAP VS_SHADOWMAP(VS_IN In)
 {
 	VS_OUT_SHADOWMAP	Out = (VS_OUT_SHADOWMAP)0;
 
-	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	matrix	BoneMatrix = (g_BoneMatrices.Matrices[In.vBlendIndex.x] * In.vBlendWeight.x) + (g_BoneMatrices.Matrices[In.vBlendIndex.y] * In.vBlendWeight.y) + (g_BoneMatrices.Matrices[In.vBlendIndex.z] * In.vBlendWeight.z) + (g_BoneMatrices.Matrices[In.vBlendIndex.w] * In.vBlendWeight.w);
+	matrix	matBW = mul(BoneMatrix, g_WorldMatrix);
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), matBW);
+	//Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 	Out.mClipPosition = Out.vPosition;
 
 	return Out;
@@ -133,6 +137,7 @@ struct GS_OUT
 	float2 vTexUV			: TEXCOORD0;
 	float4 vProjPosition	: TEXCOORD1;
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
+
 };
 
 struct GS_OUT_SHADOWMAP
@@ -228,6 +233,13 @@ struct PS_IN
 	float4 vProjPosition	: TEXCOORD1;
 };
 
+struct PS_OUT
+{
+	vector	vDiffuse	: SV_TARGET0;
+	vector	vNormal		: SV_TARGET1;
+	vector	vDepth		: SV_TARGET2;
+};
+
 struct PS_IN_SHADOWMAP
 {
 	float4 vPosition : SV_POSITION;
@@ -241,12 +253,6 @@ struct PS_OUT_SHADOWMAP
 	vector	vDepth		: SV_TARGET0;  // 조명에서 바라본 오브젝트들의 깊이 값. 
 };
 
-struct PS_OUT
-{
-	vector	vDiffuse	: SV_TARGET0;
-	vector	vNormal		: SV_TARGET1;
-	vector	vDepth		: SV_TARGET2;
-};
 
 PS_OUT	PS_MAIN(PS_IN In)
 {
@@ -266,9 +272,10 @@ PS_OUT_SHADOWMAP PS_SHADOWMAP(PS_IN_SHADOWMAP In)
 {
 	PS_OUT_SHADOWMAP Out = (PS_OUT_SHADOWMAP)0;
 
-	Out.vDepth = vector(In.mClipPosition.w / g_fMainCamFar, In.mClipPosition.z / In.mClipPosition.w, 0.f, 0.f);
-	//float depth = In.mClipPosition.z / In.mClipPosition.w;
-	//Out.vDepth = vector(depth.xxx, 1.f);
+	Out.vDepth = vector(In.mClipPosition.w / 300.f, In.mClipPosition.z / In.mClipPosition.w, 0.f, 0.f);
+
+	/*float depth = In.mClipPosition.z / In.mClipPosition.w;
+	Out.vDepth = vector(depth.xxx, 1.f);*/
 
 	return Out;
 }

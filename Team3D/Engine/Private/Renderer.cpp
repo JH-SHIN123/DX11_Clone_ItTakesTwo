@@ -201,6 +201,8 @@ HRESULT CRenderer::Render_Blend()
 	m_pVIBuffer->Set_ShaderResourceView("g_SpecularTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Specular")));
 	m_pVIBuffer->Set_ShaderResourceView("g_DOFTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_DOF")));
 	m_pVIBuffer->Set_ShaderResourceView("g_DepthTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Depth")));
+	m_pVIBuffer->Set_ShaderResourceView("g_ShadowMapTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_ShadowMap")));
+
 
 	m_pVIBuffer->Render(0);
 
@@ -219,7 +221,11 @@ HRESULT CRenderer::Render_ShadowMap()
 	m_RenderObjects[RENDER_SHADOWTARGET].clear();
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_ShadowMap")), E_FAIL);
 	//////////////////////////////////////½¦µµ¿ì ¸Ê ±×¸®±â ³¡ ///////////////////////////////////////////
+	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Shadow")), E_FAIL);
+	//m_pVIBuffer->Set_ShaderResourceView("g_ShadowMapTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_ShadowMap")));
+	//m_pVIBuffer->Set_ShaderResourceView("g_DepthTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Depth")));
 
+	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Shadow")), E_FAIL);
 	return S_OK;
 }
 

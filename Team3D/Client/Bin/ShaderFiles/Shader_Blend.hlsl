@@ -5,6 +5,14 @@ texture2D	g_ShadeTexture;
 texture2D	g_SpecularTexture;
 texture2D   g_DepthTexture;
 texture2D   g_DOFTexture;
+texture2D   g_ShadowMapTexture;
+
+sampler ShadowSampler = sampler_state
+{
+	AddressU = wrap;
+	AddressV = wrap;
+};
+
 
 sampler DOFSampler = sampler_state
 {
@@ -82,6 +90,19 @@ PS_OUT PS_MAIN(PS_IN In)
 	vector	vSpecularDesc	= g_SpecularTexture.Sample(SpecularSampler, In.vTexUV);
 	vector	vDOFDesc        = g_DOFTexture.Sample(DOFSampler, In.vTexUV / 2.f);
 	vector	vDepthDesc      = g_DepthTexture.Sample(DepthSampler, In.vTexUV);
+	vector	vShadowDesc	    = g_ShadowMapTexture.Sample(ShadowSampler, In.vTexUV);
+	
+	vector vShadowFactor;
+	if (vDepthDesc.y < vShadowDesc.y + 0.05f)
+	{
+		vShadowFactor.rgb = 1.f;
+		vShadowFactor.a = 0.f;
+	}
+	else
+	{
+		vShadowFactor.rgb = 0.f;
+		vShadowFactor.a = 1.f;
+	}
 
 	Out.vColor = vDiffuseDesc * vShadeDesc + vSpecularDesc;
 
@@ -89,6 +110,7 @@ PS_OUT PS_MAIN(PS_IN In)
 		discard;
 
 	Out.vColor = lerp(Out.vColor, vDOFDesc, saturate(5.f * abs(vDepthDesc.x)));
+	Out.vColor *= vShadowFactor;
 
 	return Out;
 }

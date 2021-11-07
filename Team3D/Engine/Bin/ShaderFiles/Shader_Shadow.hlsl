@@ -21,6 +21,16 @@ sampler ShadowMapSampler = sampler_state
 	AddressV = wrap;
 };
 
+texture2D		g_DepthTexture;
+
+sampler DepthSampler = sampler_state
+{
+	AddressU = wrap;
+	AddressV = wrap;
+};
+
+
+
 struct VS_IN_ShadowRender
 {
 	float3		vPosition	: POSITION;
@@ -59,9 +69,7 @@ struct PS_OUT
 PS_OUT PS_SHADOW(PS_IN_ShadowRender In)
 {
 	PS_OUT Out = (PS_OUT)0;
-
-
-	Out.vColor = fShadowTerm;
+	
 
 	return Out;
 }
