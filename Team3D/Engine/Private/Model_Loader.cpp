@@ -8,33 +8,34 @@
 
 IMPLEMENT_SINGLETON(CModel_Loader)
 
-CModel_Loader::CModel_Loader()
-{
-}
-
-HRESULT CModel_Loader::Load_ModelFromFile(CModel * pModel, const char * pMeshFilePath, const char * pMeshFileName)
+HRESULT CModel_Loader::Load_ModelFromFile(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, CModel * pModel, const char * pModelFilePath, const char * pModelFileName)
 {
 	NULL_CHECK_RETURN(pModel, E_FAIL);
 
 	/* Import_Scene */
-	char				szFullPath[MAX_PATH] = "";
+	char szFullPath[MAX_PATH] = "";
 
-	strcpy_s(szFullPath, pMeshFilePath);
-	strcat_s(szFullPath, pMeshFileName);
+	strcpy_s(szFullPath, pModelFilePath);
+	strcat_s(szFullPath, pModelFileName);
 
-	Assimp::Importer	Importer;
-	const aiScene*		pScene = Importer.ReadFile(szFullPath, aiProcess_ConvertToLeftHanded | aiProcess_Triangulate | aiProcess_CalcTangentSpace);
+	Assimp::Importer Importer;
+	//Importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, aiComponent_ANIMATIONS);
+	const aiScene* pScene = Importer.ReadFile(szFullPath, aiProcess_ConvertToLeftHanded | aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 	NULL_CHECK_RETURN(pScene, E_FAIL);
+	NULL_CHECK_RETURN(pScene->mRootNode, E_FAIL);
 
 	/* Create_Container & Reserve */
-	MESHES				Meshes;
-	NODES				Nodes;
-	ANIMS				Anims;
+	MESHES			Meshes;
+	MATERIALS		Materials;
+	TEMPNODES		TempNodes;
+	NODES			Nodes;
+	TRANSFORMATIONS	Transformations;
+	ANIMS			Anims;
 
-	_uint				iVertexCount	= 0;
-	_uint				iFaceCount		= 0;
-	_uint				iNodeCount		= 0;
-	_uint				iAnimCount		= pScene->mNumAnimations;
+	_uint	iVertexCount	= 0;
+	_uint	iFaceCount		= 0;
+	_uint	iNodeCount		= 0;
+	_uint	iAnimCount		= pScene->mNumAnimations;
 
 	for (_uint iIndex = 0; iIndex < pScene->mNumMeshes; ++iIndex)
 	{
@@ -45,38 +46,38 @@ HRESULT CModel_Loader::Load_ModelFromFile(CModel * pModel, const char * pMeshFil
 	NULL_CHECK_RETURN(iVertexCount, E_FAIL);
 	NULL_CHECK_RETURN(iFaceCount, E_FAIL);
 
-	VTXMESH*			pVertices	= new VTXMESH[iVertexCount];
-	POLYGON_INDICES32*	pFaces		= new POLYGON_INDICES32[iFaceCount];
+	VTXMESH* pVertices = new VTXMESH[iVertexCount];
 	ZeroMemory(pVertices, sizeof(VTXMESH) * iVertexCount);
+
+	POLYGON_INDICES32* pFaces = new POLYGON_INDICES32[iFaceCount];
 	ZeroMemory(pFaces, sizeof(POLYGON_INDICES32) * iFaceCount);
 
 	Find_NodeCount(pScene->mRootNode, iNodeCount);
 
 	Meshes.reserve(pScene->mNumMeshes);
+	Materials.reserve(pScene->mNumMaterials);
 	Nodes.reserve(iNodeCount);
+	TempNodes.reserve(iNodeCount);
+	Transformations.reserve(iNodeCount);
 	Anims.reserve(iAnimCount);
+
 
 	/* Load_Meshes */
 	FAILED_CHECK_RETURN(Add_MeshToContainer(pScene, pVertices, pFaces, Meshes), E_FAIL);
-
+	/* Load_Materials */
+	FAILED_CHECK_RETURN(Add_MaterialToContainer(pDevice, pDeviceContext, pScene, pModelFilePath, Materials), E_FAIL);
 	/* Load_Hierarchy */
-	NULL_CHECK_RETURN(pScene->mRootNode, E_FAIL);
-	FAILED_CHECK_RETURN(Add_NodeToContainer(pScene->mRootNode, Meshes, Nodes, iAnimCount), E_FAIL);
-
+	FAILED_CHECK_RETURN(Add_NodeToContainer(pScene->mRootNode, Meshes, TempNodes), E_FAIL);
 	/* Sort_Nodes */
-	sort(Nodes.begin(), Nodes.end(), [](CHierarchyNode* pDst, CHierarchyNode* pSrc) { return pDst->Get_Depth() < pSrc->Get_Depth(); });
-
+	sort(TempNodes.begin(), TempNodes.end(), [](TEMPNODE pDst, TEMPNODE pSrc) { return pDst.first->Get_Depth() < pSrc.first->Get_Depth(); });
 	/* Set_NodeIndex */
-	Set_NodeIndex(Nodes);
-
+	Set_NodeIndex(TempNodes, Nodes, Transformations);
 	/* Load_BoneInfo */
 	FAILED_CHECK_RETURN(Add_BoneInfoToContainer(pScene, pVertices, Meshes, Nodes), E_FAIL);
-
 	/* Load_Animations */
 	FAILED_CHECK_RETURN(Add_AnimToContainer(pScene, Nodes, Anims), E_FAIL);
-
 	/* Send_Containers */
-	pModel->Bring_Containers(pVertices, iVertexCount, pFaces, iFaceCount, Meshes, Nodes, Anims);
+	pModel->Bring_Containers(pVertices, iVertexCount, pFaces, iFaceCount, Meshes, Materials, Nodes, Transformations, Anims);
 
 	return S_OK;
 }
@@ -92,12 +93,7 @@ HRESULT CModel_Loader::Add_MeshToContainer(const aiScene * pScene, VTXMESH * pVe
 
 		NULL_CHECK_RETURN(pAiMesh->mNumVertices, E_FAIL);
 
-		aiColor4D	vAiColor;
-		pScene->mMaterials[iMeshIndex]->Get(AI_MATKEY_COLOR_DIFFUSE, vAiColor);
-		_vector		vColor;
-		memcpy(&vColor, &vAiColor, sizeof(_vector));
-
-		CMesh*	pMesh = CMesh::Create(pAiMesh->mName.data, iCurrentVertexIndex, iCurrentFaceIndex, pAiMesh->mNumFaces, pAiMesh->mMaterialIndex, vColor);
+		CMesh* pMesh = CMesh::Create(pAiMesh->mName.data, iCurrentVertexIndex, iCurrentFaceIndex, pAiMesh->mNumFaces, pAiMesh->mMaterialIndex);
 		Meshes.emplace_back(pMesh);
 
 		/* Add_VertexToContainer */
@@ -111,27 +107,69 @@ HRESULT CModel_Loader::Add_MeshToContainer(const aiScene * pScene, VTXMESH * pVe
 		/* Add_IndexToContainer */
 		for (_uint iFaceIndex = 0; iFaceIndex < pAiMesh->mNumFaces; ++iFaceIndex)
 		{
-			pFaces[iCurrentFaceIndex]._0	= pAiMesh->mFaces[iFaceIndex].mIndices[0];
-			pFaces[iCurrentFaceIndex]._1	= pAiMesh->mFaces[iFaceIndex].mIndices[1];
-			pFaces[iCurrentFaceIndex++]._2	= pAiMesh->mFaces[iFaceIndex].mIndices[2];
+			pFaces[iCurrentFaceIndex]._0 = pAiMesh->mFaces[iFaceIndex].mIndices[0];
+			pFaces[iCurrentFaceIndex]._1 = pAiMesh->mFaces[iFaceIndex].mIndices[1];
+			pFaces[iCurrentFaceIndex]._2 = pAiMesh->mFaces[iFaceIndex].mIndices[2];
+			++iCurrentFaceIndex;
 		}
 	}
 
 	return S_OK;
 }
 
-HRESULT CModel_Loader::Add_NodeToContainer(aiNode * pAiNode, MESHES & Meshes, NODES & Nodes, const _uint & iAnimCount, CHierarchyNode * pParent, _uint iDepth)
+HRESULT CModel_Loader::Add_MaterialToContainer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const aiScene * pScene, const char * pModelFilePath, MATERIALS & Materials)
 {
-	_matrix		TransformationMatrix;
+	for (_uint iMaterialIndex = 0; iMaterialIndex < pScene->mNumMaterials; ++ iMaterialIndex)
+	{
+		MATERIAL* pMaterial = new MATERIAL;
+		ZeroMemory(pMaterial, sizeof(MATERIAL));
 
-	memcpy(&TransformationMatrix, &XMMatrixTranspose(XMMATRIX(pAiNode->mTransformation[0])), sizeof(_matrix));
+		for (_uint iTextureType = 0; iTextureType < AI_TEXTURE_TYPE_MAX; ++iTextureType)
+		{
+			aiString strTexturePath;
 
-	CHierarchyNode*	pNode = CHierarchyNode::Create(pAiNode->mName.data, TransformationMatrix, pParent, iDepth, iAnimCount);
+			if (FAILED(pScene->mMaterials[iMaterialIndex]->GetTexture(aiTextureType(iTextureType), 0, &strTexturePath)))
+				continue;
 
-	Nodes.emplace_back(pNode);
+			char	szTextureFileName[MAX_PATH] = "";
+			char	szExt[MAX_PATH] = "";
+			char	szFullPath[MAX_PATH] = "";
+			_tchar	szFullPathW[MAX_PATH] = TEXT("");
+
+			_splitpath_s(strTexturePath.data, nullptr, 0, nullptr, 0, szTextureFileName, MAX_PATH, szExt, MAX_PATH);
+			strcat_s(szTextureFileName, szExt);
+			strcpy_s(szFullPath, pModelFilePath);
+			strcat_s(szFullPath, szTextureFileName);
+			MultiByteToWideChar(CP_ACP, 0, szFullPath, (_int)strlen(szFullPath), szFullPathW, MAX_PATH);
+
+			if (!strcmp(szExt, ".dds"))
+				pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_DDS, szFullPathW);
+			else if (!strcmp(szExt, ".tga"))
+				pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_TGA, szFullPathW);
+			else
+				pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, szFullPathW);
+		}
+		Materials.emplace_back(pMaterial);
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel_Loader::Add_NodeToContainer(aiNode * pAiNode, MESHES & Meshes, TEMPNODES & TempNodes, CHierarchyNode * pParent, _uint iDepth)
+{
+	_float4x4 TransformationMatrix;
+
+	XMStoreFloat4x4(&TransformationMatrix, XMMatrixTranspose(XMMATRIX(pAiNode->mTransformation[0])));
+
+	CHierarchyNode*	pNode = CHierarchyNode::Create(pAiNode->mName.data, pParent, iDepth);
+	NULL_CHECK_RETURN(pNode, E_FAIL);
+
+	TEMPNODE TempNode(pNode, TransformationMatrix);
+
+	TempNodes.emplace_back(TempNode);
 
 	for (_uint iIndex = 0; iIndex < pAiNode->mNumChildren; ++iIndex)
-		Add_NodeToContainer(pAiNode->mChildren[iIndex], Meshes, Nodes, iAnimCount, pNode, iDepth + 1);
+		Add_NodeToContainer(pAiNode->mChildren[iIndex], Meshes, TempNodes, pNode, iDepth + 1);
 
 	return S_OK;
 }
@@ -201,14 +239,14 @@ HRESULT CModel_Loader::Add_AnimToContainer(const aiScene * pScene, NODES & Nodes
 
 	for (_uint iAnimIndex = 0; iAnimIndex < iAnimCount; ++iAnimIndex)
 	{
-		aiAnimation*	pAiAnim = pScene->mAnimations[iAnimIndex];
+		aiAnimation* pAiAnim = pScene->mAnimations[iAnimIndex];
 		NULL_CHECK_RETURN(pAiAnim, E_FAIL);
-		CAnim*			pAnim	= CAnim::Create(pAiAnim->mName.data, pAiAnim->mDuration, pAiAnim->mTicksPerSecond);
+		CAnim* pAnim = CAnim::Create(pAiAnim->mName.data, pAiAnim->mDuration, pAiAnim->mTicksPerSecond);
 		NULL_CHECK_RETURN(pAnim, E_FAIL);
 
-		_uint		iChannelCount	= pAiAnim->mNumChannels;
+		_uint iChannelCount	= pAiAnim->mNumChannels;
 
-		CHANNELS	Channels;
+		CHANNELS Channels;
 		Channels.reserve(iChannelCount);
 
 		_vector vScale		= XMVectorZero();
@@ -217,16 +255,17 @@ HRESULT CModel_Loader::Add_AnimToContainer(const aiScene * pScene, NODES & Nodes
 
 		for (_uint iChannelIndex = 0; iChannelIndex < iChannelCount; ++iChannelIndex)
 		{
-			aiNodeAnim*		pAnimNode	= pAiAnim->mChannels[iChannelIndex];
+			aiNodeAnim* pAnimNode = pAiAnim->mChannels[iChannelIndex];
 			NULL_CHECK_RETURN(pAnimNode, E_FAIL);
-			CAnimChannel*	pChannel	= CAnimChannel::Create(pAnimNode->mNodeName.data);
+
+			CAnimChannel* pChannel = CAnimChannel::Create(pAnimNode->mNodeName.data);
 			NULL_CHECK_RETURN(pChannel, E_FAIL);
 
-			_uint	iKeyFrameCount	= pAnimNode->mNumPositionKeys;
-			iKeyFrameCount			= max(iKeyFrameCount, pAnimNode->mNumScalingKeys);
-			iKeyFrameCount			= max(iKeyFrameCount, pAnimNode->mNumRotationKeys);
+			_uint iKeyFrameCount = pAnimNode->mNumPositionKeys;
+			iKeyFrameCount = max(iKeyFrameCount, pAnimNode->mNumScalingKeys);
+			iKeyFrameCount = max(iKeyFrameCount, pAnimNode->mNumRotationKeys);
 
-			KEYFRAMES	KeyFrames;
+			KEYFRAMES KeyFrames;
 			KeyFrames.reserve(iKeyFrameCount);
 
 			for (_uint iKeyFrameIndex = 0; iKeyFrameIndex < iKeyFrameCount; ++iKeyFrameIndex)
@@ -261,8 +300,8 @@ HRESULT CModel_Loader::Add_AnimToContainer(const aiScene * pScene, NODES & Nodes
 			}
 			auto iter = find_if(Nodes.begin(), Nodes.end(), [pChannel](CHierarchyNode* pNode) { return !strcmp(pChannel->Get_Name(), pNode->Get_Name()); });
 			NULL_CHECK_RETURN(iter != Nodes.end(), E_FAIL);
-			(*iter)->Set_ConnectedAnimChannel(iAnimIndex, iChannelIndex);
 
+			pChannel->Set_ConnectedNodeIndex((*iter)->Get_NodeIndex());
 			pChannel->Bring_KeyFrameContainer(KeyFrames);
 			Channels.emplace_back(pChannel);
 		}
@@ -291,12 +330,18 @@ CHierarchyNode * CModel_Loader::Find_Node_ByName(NODES & Nodes, const char * pNo
 		return *iter;
 }
 
-void CModel_Loader::Set_NodeIndex(NODES & Nodes)
+void CModel_Loader::Set_NodeIndex(TEMPNODES & TempNodes, NODES & Nodes, TRANSFORMATIONS & Transformations)
 {
 	_uint iIndex = 0;
 
-	for (auto& pNode : Nodes)
-		pNode->Set_NodeIndex(iIndex++);
+	for (auto& pTempNode : TempNodes)
+	{
+		Nodes.emplace_back(pTempNode.first);
+		pTempNode.first->Set_NodeIndex(iIndex++);
+		Transformations.emplace_back(pTempNode.second);
+	}
+
+	TempNodes.clear();
 }
 
 void CModel_Loader::Free()

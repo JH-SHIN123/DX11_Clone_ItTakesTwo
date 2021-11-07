@@ -37,7 +37,7 @@ _int CPlayer::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	m_pModelCom->Update_NodeMatrices(dTimeDelta, m_pTransformCom);
+	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
 
 	return NO_EVENT;
 }
@@ -54,19 +54,14 @@ HRESULT CPlayer::Render()
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Bind_VIBuffer();
-
-	_uint iMeshCount = m_pModelCom->Get_MeshCount();
-
-	for (_uint iIndex = 0; iIndex < iMeshCount; ++iIndex)
-		m_pModelCom->Render_Model(iIndex, 0);
+	m_pModelCom->Render_Model(0);
 
 	return S_OK;
 }
 
 CPlayer * CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
-	CPlayer*	pInstance = new CPlayer(pDevice, pDeviceContext);
+	CPlayer* pInstance = new CPlayer(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{

@@ -142,8 +142,26 @@
     <Filter Include="97.ShaderFiles">
       <UniqueIdentifier>{a8ed466c-5a7f-4c33-8d5f-c5e1f36e60f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utility\02.Component\05.Model%28Test%29">
+    <Filter Include="02.Utility\02.Component\05.Model">
       <UniqueIdentifier>{f42d09a8-e2c1-4399-8d20-78fa83392beb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\05.Model\00.Main">
+      <UniqueIdentifier>{5ae03409-3437-45b5-a696-e24db7f1beb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\05.Model\02.Node">
+      <UniqueIdentifier>{b6206c60-7380-4193-9804-a8352fe4aec2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\05.Model\03.Anim">
+      <UniqueIdentifier>{44f8247c-6e55-49b0-9f7c-aad016a932c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\05.Model\04.AnimChannel">
+      <UniqueIdentifier>{e9d38d57-9fb4-40e9-b273-d7c2402b7917}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\05.Model\99.ModelLoader">
+      <UniqueIdentifier>{dd98b0f7-a752-49de-810c-7e0b1a3422d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\05.Model\01.Mesh">
+      <UniqueIdentifier>{288dfc8d-f2dd-43e7-85ed-31782323d247}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -258,23 +276,23 @@
     <ClInclude Include="..\Public\Pipeline.h">
       <Filter>02.Utility\99.Others\01.Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Model_Loader.h">
-      <Filter>02.Utility\02.Component\05.Model%28Test%29</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Anim.h">
-      <Filter>02.Utility\02.Component\05.Model%28Test%29</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\AnimChannel.h">
-      <Filter>02.Utility\02.Component\05.Model%28Test%29</Filter>
+    <ClInclude Include="..\Public\Model.h">
+      <Filter>02.Utility\02.Component\05.Model\00.Main</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\HierarchyNode.h">
-      <Filter>02.Utility\02.Component\05.Model%28Test%29</Filter>
+      <Filter>02.Utility\02.Component\05.Model\02.Node</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Mesh.h">
-      <Filter>02.Utility\02.Component\05.Model%28Test%29</Filter>
+      <Filter>02.Utility\02.Component\05.Model\01.Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Model.h">
-      <Filter>02.Utility\02.Component\05.Model%28Test%29</Filter>
+    <ClInclude Include="..\Public\Anim.h">
+      <Filter>02.Utility\02.Component\05.Model\03.Anim</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AnimChannel.h">
+      <Filter>02.Utility\02.Component\05.Model\04.AnimChannel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Model_Loader.h">
+      <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -374,23 +392,23 @@
     <ClCompile Include="..\Private\Pipeline.cpp">
       <Filter>02.Utility\99.Others\01.Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Anim.cpp">
-      <Filter>02.Utility\02.Component\05.Model%28Test%29</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\AnimChannel.cpp">
-      <Filter>02.Utility\02.Component\05.Model%28Test%29</Filter>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>02.Utility\02.Component\05.Model\00.Main</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\HierarchyNode.cpp">
-      <Filter>02.Utility\02.Component\05.Model%28Test%29</Filter>
+      <Filter>02.Utility\02.Component\05.Model\02.Node</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Mesh.cpp">
-      <Filter>02.Utility\02.Component\05.Model%28Test%29</Filter>
+      <Filter>02.Utility\02.Component\05.Model\01.Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Model.cpp">
-      <Filter>02.Utility\02.Component\05.Model%28Test%29</Filter>
+    <ClCompile Include="..\Private\Anim.cpp">
+      <Filter>02.Utility\02.Component\05.Model\03.Anim</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AnimChannel.cpp">
+      <Filter>02.Utility\02.Component\05.Model\04.AnimChannel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Model_Loader.cpp">
-      <Filter>02.Utility\02.Component\05.Model%28Test%29</Filter>
+      <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
