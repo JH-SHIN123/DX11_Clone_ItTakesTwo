@@ -1,18 +1,10 @@
 #include "..\public\Anim.h"
 #include "AnimChannel.h"
 
-CAnim::CAnim()
+void CAnim::Get_PreAnimKeyFrames(_uint iPreAnimFrame, vector<KEY_FRAME*>& PreAnimKeyFrames)
 {
-}
-
-const _double & CAnim::Get_Duration() const
-{
-	return m_dDuration;
-}
-
-const _double & CAnim::Get_TicksPerSecond() const
-{
-	return m_dTicksPerSecond;
+	for (auto& pChannel : m_Channels)
+		PreAnimKeyFrames[pChannel->Get_ConnectedNodeIndex()] = pChannel->Get_KeyFrames()[iPreAnimFrame];
 }
 
 HRESULT CAnim::NativeConstruct(const char * pName, const _double & dDuration, const _double & dTicksPerSecond)
@@ -25,7 +17,7 @@ HRESULT CAnim::NativeConstruct(const char * pName, const _double & dDuration, co
 	return S_OK;
 }
 
-HRESULT CAnim::Bring_ChannelContainer(vector<class CAnimChannel*>& Channels)
+HRESULT CAnim::Bring_ChannelContainer(vector<class CAnimChannel*> & Channels)
 {
 	NULL_CHECK_RETURN(m_Channels.empty(), E_FAIL);
 
@@ -34,265 +26,139 @@ HRESULT CAnim::Bring_ChannelContainer(vector<class CAnimChannel*>& Channels)
 	return S_OK;
 }
 
-HRESULT CAnim::Update_ChannelMatrices(_double & dCurrentTime, vector<_uint> & CurrentKeyFrames, vector<_float4x4> & Transformations, vector<_uint> & LastKeyFrames, CAnim* pPreAnim, _double dPreStopTime, _double dPreAnimDuration, _double dPreAnimTime)
+HRESULT CAnim::Update_Transformations(_double & dCurrentTime, _uint & iCurAnimFrame, vector<_float4x4> & Transformations)
 {
-	_uint iChannelIndex = 0;
-
-	if (nullptr == pPreAnim || 0.0 == dPreAnimDuration || 0.0 == dPreAnimTime)
+	for (auto& pChannel : m_Channels)
 	{
-		for (auto& pAnimChannel : m_Channels)
+		_uint iNodeIndex = pChannel->Get_ConnectedNodeIndex();
+
+		const vector<KEY_FRAME*>& KeyFrames = pChannel->Get_KeyFrames();
+
+		KEY_FRAME*	pFirst	= KeyFrames.front();
+		KEY_FRAME*	pLast	= KeyFrames.back();
+
+		_vector vScale, vRotation, vPosition;
+
+		if (dCurrentTime < pFirst->dTime)
 		{
-			const vector<KEY_FRAME*>&	KeyFrames = pAnimChannel->Get_KeyFrames();
-
-			KEY_FRAME*	pFirst = KeyFrames.front();
-			KEY_FRAME*	pLast = KeyFrames.back();
-
-			_vector		vScale, vRotation, vPosition;
-
-			if (dCurrentTime < pFirst->dTime)
-			{
-				vScale = XMLoadFloat3(&pFirst->vScale);
-				vRotation = XMLoadFloat4(&pFirst->vRotation);
-				vPosition = XMLoadFloat3(&pFirst->vPosition);
-				vPosition = XMVectorSetW(vPosition, 1.f);
-			}
-			else if (dCurrentTime >= pLast->dTime)
-			{
-				vScale = XMLoadFloat3(&pLast->vScale);
-				vRotation = XMLoadFloat4(&pLast->vRotation);
-				vPosition = XMLoadFloat3(&pLast->vPosition);
-				vPosition = XMVectorSetW(vPosition, 1.f);
-			}
-			else
-			{
-				_uint& iCurrentKeyFrame = CurrentKeyFrames[iChannelIndex];
-
-				if (dCurrentTime > KeyFrames[iCurrentKeyFrame + 1]->dTime)
-					++iCurrentKeyFrame;
-
-				_float	fRatio = _float((dCurrentTime - KeyFrames[iCurrentKeyFrame]->dTime) / (KeyFrames[iCurrentKeyFrame + 1]->dTime - KeyFrames[iCurrentKeyFrame]->dTime));
-
-				_vector	vSrcScale, vDstScale;
-				_vector	vSrcRotation, vDstRotation;
-				_vector	vSrcPosition, vDstPosition;
-
-				vSrcScale = XMLoadFloat3(&KeyFrames[iCurrentKeyFrame]->vScale);
-				vSrcRotation = XMLoadFloat4(&KeyFrames[iCurrentKeyFrame]->vRotation);
-				vSrcPosition = XMLoadFloat3(&KeyFrames[iCurrentKeyFrame]->vPosition);
-				vSrcPosition = XMVectorSetW(vSrcPosition, 1.f);
-
-				vDstScale = XMLoadFloat3(&KeyFrames[iCurrentKeyFrame + 1]->vScale);
-				vDstRotation = XMLoadFloat4(&KeyFrames[iCurrentKeyFrame + 1]->vRotation);
-				vDstPosition = XMLoadFloat3(&KeyFrames[iCurrentKeyFrame + 1]->vPosition);
-				vDstPosition = XMVectorSetW(vSrcPosition, 1.f);
-
-				vScale = XMVectorLerp(vSrcScale, vDstScale, fRatio);
-				vRotation = XMQuaternionSlerp(vSrcRotation, vDstRotation, fRatio);
-				vPosition = XMVectorLerp(vSrcPosition, vDstPosition, fRatio);
-				vPosition = XMVectorSetW(vPosition, 1.f);
-			}
-			_matrix	TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
-
-			XMStoreFloat4x4(&Transformations[iChannelIndex], TransformationMatrix);
-
-			++iChannelIndex;
+			vScale		= XMLoadFloat3(&pFirst->vScale);
+			vRotation	= XMLoadFloat4(&pFirst->vRotation);
+			vPosition	= XMLoadFloat3(&pFirst->vPosition);
+			vPosition	= XMVectorSetW(vPosition, 1.f);
 		}
-	}
-	else if (dPreStopTime == -1.0)
-	{
-		for (_uint iIndex = 0; iIndex < m_Channels.size(); ++iIndex)
+		else if (dCurrentTime >= pLast->dTime)
 		{
-			CAnimChannel*	pAnimChannel = m_Channels[iIndex];
-
-			const vector<KEY_FRAME*>&	KeyFrames = pAnimChannel->Get_KeyFrames();
-
-			KEY_FRAME*	pFirst = KeyFrames.front();
-			KEY_FRAME*	pLast = KeyFrames.back();
-
-			_vector		vScale, vRotation, vPosition;
-
-			if (dCurrentTime < pFirst->dTime)
-			{
-				vScale = XMLoadFloat3(&pFirst->vScale);
-				vRotation = XMLoadFloat4(&pFirst->vRotation);
-				vPosition = XMLoadFloat3(&pFirst->vPosition);
-				vPosition = XMVectorSetW(vPosition, 1.f);
-			}
-			else if (dCurrentTime >= pLast->dTime)
-			{
-				vScale = XMLoadFloat3(&pLast->vScale);
-				vRotation = XMLoadFloat4(&pLast->vRotation);
-				vPosition = XMLoadFloat3(&pLast->vPosition);
-				vPosition = XMVectorSetW(vPosition, 1.f);
-			}
-			else
-			{
-				_uint& iCurrentKeyFrame = CurrentKeyFrames[iChannelIndex];
-
-				if (dCurrentTime > KeyFrames[iCurrentKeyFrame + 1]->dTime)
-					++iCurrentKeyFrame;
-
-				_float	fRatio = _float((dCurrentTime - KeyFrames[iCurrentKeyFrame]->dTime) / (KeyFrames[iCurrentKeyFrame + 1]->dTime - KeyFrames[iCurrentKeyFrame]->dTime));
-
-				_vector	vSrcScale, vDstScale;
-				_vector	vSrcRotation, vDstRotation;
-				_vector	vSrcPosition, vDstPosition;
-
-				vSrcScale = XMLoadFloat3(&KeyFrames[iCurrentKeyFrame]->vScale);
-				vSrcRotation = XMLoadFloat4(&KeyFrames[iCurrentKeyFrame]->vRotation);
-				vSrcPosition = XMLoadFloat3(&KeyFrames[iCurrentKeyFrame]->vPosition);
-				vSrcPosition = XMVectorSetW(vSrcPosition, 1.f);
-
-				vDstScale = XMLoadFloat3(&KeyFrames[iCurrentKeyFrame + 1]->vScale);
-				vDstRotation = XMLoadFloat4(&KeyFrames[iCurrentKeyFrame + 1]->vRotation);
-				vDstPosition = XMLoadFloat3(&KeyFrames[iCurrentKeyFrame + 1]->vPosition);
-				vDstPosition = XMVectorSetW(vSrcPosition, 1.f);
-
-				vScale = XMVectorLerp(vSrcScale, vDstScale, fRatio);
-				vRotation = XMQuaternionSlerp(vSrcRotation, vDstRotation, fRatio);
-				vPosition = XMVectorLerp(vSrcPosition, vDstPosition, fRatio);
-				vPosition = XMVectorSetW(vPosition, 1.f);
-			}
-
-
-			CAnimChannel*	pPreAnimChannel = pPreAnim->m_Channels[iIndex];
-			_float			fConnectionRatio = _float(dPreAnimTime / dPreAnimDuration);
-
-			KEY_FRAME*	pPreLast = pPreAnimChannel->Get_KeyFrames().back();
-
-			_vector		vPreAnimScale		= XMLoadFloat3(&pPreLast->vScale);
-			_vector		vPreAnimRotation	= XMLoadFloat4(&pPreLast->vRotation);
-
-			vScale = XMVectorLerp(vScale, vPreAnimScale, fConnectionRatio);
-			vRotation = XMQuaternionSlerp(vRotation, vPreAnimRotation, fConnectionRatio);
-
-			_matrix	TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
-
-			XMStoreFloat4x4(&Transformations[iChannelIndex], TransformationMatrix);
-
-			++iChannelIndex;
+			vScale		= XMLoadFloat3(&pLast->vScale);
+			vRotation	= XMLoadFloat4(&pLast->vRotation);
+			vPosition	= XMLoadFloat3(&pLast->vPosition);
+			vPosition	= XMVectorSetW(vPosition, 1.f);
 		}
-	}
-	else
-	{
-		for (_uint iIndex = 0; iIndex < m_Channels.size(); ++iIndex)
+		else
 		{
-			CAnimChannel*	pAnimChannel = m_Channels[iIndex];
+			if (dCurrentTime > KeyFrames[iCurAnimFrame + 1]->dTime)
+				++iCurAnimFrame;
 
-			const vector<KEY_FRAME*>&	KeyFrames = pAnimChannel->Get_KeyFrames();
+			_float fRatio = _float((dCurrentTime - KeyFrames[iCurAnimFrame]->dTime) / (KeyFrames[iCurAnimFrame + 1]->dTime - KeyFrames[iCurAnimFrame]->dTime));
 
-			KEY_FRAME*	pFirst	= KeyFrames.front();
-			KEY_FRAME*	pLast	= KeyFrames.back();
+			_vector	vSrcScale, vDstScale;
+			_vector	vSrcRotation, vDstRotation;
+			_vector	vSrcPosition, vDstPosition;
 
-			_vector		vScale, vRotation, vPosition;
+			vSrcScale		= XMLoadFloat3(&KeyFrames[iCurAnimFrame]->vScale);
+			vSrcRotation	= XMLoadFloat4(&KeyFrames[iCurAnimFrame]->vRotation);
+			vSrcPosition	= XMLoadFloat3(&KeyFrames[iCurAnimFrame]->vPosition);
+			vSrcPosition	= XMVectorSetW(vSrcPosition, 1.f);
 
-			if (dCurrentTime < pFirst->dTime)
-			{
-				vScale = XMLoadFloat3(&pFirst->vScale);
-				vRotation = XMLoadFloat4(&pFirst->vRotation);
-				vPosition = XMLoadFloat3(&pFirst->vPosition);
-				vPosition = XMVectorSetW(vPosition, 1.f);
-			}
-			else if (dCurrentTime >= pLast->dTime)
-			{
-				vScale = XMLoadFloat3(&pLast->vScale);
-				vRotation = XMLoadFloat4(&pLast->vRotation);
-				vPosition = XMLoadFloat3(&pLast->vPosition);
-				vPosition = XMVectorSetW(vPosition, 1.f);
-			}
-			else
-			{
-				_uint& iCurrentKeyFrame = CurrentKeyFrames[iChannelIndex];
+			vDstScale		= XMLoadFloat3(&KeyFrames[iCurAnimFrame + 1]->vScale);
+			vDstRotation	= XMLoadFloat4(&KeyFrames[iCurAnimFrame + 1]->vRotation);
+			vDstPosition	= XMLoadFloat3(&KeyFrames[iCurAnimFrame + 1]->vPosition);
+			vDstPosition	= XMVectorSetW(vSrcPosition, 1.f);
 
-				if (dCurrentTime > KeyFrames[iCurrentKeyFrame + 1]->dTime)
-					++iCurrentKeyFrame;
-
-				_float	fRatio = _float((dCurrentTime - KeyFrames[iCurrentKeyFrame]->dTime) / (KeyFrames[iCurrentKeyFrame + 1]->dTime - KeyFrames[iCurrentKeyFrame]->dTime));
-
-				_vector	vSrcScale, vDstScale;
-				_vector	vSrcRotation, vDstRotation;
-				_vector	vSrcPosition, vDstPosition;
-
-				vSrcScale = XMLoadFloat3(&KeyFrames[iCurrentKeyFrame]->vScale);
-				vSrcRotation = XMLoadFloat4(&KeyFrames[iCurrentKeyFrame]->vRotation);
-				vSrcPosition = XMLoadFloat3(&KeyFrames[iCurrentKeyFrame]->vPosition);
-				vSrcPosition = XMVectorSetW(vSrcPosition, 1.f);
-
-				vDstScale = XMLoadFloat3(&KeyFrames[iCurrentKeyFrame + 1]->vScale);
-				vDstRotation = XMLoadFloat4(&KeyFrames[iCurrentKeyFrame + 1]->vRotation);
-				vDstPosition = XMLoadFloat3(&KeyFrames[iCurrentKeyFrame + 1]->vPosition);
-				vDstPosition = XMVectorSetW(vSrcPosition, 1.f);
-
-				vScale = XMVectorLerp(vSrcScale, vDstScale, fRatio);
-				vRotation = XMQuaternionSlerp(vSrcRotation, vDstRotation, fRatio);
-				vPosition = XMVectorLerp(vSrcPosition, vDstPosition, fRatio);
-				vPosition = XMVectorSetW(vPosition, 1.f);
-			}
-
-
-			CAnimChannel*	pPreAnimChannel = pPreAnim->m_Channels[iIndex];
-			_float			fConnectionRatio = _float(dPreAnimTime / dPreAnimDuration);
-
-			const vector<KEY_FRAME*>&	PreKeyFrames = pPreAnimChannel->Get_KeyFrames();
-
-			KEY_FRAME*	pPreFirst	= PreKeyFrames.front();
-			KEY_FRAME*	pPreLast	= PreKeyFrames.back();
-
-			_vector		vPreAnimScale, vPreAnimRotation;
-
-			if (dPreStopTime < pPreFirst->dTime)
-			{
-				vPreAnimScale = XMLoadFloat3(&pPreFirst->vScale);
-				vPreAnimRotation = XMLoadFloat4(&pPreFirst->vRotation);
-			}
-			else if (dPreStopTime >= pPreLast->dTime)
-			{
-				vPreAnimScale = XMLoadFloat3(&pPreLast->vScale);
-				vPreAnimRotation = XMLoadFloat4(&pPreLast->vRotation);
-			}
-			else
-			{
-				_uint& iLastKeyFrame = LastKeyFrames[iChannelIndex];
-
-				if (dPreStopTime > PreKeyFrames[iLastKeyFrame + 1]->dTime)
-					++iLastKeyFrame;
-
-				_float	fRatio = _float((dPreStopTime - PreKeyFrames[iLastKeyFrame]->dTime) / (PreKeyFrames[iLastKeyFrame + 1]->dTime - PreKeyFrames[iLastKeyFrame]->dTime));
-
-				_vector	vSrcScale, vDstScale;
-				_vector	vSrcRotation, vDstRotation;
-
-				vSrcScale = XMLoadFloat3(&PreKeyFrames[iLastKeyFrame]->vScale);
-				vSrcRotation = XMLoadFloat4(&PreKeyFrames[iLastKeyFrame]->vRotation);
-
-				vDstScale = XMLoadFloat3(&PreKeyFrames[iLastKeyFrame + 1]->vScale);
-				vDstRotation = XMLoadFloat4(&PreKeyFrames[iLastKeyFrame + 1]->vRotation);
-
-				vPreAnimScale = XMVectorLerp(vSrcScale, vDstScale, fRatio);
-				vPreAnimRotation = XMQuaternionSlerp(vSrcRotation, vDstRotation, fRatio);
-			}
-
-			vScale		= XMVectorLerp(vScale, vPreAnimScale, fConnectionRatio);
-			vRotation	= XMQuaternionSlerp(vRotation, vPreAnimRotation, fConnectionRatio);
-
-			_matrix	TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
-
-			XMStoreFloat4x4(&Transformations[iChannelIndex], TransformationMatrix);
-
-			++iChannelIndex;
+			vScale		= XMVectorLerp(vSrcScale, vDstScale, fRatio);
+			vRotation	= XMQuaternionSlerp(vSrcRotation, vDstRotation, fRatio);
+			vPosition	= XMVectorLerp(vSrcPosition, vDstPosition, fRatio);
+			vPosition	= XMVectorSetW(vPosition, 1.f);
 		}
+		XMStoreFloat4x4(&Transformations[iNodeIndex], XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition));
 	}
 
 	return S_OK;
 }
 
+HRESULT CAnim::Update_Transformations_Blend(_double & dCurrentTime, _uint & iCurAnimFrame, vector<_float4x4>& Transformations, vector<KEY_FRAME*>& PreAnimKeyFrames, _float fLerpRatio)
+{
+	for (auto& pChannel : m_Channels)
+	{
+		_uint iNodeIndex = pChannel->Get_ConnectedNodeIndex();
+
+		const vector<KEY_FRAME*>& KeyFrames = pChannel->Get_KeyFrames();
+
+		KEY_FRAME*	pFirst	= KeyFrames.front();
+		KEY_FRAME*	pLast	= KeyFrames.back();
+
+		_vector vScale, vRotation, vPosition;
+
+		if (dCurrentTime < pFirst->dTime)
+		{
+			vScale		= XMLoadFloat3(&pFirst->vScale);
+			vRotation	= XMLoadFloat4(&pFirst->vRotation);
+			vPosition	= XMLoadFloat3(&pFirst->vPosition);
+			vPosition	= XMVectorSetW(vPosition, 1.f);
+		}
+		else if (dCurrentTime >= pLast->dTime)
+		{
+			vScale		= XMLoadFloat3(&pLast->vScale);
+			vRotation	= XMLoadFloat4(&pLast->vRotation);
+			vPosition	= XMLoadFloat3(&pLast->vPosition);
+			vPosition	= XMVectorSetW(vPosition, 1.f);
+		}
+		else
+		{
+			if (dCurrentTime > KeyFrames[iCurAnimFrame + 1]->dTime)
+				++iCurAnimFrame;
+
+			_float fRatio = _float((dCurrentTime - KeyFrames[iCurAnimFrame]->dTime) / (KeyFrames[iCurAnimFrame + 1]->dTime - KeyFrames[iCurAnimFrame]->dTime));
+
+			_vector	vSrcScale, vDstScale;
+			_vector	vSrcRotation, vDstRotation;
+			_vector	vSrcPosition, vDstPosition;
+
+			vSrcScale		= XMLoadFloat3(&KeyFrames[iCurAnimFrame]->vScale);
+			vSrcRotation	= XMLoadFloat4(&KeyFrames[iCurAnimFrame]->vRotation);
+			vSrcPosition	= XMLoadFloat3(&KeyFrames[iCurAnimFrame]->vPosition);
+			vSrcPosition	= XMVectorSetW(vSrcPosition, 1.f);
+
+			vDstScale		= XMLoadFloat3(&KeyFrames[iCurAnimFrame + 1]->vScale);
+			vDstRotation	= XMLoadFloat4(&KeyFrames[iCurAnimFrame + 1]->vRotation);
+			vDstPosition	= XMLoadFloat3(&KeyFrames[iCurAnimFrame + 1]->vPosition);
+			vDstPosition	= XMVectorSetW(vSrcPosition, 1.f);
+
+			vScale		= XMVectorLerp(vSrcScale, vDstScale, fRatio);
+			vRotation	= XMQuaternionSlerp(vSrcRotation, vDstRotation, fRatio);
+			vPosition	= XMVectorLerp(vSrcPosition, vDstPosition, fRatio);
+			vPosition	= XMVectorSetW(vPosition, 1.f);
+		}
+
+		if (nullptr != PreAnimKeyFrames[iNodeIndex])
+		{
+			vScale = XMVectorLerp(vScale, XMLoadFloat3(&PreAnimKeyFrames[iNodeIndex]->vScale), fLerpRatio);
+			vRotation = XMVectorLerp(vRotation, XMLoadFloat4(&PreAnimKeyFrames[iNodeIndex]->vRotation), fLerpRatio);
+			vPosition = XMVectorLerp(vPosition, XMLoadFloat3(&PreAnimKeyFrames[iNodeIndex]->vPosition), fLerpRatio);
+		}
+
+		XMStoreFloat4x4(&Transformations[iNodeIndex], XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition));
+	}
+
+	return E_NOTIMPL;
+}
+
 CAnim * CAnim::Create(const char * pName, const _double & dDuration, const _double & dTicksPerSecond)
 {
-	CAnim*	pInstance = new CAnim;
+	CAnim* pInstance = new CAnim;
 
 	if (FAILED(pInstance->NativeConstruct(pName, dDuration, dTicksPerSecond)))
 	{
-		MSG_BOX("Failed to Creating Instance(CAnim).");
+		MSG_BOX("Failed to Create Instance - CAnim");
 		Safe_Release(pInstance);
 	}
 

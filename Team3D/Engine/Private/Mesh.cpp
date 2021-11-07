@@ -1,41 +1,7 @@
 #include "..\public\Mesh.h"
 #include "HierarchyNode.h"
 
-CMesh::CMesh()
-{
-}
-
-const _uint CMesh::Get_StartVertexIndex() const
-{
-	return m_iStratVertexIndex;
-}
-
-const _uint CMesh::Get_StratFaceIndex() const
-{
-	return m_iStratFaceIndex;
-}
-
-const _uint CMesh::Get_StratFaceCount() const
-{
-	return m_iStratFaceCount;
-}
-
-const _uint CMesh::Get_MaterialIndex() const
-{
-	return m_iMaterialIndex;
-}
-
-const _uint CMesh::Get_BoneCount() const
-{
-	return m_iBoneCount;
-}
-
-_fvector CMesh::Get_MeshColor() const
-{
-	return XMLoadFloat4(&m_vColor);
-}
-
-HRESULT CMesh::NativeConstruct(const char * pMeshName, const _uint & iStartVertexIndex, const _uint & iStartFaceIndex, const _uint & iFaceCount, const _uint & iMaterialIndex, _fvector vColor)
+HRESULT CMesh::NativeConstruct(const char * pMeshName, _uint iStartVertexIndex, _uint iStartFaceIndex, _uint iFaceCount, _uint iMaterialIndex)
 {
 	strcpy_s(m_szMeshName, pMeshName);
 
@@ -44,12 +10,10 @@ HRESULT CMesh::NativeConstruct(const char * pMeshName, const _uint & iStartVerte
 	m_iStratFaceCount	= iFaceCount;
 	m_iMaterialIndex	= iMaterialIndex;
 
-	XMStoreFloat4(&m_vColor, vColor);
-
 	return S_OK;
 }
 
-HRESULT CMesh::Bring_BoneContainer(vector<BONE_DESC*>& Bones)
+HRESULT CMesh::Bring_BoneContainer(vector<BONE_DESC*> & Bones)
 {
 	NULL_CHECK_RETURN(m_Bones.empty(), E_FAIL);
 
@@ -62,19 +26,19 @@ HRESULT CMesh::Bring_BoneContainer(vector<BONE_DESC*>& Bones)
 
 void CMesh::Calc_BoneMatrices(_matrix * pBoneMatrices, const vector<_float4x4> & CombinedTransformations)
 {
-	_uint	iIndex = 0;
+	_uint iIndex = 0;
 
 	for (auto& pBoneDesc : m_Bones)
 		pBoneMatrices[iIndex++] = XMMatrixTranspose(XMLoadFloat4x4(&pBoneDesc->OffsetMatrix) * XMLoadFloat4x4(&CombinedTransformations[pBoneDesc->pHierarchyNode->Get_NodeIndex()]));
 }
 
-CMesh * CMesh::Create(const char * pMeshName, const _uint & iStartVertexIndex, const _uint & iStartFaceIndex, const _uint & iFaceCount, const _uint & iMaterialIndex, _fvector vColor)
+CMesh * CMesh::Create(const char * pMeshName, _uint iStartVertexIndex, _uint iStartFaceIndex, _uint iFaceCount, _uint iMaterialIndex)
 {
-	CMesh*	pInstance	= new CMesh;
+	CMesh* pInstance = new CMesh;
 
-	if (FAILED(pInstance->NativeConstruct(pMeshName, iStartVertexIndex, iStartFaceIndex, iFaceCount, iMaterialIndex, vColor)))
+	if (FAILED(pInstance->NativeConstruct(pMeshName, iStartVertexIndex, iStartFaceIndex, iFaceCount, iMaterialIndex)))
 	{
-		MSG_BOX("Failed to Creating Instance(CMesh).");
+		MSG_BOX("Failed to Create Instance - CMesh");
 		Safe_Release(pInstance);
 	}
 
