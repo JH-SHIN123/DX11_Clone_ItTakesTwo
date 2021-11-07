@@ -220,19 +220,6 @@ void GS_SHADOWMAP(triangle GS_IN_SHADOWMAP In[3], inout TriangleStream<GS_OUT_SH
 		TriStream.Append(Out);
 	}
 
-	//for (uint j = 0; j < 3; j++)
-	//{
-	//	matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
-
-	//	Out.vPosition = mul(In[j].vPosition, matVP);
-	//	Out.vNormal = In[j].vNormal;
-	//	Out.vTexUV = In[j].vTexUV;
-	//	Out.mClipPosition = Out.vPosition;
-	//	Out.iViewportIndex = 0;
-
-	//	TriStream.Append(Out);
-	//}
-
 	TriStream.RestartStrip();
 }
 
@@ -275,7 +262,6 @@ PS_OUT	PS_MAIN(PS_IN In)
 	vector vMtrlDiffuse = g_vBaseColor;
 
 	Out.vDiffuse	= vMtrlDiffuse;
-	//Out.vDiffuse	= g_vBaseColor;
 	Out.vNormal		= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth		= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 
@@ -288,8 +274,8 @@ PS_OUT_SHADOWMAP PS_SHADOWMAP(PS_IN_SHADOWMAP In)
 
 	Out.vDepth = vector(In.mClipPosition.w / 300.f, In.mClipPosition.z / In.mClipPosition.w, 0.f, 0.f);
 
-	/*float depth = In.mClipPosition.z / In.mClipPosition.w;
-	Out.vDepth = vector(depth.xxx, 1.f);*/
+	///*float depth = In.mClipPosition.z / In.mClipPosition.w;
+	//Out.vDepth = vector(depth.xxx, 1.f);*/
 
 	return Out;
 }

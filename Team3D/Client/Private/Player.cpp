@@ -84,9 +84,7 @@ HRESULT CPlayer::Render_ShadowMap(_uint iPassIndex)
 	m_pModelCom->Set_Variable("LightViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
 	m_pModelCom->Set_Variable("LightProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
 
-	//m_pModelCom->Set_Variable("WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
-	//m_pModelCom->Set_Variable("LightViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-	//m_pModelCom->Set_Variable("LightProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+
 	m_pModelCom->Bind_VIBuffer();
 
 	_uint iMeshCount = m_pModelCom->Get_MeshCount();
