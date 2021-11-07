@@ -52,6 +52,7 @@ private:
 
 public:
 	_bool IsFinish_CurAnimation();
+	void Set_Animtaion(_int iState);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;

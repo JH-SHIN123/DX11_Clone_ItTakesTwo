@@ -119,7 +119,7 @@ _int CActionTask_Cody_Jog_Fwd_Left::OnStart()
 	CCody* pCody = (CCody*)m_pBehaviorTree->Get_Subject();
 	if (nullptr == pCody) return RETURN_FALSE;
 
-	if (pCody->m_bJog) {
+	if (pCody->m_bJog && pCody->m_bJog_Left) {
 		pCody->Set_NextState(CCody::JOG_LEFT);
 		return RETURN_TRUE;
 	}
@@ -132,7 +132,7 @@ _int CActionTask_Cody_Jog_Fwd_Left::OnUpdate(_double TimeDelta)
 	CCody* pCody = (CCody*)m_pBehaviorTree->Get_Subject();
 	if (nullptr == pCody) return RETURN_FALSE;
 
-	if (!pCody->m_bJog) {
+	if (!pCody->m_bJog || !pCody->m_bJog_Left) {
 		return RETURN_FALSE;
 	}
 
@@ -154,7 +154,7 @@ _int CActionTask_Cody_Jog_Fwd_Right::OnStart()
 	CCody* pCody = (CCody*)m_pBehaviorTree->Get_Subject();
 	if (nullptr == pCody) return RETURN_FALSE;
 
-	if (pCody->m_bJog) {
+	if (pCody->m_bJog && pCody->m_bJog_Right) {
 		pCody->Set_NextState(CCody::JOG_RIGHT);
 		return RETURN_TRUE;
 	}
@@ -167,7 +167,7 @@ _int CActionTask_Cody_Jog_Fwd_Right::OnUpdate(_double TimeDelta)
 	CCody* pCody = (CCody*)m_pBehaviorTree->Get_Subject();
 	if (nullptr == pCody) return RETURN_FALSE;
 
-	if (!pCody->m_bJog) {
+	if (!pCody->m_bJog || !pCody->m_bJog_Right) {
 		return RETURN_FALSE;
 	}
 

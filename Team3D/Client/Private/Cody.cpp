@@ -19,6 +19,11 @@ _bool CCody::IsFinish_CurAnimation()
 	return _bool();
 }
 
+void CCody::Set_Animtaion(_int iState)
+{
+	m_pModelCom->Set_Animation(iState,m_pTransformCom);
+}
+
 HRESULT CCody::NativeConstruct_Prototype()
 {
 	CCharacter::NativeConstruct_Prototype();
@@ -46,9 +51,9 @@ _int CCody::Tick(_double dTimeDelta)
 
 	KeyProcess(dTimeDelta);
 
-	//m_pBehaviorTree->Running(dTimeDelta);
+	m_pBehaviorTree->Running(dTimeDelta);
 
-	//StateCheck();
+	StateCheck();
 
 	m_pModelCom->Update_NodeMatrices(dTimeDelta, m_pTransformCom);
 
@@ -109,7 +114,6 @@ void CCody::StateCheck()
 		{
 		}
 
-		//m_pModelCom->Set_Animation(m_iNextState,m_pTransformCom);
 		m_pModelCom->Set_NextAnimIndex(m_iNextState);
 		m_iCurState = m_iNextState;
 	}
