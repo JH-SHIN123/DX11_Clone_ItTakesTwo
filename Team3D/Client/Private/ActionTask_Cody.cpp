@@ -32,6 +32,7 @@ _int CActionTask_Cody_Idle::OnUpdate(_double TimeDelta)
 		m_dWaitingDeltaT = 0.0;
 	}
 	else {
+		pCody->Set_NextState(CCody::MH);
 		m_dWaitingDeltaT += TimeDelta;
 		iReturn = RETURN_RUNNING;
 	}
@@ -114,6 +115,92 @@ CActionTask_Cody_BigWaiting* CActionTask_Cody_BigWaiting::Create(CBehaviorTree* 
 #pragma endregion
 
 #pragma region Jog
+_int CActionTask_Cody_Jog_StartInMotion::OnStart()
+{
+	return RETURN_FALSE;
+}
+
+_int CActionTask_Cody_Jog_StartInMotion::OnUpdate(_double TimeDelta)
+{
+	return _int();
+}
+
+CActionTask_Cody_Jog_StartInMotion* CActionTask_Cody_Jog_StartInMotion::Create(CBehaviorTree* pBehaviorTree)
+{
+	CActionTask_Cody_Jog_StartInMotion* pInstance = new CActionTask_Cody_Jog_StartInMotion(pBehaviorTree);
+	if (FAILED(pInstance->OnStart())) {
+		MSG_BOX("Failed to Creating Instance (CActionTask_Cody_Jog_StartInMotion) ");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+_int CActionTask_Cody_Jog_StartFwd::OnStart()
+{
+	CCody* pCody = (CCody*)m_pBehaviorTree->Get_Subject();
+	if (nullptr == pCody) return RETURN_FALSE;
+
+	if (pCody->m_bJog) {
+		pCody->Set_NextState(CCody::JOG_START_FWD);
+		m_dRunningTime = 0.0;
+		return RETURN_TRUE;
+	}
+
+	return RETURN_FALSE;
+}
+
+_int CActionTask_Cody_Jog_StartFwd::OnUpdate(_double TimeDelta)
+{
+	CCody* pCody = (CCody*)m_pBehaviorTree->Get_Subject();
+	if (nullptr == pCody) return RETURN_FALSE;
+
+	if (pCody->m_bJog) return RETURN_FALSE;
+
+	if (m_dRunningTime >= 0.3)
+	{
+		pCody->m_bJogStart = true;
+		m_dRunningTime = 0.0;
+		return RETURN_FALSE;
+	}
+	else
+	{
+		pCody->Set_NextState(CCody::JOG_START_FWD);
+		m_dRunningTime += TimeDelta;
+	}
+
+	return RETURN_RUNNING;
+}
+
+CActionTask_Cody_Jog_StartFwd* CActionTask_Cody_Jog_StartFwd::Create(CBehaviorTree* pBehaviorTree)
+{
+	CActionTask_Cody_Jog_StartFwd* pInstance = new CActionTask_Cody_Jog_StartFwd(pBehaviorTree);
+	if (FAILED(pInstance->OnStart())) {
+		MSG_BOX("Failed to Creating Instance (CActionTask_Cody_Jog_StartFwd) ");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+_int CActionTask_Cody_Jog_StartFwd_RightLeft180::OnStart()
+{
+	return RETURN_FALSE;
+}
+
+_int CActionTask_Cody_Jog_StartFwd_RightLeft180::OnUpdate(_double TimeDelta)
+{
+	return _int();
+}
+
+CActionTask_Cody_Jog_StartFwd_RightLeft180* CActionTask_Cody_Jog_StartFwd_RightLeft180::Create(CBehaviorTree* pBehaviorTree)
+{
+	CActionTask_Cody_Jog_StartFwd_RightLeft180* pInstance = new CActionTask_Cody_Jog_StartFwd_RightLeft180(pBehaviorTree);
+	if (FAILED(pInstance->OnStart())) {
+		MSG_BOX("Failed to Creating Instance (CActionTask_Cody_Jog_StartFwd_RightLeft180) ");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
 _int CActionTask_Cody_Jog_Fwd_Left::OnStart()
 {
 	CCody* pCody = (CCody*)m_pBehaviorTree->Get_Subject();
@@ -135,6 +222,8 @@ _int CActionTask_Cody_Jog_Fwd_Left::OnUpdate(_double TimeDelta)
 	if (!pCody->m_bJog || !pCody->m_bJog_Left) {
 		return RETURN_FALSE;
 	}
+
+	pCody->Set_NextState(CCody::JOG_LEFT);
 
 	return RETURN_RUNNING;
 }
@@ -159,6 +248,8 @@ _int CActionTask_Cody_Jog_Fwd_Right::OnStart()
 		return RETURN_TRUE;
 	}
 
+
+
 	return RETURN_FALSE;
 }
 
@@ -170,6 +261,7 @@ _int CActionTask_Cody_Jog_Fwd_Right::OnUpdate(_double TimeDelta)
 	if (!pCody->m_bJog || !pCody->m_bJog_Right) {
 		return RETURN_FALSE;
 	}
+	pCody->Set_NextState(CCody::JOG_RIGHT);
 
 	return RETURN_RUNNING;
 }
@@ -203,6 +295,7 @@ _int CActionTask_Cody_Jog_Fwd::OnUpdate(_double TimeDelta)
 	if (!pCody->m_bJog) {
 		return RETURN_FALSE;
 	}
+	pCody->Set_NextState(CCody::JOG);
 
 	return RETURN_RUNNING;
 }
@@ -217,3 +310,4 @@ CActionTask_Cody_Jog_Fwd* CActionTask_Cody_Jog_Fwd::Create(CBehaviorTree* pBehav
 	return pInstance;
 }
 #pragma endregion
+

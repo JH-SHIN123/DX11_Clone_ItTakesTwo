@@ -18,7 +18,12 @@ HRESULT CBehaviorTree_Cody::NativeConstruct()
 
 	// Jog
 	CCompositeTask* pJogSeq = CCompositeTask::Create(this, CCompositeTask::COMP_SEQUENCE);
-	//CCompositeTask* pJogStartSel = CCompositeTask::Create(this, CCompositeTask::COMP_SELECT);
+	CCompositeTask* pJogStartSel = CCompositeTask::Create(this, CCompositeTask::COMP_SELECT);
+	pJogStartSel->Add_ChildTask(CActionTask_Cody_Jog_StartFwd::Create(this));
+	//pJogStartSel->Add_ChildTask(CActionTask_Cody_Jog_Fwd_Left::Create(this));
+	//pJogStartSel->Add_ChildTask(CActionTask_Cody_Jog_Fwd_Left::Create(this));
+	m_pRootTask->Add_ChildTask(pJogStartSel);
+
 	CCompositeTask* pJogSel = CCompositeTask::Create(this, CCompositeTask::COMP_SELECT);
 	pJogSel->Add_ChildTask(CActionTask_Cody_Jog_Fwd_Left::Create(this));
 	pJogSel->Add_ChildTask(CActionTask_Cody_Jog_Fwd_Right::Create(this));

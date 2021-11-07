@@ -109,7 +109,7 @@ void CCody::StateCheck()
 		{
 		}
 
-		m_pModelCom->Set_NextAnimIndex(m_iNextState);
+		m_pModelCom->Set_Animation(m_iNextState,m_pTransformCom);
 		m_iCurState = m_iNextState;
 	}
 }

@@ -40,6 +40,7 @@ public:
 		STATE_END 
 	};
 
+	_bool m_bJogStart = false;
 	_bool m_bJog = false;
 	_bool m_bJog_Left = false;
 	_bool m_bJog_Right = false;
