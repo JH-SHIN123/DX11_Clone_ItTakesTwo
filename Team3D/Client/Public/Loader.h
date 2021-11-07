@@ -11,7 +11,7 @@ private:
 	virtual ~CLoader() = default;
 
 public:
-	HRESULT LoadData_UI();
+	HRESULT LoadData_UI(const _tchar* pFilePath);
 
 
 public:

@@ -76,6 +76,15 @@
     <Filter Include="01.Maps\99.Stage%28Test%29">
       <UniqueIdentifier>{112fc71b-614e-424a-b3ab-164e9e68c037}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.UI">
+      <UniqueIdentifier>{b76467b3-51c2-400b-a292-34e82ab9d5b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\00.Main">
+      <UniqueIdentifier>{230bdde6-894c-436b-aba5-8bd89b6759ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96.Loader">
+      <UniqueIdentifier>{6997d3e5-6526-438c-b627-0590bee437ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -123,6 +132,12 @@
     <ClInclude Include="..\Public\SubCamera.h">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Ortho_UIObject.h">
+      <Filter>02.GameObject\05.UI\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader.h">
+      <Filter>96.Loader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -155,6 +170,12 @@
     <ClCompile Include="..\Private\SubCamera.cpp">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Ortho_UIObject.cpp">
+      <Filter>02.GameObject\05.UI\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader.cpp">
+      <Filter>96.Loader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -182,6 +203,9 @@
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl">
+      <Filter>97.ShaderFiles\01.Codes</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
   </ItemGroup>

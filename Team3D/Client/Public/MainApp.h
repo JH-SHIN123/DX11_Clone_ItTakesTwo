@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Client_Defines.h"
 #include "Base.h"
+#include "Client_Defines.h"
 #include "Loading.h"
 
 BEGIN(Engine)

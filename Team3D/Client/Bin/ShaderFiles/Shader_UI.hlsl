@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////
 
 texture2D	g_DiffuseTexture;
-texture2D	g_AlphaTexture;
+texture2D	g_SubTexture;
 
 sampler	DiffuseSampler = sampler_state
 {
