@@ -82,7 +82,7 @@ VS_OUT	VS_MAIN(VS_IN In)
 
 	Out.vPosition	= mul(vector(In.vPosition, 1.f), matBW);
 	Out.vNormal		= normalize(mul(vector(In.vNormal, 0.f), matBW));
-	Out.vTexUV		= In.vTexUV / 2.f;
+	Out.vTexUV		= In.vTexUV;
 	Out.vProjPosition = Out.vPosition;
 
 	return Out;
@@ -94,7 +94,7 @@ VS_OUT VS_MAIN_NO_BONE(VS_IN In)
 
 	Out.vPosition	= mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 	Out.vNormal		= normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
-	Out.vTexUV		= In.vTexUV / 2.f;
+	Out.vTexUV		= In.vTexUV;
 
 	return Out;
 }
