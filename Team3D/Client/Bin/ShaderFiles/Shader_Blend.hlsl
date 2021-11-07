@@ -93,15 +93,15 @@ PS_OUT PS_MAIN(PS_IN In)
 	vector	vShadowDesc	    = g_ShadowMapTexture.Sample(ShadowSampler, In.vTexUV);
 	
 	vector vShadowFactor;
-	if (vDepthDesc.y < vShadowDesc.y + 0.05f)
-	{
-		vShadowFactor.rgb = 1.f;
-		vShadowFactor.a = 0.f;
-	}
-	else
+	if (vDepthDesc.y > vShadowDesc.y + 0.05f)
 	{
 		vShadowFactor.rgb = 0.f;
 		vShadowFactor.a = 1.f;
+	}
+	else
+	{
+		vShadowFactor.rgb = 1.f;
+		vShadowFactor.a = 0.f;
 	}
 
 	Out.vColor = vDiffuseDesc * vShadeDesc + vSpecularDesc;

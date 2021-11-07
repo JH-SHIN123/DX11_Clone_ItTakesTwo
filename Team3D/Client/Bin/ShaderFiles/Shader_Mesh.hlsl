@@ -220,6 +220,19 @@ void GS_SHADOWMAP(triangle GS_IN_SHADOWMAP In[3], inout TriangleStream<GS_OUT_SH
 		TriStream.Append(Out);
 	}
 
+	//for (uint j = 0; j < 3; j++)
+	//{
+	//	matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
+
+	//	Out.vPosition = mul(In[j].vPosition, matVP);
+	//	Out.vNormal = In[j].vNormal;
+	//	Out.vTexUV = In[j].vTexUV;
+	//	Out.mClipPosition = Out.vPosition;
+	//	Out.iViewportIndex = 0;
+
+	//	TriStream.Append(Out);
+	//}
+
 	TriStream.RestartStrip();
 }
 
@@ -238,6 +251,7 @@ struct PS_OUT
 	vector	vDiffuse	: SV_TARGET0;
 	vector	vNormal		: SV_TARGET1;
 	vector	vDepth		: SV_TARGET2;
+	//vector  vShadowDepth : SV_TARGET3;
 };
 
 struct PS_IN_SHADOWMAP

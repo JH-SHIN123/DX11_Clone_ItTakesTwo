@@ -27,8 +27,8 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	//m_pModelCom->Set_Animation(0, m_pTransformCom);
-	//m_pModelCom->Set_NextAnimIndex(0);
+	m_pModelCom->Set_Animation(0, m_pTransformCom);
+	m_pModelCom->Set_NextAnimIndex(0);
 
 	return S_OK;
 }
@@ -40,7 +40,7 @@ _int CPlayer::Tick(_double dTimeDelta)
 	if(m_pGameInstance->Key_Pressing(DIK_L))
 		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f ,0.f, 0.f), dTimeDelta);
 
-	//m_pModelCom->Update_NodeMatrices(dTimeDelta, m_pTransformCom);
+	m_pModelCom->Update_NodeMatrices(dTimeDelta, m_pTransformCom);
 
 	return NO_EVENT;
 }
@@ -78,12 +78,15 @@ HRESULT CPlayer::Render_ShadowMap(_uint iPassIndex)
 	_vector vLightPos = XMVectorSet(-100.f, 10.f, -100.f, 1.f);
 	 
 	LightViewMatrix = XMMatrixLookAtLH(vLightPos, XMVectorSet(4.f, 0.f, 2.f, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
-	LightProjMatrix = XMMatrixOrthographicLH(1280.f, 720.f , 0.3f, 300.f);
+	LightProjMatrix = XMMatrixOrthographicLH(1280.f / 300.f, 720.f / 300.f , 0.3f, 300.f);
 
 	m_pModelCom->Set_Variable("WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
 	m_pModelCom->Set_Variable("LightViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
 	m_pModelCom->Set_Variable("LightProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
 
+	//m_pModelCom->Set_Variable("WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+	//m_pModelCom->Set_Variable("LightViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+	//m_pModelCom->Set_Variable("LightProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
 	m_pModelCom->Bind_VIBuffer();
 
 	_uint iMeshCount = m_pModelCom->Get_MeshCount();
