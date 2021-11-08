@@ -135,7 +135,7 @@
     <ClInclude Include="..\Public\Ortho_UIObject.h">
       <Filter>02.GameObject\05.UI\00.Main</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Loader.h">
+    <ClInclude Include="..\Public\UI_Loader.h">
       <Filter>96.Loader</Filter>
     </ClInclude>
   </ItemGroup>
@@ -173,7 +173,7 @@
     <ClCompile Include="..\Private\Ortho_UIObject.cpp">
       <Filter>02.GameObject\05.UI\00.Main</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Loader.cpp">
+    <ClCompile Include="..\Private\UI_Loader.cpp">
       <Filter>96.Loader</Filter>
     </ClCompile>
   </ItemGroup>

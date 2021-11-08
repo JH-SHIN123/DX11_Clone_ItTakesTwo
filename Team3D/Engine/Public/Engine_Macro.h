@@ -18,7 +18,12 @@
 #define NOT_NULL_CHECK(_ptr)					if( _ptr != 0 ){ __debugbreak(); return; }
 #define NOT_NULL_CHECK_RETURN(_ptr, _return)	if( _ptr != 0 ){ __debugbreak(); return _return; }
 #define FAILED_CHECK(_hr)						if( ((HRESULT)(_hr)) < 0 ){ __debugbreak(); return; }
-#define FAILED_CHECK_RETURN(_hr, _return)		if( ((HRESULT)(_hr)) < 0 ){ __debugbreak(); return _return; }
+#define FAILED_CHECK_RETURN(_hr, _return)		if( ((HRESULT)(_hr)) < 0 ){ __debugbreak(); return _return; }\
+//pGameInstance->Add_GameObject_Prototype(UIDesc.iLevelIndex, PSData.szUITag,
+//Å¬·¡½º::Create)
+#define STRCMP_ADD_PROTOTYPE(pGameInstance, iLevelIndex, szUITag,_className) ( pGameInstance->Add_GameObject_Prototype(iLevelIndex, \
+PSData.szUITag, _className::Create) 
+
 
 #define NO_COPY(CLASSNAME)									\
 	private:												\
