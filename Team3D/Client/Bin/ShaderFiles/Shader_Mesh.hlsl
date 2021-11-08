@@ -107,7 +107,6 @@ VS_OUT_SHADOWMAP VS_SHADOWMAP(VS_IN In)
 	matrix	matBW = mul(BoneMatrix, g_WorldMatrix);
 
 	Out.vPosition = mul(vector(In.vPosition, 1.f), matBW);
-	//Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 	Out.mClipPosition = Out.vPosition;
 
 	return Out;
@@ -251,7 +250,7 @@ struct PS_IN_SHADOWMAP
 
 struct PS_OUT_SHADOWMAP
 {
-	vector	vDepth		: SV_TARGET0;  // 조명에서 바라본 오브젝트들의 깊이 값. 
+	vector	vDepth		: SV_TARGET0;  // 조명에서 바라본 오브젝트들의 깊이 값을 텍스쳐에 저장한다. 
 };
 
 

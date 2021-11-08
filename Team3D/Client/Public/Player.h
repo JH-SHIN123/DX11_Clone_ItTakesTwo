@@ -34,6 +34,10 @@ private:
 	/* For.Camera */
 	_float4		m_vAdjustedPos = _float4(0.f, 0.f, 0.f, 0.f);
 
+	_float		m_fPosX = 0.f;
+	_float		m_fPosY = 0.f;
+	_float		m_fPosZ = 0.f;
+
 public:
 	static CPlayer*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

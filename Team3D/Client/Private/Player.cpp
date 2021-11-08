@@ -73,14 +73,27 @@ HRESULT CPlayer::Render_ShadowMap(_uint iPassIndex)
 {
 	_matrix			WorldMatrix, LightViewMatrix, LightProjMatrix = XMMatrixIdentity();
 
-	_vector vCamPosition = CPipeline::GetInstance()->Get_MainCamPosition();
-	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	_vector vLightPos = XMVectorSet(-100.f, 10.f, -100.f, 1.f);
-	 
-	LightViewMatrix = XMMatrixLookAtLH(vLightPos, XMVectorSet(4.f, 0.f, 2.f, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
-	LightProjMatrix = XMMatrixOrthographicLH(1280.f / 300.f, 720.f / 300.f , 0.3f, 300.f);
+	//if (m_pGameInstance->Key_Pressing(DIK_I))
+	//	m_fPosX += 1.f;
+	//if (m_pGameInstance->Key_Pressing(DIK_O))
+	//	m_fPosY += 1.f;
+	//if (m_pGameInstance->Key_Pressing(DIK_P))
+	//	m_fPosZ += 1.f;
 
-	m_pModelCom->Set_Variable("WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+	//if (m_pGameInstance->Key_Pressing(DIK_8))
+	//	m_fPosX -= 1.f;
+	//if (m_pGameInstance->Key_Pressing(DIK_9))
+	//	m_fPosY -= 1.f;
+	//if (m_pGameInstance->Key_Pressing(DIK_0))
+	//	m_fPosZ -= 1.f;
+
+	//_vector vCamPosition = CPipeline::GetInstance()->Get_MainCamPosition();
+	_vector vLightPos = XMVectorSet(m_fPosX, m_fPosY + 1.f, m_fPosZ - 2.f, 1.f);
+	 
+	LightViewMatrix = XMMatrixLookAtLH(vLightPos, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	LightProjMatrix = XMMatrixOrthographicLH(1280.f , 720.f, 0.3f, 300.f);
+	//LightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), 1.f, 0.3f, 300.f);
+
 	m_pModelCom->Set_Variable("LightViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
 	m_pModelCom->Set_Variable("LightProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
 
