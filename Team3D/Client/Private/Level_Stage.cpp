@@ -30,11 +30,6 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	if (m_pGameInstance->Key_Down(DIK_3))
 		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
 
-<<<<<<< HEAD
-=======
-	if (m_pGameInstance->Key_Down(DIK_E))
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
->>>>>>> origin/main
 
 	return NO_EVENT;
 }
