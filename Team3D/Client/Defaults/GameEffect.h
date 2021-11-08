@@ -52,15 +52,19 @@ typedef struct tagEffect_Desc_Prototype
 
 	_double		fRenderTerm = 0.f;				// 한번에 그리지 않고 하나씩 나타나듯이 그리는 주기
 	_double		fInstancePosUpdateTerm = -1.f;	// 0번의 Pos로 다시 세팅되는 주기
+
+	_float3		vPivotScale = { 0.01f, 0.01f, 0.01f };
+	_float3		vPivotRotate_Degree = { 0.f, 0.f, 0.f };
+
 }EFFECT_DESC_PROTO;
 
 typedef struct tagEffect_Desc_Clone
 {
-	_float3 vDir			= { 0.f, 0.f, 0.f }; // 0 Index Move Dir;
-	_float3 vRandDirPower	= { 0.f, 0.f, 0.f }; // other Indeces Move Dir;
-	_float4 vColor			= { -1.f, -1.f, -1.f, -1.f }; // Set Addtional Color
-	_float4 vColorChange	= { -1.f, -1.f, -1.f, -1.f }; // Set Addtional ColorChange
-	_float4 vPos			= { 0.f, -0.f, 0.f, 1.f }; // Set Addtional ColorChange
+	_float3 vDir			= { 0.f, 0.f, 0.f };			// 0 Index Move Dir;
+	_float3 vRandDirPower	= { 0.f, 0.f, 0.f };			// other Indeces Move Dir;
+	_float4 vColor			= { -1.f, -1.f, -1.f, -1.f };	// Set Addtional Color
+	_float4 vColorChange	= { -1.f, -1.f, -1.f, -1.f };	// Set Addtional ColorChange
+	_float4 vPos			= { 0.f, -0.f, 0.f, 1.f };		// Set Position
 
 }EFFECT_DESC_CLONE;
 
@@ -131,6 +135,8 @@ protected:
 	CModel*		m_pModelCom = nullptr;
 
 	_bool m_IsResourceName[RESOURCE_END];
+
+	_float4x4 m_PivotMatrix;
 
 public:
 	static CGameEffect* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void* pArg);

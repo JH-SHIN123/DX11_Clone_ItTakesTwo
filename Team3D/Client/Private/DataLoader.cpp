@@ -114,13 +114,27 @@ HRESULT CDataLoader::Load_EffectData(const _tchar * pFilePath, ID3D11Device* pDe
 
 			fin.getline(NumData, MAX_PATH, L'|');
 			Data->fRenderTerm = _ttof(NumData);
-			fin.getline(NumData, MAX_PATH);
-			Data->fInstancePosUpdateTerm = _ttof(NumData);
+			fin.getline(NumData, MAX_PATH, L'|');
+			Data->fInstancePosUpdateTerm = (_float)_ttof(NumData);
 
+			fin.getline(NumData, MAX_PATH, L'|');
+			Data->vPivotScale.x = (_float)_ttof(NumData);
+			fin.getline(NumData, MAX_PATH, L'|');
+			Data->vPivotScale.y = (_float)_ttof(NumData);
+			fin.getline(NumData, MAX_PATH, L'|');
+			Data->vPivotScale.z = (_float)_ttof(NumData);
+
+			fin.getline(NumData, MAX_PATH, L'|');
+			Data->vPivotRotate_Degree.x = (_float)_ttof(NumData);
+			fin.getline(NumData, MAX_PATH, L'|');
+			Data->vPivotRotate_Degree.y = (_float)_ttof(NumData);
+			fin.getline(NumData, MAX_PATH);
+			Data->vPivotRotate_Degree.z = (_float)_ttof(NumData);
 #pragma endregion
 
-			pInstance->Add_GameObject_Prototype(Data->iLevelIndex, Data->EffectName, CGameEffect::Create(pDevice, pDeviceContext, Data));
 
+
+			pInstance->Add_GameObject_Prototype(Data->iLevelIndex, Data->EffectName, CGameEffect::Create(pDevice, pDeviceContext, Data));
 		}
 
 		Safe_Release(pInstance);

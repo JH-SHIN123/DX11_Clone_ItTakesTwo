@@ -118,7 +118,7 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Fire_Loop_01")
 			, CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_TGA, TEXT("../Bin/Resources/Effect/2D/Fire_Loop_01.tga"))), E_FAIL);
 
-		CDataLoader::Load_EffectData(TEXT("../Bin/Data/Effect/EffectData.txt"), m_pDevice, m_pDeviceContext);
+		CDataLoader::Load_EffectData(TEXT("../Bin/Data/Effect/TestSave.txt"), m_pDevice, m_pDeviceContext);
 #pragma endregion
 
 	}

@@ -88,7 +88,7 @@ HRESULT CLevel_Stage::Test_Layer_Effect(const _tchar * pLayerTag)
 
 	
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("Prototype_ItTakesTwo")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("Prototype_ItTakesTwo"), &Data), E_FAIL);
 
 	return S_OK;
 }

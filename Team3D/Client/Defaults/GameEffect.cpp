@@ -51,14 +51,15 @@ HRESULT CGameEffect::Render()
 {
 	_double TimeDelta = m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
 	
+
 	Check_Color(TimeDelta);
 	Check_Gravity(TimeDelta);
 	Control_InstanceBuffer(TimeDelta);
 
-
 	SetUp_Shader_Data();
 
 	m_pPointInstanceCom->Render(m_pEffectDesc_Prototype->iShaderPass, m_pInstanceBuffer, m_pEffectDesc_Prototype->iInstanceCount);
+
 
 	return S_OK;
 }
@@ -93,10 +94,11 @@ HRESULT CGameEffect::Ready_Component(void * pArg)
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->TextureName, TEXT("Com_Model"), (CComponent**)&m_pTexturesCom), E_FAIL);
 	if (true == m_IsResourceName[RESOURCE_TEXTURE_SECOND])
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->TextureName_Second, TEXT("Com_Model"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
+
 	if (true == m_IsResourceName[RESOURCE_MESH])
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom), E_FAIL);
+	if (false == m_IsResourceName[RESOURCE_MESH])
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom), E_FAIL);
 
 
 

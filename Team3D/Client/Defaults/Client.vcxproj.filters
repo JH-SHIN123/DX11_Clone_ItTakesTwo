@@ -82,7 +82,16 @@
     <Filter Include="96.DataLoader">
       <UniqueIdentifier>{cb9c7161-7548-4e55-9104-29a4ad667c1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\99.TestEffect">
+    <Filter Include="02.GameObject\05.Effect/Particle\3D">
+      <UniqueIdentifier>{bbc8ca2e-31e3-4a88-ba86-0624f18e40f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\00.RespawnTunnel">
+      <UniqueIdentifier>{571d88ca-fe85-4b2f-a090-6bbccd9e5679}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D">
+      <UniqueIdentifier>{f1297b94-aa6d-4d1e-9f97-4bfe51b57a14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D\99.TestEffect">
       <UniqueIdentifier>{2597e457-f059-48c4-ac26-d228360d5248}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -139,7 +148,10 @@
       <Filter>96.DataLoader</Filter>
     </ClInclude>
     <ClInclude Include="..\public\TestEffect.h">
-      <Filter>02.GameObject\05.Effect/Particle\99.TestEffect</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D\99.TestEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RespawnTunnel.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\00.RespawnTunnel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -180,7 +192,10 @@
       <Filter>96.DataLoader</Filter>
     </ClCompile>
     <ClCompile Include="..\private\TestEffect.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\99.TestEffect</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D\99.TestEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\RespawnTunnel.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\00.RespawnTunnel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
