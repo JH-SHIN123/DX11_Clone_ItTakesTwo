@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "..\public\Loading.h"
-#include "Terrain.h"
+#include "GameInstance.h"
 #include "MainCamera.h"
-#include "..\..\Engine\public\Model.h"
-#include "Player.h"
 #include "SubCamera.h"
+#include "Player.h"
+#include "Terrain.h"
 
 #include "GameEffect.h"
 #include "DataLoader.h"
@@ -108,7 +108,7 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 	{
 		WaitForSingleObject(m_arrThreads[1], INFINITE);
 		_matrix	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Mesh/", "Test.fbx", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Mesh/", "Test2.fbx", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Cody"), CPlayer::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 #pragma region Effects

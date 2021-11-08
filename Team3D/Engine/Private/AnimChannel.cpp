@@ -1,19 +1,5 @@
 #include "..\public\AnimChannel.h"
 
-CAnimChannel::CAnimChannel()
-{
-}
-
-const char * CAnimChannel::Get_Name() const
-{
-	return m_szChannelName;
-}
-
-const vector<KEY_FRAME*> & CAnimChannel::Get_KeyFrames() const
-{
-	return m_KeyFrames;
-}
-
 HRESULT CAnimChannel::NativeConstruct(const char * pName)
 {
 	strcpy_s(m_szChannelName, pName);
@@ -32,11 +18,11 @@ HRESULT CAnimChannel::Bring_KeyFrameContainer(vector<KEY_FRAME*>& KeyFrames)
 
 CAnimChannel * CAnimChannel::Create(const char * pName)
 {
-	CAnimChannel*	pInstance = new CAnimChannel;
+	CAnimChannel* pInstance = new CAnimChannel;
 
 	if (FAILED(pInstance->NativeConstruct(pName)))
 	{
-		MSG_BOX("Failed to Creating Instance(CAnimChannel).");
+		MSG_BOX("Failed to Create Instance - CAnimChannel");
 		Safe_Release(pInstance);
 	}
 
