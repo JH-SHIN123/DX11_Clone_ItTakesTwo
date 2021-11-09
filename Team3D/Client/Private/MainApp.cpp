@@ -105,7 +105,7 @@ HRESULT CMainApp::Ready_DefaultLevel(Level::ID eLevelID)
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Change_CurrentLevel(CLevel_Loading::Create(m_pDevice, m_pDeviceContext, Level::LEVEL_STATIC, eLevelID)), E_FAIL);
-
+	//test
 	return S_OK;
 }
 
