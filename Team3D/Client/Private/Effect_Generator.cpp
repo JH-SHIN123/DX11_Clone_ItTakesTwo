@@ -7,6 +7,7 @@
 #include "TestEffect.h"
 #include "RespawnTunnel.h"
 #include "RespawnTunnel_Smoke.h"
+#include "FireDoor.h"
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
 
@@ -33,6 +34,9 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_06"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_06.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_07"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_07.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_08"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_08.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise_02"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Noise_02.png"))), E_FAIL);
+
+
 
 #pragma endregion
 
@@ -224,7 +228,8 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_RespawnTunnel_Smoke"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, pPrototypeName, CRespawnTunnel_Smoke::Create(pDevice, pDeviceContext, pData));
 
-
+	else if(0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, pPrototypeName, CFireDoor::Create(pDevice, pDeviceContext, pData));
 
 	return S_OK;
 }

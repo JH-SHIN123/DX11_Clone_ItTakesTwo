@@ -97,6 +97,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D\00.RespawnTunnel_Smoke">
       <UniqueIdentifier>{536a0e19-aa1f-4e8d-a60f-a160ab01514a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D\01.FireDoor">
+      <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -159,6 +162,9 @@
     <ClInclude Include="..\public\RespawnTunnel_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D\00.RespawnTunnel_Smoke</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\FireDoor.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D\01.FireDoor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -205,6 +211,9 @@
     </ClCompile>
     <ClCompile Include="..\private\RespawnTunnel_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D\00.RespawnTunnel_Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FireDoor.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D\01.FireDoor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

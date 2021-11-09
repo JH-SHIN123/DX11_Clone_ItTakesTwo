@@ -10,6 +10,8 @@ float4			g_vUV;
 
 sampler DiffuseSampler = sampler_state
 {
+	Filter = MIN_MAG_MIP_LINEAR;
+
 	AddressU = wrap;
 	AddressV = wrap;
 };
@@ -44,7 +46,7 @@ VS_OUT VS_MAIN(VS_IN In)
 
 	return Out;
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 struct  GS_OUT
 {
 	float4 vPosition		: SV_POSITION;
@@ -153,7 +155,7 @@ void  GS_MAIN(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream< GS_OU
 	TriStream.Append(Out[6]);
 	TriStream.Append(Out[7]);
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 struct  PS_IN
 {
 	float4 vPosition : SV_POSITION;
@@ -256,6 +258,32 @@ PS_OUT  PS_MAIN_BLACKDISCARD(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_DISTORTION(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 UV = In.vTexUV += g_fTime;
+
+	float4 vFX_tex = g_SecondTexture.Sample(DiffuseSampler, In.vTexUV);
+	float4 vColor = (float4)0.f;
+	float fWeight = vFX_tex.r * 0.5f;
+
+	//if (g_iAnimation2DEnable == 0)
+	//{
+	vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV + fWeight);
+	//}
+	//else
+	//{
+	//	if (g_iAnim2DType == AT_ATLAS)
+	//		vColor = g_DiffuseTex.Sample(g_LinearSmp, input.vUV + fWeight);
+	//	else
+	//		vColor = g_ArrayTex.Sample(g_LinearSmp, float3(input.vUV + fWeight, g_iAnim2DFrame));
+	//}
+
+	Out.vColor = vColor;
+	return Out;
+}
+
 technique11		DefaultTechnique
 {
 	pass PointInstance_AlphaBlendTime // 0
@@ -296,6 +324,16 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN();
 		GeometryShader = compile gs_5_0  GS_MAIN();
 		PixelShader = compile ps_5_0  PS_MAIN_BLACKDISCARD();
+	}
+
+	pass Distortion // 4
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_DISTORTION();
 	}
 };
 

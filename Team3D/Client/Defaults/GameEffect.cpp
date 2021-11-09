@@ -89,9 +89,9 @@ HRESULT CGameEffect::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
 	if (true == m_IsResourceName[RESOURCE_TEXTURE])
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->TextureName, TEXT("Com_Model"), (CComponent**)&m_pTexturesCom), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->TextureName, TEXT("Com_Textrue"), (CComponent**)&m_pTexturesCom), E_FAIL);
 	if (true == m_IsResourceName[RESOURCE_TEXTURE_SECOND])
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->TextureName_Second, TEXT("Com_Model"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->TextureName_Second, TEXT("Com_Textrue_Second"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
 
 	if (true == m_IsResourceName[RESOURCE_MESH])
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
