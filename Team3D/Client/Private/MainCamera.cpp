@@ -25,7 +25,7 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	CCamera::NativeConstruct(pArg);
 
 
-	m_pTargetObj = CGameInstance::GetInstance()->GEt
+	//m_pTargetObj = CGameObject_Manager::GetInstance()->Get
 
 
 	return S_OK;
