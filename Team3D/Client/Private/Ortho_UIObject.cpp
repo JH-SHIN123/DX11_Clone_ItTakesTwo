@@ -28,6 +28,8 @@ HRESULT COrtho_UIObject::NativeConstruct(void * pArg)
 
 _int COrtho_UIObject::Tick(_double TimeDelta)
 {
+	CGameObject::Tick(TimeDelta);
+
 	return NO_EVENT;
 }
 
@@ -35,24 +37,18 @@ _int COrtho_UIObject::Late_Tick(_double TimeDelta)
 {
 	NULL_CHECK_RETURN(m_pRendererCom, EVENT_ERROR);
 
+	CGameObject::Late_Tick(TimeDelta);
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
 
-HRESULT COrtho_UIObject::Render(_uint iDiffTextureIndex, _uint iSubTextureIndex)
+HRESULT COrtho_UIObject::Render()
 {
-	NULL_CHECK_RETURN(m_pVIBufferCom, E_FAIL);
-	NULL_CHECK_RETURN(m_pTextureCom, E_FAIL);
-
-	m_pVIBufferCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pVIBufferCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(iDiffTextureIndex));
-
-	if (1 <= m_UIDesc.iSubTextureNum)
-		m_pVIBufferCom->Set_ShaderResourceView("g_SubTexture", m_pTextureCom->Get_ShaderResourceView(iSubTextureIndex));
-
-	m_pVIBufferCom->Render(0);
+	CGameObject::Render();
 
 	return S_OK;
 }
+
 
 HRESULT COrtho_UIObject::Ready_Component()
 {
@@ -66,6 +62,20 @@ HRESULT COrtho_UIObject::Ready_Component()
 
 	return S_OK;
 }
+
+HRESULT CModel::Set_DefaultVariables_Perspective(_fmatrix WorldMatrix)
+{
+	CPipeline* pPipeline = CPipeline::GetInstance();
+	NULL_CHECK_RETURN(pPipeline, E_FAIL);
+
+	Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+	Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINPROJ)), sizeof(_matrix));
+	Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBPROJ)), sizeof(_matrix));
+
+
+	return S_OK;
+}
+
 
 COrtho_UIObject * COrtho_UIObject::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

@@ -48,11 +48,9 @@ HRESULT CUI_Loader::LoadData_UI(const _tchar* pFilePath)
 		UIDesc.vPos = { PSData.vPos.x ,  PSData.vPos.y };
 		UIDesc.vScale = { PSData.vScale.x , PSData.vScale.y };
 
-		if (!lstrcmp(UIDesc.szUITag, L"클래스"))
+		if (!lstrcmp(UIDesc.szUITag, L"CUI_"))
 		{
-			if (FAILED(pGameInstance->Add_GameObject_Prototype(UIDesc.iLevelIndex, PSData.szUITag,
-				클래스::Create))
-				return E_FAIL;
+
 		}
 	}
 

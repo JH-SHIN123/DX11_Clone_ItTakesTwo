@@ -82,8 +82,17 @@
     <Filter Include="02.GameObject\05.UI\00.Main">
       <UniqueIdentifier>{230bdde6-894c-436b-aba5-8bd89b6759ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="96.Loader">
-      <UniqueIdentifier>{6997d3e5-6526-438c-b627-0590bee437ad}</UniqueIdentifier>
+    <Filter Include="02.GameObject\05.UI\99.Generator">
+      <UniqueIdentifier>{3d7aad74-1772-4e1d-8b5a-93e0b87baa6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\01.InputButton">
+      <UniqueIdentifier>{6cf480e1-7aa6-4798-8d4f-50b3ae185009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\01.InputButton\Frame">
+      <UniqueIdentifier>{1bd30304-36e7-463f-993b-43582032b2b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\02.ControllerIcon">
+      <UniqueIdentifier>{94ecf13f-01f2-42f6-bc64-88d4a3980c29}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -135,8 +144,11 @@
     <ClInclude Include="..\Public\Ortho_UIObject.h">
       <Filter>02.GameObject\05.UI\00.Main</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_Loader.h">
-      <Filter>96.Loader</Filter>
+    <ClInclude Include="..\Public\UI_Generator.h">
+      <Filter>02.GameObject\05.UI\99.Generator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\InputButton.h">
+      <Filter>02.GameObject\05.UI\01.InputButton</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -173,8 +185,11 @@
     <ClCompile Include="..\Private\Ortho_UIObject.cpp">
       <Filter>02.GameObject\05.UI\00.Main</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_Loader.cpp">
-      <Filter>96.Loader</Filter>
+    <ClCompile Include="..\Private\UI_Generator.cpp">
+      <Filter>02.GameObject\05.UI\99.Generator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\InputButton.cpp">
+      <Filter>02.GameObject\05.UI\01.InputButton</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

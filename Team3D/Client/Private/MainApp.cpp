@@ -2,7 +2,7 @@
 #include "..\public\MainApp.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
-#include "UI_Loader.h"
+#include "UI_Generator.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -125,7 +125,7 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
-	FAILED_CHECK(CUI_Loader::GetInstance()->DestroyInstance());
+	FAILED_CHECK(CUI_Generator::GetInstance()->DestroyInstance());
 
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pDeviceContext);

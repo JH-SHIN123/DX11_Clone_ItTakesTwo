@@ -22,6 +22,7 @@ public:
 		unsigned int	iLevelIndex;
 		unsigned int	iRenderGroup;
 		unsigned int	iTextureLevelIndex;
+		unsigned int	iTextureRenderIndex;
 		unsigned int	iSubTextureNum;
 		wchar_t			szSubTextureTag[MAX_PATH];
 		wchar_t			szTextureTag[MAX_PATH];
@@ -41,7 +42,7 @@ public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
-	virtual HRESULT	Render(_uint iDiffTextureIndex = 0, _uint iSubTextureIndex = 0);
+	virtual HRESULT Render() override;
 
 protected:
 	UI_DESC				m_UIDesc;
