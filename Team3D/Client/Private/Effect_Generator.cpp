@@ -218,6 +218,9 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, pPrototypeName, CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel_Portal"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, pPrototypeName, CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
+
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_RespawnTunnel_Smoke"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, pPrototypeName, CRespawnTunnel_Smoke::Create(pDevice, pDeviceContext, pData));
 
