@@ -94,6 +94,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D\99.TestEffect">
       <UniqueIdentifier>{2597e457-f059-48c4-ac26-d228360d5248}</UniqueIdentifier>
     </Filter>
+    <Filter Include="95.Effect_Generator">
+      <UniqueIdentifier>{1efce119-1cf1-4fab-92f2-6371aba8b2a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -153,6 +156,7 @@
     <ClInclude Include="..\public\RespawnTunnel.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\00.RespawnTunnel</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Generator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -197,6 +201,7 @@
     <ClCompile Include="..\private\RespawnTunnel.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\00.RespawnTunnel</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_Generator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

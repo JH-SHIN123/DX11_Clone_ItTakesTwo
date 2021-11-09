@@ -1,21 +1,19 @@
 #include "stdafx.h"
-#include "..\Public\DataLoader.h"
+#include "..\Public\Effect_Generator.h"
 #include "fstream"
+#include "GameInstance.h"
 
 #include "GameEffect.h"
 #include "TestEffect.h"
 #include "RespawnTunnel.h"
 
-CDataLoader::CDataLoader()
+IMPLEMENT_SINGLETON(CEffect_Generator)
+
+CEffect_Generator::CEffect_Generator()
 {
 }
 
-
-CDataLoader::~CDataLoader()
-{
-}
-
-HRESULT CDataLoader::Load_EffectData(const _tchar * pFilePath, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	wifstream fin;
 
@@ -23,9 +21,6 @@ HRESULT CDataLoader::Load_EffectData(const _tchar * pFilePath, ID3D11Device* pDe
 
 	if (!fin.fail())
 	{
-		CGameInstance* pInstance = CGameInstance::GetInstance();
-		Safe_AddRef(pInstance);
-
 		while (true)
 		{
 			TCHAR NumData[MAX_PATH] = L"";
@@ -133,17 +128,30 @@ HRESULT CDataLoader::Load_EffectData(const _tchar * pFilePath, ID3D11Device* pDe
 			Data->vPivotRotate_Degree.z = (_float)_ttof(NumData);
 #pragma endregion
 
-
-
-			pInstance->Add_GameObject_Prototype(Data->iLevelIndex, Data->EffectName, CGameEffect::Create(pDevice, pDeviceContext, Data));
+			Create_Prototype(Data->iLevelIndex, Data->EffectName, pDevice, pDeviceContext, Data);
 		}
-
-		Safe_Release(pInstance);
 
 		fin.close();
 	}
 
 
+
+
+
+	return S_OK;
+}
+
+
+HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pPrototypeName, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, EFFECT_DESC_PROTO* pData)
+{
+	CGameInstance* pInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pInstance, E_FAIL);
+
+	if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, pPrototypeName, CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, pPrototypeName, CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
 
 
 
