@@ -163,6 +163,9 @@
     <Filter Include="02.Utility\02.Component\05.Model\01.Mesh">
       <UniqueIdentifier>{288dfc8d-f2dd-43e7-85ed-31782323d247}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\05.PhysX">
+      <UniqueIdentifier>{f9714c9a-ca3b-45cd-a187-c07e5f656041}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Engine_Defines.h">
@@ -294,6 +297,9 @@
     <ClInclude Include="..\Public\Model_Loader.h">
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PhysX.h">
+      <Filter>02.Utility\05.PhysX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -409,6 +415,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Model_Loader.cpp">
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PhysX.cpp">
+      <Filter>02.Utility\05.PhysX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
