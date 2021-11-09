@@ -2,6 +2,7 @@
 #include "..\public\MainApp.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
+#include "Effect_Generator.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -18,6 +19,8 @@ HRESULT CMainApp::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Timer(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Prototype_ForStatic(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
+
+	// Test Ä¿¹Ô
 
 	return S_OK;
 }
@@ -128,6 +131,8 @@ void CMainApp::Free()
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pGameInstance);
+
+	CEffect_Generator::DestroyInstance(); // ÀÌÆåÆ® Á¦¾î±â
 
 	CGameInstance::Release_Engine();
 }

@@ -20,6 +20,7 @@ public: /* Getter */
 public: /* Setter */
 	HRESULT	Set_Animation(_uint iAnimIndex, class CTransform* pTransform);
 	HRESULT	Set_NextAnimIndex(_uint iAnimIndex);
+	void Set_Pivot(_fmatrix PivotMatrix);
 	/* For.Shader */
 	HRESULT	Set_Variable(const char* pConstantName, void* pData, _uint iByteSize);
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, ID3D11ShaderResourceView* pShaderResourceView);

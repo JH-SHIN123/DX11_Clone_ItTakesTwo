@@ -163,6 +163,9 @@
     <Filter Include="02.Utility\02.Component\05.Model\01.Mesh">
       <UniqueIdentifier>{288dfc8d-f2dd-43e7-85ed-31782323d247}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\02.Component\04.VIBuffer\03.Instance\03.Point_Custom">
+      <UniqueIdentifier>{6d41aa0b-71aa-4a15-b120-0c6ce1595b1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Engine_Defines.h">
@@ -294,6 +297,9 @@
     <ClInclude Include="..\Public\Model_Loader.h">
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_PointInstance_Custom.h">
+      <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\03.Point_Custom</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -409,6 +415,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Model_Loader.cpp">
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_PointInstance_Custom.cpp">
+      <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\03.Point_Custom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

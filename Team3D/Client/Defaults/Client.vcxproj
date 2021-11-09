@@ -95,6 +95,12 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -103,7 +109,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./;../public/;../../PlugIns/Headers/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../../PlugIns/Headers/;../../PlugIns/Headers/PhysX/;../../PlugIns/Headers/PhysX/PxShared/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -150,7 +156,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./;../public/;../../PlugIns/Headers/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../../PlugIns/Headers/;../../PlugIns/Headers/PhysX/;../../PlugIns/Headers/PhysX/PxShared/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -180,29 +186,39 @@
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
+    <ClInclude Include="..\public\Effect_Generator.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
     <ClInclude Include="..\public\Loading.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\MainCamera.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\public\RespawnTunnel.h" />
+    <ClInclude Include="..\public\RespawnTunnel_Smoke.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="..\public\TestEffect.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="GameEffect.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\private\Effect_Generator.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\MainCamera.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\private\RespawnTunnel.cpp" />
+    <ClCompile Include="..\private\RespawnTunnel_Smoke.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
+    <ClCompile Include="..\private\TestEffect.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="GameEffect.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -220,6 +236,8 @@
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Default.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

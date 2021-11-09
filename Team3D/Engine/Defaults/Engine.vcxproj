@@ -220,6 +220,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\public\VIBuffer.h" />
     <ClInclude Include="..\public\VIBuffer_Color.h" />
     <ClInclude Include="..\public\VIBuffer_PointInstance.h" />
+    <ClInclude Include="..\Public\VIBuffer_PointInstance_Custom.h" />
     <ClInclude Include="..\public\VIBuffer_Rect.h" />
     <ClInclude Include="..\public\VIBuffer_RectInstance.h" />
     <ClInclude Include="..\public\VIBuffer_RectRHW.h" />
@@ -260,6 +261,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\private\VIBuffer.cpp" />
     <ClCompile Include="..\private\VIBuffer_Color.cpp" />
     <ClCompile Include="..\private\VIBuffer_PointInstance.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_PointInstance_Custom.cpp" />
     <ClCompile Include="..\private\VIBuffer_Rect.cpp" />
     <ClCompile Include="..\private\VIBuffer_RectInstance.cpp" />
     <ClCompile Include="..\private\VIBuffer_RectRHW.cpp" />

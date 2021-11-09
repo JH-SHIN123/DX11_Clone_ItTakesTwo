@@ -1,0 +1,152 @@
+#pragma once
+
+#ifndef __GAMEEFFECT_H__
+
+#include "Client_Defines.h"
+#include "GameObject.h"
+
+BEGIN(Engine)
+class CVIBuffer_PointInstance_Custom;
+class CTransform;
+class CRenderer;
+class CTextures;
+class CModel;
+END
+
+BEGIN(Client)
+
+typedef struct tagEffect_Desc_Prototype
+{
+	_tchar		EffectName[MAX_PATH] = L""; //PrototypeName
+	_tchar		TextureName[MAX_PATH] = L"";
+	_tchar		TextureName_Second[MAX_PATH] = L"";
+	_tchar		ModelName[MAX_PATH] = L"";
+
+	_int		iInstanceCount = 1;			//인스턴싱 개수
+
+	_int		iTextureCount_U = 1;			// 플립 이미지 일 경우 세팅
+	_int		iTextureCount_V = 1;
+	_float		fUVTime_U = -1.f;			// UV 바뀌는 주기
+	_float		fUVTime_V = -1.f;			// UV 바뀌는 주기
+	_bool		IsTexFlow_U = false;		// 플립 이미지 == false, true == 쉐이더의 UV가 시간값으로 바뀜
+	_bool		IsTexFlow_V = false;		// 플립 이미지 == false, true == 쉐이더의 UV가 시간값으로 바뀜
+
+	_double		fLifeTime = -1.f;			// 생명시간
+
+	_double		fSizeTime = 0.f;
+	_float		fSizeChangePower = 0.f;
+	_bool		IsResizeContinue = false; // 쏵 늘어났다 가 아니고 같은 값으로 증감
+	_float3		vSize = { 1.f, 1.f, 1.f };
+	_float3		vSizeChange = { 0.f, 0.f, 0.f };
+
+	_float		fColorChangePower = 5.f;
+	_float4		vColor = { 1.f,  1.f,  1.f,  1.f };
+	_float4		vColorChange = { 1.f,  1.f,  1.f,  1.f };
+
+	_bool		IsGravity = false;		// 중력
+
+	_int		iShaderPass = 0;
+	_int		iLevelIndex = 1;
+
+	_bool		IsRePosAll = false;
+	_double		fDirMoveTime = -1.f;
+	_float		fDirMoveSpeed = 1.f;
+
+	_double		fRenderTerm = 0.f;				// 한번에 그리지 않고 하나씩 나타나듯이 그리는 주기
+	_double		fInstancePosUpdateTerm = -1.f;	// 0번의 Pos로 다시 세팅되는 주기
+
+	_float3		vPivotScale = { 0.01f, 0.01f, 0.01f };
+	_float3		vPivotRotate_Degree = { 0.f, 0.f, 0.f };
+
+}EFFECT_DESC_PROTO;
+
+typedef struct tagEffect_Desc_Clone
+{
+	_float3 vDir			= { 0.f, 0.f, 0.f };			// 0 Index Move Dir;
+	_float3 vRandDirPower	= { 0.f, 0.f, 0.f };			// other Indeces Move Dir;
+	_float4 vColor			= { -1.f, -1.f, -1.f, -1.f };	// Set Addtional Color
+	_float4 vColorChange	= { -1.f, -1.f, -1.f, -1.f };	// Set Addtional ColorChange
+	_float4 vPos			= { 0.f, -0.f, 0.f, 1.f };		// Set Position
+
+}EFFECT_DESC_CLONE;
+
+class CGameEffect :	public CGameObject
+{
+protected:
+	enum ERESOURCE_TYPE { RESOURCE_TEXTURE, RESOURCE_TEXTURE_SECOND, RESOURCE_MESH, RESOURCE_END };
+
+protected:
+	explicit CGameEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CGameEffect(const CGameEffect& rhs);
+	virtual ~CGameEffect() = default; public:
+
+public:
+	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
+	virtual HRESULT	NativeConstruct(void* pArg) override;
+	virtual _int	Tick(_double TimeDelta) override;
+	virtual _int	Late_Tick(_double TimeDelta) override;
+	virtual HRESULT	Render() override;
+
+public:
+	HRESULT Copy_Prototype_Desc(void* pArg);
+	HRESULT Ready_Component(void* pArg);
+	void	Check_ChangeData();
+	HRESULT	Ready_InstanceBuffer();
+	void	Compute_Pivot();
+
+public:
+	void	Check_Color(_double TimeDelta);
+	void	Check_Gravity(_double TimeDelta);
+	_float4 Check_UV(_double TimeDelta, _int iIndex);
+	_float2 Check_Size(_double TimeDelta, _int iIndex);
+	_float4 Check_Move(_double TimeDelta, _int iIndex);
+
+	void Control_InstanceBuffer(_double TimeDelta);
+
+public:
+	_float4 Set_UV(_int iIndex);
+	void SetUp_Shader_Data();
+
+protected:
+	// 프로토타입에 기본 세팅을 하고 클론에서 상황에 맞는 추가적인 데이터를 넘기자
+	EFFECT_DESC_PROTO* m_pEffectDesc_Prototype;	// 프로토 타입이 가져야 할 데이터
+	EFFECT_DESC_CLONE m_EffectDesc;				// 클론 생성시 추가적인 세팅이 필요 할 때
+	_bool	m_IsPrototypeData = false;
+
+	VTXMATRIX_CUSTOM_ST* m_pInstanceBuffer = nullptr;
+
+	// 인스턴스의 변수 제어용
+	_int			m_iInstance_RenderCount = 1;
+
+	_float3*		m_pInstance_Dir = nullptr;
+	_double*		m_pInstance_Pos_UpdateTime = nullptr;
+
+	_double*		m_pInstance_RenderTerm = nullptr;
+	_double*		m_pInstance_UVTime = nullptr;
+	_float2*		m_pInstance_UVCount = nullptr;
+
+	_float2*		m_pInstance_vReSize = nullptr;
+
+protected:
+	CRenderer*	m_pRendererCom = nullptr;
+	CTransform*	m_pTransformCom = nullptr;
+
+	CTextures* m_pTexturesCom = nullptr;
+	CTextures* m_pTexturesCom_Second = nullptr;
+	CVIBuffer_PointInstance_Custom* m_pPointInstanceCom = nullptr;
+
+	CModel*		m_pModelCom = nullptr;
+
+	_bool m_IsResourceName[RESOURCE_END];
+
+	_float4x4 m_PivotMatrix;
+
+public:
+	static CGameEffect* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void* pArg);
+	virtual CGameObject* Clone_GameObject(void* pArg) override;
+	virtual void Free() override;
+};
+
+END
+#define __GAMEEFFECT_H__
+#endif // !__GAMEEFFECT_H__

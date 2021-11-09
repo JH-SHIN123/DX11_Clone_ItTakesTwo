@@ -6,6 +6,9 @@
 #include "Player.h"
 #include "Terrain.h"
 
+#include "GameEffect.h"
+#include "Effect_Generator.h"
+
 CLoading::CLoading(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice			(pDevice)
 	, m_pDeviceContext	(pDeviceContext)
@@ -107,6 +110,10 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		_matrix	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Mesh/", "Test2.fbx", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Cody"), CPlayer::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+		CEffect_Generator::GetInstance()->Create_Prototype_Resource_Stage1(m_pDevice, m_pDeviceContext);
+		CEffect_Generator::GetInstance()->Load_EffectData(TEXT("../Bin/Data/Effect/TestSave.txt"), m_pDevice, m_pDeviceContext);
+
 	}
 
 	return S_OK;

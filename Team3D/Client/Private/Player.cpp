@@ -30,7 +30,6 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	m_pModelCom->Set_Animation(0, m_pTransformCom);
 	m_pModelCom->Set_NextAnimIndex(0);
 
-	// Test 
 	return S_OK;
 }
 
@@ -67,7 +66,6 @@ HRESULT CPlayer::Render()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Render_Model(0);
 
 	return S_OK;
