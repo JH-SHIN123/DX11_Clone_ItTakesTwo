@@ -56,6 +56,8 @@ HRESULT CPlayer::Render()
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Render_Model(0);
 
+	
+
 	return S_OK;
 }
 

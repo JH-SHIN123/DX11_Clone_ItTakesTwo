@@ -22,6 +22,9 @@ public:
 	static CMainCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg = nullptr) override;
 	virtual void Free() override;
+
+private:
+	CGameObject* m_pTargetObj = nullptr;
 };
 
 END
