@@ -11,22 +11,17 @@ CGameEffect::CGameEffect(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceCo
 CGameEffect::CGameEffect(const CGameEffect & rhs)
 	: CGameObject(rhs)
 	, m_pEffectDesc_Prototype(rhs.m_pEffectDesc_Prototype)
-	, m_PivotMatrix(rhs.m_PivotMatrix)
 {
 }
 
 HRESULT CGameEffect::NativeConstruct_Prototype(void* pArg)
 {
-	//memcpy(&m_pEffectDesc_Prototype, pArg, sizeof(EFFECT_DESC_PROTO));
-
 	m_pEffectDesc_Prototype = (EFFECT_DESC_PROTO*)pArg;
 
 	lstrcpy(m_pEffectDesc_Prototype->EffectName,			((EFFECT_DESC_PROTO*)pArg)->EffectName);
 	lstrcpy(m_pEffectDesc_Prototype->TextureName,			((EFFECT_DESC_PROTO*)pArg)->TextureName);
 	lstrcpy(m_pEffectDesc_Prototype->TextureName_Second,	((EFFECT_DESC_PROTO*)pArg)->TextureName_Second);
 	lstrcpy(m_pEffectDesc_Prototype->ModelName,				((EFFECT_DESC_PROTO*)pArg)->ModelName);
-
-	Compute_Pivot();
 
 	return S_OK;
 }
@@ -99,10 +94,8 @@ HRESULT CGameEffect::Ready_Component(void * pArg)
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->TextureName_Second, TEXT("Com_Model"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
 
 	if (true == m_IsResourceName[RESOURCE_MESH])
-	{
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-		m_pModelCom->Set_Pivot(XMLoadFloat4x4(&m_PivotMatrix));
-	}
+
 	if (false == m_IsResourceName[RESOURCE_MESH])
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom), E_FAIL);
 
@@ -207,23 +200,6 @@ HRESULT CGameEffect::Ready_InstanceBuffer()
 	m_pInstance_Dir[0] = m_EffectDesc.vDir;
 
 	return S_OK;
-}
-
-void CGameEffect::Compute_Pivot()
-{
-	_matrix vPivot = XMMatrixIdentity();;
-	_vector vScale	= XMLoadFloat3(&m_pEffectDesc_Prototype->vPivotScale);
-
-	vPivot = XMMatrixScalingFromVector(vScale);
-
-	vPivot *= XMMatrixRotationRollPitchYaw(
-		XMConvertToRadians(m_pEffectDesc_Prototype->vPivotRotate_Degree.x),
-		XMConvertToRadians(m_pEffectDesc_Prototype->vPivotRotate_Degree.y),
-		XMConvertToRadians(m_pEffectDesc_Prototype->vPivotRotate_Degree.z));
-
-	XMStoreFloat4x4(&m_PivotMatrix, vPivot);
-
-	return;
 }
 
 void CGameEffect::Check_Color(_double TimeDelta)

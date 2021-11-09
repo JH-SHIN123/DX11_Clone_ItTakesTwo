@@ -38,15 +38,16 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 
 
 #pragma region Model
+	//_matrix	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Lightning")
-		, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/Lightning/", "Lightning.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique")), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RespawnTunnel")
-		, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/RespawnTunnel/", "RespawnTunnel.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique")), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RespawnTunnel_Portal")
-		, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/RespawnTunnel/", "RespawnTunnel_Portal.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique")), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Wormhole")
-		, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/Wormhole/", "Wormhole.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique")), E_FAIL);
+	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Lightning")
+	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/Lightning/", "Lightning.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
+	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RespawnTunnel")
+	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/RespawnTunnel/", "RespawnTunnel.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
+	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RespawnTunnel_Portal")
+	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/RespawnTunnel/", "RespawnTunnel_Portal.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
+	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Wormhole")
+	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/Wormhole/", "Wormhole.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
 
 #pragma  endregion
 	return S_OK;
@@ -64,10 +65,13 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 
 	if (!fin.fail())
 	{
+		CGameInstance* pInstance = CGameInstance::GetInstance();
+		NULL_CHECK_RETURN(pInstance, E_FAIL);
+
+
 		while (true)
 		{
 			TCHAR NumData[MAX_PATH] = L"";
-
 			EFFECT_DESC_PROTO* Data = new EFFECT_DESC_PROTO;
 
 #pragma region Load Effect Data
@@ -173,6 +177,25 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 			fin.getline(NumData, MAX_PATH);
 			Data->vPivotRotate_Degree.z = (_float)_ttof(NumData);
 #pragma endregion
+			
+			if (1 < lstrlen(Data->ModelName))
+			{
+				wstring	 wstrName = Data->ModelName;
+				wstrName.erase(0, 16);
+				char szPrototypeName[MAX_PATH];
+				WideCharToMultiByte(CP_ACP, 0, wstrName.c_str(), MAX_PATH, szPrototypeName, MAX_PATH, NULL, NULL);
+
+				char pPath[MAX_PATH] = "../Bin/Resources/Effect/3D/";
+				strcat_s(pPath, MAX_PATH, szPrototypeName);
+				strcat_s(pPath, MAX_PATH, "/");
+
+				strcat_s(szPrototypeName, MAX_PATH, ".fbx");
+
+				FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, Data->ModelName
+					, CModel::Create(pDevice, pDeviceContext, pPath, szPrototypeName, TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique"
+						, Compute_Pivot(XMLoadFloat3(&Data->vPivotScale), XMLoadFloat3(&Data->vPivotRotate_Degree)))), E_FAIL);
+			}
+
 
 			Create_Prototype(Data->iLevelIndex, Data->EffectName, pDevice, pDeviceContext, Data);
 		}
@@ -201,6 +224,20 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 
 	return S_OK;
+}
+
+_fmatrix CEffect_Generator::Compute_Pivot(_vector vScale, _vector vRotate)
+{
+	_matrix vPivot = XMMatrixIdentity();;
+
+	vPivot = XMMatrixScalingFromVector(vScale);
+
+	vPivot *= XMMatrixRotationRollPitchYaw(
+		XMConvertToRadians(vRotate.m128_f32[0]),
+		XMConvertToRadians(vRotate.m128_f32[1]),
+		XMConvertToRadians(vRotate.m128_f32[2]));
+
+	return vPivot;
 }
 
 void CEffect_Generator::Free()

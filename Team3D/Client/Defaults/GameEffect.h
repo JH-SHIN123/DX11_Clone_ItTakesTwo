@@ -68,7 +68,7 @@ typedef struct tagEffect_Desc_Clone
 	_float4 vColorChange	= { -1.f, -1.f, -1.f, -1.f };	// Set Addtional ColorChange
 	_float4 vPos			= { 0.f, -0.f, 0.f, 1.f };		// Set Position
 
-}EFFECT_DESC_CLONE;
+}EFFECT_DESC_CLONE; 
 
 class CGameEffect :	public CGameObject
 {
@@ -92,7 +92,6 @@ public:
 	HRESULT Ready_Component(void* pArg);
 	void	Check_ChangeData();
 	HRESULT	Ready_InstanceBuffer();
-	void	Compute_Pivot();
 
 public:
 	void	Check_Color(_double TimeDelta);
@@ -138,8 +137,6 @@ protected:
 	CModel*		m_pModelCom = nullptr;
 
 	_bool m_IsResourceName[RESOURCE_END];
-
-	_float4x4 m_PivotMatrix;
 
 public:
 	static CGameEffect* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void* pArg);

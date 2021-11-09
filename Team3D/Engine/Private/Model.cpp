@@ -130,7 +130,7 @@ HRESULT CModel::Set_NextAnimIndex(_uint iAnimIndex)
 
 void CModel::Set_Pivot(_fmatrix PivotMatrix)
 {
-	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
+	Apply_PivotMatrix(PivotMatrix);
 }
 
 HRESULT CModel::Set_Variable(const char * pConstantName, void * pData, _uint iByteSize)
