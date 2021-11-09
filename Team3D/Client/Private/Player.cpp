@@ -30,6 +30,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	m_pModelCom->Set_Animation(0, m_pTransformCom);
 	m_pModelCom->Set_NextAnimIndex(0);
 
+	// Test 
 	return S_OK;
 }
 
