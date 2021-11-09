@@ -157,3 +157,7 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	return S_OK;
 }
+
+void CEffect_Generator::Free()
+{
+}

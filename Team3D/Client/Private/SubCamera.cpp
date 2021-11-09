@@ -38,6 +38,16 @@ _int CSubCamera::Late_Tick(_double TimeDelta)
 	return NO_EVENT;
 }
 
+HRESULT CSubCamera::Set_ShaderConstant_Default()
+{
+	return S_OK;
+}
+
+HRESULT CSubCamera::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
+{
+	return S_OK;
+}
+
 CSubCamera * CSubCamera::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CSubCamera* pInstance = new CSubCamera(pDevice, pDeviceContext);

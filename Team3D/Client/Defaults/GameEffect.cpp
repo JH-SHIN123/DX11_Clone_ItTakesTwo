@@ -64,6 +64,40 @@ HRESULT CGameEffect::Render()
 	return S_OK;
 }
 
+HRESULT CGameEffect::Set_ShaderConstant_Default()
+{
+	if (nullptr != m_pModelCom)
+		m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+		
+	if(nullptr != m_pPointInstanceCom)
+		m_pPointInstanceCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+
+	return S_OK;
+}
+
+HRESULT CGameEffect::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
+{
+	if (nullptr != m_pModelCom)
+	{
+		m_pModelCom->Set_Variable("g_WorldMatrix",		&XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
+		m_pModelCom->Set_Variable("g_MainViewMatrix",	&XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+		m_pModelCom->Set_Variable("g_MainProjMatrix",	&XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+		m_pModelCom->Set_Variable("g_SubViewMatrix",	&XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+		m_pModelCom->Set_Variable("g_SubProjMatrix",	&XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+	}
+
+	if (nullptr != m_pPointInstanceCom)
+	{
+		m_pModelCom->Set_Variable("g_WorldMatrix",		&XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
+		m_pModelCom->Set_Variable("g_MainViewMatrix",	&XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+		m_pModelCom->Set_Variable("g_MainProjMatrix",	&XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+		m_pModelCom->Set_Variable("g_SubViewMatrix",	&XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+		m_pModelCom->Set_Variable("g_SubProjMatrix",	&XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+	}
+
+	return S_OK;
+}
+
 
 HRESULT CGameEffect::Copy_Prototype_Desc(void * pArg)
 {

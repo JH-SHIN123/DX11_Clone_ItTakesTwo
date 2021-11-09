@@ -55,6 +55,16 @@ _int CMainCamera::Late_Tick(_double TimeDelta)
 	return NO_EVENT;
 }
 
+HRESULT CMainCamera::Set_ShaderConstant_Default()
+{
+	return S_OK;
+}
+
+HRESULT CMainCamera::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
+{
+	return S_OK;
+}
+
 CMainCamera * CMainCamera::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CMainCamera* pInstance = new CMainCamera(pDevice, pDeviceContext);

@@ -50,7 +50,7 @@ _int CPlayer::Tick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Pressing(DIK_6))
 		m_pModelCom->Set_Animation(7, m_pTransformCom);
 
-	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
+	//m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
 
 	return NO_EVENT;
 }
@@ -66,7 +66,7 @@ HRESULT CPlayer::Render()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Render_Model(0);
+	//m_pModelCom->Render_Model(0);
 
 	return S_OK;
 }
