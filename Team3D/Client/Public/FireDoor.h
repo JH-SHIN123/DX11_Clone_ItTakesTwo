@@ -20,6 +20,9 @@ public:
 
 private:
 	_double fT = 0.f;
+	_float4 m_vWeight = { 0.f, 0.f, 0.125f, 0.125f };
+
+	CTextures* m_pTexturesCom_ColorRamp = nullptr;
 
 public:
 	static CFireDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

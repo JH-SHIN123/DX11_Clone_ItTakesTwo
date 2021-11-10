@@ -39,8 +39,8 @@ HRESULT CVIBuffer_PointInstance_Custom::NativeConstruct_Prototype(_uint iMaxInst
 		m_pInstanceVertices[iIndex].vUp			= _float4(0.f, 1.f, 0.f, 0.f);
 		m_pInstanceVertices[iIndex].vLook		= _float4(0.f, 0.f, 1.f, 0.f);
 		m_pInstanceVertices[iIndex].vPosition	= _float4(0.f, 0.f, 0.f, 1.f);
-		m_pInstanceVertices[iIndex].vTextureUV	= _float4(0.f, 0.f, 1.f, 1.f);
 		m_pInstanceVertices[iIndex].vSize		= _float2(1.f, 1.f);
+		m_pInstanceVertices[iIndex].vTextureUV	= _float4(0.f, 0.f, 1.f, 1.f);
 	}
 
 	Create_Buffer(&m_pVBInstance, m_iMaxInstanceCount * sizeof(VTXMATRIX_CUSTOM_ST), D3D11_USAGE_DYNAMIC, D3D11_BIND_VERTEX_BUFFER, D3D11_CPU_ACCESS_WRITE, 0, sizeof(VTXMATRIX), m_pInstanceVertices, false);
@@ -54,8 +54,8 @@ HRESULT CVIBuffer_PointInstance_Custom::NativeConstruct_Prototype(_uint iMaxInst
 		{ "WORLD",		1, DXGI_FORMAT_R32G32B32A32_FLOAT,	1,	16, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 		{ "WORLD",		2, DXGI_FORMAT_R32G32B32A32_FLOAT,	1,	32, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 		{ "WORLD",		3, DXGI_FORMAT_R32G32B32A32_FLOAT,	1,	48, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "PSIZE",		0, DXGI_FORMAT_R32G32_FLOAT,		1,	64, D3D11_INPUT_PER_INSTANCE_DATA, 1 }, // Size
 		{ "TEXCOORD",	0, DXGI_FORMAT_R32G32B32A32_FLOAT,	1,	72, D3D11_INPUT_PER_INSTANCE_DATA, 1 }, // UV
-		{ "PSIZE",		0, DXGI_FORMAT_R32G32_FLOAT,		1,	80, D3D11_INPUT_PER_INSTANCE_DATA, 1 }, // Size
 	};
 
 	FAILED_CHECK_RETURN(SetUp_InputLayouts(ElementDesc, 7, pShaderFilePath, pTechniqueName), E_FAIL);
