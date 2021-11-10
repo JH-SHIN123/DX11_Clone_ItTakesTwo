@@ -11,60 +11,32 @@
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
 
-HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
-{
-	CGameInstance* pInstance = CGameInstance::GetInstance();
-	NULL_CHECK_RETURN(pInstance, E_FAIL);
-
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom")
-		, CVIBuffer_PointInstance_Custom::Create(pDevice, pDeviceContext, 5000, TEXT("../Bin/ShaderFiles/Shader_PointCustom.hlsl"), "DefaultTechnique")), E_FAIL);
-
-#pragma region Texture
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Fire_Loop_01"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Fire_Loop_01.png"))), E_FAIL);
-
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Clouds_01"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Clouds_01.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Clouds_01_xbox"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Clouds_01_xbox.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Cloud_Texture_1k"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Cloud_Texture_1k.png"))), E_FAIL);
-
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_01"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_01.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_02"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_02.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_03"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_03.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_04"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_04.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_05"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_05.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_06"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_06.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_07"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_07.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_08"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_08.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise_01"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Noise_01.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise_02"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Noise_02.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise_03"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Noise_03.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_TillingClouds_04"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/TillingClouds_04.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_TillingClouds_05"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/TillingClouds_05.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_TillingClouds_06"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/TillingClouds_06.png"))), E_FAIL);
-
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ribbon_noise_02"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/ribbon_noise_02.png"))), E_FAIL);
-
-
-#pragma endregion
-
-
-#pragma region Model
-	//_matrix	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-
-	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Lightning")
-	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/Lightning/", "Lightning.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
-	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RespawnTunnel")
-	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/RespawnTunnel/", "RespawnTunnel.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
-	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RespawnTunnel_Portal")
-	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/RespawnTunnel/", "RespawnTunnel_Portal.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
-	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Wormhole")
-	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/Wormhole/", "Wormhole.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
-
-#pragma  endregion
-	return S_OK;
-}
 
 CEffect_Generator::CEffect_Generator()
 {
+	m_pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(m_pGameInstance);
+}
+
+HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _bool IsEnvironment)
+{
+	if (Effect_Value::Effect_Value_End <= eEffect)
+		return E_FAIL;
+	
+	EFFECT_DESC_CLONE Clone_Data;
+
+	switch (eEffect)
+	{
+	case Client::Effect_Value::Player_Smoke:
+		Clone_Data.vDir = {};
+
+
+		break;
+	default:
+		break;
+	}
+
+	return S_OK;
 }
 
 HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -208,6 +180,7 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 
 
 			Create_Prototype(Data->iLevelIndex, Data->EffectName, pDevice, pDeviceContext, Data);
+				//Safe_Delete(Data);
 		}
 
 		fin.close();
@@ -234,9 +207,70 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_RespawnTunnel_Smoke"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, pPrototypeName, CRespawnTunnel_Smoke::Create(pDevice, pDeviceContext, pData));
 
-	else if(0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, pPrototypeName, CFireDoor::Create(pDevice, pDeviceContext, pData));
 
+	else
+	{
+		_tchar szWarning[MAX_PATH] = L"";
+		lstrcat(szWarning, pPrototypeName);
+		MessageBox(g_hWnd, szWarning, L"Load Error", MB_OK);
+		Safe_Delete(pData);
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+{
+	CGameInstance* pInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pInstance, E_FAIL);
+
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom")
+		, CVIBuffer_PointInstance_Custom::Create(pDevice, pDeviceContext, 5000, TEXT("../Bin/ShaderFiles/Shader_PointCustom.hlsl"), "DefaultTechnique")), E_FAIL);
+
+#pragma region Texture
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Fire_Loop_01"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Fire_Loop_01.png"))), E_FAIL);
+
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Clouds_01"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Clouds_01.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Clouds_01_xbox"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Clouds_01_xbox.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Cloud_Texture_1k"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Cloud_Texture_1k.png"))), E_FAIL);
+
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_01"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_01.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_02"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_02.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_03"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_03.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_04"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_04.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_05"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_05.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_06"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_06.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_07"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_07.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_08"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_08.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise_01"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Noise_01.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise_02"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Noise_02.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise_03"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Noise_03.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_TillingClouds_04"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/TillingClouds_04.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_TillingClouds_05"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/TillingClouds_05.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_TillingClouds_06"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/TillingClouds_06.png"))), E_FAIL);
+
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ribbon_noise_02"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/ribbon_noise_02.png"))), E_FAIL);
+
+
+#pragma endregion
+
+
+#pragma region Model
+	//_matrix	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+
+	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Lightning")
+	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/Lightning/", "Lightning.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
+	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RespawnTunnel")
+	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/RespawnTunnel/", "RespawnTunnel.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
+	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RespawnTunnel_Portal")
+	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/RespawnTunnel/", "RespawnTunnel_Portal.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
+	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Wormhole")
+	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/Wormhole/", "Wormhole.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
+
+#pragma  endregion
 	return S_OK;
 }
 
@@ -256,4 +290,5 @@ _fmatrix CEffect_Generator::Compute_Pivot(_vector vScale, _vector vRotate)
 
 void CEffect_Generator::Free()
 {
+	Safe_Release(m_pGameInstance);
 }

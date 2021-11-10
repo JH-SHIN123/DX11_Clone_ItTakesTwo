@@ -6,16 +6,24 @@
 #include "Base.h"
 #include "GameEffect.h"
 
+BEGIN(Engine)
+class CGameInstance;
+END
+
+
 BEGIN(Client)
 
 enum class Effect_Value
 {
-
+	Player_Smoke, Effect_Value_End
 };
 
 class CEffect_Generator final : public CBase
 {
 	DECLARE_SINGLETON(CEffect_Generator)
+
+public:
+	HRESULT Add_Effect(Effect_Value eEffect, _bool IsEnvironment = false); // 맵과 같이 배치되는 상호작용 없는 환경 이펙트 == true
 
 public:
 	HRESULT Load_EffectData(const _tchar* pFilePath, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -24,6 +32,9 @@ public:
 public:
 	CEffect_Generator();
 	virtual ~CEffect_Generator() = default;
+		
+private:
+	CGameInstance* m_pGameInstance = nullptr;
 
 private:
 	HRESULT	Create_Prototype(_uint iLevelIndex, const _tchar* pPrototypeName, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, EFFECT_DESC_PROTO* pData);
