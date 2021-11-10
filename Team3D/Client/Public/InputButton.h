@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "Ortho_UIObject.h"
+#include "UIObject.h"
 
 BEGIN(Engine)
 class CVIBuffer_Rect;
@@ -9,11 +9,11 @@ END
 
 BEGIN(Client)
 
-class CInputButton final : public COrtho_UIObject
+class CInputButton final : public CUIObject
  {
 private:
 	explicit CInputButton(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CInputButton(const COrtho_UIObject& rhs);
+	explicit CInputButton(const CUIObject& rhs);
 	virtual ~CInputButton() = default;
 
 public:

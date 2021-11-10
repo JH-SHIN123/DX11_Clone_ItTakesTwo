@@ -18,7 +18,7 @@ CRenderer::CRenderer(const CRenderer & rhs)
 }
 
 HRESULT CRenderer::NativeConstruct_Prototype()
-{
+{ 
 	CComponent::NativeConstruct_Prototype();
 
 	D3D11_VIEWPORT	ViewportDesc = CGraphic_Device::GetInstance()->Get_ViewportInfo(CGraphic_Device::VP_FULL);
@@ -180,7 +180,7 @@ HRESULT CRenderer::Render_Blend()
 void CRenderer::Sort_GameObjects(RENDER_OBJECTS & GameObjects)
 {
 	GameObjects.sort([](CGameObject* pFirst, CGameObject* pSecond) { return pFirst->Get_DistanceFromCamera() > pSecond->Get_DistanceFromCamera(); });
-}
+} 
 
 CRenderer * CRenderer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

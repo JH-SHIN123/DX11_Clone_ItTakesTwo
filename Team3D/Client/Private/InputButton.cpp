@@ -4,12 +4,12 @@
 #include "GameInstance.h"
 
 CInputButton::CInputButton(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
-	: COrtho_UIObject(pDevice, pDeviceContext)
+	: CUIObject(pDevice, pDeviceContext)
 {
 }
 
-CInputButton::CInputButton(const COrtho_UIObject & rhs)
-	: COrtho_UIObject(rhs)
+CInputButton::CInputButton(const CUIObject & rhs)
+	: CUIObject(rhs)
 {
 }
 
@@ -28,7 +28,7 @@ HRESULT CInputButton::NativeConstruct_Prototype(void* pArg)
 
 HRESULT CInputButton::NativeConstruct(void * pArg)
 {
-	COrtho_UIObject::NativeConstruct(pArg);
+	CUIObject::NativeConstruct(pArg);
 
 	if (FAILED(Ready_Component()))
 		return E_FAIL;
@@ -44,21 +44,21 @@ _int CInputButton::Tick(_double TimeDelta)
 	if (true == m_IsDead)
 		return EVENT_DEAD;
 
-	COrtho_UIObject::Tick(TimeDelta);
+	CUIObject::Tick(TimeDelta);
 
 	return _int();
 }
 
 _int CInputButton::Late_Tick(_double TimeDelta)
 {
-	COrtho_UIObject::Late_Tick(TimeDelta);
+	CUIObject::Late_Tick(TimeDelta);
 
 	return _int();
 }
 
 HRESULT CInputButton::Render()
 {
-	COrtho_UIObject::Render();
+	CUIObject::Render();
 
 	return S_OK;
 }
@@ -122,5 +122,5 @@ void CInputButton::Free()
 {
 	Safe_Release(m_pVIBuffer_RectCom);
 
-	COrtho_UIObject::Free();
+	CUIObject::Free();
 }

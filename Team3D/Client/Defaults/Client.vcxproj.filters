@@ -144,9 +144,6 @@
     <ClInclude Include="..\Public\SubCamera.h">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Ortho_UIObject.h">
-      <Filter>02.GameObject\05.UI\00.Main</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UI_Generator.h">
       <Filter>02.GameObject\05.UI\99.Generator</Filter>
     </ClInclude>
@@ -155,6 +152,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\InputButton.h">
       <Filter>02.GameObject\05.UI\01.InputButton\01.Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIObject.h">
+      <Filter>02.GameObject\05.UI\00.Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -188,9 +188,6 @@
     <ClCompile Include="..\Private\SubCamera.cpp">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Ortho_UIObject.cpp">
-      <Filter>02.GameObject\05.UI\00.Main</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UI_Generator.cpp">
       <Filter>02.GameObject\05.UI\99.Generator</Filter>
     </ClCompile>
@@ -199,6 +196,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\InputButton.cpp">
       <Filter>02.GameObject\05.UI\01.InputButton\01.Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIObject.cpp">
+      <Filter>02.GameObject\05.UI\00.Main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

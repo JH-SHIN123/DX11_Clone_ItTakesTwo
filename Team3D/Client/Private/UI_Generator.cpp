@@ -36,13 +36,16 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath)
 		return E_FAIL;
 	}
 
-	DWORD dwByte = 0;
+	if (FAILED(Add_Prototype_Texture()))
+		return E_FAIL;
 
+	DWORD dwByte = 0;
+	
 	while (true)
 	{
-		COrtho_UIObject::UI_DESC* psDataElement = new COrtho_UIObject::UI_DESC;
+		CUIObject::UI_DESC* psDataElement = new CUIObject::UI_DESC;
 
-		ReadFile(hFile, psDataElement, sizeof(COrtho_UIObject::UI_DESC), &dwByte, nullptr);
+		ReadFile(hFile, psDataElement, sizeof(CUIObject::UI_DESC), &dwByte, nullptr);
 
 		if (0 == dwByte)
 			break;
@@ -66,7 +69,7 @@ HRESULT CUI_Generator::Generator_UI(UI::TRIGGER eTrigger)
 	return S_OK;
 }
 
-HRESULT CUI_Generator::Add_Prototype_Interactive_UI(COrtho_UIObject::UI_DESC* UIDesc)
+HRESULT CUI_Generator::Add_Prototype_Interactive_UI(CUIObject::UI_DESC* UIDesc)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
@@ -88,8 +91,19 @@ HRESULT CUI_Generator::Add_Prototype_Interactive_UI(COrtho_UIObject::UI_DESC* UI
 }
 
 
-HRESULT CUI_Generator::Add_Prototype_Fixed_UI(COrtho_UIObject::UI_DESC UIDesc)
+HRESULT CUI_Generator::Add_Prototype_Fixed_UI(CUIObject::UI_DESC UIDesc)
 {
+	return S_OK;
+}
+
+HRESULT CUI_Generator::Add_Prototype_Texture()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("InputButton_Frame"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/InputButton_Frame%d.png"), 5)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("InputButton"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/InputButton%d.png"), 4)), E_FAIL);
+
 	return S_OK;
 }
 

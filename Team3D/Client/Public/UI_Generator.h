@@ -2,7 +2,7 @@
 
 #include "Client_Defines.h"
 #include "Base.h"
-#include "Ortho_UIObject.h"
+#include "UIObject.h"
 
 class CUI_Generator final : public CBase
 {
@@ -20,11 +20,12 @@ public:
 	HRESULT Generator_UI(UI::TRIGGER eTrigger);
 
 private:
-	HRESULT Add_Prototype_Interactive_UI(COrtho_UIObject::UI_DESC* UIDesc);
-	HRESULT Add_Prototype_Fixed_UI(COrtho_UIObject::UI_DESC UIDesc);
+	HRESULT Add_Prototype_Interactive_UI(CUIObject::UI_DESC* UIDesc);
+	HRESULT Add_Prototype_Fixed_UI(CUIObject::UI_DESC UIDesc);
+	HRESULT Add_Prototype_Texture();
 
 private:
-	vector<COrtho_UIObject::UI_DESC*> m_vecPSData;
+	vector<CUIObject::UI_DESC*> m_vecPSData;
 
 
 private:
