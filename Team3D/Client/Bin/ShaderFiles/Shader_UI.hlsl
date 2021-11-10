@@ -4,6 +4,9 @@
 
 texture2D	g_DiffuseTexture;
 texture2D	g_SubTexture;
+matrix	g_UIWorldMatrix;
+matrix	g_UIViewMatrix;
+matrix	g_UIProjMatrix;
 
 sampler	DiffuseSampler = sampler_state
 {
@@ -28,9 +31,14 @@ struct VS_OUT
 
 VS_OUT	VS_MAIN(VS_IN In)
 {
-	VS_OUT	Out = (VS_OUT)0;
+	VS_OUT			Out = (VS_OUT)0;
 
-	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	matrix		matWV, matWVP;
+
+	matWV = mul(g_UIWorldMatrix, g_UIViewMatrix);
+	matWVP = mul(matWV, g_UIProjMatrix);
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
 	Out.vTexUV = In.vTexUV;
 
 	return Out;
@@ -115,7 +123,7 @@ technique11 DefaultTechnique
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader	= compile vs_5_0 VS_MAIN();
-		GeometryShader	= compile gs_5_0 GS_MAIN();
+		GeometryShader  = NULL;
 		PixelShader		= compile ps_5_0 PS_MAIN();
 	}
 };

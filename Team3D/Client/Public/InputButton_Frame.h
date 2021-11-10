@@ -9,12 +9,12 @@ END
 
 BEGIN(Client)
 
-class CInputButton final : public COrtho_UIObject
- {
+class CInputButton_Frame final : public COrtho_UIObject
+{
 private:
-	explicit CInputButton(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CInputButton(const COrtho_UIObject& rhs);
-	virtual ~CInputButton() = default;
+	explicit CInputButton_Frame(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CInputButton_Frame(const COrtho_UIObject& rhs);
+	virtual ~CInputButton_Frame() = default;
 
 public:
 	virtual HRESULT NativeConstruct_Prototype() override;
@@ -24,6 +24,7 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
+
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 
@@ -32,7 +33,7 @@ private:
 	HRESULT Set_ConstantTable();
 
 public:
-	static CInputButton* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CInputButton_Frame* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject * Clone_GameObject(void * pArg) override;
 	virtual void Free() override;
 

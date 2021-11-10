@@ -95,16 +95,6 @@ HRESULT CVIBuffer::Set_DefaultVariables_Perspective(_fmatrix WorldMatrix)
 	Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBVIEW)), sizeof(_matrix));
 	Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBPROJ)), sizeof(_matrix));
 
-	_float	fMainCamFar			= pPipeline->Get_MainCamFar();
-	_float	fSubCamFar			= pPipeline->Get_SubCamFar();
-	_vector vMainCamPosition	= pPipeline->Get_MainCamPosition();
-	_vector vSubCamPosition		= pPipeline->Get_SubCamPosition();
-
-	Set_Variable("g_fMainCamFar", &fMainCamFar, sizeof(_float));
-	Set_Variable("g_fSubCamFar", &fSubCamFar, sizeof(_float));
-	Set_Variable("g_vMainCamPosition", &vMainCamPosition, sizeof(_vector));
-	Set_Variable("g_vSubCamPosition", &vSubCamPosition, sizeof(_vector));
-
 	return S_OK;
 }
 

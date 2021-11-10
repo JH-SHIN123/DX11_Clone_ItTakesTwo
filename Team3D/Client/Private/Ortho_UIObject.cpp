@@ -8,7 +8,8 @@ COrtho_UIObject::COrtho_UIObject(ID3D11Device * pDevice, ID3D11DeviceContext * p
 }
 
 COrtho_UIObject::COrtho_UIObject(const COrtho_UIObject & rhs)
-	: CGameObject(rhs)
+	: CGameObject(rhs),
+	m_UIDesc(rhs.m_UIDesc)
 {
 }
 
@@ -23,35 +24,37 @@ HRESULT COrtho_UIObject::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
+	if (FAILED(Ready_Component()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 _int COrtho_UIObject::Tick(_double TimeDelta)
 {
+	
+	CGameObject::Tick(TimeDelta);
+
 	return NO_EVENT;
 }
 
 _int COrtho_UIObject::Late_Tick(_double TimeDelta)
 {
-	NULL_CHECK_RETURN(m_pRendererCom, EVENT_ERROR);
+	CGameObject::Late_Tick(TimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+	return NO_EVENT;
 }
 
-HRESULT COrtho_UIObject::Render(_uint iDiffTextureIndex, _uint iSubTextureIndex)
+HRESULT COrtho_UIObject::Render()
 {
-	NULL_CHECK_RETURN(m_pVIBufferCom, E_FAIL);
-	NULL_CHECK_RETURN(m_pTextureCom, E_FAIL);
-
-	m_pVIBufferCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pVIBufferCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(iDiffTextureIndex));
-
-	if (1 <= m_UIDesc.iSubTextureNum)
-		m_pVIBufferCom->Set_ShaderResourceView("g_SubTexture", m_pTextureCom->Get_ShaderResourceView(iSubTextureIndex));
-
-	m_pVIBufferCom->Render(0);
+	CGameObject::Render();
 
 	return S_OK;
+}
+
+void COrtho_UIObject::Set_Dead()
+{
+	m_IsDead = true;
 }
 
 HRESULT COrtho_UIObject::Ready_Component()
@@ -59,7 +62,6 @@ HRESULT COrtho_UIObject::Ready_Component()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(m_UIDesc.iTextureLevelIndex, m_UIDesc.szTextureTag, TEXT("Com_Texture"), (CComponent**)&m_pTextureCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Terrain"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom), E_FAIL);
 
 	if (1 <= m_UIDesc.iSubTextureNum)
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(m_UIDesc.iTextureLevelIndex, m_UIDesc.szSubTextureTag, TEXT("Com_SubTexture"), (CComponent**)&m_pSubTexturCom), E_FAIL);
@@ -67,38 +69,12 @@ HRESULT COrtho_UIObject::Ready_Component()
 	return S_OK;
 }
 
-COrtho_UIObject * COrtho_UIObject::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
-{
-	COrtho_UIObject* pInstance = new COrtho_UIObject(pDevice, pDeviceContext);
-
-	if (FAILED(pInstance->NativeConstruct_Prototype()))
-	{
-		MSG_BOX("Failed to Create Instance - COrtho_UIObject");
-		Safe_Release(pInstance);
-	}
-
-	return pInstance;
-}
-
-CGameObject * COrtho_UIObject::Clone_GameObject(void * pArg)
-{
-	COrtho_UIObject* pInstance = new COrtho_UIObject(*this);
-
-	if (FAILED(pInstance->NativeConstruct(pArg)))
-	{
-		MSG_BOX("Failed to Clone Instance - COrtho_UIObject");
-		Safe_Release(pInstance);
-	}
-
-	return pInstance;
-}
 
 void COrtho_UIObject::Free()
 {
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pVIBufferCom);
 
 	if (1 <= m_UIDesc.iSubTextureNum)
 		Safe_Release(m_pSubTexturCom);

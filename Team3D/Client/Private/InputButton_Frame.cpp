@@ -1,24 +1,24 @@
 #include "stdafx.h"
-#include "..\Public\InputButton.h"
+#include "..\Public\InputButton_Frame.h"
 
 #include "GameInstance.h"
 
-CInputButton::CInputButton(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
+CInputButton_Frame::CInputButton_Frame(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: COrtho_UIObject(pDevice, pDeviceContext)
 {
 }
 
-CInputButton::CInputButton(const COrtho_UIObject & rhs)
+CInputButton_Frame::CInputButton_Frame(const COrtho_UIObject & rhs)
 	: COrtho_UIObject(rhs)
 {
 }
 
-HRESULT CInputButton::NativeConstruct_Prototype()
+HRESULT CInputButton_Frame::NativeConstruct_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CInputButton::NativeConstruct_Prototype(void* pArg)
+HRESULT CInputButton_Frame::NativeConstruct_Prototype(void* pArg)
 {
 	if (nullptr != pArg)
 		memcpy(&m_UIDesc, pArg, sizeof(UI_DESC));
@@ -26,7 +26,7 @@ HRESULT CInputButton::NativeConstruct_Prototype(void* pArg)
 	return S_OK;
 }
 
-HRESULT CInputButton::NativeConstruct(void * pArg)
+HRESULT CInputButton_Frame::NativeConstruct(void * pArg)
 {
 	COrtho_UIObject::NativeConstruct(pArg);
 
@@ -39,7 +39,7 @@ HRESULT CInputButton::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CInputButton::Tick(_double TimeDelta)
+_int CInputButton_Frame::Tick(_double TimeDelta)
 {
 	if (true == m_IsDead)
 		return EVENT_DEAD;
@@ -49,21 +49,26 @@ _int CInputButton::Tick(_double TimeDelta)
 	return _int();
 }
 
-_int CInputButton::Late_Tick(_double TimeDelta)
+_int CInputButton_Frame::Late_Tick(_double TimeDelta)
 {
 	COrtho_UIObject::Late_Tick(TimeDelta);
 
-	return _int();
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_UI, this);
 }
 
-HRESULT CInputButton::Render()
+HRESULT CInputButton_Frame::Render()
 {
 	COrtho_UIObject::Render();
+
+	if (FAILED(Set_ConstantTable()))
+		return E_FAIL;
+
+	m_pVIBuffer_RectCom->Render(0);
 
 	return S_OK;
 }
 
-HRESULT CInputButton::Set_ConstantTable()
+HRESULT CInputButton_Frame::Set_ConstantTable()
 {
 	if (nullptr == m_pVIBuffer_RectCom || nullptr == m_pTextureCom)
 		return E_FAIL;
@@ -85,40 +90,40 @@ HRESULT CInputButton::Set_ConstantTable()
 	return S_OK;
 }
 
-HRESULT CInputButton::Ready_Component()
+HRESULT CInputButton_Frame::Ready_Component()
 {
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
 
 	return S_OK;
 }
 
-CInputButton * CInputButton::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CInputButton_Frame * CInputButton_Frame::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CInputButton* pInstance = new CInputButton(pDevice, pDeviceContext);
+	CInputButton_Frame* pInstance = new CInputButton_Frame(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create InputButton Prototype, Error to CInputButton::Create");
+		MSG_BOX("Failed to Create InputButton_Frame Prototype, Error to CInputButton_Frame::Create");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CInputButton::Clone_GameObject(void * pArg)
+CGameObject * CInputButton_Frame::Clone_GameObject(void * pArg)
 {
-	CInputButton* pClone = new CInputButton(*this);
+	CInputButton_Frame* pClone = new CInputButton_Frame(*this);
 
 	if (FAILED(pClone->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone CInputButton, Error to CInputButton::Clone_GameObject");
+		MSG_BOX("Failed to Clone CInputButton_Frame, Error to CInputButton_Frame::Clone_GameObject");
 		Safe_Release(pClone);
 	}
 
 	return pClone;
 }
 
-void CInputButton::Free()
+void CInputButton_Frame::Free()
 {
 	Safe_Release(m_pVIBuffer_RectCom);
 

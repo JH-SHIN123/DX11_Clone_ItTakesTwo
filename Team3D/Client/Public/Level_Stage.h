@@ -19,6 +19,7 @@ public:
 private:
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Terrain(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Terrain1(const _tchar * pLayerTag);
 	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);
 
 public:

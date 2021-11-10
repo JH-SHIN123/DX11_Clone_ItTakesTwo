@@ -2,6 +2,7 @@
 #include "..\public\MainApp.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
+#include "UI_Generator.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -18,6 +19,7 @@ HRESULT CMainApp::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Timer(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Prototype_ForStatic(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
+	FAILED_CHECK_RETURN(CUI_Generator::GetInstance()->Set_Device(m_pDevice, m_pDeviceContext), E_FAIL);
 
 	return S_OK;
 }
@@ -95,6 +97,9 @@ HRESULT CMainApp::Ready_Prototype_ForStatic()
 	/* VI_Buffer_Rect */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Default.hlsl"), "DefaultTechnique")), E_FAIL);
 
+	/* UI Å×½ºÆ® */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), CVIBuffer_Rect::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_UI.hlsl"), "DefaultTechnique")), E_FAIL);
+
 	/* For.GameObject */
 
 	return S_OK;
@@ -124,6 +129,8 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
+	CUI_Generator::GetInstance()->DestroyInstance();
+
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

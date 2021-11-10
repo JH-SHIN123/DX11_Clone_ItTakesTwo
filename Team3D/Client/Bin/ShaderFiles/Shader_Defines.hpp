@@ -15,6 +15,7 @@ cbuffer Camera
 	float4	g_vSubCamPosition;
 }
 
+
 /* RasterizerState */
 RasterizerState Rasterizer_Solid
 {

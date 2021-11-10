@@ -85,6 +85,18 @@
     <Filter Include="96.Loader">
       <UniqueIdentifier>{6997d3e5-6526-438c-b627-0590bee437ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.UI\99.Generator">
+      <UniqueIdentifier>{9b8abf26-fdaf-4fcf-bf18-80ba3207b65a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\01.InputButton">
+      <UniqueIdentifier>{6f0eddad-ff1a-4aed-80fd-a95caa9dc1de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\01.InputButton\00.Frame">
+      <UniqueIdentifier>{02270630-c4a2-406e-9adc-ded33768f5cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\01.InputButton\01.Button">
+      <UniqueIdentifier>{b0976b55-522d-4d5f-960c-db1c1b6fa194}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -135,8 +147,14 @@
     <ClInclude Include="..\Public\Ortho_UIObject.h">
       <Filter>02.GameObject\05.UI\00.Main</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Loader.h">
-      <Filter>96.Loader</Filter>
+    <ClInclude Include="..\Public\UI_Generator.h">
+      <Filter>02.GameObject\05.UI\99.Generator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\InputButton_Frame.h">
+      <Filter>02.GameObject\05.UI\01.InputButton\00.Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InputButton.h">
+      <Filter>02.GameObject\05.UI\01.InputButton\01.Button</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -173,8 +191,14 @@
     <ClCompile Include="..\Private\Ortho_UIObject.cpp">
       <Filter>02.GameObject\05.UI\00.Main</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Loader.cpp">
-      <Filter>96.Loader</Filter>
+    <ClCompile Include="..\Private\UI_Generator.cpp">
+      <Filter>02.GameObject\05.UI\99.Generator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\InputButton_Frame.cpp">
+      <Filter>02.GameObject\05.UI\01.InputButton\00.Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InputButton.cpp">
+      <Filter>02.GameObject\05.UI\01.InputButton\01.Button</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

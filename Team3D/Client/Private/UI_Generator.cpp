@@ -2,12 +2,27 @@
 #include "..\Public\UI_Generator.h"
 
 #include "GameInstance.h"
-#include "Ortho_UIObject.h"
+#include "InputButton_Frame.h"
+#include "InputButton.h"
 
 IMPLEMENT_SINGLETON(CUI_Generator)
 
 CUI_Generator::CUI_Generator()
 {
+}
+
+HRESULT CUI_Generator::Set_Device(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
+{
+	NULL_CHECK_RETURN(pDevice, E_FAIL);
+	NULL_CHECK_RETURN(pDevice_Context, E_FAIL);
+
+	m_pDevice = pDevice;
+	m_pDeviceContext = pDevice_Context;
+
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pDeviceContext);
+
+	return S_OK;
 }
 
 HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath)
@@ -21,42 +36,24 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath)
 		return E_FAIL;
 	}
 
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
-
-	vector<COrtho_UIObject::UI_DESC> vecPSData;
-
 	DWORD dwByte = 0;
-	COrtho_UIObject::UI_DESC psDataElement;
 
 	while (true)
 	{
-		ReadFile(hFile, &psDataElement, sizeof(COrtho_UIObject::UI_DESC), &dwByte, nullptr);
+		COrtho_UIObject::UI_DESC* psDataElement = new COrtho_UIObject::UI_DESC;
+
+		ReadFile(hFile, psDataElement, sizeof(COrtho_UIObject::UI_DESC), &dwByte, nullptr);
 
 		if (0 == dwByte)
 			break;
 
-		vecPSData.emplace_back(psDataElement);
+		m_vecPSData.emplace_back(psDataElement);
 	}
 
-	for (auto PSData : vecPSData)
+	for (auto PSData : m_vecPSData)
 	{
-		COrtho_UIObject::UI_DESC		UIDesc;
-		UIDesc.iLevelIndex = PSData.iLevelIndex;
-		UIDesc.iRenderGroup = PSData.iRenderGroup;
-		UIDesc.iTextureLevelIndex = PSData.iTextureLevelIndex;
-		UIDesc.iTextureRenderIndex = PSData.iTextureRenderIndex;
-		UIDesc.iSubTextureNum = PSData.iSubTextureNum;
-		lstrcpyW(UIDesc.szSubTextureTag, PSData.szSubTextureTag);
-		lstrcpyW(UIDesc.szTextureTag, PSData.szTextureTag);
-		lstrcpyW(UIDesc.szUITag, PSData.szUITag);
-		UIDesc.vPos = { PSData.vPos.x ,  PSData.vPos.y };
-		UIDesc.vScale = { PSData.vScale.x , PSData.vScale.y };
-
-		if (!lstrcmp(UIDesc.szUITag, L"InputButton_Frame"))
-		{
-
-		}
+		if (FAILED(Add_Prototype_Interactive_UI(PSData)))
+			return E_FAIL;
 	}
 
 	CloseHandle(hFile);
@@ -69,7 +66,41 @@ HRESULT CUI_Generator::Generator_UI(UI::TRIGGER eTrigger)
 	return S_OK;
 }
 
+HRESULT CUI_Generator::Add_Prototype_Interactive_UI(COrtho_UIObject::UI_DESC* UIDesc)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	if (!lstrcmp(UIDesc->szUITag, L"InputButton_Frame_Circle"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"Rect"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Dot"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+
+	return S_OK;
+}
+
+
+HRESULT CUI_Generator::Add_Prototype_Fixed_UI(COrtho_UIObject::UI_DESC UIDesc)
+{
+	return S_OK;
+}
+
 
 void CUI_Generator::Free()
 {
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pDeviceContext);
+
+	for (auto PSData : m_vecPSData)
+		Safe_Delete(PSData);
+
+	m_vecPSData.clear();
 }

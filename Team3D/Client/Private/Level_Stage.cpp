@@ -2,6 +2,7 @@
 #include "..\Public\Level_Stage.h"
 #include "GameInstance.h"
 #include "Camera.h"
+#include "UI_Generator.h"
 
 CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -11,6 +12,7 @@ CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice
 HRESULT CLevel_Stage::NativeConstruct()
 {
 	CLevel::NativeConstruct();
+
 
 	FAILED_CHECK_RETURN(Ready_Layer_Camera(TEXT("Layer_Camera")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Terrain(TEXT("Layer_Terrain")), E_FAIL);
