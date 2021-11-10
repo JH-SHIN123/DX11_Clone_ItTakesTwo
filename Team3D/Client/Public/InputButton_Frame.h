@@ -24,8 +24,6 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
-	
-
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 

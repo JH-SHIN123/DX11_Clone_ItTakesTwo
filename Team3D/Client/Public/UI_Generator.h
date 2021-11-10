@@ -17,7 +17,7 @@ public:
 
 public:
 	HRESULT Load_Data(const _tchar* pFilePath);
-	HRESULT Generator_UI(UI::TRIGGER eTrigger);
+	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
 
 public:
 	void Set_TriggerOn();
@@ -32,7 +32,7 @@ private:
 
 private:
 	vector<CUIObject::UI_DESC*> m_vecPSData;
-	vector<CGameObject*>*		m_vecUIOBjects[UI::TRIGGER_END];
+	vector<CUIObject*>		m_vecUIOBjects[Player::PLAYER_END][UI::TRIGGER_END];
 
 
 private:

@@ -67,7 +67,7 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath)
 	return S_OK;
 }
 
-HRESULT CUI_Generator::Generator_UI(UI::TRIGGER eTrigger)
+HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 {
 	if (false == m_IsTrigger)
 		return S_OK;
@@ -75,17 +75,27 @@ HRESULT CUI_Generator::Generator_UI(UI::TRIGGER eTrigger)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
 
+	CGameObject* pGameObject = nullptr;
+	CUIObject* pUIObject = nullptr;
+
 	switch (eTrigger)
 	{
 	case UI::InputButton_Dot:
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_UI"), Level::LEVEL_STAGE, TEXT("InputButton_Dot")), E_FAIL);
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_UI"), Level::LEVEL_STAGE, TEXT("InputButton_Frame_Circle")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_UI"), Level::LEVEL_STAGE, TEXT("InputButton_Dot"), nullptr, &pGameObject), E_FAIL);
+		pUIObject = static_cast<CUIObject*>(pGameObject);
+		m_vecUIOBjects[ePlayer][eTrigger].push_back(pUIObject);
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_UI"), Level::LEVEL_STAGE, TEXT("InputButton_Frame_Circle"), nullptr, &pGameObject), E_FAIL);
+		pUIObject = static_cast<CUIObject*>(pGameObject);
+		m_vecUIOBjects[ePlayer][eTrigger].push_back(pUIObject);
 		break;
 	case UI::InputButton_F:
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_UI"), Level::LEVEL_STAGE, TEXT("InputButton_Dot")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_UI"), Level::LEVEL_STAGE, TEXT("InputButton_Dot"), nullptr, &pGameObject), E_FAIL);
+		pUIObject = static_cast<CUIObject*>(pGameObject);
+		m_vecUIOBjects[ePlayer][eTrigger].push_back(pUIObject);
+		break;
+	case UI::TRIGGER_END:
 		break;
 	default:
-		MSG_BOX("UI Trigger Out of Ragne, Error to CUI_Generator::Generator_UI");
 		break;
 	}
 
@@ -145,6 +155,8 @@ void CUI_Generator::Free()
 
 	for (auto PSData : m_vecPSData)
 		Safe_Delete(PSData);
+
+	
 
 	m_vecPSData.clear();
 }

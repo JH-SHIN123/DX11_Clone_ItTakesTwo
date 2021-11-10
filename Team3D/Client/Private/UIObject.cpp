@@ -29,8 +29,6 @@ HRESULT CUIObject::NativeConstruct(void * pArg)
 
 	m_fSortOrder = (_float)m_UIDesc.iRenderGroup * -1.f;
 
-	
-
 	return S_OK;
 }
 
@@ -64,6 +62,11 @@ _float CUIObject::Get_DistanceFromCamera()
 void CUIObject::Set_Dead()
 {
 	m_IsDead = true;
+}
+
+void CUIObject::Set_PlayerID(Player::ID ePlayerID)
+{
+	m_ePlayerID = ePlayerID;
 }
 
 HRESULT CUIObject::Ready_Component()

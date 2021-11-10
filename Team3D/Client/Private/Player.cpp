@@ -48,7 +48,7 @@ _int CPlayer::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	CUI_Generator::GetInstance()->Generator_UI(UI::InputButton_Dot);
+	CUI_Generator::GetInstance()->Generator_UI(Player::Player_Cody ,UI::InputButton_Dot);
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
 }

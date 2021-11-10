@@ -51,11 +51,13 @@ public:
 
 public:
 	void Set_Dead();
+	void Set_PlayerID(Player::ID ePlayerID);
 
 protected:
 	UI_DESC						m_UIDesc;
 	_bool						m_IsDead = false;
 	_float						m_fSortOrder = 0.f;
+	Player::ID					m_ePlayerID = Player::PLAYER_END;
 
 protected:
 	/* For.Component */

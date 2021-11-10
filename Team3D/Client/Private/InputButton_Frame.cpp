@@ -105,7 +105,7 @@ HRESULT CInputButton_Frame::Set_UIVariables_Perspective()
 	// 직교 할 때 0.f / 0.f 연산 때문에 XMScalarNearEqul 오류 나버림 그거 임시방편 예외처리 입니다.
 	if (0.1f <= Viewport.Width)
 		ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
-
+	                               
 	Viewport = m_pGameInstance->Get_ViewportInfo(2);
 
 	if (0.1f <= Viewport.Width)
