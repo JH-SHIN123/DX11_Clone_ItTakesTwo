@@ -20,7 +20,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 /* PhysX */
-#include "PxPhysicsAPI.h"
+//#include "PxPhysicsAPI.h"
 /* Others */
 #include <random>
 #include <ctime>
@@ -30,7 +30,7 @@
 
 using namespace std;
 using namespace DirectX;
-using namespace physx;
+//using namespace physx;
 
 #ifndef _AFX
 #ifdef _DEBUG

@@ -76,6 +76,9 @@
     <Filter Include="01.Maps\99.Stage%28Test%29">
       <UniqueIdentifier>{112fc71b-614e-424a-b3ab-164e9e68c037}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96.DataBase">
+      <UniqueIdentifier>{9d471ce0-e768-450b-9d91-9b678d9ec778}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -123,6 +126,9 @@
     <ClInclude Include="..\Public\SubCamera.h">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\DataBase.h">
+      <Filter>96.DataBase</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -154,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\SubCamera.cpp">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DataBase.cpp">
+      <Filter>96.DataBase</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

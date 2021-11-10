@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Player.h"
 #include "GameInstance.h"
-
+#include"DataBase.h"
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -30,6 +30,8 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	m_pModelCom->Set_Animation(0, m_pTransformCom);
 	m_pModelCom->Set_NextAnimIndex(0);
 
+	CDataBase::GetInstance()->Set_PlayerPtr(this);
+
 	return S_OK;
 }
 
@@ -49,6 +51,16 @@ _int CPlayer::Tick(_double dTimeDelta)
 		m_pModelCom->Set_Animation(6, m_pTransformCom);
 	if (m_pGameInstance->Key_Pressing(DIK_6))
 		m_pModelCom->Set_Animation(7, m_pTransformCom);
+
+	if (m_pGameInstance->Key_Pressing(DIK_W))
+		m_pTransformCom->Go_Straight(dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_A))
+		m_pTransformCom->Go_Left(dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_S))
+		m_pTransformCom->Go_Backward(dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_D))
+		m_pTransformCom->Go_Right(dTimeDelta);
+
 
 	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
 
