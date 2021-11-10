@@ -28,6 +28,9 @@ HRESULT CFireDoor::NativeConstruct(void * pArg)
 	
 	m_pInstanceBuffer[0].vTextureUV = _float4(0.f, 0.f, 1.f, 1.f);
 	m_vWeight = m_pInstanceBuffer[0].vTextureUV;
+
+	m_vWeight = _float4(0.f, 0.f, 0.5f, 0.5f);
+
 	return S_OK;
 }
 
@@ -43,22 +46,22 @@ _int CFireDoor::Tick(_double TimeDelta)
 	m_vWeight.w += Time;
 
 	//m_pInstanceBuffer[0].vTextureUV.x = 0.f;
-	//m_pInstanceBuffer[0].vTextureUV.y -= Time;
+	//m_pInstanceBuffer[0].vTextureUV.y += Time;
 	//m_pInstanceBuffer[0].vTextureUV.z = 0.f;
-	//m_pInstanceBuffer[0].vTextureUV.w -= Time;
+	//m_pInstanceBuffer[0].vTextureUV.w += Time;
 
 	fT += Time;
 	if (1.f <= fT)
 	{
 		fT = 0.f;
-		m_vWeight = _float4(0.f, 0.f, 1.f, 1.f);
-		//m_pInstanceBuffer[0].vTextureUV = _float4(0.f, 0.f, 1.f, 1.f);
+		m_vWeight = _float4(0.f, 0.f, 0.5f, 0.5f);
+		m_pInstanceBuffer[0].vTextureUV = _float4(0.f, 0.f, 1.f, 1.f);
 	}
 
-	//m_pInstanceBuffer[0].vTextureUV.x = 0.f;
-	//m_pInstanceBuffer[0].vTextureUV.y = 0.f;
-	//m_pInstanceBuffer[0].vTextureUV.z = 1.f;
-	//m_pInstanceBuffer[0].vTextureUV.w = 1.f;
+	m_pInstanceBuffer[0].vTextureUV.x = 0.f;
+	m_pInstanceBuffer[0].vTextureUV.y = 0.f;
+	m_pInstanceBuffer[0].vTextureUV.z = 1.f;
+	m_pInstanceBuffer[0].vTextureUV.w = 1.f;
 
 
 
@@ -75,7 +78,7 @@ HRESULT CFireDoor::Render()
 
 	SetUp_Shader_Data();
 	//_float2 fUV = {0.f,}
-	_float4 vColorRamp = { 0.f,0.f,2.f,2.f };
+	_float4 vColorRamp = { -2.0f, -2.0f, 2.0f, 2.0f };
 	m_pPointInstanceCom->Set_Variable("g_vUV", &m_vWeight, sizeof(_float4));
 	m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vColorRamp, sizeof(_float4));
 	m_pPointInstanceCom->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(0));

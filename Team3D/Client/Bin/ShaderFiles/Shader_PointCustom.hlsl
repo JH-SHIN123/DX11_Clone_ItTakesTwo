@@ -23,8 +23,8 @@ sampler ColorSampler = sampler_state
 {
 	Filter = MIN_MAG_MIP_LINEAR;
 
-	AddressU = mirror;
-	AddressV = mirror;
+	AddressU = mirror_once;
+	AddressV = mirror_once;
 };
 
 
@@ -434,12 +434,11 @@ PS_OUT  PS_DISTORTION_COLOR(PS_IN_DIST In)
 	float4 vColor = (float4)0.f;
 	float fWeight = vFX_tex.r * 0.3f;
 
-	float4 vColorRamp = g_ColorTexture.Sample(ColorSampler, In.vColorRamp_UV);
+	float4 vColorRamp = g_ColorTexture.Sample(ColorSampler, In.vColorRamp_UV + (fWeight * 2.f));
 	vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV + fWeight);
 	vColor.rgb *= vColorRamp.rgb;
 
-
-	vColor.a = abs(vColor.a - 1.f);
+	//vColor.a = abs(vColor.a - 1.f);
 	Out.vColor = vColor;
 	return Out;
 }
