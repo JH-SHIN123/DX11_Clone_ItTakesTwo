@@ -17,8 +17,6 @@ public:
 	virtual HRESULT NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double dTimeDelta) override;
 	virtual _int	Late_Tick(_double dTimeDelta) override;
-	virtual HRESULT Set_ShaderConstant_Default() override;
-	virtual HRESULT Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix) override;
 
 public:
 	static CSubCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

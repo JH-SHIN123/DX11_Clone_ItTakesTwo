@@ -26,11 +26,15 @@ const _float CGraphic_Device::Get_ViewportAspect(_uint iViewportIndex) const
 	if (0.f >= m_vViewportInfo[iViewportIndex].w)
 		return 1.f;
 
-	_float fAspect = m_vViewportInfo[iViewportIndex].z / m_vViewportInfo[iViewportIndex].w;
+	_float fAspect = m_Viewports[iViewportIndex].Width / m_Viewports[iViewportIndex].Height;;//m_vViewportInfo[iViewportIndex].z / m_vViewportInfo[iViewportIndex].w;
+	
 
 	if (0.f >= fAspect)
 		return 1.f;
 
+
+	
+	//return fAspect;
 	return fAspect;
 }
 

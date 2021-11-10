@@ -128,6 +128,11 @@ HRESULT CModel::Set_NextAnimIndex(_uint iAnimIndex)
 	return S_OK;
 }
 
+void CModel::Set_Pivot(_fmatrix PivotMatrix)
+{
+	Apply_PivotMatrix(PivotMatrix);
+}
+
 HRESULT CModel::Set_Variable(const char * pConstantName, void * pData, _uint iByteSize)
 {
 	NULL_CHECK_RETURN(m_pEffect, E_FAIL);

@@ -2,6 +2,7 @@
 #include "..\public\MainApp.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
+#include "Effect_Generator.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -130,6 +131,8 @@ void CMainApp::Free()
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pGameInstance);
+
+	CEffect_Generator::DestroyInstance(); // 이펙트 제어기
 
 	CGameInstance::Release_Engine();
 }

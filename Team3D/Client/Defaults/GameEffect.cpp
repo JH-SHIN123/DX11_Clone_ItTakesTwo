@@ -16,14 +16,12 @@ CGameEffect::CGameEffect(const CGameEffect & rhs)
 
 HRESULT CGameEffect::NativeConstruct_Prototype(void* pArg)
 {
-	//memcpy(&m_pEffectDesc_Prototype, pArg, sizeof(EFFECT_DESC_PROTO));
-
 	m_pEffectDesc_Prototype = (EFFECT_DESC_PROTO*)pArg;
 
 	lstrcpy(m_pEffectDesc_Prototype->EffectName,			((EFFECT_DESC_PROTO*)pArg)->EffectName);
 	lstrcpy(m_pEffectDesc_Prototype->TextureName,			((EFFECT_DESC_PROTO*)pArg)->TextureName);
 	lstrcpy(m_pEffectDesc_Prototype->TextureName_Second,	((EFFECT_DESC_PROTO*)pArg)->TextureName_Second);
-	lstrcpy(m_pEffectDesc_Prototype->ModelName,			((EFFECT_DESC_PROTO*)pArg)->ModelName);
+	lstrcpy(m_pEffectDesc_Prototype->ModelName,				((EFFECT_DESC_PROTO*)pArg)->ModelName);
 
 	return S_OK;
 }
@@ -64,40 +62,6 @@ HRESULT CGameEffect::Render()
 	return S_OK;
 }
 
-HRESULT CGameEffect::Set_ShaderConstant_Default()
-{
-	if (nullptr != m_pModelCom)
-		m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-		
-	if(nullptr != m_pPointInstanceCom)
-		m_pPointInstanceCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-
-	return S_OK;
-}
-
-HRESULT CGameEffect::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
-{
-	if (nullptr != m_pModelCom)
-	{
-		m_pModelCom->Set_Variable("g_WorldMatrix",		&XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-		m_pModelCom->Set_Variable("g_MainViewMatrix",	&XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-		m_pModelCom->Set_Variable("g_MainProjMatrix",	&XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-		m_pModelCom->Set_Variable("g_SubViewMatrix",	&XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-		m_pModelCom->Set_Variable("g_SubProjMatrix",	&XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-	}
-
-	if (nullptr != m_pPointInstanceCom)
-	{
-		m_pModelCom->Set_Variable("g_WorldMatrix",		&XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-		m_pModelCom->Set_Variable("g_MainViewMatrix",	&XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-		m_pModelCom->Set_Variable("g_MainProjMatrix",	&XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-		m_pModelCom->Set_Variable("g_SubViewMatrix",	&XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-		m_pModelCom->Set_Variable("g_SubProjMatrix",	&XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-	}
-
-	return S_OK;
-}
-
 
 HRESULT CGameEffect::Copy_Prototype_Desc(void * pArg)
 {
@@ -125,12 +89,13 @@ HRESULT CGameEffect::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
 	if (true == m_IsResourceName[RESOURCE_TEXTURE])
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->TextureName, TEXT("Com_Model"), (CComponent**)&m_pTexturesCom), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->TextureName, TEXT("Com_Textrue"), (CComponent**)&m_pTexturesCom), E_FAIL);
 	if (true == m_IsResourceName[RESOURCE_TEXTURE_SECOND])
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->TextureName_Second, TEXT("Com_Model"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->TextureName_Second, TEXT("Com_Textrue_Second"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
 
 	if (true == m_IsResourceName[RESOURCE_MESH])
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_pEffectDesc_Prototype->ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+
 	if (false == m_IsResourceName[RESOURCE_MESH])
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom), E_FAIL);
 
@@ -157,6 +122,9 @@ void CGameEffect::Check_ChangeData()
 
 HRESULT CGameEffect::Ready_InstanceBuffer()
 {
+	if (nullptr == m_pPointInstanceCom)
+		return S_OK;
+
 	_int iInstanceCount = m_pEffectDesc_Prototype->iInstanceCount;
 
 	m_pInstanceBuffer			= new VTXMATRIX_CUSTOM_ST[iInstanceCount];
@@ -180,7 +148,7 @@ HRESULT CGameEffect::Ready_InstanceBuffer()
 	memcpy(m_pInstanceBuffer, m_pPointInstanceCom->Get_InstanceBuffer(), sizeof(VTXMATRIX_CUSTOM_ST) * iInstanceCount);
 
 	_double fRenderTerm = 0.f;
-	_float fUVTerm = m_pEffectDesc_Prototype->fUVTime;
+	_float fUVTerm = m_pEffectDesc_Prototype->fUVTime_U;
 	for (_int i = 0; i < iInstanceCount; ++i)
 	{
 		// Point_Buffer
@@ -265,24 +233,29 @@ _float4 CGameEffect::Check_UV(_double TimeDelta, _int iIndex)
 {
 	_float4 vUV = m_pInstanceBuffer[iIndex].vTextureUV;
 
-	if (-1.f == m_pEffectDesc_Prototype->fUVTime)
+	if (-1.f == m_pEffectDesc_Prototype->fUVTime_U)
 		return vUV;
 
 	m_pInstance_UVTime[iIndex] -= TimeDelta;
 
-	if (true == m_pEffectDesc_Prototype->IsFlowUV)
+	if (true == m_pEffectDesc_Prototype->IsTexFlow_U)
 	{
 		vUV.x += (_float)TimeDelta;
-		vUV.y += (_float)TimeDelta;
 		vUV.z += (_float)TimeDelta;
+	}
+
+	if (true == m_pEffectDesc_Prototype->IsTexFlow_V)
+	{
+		vUV.y += (_float)TimeDelta;
 		vUV.w += (_float)TimeDelta;
 	}
+
 
 	else
 	{
 		if (m_pInstance_UVTime[iIndex] <= 0.f)
 		{
-			m_pInstance_UVTime[iIndex] = m_pEffectDesc_Prototype->fUVTime;
+			m_pInstance_UVTime[iIndex] = m_pEffectDesc_Prototype->fUVTime_U;
 
 			if (m_pInstance_UVCount[iIndex].x >= m_pEffectDesc_Prototype->iTextureCount_U - 1)
 			{

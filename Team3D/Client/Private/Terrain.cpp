@@ -56,16 +56,6 @@ HRESULT CTerrain::Render()
 	return S_OK;
 }
 
-HRESULT CTerrain::Set_ShaderConstant_Default()
-{
-	return S_OK;
-}
-
-HRESULT CTerrain::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
-{
-	return S_OK;
-}
-
 CTerrain * CTerrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CTerrain* pInstance = new CTerrain(pDevice, pDeviceContext);

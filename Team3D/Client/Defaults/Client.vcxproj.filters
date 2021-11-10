@@ -79,9 +79,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle">
       <UniqueIdentifier>{4034cc9d-5a92-4ac0-ac7d-533f2b23bdc9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="96.DataLoader">
-      <UniqueIdentifier>{cb9c7161-7548-4e55-9104-29a4ad667c1f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\3D">
       <UniqueIdentifier>{bbc8ca2e-31e3-4a88-ba86-0624f18e40f5}</UniqueIdentifier>
     </Filter>
@@ -96,6 +93,12 @@
     </Filter>
     <Filter Include="95.Effect_Generator">
       <UniqueIdentifier>{1efce119-1cf1-4fab-92f2-6371aba8b2a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D\00.RespawnTunnel_Smoke">
+      <UniqueIdentifier>{536a0e19-aa1f-4e8d-a60f-a160ab01514a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D\01.FireDoor">
+      <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -147,16 +150,21 @@
     <ClInclude Include="GameEffect.h">
       <Filter>02.GameObject\05.Effect/Particle</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\DataLoader.h">
-      <Filter>96.DataLoader</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\TestEffect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D\99.TestEffect</Filter>
     </ClInclude>
     <ClInclude Include="..\public\RespawnTunnel.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\00.RespawnTunnel</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_Generator.h" />
+    <ClInclude Include="..\public\Effect_Generator.h">
+      <Filter>95.Effect_Generator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RespawnTunnel_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D\00.RespawnTunnel_Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\FireDoor.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D\01.FireDoor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -192,16 +200,21 @@
     <ClCompile Include="GameEffect.cpp">
       <Filter>02.GameObject\05.Effect/Particle</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\DataLoader.cpp">
-      <Filter>96.DataLoader</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\TestEffect.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D\99.TestEffect</Filter>
     </ClCompile>
     <ClCompile Include="..\private\RespawnTunnel.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\00.RespawnTunnel</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Effect_Generator.cpp" />
+    <ClCompile Include="..\private\Effect_Generator.cpp">
+      <Filter>95.Effect_Generator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\RespawnTunnel_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D\00.RespawnTunnel_Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FireDoor.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D\01.FireDoor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -232,6 +245,9 @@
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl">
+      <Filter>97.ShaderFiles\01.Codes</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
   </ItemGroup>

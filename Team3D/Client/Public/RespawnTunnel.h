@@ -19,7 +19,7 @@ class CRespawnTunnel final : public CGameEffect
 private:
 	explicit CRespawnTunnel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CRespawnTunnel(const CRespawnTunnel& rhs);
-	virtual ~CRespawnTunnel() = default; public:
+	virtual ~CRespawnTunnel() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -27,8 +27,6 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
-	virtual HRESULT Set_ShaderConstant_Default() override;
-	virtual HRESULT Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix) override;
 
 public:
 	static CRespawnTunnel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

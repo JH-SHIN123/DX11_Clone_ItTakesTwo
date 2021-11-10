@@ -186,8 +186,8 @@
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
-    <ClInclude Include="..\public\DataLoader.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
+    <ClInclude Include="..\public\FireDoor.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
     <ClInclude Include="..\public\Loading.h" />
@@ -195,6 +195,7 @@
     <ClInclude Include="..\Public\MainCamera.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\public\RespawnTunnel.h" />
+    <ClInclude Include="..\public\RespawnTunnel_Smoke.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\public\TestEffect.h" />
@@ -205,8 +206,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\private\DataLoader.cpp" />
     <ClCompile Include="..\private\Effect_Generator.cpp" />
+    <ClCompile Include="..\private\FireDoor.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />
@@ -214,6 +215,7 @@
     <ClCompile Include="..\Private\MainCamera.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\private\RespawnTunnel.cpp" />
+    <ClCompile Include="..\private\RespawnTunnel_Smoke.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\private\TestEffect.cpp" />
@@ -236,6 +238,7 @@
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Default.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl" />
   </ItemGroup>

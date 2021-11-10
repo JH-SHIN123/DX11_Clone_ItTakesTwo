@@ -49,16 +49,6 @@ HRESULT CTestEffect::Render()
 	return S_OK;
 }
 
-HRESULT CTestEffect::Set_ShaderConstant_Default()
-{
-	return S_OK;
-}
-
-HRESULT CTestEffect::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
-{
-	return S_OK;
-}
-
 CTestEffect * CTestEffect::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void* pArg)
 {
 	CTestEffect*	pInstance = new CTestEffect(pDevice, pDeviceContext);

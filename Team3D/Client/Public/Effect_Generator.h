@@ -8,7 +8,7 @@
 
 BEGIN(Client)
 
-enum class Effect_Value 
+enum class Effect_Value
 {
 
 };
@@ -19,13 +19,16 @@ class CEffect_Generator final : public CBase
 
 public:
 	HRESULT Load_EffectData(const _tchar* pFilePath, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	HRESULT Create_Prototype_Resource_Stage1(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 
 public:
 	CEffect_Generator();
 	virtual ~CEffect_Generator() = default;
 
 private:
-	HRESULT Create_Prototype(_uint iLevelIndex, const _tchar* pPrototypeName, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, EFFECT_DESC_PROTO* pData);
+	HRESULT	Create_Prototype(_uint iLevelIndex, const _tchar* pPrototypeName, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, EFFECT_DESC_PROTO* pData);
+	_fmatrix Compute_Pivot(_vector vScale, _vector vRotate);
+
 
 public:
 	virtual void Free() override;

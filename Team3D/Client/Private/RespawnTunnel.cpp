@@ -40,19 +40,10 @@ HRESULT CRespawnTunnel::Render()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	//m_pModelCom->Render_Model(0);
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Render_Model(0);
 
 	return S_OK;
-}
-
-HRESULT CRespawnTunnel::Set_ShaderConstant_Default()
-{
-	return __super::Set_ShaderConstant_Default();
-}
-
-HRESULT CRespawnTunnel::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
-{
-	return __super::Set_ShaderConstant_Shadow(LightViewMatrix, LightViewMatrix);
 }
 
 CRespawnTunnel * CRespawnTunnel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

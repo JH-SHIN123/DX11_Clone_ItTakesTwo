@@ -26,8 +26,10 @@ typedef struct tagEffect_Desc_Prototype
 
 	_int		iTextureCount_U = 1;			// 플립 이미지 일 경우 세팅
 	_int		iTextureCount_V = 1;
-	_float		fUVTime = -1.f;			// UV 바뀌는 주기
-	_bool		IsFlowUV = false;		// 플립 이미지 == false, true == 쉐이더의 UV가 시간값으로 바뀜
+	_float		fUVTime_U = -1.f;			// UV 바뀌는 주기
+	_float		fUVTime_V = -1.f;			// UV 바뀌는 주기
+	_bool		IsTexFlow_U = false;		// 플립 이미지 == false, true == 쉐이더의 UV가 시간값으로 바뀜
+	_bool		IsTexFlow_V = false;		// 플립 이미지 == false, true == 쉐이더의 UV가 시간값으로 바뀜
 
 	_double		fLifeTime = -1.f;			// 생명시간
 
@@ -66,7 +68,7 @@ typedef struct tagEffect_Desc_Clone
 	_float4 vColorChange	= { -1.f, -1.f, -1.f, -1.f };	// Set Addtional ColorChange
 	_float4 vPos			= { 0.f, -0.f, 0.f, 1.f };		// Set Position
 
-}EFFECT_DESC_CLONE;
+}EFFECT_DESC_CLONE; 
 
 class CGameEffect :	public CGameObject
 {
@@ -84,8 +86,6 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
-	virtual HRESULT Set_ShaderConstant_Default() override;
-	virtual HRESULT Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix) override;
 
 public:
 	HRESULT Copy_Prototype_Desc(void* pArg);
@@ -137,8 +137,6 @@ protected:
 	CModel*		m_pModelCom = nullptr;
 
 	_bool m_IsResourceName[RESOURCE_END];
-
-	_float4x4 m_PivotMatrix;
 
 public:
 	static CGameEffect* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void* pArg);
