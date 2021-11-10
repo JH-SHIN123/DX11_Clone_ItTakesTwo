@@ -27,9 +27,11 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
+
+	
 	m_pModelCom->Set_Animation(0, m_pTransformCom);
 	m_pModelCom->Set_NextAnimIndex(0);
-
+	
 	CDataBase::GetInstance()->Set_PlayerPtr(this);
 
 	return S_OK;
@@ -60,6 +62,7 @@ _int CPlayer::Tick(_double dTimeDelta)
 		m_pTransformCom->Go_Backward(dTimeDelta);
 	if (m_pGameInstance->Key_Pressing(DIK_D))
 		m_pTransformCom->Go_Right(dTimeDelta);
+
 
 
 	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);

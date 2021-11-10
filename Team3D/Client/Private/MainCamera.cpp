@@ -26,67 +26,55 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 
 	
 	XMStoreFloat4x4(&m_matPreRev, XMMatrixIdentity());
-
+	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 	
+	m_eCurCamMode = Cam_Free;
+
 	return S_OK;
 }
 
 _int CMainCamera::Tick(_double dTimeDelta)
 {
-	
 	if (m_pTargetObj == nullptr)
 	{
 		m_pTargetObj = CDataBase::GetInstance()->GetPlayer();
 		if (m_pTargetObj)
 			Safe_AddRef(m_pTargetObj);
 	}
-	/*POINT pt{ g_iWinCX >> 1 , g_iWinCY >> 1 };
-	ClientToScreen(g_hWnd, &pt);
-	SetCursorPos(pt.x, pt.y);
-*/
-	CTransform* pPlayerTransform = dynamic_cast<CPlayer*>(m_pTargetObj)->Get_Transform();
-	
-	/*_matrix matTarget;
-	Get_TargetMatrix(&matTarget, dTimeDelta);
-	*/
-	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
-	matWorld *= XMMatrixInverse(nullptr , XMLoadFloat4x4(&m_matPreRev));
-	m_pTransformCom->Set_WorldMatrix(matWorld);
-	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
+		m_eCurCamMode = Cam_FreeToAuto;
+	if (m_pGameInstance->Key_Down(DIK_NUMPADENTER))
+		m_eCurCamMode = Cam_AutoToFree;
 
-	_long MouseMove = 0;
-	
-	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
+
+	if (m_eCurCamMode != m_ePreCamMode)
 	{
-		m_fMouseRev[Rev_Holizontal] += MouseMove;
-	/*	if (m_fMouseRev[Rev_Holizontal] > 360.f || m_fMouseRev[Rev_Holizontal] < -360.f)
-			m_fMouseRev[Rev_Holizontal] = 0.f;*/
+		m_ePreCamMode = m_eCurCamMode;
+		m_fChangeCamModeTime = 0.f;
 	}
-	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
-	{
-		m_fMouseRev[Rev_Prependicul] += MouseMove;
-		//if (m_fMouseRev[Rev_Prependicul] > 360.f || m_fMouseRev[Rev_Prependicul] < -360.f)
-		//	m_fMouseRev[Rev_Prependicul] = 0.f;
-		//if (m_fMouseRev[Rev_Prependicul] < -60.f)
-		//	m_fMouseRev[Rev_Prependicul] = -60.f;
-	}
-	
-	if (m_pGameInstance->Key_Pressing(DIK_Z))
-		m_pTransformCom->Go_Straight(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_X))
-		m_pTransformCom->Go_Backward(dTimeDelta);
-	
-	_matrix matRevX = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta* XMConvertToRadians(m_fMouseRev[Rev_Prependicul])* m_fMouseRevSpeed[Rev_Prependicul]);
-	_matrix matRevY= XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f),dTimeDelta* XMConvertToRadians(m_fMouseRev[Rev_Holizontal]) * m_fMouseRevSpeed[Rev_Holizontal]);
-	_matrix matTrans = XMMatrixTranslation(XMVectorGetX(vPlayerPos), XMVectorGetY(vPlayerPos), XMVectorGetZ(vPlayerPos));
-	_matrix matRev = matRevX * matRevY* matTrans;
-	XMStoreFloat4x4(&m_matPreRev, matRev);
-	
-	m_pTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix() * matRev);
 
+
+	_int iResult = NO_EVENT;
+
+	switch (m_eCurCamMode)
+	{
+	case Client::CMainCamera::Cam_Free:
+		iResult = Tick_Cam_Free(dTimeDelta);
+		break;
+	case Client::CMainCamera::Cam_Auto:
+		iResult = Tick_Cam_Auto(dTimeDelta);
+		break;
+	case Client::CMainCamera::Cam_FreeToAuto:
+		iResult = Tick_Cam_FreeToAuto(dTimeDelta);
+		break;
+	case Client::CMainCamera::Cam_AutoToFree:
+		iResult = Tick_Cam_AutoToFree(dTimeDelta);
+		break;
+	}
+	if (NO_EVENT != iResult)
+		return iResult;
 	return CCamera::Tick(dTimeDelta);
 }
 
@@ -131,48 +119,134 @@ void CMainCamera::Free()
 	Safe_Release(m_pTargetObj);
 }
 
-void CMainCamera::Get_TargetMatrix(_matrix * pOut, _double dTimeDelta)
+_int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 {
-	//CTransform* pPlayerTransform = dynamic_cast<CPlayer*>(m_pTargetObj)->Get_Transform();
-	////_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-
-	//POINT pt{ g_iWinCX >> 1 , g_iWinCY >> 1 };
-	//ClientToScreen(g_hWnd, &pt);
-	//SetCursorPos(pt.x, pt.y);
-
-	//_float2 vMouseMove = { (_float)m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X),(_float)m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y) };
-	//m_fMouseRev[Rev_Holizontal] += vMouseMove.x / 15.f;
-	//m_fMouseRev[Rev_Prependicul] += vMouseMove.y / 15.f;
-
-	//if (m_fMouseRev[Rev_Holizontal] > 360.f || m_fMouseRev[Rev_Holizontal] < -360.f)
-	//	m_fMouseRev[Rev_Holizontal] = 0.f;
-	//if (m_fMouseRev[Rev_Prependicul] > 360.f || m_fMouseRev[Rev_Prependicul] < -360.f)
-	//	m_fMouseRev[Rev_Prependicul] = 0.f;
-	//if (m_fMouseRev[Rev_Prependicul] < -60.f)
-	//	m_fMouseRev[Rev_Prependicul] = -60.f;
-
-	//_float3 vPlayerPos, vPlayerLook;
-	//XMStoreFloat3(&vPlayerPos, pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-	//XMStoreFloat3(&vPlayerLook, pPlayerTransform->Get_State(CTransform::STATE_LOOK));
+	if (nullptr == m_pTargetObj)
+		return EVENT_ERROR;
+	CTransform* pPlayerTransform = dynamic_cast<CPlayer*>(m_pTargetObj)->Get_Transform();
 
 
-	//_vector vNextAt = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-	//_vector vDir = vNextAt - XMLoadFloat3(&m_vCurAt);
+	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
+	matWorld *= XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_matPreRev));
+	m_pTransformCom->Set_WorldMatrix(matWorld);
+	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	//XMStoreFloat3(&m_vCurAt, XMLoadFloat3(&m_vCurAt) + vDir * dTimeDelta);
-	//_float3 vRealAt;
-	//XMStoreFloat3(&vRealAt, XMLoadFloat3(&m_vCurAt));
+	_long MouseMove = 0;
 
-	//_matrix matRot = XMMatrixIdentity(), matTrans = XMMatrixTranslation(0.2f, 3.5f, -3.5f), matRotX = XMMatrixIdentity(),
-	//	matRotY = XMMatrixIdentity(), matPar = XMMatrixIdentity();
+	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
+	{
+		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
+		if (m_fMouseRev[Rev_Holizontal] > 360.f || m_fMouseRev[Rev_Holizontal] < -360.f)
+			m_fMouseRev[Rev_Holizontal] = 0.f;
+	}
+	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
+	{
+		m_fMouseRev[Rev_Prependicul] += (_float)MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta;
+		if (m_fMouseRev[Rev_Prependicul] > 360.f || m_fMouseRev[Rev_Prependicul] < -360.f)
+			m_fMouseRev[Rev_Prependicul] = 0.f;
+		if (m_fMouseRev[Rev_Prependicul] > 30.f)
+			m_fMouseRev[Rev_Prependicul] = 30.f;
+		if (m_fMouseRev[Rev_Prependicul] < -90.f)
+			m_fMouseRev[Rev_Prependicul] = -90.f;
+	}
+#ifdef _DEBUG
+	if (m_pGameInstance->Key_Pressing(DIK_Z))
+		m_pTransformCom->Go_Straight(dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_X))
+		m_pTransformCom->Go_Backward(dTimeDelta);
+#endif
+	_matrix matRevX = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(m_fMouseRev[Rev_Prependicul]));
+	_matrix matRevY = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fMouseRev[Rev_Holizontal]));
+	_matrix matTrans = XMMatrixTranslation(XMVectorGetX(vPlayerPos), XMVectorGetY(vPlayerPos), XMVectorGetZ(vPlayerPos));
+	_matrix matRev = matRevX * matRevY* matTrans;
+	XMStoreFloat4x4(&m_matPreRev, matRev);
 
-	//matRot = XMMatrixRotationX(XMConvertToRadians(45.f));
-	//matRotX = XMMatrixRotationX(XMConvertToRadians(m_fMouseRev[Rev_Prependicul]));
-	//matRotY = XMMatrixRotationY(XMConvertToRadians(m_fMouseRev[Rev_Holizontal]));
+	m_pTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix() * matRev);
 
-	//matPar = XMMatrixTranslation(vRealAt.x, vRealAt.y
-	//	, vRealAt.z);
-
-	// *pOut = matRot* matTrans * matRotX * matRotY* matPar;
-
+	return NO_EVENT;
 }
+
+_int CMainCamera::Tick_Cam_Auto(_double dTimeDelta)
+{
+	
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD8))
+		m_pTransformCom->Go_Straight(dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD4))
+		m_pTransformCom->Go_Left(dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD2))
+		m_pTransformCom->Go_Backward(dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD6))
+		m_pTransformCom->Go_Right(dTimeDelta);
+
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD7))
+		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD9))
+		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -dTimeDelta);
+
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD1))
+		m_pTransformCom->Rotate_Axis(XMVectorSet(1.f, 0.f, 0.f, 0.f), dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD3))
+		m_pTransformCom->Rotate_Axis(XMVectorSet(1.f, 0.f, 0.f, 0.f), -dTimeDelta);
+
+	return NO_EVENT;
+}
+
+_int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
+{
+
+	if (nullptr == m_pTargetObj)
+		return EVENT_ERROR;
+
+	_vector vPlayerPos = dynamic_cast<CPlayer*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	m_fChangeCamModeTime += dTimeDelta;
+	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
+	_matrix matNext = XMLoadFloat4x4(&m_matBeginWorld);
+	_matrix matRevX = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(m_fMouseRev[Rev_Prependicul]));
+	_matrix matRevY = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fMouseRev[Rev_Holizontal]));
+	_matrix matTrans = XMMatrixTranslation(XMVectorGetX(vPlayerPos), XMVectorGetY(vPlayerPos), XMVectorGetZ(vPlayerPos));
+	_matrix matRev = matRevX * matRevY* matTrans;
+	XMStoreFloat4x4(&m_matPreRev, matRev);
+
+	matNext *= matRev;
+
+	_vector	  vPreRight		= matWorld.r[0],vNextRight	= matNext.r[0]
+			, vPreUp		= matWorld.r[1],vNextUp		= matNext.r[1]
+			, vPreLook		= matWorld.r[2],vNextLook	= matNext.r[2]
+			, vPrePos		= matWorld.r[3],vNextPos	= matNext.r[3];
+
+	_vector vCurRight = XMVectorLerp(vPreRight, vNextRight, m_fChangeCamModeTime),
+			vCurUp	  = XMVectorLerp(vPreUp, vNextUp, m_fChangeCamModeTime),
+			vCurLook  = XMVectorLerp(vPreLook, vNextLook, m_fChangeCamModeTime),
+			vCurPos   = XMVectorLerp(vPrePos, vNextPos, m_fChangeCamModeTime);
+	
+	_matrix matCurWorld = XMMatrixIdentity();
+	matCurWorld.r[0] = vCurRight;
+	matCurWorld.r[1] = vCurUp;
+	matCurWorld.r[2] = vCurLook;
+	matCurWorld.r[3] = vCurPos;
+
+
+	m_pTransformCom->Set_WorldMatrix(matCurWorld);
+	if (m_fChangeCamModeTime >= 1.f)
+	{
+
+		m_eCurCamMode = Cam_Free;
+
+	}
+
+	return NO_EVENT;
+}
+
+_int CMainCamera::Tick_Cam_FreeToAuto(_double dTimeDelta)
+{
+
+	XMStoreFloat4x4(&m_matPreRev,XMMatrixIdentity());
+ 
+	m_fMouseRev[Rev_Holizontal] = 0.f;
+	m_fMouseRev[Rev_Prependicul] = 0.f;
+
+	m_eCurCamMode = Cam_Auto;
+	return NO_EVENT;
+}
+
