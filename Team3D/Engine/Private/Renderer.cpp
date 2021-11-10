@@ -141,6 +141,8 @@ HRESULT CRenderer::Render_Alpha()
 
 HRESULT CRenderer::Render_UI()
 {
+	Sort_GameObjects(m_RenderObjects[RENDER_UI]);
+
 	for (auto& pGameObject : m_RenderObjects[RENDER_UI])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render(), E_FAIL);
@@ -187,7 +189,7 @@ CRenderer * CRenderer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDev
 	CRenderer* pInstance = new CRenderer(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
-	{
+	{ 
 		MSG_BOX("Failed to Create Instance - CRenderer");
 		Safe_Release(pInstance);
 	}

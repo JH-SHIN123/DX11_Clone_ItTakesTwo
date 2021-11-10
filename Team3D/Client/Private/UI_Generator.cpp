@@ -48,7 +48,10 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath)
 		ReadFile(hFile, psDataElement, sizeof(CUIObject::UI_DESC), &dwByte, nullptr);
 
 		if (0 == dwByte)
+		{
+			Safe_Delete(psDataElement);
 			break;
+		}
 
 		m_vecPSData.emplace_back(psDataElement);
 	}
@@ -66,7 +69,34 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath)
 
 HRESULT CUI_Generator::Generator_UI(UI::TRIGGER eTrigger)
 {
+	if (false == m_IsTrigger)
+		return S_OK;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	switch (eTrigger)
+	{
+	case UI::InputButton_Dot:
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_UI"), Level::LEVEL_STAGE, TEXT("InputButton_Dot")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_UI"), Level::LEVEL_STAGE, TEXT("InputButton_Frame_Circle")), E_FAIL);
+		break;
+	case UI::InputButton_F:
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_UI"), Level::LEVEL_STAGE, TEXT("InputButton_Dot")), E_FAIL);
+		break;
+	default:
+		MSG_BOX("UI Trigger Out of Ragne, Error to CUI_Generator::Generator_UI");
+		break;
+	}
+
+	m_IsTrigger = false;
+
 	return S_OK;
+}
+
+void CUI_Generator::Set_TriggerOn()
+{
+	m_IsTrigger = true;
 }
 
 HRESULT CUI_Generator::Add_Prototype_Interactive_UI(CUIObject::UI_DESC* UIDesc)
@@ -78,7 +108,7 @@ HRESULT CUI_Generator::Add_Prototype_Interactive_UI(CUIObject::UI_DESC* UIDesc)
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
-	else if (!lstrcmp(UIDesc->szUITag, L"Rect"))
+	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Frame_Rect"))
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}

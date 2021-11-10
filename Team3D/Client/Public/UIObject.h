@@ -14,6 +14,8 @@ BEGIN(Client)
 
 class CUIObject abstract : public CGameObject
 {
+
+
 public:
 	typedef struct tagPassingData_UI
 	{
@@ -45,11 +47,15 @@ public:
 	virtual HRESULT	Render() PURE;
 
 public:
+	virtual _float Get_DistanceFromCamera() override;
+
+public:
 	void Set_Dead();
 
 protected:
 	UI_DESC						m_UIDesc;
 	_bool						m_IsDead = false;
+	_float						m_fSortOrder = 0.f;
 
 protected:
 	/* For.Component */

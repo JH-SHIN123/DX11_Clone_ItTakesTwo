@@ -19,13 +19,20 @@ public:
 	HRESULT Load_Data(const _tchar* pFilePath);
 	HRESULT Generator_UI(UI::TRIGGER eTrigger);
 
+public:
+	void Set_TriggerOn();
+
 private:
 	HRESULT Add_Prototype_Interactive_UI(CUIObject::UI_DESC* UIDesc);
 	HRESULT Add_Prototype_Fixed_UI(CUIObject::UI_DESC UIDesc);
 	HRESULT Add_Prototype_Texture();
 
 private:
+	_bool						m_IsTrigger = true;
+
+private:
 	vector<CUIObject::UI_DESC*> m_vecPSData;
+	vector<CGameObject*>*		m_vecUIOBjects[UI::TRIGGER_END];
 
 
 private:

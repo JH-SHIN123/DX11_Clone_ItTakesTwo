@@ -2,6 +2,8 @@
 #include "..\public\Player.h"
 #include "GameInstance.h"
 
+#include "UI_Generator.h"
+
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -39,27 +41,14 @@ _int CPlayer::Tick(_double dTimeDelta)
 
 	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
 
-	if (m_pGameInstance->Key_Down(DIK_1))
-	{
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("dd"), Level::LEVEL_STAGE, TEXT("Rect")), E_FAIL);
-	}
-	else if (m_pGameInstance->Key_Down(DIK_2))
-	{
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("dd1"), Level::LEVEL_STAGE, TEXT("InputButton_Frame_Circle")), E_FAIL);
-	}
-	else if (m_pGameInstance->Key_Down(DIK_3))
-	{
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("dd2"), Level::LEVEL_STAGE, TEXT("InputButton_Dot")), E_FAIL);
-	}
-
-
-
 	return NO_EVENT;
 }
 
 _int CPlayer::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	CUI_Generator::GetInstance()->Generator_UI(UI::InputButton_Dot);
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
 }

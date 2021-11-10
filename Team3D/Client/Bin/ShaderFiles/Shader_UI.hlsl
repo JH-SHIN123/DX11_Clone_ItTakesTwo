@@ -44,6 +44,17 @@ VS_OUT	VS_MAIN(VS_IN In)
 	return Out;
 }
 
+VS_OUT	VS_TEST(VS_IN In)
+{
+	VS_OUT	Out = (VS_OUT)0;
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vTexUV = In.vTexUV;
+
+	return Out;
+}
+
+
 ////////////////////////////////////////////////////////////
 
 struct GS_IN
@@ -66,7 +77,7 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 
 	for (uint i = 0; i < 3; i++)
 	{
-		matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
+		matrix matVP = g_MainProjMatrix;
 
 		Out.vPosition = mul(In[i].vPosition, matVP);
 		Out.vTexUV = In[i].vTexUV;
@@ -79,7 +90,7 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 
 	for (uint j = 0; j < 3; j++)
 	{
-		matrix matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+		matrix matVP = g_SubProjMatrix;
 
 		Out.vPosition = mul(In[j].vPosition, matVP);
 		Out.vTexUV = In[j].vTexUV;
@@ -108,6 +119,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
+
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
 	return Out;
@@ -120,10 +132,20 @@ technique11 DefaultTechnique
 	pass Default
 	{
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_Default, 0);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader	= compile vs_5_0 VS_MAIN();
 		GeometryShader  = NULL;
 		PixelShader		= compile ps_5_0 PS_MAIN();
+	}
+
+	pass Test
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_TEST();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 };

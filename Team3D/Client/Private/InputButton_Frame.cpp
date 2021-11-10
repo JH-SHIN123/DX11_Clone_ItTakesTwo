@@ -60,20 +60,18 @@ HRESULT CInputButton_Frame::Render()
 {
 	CUIObject::Render();
 
-	if (FAILED(Set_ConstantTable()))
+	if (FAILED(Set_UIVariables_Perspective()))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(0);
+	m_pVIBuffer_RectCom->Render(1);
 
 	return S_OK;
 }
 
-HRESULT CInputButton_Frame::Set_ConstantTable()
+HRESULT CInputButton_Frame::Set_DefaultVariables_Perspective()
 {
 	if (nullptr == m_pVIBuffer_RectCom || nullptr == m_pTextureCom)
 		return E_FAIL;
-
-	CPipeline* pPipeline = CPipeline::GetInstance();
 
 	_matrix WorldMatrix, ViewMatrix, ProjMatrix;
 
@@ -84,6 +82,40 @@ HRESULT CInputButton_Frame::Set_ConstantTable()
 	m_pVIBuffer_RectCom->Set_Variable("g_UIWorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
 	m_pVIBuffer_RectCom->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
 	m_pVIBuffer_RectCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
+
+	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
+
+
+	return S_OK;
+}
+
+HRESULT CInputButton_Frame::Set_UIVariables_Perspective()
+{
+	if (nullptr == m_pVIBuffer_RectCom || nullptr == m_pTextureCom)
+		return E_FAIL;
+
+	_matrix WorldMatrix, ViewMatrix, ProjMatrix, subProjMatrix;
+
+	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	ViewMatrix = XMMatrixIdentity();
+
+	D3D11_VIEWPORT Viewport = m_pGameInstance->Get_ViewportInfo(1);
+
+	// 뷰포트가 하나로 합쳐질 때 뷰포트의 Width가 0.f 가 되버리면서
+	// 직교 할 때 0.f / 0.f 연산 때문에 XMScalarNearEqul 오류 나버림 그거 임시방편 예외처리 입니다.
+	if (0.1f <= Viewport.Width)
+		ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+
+	Viewport = m_pGameInstance->Get_ViewportInfo(2);
+
+	if (0.1f <= Viewport.Width)
+		subProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+
+	m_pVIBuffer_RectCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+	m_pVIBuffer_RectCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+	m_pVIBuffer_RectCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
+	m_pVIBuffer_RectCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+	m_pVIBuffer_RectCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(subProjMatrix), sizeof(_matrix));
 
 	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
 

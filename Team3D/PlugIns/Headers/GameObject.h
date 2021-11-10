@@ -40,7 +40,7 @@ private:
 	CComponent*	Find_Component(const _tchar* pComponentTag);
 
 public:
-	virtual CGameObject* Clone_GameObject(void* pArg) PURE;
+	virtual CGameObject* Clone_GameObject(void* pArg) PURE;    
 	virtual void Free() PURE;
 };
 

@@ -27,6 +27,10 @@ HRESULT CUIObject::NativeConstruct(void * pArg)
 	if (FAILED(Ready_Component()))
 		return E_FAIL;
 
+	m_fSortOrder = (_float)m_UIDesc.iRenderGroup * -1.f;
+
+	
+
 	return S_OK;
 }
 
@@ -52,6 +56,11 @@ HRESULT CUIObject::Render()
 	return S_OK;
 }
 
+_float CUIObject::Get_DistanceFromCamera()
+{
+	return m_fSortOrder;
+}
+
 void CUIObject::Set_Dead()
 {
 	m_IsDead = true;
@@ -68,7 +77,6 @@ HRESULT CUIObject::Ready_Component()
 
 	return S_OK;
 }
-
 
 void CUIObject::Free()
 {
