@@ -16,6 +16,7 @@ public: /* Getter */
 	const _uint		Get_CurAnimIndex() const { return m_iCurAnimIndex; }
 	const _float	Get_ProgressAnim() const { return m_fProgressAnim; }
 	const _bool		Is_AnimFinished(_uint iAnimIndex) const { NULL_CHECK_RETURN(iAnimIndex < m_iAnimCount, false); return m_IsAnimFinished[iAnimIndex]; }
+	MESHACTOR_DESC	Get_MeshActorDesc() { return MESHACTOR_DESC(m_iVertexCount, m_pVectorPositions, m_iFaceCount, m_pFaces); }
 
 public: /* Setter */
 	HRESULT	Set_Animation(_uint iAnimIndex, class CTransform* pTransform);
@@ -76,6 +77,8 @@ private:
 	_bool						m_bNeedCenterBone			= false;	// 중심 뼈 존재 여부
 	class CHierarchyNode*		m_pCenterBoneNode			= nullptr;	// 중심 뼈 이름
 	_float4						m_vAnimDistFromCenter		= _float4(0.f, 0.f, 0.f, 0.f);
+	/* For.PhyX */
+	_vector*					m_pVectorPositions			= nullptr;	// 정점의 Position값만 들고있는 배열 추가, 애니메이션이 없는 모델만 생성됨.
 private:
 	HRESULT		Sort_MeshesByMaterial();
 	HRESULT		Set_CenterBone(const char* pCenterBoneName = "");
@@ -108,6 +111,7 @@ private:
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const char* pMeshFilePath, const char* pMeshFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _fmatrix PivotMatrix = XMMatrixIdentity(), _bool bNeedCenterBone = false, const char* pCenterBoneName = "");
+	// + MATERIALS 세트 추가하는 경우 _uint iMaterialsCount 를 Set
 	virtual CComponent* Clone_Component(void* pArg) override;
 	virtual void Free() override;
 };

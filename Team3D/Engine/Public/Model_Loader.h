@@ -13,6 +13,7 @@ private:
 
 public:
 	HRESULT	Load_ModelFromFile(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, class CModel* pModel, const char* pModelFilePath, const char* pModelFileName);
+	HRESULT	Load_ModelFromFile(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, class CModel_Instance* pModel, const char* pModelFilePath, const char* pModelFileName);
 
 private: /* Typedef */
 	typedef vector<class CMesh*>					MESHES;

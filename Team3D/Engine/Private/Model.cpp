@@ -46,6 +46,8 @@ CModel::CModel(const CModel & rhs)
 	, m_eTopology					(rhs.m_eTopology)
 	, m_pEffect						(rhs.m_pEffect)
 	, m_InputLayouts				(rhs.m_InputLayouts)
+	, m_pVectorPositions			(rhs.m_pVectorPositions)
+	, m_pFaces						(rhs.m_pFaces)
 {
 	for (auto& pMesh : m_Meshes)
 		Safe_AddRef(pMesh);
@@ -367,12 +369,15 @@ HRESULT CModel::Apply_PivotMatrix(_fmatrix PivotMatrix)
 	}
 	else
 	{
+		m_pVectorPositions = new _vector[m_iVertexCount];
+
 		for (_uint iIndex = 0; iIndex < m_iVertexCount; ++iIndex)
 		{
 			_vector	vAdjustedPosition = XMVector3TransformCoord(XMLoadFloat3(&m_pVertices[iIndex].vPosition), PivotMatrix);
 			XMStoreFloat3(&m_pVertices[iIndex].vPosition, vAdjustedPosition);
 			_vector	vAdjustedNormal = XMVector3TransformNormal(XMLoadFloat3(&m_pVertices[iIndex].vNormal), PivotMatrix);
 			XMStoreFloat3(&m_pVertices[iIndex].vNormal, vAdjustedNormal);
+			memcpy(&m_pVectorPositions[iIndex], &XMVectorSetW(vAdjustedPosition, 1.f), sizeof(_vector));
 		}
 	}
 
@@ -425,8 +430,6 @@ HRESULT CModel::Create_Buffer(ID3D11Buffer ** ppBuffer, _uint iByteWidth, D3D11_
 
 	FAILED_CHECK_RETURN(m_pDevice->CreateBuffer(&Desc, &SubResourceData, ppBuffer), E_FAIL);
 
-	Safe_Delete_Array(pSysMem);
-
 	return S_OK;
 }
 HRESULT CModel::Create_VIBuffer(const _tchar * pShaderFilePath, const char * pTechniqueName)
@@ -435,6 +438,7 @@ HRESULT CModel::Create_VIBuffer(const _tchar * pShaderFilePath, const char * pTe
 	m_iVertexBufferCount = 1;
 	m_iVertexStride = sizeof(VTXMESH);
 	Create_Buffer(&m_pVB, m_iVertexStride * m_iVertexCount, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, m_iVertexStride, m_pVertices);
+	Safe_Delete_Array(m_pVertices);
 
 	/* For.IndexBuffer */
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
@@ -502,7 +506,7 @@ HRESULT CModel::SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC * pInputElementDesc,
 
 CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const char * pMeshFilePath, const char * pMeshFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
-	CModel*	pInstance = new CModel(pDevice, pDeviceContext);
+	CModel* pInstance = new CModel(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype(pMeshFilePath, pMeshFileName, pShaderFilePath, pTechniqueName, PivotMatrix, bNeedCenterBone, pCenterBoneName)))
 	{
@@ -515,7 +519,7 @@ CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceCon
 
 CComponent * CModel::Clone_Component(void * pArg)
 {
-	CModel*	pInstance = new CModel(*this);
+	CModel* pInstance = new CModel(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
@@ -573,7 +577,11 @@ void CModel::Free()
 	Safe_Release(m_pCenterBoneNode);
 
 	if (false == m_isClone)
+	{
 		Safe_Release(m_pModel_Loader);
+		Safe_Delete_Array(m_pVectorPositions);
+		Safe_Delete_Array(m_pFaces);
+	}
 
 	CComponent::Free();
 }

@@ -12,15 +12,18 @@ HRESULT CComponent_Manager::Reserve_Container(_uint iLevelCount)
 	return S_OK;
 }
 
-HRESULT CComponent_Manager::Add_Component_Prototype(_uint iLevelIndex, const _tchar * pPrototypeTag, CComponent * pComponent)
+HRESULT CComponent_Manager::Add_Component_Prototype(_uint iLevelIndex, const _tchar * const pPrototypeTag, CComponent * pComponent)
 {
 	NULL_CHECK_RETURN(pComponent, E_FAIL);
 	NULL_CHECK_RETURN(iLevelIndex < m_iLevelCount, E_FAIL);
 
-	CComponent*	pPrototype = Find_Prototype(iLevelIndex, pPrototypeTag);
+	_tchar* pTag = new _tchar[lstrlenW(pPrototypeTag) + 1];
+	lstrcpyW(pTag, pPrototypeTag);
+
+	CComponent*	pPrototype = Find_Prototype(iLevelIndex, pTag);
 	NOT_NULL_CHECK_RETURN(pPrototype, E_FAIL);
 
-	m_pPrototypes[iLevelIndex].emplace(pPrototypeTag, pComponent);
+	m_pPrototypes[iLevelIndex].emplace(pTag, pComponent);
 
 	return S_OK;
 }
@@ -40,7 +43,10 @@ void CComponent_Manager::Clear(_uint iLevelIndex)
 	NULL_CHECK(iLevelIndex < m_iLevelCount);
 
 	for (auto& rPair : m_pPrototypes[iLevelIndex])
+	{
+		delete[] rPair.first;
 		Safe_Release(rPair.second);
+	}
 	m_pPrototypes[iLevelIndex].clear();
 }
 
@@ -49,7 +55,10 @@ void CComponent_Manager::Clear_All()
 	for (_uint iIndex = 0; iIndex < m_iLevelCount; ++iIndex)
 	{
 		for (auto& rPair : m_pPrototypes[iIndex])
+		{
+			delete[] rPair.first;
 			Safe_Release(rPair.second);
+		}
 		m_pPrototypes[iIndex].clear();
 	}
 }
@@ -68,12 +77,7 @@ CComponent * CComponent_Manager::Find_Prototype(_uint iLevelIndex, const _tchar 
 
 void CComponent_Manager::Free()
 {
-	for (_uint iIndex = 0; iIndex < m_iLevelCount; ++iIndex)
-	{
-		for (auto& rPair : m_pPrototypes[iIndex])
-			Safe_Release(rPair.second);
-		m_pPrototypes[iIndex].clear();
-	}
+	Clear_All();
 
 	Safe_Delete_Array(m_pPrototypes);
 }
