@@ -10,6 +10,9 @@
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_PointInstance.h"
 #include "VIBuffer_RectInstance.h"
+#include "StaticActor.h"
+#include "DynamicActor.h"
+#include "ControllableActor.h"
 
 BEGIN(Engine)
 

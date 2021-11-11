@@ -1,0 +1,52 @@
+#pragma once
+
+#include "Actor.h"
+
+BEGIN(Engine)
+
+class ENGINE_DLL CControllableActor final : public CActor
+{
+private:
+	explicit CControllableActor(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CControllableActor(const CControllableActor& rhs);
+	virtual ~CControllableActor() = default;
+
+public: /* Struct */
+	typedef struct tagArgumentDesc
+	{
+		class CTransform* pTransform;
+
+		tagArgumentDesc() {}
+		tagArgumentDesc(class CTransform* _pTransform) : pTransform(_pTransform) {}
+	}ARG_DESC;
+
+public:
+	virtual HRESULT	NativeConstruct_Prototype() override;
+	virtual HRESULT	NativeConstruct(void* pArg) override;
+	void	Move(_fvector vMove, _double dTimeDelta);
+	void	Update(_double dTimeDelta);
+	void	Jump_Start(_float fJumpForce);
+	void	Jump_Higher(_float fJumpForce);
+
+private:
+	PxController*		m_pController = nullptr;
+	PxRigidDynamic*		m_pActor = nullptr;
+	class CTransform*	m_pTransform = nullptr;
+	/* For.Jump */
+	_float	m_fJumpTime = 0.f;
+	_float	m_fHeightDelta = 0.f;
+	_float	m_fJumpGravity = 0.f;
+	_float	m_fJumpForce = 0.f;
+	_float	m_fBaseJumpForce = 0.f;
+	_bool	m_bJump = false;
+private:
+	void	Jump_Stop();
+	_float	Get_Height(_double dTimeDelta);
+
+public:
+	static CControllableActor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CComponent* Clone_Component(void* pArg) override;
+	virtual void Free() override;
+};
+
+END

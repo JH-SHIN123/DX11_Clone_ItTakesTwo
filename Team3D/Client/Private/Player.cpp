@@ -34,6 +34,8 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	
 	//CDataBase::GetInstance()->Set_PlayerPtr(this);
 
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
+
 	return S_OK;
 }
 
@@ -64,6 +66,30 @@ _int CPlayer::Tick(_double dTimeDelta)
 		m_pTransformCom->Go_Right(dTimeDelta);
 
 
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
+
+	if (m_pGameInstance->Key_Pressing(DIK_I))
+		m_pActorCom->Move(XMVectorSet(0.f, 0.f, (_float)dTimeDelta * 10.f, 1.f), dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_K))
+		m_pActorCom->Move(XMVectorSet(0.f, 0.f, (_float)-dTimeDelta * 10.f, 1.f), dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_J))
+		m_pActorCom->Move(XMVectorSet((_float)-dTimeDelta * 10.f, 0.f, 0.f, 1.f), dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_L))
+		m_pActorCom->Move(XMVectorSet((_float)dTimeDelta * 10.f, 0.f, 0.f, 1.f), dTimeDelta);
+
+	if (m_pGameInstance->Key_Down(DIK_SPACE))
+		m_pActorCom->Jump_Start(30.f);
+	if (m_pGameInstance->Key_Pressing(DIK_SPACE))
+		m_pActorCom->Jump_Higher(1.f);
+
+	m_pActorCom->Update(dTimeDelta);
+
+	//if (m_pGameInstance->Key_Pressing(DIK_K))
+	//{
+	//	const PxControllerFilters Filter(NULL, NULL, false);
+	//	m_pCtrl->move(PxVec3(dTimeDelta * 10.f, 0.f, 0.f), 0.f, (_float)dTimeDelta, Filter);
+	//}
 
 	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
 
@@ -134,6 +160,7 @@ CGameObject * CPlayer::Clone_GameObject(void * pArg)
 
 void CPlayer::Free()
 {
+	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
