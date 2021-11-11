@@ -251,3 +251,4 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+Team3D/Client/Bin/Resources/Mesh/Test/LastPlayerAnimations.FBX
