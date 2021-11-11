@@ -34,7 +34,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fvector vPosition)
 	{
 	case Client::Effect_Value::Walking_Smoke:
 		Clone_Data.vDir = {0.f, 1.f, 0.f};
-		Clone_Data.fUVTime = -0.01f;
+		Clone_Data.UVTime = 0.01;
+		Clone_Data.fSizePower = 0.7f;
+		Clone_Data.vSize_Max = { 2.5f, 2.5f, 0.f };
 		XMStoreFloat4(&Clone_Data.vPos, vPosition);
 		lstrcpy(szLayer, L"Layer_Effect");
 		lstrcpy(szPrototype, L"GameObject_2D_Walking_Smoke");
@@ -43,7 +45,7 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fvector vPosition)
 		break;
 	}
 
-	m_pGameInstance->Add_GameObject_Clone(1, L"Layer_Effect", 1, L"GameObject_2D_Walking_Smoke", &Clone_Data);
+	m_pGameInstance->Add_GameObject_Clone(1, szLayer, 1, szPrototype, &Clone_Data);
 
 	return S_OK;
 }
@@ -96,6 +98,7 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 
 
 		Create_Prototype(Data->iLevelIndex, Data->EffectName, pDevice, pDeviceContext, Data);
+		Safe_Delete(Data);
 	}
 
 

@@ -17,6 +17,10 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
 
+public:
+	void Instance_Size(_float TimeDelta, _int iIndex) override;
+	void Instance_Pos(_float TimeDelta, _int iIndex) override;
+
 private:
 	_float m_fSizeTime = 0.f;
 

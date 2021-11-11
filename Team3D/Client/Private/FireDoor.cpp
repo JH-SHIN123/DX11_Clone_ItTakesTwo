@@ -79,16 +79,16 @@ HRESULT CFireDoor::Render()
 	SetUp_Shader_Data();
 	//_float2 fUV = {0.f,}
 
-	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom->Get_ShaderResourceView(m_pEffectDesc_Prototype->iTextureNum));
+	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum));
 
-	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Second->Get_ShaderResourceView(m_pEffectDesc_Prototype->iTextureNum_Second));
+	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Second->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum_Second));
 
 	_float4 vColorRamp = { 0.0f, 0.0f, 2.0f, 2.0f };
 	m_pPointInstanceCom->Set_Variable("g_vUV", &m_vWeight, sizeof(_float4));
 	m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vColorRamp, sizeof(_float4));
 	m_pPointInstanceCom->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(3));
 
-	m_pPointInstanceCom->Render(5, m_pInstanceBuffer, m_pEffectDesc_Prototype->iInstanceCount);
+	m_pPointInstanceCom->Render(5, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
 }
