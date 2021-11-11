@@ -31,7 +31,7 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath)
 
 	if (INVALID_HANDLE_VALUE == hFile)
 	{
-		MSG_BOX("Failed to LoadData UI");
+		MSG_BOX("Failed to LoadData UI, Error to CUI_Generator::Load_Data");
 		CloseHandle(hFile);
 		return E_FAIL;
 	}
@@ -69,7 +69,7 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath)
 
 HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 {
-	if (false == m_IsTrigger)
+	if (false == m_IsTrigger || ePlayer >= Player::PLAYER_END || eTrigger >= UI::TRIGGER_END)
 		return S_OK;
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -83,23 +83,41 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 	case UI::InputButton_Dot:
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_UI"), Level::LEVEL_STAGE, TEXT("InputButton_Dot"), nullptr, &pGameObject), E_FAIL);
 		pUIObject = static_cast<CUIObject*>(pGameObject);
+		pUIObject->Set_PlayerID(ePlayer);
 		m_vecUIOBjects[ePlayer][eTrigger].push_back(pUIObject);
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_UI"), Level::LEVEL_STAGE, TEXT("InputButton_Frame_Circle"), nullptr, &pGameObject), E_FAIL);
 		pUIObject = static_cast<CUIObject*>(pGameObject);
+		pUIObject->Set_PlayerID(ePlayer);
 		m_vecUIOBjects[ePlayer][eTrigger].push_back(pUIObject);
 		break;
 	case UI::InputButton_F:
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_UI"), Level::LEVEL_STAGE, TEXT("InputButton_Dot"), nullptr, &pGameObject), E_FAIL);
 		pUIObject = static_cast<CUIObject*>(pGameObject);
+		pUIObject->Set_PlayerID(ePlayer);
 		m_vecUIOBjects[ePlayer][eTrigger].push_back(pUIObject);
 		break;
-	case UI::TRIGGER_END:
-		break;
 	default:
+		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
 		break;
 	}
 
 	m_IsTrigger = false;
+
+	return S_OK;
+}
+
+HRESULT CUI_Generator::Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+ 		return S_OK;
+
+	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
+	{
+		UIObject->Set_Dead();
+		Safe_Release(UIObject);
+	}
+
+	m_vecUIOBjects[ePlayer][eTrigger].clear();
 
 	return S_OK;
 }
@@ -156,7 +174,21 @@ void CUI_Generator::Free()
 	for (auto PSData : m_vecPSData)
 		Safe_Delete(PSData);
 
-	
-
 	m_vecPSData.clear();
+
+	for (_uint i = 0; i < Player::PLAYER_END; ++i)
+	{
+		for (_uint j = 0; j < UI::TRIGGER_END; ++j)
+		{
+			if (0 != m_vecUIOBjects[i][j].size())
+			{
+				for (auto UIObject : m_vecUIOBjects[i][j])
+					Safe_Release(UIObject);
+
+				m_vecUIOBjects[i][j].clear();
+			}
+		}
+	}
+
+
 }

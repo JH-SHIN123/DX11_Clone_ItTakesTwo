@@ -18,6 +18,7 @@ public:
 public:
 	HRESULT Load_Data(const _tchar* pFilePath);
 	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
+	HRESULT Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
 
 public:
 	void Set_TriggerOn();
@@ -29,6 +30,7 @@ private:
 
 private:
 	_bool						m_IsTrigger = true;
+	_bool						m_IsOutPut = false;
 
 private:
 	vector<CUIObject::UI_DESC*> m_vecPSData;
