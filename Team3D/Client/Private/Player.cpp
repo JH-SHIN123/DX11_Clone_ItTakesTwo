@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Player.h"
 #include "GameInstance.h"
+#include "Effect_Generator.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -50,7 +51,12 @@ _int CPlayer::Tick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Pressing(DIK_6))
 		m_pModelCom->Set_Animation(7, m_pTransformCom);
 
+	if (m_pGameInstance->Key_Down(DIK_0))
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Walking_Smoke, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
+		
+
 
 	return NO_EVENT;
 }
@@ -58,7 +64,8 @@ _int CPlayer::Tick(_double dTimeDelta)
 _int CPlayer::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
-	return 0;
+	//
+	//return 0;
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
 

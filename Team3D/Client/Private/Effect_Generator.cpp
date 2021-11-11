@@ -8,6 +8,7 @@
 #include "RespawnTunnel.h"
 #include "RespawnTunnel_Smoke.h"
 #include "FireDoor.h"
+#include "Walking_Smoke.h"
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
 
@@ -18,23 +19,31 @@ CEffect_Generator::CEffect_Generator()
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _bool IsEnvironment)
+HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fvector vPosition)
 {
 	if (Effect_Value::Effect_Value_End <= eEffect)
 		return E_FAIL;
 	
 	EFFECT_DESC_CLONE Clone_Data;
 
+	_tchar szLayer[MAX_PATH] = L"";
+	_tchar szPrototype[MAX_PATH] = L"";
+
+
 	switch (eEffect)
 	{
-	case Client::Effect_Value::Player_Smoke:
-		Clone_Data.vDir = {};
-
-
+	case Client::Effect_Value::Walking_Smoke:
+		Clone_Data.vDir = {0.f, 1.f, 0.f};
+		Clone_Data.fUVTime = -0.01f;
+		XMStoreFloat4(&Clone_Data.vPos, vPosition);
+		lstrcpy(szLayer, L"Layer_Effect");
+		lstrcpy(szPrototype, L"GameObject_2D_Walking_Smoke");
 		break;
 	default:
 		break;
 	}
+
+	m_pGameInstance->Add_GameObject_Clone(1, L"Layer_Effect", 1, L"GameObject_2D_Walking_Smoke", &Clone_Data);
 
 	return S_OK;
 }
@@ -100,17 +109,22 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	CGameInstance* pInstance = CGameInstance::GetInstance();
 	NULL_CHECK_RETURN(pInstance, E_FAIL);
 
-	if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel", CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
-
-	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel_Portal"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel_Portal", CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
-
-	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_RespawnTunnel_Smoke"))
+	// 2D Effect
+	if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_RespawnTunnel_Smoke"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_RespawnTunnel_Smoke", CRespawnTunnel_Smoke::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_FireDoor", CFireDoor::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Walking_Smoke"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Walking_Smoke", CWalking_Smoke::Create(pDevice, pDeviceContext, pData));
+
+	// 3D Effect
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel", CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel_Portal"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel_Portal", CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
 
 	else
 	{

@@ -15,7 +15,7 @@ BEGIN(Client)
 
 enum class Effect_Value
 {
-	Player_Smoke, Effect_Value_End
+	Walking_Smoke, Effect_Value_End
 };
 
 class CEffect_Generator final : public CBase
@@ -23,7 +23,8 @@ class CEffect_Generator final : public CBase
 	DECLARE_SINGLETON(CEffect_Generator)
 
 public:
-	HRESULT Add_Effect(Effect_Value eEffect, _bool IsEnvironment = false); // 맵과 같이 배치되는 상호작용 없는 환경 이펙트 == true
+	HRESULT Add_Effect(Effect_Value eEffect, _fvector vPosition);
+	// 맵과 같이 배치되는 상호작용 없는 환경 이펙트는 다른걸로
 
 public:
 	HRESULT Load_EffectData(const _tchar* pFilePath, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

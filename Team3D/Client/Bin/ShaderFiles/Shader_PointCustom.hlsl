@@ -432,9 +432,9 @@ PS_OUT  PS_DISTORTION_COLOR(PS_IN_DIST In)
 
 	float4 vFX_tex = g_SecondTexture.Sample(DiffuseSampler, In.vWeightUV);
 	float4 vColor = (float4)0.f;
-	float fWeight = vFX_tex.r * 0.3f;
+	float fWeight = vFX_tex.r * 0.5f;
 
-	float4 vColorRamp = g_ColorTexture.Sample(ColorSampler, In.vColorRamp_UV + (fWeight * 2.f));
+	float4 vColorRamp = g_ColorTexture.Sample(ColorSampler, In.vColorRamp_UV + (fWeight));
 	vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV + fWeight);
 	vColor.rgb *= vColorRamp.rgb;
 

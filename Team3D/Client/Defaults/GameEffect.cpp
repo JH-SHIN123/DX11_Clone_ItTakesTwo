@@ -73,7 +73,7 @@ HRESULT CGameEffect::Copy_Prototype_Desc(void * pArg)
 HRESULT CGameEffect::Ready_Component(void * pArg)
 {
 	if (nullptr != pArg)
-		memcpy(&m_EffectDesc, pArg, sizeof(EFFECT_DESC_CLONE));
+		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
 
 	for (_int i = 0; i < RESOURCE_END; ++i)
 		m_IsResourceName[i] = false;
@@ -101,7 +101,7 @@ HRESULT CGameEffect::Ready_Component(void * pArg)
 
 
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_EffectDesc.vPos));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_EffectDesc_Clone.vPos));
 
 
 	return S_OK;
@@ -120,7 +120,7 @@ void CGameEffect::Check_ChangeData()
 
 }
 
-HRESULT CGameEffect::Ready_InstanceBuffer()
+HRESULT CGameEffect::Ready_InstanceBuffer(_bool IsRenderTerm)
 {
 	if (nullptr == m_pPointInstanceCom)
 		return S_OK;
@@ -134,27 +134,27 @@ HRESULT CGameEffect::Ready_InstanceBuffer()
 	m_pInstance_RenderTerm		= new _double[iInstanceCount];
 	m_pInstance_UVTime			= new _double[iInstanceCount];
 	m_pInstance_UVCount			= new _float2[iInstanceCount];
+	m_pInstance_vSizeTime		= new _double[iInstanceCount];
 	m_pInstance_vReSize			= new _float2[iInstanceCount];
 
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_float2 vSize = { m_pEffectDesc_Prototype->vSize.x ,m_pEffectDesc_Prototype->vSize.y };
 
-	_vector vDir = XMLoadFloat3(&m_EffectDesc.vDir);
+	_vector vDir = XMLoadFloat3(&m_EffectDesc_Clone.vDir);
 
 	_bool IsRandomDir = false;
-	if (0.f != XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_EffectDesc.vRandDirPower))))
+	if (0.f != XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_EffectDesc_Clone.vRandDirPower))))
 		IsRandomDir = true;
 
 	memcpy(m_pInstanceBuffer, m_pPointInstanceCom->Get_InstanceBuffer(), sizeof(VTXMATRIX_CUSTOM_ST) * iInstanceCount);
 
 	_double fRenderTerm = 0.f;
-	_float fUVTerm = m_EffectDesc.fUVTime;
+	_float fUVTerm = m_EffectDesc_Clone.fUVTime;
+
 	for (_int i = 0; i < iInstanceCount; ++i)
 	{
-		// Point_Buffer
 		XMStoreFloat4(&m_pInstanceBuffer[i].vPosition, vPos);
 		m_pInstanceBuffer[i].vSize = vSize;
-		//m_pInstanceBuffer[i].vTextureUV = {rand()%}
 		m_pInstance_RenderTerm[i] = fRenderTerm;
 
 		if (true == m_pEffectDesc_Prototype->IsRePosAll)
@@ -174,7 +174,7 @@ HRESULT CGameEffect::Ready_InstanceBuffer()
 		{
 			_vector vRandDir = XMVectorZero();
 
-			_int iRandPower[3] = { (_int)m_EffectDesc.vRandDirPower.x , (_int)m_EffectDesc.vRandDirPower.y, (_int)m_EffectDesc.vRandDirPower.z };
+			_int iRandPower[3] = { (_int)m_EffectDesc_Clone.vRandDirPower.x , (_int)m_EffectDesc_Clone.vRandDirPower.y, (_int)m_EffectDesc_Clone.vRandDirPower.z };
 			_int iDir[3] = { 0, 0, 0 };
 
 			for (_int j = 0; j < 3; ++j)
@@ -194,32 +194,33 @@ HRESULT CGameEffect::Ready_InstanceBuffer()
 			XMStoreFloat3(&m_pInstance_Dir[i], vRandDir);
 		}
 
-		fRenderTerm += (_float)m_pEffectDesc_Prototype->fRenderTerm;
+		if(true == IsRenderTerm)
+			fRenderTerm += (_float)m_pEffectDesc_Prototype->fRenderTerm;
 	}
 
-	m_pInstance_Dir[0] = m_EffectDesc.vDir;
+	m_pInstance_Dir[0] = m_EffectDesc_Clone.vDir;
 
 	return S_OK;
 }
 
 void CGameEffect::Check_Color(_double TimeDelta)
 {
-	if (0.f != m_EffectDesc.fColorPower)
+	if (0.f != m_EffectDesc_Clone.fColorPower)
 	{
-		_vector vColor = XMLoadFloat4(&m_EffectDesc.vColorChange);
-		_vector vColorNow = XMLoadFloat4(&m_EffectDesc.vColor);
+		_vector vColor = XMLoadFloat4(&m_EffectDesc_Clone.vColorChange);
+		_vector vColorNow = XMLoadFloat4(&m_EffectDesc_Clone.vColor);
 
 		_vector vTerm = vColor - vColorNow;
 
 		//if (false == m_pEffectDesc_Prototype->Is)
-		vColorNow += vTerm * _float((TimeDelta * m_EffectDesc.fColorPower));
+		vColorNow += vTerm * _float((TimeDelta * m_EffectDesc_Clone.fColorPower));
 		//
 		//else
 		//	vColorNow += XMVector3Normalize(vTerm) * (TimeDelta * m_pEffectDesc_Prototype->fColorChangePower);
 
-		XMStoreFloat4(&m_EffectDesc.vColor, vColorNow);
+		XMStoreFloat4(&m_EffectDesc_Clone.vColor, vColorNow);
 
-		m_pPointInstanceCom->Set_Variable("g_vColor", &m_EffectDesc.vColor, sizeof(_float4));
+		m_pPointInstanceCom->Set_Variable("g_vColor", &m_EffectDesc_Clone.vColor, sizeof(_float4));
 	}
 }
 
@@ -233,7 +234,7 @@ _float4 CGameEffect::Check_UV(_double TimeDelta, _int iIndex)
 {
 	_float4 vUV = m_pInstanceBuffer[iIndex].vTextureUV;
 
-	if (-1.f == m_EffectDesc.fUVTime)
+	if (-1.f == m_EffectDesc_Clone.fUVTime)
 		return vUV;
 
 	m_pInstance_UVTime[iIndex] -= TimeDelta;
@@ -252,7 +253,7 @@ _float4 CGameEffect::Check_UV(_double TimeDelta, _int iIndex)
 	//{
 	if (m_pInstance_UVTime[iIndex] <= 0.f)
 	{
-		m_pInstance_UVTime[iIndex] = m_EffectDesc.fUVTime;
+		m_pInstance_UVTime[iIndex] = m_EffectDesc_Clone.fUVTime;
 
 		if (m_pInstance_UVCount[iIndex].x >= m_pEffectDesc_Prototype->iTextureCount_U - 1)
 		{
@@ -282,11 +283,10 @@ _float2 CGameEffect::Check_Size(_double TimeDelta, _int iIndex)
 {
 	if (0.f != m_pEffectDesc_Prototype->fSizeChangePower)
 	{
-		m_pEffectDesc_Prototype->fSizeTime -= (_float)TimeDelta;
+		m_pInstance_vSizeTime[iIndex] -= (_float)TimeDelta;////////////////////////////////////////////
 
-		// 이건 테스트 용이기 때문에 라이프 타임이 끝나면 다시 루프를 돈다
-		// 라이프 타임보다 사이즈 타임이 더 크다면 무한 반복이 된다.
-		if (0.f >= m_pEffectDesc_Prototype->fSizeTime)
+		// m_fSizeTime
+		if (0.f >= m_pInstance_vSizeTime[iIndex])
 			return m_pInstanceBuffer[iIndex].vSize;
 
 		_vector vSize = XMLoadFloat3(&m_pEffectDesc_Prototype->vSizeChange);
@@ -463,19 +463,16 @@ CGameObject * CGameEffect::Clone_GameObject(void * pArg)
 void CGameEffect::Free()
 {
 	Safe_Delete_Array(m_pInstanceBuffer);
-
 	Safe_Delete_Array(m_pInstance_Dir);
 	Safe_Delete_Array(m_pInstance_Pos_UpdateTime);
-
 	Safe_Delete_Array(m_pInstance_RenderTerm);
 	Safe_Delete_Array(m_pInstance_UVTime);
 	Safe_Delete_Array(m_pInstance_UVCount);
-
+	Safe_Delete_Array(m_pInstance_vSizeTime);
 	Safe_Delete_Array(m_pInstance_vReSize);
 
 	if(true == m_IsPrototypeData)
 		Safe_Delete(m_pEffectDesc_Prototype);
-
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
@@ -484,7 +481,6 @@ void CGameEffect::Free()
 
 	Safe_Release(m_pTexturesCom);
 	Safe_Release(m_pTexturesCom_Second);
-
 
 	__super::Free();
 }

@@ -29,7 +29,7 @@ HRESULT CFireDoor::NativeConstruct(void * pArg)
 	m_pInstanceBuffer[0].vTextureUV = _float4(0.f, 0.f, 1.f, 1.f);
 	m_vWeight = m_pInstanceBuffer[0].vTextureUV;
 
-	m_vWeight = _float4(0.f, 0.f, 0.5f, 0.5f);
+	m_vWeight = _float4(0.25f, 0.25f, 0.75f, 0.75f);
 
 	return S_OK;
 }
@@ -38,9 +38,9 @@ _int CFireDoor::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	_double Time = TimeDelta * 0.3f;
+	_float Time = (_float)TimeDelta * 0.3f;
 
-	//m_vWeight.x += TimeDelta * 0.15f;
+	//m_vWeight.x += Time;
 	m_vWeight.y += Time;
 	//m_vWeight.z += TimeDelta * 0.15f;
 	m_vWeight.w += Time;

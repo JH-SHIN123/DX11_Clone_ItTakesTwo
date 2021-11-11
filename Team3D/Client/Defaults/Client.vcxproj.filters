@@ -168,6 +168,9 @@
     <ClInclude Include="..\public\FireDoor.h">
       <Filter>02.GameObject\05.Effect/Particle\2D\01.FireDoor</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Walking_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D\02.Walking_Smoke</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -217,6 +220,9 @@
     </ClCompile>
     <ClCompile Include="..\private\FireDoor.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D\01.FireDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Walking_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D\02.Walking_Smoke</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
