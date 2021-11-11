@@ -28,7 +28,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	m_pModelCom->Set_Animation(0, m_pTransformCom);
-	//m_pModelCom->Set_NextAnimIndex(0);
+	m_pModelCom->Set_NextAnimIndex(0);
 
 	return S_OK;
 }
@@ -50,7 +50,7 @@ _int CPlayer::Tick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Pressing(DIK_6))
 		m_pModelCom->Set_Animation(7, m_pTransformCom);
 
-	//m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
+	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
 
 	return NO_EVENT;
 }
