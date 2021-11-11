@@ -15,23 +15,23 @@ CMay::CMay(const CMay& rhs)
 {
 }
 
-//HRESULT CMay::Set_ShaderConstant_Default()
-//{
-//	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-//
-//	return S_OK;
-//}
-//
-//HRESULT CMay::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
-//{
-//	m_pModelCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-//	m_pModelCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-//	m_pModelCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-//	m_pModelCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-//	m_pModelCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-//
-//	return S_OK;
-//}
+HRESULT CMay::Set_ShaderConstant_Default()
+{
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+
+	return S_OK;
+}
+
+HRESULT CMay::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
+{
+	m_pModelCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+
+	return S_OK;
+}
 
 
 _bool CMay::IsFinish_CurAnimation()
@@ -67,7 +67,8 @@ HRESULT CMay::Ready_Component()
 	PlayerTransformDesc.dSpeedPerSec = 2.f;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &PlayerTransformDesc), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	 
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
+
 	return S_OK;
 }
 
@@ -85,6 +86,9 @@ _int CMay::Tick(_double dTimeDelta)
 	Move(dTimeDelta);
 	Roll(dTimeDelta);
 
+
+
+	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
 	return NO_EVENT;
 }
@@ -221,6 +225,15 @@ void CMay::KeyInput(_double TimeDelta)
 		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 		m_bRoll = true;
 	}
+
+	//if (m_pGameInstance->Key_Down(DIK_SPACE))
+	//{
+	//	m_pActorCom->Jump_Start(30.f);
+	//}
+	//if (m_pGameInstance->Key_Pressing(DIK_SPACE))
+	//{
+	//	m_pActorCom->Jump_Higher(1.f);
+	//}
 }
 
 void CMay::Move(const _double TimeDelta)
@@ -234,6 +247,11 @@ void CMay::Move(const _double TimeDelta)
 		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
 
 		m_bMove = false;
+
+		PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
+
+		m_pActorCom->Move(vDirection / 10.f, TimeDelta);
+
 	}
 }
 void CMay::Roll(const _double TimeDelta)
@@ -259,6 +277,7 @@ void CMay::Sprint(const _double TimeDelta)
 }
 void CMay::Jump(const _double TimeDelta)
 {
+
 }
 void CMay::StateCheck(_double TimeDelta)
 {

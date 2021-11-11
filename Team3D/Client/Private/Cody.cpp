@@ -15,23 +15,23 @@ CCody::CCody(const CCody& rhs)
 {
 }
 
-//HRESULT CCody::Set_ShaderConstant_Default()
-//{
-//	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-//
-//	return S_OK;
-//}
-//
-//HRESULT CCody::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
-//{
-//	m_pModelCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-//	m_pModelCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-//	m_pModelCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-//	m_pModelCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-//	m_pModelCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-//
-//	return S_OK;
-//}
+HRESULT CCody::Set_ShaderConstant_Default()
+{
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+
+	return S_OK;
+}
+
+HRESULT CCody::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
+{
+	m_pModelCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+
+	return S_OK;
+}
 
 
 _bool CCody::IsFinish_CurAnimation()
@@ -67,7 +67,8 @@ HRESULT CCody::Ready_Component()
 	PlayerTransformDesc.dSpeedPerSec = 2.f;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &PlayerTransformDesc), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	 
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
+
 	return S_OK;
 }
 
@@ -85,6 +86,8 @@ _int CCody::Tick(_double dTimeDelta)
 	Move(dTimeDelta);
 	Roll(dTimeDelta);
 
+
+	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
 	return NO_EVENT;
 }
@@ -221,6 +224,12 @@ void CCody::KeyInput(_double TimeDelta)
 		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 		m_bRoll = true;
 	}
+
+	if (m_pGameInstance->Key_Down(DIK_SPACE))
+	{
+		m_pActorCom->Jump_Start(2.2f);
+	}
+
 }
 
 void CCody::Move(const _double TimeDelta)
@@ -234,6 +243,11 @@ void CCody::Move(const _double TimeDelta)
 		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
 
 		m_bMove = false;
+
+		PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
+
+		m_pActorCom->Move(vDirection / 10.f, TimeDelta);
+
 	}
 }
 void CCody::Roll(const _double TimeDelta)
@@ -259,6 +273,7 @@ void CCody::Sprint(const _double TimeDelta)
 }
 void CCody::Jump(const _double TimeDelta)
 {
+
 }
 void CCody::StateCheck(_double TimeDelta)
 {

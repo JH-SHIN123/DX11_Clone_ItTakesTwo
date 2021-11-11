@@ -8,6 +8,7 @@ class CRenderer;
 class CTransform;
 class CModel;
 class CCamera;
+class CControllableActor;
 END
 
 BEGIN(Client)
@@ -37,6 +38,7 @@ protected: /* For.Component */
 	CRenderer*	m_pRendererCom = nullptr;
 	CTransform* m_pTransformCom = nullptr;
 	CModel*		m_pModelCom = nullptr;
+	CControllableActor* m_pActorCom = nullptr;
 
 protected:
 	_float m_fClockWise = 1.f; // 1이면 시계방향, -1이면 반시계방향.

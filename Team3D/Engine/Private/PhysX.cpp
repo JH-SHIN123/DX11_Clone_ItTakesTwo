@@ -36,7 +36,7 @@ HRESULT CPhysX::Ready_PhysX()
 	NULL_CHECK_RETURN(PxInitExtensions(*m_pPhysics, m_pPVD), E_FAIL);
 #else
 	m_pPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pFoundation, PxTolerancesScale());
-	NULL_CHECK_RETURN(m_pPhysics);
+	NULL_CHECK_RETURN(m_pPhysics, E_FAIL);
 #endif
 
 	m_pCooking = PxCreateCooking(PX_PHYSICS_VERSION, *m_pFoundation, PxCookingParams(PxTolerancesScale()));

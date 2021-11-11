@@ -79,9 +79,9 @@ _int CPlayer::Tick(_double dTimeDelta)
 		m_pActorCom->Move(XMVectorSet((_float)dTimeDelta * 10.f, 0.f, 0.f, 1.f), dTimeDelta);
 
 	if (m_pGameInstance->Key_Down(DIK_SPACE))
-		m_pActorCom->Jump_Start(30.f);
+		m_pActorCom->Jump_Start(10.f);
 	if (m_pGameInstance->Key_Pressing(DIK_SPACE))
-		m_pActorCom->Jump_Higher(1.f);
+		m_pActorCom->Jump_Higher(0.5f);
 
 	m_pActorCom->Update(dTimeDelta);
 

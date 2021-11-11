@@ -52,7 +52,6 @@ HRESULT CControllableActor::NativeConstruct(void * pArg)
 	CapsuleControllerDesc.slopeLimit = 0.707f;
 	CapsuleControllerDesc.position = PxExtendedVec3(0.0, 0.5, 0.0);
 
-
 	m_pController = m_pPhysX->Create_CapsuleController(CapsuleControllerDesc);
 	NULL_CHECK_RETURN(m_pController, E_FAIL);
 	m_pActor = m_pController->getActor();
@@ -67,7 +66,7 @@ HRESULT CControllableActor::NativeConstruct(void * pArg)
 
 	m_pActor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, false);
 
-	m_fJumpGravity = -50.f;
+	m_fJumpGravity = -9.8f;
 
 	return S_OK;
 }
@@ -83,9 +82,10 @@ void CControllableActor::Update(_double dTimeDelta)
 	_float fY;
 
 	if (m_fHeightDelta != 0.f)
-		fY = m_fHeightDelta;
+		fY = m_fHeightDelta * 0.5f;
 	else
 		fY = -GRAVITY * (_float)dTimeDelta;
+
 
 	PxVec3 vDist = PxVec3(0, fY, 0);
 	PxU32 iFlags = m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
@@ -112,7 +112,7 @@ void CControllableActor::Jump_Higher(_float fJumpForce)
 	if (!m_bJump || m_fHeightDelta <= 0.f)
 		return;
 
-	if (m_fBaseJumpForce * 1.3f < m_fJumpForce)
+	if (m_fBaseJumpForce * 1.2f < m_fJumpForce)
 		return;
 
 	m_fJumpForce += fJumpForce;
@@ -132,8 +132,7 @@ _float CControllableActor::Get_Height(_double dTimeDelta)
 		return 0.f;
 	
 	m_fJumpTime += (_float)dTimeDelta;
-
-	return (m_fJumpGravity * m_fJumpTime * m_fJumpTime + m_fJumpForce * m_fJumpTime) * (_float)dTimeDelta;
+	return (m_fJumpGravity / 2.f * m_fJumpTime * m_fJumpTime + m_fJumpForce * m_fJumpTime)/* * (_float)dTimeDelta*/;
 }
 
 CControllableActor * CControllableActor::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

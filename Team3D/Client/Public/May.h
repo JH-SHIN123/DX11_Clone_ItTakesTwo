@@ -180,10 +180,9 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
+	virtual HRESULT Set_ShaderConstant_Default() override;
+	virtual HRESULT Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix) override;
 
-
-	/*virtual HRESULT Set_ShaderConstant_Default() override;
-	virtual HRESULT Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix) override;*/
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 	// Tick 에서 호출될 함수들
@@ -242,6 +241,8 @@ private:
 
 	_float3 m_vMoveDirection = {};
 	_bool	m_bMove = false;
+	_bool	m_bShortJump = false;
+	_bool	m_bLongJump = false;
 
 	// 움직임 가속
 	_double m_fAcceleration = 5.0;
