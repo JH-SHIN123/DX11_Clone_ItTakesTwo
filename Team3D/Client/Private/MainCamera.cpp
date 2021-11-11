@@ -125,8 +125,8 @@ CGameObject * CMainCamera::Clone_GameObject(void * pArg)
 
 void CMainCamera::Free()
 {
-	CCamera::Free();
 	Safe_Release(m_pTargetObj);
+	CCamera::Free();
 }
 
 _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
@@ -146,13 +146,13 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 
 	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
 	{
-		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
+		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
 		if (m_fMouseRev[Rev_Holizontal] > 360.f || m_fMouseRev[Rev_Holizontal] < -360.f)
 			m_fMouseRev[Rev_Holizontal] = 0.f;
 	}
 	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
 	{
-		m_fMouseRev[Rev_Prependicul] += (_float)MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta;
+		m_fMouseRev[Rev_Prependicul] += (_float)MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * (_float)dTimeDelta;
 		if (m_fMouseRev[Rev_Prependicul] > 360.f || m_fMouseRev[Rev_Prependicul] < -360.f)
 			m_fMouseRev[Rev_Prependicul] = 0.f;
 		if (m_fMouseRev[Rev_Prependicul] > 30.f)
@@ -209,7 +209,7 @@ _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 		return EVENT_ERROR;
 
 	_vector vPlayerPos = dynamic_cast<CCody*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-	m_fChangeCamModeTime += dTimeDelta;
+	m_fChangeCamModeTime += (_float)dTimeDelta;
 	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
 	_matrix matNext = XMLoadFloat4x4(&m_matBeginWorld);
 	_matrix matRevX = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(m_fMouseRev[Rev_Prependicul]));

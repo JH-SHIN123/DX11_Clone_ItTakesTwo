@@ -150,6 +150,7 @@ void CCody::KeyInput(_double TimeDelta)
 {
 	// KeyProcess 에서 m_iCurState 와 m_iNextState를 비교하고, m_iNextState 를 변경해준다.
 
+
 	_vector vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
 	_vector vCameraRight = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
 	_bool bMove[2] = { false, false };
