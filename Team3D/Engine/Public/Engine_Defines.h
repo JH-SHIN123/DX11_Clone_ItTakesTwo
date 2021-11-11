@@ -2,6 +2,11 @@
 
 #pragma warning (disable : 4251)
 
+/* Microsoft */
+#define _CRT_SECURE_NO_WARNINGS 
+#define WIN32_LEAN_AND_MEAN // 거의 사용되지 않는 내용을 Windows 헤더에서 제외합니다.
+#include <wrl.h>
+
 /* DirectX */
 #include "D3D11.h"
 #include "d3dx11effect.h"
