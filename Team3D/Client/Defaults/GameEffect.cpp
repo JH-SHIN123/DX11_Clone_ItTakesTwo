@@ -460,6 +460,7 @@ CGameObject * CGameEffect::Clone_GameObject(void * pArg)
 		MSG_BOX("Failed to Clone Instance - CGameEffect");
 		Safe_Release(pInstance);
 	}
+	// ¤À¤²°Ï¤²
 	return pInstance;
 }
 
