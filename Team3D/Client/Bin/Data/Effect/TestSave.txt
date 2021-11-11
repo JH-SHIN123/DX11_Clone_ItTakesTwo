@@ -1,4 +1,0 @@
-GameObject_2D_RespawnTunnel_Smoke|Component_Texture_Clouds_01|||1|2|2|3|-1|0|0|-1|0|0|0|1|1|1|0|0|0|5|1|1|1|1|1|1|1|1|0|0|1|0|-1|1|0|-1|0.01|0.01|0.01|0|0|0
-GameObject_2D_FireDoor|Component_Texture_ribbon_noise_02|Component_Texture_Tilling_Noise_01||1|1|1|-1|-1|0|0|-1|0|0|0|1|1.5|1|0|0|0|5|1|1|1|1|1|1|1|1|0|1|1|0|-1|1|0|-1|0.01|0.01|0.01|0|0|0
-GameObject_3D_RespawnTunnel|||Component_Model_RespawnTunnel|1|1|1|-1|-1|0|0|-1|0|0|0|1|1|1|0|0|0|5|1|1|1|1|1|1|1|1|0|0|1|0|-1|1|0|-1|0.001|0.001|0.001|0|-90|0
-GameObject_3D_RespawnTunnel_Portal|||Component_Model_RespawnTunnel_Portal|1|1|1|-1|-1|0|0|-1|0|0|0|1|1|1|0|0|0|5|1|1|1|1|1|1|1|1|0|0|1|0|-1|1|0|-1|0.001|0.001|0.001|0|-90|0

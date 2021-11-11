@@ -23,7 +23,7 @@ HRESULT CFireDoor::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_03"), TEXT("Com_Textrue_ColorRamp"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Textrue_ColorRamp"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
 
 	
 	m_pInstanceBuffer[0].vTextureUV = _float4(0.f, 0.f, 1.f, 1.f);
@@ -40,9 +40,9 @@ _int CFireDoor::Tick(_double TimeDelta)
 
 	_double Time = TimeDelta * 0.3f;
 
-	m_vWeight.x += Time;
+	//m_vWeight.x += TimeDelta * 0.15f;
 	m_vWeight.y += Time;
-	m_vWeight.z += Time;
+	//m_vWeight.z += TimeDelta * 0.15f;
 	m_vWeight.w += Time;
 
 	//m_pInstanceBuffer[0].vTextureUV.x = 0.f;
@@ -54,7 +54,7 @@ _int CFireDoor::Tick(_double TimeDelta)
 	if (1.f <= fT)
 	{
 		fT = 0.f;
-		m_vWeight = _float4(0.f, 0.f, 0.5f, 0.5f);
+		m_vWeight = _float4(0.25f, 0.25f, 0.75f, 0.75f);
 		m_pInstanceBuffer[0].vTextureUV = _float4(0.f, 0.f, 1.f, 1.f);
 	}
 
@@ -78,10 +78,15 @@ HRESULT CFireDoor::Render()
 
 	SetUp_Shader_Data();
 	//_float2 fUV = {0.f,}
-	_float4 vColorRamp = { -2.0f, -2.0f, 2.0f, 2.0f };
+
+	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom->Get_ShaderResourceView(m_pEffectDesc_Prototype->iTextureNum));
+
+	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Second->Get_ShaderResourceView(m_pEffectDesc_Prototype->iTextureNum_Second));
+
+	_float4 vColorRamp = { 0.0f, 0.0f, 2.0f, 2.0f };
 	m_pPointInstanceCom->Set_Variable("g_vUV", &m_vWeight, sizeof(_float4));
 	m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vColorRamp, sizeof(_float4));
-	m_pPointInstanceCom->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(0));
+	m_pPointInstanceCom->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(3));
 
 	m_pPointInstanceCom->Render(5, m_pInstanceBuffer, m_pEffectDesc_Prototype->iInstanceCount);
 

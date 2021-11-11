@@ -56,7 +56,7 @@ HRESULT CGameEffect::Render()
 
 	SetUp_Shader_Data();
 
-	m_pPointInstanceCom->Render(m_pEffectDesc_Prototype->iShaderPass, m_pInstanceBuffer, m_pEffectDesc_Prototype->iInstanceCount);
+	m_pPointInstanceCom->Render(0, m_pInstanceBuffer, m_pEffectDesc_Prototype->iInstanceCount);
 
 
 	return S_OK;
@@ -109,14 +109,14 @@ HRESULT CGameEffect::Ready_Component(void * pArg)
 
 void CGameEffect::Check_ChangeData()
 {
-	_float fColor = m_EffectDesc.vColor.x + m_EffectDesc.vColor.y + m_EffectDesc.vColor.z + m_EffectDesc.vColor.w;
-	if (0.f <= fColor)
-		m_pEffectDesc_Prototype->vColor = m_EffectDesc.vColor;
-
-	_float fColorChange = m_EffectDesc.vColorChange.x + m_EffectDesc.vColorChange.y + m_EffectDesc.vColorChange.z + m_EffectDesc.vColorChange.w;
-	if (0.f <= fColor)
-		m_pEffectDesc_Prototype->vColorChange = m_EffectDesc.vColorChange;
-
+// 	_float fColor = m_EffectDesc.vColor.x + m_EffectDesc.vColor.y + m_EffectDesc.vColor.z + m_EffectDesc.vColor.w;
+// 	if (0.f <= fColor)
+// 		m_EffectDesc.vColor = m_EffectDesc.vColor;
+// 
+// 	_float fColorChange = m_EffectDesc.vColorChange.x + m_EffectDesc.vColorChange.y + m_EffectDesc.vColorChange.z + m_EffectDesc.vColorChange.w;
+// 	if (0.f <= fColor)
+// 		m_pEffectDesc_Prototype->vColorChange = m_EffectDesc.vColorChange;
+// 
 
 }
 
@@ -148,7 +148,7 @@ HRESULT CGameEffect::Ready_InstanceBuffer()
 	memcpy(m_pInstanceBuffer, m_pPointInstanceCom->Get_InstanceBuffer(), sizeof(VTXMATRIX_CUSTOM_ST) * iInstanceCount);
 
 	_double fRenderTerm = 0.f;
-	_float fUVTerm = m_pEffectDesc_Prototype->fUVTime_U;
+	_float fUVTerm = m_EffectDesc.fUVTime;
 	for (_int i = 0; i < iInstanceCount; ++i)
 	{
 		// Point_Buffer
@@ -204,22 +204,22 @@ HRESULT CGameEffect::Ready_InstanceBuffer()
 
 void CGameEffect::Check_Color(_double TimeDelta)
 {
-	if (0.f != m_pEffectDesc_Prototype->fColorChangePower)
+	if (0.f != m_EffectDesc.fColorPower)
 	{
-		_vector vColor = XMLoadFloat4(&m_pEffectDesc_Prototype->vColorChange);
-		_vector vColorNow = XMLoadFloat4(&m_pEffectDesc_Prototype->vColor);
+		_vector vColor = XMLoadFloat4(&m_EffectDesc.vColorChange);
+		_vector vColorNow = XMLoadFloat4(&m_EffectDesc.vColor);
 
 		_vector vTerm = vColor - vColorNow;
 
 		//if (false == m_pEffectDesc_Prototype->Is)
-		vColorNow += vTerm * _float((TimeDelta * m_pEffectDesc_Prototype->fColorChangePower));
+		vColorNow += vTerm * _float((TimeDelta * m_EffectDesc.fColorPower));
 		//
 		//else
 		//	vColorNow += XMVector3Normalize(vTerm) * (TimeDelta * m_pEffectDesc_Prototype->fColorChangePower);
 
-		XMStoreFloat4(&m_pEffectDesc_Prototype->vColor, vColorNow);
+		XMStoreFloat4(&m_EffectDesc.vColor, vColorNow);
 
-		m_pPointInstanceCom->Set_Variable("g_vColor", &m_pEffectDesc_Prototype->vColor, sizeof(_float4));
+		m_pPointInstanceCom->Set_Variable("g_vColor", &m_EffectDesc.vColor, sizeof(_float4));
 	}
 }
 
@@ -233,50 +233,47 @@ _float4 CGameEffect::Check_UV(_double TimeDelta, _int iIndex)
 {
 	_float4 vUV = m_pInstanceBuffer[iIndex].vTextureUV;
 
-	if (-1.f == m_pEffectDesc_Prototype->fUVTime_U)
+	if (-1.f == m_EffectDesc.fUVTime)
 		return vUV;
 
 	m_pInstance_UVTime[iIndex] -= TimeDelta;
 
-	if (true == m_pEffectDesc_Prototype->IsTexFlow_U)
-	{
-		vUV.x += (_float)TimeDelta;
-		vUV.z += (_float)TimeDelta;
-	}
-
-	if (true == m_pEffectDesc_Prototype->IsTexFlow_V)
-	{
-		vUV.y += (_float)TimeDelta;
-		vUV.w += (_float)TimeDelta;
-	}
+	// 	if (true == m_EffectDesc.fUVTime)
+// 	{
+// 		vUV.x += (_float)TimeDelta;
+// 		vUV.y += (_float)TimeDelta;
+// 		vUV.z += (_float)TimeDelta;
+// 		vUV.w += (_float)TimeDelta;
+// 	}
 
 
-	else
+
+	//else
+	//{
+	if (m_pInstance_UVTime[iIndex] <= 0.f)
 	{
-		if (m_pInstance_UVTime[iIndex] <= 0.f)
+		m_pInstance_UVTime[iIndex] = m_EffectDesc.fUVTime;
+
+		if (m_pInstance_UVCount[iIndex].x >= m_pEffectDesc_Prototype->iTextureCount_U - 1)
 		{
-			m_pInstance_UVTime[iIndex] = m_pEffectDesc_Prototype->fUVTime_U;
+			m_pInstance_UVCount[iIndex].x = 0;
 
-			if (m_pInstance_UVCount[iIndex].x >= m_pEffectDesc_Prototype->iTextureCount_U - 1)
-			{
-				m_pInstance_UVCount[iIndex].x = 0;
-
-				m_pInstance_UVCount[iIndex].y += 1.f;
-			}
-			else
-				m_pInstance_UVCount[iIndex].x += 1.f;
-
-			if (m_pInstance_UVCount[iIndex].y >= m_pEffectDesc_Prototype->iTextureCount_V)
-				m_pInstance_UVCount[iIndex].y = 0;
-
-			_float fLeft	= (1.f / m_pEffectDesc_Prototype->iTextureCount_U) *  m_pInstance_UVCount[iIndex].x;
-			_float fTop		= (1.f / m_pEffectDesc_Prototype->iTextureCount_V) *  m_pInstance_UVCount[iIndex].y;
-			_float fRight	= (1.f / m_pEffectDesc_Prototype->iTextureCount_U) * (m_pInstance_UVCount[iIndex].x + 1.f);
-			_float fBottom	= (1.f / m_pEffectDesc_Prototype->iTextureCount_V) * (m_pInstance_UVCount[iIndex].y + 1.f);
-
-			vUV = { fLeft, fTop, fRight, fBottom };
+			m_pInstance_UVCount[iIndex].y += 1.f;
 		}
+		else
+			m_pInstance_UVCount[iIndex].x += 1.f;
+
+		if (m_pInstance_UVCount[iIndex].y >= m_pEffectDesc_Prototype->iTextureCount_V)
+			m_pInstance_UVCount[iIndex].y = 0;
+
+		_float fLeft = (1.f / m_pEffectDesc_Prototype->iTextureCount_U) *  m_pInstance_UVCount[iIndex].x;
+		_float fTop = (1.f / m_pEffectDesc_Prototype->iTextureCount_V) *  m_pInstance_UVCount[iIndex].y;
+		_float fRight = (1.f / m_pEffectDesc_Prototype->iTextureCount_U) * (m_pInstance_UVCount[iIndex].x + 1.f);
+		_float fBottom = (1.f / m_pEffectDesc_Prototype->iTextureCount_V) * (m_pInstance_UVCount[iIndex].y + 1.f);
+
+		vUV = { fLeft, fTop, fRight, fBottom };
 	}
+	//}
 
 	return vUV;
 }
@@ -285,7 +282,7 @@ _float2 CGameEffect::Check_Size(_double TimeDelta, _int iIndex)
 {
 	if (0.f != m_pEffectDesc_Prototype->fSizeChangePower)
 	{
-		m_pEffectDesc_Prototype->fSizeTime -= TimeDelta;
+		m_pEffectDesc_Prototype->fSizeTime -= (_float)TimeDelta;
 
 		// 이건 테스트 용이기 때문에 라이프 타임이 끝나면 다시 루프를 돈다
 		// 라이프 타임보다 사이즈 타임이 더 크다면 무한 반복이 된다.
@@ -427,10 +424,10 @@ void CGameEffect::SetUp_Shader_Data()
 		m_pPointInstanceCom->Set_Variable("g_vMainCamPosition", &vMainCamPosition, sizeof(_vector));
 		m_pPointInstanceCom->Set_Variable("g_vSubCamPosition", &vSubCamPosition, sizeof(_vector));
 	
-			m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-	
-		if (true == m_IsResourceName[RESOURCE_TEXTURE_SECOND])
-			m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Second->Get_ShaderResourceView(0));
+		//	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+		//
+		//if (true == m_IsResourceName[RESOURCE_TEXTURE_SECOND])
+		//	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Second->Get_ShaderResourceView(0));
 	}
 
 	if (true == m_IsResourceName[RESOURCE_MESH])

@@ -19,55 +19,47 @@ typedef struct tagEffect_Desc_Prototype
 {
 	_tchar		EffectName[MAX_PATH] = L""; //PrototypeName
 	_tchar		TextureName[MAX_PATH] = L"";
+	_uint		iTextureNum = 0;
 	_tchar		TextureName_Second[MAX_PATH] = L"";
+	_uint		iTextureNum_Second = 0;
 	_tchar		ModelName[MAX_PATH] = L"";
 
 	_int		iInstanceCount = 1;			//인스턴싱 개수
 
 	_int		iTextureCount_U = 1;			// 플립 이미지 일 경우 세팅
 	_int		iTextureCount_V = 1;
-	_float		fUVTime_U = -1.f;			// UV 바뀌는 주기
-	_float		fUVTime_V = -1.f;			// UV 바뀌는 주기
-	_bool		IsTexFlow_U = false;		// 플립 이미지 == false, true == 쉐이더의 UV가 시간값으로 바뀜
-	_bool		IsTexFlow_V = false;		// 플립 이미지 == false, true == 쉐이더의 UV가 시간값으로 바뀜
 
-	_double		fLifeTime = -1.f;			// 생명시간
+	_float		fLifeTime = -1.f;			// 생명시간
 
-	_double		fSizeTime = 0.f;
-	_float		fSizeChangePower = 0.f;
+	_float		fSizeTime = 0.f;
 	_bool		IsResizeContinue = false; // 쏵 늘어났다 가 아니고 같은 값으로 증감
+	_float		fSizeChangePower = 0.f;
 	_float3		vSize = { 1.f, 1.f, 1.f };
 	_float3		vSizeChange = { 0.f, 0.f, 0.f };
 
-	_float		fColorChangePower = 5.f;
-	_float4		vColor = { 1.f,  1.f,  1.f,  1.f };
-	_float4		vColorChange = { 1.f,  1.f,  1.f,  1.f };
-
 	_bool		IsGravity = false;		// 중력
 
-	_int		iShaderPass = 0;
 	_int		iLevelIndex = 1;
 
 	_bool		IsRePosAll = false;
-	_double		fDirMoveTime = -1.f;
 	_float		fDirMoveSpeed = 1.f;
 
-	_double		fRenderTerm = 0.f;				// 한번에 그리지 않고 하나씩 나타나듯이 그리는 주기
-	_double		fInstancePosUpdateTerm = -1.f;	// 0번의 Pos로 다시 세팅되는 주기
+	_float		fRenderTerm = 0.f;				// 한번에 그리지 않고 하나씩 나타나듯이 그리는 주기
+	_float		fInstancePosUpdateTerm = -1.f;	// 0번의 Pos로 다시 세팅되는 주기
 
 	_float3		vPivotScale = { 0.01f, 0.01f, 0.01f };
 	_float3		vPivotRotate_Degree = { 0.f, 0.f, 0.f };
-
 }EFFECT_DESC_PROTO;
 
 typedef struct tagEffect_Desc_Clone
 {
 	_float3 vDir			= { 0.f, 0.f, 0.f };			// 0 Index Move Dir;
 	_float3 vRandDirPower	= { 0.f, 0.f, 0.f };			// other Indeces Move Dir;
+	_float fColorPower		= 5.f;	// Set Addtional Color
 	_float4 vColor			= { -1.f, -1.f, -1.f, -1.f };	// Set Addtional Color
 	_float4 vColorChange	= { -1.f, -1.f, -1.f, -1.f };	// Set Addtional ColorChange
 	_float4 vPos			= { 0.f, -0.f, 0.f, 1.f };		// Set Position
-
+	_float fUVTime = -1.f;
 }EFFECT_DESC_CLONE; 
 
 class CGameEffect :	public CGameObject

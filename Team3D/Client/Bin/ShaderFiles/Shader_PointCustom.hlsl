@@ -23,8 +23,8 @@ sampler ColorSampler = sampler_state
 {
 	Filter = MIN_MAG_MIP_LINEAR;
 
-	AddressU = mirror_once;
-	AddressV = mirror_once;
+	AddressU = mirror/*_once*/;
+	AddressV = mirror/*_once*/;
 };
 
 
