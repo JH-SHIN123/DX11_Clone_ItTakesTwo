@@ -185,6 +185,7 @@ void CMay::KeyInput(_double TimeDelta)
 	}
 	else
 	{
+		//Test
 		if (m_pGameInstance->Key_Pressing(DIK_UP))
 		{
 			bMove[0] = !bMove[0];
