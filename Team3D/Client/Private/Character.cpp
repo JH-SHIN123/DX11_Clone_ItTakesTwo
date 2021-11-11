@@ -12,6 +12,70 @@ CCharacter::CCharacter(const CCharacter& rhs)
 {
 }
 
+_float CCharacter::Compute_Distance(CTransform * pPlayerTransform, CTransform * pDstTransform)
+{
+	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vTargetPos = pDstTransform->Get_State(CTransform::STATE_POSITION);
+
+	_vector vDir = vTargetPos - vPlayerPos;
+	_float vDist = fabs(XMVectorGetX(XMVector3Length(vDir)));
+
+	return vDist;
+}
+
+_float CCharacter::Compute_Degree(CTransform * pPlayerTransform, CTransform * pDstTransform)
+{
+	_vector vTargetPos = pDstTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vTargetLook = pDstTransform->Get_State(CTransform::STATE_LOOK);
+	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+
+	_vector vDir = vPlayerPos - vTargetPos;
+	vDir = XMVector3Normalize(vDir);
+	_float Cos = acosf(XMVectorGetX(XMVector3Dot(vTargetLook, vDir)));
+	_float fDegree = XMConvertToDegrees(Cos);
+
+	//Cross 
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_vector vOriginUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	_vector vUp = XMVector3Cross(vLook, vDir);
+	_float CCW = XMVectorGetX(XMVector3Dot(vOriginUp, vUp));
+
+	if (CCW < 0.f)
+		m_fClockWise = -1.f;
+	else
+		m_fClockWise = 1.f;
+
+	return fDegree;
+}
+
+_float CCharacter::Compute_Degree_On_Land(CTransform * pPlayerTransform, CTransform * pDstTransform)
+{
+	_vector vTargetPos = pDstTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vTargetLook = pDstTransform->Get_State(CTransform::STATE_LOOK);
+	vTargetLook = XMVectorSetY(vTargetLook, 0.f);
+
+	_vector vDir = vPlayerPos - vTargetPos;
+	vDir = XMVector3Normalize(vDir);
+	vDir = XMVectorSetY(vDir, 0.f);
+
+	_float Cos = acosf(XMVectorGetX(XMVector3Dot(vTargetLook, vDir)));
+	_float fDegree = XMConvertToDegrees(Cos);
+
+	//Cross 
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_vector vOriginUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	_vector vUp = XMVector3Cross(vLook, vDir);
+	_float CCW = XMVectorGetX(XMVector3Dot(vOriginUp, vUp));
+
+	if (CCW < 0.f)
+		m_fClockWise = -1.f;
+	else
+		m_fClockWise = 1.f;
+
+	return fDegree;
+}
+
 HRESULT CCharacter::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
@@ -22,9 +86,6 @@ HRESULT CCharacter::NativeConstruct_Prototype()
 HRESULT CCharacter::NativeConstruct(void* pArg)
 {
 	CGameObject::NativeConstruct(pArg);
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
 	return S_OK;
 }
@@ -44,11 +105,26 @@ HRESULT CCharacter::Render()
 	return CGameObject::Render();
 }
 
+HRESULT CCharacter::Set_ShaderConstant_Default()
+{
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+
+	return S_OK;
+}
+
+HRESULT CCharacter::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
+{
+	m_pModelCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+
+	return S_OK;
+}
+
 void CCharacter::Free()
 {
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pRendererCom);
 
 	CGameObject::Free();
 }

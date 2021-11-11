@@ -73,32 +73,20 @@
     <Filter Include="02.GameObject\00.Public\03.Character">
       <UniqueIdentifier>{7e996727-b5b0-41d9-b6b8-6b873902fd9e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\00.Public\03.Character\May">
-      <UniqueIdentifier>{49acfb49-2074-4d96-9c3b-229603d013ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\00.Public\03.Character\Cody">
-      <UniqueIdentifier>{a3785dbd-545e-4a19-b04f-e50b3e2ac4af}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\99.Stage%28Test%29\01.Player">
       <UniqueIdentifier>{b134e824-3c41-4f85-8703-7c00321fcce5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\00.Public\03.Character\BehaviorTree">
-      <UniqueIdentifier>{c3a3a29d-efa8-47ad-ad01-5b4d894e2ed3}</UniqueIdentifier>
+    <Filter Include="02.GameObject\00.Public\03.Character\99.Parent">
+      <UniqueIdentifier>{0b5865f1-2eda-4ced-acc0-09423f134b86}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\00.Public\03.Character\BehaviorTree\Task">
-      <UniqueIdentifier>{014ede96-4b1c-4f43-96c7-bda539c2b190}</UniqueIdentifier>
+    <Filter Include="02.GameObject\00.Public\03.Character\00.Cody">
+      <UniqueIdentifier>{a3785dbd-545e-4a19-b04f-e50b3e2ac4af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\00.Public\03.Character\BehaviorTree\Task\Action">
-      <UniqueIdentifier>{65722b49-3fdc-4d7c-85c1-2f7221b300f9}</UniqueIdentifier>
+    <Filter Include="02.GameObject\00.Public\03.Character\01.May">
+      <UniqueIdentifier>{49acfb49-2074-4d96-9c3b-229603d013ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\00.Public\03.Character\BehaviorTree\Task\Composite">
-      <UniqueIdentifier>{454a1c8b-2fdd-4686-9df5-cc80ebea861d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\00.Public\03.Character\Cody\BehaviorTree">
-      <UniqueIdentifier>{2ed6de5b-8570-447e-8002-0b004cae5cc6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\00.Public\03.Character\Cody\BehaviorTree\ActionTask">
-      <UniqueIdentifier>{653f28a9-7285-4caa-97aa-c11e3cbad32b}</UniqueIdentifier>
+    <Filter Include="96.DataBase">
+      <UniqueIdentifier>{9d471ce0-e768-450b-9d91-9b678d9ec778}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -148,28 +136,16 @@
       <Filter>02.GameObject\99.Stage%28Test%29\01.Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Cody.h">
-      <Filter>02.GameObject\00.Public\03.Character\Cody</Filter>
+      <Filter>02.GameObject\00.Public\03.Character\00.Cody</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Character.h">
-      <Filter>02.GameObject\00.Public\03.Character</Filter>
+      <Filter>02.GameObject\00.Public\03.Character\99.Parent</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\BehaviorTree.h">
-      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree</Filter>
+    <ClInclude Include="..\public\DataBase.h">
+      <Filter>96.DataBase</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Task.h">
-      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree\Task</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ActionTask.h">
-      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree\Task\Action</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CompositeTask.h">
-      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree\Task\Composite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\BehaviorTree_Cody.h">
-      <Filter>02.GameObject\00.Public\03.Character\Cody\BehaviorTree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ActionTask_Cody.h">
-      <Filter>02.GameObject\00.Public\03.Character\Cody\BehaviorTree\ActionTask</Filter>
+    <ClInclude Include="..\Public\May.h">
+      <Filter>02.GameObject\00.Public\03.Character\01.May</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -204,28 +180,16 @@
       <Filter>02.GameObject\99.Stage%28Test%29\01.Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Cody.cpp">
-      <Filter>02.GameObject\00.Public\03.Character\Cody</Filter>
+      <Filter>02.GameObject\00.Public\03.Character\00.Cody</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp">
-      <Filter>02.GameObject\00.Public\03.Character</Filter>
+      <Filter>02.GameObject\00.Public\03.Character\99.Parent</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\BehaviorTree.cpp">
-      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree</Filter>
+    <ClCompile Include="..\private\DataBase.cpp">
+      <Filter>96.DataBase</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Task.cpp">
-      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree\Task</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ActionTask.cpp">
-      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree\Task\Action</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CompositeTask.cpp">
-      <Filter>02.GameObject\00.Public\03.Character\BehaviorTree\Task\Composite</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\BehaviorTree_Cody.cpp">
-      <Filter>02.GameObject\00.Public\03.Character\Cody\BehaviorTree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ActionTask_Cody.cpp">
-      <Filter>02.GameObject\00.Public\03.Character\Cody\BehaviorTree\ActionTask</Filter>
+    <ClCompile Include="..\Private\May.cpp">
+      <Filter>02.GameObject\00.Public\03.Character\01.May</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

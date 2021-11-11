@@ -18,11 +18,10 @@ protected:
 	explicit CCharacter(const CCharacter& rhs);
 	virtual ~CCharacter() = default;
 
-public:
-	const _int Get_CurState() const { return m_iCurState; }
-	const _int Get_NextState() const { return m_iNextState; }
-
-	void Set_NextState(_int iState) { m_iNextState = iState; }
+protected:
+	_float Compute_Distance(CTransform* pPlayerTransform, CTransform* pDstTransform);
+	_float Compute_Degree(CTransform* pPlayerTransform, CTransform* pDstTransform);
+	_float Compute_Degree_On_Land(CTransform* pPlayerTransform, CTransform* pDstTransform);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -30,9 +29,9 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
+	virtual HRESULT Set_ShaderConstant_Default() override;
+	virtual HRESULT Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix) override;
 
-protected:
-	virtual void KeyProcess(_double TimeDelta) = 0;
 
 protected: /* For.Component */
 	CRenderer*	m_pRendererCom = nullptr;
@@ -40,8 +39,8 @@ protected: /* For.Component */
 	CModel*		m_pModelCom = nullptr;
 
 protected:
-	_int m_iCurState = 0;
-	_int m_iNextState = 0;
+	_float m_fClockWise = 1.f; // 1이면 시계방향, -1이면 반시계방향.
+	//_uint  m_iViewPortNum = 0;
 
 public:
 	virtual void Free() override;
