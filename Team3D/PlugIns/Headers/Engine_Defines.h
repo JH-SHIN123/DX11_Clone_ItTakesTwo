@@ -50,4 +50,7 @@ using namespace physx;
 #include "Engine_Typedef.h"
 #include "Engine_Function.h"
 
+/* Convenience */
+#include "MathHelper.h"
+
 using namespace Engine;
