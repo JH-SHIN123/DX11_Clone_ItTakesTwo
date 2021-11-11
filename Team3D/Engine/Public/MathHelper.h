@@ -42,4 +42,9 @@ namespace Engine
 	{
 		return XMVectorSet((_float)vVector.x, (_float)vVector.y, (_float)vVector.z, fW);
 	}
+
+	static _vector MH_GetXMPosition(_float4x4 Matrix)
+	{
+		return XMVectorSet(Matrix._41, Matrix._42, Matrix._43, Matrix._44);
+	}
 }

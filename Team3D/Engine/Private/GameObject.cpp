@@ -16,6 +16,7 @@ CGameObject::CGameObject(const CGameObject & rhs)
 	, m_pDeviceContext(rhs.m_pDeviceContext)
 	, m_pGameInstance(rhs.m_pGameInstance)
 	, m_isDead(false)
+	, m_isClone(true)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -59,13 +60,16 @@ HRESULT CGameObject::Render()
 
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const _tchar * pPrototypeTag, const _tchar * pComponentTag, CComponent ** ppOut, void * pArg)
 {
-	CComponent*	pComponent = Find_Component(pComponentTag);
+	_tchar* pTag = new _tchar[lstrlenW(pComponentTag) + 1];
+	lstrcpyW(pTag, pComponentTag);
+
+	CComponent*	pComponent = Find_Component(pTag);
 	NOT_NULL_CHECK_RETURN(pComponent, E_FAIL);
 
 	pComponent = m_pGameInstance->Add_Component_Clone(iPrototypeLevelIndex, pPrototypeTag, pArg);
 	NULL_CHECK_RETURN(pComponent, E_FAIL);
 
-	m_Components.emplace(pComponentTag, pComponent);
+	m_Components.emplace(pTag, pComponent);
 
 	*ppOut = pComponent;
 	Safe_AddRef(pComponent);
@@ -86,7 +90,10 @@ CComponent * CGameObject::Find_Component(const _tchar * pComponentTag)
 void CGameObject::Free()
 {
 	for (auto& rPair : m_Components)
+	{
+		delete[] rPair.first;
 		Safe_Release(rPair.second);
+	}
 
 	m_Components.clear();
 

@@ -5,9 +5,7 @@
 
 BEGIN(Engine)
 class CRenderer;
-class CTransform;
-class CModel;
-class CStaticActor;
+class CModel_Instance;
 END
 
 BEGIN(Client)
@@ -28,10 +26,8 @@ public:
 
 private:
 	/* For.Component */
-	CRenderer*		m_pRendererCom = nullptr;
-	CTransform*		m_pTransformCom = nullptr;
-	CModel*			m_pModelCom = nullptr;
-	CStaticActor*	m_pActorCom = nullptr;
+	CRenderer*			m_pRendererCom = nullptr;
+	CModel_Instance*	m_pModelCom = nullptr;
 
 public:
 	static CTileBox* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

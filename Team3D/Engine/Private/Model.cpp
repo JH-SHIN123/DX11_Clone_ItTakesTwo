@@ -506,7 +506,7 @@ HRESULT CModel::SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC * pInputElementDesc,
 
 CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const char * pMeshFilePath, const char * pMeshFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
-	CModel*	pInstance = new CModel(pDevice, pDeviceContext);
+	CModel* pInstance = new CModel(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype(pMeshFilePath, pMeshFileName, pShaderFilePath, pTechniqueName, PivotMatrix, bNeedCenterBone, pCenterBoneName)))
 	{
@@ -519,7 +519,7 @@ CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceCon
 
 CComponent * CModel::Clone_Component(void * pArg)
 {
-	CModel*	pInstance = new CModel(*this);
+	CModel* pInstance = new CModel(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{

@@ -193,5 +193,8 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl">
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl">
+      <Filter>97.ShaderFiles\01.Codes</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
