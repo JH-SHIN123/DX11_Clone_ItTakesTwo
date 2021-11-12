@@ -28,7 +28,7 @@ HRESULT CWalking_Smoke::NativeConstruct(void * pArg)
 	__super::NativeConstruct(pArg);
 
 
-
+	// 사용금지
 	return S_OK;
 }
 
