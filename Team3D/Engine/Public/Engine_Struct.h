@@ -115,4 +115,15 @@ namespace Engine
 		XMFLOAT3	vPosition;
 		double		dTime;
 	}KEY_FRAME;
+
+	typedef struct tagMeshActorDesc
+	{
+		void*		pVertices;
+		void*		pFaces;
+		uint32_t	iVertexCount;
+		uint32_t	iFaceCount;
+
+		tagMeshActorDesc() { }
+		tagMeshActorDesc(uint32_t _iVertexCount, void* _pVertices, uint32_t _iFaceCount, void* _pFaces) : iVertexCount(_iVertexCount), pVertices(_pVertices), iFaceCount(_iFaceCount), pFaces(_pFaces){}
+	}MESHACTOR_DESC;
 }

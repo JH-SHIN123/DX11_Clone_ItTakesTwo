@@ -103,6 +103,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D\02.Walking_Smoke">
       <UniqueIdentifier>{04cb3247-05c6-4c7f-a7f1-64176fb9a4f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\03.Env">
+      <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -171,6 +174,9 @@
     <ClInclude Include="..\Public\Walking_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D\02.Walking_Smoke</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\TileBox.h">
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -224,6 +230,9 @@
     <ClCompile Include="..\Private\Walking_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D\02.Walking_Smoke</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\TileBox.cpp">
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -257,6 +266,8 @@
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl">
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
   </ItemGroup>

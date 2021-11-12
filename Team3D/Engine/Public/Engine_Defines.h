@@ -2,6 +2,11 @@
 
 #pragma warning (disable : 4251)
 
+/* Microsoft */
+#define _CRT_SECURE_NO_WARNINGS 
+#define WIN32_LEAN_AND_MEAN // 거의 사용되지 않는 내용을 Windows 헤더에서 제외합니다.
+#include <wrl.h>
+
 /* DirectX */
 #include "D3D11.h"
 #include "d3dx11effect.h"
@@ -19,6 +24,8 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+/* PhysX */
+#include "PxPhysicsAPI.h"
 /* Others */
 #include <random>
 #include <ctime>
@@ -28,6 +35,7 @@
 
 using namespace std;
 using namespace DirectX;
+using namespace physx;
 
 #ifndef _AFX
 #ifdef _DEBUG
@@ -46,5 +54,8 @@ using namespace DirectX;
 #include "Engine_Struct.h"
 #include "Engine_Typedef.h"
 #include "Engine_Function.h"
+
+/* Convenience */
+#include "MathHelper.h"
 
 using namespace Engine;

@@ -56,3 +56,7 @@
 #define EVENT_DEAD		1
 #define EVENT_ERROR		-1
 #pragma endregion
+
+#pragma region PHYSX
+#define GRAVITY			9.8f
+#pragma endregion

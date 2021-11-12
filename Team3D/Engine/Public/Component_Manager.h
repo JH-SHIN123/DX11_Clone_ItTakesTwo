@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Model.h"
+#include "Model_Instance.h"
 #include "Renderer.h"
 #include "Textures.h"
 #include "Transform.h"
@@ -11,6 +12,10 @@
 #include "VIBuffer_PointInstance.h"
 #include "VIBuffer_RectInstance.h"
 #include "VIBuffer_PointInstance_Custom.h"
+
+#include "StaticActor.h"
+#include "DynamicActor.h"
+#include "ControllableActor.h"
 
 BEGIN(Engine)
 

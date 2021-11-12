@@ -200,6 +200,7 @@
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\public\TestEffect.h" />
     <ClInclude Include="..\Public\Walking_Smoke.h" />
+    <ClInclude Include="..\public\TileBox.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="GameEffect.h" />
     <ClInclude Include="Resource.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\private\TestEffect.cpp" />
     <ClCompile Include="..\Private\Walking_Smoke.cpp" />
+    <ClCompile Include="..\private\TileBox.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="GameEffect.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -242,6 +244,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

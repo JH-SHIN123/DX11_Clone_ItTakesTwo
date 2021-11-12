@@ -34,7 +34,7 @@ HRESULT CWalking_Smoke::NativeConstruct(void * pArg)
 
 _int CWalking_Smoke::Tick(_double TimeDelta)
 {
-	m_EffectDesc_Prototype.fLifeTime -= TimeDelta;
+	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{

@@ -1,5 +1,6 @@
 #include "..\public\Model_Loader.h"
 #include "Model.h"
+#include "Model_Instance.h"
 #include "Mesh.h"
 #include "Textures.h"
 #include "HierarchyNode.h"
@@ -78,6 +79,57 @@ HRESULT CModel_Loader::Load_ModelFromFile(ID3D11Device * pDevice, ID3D11DeviceCo
 	FAILED_CHECK_RETURN(Add_AnimToContainer(pScene, Nodes, Anims), E_FAIL);
 	/* Send_Containers */
 	pModel->Bring_Containers(pVertices, iVertexCount, pFaces, iFaceCount, Meshes, Materials, Nodes, Transformations, Anims);
+
+	return S_OK;
+}
+
+HRESULT CModel_Loader::Load_ModelFromFile(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, CModel_Instance * pModel, const char * pModelFilePath, const char * pModelFileName)
+{
+	NULL_CHECK_RETURN(pModel, E_FAIL);
+
+	/* Import_Scene */
+	char szFullPath[MAX_PATH] = "";
+
+	strcpy_s(szFullPath, pModelFilePath);
+	strcat_s(szFullPath, pModelFileName);
+
+	Assimp::Importer Importer;
+	//Importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, aiComponent_ANIMATIONS);
+	const aiScene* pScene = Importer.ReadFile(szFullPath, aiProcess_ConvertToLeftHanded | aiProcess_Triangulate | aiProcess_CalcTangentSpace);
+	NULL_CHECK_RETURN(pScene, E_FAIL);
+	NULL_CHECK_RETURN(pScene->mRootNode, E_FAIL);
+
+	/* Create_Container & Reserve */
+	MESHES			Meshes;
+	MATERIALS		Materials;
+
+	_uint	iVertexCount = 0;
+	_uint	iFaceCount = 0;
+
+	for (_uint iIndex = 0; iIndex < pScene->mNumMeshes; ++iIndex)
+	{
+		iVertexCount += pScene->mMeshes[iIndex]->mNumVertices;
+		iFaceCount += pScene->mMeshes[iIndex]->mNumFaces;
+	}
+
+	NULL_CHECK_RETURN(iVertexCount, E_FAIL);
+	NULL_CHECK_RETURN(iFaceCount, E_FAIL);
+
+	VTXMESH* pVertices = new VTXMESH[iVertexCount];
+	ZeroMemory(pVertices, sizeof(VTXMESH) * iVertexCount);
+
+	POLYGON_INDICES32* pFaces = new POLYGON_INDICES32[iFaceCount];
+	ZeroMemory(pFaces, sizeof(POLYGON_INDICES32) * iFaceCount);
+
+	Meshes.reserve(pScene->mNumMeshes);
+	Materials.reserve(pScene->mNumMaterials);
+
+	/* Load_Meshes */
+	FAILED_CHECK_RETURN(Add_MeshToContainer(pScene, pVertices, pFaces, Meshes), E_FAIL);
+	/* Load_Materials */
+	FAILED_CHECK_RETURN(Add_MaterialToContainer(pDevice, pDeviceContext, pScene, pModelFilePath, Materials), E_FAIL);
+	/* Send_Containers */
+	pModel->Bring_Containers(pVertices, iVertexCount, pFaces, iFaceCount, Meshes, Materials);
 
 	return S_OK;
 }
