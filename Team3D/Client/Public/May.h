@@ -222,8 +222,8 @@ public:
 
 private:
 	// 상태
-	MAY_STATE m_iCurState = SPACESTATION_HUB_SECONDGENERATOR;
-	MAY_STATE m_iNextState = SPACESTATION_HUB_SECONDGENERATOR;
+	MAY_STATE m_iCurState = WALK_BANK_RIGHT;
+	MAY_STATE m_iNextState = WALK_BANK_RIGHT;
 
 
 	// 기본 움직임
