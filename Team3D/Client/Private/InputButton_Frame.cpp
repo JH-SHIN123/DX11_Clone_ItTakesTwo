@@ -63,7 +63,7 @@ HRESULT CInputButton_Frame::Render()
 	if (FAILED(Set_UIVariables_Perspective()))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(0);
+	m_pVIBuffer_RectCom->Render(1);
 
 	return S_OK;
 }

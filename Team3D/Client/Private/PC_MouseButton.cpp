@@ -64,7 +64,7 @@ HRESULT CPC_MouseButton::Render()
 	if (FAILED(Set_UIVariables_Perspective1()))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(0);
+	m_pVIBuffer_RectCom->Render(2);
 
 	return S_OK;
 }
@@ -85,6 +85,7 @@ HRESULT CPC_MouseButton::Set_UIVariables_Perspective()
 	m_pVIBuffer_RectCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
 
 	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
+
 
 	return S_OK;
 }
@@ -133,6 +134,8 @@ HRESULT CPC_MouseButton::Set_UIVariables_Perspective1()
 
 	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
 
+	if (1 <= m_UIDesc.iSubTextureNum)
+		m_pVIBuffer_RectCom->Set_ShaderResourceView("g_SubTexture", m_pTextureCom->Get_ShaderResourceView(0));
 
 	return S_OK;
 }

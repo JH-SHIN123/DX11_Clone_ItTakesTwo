@@ -125,6 +125,35 @@ PS_OUT	PS_MAIN(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_FRAME(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	Out.vColor.b = 0.f;
+
+	return Out;
+
+}
+
+PS_OUT PS_PC_MOUSE(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	float4 vSubColor = g_SubTexture.Sample(DiffuseSampler, In.vTexUV);
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.g == vSubColor.g)
+		Out.vColor.b = 0.f;
+	/*
+	if (Out.vColor.r == vSubColor.r)
+		Out.vColor.b = 0.f;
+	*/
+	return Out;
+}
+
+
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
@@ -139,13 +168,23 @@ technique11 DefaultTechnique
 		PixelShader		= compile ps_5_0 PS_MAIN();
 	}
 
-	//pass Test
-	//{
-	//	SetRasterizerState(Rasterizer_Solid);
-	//	SetDepthStencilState(DepthStecil_No_ZWrite, 0);
-	//	SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-	//	VertexShader = compile vs_5_0 VS_TEST();
-	//	GeometryShader = compile gs_5_0 GS_MAIN();
-	//	PixelShader = compile ps_5_0 PS_MAIN();
-	//}
+	pass Frame
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_FRAME();
+	}
+
+	pass Mouse
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PC_MOUSE();
+	}
 };
