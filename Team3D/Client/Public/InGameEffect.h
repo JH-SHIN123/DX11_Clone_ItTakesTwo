@@ -82,6 +82,12 @@ public:
 	virtual HRESULT	Render() override;
 
 public:
+	HRESULT SetUp_InstanceCount(_uint iInstanceCount);
+	HRESULT SetUp_Instance_WorldMatrix(_uint iIndex, _float4x4 WolrdMatrix);
+	HRESULT SetUp_Instance_WorldMatrix(_uint iIndex, _fmatrix WolrdMatrix);
+	HRESULT SetUp_Instance_Position(_uint iIndex, _fvector vPosition, _fvector vOffSetPosition = XMVectorZero());
+
+public:
 	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0);
 	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0);
 	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0);
@@ -136,6 +142,7 @@ protected:
 	CModel*		m_pModelCom = nullptr;
 
 	_bool m_IsResourceName[RESOURCE_END];
+	_bool m_IsBillBoard = true;
 
 public:
 	static CInGameEffect* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void* pArg);

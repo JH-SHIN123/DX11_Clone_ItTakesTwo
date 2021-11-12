@@ -91,9 +91,6 @@
     <Filter Include="95.Effect_Generator">
       <UniqueIdentifier>{1efce119-1cf1-4fab-92f2-6371aba8b2a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D\01.FireDoor">
-      <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\99.Stage%28Test%29\03.Env">
       <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
     </Filter>
@@ -111,6 +108,12 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D\99.DummyEffect">
       <UniqueIdentifier>{2597e457-f059-48c4-ac26-d228360d5248}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D\Member">
+      <UniqueIdentifier>{2d113bd5-2e8a-454e-ae74-7e78d42a438b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D\Member\00.FireDoor">
+      <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -169,7 +172,7 @@
       <Filter>02.GameObject\05.Effect/Particle\2D\Smoke\02.RespawnTunnel_Smoke</Filter>
     </ClInclude>
     <ClInclude Include="..\public\FireDoor.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D\01.FireDoor</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D\Member\00.FireDoor</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Walking_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D\Smoke\00.Walking_Smoke</Filter>
@@ -185,6 +188,9 @@
     </ClInclude>
     <ClInclude Include="..\public\Landing_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D\Smoke\01.Landing_Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Test_EnvObject.h">
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -228,7 +234,7 @@
       <Filter>02.GameObject\05.Effect/Particle\2D\Smoke\02.RespawnTunnel_Smoke</Filter>
     </ClCompile>
     <ClCompile Include="..\private\FireDoor.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D\01.FireDoor</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D\Member\00.FireDoor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Walking_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D\Smoke\00.Walking_Smoke</Filter>
@@ -244,6 +250,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Landing_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D\Smoke\01.Landing_Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Test_EnvObject.cpp">
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

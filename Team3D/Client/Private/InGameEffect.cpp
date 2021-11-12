@@ -48,6 +48,52 @@ HRESULT CInGameEffect::Render()
 	return S_OK;
 }
 
+HRESULT CInGameEffect::SetUp_InstanceCount(_uint iInstanceCount)
+{
+	m_EffectDesc_Prototype.iInstanceCount = iInstanceCount;
+
+	Safe_Delete_Array(m_pInstanceBuffer);
+	Safe_Delete_Array(m_pInstance_Dir);
+	Safe_Delete_Array(m_pInstance_Pos_UpdateTime);
+	Safe_Delete_Array(m_pInstance_RenderTerm);
+	Safe_Delete_Array(m_pInstance_UVCount);
+
+	Ready_InstanceBuffer();
+
+	return S_OK;
+}
+
+HRESULT CInGameEffect::SetUp_Instance_WorldMatrix(_uint iIndex, _float4x4 WolrdMatrix)
+{
+	if ((_uint)m_EffectDesc_Prototype.iInstanceCount <= iIndex)
+		return E_FAIL;
+
+	memcpy(&m_pInstanceBuffer[iIndex].vRight,		&WolrdMatrix.m[0][0], sizeof(_float4));
+	memcpy(&m_pInstanceBuffer[iIndex].vUp,			&WolrdMatrix.m[1][0], sizeof(_float4));
+	memcpy(&m_pInstanceBuffer[iIndex].vLook,		&WolrdMatrix.m[2][0], sizeof(_float4));
+	memcpy(&m_pInstanceBuffer[iIndex].vPosition,	&WolrdMatrix.m[3][0], sizeof(_float4));
+
+	return S_OK;
+}
+
+HRESULT CInGameEffect::SetUp_Instance_WorldMatrix(_uint iIndex, _fmatrix WolrdMatrix)
+{
+	if ((_uint)m_EffectDesc_Prototype.iInstanceCount <= iIndex)
+		return E_FAIL;
+
+	memcpy(&m_pInstanceBuffer[iIndex].vRight,		&WolrdMatrix.r[0],	sizeof(_float4));
+	memcpy(&m_pInstanceBuffer[iIndex].vUp,			&WolrdMatrix.r[1],	sizeof(_float4));
+	memcpy(&m_pInstanceBuffer[iIndex].vLook,		&WolrdMatrix.r[2],	sizeof(_float4));
+	memcpy(&m_pInstanceBuffer[iIndex].vPosition,	&WolrdMatrix.r[3],	sizeof(_float4));
+
+	return S_OK;
+}
+
+HRESULT CInGameEffect::SetUp_Instance_Position(_uint iIndex, _fvector vPosition, _fvector vOffSetPosition)
+{
+	return S_OK;
+}
+
 void CInGameEffect::Instance_Size(_float TimeDelta, _int iIndex)
 {
 }
@@ -394,6 +440,11 @@ void CInGameEffect::SetUp_Shader_Data()
 		_float	fSubCamFar = pPipeline->Get_SubCamFar();
 		_vector vMainCamPosition = pPipeline->Get_MainCamPosition();
 		_vector vSubCamPosition = pPipeline->Get_SubCamPosition();
+
+		_int IsBillBoard = TRUE;
+		if (false == m_IsBillBoard)
+			IsBillBoard = FALSE;
+		m_pPointInstanceCom->Set_Variable("g_IsBillBoard", &IsBillBoard, sizeof(_int));
 	
 		m_pPointInstanceCom->Set_Variable("g_fMainCamFar", &fMainCamFar, sizeof(_float));
 		m_pPointInstanceCom->Set_Variable("g_fSubCamFar", &fSubCamFar, sizeof(_float));

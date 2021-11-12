@@ -10,6 +10,7 @@ float4			g_vColor;
 float			g_fTime;
 float4			g_vUV;
 float4			g_vColorRamp_UV;
+int				g_IsBillBoard;
 
 sampler DiffuseSampler = sampler_state
 {
@@ -44,7 +45,7 @@ struct VS_OUT
 	float4 vPosition		: POSITION;
 	float2 vSize			: PSIZE;
 	float4 vTextureUV_LTRB	: TEXCOORD0;
-
+	float3 vPointLook		: TEXCOORD1;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -54,6 +55,9 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vPosition = mul(vector(In.vPosition, 1.f), In.WorldMatrix);
 	Out.vTextureUV_LTRB = In.vTextureUV_LTRB;
 	Out.vSize = In.vSize;
+
+	Out.vPointLook = -In.WorldMatrix._31_32_33;
+
 
 	return Out;
 }
@@ -73,6 +77,10 @@ void  GS_MAIN(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream< GS_OU
 
 	// Main View 0,0
 	float3		vLook = normalize(g_vMainCamPosition - In[0].vPosition).xyz;
+
+	if (0 == g_IsBillBoard) // false
+		vLook = In[0].vPointLook;
+
 	float3		vAxisY = vector(0.f, 1.f, 0.f, 0.f).xyz;
 	float3		vRight = normalize(cross(vAxisY, vLook));
 	float3		vUp = normalize(cross(vLook, vRight));
@@ -123,6 +131,8 @@ void  GS_MAIN(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream< GS_OU
 	// Sub View 0,1
 
 	vLook	= normalize(g_vSubCamPosition - In[0].vPosition).xyz;
+	if (0 == g_IsBillBoard) // false
+		vLook = In[0].vPointLook;
 	vAxisY	= vector(0.f, 1.f, 0.f, 0.f).xyz;
 	vRight	= normalize(cross(vAxisY, vLook));
 	vUp		= normalize(cross(vLook, vRight));
@@ -184,6 +194,9 @@ void  GS_MAIN_DIST(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream< 
 
 	// Main View 0,0
 	float3		vLook = normalize(g_vMainCamPosition - In[0].vPosition).xyz;
+	if (0 == g_IsBillBoard) // false
+		vLook = In[0].vPointLook;
+
 	float3		vAxisY = vector(0.f, 1.f, 0.f, 0.f).xyz;
 	float3		vRight = normalize(cross(vAxisY, vLook));
 	float3		vUp = normalize(cross(vLook, vRight));
@@ -242,6 +255,9 @@ void  GS_MAIN_DIST(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream< 
 	// Sub View 0,1
 
 	vLook = normalize(g_vSubCamPosition - In[0].vPosition).xyz;
+	if (0 == g_IsBillBoard) // false
+		vLook = In[0].vPointLook;
+
 	vAxisY = vector(0.f, 1.f, 0.f, 0.f).xyz;
 	vRight = normalize(cross(vAxisY, vLook));
 	vUp = normalize(cross(vLook, vRight));
@@ -375,7 +391,7 @@ PS_OUT  PS_DISTORTION_COLOR(PS_IN_DIST In)
 	float4 vColor = (float4)0.f;
 	float fWeight = vFX_tex.r * 0.5f;
 
-	float4 vColorRamp = g_ColorTexture.Sample(ColorSampler, In.vColorRamp_UV + (fWeight));
+	float4 vColorRamp = g_ColorTexture.Sample(ColorSampler, In.vColorRamp_UV );
 	vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV + fWeight);
 	vColor.rgb *= vColorRamp.rgb;
 
@@ -388,7 +404,7 @@ technique11		DefaultTechnique
 {
 	pass PointInstance_Default // 0
 	{
-		SetRasterizerState(Rasterizer_Solid);
+		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0  VS_MAIN();
@@ -398,7 +414,7 @@ technique11		DefaultTechnique
 
 	pass PointInstance_G_COLOR // 1
 	{
-		SetRasterizerState(Rasterizer_Solid);
+		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0  VS_MAIN();
@@ -408,7 +424,7 @@ technique11		DefaultTechnique
 
 	pass Distortion // 2
 	{
-		SetRasterizerState(Rasterizer_Solid);
+		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0  VS_MAIN();
@@ -418,7 +434,7 @@ technique11		DefaultTechnique
 
 	pass Distortion_Color // 3
 	{
-		SetRasterizerState(Rasterizer_Solid);
+		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0  VS_MAIN();

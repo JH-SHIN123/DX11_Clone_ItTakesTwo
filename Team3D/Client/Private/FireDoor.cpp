@@ -22,15 +22,14 @@ HRESULT CFireDoor::NativeConstruct_Prototype(void * pArg)
 HRESULT CFireDoor::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
-
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Textrue_ColorRamp"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
-
 	
 	m_pInstanceBuffer[0].vTextureUV = _float4(0.f, 0.f, 1.f, 1.f);
 	m_vWeight = m_pInstanceBuffer[0].vTextureUV;
 
 	m_vWeight = _float4(0.25f, 0.25f, 0.75f, 0.75f);
 
+	m_IsBillBoard = false;
 	return S_OK;
 }
 
@@ -63,8 +62,8 @@ _int CFireDoor::Tick(_double TimeDelta)
 	m_pInstanceBuffer[0].vTextureUV.z = 1.f;
 	m_pInstanceBuffer[0].vTextureUV.w = 1.f;
 
-
-
+	m_pInstanceBuffer[0].vSize = { 6.f, 10.25f };
+	m_pInstanceBuffer[0].vPosition = { 0.f, 5.f, 0.f,1.f };
 	return _int();
 }
 
@@ -75,9 +74,7 @@ _int CFireDoor::Late_Tick(_double TimeDelta)
 
 HRESULT CFireDoor::Render()
 {
-
 	SetUp_Shader_Data();
-	//_float2 fUV = {0.f,}
 
 	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum));
 
