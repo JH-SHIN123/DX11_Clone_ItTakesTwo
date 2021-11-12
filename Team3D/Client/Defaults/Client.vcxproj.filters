@@ -100,6 +100,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D\01.FireDoor">
       <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D\02.Walking_Smoke">
+      <UniqueIdentifier>{04cb3247-05c6-4c7f-a7f1-64176fb9a4f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -165,6 +168,9 @@
     <ClInclude Include="..\public\FireDoor.h">
       <Filter>02.GameObject\05.Effect/Particle\2D\01.FireDoor</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Walking_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D\02.Walking_Smoke</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -214,6 +220,9 @@
     </ClCompile>
     <ClCompile Include="..\private\FireDoor.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D\01.FireDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Walking_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D\02.Walking_Smoke</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

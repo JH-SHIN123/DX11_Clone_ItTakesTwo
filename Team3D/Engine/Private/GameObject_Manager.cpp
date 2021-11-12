@@ -17,9 +17,9 @@ HRESULT CGameObject_Manager::Reserve_Container(_uint iLevelCount)
 	NOT_NULL_CHECK_RETURN(m_pLayers, E_FAIL);
 	NOT_NULL_CHECK_RETURN(m_pPrototypes, E_FAIL);
 
-	m_iLevelCount	= iLevelCount;
-	m_pLayers		= new LAYERS[iLevelCount];
-	m_pPrototypes	= new PROTOTYPES[iLevelCount];
+	m_iLevelCount = iLevelCount;
+	m_pLayers = new LAYERS[iLevelCount];
+	m_pPrototypes = new PROTOTYPES[iLevelCount];
 
 	return S_OK;
 }
@@ -29,9 +29,13 @@ HRESULT CGameObject_Manager::Add_GameObject_Prototype(_uint iPrototypeLevelIndex
 	NULL_CHECK_RETURN(pPrototype, E_FAIL);
 	NULL_CHECK_RETURN(m_pPrototypes, E_FAIL);
 	NULL_CHECK_RETURN(iPrototypeLevelIndex < m_iLevelCount, E_FAIL);
-	NOT_NULL_CHECK_RETURN(Find_Prototype(iPrototypeLevelIndex, pPrototypeTag), E_FAIL);
 
-	m_pPrototypes[iPrototypeLevelIndex].emplace(pPrototypeTag, pPrototype);
+	_tchar* pTag = new _tchar[lstrlenW(pPrototypeTag) + 1];
+	lstrcpyW(pTag, pPrototypeTag);
+
+	NOT_NULL_CHECK_RETURN(Find_Prototype(iPrototypeLevelIndex, pTag), E_FAIL);
+
+	m_pPrototypes[iPrototypeLevelIndex].emplace(pTag, pPrototype);
 
 	return S_OK;
 }
@@ -118,7 +122,10 @@ void CGameObject_Manager::Clear(_uint iLevelIndex)
 	m_pLayers[iLevelIndex].clear();
 
 	for (auto& rPair : m_pPrototypes[iLevelIndex])
+	{
+		delete[] rPair.first;
 		Safe_Release(rPair.second);
+	}
 	m_pPrototypes[iLevelIndex].clear();
 }
 
@@ -132,8 +139,10 @@ void CGameObject_Manager::Clear_All()
 		m_pLayers[iIndex].clear();
 
 		for (auto& rPair : m_pPrototypes[iIndex])
+		{
+			delete[] rPair.first;
 			Safe_Release(rPair.second);
-
+		}
 		m_pPrototypes[iIndex].clear();
 	}
 }
@@ -178,16 +187,7 @@ CLayer * CGameObject_Manager::Find_Layer(_uint iLevelIndex, const _tchar * pLaye
 
 void CGameObject_Manager::Free()
 {
-	for (_uint iLevelIndex = 0; iLevelIndex < m_iLevelCount; iLevelIndex++)
-	{
-		for (auto& rPair : m_pLayers[iLevelIndex])
-			Safe_Release(rPair.second);
-		m_pLayers[iLevelIndex].clear();
-
-		for (auto& rPair : m_pPrototypes[iLevelIndex])
-			Safe_Release(rPair.second);
-		m_pPrototypes[iLevelIndex].clear();
-	}
+	Clear_All();
 
 	Safe_Delete_Array(m_pLayers);
 	Safe_Delete_Array(m_pPrototypes);

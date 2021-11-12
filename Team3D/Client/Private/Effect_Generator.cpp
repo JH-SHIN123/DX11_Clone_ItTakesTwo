@@ -8,8 +8,138 @@
 #include "RespawnTunnel.h"
 #include "RespawnTunnel_Smoke.h"
 #include "FireDoor.h"
+#include "Walking_Smoke.h"
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
+
+
+CEffect_Generator::CEffect_Generator()
+{
+	m_pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(m_pGameInstance);
+}
+
+HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fvector vPosition)
+{
+	if (Effect_Value::Effect_Value_End <= eEffect)
+		return E_FAIL;
+	
+	EFFECT_DESC_CLONE Clone_Data;
+
+	_tchar szLayer[MAX_PATH] = L"";
+	_tchar szPrototype[MAX_PATH] = L"";
+
+
+	switch (eEffect)
+	{
+	case Client::Effect_Value::Walking_Smoke:
+		Clone_Data.vDir = {0.f, 1.f, 0.f};
+		Clone_Data.UVTime = 0.01;
+		Clone_Data.fSizePower = 0.7f;
+		Clone_Data.vSize_Max = { 2.5f, 2.5f, 0.f };
+		XMStoreFloat4(&Clone_Data.vPos, vPosition);
+		lstrcpy(szLayer, L"Layer_Effect");
+		lstrcpy(szPrototype, L"GameObject_2D_Walking_Smoke");
+		break;
+	default:
+		break;
+	}
+
+	m_pGameInstance->Add_GameObject_Clone(1, szLayer, 1, szPrototype, &Clone_Data);
+
+	return S_OK;
+}
+
+HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+{
+
+	HANDLE hFile = CreateFile(pFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Failed to LoadData UI");
+		CloseHandle(hFile);
+		return E_FAIL;
+	}
+
+	DWORD dwByte = 0;
+
+	CGameInstance* pInstance = CGameInstance::GetInstance();
+
+	while (true)
+	{
+		EFFECT_DESC_PROTO* Data = new EFFECT_DESC_PROTO;
+
+		ReadFile(hFile, Data, sizeof(EFFECT_DESC_PROTO), &dwByte, nullptr);
+
+		if (0 == dwByte)
+		{
+			Safe_Delete(Data);
+			break;
+		}
+
+		if (1 < lstrlen(Data->ModelName))
+		{
+			wstring	 wstrName = Data->ModelName;
+			wstrName.erase(0, 16);
+			char szPrototypeName[MAX_PATH];
+			WideCharToMultiByte(CP_ACP, 0, wstrName.c_str(), MAX_PATH, szPrototypeName, MAX_PATH, NULL, NULL);
+
+			char pPath[MAX_PATH] = "../Bin/Resources/Effect/3D/";
+			strcat_s(pPath, MAX_PATH, szPrototypeName);
+			strcat_s(pPath, MAX_PATH, "/");
+
+			strcat_s(szPrototypeName, MAX_PATH, ".fbx");
+
+			FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Data->iLevelIndex, Data->ModelName
+				, CModel::Create(pDevice, pDeviceContext, pPath, szPrototypeName, TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique"
+					, Compute_Pivot(XMLoadFloat3(&Data->vPivotScale), XMLoadFloat3(&Data->vPivotRotate_Degree)))), E_FAIL);
+		}
+
+
+		Create_Prototype(Data->iLevelIndex, Data->EffectName, pDevice, pDeviceContext, Data);
+		Safe_Delete(Data);
+	}
+
+
+	CloseHandle(hFile);
+
+	return S_OK;
+}
+
+HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pPrototypeName, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, EFFECT_DESC_PROTO* pData)
+{
+	CGameInstance* pInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pInstance, E_FAIL);
+
+	// 2D Effect
+	if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_RespawnTunnel_Smoke"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_RespawnTunnel_Smoke", CRespawnTunnel_Smoke::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_FireDoor", CFireDoor::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Walking_Smoke"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Walking_Smoke", CWalking_Smoke::Create(pDevice, pDeviceContext, pData));
+
+	// 3D Effect
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel", CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel_Portal"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel_Portal", CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
+
+	else
+	{
+		_tchar szWarning[MAX_PATH] = L"";
+		lstrcat(szWarning, pPrototypeName);
+		MessageBox(g_hWnd, szWarning, L"Load Error", MB_OK);
+		Safe_Delete(pData);
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
 
 HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
@@ -20,223 +150,31 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 		, CVIBuffer_PointInstance_Custom::Create(pDevice, pDeviceContext, 5000, TEXT("../Bin/ShaderFiles/Shader_PointCustom.hlsl"), "DefaultTechnique")), E_FAIL);
 
 #pragma region Texture
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Fire_Loop_01"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Fire_Loop_01.png"))), E_FAIL);
-
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Clouds_01"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Clouds_01.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Clouds_01_xbox"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Clouds_01_xbox.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Cloud_Texture_1k"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Cloud_Texture_1k.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ligntning_01"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/ligntning_01.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Fire_Loop"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Fire_Loop/Fire_Loop_0%d.png"), 2)), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Flow_01"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Smoke/Smoke_Flow_01_E%d.png"), 2)), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Flow_02"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Smoke/Smoke_Flow_02_E%d.png"), 2)), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Puff_01"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Smoke/Smoke_Puff_01_E%d.png"), 2)), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Puff_02"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Smoke/Smoke_Puff_02_E%d.png"), 2)), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp/Color_Ramp_%d.png"), 10)), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Noise/Tilling_Noise_0%d.png"), 3)), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Cloud"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Cloud/Tilling_Cloud_0%d.png"), 3)), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Ribbon_Noise"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Ribbon_Noise/Ribbon_Noise_0%d.png"), 2)), E_FAIL);
 
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_01"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_01.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_02"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_02.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_03"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_03.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_04"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_04.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_05"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_05.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_06"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_06.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_07"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_07.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp_08"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp_08.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise_01"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Noise_01.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise_02"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Noise_02.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise_03"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Noise_03.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_TillingClouds_04"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/TillingClouds_04.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_TillingClouds_05"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/TillingClouds_05.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_TillingClouds_06"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/TillingClouds_06.png"))), E_FAIL);
 
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ribbon_noise_02"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/ribbon_noise_02.png"))), E_FAIL);
+
 
 
 #pragma endregion
 
 
 #pragma region Model
-	//_matrix	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
-	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Lightning")
-	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/Lightning/", "Lightning.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
-	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RespawnTunnel")
-	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/RespawnTunnel/", "RespawnTunnel.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
-	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RespawnTunnel_Portal")
-	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/RespawnTunnel/", "RespawnTunnel_Portal.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
-	//FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Wormhole")
-	//	, CModel::Create(pDevice, pDeviceContext, "../Bin/Resources/Effect/3D/Wormhole/", "Wormhole.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
 
 #pragma  endregion
-	return S_OK;
-}
-
-CEffect_Generator::CEffect_Generator()
-{
-}
-
-HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-{
-	wifstream fin;
-
-	fin.open(pFilePath);
-
-	if (!fin.fail())
-	{
-		CGameInstance* pInstance = CGameInstance::GetInstance();
-		NULL_CHECK_RETURN(pInstance, E_FAIL);
-
-
-		while (true)
-		{
-			TCHAR NumData[MAX_PATH] = L"";
-			EFFECT_DESC_PROTO* Data = new EFFECT_DESC_PROTO;
-
-#pragma region Load Effect Data
-			fin.getline(Data->EffectName, MAX_PATH, L'|');
-			fin.getline(Data->TextureName, MAX_PATH, L'|');
-			fin.getline(Data->TextureName_Second, MAX_PATH, L'|');
-			fin.getline(Data->ModelName, MAX_PATH, L'|');
-
-			if (fin.eof())
-			{
-				Safe_Delete(Data);
-				break;
-			}
-
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->iInstanceCount = _ttoi(NumData);
-
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->iTextureCount_U = _ttoi(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->iTextureCount_V = _ttoi(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->fUVTime_U = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->fUVTime_V = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->IsTexFlow_U = (_ttoi(NumData) == TRUE) ? true : false;
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->IsTexFlow_V = (_ttoi(NumData) == TRUE) ? true : false;
-
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->fLifeTime = _ttof(NumData);
-
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->fSizeTime = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->fSizeChangePower = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->IsResizeContinue = (_ttoi(NumData) == TRUE) ? true : false;
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vSize.x = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vSize.y = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vSize.z = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vSizeChange.x = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vSizeChange.y = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vSizeChange.z = (_float)_ttof(NumData);
-
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->fColorChangePower = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vColor.x = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vColor.y = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vColor.z = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vColor.w = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vColorChange.x = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vColorChange.y = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vColorChange.z = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vColorChange.w = (_float)_ttof(NumData);
-
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->IsGravity = (_ttoi(NumData) == TRUE) ? true : false;
-
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->iShaderPass = _ttoi(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->iLevelIndex = _ttoi(NumData);
-
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->IsRePosAll = (_ttoi(NumData) == TRUE) ? true : false;
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->fDirMoveTime = _ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->fDirMoveSpeed = (_float)_ttof(NumData);
-
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->fRenderTerm = _ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->fInstancePosUpdateTerm = (_float)_ttof(NumData);
-
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vPivotScale.x = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vPivotScale.y = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vPivotScale.z = (_float)_ttof(NumData);
-
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vPivotRotate_Degree.x = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH, L'|');
-			Data->vPivotRotate_Degree.y = (_float)_ttof(NumData);
-			fin.getline(NumData, MAX_PATH);
-			Data->vPivotRotate_Degree.z = (_float)_ttof(NumData);
-#pragma endregion
-			
-			if (1 < lstrlen(Data->ModelName))
-			{
-				wstring	 wstrName = Data->ModelName;
-				wstrName.erase(0, 16);
-				char szPrototypeName[MAX_PATH];
-				WideCharToMultiByte(CP_ACP, 0, wstrName.c_str(), MAX_PATH, szPrototypeName, MAX_PATH, NULL, NULL);
-
-				char pPath[MAX_PATH] = "../Bin/Resources/Effect/3D/";
-				strcat_s(pPath, MAX_PATH, szPrototypeName);
-				strcat_s(pPath, MAX_PATH, "/");
-
-				strcat_s(szPrototypeName, MAX_PATH, ".fbx");
-
-				FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, Data->ModelName
-					, CModel::Create(pDevice, pDeviceContext, pPath, szPrototypeName, TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique"
-						, Compute_Pivot(XMLoadFloat3(&Data->vPivotScale), XMLoadFloat3(&Data->vPivotRotate_Degree)))), E_FAIL);
-			}
-
-
-			Create_Prototype(Data->iLevelIndex, Data->EffectName, pDevice, pDeviceContext, Data);
-		}
-
-		fin.close();
-	}
-
-
-
-
-
-	return S_OK;
-}
-
-HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pPrototypeName, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, EFFECT_DESC_PROTO* pData)
-{
-	CGameInstance* pInstance = CGameInstance::GetInstance();
-	NULL_CHECK_RETURN(pInstance, E_FAIL);
-
-	if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, pPrototypeName, CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
-
-	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel_Portal"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, pPrototypeName, CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
-
-	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_RespawnTunnel_Smoke"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, pPrototypeName, CRespawnTunnel_Smoke::Create(pDevice, pDeviceContext, pData));
-
-	else if(0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, pPrototypeName, CFireDoor::Create(pDevice, pDeviceContext, pData));
-
 	return S_OK;
 }
 
@@ -256,4 +194,5 @@ _fmatrix CEffect_Generator::Compute_Pivot(_vector vScale, _vector vRotate)
 
 void CEffect_Generator::Free()
 {
+	Safe_Release(m_pGameInstance);
 }

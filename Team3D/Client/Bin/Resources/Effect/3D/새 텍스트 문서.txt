@@ -1,0 +1,20 @@
+RespawnTunnel
+	스테이지 진입시 포탈 뒤에 나오는 이펙트
+
+RespawnTunnel_Portal
+	관문에 뜨는 일렁일렁 점들 이펙트
+
+Wormhole
+	포탈 타고 가면 슈루룩 이동하는데 메쉬에 텍스처
+
+
+
+
+
+
+
+
+
+미확인
+Lightning
+SpacePSkyShpere

@@ -199,6 +199,7 @@
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\public\TestEffect.h" />
+    <ClInclude Include="..\Public\Walking_Smoke.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="GameEffect.h" />
     <ClInclude Include="Resource.h" />
@@ -219,6 +220,7 @@
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\private\TestEffect.cpp" />
+    <ClCompile Include="..\Private\Walking_Smoke.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="GameEffect.cpp" />
     <ClCompile Include="stdafx.cpp">
