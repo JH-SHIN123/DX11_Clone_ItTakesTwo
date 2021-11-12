@@ -64,14 +64,6 @@ void CGameEffect::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 }
 
-
-HRESULT CGameEffect::Copy_Prototype_Desc(void * pArg)
-{
-
-
-	return S_OK;
-}
-
 HRESULT CGameEffect::Ready_Component(void * pArg)
 {
 	if (nullptr != pArg)
@@ -172,7 +164,7 @@ HRESULT CGameEffect::Ready_InstanceBuffer(_bool IsRenderTerm)
 				if (0 != iRandPower[j])
 				{
 					iDir[j] = rand() % iRandPower[j] + 1;
-					if (rand() % 2 == 0)
+					if (true == m_EffectDesc_Clone.IsRandDirDown[j] && rand() % 2 == 0)
 						iDir[j] *= -1;
 				}
 
@@ -359,8 +351,8 @@ void CGameEffect::Control_InstanceBuffer(_double TimeDelta)
 
 		}
 
-		m_pInstanceBuffer[i].vSize = Check_Size(TimeDelta, i);
-		m_pInstanceBuffer[i].vPosition = Check_Move(TimeDelta, i);//m_pMovementCom->Get_State(EState::Position);
+		m_pInstanceBuffer[i].vSize		= Check_Size(TimeDelta, i);
+		m_pInstanceBuffer[i].vPosition	= Check_Move(TimeDelta, i);
 		m_pInstanceBuffer[i].vTextureUV = Check_UV(TimeDelta, i);
 	}
 }
@@ -385,11 +377,11 @@ void CGameEffect::SetUp_Shader_Data()
 
 	if (true == m_IsResourceName[RESOURCE_TEXTURE])
 	{
-		m_pPointInstanceCom->Set_Variable("g_WorldMatrix",		&XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-		m_pPointInstanceCom->Set_Variable("g_MainViewMatrix",	&XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINVIEW)), sizeof(_matrix));
-		m_pPointInstanceCom->Set_Variable("g_MainProjMatrix",	&XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINPROJ)), sizeof(_matrix));
-		m_pPointInstanceCom->Set_Variable("g_SubViewMatrix",	&XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBVIEW)), sizeof(_matrix));
-		m_pPointInstanceCom->Set_Variable("g_SubProjMatrix",	&XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBPROJ)), sizeof(_matrix));
+		m_pPointInstanceCom->Set_Variable("g_WorldMatrix",		&XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()),					sizeof(_matrix));
+		m_pPointInstanceCom->Set_Variable("g_MainViewMatrix",	&XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINVIEW)),	sizeof(_matrix));
+		m_pPointInstanceCom->Set_Variable("g_MainProjMatrix",	&XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINPROJ)),	sizeof(_matrix));
+		m_pPointInstanceCom->Set_Variable("g_SubViewMatrix",	&XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBVIEW)),	sizeof(_matrix));
+		m_pPointInstanceCom->Set_Variable("g_SubProjMatrix",	&XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBPROJ)),	sizeof(_matrix));
 	
 		_float	fMainCamFar = pPipeline->Get_MainCamFar();
 		_float	fSubCamFar = pPipeline->Get_SubCamFar();
@@ -401,10 +393,6 @@ void CGameEffect::SetUp_Shader_Data()
 		m_pPointInstanceCom->Set_Variable("g_vMainCamPosition", &vMainCamPosition, sizeof(_vector));
 		m_pPointInstanceCom->Set_Variable("g_vSubCamPosition", &vSubCamPosition, sizeof(_vector));
 	
-		//	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-		//
-		//if (true == m_IsResourceName[RESOURCE_TEXTURE_SECOND])
-		//	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Second->Get_ShaderResourceView(0));
 	}
 
 	if (true == m_IsResourceName[RESOURCE_MESH])

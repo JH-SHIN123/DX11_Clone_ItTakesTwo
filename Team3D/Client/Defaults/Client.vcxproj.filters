@@ -153,12 +153,6 @@
     <ClInclude Include="..\Public\SubCamera.h">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClInclude>
-    <ClInclude Include="GameEffect.h">
-      <Filter>02.GameObject\05.Effect/Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\TestEffect.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D\99.TestEffect</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\RespawnTunnel.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\00.RespawnTunnel</Filter>
     </ClInclude>
@@ -176,6 +170,12 @@
     </ClInclude>
     <ClInclude Include="..\public\TileBox.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TestEffect.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D\99.TestEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameEffect.h">
+      <Filter>02.GameObject\05.Effect/Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -209,12 +209,6 @@
     <ClCompile Include="..\Private\SubCamera.cpp">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClCompile>
-    <ClCompile Include="GameEffect.cpp">
-      <Filter>02.GameObject\05.Effect/Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\TestEffect.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D\99.TestEffect</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\RespawnTunnel.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\00.RespawnTunnel</Filter>
     </ClCompile>
@@ -232,6 +226,12 @@
     </ClCompile>
     <ClCompile Include="..\private\TileBox.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TestEffect.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D\99.TestEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameEffect.cpp">
+      <Filter>02.GameObject\05.Effect/Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

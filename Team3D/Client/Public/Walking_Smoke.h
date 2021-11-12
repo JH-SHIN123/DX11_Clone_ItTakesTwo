@@ -18,11 +18,18 @@ public:
 	virtual HRESULT	Render() override;
 
 public:
+	void Control_Alpha(_double TimeDelta);
+	void Control_Instance(_float TimeDelta);
+
+public:
 	void Instance_Size(_float TimeDelta, _int iIndex) override;
 	void Instance_Pos(_float TimeDelta, _int iIndex) override;
 
 private:
 	_float m_fSizeTime = 0.f;
+	_double m_dAlphaTime = 0.0;
+	_bool	m_IsDisapear = false;
+
 
 public:
 	static CWalking_Smoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

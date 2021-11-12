@@ -55,10 +55,11 @@ typedef struct tagEffect_Desc_Clone // 상황에 따라 얘는 좀 이랬으면 좋겠다 싶은 
 {
 	_float3 vDir			= { 0.f, 0.f, 0.f };			// 0 Index Move Dir;
 	_float3 vRandDirPower	= { 0.f, 0.f, 0.f };			// other Indeces Move Dir;
+	_bool	IsRandDirDown[3] = { true, true, true };
 	_bool	IsRandDir_FirstIndex = false;
 	_float4 vPos			= { 0.f, -0.f, 0.f, 1.f };		// Set Position
 	_double	UVTime = -1.f;
-	_float fSizePower = 1.f;
+	_float	fSizePower = 1.f;
 	_float3 vSize_Max = { 1.f,1.f,1.f };
 }EFFECT_DESC_CLONE; 
 
@@ -94,7 +95,6 @@ public: // 기본적인 기능
 	void Control_InstanceBuffer(_double TimeDelta);
 
 public:
-	HRESULT Copy_Prototype_Desc(void* pArg);
 	HRESULT Ready_Component(void* pArg);
 	void	Check_ChangeData();
 	HRESULT	Ready_InstanceBuffer(_bool IsRenderTerm = false);

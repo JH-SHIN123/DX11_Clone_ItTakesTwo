@@ -36,7 +36,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fvector vPosition)
 		Clone_Data.vDir = {0.f, 1.f, 0.f};
 		Clone_Data.UVTime = 0.01;
 		Clone_Data.fSizePower = 0.7f;
-		Clone_Data.vSize_Max = { 2.5f, 2.5f, 0.f };
+		Clone_Data.vSize_Max = { 2.f, 2.f, 0.f };
+		Clone_Data.vRandDirPower = { 5.f, 100.f, 5.f };
+		Clone_Data.IsRandDirDown[1] = false;
 		XMStoreFloat4(&Clone_Data.vPos, vPosition);
 		lstrcpy(szLayer, L"Layer_Effect");
 		lstrcpy(szPrototype, L"GameObject_2D_Walking_Smoke");

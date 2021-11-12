@@ -88,7 +88,7 @@ HRESULT CFireDoor::Render()
 	m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vColorRamp, sizeof(_float4));
 	m_pPointInstanceCom->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(3));
 
-	m_pPointInstanceCom->Render(5, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
+	m_pPointInstanceCom->Render(3, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
 }

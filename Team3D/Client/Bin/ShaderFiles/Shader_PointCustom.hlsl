@@ -338,65 +338,6 @@ PS_OUT  PS_MAIN_COLOR(PS_IN In)
 	return Out;
 }
 
-PS_OUT  PS_MAIN_ALPHATIME_BLACK(PS_IN In)
-{
-	PS_OUT		Out = (PS_OUT)0;
-
-	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-
-	if (0 < Out.vColor.a)
-		Out.vColor.a = g_fTime;
-
-	float fColor = (Out.vColor.r + Out.vColor.g + Out.vColor.b);
-
-	if (0.5 > fColor)
-		Out.vColor.a = 0;
-
-	return Out;
-}
-
-PS_OUT  PS_MAIN_ALPHATIME_DISCARD(PS_IN In)
-{
-	PS_OUT		Out = (PS_OUT)0;
-
-	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-
-	//if (0.f >= In.fTime)
-	//	Out.vColor.a = 0.f;
-
-	return Out;
-}
-
-PS_OUT  PS_MAIN_TEST_SECONDTEX(PS_IN In)
-{
-	PS_OUT		Out = (PS_OUT)0;
-
-	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-	vector vColor = g_SecondTexture.Sample(DiffuseSampler, In.vTexUV);
-
-	float fColor = (Out.vColor.r + Out.vColor.g + Out.vColor.b);
-
-	if (0.1f >= fColor)
-		Out.vColor.a = 0.f;
-
-	Out.vColor.rgb = vColor.rgb;
-
-	return Out;
-}
-
-PS_OUT  PS_MAIN_BLACKDISCARD(PS_IN In)
-{
-	PS_OUT		Out = (PS_OUT)0;
-
-	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-
-	float fColor = Out.vColor.r + Out.vColor.g + Out.vColor.b;
-	if (0.5f >= fColor)
-		discard;
-
-	return Out;
-}
-
 struct  PS_IN_DIST
 {
 	float4 vPosition : SV_POSITION;
@@ -445,7 +386,7 @@ PS_OUT  PS_DISTORTION_COLOR(PS_IN_DIST In)
 
 technique11		DefaultTechnique
 {
-	pass PointInstance_AlphaBlendTime // 0
+	pass PointInstance_Default // 0
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
@@ -455,7 +396,7 @@ technique11		DefaultTechnique
 		PixelShader = compile ps_5_0  PS_MAIN();
 	}
 
-	pass PointInstance_AlphaBlend_gTime // 1
+	pass PointInstance_G_COLOR // 1
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
@@ -465,27 +406,7 @@ technique11		DefaultTechnique
 		PixelShader = compile ps_5_0  PS_MAIN_COLOR();
 	}
 
-	pass Test_SecondTex // 2
-	{
-		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
-		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0  VS_MAIN();
-		GeometryShader = compile gs_5_0  GS_MAIN();
-		PixelShader = compile ps_5_0  PS_MAIN_TEST_SECONDTEX();
-	}
-
-	pass Black_Discard// 3
-	{
-		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
-		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0  VS_MAIN();
-		GeometryShader = compile gs_5_0  GS_MAIN();
-		PixelShader = compile ps_5_0  PS_MAIN_BLACKDISCARD();
-	}
-
-	pass Distortion // 4
+	pass Distortion // 2
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
@@ -495,7 +416,7 @@ technique11		DefaultTechnique
 		PixelShader = compile ps_5_0  PS_DISTORTION();
 	}
 
-	pass Distortion_Color // 4
+	pass Distortion_Color // 3
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);

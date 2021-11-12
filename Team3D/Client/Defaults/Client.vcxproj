@@ -188,6 +188,7 @@
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
     <ClInclude Include="..\public\FireDoor.h" />
+    <ClInclude Include="..\Public\GameEffect.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
     <ClInclude Include="..\public\Loading.h" />
@@ -198,11 +199,10 @@
     <ClInclude Include="..\public\RespawnTunnel_Smoke.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
-    <ClInclude Include="..\public\TestEffect.h" />
+    <ClInclude Include="..\Public\TestEffect.h" />
     <ClInclude Include="..\Public\Walking_Smoke.h" />
     <ClInclude Include="..\public\TileBox.h" />
     <ClInclude Include="Client.h" />
-    <ClInclude Include="GameEffect.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -210,6 +210,7 @@
   <ItemGroup>
     <ClCompile Include="..\private\Effect_Generator.cpp" />
     <ClCompile Include="..\private\FireDoor.cpp" />
+    <ClCompile Include="..\Private\GameEffect.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />
@@ -220,11 +221,10 @@
     <ClCompile Include="..\private\RespawnTunnel_Smoke.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
-    <ClCompile Include="..\private\TestEffect.cpp" />
+    <ClCompile Include="..\Private\TestEffect.cpp" />
     <ClCompile Include="..\Private\Walking_Smoke.cpp" />
     <ClCompile Include="..\private\TileBox.cpp" />
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="GameEffect.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
