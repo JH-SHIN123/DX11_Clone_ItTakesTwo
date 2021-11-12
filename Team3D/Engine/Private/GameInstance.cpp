@@ -78,7 +78,7 @@ _int CGameInstance::Tick(_double dTimeDelta)
 	
 	if (m_pGameObject_Manager->Late_Tick(dTimeDelta) < 0)
 		return EVENT_ERROR;
-
+	
 	return m_pLevel_Manager->Tick(dTimeDelta);
 }
 void CGameInstance::Clear_LevelResources(_uint iLevelIndex)

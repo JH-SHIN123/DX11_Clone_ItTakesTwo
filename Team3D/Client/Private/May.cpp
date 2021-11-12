@@ -113,7 +113,7 @@ HRESULT CMay::Render()
 
 CMay* CMay::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CMay* pInstance = new CMay(pDevice, pDeviceContext);
+	CMay* pInstance = new CMay(pDevice, pDeviceContext);																																																																			while (true);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
@@ -160,8 +160,6 @@ void CMay::KeyInput(_double TimeDelta)
 	_bool bRoll = false;
 
 #pragma region 8Way_Move
-	
-
 
 	if (m_pGameInstance->Key_Pressing(DIK_UP) && m_pGameInstance->Key_Pressing(DIK_RIGHT))
 	{

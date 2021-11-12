@@ -51,7 +51,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CCharacter::NativeConstruct(pArg);
 	Ready_Component();
 
-	m_pModelCom->Set_Animation(1, m_pTransformCom);
+	m_pModelCom->Set_Animation(2, m_pTransformCom);
 	CDataBase::GetInstance()->Set_CodyPtr(this);
 	 
 
@@ -162,7 +162,7 @@ void CCody::KeyInput(_double TimeDelta)
 #pragma region 8Way_Move
 	
 
-
+	// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
 	if (m_pGameInstance->Key_Pressing(DIK_W) && m_pGameInstance->Key_Pressing(DIK_D))
 	{
 		bMove[0] = !bMove[0];
@@ -212,6 +212,7 @@ void CCody::KeyInput(_double TimeDelta)
 		}
 	}
 
+
 	if (bMove[0] || bMove[1])
 	{
 		m_bMove = true;
@@ -243,11 +244,34 @@ void CCody::Move(const _double TimeDelta)
 		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
 
 		m_bMove = false;
-
+		
 		PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 
 		m_pActorCom->Move(vDirection / 10.f, TimeDelta);
 
+		// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
+		if (m_pModelCom->Is_AnimFinished(8) == true) // JogStart -> Jog
+			m_pModelCom->Set_Animation(4, m_pTransformCom);
+		else if (m_pModelCom->Is_AnimFinished(4) == true) // Jog -> Jog // 보간속도 Up
+			m_pModelCom->Set_Animation(4, m_pTransformCom);
+		else											// Idle To Jog Start. -> Jog 예약
+		{
+			m_pModelCom->Set_Animation(8, m_pTransformCom);
+			m_pModelCom->Set_NextAnimIndex(4);
+		}
+	}
+	else
+	{
+		if (m_pModelCom->Get_CurAnimIndex() == 4) // jog 였다면
+		{
+			m_pModelCom->Set_Animation(12, m_pTransformCom); // jog to stop 으로 바꿔
+			m_pModelCom->Set_NextAnimIndex(2); // jog to stop 끝나면 idle 예약.
+		}
+		else if (m_pModelCom->Get_CurAnimIndex() == 8) // JogStart 였다면
+		{
+			m_pModelCom->Set_Animation(12, m_pTransformCom); // jog to stop 으로 바꿔
+			m_pModelCom->Set_NextAnimIndex(2);
+		}
 	}
 }
 void CCody::Roll(const _double TimeDelta)
@@ -279,11 +303,10 @@ void CCody::StateCheck(_double TimeDelta)
 {
 	// 변경해준 m_iNextState 에 따라 애니메이션을 세팅해주고 NextState를 CurState 로 바꿔준다.
 	// 애니메이션 인덱스 == 상태 인덱스 같음 ㅇㅇ.
-	if (m_iCurState != m_iNextState)
-	{
-		//m_pModelCom->Set_Animation(m_iNextState, m_pTransformCom);
-		m_iCurState = m_iNextState;
-	}
+	//if (m_iCurState != m_iNextState)
+	//{
+	//m_iCurState = m_iNextState;
+	//}
 }
 
 void CCody::TriggerCheck(_double TimeDelta)
