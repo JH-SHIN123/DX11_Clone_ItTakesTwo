@@ -250,6 +250,7 @@ public:
 	void Roll(const _double TimeDelta);
 	void Sprint(const _double TimeDelta);
 	void Jump(const _double TimeDelta);
+	void Change_Size(const _double TimeDelta);
 
 
 private:
@@ -288,7 +289,10 @@ private:
 
 
 	// 크기가 달라졌다면
-	PLAYER_SIZE m_ePlayerSize = SIZE_MEDIUM;
+	PLAYER_SIZE m_eCurPlayerSize = SIZE_MEDIUM;
+	PLAYER_SIZE m_eNextPlayerSize = SIZE_MEDIUM;
+	_float3 m_vScale = {1.f, 1.f, 1.f};
+	_bool m_IsSizeChanging = false;
 
 
 	// 컷씬이라면

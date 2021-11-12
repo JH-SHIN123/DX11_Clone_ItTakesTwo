@@ -113,7 +113,7 @@ HRESULT CMay::Render()
 
 CMay* CMay::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CMay* pInstance = new CMay(pDevice, pDeviceContext);																																																																			while (true);
+	CMay* pInstance = new CMay(pDevice, pDeviceContext);																																																																	
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{

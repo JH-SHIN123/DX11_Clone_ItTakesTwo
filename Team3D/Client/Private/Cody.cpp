@@ -64,6 +64,7 @@ _int CCody::Tick(_double dTimeDelta)
 	StateCheck(dTimeDelta);
 	Move(dTimeDelta);
 	Roll(dTimeDelta);
+	Change_Size(dTimeDelta);
 
 
 	m_pActorCom->Update(dTimeDelta);
@@ -133,7 +134,6 @@ void CCody::Free()
 
 void CCody::KeyInput(_double TimeDelta)
 {
-
 #pragma region Local variable
 	_vector vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
 	_vector vCameraRight = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
@@ -222,19 +222,15 @@ void CCody::KeyInput(_double TimeDelta)
 	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
 	{
 		// 커져라
-		switch (m_ePlayerSize)
+		switch (m_eCurPlayerSize)
 		{
 		case Client::CCody::SIZE_SMALL:
-			m_ePlayerSize = SIZE_MEDIUM;
+			m_eNextPlayerSize = SIZE_MEDIUM;
+			m_IsSizeChanging = true;
 			break;
 		case Client::CCody::SIZE_MEDIUM:
-			m_ePlayerSize = SIZE_LARGE;
-			break;
-		case Client::CCody::SIZE_LARGE:
-			break;
-		case Client::CCody::SIZE_END:
-			break;
-		default:
+			m_eNextPlayerSize = SIZE_LARGE;
+			m_IsSizeChanging = true;
 			break;
 		}
 	}
@@ -244,19 +240,15 @@ void CCody::KeyInput(_double TimeDelta)
 	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB))
 	{
 		// 작아져라
-		switch (m_ePlayerSize)
+		switch (m_eCurPlayerSize)
 		{
-		case Client::CCody::SIZE_SMALL:
+		case Client::CCody::SIZE_LARGE:
+			m_eNextPlayerSize = SIZE_MEDIUM;
+			m_IsSizeChanging = true;
 			break;
 		case Client::CCody::SIZE_MEDIUM:
-			m_ePlayerSize = SIZE_SMALL;
-			break;
-		case Client::CCody::SIZE_LARGE:
-			m_ePlayerSize = SIZE_MEDIUM;
-			break;
-		case Client::CCody::SIZE_END:
-			break;
-		default:
+			m_eNextPlayerSize = SIZE_SMALL;
+			m_IsSizeChanging = true;
 			break;
 		}
 	}
@@ -329,6 +321,80 @@ void CCody::Sprint(const _double TimeDelta)
 void CCody::Jump(const _double TimeDelta)
 {
 
+}
+void CCody::Change_Size(const _double TimeDelta)
+{
+	if (m_IsSizeChanging == true)
+	{
+		if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_LARGE)
+		{
+			if (m_vScale.x < 5.f)
+			{
+				m_vScale.x += TimeDelta * 20.f;
+				m_vScale.y += TimeDelta * 20.f;
+				m_vScale.z += TimeDelta * 20.f;
+				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+			}
+			else
+			{
+				m_vScale = { 5.f, 5.f, 5.f };
+				m_IsSizeChanging = false;
+				m_eCurPlayerSize = SIZE_LARGE;
+				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+			}
+		}
+		else if (m_eCurPlayerSize == SIZE_LARGE && m_eNextPlayerSize == SIZE_MEDIUM)
+		{
+			if (m_vScale.x > 1.f)
+			{
+				m_vScale.x -= TimeDelta * 20.f;
+				m_vScale.y -= TimeDelta * 20.f;
+				m_vScale.z -= TimeDelta * 20.f;
+				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+			}
+			else
+			{
+				m_vScale = { 1.f, 1.f, 1.f };
+				m_IsSizeChanging = false;
+				m_eCurPlayerSize = SIZE_MEDIUM;
+				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+			}
+		}
+		else if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_SMALL)
+		{
+			if (m_vScale.x > 0.5f)
+			{
+				m_vScale.x -= TimeDelta * 10.f;
+				m_vScale.y -= TimeDelta * 10.f;
+				m_vScale.z -= TimeDelta * 10.f;
+				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+			}
+			else
+			{
+				m_vScale = { 0.2f, 0.2f, 0.2f };
+				m_IsSizeChanging = false;
+				m_eCurPlayerSize = SIZE_SMALL;
+				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+			}
+		}
+		else if (m_eCurPlayerSize == SIZE_SMALL && m_eNextPlayerSize == SIZE_MEDIUM)
+		{
+			if (m_vScale.x < 1.f)
+			{
+				m_vScale.x += TimeDelta * 10.f;
+				m_vScale.y += TimeDelta * 10.f;
+				m_vScale.z += TimeDelta * 10.f;
+				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+			}
+			else
+			{
+				m_vScale = { 1.f, 1.f, 1.f };
+				m_IsSizeChanging = false;
+				m_eCurPlayerSize = SIZE_MEDIUM;
+				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+			}
+		}
+	}
 }
 void CCody::StateCheck(_double TimeDelta)
 {
