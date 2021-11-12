@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CRespawnTunnel::CRespawnTunnel(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
-	: CGameEffect(pDevice, pDeviceContext)
+	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
 CRespawnTunnel::CRespawnTunnel(const CRespawnTunnel & rhs)
-	: CGameEffect(rhs)
+	: CInGameEffect(rhs)
 {
 }
 

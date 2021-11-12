@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CRespawnTunnel_Smoke::CRespawnTunnel_Smoke(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
-	: CGameEffect(pDevice, pDeviceContext)
+	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
 CRespawnTunnel_Smoke::CRespawnTunnel_Smoke(const CRespawnTunnel_Smoke & rhs)
-	: CGameEffect(rhs)
+	: CInGameEffect(rhs)
 {
 }
 
@@ -30,23 +30,26 @@ _int CRespawnTunnel_Smoke::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	return S_OK;
+
+	return _int();
 }
 
 _int CRespawnTunnel_Smoke::Late_Tick(_double TimeDelta)
 {
 
-	return  m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_ALPHA, this);
+	return __super::Late_Tick(TimeDelta);
 }
 
 HRESULT CRespawnTunnel_Smoke::Render()
 {
 	__super::Render();
 
+
+
 	return S_OK;
 }
 
-CRespawnTunnel_Smoke * CRespawnTunnel_Smoke::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CRespawnTunnel_Smoke * CRespawnTunnel_Smoke::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void* pArg)
 {
 	CRespawnTunnel_Smoke*	pInstance = new CRespawnTunnel_Smoke(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))

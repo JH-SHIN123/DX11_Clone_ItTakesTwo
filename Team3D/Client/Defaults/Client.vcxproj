@@ -188,7 +188,8 @@
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
     <ClInclude Include="..\public\FireDoor.h" />
-    <ClInclude Include="..\Public\GameEffect.h" />
+    <ClInclude Include="..\Public\InGameEffect.h" />
+    <ClInclude Include="..\public\Landing_Smoke.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
     <ClInclude Include="..\public\Loading.h" />
@@ -210,7 +211,8 @@
   <ItemGroup>
     <ClCompile Include="..\private\Effect_Generator.cpp" />
     <ClCompile Include="..\private\FireDoor.cpp" />
-    <ClCompile Include="..\Private\GameEffect.cpp" />
+    <ClCompile Include="..\Private\InGameEffect.cpp" />
+    <ClCompile Include="..\private\Landing_Smoke.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />

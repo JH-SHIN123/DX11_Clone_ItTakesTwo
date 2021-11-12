@@ -1,10 +1,10 @@
 #pragma once
 
 #ifndef __FIREDOOR_H__
-#include "GameEffect.h"
+#include "InGameEffect.h"
 
 BEGIN(Client)
-class CFireDoor final : public CGameEffect
+class CFireDoor final : public CInGameEffect
 {
 private:
 	explicit CFireDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

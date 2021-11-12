@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CFireDoor::CFireDoor(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
-	: CGameEffect(pDevice, pDeviceContext)
+	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
 CFireDoor::CFireDoor(const CFireDoor & rhs)
-	: CGameEffect(rhs)
+	: CInGameEffect(rhs)
 {
 }
 

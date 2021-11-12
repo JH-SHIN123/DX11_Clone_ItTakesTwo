@@ -1,14 +1,16 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Generator.h"
-#include "fstream"
 #include "GameInstance.h"
+#include "Effect_Generator.h"
 
-#include "GameEffect.h"
+#pragma  region Effect Include
 #include "TestEffect.h"
 #include "RespawnTunnel.h"
 #include "RespawnTunnel_Smoke.h"
 #include "FireDoor.h"
 #include "Walking_Smoke.h"
+#include "Landing_Smoke.h"
+#pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
 
@@ -42,6 +44,12 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fvector vPosition)
 		XMStoreFloat4(&Clone_Data.vPos, vPosition);
 		lstrcpy(szLayer, L"Layer_Effect");
 		lstrcpy(szPrototype, L"GameObject_2D_Walking_Smoke");
+		break;
+	case Effect_Value::Landing_Smoke:
+		Clone_Data.UVTime = 0.001;
+		XMStoreFloat4(&Clone_Data.vPos, vPosition);
+		lstrcpy(szLayer, L"Layer_Effect");
+		lstrcpy(szPrototype, L"GameObject_2D_Landing_Smoke");
 		break;
 	default:
 		break;
@@ -123,6 +131,9 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Walking_Smoke"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Walking_Smoke", CWalking_Smoke::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Landing_Smoke"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Landing_Smoke", CLanding_Smoke::Create(pDevice, pDeviceContext, pData));
 
 	// 3D Effect
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))

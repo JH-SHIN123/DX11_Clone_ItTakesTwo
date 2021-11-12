@@ -3,7 +3,7 @@
 #ifndef __RESPAWNTUNNEL_H__
 
 #include "Client_Defines.h"
-#include "GameEffect.h"
+#include "InGameEffect.h"
 
 // BEGIN(Engine)
 // class CVIBuffer_PointInstance_Custom;
@@ -14,7 +14,7 @@
 // END
 
 BEGIN(Client)
-class CRespawnTunnel final : public CGameEffect
+class CRespawnTunnel final : public CInGameEffect
 {
 private:
 	explicit CRespawnTunnel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

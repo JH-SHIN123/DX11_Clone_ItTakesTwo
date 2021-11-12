@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CWalking_Smoke::CWalking_Smoke(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
-	: CGameEffect(pDevice, pDeviceContext)
+	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
 CWalking_Smoke::CWalking_Smoke(const CWalking_Smoke & rhs)
-	: CGameEffect(rhs)
+	: CInGameEffect(rhs)
 {
 }
 

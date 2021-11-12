@@ -1,6 +1,8 @@
 #pragma once
-#include "GameEffect.h"
-class CTestEffect final : public CGameEffect
+
+#include "InGameEffect.h"
+BEGIN(Client)
+class CTestEffect final : public CInGameEffect
 {
 private:
 	explicit CTestEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -15,9 +17,14 @@ public:
 	virtual HRESULT	Render() override;
 
 public:
+	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0) override;
+	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0) override;
+
+
+public:
 	static CTestEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 
 };
-
+END

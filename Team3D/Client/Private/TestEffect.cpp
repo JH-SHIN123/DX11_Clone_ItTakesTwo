@@ -3,12 +3,12 @@
 
 
 CTestEffect::CTestEffect(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
-	: CGameEffect(pDevice, pDeviceContext)
+	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
 CTestEffect::CTestEffect(const CTestEffect & rhs)
-	: CGameEffect(rhs)
+	: CInGameEffect(rhs)
 {
 }
 
@@ -49,29 +49,33 @@ HRESULT CTestEffect::Render()
 	return S_OK;
 }
 
+void CTestEffect::Instance_Size(_float TimeDelta, _int iIndex)
+{
+}
+
+void CTestEffect::Instance_Pos(_float TimeDelta, _int iIndex)
+{
+}
+
 CTestEffect * CTestEffect::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void* pArg)
 {
 	CTestEffect*	pInstance = new CTestEffect(pDevice, pDeviceContext);
-
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
 		MSG_BOX("Failed to Create Instance - CTestEffect");
 		Safe_Release(pInstance);
 	}
-
 	return pInstance;
 }
 
 CGameObject * CTestEffect::Clone_GameObject(void * pArg)
 {
 	CTestEffect* pInstance = new CTestEffect(*this);
-
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
 		MSG_BOX("Failed to Clone Instance - CTestEffect");
 		Safe_Release(pInstance);
 	}
-
 	return pInstance;
 }
 

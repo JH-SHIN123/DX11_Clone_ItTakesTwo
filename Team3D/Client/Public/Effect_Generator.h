@@ -4,7 +4,7 @@
 
 #include "Client_Defines.h"
 #include "Base.h"
-#include "GameEffect.h"
+#include "InGameEffect.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -15,7 +15,7 @@ BEGIN(Client)
 
 enum class Effect_Value
 {
-	Walking_Smoke, Effect_Value_End
+	Walking_Smoke, Landing_Smoke, Effect_Value_End
 };
 
 class CEffect_Generator final : public CBase

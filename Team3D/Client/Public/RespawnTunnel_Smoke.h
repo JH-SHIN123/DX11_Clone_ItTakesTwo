@@ -2,10 +2,10 @@
 
 #ifndef __RESPAWNTUNNEL_SMOKE_H__
 
-#include "GameEffect.h"
+#include "InGameEffect.h"
 
 BEGIN(Client)
-class CRespawnTunnel_Smoke final : public CGameEffect
+class CRespawnTunnel_Smoke final : public CInGameEffect
 {
 private:
 	explicit CRespawnTunnel_Smoke(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

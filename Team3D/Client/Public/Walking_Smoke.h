@@ -2,8 +2,8 @@
 
 #ifndef __WALKING_SMOKE_H__
 
-#include "GameEffect.h"
-class CWalking_Smoke final : public CGameEffect
+#include "InGameEffect.h"
+class CWalking_Smoke final : public CInGameEffect
 {
 private:
 	explicit CWalking_Smoke(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
