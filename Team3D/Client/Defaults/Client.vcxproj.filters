@@ -97,6 +97,18 @@
     <Filter Include="02.GameObject\05.UI\01.InputButton\02.PC_Mouse">
       <UniqueIdentifier>{8173318f-1fa2-42d0-a9af-9fecd05551f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.UI\03.PlayerMarker">
+      <UniqueIdentifier>{bcb1ba0a-7663-4d02-ad8e-327a42640247}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\04.ArrowKeys">
+      <UniqueIdentifier>{94f16a15-f8c5-4016-a6d4-a887aa345023}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\04.ArrowKeys\00.Outline">
+      <UniqueIdentifier>{61a4c168-a303-471d-b37a-2df2d190aa83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\04.ArrowKeys\01.Fill">
+      <UniqueIdentifier>{e25c2719-7f51-45a6-abd1-a6ffb701019b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -159,6 +171,15 @@
     <ClInclude Include="..\Public\PC_MouseButton.h">
       <Filter>02.GameObject\05.UI\01.InputButton\02.PC_Mouse</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PlayerMarker.h">
+      <Filter>02.GameObject\05.UI\03.PlayerMarker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Arrowkeys_Outline.h">
+      <Filter>02.GameObject\05.UI\04.ArrowKeys\00.Outline</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Arrowkeys_Fill.h">
+      <Filter>02.GameObject\05.UI\04.ArrowKeys\01.Fill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -205,6 +226,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\PC_MouseButton.cpp">
       <Filter>02.GameObject\05.UI\01.InputButton\02.PC_Mouse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerMarker.cpp">
+      <Filter>02.GameObject\05.UI\03.PlayerMarker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp">
+      <Filter>02.GameObject\05.UI\04.ArrowKeys\00.Outline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp">
+      <Filter>02.GameObject\05.UI\04.ArrowKeys\01.Fill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -51,13 +51,14 @@ _int CPlayer::Late_Tick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_1))
 	{
 		CUI_Generator::GetInstance()->Set_TriggerOn();
-		CUI_Generator::GetInstance()->Generator_UI(Player::Player_Cody, UI::InputButton_Dot);
+		CUI_Generator::GetInstance()->Generator_UI(Player::Player_May, UI::InputButton_PS_L2);
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_2))
 	{
+
 		CUI_Generator::GetInstance()->Set_TriggerOn();
-		CUI_Generator::GetInstance()->Generator_UI(Player::Player_Cody, UI::InputButton_InterActive);
+		CUI_Generator::GetInstance()->Generator_UI(Player::Player_May, UI::InputButton_PS_R2);
 	}
 	if (m_pGameInstance->Key_Down(DIK_3))
 	{

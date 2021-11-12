@@ -178,6 +178,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
+    <ClInclude Include="..\Public\Arrowkeys_Fill.h" />
+    <ClInclude Include="..\Public\Arrowkeys_Outline.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\InputButton.h" />
@@ -189,6 +191,7 @@
     <ClInclude Include="..\Public\MainCamera.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\PlayerMarker.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\UIObject.h" />
@@ -199,6 +202,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
+    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\InputButton.cpp" />
     <ClCompile Include="..\private\InputButton_Frame.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
@@ -208,6 +213,7 @@
     <ClCompile Include="..\Private\MainCamera.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\PlayerMarker.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\UIObject.cpp" />

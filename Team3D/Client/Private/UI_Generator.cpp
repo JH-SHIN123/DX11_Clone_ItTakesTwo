@@ -5,6 +5,9 @@
 #include "InputButton_Frame.h"
 #include "InputButton.h"
 #include "PC_MouseButton.h"
+#include "PlayerMarker.h"
+#include "Arrowkeys_Outline.h"
+#include "Arrowkeys_Fill.h"
 
 IMPLEMENT_SINGLETON(CUI_Generator)
 
@@ -96,19 +99,51 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 		SetUp_Clone(ePlayer, eTrigger, TEXT("PC_Mouse_Enlargement"));
 		break;
 	case UI::InputButton_Cancle:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Cancle"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Cancle"));
 		break;
 	case UI::InputButton_PS_Cancle:
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Cancle"));
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Cancle"));
 		break;
 	case UI::InputButton_Up:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Up"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Up"));
 		break;
 	case UI::InputButton_Down:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Down"));
 		break;
 	case UI::InputButton_PS_Up:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Up"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Up"));
 		break;
 	case UI::InputButton_PS_Down:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Down"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Down"));
+		break;
+	case UI::PlayerMarker:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("PlayerMarker"));
+		break;
+	case UI::InputButton_PS_R1:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R1"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R1"));
+		break;
+	case UI::Arrowkeys_Side:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Outline"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Left"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Right"));
+		break;
+	case UI::Arrowkeys_UpDown:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Outline"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Up"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Down"));
+		break;
+	case UI::InputButton_PS_L2:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_L2"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_L2"));
+		break;
+	case UI::InputButton_PS_R2:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R2"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R2"));
 		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
@@ -168,7 +203,7 @@ HRESULT CUI_Generator::Add_Prototype_Interactive_UI(CUIObject::UI_DESC* UIDesc)
 	}
 	else if (!lstrcmp(UIDesc->szUITag, L"PlayerMarker"))
 	{
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CPlayerMarker::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
 	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Frame_PS_R1"))
 	{
@@ -239,23 +274,23 @@ HRESULT CUI_Generator::Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc)
 	}
 	else if (!lstrcmp(UIDesc->szUITag, L"Arrowkeys_Outline"))
 	{
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CArrowkeys_Outline::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
 	else if (!lstrcmp(UIDesc->szUITag, L"Arrowkeys_Fill_Up"))
 	{
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CArrowkeys_Fill::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
 	else if (!lstrcmp(UIDesc->szUITag, L"Arrowkeys_Fill_Right"))
 	{
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CArrowkeys_Fill::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
 	else if (!lstrcmp(UIDesc->szUITag, L"Arrowkeys_Fill_Down"))
 	{
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CArrowkeys_Fill::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
 	else if (!lstrcmp(UIDesc->szUITag, L"Arrowkeys_Fill_Left"))
 	{
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CArrowkeys_Fill::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
 	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Frame_PS_L2"))
 	{
@@ -282,10 +317,13 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
 
-	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("InputButton_Frame"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/InputButton_Frame%d.png"), 5)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("InputButton"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/InputButton%d.png"), 4)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("InputButton_Frame"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/InputButton_Frame%d.png"), 6)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("InputButton"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/InputButton%d.png"), 10)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("PlayerMarker"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/ActorMarker/PlayerMarker.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("PC_Mouse"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/PC_Mouse%d.png"), 3)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("PC_Mouse_SubTexture"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/PC_Mouse_SubTexture.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Arrowkeys_Outline"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/Arrowkeys_Outline.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Arrowkeys_Fill"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/Arrowkeys_Fill.png"))), E_FAIL);
 
 	return S_OK;
 }
