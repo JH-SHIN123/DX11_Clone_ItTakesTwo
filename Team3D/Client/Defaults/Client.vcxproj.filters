@@ -115,6 +115,12 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D\Member\00.FireDoor">
       <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D\Cody">
+      <UniqueIdentifier>{173c747f-cf0a-4944-9ff4-a04578e4726c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D\Cody\Dash">
+      <UniqueIdentifier>{31da29fd-8033-4ca7-8797-406f2fb4152b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -192,6 +198,9 @@
     <ClInclude Include="..\public\Test_EnvObject.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Cody_Dash.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D\Cody\Dash</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -253,6 +262,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Test_EnvObject.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Cody_Dash.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D\Cody\Dash</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

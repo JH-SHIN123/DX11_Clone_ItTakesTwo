@@ -67,6 +67,8 @@ _int CPlayer::Tick(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_0))
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Landing_Smoke, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	if (m_pGameInstance->Key_Down(DIK_9))
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Walking_Smoke, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
 		

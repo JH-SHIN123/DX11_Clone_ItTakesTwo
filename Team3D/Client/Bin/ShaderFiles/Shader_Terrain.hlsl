@@ -126,7 +126,7 @@ technique11	DefaultTechnique
 {
 	pass Default
 	{
-		SetRasterizerState(Rasterizer_Wireframe);
+		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader	= compile vs_5_0 VS_MAIN();

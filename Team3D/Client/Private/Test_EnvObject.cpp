@@ -28,7 +28,7 @@ HRESULT CTest_EnvObject::NativeConstruct(void * pArg)
 
 
 	CModel_Instance::ARG_DESC Arg;
-	Arg.iInstanceCount = 5;
+	Arg.iInstanceCount = 1;
 	Arg.fCullingRadius = 10.f;
 	Arg.pActorName = "TileBox";
 	Arg.pWorldMatrices = new _float4x4[Arg.iInstanceCount];
@@ -37,8 +37,8 @@ HRESULT CTest_EnvObject::NativeConstruct(void * pArg)
 	for (_uint i = 0; i < Arg.iInstanceCount; ++i)
 	{
 		Arg.pWorldMatrices[i] = MH_XMFloat4x4Identity();
-		Arg.pWorldMatrices[i]._41 = ((i % 100) * 10.f);
-		Arg.pWorldMatrices[i]._43 = ((i / 100) * 10.f);
+		Arg.pWorldMatrices[i]._41 = 10.f;//((i % 100) * 10.f);
+		Arg.pWorldMatrices[i]._43 = 10.f;//((i / 100) * 10.f);
 		m_pFireDoor->SetUp_Instance_WorldMatrix(i, Arg.pWorldMatrices[i]);
 	}
 
