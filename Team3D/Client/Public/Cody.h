@@ -194,6 +194,9 @@ public:
 	};
 #pragma endregion
 
+public:
+	enum PLAYER_SIZE { SIZE_SMALL, SIZE_MEDIUM, SIZE_LARGE, SIZE_END };
+
 private:
 	explicit CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CCody(const CCody& rhs);
@@ -285,8 +288,7 @@ private:
 
 
 	// 크기가 달라졌다면
-	_bool m_IsMediumSize = false;
-	_bool m_IsLargeSize = false;
+	PLAYER_SIZE m_ePlayerSize = SIZE_MEDIUM;
 
 
 	// 컷씬이라면

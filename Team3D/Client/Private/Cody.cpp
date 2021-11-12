@@ -5,6 +5,7 @@
 #include "Transform.h"
 #include "DataBase.h"
 
+#pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
 {
@@ -15,29 +16,6 @@ CCody::CCody(const CCody& rhs)
 {
 }
 
-HRESULT CCody::Set_ShaderConstant_Default()
-{
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-
-	return S_OK;
-}
-
-HRESULT CCody::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
-{
-	m_pModelCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-
-	return S_OK;
-}
-
-
-_bool CCody::IsFinish_CurAnimation()
-{
-	return _bool();
-}
 
 HRESULT CCody::NativeConstruct_Prototype()
 {
@@ -58,7 +36,6 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	return S_OK;
 }
 
-
 HRESULT CCody::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
@@ -71,7 +48,9 @@ HRESULT CCody::Ready_Component()
 
 	return S_OK;
 }
+#pragma endregion
 
+#pragma region Overrided Function
 _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
@@ -108,8 +87,9 @@ HRESULT CCody::Render()
 
 	return S_OK;
 }
+#pragma endregion
 
-
+#pragma region Rarely_Fix
 CCody* CCody::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CCody* pInstance = new CCody(pDevice, pDeviceContext);
@@ -145,19 +125,21 @@ void CCody::Free()
 	CCharacter::Free();
 }
 
+#pragma endregion
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////	키체크, 상태체크, 애니메이션에 대한 Transform 변경	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void CCody::KeyInput(_double TimeDelta)
 {
-	// KeyProcess 에서 m_iCurState 와 m_iNextState를 비교하고, m_iNextState 를 변경해준다.
 
-
+#pragma region Local variable
 	_vector vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
 	_vector vCameraRight = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
 	_bool bMove[2] = { false, false };
 	_bool bRoll = false;
+#pragma endregion
 
 #pragma region 8Way_Move
 	
@@ -220,16 +202,65 @@ void CCody::KeyInput(_double TimeDelta)
 
 #pragma endregion
 
+#pragma region Keyboard_Shift_Button
 	if (m_pGameInstance->Key_Down(DIK_LSHIFT) && m_bRoll == false)
 	{
 		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 		m_bRoll = true;
 	}
+#pragma endregion
 
+#pragma region Keyboard_Space_Button
 	if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
 		m_pActorCom->Jump_Start(2.2f);
+		m_bShortJump = true;
 	}
+#pragma endregion
+
+#pragma region Mouse_LButton
+	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
+	{
+		// 커져라
+		switch (m_ePlayerSize)
+		{
+		case Client::CCody::SIZE_SMALL:
+			m_ePlayerSize = SIZE_MEDIUM;
+			break;
+		case Client::CCody::SIZE_MEDIUM:
+			m_ePlayerSize = SIZE_LARGE;
+			break;
+		case Client::CCody::SIZE_LARGE:
+			break;
+		case Client::CCody::SIZE_END:
+			break;
+		default:
+			break;
+		}
+	}
+#pragma endregion
+
+#pragma region Mouse_RButton
+	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB))
+	{
+		// 작아져라
+		switch (m_ePlayerSize)
+		{
+		case Client::CCody::SIZE_SMALL:
+			break;
+		case Client::CCody::SIZE_MEDIUM:
+			m_ePlayerSize = SIZE_SMALL;
+			break;
+		case Client::CCody::SIZE_LARGE:
+			m_ePlayerSize = SIZE_MEDIUM;
+			break;
+		case Client::CCody::SIZE_END:
+			break;
+		default:
+			break;
+		}
+	}
+#pragma endregion
 
 }
 
@@ -314,4 +345,25 @@ void CCody::TriggerCheck(_double TimeDelta)
 	//m_bMove = false;
 	//m_bRoll = false;
 }
+
+
+#pragma region Shader_Variables
+HRESULT CCody::Set_ShaderConstant_Default()
+{
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+
+	return S_OK;
+}
+
+HRESULT CCody::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
+{
+	m_pModelCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
+	m_pModelCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+
+	return S_OK;
+}
+#pragma endregion
 
