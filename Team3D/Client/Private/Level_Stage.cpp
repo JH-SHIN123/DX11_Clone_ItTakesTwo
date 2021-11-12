@@ -12,6 +12,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 {
 	CLevel::NativeConstruct();
 
+	//로딩시간 체크중
 	FAILED_CHECK_RETURN(Ready_Layer_Camera(TEXT("Layer_Camera")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Terrain(TEXT("Layer_Terrain")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Cody(TEXT("Layer_Cody")), E_FAIL);
