@@ -19,7 +19,7 @@ HRESULT CMainApp::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Timer(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Prototype_ForStatic(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
-	FAILED_CHECK_RETURN(CUI_Generator::GetInstance()->Set_Device(m_pDevice, m_pDeviceContext), E_FAIL);
+	FAILED_CHECK_RETURN(CUI_Generator::GetInstance()->NativeConstruct(m_pDevice, m_pDeviceContext), E_FAIL);
 
 	return S_OK;
 }

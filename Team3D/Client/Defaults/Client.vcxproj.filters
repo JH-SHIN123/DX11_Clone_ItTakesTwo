@@ -82,9 +82,6 @@
     <Filter Include="02.GameObject\05.UI\00.Main">
       <UniqueIdentifier>{230bdde6-894c-436b-aba5-8bd89b6759ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="96.Loader">
-      <UniqueIdentifier>{6997d3e5-6526-438c-b627-0590bee437ad}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.UI\99.Generator">
       <UniqueIdentifier>{9b8abf26-fdaf-4fcf-bf18-80ba3207b65a}</UniqueIdentifier>
     </Filter>
@@ -96,6 +93,9 @@
     </Filter>
     <Filter Include="02.GameObject\05.UI\01.InputButton\01.Button">
       <UniqueIdentifier>{b0976b55-522d-4d5f-960c-db1c1b6fa194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\01.InputButton\02.PC_Mouse">
+      <UniqueIdentifier>{8173318f-1fa2-42d0-a9af-9fecd05551f4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +156,9 @@
     <ClInclude Include="..\Public\UIObject.h">
       <Filter>02.GameObject\05.UI\00.Main</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PC_MouseButton.h">
+      <Filter>02.GameObject\05.UI\01.InputButton\02.PC_Mouse</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -199,6 +202,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIObject.cpp">
       <Filter>02.GameObject\05.UI\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PC_MouseButton.cpp">
+      <Filter>02.GameObject\05.UI\01.InputButton\02.PC_Mouse</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

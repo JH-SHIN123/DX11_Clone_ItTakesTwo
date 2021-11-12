@@ -48,10 +48,39 @@ _int CPlayer::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	CUI_Generator::GetInstance()->Generator_UI(Player::Player_Cody, UI::InputButton_Dot);
+	if (m_pGameInstance->Key_Down(DIK_1))
+	{
+		CUI_Generator::GetInstance()->Set_TriggerOn();
+		CUI_Generator::GetInstance()->Generator_UI(Player::Player_Cody, UI::InputButton_Dot);
+	}
 
-	if(m_pGameInstance->Key_Down(DIK_1))
+	if (m_pGameInstance->Key_Down(DIK_2))
+	{
+		CUI_Generator::GetInstance()->Set_TriggerOn();
+		CUI_Generator::GetInstance()->Generator_UI(Player::Player_Cody, UI::InputButton_InterActive);
+	}
+	if (m_pGameInstance->Key_Down(DIK_3))
+	{
+		CUI_Generator::GetInstance()->Set_TriggerOn();
+		CUI_Generator::GetInstance()->Generator_UI(Player::Player_Cody, UI::InputButton_PS_InterActive);
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_4))
+	{
+		CUI_Generator::GetInstance()->Set_TriggerOn();
+		CUI_Generator::GetInstance()->Generator_UI(Player::Player_May, UI::InputButton_Dot);
+	}
+
+
+	if(m_pGameInstance->Key_Down(DIK_Z))
 		CUI_Generator::GetInstance()->Delete_UI(Player::Player_Cody, UI::InputButton_Dot);
+
+	if (m_pGameInstance->Key_Down(DIK_V))
+		CUI_Generator::GetInstance()->Delete_UI(Player::Player_May, UI::InputButton_Dot);
+
+
+
+
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
 }

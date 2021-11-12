@@ -114,7 +114,7 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 
 
 
-		FAILED_CHECK_RETURN(CUI_Generator::GetInstance()->Load_Data(TEXT("../../Data/Interactive_UI.dat")), E_FAIL);
+		FAILED_CHECK_RETURN(CUI_Generator::GetInstance()->Load_Data(TEXT("../../Data/UI.dat")), E_FAIL);
 	}
 
 

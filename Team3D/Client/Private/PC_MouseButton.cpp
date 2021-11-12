@@ -1,24 +1,24 @@
 #include "stdafx.h"
-#include "..\Public\InputButton.h"
+#include "..\Public\PC_MouseButton.h"
 
 #include "GameInstance.h"
 
-CInputButton::CInputButton(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
+CPC_MouseButton::CPC_MouseButton(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
 {
 }
 
-CInputButton::CInputButton(const CUIObject & rhs)
+CPC_MouseButton::CPC_MouseButton(const CUIObject & rhs)
 	: CUIObject(rhs)
 {
 }
 
-HRESULT CInputButton::NativeConstruct_Prototype()
+HRESULT CPC_MouseButton::NativeConstruct_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CInputButton::NativeConstruct_Prototype(void* pArg)
+HRESULT CPC_MouseButton::NativeConstruct_Prototype(void* pArg)
 {
 	if (nullptr != pArg)
 		memcpy(&m_UIDesc, pArg, sizeof(UI_DESC));
@@ -26,7 +26,7 @@ HRESULT CInputButton::NativeConstruct_Prototype(void* pArg)
 	return S_OK;
 }
 
-HRESULT CInputButton::NativeConstruct(void * pArg)
+HRESULT CPC_MouseButton::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
 
@@ -40,7 +40,7 @@ HRESULT CInputButton::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CInputButton::Tick(_double TimeDelta)
+_int CPC_MouseButton::Tick(_double TimeDelta)
 {
 	if (true == m_IsDead)
 		return EVENT_DEAD;
@@ -50,14 +50,14 @@ _int CInputButton::Tick(_double TimeDelta)
 	return _int();
 }
 
-_int CInputButton::Late_Tick(_double TimeDelta)
+_int CPC_MouseButton::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 	
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_UI, this);
 }
 
-HRESULT CInputButton::Render()
+HRESULT CPC_MouseButton::Render()
 {
 	CUIObject::Render();
 
@@ -69,7 +69,7 @@ HRESULT CInputButton::Render()
 	return S_OK;
 }
 
-HRESULT CInputButton::Set_UIVariables_Perspective()
+HRESULT CPC_MouseButton::Set_UIVariables_Perspective()
 {
 	if (nullptr == m_pVIBuffer_RectCom || nullptr == m_pTextureCom)
 		return E_FAIL;
@@ -89,7 +89,7 @@ HRESULT CInputButton::Set_UIVariables_Perspective()
 	return S_OK;
 }
 
-HRESULT CInputButton::Set_UIVariables_Perspective1()
+HRESULT CPC_MouseButton::Set_UIVariables_Perspective1()
 {
 	if (nullptr == m_pVIBuffer_RectCom || nullptr == m_pTextureCom)
 		return E_FAIL;
@@ -137,40 +137,40 @@ HRESULT CInputButton::Set_UIVariables_Perspective1()
 	return S_OK;
 }
 
-HRESULT CInputButton::Ready_Component()
+HRESULT CPC_MouseButton::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
 
 	return S_OK;
 }
 
-CInputButton * CInputButton::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CPC_MouseButton * CPC_MouseButton::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CInputButton* pInstance = new CInputButton(pDevice, pDeviceContext);
+	CPC_MouseButton* pInstance = new CPC_MouseButton(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create InputButton Prototype, Error to CInputButton::Create");
+		MSG_BOX("Failed to Create PC_MouseButton Prototype, Error to CPC_MouseButton::Create");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CInputButton::Clone_GameObject(void * pArg)
+CGameObject * CPC_MouseButton::Clone_GameObject(void * pArg)
 {
-	CInputButton* pClone = new CInputButton(*this);
+	CPC_MouseButton* pClone = new CPC_MouseButton(*this);
 
 	if (FAILED(pClone->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone CInputButton, Error to CInputButton::Clone_GameObject");
+		MSG_BOX("Failed to Clone CPC_MouseButton, Error to CPC_MouseButton::Clone_GameObject");
 		Safe_Release(pClone);
 	}
 
 	return pClone;
 }
 
-void CInputButton::Free()
+void CPC_MouseButton::Free()
 {
 	Safe_Release(m_pVIBuffer_RectCom);
 

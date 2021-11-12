@@ -29,22 +29,22 @@ struct VS_OUT
 	float2	vTexUV		: TEXCOORD0;
 };
 
+//VS_OUT	VS_MAIN(VS_IN In)
+//{
+//	VS_OUT			Out = (VS_OUT)0;
+//
+//	matrix		matWV, matWVP;
+//
+//	matWV = mul(g_UIWorldMatrix, g_UIViewMatrix);
+//	matWVP = mul(matWV, g_UIProjMatrix);
+//
+//	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+//	Out.vTexUV = In.vTexUV;
+//
+//	return Out;
+//}
+
 VS_OUT	VS_MAIN(VS_IN In)
-{
-	VS_OUT			Out = (VS_OUT)0;
-
-	matrix		matWV, matWVP;
-
-	matWV = mul(g_UIWorldMatrix, g_UIViewMatrix);
-	matWVP = mul(matWV, g_UIProjMatrix);
-
-	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
-	Out.vTexUV = In.vTexUV;
-
-	return Out;
-}
-
-VS_OUT	VS_TEST(VS_IN In)
 {
 	VS_OUT	Out = (VS_OUT)0;
 
@@ -135,17 +135,17 @@ technique11 DefaultTechnique
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader	= compile vs_5_0 VS_MAIN();
-		GeometryShader  = NULL;
+		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader		= compile ps_5_0 PS_MAIN();
 	}
 
-	pass Test
-	{
-		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
-		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_TEST();
-		GeometryShader = compile gs_5_0 GS_MAIN();
-		PixelShader = compile ps_5_0 PS_MAIN();
-	}
+	//pass Test
+	//{
+	//	SetRasterizerState(Rasterizer_Solid);
+	//	SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+	//	SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+	//	VertexShader = compile vs_5_0 VS_TEST();
+	//	GeometryShader = compile gs_5_0 GS_MAIN();
+	//	PixelShader = compile ps_5_0 PS_MAIN();
+	//}
 };

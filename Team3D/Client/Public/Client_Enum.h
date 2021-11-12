@@ -12,5 +12,7 @@ namespace Player
 
 namespace UI
 {
-	enum TRIGGER { InputButton_Dot, InputButton_F, TRIGGER_END };
+	enum TRIGGER { InputButton_Dot, InputButton_InterActive, InputButton_PS_InterActive, InputButton_OK, InputButton_PS_OK, PC_Mouse_Reduction,
+		PC_Mouse_Enlargement, InputButton_Cancle, InputButton_PS_Cancle, InputButton_Up, InputButton_Down, InputButton_PS_Up, 
+		InputButton_PS_Down, TRIGGER_END };
 }
