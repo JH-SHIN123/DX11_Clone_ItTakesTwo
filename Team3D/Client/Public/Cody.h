@@ -202,9 +202,6 @@ private:
 	explicit CCody(const CCody& rhs);
 	virtual ~CCody() = default;
 
-public:
-	_bool IsFinish_CurAnimation();
-
 	// 부모로 부터 상속
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -293,6 +290,9 @@ private:
 	PLAYER_SIZE m_eNextPlayerSize = SIZE_MEDIUM;
 	_float3 m_vScale = {1.f, 1.f, 1.f};
 	_bool m_IsSizeChanging = false;
+
+	// 점프관련 변수
+	_bool m_bJumpAnimationOnce = false;
 
 
 	// 컷씬이라면

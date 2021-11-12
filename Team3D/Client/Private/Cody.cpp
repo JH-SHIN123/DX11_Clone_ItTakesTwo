@@ -64,6 +64,7 @@ _int CCody::Tick(_double dTimeDelta)
 	StateCheck(dTimeDelta);
 	Move(dTimeDelta);
 	Roll(dTimeDelta);
+	Jump(dTimeDelta);
 	Change_Size(dTimeDelta);
 
 
@@ -213,7 +214,6 @@ void CCody::KeyInput(_double TimeDelta)
 #pragma region Keyboard_Space_Button
 	if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
-		m_pActorCom->Jump_Start(2.2f);
 		m_bShortJump = true;
 	}
 #pragma endregion
@@ -272,28 +272,34 @@ void CCody::Move(const _double TimeDelta)
 
 		m_pActorCom->Move(vDirection / 10.f, TimeDelta);
 
-		// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
-		if (m_pModelCom->Is_AnimFinished(8) == true) // JogStart -> Jog
-			m_pModelCom->Set_Animation(4, m_pTransformCom);
-		else if (m_pModelCom->Is_AnimFinished(4) == true) // Jog -> Jog // 보간속도 Up
-			m_pModelCom->Set_Animation(4, m_pTransformCom);
-		else											// Idle To Jog Start. -> Jog 예약
+		if (m_bShortJump == false)
 		{
-			m_pModelCom->Set_Animation(8, m_pTransformCom);
-			m_pModelCom->Set_NextAnimIndex(4);
+			// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
+			if (m_pModelCom->Is_AnimFinished(8) == true) // JogStart -> Jog
+				m_pModelCom->Set_Animation(4, m_pTransformCom);
+			else if (m_pModelCom->Is_AnimFinished(4) == true) // Jog -> Jog // 보간속도 Up
+				m_pModelCom->Set_Animation(4, m_pTransformCom);
+			else											// Idle To Jog Start. -> Jog 예약
+			{
+				m_pModelCom->Set_Animation(8, m_pTransformCom);
+				m_pModelCom->Set_NextAnimIndex(4);
+			}
 		}
 	}
 	else
 	{
-		if (m_pModelCom->Get_CurAnimIndex() == 4) // jog 였다면
+		if (m_bShortJump == false)
 		{
-			m_pModelCom->Set_Animation(12, m_pTransformCom); // jog to stop 으로 바꿔
-			m_pModelCom->Set_NextAnimIndex(2); // jog to stop 끝나면 idle 예약.
-		}
-		else if (m_pModelCom->Get_CurAnimIndex() == 8) // JogStart 였다면
-		{
-			m_pModelCom->Set_Animation(12, m_pTransformCom); // jog to stop 으로 바꿔
-			m_pModelCom->Set_NextAnimIndex(2);
+			if (m_pModelCom->Get_CurAnimIndex() == 4) // jog 였다면
+			{
+				m_pModelCom->Set_Animation(12, m_pTransformCom); // jog to stop 으로 바꿔
+				m_pModelCom->Set_NextAnimIndex(2); // jog to stop 끝나면 idle 예약.
+			}
+			else if (m_pModelCom->Get_CurAnimIndex() == 8) // JogStart 였다면
+			{
+				m_pModelCom->Set_Animation(12, m_pTransformCom); // jog to stop 으로 바꿔
+				m_pModelCom->Set_NextAnimIndex(2);
+			}
 		}
 	}
 }
@@ -320,7 +326,17 @@ void CCody::Sprint(const _double TimeDelta)
 }
 void CCody::Jump(const _double TimeDelta)
 {
-
+	if (m_bShortJump == true && m_bJumpAnimationOnce == false)
+	{
+		m_pActorCom->Jump_Start(2.2f);
+		m_pModelCom->Set_Animation(22, m_pTransformCom);
+		m_bJumpAnimationOnce = true;
+	}
+	if (m_pModelCom->Is_AnimFinished(22) == true)
+	{
+		m_bShortJump = false;
+		m_bJumpAnimationOnce = false;
+	}
 }
 void CCody::Change_Size(const _double TimeDelta)
 {
@@ -330,9 +346,9 @@ void CCody::Change_Size(const _double TimeDelta)
 		{
 			if (m_vScale.x < 5.f)
 			{
-				m_vScale.x += TimeDelta * 20.f;
-				m_vScale.y += TimeDelta * 20.f;
-				m_vScale.z += TimeDelta * 20.f;
+				m_vScale.x += (_float)TimeDelta * 20.f;
+				m_vScale.y += (_float)TimeDelta * 20.f;
+				m_vScale.z += (_float)TimeDelta * 20.f;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 			}
 			else
@@ -347,9 +363,9 @@ void CCody::Change_Size(const _double TimeDelta)
 		{
 			if (m_vScale.x > 1.f)
 			{
-				m_vScale.x -= TimeDelta * 20.f;
-				m_vScale.y -= TimeDelta * 20.f;
-				m_vScale.z -= TimeDelta * 20.f;
+				m_vScale.x -= (_float)TimeDelta * 20.f;
+				m_vScale.y -= (_float)TimeDelta * 20.f;
+				m_vScale.z -= (_float)TimeDelta * 20.f;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 			}
 			else
@@ -364,9 +380,9 @@ void CCody::Change_Size(const _double TimeDelta)
 		{
 			if (m_vScale.x > 0.5f)
 			{
-				m_vScale.x -= TimeDelta * 10.f;
-				m_vScale.y -= TimeDelta * 10.f;
-				m_vScale.z -= TimeDelta * 10.f;
+				m_vScale.x -= (_float)TimeDelta * 10.f;
+				m_vScale.y -= (_float)TimeDelta * 10.f;
+				m_vScale.z -= (_float)TimeDelta * 10.f;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 			}
 			else
@@ -381,9 +397,9 @@ void CCody::Change_Size(const _double TimeDelta)
 		{
 			if (m_vScale.x < 1.f)
 			{
-				m_vScale.x += TimeDelta * 10.f;
-				m_vScale.y += TimeDelta * 10.f;
-				m_vScale.z += TimeDelta * 10.f;
+				m_vScale.x += (_float)TimeDelta * 10.f;
+				m_vScale.y += (_float)TimeDelta * 10.f;
+				m_vScale.z += (_float)TimeDelta * 10.f;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 			}
 			else
