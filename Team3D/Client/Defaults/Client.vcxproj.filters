@@ -91,6 +91,12 @@
     <Filter Include="02.GameObject\99.Stage%28Test%29\03.Env">
       <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\00.Public\03.Character\02.UFO">
+      <UniqueIdentifier>{a1a80e33-62b7-46e8-9030-d0f0d0245370}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\03.Character\03.MoonBaboon">
+      <UniqueIdentifier>{f25b4c8e-4beb-4ec5-9404-fd56a08a7591}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -153,6 +159,12 @@
     <ClInclude Include="..\public\TileBox.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboon.h">
+      <Filter>02.GameObject\00.Public\03.Character\03.MoonBaboon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UFO.h">
+      <Filter>02.GameObject\00.Public\03.Character\02.UFO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -199,6 +211,12 @@
     </ClCompile>
     <ClCompile Include="..\private\TileBox.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboon.cpp">
+      <Filter>02.GameObject\00.Public\03.Character\03.MoonBaboon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UFO.cpp">
+      <Filter>02.GameObject\00.Public\03.Character\02.UFO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
