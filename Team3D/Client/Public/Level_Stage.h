@@ -21,6 +21,8 @@ private:
 	HRESULT Ready_Layer_Terrain(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Cody(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_May(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_UFO(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_MoonBaboon(const _tchar* pLayerTag);
 
 public:
 	static CLevel_Stage* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
