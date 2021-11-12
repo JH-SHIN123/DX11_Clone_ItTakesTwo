@@ -23,6 +23,11 @@ HRESULT CPC_MouseButton::NativeConstruct_Prototype(void* pArg)
 	if (nullptr != pArg)
 		memcpy(&m_UIDesc, pArg, sizeof(UI_DESC));
 
+	if (!lstrcmp(m_UIDesc.szUITag, L"PC_Mouse_Reduction"))
+		m_iShaderMouseOption = 0;
+	else
+		m_iShaderMouseOption = 1;
+
 	return S_OK;
 }
 
@@ -32,7 +37,6 @@ HRESULT CPC_MouseButton::NativeConstruct(void * pArg)
 
 	if (FAILED(Ready_Component()))
 		return E_FAIL;
-
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
@@ -61,7 +65,7 @@ HRESULT CPC_MouseButton::Render()
 {
 	CUIObject::Render();
 
-	if (FAILED(Set_UIVariables_Perspective1()))
+	if (FAILED(Set_UIVariables_Perspective()))
 		return E_FAIL;
 
 	m_pVIBuffer_RectCom->Render(2);
@@ -74,31 +78,12 @@ HRESULT CPC_MouseButton::Set_UIVariables_Perspective()
 	if (nullptr == m_pVIBuffer_RectCom || nullptr == m_pTextureCom)
 		return E_FAIL;
 
-	_matrix WorldMatrix, ViewMatrix, ProjMatrix;
-
-	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	ViewMatrix = XMMatrixIdentity();
-	ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
-
-	m_pVIBuffer_RectCom->Set_Variable("g_UIWorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
-	m_pVIBuffer_RectCom->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-	m_pVIBuffer_RectCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
-
-	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
-
-
-	return S_OK;
-}
-
-HRESULT CPC_MouseButton::Set_UIVariables_Perspective1()
-{
-	if (nullptr == m_pVIBuffer_RectCom || nullptr == m_pTextureCom)
-		return E_FAIL;
-
 	_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubViewMatrix, SubProjMatrix;
 
 	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	ViewMatrix = XMMatrixIdentity();
+
+	m_pVIBuffer_RectCom->Set_Variable("g_iShaderMouseOption", &m_iShaderMouseOption, sizeof(_uint));
 
 	if (m_ePlayerID == Player::Player_Cody)
 	{

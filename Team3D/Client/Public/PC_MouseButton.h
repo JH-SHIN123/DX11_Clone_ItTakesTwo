@@ -25,12 +25,14 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	_uint							m_iShaderMouseOption = 0;
+
+private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 
 private:
 	HRESULT Ready_Component();
 	HRESULT Set_UIVariables_Perspective();
-	HRESULT Set_UIVariables_Perspective1();
 
 public:
 	static CPC_MouseButton* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

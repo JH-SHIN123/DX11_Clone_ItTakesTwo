@@ -46,6 +46,8 @@ _int CArrowkeys_Fill::Tick(_double TimeDelta)
 
 	CUIObject::Tick(TimeDelta);
 
+	UpDown(TimeDelta);
+
 	return _int();
 }
 
@@ -60,35 +62,15 @@ HRESULT CArrowkeys_Fill::Render()
 {
 	CUIObject::Render();
 
-	if (FAILED(Set_UIVariables_Perspective1()))
+	if (FAILED(Set_UIVariables_Perspective()))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(0);
+	m_pVIBuffer_RectCom->Render(3);
 
 	return S_OK;
 }
 
 HRESULT CArrowkeys_Fill::Set_UIVariables_Perspective()
-{
-	if (nullptr == m_pVIBuffer_RectCom || nullptr == m_pTextureCom)
-		return E_FAIL;
-
-	_matrix WorldMatrix, ViewMatrix, ProjMatrix;
-
-	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	ViewMatrix = XMMatrixIdentity();
-	ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
-
-	m_pVIBuffer_RectCom->Set_Variable("g_UIWorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
-	m_pVIBuffer_RectCom->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-	m_pVIBuffer_RectCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
-
-	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
-
-	return S_OK;
-}
-
-HRESULT CArrowkeys_Fill::Set_UIVariables_Perspective1()
 {
 	if (nullptr == m_pVIBuffer_RectCom || nullptr == m_pTextureCom)
 		return E_FAIL;
@@ -134,6 +116,27 @@ HRESULT CArrowkeys_Fill::Set_UIVariables_Perspective1()
 
 
 	return S_OK;
+}
+
+void CArrowkeys_Fill::UpDown(_double TimeDelta)
+{
+	m_UpDownTime += TimeDelta;
+
+	_float fChange = 1.f;
+
+	if (1 == m_iUpDownCount % 2)
+		fChange *= -1.f;
+
+	if (m_UpDownTime < 0.1)
+	{
+		m_UIDesc.vPos.y -= 0.5f * fChange;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
+	}
+	else if (0.5 < m_UpDownTime)
+	{
+		m_UpDownTime = 0;
+		++m_iUpDownCount;
+	}
 }
 
 HRESULT CArrowkeys_Fill::Ready_Component()

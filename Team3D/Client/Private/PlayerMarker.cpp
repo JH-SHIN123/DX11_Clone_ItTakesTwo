@@ -61,7 +61,7 @@ HRESULT CPlayerMarker::Render()
 {
 	CUIObject::Render();
 
-	if (FAILED(Set_UIVariables_Perspective1()))
+	if (FAILED(Set_UIVariables_Perspective()))
 		return E_FAIL;
 
 	m_pVIBuffer_RectCom->Render(0);
@@ -70,26 +70,6 @@ HRESULT CPlayerMarker::Render()
 }
 
 HRESULT CPlayerMarker::Set_UIVariables_Perspective()
-{
-	if (nullptr == m_pVIBuffer_RectCom || nullptr == m_pTextureCom)
-		return E_FAIL;
-
-	_matrix WorldMatrix, ViewMatrix, ProjMatrix;
-
-	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	ViewMatrix = XMMatrixIdentity();
-	ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
-
-	m_pVIBuffer_RectCom->Set_Variable("g_UIWorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
-	m_pVIBuffer_RectCom->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-	m_pVIBuffer_RectCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
-
-	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
-
-	return S_OK;
-}
-
-HRESULT CPlayerMarker::Set_UIVariables_Perspective1()
 {
 	if (nullptr == m_pVIBuffer_RectCom || nullptr == m_pTextureCom)
 		return E_FAIL;

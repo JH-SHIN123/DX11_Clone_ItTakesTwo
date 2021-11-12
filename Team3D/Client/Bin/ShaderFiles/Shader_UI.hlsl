@@ -4,9 +4,11 @@
 
 texture2D	g_DiffuseTexture;
 texture2D	g_SubTexture;
-matrix	g_UIWorldMatrix;
-matrix	g_UIViewMatrix;
-matrix	g_UIProjMatrix;
+matrix		g_UIWorldMatrix;
+matrix		g_UIViewMatrix;
+matrix		g_UIProjMatrix;
+
+int		g_iShaderMouseOption;
 
 sampler	DiffuseSampler = sampler_state
 {
@@ -24,7 +26,7 @@ struct VS_IN
 };
 
 struct VS_OUT
-{
+{           
 	float4	vPosition	: SV_POSITION;
 	float2	vTexUV		: TEXCOORD0;
 };
@@ -144,14 +146,25 @@ PS_OUT PS_PC_MOUSE(PS_IN In)
 	float4 vSubColor = g_SubTexture.Sample(DiffuseSampler, In.vTexUV);
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	if (Out.vColor.g == vSubColor.g)
-		Out.vColor.b = 0.f;
-	/*
-	if (Out.vColor.r == vSubColor.r)
-		Out.vColor.b = 0.f;
-	*/
+	Out.vColor.b = 0.f;
+
+	
 	return Out;
 }
+
+
+PS_OUT PS_Fill(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	Out.vColor.rg = 1.f;
+
+
+	return Out;
+}
+
 
 
 ////////////////////////////////////////////////////////////
@@ -187,4 +200,15 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_PC_MOUSE();
 	}
+	
+	pass Fill
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_Fill();
+	}
+
 };

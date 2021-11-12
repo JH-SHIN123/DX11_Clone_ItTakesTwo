@@ -25,12 +25,18 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	 _double						m_UpDownTime = 0;
+	 _uint							m_iUpDownCount = 0;
+
+private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
+
+private:
+	void UpDown(_double TimeDelta);
 
 private:
 	HRESULT Ready_Component();
 	HRESULT Set_UIVariables_Perspective();
-	HRESULT Set_UIVariables_Perspective1();
 
 public:
 	static CArrowkeys_Fill* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
