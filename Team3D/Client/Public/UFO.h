@@ -35,8 +35,9 @@ public:
 	virtual HRESULT Set_ShaderConstant_Default() override;
 	virtual HRESULT Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix) override;
 
-
+public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
+	CModel* Get_Model() { return m_pModelCom; }
 
 protected:
 	/* For.Component */

@@ -45,10 +45,13 @@ protected:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
-	CControllableActor* m_pActorCom = nullptr;
+	//CControllableActor* m_pActorCom = nullptr;
 
 	CTransform*			m_pCodyTransform = nullptr;
 	CTransform*			m_pMayTransform = nullptr;
+
+	CModel*				m_pUFOModel = nullptr;
+	CTransform*			m_pUFOTransform = nullptr;
 
 public:
 	CMoonBaboon::MOON_STATE Check_State(_double TimeDelta);

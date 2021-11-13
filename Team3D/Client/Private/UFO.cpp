@@ -45,6 +45,9 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	m_pModelCom->Set_Animation(23, m_pTransformCom);
 	m_pModelCom->Set_NextAnimIndex(23);
 
+	// DataBase에 포인터 등록
+	CDataBase::GetInstance()->Set_UFOPtr(this);
+
 	return S_OK;
 }
 
@@ -114,7 +117,7 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 HRESULT CUFO::Render()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-
+	s
 	m_pModelCom->Render_Model(0);
 
 	return S_OK;
