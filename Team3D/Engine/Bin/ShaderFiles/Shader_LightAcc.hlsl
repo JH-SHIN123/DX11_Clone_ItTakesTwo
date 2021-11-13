@@ -121,7 +121,7 @@ float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSlic
 	// 여기가 문제인가?
 	float2 vShadowUV = shadowPosH.xy;
 	vShadowUV.x += iViewportIndex * 0.5f;
-	vShadowUV.y = (vShadowUV.y + iSliceIndex) * (float) (1 / MAX_CASCADES);
+	vShadowUV.y = (vShadowUV.y + iSliceIndex) * (1.f / (float)MAX_CASCADES);
 
 
 	float shadowFactor = 0.f;
