@@ -96,7 +96,7 @@ HRESULT CRenderTarget::Clear_Depth_Stencil_Buffer()
 	if (nullptr == m_pDeviceContext)
 		return E_FAIL;
 
-	m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	if(m_pDepthStencilView) m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	return S_OK;
 }
@@ -105,7 +105,7 @@ CRenderTarget * CRenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext
 {
 	CRenderTarget* pInstance = new CRenderTarget(pDevice, pDevice_Context);
 
-	if (FAILED(pInstance->NativeConstruct(iWidth, iHeight, eFormat, vClearColor)))
+	if (FAILED(pInstance->NativeConstruct(iWidth, iHeight, eFormat, vClearColor, isDepthBuffer)))
 	{
 		MSG_BOX("Failed to Create Instance - CRenderTarget");
 		Safe_Release(pInstance);

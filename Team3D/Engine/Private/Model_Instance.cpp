@@ -192,7 +192,7 @@ HRESULT CModel_Instance::Bring_Containers(VTXMESH * pVertices, _uint iVertexCoun
 	return S_OK;
 }
 
-HRESULT CModel_Instance::Render_Model(_uint iPassIndex)
+HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _bool bShadowWrite)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 
@@ -224,7 +224,8 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex)
 
 	for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
 	{
-		Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE);
+		/* Write Shadow - ÅØ½ºÃÄ ¿¬°á¾ÈÇØÁàµµ µÊ */
+		if(false == bShadowWrite) Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE);
 		FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])

@@ -25,6 +25,9 @@ public:
 	virtual _int	Late_Tick(_double dTimeDelta);
 	virtual HRESULT	Render();
 
+public: /* For. Write Shadow Depth */
+	virtual HRESULT Render_ShadowDepth();
+
 protected: /* Typedef */
 	typedef unordered_map<const _tchar*, CComponent*>	COMPONENTS;
 protected:

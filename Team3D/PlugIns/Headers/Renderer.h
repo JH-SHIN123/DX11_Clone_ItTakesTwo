@@ -26,13 +26,19 @@ private:
 	RENDER_OBJECTS					m_RenderObjects[RENDER_END];
 	class CRenderTarget_Manager*	m_pRenderTarget_Manager = nullptr;
 	class CVIBuffer_RectRHW*		m_pVIBuffer = nullptr;
+
 private:
 	HRESULT	Render_Priority();
 	HRESULT	Render_NonAlpha();
 	HRESULT	Render_Alpha();
 	HRESULT	Render_UI();
+
+private:
+	HRESULT Render_ShadowsForAllCascades();
 	HRESULT Render_LightAcc();
 	HRESULT Render_Blend();
+
+private:
 	void	Sort_GameObjects(RENDER_OBJECTS& GameObjects);
 
 public:

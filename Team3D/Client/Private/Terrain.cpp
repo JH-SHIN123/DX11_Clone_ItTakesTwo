@@ -56,6 +56,11 @@ HRESULT CTerrain::Render()
 	return S_OK;
 }
 
+HRESULT CTerrain::Render_ShadowDepth()
+{
+	return S_OK;
+}
+
 CTerrain * CTerrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CTerrain* pInstance = new CTerrain(pDevice, pDeviceContext);

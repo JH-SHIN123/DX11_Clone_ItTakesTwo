@@ -205,6 +205,9 @@
     <Filter Include="02.Utility\05.Shadow\99.Manager">
       <UniqueIdentifier>{b744d2d9-3b50-46a6-a5f2-0c8f4be1c175}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97.ShaderFiles\Include">
+      <UniqueIdentifier>{9654196f-e3ab-4f25-a09c-cb0ad655fa08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\GameInstance.h">
@@ -362,6 +365,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Shadow_Manager.h">
       <Filter>02.Utility\05.Shadow\99.Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
+      <Filter>97.ShaderFiles\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Macro.hpp">
+      <Filter>97.ShaderFiles\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp">
+      <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

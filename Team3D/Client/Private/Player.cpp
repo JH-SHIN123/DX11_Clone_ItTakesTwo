@@ -86,6 +86,14 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
+HRESULT CPlayer::Render_ShadowDepth()
+{
+	// World
+	// ShadowTransform
+
+	return S_OK;
+}
+
 CPlayer * CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CPlayer* pInstance = new CPlayer(pDevice, pDeviceContext);

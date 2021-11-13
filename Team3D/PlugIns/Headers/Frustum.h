@@ -7,6 +7,10 @@ BEGIN(Engine)
 class CFrustum final : public CBase
 {
 	DECLARE_SINGLETON(CFrustum)
+
+public:
+	enum TYPE { FRUSTUM_MAIN, FRUSTUM_SUB, FRUSTUM_END };
+
 private:
 	explicit CFrustum() = default;
 	virtual ~CFrustum() = default;
@@ -35,7 +39,7 @@ public:
 
 private:
 	_float3			m_vPoints[8];
-	FRUSTUM_DESC	m_Frustum[2];
+	FRUSTUM_DESC	m_Frustum[FRUSTUM_END];
 
 public:
 	 virtual void Free() override;

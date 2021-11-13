@@ -39,7 +39,7 @@ public:
 	/* For.ModelLoader */
 	HRESULT	Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials);
 	/* For.Client */
-	HRESULT	Render_Model(_uint iPassIndex);
+	HRESULT	Render_Model(_uint iPassIndex, _bool bShadowWrite = false);
 
 private: /* Typedef */
 	typedef vector<class CMesh*>	MESHES;

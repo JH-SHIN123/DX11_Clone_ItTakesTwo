@@ -34,7 +34,7 @@ public:
 	HRESULT	Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials, vector<class CHierarchyNode*>& Nodes, vector<_float4x4>& Transformations, vector<class CAnim*>& Anims);
 	/* For.Client */
 	HRESULT	Update_Animation(_double dTimeDelta, class CTransform* pTransform);
-	HRESULT	Render_Model(_uint iPassIndex);
+	HRESULT	Render_Model(_uint iPassIndex, _bool bShadowWrite = false);
 
 private: /* Typedef */
 	typedef vector<class CMesh*>			MESHES;

@@ -119,7 +119,7 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_TileBox"), CTileBox::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 		PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.f));
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_TileBox"), CModel_Instance::Create(m_pDevice, m_pDeviceContext, 10000, "../Bin/Resources/Test/Mesh/", "test3.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_TileBox"), CModel_Instance::Create(m_pDevice, m_pDeviceContext, 500, "../Bin/Resources/Test/Mesh/", "test3.fbx", TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", PivotMatrix)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_TileBox"), CTileBox::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	}
 

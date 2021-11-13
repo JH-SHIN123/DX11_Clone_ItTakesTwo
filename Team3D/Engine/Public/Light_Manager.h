@@ -12,25 +12,29 @@ private:
 	virtual ~CLight_Manager() = default;
 
 public: /* Getter */
-	LIGHT_DESC* Get_LightDescPtr(_uint iIndex);
+	LIGHT_DESC*		Get_LightDescPtr(const _tchar* pLightTag);
+	class CLight*	Get_DirectionalLight() const { return m_pDirectionalLight; }
 
 public: /* Setter */
-	HRESULT TurnOn_Light(_uint iIndex);
-	HRESULT TurnOff_Light(_uint iIndex);
+	HRESULT TurnOn_Light(const _tchar* pLightTag);
+	HRESULT TurnOff_Light(const _tchar* pLightTag);
 
 public:
 	HRESULT Ready_LightManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight);
 	HRESULT	Reserve_Container(_uint iCount);
-	HRESULT	Add_Light(const LIGHT_DESC& pLightDesc, _bool isActive);
+	HRESULT	Add_Light(const _tchar* pLightTag, const LIGHT_DESC& pLightDesc, _bool isActive);
 	HRESULT Render_Lights();
 	void	Clear_Lights();
 	void	Clear_Buffer();
 
 private: /* Typedef */
-	typedef vector<class CLight*> LIGHTS;
+	typedef unordered_map<const _tchar* ,class CLight*> LIGHTS;
+	// typedef vector<class CLight*> LIGHTS; // dynamic light (effect light)
+
 private:
 	class CVIBuffer_RectRHW*	m_pVIBuffer = nullptr;
 	LIGHTS						m_Lights;
+	class CLight*				m_pDirectionalLight = nullptr; /* must be only one in game */
 
 public:
 	virtual void Free() override;

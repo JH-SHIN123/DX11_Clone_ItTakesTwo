@@ -57,7 +57,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 	LightDesc.vAmbient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 
-	if (FAILED(pGameInstance->Add_Light(LightDesc)))
+	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
 		return E_FAIL;
 
 	return S_OK;

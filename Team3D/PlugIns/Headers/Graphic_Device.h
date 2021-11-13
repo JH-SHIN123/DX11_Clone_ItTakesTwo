@@ -23,6 +23,7 @@ public: /* Getter */
 public: /* Setter */
 	void Set_ViewportInfo(_fvector vMainViewportInfo, _fvector vSubViewportInfo); /* 뷰포트 사이즈 바로 세팅 */
 	void Set_GoalViewportInfo(_fvector vMainViewportInfo, _fvector vSubViewportInfo, _float fLerpSpeed); /* 뷰포트 사이즈 천천히 변환 */
+	void Set_Viewport();
 
 public:
 	HRESULT	Ready_GraphicDevice(WINMODE eWinMode, HWND hWnd, _uint iWinSizeX, _uint iWinSizeY, ID3D11Device** ppDevice, ID3D11DeviceContext** ppDeviceContext);
@@ -51,7 +52,6 @@ private:
 	HRESULT Ready_SwapChain(WINMODE eWinMode, HWND hWnd, _uint iWinSizeX, _uint iWinSizeY);
 	HRESULT Ready_BackBufferRenderTargetView();
 	HRESULT Ready_DepthStencilRenderTargetView(_uint iWinSizeX, _uint iWinSizeY);
-	void	Set_Viewport();
 
 public:
 	virtual void Free() override;

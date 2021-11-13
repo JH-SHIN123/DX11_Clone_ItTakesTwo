@@ -1,3 +1,9 @@
+/* struct */
+struct BONEMATRICES
+{
+	matrix	Matrices[256];
+};
+
 /* cbuffer */
 cbuffer Matrices
 {
@@ -14,6 +20,20 @@ cbuffer Camera
 	float4	g_vMainCamPosition;
 	float4	g_vSubCamPosition;
 }
+
+/* Sampler */
+sampler	Wrap_Sampler = sampler_state
+{
+	AddressU = Wrap;
+	AddressV = Wrap;
+};
+
+sampler	Wrap_MinMagMipLinear_Sampler = sampler_state
+{
+	AddressU = Wrap;
+	AddressV = Wrap;
+	Filter = MIN_MAG_MIP_LINEAR;
+};
 
 /* RasterizerState */
 RasterizerState Rasterizer_Solid

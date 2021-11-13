@@ -12,6 +12,7 @@
 #include "RenderTarget_Manager.h"
 #include "Sound_Manager.h"
 #include "Timer_Manager.h"
+#include "Shadow_Manager.h"
 
 BEGIN(Engine)
 
@@ -82,11 +83,15 @@ public:
 
 #pragma region Light_Manager
 	HRESULT		Reserve_Container_Light(_uint iCount);
-	HRESULT		Add_Light(const LIGHT_DESC& LightDesc, _bool isActive = true);
-	LIGHT_DESC*	Get_LightDescPtr(_uint iIndex);
-	HRESULT		TurnOn_Light(_uint iIndex);
-	HRESULT		TurnOff_Light(_uint iIndex);
+	HRESULT		Add_Light(const _tchar * pLightTag, const LIGHT_DESC& LightDesc, _bool isActive = true);
+	LIGHT_DESC*	Get_LightDescPtr(const _tchar * pLightTag);
+	HRESULT		TurnOn_Light(const _tchar * pLightTag);
+	HRESULT		TurnOff_Light(const _tchar * pLightTag);
 	void		Clear_Lights();
+#pragma endregion
+
+#pragma region Shadow_Manager
+	void Get_CascadeShadowLightViewProjTranspose(_uint iViewportIndex, _matrix * OutMatrix) const;
 #pragma endregion
 
 #pragma region PhysX
@@ -116,6 +121,7 @@ private:
 	CGameObject_Manager*	m_pGameObject_Manager	= nullptr;
 	CComponent_Manager*		m_pComponent_Manager	= nullptr;
 	CLight_Manager*			m_pLight_Manager		= nullptr;
+	CShadow_Manager*		m_pShadow_Manager		= nullptr;
 	CPhysX*					m_pPhysX				= nullptr;
 	CPipeline*				m_pPipeline				= nullptr;
 	CFrustum*				m_pFrustum				= nullptr;

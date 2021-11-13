@@ -60,6 +60,7 @@ HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, c
 	for (auto& pRenderTarget : *pMRT)
 	{
 		pRenderTarget->Clear_View();
+		pRenderTarget->Clear_Depth_Stencil_Buffer();
 		RenderTargets[iRenderTargetIndex] = pRenderTarget->Get_RenderTargetView();
 		DepthStencil = pRenderTarget->Get_DepthStencilView();
 		++iRenderTargetIndex;

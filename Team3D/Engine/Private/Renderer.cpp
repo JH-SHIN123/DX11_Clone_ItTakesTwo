@@ -4,6 +4,7 @@
 #include "RenderTarget_Manager.h"
 #include "VIBuffer_RectRHW.h"
 #include "Graphic_Device.h"
+#include "Shadow_Manager.h"
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)
@@ -91,6 +92,10 @@ HRESULT CRenderer::Add_GameObject_ToRenderGroup(RENDER_GROUP eGroup, CGameObject
 
 HRESULT CRenderer::Draw_Renderer()
 {
+	// 0 - pass
+	FAILED_CHECK_RETURN(Render_ShadowsForAllCascades(), E_FAIL);
+	
+	// 1- pass
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonAlpha(), E_FAIL);
 
@@ -159,6 +164,30 @@ HRESULT CRenderer::Render_UI()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_UI].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_ShadowsForAllCascades()
+{
+	NULL_CHECK_RETURN(m_pRenderTarget_Manager, E_FAIL);
+
+	// if directional light is not exit, not render shadow
+	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();
+	if (nullptr == pShadowManager) return E_FAIL;
+
+	// Set Each Cascade Shadow viewports
+	FAILED_CHECK_RETURN(pShadowManager->RSSet_CascadedViewports(), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_CascadedShadow")), E_FAIL);
+	for (auto& pGameObject : m_RenderObjects[RENDER_NONALPHA])
+	{
+		FAILED_CHECK_RETURN(pGameObject->Render_ShadowDepth(), E_FAIL);
+	}
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_CascadedShadow")), E_FAIL);
+
+	// Setup origin Viewports
+	CGraphic_Device::GetInstance()->Set_Viewport();
 
 	return S_OK;
 }

@@ -1,12 +1,5 @@
 #include "Shader_Defines.hpp"
-
-////////////////////////////////////////////////////////////
-
-struct BONEMATRICES
-{
-	matrix	Matrices[256];
-};
-
+#include "Shader_Macro.hpp"
 ////////////////////////////////////////////////////////////
 
 texture2D	g_DiffuseTexture;
@@ -16,23 +9,20 @@ texture2D	g_DiffuseTexture;
 //texture2D	g_OpacityTexture;
 //texture2D	g_LightTexture;
 
-sampler	DiffuseSampler = sampler_state
-{
-	Filter = MIN_MAG_MIP_LINEAR;
-	AddressU = Wrap;
-	AddressV = Wrap;
-};
-
 cbuffer BoneMatrixDesc
 {
 	BONEMATRICES	g_BoneMatrices;
 };
 
-cbuffer Effect
+cbuffer EffectDesc
 {
 	float	g_fAlpha;
 };
 
+cbuffer ShadowDesc
+{
+	matrix	g_ShadowTransforms[MAX_CASCADES];
+};
 ////////////////////////////////////////////////////////////
 
 struct VS_IN
@@ -50,6 +40,11 @@ struct VS_OUT
 	float4 vPosition	: SV_POSITION;
 	float4 vNormal		: NORMAL;
 	float2 vTexUV		: TEXCOORD0;
+};
+
+struct VS_CSM_OUT
+{
+	float4 vPosition : SV_POSITION;
 };
 
 VS_OUT	VS_MAIN(VS_IN In)
@@ -76,6 +71,16 @@ VS_OUT VS_MAIN_NO_BONE(VS_IN In)
 
 	return Out;
 }
+
+//VS_CSM_OUT VS_MAIN_CSM_DEPTH(VS_IN In)
+//{
+//	VS_CSM_OUT Out = (VS_CSM_OUT)0;
+//
+//	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+//	Out.vTexUV = In.vTexUV;
+//
+//	return Out;
+//}
 
 ////////////////////////////////////////////////////////////
 
@@ -152,7 +157,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector vMtrlDiffuse = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
 	Out.vDiffuse	= vMtrlDiffuse;
 	Out.vNormal		= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
@@ -185,4 +190,14 @@ technique11 DefaultTechnique
 		GeometryShader	= compile gs_5_0 GS_MAIN();
 		PixelShader		= compile ps_5_0 PS_MAIN();
 	}
+	// 2
+	//pass Write_CascadedShadowDepth
+	//{
+	//	SetRasterizerState(Rasterizer_Solid);
+	//	SetDepthStencilState(DepthStecil_Default, 0);
+	//	SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+	//	VertexShader = compile vs_5_0 VS_MAIN_SHADOW_DEPTH();
+	//	GeometryShader = compile gs_5_0 GS_MAIN_SHADOWDEPTH();
+	//	PixelShader = compile ps_5_0 PS_MAIN_SHADOW_DEPTH();
+	//}
 };

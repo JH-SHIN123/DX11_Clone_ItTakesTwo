@@ -14,34 +14,43 @@ private:
 	virtual ~CShadow_Manager() = default;
 
 public:
-	const D3D11_VIEWPORT* Get_CascadeViewports() const { return m_CascadeViewport; }
 	const _float* Get_CascadedEnds() const { return m_fCascadedEnds; }
 
-	void Get_CascadeShadowLightViewProjTranspose(_matrix* OutMatrix) const;
-	void Get_CascadeShadowTransformsTranspose(_matrix* OutMatrix) const;
+	/* 0: Main / 1: Sub */
+	void Get_CascadeShadowLightViewProjTranspose(_uint iViewportIndex, _matrix* OutMatrix) const;
+	void Get_CascadeShadowTransformsTranspose(_uint iViewportIndex, _matrix* OutMatrix) const;
 
 public:
 	HRESULT Ready_ShadowManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
 
 public:
-	_int	Update_CascadedShadowViewport(_uint iViewportIndex);
-	_int	Update_CascadedShadowTransform(_uint iViewportIndex, _fvector vDirectionalLightDir);
+	_int	Update_CascadedShadowTransform_MainViewport();
+	_int	Update_CascadedShadowTransform_SubViewport();
 
-//private:
-//	HRESULT Create_CascadeViewports();
+	HRESULT RSSet_CascadedViewports();
+
+private:
+	HRESULT	Set_CascadeViewportsInfo();
+	HRESULT Update_CascadeShadowTransform(_uint iViewportIndex);
 
 private:
 	ID3D11Device* m_pDevice = nullptr;
 	ID3D11DeviceContext* m_pDevice_Context = nullptr;
 
 private: /* For. Cascaded */
-	const _float			m_fCascadedEnds[MAX_CASCADES + 1] = { 0.f, 0.2f, 0.4f, 1.f };
+	D3D11_VIEWPORT	m_CascadeViewport[MAX_CASCADES * 2];
+	const _float	m_fCascadedEnds[MAX_CASCADES + 1] = { 0.f, 0.2f, 0.4f, 1.f };
 
+	/* For. Main Viewports */
 	_float4x4 m_CascadeViews[MAX_CASCADES];
 	_float4x4 m_CascadeProjs[MAX_CASCADES];
 	_float4x4 m_CascadedShadowTransforms[MAX_CASCADES];
 
-	D3D11_VIEWPORT m_CascadeViewport[MAX_CASCADES * 2 /* Main / Sub */];
+	/* For. Sub Viewports */
+	_float4x4 m_CascadeViews_Sub[MAX_CASCADES];
+	_float4x4 m_CascadeProjs_Sub[MAX_CASCADES];
+	_float4x4 m_CascadedShadowTransforms_Sub[MAX_CASCADES];
+
 
 public:
 	virtual void Free() override;

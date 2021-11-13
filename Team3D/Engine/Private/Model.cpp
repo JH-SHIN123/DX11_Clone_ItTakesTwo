@@ -286,7 +286,7 @@ HRESULT CModel::Update_Animation(_double dTimeDelta, CTransform * pTransform)
 	return S_OK;
 }
 
-HRESULT CModel::Render_Model(_uint iPassIndex)
+HRESULT CModel::Render_Model(_uint iPassIndex, _bool bShadowWrite)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 
@@ -303,7 +303,7 @@ HRESULT CModel::Render_Model(_uint iPassIndex)
 
 		for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
 		{
-			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE);
+			if (false == bShadowWrite) Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE);
 			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
@@ -320,7 +320,7 @@ HRESULT CModel::Render_Model(_uint iPassIndex)
 	{
 		for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
 		{
-			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE);
+			if (false == bShadowWrite) Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE);
 			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])

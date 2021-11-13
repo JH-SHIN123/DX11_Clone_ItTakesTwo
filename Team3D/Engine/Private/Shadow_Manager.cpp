@@ -3,22 +3,30 @@
 #include "Frustum.h"
 #include "PipeLine.h"
 #include "RenderTarget_Manager.h"
+#include "Light_Manager.h"
+#include "Light.h"
 
 IMPLEMENT_SINGLETON(CShadow_Manager);
 
-void CShadow_Manager::Get_CascadeShadowLightViewProjTranspose(_matrix* OutMatrix) const
+void CShadow_Manager::Get_CascadeShadowLightViewProjTranspose(_uint iViewportIndex, _matrix* OutMatrix) const
 {
 	for (_uint i = 0; i < MAX_CASCADES; ++i)
 	{
-		OutMatrix[i] = XMMatrixTranspose(XMLoadFloat4x4(&m_CascadeViews[i]) * XMLoadFloat4x4(&m_CascadeProjs[i]));
+		if(0 == iViewportIndex)
+			OutMatrix[i] = XMMatrixTranspose(XMLoadFloat4x4(&m_CascadeViews[i]) * XMLoadFloat4x4(&m_CascadeProjs[i]));
+		else
+			OutMatrix[i] = XMMatrixTranspose(XMLoadFloat4x4(&m_CascadeViews_Sub[i]) * XMLoadFloat4x4(&m_CascadeProjs_Sub[i]));
 	}
 }
 
-void CShadow_Manager::Get_CascadeShadowTransformsTranspose(_matrix* OutMatrix) const
+void CShadow_Manager::Get_CascadeShadowTransformsTranspose(_uint iViewportIndex, _matrix* OutMatrix) const
 {
 	for (_uint i = 0; i < MAX_CASCADES; ++i)
 	{
-		OutMatrix[i] = XMMatrixTranspose(XMLoadFloat4x4(&m_CascadedShadowTransforms[i]));
+		if (0 == iViewportIndex)
+			OutMatrix[i] = XMMatrixTranspose(XMLoadFloat4x4(&m_CascadedShadowTransforms[i]));
+		else
+			OutMatrix[i] = XMMatrixTranspose(XMLoadFloat4x4(&m_CascadedShadowTransforms_Sub[i]));
 	}
 }
 
@@ -30,24 +38,75 @@ HRESULT CShadow_Manager::Ready_ShadowManager(ID3D11Device* pDevice, ID3D11Device
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDevice_Context);
 
-	//if (FAILED(Create_CascadeViewports()))
-	//	return E_FAIL;
+	FAILED_CHECK_RETURN(Set_CascadeViewportsInfo(), E_FAIL);
 
 	return S_OK;
 }
 
-_int CShadow_Manager::Update_CascadedShadowViewport(_uint iViewportIndex)
+_int CShadow_Manager::Update_CascadedShadowTransform_MainViewport()
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	if (nullptr == pGameInstance) return E_FAIL;
-
-	//pGameInstance->Get_ViewportInfo();
+	FAILED_CHECK_RETURN(Update_CascadeShadowTransform(CFrustum::FRUSTUM_MAIN), E_FAIL);
 
 	return _int();
 }
 
-_int CShadow_Manager::Update_CascadedShadowTransform(_uint iViewportIndex, _fvector vDirectionalLightDir)
+_int CShadow_Manager::Update_CascadedShadowTransform_SubViewport()
 {
+	FAILED_CHECK_RETURN(Update_CascadeShadowTransform(CFrustum::FRUSTUM_SUB), E_FAIL);
+
+	return _int();
+}
+
+HRESULT CShadow_Manager::RSSet_CascadedViewports()
+{
+	_uint iNumViewport = 2;
+	m_pDevice_Context->RSSetViewports(MAX_CASCADES * iNumViewport, m_CascadeViewport);
+
+	return S_OK;
+}
+
+HRESULT CShadow_Manager::Set_CascadeViewportsInfo()
+{
+	// CSM Main Viewports
+	for (_uint i = 0; i < MAX_CASCADES; ++i)
+	{
+		// width / height 해상도 ( LOD X )
+		m_CascadeViewport[i].TopLeftX = 0.f;
+		m_CascadeViewport[i].TopLeftY = (_float)(SHADOWMAP_SIZE * i);
+		m_CascadeViewport[i].Width = SHADOWMAP_SIZE / 2.f;
+		m_CascadeViewport[i].Height = SHADOWMAP_SIZE;
+		m_CascadeViewport[i].MinDepth = 0.f;
+		m_CascadeViewport[i].MaxDepth = 1.f;
+	}
+
+	// CSM Sub Viewports
+	for (_uint i = 0; i < MAX_CASCADES; ++i)
+	{
+		// width / height 해상도 ( LOD X )
+		m_CascadeViewport[MAX_CASCADES + i].TopLeftX = SHADOWMAP_SIZE / 2.f;
+		m_CascadeViewport[MAX_CASCADES + i].TopLeftY = (_float)(SHADOWMAP_SIZE * i);
+		m_CascadeViewport[MAX_CASCADES + i].Width = SHADOWMAP_SIZE / 2.f;
+		m_CascadeViewport[MAX_CASCADES + i].Height = SHADOWMAP_SIZE;
+		m_CascadeViewport[MAX_CASCADES + i].MinDepth = 0.f;
+		m_CascadeViewport[MAX_CASCADES + i].MaxDepth = 1.f;
+	}
+
+	return S_OK;
+}
+
+HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
+{
+	// Get Directional Light - if light is not exit, return 0
+	CLight_Manager* pLightManager = CLight_Manager::GetInstance();
+	if (nullptr == pLightManager) return E_FAIL;
+	CLight* pLight = pLightManager->Get_DirectionalLight();
+	if (nullptr == pLight) return 0;
+
+	LIGHT_DESC* lightDesc = pLight->Get_LightDescPtr();
+	if (nullptr == lightDesc) return E_FAIL;
+	_vector vDirectionalLightDir = XMLoadFloat3(&lightDesc->vDirection);
+
+
 	CFrustum* pFrustum = CFrustum::GetInstance();
 	if (nullptr == pFrustum) return E_FAIL;
 
@@ -57,23 +116,23 @@ _int CShadow_Manager::Update_CascadedShadowTransform(_uint iViewportIndex, _fvec
 	_vector cascadeFrustumCornersW[8];
 	ZeroMemory(cascadeFrustumCornersW, sizeof(_vector) * 8);
 
-	// Get Frustum Transform Offset
-	CPipeline* pPipeLine = CPipeline::GetInstance();
-	if (nullptr == pPipeLine) return E_FAIL;
+	//// Get Frustum Transform Offset
+	//CPipeline* pPipeLine = CPipeline::GetInstance();
+	//if (nullptr == pPipeLine) return E_FAIL;
 
-	_matrix CamWorldMat = XMMatrixIdentity();
+	//_matrix CamWorldMat = XMMatrixIdentity();
 
-	if (0 == iViewportIndex)  /* Main View */
-		CamWorldMat = pPipeLine->Get_Transform(CPipeline::TS_MAINVIEW_INVERSE);
-	else if (1 == iViewportIndex)
-		CamWorldMat = pPipeLine->Get_Transform(CPipeline::TS_SUBVIEW_INVERSE);
+	//if (0 == iViewportIndex)  /* Main View */
+	//	CamWorldMat = pPipeLine->Get_Transform(CPipeline::TS_MAINVIEW_INVERSE);
+	//else if (1 == iViewportIndex)
+	//	CamWorldMat = pPipeLine->Get_Transform(CPipeline::TS_SUBVIEW_INVERSE);
 
-	_vector vCamLook = XMVector3Normalize(CamWorldMat.r[2]);
+	//_vector vCamLook = XMVector3Normalize(CamWorldMat.r[2]);
 
-	_float fFrustumTransformOffset = pPipeLine->Get_MainCamFar();
-	fFrustumTransformOffset *= m_fCascadedEnds[0] * 0.5f;
+	//_float fFrustumTransformOffset = pPipeLine->Get_MainCamFar(); --> Main & Sub
+	//fFrustumTransformOffset *= m_fCascadedEnds[0] * 0.5f;
 
-	_vector vCascadeFrustumOffset = -vCamLook * fFrustumTransformOffset;
+	//_vector vCascadeFrustumOffset = -vCamLook * fFrustumTransformOffset;
 
 	for (_uint currentCascade = 0; currentCascade < MAX_CASCADES; ++currentCascade)
 	{
@@ -143,29 +202,23 @@ _int CShadow_Manager::Update_CascadedShadowTransform(_uint iViewportIndex, _fvec
 
 		_matrix S = ShadowView * ShadowProj * T;
 
-		XMStoreFloat4x4(&m_CascadeViews[currentCascade], ShadowView);
-		XMStoreFloat4x4(&m_CascadeProjs[currentCascade], ShadowProj);
-		XMStoreFloat4x4(&m_CascadedShadowTransforms[currentCascade], S);
+		if (CFrustum::FRUSTUM_MAIN == iViewportIndex)
+		{
+			XMStoreFloat4x4(&m_CascadeViews[currentCascade], ShadowView);
+			XMStoreFloat4x4(&m_CascadeProjs[currentCascade], ShadowProj);
+			XMStoreFloat4x4(&m_CascadedShadowTransforms[currentCascade], S);
+		}
+		else
+		{
+			XMStoreFloat4x4(&m_CascadeViews_Sub[currentCascade], ShadowView);
+			XMStoreFloat4x4(&m_CascadeProjs_Sub[currentCascade], ShadowProj);
+			XMStoreFloat4x4(&m_CascadedShadowTransforms_Sub[currentCascade], S);
+		}
 	}
 
-	return _int();
+	return S_OK;
 }
 
-//HRESULT CShadow_Manager::Create_CascadeViewports()
-//{
-//	for (_uint i = 0; i < MAX_CASCADES * 2; ++i)
-//	{
-//		// width / height 해상도 ( LOD X )
-//		m_CascadeViewport[i].TopLeftX = 0.f;
-//		m_CascadeViewport[i].TopLeftY = SHADOWMAP_SIZE * i;
-//		m_CascadeViewport[i].Width = SHADOWMAP_SIZE / 2.f;
-//		m_CascadeViewport[i].Height = SHADOWMAP_SIZE;
-//		m_CascadeViewport[i].MinDepth = 0.f;
-//		m_CascadeViewport[i].MaxDepth = 1.f;
-//	}
-//
-//	return S_OK;
-//}
 
 void CShadow_Manager::Free()
 {
