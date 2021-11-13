@@ -1,0 +1,50 @@
+#pragma once
+#pragma once
+
+#include "Base.h"
+
+/* 그림자 정보들을 보관한다. */
+BEGIN(Engine)
+class CShadow_Manager final : public CBase
+{
+	DECLARE_SINGLETON(CShadow_Manager)
+
+private:
+	CShadow_Manager() = default;
+	virtual ~CShadow_Manager() = default;
+
+public:
+	const D3D11_VIEWPORT* Get_CascadeViewports() const { return m_CascadeViewport; }
+	const _float* Get_CascadedEnds() const { return m_fCascadedEnds; }
+
+	void Get_CascadeShadowLightViewProjTranspose(_matrix* OutMatrix) const;
+	void Get_CascadeShadowTransformsTranspose(_matrix* OutMatrix) const;
+
+public:
+	HRESULT Ready_ShadowManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
+
+public:
+	_int	Update_CascadedShadowViewport(_uint iViewportIndex);
+	_int	Update_CascadedShadowTransform(_uint iViewportIndex, _fvector vDirectionalLightDir);
+
+//private:
+//	HRESULT Create_CascadeViewports();
+
+private:
+	ID3D11Device* m_pDevice = nullptr;
+	ID3D11DeviceContext* m_pDevice_Context = nullptr;
+
+private: /* For. Cascaded */
+	const _float			m_fCascadedEnds[MAX_CASCADES + 1] = { 0.f, 0.2f, 0.4f, 1.f };
+
+	_float4x4 m_CascadeViews[MAX_CASCADES];
+	_float4x4 m_CascadeProjs[MAX_CASCADES];
+	_float4x4 m_CascadedShadowTransforms[MAX_CASCADES];
+
+	D3D11_VIEWPORT m_CascadeViewport[MAX_CASCADES * 2 /* Main / Sub */];
+
+public:
+	virtual void Free() override;
+};
+
+END

@@ -60,3 +60,8 @@
 #pragma region PHYSX
 #define GRAVITY			9.8f
 #pragma endregion
+
+#pragma region PostProcessing
+#define MAX_CASCADES		3
+#define SHADOWMAP_SIZE		5096 /* Width size equal height Size */
+#pragma endregion

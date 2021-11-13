@@ -18,7 +18,13 @@ public: /* Struct */
 		_float3	vPoints_Local[8];
 		_float4	PlaneWorld[6];
 		_float4	PlaneLocal[6];
+
+		_float	fFrustumDepth = 0.f;
 	}FRUSTUM_DESC;
+
+public:
+	const _float3*	Get_FrustumPointsInWorld(_uint iIndex /* 1: Main 2: Sub */) const { return m_Frustum[iIndex].vPoints_World; }
+	_float			Get_FrustumDepth(_uint iIndex) const { return m_Frustum[iIndex].fFrustumDepth; }
 
 public:
 	HRESULT	Ready_Frustum();

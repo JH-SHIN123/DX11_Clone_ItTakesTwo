@@ -15,7 +15,7 @@ public: /* Getter */
 	ID3D11ShaderResourceView* Get_ShaderResourceView(const _tchar* pRenderTargetTag);
 
 public:
-	HRESULT Add_RenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _tchar* pRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vClearColor);
+	HRESULT Add_RenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _tchar* pRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vClearColor, _bool isDepthBuffer = false);
 	HRESULT Add_MRT(const _tchar* pRenderTargetTag, const _tchar* pMRTTag);
 	HRESULT Begin_MRT(ID3D11DeviceContext* pDevice_Context, const _tchar* pMRTTag);
 	HRESULT End_MRT(ID3D11DeviceContext* pDevice_Context, const _tchar* pMRTTag);

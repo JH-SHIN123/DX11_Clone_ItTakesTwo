@@ -219,6 +219,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\public\Renderer.h" />
     <ClInclude Include="..\public\RenderTarget.h" />
     <ClInclude Include="..\public\RenderTarget_Manager.h" />
+    <ClInclude Include="..\Public\Shadow_Manager.h" />
     <ClInclude Include="..\public\Sound_Manager.h" />
     <ClInclude Include="..\public\StaticActor.h" />
     <ClInclude Include="..\public\Textures.h" />
@@ -266,6 +267,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\private\Renderer.cpp" />
     <ClCompile Include="..\private\RenderTarget.cpp" />
     <ClCompile Include="..\private\RenderTarget_Manager.cpp" />
+    <ClCompile Include="..\Private\Shadow_Manager.cpp" />
     <ClCompile Include="..\private\Sound_Manager.cpp" />
     <ClCompile Include="..\private\StaticActor.cpp" />
     <ClCompile Include="..\private\Textures.cpp" />

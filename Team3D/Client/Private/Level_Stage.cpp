@@ -12,6 +12,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 {
 	CLevel::NativeConstruct();
 
+	FAILED_CHECK_RETURN(Ready_Lights(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Camera(TEXT("Layer_Camera")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Terrain(TEXT("Layer_Terrain")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_Player(TEXT("Layer_Player")), E_FAIL);
@@ -36,6 +37,29 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 
 HRESULT CLevel_Stage::Render()
 {
+	return S_OK;
+}
+
+HRESULT CLevel_Stage::Ready_Lights()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	pGameInstance->Reserve_Container_Light(1);
+
+	LIGHT_DESC			LightDesc;
+
+	/* For.Directional */
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
+	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.f);
+	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Light(LightDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

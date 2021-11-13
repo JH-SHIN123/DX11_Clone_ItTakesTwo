@@ -166,7 +166,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 technique11 DefaultTechnique
 {
 	// 0
-	pass Light_Directional
+	pass Default_Skinned
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_Default, 0);
@@ -176,7 +176,7 @@ technique11 DefaultTechnique
 		PixelShader		= compile ps_5_0 PS_MAIN();
 	}
 	// 1
-	pass Light_Directional_NoBone
+	pass Default
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_Default, 0);

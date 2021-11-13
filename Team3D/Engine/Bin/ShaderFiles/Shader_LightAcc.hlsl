@@ -134,7 +134,9 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	vector vReflect = reflect(normalize(g_vLightDir), vNormal);
 
 	Out.vShade		= max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient);
+	Out.vShade.a = 0.f;
 	Out.vSpecular	= pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
+	Out.vSpecular.a = 0.f;
 
 	return Out;
 }
@@ -175,7 +177,9 @@ PS_OUT PS_POINT(PS_IN In)
 	vector	vReflect	= reflect(normalize(g_vLightDir), vNormal);
 
 	Out.vShade		= (max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
+	Out.vShade.a = 0.f;
 	Out.vSpecular	= (pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular)) * fAtt;
+	Out.vSpecular.a = 0.f;
 
 	return Out;
 }
