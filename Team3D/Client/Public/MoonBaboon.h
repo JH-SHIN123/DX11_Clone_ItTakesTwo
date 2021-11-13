@@ -58,6 +58,8 @@ public:
 	void Change_State(_double TimeDelta);
 	void During_Animation_Behavior(_double TimeDelta);
 
+	void Fix_MoonBaboon_Chair(_double TimeDelta);
+
 
 private:
 	MOON_STATE m_eCurState = MOON_ENTIRE_ANIMATION;

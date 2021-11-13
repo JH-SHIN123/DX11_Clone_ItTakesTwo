@@ -56,7 +56,7 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 	
 	
 	m_pModelCom->Set_Animation(15, m_pTransformCom);
-	m_pModelCom->Set_NextAnimIndex(15);
+	m_pModelCom->Set_NextAnimIndex(15);	
 
 	return S_OK;
 }
@@ -68,14 +68,7 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 	Check_State(dTimeDelta);
 	Change_State(dTimeDelta);
 	During_Animation_Behavior(dTimeDelta);
-
-	_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
-	_float4x4 matWorld, matScale;
-	XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f)  * BoneChair * m_pUFOTransform->Get_WorldMatrix());
-	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
-
-	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	int i = 0;
+	Fix_MoonBaboon_Chair(dTimeDelta);
 
 	PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 	//m_pActorCom->Update(dTimeDelta);
@@ -119,19 +112,25 @@ void CMoonBaboon::During_Animation_Behavior(_double TimeDelta)
 {
 }
 
+void CMoonBaboon::Fix_MoonBaboon_Chair(_double TimeDelta)
+{
+	_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
+	_float4x4 matWorld, matScale; // 우주선 안에있을때 유리밖으로 꼬리 튀어나와서 100->95정도로 줄임.
+	XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f)  * BoneChair * m_pUFOTransform->Get_WorldMatrix());
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
+}
+
 HRESULT CMoonBaboon::Render()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
 	m_pModelCom->Render_Model(0);
-
 	return S_OK;
 }
 
 HRESULT CMoonBaboon::Set_ShaderConstant_Default()
 {
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-
 	return S_OK;
 }
 
