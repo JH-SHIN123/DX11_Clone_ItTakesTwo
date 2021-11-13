@@ -24,7 +24,7 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 	CGameObject::NativeConstruct(pArg);
 
 	CModel_Instance::ARG_DESC Arg;
-	Arg.iInstanceCount = 500;
+	Arg.iInstanceCount = 50;
 	Arg.fCullingRadius = 10.f;
 	Arg.pActorName = "TileBox";
 	Arg.pWorldMatrices = new _float4x4[Arg.iInstanceCount];
@@ -78,7 +78,7 @@ HRESULT CTileBox::Render_ShadowDepth()
 	m_pGameInstance->Get_CascadeShadowLightViewProjTranspose(1, ShadowLightViewProj);
 	m_pModelCom->Set_Variable("g_ShadowTransforms_Sub", ShadowLightViewProj, sizeof(_matrix) * MAX_CASCADES);
 
-	m_pModelCom->Render_Model(1);
+	m_pModelCom->Render_Model(1,true);
 
 	return S_OK;
 }

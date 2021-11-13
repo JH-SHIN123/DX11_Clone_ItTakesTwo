@@ -164,9 +164,6 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
 		cascadeFrustumCenter /= 8.0f;
 
 		// Caculate AABB around the frustum conrners
-		_vector mins = XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, 0.f);
-		_vector maxes = XMVectorSet(-FLT_MAX, -FLT_MAX, -FLT_MAX, 0.f);
-
 		_float sphereRadius = 0.f;
 		for (_uint i = 0; i < 8; ++i)
 		{
@@ -174,6 +171,9 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
 			sphereRadius = max(sphereRadius, dist);
 		}
 		sphereRadius = std::ceil(sphereRadius * 16.0f) / 16.0f;
+
+		_vector mins = XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, 0.f);
+		_vector maxes = XMVectorSet(-FLT_MAX, -FLT_MAX, -FLT_MAX, 0.f);
 
 		maxes = XMVectorSet(sphereRadius, sphereRadius, sphereRadius, 0.f);
 		mins = -maxes;
@@ -183,11 +183,11 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
 		// Get Position of the Shadow Camera
 		_vector shadowCameraPos = cascadeFrustumCenter - XMVector3Normalize(vDirectionalLightDir) * fabs(XMVectorGetZ(mins));
 		shadowCameraPos = XMVectorSetW(shadowCameraPos, 1.f);
+		cascadeFrustumCenter = XMVectorSetW(cascadeFrustumCenter, 1.f);
 
 		// Build Light View Proj
 		_matrix ShadowView, ShadowProj;
 		_vector vTarget = cascadeFrustumCenter;
-		vTarget = XMVectorSetW(vTarget, 1.f);
 		_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 
 		ShadowView = XMMatrixLookAtLH(shadowCameraPos, vTarget, vUp);

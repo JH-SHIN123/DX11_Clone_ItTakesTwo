@@ -99,8 +99,12 @@ float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSlic
 	shadowPosH.xyz /= shadowPosH.w;
 
 	// PCF
-	uint	width = SHADOWMAP_SIZE;
-	uint	height = SHADOWMAP_SIZE * 3.f;
+	//uint	width = SHADOWMAP_SIZE * 0.5f;
+	//uint	height = SHADOWMAP_SIZE * 3.f;
+
+	uint	width, height;
+	g_CascadedShadowDepthTexture.GetDimensions(width,height);
+
 	float	dx = 1.0f / (float)width;
 	float	dy = 1.0f / (float)height;
 
@@ -111,9 +115,11 @@ float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSlic
 		float2(-dx, +dy), float2(0.0f, +dy), float2(dx, +dy)
 	};
 
+	// 여기가 문제인가?
 	float2 vShadowUV = shadowPosH.xy;
 	vShadowUV.x += iViewportIndex * 0.5f;
 	vShadowUV.y = (vShadowUV.y + iSliceIndex) / MAX_CASCADES;
+
 
 	float shadowFactor = 0.f;
 	float percentLit = 0.0f;
