@@ -219,8 +219,8 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		if (iIndex < 0) return Out;
 		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Sub[iIndex], iIndex, 1);
 	}
-	//else
-	//	discard;
+	else
+		discard;
 
 	vector vReflect = reflect(normalize(g_vLightDir), vNormal);
 

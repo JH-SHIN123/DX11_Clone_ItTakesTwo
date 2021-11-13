@@ -53,7 +53,9 @@ HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, c
 	m_pDepthStencilView->Release();
 
 	ID3D11RenderTargetView* RenderTargets[8] = { nullptr };
-	ID3D11DepthStencilView* DepthStencil = nullptr;
+	ID3D11DepthStencilView* DepthStencil[8] = { nullptr };
+
+	//ID3D11DepthStencilView* DepthStencil = nullptr;
 
 	_uint iRenderTargetIndex = 0;
 
@@ -62,14 +64,14 @@ HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, c
 		pRenderTarget->Clear_View();
 		pRenderTarget->Clear_Depth_Stencil_Buffer();
 		RenderTargets[iRenderTargetIndex] = pRenderTarget->Get_RenderTargetView();
-		DepthStencil = pRenderTarget->Get_DepthStencilView();
+		DepthStencil[iRenderTargetIndex] = pRenderTarget->Get_DepthStencilView();
 		++iRenderTargetIndex;
 	}
 
-	if (nullptr == DepthStencil)
+	if (nullptr == DepthStencil[0])
 		pDeviceContext->OMSetRenderTargets((_uint)pMRT->size(), RenderTargets, m_pDepthStencilView);
 	else
-		pDeviceContext->OMSetRenderTargets((_uint)pMRT->size(), RenderTargets, DepthStencil);
+		pDeviceContext->OMSetRenderTargets((_uint)pMRT->size(), RenderTargets, DepthStencil[0]);
 	
 	return S_OK;
 }
