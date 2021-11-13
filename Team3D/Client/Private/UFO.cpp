@@ -117,7 +117,6 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 HRESULT CUFO::Render()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-	s
 	m_pModelCom->Render_Model(0);
 
 	return S_OK;
