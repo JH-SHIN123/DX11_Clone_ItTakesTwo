@@ -30,7 +30,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	Ready_Component();
 
 	m_pModelCom->Set_Animation(2, m_pTransformCom);
-	CDataBase::GetInstance()->Set_CodyPtr(this);
+	CDataBase::GetInstance()->Set_CodyPtr(this);			
 	 
 
 	return S_OK;
