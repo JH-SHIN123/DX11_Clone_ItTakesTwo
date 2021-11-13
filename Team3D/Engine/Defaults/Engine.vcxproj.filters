@@ -199,6 +199,9 @@
     <Filter Include="02.Utility\02.Component\05.Model\00.Main\01.Instance">
       <UniqueIdentifier>{a76bbefa-3da3-46a3-808b-d54d00aa9310}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\05.">
+      <UniqueIdentifier>{b24e96d2-8383-488b-9aca-0c27a5485b2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\GameInstance.h">
