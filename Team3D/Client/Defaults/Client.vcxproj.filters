@@ -70,20 +70,8 @@
     <Filter Include="02.GameObject\04.Stage_Tree">
       <UniqueIdentifier>{9b2ce05d-80d0-464d-8dce-5a75d40f42db}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\00.Public\03.Character">
-      <UniqueIdentifier>{7e996727-b5b0-41d9-b6b8-6b873902fd9e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\99.Stage%28Test%29\01.Player">
       <UniqueIdentifier>{b134e824-3c41-4f85-8703-7c00321fcce5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\00.Public\03.Character\99.Parent">
-      <UniqueIdentifier>{0b5865f1-2eda-4ced-acc0-09423f134b86}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\00.Public\03.Character\00.Cody">
-      <UniqueIdentifier>{a3785dbd-545e-4a19-b04f-e50b3e2ac4af}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\00.Public\03.Character\01.May">
-      <UniqueIdentifier>{49acfb49-2074-4d96-9c3b-229603d013ec}</UniqueIdentifier>
     </Filter>
     <Filter Include="96.DataBase">
       <UniqueIdentifier>{9d471ce0-e768-450b-9d91-9b678d9ec778}</UniqueIdentifier>
@@ -91,10 +79,25 @@
     <Filter Include="02.GameObject\99.Stage%28Test%29\03.Env">
       <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\00.Public\03.Character\02.UFO">
+    <Filter Include="02.GameObject\03.Character">
+      <UniqueIdentifier>{7e996727-b5b0-41d9-b6b8-6b873902fd9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\03.Character\99.Parent">
+      <UniqueIdentifier>{0b5865f1-2eda-4ced-acc0-09423f134b86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\03.Character\00.Cody">
+      <UniqueIdentifier>{a3785dbd-545e-4a19-b04f-e50b3e2ac4af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\03.Character\01.May">
+      <UniqueIdentifier>{49acfb49-2074-4d96-9c3b-229603d013ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\03.Character\03.Boss">
+      <UniqueIdentifier>{97f33821-55ec-4e25-853a-bb4f0faf6f7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\03.Character\03.Boss\00.UFO">
       <UniqueIdentifier>{a1a80e33-62b7-46e8-9030-d0f0d0245370}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\00.Public\03.Character\03.MoonBaboon">
+    <Filter Include="02.GameObject\03.Character\03.Boss\01.MoonBaboon">
       <UniqueIdentifier>{f25b4c8e-4beb-4ec5-9404-fd56a08a7591}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -145,25 +148,25 @@
       <Filter>02.GameObject\99.Stage%28Test%29\01.Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Cody.h">
-      <Filter>02.GameObject\00.Public\03.Character\00.Cody</Filter>
+      <Filter>02.GameObject\03.Character\00.Cody</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Character.h">
-      <Filter>02.GameObject\00.Public\03.Character\99.Parent</Filter>
+      <Filter>02.GameObject\03.Character\99.Parent</Filter>
     </ClInclude>
     <ClInclude Include="..\public\DataBase.h">
       <Filter>96.DataBase</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\May.h">
-      <Filter>02.GameObject\00.Public\03.Character\01.May</Filter>
+      <Filter>02.GameObject\03.Character\01.May</Filter>
     </ClInclude>
     <ClInclude Include="..\public\TileBox.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MoonBaboon.h">
-      <Filter>02.GameObject\00.Public\03.Character\03.MoonBaboon</Filter>
+      <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UFO.h">
-      <Filter>02.GameObject\00.Public\03.Character\02.UFO</Filter>
+      <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
     </ClInclude>
     <ClInclude Include="Client_Animation_Index_Define.h">
       <Filter>98.Defines</Filter>
@@ -201,25 +204,25 @@
       <Filter>02.GameObject\99.Stage%28Test%29\01.Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Cody.cpp">
-      <Filter>02.GameObject\00.Public\03.Character\00.Cody</Filter>
+      <Filter>02.GameObject\03.Character\00.Cody</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp">
-      <Filter>02.GameObject\00.Public\03.Character\99.Parent</Filter>
+      <Filter>02.GameObject\03.Character\99.Parent</Filter>
     </ClCompile>
     <ClCompile Include="..\private\DataBase.cpp">
       <Filter>96.DataBase</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\May.cpp">
-      <Filter>02.GameObject\00.Public\03.Character\01.May</Filter>
+      <Filter>02.GameObject\03.Character\01.May</Filter>
     </ClCompile>
     <ClCompile Include="..\private\TileBox.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MoonBaboon.cpp">
-      <Filter>02.GameObject\00.Public\03.Character\03.MoonBaboon</Filter>
+      <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UFO.cpp">
-      <Filter>02.GameObject\00.Public\03.Character\02.UFO</Filter>
+      <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
