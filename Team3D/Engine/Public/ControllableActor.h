@@ -28,6 +28,9 @@ public:
 	void	Jump_Start(_float fJumpForce);
 	void	Jump_Higher(_float fJumpForce);
 
+	/* Setter */
+	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
+
 private:
 	PxController*		m_pController = nullptr;
 	PxRigidDynamic*		m_pActor = nullptr;
@@ -35,10 +38,13 @@ private:
 	/* For.Jump */
 	_float	m_fJumpTime = 0.f;
 	_float	m_fHeightDelta = 0.f;
-	_float	m_fJumpGravity = 0.f;
 	_float	m_fJumpForce = 0.f;
 	_float	m_fBaseJumpForce = 0.f;
 	_bool	m_bJump = false;
+
+	/* For.Gravity */
+	_float m_fGravity = -9.8f;
+
 private:
 	void	Jump_Stop();
 	_float	Get_Height(_double dTimeDelta);

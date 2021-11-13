@@ -66,8 +66,6 @@ HRESULT CControllableActor::NativeConstruct(void * pArg)
 
 	m_pActor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, false);
 
-	m_fJumpGravity = -9.8f;
-
 	return S_OK;
 }
 
@@ -84,7 +82,7 @@ void CControllableActor::Update(_double dTimeDelta)
 	if (m_fHeightDelta != 0.f)
 		fY = m_fHeightDelta * 0.5f;
 	else
-		fY = -GRAVITY * (_float)dTimeDelta;
+		fY = m_fGravity * (_float)dTimeDelta;
 
 
 	PxVec3 vDist = PxVec3(0, fY, 0);
@@ -132,7 +130,7 @@ _float CControllableActor::Get_Height(_double dTimeDelta)
 		return 0.f;
 	
 	m_fJumpTime += (_float)dTimeDelta;
-	return (m_fJumpGravity / 2.f * m_fJumpTime * m_fJumpTime + m_fJumpForce * m_fJumpTime)/* * (_float)dTimeDelta*/;
+	return (m_fGravity / 2.f * m_fJumpTime * m_fJumpTime + m_fJumpForce * m_fJumpTime)/* * (_float)dTimeDelta*/;
 }
 
 CControllableActor * CControllableActor::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

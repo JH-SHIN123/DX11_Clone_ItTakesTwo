@@ -50,8 +50,12 @@ public:
 	void	Rotate_ToTargetOnLand(_fvector vTargetPos);
 	void	Move_ToTarget(_fvector vTargetPos, _double dTimeDelta);
 
+	void    RotateYawDirectionOnLand(const _fvector& vMoveDir, const _double TimeDelta, const _double dAcceleration = 1.f, class CNavigation* pNavigation = nullptr);
+	void    RotatePitchDirectionOnLand(const _fvector& vMoveDir, const _double TimeDelta, const _double dAcceleration = 1.f, class CNavigation* pNavigation = nullptr);
+
 	void    MoveDirectionOnLand(const _fvector& vMoveDir, const _double TimeDelta, const _double dAcceleration = 1.f, class CNavigation* pNavigation = nullptr);
 	void	RotateYaw(const _double TimeDelta);
+	void	RotatePitch(const _double TimeDelta);
 
 private:
 	_float4x4		m_WorldMatrix;

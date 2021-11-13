@@ -191,6 +191,76 @@ void CTransform::Move_ToTarget(_fvector vTargetPos, _double dTimeDelta)
 	Rotate_ToTargetOnLand(vTargetPos);
 }
 
+void CTransform::RotateYawDirectionOnLand(const _fvector & vMoveDir, const _double TimeDelta, const _double dAcceleration, CNavigation * pNavigation)
+{
+	if (0.0 == m_TransformDesc.dSpeedPerSec) return;
+
+	_vector vMoveDir_Norm = XMVector3Normalize(vMoveDir);
+
+	_vector	vUp, vLook;
+
+	vLook = Get_State(STATE_LOOK);
+	vUp = Get_State(STATE_UP);
+	vLook = XMVector3Normalize(vLook);
+	vUp = XMVector3Normalize(vUp);
+
+	_float fCosValue = XMVectorGetX(XMVector3Dot(vMoveDir_Norm, vLook));
+
+	// 회전 각도 제한
+	_float fAcosValue = 0.f;
+	if (fCosValue <= -1.f) // 
+		fAcosValue = (_float)AI_MATH_PI;
+	else if (fCosValue > 1.f) // 
+		fAcosValue = 0.f;
+	else
+		fAcosValue = acos(fCosValue); // Dir - vLook (Radian)
+
+									  // 외적해서, y축 부호 시계방향, 반시계방향 정하기
+	_float fCCW = XMVectorGetX(XMVector3Dot(vUp, XMVector3Cross(vMoveDir_Norm, vLook)));
+
+	_float fDeltaDegree = XMConvertToDegrees(fAcosValue);
+	if (fCCW > 0)	// ccw가 양수이면 반시계로 돌아야함
+		fDeltaDegree *= -1;
+
+	// Transform
+	RotateYaw(TimeDelta * XMConvertToRadians(fDeltaDegree) * 2.f);
+}
+
+void CTransform::RotatePitchDirectionOnLand(const _fvector & vMoveDir, const _double TimeDelta, const _double dAcceleration, CNavigation * pNavigation)
+{
+	if (0.0 == m_TransformDesc.dSpeedPerSec) return;
+
+	_vector vMoveDir_Norm = XMVector3Normalize(vMoveDir);
+
+	_vector	vUp, vLook;
+
+	vLook = Get_State(STATE_LOOK);
+	vUp = Get_State(STATE_UP);
+	vLook = XMVector3Normalize(vLook);
+	vUp = XMVector3Normalize(vUp);
+
+	_float fCosValue = XMVectorGetX(XMVector3Dot(vMoveDir_Norm, vLook));
+
+	// 회전 각도 제한
+	_float fAcosValue = 0.f;
+	if (fCosValue <= -1.f) // 
+		fAcosValue = (_float)AI_MATH_PI;
+	else if (fCosValue > 1.f) // 
+		fAcosValue = 0.f;
+	else
+		fAcosValue = acos(fCosValue); // Dir - vLook (Radian)
+
+									  // 외적해서, y축 부호 시계방향, 반시계방향 정하기
+	_float fCCW = XMVectorGetX(XMVector3Dot(vUp, XMVector3Cross(vMoveDir_Norm, vLook)));
+
+	_float fDeltaDegree = XMConvertToDegrees(fAcosValue);
+	if (fCCW > 0)	// ccw가 양수이면 반시계로 돌아야함
+		fDeltaDegree *= -1;
+
+	// Transform
+	RotatePitch(TimeDelta * XMConvertToRadians(fDeltaDegree) * 2.f);
+}
+
 void CTransform::MoveDirectionOnLand(const _fvector & vMoveDir, const _double TimeDelta, const _double dAcceleration, CNavigation * pNavigation)
 {
 	if (0.0 == m_TransformDesc.dSpeedPerSec) return;
@@ -234,6 +304,19 @@ void CTransform::RotateYaw(const _double TimeDelta)
 	_vector		vLook = Get_State(CTransform::STATE_LOOK);
 
 	_matrix		RotateMatrix = XMMatrixRotationAxis(XMVector3Normalize(vUp), (_float)(TimeDelta * 5.f));
+
+	Set_State(STATE_RIGHT, XMVector3TransformNormal(vRight, RotateMatrix));
+	Set_State(STATE_UP, XMVector3TransformNormal(vUp, RotateMatrix));
+	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
+}
+
+void CTransform::RotatePitch(const _double TimeDelta)
+{
+	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
+	_vector		vUp = Get_State(CTransform::STATE_UP);
+	_vector		vLook = Get_State(CTransform::STATE_LOOK);
+
+	_matrix		RotateMatrix = XMMatrixRotationAxis(XMVector3Normalize(vRight), (_float)(TimeDelta * 5.f));
 
 	Set_State(STATE_RIGHT, XMVector3TransformNormal(vRight, RotateMatrix));
 	Set_State(STATE_UP, XMVector3TransformNormal(vUp, RotateMatrix));

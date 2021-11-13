@@ -40,9 +40,10 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	if (nullptr == m_pMayTransform)
 		return E_FAIL;
 	Safe_AddRef(m_pMayTransform);
-	
-	m_pModelCom->Set_Animation(0, m_pTransformCom);
-	m_pModelCom->Set_NextAnimIndex(0);
+
+	m_pActorCom->Set_Gravity(0.f);
+	m_pModelCom->Set_Animation(23, m_pTransformCom);
+	m_pModelCom->Set_NextAnimIndex(23);
 
 	return S_OK;
 }
@@ -50,6 +51,13 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 _int CUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+	
+	if (m_pGameInstance->Key_Pressing(DIK_K))
+		m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_M))
+		m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_N))
+		m_pActorCom->Move(XMVectorSet(0.f, 1.f, 0.f, 0.f) / 10.f, dTimeDelta);
 
 	Check_State(dTimeDelta);
 	Change_State(dTimeDelta);
@@ -57,6 +65,7 @@ _int CUFO::Tick(_double dTimeDelta)
 
 
 	PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
+
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
 
@@ -71,8 +80,7 @@ _int CUFO::Late_Tick(_double dTimeDelta)
 }
 
 
-
-CUFO::UFO_STATE CUFO::Check_State(_double TimeDelta)
+CUFO::UFO_STATE CUFO::Check_State(_double dTimeDelta)
 {
 	if (m_eNextState != m_eCurState)
 	{
@@ -82,20 +90,25 @@ CUFO::UFO_STATE CUFO::Check_State(_double TimeDelta)
 	return m_eCurState;
 }
 
-void CUFO::Change_State(_double TimeDelta)
+void CUFO::Change_State(_double dTimeDelta)
 {
-	if (m_eTarget == TARGET_CODY)
-	{
-		int i = 0;
-	}
-	else
-	{
-		int i = 0;
-	}
+
 }
 
-void CUFO::During_Animation_Behavior(_double TimeDelta)
+void CUFO::During_Animation_Behavior(_double dTimeDelta)
 {
+	Laser_Pattern(dTimeDelta);
+}
+
+void CUFO::Laser_Pattern(_double dTimeDelta)
+{
+	_vector vDir = m_pCodyTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	
+	_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
+	_vector vDirForLaser = XMVector3Normalize(vDir);
+
+	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta); // 플레이어 쪽으로 천천히 회전.
+
 }
 
 HRESULT CUFO::Render()

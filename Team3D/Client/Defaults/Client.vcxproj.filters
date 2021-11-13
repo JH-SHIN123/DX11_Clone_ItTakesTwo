@@ -165,6 +165,9 @@
     <ClInclude Include="..\Public\UFO.h">
       <Filter>02.GameObject\00.Public\03.Character\02.UFO</Filter>
     </ClInclude>
+    <ClInclude Include="Client_Animation_Index_Define.h">
+      <Filter>98.Defines</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">

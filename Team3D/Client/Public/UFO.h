@@ -29,8 +29,8 @@ public:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-	virtual _int	Tick(_double TimeDelta) override;
-	virtual _int	Late_Tick(_double TimeDelta) override;
+	virtual _int	Tick(_double dTimeDelta) override;
+	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render() override;
 	virtual HRESULT Set_ShaderConstant_Default() override;
 	virtual HRESULT Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix) override;
@@ -49,9 +49,12 @@ protected:
 	CTransform*			m_pMayTransform = nullptr;
 
 public:
-	CUFO::UFO_STATE Check_State(_double TimeDelta);
-	void Change_State(_double TimeDelta);
-	void During_Animation_Behavior(_double TimeDelta);
+	CUFO::UFO_STATE Check_State(_double dTimeDelta);
+	void Change_State(_double dTimeDelta);
+	void During_Animation_Behavior(_double dTimeDelta);
+
+	// Patterns
+	void Laser_Pattern(_double dTimeDelta);
 
 
 private:
