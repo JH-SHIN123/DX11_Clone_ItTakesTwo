@@ -172,6 +172,9 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
 		}
 		sphereRadius = std::ceil(sphereRadius * 16.0f) / 16.0f;
 
+		//// Set CascadeEnd World pos
+		//m_fCascadedEndsW[currentCascade] = XMVectorGetZ(cascadeFrustumCenter) + sphereRadius;
+
 		_vector mins = XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, 0.f);
 		_vector maxes = XMVectorSet(-FLT_MAX, -FLT_MAX, -FLT_MAX, 0.f);
 
@@ -192,7 +195,7 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
 
 		ShadowView = XMMatrixLookAtLH(shadowCameraPos, vTarget, vUp);
 		// aabb의 길이 w / 높이 h / 기준점 zn / 깊이 zf 
-		ShadowProj = XMMatrixOrthographicLH(XMVectorGetX(cascadeExtents), XMVectorGetY(cascadeExtents), 0.3f, XMVectorGetZ(cascadeExtents));
+		ShadowProj = XMMatrixOrthographicLH(XMVectorGetX(cascadeExtents), XMVectorGetY(cascadeExtents), 0.f, XMVectorGetZ(cascadeExtents));
 
 		// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
 		_matrix T(
