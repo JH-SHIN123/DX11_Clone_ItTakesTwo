@@ -71,7 +71,7 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 
 	_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
 	_float4x4 matWorld, matScale;
-	XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(100.f, 100.f, 100.f)  * BoneChair * m_pUFOTransform->Get_WorldMatrix());
+	XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f)  * BoneChair * m_pUFOTransform->Get_WorldMatrix());
 	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
 
 	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);

@@ -154,7 +154,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	Out.vDiffuse	= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDiffuse	= vMtrlDiffuse;/*vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);*/
 
 	Out.vNormal		= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth		= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
