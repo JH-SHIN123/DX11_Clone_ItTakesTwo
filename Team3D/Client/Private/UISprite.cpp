@@ -34,25 +34,9 @@ HRESULT CUISprite::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
-	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));\
-
-
-	if (!lstrcmp(m_UIDesc.szUITag, TEXT("StickIcon")))
-	{
-		m_iTextureWidth = 2048;
-		m_iTextureHeight = 256;
-		m_iWidthMaxCount = 16;
-		m_iHeightMaxCount = 2;
-		m_iShaderPassNum = 0;
-	}
-	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("LoadingBook")))
-	{
-		m_iTextureWidth = 1024;
-		m_iTextureHeight = 1024;
-		m_iWidthMaxCount = 8;
-		m_iHeightMaxCount = 8;
-		m_iShaderPassNum = 1;
-	}
+	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	
+	SetUp_SpriteInfo();
 
 	return S_OK;
 }
@@ -166,7 +150,7 @@ void CUISprite::Update_Frame(_double TimeDelta)
 {
 	m_FrameTime += TimeDelta;
 
-	if (0.01 <= m_FrameTime)
+	if (m_FrameControl <= m_FrameTime)
 	{
 		++m_iWidthIndex;
 		m_FrameTime = 0;
@@ -175,13 +159,38 @@ void CUISprite::Update_Frame(_double TimeDelta)
 	if (m_iWidthIndex >= m_iWidthMaxCount)
 	{
 		m_iWidthIndex = 0;
-		++m_iHeightIndex;
+
+		if(1 != m_iStickOption)
+			++m_iHeightIndex;
 	}
 
 	if (m_iHeightIndex >= m_iHeightMaxCount)
 	{
 		m_iWidthIndex = 0;
 		m_iHeightIndex = 0;
+	}
+}
+
+void CUISprite::SetUp_SpriteInfo()
+{
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("StickIcon")))
+	{
+		m_iTextureWidth = 2048;
+		m_iTextureHeight = 256;
+		m_iWidthMaxCount = 16;
+		m_iHeightMaxCount = 2;
+		m_iShaderPassNum = 0;
+		m_iStickOption = 1;
+		m_FrameControl = 0.03;
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("LoadingBook")))
+	{
+		m_iTextureWidth = 1024;
+		m_iTextureHeight = 1024;
+		m_iWidthMaxCount = 8;
+		m_iHeightMaxCount = 8;
+		m_iShaderPassNum = 1;
+		m_FrameControl = 0.01;
 	}
 }
 

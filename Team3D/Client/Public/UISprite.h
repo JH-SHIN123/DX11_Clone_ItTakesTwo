@@ -26,6 +26,7 @@ public:
 
 private:
 	_double								m_FrameTime = 0;
+	_double								m_FrameControl = 0;
 	_uint								m_iWidthMaxCount = 0;
 	_uint								m_iHeightMaxCount = 0;
 	_uint								m_iWidthIndex = 0;
@@ -33,12 +34,14 @@ private:
 	_uint								m_iTextureWidth = 0;
 	_uint								m_iTextureHeight = 0;
 	_uint								m_iShaderPassNum = 0;
+	_uint								m_iStickOption = 0;
 
 private:
 	CVIBuffer_Sprite*					m_pVIBuffer_SpriteCom = nullptr;
 
 private:
 	 void Update_Frame(_double TimeDelta);
+	 void SetUp_SpriteInfo();
 
 private:
 	HRESULT Ready_Component();
