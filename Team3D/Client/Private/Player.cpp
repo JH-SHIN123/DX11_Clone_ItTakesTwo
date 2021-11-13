@@ -54,6 +54,24 @@ _int CPlayer::Late_Tick(_double dTimeDelta)
 		CUI_Generator::GetInstance()->Generator_UI(Player::Player_Cody, UI::Arrowkeys_Side);
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_2))
+	{
+		CUI_Generator::GetInstance()->Set_TriggerOn();
+		CUI_Generator::GetInstance()->Generator_UI(Player::Player_Cody, UI::StickIcon);
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_3))
+	{
+		CUI_Generator::GetInstance()->Set_TriggerOn();
+		CUI_Generator::GetInstance()->Generator_UI(Player::Player_May, UI::StickIcon);
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_4))
+	{
+		CUI_Generator::GetInstance()->Set_TriggerOn();
+		CUI_Generator::GetInstance()->Generator_UI(Player::Default, UI::LoadingBook);
+	}
+
 	if (m_pGameInstance->Key_Down(DIK_Z))
 		CUI_Generator::GetInstance()->Delete_UI(Player::Player_Cody, UI::Arrowkeys_Side);
 

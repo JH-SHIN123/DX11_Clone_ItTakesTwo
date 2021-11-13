@@ -16,7 +16,6 @@ CUIObject::CUIObject(const CUIObject & rhs)
 HRESULT CUIObject::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
-	//d
 
 	return S_OK;
 }

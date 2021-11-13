@@ -31,6 +31,19 @@ struct VS_OUT
 	float2	vTexUV		: TEXCOORD0;
 };
 
+//struct VS_SPRITE_IN
+//{
+//	float3	vPosition	: POSITION;
+//	float3	vVTXNum		: NORMAL;
+//	float2	vTexUV		: TEXCOORD0;
+//};
+//
+//struct VS_SPRITE_OUT
+//{
+//	float4  vPosition : SV_POSITION;
+//	float2  vTexUV : TEXCOORD0;
+//};
+
 //VS_OUT	VS_MAIN(VS_IN In)
 //{
 //	VS_OUT			Out = (VS_OUT)0;
@@ -56,6 +69,30 @@ VS_OUT	VS_MAIN(VS_IN In)
 	return Out;
 }
 
+//VS_SPRITE_OUT VS_SPRITE(VS_SPRITE_IN In)
+//{
+//	VS_SPRITE_OUT		Out = (VS_SPRITE_OUT)0;
+//
+//	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+//
+//	switch (In.vVTXNum.x)
+//	{
+//	case 0:
+//		Out.vTexUV = vLeftTopUV;
+//		break;
+//	case 1:
+//		Out.vTexUV = vRightTopUV;
+//		break;
+//	case 2:
+//		Out.vTexUV = vRightBottomUV;
+//		break;
+//	case 3:
+//		Out.vTexUV = vLeftBottomUV;
+//		break;
+//	}
+//
+//	return Out;
+//}
 
 ////////////////////////////////////////////////////////////
 
@@ -210,5 +247,7 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_Fill();
 	}
+
+
 
 };

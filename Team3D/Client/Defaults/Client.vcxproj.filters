@@ -109,6 +109,9 @@
     <Filter Include="02.GameObject\05.UI\04.ArrowKeys\01.Fill">
       <UniqueIdentifier>{e25c2719-7f51-45a6-abd1-a6ffb701019b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.UI\05.Sprite">
+      <UniqueIdentifier>{15a54422-1468-45aa-bcee-b46afcf47f6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -180,6 +183,9 @@
     <ClInclude Include="..\Public\Arrowkeys_Fill.h">
       <Filter>02.GameObject\05.UI\04.ArrowKeys\01.Fill</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UISprite.h">
+      <Filter>02.GameObject\05.UI\05.Sprite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -236,6 +242,9 @@
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp">
       <Filter>02.GameObject\05.UI\04.ArrowKeys\01.Fill</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UISprite.cpp">
+      <Filter>02.GameObject\05.UI\05.Sprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -266,6 +275,9 @@
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
+      <Filter>97.ShaderFiles\01.Codes</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Sprite.hlsl">
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
   </ItemGroup>

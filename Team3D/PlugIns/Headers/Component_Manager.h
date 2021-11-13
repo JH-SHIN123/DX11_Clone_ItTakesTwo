@@ -7,6 +7,7 @@
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Color.h"
 #include "VIBuffer_RectRHW.h"
+#include "VIBuffer_Sprite.h"
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_PointInstance.h"
 #include "VIBuffer_RectInstance.h"

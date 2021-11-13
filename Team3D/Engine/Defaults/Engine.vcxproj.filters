@@ -163,6 +163,9 @@
     <Filter Include="02.Utility\02.Component\05.Model\01.Mesh">
       <UniqueIdentifier>{288dfc8d-f2dd-43e7-85ed-31782323d247}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite">
+      <UniqueIdentifier>{4e9c4b91-5a1e-44b7-af9e-d858b891129f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Engine_Defines.h">
@@ -294,6 +297,9 @@
     <ClInclude Include="..\Public\Model_Loader.h">
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Sprite.h">
+      <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -409,6 +415,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Model_Loader.cpp">
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Sprite.cpp">
+      <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
