@@ -173,6 +173,7 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
 			float dist = XMVectorGetX(XMVector3Length(cascadeFrustumCornersW[i] - cascadeFrustumCenter));
 			sphereRadius = max(sphereRadius, dist);
 		}
+		sphereRadius = std::ceil(sphereRadius * 16.0f) / 16.0f;
 
 		maxes = XMVectorSet(sphereRadius, sphereRadius, sphereRadius, 0.f);
 		mins = -maxes;

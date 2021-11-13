@@ -1,18 +1,28 @@
 ////////////////////////////////////////////////////////////
+#include "Shader_Defines.hpp"
+#include "Shader_Macro.hpp"
 
 texture2D	g_NormalTexture;
 texture2D	g_DepthTexture;
+texture2D	g_CascadedShadowDepthTexture;
 
-sampler NormalSampler = sampler_state
+SamplerComparisonState ShadowSampler = sampler_state
 {
-	AddressU = wrap;
-	AddressV = wrap;
+	Filter = COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+	AddressU = BORDER;
+	AddressV = BORDER;
+	AddressW = BORDER;
+	BorderColor = float4(1.0f, 1.0f, 1.0f, 0.0f);
+
+	ComparisonFunc = LESS;
 };
 
-sampler DepthSampler = sampler_state
+cbuffer CascadedShadowDesc
 {
-	AddressU = wrap;
-	AddressV = wrap;
+	float	g_CascadeEnds[MAX_CASCADES + 1];
+
+	matrix	g_ShadowTransforms_Main[MAX_CASCADES];
+	matrix	g_ShadowTransforms_Sub[MAX_CASCADES];
 };
 
 cbuffer Directional
@@ -43,13 +53,13 @@ cbuffer MtrlDesc
 
 cbuffer TransformDesc
 {
-	float	g_fMainCamFar;
-	vector	g_vMainCamPosition;
+	//float	g_fMainCamFar;
+	//vector	g_vMainCamPosition;
 	matrix	g_MainProjMatrixInverse;
 	matrix	g_MainViewMatrixInverse;
 
-	float	g_fSubCamFar;
-	vector	g_vSubCamPosition;
+	//float	g_fSubCamFar;
+	//vector	g_vSubCamPosition;
 	matrix	g_SubProjMatrixInverse;
 	matrix	g_SubViewMatrixInverse;
 }
@@ -59,6 +69,72 @@ cbuffer Viewport
 	float4	g_vMainViewportUVInfo;
 	float4	g_vSubViewportUVInfo;
 };
+
+////////////////////////////////////////////////////////////
+/* Function */
+int Get_CascadedShadowSliceIndex(vector vWorldPos, int iViewportIndex)
+{
+	vector shadowPosNDC;
+	int iIndex = -1;
+	for (uint i = 0; i < MAX_CASCADES; ++i)
+	{
+		if (0 == iViewportIndex) shadowPosNDC = mul(vWorldPos, g_ShadowTransforms_Main[i]);
+		else shadowPosNDC = mul(vWorldPos, g_ShadowTransforms_Sub[i]);
+		shadowPosNDC.z /= shadowPosNDC.w;
+
+		// 2. 절두체에 위치하는지 & 몇번째 슬라이스에 존재하는지 체크(cascadeEndWorld값과 비교해가며 슬라이스 인덱스 구하기)
+		if (-shadowPosNDC.z <= g_CascadeEnds[i + 1])
+		{
+			iIndex = i;
+			break;
+		}
+	}
+
+	return iIndex;
+}
+
+float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSliceIndex, int iViewportIndex)
+{
+	vector shadowPosH = mul(vWorldPos, shadowTransformMatrix);
+	shadowPosH.xyz /= shadowPosH.w;
+
+	// PCF
+	uint	width = SHADOWMAP_SIZE;
+	uint	height = SHADOWMAP_SIZE * 3.f;
+	float	dx = 1.0f / (float)width;
+	float	dy = 1.0f / (float)height;
+
+	const float2 offsets[9] =
+	{
+		float2(-dx, -dy), float2(0.0f, -dy), float2(dx, -dy),
+		float2(-dx, 0.0f), float2(0.0f, 0.0f), float2(dx, 0.0f),
+		float2(-dx, +dy), float2(0.0f, +dy), float2(dx, +dy)
+	};
+
+	float2 vShadowUV = shadowPosH.xy;
+	vShadowUV.x += iViewportIndex * 0.5f;
+	vShadowUV.y = (vShadowUV.y + iSliceIndex) / MAX_CASCADES;
+
+	float shadowFactor = 0.f;
+	float percentLit = 0.0f;
+	float depth = shadowPosH.z; // 그릴 객체들의 깊이값. (그림자 ndc로 이동한)
+
+	[unroll]
+	for (int offsetIndex = 0; offsetIndex < 9; ++offsetIndex)
+	{
+		// 여기서 뽑아내는값이, 캐스케이드 쉐도우맵에 기록된 깊이값.
+		percentLit += g_CascadedShadowDepthTexture.SampleCmpLevelZero(ShadowSampler,
+			vShadowUV + offsets[offsetIndex], depth).r;
+	}
+	shadowFactor = percentLit / 9.f;
+
+	if (shadowPosH.z < shadowFactor + 0.01f)
+	{
+		shadowFactor = 0.f;
+	}
+
+	return shadowFactor;
+}
 
 ////////////////////////////////////////////////////////////
 
@@ -99,34 +175,49 @@ struct PS_OUT
 {
 	vector	vShade		: SV_TARGET0;
 	vector	vSpecular	: SV_TARGET1;
+	vector	vShadow		: SV_TARGET2;
 };
 
 PS_OUT PS_DIRECTIONAL(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector	vNormalDesc = g_NormalTexture.Sample(NormalSampler, In.vTexUV);
+	vector	vNormalDesc = g_NormalTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vNormal		= vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-	vector	vDepthDesc	= g_DepthTexture.Sample(DepthSampler, In.vTexUV);
+	vector	vDepthDesc	= g_DepthTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vWorldPos	= vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
 	float	fViewZ		= 0.f;
 	vector	vLook		= (vector)0.f;
+	float fShadowfactor = 0.f;
 
-	if (In.vTexUV.x >= g_vMainViewportUVInfo.x && In.vTexUV.x <= g_vMainViewportUVInfo.z && In.vTexUV.y >= g_vMainViewportUVInfo.y && In.vTexUV.y <= g_vMainViewportUVInfo.w)
+	/* ViewportUVInfo : x = TopLeftX, y = TopLeftY, z = Width, w = Height, 0.f ~ 1.f */
+	if (In.vTexUV.x >= g_vMainViewportUVInfo.x && In.vTexUV.x <= g_vMainViewportUVInfo.z &&
+		In.vTexUV.y >= g_vMainViewportUVInfo.y && In.vTexUV.y <= g_vMainViewportUVInfo.w)
 	{
 		fViewZ		= vDepthDesc.x * g_fMainCamFar;
 		vWorldPos	= vWorldPos * fViewZ;
 		vWorldPos	= mul(vWorldPos, g_MainProjMatrixInverse);
 		vWorldPos	= mul(vWorldPos, g_MainViewMatrixInverse);
 		vLook		= normalize(vWorldPos - g_vMainCamPosition);
+
+		/* Carculate Shadow */
+		int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 0);
+		if (iIndex < 0) return Out;
+		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Main[iIndex], iIndex, 0);
 	}
-	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z && In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
+	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
+		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
 	{
 		fViewZ		= vDepthDesc.x * g_fSubCamFar;
 		vWorldPos	= vWorldPos * fViewZ;
 		vWorldPos	= mul(vWorldPos, g_SubProjMatrixInverse);
 		vWorldPos	= mul(vWorldPos, g_SubViewMatrixInverse);
 		vLook		= normalize(vWorldPos - g_vSubCamPosition);
+
+		/* Carculate Shadow */
+		int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 1);
+		if (iIndex < 0) return Out;
+		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Sub[iIndex], iIndex, 1);
 	}
 	else
 		discard;
@@ -138,6 +229,9 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	Out.vSpecular	= pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
 	Out.vSpecular.a = 0.f;
 
+	Out.vShadow = 1.f - fShadowfactor;
+	Out.vShadow.a = 1.f;
+
 	return Out;
 }
 
@@ -145,9 +239,9 @@ PS_OUT PS_POINT(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector	vNormalDesc = g_NormalTexture.Sample(NormalSampler, In.vTexUV);
+	vector	vNormalDesc = g_NormalTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vNormal		= vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-	vector	vDepthDesc	= g_DepthTexture.Sample(DepthSampler, In.vTexUV);
+	vector	vDepthDesc	= g_DepthTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vWorldPos	= vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
 	float	fViewZ		= 0.f;
 	vector	vLook		= (vector)0.f;
@@ -186,35 +280,6 @@ PS_OUT PS_POINT(PS_IN In)
 
 ////////////////////////////////////////////////////////////
 
-RasterizerState Rasterizer_Solid
-{
-	FillMode = solid;
-	CullMode = back;
-	FrontCounterClockwise = false;
-};
-
-DepthStencilState DepthStecil_ZEnable
-{
-	DepthEnable = false;	
-};
-
-BlendState BlendState_None
-{
-	BlendEnable[0] = false;
-};
-
-BlendState BlendState_Add
-{
-	BlendEnable[0]	= true;
-	BlendEnable[1]	= true;
-	SrcBlend		= ONE;
-	DestBlend		= ONE;
-	BlendOp			= Add;
-	SrcBlendAlpha	= ONE;
-	DestBlendAlpha	= ONE;
-	BlendOpAlpha	= Add;
-};
-
 ////////////////////////////////////////////////////////////
 
 technique11		DefaultTechnique
@@ -222,7 +287,7 @@ technique11		DefaultTechnique
 	pass Directional
 	{		
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_ZEnable, 0);
+		SetDepthStencilState(DepthStecil_No_ZTest, 0);
 		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader	= compile vs_5_0 VS_MAIN();
 		GeometryShader	= NULL;
@@ -232,7 +297,7 @@ technique11		DefaultTechnique
 	pass Point
 	{
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_ZEnable, 0);
+		SetDepthStencilState(DepthStecil_No_ZTest, 0);
 		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader	= compile vs_5_0 VS_MAIN();
 		GeometryShader	= NULL;

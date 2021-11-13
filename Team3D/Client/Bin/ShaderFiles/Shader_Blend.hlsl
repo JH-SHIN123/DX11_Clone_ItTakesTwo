@@ -1,26 +1,10 @@
 ////////////////////////////////////////////////////////////
+#include "Shader_Defines.hpp"
 
 texture2D	g_DiffuseTexture;
 texture2D	g_ShadeTexture;
 texture2D	g_SpecularTexture;
-
-sampler DiffuseSampler = sampler_state
-{
-	AddressU = wrap;
-	AddressV = wrap;
-};
-
-sampler ShadeSampler = sampler_state
-{
-	AddressU = wrap;
-	AddressV = wrap;
-};
-
-sampler SpecularSampler = sampler_state
-{
-	AddressU = wrap;
-	AddressV = wrap;
-};
+texture2D	g_ShadowTexture;
 
 ////////////////////////////////////////////////////////////
 
@@ -63,11 +47,13 @@ PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector	vDiffuseDesc	= g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-	vector	vShadeDesc		= g_ShadeTexture.Sample(ShadeSampler, In.vTexUV);
-	vector	vSpecularDesc	= g_SpecularTexture.Sample(SpecularSampler, In.vTexUV);
+	vector	vDiffuseDesc	= g_DiffuseTexture.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vShadeDesc		= g_ShadeTexture.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vSpecularDesc	= g_SpecularTexture.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vShadowDesc		= g_ShadowTexture.Sample(Wrap_Sampler, In.vTexUV);
 
-	Out.vColor = vDiffuseDesc * vShadeDesc + vSpecularDesc;
+	
+	Out.vColor = (vDiffuseDesc * vShadeDesc + vSpecularDesc) * vShadowDesc;
 
 	if (Out.vColor.a == 0.f)
 		discard;
@@ -77,23 +63,6 @@ PS_OUT PS_MAIN(PS_IN In)
 
 ////////////////////////////////////////////////////////////
 
-RasterizerState Rasterizer_Solid
-{
-	FillMode = solid;
-	CullMode = back;
-	FrontCounterClockwise = false;
-};
-
-DepthStencilState DepthStecil_ZEnable
-{
-	DepthEnable = false;	
-};
-
-BlendState BlendState_None
-{
-	BlendEnable[0] = false;
-};
-
 ////////////////////////////////////////////////////////////
 
 technique11		DefaultTechnique
@@ -101,7 +70,7 @@ technique11		DefaultTechnique
 	pass Directional
 	{		
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_ZEnable, 0);
+		SetDepthStencilState(DepthStecil_No_ZTest, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader	= compile vs_5_0 VS_MAIN();
 		GeometryShader	= NULL;
