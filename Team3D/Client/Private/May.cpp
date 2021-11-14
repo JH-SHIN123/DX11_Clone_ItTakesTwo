@@ -69,6 +69,7 @@ HRESULT CMay::Ready_Component()
 
 _int CMay::Tick(_double dTimeDelta)
 {
+	//s
 	CCharacter::Tick(dTimeDelta);
 
 	m_pCamera = (CSubCamera*)CDataBase::GetInstance()->Get_SubCam();
