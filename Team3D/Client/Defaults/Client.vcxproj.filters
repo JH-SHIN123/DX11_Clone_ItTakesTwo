@@ -79,7 +79,6 @@
     <Filter Include="02.GameObject\99.Stage%28Test%29\03.Env">
       <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
     <Filter Include="02.GameObject\99.Stage%28Test%29\04.Environment">
       <UniqueIdentifier>{4055a4be-e7b9-4fae-9aff-c679903a8799}</UniqueIdentifier>
     </Filter>
@@ -97,10 +96,9 @@
     </Filter>
     <Filter Include="02.GameObject\99.Stage%28Test%29\04.Environment\02.Dynamic">
       <UniqueIdentifier>{8239536b-7d2e-45fa-b088-d582aa82bf2c}</UniqueIdentifier>
-=======
+    </Filter>
     <Filter Include="96.DataStorage">
       <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
->>>>>>> main
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -152,7 +150,6 @@
     <ClInclude Include="..\public\TileBox.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\Public\Instancing_Env.h">
       <Filter>02.GameObject\99.Stage%28Test%29\04.Environment\01.Static\01.Instancing_Env</Filter>
     </ClInclude>
@@ -161,10 +158,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Environment_Generator.h">
       <Filter>02.GameObject\99.Stage%28Test%29\04.Environment\00.Environment_Generator</Filter>
-=======
+    </ClInclude>
     <ClInclude Include="..\public\DataStorage.h">
       <Filter>96.DataStorage</Filter>
->>>>>>> main
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -201,7 +197,6 @@
     <ClCompile Include="..\private\TileBox.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\Private\Instancing_Env.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\04.Environment\01.Static\01.Instancing_Env</Filter>
     </ClCompile>
@@ -210,10 +205,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Environment_Generator.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\04.Environment\00.Environment_Generator</Filter>
-=======
+    </ClCompile>
     <ClCompile Include="..\private\DataStorage.cpp">
       <Filter>96.DataStorage</Filter>
->>>>>>> main
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

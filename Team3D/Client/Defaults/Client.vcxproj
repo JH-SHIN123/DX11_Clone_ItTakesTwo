@@ -180,12 +180,9 @@
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
-<<<<<<< HEAD
     <ClInclude Include="..\Public\Environment_Generator.h" />
     <ClInclude Include="..\Public\Instancing_Env.h" />
-=======
     <ClInclude Include="..\public\DataStorage.h" />
->>>>>>> main
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
     <ClInclude Include="..\public\Loading.h" />
@@ -202,12 +199,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClCompile Include="..\Private\Environment_Generator.cpp" />
     <ClCompile Include="..\Private\Instancing_Env.cpp" />
-=======
     <ClCompile Include="..\private\DataStorage.cpp" />
->>>>>>> main
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />
