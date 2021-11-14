@@ -3,10 +3,23 @@
 #include "Client_Defines.h"
 #include "Base.h"
 #include "UIObject.h"
+#include "GameInstance.h"
+
+BEGIN(ENGINE)
+class CTextures;
+class CVIBuffer_FontInstance;
+END
 
 class CUI_Generator final : public CBase
 {
 	DECLARE_SINGLETON(CUI_Generator)
+
+public:
+	typedef struct tagFontDesc
+	{
+		_float3 vPosition;
+		_float2 vTexUV;
+	}FONTDESC;
 
 private:
 	explicit CUI_Generator();
@@ -19,22 +32,27 @@ public:
 	HRESULT Load_Data(const _tchar* pFilePath);
 	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	HRESULT Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
+	HRESULT Render_Font(_tchar* pText, _float2 vPos, _float2 vScale);
 
 public:
 	void Set_TriggerOn();
 
 private:
-	_bool						m_IsTrigger = true;
+	_bool							m_IsTrigger = true;
+	FONTDESC						m_FontDesc;
+	vector<FONTDESC>				m_vecFontDesc;
 
 private:
-	vector<CUIObject::UI_DESC*> m_vecPSData;
-	vector<CUIObject*>		m_vecUIOBjects[Player::PLAYER_END][UI::TRIGGER_END];
-
+	vector<CUIObject::UI_DESC*>		m_vecPSData;
+	vector<CUIObject*>				m_vecUIOBjects[Player::PLAYER_END][UI::TRIGGER_END];
 
 private:
-	ID3D11Device*			m_pDevice = nullptr;
-	ID3D11DeviceContext*	m_pDeviceContext = nullptr;
+	CTextures*						m_pTexturesCom = nullptr;
+	CVIBuffer_FontInstance*			m_pVIBuffer_FontCom = nullptr;
 
+private:
+	ID3D11Device*					m_pDevice = nullptr;
+	ID3D11DeviceContext*			m_pDeviceContext = nullptr;
 
 private:
 	HRESULT Add_Prototype_Interactive_UI(CUIObject::UI_DESC* UIDesc);

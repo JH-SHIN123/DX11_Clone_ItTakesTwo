@@ -9,8 +9,9 @@
 #include "VIBuffer_RectRHW.h"
 #include "VIBuffer_Sprite.h"
 #include "VIBuffer_Terrain.h"
-#include "VIBuffer_PointInstance.h"
 #include "VIBuffer_RectInstance.h"
+#include "VIBuffer_FontInstance.h"
+#include "VIBuffer_PointInstance.h"
 
 BEGIN(Engine)
 
