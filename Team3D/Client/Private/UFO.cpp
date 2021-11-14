@@ -42,8 +42,9 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	Safe_AddRef(m_pMayTransform);
 
 	m_pActorCom->Set_Gravity(0.f);
-	m_pModelCom->Set_Animation(23, m_pTransformCom);
-	m_pModelCom->Set_NextAnimIndex(23);
+	m_eNextState = UFO_LASER_MH;
+	m_pModelCom->Set_Animation(ANI_UFO_LASER_MH, m_pTransformCom);
+	m_pModelCom->Set_NextAnimIndex(ANI_UFO_LASER_MH);
 
 	// DataBase에 포인터 등록
 	CDataBase::GetInstance()->Set_UFOPtr(this);
@@ -61,6 +62,8 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta);
 	if (m_pGameInstance->Key_Pressing(DIK_N))
 		m_pActorCom->Move(XMVectorSet(0.f, 1.f, 0.f, 0.f) / 10.f, dTimeDelta);
+	if (m_pGameInstance->Key_Down(DIK_0))
+		m_IsCoreExplode = true;
 
 	Check_State(dTimeDelta);
 	Change_State(dTimeDelta);
@@ -87,7 +90,119 @@ CUFO::UFO_STATE CUFO::Check_State(_double dTimeDelta)
 {
 	if (m_eNextState != m_eCurState)
 	{
-		m_pModelCom->Set_Animation(m_eNextState, m_pTransformCom);
+		switch (m_eNextState)
+		{
+		case Client::CUFO::UFO_ENTIRE_ANIMATION:
+			m_pModelCom->Set_Animation(0, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_REF:
+			m_pModelCom->Set_Animation(ANI_UFO_REF, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_BACK:
+			m_pModelCom->Set_Animation(ANI_UFO_BACK, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_CODYHOLDING:
+			m_pModelCom->Set_Animation(ANI_UFO_CODYHOLDING, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_CODYHOLDING_ENTER:
+			m_pModelCom->Set_Animation(ANI_UFO_CODYHOLDING_ENTER, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_CODYHOLDING_LOW:
+			m_pModelCom->Set_Animation(ANI_UFO_CODYHOLDING_LOW, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_CONTROLLABLE_ADDITIVE:
+			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_ADDITIVE, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_CONTROLLABLE_ADDITIVE_BOOST:
+			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_ADDITIVE_BOOST, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_CONTROLLABLE_ADDITIVE_FLYING:
+			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_ADDITIVE_FLYING, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_CONTROLLABLE_POSE_BCK:
+			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_BCK, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_CONTROLLABLE_POSE_FWD:
+			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_FWD, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_CONTROLLABLE_POSE_LEFT:
+			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_LEFT, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_CONTROLLABLE_POSE_RIGHT:
+			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_RIGHT, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_FIREROCKET_ADDITIVE_LEFT:
+			m_pModelCom->Set_Animation(ANI_UFO_FIREROCKET_ADDITIVE_LEFT, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_FIREROCKET_ADDITIVE_RIGHT:
+			m_pModelCom->Set_Animation(ANI_UFO_FIREROCKET_ADDITIVE_RIGHT, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_FWD:
+			m_pModelCom->Set_Animation(ANI_UFO_FWD, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_GROUNDPOUND:
+			m_pModelCom->Set_Animation(ANI_UFO_GROUNDPOUND, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_HITREACTION_BCK:
+			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_BCK, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_HITREACTION_FWD:
+			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_FWD, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_HITREACTION_LEFT:
+			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_LEFT, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_HITREACTION_RIGHT:
+			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_RIGHT, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_KNOCKDOWNMH:
+			m_pModelCom->Set_Animation(ANI_UFO_KNOCKDOWNMH, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_LASER_HITPOD:
+			m_pModelCom->Set_Animation(ANI_UFO_LASER_HITPOD, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_LASER_MH:
+			m_pModelCom->Set_Animation(ANI_UFO_LASER_MH, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_LASERRIPPEDOFF:
+			m_pModelCom->Set_Animation(ANI_UFO_LASERRIPPEDOFF, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_LEFT:
+			m_pModelCom->Set_Animation(ANI_UFO_LEFT, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_MH:
+			m_pModelCom->Set_Animation(ANI_UFO_MH, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_RIGHT:
+			m_pModelCom->Set_Animation(ANI_UFO_RIGHT, m_pTransformCom);
+			break;
+		case Client::CUFO::UFO_ROCKETKNOCKDOWN_MH:
+			m_pModelCom->Set_Animation(ANI_UFO_ROCKETKNOCKDOWN_MH, m_pTransformCom);
+			break;
+		case Client::CUFO::CUTSCENE_EJECT_FLYINGSAUCER:
+			m_pModelCom->Set_Animation(ANI_CUTSCENE_EJECT_FLYINGSAUCER, m_pTransformCom);
+			break;
+		case Client::CUFO::CUTSCENE_ENTERUFO_FLYINGSAUCER:
+			m_pModelCom->Set_Animation(ANI_CUTSCENE_ENTERUFO_FLYINGSAUCER, m_pTransformCom);
+			break;
+		case Client::CUFO::CUTSCENE_UFO_BOSS_INTRO:
+			m_pModelCom->Set_Animation(ANI_CUTSCENE_UFO_BOSS_INTRO, m_pTransformCom);
+			break;
+		case Client::CUFO::CUTSCENE_UFO_LASERRIPPEDOFF_FLYINGSAUCER:
+			m_pModelCom->Set_Animation(ANI_CUTSCENE_UFO_LASERRIPPEDOFF_FLYINGSAUCER, m_pTransformCom);
+			break;
+		case Client::CUFO::CUTSCENE_UFO_OUTRO:
+			m_pModelCom->Set_Animation(ANI_CUTSCENE_UFO_OUTRO, m_pTransformCom);
+			break;
+		case Client::CUFO::CUTSCENE_POWERCORESDESTROYED_UFO:
+			m_pModelCom->Set_Animation(ANI_CUTSCENE_POWERCORESDESTROYED_UFO, m_pTransformCom);
+			break;
+		case Client::CUFO::CUTSCENE_ROCKETPHASEFINISHED_FLYINGSAUCER:
+			m_pModelCom->Set_Animation(ANI_CUTSCENE_ROCKETPHASEFINISHED_FLYINGSAUCER, m_pTransformCom);
+			break;
+		default:
+			break;
+		}
 		m_eCurState = m_eNextState;
 	}
 	return m_eCurState;
@@ -95,12 +210,76 @@ CUFO::UFO_STATE CUFO::Check_State(_double dTimeDelta)
 
 void CUFO::Change_State(_double dTimeDelta)
 {
+		if (m_eCurState == UFO_LASER_MH && m_IsCoreExplode == true)
+		{
+			m_eNextState = UFO_LASER_HITPOD;
+		}
+		else if (m_eCurState == UFO_LASER_HITPOD && m_pModelCom->Is_AnimFinished(ANI_UFO_LASER_HITPOD) == true)
+		{
+			m_eNextState = UFO_GROUNDPOUND;
+			m_IsCoreExplode = false;
+		}
+		else if (m_eCurState == UFO_GROUNDPOUND && m_pModelCom->Is_AnimFinished(ANI_UFO_GROUNDPOUND) == true)
+		{
+			m_eNextState = UFO_KNOCKDOWNMH;
+		}
 
 }
 
 void CUFO::During_Animation_Behavior(_double dTimeDelta)
 {
-	Laser_Pattern(dTimeDelta);
+	switch (m_eCurState)
+	{
+	case Client::CUFO::UFO_REF:
+		break;
+	case Client::CUFO::UFO_BACK:
+		break;
+	case Client::CUFO::UFO_CODYHOLDING:
+		break;
+	case Client::CUFO::UFO_CODYHOLDING_ENTER:
+		break;
+	case Client::CUFO::UFO_CODYHOLDING_LOW:
+		break;
+	case Client::CUFO::UFO_CONTROLLABLE_POSE_BCK:
+		break;
+	case Client::CUFO::UFO_CONTROLLABLE_POSE_FWD:
+		break;
+	case Client::CUFO::UFO_CONTROLLABLE_POSE_LEFT:
+		break;
+	case Client::CUFO::UFO_CONTROLLABLE_POSE_RIGHT:
+		break;
+	case Client::CUFO::UFO_FWD:
+		break;
+	case Client::CUFO::UFO_GROUNDPOUND:
+		break;
+	case Client::CUFO::UFO_HITREACTION_BCK:
+		break;
+	case Client::CUFO::UFO_HITREACTION_FWD:
+		break;
+	case Client::CUFO::UFO_HITREACTION_LEFT:
+		break;
+	case Client::CUFO::UFO_HITREACTION_RIGHT:
+		break;
+	case Client::CUFO::UFO_KNOCKDOWNMH:
+		break;
+	case Client::CUFO::UFO_LASER_HITPOD:
+		break;
+	case Client::CUFO::UFO_LASER_MH:
+		Laser_Pattern(dTimeDelta);
+		break;
+	case Client::CUFO::UFO_LASERRIPPEDOFF:
+		break;
+	case Client::CUFO::UFO_LEFT:
+		break;
+	case Client::CUFO::UFO_MH:
+		break;
+	case Client::CUFO::UFO_RIGHT:
+		break;
+	case Client::CUFO::UFO_ROCKETKNOCKDOWN_MH:
+		break;
+	default:
+		break;
+	}
 }
 
 void CUFO::Laser_Pattern(_double dTimeDelta)
@@ -110,7 +289,7 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
 	_vector vDirForLaser = XMVector3Normalize(vDir);
 
-	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta); // 플레이어 쪽으로 천천히 회전.
+	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f); // 플레이어 쪽으로 천천히 회전.
 
 }
 
