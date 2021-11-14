@@ -102,6 +102,7 @@ private:
 
 	/* For.Battle */
 	_bool m_IsCoreExplode = false;
+	_bool m_IsCodyHold = false;
 
 
 

@@ -64,6 +64,8 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_pActorCom->Move(XMVectorSet(0.f, 1.f, 0.f, 0.f) / 10.f, dTimeDelta);
 	if (m_pGameInstance->Key_Down(DIK_0))
 		m_IsCoreExplode = true;
+	if (m_pGameInstance->Key_Down(DIK_9))
+		m_IsCodyHold = true;
 
 	Check_State(dTimeDelta);
 	Change_State(dTimeDelta);
@@ -222,6 +224,14 @@ void CUFO::Change_State(_double dTimeDelta)
 		else if (m_eCurState == UFO_GROUNDPOUND && m_pModelCom->Is_AnimFinished(ANI_UFO_GROUNDPOUND) == true)
 		{
 			m_eNextState = UFO_KNOCKDOWNMH;
+		}
+		else if (m_eCurState == UFO_KNOCKDOWNMH && m_pModelCom->Is_AnimFinished(ANI_UFO_KNOCKDOWNMH) == true && m_IsCodyHold == false)
+		{
+			m_eNextState = UFO_KNOCKDOWNMH;
+		}
+		else if (m_eCurState == UFO_KNOCKDOWNMH && m_IsCodyHold == true)
+		{
+			m_eNextState = UFO_LASERRIPPEDOFF;
 		}
 
 }
