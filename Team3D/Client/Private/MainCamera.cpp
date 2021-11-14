@@ -200,14 +200,16 @@ _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 
 	_vector vPlayerPos = dynamic_cast<CPlayer*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 	m_fChangeCamModeTime += dTimeDelta;
-	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
-	_matrix matNext = XMLoadFloat4x4(&m_matBeginWorld);
+	_matrix matWorld = m_pTransformCom->Get_WorldMatrix(); //현재 매트릭스
+	_matrix matNext = XMLoadFloat4x4(&m_matBeginWorld); //목표 매트릭스
+	//이전에 있던 공전매트릭스를 디폴트공전매트릭스로
 	_matrix matRevX = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(m_fMouseRev[Rev_Prependicul]));
 	_matrix matRevY = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fMouseRev[Rev_Holizontal]));
 	_matrix matTrans = XMMatrixTranslation(XMVectorGetX(vPlayerPos), XMVectorGetY(vPlayerPos), XMVectorGetZ(vPlayerPos));
 	_matrix matRev = matRevX * matRevY* matTrans;
 	XMStoreFloat4x4(&m_matPreRev, matRev);
 
+	
 	matNext *= matRev;
 
 	_vector	  vPreRight		= matWorld.r[0],vNextRight	= matNext.r[0]
