@@ -240,6 +240,7 @@ technique11 DefaultTechnique
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile		vs_5_0 VS_MAIN_CSM_DEPTH();
 		GeometryShader = compile	gs_5_0 GS_MAIN_CSM_DEPTH();
-		PixelShader = compile		ps_5_0 PS_MAIN_CSM_DEPTH();
+		PixelShader = NULL;
+	//	PixelShader = compile		ps_5_0 PS_MAIN_CSM_DEPTH();
 	}
 };

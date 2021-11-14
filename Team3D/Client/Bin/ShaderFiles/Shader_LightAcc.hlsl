@@ -120,9 +120,8 @@ float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSlic
 
 	// 여기가 문제인가?
 	float2 vShadowUV = shadowPosH.xy;
-	vShadowUV.x += iViewportIndex * 0.5f;
-	vShadowUV.y = (vShadowUV.y + iSliceIndex) * (1.f / (float)MAX_CASCADES);
-
+	vShadowUV.x += float(iViewportIndex) * 0.5f;
+	vShadowUV.y = (vShadowUV.y + float(iSliceIndex)) / float(MAX_CASCADES);
 
 	float shadowFactor = 0.f;
 	float percentLit = 0.0f;
@@ -132,15 +131,16 @@ float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSlic
 	for (int offsetIndex = 0; offsetIndex < 9; ++offsetIndex)
 	{
 		// 여기서 뽑아내는값이, 캐스케이드 쉐도우맵에 기록된 깊이값.
-		percentLit += g_CascadedShadowDepthTexture.SampleCmpLevelZero(ShadowSampler,
+		percentLit += g_CascadedShadowDepthTexture.SampleCmp(ShadowSampler,
 			vShadowUV + offsets[offsetIndex], depth).r;
 	}
 	shadowFactor = percentLit / 9.f;
 
-	if (shadowPosH.z < shadowFactor + 0.01f)
-	{
-		shadowFactor = 0.f;
-	}
+	//if (shadowPosH.z < shadowFactor + 0.01f)
+	//{
+	//	shadowFactor = 0.f;
+	//}
+	shadowFactor = g_CascadedShadowDepthTexture.Sample(Wrap_Sampler, vShadowUV);
 
 	return shadowFactor;
 }
@@ -213,6 +213,8 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 0);
 		if (iIndex < 0) return Out;
 		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Main[iIndex], iIndex, 0);
+
+		Out.vShadow = 1.f - fShadowfactor;
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
 		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
@@ -227,6 +229,13 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 1);
 		if (iIndex < 0) return Out;
 		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Sub[iIndex], iIndex, 1);
+
+		if (iIndex == 0)
+			Out.vShadow.r = 1.f;
+		else if (iIndex == 1)
+			Out.vShadow.g = 1.f;
+		else
+			Out.vShadow.b = 1.f;
 	}
 	else
 		discard;
@@ -238,7 +247,7 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	Out.vSpecular	= pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
 	Out.vSpecular.a = 0.f;
 
-	Out.vShadow = 1.f - fShadowfactor;
+	//Out.vShadow = 1.f - fShadowfactor;
 	Out.vShadow.a = 1.f;
 
 	return Out;

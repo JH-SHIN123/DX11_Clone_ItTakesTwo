@@ -77,9 +77,10 @@ HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, c
 	if (nullptr == DepthStencil)
 		pDeviceContext->OMSetRenderTargets((_uint)pMRT->size(), RenderTargets, m_pDepthStencilView);
 	else {
+		ID3D11RenderTargetView* nullRenderTargets[8] = { nullptr };
 		ID3D11ShaderResourceView* pSRV[8] = { nullptr };
 		pDeviceContext->PSSetShaderResources(0, 8, pSRV);
-		pDeviceContext->OMSetRenderTargets((_uint)pMRT->size(), RenderTargets, DepthStencil);
+		pDeviceContext->OMSetRenderTargets((_uint)pMRT->size(), nullRenderTargets, DepthStencil);
 	}
 	
 	return S_OK;

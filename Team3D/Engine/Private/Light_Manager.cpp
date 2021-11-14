@@ -100,7 +100,7 @@ HRESULT CLight_Manager::Render_Lights()
 	NULL_CHECK_RETURN(pNormalShaderResourceView, E_FAIL);
 	ID3D11ShaderResourceView* pDepthShaderResourceView = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_Depth"));
 	NULL_CHECK_RETURN(pDepthShaderResourceView, E_FAIL);
-	ID3D11ShaderResourceView* pCascadedShadowDepthMap = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView_Depth(TEXT("Target_CascadedShadow_Depth"));;
+	ID3D11ShaderResourceView* pCascadedShadowDepthMap = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView_Depth(TEXT("Target_CascadedShadow_Depth"));
 	NULL_CHECK_RETURN(pCascadedShadowDepthMap, E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_NormalTexture", pNormalShaderResourceView), E_FAIL);

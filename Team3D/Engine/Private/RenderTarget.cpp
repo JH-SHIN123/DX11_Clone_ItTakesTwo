@@ -60,7 +60,7 @@ HRESULT CRenderTarget::NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT 
 	{
 		D3D11_TEXTURE2D_DESC		TextureDesc_Depth;
 		TextureDesc_Depth = TextureDesc;
-		TextureDesc_Depth.Format = DXGI_FORMAT_R24G8_TYPELESS;
+		TextureDesc_Depth.Format = DXGI_FORMAT_R32_TYPELESS;
 		TextureDesc_Depth.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 
 		if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc_Depth, nullptr, &m_pDepthTargetTexture)))
@@ -71,7 +71,7 @@ HRESULT CRenderTarget::NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT 
 
 		// Srv
 		ZeroMemory(&ShaderResourceViewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-		ShaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		ShaderResourceViewDesc.Format = DXGI_FORMAT_R32_FLOAT;
 		ShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		ShaderResourceViewDesc.Texture2D.MipLevels = 1;
 
@@ -84,7 +84,7 @@ HRESULT CRenderTarget::NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT 
 		// Dsv
 		D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
 		ZeroMemory(&dsvDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
-		dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
 		dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		dsvDesc.Texture2D.MipSlice = 0;
 
