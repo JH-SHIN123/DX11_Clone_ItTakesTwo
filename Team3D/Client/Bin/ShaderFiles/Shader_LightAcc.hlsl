@@ -101,42 +101,15 @@ float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSlic
 	vector shadowPosH = mul(vWorldPos, shadowTransformMatrix);
 	shadowPosH.xyz /= shadowPosH.w;
 
-	// PCF
-	//uint	width = SHADOWMAP_SIZE * 0.5f;
-	//uint	height = SHADOWMAP_SIZE * 3.f;
-
-	uint	width, height;
-	g_CascadedShadowDepthTexture.GetDimensions(width,height);
-
-	float	dx = 1.0f / (float)width;
-	float	dy = 1.0f / (float)height;
-
-	const float2 offsets[9] =
-	{
-		float2(-dx, -dy), float2(0.0f, -dy), float2(dx, -dy),
-		float2(-dx, 0.0f), float2(0.0f, 0.0f), float2(dx, 0.0f),
-		float2(-dx, +dy), float2(0.0f, +dy), float2(dx, +dy)
-	};
-
-	// 여기가 문제인가?
 	float2 vShadowUV = shadowPosH.xy;
-	vShadowUV.x += float(iViewportIndex) * 0.5f;
+	//vShadowUV.x = vShadowUV.x ;
 	vShadowUV.y = (vShadowUV.y + float(iSliceIndex)) / float(MAX_CASCADES);
 
 	float shadowFactor = 0.f;
 	float percentLit = 0.0f;
 	float depth = shadowPosH.z; // 그릴 객체들의 깊이값. (그림자 ndc로 이동한)
 
-	//[unroll]
-	//for (int offsetIndex = 0; offsetIndex < 9; ++offsetIndex)
-	//{
-		// 여기서 뽑아내는값이, 캐스케이드 쉐도우맵에 기록된 깊이값.
-		//percentLit += g_CascadedShadowDepthTexture.SampleCmp(ShadowSampler,
-		//	vShadowUV + offsets[offsetIndex], depth).r;
-	//}
-	//shadowFactor = percentLit / 9.f;
-
-	percentLit = g_CascadedShadowDepthTexture.Sample(Wrap_Sampler, vShadowUV);
+	percentLit = g_CascadedShadowDepthTexture.Sample(Wrap_Sampler, vShadowUV).r;
 	if (percentLit < depth)
 		shadowFactor += percentLit;
 
@@ -217,7 +190,6 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		if (iIndex < 0) return Out;
 		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Main[iIndex], iIndex, 0);
 
-		Out.vShadow = 1.f - fShadowfactor;
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
 		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
@@ -232,13 +204,6 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 1);
 		if (iIndex < 0) return Out;
 		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Sub[iIndex], iIndex, 1);
-
-		if (iIndex == 0)
-			Out.vShadow.r = 1.f;
-		else if (iIndex == 1)
-			Out.vShadow.g = 1.f;
-		else
-			Out.vShadow.b = 1.f;
 	}
 	else
 		discard;
@@ -250,7 +215,7 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	Out.vSpecular	= pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
 	Out.vSpecular.a = 0.f;
 
-	//Out.vShadow = 1.f - fShadowfactor;
+	Out.vShadow = 1.f - fShadowfactor;
 	Out.vShadow.a = 1.f;
 
 	return Out;

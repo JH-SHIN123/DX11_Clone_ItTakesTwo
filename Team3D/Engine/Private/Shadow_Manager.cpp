@@ -59,6 +59,8 @@ _int CShadow_Manager::Update_CascadedShadowTransform_SubViewport()
 
 HRESULT CShadow_Manager::RSSet_CascadedViewports()
 {
+	Set_CascadeViewportsInfo();
+
 	_uint iNumViewport = 1;
 	m_pDevice_Context->RSSetViewports(MAX_CASCADES * iNumViewport, m_CascadeViewport);
 
@@ -67,12 +69,19 @@ HRESULT CShadow_Manager::RSSet_CascadedViewports()
 
 HRESULT CShadow_Manager::Set_CascadeViewportsInfo()
 {
+	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
+	if (nullptr == pGraphicDevice) return E_FAIL;
+
+	/* x = TopLeftX, y = TopLeftY, z = Width, w = Height, 0.f ~ 1.f */
+	_float4 mainViewportUV = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_MAIN);
+	//_float4 subViewportUV = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_SUB);
+
 	// CSM Main Viewports
 	for (_uint i = 0; i < MAX_CASCADES; ++i)
 	{
 		// width / height ÇØ»óµµ ( LOD X )
 		m_CascadeViewport[i].TopLeftX = 0.f;
-		m_CascadeViewport[i].TopLeftY = (_float)(SHADOWMAP_SIZE * i);
+		m_CascadeViewport[i].TopLeftY = (_float)(i * SHADOWMAP_SIZE);
 		m_CascadeViewport[i].Width = SHADOWMAP_SIZE;
 		m_CascadeViewport[i].Height = SHADOWMAP_SIZE;
 		m_CascadeViewport[i].MinDepth = 0.f;
