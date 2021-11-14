@@ -215,7 +215,16 @@ void CCody::KeyInput(_double TimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
 		m_bShortJump = true;
+		++m_iJumpCount;
+
+		if (m_iJumpCount == 1)
+		{
+			m_bDoubleJump = true;
+			++m_iJumpCount;
+		}
 	}
+
+	
 #pragma endregion
 
 #pragma region Mouse_LButton
@@ -258,50 +267,76 @@ void CCody::KeyInput(_double TimeDelta)
 
 void CCody::Move(const _double TimeDelta)
 {
-	if (m_bMove && m_pTransformCom)
+#pragma region Medium_Size
+	if (m_eCurPlayerSize == SIZE_MEDIUM)
 	{
-		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
-		vDirection = XMVectorSetY(vDirection, 0.f);
-		vDirection = XMVector3Normalize(vDirection);
-
-		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
-
-		m_bMove = false;
-		
-		PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
-
-		m_pActorCom->Move(vDirection / 10.f, TimeDelta);
-
-		if (m_bShortJump == false)
+		if (m_bMove && m_pTransformCom)
 		{
-			// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
-			if (m_pModelCom->Is_AnimFinished(ANI_C_Jog_Start_Fwd) == true) // JogStart -> Jog
-				m_pModelCom->Set_Animation(ANI_C_Jog);
-			else if (m_pModelCom->Is_AnimFinished(ANI_C_Jog) == true) // Jog -> Jog // 보간속도 Up
-				m_pModelCom->Set_Animation(ANI_C_Jog);
-			else											// Idle To Jog Start. -> Jog 예약
+			_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
+			vDirection = XMVectorSetY(vDirection, 0.f);
+			vDirection = XMVector3Normalize(vDirection);
+
+			m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
+
+			m_bMove = false;
+
+			PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
+
+			if (m_fJogAcceleration > 10.f)
+				m_fJogAcceleration -= TimeDelta * 50.f;
+			else
+				m_fJogAcceleration = 10.f;
+
+			m_pActorCom->Move(vDirection / m_fJogAcceleration, TimeDelta);
+
+			if (m_bShortJump == false)
 			{
-				m_pModelCom->Set_Animation(ANI_C_Jog_Start_Fwd);
-				m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
+				// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
+				if (m_pModelCom->Is_AnimFinished(ANI_C_Jog_Start_Fwd) == true) // JogStart -> Jog
+					m_pModelCom->Set_Animation(ANI_C_Jog);
+				else if (m_pModelCom->Is_AnimFinished(ANI_C_Jog) == true) // Jog -> Jog // 보간속도 Up
+					m_pModelCom->Set_Animation(ANI_C_Jog);
+				else											// Idle To Jog Start. -> Jog 예약
+				{
+					m_pModelCom->Set_Animation(ANI_C_Jog_Start_Fwd);
+					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
+				}
+			}
+		}
+		else
+		{
+			if (m_bShortJump == false)
+			{
+				m_fJogAcceleration = 20.f;
+				if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog) // jog 였다면
+				{
+					m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd); // jog to stop 으로 바꿔
+					m_pModelCom->Set_NextAnimIndex(ANI_C_MH - 1); // jog to stop 끝나면 idle 예약.
+				}
+				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Start_Fwd) // JogStart 였다면
+				{
+					m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd); // jog to stop 으로 바꿔
+					m_pModelCom->Set_NextAnimIndex(ANI_C_MH - 1);
+				}
+				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH - 1) // IDLE 상태라면
+				{
+					m_fIdleTime += TimeDelta;
+					if (m_fIdleTime > 5.f && m_pModelCom->Is_AnimFinished(ANI_C_MH - 1)) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
+					{
+						m_pModelCom->Set_Animation(ANI_C_Bhv_MH_Gesture_Small_Drumming); // 배 두들기는 애니메이션 재생
+						m_fIdleTime = 0.f;
+					}
+				}
 			}
 		}
 	}
-	else
+#pragma endregion
+
+	else if (m_eCurPlayerSize == SIZE_LARGE)
 	{
-		if (m_bShortJump == false)
-		{
-			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog) // jog 였다면
-			{
-				m_pModelCom->Set_Animation(ANI_C_Jog_GoToStop ); // jog to stop 으로 바꿔
-				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_MH_Gesture_Small_Belly ); // jog to stop 끝나면 idle 예약.
-			}
-			else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Start_Fwd ) // JogStart 였다면
-			{
-				m_pModelCom->Set_Animation(ANI_C_Jog_GoToStop ); // jog to stop 으로 바꿔
-				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_MH_Gesture_Small_Belly);
-			}
-		}
+
 	}
+
 }
 void CCody::Roll(const _double TimeDelta)
 {
@@ -326,16 +361,10 @@ void CCody::Sprint(const _double TimeDelta)
 }
 void CCody::Jump(const _double TimeDelta)
 {
-	if (m_bShortJump == true && m_bJumpAnimationOnce == false)
+	if (m_bShortJump == true)
 	{
 		m_pActorCom->Jump_Start(2.2f);
-		m_pModelCom->Set_Animation(ANI_C_DoubleJump);
-		m_bJumpAnimationOnce = true;
-	}
-	if (m_pModelCom->Is_AnimFinished(ANI_C_DoubleJump) == true)
-	{
 		m_bShortJump = false;
-		m_bJumpAnimationOnce = false;
 	}
 }
 void CCody::Change_Size(const _double TimeDelta)

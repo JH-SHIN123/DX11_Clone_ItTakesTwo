@@ -276,6 +276,10 @@ private:
 
 	// 움직임 가속
 	_double m_fAcceleration = 5.0;
+	_float	m_fJogAcceleration = 40.f;
+
+	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
+	_float	m_fIdleTime = 0.f;
 
 
 	// 상호작용에 의한 움직임.
@@ -293,6 +297,9 @@ private:
 
 	// 점프관련 변수
 	_bool m_bJumpAnimationOnce = false;
+	_bool m_bDoubleJump = false;
+	_uint m_iJumpCount = 0;
+
 
 
 	// 컷씬이라면

@@ -82,7 +82,6 @@ _int CMay::Tick(_double dTimeDelta)
 	Move(dTimeDelta);
 	Roll(dTimeDelta);
 
-	m_pModelCom->Set_Animation(ANI_M_Bounce4);
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
@@ -246,6 +245,35 @@ void CMay::Move(const _double TimeDelta)
 
 		m_pActorCom->Move(vDirection / 10.f, TimeDelta);
 
+		if (m_bShortJump == false)
+		{
+			// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
+			if (m_pModelCom->Is_AnimFinished(ANI_M_Jog_Start) == true) // JogStart -> Jog
+				m_pModelCom->Set_Animation(ANI_M_Jog);
+			else if (m_pModelCom->Is_AnimFinished(ANI_M_Jog) == true) // Jog -> Jog // 보간속도 Up
+				m_pModelCom->Set_Animation(ANI_M_Jog);
+			else											// Idle To Jog Start. -> Jog 예약
+			{
+				m_pModelCom->Set_Animation(ANI_M_Jog_Start);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
+			}
+		}
+	}
+	else
+	{
+		if (m_bShortJump == false)
+		{
+			if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog) // jog 였다면
+			{
+				m_pModelCom->Set_Animation(ANI_M_Jog_Stop); // jog to stop 으로 바꿔
+				m_pModelCom->Set_NextAnimIndex(ANI_M_MH_Gesture_Small_Stretch); // jog to stop 끝나면 idle 예약.
+			}
+			else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Start) // JogStart 였다면
+			{
+				m_pModelCom->Set_Animation(ANI_M_Jog_Stop); // jog to stop 으로 바꿔
+				m_pModelCom->Set_NextAnimIndex(ANI_M_MH_Gesture_Small_Stretch);
+			}
+		}
 	}
 }
 void CMay::Roll(const _double TimeDelta)
