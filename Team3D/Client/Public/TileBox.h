@@ -28,6 +28,7 @@ private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CModel_Instance*	m_pModelCom = nullptr;
+	_uint				m_iRenderNum = 0;
 
 public:
 	static CTileBox* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

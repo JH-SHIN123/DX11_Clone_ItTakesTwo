@@ -1,31 +1,17 @@
 #include "..\public\HierarchyNode.h"
 
-const _int CHierarchyNode::Get_ParentNodeIndex() const
+HRESULT CHierarchyNode::NativeConstruct(NODE_DESC NodeDesc)
 {
-	if (nullptr != m_pParent)
-		return m_pParent->m_iNodeIndex;
-
-	return -1;
-}
-
-HRESULT CHierarchyNode::NativeConstruct(char * pName, CHierarchyNode * pParent, _uint iDepth)
-{
-	strcpy_s(m_szNodeName, pName);
-
-	m_pParent = pParent;
-	Safe_AddRef(m_pParent);
-
-	m_iDepth		= iDepth;
-	m_iNodeIndex	= -1;
+	memcpy(&m_NodeDesc, &NodeDesc, sizeof(NODE_DESC));
 
 	return S_OK;
 }
 
-CHierarchyNode * CHierarchyNode::Create(char * pName, CHierarchyNode * pParent, _uint iDepth)
+CHierarchyNode * CHierarchyNode::Create(NODE_DESC NodeDesc)
 {
 	CHierarchyNode* pInstance = new CHierarchyNode;
 
-	if (FAILED(pInstance->NativeConstruct(pName, pParent, iDepth)))
+	if (FAILED(pInstance->NativeConstruct(NodeDesc)))
 	{
 		MSG_BOX("Failed to Create Instance - CHierarchyNode");
 		Safe_Release(pInstance);
@@ -36,5 +22,4 @@ CHierarchyNode * CHierarchyNode::Create(char * pName, CHierarchyNode * pParent, 
 
 void CHierarchyNode::Free()
 {
-	Safe_Release(m_pParent);
 }
