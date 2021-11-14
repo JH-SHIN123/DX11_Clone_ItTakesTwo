@@ -46,6 +46,13 @@ _int CTileBox::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_8))
+		m_iRenderNum = 0;
+	if (m_pGameInstance->Key_Down(DIK_9))
+		m_iRenderNum = 1;
+	if (m_pGameInstance->Key_Down(DIK_0))
+		m_iRenderNum = 2;
+
 	return NO_EVENT;
 }
 
@@ -61,7 +68,7 @@ HRESULT CTileBox::Render()
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
 	m_pModelCom->Set_DefaultVariables_Perspective();
-	m_pModelCom->Render_Model(0);
+	m_pModelCom->Render_Model(0, m_iRenderNum);
 
 	return S_OK;
 }

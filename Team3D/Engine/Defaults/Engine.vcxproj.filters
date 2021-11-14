@@ -237,9 +237,6 @@
     <ClInclude Include="..\public\VIBuffer.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\00.Main</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Textures.h">
-      <Filter>02.Utility\02.Component\03.Texture</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\VIBuffer_Terrain.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\02.Terrain</Filter>
     </ClInclude>
@@ -354,6 +351,9 @@
     <ClInclude Include="..\public\Model_Instance.h">
       <Filter>02.Utility\02.Component\05.Model\00.Main\01.Instance</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Textures.h">
+      <Filter>02.Utility\02.Component\03.Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -391,9 +391,6 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\00.Main</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Textures.cpp">
-      <Filter>02.Utility\02.Component\03.Texture</Filter>
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\02.Terrain</Filter>
@@ -490,6 +487,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Model_Instance.cpp">
       <Filter>02.Utility\02.Component\05.Model\00.Main\01.Instance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Textures.cpp">
+      <Filter>02.Utility\02.Component\03.Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

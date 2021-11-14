@@ -6,7 +6,6 @@
 #define _CRT_SECURE_NO_WARNINGS 
 #define WIN32_LEAN_AND_MEAN // 거의 사용되지 않는 내용을 Windows 헤더에서 제외합니다.
 #include <wrl.h>
-
 /* DirectX */
 #include "D3D11.h"
 #include "d3dx11effect.h"
@@ -20,10 +19,6 @@
 /* DirectInput */
 #define DIRECTINPUT_VERSION 0x0800
 #include "dInput.h"
-/* Assimp */
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 /* PhysX */
 #include "PxPhysicsAPI.h"
 /* Others */

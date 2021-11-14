@@ -1,13 +1,13 @@
 #include "..\public\AnimChannel.h"
 
-HRESULT CAnimChannel::NativeConstruct(const char * pName)
+HRESULT CAnimChannel::NativeConstruct(CHANNEL_DESC ChannelDesc)
 {
-	strcpy_s(m_szChannelName, pName);
+	memcpy(&m_ChannelDesc, &ChannelDesc, sizeof(CHANNEL_DESC));
 
 	return S_OK;
 }
 
-HRESULT CAnimChannel::Bring_KeyFrameContainer(vector<KEY_FRAME*>& KeyFrames)
+HRESULT CAnimChannel::Bring_KeyFrameContainer(vector<KEY_FRAME> & KeyFrames)
 {
 	NULL_CHECK_RETURN(m_KeyFrames.empty(), E_FAIL);
 
@@ -16,11 +16,11 @@ HRESULT CAnimChannel::Bring_KeyFrameContainer(vector<KEY_FRAME*>& KeyFrames)
 	return S_OK;
 }
 
-CAnimChannel * CAnimChannel::Create(const char * pName)
+CAnimChannel * CAnimChannel::Create(CHANNEL_DESC ChannelDesc)
 {
 	CAnimChannel* pInstance = new CAnimChannel;
 
-	if (FAILED(pInstance->NativeConstruct(pName)))
+	if (FAILED(pInstance->NativeConstruct(ChannelDesc)))
 	{
 		MSG_BOX("Failed to Create Instance - CAnimChannel");
 		Safe_Release(pInstance);
@@ -31,7 +31,5 @@ CAnimChannel * CAnimChannel::Create(const char * pName)
 
 void CAnimChannel::Free()
 {
-	for (auto& pFrame : m_KeyFrames)
-		Safe_Delete(pFrame);
 	m_KeyFrames.clear();
 }

@@ -1,23 +1,17 @@
 #include "..\public\Mesh.h"
-#include "HierarchyNode.h"
 
-HRESULT CMesh::NativeConstruct(const char * pMeshName, _uint iStartVertexIndex, _uint iStartFaceIndex, _uint iFaceCount, _uint iMaterialIndex)
+HRESULT CMesh::NativeConstruct(MESH_DESC MeshDesc)
 {
-	strcpy_s(m_szMeshName, pMeshName);
-
-	m_iStratVertexIndex = iStartVertexIndex;
-	m_iStratFaceIndex	= iStartFaceIndex;
-	m_iStratFaceCount	= iFaceCount;
-	m_iMaterialIndex	= iMaterialIndex;
+	memcpy(&m_MeshDesc, &MeshDesc, sizeof(MESH_DESC));
 
 	return S_OK;
 }
 
-HRESULT CMesh::Bring_BoneContainer(vector<BONE_DESC*> & Bones)
+HRESULT CMesh::Bring_BoneContainer(vector<BONE_DESC> & Bones)
 {
 	NULL_CHECK_RETURN(m_Bones.empty(), E_FAIL);
 
-	m_iBoneCount = (_uint)Bones.size();
+	m_MeshDesc.iBoneCount = (_uint)Bones.size();
 
 	m_Bones.swap(Bones);
 
@@ -28,15 +22,15 @@ void CMesh::Calc_BoneMatrices(_matrix * pBoneMatrices, const vector<_float4x4> &
 {
 	_uint iIndex = 0;
 
-	for (auto& pBoneDesc : m_Bones)
-		pBoneMatrices[iIndex++] = XMMatrixTranspose(XMLoadFloat4x4(&pBoneDesc->OffsetMatrix) * XMLoadFloat4x4(&CombinedTransformations[pBoneDesc->pHierarchyNode->Get_NodeIndex()]));
+	for (auto& BoneDesc : m_Bones)
+		pBoneMatrices[iIndex++] = XMMatrixTranspose(XMLoadFloat4x4(&BoneDesc.OffsetMatrix) * XMLoadFloat4x4(&CombinedTransformations[BoneDesc.iNodeIndex]));
 }
 
-CMesh * CMesh::Create(const char * pMeshName, _uint iStartVertexIndex, _uint iStartFaceIndex, _uint iFaceCount, _uint iMaterialIndex)
+CMesh * CMesh::Create(MESH_DESC MeshDesc)
 {
 	CMesh* pInstance = new CMesh;
 
-	if (FAILED(pInstance->NativeConstruct(pMeshName, iStartVertexIndex, iStartFaceIndex, iFaceCount, iMaterialIndex)))
+	if (FAILED(pInstance->NativeConstruct(MeshDesc)))
 	{
 		MSG_BOX("Failed to Create Instance - CMesh");
 		Safe_Release(pInstance);
@@ -47,10 +41,5 @@ CMesh * CMesh::Create(const char * pMeshName, _uint iStartVertexIndex, _uint iSt
 
 void CMesh::Free()
 {
-	for (auto& pBone : m_Bones)
-	{
-		Safe_Release(pBone->pHierarchyNode);
-		Safe_Delete(pBone);
-	}
 	m_Bones.clear();
 }

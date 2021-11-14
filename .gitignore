@@ -251,3 +251,6 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+
+# Directory
+Team3D/Client/Bin/Resources/
