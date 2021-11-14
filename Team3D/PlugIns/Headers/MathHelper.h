@@ -1,5 +1,4 @@
 #pragma once
-
 namespace Engine
 {
 	static _float4x4 MH_XMFloat4x4Identity()
@@ -47,4 +46,10 @@ namespace Engine
 	{
 		return XMVectorSet(Matrix._41, Matrix._42, Matrix._43, Matrix._44);
 	}
+	
+// 	enum TRANSTORM_STATE {TS_RIGHT, TS_UP, TS_LOOK, TS_POSITION, TS_END};
+// 	static _vector MH_GetState(_float4x4 Matrix, TRANSTORM_STATE eState)
+// 	{
+// 		return XMVectorSet(Matrix.m[eState][0], Matrix.m[eState][1], Matrix.m[eState][2], Matrix.m[eState][3]);
+// 	}
 }

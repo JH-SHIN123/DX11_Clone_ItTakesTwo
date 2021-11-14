@@ -4,6 +4,7 @@
 #include "Camera.h"
 
 #include "InGameEffect.h"
+#include "Effect_Generator.h"
 
 CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -33,6 +34,8 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 
 	if (m_pGameInstance->Key_Down(DIK_E))
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+
+	CEffect_Generator::GetInstance()->LoopSpawner(dTimedelta);
 
 	return NO_EVENT;
 }

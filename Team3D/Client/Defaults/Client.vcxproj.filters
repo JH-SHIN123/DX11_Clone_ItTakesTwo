@@ -85,41 +85,47 @@
     <Filter Include="02.GameObject\05.Effect/Particle\3D\00.RespawnTunnel">
       <UniqueIdentifier>{571d88ca-fe85-4b2f-a090-6bbccd9e5679}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D">
-      <UniqueIdentifier>{f1297b94-aa6d-4d1e-9f97-4bfe51b57a14}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Effect_Generator">
       <UniqueIdentifier>{1efce119-1cf1-4fab-92f2-6371aba8b2a3}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\99.Stage%28Test%29\03.Env">
       <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D\Smoke">
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point">
+      <UniqueIdentifier>{f1297b94-aa6d-4d1e-9f97-4bfe51b57a14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Smoke">
       <UniqueIdentifier>{d69c61a0-2dcc-4700-b565-44e359f06816}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D\Smoke\00.Walking_Smoke">
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Smoke\00.Walking_Smoke">
       <UniqueIdentifier>{04cb3247-05c6-4c7f-a7f1-64176fb9a4f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D\Smoke\01.Landing_Smoke">
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Smoke\01.Landing_Smoke">
       <UniqueIdentifier>{5268a6b4-0c71-43a4-b934-31ce7bc3a010}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D\Smoke\02.RespawnTunnel_Smoke">
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Smoke\02.RespawnTunnel_Smoke">
       <UniqueIdentifier>{536a0e19-aa1f-4e8d-a60f-a160ab01514a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D\99.DummyEffect">
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect">
       <UniqueIdentifier>{2597e457-f059-48c4-ac26-d228360d5248}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D\Member">
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Member">
       <UniqueIdentifier>{2d113bd5-2e8a-454e-ae74-7e78d42a438b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D\Member\00.FireDoor">
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Member\00.FireDoor">
       <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D\Cody">
-      <UniqueIdentifier>{173c747f-cf0a-4944-9ff4-a04578e4726c}</UniqueIdentifier>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Rect">
+      <UniqueIdentifier>{f180cbf3-2d57-4520-b579-6f6eda0e713e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D\Cody\Dash">
-      <UniqueIdentifier>{31da29fd-8033-4ca7-8797-406f2fb4152b}</UniqueIdentifier>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Rect\Dash">
+      <UniqueIdentifier>{0d8baa14-37cc-4ac6-9958-4521a5dab802}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect">
+      <UniqueIdentifier>{25a9338e-4725-412e-b28b-91fa9da3c1b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect\Dead_Particle">
+      <UniqueIdentifier>{40f62ada-3b9b-4df1-b0b0-07d2420974ba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -175,31 +181,40 @@
       <Filter>95.Effect_Generator</Filter>
     </ClInclude>
     <ClInclude Include="..\public\RespawnTunnel_Smoke.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D\Smoke\02.RespawnTunnel_Smoke</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\02.RespawnTunnel_Smoke</Filter>
     </ClInclude>
     <ClInclude Include="..\public\FireDoor.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D\Member\00.FireDoor</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Member\00.FireDoor</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Walking_Smoke.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D\Smoke\00.Walking_Smoke</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\00.Walking_Smoke</Filter>
     </ClInclude>
     <ClInclude Include="..\public\TileBox.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TestEffect.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D\99.DummyEffect</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\InGameEffect.h">
       <Filter>02.GameObject\05.Effect/Particle</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Landing_Smoke.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D\Smoke\01.Landing_Smoke</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\01.Landing_Smoke</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Test_EnvObject.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_Cody_Dash.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D\Cody\Dash</Filter>
+    <ClInclude Include="Effect_Dash.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InGameEffect_Rect.h">
+      <Filter>02.GameObject\05.Effect/Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_DeadEffect.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_DeadParticle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect\Dead_Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -240,31 +255,40 @@
       <Filter>95.Effect_Generator</Filter>
     </ClCompile>
     <ClCompile Include="..\private\RespawnTunnel_Smoke.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D\Smoke\02.RespawnTunnel_Smoke</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\02.RespawnTunnel_Smoke</Filter>
     </ClCompile>
     <ClCompile Include="..\private\FireDoor.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D\Member\00.FireDoor</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Member\00.FireDoor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Walking_Smoke.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D\Smoke\00.Walking_Smoke</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\00.Walking_Smoke</Filter>
     </ClCompile>
     <ClCompile Include="..\private\TileBox.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TestEffect.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D\99.DummyEffect</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\InGameEffect.cpp">
       <Filter>02.GameObject\05.Effect/Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Landing_Smoke.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D\Smoke\01.Landing_Smoke</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\01.Landing_Smoke</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Test_EnvObject.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Effect_Cody_Dash.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D\Cody\Dash</Filter>
+    <ClCompile Include="Effect_Dash.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InGameEffect_Rect.cpp">
+      <Filter>02.GameObject\05.Effect/Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_DeadEffect.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_DeadParticle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect\Dead_Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -302,6 +326,9 @@
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
+      <Filter>97.ShaderFiles\01.Codes</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_RectCustom.hlsl">
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
   </ItemGroup>

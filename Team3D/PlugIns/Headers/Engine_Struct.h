@@ -43,6 +43,14 @@ namespace Engine
 		XMFLOAT2	vTexUV;
 	}VTXTEX;
 
+	typedef struct tagVertexTexture_Triple
+	{
+		XMFLOAT3	vPosition;
+		XMFLOAT2	vTexUV;
+		XMFLOAT2	vTexUV_2;
+		XMFLOAT2	vTexUV_3;
+	}VTXTEX_TRIPLE;
+
 	typedef struct tagVertexColor
 	{
 		XMFLOAT3	vPosition;

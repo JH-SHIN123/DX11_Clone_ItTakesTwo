@@ -186,10 +186,10 @@
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
-    <ClInclude Include="..\public\Effect_Cody_Dash.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
     <ClInclude Include="..\public\FireDoor.h" />
     <ClInclude Include="..\Public\InGameEffect.h" />
+    <ClInclude Include="..\Public\InGameEffect_Rect.h" />
     <ClInclude Include="..\public\Landing_Smoke.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
@@ -197,6 +197,8 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\MainCamera.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\public\Player_DeadEffect.h" />
+    <ClInclude Include="..\public\Player_DeadParticle.h" />
     <ClInclude Include="..\public\RespawnTunnel.h" />
     <ClInclude Include="..\public\RespawnTunnel_Smoke.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
@@ -206,15 +208,16 @@
     <ClInclude Include="..\Public\Walking_Smoke.h" />
     <ClInclude Include="..\public\TileBox.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Effect_Dash.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\private\Effect_Cody_Dash.cpp" />
     <ClCompile Include="..\private\Effect_Generator.cpp" />
     <ClCompile Include="..\private\FireDoor.cpp" />
     <ClCompile Include="..\Private\InGameEffect.cpp" />
+    <ClCompile Include="..\Private\InGameEffect_Rect.cpp" />
     <ClCompile Include="..\private\Landing_Smoke.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
@@ -222,6 +225,8 @@
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\MainCamera.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\private\Player_DeadEffect.cpp" />
+    <ClCompile Include="..\private\Player_DeadParticle.cpp" />
     <ClCompile Include="..\private\RespawnTunnel.cpp" />
     <ClCompile Include="..\private\RespawnTunnel_Smoke.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
@@ -231,6 +236,7 @@
     <ClCompile Include="..\Private\Walking_Smoke.cpp" />
     <ClCompile Include="..\private\TileBox.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Effect_Dash.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -251,6 +257,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_RectCustom.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

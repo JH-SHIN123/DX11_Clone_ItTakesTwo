@@ -49,10 +49,10 @@ _int CFireDoor::Tick(_double TimeDelta)
 	//m_pInstanceBuffer[0].vTextureUV.z = 0.f;
 	//m_pInstanceBuffer[0].vTextureUV.w += Time;
 
-	fT += Time;
-	if (1.f <= fT)
+	dResetTime += Time;
+	if (1.f <= dResetTime)
 	{
-		fT = 0.f;
+		dResetTime = 0.f;
 		m_vWeight = _float4(0.25f, 0.25f, 0.75f, 0.75f);
 		m_pInstanceBuffer[0].vTextureUV = _float4(0.f, 0.f, 1.f, 1.f);
 	}
@@ -63,7 +63,7 @@ _int CFireDoor::Tick(_double TimeDelta)
 	m_pInstanceBuffer[0].vTextureUV.w = 1.f;
 
 	m_pInstanceBuffer[0].vSize = { 6.f, 10.25f };
-	m_pInstanceBuffer[0].vPosition = { 0.f, 5.f, 0.f,1.f };
+	m_pInstanceBuffer[0].vPosition = { 10.f, 5.f, 10.f,1.f };
 	return _int();
 }
 

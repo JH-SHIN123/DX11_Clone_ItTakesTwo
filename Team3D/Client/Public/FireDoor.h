@@ -19,7 +19,7 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
-	_double fT = 0.f;
+	_double dResetTime = 0.f;
 	_float4 m_vWeight = { 0.f, 0.f, 0.125f, 0.125f };
 
 	CTextures* m_pTexturesCom_ColorRamp = nullptr;

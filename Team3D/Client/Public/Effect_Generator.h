@@ -15,7 +15,11 @@ BEGIN(Client)
 
 enum class Effect_Value
 {
-	Walking_Smoke, Landing_Smoke, Effect_Value_End
+	Walking_Smoke, Landing_Smoke, 
+	Effect_Dash,
+	Cody_DeadEffect,
+	May_DeadEffect,
+	Effect_Value_End
 };
 
 class CEffect_Generator final : public CBase
@@ -23,12 +27,16 @@ class CEffect_Generator final : public CBase
 	DECLARE_SINGLETON(CEffect_Generator)
 
 public:
-	HRESULT Add_Effect(Effect_Value eEffect, _fvector vPosition);
+	HRESULT Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix);
 	// 맵과 같이 배치되는 상호작용 없는 환경 이펙트는 다른걸로
 
 public:
 	HRESULT Load_EffectData(const _tchar* pFilePath, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	HRESULT Create_Prototype_Resource_Stage1(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+
+public:
+	void LoopSpawner(_double TimeDelta);
+	_double m_dSpawnTerm = 5.0;
 
 public:
 	CEffect_Generator();

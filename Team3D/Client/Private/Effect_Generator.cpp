@@ -10,6 +10,9 @@
 #include "FireDoor.h"
 #include "Walking_Smoke.h"
 #include "Landing_Smoke.h"
+#include "Effect_Dash.h"
+#include "Player_DeadEffect.h"
+#include "Player_DeadParticle.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -21,7 +24,7 @@ CEffect_Generator::CEffect_Generator()
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fvector vPosition)
+HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix)
 {
 	if (Effect_Value::Effect_Value_End <= eEffect)
 		return E_FAIL;
@@ -31,7 +34,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fvector vPosition)
 	_tchar szLayer[MAX_PATH] = L"";
 	_tchar szPrototype[MAX_PATH] = L"";
 
+	XMStoreFloat4x4(&Clone_Data.WorldMatrix, WorldMatrix);
 
+	lstrcpy(szLayer, L"Layer_Effect");
 	switch (eEffect)
 	{
 	case Client::Effect_Value::Walking_Smoke:
@@ -41,15 +46,23 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fvector vPosition)
 		Clone_Data.vSize_Max = { 2.f, 2.f, 0.f };
 		Clone_Data.vRandDirPower = { 5.f, 100.f, 5.f };
 		Clone_Data.IsRandDirDown[1] = false;
-		XMStoreFloat4(&Clone_Data.vPos, vPosition);
-		lstrcpy(szLayer, L"Layer_Effect");
 		lstrcpy(szPrototype, L"GameObject_2D_Walking_Smoke");
 		break;
 	case Effect_Value::Landing_Smoke:
 		Clone_Data.UVTime = 0.001;
-		XMStoreFloat4(&Clone_Data.vPos, vPosition);
-		lstrcpy(szLayer, L"Layer_Effect");
 		lstrcpy(szPrototype, L"GameObject_2D_Landing_Smoke");
+		break;
+	case Effect_Value::Effect_Dash:
+		lstrcpy(szPrototype, L"GameObject_2D_Effect_Dash");
+		break;
+	case Effect_Value::Cody_DeadEffect:
+		Clone_Data.IsCody = true;
+		lstrcpy(szPrototype, L"GameObject_2D_Player_DeadEffect");
+		break;
+	case Effect_Value::May_DeadEffect:
+		Clone_Data.IsCody = false;
+		//lstrcpy(szPrototype, L"GameObject_2D_Player_DeadEffect");
+		lstrcpy(szPrototype, L"GameObject_2D_Player_DeadEffect");
 		break;
 	default:
 		break;
@@ -134,6 +147,12 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Landing_Smoke"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Landing_Smoke", CLanding_Smoke::Create(pDevice, pDeviceContext, pData));
+	
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Dash"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Effect_Dash", CEffect_Dash::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_DeadEffect"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_DeadEffect", CPlayer_DeadParticle::Create(pDevice, pDeviceContext, pData));
 
 	// 3D Effect
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
@@ -151,6 +170,7 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 		return E_FAIL;
 	}
 
+
 	return S_OK;
 }
 
@@ -161,6 +181,9 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom")
 		, CVIBuffer_PointInstance_Custom::Create(pDevice, pDeviceContext, 5000, TEXT("../Bin/ShaderFiles/Shader_PointCustom.hlsl"), "DefaultTechnique")), E_FAIL);
+
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_RectInstance_Custom")
+		, CVIBuffer_RectInstance_Custom::Create(pDevice, pDeviceContext, 100, TEXT("../Bin/ShaderFiles/Shader_RectCustom.hlsl"), "DefaultTechnique")), E_FAIL);
 
 #pragma region Texture
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Clouds_01"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Clouds_01.png"))), E_FAIL);
@@ -176,6 +199,11 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Noise/Tilling_Noise_0%d.png"), 3)), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Cloud"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Cloud/Tilling_Cloud_0%d.png"), 3)), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Ribbon_Noise"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Ribbon_Noise/Ribbon_Noise_0%d.png"), 2)), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_CartoonTrail"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/CartoonTrail_01.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Gradient_Noise"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Gradient_Noise/Gradient_Noise_0%d.png"), 3)), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Circle_Alpha"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Circle_Alpha.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_distortion"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/distortion_01_E2.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Dead_Cells"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Custom/Dead_Cells.png"))), E_FAIL);
 
 
 
@@ -183,12 +211,22 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 
 #pragma endregion
 
-
-#pragma region Model
-
-
-#pragma  endregion
 	return S_OK;
+}
+
+void CEffect_Generator::LoopSpawner(_double TimeDelta)
+{
+	m_dSpawnTerm -= TimeDelta;
+
+	if (0.0 >= m_dSpawnTerm)
+	{
+		m_dSpawnTerm = 5.0;
+
+		_matrix WorldMatrix = XMMatrixIdentity();
+
+		WorldMatrix.r[3] = { 5.f, 0.f, 5.f, 1.f };
+		Add_Effect(Effect_Value::Cody_DeadEffect, WorldMatrix);
+	}
 }
 
 _fmatrix CEffect_Generator::Compute_Pivot(_vector vScale, _vector vRotate)

@@ -202,6 +202,9 @@
     <Filter Include="02.Utility\02.Component\05.Model\00.Main\01.Instance">
       <UniqueIdentifier>{a76bbefa-3da3-46a3-808b-d54d00aa9310}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\02.Component\04.VIBuffer\03.Instance\04.Rect_Custom">
+      <UniqueIdentifier>{a633cb29-15fa-429a-a4eb-e93355f0df2b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\GameInstance.h">
@@ -360,6 +363,9 @@
     <ClInclude Include="..\public\Model_Instance.h">
       <Filter>02.Utility\02.Component\05.Model\00.Main\01.Instance</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_RectInstance_Custom.h">
+      <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\04.Rect_Custom</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -499,6 +505,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Model_Instance.cpp">
       <Filter>02.Utility\02.Component\05.Model\00.Main\01.Instance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_RectInstance_Custom.cpp">
+      <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\04.Rect_Custom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

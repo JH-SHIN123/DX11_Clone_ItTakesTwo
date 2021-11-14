@@ -13,6 +13,7 @@ private:
 
 public: /* Enum */
 	enum TRANSFORM_STATETYPE { TS_MAINVIEW, TS_MAINVIEW_INVERSE, TS_MAINPROJ, TS_MAINPROJ_INVERSE, TS_SUBVIEW, TS_SUBVIEW_INVERSE, TS_SUBPROJ, TS_SUBPROJ_INVERSE, TS_END };
+	enum CAMERA_STATETYPE { CAM_RIGHT, CAM_UP, CAM_LOOK, CAM_END };
 
 public: /* Getter */
 	_matrix			Get_Transform(TRANSFORM_STATETYPE eType) const { return XMLoadFloat4x4(&m_StateMatrices[eType]); }
@@ -20,6 +21,8 @@ public: /* Getter */
 	_fvector		Get_SubCamPosition() const { return XMLoadFloat4((_float4*)&m_StateMatrices[CPipeline::TS_SUBVIEW_INVERSE].m[3][0]); }
 	const _float	Get_MainCamFar() const { return m_fMainCamFar; }
 	const _float	Get_SubCamFar() const { return m_fSubCamFar; }
+	_fvector		Get_MainCam_State(CAMERA_STATETYPE eCamState) const { return XMLoadFloat4((_float4*)&m_StateMatrices[CPipeline::TS_MAINVIEW_INVERSE].m[eCamState][0]); }
+	_fvector		Get_SubCam_State(CAMERA_STATETYPE eCamState) const { return XMLoadFloat4((_float4*)&m_StateMatrices[CPipeline::TS_SUBVIEW_INVERSE].m[eCamState][0]); }
 
 public: /* Setter */
 	void Set_Transform(TRANSFORM_STATETYPE eType, _fmatrix matTransformMatrix) { return XMStoreFloat4x4(&m_StateMatrices[eType], matTransformMatrix); }
