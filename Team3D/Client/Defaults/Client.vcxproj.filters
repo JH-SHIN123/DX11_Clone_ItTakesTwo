@@ -82,6 +82,18 @@
     <Filter Include="96.DataStorage">
       <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\Environment">
+      <UniqueIdentifier>{4ee4895b-516b-49e8-a45a-02920e3036d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\Environment\Environment_Generator">
+      <UniqueIdentifier>{eb82ee18-6e0d-4236-a5a0-fb4ff4fc2191}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\Environment\Instancing">
+      <UniqueIdentifier>{608f2680-6c1b-46e3-98a7-7fa14bb7a3a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\Environment\Static">
+      <UniqueIdentifier>{c42420fb-0e79-4729-8656-497277ab4496}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -135,6 +147,15 @@
     <ClInclude Include="..\public\DataStorage.h">
       <Filter>96.DataStorage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Environment_Generator.h">
+      <Filter>02.GameObject\99.Stage%28Test%29\Environment\Environment_Generator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Instancing_Env.h">
+      <Filter>02.GameObject\99.Stage%28Test%29\Environment\Instancing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Static_Env.h">
+      <Filter>02.GameObject\99.Stage%28Test%29\Environment\Static</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -172,6 +193,15 @@
     </ClCompile>
     <ClCompile Include="..\private\DataStorage.cpp">
       <Filter>96.DataStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Instancing_Env.cpp">
+      <Filter>02.GameObject\99.Stage%28Test%29\Environment\Instancing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Environment_Generator.cpp">
+      <Filter>02.GameObject\99.Stage%28Test%29\Environment\Environment_Generator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Static_Env.cpp">
+      <Filter>02.GameObject\99.Stage%28Test%29\Environment\Static</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
