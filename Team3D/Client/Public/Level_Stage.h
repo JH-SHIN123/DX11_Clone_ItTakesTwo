@@ -21,6 +21,9 @@ private:
 	HRESULT Ready_Layer_Terrain(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);
 
+	HRESULT Ready_Layer_Environment(const _tchar* pLayerTag);
+	HRESULT Load_Environment();
+
 public:
 	static CLevel_Stage* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

@@ -31,7 +31,6 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	m_pModelCom->Set_NextAnimIndex(0);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
-
 	return S_OK;
 }
 

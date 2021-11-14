@@ -79,6 +79,24 @@
     <Filter Include="02.GameObject\99.Stage%28Test%29\03.Env">
       <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\04.Environment">
+      <UniqueIdentifier>{4055a4be-e7b9-4fae-9aff-c679903a8799}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\04.Environment\00.Environment_Generator">
+      <UniqueIdentifier>{c75f9063-b7f1-4b4e-95ab-f0a7f880869e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\04.Environment\01.Static">
+      <UniqueIdentifier>{aa1177a1-2797-453c-af56-89e9e72e9dd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\04.Environment\01.Static\01.Instancing_Env">
+      <UniqueIdentifier>{c0e8abeb-64e4-494d-a253-8e2bfa3a1699}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\04.Environment\01.Static\02.Static_Env">
+      <UniqueIdentifier>{94b43feb-9998-40c6-9592-d6be31fb4c1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\04.Environment\02.Dynamic">
+      <UniqueIdentifier>{8239536b-7d2e-45fa-b088-d582aa82bf2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -129,6 +147,15 @@
     <ClInclude Include="..\public\TileBox.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Instancing_Env.h">
+      <Filter>02.GameObject\99.Stage%28Test%29\04.Environment\01.Static\01.Instancing_Env</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Static_Env.h">
+      <Filter>02.GameObject\99.Stage%28Test%29\04.Environment\01.Static\02.Static_Env</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Environment_Generator.h">
+      <Filter>02.GameObject\99.Stage%28Test%29\04.Environment\00.Environment_Generator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -163,6 +190,15 @@
     </ClCompile>
     <ClCompile Include="..\private\TileBox.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Instancing_Env.cpp">
+      <Filter>02.GameObject\99.Stage%28Test%29\04.Environment\01.Static\01.Instancing_Env</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Static_Env.cpp">
+      <Filter>02.GameObject\99.Stage%28Test%29\04.Environment\01.Static\02.Static_Env</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Environment_Generator.cpp">
+      <Filter>02.GameObject\99.Stage%28Test%29\04.Environment\00.Environment_Generator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
