@@ -2,6 +2,7 @@
 #include "..\public\MainApp.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
+#include "Environment_Generator.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -124,6 +125,7 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
+	CEnvironment_Generator::DestroyInstance();
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
