@@ -33,12 +33,6 @@ HRESULT CMay::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix Light
 	return S_OK;
 }
 
-
-_bool CMay::IsFinish_CurAnimation()
-{
-	return _bool();
-}
-
 HRESULT CMay::NativeConstruct_Prototype()
 {
 	CCharacter::NativeConstruct_Prototype();
@@ -51,7 +45,8 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	CCharacter::NativeConstruct(pArg);
 	Ready_Component();
 
-	m_pModelCom->Set_Animation(0, m_pTransformCom);
+
+	m_pModelCom->Set_Animation(ANI_M_Bounce4);
 	CDataBase::GetInstance()->Set_MayPtr(this);
 	 
 
@@ -86,10 +81,10 @@ _int CMay::Tick(_double dTimeDelta)
 	Move(dTimeDelta);
 	Roll(dTimeDelta);
 
-
+	m_pModelCom->Set_Animation(ANI_M_Bounce4);
 
 	m_pActorCom->Update(dTimeDelta);
-	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
+	m_pModelCom->Update_Animation(dTimeDelta);
 	return NO_EVENT;
 }
 

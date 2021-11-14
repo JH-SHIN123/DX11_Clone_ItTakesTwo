@@ -100,6 +100,9 @@
     <Filter Include="02.GameObject\03.Character\03.Boss\01.MoonBaboon">
       <UniqueIdentifier>{f25b4c8e-4beb-4ec5-9404-fd56a08a7591}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96.DataStorage">
+      <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -171,6 +174,9 @@
     <ClInclude Include="Client_Animation_Index_Define.h">
       <Filter>98.Defines</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\DataStorage.h">
+      <Filter>96.DataStorage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -224,6 +230,9 @@
     <ClCompile Include="..\Private\UFO.cpp">
       <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\DataStorage.cpp">
+      <Filter>96.DataStorage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -251,6 +260,9 @@
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl">
+      <Filter>97.ShaderFiles\01.Codes</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl">
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
   </ItemGroup>

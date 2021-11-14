@@ -55,7 +55,7 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 	Safe_AddRef(m_pUFOModel);
 	
 	
-	m_pModelCom->Set_Animation(15, m_pTransformCom);
+	m_pModelCom->Set_Animation(15);
 	m_pModelCom->Set_NextAnimIndex(15);	
 
 	return S_OK;
@@ -72,7 +72,7 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 
 	PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 	//m_pActorCom->Update(dTimeDelta);
-	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
+	m_pModelCom->Update_Animation(dTimeDelta);
 
 	return NO_EVENT;
 }
@@ -90,7 +90,7 @@ CMoonBaboon::MOON_STATE CMoonBaboon::Check_State(_double TimeDelta)
 {
 	if (m_eNextState != m_eCurState)
 	{
-		m_pModelCom->Set_Animation(m_eNextState, m_pTransformCom);
+		m_pModelCom->Set_Animation(m_eNextState);
 		m_eCurState = m_eNextState;
 	}
 	return m_eCurState;

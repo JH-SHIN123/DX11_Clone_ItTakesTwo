@@ -10,27 +10,34 @@ private:
 	explicit CAnim() = default;
 	virtual ~CAnim() = default;
 
+public: /* Struct */
+	typedef struct tagAnimDesc
+	{
+		_double	dDuration;
+		_double	dTicksPerSecond;
+		char	szAnimName[MAX_PATH];
+	}ANIM_DESC;
+
 public: /* Getter */
-	const _double Get_Duration() const { return m_dDuration; }
-	const _double Get_TicksPerSecond() const { return m_dTicksPerSecond; }
-	void Get_PreAnimKeyFrames(_uint iPreAnimFrame, vector<KEY_FRAME*>& PreAnimKeyFrames);
+	const _double	Get_Duration() const { return m_AnimDesc.dDuration; }
+	const _double	Get_TicksPerSecond() const { return m_AnimDesc.dTicksPerSecond; }
+	void			Get_PreAnimKeyFrames(_uint iPreAnimFrame, vector<KEY_FRAME>& PreAnimKeyFrames);
+	const vector<class CAnimChannel*>& Get_Channels() const { return m_Channels; }
 
 public:
-	HRESULT	NativeConstruct(const char* pName, const _double& dDuration, const _double& dTicksPerSecond);
+	HRESULT	NativeConstruct(ANIM_DESC AnimDesc);
 	HRESULT	Bring_ChannelContainer(vector<class CAnimChannel*>& Channels);
 	HRESULT	Update_Transformations(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations);
-	HRESULT Update_Transformations_Blend(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations, vector<KEY_FRAME*>& PreAnimKeyFrames, _float fLerpRatio);
+	HRESULT Update_Transformations_Blend(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations, vector<KEY_FRAME>& PreAnimKeyFrames, _float fLerpRatio);
 
 private: /* Typedef */
 	typedef vector<class CAnimChannel*>	CHANNELS;
 private:
 	CHANNELS	m_Channels;
-	char		m_szAnimName[MAX_PATH] = "";
-	_double		m_dDuration = 0.0;
-	_double		m_dTicksPerSecond = 0.0;
+	ANIM_DESC	m_AnimDesc;
 
 public:
-	static CAnim* Create(const char* pName, const _double& dDuration, const _double& dTicksPerSecond);
+	static CAnim* Create(ANIM_DESC AnimDesc);
 	virtual void Free() override;
 };
 

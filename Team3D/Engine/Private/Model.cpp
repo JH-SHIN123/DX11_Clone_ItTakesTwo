@@ -35,6 +35,7 @@ CModel::CModel(const CModel & rhs)
 	, m_bNeedCenterBone				(rhs.m_bNeedCenterBone)
 	, m_pCenterBoneNode				(rhs.m_pCenterBoneNode)
 	, m_vAnimDistFromCenter			(rhs.m_vAnimDistFromCenter)
+	, m_iMaterialSetCount			(rhs.m_iMaterialSetCount)
 	, m_pVB							(rhs.m_pVB)
 	, m_iVertexCount				(rhs.m_iVertexCount)
 	, m_iVertexStride				(rhs.m_iVertexStride)
@@ -95,7 +96,7 @@ _fmatrix CModel::Get_BoneMatrix(const char * pBoneName) const
 	return XMMatrixIdentity();
 }
 
-HRESULT CModel::Set_Animation(_uint iAnimIndex, CTransform * pTransform)
+HRESULT CModel::Set_Animation(_uint iAnimIndex)
 {
 	if (iAnimIndex == m_iCurAnimIndex)
 		return S_OK;
@@ -103,8 +104,10 @@ HRESULT CModel::Set_Animation(_uint iAnimIndex, CTransform * pTransform)
 	NULL_CHECK_RETURN(iAnimIndex < m_iAnimCount, E_FAIL);
 
 	/* For.Lerp */
+	KEY_FRAME KeyFrame;
+	ZeroMemory(&KeyFrame, sizeof(KEY_FRAME));
 	m_fLerpRatio = 1.f;
-	m_PreAnimKeyFrames.assign(m_iNodeCount, nullptr);
+	m_PreAnimKeyFrames.assign(m_iNodeCount, KeyFrame);
 	m_Anims[m_iCurAnimIndex]->Get_PreAnimKeyFrames(m_iCurAnimFrame, m_PreAnimKeyFrames);
 
 	/* For.FinishCheck */
@@ -192,7 +195,7 @@ HRESULT CModel::Set_DefaultVariables_Perspective(_fmatrix WorldMatrix)
 	return S_OK;
 }
 
-HRESULT CModel::NativeConstruct_Prototype(const char * pMeshFilePath, const char * pMeshFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
+HRESULT CModel::NativeConstruct_Prototype(const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
 	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
 
@@ -200,8 +203,9 @@ HRESULT CModel::NativeConstruct_Prototype(const char * pMeshFilePath, const char
 
 	m_bNeedCenterBone = bNeedCenterBone;
 	m_vAnimDistFromCenter = _float4(0.f, 0.f, 0.f, 1.f);
+	m_iMaterialSetCount = iMaterialSetCount;
 
-	FAILED_CHECK_RETURN(m_pModel_Loader->Load_ModelFromFile(m_pDevice, m_pDeviceContext, this, pMeshFilePath, pMeshFileName), E_FAIL);
+	FAILED_CHECK_RETURN(m_pModel_Loader->Load_ModelFromFile(m_pDevice, m_pDeviceContext, CModel_Loader::TYPE_NORMAL, this, pModelFilePath, pModelFileName, iMaterialSetCount), E_FAIL);
 	FAILED_CHECK_RETURN(Apply_PivotMatrix(PivotMatrix), E_FAIL);
 	FAILED_CHECK_RETURN(Create_VIBuffer(pShaderFilePath, pTechniqueName), E_FAIL);
 	FAILED_CHECK_RETURN(Sort_MeshesByMaterial(), E_FAIL);
@@ -239,7 +243,10 @@ HRESULT CModel::Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON
 
 	m_AnimTransformations.resize(m_iNodeCount);
 	m_CombinedTransformations.resize(m_iNodeCount);
-	m_PreAnimKeyFrames.resize(m_iNodeCount, nullptr);
+
+	KEY_FRAME KeyFrame;
+	ZeroMemory(&KeyFrame, sizeof(KEY_FRAME));
+	m_PreAnimKeyFrames.resize(m_iNodeCount, KeyFrame);
 	m_IsAnimFinished.resize(m_iAnimCount, false);
 
 	m_AnimTransformations.assign(m_BaseTransformations.begin(), m_BaseTransformations.end());
@@ -247,7 +254,7 @@ HRESULT CModel::Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON
 	return S_OK;
 }
 
-HRESULT CModel::Update_Animation(_double dTimeDelta, CTransform * pTransform)
+HRESULT CModel::Update_Animation(_double dTimeDelta)
 {
 	NULL_CHECK_RETURN(m_iAnimCount, E_FAIL);
 
@@ -259,8 +266,10 @@ HRESULT CModel::Update_Animation(_double dTimeDelta, CTransform * pTransform)
 	if (m_dCurrentTime >= dDuration)
 	{
 		/* For.Lerp */
+		KEY_FRAME KeyFrame;
+		ZeroMemory(&KeyFrame, sizeof(KEY_FRAME));
 		m_fLerpRatio = 1.f;
-		m_PreAnimKeyFrames.assign(m_iNodeCount, nullptr);
+		m_PreAnimKeyFrames.assign(m_iNodeCount, KeyFrame);
 		m_Anims[m_iCurAnimIndex]->Get_PreAnimKeyFrames(m_iCurAnimFrame, m_PreAnimKeyFrames);
 
 		/* For.FinishCheck */
@@ -286,7 +295,7 @@ HRESULT CModel::Update_Animation(_double dTimeDelta, CTransform * pTransform)
 	return S_OK;
 }
 
-HRESULT CModel::Render_Model(_uint iPassIndex)
+HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 
@@ -303,9 +312,8 @@ HRESULT CModel::Render_Model(_uint iPassIndex)
 
 		for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
 		{
-
-			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE);
-			
+			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
+			//Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
 			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 			
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
@@ -314,8 +322,7 @@ HRESULT CModel::Render_Model(_uint iPassIndex)
 				pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
 				Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
 
-				if(iMaterialIndex != 0)
-					m_pDeviceContext->DrawIndexed(3 * pMesh->Get_StratFaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+				m_pDeviceContext->DrawIndexed(3 * pMesh->Get_StratFaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
 			}
 		}
 	}
@@ -323,8 +330,7 @@ HRESULT CModel::Render_Model(_uint iPassIndex)
 	{
 		for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
 		{
-			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE);
-			/*Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS);*/
+			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
 			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
@@ -508,11 +514,11 @@ HRESULT CModel::SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC * pInputElementDesc,
 }
 #pragma endregion
 
-CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const char * pMeshFilePath, const char * pMeshFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
+CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
-	CModel*	pInstance = new CModel(pDevice, pDeviceContext);
+	CModel* pInstance = new CModel(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype(pMeshFilePath, pMeshFileName, pShaderFilePath, pTechniqueName, PivotMatrix, bNeedCenterBone, pCenterBoneName)))
+	if (FAILED(pInstance->NativeConstruct_Prototype(pModelFilePath, pModelFileName, pShaderFilePath, pTechniqueName, iMaterialSetCount, PivotMatrix, bNeedCenterBone, pCenterBoneName)))
 	{
 		MSG_BOX("Failed to Create Instance - CModel");
 		Safe_Release(pInstance);
@@ -523,7 +529,7 @@ CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceCon
 
 CComponent * CModel::Clone_Component(void * pArg)
 {
-	CModel*	pInstance = new CModel(*this);
+	CModel* pInstance = new CModel(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{

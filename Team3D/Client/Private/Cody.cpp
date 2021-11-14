@@ -29,7 +29,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CCharacter::NativeConstruct(pArg);
 	Ready_Component();
 
-	m_pModelCom->Set_Animation(2, m_pTransformCom);
+	m_pModelCom->Set_Animation(ANI_C_Bhv_MH_Gesture_Small_Belly);
 	CDataBase::GetInstance()->Set_CodyPtr(this);			
 	 
 
@@ -69,7 +69,7 @@ _int CCody::Tick(_double dTimeDelta)
 
 
 	m_pActorCom->Update(dTimeDelta);
-	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
+	m_pModelCom->Update_Animation(dTimeDelta);
 	return NO_EVENT;
 }
 
@@ -275,14 +275,14 @@ void CCody::Move(const _double TimeDelta)
 		if (m_bShortJump == false)
 		{
 			// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
-			if (m_pModelCom->Is_AnimFinished(8) == true) // JogStart -> Jog
-				m_pModelCom->Set_Animation(4, m_pTransformCom);
-			else if (m_pModelCom->Is_AnimFinished(4) == true) // Jog -> Jog // 보간속도 Up
-				m_pModelCom->Set_Animation(4, m_pTransformCom);
+			if (m_pModelCom->Is_AnimFinished(ANI_C_Jog_Start_Fwd) == true) // JogStart -> Jog
+				m_pModelCom->Set_Animation(ANI_C_Jog);
+			else if (m_pModelCom->Is_AnimFinished(ANI_C_Jog) == true) // Jog -> Jog // 보간속도 Up
+				m_pModelCom->Set_Animation(ANI_C_Jog);
 			else											// Idle To Jog Start. -> Jog 예약
 			{
-				m_pModelCom->Set_Animation(8, m_pTransformCom);
-				m_pModelCom->Set_NextAnimIndex(4);
+				m_pModelCom->Set_Animation(ANI_C_Jog_Start_Fwd);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 			}
 		}
 	}
@@ -290,15 +290,15 @@ void CCody::Move(const _double TimeDelta)
 	{
 		if (m_bShortJump == false)
 		{
-			if (m_pModelCom->Get_CurAnimIndex() == 4) // jog 였다면
+			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog) // jog 였다면
 			{
-				m_pModelCom->Set_Animation(12, m_pTransformCom); // jog to stop 으로 바꿔
-				m_pModelCom->Set_NextAnimIndex(2); // jog to stop 끝나면 idle 예약.
+				m_pModelCom->Set_Animation(ANI_C_Jog_GoToStop ); // jog to stop 으로 바꿔
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_MH_Gesture_Small_Belly ); // jog to stop 끝나면 idle 예약.
 			}
-			else if (m_pModelCom->Get_CurAnimIndex() == 8) // JogStart 였다면
+			else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Start_Fwd ) // JogStart 였다면
 			{
-				m_pModelCom->Set_Animation(12, m_pTransformCom); // jog to stop 으로 바꿔
-				m_pModelCom->Set_NextAnimIndex(2);
+				m_pModelCom->Set_Animation(ANI_C_Jog_GoToStop ); // jog to stop 으로 바꿔
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_MH_Gesture_Small_Belly);
 			}
 		}
 	}
@@ -329,10 +329,10 @@ void CCody::Jump(const _double TimeDelta)
 	if (m_bShortJump == true && m_bJumpAnimationOnce == false)
 	{
 		m_pActorCom->Jump_Start(2.2f);
-		m_pModelCom->Set_Animation(22, m_pTransformCom);
+		m_pModelCom->Set_Animation(ANI_C_DoubleJump);
 		m_bJumpAnimationOnce = true;
 	}
-	if (m_pModelCom->Is_AnimFinished(22) == true)
+	if (m_pModelCom->Is_AnimFinished(ANI_C_DoubleJump) == true)
 	{
 		m_bShortJump = false;
 		m_bJumpAnimationOnce = false;
@@ -421,7 +421,6 @@ void CCody::StateCheck(_double TimeDelta)
 	//m_iCurState = m_iNextState;
 	//}
 }
-
 void CCody::TriggerCheck(_double TimeDelta)
 {
 	//m_bMove = false;

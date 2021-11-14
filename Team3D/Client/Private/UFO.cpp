@@ -43,7 +43,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 
 	m_pActorCom->Set_Gravity(0.f);
 	m_eNextState = UFO_LASER_MH;
-	m_pModelCom->Set_Animation(ANI_UFO_LASER_MH, m_pTransformCom);
+	m_pModelCom->Set_Animation(ANI_UFO_LASER_MH);
 	m_pModelCom->Set_NextAnimIndex(ANI_UFO_LASER_MH);
 
 	// DataBase에 포인터 등록
@@ -75,7 +75,7 @@ _int CUFO::Tick(_double dTimeDelta)
 	PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 
 	m_pActorCom->Update(dTimeDelta);
-	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
+	m_pModelCom->Update_Animation(dTimeDelta);
 
 	return NO_EVENT;
 }
@@ -95,112 +95,112 @@ CUFO::UFO_STATE CUFO::Check_State(_double dTimeDelta)
 		switch (m_eNextState)
 		{
 		case Client::CUFO::UFO_ENTIRE_ANIMATION:
-			m_pModelCom->Set_Animation(0, m_pTransformCom);
+			m_pModelCom->Set_Animation(0);
 			break;
 		case Client::CUFO::UFO_REF:
-			m_pModelCom->Set_Animation(ANI_UFO_REF, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_REF);
 			break;
 		case Client::CUFO::UFO_BACK:
-			m_pModelCom->Set_Animation(ANI_UFO_BACK, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_BACK);
 			break;
 		case Client::CUFO::UFO_CODYHOLDING:
-			m_pModelCom->Set_Animation(ANI_UFO_CODYHOLDING, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_CODYHOLDING);
 			break;
 		case Client::CUFO::UFO_CODYHOLDING_ENTER:
-			m_pModelCom->Set_Animation(ANI_UFO_CODYHOLDING_ENTER, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_CODYHOLDING_ENTER);
 			break;
 		case Client::CUFO::UFO_CODYHOLDING_LOW:
-			m_pModelCom->Set_Animation(ANI_UFO_CODYHOLDING_LOW, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_CODYHOLDING_LOW);
 			break;
 		case Client::CUFO::UFO_CONTROLLABLE_ADDITIVE:
-			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_ADDITIVE, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_ADDITIVE);
 			break;
 		case Client::CUFO::UFO_CONTROLLABLE_ADDITIVE_BOOST:
-			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_ADDITIVE_BOOST, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_ADDITIVE_BOOST);
 			break;
 		case Client::CUFO::UFO_CONTROLLABLE_ADDITIVE_FLYING:
-			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_ADDITIVE_FLYING, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_ADDITIVE_FLYING);
 			break;
 		case Client::CUFO::UFO_CONTROLLABLE_POSE_BCK:
-			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_BCK, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_BCK);
 			break;
 		case Client::CUFO::UFO_CONTROLLABLE_POSE_FWD:
-			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_FWD, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_FWD);
 			break;
 		case Client::CUFO::UFO_CONTROLLABLE_POSE_LEFT:
-			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_LEFT, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_LEFT);
 			break;
 		case Client::CUFO::UFO_CONTROLLABLE_POSE_RIGHT:
-			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_RIGHT, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_RIGHT);
 			break;
 		case Client::CUFO::UFO_FIREROCKET_ADDITIVE_LEFT:
-			m_pModelCom->Set_Animation(ANI_UFO_FIREROCKET_ADDITIVE_LEFT, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_FIREROCKET_ADDITIVE_LEFT);
 			break;
 		case Client::CUFO::UFO_FIREROCKET_ADDITIVE_RIGHT:
-			m_pModelCom->Set_Animation(ANI_UFO_FIREROCKET_ADDITIVE_RIGHT, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_FIREROCKET_ADDITIVE_RIGHT);
 			break;
 		case Client::CUFO::UFO_FWD:
-			m_pModelCom->Set_Animation(ANI_UFO_FWD, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_FWD);
 			break;
 		case Client::CUFO::UFO_GROUNDPOUND:
-			m_pModelCom->Set_Animation(ANI_UFO_GROUNDPOUND, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_GROUNDPOUND);
 			break;
 		case Client::CUFO::UFO_HITREACTION_BCK:
-			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_BCK, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_BCK);
 			break;
 		case Client::CUFO::UFO_HITREACTION_FWD:
-			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_FWD, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_FWD);
 			break;
 		case Client::CUFO::UFO_HITREACTION_LEFT:
-			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_LEFT, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_LEFT);
 			break;
 		case Client::CUFO::UFO_HITREACTION_RIGHT:
-			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_RIGHT, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_RIGHT);
 			break;
 		case Client::CUFO::UFO_KNOCKDOWNMH:
-			m_pModelCom->Set_Animation(ANI_UFO_KNOCKDOWNMH, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_KNOCKDOWNMH);
 			break;
 		case Client::CUFO::UFO_LASER_HITPOD:
-			m_pModelCom->Set_Animation(ANI_UFO_LASER_HITPOD, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_LASER_HITPOD);
 			break;
 		case Client::CUFO::UFO_LASER_MH:
-			m_pModelCom->Set_Animation(ANI_UFO_LASER_MH, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_LASER_MH);
 			break;
 		case Client::CUFO::UFO_LASERRIPPEDOFF:
-			m_pModelCom->Set_Animation(ANI_UFO_LASERRIPPEDOFF, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_LASERRIPPEDOFF);
 			break;
 		case Client::CUFO::UFO_LEFT:
-			m_pModelCom->Set_Animation(ANI_UFO_LEFT, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_LEFT);
 			break;
 		case Client::CUFO::UFO_MH:
-			m_pModelCom->Set_Animation(ANI_UFO_MH, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_MH);
 			break;
 		case Client::CUFO::UFO_RIGHT:
-			m_pModelCom->Set_Animation(ANI_UFO_RIGHT, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_RIGHT);
 			break;
 		case Client::CUFO::UFO_ROCKETKNOCKDOWN_MH:
-			m_pModelCom->Set_Animation(ANI_UFO_ROCKETKNOCKDOWN_MH, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_UFO_ROCKETKNOCKDOWN_MH);
 			break;
 		case Client::CUFO::CUTSCENE_EJECT_FLYINGSAUCER:
-			m_pModelCom->Set_Animation(ANI_CUTSCENE_EJECT_FLYINGSAUCER, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_CUTSCENE_EJECT_FLYINGSAUCER);
 			break;
 		case Client::CUFO::CUTSCENE_ENTERUFO_FLYINGSAUCER:
-			m_pModelCom->Set_Animation(ANI_CUTSCENE_ENTERUFO_FLYINGSAUCER, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_CUTSCENE_ENTERUFO_FLYINGSAUCER);
 			break;
 		case Client::CUFO::CUTSCENE_UFO_BOSS_INTRO:
-			m_pModelCom->Set_Animation(ANI_CUTSCENE_UFO_BOSS_INTRO, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_CUTSCENE_UFO_BOSS_INTRO);
 			break;
 		case Client::CUFO::CUTSCENE_UFO_LASERRIPPEDOFF_FLYINGSAUCER:
-			m_pModelCom->Set_Animation(ANI_CUTSCENE_UFO_LASERRIPPEDOFF_FLYINGSAUCER, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_CUTSCENE_UFO_LASERRIPPEDOFF_FLYINGSAUCER);
 			break;
 		case Client::CUFO::CUTSCENE_UFO_OUTRO:
-			m_pModelCom->Set_Animation(ANI_CUTSCENE_UFO_OUTRO, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_CUTSCENE_UFO_OUTRO);
 			break;
 		case Client::CUFO::CUTSCENE_POWERCORESDESTROYED_UFO:
-			m_pModelCom->Set_Animation(ANI_CUTSCENE_POWERCORESDESTROYED_UFO, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_CUTSCENE_POWERCORESDESTROYED_UFO);
 			break;
 		case Client::CUFO::CUTSCENE_ROCKETPHASEFINISHED_FLYINGSAUCER:
-			m_pModelCom->Set_Animation(ANI_CUTSCENE_ROCKETPHASEFINISHED_FLYINGSAUCER, m_pTransformCom);
+			m_pModelCom->Set_Animation(ANI_CUTSCENE_ROCKETPHASEFINISHED_FLYINGSAUCER);
 			break;
 		default:
 			break;

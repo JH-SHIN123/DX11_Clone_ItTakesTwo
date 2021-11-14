@@ -35,6 +35,7 @@ protected:
 	ID3D11DeviceContext*	m_pDeviceContext = nullptr;
 	COMPONENTS				m_Components;
 	_bool					m_isDead = false;
+	_bool					m_isClone = false;
 protected:
 	HRESULT	Add_Component(_uint iPrototypeLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg = nullptr);
 

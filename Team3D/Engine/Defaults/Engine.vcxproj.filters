@@ -196,6 +196,12 @@
     <Filter Include="99.Defines\02.Convenience">
       <UniqueIdentifier>{da9222d9-50c2-4853-af74-9fb3bfb8ad10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\02.Component\05.Model\00.Main\00.Normal">
+      <UniqueIdentifier>{30ffa4e5-d430-4267-8f5b-c88bed9c2fb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\05.Model\00.Main\01.Instance">
+      <UniqueIdentifier>{a76bbefa-3da3-46a3-808b-d54d00aa9310}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\GameInstance.h">
@@ -233,9 +239,6 @@
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\00.Main</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Textures.h">
-      <Filter>02.Utility\02.Component\03.Texture</Filter>
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer_Terrain.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\02.Terrain</Filter>
@@ -294,9 +297,6 @@
     <ClInclude Include="..\Public\Pipeline.h">
       <Filter>02.Utility\99.Others\01.Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Model.h">
-      <Filter>02.Utility\02.Component\05.Model\00.Main</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\HierarchyNode.h">
       <Filter>02.Utility\02.Component\05.Model\02.Node</Filter>
     </ClInclude>
@@ -348,6 +348,15 @@
     <ClInclude Include="..\public\MathHelper.h">
       <Filter>99.Defines\02.Convenience</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Model.h">
+      <Filter>02.Utility\02.Component\05.Model\00.Main\00.Normal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Model_Instance.h">
+      <Filter>02.Utility\02.Component\05.Model\00.Main\01.Instance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Textures.h">
+      <Filter>02.Utility\02.Component\03.Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -385,9 +394,6 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\00.Main</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Textures.cpp">
-      <Filter>02.Utility\02.Component\03.Texture</Filter>
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\02.Terrain</Filter>
@@ -446,9 +452,6 @@
     <ClCompile Include="..\Private\Pipeline.cpp">
       <Filter>02.Utility\99.Others\01.Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Model.cpp">
-      <Filter>02.Utility\02.Component\05.Model\00.Main</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\HierarchyNode.cpp">
       <Filter>02.Utility\02.Component\05.Model\02.Node</Filter>
     </ClCompile>
@@ -481,6 +484,15 @@
     </ClCompile>
     <ClCompile Include="..\private\ControllableActor.cpp">
       <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>02.Utility\02.Component\05.Model\00.Main\00.Normal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Model_Instance.cpp">
+      <Filter>02.Utility\02.Component\05.Model\00.Main\01.Instance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Textures.cpp">
+      <Filter>02.Utility\02.Component\03.Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

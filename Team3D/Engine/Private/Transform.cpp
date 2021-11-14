@@ -209,7 +209,7 @@ void CTransform::RotateYawDirectionOnLand(const _fvector & vMoveDir, const _doub
 	// 회전 각도 제한
 	_float fAcosValue = 0.f;
 	if (fCosValue <= -1.f) // 
-		fAcosValue = (_float)AI_MATH_PI;
+		fAcosValue = (_float)3.141592;
 	else if (fCosValue > 1.f) // 
 		fAcosValue = 0.f;
 	else
@@ -244,7 +244,7 @@ void CTransform::RotatePitchDirectionOnLand(const _fvector & vMoveDir, const _do
 	// 회전 각도 제한
 	_float fAcosValue = 0.f;
 	if (fCosValue <= -1.f) // 
-		fAcosValue = (_float)AI_MATH_PI;
+		fAcosValue = (_float)3.141592;
 	else if (fCosValue > 1.f) // 
 		fAcosValue = 0.f;
 	else
@@ -279,7 +279,7 @@ void CTransform::MoveDirectionOnLand(const _fvector & vMoveDir, const _double Ti
 	// 회전 각도 제한
 	_float fAcosValue = 0.f;
 	if (fCosValue <= -1.f) // 
-		fAcosValue = (_float)AI_MATH_PI;
+		fAcosValue = (_float)3.141592;
 	else if (fCosValue > 1.f) // 
 		fAcosValue = 0.f;
 	else

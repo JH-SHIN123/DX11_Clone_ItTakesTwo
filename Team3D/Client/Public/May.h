@@ -171,10 +171,6 @@ private:
 	virtual ~CMay() = default;
 
 public:
-	_bool IsFinish_CurAnimation();
-
-	// 부모로 부터 상속
-public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double TimeDelta) override;

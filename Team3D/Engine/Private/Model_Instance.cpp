@@ -1,0 +1,466 @@
+#include "..\Public\Model_Instance.h"
+#include "Model_Loader.h"
+#include "Mesh.h"
+#include "Textures.h"
+#include "Pipeline.h"
+#include "Frustum.h"
+#include "PhysX.h"
+
+CModel_Instance::CModel_Instance(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+	: CComponent(pDevice, pDeviceContext)
+	, m_pModel_Loader(CModel_Loader::GetInstance())
+{
+	Safe_AddRef(m_pModel_Loader);
+}
+
+CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
+	: CComponent					(rhs)
+	, m_Meshes						(rhs.m_Meshes)
+	, m_Materials					(rhs.m_Materials)
+	, m_iMeshCount					(rhs.m_iMeshCount)
+	, m_iMaterialCount				(rhs.m_iMaterialCount)
+	, m_SortedMeshes				(rhs.m_SortedMeshes)
+	, m_iMaterialSetCount			(rhs.m_iMaterialSetCount)
+	, m_pVB							(rhs.m_pVB)
+	, m_iVertexCount				(rhs.m_iVertexCount)
+	, m_iVertexStride				(rhs.m_iVertexStride)
+	, m_iVertexBufferCount			(rhs.m_iVertexBufferCount)
+	, m_pIB							(rhs.m_pIB)
+	, m_iFaceCount					(rhs.m_iFaceCount)
+	, m_iFaceStride					(rhs.m_iFaceStride)
+	, m_eIndexFormat				(rhs.m_eIndexFormat)
+	, m_eTopology					(rhs.m_eTopology)
+	, m_pEffect						(rhs.m_pEffect)
+	, m_InputLayouts				(rhs.m_InputLayouts)
+	, m_pVectorPositions			(rhs.m_pVectorPositions)
+	, m_pFaces						(rhs.m_pFaces)
+	, m_pVBInstance					(rhs.m_pVBInstance)
+	, m_pInstanceVertices			(rhs.m_pInstanceVertices)
+	, m_iMaxInstanceCount			(rhs.m_iMaxInstanceCount)
+{
+	for (auto& pMesh : m_Meshes)
+		Safe_AddRef(pMesh);
+
+	for (auto& pMaterial : m_Materials)
+	{
+		for (auto& pTexture : pMaterial->pMaterialTexture)
+			Safe_AddRef(pTexture);
+	}
+
+	Safe_AddRef(m_pVB);
+	Safe_AddRef(m_pIB);
+	Safe_AddRef(m_pVBInstance);
+	Safe_AddRef(m_pEffect);
+
+	for (auto& InputLayout : m_InputLayouts)
+	{
+		Safe_AddRef(InputLayout.pLayout);
+		Safe_AddRef(InputLayout.pPass);
+	}
+}
+
+HRESULT CModel_Instance::Set_Variable(const char * pConstantName, void * pData, _uint iByteSize)
+{
+	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
+
+	ID3DX11EffectVariable*	pVariable = m_pEffect->GetVariableByName(pConstantName);
+	NULL_CHECK_RETURN(pVariable, E_FAIL);
+
+	return pVariable->SetRawValue(pData, 0, iByteSize);
+}
+
+HRESULT CModel_Instance::Set_ShaderResourceView(const char * pConstantName, ID3D11ShaderResourceView * pShaderResourceView)
+{
+	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
+
+	ID3DX11EffectShaderResourceVariable* pVariable = m_pEffect->GetVariableByName(pConstantName)->AsShaderResource();
+	NULL_CHECK_RETURN(pVariable, E_FAIL);
+
+	return pVariable->SetResource(pShaderResourceView);
+}
+
+HRESULT CModel_Instance::Set_ShaderResourceView(const char * pConstantName, _uint iMaterialIndex, aiTextureType eTextureType, _uint iTextureIndex)
+{
+	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
+
+	ID3DX11EffectShaderResourceVariable* pVariable = m_pEffect->GetVariableByName(pConstantName)->AsShaderResource();
+	NULL_CHECK_RETURN(pVariable, E_FAIL);
+
+	CTextures* pTextures = m_Materials[iMaterialIndex]->pMaterialTexture[eTextureType];
+
+	if (nullptr == pTextures)
+		return S_OK;
+
+	ID3D11ShaderResourceView* pShaderResourceView = pTextures->Get_ShaderResourceView(iTextureIndex);
+	NULL_CHECK_RETURN(pTextures, E_FAIL);
+
+	return pVariable->SetResource(pShaderResourceView);
+}
+
+HRESULT CModel_Instance::Set_DefaultVariables_Perspective()
+{
+	CPipeline* pPipeline = CPipeline::GetInstance();
+	NULL_CHECK_RETURN(pPipeline, E_FAIL);
+
+	Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINVIEW)), sizeof(_matrix));
+	Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINPROJ)), sizeof(_matrix));
+	Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBVIEW)), sizeof(_matrix));
+	Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBPROJ)), sizeof(_matrix));
+
+	_float	fMainCamFar = pPipeline->Get_MainCamFar();
+	_float	fSubCamFar = pPipeline->Get_SubCamFar();
+	_vector vMainCamPosition = pPipeline->Get_MainCamPosition();
+	_vector vSubCamPosition = pPipeline->Get_SubCamPosition();
+
+	Set_Variable("g_fMainCamFar", &fMainCamFar, sizeof(_float));
+	Set_Variable("g_fSubCamFar", &fSubCamFar, sizeof(_float));
+	Set_Variable("g_vMainCamPosition", &vMainCamPosition, sizeof(_vector));
+	Set_Variable("g_vSubCamPosition", &vSubCamPosition, sizeof(_vector));
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::NativeConstruct_Prototype(_uint iMaxInstanceCount, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
+{
+	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
+
+	CComponent::NativeConstruct_Prototype();
+
+	m_iMaxInstanceCount = iMaxInstanceCount;
+	m_iMaterialSetCount = iMaterialSetCount;
+
+	FAILED_CHECK_RETURN(m_pModel_Loader->Load_ModelFromFile(m_pDevice, m_pDeviceContext, CModel_Loader::TYPE_INSTANCE, this, pModelFilePath, pModelFileName, iMaterialSetCount), E_FAIL);
+	FAILED_CHECK_RETURN(Apply_PivotMatrix(PivotMatrix), E_FAIL);
+	FAILED_CHECK_RETURN(Create_VIBuffer(pShaderFilePath, pTechniqueName), E_FAIL);
+	FAILED_CHECK_RETURN(Sort_MeshesByMaterial(), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::NativeConstruct(void * pArg)
+{
+	CComponent::NativeConstruct(pArg);
+
+	NULL_CHECK_RETURN(pArg, E_FAIL);
+
+	ARG_DESC ArgDesc = *static_cast<ARG_DESC*>(pArg);
+
+	m_pWorldMatrices = ArgDesc.pWorldMatrices;
+	m_iInstanceCount = ArgDesc.iInstanceCount;
+	NULL_CHECK_RETURN(m_iInstanceCount <= m_iMaxInstanceCount, E_FAIL);
+
+	m_RealTimeMatrices.resize(m_iInstanceCount, MH_XMFloat4x4Identity());
+	m_fCullingRadius = ArgDesc.fCullingRadius;
+
+	m_ppActors = new PxRigidStatic*[m_iInstanceCount];
+	CPhysX* pPhysX = CPhysX::GetInstance();
+
+	strcpy(m_szActorName, ArgDesc.pActorName);
+
+	PxTriangleMesh* TriMesh = pPhysX->Create_Mesh(Get_MeshActorDesc());
+
+	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+	{
+		_vector vScale, vRotQuat, vPosition;
+		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_pWorldMatrices[iIndex]));
+
+		PxTriangleMeshGeometry geom(TriMesh);
+		geom.scale = PxMeshScale(MH_PxVec3(vScale));
+
+		m_ppActors[iIndex] = pPhysX->Create_StaticActor(MH_PxTransform(vRotQuat, vPosition), geom, pPhysX->Create_Material(0.5f, 0.5f, 0.5f), m_szActorName);
+		NULL_CHECK_RETURN(m_ppActors[iIndex], E_FAIL);
+
+		PxShape* Shape;
+		m_ppActors[iIndex]->getShapes(&Shape, 1);
+		Shape->setContactOffset(0.02f);
+		Shape->setRestOffset(-0.5f);
+
+		pPhysX->Add_ActorToScene(m_ppActors[iIndex]);
+	}
+
+	TriMesh->release();
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Bring_Containers(VTXMESH * pVertices, _uint iVertexCount, POLYGON_INDICES32 * pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials)
+{
+	m_iVertexCount = iVertexCount;
+	m_iFaceCount = iFaceCount;
+	m_iMeshCount = (_uint)Meshes.size();
+	m_iMaterialCount = (_uint)Materials.size();
+
+	/* Bring_Containers */
+	m_pVertices = pVertices;
+	m_pFaces = pFaces;
+	m_Meshes.swap(Meshes);
+	m_Materials.swap(Materials);
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
+{
+	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
+
+	/* For.Culling */
+	_uint iRenderCount = 0;
+
+	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+	{
+		if (CFrustum::GetInstance()->IsIn_WorldSpace(MH_GetXMPosition(m_pWorldMatrices[iIndex]), m_fCullingRadius))
+			m_RealTimeMatrices[iRenderCount++] = m_pWorldMatrices[iIndex];
+	}
+
+	/* For.UpdateBuffer */
+	D3D11_MAPPED_SUBRESOURCE MappedSubResource;
+
+	m_pDeviceContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedSubResource);
+	memcpy(MappedSubResource.pData, &m_RealTimeMatrices[0], sizeof(VTXMATRIX) * iRenderCount);
+	m_pDeviceContext->Unmap(m_pVBInstance, 0);
+
+	/* For.Render */
+	ID3D11Buffer* pBuffers[2] = { m_pVB, m_pVBInstance };
+	_uint iStrides[2] = { sizeof(VTXMESH), sizeof(VTXMATRIX) };
+	_uint iOffsets[2] = { 0, 0 };
+
+	m_pDeviceContext->IASetVertexBuffers(0, m_iVertexBufferCount, pBuffers, iStrides, iOffsets);
+	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
+	m_pDeviceContext->IASetPrimitiveTopology(m_eTopology);
+	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
+
+	for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
+	{
+		Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
+		FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
+		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
+			m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_StratFaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Sort_MeshesByMaterial()
+{
+	m_SortedMeshes.resize(m_iMaterialCount);
+
+	for (auto& pMesh : m_Meshes)
+	{
+		_uint iMaterialIndex = pMesh->Get_MaterialIndex();
+		NULL_CHECK_RETURN(iMaterialIndex < m_iMaterialCount, E_FAIL);
+
+		m_SortedMeshes[iMaterialIndex].emplace_back(pMesh);
+		Safe_AddRef(pMesh);
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Apply_PivotMatrix(_fmatrix PivotMatrix)
+{
+	m_pVectorPositions = new _vector[m_iVertexCount];
+
+	for (_uint iIndex = 0; iIndex < m_iVertexCount; ++iIndex)
+	{
+		_vector	vAdjustedPosition = XMVector3TransformCoord(XMLoadFloat3(&m_pVertices[iIndex].vPosition), PivotMatrix);
+		XMStoreFloat3(&m_pVertices[iIndex].vPosition, vAdjustedPosition);
+		_vector	vAdjustedNormal = XMVector3TransformNormal(XMLoadFloat3(&m_pVertices[iIndex].vNormal), PivotMatrix);
+		XMStoreFloat3(&m_pVertices[iIndex].vNormal, vAdjustedNormal);
+		memcpy(&m_pVectorPositions[iIndex], &XMVectorSetW(vAdjustedPosition, 1.f), sizeof(_vector));
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Create_Buffer(ID3D11Buffer ** ppBuffer, _uint iByteWidth, D3D11_USAGE Usage, _uint iBindFlags, _uint iCPUAccessFlags, _uint iMiscFlags, _uint iStructureByteStride, void * pSysMem, _uint iSysMemPitch, _uint iSysMemSlicePitch)
+{
+	NULL_CHECK_RETURN(m_pDevice, E_FAIL);
+
+	D3D11_BUFFER_DESC Desc;
+	ZeroMemory(&Desc, sizeof(D3D11_BUFFER_DESC));
+	Desc.ByteWidth = iByteWidth;
+	Desc.Usage = Usage;
+	Desc.BindFlags = iBindFlags;
+	Desc.CPUAccessFlags = iCPUAccessFlags;
+	Desc.MiscFlags = iMiscFlags;
+	Desc.StructureByteStride = iStructureByteStride;
+
+	D3D11_SUBRESOURCE_DATA SubResourceData;
+	ZeroMemory(&SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
+	SubResourceData.pSysMem = pSysMem;
+	SubResourceData.SysMemPitch = iSysMemPitch;
+	SubResourceData.SysMemSlicePitch = iSysMemSlicePitch;
+
+	FAILED_CHECK_RETURN(m_pDevice->CreateBuffer(&Desc, &SubResourceData, ppBuffer), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Create_VIBuffer(const _tchar * pShaderFilePath, const char * pTechniqueName)
+{
+	/* For.VertexBuffer */
+	m_iVertexBufferCount = 2;
+	m_iVertexStride = sizeof(VTXMESH);
+	Create_Buffer(&m_pVB, m_iVertexStride * m_iVertexCount, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, m_iVertexStride, m_pVertices);
+	Safe_Delete_Array(m_pVertices);
+
+	/* For.IndexBuffer */
+	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
+	m_iFaceStride = sizeof(POLYGON_INDICES32);
+	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	Create_Buffer(&m_pIB, m_iFaceCount * m_iFaceStride, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, 0, m_pFaces);
+
+	/* For.InstanceBuffer */
+	m_pInstanceVertices = new VTXMATRIX[m_iMaxInstanceCount];
+
+	for (_uint iIndex = 0; iIndex < m_iMaxInstanceCount; ++iIndex)
+	{
+		m_pInstanceVertices[iIndex].vRight = _float4(1.f, 0.f, 0.f, 0.f);
+		m_pInstanceVertices[iIndex].vUp = _float4(0.f, 1.f, 0.f, 0.f);
+		m_pInstanceVertices[iIndex].vLook = _float4(0.f, 0.f, 1.f, 0.f);
+		m_pInstanceVertices[iIndex].vPosition = _float4(0.f, 0.f, 0.f, 1.f);
+	}
+	Create_Buffer(&m_pVBInstance, m_iMaxInstanceCount * sizeof(VTXMATRIX), D3D11_USAGE_DYNAMIC, D3D11_BIND_VERTEX_BUFFER, D3D11_CPU_ACCESS_WRITE, 0, sizeof(VTXMATRIX), m_pInstanceVertices);
+
+	/* For.InputLayouts*/
+	D3D11_INPUT_ELEMENT_DESC	ElementDesc[] =
+	{
+		{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",			0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 12,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TANGENT",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 24,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD",		0, DXGI_FORMAT_R32G32_FLOAT,		0, 36,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDINDEX",		0, DXGI_FORMAT_R32G32B32A32_UINT,	0, 44,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDWEIGHT",	0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, 60,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "WORLD",			0, DXGI_FORMAT_R32G32B32A32_FLOAT,	1, 0,	D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "WORLD",			1, DXGI_FORMAT_R32G32B32A32_FLOAT,	1, 16,	D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "WORLD",			2, DXGI_FORMAT_R32G32B32A32_FLOAT,	1, 32,	D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "WORLD",			3, DXGI_FORMAT_R32G32B32A32_FLOAT,	1, 48,	D3D11_INPUT_PER_INSTANCE_DATA, 1 }
+	};
+	FAILED_CHECK_RETURN(SetUp_InputLayouts(ElementDesc, 10, pShaderFilePath, pTechniqueName), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC * pInputElementDesc, _uint iElementCount, const _tchar * pShaderFilePath, const char * pTechniqueName)
+{
+	_uint iFlag = 0;
+
+#ifdef _DEBUG
+	iFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#else
+	iFlag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
+#endif
+
+	ID3DBlob* pCompiledShaderCode = nullptr;
+	ID3DBlob* pCompileErrorMsg = nullptr;
+
+	FAILED_CHECK_RETURN(D3DCompileFromFile(pShaderFilePath, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, nullptr, "fx_5_0", iFlag, 0, &pCompiledShaderCode, &pCompileErrorMsg), E_FAIL);
+	FAILED_CHECK_RETURN(D3DX11CreateEffectFromMemory(pCompiledShaderCode->GetBufferPointer(), pCompiledShaderCode->GetBufferSize(), 0, m_pDevice, &m_pEffect), E_FAIL);
+
+	ID3DX11EffectTechnique*	pTechnique = m_pEffect->GetTechniqueByName(pTechniqueName);
+	NULL_CHECK_RETURN(pTechnique, E_FAIL);
+
+	D3DX11_TECHNIQUE_DESC	TechniqueDesc;
+	FAILED_CHECK_RETURN(pTechnique->GetDesc(&TechniqueDesc), E_FAIL);
+
+	m_InputLayouts.reserve(TechniqueDesc.Passes);
+
+	for (_uint iPassIndex = 0; iPassIndex < TechniqueDesc.Passes; ++iPassIndex)
+	{
+		INPUT_LAYOUT_DESC	InputLayoutDesc;
+		D3DX11_PASS_DESC	PassDesc;
+
+		InputLayoutDesc.pPass = pTechnique->GetPassByIndex(iPassIndex);
+		FAILED_CHECK_RETURN(InputLayoutDesc.pPass->GetDesc(&PassDesc), E_FAIL);
+		FAILED_CHECK_RETURN(m_pDevice->CreateInputLayout(pInputElementDesc, iElementCount, PassDesc.pIAInputSignature, PassDesc.IAInputSignatureSize, &InputLayoutDesc.pLayout), E_FAIL);
+
+		m_InputLayouts.emplace_back(InputLayoutDesc);
+	}
+
+	Safe_Release(pTechnique);
+	Safe_Release(pCompiledShaderCode);
+	Safe_Release(pCompileErrorMsg);
+
+	return S_OK;
+}
+
+CModel_Instance * CModel_Instance::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, _uint iMaxInstanceCount, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
+{
+	CModel_Instance* pInstance = new CModel_Instance(pDevice, pDeviceContext);
+
+	if (FAILED(pInstance->NativeConstruct_Prototype(iMaxInstanceCount, pModelFilePath, pModelFileName, pShaderFilePath, pTechniqueName, iMaterialSetCount ,PivotMatrix, bNeedCenterBone, pCenterBoneName)))
+	{
+		MSG_BOX("Failed to Create Instance - CModel_Instance");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CComponent * CModel_Instance::Clone_Component(void * pArg)
+{
+	CModel_Instance* pInstance = new CModel_Instance(*this);
+
+	if (FAILED(pInstance->NativeConstruct(pArg)))
+	{
+		MSG_BOX("Failed to Clone Instance - CModel_Instance");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CModel_Instance::Free()
+{
+	for (auto& InputLayout : m_InputLayouts)
+	{
+		Safe_Release(InputLayout.pLayout);
+		Safe_Release(InputLayout.pPass);
+	}
+
+	Safe_Release(m_pEffect);
+	Safe_Release(m_pIB);
+	Safe_Release(m_pVB);
+	Safe_Release(m_pVBInstance);
+
+	for (auto& pMesh : m_Meshes)
+		Safe_Release(pMesh);
+	m_Meshes.clear();
+
+	for (auto& pMaterial : m_Materials)
+	{
+		for (auto& pTexture : pMaterial->pMaterialTexture)
+			Safe_Release(pTexture);
+		if (false == m_isClone)
+			Safe_Delete(pMaterial);
+	}
+	m_Materials.clear();
+
+	for (auto& Meshes : m_SortedMeshes)
+	{
+		for (auto& pMesh : Meshes)
+			Safe_Release(pMesh);
+	}
+	m_SortedMeshes.clear();
+
+	if (false == m_isClone)
+	{
+		Safe_Release(m_pModel_Loader);
+		Safe_Delete_Array(m_pVectorPositions);
+		Safe_Delete_Array(m_pFaces);
+		Safe_Delete_Array(m_pInstanceVertices);
+	}
+
+	Safe_Delete_Array(m_pWorldMatrices);
+	m_RealTimeMatrices.clear();
+
+	if (true == m_isClone)
+	{
+		for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+			CPhysX::GetInstance()->Remove_Actor(&m_ppActors[iIndex]);
+		Safe_Delete_Array(m_ppActors);
+	}
+
+	CComponent::Free();
+}

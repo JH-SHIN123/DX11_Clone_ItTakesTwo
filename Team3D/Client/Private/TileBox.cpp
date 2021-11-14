@@ -23,13 +23,21 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_TileBox"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	CModel_Instance::ARG_DESC Arg;
+	Arg.iInstanceCount = 5000;
+	Arg.fCullingRadius = 10.f;
+	Arg.pActorName = "TileBox";
+	Arg.pWorldMatrices = new _float4x4[Arg.iInstanceCount];
 
-	PxTriangleMesh* TriMesh = m_pGameInstance->Create_PxMesh(m_pModelCom->Get_MeshActorDesc());
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CStaticActor::ARG_DESC(m_pTransformCom->Get_WorldMatrix(), &PxTriangleMeshGeometry(TriMesh), m_pGameInstance->Create_PxMaterial(0.5f, 0.5f, 0.5f), "TileBox")), E_FAIL);
-	TriMesh->release();
+	for (_uint i = 0; i < Arg.iInstanceCount; ++i)
+	{
+		Arg.pWorldMatrices[i] = MH_XMFloat4x4Identity();
+		Arg.pWorldMatrices[i]._41 = ((i % 100) * 10.f);
+		Arg.pWorldMatrices[i]._43 = ((i / 100) * 10.f);
+	}
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_TileBox"), TEXT("Com_Model"), (CComponent**)&m_pModelCom, &Arg), E_FAIL);
 
 	return S_OK;
 }
@@ -37,6 +45,13 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 _int CTileBox::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	if (m_pGameInstance->Key_Down(DIK_8))
+		m_iRenderNum = 0;
+	if (m_pGameInstance->Key_Down(DIK_9))
+		m_iRenderNum = 1;
+	if (m_pGameInstance->Key_Down(DIK_0))
+		m_iRenderNum = 2;
 
 	return NO_EVENT;
 }
@@ -52,8 +67,8 @@ HRESULT CTileBox::Render()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Render_Model(1);
+	m_pModelCom->Set_DefaultVariables_Perspective();
+	m_pModelCom->Render_Model(0, m_iRenderNum);
 
 	return S_OK;
 }
@@ -86,8 +101,6 @@ CGameObject * CTileBox::Clone_GameObject(void * pArg)
 
 void CTileBox::Free()
 {
-	Safe_Release(m_pActorCom);
-	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
 
