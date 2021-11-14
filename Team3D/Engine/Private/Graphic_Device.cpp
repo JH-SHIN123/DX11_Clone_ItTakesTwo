@@ -23,10 +23,10 @@ const _float4 CGraphic_Device::Get_ViewportUVInfo(_uint iViewportIndex) const
 
 const _float CGraphic_Device::Get_ViewportAspect(_uint iViewportIndex) const
 {
-	if (0.f >= m_vViewportInfo[iViewportIndex].w)
+	if (0.f >= m_Viewports[iViewportIndex].Height)
 		return 1.f;
 
-	_float fAspect = m_vViewportInfo[iViewportIndex].z / m_vViewportInfo[iViewportIndex].w;
+	_float fAspect = m_Viewports[iViewportIndex].Width / m_Viewports[iViewportIndex].Height;
 
 	if (0.f >= fAspect)
 		return 1.f;
@@ -82,7 +82,41 @@ HRESULT CGraphic_Device::Ready_GraphicDevice(WINMODE eWinMode, HWND hWnd, _uint 
 	
 	D3D_FEATURE_LEVEL FeatureLevel;
 
-	FAILED_CHECK_RETURN(D3D11CreateDevice(0, D3D_DRIVER_TYPE_HARDWARE, 0, iCreateFlag, nullptr, 0, D3D11_SDK_VERSION, &m_pDevice, &FeatureLevel, &m_pDeviceContext), E_FAIL);
+	Microsoft::WRL::ComPtr<IDXGIFactory> mdxgiFactory;
+	FAILED_CHECK_RETURN(CreateDXGIFactory(IID_PPV_ARGS(&mdxgiFactory)), E_FAIL);
+
+	std::size_t ui64VideoMemory;
+	Microsoft::WRL::ComPtr<IDXGIAdapter> pAdapter;
+	DXGI_ADAPTER_DESC adapterDesc;
+
+	// 그래픽 카드 어뎁터 체크 
+	// 요청한 그래픽 카드 인터페이스에 대한 어뎁터가 없습니다.
+	FAILED_CHECK_RETURN(mdxgiFactory->EnumAdapters(0, (IDXGIAdapter**)&pAdapter), E_FAIL);
+	FAILED_CHECK_RETURN(pAdapter->GetDesc(&adapterDesc), E_FAIL);
+
+	ui64VideoMemory = (std::size_t)(adapterDesc.DedicatedVideoMemory + adapterDesc.SharedSystemMemory);
+
+	// Compare Video Memory and Find better Gpu
+	int gpu_idx = 0;
+	int select = 0;
+	std::size_t comparison_videoMemory = 0;
+
+	while (mdxgiFactory->EnumAdapters(gpu_idx, &pAdapter) != DXGI_ERROR_NOT_FOUND)
+	{
+		pAdapter->GetDesc(&adapterDesc);
+		comparison_videoMemory = adapterDesc.DedicatedVideoMemory + adapterDesc.SharedSystemMemory;
+
+		if (comparison_videoMemory > ui64VideoMemory)
+		{
+			ui64VideoMemory = comparison_videoMemory;
+			select = gpu_idx;
+		}
+		++gpu_idx;
+	}
+
+	FAILED_CHECK_RETURN(mdxgiFactory->EnumAdapters(select, &pAdapter), E_FAIL);
+
+	FAILED_CHECK_RETURN(D3D11CreateDevice(pAdapter.Get(), D3D_DRIVER_TYPE_UNKNOWN, 0, iCreateFlag, nullptr, 0, D3D11_SDK_VERSION, &m_pDevice, &FeatureLevel, &m_pDeviceContext), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_SwapChain(eWinMode, hWnd, iWinSizeX, iWinSizeY), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_BackBufferRenderTargetView(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_DepthStencilRenderTargetView(iWinSizeX, iWinSizeY), E_FAIL);

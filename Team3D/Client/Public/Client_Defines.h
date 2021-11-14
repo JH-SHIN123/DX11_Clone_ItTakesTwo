@@ -10,6 +10,7 @@ extern HINSTANCE	g_hInst;
 
 
 #include "Client_Enum.h"
+#include "DataStorage.h"
 
 
 namespace Client {}

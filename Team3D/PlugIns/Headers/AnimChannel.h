@@ -10,27 +10,30 @@ private:
 	explicit CAnimChannel() = default;
 	virtual ~CAnimChannel() = default;
 
-public: /* Getter */
-	const char*					Get_Name() const { return m_szChannelName; }
-	const vector<KEY_FRAME*>&	Get_KeyFrames() const { return m_KeyFrames; }
-	const _uint					Get_ConnectedNodeIndex() const { return m_iConnectedNodeIndex; }
+public: /* Struct */
+	typedef struct tagChannelDesc
+	{
+		_uint	iConnectedNodeIndex;
+		char	szChannelName[MAX_PATH];
+	}CHANNEL_DESC;
 
-public: /* Setter */
-	void Set_ConnectedNodeIndex(_uint iIndex) { m_iConnectedNodeIndex = iIndex; }
+public: /* Getter */
+	const char*					Get_Name() const { return m_ChannelDesc.szChannelName; }
+	const _uint					Get_ConnectedNodeIndex() const { return m_ChannelDesc.iConnectedNodeIndex; }
+	const vector<KEY_FRAME>&	Get_KeyFrames() const { return m_KeyFrames; }
 
 public:
-	HRESULT	NativeConstruct(const char* pName);
-	HRESULT	Bring_KeyFrameContainer(vector<KEY_FRAME*>& KeyFrames);
+	HRESULT	NativeConstruct(CHANNEL_DESC ChannelDesc);
+	HRESULT	Bring_KeyFrameContainer(vector<KEY_FRAME>& KeyFrames);
 
 private: /* Typedef */
-	typedef vector<KEY_FRAME*> KEYFRAMES;
+	typedef vector<KEY_FRAME> KEYFRAMES;
 private:
-	KEYFRAMES	m_KeyFrames;
-	char		m_szChannelName[MAX_PATH] = "";
-	_uint		m_iConnectedNodeIndex = 0;
+	KEYFRAMES		m_KeyFrames;
+	CHANNEL_DESC	m_ChannelDesc;
 
 public:
-	static CAnimChannel* Create(const char* pName);
+	static CAnimChannel* Create(CHANNEL_DESC ChannelDesc);
 	virtual void Free() override;
 };
 

@@ -16,9 +16,10 @@ public: /* Getter */
 	const _uint		Get_CurAnimIndex() const { return m_iCurAnimIndex; }
 	const _float	Get_ProgressAnim() const { return m_fProgressAnim; }
 	const _bool		Is_AnimFinished(_uint iAnimIndex) const { NULL_CHECK_RETURN(iAnimIndex < m_iAnimCount, false); return m_IsAnimFinished[iAnimIndex]; }
+	MESHACTOR_DESC	Get_MeshActorDesc() { return MESHACTOR_DESC(m_iVertexCount, m_pVectorPositions, m_iFaceCount, m_pFaces); }
 
 public: /* Setter */
-	HRESULT	Set_Animation(_uint iAnimIndex, class CTransform* pTransform);
+	HRESULT	Set_Animation(_uint iAnimIndex);
 	HRESULT	Set_NextAnimIndex(_uint iAnimIndex);
 	/* For.Shader */
 	HRESULT	Set_Variable(const char* pConstantName, void* pData, _uint iByteSize);
@@ -27,13 +28,13 @@ public: /* Setter */
 	HRESULT	Set_DefaultVariables_Perspective(_fmatrix WorldMatrix);
 
 public:
-	virtual HRESULT	NativeConstruct_Prototype(const char* pMeshFilePath, const char* pMeshFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName);
+	virtual HRESULT	NativeConstruct_Prototype(const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	/* For.ModelLoader */
 	HRESULT	Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials, vector<class CHierarchyNode*>& Nodes, vector<_float4x4>& Transformations, vector<class CAnim*>& Anims);
 	/* For.Client */
-	HRESULT	Update_Animation(_double dTimeDelta, class CTransform* pTransform);
-	HRESULT	Render_Model(_uint iPassIndex);
+	HRESULT	Update_Animation(_double dTimeDelta);
+	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0);
 
 private: /* Typedef */
 	typedef vector<class CMesh*>			MESHES;
@@ -41,7 +42,7 @@ private: /* Typedef */
 	typedef	vector<class CHierarchyNode*>	NODES;
 	typedef vector<class CAnim*>			ANIMS;
 	typedef vector<_float4x4>				TRANSFORMATIONS;
-	typedef vector<KEY_FRAME*>				KEYFRAMES;
+	typedef vector<KEY_FRAME>				KEYFRAMES;
 private:
 	class CModel_Loader*		m_pModel_Loader				= nullptr;
 	VTXMESH*					m_pVertices					= nullptr;
@@ -76,6 +77,10 @@ private:
 	_bool						m_bNeedCenterBone			= false;	// 중심 뼈 존재 여부
 	class CHierarchyNode*		m_pCenterBoneNode			= nullptr;	// 중심 뼈 이름
 	_float4						m_vAnimDistFromCenter		= _float4(0.f, 0.f, 0.f, 0.f);
+	/* For.PhyX */
+	_vector*					m_pVectorPositions			= nullptr;	// 정점의 Position값만 들고있는 배열 추가, 애니메이션이 없는 모델만 생성됨.
+	/* For.MaterialSet */
+	_uint						m_iMaterialSetCount			= 0;
 private:
 	HRESULT		Sort_MeshesByMaterial();
 	HRESULT		Set_CenterBone(const char* pCenterBoneName = "");
@@ -107,7 +112,7 @@ private:
 #pragma endregion
 
 public:
-	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const char* pMeshFilePath, const char* pMeshFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _fmatrix PivotMatrix = XMMatrixIdentity(), _bool bNeedCenterBone = false, const char* pCenterBoneName = "");
+	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount = 1, _fmatrix PivotMatrix = XMMatrixIdentity(), _bool bNeedCenterBone = false, const char* pCenterBoneName = "");
 	virtual CComponent* Clone_Component(void* pArg) override;
 	virtual void Free() override;
 };
