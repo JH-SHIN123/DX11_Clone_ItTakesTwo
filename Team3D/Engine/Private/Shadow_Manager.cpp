@@ -59,7 +59,7 @@ _int CShadow_Manager::Update_CascadedShadowTransform_SubViewport()
 
 HRESULT CShadow_Manager::RSSet_CascadedViewports()
 {
-	_uint iNumViewport = 2;
+	_uint iNumViewport = 1;
 	m_pDevice_Context->RSSetViewports(MAX_CASCADES * iNumViewport, m_CascadeViewport);
 
 	return S_OK;
@@ -73,23 +73,23 @@ HRESULT CShadow_Manager::Set_CascadeViewportsInfo()
 		// width / height 해상도 ( LOD X )
 		m_CascadeViewport[i].TopLeftX = 0.f;
 		m_CascadeViewport[i].TopLeftY = (_float)(SHADOWMAP_SIZE * i);
-		m_CascadeViewport[i].Width = SHADOWMAP_SIZE / 2.f;
+		m_CascadeViewport[i].Width = SHADOWMAP_SIZE;
 		m_CascadeViewport[i].Height = SHADOWMAP_SIZE;
 		m_CascadeViewport[i].MinDepth = 0.f;
 		m_CascadeViewport[i].MaxDepth = 1.f;
 	}
 
-	// CSM Sub Viewports
-	for (_uint i = 0; i < MAX_CASCADES; ++i)
-	{
-		// width / height 해상도 ( LOD X )
-		m_CascadeViewport[MAX_CASCADES + i].TopLeftX = SHADOWMAP_SIZE / 2.f;
-		m_CascadeViewport[MAX_CASCADES + i].TopLeftY = (_float)(SHADOWMAP_SIZE * i);
-		m_CascadeViewport[MAX_CASCADES + i].Width = SHADOWMAP_SIZE / 2.f;
-		m_CascadeViewport[MAX_CASCADES + i].Height = SHADOWMAP_SIZE;
-		m_CascadeViewport[MAX_CASCADES + i].MinDepth = 0.f;
-		m_CascadeViewport[MAX_CASCADES + i].MaxDepth = 1.f;
-	}
+	//// CSM Sub Viewports
+	//for (_uint i = 0; i < MAX_CASCADES; ++i)
+	//{
+	//	// width / height 해상도 ( LOD X )
+	//	m_CascadeViewport[MAX_CASCADES + i].TopLeftX = SHADOWMAP_SIZE;
+	//	m_CascadeViewport[MAX_CASCADES + i].TopLeftY = (_float)(SHADOWMAP_SIZE * i);
+	//	m_CascadeViewport[MAX_CASCADES + i].Width = SHADOWMAP_SIZE;
+	//	m_CascadeViewport[MAX_CASCADES + i].Height = SHADOWMAP_SIZE;
+	//	m_CascadeViewport[MAX_CASCADES + i].MinDepth = 0.f;
+	//	m_CascadeViewport[MAX_CASCADES + i].MaxDepth = 1.f;
+	//}
 
 	return S_OK;
 }

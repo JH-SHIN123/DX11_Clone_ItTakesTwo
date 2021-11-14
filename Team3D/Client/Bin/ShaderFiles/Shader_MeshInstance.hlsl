@@ -154,21 +154,21 @@ void GS_MAIN_CSM_DEPTH(triangle GS_IN_CSM_DEPTH In[3], inout TriangleStream<GS_O
 		TriStream.RestartStrip();
 	}
 
-	/* Sub Viewport - Viewport 3, 4, 5 */
-	[unroll]
-	for (uint subViewIndex = 0; subViewIndex < MAX_CASCADES; ++subViewIndex)
-	{
-		[unroll]
-		for (uint j = 0; j < 3; j++)
-		{
-			Out.vPosition = mul(In[j].vPosition, g_ShadowTransforms_Sub[subViewIndex]);
-			Out.iViewportIndex = MAX_CASCADES + subViewIndex;
+	///* Sub Viewport - Viewport 3, 4, 5 */
+	//[unroll]
+	//for (uint subViewIndex = 0; subViewIndex < MAX_CASCADES; ++subViewIndex)
+	//{
+	//	[unroll]
+	//	for (uint j = 0; j < 3; j++)
+	//	{
+	//		Out.vPosition = mul(In[j].vPosition, g_ShadowTransforms_Sub[subViewIndex]);
+	//		Out.iViewportIndex = MAX_CASCADES + subViewIndex;
 
-			TriStream.Append(Out);
-		}
+	//		TriStream.Append(Out);
+	//	}
 
-		TriStream.RestartStrip();
-	}
+	//	TriStream.RestartStrip();
+	//}
 }
 ////////////////////////////////////////////////////////////
 

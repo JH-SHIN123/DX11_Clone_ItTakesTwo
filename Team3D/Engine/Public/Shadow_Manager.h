@@ -39,7 +39,7 @@ private:
 	ID3D11DeviceContext* m_pDevice_Context = nullptr;
 
 private: /* For. Cascaded */
-	D3D11_VIEWPORT	m_CascadeViewport[MAX_CASCADES * 2];
+	D3D11_VIEWPORT	m_CascadeViewport[MAX_CASCADES];
 	const _float	m_fCascadedEnds[MAX_CASCADES + 1] = { 0.05f, 0.15f, 0.5f, 1.f };
 
 	/* For. Main Viewports */
