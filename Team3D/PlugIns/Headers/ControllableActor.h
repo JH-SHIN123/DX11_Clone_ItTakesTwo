@@ -31,6 +31,9 @@ public:
 	/* Setter */
 	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
 
+	/* Getter */
+	_bool  Get_IsJump() { return m_bJump; }
+
 private:
 	PxController*		m_pController = nullptr;
 	PxRigidDynamic*		m_pActor = nullptr;
@@ -48,6 +51,7 @@ private:
 private:
 	void	Jump_Stop();
 	_float	Get_Height(_double dTimeDelta);
+
 
 public:
 	static CControllableActor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

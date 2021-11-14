@@ -215,13 +215,6 @@ void CCody::KeyInput(_double TimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
 		m_bShortJump = true;
-		++m_iJumpCount;
-
-		if (m_iJumpCount == 1)
-		{
-			m_bDoubleJump = true;
-			++m_iJumpCount;
-		}
 	}
 
 	
@@ -283,7 +276,7 @@ void CCody::Move(const _double TimeDelta)
 			PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 
 			if (m_fJogAcceleration > 10.f)
-				m_fJogAcceleration -= TimeDelta * 50.f;
+				m_fJogAcceleration -= (_float)TimeDelta * 50.f;
 			else
 				m_fJogAcceleration = 10.f;
 
@@ -320,7 +313,7 @@ void CCody::Move(const _double TimeDelta)
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH - 1) // IDLE 상태라면
 				{
-					m_fIdleTime += TimeDelta;
+					m_fIdleTime += (_float)TimeDelta;
 					if (m_fIdleTime > 5.f && m_pModelCom->Is_AnimFinished(ANI_C_MH - 1)) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
 					{
 						m_pModelCom->Set_Animation(ANI_C_Bhv_MH_Gesture_Small_Drumming); // 배 두들기는 애니메이션 재생
@@ -364,7 +357,12 @@ void CCody::Jump(const _double TimeDelta)
 	if (m_bShortJump == true)
 	{
 		m_pActorCom->Jump_Start(2.2f);
+		m_pModelCom->Set_Animation(ANI_C_Jump_Start + 1);
 		m_bShortJump = false;
+	}
+	if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jump_Start + 1 && m_pActorCom->Get_IsJump() == false)
+	{
+		m_pModelCom->Set_Animation(ANI_C_Jump_Land + 2);
 	}
 }
 void CCody::Change_Size(const _double TimeDelta)

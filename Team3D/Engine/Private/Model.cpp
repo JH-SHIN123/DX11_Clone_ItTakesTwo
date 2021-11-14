@@ -399,7 +399,7 @@ void CModel::Update_AnimTransformations(_double dTimeDelta)
 	if (m_fLerpRatio > 0.f)
 	{
 		m_Anims[m_iCurAnimIndex]->Update_Transformations_Blend(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations, m_PreAnimKeyFrames, m_fLerpRatio);
-		m_fLerpRatio -= (_float)dTimeDelta * 5.f;
+		m_fLerpRatio -= (_float)dTimeDelta * 8.f;
 	}
 	else
 		m_Anims[m_iCurAnimIndex]->Update_Transformations(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations);
