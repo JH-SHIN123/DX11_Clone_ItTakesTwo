@@ -218,20 +218,30 @@ void CUFO::Change_State(_double dTimeDelta)
 		}
 		else if (m_eCurState == UFO_LASER_HITPOD && m_pModelCom->Is_AnimFinished(ANI_UFO_LASER_HITPOD) == true)
 		{
-			m_eNextState = UFO_GROUNDPOUND;
+			m_eNextState = CUTSCENE_POWERCORESDESTROYED_UFO;
 			m_IsCoreExplode = false;
 		}
-		else if (m_eCurState == UFO_GROUNDPOUND && m_pModelCom->Is_AnimFinished(ANI_UFO_GROUNDPOUND) == true)
+		else if (m_eCurState == CUTSCENE_POWERCORESDESTROYED_UFO && m_pModelCom->Is_AnimFinished(ANI_CUTSCENE_POWERCORESDESTROYED_UFO) == true)
 		{
 			m_eNextState = UFO_KNOCKDOWNMH;
 		}
-		else if (m_eCurState == UFO_KNOCKDOWNMH && m_pModelCom->Is_AnimFinished(ANI_UFO_KNOCKDOWNMH) == true && m_IsCodyHold == false)
+		else if (m_eCurState == UFO_KNOCKDOWNMH)
 		{
-			m_eNextState = UFO_KNOCKDOWNMH;
+			if (m_IsCodyHold == false)
+				m_eNextState = UFO_KNOCKDOWNMH;
+			else if (m_IsCodyHold == true)
+				m_eNextState = UFO_CODYHOLDING_ENTER;
 		}
-		else if (m_eCurState == UFO_KNOCKDOWNMH && m_IsCodyHold == true)
+		else if (m_eCurState == UFO_CODYHOLDING_ENTER && m_pModelCom->Is_AnimFinished(ANI_UFO_CODYHOLDING_ENTER))
 		{
-			m_eNextState = UFO_LASERRIPPEDOFF;
+			m_eNextState = UFO_CODYHOLDING;
+		}
+		else if (m_eCurState == UFO_CODYHOLDING)
+		{
+			if (m_IsMayLaserRippedOff == false)
+				m_eNextState = UFO_CODYHOLDING;
+			else
+				m_eNextState = CUTSCENE_UFO_LASERRIPPEDOFF_FLYINGSAUCER; 
 		}
 
 }
