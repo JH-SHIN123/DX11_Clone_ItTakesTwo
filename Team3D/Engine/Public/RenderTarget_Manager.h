@@ -13,7 +13,6 @@ public:
 
 public: /* Getter */
 	ID3D11ShaderResourceView* Get_ShaderResourceView(const _tchar* pRenderTargetTag);
-	ID3D11ShaderResourceView* Get_ShaderResourceView_Depth(const _tchar* pRenderTargetTag);
 	
 public:
 	HRESULT Add_RenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _tchar* pRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vClearColor, _bool isDepthBuffer = false);

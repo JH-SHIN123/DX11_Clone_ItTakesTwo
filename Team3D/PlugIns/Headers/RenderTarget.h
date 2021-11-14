@@ -13,9 +13,7 @@ private:
 public: /* Getter */
 	ID3D11RenderTargetView*		Get_RenderTargetView() const { return m_pRenderTargetView; }
 	ID3D11ShaderResourceView*	Get_ShaderResourceView() const { return m_pShaderResourceView; }
-
 	ID3D11DepthStencilView*		Get_DepthStencilView() const { return m_pDepthStencilView; }
-	ID3D11ShaderResourceView*	Get_ShaderResourceView_Depth() const { return m_pShaderResourceView_Depth; }
 
 public:
 	HRESULT NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vClearColor, _bool isDepthBuffer = false);
@@ -33,7 +31,6 @@ private:
 	_bool						m_IsDepthStencil = false;
 	ID3D11Texture2D*			m_pDepthTargetTexture = nullptr;
 	ID3D11DepthStencilView*		m_pDepthStencilView = nullptr;
-	ID3D11ShaderResourceView*	m_pShaderResourceView_Depth = nullptr;
 
 private:
 	_float4						m_vClearColor;

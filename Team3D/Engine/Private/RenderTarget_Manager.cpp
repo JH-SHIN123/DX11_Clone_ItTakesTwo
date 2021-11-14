@@ -10,14 +10,6 @@ ID3D11ShaderResourceView * CRenderTarget_Manager::Get_ShaderResourceView(const _
 	return pRenderTarget->Get_ShaderResourceView();	
 }
 
-ID3D11ShaderResourceView* CRenderTarget_Manager::Get_ShaderResourceView_Depth(const _tchar* pRenderTargetTag)
-{
-	CRenderTarget* pRenderTarget = Find_RenderTarget(pRenderTargetTag);
-	NULL_CHECK_RETURN(pRenderTarget, nullptr);
-
-	return pRenderTarget->Get_ShaderResourceView_Depth();
-}
-
 HRESULT CRenderTarget_Manager::Add_RenderTarget(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, _tchar * pRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vClearColor, _bool isDepthBuffer)
 {
 	NOT_NULL_CHECK_RETURN(Find_RenderTarget(pRenderTargetTag), E_FAIL);
@@ -77,10 +69,10 @@ HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, c
 	if (nullptr == DepthStencil)
 		pDeviceContext->OMSetRenderTargets((_uint)pMRT->size(), RenderTargets, m_pDepthStencilView);
 	else {
-		ID3D11RenderTargetView* nullRenderTargets[8] = { nullptr };
-		ID3D11ShaderResourceView* pSRV[8] = { nullptr };
-		pDeviceContext->PSSetShaderResources(0, 8, pSRV);
-		pDeviceContext->OMSetRenderTargets((_uint)pMRT->size(), nullRenderTargets, DepthStencil);
+		//ID3D11RenderTargetView* nullRenderTargets[8] = { nullptr };
+		//ID3D11ShaderResourceView* pSRV[8] = { nullptr };
+		//pDeviceContext->PSSetShaderResources(0, 8, pSRV);
+		pDeviceContext->OMSetRenderTargets((_uint)pMRT->size(), RenderTargets, DepthStencil);
 	}
 	
 	return S_OK;

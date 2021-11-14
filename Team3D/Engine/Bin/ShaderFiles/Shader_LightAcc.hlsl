@@ -12,7 +12,7 @@ SamplerComparisonState ShadowSampler = sampler_state
 	AddressU = BORDER;
 	AddressV = BORDER;
 	AddressW = BORDER;
-	BorderColor = float4(1.0f, 1.0f, 1.0f, 0.0f);
+	BorderColor = float4(0.f, 0.f, 0.f, 0.0f);
 
 	ComparisonFunc = LESS;
 };
@@ -127,20 +127,23 @@ float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSlic
 	float percentLit = 0.0f;
 	float depth = shadowPosH.z; // 그릴 객체들의 깊이값. (그림자 ndc로 이동한)
 
-	[unroll]
-	for (int offsetIndex = 0; offsetIndex < 9; ++offsetIndex)
-	{
-		// 여기서 뽑아내는값이, 캐스케이드 쉐도우맵에 기록된 깊이값.
-		percentLit += g_CascadedShadowDepthTexture.SampleCmp(ShadowSampler,
-			vShadowUV + offsets[offsetIndex], depth).r;
-	}
-	shadowFactor = percentLit / 9.f;
-
-	//if (shadowPosH.z < shadowFactor + 0.01f)
+	//[unroll]
+	//for (int offsetIndex = 0; offsetIndex < 9; ++offsetIndex)
 	//{
-	//	shadowFactor = 0.f;
+		// 여기서 뽑아내는값이, 캐스케이드 쉐도우맵에 기록된 깊이값.
+		//percentLit += g_CascadedShadowDepthTexture.SampleCmp(ShadowSampler,
+		//	vShadowUV + offsets[offsetIndex], depth).r;
 	//}
-	shadowFactor = g_CascadedShadowDepthTexture.Sample(Wrap_Sampler, vShadowUV);
+	//shadowFactor = percentLit / 9.f;
+
+	percentLit = g_CascadedShadowDepthTexture.Sample(Wrap_Sampler, vShadowUV);
+	if (percentLit < depth)
+		shadowFactor += percentLit;
+
+	if (shadowPosH.z < shadowFactor + 0.01f)
+	{
+		shadowFactor = 0.f;
+	}
 
 	return shadowFactor;
 }

@@ -60,8 +60,9 @@ HRESULT CRenderTarget::NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT 
 	{
 		D3D11_TEXTURE2D_DESC		TextureDesc_Depth;
 		TextureDesc_Depth = TextureDesc;
-		TextureDesc_Depth.Format = DXGI_FORMAT_R32_TYPELESS;
-		TextureDesc_Depth.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+		TextureDesc_Depth.Format = DXGI_FORMAT_D32_FLOAT;
+		TextureDesc_Depth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		TextureDesc_Depth.MipLevels = 0;
 
 		if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc_Depth, nullptr, &m_pDepthTargetTexture)))
 		{
@@ -69,26 +70,7 @@ HRESULT CRenderTarget::NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT 
 			return E_FAIL;
 		}
 
-		// Srv
-		ZeroMemory(&ShaderResourceViewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-		ShaderResourceViewDesc.Format = DXGI_FORMAT_R32_FLOAT;
-		ShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-		ShaderResourceViewDesc.Texture2D.MipLevels = 1;
-
-		if (FAILED(m_pDevice->CreateShaderResourceView(m_pDepthTargetTexture, &ShaderResourceViewDesc, &m_pShaderResourceView_Depth)))
-		{
-			MSG_BOX("Failed to Create ShaderResourceView - DepthStencil");
-			return E_FAIL;
-		}
-
-		// Dsv
-		D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
-		ZeroMemory(&dsvDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
-		dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
-		dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-		dsvDesc.Texture2D.MipSlice = 0;
-
-		if (FAILED(m_pDevice->CreateDepthStencilView(m_pDepthTargetTexture, &dsvDesc, &m_pDepthStencilView)))
+		if (FAILED(m_pDevice->CreateDepthStencilView(m_pDepthTargetTexture,nullptr, &m_pDepthStencilView)))
 			return E_FAIL;
 	}
 
@@ -132,7 +114,6 @@ CRenderTarget * CRenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext
 
 void CRenderTarget::Free()
 {
-	Safe_Release(m_pShaderResourceView_Depth);
 	Safe_Release(m_pDepthTargetTexture);
 	Safe_Release(m_pDepthStencilView);
 
@@ -158,10 +139,7 @@ HRESULT CRenderTarget::Ready_DebugBuffer(_float fX, _float fY, _float fSizeX, _f
 
 HRESULT CRenderTarget::Render_DebugBuffer()
 {
-	if(m_IsDepthStencil)
-		m_pVIBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pShaderResourceView_Depth);
-	else
-		m_pVIBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pShaderResourceView);
+	m_pVIBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pShaderResourceView);
 
 	m_pVIBuffer->Render(0);
 

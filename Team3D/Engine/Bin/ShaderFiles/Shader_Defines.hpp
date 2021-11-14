@@ -52,6 +52,15 @@ RasterizerState Rasterizer_NoCull
 	FillMode = Solid;
 	CullMode = None;
 };
+RasterizerState Rasterizer_Shadow
+{
+	FillMode = Solid;
+	CullMode = Back;
+	FrontCounterClockwise = false;
+	//DepthBias = 0.005;
+	//DepthBiasClamp = 0.0f;
+	//SlopeScaledDepthBias = 5;
+};
 
 /* DepthStencilState */
 DepthStencilState DepthStecil_Default
