@@ -26,7 +26,7 @@ CEffect_Generator::CEffect_Generator()
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix)
+HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix, void* pArg)
 {
 	if (Effect_Value::Effect_Value_End <= eEffect)
 		return E_FAIL;
@@ -37,6 +37,7 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	_tchar szPrototype[MAX_PATH] = L"";
 
 	XMStoreFloat4x4(&Clone_Data.WorldMatrix, WorldMatrix);
+	Clone_Data.pArg = pArg;
 
 	switch (eEffect)
 	{

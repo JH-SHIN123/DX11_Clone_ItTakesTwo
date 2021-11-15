@@ -27,7 +27,7 @@ class CEffect_Generator final : public CBase
 	DECLARE_SINGLETON(CEffect_Generator)
 
 public:
-	HRESULT Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix);
+	HRESULT Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix, void* pArg = nullptr);
 	// 맵과 같이 배치되는 상호작용 없는 환경 이펙트는 다른걸로
 
 public:

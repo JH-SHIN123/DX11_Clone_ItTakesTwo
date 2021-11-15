@@ -25,7 +25,7 @@ private: // 0 연기 1 ~ 파티클
 	_bool	m_IsDisapear = false;
 	CTextures* m_pTexturesCom_Particle = nullptr;
 	CTextures* m_pTexturesCom_Particle_Mask = nullptr;
-
+	CModel* m_pTargetModel = nullptr;
 
 public:
 	static CPlayer_DeadParticle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

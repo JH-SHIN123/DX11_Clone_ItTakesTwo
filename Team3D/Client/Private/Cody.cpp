@@ -274,6 +274,12 @@ void CCody::KeyInput(_double TimeDelta)
 	}
 #pragma endregion
 
+#pragma region Effet Test
+	if (m_pGameInstance->Key_Down(DIK_P))
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_DeadEffect, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+
+
+#pragma  endregion
 }
 
 void CCody::Move(const _double TimeDelta)

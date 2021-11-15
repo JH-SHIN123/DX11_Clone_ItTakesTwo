@@ -64,6 +64,8 @@ typedef struct tagEffect_Desc_Clone // 상황에 따라 얘는 좀 이랬으면 좋겠다 싶은 
 	_float3 vSize_Max = { 1.f,1.f,1.f };
 	_bool IsCody = false;
 	_float fCullingRadius = 10.f;
+
+	void* pArg = nullptr;
 }EFFECT_DESC_CLONE; 
 
 class CInGameEffect :	public CGameObject
