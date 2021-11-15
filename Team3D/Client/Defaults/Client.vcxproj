@@ -184,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
+    <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
@@ -192,12 +193,16 @@
     <ClInclude Include="..\Public\InGameEffect.h" />
     <ClInclude Include="..\Public\InGameEffect_Rect.h" />
     <ClInclude Include="..\public\Landing_Smoke.h" />
+    <ClInclude Include="..\Public\Cody.h" />
+    <ClInclude Include="..\public\DataBase.h" />
     <ClInclude Include="..\public\DataStorage.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
     <ClInclude Include="..\public\Loading.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\MainCamera.h" />
+    <ClInclude Include="..\Public\May.h" />
+    <ClInclude Include="..\Public\MoonBaboon.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\public\Player_DeadEffect.h" />
     <ClInclude Include="..\public\Player_DeadParticle.h" />
@@ -209,8 +214,10 @@
     <ClInclude Include="..\public\Test_EnvObject.h" />
     <ClInclude Include="..\Public\Walking_Smoke.h" />
     <ClInclude Include="..\public\TileBox.h" />
+    <ClInclude Include="..\Public\UFO.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Effect_Dash.h" />
+    <ClInclude Include="Client_Animation_Index_Define.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -222,12 +229,17 @@
     <ClCompile Include="..\Private\InGameEffect.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Rect.cpp" />
     <ClCompile Include="..\private\Landing_Smoke.cpp" />
+    <ClCompile Include="..\Private\Character.cpp" />
+    <ClCompile Include="..\Private\Cody.cpp" />
+    <ClCompile Include="..\private\DataBase.cpp" />
     <ClCompile Include="..\private\DataStorage.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\MainCamera.cpp" />
+    <ClCompile Include="..\Private\May.cpp" />
+    <ClCompile Include="..\Private\MoonBaboon.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\private\Player_DeadEffect.cpp" />
     <ClCompile Include="..\private\Player_DeadParticle.cpp" />
@@ -239,6 +251,7 @@
     <ClCompile Include="..\private\Test_EnvObject.cpp" />
     <ClCompile Include="..\Private\Walking_Smoke.cpp" />
     <ClCompile Include="..\private\TileBox.cpp" />
+    <ClCompile Include="..\Private\UFO.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Effect_Dash.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -19,7 +19,10 @@ public:
 private:
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Terrain(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Cody(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_May(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_UFO(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_MoonBaboon(const _tchar* pLayerTag);
 
 
 	HRESULT Test_Layer_Effect(const _tchar* pLayerTag);

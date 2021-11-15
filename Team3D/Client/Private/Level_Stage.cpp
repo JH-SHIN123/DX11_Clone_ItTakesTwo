@@ -15,9 +15,13 @@ HRESULT CLevel_Stage::NativeConstruct()
 {
 	CLevel::NativeConstruct();
 
+	//로딩시간 체크중
 	FAILED_CHECK_RETURN(Ready_Layer_Camera(TEXT("Layer_Camera")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Terrain(TEXT("Layer_Terrain")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_Player(TEXT("Layer_Player")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Cody(TEXT("Layer_Cody")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_May(TEXT("Layer_May")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
 
 	Test_Layer_Effect(L"Layer_Effect");
 
@@ -29,11 +33,13 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
 
-	if (m_pGameInstance->Key_Down(DIK_Q))
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
-
-	if (m_pGameInstance->Key_Down(DIK_E))
+	if (m_pGameInstance->Key_Down(DIK_1))
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 0.f, 1.f) );
+	if (m_pGameInstance->Key_Down(DIK_2))
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_3))
+		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+
 
 	CEffect_Generator::GetInstance()->LoopSpawner(dTimedelta);
 
@@ -66,24 +72,26 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.vAt								= _float3(0.f, 0.f, 0.f);
 	CameraDesc.vAxisY							= _float3(0.f, 1.f, 0.f);
 
+	// MAY 로딩하면 램 터져서 잠시 비활성화.
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SubCamera"), &CameraDesc), E_FAIL);
-
 	return S_OK;
 }
 
 HRESULT CLevel_Stage::Ready_Layer_Terrain(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Terrain")), E_FAIL);
-
 	return S_OK;
 }
 
-HRESULT CLevel_Stage::Ready_Layer_Player(const _tchar * pLayerTag)
+HRESULT CLevel_Stage::Ready_Layer_Cody(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Cody")), E_FAIL);
+	return S_OK;
+}
 
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
-
+HRESULT CLevel_Stage::Ready_Layer_May(const _tchar * pLayerTag)
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_May")), E_FAIL);
 
 	return S_OK;
 }
@@ -92,24 +100,18 @@ HRESULT CLevel_Stage::Test_Layer_Effect(const _tchar * pLayerTag)
 {
 	EFFECT_DESC_CLONE Data;
 
-	
+	return S_OK;
+}
 
-	//Data.vPos = { 5.f, 2.f, 5.f, 1.f };
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_2D_FireDoor"), &Data), E_FAIL);
+HRESULT CLevel_Stage::Ready_Layer_UFO(const _tchar * pLayerTag)
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UFO")), E_FAIL);
+	return S_OK;
+}
 
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_2D_RespawnTunnel_Smoke"), &Data), E_FAIL);
-//	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
-
-// 	Data.vPos.x += 5.f;
-// 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_2D_RespawnTunnel_Smoke"), &Data), E_FAIL);
-// 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
-// 
-// 	Data.vPos.x += 5.f;
-// 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_2D_RespawnTunnel_Smoke"), &Data), E_FAIL);
-// 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
-
-
-
+HRESULT CLevel_Stage::Ready_Layer_MoonBaboon(const _tchar * pLayerTag)
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon")), E_FAIL);
 	return S_OK;
 }
 

@@ -320,7 +320,7 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
 			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
 			//Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
 			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
-
+			
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
 			{
 				ZeroMemory(BoneMatrices, sizeof(_matrix) * 256);
@@ -404,7 +404,7 @@ void CModel::Update_AnimTransformations(_double dTimeDelta)
 	if (m_fLerpRatio > 0.f)
 	{
 		m_Anims[m_iCurAnimIndex]->Update_Transformations_Blend(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations, m_PreAnimKeyFrames, m_fLerpRatio);
-		m_fLerpRatio -= (_float)dTimeDelta * 100.f;
+		m_fLerpRatio -= (_float)dTimeDelta * 8.f;
 	}
 	else
 		m_Anims[m_iCurAnimIndex]->Update_Transformations(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations);
