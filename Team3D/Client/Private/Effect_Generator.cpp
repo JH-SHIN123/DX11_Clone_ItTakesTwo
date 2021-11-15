@@ -152,7 +152,10 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Effect_Dash", CEffect_Dash::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_DeadEffect"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_DeadEffect", CPlayer_DeadParticle::Create(pDevice, pDeviceContext, pData));
+	{
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_DeadEffect", CPlayer_DeadEffect::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_DeadParticle", CPlayer_DeadParticle::Create(pDevice, pDeviceContext, pData));
+	}
 
 	// 3D Effect
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
