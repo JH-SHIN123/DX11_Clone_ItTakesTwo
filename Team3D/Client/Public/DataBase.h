@@ -36,6 +36,6 @@ private:
 	class CGameObject* m_pUFO = nullptr;
 
 public:
-	virtual void Free();
+	virtual void Free() override;
 };
 
