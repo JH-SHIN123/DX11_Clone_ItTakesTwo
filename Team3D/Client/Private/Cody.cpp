@@ -31,7 +31,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CCharacter::NativeConstruct(pArg);
 	Ready_Component();
 
-	m_pModelCom->Set_Animation(ANI_C_Bhv_MH_Gesture_Small_Belly);
+	m_pModelCom->Set_Animation(ANI_C_MH);
 	CDataBase::GetInstance()->Set_CodyPtr(this);			
 	 
 
@@ -209,14 +209,21 @@ void CCody::KeyInput(_double TimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_LSHIFT) && m_bRoll == false)
 	{
 		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
+
+		m_pModelCom->Set_Animation(ANI_C_Roll_Start);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Roll_Stop);
+		
+		m_bAction = false;
 		m_bRoll = true;
 	}
 #pragma endregion
 
 #pragma region Keyboard_Space_Button
-	if (m_pGameInstance->Key_Down(DIK_SPACE))
+	if (m_pGameInstance->Key_Down(DIK_SPACE) && m_iJumpCount < 2)
 	{
 		m_bShortJump = true;
+		m_iJumpCount += 1;
 	}
 
 	
@@ -267,13 +274,14 @@ void CCody::Move(const _double TimeDelta)
 	{
 		if (m_bMove && m_pTransformCom)
 		{
+			m_bAction = false;
+
 			_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 			vDirection = XMVectorSetY(vDirection, 0.f);
 			vDirection = XMVector3Normalize(vDirection);
 
 			m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
 
-			m_bMove = false;
 
 			PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 
@@ -284,19 +292,27 @@ void CCody::Move(const _double TimeDelta)
 
 			m_pActorCom->Move(vDirection / m_fJogAcceleration, TimeDelta);
 
-			if (m_bShortJump == false)
+			if (m_bRoll == false && m_IsJumping == false)
 			{
 				// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
 				if (m_pModelCom->Is_AnimFinished(ANI_C_Jog_Start_Fwd) == true) // JogStart -> Jog
 					m_pModelCom->Set_Animation(ANI_C_Jog);
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Jog) == true) // Jog -> Jog // 보간속도 Up
 					m_pModelCom->Set_Animation(ANI_C_Jog);
-				else											// Idle To Jog Start. -> Jog 예약
+				else if(m_pModelCom->Get_CurAnimIndex() == ANI_C_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_MH_Gesture_Small_Drumming || m_pModelCom->Get_CurAnimIndex() == ANI_C_ActionMH)	// Idle To Jog Start. -> Jog 예약
 				{
 					m_pModelCom->Set_Animation(ANI_C_Jog_Start_Fwd);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 				}
+				else if (m_pModelCom->Is_AnimFinished(ANI_C_Roll_Start)) // 구르고 나서 바로 움직이면 Roll to Jog
+				{
+					m_bRoll = false;
+					m_pModelCom->Set_Animation(ANI_C_Roll_To_Jog);
+					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
+					return;
+				}
 			}
+			m_bMove = false;
 		}
 		else
 		{
@@ -315,12 +331,32 @@ void CCody::Move(const _double TimeDelta)
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH) // IDLE 상태라면
 				{
+
 					m_fIdleTime += (_float)TimeDelta;
-					if (m_fIdleTime > 5.f && m_pModelCom->Is_AnimFinished(ANI_C_MH)) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
+					if (m_bAction == false)
 					{
-						m_pModelCom->Set_Animation(ANI_C_Bhv_MH_Gesture_Small_Drumming); // 배 두들기는 애니메이션 재생
-						m_fIdleTime = 0.f;
+						if (m_fIdleTime > 5.f && m_pModelCom->Is_AnimFinished(ANI_C_MH)) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
+						{
+							m_pModelCom->Set_Animation(ANI_C_Bhv_MH_Gesture_Small_Drumming); // 배 두들기는 애니메이션 재생
+							m_fIdleTime = 0.f;
+						}
 					}
+					else if (m_bAction == true)
+					{
+						m_pModelCom->Set_Animation(ANI_C_Idle_To_Action);
+						m_pModelCom->Set_NextAnimIndex(ANI_C_ActionMH);
+					}
+				}
+				else if (m_pModelCom->Is_AnimFinished(ANI_C_Idle_To_Action) == true && m_bAction == true)
+				{
+					m_pModelCom->Set_Animation(ANI_C_ActionMH);
+					m_pModelCom->Set_NextAnimIndex(ANI_C_ActionMH_To_Idle);
+				}
+				else if (m_pModelCom->Is_AnimFinished(ANI_C_ActionMH) == true && m_bAction == true)
+				{
+					m_pModelCom->Set_Animation(ANI_C_ActionMH_To_Idle);
+					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+					m_bAction = false;
 				}
 			}
 		}
@@ -337,22 +373,21 @@ void CCody::Roll(const _double TimeDelta)
 {
 	if (m_bRoll && m_pTransformCom)
 	{
+		if (m_fAcceleration <= 0.2)
+		{
+			m_fAcceleration = 5.0;
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_bRoll = false;
+			m_bAction = true;
+		}
+
 		m_fAcceleration -= TimeDelta * 10.0;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 		vDirection = XMVectorSetY(vDirection, 0.f);
 		vDirection = XMVector3Normalize(vDirection);
 
 		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta * m_fAcceleration);
-
-		if (m_pModelCom->Get_CurAnimIndex() != ANI_C_Roll_Start && m_pModelCom->Get_CurAnimIndex() != ANI_C_Roll_Stop)
-		{
-			m_pModelCom->Set_Animation(ANI_C_Roll_Start);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Roll_Stop);
-		}
-		else if (m_pModelCom->Is_AnimFinished(ANI_C_Roll_Stop))
-		{
-			m_bRoll = false;
-		}
+		m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), TimeDelta);
 	}
 	
 	
@@ -364,13 +399,32 @@ void CCody::Jump(const _double TimeDelta)
 {
 	if (m_bShortJump == true)
 	{
-		m_pActorCom->Jump_Start(2.2f);
-		m_pModelCom->Set_Animation(ANI_C_Jump_Start);
-		m_bShortJump = false;
+		if (m_iJumpCount == 1)
+		{
+			m_IsJumping = true;
+			m_pActorCom->Jump_Start(2.4f);
+			m_pModelCom->Set_Animation(ANI_C_Jump_Land_Still_Jump);
+			m_bShortJump = false;
+		}
+		if (m_iJumpCount == 2)
+		{
+			m_IsJumping = true;
+			//m_pActorCom->Jump_Higher(1.4f);
+			//m_pActorCom->Set_Gravity(0.f);
+			m_pActorCom->Jump_Start(2.4f);
+			m_pModelCom->Set_Animation(ANI_C_DoubleJump);
+			m_bShortJump = false;
+		}
 	}
-	if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jump_Start && m_pActorCom->Get_IsJump() == false)
+	if (m_IsJumping == true && m_pActorCom->Get_IsJump() == false)
 	{
-		m_pModelCom->Set_Animation(ANI_C_Jump_Land);
+		if (m_pGameInstance->Key_Pressing(DIK_W) || m_pGameInstance->Key_Pressing(DIK_A) || m_pGameInstance->Key_Pressing(DIK_S) || m_pGameInstance->Key_Pressing(DIK_D))
+			m_pModelCom->Set_Animation(ANI_C_Jump_Land_Jog);
+		else
+			m_pModelCom->Set_Animation(ANI_C_Jump_Land);
+
+		m_IsJumping = false;
+		m_iJumpCount = 0;
 	}
 }
 void CCody::Change_Size(const _double TimeDelta)

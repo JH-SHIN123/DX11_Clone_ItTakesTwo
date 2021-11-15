@@ -284,6 +284,12 @@ private:
 
 	// 상호작용에 의한 움직임.
 
+	// 구르기 관련
+	_bool m_bAction = false;
+
+	// 점프 중이니
+	_bool m_IsJumping = false;
+
 
 	// 뭔가 들고있다면
 	_bool m_IsPickUp = false;
