@@ -37,7 +37,7 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Font"));
 	m_pVIBuffer_FontCom = (CVIBuffer_FontInstance*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"));
 	
-	m_FontDesc = new VTXFONT[50];
+	m_VTXFONT = new VTXFONT[50];
 
 	return S_OK;
 }
@@ -187,13 +187,12 @@ HRESULT CUI_Generator::Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 	return S_OK;
 }
 
-HRESULT CUI_Generator::Render_Font(_tchar * pText, _float2 vPos, _float2 vScale)
+HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
 
 	_ulong iX, iY, iTextureWidth, iTextureHeigth, iFontWidth, iFontHeigth;
-	_float fValue = 0.f;
   	_int TextLen = lstrlen(pText);
 
 	for (_int i = 0; i < TextLen; ++i)
@@ -217,12 +216,11 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, _float2 vPos, _float2 vScale)
 		//_float2 vRightTop = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
 		//_float2 vLeftBottom = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
 
-		// vScale.x / 2.f 뷰포트 나누기
-		vPos.x = (vPos.x + (_float)i * iFontWidth) + vScale.x / 2.f;
+		_float fPositionX = (tFontDesc.vPosition.x + (_float)i * iFontWidth) + ((_float)i * tFontDesc.fInterval);
 
-		m_FontDesc[i].vPosition = _float3(vPos.x, vPos.y, 0.f);
-		m_FontDesc[i].vScale = _float2(vScale.x, vScale.y);
-		m_FontDesc[i].vTexUV = _float4(vLeftTop.x, vLeftTop.y, vRightBottom.x, vRightBottom.y);
+		m_VTXFONT[i].vPosition = _float3(fPositionX, tFontDesc.vPosition.y, 0.f);
+		m_VTXFONT[i].vScale = _float2(tFontDesc.vScale.x, tFontDesc.vScale.y);
+		m_VTXFONT[i].vTexUV = _float4(vLeftTop.x, vLeftTop.y, vRightBottom.x, vRightBottom.y);
 
 		_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubProjMatrix;
 
@@ -234,7 +232,6 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, _float2 vPos, _float2 vScale)
 
 		if (0.f < Viewport.Width)
 			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
-
 
 		Viewport = pGameInstance->Get_ViewportInfo(2);
 		_float2 vSubViewPort = { Viewport.Width, Viewport.Height };
@@ -254,7 +251,7 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, _float2 vPos, _float2 vScale)
 		m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	}
 	
-	m_pVIBuffer_FontCom->Render(0, m_FontDesc, TextLen);
+	m_pVIBuffer_FontCom->Render(0, m_VTXFONT, TextLen);
 
 	return S_OK;
 }
@@ -471,5 +468,5 @@ void CUI_Generator::Free()
 	Safe_Release(m_pTexturesCom);
 	Safe_Release(m_pVIBuffer_FontCom);
 
-	Safe_Delete_Array(m_FontDesc);
+	Safe_Delete_Array(m_VTXFONT);
 }

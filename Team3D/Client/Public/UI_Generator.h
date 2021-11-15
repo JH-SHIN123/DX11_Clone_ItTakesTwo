@@ -17,8 +17,9 @@ class CUI_Generator final : public CBase
 public:
 	typedef struct tagFontDesc
 	{
-		_float3 vPosition;
-		_float2 vTexUV;
+		_float2 vPosition;
+		_float2 vScale;
+		_float  fInterval;
 	}FONTDESC;
 
 private:
@@ -32,14 +33,15 @@ public:
 	HRESULT Load_Data(const _tchar* pFilePath);
 	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	HRESULT Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
-	HRESULT Render_Font(_tchar* pText, _float2 vPos, _float2 vScale);
+	HRESULT Render_Font(_tchar* pText, FONTDESC tFontDesc);
 
 public:
 	void Set_TriggerOn();
 
 private:
 	_bool							m_IsTrigger = true;
-	VTXFONT*						m_FontDesc;
+	VTXFONT*						m_VTXFONT;
+	FONTDESC						m_FontDesc;
 
 private:
 	vector<CUIObject::UI_DESC*>		m_vecPSData;

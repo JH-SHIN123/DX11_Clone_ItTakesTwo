@@ -63,7 +63,7 @@ void  GS_MAIN(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT
 	// 어쩌피 뷰 매트릭스는 항등
 	matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
 
-	float2		vSize = float2(In[0].vScale.x / g_MainViewPort.x, In[0].vScale.y / g_MainViewPort.y);
+	float2	vSize = float2(In[0].vScale.x / g_MainViewPort.x, In[0].vScale.y / g_MainViewPort.y);
 	
 	/* 좌상 */
 	Out[0].vPosition = mul(In[0].vPosition, matVP);
