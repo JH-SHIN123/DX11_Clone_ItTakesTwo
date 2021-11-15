@@ -115,7 +115,6 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
 	if (nullptr == lightDesc) return E_FAIL;
 	_vector vDirectionalLightDir = XMLoadFloat3(&lightDesc->vDirection);
 
-
 	CFrustum* pFrustum = CFrustum::GetInstance();
 	if (nullptr == pFrustum) return E_FAIL;
 
@@ -126,8 +125,8 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
 	ZeroMemory(cascadeFrustumCornersW, sizeof(_vector) * 8);
 
 	//// Get Frustum Transform Offset
-	CPipeline* pPipeLine = CPipeline::GetInstance();
-	if (nullptr == pPipeLine) return E_FAIL;
+	//CPipeline* pPipeLine = CPipeline::GetInstance();
+	//if (nullptr == pPipeLine) return E_FAIL;
 
 	//_matrix CamWorldMat = XMMatrixIdentity();
 

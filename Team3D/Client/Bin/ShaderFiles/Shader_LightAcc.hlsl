@@ -6,17 +6,6 @@ texture2D	g_NormalTexture;
 texture2D	g_DepthTexture;
 texture2D	g_CascadedShadowDepthTexture;
 
-SamplerComparisonState ShadowSampler = sampler_state
-{
-	Filter = COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
-	AddressU = BORDER;
-	AddressV = BORDER;
-	AddressW = BORDER;
-	BorderColor = float4(0.f, 0.f, 0.f, 0.0f);
-
-	ComparisonFunc = LESS;
-};
-
 cbuffer CascadedShadowDesc
 {
 	float	g_CascadeEnds[MAX_CASCADES + 1];
@@ -78,12 +67,14 @@ int Get_CascadedShadowSliceIndex(vector vWorldPos, int iViewportIndex)
 	int iIndex = -1;
 	for (uint i = 0; i < MAX_CASCADES; ++i)
 	{
-		if (0 == iViewportIndex) shadowPosNDC = mul(vWorldPos, g_ShadowTransforms_Main[i]);
-		else shadowPosNDC = mul(vWorldPos, g_ShadowTransforms_Sub[i]);
+		// TEST Main만 띄워보자.
+		//if (0 == iViewportIndex) shadowPosNDC = mul(vWorldPos, g_ShadowTransforms_Main[i]);
+		//else shadowPosNDC = mul(vWorldPos, g_ShadowTransforms_Sub[i]);
+		shadowPosNDC = mul(vWorldPos, g_ShadowTransforms_Main[i]);
 		shadowPosNDC.z /= shadowPosNDC.w;
 
 		// 2. 절두체에 위치하는지 & 몇번째 슬라이스에 존재하는지 체크(cascadeEndWorld값과 비교해가며 슬라이스 인덱스 구하기)
-		if (shadowPosNDC.x >= 0.0 && shadowPosNDC.x <= 1.0 && shadowPosNDC.y >= 0.0 && shadowPosNDC.y <= 1.0 && shadowPosNDC.z >= 0.0 && shadowPosNDC.z <= 1.0)
+		if (shadowPosNDC.x >= 0 && shadowPosNDC.x <= 1.0 && shadowPosNDC.y >= 0.0 && shadowPosNDC.y <= 1.0 && shadowPosNDC.z >= 0.0 && shadowPosNDC.z <= 1.0)
 		{
 			// 여기서 문제 발생 (Aspect 변경시)
 			if (-shadowPosNDC.z <= g_CascadeEnds[i + 1])
@@ -97,11 +88,12 @@ int Get_CascadedShadowSliceIndex(vector vWorldPos, int iViewportIndex)
 	return iIndex;
 }
 
-float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSliceIndex, int iViewportIndex)
+float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSliceIndex)
 {
 	vector shadowPosH = mul(vWorldPos, shadowTransformMatrix);
 	shadowPosH.xyz /= shadowPosH.w;
 
+	// Match up Deferred With Cascaded Shadow Depth
 	float2 vShadowUV = shadowPosH.xy;
 	vShadowUV.y = (vShadowUV.y + float(iSliceIndex)) / float(MAX_CASCADES);
 
@@ -111,7 +103,7 @@ float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSlic
 
 	percentLit = g_CascadedShadowDepthTexture.Sample(Wrap_Sampler, vShadowUV).r;
 	if (percentLit < depth)
-		shadowFactor += percentLit;
+		shadowFactor = percentLit;
 
 	if (shadowPosH.z < shadowFactor + 0.01f)
 	{
@@ -188,14 +180,16 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		/* Carculate Shadow */
 		int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 0);
 		if (iIndex < 0) return Out;
-		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Main[iIndex], iIndex, 0);
+		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Main[iIndex], iIndex);
 
-		if (0 == iIndex)
-			Out.vShadow.x = 1.f;
-		else if(1 == iIndex)
-			Out.vShadow.y = 1.f;
-		else if (2 == iIndex)
-			Out.vShadow.z = 1.f;
+		//if (0 == iIndex)
+		//	Out.vShadow.x = 1.f;
+		//else if(1 == iIndex)
+		//	Out.vShadow.y = 1.f;
+		//else if (2 == iIndex)
+		//	Out.vShadow.z = 1.f;
+
+		Out.vShadow = 1.f - fShadowfactor;
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
 		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
@@ -206,10 +200,11 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		vWorldPos	= mul(vWorldPos, g_SubViewMatrixInverse);
 		vLook		= normalize(vWorldPos - g_vSubCamPosition);
 
-		/* Carculate Shadow */
-		int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 1);
-		if (iIndex < 0) return Out;
-		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Sub[iIndex], iIndex, 1);
+		///* Carculate Shadow */
+		//int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 1);
+		//if (iIndex < 0) return Out;
+		//fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Sub[iIndex], iIndex, 1);
+		fShadowfactor = 1.f;
 	}
 	else
 		discard;
