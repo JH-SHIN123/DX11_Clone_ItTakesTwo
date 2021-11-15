@@ -304,17 +304,17 @@ void CCody::Move(const _double TimeDelta)
 				if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog) // jog 였다면
 				{
 					m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd); // jog to stop 으로 바꿔
-					m_pModelCom->Set_NextAnimIndex(ANI_C_MH - 1); // jog to stop 끝나면 idle 예약.
+					m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // jog to stop 끝나면 idle 예약.
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Start_Fwd) // JogStart 였다면
 				{
 					m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd); // jog to stop 으로 바꿔
-					m_pModelCom->Set_NextAnimIndex(ANI_C_MH - 1);
+					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 				}
-				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH - 1) // IDLE 상태라면
+				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH) // IDLE 상태라면
 				{
 					m_fIdleTime += (_float)TimeDelta;
-					if (m_fIdleTime > 5.f && m_pModelCom->Is_AnimFinished(ANI_C_MH - 1)) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
+					if (m_fIdleTime > 5.f && m_pModelCom->Is_AnimFinished(ANI_C_MH)) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
 					{
 						m_pModelCom->Set_Animation(ANI_C_Bhv_MH_Gesture_Small_Drumming); // 배 두들기는 애니메이션 재생
 						m_fIdleTime = 0.f;
@@ -333,11 +333,6 @@ void CCody::Move(const _double TimeDelta)
 }
 void CCody::Roll(const _double TimeDelta)
 {
-	if (m_fAcceleration <= 0.0)
-	{
-		m_fAcceleration = 5.0;
-		m_bRoll = false;
-	}
 	if (m_bRoll && m_pTransformCom)
 	{
 		m_fAcceleration -= TimeDelta * 10.0;
@@ -346,7 +341,18 @@ void CCody::Roll(const _double TimeDelta)
 		vDirection = XMVector3Normalize(vDirection);
 
 		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta * m_fAcceleration);
+
+		if (m_pModelCom->Get_CurAnimIndex() != ANI_C_Roll_Start && m_pModelCom->Get_CurAnimIndex() != ANI_C_Roll_Stop)
+		{
+			m_pModelCom->Set_Animation(ANI_C_Roll_Start);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Roll_Stop);
+		}
+		else if (m_pModelCom->Is_AnimFinished(ANI_C_Roll_Stop))
+		{
+			m_bRoll = false;
+		}
 	}
+	
 	
 }
 void CCody::Sprint(const _double TimeDelta)
@@ -357,12 +363,12 @@ void CCody::Jump(const _double TimeDelta)
 	if (m_bShortJump == true)
 	{
 		m_pActorCom->Jump_Start(2.2f);
-		m_pModelCom->Set_Animation(ANI_C_Jump_Start + 1);
+		m_pModelCom->Set_Animation(ANI_C_Jump_Start);
 		m_bShortJump = false;
 	}
-	if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jump_Start + 1 && m_pActorCom->Get_IsJump() == false)
+	if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jump_Start && m_pActorCom->Get_IsJump() == false)
 	{
-		m_pModelCom->Set_Animation(ANI_C_Jump_Land + 2);
+		m_pModelCom->Set_Animation(ANI_C_Jump_Land);
 	}
 }
 void CCody::Change_Size(const _double TimeDelta)
