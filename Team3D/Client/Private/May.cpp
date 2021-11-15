@@ -423,6 +423,7 @@ void CMay::Roll(const _double TimeDelta)
 }
 void CMay::Sprint(const _double TimeDelta)
 {
+	// 내려찍기 전까지 커밋!
 	if (m_bSprint == true && m_bMove == true)
 	{
 		m_bAction = false;
