@@ -249,6 +249,7 @@ public:
 	void Sprint(const _double TimeDelta);
 	void Jump(const _double TimeDelta);
 	void Change_Size(const _double TimeDelta);
+	void Ground_Pound(const _double TimeDelta);
 
 
 private:
@@ -258,33 +259,10 @@ private:
 
 
 	// 기본 움직임
-	_bool m_bFalling = false;
-	_bool m_bWalk = false;
-	_bool m_bJog = false;
-	_bool m_bDash = false;
 	_bool m_bSprint = false;
-	_bool m_bOneJumping = false;
-	_bool m_bTwoJumping = false;
-	_bool m_bClimb = false;
-	_bool m_bLedgeGrab = false;
-	_bool m_bOnGrind = false;
 	_bool m_bRoll = false;
-
-	_float3 m_vMoveDirection = {};
-	_bool	m_bMove = false;
-	_bool	m_bShortJump = false;
-	_bool	m_bLongJump = false;
-
-	// 움직임 가속
-	_float m_fAcceleration = 5.0;
-	_float	m_fJogAcceleration = 25.f;
-
-	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
-	_float	m_fIdleTime = 0.f;
-
-
-	// 상호작용에 의한 움직임.
-
+	_bool m_bMove = false;
+	_bool m_bShortJump = false;
 	// 구르기 관련
 	_bool m_bAction = false;
 
@@ -292,6 +270,17 @@ private:
 	_bool m_IsJumping = false;
 	_bool m_IsAirDash = false;
 
+	_float3 m_vMoveDirection = {};
+
+	// 움직임 가속
+	_float m_fAcceleration = 5.0;
+	_float	m_fJogAcceleration = 25.f;
+	_float m_fSprintAcceleration = 35.f;
+
+	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
+	_float	m_fIdleTime = 0.f;
+
+	// 상호작용에 의한 움직임.
 
 	// 뭔가 들고있다면
 	_bool m_IsPickUp = false;
@@ -304,8 +293,6 @@ private:
 	_bool m_IsSizeChanging = false;
 
 	// 점프관련 변수
-	_bool m_bJumpAnimationOnce = false;
-	_bool m_bDoubleJump = false;
 	_uint m_iJumpCount = 0;
 
 
@@ -318,8 +305,6 @@ private:
 	_bool m_IsTriggerPlaying = false;
 
 	
-	// Sprint
-	_float m_fSprintAcceleration = 35.f;
 
 
 };
