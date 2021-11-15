@@ -189,77 +189,70 @@ HRESULT CUI_Generator::Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 
 HRESULT CUI_Generator::Render_Font(_tchar * pText, _float2 vPos, _float2 vScale)
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
 	_ulong iX, iY, iTextureWidth, iTextureHeigth, iFontWidth, iFontHeigth;
 	_float fValue = 0.f;
   	_int TextLen = lstrlen(pText);
 
-	for (_int i = 0; i < 50; ++i)
+	for (_int i = 0; i < TextLen; ++i)
 	{
-		if (i < TextLen)
+		_ulong iNumChar = pText[i];
+
+		/* 한글 */
+		if (44032 <= iNumChar)
 		{
-			_ulong iNumChar = pText[i];
-
-			/* 한글 */
-			if (44032 <= iNumChar)
-			{
-				iNumChar -= 44032;
-				iX = iNumChar % 132;
-				iY = iNumChar / 132;
-				iTextureWidth = 4096;
-				iTextureHeigth = 4096;
-				iFontWidth = 31;
-				iFontHeigth = 46;
-
-				vPos.x = (vPos.x + (_float)i * iFontWidth) / 2.f;
-			}
-
-			// 테스트용
-			_float2 vLeftTop = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
-			_float2 vRightTop = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
-			_float2 vRightBottom = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
-			_float2 vLeftBottom = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
-
-			m_FontDesc[i].vPosition = _float3(vPos.x, vPos.y, 0.f);
-			m_FontDesc[i].vTexUV = _float4(vLeftTop.x, vLeftTop.y, vRightBottom.x, vRightBottom.y);
-
- 			CGameInstance* pGameInstance = CGameInstance::GetInstance();
-			NULL_CHECK_RETURN(pGameInstance, E_FAIL);
-			D3D11_VIEWPORT Viewport = pGameInstance->Get_ViewportInfo(1);
-
-			_vector dd = CPipeline::GetInstance()->Get_MainCamPosition();
-
-			_matrix ViewMatrix, ProjMatrix, WorldMatrix, SubProjMatrix;
-
-			WorldMatrix = XMMatrixIdentity();
-			WorldMatrix.r[0].m128_f32[0] = vScale.x;
-			WorldMatrix.r[1].m128_f32[1] = vScale.y;
-			WorldMatrix.r[3].m128_f32[0] = vPos.x;
-			WorldMatrix.r[3].m128_f32[1] = vPos.y;
-
-			ViewMatrix = XMMatrixIdentity();
-			
-			if (0.f < Viewport.Width)
-				ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
-
-			Viewport = pGameInstance->Get_ViewportInfo(2);
-
-			//if (0.1f <= Viewport.Width)
-			//	SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
-			m_pVIBuffer_FontCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
-			m_pVIBuffer_FontCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-			m_pVIBuffer_FontCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
-			//m_pVIBuffer_FontCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-			//m_pVIBuffer_FontCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
-
-			m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+			iNumChar -= 44032;
+			iX = iNumChar % 132;
+			iY = iNumChar / 132;
+			iTextureWidth = 4096;
+			iTextureHeigth = 4096;
+			iFontWidth = 31;
+			iFontHeigth = 46;
 		}
-		else
-		{
-			m_FontDesc[i].vPosition = _float3(0.f, 0.f, 0.f);
-			m_FontDesc[i].vTexUV = _float4(0.f, 0.f, 0.f, 0.f);
-		}
+
+		_float2 vLeftTop = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
+		_float2 vRightBottom = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
+		//_float2 vRightTop = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
+		//_float2 vLeftBottom = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
+
+		// vScale.x / 2.f 뷰포트 나누기
+		vPos.x = (vPos.x + (_float)i * iFontWidth) + vScale.x / 2.f;
+
+		m_FontDesc[i].vPosition = _float3(vPos.x, vPos.y, 0.f);
+		m_FontDesc[i].vScale = _float2(vScale.x, vScale.y);
+		m_FontDesc[i].vTexUV = _float4(vLeftTop.x, vLeftTop.y, vRightBottom.x, vRightBottom.y);
+
+		_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubProjMatrix;
+
+		WorldMatrix = XMMatrixIdentity();
+		ViewMatrix = XMMatrixIdentity();
+	
+		D3D11_VIEWPORT Viewport = pGameInstance->Get_ViewportInfo(1);
+		_float2 vMainViewPort = { Viewport.Width, Viewport.Height };
+
+		if (0.f < Viewport.Width)
+			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+
+
+		Viewport = pGameInstance->Get_ViewportInfo(2);
+		_float2 vSubViewPort = { Viewport.Width, Viewport.Height };
+
+		if (0.f < Viewport.Width)
+			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+
+		m_pVIBuffer_FontCom->Set_Variable("g_MainViewPort", &vMainViewPort, sizeof(_float2));
+		m_pVIBuffer_FontCom->Set_Variable("g_SubViewPort", &vSubViewPort, sizeof(_float2));
+
+		m_pVIBuffer_FontCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+		m_pVIBuffer_FontCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+		m_pVIBuffer_FontCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
+		m_pVIBuffer_FontCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+		m_pVIBuffer_FontCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
+
+		m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	}
-	m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	
 	m_pVIBuffer_FontCom->Render(0, m_FontDesc, TextLen);
 
@@ -429,7 +422,7 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Arrowkeys_Fill"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/Arrowkeys_Fill.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("StickIcon"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/StickIcon.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("LoadingBook"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Loading/HakimSpinner.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Font"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_DDS, TEXT("../Bin/Resources/Font/Font.dds"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Font"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_DDS, TEXT("../Bin/Resources/Texture/UI/Font/Font.dds"))), E_FAIL);
 
 	return S_OK;
 }

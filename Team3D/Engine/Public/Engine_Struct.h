@@ -52,6 +52,7 @@ namespace Engine
 	typedef struct tagVertexFont
 	{
 		XMFLOAT3	vPosition;
+		XMFLOAT2	vScale;
 		XMFLOAT4	vTexUV;
 	}VTXFONT;
 
@@ -95,9 +96,7 @@ namespace Engine
 	typedef struct tagVertexPointPos
 	{
 		XMFLOAT3	vPosition;
-		XMFLOAT2	vSize;
 	}VTXPOINTPOS;
-
 
 	typedef struct tagMaterial
 	{

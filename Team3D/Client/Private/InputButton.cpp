@@ -86,7 +86,7 @@ HRESULT CInputButton::Set_UIVariables_Perspective()
 		SubProjMatrix = XMMatrixIdentity();
 
 		// 뷰포트 하나로 합쳐질 때 Width가 0.f가 되버리면 직교할 때 0.f / 0.f 나누기 연산이 일어나서 XMSclarNearEqul 오류 발생 그거 임시방편 예외처리 입니다.
-		if (0.1f <= Viewport.Width)
+		if (0.f < Viewport.Width)
 			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
 		m_pVIBuffer_RectCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
@@ -101,7 +101,7 @@ HRESULT CInputButton::Set_UIVariables_Perspective()
 
 		ProjMatrix = XMMatrixIdentity();
 
-		if (0.1f <= Viewport.Width)
+		if (0.f < Viewport.Width)
 			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
 		m_pVIBuffer_RectCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));

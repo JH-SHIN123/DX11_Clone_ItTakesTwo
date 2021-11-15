@@ -40,7 +40,6 @@ public:
 private:
 	_bool							m_IsTrigger = true;
 	VTXFONT*						m_FontDesc;
-	vector<VTXFONT>				m_vecFontDesc;
 
 private:
 	vector<CUIObject::UI_DESC*>		m_vecPSData;
