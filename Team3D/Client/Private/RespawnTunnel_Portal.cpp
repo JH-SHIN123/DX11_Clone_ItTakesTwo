@@ -1,13 +1,14 @@
 #include "stdafx.h"
 #include "..\Public\RespawnTunnel_Portal.h"
+#include "GameInstance.h"
 
 CRespawnTunnel_Portal::CRespawnTunnel_Portal(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
-	: CInGameEffect(pDevice, pDeviceContext)
+	: CInGameEffect_Model(pDevice, pDeviceContext)
 {
 }
 
 CRespawnTunnel_Portal::CRespawnTunnel_Portal(const CRespawnTunnel_Portal & rhs)
-	: CInGameEffect(rhs)
+	: CInGameEffect_Model(rhs)
 {
 }
 
@@ -20,8 +21,7 @@ HRESULT CRespawnTunnel_Portal::NativeConstruct_Prototype(void * pArg)
 
 HRESULT CRespawnTunnel_Portal::NativeConstruct(void * pArg)
 {
-	__super::Ready_Component(pArg);
-	Ready_Instance();
+	__super::NativeConstruct(pArg);
 
 	return S_OK;
 }
@@ -33,12 +33,21 @@ _int CRespawnTunnel_Portal::Tick(_double TimeDelta)
 
 _int CRespawnTunnel_Portal::Late_Tick(_double TimeDelta)
 {
-	return _int();
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_ALPHA, this);
 }
 
 HRESULT CRespawnTunnel_Portal::Render()
 {
+	NULL_CHECK_RETURN(m_pModelInstanceCom, E_FAIL);
+
+	m_pModelInstanceCom->Set_DefaultVariables_Perspective();
+	m_pModelInstanceCom->Render_Model(0);
+
 	return S_OK;
+}
+
+void CRespawnTunnel_Portal::SetUp_WorldMatrix(_fmatrix WorldMatrix)
+{
 }
 
 HRESULT CRespawnTunnel_Portal::Ready_Instance()

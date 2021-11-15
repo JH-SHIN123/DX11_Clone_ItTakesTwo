@@ -2,10 +2,10 @@
 
 #ifndef __RESPAWNTUNNEL_PORTAL_H__
 
-#include "InGameEffect.h"
+#include "InGameEffect_Model.h"
 
 BEGIN(Client)
-class CRespawnTunnel_Portal final : public CInGameEffect
+class CRespawnTunnel_Portal final : public CInGameEffect_Model
 {
 private:
 	explicit CRespawnTunnel_Portal(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -18,6 +18,8 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
+	virtual void SetUp_WorldMatrix(_fmatrix WorldMatrix) override;
+
 
 public:
 	HRESULT Ready_Instance();

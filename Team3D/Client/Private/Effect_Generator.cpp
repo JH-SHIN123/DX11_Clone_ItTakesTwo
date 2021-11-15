@@ -14,7 +14,7 @@
 #include "Player_DeadEffect.h"
 #include "Player_DeadParticle.h"
 #include "Effect_Cody_Size_ML.h"
-#include "RespawnTunnel_Portal.h";
+#include "RespawnTunnel_Portal.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)

@@ -19,7 +19,7 @@ HRESULT CRespawnTunnel_Smoke::NativeConstruct_Prototype(void * pArg)
 	return S_OK;
 }
 
-HRESULT CRespawnTunnel_Smoke::NativeConstruct(void * pArg)
+HRESULT CRespawnTunnel_Smoke::NativeConstruct(void * pArg) 
 {
 	__super::NativeConstruct(pArg);
 

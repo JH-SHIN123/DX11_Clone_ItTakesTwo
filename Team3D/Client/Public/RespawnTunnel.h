@@ -3,7 +3,7 @@
 #ifndef __RESPAWNTUNNEL_H__
 
 #include "Client_Defines.h"
-#include "InGameEffect.h"
+#include "InGameEffect_Model.h"
 
 // BEGIN(Engine)
 // class CVIBuffer_PointInstance_Custom;
@@ -14,7 +14,7 @@
 // END
 
 BEGIN(Client)
-class CRespawnTunnel final : public CInGameEffect
+class CRespawnTunnel final : public CInGameEffect_Model
 {
 private:
 	explicit CRespawnTunnel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -27,6 +27,7 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
+	virtual void SetUp_WorldMatrix(_fmatrix WorldMatrix) override;
 
 public:
 	static CRespawnTunnel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

@@ -100,6 +100,14 @@ HRESULT CLevel_Stage::Test_Layer_Effect(const _tchar * pLayerTag)
 {
 	EFFECT_DESC_CLONE Data;
 
+	_matrix WorldMatrix = XMMatrixIdentity();
+	WorldMatrix.r[3] = { 5.f,2.f,5.f,1.f };
+	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
+
+
+
 	return S_OK;
 }
 

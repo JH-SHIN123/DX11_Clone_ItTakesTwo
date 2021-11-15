@@ -249,9 +249,6 @@
     <ClInclude Include="..\Public\TestEffect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\InGameEffect.h">
-      <Filter>02.GameObject\05.Effect/Particle</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Landing_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\01.Landing_Smoke</Filter>
     </ClInclude>
@@ -260,9 +257,6 @@
     </ClInclude>
     <ClInclude Include="Effect_Dash.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\InGameEffect_Rect.h">
-      <Filter>02.GameObject\05.Effect/Particle</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Player_DeadEffect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect</Filter>
@@ -290,6 +284,15 @@
     </ClInclude>
     <ClInclude Include="..\public\RespawnTunnel_Portal.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\01.RespawnTunnel_Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InGameEffect.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InGameEffect_Rect.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Rect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\InGameEffect_Model.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -356,9 +359,6 @@
     <ClCompile Include="..\Private\TestEffect.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\InGameEffect.cpp">
-      <Filter>02.GameObject\05.Effect/Particle</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Landing_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\01.Landing_Smoke</Filter>
     </ClCompile>
@@ -367,9 +367,6 @@
     </ClCompile>
     <ClCompile Include="Effect_Dash.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\InGameEffect_Rect.cpp">
-      <Filter>02.GameObject\05.Effect/Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Player_DeadEffect.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect</Filter>
@@ -394,6 +391,15 @@
     </ClCompile>
     <ClCompile Include="..\private\RespawnTunnel_Portal.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\01.RespawnTunnel_Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InGameEffect.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InGameEffect_Rect.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Rect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\InGameEffect_Model.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

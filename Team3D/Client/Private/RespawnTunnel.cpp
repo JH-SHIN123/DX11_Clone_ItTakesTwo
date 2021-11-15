@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CRespawnTunnel::CRespawnTunnel(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
-	: CInGameEffect(pDevice, pDeviceContext)
+	: CInGameEffect_Model(pDevice, pDeviceContext)
 {
 }
 
 CRespawnTunnel::CRespawnTunnel(const CRespawnTunnel & rhs)
-	: CInGameEffect(rhs)
+	: CInGameEffect_Model(rhs)
 {
 }
 
@@ -38,12 +38,16 @@ _int CRespawnTunnel::Late_Tick(_double TimeDelta)
 
 HRESULT CRespawnTunnel::Render()
 {
-	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+	NULL_CHECK_RETURN(m_pModelInstanceCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Render_Model(0);
+	m_pModelInstanceCom->Set_DefaultVariables_Perspective();
+	m_pModelInstanceCom->Render_Model(0);
 
 	return S_OK;
+}
+
+void CRespawnTunnel::SetUp_WorldMatrix(_fmatrix WorldMatrix)
+{
 }
 
 CRespawnTunnel * CRespawnTunnel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

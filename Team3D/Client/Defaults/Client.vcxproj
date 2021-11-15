@@ -192,6 +192,7 @@
     <ClInclude Include="..\public\Effect_Wormhole.h" />
     <ClInclude Include="..\public\FireDoor.h" />
     <ClInclude Include="..\Public\InGameEffect.h" />
+    <ClInclude Include="..\public\InGameEffect_Model.h" />
     <ClInclude Include="..\Public\InGameEffect_Rect.h" />
     <ClInclude Include="..\public\Landing_Smoke.h" />
     <ClInclude Include="..\Public\Cody.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="..\private\Effect_Wormhole.cpp" />
     <ClCompile Include="..\private\FireDoor.cpp" />
     <ClCompile Include="..\Private\InGameEffect.cpp" />
+    <ClCompile Include="..\private\InGameEffect_Model.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Rect.cpp" />
     <ClCompile Include="..\private\Landing_Smoke.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
