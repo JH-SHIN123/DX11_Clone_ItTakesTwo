@@ -275,8 +275,8 @@ private:
 	_bool	m_bLongJump = false;
 
 	// 움직임 가속
-	_double m_fAcceleration = 5.0;
-	_float	m_fJogAcceleration = 40.f;
+	_float m_fAcceleration = 5.0;
+	_float	m_fJogAcceleration = 25.f;
 
 	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
 	_float	m_fIdleTime = 0.f;

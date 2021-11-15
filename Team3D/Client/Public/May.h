@@ -241,25 +241,38 @@ private:
 	_bool	m_bLongJump = false;
 
 	// 움직임 가속
-	_double m_fAcceleration = 5.0;
+	_float m_fAcceleration = 5.0;
+	_float	m_fJogAcceleration = 25.f;
+
+	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
+	_float	m_fIdleTime = 0.f;
 
 
 	// 상호작용에 의한 움직임.
+
+	// 구르기 관련
+	_bool m_bAction = false;
+
+	// 점프 중이니
+	_bool m_IsJumping = false;
+	_bool m_IsAirDash = false;
 
 
 	// 뭔가 들고있다면
 	_bool m_IsPickUp = false;
 
 
-	// 크기가 달라졌다면
-	_bool m_IsMediumSize = false;
-	_bool m_IsLargeSize = false;
+	// 점프관련 변수
+	_bool m_bJumpAnimationOnce = false;
+	_bool m_bDoubleJump = false;
+	_uint m_iJumpCount = 0;
+
 
 
 	// 컷씬이라면
 	_bool m_IsCutScene = false;
 
-	
+
 	// 트리거(상호작용) 진행중이라면
 	_bool m_IsTriggerPlaying = false;
 

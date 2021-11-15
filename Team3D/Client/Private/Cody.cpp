@@ -219,9 +219,12 @@ void CCody::KeyInput(_double TimeDelta)
 		}
 		else
 		{
-			m_pActorCom->Jump_Start(1.2f);
-			m_pModelCom->Set_Animation(ANI_C_AirDash_Start);
-			m_IsAirDash = true;
+			if (m_pModelCom->Get_CurAnimIndex() != ANI_C_AirDash_Start)
+			{
+				m_pActorCom->Jump_Start(1.2f);
+				m_pModelCom->Set_Animation(ANI_C_AirDash_Start);
+				m_IsAirDash = true;
+			}
 		}
 	}
 #pragma endregion
@@ -325,7 +328,7 @@ void CCody::Move(const _double TimeDelta)
 		{
 			if (m_bShortJump == false)
 			{
-				m_fJogAcceleration = 20.f;
+				m_fJogAcceleration = 25.f;
 				if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog) // jog 였다면
 				{
 					m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd); // jog to stop 으로 바꿔
@@ -380,12 +383,13 @@ void CCody::Roll(const _double TimeDelta)
 {
 	if ((m_bRoll && m_pTransformCom))
 	{
-		if (m_fAcceleration <= 0.2)
+		if (m_fAcceleration <= 0.f)
 		{
 			m_fAcceleration = 5.0;
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_bRoll = false;
 			m_bAction = true;
+			return;
 		}
 
 		m_fAcceleration -= TimeDelta * 10.0;
@@ -399,7 +403,7 @@ void CCody::Roll(const _double TimeDelta)
 
 	if (m_IsAirDash && m_pTransformCom)
 	{
-		if (m_fAcceleration <= 0.2)
+		if (m_fAcceleration <= 0.f)
 		{
 			m_fAcceleration = 5.0;
 			m_IsAirDash = false;
@@ -445,8 +449,10 @@ void CCody::Jump(const _double TimeDelta)
 		if (m_pGameInstance->Key_Pressing(DIK_W) || m_pGameInstance->Key_Pressing(DIK_A) || m_pGameInstance->Key_Pressing(DIK_S) || m_pGameInstance->Key_Pressing(DIK_D))
 			m_pModelCom->Set_Animation(ANI_C_Jump_Land_Jog);
 		else
+		{
 			m_pModelCom->Set_Animation(ANI_C_Jump_Land);
-
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		}
 		m_IsJumping = false;
 		m_iJumpCount = 0;
 	}
