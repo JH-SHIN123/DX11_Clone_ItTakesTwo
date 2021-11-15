@@ -5,6 +5,7 @@
 texture2D	g_NormalTexture;
 texture2D	g_DepthTexture;
 texture2D	g_CascadedShadowDepthTexture;
+texture2D	g_CascadedShadowDepthTexture_Sub;
 
 cbuffer CascadedShadowDesc
 {
@@ -177,10 +178,10 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		vWorldPos	= mul(vWorldPos, g_MainViewMatrixInverse);
 		vLook		= normalize(vWorldPos - g_vMainCamPosition);
 
-		/* Carculate Shadow */
-		int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 0);
-		if (iIndex < 0) return Out;
-		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Main[iIndex], iIndex);
+		///* Carculate Shadow */
+		//int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 0);
+		//if (iIndex < 0) return Out;
+		//fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Main[iIndex], iIndex);
 
 		//if (0 == iIndex)
 		//	Out.vShadow.x = 1.f;
@@ -189,7 +190,7 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		//else if (2 == iIndex)
 		//	Out.vShadow.z = 1.f;
 
-		Out.vShadow = 1.f - fShadowfactor;
+		//Out.vShadow = 1.f - fShadowfactor;
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
 		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
@@ -204,7 +205,7 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		//int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 1);
 		//if (iIndex < 0) return Out;
 		//fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Sub[iIndex], iIndex, 1);
-		fShadowfactor = 1.f;
+		//fShadowfactor = 1.f;
 	}
 	else
 		discard;
@@ -215,6 +216,13 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	Out.vShade.a = 0.f;
 	Out.vSpecular	= pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
 	Out.vSpecular.a = 0.f;
+
+	//if (0 == iIndex)
+	//	Out.vShadow.x = 1.f;
+	//else if(1 == iIndex)
+	//	Out.vShadow.y = 1.f;
+	//else if (2 == iIndex)
+	//	Out.vShadow.z = 1.f;
 
 	//Out.vShadow = 1.f - fShadowfactor;
 	Out.vShadow.a = 1.f;

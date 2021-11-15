@@ -58,7 +58,7 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
-HRESULT CGameObject::Render_ShadowDepth()
+HRESULT CGameObject::Render_ShadowDepth(_uint iIndexViewport)
 {
 	return S_OK;
 }

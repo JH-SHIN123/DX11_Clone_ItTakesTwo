@@ -26,7 +26,7 @@ public:
 	virtual HRESULT	Render();
 
 public: /* For. Write Shadow Depth */
-	virtual HRESULT Render_ShadowDepth();
+	virtual HRESULT Render_ShadowDepth(_uint iIndexViewport);
 
 protected: /* Typedef */
 	typedef unordered_map<const _tchar*, CComponent*>	COMPONENTS;

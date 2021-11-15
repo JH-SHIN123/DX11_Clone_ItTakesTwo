@@ -30,7 +30,7 @@ void CShadow_Manager::Get_CascadeShadowTransformsTranspose(_uint iViewportIndex,
 	}
 }
 
-HRESULT CShadow_Manager::Ready_ShadowManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context)
+HRESULT CShadow_Manager::Ready_ShadowManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context, _float fBufferWidth, _float fBufferHeight)
 {
 	m_pDevice = pDevice;
 	m_pDevice_Context = pDevice_Context;
@@ -39,6 +39,9 @@ HRESULT CShadow_Manager::Ready_ShadowManager(ID3D11Device* pDevice, ID3D11Device
 	Safe_AddRef(m_pDevice_Context);
 
 	FAILED_CHECK_RETURN(Set_CascadeViewportsInfo(), E_FAIL);
+
+	//m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDevice_Context, 0.f, 0.f, fBufferWidth, fBufferHeight, TEXT("../Bin/ShaderFiles/Shader_LightAcc.hlsl"), "DefaultTechnique");
+	//NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
 
 	return S_OK;
 }
@@ -59,12 +62,14 @@ _int CShadow_Manager::Update_CascadedShadowTransform_SubViewport()
 
 HRESULT CShadow_Manager::RSSet_CascadedViewports()
 {
-	Set_CascadeViewportsInfo();
-
-	_uint iNumViewport = 2;
-	m_pDevice_Context->RSSetViewports(MAX_CASCADES * iNumViewport, m_CascadeViewport);
+	m_pDevice_Context->RSSetViewports(MAX_CASCADES, m_CascadeViewport);
 
 	return S_OK;
+}
+
+HRESULT CShadow_Manager::Render_Shadows()
+{
+	return E_NOTIMPL;
 }
 
 HRESULT CShadow_Manager::Set_CascadeViewportsInfo()
@@ -72,32 +77,15 @@ HRESULT CShadow_Manager::Set_CascadeViewportsInfo()
 	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
 	if (nullptr == pGraphicDevice) return E_FAIL;
 
-	/* x = TopLeftX, y = TopLeftY, z = Width, w = Height, 0.f ~ 1.f */
-	_float4 mainViewportUV = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_MAIN);
-	_float4 subViewportUV = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_SUB);
-
-	// CSM Main Viewports
 	for (_uint i = 0; i < MAX_CASCADES; ++i)
 	{
 		// width / height 해상도 ( LOD X )
-		m_CascadeViewport[i].TopLeftX = mainViewportUV.x * SHADOWMAP_SIZE;
-		m_CascadeViewport[i].TopLeftY = (_float)((i + mainViewportUV.y) * SHADOWMAP_SIZE);
-		m_CascadeViewport[i].Width = mainViewportUV.z * SHADOWMAP_SIZE;
-		m_CascadeViewport[i].Height = mainViewportUV.w * SHADOWMAP_SIZE;
+		m_CascadeViewport[i].TopLeftX = 0.f;
+		m_CascadeViewport[i].TopLeftY = (_float)(i * SHADOWMAP_SIZE);
+		m_CascadeViewport[i].Width = SHADOWMAP_SIZE;
+		m_CascadeViewport[i].Height = SHADOWMAP_SIZE;
 		m_CascadeViewport[i].MinDepth = 0.f;
 		m_CascadeViewport[i].MaxDepth = 1.f;
-	}
-
-	// CSM Sub Viewports
-	for (_uint i = 0; i < MAX_CASCADES; ++i)
-	{
-		// width / height 해상도 ( LOD X )
-		m_CascadeViewport[MAX_CASCADES + i].TopLeftX = subViewportUV.x * SHADOWMAP_SIZE;
-		m_CascadeViewport[MAX_CASCADES + i].TopLeftY = (_float)((i + subViewportUV.y) * SHADOWMAP_SIZE);
-		m_CascadeViewport[MAX_CASCADES + i].Width = subViewportUV.z * SHADOWMAP_SIZE;
-		m_CascadeViewport[MAX_CASCADES + i].Height = subViewportUV.w * SHADOWMAP_SIZE;
-		m_CascadeViewport[MAX_CASCADES + i].MinDepth = 0.f;
-		m_CascadeViewport[MAX_CASCADES + i].MaxDepth = 1.f;
 	}
 
 	return S_OK;
@@ -253,6 +241,8 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
 
 void CShadow_Manager::Free()
 {
+	Safe_Release(m_pVIBuffer);
+
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDevice_Context);
 }

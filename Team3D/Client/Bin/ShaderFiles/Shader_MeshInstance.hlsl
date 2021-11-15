@@ -20,8 +20,7 @@ cbuffer Effect
 
 cbuffer ShadowDesc
 {
-	matrix	g_ShadowTransforms_Main[MAX_CASCADES];
-	matrix	g_ShadowTransforms_Sub[MAX_CASCADES];
+	matrix	g_ShadowTransforms[MAX_CASCADES];
 };
 ////////////////////////////////////////////////////////////
 
@@ -138,31 +137,14 @@ void GS_MAIN_CSM_DEPTH(triangle GS_IN_CSM_DEPTH In[3], inout TriangleStream<GS_O
 {
 	GS_OUT_CSM_DEPTH Out = (GS_OUT_CSM_DEPTH)0;
 
-	/* Main Viewport - Viewport 0, 1, 2 */
 	[unroll]
-	for (uint mainViewIndex = 0; mainViewIndex < MAX_CASCADES; ++mainViewIndex)
+	for (uint j = 0; j < MAX_CASCADES; ++j)
 	{
 		[unroll]
 		for (uint i = 0; i < 3; i++)
 		{
-			Out.vPosition = mul(In[i].vPosition, g_ShadowTransforms_Main[mainViewIndex]);
-			Out.iViewportIndex = mainViewIndex;
-
-			TriStream.Append(Out);
-		}
-
-		TriStream.RestartStrip();
-	}
-
-	/* Sub Viewport - Viewport 3, 4, 5 */
-	[unroll]
-	for (uint subViewIndex = 0; subViewIndex < MAX_CASCADES; ++subViewIndex)
-	{
-		[unroll]
-		for (uint j = 0; j < 3; j++)
-		{
-			Out.vPosition = mul(In[j].vPosition, g_ShadowTransforms_Sub[subViewIndex]);
-			Out.iViewportIndex = MAX_CASCADES + subViewIndex;
+			Out.vPosition = mul(In[i].vPosition, g_ShadowTransforms[j]);
+			Out.iViewportIndex = j;
 
 			TriStream.Append(Out);
 		}

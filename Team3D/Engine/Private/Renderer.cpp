@@ -47,10 +47,12 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Shadow"), iWidth, iHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Shadow"), TEXT("MRT_LightAcc")), E_FAIL);
 
-	/* MRT_ShadowDepth */
+	/* Target_CascadedShadow_Depth */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_CascadedShadow_Depth"), SHADOWMAP_SIZE, SHADOWMAP_SIZE * MAX_CASCADES, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f), true), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_CascadedShadow_Depth"), SHADOWMAP_SIZE, SHADOWMAP_SIZE * MAX_CASCADES, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f), true), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_CascadedShadow_Depth"), TEXT("MRT_CascadedShadow")), E_FAIL);
+	/* Target_CascadedShadow_Depth_Sub */
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_CascadedShadow_Depth_Sub"), SHADOWMAP_SIZE, SHADOWMAP_SIZE * MAX_CASCADES, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f), true), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_CascadedShadow_Depth_Sub"), TEXT("MRT_CascadedShadow_Sub")), E_FAIL);
 
 	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width, ViewportDesc.Height, TEXT("../Bin/ShaderFiles/Shader_Blend.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
@@ -68,6 +70,7 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shadow"), fWidth, fHeight * 2.f, fWidth, fHeight), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_CascadedShadow_Depth"), fWidth * 2.f, 0.f, fWidth, fHeight * MAX_CASCADES), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_CascadedShadow_Depth_Sub"), fWidth * 3.f, 0.f, fWidth, fHeight * MAX_CASCADES), E_FAIL);
 #endif
 
 	return S_OK;
@@ -110,6 +113,7 @@ HRESULT CRenderer::Draw_Renderer()
 	m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Deferred"));
 	m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_LightAcc"));
 	m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_CascadedShadow"));
+	m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_CascadedShadow_Sub"));
 #endif
 
 	return S_OK;
@@ -180,12 +184,26 @@ HRESULT CRenderer::Render_ShadowsForAllCascades()
 	// Set Each Cascade Shadow viewports
 	FAILED_CHECK_RETURN(pShadowManager->RSSet_CascadedViewports(), E_FAIL);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/* Main Shadow Depth */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_CascadedShadow")), E_FAIL);
+	// Set_ShadowTransforms
 	for (auto& pGameObject : m_RenderObjects[RENDER_NONALPHA])
 	{
-		FAILED_CHECK_RETURN(pGameObject->Render_ShadowDepth(), E_FAIL);
+		FAILED_CHECK_RETURN(pGameObject->Render_ShadowDepth(0), E_FAIL);
 	}
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_CascadedShadow")), E_FAIL);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/* Sub Shadow Depth */
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_CascadedShadow_Sub")), E_FAIL);
+	// Set_ShadowTransforms
+	for (auto& pGameObject : m_RenderObjects[RENDER_NONALPHA])
+	{
+		FAILED_CHECK_RETURN(pGameObject->Render_ShadowDepth(1), E_FAIL);
+	}
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_CascadedShadow_Sub")), E_FAIL);
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// Setup origin Viewports
 	CGraphic_Device::GetInstance()->Set_Viewport();

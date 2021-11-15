@@ -25,7 +25,7 @@ public:
 	virtual HRESULT	Render() override;
 
 public:
-	virtual HRESULT Render_ShadowDepth() override;
+	virtual HRESULT Render_ShadowDepth(_uint iIndexViewport) override;
 
 private:
 	/* For.Component */

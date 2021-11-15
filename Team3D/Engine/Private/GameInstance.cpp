@@ -48,7 +48,7 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 	FAILED_CHECK_RETURN(m_pLight_Manager->Ready_LightManager(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
 	FAILED_CHECK_RETURN(m_pPhysX->Ready_PhysX(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pFrustum->Ready_Frustum(), E_FAIL);
-	FAILED_CHECK_RETURN(m_pShadow_Manager->Ready_ShadowManager(*ppDevice, *ppDeviceContext), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShadow_Manager->Ready_ShadowManager(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
 
 	return S_OK;
 }
