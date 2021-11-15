@@ -69,7 +69,7 @@ _int CCody::Tick(_double dTimeDelta)
 	Jump(dTimeDelta);
 	Change_Size(dTimeDelta);
 
-	
+	//m_pModelCom->Set_Animation(15);
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
 	return NO_EVENT;

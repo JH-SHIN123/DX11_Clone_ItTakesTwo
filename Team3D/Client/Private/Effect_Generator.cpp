@@ -142,7 +142,7 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Landing_Smoke"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Landing_Smoke", CLanding_Smoke::Create(pDevice, pDeviceContext, pData));
-	
+
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Dash"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Effect_Dash", CEffect_Dash::Create(pDevice, pDeviceContext, pData));
 
