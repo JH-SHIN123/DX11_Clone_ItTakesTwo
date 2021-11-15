@@ -28,7 +28,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pModelCom->Set_Animation(0, m_pTransformCom);
+	m_pModelCom->Set_Animation(0);
 	m_pModelCom->Set_NextAnimIndex(0);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
@@ -59,11 +59,6 @@ _int CPlayer::Tick(_double dTimeDelta)
 
 	m_pActorCom->Update(dTimeDelta);
 
-	//if (m_pGameInstance->Key_Pressing(DIK_K))
-	//{
-	//	const PxControllerFilters Filter(NULL, NULL, false);
-	//	m_pCtrl->move(PxVec3(dTimeDelta * 10.f, 0.f, 0.f), 0.f, (_float)dTimeDelta, Filter);
-	//}
 
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_matrix Matrix = XMMatrixIdentity();//m_pTransformCom->Get_WorldMatrix();
@@ -82,9 +77,8 @@ _int CPlayer::Tick(_double dTimeDelta)
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_DeadEffect, Matrix);
 
 
-	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
-		
 
+	m_pModelCom->Update_Animation(dTimeDelta);
 
 	return NO_EVENT;
 }

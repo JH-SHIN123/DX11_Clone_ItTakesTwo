@@ -127,6 +127,12 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect\Dead_Particle">
       <UniqueIdentifier>{40f62ada-3b9b-4df1-b0b0-07d2420974ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96.DataStorage">
+      <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\01.Wormhole">
+      <UniqueIdentifier>{dac8b6db-4fef-46a2-8e97-07dea945da6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -216,6 +222,10 @@
     <ClInclude Include="..\public\Player_DeadParticle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect\Dead_Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\DataStorage.h">
+      <Filter>96.DataStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Wormhole.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -290,6 +300,10 @@
     <ClCompile Include="..\private\Player_DeadParticle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect\Dead_Particle</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\DataStorage.cpp">
+      <Filter>96.DataStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Wormhole.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

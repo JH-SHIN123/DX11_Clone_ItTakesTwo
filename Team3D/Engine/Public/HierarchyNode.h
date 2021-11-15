@@ -10,26 +10,28 @@ private:
 	explicit CHierarchyNode() = default;
 	virtual ~CHierarchyNode() = default;
 
-public: /* Getter */
-	const char*	Get_Name() const { return m_szNodeName; }
-	const _uint	Get_Depth() const { return m_iDepth; }
-	const _int	Get_NodeIndex() const { return m_iNodeIndex; }
-	const _int	Get_ParentNodeIndex() const;
+public: /* Struct */
+	typedef struct tagNodeDesc
+	{
+		_uint	iDepth;
+		_int	iNodeIndex;
+		_int	iParentNodeIndex;
+		char	szNodeName[MAX_PATH];
+	}NODE_DESC;
 
-public: /* Setter */
-	void Set_NodeIndex(_int iIndex) { m_iNodeIndex = iIndex; }
+public: /* Getter */
+	const char*	Get_Name() const { return m_NodeDesc.szNodeName; }
+	const _int	Get_NodeIndex() const { return m_NodeDesc.iNodeIndex; }
+	const _int	Get_ParentNodeIndex() const { return m_NodeDesc.iParentNodeIndex; }
 
 public:
-	HRESULT	NativeConstruct(char* pName, CHierarchyNode* pParent, _uint iDepth);
+	HRESULT	NativeConstruct(NODE_DESC NodeDesc);
 
 private:
-	char				m_szNodeName[MAX_PATH] = "";
-	CHierarchyNode*		m_pParent = nullptr;
-	_uint				m_iDepth = 0;
-	_int				m_iNodeIndex = 0;
+	NODE_DESC m_NodeDesc;
 
 public:
-	static CHierarchyNode* Create(char* pName, CHierarchyNode* pParent, _uint iDepth);
+	static CHierarchyNode* Create(NODE_DESC NodeDesc);
 	virtual void Free() override;
 };
 

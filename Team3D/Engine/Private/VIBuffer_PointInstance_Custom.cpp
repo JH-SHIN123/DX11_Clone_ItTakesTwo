@@ -35,10 +35,10 @@ HRESULT CVIBuffer_PointInstance_Custom::NativeConstruct_Prototype(_uint iMaxInst
 
 	for (_uint iIndex = 0; iIndex < m_iMaxInstanceCount; ++iIndex)
 	{
-		m_pInstanceVertices[iIndex].vRight		= _float4(1.f, 0.f, 0.f, 0.f);
-		m_pInstanceVertices[iIndex].vUp			= _float4(0.f, 1.f, 0.f, 0.f);
-		m_pInstanceVertices[iIndex].vLook		= _float4(0.f, 0.f, 1.f, 0.f);
-		m_pInstanceVertices[iIndex].vPosition	= _float4(0.f, 0.f, 0.f, 1.f);
+		m_pInstanceVertices[iIndex].vRight		= _float4(1.f, 0.f, 0.f, 0.f); // 매트릭스
+		m_pInstanceVertices[iIndex].vUp			= _float4(0.f, 1.f, 0.f, 0.f); // 매트릭스
+		m_pInstanceVertices[iIndex].vLook		= _float4(0.f, 0.f, 1.f, 0.f); // 매트릭스
+		m_pInstanceVertices[iIndex].vPosition	= _float4(0.f, 0.f, 0.f, 1.f); // 매트릭스
 		m_pInstanceVertices[iIndex].vSize		= _float2(1.f, 1.f);
 		m_pInstanceVertices[iIndex].vTextureUV	= _float4(0.f, 0.f, 1.f, 1.f);
 	}

@@ -110,10 +110,21 @@ namespace Engine
 		class CTextures* pMaterialTexture[AI_TEXTURE_TYPE_MAX];
 	}MATERIAL;
 
+	typedef struct tagTextureName
+	{
+		bool		isNotEmpty;
+		wchar_t		szMaterialTextureName[MAX_PATH];
+	}MATERIAL_TEX;
+
+	typedef struct tagMaterialNames
+	{
+		MATERIAL_TEX MaterialTex[AI_TEXTURE_TYPE_MAX];
+	}MATERIAL_NAMES;
+
 	typedef struct tagBoneDesc 
 	{
-		class CHierarchyNode*	pHierarchyNode;
-		XMFLOAT4X4				OffsetMatrix;
+		XMFLOAT4X4	OffsetMatrix;
+		int			iNodeIndex;
 	}BONE_DESC;
 
 	typedef struct tagKeyFrame
@@ -122,6 +133,7 @@ namespace Engine
 		XMFLOAT4	vRotation;
 		XMFLOAT3	vPosition;
 		double		dTime;
+		bool		bActive;
 	}KEY_FRAME;
 
 	typedef struct tagMeshActorDesc

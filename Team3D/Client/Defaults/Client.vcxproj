@@ -187,10 +187,12 @@
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
+    <ClInclude Include="..\public\Effect_Wormhole.h" />
     <ClInclude Include="..\public\FireDoor.h" />
     <ClInclude Include="..\Public\InGameEffect.h" />
     <ClInclude Include="..\Public\InGameEffect_Rect.h" />
     <ClInclude Include="..\public\Landing_Smoke.h" />
+    <ClInclude Include="..\public\DataStorage.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
     <ClInclude Include="..\public\Loading.h" />
@@ -215,10 +217,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Effect_Generator.cpp" />
+    <ClCompile Include="..\private\Effect_Wormhole.cpp" />
     <ClCompile Include="..\private\FireDoor.cpp" />
     <ClCompile Include="..\Private\InGameEffect.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Rect.cpp" />
     <ClCompile Include="..\private\Landing_Smoke.cpp" />
+    <ClCompile Include="..\private\DataStorage.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />

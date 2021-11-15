@@ -148,10 +148,10 @@ HRESULT CPlayer_DeadParticle::Ready_Instance()
 
 _float4 CPlayer_DeadParticle::Set_particleUV(_int iIndex, _int U, _int V)
 {
-	_float fLeft = (1.f / U) *  m_pInstance_UVCount[iIndex].x;
-	_float fTop = (1.f / V) *  m_pInstance_UVCount[iIndex].y;
-	_float fRight = (1.f / U) * (m_pInstance_UVCount[iIndex].x + 1.f);
-	_float fBottom = (1.f / V) * (m_pInstance_UVCount[iIndex].y + 1.f);
+	_float fLeft	= (1.f / U) *  m_pInstance_UVCount[iIndex].x;
+	_float fTop		= (1.f / V) *  m_pInstance_UVCount[iIndex].y;
+	_float fRight	= (1.f / U) * (m_pInstance_UVCount[iIndex].x + 1.f);
+	_float fBottom	= (1.f / V) * (m_pInstance_UVCount[iIndex].y + 1.f);
 
 	_float4 vUV = { fLeft, fTop, fRight, fBottom };
 

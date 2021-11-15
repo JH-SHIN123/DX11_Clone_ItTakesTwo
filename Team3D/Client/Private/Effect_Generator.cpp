@@ -86,8 +86,6 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 
 	DWORD dwByte = 0;
 
-	CGameInstance* pInstance = CGameInstance::GetInstance();
-
 	while (true)
 	{
 		EFFECT_DESC_PROTO* Data = new EFFECT_DESC_PROTO;
@@ -102,19 +100,15 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 
 		if (1 < lstrlen(Data->ModelName))
 		{
+			// ¼öÁ¤
 			wstring	 wstrName = Data->ModelName;
 			wstrName.erase(0, 16);
-			char szPrototypeName[MAX_PATH];
-			WideCharToMultiByte(CP_ACP, 0, wstrName.c_str(), MAX_PATH, szPrototypeName, MAX_PATH, NULL, NULL);
+			_tchar szPrototypeName[MAX_PATH] = L"";
+			lstrcat(szPrototypeName, wstrName.c_str());
 
-			char pPath[MAX_PATH] = "../Bin/Resources/Effect/3D/";
-			strcat_s(pPath, MAX_PATH, szPrototypeName);
-			strcat_s(pPath, MAX_PATH, "/");
-
-			strcat_s(szPrototypeName, MAX_PATH, ".fbx");
-
-			FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Data->iLevelIndex, Data->ModelName
-				, CModel::Create(pDevice, pDeviceContext, pPath, szPrototypeName, TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique"
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Data->iLevelIndex, Data->ModelName
+				, CModel_Instance::Create(pDevice, pDeviceContext, 1, TEXT("../Bin/Resources/Effect/3D/")
+					, szPrototypeName, TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", 1
 					, Compute_Pivot(XMLoadFloat3(&Data->vPivotScale), XMLoadFloat3(&Data->vPivotRotate_Degree)))), E_FAIL);
 		}
 

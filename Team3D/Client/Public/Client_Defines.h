@@ -9,6 +9,7 @@ extern HWND			g_hWnd;
 extern HINSTANCE	g_hInst;
 
 #include "Client_Enum.h"
+#include "DataStorage.h"
 
 namespace Client {}
 using namespace Client;

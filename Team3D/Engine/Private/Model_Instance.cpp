@@ -20,6 +20,7 @@ CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
 	, m_iMeshCount					(rhs.m_iMeshCount)
 	, m_iMaterialCount				(rhs.m_iMaterialCount)
 	, m_SortedMeshes				(rhs.m_SortedMeshes)
+	, m_iMaterialSetCount			(rhs.m_iMaterialSetCount)
 	, m_pVB							(rhs.m_pVB)
 	, m_iVertexCount				(rhs.m_iVertexCount)
 	, m_iVertexStride				(rhs.m_iVertexStride)
@@ -119,15 +120,16 @@ HRESULT CModel_Instance::Set_DefaultVariables_Perspective()
 	return S_OK;
 }
 
-HRESULT CModel_Instance::NativeConstruct_Prototype(_uint iMaxInstanceCount, const char * pMeshFilePath, const char * pMeshFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
+HRESULT CModel_Instance::NativeConstruct_Prototype(_uint iMaxInstanceCount, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
 	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
 
 	CComponent::NativeConstruct_Prototype();
 
 	m_iMaxInstanceCount = iMaxInstanceCount;
+	m_iMaterialSetCount = iMaterialSetCount;
 
-	FAILED_CHECK_RETURN(m_pModel_Loader->Load_ModelFromFile(m_pDevice, m_pDeviceContext, this, pMeshFilePath, pMeshFileName), E_FAIL);
+	FAILED_CHECK_RETURN(m_pModel_Loader->Load_ModelFromFile(m_pDevice, m_pDeviceContext, CModel_Loader::TYPE_INSTANCE, this, pModelFilePath, pModelFileName, iMaterialSetCount), E_FAIL);
 	FAILED_CHECK_RETURN(Apply_PivotMatrix(PivotMatrix), E_FAIL);
 	FAILED_CHECK_RETURN(Create_VIBuffer(pShaderFilePath, pTechniqueName), E_FAIL);
 	FAILED_CHECK_RETURN(Sort_MeshesByMaterial(), E_FAIL);
@@ -153,6 +155,8 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 	m_ppActors = new PxRigidStatic*[m_iInstanceCount];
 	CPhysX* pPhysX = CPhysX::GetInstance();
 
+	strcpy(m_szActorName, ArgDesc.pActorName);
+
 	PxTriangleMesh* TriMesh = pPhysX->Create_Mesh(Get_MeshActorDesc());
 
 	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
@@ -160,7 +164,10 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 		_vector vScale, vRotQuat, vPosition;
 		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_pWorldMatrices[iIndex]));
 
-		m_ppActors[iIndex] = pPhysX->Create_StaticActor(MH_PxTransform(vRotQuat, vPosition), PxTriangleMeshGeometry(TriMesh), pPhysX->Create_Material(0.5f, 0.5f, 0.5f), ArgDesc.pActorName);
+		PxTriangleMeshGeometry geom(TriMesh);
+		geom.scale = PxMeshScale(MH_PxVec3(vScale));
+
+		m_ppActors[iIndex] = pPhysX->Create_StaticActor(MH_PxTransform(vRotQuat, vPosition), geom, pPhysX->Create_Material(0.5f, 0.5f, 0.5f), m_szActorName);
 		NULL_CHECK_RETURN(m_ppActors[iIndex], E_FAIL);
 
 		PxShape* Shape;
@@ -192,7 +199,7 @@ HRESULT CModel_Instance::Bring_Containers(VTXMESH * pVertices, _uint iVertexCoun
 	return S_OK;
 }
 
-HRESULT CModel_Instance::Render_Model(_uint iPassIndex)
+HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 
@@ -224,7 +231,7 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex)
 
 	for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
 	{
-		Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE);
+		Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
 		FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
@@ -378,11 +385,11 @@ HRESULT CModel_Instance::SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC * pInputEle
 	return S_OK;
 }
 
-CModel_Instance * CModel_Instance::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, _uint iMaxInstanceCount, const char * pMeshFilePath, const char * pMeshFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
+CModel_Instance * CModel_Instance::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, _uint iMaxInstanceCount, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
 	CModel_Instance* pInstance = new CModel_Instance(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype(iMaxInstanceCount, pMeshFilePath, pMeshFileName, pShaderFilePath, pTechniqueName, PivotMatrix, bNeedCenterBone, pCenterBoneName)))
+	if (FAILED(pInstance->NativeConstruct_Prototype(iMaxInstanceCount, pModelFilePath, pModelFileName, pShaderFilePath, pTechniqueName, iMaterialSetCount ,PivotMatrix, bNeedCenterBone, pCenterBoneName)))
 	{
 		MSG_BOX("Failed to Create Instance - CModel_Instance");
 		Safe_Release(pInstance);
