@@ -21,6 +21,7 @@ CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
 	, m_iMaterialCount				(rhs.m_iMaterialCount)
 	, m_SortedMeshes				(rhs.m_SortedMeshes)
 	, m_iMaterialSetCount			(rhs.m_iMaterialSetCount)
+	, m_PxTriMeshes					(rhs.m_PxTriMeshes)
 	, m_pVB							(rhs.m_pVB)
 	, m_iVertexCount				(rhs.m_iVertexCount)
 	, m_iVertexStride				(rhs.m_iVertexStride)
@@ -32,7 +33,6 @@ CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
 	, m_eTopology					(rhs.m_eTopology)
 	, m_pEffect						(rhs.m_pEffect)
 	, m_InputLayouts				(rhs.m_InputLayouts)
-	, m_pVectorPositions			(rhs.m_pVectorPositions)
 	, m_pFaces						(rhs.m_pFaces)
 	, m_pVBInstance					(rhs.m_pVBInstance)
 	, m_pInstanceVertices			(rhs.m_pInstanceVertices)
@@ -131,6 +131,7 @@ HRESULT CModel_Instance::NativeConstruct_Prototype(_uint iMaxInstanceCount, cons
 
 	FAILED_CHECK_RETURN(m_pModel_Loader->Load_ModelFromFile(m_pDevice, m_pDeviceContext, CModel_Loader::TYPE_INSTANCE, this, pModelFilePath, pModelFileName, iMaterialSetCount), E_FAIL);
 	FAILED_CHECK_RETURN(Apply_PivotMatrix(PivotMatrix), E_FAIL);
+	FAILED_CHECK_RETURN(Store_TriMeshes(), E_FAIL);
 	FAILED_CHECK_RETURN(Create_VIBuffer(pShaderFilePath, pTechniqueName), E_FAIL);
 	FAILED_CHECK_RETURN(Sort_MeshesByMaterial(), E_FAIL);
 
@@ -143,6 +144,7 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 
 	NULL_CHECK_RETURN(pArg, E_FAIL);
 
+	CPhysX* pPhysX = CPhysX::GetInstance();
 	ARG_DESC ArgDesc = *static_cast<ARG_DESC*>(pArg);
 
 	m_pWorldMatrices = ArgDesc.pWorldMatrices;
@@ -153,32 +155,29 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 	m_fCullingRadius = ArgDesc.fCullingRadius;
 
 	m_ppActors = new PxRigidStatic*[m_iInstanceCount];
-	CPhysX* pPhysX = CPhysX::GetInstance();
 
 	strcpy(m_szActorName, ArgDesc.pActorName);
 
-	PxTriangleMesh* TriMesh = pPhysX->Create_Mesh(Get_MeshActorDesc());
-
-	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+	for (auto& TriMesh : m_PxTriMeshes)
 	{
-		_vector vScale, vRotQuat, vPosition;
-		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_pWorldMatrices[iIndex]));
+		for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+		{
+			_vector vScale, vRotQuat, vPosition;
+			XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_pWorldMatrices[iIndex]));
 
-		PxTriangleMeshGeometry geom(TriMesh);
-		geom.scale = PxMeshScale(MH_PxVec3(vScale));
+			PxTriangleMeshGeometry geom(TriMesh.pTriMesh, PxMeshScale(MH_PxVec3(vScale)));
 
-		m_ppActors[iIndex] = pPhysX->Create_StaticActor(MH_PxTransform(vRotQuat, vPosition), geom, pPhysX->Create_Material(0.5f, 0.5f, 0.5f), m_szActorName);
-		NULL_CHECK_RETURN(m_ppActors[iIndex], E_FAIL);
+			m_ppActors[iIndex] = pPhysX->Create_StaticActor(MH_PxTransform(vRotQuat, vPosition), geom, ArgDesc.pMaterial, m_szActorName);
+			NULL_CHECK_RETURN(m_ppActors[iIndex], E_FAIL);
 
-		PxShape* Shape;
-		m_ppActors[iIndex]->getShapes(&Shape, 1);
-		Shape->setContactOffset(0.02f);
-		Shape->setRestOffset(-0.5f);
+			PxShape* Shape;
+			m_ppActors[iIndex]->getShapes(&Shape, 1);
+			Shape->setContactOffset(0.02f);
+			Shape->setRestOffset(-0.5f);
 
-		pPhysX->Add_ActorToScene(m_ppActors[iIndex]);
+			pPhysX->Add_ActorToScene(m_ppActors[iIndex]);
+		}
 	}
-
-	TriMesh->release();
 
 	return S_OK;
 }
@@ -235,7 +234,7 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
 		FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
-			m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_StratFaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
+			m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
 	}
 
 	return S_OK;
@@ -259,15 +258,42 @@ HRESULT CModel_Instance::Sort_MeshesByMaterial()
 
 HRESULT CModel_Instance::Apply_PivotMatrix(_fmatrix PivotMatrix)
 {
-	m_pVectorPositions = new _vector[m_iVertexCount];
-
 	for (_uint iIndex = 0; iIndex < m_iVertexCount; ++iIndex)
 	{
 		_vector	vAdjustedPosition = XMVector3TransformCoord(XMLoadFloat3(&m_pVertices[iIndex].vPosition), PivotMatrix);
 		XMStoreFloat3(&m_pVertices[iIndex].vPosition, vAdjustedPosition);
 		_vector	vAdjustedNormal = XMVector3TransformNormal(XMLoadFloat3(&m_pVertices[iIndex].vNormal), PivotMatrix);
 		XMStoreFloat3(&m_pVertices[iIndex].vNormal, vAdjustedNormal);
-		memcpy(&m_pVectorPositions[iIndex], &XMVectorSetW(vAdjustedPosition, 1.f), sizeof(_vector));
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Store_TriMeshes()
+{
+	CPhysX* pPhysX = CPhysX::GetInstance();
+
+	m_PxTriMeshes.reserve(m_iMeshCount);
+
+	for (_uint iIndex = 0; iIndex < m_iMeshCount; ++iIndex)
+	{
+		PX_TRIMESH TriMesh;
+
+		_uint iMeshStartVertexIndex = m_Meshes[iIndex]->Get_StartVertexIndex();
+		_uint iMeshStartFaceIndex = m_Meshes[iIndex]->Get_StratFaceIndex();
+		_uint iMeshVertexCount = (iIndex + 1 == m_iMeshCount) ? m_iVertexCount - iMeshStartVertexIndex : m_Meshes[iIndex + 1]->Get_StartVertexIndex() - iMeshStartVertexIndex;
+		_uint iMeshFaceCount = m_Meshes[iIndex]->Get_FaceCount();
+
+		TriMesh.pVertices = new PxVec3[iMeshVertexCount];
+		TriMesh.pFaces = new POLYGON_INDICES32[iMeshVertexCount];
+
+		for (_uint iVertexIndex = 0; iVertexIndex < iMeshVertexCount; ++iVertexIndex)
+			memcpy(&TriMesh.pVertices[iVertexIndex], &m_pVertices[iMeshStartVertexIndex + iVertexIndex], sizeof(PxVec3));
+		for (_uint iFaceIndex = 0; iFaceIndex < iMeshFaceCount; ++iFaceIndex)
+			memcpy(&TriMesh.pFaces[iFaceIndex], &m_pFaces[iMeshStartFaceIndex + iFaceIndex], sizeof(POLYGON_INDICES32));
+		TriMesh.pTriMesh = pPhysX->Create_Mesh(MESHACTOR_DESC(iMeshVertexCount, TriMesh.pVertices, iMeshFaceCount, TriMesh.pFaces));
+
+		m_PxTriMeshes.emplace_back(TriMesh);
 	}
 
 	return S_OK;
@@ -310,6 +336,7 @@ HRESULT CModel_Instance::Create_VIBuffer(const _tchar * pShaderFilePath, const c
 	m_iFaceStride = sizeof(POLYGON_INDICES32);
 	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	Create_Buffer(&m_pIB, m_iFaceCount * m_iFaceStride, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, 0, m_pFaces);
+	Safe_Delete_Array(m_pFaces);
 
 	/* For.InstanceBuffer */
 	m_pInstanceVertices = new VTXMATRIX[m_iMaxInstanceCount];
@@ -447,9 +474,15 @@ void CModel_Instance::Free()
 	if (false == m_isClone)
 	{
 		Safe_Release(m_pModel_Loader);
-		Safe_Delete_Array(m_pVectorPositions);
-		Safe_Delete_Array(m_pFaces);
 		Safe_Delete_Array(m_pInstanceVertices);
+
+		for (auto& TriMesh : m_PxTriMeshes)
+		{
+			Safe_Delete_Array(TriMesh.pVertices);
+			Safe_Delete_Array(TriMesh.pFaces);
+			TriMesh.pTriMesh->release();
+		}
+		m_PxTriMeshes.clear();
 	}
 
 	Safe_Delete_Array(m_pWorldMatrices);

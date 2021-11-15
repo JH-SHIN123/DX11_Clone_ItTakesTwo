@@ -15,7 +15,7 @@ public: /* Struct */
 	{
 		_uint	iStratVertexIndex;
 		_uint	iStratFaceIndex;
-		_uint	iStratFaceCount;
+		_uint	iFaceCount;
 		_uint	iMaterialIndex;	
 		_uint	iBoneCount;
 		char	szMeshName[MAX_PATH];
@@ -24,7 +24,7 @@ public: /* Struct */
 public: /* Getter */
 	const _uint		Get_StartVertexIndex() const { return m_MeshDesc.iStratVertexIndex; }
 	const _uint		Get_StratFaceIndex() const { return m_MeshDesc.iStratFaceIndex; }
-	const _uint		Get_StratFaceCount() const { return m_MeshDesc.iStratFaceCount; }
+	const _uint		Get_FaceCount() const { return m_MeshDesc.iFaceCount; }
 	const _uint		Get_MaterialIndex() const { return m_MeshDesc.iMaterialIndex; }
 
 public:

@@ -139,7 +139,7 @@ PxTriangleMesh* CPhysX::Create_Mesh(MESHACTOR_DESC pMeshActorDesc)
 	PxTriangleMeshDesc MeshDesc;
 	MeshDesc.points.count		= pMeshActorDesc.iVertexCount;
 	MeshDesc.points.data		= pMeshActorDesc.pVertices;
-	MeshDesc.points.stride		= sizeof(_vector);
+	MeshDesc.points.stride		= sizeof(PxVec3);
 	MeshDesc.triangles.count	= pMeshActorDesc.iFaceCount;
 	MeshDesc.triangles.data		= pMeshActorDesc.pFaces;
 	MeshDesc.triangles.stride	= sizeof(POLYGON_INDICES32);
@@ -150,6 +150,9 @@ PxTriangleMesh* CPhysX::Create_Mesh(MESHACTOR_DESC pMeshActorDesc)
 	Params.suppressTriangleMeshRemapTable = true;
 	Params.meshPreprocessParams &= ~static_cast<PxMeshPreprocessingFlags>(PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH);
 	Params.meshPreprocessParams &= ~static_cast<PxMeshPreprocessingFlags>(PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE);
+
+	//Params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH;
+	//Params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE);
 
 	//Params.midphaseDesc.mBVH33Desc.meshCookingHint = PxMeshCookingHint::eCOOKING_PERFORMANCE;
 	Params.midphaseDesc.mBVH33Desc.meshCookingHint = PxMeshCookingHint::eSIM_PERFORMANCE;

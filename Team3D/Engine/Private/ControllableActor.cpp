@@ -52,7 +52,6 @@ HRESULT CControllableActor::NativeConstruct(void * pArg)
 	CapsuleControllerDesc.slopeLimit = 0.707f;
 	CapsuleControllerDesc.position = PxExtendedVec3(0.0, 0.5, 0.0);
 
-
 	m_pController = m_pPhysX->Create_CapsuleController(CapsuleControllerDesc);
 	NULL_CHECK_RETURN(m_pController, E_FAIL);
 	m_pActor = m_pController->getActor();

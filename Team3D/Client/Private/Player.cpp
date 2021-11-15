@@ -27,6 +27,9 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
+	m_pModelCom->Add_LerpInfo(0, 1, false);
+	m_pModelCom->Add_LerpInfo(1, 2, true, 8.f);
+
 	m_pModelCom->Set_Animation(0);
 	m_pModelCom->Set_NextAnimIndex(0);
 
