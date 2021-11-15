@@ -396,10 +396,10 @@ HRESULT CModel::Apply_PivotMatrix(_fmatrix PivotMatrix)
 
 void CModel::Update_AnimTransformations(_double dTimeDelta)
 {
-	if (m_fLerpRatio > 0.f)
+	if (m_fLerpRatio > 0.9f) // 이렇게 했을때 왜 더 애니메이션이 이쁠까?
 	{
 		m_Anims[m_iCurAnimIndex]->Update_Transformations_Blend(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations, m_PreAnimKeyFrames, m_fLerpRatio);
-		m_fLerpRatio -= (_float)dTimeDelta * 8.f;
+		m_fLerpRatio -= (_float)dTimeDelta * 10.f;
 	}
 	else
 		m_Anims[m_iCurAnimIndex]->Update_Transformations(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations);

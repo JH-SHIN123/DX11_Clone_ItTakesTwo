@@ -96,8 +96,8 @@ void CControllableActor::Update(_double dTimeDelta)
 
 void CControllableActor::Jump_Start(_float fJumpForce)
 {
-	if (m_bJump)
-		return;
+	/*if (m_bJump)
+		return;*/
 
 	m_fJumpTime = 0.f;
 	m_fJumpForce = fJumpForce;
