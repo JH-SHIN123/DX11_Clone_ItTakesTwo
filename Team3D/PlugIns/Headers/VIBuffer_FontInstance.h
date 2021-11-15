@@ -19,7 +19,7 @@ public:
 
 private:
 	ID3D11Buffer*	m_pVBInstance = nullptr;
-	VTXTEX*			m_pInstanceVertices = nullptr;
+	VTXFONT*			m_pInstanceVertices = nullptr;
 	_uint			m_iMaxInstanceCount = 0;
 
 public:

@@ -8,6 +8,7 @@
 #include "Arrowkeys_Outline.h"
 #include "Arrowkeys_Fill.h"
 #include "UISprite.h"
+#include "Pipeline.h"
 
 
 IMPLEMENT_SINGLETON(CUI_Generator)
@@ -34,10 +35,9 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 		return E_FAIL;
 
 	m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Font"));
-	Safe_AddRef(m_pTexturesCom);
-
 	m_pVIBuffer_FontCom = (CVIBuffer_FontInstance*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"));
-	Safe_AddRef(m_pVIBuffer_FontCom);
+	
+	m_FontDesc = new VTXFONT[50];
 
 	return S_OK;
 }
@@ -191,66 +191,77 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, _float2 vPos, _float2 vScale)
 {
 	_ulong iX, iY, iTextureWidth, iTextureHeigth, iFontWidth, iFontHeigth;
 	_float fValue = 0.f;
-	for (_int i = 0; i < lstrlen(pText); ++i)
+  	_int TextLen = lstrlen(pText);
+
+	for (_int i = 0; i < 50; ++i)
 	{
-		_ulong iNumChar = pText[i];
-		m_vecFontDesc.reserve(lstrlen(pText) * 4);
-
-		/* 한글 */
-		if (44032 <= iNumChar)
+		if (i < TextLen)
 		{
-			iNumChar -= 44032;
-			iX = iNumChar % 132;
-			iY = iNumChar / 132;
-			iTextureWidth = 4096;
-			iTextureHeigth = 4096;
-			iFontWidth = 31;
-			iFontHeigth = 46;
+			_ulong iNumChar = pText[i];
+
+			/* 한글 */
+			if (44032 <= iNumChar)
+			{
+				iNumChar -= 44032;
+				iX = iNumChar % 132;
+				iY = iNumChar / 132;
+				iTextureWidth = 4096;
+				iTextureHeigth = 4096;
+				iFontWidth = 31;
+				iFontHeigth = 46;
+
+				vPos.x = (vPos.x + (_float)i * iFontWidth) / 2.f;
+			}
+
+			// 테스트용
+			_float2 vLeftTop = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
+			_float2 vRightTop = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
+			_float2 vRightBottom = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
+			_float2 vLeftBottom = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
+
+			m_FontDesc[i].vPosition = _float3(vPos.x, vPos.y, 0.f);
+			m_FontDesc[i].vTexUV = _float4(vLeftTop.x, vLeftTop.y, vRightBottom.x, vRightBottom.y);
+
+ 			CGameInstance* pGameInstance = CGameInstance::GetInstance();
+			NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+			D3D11_VIEWPORT Viewport = pGameInstance->Get_ViewportInfo(1);
+
+			_vector dd = CPipeline::GetInstance()->Get_MainCamPosition();
+
+			_matrix ViewMatrix, ProjMatrix, WorldMatrix, SubProjMatrix;
+
+			WorldMatrix = XMMatrixIdentity();
+			WorldMatrix.r[0].m128_f32[0] = vScale.x;
+			WorldMatrix.r[1].m128_f32[1] = vScale.y;
+			WorldMatrix.r[3].m128_f32[0] = vPos.x;
+			WorldMatrix.r[3].m128_f32[1] = vPos.y;
+
+			ViewMatrix = XMMatrixIdentity();
+			
+			if (0.f < Viewport.Width)
+				ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+
+			Viewport = pGameInstance->Get_ViewportInfo(2);
+
+			//if (0.1f <= Viewport.Width)
+			//	SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+			m_pVIBuffer_FontCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
+			//m_pVIBuffer_FontCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+			//m_pVIBuffer_FontCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
+
+			m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 		}
-
-
-		// 테스트용
-		FONTDESC FontDesc;
-		ZeroMemory(&FontDesc, sizeof(FONTDESC));
-		FontDesc.vPosition = XMFLOAT3(vPos.x, vPos.y, 0.f);
-		_float2 vLeftTop = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
-		FontDesc.vTexUV = vLeftTop;
-		m_vecFontDesc.emplace_back(FontDesc);
-		_float2 vRightTop = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
-		FontDesc.vTexUV = vRightTop;
-		m_vecFontDesc.emplace_back(FontDesc);
-		_float2 vRightBottom = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
-		FontDesc.vTexUV = vRightBottom;
-		m_vecFontDesc.emplace_back(FontDesc);
-		_float2 vLeftBottom = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
-		FontDesc.vTexUV = vLeftBottom;
-		m_vecFontDesc.emplace_back(FontDesc);
-
-		// ㅇㅇ 필요없을 듯
-		//m_pVIBuffer_FontCom->Set_Variable("vLeftTopUV", &vLeftTop, sizeof(_float2));
-		//m_pVIBuffer_FontCom->Set_Variable("vRightTopUV", &vRightTop, sizeof(_float2));
-		//m_pVIBuffer_FontCom->Set_Variable("vLeftBottomUV", &vLeftBottom, sizeof(_float2));
-		//m_pVIBuffer_FontCom->Set_Variable("vRightBottomUV", &vRightBottom, sizeof(_float2));
-
-		_matrix ViewMatrix, ProjMatrix, WorldMatrix;
-
-		ViewMatrix = XMMatrixIdentity();
-		WorldMatrix = XMMatrixIdentity();
-		ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
-
-		ViewMatrix.r[0].m128_f32[0] = vScale.x;
-		ViewMatrix.r[1].m128_f32[1] = vScale.y;
-		ViewMatrix.r[3].m128_f32[0] = vPos.x + (_float)i * iFontWidth;
-		ViewMatrix.r[3].m128_f32[1] = vPos.y;
-
-		m_pVIBuffer_FontCom->Set_Variable("g_UIWorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
-		m_pVIBuffer_FontCom->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-		m_pVIBuffer_FontCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
-
-		m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+		else
+		{
+			m_FontDesc[i].vPosition = _float3(0.f, 0.f, 0.f);
+			m_FontDesc[i].vTexUV = _float4(0.f, 0.f, 0.f, 0.f);
+		}
 	}
-
-	m_pVIBuffer_FontCom->Render(0, &m_vecFontDesc, lstrlen(pText) * 4);
+	m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+	
+	m_pVIBuffer_FontCom->Render(0, m_FontDesc, TextLen);
 
 	return S_OK;
 }
@@ -466,4 +477,6 @@ void CUI_Generator::Free()
 
 	Safe_Release(m_pTexturesCom);
 	Safe_Release(m_pVIBuffer_FontCom);
+
+	Safe_Delete_Array(m_FontDesc);
 }

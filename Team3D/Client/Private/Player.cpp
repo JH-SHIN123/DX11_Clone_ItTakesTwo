@@ -41,6 +41,8 @@ _int CPlayer::Tick(_double dTimeDelta)
 
 	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
 
+
+
 	return NO_EVENT;
 }
 
@@ -87,8 +89,7 @@ HRESULT CPlayer::Render()
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Render_Model(0);
 
-	CUI_Generator::GetInstance()->Render_Font(TEXT("진짜답없네"), XMFLOAT2(0.f, 0.f), XMFLOAT2(100.f, 100.f));
-
+	CUI_Generator::GetInstance()->Render_Font(TEXT("진짜답없네"), XMFLOAT2(0.f, 0.f), XMFLOAT2(10.f, 10.f));
 
 	return S_OK;
 }

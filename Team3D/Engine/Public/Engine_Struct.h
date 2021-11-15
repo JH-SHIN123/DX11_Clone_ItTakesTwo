@@ -49,6 +49,12 @@ namespace Engine
 		XMFLOAT4	vColor;
 	}VTXCOL;
 
+	typedef struct tagVertexFont
+	{
+		XMFLOAT3	vPosition;
+		XMFLOAT4	vTexUV;
+	}VTXFONT;
+
 	typedef struct tagVertexNormalTexture
 	{
 		XMFLOAT3	vPosition;
@@ -85,6 +91,13 @@ namespace Engine
 		XMFLOAT3	vPosition;
 		XMFLOAT2	vSize;
 	}VTXPOINT;
+
+	typedef struct tagVertexPointPos
+	{
+		XMFLOAT3	vPosition;
+		XMFLOAT2	vSize;
+	}VTXPOINTPOS;
+
 
 	typedef struct tagMaterial
 	{
