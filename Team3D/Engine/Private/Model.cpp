@@ -330,12 +330,9 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
 	{
 		for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
 		{
-<<<<<<< HEAD
-			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE);
-			/*Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS);*/
-=======
+
 			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
->>>>>>> main
+
 			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])

@@ -82,6 +82,12 @@
     <Filter Include="96.DataStorage">
       <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\00.Public\03.Cam_Helper">
+      <UniqueIdentifier>{a3a6fff7-bf95-4b71-a03c-4caea40e84ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\03.Cam_Helper\Film">
+      <UniqueIdentifier>{25fa91e7-22b9-488f-a881-4902b0783881}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -135,6 +141,12 @@
     <ClInclude Include="..\public\DataStorage.h">
       <Filter>96.DataStorage</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Cam_Helper.h">
+      <Filter>02.GameObject\00.Public\03.Cam_Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Film.h">
+      <Filter>02.GameObject\00.Public\03.Cam_Helper\Film</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -172,6 +184,12 @@
     </ClCompile>
     <ClCompile Include="..\private\DataStorage.cpp">
       <Filter>96.DataStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Cam_Helper.cpp">
+      <Filter>02.GameObject\00.Public\03.Cam_Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Film.cpp">
+      <Filter>02.GameObject\00.Public\03.Cam_Helper\Film</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

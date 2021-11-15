@@ -14,6 +14,11 @@ private:
 	explicit CDataStorage() = default;
 	virtual ~CDataStorage() = default;
 
+
+public:
+	void	Set_Player(class CPlayer* pPlayer) { Player = pPlayer; }
+	class CPlayer* Get_Player() { return Player; }
+
 public:
 	class CPlayer* Player;
 

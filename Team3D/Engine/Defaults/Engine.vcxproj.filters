@@ -297,6 +297,14 @@
     <ClInclude Include="..\public\PhysX.h">
       <Filter>02.Utility\05.PhysX</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Actor.h" />
+    <ClInclude Include="..\public\ControllableActor.h" />
+    <ClInclude Include="..\public\DynamicActor.h" />
+    <ClInclude Include="..\public\MathHelper.h" />
+    <ClInclude Include="..\Public\Model.h" />
+    <ClInclude Include="..\public\Model_Instance.h" />
+    <ClInclude Include="..\public\PxEventCallback.h" />
+    <ClInclude Include="..\public\StaticActor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -336,6 +344,7 @@
       <Filter>02.Utility\02.Component\04.VIBuffer\00.Main</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Textures.cpp">
+    </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\02.Terrain</Filter>
     </ClCompile>
@@ -417,6 +426,12 @@
     <ClCompile Include="..\private\PhysX.cpp">
       <Filter>02.Utility\05.PhysX</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Actor.cpp" />
+    <ClCompile Include="..\private\ControllableActor.cpp" />
+    <ClCompile Include="..\private\DynamicActor.cpp" />
+    <ClCompile Include="..\private\Model_Instance.cpp" />
+    <ClCompile Include="..\private\PxEventCallback.cpp" />
+    <ClCompile Include="..\private\StaticActor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\bin\ShaderFiles\Shader_RenderTarget.hlsl">

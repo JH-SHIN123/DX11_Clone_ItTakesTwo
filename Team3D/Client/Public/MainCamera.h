@@ -2,15 +2,17 @@
 
 #include "Client_Defines.h"
 #include "Camera.h"
-
-
+#include"Cam_Helper.h"
+BEGIN(Engine)
+class CControllableActor;
+END
 
 BEGIN(Client)
 
 class CMainCamera final : public CCamera
 {
 	enum CamRev {Rev_Holizontal,Rev_Prependicul,Rev_End};
-	enum CamMode{Cam_Free,Cam_Auto,Cam_FreeToAuto,Cam_AutoToFree,Cam_End};
+	enum CamMode{Cam_Free,Cam_AutoToFree,Cam_End};
 
 private:
 	explicit CMainCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -30,11 +32,18 @@ public:
 
 
 private:
-	//return EventFlag
-	_int	Tick_Cam_Free(_double dTimeDelta); 
-	_int	Tick_Cam_Auto(_double dTimeDelta);
-	_int	Tick_Cam_AutoToFree(_double dTimeDelta);
-	_int	Tick_Cam_FreeToAuto(_double dTimeDelta);
+	CControllableActor* m_pActorCom = nullptr;
+	class	CCam_Helper* m_pCamHelper = nullptr;
+private:
+	//For Free.
+	_int	Tick_Cam_Free(_double dTimeDelta);				//자유이동
+	_int	Tick_Cam_AutoToFree(_double dTimeDelta);		//연출 카메라 -> 자유이동시 보간
+	//CamHelper State(현재 )
+	_int	Tick_CamHelperNone(_double dTimeDelta);			//현재 아무것도 재생안함
+	_int	Tick_CamHelper_Act(_double dTimeDelta);			//재생중
+	_int	Tick_CamHelper_SeeCamNode(_double dTimeDelta);	//카메라노드를 처다봄
+private:
+	_int	ReSet_Cam_FreeToAuto();		//변수 초기화용
 private:
 	CGameObject* m_pTargetObj = nullptr;
 	_float m_fMouseRevSpeed[Rev_End] = { 2.5f,2.5f };
@@ -48,6 +57,7 @@ private:
 	_float4x4 m_matPreRev;
 
 	_float m_fChangeCamModeTime = 0.f;
+
 };
 
 END

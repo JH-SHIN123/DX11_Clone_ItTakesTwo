@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include"DataBase.h"
 #include"Player.h"
+#include"ControllableActor.h"
+
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -24,55 +26,48 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 {
 	CCamera::NativeConstruct(pArg);
 
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
+
 	
 	XMStoreFloat4x4(&m_matPreRev, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 	
 	m_eCurCamMode = Cam_Free;
 
+	
 	return S_OK;
 }
 
 _int CMainCamera::Tick(_double dTimeDelta)
 {
-	if (m_pTargetObj == nullptr)
-	{
-		m_pTargetObj = CDataBase::GetInstance()->GetPlayer();
-		if (m_pTargetObj)
-			Safe_AddRef(m_pTargetObj);
-	}
-
-
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
-		m_eCurCamMode = Cam_FreeToAuto;
-	if (m_pGameInstance->Key_Down(DIK_NUMPADENTER))
-		m_eCurCamMode = Cam_AutoToFree;
-
-
-	if (m_eCurCamMode != m_ePreCamMode)
-	{
-		m_ePreCamMode = m_eCurCamMode;
-		m_fChangeCamModeTime = 0.f;
-	}
-
+	if (nullptr == m_pCamHelper)
+		return EVENT_ERROR;
 
 	_int iResult = NO_EVENT;
+	
 
-	switch (m_eCurCamMode)
+	switch ( m_pCamHelper->Tick(dTimeDelta,CFilm::LScreen))
 	{
-	case Client::CMainCamera::Cam_Free:
-		iResult = Tick_Cam_Free(dTimeDelta);
+	case CCam_Helper::CamHelperState::Helper_None:
+		m_fChangeCamModeTime <=1.f ? m_eCurCamMode = CamMode::Cam_AutoToFree : m_eCurCamMode = CamMode::Cam_Free;
+		iResult = Tick_CamHelperNone(dTimeDelta);
 		break;
-	case Client::CMainCamera::Cam_Auto:
-		iResult = Tick_Cam_Auto(dTimeDelta);
+	case CCam_Helper::CamHelperState::Helper_Act:
+		ReSet_Cam_FreeToAuto();
+		iResult = Tick_CamHelper_Act(dTimeDelta);
 		break;
-	case Client::CMainCamera::Cam_FreeToAuto:
-		iResult = Tick_Cam_FreeToAuto(dTimeDelta);
+	case CCam_Helper::CamHelperState::Helper_SeeCamNode:
+		ReSet_Cam_FreeToAuto();
+		iResult = Tick_CamHelper_SeeCamNode(dTimeDelta);
 		break;
-	case Client::CMainCamera::Cam_AutoToFree:
-		iResult = Tick_Cam_AutoToFree(dTimeDelta);
+	case CCam_Helper::CamHelperState::Helper_End:
+	default:
+		iResult = EVENT_ERROR;
 		break;
 	}
+
 	if (NO_EVENT != iResult)
 		return iResult;
 	return CCamera::Tick(dTimeDelta);
@@ -116,6 +111,8 @@ CGameObject * CMainCamera::Clone_GameObject(void * pArg)
 void CMainCamera::Free()
 {
 	CCamera::Free();
+	Safe_Release(m_pCamHelper);
+	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTargetObj);
 }
 
@@ -167,31 +164,6 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-_int CMainCamera::Tick_Cam_Auto(_double dTimeDelta)
-{
-	
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD8))
-		m_pTransformCom->Go_Straight(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD4))
-		m_pTransformCom->Go_Left(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD2))
-		m_pTransformCom->Go_Backward(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD6))
-		m_pTransformCom->Go_Right(dTimeDelta);
-
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD7))
-		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD9))
-		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -dTimeDelta);
-
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD1))
-		m_pTransformCom->Rotate_Axis(XMVectorSet(1.f, 0.f, 0.f, 0.f), dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD3))
-		m_pTransformCom->Rotate_Axis(XMVectorSet(1.f, 0.f, 0.f, 0.f), -dTimeDelta);
-
-	return NO_EVENT;
-}
-
 _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 {
 
@@ -232,23 +204,89 @@ _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 	m_pTransformCom->Set_WorldMatrix(matCurWorld);
 	if (m_fChangeCamModeTime >= 1.f)
 	{
-
 		m_eCurCamMode = Cam_Free;
-
 	}
 
 	return NO_EVENT;
 }
 
-_int CMainCamera::Tick_Cam_FreeToAuto(_double dTimeDelta)
+_int CMainCamera::ReSet_Cam_FreeToAuto()
 {
 
 	XMStoreFloat4x4(&m_matPreRev,XMMatrixIdentity());
- 
+	m_fChangeCamModeTime = 0.f;
 	m_fMouseRev[Rev_Holizontal] = 0.f;
 	m_fMouseRev[Rev_Prependicul] = 0.f;
 
-	m_eCurCamMode = Cam_Auto;
 	return NO_EVENT;
 }
 
+#pragma region Cam_Helper
+_int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
+{
+	if (m_pTargetObj == nullptr)
+	{
+		m_pTargetObj = CDataStorage::GetInstance()->Get_Player();
+		if (m_pTargetObj)
+			Safe_AddRef(m_pTargetObj);
+	}
+
+
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
+	{
+		m_pCamHelper->Start_Film(L"Eye_Bezier3", CFilm::LScreen);
+		return NO_EVENT;
+	}
+			
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
+	{
+		m_pCamHelper->Start_Film(L"Eye_Bezier4", CFilm::LScreen);
+		return NO_EVENT;
+	}
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
+	{
+
+	}
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
+	{
+
+	}
+
+
+	/*if (m_eCurCamMode != m_ePreCamMode)
+	{
+		m_ePreCamMode = m_eCurCamMode;
+		m_fChangeCamModeTime = 0.f;
+	}*/
+
+
+	_int iResult = NO_EVENT;
+	switch (m_eCurCamMode)
+	{
+	case Client::CMainCamera::Cam_Free:
+		iResult = Tick_Cam_Free(dTimeDelta);
+		break;
+	case Client::CMainCamera::Cam_AutoToFree:
+		iResult = Tick_Cam_AutoToFree(dTimeDelta);
+
+		break;
+	}
+	return iResult;
+}
+
+_int CMainCamera::Tick_CamHelper_Act(_double dTimeDelta)
+{
+	if (nullptr == m_pCamHelper)
+		return EVENT_ERROR;
+	m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Tick_Film(dTimeDelta, CFilm::LScreen));
+	return NO_EVENT;
+}
+
+_int CMainCamera::Tick_CamHelper_SeeCamNode(_double dTimeDelta)
+{
+	if (m_pCamHelper == nullptr)
+		return EVENT_ERROR;
+	m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CamNodeMatrix(m_pTransformCom, dTimeDelta, CFilm::LScreen));
+	return NO_EVENT;
+}
+#pragma endregion

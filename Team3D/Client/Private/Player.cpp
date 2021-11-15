@@ -27,16 +27,12 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-<<<<<<< HEAD
 
-	
-	m_pModelCom->Set_Animation(0, m_pTransformCom);
-=======
 	m_pModelCom->Set_Animation(0);
->>>>>>> main
+
 	m_pModelCom->Set_NextAnimIndex(0);
 	
-	CDataBase::GetInstance()->Set_PlayerPtr(this);
+	CDataStorage::GetInstance()->Set_Player(this);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
 
@@ -47,33 +43,7 @@ _int CPlayer::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-<<<<<<< HEAD
-	if (m_pGameInstance->Key_Pressing(DIK_1))
-		m_pModelCom->Set_Animation(1, m_pTransformCom);
-	if (m_pGameInstance->Key_Pressing(DIK_2))
-		m_pModelCom->Set_Animation(2, m_pTransformCom);
-	if (m_pGameInstance->Key_Pressing(DIK_3))
-		m_pModelCom->Set_Animation(4, m_pTransformCom);
-	if (m_pGameInstance->Key_Pressing(DIK_4))
-		m_pModelCom->Set_Animation(5, m_pTransformCom);
-	if (m_pGameInstance->Key_Pressing(DIK_5))
-		m_pModelCom->Set_Animation(6, m_pTransformCom);
-	if (m_pGameInstance->Key_Pressing(DIK_6))
-		m_pModelCom->Set_Animation(7, m_pTransformCom);
 
-	if (m_pGameInstance->Key_Pressing(DIK_W))
-		m_pTransformCom->Go_Straight(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_A))
-		m_pTransformCom->Go_Left(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_S))
-		m_pTransformCom->Go_Backward(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_D))
-		m_pTransformCom->Go_Right(dTimeDelta);
-
-
-
-	m_pModelCom->Update_Animation(dTimeDelta, m_pTransformCom);
-=======
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 
@@ -94,7 +64,7 @@ _int CPlayer::Tick(_double dTimeDelta)
 	m_pActorCom->Update(dTimeDelta);
 
 	m_pModelCom->Update_Animation(dTimeDelta);
->>>>>>> main
+
 
 	return NO_EVENT;
 }
@@ -110,7 +80,7 @@ HRESULT CPlayer::Render()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-<<<<<<< HEAD
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Render_Model(0);
 
 	
@@ -118,15 +88,6 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
-HRESULT CPlayer::Set_ShaderConstant_Default()
-{
-=======
->>>>>>> main
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Render_Model(0);
-
-	return S_OK;
-}
 
 CPlayer * CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
