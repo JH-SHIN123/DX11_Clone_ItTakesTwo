@@ -43,9 +43,10 @@ HRESULT CEffect_Dash::NativeConstruct(void * pArg)
 _int CEffect_Dash::Tick(_double TimeDelta)
 {
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
+	m_dAlphaTime -= TimeDelta;
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
-		Check_Rotate(TimeDelta, iIndex);
+		Check_Scale(TimeDelta, iIndex);
 
 
 	return _int();
@@ -67,17 +68,8 @@ HRESULT CEffect_Dash::Render()
 	if (nullptr == pPipeline)
 		return S_OK;
 
-	_matrix Mat = XMMatrixIdentity();
-
-	Mat.r[0] = { 1.1f, 1.2f, 1.3f, 0.f };
-	Mat.r[1] = { 2.1f, 2.2f, 2.3f, 0.f };
-	Mat.r[2] = { 3.1f, 3.2f, 3.3f, 0.f };
-	Mat.r[3] = { 9.f, 8.f, 7.f, 1.f };
-
-	Mat = XMMatrixTranspose(Mat);
-
-	m_pRectInstanceCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBVIEW)), sizeof(_matrix));
-	m_pRectInstanceCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBPROJ)), sizeof(_matrix));
+	_float fTime = (_float)m_dAlphaTime;
+	m_pRectInstanceCom->Set_Variable("g_fTime", &fTime, sizeof(_float));
 
 	m_pRectInstanceCom->Set_ShaderResourceView("g_SecondTexture",	m_pTexturesCom->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum));
 	m_pRectInstanceCom->Set_ShaderResourceView("g_DiffuseTexture",	m_pTexturesCom_Second->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum_Second));
@@ -88,7 +80,7 @@ HRESULT CEffect_Dash::Render()
 	return S_OK;
 }
 
-void CEffect_Dash::Check_Rotate(_double TimeDelta, _uint iIndex)
+void CEffect_Dash::Check_Scale(_double TimeDelta, _uint iIndex)
 {
 	_vector vRight	= XMLoadFloat4(&m_pInstanceBuffer[iIndex].vRight);
 	_vector vUp		= XMLoadFloat4(&m_pInstanceBuffer[iIndex].vUp);
@@ -96,6 +88,11 @@ void CEffect_Dash::Check_Rotate(_double TimeDelta, _uint iIndex)
 
 	_float3 vScale = { XMVector3Length(vRight).m128_f32[0], XMVector3Length(vUp).m128_f32[0], XMVector3Length(vLook).m128_f32[0] };
 
+	//vScale.x -= (_float)TimeDelta * 0.5f;
+	vScale.z += (_float)TimeDelta * 0.8f;
+
+	if (0.f >= vScale.x)
+		vScale.x = 0.1f;
 
 	XMStoreFloat4(&m_pInstanceBuffer[iIndex].vRight, (XMVector3Normalize(vRight) * vScale.x));
 	XMStoreFloat4(&m_pInstanceBuffer[iIndex].vUp, (XMVector3Normalize(vUp) * vScale.y));

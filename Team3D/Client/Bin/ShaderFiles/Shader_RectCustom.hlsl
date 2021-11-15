@@ -183,7 +183,9 @@ PS_OUT  PS_DISTORTION_COLOR(PS_IN_DIST In)
 	if (0.1f >= vColor.r)
 		discard;
 	//vColor.a = abs(vColor.a - 1.f);
+	vColor.a = g_fTime;
 	Out.vColor = vColor;
+
 	return Out;
 }
 

@@ -31,12 +31,11 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	
 	EFFECT_DESC_CLONE Clone_Data;
 
-	_tchar szLayer[MAX_PATH] = L"";
+	_tchar szLayer[MAX_PATH] = L"Layer_Effect";
 	_tchar szPrototype[MAX_PATH] = L"";
 
 	XMStoreFloat4x4(&Clone_Data.WorldMatrix, WorldMatrix);
 
-	lstrcpy(szLayer, L"Layer_Effect");
 	switch (eEffect)
 	{
 	case Client::Effect_Value::Walking_Smoke:
@@ -57,12 +56,12 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::Cody_DeadEffect:
 		Clone_Data.IsCody = true;
-		lstrcpy(szPrototype, L"GameObject_2D_Player_DeadEffect");
+		lstrcpy(szPrototype, L"GameObject_2D_Player_DeadParticle");
 		break;
 	case Effect_Value::May_DeadEffect:
 		Clone_Data.IsCody = false;
 		//lstrcpy(szPrototype, L"GameObject_2D_Player_DeadEffect");
-		lstrcpy(szPrototype, L"GameObject_2D_Player_DeadEffect");
+		lstrcpy(szPrototype, L"GameObject_2D_Player_DeadParticle");
 		break;
 	default:
 		break;
@@ -219,6 +218,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 
 void CEffect_Generator::LoopSpawner(_double TimeDelta)
 {
+#ifdef _DEBUG
 	m_dSpawnTerm -= TimeDelta;
 
 	if (0.0 >= m_dSpawnTerm)
@@ -226,10 +226,11 @@ void CEffect_Generator::LoopSpawner(_double TimeDelta)
 		m_dSpawnTerm = 5.0;
 
 		_matrix WorldMatrix = XMMatrixIdentity();
-
+		
 		WorldMatrix.r[3] = { 5.f, 0.f, 5.f, 1.f };
-		Add_Effect(Effect_Value::Cody_DeadEffect, WorldMatrix);
+		//Add_Effect(Effect_Value::Cody_DeadEffect, WorldMatrix);
 	}
+#endif // _DEBUG
 }
 
 _fmatrix CEffect_Generator::Compute_Pivot(_vector vScale, _vector vRotate)

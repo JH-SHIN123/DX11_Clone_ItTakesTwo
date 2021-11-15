@@ -24,7 +24,7 @@ HRESULT CPlayer_DeadParticle::NativeConstruct(void * pArg)
 {
 	m_EffectDesc_Prototype.fLifeTime = 2.f;
 	m_EffectDesc_Prototype.vSize = { 0.0625f, 0.0625f,0.f };
-	m_EffectDesc_Prototype.iInstanceCount = 5;
+	m_EffectDesc_Prototype.iInstanceCount = 100;
 
 	__super::Ready_Component(pArg);
 
@@ -114,14 +114,11 @@ HRESULT CPlayer_DeadParticle::Ready_Instance()
 
 		m_pInstanceBuffer[i].vSize = vSize;
 
-			m_pInstance_UVCount[i] = { _float(rand() % 4), _float(rand() % 2) };
-			if (true == m_EffectDesc_Clone.IsCody)
-				m_pInstance_UVCount[i].y += 2.f;
-		else
-			m_pInstance_UVCount[i] = { 0.f, 0.f };
+		m_pInstance_UVCount[i] = { _float(rand() % 4), _float(rand() % 2) };
+		if (true == m_EffectDesc_Clone.IsCody)
+			m_pInstance_UVCount[i].y += 2.f;
 		m_pInstanceBuffer[i].vTextureUV = Set_particleUV(i, 4, 4);
 
-		m_pInstance_Dir[i] = _float3(0.f, 0.f, 0.f);
 		_vector vRandDir = XMVectorZero();
 
 		_int iRandPower[3] = { (_int)m_EffectDesc_Clone.vRandDirPower.x , (_int)m_EffectDesc_Clone.vRandDirPower.y, (_int)m_EffectDesc_Clone.vRandDirPower.z };
@@ -140,13 +137,11 @@ HRESULT CPlayer_DeadParticle::Ready_Instance()
 		}
 
 		vRandDir = XMVector3Normalize(vRandDir);
-			// Pos Setting
+		// Pos Setting
 		vPos += vRandDir * 0.5f;// (_float(rand() % 2));
 		XMStoreFloat4(&m_pInstanceBuffer[i].vPosition, vPos);
 		XMStoreFloat3(&m_pInstance_Dir[i], vRandDir);
 	}
-
-	m_pInstance_Dir[0] = m_EffectDesc_Clone.vDir;
 
 	return S_OK;
 }

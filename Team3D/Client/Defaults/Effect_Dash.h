@@ -20,10 +20,10 @@ public:
 	virtual HRESULT	Render() override;
 
 public:
-	void Check_Rotate(_double TimeDelta, _uint iIndex);
+	void Check_Scale(_double TimeDelta, _uint iIndex);
 
 public:
-	_double fT = 0.f;
+	_double m_dAlphaTime = 1.0;
 	_float4 m_vWeight = { 0.f, 0.f, 0.125f, 0.125f };
 	_float3 m_vScale = { 1.f, 0.f, 5.f };
 //	CTextures* m_pTexturesCom_Color = nullptr;
