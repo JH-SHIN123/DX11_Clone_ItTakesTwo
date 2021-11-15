@@ -138,24 +138,24 @@ HRESULT CLight_Manager::Render_Lights()
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4)), E_FAIL);
 
 	/* For. Shadow */
-	ID3D11ShaderResourceView* pCascadedShadowDepthMap = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_CascadedShadow_Depth"));
-	NULL_CHECK_RETURN(pCascadedShadowDepthMap, E_FAIL);
-	ID3D11ShaderResourceView* pCascadedShadowDepthMap_Sub = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_CascadedShadow_Depth_Sub"));
-	NULL_CHECK_RETURN(pCascadedShadowDepthMap_Sub, E_FAIL);
+	//ID3D11ShaderResourceView* pCascadedShadowDepthMap = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_CascadedShadow_Depth"));
+	//NULL_CHECK_RETURN(pCascadedShadowDepthMap, E_FAIL);
+	//ID3D11ShaderResourceView* pCascadedShadowDepthMap_Sub = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_CascadedShadow_Depth_Sub"));
+	//NULL_CHECK_RETURN(pCascadedShadowDepthMap_Sub, E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_CascadedShadowDepthTexture", pCascadedShadowDepthMap), E_FAIL);
-	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_CascadedShadowDepthTexture_Sub", pCascadedShadowDepthMap_Sub), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_CascadedShadowDepthTexture", pCascadedShadowDepthMap), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_CascadedShadowDepthTexture_Sub", pCascadedShadowDepthMap_Sub), E_FAIL);
 
-	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();
-	if (nullptr == pShadowManager) return E_FAIL;
+	//CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();
+	//if (nullptr == pShadowManager) return E_FAIL;
 
-	m_pVIBuffer->Set_Variable("g_CascadeEnds", (void*)pShadowManager->Get_CascadedEnds(), sizeof(_float) * MAX_CASCADES);
+	//m_pVIBuffer->Set_Variable("g_CascadeEnds", (void*)pShadowManager->Get_CascadedEnds(), sizeof(_float) * MAX_CASCADES);
 
-	_matrix ShadowTransforms[MAX_CASCADES];
-	pShadowManager->Get_CascadeShadowTransformsTranspose(0, ShadowTransforms);
-	m_pVIBuffer->Set_Variable("g_ShadowTransforms_Main", ShadowTransforms, sizeof(_matrix) * MAX_CASCADES);
-	pShadowManager->Get_CascadeShadowTransformsTranspose(1, ShadowTransforms);
-	m_pVIBuffer->Set_Variable("g_ShadowTransforms_Sub", ShadowTransforms, sizeof(_matrix) * MAX_CASCADES);
+	//_matrix ShadowTransforms[MAX_CASCADES];
+	//pShadowManager->Get_CascadeShadowTransformsTranspose(0, ShadowTransforms);
+	//m_pVIBuffer->Set_Variable("g_ShadowTransforms_Main", ShadowTransforms, sizeof(_matrix) * MAX_CASCADES);
+	//pShadowManager->Get_CascadeShadowTransformsTranspose(1, ShadowTransforms);
+	//m_pVIBuffer->Set_Variable("g_ShadowTransforms_Sub", ShadowTransforms, sizeof(_matrix) * MAX_CASCADES);
 
 	for (auto& pLight : m_Lights)
 		FAILED_CHECK_RETURN(pLight.second->Render_Light(m_pVIBuffer), E_FAIL);
