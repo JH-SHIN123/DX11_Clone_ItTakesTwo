@@ -69,9 +69,8 @@ int Get_CascadedShadowSliceIndex(vector vWorldPos, int iViewportIndex)
 	for (uint i = 0; i < MAX_CASCADES; ++i)
 	{
 		// TEST Main만 띄워보자.
-		//if (0 == iViewportIndex) shadowPosNDC = mul(vWorldPos, g_ShadowTransforms_Main[i]);
-		//else shadowPosNDC = mul(vWorldPos, g_ShadowTransforms_Sub[i]);
-		shadowPosNDC = mul(vWorldPos, g_ShadowTransforms_Main[i]);
+		if (0 == iViewportIndex) shadowPosNDC = mul(vWorldPos, g_ShadowTransforms_Main[i]);
+		else shadowPosNDC = mul(vWorldPos, g_ShadowTransforms_Sub[i]);
 		shadowPosNDC.z /= shadowPosNDC.w;
 
 		// 2. 절두체에 위치하는지 & 몇번째 슬라이스에 존재하는지 체크(cascadeEndWorld값과 비교해가며 슬라이스 인덱스 구하기)
@@ -89,7 +88,7 @@ int Get_CascadedShadowSliceIndex(vector vWorldPos, int iViewportIndex)
 	return iIndex;
 }
 
-float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSliceIndex)
+float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSliceIndex, int iViewportIndex)
 {
 	vector shadowPosH = mul(vWorldPos, shadowTransformMatrix);
 	shadowPosH.xyz /= shadowPosH.w;
@@ -102,7 +101,11 @@ float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSlic
 	float percentLit = 0.0f;
 	float depth = shadowPosH.z; // 그릴 객체들의 깊이값. (그림자 ndc로 이동한)
 
-	percentLit = g_CascadedShadowDepthTexture.Sample(Wrap_Sampler, vShadowUV).r;
+	if(0 == iViewportIndex)
+		percentLit = g_CascadedShadowDepthTexture.Sample(Wrap_Sampler, vShadowUV).r;
+	else if (1 == iViewportIndex)
+		percentLit = g_CascadedShadowDepthTexture_Sub.Sample(Wrap_Sampler, vShadowUV).r;
+
 	if (percentLit < depth)
 		shadowFactor = percentLit;
 
@@ -178,10 +181,10 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		vWorldPos	= mul(vWorldPos, g_MainViewMatrixInverse);
 		vLook		= normalize(vWorldPos - g_vMainCamPosition);
 
-		///* Carculate Shadow */
-		//int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 0);
-		//if (iIndex < 0) return Out;
-		//fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Main[iIndex], iIndex);
+		/* Carculate Shadow */
+		int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 0);
+		if (iIndex < 0) return Out;
+		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Main[iIndex], iIndex, 0);
 
 		//if (0 == iIndex)
 		//	Out.vShadow.x = 1.f;
@@ -201,11 +204,10 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		vWorldPos	= mul(vWorldPos, g_SubViewMatrixInverse);
 		vLook		= normalize(vWorldPos - g_vSubCamPosition);
 
-		///* Carculate Shadow */
-		//int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 1);
-		//if (iIndex < 0) return Out;
-		//fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Sub[iIndex], iIndex, 1);
-		//fShadowfactor = 1.f;
+		/* Carculate Shadow */
+		int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 1);
+		if (iIndex < 0) return Out;
+		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Sub[iIndex], iIndex, 1);
 	}
 	else
 		discard;
@@ -224,7 +226,7 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	//else if (2 == iIndex)
 	//	Out.vShadow.z = 1.f;
 
-	//Out.vShadow = 1.f - fShadowfactor;
+	Out.vShadow = 1.f - fShadowfactor;
 	Out.vShadow.a = 1.f;
 
 	return Out;
