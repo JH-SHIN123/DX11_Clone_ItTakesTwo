@@ -105,9 +105,11 @@ HRESULT CInGameEffect_Rect::Ready_Component(void * pArg)
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
 
 	for (_int i = 0; i < 3; ++i)
-		XMVector3Normalize(WolrdMatrix.r[i]);
+		WolrdMatrix.r[i] = XMVector3Normalize(WolrdMatrix.r[i]);
 
-
+	WolrdMatrix.r[0] *= m_EffectDesc_Prototype.vSize.x;
+	WolrdMatrix.r[1] *= m_EffectDesc_Prototype.vSize.y;
+	WolrdMatrix.r[2] *= m_EffectDesc_Prototype.vSize.z;
 
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 
@@ -122,19 +124,19 @@ HRESULT CInGameEffect_Rect::Ready_InstanceBuffer(_bool IsRenderTerm)
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_float3 vSize = { m_EffectDesc_Prototype.vSize.x ,m_EffectDesc_Prototype.vSize.y,  m_EffectDesc_Prototype.vSize.x};
 
-	_float4 vRight, vUp, vLook;
-	memcpy(&vRight, &m_EffectDesc_Clone.WorldMatrix.m[0][0], sizeof(_float4));
-	memcpy(&vUp, &m_EffectDesc_Clone.WorldMatrix.m[0][0], sizeof(_float4));
-	memcpy(&vLook, &m_EffectDesc_Clone.WorldMatrix.m[0][0], sizeof(_float4));
+	_vector vRight, vUp, vLook;
+	vRight	= m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	vUp		= m_pTransformCom->Get_State(CTransform::STATE_UP);
+	vLook	= m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
 
 	for (_int i = 0; i < m_EffectDesc_Prototype.iInstanceCount; ++i)
 	{
 		XMStoreFloat4(&m_pInstanceBuffer[i].vPosition, vPos);
-		m_pInstanceBuffer[i].vRight = vRight;
-		m_pInstanceBuffer[i].vUp	= vUp;
-		m_pInstanceBuffer[i].vLook	= vLook;
-
-		m_pInstanceBuffer[i].vLook = { 0.f,0.f,5.f,0.f };
+		m_pInstanceBuffer[i].vPosition = { 5.f,0.f,5.f,1.f };
+		XMStoreFloat4(&m_pInstanceBuffer[i].vRight , vRight);
+		XMStoreFloat4(&m_pInstanceBuffer[i].vUp	, vUp);
+		XMStoreFloat4(&m_pInstanceBuffer[i].vLook	, vLook);
 	}
 
 	return S_OK;

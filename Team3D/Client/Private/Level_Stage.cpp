@@ -23,7 +23,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	//FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
 
-	Test_Layer_Effect(L"Layer_Effect");
+	//Test_Layer_Effect(L"Layer_Effect");
 
 
 	return S_OK;

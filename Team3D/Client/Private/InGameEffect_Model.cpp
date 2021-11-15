@@ -113,7 +113,7 @@ void CInGameEffect_Model::Free()
 	Safe_Release(m_pTexturesCom);
 	Safe_Release(m_pModelInstanceCom);
 
-	Safe_Delete_Array(m_pInstanceBuffer);
+	//Safe_Delete_Array(m_pInstanceBuffer);
 
 	__super::Free();
 }

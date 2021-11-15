@@ -234,6 +234,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\public\VIBuffer_RectInstance.h" />
     <ClInclude Include="..\Public\VIBuffer_RectInstance_Custom.h" />
     <ClInclude Include="..\public\VIBuffer_RectRHW.h" />
+    <ClInclude Include="..\public\VIBuffer_Rect_TripleUV.h" />
     <ClInclude Include="..\public\VIBuffer_Terrain.h" />
   </ItemGroup>
   <ItemGroup>
@@ -283,6 +284,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\private\VIBuffer_RectInstance.cpp" />
     <ClCompile Include="..\Private\VIBuffer_RectInstance_Custom.cpp" />
     <ClCompile Include="..\private\VIBuffer_RectRHW.cpp" />
+    <ClCompile Include="..\private\VIBuffer_Rect_TripleUV.cpp" />
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>

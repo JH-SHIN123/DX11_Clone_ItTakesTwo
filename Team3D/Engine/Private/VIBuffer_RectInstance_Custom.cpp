@@ -120,8 +120,24 @@ HRESULT CVIBuffer_RectInstance_Custom::Render(_uint iPassIndex, void * VertexMat
 	D3D11_MAPPED_SUBRESOURCE MappedSubResource;
 
 	m_pDeviceContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedSubResource);
-	memcpy(MappedSubResource.pData, VertexMatrices, sizeof(VTXMATRIX) * iInstanceCount);
+
+	VTXMATRIX* pWorldMatrix = new VTXMATRIX[iInstanceCount];
+	memcpy(pWorldMatrix, VertexMatrices, sizeof(VTXMATRIX) * iInstanceCount);
+
+	for (_uint iIndex = 0; iIndex < iInstanceCount; ++iIndex)
+	{
+ 		_float4x4 vWolrd4x4;
+ 		memcpy(&vWolrd4x4, &pWorldMatrix[iIndex], sizeof(VTXMATRIX));
+
+		pWorldMatrix[iIndex].vRight		= { vWolrd4x4._11, vWolrd4x4._21 , vWolrd4x4._31 , vWolrd4x4._41 };
+		pWorldMatrix[iIndex].vUp		= { vWolrd4x4._12, vWolrd4x4._22 , vWolrd4x4._32 , vWolrd4x4._42 };
+		pWorldMatrix[iIndex].vLook		= { vWolrd4x4._13, vWolrd4x4._23 , vWolrd4x4._33 , vWolrd4x4._43 };
+		pWorldMatrix[iIndex].vPosition	= { vWolrd4x4._14, vWolrd4x4._24 , vWolrd4x4._34 , vWolrd4x4._44 };
+	}
+	memcpy(MappedSubResource.pData, pWorldMatrix, sizeof(VTXMATRIX) * iInstanceCount); // 전치로 변경해서 던지기
+
 	m_pDeviceContext->Unmap(m_pVBInstance, 0);
+	Safe_Delete_Array(pWorldMatrix);
 
 	/* For.RenderBuffer */
 	ID3D11Buffer* pBuffers[2] = { m_pVB, m_pVBInstance };

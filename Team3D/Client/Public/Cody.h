@@ -289,6 +289,7 @@ private:
 
 	// 점프 중이니
 	_bool m_IsJumping = false;
+	_bool m_IsAirDash = false;
 
 
 	// 뭔가 들고있다면

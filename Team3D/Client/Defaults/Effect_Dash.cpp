@@ -16,6 +16,7 @@ HRESULT CEffect_Dash::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
+	m_EffectDesc_Prototype.vSize = { 1.f,1.f,10.f };
 	m_EffectDesc_Prototype.fLifeTime = 3;
 
 	return S_OK;
@@ -26,16 +27,17 @@ HRESULT CEffect_Dash::NativeConstruct(void * pArg)
 	__super::NativeConstruct(pArg);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Textrue_Color"), (CComponent**)&m_pTexturesCom_Color), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV"), TEXT("Com_Rect"), (CComponent**)&m_pRectCom), E_FAIL);
 
-	_vector vRight = XMLoadFloat4(&m_pInstanceBuffer[0].vRight);
-	_vector vUp = XMLoadFloat4(&m_pInstanceBuffer[0].vUp);
-	_vector vLook = XMLoadFloat4(&m_pInstanceBuffer[0].vLook);
+	//
+	//_vector vRight = XMLoadFloat4(&m_pInstanceBuffer[0].vRight);
+	//_vector vUp = XMLoadFloat4(&m_pInstanceBuffer[0].vUp);
+	//_vector vLook = XMLoadFloat4(&m_pInstanceBuffer[0].vLook);
+	//_float3 vScale = { XMVector3Length(vRight).m128_f32[0], XMVector3Length(vUp).m128_f32[0], XMVector3Length(vLook).m128_f32[0] };
 
-	_float3 vScale = { XMVector3Length(vRight).m128_f32[0], XMVector3Length(vUp).m128_f32[0], XMVector3Length(vLook).m128_f32[0] };
-
-	XMStoreFloat4(&m_pInstanceBuffer[0].vRight, (XMVector3Normalize(vRight) * vScale.x));
-	XMStoreFloat4(&m_pInstanceBuffer[0].vUp, (XMVector3Normalize(vUp) * vScale.y));
-	XMStoreFloat4(&m_pInstanceBuffer[0].vLook, (XMVector3Normalize(vLook) * vScale.z));
+	//XMStoreFloat4(&m_pInstanceBuffer[0].vRight, (XMVector3Normalize(vRight) * m_EffectDesc_Prototype.vSize.x));
+	//XMStoreFloat4(&m_pInstanceBuffer[0].vUp, (XMVector3Normalize(vUp) * m_EffectDesc_Prototype.vSize.y));
+	//XMStoreFloat4(&m_pInstanceBuffer[0].vLook, (XMVector3Normalize(vLook) * m_EffectDesc_Prototype.vSize.z));
 
 	return S_OK;
 }
@@ -62,26 +64,40 @@ _int CEffect_Dash::Late_Tick(_double TimeDelta)
 
 HRESULT CEffect_Dash::Render()
 {
-	SetUp_Shader_Data();
-
 	CPipeline* pPipeline = CPipeline::GetInstance();
 	if (nullptr == pPipeline)
-		return S_OK;
+		return E_FAIL;
+
+	m_pRectCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
+	m_pRectCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINVIEW)), sizeof(_matrix));
+	m_pRectCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINPROJ)), sizeof(_matrix));
+	m_pRectCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBVIEW)), sizeof(_matrix));
+	m_pRectCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBPROJ)), sizeof(_matrix));
+
+	_float	fMainCamFar = pPipeline->Get_MainCamFar();
+	_float	fSubCamFar = pPipeline->Get_SubCamFar();
+	_vector vMainCamPosition = pPipeline->Get_MainCamPosition();
+	_vector vSubCamPosition = pPipeline->Get_SubCamPosition();
+
+	m_pRectCom->Set_Variable("g_fMainCamFar", &fMainCamFar, sizeof(_float));
+	m_pRectCom->Set_Variable("g_fSubCamFar", &fSubCamFar, sizeof(_float));
+	m_pRectCom->Set_Variable("g_vMainCamPosition", &vMainCamPosition, sizeof(_vector));
+	m_pRectCom->Set_Variable("g_vSubCamPosition", &vSubCamPosition, sizeof(_vector));
 
 	_float fTime = (_float)m_dAlphaTime;
-	m_pRectInstanceCom->Set_Variable("g_fTime", &fTime, sizeof(_float));
+	m_pRectCom->Set_Variable("g_fTime", &fTime, sizeof(_float));
+	m_pRectCom->Set_ShaderResourceView("g_SecondTexture",	m_pTexturesCom->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum));
+	m_pRectCom->Set_ShaderResourceView("g_DiffuseTexture",	m_pTexturesCom_Second->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum_Second));
+	m_pRectCom->Set_ShaderResourceView("g_ColorTexture",	m_pTexturesCom_Color->Get_ShaderResourceView(9));
 
-	m_pRectInstanceCom->Set_ShaderResourceView("g_SecondTexture",	m_pTexturesCom->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum));
-	m_pRectInstanceCom->Set_ShaderResourceView("g_DiffuseTexture",	m_pTexturesCom_Second->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum_Second));
-	m_pRectInstanceCom->Set_ShaderResourceView("g_ColorTexture",	m_pTexturesCom_Color->Get_ShaderResourceView(9));
-
-	m_pRectInstanceCom->Render(0, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
+	m_pRectCom->Render(0);
 
 	return S_OK;
 }
 
 void CEffect_Dash::Check_Scale(_double TimeDelta, _uint iIndex)
 {
+	return;
 	_vector vRight	= XMLoadFloat4(&m_pInstanceBuffer[iIndex].vRight);
 	_vector vUp		= XMLoadFloat4(&m_pInstanceBuffer[iIndex].vUp);
 	_vector vLook	= XMLoadFloat4(&m_pInstanceBuffer[iIndex].vLook);
@@ -125,5 +141,7 @@ CGameObject * CEffect_Dash::Clone_GameObject(void * pArg)
 void CEffect_Dash::Free()
 {
 	Safe_Release(m_pTexturesCom_Color);
+	Safe_Release(m_pRectCom);
+
 	__super::Free();
 }

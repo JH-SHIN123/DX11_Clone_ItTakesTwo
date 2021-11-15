@@ -134,7 +134,8 @@ CGameObject* CMay::Clone_GameObject(void* pArg)
 
 void CMay::Free()
 {
-	Safe_Release(m_pCamera);
+	//Safe_Release(m_pCamera);
+	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);

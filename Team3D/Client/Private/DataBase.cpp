@@ -15,5 +15,4 @@ CDataBase::CDataBase()
 
 void CDataBase::Free()
 {
-
 }

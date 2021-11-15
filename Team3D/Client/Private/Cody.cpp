@@ -122,7 +122,8 @@ CGameObject* CCody::Clone_GameObject(void* pArg)
 
 void CCody::Free()
 {
-	Safe_Release(m_pCamera);
+	//Safe_Release(m_pCamera);
+	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
@@ -209,13 +210,21 @@ void CCody::KeyInput(_double TimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_LSHIFT) && m_bRoll == false)
 	{
 		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Effect_Dash, m_pTransformCom->Get_WorldMatrix());
+		if (m_IsJumping == false)
+		{
+			m_pModelCom->Set_Animation(ANI_C_Roll_Start);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Roll_Stop);
 
-
-		m_pModelCom->Set_Animation(ANI_C_Roll_Start);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_Roll_Stop);
-		
-		m_bAction = false;
-		m_bRoll = true;
+			m_bAction = false;
+			m_bRoll = true;
+		}
+		else
+		{
+			m_pActorCom->Jump_Start(1.2f);
+			m_pModelCom->Set_Animation(ANI_C_AirDash_Start);
+			m_IsAirDash = true;
+		}
 	}
 #pragma endregion
 
@@ -371,7 +380,7 @@ void CCody::Move(const _double TimeDelta)
 }
 void CCody::Roll(const _double TimeDelta)
 {
-	if (m_bRoll && m_pTransformCom)
+	if ((m_bRoll && m_pTransformCom))
 	{
 		if (m_fAcceleration <= 0.2)
 		{
@@ -389,9 +398,26 @@ void CCody::Roll(const _double TimeDelta)
 		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta * m_fAcceleration);
 		m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), TimeDelta);
 	}
+
+	if (m_IsAirDash && m_pTransformCom)
+	{
+		if (m_fAcceleration <= 0.2)
+		{
+			m_fAcceleration = 5.0;
+			m_IsAirDash = false;
+		}
+
+		m_fAcceleration -= TimeDelta * 10.0;
+		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
+		vDirection = XMVectorSetY(vDirection, 0.f);
+		vDirection = XMVector3Normalize(vDirection);
+		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta * m_fAcceleration);
+		m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), TimeDelta);
+	}
 	
 	
 }
+
 void CCody::Sprint(const _double TimeDelta)
 {
 }
@@ -402,7 +428,7 @@ void CCody::Jump(const _double TimeDelta)
 		if (m_iJumpCount == 1)
 		{
 			m_IsJumping = true;
-			m_pActorCom->Jump_Start(2.4f);
+			m_pActorCom->Jump_Start(2.6f);
 			m_pModelCom->Set_Animation(ANI_C_Jump_Land_Still_Jump);
 			m_bShortJump = false;
 		}
@@ -411,7 +437,7 @@ void CCody::Jump(const _double TimeDelta)
 			m_IsJumping = true;
 			//m_pActorCom->Jump_Higher(1.4f);
 			//m_pActorCom->Set_Gravity(0.f);
-			m_pActorCom->Jump_Start(2.4f);
+			m_pActorCom->Jump_Start(2.6f);
 			m_pModelCom->Set_Animation(ANI_C_DoubleJump);
 			m_bShortJump = false;
 		}

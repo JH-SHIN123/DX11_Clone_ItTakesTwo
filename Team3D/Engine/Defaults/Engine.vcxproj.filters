@@ -208,6 +208,9 @@
     <Filter Include="02.Utility\02.Component\04.VIBuffer\03.Instance\04.Rect_Custom">
       <UniqueIdentifier>{a633cb29-15fa-429a-a4eb-e93355f0df2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\02.Component\04.VIBuffer\01.Rect\04.TripleUV">
+      <UniqueIdentifier>{146b9037-6892-48b7-afbd-5f30f48bac89}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\GameInstance.h">
@@ -369,6 +372,9 @@
     <ClInclude Include="..\public\Textures.h">
       <Filter>02.Utility\02.Component\03.Texture</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Rect_TripleUV.h">
+      <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.TripleUV</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -511,6 +517,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Textures.cpp">
       <Filter>02.Utility\02.Component\03.Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Rect_TripleUV.cpp">
+      <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.TripleUV</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

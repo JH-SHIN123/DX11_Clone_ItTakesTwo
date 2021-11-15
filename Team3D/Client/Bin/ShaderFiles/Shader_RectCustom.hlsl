@@ -38,7 +38,7 @@ struct VS_IN
 	float2 vTexUV_ColorRamp		: TEXCOORD2;
 
 	/* 인스턴스할 정점버퍼 */
-	row_major matrix WorldMatrix	: WORLD;
+	matrix WorldMatrix	: WORLD;
 };
 
 struct VS_OUT
@@ -48,7 +48,7 @@ struct VS_OUT
 	float2 vTexUV_Weight		: TEXCOORD1;
 	float2 vTexUV_ColorRamp		: TEXCOORD2;
 
-	row_major matrix WorldMatrix : TEXCOORD3;
+	row_major matrix WorldMatrix : WORLD;
 };
 
 VS_OUT	VS_MAIN(VS_IN In)
@@ -93,8 +93,8 @@ void  GS_MAIN_DIST(/*입력*/ triangle  VS_OUT In[3], /*출력*/ inout TriangleStrea
 		Out.vProjPosition = Out.vPosition;
 		Out.iViewportIndex = 1;
 
-		float3 vScale = { length(In[i].WorldMatrix._11_12_13_14),  length(In[i].WorldMatrix._21_22_23_24) ,  length(In[i].WorldMatrix._31_32_33_34) };
-		float3 vLook = normalize(In[i].WorldMatrix._31_32_33_34).xyz;
+		float3 vScale = { length(In[i].WorldMatrix._11_12_13),  length(In[i].WorldMatrix._21_22_23) ,  length(In[i].WorldMatrix._31_32_33) };
+		float3 vLook = normalize(In[i].WorldMatrix._31_32_33).xyz;
 		float3 vDir = normalize(g_vMainCamPosition - In[i].vPosition).xyz;
 		float3 vRight = cross(vLook, vDir).xyz;
 		float3 vUp = cross(vRight, vLook).xyz;

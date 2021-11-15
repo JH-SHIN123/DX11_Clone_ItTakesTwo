@@ -442,5 +442,8 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_RectCustom.hlsl">
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect.hlsl">
+      <Filter>97.ShaderFiles\01.Codes</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
