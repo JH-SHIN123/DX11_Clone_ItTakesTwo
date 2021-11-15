@@ -190,12 +190,12 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		if (iIndex < 0) return Out;
 		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Main[iIndex], iIndex, 0);
 
-		//if (0 == iIndex)
-		//	Out.vShadow.x = 1.f;
-		//else if(1 == iIndex)
-		//	Out.vShadow.y = 1.f;
-		//else if (2 == iIndex)
-		//	Out.vShadow.z = 1.f;
+		if (0 == iIndex)
+			Out.vShadow.x = 1.f;
+		else if(1 == iIndex)
+			Out.vShadow.y = 1.f;
+		else if (2 == iIndex)
+			Out.vShadow.z = 1.f;
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
 		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
@@ -221,7 +221,7 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	Out.vSpecular	= pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
 	Out.vSpecular.a = 0.f;
 
-	Out.vShadow = 1.f - fShadowfactor;
+	//Out.vShadow = 1.f - fShadowfactor;
 	Out.vShadow.a = 1.f;
 
 	return Out;

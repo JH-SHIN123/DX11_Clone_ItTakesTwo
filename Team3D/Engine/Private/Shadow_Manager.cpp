@@ -61,7 +61,7 @@ HRESULT CShadow_Manager::RSSet_CascadedViewports()
 {
 	Set_CascadeViewportsInfo();
 
-	_uint iNumViewport = 1;
+	_uint iNumViewport = 2;
 	m_pDevice_Context->RSSetViewports(MAX_CASCADES * iNumViewport, m_CascadeViewport);
 
 	return S_OK;
