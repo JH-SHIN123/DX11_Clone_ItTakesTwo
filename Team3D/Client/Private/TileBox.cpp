@@ -24,10 +24,11 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 	CGameObject::NativeConstruct(pArg);
 
 	CModel_Instance::ARG_DESC Arg;
-	Arg.iInstanceCount = 5000;
+	Arg.iInstanceCount = 2;
 	Arg.fCullingRadius = 10.f;
 	Arg.pActorName = "TileBox";
 	Arg.pWorldMatrices = new _float4x4[Arg.iInstanceCount];
+	Arg.pMaterial = m_pGameInstance->Create_PxMaterial(0.5f, 0.5f, 0.5f);
 
 	for (_uint i = 0; i < Arg.iInstanceCount; ++i)
 	{

@@ -224,6 +224,7 @@ private:
 
 	// 단발성 함수들.
 	HRESULT Ready_Component();
+	void Add_LerpInfo_To_Model();
 
 	// Components
 private:
@@ -315,6 +316,10 @@ private:
 	
 	// 트리거(상호작용) 진행중이라면
 	_bool m_IsTriggerPlaying = false;
+
+	
+	// Sprint
+	_float m_fSprintAcceleration = 35.f;
 
 
 };

@@ -191,6 +191,7 @@ private:
 
 	// 단발성 함수들.
 	HRESULT Ready_Component();
+	void Add_LerpInfo_To_Model();
 
 	// 카메라
 private:
@@ -242,7 +243,7 @@ private:
 
 	// 움직임 가속
 	_float m_fAcceleration = 5.0;
-	_float	m_fJogAcceleration = 25.f;
+	_float	m_fJogAcceleration = 15.f;
 
 	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
 	_float	m_fIdleTime = 0.f;
@@ -275,6 +276,9 @@ private:
 
 	// 트리거(상호작용) 진행중이라면
 	_bool m_IsTriggerPlaying = false;
+
+	// Sprint
+	_float m_fSprintAcceleration = 35.f;
 
 
 };

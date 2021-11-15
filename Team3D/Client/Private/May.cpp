@@ -48,6 +48,7 @@ HRESULT CMay::NativeConstruct(void* pArg)
 
 	m_pModelCom->Set_Animation(ANI_M_Bounce4);
 	CDataBase::GetInstance()->Set_MayPtr(this);
+	Add_LerpInfo_To_Model();
 	 
 
 	return S_OK;
@@ -67,6 +68,16 @@ HRESULT CMay::Ready_Component()
 	return S_OK;
 }
 
+void CMay::Add_LerpInfo_To_Model()
+{
+	m_pModelCom->Add_LerpInfo(ANI_M_Roll_Start, ANI_M_Roll_Jog, false);
+	m_pModelCom->Add_LerpInfo(ANI_M_Roll_Jog, ANI_M_Jog, true, 10.f);
+
+	m_pModelCom->Add_LerpInfo(ANI_M_ExhaustedMH, ANI_M_Jog_Exhausted_Start, true, 10.f);
+	m_pModelCom->Add_LerpInfo(ANI_M_Jog_Exhausted_Start, ANI_M_Jog, true, 20.f);
+	return;
+}
+
 _int CMay::Tick(_double dTimeDelta)
 {
 	//s
@@ -79,6 +90,7 @@ _int CMay::Tick(_double dTimeDelta)
 	KeyInput(dTimeDelta);
 	TriggerCheck(dTimeDelta);
 	StateCheck(dTimeDelta);
+	Sprint(dTimeDelta);
 	Move(dTimeDelta);
 	Roll(dTimeDelta);
 	Jump(dTimeDelta);
@@ -248,11 +260,32 @@ void CMay::KeyInput(_double TimeDelta)
 		m_iJumpCount += 1;
 	}
 #pragma endregion
+
+#pragma region Key_M
+	if (m_pGameInstance->Key_Down(DIK_M))
+	{
+		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint)
+		{
+			//ANI_C_Jog_Exhausted_MH_Start_Fwd
+			m_pModelCom->Set_Animation(ANI_M_Jog_Exhausted_Start);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
+		}
+		if (m_bSprint == false)
+		{
+			m_bSprint = true;
+		}
+		else
+		{
+			m_bSprint = false;
+		}
+	}
+#pragma endregion
+
 }
 
 void CMay::Move(const _double TimeDelta)
 {
-	if (m_bMove && m_pTransformCom)
+	if (m_bSprint == false && m_bMove && m_pTransformCom)
 	{
 		m_bAction = false;
 
@@ -282,6 +315,11 @@ void CMay::Move(const _double TimeDelta)
 			else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_MH || m_pModelCom->Get_CurAnimIndex() == ANI_M_MH_Gesture_Small_Stretch || m_pModelCom->Get_CurAnimIndex() == ANI_M_ActionMH)	// Idle To Jog Start. -> Jog 예약
 			{
 				m_pModelCom->Set_Animation(ANI_M_Jog_Start);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
+			}
+			else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_ExhaustedMH || m_pModelCom->Get_CurAnimIndex() == ANI_M_ExhaustedMH_To_Idle || m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)
+			{
+				m_pModelCom->Set_Animation(ANI_M_Jog_Exhausted_Start);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
 			}
 			else if (m_pModelCom->Is_AnimFinished(ANI_M_Roll_Start)) // 구르고 나서 바로 움직이면 Roll to Jog
@@ -345,16 +383,19 @@ void CMay::Roll(const _double TimeDelta)
 {
 	if ((m_bRoll && m_pTransformCom))
 	{
-		if (m_fAcceleration <= 0.f)
+		if (m_pModelCom->Is_AnimFinished(ANI_M_Roll_Start))
 		{
 			m_fAcceleration = 5.0;
+			m_pModelCom->Set_Animation(ANI_M_Roll_Stop);
+			if(m_bMove == false)
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+
 			m_bRoll = false;
 			m_bAction = true;
 			return;
 		}
 
-		m_fAcceleration -= TimeDelta * 10.0;
+		m_fAcceleration -= TimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 		vDirection = XMVectorSetY(vDirection, 0.f);
 		vDirection = XMVector3Normalize(vDirection);
@@ -365,13 +406,13 @@ void CMay::Roll(const _double TimeDelta)
 
 	if (m_IsAirDash && m_pTransformCom)
 	{
-		if (m_fAcceleration <= 0.f)
+		if (m_pModelCom->Is_AnimFinished(ANI_M_AirDash_Start))
 		{
 			m_fAcceleration = 5.0;
 			m_IsAirDash = false;
 		}
 
-		m_fAcceleration -= TimeDelta * 10.0;
+		m_fAcceleration -= TimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 		vDirection = XMVectorSetY(vDirection, 0.f);
 		vDirection = XMVector3Normalize(vDirection);
@@ -382,6 +423,89 @@ void CMay::Roll(const _double TimeDelta)
 }
 void CMay::Sprint(const _double TimeDelta)
 {
+	if (m_bSprint == true && m_bMove == true)
+	{
+		m_bAction = false;
+
+		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
+		vDirection = XMVectorSetY(vDirection, 0.f);
+		vDirection = XMVector3Normalize(vDirection);
+
+		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
+
+
+		PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
+
+		if (m_fSprintAcceleration > 5.f)
+			m_fSprintAcceleration -= (_float)TimeDelta * 50.f;
+		else
+			m_fSprintAcceleration = 5.f;
+
+		m_pActorCom->Move(vDirection / m_fSprintAcceleration, TimeDelta);
+
+		if (m_bRoll == false && m_IsJumping == false)
+		{
+			if (m_pModelCom->Is_AnimFinished(ANI_M_Sprint_Start_FromDash) == true) // JogStart -> Jog
+				m_pModelCom->Set_Animation(ANI_M_Sprint);
+			else if (m_pModelCom->Is_AnimFinished(ANI_M_Sprint) == true) // Jog -> Jog // 보간속도 Up
+				m_pModelCom->Set_Animation(ANI_M_Sprint);
+			else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_MH ||
+				m_pModelCom->Get_CurAnimIndex() == ANI_M_MH_Gesture_Small_Stretch ||
+				m_pModelCom->Get_CurAnimIndex() == ANI_M_ActionMH ||
+				m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop)	// Idle To Jog Start. -> Jog 예약
+			{
+				m_pModelCom->Set_Animation(ANI_M_Sprint_Start_FromDash);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Sprint);
+			}
+			else if (m_pModelCom->Is_AnimFinished(ANI_M_Roll_Start)) // 구르고 나서 바로 움직이면 Roll to Jog
+			{
+				m_bRoll = false;
+				if (m_bSprint == false)
+				{
+					m_pModelCom->Set_Animation(ANI_M_Roll_Jog);
+					m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
+				}
+				else
+				{
+					m_pModelCom->Set_Animation(ANI_M_Sprint_Start_FromDash);
+					m_pModelCom->Set_NextAnimIndex(ANI_M_Sprint);
+				}
+			}
+		}
+		m_bMove = false;
+	}
+	else if (m_bSprint == true && m_bMove == false)
+	{
+		if (m_bShortJump == false)
+		{
+			m_fSprintAcceleration = 35.f;
+			if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) // jog 였다면
+			{
+				m_bSprint = false;
+				m_pModelCom->Set_Animation(ANI_M_Jog_Stop_Exhausted); // jog to stop 으로 바꿔
+				m_pModelCom->Set_NextAnimIndex(ANI_M_ExhaustedMH); // jog to stop 끝나면 idle 예약.
+			}
+		}
+	}
+	else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint_Start_FromDash) // JogStart 였다면
+	{
+		m_bSprint = false;
+		m_pModelCom->Set_Animation(ANI_M_Jog_Stop_Exhausted); // jog to stop 으로 바꿔
+		m_pModelCom->Set_NextAnimIndex(ANI_M_ExhaustedMH);
+	}
+	else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_ExhaustedMH) // IDLE 상태라면
+	{
+		m_fIdleTime += (_float)TimeDelta;
+
+		if (m_fIdleTime > 3.f && m_pModelCom->Get_CurAnimIndex() == ANI_M_ExhaustedMH) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
+		{
+			m_pModelCom->Set_Animation(ANI_M_ExhaustedMH_To_Idle);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+			m_bSprint = false;
+			m_fIdleTime = 0.f;
+		}
+
+	}
 }
 void CMay::Jump(const _double TimeDelta)
 {
@@ -390,24 +514,27 @@ void CMay::Jump(const _double TimeDelta)
 		if (m_iJumpCount == 1)
 		{
 			m_IsJumping = true;
-			m_pActorCom->Jump_Start(2.4f);
+			m_pActorCom->Jump_Start(2.6f);
 			m_pModelCom->Set_Animation(ANI_M_Jump_Start);
 			m_bShortJump = false;
 		}
 		if (m_iJumpCount == 2)
 		{
 			m_IsJumping = true;
-			//m_pActorCom->Jump_Higher(1.4f);
-			//m_pActorCom->Set_Gravity(0.f);
-			m_pActorCom->Jump_Start(2.4f);
+			m_pActorCom->Jump_Start(2.6f);
 			m_pModelCom->Set_Animation(ANI_M_DoubleJump);
 			m_bShortJump = false;
 		}
 	}
 	if (m_IsJumping == true && m_pActorCom->Get_IsJump() == false)
 	{
+		m_bSprint = false;
+
 		if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Key_Pressing(DIK_DOWN) || m_pGameInstance->Key_Pressing(DIK_LEFT))
-			m_pModelCom->Set_Animation(ANI_M_Jump_Land_Dash_Jog);
+		{
+			m_pModelCom->Set_Animation(ANI_M_Jump_Land_Jog);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
+		}
 		else
 		{
 			m_pModelCom->Set_Animation(ANI_M_Jump_Land);
@@ -421,11 +548,11 @@ void CMay::StateCheck(_double TimeDelta)
 {
 	// 변경해준 m_iNextState 에 따라 애니메이션을 세팅해주고 NextState를 CurState 로 바꿔준다.
 	// 애니메이션 인덱스 == 상태 인덱스 같음 ㅇㅇ.
-	if (m_iCurState != m_iNextState)
-	{
-		//m_pModelCom->Set_Animation(m_iNextState, m_pTransformCom);
-		m_iCurState = m_iNextState;
-	}
+	//if (m_iCurState != m_iNextState)
+	//{
+	//	//m_pModelCom->Set_Animation(m_iNextState, m_pTransformCom);
+	//	m_iCurState = m_iNextState;
+	//}
 }
 
 void CMay::TriggerCheck(_double TimeDelta)

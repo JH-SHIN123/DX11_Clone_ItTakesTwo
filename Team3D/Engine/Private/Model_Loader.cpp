@@ -148,9 +148,7 @@ HRESULT CModel_Loader::Load_ModelFromFile(ID3D11Device * pDevice, ID3D11DeviceCo
 	intptr_t hAnimFile;
 	_uint iAnimCount = 0;
 
-	if ((hAnimFile = _wfindfirst(szAnimPath, &anim_file)) < 0)
-		return S_OK;
-	else
+	if ((hAnimFile = _wfindfirst(szAnimPath, &anim_file)) >= 0)
 	{
 		do {
 			lstrcpy(szAnimFullPath, szBasePath);
