@@ -15,6 +15,13 @@ cbuffer Camera
 	float4	g_vSubCamPosition;
 }
 
+cbuffer Sprite
+{
+	float2 vLeftTopUV;
+	float2 vRightTopUV;
+	float2 vRightBottomUV;
+	float2 vLeftBottomUV;
+}
 
 /* RasterizerState */
 RasterizerState Rasterizer_Solid

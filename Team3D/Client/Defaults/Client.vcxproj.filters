@@ -109,6 +109,12 @@
     <Filter Include="02.GameObject\05.UI\04.ArrowKeys\01.Fill">
       <UniqueIdentifier>{e25c2719-7f51-45a6-abd1-a6ffb701019b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.UI\05.Sprite">
+      <UniqueIdentifier>{15a54422-1468-45aa-bcee-b46afcf47f6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\99.Generator\00.UI_Generator">
+      <UniqueIdentifier>{6f5c1ea7-2f06-4f40-a8dd-522df18a854f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -156,9 +162,6 @@
     <ClInclude Include="..\Public\SubCamera.h">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_Generator.h">
-      <Filter>02.GameObject\05.UI\99.Generator</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\InputButton_Frame.h">
       <Filter>02.GameObject\05.UI\01.InputButton\00.Frame</Filter>
     </ClInclude>
@@ -179,6 +182,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Arrowkeys_Fill.h">
       <Filter>02.GameObject\05.UI\04.ArrowKeys\01.Fill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UISprite.h">
+      <Filter>02.GameObject\05.UI\05.Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Generator.h">
+      <Filter>02.GameObject\05.UI\99.Generator\00.UI_Generator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -212,9 +221,6 @@
     <ClCompile Include="..\Private\SubCamera.cpp">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_Generator.cpp">
-      <Filter>02.GameObject\05.UI\99.Generator</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\InputButton_Frame.cpp">
       <Filter>02.GameObject\05.UI\01.InputButton\00.Frame</Filter>
     </ClCompile>
@@ -235,6 +241,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp">
       <Filter>02.GameObject\05.UI\04.ArrowKeys\01.Fill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UISprite.cpp">
+      <Filter>02.GameObject\05.UI\05.Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Generator.cpp">
+      <Filter>02.GameObject\05.UI\99.Generator\00.UI_Generator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -266,6 +278,12 @@
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
+      <Filter>97.ShaderFiles\01.Codes</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Sprite.hlsl">
+      <Filter>97.ShaderFiles\01.Codes</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Font.hlsl">
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
   </ItemGroup>

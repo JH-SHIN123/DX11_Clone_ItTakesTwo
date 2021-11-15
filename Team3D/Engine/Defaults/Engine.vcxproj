@@ -219,10 +219,12 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\public\Transform.h" />
     <ClInclude Include="..\public\VIBuffer.h" />
     <ClInclude Include="..\public\VIBuffer_Color.h" />
+    <ClInclude Include="..\Public\VIBuffer_FontInstance.h" />
     <ClInclude Include="..\public\VIBuffer_PointInstance.h" />
     <ClInclude Include="..\public\VIBuffer_Rect.h" />
     <ClInclude Include="..\public\VIBuffer_RectInstance.h" />
     <ClInclude Include="..\public\VIBuffer_RectRHW.h" />
+    <ClInclude Include="..\Public\VIBuffer_Sprite.h" />
     <ClInclude Include="..\public\VIBuffer_Terrain.h" />
   </ItemGroup>
   <ItemGroup>
@@ -259,10 +261,12 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\private\Transform.cpp" />
     <ClCompile Include="..\private\VIBuffer.cpp" />
     <ClCompile Include="..\private\VIBuffer_Color.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_FontInstance.cpp" />
     <ClCompile Include="..\private\VIBuffer_PointInstance.cpp" />
     <ClCompile Include="..\private\VIBuffer_Rect.cpp" />
     <ClCompile Include="..\private\VIBuffer_RectInstance.cpp" />
     <ClCompile Include="..\private\VIBuffer_RectRHW.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_Sprite.cpp" />
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>

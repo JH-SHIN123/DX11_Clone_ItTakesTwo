@@ -54,8 +54,27 @@ _int CPlayer::Late_Tick(_double dTimeDelta)
 		CUI_Generator::GetInstance()->Generator_UI(Player::Player_Cody, UI::Arrowkeys_Side);
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_2))
+	{
+		CUI_Generator::GetInstance()->Set_TriggerOn();
+		CUI_Generator::GetInstance()->Generator_UI(Player::Player_Cody, UI::StickIcon);
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_3))
+	{
+		CUI_Generator::GetInstance()->Set_TriggerOn();
+		CUI_Generator::GetInstance()->Generator_UI(Player::Player_May, UI::StickIcon);
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_4))
+	{
+		CUI_Generator::GetInstance()->Set_TriggerOn();
+		CUI_Generator::GetInstance()->Generator_UI(Player::Default, UI::LoadingBook);
+	}
+
 	if (m_pGameInstance->Key_Down(DIK_Z))
 		CUI_Generator::GetInstance()->Delete_UI(Player::Player_Cody, UI::Arrowkeys_Side);
+
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
 
@@ -67,6 +86,9 @@ HRESULT CPlayer::Render()
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Render_Model(0);
+
+	CUI_Generator::GetInstance()->Render_Font(TEXT("진짜답없네"), XMFLOAT2(0.f, 0.f), XMFLOAT2(100.f, 100.f));
+
 
 	return S_OK;
 }

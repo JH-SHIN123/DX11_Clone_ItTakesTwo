@@ -1,13 +1,14 @@
 #include "stdafx.h"
 #include "..\Public\UI_Generator.h"
 
-#include "GameInstance.h"
 #include "InputButton_Frame.h"
 #include "InputButton.h"
 #include "PC_MouseButton.h"
 #include "PlayerMarker.h"
 #include "Arrowkeys_Outline.h"
 #include "Arrowkeys_Fill.h"
+#include "UISprite.h"
+
 
 IMPLEMENT_SINGLETON(CUI_Generator)
 
@@ -20,6 +21,9 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	NULL_CHECK_RETURN(pDevice, E_FAIL);
 	NULL_CHECK_RETURN(pDevice_Context, E_FAIL);
 
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
 	m_pDevice = pDevice;
 	m_pDeviceContext = pDevice_Context;
 
@@ -28,6 +32,12 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 
 	if (FAILED(Add_Prototype_Texture()))
 		return E_FAIL;
+
+	m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Font"));
+	Safe_AddRef(m_pTexturesCom);
+
+	m_pVIBuffer_FontCom = (CVIBuffer_FontInstance*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"));
+	Safe_AddRef(m_pVIBuffer_FontCom);
 
 	return S_OK;
 }
@@ -145,6 +155,12 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R2"));
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R2"));
 		break;
+	case UI::StickIcon:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("StickIcon"));
+		break;
+	case UI::LoadingBook:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("LoadingBook"));
+		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
 		break;
@@ -167,6 +183,74 @@ HRESULT CUI_Generator::Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 	}
 
 	m_vecUIOBjects[ePlayer][eTrigger].clear();
+
+	return S_OK;
+}
+
+HRESULT CUI_Generator::Render_Font(_tchar * pText, _float2 vPos, _float2 vScale)
+{
+	_ulong iX, iY, iTextureWidth, iTextureHeigth, iFontWidth, iFontHeigth;
+	_float fValue = 0.f;
+	for (_int i = 0; i < lstrlen(pText); ++i)
+	{
+		_ulong iNumChar = pText[i];
+		m_vecFontDesc.reserve(lstrlen(pText) * 4);
+
+		/* 한글 */
+		if (44032 <= iNumChar)
+		{
+			iNumChar -= 44032;
+			iX = iNumChar % 132;
+			iY = iNumChar / 132;
+			iTextureWidth = 4096;
+			iTextureHeigth = 4096;
+			iFontWidth = 31;
+			iFontHeigth = 46;
+		}
+
+
+		// 테스트용
+		FONTDESC FontDesc;
+		ZeroMemory(&FontDesc, sizeof(FONTDESC));
+		FontDesc.vPosition = XMFLOAT3(vPos.x, vPos.y, 0.f);
+		_float2 vLeftTop = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
+		FontDesc.vTexUV = vLeftTop;
+		m_vecFontDesc.emplace_back(FontDesc);
+		_float2 vRightTop = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
+		FontDesc.vTexUV = vRightTop;
+		m_vecFontDesc.emplace_back(FontDesc);
+		_float2 vRightBottom = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
+		FontDesc.vTexUV = vRightBottom;
+		m_vecFontDesc.emplace_back(FontDesc);
+		_float2 vLeftBottom = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
+		FontDesc.vTexUV = vLeftBottom;
+		m_vecFontDesc.emplace_back(FontDesc);
+
+		// ㅇㅇ 필요없을 듯
+		//m_pVIBuffer_FontCom->Set_Variable("vLeftTopUV", &vLeftTop, sizeof(_float2));
+		//m_pVIBuffer_FontCom->Set_Variable("vRightTopUV", &vRightTop, sizeof(_float2));
+		//m_pVIBuffer_FontCom->Set_Variable("vLeftBottomUV", &vLeftBottom, sizeof(_float2));
+		//m_pVIBuffer_FontCom->Set_Variable("vRightBottomUV", &vRightBottom, sizeof(_float2));
+
+		_matrix ViewMatrix, ProjMatrix, WorldMatrix;
+
+		ViewMatrix = XMMatrixIdentity();
+		WorldMatrix = XMMatrixIdentity();
+		ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
+
+		ViewMatrix.r[0].m128_f32[0] = vScale.x;
+		ViewMatrix.r[1].m128_f32[1] = vScale.y;
+		ViewMatrix.r[3].m128_f32[0] = vPos.x + (_float)i * iFontWidth;
+		ViewMatrix.r[3].m128_f32[1] = vPos.y;
+
+		m_pVIBuffer_FontCom->Set_Variable("g_UIWorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+		m_pVIBuffer_FontCom->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+		m_pVIBuffer_FontCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
+
+		m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+	}
+
+	m_pVIBuffer_FontCom->Render(0, &m_vecFontDesc, lstrlen(pText) * 4);
 
 	return S_OK;
 }
@@ -308,6 +392,14 @@ HRESULT CUI_Generator::Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc)
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
+	else if (!lstrcmp(UIDesc->szUITag, L"LoadingBook"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CUISprite::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"StickIcon"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CUISprite::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
 
 	return S_OK;
 }
@@ -324,6 +416,9 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("PC_Mouse_SubTexture"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/PC_Mouse_SubTexture.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Arrowkeys_Outline"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/Arrowkeys_Outline.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Arrowkeys_Fill"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/Arrowkeys_Fill.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("StickIcon"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/StickIcon.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("LoadingBook"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Loading/HakimSpinner.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Font"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_DDS, TEXT("../Bin/Resources/Font/Font.dds"))), E_FAIL);
 
 	return S_OK;
 }
@@ -368,4 +463,7 @@ void CUI_Generator::Free()
 			}
 		}
 	}
+
+	Safe_Release(m_pTexturesCom);
+	Safe_Release(m_pVIBuffer_FontCom);
 }
