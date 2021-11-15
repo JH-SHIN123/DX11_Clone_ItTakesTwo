@@ -58,6 +58,7 @@ _int CPlayer::Late_Tick(_double dTimeDelta)
 		CUI_Generator::GetInstance()->Delete_UI(Player::Player_Cody, UI::Arrowkeys_Side);
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+
 }
 
 HRESULT CPlayer::Render()
