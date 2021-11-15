@@ -74,31 +74,31 @@ HRESULT CShadow_Manager::Set_CascadeViewportsInfo()
 
 	/* x = TopLeftX, y = TopLeftY, z = Width, w = Height, 0.f ~ 1.f */
 	_float4 mainViewportUV = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_MAIN);
-	//_float4 subViewportUV = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_SUB);
+	_float4 subViewportUV = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_SUB);
 
 	// CSM Main Viewports
 	for (_uint i = 0; i < MAX_CASCADES; ++i)
 	{
 		// width / height 해상도 ( LOD X )
-		m_CascadeViewport[i].TopLeftX = 0.f;
-		m_CascadeViewport[i].TopLeftY = (_float)(i * SHADOWMAP_SIZE);
-		m_CascadeViewport[i].Width = SHADOWMAP_SIZE;
-		m_CascadeViewport[i].Height = SHADOWMAP_SIZE;
+		m_CascadeViewport[i].TopLeftX = mainViewportUV.x * SHADOWMAP_SIZE;
+		m_CascadeViewport[i].TopLeftY = (_float)((i + mainViewportUV.y) * SHADOWMAP_SIZE);
+		m_CascadeViewport[i].Width = mainViewportUV.z * SHADOWMAP_SIZE;
+		m_CascadeViewport[i].Height = mainViewportUV.w * SHADOWMAP_SIZE;
 		m_CascadeViewport[i].MinDepth = 0.f;
 		m_CascadeViewport[i].MaxDepth = 1.f;
 	}
 
-	//// CSM Sub Viewports
-	//for (_uint i = 0; i < MAX_CASCADES; ++i)
-	//{
-	//	// width / height 해상도 ( LOD X )
-	//	m_CascadeViewport[MAX_CASCADES + i].TopLeftX = SHADOWMAP_SIZE;
-	//	m_CascadeViewport[MAX_CASCADES + i].TopLeftY = (_float)(SHADOWMAP_SIZE * i);
-	//	m_CascadeViewport[MAX_CASCADES + i].Width = SHADOWMAP_SIZE;
-	//	m_CascadeViewport[MAX_CASCADES + i].Height = SHADOWMAP_SIZE;
-	//	m_CascadeViewport[MAX_CASCADES + i].MinDepth = 0.f;
-	//	m_CascadeViewport[MAX_CASCADES + i].MaxDepth = 1.f;
-	//}
+	// CSM Sub Viewports
+	for (_uint i = 0; i < MAX_CASCADES; ++i)
+	{
+		// width / height 해상도 ( LOD X )
+		m_CascadeViewport[MAX_CASCADES + i].TopLeftX = subViewportUV.x * SHADOWMAP_SIZE;
+		m_CascadeViewport[MAX_CASCADES + i].TopLeftY = (_float)((i + subViewportUV.y) * SHADOWMAP_SIZE);
+		m_CascadeViewport[MAX_CASCADES + i].Width = subViewportUV.z * SHADOWMAP_SIZE;
+		m_CascadeViewport[MAX_CASCADES + i].Height = subViewportUV.w * SHADOWMAP_SIZE;
+		m_CascadeViewport[MAX_CASCADES + i].MinDepth = 0.f;
+		m_CascadeViewport[MAX_CASCADES + i].MaxDepth = 1.f;
+	}
 
 	return S_OK;
 }
@@ -126,8 +126,8 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
 	ZeroMemory(cascadeFrustumCornersW, sizeof(_vector) * 8);
 
 	//// Get Frustum Transform Offset
-	//CPipeline* pPipeLine = CPipeline::GetInstance();
-	//if (nullptr == pPipeLine) return E_FAIL;
+	CPipeline* pPipeLine = CPipeline::GetInstance();
+	if (nullptr == pPipeLine) return E_FAIL;
 
 	//_matrix CamWorldMat = XMMatrixIdentity();
 
@@ -205,6 +205,25 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
 		ShadowView = XMMatrixLookAtLH(shadowCameraPos, vTarget, vUp);
 		// aabb의 길이 w / 높이 h / 기준점 zn / 깊이 zf 
 		ShadowProj = XMMatrixOrthographicLH(XMVectorGetX(cascadeExtents), XMVectorGetY(cascadeExtents), 0.f, XMVectorGetZ(cascadeExtents));
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// CASE 2
+		//// Ortho frustum in light space encloses scene.
+		//shadowCameraPos = XMVector3Normalize(vDirectionalLightDir) * fabs(XMVectorGetZ(mins)) * -2.f;
+		//shadowCameraPos = XMVectorSetW(shadowCameraPos, 1.f);
+		//ShadowView = XMMatrixLookAtLH(shadowCameraPos, vTarget, vUp);
+
+		//cascadeFrustumCenter = XMVector3TransformCoord(vTarget, ShadowView);
+
+		//float l = XMVectorGetX(cascadeFrustumCenter) - sphereRadius;
+		//float b =  XMVectorGetY(cascadeFrustumCenter) - sphereRadius;
+		//float n =  XMVectorGetZ(cascadeFrustumCenter) - sphereRadius;
+		//float r =  XMVectorGetX(cascadeFrustumCenter) + sphereRadius;
+		//float t =  XMVectorGetY(cascadeFrustumCenter) + sphereRadius;
+		//float f =  XMVectorGetZ(cascadeFrustumCenter) + sphereRadius;
+		//ShadowProj = XMMatrixOrthographicOffCenterLH(l, r, b, t, n, f);
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
 		_matrix T(

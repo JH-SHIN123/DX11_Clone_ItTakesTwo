@@ -85,6 +85,7 @@ int Get_CascadedShadowSliceIndex(vector vWorldPos, int iViewportIndex)
 		// 2. 절두체에 위치하는지 & 몇번째 슬라이스에 존재하는지 체크(cascadeEndWorld값과 비교해가며 슬라이스 인덱스 구하기)
 		if (shadowPosNDC.x >= 0.0 && shadowPosNDC.x <= 1.0 && shadowPosNDC.y >= 0.0 && shadowPosNDC.y <= 1.0 && shadowPosNDC.z >= 0.0 && shadowPosNDC.z <= 1.0)
 		{
+			// 여기서 문제 발생 (Aspect 변경시)
 			if (-shadowPosNDC.z <= g_CascadeEnds[i + 1])
 			{
 				iIndex = i;
@@ -102,7 +103,6 @@ float Get_ShadowFactor(vector vWorldPos, matrix shadowTransformMatrix, int iSlic
 	shadowPosH.xyz /= shadowPosH.w;
 
 	float2 vShadowUV = shadowPosH.xy;
-	//vShadowUV.x = vShadowUV.x ;
 	vShadowUV.y = (vShadowUV.y + float(iSliceIndex)) / float(MAX_CASCADES);
 
 	float shadowFactor = 0.f;
@@ -190,6 +190,12 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		if (iIndex < 0) return Out;
 		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Main[iIndex], iIndex, 0);
 
+		//if (0 == iIndex)
+		//	Out.vShadow.x = 1.f;
+		//else if(1 == iIndex)
+		//	Out.vShadow.y = 1.f;
+		//else if (2 == iIndex)
+		//	Out.vShadow.z = 1.f;
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
 		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)

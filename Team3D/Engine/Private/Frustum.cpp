@@ -14,6 +14,13 @@ HRESULT CFrustum::Ready_Frustum()
 	m_vPoints[6] = _float3(1.f, -1.f, 1.f);
 	m_vPoints[7] = _float3(-1.f, -1.f, 1.f);
 
+	/* ViewZ ∞ˆ«ÿ¡÷±‚ */
+	//m_vPoints[4].z *= 300.f;
+	//m_vPoints[5].z *= 300.f;
+	//m_vPoints[6].z *= 300.f;
+	//m_vPoints[7].z *= 300.f;
+
+
 	return S_OK;
 }
 

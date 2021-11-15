@@ -25,7 +25,7 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	D3D11_VIEWPORT	ViewportDesc = CGraphic_Device::GetInstance()->Get_ViewportInfo(CGraphic_Device::VP_FULL);
 
 	_uint iWidth	= (_uint)ViewportDesc.Width;
-	_uint iHeight	= (_uint)ViewportDesc.Height;
+	_uint iHeight = (_uint)ViewportDesc.Height;
 
 	/* Target_Diffuse */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Diffuse"), iWidth, iHeight, DXGI_FORMAT_R8G8B8A8_SNORM, _float4(1.f, 1.f, 1.f, 0.f)), E_FAIL);
