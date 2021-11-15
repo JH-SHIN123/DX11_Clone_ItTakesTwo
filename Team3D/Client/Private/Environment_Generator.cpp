@@ -37,7 +37,7 @@ HRESULT CEnvironment_Generator::Load_Environment_Model_Prototype(ID3D11Device* p
 			break;
 
 		_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel_Instance::Create(pDevice, pDeviceContext, 10000, szFilePath, szFolderName, TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel_Instance::Create(pDevice, pDeviceContext, 10000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
 	}
 	CloseHandle(hFile);
 
@@ -58,7 +58,7 @@ HRESULT CEnvironment_Generator::Load_Environment_Model_Prototype(ID3D11Device* p
 			break;
 
 		_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel::Create(pDevice, pDeviceContext, szFilePath, szFolderName, TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel::Create(pDevice, pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
 	}
 	CloseHandle(hFile);
 	return S_OK;
@@ -388,6 +388,27 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.RenderGroup = CRenderer::RENDER_NONALPHA;
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox10_Lid";
+		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+	}
+	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_SofaCushion"))
+	{
+		EnvDesc.RenderGroup = CRenderer::RENDER_NONALPHA;
+		EnvDesc.ShaderPass = 0;
+		EnvDesc.Instancing_Arg.pActorName = "SofaCushion";
+		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+	}
+	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_Pillow"))
+	{
+		EnvDesc.RenderGroup = CRenderer::RENDER_NONALPHA;
+		EnvDesc.ShaderPass = 0;
+		EnvDesc.Instancing_Arg.pActorName = "Pillow";
+		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+	}
+	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_SquarePillow"))
+	{
+		EnvDesc.RenderGroup = CRenderer::RENDER_NONALPHA;
+		EnvDesc.ShaderPass = 0;
+		EnvDesc.Instancing_Arg.pActorName = "SquarePillow";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
 	}
 }
