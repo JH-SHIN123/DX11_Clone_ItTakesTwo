@@ -13,6 +13,8 @@
 #include "Effect_Dash.h"
 #include "Player_DeadEffect.h"
 #include "Player_DeadParticle.h"
+#include "Effect_Cody_Size_ML.h"
+#include "RespawnTunnel_Portal.h";
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -145,17 +147,21 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Effect_Dash", CEffect_Dash::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_DeadEffect"))
-	{
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_DeadEffect", CPlayer_DeadEffect::Create(pDevice, pDeviceContext, pData));
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_DeadParticle", CPlayer_DeadParticle::Create(pDevice, pDeviceContext, pData));
-	}
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_DeadParticle"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_DeadParticle", CPlayer_DeadParticle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Effect_Cody_Size_ML"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Effect_Cody_Size_ML", CEffect_Cody_Size_ML::Create(pDevice, pDeviceContext, pData));
+
+	//
 	// 3D Effect
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel", CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel_Portal"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel_Portal", CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel_Portal", CRespawnTunnel_Portal::Create(pDevice, pDeviceContext, pData));
 
 	else
 	{

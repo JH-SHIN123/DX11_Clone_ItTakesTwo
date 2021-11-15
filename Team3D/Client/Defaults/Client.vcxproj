@@ -187,6 +187,7 @@
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
+    <ClInclude Include="..\public\Effect_Cody_Size_ML.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
     <ClInclude Include="..\public\Effect_Wormhole.h" />
     <ClInclude Include="..\public\FireDoor.h" />
@@ -207,6 +208,7 @@
     <ClInclude Include="..\public\Player_DeadEffect.h" />
     <ClInclude Include="..\public\Player_DeadParticle.h" />
     <ClInclude Include="..\public\RespawnTunnel.h" />
+    <ClInclude Include="..\public\RespawnTunnel_Portal.h" />
     <ClInclude Include="..\public\RespawnTunnel_Smoke.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
@@ -223,6 +225,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\private\Effect_Cody_Size_ML.cpp" />
     <ClCompile Include="..\private\Effect_Generator.cpp" />
     <ClCompile Include="..\private\Effect_Wormhole.cpp" />
     <ClCompile Include="..\private\FireDoor.cpp" />
@@ -244,6 +247,7 @@
     <ClCompile Include="..\private\Player_DeadEffect.cpp" />
     <ClCompile Include="..\private\Player_DeadParticle.cpp" />
     <ClCompile Include="..\private\RespawnTunnel.cpp" />
+    <ClCompile Include="..\private\RespawnTunnel_Portal.cpp" />
     <ClCompile Include="..\private\RespawnTunnel_Smoke.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />

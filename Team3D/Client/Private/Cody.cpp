@@ -5,6 +5,8 @@
 #include "Transform.h"
 #include "DataBase.h"
 
+#include "Effect_Generator.h"
+
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
@@ -67,7 +69,7 @@ _int CCody::Tick(_double dTimeDelta)
 	Jump(dTimeDelta);
 	Change_Size(dTimeDelta);
 
-
+	
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
 	return NO_EVENT;

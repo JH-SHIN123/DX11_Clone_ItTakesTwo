@@ -121,12 +121,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Rect\Dash">
       <UniqueIdentifier>{0d8baa14-37cc-4ac6-9958-4521a5dab802}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect">
-      <UniqueIdentifier>{25a9338e-4725-412e-b28b-91fa9da3c1b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect\Dead_Particle">
-      <UniqueIdentifier>{40f62ada-3b9b-4df1-b0b0-07d2420974ba}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\03.Character">
       <UniqueIdentifier>{7e996727-b5b0-41d9-b6b8-6b873902fd9e}</UniqueIdentifier>
     </Filter>
@@ -151,7 +145,28 @@
     <Filter Include="96.DataStorage">
       <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\3D\01.Wormhole">
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May">
+      <UniqueIdentifier>{611bc1d3-0276-4f21-b082-4231462adca0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect">
+      <UniqueIdentifier>{25a9338e-4725-412e-b28b-91fa9da3c1b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle">
+      <UniqueIdentifier>{40f62ada-3b9b-4df1-b0b0-07d2420974ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.CodySize">
+      <UniqueIdentifier>{f386c037-a6cf-4f8a-b0c5-48b528993dc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.CodySize\01.CodySize_ML">
+      <UniqueIdentifier>{e7396a7d-8e9b-4d91-85c0-717a7a7fd7f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.CodySize\01.CodySize_ML\02.Cody">
+      <UniqueIdentifier>{6c532ecf-0470-4d80-833c-594ecb56234c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\01.RespawnTunnel_Portal">
+      <UniqueIdentifier>{7d4c2d2d-d347-4771-b7b6-dbd3daee18be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\02.Wormhole">
       <UniqueIdentifier>{dac8b6db-4fef-46a2-8e97-07dea945da6c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -250,10 +265,10 @@
       <Filter>02.GameObject\05.Effect/Particle</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Player_DeadEffect.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Player_DeadParticle.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect\Dead_Particle</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MoonBaboon.h">
       <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
@@ -267,7 +282,15 @@
     <ClInclude Include="..\public\DataStorage.h">
       <Filter>96.DataStorage</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_Wormhole.h" />
+    <ClInclude Include="..\public\Effect_Cody_Size_ML.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.CodySize\01.CodySize_ML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Wormhole.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\02.Wormhole</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RespawnTunnel_Portal.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\01.RespawnTunnel_Portal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -349,10 +372,10 @@
       <Filter>02.GameObject\05.Effect/Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Player_DeadEffect.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Player_DeadParticle.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Dead_Effect\Dead_Particle</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MoonBaboon.cpp">
       <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
@@ -363,7 +386,15 @@
     <ClCompile Include="..\private\DataStorage.cpp">
       <Filter>96.DataStorage</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Effect_Wormhole.cpp" />
+    <ClCompile Include="..\private\Effect_Cody_Size_ML.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.CodySize\01.CodySize_ML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Wormhole.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\02.Wormhole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\RespawnTunnel_Portal.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\01.RespawnTunnel_Portal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
