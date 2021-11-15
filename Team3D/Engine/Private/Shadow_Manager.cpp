@@ -5,6 +5,7 @@
 #include "RenderTarget_Manager.h"
 #include "Light_Manager.h"
 #include "Light.h"
+#include "Graphic_Device.h"
 
 IMPLEMENT_SINGLETON(CShadow_Manager);
 
@@ -40,8 +41,8 @@ HRESULT CShadow_Manager::Ready_ShadowManager(ID3D11Device* pDevice, ID3D11Device
 
 	FAILED_CHECK_RETURN(Set_CascadeViewportsInfo(), E_FAIL);
 
-	//m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDevice_Context, 0.f, 0.f, fBufferWidth, fBufferHeight, TEXT("../Bin/ShaderFiles/Shader_LightAcc.hlsl"), "DefaultTechnique");
-	//NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
+	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDevice_Context, 0.f, 0.f, fBufferWidth, fBufferHeight, TEXT("../Bin/ShaderFiles/Shader_Shadow.hlsl"), "DefaultTechnique");
+	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
 
 	return S_OK;
 }
@@ -69,7 +70,43 @@ HRESULT CShadow_Manager::RSSet_CascadedViewports()
 
 HRESULT CShadow_Manager::Render_Shadows()
 {
-	return E_NOTIMPL;
+	// 일단은 메인만
+	ID3D11ShaderResourceView* pDepthShaderResourceView = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_Depth"));
+	NULL_CHECK_RETURN(pDepthShaderResourceView, E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_DepthTexture", pDepthShaderResourceView), E_FAIL);
+
+	ID3D11ShaderResourceView* pCascadedShadowDepthMap = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_CascadedShadow_Depth"));
+	NULL_CHECK_RETURN(pCascadedShadowDepthMap, E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_CascadedShadowDepthTexture", pCascadedShadowDepthMap), E_FAIL);
+
+	/* For.MainView */
+	_float	fCamFar;
+	_matrix	ProjMatrixInverse;
+	_matrix ViewMatrixInverse;
+	_float4	vViewportUVInfo;
+
+	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
+	CPipeline* pPipeline = CPipeline::GetInstance();
+
+	fCamFar = pPipeline->Get_MainCamFar();
+	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_MAINPROJ_INVERSE);
+	ViewMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_MAINVIEW_INVERSE);
+	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_MAIN);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_fCamFar", &fCamFar, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_ProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(_matrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_ViewMatrixInverse", &XMMatrixTranspose(ViewMatrixInverse), sizeof(_matrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_vViewportUVInfo", &vViewportUVInfo, sizeof(_float4)), E_FAIL);
+
+	m_pVIBuffer->Set_Variable("g_CascadeEnds", (void*)m_fCascadedEnds, sizeof(_float) * MAX_CASCADES + 1);
+
+	_matrix ShadowTransforms[MAX_CASCADES];
+	Get_CascadeShadowTransformsTranspose(0, ShadowTransforms);
+	m_pVIBuffer->Set_Variable("g_ShadowTransforms", ShadowTransforms, sizeof(_matrix) * MAX_CASCADES);
+
+	// Cascade Shadow
+	m_pVIBuffer->Render(0);
+
+	return S_OK;
 }
 
 HRESULT CShadow_Manager::Set_CascadeViewportsInfo()
