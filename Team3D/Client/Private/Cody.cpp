@@ -6,6 +6,7 @@
 #include "DataBase.h"
 
 #include "Effect_Generator.h"
+#include "Effect_Cody_Size.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -48,6 +49,10 @@ HRESULT CCody::Ready_Component()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
 
+	//Effect 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Cody_Size"), nullptr, (CGameObject**)&m_pEffect_Size), E_FAIL);
+	m_pEffect_Size->Set_Model(m_pModelCom);
+
 	return S_OK;
 }
 #pragma endregion
@@ -69,9 +74,7 @@ _int CCody::Tick(_double dTimeDelta)
 	Jump(dTimeDelta);
 	Change_Size(dTimeDelta);
 
-	//m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
-	//m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Death_Fall_MH);
-
+	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
 	return NO_EVENT;
@@ -129,6 +132,7 @@ void CCody::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pEffect_Size);
 	CCharacter::Free();
 }
 
@@ -212,7 +216,9 @@ void CCody::KeyInput(_double TimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_LSHIFT) && m_bRoll == false)
 	{
 		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 		if (m_IsJumping == false)
 		{
 			m_pModelCom->Set_Animation(ANI_C_Roll_Start);
@@ -469,6 +475,8 @@ void CCody::Change_Size(const _double TimeDelta)
 	{
 		if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_LARGE)
 		{
+			m_pEffect_Size->Change_SizeUp();
+
 			if (m_vScale.x < 5.f)
 			{
 				m_vScale.x += (_float)TimeDelta * 20.f;
@@ -486,6 +494,8 @@ void CCody::Change_Size(const _double TimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_LARGE && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
+			m_pEffect_Size->Change_SizeDown();
+
 			if (m_vScale.x > 1.f)
 			{
 				m_vScale.x -= (_float)TimeDelta * 20.f;
@@ -503,6 +513,8 @@ void CCody::Change_Size(const _double TimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_SMALL)
 		{
+			m_pEffect_Size->Change_SizeDown();
+
 			if (m_vScale.x > 0.5f)
 			{
 				m_vScale.x -= (_float)TimeDelta * 10.f;
@@ -520,6 +532,8 @@ void CCody::Change_Size(const _double TimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_SMALL && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
+			m_pEffect_Size->Change_SizeUp();
+
 			if (m_vScale.x < 1.f)
 			{
 				m_vScale.x += (_float)TimeDelta * 10.f;

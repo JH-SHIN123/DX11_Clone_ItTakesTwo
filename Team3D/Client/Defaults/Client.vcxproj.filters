@@ -166,8 +166,8 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.CodySize">
       <UniqueIdentifier>{f386c037-a6cf-4f8a-b0c5-48b528993dc8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.CodySize\01.CodySize_ML">
-      <UniqueIdentifier>{e7396a7d-8e9b-4d91-85c0-717a7a7fd7f8}</UniqueIdentifier>
+    <Filter Include="97.ShaderFiles\01.Codes\00.Effect">
+      <UniqueIdentifier>{61c62b4e-19bc-4143-8975-a999c1978874}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -255,9 +255,6 @@
     <ClInclude Include="..\public\DataStorage.h">
       <Filter>96.DataStorage</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_Cody_Size_ML.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.CodySize\01.CodySize_ML</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Effect_Wormhole.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\02.Wormhole</Filter>
     </ClInclude>
@@ -296,6 +293,12 @@
     </ClInclude>
     <ClInclude Include="..\public\Effect_RespawnTunnel_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\02.RespawnTunnel_Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Cody_Size.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.CodySize</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Color.txt">
+      <Filter>02.GameObject\05.Effect/Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -365,9 +368,6 @@
     <ClCompile Include="..\private\DataStorage.cpp">
       <Filter>96.DataStorage</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Effect_Cody_Size_ML.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.CodySize\01.CodySize_ML</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Effect_Wormhole.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\02.Wormhole</Filter>
     </ClCompile>
@@ -407,6 +407,9 @@
     <ClCompile Include="..\private\Effect_RespawnTunnel_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\02.RespawnTunnel_Smoke</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_Cody_Size.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.CodySize</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -436,20 +439,20 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl">
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl">
-      <Filter>97.ShaderFiles\01.Codes</Filter>
-    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl">
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
-      <Filter>97.ShaderFiles\01.Codes</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_RectCustom.hlsl">
-      <Filter>97.ShaderFiles\01.Codes</Filter>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl">
+      <Filter>97.ShaderFiles\01.Codes\00.Effect</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect.hlsl">
-      <Filter>97.ShaderFiles\01.Codes</Filter>
+      <Filter>97.ShaderFiles\01.Codes\00.Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_RectCustom.hlsl">
+      <Filter>97.ShaderFiles\01.Codes\00.Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
+      <Filter>97.ShaderFiles\01.Codes\00.Effect</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

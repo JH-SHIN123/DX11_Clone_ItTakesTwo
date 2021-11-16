@@ -225,10 +225,12 @@ private:
 	// 단발성 함수들.
 	HRESULT Ready_Component();
 
+private: // Effects
+	class CEffect_Cody_Size* m_pEffect_Size = nullptr;
+
 	// Components
 private:
 	class CMainCamera*	m_pCamera = nullptr;
-
 
 	// 생성 및 소멸 관련
 public:

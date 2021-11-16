@@ -3,7 +3,7 @@ GameObject_2D_Player_Dead|Component_Texture_Smoke_Puff_01|0||0||1|8|8|-1|1|1|1|1
 GameObject_2D_Player_Dead_Particle|Component_Texture_Circle_Alpha|0|Component_Texture_Dead_Cells|0||1000|4|4|-1|1|1|1|1|0|1|0|-1|0.01|0.01|0.01|0|0|0
 GameObject_2D_Player_Revive|Component_Texture_Circle_Alpha|0|Component_Texture_Dead_Cells|0||1000|4|4|-1|1|1|1|1|0|1|0|-1|0.01|0.01|0.01|0|0|0
 GameObject_2D_FireDoor|Component_Texture_Ribbon_Noise|1|Component_Texture_Tilling_Noise|1||1|1|1|-1|1|1|1|1|0|1|0|-1|0.01|0.01|0.01|0|0|0
-GameObject_2D_Effect_Cody_Size_ML|Component_Texture_Circle_Alpha|0||1||150|1|1|-1|1|1|1|1|0|1|0|-1|0.01|0.01|0.01|0|0|0
+GameObject_2D_Cody_Size|Component_Texture_Circle_Alpha|0||1||150|1|1|-1|1|1|1|1|0|1|0|-1|0.01|0.01|0.01|0|0|0
 GameObject_2D_Landing_Smoke|Component_Texture_Smoke_Puff_02|0||0||1|8|8|-1|2|2|1|1|0|1|0|-1|0.01|0.01|0.01|0|0|0
 GameObject_2D_Dash|Component_Texture_Gradient_Noise|2|Component_Texture_Ribbon_Noise|0||1|1|1|-1|10|1|1|1|0|1|0|-1|0.01|0.01|0.01|0|0|0
 GameObject_3D_RespawnTunnel||0||0|Component_Model_RespawnTunnel|1|1|1|-1|1|1|1|1|0|1|0|-1|0.002|0.002|0.002|0|-90|0

@@ -14,7 +14,7 @@
 #include "Effect_Player_Dead.h"
 #include "Effect_Player_Dead_Particle.h"
 #include "Effect_Player_Revive.h"
-#include "Effect_Cody_Size_ML.h"
+#include "Effect_Cody_Size.h"
 #include "Effect_RespawnTunnel_Portal.h"
 #pragma endregion
 
@@ -175,8 +175,8 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Revive"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Revive",		CEffect_Player_Revive::Create(pDevice, pDeviceContext, pData));
 
-	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Effect_Cody_Size_ML"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Effect_Cody_Size_ML",	CEffect_Cody_Size_ML::Create(pDevice, pDeviceContext, pData));
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Cody_Size"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Cody_Size",			CEffect_Cody_Size::Create(pDevice, pDeviceContext, pData));
 
 	//
 	// 3D Effect

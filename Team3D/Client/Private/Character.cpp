@@ -105,16 +105,6 @@ HRESULT CCharacter::Render()
 	return CGameObject::Render();
 }
 
-HRESULT CCharacter::Set_ShaderConstant_Default()
-{
-	return CGameObject::Set_ShaderConstant_Default();
-}
-
-HRESULT CCharacter::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
-{
-	return CGameObject::Set_ShaderConstant_Shadow(LightViewMatrix, LightProjMatrix);
-}
-
 void CCharacter::Free()
 {
 

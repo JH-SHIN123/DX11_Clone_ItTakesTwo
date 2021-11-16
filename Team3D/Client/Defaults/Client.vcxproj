@@ -187,7 +187,8 @@
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
-    <ClInclude Include="..\public\Effect_Cody_Size_ML.h" />
+    <ClInclude Include="..\public\Effect_Cody_Size.h" />
+    <ClInclude Include="..\Public\Effect_Color.txt" />
     <ClInclude Include="..\public\Effect_Generator.h" />
     <ClInclude Include="..\public\Effect_Player_Revive.h" />
     <ClInclude Include="..\public\Effect_Wormhole.h" />
@@ -227,7 +228,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\private\Effect_Cody_Size_ML.cpp" />
+    <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\private\Effect_Generator.cpp" />
     <ClCompile Include="..\private\Effect_Player_Revive.cpp" />
     <ClCompile Include="..\private\Effect_Wormhole.cpp" />
