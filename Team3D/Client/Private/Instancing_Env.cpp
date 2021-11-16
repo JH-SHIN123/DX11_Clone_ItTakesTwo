@@ -43,8 +43,8 @@ _int CInstancing_Env::Late_Tick(_double TimeDelta)
 {
 	CGameObject::Late_Tick(TimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
-	//return m_pRendererCom->Add_GameObject_ToRenderGroup((CRenderer::RENDER_GROUP)m_Ins_Env_Desc.RenderGroup, this);
+	//return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup((CRenderer::RENDER_GROUP)m_Ins_Env_Desc.RenderGroup, this);
 
 	return NO_EVENT;
 }
@@ -56,7 +56,7 @@ HRESULT CInstancing_Env::Render()
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
 	m_pModelCom->Set_DefaultVariables_Perspective();
-	m_pModelCom->Render_Model(0, m_Ins_Env_Desc.iMaterialIndex);
+	m_pModelCom->Render_Model(m_Ins_Env_Desc.ShaderPass, m_Ins_Env_Desc.iMaterialIndex);
 	//m_pModelCom->Render_Model(m_Ins_Env_Desc.ShaderPass);
 
 	return S_OK;
