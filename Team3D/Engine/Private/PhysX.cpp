@@ -14,7 +14,7 @@ PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData fi
 	PX_UNUSED(constantBlock);
 
 	// all initial and persisting reports for everything, with per-point data
-	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT | PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_CONTACT_POINTS;
+	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT | PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_CONTACT_POINTS | PxPairFlag::eNOTIFY_TOUCH_CCD;
 
 	return PxFilterFlag::eDEFAULT;
 }
@@ -51,12 +51,11 @@ HRESULT CPhysX::Ready_PhysX()
 	SceneDesc.simulationEventCallback = m_pEventCallback;
 	SceneDesc.cpuDispatcher = m_pDispatcher;
 	SceneDesc.filterShader = FilterShader;
+	SceneDesc.kineKineFilteringMode = PxPairFilteringMode::eKILL;
+	SceneDesc.staticKineFilteringMode = PxPairFilteringMode::eDEFAULT;
 
 	m_pScene = m_pPhysics->createScene(SceneDesc);
 	NULL_CHECK_RETURN(m_pScene, E_FAIL);
-
-	//m_pScene->setFlag(PxSceneFlag::eENABLE_KINEMATIC_PAIRS, true);
-	//m_pScene->setFlag(PxSceneFlag::eENABLE_KINEMATIC_STATIC_PAIRS, true);
 
 #ifdef _DEBUG
 	PxPvdSceneClient* pClient = m_pScene->getScenePvdClient();
@@ -140,7 +139,7 @@ PxTriangleMesh* CPhysX::Create_Mesh(MESHACTOR_DESC pMeshActorDesc)
 	PxTriangleMeshDesc MeshDesc;
 	MeshDesc.points.count		= pMeshActorDesc.iVertexCount;
 	MeshDesc.points.data		= pMeshActorDesc.pVertices;
-	MeshDesc.points.stride		= sizeof(_vector);
+	MeshDesc.points.stride		= sizeof(PxVec3);
 	MeshDesc.triangles.count	= pMeshActorDesc.iFaceCount;
 	MeshDesc.triangles.data		= pMeshActorDesc.pFaces;
 	MeshDesc.triangles.stride	= sizeof(POLYGON_INDICES32);
@@ -151,6 +150,9 @@ PxTriangleMesh* CPhysX::Create_Mesh(MESHACTOR_DESC pMeshActorDesc)
 	Params.suppressTriangleMeshRemapTable = true;
 	Params.meshPreprocessParams &= ~static_cast<PxMeshPreprocessingFlags>(PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH);
 	Params.meshPreprocessParams &= ~static_cast<PxMeshPreprocessingFlags>(PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE);
+
+	//Params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH;
+	//Params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE);
 
 	//Params.midphaseDesc.mBVH33Desc.meshCookingHint = PxMeshCookingHint::eCOOKING_PERFORMANCE;
 	Params.midphaseDesc.mBVH33Desc.meshCookingHint = PxMeshCookingHint::eSIM_PERFORMANCE;

@@ -24,10 +24,11 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 	CGameObject::NativeConstruct(pArg);
 
 	CModel_Instance::ARG_DESC Arg;
-	Arg.iInstanceCount = 5000;
+	Arg.iInstanceCount = 10;
 	Arg.fCullingRadius = 10.f;
 	Arg.pActorName = "TileBox";
 	Arg.pWorldMatrices = new _float4x4[Arg.iInstanceCount];
+	Arg.pMaterial = m_pGameInstance->Create_PxMaterial(0.5f, 0.5f, 0.5f);
 
 	for (_uint i = 0; i < Arg.iInstanceCount; ++i)
 	{
@@ -39,6 +40,10 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_TileBox"), TEXT("Com_Model"), (CComponent**)&m_pModelCom, &Arg), E_FAIL);
 
+	_matrix TransformMatrix = XMMatrixIdentity();
+	TransformMatrix.r[3] = XMVectorSet(0.f, 0.f, 100.f, 1.f);
+	m_pModelCom->Update_Model(TransformMatrix);
+
 	return S_OK;
 }
 
@@ -46,12 +51,13 @@ _int CTileBox::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_8))
-		m_iRenderNum = 0;
-	if (m_pGameInstance->Key_Down(DIK_9))
-		m_iRenderNum = 1;
+	_matrix TransformMatrix= XMMatrixRotationZ(XMConvertToRadians((_float)-dTimeDelta * 10.f));
+
 	if (m_pGameInstance->Key_Down(DIK_0))
-		m_iRenderNum = 2;
+		m_pModelCom->Update_Model(TransformMatrix);
+
+	if (m_pGameInstance->Key_Pressing(DIK_9))
+		m_pModelCom->Update_Model(TransformMatrix);
 
 	return NO_EVENT;
 }

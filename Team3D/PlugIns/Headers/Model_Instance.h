@@ -17,14 +17,19 @@ public: /* Struct */
 		_float4x4*		pWorldMatrices;
 		_uint			iInstanceCount;
 		_float			fCullingRadius;
+		PxMaterial*		pMaterial;
 		const char*		pActorName;
 
 		tagArgumentDesc() {}
-		tagArgumentDesc(_float4x4* _pWorldMatrices, _uint _iInstanceCount, _float _fCullingRadius, const char* pName) : pWorldMatrices(_pWorldMatrices), iInstanceCount(_iInstanceCount), fCullingRadius(_fCullingRadius), pActorName(pName) {}
+		tagArgumentDesc(_float4x4* _pWorldMatrices, _uint _iInstanceCount, _float _fCullingRadius, PxMaterial* _pMaterial, const char* pName)
+			: pWorldMatrices(_pWorldMatrices), iInstanceCount(_iInstanceCount), fCullingRadius(_fCullingRadius), pMaterial(_pMaterial), pActorName(pName) {}
 	}ARG_DESC;
-
-public: /* Getter */
-	MESHACTOR_DESC	Get_MeshActorDesc() { return MESHACTOR_DESC(m_iVertexCount, m_pVectorPositions, m_iFaceCount, m_pFaces); }
+	typedef struct tagPxTriMesh
+	{
+		PxVec3*				pVertices;
+		POLYGON_INDICES32*	pFaces;
+		PxTriangleMesh*		pTriMesh;
+	}PX_TRIMESH;
 
 public: /* Setter */
 	/* For.Shader */
@@ -39,34 +44,36 @@ public:
 	/* For.ModelLoader */
 	HRESULT	Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials);
 	/* For.Client */
+	HRESULT Update_Model(_fmatrix TransformMatrix);
 	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0);
 
 private: /* Typedef */
 	typedef vector<class CMesh*>	MESHES;
 	typedef vector<MATERIAL*>		MATERIALS;
 private:
-	class CModel_Loader*		m_pModel_Loader = nullptr;
-	VTXMESH*					m_pVertices = nullptr;
-	POLYGON_INDICES32*			m_pFaces = nullptr;
-	MESHES						m_Meshes;
-	MATERIALS					m_Materials;
-	_uint						m_iMeshCount = 0;
-	_uint						m_iMaterialCount = 0;
-	vector<MESHES>				m_SortedMeshes;
+	class CModel_Loader*	m_pModel_Loader = nullptr;
+	VTXMESH*				m_pVertices = nullptr;
+	POLYGON_INDICES32*		m_pFaces = nullptr;
+	MESHES					m_Meshes;
+	MATERIALS				m_Materials;
+	_uint					m_iMeshCount = 0;
+	_uint					m_iMaterialCount = 0;
+	vector<MESHES>			m_SortedMeshes;
 	/* For.Instance */
-	_uint						m_iInstanceCount = 0;
-	_float4x4*					m_pWorldMatrices = nullptr;
-	vector<_float4x4>			m_RealTimeMatrices;
-	_float						m_fCullingRadius = 0.f;
-	PxRigidStatic**				m_ppActors = nullptr;
+	_uint					m_iInstanceCount = 0;
+	_float4x4*				m_pWorldMatrices = nullptr;
+	vector<_float4x4>		m_RealTimeMatrices;
+	_float					m_fCullingRadius = 0.f;
 	/* For.PhyX */
-	_vector*					m_pVectorPositions = nullptr;
-	char						m_szActorName[MAX_PATH];
+	PxRigidStatic**			m_ppActors = nullptr;
+	vector<PX_TRIMESH>		m_PxTriMeshes;
+	char					m_szActorName[MAX_PATH];
 	/* For.MaterialSet */
-	_uint						m_iMaterialSetCount = 0;
+	_uint					m_iMaterialSetCount = 0;
 private:
-	HRESULT		Sort_MeshesByMaterial();
-	HRESULT		Apply_PivotMatrix(_fmatrix PivotMatrix);
+	HRESULT	Sort_MeshesByMaterial();
+	HRESULT	Apply_PivotMatrix(_fmatrix PivotMatrix);
+	HRESULT	Store_TriMeshes();
 
 #pragma region For_Buffer
 private: /* For.Buffer */
