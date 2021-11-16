@@ -14,6 +14,7 @@ private:
 
 public:
 	HRESULT Ready_PhysX();
+
 	_int	Tick();
 	/* For.Actor */
 	PxRigidStatic*	Create_StaticActor(PxTransform Transform, PxGeometry& Geometry, PxMaterial* pMaterial, const char* pActorName);
@@ -27,6 +28,7 @@ public:
 	/* For.Material */
 	PxMaterial*		Create_Material(PxReal StaticFriction, PxReal DynamicFriction, PxReal Restitution);
 
+	_bool RayCast(_fvector vOrigin,_fvector vDir,PxRaycastBuffer& _Rayhit);
 private:
 	PxDefaultAllocator		m_Allocator;
 	PxDefaultErrorCallback	m_ErrorCallback;

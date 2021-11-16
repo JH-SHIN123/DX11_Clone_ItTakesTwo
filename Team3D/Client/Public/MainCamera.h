@@ -46,7 +46,7 @@ private:
 
 private:
 	_int	ReSet_Cam_FreeToAuto();		//변수 초기화용
-	void	OffSetPhsX(_double dTimeDelta);
+	void	OffSetPhsX(_double dTimeDelta,_fmatrix matRev);
 
 private:
 	CGameObject* m_pTargetObj = nullptr;
