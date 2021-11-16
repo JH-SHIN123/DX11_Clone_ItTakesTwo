@@ -17,6 +17,10 @@ public: /* Struct */
 	{
 		_uint	iViewportIndex;
 
+		/* For. Shadow */
+		// Near, Fov는 안바뀐다고 가정함.
+		_float	fFullScreenAspect;
+
 		_float3	vEye;
 		_float3	vAt;
 		_float3	vAxisY;

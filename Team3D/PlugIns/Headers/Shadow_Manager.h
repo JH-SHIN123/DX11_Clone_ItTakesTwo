@@ -17,10 +17,9 @@ private:
 	virtual ~CShadow_Manager() = default;
 
 public:
-	const _float* Get_CascadedEnds() const { return m_fCascadedEnds; }
-
-	void Get_CascadeShadowViewProjTranspose(TYPE iShadowType, _matrix* OutMatrix) const;
-	void Get_CascadeShadowTransformsTranspose(TYPE iShadowType, _matrix* OutMatrix) const;
+	const _float*	Get_CascadedEnds() const { return m_fCascadedEnds; }
+	void			Get_CascadeShadowViewProjTranspose(TYPE iShadowType, _matrix* OutMatrix) const;
+	void			Get_CascadeShadowTransformsTranspose(TYPE iShadowType, _matrix* OutMatrix) const;
 
 public:
 	HRESULT Ready_ShadowManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
