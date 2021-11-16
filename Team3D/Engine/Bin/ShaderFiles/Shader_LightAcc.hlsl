@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////
-#include "Shader_Defines.hpp"
-#include "Shader_Macro.hpp"
+#include "Shader_Include.hpp"
+
 
 texture2D	g_NormalTexture;
 texture2D	g_DepthTexture;

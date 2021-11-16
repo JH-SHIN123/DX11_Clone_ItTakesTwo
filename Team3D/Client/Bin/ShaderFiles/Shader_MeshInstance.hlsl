@@ -1,5 +1,4 @@
-#include "Shader_Defines.hpp"
-#include "Shader_Macro.hpp"
+#include "Shader_Include.hpp"
 
 ////////////////////////////////////////////////////////////
 #define MAX_VERTICES NUM_VERTICES * MAX_CASCADES * NUM_VIEWPORTS
@@ -18,13 +17,6 @@ cbuffer Effect
 	float	g_fAlpha;
 };
 
-texture2D g_CascadedShadowDepthTexture;
-cbuffer ShadowDesc
-{
-	float	g_CascadeEnds[MAX_CASCADES + 1];
-	matrix	g_ShadowTransforms_Main[MAX_CASCADES];
-	matrix	g_ShadowTransforms_Sub[MAX_CASCADES];
-};
 ////////////////////////////////////////////////////////////
 
 struct VS_IN
@@ -215,52 +207,13 @@ PS_OUT	PS_MAIN(PS_IN In)
 
 	// Calculate Shadow
 	int iIndex = -1;
-	vector shadowPosNDC;
-	for (uint i = 0; i < MAX_CASCADES; ++i)
-	{
-		if (1 == In.iViewportIndex) shadowPosNDC = mul(In.vWorldPosition, g_ShadowTransforms_Main[i]);
-		else shadowPosNDC = mul(In.vWorldPosition, g_ShadowTransforms_Sub[i]);
-		shadowPosNDC.z /= shadowPosNDC.w;
-
-		// 2. 절두체에 위치하는지 & 몇번째 슬라이스에 존재하는지 체크(cascadeEndWorld값과 비교해가며 슬라이스 인덱스 구하기)
-		if (shadowPosNDC.x >= 0 && shadowPosNDC.x <= 1.0 && shadowPosNDC.y >= 0.0 && shadowPosNDC.y <= 1.0 && shadowPosNDC.z >= 0.0 && shadowPosNDC.z <= 1.0)
-		{
-			// 여기서 문제 발생 (Aspect 변경시)
-			if (-shadowPosNDC.z <= g_CascadeEnds[i + 1])
-			{
-				iIndex = i;
-				break;
-			}
-		}
-	}
+	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex,In.vWorldPosition);
 
 	// Get_ShadowFactor
-	matrix shadowTransformMatrix;
-	if (1 == In.iViewportIndex) shadowTransformMatrix = g_ShadowTransforms_Main[iIndex];
-	else shadowTransformMatrix = g_ShadowTransforms_Sub[iIndex];
+	float fShadowFactor = 0.f;
+	fShadowFactor = Get_ShadowFactor(In.iViewportIndex, iIndex, In.vWorldPosition);
 
-	vector shadowPosH = mul(In.vWorldPosition, shadowTransformMatrix);
-	shadowPosH.xyz /= shadowPosH.w;
-
-	// Match up Deferred With Cascaded Shadow Depth
-	float2 vShadowUV = shadowPosH.xy;
-	vShadowUV.x *= 0.5f;
-	vShadowUV.y = (vShadowUV.y + float(iIndex)) / float(MAX_CASCADES);
-
-	float shadowFactor = 0.f;
-	float percentLit = 0.0f;
-	float depth = shadowPosH.z; // 그릴 객체들의 깊이값. (그림자 ndc로 이동한)
-
-	percentLit = g_CascadedShadowDepthTexture.Sample(Wrap_Sampler, vShadowUV).r;
-	if (percentLit < depth)
-		shadowFactor = percentLit;
-
-	if (shadowPosH.z < shadowFactor + 0.01f)
-	{
-		shadowFactor = 0.f;
-	}
-
-	Out.vShadow = 1.f - shadowFactor;
+	Out.vShadow = 1.f - fShadowFactor;
 	Out.vShadow.a = 1.f;
 
 	return Out;
@@ -289,7 +242,7 @@ technique11 DefaultTechnique
 	// 1
 	pass Write_CascadedShadowDepth
 	{
-		SetRasterizerState(Rasterizer_Shadow);
+		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile		vs_5_0 VS_MAIN_CSM_DEPTH();

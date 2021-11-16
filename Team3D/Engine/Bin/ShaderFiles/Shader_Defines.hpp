@@ -1,3 +1,8 @@
+
+#define MAX_CASCADES	3
+#define MAIN_VIEWPORT_INDEX 1
+#define SUB_VIEWPORT_INDEX 2
+
 /* struct */
 struct BONEMATRICES
 {
@@ -8,7 +13,6 @@ struct BONEMATRICES
 cbuffer Matrices
 {
 	matrix	g_WorldMatrix;
-	
 	matrix	g_MainViewMatrix;
 	matrix	g_MainProjMatrix;
 	matrix	g_SubViewMatrix;
@@ -21,6 +25,15 @@ cbuffer Camera
 	float4	g_vMainCamPosition;
 	float4	g_vSubCamPosition;
 }
+
+/* For. Shadow */
+texture2D g_CascadedShadowDepthTexture;
+cbuffer ShadowDesc
+{
+	float	g_CascadeEnds[MAX_CASCADES + 1];
+	matrix	g_ShadowTransforms_Main[MAX_CASCADES];
+	matrix	g_ShadowTransforms_Sub[MAX_CASCADES];
+};
 
 /* Sampler */
 sampler	Wrap_Sampler = sampler_state
@@ -52,15 +65,6 @@ RasterizerState Rasterizer_NoCull
 {
 	FillMode = Solid;
 	CullMode = None;
-};
-RasterizerState Rasterizer_Shadow
-{
-	FillMode = Solid;
-	CullMode = Back;
-	FrontCounterClockwise = false;
-	//DepthBias = 0.005;
-	//DepthBiasClamp = 0.0f;
-	//SlopeScaledDepthBias = 5;
 };
 
 /* DepthStencilState */

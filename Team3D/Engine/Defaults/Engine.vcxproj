@@ -183,7 +183,7 @@ call WinCmd_UpdateLib.bat</Command>
   <ItemGroup>
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp" />
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Macro.hpp" />
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp" />
     <ClInclude Include="..\public\Actor.h" />
     <ClInclude Include="..\Public\Anim.h" />
     <ClInclude Include="..\Public\AnimChannel.h" />

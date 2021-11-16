@@ -369,10 +369,10 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Macro.hpp">
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp">
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
   </ItemGroup>
