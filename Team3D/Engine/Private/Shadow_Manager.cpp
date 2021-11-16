@@ -106,9 +106,9 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(TYPE eType)
 
 	const _float3* pFrustumCornersW = nullptr;
 	if(SHADOW_MAIN == eType)
-		pFrustumCornersW = pFrustum->Get_FrustumPointsInWorld(CFrustum::FRUSTUM_FULLSCREEN_MAIN);
+		pFrustumCornersW = pFrustum->Get_FrustumPointsInWorld(CFrustum::FRUSTUM_MAIN);
 	else
-		pFrustumCornersW = pFrustum->Get_FrustumPointsInWorld(CFrustum::FRUSTUM_FULLSCREEN_SUB);
+		pFrustumCornersW = pFrustum->Get_FrustumPointsInWorld(CFrustum::FRUSTUM_SUB);
 
 	if (nullptr == pFrustumCornersW) return E_FAIL;
 

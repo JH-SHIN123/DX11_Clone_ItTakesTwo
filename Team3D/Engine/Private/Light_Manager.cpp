@@ -100,12 +100,9 @@ HRESULT CLight_Manager::Render_Lights()
 	NULL_CHECK_RETURN(pNormalShaderResourceView, E_FAIL);
 	ID3D11ShaderResourceView* pDepthShaderResourceView = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_Depth"));
 	NULL_CHECK_RETURN(pDepthShaderResourceView, E_FAIL);
-	ID3D11ShaderResourceView* pCascadedShadowDepthMap = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_CascadedShadow_Depth"));
-	NULL_CHECK_RETURN(pCascadedShadowDepthMap, E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_NormalTexture", pNormalShaderResourceView), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_DepthTexture", pDepthShaderResourceView), E_FAIL);
-	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_CascadedShadowDepthTexture", pCascadedShadowDepthMap), E_FAIL);
 
 	_float	fCamFar;
 	_vector vCamPosition;
@@ -115,12 +112,6 @@ HRESULT CLight_Manager::Render_Lights()
 
 	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
 	CPipeline* pPipeline = CPipeline::GetInstance();
-
-	/* For, FullScreen */
-	fCamFar = pPipeline->Get_FullscreenFar();
-	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_FULLSCREEN_PROJ_INVERSE);
-	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_fFullScreenCamFar", &fCamFar, sizeof(_float)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_FullScreenProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(_matrix)), E_FAIL);
 
 	/* For.MainView */
 	vCamPosition		= pPipeline->Get_MainCamPosition();
@@ -145,18 +136,6 @@ HRESULT CLight_Manager::Render_Lights()
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_SubProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(_matrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_SubViewMatrixInverse", &XMMatrixTranspose(ViewMatrixInverse), sizeof(_matrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4)), E_FAIL);
-
-	/* For. Shadow */
-	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();
-	if (nullptr == pShadowManager) return E_FAIL;
-
-	m_pVIBuffer->Set_Variable("g_CascadeEnds", (void*)pShadowManager->Get_CascadedEnds(), sizeof(_float) * (MAX_CASCADES + 1));
-
-	_matrix ShadowTransforms[MAX_CASCADES];
-	pShadowManager->Get_CascadeShadowTransformsTranspose(0, ShadowTransforms);
-	m_pVIBuffer->Set_Variable("g_ShadowTransforms_Main", ShadowTransforms, sizeof(_matrix) * MAX_CASCADES);
-	pShadowManager->Get_CascadeShadowTransformsTranspose(1, ShadowTransforms);
-	m_pVIBuffer->Set_Variable("g_ShadowTransforms_Sub", ShadowTransforms, sizeof(_matrix) * MAX_CASCADES);
 
 	for (auto& pLight : m_Lights)
 		FAILED_CHECK_RETURN(pLight.second->Render_Light(m_pVIBuffer), E_FAIL);
