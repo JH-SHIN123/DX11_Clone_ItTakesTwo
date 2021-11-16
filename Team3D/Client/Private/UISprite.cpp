@@ -71,11 +71,11 @@ HRESULT CUISprite::Render()
 	m_pVIBuffer_SpriteCom->Render(m_iShaderPassNum);
 
 	CUI_Generator::FONTDESC tFontDesc;
-	tFontDesc.vPosition = { 0.f, -200.f };
-	tFontDesc.vScale = { 30.f, 30.f };
-	tFontDesc.fInterval = -5.f;
+	tFontDesc.vPosition = { -50.f, -300.f };
+	tFontDesc.vScale = { 25.f, 30.f };
+	tFontDesc.fInterval = -7.f;
 
-	CUI_Generator::GetInstance()->Render_Font(TEXT("이게된다고"), tFontDesc);
+	CUI_Generator::GetInstance()->Render_Font(TEXT("폰트껒여"), tFontDesc);
 
 	return S_OK;
 }

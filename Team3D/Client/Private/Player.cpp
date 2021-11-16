@@ -77,6 +77,9 @@ _int CPlayer::Late_Tick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_Z))
 		CUI_Generator::GetInstance()->Delete_UI(Player::Player_Cody, UI::Arrowkeys_Side);
 
+	if (m_pGameInstance->Key_Down(DIK_X))
+		CUI_Generator::GetInstance()->Delete_UI(Player::Player_Cody, UI::StickIcon);
+
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
 
