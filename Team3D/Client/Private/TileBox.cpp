@@ -41,7 +41,7 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_TileBox"), TEXT("Com_Model"), (CComponent**)&m_pModelCom, &Arg), E_FAIL);
 
 	_matrix TransformMatrix = XMMatrixIdentity();
-	TransformMatrix.r[3] = XMVectorSet(0.f, 0.f, 5.f, 1.f);
+	TransformMatrix.r[3] = XMVectorSet(0.f, 0.f, 10.f, 1.f);
 	m_pModelCom->Update_Model(TransformMatrix);
 
 	return S_OK;
@@ -64,6 +64,7 @@ _int CTileBox::Tick(_double dTimeDelta)
 	{
 		m_pTest = CPhysX::GetInstance()->Create_DynamicActor(PxTransform(PxVec3(0.f, 5.f, 0.f)), PxSphereGeometry(3.f), m_pGameInstance->Create_PxMaterial(0.5f, 0.5f, 0.5f), "Test", PxVec3(0.5f, 0.5f, 0.5f));
 		CPhysX::GetInstance()->Add_ActorToScene(m_pTest);
+		Setup_PxFiltering(m_pTest, FilterGroup::eDYNAMIC, FilterGroup::eSTATIC | FilterGroup::ePLAYER);
 	}
 
 	//if (m_pGameInstance->Key_Down(DIK_8))

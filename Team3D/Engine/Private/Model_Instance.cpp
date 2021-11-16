@@ -177,6 +177,7 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 			Shape->setRestOffset(-0.5f);
 
 			pPhysX->Add_ActorToScene(m_ppActors[iActorIndex]);
+			Setup_PxFiltering(m_ppActors[iActorIndex], FilterGroup::eSTATIC, 0);
 		}
 	}
 
