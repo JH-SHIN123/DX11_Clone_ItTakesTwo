@@ -65,6 +65,26 @@ void CFrustum::Transform_ToWorldSpace()
 	XMStoreFloat4(&m_Frustum[1].PlaneWorld[5], XMPlaneFromPoints(vPoints_World[0], vPoints_World[1], vPoints_World[2]));
 
 	m_Frustum[1].fFrustumDepth = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_Frustum[1].PlaneWorld[4]) - XMLoadFloat4(&m_Frustum[1].PlaneWorld[5])));
+
+	/* For.ShadowFrustum */
+	InverseProjMatrix = pPipeline->Get_Transform(CPipeline::TS_SHADOWPROJ_INVERSE);
+	InverseViewMatrix = pPipeline->Get_Transform(CPipeline::TS_SUBVIEW_INVERSE);
+	CombinedMatrix = InverseProjMatrix * InverseViewMatrix;
+
+	for (_uint iIndex = 0; iIndex < 8; ++iIndex)
+	{
+		vPoints_World[iIndex] = XMVector3TransformCoord(XMLoadFloat3(&m_vPoints[iIndex]), CombinedMatrix);
+		XMStoreFloat3(&m_Frustum[2].vPoints_World[iIndex], vPoints_World[iIndex]);
+	}
+
+	XMStoreFloat4(&m_Frustum[2].PlaneWorld[0], XMPlaneFromPoints(vPoints_World[1], vPoints_World[5], vPoints_World[6]));
+	XMStoreFloat4(&m_Frustum[2].PlaneWorld[1], XMPlaneFromPoints(vPoints_World[4], vPoints_World[0], vPoints_World[3]));
+	XMStoreFloat4(&m_Frustum[2].PlaneWorld[2], XMPlaneFromPoints(vPoints_World[4], vPoints_World[5], vPoints_World[1]));
+	XMStoreFloat4(&m_Frustum[2].PlaneWorld[3], XMPlaneFromPoints(vPoints_World[3], vPoints_World[2], vPoints_World[6]));
+	XMStoreFloat4(&m_Frustum[2].PlaneWorld[4], XMPlaneFromPoints(vPoints_World[5], vPoints_World[4], vPoints_World[7]));
+	XMStoreFloat4(&m_Frustum[2].PlaneWorld[5], XMPlaneFromPoints(vPoints_World[0], vPoints_World[1], vPoints_World[2]));
+
+	m_Frustum[2].fFrustumDepth = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_Frustum[2].PlaneWorld[4]) - XMLoadFloat4(&m_Frustum[2].PlaneWorld[5])));
 }
 
 void CFrustum::Transform_ToLocalSpace(_fmatrix WorldMatrix)
@@ -111,6 +131,24 @@ void CFrustum::Transform_ToLocalSpace(_fmatrix WorldMatrix)
 	XMStoreFloat4(&m_Frustum[1].PlaneLocal[3], XMPlaneFromPoints(vPoints_Local[3], vPoints_Local[2], vPoints_Local[6]));
 	XMStoreFloat4(&m_Frustum[1].PlaneLocal[4], XMPlaneFromPoints(vPoints_Local[5], vPoints_Local[4], vPoints_Local[7]));
 	XMStoreFloat4(&m_Frustum[1].PlaneLocal[5], XMPlaneFromPoints(vPoints_Local[0], vPoints_Local[1], vPoints_Local[2]));
+
+	/* For.ShadowViewport - not use this fuction */
+	//InverseProjMatrix = pPipeline->Get_Transform(CPipeline::TS_SHADOWPROJ_INVERSE);
+	//InverseViewMatrix = pPipeline->Get_Transform(CPipeline::TS_SUBVIEW_INVERSE);
+	//CombinedMatrix = InverseProjMatrix * InverseViewMatrix;
+
+	//for (_uint iIndex = 0; iIndex < 8; ++iIndex)
+	//{
+	//	vPoints_Local[iIndex] = XMVector3TransformCoord(XMLoadFloat3(&m_vPoints[iIndex]), CombinedMatrix);
+	//	XMStoreFloat3(&m_Frustum[2].vPoints_Local[iIndex], vPoints_Local[iIndex]);
+	//}
+
+	//XMStoreFloat4(&m_Frustum[2].PlaneLocal[0], XMPlaneFromPoints(vPoints_Local[1], vPoints_Local[5], vPoints_Local[6]));
+	//XMStoreFloat4(&m_Frustum[2].PlaneLocal[1], XMPlaneFromPoints(vPoints_Local[4], vPoints_Local[0], vPoints_Local[3]));
+	//XMStoreFloat4(&m_Frustum[2].PlaneLocal[2], XMPlaneFromPoints(vPoints_Local[4], vPoints_Local[5], vPoints_Local[1]));
+	//XMStoreFloat4(&m_Frustum[2].PlaneLocal[3], XMPlaneFromPoints(vPoints_Local[3], vPoints_Local[2], vPoints_Local[6]));
+	//XMStoreFloat4(&m_Frustum[2].PlaneLocal[4], XMPlaneFromPoints(vPoints_Local[5], vPoints_Local[4], vPoints_Local[7]));
+	//XMStoreFloat4(&m_Frustum[2].PlaneLocal[5], XMPlaneFromPoints(vPoints_Local[0], vPoints_Local[1], vPoints_Local[2]));
 }
 
 _bool CFrustum::IsIn_WorldSpace(_fvector vPosition, _float fRadius)

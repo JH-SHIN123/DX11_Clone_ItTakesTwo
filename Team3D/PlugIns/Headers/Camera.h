@@ -23,6 +23,7 @@ public: /* Struct */
 
 		_float	fFovY;
 		_float	fAspect;
+		_float	fFullScreenAspect;
 		_float	fNear;
 		_float	fFar;
 

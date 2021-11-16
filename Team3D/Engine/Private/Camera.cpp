@@ -57,21 +57,24 @@ _int CCamera::Tick(_double dTimeDelta)
 	{
 		m_CameraDesc.fAspect = CGraphic_Device::GetInstance()->Get_ViewportAspect(1);
 
-		_matrix CameraMatrix	= m_pTransformCom->Get_WorldMatrix();
-		_matrix ProjMatrix		= XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+		_matrix CameraMatrix		= m_pTransformCom->Get_WorldMatrix();
+		_matrix ProjMatrix			= XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
 
 		m_pPipeline->Set_Transform(CPipeline::TS_MAINVIEW, XMMatrixInverse(nullptr, CameraMatrix));
 		m_pPipeline->Set_Transform(CPipeline::TS_MAINVIEW_INVERSE, CameraMatrix);
 		m_pPipeline->Set_Transform(CPipeline::TS_MAINPROJ, ProjMatrix);
 		m_pPipeline->Set_Transform(CPipeline::TS_MAINPROJ_INVERSE, XMMatrixInverse(nullptr, ProjMatrix));
+
+
 		m_pPipeline->Set_MainCamFar(m_CameraDesc.fFar);
 	}
 	else if (2 == m_CameraDesc.iViewportIndex)
 	{
 		m_CameraDesc.fAspect = CGraphic_Device::GetInstance()->Get_ViewportAspect(2);
 
-		_matrix CameraMatrix	= m_pTransformCom->Get_WorldMatrix();
-		_matrix ProjMatrix		= XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+		_matrix CameraMatrix		= m_pTransformCom->Get_WorldMatrix();
+		_matrix ProjMatrix			= XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+		_matrix FrustumProjMatrix	= XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fFullScreenAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
 
 		m_pPipeline->Set_Transform(CPipeline::TS_SUBVIEW, XMMatrixInverse(nullptr, CameraMatrix));
 		m_pPipeline->Set_Transform(CPipeline::TS_SUBVIEW_INVERSE, CameraMatrix);
@@ -79,6 +82,11 @@ _int CCamera::Tick(_double dTimeDelta)
 		m_pPipeline->Set_Transform(CPipeline::TS_SUBPROJ_INVERSE, XMMatrixInverse(nullptr, ProjMatrix));
 		m_pPipeline->Set_SubCamFar(m_CameraDesc.fFar);
 	}
+
+	/* Frustum Aspect is Always same */
+	_matrix FrustumProjMatrix = XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fFullScreenAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+	m_pPipeline->Set_Transform(CPipeline::TS_SHADOWPROJ, XMMatrixInverse(nullptr, FrustumProjMatrix));
+	m_pPipeline->Set_Transform(CPipeline::TS_SHADOWPROJ_INVERSE, XMMatrixInverse(nullptr, FrustumProjMatrix));
 
 	return NO_EVENT;
 }

@@ -2,9 +2,8 @@
 #include "Shader_Macro.hpp"
 
 ////////////////////////////////////////////////////////////
-#define MAX_VERTICES NUM_VERTICES * MAX_CASCADES * NUM_VIEWPORTS
+#define MAX_VERTICES NUM_VERTICES * MAX_CASCADES
 #define NUM_VERTICES 3
-#define NUM_VIEWPORTS 2
 
 texture2D	g_DiffuseTexture;
 //texture2D	g_NormalTexture;
@@ -20,8 +19,7 @@ cbuffer Effect
 
 cbuffer ShadowDesc
 {
-	matrix	g_ShadowTransforms_Main[MAX_CASCADES];
-	matrix	g_ShadowTransforms_Sub[MAX_CASCADES];
+	matrix	g_ShadowTransforms[MAX_CASCADES];
 };
 ////////////////////////////////////////////////////////////
 
@@ -140,29 +138,13 @@ void GS_MAIN_CSM_DEPTH(triangle GS_IN_CSM_DEPTH In[3], inout TriangleStream<GS_O
 
 	/* Main Viewport - Viewport 0, 1, 2 */
 	[unroll]
-	for (uint mainViewIndex = 0; mainViewIndex < MAX_CASCADES; ++mainViewIndex)
+	for (uint iViewIndex = 0; iViewIndex < MAX_CASCADES; ++iViewIndex)
 	{
 		[unroll]
 		for (uint i = 0; i < 3; i++)
 		{
-			Out.vPosition = mul(In[i].vPosition, g_ShadowTransforms_Main[mainViewIndex]);
-			Out.iViewportIndex = mainViewIndex;
-
-			TriStream.Append(Out);
-		}
-
-		TriStream.RestartStrip();
-	}
-
-	/* Sub Viewport - Viewport 3, 4, 5 */
-	[unroll]
-	for (uint subViewIndex = 0; subViewIndex < MAX_CASCADES; ++subViewIndex)
-	{
-		[unroll]
-		for (uint j = 0; j < 3; j++)
-		{
-			Out.vPosition = mul(In[j].vPosition, g_ShadowTransforms_Sub[subViewIndex]);
-			Out.iViewportIndex = MAX_CASCADES + subViewIndex;
+			Out.vPosition = mul(In[i].vPosition, g_ShadowTransforms[iViewIndex]);
+			Out.iViewportIndex = iViewIndex;
 
 			TriStream.Append(Out);
 		}

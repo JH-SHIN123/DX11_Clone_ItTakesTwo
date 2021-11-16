@@ -83,8 +83,7 @@ _int CGameInstance::Tick(_double dTimeDelta)
 	if (m_pGameObject_Manager->Late_Tick(dTimeDelta) < 0)
 		return EVENT_ERROR;
 
-	m_pShadow_Manager->Update_CascadedShadowTransform_MainViewport();
-	m_pShadow_Manager->Update_CascadedShadowTransform_SubViewport();
+	m_pShadow_Manager->Update_CascadeShadowTransform();
 
 	return m_pLevel_Manager->Tick(dTimeDelta);
 }
@@ -301,12 +300,12 @@ void CGameInstance::Clear_Lights()
 #pragma endregion
 
 #pragma region Shadow_Manager
-void CGameInstance::Get_CascadeShadowLightViewProjTranspose(_uint iViewportIndex, _matrix* OutMatrix) const
+void CGameInstance::Get_CascadeShadowLightViewProjTranspose(_matrix* OutMatrix) const
 {
 	if (nullptr == m_pShadow_Manager)
 		return;
 
-	return m_pShadow_Manager->Get_CascadeShadowLightViewProjTranspose(iViewportIndex, OutMatrix);
+	return m_pShadow_Manager->Get_CascadeShadowLightViewProjTranspose(OutMatrix);
 }
 #pragma endregion
 
