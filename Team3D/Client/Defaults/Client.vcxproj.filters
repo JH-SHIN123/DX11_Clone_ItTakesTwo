@@ -192,6 +192,9 @@
     <ClInclude Include="..\Public\Rocket.h">
       <Filter>02.GameObject\98.Interaction_Deco\00.Rocket</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\StarBuddy.h">
+      <Filter>02.GameObject\98.Interaction_Deco\01.StarBuddy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -250,6 +253,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Rocket.cpp">
       <Filter>02.GameObject\98.Interaction_Deco\00.Rocket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StarBuddy.cpp">
+      <Filter>02.GameObject\98.Interaction_Deco\01.StarBuddy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

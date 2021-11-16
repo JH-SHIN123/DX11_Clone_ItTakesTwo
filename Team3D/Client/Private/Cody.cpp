@@ -290,7 +290,7 @@ void CCody::KeyInput(_double TimeDelta)
 	if (m_pModelCom->Get_CurAnimIndex() == ANI_C_SprintTurnAround)
 	{
 		if(m_fSprintAcceleration < 12.f)
-			m_fSprintAcceleration += TimeDelta * 20.f;
+			m_fSprintAcceleration += (_float)TimeDelta * 20.f;
 	}
 	if (m_pModelCom->Is_AnimFinished(ANI_C_SprintTurnAround))
 	{
@@ -732,7 +732,7 @@ void CCody::Roll(const _double TimeDelta)
 			return;
 		}
 
-		m_fAcceleration -= TimeDelta * 10.0;
+		m_fAcceleration -= (_float)TimeDelta * 10.0;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 		vDirection = XMVectorSetY(vDirection, 0.f);
 		vDirection = XMVector3Normalize(vDirection);
@@ -1016,7 +1016,7 @@ void CCody::Ground_Pound(const _double TimeDelta)
 			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Start);
 			m_pActorCom->Set_Jump(false);
 			m_pActorCom->Set_Gravity(0.f);
-			m_fGroundPoundAirDelay += TimeDelta;
+			m_fGroundPoundAirDelay += (_float)TimeDelta;
 		}
 	}
 

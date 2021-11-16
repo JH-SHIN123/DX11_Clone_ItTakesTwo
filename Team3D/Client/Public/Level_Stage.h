@@ -26,6 +26,7 @@ private:
 
 	/* Interactive Objects */
 	HRESULT Ready_Layer_Rocket(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_StarBuddy(const _tchar* pLayerTag);
 
 public:
 	static CLevel_Stage* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

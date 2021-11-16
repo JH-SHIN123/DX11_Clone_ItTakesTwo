@@ -193,6 +193,7 @@
     <ClInclude Include="..\Public\MoonBaboon.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Rocket.h" />
+    <ClInclude Include="..\Public\StarBuddy.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\public\TileBox.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="..\Private\MoonBaboon.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
+    <ClCompile Include="..\Private\StarBuddy.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\private\TileBox.cpp" />

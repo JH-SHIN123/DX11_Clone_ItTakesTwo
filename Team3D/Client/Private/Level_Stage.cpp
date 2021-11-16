@@ -24,6 +24,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 
 	/* For.Interactive Objects */
 	FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
 
 	return S_OK;
 }
@@ -109,6 +110,13 @@ HRESULT CLevel_Stage::Ready_Layer_Rocket(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Rocket")), E_FAIL);
 	return S_OK;
+}
+
+HRESULT CLevel_Stage::Ready_Layer_StarBuddy(const _tchar * pLayerTag)
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy")), E_FAIL);
+	return S_OK;
+
 }
 
 CLevel_Stage * CLevel_Stage::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

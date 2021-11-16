@@ -11,12 +11,12 @@ END
 
 BEGIN(Client)
 
-class CRocket : public CGameObject
+class CStarBuddy : public CGameObject
 {
 protected:
-	explicit CRocket(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CRocket(const CRocket& rhs);
-	virtual ~CRocket() = default;
+	explicit CStarBuddy(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CStarBuddy(const CStarBuddy& rhs);
+	virtual ~CStarBuddy() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -29,7 +29,7 @@ public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 public:
-	void Launch_Rocket(_double TimeDelta);
+	void Launch_StarBuddy(_double TimeDelta);
 
 private:
 	_float		m_fUpAcceleration = 0.f;
@@ -43,7 +43,7 @@ protected:
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 public:
-	static CRocket* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CStarBuddy* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
