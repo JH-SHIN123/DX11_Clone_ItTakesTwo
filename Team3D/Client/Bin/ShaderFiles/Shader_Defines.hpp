@@ -35,6 +35,7 @@ cbuffer Camera
 
 cbuffer Viewport
 {
+	/* x = TopLeftX, y = TopLeftY, z = Width, w = Height, 0.f ~ 1.f */
 	float4	g_vMainViewportUVInfo;
 	float4	g_vSubViewportUVInfo;
 };

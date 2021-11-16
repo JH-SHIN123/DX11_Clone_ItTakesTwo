@@ -36,8 +36,16 @@ float Get_ShadowFactor(uint iViewportIndex, uint iSliceIndex, vector vWorldPos)
 
 	// Match up Deferred With Cascaded Shadow Depth
 	float2 vShadowUV = shadowPosH.xy;
-	vShadowUV.x *= 0.5f;
+	
+	// Set up to Slice Offset
 	vShadowUV.y = (vShadowUV.y + float(iSliceIndex)) / float(MAX_CASCADES);
+
+	// Set up to Viewport Offset
+	if(MAIN_VIEWPORT_INDEX == iViewportIndex)
+		vShadowUV.x *= g_vMainViewportUVInfo.z;
+	else
+		vShadowUV.x *= g_vMainViewportUVInfo.z + 0.5f;
+
 
 	float shadowFactor = 0.f;
 	float percentLit = 0.0f;
