@@ -24,6 +24,9 @@ private:
 	HRESULT Ready_Layer_UFO(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MoonBaboon(const _tchar* pLayerTag);
 
+	/* Interactive Objects */
+	HRESULT Ready_Layer_Rocket(const _tchar* pLayerTag);
+
 public:
 	static CLevel_Stage* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

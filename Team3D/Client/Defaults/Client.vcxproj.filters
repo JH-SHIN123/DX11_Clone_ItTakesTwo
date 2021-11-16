@@ -103,6 +103,18 @@
     <Filter Include="96.DataStorage">
       <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\98.Interaction_Deco">
+      <UniqueIdentifier>{80b9488d-6107-4ad3-ab4d-9ba4db640228}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\98.Interaction_Deco\00.Rocket">
+      <UniqueIdentifier>{a4d27e3c-4021-47f3-bb3c-081dd7fb5758}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\98.Interaction_Deco\01.StarBuddy">
+      <UniqueIdentifier>{6be15374-eb26-4929-8e60-d673bd18461d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\98.Interaction_Deco\02.SecurityCamera">
+      <UniqueIdentifier>{db7e22fc-29b8-4ab2-a9be-83636efb01da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -177,6 +189,9 @@
     <ClInclude Include="..\public\DataStorage.h">
       <Filter>96.DataStorage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Rocket.h">
+      <Filter>02.GameObject\98.Interaction_Deco\00.Rocket</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -232,6 +247,9 @@
     </ClCompile>
     <ClCompile Include="..\private\DataStorage.cpp">
       <Filter>96.DataStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rocket.cpp">
+      <Filter>02.GameObject\98.Interaction_Deco\00.Rocket</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
