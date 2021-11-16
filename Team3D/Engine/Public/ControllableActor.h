@@ -30,6 +30,7 @@ public:
 
 	/* Setter */
 	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
+	void    Set_Jump(_bool bJump) { m_bJump = bJump; }
 
 	/* Getter */
 	_bool  Get_IsJump() { return m_bJump; }

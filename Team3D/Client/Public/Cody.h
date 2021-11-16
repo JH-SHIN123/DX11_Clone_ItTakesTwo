@@ -217,7 +217,6 @@ public:
 	// Tick 에서 호출될 함수들
 private:
 	virtual void KeyInput(_double TimeDelta);
-	void StateCheck(_double TimeDelta);
 	void TriggerCheck(_double TimeDelta);
 
 
@@ -263,6 +262,8 @@ private:
 	_bool m_bRoll = false;
 	_bool m_bMove = false;
 	_bool m_bShortJump = false;
+	_bool m_bGroundPound = false;
+
 	// 구르기 관련
 	_bool m_bAction = false;
 
@@ -276,6 +277,11 @@ private:
 	_float m_fAcceleration = 5.0;
 	_float	m_fJogAcceleration = 25.f;
 	_float m_fSprintAcceleration = 35.f;
+	_float m_fGroundPoundAirDelay = 0.f; // 체공시간.
+
+	// GroundPound 관련
+	_bool m_bPlayGroundPoundOnce = false;
+	_bool m_bCanMove = true;
 
 	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
 	_float	m_fIdleTime = 0.f;

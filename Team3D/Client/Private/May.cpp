@@ -75,6 +75,8 @@ void CMay::Add_LerpInfo_To_Model()
 
 	m_pModelCom->Add_LerpInfo(ANI_M_ExhaustedMH, ANI_M_Jog_Exhausted_Start, true, 10.f);
 	m_pModelCom->Add_LerpInfo(ANI_M_Jog_Exhausted_Start, ANI_M_Jog, true, 20.f);
+
+	m_pModelCom->Add_LerpInfo(ANI_M_GroundPound_Land, ANI_M_GroundPound_Land_Exit, false, 1.8f);
 	return;
 }
 
@@ -83,17 +85,23 @@ _int CMay::Tick(_double dTimeDelta)
 	//s
 	CCharacter::Tick(dTimeDelta);
 
+
 	m_pCamera = (CSubCamera*)CDataBase::GetInstance()->Get_SubCam();
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
-	KeyInput(dTimeDelta);
-	TriggerCheck(dTimeDelta);
-	StateCheck(dTimeDelta);
-	Sprint(dTimeDelta);
-	Move(dTimeDelta);
-	Roll(dTimeDelta);
-	Jump(dTimeDelta);
+	if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
+	{
+		KeyInput(dTimeDelta);
+		TriggerCheck(dTimeDelta);
+		StateCheck(dTimeDelta);
+		Sprint(dTimeDelta);
+		Move(dTimeDelta);
+		Roll(dTimeDelta);
+		Jump(dTimeDelta);
+	}
+	Ground_Pound(dTimeDelta);
+
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
@@ -280,6 +288,15 @@ void CMay::KeyInput(_double TimeDelta)
 		}
 	}
 #pragma endregion
+
+#pragma region Key_RAlt
+
+	if (m_pGameInstance->Key_Down(DIK_RALT) && m_pActorCom->Get_IsJump() == true)
+	{
+		m_bGroundPound = true;
+	}
+
+#pragma endregion 
 
 }
 
@@ -543,6 +560,45 @@ void CMay::Jump(const _double TimeDelta)
 		}
 		m_IsJumping = false;
 		m_iJumpCount = 0;
+	}
+}
+void CMay::Ground_Pound(const _double TimeDelta)
+{
+	if (m_bGroundPound == true)
+	{
+		if (m_fGroundPoundAirDelay > 0.4f)
+		{
+			m_pModelCom->Set_Animation(ANI_M_GroundPound_Falling);
+			m_pActorCom->Set_Gravity(-9.8f);
+			m_pActorCom->Jump_Start(-20.f);
+			m_fGroundPoundAirDelay = 0.f;
+			m_bGroundPound = false;
+		}
+		else
+		{
+			m_bCanMove = false;
+			m_pModelCom->Set_Animation(ANI_M_GroundPound_Start);
+			m_pActorCom->Set_Jump(false);
+			m_pActorCom->Set_Gravity(0.f);
+			m_fGroundPoundAirDelay += TimeDelta;
+		}
+	}
+
+	if (m_pModelCom->Is_AnimFinished(ANI_M_GroundPound_Falling) && m_bPlayGroundPoundOnce == false)
+	{
+		m_bPlayGroundPoundOnce = true;
+		m_pModelCom->Set_Animation(ANI_M_Jump_Land);
+		//m_pModelCom->Set_NextAnimIndex(ANI_M_GroundPound_Land_Exit);
+	}
+	if (m_pModelCom->Is_AnimFinished(ANI_M_Jump_Land))
+	{
+		//m_pModelCom->Set_Animation(ANI_M_GroundPound_Land_Exit);
+		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+	}
+	//if (m_pModelCom->Is_AnimFinished(ANI_M_GroundPound_Land_Exit))
+	{
+		m_bPlayGroundPoundOnce = false;
+		m_bCanMove = true;
 	}
 }
 void CMay::StateCheck(_double TimeDelta)

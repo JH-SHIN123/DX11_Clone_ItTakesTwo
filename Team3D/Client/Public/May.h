@@ -215,6 +215,7 @@ public:
 	void Roll(const _double TimeDelta);
 	void Sprint(const _double TimeDelta);
 	void Jump(const _double TimeDelta);
+	void Ground_Pound(const _double TimeDelta);
 
 
 private:
@@ -244,6 +245,12 @@ private:
 	// 움직임 가속
 	_float m_fAcceleration = 5.0;
 	_float	m_fJogAcceleration = 15.f;
+	_float m_fGroundPoundAirDelay = 0.f; // 체공시간.
+
+	 // GroundPound 관련
+	_bool m_bPlayGroundPoundOnce = false;
+	_bool m_bCanMove = true;
+	_bool m_bGroundPound = false;
 
 	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
 	_float	m_fIdleTime = 0.f;

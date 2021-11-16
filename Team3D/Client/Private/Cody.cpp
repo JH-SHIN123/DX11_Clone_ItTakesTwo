@@ -55,6 +55,7 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_Jump_Start, false);
 	//m_pModelCom->Add_LerpInfo(1, 2, true, 8.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_Sprint, ANI_C_Sprint, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_MH, true, 10.f);
 	return;
 }
 
@@ -70,14 +71,16 @@ _int CCody::Tick(_double dTimeDelta)
 		return NO_EVENT;
 
 	KeyInput(dTimeDelta);
-	TriggerCheck(dTimeDelta);
-	StateCheck(dTimeDelta);
-	Sprint(dTimeDelta);
-	Move(dTimeDelta);
-	Roll(dTimeDelta);
-	Jump(dTimeDelta);
-	Change_Size(dTimeDelta);
-
+	if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
+	{
+		TriggerCheck(dTimeDelta);
+		Sprint(dTimeDelta);
+		Move(dTimeDelta);
+		Roll(dTimeDelta);
+		Jump(dTimeDelta);
+		Change_Size(dTimeDelta);
+	}
+	Ground_Pound(dTimeDelta);
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
@@ -305,8 +308,16 @@ void CCody::KeyInput(_double TimeDelta)
 	}
 #pragma endregion
 
-}
+#pragma region Key_LCtrl
 
+	if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pActorCom->Get_IsJump() == true)
+	{
+		m_bGroundPound = true;
+	}
+
+#pragma endregion 
+
+}
 void CCody::Move(const _double TimeDelta)
 {
 #pragma region Medium_Size
@@ -457,7 +468,6 @@ void CCody::Roll(const _double TimeDelta)
 	
 	
 }
-
 void CCody::Sprint(const _double TimeDelta)
 {
 	if (m_bSprint == true && m_bMove == true)
@@ -658,14 +668,45 @@ void CCody::Change_Size(const _double TimeDelta)
 		}
 	}
 }
-void CCody::StateCheck(_double TimeDelta)
+void CCody::Ground_Pound(const _double TimeDelta)
 {
-	// 변경해준 m_iNextState 에 따라 애니메이션을 세팅해주고 NextState를 CurState 로 바꿔준다.
-	// 애니메이션 인덱스 == 상태 인덱스 같음 ㅇㅇ.
-	//if (m_iCurState != m_iNextState)
-	//{
-	//m_iCurState = m_iNextState;
-	//}
+	if (m_bGroundPound == true)
+	{
+		if (m_fGroundPoundAirDelay > 0.4f)
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Falling);
+			m_pActorCom->Set_Gravity(-9.8f);
+			m_pActorCom->Jump_Start(-20.f);
+			m_fGroundPoundAirDelay = 0.f;
+			m_bGroundPound = false;
+		}
+		else
+		{
+			m_bCanMove = false;
+			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Start);
+			m_pActorCom->Set_Jump(false);
+			m_pActorCom->Set_Gravity(0.f);
+			m_fGroundPoundAirDelay += TimeDelta;
+		}
+	}
+
+	if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_GroundPound_Falling) && m_bPlayGroundPoundOnce == false)
+	{
+		m_bPlayGroundPoundOnce = true;
+		m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Land);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit);
+	}
+	if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_GroundPound_Land))
+	{
+		m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+	}
+	if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit))
+	{
+		m_bPlayGroundPoundOnce = false;
+		m_bCanMove = true;
+	}
+
 }
 void CCody::TriggerCheck(_double TimeDelta)
 {
