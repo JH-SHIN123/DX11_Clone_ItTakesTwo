@@ -178,9 +178,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
+<<<<<<< HEAD
     <ClInclude Include="..\public\Cam_Helper.h" />
+=======
+    <ClInclude Include="..\Public\Character.h" />
+>>>>>>> origin/YYY_RealPlayer
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
+    <ClInclude Include="..\Public\Cody.h" />
+    <ClInclude Include="..\public\DataBase.h" />
     <ClInclude Include="..\public\DataStorage.h" />
     <ClInclude Include="..\public\Film.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
@@ -188,17 +194,28 @@
     <ClInclude Include="..\public\Loading.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\MainCamera.h" />
+    <ClInclude Include="..\Public\May.h" />
+    <ClInclude Include="..\Public\MoonBaboon.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\Rocket.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\public\TileBox.h" />
+    <ClInclude Include="..\Public\UFO.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Client_Animation_Index_Define.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <ClCompile Include="..\private\Cam_Helper.cpp" />
+=======
+    <ClCompile Include="..\Private\Character.cpp" />
+    <ClCompile Include="..\Private\Cody.cpp" />
+    <ClCompile Include="..\private\DataBase.cpp" />
+>>>>>>> origin/YYY_RealPlayer
     <ClCompile Include="..\private\DataStorage.cpp" />
     <ClCompile Include="..\private\Film.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
@@ -206,10 +223,14 @@
     <ClCompile Include="..\private\Loading.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\MainCamera.cpp" />
+    <ClCompile Include="..\Private\May.cpp" />
+    <ClCompile Include="..\Private\MoonBaboon.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\Rocket.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\private\TileBox.cpp" />
+    <ClCompile Include="..\Private\UFO.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

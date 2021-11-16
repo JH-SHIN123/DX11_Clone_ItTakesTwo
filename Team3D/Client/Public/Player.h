@@ -12,9 +12,9 @@ END
 
 BEGIN(Client)
 
-class CPlayer final : public CGameObject
+class CPlayer : public CGameObject
 {
-private:
+protected:
 	explicit CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CPlayer(const CPlayer& rhs);
 	virtual ~CPlayer() = default;
@@ -25,11 +25,17 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
+	virtual HRESULT Set_ShaderConstant_Default() override;
+	virtual HRESULT Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix) override;
 
 
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
+<<<<<<< HEAD
 private:
+=======
+protected:
+>>>>>>> origin/YYY_RealPlayer
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;

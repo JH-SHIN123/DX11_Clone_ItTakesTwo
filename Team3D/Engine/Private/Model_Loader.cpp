@@ -7,6 +7,7 @@
 #include "Anim.h"
 #include "AnimChannel.h"
 #include <io.h>
+#include <fstream>
 
 IMPLEMENT_SINGLETON(CModel_Loader)
 
@@ -152,11 +153,12 @@ HRESULT CModel_Loader::Load_ModelFromFile(ID3D11Device * pDevice, ID3D11DeviceCo
 		do {
 			lstrcpy(szAnimFullPath, szBasePath);
 			lstrcat(szAnimFullPath, anim_file.name);
-
+			
 			hFile = CreateFile(szAnimFullPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 			if (INVALID_HANDLE_VALUE == hFile) return E_FAIL;
 
 			++iAnimCount;
+
 
 			CAnim::ANIM_DESC AnimDesc;
 			ReadFile(hFile, &AnimDesc, sizeof(CAnim::ANIM_DESC), &dwByte, nullptr);
@@ -186,6 +188,33 @@ HRESULT CModel_Loader::Load_ModelFromFile(ID3D11Device * pDevice, ID3D11DeviceCo
 			}
 			pAnim->Bring_ChannelContainer(Channels);
 			Anims.emplace_back(pAnim);
+
+			//if (0 == lstrcmp(szBasePath, L"../Bin/Resources/_Test/Model/May/Animation/"))
+			//{
+			//	wofstream fout;
+			//	fout.open(L"../Bin/Resources/_Test/Model/May/Index/MayIndex.txt", std::ios_base::out | std::ios_base::app);
+			//	HANDLE hFile2 = CreateFile(L"../Bin/Resources/_Test/Model/May/Index/MayIndex.txt", GENERIC_WRITE, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+			//	DWORD dwByte2 = 0;
+			//	DWORD dwStrByte2 = 0;
+			//	SetFilePointer(hFile2, 0, NULL, FILE_END);
+			//	fout << L"#define " << AnimDesc.szAnimName << ' ' << iAnimCount - 1 << endl;
+			//	fout.close();
+			//	CloseHandle(hFile2);
+			//}
+			//else if (0 == lstrcmp(szBasePath, L"../Bin/Resources/_Test/Model/Cody/Animation/"))
+			//{
+			//	wofstream fout;
+			//	fout.open(L"../Bin/Resources/_Test/Model/Cody/Index/CodyIndex.txt", std::ios_base::out | std::ios_base::app);
+			//	HANDLE hFile2 = CreateFile(L"../Bin/Resources/_Test/Model/Cody/Index/CodyIndex.txt", GENERIC_WRITE, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+			//	DWORD dwByte2 = 0;
+			//	DWORD dwStrByte2 = 0;
+			//	SetFilePointer(hFile2, 0, NULL, FILE_END);
+			//	fout << L"#define " << AnimDesc.szAnimName << ' ' << iAnimCount - 1<< endl;
+			//	fout.close();
+			//	CloseHandle(hFile2);
+			//}
 
 			CloseHandle(hFile);
 		} while (_wfindnext(hAnimFile, &anim_file) == 0);

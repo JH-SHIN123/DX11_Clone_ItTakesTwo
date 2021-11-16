@@ -25,6 +25,9 @@ private:
 	CRenderer*				m_pRenderer			= nullptr;
 	ID3D11Device*			m_pDevice			= nullptr;
 	ID3D11DeviceContext*	m_pDeviceContext	= nullptr;
+
+
+
 	/* For.Timer */
 	_double					m_dFrameAcc			= 0.0; /* 1프레임시간 누적 */
 private:
