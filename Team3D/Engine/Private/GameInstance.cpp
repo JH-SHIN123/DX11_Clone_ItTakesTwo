@@ -302,12 +302,27 @@ void CGameInstance::Clear_Lights()
 #pragma endregion
 
 #pragma region Shadow_Manager
+const _float* CGameInstance::Get_CascadedEnds() const
+{
+	if (nullptr == m_pShadow_Manager)
+		return nullptr;
+
+	return m_pShadow_Manager->Get_CascadedEnds();
+}
+
 void CGameInstance::Get_CascadeShadowLightViewProjTranspose(_uint iViewportIndex, _matrix* OutMatrix) const
 {
 	if (nullptr == m_pShadow_Manager)
 		return;
 
 	return m_pShadow_Manager->Get_CascadeShadowLightViewProjTranspose(iViewportIndex, OutMatrix);
+}
+void CGameInstance::Get_CascadeShadowTransformTranspose(_uint iViewportIndex, _matrix* OutMatrix) const
+{
+	if (nullptr == m_pShadow_Manager)
+		return;
+
+	return m_pShadow_Manager->Get_CascadeShadowTransformsTranspose(iViewportIndex, OutMatrix);
 }
 #pragma endregion
 

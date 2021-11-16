@@ -8,8 +8,10 @@
 
 texture2D g_DiffuseTexture;
 
+texture2D g_CascadedShadowDepthTexture;
 cbuffer ShadowDesc
 {
+	float	g_CascadeEnds[MAX_CASCADES + 1];
 	matrix	g_ShadowTransforms_Main[MAX_CASCADES];
 	matrix	g_ShadowTransforms_Sub[MAX_CASCADES];
 };
@@ -69,7 +71,7 @@ struct GS_OUT
 	float4 vNormal				: NORMAL;
 	float2 vTexUV				: TEXCOORD0;
 	float4 vProjPosition		: TEXCOORD1;
-	float4 vProjPosition_Full	: TEXCOORD2;
+	float4 vWorldPosition		: TEXCOORD2;
 	uint   iViewportIndex		: SV_VIEWPORTARRAYINDEX;
 };
 
@@ -92,13 +94,12 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 	for (uint i = 0; i < 3; i++)
 	{
 		matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
-		matrix matVP_Full = mul(g_MainViewMatrix, g_FullScreenProjMatrix);
 
 		Out.vPosition		= mul(In[i].vPosition, matVP);
 		Out.vNormal			= In[i].vNormal;
 		Out.vTexUV			= In[i].vTexUV;
 		Out.vProjPosition	= Out.vPosition;
-		Out.vProjPosition_Full = mul(In[i].vPosition, matVP_Full);
+		Out.vWorldPosition = In[i].vPosition;
 		Out.iViewportIndex	= 1;
 
 		TriStream.Append(Out);
@@ -109,13 +110,12 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 	for (uint j = 0; j < 3; j++)
 	{
 		matrix matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
-		matrix matVP_Full = mul(g_MainViewMatrix, g_FullScreenProjMatrix);
 
 		Out.vPosition		= mul(In[j].vPosition, matVP);
 		Out.vNormal			= In[j].vNormal;
 		Out.vTexUV			= In[j].vTexUV;
 		Out.vProjPosition	= Out.vPosition;
-		Out.vProjPosition_Full = mul(In[j].vPosition, matVP_Full);
+		Out.vWorldPosition	= In[j].vPosition;
 		Out.iViewportIndex	= 2;
 
 		TriStream.Append(Out);
@@ -169,7 +169,8 @@ struct PS_IN
 	float4	vNormal				: NORMAL;
 	float2	vTexUV				: TEXCOORD0;
 	float4	vProjPosition		: TEXCOORD1;
-	float4 vProjPosition_Full	: TEXCOORD2;
+	float4  vWorldPosition		: TEXCOORD2;
+	uint   iViewportIndex		: SV_VIEWPORTARRAYINDEX;
 };
 
 struct PS_OUT
@@ -177,7 +178,7 @@ struct PS_OUT
 	vector	vDiffuse			: SV_TARGET0;
 	vector	vNormal				: SV_TARGET1;
 	vector	vDepth				: SV_TARGET2;
-	vector	vDepth_FullScreen	: SV_TARGET3;
+	vector	vShadow				: SV_TARGET3;
 };
 
 struct PS_IN_CSM_DEPTH
@@ -197,7 +198,56 @@ PS_OUT PS_MAIN(PS_IN In)
 	Out.vDiffuse			= g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vNormal				= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth				= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
-	Out.vDepth_FullScreen	= vector(In.vProjPosition_Full.w / g_fFullScreenCamFar, In.vProjPosition_Full.z / In.vProjPosition.w, 0.f, 0.f);
+
+	// Calculate Shadow
+	int iIndex = -1;
+	vector shadowPosNDC;
+	for (uint i = 0; i < MAX_CASCADES; ++i)
+	{
+		if (1 == In.iViewportIndex) shadowPosNDC = mul(In.vWorldPosition, g_ShadowTransforms_Main[i]);
+		else shadowPosNDC = mul(In.vWorldPosition, g_ShadowTransforms_Sub[i]);
+		shadowPosNDC.z /= shadowPosNDC.w;
+
+		// 2. 절두체에 위치하는지 & 몇번째 슬라이스에 존재하는지 체크(cascadeEndWorld값과 비교해가며 슬라이스 인덱스 구하기)
+		if (shadowPosNDC.x >= 0 && shadowPosNDC.x <= 1.0 && shadowPosNDC.y >= 0.0 && shadowPosNDC.y <= 1.0 && shadowPosNDC.z >= 0.0 && shadowPosNDC.z <= 1.0)
+		{
+			// 여기서 문제 발생 (Aspect 변경시)
+			if (-shadowPosNDC.z <= g_CascadeEnds[i + 1])
+			{
+				iIndex = i;
+				break;
+			}
+		}
+	}
+
+	// Get_ShadowFactor
+	matrix shadowTransformMatrix;
+	if (1 == In.iViewportIndex) shadowTransformMatrix = g_ShadowTransforms_Main[iIndex];
+	else shadowTransformMatrix = g_ShadowTransforms_Sub[iIndex];
+
+	vector shadowPosH = mul(In.vWorldPosition, shadowTransformMatrix);
+	shadowPosH.xyz /= shadowPosH.w;
+
+	// Match up Deferred With Cascaded Shadow Depth
+	float2 vShadowUV = shadowPosH.xy;
+	vShadowUV.x *= 0.5f;
+	vShadowUV.y = (vShadowUV.y + float(iIndex)) / float(MAX_CASCADES);
+
+	float shadowFactor = 0.f;
+	float percentLit = 0.0f;
+	float depth = shadowPosH.z; // 그릴 객체들의 깊이값. (그림자 ndc로 이동한)
+
+	percentLit = g_CascadedShadowDepthTexture.Sample(Wrap_Sampler, vShadowUV).r;
+	if (percentLit < depth)
+		shadowFactor = percentLit;
+
+	if (shadowPosH.z < shadowFactor + 0.01f)
+	{
+		shadowFactor = 0.f;
+	}
+
+	Out.vShadow = 1.f - shadowFactor;
+	Out.vShadow.a = 1.f;
 
 	return Out;
 }

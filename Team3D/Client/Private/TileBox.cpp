@@ -61,6 +61,19 @@ HRESULT CTileBox::Render()
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
 	m_pModelCom->Set_DefaultVariables_Perspective();
+
+	_matrix ShadowLightViewProj[MAX_CASCADES];
+
+	m_pGameInstance->Get_CascadeShadowTransformTranspose(0, ShadowLightViewProj);
+	m_pModelCom->Set_Variable("g_ShadowTransforms_Main", ShadowLightViewProj, sizeof(_matrix) * MAX_CASCADES);
+
+	m_pGameInstance->Get_CascadeShadowTransformTranspose(1, ShadowLightViewProj);
+	m_pModelCom->Set_Variable("g_ShadowTransforms_Sub", ShadowLightViewProj, sizeof(_matrix) * MAX_CASCADES);
+
+	m_pModelCom->Set_Variable("g_CascadeEnds", (void*)m_pGameInstance->Get_CascadedEnds(), sizeof(_float) * (MAX_CASCADES + 1));
+
+	m_pModelCom->Set_ShaderResourceView("g_CascadedShadowDepthTexture", m_pRendererCom->Get_ShaderResourceView_RenderTargetManager(L"Target_CascadedShadow_Depth"));
+	
 	m_pModelCom->Render_Model(0);
 
 	return S_OK;

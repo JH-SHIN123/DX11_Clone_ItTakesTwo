@@ -52,7 +52,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	vector	vSpecularDesc	= g_SpecularTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vShadowDesc		= g_ShadowTexture.Sample(Wrap_Sampler, In.vTexUV);
 
-	
+	//Out.vColor = (vDiffuseDesc * vShadeDesc + vSpecularDesc);
 	Out.vColor = (vDiffuseDesc * vShadeDesc + vSpecularDesc) * vShadowDesc;
 
 	if (Out.vColor.a == 0.f)

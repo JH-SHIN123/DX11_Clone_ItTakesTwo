@@ -15,6 +15,9 @@ public: /* Enum */
 	enum RENDER_GROUP { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_ALPHA, RENDER_UI, RENDER_END };
 
 public:
+	ID3D11ShaderResourceView* Get_ShaderResourceView_RenderTargetManager(const _tchar* pRenderTargetTag);
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype();
 	virtual HRESULT	NativeConstruct(void* pArg);
 	HRESULT			Add_GameObject_ToRenderGroup(RENDER_GROUP eGroup, class CGameObject* pGameObject);
