@@ -147,7 +147,7 @@ HRESULT CLight_Manager::Render_Lights()
 	m_pVIBuffer->Set_Variable("g_CascadeEnds", (void*)pShadowManager->Get_CascadedEnds(), sizeof(_float) * (MAX_CASCADES + 1));
 
 	_matrix ShadowTransforms[MAX_CASCADES];
-	pShadowManager->Get_CascadeShadowTransformsTranspose(ShadowTransforms);
+	pShadowManager->Get_CascadeShadowTransformsTranspose(CShadow_Manager::SHADOW_MAIN, ShadowTransforms);
 	m_pVIBuffer->Set_Variable("g_ShadowTransforms", ShadowTransforms, sizeof(_matrix) * MAX_CASCADES);
 
 	for (auto& pLight : m_Lights)

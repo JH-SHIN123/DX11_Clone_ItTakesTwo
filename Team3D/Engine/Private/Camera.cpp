@@ -83,10 +83,9 @@ _int CCamera::Tick(_double dTimeDelta)
 		m_pPipeline->Set_SubCamFar(m_CameraDesc.fFar);
 	}
 
-	/* Frustum Aspect is Always same */
-	_matrix FrustumProjMatrix = XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fFullScreenAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
-	m_pPipeline->Set_Transform(CPipeline::TS_SHADOWPROJ, XMMatrixInverse(nullptr, FrustumProjMatrix));
-	m_pPipeline->Set_Transform(CPipeline::TS_SHADOWPROJ_INVERSE, XMMatrixInverse(nullptr, FrustumProjMatrix));
+	_matrix FullscreenProjMatrix = XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fFullScreenAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+	m_pPipeline->Set_Transform(CPipeline::TS_FULLSCREENPROJ, XMMatrixInverse(nullptr, FullscreenProjMatrix));
+	m_pPipeline->Set_Transform(CPipeline::TS_FULLSCREENPROJ_INVERSE, XMMatrixInverse(nullptr, FullscreenProjMatrix));
 
 	return NO_EVENT;
 }

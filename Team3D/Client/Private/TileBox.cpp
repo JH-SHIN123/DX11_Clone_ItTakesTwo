@@ -71,7 +71,7 @@ HRESULT CTileBox::Render_ShadowDepth()
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
 	_matrix ShadowLightViewProj[MAX_CASCADES];
-	m_pGameInstance->Get_CascadeShadowLightViewProjTranspose(ShadowLightViewProj);
+	m_pGameInstance->Get_CascadeShadowLightViewProjTranspose(0, ShadowLightViewProj);
 	m_pModelCom->Set_Variable("g_ShadowTransforms", ShadowLightViewProj, sizeof(_matrix) * MAX_CASCADES);
 
 	m_pModelCom->Render_Model(1,true);

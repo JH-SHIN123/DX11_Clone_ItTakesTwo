@@ -8,19 +8,19 @@
 
 IMPLEMENT_SINGLETON(CShadow_Manager);
 
-void CShadow_Manager::Get_CascadeShadowLightViewProjTranspose(_matrix* OutMatrix) const
+void CShadow_Manager::Get_CascadeShadowLightViewProjTranspose(TYPE eType, _matrix* OutMatrix) const
 {
 	for (_uint i = 0; i < MAX_CASCADES; ++i)
-		OutMatrix[i] = XMMatrixTranspose(XMLoadFloat4x4(&m_CascadeViews[i]) * XMLoadFloat4x4(&m_CascadeProjs[i]));
+		OutMatrix[i] = XMMatrixTranspose(XMLoadFloat4x4(&m_CascadeViews[i][eType]) * XMLoadFloat4x4(&m_CascadeProjs[i][eType]));
 }
 
-void CShadow_Manager::Get_CascadeShadowTransformsTranspose(_matrix* OutMatrix) const
+void CShadow_Manager::Get_CascadeShadowTransformsTranspose(TYPE eType, _matrix* OutMatrix) const
 {
 	for (_uint i = 0; i < MAX_CASCADES; ++i)
-		OutMatrix[i] = XMMatrixTranspose(XMLoadFloat4x4(&m_CascadedShadowTransforms[i]));
+		OutMatrix[i] = XMMatrixTranspose(XMLoadFloat4x4(&m_CascadedShadowTransforms[i][eType]));
 }
 
-HRESULT CShadow_Manager::Ready_ShadowManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context)
+HRESULT CShadow_Manager::Ready_ShadowManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context, _float fBufferWidth, _float fBufferHeight)
 {
 	m_pDevice = pDevice;
 	m_pDevice_Context = pDevice_Context;
@@ -30,7 +30,7 @@ HRESULT CShadow_Manager::Ready_ShadowManager(ID3D11Device* pDevice, ID3D11Device
 
 	FAILED_CHECK_RETURN(Set_CascadeViewportsInfo(), E_FAIL);
 
-	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDevice_Context, 0.f, 0.f, 1000, 1000, TEXT("../Bin/ShaderFiles/Shader_LightAcc.hlsl"), "DefaultTechnique");
+	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDevice_Context, 0.f, 0.f, fBufferWidth, fBufferHeight, TEXT("../Bin/ShaderFiles/Shader_Shadow.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
 
 	return S_OK;
@@ -64,7 +64,7 @@ HRESULT CShadow_Manager::Set_CascadeViewportsInfo()
 	return S_OK;
 }
 
-HRESULT CShadow_Manager::Update_CascadeShadowTransform()
+HRESULT CShadow_Manager::Update_CascadeShadowTransform(TYPE eShadowType)
 {
 	// Get Directional Light - if light is not exit, return 0
 	CLight_Manager* pLightManager = CLight_Manager::GetInstance();
@@ -79,7 +79,11 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform()
 	CFrustum* pFrustum = CFrustum::GetInstance();
 	if (nullptr == pFrustum) return E_FAIL;
 
-	const _float3* pFrustumCornersW = pFrustum->Get_FrustumPointsInWorld(CFrustum::FRUSTUM_SHADOW);
+	const _float3* pFrustumCornersW = nullptr;
+	if(eShadowType == SHADOW_MAIN)
+		pFrustumCornersW = pFrustum->Get_FrustumPointsInWorld(CFrustum::FRUSTUM_MAIN_FULLSCREEN);
+	else if(eShadowType == SHADOW_SUB)
+		pFrustumCornersW = pFrustum->Get_FrustumPointsInWorld(CFrustum::FRUSTUM_SUB_FULLSCREEN);
 	if (nullptr == pFrustumCornersW) return E_FAIL;
 
 	_vector cascadeFrustumCornersW[8];
@@ -194,10 +198,9 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform()
 
 		_matrix S = ShadowView * ShadowProj * T;
 
-		XMStoreFloat4x4(&m_CascadeViews[currentCascade], ShadowView);
-		XMStoreFloat4x4(&m_CascadeProjs[currentCascade], ShadowProj);
-		XMStoreFloat4x4(&m_CascadedShadowTransforms[currentCascade], S);
-
+		XMStoreFloat4x4(&m_CascadeViews[currentCascade][eShadowType], ShadowView);
+		XMStoreFloat4x4(&m_CascadeProjs[currentCascade][eShadowType], ShadowProj);
+		XMStoreFloat4x4(&m_CascadedShadowTransforms[currentCascade][eShadowType], S);
 	}
 
 	return S_OK;

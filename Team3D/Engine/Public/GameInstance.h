@@ -91,7 +91,8 @@ public:
 #pragma endregion
 
 #pragma region Shadow_Manager
-	void Get_CascadeShadowLightViewProjTranspose(_matrix * OutMatrix) const;
+	/* 0: Main / 1: Sub */
+	void Get_CascadeShadowLightViewProjTranspose(_uint iType, _matrix * OutMatrix) const;
 #pragma endregion
 
 #pragma region PhysX

@@ -48,7 +48,7 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 	FAILED_CHECK_RETURN(m_pLight_Manager->Ready_LightManager(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
 	FAILED_CHECK_RETURN(m_pPhysX->Ready_PhysX(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pFrustum->Ready_Frustum(), E_FAIL);
-	FAILED_CHECK_RETURN(m_pShadow_Manager->Ready_ShadowManager(*ppDevice, *ppDeviceContext), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShadow_Manager->Ready_ShadowManager(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
 
 	return S_OK;
 }
@@ -83,7 +83,8 @@ _int CGameInstance::Tick(_double dTimeDelta)
 	if (m_pGameObject_Manager->Late_Tick(dTimeDelta) < 0)
 		return EVENT_ERROR;
 
-	m_pShadow_Manager->Update_CascadeShadowTransform();
+	m_pShadow_Manager->Update_CascadeShadowTransform(CShadow_Manager::SHADOW_MAIN);
+	m_pShadow_Manager->Update_CascadeShadowTransform(CShadow_Manager::SHADOW_SUB);
 
 	return m_pLevel_Manager->Tick(dTimeDelta);
 }
@@ -300,12 +301,12 @@ void CGameInstance::Clear_Lights()
 #pragma endregion
 
 #pragma region Shadow_Manager
-void CGameInstance::Get_CascadeShadowLightViewProjTranspose(_matrix* OutMatrix) const
+void CGameInstance::Get_CascadeShadowLightViewProjTranspose(_uint iType, _matrix* OutMatrix) const
 {
 	if (nullptr == m_pShadow_Manager)
 		return;
 
-	return m_pShadow_Manager->Get_CascadeShadowLightViewProjTranspose(OutMatrix);
+	return m_pShadow_Manager->Get_CascadeShadowLightViewProjTranspose(CShadow_Manager::TYPE(iType), OutMatrix);
 }
 #pragma endregion
 

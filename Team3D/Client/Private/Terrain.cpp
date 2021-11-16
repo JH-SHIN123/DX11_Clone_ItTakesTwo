@@ -61,7 +61,7 @@ HRESULT CTerrain::Render_ShadowDepth()
 	m_pVIBufferCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
 
 	_matrix ShadowLightViewProj[MAX_CASCADES];
-	m_pGameInstance->Get_CascadeShadowLightViewProjTranspose(ShadowLightViewProj);
+	m_pGameInstance->Get_CascadeShadowLightViewProjTranspose(0, ShadowLightViewProj);
 	m_pVIBufferCom->Set_Variable("g_ShadowTransforms", ShadowLightViewProj, sizeof(_matrix) * MAX_CASCADES);
 
 	m_pVIBufferCom->Render(1);
