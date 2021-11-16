@@ -19,6 +19,7 @@ public:
 public:
 	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0) override;
 	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0) override;
+	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0) override;
 
 
 public:

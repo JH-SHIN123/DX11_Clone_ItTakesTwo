@@ -24,7 +24,7 @@ HRESULT CPlayer_DeadParticle::NativeConstruct(void * pArg)
 {
 	m_EffectDesc_Prototype.fLifeTime = 2.f;
 	m_EffectDesc_Prototype.vSize = { 0.0625f, 0.0625f,0.f };
-	m_EffectDesc_Prototype.iInstanceCount = 400;
+	m_EffectDesc_Prototype.iInstanceCount = 1000;
 
 	__super::Ready_Component(pArg);
 
@@ -52,8 +52,11 @@ _int CPlayer_DeadParticle::Tick(_double TimeDelta)
 
 	m_pInstanceBuffer[0].vTextureUV = Check_UV((_float)TimeDelta, 0, false);
 
-	//for (_int iIndex = 1; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
-	//	Instance_Pos((_float)TimeDelta, iIndex);
+	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
+	{
+		Instance_Pos((_float)TimeDelta, iIndex);
+		Instance_Size((_float)TimeDelta, iIndex);
+	}
 
 	return _int();
 }
@@ -81,14 +84,31 @@ HRESULT CPlayer_DeadParticle::Render()
 	return S_OK;
 }
 
+void CPlayer_DeadParticle::Instance_Size(_float TimeDelta, _int iIndex)
+{
+	m_pInstanceBuffer[iIndex].vSize.x -= TimeDelta * 0.05f;
+	m_pInstanceBuffer[iIndex].vSize.y -= TimeDelta * 0.05f;
+
+	if (0.f >= m_pInstanceBuffer[iIndex].vSize.x)
+	{
+		m_pInstanceBuffer[iIndex].vSize.x = 0.f;
+		m_pInstanceBuffer[iIndex].vSize.y = 0.f;
+	}
+}
+
 void CPlayer_DeadParticle::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 	_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
 	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer[iIndex].vPosition);
 
-	vPos += vDir * TimeDelta;
+	vPos += vDir * TimeDelta * 0.125f;
 
 	XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vPos);
+}
+
+void CPlayer_DeadParticle::Instance_UV(_float TimeDelta, _int iIndex)
+{
+
 }
 
 HRESULT CPlayer_DeadParticle::Ready_Instance()
@@ -104,8 +124,8 @@ HRESULT CPlayer_DeadParticle::Ready_Instance()
 	Safe_AddRef(m_pTargetModel);
 	VTXMESH* pVtx = m_pTargetModel->Get_Vertices();
 	_uint iVtxCount = m_pTargetModel->Get_VertexCount();
-	_int iRandVtx = 177171;//rand() % iInstanceCount;
-	_int iAddVtx = _int(123912 / (_float)iInstanceCount);//_int(iVtxCount / (_float)iInstanceCount);
+	_uint iRandVtx = rand() % iInstanceCount;
+	_uint iAddVtx = _int(iVtxCount / (_float)iInstanceCount);
 
 	_matrix	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f)) * XMMatrixRotationZ(XMConvertToRadians(90.f));
@@ -128,8 +148,14 @@ HRESULT CPlayer_DeadParticle::Ready_Instance()
 	for (_int i = 0; i < iInstanceCount; ++i)
 	{
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-		m_pInstanceBuffer[i].vSize = vSize;
+		
+		_int iRandSize = rand() % 3;
+		if (0 == iRandSize)
+			m_pInstanceBuffer[i].vSize = _float2(0.05f, 0.05f);
+		else if (0 == iRandSize)
+			m_pInstanceBuffer[i].vSize = _float2(0.0625f, 0.0625f);
+		else
+			m_pInstanceBuffer[i].vSize = _float2(0.075f, 0.075f);
 
 		_vector vRandDir = XMVectorZero();
 
@@ -158,24 +184,9 @@ HRESULT CPlayer_DeadParticle::Ready_Instance()
 
 		iRandVtx += iAddVtx;
 		if (iRandVtx >= iVtxCount)
-			iRandVtx = 177171;//rand() % iInstanceCount;
+			iRandVtx = rand() % iInstanceCount;
 
-		if (177171 <= iRandVtx && iRandVtx <= 197823)
-			m_pInstance_UVCount[i] = { 3.f, 0.f };
-		else if (197823 <= iRandVtx && iRandVtx <= 218475)
-			m_pInstance_UVCount[i] = { 1.f, 0.f };
-		else if (218475 <= iRandVtx && iRandVtx <= 239127)
-			m_pInstance_UVCount[i] = { 2.f, 1.f };
-		else if (239127 <= iRandVtx && iRandVtx <= 259779)
-			m_pInstance_UVCount[i] = { 2.f, 1.f };
-		else if (259779 <= iRandVtx && iRandVtx <= 301083)
-			m_pInstance_UVCount[i] = { 3.f, 1.f };
-
-
-		//m_pInstance_UVCount[i] = { _float(rand() % 4), _float(rand() % 2) };
-		//if (true == m_EffectDesc_Clone.IsCody)
-		//	m_pInstance_UVCount[i].y += 2.f;
-		m_pInstanceBuffer[i].vTextureUV = Set_particleUV(i, 4, 4);
+		Set_VtxColor(i, iRandVtx);
 
 
 
@@ -197,6 +208,45 @@ _float4 CPlayer_DeadParticle::Set_particleUV(_int iIndex, _int U, _int V)
 	_float4 vUV = { fLeft, fTop, fRight, fBottom };
 
 	return vUV;
+}
+
+void CPlayer_DeadParticle::Set_VtxColor(_int iIndex, _uint iVtxIndex)
+{
+	if (true == m_EffectDesc_Clone.IsCody)
+	{
+		if (0 <= iVtxIndex && iVtxIndex <= 41748) // ½º¿þÅÍ
+			m_pInstance_UVCount[iIndex] = { 3.f, 2.f };
+		else if (54924 <= iVtxIndex && iVtxIndex <= 96558) // ¸Ó¸®ÅÐ
+			m_pInstance_UVCount[iIndex] = { 0.f, 2.f };
+		else if (177171 <= iVtxIndex && iVtxIndex <= 209500) // ¹ÙÁö
+			m_pInstance_UVCount[iIndex] = { 2.f, 2.f };
+		else if (209500 <= iVtxIndex && iVtxIndex <= 259779) // ÆÈ¶Ò
+			m_pInstance_UVCount[iIndex] = { 1.f, 2.f };
+		else if (259779 <= iVtxIndex && iVtxIndex <= 301083) // ¶Ç´Ù¸¥ ¸Ó¸®ÅÐ
+			m_pInstance_UVCount[iIndex] = { 0.f, 2.f };
+		else
+			m_pInstance_UVCount[iIndex] = { 1.f, 2.f };
+
+	}
+	else
+	{
+		if (0 <= iVtxIndex && iVtxIndex <= 92670) // ¹åÁÙ, ÆÈ¶Ò
+			m_pInstance_UVCount[iIndex] = { 3.f, 0.f };
+		else if (92670 <= iVtxIndex && iVtxIndex <= 135426) // ½º¿þÅÍ
+			m_pInstance_UVCount[iIndex] = { 1.f, 0.f };
+		else if (135426 <= iVtxIndex && iVtxIndex <= 140226) // ´«±ò
+			m_pInstance_UVCount[iIndex] = { 3.f, 0.f };
+		else if (140226 <= iVtxIndex && iVtxIndex <= 177645) // ´ë°¥Åë
+			m_pInstance_UVCount[iIndex] = { 3.f, 0.f };
+		else if (177645 <= iVtxIndex && iVtxIndex <= 291639) // ¸Ó¸®ÅÐ, Àå½Ä
+			m_pInstance_UVCount[iIndex] = { 0.f, 0.f };
+		else if (291639 <= iVtxIndex && iVtxIndex <= 347628) // ¹ÙÁö, ½Å¹ß
+			m_pInstance_UVCount[iIndex] = { 2.f, 0.f };
+		else
+			m_pInstance_UVCount[iIndex] = { 1.f, 0.f };
+	}
+
+	m_pInstanceBuffer[iIndex].vTextureUV = Set_particleUV(iIndex, 4, 4);
 }
 
 CPlayer_DeadParticle * CPlayer_DeadParticle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

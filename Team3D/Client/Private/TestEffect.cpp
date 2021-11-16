@@ -57,6 +57,10 @@ void CTestEffect::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 }
 
+void CTestEffect::Instance_UV(_float TimeDelta, _int iIndex)
+{
+}
+
 CTestEffect * CTestEffect::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void* pArg)
 {
 	CTestEffect*	pInstance = new CTestEffect(pDevice, pDeviceContext);

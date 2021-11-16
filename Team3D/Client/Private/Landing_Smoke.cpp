@@ -62,6 +62,10 @@ HRESULT CLanding_Smoke::Render()
 	return S_OK;
 }
 
+void CLanding_Smoke::Instance_Size(_float TimeDelta, _int iIndex)
+{
+}
+
 void CLanding_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer[iIndex].vPosition);

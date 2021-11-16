@@ -90,6 +90,18 @@ HRESULT CFireDoor::Render()
 	return S_OK;
 }
 
+void CFireDoor::Instance_Size(_float TimeDelta, _int iIndex)
+{
+}
+
+void CFireDoor::Instance_Pos(_float TimeDelta, _int iIndex)
+{
+}
+
+void CFireDoor::Instance_UV(_float TimeDelta, _int iIndex)
+{
+}
+
 CFireDoor * CFireDoor::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
 	CFireDoor*	pInstance = new CFireDoor(pDevice, pDeviceContext);

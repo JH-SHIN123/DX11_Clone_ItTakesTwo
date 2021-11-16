@@ -4,6 +4,7 @@
 #include "SubCamera.h"
 #include "Transform.h"
 #include "DataBase.h"
+#include "Effect_Generator.h"
 
 CMay::CMay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
@@ -91,7 +92,6 @@ _int CMay::Tick(_double dTimeDelta)
 _int CMay::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
-	return 0;
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
@@ -229,6 +229,14 @@ void CMay::KeyInput(_double TimeDelta)
 	//{
 	//	m_pActorCom->Jump_Higher(1.f);
 	//}
+
+#pragma region Effet Test
+	if (m_pGameInstance->Key_Down(DIK_P))
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_DeadEffect, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+
+
+#pragma  endregion
+
 }
 
 void CMay::Move(const _double TimeDelta)

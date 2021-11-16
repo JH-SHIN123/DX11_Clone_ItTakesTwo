@@ -49,6 +49,18 @@ HRESULT CRespawnTunnel_Smoke::Render()
 	return S_OK;
 }
 
+void CRespawnTunnel_Smoke::Instance_Size(_float TimeDelta, _int iIndex)
+{
+}
+
+void CRespawnTunnel_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
+{
+}
+
+void CRespawnTunnel_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
+{
+}
+
 CRespawnTunnel_Smoke * CRespawnTunnel_Smoke::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void* pArg)
 {
 	CRespawnTunnel_Smoke*	pInstance = new CRespawnTunnel_Smoke(pDevice, pDeviceContext);

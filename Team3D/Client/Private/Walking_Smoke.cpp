@@ -112,6 +112,10 @@ void CWalking_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
 	XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vPos);
 }
 
+void CWalking_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
+{
+}
+
 CWalking_Smoke * CWalking_Smoke::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
 	CWalking_Smoke*	pInstance = new CWalking_Smoke(pDevice, pDeviceContext);

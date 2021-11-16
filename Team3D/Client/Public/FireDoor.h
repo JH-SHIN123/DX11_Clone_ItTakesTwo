@@ -18,6 +18,12 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
 
+public:
+	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0) override;
+	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0) override;
+	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0) override;
+
+
 private:
 	_double dResetTime = 0.f;
 	_float4 m_vWeight = { 0.f, 0.f, 0.125f, 0.125f };

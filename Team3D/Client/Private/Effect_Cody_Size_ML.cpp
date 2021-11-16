@@ -46,7 +46,15 @@ HRESULT CEffect_Cody_Size_ML::Render()
 	return S_OK;
 }
 
+void CEffect_Cody_Size_ML::Instance_Size(_float TimeDelta, _int iIndex)
+{
+}
+
 void CEffect_Cody_Size_ML::Instance_Pos(_float TimeDelta, _int iIndex)
+{
+}
+
+void CEffect_Cody_Size_ML::Instance_UV(_float TimeDelta, _int iIndex)
 {
 }
 

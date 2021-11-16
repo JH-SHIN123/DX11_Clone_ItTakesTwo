@@ -92,9 +92,9 @@ public:
 	HRESULT SetUp_Instance_Position(_uint iIndex, _fvector vPosition, _fvector vOffSetPosition = XMVectorZero());
 
 public:
-	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0);
-	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0);
-	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0);
+	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0) PURE;
+	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0) PURE;
+	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0) PURE;
 
 
 public: // 기본적인 기능
@@ -147,7 +147,6 @@ protected:
 	_bool m_IsBillBoard = true;
 
 public:
-	static CInGameEffect* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

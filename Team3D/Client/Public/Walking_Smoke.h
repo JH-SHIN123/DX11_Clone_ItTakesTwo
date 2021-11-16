@@ -18,12 +18,13 @@ public:
 	virtual HRESULT	Render() override;
 
 public:
-	void Control_Alpha(_double TimeDelta);
-	void Control_Instance(_float TimeDelta);
+	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0) override;
+	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0) override;
+	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0) override;
 
 public:
-	void Instance_Size(_float TimeDelta, _int iIndex) override;
-	void Instance_Pos(_float TimeDelta, _int iIndex) override;
+	void Control_Alpha(_double TimeDelta);
+	void Control_Instance(_float TimeDelta);
 
 private:
 	_float m_fSizeTime = 0.f;

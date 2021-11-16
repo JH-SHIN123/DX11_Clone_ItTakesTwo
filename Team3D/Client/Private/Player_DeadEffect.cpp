@@ -85,6 +85,10 @@ HRESULT CPlayer_DeadEffect::Render()
 	return S_OK;
 }
 
+void CPlayer_DeadEffect::Instance_Size(_float TimeDelta, _int iIndex)
+{
+}
+
 void CPlayer_DeadEffect::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 	_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
@@ -93,6 +97,10 @@ void CPlayer_DeadEffect::Instance_Pos(_float TimeDelta, _int iIndex)
 	vPos += vDir * TimeDelta * 2.f;
 
 	XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vPos);
+}
+
+void CPlayer_DeadEffect::Instance_UV(_float TimeDelta, _int iIndex)
+{
 }
 
 HRESULT CPlayer_DeadEffect::Ready_Instance()

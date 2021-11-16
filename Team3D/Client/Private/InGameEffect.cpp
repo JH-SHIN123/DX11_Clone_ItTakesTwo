@@ -457,26 +457,9 @@ void CInGameEffect::SetUp_Shader_Data()
 	return;
 }
 
-CInGameEffect * CInGameEffect::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
-{
-	CInGameEffect*	pInstance = new CInGameEffect(pDevice, pDeviceContext);
-	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
-	{
-		MSG_BOX("Failed to Create Instance - CInGameEffect");
-		Safe_Release(pInstance);
-	}
-	return pInstance;
-}
-
 CGameObject * CInGameEffect::Clone_GameObject(void * pArg)
 {
-	CInGameEffect* pInstance = new CInGameEffect(*this);
-	if (FAILED(pInstance->NativeConstruct(pArg)))
-	{
-		MSG_BOX("Failed to Clone Instance - CInGameEffect");
-		Safe_Release(pInstance);
-	}
-	return pInstance;
+	return nullptr;
 }
 
 void CInGameEffect::Free()
