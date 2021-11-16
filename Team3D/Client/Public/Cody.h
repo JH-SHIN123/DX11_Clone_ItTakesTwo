@@ -263,6 +263,7 @@ private:
 	_bool m_bMove = false;
 	_bool m_bShortJump = false;
 	_bool m_bGroundPound = false;
+	_bool m_IsTurnAround = false;
 
 	// 구르기 관련
 	_bool m_bAction = false;
@@ -272,6 +273,8 @@ private:
 	_bool m_IsAirDash = false;
 
 	_float3 m_vMoveDirection = {};
+	_int m_iSavedKeyPress = 0;
+
 
 	// 움직임 가속
 	_float m_fAcceleration = 5.0;

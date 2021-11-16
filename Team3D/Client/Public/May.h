@@ -236,6 +236,8 @@ private:
 	_bool m_bLedgeGrab = false;
 	_bool m_bOnGrind = false;
 	_bool m_bRoll = false;
+	_bool m_IsTurnAround = false;
+	_int m_iSavedKeyPress = 0;
 
 	_float3 m_vMoveDirection = {};
 	_bool	m_bMove = false;
