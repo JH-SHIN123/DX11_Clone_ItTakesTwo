@@ -55,6 +55,8 @@ public: /* Setter */
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, ID3D11ShaderResourceView* pShaderResourceView);
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, _uint iMaterialIndex, aiTextureType eTextureType, _uint iTextureIndex = 0);
 	HRESULT	Set_DefaultVariables_Perspective(_fmatrix WorldMatrix);
+	HRESULT	Set_DefaultVariables_Shadow();
+	HRESULT	Set_DefaultVariables_ShadowDepth();
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName);

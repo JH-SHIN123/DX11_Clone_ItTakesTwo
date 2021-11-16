@@ -14,7 +14,7 @@ int Get_CascadedShadowSliceIndex(uint iViewportIndex, vector vWorldPos) /* 1: Ma
 		if (shadowPosNDC.x >= 0 && shadowPosNDC.x <= 1.0 && shadowPosNDC.y >= 0.0 && shadowPosNDC.y <= 1.0 && shadowPosNDC.z >= 0.0 && shadowPosNDC.z <= 1.0)
 		{
 			// 여기서 문제 발생 (Aspect 변경시)
-			if (-shadowPosNDC.z <= g_CascadeEnds[i + 1])
+			if (-shadowPosNDC.z <= g_CascadeEnds[i+1])
 			{
 				iIndex = i;
 				break;
