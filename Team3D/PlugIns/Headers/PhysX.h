@@ -32,8 +32,6 @@ public:
 	PxMaterial*		Create_Material(PxReal StaticFriction, PxReal DynamicFriction, PxReal Restitution);
 	/* For.Raycast */
 	_bool			Raycast(PxRaycastBuffer& RaycastHit, _fvector vSrc, _fvector vDst, _float fDist);
-
-	_bool RayCast(_fvector vOrigin,_fvector vDir,PxRaycastBuffer& _Rayhit);
 private:
 	PxDefaultAllocator		m_Allocator;
 	PxDefaultErrorCallback	m_ErrorCallback;

@@ -166,8 +166,6 @@
     <Filter Include="02.Utility\05.PhysX">
       <UniqueIdentifier>{f9714c9a-ca3b-45cd-a187-c07e5f656041}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
-=======
     <Filter Include="02.Utility\02.Component\06.Actor\98.Event">
       <UniqueIdentifier>{ad9c964c-c541-4c84-b8e0-d3843476fecf}</UniqueIdentifier>
     </Filter>
@@ -201,7 +199,6 @@
     <Filter Include="02.Utility\02.Component\06.Actor\03.ControllableActor\01.Callback">
       <UniqueIdentifier>{551be4d3-8b36-4350-b615-a5af8be67e8d}</UniqueIdentifier>
     </Filter>
->>>>>>> main
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Engine_Defines.h">
@@ -331,18 +328,6 @@
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClInclude>
     <ClInclude Include="..\public\PhysX.h">
-<<<<<<< HEAD
-      <Filter>02.Utility\05.PhysX</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Actor.h" />
-    <ClInclude Include="..\public\ControllableActor.h" />
-    <ClInclude Include="..\public\DynamicActor.h" />
-    <ClInclude Include="..\public\MathHelper.h" />
-    <ClInclude Include="..\Public\Model.h" />
-    <ClInclude Include="..\public\Model_Instance.h" />
-    <ClInclude Include="..\public\PxEventCallback.h" />
-    <ClInclude Include="..\public\StaticActor.h" />
-=======
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
     </ClInclude>
     <ClInclude Include="..\public\PxEventCallback.h">
@@ -390,7 +375,6 @@
     <ClInclude Include="..\public\PxControllerCallback.h">
       <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor\01.Callback</Filter>
     </ClInclude>
->>>>>>> main
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -510,16 +494,6 @@
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PhysX.cpp">
-<<<<<<< HEAD
-      <Filter>02.Utility\05.PhysX</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Actor.cpp" />
-    <ClCompile Include="..\private\ControllableActor.cpp" />
-    <ClCompile Include="..\private\DynamicActor.cpp" />
-    <ClCompile Include="..\private\Model_Instance.cpp" />
-    <ClCompile Include="..\private\PxEventCallback.cpp" />
-    <ClCompile Include="..\private\StaticActor.cpp" />
-=======
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PxEventCallback.cpp">
@@ -549,7 +523,6 @@
     <ClCompile Include="..\private\PxControllerCallback.cpp">
       <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor\01.Callback</Filter>
     </ClCompile>
->>>>>>> main
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\bin\ShaderFiles\Shader_RenderTarget.hlsl">
