@@ -89,7 +89,7 @@ HRESULT CPlayer::Render()
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Render_Model(0);
 
-	CUI_Generator::GetInstance()->Render_Font(TEXT("진짜답없네"), XMFLOAT2(0.f, 0.f), XMFLOAT2(10.f, 10.f));
+
 
 	return S_OK;
 }
@@ -98,7 +98,7 @@ CPlayer * CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceC
 {
 	CPlayer* pInstance = new CPlayer(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype()))
+	if (FAILED(pInstance->NativeConstruct_Prototype())) 
 	{
 		MSG_BOX("Failed to Create Instance - CPlayer");
 		Safe_Release(pInstance);

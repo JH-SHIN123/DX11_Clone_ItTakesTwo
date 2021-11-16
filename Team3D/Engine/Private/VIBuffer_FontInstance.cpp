@@ -21,16 +21,13 @@ HRESULT CVIBuffer_FontInstance::NativeConstruct_Prototype(_uint iNumInstance, co
 	m_iMaxInstanceCount = iNumInstance;
 
 	/* For. VertexBuffer */
-	VTXPOINT* pVertices = new  VTXPOINT[m_iMaxInstanceCount];
+	VTXPOINTPOS* pVertices = new  VTXPOINTPOS[m_iMaxInstanceCount];
 	m_eTopology = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
 
 	for (_uint iIndex = 0; iIndex < m_iMaxInstanceCount; ++iIndex)
-	{
 		pVertices[iIndex].vPosition = _float3(0.f, 0.f, 0.f);
-		pVertices[iIndex].vSize = _float2(0.5f, 0.5f);
-	}
 
-	Store_VertexBufferInfo(2, 4, sizeof(VTXPOINT));
+	Store_VertexBufferInfo(2, 4, sizeof(VTXPOINTPOS));
 	Create_Buffer(&m_pVB, m_iVertexCount * m_iVertexStride, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, m_iVertexStride, pVertices);
 
 	/* For.InstanceBuffer */
@@ -39,22 +36,33 @@ HRESULT CVIBuffer_FontInstance::NativeConstruct_Prototype(_uint iNumInstance, co
 	for (_uint iIndex = 0; iIndex < m_iMaxInstanceCount; ++iIndex)
 	{
 		m_pInstanceVertices[iIndex].vPosition	= _float3(0.f, 0.f, 0.f);
-		m_pInstanceVertices[iIndex].vTexUV	= _float4(0.f, 0.f, 1.f, 1.f);
+		m_pInstanceVertices[iIndex].vScale		= _float2(0.f, 0.f);
+		m_pInstanceVertices[iIndex].vTexUV		= _float4(0.f, 0.f, 1.f, 1.f);
 	}
 
 	Create_Buffer(&m_pVBInstance, m_iMaxInstanceCount * sizeof(VTXFONT), D3D11_USAGE_DYNAMIC, D3D11_BIND_VERTEX_BUFFER, D3D11_CPU_ACCESS_WRITE, 0, sizeof(VTXFONT), m_pInstanceVertices, false);
 
 	/* For.InputLayouts*/
+	//D3D11_INPUT_ELEMENT_DESC ElementDesc[] =
+	//{
+	//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "PSIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+	//	{ "TEXCOORD", 1, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+	//	{ "TEXCOORD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 12, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+	//};
+
 	D3D11_INPUT_ELEMENT_DESC ElementDesc[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "PSIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
 		{ "TEXCOORD", 1, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-		{ "TEXCOORD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 12, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "TEXCOORD", 2, DXGI_FORMAT_R32G32_FLOAT, 1, 12, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "TEXCOORD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 20, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 	};
 
-	FAILED_CHECK_RETURN(SetUp_InputLayouts(ElementDesc, 4, pShaderFilePath, pTechniqueName), E_FAIL);
+	FAILED_CHECK_RETURN(SetUp_InputLayouts(ElementDesc, 5, pShaderFilePath, pTechniqueName), E_FAIL);
 
 	return S_OK;
 }
@@ -87,7 +95,7 @@ HRESULT CVIBuffer_FontInstance::Render(_uint iPassIndex, void * VertexMatrices, 
 
 	/* For.RenderBuffer */
 	ID3D11Buffer* pBuffers[2] = { m_pVB, m_pVBInstance };
-	_uint iStrides[2] = { sizeof(VTXPOINT), sizeof(VTXFONT) };
+	_uint iStrides[2] = { sizeof(VTXPOINTPOS), sizeof(VTXFONT) };
 	_uint iOffsets[2] = { 0, 0 };
 
 	m_pDeviceContext->IASetVertexBuffers(0, m_iVertexBufferCount, pBuffers, iStrides, iOffsets);

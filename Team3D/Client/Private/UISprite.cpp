@@ -2,6 +2,7 @@
 #include "..\Public\UISprite.h"
 
 #include "GameInstance.h"
+#include "UI_Generator.h"
 
 CUISprite::CUISprite(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -69,6 +70,13 @@ HRESULT CUISprite::Render()
 
 	m_pVIBuffer_SpriteCom->Render(m_iShaderPassNum);
 
+	CUI_Generator::FONTDESC tFontDesc;
+	tFontDesc.vPosition = { 0.f, -200.f };
+	tFontDesc.vScale = { 30.f, 30.f };
+	tFontDesc.fInterval = -5.f;
+
+	CUI_Generator::GetInstance()->Render_Font(TEXT("이게된다고"), tFontDesc);
+
 	return S_OK;
 }
 
@@ -97,6 +105,7 @@ HRESULT CUISprite::Set_UIVariables_Perspective()
 
 	if (m_ePlayerID == Player::Player_Cody)
 	{
+		// 이거 안하면 반대쪽 뷰포트 반짝거리는 오류 발생합니다.
 		_int iGsOption = 0;
 		m_pVIBuffer_SpriteCom->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
 
@@ -105,7 +114,7 @@ HRESULT CUISprite::Set_UIVariables_Perspective()
 		SubProjMatrix = XMMatrixIdentity();
 
 		// 뷰포트 하나로 합쳐질 때 Width가 0.f가 되버리면 직교할 때 0.f / 0.f 나누기 연산이 일어나서 XMSclarNearEqul 오류 발생 그거 임시방편 예외처리 입니다.
-		if (0.1f <= Viewport.Width)
+		if (0.f < Viewport.Width)
 			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
 		m_pVIBuffer_SpriteCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
@@ -116,6 +125,7 @@ HRESULT CUISprite::Set_UIVariables_Perspective()
 	}         
 	else if (m_ePlayerID == Player::Player_May)
 	{
+		// 이거 안하면 반대쪽 뷰포트 반짝거리는 오류 발생합니다.
 		_int iGsOption = 1;
 		m_pVIBuffer_SpriteCom->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
 
@@ -123,7 +133,7 @@ HRESULT CUISprite::Set_UIVariables_Perspective()
 
 		ProjMatrix = XMMatrixIdentity();
 
-		if (0.1f <= Viewport.Width)
+		if (0.f < Viewport.Width)
 			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
 		m_pVIBuffer_SpriteCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
