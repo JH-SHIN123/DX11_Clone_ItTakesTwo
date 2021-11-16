@@ -59,6 +59,16 @@ _int CTileBox::Tick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Pressing(DIK_9))
 		m_pModelCom->Update_Model(TransformMatrix);
 
+
+	//if (m_pGameInstance->Key_Down(DIK_7))
+	//{
+	//	m_pTest = CPhysX::GetInstance()->Create_StaticActor(PxTransform(PxVec3(0.f, 3.f, 0.f)), PxTriangleMeshGeometry(m_pModelCom->Get_T()), m_pGameInstance->Create_PxMaterial(0.5f, 0.5f, 0.5f), "Test");
+	//	CPhysX::GetInstance()->Add_ActorToScene(m_pTest);
+	//}
+
+	//if (m_pGameInstance->Key_Down(DIK_8))
+	//	m_pTest->setGlobalPose(PxTransform(PxVec3(100.f, 0.f, 100.f)));
+
 	return NO_EVENT;
 }
 

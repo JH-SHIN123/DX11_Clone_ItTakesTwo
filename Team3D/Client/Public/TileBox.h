@@ -29,6 +29,7 @@ private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CModel_Instance*	m_pModelCom = nullptr;
 	_uint				m_iRenderNum = 0;
+	PxRigidStatic*		m_pTest = nullptr;
 
 public:
 	static CTileBox* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -154,28 +154,29 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 	m_RealTimeMatrices.resize(m_iInstanceCount, MH_XMFloat4x4Identity());
 	m_fCullingRadius = ArgDesc.fCullingRadius;
 
-	m_ppActors = new PxRigidStatic*[m_iInstanceCount];
-
 	strcpy(m_szActorName, ArgDesc.pActorName);
+	m_ppActors = new PxRigidStatic*[m_iInstanceCount * m_iMeshCount];
 
-	for (auto& TriMesh : m_PxTriMeshes)
+	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
 	{
-		for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+		_vector vScale, vRotQuat, vPosition;
+		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_pWorldMatrices[iIndex]));
+
+		for (_uint iMeshIndex = 0; iMeshIndex < m_iMeshCount; ++iMeshIndex)
 		{
-			_vector vScale, vRotQuat, vPosition;
-			XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_pWorldMatrices[iIndex]));
+			_uint iActorIndex = iIndex + iMeshIndex * m_iInstanceCount;
 
-			PxTriangleMeshGeometry geom(TriMesh.pTriMesh, PxMeshScale(MH_PxVec3(vScale)));
+			PxTriangleMeshGeometry geom(m_PxTriMeshes[iMeshIndex].pTriMesh, PxMeshScale(MH_PxVec3(vScale)));
 
-			m_ppActors[iIndex] = pPhysX->Create_StaticActor(MH_PxTransform(vRotQuat, vPosition), geom, ArgDesc.pMaterial, m_szActorName);
-			NULL_CHECK_RETURN(m_ppActors[iIndex], E_FAIL);
+			m_ppActors[iActorIndex] = pPhysX->Create_StaticActor(MH_PxTransform(vRotQuat, vPosition), geom, ArgDesc.pMaterial, m_szActorName);
+			NULL_CHECK_RETURN(m_ppActors[iActorIndex], E_FAIL);
 
 			PxShape* Shape;
-			m_ppActors[iIndex]->getShapes(&Shape, 1);
+			m_ppActors[iActorIndex]->getShapes(&Shape, 1);
 			Shape->setContactOffset(0.02f);
 			Shape->setRestOffset(-0.5f);
 
-			pPhysX->Add_ActorToScene(m_ppActors[iIndex]);
+			pPhysX->Add_ActorToScene(m_ppActors[iActorIndex]);
 		}
 	}
 
@@ -207,7 +208,11 @@ HRESULT CModel_Instance::Update_Model(_fmatrix TransformMatrix)
 		_vector vScale, vRotQuat, vPosition;
 		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_pWorldMatrices[iIndex]));
 
-		m_ppActors[iIndex]->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
+		for (_uint iMeshIndex = 0; iMeshIndex < m_iMeshCount; ++iMeshIndex)
+		{
+			_uint iActorIndex = iIndex + iMeshIndex * m_iInstanceCount;
+			m_ppActors[iActorIndex]->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
+		}
 	}
 
 	return S_OK;
@@ -505,7 +510,9 @@ void CModel_Instance::Free()
 
 	if (true == m_isClone)
 	{
-		for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+		_uint iActorCount = m_iInstanceCount * m_iMeshCount;
+
+		for (_uint iIndex = 0; iIndex < iActorCount; ++iIndex)
 			CPhysX::GetInstance()->Remove_Actor(&m_ppActors[iIndex]);
 		Safe_Delete_Array(m_ppActors);
 	}
