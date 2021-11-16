@@ -103,17 +103,20 @@
     <Filter Include="96.DataStorage">
       <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\98.Interaction_Deco">
+    <Filter Include="02.GameObject\98.Interactive_Objects">
       <UniqueIdentifier>{80b9488d-6107-4ad3-ab4d-9ba4db640228}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\98.Interaction_Deco\00.Rocket">
+    <Filter Include="02.GameObject\98.Interactive_Objects\00.Rocket">
       <UniqueIdentifier>{a4d27e3c-4021-47f3-bb3c-081dd7fb5758}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\98.Interaction_Deco\01.StarBuddy">
+    <Filter Include="02.GameObject\98.Interactive_Objects\01.StarBuddy">
       <UniqueIdentifier>{6be15374-eb26-4929-8e60-d673bd18461d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\98.Interaction_Deco\02.SecurityCamera">
+    <Filter Include="02.GameObject\98.Interactive_Objects\02.SecurityCamera">
       <UniqueIdentifier>{db7e22fc-29b8-4ab2-a9be-83636efb01da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\03.Robot">
+      <UniqueIdentifier>{cb5078d5-ca2a-48ea-ab02-93109613a458}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -190,10 +193,16 @@
       <Filter>96.DataStorage</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Rocket.h">
-      <Filter>02.GameObject\98.Interaction_Deco\00.Rocket</Filter>
+      <Filter>02.GameObject\98.Interactive_Objects\00.Rocket</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\StarBuddy.h">
-      <Filter>02.GameObject\98.Interaction_Deco\01.StarBuddy</Filter>
+      <Filter>02.GameObject\98.Interactive_Objects\01.StarBuddy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Robot.h">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RobotHead.h">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -252,10 +261,16 @@
       <Filter>96.DataStorage</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Rocket.cpp">
-      <Filter>02.GameObject\98.Interaction_Deco\00.Rocket</Filter>
+      <Filter>02.GameObject\98.Interactive_Objects\00.Rocket</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\StarBuddy.cpp">
-      <Filter>02.GameObject\98.Interaction_Deco\01.StarBuddy</Filter>
+      <Filter>02.GameObject\98.Interactive_Objects\01.StarBuddy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Robot.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RobotHead.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
