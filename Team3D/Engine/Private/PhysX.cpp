@@ -6,6 +6,11 @@ IMPLEMENT_SINGLETON(CPhysX)
 
 PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
+	if (PxFilterObjectIsKinematic(attributes0) && PxFilterObjectIsKinematic(attributes1))
+	{
+		//pairFlags = PxPairFlag::;
+	}
+
 	PX_UNUSED(attributes0);
 	PX_UNUSED(attributes1);
 	PX_UNUSED(filterData0);
@@ -48,9 +53,9 @@ HRESULT CPhysX::Ready_PhysX()
 
 	PxSceneDesc SceneDesc(m_pPhysics->getTolerancesScale());
 	SceneDesc.gravity = PxVec3(0.f, -GRAVITY, 0.f);
-	SceneDesc.simulationEventCallback = m_pEventCallback;
 	SceneDesc.cpuDispatcher = m_pDispatcher;
 	SceneDesc.filterShader = FilterShader;
+	SceneDesc.simulationEventCallback = m_pEventCallback;
 	SceneDesc.kineKineFilteringMode = PxPairFilteringMode::eKILL;
 	SceneDesc.staticKineFilteringMode = PxPairFilteringMode::eDEFAULT;
 
@@ -66,7 +71,12 @@ HRESULT CPhysX::Ready_PhysX()
 	pClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 #endif
 
+	m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 	m_pControllerManager = PxCreateControllerManager(*m_pScene);
+
+#ifdef _DEBUG
+	//m_pControllerManager->setTessellation(true, 50);
+#endif
 
 	// юс╫ц ╧ы╢з
 	PxMaterial* pMaerial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
@@ -179,6 +189,13 @@ PxMaterial * CPhysX::Create_Material(PxReal StaticFriction, PxReal DynamicFricti
 	NULL_CHECK_RETURN(pMaterial, nullptr);
 
 	return pMaterial;
+}
+
+_bool CPhysX::Raycast(PxRaycastBuffer & RaycastHit, _fvector vSrc, _fvector vDst, _float fDist)
+{
+	_vector vRayDir = XMVector3Normalize(vDst - vSrc);
+
+	return m_pScene->raycast(MH_PxVec3(vSrc), MH_PxVec3(vRayDir), fDist, RaycastHit);
 }
 
 void CPhysX::Free()

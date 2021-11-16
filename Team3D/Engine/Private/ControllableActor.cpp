@@ -1,6 +1,7 @@
 #include "..\Public\ControllableActor.h"
 #include "PhysX.h"
 #include "Transform.h"
+#include "PxControllerCallback.h"
 
 CControllableActor::CControllableActor(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CActor(pDevice, pDeviceContext)
@@ -29,6 +30,9 @@ HRESULT CControllableActor::NativeConstruct(void * pArg)
 	NULL_CHECK_RETURN(ArgDesc.pTransform, E_FAIL);
 	m_pTransform = ArgDesc.pTransform;
 	Safe_AddRef(m_pTransform);
+
+	m_pCallback = new CPxControllerCallback;
+	ArgDesc.CapsuleControllerDesc.behaviorCallback = m_pCallback;
 
 	m_pController = m_pPhysX->Create_CapsuleController(ArgDesc.CapsuleControllerDesc);
 	NULL_CHECK_RETURN(m_pController, E_FAIL);
@@ -137,7 +141,10 @@ CComponent * CControllableActor::Clone_Component(void * pArg)
 void CControllableActor::Free()
 {
 	if (true == m_isClone)
+	{
+		Safe_Delete(m_pCallback);
 		m_pController->release();
+	}
 
 	Safe_Release(m_pTransform);
 
