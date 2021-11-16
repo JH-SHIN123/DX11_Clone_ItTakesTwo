@@ -203,6 +203,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\public\GameInstance.h" />
     <ClInclude Include="..\public\GameObject.h" />
     <ClInclude Include="..\public\GameObject_Manager.h" />
+    <ClInclude Include="..\Public\GlobalFunction.h" />
     <ClInclude Include="..\public\Graphic_Device.h" />
     <ClInclude Include="..\Public\HierarchyNode.h" />
     <ClInclude Include="..\public\Input_Device.h" />
@@ -218,6 +219,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\Public\Model_Loader.h" />
     <ClInclude Include="..\public\PhysX.h" />
     <ClInclude Include="..\Public\Pipeline.h" />
+    <ClInclude Include="..\public\PxContactCallback.h" />
     <ClInclude Include="..\public\PxControllerCallback.h" />
     <ClInclude Include="..\public\PxEventCallback.h" />
     <ClInclude Include="..\public\Renderer.h" />
@@ -267,6 +269,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\Private\Model_Loader.cpp" />
     <ClCompile Include="..\private\PhysX.cpp" />
     <ClCompile Include="..\Private\Pipeline.cpp" />
+    <ClCompile Include="..\private\PxContactCallback.cpp" />
     <ClCompile Include="..\private\PxControllerCallback.cpp" />
     <ClCompile Include="..\private\PxEventCallback.cpp" />
     <ClCompile Include="..\private\Renderer.cpp" />
