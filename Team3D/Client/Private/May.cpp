@@ -112,9 +112,9 @@ _int CMay::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
+	KeyInput(dTimeDelta);
 	if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
 	{
-		KeyInput(dTimeDelta);
 		TriggerCheck(dTimeDelta);
 		StateCheck(dTimeDelta);
 		Sprint(dTimeDelta);
@@ -229,7 +229,7 @@ void CMay::KeyInput(_double TimeDelta)
 	{
 		if (m_pGameInstance->Key_Pressing(DIK_LEFT) && m_iSavedKeyPress == RIGHT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 		{
-			if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint && m_IsTurnAround == false)
+			if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)) && m_IsTurnAround == false)
 			{
 				m_fSprintAcceleration = 15.f;
 				bMove[1] = !bMove[1];
@@ -240,7 +240,7 @@ void CMay::KeyInput(_double TimeDelta)
 		}
 		if (m_pGameInstance->Key_Pressing(DIK_RIGHT) && m_iSavedKeyPress == LEFT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 		{
-			if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint && m_IsTurnAround == false)
+			if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)) && m_IsTurnAround == false)
 			{
 				m_fSprintAcceleration = 15.f;
 				bMove[1] = !bMove[1];
@@ -251,10 +251,10 @@ void CMay::KeyInput(_double TimeDelta)
 		}
 		if (m_pGameInstance->Key_Pressing(DIK_UP) && m_iSavedKeyPress == DOWN)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 		{
-			if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint && m_IsTurnAround == false)
+			if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)) && m_IsTurnAround == false)
 			{
 				m_fSprintAcceleration = 15.f;
-				bMove[1] = !bMove[1];
+				bMove[0] = !bMove[0];
 				m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
 				m_IsTurnAround = true;
 				return;
@@ -262,10 +262,10 @@ void CMay::KeyInput(_double TimeDelta)
 		}
 		if (m_pGameInstance->Key_Pressing(DIK_DOWN) && m_iSavedKeyPress == UP)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 		{
-			if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint && m_IsTurnAround == false)
+			if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)) && m_IsTurnAround == false)
 			{
 				m_fSprintAcceleration = 15.f;
-				bMove[1] = !bMove[1];
+				bMove[0] = !bMove[0];
 				m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
 				m_IsTurnAround = true;
 				return;
@@ -318,12 +318,13 @@ void CMay::KeyInput(_double TimeDelta)
 #pragma endregion
 
 #pragma region Keyboard_Right_Shift_Button
-	if (m_pGameInstance->Key_Down(DIK_RSHIFT) && m_bRoll == false)
+	if (m_pGameInstance->Key_Down(DIK_RSHIFT) && m_bRoll == false && m_bCanMove == true)
 	{
 		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 		if (m_IsJumping == false)
 		{
+			m_fAcceleration = 5.f;
 			m_pModelCom->Set_Animation(ANI_M_Roll_Start);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Roll_Stop);
 
@@ -334,6 +335,7 @@ void CMay::KeyInput(_double TimeDelta)
 		{
 			if (m_pModelCom->Get_CurAnimIndex() != ANI_C_AirDash_Start)
 			{
+				m_fAcceleration = 5.f;
 				m_pActorCom->Jump_Start(1.2f);
 				m_pModelCom->Set_Animation(ANI_M_AirDash_Start);
 				m_IsAirDash = true;
@@ -374,6 +376,9 @@ void CMay::KeyInput(_double TimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_RALT) && m_pActorCom->Get_IsJump() == true)
 	{
+		m_fAcceleration = 5.0f;
+		m_fJogAcceleration = 25.f;
+		m_fSprintAcceleration = 35.f;
 		m_bGroundPound = true;
 	}
 
@@ -502,9 +507,9 @@ void CMay::Roll(const _double TimeDelta)
 		m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), TimeDelta);
 	}
 
-	if (m_IsAirDash && m_pTransformCom)
+	if (m_IsAirDash && m_bCanMove == true && m_pTransformCom)
 	{
-		if (m_pModelCom->Is_AnimFinished(ANI_M_AirDash_Start))
+		if (m_fAcceleration <= 0.f)
 		{
 			m_fAcceleration = 5.0;
 			m_IsAirDash = false;
@@ -672,18 +677,15 @@ void CMay::Ground_Pound(const _double TimeDelta)
 	{
 		m_bPlayGroundPoundOnce = true;
 		m_pModelCom->Set_Animation(ANI_M_Jump_Land);
-		//m_pModelCom->Set_NextAnimIndex(ANI_M_GroundPound_Land_Exit);
 	}
 	if (m_pModelCom->Is_AnimFinished(ANI_M_Jump_Land))
 	{
-		//m_pModelCom->Set_Animation(ANI_M_GroundPound_Land_Exit);
-		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
-	}
-	//if (m_pModelCom->Is_AnimFinished(ANI_M_GroundPound_Land_Exit))
-	{
+		m_IsAirDash = false;
 		m_bPlayGroundPoundOnce = false;
 		m_bCanMove = true;
+		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 	}
+
 }
 void CMay::StateCheck(_double TimeDelta)
 {

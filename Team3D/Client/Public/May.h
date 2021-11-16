@@ -246,7 +246,7 @@ private:
 
 	// 움직임 가속
 	_float m_fAcceleration = 5.0;
-	_float	m_fJogAcceleration = 15.f;
+	_float	m_fJogAcceleration = 25.f;
 	_float m_fGroundPoundAirDelay = 0.f; // 체공시간.
 
 	 // GroundPound 관련
