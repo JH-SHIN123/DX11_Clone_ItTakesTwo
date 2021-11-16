@@ -42,8 +42,12 @@ private:
 	_int	Tick_CamHelperNone(_double dTimeDelta);			//현재 아무것도 재생안함
 	_int	Tick_CamHelper_Act(_double dTimeDelta);			//재생중
 	_int	Tick_CamHelper_SeeCamNode(_double dTimeDelta);	//카메라노드를 처다봄
+
+
 private:
 	_int	ReSet_Cam_FreeToAuto();		//변수 초기화용
+	void	OffSetPhsX(_double dTimeDelta);
+
 private:
 	CGameObject* m_pTargetObj = nullptr;
 	_float m_fMouseRevSpeed[Rev_End] = { 2.5f,2.5f };
@@ -56,7 +60,10 @@ private:
 	_float4x4 m_matBeginWorld;
 	_float4x4 m_matPreRev;
 
+	_float4x4 m_matCur;
+
 	_float m_fChangeCamModeTime = 0.f;
+
 
 };
 

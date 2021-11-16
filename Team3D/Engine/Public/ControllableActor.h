@@ -30,7 +30,7 @@ public:
 	void	Update_Cam(_double dTimeDelta);
 	void	Jump_Start(_float fJumpForce);
 	void	Jump_Higher(_float fJumpForce);
-
+	PxController* Get_Controller() { return m_pController; }
 private:
 	PxController*		m_pController = nullptr;
 	PxRigidDynamic*		m_pActor = nullptr;

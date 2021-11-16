@@ -27,13 +27,35 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	CCamera::NativeConstruct(pArg);
 
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
+	PxCapsuleControllerDesc CapsuleControllerDesc;
+	CapsuleControllerDesc.setToDefault();
+	CapsuleControllerDesc.height = 0.5f;
+	CapsuleControllerDesc.radius = 0.5f;
+	CapsuleControllerDesc.material = m_pGameInstance->Create_PxMaterial(0.5f, 0.5f, 0.5f);
+	CapsuleControllerDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
+	CapsuleControllerDesc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
+	CapsuleControllerDesc.contactOffset = 0.02f;
+	CapsuleControllerDesc.stepOffset = 0.5f;
+	CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
+	CapsuleControllerDesc.slopeLimit = 0.707f;
+	CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	////CapsuleControllerDesc.reportCallback = NULL;
+	////CapsuleControllerDesc.behaviorCallback = NULL;
+	//CapsuleControllerDesc.density = 10.f;
+	//CapsuleControllerDesc.scaleCoeff = 0.8f;
+	//CapsuleControllerDesc.invisibleWallHeight = 0.f;
+	//CapsuleControllerDesc.maxJumpHeight = 10.f;
+	//CapsuleControllerDesc.volumeGrowth = 1.5f;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom, CapsuleControllerDesc, 0.f)), E_FAIL);
+
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
 
 	
 	XMStoreFloat4x4(&m_matPreRev, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
-	
+	XMStoreFloat4x4(&m_matCur, m_pTransformCom->Get_WorldMatrix());
+
 	m_eCurCamMode = Cam_Free;
 
 	
@@ -51,8 +73,10 @@ _int CMainCamera::Tick(_double dTimeDelta)
 	switch ( m_pCamHelper->Tick(dTimeDelta,CFilm::LScreen))
 	{
 	case CCam_Helper::CamHelperState::Helper_None:
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matCur));
 		m_fChangeCamModeTime <=1.f ? m_eCurCamMode = CamMode::Cam_AutoToFree : m_eCurCamMode = CamMode::Cam_Free;
 		iResult = Tick_CamHelperNone(dTimeDelta);
+		OffSetPhsX(dTimeDelta);
 		break;
 	case CCam_Helper::CamHelperState::Helper_Act:
 		ReSet_Cam_FreeToAuto();
@@ -70,6 +94,8 @@ _int CMainCamera::Tick(_double dTimeDelta)
 
 	if (NO_EVENT != iResult)
 		return iResult;
+
+
 	return CCamera::Tick(dTimeDelta);
 }
 
@@ -219,6 +245,20 @@ _int CMainCamera::ReSet_Cam_FreeToAuto()
 	m_fMouseRev[Rev_Prependicul] = 0.f;
 
 	return NO_EVENT;
+}
+
+void CMainCamera::OffSetPhsX(_double dTimeDelta)
+{
+	XMStoreFloat4x4(&m_matCur, m_pTransformCom->Get_WorldMatrix());
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_vector vPrePhsXPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
+
+	if (m_pActorCom->Get_Controller()->move(MH_PxVec3(XMVector4Normalize(vPos - vPrePhsXPos)), 0.001f, dTimeDelta, PxControllerFilters()) & PxControllerCollisionFlag::eCOLLISION_DOWN)
+	{
+		m_pActorCom->Update_Cam(dTimeDelta);
+	}
+	
 }
 
 #pragma region Cam_Helper
