@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Test_EnvObject.h"
 #include "GameInstance.h"
-#include "FireDoor.h"
+#include "Effect_FireDoor.h"
 
 CTest_EnvObject::CTest_EnvObject(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)

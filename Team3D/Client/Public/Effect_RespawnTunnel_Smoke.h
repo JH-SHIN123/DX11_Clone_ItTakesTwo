@@ -1,16 +1,16 @@
 #pragma once
 
-#ifndef __RESPAWNTUNNEL_SMOKE_H__
+#ifndef __EFFECT_RESPAWNTUNNEL_SMOKE_H__
 
 #include "InGameEffect.h"
 
 BEGIN(Client)
-class CRespawnTunnel_Smoke final : public CInGameEffect
+class CEffect_RespawnTunnel_Smoke final : public CInGameEffect
 {
 private:
-	explicit CRespawnTunnel_Smoke(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CRespawnTunnel_Smoke(const CRespawnTunnel_Smoke& rhs);
-	virtual ~CRespawnTunnel_Smoke() = default;
+	explicit CEffect_RespawnTunnel_Smoke(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_RespawnTunnel_Smoke(const CEffect_RespawnTunnel_Smoke& rhs);
+	virtual ~CEffect_RespawnTunnel_Smoke() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -25,11 +25,11 @@ public:
 	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0) override;
 
 public:
-	static CRespawnTunnel_Smoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_RespawnTunnel_Smoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
 
 END
-#define __RESPAWNTUNNEL_SMOKE_H__
+#define __EFFECT_RESPAWNTUNNEL_SMOKE_H__
 #endif

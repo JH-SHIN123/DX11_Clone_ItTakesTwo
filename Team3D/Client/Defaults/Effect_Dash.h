@@ -1,6 +1,6 @@
 #pragma once
 
-#ifndef __DASH_EFFFECT_H__
+#ifndef __EFFECT_DASH_H__
 
 #include "InGameEffect_Rect.h"
 
@@ -42,5 +42,5 @@ public:
 };
 
 END
-#define __DASH_EFFFECT_H__
-#endif // !__DASH_EFFFECT_H__
+#define __EFFECT_DASH_H__
+#endif // !__EFFECT_DASH_H__

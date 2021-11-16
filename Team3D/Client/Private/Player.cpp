@@ -98,14 +98,6 @@ _int CPlayer::Tick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_9))
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Walking_Smoke, Matrix);
 
-	vPos.m128_f32[1] += 3.f;
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Effect_Dash, Matrix);
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_DeadEffect, Matrix);
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_DeadEffect, Matrix);
-
 
 
 	m_pModelCom->Update_Animation(dTimeDelta);

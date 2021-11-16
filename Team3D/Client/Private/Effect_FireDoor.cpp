@@ -1,25 +1,25 @@
 #include "stdafx.h"
-#include "..\Public\FireDoor.h"
+#include "..\Public\Effect_FireDoor.h"
 #include "GameInstance.h"
 
-CFireDoor::CFireDoor(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_FireDoor::CEffect_FireDoor(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
-CFireDoor::CFireDoor(const CFireDoor & rhs)
+CEffect_FireDoor::CEffect_FireDoor(const CEffect_FireDoor & rhs)
 	: CInGameEffect(rhs)
 {
 }
 
-HRESULT CFireDoor::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_FireDoor::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
 	return S_OK;
 }
 
-HRESULT CFireDoor::NativeConstruct(void * pArg)
+HRESULT CEffect_FireDoor::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Textrue_ColorRamp"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
@@ -33,7 +33,7 @@ HRESULT CFireDoor::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CFireDoor::Tick(_double TimeDelta)
+_int CEffect_FireDoor::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
@@ -67,12 +67,12 @@ _int CFireDoor::Tick(_double TimeDelta)
 	return _int();
 }
 
-_int CFireDoor::Late_Tick(_double TimeDelta)
+_int CEffect_FireDoor::Late_Tick(_double TimeDelta)
 {
 	return  m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_ALPHA, this);
 }
 
-HRESULT CFireDoor::Render()
+HRESULT CEffect_FireDoor::Render()
 {
 	SetUp_Shader_Data();
 
@@ -90,41 +90,41 @@ HRESULT CFireDoor::Render()
 	return S_OK;
 }
 
-void CFireDoor::Instance_Size(_float TimeDelta, _int iIndex)
+void CEffect_FireDoor::Instance_Size(_float TimeDelta, _int iIndex)
 {
 }
 
-void CFireDoor::Instance_Pos(_float TimeDelta, _int iIndex)
+void CEffect_FireDoor::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 }
 
-void CFireDoor::Instance_UV(_float TimeDelta, _int iIndex)
+void CEffect_FireDoor::Instance_UV(_float TimeDelta, _int iIndex)
 {
 }
 
-CFireDoor * CFireDoor::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CEffect_FireDoor * CEffect_FireDoor::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CFireDoor*	pInstance = new CFireDoor(pDevice, pDeviceContext);
+	CEffect_FireDoor*	pInstance = new CEffect_FireDoor(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CFireDoor");
+		MSG_BOX("Failed to Create Instance - CEffect_FireDoor");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CFireDoor::Clone_GameObject(void * pArg)
+CGameObject * CEffect_FireDoor::Clone_GameObject(void * pArg)
 {
-	CFireDoor* pInstance = new CFireDoor(*this);
+	CEffect_FireDoor* pInstance = new CEffect_FireDoor(*this);
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CFireDoor");
+		MSG_BOX("Failed to Clone Instance - CEffect_FireDoor");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CFireDoor::Free()
+void CEffect_FireDoor::Free()
 {
 	Safe_Release(m_pTexturesCom_ColorRamp);
 

@@ -12,7 +12,7 @@ END
 
 BEGIN(Client)
 
-class CFireDoor;
+class CEffect_FireDoor;
 
 class CTest_EnvObject final : public CGameObject
 {
@@ -34,7 +34,7 @@ private:
 	CModel_Instance*	m_pModelCom = nullptr;
 
 private:
-	CFireDoor* m_pFireDoor = nullptr;
+	CEffect_FireDoor* m_pFireDoor = nullptr;
 
 public:
 	static CTest_EnvObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

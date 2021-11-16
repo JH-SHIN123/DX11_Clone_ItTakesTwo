@@ -53,17 +53,19 @@ typedef struct tagEffect_Desc_Prototype
 
 typedef struct tagEffect_Desc_Clone // 상황에 따라 얘는 좀 이랬으면 좋겠다 싶은 것들
 {
-	_float3 vDir			= { 0.f, 0.f, 0.f };			// 0 Index Move Dir;
-	_float3 vRandDirPower	= { 0.f, 0.f, 0.f };			// other Indeces Move Dir;
-	_bool	IsRandDirDown[3] = { true, true, true };
-	_bool	IsRandDir_FirstIndex = false;
-	_float4x4 WorldMatrix = MH_XMFloat4x4Identity();
-	_double	UVTime = -1.f;
-	_bool	IsRandUV = false;
-	_float	fSizePower = 1.f;
-	_float3 vSize_Max = { 1.f,1.f,1.f };
-	_bool IsCody = false;
-	_float fCullingRadius = 10.f;
+	enum PLAYER_VALUE {	PV_MAY, PV_CODY, PV_CODY_S, PV_CODY_L, PV_END};
+
+	_float3		vDir			= { 0.f, 0.f, 0.f };			// 0 Index Move Dir;
+	_float3		vRandDirPower	= { 0.f, 0.f, 0.f };			// other Indeces Move Dir;
+	_bool		IsRandDirDown[3] = { true, true, true };
+	_bool		IsRandDir_FirstIndex = false;
+	_float4x4	WorldMatrix = MH_XMFloat4x4Identity();
+	_double		UVTime = -1.f;
+	_bool		IsRandUV = false;
+	_float		fSizePower = 1.f;
+	_float3		vSize_Max = { 1.f,1.f,1.f };
+	_int		iPlayerValue = PV_MAY;
+	_float		fCullingRadius = 10.f;
 
 	void* pArg = nullptr;
 }EFFECT_DESC_CLONE; 

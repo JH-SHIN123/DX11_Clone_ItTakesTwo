@@ -232,7 +232,7 @@ void CMay::KeyInput(_double TimeDelta)
 
 #pragma region Effet Test
 	if (m_pGameInstance->Key_Down(DIK_P))
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_DeadEffect, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 
 
 #pragma  endregion

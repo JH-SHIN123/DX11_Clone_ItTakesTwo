@@ -1,18 +1,18 @@
 #include "stdafx.h"
-#include "..\Public\Player_DeadParticle.h"
+#include "..\Public\Effect_Player_Dead_Particle.h"
 #include "GameInstance.h"
 
-CPlayer_DeadParticle::CPlayer_DeadParticle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_Player_Dead_Particle::CEffect_Player_Dead_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
-CPlayer_DeadParticle::CPlayer_DeadParticle(const CPlayer_DeadParticle & rhs)
+CEffect_Player_Dead_Particle::CEffect_Player_Dead_Particle(const CEffect_Player_Dead_Particle & rhs)
 	: CInGameEffect(rhs)
 {
 }
 
-HRESULT CPlayer_DeadParticle::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_Player_Dead_Particle::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
@@ -20,22 +20,24 @@ HRESULT CPlayer_DeadParticle::NativeConstruct_Prototype(void * pArg)
 	return S_OK;
 }
 
-HRESULT CPlayer_DeadParticle::NativeConstruct(void * pArg)
+HRESULT CEffect_Player_Dead_Particle::NativeConstruct(void * pArg)
 {
 	m_EffectDesc_Prototype.fLifeTime = 2.f;
 	m_EffectDesc_Prototype.vSize = { 0.0625f, 0.0625f,0.f };
-	m_EffectDesc_Prototype.iInstanceCount = 1000;
 
 	__super::Ready_Component(pArg);
+
+	if(EFFECT_DESC_CLONE::PV_CODY >= m_EffectDesc_Clone.iPlayerValue)
+		m_EffectDesc_Prototype.iInstanceCount = 1000;
+	else if(EFFECT_DESC_CLONE::PV_CODY_S == m_EffectDesc_Clone.iPlayerValue)
+		m_EffectDesc_Prototype.iInstanceCount = 100;
+	else if (EFFECT_DESC_CLONE::PV_CODY_L == m_EffectDesc_Clone.iPlayerValue)
+		m_EffectDesc_Prototype.iInstanceCount = 5000;
 
 	m_EffectDesc_Clone.UVTime = 0.01;
 	m_EffectDesc_Clone.vRandDirPower = { 10.f,10.f,10.f };
 
-
-
 	Ready_Instance();
-
-
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Dead_Cells"), TEXT("Com_Textrue_Particle"), (CComponent**)&m_pTexturesCom_Particle), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Circle_Alpha"), TEXT("Com_Textrue_Particle_Mask"), (CComponent**)&m_pTexturesCom_Particle_Mask), E_FAIL);
@@ -43,7 +45,7 @@ HRESULT CPlayer_DeadParticle::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CPlayer_DeadParticle::Tick(_double TimeDelta)
+_int CEffect_Player_Dead_Particle::Tick(_double TimeDelta)
 {
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
@@ -61,7 +63,7 @@ _int CPlayer_DeadParticle::Tick(_double TimeDelta)
 	return _int();
 }
 
-_int CPlayer_DeadParticle::Late_Tick(_double TimeDelta)
+_int CEffect_Player_Dead_Particle::Late_Tick(_double TimeDelta)
 {
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
@@ -69,7 +71,7 @@ _int CPlayer_DeadParticle::Late_Tick(_double TimeDelta)
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_ALPHA, this);
 }
 
-HRESULT CPlayer_DeadParticle::Render()
+HRESULT CEffect_Player_Dead_Particle::Render()
 {
 	SetUp_Shader_Data();
 
@@ -84,7 +86,7 @@ HRESULT CPlayer_DeadParticle::Render()
 	return S_OK;
 }
 
-void CPlayer_DeadParticle::Instance_Size(_float TimeDelta, _int iIndex)
+void CEffect_Player_Dead_Particle::Instance_Size(_float TimeDelta, _int iIndex)
 {
 	m_pInstanceBuffer[iIndex].vSize.x -= TimeDelta * 0.05f;
 	m_pInstanceBuffer[iIndex].vSize.y -= TimeDelta * 0.05f;
@@ -96,7 +98,7 @@ void CPlayer_DeadParticle::Instance_Size(_float TimeDelta, _int iIndex)
 	}
 }
 
-void CPlayer_DeadParticle::Instance_Pos(_float TimeDelta, _int iIndex)
+void CEffect_Player_Dead_Particle::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 	_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
 	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer[iIndex].vPosition);
@@ -106,12 +108,12 @@ void CPlayer_DeadParticle::Instance_Pos(_float TimeDelta, _int iIndex)
 	XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vPos);
 }
 
-void CPlayer_DeadParticle::Instance_UV(_float TimeDelta, _int iIndex)
+void CEffect_Player_Dead_Particle::Instance_UV(_float TimeDelta, _int iIndex)
 {
 
 }
 
-HRESULT CPlayer_DeadParticle::Ready_Instance()
+HRESULT CEffect_Player_Dead_Particle::Ready_Instance()
 {
 	if (nullptr == m_pPointInstanceCom)
 		return S_OK;
@@ -187,9 +189,6 @@ HRESULT CPlayer_DeadParticle::Ready_Instance()
 			iRandVtx = rand() % iInstanceCount;
 
 		Set_VtxColor(i, iRandVtx);
-
-
-
 	}
 
 
@@ -198,7 +197,7 @@ HRESULT CPlayer_DeadParticle::Ready_Instance()
 	return S_OK;
 }
 
-_float4 CPlayer_DeadParticle::Set_particleUV(_int iIndex, _int U, _int V)
+_float4 CEffect_Player_Dead_Particle::Set_particleUV(_int iIndex, _int U, _int V)
 {
 	_float fLeft	= (1.f / U) *  m_pInstance_UVCount[iIndex].x;
 	_float fTop		= (1.f / V) *  m_pInstance_UVCount[iIndex].y;
@@ -210,25 +209,9 @@ _float4 CPlayer_DeadParticle::Set_particleUV(_int iIndex, _int U, _int V)
 	return vUV;
 }
 
-void CPlayer_DeadParticle::Set_VtxColor(_int iIndex, _uint iVtxIndex)
+void CEffect_Player_Dead_Particle::Set_VtxColor(_int iIndex, _uint iVtxIndex)
 {
-	if (true == m_EffectDesc_Clone.IsCody)
-	{
-		if (0 <= iVtxIndex && iVtxIndex <= 41748) // ½º¿þÅÍ
-			m_pInstance_UVCount[iIndex] = { 3.f, 2.f };
-		else if (54924 <= iVtxIndex && iVtxIndex <= 96558) // ¸Ó¸®ÅÐ
-			m_pInstance_UVCount[iIndex] = { 0.f, 2.f };
-		else if (177171 <= iVtxIndex && iVtxIndex <= 209500) // ¹ÙÁö
-			m_pInstance_UVCount[iIndex] = { 2.f, 2.f };
-		else if (209500 <= iVtxIndex && iVtxIndex <= 259779) // ÆÈ¶Ò
-			m_pInstance_UVCount[iIndex] = { 1.f, 2.f };
-		else if (259779 <= iVtxIndex && iVtxIndex <= 301083) // ¶Ç´Ù¸¥ ¸Ó¸®ÅÐ
-			m_pInstance_UVCount[iIndex] = { 0.f, 2.f };
-		else
-			m_pInstance_UVCount[iIndex] = { 1.f, 2.f };
-
-	}
-	else
+	if (EFFECT_DESC_CLONE::PV_MAY != m_EffectDesc_Clone.iPlayerValue)
 	{
 		if (0 <= iVtxIndex && iVtxIndex <= 92670) // ¹åÁÙ, ÆÈ¶Ò
 			m_pInstance_UVCount[iIndex] = { 3.f, 0.f };
@@ -245,33 +228,48 @@ void CPlayer_DeadParticle::Set_VtxColor(_int iIndex, _uint iVtxIndex)
 		else
 			m_pInstance_UVCount[iIndex] = { 1.f, 0.f };
 	}
+	else
+	{
+		if (0 <= iVtxIndex && iVtxIndex <= 41748) // ½º¿þÅÍ
+			m_pInstance_UVCount[iIndex] = { 3.f, 2.f };
+		else if (54924 <= iVtxIndex && iVtxIndex <= 96558) // ¸Ó¸®ÅÐ
+			m_pInstance_UVCount[iIndex] = { 0.f, 2.f };
+		else if (177171 <= iVtxIndex && iVtxIndex <= 209500) // ¹ÙÁö
+			m_pInstance_UVCount[iIndex] = { 2.f, 2.f };
+		else if (209500 <= iVtxIndex && iVtxIndex <= 259779) // ÆÈ¶Ò
+			m_pInstance_UVCount[iIndex] = { 1.f, 2.f };
+		else if (259779 <= iVtxIndex && iVtxIndex <= 301083) // ¶Ç´Ù¸¥ ¸Ó¸®ÅÐ
+			m_pInstance_UVCount[iIndex] = { 0.f, 2.f };
+		else
+			m_pInstance_UVCount[iIndex] = { 1.f, 2.f };
+	}
 
 	m_pInstanceBuffer[iIndex].vTextureUV = Set_particleUV(iIndex, 4, 4);
 }
 
-CPlayer_DeadParticle * CPlayer_DeadParticle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CEffect_Player_Dead_Particle * CEffect_Player_Dead_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CPlayer_DeadParticle*	pInstance = new CPlayer_DeadParticle(pDevice, pDeviceContext);
+	CEffect_Player_Dead_Particle*	pInstance = new CEffect_Player_Dead_Particle(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CPlayer_DeadParticle");
+		MSG_BOX("Failed to Create Instance - CEffect_Player_Dead_Particle");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CPlayer_DeadParticle::Clone_GameObject(void * pArg)
+CGameObject * CEffect_Player_Dead_Particle::Clone_GameObject(void * pArg)
 {
-	CPlayer_DeadParticle* pInstance = new CPlayer_DeadParticle(*this);
+	CEffect_Player_Dead_Particle* pInstance = new CEffect_Player_Dead_Particle(*this);
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CPlayer_DeadParticle");
+		MSG_BOX("Failed to Clone Instance - CEffect_Player_Dead_Particle");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CPlayer_DeadParticle::Free()
+void CEffect_Player_Dead_Particle::Free()
 {
 	Safe_Release(m_pTexturesCom_Particle);
 	Safe_Release(m_pTexturesCom_Particle_Mask);

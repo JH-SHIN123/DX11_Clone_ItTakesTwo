@@ -16,9 +16,10 @@ BEGIN(Client)
 enum class Effect_Value
 {
 	Walking_Smoke, Landing_Smoke, 
-	Effect_Dash,
-	Cody_DeadEffect,
-	May_DeadEffect,
+	Dash,
+	Cody_Dead,
+	Cody_Revive,
+	May_Dead,
 	Effect_Value_End
 };
 
@@ -41,7 +42,10 @@ public:
 public:
 	CEffect_Generator();
 	virtual ~CEffect_Generator() = default;
-		
+
+private:
+	EFFECT_DESC_CLONE::PLAYER_VALUE Check_Cody_Size(_fmatrix WorldMatrix);
+
 private:
 	CGameInstance* m_pGameInstance = nullptr;
 

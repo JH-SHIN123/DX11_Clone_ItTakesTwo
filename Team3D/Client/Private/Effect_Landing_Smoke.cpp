@@ -1,18 +1,18 @@
 #include "stdafx.h"
-#include "..\Public\Landing_Smoke.h"
+#include "..\Public\Effect_Landing_Smoke.h"
 #include "GameInstance.h"
 
-CLanding_Smoke::CLanding_Smoke(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_Landing_Smoke::CEffect_Landing_Smoke(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
-CLanding_Smoke::CLanding_Smoke(const CLanding_Smoke & rhs)
+CEffect_Landing_Smoke::CEffect_Landing_Smoke(const CEffect_Landing_Smoke & rhs)
 	: CInGameEffect(rhs)
 {
 }
 
-HRESULT CLanding_Smoke::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_Landing_Smoke::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
@@ -21,14 +21,14 @@ HRESULT CLanding_Smoke::NativeConstruct_Prototype(void * pArg)
 	return S_OK;
 }
 
-HRESULT CLanding_Smoke::NativeConstruct(void * pArg)
+HRESULT CEffect_Landing_Smoke::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
 
 	return S_OK;
 }
 
-_int CLanding_Smoke::Tick(_double TimeDelta)
+_int CEffect_Landing_Smoke::Tick(_double TimeDelta)
 {
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
 
@@ -40,7 +40,7 @@ _int CLanding_Smoke::Tick(_double TimeDelta)
 	return _int();
 }
 
-_int CLanding_Smoke::Late_Tick(_double TimeDelta)
+_int CEffect_Landing_Smoke::Late_Tick(_double TimeDelta)
 {
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
@@ -48,7 +48,7 @@ _int CLanding_Smoke::Late_Tick(_double TimeDelta)
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_ALPHA, this);
 }
 
-HRESULT CLanding_Smoke::Render()
+HRESULT CEffect_Landing_Smoke::Render()
 {
 	SetUp_Shader_Data();
 
@@ -62,11 +62,11 @@ HRESULT CLanding_Smoke::Render()
 	return S_OK;
 }
 
-void CLanding_Smoke::Instance_Size(_float TimeDelta, _int iIndex)
+void CEffect_Landing_Smoke::Instance_Size(_float TimeDelta, _int iIndex)
 {
 }
 
-void CLanding_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
+void CEffect_Landing_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer[iIndex].vPosition);
 	_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
@@ -76,7 +76,7 @@ void CLanding_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
 	XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vPos);
 }
 
-void CLanding_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
+void CEffect_Landing_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
 {
 	if (-1.f == m_EffectDesc_Clone.UVTime)
 		return;
@@ -108,7 +108,7 @@ void CLanding_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
 	}
 }
 
-void CLanding_Smoke::Control_Alpha(_double TimeDelta)
+void CEffect_Landing_Smoke::Control_Alpha(_double TimeDelta)
 {
 // 	if (false == m_IsDisapear)
 // 	{
@@ -125,7 +125,7 @@ void CLanding_Smoke::Control_Alpha(_double TimeDelta)
 	
 }
 
-void CLanding_Smoke::Control_Instance(_double TimeDelta)
+void CEffect_Landing_Smoke::Control_Instance(_double TimeDelta)
 {
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
@@ -134,29 +134,29 @@ void CLanding_Smoke::Control_Instance(_double TimeDelta)
 	}
 }
 
-CLanding_Smoke * CLanding_Smoke::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CEffect_Landing_Smoke * CEffect_Landing_Smoke::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CLanding_Smoke*	pInstance = new CLanding_Smoke(pDevice, pDeviceContext);
+	CEffect_Landing_Smoke*	pInstance = new CEffect_Landing_Smoke(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CLanding_Smoke");
+		MSG_BOX("Failed to Create Instance - CEffect_Landing_Smoke");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CLanding_Smoke::Clone_GameObject(void * pArg)
+CGameObject * CEffect_Landing_Smoke::Clone_GameObject(void * pArg)
 {
-	CLanding_Smoke* pInstance = new CLanding_Smoke(*this);
+	CEffect_Landing_Smoke* pInstance = new CEffect_Landing_Smoke(*this);
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CLanding_Smoke");
+		MSG_BOX("Failed to Clone Instance - CEffect_Landing_Smoke");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CLanding_Smoke::Free()
+void CEffect_Landing_Smoke::Free()
 {
 	__super::Free();
 }

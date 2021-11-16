@@ -1,18 +1,18 @@
 #include "stdafx.h"
-#include "..\Public\Player_DeadEffect.h"
+#include "..\Public\Effect_Player_Dead.h"
 #include "GameInstance.h"
 
-CPlayer_DeadEffect::CPlayer_DeadEffect(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_Player_Dead::CEffect_Player_Dead(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
-CPlayer_DeadEffect::CPlayer_DeadEffect(const CPlayer_DeadEffect & rhs)
+CEffect_Player_Dead::CEffect_Player_Dead(const CEffect_Player_Dead & rhs)
 	: CInGameEffect(rhs)
 {
 }
 
-HRESULT CPlayer_DeadEffect::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_Player_Dead::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
@@ -20,7 +20,7 @@ HRESULT CPlayer_DeadEffect::NativeConstruct_Prototype(void * pArg)
 	return S_OK;
 }
 
-HRESULT CPlayer_DeadEffect::NativeConstruct(void * pArg)
+HRESULT CEffect_Player_Dead::NativeConstruct(void * pArg)
 {
 	m_EffectDesc_Prototype.fLifeTime = 2.f;
 	m_EffectDesc_Prototype.vSize = { 1.f,1.f,0.f };
@@ -39,7 +39,7 @@ HRESULT CPlayer_DeadEffect::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CPlayer_DeadEffect::Tick(_double TimeDelta)
+_int CEffect_Player_Dead::Tick(_double TimeDelta)
 {
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
@@ -54,7 +54,7 @@ _int CPlayer_DeadEffect::Tick(_double TimeDelta)
 	return _int();
 }
 
-_int CPlayer_DeadEffect::Late_Tick(_double TimeDelta)
+_int CEffect_Player_Dead::Late_Tick(_double TimeDelta)
 {
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
@@ -62,7 +62,7 @@ _int CPlayer_DeadEffect::Late_Tick(_double TimeDelta)
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_ALPHA, this);
 }
 
-HRESULT CPlayer_DeadEffect::Render()
+HRESULT CEffect_Player_Dead::Render()
 {
 	SetUp_Shader_Data();
 
@@ -85,11 +85,11 @@ HRESULT CPlayer_DeadEffect::Render()
 	return S_OK;
 }
 
-void CPlayer_DeadEffect::Instance_Size(_float TimeDelta, _int iIndex)
+void CEffect_Player_Dead::Instance_Size(_float TimeDelta, _int iIndex)
 {
 }
 
-void CPlayer_DeadEffect::Instance_Pos(_float TimeDelta, _int iIndex)
+void CEffect_Player_Dead::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 	_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
 	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer[iIndex].vPosition);
@@ -99,11 +99,11 @@ void CPlayer_DeadEffect::Instance_Pos(_float TimeDelta, _int iIndex)
 	XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vPos);
 }
 
-void CPlayer_DeadEffect::Instance_UV(_float TimeDelta, _int iIndex)
+void CEffect_Player_Dead::Instance_UV(_float TimeDelta, _int iIndex)
 {
 }
 
-HRESULT CPlayer_DeadEffect::Ready_Instance()
+HRESULT CEffect_Player_Dead::Ready_Instance()
 {
 	if (nullptr == m_pPointInstanceCom)
 		return S_OK;
@@ -133,7 +133,7 @@ HRESULT CPlayer_DeadEffect::Ready_Instance()
 		if (0 < i)
 		{
 			m_pInstance_UVCount[i] = { _float(rand() % 4), _float(rand() % 2) };
-			if (true == m_EffectDesc_Clone.IsCody)
+			if (EFFECT_DESC_CLONE::PV_MAY != m_EffectDesc_Clone.iPlayerValue)
 				m_pInstance_UVCount[i].y += 2.f;
 		}
 		else
@@ -176,7 +176,7 @@ HRESULT CPlayer_DeadEffect::Ready_Instance()
 	return S_OK;
 }
 
-_float4 CPlayer_DeadEffect::Set_particleUV(_int iIndex, _int U, _int V)
+_float4 CEffect_Player_Dead::Set_particleUV(_int iIndex, _int U, _int V)
 {
 	_float fLeft		= (1.f	/ U) *  m_pInstance_UVCount[iIndex].x;
 	_float fTop			= (1.f	/ V) *  m_pInstance_UVCount[iIndex].y;
@@ -188,29 +188,29 @@ _float4 CPlayer_DeadEffect::Set_particleUV(_int iIndex, _int U, _int V)
 	return vUV;
 }
 
-CPlayer_DeadEffect * CPlayer_DeadEffect::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CEffect_Player_Dead * CEffect_Player_Dead::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CPlayer_DeadEffect*	pInstance = new CPlayer_DeadEffect(pDevice, pDeviceContext);
+	CEffect_Player_Dead*	pInstance = new CEffect_Player_Dead(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CPlayer_DeadEffect");
+		MSG_BOX("Failed to Create Instance - CEffect_Player_Dead");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CPlayer_DeadEffect::Clone_GameObject(void * pArg)
+CGameObject * CEffect_Player_Dead::Clone_GameObject(void * pArg)
 {
-	CPlayer_DeadEffect* pInstance = new CPlayer_DeadEffect(*this);
+	CEffect_Player_Dead* pInstance = new CEffect_Player_Dead(*this);
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CPlayer_DeadEffect");
+		MSG_BOX("Failed to Clone Instance - CEffect_Player_Dead");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CPlayer_DeadEffect::Free()
+void CEffect_Player_Dead::Free()
 {
 	Safe_Release(m_pTexturesCom_Particle);
 	Safe_Release(m_pTexturesCom_Particle_Mask);

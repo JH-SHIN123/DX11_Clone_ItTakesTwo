@@ -1,14 +1,14 @@
 #pragma once
 
-#ifndef __WALKING_SMOKE_H__
+#ifndef __EFFECT_ANDING_SMOKE_H__
 
 #include "InGameEffect.h"
-class CWalking_Smoke final : public CInGameEffect
+class CEffect_Landing_Smoke final : public CInGameEffect
 {
 private:
-	explicit CWalking_Smoke(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CWalking_Smoke(const CWalking_Smoke& rhs);
-	virtual ~CWalking_Smoke() = default; public:
+	explicit CEffect_Landing_Smoke(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_Landing_Smoke(const CEffect_Landing_Smoke& rhs);
+	virtual ~CEffect_Landing_Smoke() = default; public:
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -24,19 +24,17 @@ public:
 
 public:
 	void Control_Alpha(_double TimeDelta);
-	void Control_Instance(_float TimeDelta);
+	void Control_Instance(_double TimeDelta);
 
 private:
-	_float m_fSizeTime = 0.f;
-	_double m_dAlphaTime = 0.0;
+	_double m_dAlphaTime = 1.5;
 	_bool	m_IsDisapear = false;
 
-
 public:
-	static CWalking_Smoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_Landing_Smoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
 
-#define __WALKING_SMOKE_H__
-#endif // !__WALKING_SMOKE_H__
+#define __EFFECT_LANDING_SMOKE_H__
+#endif // !__LANDING_SMOKE_H__

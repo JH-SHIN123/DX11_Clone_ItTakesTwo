@@ -1,18 +1,18 @@
 #include "stdafx.h"
-#include "..\Public\Walking_Smoke.h"
+#include "..\Public\Effect_Walking_Smoke.h"
 #include "GameInstance.h"
 
-CWalking_Smoke::CWalking_Smoke(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_Walking_Smoke::CEffect_Walking_Smoke(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
-CWalking_Smoke::CWalking_Smoke(const CWalking_Smoke & rhs)
+CEffect_Walking_Smoke::CEffect_Walking_Smoke(const CEffect_Walking_Smoke & rhs)
 	: CInGameEffect(rhs)
 {
 }
 
-HRESULT CWalking_Smoke::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_Walking_Smoke::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 	
@@ -24,7 +24,7 @@ HRESULT CWalking_Smoke::NativeConstruct_Prototype(void * pArg)
 	return S_OK;
 }
 
-HRESULT CWalking_Smoke::NativeConstruct(void * pArg)
+HRESULT CEffect_Walking_Smoke::NativeConstruct(void * pArg)
 {
 
 	__super::NativeConstruct(pArg);
@@ -32,7 +32,7 @@ HRESULT CWalking_Smoke::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CWalking_Smoke::Tick(_double TimeDelta)
+_int CEffect_Walking_Smoke::Tick(_double TimeDelta)
 {
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
 
@@ -43,7 +43,7 @@ _int CWalking_Smoke::Tick(_double TimeDelta)
 	return _int();
 }
 
-_int CWalking_Smoke::Late_Tick(_double TimeDelta)
+_int CEffect_Walking_Smoke::Late_Tick(_double TimeDelta)
 {
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
@@ -51,7 +51,7 @@ _int CWalking_Smoke::Late_Tick(_double TimeDelta)
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_ALPHA, this);
 }
 
-HRESULT CWalking_Smoke::Render()
+HRESULT CEffect_Walking_Smoke::Render()
 {
 	SetUp_Shader_Data();
 
@@ -64,7 +64,7 @@ HRESULT CWalking_Smoke::Render()
 	return S_OK;
 }
 
-void CWalking_Smoke::Control_Alpha(_double TimeDelta)
+void CEffect_Walking_Smoke::Control_Alpha(_double TimeDelta)
 {
 	if (false == m_IsDisapear)
 		m_dAlphaTime += TimeDelta;
@@ -78,7 +78,7 @@ void CWalking_Smoke::Control_Alpha(_double TimeDelta)
 	}
 }
 
-void CWalking_Smoke::Control_Instance(_float TimeDelta)
+void CEffect_Walking_Smoke::Control_Instance(_float TimeDelta)
 {
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
@@ -88,7 +88,7 @@ void CWalking_Smoke::Control_Instance(_float TimeDelta)
 	}
 }
 
-void CWalking_Smoke::Instance_Size(_float TimeDelta, _int iIndex)
+void CEffect_Walking_Smoke::Instance_Size(_float TimeDelta, _int iIndex)
 {
 	m_pInstanceBuffer[iIndex].vSize.x += TimeDelta * m_EffectDesc_Clone.fSizePower;
 	m_pInstanceBuffer[iIndex].vSize.y += TimeDelta * m_EffectDesc_Clone.fSizePower;
@@ -102,7 +102,7 @@ void CWalking_Smoke::Instance_Size(_float TimeDelta, _int iIndex)
 	return;
 }
 
-void CWalking_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
+void CEffect_Walking_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer[iIndex].vPosition);
 	_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
@@ -112,37 +112,37 @@ void CWalking_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
 	XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vPos);
 }
 
-void CWalking_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
+void CEffect_Walking_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
 {
 }
 
-CWalking_Smoke * CWalking_Smoke::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CEffect_Walking_Smoke * CEffect_Walking_Smoke::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CWalking_Smoke*	pInstance = new CWalking_Smoke(pDevice, pDeviceContext);
+	CEffect_Walking_Smoke*	pInstance = new CEffect_Walking_Smoke(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CWalking_Smoke");
+		MSG_BOX("Failed to Create Instance - CEffect_Walking_Smoke");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CWalking_Smoke::Clone_GameObject(void * pArg)
+CGameObject * CEffect_Walking_Smoke::Clone_GameObject(void * pArg)
 {
-	CWalking_Smoke*	pInstance = new CWalking_Smoke(*this);
+	CEffect_Walking_Smoke*	pInstance = new CEffect_Walking_Smoke(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CWalking_Smoke");
+		MSG_BOX("Failed to Create Instance - CEffect_Walking_Smoke");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CWalking_Smoke::Free()
+void CEffect_Walking_Smoke::Free()
 {
 	__super::Free();
 }

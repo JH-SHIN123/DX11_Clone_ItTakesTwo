@@ -1,5 +1,8 @@
 #pragma once
 
+
+#ifndef __INGAMEEFFECT_RECT_H__
+
 #include "InGameEffect.h"
 
 BEGIN(Engine)
@@ -65,3 +68,5 @@ public:
 	virtual void Free() override; private:
 };
 END
+#define __INGAMEEFFECT_RECT_H__
+#endif

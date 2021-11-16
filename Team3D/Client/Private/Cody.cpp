@@ -69,7 +69,9 @@ _int CCody::Tick(_double dTimeDelta)
 	Jump(dTimeDelta);
 	Change_Size(dTimeDelta);
 
-	//m_pModelCom->Set_Animation(15);
+	//m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
+	//m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Death_Fall_MH);
+
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
 	return NO_EVENT;
@@ -210,7 +212,7 @@ void CCody::KeyInput(_double TimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_LSHIFT) && m_bRoll == false)
 	{
 		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Effect_Dash, m_pTransformCom->Get_WorldMatrix());
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
 		if (m_IsJumping == false)
 		{
 			m_pModelCom->Set_Animation(ANI_C_Roll_Start);
@@ -276,7 +278,9 @@ void CCody::KeyInput(_double TimeDelta)
 
 #pragma region Effet Test
 	if (m_pGameInstance->Key_Down(DIK_O))
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_DeadEffect, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+	if (m_pGameInstance->Key_Down(DIK_I))
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 
 
 #pragma  endregion
@@ -475,7 +479,7 @@ void CCody::Change_Size(const _double TimeDelta)
 			else
 			{
 				m_vScale = { 5.f, 5.f, 5.f };
-				m_IsSizeChanging = false;
+				m_IsSizeChanging = false; 
 				m_eCurPlayerSize = SIZE_LARGE;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 			}

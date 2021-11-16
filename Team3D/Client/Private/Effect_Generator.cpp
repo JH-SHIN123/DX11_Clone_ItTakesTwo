@@ -5,16 +5,17 @@
 
 #pragma  region Effect Include
 #include "TestEffect.h"
-#include "RespawnTunnel.h"
-#include "RespawnTunnel_Smoke.h"
-#include "FireDoor.h"
-#include "Walking_Smoke.h"
-#include "Landing_Smoke.h"
+#include "Effect_RespawnTunnel.h"
+#include "Effect_RespawnTunnel_Smoke.h"
+#include "Effect_FireDoor.h"
+#include "Effect_Walking_Smoke.h"
+#include "Effect_Landing_Smoke.h"
 #include "Effect_Dash.h"
-#include "Player_DeadEffect.h"
-#include "Player_DeadParticle.h"
+#include "Effect_Player_Dead.h"
+#include "Effect_Player_Dead_Particle.h"
+#include "Effect_Player_Revive.h"
 #include "Effect_Cody_Size_ML.h"
-#include "RespawnTunnel_Portal.h"
+#include "Effect_RespawnTunnel_Portal.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -33,15 +34,15 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	
 	EFFECT_DESC_CLONE Clone_Data;
 
-	_tchar szLayer[MAX_PATH] = L"Layer_Effect";
-	_tchar szPrototype[MAX_PATH] = L"";
+	_tchar szLayer[MAX_PATH]		= L"Layer_Effect";
+	_tchar szPrototype[MAX_PATH]	= L"";
 
 	XMStoreFloat4x4(&Clone_Data.WorldMatrix, WorldMatrix);
 	Clone_Data.pArg = pArg;
 
 	switch (eEffect)
 	{
-	case Client::Effect_Value::Walking_Smoke:
+	case Effect_Value::Walking_Smoke:
 		Clone_Data.vDir = {0.f, 1.f, 0.f};
 		Clone_Data.UVTime = 0.01;
 		Clone_Data.fSizePower = 0.7f;
@@ -54,17 +55,21 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		Clone_Data.UVTime = 0.001;
 		lstrcpy(szPrototype, L"GameObject_2D_Landing_Smoke");
 		break;
-	case Effect_Value::Effect_Dash:
-		lstrcpy(szPrototype, L"GameObject_2D_Effect_Dash");
+	case Effect_Value::Dash:
+		lstrcpy(szPrototype, L"GameObject_2D_Dash");
 		break;
-	case Effect_Value::Cody_DeadEffect:
-		Clone_Data.IsCody = true;
-		lstrcpy(szPrototype, L"GameObject_2D_Player_DeadParticle");
+	case Effect_Value::Cody_Dead:
+		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);
+		lstrcpy(szPrototype, L"GameObject_2D_Player_Dead_Particle");
 		break;
-	case Effect_Value::May_DeadEffect:
-		Clone_Data.IsCody = false;
-		//lstrcpy(szPrototype, L"GameObject_2D_Player_DeadEffect");
-		lstrcpy(szPrototype, L"GameObject_2D_Player_DeadParticle");
+	case Effect_Value::Cody_Revive:
+		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);
+		lstrcpy(szPrototype, L"GameObject_2D_Player_Revive");
+		break;
+	case Effect_Value::May_Dead:
+		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
+		//lstrcpy(szPrototype, L"GameObject_2D_Player_Dead");
+		lstrcpy(szPrototype, L"GameObject_2D_Player_Dead_Particle");
 		break;
 	default:
 		break;
@@ -73,6 +78,20 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	m_pGameInstance->Add_GameObject_Clone(1, szLayer, 1, szPrototype, &Clone_Data);
 
 	return S_OK;
+}
+
+EFFECT_DESC_CLONE::PLAYER_VALUE CEffect_Generator::Check_Cody_Size(_fmatrix WorldMatrix)
+{
+	_float fScale = (XMVector3Length(WorldMatrix.r[0])).m128_f32[0];
+
+	if (0.f <= fScale && fScale < 0.8f)
+		return EFFECT_DESC_CLONE::PV_CODY_S;
+	else if (0.8f <= fScale && fScale < 2.5f)
+		return EFFECT_DESC_CLONE::PV_CODY;
+	else if (2.5f <= fScale && fScale <= 5.f)
+		return EFFECT_DESC_CLONE::PV_CODY_L;
+
+	return EFFECT_DESC_CLONE::PV_CODY;
 }
 
 HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -133,36 +152,39 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	// 2D Effect
 	if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_RespawnTunnel_Smoke"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_RespawnTunnel_Smoke", CRespawnTunnel_Smoke::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_RespawnTunnel_Smoke",	CEffect_RespawnTunnel_Smoke::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_FireDoor", CFireDoor::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_FireDoor",				CEffect_FireDoor::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Walking_Smoke"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Walking_Smoke", CWalking_Smoke::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Walking_Smoke",		CEffect_Walking_Smoke::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Landing_Smoke"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Landing_Smoke", CLanding_Smoke::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Landing_Smoke",		CEffect_Landing_Smoke::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Dash"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Effect_Dash", CEffect_Dash::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Effect_Dash",			CEffect_Dash::Create(pDevice, pDeviceContext, pData));
 
-	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_DeadEffect"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_DeadEffect", CPlayer_DeadEffect::Create(pDevice, pDeviceContext, pData));
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Dead"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead",			CEffect_Player_Dead::Create(pDevice, pDeviceContext, pData));
 
-	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_DeadParticle"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_DeadParticle", CPlayer_DeadParticle::Create(pDevice, pDeviceContext, pData));
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Dead_Particle"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead_Particle",	CEffect_Player_Dead_Particle::Create(pDevice, pDeviceContext, pData));
+	
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Revive"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Revive",		CEffect_Player_Revive::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Effect_Cody_Size_ML"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Effect_Cody_Size_ML", CEffect_Cody_Size_ML::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Effect_Cody_Size_ML",	CEffect_Cody_Size_ML::Create(pDevice, pDeviceContext, pData));
 
 	//
 	// 3D Effect
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel", CRespawnTunnel::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel", CEffect_RespawnTunnel::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel_Portal"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel_Portal", CRespawnTunnel_Portal::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel_Portal", CEffect_RespawnTunnel_Portal::Create(pDevice, pDeviceContext, pData));
 
 	else
 	{

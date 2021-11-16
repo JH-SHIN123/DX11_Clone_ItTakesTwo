@@ -1,15 +1,15 @@
 #pragma once
 
-#ifndef __FIREDOOR_H__
+#ifndef __EFFECT_FIREDOOR_H__
 #include "InGameEffect.h"
 
 BEGIN(Client)
-class CFireDoor final : public CInGameEffect
+class CEffect_FireDoor final : public CInGameEffect
 {
 private:
-	explicit CFireDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CFireDoor(const CFireDoor& rhs);
-	virtual ~CFireDoor() = default;
+	explicit CEffect_FireDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_FireDoor(const CEffect_FireDoor& rhs);
+	virtual ~CEffect_FireDoor() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -31,11 +31,11 @@ private:
 	CTextures* m_pTexturesCom_ColorRamp = nullptr;
 
 public:
-	static CFireDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_FireDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
 
 END
-#define __FIREDOOR_H__
+#define __EFFECT_FIREDOOR_H__
 #endif 
