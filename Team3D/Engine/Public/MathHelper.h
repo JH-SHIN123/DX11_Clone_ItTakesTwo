@@ -38,6 +38,18 @@ namespace Engine
 		return vPxVector;
 	}
 
+	static PxQuat MH_PxQuat(_fvector vVector, _float fW)
+	{
+		PxQuat vPxVector;
+
+		vPxVector.x = XMVectorGetX(vVector);
+		vPxVector.y = XMVectorGetY(vVector);
+		vPxVector.z = XMVectorGetZ(vVector);
+		vPxVector.w = fW;
+
+		return vPxVector;
+	}
+
 	static _vector MH_XMVec3(PxVec3 vPx)
 	{
 		return XMVectorSet(vPx.x, vPx.y, vPx.z, 0.f);
@@ -52,16 +64,6 @@ namespace Engine
 		vPxVector.z = (_double)XMVectorGetZ(vVector);
 
 		return vPxVector;
-	}
-
-	static PxTransform MH_PxTransform(PxTransform vPose, _fmatrix WorldMatrix)
-	{
-		PxTransform vTrans;
-
-		_vector vScale, vRotQuat, vPosition;
-		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, WorldMatrix);
-
-		return vPose.transform(MH_PxTransform(vRotQuat, vPosition));
 	}
 
 	static _vector MH_ConvertToXMVector(PxExtendedVec3 vVector, _float fW)
