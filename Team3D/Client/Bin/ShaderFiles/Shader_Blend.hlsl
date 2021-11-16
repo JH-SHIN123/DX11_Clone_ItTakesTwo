@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////
-#include "Shader_Defines.hpp"
+#include "Shader_Include.hpp"
 
 texture2D	g_DiffuseTexture;
 texture2D	g_ShadeTexture;

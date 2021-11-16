@@ -13,11 +13,18 @@ struct BONEMATRICES
 cbuffer Matrices
 {
 	matrix	g_WorldMatrix;
+
 	matrix	g_MainViewMatrix;
 	matrix	g_MainProjMatrix;
 	matrix	g_SubViewMatrix;
 	matrix	g_SubProjMatrix;
+
+	matrix	g_MainProjMatrixInverse;
+	matrix	g_MainViewMatrixInverse;
+	matrix	g_SubProjMatrixInverse;
+	matrix	g_SubViewMatrixInverse;
 }
+
 cbuffer Camera
 {
 	float	g_fMainCamFar;
@@ -25,6 +32,12 @@ cbuffer Camera
 	float4	g_vMainCamPosition;
 	float4	g_vSubCamPosition;
 }
+
+cbuffer Viewport
+{
+	float4	g_vMainViewportUVInfo;
+	float4	g_vSubViewportUVInfo;
+};
 
 /* For. Shadow */
 texture2D g_CascadedShadowDepthTexture;

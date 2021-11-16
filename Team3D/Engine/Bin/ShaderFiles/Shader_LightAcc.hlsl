@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////
 #include "Shader_Include.hpp"
 
-
 texture2D	g_NormalTexture;
 texture2D	g_DepthTexture;
 
@@ -31,25 +30,6 @@ cbuffer MtrlDesc
 	vector	g_vMtrlAmbient	= (vector)1.f;
 	vector	g_vMtrlSpecular = (vector)1.f;
 }
-
-cbuffer TransformDesc
-{
-	//float	g_fMainCamFar;
-	//vector	g_vMainCamPosition;
-	matrix	g_MainProjMatrixInverse;
-	matrix	g_MainViewMatrixInverse;
-
-	//float	g_fSubCamFar;
-	//vector	g_vSubCamPosition;
-	matrix	g_SubProjMatrixInverse;
-	matrix	g_SubViewMatrixInverse;
-}
-
-cbuffer Viewport
-{
-	float4	g_vMainViewportUVInfo;
-	float4	g_vSubViewportUVInfo;
-};
 
 struct VS_IN
 {
