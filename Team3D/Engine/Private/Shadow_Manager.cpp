@@ -193,25 +193,6 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(TYPE eType)
 		// aabb의 길이 w / 높이 h / 기준점 zn / 깊이 zf 
 		ShadowProj = XMMatrixOrthographicLH(XMVectorGetX(cascadeExtents), XMVectorGetY(cascadeExtents), 0.f, XMVectorGetZ(cascadeExtents));
 
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// CASE 2
-		//// Ortho frustum in light space encloses scene.
-		//shadowCameraPos = XMVector3Normalize(vDirectionalLightDir) * fabs(XMVectorGetZ(mins)) * -2.f;
-		//shadowCameraPos = XMVectorSetW(shadowCameraPos, 1.f);
-		//ShadowView = XMMatrixLookAtLH(shadowCameraPos, vTarget, vUp);
-
-		//cascadeFrustumCenter = XMVector3TransformCoord(vTarget, ShadowView);
-
-		//float l = XMVectorGetX(cascadeFrustumCenter) - sphereRadius;
-		//float b =  XMVectorGetY(cascadeFrustumCenter) - sphereRadius;
-		//float n =  XMVectorGetZ(cascadeFrustumCenter) - sphereRadius;
-		//float r =  XMVectorGetX(cascadeFrustumCenter) + sphereRadius;
-		//float t =  XMVectorGetY(cascadeFrustumCenter) + sphereRadius;
-		//float f =  XMVectorGetZ(cascadeFrustumCenter) + sphereRadius;
-		//ShadowProj = XMMatrixOrthographicOffCenterLH(l, r, b, t, n, f);
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 		// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
 		_matrix T(
 			0.5f, 0.0f, 0.0f, 0.0f,
