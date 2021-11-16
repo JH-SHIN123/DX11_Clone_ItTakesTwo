@@ -49,19 +49,9 @@ HRESULT CTerrain::Render()
 	NULL_CHECK_RETURN(m_pTextureCom, E_FAIL);
 
 	m_pVIBufferCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pVIBufferCom->Set_DefaultVariables_Shadow();
+
 	m_pVIBufferCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(0));
-
-	_matrix ShadowLightViewProj[MAX_CASCADES];
-
-	m_pGameInstance->Get_CascadeShadowTransformTranspose(0, ShadowLightViewProj);
-	m_pVIBufferCom->Set_Variable("g_ShadowTransforms_Main", ShadowLightViewProj, sizeof(_matrix) * MAX_CASCADES);
-
-	m_pGameInstance->Get_CascadeShadowTransformTranspose(1, ShadowLightViewProj);
-	m_pVIBufferCom->Set_Variable("g_ShadowTransforms_Sub", ShadowLightViewProj, sizeof(_matrix) * MAX_CASCADES);
-
-	m_pVIBufferCom->Set_Variable("g_CascadeEnds", (void*)m_pGameInstance->Get_CascadedEnds(), sizeof(_float) * (MAX_CASCADES + 1));
-
-	m_pVIBufferCom->Set_ShaderResourceView("g_CascadedShadowDepthTexture", m_pRendererCom->Get_ShaderResourceView_RenderTargetManager(L"Target_CascadedShadow_Depth"));
 
 	m_pVIBufferCom->Render(0);
 
@@ -71,14 +61,7 @@ HRESULT CTerrain::Render()
 HRESULT CTerrain::Render_ShadowDepth()
 {
 	m_pVIBufferCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-
-	_matrix ShadowLightViewProj[MAX_CASCADES];
-
-	m_pGameInstance->Get_CascadeShadowLightViewProjTranspose(0, ShadowLightViewProj);
-	m_pVIBufferCom->Set_Variable("g_ShadowTransforms_Main", ShadowLightViewProj, sizeof(_matrix) * MAX_CASCADES);
-
-	m_pGameInstance->Get_CascadeShadowLightViewProjTranspose(1, ShadowLightViewProj);
-	m_pVIBufferCom->Set_Variable("g_ShadowTransforms_Sub", ShadowLightViewProj, sizeof(_matrix) * MAX_CASCADES);
+	m_pVIBufferCom->Set_DefaultVariables_ShadowDepth();
 
 	m_pVIBufferCom->Render(1);
 

@@ -1,4 +1,6 @@
 #include "..\Public\Model_Instance.h"
+#include "Shadow_Manager.h"
+#include "RenderTarget_Manager.h"
 #include "Model_Loader.h"
 #include "Mesh.h"
 #include "Textures.h"
@@ -115,6 +117,42 @@ HRESULT CModel_Instance::Set_DefaultVariables_Perspective()
 	Set_Variable("g_fSubCamFar", &fSubCamFar, sizeof(_float));
 	Set_Variable("g_vMainCamPosition", &vMainCamPosition, sizeof(_vector));
 	Set_Variable("g_vSubCamPosition", &vSubCamPosition, sizeof(_vector));
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Set_DefaultVariables_Shadow()
+{
+	_matrix ShadowTransform[MAX_CASCADES]; /* Shadow View * Shadow Proj * NDC */
+
+	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();
+
+	pShadowManager->Get_CascadeShadowTransformsTranspose(CShadow_Manager::SHADOW_MAIN, ShadowTransform);
+	Set_Variable("g_ShadowTransforms_Main", ShadowTransform, sizeof(_matrix) * MAX_CASCADES);
+
+	pShadowManager->Get_CascadeShadowTransformsTranspose(CShadow_Manager::SHADOW_SUB, ShadowTransform);
+	Set_Variable("g_ShadowTransforms_Sub", ShadowTransform, sizeof(_matrix) * MAX_CASCADES);
+
+	Set_Variable("g_CascadeEnds", (void*)pShadowManager->Get_CascadedEnds(), sizeof(_float) * (MAX_CASCADES + 1));
+
+	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
+	
+	Set_ShaderResourceView("g_CascadedShadowDepthTexture", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_CascadedShadow_Depth")));
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Set_DefaultVariables_ShadowDepth()
+{
+	_matrix ShadowViewProj[MAX_CASCADES];
+
+	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();
+
+	pShadowManager->Get_CascadeShadowViewProjTranspose(CShadow_Manager::SHADOW_MAIN, ShadowViewProj);
+	Set_Variable("g_ShadowTransforms_Main", ShadowViewProj, sizeof(_matrix) * MAX_CASCADES);
+
+	pShadowManager->Get_CascadeShadowViewProjTranspose(CShadow_Manager::SHADOW_SUB, ShadowViewProj);
+	Set_Variable("g_ShadowTransforms_Sub", ShadowViewProj, sizeof(_matrix) * MAX_CASCADES);
 
 	return S_OK;
 }

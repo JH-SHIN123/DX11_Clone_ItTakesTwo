@@ -8,22 +8,22 @@
 
 IMPLEMENT_SINGLETON(CShadow_Manager);
 
-void CShadow_Manager::Get_CascadeShadowLightViewProjTranspose(_uint iViewportIndex, _matrix* OutMatrix) const
+void CShadow_Manager::Get_CascadeShadowViewProjTranspose(TYPE iShadowType, _matrix* OutMatrix) const
 {
 	for (_uint i = 0; i < MAX_CASCADES; ++i)
 	{
-		if(0 == iViewportIndex)
+		if(SHADOW_MAIN == iShadowType)
 			OutMatrix[i] = XMMatrixTranspose(XMLoadFloat4x4(&m_CascadeViews[i]) * XMLoadFloat4x4(&m_CascadeProjs[i]));
 		else
 			OutMatrix[i] = XMMatrixTranspose(XMLoadFloat4x4(&m_CascadeViews_Sub[i]) * XMLoadFloat4x4(&m_CascadeProjs_Sub[i]));
 	}
 }
 
-void CShadow_Manager::Get_CascadeShadowTransformsTranspose(_uint iViewportIndex, _matrix* OutMatrix) const
+void CShadow_Manager::Get_CascadeShadowTransformsTranspose(TYPE iShadowType, _matrix* OutMatrix) const
 {
 	for (_uint i = 0; i < MAX_CASCADES; ++i)
 	{
-		if (0 == iViewportIndex)
+		if (SHADOW_MAIN == iShadowType)
 			OutMatrix[i] = XMMatrixTranspose(XMLoadFloat4x4(&m_CascadedShadowTransforms[i]));
 		else
 			OutMatrix[i] = XMMatrixTranspose(XMLoadFloat4x4(&m_CascadedShadowTransforms_Sub[i]));

@@ -90,12 +90,6 @@ public:
 	void		Clear_Lights();
 #pragma endregion
 
-#pragma region Shadow_Manager
-	const _float*	Get_CascadedEnds() const;
-	void			Get_CascadeShadowLightViewProjTranspose(_uint iViewportIndex, _matrix * OutMatrix) const;
-	void			Get_CascadeShadowTransformTranspose(_uint iViewportIndex, _matrix * OutMatrix) const;
-#pragma endregion
-
 #pragma region PhysX
 	PxMaterial*		Create_PxMaterial(PxReal StaticFriction, PxReal DynamicFriction, PxReal Restitution);
 	PxTriangleMesh*	Create_PxMesh(MESHACTOR_DESC pMeshActorDesc);
