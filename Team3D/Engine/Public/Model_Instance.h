@@ -44,6 +44,7 @@ public:
 	/* For.ModelLoader */
 	HRESULT	Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials);
 	/* For.Client */
+	HRESULT Update_Model(_fmatrix TransformMatrix);
 	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0);
 
 private: /* Typedef */

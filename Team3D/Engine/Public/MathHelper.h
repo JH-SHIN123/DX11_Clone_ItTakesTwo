@@ -38,6 +38,34 @@ namespace Engine
 		return vPxVector;
 	}
 
+	static PxQuat MH_PxQuat(_fvector vVector, _float fW)
+	{
+		PxQuat vPxVector;
+
+		vPxVector.x = XMVectorGetX(vVector);
+		vPxVector.y = XMVectorGetY(vVector);
+		vPxVector.z = XMVectorGetZ(vVector);
+		vPxVector.w = fW;
+
+		return vPxVector;
+	}
+
+	static _vector MH_XMVec3(PxVec3 vPx)
+	{
+		return XMVectorSet(vPx.x, vPx.y, vPx.z, 0.f);
+	}
+
+	static PxExtendedVec3 MH_PxExtendedVec3(_fvector vVector)
+	{
+		PxExtendedVec3 vPxVector;
+
+		vPxVector.x = (_double)XMVectorGetX(vVector);
+		vPxVector.y = (_double)XMVectorGetY(vVector);
+		vPxVector.z = (_double)XMVectorGetZ(vVector);
+
+		return vPxVector;
+	}
+
 	static _vector MH_ConvertToXMVector(PxExtendedVec3 vVector, _float fW)
 	{
 		return XMVectorSet((_float)vVector.x, (_float)vVector.y, (_float)vVector.z, fW);

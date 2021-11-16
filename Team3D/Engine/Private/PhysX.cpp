@@ -13,7 +13,7 @@ PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData fi
 	PX_UNUSED(constantBlock);
 
 	// all initial and persisting reports for everything, with per-point data
-	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT | PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_CONTACT_POINTS;
+	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT | PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_CONTACT_POINTS | PxPairFlag::eNOTIFY_TOUCH_CCD;
 
 	return PxFilterFlag::eDEFAULT;
 }
@@ -50,12 +50,11 @@ HRESULT CPhysX::Ready_PhysX()
 	SceneDesc.simulationEventCallback = m_pEventCallback;
 	SceneDesc.cpuDispatcher = m_pDispatcher;
 	SceneDesc.filterShader = FilterShader;
+	SceneDesc.kineKineFilteringMode = PxPairFilteringMode::eKILL;
+	SceneDesc.staticKineFilteringMode = PxPairFilteringMode::eDEFAULT;
 
 	m_pScene = m_pPhysics->createScene(SceneDesc);
 	NULL_CHECK_RETURN(m_pScene, E_FAIL);
-
-	//m_pScene->setFlag(PxSceneFlag::eENABLE_KINEMATIC_PAIRS, true);
-	//m_pScene->setFlag(PxSceneFlag::eENABLE_KINEMATIC_STATIC_PAIRS, true);
 
 #ifdef _DEBUG
 	PxPvdSceneClient* pClient = m_pScene->getScenePvdClient();
