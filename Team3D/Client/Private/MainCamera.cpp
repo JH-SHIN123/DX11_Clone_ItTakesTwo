@@ -28,22 +28,22 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 
 _int CMainCamera::Tick(_double dTimeDelta)
 {
-	//if (m_pGameInstance->Key_Pressing(DIK_W))
-	//	m_pTransformCom->Go_Straight(dTimeDelta);
-	//if (m_pGameInstance->Key_Pressing(DIK_A))
-	//	m_pTransformCom->Go_Left(dTimeDelta);
-	//if (m_pGameInstance->Key_Pressing(DIK_S))
-	//	m_pTransformCom->Go_Backward(dTimeDelta);
-	//if (m_pGameInstance->Key_Pressing(DIK_D))
-	//	m_pTransformCom->Go_Right(dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_W))
+		m_pTransformCom->Go_Straight(dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_A))
+		m_pTransformCom->Go_Left(dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_S))
+		m_pTransformCom->Go_Backward(dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_D))
+		m_pTransformCom->Go_Right(dTimeDelta);
 
-	//_long	MouseMove = 0;
+	_long	MouseMove = 0;
 
-	//if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
-	//	m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * MouseMove * 0.1);
+	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
+		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * MouseMove * 0.1);
 
-	//if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
-	//	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * MouseMove * 0.1);
+	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
+		m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * MouseMove * 0.1);
 
 	return CCamera::Tick(dTimeDelta);
 }
