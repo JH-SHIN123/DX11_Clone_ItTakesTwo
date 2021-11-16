@@ -1,4 +1,7 @@
 
+// Relase시 사용 : 에러메시지뜨는데, 잘돌아감.
+//#define PCF 0
+
 int Get_CascadedShadowSliceIndex(uint iViewportIndex, vector vWorldPos) /* 1: Main 2: Sub*/
 {
 	int iIndex = -1;
@@ -53,15 +56,40 @@ float Get_ShadowFactor(uint iViewportIndex, uint iSliceIndex, vector vWorldPos)
 		//vShadowUV.y = vShadowUV.y * (g_vSubViewportUVInfo.w) + (1.f - g_vSubViewportUVInfo.w);
 	}
 
-
 	float percentLit = 0.0f;
 	float depth = shadowPosH.z; // 그릴 객체들의 깊이값. (그림자 ndc로 이동한)
 
+#ifdef PCF
+	// PCF 적용
+	uint width, height, numMips;
+	g_CascadedShadowDepthTexture.GetDimensions(0, width, height, numMips);
+
+	// Texel size.
+	float dx = 1.0f / (float)width;
+	float dy = 1.0f / (float)height;
+
+	const float2 offsets[9] =
+	{
+		float2(-dx, -dy), float2(0.0f, -dy), float2(dx, -dy),
+		float2(-dx, 0.0f), float2(0.0f, 0.0f), float2(dx, 0.0f),
+		float2(-dx, +dy), float2(0.0f, +dy), float2(dx, +dy)
+	};
+
+	[unroll]
+	for (int i = 0; i < 9; ++i)
+	{
+		percentLit += g_CascadedShadowDepthTexture.SampleCmpLevelZero(ShadowSampler,
+			vShadowUV + offsets[i], depth).r;
+	}
+	percentLit /= 9.0f;
+	shadowFactor = percentLit;
+#else
 	percentLit = g_CascadedShadowDepthTexture.Sample(Wrap_Sampler, vShadowUV).r;
 	if (percentLit < depth)
 		shadowFactor = percentLit;
+#endif
 
-	if (shadowPosH.z < shadowFactor + 0.01f)
+	if (depth < shadowFactor + 0.002f)
 	{
 		shadowFactor = 0.f;
 	}

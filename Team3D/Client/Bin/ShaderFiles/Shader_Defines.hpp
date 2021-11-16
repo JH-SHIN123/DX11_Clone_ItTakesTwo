@@ -63,6 +63,17 @@ sampler	Wrap_MinMagMipLinear_Sampler = sampler_state
 	Filter = MIN_MAG_MIP_LINEAR;
 };
 
+SamplerComparisonState ShadowSampler = sampler_state
+{
+	Filter = COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+	AddressU = BORDER;
+	AddressV = BORDER;
+	AddressW = BORDER;
+	BorderColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+	ComparisonFunc = LESS;
+};
+
 /* RasterizerState */
 RasterizerState Rasterizer_Solid
 {

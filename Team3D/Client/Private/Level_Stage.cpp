@@ -14,7 +14,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 
 	FAILED_CHECK_RETURN(Ready_Lights(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Camera(TEXT("Layer_Camera")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_Terrain(TEXT("Layer_Terrain")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Terrain(TEXT("Layer_Terrain")), E_FAIL);  
 	FAILED_CHECK_RETURN(Ready_Layer_Player(TEXT("Layer_Player")), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Map", Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
@@ -52,8 +52,8 @@ HRESULT CLevel_Stage::Ready_Lights()
 
 	/* For.Directional */
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
-	//LightDesc.vDirection = XMFLOAT3(0.5f, -1.f, 0.5f);
+	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
+	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
 	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vAmbient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
