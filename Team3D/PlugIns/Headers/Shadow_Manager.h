@@ -22,6 +22,7 @@ public:
 
 public:
 	HRESULT Ready_ShadowManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
+	void	Clear_Buffer();
 
 public:
 	HRESULT RSSet_CascadedViewports();
@@ -33,6 +34,9 @@ private:
 private:
 	ID3D11Device* m_pDevice = nullptr;
 	ID3D11DeviceContext* m_pDevice_Context = nullptr;
+
+private:
+	class CVIBuffer_RectRHW* m_pVIBuffer = nullptr;
 
 private: /* For. Cascaded */
 	D3D11_VIEWPORT	m_CascadeViewport[MAX_CASCADES];

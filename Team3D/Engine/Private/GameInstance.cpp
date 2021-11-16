@@ -368,6 +368,7 @@ void CGameInstance::Release_Engine()
 	CGameObject_Manager::GetInstance()->Clear_All();
 	CComponent_Manager::GetInstance()->Clear_All();
 	CLight_Manager::GetInstance()->Clear_Buffer();
+	CShadow_Manager::GetInstance()->Clear_Buffer();
 	CLevel_Manager::GetInstance()->Clear_Level();
 
 #ifdef _DEBUG

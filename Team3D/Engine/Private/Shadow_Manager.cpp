@@ -30,7 +30,15 @@ HRESULT CShadow_Manager::Ready_ShadowManager(ID3D11Device* pDevice, ID3D11Device
 
 	FAILED_CHECK_RETURN(Set_CascadeViewportsInfo(), E_FAIL);
 
+	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDevice_Context, 0.f, 0.f, 1000, 1000, TEXT("../Bin/ShaderFiles/Shader_LightAcc.hlsl"), "DefaultTechnique");
+	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
+
 	return S_OK;
+}
+
+void CShadow_Manager::Clear_Buffer()
+{
+	Safe_Release(m_pVIBuffer);
 }
 
 HRESULT CShadow_Manager::RSSet_CascadedViewports()
@@ -198,6 +206,8 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform()
 
 void CShadow_Manager::Free()
 {
+	Safe_Release(m_pVIBuffer);
+
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDevice_Context);
 }

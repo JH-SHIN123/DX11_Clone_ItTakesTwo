@@ -95,6 +95,7 @@ float Get_ShadowFactor(vector vWorldPos, int iSliceIndex)
 	// Match up Deferred With Cascaded Shadow Depth
 	float2 vShadowUV = shadowPosH.xy;
 	// viewport index가 필요하겠다.
+	vShadowUV.x = vShadowUV.x * 2.f + 0.5f;
 	vShadowUV.y = (vShadowUV.y + float(iSliceIndex)) / float(MAX_CASCADES);
 
 	float shadowFactor = 0.f;
