@@ -30,50 +30,18 @@ HRESULT CControllableActor::NativeConstruct(void * pArg)
 	m_pTransform = ArgDesc.pTransform;
 	Safe_AddRef(m_pTransform);
 
-
-	PxCapsuleControllerDesc CapsuleControllerDesc;
-
-	//CapsuleControllerDesc.density = 10.f;
-	//CapsuleControllerDesc.scaleCoeff = 0.8f;
-	//CapsuleControllerDesc.invisibleWallHeight = 0.f;
-	//CapsuleControllerDesc.maxJumpHeight = 10.f;
-	//CapsuleControllerDesc.reportCallback = NULL;
-	//CapsuleControllerDesc.behaviorCallback = NULL;
-	//CapsuleControllerDesc.volumeGrowth = 1.5f;
-	CapsuleControllerDesc.setToDefault();
-	CapsuleControllerDesc.height = 0.5f;
-	CapsuleControllerDesc.radius = 0.5f;
-	CapsuleControllerDesc.material = m_pPhysX->Create_Material(0.5f, 0.5f, 0.5f);
-	CapsuleControllerDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
-	CapsuleControllerDesc.contactOffset = 0.01f;
-	CapsuleControllerDesc.stepOffset = 0.5f;
-	CapsuleControllerDesc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
-	CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
-	CapsuleControllerDesc.slopeLimit = 0.707f;
-	CapsuleControllerDesc.position = PxExtendedVec3(0.0, 0.5, 0.0);
-
-	m_pController = m_pPhysX->Create_CapsuleController(CapsuleControllerDesc);
+	m_pController = m_pPhysX->Create_CapsuleController(ArgDesc.CapsuleControllerDesc);
 	NULL_CHECK_RETURN(m_pController, E_FAIL);
 	m_pActor = m_pController->getActor();
-	//m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
 
-	//if (m_pActor->getNbShapes())
-	//{
-	//	PxShape* Shape;
-	//	m_pActor->getShapes(&Shape, 1);
-	//	Shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
-	//}
-
-	m_pActor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, false);
-
-	m_fJumpGravity = -50.f;
+	m_fJumpGravity = ArgDesc.fJumpGravity;
 
 	return S_OK;
 }
 
 void CControllableActor::Move(_fvector vMove, _double dTimeDelta)
 {
-	m_pController->move(MH_PxVec3(vMove), 0.0001f, (_float)dTimeDelta, PxControllerFilters());
+	m_pController->move(MH_PxVec3(vMove), 0.001f, (_float)dTimeDelta, PxControllerFilters());
 }
 
 void CControllableActor::Update(_double dTimeDelta)
@@ -93,6 +61,11 @@ void CControllableActor::Update(_double dTimeDelta)
 		Jump_Stop();
 
 	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+}
+
+void CControllableActor::Update_Cam(_double dTimeDelta)
+{
+	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getPosition(), 1.f));
 }
 
 void CControllableActor::Jump_Start(_float fJumpForce)

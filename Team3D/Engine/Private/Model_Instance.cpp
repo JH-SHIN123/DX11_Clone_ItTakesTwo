@@ -198,6 +198,21 @@ HRESULT CModel_Instance::Bring_Containers(VTXMESH * pVertices, _uint iVertexCoun
 	return S_OK;
 }
 
+HRESULT CModel_Instance::Update_Model(_fmatrix TransformMatrix)
+{
+	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+	{
+		XMStoreFloat4x4(&m_pWorldMatrices[iIndex], XMLoadFloat4x4(&m_pWorldMatrices[iIndex]) * TransformMatrix);
+
+		_vector vScale, vRotQuat, vPosition;
+		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_pWorldMatrices[iIndex]));
+
+		m_ppActors[iIndex]->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
+	}
+
+	return S_OK;
+}
+
 HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
