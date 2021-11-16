@@ -9,7 +9,6 @@ cbuffer Matrices
 {
 	matrix	g_WorldMatrix;
 	
-	matrix	g_FullScreenProjMatrix;
 	matrix	g_MainViewMatrix;
 	matrix	g_MainProjMatrix;
 	matrix	g_SubViewMatrix;
@@ -17,7 +16,6 @@ cbuffer Matrices
 }
 cbuffer Camera
 {
-	float	g_fFullScreenCamFar;
 	float	g_fMainCamFar;
 	float	g_fSubCamFar;
 	float4	g_vMainCamPosition;

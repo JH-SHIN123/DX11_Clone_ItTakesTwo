@@ -9,7 +9,7 @@ class CFrustum final : public CBase
 	DECLARE_SINGLETON(CFrustum)
 
 public:
-	enum TYPE { FRUSTUM_MAIN, FRUSTUM_SUB, FRUSTUM_FULLSCREEN_MAIN, FRUSTUM_FULLSCREEN_SUB, FRUSTUM_END };
+	enum TYPE { FRUSTUM_MAIN, FRUSTUM_SUB, FRUSTUM_END };
 
 private:
 	explicit CFrustum() = default;
