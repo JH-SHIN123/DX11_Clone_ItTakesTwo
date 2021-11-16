@@ -294,6 +294,11 @@ void CGameInstance::Clear_Lights()
 #pragma endregion
 
 #pragma region PhysX
+PxMaterial * CGameInstance::Get_BasePxMaterial()
+{
+	NULL_CHECK_RETURN(m_pPhysX, nullptr);
+	return m_pPhysX->Get_BaseMaterial();
+}
 PxMaterial * CGameInstance::Create_PxMaterial(PxReal StaticFriction, PxReal DynamicFriction, PxReal Restitution)
 {
 	NULL_CHECK_RETURN(m_pPhysX, nullptr);

@@ -90,6 +90,7 @@ public:
 #pragma endregion
 
 #pragma region PhysX
+	PxMaterial*		Get_BasePxMaterial();
 	PxMaterial*		Create_PxMaterial(PxReal StaticFriction, PxReal DynamicFriction, PxReal Restitution);
 	PxTriangleMesh*	Create_PxMesh(MESHACTOR_DESC pMeshActorDesc);
 #pragma endregion

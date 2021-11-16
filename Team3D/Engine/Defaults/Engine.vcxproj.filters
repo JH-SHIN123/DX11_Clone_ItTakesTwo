@@ -199,6 +199,12 @@
     <Filter Include="02.Utility\02.Component\05.Model\00.Main\01.Instance">
       <UniqueIdentifier>{a76bbefa-3da3-46a3-808b-d54d00aa9310}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\03.ControllableActor\00.Main">
+      <UniqueIdentifier>{ac03b7c4-87d1-4087-8e49-c826a101e55d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\03.ControllableActor\01.Callback">
+      <UniqueIdentifier>{551be4d3-8b36-4350-b615-a5af8be67e8d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\GameInstance.h">
@@ -324,9 +330,6 @@
     <ClInclude Include="..\public\DynamicActor.h">
       <Filter>02.Utility\02.Component\06.Actor\02.DynamicActor</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ControllableActor.h">
-      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Engine_Defines.h">
       <Filter>99.Defines\00.Main</Filter>
     </ClInclude>
@@ -353,6 +356,12 @@
     </ClInclude>
     <ClInclude Include="..\public\Textures.h">
       <Filter>02.Utility\02.Component\03.Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ControllableActor.h">
+      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PxControllerCallback.h">
+      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor\01.Callback</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -479,9 +488,6 @@
     <ClCompile Include="..\private\DynamicActor.cpp">
       <Filter>02.Utility\02.Component\06.Actor\02.DynamicActor</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ControllableActor.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Model.cpp">
       <Filter>02.Utility\02.Component\05.Model\00.Main\00.Normal</Filter>
     </ClCompile>
@@ -490,6 +496,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Textures.cpp">
       <Filter>02.Utility\02.Component\03.Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ControllableActor.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PxControllerCallback.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor\01.Callback</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

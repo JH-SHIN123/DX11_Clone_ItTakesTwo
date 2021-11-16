@@ -11,6 +11,9 @@ private:
 	explicit CPhysX() = default;
 	virtual ~CPhysX() = default;
 
+public: /* Getter */
+	PxMaterial* Get_BaseMaterial() { return m_pMaterial; }
+
 public:
 	HRESULT Ready_PhysX();
 	_int	Tick();
@@ -25,6 +28,8 @@ public:
 	PxTriangleMesh*	Create_Mesh(MESHACTOR_DESC pMeshActorDesc);
 	/* For.Material */
 	PxMaterial*		Create_Material(PxReal StaticFriction, PxReal DynamicFriction, PxReal Restitution);
+	/* For.Raycast */
+	_bool			Raycast(PxRaycastBuffer& RaycastHit, _fvector vSrc, _fvector vDst, _float fDist);
 
 private:
 	PxDefaultAllocator		m_Allocator;
@@ -35,6 +40,7 @@ private:
 	PxScene*				m_pScene = nullptr;
 	PxCooking*				m_pCooking = nullptr;
 	PxControllerManager*	m_pControllerManager = nullptr;
+	PxMaterial*				m_pMaterial = nullptr;
 	class CPxEventCallback*	m_pEventCallback = nullptr;
 
 public:
