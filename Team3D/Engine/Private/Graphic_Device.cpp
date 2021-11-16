@@ -21,6 +21,13 @@ const _float4 CGraphic_Device::Get_ViewportUVInfo(_uint iViewportIndex) const
 	return _float4(fLeft, fTop, fRight, fBottom);
 }
 
+const _float4 CGraphic_Device::Get_ViewportRadioInfo(_uint iViewportIndex) const
+{
+	NULL_CHECK_RETURN(iViewportIndex < VP_END, _float4());
+
+	return m_vViewportInfo[iViewportIndex];
+}
+
 const _float CGraphic_Device::Get_ViewportAspect(_uint iViewportIndex) const
 {
 	if (0.f >= m_Viewports[iViewportIndex].Height)

@@ -59,8 +59,8 @@ HRESULT CShadow_Manager::Set_CascadeViewportsInfo()
 	if (nullptr == pGraphicDevice) return E_FAIL;
 
 	/* x = TopLeftX, y = TopLeftY, z = Width, w = Height, 0.f ~ 1.f */
-	_float4 mainViewportUV = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_MAIN);
-	_float4 subViewportUV = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_SUB);
+	_float4 mainViewportUV = pGraphicDevice->Get_ViewportRadioInfo(CGraphic_Device::VP_MAIN);
+	_float4 subViewportUV = pGraphicDevice->Get_ViewportRadioInfo(CGraphic_Device::VP_SUB);
 
 	// CSM Main Viewports
 	for (_uint i = 0; i < MAX_CASCADES; ++i)

@@ -34,6 +34,8 @@ float Get_ShadowFactor(uint iViewportIndex, uint iSliceIndex, vector vWorldPos)
 	vector shadowPosH = mul(vWorldPos, shadowTransformMatrix);
 	shadowPosH.xyz /= shadowPosH.w;
 
+	float shadowFactor = 0.f;
+
 	// Match up Deferred With Cascaded Shadow Depth
 	float2 vShadowUV = shadowPosH.xy;
 	
@@ -43,11 +45,11 @@ float Get_ShadowFactor(uint iViewportIndex, uint iSliceIndex, vector vWorldPos)
 	// Set up to Viewport Offset
 	if(MAIN_VIEWPORT_INDEX == iViewportIndex)
 		vShadowUV.x *= g_vMainViewportUVInfo.z;
-	else
-		vShadowUV.x *= g_vMainViewportUVInfo.z + 0.5f;
+	else {
+		vShadowUV.x = vShadowUV.x * (g_vSubViewportUVInfo.z) + (1.f - g_vSubViewportUVInfo.z);
+		if (vShadowUV.x > 1.f) return shadowFactor;
+	}
 
-
-	float shadowFactor = 0.f;
 	float percentLit = 0.0f;
 	float depth = shadowPosH.z; // 그릴 객체들의 깊이값. (그림자 ndc로 이동한)
 

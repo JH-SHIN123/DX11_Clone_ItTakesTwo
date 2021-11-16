@@ -38,7 +38,7 @@ private:
 
 private: /* For. Cascaded */
 	D3D11_VIEWPORT	m_CascadeViewport[MAX_CASCADES * SHADOW_END];
-	const _float	m_fCascadedEnds[MAX_CASCADES + 1] = { 0.05f, 0.15f, 0.5f, 1.f };
+	const _float	m_fCascadedEnds[MAX_CASCADES + 1] = { 0.2f, 0.4f, 0.6f, 1.f };
 
 	/* For. Main Viewports */
 	_float4x4 m_CascadeViews[MAX_CASCADES];

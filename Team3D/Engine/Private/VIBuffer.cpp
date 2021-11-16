@@ -116,9 +116,9 @@ HRESULT CVIBuffer::Set_DefaultVariables_Shadow()
 {
 	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
 	_float4	vViewportUVInfo;
-	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_MAIN);
+	vViewportUVInfo = pGraphicDevice->Get_ViewportRadioInfo(CGraphic_Device::VP_MAIN);
 	Set_Variable("g_vMainViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
-	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_SUB);
+	vViewportUVInfo = pGraphicDevice->Get_ViewportRadioInfo(CGraphic_Device::VP_SUB);
 	Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
 
 	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();

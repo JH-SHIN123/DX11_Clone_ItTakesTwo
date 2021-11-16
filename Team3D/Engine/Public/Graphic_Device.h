@@ -18,6 +18,7 @@ public: /* Enum */
 public: /* Getter */
 	const D3D11_VIEWPORT	Get_ViewportInfo(_uint iViewportIndex) const;
 	const _float4			Get_ViewportUVInfo(_uint iViewportIndex) const;
+	const _float4			Get_ViewportRadioInfo(_uint iViewportIndex) const;
 	const _float			Get_ViewportAspect(_uint iViewportIndex) const;
 
 public: /* Setter */
