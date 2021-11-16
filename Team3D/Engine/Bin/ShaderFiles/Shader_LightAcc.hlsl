@@ -153,7 +153,6 @@ struct PS_OUT
 {
 	vector	vShade		: SV_TARGET0;
 	vector	vSpecular	: SV_TARGET1;
-	vector	vShadow		: SV_TARGET2;
 };
 
 PS_OUT PS_DIRECTIONAL(PS_IN In)
@@ -197,20 +196,20 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	Out.vSpecular	= pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
 	Out.vSpecular.a = 0.f;
 
-	/* Carculate Shadow */
-	int iIndex = Get_CascadedShadowSliceIndex(vWorldPos);
-	if (iIndex < 0) return Out;
-	fShadowfactor = Get_ShadowFactor(vWorldPos, iIndex);
+	///* Carculate Shadow */
+	//int iIndex = Get_CascadedShadowSliceIndex(vWorldPos);
+	//if (iIndex < 0) return Out;
+	//fShadowfactor = Get_ShadowFactor(vWorldPos, iIndex);
 
-	//if (0 == iIndex)
-	//	Out.vShadow.x = 1.f;
-	//else if(1 == iIndex)
-	//	Out.vShadow.y = 1.f;
-	//else if (2 == iIndex)
-	//	Out.vShadow.z = 1.f;
+	////if (0 == iIndex)
+	////	Out.vShadow.x = 1.f;
+	////else if(1 == iIndex)
+	////	Out.vShadow.y = 1.f;
+	////else if (2 == iIndex)
+	////	Out.vShadow.z = 1.f;
 
-	Out.vShadow = 1.f - fShadowfactor;
-	Out.vShadow.a = 1.f;
+	//Out.vShadow = 1.f - fShadowfactor;
+	//Out.vShadow.a = 1.f;
 
 	return Out;
 }

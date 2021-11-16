@@ -36,6 +36,54 @@ HRESULT CShadow_Manager::Ready_ShadowManager(ID3D11Device* pDevice, ID3D11Device
 	return S_OK;
 }
 
+HRESULT CShadow_Manager::Render_Shadows()
+{
+	ID3D11ShaderResourceView* pDepthShaderResourceView = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_Depth"));
+	NULL_CHECK_RETURN(pDepthShaderResourceView, E_FAIL);
+	ID3D11ShaderResourceView* pCascadedShadowDepthMap = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_CascadedShadow_Depth"));
+	NULL_CHECK_RETURN(pCascadedShadowDepthMap, E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_DepthTexture", pDepthShaderResourceView), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_CascadedShadowDepthTexture", pCascadedShadowDepthMap), E_FAIL);;
+
+	_float	fCamFar;
+	_matrix	ProjMatrixInverse;
+	_matrix ViewMatrixInverse;
+	_float4	vViewportUVInfo;
+
+	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
+	CPipeline* pPipeline = CPipeline::GetInstance();
+
+	/* For.MainView */
+	fCamFar = pPipeline->Get_MainCamFar();
+	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_FULLSCREENPROJ);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_FullScreenProjInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(_matrix)), E_FAIL);
+
+	ViewMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_MAINVIEW_INVERSE);
+	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_MAIN);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_fMainCamFar", &fCamFar, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_MainViewMatrixInverse", &XMMatrixTranspose(ViewMatrixInverse), sizeof(_matrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_vMainViewportUVInfo", &vViewportUVInfo, sizeof(_float4)), E_FAIL);
+
+	/* For.SubView */
+	fCamFar = pPipeline->Get_SubCamFar();
+	ViewMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_SUBVIEW_INVERSE);
+	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_SUB);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_fSubCamFar", &fCamFar, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_SubViewMatrixInverse", &XMMatrixTranspose(ViewMatrixInverse), sizeof(_matrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4)), E_FAIL);
+
+	m_pVIBuffer->Set_Variable("g_CascadeEnds", (void*)m_fCascadedEnds, sizeof(_float) * (MAX_CASCADES + 1));
+
+	_matrix ShadowTransforms[MAX_CASCADES];
+	Get_CascadeShadowTransformsTranspose(CShadow_Manager::SHADOW_MAIN, ShadowTransforms);
+	m_pVIBuffer->Set_Variable("g_ShadowTransforms", ShadowTransforms, sizeof(_matrix) * MAX_CASCADES);
+
+	m_pVIBuffer->Render(0);
+
+	return S_OK;
+}
+
 void CShadow_Manager::Clear_Buffer()
 {
 	Safe_Release(m_pVIBuffer);
@@ -55,7 +103,7 @@ HRESULT CShadow_Manager::Set_CascadeViewportsInfo()
 		// width / height ÇØ»óµµ ( LOD X )
 		m_CascadeViewport[i].TopLeftX = 0.f;
 		m_CascadeViewport[i].TopLeftY = (_float)(i * SHADOWMAP_SIZE);
-		m_CascadeViewport[i].Width = SHADOWMAP_SIZE;
+		m_CascadeViewport[i].Width = SHADOWMAP_SIZE / 2.f;
 		m_CascadeViewport[i].Height = SHADOWMAP_SIZE;
 		m_CascadeViewport[i].MinDepth = 0.f;
 		m_CascadeViewport[i].MaxDepth = 1.f;

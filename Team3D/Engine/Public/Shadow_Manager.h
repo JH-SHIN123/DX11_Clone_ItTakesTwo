@@ -25,6 +25,7 @@ public:
 
 public:
 	HRESULT Ready_ShadowManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context, _float fBufferWidth, _float fBufferHeight);
+	HRESULT Render_Shadows();
 	void	Clear_Buffer();
 
 public:

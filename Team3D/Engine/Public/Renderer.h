@@ -36,6 +36,7 @@ private:
 private:
 	HRESULT Render_ShadowsForAllCascades();
 	HRESULT Render_LightAcc();
+	HRESULT Render_Shadow();
 	HRESULT Render_Blend();
 
 private:
