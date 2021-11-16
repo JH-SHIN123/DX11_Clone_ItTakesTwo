@@ -9,6 +9,9 @@ class CShadow_Manager final : public CBase
 {
 	DECLARE_SINGLETON(CShadow_Manager)
 
+public:
+	enum TYPE {SHADOW_MAIN, SHADOW_SUB, SHADOW_END};
+
 private:
 	CShadow_Manager() = default;
 	virtual ~CShadow_Manager() = default;
@@ -24,21 +27,18 @@ public:
 	HRESULT Ready_ShadowManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
 
 public:
-	_int	Update_CascadedShadowTransform_MainViewport();
-	_int	Update_CascadedShadowTransform_SubViewport();
-
 	HRESULT RSSet_CascadedViewports();
+	HRESULT Update_CascadeShadowTransform(TYPE eType);
 
 private:
 	HRESULT	Set_CascadeViewportsInfo();
-	HRESULT Update_CascadeShadowTransform(_uint iViewportIndex);
 
 private:
 	ID3D11Device* m_pDevice = nullptr;
 	ID3D11DeviceContext* m_pDevice_Context = nullptr;
 
 private: /* For. Cascaded */
-	D3D11_VIEWPORT	m_CascadeViewport[MAX_CASCADES * 2];
+	D3D11_VIEWPORT	m_CascadeViewport[MAX_CASCADES * SHADOW_END];
 	const _float	m_fCascadedEnds[MAX_CASCADES + 1] = { 0.05f, 0.15f, 0.5f, 1.f };
 
 	/* For. Main Viewports */

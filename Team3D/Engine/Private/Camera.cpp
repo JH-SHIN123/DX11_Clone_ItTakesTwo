@@ -53,6 +53,12 @@ _int CCamera::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	/* FullScreen */
+	_matrix ProjMatrix_Full = XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fAspect_FullScreen, m_CameraDesc.fNear, m_CameraDesc.fFar_FullScreen);
+	m_pPipeline->Set_Transform(CPipeline::TS_FULLSCREEN_PROJ, ProjMatrix_Full);
+	m_pPipeline->Set_Transform(CPipeline::TS_FULLSCREEN_PROJ_INVERSE, XMMatrixInverse(nullptr, ProjMatrix_Full));
+	m_pPipeline->Set_FullScreenFar(m_CameraDesc.fFar_FullScreen);
+
 	if (1 == m_CameraDesc.iViewportIndex)
 	{
 		m_CameraDesc.fAspect = CGraphic_Device::GetInstance()->Get_ViewportAspect(1);

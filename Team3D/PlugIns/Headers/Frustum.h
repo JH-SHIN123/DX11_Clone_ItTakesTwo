@@ -9,7 +9,7 @@ class CFrustum final : public CBase
 	DECLARE_SINGLETON(CFrustum)
 
 public:
-	enum TYPE { FRUSTUM_MAIN, FRUSTUM_SUB, FRUSTUM_END };
+	enum TYPE { FRUSTUM_MAIN, FRUSTUM_SUB, FRUSTUM_FULLSCREEN_MAIN, FRUSTUM_FULLSCREEN_SUB, FRUSTUM_END };
 
 private:
 	explicit CFrustum() = default;
@@ -27,7 +27,7 @@ public: /* Struct */
 	}FRUSTUM_DESC;
 
 public:
-	const _float3*	Get_FrustumPointsInWorld(_uint iIndex /* 1: Main 2: Sub */) const { return m_Frustum[iIndex].vPoints_World; }
+	const _float3*	Get_FrustumPointsInWorld(_uint iIndex) const { return m_Frustum[iIndex].vPoints_World; }
 	_float			Get_FrustumDepth(_uint iIndex) const { return m_Frustum[iIndex].fFrustumDepth; }
 
 public:

@@ -83,8 +83,9 @@ _int CGameInstance::Tick(_double dTimeDelta)
 	if (m_pGameObject_Manager->Late_Tick(dTimeDelta) < 0)
 		return EVENT_ERROR;
 
-	m_pShadow_Manager->Update_CascadedShadowTransform_MainViewport();
-	m_pShadow_Manager->Update_CascadedShadowTransform_SubViewport();
+	/* Shadow View / Proj 생성 - FullScreen 기준 */
+	m_pShadow_Manager->Update_CascadeShadowTransform(CShadow_Manager::SHADOW_MAIN);
+	m_pShadow_Manager->Update_CascadeShadowTransform(CShadow_Manager::SHADOW_SUB);
 
 	return m_pLevel_Manager->Tick(dTimeDelta);
 }

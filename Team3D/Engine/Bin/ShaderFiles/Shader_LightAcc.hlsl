@@ -4,6 +4,7 @@
 
 texture2D	g_NormalTexture;
 texture2D	g_DepthTexture;
+texture2D	g_DepthTexture_FullScreen;
 texture2D	g_CascadedShadowDepthTexture;
 
 cbuffer CascadedShadowDesc
@@ -42,6 +43,8 @@ cbuffer MtrlDesc
 
 cbuffer TransformDesc
 {
+	matrix	g_FullScreenProjMatrixInverse;
+
 	//float	g_fMainCamFar;
 	//vector	g_vMainCamPosition;
 	matrix	g_MainProjMatrixInverse;
@@ -165,7 +168,11 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	vector	vWorldPos	= vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
 	float	fViewZ		= 0.f;
 	vector	vLook		= (vector)0.f;
-	float fShadowfactor = 0.f;
+	
+	vector	vDepthFullDesc = g_DepthTexture_FullScreen.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vWorldPos_Full = vector(In.vProjPosition.x, In.vProjPosition.y, vDepthFullDesc.y, 1.f);
+	float	fViewZFull = 0.f;
+	float	fShadowfactor = 0.f;
 
 	/* ViewportUVInfo : x = TopLeftX, y = TopLeftY, z = Width, w = Height, 0.f ~ 1.f */
 	if (In.vTexUV.x >= g_vMainViewportUVInfo.x && In.vTexUV.x <= g_vMainViewportUVInfo.z &&
@@ -178,9 +185,13 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		vLook		= normalize(vWorldPos - g_vMainCamPosition);
 
 		/* Carculate Shadow */
-		int iIndex = Get_CascadedShadowSliceIndex(vWorldPos, 0);
+		fViewZFull = vDepthFullDesc.x * g_fFullScreenCamFar;
+		vWorldPos_Full = vWorldPos_Full * fViewZ;
+		vWorldPos_Full = mul(vWorldPos_Full, g_FullScreenProjMatrixInverse);
+		vWorldPos_Full = mul(vWorldPos_Full, g_MainViewMatrixInverse);
+		int iIndex = Get_CascadedShadowSliceIndex(vWorldPos_Full, 0);
 		if (iIndex < 0) return Out;
-		fShadowfactor = Get_ShadowFactor(vWorldPos, g_ShadowTransforms_Main[iIndex], iIndex);
+		fShadowfactor = Get_ShadowFactor(vWorldPos_Full, g_ShadowTransforms_Main[iIndex], iIndex);
 
 		//if (0 == iIndex)
 		//	Out.vShadow.x = 1.f;

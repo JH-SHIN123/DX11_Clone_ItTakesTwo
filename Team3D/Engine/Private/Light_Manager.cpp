@@ -100,11 +100,14 @@ HRESULT CLight_Manager::Render_Lights()
 	NULL_CHECK_RETURN(pNormalShaderResourceView, E_FAIL);
 	ID3D11ShaderResourceView* pDepthShaderResourceView = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_Depth"));
 	NULL_CHECK_RETURN(pDepthShaderResourceView, E_FAIL);
+	ID3D11ShaderResourceView* pDepthFullShaderResourceView = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_Depth_FullScreen"));
+	NULL_CHECK_RETURN(pDepthShaderResourceView, E_FAIL);
 	ID3D11ShaderResourceView* pCascadedShadowDepthMap = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_CascadedShadow_Depth"));
 	NULL_CHECK_RETURN(pCascadedShadowDepthMap, E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_NormalTexture", pNormalShaderResourceView), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_DepthTexture", pDepthShaderResourceView), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_DepthTexture_FullScreen", pDepthFullShaderResourceView), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_CascadedShadowDepthTexture", pCascadedShadowDepthMap), E_FAIL);
 
 	_float	fCamFar;
@@ -115,6 +118,12 @@ HRESULT CLight_Manager::Render_Lights()
 
 	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
 	CPipeline* pPipeline = CPipeline::GetInstance();
+
+	/* For, FullScreen */
+	fCamFar = pPipeline->Get_FullscreenFar();
+	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_FULLSCREEN_PROJ_INVERSE);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_fFullScreenCamFar", &fCamFar, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_FullScreenProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(_matrix)), E_FAIL);
 
 	/* For.MainView */
 	vCamPosition		= pPipeline->Get_MainCamPosition();

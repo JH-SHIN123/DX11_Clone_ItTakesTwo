@@ -17,6 +17,9 @@ public: /* Struct */
 	{
 		_uint	iViewportIndex;
 
+		_float	fAspect_FullScreen;
+		_float	fFar_FullScreen;
+
 		_float3	vEye;
 		_float3	vAt;
 		_float3	vAxisY;

@@ -43,26 +43,12 @@ HRESULT CShadow_Manager::Ready_ShadowManager(ID3D11Device* pDevice, ID3D11Device
 	return S_OK;
 }
 
-_int CShadow_Manager::Update_CascadedShadowTransform_MainViewport()
-{
-	FAILED_CHECK_RETURN(Update_CascadeShadowTransform(CFrustum::FRUSTUM_MAIN), E_FAIL);
-
-	return _int();
-}
-
-_int CShadow_Manager::Update_CascadedShadowTransform_SubViewport()
-{
-	FAILED_CHECK_RETURN(Update_CascadeShadowTransform(CFrustum::FRUSTUM_SUB), E_FAIL);
-
-	return _int();
-}
 
 HRESULT CShadow_Manager::RSSet_CascadedViewports()
 {
 	Set_CascadeViewportsInfo();
 
-	_uint iNumViewport = 2;
-	m_pDevice_Context->RSSetViewports(MAX_CASCADES * iNumViewport, m_CascadeViewport);
+	m_pDevice_Context->RSSetViewports(MAX_CASCADES * SHADOW_END, m_CascadeViewport);
 
 	return S_OK;
 }
@@ -103,7 +89,7 @@ HRESULT CShadow_Manager::Set_CascadeViewportsInfo()
 	return S_OK;
 }
 
-HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
+HRESULT CShadow_Manager::Update_CascadeShadowTransform(TYPE eType)
 {
 	// Get Directional Light - if light is not exit, return 0
 	CLight_Manager* pLightManager = CLight_Manager::GetInstance();
@@ -118,7 +104,12 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
 	CFrustum* pFrustum = CFrustum::GetInstance();
 	if (nullptr == pFrustum) return E_FAIL;
 
-	const _float3* pFrustumCornersW = pFrustum->Get_FrustumPointsInWorld(iViewportIndex);
+	const _float3* pFrustumCornersW = nullptr;
+	if(SHADOW_MAIN == eType)
+		pFrustumCornersW = pFrustum->Get_FrustumPointsInWorld(CFrustum::FRUSTUM_FULLSCREEN_MAIN);
+	else
+		pFrustumCornersW = pFrustum->Get_FrustumPointsInWorld(CFrustum::FRUSTUM_FULLSCREEN_SUB);
+
 	if (nullptr == pFrustumCornersW) return E_FAIL;
 
 	_vector cascadeFrustumCornersW[8];
@@ -180,9 +171,6 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
 		}
 		sphereRadius = std::ceil(sphereRadius * 16.0f) / 16.0f;
 
-		//// Set CascadeEnd World pos
-		//m_fCascadedEndsW[currentCascade] = XMVectorGetZ(cascadeFrustumCenter) + sphereRadius;
-
 		_vector mins = XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, 0.f);
 		_vector maxes = XMVectorSet(-FLT_MAX, -FLT_MAX, -FLT_MAX, 0.f);
 
@@ -233,7 +221,7 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(_uint iViewportIndex)
 
 		_matrix S = ShadowView * ShadowProj * T;
 
-		if (CFrustum::FRUSTUM_MAIN == iViewportIndex)
+		if (SHADOW_MAIN == eType)
 		{
 			XMStoreFloat4x4(&m_CascadeViews[currentCascade], ShadowView);
 			XMStoreFloat4x4(&m_CascadeProjs[currentCascade], ShadowProj);

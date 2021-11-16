@@ -65,11 +65,12 @@ struct GS_IN
 
 struct GS_OUT
 {
-	float4 vPosition		: SV_POSITION;
-	float4 vNormal			: NORMAL;
-	float2 vTexUV			: TEXCOORD0;
-	float4 vProjPosition	: TEXCOORD1;
-	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
+	float4 vPosition			: SV_POSITION;
+	float4 vNormal				: NORMAL;
+	float2 vTexUV				: TEXCOORD0;
+	float4 vProjPosition		: TEXCOORD1;
+	float4 vProjPosition_Full	: TEXCOORD2;
+	uint   iViewportIndex		: SV_VIEWPORTARRAYINDEX;
 };
 
 struct GS_IN_CSM_DEPTH
@@ -91,11 +92,13 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 	for (uint i = 0; i < 3; i++)
 	{
 		matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
+		matrix matVP_Full = mul(g_MainViewMatrix, g_FullScreenProjMatrix);
 
 		Out.vPosition		= mul(In[i].vPosition, matVP);
 		Out.vNormal			= In[i].vNormal;
 		Out.vTexUV			= In[i].vTexUV;
 		Out.vProjPosition	= Out.vPosition;
+		Out.vProjPosition_Full = mul(In[i].vPosition, matVP_Full);
 		Out.iViewportIndex	= 1;
 
 		TriStream.Append(Out);
@@ -106,11 +109,13 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 	for (uint j = 0; j < 3; j++)
 	{
 		matrix matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+		matrix matVP_Full = mul(g_MainViewMatrix, g_FullScreenProjMatrix);
 
 		Out.vPosition		= mul(In[j].vPosition, matVP);
 		Out.vNormal			= In[j].vNormal;
 		Out.vTexUV			= In[j].vTexUV;
 		Out.vProjPosition	= Out.vPosition;
+		Out.vProjPosition_Full = mul(In[j].vPosition, matVP_Full);
 		Out.iViewportIndex	= 2;
 
 		TriStream.Append(Out);
@@ -160,17 +165,19 @@ void GS_MAIN_CSM_DEPTH(triangle GS_IN_CSM_DEPTH In[3], inout TriangleStream<GS_O
 
 struct PS_IN
 {
-	float4	vPosition		: SV_POSITION;
-	float4	vNormal			: NORMAL;
-	float2	vTexUV			: TEXCOORD0;
-	float4	vProjPosition	: TEXCOORD1;
+	float4	vPosition			: SV_POSITION;
+	float4	vNormal				: NORMAL;
+	float2	vTexUV				: TEXCOORD0;
+	float4	vProjPosition		: TEXCOORD1;
+	float4 vProjPosition_Full	: TEXCOORD2;
 };
 
 struct PS_OUT
 {
-	vector	vDiffuse	: SV_TARGET0;
-	vector	vNormal		: SV_TARGET1;
-	vector	vDepth		: SV_TARGET2;
+	vector	vDiffuse			: SV_TARGET0;
+	vector	vNormal				: SV_TARGET1;
+	vector	vDepth				: SV_TARGET2;
+	vector	vDepth_FullScreen	: SV_TARGET3;
 };
 
 struct PS_IN_CSM_DEPTH
@@ -187,9 +194,10 @@ PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	Out.vDiffuse	= g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-	Out.vNormal		= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-	Out.vDepth		= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+	Out.vDiffuse			= g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	Out.vNormal				= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth				= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+	Out.vDepth_FullScreen	= vector(In.vProjPosition_Full.w / g_fFullScreenCamFar, In.vProjPosition_Full.z / In.vProjPosition.w, 0.f, 0.f);
 
 	return Out;
 }
@@ -222,7 +230,6 @@ technique11	DefaultTechnique
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile		vs_5_0 VS_MAIN_CSM_DEPTH();
 		GeometryShader = compile	gs_5_0 GS_MAIN_CSM_DEPTH();
-		//PixelShader = NULL;
 		PixelShader = compile		ps_5_0 PS_MAIN_CSM_DEPTH();
 	}
 };
