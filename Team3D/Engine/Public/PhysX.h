@@ -9,7 +9,7 @@ typedef struct ENGINE_DLL tagActorData
 
 }ACTORDATA;
 
-class CPhysX final : public CBase
+class ENGINE_DLL CPhysX final : public CBase
 {
 	DECLARE_SINGLETON(CPhysX)
 private:
@@ -19,6 +19,18 @@ private:
 public:
 	HRESULT Ready_PhysX();
 
+	_int	Tick();
+	/* For.Actor */
+	PxRigidStatic*	Create_StaticActor(PxTransform Transform, PxGeometry& Geometry, PxMaterial* pMaterial, const char* pActorName);
+	PxRigidDynamic*	Create_DynamicActor(PxTransform Transform, PxGeometry& Geometry, PxMaterial* pMaterial, const char* pActorName, const PxVec3 vVelocity);
+	PxController*	Create_CapsuleController(PxCapsuleControllerDesc CapsuleControllerDesc);
+	void			Add_ActorToScene(PxActor* pActor);
+	void			Remove_Actor(PxRigidStatic** ppActor);
+	void			Remove_Actor(PxRigidDynamic** ppActor);
+	/* For.Shape */
+	PxTriangleMesh*	Create_Mesh(MESHACTOR_DESC pMeshActorDesc);
+	/* For.Material */
+	PxMaterial*		Create_Material(PxReal StaticFriction, PxReal DynamicFriction, PxReal Restitution);
 
 private:
 	PxDefaultAllocator		m_Allocator;
@@ -29,12 +41,16 @@ private:
 	PxScene*				m_pScene = nullptr;
 	PxMaterial*				m_pMaterial = nullptr;
 	PxCooking*				m_pCooking = nullptr;
+	PxControllerManager*	m_pControllerManager = nullptr;
+	class CPxEventCallback*	m_pEventCallback = nullptr;
 
 public:
 	virtual void Free() override;
 
 #ifdef _DEBUG
-	PxPvd* m_pPVD = nullptr;
+
+	PxPvd*			m_pPVD = nullptr;
+	PxPvdTransport* m_pTransport = nullptr;
 #endif
 };
 

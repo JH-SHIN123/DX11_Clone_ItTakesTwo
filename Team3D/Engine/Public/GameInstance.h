@@ -9,6 +9,7 @@
 #include "Level_Manager.h"
 #include "Light_Manager.h"
 #include "Pipeline.h"
+#include "PhysX.h"
 #include "RenderTarget_Manager.h"
 #include "Sound_Manager.h"
 #include "Timer_Manager.h"
@@ -89,6 +90,11 @@ public:
 	void		Clear_Lights();
 #pragma endregion
 
+#pragma region PhysX
+	PxMaterial*		Create_PxMaterial(PxReal StaticFriction, PxReal DynamicFriction, PxReal Restitution);
+	PxTriangleMesh*	Create_PxMesh(MESHACTOR_DESC pMeshActorDesc);
+#pragma endregion
+
 #pragma region Pipeline_Manager
 	_fmatrix		Get_Transform(CPipeline::TRANSFORM_STATETYPE eType) const;
 	_fvector		Get_MainCamPosition() const;
@@ -111,6 +117,7 @@ private:
 	CGameObject_Manager*	m_pGameObject_Manager	= nullptr;
 	CComponent_Manager*		m_pComponent_Manager	= nullptr;
 	CLight_Manager*			m_pLight_Manager		= nullptr;
+	CPhysX*					m_pPhysX				= nullptr;
 	CPipeline*				m_pPipeline				= nullptr;
 	CFrustum*				m_pFrustum				= nullptr;
 

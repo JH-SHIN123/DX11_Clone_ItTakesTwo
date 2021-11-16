@@ -103,7 +103,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./;../public/;../../PlugIns/Headers/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../../PlugIns/Headers/;../../PlugIns/Headers/PhysX/;../../PlugIns/Headers/PhysX/PxShared/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -150,7 +150,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./;../public/;../../PlugIns/Headers/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../../PlugIns/Headers/;../../PlugIns/Headers/PhysX/;../../PlugIns/Headers/PhysX/PxShared/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -184,6 +184,12 @@
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\InputButton.h" />
     <ClInclude Include="..\public\InputButton_Frame.h" />
+    <ClInclude Include="..\Public\Character.h" />
+    <ClInclude Include="..\public\Client_Defines.h" />
+    <ClInclude Include="..\Public\Client_Enum.h" />
+    <ClInclude Include="..\Public\Cody.h" />
+    <ClInclude Include="..\public\DataBase.h" />
+    <ClInclude Include="..\public\DataStorage.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
     <ClInclude Include="..\public\Loading.h" />
@@ -197,7 +203,19 @@
     <ClInclude Include="..\Public\UIObject.h" />
     <ClInclude Include="..\Public\UISprite.h" />
     <ClInclude Include="..\Public\UI_Generator.h" />
+    <ClInclude Include="..\Public\May.h" />
+    <ClInclude Include="..\Public\MoonBaboon.h" />
+    <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\Robot.h" />
+    <ClInclude Include="..\Public\RobotHead.h" />
+    <ClInclude Include="..\Public\Rocket.h" />
+    <ClInclude Include="..\Public\StarBuddy.h" />
+    <ClInclude Include="..\Public\SubCamera.h" />
+    <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="..\public\TileBox.h" />
+    <ClInclude Include="..\Public\UFO.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Client_Animation_Index_Define.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -207,6 +225,10 @@
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\InputButton.cpp" />
     <ClCompile Include="..\private\InputButton_Frame.cpp" />
+    <ClCompile Include="..\Private\Character.cpp" />
+    <ClCompile Include="..\Private\Cody.cpp" />
+    <ClCompile Include="..\private\DataBase.cpp" />
+    <ClCompile Include="..\private\DataStorage.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />
@@ -220,6 +242,17 @@
     <ClCompile Include="..\Private\UIObject.cpp" />
     <ClCompile Include="..\Private\UISprite.cpp" />
     <ClCompile Include="..\Private\UI_Generator.cpp" />
+    <ClCompile Include="..\Private\May.cpp" />
+    <ClCompile Include="..\Private\MoonBaboon.cpp" />
+    <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\Robot.cpp" />
+    <ClCompile Include="..\Private\RobotHead.cpp" />
+    <ClCompile Include="..\Private\Rocket.cpp" />
+    <ClCompile Include="..\Private\StarBuddy.cpp" />
+    <ClCompile Include="..\Private\SubCamera.cpp" />
+    <ClCompile Include="..\Private\Terrain.cpp" />
+    <ClCompile Include="..\private\TileBox.cpp" />
+    <ClCompile Include="..\Private\UFO.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -240,6 +273,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Font.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sprite.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl" />
   </ItemGroup>

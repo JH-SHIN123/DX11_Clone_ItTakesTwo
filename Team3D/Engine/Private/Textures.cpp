@@ -31,14 +31,23 @@ HRESULT CTextures::NativeConstruct_Prototype(TEXTURE_TYPE eType, const _tchar * 
 	m_iTextureCount = iTextureCount;
 
 	_tchar	szTextureFileName[MAX_PATH] = TEXT("");
+	_tchar	szPreTextureFileName[MAX_PATH] = TEXT("");
+	ID3D11ShaderResourceView*	pShaderResourceView = nullptr;
 
 	for (_uint iIndex = 0; iIndex < m_iTextureCount; ++iIndex)
 	{
 		wsprintf(szTextureFileName, pTextureFilePath, iIndex);
 
-		ID3D11ShaderResourceView*	pShaderResourceView = nullptr;
-		ScratchImage				Image;
-		HRESULT						hr = 0;
+		if (!lstrcmp(szPreTextureFileName, szTextureFileName))
+		{
+			m_Textures.emplace_back(pShaderResourceView);
+			Safe_AddRef(pShaderResourceView);
+			continue;
+		}
+		lstrcpy(szPreTextureFileName, szTextureFileName);
+
+		ScratchImage	Image;
+		HRESULT			hr = 0;
 
 		switch (eType)
 		{

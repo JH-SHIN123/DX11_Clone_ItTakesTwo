@@ -101,6 +101,7 @@ HRESULT CRenderer::Render_Priority()
 {
 	for (auto& pGameObject : m_RenderObjects[RENDER_PRIORITY])
 	{
+		FAILED_CHECK_RETURN(pGameObject->Set_ShaderConstant_Default(), E_FAIL);
 		FAILED_CHECK_RETURN(pGameObject->Render(), E_FAIL);
 		Safe_Release(pGameObject);
 	}
@@ -115,6 +116,7 @@ HRESULT CRenderer::Render_NonAlpha()
 
 	for (auto& pGameObject : m_RenderObjects[RENDER_NONALPHA])
 	{
+		FAILED_CHECK_RETURN(pGameObject->Set_ShaderConstant_Default(), E_FAIL);
 		FAILED_CHECK_RETURN(pGameObject->Render(), E_FAIL);
 		Safe_Release(pGameObject);
 	}
@@ -131,6 +133,7 @@ HRESULT CRenderer::Render_Alpha()
 
 	for (auto& pGameObject : m_RenderObjects[RENDER_ALPHA])
 	{
+		FAILED_CHECK_RETURN(pGameObject->Set_ShaderConstant_Default(), E_FAIL);
 		FAILED_CHECK_RETURN(pGameObject->Render(), E_FAIL);
 		Safe_Release(pGameObject);
 	}
@@ -145,6 +148,7 @@ HRESULT CRenderer::Render_UI()
 
 	for (auto& pGameObject : m_RenderObjects[RENDER_UI])
 	{
+		FAILED_CHECK_RETURN(pGameObject->Set_ShaderConstant_Default(), E_FAIL);
 		FAILED_CHECK_RETURN(pGameObject->Render(), E_FAIL);
 		Safe_Release(pGameObject);
 	}

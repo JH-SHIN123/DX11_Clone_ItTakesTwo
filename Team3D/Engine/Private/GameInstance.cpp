@@ -12,6 +12,7 @@ CGameInstance::CGameInstance()
 	, m_pGameObject_Manager	(CGameObject_Manager::GetInstance())
 	, m_pComponent_Manager	(CComponent_Manager::GetInstance())
 	, m_pLight_Manager		(CLight_Manager::GetInstance())
+	, m_pPhysX				(CPhysX::GetInstance())
 	, m_pPipeline			(CPipeline::GetInstance())
 	, m_pFrustum			(CFrustum::GetInstance())
 {
@@ -23,6 +24,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pGameObject_Manager);
 	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pLight_Manager);
+	Safe_AddRef(m_pPhysX);
 	Safe_AddRef(m_pPipeline);
 	Safe_AddRef(m_pFrustum);
 }
@@ -34,12 +36,14 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 	NULL_CHECK_RETURN(m_pInput_Device, E_FAIL);
 	NULL_CHECK_RETURN(m_pSound_Manager, E_FAIL);
 	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
+	NULL_CHECK_RETURN(m_pPhysX, E_FAIL);
 	NULL_CHECK_RETURN(m_pFrustum, E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGraphic_Device->Ready_GraphicDevice(eWinMode, hWnd, iWinSizeX, iWinSizeY, ppDevice, ppDeviceContext), E_FAIL);
 	FAILED_CHECK_RETURN(m_pInput_Device->Ready_InputDevice(hInst, hWnd), E_FAIL);
-	FAILED_CHECK_RETURN(m_pSound_Manager->Ready_SoundManager(), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pSound_Manager->Ready_SoundManager(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pLight_Manager->Ready_LightManager(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
+	FAILED_CHECK_RETURN(m_pPhysX->Ready_PhysX(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pFrustum->Ready_Frustum(), E_FAIL);
 
 	return S_OK;
@@ -65,6 +69,7 @@ _int CGameInstance::Tick(_double dTimeDelta)
 
 	m_pGraphic_Device->Tick(dTimeDelta);
 	m_pInput_Device->Tick();
+	m_pPhysX->Tick();
 
 	if (m_pGameObject_Manager->Tick(dTimeDelta) < 0)
 		return EVENT_ERROR;
@@ -73,7 +78,7 @@ _int CGameInstance::Tick(_double dTimeDelta)
 	
 	if (m_pGameObject_Manager->Late_Tick(dTimeDelta) < 0)
 		return EVENT_ERROR;
-
+	
 	return m_pLevel_Manager->Tick(dTimeDelta);
 }
 void CGameInstance::Clear_LevelResources(_uint iLevelIndex)
@@ -286,6 +291,19 @@ void CGameInstance::Clear_Lights()
 	NULL_CHECK(m_pLight_Manager);
 	m_pLight_Manager->Clear_Lights();
 }
+#pragma endregion
+
+#pragma region PhysX
+PxMaterial * CGameInstance::Create_PxMaterial(PxReal StaticFriction, PxReal DynamicFriction, PxReal Restitution)
+{
+	NULL_CHECK_RETURN(m_pPhysX, nullptr);
+	return m_pPhysX->Create_Material(StaticFriction, DynamicFriction, Restitution);
+}
+PxTriangleMesh * CGameInstance::Create_PxMesh(MESHACTOR_DESC pMeshActorDesc)
+{
+	NULL_CHECK_RETURN(m_pPhysX, nullptr);
+	return m_pPhysX->Create_Mesh(pMeshActorDesc);
+}
 #pragma endregion 
 
 #pragma region Pipeline_Manager
@@ -352,6 +370,8 @@ void CGameInstance::Release_Engine()
 		MSG_BOX("Failed to Release CModel_Loader.");
 	if (CLight_Manager::GetInstance()->DestroyInstance())
 		MSG_BOX("Failed to Release CLight_Manager.");
+	if (CPhysX::GetInstance()->DestroyInstance())
+		MSG_BOX("Failed to Release CPhysX.");
 	if (CRenderTarget_Manager::GetInstance()->DestroyInstance())
 		MSG_BOX("Failed to Release CRenderTarget_Manager.");
 	if (CFrustum::GetInstance()->DestroyInstance())
@@ -374,6 +394,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pLight_Manager);
+	Safe_Release(m_pPhysX);
 	Safe_Release(m_pGameObject_Manager);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pFrustum);

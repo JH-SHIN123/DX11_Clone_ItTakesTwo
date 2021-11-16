@@ -103,10 +103,21 @@ namespace Engine
 		class CTextures* pMaterialTexture[AI_TEXTURE_TYPE_MAX];
 	}MATERIAL;
 
+	typedef struct tagTextureName
+	{
+		bool		isNotEmpty;
+		wchar_t		szMaterialTextureName[MAX_PATH];
+	}MATERIAL_TEX;
+
+	typedef struct tagMaterialNames
+	{
+		MATERIAL_TEX MaterialTex[AI_TEXTURE_TYPE_MAX];
+	}MATERIAL_NAMES;
+
 	typedef struct tagBoneDesc 
 	{
-		class CHierarchyNode*	pHierarchyNode;
-		XMFLOAT4X4				OffsetMatrix;
+		XMFLOAT4X4	OffsetMatrix;
+		int			iNodeIndex;
 	}BONE_DESC;
 
 	typedef struct tagKeyFrame
@@ -115,5 +126,17 @@ namespace Engine
 		XMFLOAT4	vRotation;
 		XMFLOAT3	vPosition;
 		double		dTime;
+		bool		bActive;
 	}KEY_FRAME;
+
+	typedef struct tagMeshActorDesc
+	{
+		void*		pVertices;
+		void*		pFaces;
+		uint32_t	iVertexCount;
+		uint32_t	iFaceCount;
+
+		tagMeshActorDesc() { }
+		tagMeshActorDesc(uint32_t _iVertexCount, void* _pVertices, uint32_t _iFaceCount, void* _pFaces) : iVertexCount(_iVertexCount), pVertices(_pVertices), iFaceCount(_iFaceCount), pFaces(_pFaces){}
+	}MESHACTOR_DESC;
 }

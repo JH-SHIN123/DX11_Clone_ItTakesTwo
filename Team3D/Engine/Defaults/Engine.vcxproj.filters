@@ -169,11 +169,47 @@
     <Filter Include="02.Utility\02.Component\04.VIBuffer\03.Instance\03.Font">
       <UniqueIdentifier>{8398833d-eb01-44e2-ab4d-4321653d3091}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\05.PhysX">
+      <UniqueIdentifier>{f9714c9a-ca3b-45cd-a187-c07e5f656041}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor">
+      <UniqueIdentifier>{ffed9d87-12a2-436f-b467-b10ae20b311c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\00.Main">
+      <UniqueIdentifier>{6cfdfedc-3495-40c0-a50f-993928202b6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX">
+      <UniqueIdentifier>{f9714c9a-ca3b-45cd-a187-c07e5f656041}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\98.Event">
+      <UniqueIdentifier>{ad9c964c-c541-4c84-b8e0-d3843476fecf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\01.StaticActor">
+      <UniqueIdentifier>{fc097fb8-7543-49a5-8c52-ec5fd9315090}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\02.DynamicActor">
+      <UniqueIdentifier>{90169c14-bd08-4bc2-a0f0-15ef5a785553}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\03.ControllableActor">
+      <UniqueIdentifier>{cac120a9-d36f-4d60-865e-3ef195712813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Defines\00.Main">
+      <UniqueIdentifier>{cc736e6d-a6b6-4257-86a5-51d8da2b593a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Defines\01.Engine">
+      <UniqueIdentifier>{761c450f-e718-4655-b80b-2ee79310a6a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Defines\02.Convenience">
+      <UniqueIdentifier>{da9222d9-50c2-4853-af74-9fb3bfb8ad10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\05.Model\00.Main\00.Normal">
+      <UniqueIdentifier>{30ffa4e5-d430-4267-8f5b-c88bed9c2fb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\05.Model\00.Main\01.Instance">
+      <UniqueIdentifier>{a76bbefa-3da3-46a3-808b-d54d00aa9310}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\public\Engine_Defines.h">
-      <Filter>99.Defines</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\GameInstance.h">
       <Filter>00.GameInstance</Filter>
     </ClInclude>
@@ -182,18 +218,6 @@
     </ClInclude>
     <ClInclude Include="..\public\Graphic_Device.h">
       <Filter>01.System\00.Graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Engine_Function.h">
-      <Filter>99.Defines</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Engine_Macro.h">
-      <Filter>99.Defines</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Engine_Struct.h">
-      <Filter>99.Defines</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Engine_Typedef.h">
-      <Filter>99.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Manager.h">
       <Filter>02.Utility\00.Level\99.Manager</Filter>
@@ -221,9 +245,6 @@
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\00.Main</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Textures.h">
-      <Filter>02.Utility\02.Component\03.Texture</Filter>
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer_Terrain.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\02.Terrain</Filter>
@@ -282,9 +303,6 @@
     <ClInclude Include="..\Public\Pipeline.h">
       <Filter>02.Utility\99.Others\01.Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Model.h">
-      <Filter>02.Utility\02.Component\05.Model\00.Main</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\HierarchyNode.h">
       <Filter>02.Utility\02.Component\05.Model\02.Node</Filter>
     </ClInclude>
@@ -305,6 +323,51 @@
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_FontInstance.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\03.Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PhysX.h">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PxEventCallback.h">
+      <Filter>02.Utility\02.Component\06.Actor\98.Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Actor.h">
+      <Filter>02.Utility\02.Component\06.Actor\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\StaticActor.h">
+      <Filter>02.Utility\02.Component\06.Actor\01.StaticActor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DynamicActor.h">
+      <Filter>02.Utility\02.Component\06.Actor\02.DynamicActor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ControllableActor.h">
+      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Defines.h">
+      <Filter>99.Defines\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Function.h">
+      <Filter>99.Defines\01.Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Macro.h">
+      <Filter>99.Defines\01.Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Struct.h">
+      <Filter>99.Defines\01.Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Typedef.h">
+      <Filter>99.Defines\01.Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MathHelper.h">
+      <Filter>99.Defines\02.Convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Model.h">
+      <Filter>02.Utility\02.Component\05.Model\00.Main\00.Normal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Model_Instance.h">
+      <Filter>02.Utility\02.Component\05.Model\00.Main\01.Instance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Textures.h">
+      <Filter>02.Utility\02.Component\03.Texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -343,9 +406,6 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\00.Main</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Textures.cpp">
-      <Filter>02.Utility\02.Component\03.Texture</Filter>
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\02.Terrain</Filter>
@@ -404,9 +464,6 @@
     <ClCompile Include="..\Private\Pipeline.cpp">
       <Filter>02.Utility\99.Others\01.Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Model.cpp">
-      <Filter>02.Utility\02.Component\05.Model\00.Main</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\HierarchyNode.cpp">
       <Filter>02.Utility\02.Component\05.Model\02.Node</Filter>
     </ClCompile>
@@ -427,6 +484,33 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_FontInstance.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\03.Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PhysX.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PxEventCallback.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\98.Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Actor.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StaticActor.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\01.StaticActor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DynamicActor.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\02.DynamicActor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ControllableActor.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>02.Utility\02.Component\05.Model\00.Main\00.Normal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Model_Instance.cpp">
+      <Filter>02.Utility\02.Component\05.Model\00.Main\01.Instance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Textures.cpp">
+      <Filter>02.Utility\02.Component\03.Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
