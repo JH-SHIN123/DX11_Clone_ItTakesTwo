@@ -11,15 +11,44 @@ private:
 	explicit CModel(const CModel& rhs);
 	virtual ~CModel() = default;
 
+public: /* Struct */
+	typedef struct tagPxTriMesh
+	{
+		PxVec3*				pVertices;
+		POLYGON_INDICES32*	pFaces;
+		PxTriangleMesh*		pTriMesh;
+	}PX_TRIMESH;
+	typedef struct tagLerpPair
+	{
+		_uint iCurAnimIndex;
+		_uint iNextAnimIndex;
+		
+		bool operator<(const tagLerpPair &var) const
+		{
+			if (iCurAnimIndex != var.iCurAnimIndex)
+				return iCurAnimIndex < var.iCurAnimIndex;
+			return iNextAnimIndex < var.iNextAnimIndex;
+		}
+
+		tagLerpPair() {}
+		tagLerpPair(_uint _iCurAnimIndex, _uint _iNextAnimIndex) : iCurAnimIndex(_iCurAnimIndex), iNextAnimIndex(_iNextAnimIndex) {}
+	}LERP_PAIR;
+	typedef struct tagLerpInfo
+	{
+		_bool	bGoingToLerp;
+		_float	fLerpSpeed;
+	}LERP_INFO;
+
 public: /* Getter */
+	VTXMESH*		Get_Vertices() { return m_pVertices; }
+	const _uint		Get_VertexCount() { return m_iVertexCount; }
 	_fmatrix		Get_BoneMatrix(const char* pBoneName) const;
 	const _uint		Get_CurAnimIndex() const { return m_iCurAnimIndex; }
 	const _float	Get_ProgressAnim() const { return m_fProgressAnim; }
 	const _bool		Is_AnimFinished(_uint iAnimIndex) const { NULL_CHECK_RETURN(iAnimIndex < m_iAnimCount, false); return m_IsAnimFinished[iAnimIndex]; }
-	MESHACTOR_DESC	Get_MeshActorDesc() { return MESHACTOR_DESC(m_iVertexCount, m_pVectorPositions, m_iFaceCount, m_pFaces); }
 
 public: /* Setter */
-	HRESULT	Set_Animation(_uint iAnimIndex, class CTransform* pTransform);
+	HRESULT	Set_Animation(_uint iAnimIndex);
 	HRESULT	Set_NextAnimIndex(_uint iAnimIndex);
 	/* For.Shader */
 	HRESULT	Set_Variable(const char* pConstantName, void* pData, _uint iByteSize);
@@ -28,13 +57,14 @@ public: /* Setter */
 	HRESULT	Set_DefaultVariables_Perspective(_fmatrix WorldMatrix);
 
 public:
-	virtual HRESULT	NativeConstruct_Prototype(const char* pMeshFilePath, const char* pMeshFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName);
+	virtual HRESULT	NativeConstruct_Prototype(const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	/* For.ModelLoader */
 	HRESULT	Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials, vector<class CHierarchyNode*>& Nodes, vector<_float4x4>& Transformations, vector<class CAnim*>& Anims);
 	/* For.Client */
-	HRESULT	Update_Animation(_double dTimeDelta, class CTransform* pTransform);
-	HRESULT	Render_Model(_uint iPassIndex, _bool bShadowWrite = false);
+	HRESULT Add_LerpInfo(_uint iCurAnimIndex, _uint iNextAnimIndex, _bool bGoingToLerp, _float fLerpSpeed = 5.f);
+	HRESULT	Update_Animation(_double dTimeDelta);
+	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false);
 
 private: /* Typedef */
 	typedef vector<class CMesh*>			MESHES;
@@ -42,7 +72,8 @@ private: /* Typedef */
 	typedef	vector<class CHierarchyNode*>	NODES;
 	typedef vector<class CAnim*>			ANIMS;
 	typedef vector<_float4x4>				TRANSFORMATIONS;
-	typedef vector<KEY_FRAME*>				KEYFRAMES;
+	typedef vector<KEY_FRAME>				KEYFRAMES;
+	typedef map<LERP_PAIR, LERP_INFO>		LERP_MAP;
 private:
 	class CModel_Loader*		m_pModel_Loader				= nullptr;
 	VTXMESH*					m_pVertices					= nullptr;
@@ -70,7 +101,9 @@ private:
 	_float						m_fProgressAnim				= 0.f;		// 애니메이션 진행도
 	/* For.Lerp */
 	_float						m_fLerpRatio				= 0.f;
+	_float						m_fLerpSpeed				= 0.f;
 	KEYFRAMES					m_PreAnimKeyFrames;						// 이전 애니메이션 키프레임들
+	LERP_MAP					m_LerpMap;
 	/* For.FinishCheck */
 	vector<_bool>				m_IsAnimFinished;						// 애니메이션 종료 확인
 	/* For.Adjust_Center */
@@ -78,13 +111,16 @@ private:
 	class CHierarchyNode*		m_pCenterBoneNode			= nullptr;	// 중심 뼈 이름
 	_float4						m_vAnimDistFromCenter		= _float4(0.f, 0.f, 0.f, 0.f);
 	/* For.PhyX */
-	_vector*					m_pVectorPositions			= nullptr;	// 정점의 Position값만 들고있는 배열 추가, 애니메이션이 없는 모델만 생성됨.
+	vector<PX_TRIMESH>			m_PxTriMeshes;
+	/* For.MaterialSet */
+	_uint						m_iMaterialSetCount			= 0;
 private:
-	HRESULT		Sort_MeshesByMaterial();
-	HRESULT		Set_CenterBone(const char* pCenterBoneName = "");
-	HRESULT		Apply_PivotMatrix(_fmatrix PivotMatrix);
-	void		Update_AnimTransformations(_double dTimeDelta);
-	void		Update_CombinedTransformations();
+	HRESULT	Sort_MeshesByMaterial();
+	HRESULT	Set_CenterBone(const char* pCenterBoneName = "");
+	HRESULT	Apply_PivotMatrix(_fmatrix PivotMatrix);
+	HRESULT	Store_TriMeshes();
+	void	Update_AnimTransformations(_double dTimeDelta);
+	void	Update_CombinedTransformations();
 
 #pragma region For_Buffer
 private: /* For.Buffer */
@@ -110,8 +146,7 @@ private:
 #pragma endregion
 
 public:
-	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const char* pMeshFilePath, const char* pMeshFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _fmatrix PivotMatrix = XMMatrixIdentity(), _bool bNeedCenterBone = false, const char* pCenterBoneName = "");
-	// + MATERIALS 세트 추가하는 경우 _uint iMaterialsCount 를 Set
+	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount = 1, _fmatrix PivotMatrix = XMMatrixIdentity(), _bool bNeedCenterBone = false, const char* pCenterBoneName = "");
 	virtual CComponent* Clone_Component(void* pArg) override;
 	virtual void Free() override;
 };

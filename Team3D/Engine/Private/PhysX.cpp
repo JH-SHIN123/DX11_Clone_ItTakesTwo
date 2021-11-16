@@ -5,6 +5,11 @@ IMPLEMENT_SINGLETON(CPhysX)
 
 PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
+	if (PxFilterObjectIsKinematic(attributes0) && PxFilterObjectIsKinematic(attributes1))
+	{
+		//pairFlags = PxPairFlag::;
+	}
+
 	PX_UNUSED(attributes0);
 	PX_UNUSED(attributes1);
 	PX_UNUSED(filterData0);
@@ -13,7 +18,7 @@ PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData fi
 	PX_UNUSED(constantBlock);
 
 	// all initial and persisting reports for everything, with per-point data
-	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT | PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_CONTACT_POINTS;
+	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT | PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_CONTACT_POINTS | PxPairFlag::eNOTIFY_TOUCH_CCD;
 
 	return PxFilterFlag::eDEFAULT;
 }
@@ -47,15 +52,14 @@ HRESULT CPhysX::Ready_PhysX()
 
 	PxSceneDesc SceneDesc(m_pPhysics->getTolerancesScale());
 	SceneDesc.gravity = PxVec3(0.f, -GRAVITY, 0.f);
-	SceneDesc.simulationEventCallback = m_pEventCallback;
 	SceneDesc.cpuDispatcher = m_pDispatcher;
 	SceneDesc.filterShader = FilterShader;
+	SceneDesc.simulationEventCallback = m_pEventCallback;
+	SceneDesc.kineKineFilteringMode = PxPairFilteringMode::eKILL;
+	SceneDesc.staticKineFilteringMode = PxPairFilteringMode::eDEFAULT;
 
 	m_pScene = m_pPhysics->createScene(SceneDesc);
 	NULL_CHECK_RETURN(m_pScene, E_FAIL);
-
-	//m_pScene->setFlag(PxSceneFlag::eENABLE_KINEMATIC_PAIRS, true);
-	//m_pScene->setFlag(PxSceneFlag::eENABLE_KINEMATIC_STATIC_PAIRS, true);
 
 #ifdef _DEBUG
 	PxPvdSceneClient* pClient = m_pScene->getScenePvdClient();
@@ -66,7 +70,12 @@ HRESULT CPhysX::Ready_PhysX()
 	pClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 #endif
 
+	m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 	m_pControllerManager = PxCreateControllerManager(*m_pScene);
+
+#ifdef _DEBUG
+	//m_pControllerManager->setTessellation(true, 50);
+#endif
 
 	// юс╫ц ╧ы╢з
 	PxMaterial* pMaerial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
@@ -139,7 +148,7 @@ PxTriangleMesh* CPhysX::Create_Mesh(MESHACTOR_DESC pMeshActorDesc)
 	PxTriangleMeshDesc MeshDesc;
 	MeshDesc.points.count		= pMeshActorDesc.iVertexCount;
 	MeshDesc.points.data		= pMeshActorDesc.pVertices;
-	MeshDesc.points.stride		= sizeof(_vector);
+	MeshDesc.points.stride		= sizeof(PxVec3);
 	MeshDesc.triangles.count	= pMeshActorDesc.iFaceCount;
 	MeshDesc.triangles.data		= pMeshActorDesc.pFaces;
 	MeshDesc.triangles.stride	= sizeof(POLYGON_INDICES32);
@@ -150,6 +159,9 @@ PxTriangleMesh* CPhysX::Create_Mesh(MESHACTOR_DESC pMeshActorDesc)
 	Params.suppressTriangleMeshRemapTable = true;
 	Params.meshPreprocessParams &= ~static_cast<PxMeshPreprocessingFlags>(PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH);
 	Params.meshPreprocessParams &= ~static_cast<PxMeshPreprocessingFlags>(PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE);
+
+	//Params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH;
+	//Params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE);
 
 	//Params.midphaseDesc.mBVH33Desc.meshCookingHint = PxMeshCookingHint::eCOOKING_PERFORMANCE;
 	Params.midphaseDesc.mBVH33Desc.meshCookingHint = PxMeshCookingHint::eSIM_PERFORMANCE;
@@ -176,6 +188,13 @@ PxMaterial * CPhysX::Create_Material(PxReal StaticFriction, PxReal DynamicFricti
 	NULL_CHECK_RETURN(pMaterial, nullptr);
 
 	return pMaterial;
+}
+
+_bool CPhysX::Raycast(PxRaycastBuffer & RaycastHit, _fvector vSrc, _fvector vDst, _float fDist)
+{
+	_vector vRayDir = XMVector3Normalize(vDst - vSrc);
+
+	return m_pScene->raycast(MH_PxVec3(vSrc), MH_PxVec3(vRayDir), fDist, RaycastHit);
 }
 
 void CPhysX::Free()

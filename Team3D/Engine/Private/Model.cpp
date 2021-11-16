@@ -6,6 +6,7 @@
 #include "Anim.h"
 #include "Transform.h"
 #include "Pipeline.h"
+#include "PhysX.h"
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CComponent		(pDevice, pDeviceContext)
@@ -16,6 +17,7 @@ CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 
 CModel::CModel(const CModel & rhs)
 	: CComponent					(rhs)
+	, m_pVertices					(rhs.m_pVertices)
 	, m_Meshes						(rhs.m_Meshes)
 	, m_Materials					(rhs.m_Materials)
 	, m_Nodes						(rhs.m_Nodes)
@@ -35,6 +37,8 @@ CModel::CModel(const CModel & rhs)
 	, m_bNeedCenterBone				(rhs.m_bNeedCenterBone)
 	, m_pCenterBoneNode				(rhs.m_pCenterBoneNode)
 	, m_vAnimDistFromCenter			(rhs.m_vAnimDistFromCenter)
+	, m_iMaterialSetCount			(rhs.m_iMaterialSetCount)
+	, m_PxTriMeshes					(rhs.m_PxTriMeshes)
 	, m_pVB							(rhs.m_pVB)
 	, m_iVertexCount				(rhs.m_iVertexCount)
 	, m_iVertexStride				(rhs.m_iVertexStride)
@@ -46,7 +50,6 @@ CModel::CModel(const CModel & rhs)
 	, m_eTopology					(rhs.m_eTopology)
 	, m_pEffect						(rhs.m_pEffect)
 	, m_InputLayouts				(rhs.m_InputLayouts)
-	, m_pVectorPositions			(rhs.m_pVectorPositions)
 	, m_pFaces						(rhs.m_pFaces)
 {
 	for (auto& pMesh : m_Meshes)
@@ -95,7 +98,7 @@ _fmatrix CModel::Get_BoneMatrix(const char * pBoneName) const
 	return XMMatrixIdentity();
 }
 
-HRESULT CModel::Set_Animation(_uint iAnimIndex, CTransform * pTransform)
+HRESULT CModel::Set_Animation(_uint iAnimIndex)
 {
 	if (iAnimIndex == m_iCurAnimIndex)
 		return S_OK;
@@ -103,9 +106,29 @@ HRESULT CModel::Set_Animation(_uint iAnimIndex, CTransform * pTransform)
 	NULL_CHECK_RETURN(iAnimIndex < m_iAnimCount, E_FAIL);
 
 	/* For.Lerp */
-	m_fLerpRatio = 1.f;
-	m_PreAnimKeyFrames.assign(m_iNodeCount, nullptr);
-	m_Anims[m_iCurAnimIndex]->Get_PreAnimKeyFrames(m_iCurAnimFrame, m_PreAnimKeyFrames);
+	auto iter = m_LerpMap.find(LERP_PAIR(m_iCurAnimIndex, iAnimIndex));
+
+	if (iter == m_LerpMap.end())
+	{
+		KEY_FRAME KeyFrame;
+		ZeroMemory(&KeyFrame, sizeof(KEY_FRAME));
+		m_fLerpRatio = 1.f;
+		m_fLerpSpeed = 5.f;
+		m_PreAnimKeyFrames.assign(m_iNodeCount, KeyFrame);
+		m_Anims[m_iCurAnimIndex]->Get_PreAnimKeyFrames(m_iCurAnimFrame, m_PreAnimKeyFrames);
+	}
+	else
+	{
+		if (iter->second.bGoingToLerp)
+		{
+			KEY_FRAME KeyFrame;
+			ZeroMemory(&KeyFrame, sizeof(KEY_FRAME));
+			m_fLerpRatio = 1.f;
+			m_fLerpSpeed = iter->second.fLerpSpeed;
+			m_PreAnimKeyFrames.assign(m_iNodeCount, KeyFrame);
+			m_Anims[m_iCurAnimIndex]->Get_PreAnimKeyFrames(m_iCurAnimFrame, m_PreAnimKeyFrames);
+		}
+	}
 
 	/* For.FinishCheck */
 	m_IsAnimFinished.assign(m_iAnimCount, false);
@@ -192,7 +215,7 @@ HRESULT CModel::Set_DefaultVariables_Perspective(_fmatrix WorldMatrix)
 	return S_OK;
 }
 
-HRESULT CModel::NativeConstruct_Prototype(const char * pMeshFilePath, const char * pMeshFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
+HRESULT CModel::NativeConstruct_Prototype(const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
 	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
 
@@ -200,9 +223,11 @@ HRESULT CModel::NativeConstruct_Prototype(const char * pMeshFilePath, const char
 
 	m_bNeedCenterBone = bNeedCenterBone;
 	m_vAnimDistFromCenter = _float4(0.f, 0.f, 0.f, 1.f);
+	m_iMaterialSetCount = iMaterialSetCount;
 
-	FAILED_CHECK_RETURN(m_pModel_Loader->Load_ModelFromFile(m_pDevice, m_pDeviceContext, this, pMeshFilePath, pMeshFileName), E_FAIL);
+	FAILED_CHECK_RETURN(m_pModel_Loader->Load_ModelFromFile(m_pDevice, m_pDeviceContext, CModel_Loader::TYPE_NORMAL, this, pModelFilePath, pModelFileName, iMaterialSetCount), E_FAIL);
 	FAILED_CHECK_RETURN(Apply_PivotMatrix(PivotMatrix), E_FAIL);
+	FAILED_CHECK_RETURN(Store_TriMeshes(), E_FAIL);
 	FAILED_CHECK_RETURN(Create_VIBuffer(pShaderFilePath, pTechniqueName), E_FAIL);
 	FAILED_CHECK_RETURN(Sort_MeshesByMaterial(), E_FAIL);
 
@@ -239,7 +264,10 @@ HRESULT CModel::Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON
 
 	m_AnimTransformations.resize(m_iNodeCount);
 	m_CombinedTransformations.resize(m_iNodeCount);
-	m_PreAnimKeyFrames.resize(m_iNodeCount, nullptr);
+
+	KEY_FRAME KeyFrame;
+	ZeroMemory(&KeyFrame, sizeof(KEY_FRAME));
+	m_PreAnimKeyFrames.resize(m_iNodeCount, KeyFrame);
 	m_IsAnimFinished.resize(m_iAnimCount, false);
 
 	m_AnimTransformations.assign(m_BaseTransformations.begin(), m_BaseTransformations.end());
@@ -247,7 +275,18 @@ HRESULT CModel::Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON
 	return S_OK;
 }
 
-HRESULT CModel::Update_Animation(_double dTimeDelta, CTransform * pTransform)
+HRESULT CModel::Add_LerpInfo(_uint iCurAnimIndex, _uint iNextAnimIndex, _bool bGoingToLerp, _float fLerpSpeed)
+{
+	LERP_INFO LerpInfo;
+	LerpInfo.bGoingToLerp = bGoingToLerp;
+	LerpInfo.fLerpSpeed = fLerpSpeed;
+
+	m_LerpMap.emplace(LERP_PAIR(iCurAnimIndex, iNextAnimIndex), LerpInfo);
+
+	return S_OK;
+}
+
+HRESULT CModel::Update_Animation(_double dTimeDelta)
 {
 	NULL_CHECK_RETURN(m_iAnimCount, E_FAIL);
 
@@ -259,9 +298,29 @@ HRESULT CModel::Update_Animation(_double dTimeDelta, CTransform * pTransform)
 	if (m_dCurrentTime >= dDuration)
 	{
 		/* For.Lerp */
-		m_fLerpRatio = 1.f;
-		m_PreAnimKeyFrames.assign(m_iNodeCount, nullptr);
-		m_Anims[m_iCurAnimIndex]->Get_PreAnimKeyFrames(m_iCurAnimFrame, m_PreAnimKeyFrames);
+		auto iter = m_LerpMap.find(LERP_PAIR(m_iCurAnimIndex, m_iNextAnimIndex));
+
+		if (iter == m_LerpMap.end())
+		{
+			KEY_FRAME KeyFrame;
+			ZeroMemory(&KeyFrame, sizeof(KEY_FRAME));
+			m_fLerpRatio = 1.f;
+			m_fLerpSpeed = 5.f;
+			m_PreAnimKeyFrames.assign(m_iNodeCount, KeyFrame);
+			m_Anims[m_iCurAnimIndex]->Get_PreAnimKeyFrames(m_iCurAnimFrame, m_PreAnimKeyFrames);
+		}
+		else
+		{
+			if (iter->second.bGoingToLerp)
+			{
+				KEY_FRAME KeyFrame;
+				ZeroMemory(&KeyFrame, sizeof(KEY_FRAME));
+				m_fLerpRatio = 1.f;
+				m_fLerpSpeed = iter->second.fLerpSpeed;
+				m_PreAnimKeyFrames.assign(m_iNodeCount, KeyFrame);
+				m_Anims[m_iCurAnimIndex]->Get_PreAnimKeyFrames(m_iCurAnimFrame, m_PreAnimKeyFrames);
+			}
+		}
 
 		/* For.FinishCheck */
 		m_IsAnimFinished.assign(m_iAnimCount, false);
@@ -286,7 +345,7 @@ HRESULT CModel::Update_Animation(_double dTimeDelta, CTransform * pTransform)
 	return S_OK;
 }
 
-HRESULT CModel::Render_Model(_uint iPassIndex, _bool bShadowWrite)
+HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 
@@ -303,7 +362,12 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _bool bShadowWrite)
 
 		for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
 		{
-			if (false == bShadowWrite) Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE);
+			if (false == bShadowWrite) 
+			{
+				Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
+				//Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+			}
+
 			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
@@ -312,7 +376,7 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _bool bShadowWrite)
 				pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
 				Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
 
-				m_pDeviceContext->DrawIndexed(3 * pMesh->Get_StratFaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+				m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
 			}
 		}
 	}
@@ -320,11 +384,14 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _bool bShadowWrite)
 	{
 		for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
 		{
-			if (false == bShadowWrite) Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE);
+			if (false == bShadowWrite)
+			{
+				Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
+			}
 			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
-				m_pDeviceContext->DrawIndexed(3 * pMesh->Get_StratFaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+				m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
 		}
 	}
 
@@ -369,16 +436,46 @@ HRESULT CModel::Apply_PivotMatrix(_fmatrix PivotMatrix)
 	}
 	else
 	{
-		m_pVectorPositions = new _vector[m_iVertexCount];
-
 		for (_uint iIndex = 0; iIndex < m_iVertexCount; ++iIndex)
 		{
 			_vector	vAdjustedPosition = XMVector3TransformCoord(XMLoadFloat3(&m_pVertices[iIndex].vPosition), PivotMatrix);
 			XMStoreFloat3(&m_pVertices[iIndex].vPosition, vAdjustedPosition);
 			_vector	vAdjustedNormal = XMVector3TransformNormal(XMLoadFloat3(&m_pVertices[iIndex].vNormal), PivotMatrix);
 			XMStoreFloat3(&m_pVertices[iIndex].vNormal, vAdjustedNormal);
-			memcpy(&m_pVectorPositions[iIndex], &XMVectorSetW(vAdjustedPosition, 1.f), sizeof(_vector));
 		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel::Store_TriMeshes()
+{
+	if (m_iAnimCount > 0)
+		return S_OK;
+
+	CPhysX* pPhysX = CPhysX::GetInstance();
+
+	m_PxTriMeshes.reserve(m_iMeshCount);
+
+	for (_uint iIndex = 0; iIndex < m_iMeshCount; ++iIndex)
+	{
+		PX_TRIMESH TriMesh;
+
+		_uint iMeshStartVertexIndex = m_Meshes[iIndex]->Get_StartVertexIndex();
+		_uint iMeshStartFaceIndex = m_Meshes[iIndex]->Get_StratFaceIndex();
+		_uint iMeshVertexCount = (iIndex + 1 == m_iMeshCount) ? m_iVertexCount - iMeshStartVertexIndex : m_Meshes[iIndex + 1]->Get_StartVertexIndex() - iMeshStartVertexIndex;
+		_uint iMeshFaceCount = m_Meshes[iIndex]->Get_FaceCount();
+
+		TriMesh.pVertices = new PxVec3[iMeshVertexCount];
+		TriMesh.pFaces = new POLYGON_INDICES32[iMeshVertexCount];
+
+		for (_uint iVertexIndex = 0; iVertexIndex < iMeshVertexCount; ++iVertexIndex)
+			memcpy(&TriMesh.pVertices[iVertexIndex], &m_pVertices[iMeshStartVertexIndex + iVertexIndex], sizeof(PxVec3));
+		for (_uint iFaceIndex = 0; iFaceIndex < iMeshFaceCount; ++iFaceIndex)
+			memcpy(&TriMesh.pFaces[iFaceIndex], &m_pFaces[iMeshStartFaceIndex + iFaceIndex], sizeof(POLYGON_INDICES32));
+		TriMesh.pTriMesh = pPhysX->Create_Mesh(MESHACTOR_DESC(iMeshVertexCount, TriMesh.pVertices, iMeshFaceCount, TriMesh.pFaces));
+
+		m_PxTriMeshes.emplace_back(TriMesh);
 	}
 
 	return S_OK;
@@ -389,7 +486,7 @@ void CModel::Update_AnimTransformations(_double dTimeDelta)
 	if (m_fLerpRatio > 0.f)
 	{
 		m_Anims[m_iCurAnimIndex]->Update_Transformations_Blend(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations, m_PreAnimKeyFrames, m_fLerpRatio);
-		m_fLerpRatio -= (_float)dTimeDelta * 100.f;
+		m_fLerpRatio -= (_float)dTimeDelta * m_fLerpSpeed;
 	}
 	else
 		m_Anims[m_iCurAnimIndex]->Update_Transformations(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations);
@@ -438,13 +535,16 @@ HRESULT CModel::Create_VIBuffer(const _tchar * pShaderFilePath, const char * pTe
 	m_iVertexBufferCount = 1;
 	m_iVertexStride = sizeof(VTXMESH);
 	Create_Buffer(&m_pVB, m_iVertexStride * m_iVertexCount, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, m_iVertexStride, m_pVertices);
-	Safe_Delete_Array(m_pVertices);
+
+	if (m_iAnimCount == 0)
+		Safe_Delete_Array(m_pVertices);
 
 	/* For.IndexBuffer */
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
 	m_iFaceStride = sizeof(POLYGON_INDICES32);
 	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	Create_Buffer(&m_pIB, m_iFaceCount * m_iFaceStride, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, 0, m_pFaces);
+	Safe_Delete_Array(m_pFaces);
 
 	/* For.InputLayouts*/
 	D3D11_INPUT_ELEMENT_DESC	ElementDesc[] =
@@ -504,11 +604,11 @@ HRESULT CModel::SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC * pInputElementDesc,
 }
 #pragma endregion
 
-CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const char * pMeshFilePath, const char * pMeshFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
+CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
 	CModel* pInstance = new CModel(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype(pMeshFilePath, pMeshFileName, pShaderFilePath, pTechniqueName, PivotMatrix, bNeedCenterBone, pCenterBoneName)))
+	if (FAILED(pInstance->NativeConstruct_Prototype(pModelFilePath, pModelFileName, pShaderFilePath, pTechniqueName, iMaterialSetCount, PivotMatrix, bNeedCenterBone, pCenterBoneName)))
 	{
 		MSG_BOX("Failed to Create Instance - CModel");
 		Safe_Release(pInstance);
@@ -573,14 +673,24 @@ void CModel::Free()
 	m_BaseTransformations.clear();
 	m_AnimTransformations.clear();
 	m_CombinedTransformations.clear();
-	
+	m_LerpMap.clear();
+
 	Safe_Release(m_pCenterBoneNode);
 
 	if (false == m_isClone)
 	{
 		Safe_Release(m_pModel_Loader);
-		Safe_Delete_Array(m_pVectorPositions);
-		Safe_Delete_Array(m_pFaces);
+
+		if (m_iAnimCount > 0)
+			Safe_Delete_Array(m_pVertices);
+
+		for (auto& TriMesh : m_PxTriMeshes)
+		{
+			Safe_Delete_Array(TriMesh.pVertices);
+			Safe_Delete_Array(TriMesh.pFaces);
+			TriMesh.pTriMesh->release();
+		}
+		m_PxTriMeshes.clear();
 	}
 
 	CComponent::Free();
