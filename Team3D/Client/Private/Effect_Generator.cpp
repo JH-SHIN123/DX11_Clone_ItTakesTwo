@@ -164,7 +164,7 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Landing_Smoke",		CEffect_Landing_Smoke::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Dash"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Effect_Dash",			CEffect_Dash::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Dash",					CEffect_Dash::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Dead"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead",			CEffect_Player_Dead::Create(pDevice, pDeviceContext, pData));
@@ -208,7 +208,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 		, CVIBuffer_Rect_TripleUV::Create(pDevice, pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Rect.hlsl"), "DefaultTechnique")), E_FAIL);
 
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom")
-		, CVIBuffer_PointInstance_Custom::Create(pDevice, pDeviceContext, 5000, TEXT("../Bin/ShaderFiles/Shader_PointCustom.hlsl"), "DefaultTechnique")), E_FAIL);
+		, CVIBuffer_PointInstance_Custom::Create(pDevice, pDeviceContext, 10000, TEXT("../Bin/ShaderFiles/Shader_PointCustom.hlsl"), "DefaultTechnique")), E_FAIL);
 
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_RectInstance_Custom")
 		, CVIBuffer_RectInstance_Custom::Create(pDevice, pDeviceContext, 100, TEXT("../Bin/ShaderFiles/Shader_RectCustom.hlsl"), "DefaultTechnique")), E_FAIL);

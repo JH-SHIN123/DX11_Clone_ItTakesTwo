@@ -30,9 +30,9 @@ HRESULT CEffect_Player_Revive::NativeConstruct(void * pArg)
 	if (EFFECT_DESC_CLONE::PV_CODY >= m_EffectDesc_Clone.iPlayerValue)
 		m_EffectDesc_Prototype.iInstanceCount = 1500;
 	else if (EFFECT_DESC_CLONE::PV_CODY_S == m_EffectDesc_Clone.iPlayerValue)
-		m_EffectDesc_Prototype.iInstanceCount = 100;
+		m_EffectDesc_Prototype.iInstanceCount = 240;
 	else if (EFFECT_DESC_CLONE::PV_CODY_L == m_EffectDesc_Clone.iPlayerValue)
-		m_EffectDesc_Prototype.iInstanceCount = 5000;
+		m_EffectDesc_Prototype.iInstanceCount = 4200;
 
 	m_EffectDesc_Clone.UVTime = 0.01;
 	m_EffectDesc_Clone.vRandDirPower = { 10.f,10.f,10.f };
@@ -51,9 +51,6 @@ _int CEffect_Player_Revive::Tick(_double TimeDelta)
 
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
 	m_dTime -= TimeDelta * 2.f;
-
-
-	m_pInstanceBuffer[0].vTextureUV = Check_UV((_float)TimeDelta, 0, false);
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
@@ -100,7 +97,7 @@ void CEffect_Player_Revive::Instance_Size(_float TimeDelta, _int iIndex)
 
 void CEffect_Player_Revive::Instance_Pos(_float TimeDelta, _int iIndex)
 {
-	_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]); // »ý¶×Ãà
+	_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
 	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer[iIndex].vPosition);
 	_vector vTargetPos = XMLoadFloat4(&m_pInstance_TargetPos[iIndex]);	 
 
@@ -126,34 +123,39 @@ HRESULT CEffect_Player_Revive::Ready_Instance()
 
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
-	m_pTargetModel = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
-	Safe_AddRef(m_pTargetModel);
-	VTXMESH* pVtx = m_pTargetModel->Get_Vertices();
-	_uint iVtxCount = m_pTargetModel->Get_VertexCount();
-	_uint iRandVtx = rand() % iInstanceCount;
-	_uint iAddVtx = _int(iVtxCount / (_float)iInstanceCount);
-
-	_matrix	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f)) * XMMatrixRotationZ(XMConvertToRadians(90.f));
-
 	m_pInstanceBuffer		= new VTXMATRIX_CUSTOM_ST[iInstanceCount];
 	m_pInstance_Dir			= new _float3[iInstanceCount];
 	m_pInstance_UVCount		= new _float2[iInstanceCount];
 	m_pInstance_TargetPos	= new _float4[iInstanceCount];
 
-	_float fAdditinalDir = m_fFarRatio;
+	m_pTargetModel	= static_cast<CModel*>(m_EffectDesc_Clone.pArg);
+	Safe_AddRef(m_pTargetModel);
+	VTXMESH* pVtx	= m_pTargetModel->Get_Vertices();
+	_uint iVtxCount = m_pTargetModel->Get_VertexCount();
+	_uint iRandVtx	= rand() % iInstanceCount;
+	_uint iAddVtx	= _int(iVtxCount / (_float)iInstanceCount);
+
+	_float	fAdditinalDir = m_fFarRatio;
 	_float2 vSize = { m_EffectDesc_Prototype.vSize.x ,m_EffectDesc_Prototype.vSize.y };
 	_vector vDir = XMLoadFloat3(&m_EffectDesc_Clone.vDir);
 
-	memcpy(m_pInstanceBuffer, m_pPointInstanceCom->Get_InstanceBuffer(), sizeof(VTXMATRIX_CUSTOM_ST) * iInstanceCount);
+	_float fIndecesRatio = 0.6f * iInstanceCount;
+	_float fIndecesRatio2 = 0.4f * iInstanceCount;
+
+	_float fScaleX = m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
+	_float fDis = 0.5f * fScaleX;
 
 	_double fRenderTerm = 0.f;
 	m_UVTime = m_EffectDesc_Clone.UVTime;
 
+	_vector vPos = XMVectorZero();
+	_matrix	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f)) * XMMatrixRotationZ(XMConvertToRadians(90.f));
+
+	memcpy(m_pInstanceBuffer, m_pPointInstanceCom->Get_InstanceBuffer(), sizeof(VTXMATRIX_CUSTOM_ST) * iInstanceCount);
+
 	for (_int i = 0; i < iInstanceCount; ++i)
 	{
-		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		vPos.m128_f32[1] += 0.5f;
 
 		_int iRandSize = rand() % 3;
 		if (0 == iRandSize)
@@ -162,7 +164,6 @@ HRESULT CEffect_Player_Revive::Ready_Instance()
 			m_pInstanceBuffer[i].vSize = _float2(0.0625f, 0.0625f);
 		else
 			m_pInstanceBuffer[i].vSize = _float2(0.075f, 0.075f);
-
 
 		_vector vRandDir = XMVectorZero();
 
@@ -181,23 +182,14 @@ HRESULT CEffect_Player_Revive::Ready_Instance()
 			vRandDir.m128_f32[j] = (_float)iDir[j];
 		}
 
-		vRandDir = XMVector3Normalize(vRandDir);// *(XMLoadFloat3(&pVtx[i].vNormal) * 10.f));
-		
+		vRandDir = XMVector3Normalize(vRandDir);		
 
 		_vector vLocalPos = XMLoadFloat3(&pVtx[iRandVtx].vPosition);
 		vLocalPos = XMVector3Transform(vLocalPos, PivotMatrix);
 		vLocalPos = XMVector3Transform(vLocalPos, XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix));
 		
 		vPos = vLocalPos + vRandDir * fAdditinalDir;
-
-		_vector vLocalNormal = XMLoadFloat3(&pVtx[i].vNormal);
-		vLocalNormal = XMVector3Transform(vLocalNormal, PivotMatrix);
-		vLocalNormal = XMVector3Transform(vLocalNormal, XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix));
-		vLocalNormal = XMVector3Normalize(vLocalNormal);
-		
-		_vector vWorldPos = vLocalPos /*+ (vLocalNormal * -1.5f)*/;
-		vWorldPos.m128_f32[3] = 1.f;
-		_vector vWorldDir = XMVector3Normalize((vLocalPos - vPos));// * 7.f * vRandDir);//XMVector3Normalize(vLocalPos - vWorldPos);
+		_vector vWorldDir = XMVector3Normalize((vLocalPos - vPos));
 		_vector vDir = XMVector3Cross(vWorldDir, XMVectorSet(0.f, 1.f, 0.f, 0.f));
 
 		XMStoreFloat4(&m_pInstanceBuffer[i].vPosition, vPos);
@@ -210,15 +202,14 @@ HRESULT CEffect_Player_Revive::Ready_Instance()
 
 		Set_VtxColor(i, iRandVtx);
 
-		_float fRatio = 0.6f * iInstanceCount;
-		if(i > fRatio)
-			fAdditinalDir += 0.5f;
-		else if ( i > 0.4f * iInstanceCount)
-			fAdditinalDir += 0.25f;
+		if(i > fIndecesRatio)
+			fAdditinalDir += fDis;
+		else if (i > fIndecesRatio2)
+			fAdditinalDir += fDis * 0.5f;
+
 		if (m_fFarRatio_Max <= fAdditinalDir)
 			fAdditinalDir = 0.f;
 	}
-
 
 	Safe_Release(m_pTargetModel);
 
@@ -227,14 +218,12 @@ HRESULT CEffect_Player_Revive::Ready_Instance()
 
 _float4 CEffect_Player_Revive::Set_particleUV(_int iIndex, _int U, _int V)
 {
-	_float fLeft = (1.f / U) *  m_pInstance_UVCount[iIndex].x;
-	_float fTop = (1.f / V) *  m_pInstance_UVCount[iIndex].y;
-	_float fRight = (1.f / U) * (m_pInstance_UVCount[iIndex].x + 1.f);
-	_float fBottom = (1.f / V) * (m_pInstance_UVCount[iIndex].y + 1.f);
+	_float fLeft	= (1.f / U) *  m_pInstance_UVCount[iIndex].x;
+	_float fTop		= (1.f / V) *  m_pInstance_UVCount[iIndex].y;
+	_float fRight	= (1.f / U) * (m_pInstance_UVCount[iIndex].x + 1.f);
+	_float fBottom	= (1.f / V) * (m_pInstance_UVCount[iIndex].y + 1.f);
 
-	_float4 vUV = { fLeft, fTop, fRight, fBottom };
-
-	return vUV;
+	return _float4(fLeft, fTop, fRight, fBottom);
 }
 
 void CEffect_Player_Revive::Set_VtxColor(_int iIndex, _uint iVtxIndex)

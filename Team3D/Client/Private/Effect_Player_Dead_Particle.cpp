@@ -118,8 +118,6 @@ HRESULT CEffect_Player_Dead_Particle::Ready_Instance()
 	if (nullptr == m_pPointInstanceCom)
 		return S_OK;
 
-
-
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
 	m_pTargetModel = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
@@ -211,7 +209,22 @@ _float4 CEffect_Player_Dead_Particle::Set_particleUV(_int iIndex, _int U, _int V
 
 void CEffect_Player_Dead_Particle::Set_VtxColor(_int iIndex, _uint iVtxIndex)
 {
-	if (EFFECT_DESC_CLONE::PV_MAY != m_EffectDesc_Clone.iPlayerValue)
+	if (EFFECT_DESC_CLONE::PV_MAY == m_EffectDesc_Clone.iPlayerValue)
+	{
+		if (0 <= iVtxIndex && iVtxIndex <= 41748) // ½º¿þÅÍ
+			m_pInstance_UVCount[iIndex] = { 3.f, 2.f };
+		else if (54924 <= iVtxIndex && iVtxIndex <= 96558) // ¸Ó¸®ÅÐ
+			m_pInstance_UVCount[iIndex] = { 0.f, 2.f };
+		else if (177171 <= iVtxIndex && iVtxIndex <= 209500) // ¹ÙÁö
+			m_pInstance_UVCount[iIndex] = { 2.f, 2.f };
+		else if (209500 <= iVtxIndex && iVtxIndex <= 259779) // ÆÈ¶Ò
+			m_pInstance_UVCount[iIndex] = { 1.f, 2.f };
+		else if (259779 <= iVtxIndex && iVtxIndex <= 301083) // ¶Ç´Ù¸¥ ¸Ó¸®ÅÐ
+			m_pInstance_UVCount[iIndex] = { 0.f, 2.f };
+		else
+			m_pInstance_UVCount[iIndex] = { 1.f, 2.f };
+	}
+	else
 	{
 		if (0 <= iVtxIndex && iVtxIndex <= 92670) // ¹åÁÙ, ÆÈ¶Ò
 			m_pInstance_UVCount[iIndex] = { 3.f, 0.f };
@@ -227,21 +240,6 @@ void CEffect_Player_Dead_Particle::Set_VtxColor(_int iIndex, _uint iVtxIndex)
 			m_pInstance_UVCount[iIndex] = { 2.f, 0.f };
 		else
 			m_pInstance_UVCount[iIndex] = { 1.f, 0.f };
-	}
-	else
-	{
-		if (0 <= iVtxIndex && iVtxIndex <= 41748) // ½º¿þÅÍ
-			m_pInstance_UVCount[iIndex] = { 3.f, 2.f };
-		else if (54924 <= iVtxIndex && iVtxIndex <= 96558) // ¸Ó¸®ÅÐ
-			m_pInstance_UVCount[iIndex] = { 0.f, 2.f };
-		else if (177171 <= iVtxIndex && iVtxIndex <= 209500) // ¹ÙÁö
-			m_pInstance_UVCount[iIndex] = { 2.f, 2.f };
-		else if (209500 <= iVtxIndex && iVtxIndex <= 259779) // ÆÈ¶Ò
-			m_pInstance_UVCount[iIndex] = { 1.f, 2.f };
-		else if (259779 <= iVtxIndex && iVtxIndex <= 301083) // ¶Ç´Ù¸¥ ¸Ó¸®ÅÐ
-			m_pInstance_UVCount[iIndex] = { 0.f, 2.f };
-		else
-			m_pInstance_UVCount[iIndex] = { 1.f, 2.f };
 	}
 
 	m_pInstanceBuffer[iIndex].vTextureUV = Set_particleUV(iIndex, 4, 4);
