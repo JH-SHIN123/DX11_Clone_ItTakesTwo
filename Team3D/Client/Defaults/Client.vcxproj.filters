@@ -16,12 +16,6 @@
     <Filter Include="97.ShaderFiles">
       <UniqueIdentifier>{395ace26-c26e-4237-9031-47429a7fd067}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97.ShaderFiles\00.Defines">
-      <UniqueIdentifier>{0d896044-2e1a-49b3-8cf8-ca6b2e41a334}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97.ShaderFiles\01.Codes">
-      <UniqueIdentifier>{1d67cbdf-83f5-4ab1-9d81-2f033df901dd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject">
       <UniqueIdentifier>{b604bc39-7ea2-4ccb-a98b-f89e2d0279b7}</UniqueIdentifier>
     </Filter>
@@ -137,9 +131,6 @@
     </ClInclude>
     <ClInclude Include="..\public\Loading.h">
       <Filter>01.Maps\01.Loading\99.Loading</Filter>
-    </ClInclude>
-    <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp">
-      <Filter>97.ShaderFiles\00.Defines</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
@@ -284,16 +275,16 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl">
-      <Filter>97.ShaderFiles\01.Codes</Filter>
+      <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Default.hlsl">
-      <Filter>97.ShaderFiles\01.Codes</Filter>
+      <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl">
-      <Filter>97.ShaderFiles\01.Codes</Filter>
+      <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl">
-      <Filter>97.ShaderFiles\01.Codes</Filter>
+      <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -27,11 +27,14 @@ public:
 	virtual HRESULT	Render() override;
 	virtual HRESULT Set_ShaderConstant_Default() override;
 	virtual HRESULT Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix) override;
+	virtual HRESULT Render_ShadowDepth() override;
 
 
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
-protected:
+public:
+
+private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;

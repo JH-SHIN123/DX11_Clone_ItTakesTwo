@@ -57,6 +57,9 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom, CapsuleControllerDesc, -50.f)), E_FAIL);
 
+
+	m_pTransformCom->Set_Scale(XMVectorSet(5.f, 5.f, 5.f, 0.f));
+
 	return S_OK;
 }
 
@@ -122,6 +125,8 @@ HRESULT CPlayer::Render()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(0);
 
 	
@@ -143,6 +148,18 @@ HRESULT CPlayer::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix Li
 	m_pModelCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
 	m_pModelCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
 	m_pModelCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+
+	return S_OK;
+}
+
+HRESULT CPlayer::Render_ShadowDepth()
+{
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+
+	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+
+	// Skinned: 2 / Normal: 3
+	m_pModelCom->Render_Model(2, 0, true);
 
 	return S_OK;
 }

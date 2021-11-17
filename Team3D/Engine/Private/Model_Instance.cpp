@@ -1,4 +1,7 @@
 #include "..\Public\Model_Instance.h"
+#include "Shadow_Manager.h"
+#include "RenderTarget_Manager.h"
+#include "Graphic_Device.h"
 #include "Model_Loader.h"
 #include "Mesh.h"
 #include "Textures.h"
@@ -120,6 +123,45 @@ HRESULT CModel_Instance::Set_DefaultVariables_Perspective()
 	return S_OK;
 }
 
+HRESULT CModel_Instance::Set_DefaultVariables_Shadow()
+{
+	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
+	_float4	vViewportUVInfo;
+	vViewportUVInfo = pGraphicDevice->Get_ViewportRadioInfo(CGraphic_Device::VP_MAIN);
+	Set_Variable("g_vMainViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
+	vViewportUVInfo = pGraphicDevice->Get_ViewportRadioInfo(CGraphic_Device::VP_SUB);
+	Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
+
+	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();
+	_matrix ShadowTransform[MAX_CASCADES]; /* Shadow View * Shadow Proj * NDC */
+	pShadowManager->Get_CascadeShadowTransformsTranspose(CShadow_Manager::SHADOW_MAIN, ShadowTransform);
+	Set_Variable("g_ShadowTransforms_Main", ShadowTransform, sizeof(_matrix) * MAX_CASCADES);
+	pShadowManager->Get_CascadeShadowTransformsTranspose(CShadow_Manager::SHADOW_SUB, ShadowTransform);
+	Set_Variable("g_ShadowTransforms_Sub", ShadowTransform, sizeof(_matrix) * MAX_CASCADES);
+	Set_Variable("g_CascadeEnds", (void*)pShadowManager->Get_CascadedEnds(), sizeof(_float) * (MAX_CASCADES + 1));
+
+	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
+	Set_ShaderResourceView("g_CascadedShadowDepthTexture", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_CascadedShadow_Depth")));
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Set_DefaultVariables_ShadowDepth()
+{
+	_matrix ShadowViewProj[MAX_CASCADES];
+
+	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();
+
+	pShadowManager->Get_CascadeShadowViewProjTranspose(CShadow_Manager::SHADOW_MAIN, ShadowViewProj);
+	Set_Variable("g_ShadowTransforms_Main", ShadowViewProj, sizeof(_matrix) * MAX_CASCADES);
+
+	pShadowManager->Get_CascadeShadowViewProjTranspose(CShadow_Manager::SHADOW_SUB, ShadowViewProj);
+	Set_Variable("g_ShadowTransforms_Sub", ShadowViewProj, sizeof(_matrix) * MAX_CASCADES);
+
+	return S_OK;
+}
+
+
 HRESULT CModel_Instance::NativeConstruct_Prototype(_uint iMaxInstanceCount, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
 	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
@@ -177,6 +219,7 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 			Shape->setRestOffset(-0.5f);
 
 			pPhysX->Add_ActorToScene(m_ppActors[iActorIndex]);
+			Setup_PxFiltering(m_ppActors[iActorIndex], FilterGroup::eSTATIC, 0);
 		}
 	}
 
@@ -218,7 +261,7 @@ HRESULT CModel_Instance::Update_Model(_fmatrix TransformMatrix)
 	return S_OK;
 }
 
-HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
+HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 
@@ -250,7 +293,11 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
 
 	for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
 	{
-		Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
+		/* Write Shadow - ÅØ½ºÃÄ ¿¬°á¾ÈÇØÁàµµ µÊ */
+		if (false == bShadowWrite) {
+			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
+		}
+
 		FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])

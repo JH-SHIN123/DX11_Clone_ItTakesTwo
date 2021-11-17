@@ -361,6 +361,16 @@ HRESULT CUFO::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix Light
 	return S_OK;
 }
 
+HRESULT CUFO::Render_ShadowDepth()
+{
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+
+	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+
+	// Skinned: 2 / Normal: 3
+	m_pModelCom->Render_Model(2, 0, true);
+}
+
 CUFO * CUFO::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CUFO* pInstance = new CUFO(pDevice, pDeviceContext);

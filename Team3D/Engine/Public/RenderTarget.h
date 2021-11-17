@@ -13,10 +13,12 @@ private:
 public: /* Getter */
 	ID3D11RenderTargetView*		Get_RenderTargetView() const { return m_pRenderTargetView; }
 	ID3D11ShaderResourceView*	Get_ShaderResourceView() const { return m_pShaderResourceView; }
+	ID3D11DepthStencilView*		Get_DepthStencilView() const { return m_pDepthStencilView; }
 
 public:
-	HRESULT NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vClearColor);
+	HRESULT NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vClearColor, _bool isDepthBuffer = false);
 	HRESULT Clear_View();
+	HRESULT Clear_Depth_Stencil_Buffer();
 
 private:
 	ID3D11Device*				m_pDevice = nullptr;
@@ -24,10 +26,17 @@ private:
 	ID3D11Texture2D*			m_pTargetTexture = nullptr;
 	ID3D11RenderTargetView*		m_pRenderTargetView = nullptr;
 	ID3D11ShaderResourceView*	m_pShaderResourceView = nullptr;
+	
+private:
+	_bool						m_IsDepthStencil = false;
+	ID3D11Texture2D*			m_pDepthTargetTexture = nullptr;
+	ID3D11DepthStencilView*		m_pDepthStencilView = nullptr;
+
+private:
 	_float4						m_vClearColor;
 
 public:
-	static CRenderTarget* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vClearColor);
+	static CRenderTarget* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vClearColor, _bool isDepthBuffer);
 	virtual void Free() override;
 
 #ifdef _DEBUG

@@ -182,6 +182,9 @@ call WinCmd_UpdateLib.bat</Command>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp" />
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp" />
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp" />
     <ClInclude Include="..\public\Actor.h" />
     <ClInclude Include="..\Public\Anim.h" />
     <ClInclude Include="..\Public\AnimChannel.h" />
@@ -201,6 +204,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\public\GameInstance.h" />
     <ClInclude Include="..\public\GameObject.h" />
     <ClInclude Include="..\public\GameObject_Manager.h" />
+    <ClInclude Include="..\Public\GlobalFunction.h" />
     <ClInclude Include="..\public\Graphic_Device.h" />
     <ClInclude Include="..\Public\HierarchyNode.h" />
     <ClInclude Include="..\public\Input_Device.h" />
@@ -216,10 +220,13 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\Public\Model_Loader.h" />
     <ClInclude Include="..\public\PhysX.h" />
     <ClInclude Include="..\Public\Pipeline.h" />
+    <ClInclude Include="..\public\PxContactCallback.h" />
+    <ClInclude Include="..\public\PxControllerCallback.h" />
     <ClInclude Include="..\public\PxEventCallback.h" />
     <ClInclude Include="..\public\Renderer.h" />
     <ClInclude Include="..\public\RenderTarget.h" />
     <ClInclude Include="..\public\RenderTarget_Manager.h" />
+    <ClInclude Include="..\Public\Shadow_Manager.h" />
     <ClInclude Include="..\public\Sound_Manager.h" />
     <ClInclude Include="..\public\StaticActor.h" />
     <ClInclude Include="..\public\Textures.h" />
@@ -263,10 +270,13 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\Private\Model_Loader.cpp" />
     <ClCompile Include="..\private\PhysX.cpp" />
     <ClCompile Include="..\Private\Pipeline.cpp" />
+    <ClCompile Include="..\private\PxContactCallback.cpp" />
+    <ClCompile Include="..\private\PxControllerCallback.cpp" />
     <ClCompile Include="..\private\PxEventCallback.cpp" />
     <ClCompile Include="..\private\Renderer.cpp" />
     <ClCompile Include="..\private\RenderTarget.cpp" />
     <ClCompile Include="..\private\RenderTarget_Manager.cpp" />
+    <ClCompile Include="..\Private\Shadow_Manager.cpp" />
     <ClCompile Include="..\private\Sound_Manager.cpp" />
     <ClCompile Include="..\private\StaticActor.cpp" />
     <ClCompile Include="..\private\Textures.cpp" />

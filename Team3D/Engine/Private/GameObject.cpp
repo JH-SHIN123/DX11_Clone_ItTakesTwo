@@ -68,6 +68,11 @@ HRESULT CGameObject::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatri
 	return S_OK;
 }
 
+HRESULT CGameObject::Render_ShadowDepth()
+{
+	return S_OK;
+}
+
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const _tchar * pPrototypeTag, const _tchar * pComponentTag, CComponent ** ppOut, void * pArg)
 {
 	_tchar* pTag = new _tchar[lstrlenW(pComponentTag) + 1];

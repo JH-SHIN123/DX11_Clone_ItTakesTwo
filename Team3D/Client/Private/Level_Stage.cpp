@@ -13,6 +13,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	CLevel::NativeConstruct();
 
 	//로딩시간 체크중
+	FAILED_CHECK_RETURN(Ready_Lights(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Camera(TEXT("Layer_Camera")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Terrain(TEXT("Layer_Terrain")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Cody(TEXT("Layer_Cody")), E_FAIL);
@@ -26,7 +27,8 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Robot(TEXT("Layer_Robot")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_RobotHead(TEXT("Layer_RobotHead")), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Map", Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
 
 	return S_OK;
 }
@@ -51,6 +53,30 @@ HRESULT CLevel_Stage::Render()
 	return S_OK;
 }
 
+HRESULT CLevel_Stage::Ready_Lights()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	pGameInstance->Reserve_Container_Light(1);
+
+	LIGHT_DESC			LightDesc;
+
+	/* For.Directional */
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
+	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
+	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.f);
+	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
 	CCamera::CAMERA_DESC CameraDesc;
@@ -59,6 +85,7 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.vAt								= _float3(0.f, 0.f, 0.f);
 	CameraDesc.vAxisY							= _float3(0.f, 1.f, 0.f);
 	CameraDesc.fFovY							= XMConvertToRadians(60.f);
+	CameraDesc.fFullScreenAspect				= (_float)g_iWinCX / (_float)g_iWinCY;
 	CameraDesc.fAspect							= 1.f;
 	CameraDesc.fNear							= 0.3f;
 	CameraDesc.fFar								= 300.f;
@@ -68,8 +95,8 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MainCamera"), &CameraDesc), E_FAIL);
 
 	CameraDesc.iViewportIndex					= 2;
-	CameraDesc.vEye								= _float3(1.f, 8.f, -5.f);
-	CameraDesc.vAt								= _float3(0.f, 0.f, 0.f);
+	CameraDesc.vEye								= _float3(50.f, 50.f, -50.f);
+	CameraDesc.vAt								= _float3(50.f, 0.f, 0.f);
 	CameraDesc.vAxisY							= _float3(0.f, 1.f, 0.f);
 
 	// MAY 로딩하면 램 터져서 잠시 비활성화.
@@ -92,7 +119,6 @@ HRESULT CLevel_Stage::Ready_Layer_Cody(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_May(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_May")), E_FAIL);
-
 	return S_OK;
 }
 

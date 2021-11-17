@@ -37,6 +37,8 @@ public: /* Setter */
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, ID3D11ShaderResourceView* pShaderResourceView);
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, _uint iMaterialIndex, aiTextureType eTextureType, _uint iTextureIndex = 0);
 	HRESULT	Set_DefaultVariables_Perspective();
+	HRESULT	Set_DefaultVariables_Shadow();
+	HRESULT	Set_DefaultVariables_ShadowDepth();
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(_uint iMaxInstanceCount, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName);
@@ -45,7 +47,7 @@ public:
 	HRESULT	Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials);
 	/* For.Client */
 	HRESULT Update_Model(_fmatrix TransformMatrix);
-	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0);
+	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false);
 
 private: /* Typedef */
 	typedef vector<class CMesh*>	MESHES;

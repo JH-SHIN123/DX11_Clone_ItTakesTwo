@@ -53,5 +53,6 @@ using namespace physx;
 
 /* Convenience */
 #include "MathHelper.h"
+#include "GlobalFunction.h"
 
 using namespace Engine;

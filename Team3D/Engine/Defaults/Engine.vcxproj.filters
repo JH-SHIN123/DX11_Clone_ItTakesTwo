@@ -175,9 +175,6 @@
     <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX">
       <UniqueIdentifier>{f9714c9a-ca3b-45cd-a187-c07e5f656041}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\98.Event">
-      <UniqueIdentifier>{ad9c964c-c541-4c84-b8e0-d3843476fecf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Utility\02.Component\06.Actor\01.StaticActor">
       <UniqueIdentifier>{fc097fb8-7543-49a5-8c52-ec5fd9315090}</UniqueIdentifier>
     </Filter>
@@ -201,6 +198,30 @@
     </Filter>
     <Filter Include="02.Utility\02.Component\05.Model\00.Main\01.Instance">
       <UniqueIdentifier>{a76bbefa-3da3-46a3-808b-d54d00aa9310}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\05.Shadow">
+      <UniqueIdentifier>{b24e96d2-8383-488b-9aca-0c27a5485b2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\05.Shadow\99.Manager">
+      <UniqueIdentifier>{b744d2d9-3b50-46a6-a5f2-0c8f4be1c175}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles\Include">
+      <UniqueIdentifier>{9654196f-e3ab-4f25-a09c-cb0ad655fa08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\03.ControllableActor\00.Main">
+      <UniqueIdentifier>{ac03b7c4-87d1-4087-8e49-c826a101e55d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\03.ControllableActor\01.Callback">
+      <UniqueIdentifier>{551be4d3-8b36-4350-b615-a5af8be67e8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX\00.Main">
+      <UniqueIdentifier>{17b0b8f3-b04a-48ed-987f-777e587dab3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX\01.SimulCallback">
+      <UniqueIdentifier>{ad9c964c-c541-4c84-b8e0-d3843476fecf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback">
+      <UniqueIdentifier>{7217416e-7088-47ec-b7c5-df5d4f4d2af0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -312,11 +333,8 @@
     <ClInclude Include="..\Public\Model_Loader.h">
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\PhysX.h">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\PxEventCallback.h">
-      <Filter>02.Utility\02.Component\06.Actor\98.Event</Filter>
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\01.SimulCallback</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Actor.h">
       <Filter>02.Utility\02.Component\06.Actor\00.Main</Filter>
@@ -326,9 +344,6 @@
     </ClInclude>
     <ClInclude Include="..\public\DynamicActor.h">
       <Filter>02.Utility\02.Component\06.Actor\02.DynamicActor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\ControllableActor.h">
-      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Engine_Defines.h">
       <Filter>99.Defines\00.Main</Filter>
@@ -354,8 +369,35 @@
     <ClInclude Include="..\public\Model_Instance.h">
       <Filter>02.Utility\02.Component\05.Model\00.Main\01.Instance</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Shadow_Manager.h">
+      <Filter>02.Utility\05.Shadow\99.Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
+      <Filter>97.ShaderFiles\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp">
+      <Filter>97.ShaderFiles\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp">
+      <Filter>97.ShaderFiles\Include</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Textures.h">
       <Filter>02.Utility\02.Component\03.Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ControllableActor.h">
+      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PxControllerCallback.h">
+      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor\01.Callback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PhysX.h">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GlobalFunction.h">
+      <Filter>99.Defines\02.Convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PxContactCallback.h">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -467,11 +509,8 @@
     <ClCompile Include="..\Private\Model_Loader.cpp">
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\PhysX.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\PxEventCallback.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\98.Event</Filter>
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\01.SimulCallback</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Actor.cpp">
       <Filter>02.Utility\02.Component\06.Actor\00.Main</Filter>
@@ -482,17 +521,29 @@
     <ClCompile Include="..\private\DynamicActor.cpp">
       <Filter>02.Utility\02.Component\06.Actor\02.DynamicActor</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ControllableActor.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Model.cpp">
       <Filter>02.Utility\02.Component\05.Model\00.Main\00.Normal</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Model_Instance.cpp">
       <Filter>02.Utility\02.Component\05.Model\00.Main\01.Instance</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Shadow_Manager.cpp">
+      <Filter>02.Utility\05.Shadow\99.Manager</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\Textures.cpp">
       <Filter>02.Utility\02.Component\03.Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ControllableActor.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PxControllerCallback.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor\01.Callback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PhysX.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PxContactCallback.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

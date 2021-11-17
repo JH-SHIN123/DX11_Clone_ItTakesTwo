@@ -15,6 +15,9 @@ public: /* Enum */
 	enum RENDER_GROUP { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_ALPHA, RENDER_UI, RENDER_END };
 
 public:
+	ID3D11ShaderResourceView* Get_ShaderResourceView_RenderTargetManager(const _tchar* pRenderTargetTag);
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype();
 	virtual HRESULT	NativeConstruct(void* pArg);
 	HRESULT			Add_GameObject_ToRenderGroup(RENDER_GROUP eGroup, class CGameObject* pGameObject);
@@ -26,13 +29,19 @@ private:
 	RENDER_OBJECTS					m_RenderObjects[RENDER_END];
 	class CRenderTarget_Manager*	m_pRenderTarget_Manager = nullptr;
 	class CVIBuffer_RectRHW*		m_pVIBuffer = nullptr;
+
 private:
 	HRESULT	Render_Priority();
 	HRESULT	Render_NonAlpha();
 	HRESULT	Render_Alpha();
 	HRESULT	Render_UI();
+
+private:
+	HRESULT Render_ShadowsForAllCascades();
 	HRESULT Render_LightAcc();
 	HRESULT Render_Blend();
+
+private:
 	void	Sort_GameObjects(RENDER_OBJECTS& GameObjects);
 
 public:

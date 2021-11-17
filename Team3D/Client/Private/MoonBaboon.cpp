@@ -145,6 +145,16 @@ HRESULT CMoonBaboon::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatri
 	return S_OK;
 }
 
+HRESULT CMoonBaboon::Render_ShadowDepth()
+{
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+
+	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+
+	// Skinned: 2 / Normal: 3
+	m_pModelCom->Render_Model(2, 0, true);
+}
+
 CMoonBaboon * CMoonBaboon::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CMoonBaboon* pInstance = new CMoonBaboon(pDevice, pDeviceContext);

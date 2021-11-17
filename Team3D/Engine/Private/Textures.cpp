@@ -46,24 +46,30 @@ HRESULT CTextures::NativeConstruct_Prototype(TEXTURE_TYPE eType, const _tchar * 
 		}
 		lstrcpy(szPreTextureFileName, szTextureFileName);
 
-		ScratchImage	Image;
+		ScratchImage	SrcImage;
+		ScratchImage	DstImage;
 		HRESULT			hr = 0;
 
 		switch (eType)
 		{
 		case Engine::CTextures::TYPE_DDS:
-			hr = LoadFromDDSFile(szTextureFileName, DDS_FLAGS_NONE, nullptr, Image);
+			hr = LoadFromDDSFile(szTextureFileName, DDS_FLAGS_NONE, nullptr, SrcImage);
 			break;
 		case Engine::CTextures::TYPE_TGA:
-			hr = LoadFromTGAFile(szTextureFileName, nullptr, Image);
+			hr = LoadFromTGAFile(szTextureFileName, nullptr, SrcImage);
 			break;
 		case Engine::CTextures::TYPE_WIC:
-			hr = LoadFromWICFile(szTextureFileName, WIC_FLAGS_NONE, nullptr, Image);
+			hr = LoadFromWICFile(szTextureFileName, WIC_FLAGS_NONE, nullptr, SrcImage);
 			break;
 		}
 
 		FAILED_CHECK_RETURN(hr, E_FAIL);
-		FAILED_CHECK_RETURN(CreateShaderResourceView(m_pDevice, Image.GetImages(), Image.GetImageCount(), Image.GetMetadata(), &pShaderResourceView), E_FAIL);
+
+		_uint iWidth = (_uint)SrcImage.GetImage(0, 0, 0)->width / 2;
+		_uint iHeight = (_uint)SrcImage.GetImage(0, 0, 0)->width / 2;
+
+		FAILED_CHECK_RETURN(Resize(*SrcImage.GetImage(0, 0 ,0), iWidth, iHeight, TEX_FILTER_DEFAULT, DstImage), E_FAIL);
+		FAILED_CHECK_RETURN(CreateShaderResourceView(m_pDevice, DstImage.GetImages(), DstImage.GetImageCount(), DstImage.GetMetadata(), &pShaderResourceView), E_FAIL);
 
 		m_Textures.emplace_back(pShaderResourceView);
 	}

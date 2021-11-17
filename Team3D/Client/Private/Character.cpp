@@ -115,6 +115,11 @@ HRESULT CCharacter::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix
 	return CGameObject::Set_ShaderConstant_Shadow(LightViewMatrix, LightProjMatrix);
 }
 
+HRESULT CCharacter::Render_ShadowDepth()
+{
+	return CGameObject::Render_ShadowDepth();
+}
+
 void CCharacter::Free()
 {
 

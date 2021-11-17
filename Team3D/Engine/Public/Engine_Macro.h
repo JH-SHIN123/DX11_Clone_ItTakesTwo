@@ -86,3 +86,8 @@ enum aiTextureType
 #pragma region PHYSX
 #define GRAVITY			9.8f
 #pragma endregion
+
+#pragma region PostProcessing
+#define MAX_CASCADES		3
+#define SHADOWMAP_SIZE		2048 /* Width size equal height Size */
+#pragma endregion

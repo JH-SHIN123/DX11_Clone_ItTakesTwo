@@ -27,6 +27,9 @@ public:
 	virtual HRESULT Set_ShaderConstant_Default();
 	virtual HRESULT Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix);
 
+public: /* For. Write Shadow Depth */
+	virtual HRESULT Render_ShadowDepth();
+
 protected: /* Typedef */
 	typedef unordered_map<const _tchar*, CComponent*>	COMPONENTS;
 protected:

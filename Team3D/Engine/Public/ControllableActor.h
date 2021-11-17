@@ -39,9 +39,10 @@ public:
 	_bool  Get_IsJump() { return m_bJump; }
 
 private:
-	PxController*		m_pController = nullptr;
-	PxRigidDynamic*		m_pActor = nullptr;
-	class CTransform*	m_pTransform = nullptr;
+	PxController*					m_pController = nullptr;
+	PxRigidDynamic*					m_pActor = nullptr;
+	class CTransform*				m_pTransform = nullptr;
+	class CPxControllerCallback*	m_pCallback = nullptr;
 	/* For.Jump */
 	_float	m_fJumpTime = 0.f;
 	_float	m_fHeightDelta = 0.f;

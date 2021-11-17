@@ -1,19 +1,26 @@
 #include "..\Public\PhysX.h"
 #include "PxEventCallback.h"
+#include "PxContactCallback.h"
 
 IMPLEMENT_SINGLETON(CPhysX)
 
 PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-	PX_UNUSED(attributes0);
-	PX_UNUSED(attributes1);
-	PX_UNUSED(filterData0);
-	PX_UNUSED(filterData1);
 	PX_UNUSED(constantBlockSize);
 	PX_UNUSED(constantBlock);
 
-	// all initial and persisting reports for everything, with per-point data
-	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT | PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_CONTACT_POINTS | PxPairFlag::eNOTIFY_TOUCH_CCD;
+	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
+	{
+		pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+	}
+	else if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+	{
+		pairFlags = PxPairFlag::eCONTACT_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_TOUCH_LOST | PxPairFlag::eMODIFY_CONTACTS;
+	}
+	else
+	{
+		pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+	}
 
 	return PxFilterFlag::eDEFAULT;
 }
@@ -44,14 +51,14 @@ HRESULT CPhysX::Ready_PhysX()
 
 	m_pDispatcher = PxDefaultCpuDispatcherCreate(2);
 	m_pEventCallback = new CPxEventCallback;
+	m_pContactCallback = new CPxContactCallback;
 
 	PxSceneDesc SceneDesc(m_pPhysics->getTolerancesScale());
 	SceneDesc.gravity = PxVec3(0.f, -GRAVITY, 0.f);
-	SceneDesc.simulationEventCallback = m_pEventCallback;
 	SceneDesc.cpuDispatcher = m_pDispatcher;
 	SceneDesc.filterShader = FilterShader;
-	SceneDesc.kineKineFilteringMode = PxPairFilteringMode::eKILL;
-	SceneDesc.staticKineFilteringMode = PxPairFilteringMode::eDEFAULT;
+	SceneDesc.simulationEventCallback = m_pEventCallback;
+	SceneDesc.contactModifyCallback = m_pContactCallback;
 
 	m_pScene = m_pPhysics->createScene(SceneDesc);
 	NULL_CHECK_RETURN(m_pScene, E_FAIL);
@@ -65,12 +72,15 @@ HRESULT CPhysX::Ready_PhysX()
 	pClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 #endif
 
+	m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 	m_pControllerManager = PxCreateControllerManager(*m_pScene);
 
 	// юс╫ц ╧ы╢з
 	PxMaterial* pMaerial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 	PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *pMaerial);
 	groundPlane->setName("Ground");
+	Setup_PxFiltering(groundPlane, FilterGroup::eSTATIC, FilterGroup::ePLAYER | FilterGroup::eSTATIC | FilterGroup::eDYNAMIC);
+
 	m_pScene->addActor(*groundPlane);
 
 	return S_OK;
@@ -180,6 +190,13 @@ PxMaterial * CPhysX::Create_Material(PxReal StaticFriction, PxReal DynamicFricti
 	return pMaterial;
 }
 
+_bool CPhysX::Raycast(PxRaycastBuffer & RaycastHit, _fvector vSrc, _fvector vDst, _float fDist)
+{
+	_vector vRayDir = XMVector3Normalize(vDst - vSrc);
+
+	return m_pScene->raycast(MH_PxVec3(vSrc), MH_PxVec3(vRayDir), fDist, RaycastHit);
+}
+
 void CPhysX::Free()
 {
 	m_pControllerManager->release();
@@ -187,6 +204,7 @@ void CPhysX::Free()
 	m_pScene->release();
 	m_pDispatcher->release();
 
+	Safe_Delete(m_pContactCallback);
 	Safe_Delete(m_pEventCallback);
 	PxCloseExtensions();
 
