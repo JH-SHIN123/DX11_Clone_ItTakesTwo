@@ -5,6 +5,7 @@
 #include "VIBuffer_RectRHW.h"
 #include "Graphic_Device.h"
 #include "Shadow_Manager.h"
+#include "Input_Device.h"
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)
@@ -113,9 +114,15 @@ HRESULT CRenderer::Draw_Renderer()
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
 #ifdef _DEBUG
-	m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Deferred"));
-	m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_LightAcc"));
-	m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_CascadedShadow"));
+	if (CInput_Device::GetInstance()->Key_Down(DIK_1) && CInput_Device::GetInstance()->Key_Pressing(DIK_LCONTROL))
+		m_bShowDebugBuffer = !m_bShowDebugBuffer;
+
+	if (m_bShowDebugBuffer)
+	{
+		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Deferred"));
+		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_LightAcc"));
+		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_CascadedShadow"));
+	}
 #endif
 
 	return S_OK;
