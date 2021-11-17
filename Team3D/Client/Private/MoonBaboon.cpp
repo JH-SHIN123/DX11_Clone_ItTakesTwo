@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\public\MoonBaboon.h"
 #include "GameInstance.h"
-#include "DataBase.h"
+#include "DataStorage.h"
 #include "May.h"
 #include "Cody.h"
 #include "UFO.h"
@@ -34,22 +34,22 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
 
-	m_pCodyTransform = ((CCody*)CDataBase::GetInstance()->GetCody())->Get_Transform();
+	m_pCodyTransform = ((CCody*)CDataStorage::GetInstance()->GetCody())->Get_Transform();
 	if (nullptr == m_pCodyTransform)
 		return E_FAIL;
 	Safe_AddRef(m_pCodyTransform);
 
-	m_pMayTransform = ((CMay*)CDataBase::GetInstance()->GetMay())->Get_Transform();
+	m_pMayTransform = ((CMay*)CDataStorage::GetInstance()->GetMay())->Get_Transform();
 	if (nullptr == m_pMayTransform)
 		return E_FAIL;
 	Safe_AddRef(m_pMayTransform);
 
-	m_pUFOModel = ((CUFO*)CDataBase::GetInstance()->Get_UFO())->Get_Model();
+	m_pUFOModel = ((CUFO*)CDataStorage::GetInstance()->Get_UFO())->Get_Model();
 	if (nullptr == m_pUFOModel)
 		return E_FAIL;
 	Safe_AddRef(m_pUFOModel);
 
-	m_pUFOTransform = ((CUFO*)CDataBase::GetInstance()->Get_UFO())->Get_Transform();
+	m_pUFOTransform = ((CUFO*)CDataStorage::GetInstance()->Get_UFO())->Get_Transform();
 	if (nullptr == m_pUFOTransform)
 		return E_FAIL;
 	Safe_AddRef(m_pUFOModel);

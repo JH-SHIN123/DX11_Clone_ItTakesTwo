@@ -73,9 +73,6 @@
     <Filter Include="02.GameObject\99.Stage%28Test%29\01.Player">
       <UniqueIdentifier>{b134e824-3c41-4f85-8703-7c00321fcce5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="96.DataBase">
-      <UniqueIdentifier>{9d471ce0-e768-450b-9d91-9b678d9ec778}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\99.Stage%28Test%29\03.Env">
       <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
     </Filter>
@@ -171,9 +168,6 @@
     <ClInclude Include="..\Public\Character.h">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\DataBase.h">
-      <Filter>96.DataBase</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\May.h">
       <Filter>02.GameObject\03.Character\01.May</Filter>
     </ClInclude>
@@ -241,9 +235,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\DataBase.cpp">
-      <Filter>96.DataBase</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\May.cpp">
       <Filter>02.GameObject\03.Character\01.May</Filter>

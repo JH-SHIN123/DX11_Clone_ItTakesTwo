@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\public\RobotHead.h"
 #include "GameInstance.h"
-#include "DataBase.h"
+#include "DataStorage.h"
 CRobotHead::CRobotHead(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {

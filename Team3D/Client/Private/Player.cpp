@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Player.h"
 #include "GameInstance.h"
-#include"DataBase.h"
+#include "DataStorage.h"
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -33,7 +33,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	m_pModelCom->Set_Animation(0);
 	m_pModelCom->Set_NextAnimIndex(0);
 	
-	//CDataBase::GetInstance()->Set_PlayerPtr(this);
+	//CDataStorage::GetInstance()->Set_PlayerPtr(this);
 
 	PxCapsuleControllerDesc CapsuleControllerDesc;
 	CapsuleControllerDesc.setToDefault();
