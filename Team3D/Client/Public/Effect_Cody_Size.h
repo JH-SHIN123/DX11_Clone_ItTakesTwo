@@ -7,12 +7,13 @@
 BEGIN(Client)
 class CEffect_Cody_Size final : public CInGameEffect
 {
-private:
+public:
 	enum SIZE_TYPE
 	{
-		TYPE_SMALL,
-		TYPE_MIDDLE,
-		TYPE_LARGE,
+		TYPE_SMALL_MIDDLE,
+		TYPE_MIDDLE_SMALL,
+		TYPE_MIDDLE_LARGE,
+		TYPE_LARGE_MIDDLE,
 		TYPE_END
 	};
 
@@ -31,8 +32,7 @@ public:
 public:
 	void Set_Model(CModel* pModel);				// Initialize
 	void Update_Matrix(_fmatrix WorldMatrix);	// Tick
-	void Change_SizeUp();
-	void Change_SizeDown();
+	void Change_Size(SIZE_TYPE eChangeSize);
 
 protected:
 	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0) override;
@@ -46,8 +46,6 @@ private:
 	void Resizing_LM(_double TimeDelta);
 	void Resizing_SM(_double TimeDelta);
 	void Resizing_ML(_double TimeDelta);
-
-	void Check_Resizing_End(_double TimeDelta);
 	void Resizing_MS_End(_double TimeDelta);
 	void Resizing_LM_End(_double TimeDelta);
 	void Resizing_SM_End(_double TimeDelta);
@@ -55,11 +53,11 @@ private:
 
 private:
 	_int Get_InstanceCount();
+	void Reset_Instance();
 	
 
 private:
-	SIZE_TYPE m_eChangeSize_Cur		= TYPE_MIDDLE;
-	SIZE_TYPE m_eChangeSize_Next	= TYPE_MIDDLE;
+	SIZE_TYPE m_eChangeSize_Now		= TYPE_END;
 
 private:
 	const _int	m_iInstance_Small	= 120;
@@ -67,12 +65,18 @@ private:
 	const _int	m_iInstance_Large	= 1500;
 
 	_double		m_dReSizeTime;
+	_double		m_dParabolaTime;
 	_bool		m_IsReSizing = false;
+	_bool		m_IsNextSizing = false;
+	_bool		m_IsSetDir = false;
 
 private:
-	CModel*		m_pTargetModel = nullptr;
-	_float4*	m_pInstance_LocalPos = nullptr;
-	_float*		m_pInstance_SizeType = nullptr;
+	CModel*		m_pTargetModel				= nullptr;
+	_float4*	m_pInstance_LocalPos		= nullptr;
+	_float4*	m_pInstance_LocalPos_Origin = nullptr;
+	_float*		m_pParabola_WorldPos_Y		= nullptr;
+	_float*		m_pInstance_SizeType		= nullptr;
+	
 
 public:
 	static CEffect_Cody_Size* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

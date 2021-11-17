@@ -247,7 +247,7 @@ void CCody::KeyInput(_double TimeDelta)
 #pragma endregion
 
 #pragma region Mouse_LButton
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD8)/*Mouse_Down(CInput_Device::DIM_LB)*/)
 	{
 		// 커져라
 		switch (m_eCurPlayerSize)
@@ -265,7 +265,7 @@ void CCody::KeyInput(_double TimeDelta)
 #pragma endregion
 
 #pragma region Mouse_RButton
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB))
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD9)/*Mouse_Down(CInput_Device::DIM_RB)*/)
 	{
 		// 작아져라
 		switch (m_eCurPlayerSize)
@@ -475,7 +475,7 @@ void CCody::Change_Size(const _double TimeDelta)
 	{
 		if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_LARGE)
 		{
-			m_pEffect_Size->Change_SizeUp();
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_LARGE);
 
 			if (m_vScale.x < 5.f)
 			{
@@ -494,7 +494,7 @@ void CCody::Change_Size(const _double TimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_LARGE && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
-			m_pEffect_Size->Change_SizeDown();
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_LARGE_MIDDLE);
 
 			if (m_vScale.x > 1.f)
 			{
@@ -513,7 +513,7 @@ void CCody::Change_Size(const _double TimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_SMALL)
 		{
-			m_pEffect_Size->Change_SizeDown();
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_SMALL);
 
 			if (m_vScale.x > 0.5f)
 			{
@@ -532,7 +532,7 @@ void CCody::Change_Size(const _double TimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_SMALL && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
-			m_pEffect_Size->Change_SizeUp();
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_SMALL_MIDDLE);
 
 			if (m_vScale.x < 1.f)
 			{
