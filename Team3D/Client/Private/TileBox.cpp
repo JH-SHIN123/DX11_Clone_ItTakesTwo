@@ -77,7 +77,7 @@ _int CTileBox::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
 
 HRESULT CTileBox::Render()
@@ -86,20 +86,22 @@ HRESULT CTileBox::Render()
 
 	m_pModelCom->Set_DefaultVariables_Perspective();
 	// Alpha : Not Process Shadow 
-	//m_pModelCom->Set_DefaultVariables_Shadow();
+	m_pModelCom->Set_DefaultVariables_Shadow();
+	m_pModelCom->Render_Model(0, m_iRenderNum);
 
-	_uint iRenderCount = m_pModelCom->Frustum_Culling();
-	m_pModelCom->Bind_GBuffers(iRenderCount);
+	/* 유리창 렌더 코드 */
+	//_uint iRenderCount = m_pModelCom->Frustum_Culling();
+	//m_pModelCom->Bind_GBuffers(iRenderCount);
 
-	// 유리창
-	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 0, aiTextureType_DIFFUSE, m_iRenderNum);
-	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", 0, aiTextureType_NORMALS, m_iRenderNum);
-	m_pModelCom->Render_ModelByPass(iRenderCount, 0, 2);
+	//// 유리창
+	//m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 0, aiTextureType_DIFFUSE, m_iRenderNum);
+	//m_pModelCom->Set_ShaderResourceView("g_NormalTexture", 0, aiTextureType_NORMALS, m_iRenderNum);
+	//m_pModelCom->Render_ModelByPass(iRenderCount, 0, 2);
 
-	// 창틀
-	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 1, aiTextureType_DIFFUSE, m_iRenderNum);
-	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", 1, aiTextureType_NORMALS, m_iRenderNum);
-	m_pModelCom->Render_ModelByPass(iRenderCount, 1, 3);
+	//// 창틀
+	//m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 1, aiTextureType_DIFFUSE, m_iRenderNum);
+	//m_pModelCom->Set_ShaderResourceView("g_NormalTexture", 1, aiTextureType_NORMALS, m_iRenderNum);
+	//m_pModelCom->Render_ModelByPass(iRenderCount, 1, 3);
 
 	return S_OK;
 }

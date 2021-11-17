@@ -25,6 +25,29 @@
 #define		SUB_VIEWPORT_INDEX	2
 
 /* struct */
+struct ISMATERIALS
+{
+	uint Is_None;
+	uint Is_Diffuse;
+	uint Is_Specular;
+	uint Is_Ambient;
+	uint Is_Emissive;
+	uint Is_Height;
+	uint Is_Normals;
+	uint Is_Shininess;
+	uint Is_Opacity;
+	uint Is_Display;
+	uint Is_Lightmap;
+	uint Is_Reflection;
+	uint Is_Base_color;
+	uint Is_Normal_camera;
+	uint Is_Emission_color;
+	uint Is_Metalness;
+	uint Is_Diffuse_roughness;
+	uint Is_Ambient_occlusion;
+	uint Is_Unknown;
+};
+
 struct BONEMATRICES
 {
 	matrix	Matrices[256];
@@ -57,7 +80,7 @@ cbuffer Matrices
 cbuffer Materials
 {
 	Material	g_Material = (Material)(1.f);
-	bool		g_IsMaterials[AI_TEXTURE_TYPE_MAX];
+	ISMATERIALS g_IsMaterials;
 }
 
 cbuffer Camera

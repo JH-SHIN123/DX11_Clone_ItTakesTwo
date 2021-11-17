@@ -121,7 +121,7 @@ private:
 	/* For.MaterialSet */
 	_uint						m_iMaterialSetCount			= 0;
 	/*For. Check Bind Materials */
-	_bool						m_IsBindMaterials[AI_TEXTURE_TYPE_MAX];
+	_uint						m_IsBindMaterials[AI_TEXTURE_TYPE_MAX];
 private:
 	HRESULT	Sort_MeshesByMaterial();
 	HRESULT	Set_CenterBone(const char* pCenterBoneName = "");

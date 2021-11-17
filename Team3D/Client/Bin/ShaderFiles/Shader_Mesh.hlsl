@@ -248,7 +248,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 	Out.vDepth		= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 
 	// Calculate Normal
-	if (g_IsMaterials[aiTextureType_NORMALS] & 1) // Normal Mapping
+	if (g_IsMaterials.Is_Normals & 1) // Normal Mapping
 	{
 		vector vNormal = vector(g_NormalTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, 0.f) * 2.f - 1.f;
 		float3x3 TBN = transpose(float3x3(In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz));
