@@ -439,6 +439,45 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 	return S_OK;
 }
 
+HRESULT CModel::Bind_GBuffers()
+{
+	_uint iOffSet = 0;
+
+	m_pDeviceContext->IASetVertexBuffers(0, m_iVertexBufferCount, &m_pVB, &m_iVertexStride, &iOffSet);
+	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
+	m_pDeviceContext->IASetPrimitiveTopology(m_eTopology);
+
+	return S_OK;
+}
+
+HRESULT CModel::Render_ModelByPass(_uint iMaterialIndex, _uint iPassIndex)
+{
+	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
+
+	FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
+	if (0 < m_iAnimCount)
+	{
+		_matrix	BoneMatrices[256];
+
+		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
+		{
+			ZeroMemory(BoneMatrices, sizeof(_matrix) * 256);
+			pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
+			Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
+
+			m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+		}
+	}
+	else
+	{
+		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
+			m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+	}
+
+	return S_OK;
+}
+
 HRESULT CModel::Sort_MeshesByMaterial()
 {
 	m_SortedMeshes.resize(m_iMaterialCount);

@@ -49,6 +49,11 @@ public:
 	HRESULT Update_Model(_fmatrix TransformMatrix);
 	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false);
 
+public:
+	_uint	Frustum_Culling(); /* @Return : RenderCount */
+	HRESULT Bind_GBuffers(_uint iRenderCount);
+	HRESULT	Render_ModelByPass(_uint iRenderCount, _uint iMaterialIndex, _uint iPassIndex); /* 텍스쳐 외부에서 따로 연결해줘야함. */
+
 private: /* Typedef */
 	typedef vector<class CMesh*>	MESHES;
 	typedef vector<MATERIAL*>		MATERIALS;

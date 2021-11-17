@@ -219,6 +219,18 @@ PS_OUT	PS_MAIN(PS_IN In)
 	return Out;
 }
 
+PS_OUT	PS_MAIN_ALPHA(PS_IN In, uniform bool isOpaque)
+{
+	PS_OUT Out = (PS_OUT)0;
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	Out.vDiffuse = vMtrlDiffuse * g_Material.vDiffuse;
+	if (true == isOpaque) Out.vDiffuse.w = 1.f;
+	//Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	//Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+
+	return Out;
+}
+
 PS_OUT_CSM_DEPTH PS_MAIN_CSM_DEPTH(PS_IN_CSM_DEPTH In)
 {
 	PS_OUT_CSM_DEPTH		Out = (PS_OUT_CSM_DEPTH)0;
@@ -248,5 +260,25 @@ technique11 DefaultTechnique
 		VertexShader = compile		vs_5_0 VS_MAIN_CSM_DEPTH();
 		GeometryShader = compile	gs_5_0 GS_MAIN_CSM_DEPTH();
 		PixelShader = compile		ps_5_0 PS_MAIN_CSM_DEPTH();
+	}
+	// 2
+	pass Default_Alpha
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_ALPHA(false);
+	}
+	// 3
+	pass Default_Alpha_Opaque
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_ALPHA(true);
 	}
 };

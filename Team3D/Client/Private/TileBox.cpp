@@ -77,7 +77,7 @@ _int CTileBox::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_ALPHA, this);
 }
 
 HRESULT CTileBox::Render()
@@ -85,9 +85,19 @@ HRESULT CTileBox::Render()
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
 	m_pModelCom->Set_DefaultVariables_Perspective();
-	m_pModelCom->Set_DefaultVariables_Shadow();
+	// Alpha : Not Process Shadow 
+	//m_pModelCom->Set_DefaultVariables_Shadow();
 
-	m_pModelCom->Render_Model(0, m_iRenderNum);
+	_uint iRenderCount = m_pModelCom->Frustum_Culling();
+	m_pModelCom->Bind_GBuffers(iRenderCount);
+
+	// â
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 0, aiTextureType_DIFFUSE, m_iRenderNum);
+	m_pModelCom->Render_ModelByPass(iRenderCount, 0, 2);
+
+	// âƲ
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 1, aiTextureType_DIFFUSE, m_iRenderNum);
+	m_pModelCom->Render_ModelByPass(iRenderCount, 1, 3);
 
 	return S_OK;
 }

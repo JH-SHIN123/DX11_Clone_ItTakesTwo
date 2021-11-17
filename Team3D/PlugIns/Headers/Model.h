@@ -66,7 +66,11 @@ public:
 	/* For.Client */
 	HRESULT Add_LerpInfo(_uint iCurAnimIndex, _uint iNextAnimIndex, _bool bGoingToLerp, _float fLerpSpeed = 5.f);
 	HRESULT	Update_Animation(_double dTimeDelta);
-	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false);
+	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false); /* ShadowWrite시, 텍스쳐 세팅안함. */
+
+public:
+	HRESULT Bind_GBuffers();
+	HRESULT	Render_ModelByPass(_uint iMaterialIndex, _uint iPassIndex); /* 텍스쳐 외부에서 따로 연결해줘야함. */
 
 private: /* Typedef */
 	typedef vector<class CMesh*>			MESHES;

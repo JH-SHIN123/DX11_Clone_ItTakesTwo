@@ -9,6 +9,14 @@ struct BONEMATRICES
 	matrix	Matrices[256];
 };
 
+struct Material
+{
+	float4 vDiffuse;
+	float4 vAmbient;
+	float4 vSpecular; // w = SpecPower
+	float4 vReflect;
+};
+
 /* cbuffer */
 cbuffer Matrices
 {
@@ -23,6 +31,8 @@ cbuffer Matrices
 	matrix	g_MainViewMatrixInverse;
 	matrix	g_SubProjMatrixInverse;
 	matrix	g_SubViewMatrixInverse;
+
+	Material g_Material = (Material)(1.f);
 }
 
 cbuffer Camera
