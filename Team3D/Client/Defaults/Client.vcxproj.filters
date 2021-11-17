@@ -109,6 +109,9 @@
     <Filter Include="02.GameObject\98.Interactive_Objects\03.Robot">
       <UniqueIdentifier>{cb5078d5-ca2a-48ea-ab02-93109613a458}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97.ShaderFiles\Include">
+      <UniqueIdentifier>{87727c9a-6160-4971-88de-e99cb7b2333a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -188,6 +191,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\RobotHead.h">
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp">
+      <Filter>97.ShaderFiles\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp">
+      <Filter>97.ShaderFiles\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp">
+      <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -11,8 +11,8 @@ extern HINSTANCE	g_hInst;
 #define MATH_PI 3.141592
 
 #include "Client_Enum.h"
-#include "DataStorage.h"
 #include "Client_Animation_Index_Define.h"
+#include "DataStorage.h"
 
 namespace Client {}
 using namespace Client;

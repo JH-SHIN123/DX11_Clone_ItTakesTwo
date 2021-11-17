@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Public\DataStorage.h"
+#include "..\public\DataStorage.h"
 #include "Cody.h"
 #include "May.h"
 #include "MainCamera.h"
