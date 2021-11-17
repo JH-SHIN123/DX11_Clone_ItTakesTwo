@@ -52,27 +52,11 @@ _int CRobotHead::Late_Tick(_double dTimeDelta)
 
 HRESULT CRobotHead::Render()
 {
+	CGameObject::Render();
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(0);
-
-	return S_OK;
-}
-
-HRESULT CRobotHead::Set_ShaderConstant_Default()
-{
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	return S_OK;
-}
-
-HRESULT CRobotHead::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
-{
-	m_pModelCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
 
 	return S_OK;
 }
