@@ -1,5 +1,5 @@
 
-#define MAX_CASCADES	3
+#define MAX_CASCADES	4
 #define MAIN_VIEWPORT_INDEX 1
 #define SUB_VIEWPORT_INDEX 2
 

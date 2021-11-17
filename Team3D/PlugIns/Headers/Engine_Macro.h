@@ -88,6 +88,6 @@ enum aiTextureType
 #pragma endregion
 
 #pragma region PostProcessing
-#define MAX_CASCADES		3
-#define SHADOWMAP_SIZE		5096 /* Width size equal height Size */
+#define MAX_CASCADES		4
+#define SHADOWMAP_SIZE		1024 /* Width size equal height Size */
 #pragma endregion
