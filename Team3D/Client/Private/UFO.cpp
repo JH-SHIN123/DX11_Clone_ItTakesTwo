@@ -354,6 +354,7 @@ HRESULT CUFO::Render_ShadowDepth()
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(2, 0, true);
+	return S_OK;
 }
 
 CUFO * CUFO::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

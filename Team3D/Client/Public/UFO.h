@@ -38,6 +38,8 @@ public:
 	virtual _int	Tick(_double dTimeDelta) override;
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render() override;
+
+public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:

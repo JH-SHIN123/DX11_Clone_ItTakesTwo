@@ -95,8 +95,8 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MainCamera"), &CameraDesc), E_FAIL);
 
 	CameraDesc.iViewportIndex					= 2;
-	CameraDesc.vEye								= _float3(50.f, 50.f, -50.f);
-	CameraDesc.vAt								= _float3(50.f, 0.f, 0.f);
+	CameraDesc.vEye								= _float3(0.f, 8.f, -7.f);
+	CameraDesc.vAt								= _float3(0.f, 0.f, 0.f);
 	CameraDesc.vAxisY							= _float3(0.f, 1.f, 0.f);
 
 	// MAY 로딩하면 램 터져서 잠시 비활성화.

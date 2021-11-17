@@ -733,7 +733,7 @@ void CCody::Roll(const _double TimeDelta)
 			return;
 		}
 
-		m_fAcceleration -= (_float)TimeDelta * 10.0;
+		m_fAcceleration -= (_float)TimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 		vDirection = XMVectorSetY(vDirection, 0.f);
 		vDirection = XMVector3Normalize(vDirection);
@@ -753,7 +753,7 @@ void CCody::Roll(const _double TimeDelta)
 			m_IsAirDash = false;
 		}
 
-		m_fAcceleration -= TimeDelta * 10.0;
+		m_fAcceleration -= (_float)TimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 		vDirection = XMVectorSetY(vDirection, 0.f);
 		vDirection = XMVector3Normalize(vDirection);
@@ -1056,6 +1056,7 @@ HRESULT CCody::Render_ShadowDepth()
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(2, 0, true);
+	return S_OK;
 }
 #pragma endregion
 

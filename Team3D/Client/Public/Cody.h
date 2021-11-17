@@ -209,8 +209,11 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
+
+public:
 	virtual HRESULT Render_ShadowDepth() override;
 
+public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 	// Tick 에서 호출될 함수들

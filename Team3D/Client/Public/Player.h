@@ -25,12 +25,12 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
-	virtual HRESULT Render_ShadowDepth() override;
-
-
-	CTransform* Get_Transform() { return m_pTransformCom; }
 
 public:
+	virtual HRESULT Render_ShadowDepth() override;
+
+public:
+	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
 	/* For.Component */
