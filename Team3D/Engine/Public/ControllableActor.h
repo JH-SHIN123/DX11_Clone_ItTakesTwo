@@ -30,6 +30,8 @@ public:
 	void	Update_Cam(_double dTimeDelta);
 	void	Jump_Start(_float fJumpForce);
 	void	Jump_Higher(_float fJumpForce);
+	//void	Kinematic_On() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true); }
+	//void	Kinematic_Off() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false); }
 
 private:
 	PxController*					m_pController = nullptr;
