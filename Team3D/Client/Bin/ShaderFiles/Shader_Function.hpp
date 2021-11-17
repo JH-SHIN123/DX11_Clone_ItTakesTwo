@@ -1,6 +1,6 @@
 
 // Relase시 사용 : 에러메시지뜨는데, 잘돌아감.
-//#define PCF 0
+#define PCF 0
 
 int Get_CascadedShadowSliceIndex(uint iViewportIndex, vector vWorldPos) /* 1: Main 2: Sub*/
 {
