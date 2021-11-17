@@ -408,10 +408,16 @@ void CMay::Move(const _double TimeDelta)
 		{
 			// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
 			if (m_pModelCom->Is_AnimFinished(ANI_M_Jog_Start) == true) // JogStart -> Jog
+			{
 				m_pModelCom->Set_Animation(ANI_M_Jog);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
+			}
 			else if (m_pModelCom->Is_AnimFinished(ANI_M_Jog) == true) // Jog -> Jog // 보간속도 Up
+			{
 				m_pModelCom->Set_Animation(ANI_M_Jog);
-			else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_MH || m_pModelCom->Get_CurAnimIndex() == ANI_M_MH_Gesture_Small_Stretch || m_pModelCom->Get_CurAnimIndex() == ANI_M_ActionMH)	// Idle To Jog Start. -> Jog 예약
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
+			}
+			else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop || m_pModelCom->Get_CurAnimIndex() == ANI_M_MH || m_pModelCom->Get_CurAnimIndex() == ANI_M_MH_Gesture_Small_Stretch || m_pModelCom->Get_CurAnimIndex() == ANI_M_ActionMH)	// Idle To Jog Start. -> Jog 예약
 			{
 				m_pModelCom->Set_Animation(ANI_M_Jog_Start);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
