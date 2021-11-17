@@ -296,6 +296,9 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _
 		/* Write Shadow - ÅØ½ºÃÄ ¿¬°á¾ÈÇØÁàµµ µÊ */
 		if (false == bShadowWrite) {
 			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
+			Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+
+			FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 		}
 
 		FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
@@ -342,9 +345,12 @@ HRESULT CModel_Instance::Bind_GBuffers(_uint iRenderCount)
 	return S_OK;
 }
 
-HRESULT CModel_Instance::Render_ModelByPass(_uint iRenderCount, _uint iMaterialIndex, _uint iPassIndex)
+HRESULT CModel_Instance::Render_ModelByPass(_uint iRenderCount, _uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite)
 {
 	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
+
+	if (false == bShadowWrite)
+		FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
@@ -409,6 +415,22 @@ HRESULT CModel_Instance::Store_TriMeshes()
 
 		m_PxTriMeshes.emplace_back(TriMesh);
 	}
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Is_BindMaterials(_uint iMaterialIndex)
+{
+	ZeroMemory(m_IsBindMaterials, sizeof(m_IsBindMaterials));
+
+	for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
+	{
+		if (nullptr == m_Materials[iMaterialIndex]->pMaterialTexture[i])
+			m_IsBindMaterials[i] = false;
+		else
+			m_IsBindMaterials[i] = true;
+	}
+	Set_Variable("g_IsMaterials", m_IsBindMaterials, sizeof(m_IsBindMaterials));
 
 	return S_OK;
 }

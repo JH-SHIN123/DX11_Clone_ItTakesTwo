@@ -185,8 +185,10 @@ HRESULT CModel::Set_ShaderResourceView(const char * pConstantName, _uint iMateri
 
 	CTextures* pTextures = m_Materials[iMaterialIndex]->pMaterialTexture[eTextureType];
 
-	if (nullptr == pTextures)
+	if (nullptr == pTextures) {
+		//pVariable->SetResource(nullptr);
 		return S_OK;
+	}
 
 	ID3D11ShaderResourceView* pShaderResourceView = pTextures->Get_ShaderResourceView(iTextureIndex);
 	NULL_CHECK_RETURN(pTextures, E_FAIL);
@@ -406,7 +408,9 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 			if (false == bShadowWrite) 
 			{
 				Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
-				//Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+				Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+
+				FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 			}
 
 			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
@@ -416,6 +420,7 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 				ZeroMemory(BoneMatrices, sizeof(_matrix) * 256);
 				pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
 				Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
+
 
 				m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
 			}
@@ -428,7 +433,11 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 			if (false == bShadowWrite)
 			{
 				Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
+				Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+
+				FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 			}
+
 			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
@@ -450,9 +459,12 @@ HRESULT CModel::Bind_GBuffers()
 	return S_OK;
 }
 
-HRESULT CModel::Render_ModelByPass(_uint iMaterialIndex, _uint iPassIndex)
+HRESULT CModel::Render_ModelByPass(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite)
 {
 	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
+
+	if(false == bShadowWrite)
+		FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
@@ -583,6 +595,22 @@ void CModel::Update_CombinedTransformations()
 		else
 			XMStoreFloat4x4(&m_CombinedTransformations[pNode->Get_NodeIndex()], XMLoadFloat4x4(&m_AnimTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_CombinedPivotMatrix));
 	}
+}
+
+HRESULT CModel::Is_BindMaterials(_uint iMaterialIndex)
+{
+	ZeroMemory(m_IsBindMaterials, sizeof(m_IsBindMaterials));
+
+	for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
+	{
+		if (nullptr == m_Materials[iMaterialIndex]->pMaterialTexture[i])
+			m_IsBindMaterials[i] = false;
+		else
+			m_IsBindMaterials[i] = true;
+	}
+	Set_Variable("g_IsMaterials", m_IsBindMaterials, sizeof(m_IsBindMaterials));
+	
+	return S_OK;
 }
 
 #pragma region For_Buffer

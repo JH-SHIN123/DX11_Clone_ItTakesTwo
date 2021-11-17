@@ -25,7 +25,7 @@ public:
 	virtual _int	Late_Tick(_double dTimeDelta);
 	virtual HRESULT	Render();
 
-public: /* For. Write Shadow Depth */
+public: /* Etc */
 	virtual HRESULT Render_ShadowDepth();
 
 protected: /* Typedef */

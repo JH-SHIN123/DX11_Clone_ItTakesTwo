@@ -70,7 +70,7 @@ public:
 
 public:
 	HRESULT Bind_GBuffers();
-	HRESULT	Render_ModelByPass(_uint iMaterialIndex, _uint iPassIndex); /* 텍스쳐 외부에서 따로 연결해줘야함. */
+	HRESULT	Render_ModelByPass(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false); /* 텍스쳐 외부에서 따로 연결해줘야함. */
 
 private: /* Typedef */
 	typedef vector<class CMesh*>			MESHES;
@@ -120,6 +120,8 @@ private:
 	vector<PX_TRIMESH>			m_PxTriMeshes;
 	/* For.MaterialSet */
 	_uint						m_iMaterialSetCount			= 0;
+	/*For. Check Bind Materials */
+	_bool						m_IsBindMaterials[AI_TEXTURE_TYPE_MAX];
 private:
 	HRESULT	Sort_MeshesByMaterial();
 	HRESULT	Set_CenterBone(const char* pCenterBoneName = "");
@@ -127,7 +129,7 @@ private:
 	HRESULT	Store_TriMeshes();
 	void	Update_AnimTransformations(_double dTimeDelta);
 	void	Update_CombinedTransformations();
-
+	HRESULT Is_BindMaterials(_uint iMaterialIndex);
 #pragma region For_Buffer
 private: /* For.Buffer */
 	/* For.Vertices */

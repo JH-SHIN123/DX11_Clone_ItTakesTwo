@@ -5,7 +5,7 @@
 #define NUM_VIEWPORTS 2
 
 texture2D	g_DiffuseTexture;
-//texture2D	g_NormalTexture;
+texture2D	g_NormalTexture;
 //texture2D	g_EmmesiveTexture;
 //texture2D	g_AmbientTexture;
 //texture2D	g_OpacityTexture;
@@ -19,11 +19,6 @@ cbuffer BoneMatrixDesc
 cbuffer EffectDesc
 {
 	float	g_fAlpha;
-};
-
-cbuffer ShadowDesc
-{
-	matrix	g_ShadowTransforms[MAX_CASCADES];
 };
 ////////////////////////////////////////////////////////////
 
@@ -41,6 +36,8 @@ struct VS_OUT
 {
 	float4 vPosition	: SV_POSITION;
 	float4 vNormal		: NORMAL;
+	float3 vTangent		: TANGENT;
+	float3 vBiNormal	: BINORMAL;
 	float2 vTexUV		: TEXCOORD0;
 };
 
@@ -58,6 +55,8 @@ VS_OUT	VS_MAIN(VS_IN In)
 
 	Out.vPosition	= mul(vector(In.vPosition, 1.f), matBW);
 	Out.vNormal		= normalize(mul(vector(In.vNormal, 0.f), matBW));
+	Out.vTangent	= normalize(mul(vector(In.vTangent, 0.f), matBW));
+	Out.vBiNormal	= normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
 	Out.vTexUV		= In.vTexUV;
 
 	return Out;
@@ -69,6 +68,8 @@ VS_OUT VS_MAIN_NO_BONE(VS_IN In)
 
 	Out.vPosition	= mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 	Out.vNormal		= normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
+	Out.vTangent	= normalize(mul(vector(In.vTangent, 0.f), g_WorldMatrix));
+	Out.vBiNormal	= normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
 	Out.vTexUV		= In.vTexUV;
 
 	return Out;
@@ -96,6 +97,8 @@ struct GS_IN
 {
 	float4 vPosition	: SV_POSITION;
 	float4 vNormal		: NORMAL;
+	float3 vTangent		: TANGENT;
+	float3 vBiNormal	: BINORMAL;
 	float2 vTexUV		: TEXCOORD0;
 };
 
@@ -103,6 +106,8 @@ struct GS_OUT
 {
 	float4 vPosition		: SV_POSITION;
 	float4 vNormal			: NORMAL;
+	float3 vTangent			: TANGENT;
+	float3 vBiNormal		: BINORMAL;
 	float2 vTexUV			: TEXCOORD0;
 	float4 vProjPosition	: TEXCOORD1;
 	float4 vWorldPosition	: TEXCOORD2;
@@ -132,6 +137,8 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 
 		Out.vPosition		= mul(In[i].vPosition, matVP);
 		Out.vNormal			= In[i].vNormal;
+		Out.vTangent		= In[i].vTangent;
+		Out.vBiNormal		= In[i].vBiNormal;
 		Out.vTexUV			= In[i].vTexUV;
 		Out.vProjPosition	= Out.vPosition;
 		Out.vWorldPosition = In[i].vPosition;
@@ -149,6 +156,8 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 
 		Out.vPosition		= mul(In[j].vPosition, matVP);
 		Out.vNormal			= In[j].vNormal;
+		Out.vTangent		= In[j].vTangent;
+		Out.vBiNormal		= In[j].vBiNormal;
 		Out.vTexUV			= In[j].vTexUV;
 		Out.vProjPosition	= Out.vPosition;
 		Out.vWorldPosition = In[j].vPosition;
@@ -203,6 +212,8 @@ struct PS_IN
 {
 	float4 vPosition		: SV_POSITION;
 	float4 vNormal			: NORMAL;
+	float3 vTangent			: TANGENT;
+	float3 vBiNormal		: BINORMAL;
 	float2 vTexUV			: TEXCOORD0;
 	float4 vProjPosition	: TEXCOORD1;
 	float4 vWorldPosition	: TEXCOORD2;
@@ -234,8 +245,17 @@ PS_OUT	PS_MAIN(PS_IN In)
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
 	Out.vDiffuse	= vMtrlDiffuse;
-	Out.vNormal		= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth		= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+
+	// Calculate Normal
+	if (g_IsMaterials[aiTextureType_NORMALS] & 1) // Normal Mapping
+	{
+		vector vNormal = vector(g_NormalTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, 0.f) * 2.f - 1.f;
+		float3x3 TBN = transpose(float3x3(In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz));
+		vNormal = vector(mul(TBN, normalize(vNormal.xyz)), 0.f);
+		Out.vNormal = vector(normalize(vNormal.xyz) * 0.5f + 0.5f, 0.f);
+	}
+	else Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 
 	// Calculate Shadow
 	int iIndex = -1;

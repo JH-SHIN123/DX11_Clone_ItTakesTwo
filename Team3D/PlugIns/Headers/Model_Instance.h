@@ -52,7 +52,7 @@ public:
 public:
 	_uint	Frustum_Culling(); /* @Return : RenderCount */
 	HRESULT Bind_GBuffers(_uint iRenderCount);
-	HRESULT	Render_ModelByPass(_uint iRenderCount, _uint iMaterialIndex, _uint iPassIndex); /* 텍스쳐 외부에서 따로 연결해줘야함. */
+	HRESULT	Render_ModelByPass(_uint iRenderCount, _uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false); /* 텍스쳐 외부에서 따로 연결해줘야함. */
 
 private: /* Typedef */
 	typedef vector<class CMesh*>	MESHES;
@@ -77,11 +77,13 @@ private:
 	char					m_szActorName[MAX_PATH];
 	/* For.MaterialSet */
 	_uint					m_iMaterialSetCount = 0;
+	/*For. Check Bind Materials */
+	_bool					m_IsBindMaterials[AI_TEXTURE_TYPE_MAX];
 private:
 	HRESULT	Sort_MeshesByMaterial();
 	HRESULT	Apply_PivotMatrix(_fmatrix PivotMatrix);
 	HRESULT	Store_TriMeshes();
-
+	HRESULT Is_BindMaterials(_uint iMaterialIndex);
 #pragma region For_Buffer
 private: /* For.Buffer */
 	/* For.Vertices */

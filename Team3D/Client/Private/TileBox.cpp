@@ -91,12 +91,14 @@ HRESULT CTileBox::Render()
 	_uint iRenderCount = m_pModelCom->Frustum_Culling();
 	m_pModelCom->Bind_GBuffers(iRenderCount);
 
-	// â
+	// 유리창
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 0, aiTextureType_DIFFUSE, m_iRenderNum);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", 0, aiTextureType_NORMALS, m_iRenderNum);
 	m_pModelCom->Render_ModelByPass(iRenderCount, 0, 2);
 
-	// âƲ
+	// 창틀
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 1, aiTextureType_DIFFUSE, m_iRenderNum);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", 1, aiTextureType_NORMALS, m_iRenderNum);
 	m_pModelCom->Render_ModelByPass(iRenderCount, 1, 3);
 
 	return S_OK;

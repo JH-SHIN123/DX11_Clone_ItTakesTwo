@@ -6,11 +6,17 @@
 #define NUM_VIEWPORTS 2
 
 texture2D	g_DiffuseTexture;
-//texture2D	g_NormalTexture;
+texture2D	g_NormalTexture;
 //texture2D	g_EmmesiveTexture;
 //texture2D	g_AmbientTexture;
 //texture2D	g_OpacityTexture;
 //texture2D	g_LightTexture;
+
+cbuffer CheckTexture
+{
+	bool isDiffuse = false;
+	bool isNormal = false;
+};
 
 cbuffer Effect
 {

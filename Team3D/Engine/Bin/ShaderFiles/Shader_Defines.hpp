@@ -1,7 +1,28 @@
 
-#define MAX_CASCADES	4
-#define MAIN_VIEWPORT_INDEX 1
-#define SUB_VIEWPORT_INDEX 2
+#define aiTextureType_NONE 0
+#define aiTextureType_DIFFUSE 1
+#define aiTextureType_SPECULAR 2
+#define aiTextureType_AMBIENT 3
+#define aiTextureType_EMISSIVE 4
+#define aiTextureType_HEIGHT 5
+#define aiTextureType_NORMALS 6
+#define aiTextureType_SHININESS 7
+#define aiTextureType_OPACITY 8
+#define aiTextureType_DISPLACEMENT 9
+#define aiTextureType_LIGHTMAP 10
+#define aiTextureType_REFLECTION 11
+#define aiTextureType_BASE_COLOR 12
+#define aiTextureType_NORMAL_CAMERA 13
+#define aiTextureType_EMISSION_COLOR 14
+#define aiTextureType_METALNESS 15
+#define aiTextureType_DIFFUSE_ROUGHNESS 16
+#define aiTextureType_AMBIENT_OCCLUSION 17
+#define aiTextureType_UNKNOWN  18
+#define AI_TEXTURE_TYPE_MAX  aiTextureType_UNKNOWN
+
+#define		MAX_CASCADES		4
+#define		MAIN_VIEWPORT_INDEX 1
+#define		SUB_VIEWPORT_INDEX	2
 
 /* struct */
 struct BONEMATRICES
@@ -31,8 +52,12 @@ cbuffer Matrices
 	matrix	g_MainViewMatrixInverse;
 	matrix	g_SubProjMatrixInverse;
 	matrix	g_SubViewMatrixInverse;
+}
 
-	Material g_Material = (Material)(1.f);
+cbuffer Materials
+{
+	Material	g_Material = (Material)(1.f);
+	bool		g_IsMaterials[AI_TEXTURE_TYPE_MAX];
 }
 
 cbuffer Camera
