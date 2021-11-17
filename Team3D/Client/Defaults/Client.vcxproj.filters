@@ -189,6 +189,13 @@
     <ClInclude Include="..\Public\RobotHead.h">
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
     </ClInclude>
+    <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
+    <ClInclude Include="..\Public\SecurityCameraHandle.h">
+      <Filter>02.GameObject\98.Interactive_Objects\02.SecurityCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SecurityCamera.h">
+      <Filter>02.GameObject\98.Interactive_Objects\02.SecurityCamera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -253,6 +260,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\RobotHead.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SecurityCameraHandle.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\02.SecurityCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SecurityCamera.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\02.SecurityCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

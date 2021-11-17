@@ -34,7 +34,7 @@ HRESULT CRocket::NativeConstruct(void * pArg)
 
 _int CRocket::Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
 
 	if (m_pGameInstance->Key_Down(DIK_9))
 		m_bLaunch = true;

@@ -8,8 +8,6 @@ public:
 	CDataStorage();
 	virtual ~CDataStorage() = default;
 
-
-
 public:
 	void Set_CodyPtr(class CGameObject* pCody) { m_pCody = pCody; }
 	CGameObject* GetCody() { return m_pCody; }

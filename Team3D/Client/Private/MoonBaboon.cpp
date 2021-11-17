@@ -79,7 +79,7 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 
 _int CMoonBaboon::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
