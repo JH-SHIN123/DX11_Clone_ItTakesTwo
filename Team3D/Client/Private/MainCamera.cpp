@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "..\public\MainCamera.h"
 #include "GameInstance.h"
-#include "DataBase.h"
+#include "DataStorage.h"
 #include "Cody.h"
+#include "DataStorage.h"
 
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
@@ -18,6 +19,8 @@ HRESULT CMainCamera::NativeConstruct_Prototype()
 {
 	CCamera::NativeConstruct_Prototype();
 
+	DATABASE->Set_MainCamPtr(this);
+
 	return S_OK;
 }
 
@@ -30,7 +33,7 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 	
 	m_eCurCamMode = Cam_Free;
-	CDataBase::GetInstance()->Set_MainCamPtr(this);
+	DATABASE->Set_MainCamPtr(this);
 
 	return S_OK;
 }
@@ -47,7 +50,7 @@ _int CMainCamera::Tick(_double dTimeDelta)
 	//	m_pTransformCom->Go_Right(dTimeDelta);
 	if (m_pTargetObj == nullptr)
 	{
-		m_pTargetObj = CDataBase::GetInstance()->GetCody();
+		m_pTargetObj = DATABASE->GetCody();
 		if (m_pTargetObj)
 			Safe_AddRef(m_pTargetObj);
 	}

@@ -237,9 +237,6 @@
     <ClInclude Include="..\Public\Character.h">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\DataBase.h">
-      <Filter>96.DataBase</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\May.h">
       <Filter>02.GameObject\03.Character\01.May</Filter>
     </ClInclude>
@@ -270,6 +267,11 @@
     <ClInclude Include="..\Public\RobotHead.h">
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Client_Defines.h" />
+    <ClInclude Include="..\Public\Client_Enum.h" />
+    <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\SubCamera.h" />
+    <ClInclude Include="..\Public\Terrain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -335,9 +337,6 @@
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\DataBase.cpp">
-      <Filter>96.DataBase</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\May.cpp">
       <Filter>02.GameObject\03.Character\01.May</Filter>
     </ClCompile>
@@ -365,6 +364,9 @@
     <ClCompile Include="..\Private\RobotHead.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\SubCamera.cpp" />
+    <ClCompile Include="..\Private\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

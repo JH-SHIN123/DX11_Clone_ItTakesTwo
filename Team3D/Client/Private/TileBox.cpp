@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\public\TileBox.h"
+
 #include "GameInstance.h"
 
 CTileBox::CTileBox(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

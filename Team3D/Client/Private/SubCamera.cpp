@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\public\SubCamera.h"
 #include "GameInstance.h"
-#include "DataBase.h"
+#include "DataStorage.h"
 #include "May.h"
 
 CSubCamera::CSubCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -30,7 +30,7 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 
 	m_eCurCamMode = Cam_Free;
-	CDataBase::GetInstance()->Set_SubCamPtr(this);
+	DATABASE->Set_SubCamPtr(this);
 
 	return S_OK;
 }
@@ -47,7 +47,7 @@ _int CSubCamera::Tick(_double dTimeDelta)
 	//	m_pTransformCom->Go_Right(dTimeDelta);
 	if (m_pTargetObj == nullptr)
 	{
-		m_pTargetObj = CDataBase::GetInstance()->GetMay();
+		m_pTargetObj = DATABASE->GetMay();
 		if (m_pTargetObj)
 			Safe_AddRef(m_pTargetObj);
 	}

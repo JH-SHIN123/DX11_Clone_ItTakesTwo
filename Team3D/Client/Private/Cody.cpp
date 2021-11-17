@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 #include "MainCamera.h"
 #include "Transform.h"
-#include "DataBase.h"
+#include "DataStorage.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -30,7 +30,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	Ready_Component();
 
 	m_pModelCom->Set_Animation(ANI_C_MH);
-	CDataBase::GetInstance()->Set_CodyPtr(this);	
+	DATABASE->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 	 
 
@@ -89,7 +89,7 @@ _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
 
-	m_pCamera = (CMainCamera*)CDataBase::GetInstance()->Get_MainCam();
+	m_pCamera = (CMainCamera*)DATABASE->Get_MainCam();
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 

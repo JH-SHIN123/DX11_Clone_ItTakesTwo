@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 #include "SubCamera.h"
 #include "Transform.h"
-#include "DataBase.h"
+#include "DataStorage.h"
 
 CMay::CMay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
@@ -47,7 +47,7 @@ HRESULT CMay::NativeConstruct(void* pArg)
 
 
 	m_pModelCom->Set_Animation(ANI_M_Bounce4);
-	CDataBase::GetInstance()->Set_MayPtr(this);
+	DATABASE->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
 	 
 
@@ -108,7 +108,7 @@ _int CMay::Tick(_double dTimeDelta)
 	CCharacter::Tick(dTimeDelta);
 
 
-	m_pCamera = (CSubCamera*)CDataBase::GetInstance()->Get_SubCam();
+	m_pCamera = (CSubCamera*)DATABASE->Get_SubCam();
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 

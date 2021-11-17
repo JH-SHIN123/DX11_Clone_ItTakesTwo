@@ -225,9 +225,6 @@
     <ClInclude Include="..\public\Level.h">
       <Filter>02.Utility\00.Level\00.Main</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\GameObject.h">
-      <Filter>02.Utility\01.GameObject\00.Main</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Layer.h">
       <Filter>02.Utility\01.GameObject\98.Layer</Filter>
     </ClInclude>
@@ -369,6 +366,9 @@
     <ClInclude Include="..\public\Textures.h">
       <Filter>02.Utility\02.Component\03.Texture</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\GameObject.h">
+      <Filter>02.Utility\01.GameObject\00.Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -385,9 +385,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Level.cpp">
       <Filter>02.Utility\00.Level\00.Main</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\GameObject.cpp">
-      <Filter>02.Utility\01.GameObject\00.Main</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Layer.cpp">
       <Filter>02.Utility\01.GameObject\98.Layer</Filter>
@@ -511,6 +508,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Textures.cpp">
       <Filter>02.Utility\02.Component\03.Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameObject.cpp">
+      <Filter>02.Utility\01.GameObject\00.Main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

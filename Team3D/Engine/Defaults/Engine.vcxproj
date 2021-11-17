@@ -199,7 +199,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\public\Engine_Typedef.h" />
     <ClInclude Include="..\public\Frustum.h" />
     <ClInclude Include="..\public\GameInstance.h" />
-    <ClInclude Include="..\public\GameObject.h" />
+    <ClInclude Include="..\Public\GameObject.h" />
     <ClInclude Include="..\public\GameObject_Manager.h" />
     <ClInclude Include="..\public\Graphic_Device.h" />
     <ClInclude Include="..\Public\HierarchyNode.h" />
@@ -249,7 +249,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\private\DynamicActor.cpp" />
     <ClCompile Include="..\private\Frustum.cpp" />
     <ClCompile Include="..\private\GameInstance.cpp" />
-    <ClCompile Include="..\private\GameObject.cpp" />
+    <ClCompile Include="..\Private\GameObject.cpp" />
     <ClCompile Include="..\private\GameObject_Manager.cpp" />
     <ClCompile Include="..\private\Graphic_Device.cpp" />
     <ClCompile Include="..\Private\HierarchyNode.cpp" />
