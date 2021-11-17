@@ -12,9 +12,8 @@ extern HINSTANCE	g_hInst;
 
 #include "Client_Enum.h"
 #include "Client_Animation_Index_Define.h"
+#include "DataStorage.h"
 
 
 namespace Client {}
 using namespace Client;
-
-

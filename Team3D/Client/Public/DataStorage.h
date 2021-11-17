@@ -1,39 +1,45 @@
 #pragma once
-#include "Base.h"
+
+#include "GameObject.h"
+
+BEGIN(Client)
+
+#define DATABASE CDataStorage::GetInstance()
 
 class CDataStorage final : public CBase
 {
 	DECLARE_SINGLETON(CDataStorage)
-public:
-	CDataStorage();
+private:
+	explicit CDataStorage() = default;
 	virtual ~CDataStorage() = default;
 
 public:
-	void Set_CodyPtr(class CGameObject* pCody) { m_pCody = pCody; }
+	void Set_CodyPtr(CGameObject* pCody) { m_pCody = pCody; }
 	CGameObject* GetCody() { return m_pCody; }
 
-	void Set_MayPtr(class CGameObject* pMay) { m_pMay = pMay; }
+	void Set_MayPtr(CGameObject* pMay) { m_pMay = pMay; }
 	CGameObject* GetMay() { return m_pMay; }
 
-	void Set_MainCamPtr(class CGameObject* pMainCam) { m_pMainCam = pMainCam; }
+	void Set_MainCamPtr(CGameObject* pMainCam) { m_pMainCam = pMainCam; }
 	CGameObject* Get_MainCam() { return m_pMainCam; }
 
-	void Set_SubCamPtr(class CGameObject* pSubCam) { m_pSubCam = pSubCam; }
+	void Set_SubCamPtr(CGameObject* pSubCam) { m_pSubCam = pSubCam; }
 	CGameObject* Get_SubCam() { return m_pSubCam; }
 
-	void Set_UFOPtr(class CGameObject* pUFO) { m_pUFO = pUFO; }
+	void Set_UFOPtr(CGameObject* pUFO) { m_pUFO = pUFO; }
 	CGameObject* Get_UFO() { return m_pUFO; }
 
 private:
-	class CGameObject* m_pCody = nullptr;
-	class CGameObject* m_pMay = nullptr;
-	class CGameObject* m_pMainCam = nullptr;
-	class CGameObject* m_pSubCam = nullptr;
+	CGameObject* m_pCody = nullptr;
+	CGameObject* m_pMay = nullptr;
+	CGameObject* m_pMainCam = nullptr;
+	CGameObject* m_pSubCam = nullptr;
 
 	// UFO
-	class CGameObject* m_pUFO = nullptr;
+	CGameObject* m_pUFO = nullptr;
 
 public:
 	virtual void Free() override;
 };
 
+END

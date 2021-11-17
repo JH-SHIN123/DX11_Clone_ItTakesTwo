@@ -3,8 +3,6 @@
 #include "Client_Defines.h"
 #include "Camera.h"
 
-
-
 BEGIN(Client)
 
 class CSubCamera final : public CCamera

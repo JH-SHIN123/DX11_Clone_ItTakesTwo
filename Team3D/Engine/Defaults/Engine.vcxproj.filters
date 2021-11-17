@@ -163,9 +163,6 @@
     <Filter Include="02.Utility\02.Component\05.Model\01.Mesh">
       <UniqueIdentifier>{288dfc8d-f2dd-43e7-85ed-31782323d247}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utility\05.PhysX">
-      <UniqueIdentifier>{f9714c9a-ca3b-45cd-a187-c07e5f656041}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Utility\02.Component\06.Actor">
       <UniqueIdentifier>{ffed9d87-12a2-436f-b467-b10ae20b311c}</UniqueIdentifier>
     </Filter>

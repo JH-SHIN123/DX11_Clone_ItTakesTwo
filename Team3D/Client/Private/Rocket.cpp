@@ -2,6 +2,7 @@
 #include "..\public\Rocket.h"
 #include "GameInstance.h"
 #include "DataStorage.h"
+
 CRocket::CRocket(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {

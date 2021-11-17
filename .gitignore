@@ -251,12 +251,6 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
-Team3D/Client/Bin/Resources/Mesh/Test/LastPlayerAnimations.FBX
-Team3D/Client/Bin/Resources/Mesh/May/May.fbx
-Team3D/Client/Bin/Resources/Mesh/MoonBaboon/MoonBaboon.fbx
-Team3D/Client/Bin/Resources/Mesh/UFO/UFO.FBX
-Team3D/Client/Bin/Resources/Mesh/May/MayOnlyAnimation.fbx
-Team3D/Client/Bin/Resources/Mesh/Cody/Cody.FBX
 
 # Directory
 Team3D/Client/Bin/Resources/
