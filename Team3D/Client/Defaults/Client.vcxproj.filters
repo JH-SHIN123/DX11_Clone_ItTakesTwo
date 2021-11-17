@@ -73,9 +73,6 @@
     <Filter Include="02.GameObject\99.Stage%28Test%29\01.Player">
       <UniqueIdentifier>{b134e824-3c41-4f85-8703-7c00321fcce5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="96.DataBase">
-      <UniqueIdentifier>{9d471ce0-e768-450b-9d91-9b678d9ec778}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\99.Stage%28Test%29\03.Env">
       <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
     </Filter>
@@ -103,13 +100,12 @@
     <Filter Include="96.DataStorage">
       <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
     <Filter Include="02.GameObject\00.Public\03.Cam_Helper">
       <UniqueIdentifier>{a3a6fff7-bf95-4b71-a03c-4caea40e84ed}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\00.Public\03.Cam_Helper\Film">
       <UniqueIdentifier>{25fa91e7-22b9-488f-a881-4902b0783881}</UniqueIdentifier>
-=======
+    </Filter>
     <Filter Include="02.GameObject\98.Interaction_Deco">
       <UniqueIdentifier>{80b9488d-6107-4ad3-ab4d-9ba4db640228}</UniqueIdentifier>
     </Filter>
@@ -121,7 +117,6 @@
     </Filter>
     <Filter Include="02.GameObject\98.Interaction_Deco\02.SecurityCamera">
       <UniqueIdentifier>{db7e22fc-29b8-4ab2-a9be-83636efb01da}</UniqueIdentifier>
->>>>>>> origin/YYY_RealPlayer
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -176,9 +171,6 @@
     <ClInclude Include="..\Public\Character.h">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\DataBase.h">
-      <Filter>96.DataBase</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\May.h">
       <Filter>02.GameObject\03.Character\01.May</Filter>
     </ClInclude>
@@ -197,16 +189,14 @@
     <ClInclude Include="..\public\DataStorage.h">
       <Filter>96.DataStorage</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\public\Cam_Helper.h">
       <Filter>02.GameObject\00.Public\03.Cam_Helper</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Film.h">
       <Filter>02.GameObject\00.Public\03.Cam_Helper\Film</Filter>
-=======
+    </ClInclude>
     <ClInclude Include="..\Public\Rocket.h">
       <Filter>02.GameObject\98.Interaction_Deco\00.Rocket</Filter>
->>>>>>> origin/YYY_RealPlayer
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -246,9 +236,6 @@
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\DataBase.cpp">
-      <Filter>96.DataBase</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\May.cpp">
       <Filter>02.GameObject\03.Character\01.May</Filter>
     </ClCompile>
@@ -264,16 +251,14 @@
     <ClCompile Include="..\private\DataStorage.cpp">
       <Filter>96.DataStorage</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\private\Cam_Helper.cpp">
       <Filter>02.GameObject\00.Public\03.Cam_Helper</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Film.cpp">
       <Filter>02.GameObject\00.Public\03.Cam_Helper\Film</Filter>
-=======
+    </ClCompile>
     <ClCompile Include="..\Private\Rocket.cpp">
       <Filter>02.GameObject\98.Interaction_Deco\00.Rocket</Filter>
->>>>>>> origin/YYY_RealPlayer
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -31,11 +31,7 @@ public:
 
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
-<<<<<<< HEAD
-private:
-=======
-protected:
->>>>>>> origin/YYY_RealPlayer
+
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;

@@ -30,9 +30,7 @@ public:
 	void	Update_Cam(_double dTimeDelta);
 	void	Jump_Start(_float fJumpForce);
 	void	Jump_Higher(_float fJumpForce);
-<<<<<<< HEAD
 	PxController* Get_Controller() { return m_pController; }
-=======
 
 	/* Setter */
 	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
@@ -41,7 +39,6 @@ public:
 	/* Getter */
 	_bool  Get_IsJump() { return m_bJump; }
 
->>>>>>> origin/YYY_RealPlayer
 private:
 	PxController*					m_pController = nullptr;
 	PxRigidDynamic*					m_pActor = nullptr;

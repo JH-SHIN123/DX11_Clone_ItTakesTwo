@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\public\Player.h"
 #include "GameInstance.h"
-#include"DataBase.h"
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -34,11 +33,9 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 
 	m_pModelCom->Set_NextAnimIndex(0);
 	
-<<<<<<< HEAD
-	CDataStorage::GetInstance()->Set_Player(this);
-=======
-	//CDataBase::GetInstance()->Set_PlayerPtr(this);
->>>>>>> origin/YYY_RealPlayer
+
+	//CDataStorage::GetInstance()->Set_Player(this);
+
 
 	PxCapsuleControllerDesc CapsuleControllerDesc;
 	CapsuleControllerDesc.setToDefault();
@@ -69,31 +66,6 @@ _int CPlayer::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-<<<<<<< HEAD
-=======
-	//if (m_pGameInstance->Key_Pressing(DIK_1))
-	//	m_pModelCom->Set_Animation(1, m_pTransformCom);
-	//if (m_pGameInstance->Key_Pressing(DIK_2))
-	//	m_pModelCom->Set_Animation(2, m_pTransformCom);
-	//if (m_pGameInstance->Key_Pressing(DIK_3))
-	//	m_pModelCom->Set_Animation(4, m_pTransformCom);
-	//if (m_pGameInstance->Key_Pressing(DIK_4))
-	//	m_pModelCom->Set_Animation(5, m_pTransformCom);
-	//if (m_pGameInstance->Key_Pressing(DIK_5))
-	//	m_pModelCom->Set_Animation(6, m_pTransformCom);
-	//if (m_pGameInstance->Key_Pressing(DIK_6))
-	//	m_pModelCom->Set_Animation(7, m_pTransformCom);
-
-	if (m_pGameInstance->Key_Pressing(DIK_W))
-		m_pTransformCom->Go_Straight(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_A))
-		m_pTransformCom->Go_Left(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_S))
-		m_pTransformCom->Go_Backward(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_D))
-		m_pTransformCom->Go_Right(dTimeDelta);
-
->>>>>>> origin/YYY_RealPlayer
 
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
@@ -134,9 +106,6 @@ HRESULT CPlayer::Render()
 	m_pModelCom->Render_Model(0);
 
 	
-
-<<<<<<< HEAD
-=======
 	return S_OK;
 }
 
@@ -155,7 +124,6 @@ HRESULT CPlayer::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix Li
 	m_pModelCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
 	m_pModelCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
 
->>>>>>> origin/YYY_RealPlayer
 	return S_OK;
 }
 

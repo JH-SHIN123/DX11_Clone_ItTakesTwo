@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "..\public\UFO.h"
 #include "GameInstance.h"
-#include "DataBase.h"
 #include "May.h"
 #include "Cody.h"
-
+#include"DataStorage.h"
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -53,12 +52,12 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom, CapsuleControllerDesc, -50.f)), E_FAIL);
 
 
-	m_pCodyTransform = ((CCody*)CDataBase::GetInstance()->GetCody())->Get_Transform();
+	m_pCodyTransform = ((CCody*)CDataStorage::GetInstance()->GetCody())->Get_Transform();
 	if (nullptr == m_pCodyTransform)
 		return E_FAIL;
 	Safe_AddRef(m_pCodyTransform);
 
-	m_pMayTransform = ((CMay*)CDataBase::GetInstance()->GetMay())->Get_Transform();
+	m_pMayTransform = ((CMay*)CDataStorage::GetInstance()->GetMay())->Get_Transform();
 	if (nullptr == m_pMayTransform)
 		return E_FAIL;
 	Safe_AddRef(m_pMayTransform);
@@ -69,7 +68,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	m_pModelCom->Set_NextAnimIndex(ANI_UFO_LASER_MH);
 
 	// DataBase에 포인터 등록
-	CDataBase::GetInstance()->Set_UFOPtr(this);
+	CDataStorage::GetInstance()->Set_UFOPtr(this);
 
 	return S_OK;
 }

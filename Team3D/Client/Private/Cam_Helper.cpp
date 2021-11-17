@@ -271,7 +271,7 @@ CCam_Helper * CCam_Helper::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pD
 
 CComponent * CCam_Helper::Clone_Component(void * pArg)
 {
-	AddRef();
+	Safe_AddRef(this);
 	return this;
 }
 
@@ -282,7 +282,6 @@ void CCam_Helper::Free()
 	for (auto& rPair : m_Films)
 		Safe_Release(rPair.second);
 	m_Films.clear();
-	for (_uint i = 0; i < 2; i++)
-	Safe_Release(m_pCurFilm[i]);
+
 }
 

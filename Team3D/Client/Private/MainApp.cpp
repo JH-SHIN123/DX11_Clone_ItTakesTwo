@@ -2,7 +2,7 @@
 #include "..\public\MainApp.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
-#include "DataBase.h"
+#include "DataStorage.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -130,7 +130,7 @@ void CMainApp::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pGameInstance);
 
-	CDataBase::GetInstance()->DestroyInstance();
+	CDataStorage::GetInstance()->DestroyInstance();
 
 	CGameInstance::Release_Engine();
 }

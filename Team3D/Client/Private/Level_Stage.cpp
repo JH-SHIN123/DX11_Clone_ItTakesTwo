@@ -24,6 +24,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 
 	/* For.Interactive Objects */
 	FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE,L"Layer_Instance",Level::LEVEL_STAGE,TEXT("GameObject_TileBox")), E_FAIL);
 
 	return S_OK;
 }
@@ -48,12 +49,14 @@ HRESULT CLevel_Stage::Render()
 	return S_OK;
 }
 
+
 HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
+
 	CCamera::CAMERA_DESC CameraDesc;
 	CameraDesc.iViewportIndex					= 1;
 	CameraDesc.vEye								= _float3(0.f, 8.f, -7.f);
-	CameraDesc.vAt								= _float3(0.f, 0.f, 0.f);
+	CameraDesc.vAt								= _float3(0.f, 2.f, 0.f);
 	CameraDesc.vAxisY							= _float3(0.f, 1.f, 0.f);
 	CameraDesc.fFovY							= XMConvertToRadians(60.f);
 	CameraDesc.fAspect							= 1.f;
