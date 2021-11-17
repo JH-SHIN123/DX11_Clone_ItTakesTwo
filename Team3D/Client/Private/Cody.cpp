@@ -4,6 +4,7 @@
 #include "MainCamera.h"
 #include "Transform.h"
 #include "DataStorage.h"
+#include "UI_Generator.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -32,7 +33,11 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	m_pModelCom->Set_Animation(ANI_C_MH);
 	DATABASE->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
-	 
+
+
+	UI_Create(May, StickIcon);
+	UI_Create(Cody, PC_Mouse_Reduction);
+	UI_Create(Cody, PC_Mouse_Enlargement);
 
 	return S_OK;
 }

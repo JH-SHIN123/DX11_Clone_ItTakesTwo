@@ -209,7 +209,6 @@
     <ClInclude Include="..\Public\RobotHead.h" />
     <ClInclude Include="..\Public\Rocket.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
-    <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\public\TileBox.h" />
     <ClInclude Include="..\Public\UFO.h" />
@@ -247,7 +246,6 @@
     <ClCompile Include="..\Private\RobotHead.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
-    <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\private\TileBox.cpp" />
     <ClCompile Include="..\Private\UFO.cpp" />

@@ -7,7 +7,7 @@ namespace Level
 
 namespace Player
 {
-	enum ID { Player_Cody , Player_May, Default, PLAYER_END };
+	enum ID { Cody, May, Default, PLAYER_END };
 }
 
 namespace UI

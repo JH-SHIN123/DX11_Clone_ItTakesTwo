@@ -3,7 +3,6 @@
 #include "GameInstance.h"
 #include "DataStorage.h"
 #include "Cody.h"
-#include "DataStorage.h"
 
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
@@ -18,8 +17,6 @@ CMainCamera::CMainCamera(const CMainCamera & rhs)
 HRESULT CMainCamera::NativeConstruct_Prototype()
 {
 	CCamera::NativeConstruct_Prototype();
-
-	DATABASE->Set_MainCamPtr(this);
 
 	return S_OK;
 }

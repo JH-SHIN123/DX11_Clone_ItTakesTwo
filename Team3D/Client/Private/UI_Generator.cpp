@@ -188,7 +188,7 @@ HRESULT CUI_Generator::Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 	return S_OK;
 }
 
-HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc)
+HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::ID ePlayer)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
@@ -228,17 +228,26 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc)
 		WorldMatrix = XMMatrixIdentity();
 		ViewMatrix = XMMatrixIdentity();
 	
-		D3D11_VIEWPORT Viewport = pGameInstance->Get_ViewportInfo(1);
-		_float2 vMainViewPort = { Viewport.Width, Viewport.Height };
+		_float2 vMainViewPort, vSubViewPort;
+		D3D11_VIEWPORT Viewport;
 
-		if (0.f < Viewport.Width)
-			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+		if (ePlayer == Player::Cody)
+		{
+			Viewport = pGameInstance->Get_ViewportInfo(1);
+			vMainViewPort = { Viewport.Width, Viewport.Height };
 
-		Viewport = pGameInstance->Get_ViewportInfo(2);
-		_float2 vSubViewPort = { Viewport.Width, Viewport.Height };
+			if (0.f < Viewport.Width)
+				ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
-		if (0.f < Viewport.Width)
-			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+		}
+		else if (ePlayer == Player::May)
+		{
+			Viewport = pGameInstance->Get_ViewportInfo(2);
+			vSubViewPort = { Viewport.Width, Viewport.Height };
+
+			if (0.f < Viewport.Width)
+				SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+		}
 
 		m_pVIBuffer_FontCom->Set_Variable("g_MainViewPort", &vMainViewPort, sizeof(_float2));
 		m_pVIBuffer_FontCom->Set_Variable("g_SubViewPort", &vSubViewPort, sizeof(_float2));

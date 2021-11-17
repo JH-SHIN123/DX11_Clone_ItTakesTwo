@@ -103,7 +103,7 @@ HRESULT CLoading::Loading(Level::ID ePreLevelID, Level::ID eNextLevelID, _uint i
 
 HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 {
-	_matrix  PivotMatrix;
+	_matrix  PivotMatrix = XMMatrixIdentity();
 
 	if (0 == iThreadIndex)
 	{
@@ -144,7 +144,8 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		WaitForSingleObject(m_arrThreads[1], INFINITE);
 
 		FAILED_CHECK_RETURN(CUI_Generator::GetInstance()->Load_Data(TEXT("../../Data/UI.dat")), E_FAIL);
-		PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f));
+
+		PivotMatrix *= XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("Cody"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Cody"), CCody::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 

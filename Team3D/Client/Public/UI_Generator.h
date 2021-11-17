@@ -10,6 +10,14 @@ class CTextures;
 class CVIBuffer_FontInstance;
 END
 
+BEGIN(Client)
+
+#define UI_Create(ePlayer, eTrigger)															\
+	CUI_Generator::GetInstance()->Set_TriggerOn();												\
+	CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger);					\
+
+#define  UI_Generator CUI_Generator::GetInstance()
+
 class CUI_Generator final : public CBase
 {
 	DECLARE_SINGLETON(CUI_Generator)
@@ -17,9 +25,9 @@ class CUI_Generator final : public CBase
 public:
 	typedef struct tagFontDesc
 	{
-		_float2 vPosition;
-		_float2 vScale;
-		_float  fInterval;
+		_float2 vPosition = { 0.f, 0.f };
+		_float2 vScale = { 100.f, 100.f };
+		_float  fInterval = 0.f;
 	}FONTDESC;
 
 private:
@@ -33,7 +41,7 @@ public:
 	HRESULT Load_Data(const _tchar* pFilePath);
 	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	HRESULT Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
-	HRESULT Render_Font(_tchar* pText, FONTDESC tFontDesc);
+	HRESULT Render_Font(_tchar* pText, FONTDESC tFontDesc, Player::ID ePlayer);
 
 public:
 	void Set_TriggerOn();
@@ -67,3 +75,5 @@ public:
 	virtual void Free() override;
 
 };
+
+END

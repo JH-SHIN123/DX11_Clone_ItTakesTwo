@@ -11,7 +11,7 @@ class CDataStorage final : public CBase
 {
 	DECLARE_SINGLETON(CDataStorage)
 private:
-	explicit CDataStorage() = default;
+	explicit CDataStorage();
 	virtual ~CDataStorage() = default;
 
 public:

@@ -198,9 +198,6 @@
     <ClInclude Include="..\public\Level_Stage.h">
       <Filter>01.Maps\99.Stage%28Test%29</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\SubCamera.h">
-      <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\InputButton_Frame.h">
       <Filter>02.GameObject\05.UI\01.InputButton\00.Frame</Filter>
     </ClInclude>
@@ -272,6 +269,9 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="..\Public\SubCamera.h">
+      <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -297,9 +297,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Level_Stage.cpp">
       <Filter>01.Maps\99.Stage%28Test%29</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\SubCamera.cpp">
-      <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClCompile>
     <ClCompile Include="..\private\InputButton_Frame.cpp">
       <Filter>02.GameObject\05.UI\01.InputButton\00.Frame</Filter>
@@ -367,6 +364,9 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
+    <ClCompile Include="..\Private\SubCamera.cpp">
+      <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

@@ -2,6 +2,7 @@
 #include "..\Public\PC_MouseButton.h"
 
 #include "GameInstance.h"
+#include "UI_Generator.h"
 
 CPC_MouseButton::CPC_MouseButton(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -70,6 +71,16 @@ HRESULT CPC_MouseButton::Render()
 
 	m_pVIBuffer_RectCom->Render(2);
 
+	CUI_Generator::FONTDESC		tFontDesc;
+	tFontDesc.vPosition = { m_UIDesc.vPos.x - 7.f , m_UIDesc.vPos.y - 50.f };
+	tFontDesc.vScale = { 25.f, 25.f };
+	tFontDesc.fInterval = -5.f;
+
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("PC_Mouse_Reduction")))
+		UI_Generator->Render_Font(TEXT("축소"), tFontDesc, m_ePlayerID);
+	else
+		UI_Generator->Render_Font(TEXT("확대"), tFontDesc, m_ePlayerID);
+
 	return S_OK;
 }
 
@@ -85,37 +96,29 @@ HRESULT CPC_MouseButton::Set_UIVariables_Perspective()
 
 	m_pVIBuffer_RectCom->Set_Variable("g_iShaderMouseOption", &m_iShaderMouseOption, sizeof(_uint));
 
-	if (m_ePlayerID == Player::Player_Cody)
+	D3D11_VIEWPORT Viewport;
+
+	if (m_ePlayerID == Player::Cody)
 	{
-		D3D11_VIEWPORT Viewport = m_pGameInstance->Get_ViewportInfo(1);
+		Viewport = m_pGameInstance->Get_ViewportInfo(1);
 
-		SubProjMatrix = XMMatrixIdentity();
-
-		// 뷰포트 하나로 합쳐질 때 Width가 0.f가 되버리면 직교할 때 0.f / 0.f 나누기 연산이 일어나서 XMSclarNearEqul 오류 발생 그거 임시방편 예외처리 입니다.
 		if (0.f < Viewport.Width)
 			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
-		m_pVIBuffer_RectCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
-		m_pVIBuffer_RectCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-		m_pVIBuffer_RectCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
-		m_pVIBuffer_RectCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-		m_pVIBuffer_RectCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
-	}         
-	else if (m_ePlayerID == Player::Player_May)
+	}
+	else if (m_ePlayerID == Player::May)
 	{
-		D3D11_VIEWPORT Viewport = m_pGameInstance->Get_ViewportInfo(2);
-
-		ProjMatrix = XMMatrixIdentity();
+		Viewport = m_pGameInstance->Get_ViewportInfo(2);
 
 		if (0.f < Viewport.Width)
 			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
-
-		m_pVIBuffer_RectCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
-		m_pVIBuffer_RectCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-		m_pVIBuffer_RectCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
-		m_pVIBuffer_RectCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-		m_pVIBuffer_RectCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
 	}
+
+	m_pVIBuffer_RectCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+	m_pVIBuffer_RectCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+	m_pVIBuffer_RectCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
+	m_pVIBuffer_RectCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+	m_pVIBuffer_RectCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
 
 	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
 
