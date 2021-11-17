@@ -38,8 +38,7 @@ HRESULT CControllableActor::NativeConstruct(void * pArg)
 	NULL_CHECK_RETURN(m_pController, E_FAIL);
 	m_pActor = m_pController->getActor();
 
-	m_fJumpGravity = ArgDesc.fJumpGravity;
-
+	//m_fJumpGravity = ArgDesc.fJumpGravity;
 	Setup_PxFiltering(m_pActor, FilterGroup::ePLAYER, FilterGroup::eSTATIC | FilterGroup::eDYNAMIC);
 
 	return S_OK;
@@ -56,9 +55,10 @@ void CControllableActor::Update(_double dTimeDelta)
 	_float fY;
 
 	if (m_fHeightDelta != 0.f)
-		fY = m_fHeightDelta;
+		fY = m_fHeightDelta * 0.5f;
 	else
-		fY = -GRAVITY * (_float)dTimeDelta;
+		fY = m_fGravity * (_float)dTimeDelta;
+
 
 	PxVec3 vDist = PxVec3(0, fY, 0);
 	PxU32 iFlags = m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
@@ -76,8 +76,8 @@ void CControllableActor::Update_Cam(_double dTimeDelta)
 
 void CControllableActor::Jump_Start(_float fJumpForce)
 {
-	if (m_bJump)
-		return;
+	/*if (m_bJump)
+		return;*/
 
 	m_fJumpTime = 0.f;
 	m_fJumpForce = fJumpForce;
@@ -90,7 +90,7 @@ void CControllableActor::Jump_Higher(_float fJumpForce)
 	if (!m_bJump || m_fHeightDelta <= 0.f)
 		return;
 
-	if (m_fBaseJumpForce * 1.3f < m_fJumpForce)
+	if (m_fBaseJumpForce * 1.2f < m_fJumpForce)
 		return;
 
 	m_fJumpForce += fJumpForce;
@@ -110,8 +110,7 @@ _float CControllableActor::Get_Height(_double dTimeDelta)
 		return 0.f;
 	
 	m_fJumpTime += (_float)dTimeDelta;
-
-	return (m_fJumpGravity * m_fJumpTime * m_fJumpTime + m_fJumpForce * m_fJumpTime) * (_float)dTimeDelta;
+	return (m_fGravity / 2.f * m_fJumpTime * m_fJumpTime + m_fJumpForce * m_fJumpTime)/* * (_float)dTimeDelta*/;
 }
 
 CControllableActor * CControllableActor::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

@@ -12,9 +12,9 @@ END
 
 BEGIN(Client)
 
-class CPlayer final : public CGameObject
+class CPlayer : public CGameObject
 {
-private:
+protected:
 	explicit CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CPlayer(const CPlayer& rhs);
 	virtual ~CPlayer() = default;
@@ -28,6 +28,9 @@ public:
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
+
+public:
+	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
 	/* For.Component */

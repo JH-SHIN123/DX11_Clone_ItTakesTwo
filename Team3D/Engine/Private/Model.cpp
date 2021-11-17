@@ -414,7 +414,7 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 			}
 
 			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
-
+			
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
 			{
 				ZeroMemory(BoneMatrices, sizeof(_matrix) * 256);
@@ -575,7 +575,7 @@ HRESULT CModel::Store_TriMeshes()
 
 void CModel::Update_AnimTransformations(_double dTimeDelta)
 {
-	if (m_fLerpRatio > 0.f)
+	if (m_fLerpRatio > 0.9f) // 이렇게 했을때 왜 더 애니메이션이 이쁠까?
 	{
 		m_Anims[m_iCurAnimIndex]->Update_Transformations_Blend(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations, m_PreAnimKeyFrames, m_fLerpRatio);
 		m_fLerpRatio -= (_float)dTimeDelta * m_fLerpSpeed;
