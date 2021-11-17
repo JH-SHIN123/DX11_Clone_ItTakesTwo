@@ -119,6 +119,7 @@
       <AdditionalDependencies>d3d11.lib;dxguid.lib;dinput8.lib;Effects11d.lib;DirectXTKd.lib;DirectXTexd.lib;fmodL_vc.lib;LowLevelDEBUG.lib;LowLevelAABBDEBUG.lib;LowLevelClothDEBUG.lib;LowLevelDynamicsDEBUG.lib;LowLevelParticlesDEBUG.lib;PhysX3DEBUG_x64.lib;PhysX3CharacterKinematicDEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PhysX3CookingDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;PhysX3VehicleDEBUG.lib;PsFastXmlDEBUG_x64.lib;PxFoundationDEBUG_x64.lib;PxPvdSDKDEBUG_x64.lib;PxTaskDEBUG_x64.lib;SceneQueryDEBUG.lib;SimulationControllerDEBUG.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLibraries/Debug/;../ThirdPartyLibraries/Debug/PhysX/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <PostBuildEvent>
       <Command>cd $(SolutionDir)

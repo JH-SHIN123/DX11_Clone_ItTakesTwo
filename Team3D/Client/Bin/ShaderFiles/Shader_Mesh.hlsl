@@ -233,7 +233,8 @@ PS_OUT	PS_MAIN(PS_IN In)
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
-	Out.vDiffuse	= vMtrlDiffuse;
+	Out.vDiffuse	= vMtrlDiffuse;/*vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);*/
+
 	Out.vNormal		= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth		= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 

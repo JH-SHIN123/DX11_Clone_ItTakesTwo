@@ -7,17 +7,16 @@ BEGIN(Engine)
 class CRenderer;
 class CTransform;
 class CModel;
-class CControllableActor;
 END
 
 BEGIN(Client)
 
-class CPlayer : public CGameObject
+class CRobotHead : public CGameObject
 {
 protected:
-	explicit CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CPlayer(const CPlayer& rhs);
-	virtual ~CPlayer() = default;
+	explicit CRobotHead(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CRobotHead(const CRobotHead& rhs);
+	virtual ~CRobotHead() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -32,14 +31,13 @@ public:
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
-private:
+protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
-	CControllableActor* m_pActorCom = nullptr;
 public:
-	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CRobotHead* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
