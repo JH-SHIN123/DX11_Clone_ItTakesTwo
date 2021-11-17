@@ -79,16 +79,16 @@ HRESULT CRocket::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CRocket::Launch_Rocket(_double TimeDelta)
+void CRocket::Launch_Rocket(_double dTimeDelta)
 {
-	m_fUpAcceleration += (_float)TimeDelta * 0.2f;
+	m_fUpAcceleration += (_float)dTimeDelta * 0.2f;
 
 	//m_pTransformCom->Go_Straight(TimeDelta);
 
 	if (m_fUpAcceleration < 0.092f)
 	{
 		// 실제로 상호작용 할땐 Player <-> Rocket Dir 을 축으로 회전해야함.
-		m_pTransformCom->Rotate_Axis(XMVectorSet(1.f, 0.f, 0.f, 0.f), TimeDelta * 1.75f);
+		m_pTransformCom->Rotate_Axis(XMVectorSet(1.f, 0.f, 0.f, 0.f), dTimeDelta * 1.75f);
 		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), (m_fUpAcceleration - 0.06f) * (m_fUpAcceleration - 0.06f)/*/ 4.f*/);
 	}
 

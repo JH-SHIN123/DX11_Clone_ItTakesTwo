@@ -206,8 +206,8 @@ private:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-	virtual _int	Tick(_double TimeDelta) override;
-	virtual _int	Late_Tick(_double TimeDelta) override;
+	virtual _int	Tick(_double dTimeDelta) override;
+	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render() override;
 
 public:
@@ -218,8 +218,8 @@ public:
 
 	// Tick 에서 호출될 함수들
 private:
-	virtual void KeyInput(_double TimeDelta);
-	void TriggerCheck(_double TimeDelta);
+	virtual void KeyInput(_double dTimeDelta);
+	void TriggerCheck(_double dTimeDelta);
 
 
 
@@ -245,12 +245,12 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public:
 	// 상태 && 이동
-	void Move(const _double TimeDelta);
-	void Roll(const _double TimeDelta);
-	void Sprint(const _double TimeDelta);
-	void Jump(const _double TimeDelta);
-	void Change_Size(const _double TimeDelta);
-	void Ground_Pound(const _double TimeDelta);
+	void Move(const _double dTimeDelta);
+	void Roll(const _double dTimeDelta);
+	void Sprint(const _double dTimeDelta);
+	void Jump(const _double dTimeDelta);
+	void Change_Size(const _double dTimeDelta);
+	void Ground_Pound(const _double dTimeDelta);
 
 
 private:

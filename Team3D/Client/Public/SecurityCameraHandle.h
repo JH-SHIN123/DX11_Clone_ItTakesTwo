@@ -11,7 +11,7 @@ END
 
 BEGIN(Client)
 
-class CSecurityCameraHandle : public CGameObject
+class CSecurityCameraHandle final : public CGameObject
 {
 protected:
 	explicit CSecurityCameraHandle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -21,8 +21,8 @@ protected:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-	virtual _int	Tick(_double TimeDelta) override;
-	virtual _int	Late_Tick(_double TimeDelta) override;
+	virtual _int	Tick(_double dTimeDelta) override;
+	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render() override;
 public:
 	virtual HRESULT Render_ShadowDepth() override;
@@ -31,13 +31,11 @@ public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
-
-
-protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
+
 public:
 	static CSecurityCameraHandle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

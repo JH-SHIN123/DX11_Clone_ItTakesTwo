@@ -173,7 +173,7 @@ void CCody::Free()
 ////////////////////////////////////////////////////////////////////////////////////	키체크, 상태체크, 애니메이션에 대한 Transform 변경	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void CCody::KeyInput(_double TimeDelta)
+void CCody::KeyInput(_double dTimeDelta)
 {
 #pragma region Local variable
 	_vector vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
@@ -291,7 +291,7 @@ void CCody::KeyInput(_double TimeDelta)
 	if (m_pModelCom->Get_CurAnimIndex() == ANI_C_SprintTurnAround)
 	{
 		if(m_fSprintAcceleration < 12.f)
-			m_fSprintAcceleration += (_float)TimeDelta * 20.f;
+			m_fSprintAcceleration += (_float)dTimeDelta * 20.f;
 	}
 	if (m_pModelCom->Is_AnimFinished(ANI_C_SprintTurnAround))
 	{
@@ -423,7 +423,7 @@ void CCody::KeyInput(_double TimeDelta)
 #pragma endregion 
 
 }
-void CCody::Move(const _double TimeDelta)
+void CCody::Move(const _double dTimeDelta)
 {
 #pragma region Medium_Size
 	if (m_eCurPlayerSize == SIZE_MEDIUM)
@@ -436,17 +436,17 @@ void CCody::Move(const _double TimeDelta)
 			vDirection = XMVectorSetY(vDirection, 0.f);
 			vDirection = XMVector3Normalize(vDirection);
 
-			m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
+			m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);
 
 
 			PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 
 			if (m_fJogAcceleration > 10.f)
-				m_fJogAcceleration -= (_float)TimeDelta * 50.f;
+				m_fJogAcceleration -= (_float)dTimeDelta * 50.f;
 			else
 				m_fJogAcceleration = 10.f;
 
-			m_pActorCom->Move(vDirection / m_fJogAcceleration, TimeDelta);
+			m_pActorCom->Move(vDirection / m_fJogAcceleration, dTimeDelta);
 			
 			if (m_bRoll == false && m_IsJumping == false)
 			{
@@ -499,7 +499,7 @@ void CCody::Move(const _double TimeDelta)
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH) // IDLE 상태라면
 				{
 
-					m_fIdleTime += (_float)TimeDelta;
+					m_fIdleTime += (_float)dTimeDelta;
 					if (m_bAction == false)
 					{
 						if (m_fIdleTime > 5.f && m_pModelCom->Is_AnimFinished(ANI_C_MH)) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
@@ -540,17 +540,17 @@ void CCody::Move(const _double TimeDelta)
 			vDirection = XMVectorSetY(vDirection, 0.f);
 			vDirection = XMVector3Normalize(vDirection);
 
-			m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
+			m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);
 
 
 			PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 
 			if (m_fJogAcceleration > 10.f)
-				m_fJogAcceleration -= (_float)TimeDelta * 50.f;
+				m_fJogAcceleration -= (_float)dTimeDelta * 50.f;
 			else
 				m_fJogAcceleration = 10.f;
 
-			m_pActorCom->Move(vDirection / m_fJogAcceleration, TimeDelta);
+			m_pActorCom->Move(vDirection / m_fJogAcceleration, dTimeDelta);
 
 			if (m_bRoll == false && m_IsJumping == false)
 			{
@@ -587,7 +587,7 @@ void CCody::Move(const _double TimeDelta)
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH) // IDLE 상태라면
 				{
 
-					m_fIdleTime += (_float)TimeDelta;
+					m_fIdleTime += (_float)dTimeDelta;
 					if (m_bAction == false)
 					{
 						if (m_fIdleTime > 5.f && m_pModelCom->Is_AnimFinished(ANI_C_MH)) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
@@ -629,17 +629,17 @@ void CCody::Move(const _double TimeDelta)
 			vDirection = XMVectorSetY(vDirection, 0.f);
 			vDirection = XMVector3Normalize(vDirection);
 
-			m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
+			m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);
 
 
 			PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 
 			if (m_fJogAcceleration > 10.f)
-				m_fJogAcceleration -= (_float)TimeDelta * 50.f;
+				m_fJogAcceleration -= (_float)dTimeDelta * 50.f;
 			else
 				m_fJogAcceleration = 10.f;
 
-			m_pActorCom->Move(vDirection / m_fJogAcceleration / 4.f, TimeDelta);
+			m_pActorCom->Move(vDirection / m_fJogAcceleration / 4.f, dTimeDelta);
 
 			if (m_bRoll == false && m_IsJumping == false)
 			{
@@ -686,7 +686,7 @@ void CCody::Move(const _double TimeDelta)
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH) // IDLE 상태라면
 				{
 
-					m_fIdleTime += (_float)TimeDelta;
+					m_fIdleTime += (_float)dTimeDelta;
 					if (m_bAction == false)
 					{
 						if (m_fIdleTime > 5.f && m_pModelCom->Is_AnimFinished(ANI_C_MH)) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
@@ -717,7 +717,7 @@ void CCody::Move(const _double TimeDelta)
 	}
 #pragma endregion
 }
-void CCody::Roll(const _double TimeDelta)
+void CCody::Roll(const _double dTimeDelta)
 {
 	if ((m_bRoll && m_pTransformCom))
 	{
@@ -733,16 +733,16 @@ void CCody::Roll(const _double TimeDelta)
 			return;
 		}
 
-		m_fAcceleration -= (_float)TimeDelta * 10.f;
+		m_fAcceleration -= (_float)dTimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 		vDirection = XMVectorSetY(vDirection, 0.f);
 		vDirection = XMVector3Normalize(vDirection);
 
-		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta * m_fAcceleration);
+		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta * m_fAcceleration);
 		if (m_eCurPlayerSize == SIZE_MEDIUM)
-			m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), TimeDelta);
+			m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), dTimeDelta);
 		else if (m_eCurPlayerSize == SIZE_SMALL)
-			m_pActorCom->Move(vDirection * (m_fAcceleration / 40.f), TimeDelta);
+			m_pActorCom->Move(vDirection * (m_fAcceleration / 40.f), dTimeDelta);
 	}
 
 	if (m_IsAirDash && m_bCanMove == true && m_pTransformCom)
@@ -753,21 +753,21 @@ void CCody::Roll(const _double TimeDelta)
 			m_IsAirDash = false;
 		}
 
-		m_fAcceleration -= (_float)TimeDelta * 10.f;
+		m_fAcceleration -= (_float)dTimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 		vDirection = XMVectorSetY(vDirection, 0.f);
 		vDirection = XMVector3Normalize(vDirection);
-		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta * m_fAcceleration);
+		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta * m_fAcceleration);
 
 		if(m_eCurPlayerSize == SIZE_MEDIUM)
-			m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), TimeDelta);
+			m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), dTimeDelta);
 		else if (m_eCurPlayerSize == SIZE_SMALL)
-			m_pActorCom->Move(vDirection * (m_fAcceleration / 40.f), TimeDelta);
+			m_pActorCom->Move(vDirection * (m_fAcceleration / 40.f), dTimeDelta);
 	}
 	
 	
 }
-void CCody::Sprint(const _double TimeDelta)
+void CCody::Sprint(const _double dTimeDelta)
 {
 	if (m_bSprint == true && m_bMove == true)
 	{
@@ -777,20 +777,20 @@ void CCody::Sprint(const _double TimeDelta)
 		vDirection = XMVectorSetY(vDirection, 0.f);
 		vDirection = XMVector3Normalize(vDirection);
 
-		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
+		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);
 
 
 		PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 
 		if (m_fSprintAcceleration > 5.f)
-			m_fSprintAcceleration -= (_float)TimeDelta * 50.f;
+			m_fSprintAcceleration -= (_float)dTimeDelta * 50.f;
 		else
 			m_fSprintAcceleration = 5.f;
 
 		if(m_eCurPlayerSize == SIZE_MEDIUM)
-			m_pActorCom->Move(vDirection / m_fSprintAcceleration, TimeDelta);
+			m_pActorCom->Move(vDirection / m_fSprintAcceleration, dTimeDelta);
 		else if (m_eCurPlayerSize == SIZE_SMALL)
-			m_pActorCom->Move(vDirection / m_fSprintAcceleration / 4.f, TimeDelta);
+			m_pActorCom->Move(vDirection / m_fSprintAcceleration / 4.f, dTimeDelta);
 
 		if (m_bRoll == false && m_IsJumping == false && m_IsTurnAround == false)
 		{
@@ -846,7 +846,7 @@ void CCody::Sprint(const _double TimeDelta)
 	}
 	else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Exhausted_MH) // IDLE 상태라면
 	{
-		m_fIdleTime += (_float)TimeDelta;
+		m_fIdleTime += (_float)dTimeDelta;
 
 		if (m_fIdleTime > 3.f && m_pModelCom->Get_CurAnimIndex() == ANI_C_Exhausted_MH) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
 		{
@@ -858,7 +858,7 @@ void CCody::Sprint(const _double TimeDelta)
 
 	}
 }
-void CCody::Jump(const _double TimeDelta)
+void CCody::Jump(const _double dTimeDelta)
 {
 	if (m_bShortJump == true)
 	{
@@ -922,7 +922,7 @@ void CCody::Jump(const _double TimeDelta)
 		m_iJumpCount = 0;
 	}
 }
-void CCody::Change_Size(const _double TimeDelta)
+void CCody::Change_Size(const _double dTimeDelta)
 {
 	if (m_IsSizeChanging == true)
 	{
@@ -930,9 +930,9 @@ void CCody::Change_Size(const _double TimeDelta)
 		{
 			if (m_vScale.x < 5.f)
 			{
-				m_vScale.x += (_float)TimeDelta * 20.f;
-				m_vScale.y += (_float)TimeDelta * 20.f;
-				m_vScale.z += (_float)TimeDelta * 20.f;
+				m_vScale.x += (_float)dTimeDelta * 20.f;
+				m_vScale.y += (_float)dTimeDelta * 20.f;
+				m_vScale.z += (_float)dTimeDelta * 20.f;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 			}
 			else
@@ -947,9 +947,9 @@ void CCody::Change_Size(const _double TimeDelta)
 		{
 			if (m_vScale.x > 1.f)
 			{
-				m_vScale.x -= (_float)TimeDelta * 20.f;
-				m_vScale.y -= (_float)TimeDelta * 20.f;
-				m_vScale.z -= (_float)TimeDelta * 20.f;
+				m_vScale.x -= (_float)dTimeDelta * 20.f;
+				m_vScale.y -= (_float)dTimeDelta * 20.f;
+				m_vScale.z -= (_float)dTimeDelta * 20.f;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 			}
 			else
@@ -964,9 +964,9 @@ void CCody::Change_Size(const _double TimeDelta)
 		{
 			if (m_vScale.x > 0.5f)
 			{
-				m_vScale.x -= (_float)TimeDelta * 10.f;
-				m_vScale.y -= (_float)TimeDelta * 10.f;
-				m_vScale.z -= (_float)TimeDelta * 10.f;
+				m_vScale.x -= (_float)dTimeDelta * 10.f;
+				m_vScale.y -= (_float)dTimeDelta * 10.f;
+				m_vScale.z -= (_float)dTimeDelta * 10.f;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 			}
 			else
@@ -981,9 +981,9 @@ void CCody::Change_Size(const _double TimeDelta)
 		{
 			if (m_vScale.x < 1.f)
 			{
-				m_vScale.x += (_float)TimeDelta * 10.f;
-				m_vScale.y += (_float)TimeDelta * 10.f;
-				m_vScale.z += (_float)TimeDelta * 10.f;
+				m_vScale.x += (_float)dTimeDelta * 10.f;
+				m_vScale.y += (_float)dTimeDelta * 10.f;
+				m_vScale.z += (_float)dTimeDelta * 10.f;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 			}
 			else
@@ -996,7 +996,7 @@ void CCody::Change_Size(const _double TimeDelta)
 		}
 	}
 }
-void CCody::Ground_Pound(const _double TimeDelta)
+void CCody::Ground_Pound(const _double dTimeDelta)
 {
 	if (m_bGroundPound == true)
 	{
@@ -1017,7 +1017,7 @@ void CCody::Ground_Pound(const _double TimeDelta)
 			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Start);
 			m_pActorCom->Set_Jump(false);
 			m_pActorCom->Set_Gravity(0.f);
-			m_fGroundPoundAirDelay += (_float)TimeDelta;
+			m_fGroundPoundAirDelay += (_float)dTimeDelta;
 		}
 	}
 
@@ -1040,7 +1040,7 @@ void CCody::Ground_Pound(const _double TimeDelta)
 	}
 
 }
-void CCody::TriggerCheck(_double TimeDelta)
+void CCody::TriggerCheck(_double dTimeDelta)
 {
 	//m_bMove = false;
 	//m_bRoll = false;

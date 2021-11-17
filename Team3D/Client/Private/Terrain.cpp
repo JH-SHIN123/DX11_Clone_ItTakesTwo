@@ -31,12 +31,12 @@ HRESULT CTerrain::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CTerrain::Tick(_double TimeDelta)
+_int CTerrain::Tick(_double dTimeDelta)
 {
 	return NO_EVENT;
 }
 
-_int CTerrain::Late_Tick(_double TimeDelta)
+_int CTerrain::Late_Tick(_double dTimeDelta)
 {
 	NULL_CHECK_RETURN(m_pRendererCom, EVENT_ERROR);
 

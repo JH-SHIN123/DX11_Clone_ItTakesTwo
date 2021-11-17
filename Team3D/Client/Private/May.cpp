@@ -184,7 +184,7 @@ void CMay::Free()
 ////////////////////////////////////////////////////////////////////////////////////	키체크, 상태체크, 애니메이션에 대한 Transform 변경	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void CMay::KeyInput(_double TimeDelta)
+void CMay::KeyInput(_double dTimeDelta)
 {
 #pragma region Local variable
 	_vector vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
@@ -298,7 +298,7 @@ void CMay::KeyInput(_double TimeDelta)
 	if (m_pModelCom->Get_CurAnimIndex() == ANI_M_SprintTurnAround)
 	{
 		if (m_fSprintAcceleration < 12.f)
-			m_fSprintAcceleration += (_float)TimeDelta * 20.f;
+			m_fSprintAcceleration += (_float)dTimeDelta * 20.f;
 	}
 	if (m_pModelCom->Is_AnimFinished(ANI_M_SprintTurnAround))
 	{
@@ -382,7 +382,7 @@ void CMay::KeyInput(_double TimeDelta)
 
 }
 
-void CMay::Move(const _double TimeDelta)
+void CMay::Move(const _double dTimeDelta)
 {
 	if (m_bSprint == false && m_bMove && m_pTransformCom)
 	{
@@ -392,17 +392,17 @@ void CMay::Move(const _double TimeDelta)
 		vDirection = XMVectorSetY(vDirection, 0.f);
 		vDirection = XMVector3Normalize(vDirection);
 
-		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
+		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);
 
 
 		PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 
 		if (m_fJogAcceleration > 10.f)
-			m_fJogAcceleration -= (_float)TimeDelta * 50.f;
+			m_fJogAcceleration -= (_float)dTimeDelta * 50.f;
 		else
 			m_fJogAcceleration = 10.f;
 
-		m_pActorCom->Move(vDirection / m_fJogAcceleration, TimeDelta);
+		m_pActorCom->Move(vDirection / m_fJogAcceleration, dTimeDelta);
 
 		if (m_bRoll == false && m_IsJumping == false)
 		{
@@ -455,7 +455,7 @@ void CMay::Move(const _double TimeDelta)
 			else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_MH) // IDLE 상태라면
 			{
 
-				m_fIdleTime += (_float)TimeDelta;
+				m_fIdleTime += (_float)dTimeDelta;
 				if (m_bAction == false)
 				{
 					if (m_fIdleTime > 5.f && m_pModelCom->Is_AnimFinished(ANI_M_MH)) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
@@ -484,7 +484,7 @@ void CMay::Move(const _double TimeDelta)
 		}
 	}
 }
-void CMay::Roll(const _double TimeDelta)
+void CMay::Roll(const _double dTimeDelta)
 {
 	if ((m_bRoll && m_pTransformCom))
 	{
@@ -500,13 +500,13 @@ void CMay::Roll(const _double TimeDelta)
 			return;
 		}
 
-		m_fAcceleration -= (_float)TimeDelta * 10.f;
+		m_fAcceleration -= (_float)dTimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 		vDirection = XMVectorSetY(vDirection, 0.f);
 		vDirection = XMVector3Normalize(vDirection);
 
-		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta * m_fAcceleration);
-		m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), TimeDelta);
+		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta * m_fAcceleration);
+		m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), dTimeDelta);
 	}
 
 	if (m_IsAirDash && m_bCanMove == true && m_pTransformCom)
@@ -517,16 +517,16 @@ void CMay::Roll(const _double TimeDelta)
 			m_IsAirDash = false;
 		}
 
-		m_fAcceleration -= (_float)TimeDelta * 10.f;
+		m_fAcceleration -= (_float)dTimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 		vDirection = XMVectorSetY(vDirection, 0.f);
 		vDirection = XMVector3Normalize(vDirection);
-		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta * m_fAcceleration);
-		m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), TimeDelta);
+		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta * m_fAcceleration);
+		m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), dTimeDelta);
 	}
 	
 }
-void CMay::Sprint(const _double TimeDelta)
+void CMay::Sprint(const _double dTimeDelta)
 {
 	// 내려찍기 전까지 커밋!
 	if (m_bSprint == true && m_bMove == true)
@@ -538,19 +538,19 @@ void CMay::Sprint(const _double TimeDelta)
 		vDirection = XMVector3Normalize(vDirection);
 
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_SprintTurnAround)
-			m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta * 2.f);
+			m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta * 2.f);
 		else
-			m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
+			m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);
 
 
 		PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 
 		if (m_fSprintAcceleration > 5.f)
-			m_fSprintAcceleration -= (_float)TimeDelta * 50.f;
+			m_fSprintAcceleration -= (_float)dTimeDelta * 50.f;
 		else
 			m_fSprintAcceleration = 5.f;
 
-		m_pActorCom->Move(vDirection / m_fSprintAcceleration, TimeDelta);
+		m_pActorCom->Move(vDirection / m_fSprintAcceleration, dTimeDelta);
 
 		if (m_bRoll == false && m_IsJumping == false && m_IsTurnAround == false)
 		{
@@ -604,7 +604,7 @@ void CMay::Sprint(const _double TimeDelta)
 	}
 	else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_ExhaustedMH) // IDLE 상태라면
 	{
-		m_fIdleTime += (_float)TimeDelta;
+		m_fIdleTime += (_float)dTimeDelta;
 
 		if (m_fIdleTime > 3.f && m_pModelCom->Get_CurAnimIndex() == ANI_M_ExhaustedMH) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
 		{
@@ -616,7 +616,7 @@ void CMay::Sprint(const _double TimeDelta)
 
 	}
 }
-void CMay::Jump(const _double TimeDelta)
+void CMay::Jump(const _double dTimeDelta)
 {
 	if (m_bShortJump == true)
 	{
@@ -653,7 +653,7 @@ void CMay::Jump(const _double TimeDelta)
 		m_iJumpCount = 0;
 	}
 }
-void CMay::Ground_Pound(const _double TimeDelta)
+void CMay::Ground_Pound(const _double dTimeDelta)
 {
 	if (m_bGroundPound == true)
 	{
@@ -671,7 +671,7 @@ void CMay::Ground_Pound(const _double TimeDelta)
 			m_pModelCom->Set_Animation(ANI_M_GroundPound_Start);
 			m_pActorCom->Set_Jump(false);
 			m_pActorCom->Set_Gravity(0.f);
-			m_fGroundPoundAirDelay += (_float)TimeDelta;
+			m_fGroundPoundAirDelay += (_float)dTimeDelta;
 		}
 	}
 
@@ -689,7 +689,7 @@ void CMay::Ground_Pound(const _double TimeDelta)
 	}
 
 }
-void CMay::StateCheck(_double TimeDelta)
+void CMay::StateCheck(_double dTimeDelta)
 {
 	// 변경해준 m_iNextState 에 따라 애니메이션을 세팅해주고 NextState를 CurState 로 바꿔준다.
 	// 애니메이션 인덱스 == 상태 인덱스 같음 ㅇㅇ.
@@ -700,7 +700,7 @@ void CMay::StateCheck(_double TimeDelta)
 	//}
 }
 
-void CMay::TriggerCheck(_double TimeDelta)
+void CMay::TriggerCheck(_double dTimeDelta)
 {
 	//m_bMove = false;
 	//m_bRoll = false;

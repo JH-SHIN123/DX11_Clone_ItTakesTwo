@@ -2,6 +2,9 @@
 #include "..\public\SecurityCamera.h"
 #include "GameInstance.h"
 #include "DataStorage.h"
+#include "May.h"
+#include "Cody.h"
+
 CSecurityCamera::CSecurityCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -35,6 +38,13 @@ HRESULT CSecurityCamera::NativeConstruct(void * pArg)
 _int CSecurityCamera::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	if (nullptr == m_pTargetObj)
+		return NO_EVENT;
+
+	Find_Target(dTimeDelta);
+
+
 	return NO_EVENT;
 }
 
@@ -65,6 +75,34 @@ HRESULT CSecurityCamera::Render_ShadowDepth()
 	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
+}
+
+void CSecurityCamera::Find_Target(_double dTimeDelta)
+{
+	CGameObject* pCody = DATABASE->GetCody();
+	if (nullptr == pCody)
+		return;
+
+	CGameObject* pMay = DATABASE->GetMay();
+	if (nullptr == pMay)
+		return;
+
+	_vector ToCodyDir = ((CCody*)pCody)->Get_Transform()->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector ToMayDir = ((CMay*)pMay)->Get_Transform()->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_float CodyDist = XMVectorGetX(XMVector3Length(ToCodyDir));
+	_float MayDist = XMVectorGetX(XMVector3Length(ToMayDir));
+
+	if (CodyDist < MayDist)
+		m_pTargetObj = dynamic_cast<CCody*>(DATABASE->GetCody());
+	else if (CodyDist > MayDist)
+		m_pTargetObj = dynamic_cast<CMay*>(DATABASE->GetMay());
+
+}
+
+void CSecurityCamera::Watch_Target(_double dTimeDelta)
+{
+
 }
 
 CSecurityCamera * CSecurityCamera::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

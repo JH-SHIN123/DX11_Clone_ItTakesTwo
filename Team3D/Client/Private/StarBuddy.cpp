@@ -85,12 +85,12 @@ HRESULT CStarBuddy::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CStarBuddy::Launch_StarBuddy(_double TimeDelta)
+void CStarBuddy::Launch_StarBuddy(_double dTimeDelta)
 {
 	// 실제로 상호작용 할땐 Player -> StarBuddy Dir 방향으로 이동
-	m_pTransformCom->Move_ToTarget(XMVectorSet(100.f, 10.f, 100.f, 0.f), TimeDelta * 5.f);
-	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), TimeDelta * 4.f);
-	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), TimeDelta * 4.f);
+	m_pTransformCom->Move_ToTarget(XMVectorSet(100.f, 10.f, 100.f, 0.f), dTimeDelta * 5.f);
+	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta * 4.f);
+	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * 4.f);
 		
 }
 
