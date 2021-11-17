@@ -15,11 +15,11 @@ PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData fi
 	}
 	else if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
 	{
-		pairFlags = PxPairFlag::eCONTACT_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_TOUCH_LOST | PxPairFlag::eMODIFY_CONTACTS;
+		pairFlags = PxPairFlag::eCONTACT_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_TOUCH_LOST /*| PxPairFlag::eMODIFY_CONTACTS*/;
 	}
 	else
 	{
-		pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+		pairFlags = PxPairFlag::eMODIFY_CONTACTS;
 	}
 
 	return PxFilterFlag::eDEFAULT;
@@ -59,6 +59,8 @@ HRESULT CPhysX::Ready_PhysX()
 	SceneDesc.filterShader = FilterShader;
 	SceneDesc.simulationEventCallback = m_pEventCallback;
 	SceneDesc.contactModifyCallback = m_pContactCallback;
+	SceneDesc.kineKineFilteringMode = PxPairFilteringMode::eKEEP;
+	SceneDesc.staticKineFilteringMode = PxPairFilteringMode::eKEEP;
 
 	m_pScene = m_pPhysics->createScene(SceneDesc);
 	NULL_CHECK_RETURN(m_pScene, E_FAIL);

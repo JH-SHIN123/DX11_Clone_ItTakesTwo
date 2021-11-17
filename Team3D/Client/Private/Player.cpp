@@ -56,7 +56,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom, CapsuleControllerDesc, -50.f)), E_FAIL);
 
 
-	m_pTransformCom->Set_Scale(XMVectorSet(5.f, 5.f, 5.f, 0.f));
+	//m_pTransformCom->Set_Scale(XMVectorSet(5.f, 5.f, 5.f, 0.f));
 
 	return S_OK;
 }

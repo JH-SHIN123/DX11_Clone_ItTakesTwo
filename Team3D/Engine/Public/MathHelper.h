@@ -38,6 +38,17 @@ namespace Engine
 		return vPxVector;
 	}
 
+	static PxVec3 MH_PxVec3(PxExtendedVec3 vVector)
+	{
+		PxVec3 vPxVector;
+
+		vPxVector.x = (_float)vVector.x;
+		vPxVector.y = (_float)vVector.y;
+		vPxVector.z = (_float)vVector.z;
+
+		return vPxVector;
+	}
+
 	static PxQuat MH_PxQuat(_fvector vVector, _float fW)
 	{
 		PxQuat vPxVector;
@@ -66,9 +77,25 @@ namespace Engine
 		return vPxVector;
 	}
 
+	static PxExtendedVec3 MH_PxExtendedVec3(PxVec3 vVector)
+	{
+		PxExtendedVec3 vPxVector;
+
+		vPxVector.x = (_double)vVector.x;
+		vPxVector.y = (_double)vVector.y;
+		vPxVector.z = (_double)vVector.z;
+
+		return vPxVector;
+	}
+
 	static _vector MH_ConvertToXMVector(PxExtendedVec3 vVector, _float fW)
 	{
 		return XMVectorSet((_float)vVector.x, (_float)vVector.y, (_float)vVector.z, fW);
+	}
+
+	static _vector MH_ConvertToXMVector(PxVec3 vVector, _float fW)
+	{
+		return XMVectorSet(vVector.x, vVector.y, vVector.z, fW);
 	}
 
 	static _vector MH_GetXMPosition(_float4x4 Matrix)
