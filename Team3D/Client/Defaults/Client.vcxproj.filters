@@ -16,12 +16,6 @@
     <Filter Include="97.ShaderFiles">
       <UniqueIdentifier>{395ace26-c26e-4237-9031-47429a7fd067}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97.ShaderFiles\00.Defines">
-      <UniqueIdentifier>{0d896044-2e1a-49b3-8cf8-ca6b2e41a334}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97.ShaderFiles\01.Codes">
-      <UniqueIdentifier>{1d67cbdf-83f5-4ab1-9d81-2f033df901dd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject">
       <UniqueIdentifier>{b604bc39-7ea2-4ccb-a98b-f89e2d0279b7}</UniqueIdentifier>
     </Filter>
@@ -100,6 +94,7 @@
     <Filter Include="96.DataStorage">
       <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
     </Filter>
+<<<<<<< HEAD
     <Filter Include="02.GameObject\00.Public\03.Cam_Helper">
       <UniqueIdentifier>{a3a6fff7-bf95-4b71-a03c-4caea40e84ed}</UniqueIdentifier>
     </Filter>
@@ -107,16 +102,25 @@
       <UniqueIdentifier>{25fa91e7-22b9-488f-a881-4902b0783881}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\98.Interaction_Deco">
+=======
+    <Filter Include="02.GameObject\98.Interactive_Objects">
+>>>>>>> main
       <UniqueIdentifier>{80b9488d-6107-4ad3-ab4d-9ba4db640228}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\98.Interaction_Deco\00.Rocket">
+    <Filter Include="02.GameObject\98.Interactive_Objects\00.Rocket">
       <UniqueIdentifier>{a4d27e3c-4021-47f3-bb3c-081dd7fb5758}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\98.Interaction_Deco\01.StarBuddy">
+    <Filter Include="02.GameObject\98.Interactive_Objects\01.StarBuddy">
       <UniqueIdentifier>{6be15374-eb26-4929-8e60-d673bd18461d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\98.Interaction_Deco\02.SecurityCamera">
+    <Filter Include="02.GameObject\98.Interactive_Objects\02.SecurityCamera">
       <UniqueIdentifier>{db7e22fc-29b8-4ab2-a9be-83636efb01da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\03.Robot">
+      <UniqueIdentifier>{cb5078d5-ca2a-48ea-ab02-93109613a458}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles\Include">
+      <UniqueIdentifier>{87727c9a-6160-4971-88de-e99cb7b2333a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -140,9 +144,6 @@
     </ClInclude>
     <ClInclude Include="..\public\Loading.h">
       <Filter>01.Maps\01.Loading\99.Loading</Filter>
-    </ClInclude>
-    <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp">
-      <Filter>97.ShaderFiles\00.Defines</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
@@ -196,7 +197,25 @@
       <Filter>02.GameObject\00.Public\03.Cam_Helper\Film</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Rocket.h">
-      <Filter>02.GameObject\98.Interaction_Deco\00.Rocket</Filter>
+      <Filter>02.GameObject\98.Interactive_Objects\00.Rocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StarBuddy.h">
+      <Filter>02.GameObject\98.Interactive_Objects\01.StarBuddy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Robot.h">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RobotHead.h">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp">
+      <Filter>97.ShaderFiles\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp">
+      <Filter>97.ShaderFiles\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp">
+      <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -258,7 +277,16 @@
       <Filter>02.GameObject\00.Public\03.Cam_Helper\Film</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Rocket.cpp">
-      <Filter>02.GameObject\98.Interaction_Deco\00.Rocket</Filter>
+      <Filter>02.GameObject\98.Interactive_Objects\00.Rocket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StarBuddy.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\01.StarBuddy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Robot.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RobotHead.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -281,16 +309,16 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl">
-      <Filter>97.ShaderFiles\01.Codes</Filter>
+      <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Default.hlsl">
-      <Filter>97.ShaderFiles\01.Codes</Filter>
+      <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl">
-      <Filter>97.ShaderFiles\01.Codes</Filter>
+      <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl">
-      <Filter>97.ShaderFiles\01.Codes</Filter>
+      <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

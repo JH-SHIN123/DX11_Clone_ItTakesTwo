@@ -15,6 +15,7 @@ CGameInstance::CGameInstance()
 	, m_pPhysX				(CPhysX::GetInstance())
 	, m_pPipeline			(CPipeline::GetInstance())
 	, m_pFrustum			(CFrustum::GetInstance())
+	, m_pShadow_Manager		(CShadow_Manager::GetInstance())
 {
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pInput_Device);
@@ -27,6 +28,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pPhysX);
 	Safe_AddRef(m_pPipeline);
 	Safe_AddRef(m_pFrustum);
+	Safe_AddRef(m_pShadow_Manager);
 }
 
 #pragma region GameInstance
@@ -38,13 +40,15 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
 	NULL_CHECK_RETURN(m_pPhysX, E_FAIL);
 	NULL_CHECK_RETURN(m_pFrustum, E_FAIL);
-
+	NULL_CHECK_RETURN(m_pShadow_Manager, E_FAIL);
+	
 	FAILED_CHECK_RETURN(m_pGraphic_Device->Ready_GraphicDevice(eWinMode, hWnd, iWinSizeX, iWinSizeY, ppDevice, ppDeviceContext), E_FAIL);
 	FAILED_CHECK_RETURN(m_pInput_Device->Ready_InputDevice(hInst, hWnd), E_FAIL);
 	//FAILED_CHECK_RETURN(m_pSound_Manager->Ready_SoundManager(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pLight_Manager->Ready_LightManager(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
 	FAILED_CHECK_RETURN(m_pPhysX->Ready_PhysX(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pFrustum->Ready_Frustum(), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShadow_Manager->Ready_ShadowManager(*ppDevice, *ppDeviceContext), E_FAIL);
 
 	return S_OK;
 }
@@ -78,7 +82,11 @@ _int CGameInstance::Tick(_double dTimeDelta)
 	
 	if (m_pGameObject_Manager->Late_Tick(dTimeDelta) < 0)
 		return EVENT_ERROR;
-	
+
+	/* Shadow View / Proj 생성 - FullScreen 기준 */
+	m_pShadow_Manager->Update_CascadeShadowTransform(CShadow_Manager::SHADOW_MAIN);
+	m_pShadow_Manager->Update_CascadeShadowTransform(CShadow_Manager::SHADOW_SUB);
+
 	return m_pLevel_Manager->Tick(dTimeDelta);
 }
 void CGameInstance::Clear_LevelResources(_uint iLevelIndex)
@@ -266,25 +274,25 @@ HRESULT CGameInstance::Reserve_Container_Light(_uint iCount)
 	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
 	return m_pLight_Manager->Reserve_Container(iCount);
 }
-HRESULT CGameInstance::Add_Light(const LIGHT_DESC & LightDesc, _bool isActive)
+HRESULT CGameInstance::Add_Light(const _tchar* pLightTag, const LIGHT_DESC & LightDesc, _bool isActive)
 {
 	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
-	return m_pLight_Manager->Add_Light(LightDesc, isActive);
+	return m_pLight_Manager->Add_Light(pLightTag, LightDesc, isActive);
 }
-LIGHT_DESC * CGameInstance::Get_LightDescPtr(_uint iIndex)
+LIGHT_DESC * CGameInstance::Get_LightDescPtr(const _tchar* pLightTag)
 {
 	NULL_CHECK_RETURN(m_pLight_Manager, nullptr);
-	return m_pLight_Manager->Get_LightDescPtr(iIndex);
+	return m_pLight_Manager->Get_LightDescPtr(pLightTag);
 }
-HRESULT CGameInstance::TurnOn_Light(_uint iIndex)
+HRESULT CGameInstance::TurnOn_Light(const _tchar* pLightTag)
 {
 	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
-	return m_pLight_Manager->TurnOn_Light(iIndex);
+	return m_pLight_Manager->TurnOn_Light(pLightTag);
 }
-HRESULT CGameInstance::TurnOff_Light(_uint iIndex)
+HRESULT CGameInstance::TurnOff_Light(const _tchar* pLightTag)
 {
 	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
-	return m_pLight_Manager->TurnOff_Light(iIndex);
+	return m_pLight_Manager->TurnOff_Light(pLightTag);
 }
 void CGameInstance::Clear_Lights()
 {
@@ -373,6 +381,8 @@ void CGameInstance::Release_Engine()
 		MSG_BOX("Failed to Release CComponent_Manager.");
 	if (CModel_Loader::GetInstance()->DestroyInstance())
 		MSG_BOX("Failed to Release CModel_Loader.");
+	if (CShadow_Manager::GetInstance()->DestroyInstance())
+		MSG_BOX("Failed to Release CShadow_Manager.");
 	if (CLight_Manager::GetInstance()->DestroyInstance())
 		MSG_BOX("Failed to Release CLight_Manager.");
 	if (CPhysX::GetInstance()->DestroyInstance())
@@ -398,6 +408,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pTimer_Manager);
+	Safe_Release(m_pShadow_Manager);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pPhysX);
 	Safe_Release(m_pGameObject_Manager);

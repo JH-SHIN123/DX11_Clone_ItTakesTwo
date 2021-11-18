@@ -102,6 +102,15 @@ namespace Engine
 		MATERIAL_TEX MaterialTex[AI_TEXTURE_TYPE_MAX];
 	}MATERIAL_NAMES;
 
+	typedef struct tagMaterialObject
+	{
+		/* Material Ratio 전용으로 사용될 예정 */
+		XMFLOAT4 vDiffuse = {1.f,1.f,1.f,1.f};
+		XMFLOAT4 vAmbient = { 1.f,1.f,1.f,1.f };
+		XMFLOAT4 vSpecular = { 1.f,1.f,1.f,1.f }; // w = SpecPower
+		XMFLOAT4 vReflect = { 1.f,1.f,1.f,1.f };
+	}MATERIAL_OBJECT;
+
 	typedef struct tagBoneDesc 
 	{
 		XMFLOAT4X4	OffsetMatrix;

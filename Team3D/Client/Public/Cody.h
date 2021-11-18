@@ -209,9 +209,11 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
-	virtual HRESULT Set_ShaderConstant_Default() override;
-	virtual HRESULT Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix) override;
 
+public:
+	virtual HRESULT Render_ShadowDepth() override;
+
+public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	PLAYER_SIZE Get_CurSize() { return m_eCurPlayerSize; }
 	// Tick 에서 호출될 함수들

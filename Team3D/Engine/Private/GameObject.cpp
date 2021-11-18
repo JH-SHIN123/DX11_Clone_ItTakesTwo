@@ -58,12 +58,7 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
-HRESULT CGameObject::Set_ShaderConstant_Default()
-{
-	return S_OK;
-}
-
-HRESULT CGameObject::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
+HRESULT CGameObject::Render_ShadowDepth()
 {
 	return S_OK;
 }

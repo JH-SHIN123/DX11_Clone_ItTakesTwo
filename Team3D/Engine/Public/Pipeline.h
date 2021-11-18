@@ -12,7 +12,9 @@ private:
 	virtual ~CPipeline() = default;
 
 public: /* Enum */
-	enum TRANSFORM_STATETYPE { TS_MAINVIEW, TS_MAINVIEW_INVERSE, TS_MAINPROJ, TS_MAINPROJ_INVERSE, TS_SUBVIEW, TS_SUBVIEW_INVERSE, TS_SUBPROJ, TS_SUBPROJ_INVERSE, TS_END };
+	enum TRANSFORM_STATETYPE { 
+		TS_MAINVIEW, TS_MAINVIEW_INVERSE, TS_MAINPROJ, TS_MAINPROJ_INVERSE, TS_SUBVIEW, TS_SUBVIEW_INVERSE, TS_SUBPROJ, TS_SUBPROJ_INVERSE, 
+		TS_FULLSCREEN_PROJ, TS_FULLSCREEN_PROJ_INVERSE, TS_END };
 
 public: /* Getter */
 	_matrix			Get_Transform(TRANSFORM_STATETYPE eType) const { return XMLoadFloat4x4(&m_StateMatrices[eType]); }
@@ -28,6 +30,7 @@ public: /* Setter */
 
 private:
 	_float4x4	m_StateMatrices[TS_END];
+
 	_float		m_fMainCamFar = 0.f;
 	_float		m_fSubCamFar = 0.f;
 

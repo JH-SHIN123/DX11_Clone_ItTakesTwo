@@ -38,11 +38,9 @@ HRESULT CControllableActor::NativeConstruct(void * pArg)
 	NULL_CHECK_RETURN(m_pController, E_FAIL);
 	m_pActor = m_pController->getActor();
 
-//<<<<<<< HEAD
-//=======
-//	m_fJumpGravity = ArgDesc.fJumpGravity;
-//
-//>>>>>>> main
+	//m_fJumpGravity = ArgDesc.fJumpGravity;
+	Setup_PxFiltering(m_pActor, FilterGroup::ePLAYER, FilterGroup::eSTATIC | FilterGroup::eDYNAMIC);
+
 	return S_OK;
 }
 

@@ -55,6 +55,8 @@ public: /* Setter */
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, ID3D11ShaderResourceView* pShaderResourceView);
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, _uint iMaterialIndex, aiTextureType eTextureType, _uint iTextureIndex = 0);
 	HRESULT	Set_DefaultVariables_Perspective(_fmatrix WorldMatrix);
+	HRESULT	Set_DefaultVariables_Shadow();
+	HRESULT	Set_DefaultVariables_ShadowDepth();
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName);
@@ -64,7 +66,11 @@ public:
 	/* For.Client */
 	HRESULT Add_LerpInfo(_uint iCurAnimIndex, _uint iNextAnimIndex, _bool bGoingToLerp, _float fLerpSpeed = 5.f);
 	HRESULT	Update_Animation(_double dTimeDelta);
-	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0);
+	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false); /* ShadowWrite시, 텍스쳐 세팅안함. */
+
+public:
+	HRESULT Bind_GBuffers();
+	HRESULT	Render_ModelByPass(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false); /* 텍스쳐 외부에서 따로 연결해줘야함. */
 
 private: /* Typedef */
 	typedef vector<class CMesh*>			MESHES;
@@ -114,6 +120,8 @@ private:
 	vector<PX_TRIMESH>			m_PxTriMeshes;
 	/* For.MaterialSet */
 	_uint						m_iMaterialSetCount			= 0;
+	/*For. Check Bind Materials */
+	_uint						m_IsBindMaterials[AI_TEXTURE_TYPE_MAX];
 private:
 	HRESULT	Sort_MeshesByMaterial();
 	HRESULT	Set_CenterBone(const char* pCenterBoneName = "");
@@ -121,7 +129,7 @@ private:
 	HRESULT	Store_TriMeshes();
 	void	Update_AnimTransformations(_double dTimeDelta);
 	void	Update_CombinedTransformations();
-
+	HRESULT Is_BindMaterials(_uint iMaterialIndex);
 #pragma region For_Buffer
 private: /* For.Buffer */
 	/* For.Vertices */

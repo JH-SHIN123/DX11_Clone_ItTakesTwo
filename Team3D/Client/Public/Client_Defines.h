@@ -17,5 +17,9 @@ extern HINSTANCE	g_hInst;
 
 
 namespace Client {}
+<<<<<<< HEAD
 using namespace Client;
 
+=======
+using namespace Client;
+>>>>>>> main

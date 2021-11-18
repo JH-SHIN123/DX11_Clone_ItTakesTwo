@@ -24,9 +24,20 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
+public:
+	virtual HRESULT Render_ShadowDepth() override;
 
-
+public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
+
+public:
+	void Launch_Rocket(_double TimeDelta);
+
+private:
+	_float		m_fUpAcceleration = 0.f;
+	_bool		m_bLaunch = false;
+	_float		m_fLifeTime = 0.f;
+
 
 protected:
 	/* For.Component */

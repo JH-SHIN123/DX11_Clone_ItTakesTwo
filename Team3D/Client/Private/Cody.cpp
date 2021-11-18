@@ -30,7 +30,11 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	Ready_Component();
 
 	m_pModelCom->Set_Animation(ANI_C_MH);
+<<<<<<< HEAD
 	CDataStorage::GetInstance()->Set_CodyPtr(this);	
+=======
+	CDataStorage::GetInstance()->Set_CodyPtr(this);
+>>>>>>> main
 	Add_LerpInfo_To_Model();
 	 
 
@@ -114,7 +118,6 @@ _int CCody::Tick(_double dTimeDelta)
 _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
-
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
 
@@ -122,11 +125,13 @@ HRESULT CCody::Render()
 {
 	CCharacter::Render();
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(0);
 
 	return S_OK;
 }
+
 #pragma endregion
 
 #pragma region Rarely_Fix
@@ -290,7 +295,7 @@ void CCody::KeyInput(_double TimeDelta)
 	if (m_pModelCom->Get_CurAnimIndex() == ANI_C_SprintTurnAround)
 	{
 		if(m_fSprintAcceleration < 12.f)
-			m_fSprintAcceleration += TimeDelta * 20.f;
+			m_fSprintAcceleration += (_float)TimeDelta * 20.f;
 	}
 	if (m_pModelCom->Is_AnimFinished(ANI_C_SprintTurnAround))
 	{
@@ -732,7 +737,7 @@ void CCody::Roll(const _double TimeDelta)
 			return;
 		}
 
-		m_fAcceleration -= TimeDelta * 10.0;
+		m_fAcceleration -= (_float)TimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 		vDirection = XMVectorSetY(vDirection, 0.f);
 		vDirection = XMVector3Normalize(vDirection);
@@ -752,7 +757,7 @@ void CCody::Roll(const _double TimeDelta)
 			m_IsAirDash = false;
 		}
 
-		m_fAcceleration -= TimeDelta * 10.0;
+		m_fAcceleration -= (_float)TimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 		vDirection = XMVectorSetY(vDirection, 0.f);
 		vDirection = XMVector3Normalize(vDirection);
@@ -1016,7 +1021,7 @@ void CCody::Ground_Pound(const _double TimeDelta)
 			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Start);
 			m_pActorCom->Set_Jump(false);
 			m_pActorCom->Set_Gravity(0.f);
-			m_fGroundPoundAirDelay += TimeDelta;
+			m_fGroundPoundAirDelay += (_float)TimeDelta;
 		}
 	}
 
@@ -1047,21 +1052,14 @@ void CCody::TriggerCheck(_double TimeDelta)
 
 
 #pragma region Shader_Variables
-HRESULT CCody::Set_ShaderConstant_Default()
+HRESULT CCody::Render_ShadowDepth()
 {
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	return S_OK;
-}
+	m_pModelCom->Set_DefaultVariables_ShadowDepth();
 
-HRESULT CCody::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
-{
-	m_pModelCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-
+	// Skinned: 2 / Normal: 3
+	m_pModelCom->Render_Model(2, 0, true);
 	return S_OK;
 }
 #pragma endregion

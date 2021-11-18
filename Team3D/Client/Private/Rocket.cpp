@@ -2,6 +2,10 @@
 #include "..\public\Rocket.h"
 #include "GameInstance.h"
 #include "DataStorage.h"
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 CRocket::CRocket(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -36,6 +40,17 @@ _int CRocket::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_9))
+		m_bLaunch = true;
+
+	if (m_bLaunch == true)
+	{
+		Launch_Rocket(dTimeDelta);
+		m_fLifeTime += (_float)dTimeDelta;
+		if (m_fLifeTime > 3.5f)
+			return EVENT_DEAD;
+	}
+
 	return NO_EVENT;
 }
 
@@ -47,12 +62,42 @@ _int CRocket::Late_Tick(_double dTimeDelta)
 
 HRESULT CRocket::Render()
 {
+	CGameObject::Render();
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(1);
 
 	return S_OK;
+}
+
+HRESULT CRocket::Render_ShadowDepth()
+{
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+
+	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+
+	// Skinned: 2 / Normal: 3
+	m_pModelCom->Render_Model(3, 0, true);
+	return S_OK;
+}
+
+void CRocket::Launch_Rocket(_double TimeDelta)
+{
+	m_fUpAcceleration += (_float)TimeDelta * 0.2f;
+
+	//m_pTransformCom->Go_Straight(TimeDelta);
+
+	if (m_fUpAcceleration < 0.092f)
+	{
+		// 실제로 상호작용 할땐 Player <-> Rocket Dir 을 축으로 회전해야함.
+		m_pTransformCom->Rotate_Axis(XMVectorSet(1.f, 0.f, 0.f, 0.f), TimeDelta * 1.75f);
+		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), (m_fUpAcceleration - 0.06f) * (m_fUpAcceleration - 0.06f)/*/ 4.f*/);
+	}
+
+	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), m_fUpAcceleration);
+	m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), (m_fUpAcceleration - 0.06f) * (m_fUpAcceleration - 0.06f)/*/ 4.f*/);
+	m_pTransformCom->Go_Up(m_fUpAcceleration / 8.f);
 }
 
 

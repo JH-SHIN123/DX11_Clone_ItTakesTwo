@@ -80,6 +80,11 @@ _int CCamera::Tick(_double dTimeDelta)
 		m_pPipeline->Set_SubCamFar(m_CameraDesc.fFar);
 	}
 
+	// For. Full Screen
+	_matrix FullScreenProjMatrix = XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fFullScreenAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+	m_pPipeline->Set_Transform(CPipeline::TS_FULLSCREEN_PROJ, FullScreenProjMatrix);
+	m_pPipeline->Set_Transform(CPipeline::TS_FULLSCREEN_PROJ_INVERSE, XMMatrixInverse(nullptr, FullScreenProjMatrix));
+
 	return NO_EVENT;
 }
 

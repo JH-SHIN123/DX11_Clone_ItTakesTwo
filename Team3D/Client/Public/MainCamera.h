@@ -8,8 +8,6 @@ BEGIN(Engine)
 class CControllableActor;
 END
 
-
-
 BEGIN(Client)
 
 class CMainCamera final : public CCamera

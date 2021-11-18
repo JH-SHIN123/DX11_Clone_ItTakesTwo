@@ -178,7 +178,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
+<<<<<<< HEAD
     <ClInclude Include="..\public\Cam_Helper.h" />
+=======
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp" />
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp" />
+>>>>>>> main
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
@@ -193,7 +198,10 @@
     <ClInclude Include="..\Public\May.h" />
     <ClInclude Include="..\Public\MoonBaboon.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\Robot.h" />
+    <ClInclude Include="..\Public\RobotHead.h" />
     <ClInclude Include="..\Public\Rocket.h" />
+    <ClInclude Include="..\Public\StarBuddy.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\public\TileBox.h" />
@@ -218,7 +226,10 @@
     <ClCompile Include="..\Private\May.cpp" />
     <ClCompile Include="..\Private\MoonBaboon.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\Robot.cpp" />
+    <ClCompile Include="..\Private\RobotHead.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
+    <ClCompile Include="..\Private\StarBuddy.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\private\TileBox.cpp" />

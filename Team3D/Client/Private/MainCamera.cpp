@@ -1,10 +1,15 @@
 #include "stdafx.h"
 #include "..\public\MainCamera.h"
 #include "GameInstance.h"
+<<<<<<< HEAD
 #include"ControllableActor.h"
 
 #include"Level.h"
 #include"DataStorage.h"
+=======
+#include "DataStorage.h"
+#include "Cody.h"
+>>>>>>> main
 
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
@@ -60,17 +65,39 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	m_eCurCamEffect = CamEffect::CamEffect_None;
 	m_bPhsXCollision = false;
 	
+<<<<<<< HEAD
 	CDataStorage::GetInstance()->Set_MainCamPtr(this);
 
 	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_SMALL], MakeViewMatrix(_float3(0.f, 3.f, -4.f), _float3(0.f, 1.f, 0.f)));
 	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_MEDIUM], MakeViewMatrix(_float3(0.f, 8.f, -7.f), _float3(0.f, 2.f, 0.f)));
 	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_LARGE], MakeViewMatrix(_float3(0.f, 7.f, -12.f), _float3(0.f, 3.f, 2.f)));
+=======
+	m_eCurCamMode = Cam_Free;
+	CDataStorage::GetInstance()->Set_MainCamPtr(this);
+>>>>>>> main
 
 	return S_OK;
 }
 
 _int CMainCamera::Tick(_double dTimeDelta)
 {
+<<<<<<< HEAD
+=======
+	//if (m_pGameInstance->Key_Pressing(DIK_W))
+	//	m_pTransformCom->Go_Straight(dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_A))
+	//	m_pTransformCom->Go_Left(dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_S))
+	//	m_pTransformCom->Go_Backward(dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_D))
+	//	m_pTransformCom->Go_Right(dTimeDelta);
+	if (m_pTargetObj == nullptr)
+	{
+		m_pTargetObj = CDataStorage::GetInstance()->GetCody();
+		if (m_pTargetObj)
+			Safe_AddRef(m_pTargetObj);
+	}
+>>>>>>> main
 
 	if (nullptr == m_pCamHelper)
 		return EVENT_ERROR;
