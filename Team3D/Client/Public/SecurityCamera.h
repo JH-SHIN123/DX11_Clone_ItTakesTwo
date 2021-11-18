@@ -47,7 +47,7 @@ private:
 	CModel*				m_pModelCom = nullptr;
 
 	//Target
-	CGameObject* m_pTargetObj = nullptr;
+	CTransform* m_pTargetTransform = nullptr;
 
 public:
 	static CSecurityCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

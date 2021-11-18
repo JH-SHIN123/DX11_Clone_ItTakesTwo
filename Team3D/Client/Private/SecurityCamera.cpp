@@ -30,7 +30,7 @@ HRESULT CSecurityCamera::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_SecurityCamera"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(35.f, 1.f, 35.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(35.f, 1.f, 31.85f, 1.f));
 
 	return S_OK;
 }
@@ -39,10 +39,12 @@ _int CSecurityCamera::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (nullptr == m_pTargetObj)
-		return NO_EVENT;
 
 	Find_Target(dTimeDelta);
+
+	if(nullptr != m_pTargetTransform)
+		Watch_Target(dTimeDelta);
+
 
 
 	return NO_EVENT;
@@ -94,15 +96,16 @@ void CSecurityCamera::Find_Target(_double dTimeDelta)
 	_float MayDist = XMVectorGetX(XMVector3Length(ToMayDir));
 
 	if (CodyDist < MayDist)
-		m_pTargetObj = dynamic_cast<CCody*>(DATABASE->GetCody());
+		m_pTargetTransform = (CTransform*)(dynamic_cast<CCody*>(DATABASE->GetCody()))->Get_Transform();
 	else if (CodyDist > MayDist)
-		m_pTargetObj = dynamic_cast<CMay*>(DATABASE->GetMay());
+		m_pTargetTransform = (CTransform*)(dynamic_cast<CMay*>(DATABASE->GetMay()))->Get_Transform();;
 
 }
 
 void CSecurityCamera::Watch_Target(_double dTimeDelta)
 {
-
+	_vector TargetPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION);
+	m_pTransformCom->Rotate_ToTarget(TargetPos);
 }
 
 CSecurityCamera * CSecurityCamera::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
