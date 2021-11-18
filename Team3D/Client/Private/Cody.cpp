@@ -5,6 +5,7 @@
 #include "Transform.h"
 #include "DataStorage.h"
 #include "UI_Generator.h"
+#include "UIObject.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -34,10 +35,10 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	DATABASE->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
-
 	UI_Create(May, StickIcon);
 	UI_Create(Cody, PC_Mouse_Reduction);
 	UI_Create(Cody, PC_Mouse_Enlargement);
+	UI_Create(Default, LoadingBook);
 
 	return S_OK;
 }
@@ -945,6 +946,9 @@ void CCody::Change_Size(const _double TimeDelta)
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_LARGE;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+
+				//UI
+				UI_Generator->UI_RETutorial(Player::Cody, UI::PC_Mouse_Enlargement);
 			}
 		}
 		else if (m_eCurPlayerSize == SIZE_LARGE && m_eNextPlayerSize == SIZE_MEDIUM)
@@ -979,6 +983,9 @@ void CCody::Change_Size(const _double TimeDelta)
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_SMALL;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+
+				//UI
+				UI_Generator->UI_RETutorial(Player::Cody, UI::PC_Mouse_Reduction);
 			}
 		}
 		else if (m_eCurPlayerSize == SIZE_SMALL && m_eNextPlayerSize == SIZE_MEDIUM)

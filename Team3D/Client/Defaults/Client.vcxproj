@@ -201,7 +201,6 @@
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\UIObject.h" />
     <ClInclude Include="..\Public\UISprite.h" />
-    <ClInclude Include="..\Public\UI_Generator.h" />
     <ClInclude Include="..\Public\May.h" />
     <ClInclude Include="..\Public\MoonBaboon.h" />
     <ClInclude Include="..\Public\Player.h" />
@@ -212,6 +211,7 @@
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\public\TileBox.h" />
     <ClInclude Include="..\Public\UFO.h" />
+    <ClInclude Include="..\Public\UI_Generator.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Animation_Index_Define.h" />
     <ClInclude Include="Resource.h" />
@@ -238,7 +238,6 @@
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\UIObject.cpp" />
     <ClCompile Include="..\Private\UISprite.cpp" />
-    <ClCompile Include="..\Private\UI_Generator.cpp" />
     <ClCompile Include="..\Private\May.cpp" />
     <ClCompile Include="..\Private\MoonBaboon.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
@@ -249,6 +248,7 @@
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\private\TileBox.cpp" />
     <ClCompile Include="..\Private\UFO.cpp" />
+    <ClCompile Include="..\Private\UI_Generator.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

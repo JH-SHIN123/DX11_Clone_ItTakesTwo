@@ -10,13 +10,12 @@ class CTextures;
 class CVIBuffer_FontInstance;
 END
 
-BEGIN(Client)
-
 #define UI_Create(ePlayer, eTrigger)															\
 	CUI_Generator::GetInstance()->Set_TriggerOn();												\
 	CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger);					\
 
-#define  UI_Generator CUI_Generator::GetInstance()
+#define UI_Generator CUI_Generator::GetInstance()
+#define UI_Delete(ePlayer, eTrigger) CUI_Generator::GetInstance()->Delete_UI(Player::ePlayer, UI::eTrigger);
 
 class CUI_Generator final : public CBase
 {
@@ -44,7 +43,14 @@ public:
 	HRESULT Render_Font(_tchar* pText, FONTDESC tFontDesc, Player::ID ePlayer);
 
 public:
+	CUIObject* Get_UIObject(Player::ID ePlayer, UI::TRIGGER eTrigger) { return m_vecUIOBjects[ePlayer][eTrigger].front(); };
+
+public:
 	void Set_TriggerOn();
+
+public:
+	void UI_RETutorial(Player::ID ePlayer, UI::TRIGGER eTrigger);
+
 
 private:
 	_bool							m_IsTrigger = true;
@@ -75,5 +81,3 @@ public:
 	virtual void Free() override;
 
 };
-
-END

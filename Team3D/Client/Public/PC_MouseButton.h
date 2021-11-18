@@ -34,6 +34,9 @@ private:
 	HRESULT Ready_Component();
 	HRESULT Set_UIVariables_Perspective();
 
+private:
+	 void Render_Font();
+
 public:
 	static CPC_MouseButton* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject * Clone_GameObject(void * pArg) override;

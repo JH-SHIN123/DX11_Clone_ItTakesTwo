@@ -222,9 +222,6 @@
     <ClInclude Include="..\Public\UISprite.h">
       <Filter>02.GameObject\05.UI\05.Sprite</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_Generator.h">
-      <Filter>02.GameObject\05.UI\99.Generator\00.UI_Generator</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Player.h">
       <Filter>02.GameObject\99.Stage%28Test%29\01.Player</Filter>
     </ClInclude>
@@ -271,6 +268,13 @@
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\SubCamera.h">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Client_Defines.h" />
+    <ClInclude Include="..\Public\Client_Enum.h" />
+    <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="..\Public\UI_Generator.h">
+      <Filter>02.GameObject\05.UI\99.Generator\00.UI_Generator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -322,9 +326,6 @@
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.Sprite</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_Generator.cpp">
-      <Filter>02.GameObject\05.UI\99.Generator\00.UI_Generator</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\01.Player</Filter>
     </ClCompile>
@@ -366,6 +367,11 @@
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\Terrain.cpp" />
+    <ClCompile Include="..\Private\UI_Generator.cpp">
+      <Filter>02.GameObject\05.UI\99.Generator\00.UI_Generator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

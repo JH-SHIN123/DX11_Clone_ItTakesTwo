@@ -305,16 +305,11 @@ private:
 	_uint m_iJumpCount = 0;
 
 
-
 	// 컷씬이라면
 	_bool m_IsCutScene = false;
 
-	
 	// 트리거(상호작용) 진행중이라면
 	_bool m_IsTriggerPlaying = false;
-
-	
-
 
 };
 END

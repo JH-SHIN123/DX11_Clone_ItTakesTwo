@@ -40,7 +40,7 @@ HRESULT CPC_MouseButton::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
-	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x - 20.f, m_UIDesc.vScale.y - 10.f , 0.f, 0.f));
 
 	return S_OK;
 }
@@ -71,15 +71,8 @@ HRESULT CPC_MouseButton::Render()
 
 	m_pVIBuffer_RectCom->Render(2);
 
-	CUI_Generator::FONTDESC		tFontDesc;
-	tFontDesc.vPosition = { m_UIDesc.vPos.x - 7.f , m_UIDesc.vPos.y - 50.f };
-	tFontDesc.vScale = { 25.f, 25.f };
-	tFontDesc.fInterval = -5.f;
+	Render_Font();
 
-	if (!lstrcmp(m_UIDesc.szUITag, TEXT("PC_Mouse_Reduction")))
-		UI_Generator->Render_Font(TEXT("축소"), tFontDesc, m_ePlayerID);
-	else
-		UI_Generator->Render_Font(TEXT("확대"), tFontDesc, m_ePlayerID);
 
 	return S_OK;
 }
@@ -126,6 +119,19 @@ HRESULT CPC_MouseButton::Set_UIVariables_Perspective()
 		m_pVIBuffer_RectCom->Set_ShaderResourceView("g_SubTexture", m_pTextureCom->Get_ShaderResourceView(0));
 
 	return S_OK;
+}
+
+void CPC_MouseButton::Render_Font()
+{
+	CUI_Generator::FONTDESC		tFontDesc;
+	tFontDesc.vPosition = { m_UIDesc.vPos.x - 7.f , m_UIDesc.vPos.y - 50.f };
+	tFontDesc.vScale = { 25.f, 25.f };
+	tFontDesc.fInterval = -10.f;
+
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("PC_Mouse_Reduction")))
+		UI_Generator->Render_Font(TEXT("축소"), tFontDesc, m_ePlayerID);
+	else
+		UI_Generator->Render_Font(TEXT("확대"), tFontDesc, m_ePlayerID);
 }
 
 HRESULT CPC_MouseButton::Ready_Component()

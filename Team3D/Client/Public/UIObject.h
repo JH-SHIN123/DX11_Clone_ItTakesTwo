@@ -52,6 +52,7 @@ public:
 public:
 	void Set_Dead();
 	void Set_PlayerID(Player::ID ePlayerID);
+	void Set_PosX(_float fPosX);
 
 protected:
 	UI_DESC						m_UIDesc;

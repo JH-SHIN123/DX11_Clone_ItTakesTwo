@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include "..\Public\UI_Generator.h"
 
@@ -10,7 +9,6 @@
 #include "Arrowkeys_Fill.h"
 #include "UISprite.h"
 #include "Pipeline.h"
-
 
 IMPLEMENT_SINGLETON(CUI_Generator)
 
@@ -415,6 +413,29 @@ HRESULT CUI_Generator::Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc)
 	return S_OK;
 }
 
+
+void CUI_Generator::UI_RETutorial(Player::ID ePlayer, UI::TRIGGER eTrigger)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return;
+
+	if (eTrigger == UI::PC_Mouse_Enlargement)
+	{
+		for (auto UIObject : m_vecUIOBjects[ePlayer][UI::PC_Mouse_Reduction])
+			UIObject->Set_PosX(0.f);
+
+		Delete_UI(Player::Cody, UI::PC_Mouse_Enlargement);
+	}
+	else if (eTrigger == UI::PC_Mouse_Reduction)
+	{
+		for (auto UIObject : m_vecUIOBjects[ePlayer][UI::PC_Mouse_Enlargement])
+			UIObject->Set_PosX(0.f);
+
+		Delete_UI(Player::Cody, UI::PC_Mouse_Reduction);
+	}
+
+}
+
 HRESULT CUI_Generator::Add_Prototype_Texture()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -450,7 +471,6 @@ HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, con
 	return S_OK;
 }
 
-
 void CUI_Generator::Free()
 {
 	Safe_Release(m_pDevice);
@@ -480,3 +500,4 @@ void CUI_Generator::Free()
 
 	Safe_Delete_Array(m_VTXFONT);
 }
+

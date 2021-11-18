@@ -96,7 +96,6 @@ HRESULT CUISprite::Set_UIVariables_Perspective()
 	m_pVIBuffer_SpriteCom->Set_Variable("vLeftBottomUV", &vLeftBottom, sizeof(_float2));
 	m_pVIBuffer_SpriteCom->Set_Variable("vRightBottomUV", &vRightBottom, sizeof(_float2));
 
-
 	D3D11_VIEWPORT Viewport;
 
 	if (m_ePlayerID == Player::Cody)
@@ -144,54 +143,6 @@ HRESULT CUISprite::Set_UIVariables_Perspective()
 		m_pVIBuffer_SpriteCom->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
 		m_pVIBuffer_SpriteCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
 	}
-
-	//if (m_ePlayerID == Player::Cody)
-	//{
-	//	// 이거 안하면 반대쪽 뷰포트 반짝거리는 오류 발생합니다.
-	//	_int iGsOption = 0;
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
-
-	//	D3D11_VIEWPORT Viewport = m_pGameInstance->Get_ViewportInfo(1);
-
-	//	SubProjMatrix = XMMatrixIdentity();
-
-	//	// 뷰포트 하나로 합쳐질 때 Width가 0.f가 되버리면 직교할 때 0.f / 0.f 나누기 연산이 일어나서 XMSclarNearEqul 오류 발생 그거 임시방편 예외처리 입니다.
-	//	if (0.f < Viewport.Width)
-	//		ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
-
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
-	//}         
-	//else if (m_ePlayerID == Player::May)
-	//{
-	//	// 이거 안하면 반대쪽 뷰포트 반짝거리는 오류 발생합니다.
-	//	_int iGsOption = 1;
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
-
-	//	D3D11_VIEWPORT Viewport = m_pGameInstance->Get_ViewportInfo(2);
-
-	//	ProjMatrix = XMMatrixIdentity();
-
-	//	if (0.f < Viewport.Width)
-	//		SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
-
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
-	//}
-	//else if (m_ePlayerID == Player::Default)
-	//{
-	//	ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
-
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_UIWorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-	//	m_pVIBuffer_SpriteCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
-	//}
 
 	m_pVIBuffer_SpriteCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
 
