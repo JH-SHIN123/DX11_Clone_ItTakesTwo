@@ -180,13 +180,9 @@
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\Public\Arrowkeys_Fill.h" />
     <ClInclude Include="..\Public\Arrowkeys_Outline.h" />
-    <ClInclude Include="..\public\Client_Defines.h" />
-    <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\InputButton.h" />
     <ClInclude Include="..\public\InputButton_Frame.h" />
     <ClInclude Include="..\Public\Character.h" />
-    <ClInclude Include="..\public\Client_Defines.h" />
-    <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\Cody.h" />
     <ClInclude Include="..\public\DataStorage.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
@@ -195,7 +191,6 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\MainCamera.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
-    <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\PlayerMarker.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
@@ -203,7 +198,6 @@
     <ClInclude Include="..\Public\UISprite.h" />
     <ClInclude Include="..\Public\May.h" />
     <ClInclude Include="..\Public\MoonBaboon.h" />
-    <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Robot.h" />
     <ClInclude Include="..\Public\RobotHead.h" />
     <ClInclude Include="..\Public\Rocket.h" />
@@ -232,7 +226,6 @@
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\MainCamera.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
-    <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
@@ -240,7 +233,6 @@
     <ClCompile Include="..\Private\UISprite.cpp" />
     <ClCompile Include="..\Private\May.cpp" />
     <ClCompile Include="..\Private\MoonBaboon.cpp" />
-    <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />
     <ClCompile Include="..\Private\RobotHead.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />

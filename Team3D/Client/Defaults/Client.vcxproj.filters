@@ -276,6 +276,7 @@
     <ClInclude Include="..\Public\UI_Generator.h">
       <Filter>02.GameObject\05.UI\99.Generator\00.UI_Generator</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Terrain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -373,6 +374,7 @@
     <ClCompile Include="..\Private\UI_Generator.cpp">
       <Filter>02.GameObject\05.UI\99.Generator\00.UI_Generator</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -408,9 +410,10 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sprite.hlsl">
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_Font.hlsl">
-    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl">
+      <Filter>97.ShaderFiles\01.Codes</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Font.hlsl">
       <Filter>97.ShaderFiles\01.Codes</Filter>
     </FxCompile>
   </ItemGroup>
