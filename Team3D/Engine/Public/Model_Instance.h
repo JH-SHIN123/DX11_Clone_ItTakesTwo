@@ -17,14 +17,19 @@ public: /* Struct */
 		_float4x4*		pWorldMatrices;
 		_uint			iInstanceCount;
 		_float			fCullingRadius;
+		PxMaterial*		pMaterial;
 		const char*		pActorName;
 
 		tagArgumentDesc() {}
-		tagArgumentDesc(_float4x4* _pWorldMatrices, _uint _iInstanceCount, _float _fCullingRadius, const char* pName) : pWorldMatrices(_pWorldMatrices), iInstanceCount(_iInstanceCount), fCullingRadius(_fCullingRadius), pActorName(pName) {}
+		tagArgumentDesc(_float4x4* _pWorldMatrices, _uint _iInstanceCount, _float _fCullingRadius, PxMaterial* _pMaterial, const char* pName)
+			: pWorldMatrices(_pWorldMatrices), iInstanceCount(_iInstanceCount), fCullingRadius(_fCullingRadius), pMaterial(_pMaterial), pActorName(pName) {}
 	}ARG_DESC;
-
-public: /* Getter */
-	MESHACTOR_DESC	Get_MeshActorDesc() { return MESHACTOR_DESC(m_iVertexCount, m_pVectorPositions, m_iFaceCount, m_pFaces); }
+	typedef struct tagPxTriMesh
+	{
+		PxVec3*				pVertices;
+		POLYGON_INDICES32*	pFaces;
+		PxTriangleMesh*		pTriMesh;
+	}PX_TRIMESH;
 
 public: /* Setter */
 	/* For.Shader */
@@ -32,6 +37,8 @@ public: /* Setter */
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, ID3D11ShaderResourceView* pShaderResourceView);
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, _uint iMaterialIndex, aiTextureType eTextureType, _uint iTextureIndex = 0);
 	HRESULT	Set_DefaultVariables_Perspective();
+	HRESULT	Set_DefaultVariables_Shadow();
+	HRESULT	Set_DefaultVariables_ShadowDepth();
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(_uint iMaxInstanceCount, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName);
@@ -39,35 +46,44 @@ public:
 	/* For.ModelLoader */
 	HRESULT	Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials);
 	/* For.Client */
-	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0);
+	HRESULT Update_Model(_fmatrix TransformMatrix);
+	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false);
+
+public:
+	_uint	Frustum_Culling(); /* @Return : RenderCount */
+	HRESULT Bind_GBuffers(_uint iRenderCount);
+	HRESULT	Render_ModelByPass(_uint iRenderCount, _uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false); /* 텍스쳐 외부에서 따로 연결해줘야함. */
 
 private: /* Typedef */
 	typedef vector<class CMesh*>	MESHES;
 	typedef vector<MATERIAL*>		MATERIALS;
 private:
-	class CModel_Loader*		m_pModel_Loader = nullptr;
-	VTXMESH*					m_pVertices = nullptr;
-	POLYGON_INDICES32*			m_pFaces = nullptr;
-	MESHES						m_Meshes;
-	MATERIALS					m_Materials;
-	_uint						m_iMeshCount = 0;
-	_uint						m_iMaterialCount = 0;
-	vector<MESHES>				m_SortedMeshes;
+	class CModel_Loader*	m_pModel_Loader = nullptr;
+	VTXMESH*				m_pVertices = nullptr;
+	POLYGON_INDICES32*		m_pFaces = nullptr;
+	MESHES					m_Meshes;
+	MATERIALS				m_Materials;
+	_uint					m_iMeshCount = 0;
+	_uint					m_iMaterialCount = 0;
+	vector<MESHES>			m_SortedMeshes;
 	/* For.Instance */
-	_uint						m_iInstanceCount = 0;
-	_float4x4*					m_pWorldMatrices = nullptr;
-	vector<_float4x4>			m_RealTimeMatrices;
-	_float						m_fCullingRadius = 0.f;
-	PxRigidStatic**				m_ppActors = nullptr;
+	_uint					m_iInstanceCount = 0;
+	_float4x4*				m_pWorldMatrices = nullptr;
+	vector<_float4x4>		m_RealTimeMatrices;
+	_float					m_fCullingRadius = 0.f;
 	/* For.PhyX */
-	_vector*					m_pVectorPositions = nullptr;
-	char						m_szActorName[MAX_PATH];
+	PxRigidStatic**			m_ppActors = nullptr;
+	vector<PX_TRIMESH>		m_PxTriMeshes;
+	char					m_szActorName[MAX_PATH];
 	/* For.MaterialSet */
-	_uint						m_iMaterialSetCount = 0;
+	_uint					m_iMaterialSetCount = 0;
+	/*For. Check Bind Materials */
+	_uint					m_IsBindMaterials[AI_TEXTURE_TYPE_MAX];
 private:
-	HRESULT		Sort_MeshesByMaterial();
-	HRESULT		Apply_PivotMatrix(_fmatrix PivotMatrix);
-
+	HRESULT	Sort_MeshesByMaterial();
+	HRESULT	Apply_PivotMatrix(_fmatrix PivotMatrix);
+	HRESULT	Store_TriMeshes();
+	HRESULT Is_BindMaterials(_uint iMaterialIndex);
 #pragma region For_Buffer
 private: /* For.Buffer */
 	/* For.Vertices */

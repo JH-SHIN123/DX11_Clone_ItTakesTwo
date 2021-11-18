@@ -33,9 +33,9 @@ HRESULT CStatic_Env::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_Static_Env_Desc.WorldMatrix));
 
-	PxTriangleMesh* pMesh = m_pGameInstance->Create_PxMesh(m_pModelCom->Get_MeshActorDesc());
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &CStaticActor::ARG_DESC(m_pTransformCom->Get_WorldMatrix(), &PxTriangleMeshGeometry(pMesh), m_pGameInstance->Create_PxMaterial(0.5f, 0.5f, 0.f), m_Static_Env_Desc.pActorName)), E_FAIL);
-	pMesh->release();
+	//PxTriangleMesh* pMesh = m_pGameInstance->Create_PxMesh(m_pModelCom->Get_MeshActorDesc());
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &CStaticActor::ARG_DESC(m_pTransformCom->Get_WorldMatrix(), &PxTriangleMeshGeometry(pMesh), m_pGameInstance->Create_PxMaterial(0.5f, 0.5f, 0.f), m_Static_Env_Desc.pActorName)), E_FAIL);
+	//pMesh->release();
 
 	return S_OK;
 }

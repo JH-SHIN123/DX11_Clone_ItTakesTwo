@@ -21,6 +21,13 @@ const _float4 CGraphic_Device::Get_ViewportUVInfo(_uint iViewportIndex) const
 	return _float4(fLeft, fTop, fRight, fBottom);
 }
 
+const _float4 CGraphic_Device::Get_ViewportRadioInfo(_uint iViewportIndex) const
+{
+	NULL_CHECK_RETURN(iViewportIndex < VP_END, _float4());
+
+	return m_vViewportInfo[iViewportIndex];
+}
+
 const _float CGraphic_Device::Get_ViewportAspect(_uint iViewportIndex) const
 {
 	if (0.f >= m_Viewports[iViewportIndex].Height)
@@ -65,6 +72,32 @@ void CGraphic_Device::Set_GoalViewportInfo(_fvector vMainViewportInfo, _fvector 
 
 	memcpy(&m_vStartInfo[VP_MAIN], &m_vViewportInfo[VP_MAIN], sizeof(_float4));
 	memcpy(&m_vStartInfo[VP_SUB], &m_vViewportInfo[VP_SUB], sizeof(_float4));
+}
+
+void CGraphic_Device::Set_Viewport()
+{
+	m_Viewports[VP_FULL].TopLeftX = 0.f;
+	m_Viewports[VP_FULL].TopLeftY = 0.f;
+	m_Viewports[VP_FULL].Width = m_fWinSizeX;
+	m_Viewports[VP_FULL].Height = m_fWinSizeY;
+	m_Viewports[VP_FULL].MinDepth = 0.f;
+	m_Viewports[VP_FULL].MaxDepth = 1.f;
+
+	m_Viewports[VP_MAIN].TopLeftX = m_vViewportInfo[VP_MAIN].x * m_fWinSizeX;
+	m_Viewports[VP_MAIN].TopLeftY = m_vViewportInfo[VP_MAIN].y * m_fWinSizeY;
+	m_Viewports[VP_MAIN].Width = m_vViewportInfo[VP_MAIN].z * m_fWinSizeX;
+	m_Viewports[VP_MAIN].Height = m_vViewportInfo[VP_MAIN].w * m_fWinSizeY;
+	m_Viewports[VP_MAIN].MinDepth = 0.f;
+	m_Viewports[VP_MAIN].MaxDepth = 1.f;
+
+	m_Viewports[VP_SUB].TopLeftX = m_vViewportInfo[VP_SUB].x * m_fWinSizeX;
+	m_Viewports[VP_SUB].TopLeftY = m_vViewportInfo[VP_SUB].y * m_fWinSizeY;
+	m_Viewports[VP_SUB].Width = m_vViewportInfo[VP_SUB].z * m_fWinSizeX;
+	m_Viewports[VP_SUB].Height = m_vViewportInfo[VP_SUB].w * m_fWinSizeY;
+	m_Viewports[VP_SUB].MinDepth = 0.f;
+	m_Viewports[VP_SUB].MaxDepth = 1.f;
+
+	m_pDeviceContext->RSSetViewports(3, m_Viewports);
 }
 
 HRESULT CGraphic_Device::Ready_GraphicDevice(WINMODE eWinMode, HWND hWnd, _uint iWinSizeX, _uint iWinSizeY, ID3D11Device** ppDevice, ID3D11DeviceContext** ppDeviceContext)
@@ -261,32 +294,6 @@ HRESULT CGraphic_Device::Ready_DepthStencilRenderTargetView(_uint iWinSizeX, _ui
 	Safe_Release(pDepthStencil);
 
 	return S_OK;
-}
-
-void CGraphic_Device::Set_Viewport()
-{
-	m_Viewports[VP_FULL].TopLeftX	= 0.f;
-	m_Viewports[VP_FULL].TopLeftY	= 0.f;
-	m_Viewports[VP_FULL].Width		= m_fWinSizeX;
-	m_Viewports[VP_FULL].Height		= m_fWinSizeY;
-	m_Viewports[VP_FULL].MinDepth	= 0.f;
-	m_Viewports[VP_FULL].MaxDepth	= 1.f;
-
-	m_Viewports[VP_MAIN].TopLeftX	= m_vViewportInfo[VP_MAIN].x * m_fWinSizeX;
-	m_Viewports[VP_MAIN].TopLeftY	= m_vViewportInfo[VP_MAIN].y * m_fWinSizeY;
-	m_Viewports[VP_MAIN].Width		= m_vViewportInfo[VP_MAIN].z * m_fWinSizeX;
-	m_Viewports[VP_MAIN].Height		= m_vViewportInfo[VP_MAIN].w * m_fWinSizeY;
-	m_Viewports[VP_MAIN].MinDepth	= 0.f;
-	m_Viewports[VP_MAIN].MaxDepth	= 1.f;
-
-	m_Viewports[VP_SUB].TopLeftX	= m_vViewportInfo[VP_SUB].x * m_fWinSizeX;
-	m_Viewports[VP_SUB].TopLeftY	= m_vViewportInfo[VP_SUB].y * m_fWinSizeY;
-	m_Viewports[VP_SUB].Width		= m_vViewportInfo[VP_SUB].z * m_fWinSizeX;
-	m_Viewports[VP_SUB].Height		= m_vViewportInfo[VP_SUB].w * m_fWinSizeY;
-	m_Viewports[VP_SUB].MinDepth	= 0.f;
-	m_Viewports[VP_SUB].MaxDepth	= 1.f;
-
-	m_pDeviceContext->RSSetViewports(3, m_Viewports);
 }
 
 void CGraphic_Device::Free()

@@ -25,6 +25,7 @@
 #include <random>
 #include <ctime>
 #include <unordered_map>
+#include <map>
 #include <algorithm>
 #include <functional>
 
@@ -52,5 +53,6 @@ using namespace physx;
 
 /* Convenience */
 #include "MathHelper.h"
+#include "GlobalFunction.h"
 
 using namespace Engine;

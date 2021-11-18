@@ -200,6 +200,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "GlassWall_Beveled";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_GlassWall01"))
 	{
@@ -207,6 +208,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "GlassWall01";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_GlassWall01_Half"))
 	{
@@ -214,6 +216,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "GlassWall01_Half";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox_Platform"))
 	{
@@ -221,6 +224,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox_Platform";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox_Round01"))
 	{
@@ -228,6 +232,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox_Round01";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox_Round02"))
 	{
@@ -235,6 +240,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox_Round02";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox_Small"))
 	{
@@ -242,6 +248,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox_Small";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox_SmallDouble"))
 	{
@@ -249,6 +256,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox_SmallDouble";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox_SmallPilar"))
 	{
@@ -256,6 +264,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox_SmallPilar";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox_SmallQuadruple"))
 	{
@@ -263,6 +272,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox_SmallQuadruple";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox01"))
 	{
@@ -270,6 +280,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox01";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox02"))
 	{
@@ -277,6 +288,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox02";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox03"))
 	{
@@ -284,6 +296,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox03";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox04"))
 	{
@@ -291,6 +304,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox04";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox05"))
 	{
@@ -298,6 +312,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox05";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox06_Wall01"))
 	{
@@ -305,6 +320,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox06_Wall01";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox06_Wall02"))
 	{
@@ -312,6 +328,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox06_Wall02";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox06_Wall03"))
 	{
@@ -319,6 +336,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox06_Wall03";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox07"))
 	{
@@ -326,6 +344,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox07";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox08"))
 	{
@@ -333,6 +352,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox08";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox08_Chunk"))
 	{
@@ -340,6 +360,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox08_Chunk";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox08_Lid"))
 	{
@@ -347,6 +368,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox08_Lid";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox08_Variation"))
 	{
@@ -354,6 +376,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox08_Variation";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox08_WallJump"))
 	{
@@ -361,6 +384,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox08_WallJump";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox09_Stars"))
 	{
@@ -368,6 +392,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox09_Stars";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox10"))
 	{
@@ -375,6 +400,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox10";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox10_Bottom"))
 	{
@@ -382,6 +408,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox10_Bottom";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_ToyBox10_Lid"))
 	{
@@ -389,6 +416,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "ToyBox10_Lid";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_SofaCushion"))
 	{
@@ -396,6 +424,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "SofaCushion";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_Pillow"))
 	{
@@ -403,6 +432,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "Pillow";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 	else if (0 == lstrcmp(EnvDesc.szModelTag, L"Component_Model_SquarePillow"))
 	{
@@ -410,6 +440,7 @@ void CEnvironment_Generator::Add_Environment_Desc(CInstancing_Env::INS_ENV_DESC 
 		EnvDesc.ShaderPass = 0;
 		EnvDesc.Instancing_Arg.pActorName = "SquarePillow";
 		EnvDesc.Instancing_Arg.fCullingRadius = 10.f;
+		EnvDesc.Instancing_Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 	}
 }
 

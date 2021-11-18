@@ -1,4 +1,7 @@
 #include "..\Public\Model_Instance.h"
+#include "Shadow_Manager.h"
+#include "RenderTarget_Manager.h"
+#include "Graphic_Device.h"
 #include "Model_Loader.h"
 #include "Mesh.h"
 #include "Textures.h"
@@ -21,6 +24,7 @@ CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
 	, m_iMaterialCount				(rhs.m_iMaterialCount)
 	, m_SortedMeshes				(rhs.m_SortedMeshes)
 	, m_iMaterialSetCount			(rhs.m_iMaterialSetCount)
+	, m_PxTriMeshes					(rhs.m_PxTriMeshes)
 	, m_pVB							(rhs.m_pVB)
 	, m_iVertexCount				(rhs.m_iVertexCount)
 	, m_iVertexStride				(rhs.m_iVertexStride)
@@ -32,7 +36,6 @@ CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
 	, m_eTopology					(rhs.m_eTopology)
 	, m_pEffect						(rhs.m_pEffect)
 	, m_InputLayouts				(rhs.m_InputLayouts)
-	, m_pVectorPositions			(rhs.m_pVectorPositions)
 	, m_pFaces						(rhs.m_pFaces)
 	, m_pVBInstance					(rhs.m_pVBInstance)
 	, m_pInstanceVertices			(rhs.m_pInstanceVertices)
@@ -120,6 +123,45 @@ HRESULT CModel_Instance::Set_DefaultVariables_Perspective()
 	return S_OK;
 }
 
+HRESULT CModel_Instance::Set_DefaultVariables_Shadow()
+{
+	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
+	_float4	vViewportUVInfo;
+	vViewportUVInfo = pGraphicDevice->Get_ViewportRadioInfo(CGraphic_Device::VP_MAIN);
+	Set_Variable("g_vMainViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
+	vViewportUVInfo = pGraphicDevice->Get_ViewportRadioInfo(CGraphic_Device::VP_SUB);
+	Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
+
+	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();
+	_matrix ShadowTransform[MAX_CASCADES]; /* Shadow View * Shadow Proj * NDC */
+	pShadowManager->Get_CascadeShadowTransformsTranspose(CShadow_Manager::SHADOW_MAIN, ShadowTransform);
+	Set_Variable("g_ShadowTransforms_Main", ShadowTransform, sizeof(_matrix) * MAX_CASCADES);
+	pShadowManager->Get_CascadeShadowTransformsTranspose(CShadow_Manager::SHADOW_SUB, ShadowTransform);
+	Set_Variable("g_ShadowTransforms_Sub", ShadowTransform, sizeof(_matrix) * MAX_CASCADES);
+	Set_Variable("g_CascadeEnds", (void*)pShadowManager->Get_CascadedEnds(), sizeof(_float) * (MAX_CASCADES + 1));
+
+	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
+	Set_ShaderResourceView("g_CascadedShadowDepthTexture", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_CascadedShadow_Depth")));
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Set_DefaultVariables_ShadowDepth()
+{
+	_matrix ShadowViewProj[MAX_CASCADES];
+
+	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();
+
+	pShadowManager->Get_CascadeShadowViewProjTranspose(CShadow_Manager::SHADOW_MAIN, ShadowViewProj);
+	Set_Variable("g_ShadowTransforms_Main", ShadowViewProj, sizeof(_matrix) * MAX_CASCADES);
+
+	pShadowManager->Get_CascadeShadowViewProjTranspose(CShadow_Manager::SHADOW_SUB, ShadowViewProj);
+	Set_Variable("g_ShadowTransforms_Sub", ShadowViewProj, sizeof(_matrix) * MAX_CASCADES);
+
+	return S_OK;
+}
+
+
 HRESULT CModel_Instance::NativeConstruct_Prototype(_uint iMaxInstanceCount, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
 	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
@@ -131,6 +173,7 @@ HRESULT CModel_Instance::NativeConstruct_Prototype(_uint iMaxInstanceCount, cons
 
 	FAILED_CHECK_RETURN(m_pModel_Loader->Load_ModelFromFile(m_pDevice, m_pDeviceContext, CModel_Loader::TYPE_INSTANCE, this, pModelFilePath, pModelFileName, iMaterialSetCount), E_FAIL);
 	FAILED_CHECK_RETURN(Apply_PivotMatrix(PivotMatrix), E_FAIL);
+	FAILED_CHECK_RETURN(Store_TriMeshes(), E_FAIL);
 	FAILED_CHECK_RETURN(Create_VIBuffer(pShaderFilePath, pTechniqueName), E_FAIL);
 	FAILED_CHECK_RETURN(Sort_MeshesByMaterial(), E_FAIL);
 
@@ -143,6 +186,7 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 
 	NULL_CHECK_RETURN(pArg, E_FAIL);
 
+	CPhysX* pPhysX = CPhysX::GetInstance();
 	ARG_DESC ArgDesc = *static_cast<ARG_DESC*>(pArg);
 
 	m_pWorldMatrices = ArgDesc.pWorldMatrices;
@@ -152,33 +196,34 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 	m_RealTimeMatrices.resize(m_iInstanceCount, MH_XMFloat4x4Identity());
 	m_fCullingRadius = ArgDesc.fCullingRadius;
 
-	m_ppActors = new PxRigidStatic*[m_iInstanceCount];
-	CPhysX* pPhysX = CPhysX::GetInstance();
-
 	strcpy(m_szActorName, ArgDesc.pActorName);
-
-	PxTriangleMesh* TriMesh = pPhysX->Create_Mesh(Get_MeshActorDesc());
+	m_ppActors = new PxRigidStatic*[m_iInstanceCount * m_iMeshCount];
 
 	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
 	{
 		_vector vScale, vRotQuat, vPosition;
 		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_pWorldMatrices[iIndex]));
 
-		PxTriangleMeshGeometry geom(TriMesh);
-		geom.scale = PxMeshScale(MH_PxVec3(vScale));
+		for (_uint iMeshIndex = 0; iMeshIndex < m_iMeshCount; ++iMeshIndex)
+		{
+			_uint iActorIndex = iIndex + iMeshIndex * m_iInstanceCount;
 
-		m_ppActors[iIndex] = pPhysX->Create_StaticActor(MH_PxTransform(vRotQuat, vPosition), geom, pPhysX->Create_Material(0.5f, 0.5f, 0.5f), m_szActorName);
-		NULL_CHECK_RETURN(m_ppActors[iIndex], E_FAIL);
+			PxTriangleMeshGeometry geom(m_PxTriMeshes[iMeshIndex].pTriMesh, PxMeshScale(MH_PxVec3(vScale)));
 
-		PxShape* Shape;
-		m_ppActors[iIndex]->getShapes(&Shape, 1);
-		Shape->setContactOffset(0.02f);
-		Shape->setRestOffset(-0.5f);
+			m_ppActors[iActorIndex] = pPhysX->Create_StaticActor(MH_PxTransform(vRotQuat, vPosition), geom, ArgDesc.pMaterial, m_szActorName);
+			NULL_CHECK_RETURN(m_ppActors[iActorIndex], E_FAIL);
 
-		pPhysX->Add_ActorToScene(m_ppActors[iIndex]);
+			PxShape* Shape;
+			m_ppActors[iActorIndex]->getShapes(&Shape, 1);
+			Shape->setContactOffset(0.02f);
+			Shape->setRestOffset(-0.5f);
+			//
+			Shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+
+			pPhysX->Add_ActorToScene(m_ppActors[iActorIndex]);
+			Setup_PxFiltering(m_ppActors[iActorIndex], FilterGroup::eSTATIC, 0);
+		}
 	}
-
-	TriMesh->release();
 
 	return S_OK;
 }
@@ -199,7 +244,26 @@ HRESULT CModel_Instance::Bring_Containers(VTXMESH * pVertices, _uint iVertexCoun
 	return S_OK;
 }
 
-HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
+HRESULT CModel_Instance::Update_Model(_fmatrix TransformMatrix)
+{
+	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+	{
+		XMStoreFloat4x4(&m_pWorldMatrices[iIndex], XMLoadFloat4x4(&m_pWorldMatrices[iIndex]) * TransformMatrix);
+
+		_vector vScale, vRotQuat, vPosition;
+		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_pWorldMatrices[iIndex]));
+
+		for (_uint iMeshIndex = 0; iMeshIndex < m_iMeshCount; ++iMeshIndex)
+		{
+			_uint iActorIndex = iIndex + iMeshIndex * m_iInstanceCount;
+			m_ppActors[iActorIndex]->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 
@@ -231,12 +295,69 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
 
 	for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
 	{
-		Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
+		/* Write Shadow - ÅØ½ºÃÄ ¿¬°á¾ÈÇØÁàµµ µÊ */
+		if (false == bShadowWrite) {
+			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
+			Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+
+			FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
+		}
+
 		FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
-			m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_StratFaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
+			m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
 	}
+
+	return S_OK;
+}
+
+_uint CModel_Instance::Frustum_Culling()
+{
+	/* For.Culling */
+	_uint iRenderCount = 0;
+
+	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+	{
+		if (CFrustum::GetInstance()->IsIn_WorldSpace(MH_GetXMPosition(m_pWorldMatrices[iIndex]), m_fCullingRadius))
+			m_RealTimeMatrices[iRenderCount++] = m_pWorldMatrices[iIndex];
+	}
+
+	return iRenderCount;
+}
+
+HRESULT CModel_Instance::Bind_GBuffers(_uint iRenderCount)
+{
+	/* For.UpdateBuffer */
+	D3D11_MAPPED_SUBRESOURCE MappedSubResource;
+
+	m_pDeviceContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedSubResource);
+	memcpy(MappedSubResource.pData, &m_RealTimeMatrices[0], sizeof(VTXMATRIX) * iRenderCount);
+	m_pDeviceContext->Unmap(m_pVBInstance, 0);
+
+	/* For.Render */
+	ID3D11Buffer* pBuffers[2] = { m_pVB, m_pVBInstance };
+	_uint iStrides[2] = { sizeof(VTXMESH), sizeof(VTXMATRIX) };
+	_uint iOffsets[2] = { 0, 0 };
+
+	m_pDeviceContext->IASetVertexBuffers(0, m_iVertexBufferCount, pBuffers, iStrides, iOffsets);
+	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
+	m_pDeviceContext->IASetPrimitiveTopology(m_eTopology);
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Render_ModelByPass(_uint iRenderCount, _uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite)
+{
+	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
+
+	if (false == bShadowWrite)
+		FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
+	for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
+		m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
 
 	return S_OK;
 }
@@ -259,16 +380,59 @@ HRESULT CModel_Instance::Sort_MeshesByMaterial()
 
 HRESULT CModel_Instance::Apply_PivotMatrix(_fmatrix PivotMatrix)
 {
-	m_pVectorPositions = new _vector[m_iVertexCount];
-
 	for (_uint iIndex = 0; iIndex < m_iVertexCount; ++iIndex)
 	{
 		_vector	vAdjustedPosition = XMVector3TransformCoord(XMLoadFloat3(&m_pVertices[iIndex].vPosition), PivotMatrix);
 		XMStoreFloat3(&m_pVertices[iIndex].vPosition, vAdjustedPosition);
 		_vector	vAdjustedNormal = XMVector3TransformNormal(XMLoadFloat3(&m_pVertices[iIndex].vNormal), PivotMatrix);
 		XMStoreFloat3(&m_pVertices[iIndex].vNormal, vAdjustedNormal);
-		memcpy(&m_pVectorPositions[iIndex], &XMVectorSetW(vAdjustedPosition, 1.f), sizeof(_vector));
 	}
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Store_TriMeshes()
+{
+	CPhysX* pPhysX = CPhysX::GetInstance();
+
+	m_PxTriMeshes.reserve(m_iMeshCount);
+
+	for (_uint iIndex = 0; iIndex < m_iMeshCount; ++iIndex)
+	{
+		PX_TRIMESH TriMesh;
+
+		_uint iMeshStartVertexIndex = m_Meshes[iIndex]->Get_StartVertexIndex();
+		_uint iMeshStartFaceIndex = m_Meshes[iIndex]->Get_StratFaceIndex();
+		_uint iMeshVertexCount = (iIndex + 1 == m_iMeshCount) ? m_iVertexCount - iMeshStartVertexIndex : m_Meshes[iIndex + 1]->Get_StartVertexIndex() - iMeshStartVertexIndex;
+		_uint iMeshFaceCount = m_Meshes[iIndex]->Get_FaceCount();
+
+		TriMesh.pVertices = new PxVec3[iMeshVertexCount];
+		TriMesh.pFaces = new POLYGON_INDICES32[iMeshVertexCount];
+
+		for (_uint iVertexIndex = 0; iVertexIndex < iMeshVertexCount; ++iVertexIndex)
+			memcpy(&TriMesh.pVertices[iVertexIndex], &m_pVertices[iMeshStartVertexIndex + iVertexIndex], sizeof(PxVec3));
+		for (_uint iFaceIndex = 0; iFaceIndex < iMeshFaceCount; ++iFaceIndex)
+			memcpy(&TriMesh.pFaces[iFaceIndex], &m_pFaces[iMeshStartFaceIndex + iFaceIndex], sizeof(POLYGON_INDICES32));
+		TriMesh.pTriMesh = pPhysX->Create_Mesh(MESHACTOR_DESC(iMeshVertexCount, TriMesh.pVertices, iMeshFaceCount, TriMesh.pFaces));
+
+		m_PxTriMeshes.emplace_back(TriMesh);
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Is_BindMaterials(_uint iMaterialIndex)
+{
+	ZeroMemory(m_IsBindMaterials, sizeof(m_IsBindMaterials));
+
+	for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
+	{
+		if (nullptr == m_Materials[iMaterialIndex]->pMaterialTexture[i])
+			m_IsBindMaterials[i] = false;
+		else
+			m_IsBindMaterials[i] = true;
+	}
+	Set_Variable("g_IsMaterials", m_IsBindMaterials, sizeof(m_IsBindMaterials));
 
 	return S_OK;
 }
@@ -310,6 +474,7 @@ HRESULT CModel_Instance::Create_VIBuffer(const _tchar * pShaderFilePath, const c
 	m_iFaceStride = sizeof(POLYGON_INDICES32);
 	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	Create_Buffer(&m_pIB, m_iFaceCount * m_iFaceStride, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, 0, m_pFaces);
+	Safe_Delete_Array(m_pFaces);
 
 	/* For.InstanceBuffer */
 	m_pInstanceVertices = new VTXMATRIX[m_iMaxInstanceCount];
@@ -447,9 +612,15 @@ void CModel_Instance::Free()
 	if (false == m_isClone)
 	{
 		Safe_Release(m_pModel_Loader);
-		Safe_Delete_Array(m_pVectorPositions);
-		Safe_Delete_Array(m_pFaces);
 		Safe_Delete_Array(m_pInstanceVertices);
+
+		for (auto& TriMesh : m_PxTriMeshes)
+		{
+			Safe_Delete_Array(TriMesh.pVertices);
+			Safe_Delete_Array(TriMesh.pFaces);
+			TriMesh.pTriMesh->release();
+		}
+		m_PxTriMeshes.clear();
 	}
 
 	Safe_Delete_Array(m_pWorldMatrices);
@@ -457,7 +628,9 @@ void CModel_Instance::Free()
 
 	if (true == m_isClone)
 	{
-		for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+		_uint iActorCount = m_iInstanceCount * m_iMeshCount;
+
+		for (_uint iIndex = 0; iIndex < iActorCount; ++iIndex)
 			CPhysX::GetInstance()->Remove_Actor(&m_ppActors[iIndex]);
 		Safe_Delete_Array(m_ppActors);
 	}

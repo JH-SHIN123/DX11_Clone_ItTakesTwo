@@ -1,0 +1,108 @@
+#include "stdafx.h"
+#include "..\public\RobotHead.h"
+#include "GameInstance.h"
+#include "DataStorage.h"
+CRobotHead::CRobotHead(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+	: CGameObject(pDevice, pDeviceContext)
+{
+}
+
+CRobotHead::CRobotHead(const CRobotHead & rhs)
+	: CGameObject(rhs)
+{
+}
+
+HRESULT CRobotHead::NativeConstruct_Prototype()
+{
+	CGameObject::NativeConstruct_Prototype();
+
+	return S_OK;
+}
+
+HRESULT CRobotHead::NativeConstruct(void * pArg)
+{
+	CGameObject::NativeConstruct(pArg);
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_RobotHead"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(15.f, 4.f, 20.f, 1.f));
+	m_pModelCom->Set_Animation(0);
+	m_pModelCom->Set_NextAnimIndex(0);
+	
+	return S_OK;
+}
+
+_int CRobotHead::Tick(_double dTimeDelta)
+{
+	CGameObject::Tick(dTimeDelta);
+
+	m_pModelCom->Update_Animation(dTimeDelta);
+
+	return NO_EVENT;
+}
+
+_int CRobotHead::Late_Tick(_double dTimeDelta)
+{
+	CGameObject::Tick(dTimeDelta);
+
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+}
+
+HRESULT CRobotHead::Render()
+{
+	CGameObject::Render();
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Set_DefaultVariables_Shadow();
+	m_pModelCom->Render_Model(0);
+
+	return S_OK;
+}
+
+HRESULT CRobotHead::Render_ShadowDepth()
+{
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+
+	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+
+	// Skinned: 2 / Normal: 3
+	m_pModelCom->Render_Model(2, 0, true);
+	return S_OK; 
+}
+
+CRobotHead * CRobotHead::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+{
+	CRobotHead* pInstance = new CRobotHead(pDevice, pDeviceContext);
+
+	if (FAILED(pInstance->NativeConstruct_Prototype()))
+	{
+		MSG_BOX("Failed to Create Instance - CRobotHead");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CGameObject * CRobotHead::Clone_GameObject(void * pArg)
+{
+	CRobotHead* pInstance = new CRobotHead(*this);
+
+	if (FAILED(pInstance->NativeConstruct(pArg)))
+	{
+		MSG_BOX("Failed to Clone Instance - CRobotHead");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CRobotHead::Free()
+{
+	Safe_Release(m_pTransformCom);
+	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pModelCom);
+
+	CGameObject::Free();
+}

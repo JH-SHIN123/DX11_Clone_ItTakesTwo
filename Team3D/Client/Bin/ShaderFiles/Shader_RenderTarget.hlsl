@@ -1,12 +1,7 @@
 ////////////////////////////////////////////////////////////
+#include "Shader_Include.hpp"
 
 texture2D g_DiffuseTexture;
-
-sampler DiffuseSampler = sampler_state
-{
-	AddressU = wrap;
-	AddressV = wrap;
-};
 
 ////////////////////////////////////////////////////////////
 
@@ -49,29 +44,12 @@ PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	Out.vColor = g_DiffuseTexture.Sample(Wrap_Sampler, In.vTexUV);
 
 	return Out;
 }
 
 ////////////////////////////////////////////////////////////
-
-RasterizerState Rasterizer_Solid
-{
-	FillMode = solid;
-	CullMode = back;
-	FrontCounterClockwise = false;
-};
-
-DepthStencilState DepthStecil_ZEnable
-{
-	DepthEnable = false;	
-};
-
-BlendState BlendState_None
-{
-	BlendEnable[0] = false;
-};
 
 ////////////////////////////////////////////////////////////
 
@@ -80,7 +58,7 @@ technique11		DefaultTechnique
 	pass Default
 	{		
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_ZEnable, 0);
+		SetDepthStencilState(DepthStecil_No_ZTest, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		GeometryShader = NULL;
 		VertexShader = compile vs_5_0 VS_MAIN();
