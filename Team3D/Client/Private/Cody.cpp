@@ -30,11 +30,9 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	Ready_Component();
 
 	m_pModelCom->Set_Animation(ANI_C_MH);
-<<<<<<< HEAD
-	CDataStorage::GetInstance()->Set_CodyPtr(this);	
-=======
+
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
->>>>>>> main
+
 	Add_LerpInfo_To_Model();
 	 
 

@@ -32,11 +32,9 @@ public:
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
-<<<<<<< HEAD
 
-=======
 private:
->>>>>>> main
+
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;

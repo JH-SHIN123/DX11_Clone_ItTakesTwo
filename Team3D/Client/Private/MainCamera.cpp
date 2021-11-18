@@ -1,15 +1,11 @@
 #include "stdafx.h"
 #include "..\public\MainCamera.h"
 #include "GameInstance.h"
-<<<<<<< HEAD
 #include"ControllableActor.h"
-
 #include"Level.h"
 #include"DataStorage.h"
-=======
-#include "DataStorage.h"
 #include "Cody.h"
->>>>>>> main
+
 
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
@@ -65,39 +61,26 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	m_eCurCamEffect = CamEffect::CamEffect_None;
 	m_bPhsXCollision = false;
 	
-<<<<<<< HEAD
+
 	CDataStorage::GetInstance()->Set_MainCamPtr(this);
 
 	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_SMALL], MakeViewMatrix(_float3(0.f, 3.f, -4.f), _float3(0.f, 1.f, 0.f)));
 	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_MEDIUM], MakeViewMatrix(_float3(0.f, 8.f, -7.f), _float3(0.f, 2.f, 0.f)));
 	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_LARGE], MakeViewMatrix(_float3(0.f, 7.f, -12.f), _float3(0.f, 3.f, 2.f)));
-=======
-	m_eCurCamMode = Cam_Free;
-	CDataStorage::GetInstance()->Set_MainCamPtr(this);
->>>>>>> main
+
 
 	return S_OK;
 }
 
 _int CMainCamera::Tick(_double dTimeDelta)
 {
-<<<<<<< HEAD
-=======
-	//if (m_pGameInstance->Key_Pressing(DIK_W))
-	//	m_pTransformCom->Go_Straight(dTimeDelta);
-	//if (m_pGameInstance->Key_Pressing(DIK_A))
-	//	m_pTransformCom->Go_Left(dTimeDelta);
-	//if (m_pGameInstance->Key_Pressing(DIK_S))
-	//	m_pTransformCom->Go_Backward(dTimeDelta);
-	//if (m_pGameInstance->Key_Pressing(DIK_D))
-	//	m_pTransformCom->Go_Right(dTimeDelta);
+
 	if (m_pTargetObj == nullptr)
 	{
 		m_pTargetObj = CDataStorage::GetInstance()->GetCody();
 		if (m_pTargetObj)
 			Safe_AddRef(m_pTargetObj);
 	}
->>>>>>> main
 
 	if (nullptr == m_pCamHelper)
 		return EVENT_ERROR;
@@ -114,7 +97,6 @@ _int CMainCamera::Tick(_double dTimeDelta)
 	switch ( m_pCamHelper->Tick(dTimeDelta,CFilm::LScreen))
 	{
 	case CCam_Helper::CamHelperState::Helper_None:
-		m_fChangeCamModeTime <=1.f ? m_eCurCamMode = CamMode::Cam_AutoToFree : m_eCurCamMode = CamMode::Cam_Free;
 		iResult = Tick_CamHelperNone(dTimeDelta);
 		break;
 	case CCam_Helper::CamHelperState::Helper_Act:
@@ -226,6 +208,7 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 	m_pTransformCom->Set_WorldMatrix(matWorld);
 	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
+	//마우스 체크
 	_long MouseMove = 0;
 
 	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
@@ -245,7 +228,7 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 			m_fMouseRev[Rev_Prependicul] = -90.f;
 	}
 
-	//CameraDist
+	//카메라 회전에 따른 거리체크
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 	_vector vPos = XMLoadFloat4x4(&m_matPlayerSizeOffSetMatrix[m_eCurPlayerSize]).r[3];
 	switch (m_eCurPlayerSize)
@@ -268,27 +251,30 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 	case Client::CMainCamera::CamEffect::CamEffect_None:
 		break;
 	case Client::CMainCamera::CamEffect::CamEffect_Shake:
-		XMStoreFloat4x4(&m_matBeginWorld,Tick_CamEffect_ShakeCamera(dTimeDelta));
+		m_pTransformCom->Set_WorldMatrix(Tick_CamEffect_ShakeCamera(dTimeDelta));
+		XMStoreFloat4x4(&m_matBeginWorld,m_pTransformCom->Get_WorldMatrix());
 		break;
 	}
 	
 
+
+//카메라 움직임이 끝나고 체크할것들
 	_matrix matRevX = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(m_fMouseRev[Rev_Prependicul]));
 	_matrix matRevY = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fMouseRev[Rev_Holizontal]));
 	_matrix matTrans = XMMatrixTranslation(XMVectorGetX(vPlayerPos), XMVectorGetY(vPlayerPos), XMVectorGetZ(vPlayerPos));
 	_matrix matRev = matRevX * matRevY* matTrans;
 
 	
-#pragma region CamMove
-	_vector vResultPos = XMVectorZero();
-	m_bPhsXCollision = OffSetPhsX(dTimeDelta, matRev , &vResultPos); //로컬에서 공전후에 충돌검사함
-	if (true == m_bPhsXCollision)
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
-		m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vResultPos), XMVectorGetY(vResultPos), XMVectorGetZ(vResultPos)));
-	}
-	else
-		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matBeginWorld));
+#pragma region PhsyX Check
+	//_vector vResultPos = XMVectorZero();
+	//m_bPhsXCollision = OffSetPhsX(dTimeDelta, matRev , &vResultPos); //로컬에서 공전후에 충돌검사함
+	//if (true == m_bPhsXCollision)
+	//{
+	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
+	//	//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vResultPos), XMVectorGetY(vResultPos), XMVectorGetZ(vResultPos)));
+	//}
+	//else
+	//	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matBeginWorld));
 #pragma endregion
 
 	XMStoreFloat4x4(&m_matPreRev, matRev);
@@ -419,31 +405,41 @@ _fmatrix CMainCamera::MakeViewMatrix(_float3 Eye, _float3 At)
 void CMainCamera::StopCamEffect()
 {
 	m_eCurCamEffect = CamEffect::CamEffect_None;
-
-	m_dCamEffectTime = 0.0;
-	m_dCamEffectDuration = 0.0;
-	//For.ReSetCamEffect_Shake
-	m_fShakeCycleLength = 0.0f;
-	m_fShakeMaxHeight = 0.0f;
-	m_fShakeMaxWidth = 0.0f;
+	
 }
 
-void CMainCamera::StartCamEffect_Shake(CamEffect eCamEffect, _double dDuration, _float fCycleLength, _float fMaxWidth, _float fMaxHeight)
+void CMainCamera::StartCamEffect_Shake(_float fDecaysec)
 {
-	if (m_eCurCamEffect == eCamEffect)
+	if (m_eCurCamEffect == CamEffect::CamEffect_Shake)
 		return;
+	m_eCurCamEffect = CamEffect::CamEffect_Shake;
+	m_fDecaysec = fDecaysec;
 	m_dCamEffectTime = 0.0;
-	m_dCamEffectDuration = dDuration;
-	m_eCurCamEffect = eCamEffect;
-	m_fShakeCycleLength = fCycleLength;
-	m_fShakeMaxHeight = fMaxHeight;
-	m_fShakeMaxWidth = fMaxWidth;
+
 
 }
 
-_fmatrix CMainCamera::Tick_CamEffect_ShakeCamera(_double dTimeDelta)
+_fmatrix CMainCamera::Tick_CamEffect_ShakeCamera(_double dTimeDelta) //Gara
 {
-	return _matrix();
+	_matrix matLocal = XMLoadFloat4x4(&m_matBeginWorld);
+	_vector vPosition = matLocal.r[3];
+
+	m_dCamEffectTime +=dTimeDelta * 2.f;
+
+	if (m_dCamEffectTime < m_fDecaysec)
+	{
+		vPosition = XMVectorSetY(vPosition,
+			XMVectorGetY(vPosition) + sinf(m_dCamEffectTime * 8.f) * pow(0.5f, m_dCamEffectTime));
+			//(sinf(2.f * MATH_PI * m_dCamEffectTime * 2.f) * 30.f +
+			//	//Phase
+			//	sinf(2.f * MATH_PI * m_dCamEffectTime * 7 + 0.2f) * 10.1f +
+			//	//amp														//decaysec
+			//	sinf(2.f * MATH_PI * m_dCamEffectTime * 15 + 0.5f) * 1.1f) * (m_fDecaysec - m_dCamEffectTime) / m_fDecaysec);
+	}
+	else
+		m_eCurCamEffect = CamEffect::CamEffect_None;
+	matLocal.r[3] = vPosition;
+	return matLocal;
 }
 
 
@@ -456,7 +452,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		if (m_pTargetObj)
 			Safe_AddRef(m_pTargetObj);
 	}
-
+	//외부에서 상태 설정 구간
 
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
@@ -469,8 +465,12 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		m_pCamHelper->Start_Film(L"Eye_Bezier4", CFilm::LScreen);
 		return NO_EVENT;
 	}
+	if (m_pGameInstance->Key_Down(DIK_T))
+	{
+		StartCamEffect_Shake(5.f);
+	}
 
-
+	m_fChangeCamModeTime <= 1.f ? m_eCurCamMode = CamMode::Cam_AutoToFree : m_eCurCamMode = CamMode::Cam_Free;
 
 	_int iResult = NO_EVENT;
 	switch (m_eCurCamMode)

@@ -38,6 +38,7 @@ public:
 		ViewPortOption	eViewPortOption = ViewPortOption::End;
 	}CamNode;
 
+	
 public:
 	explicit CFilm();
 	virtual ~CFilm() = default;

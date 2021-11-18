@@ -1,10 +1,6 @@
 #include "stdafx.h"
 #include "..\public\UFO.h"
 #include "GameInstance.h"
-<<<<<<< HEAD
-=======
-#include "DataStorage.h"
->>>>>>> main
 #include "May.h"
 #include "Cody.h"
 #include"DataStorage.h"

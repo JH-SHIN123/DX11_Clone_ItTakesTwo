@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "..\public\Player.h"
 #include "GameInstance.h"
-<<<<<<< HEAD
-=======
+
 #include "DataStorage.h"
->>>>>>> main
+
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -37,13 +36,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 
 	m_pModelCom->Set_NextAnimIndex(0);
 	
-<<<<<<< HEAD
 
-	//CDataStorage::GetInstance()->Set_Player(this);
-
-=======
-	//CDataStorage::GetInstance()->Set_PlayerPtr(this);
->>>>>>> main
 
 	PxCapsuleControllerDesc CapsuleControllerDesc;
 	CapsuleControllerDesc.setToDefault();
@@ -118,10 +111,7 @@ HRESULT CPlayer::Render()
 	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(0);
 
-<<<<<<< HEAD
-	
-=======
->>>>>>> main
+
 	return S_OK;
 }
 

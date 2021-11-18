@@ -26,15 +26,14 @@ HRESULT CLevel_Stage::NativeConstruct()
 
 	/* For.Interactive Objects */
 	FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
-<<<<<<< HEAD
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE,L"Layer_Instance",Level::LEVEL_STAGE,TEXT("GameObject_TileBox")), E_FAIL);
-=======
+
+
 	FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Robot(TEXT("Layer_Robot")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_RobotHead(TEXT("Layer_RobotHead")), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Map", Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
->>>>>>> main
+
 
 	return S_OK;
 }
@@ -59,8 +58,7 @@ HRESULT CLevel_Stage::Render()
 	return S_OK;
 }
 
-<<<<<<< HEAD
-=======
+
 HRESULT CLevel_Stage::Ready_Lights()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -84,7 +82,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 
 	return S_OK;
 }
->>>>>>> main
+
 
 HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 {

@@ -59,7 +59,7 @@ public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 private:
 	void	StopCamEffect();
-	void	StartCamEffect_Shake(CamEffect eCamEffect,_double dDuration,_float fCycleLength,_float fMaxWidth,_float fMaxHeight);
+	void	StartCamEffect_Shake(_float fDecaysec);
 	_fmatrix	Tick_CamEffect_ShakeCamera(_double dTimeDelta);
 private:
 	CGameObject* m_pTargetObj = nullptr;
@@ -88,12 +88,11 @@ private:
 	_float4x4	m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_END];
 
 	CamEffect	m_eCurCamEffect = CamEffect::CamEffect_End;
-	_double		m_dCamEffectTime = 0.0;
-	_double		m_dCamEffectDuration = 0.0;
+	_double		m_dCamEffectTime = 0.f;
+
 	//For.CameraShake
-	_float		m_fShakeCycleLength = 0.f;
-	_float		m_fShakeMaxWidth = 0.f;
-	_float		m_fShakeMaxHeight = 0.f;
+	_float		m_fDecaysec = 0.f;
+
 };
 
 END
