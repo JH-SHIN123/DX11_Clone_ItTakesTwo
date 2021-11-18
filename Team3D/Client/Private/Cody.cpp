@@ -93,22 +93,42 @@ _int CCody::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
-	m_IsFalling = m_pActorCom->Get_IsFalling();
-	m_pActorCom->Set_GroundPound(m_bGroundPound);
-
-	if((m_bRoll == false || m_bSprint == true))
-		KeyInput(dTimeDelta);
-	if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
+	//Test 
+	if (m_pGameInstance->Key_Down(DIK_E))
 	{
-		TriggerCheck(dTimeDelta);
-		Sprint(dTimeDelta);
-		Move(dTimeDelta);
-		if(m_eCurPlayerSize != SIZE_LARGE)
-		Roll(dTimeDelta);
-		Jump(dTimeDelta);
-		Change_Size(dTimeDelta);
+		m_IsTriggerPlaying = true;
 	}
-	Ground_Pound(dTimeDelta);
+	//Test
+
+#pragma region BasicActions
+	if (m_IsTriggerPlaying == false)
+	{
+		m_IsFalling = m_pActorCom->Get_IsFalling();
+		m_pActorCom->Set_GroundPound(m_bGroundPound);
+
+		if ((m_bRoll == false || m_bSprint == true))
+			KeyInput(dTimeDelta);
+		if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
+		{
+			Sprint(dTimeDelta);
+			Move(dTimeDelta);
+			if (m_eCurPlayerSize != SIZE_LARGE)
+				Roll(dTimeDelta);
+			Jump(dTimeDelta);
+			Change_Size(dTimeDelta);
+		}
+		Ground_Pound(dTimeDelta);
+	}
+#pragma endregion
+
+#pragma region TriggerActions
+	else
+	{
+
+	}
+
+
+#pragma endregion
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
@@ -1122,8 +1142,6 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 }
 void CCody::TriggerCheck(_double dTimeDelta)
 {
-	//m_bMove = false;
-	//m_bRoll = false;
 }
 
 

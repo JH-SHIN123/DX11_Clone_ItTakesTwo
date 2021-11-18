@@ -318,8 +318,5 @@ private:
 	// 트리거(상호작용) 진행중이라면
 	_bool m_IsTriggerPlaying = false;
 
-	
-
-
 };
 END

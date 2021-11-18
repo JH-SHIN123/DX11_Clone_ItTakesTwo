@@ -101,11 +101,20 @@ void CSecurityCamera::Find_Target(_double dTimeDelta)
 		m_pTargetTransform = (CTransform*)(dynamic_cast<CMay*>(DATABASE->GetMay()))->Get_Transform();;
 
 }
-
+ 
 void CSecurityCamera::Watch_Target(_double dTimeDelta)
 {
 	_vector TargetPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION);
 	m_pTransformCom->Rotate_ToTarget(TargetPos);
+	//_vector vDir = TargetPos -  m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//vDir = XMVector3Normalize(vDir,);
+	
+	//_vector DirHorizon = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
+	//_vector DirVertical = XMVector3Normalize(XMVectorSetZ(XMVectorSetX(vDir, 0.f), 0.f));
+
+	//m_pTransformCom->RotateYawDirectionOnLand(DirHorizon, dTimeDelta);
+	//m_pTransformCom->RotatePitchDirectionOnLand(DirVertical, dTimeDelta);
+
 
 }
 
