@@ -160,9 +160,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.CodySize">
       <UniqueIdentifier>{f386c037-a6cf-4f8a-b0c5-48b528993dc8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97.ShaderFiles\01.Codes\00.Effect">
-      <UniqueIdentifier>{61c62b4e-19bc-4143-8975-a999c1978874}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\98.Interactive_Objects">
       <UniqueIdentifier>{80b9488d-6107-4ad3-ab4d-9ba4db640228}</UniqueIdentifier>
     </Filter>
@@ -180,6 +177,9 @@
     </Filter>
     <Filter Include="97.ShaderFiles\Include">
       <UniqueIdentifier>{87727c9a-6160-4971-88de-e99cb7b2333a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles\00.Effect">
+      <UniqueIdentifier>{3c9102f7-871d-4ebb-8efa-a1b2b8ffdb02}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -245,9 +245,6 @@
     </ClInclude>
     <ClInclude Include="..\public\Test_EnvObject.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
-    </ClInclude>
-    <ClInclude Include="Effect_Dash.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MoonBaboon.h">
       <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
@@ -327,6 +324,9 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_Dash.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -379,9 +379,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Test_EnvObject.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
-    </ClCompile>
-    <ClCompile Include="Effect_Dash.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MoonBaboon.cpp">
       <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
@@ -446,6 +443,9 @@
     <ClCompile Include="..\Private\RobotHead.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Effect_Dash.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -478,17 +478,17 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
+      <Filter>97.ShaderFiles\00.Effect</Filter>
+    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl">
-      <Filter>97.ShaderFiles\01.Codes\00.Effect</Filter>
+      <Filter>97.ShaderFiles\00.Effect</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect.hlsl">
-      <Filter>97.ShaderFiles\01.Codes\00.Effect</Filter>
+      <Filter>97.ShaderFiles\00.Effect</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_RectCustom.hlsl">
-      <Filter>97.ShaderFiles\01.Codes\00.Effect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
-      <Filter>97.ShaderFiles\01.Codes\00.Effect</Filter>
+      <Filter>97.ShaderFiles\00.Effect</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

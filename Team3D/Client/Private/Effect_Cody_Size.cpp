@@ -138,7 +138,7 @@ void CEffect_Cody_Size::Resizing_MS(_double TimeDelta)
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	_float fSize = m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
 
-	if (0.2f == fSize)
+	if (0.201f >= fSize)
 	{
 		m_IsNextSizing = true;
 		return;
@@ -146,7 +146,7 @@ void CEffect_Cody_Size::Resizing_MS(_double TimeDelta)
 
 	for (_int iIndex = 0; iIndex < m_iInstance_Small; ++iIndex)
 	{
-		_vector vWorldPos = XMLoadFloat4(&m_pInstance_LocalPos[iIndex]);
+		_vector vWorldPos = XMLoadFloat4(&m_pInstance_LocalPos_Origin[iIndex]);
 		vWorldPos = XMVector3Transform(vWorldPos, WorldMatrix);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vWorldPos);
 
@@ -154,13 +154,12 @@ void CEffect_Cody_Size::Resizing_MS(_double TimeDelta)
 		m_pInstanceBuffer[iIndex].vSize = _float2(fPointSize, fPointSize);		
 	}
 }
-
 void CEffect_Cody_Size::Resizing_LM(_double TimeDelta)
 {
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	_float fSize = m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
 
-	if (1.1f >= fSize)
+	if (1.005f >= fSize)
 	{
 		m_IsNextSizing = true;
 		return;
@@ -169,7 +168,7 @@ void CEffect_Cody_Size::Resizing_LM(_double TimeDelta)
 	for (_int iIndex = 0; iIndex < m_iInstance_Large; ++iIndex)
 	{
 		_vector vWorldPos = XMLoadFloat4(&m_pInstance_LocalPos[iIndex]);
-		vWorldPos = XMVector3Transform(vWorldPos, WorldMatrix);		
+		vWorldPos = XMVector3Transform(vWorldPos, WorldMatrix);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vWorldPos);
 		//m_pParabola_WorldPos_Y[iIndex] = m_pInstanceBuffer[iIndex].vPosition.y;
 
@@ -177,7 +176,6 @@ void CEffect_Cody_Size::Resizing_LM(_double TimeDelta)
 		m_pInstanceBuffer[iIndex].vSize = _float2(fPointSize, fPointSize);
 	}
 }
-
 void CEffect_Cody_Size::Resizing_SM(_double TimeDelta)
 {
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
@@ -201,7 +199,6 @@ void CEffect_Cody_Size::Resizing_SM(_double TimeDelta)
 		m_pInstanceBuffer[iIndex].vSize = _float2(fPointSize, fPointSize);
 	}
 }
-
 void CEffect_Cody_Size::Resizing_ML(_double TimeDelta)
 {
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
@@ -230,8 +227,45 @@ void CEffect_Cody_Size::Resizing_MS_End(_double TimeDelta)
 {
 	if (false == m_IsNextSizing)
 		return;
-}
 
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	_float fSize = m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
+
+	for (_int iIndex = 0; iIndex < m_iInstance_Large; ++iIndex)
+	{
+		_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
+
+		if (0 != XMVector3Length(vDir).m128_f32[0])
+		{
+			_vector vWorldPos = XMLoadFloat4(&m_pInstance_LocalPos_Origin[iIndex]);
+			vWorldPos = XMVector3Transform(vWorldPos, WorldMatrix);
+
+			_vector vPos = XMLoadFloat4(&m_pInstanceBuffer[iIndex].vPosition);
+			_vector vDir_D = vWorldPos - vPos;
+			vPos += vDir_D * 5.f * (_float)TimeDelta;
+			XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vPos);
+
+			m_pInstanceBuffer[iIndex].vSize.x -= (_float)TimeDelta * 0.03125f;
+			m_pInstanceBuffer[iIndex].vSize.y = m_pInstanceBuffer[iIndex].vSize.x;
+			if (0.f >= m_pInstanceBuffer[iIndex].vSize.x)
+				m_pInstanceBuffer[iIndex].vSize = _float2(0.f, 0.f);
+		}
+
+		else
+		{
+			m_pInstanceBuffer[iIndex].vSize.x -= (_float)TimeDelta * 0.0625f;
+			m_pInstanceBuffer[iIndex].vSize.y = m_pInstanceBuffer[iIndex].vSize.x;
+			if (0.f >= m_pInstanceBuffer[iIndex].vSize.x)
+				m_pInstanceBuffer[iIndex].vSize = _float2(0.f, 0.f);
+
+			_vector vWorldPos = XMLoadFloat4(&m_pInstance_LocalPos[iIndex]);
+			vWorldPos = XMVector3Transform(vWorldPos, WorldMatrix);
+			XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vWorldPos);
+		}
+	}
+
+	m_dParabolaTime += 0.02;
+}
 void CEffect_Cody_Size::Resizing_LM_End(_double TimeDelta)
 {
 	if (false == m_IsNextSizing)
@@ -266,12 +300,15 @@ void CEffect_Cody_Size::Resizing_LM_End(_double TimeDelta)
 			m_pInstanceBuffer[iIndex].vSize.y = m_pInstanceBuffer[iIndex].vSize.x;
 			if (0.f >= m_pInstanceBuffer[iIndex].vSize.x)
 				m_pInstanceBuffer[iIndex].vSize = _float2(0.f, 0.f);
+
+			_vector vWorldPos = XMLoadFloat4(&m_pInstance_LocalPos[iIndex]);
+			vWorldPos = XMVector3Transform(vWorldPos, WorldMatrix);
+			XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vWorldPos);
 		}
 	}
 
 	m_dParabolaTime += 0.02;
 }
-
 void CEffect_Cody_Size::Resizing_SM_End(_double TimeDelta)
 {
 	if (false == m_IsNextSizing)
@@ -314,7 +351,6 @@ void CEffect_Cody_Size::Resizing_SM_End(_double TimeDelta)
 
 	m_dParabolaTime += 0.02;
 }
-
 void CEffect_Cody_Size::Resizing_ML_End(_double TimeDelta)
 {
 	if (false == m_IsNextSizing)
@@ -397,7 +433,7 @@ void CEffect_Cody_Size::Reset_Instance()
 
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	_matrix	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	_matrix	PivotMatrix = XMMatrixScaling(0.0105f, 0.0105f, 0.0105f);
 	PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f)) * XMMatrixRotationZ(XMConvertToRadians(90.f));
 
 	for (_int i = 0; i < iInstanceCount; ++i)
@@ -454,6 +490,31 @@ void CEffect_Cody_Size::Reset_Instance()
 
 			else if(TYPE_SMALL_MIDDLE == m_eChangeSize_Now)
 				XMStoreFloat3(&m_pInstance_Dir[i], vDir);
+
+			else if (TYPE_MIDDLE_SMALL == m_eChangeSize_Now)
+			{
+				XMStoreFloat4(&m_pInstance_LocalPos_Origin[i], vPivotPos);
+
+				_float fPower = pVtx[iRandVtx].vNormal.y + 0.2f;
+				if (0.f >= fPower)
+					fPower *= -1.f;
+				_float fHeight = XMVectorGetY(vPivotPos);
+
+				_float fRandTime = _float(rand() % 3 + 1) * 0.1f;
+				fHeight += _float((8.f * fPower * fRandTime) - 0.5f * (GRAVITY * fRandTime * fRandTime));
+				vPivotPos = XMVectorSetY(vPivotPos, fHeight);
+
+				_vector vDir_XZ = vDir;
+				_float fRandPower = _float(rand() % 5 + 8) * 0.1f;
+				vDir_XZ.m128_f32[1] = 0.f;
+				if (rand() % 2 == 0)
+					vPivotPos += vDir_XZ * fRandPower;
+				else
+					vPivotPos -= vDir_XZ * fRandPower;
+
+				vDir *= -1.f;
+				XMStoreFloat3(&m_pInstance_Dir[i], vDir);
+			}
 
 		}
 

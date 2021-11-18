@@ -60,7 +60,7 @@ private:
 	SIZE_TYPE m_eChangeSize_Now		= TYPE_END;
 
 private:
-	const _int	m_iInstance_Small	= 120;
+	const _int	m_iInstance_Small	= 240;
 	const _int	m_iInstance_Middle	= 600;
 	const _int	m_iInstance_Large	= 1500;
 

@@ -191,6 +191,7 @@
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Color.txt" />
+    <ClInclude Include="..\Public\Effect_Dash.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
     <ClInclude Include="..\public\Effect_Player_Revive.h" />
     <ClInclude Include="..\public\Effect_Wormhole.h" />
@@ -226,7 +227,6 @@
     <ClInclude Include="..\public\TileBox.h" />
     <ClInclude Include="..\Public\UFO.h" />
     <ClInclude Include="Client.h" />
-    <ClInclude Include="Effect_Dash.h" />
     <ClInclude Include="Client_Animation_Index_Define.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -234,6 +234,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
+    <ClCompile Include="..\Private\Effect_Dash.cpp" />
     <ClCompile Include="..\private\Effect_Generator.cpp" />
     <ClCompile Include="..\private\Effect_Player_Revive.cpp" />
     <ClCompile Include="..\private\Effect_Wormhole.cpp" />
@@ -270,7 +271,6 @@
     <ClCompile Include="..\private\TileBox.cpp" />
     <ClCompile Include="..\Private\UFO.cpp" />
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="Effect_Dash.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
