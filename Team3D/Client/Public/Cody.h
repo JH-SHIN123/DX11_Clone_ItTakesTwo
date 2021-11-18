@@ -273,6 +273,8 @@ private:
 	// 점프 중이니
 	_bool m_IsJumping = false;
 	_bool m_IsAirDash = false;
+	_bool m_IsFalling = false;
+	_bool	m_bFallAniOnce = false;
 
 	_float3 m_vMoveDirection = {};
 	_int m_iSavedKeyPress = 0;
@@ -305,6 +307,7 @@ private:
 
 	// 점프관련 변수
 	_uint m_iJumpCount = 0;
+
 
 
 

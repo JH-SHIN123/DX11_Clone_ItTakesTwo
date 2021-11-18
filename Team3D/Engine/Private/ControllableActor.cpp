@@ -63,15 +63,28 @@ void CControllableActor::Update(_double dTimeDelta)
 	else
 	{
 		fY = m_fGravity * (_float)dTimeDelta;
-		if(m_bJump == true)
-			m_IsFalling = true;
 	}
+
+
 
 	PxVec3 vDist = PxVec3(0, fY, 0);
 	PxU32 iFlags = m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
 
 	if (PxControllerCollisionFlag::eCOLLISION_DOWN & iFlags)
+	{
+		m_fFallingTime = 0.f;
+		m_IsFalling = false;
 		Jump_Stop();
+	}
+	else if (!(PxControllerCollisionFlag::eCOLLISION_DOWN & iFlags) && !m_bJump && !m_bGroundPound)
+	{
+		m_IsFalling = true;
+		m_fFallingTime += dTimeDelta;
+		// ÀÚÀ¯³«ÇÏ
+		vDist = PxVec3(0, (0.4f * -GRAVITY * 0.8f * m_fFallingTime * m_fFallingTime), 0);
+		m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
+	}
+
 
 	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
 }

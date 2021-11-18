@@ -42,7 +42,7 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 
 	_matrix TransformMatrix = XMMatrixIdentity();
 	//TransformMatrix.r[3] = XMVectorSet(0.f, 0.f, 10.f, 1.f);
-	TransformMatrix.r[3] = XMVectorSet(0.f, 2.f, 10.f, 1.f);
+	TransformMatrix.r[3] = XMVectorSet(0.f, 30.f, 10.f, 1.f);
 	m_pModelCom->Update_Model(TransformMatrix);
 
 	return S_OK;

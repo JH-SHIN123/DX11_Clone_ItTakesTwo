@@ -244,6 +244,8 @@ private:
 	_bool	m_bMove = false;
 	_bool	m_bShortJump = false;
 	_bool	m_bLongJump = false;
+	_bool	m_IsFalling = false;
+	_bool	m_bFallAniOnce = false;
 
 	// 움직임 가속
 	_float m_fAcceleration = 5.0;

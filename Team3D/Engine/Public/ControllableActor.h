@@ -36,6 +36,7 @@ public:
 	/* Setter */
 	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
 	void    Set_Jump(_bool bJump) { m_bJump = bJump; }
+	void	Set_GroundPound(_bool bGroundPound) { m_bGroundPound = bGroundPound; }
 
 	/* Getter */
 	_bool  Get_IsJump() { return m_bJump; }
@@ -52,7 +53,10 @@ private:
 	_float	m_fJumpForce = 0.f;
 	_float	m_fBaseJumpForce = 0.f;
 	_bool	m_bJump = false;
+	_bool	m_bGroundPound = false;
 	_bool	m_IsFalling = false;
+
+	_float  m_fFallingTime = 0.f;
 
 
 	/* For.Gravity */

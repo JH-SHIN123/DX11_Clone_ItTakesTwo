@@ -105,6 +105,9 @@ _int CMay::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
+	m_IsFalling = m_pActorCom->Get_IsFalling();
+	m_pActorCom->Set_GroundPound(m_bGroundPound);
+
 	if (m_bRoll == false || m_bSprint == true)
 		KeyInput(dTimeDelta);
 	if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
@@ -353,7 +356,7 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Key_M
-	if (m_pGameInstance->Key_Down(DIK_M))
+	if (m_pGameInstance->Key_Down(DIK_M) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jog_Exhausted_Start && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jog_Stop_Exhausted && m_pModelCom->Get_CurAnimIndex() != ANI_M_Sprint_Start_FromDash)
 	{
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint)
 		{
@@ -408,7 +411,7 @@ void CMay::Move(const _double dTimeDelta)
 
 		m_pActorCom->Move(vDirection / m_fJogAcceleration, dTimeDelta);
 
-		if (m_bRoll == false && m_IsJumping == false)
+		if (m_bRoll == false && m_IsJumping == false && m_IsFalling == false && ANI_M_Jump_Land_Jog != m_pModelCom->Get_CurAnimIndex())
 		{
 			// TEST!! 8¹ø jog start , 4¹ø jog , 7¹ø jog to stop. TEST!!
 			if (m_pModelCom->Is_AnimFinished(ANI_M_Jog_Start) == true) // JogStart -> Jog
@@ -656,6 +659,43 @@ void CMay::Jump(const _double dTimeDelta)
 		m_IsJumping = false;
 		m_iJumpCount = 0;
 	}
+	else if (m_IsJumping == false && m_IsFalling == true && m_bRoll == false && m_bGroundPound == false)
+	{
+
+		m_bSprint = false;
+
+		if (m_bFallAniOnce == false)
+		{
+			if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Roll_Start || ANI_M_Roll_Stop)
+			{
+				m_pModelCom->Set_Animation(ANI_M_Jump_LongJump);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Falling);
+			}
+			else
+			{
+				m_pModelCom->Set_Animation(ANI_M_Jump_Falling);
+			}
+			m_bFallAniOnce = true;
+		}
+	}
+	else if (m_IsJumping == false && m_IsFalling == false && m_bFallAniOnce == true && m_bRoll == false && m_bGroundPound == false)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Key_Pressing(DIK_DOWN) || m_pGameInstance->Key_Pressing(DIK_LEFT))
+		{
+			m_pModelCom->Set_Animation(ANI_M_Jump_Land_Jog);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
+		}
+		else
+		{
+			m_pModelCom->Set_Animation(ANI_M_Jump_Land);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+		}
+
+		m_bFallAniOnce = false;
+		m_IsJumping = false;
+		m_iJumpCount = 0;
+	}
+
 }
 void CMay::Ground_Pound(const _double dTimeDelta)
 {
