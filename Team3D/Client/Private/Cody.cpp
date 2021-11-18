@@ -931,14 +931,13 @@ void CCody::Jump(const _double dTimeDelta)
 	}
 	else if (m_IsJumping == false && m_IsFalling == true && m_bRoll == false && m_bGroundPound == false)
 	{
-
 		m_bSprint = false;
 
 		if (m_bFallAniOnce == false)
 		{
 			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Roll_Start || ANI_C_Roll_Stop)
 			{
-				m_pModelCom->Set_Animation(ANI_C_DoubleJump);
+				m_pModelCom->Set_Animation(ANI_C_Jump_180R);
 				m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Falling);
 			}
 			else
@@ -976,8 +975,6 @@ void CCody::Jump(const _double dTimeDelta)
 		//		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		//	}
 		//}
-		//m_IsJumping = false;
-		//m_iJumpCount = 0;
 	}
 	else if (m_IsJumping == false && m_IsFalling == false && m_bFallAniOnce == true && m_bRoll == false && m_bGroundPound == false)
 	{
@@ -995,6 +992,14 @@ void CCody::Jump(const _double dTimeDelta)
 		m_bFallAniOnce = false;
 		m_IsJumping = false;
 		m_iJumpCount = 0;
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_SPACE) && m_IsFalling == true)
+	{
+		m_bShortJump = true;
+		m_IsJumping = true;
+		m_iJumpCount = 2;
+		return;
 	}
 }
 void CCody::Change_Size(const _double dTimeDelta)

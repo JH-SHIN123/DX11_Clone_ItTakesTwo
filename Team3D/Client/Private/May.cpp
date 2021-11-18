@@ -695,6 +695,13 @@ void CMay::Jump(const _double dTimeDelta)
 		m_IsJumping = false;
 		m_iJumpCount = 0;
 	}
+	if (m_pGameInstance->Key_Down(DIK_RCONTROL) && m_IsFalling == true)
+	{
+		m_bShortJump = true;
+		m_IsJumping = true;
+		m_iJumpCount = 2;
+		return;
+	}
 
 }
 void CMay::Ground_Pound(const _double dTimeDelta)
