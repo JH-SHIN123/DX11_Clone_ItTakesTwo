@@ -63,7 +63,7 @@ HRESULT CRocket::Render()
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1);
+	m_pModelCom->Render_Model(1, 0);
 
 	return S_OK;
 }

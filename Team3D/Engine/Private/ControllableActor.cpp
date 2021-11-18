@@ -55,11 +55,17 @@ void CControllableActor::Update(_double dTimeDelta)
 	m_fHeightDelta = Get_Height(dTimeDelta);
 	_float fY;
 
-	if (m_fHeightDelta != 0.f)
-		fY = m_fHeightDelta * 0.5f;
-	else
-		fY = m_fGravity * (_float)dTimeDelta;
 
+	if (m_fHeightDelta != 0.f)
+	{
+		fY = m_fHeightDelta * 0.5f;
+	}
+	else
+	{
+		fY = m_fGravity * (_float)dTimeDelta;
+		if(m_bJump == true)
+			m_IsFalling = true;
+	}
 
 	PxVec3 vDist = PxVec3(0, fY, 0);
 	PxU32 iFlags = m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());

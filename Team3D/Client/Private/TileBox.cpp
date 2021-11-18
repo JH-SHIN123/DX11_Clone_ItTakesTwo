@@ -41,7 +41,8 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_TileBox"), TEXT("Com_Model"), (CComponent**)&m_pModelCom, &Arg), E_FAIL);
 
 	_matrix TransformMatrix = XMMatrixIdentity();
-	TransformMatrix.r[3] = XMVectorSet(0.f, 0.f, 10.f, 1.f);
+	//TransformMatrix.r[3] = XMVectorSet(0.f, 0.f, 10.f, 1.f);
+	TransformMatrix.r[3] = XMVectorSet(0.f, 2.f, 10.f, 1.f);
 	m_pModelCom->Update_Model(TransformMatrix);
 
 	return S_OK;
