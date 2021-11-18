@@ -53,12 +53,15 @@ public:
 	void Set_Dead();
 	void Set_PlayerID(Player::ID ePlayerID);
 	void Set_PosX(_float fPosX);
+	void Set_TargetPos(_vector vPos);
 
 protected:
 	UI_DESC						m_UIDesc;
 	_bool						m_IsDead = false;
 	_float						m_fSortOrder = 0.f;
 	Player::ID					m_ePlayerID = Player::PLAYER_END;
+	_uint						m_iOption = 0;
+	_float4						m_vTargetPos;
 
 protected:
 	/* For.Component */

@@ -501,3 +501,11 @@ void CUI_Generator::Free()
 	Safe_Delete_Array(m_VTXFONT);
 }
 
+void CUI_Generator::Set_TargetPos(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPos)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return;
+
+	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
+		UIObject->Set_TargetPos(vTargetPos);
+}

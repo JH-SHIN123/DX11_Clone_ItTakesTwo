@@ -44,9 +44,11 @@ public:
 
 public:
 	CUIObject* Get_UIObject(Player::ID ePlayer, UI::TRIGGER eTrigger) { return m_vecUIOBjects[ePlayer][eTrigger].front(); };
+	_bool Get_EmptyCheck(Player::ID ePlayer, UI::TRIGGER eTrigger) { return m_vecUIOBjects[ePlayer][eTrigger].empty(); };
 
 public:
 	void Set_TriggerOn();
+	void Set_TargetPos(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPos);
 
 public:
 	void UI_RETutorial(Player::ID ePlayer, UI::TRIGGER eTrigger);

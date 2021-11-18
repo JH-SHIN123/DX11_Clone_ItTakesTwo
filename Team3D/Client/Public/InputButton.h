@@ -30,6 +30,8 @@ private:
 private:
 	HRESULT Ready_Component();
 	HRESULT Set_UIVariables_Perspective();
+	HRESULT Set_InterActiveVariables_Perspective();
+	void SetUp_Option();
 
 public:
 	static CInputButton* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

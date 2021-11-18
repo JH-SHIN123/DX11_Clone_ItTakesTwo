@@ -75,6 +75,11 @@ void CUIObject::Set_PosX(_float fPosX)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 }
 
+void CUIObject::Set_TargetPos(_vector vPos)
+{
+	XMStoreFloat4(&m_vTargetPos, vPos);
+}
+
 HRESULT CUIObject::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);

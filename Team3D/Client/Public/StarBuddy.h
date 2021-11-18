@@ -36,6 +36,9 @@ private:
 	_bool		m_bLaunch = false;
 	_float		m_fLifeTime = 0.f;
 
+private:
+	HRESULT Interactive_UI();
+
 
 protected:
 	/* For.Component */
