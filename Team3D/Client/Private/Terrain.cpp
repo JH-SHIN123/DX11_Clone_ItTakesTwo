@@ -49,9 +49,21 @@ HRESULT CTerrain::Render()
 	NULL_CHECK_RETURN(m_pTextureCom, E_FAIL);
 
 	m_pVIBufferCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pVIBufferCom->Set_DefaultVariables_Shadow();
+
 	m_pVIBufferCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(0));
 
 	m_pVIBufferCom->Render(0);
+
+	return S_OK;
+}
+
+HRESULT CTerrain::Render_ShadowDepth()
+{
+	m_pVIBufferCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
+	m_pVIBufferCom->Set_DefaultVariables_ShadowDepth();
+
+	m_pVIBufferCom->Render(1);
 
 	return S_OK;
 }

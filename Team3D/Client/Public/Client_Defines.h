@@ -16,5 +16,3 @@ extern HINSTANCE	g_hInst;
 
 namespace Client {}
 using namespace Client;
-
-

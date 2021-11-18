@@ -29,7 +29,12 @@ public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
+
+public:
 	virtual HRESULT	Render() override;
+public:
+	virtual HRESULT Render_ShadowDepth() override;
+
 
 protected: /* For.Component */
 	CRenderer*	m_pRendererCom = nullptr;

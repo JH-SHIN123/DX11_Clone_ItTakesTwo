@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\public\SubCamera.h"
 #include "GameInstance.h"
-#include "DataBase.h"
+#include "DataStorage.h"
 #include "May.h"
 
 CSubCamera::CSubCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -30,7 +30,7 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 
 	m_eCurCamMode = Cam_Free;
-	CDataBase::GetInstance()->Set_SubCamPtr(this);
+	CDataStorage::GetInstance()->Set_SubCamPtr(this);
 
 	return S_OK;
 }
@@ -45,9 +45,10 @@ _int CSubCamera::Tick(_double dTimeDelta)
 	//	m_pTransformCom->Go_Backward(dTimeDelta);
 	//if (m_pGameInstance->Key_Pressing(DIK_D))
 	//	m_pTransformCom->Go_Right(dTimeDelta);
+
 	if (m_pTargetObj == nullptr)
 	{
-		m_pTargetObj = CDataBase::GetInstance()->GetMay();
+		m_pTargetObj = CDataStorage::GetInstance()->GetMay();
 		if (m_pTargetObj)
 			Safe_AddRef(m_pTargetObj);
 	}
@@ -85,6 +86,15 @@ _int CSubCamera::Tick(_double dTimeDelta)
 	}
 	if (NO_EVENT != iResult)
 		return iResult;
+
+	//_long	MouseMove = 0;
+
+	//if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
+	//	m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * MouseMove * 0.1);
+
+	//if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
+	//	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * MouseMove * 0.1);
+
 	return CCamera::Tick(dTimeDelta);
 }
 
@@ -142,40 +152,24 @@ _int CSubCamera::Tick_Cam_Free(_double dTimeDelta)
 	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	_long MouseMove = 5;
+	_long MouseMove = 0;
 
-	if (/*MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X)*/m_pGameInstance->Key_Pressing(DIK_O))
-	{
-		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta * m_fMouseRevSpeed[Rev_Holizontal];
-		if (m_fMouseRev[Rev_Holizontal] > 360.f || m_fMouseRev[Rev_Holizontal] < -360.f)
-			m_fMouseRev[Rev_Holizontal] = 0.f;
-	}
-	if (/*MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X)*/m_pGameInstance->Key_Pressing(DIK_P))
-	{
-		m_fMouseRev[Rev_Holizontal] -= (_float)MouseMove * (_float)dTimeDelta * m_fMouseRevSpeed[Rev_Holizontal];
-		if (m_fMouseRev[Rev_Holizontal] > 360.f || m_fMouseRev[Rev_Holizontal] < -360.f)
-			m_fMouseRev[Rev_Holizontal] = 0.f;
-	}
-	if (/*MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y)*/m_pGameInstance->Key_Pressing(DIK_U))
-	{
-		m_fMouseRev[Rev_Prependicul] += (_float)MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * (_float)dTimeDelta;
-		if (m_fMouseRev[Rev_Prependicul] > 360.f || m_fMouseRev[Rev_Prependicul] < -360.f)
-			m_fMouseRev[Rev_Prependicul] = 0.f;
-		if (m_fMouseRev[Rev_Prependicul] > 30.f)
-			m_fMouseRev[Rev_Prependicul] = 30.f;
-		if (m_fMouseRev[Rev_Prependicul] < -90.f)
-			m_fMouseRev[Rev_Prependicul] = -90.f;
-	}
-	if (/*MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y)*/m_pGameInstance->Key_Pressing(DIK_I))
-	{
-		m_fMouseRev[Rev_Prependicul] -= (_float)MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * (_float)dTimeDelta;
-		if (m_fMouseRev[Rev_Prependicul] > 360.f || m_fMouseRev[Rev_Prependicul] < -360.f)
-			m_fMouseRev[Rev_Prependicul] = 0.f;
-		if (m_fMouseRev[Rev_Prependicul] > 30.f)
-			m_fMouseRev[Rev_Prependicul] = 30.f;
-		if (m_fMouseRev[Rev_Prependicul] < -90.f)
-			m_fMouseRev[Rev_Prependicul] = -90.f;
-	}
+	//if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
+	//{
+	//	m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
+	//	if (m_fMouseRev[Rev_Holizontal] > 360.f || m_fMouseRev[Rev_Holizontal] < -360.f)
+	//		m_fMouseRev[Rev_Holizontal] = 0.f;
+	//}
+	//if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
+	//{
+	//	m_fMouseRev[Rev_Prependicul] += (_float)MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * (_float)dTimeDelta;
+	//	if (m_fMouseRev[Rev_Prependicul] > 360.f || m_fMouseRev[Rev_Prependicul] < -360.f)
+	//		m_fMouseRev[Rev_Prependicul] = 0.f;
+	//	if (m_fMouseRev[Rev_Prependicul] > 30.f)
+	//		m_fMouseRev[Rev_Prependicul] = 30.f;
+	//	if (m_fMouseRev[Rev_Prependicul] < -90.f)
+	//		m_fMouseRev[Rev_Prependicul] = -90.f;
+	//}
 #ifdef _DEBUG
 	if (m_pGameInstance->Key_Pressing(DIK_Z))
 		m_pTransformCom->Go_Straight(dTimeDelta);
@@ -189,7 +183,6 @@ _int CSubCamera::Tick_Cam_Free(_double dTimeDelta)
 	XMStoreFloat4x4(&m_matPreRev, matRev);
 
 	m_pTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix() * matRev);
-
 	return NO_EVENT;
 }
 

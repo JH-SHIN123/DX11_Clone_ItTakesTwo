@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\public\MoonBaboon.h"
 #include "GameInstance.h"
-#include "DataBase.h"
+#include "DataStorage.h"
 #include "May.h"
 #include "Cody.h"
 #include "UFO.h"
@@ -34,22 +34,22 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
 
-	m_pCodyTransform = ((CCody*)CDataBase::GetInstance()->GetCody())->Get_Transform();
+	m_pCodyTransform = ((CCody*)CDataStorage::GetInstance()->GetCody())->Get_Transform();
 	if (nullptr == m_pCodyTransform)
 		return E_FAIL;
 	Safe_AddRef(m_pCodyTransform);
 
-	m_pMayTransform = ((CMay*)CDataBase::GetInstance()->GetMay())->Get_Transform();
+	m_pMayTransform = ((CMay*)CDataStorage::GetInstance()->GetMay())->Get_Transform();
 	if (nullptr == m_pMayTransform)
 		return E_FAIL;
 	Safe_AddRef(m_pMayTransform);
 
-	m_pUFOModel = ((CUFO*)CDataBase::GetInstance()->Get_UFO())->Get_Model();
+	m_pUFOModel = ((CUFO*)CDataStorage::GetInstance()->Get_UFO())->Get_Model();
 	if (nullptr == m_pUFOModel)
 		return E_FAIL;
 	Safe_AddRef(m_pUFOModel);
 
-	m_pUFOTransform = ((CUFO*)CDataBase::GetInstance()->Get_UFO())->Get_Transform();
+	m_pUFOTransform = ((CUFO*)CDataStorage::GetInstance()->Get_UFO())->Get_Transform();
 	if (nullptr == m_pUFOTransform)
 		return E_FAIL;
 	Safe_AddRef(m_pUFOModel);
@@ -122,26 +122,24 @@ void CMoonBaboon::Fix_MoonBaboon_Chair(_double TimeDelta)
 
 HRESULT CMoonBaboon::Render()
 {
+	CGameObject::Render();
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Set_DefaultVariables_Shadow();
+	m_pModelCom->Render_Model(0);
+
+	return S_OK;
+}
+
+
+HRESULT CMoonBaboon::Render_ShadowDepth()
+{
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Render_Model(0);
-	return S_OK;
-}
+	m_pModelCom->Set_DefaultVariables_ShadowDepth();
 
-HRESULT CMoonBaboon::Set_ShaderConstant_Default()
-{
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	return S_OK;
-}
-
-HRESULT CMoonBaboon::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
-{
-	m_pModelCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-
+	// Skinned: 2 / Normal: 3
+	m_pModelCom->Render_Model(2, 0, true);
 	return S_OK;
 }
 

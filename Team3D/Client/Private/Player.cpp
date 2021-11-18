@@ -2,8 +2,8 @@
 #include "..\public\Player.h"
 #include "GameInstance.h"
 
+#include "DataStorage.h"
 #include "Effect_Generator.h"
-#include"DataBase.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -36,9 +36,32 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	m_pModelCom->Set_Animation(0);
 	m_pModelCom->Set_NextAnimIndex(0);
 	
-	//CDataBase::GetInstance()->Set_PlayerPtr(this);
+	//CDataStorage::GetInstance()->Set_PlayerPtr(this);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
+	PxCapsuleControllerDesc CapsuleControllerDesc;
+	CapsuleControllerDesc.setToDefault();
+	CapsuleControllerDesc.height = 0.5f;
+	CapsuleControllerDesc.radius = 0.5f;
+	CapsuleControllerDesc.material = m_pGameInstance->Create_PxMaterial(0.5f, 0.5f, 0.5f);
+	CapsuleControllerDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
+	CapsuleControllerDesc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
+	CapsuleControllerDesc.contactOffset = 0.02f;
+	CapsuleControllerDesc.stepOffset = 0.5f;
+	CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
+	CapsuleControllerDesc.slopeLimit = 0.707f;
+	CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	////CapsuleControllerDesc.reportCallback = NULL;
+	////CapsuleControllerDesc.behaviorCallback = NULL;
+	//CapsuleControllerDesc.density = 10.f;
+	//CapsuleControllerDesc.scaleCoeff = 0.8f;
+	//CapsuleControllerDesc.invisibleWallHeight = 0.f;
+	//CapsuleControllerDesc.maxJumpHeight = 10.f;
+	//CapsuleControllerDesc.volumeGrowth = 1.5f;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom, CapsuleControllerDesc, -50.f)), E_FAIL);
+
+
+	//m_pTransformCom->Set_Scale(XMVectorSet(5.f, 5.f, 5.f, 0.f));
 
 	return S_OK;
 }
@@ -116,28 +139,22 @@ _int CPlayer::Late_Tick(_double dTimeDelta)
 HRESULT CPlayer::Render()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-	
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 
-	m_pModelCom->Render_Model(0);	
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Set_DefaultVariables_Shadow();
+	m_pModelCom->Render_Model(0);
 
 	return S_OK;
 }
 
-HRESULT CPlayer::Set_ShaderConstant_Default()
+HRESULT CPlayer::Render_ShadowDepth()
 {
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	return S_OK;
-}
+	m_pModelCom->Set_DefaultVariables_ShadowDepth();
 
-HRESULT CPlayer::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix)
-{
-	m_pModelCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(LightViewMatrix), sizeof(_matrix));
-	m_pModelCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(LightProjMatrix), sizeof(_matrix));
+	// Skinned: 2 / Normal: 3
+	m_pModelCom->Render_Model(2, 0, true);
 
 	return S_OK;
 }

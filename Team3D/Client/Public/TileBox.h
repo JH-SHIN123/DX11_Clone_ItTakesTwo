@@ -24,11 +24,15 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
 
+public:
+	virtual HRESULT Render_ShadowDepth() override;
+
 private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CModel_Instance*	m_pModelCom = nullptr;
 	_uint				m_iRenderNum = 0;
+	PxRigidDynamic*		m_pTest = nullptr;
 
 public:
 	static CTileBox* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

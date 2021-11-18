@@ -4,30 +4,40 @@
 #include "Graphic_Device.h"
 #include "Pipeline.h"
 #include "RenderTarget_Manager.h"
+#include "Shadow_Manager.h"
 
 IMPLEMENT_SINGLETON(CLight_Manager)
 
-LIGHT_DESC * CLight_Manager::Get_LightDescPtr(_uint iIndex)
+LIGHT_DESC * CLight_Manager::Get_LightDescPtr(const _tchar* pLightTag)
 {
-	NULL_CHECK_RETURN(iIndex < m_Lights.size(), nullptr);
+	if (nullptr == pLightTag) return nullptr;
 
-	return m_Lights[iIndex]->Get_LightDescPtr();
+	const auto& iter = find_if(m_Lights.begin(), m_Lights.end(), CTagFinder(pLightTag));
+	if (iter == m_Lights.end()) return nullptr;
+
+	return iter->second->Get_LightDescPtr();
 }
 
-HRESULT CLight_Manager::TurnOn_Light(_uint iIndex)
+HRESULT CLight_Manager::TurnOn_Light(const _tchar* pLightTag)
 {
-	NULL_CHECK_RETURN(iIndex < m_Lights.size(), E_FAIL);
+	if (nullptr == pLightTag) return E_FAIL;
 
-	m_Lights[iIndex]->TurnOn_Light();
+	const auto& iter = find_if(m_Lights.begin(), m_Lights.end(), CTagFinder(pLightTag));
+	if (iter == m_Lights.end()) return E_FAIL;
+
+	iter->second->TurnOn_Light();
 
 	return S_OK;
 }
 
-HRESULT CLight_Manager::TurnOff_Light(_uint iIndex)
+HRESULT CLight_Manager::TurnOff_Light(const _tchar* pLightTag)
 {
-	NULL_CHECK_RETURN(iIndex < m_Lights.size(), E_FAIL);
+	if (nullptr == pLightTag) return E_FAIL;
 
-	m_Lights[iIndex]->TurnOff_Light();
+	const auto& iter = find_if(m_Lights.begin(), m_Lights.end(), CTagFinder(pLightTag));
+	if (iter == m_Lights.end()) return E_FAIL;
+
+	iter->second->TurnOff_Light();
 
 	return S_OK;
 }
@@ -50,12 +60,36 @@ HRESULT CLight_Manager::Reserve_Container(_uint iCount)
 	return S_OK;
 }
 
-HRESULT CLight_Manager::Add_Light(const LIGHT_DESC & LightDesc, _bool isActive)
+HRESULT CLight_Manager::Add_Light(const _tchar* pLightTag, const LIGHT_DESC & LightDesc, _bool isActive)
 {
-	CLight*	pLight = CLight::Create(LightDesc, isActive);
+	if (nullptr == pLightTag) return E_FAIL;
+
+	const auto& iter = find_if(m_Lights.begin(), m_Lights.end(), CTagFinder(pLightTag));
+	if (iter != m_Lights.end()) {
+		MSG_BOX("Already Exist Light");
+		return E_FAIL;
+	}
+
+	CLight* pLight = nullptr;
+	if (LIGHT_DESC::TYPE_DIRECTIONAL == LightDesc.eType)
+	{
+		if (nullptr == m_pDirectionalLight) 
+		{
+			pLight = CLight::Create(LightDesc, isActive);
+			m_pDirectionalLight = pLight;
+			Safe_AddRef(m_pDirectionalLight);
+		}
+	}
+	else
+	{
+		pLight = CLight::Create(LightDesc, isActive);
+	}
+
 	NULL_CHECK_RETURN(pLight, E_FAIL);
 
-	m_Lights.emplace_back(pLight);
+	//m_Lights.emplace(pLightTag, pLight);
+
+	m_Lights[pLightTag] = pLight;
 
 	return S_OK;
 }
@@ -90,6 +124,7 @@ HRESULT CLight_Manager::Render_Lights()
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_MainProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(_matrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_MainViewMatrixInverse", &XMMatrixTranspose(ViewMatrixInverse), sizeof(_matrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_vMainViewportUVInfo", &vViewportUVInfo, sizeof(_float4)), E_FAIL);
+	
 	/* For.SubView */
 	vCamPosition		= pPipeline->Get_SubCamPosition();
 	fCamFar				= pPipeline->Get_SubCamFar();
@@ -103,15 +138,17 @@ HRESULT CLight_Manager::Render_Lights()
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4)), E_FAIL);
 
 	for (auto& pLight : m_Lights)
-		FAILED_CHECK_RETURN(pLight->Render_Light(m_pVIBuffer), E_FAIL);
+		FAILED_CHECK_RETURN(pLight.second->Render_Light(m_pVIBuffer), E_FAIL);
 
 	return S_OK;
 }
 
 void CLight_Manager::Clear_Lights()
 {
+	Safe_Release(m_pDirectionalLight);
+
 	for (auto& pLight : m_Lights)
-		Safe_Release(pLight);
+		Safe_Release(pLight.second);
 	m_Lights.clear();
 }
 
@@ -124,7 +161,5 @@ void CLight_Manager::Free()
 {
 	Safe_Release(m_pVIBuffer);
 
-	for (auto& pLight : m_Lights)
-		Safe_Release(pLight);
-	m_Lights.clear();
+	Clear_Lights();
 }

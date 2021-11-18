@@ -24,7 +24,7 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 	CGameObject::NativeConstruct(pArg);
 
 	CModel_Instance::ARG_DESC Arg;
-	Arg.iInstanceCount = 5;
+	Arg.iInstanceCount = 10;
 	Arg.fCullingRadius = 10.f;
 	Arg.pActorName = "TileBox";
 	Arg.pWorldMatrices = new _float4x4[Arg.iInstanceCount];
@@ -40,6 +40,10 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_TileBox"), TEXT("Com_Model"), (CComponent**)&m_pModelCom, &Arg), E_FAIL);
 
+	_matrix TransformMatrix = XMMatrixIdentity();
+	TransformMatrix.r[3] = XMVectorSet(0.f, 0.f, 10.f, 1.f);
+	m_pModelCom->Update_Model(TransformMatrix);
+
 	return S_OK;
 }
 
@@ -47,12 +51,24 @@ _int CTileBox::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_8))
-		m_iRenderNum = 0;
-	if (m_pGameInstance->Key_Down(DIK_9))
-		m_iRenderNum = 1;
+	_matrix TransformMatrix= XMMatrixRotationZ(XMConvertToRadians((_float)-dTimeDelta * 10.f));
+
 	if (m_pGameInstance->Key_Down(DIK_0))
-		m_iRenderNum = 2;
+		m_pModelCom->Update_Model(TransformMatrix);
+
+	if (m_pGameInstance->Key_Pressing(DIK_9))
+		m_pModelCom->Update_Model(TransformMatrix);
+
+
+	if (m_pGameInstance->Key_Down(DIK_7))
+	{
+		m_pTest = CPhysX::GetInstance()->Create_DynamicActor(PxTransform(PxVec3(0.f, 5.f, 0.f)), PxSphereGeometry(3.f), m_pGameInstance->Create_PxMaterial(0.5f, 0.5f, 0.5f), "Test", PxVec3(0.5f, 0.5f, 0.5f));
+		CPhysX::GetInstance()->Add_ActorToScene(m_pTest);
+		Setup_PxFiltering(m_pTest, FilterGroup::eDYNAMIC, FilterGroup::eSTATIC | FilterGroup::ePLAYER);
+	}
+
+	//if (m_pGameInstance->Key_Down(DIK_8))
+	//	m_pTest->setGlobalPose(PxTransform(PxVec3(100.f, 0.f, 100.f)));
 
 	return NO_EVENT;
 }
@@ -69,7 +85,34 @@ HRESULT CTileBox::Render()
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
 	m_pModelCom->Set_DefaultVariables_Perspective();
+	// Alpha : Not Process Shadow 
+	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(0, m_iRenderNum);
+
+	/* 유리창 렌더 코드 */
+	//_uint iRenderCount = m_pModelCom->Frustum_Culling();
+	//m_pModelCom->Bind_GBuffers(iRenderCount);
+
+	//// 유리창
+	//m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 0, aiTextureType_DIFFUSE, m_iRenderNum);
+	//m_pModelCom->Set_ShaderResourceView("g_NormalTexture", 0, aiTextureType_NORMALS, m_iRenderNum);
+	//m_pModelCom->Render_ModelByPass(iRenderCount, 0, 2);
+
+	//// 창틀
+	//m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 1, aiTextureType_DIFFUSE, m_iRenderNum);
+	//m_pModelCom->Set_ShaderResourceView("g_NormalTexture", 1, aiTextureType_NORMALS, m_iRenderNum);
+	//m_pModelCom->Render_ModelByPass(iRenderCount, 1, 3);
+
+	return S_OK;
+}
+
+HRESULT CTileBox::Render_ShadowDepth()
+{
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+
+	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+
+	m_pModelCom->Render_Model(1,0, true);
 
 	return S_OK;
 }

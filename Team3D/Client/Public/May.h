@@ -176,9 +176,10 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render() override;
-	virtual HRESULT Set_ShaderConstant_Default() override;
-	virtual HRESULT Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix) override;
 
+public:
+	virtual HRESULT Render_ShadowDepth() override;
+public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 	// Tick 에서 호출될 함수들
@@ -191,6 +192,7 @@ private:
 
 	// 단발성 함수들.
 	HRESULT Ready_Component();
+	void Add_LerpInfo_To_Model();
 
 	// 카메라
 private:
@@ -214,6 +216,7 @@ public:
 	void Roll(const _double TimeDelta);
 	void Sprint(const _double TimeDelta);
 	void Jump(const _double TimeDelta);
+	void Ground_Pound(const _double TimeDelta);
 
 
 private:
@@ -234,6 +237,8 @@ private:
 	_bool m_bLedgeGrab = false;
 	_bool m_bOnGrind = false;
 	_bool m_bRoll = false;
+	_bool m_IsTurnAround = false;
+	_int m_iSavedKeyPress = 0;
 
 	_float3 m_vMoveDirection = {};
 	_bool	m_bMove = false;
@@ -241,27 +246,49 @@ private:
 	_bool	m_bLongJump = false;
 
 	// 움직임 가속
-	_double m_fAcceleration = 5.0;
+	_float m_fAcceleration = 5.0;
+	_float	m_fJogAcceleration = 25.f;
+	_float m_fGroundPoundAirDelay = 0.f; // 체공시간.
+
+	 // GroundPound 관련
+	_bool m_bPlayGroundPoundOnce = false;
+	_bool m_bCanMove = true;
+	_bool m_bGroundPound = false;
+
+	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
+	_float	m_fIdleTime = 0.f;
 
 
 	// 상호작용에 의한 움직임.
+
+	// 구르기 관련
+	_bool m_bAction = false;
+
+	// 점프 중이니
+	_bool m_IsJumping = false;
+	_bool m_IsAirDash = false;
 
 
 	// 뭔가 들고있다면
 	_bool m_IsPickUp = false;
 
 
-	// 크기가 달라졌다면
-	_bool m_IsMediumSize = false;
-	_bool m_IsLargeSize = false;
+	// 점프관련 변수
+	_bool m_bJumpAnimationOnce = false;
+	_bool m_bDoubleJump = false;
+	_uint m_iJumpCount = 0;
+
 
 
 	// 컷씬이라면
 	_bool m_IsCutScene = false;
 
-	
+
 	// 트리거(상호작용) 진행중이라면
 	_bool m_IsTriggerPlaying = false;
+
+	// Sprint
+	_float m_fSprintAcceleration = 35.f;
 
 
 };

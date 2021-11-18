@@ -87,7 +87,7 @@ void  GS_MAIN_DIST(/*입력*/ triangle  VS_OUT In[3], /*출력*/ inout TriangleStrea
 
 		float3 vScale = { length(g_WorldMatrix._11_12_13),  length(g_WorldMatrix._21_22_23) ,  length(g_WorldMatrix._31_32_33) };
 		float3 vLook = normalize(g_WorldMatrix._31_32_33).xyz;
-		float3 vDir = normalize(g_vMainCamPosition - g_WorldMatrix._31_32_33).xyz;
+		float3 vDir = normalize(g_vMainCamPosition - g_WorldMatrix._31_32_33_34).xyz;
 		float3 vRight = cross(vLook, vDir).xyz;
 		float3 vUp = cross(vRight, vLook).xyz;
 		vRight *= vScale.x;
@@ -114,7 +114,7 @@ void  GS_MAIN_DIST(/*입력*/ triangle  VS_OUT In[3], /*출력*/ inout TriangleStrea
 	{
 		float3 vScale = { length(g_WorldMatrix._11_12_13_14),  length(g_WorldMatrix._21_22_23_24) ,  length(g_WorldMatrix._31_32_33_34) };
 		float3 vLook = normalize(g_WorldMatrix._31_32_33_34).xyz;
-		float3 vDir = normalize(g_vSubCamPosition - g_WorldMatrix._31_32_33).xyz;
+		float3 vDir = normalize(g_vSubCamPosition - g_WorldMatrix._31_32_33_34).xyz;
 		float3 vRight = cross(vLook, vDir).xyz;
 		float3 vUp = cross(vRight, vLook).xyz;
 		vRight *= vScale.x;

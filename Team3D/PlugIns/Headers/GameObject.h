@@ -24,8 +24,9 @@ public:
 	virtual _int	Tick(_double dTimeDelta);
 	virtual _int	Late_Tick(_double dTimeDelta);
 	virtual HRESULT	Render();
-	virtual HRESULT Set_ShaderConstant_Default();
-	virtual HRESULT Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix LightProjMatrix);
+
+public: /* Etc */
+	virtual HRESULT Render_ShadowDepth();
 
 protected: /* Typedef */
 	typedef unordered_map<const _tchar*, CComponent*>	COMPONENTS;
@@ -36,6 +37,8 @@ protected:
 	COMPONENTS				m_Components;
 	_bool					m_isDead = false;
 	_bool					m_isClone = false;
+protected:
+	MATERIAL_OBJECT			m_Material;
 protected:
 	HRESULT	Add_Component(_uint iPrototypeLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg = nullptr);
 

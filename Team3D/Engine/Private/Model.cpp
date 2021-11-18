@@ -7,6 +7,9 @@
 #include "Transform.h"
 #include "Pipeline.h"
 #include "PhysX.h"
+#include "Graphic_Device.h"
+#include "Shadow_Manager.h"
+#include "RenderTarget_Manager.h"
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CComponent		(pDevice, pDeviceContext)
@@ -153,11 +156,6 @@ HRESULT CModel::Set_NextAnimIndex(_uint iAnimIndex)
 	return S_OK;
 }
 
-void CModel::Set_Pivot(_fmatrix PivotMatrix)
-{
-	Apply_PivotMatrix(PivotMatrix);
-}
-
 HRESULT CModel::Set_Variable(const char * pConstantName, void * pData, _uint iByteSize)
 {
 	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
@@ -187,8 +185,10 @@ HRESULT CModel::Set_ShaderResourceView(const char * pConstantName, _uint iMateri
 
 	CTextures* pTextures = m_Materials[iMaterialIndex]->pMaterialTexture[eTextureType];
 
-	if (nullptr == pTextures)
+	if (nullptr == pTextures) {
+		//pVariable->SetResource(nullptr);
 		return S_OK;
+	}
 
 	ID3D11ShaderResourceView* pShaderResourceView = pTextures->Get_ShaderResourceView(iTextureIndex);
 	NULL_CHECK_RETURN(pTextures, E_FAIL);
@@ -216,6 +216,44 @@ HRESULT CModel::Set_DefaultVariables_Perspective(_fmatrix WorldMatrix)
 	Set_Variable("g_fSubCamFar", &fSubCamFar, sizeof(_float));
 	Set_Variable("g_vMainCamPosition", &vMainCamPosition, sizeof(_vector));
 	Set_Variable("g_vSubCamPosition", &vSubCamPosition, sizeof(_vector));
+
+	return S_OK;
+}
+
+HRESULT CModel::Set_DefaultVariables_Shadow()
+{
+	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
+	_float4	vViewportUVInfo;
+	vViewportUVInfo = pGraphicDevice->Get_ViewportRadioInfo(CGraphic_Device::VP_MAIN);
+	Set_Variable("g_vMainViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
+	vViewportUVInfo = pGraphicDevice->Get_ViewportRadioInfo(CGraphic_Device::VP_SUB);
+	Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
+
+	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();
+	_matrix ShadowTransform[MAX_CASCADES]; /* Shadow View * Shadow Proj * NDC */
+	pShadowManager->Get_CascadeShadowTransformsTranspose(CShadow_Manager::SHADOW_MAIN, ShadowTransform);
+	Set_Variable("g_ShadowTransforms_Main", ShadowTransform, sizeof(_matrix) * MAX_CASCADES);
+	pShadowManager->Get_CascadeShadowTransformsTranspose(CShadow_Manager::SHADOW_SUB, ShadowTransform);
+	Set_Variable("g_ShadowTransforms_Sub", ShadowTransform, sizeof(_matrix) * MAX_CASCADES);
+	Set_Variable("g_CascadeEnds", (void*)pShadowManager->Get_CascadedEnds(), sizeof(_float) * (MAX_CASCADES + 1));
+
+	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
+	Set_ShaderResourceView("g_CascadedShadowDepthTexture", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_CascadedShadow_Depth")));
+
+	return S_OK;
+}
+
+HRESULT CModel::Set_DefaultVariables_ShadowDepth()
+{
+	_matrix ShadowViewProj[MAX_CASCADES];
+
+	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();
+
+	pShadowManager->Get_CascadeShadowViewProjTranspose(CShadow_Manager::SHADOW_MAIN, ShadowViewProj);
+	Set_Variable("g_ShadowTransforms_Main", ShadowViewProj, sizeof(_matrix) * MAX_CASCADES);
+
+	pShadowManager->Get_CascadeShadowViewProjTranspose(CShadow_Manager::SHADOW_SUB, ShadowViewProj);
+	Set_Variable("g_ShadowTransforms_Sub", ShadowViewProj, sizeof(_matrix) * MAX_CASCADES);
 
 	return S_OK;
 }
@@ -350,7 +388,7 @@ HRESULT CModel::Update_Animation(_double dTimeDelta)
 	return S_OK;
 }
 
-HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
+HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 
@@ -367,8 +405,14 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
 
 		for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
 		{
-			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
-			//Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+			if (false == bShadowWrite) 
+			{
+				Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
+				Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+
+				FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
+			}
+
 			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 			
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
@@ -376,6 +420,7 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
 				ZeroMemory(BoneMatrices, sizeof(_matrix) * 256);
 				pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
 				Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
+
 
 				m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
 			}
@@ -385,12 +430,61 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum)
 	{
 		for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
 		{
-			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
+			if (false == bShadowWrite)
+			{
+				Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
+				Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+
+				FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
+			}
+
 			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
 				m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
 		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel::Bind_GBuffers()
+{
+	_uint iOffSet = 0;
+
+	m_pDeviceContext->IASetVertexBuffers(0, m_iVertexBufferCount, &m_pVB, &m_iVertexStride, &iOffSet);
+	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
+	m_pDeviceContext->IASetPrimitiveTopology(m_eTopology);
+
+	return S_OK;
+}
+
+HRESULT CModel::Render_ModelByPass(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite)
+{
+	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
+
+	if(false == bShadowWrite)
+		FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
+	if (0 < m_iAnimCount)
+	{
+		_matrix	BoneMatrices[256];
+
+		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
+		{
+			ZeroMemory(BoneMatrices, sizeof(_matrix) * 256);
+			pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
+			Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
+
+			m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+		}
+	}
+	else
+	{
+		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
+			m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
 	}
 
 	return S_OK;
@@ -484,7 +578,6 @@ void CModel::Update_AnimTransformations(_double dTimeDelta)
 	if (m_fLerpRatio > 0.9f) // 이렇게 했을때 왜 더 애니메이션이 이쁠까?
 	{
 		m_Anims[m_iCurAnimIndex]->Update_Transformations_Blend(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations, m_PreAnimKeyFrames, m_fLerpRatio);
-
 		m_fLerpRatio -= (_float)dTimeDelta * m_fLerpSpeed;
 	}
 	else
@@ -502,6 +595,22 @@ void CModel::Update_CombinedTransformations()
 		else
 			XMStoreFloat4x4(&m_CombinedTransformations[pNode->Get_NodeIndex()], XMLoadFloat4x4(&m_AnimTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_CombinedPivotMatrix));
 	}
+}
+
+HRESULT CModel::Is_BindMaterials(_uint iMaterialIndex)
+{
+	ZeroMemory(m_IsBindMaterials, sizeof(m_IsBindMaterials));
+
+	for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
+	{
+		if (nullptr == m_Materials[iMaterialIndex]->pMaterialTexture[i])
+			m_IsBindMaterials[i] = false;
+		else
+			m_IsBindMaterials[i] = true;
+	}
+	Set_Variable("g_IsMaterials", m_IsBindMaterials, sizeof(m_IsBindMaterials));
+	
+	return S_OK;
 }
 
 #pragma region For_Buffer

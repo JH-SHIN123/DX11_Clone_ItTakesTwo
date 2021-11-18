@@ -7,6 +7,10 @@ BEGIN(Engine)
 class CFrustum final : public CBase
 {
 	DECLARE_SINGLETON(CFrustum)
+
+public:
+	enum TYPE { FRUSTUM_MAIN, FRUSTUM_SUB, FRUSTUM_FULLSCREEN_MAIN, FRUSTUM_FULLSCREEN_SUB, FRUSTUM_END };
+
 private:
 	explicit CFrustum() = default;
 	virtual ~CFrustum() = default;
@@ -18,7 +22,13 @@ public: /* Struct */
 		_float3	vPoints_Local[8];
 		_float4	PlaneWorld[6];
 		_float4	PlaneLocal[6];
+
+		_float	fFrustumDepth = 0.f;
 	}FRUSTUM_DESC;
+
+public:
+	const _float3*	Get_FrustumPointsInWorld(_uint iIndex) const { return m_Frustum[iIndex].vPoints_World; }
+	_float			Get_FrustumDepth(_uint iIndex) const { return m_Frustum[iIndex].fFrustumDepth; }
 
 public:
 	HRESULT	Ready_Frustum();
@@ -29,7 +39,7 @@ public:
 
 private:
 	_float3			m_vPoints[8];
-	FRUSTUM_DESC	m_Frustum[2];
+	FRUSTUM_DESC	m_Frustum[FRUSTUM_END];
 
 public:
 	 virtual void Free() override;

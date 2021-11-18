@@ -184,6 +184,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp" />
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp" />
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
@@ -198,7 +200,6 @@
     <ClInclude Include="..\Public\InGameEffect_Rect.h" />
     <ClInclude Include="..\public\Effect_Landing_Smoke.h" />
     <ClInclude Include="..\Public\Cody.h" />
-    <ClInclude Include="..\public\DataBase.h" />
     <ClInclude Include="..\public\DataStorage.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
@@ -213,6 +214,10 @@
     <ClInclude Include="..\public\Effect_RespawnTunnel.h" />
     <ClInclude Include="..\public\Effect_RespawnTunnel_Portal.h" />
     <ClInclude Include="..\public\Effect_RespawnTunnel_Smoke.h" />
+    <ClInclude Include="..\Public\Robot.h" />
+    <ClInclude Include="..\Public\RobotHead.h" />
+    <ClInclude Include="..\Public\Rocket.h" />
+    <ClInclude Include="..\Public\StarBuddy.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TestEffect.h" />
@@ -239,7 +244,6 @@
     <ClCompile Include="..\private\Effect_Landing_Smoke.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
-    <ClCompile Include="..\private\DataBase.cpp" />
     <ClCompile Include="..\private\DataStorage.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
@@ -254,6 +258,10 @@
     <ClCompile Include="..\private\Effect_RespawnTunnel.cpp" />
     <ClCompile Include="..\private\Effect_RespawnTunnel_Portal.cpp" />
     <ClCompile Include="..\private\Effect_RespawnTunnel_Smoke.cpp" />
+    <ClCompile Include="..\Private\Robot.cpp" />
+    <ClCompile Include="..\Private\RobotHead.cpp" />
+    <ClCompile Include="..\Private\Rocket.cpp" />
+    <ClCompile Include="..\Private\StarBuddy.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TestEffect.cpp" />

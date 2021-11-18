@@ -5,13 +5,6 @@
 texture2D	g_DiffuseTexture;
 texture2D	g_AlphaTexture;
 
-sampler	DiffuseSampler = sampler_state
-{
-	Filter = MIN_MAG_MIP_LINEAR;
-	AddressU = Wrap;
-	AddressV = Wrap;
-};
-
 ////////////////////////////////////////////////////////////
 
 struct VS_IN
@@ -100,7 +93,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	Out.vColor = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
 	return Out;
 }

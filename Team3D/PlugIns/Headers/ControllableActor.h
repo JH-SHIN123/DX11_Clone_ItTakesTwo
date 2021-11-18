@@ -14,10 +14,12 @@ private:
 public: /* Struct */
 	typedef struct tagArgumentDesc
 	{
-		class CTransform* pTransform;
+		class CTransform*		pTransform;
+		PxCapsuleControllerDesc	CapsuleControllerDesc;
+		_float					fJumpGravity;
 
 		tagArgumentDesc() {}
-		tagArgumentDesc(class CTransform* _pTransform) : pTransform(_pTransform) {}
+		tagArgumentDesc(class CTransform* _pTransform, PxCapsuleControllerDesc _CapsuleControllerDesc, _float _fJumpGravity) : pTransform(_pTransform), CapsuleControllerDesc(_CapsuleControllerDesc), fJumpGravity(_fJumpGravity) {}
 	}ARG_DESC;
 
 public:
@@ -25,19 +27,24 @@ public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	void	Move(_fvector vMove, _double dTimeDelta);
 	void	Update(_double dTimeDelta);
+	void	Update_Cam(_double dTimeDelta);
 	void	Jump_Start(_float fJumpForce);
 	void	Jump_Higher(_float fJumpForce);
+	//void	Kinematic_On() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true); }
+	//void	Kinematic_Off() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false); }
 
 	/* Setter */
 	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
+	void    Set_Jump(_bool bJump) { m_bJump = bJump; }
 
 	/* Getter */
 	_bool  Get_IsJump() { return m_bJump; }
 
 private:
-	PxController*		m_pController = nullptr;
-	PxRigidDynamic*		m_pActor = nullptr;
-	class CTransform*	m_pTransform = nullptr;
+	PxController*					m_pController = nullptr;
+	PxRigidDynamic*					m_pActor = nullptr;
+	class CTransform*				m_pTransform = nullptr;
+	class CPxControllerCallback*	m_pCallback = nullptr;
 	/* For.Jump */
 	_float	m_fJumpTime = 0.f;
 	_float	m_fHeightDelta = 0.f;

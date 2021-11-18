@@ -105,6 +105,11 @@ HRESULT CCharacter::Render()
 	return CGameObject::Render();
 }
 
+HRESULT CCharacter::Render_ShadowDepth()
+{
+	return CGameObject::Render_ShadowDepth();
+}
+
 void CCharacter::Free()
 {
 

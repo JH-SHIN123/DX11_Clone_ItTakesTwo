@@ -1112,3 +1112,8 @@
 #define ANI_CUTSCENE_ROCKETPHASEFINISHED_FLYINGSAUCER	35
 
 #pragma endregion
+
+#define UP 0
+#define DOWN 1
+#define LEFT 2
+#define RIGHT 3
