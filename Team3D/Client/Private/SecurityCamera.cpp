@@ -106,6 +106,7 @@ void CSecurityCamera::Watch_Target(_double dTimeDelta)
 {
 	_vector TargetPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION);
 	m_pTransformCom->Rotate_ToTarget(TargetPos);
+
 }
 
 CSecurityCamera * CSecurityCamera::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
