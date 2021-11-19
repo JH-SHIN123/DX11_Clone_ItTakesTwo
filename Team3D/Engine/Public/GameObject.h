@@ -25,7 +25,7 @@ public:
 	virtual _int	Late_Tick(_double dTimeDelta);
 	virtual HRESULT	Render();
 
-public: /* For. Write Shadow Depth */
+public: /* Etc */
 	virtual HRESULT Render_ShadowDepth();
 
 protected: /* Typedef */
@@ -37,6 +37,8 @@ protected:
 	COMPONENTS				m_Components;
 	_bool					m_isDead = false;
 	_bool					m_isClone = false;
+protected:
+	MATERIAL_OBJECT			m_Material;
 protected:
 	HRESULT	Add_Component(_uint iPrototypeLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg = nullptr);
 

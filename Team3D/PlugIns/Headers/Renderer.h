@@ -48,6 +48,11 @@ public:
 	static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CComponent*	Clone_Component(void* pArg) override;
 	virtual void Free() override;
+
+#ifdef _DEBUG
+private:
+	_bool m_bShowDebugBuffer = false;
+#endif
 };
 
 END

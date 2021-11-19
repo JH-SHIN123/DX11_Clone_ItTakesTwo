@@ -6,7 +6,7 @@
 #define NUM_VIEWPORTS 2
 
 texture2D	g_DiffuseTexture;
-//texture2D	g_NormalTexture;
+texture2D	g_NormalTexture;
 //texture2D	g_EmmesiveTexture;
 //texture2D	g_AmbientTexture;
 //texture2D	g_OpacityTexture;
@@ -34,6 +34,8 @@ struct VS_OUT
 {
 	float4 vPosition	: SV_POSITION;
 	float4 vNormal		: NORMAL;
+	float3 vTangent		: TANGENT;
+	float3 vBiNormal	: BINORMAL;
 	float2 vTexUV		: TEXCOORD0;
 };
 
@@ -48,6 +50,8 @@ VS_OUT VS_MAIN(VS_IN In)
 
 	Out.vPosition	= mul(vector(In.vPosition, 1.f), In.WorldMatrix);
 	Out.vNormal		= normalize(mul(vector(In.vNormal, 0.f), In.WorldMatrix));
+	Out.vTangent	= normalize(mul(vector(In.vTangent, 0.f), In.WorldMatrix));
+	Out.vBiNormal	= normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
 	Out.vTexUV		= In.vTexUV;
 
 	return Out;
@@ -68,6 +72,8 @@ struct GS_IN
 {
 	float4 vPosition	: SV_POSITION;
 	float4 vNormal		: NORMAL;
+	float3 vTangent		: TANGENT;
+	float3 vBiNormal	: BINORMAL;
 	float2 vTexUV		: TEXCOORD0;
 };
 
@@ -75,6 +81,8 @@ struct GS_OUT
 {
 	float4 vPosition			: SV_POSITION;
 	float4 vNormal				: NORMAL;
+	float3 vTangent				: TANGENT;
+	float3 vBiNormal			: BINORMAL;
 	float2 vTexUV				: TEXCOORD0;
 	float4 vProjPosition		: TEXCOORD1;
 	float4 vWorldPosition		: TEXCOORD2;
@@ -104,6 +112,8 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 
 		Out.vPosition			= mul(In[i].vPosition, matVP);
 		Out.vNormal				= In[i].vNormal;
+		Out.vTangent			= In[i].vTangent;
+		Out.vBiNormal			= In[i].vBiNormal;
 		Out.vTexUV				= In[i].vTexUV;
 		Out.vProjPosition		= Out.vPosition;
 		Out.vWorldPosition		= In[i].vPosition;
@@ -120,6 +130,8 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 
 		Out.vPosition		= mul(In[j].vPosition, matVP);
 		Out.vNormal			= In[j].vNormal;
+		Out.vTangent		= In[j].vTangent;
+		Out.vBiNormal		= In[j].vBiNormal;
 		Out.vTexUV			= In[j].vTexUV;
 		Out.vProjPosition	= Out.vPosition;
 		Out.vWorldPosition	= In[j].vPosition;
@@ -173,6 +185,8 @@ struct PS_IN
 {
 	float4 vPosition			: SV_POSITION;
 	float4 vNormal				: NORMAL;
+	float3 vTangent				: TANGENT;
+	float3 vBiNormal			: BINORMAL;
 	float2 vTexUV				: TEXCOORD0;
 	float4 vProjPosition		: TEXCOORD1;
 	float4 vWorldPosition		: TEXCOORD2;
@@ -202,8 +216,17 @@ PS_OUT	PS_MAIN(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vDiffuse			= vMtrlDiffuse;
-	Out.vNormal				= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth				= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+
+	// Calculate Normal
+	if (g_IsMaterials.Is_Normals & 1) // Normal Mapping
+	{
+		vector vNormal = vector(g_NormalTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, 0.f) * 2.f - 1.f;
+		float3x3 TBN = transpose(float3x3(In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz));
+		vNormal = vector(mul(TBN, normalize(vNormal.xyz)), 0.f);
+		Out.vNormal = vector(normalize(vNormal.xyz) * 0.5f + 0.5f, 0.f);
+	}
+	else Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 
 	// Calculate Shadow
 	int iIndex = -1;
@@ -215,6 +238,18 @@ PS_OUT	PS_MAIN(PS_IN In)
 
 	Out.vShadow = 1.f - fShadowFactor;
 	Out.vShadow.a = 1.f;
+
+	return Out;
+}
+
+PS_OUT	PS_MAIN_ALPHA(PS_IN In, uniform bool isOpaque)
+{
+	PS_OUT Out = (PS_OUT)0;
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	Out.vDiffuse = vMtrlDiffuse * g_Material.vDiffuse;
+	if (true == isOpaque) Out.vDiffuse.w = 1.f;
+	//Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	//Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 
 	return Out;
 }
@@ -248,5 +283,25 @@ technique11 DefaultTechnique
 		VertexShader = compile		vs_5_0 VS_MAIN_CSM_DEPTH();
 		GeometryShader = compile	gs_5_0 GS_MAIN_CSM_DEPTH();
 		PixelShader = compile		ps_5_0 PS_MAIN_CSM_DEPTH();
+	}
+	// 2
+	pass Default_Alpha
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_ALPHA(false);
+	}
+	// 3
+	pass Default_Alpha_Opaque
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_ALPHA(true);
 	}
 };

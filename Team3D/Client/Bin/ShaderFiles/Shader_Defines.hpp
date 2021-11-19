@@ -1,12 +1,64 @@
 
-#define MAX_CASCADES	3
-#define MAIN_VIEWPORT_INDEX 1
-#define SUB_VIEWPORT_INDEX 2
+#define aiTextureType_NONE 0
+#define aiTextureType_DIFFUSE 1
+#define aiTextureType_SPECULAR 2
+#define aiTextureType_AMBIENT 3
+#define aiTextureType_EMISSIVE 4
+#define aiTextureType_HEIGHT 5
+#define aiTextureType_NORMALS 6
+#define aiTextureType_SHININESS 7
+#define aiTextureType_OPACITY 8
+#define aiTextureType_DISPLACEMENT 9
+#define aiTextureType_LIGHTMAP 10
+#define aiTextureType_REFLECTION 11
+#define aiTextureType_BASE_COLOR 12
+#define aiTextureType_NORMAL_CAMERA 13
+#define aiTextureType_EMISSION_COLOR 14
+#define aiTextureType_METALNESS 15
+#define aiTextureType_DIFFUSE_ROUGHNESS 16
+#define aiTextureType_AMBIENT_OCCLUSION 17
+#define aiTextureType_UNKNOWN  18
+#define AI_TEXTURE_TYPE_MAX  aiTextureType_UNKNOWN
+
+#define		MAX_CASCADES		4
+#define		MAIN_VIEWPORT_INDEX 1
+#define		SUB_VIEWPORT_INDEX	2
 
 /* struct */
+struct ISMATERIALS
+{
+	uint Is_None;
+	uint Is_Diffuse;
+	uint Is_Specular;
+	uint Is_Ambient;
+	uint Is_Emissive;
+	uint Is_Height;
+	uint Is_Normals;
+	uint Is_Shininess;
+	uint Is_Opacity;
+	uint Is_Display;
+	uint Is_Lightmap;
+	uint Is_Reflection;
+	uint Is_Base_color;
+	uint Is_Normal_camera;
+	uint Is_Emission_color;
+	uint Is_Metalness;
+	uint Is_Diffuse_roughness;
+	uint Is_Ambient_occlusion;
+	uint Is_Unknown;
+};
+
 struct BONEMATRICES
 {
 	matrix	Matrices[256];
+};
+
+struct Material
+{
+	float4 vDiffuse;
+	float4 vAmbient;
+	float4 vSpecular; // w = SpecPower
+	float4 vReflect;
 };
 
 /* cbuffer */
@@ -23,6 +75,12 @@ cbuffer Matrices
 	matrix	g_MainViewMatrixInverse;
 	matrix	g_SubProjMatrixInverse;
 	matrix	g_SubViewMatrixInverse;
+}
+
+cbuffer Materials
+{
+	Material	g_Material = (Material)(1.f);
+	ISMATERIALS g_IsMaterials;
 }
 
 cbuffer Camera
