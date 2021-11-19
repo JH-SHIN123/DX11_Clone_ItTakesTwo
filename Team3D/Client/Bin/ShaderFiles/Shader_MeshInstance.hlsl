@@ -201,16 +201,6 @@ struct PS_OUT
 	vector	vShadow				: SV_TARGET3;
 };
 
-struct PS_IN_CSM_DEPTH
-{
-	float4 vPosition : SV_POSITION;
-};
-
-struct PS_OUT_CSM_DEPTH
-{
-	vector	vShadowDepth : SV_TARGET0;
-};
-
 PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -253,13 +243,6 @@ PS_OUT	PS_MAIN_ALPHA(PS_IN In, uniform bool isOpaque)
 
 	return Out;
 }
-
-PS_OUT_CSM_DEPTH PS_MAIN_CSM_DEPTH(PS_IN_CSM_DEPTH In)
-{
-	PS_OUT_CSM_DEPTH		Out = (PS_OUT_CSM_DEPTH)0;
-	Out.vShadowDepth = vector(In.vPosition.z, In.vPosition.z, In.vPosition.z, 1.f); /* NDC X 투영공간의 z*/
-	return Out;
-}
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
@@ -282,7 +265,6 @@ technique11 DefaultTechnique
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile		vs_5_0 VS_MAIN_CSM_DEPTH();
 		GeometryShader = compile	gs_5_0 GS_MAIN_CSM_DEPTH();
-		//PixelShader = compile		ps_5_0 PS_MAIN_CSM_DEPTH();
 		PixelShader = NULL;
 	}
 	// 2
