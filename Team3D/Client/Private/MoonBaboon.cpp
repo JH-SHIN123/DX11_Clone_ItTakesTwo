@@ -70,7 +70,6 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 	During_Animation_Behavior(dTimeDelta);
 	Fix_MoonBaboon_Chair(dTimeDelta);
 
-	PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 	//m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
 

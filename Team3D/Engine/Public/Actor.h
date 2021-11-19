@@ -11,18 +11,12 @@ protected:
 	explicit CActor(const CActor& rhs);
 	virtual ~CActor() = default;
 
-public: /* Struct */
-	typedef struct tagActorData
-	{
-
-	}ACTORDATA;
-
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 
 protected:
-	class CPhysX* m_pPhysX = nullptr;
+	class CPhysX*	m_pPhysX = nullptr;
 
 public:
 	virtual CComponent* Clone_Component(void* pArg) PURE;

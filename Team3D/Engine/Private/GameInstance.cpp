@@ -307,11 +307,6 @@ PxMaterial * CGameInstance::Get_BasePxMaterial()
 	NULL_CHECK_RETURN(m_pPhysX, nullptr);
 	return m_pPhysX->Get_BaseMaterial();
 }
-PxMaterial * CGameInstance::Create_PxMaterial(PxReal StaticFriction, PxReal DynamicFriction, PxReal Restitution)
-{
-	NULL_CHECK_RETURN(m_pPhysX, nullptr);
-	return m_pPhysX->Create_Material(StaticFriction, DynamicFriction, Restitution);
-}
 PxTriangleMesh * CGameInstance::Create_PxMesh(MESHACTOR_DESC pMeshActorDesc)
 {
 	NULL_CHECK_RETURN(m_pPhysX, nullptr);

@@ -14,6 +14,7 @@
 #include "StaticActor.h"
 #include "DynamicActor.h"
 #include "ControllableActor.h"
+#include "TriggerActor.h"
 
 BEGIN(Engine)
 
