@@ -6,6 +6,7 @@
 
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
+texture2D	g_SpecularTexture;
 //texture2D	g_EmmesiveTexture;
 //texture2D	g_AmbientTexture;
 //texture2D	g_OpacityTexture;
@@ -226,6 +227,7 @@ struct PS_OUT
 	vector	vNormal		: SV_TARGET1;
 	vector	vDepth		: SV_TARGET2;
 	vector	vShadow		: SV_TARGET3;
+	vector	vSpecular	: SV_TARGET4;
 };
 
 PS_OUT	PS_MAIN(PS_IN In)
@@ -238,14 +240,11 @@ PS_OUT	PS_MAIN(PS_IN In)
 	Out.vDepth		= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 
 	// Calculate Normal
-	if (g_IsMaterials.Is_Normals & 1) // Normal Mapping
-	{
-		vector vNormal = vector(g_NormalTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, 0.f) * 2.f - 1.f;
-		float3x3 TBN = transpose(float3x3(In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz));
-		vNormal = vector(mul(TBN, normalize(vNormal.xyz)), 0.f);
-		Out.vNormal = vector(normalize(vNormal.xyz) * 0.5f + 0.5f, 0.f);
-	}
+	if (g_IsMaterials.Is_Normals & 1) Out.vNormal = TextureSampleToWorldSpace(g_NormalTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
 	else Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+	// Calculate Specular
+	if (g_IsMaterials.Is_Specular & 1) Out.vSpecular = TextureSampleToWorldSpace(g_SpecularTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
 
 	// Calculate Shadow
 	int iIndex = -1;

@@ -299,6 +299,7 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _
 		if (false == bShadowWrite) {
 			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
 			Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+			Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, iMaterialSetNum);
 
 			FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 		}

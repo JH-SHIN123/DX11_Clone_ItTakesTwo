@@ -3,6 +3,7 @@
 
 texture2D	g_NormalTexture;
 texture2D	g_DepthTexture;
+texture2D	g_SpecularSrcTexture;
 
 
 cbuffer Directional
@@ -25,7 +26,7 @@ cbuffer LightColor
 
 cbuffer MtrlDesc
 {
-	float	g_fPower		= 20.f;
+	float	g_fPower		= 16.f;
 	vector	g_vMtrlDiffuse	= (vector)1.f;
 	vector	g_vMtrlAmbient	= (vector)1.f;
 	vector	g_vMtrlSpecular = (vector)1.f;
@@ -77,6 +78,9 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	vector	vNormalDesc = g_NormalTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vNormal		= vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 	vector	vDepthDesc	= g_DepthTexture.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
+	
 	vector	vWorldPos	= vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
 	float	fViewZ		= 0.f;
 	vector	vLook		= (vector)0.f;
@@ -103,7 +107,7 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	else
 		discard;
 
-	vector vReflect = reflect(normalize(g_vLightDir), vNormal);
+	vector vReflect = reflect(normalize(g_vLightDir), vSpecSrc);
 
 	Out.vShade		= max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient);
 	Out.vShade.a = 0.f;

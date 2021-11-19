@@ -17,6 +17,16 @@ float3 SchlickFresnel(float3 R0, float3 normal, float3 lightVec)
 	return reflectPercent;
 }
 
+vector TextureSampleToWorldSpace(float3 mapSample, float3 tangetW, float3 biNormalW, float3 normalW)
+{
+	vector vReturn = vector(mapSample, 0.f) * 2.f - 1.f;
+
+	float3x3 TBN = transpose(float3x3(tangetW, biNormalW, normalW));
+	vReturn = vector(mul(TBN, normalize(vReturn.xyz)), 0.f);
+	vReturn = vector(normalize(vReturn.xyz) * 0.5f + 0.5f, 0.f);
+
+	return vReturn;
+}
 
 int Get_CascadedShadowSliceIndex(uint iViewportIndex, vector vWorldPos) /* 1: Main 2: Sub*/
 {
