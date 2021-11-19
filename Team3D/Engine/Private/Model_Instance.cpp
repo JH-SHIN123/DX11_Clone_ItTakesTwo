@@ -288,6 +288,9 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _
 		/* Write Shadow - ÅØ½ºÃÄ ¿¬°á¾ÈÇØÁàµµ µÊ */
 		if (false == bShadowWrite) {
 			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
+			Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+
+			FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 		}
 
 		FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
@@ -295,6 +298,56 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _
 		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
 			m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
 	}
+
+	return S_OK;
+}
+
+_uint CModel_Instance::Frustum_Culling()
+{
+	/* For.Culling */
+	_uint iRenderCount = 0;
+
+	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+	{
+		if (CFrustum::GetInstance()->IsIn_WorldSpace(MH_GetXMPosition(m_pWorldMatrices[iIndex]), m_fCullingRadius))
+			m_RealTimeMatrices[iRenderCount++] = m_pWorldMatrices[iIndex];
+	}
+
+	return iRenderCount;
+}
+
+HRESULT CModel_Instance::Bind_GBuffers(_uint iRenderCount)
+{
+	/* For.UpdateBuffer */
+	D3D11_MAPPED_SUBRESOURCE MappedSubResource;
+
+	m_pDeviceContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedSubResource);
+	memcpy(MappedSubResource.pData, &m_RealTimeMatrices[0], sizeof(VTXMATRIX) * iRenderCount);
+	m_pDeviceContext->Unmap(m_pVBInstance, 0);
+
+	/* For.Render */
+	ID3D11Buffer* pBuffers[2] = { m_pVB, m_pVBInstance };
+	_uint iStrides[2] = { sizeof(VTXMESH), sizeof(VTXMATRIX) };
+	_uint iOffsets[2] = { 0, 0 };
+
+	m_pDeviceContext->IASetVertexBuffers(0, m_iVertexBufferCount, pBuffers, iStrides, iOffsets);
+	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
+	m_pDeviceContext->IASetPrimitiveTopology(m_eTopology);
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Render_ModelByPass(_uint iRenderCount, _uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite)
+{
+	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
+
+	if (false == bShadowWrite)
+		FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
+	for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
+		m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
 
 	return S_OK;
 }
@@ -354,6 +407,22 @@ HRESULT CModel_Instance::Store_TriMeshes()
 
 		m_PxTriMeshes.emplace_back(TriMesh);
 	}
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Is_BindMaterials(_uint iMaterialIndex)
+{
+	ZeroMemory(m_IsBindMaterials, sizeof(m_IsBindMaterials));
+
+	for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
+	{
+		if (nullptr == m_Materials[iMaterialIndex]->pMaterialTexture[i])
+			m_IsBindMaterials[i] = false;
+		else
+			m_IsBindMaterials[i] = true;
+	}
+	Set_Variable("g_IsMaterials", m_IsBindMaterials, sizeof(m_IsBindMaterials));
 
 	return S_OK;
 }

@@ -40,6 +40,8 @@ protected:
 	_bool					m_isClone = false;
 	USERDATA				m_UserData;
 protected:
+	MATERIAL_OBJECT			m_Material;
+protected:
 	HRESULT	Add_Component(_uint iPrototypeLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg = nullptr);
 
 private:
