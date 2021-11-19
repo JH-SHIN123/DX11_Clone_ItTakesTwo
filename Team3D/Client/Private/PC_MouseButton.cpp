@@ -66,6 +66,7 @@ HRESULT CPC_MouseButton::Render()
 {
 	CUIObject::Render();
 
+	// ¾ë ÀÚ±â²¨ ½á¾ßÇÔ
 	if (FAILED(Set_UIVariables_Perspective()))
 		return E_FAIL;
 

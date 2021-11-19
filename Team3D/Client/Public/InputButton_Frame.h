@@ -29,9 +29,6 @@ private:
 
 private:
 	HRESULT Ready_Component();
-	HRESULT Set_DefaultVariables_Perspective();
-	HRESULT Set_UIVariables_Perspective();
-	HRESULT Set_InterActiveVariables_Perspective();
 	void SetUp_Option();
 
 public:

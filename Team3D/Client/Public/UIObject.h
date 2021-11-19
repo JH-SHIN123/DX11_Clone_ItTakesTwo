@@ -8,6 +8,7 @@ class CRenderer;
 class CTextures;
 class CTransform;
 class CVIBuffer_Terrain;
+class CVIBuffer;
 END
 
 BEGIN(Client)
@@ -72,6 +73,8 @@ protected:
 
 protected:
 	HRESULT Ready_Component();
+	HRESULT Set_UIVariables_Perspective(CVIBuffer* pVIBuffer);
+	HRESULT Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer);
 
 
 public:

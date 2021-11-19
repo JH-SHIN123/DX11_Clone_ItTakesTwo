@@ -35,10 +35,10 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	DATABASE->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
-	UI_Create(May, StickIcon);
 	UI_Create(Cody, PC_Mouse_Reduction);
 	UI_Create(Cody, PC_Mouse_Enlargement);
 	UI_Create(Default, LoadingBook);
+	UI_Create(May, Arrowkeys_Side);
 
 	return S_OK;
 }

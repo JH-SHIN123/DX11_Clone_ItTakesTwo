@@ -61,7 +61,7 @@ HRESULT CArrowkeys_Outline::Render()
 {
 	CUIObject::Render();
 
-	if (FAILED(Set_UIVariables_Perspective()))
+	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
 	m_pVIBuffer_RectCom->Render(0);
