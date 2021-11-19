@@ -41,6 +41,9 @@ protected: /* For.Component */
 	CControllableActor* m_pActorCom = nullptr;
 
 protected:
+	void Character_Marker(CTransform* pTransformCom);
+
+protected:
 	_float m_fClockWise = 1.f; // 1이면 시계방향, -1이면 반시계방향.
 	//_uint  m_iViewPortNum = 0;
 

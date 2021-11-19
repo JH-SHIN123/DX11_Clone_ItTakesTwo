@@ -29,6 +29,7 @@ private:
 
 private:
 	HRESULT Ready_Component();
+	HRESULT Set_PlayerMarkerVariables_Perspective();
 
 public:
 	static CPlayerMarker* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

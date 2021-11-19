@@ -115,6 +115,50 @@ HRESULT CCharacter::Set_ShaderConstant_Shadow(_fmatrix LightViewMatrix, _fmatrix
 	return CGameObject::Set_ShaderConstant_Shadow(LightViewMatrix, LightProjMatrix);
 }
 
+void CCharacter::Character_Marker(CTransform* pTransformCom)
+{
+	//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//_vector vTargetPos = pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	//D3D11_VIEWPORT Viewport;
+	//_matrix ViewMatrix, ProjMatrix;
+	//_float3 vConvertPos;
+
+	//Viewport = m_pGameInstance->Get_ViewportInfo(1);
+
+	//_matrix ViewMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_MAINVIEW);
+	//_matrix ProjMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_MAINPROJ);
+
+	//_matrix matMainCombine = ViewMatrix * ProjMatrix;
+
+	//vTargetPos = XMVector3TransformCoord(vTargetPos, matMainCombine);
+
+	//XMStoreFloat3(&vConvertPos, vTargetPos);
+	//vConvertPos.x += 1.f;
+	//vConvertPos.y += 1.f;
+
+	//if (1.f <= vConvertPos.z)
+	//{
+	//	vConvertPos.y *= -1.f;
+	//	vConvertPos.x *= -1.f;
+	//}
+
+	//vConvertPos.x = ((Viewport.Width * (vConvertPos.x)) / 2.f + Viewport.TopLeftX);
+	//vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f + Viewport.TopLeftY);
+
+	//if (Viewport.Width < vConvertPos.x)
+	//	vConvertPos.x = Viewport.Width - 10.f;
+	//else if (Viewport.TopLeftX > vConvertPos.x)
+	//	vConvertPos.x = Viewport.TopLeftX + 10.f;
+
+	//if (0.f > vConvertPos.y)
+	//	vConvertPos.y = Viewport.TopLeftY + 10.f;
+	//else if (Viewport.Height < vConvertPos.y)
+	//	vConvertPos.y = Viewport.Height - 20.f;
+
+
+}
+
 void CCharacter::Free()
 {
 

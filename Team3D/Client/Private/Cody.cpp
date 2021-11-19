@@ -6,6 +6,7 @@
 #include "DataStorage.h"
 #include "UI_Generator.h"
 #include "UIObject.h"
+#include "May.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -39,6 +40,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	UI_Create(Cody, PC_Mouse_Enlargement);
 	UI_Create(Default, LoadingBook);
 	UI_Create(May, Arrowkeys_Side);
+	UI_Create(May, StickIcon);
 
 	return S_OK;
 }
@@ -112,6 +114,11 @@ _int CCody::Tick(_double dTimeDelta)
 	}
 	Ground_Pound(dTimeDelta);
 
+	///////////////////////// Å×½ºÆ®
+	CMay* pMay = (CMay*)DATABASE->GetMay();
+	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+	//////////////////////////////
+
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
 	return NO_EVENT;
@@ -120,6 +127,9 @@ _int CCody::Tick(_double dTimeDelta)
 _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
+
+	if(m_pGameInstance->Key_Down(DIK_5))
+		UI_Create(Cody, PlayerMarker);
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
