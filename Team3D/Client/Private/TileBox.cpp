@@ -52,7 +52,7 @@ _int CTileBox::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	_matrix TransformMatrix= XMMatrixRotationY(XMConvertToRadians((_float)-dTimeDelta * 10.f));
+	_matrix TransformMatrix= XMMatrixRotationZ(XMConvertToRadians((_float)-dTimeDelta * 10.f));
 
 	if (m_pGameInstance->Key_Down(DIK_0))
 		m_pModelCom->Update_Model(TransformMatrix);

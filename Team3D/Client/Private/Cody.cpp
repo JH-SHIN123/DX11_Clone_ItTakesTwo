@@ -103,25 +103,33 @@ _int CCody::Tick(_double dTimeDelta)
 
 #pragma region BasicActions
 
-	// 트리거 끝나고 애니메이션 초기화
-	Trigger_End(dTimeDelta);
-
-	m_IsFalling = m_pActorCom->Get_IsFalling();
-	m_pActorCom->Set_GroundPound(m_bGroundPound);
-
-	if ((m_bRoll == false || m_bSprint == true))
-		KeyInput(dTimeDelta);
-	if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
+	/////////////////////////////////////////////
+	if (Trigger_Check(dTimeDelta))
 	{
-		Sprint(dTimeDelta);
-		Move(dTimeDelta);
-		if (m_eCurPlayerSize != SIZE_LARGE)
-			Roll(dTimeDelta);
-		Jump(dTimeDelta);
-		Change_Size(dTimeDelta);
+		Go_Grind(dTimeDelta);
 	}
-	Ground_Pound(dTimeDelta);
-	Go_Grind(dTimeDelta);
+	else
+	{
+		// 트리거 끝나고 애니메이션 초기화
+		Trigger_End(dTimeDelta);
+		m_IsFalling = m_pActorCom->Get_IsFalling();
+		m_pActorCom->Set_GroundPound(m_bGroundPound);
+
+		if ((m_bRoll == false || m_bSprint == true))
+			KeyInput(dTimeDelta);
+		if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
+		{
+			Sprint(dTimeDelta);
+			Move(dTimeDelta);
+			if (m_eCurPlayerSize != SIZE_LARGE)
+				Roll(dTimeDelta);
+			Jump(dTimeDelta);
+			Change_Size(dTimeDelta);
+		}
+		Ground_Pound(dTimeDelta);
+	}
+	/////////////////////////////////////////////
+
 	
 #pragma endregion
 
@@ -1183,15 +1191,31 @@ HRESULT CCody::Render_ShadowDepth()
 #pragma region Trigger
 void CCody::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	if (eStatus == TriggerStatus::eFOUND && m_pGameInstance->Key_Down(DIK_E))
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::eSTARBUDDY)
+	{
+		m_IsCollide = true;
+	}
+	else if (eStatus == TriggerStatus::eLOST)
+		m_IsCollide = false;
+
+}
+
+_bool CCody::Trigger_Check(const _double dTimeDelta)
+{
+	if (m_IsCollide && m_pGameInstance->Key_Down(DIK_F))
 	{
 		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind);
-
 		m_IsOnGrind = true;
 	}
+
+	// Trigger 여따가 싹다모아~
+	if (m_IsOnGrind)
+		return true;
+
+	return false;
 }
-bool CCody::Trigger_End(const _double dTimeDelta)
+_bool CCody::Trigger_End(const _double dTimeDelta)
 {
 	if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jump_Land)
 	{

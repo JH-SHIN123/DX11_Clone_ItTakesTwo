@@ -61,7 +61,6 @@ HRESULT CTestObject01::Render()
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-
 	m_pModelCom->Render_Model(1);
 
 	return S_OK;
@@ -70,6 +69,7 @@ HRESULT CTestObject01::Render()
 void CTestObject01::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	pGameObject->Trigger(eStatus, GameID::eSTARBUDDY, this);
+
 }
 
 HRESULT CTestObject01::Render_ShadowDepth()

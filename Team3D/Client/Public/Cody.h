@@ -223,7 +223,6 @@ public:
 	// Tick 에서 호출될 함수들
 private:
 	virtual void KeyInput(_double dTimeDelta);
-	void TriggerCheck(_double dTimeDelta);
 
 private:
 	// 단발성 함수들.
@@ -253,9 +252,9 @@ public:
 	void Jump(const _double dTimeDelta);
 	void Change_Size(const _double dTimeDelta);
 	void Ground_Pound(const _double dTimeDelta);
-	bool Trigger_End(const _double dTimeDelta);
+	_bool Trigger_End(const _double dTimeDelta);
+	_bool Trigger_Check(const _double dTimeDelta);
 
-	void Go_Grind(const _double dTimeDelta);
 
 #pragma region BasicMovement
 private:
@@ -320,9 +319,16 @@ private:
 	_bool m_IsCutScene = false;
 #pragma endregion
 
+#pragma region Trigger
+	_bool m_IsCollide = false;
+
+	void Go_Grind(const _double dTimeDelta);
+
 
 	_bool m_IsOnGrind = false;
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
+#pragma endregion
+
 };
 END

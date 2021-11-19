@@ -29,6 +29,15 @@ HRESULT CStarBuddy::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(35.f, 1.f, 25.f, 1.f));
 
+	CTriggerActor::ARG_DESC ArgDesc;
+
+	m_UserData = USERDATA(GameID::eSTARBUDDY, this);
+	ArgDesc.pUserData = &m_UserData;
+	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.pGeometry = &PxSphereGeometry(0.5f);
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
+
 	return S_OK;
 }
 
@@ -36,8 +45,10 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_0))
+	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide)
+	{
 		m_bLaunch = true;
+	}
 
 	if (m_bLaunch == false)
 	{
@@ -73,6 +84,28 @@ HRESULT CStarBuddy::Render()
 	return S_OK;
 }
 
+void CStarBuddy::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+	//// ui 생성
+	//1.pGameObject; -> 플레이어
+	//2.this; -> 별이야
+    
+
+
+	//// 별의 포인터 
+	//// UI 내부에선 IF(m_pGameInstance->Key_Down(DIKI))
+	//{
+	//	pPlayer->신호
+	//	pStar->신호
+	//}
+
+	if (eStatus == TriggerStatus::eFOUND)
+		m_IsCollide = true;
+	else
+		m_IsCollide = false;
+
+}
+
 HRESULT CStarBuddy::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -88,10 +121,11 @@ HRESULT CStarBuddy::Render_ShadowDepth()
 void CStarBuddy::Launch_StarBuddy(_double dTimeDelta)
 {
 	// 실제로 상호작용 할땐 Player -> StarBuddy Dir 방향으로 이동
+
 	m_pTransformCom->Move_ToTarget(XMVectorSet(100.f, 10.f, 100.f, 0.f), dTimeDelta * 5.f);
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta * 4.f);
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * 4.f);
-		
+	
 }
 
 
@@ -123,6 +157,7 @@ CGameObject * CStarBuddy::Clone_GameObject(void * pArg)
 
 void CStarBuddy::Free()
 {
+	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
