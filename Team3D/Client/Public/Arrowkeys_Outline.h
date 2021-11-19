@@ -29,7 +29,6 @@ private:
 
 private:
 	HRESULT Ready_Component();
-	HRESULT Set_UIVariables_Perspective();
 
 public:
 	static CArrowkeys_Outline* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

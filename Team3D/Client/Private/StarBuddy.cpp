@@ -102,7 +102,7 @@ HRESULT CStarBuddy::Interactive_UI()
 	_vector vCodyComparePos = vPos - vCodyPos;
 	_vector vMayComparePos = vPos - vMayPos;
 
-	_float fRange = 30.f;
+	_float fRange = 20.f;
 
 	_float vCodyComparePosX = abs(XMVectorGetX(vCodyComparePos));
 	_float vCodyComparePosZ = abs(XMVectorGetZ(vCodyComparePos));

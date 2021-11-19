@@ -69,46 +69,6 @@ HRESULT CArrowkeys_Outline::Render()
 	return S_OK;
 }
 
-HRESULT CArrowkeys_Outline::Set_UIVariables_Perspective()
-{
-	if (nullptr == m_pVIBuffer_RectCom || nullptr == m_pTextureCom)
-		return E_FAIL;
-
-	_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubViewMatrix, SubProjMatrix;
-
-	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	ViewMatrix = XMMatrixIdentity();
-
-	D3D11_VIEWPORT Viewport;
-
-	if (m_ePlayerID == Player::Cody)
-	{
-		Viewport = m_pGameInstance->Get_ViewportInfo(1);
-
-		if (0.f < Viewport.Width)
-			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
-
-	}
-	else if (m_ePlayerID == Player::May)
-	{
-		Viewport = m_pGameInstance->Get_ViewportInfo(2);
-
-		if (0.f < Viewport.Width)
-			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
-	}
-
-	m_pVIBuffer_RectCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
-	m_pVIBuffer_RectCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-	m_pVIBuffer_RectCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
-	m_pVIBuffer_RectCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-	m_pVIBuffer_RectCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
-
-	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
-
-
-	return S_OK;
-}
-
 HRESULT CArrowkeys_Outline::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);

@@ -128,6 +128,7 @@ HRESULT CUIObject::Set_UIVariables_Perspective(CVIBuffer* pVIBuffer)
 
 	pVIBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
 
+	return S_OK;
 }
 
 HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
@@ -151,15 +152,19 @@ HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
 
 		_vector vTargetPos = XMLoadFloat4(&m_vTargetPos);
 		vTargetPos = XMVector3TransformCoord(vTargetPos, matMainCombine);
-
+		
 		XMStoreFloat3(&vConvertPos, vTargetPos);
 		vConvertPos.x += 1.f;
 		vConvertPos.y += 1.f;
 
+		if (1.f <= vConvertPos.z)
+		{
+			vConvertPos.y *= -1.f;
+			vConvertPos.x *= -1.f;
+		}
+
 		vConvertPos.x = ((Viewport.Width * (vConvertPos.x)) / 2.f + Viewport.TopLeftX);
 		vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f + Viewport.TopLeftY);
-
-		// ¿ÞÂÊ ¿À¸¥ÂÊ
 
 		if (Viewport.Width < vConvertPos.x)
 			vConvertPos.x = Viewport.Width - 10.f;
@@ -168,9 +173,9 @@ HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
 
 		if (0.f > vConvertPos.y)
 			vConvertPos.y = Viewport.TopLeftY + 10.f;
-		else if (vConvertPos.y > 720.f)
-			vConvertPos.y = Viewport.Height - 20.f;
 
+		else if (Viewport.Height < vConvertPos.y)
+			vConvertPos.y = Viewport.Height - 20.f;
 
 		vConvertPos.x = -1.f * (Viewport.Width / 2) + vConvertPos.x;
 		vConvertPos.y = Viewport.Height - (1.f * (Viewport.Height / 2) + vConvertPos.y);
@@ -225,7 +230,6 @@ HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
 	pVIBuffer->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
 
 	pVIBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
-
 
 	return S_OK;
 }
