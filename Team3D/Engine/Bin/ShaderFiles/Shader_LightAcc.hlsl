@@ -6,15 +6,13 @@ texture2D	g_DepthTexture;
 texture2D	g_SpecularSrcTexture;
 
 
-cbuffer Directional
+cbuffer LightDesc
 {
-	vector	g_vLightDir;
-}
-
-cbuffer Point
-{
-	vector	g_vLightPos;
-	float	g_fRadius;
+	vector	g_vLightDir;		// only use directional / spot
+	vector	g_vLightPos;		// only use point / spot
+	float	g_fRange;			// only use point / spot
+	//float	g_fAngleOuterCone;	// only use spot
+	//float	g_fAngleInnerCone;	// only use spot
 }
 
 cbuffer LightColor
@@ -154,7 +152,7 @@ PS_OUT PS_POINT(PS_IN In)
 		discard;
 
 	vector	vLightDir	= vWorldPos - g_vLightPos;
-	float	fDistance	= length(vLightDir) / g_fRadius;
+	float	fDistance	= length(vLightDir) / g_fRange;
 	clip(1 - fDistance);
 	float	fAtt		= 0.5f * COS_ARR(3.14f * pow(fDistance, 1.5f)) + 0.5f;
 
@@ -163,13 +161,12 @@ PS_OUT PS_POINT(PS_IN In)
 
 	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
-	vector	vReflect = reflect(normalize(g_vLightDir), vSpecSrcDesc);
+	vector	vReflect = reflect(normalize(vLightDir), vSpecSrcDesc);
 	Out.vSpecular	= (pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular)) * fAtt;
 	Out.vSpecular.a = 0.f;
 
 	return Out;
 }
-
 ////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
