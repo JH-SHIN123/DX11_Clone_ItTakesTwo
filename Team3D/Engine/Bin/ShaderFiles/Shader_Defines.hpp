@@ -127,9 +127,12 @@ SamplerComparisonState ShadowSampler = sampler_state
 	AddressU = BORDER;
 	AddressV = BORDER;
 	AddressW = BORDER;
+	mipLODBias = 0.f;
+	maxAnisotropy = 16.f;
 	BorderColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	ComparisonFunc = LESS;
+	//ComparisonFunc = LESS_EQUAL;
 };
 
 /* RasterizerState */
@@ -148,6 +151,16 @@ RasterizerState Rasterizer_NoCull
 {
 	FillMode = Solid;
 	CullMode = None;
+};
+RasterizerState Rasterizer_Shadow
+{
+	FillMode = Solid;
+	CullMode = Back;
+	FrontCounterClockwise = true;
+
+	DepthBias = 50000;
+	DepthBiasClamp = 0.0f;
+	SlopeScaledDepthBias = 1.0f;
 };
 
 /* DepthStencilState */

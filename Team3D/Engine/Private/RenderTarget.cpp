@@ -31,37 +31,13 @@ HRESULT CRenderTarget::NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT 
 		return E_FAIL;
 	}
 
-	D3D11_RENDER_TARGET_VIEW_DESC RenderTargetViewDesc;
-	ZeroMemory(&RenderTargetViewDesc, sizeof(D3D11_RENDER_TARGET_VIEW_DESC));
-	RenderTargetViewDesc.Format				= eFormat;
-	RenderTargetViewDesc.ViewDimension		= D3D11_RTV_DIMENSION_TEXTURE2D;
-	RenderTargetViewDesc.Texture2D.MipSlice = 0;
-
-	if (m_pDevice->CreateRenderTargetView(m_pTargetTexture, &RenderTargetViewDesc, &m_pRenderTargetView))
-	{
-		MSG_BOX("Failed to Create RenderTargetView - CRenderTarget");
-		return E_FAIL;
-	}
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC	 ShaderResourceViewDesc;
-	ZeroMemory(&ShaderResourceViewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-	ShaderResourceViewDesc.Format				= eFormat;
-	ShaderResourceViewDesc.ViewDimension		= D3D11_SRV_DIMENSION_TEXTURE2D;
-	ShaderResourceViewDesc.Texture2D.MipLevels	= 1;
-
-	if(FAILED(m_pDevice->CreateShaderResourceView(m_pTargetTexture, &ShaderResourceViewDesc, &m_pShaderResourceView)))
-	{
-		MSG_BOX("Failed to Create ShaderResourceView - CRenderTarget");
-		return E_FAIL;
-	}
-
 	m_IsDepthStencil = isDepthBuffer;
 	if (m_IsDepthStencil)
 	{
 		D3D11_TEXTURE2D_DESC		TextureDesc_Depth;
 		TextureDesc_Depth = TextureDesc;
-		TextureDesc_Depth.Format = DXGI_FORMAT_D32_FLOAT;
-		TextureDesc_Depth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		TextureDesc_Depth.Format = DXGI_FORMAT_R32_TYPELESS;
+		TextureDesc_Depth.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 		TextureDesc_Depth.MipLevels = 0;
 
 		if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc_Depth, nullptr, &m_pDepthTargetTexture)))
@@ -70,8 +46,51 @@ HRESULT CRenderTarget::NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT 
 			return E_FAIL;
 		}
 
-		if (FAILED(m_pDevice->CreateDepthStencilView(m_pDepthTargetTexture,nullptr, &m_pDepthStencilView)))
+		// SRV
+		D3D11_SHADER_RESOURCE_VIEW_DESC	 srvDesc;
+		ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Format = DXGI_FORMAT_R32_FLOAT;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Texture2D.MipLevels = 1;
+
+		if (FAILED(m_pDevice->CreateShaderResourceView(m_pDepthTargetTexture, &srvDesc, &m_pShaderResourceView)))
 			return E_FAIL;
+
+		// DSV
+		D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
+		ZeroMemory(&dsvDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
+		dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+
+		if (FAILED(m_pDevice->CreateDepthStencilView(m_pDepthTargetTexture, &dsvDesc, &m_pDepthStencilView)))
+			return E_FAIL;
+	}
+	else
+	{
+		D3D11_RENDER_TARGET_VIEW_DESC RenderTargetViewDesc;
+		ZeroMemory(&RenderTargetViewDesc, sizeof(D3D11_RENDER_TARGET_VIEW_DESC));
+		RenderTargetViewDesc.Format = eFormat;
+		RenderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+		RenderTargetViewDesc.Texture2D.MipSlice = 0;
+
+		if (m_pDevice->CreateRenderTargetView(m_pTargetTexture, &RenderTargetViewDesc, &m_pRenderTargetView))
+		{
+			MSG_BOX("Failed to Create RenderTargetView - CRenderTarget");
+			return E_FAIL;
+		}
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC	 ShaderResourceViewDesc;
+		ZeroMemory(&ShaderResourceViewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+		ShaderResourceViewDesc.Format = eFormat;
+		ShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		ShaderResourceViewDesc.Texture2D.MipLevels = 1;
+
+		if (FAILED(m_pDevice->CreateShaderResourceView(m_pTargetTexture, &ShaderResourceViewDesc, &m_pShaderResourceView)))
+		{
+			MSG_BOX("Failed to Create ShaderResourceView - CRenderTarget");
+			return E_FAIL;
+		}
 	}
 
 	m_vClearColor = vClearColor;
@@ -81,6 +100,8 @@ HRESULT CRenderTarget::NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT 
 
 HRESULT CRenderTarget::Clear_View()
 {
+	if (m_IsDepthStencil) return S_OK;
+
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 	NULL_CHECK_RETURN(m_pRenderTargetView, E_FAIL);
 

@@ -304,21 +304,23 @@ technique11 DefaultTechnique
 	// 2
 	pass Write_CascadedShadowDepth_Skinned
 	{
-		SetRasterizerState(Rasterizer_Solid);
+		SetRasterizerState(Rasterizer_Shadow);
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile		vs_5_0 VS_MAIN_CSM_DEPTH(true);
 		GeometryShader = compile	gs_5_0 GS_MAIN_CSM_DEPTH();
-		PixelShader = compile		ps_5_0 PS_MAIN_CSM_DEPTH();
+		//PixelShader = compile		ps_5_0 PS_MAIN_CSM_DEPTH();
+		PixelShader = NULL;
 	}
 	// 3
 	pass Write_CascadedShadowDepth
 	{
-		SetRasterizerState(Rasterizer_Solid);
+		SetRasterizerState(Rasterizer_Shadow);
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile		vs_5_0 VS_MAIN_CSM_DEPTH(false);
 		GeometryShader = compile	gs_5_0 GS_MAIN_CSM_DEPTH();
-		PixelShader = compile		ps_5_0 PS_MAIN_CSM_DEPTH();
+		//PixelShader = compile		ps_5_0 PS_MAIN_CSM_DEPTH();
+		PixelShader = NULL;
 	}
 };

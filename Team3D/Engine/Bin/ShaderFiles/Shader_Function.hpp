@@ -1,7 +1,5 @@
 
 // Relase시 사용 : 에러메시지뜨는데, 잘돌아감.
-//#define PCF 0
-
 int Get_CascadedShadowSliceIndex(uint iViewportIndex, vector vWorldPos) /* 1: Main 2: Sub*/
 {
 	int iIndex = -1;
@@ -59,7 +57,6 @@ float Get_ShadowFactor(uint iViewportIndex, uint iSliceIndex, vector vWorldPos)
 	float percentLit = 0.0f;
 	float depth = shadowPosH.z; // 그릴 객체들의 깊이값. (그림자 ndc로 이동한)
 
-#ifdef PCF
 	// PCF 적용
 	uint width, height, numMips;
 	g_CascadedShadowDepthTexture.GetDimensions(0, width, height, numMips);
@@ -75,6 +72,7 @@ float Get_ShadowFactor(uint iViewportIndex, uint iSliceIndex, vector vWorldPos)
 		float2(-dx, +dy), float2(0.0f, +dy), float2(dx, +dy)
 	};
 
+	// - 0.002f
 	[unroll]
 	for (int i = 0; i < 9; ++i)
 	{
@@ -82,17 +80,7 @@ float Get_ShadowFactor(uint iViewportIndex, uint iSliceIndex, vector vWorldPos)
 			vShadowUV + offsets[i], depth).r;
 	}
 	percentLit /= 9.0f;
-	shadowFactor = percentLit;
-#else
-	percentLit = g_CascadedShadowDepthTexture.Sample(Wrap_Sampler, vShadowUV).r;
-	if (percentLit < depth)
-		shadowFactor = percentLit;
-#endif
-
-	if (depth < shadowFactor + 0.002f)
-	{
-		shadowFactor = 0.f;
-	}
+	shadowFactor = 1.f - percentLit;
 
 	return shadowFactor;
 }
