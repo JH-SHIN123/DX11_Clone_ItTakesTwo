@@ -33,7 +33,10 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 	 
-
+	/*m_vPoints[0] = {0.f, 0.f, 0.f};
+	m_vPoints[1] = {10.f, 0.f, 10.f};
+	m_vPoints[2] = {40.f, 0.f, -10.f};
+	m_vPoints[3] = {10.f, 0.f, -20.f};*/
 	return S_OK;
 }
 
@@ -79,6 +82,8 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Sprint, ANI_C_Sprint, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_MH, true, 10.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Walk_Large_Fwd, ANI_C_ChangeSize_Walk_Large_Fwd, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_Enter, ANI_C_Grind_Grapple_ToGrind, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_ToGrind, ANI_C_Grind_Slow_MH, false);
 	return;
 }
 
@@ -96,7 +101,12 @@ _int CCody::Tick(_double dTimeDelta)
 	//Test 
 	if (m_pGameInstance->Key_Down(DIK_E))
 	{
-		m_IsTriggerPlaying = true;
+		//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(m_vPoints[1].x, m_vPoints[1].y, m_vPoints[1].z));
+
+		//if (m_IsTriggerPlaying == false)
+		//	m_IsTriggerPlaying = true;
+		//else
+		//	m_IsTriggerPlaying = false;
 	}
 	//Test
 
@@ -124,8 +134,26 @@ _int CCody::Tick(_double dTimeDelta)
 #pragma region TriggerActions
 	else
 	{
+		//if (m_dTestTime >= 1.0)
+		//{
+		//	m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(m_vPoints[1].x, m_vPoints[1].y, m_vPoints[1].z));
+		//	m_dTestTime = 0.0; //Points 1과 2사이를 곡선으로 보간 0과 3은 곡선이 어떤 형태를 띌지 수치 조절.
+		//	m_IsTriggerPlaying = false;
+		//	m_vPoints[1] = m_vPoints[2]; // 시작을 마지막 지점이였던 점으로
+		//	m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(m_vPoints[1].x, m_vPoints[1].y, m_vPoints[1].z));
+		//}
+		//m_dTestTime += dTimeDelta;
 
+		//_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), m_dTestTime), 1.f);
+		//_vector vPhsixPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
+		//_vector vDir = XMVectorSetW(XMVector3Normalize(vPos - vPhsixPos), 0.f);
+
+		//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
+		//m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta / 10.f);
 	}
+		//_vector vCurPos = XMVectorSetW(XMVectorLerp(XMLoadFloat3(vCurNode), XMLoadFloat3(&m_vPoints[iCurNode + 1]), dProgress),1.f);
+		//_vector vPhsXPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
+		//_vector vDir = XMVector4Normalize(vCurPos - vPhsXPos);
 
 
 #pragma endregion

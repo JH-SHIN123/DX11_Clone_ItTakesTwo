@@ -21,6 +21,7 @@ public: /* Struct */
 		tagArgumentDesc() {}
 		tagArgumentDesc(class CTransform* _pTransform, PxCapsuleControllerDesc _CapsuleControllerDesc, _float _fJumpGravity) : pTransform(_pTransform), CapsuleControllerDesc(_CapsuleControllerDesc), fJumpGravity(_fJumpGravity) {}
 	}ARG_DESC;
+	PxController* Get_Controller() { return m_pController; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;

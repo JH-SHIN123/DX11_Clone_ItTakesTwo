@@ -252,7 +252,7 @@ public:
 	void Change_Size(const _double dTimeDelta);
 	void Ground_Pound(const _double dTimeDelta);
 
-
+#pragma region BasicMovement
 private:
 	// 상태
 	CODY_STATE m_iCurState = CUTSCENE_HUB_SECOND_GENERATOR;
@@ -317,6 +317,10 @@ private:
 	
 	// 트리거(상호작용) 진행중이라면
 	_bool m_IsTriggerPlaying = false;
+#pragma endregion
 
+
+	//_float3 m_vPoints[4] = {};
+	//_double	m_dTestTime = 0.0;
 };
 END
