@@ -35,7 +35,7 @@ HRESULT CMainApp::Run_App()
 
 		_double dTimeDelta = m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
 
-		if (Tick(dTimeDelta) & 0x80000000)
+		if (Tick(0.016666666666666666) & 0x80000000)
 			return E_FAIL;
 
 		if (FAILED(Render()))

@@ -34,7 +34,7 @@ HRESULT CTestObject01::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eSTARBUDDY, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = &PxSphereGeometry(3.f);
+	ArgDesc.pGeometry = &PxSphereGeometry(0.5f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 
@@ -62,7 +62,7 @@ HRESULT CTestObject01::Render()
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
 
-	m_pModelCom->Render_Model(0);
+	m_pModelCom->Render_Model(1);
 
 	return S_OK;
 }
@@ -73,7 +73,7 @@ HRESULT CTestObject01::Render_ShadowDepth()
 
 	m_pModelCom->Set_DefaultVariables_ShadowDepth();
 
-	m_pModelCom->Render_Model(1, 0, true);
+	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
 }

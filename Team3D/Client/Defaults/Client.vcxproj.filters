@@ -61,9 +61,6 @@
     <Filter Include="01.Maps\99.Stage%28Test%29">
       <UniqueIdentifier>{112fc71b-614e-424a-b3ab-164e9e68c037}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\99.Stage%28Test%29\03.Env">
-      <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\03.Character">
       <UniqueIdentifier>{7e996727-b5b0-41d9-b6b8-6b873902fd9e}</UniqueIdentifier>
     </Filter>
@@ -111,6 +108,9 @@
     </Filter>
     <Filter Include="01.Maps\04.Stage_Space">
       <UniqueIdentifier>{5bbd0183-dea1-417a-b173-4e16c2288048}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\03.Test">
+      <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -163,7 +163,7 @@
       <Filter>02.GameObject\03.Character\01.May</Filter>
     </ClInclude>
     <ClInclude Include="..\public\TileBox.h">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MoonBaboon.h">
       <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
@@ -199,7 +199,7 @@
       <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\public\TestObject01.h">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -240,7 +240,7 @@
       <Filter>02.GameObject\03.Character\01.May</Filter>
     </ClCompile>
     <ClCompile Include="..\private\TileBox.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MoonBaboon.cpp">
       <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
@@ -264,7 +264,7 @@
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
     </ClCompile>
     <ClCompile Include="..\private\TestObject01.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
