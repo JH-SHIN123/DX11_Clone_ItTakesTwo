@@ -125,8 +125,7 @@ HRESULT CStarBuddy::Interactive_UI()
 		if (UI_Generator->Get_EmptyCheck(Player::May, UI::InputButton_Dot))
 			UI_Create(May, InputButton_Dot);
 
-		UI_Generator->Get_UIObject(Player::May, UI::InputButton_Dot)->Set_TargetPos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
+		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	}
 	else
 		UI_Delete(May, InputButton_Dot);

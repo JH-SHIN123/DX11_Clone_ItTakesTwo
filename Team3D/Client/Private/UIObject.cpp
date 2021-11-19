@@ -173,7 +173,6 @@ HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
 
 		if (0.f > vConvertPos.y)
 			vConvertPos.y = Viewport.TopLeftY + 10.f;
-
 		else if (Viewport.Height < vConvertPos.y)
 			vConvertPos.y = Viewport.Height - 20.f;
 
@@ -207,8 +206,24 @@ HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
 		vConvertPos.x += 1.f;
 		vConvertPos.y += 1.f;
 
+		if (1.f <= vConvertPos.z)
+		{
+			vConvertPos.y *= -1.f;
+			vConvertPos.x *= -1.f;
+		}
+
 		vConvertPos.x = ((Viewport.Width * (vConvertPos.x)) / 2.f);
 		vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f);
+
+		if (Viewport.Width < vConvertPos.x)
+			vConvertPos.x = Viewport.Width - 10.f;
+		else if (0.f > vConvertPos.x)
+			vConvertPos.x = 10.f;
+
+		if (0.f > vConvertPos.y)
+			vConvertPos.y = Viewport.TopLeftY + 10.f;
+		else if (Viewport.Height < vConvertPos.y)
+			vConvertPos.y = Viewport.Height - 20.f;
 
 		vConvertPos.x = -1.f * (Viewport.Width / 2) + vConvertPos.x;
 		vConvertPos.y = Viewport.Height - (1.f * (Viewport.Height / 2) + vConvertPos.y);
