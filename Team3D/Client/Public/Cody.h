@@ -210,6 +210,10 @@ public:
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	/* For.Trigger */
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+
+
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
@@ -221,8 +225,7 @@ private:
 	virtual void KeyInput(_double dTimeDelta);
 	void TriggerCheck(_double dTimeDelta);
 
-
-
+private:
 	// 단발성 함수들.
 	HRESULT Ready_Component();
 	void Add_LerpInfo_To_Model();
@@ -230,7 +233,6 @@ private:
 	// Components
 private:
 	class CMainCamera*	m_pCamera = nullptr;
-
 
 	// 생성 및 소멸 관련
 public:
@@ -252,6 +254,8 @@ public:
 	void Change_Size(const _double dTimeDelta);
 	void Ground_Pound(const _double dTimeDelta);
 	bool Trigger_End(const _double dTimeDelta);
+
+	void Go_Grind(const _double dTimeDelta);
 
 #pragma region BasicMovement
 private:
@@ -314,13 +318,10 @@ private:
 
 	// 컷씬이라면
 	_bool m_IsCutScene = false;
-
-	
-	// 트리거(상호작용) 진행중이라면
-	_bool m_IsTriggerPlaying = false;
 #pragma endregion
 
 
+	_bool m_IsOnGrind = false;
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
 };

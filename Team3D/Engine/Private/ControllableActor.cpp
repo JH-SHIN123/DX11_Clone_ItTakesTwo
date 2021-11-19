@@ -82,7 +82,7 @@ void CControllableActor::Update(_double dTimeDelta)
 	else if (!(PxControllerCollisionFlag::eCOLLISION_DOWN & iFlags) && !m_bJump && !m_bGroundPound)
 	{
 		m_IsFalling = true;
-		m_fFallingTime += dTimeDelta;
+		m_fFallingTime += (_float)dTimeDelta;
 		// ÀÚÀ¯³«ÇÏ
 		vDist = PxVec3(0, (0.4f * -GRAVITY * 0.8f * m_fFallingTime * m_fFallingTime), 0);
 		m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());

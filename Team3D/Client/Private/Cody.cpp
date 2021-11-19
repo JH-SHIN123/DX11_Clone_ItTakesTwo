@@ -101,82 +101,28 @@ _int CCody::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
-	//Test 
-	if (m_pGameInstance->Key_Down(DIK_E))
-	{
-		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind);
-
-		if (m_IsTriggerPlaying == false)
-			m_IsTriggerPlaying = true;
-		else
-			m_IsTriggerPlaying = false;
-	}
-	//Test
-
 #pragma region BasicActions
-	if (m_IsTriggerPlaying == false)
+
+	// 트리거 끝나고 애니메이션 초기화
+	Trigger_End(dTimeDelta);
+
+	m_IsFalling = m_pActorCom->Get_IsFalling();
+	m_pActorCom->Set_GroundPound(m_bGroundPound);
+
+	if ((m_bRoll == false || m_bSprint == true))
+		KeyInput(dTimeDelta);
+	if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
 	{
-		// 트리거 끝나고 애니메이션 초기화
-		Trigger_End(dTimeDelta);
-
-		m_IsFalling = m_pActorCom->Get_IsFalling();
-		m_pActorCom->Set_GroundPound(m_bGroundPound);
-
-		if ((m_bRoll == false || m_bSprint == true))
-			KeyInput(dTimeDelta);
-		if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
-		{
-			Sprint(dTimeDelta);
-			Move(dTimeDelta);
-			if (m_eCurPlayerSize != SIZE_LARGE)
-				Roll(dTimeDelta);
-			Jump(dTimeDelta);
-			Change_Size(dTimeDelta);
-		}
-		Ground_Pound(dTimeDelta);
+		Sprint(dTimeDelta);
+		Move(dTimeDelta);
+		if (m_eCurPlayerSize != SIZE_LARGE)
+			Roll(dTimeDelta);
+		Jump(dTimeDelta);
+		Change_Size(dTimeDelta);
 	}
-#pragma endregion
-
-#pragma region TriggerActions
-	else
-	{
-		if (m_pModelCom->Is_AnimFinished(ANI_C_Grind_Grapple_ToGrind))
-		{
-			m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
-			if (m_dTestTime < 1.0)
-			{
-				m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
-			}
-		}
-		if (m_dTestTime >= 1.0)
-		{
-			_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), m_dTestTime), 1.f);
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-			m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
-
-			m_pModelCom->Set_Animation(ANI_C_Grind_Jump);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Land);
-			m_pActorCom->Jump_Start(2.6f);
-
-			m_dTestTime = 0.0; //Points 1과 2사이를 곡선으로 보간 0과 3은 곡선이 어떤 형태를 띌지 수치 조절.
-			m_IsTriggerPlaying = false;
-			return NO_EVENT;
-		}
-		m_dTestTime += dTimeDelta / 5.f;
-
-		_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), m_dTestTime), 1.f);
-		_vector vPhsixPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
-		_vector vDir = XMVectorSetW(XMVector3Normalize(vPos - vPhsixPos), 0.f);
-
-		m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
-		m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta / 10.f);
-	}
-		//_vector vCurPos = XMVectorSetW(XMVectorLerp(XMLoadFloat3(vCurNode), XMLoadFloat3(&m_vPoints[iCurNode + 1]), dProgress),1.f);
-		//_vector vPhsXPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
-		//_vector vDir = XMVector4Normalize(vCurPos - vPhsXPos);
-
-
+	Ground_Pound(dTimeDelta);
+	Go_Grind(dTimeDelta);
+	
 #pragma endregion
 
 	m_pActorCom->Update(dTimeDelta);
@@ -1177,18 +1123,49 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 	}
 
 }
-bool CCody::Trigger_End(const _double dTimeDelta)
+void CCody::Go_Grind(const _double dTimeDelta)
 {
-	if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jump_Land)
+#pragma region Grind_Actions
+	if (m_IsOnGrind == true)
 	{
-		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
-	}
-	return false;
-}
-void CCody::TriggerCheck(_double dTimeDelta)
-{
-}
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Grind_Grapple_ToGrind))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
+			if (m_dTestTime < 1.0)
+			{
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
+			}
+		}
+		if (m_dTestTime >= 1.0)
+		{
+			_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), m_dTestTime), 1.f);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+			m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
 
+			m_pModelCom->Set_Animation(ANI_C_Grind_Jump);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Land);
+			m_pActorCom->Jump_Start(2.6f);
+
+			m_dTestTime = 0.0; //Points 1과 2사이를 곡선으로 보간 0과 3은 곡선이 어떤 형태를 띌지 수치 조절.
+			m_IsOnGrind = false;
+			return;
+		}
+		m_dTestTime += dTimeDelta / 5.f;
+
+		_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), m_dTestTime), 1.f);
+		_vector vPhsixPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
+		_vector vDir = XMVectorSetW(XMVector3Normalize(vPos - vPhsixPos), 0.f);
+
+		m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
+		m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta / 10.f);
+	}
+	//_vector vCurPos = XMVectorSetW(XMVectorLerp(XMLoadFloat3(vCurNode), XMLoadFloat3(&m_vPoints[iCurNode + 1]), dProgress),1.f);
+	//_vector vPhsXPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
+	//_vector vDir = XMVector4Normalize(vCurPos - vPhsXPos);
+
+
+#pragma endregion
+}
 
 #pragma region Shader_Variables
 HRESULT CCody::Render_ShadowDepth()
@@ -1203,3 +1180,23 @@ HRESULT CCody::Render_ShadowDepth()
 }
 #pragma endregion
 
+#pragma region Trigger
+void CCody::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+	if (eStatus == TriggerStatus::eFOUND && m_pGameInstance->Key_Down(DIK_E))
+	{
+		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind);
+
+		m_IsOnGrind = true;
+	}
+}
+bool CCody::Trigger_End(const _double dTimeDelta)
+{
+	if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jump_Land)
+	{
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+	}
+	return false;
+}
+#pragma endregion

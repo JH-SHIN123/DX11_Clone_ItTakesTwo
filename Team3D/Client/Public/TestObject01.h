@@ -26,6 +26,10 @@ public:
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	/* For.Trigger */
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+
+
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 

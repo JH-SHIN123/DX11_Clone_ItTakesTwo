@@ -21,13 +21,6 @@ public: /* Struct */
 	}ARG_DESC;
 	PxController* Get_Controller() { return m_pController; }
 
-public: /* Getter */
-	_bool  Get_IsJump() { return m_bJump; }
-
-public: /* Setter */
-	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
-	void    Set_Jump(_bool bJump) { m_bJump = bJump; }
-
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
@@ -36,6 +29,7 @@ public:
 	void	Update_Cam(_double dTimeDelta);
 	void	Jump_Start(_float fJumpForce);
 	void	Jump_Higher(_float fJumpForce);
+
 	//void	Kinematic_On() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true); }
 	//void	Kinematic_Off() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false); }
 
