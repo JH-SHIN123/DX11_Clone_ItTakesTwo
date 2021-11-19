@@ -171,6 +171,7 @@ struct PS_OUT
 	vector	vNormal				: SV_TARGET1;
 	vector	vDepth				: SV_TARGET2;
 	vector	vShadow				: SV_TARGET3;
+	vector	vSpecular			: SV_TARGET4;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -185,6 +186,9 @@ PS_OUT PS_MAIN(PS_IN In)
 	// Calculate Shadow
 	int iIndex = -1;
 	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
+
+	// Calculate Specular
+	Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
 
 	// Get_ShadowFactor
 	float fShadowFactor = 0.f;
