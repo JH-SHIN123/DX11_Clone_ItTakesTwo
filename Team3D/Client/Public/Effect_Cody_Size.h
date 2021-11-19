@@ -77,6 +77,9 @@ private:
 	_float*		m_pParabola_WorldPos_Y		= nullptr;
 	_float*		m_pInstance_SizeType		= nullptr;
 	
+private:
+	//CTextures* m_pTexturesCom_Circle = nullptr;
+	//CVIBuffer_Rect*
 
 public:
 	static CEffect_Cody_Size* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

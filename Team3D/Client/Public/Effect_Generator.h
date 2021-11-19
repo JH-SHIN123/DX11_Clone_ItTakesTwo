@@ -20,6 +20,8 @@ enum class Effect_Value
 	Cody_Dead,
 	Cody_Revive,
 	May_Dead,
+	May_Revive,
+	May_Boots_Walking,
 	Effect_Value_End
 };
 

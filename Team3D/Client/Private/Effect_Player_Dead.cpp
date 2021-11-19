@@ -30,7 +30,7 @@ HRESULT CEffect_Player_Dead::NativeConstruct(void * pArg)
 	Ready_Instance();
 
 	m_pInstanceBuffer[0].vSize = { 7.f, 7.f };
-	m_pInstanceBuffer[0].vPosition.y -= 0.5f;
+	m_pInstanceBuffer[0].vPosition.y += 1.f;
 	m_EffectDesc_Clone.UVTime = 0.01;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Dead_Cells"), TEXT("Com_Textrue_Particle"), (CComponent**)&m_pTexturesCom_Particle), E_FAIL);
@@ -74,12 +74,12 @@ HRESULT CEffect_Player_Dead::Render()
 
 	// 나머지 파티클
 	//g_vColorRamp_UV
-	_float4 vUV = { 0.f,0.f,1.f,1.f };
-	m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vUV, sizeof(_float4));
-	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Particle_Mask->Get_ShaderResourceView(0));
-	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Particle->Get_ShaderResourceView(0));
-
-	m_pPointInstanceCom->Render(4, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount - 1, 1);
+	//_float4 vUV = { 0.f,0.f,1.f,1.f };
+	//m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vUV, sizeof(_float4));
+	//m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Particle_Mask->Get_ShaderResourceView(0));
+	//m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Particle->Get_ShaderResourceView(0));
+	//
+	//m_pPointInstanceCom->Render(4, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount - 1, 1);
 
 
 	return S_OK;
@@ -163,8 +163,8 @@ HRESULT CEffect_Player_Dead::Ready_Instance()
 		{
 			// Pos Setting
 			vPos += vRandDir * _float(rand() % 5);
-			XMStoreFloat4(&m_pInstanceBuffer[i].vPosition, vPos);
 		}
+		XMStoreFloat4(&m_pInstanceBuffer[i].vPosition, vPos);
 
 
 		XMStoreFloat3(&m_pInstance_Dir[i], vRandDir);

@@ -193,6 +193,8 @@
     <ClInclude Include="..\Public\Effect_Color.txt" />
     <ClInclude Include="..\Public\Effect_Dash.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
+    <ClInclude Include="..\public\Effect_May_Boots.h" />
+    <ClInclude Include="..\public\Effect_May_Boots_Walking_Particle.h" />
     <ClInclude Include="..\public\Effect_Player_Revive.h" />
     <ClInclude Include="..\public\Effect_Wormhole.h" />
     <ClInclude Include="..\public\Effect_FireDoor.h" />
@@ -236,6 +238,8 @@
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
     <ClCompile Include="..\private\Effect_Generator.cpp" />
+    <ClCompile Include="..\private\Effect_May_Boots.cpp" />
+    <ClCompile Include="..\private\Effect_May_Boots_Walking_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Player_Revive.cpp" />
     <ClCompile Include="..\private\Effect_Wormhole.cpp" />
     <ClCompile Include="..\private\Effect_FireDoor.cpp" />
@@ -291,6 +295,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom_STT.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_RectCustom.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl" />

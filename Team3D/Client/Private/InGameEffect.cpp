@@ -278,7 +278,6 @@ _float4 CInGameEffect::Check_UV(_double TimeDelta, _int iIndex, _bool IsLoop)
 		if (m_pInstance_UVCount[iIndex].x >= m_EffectDesc_Prototype.iTextureCount_U - 1)
 		{
 			m_pInstance_UVCount[iIndex].x = 0;
-
 			m_pInstance_UVCount[iIndex].y += 1.f;
 		}
 		else

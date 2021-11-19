@@ -16,6 +16,8 @@
 #include "Effect_Player_Revive.h"
 #include "Effect_Cody_Size.h"
 #include "Effect_RespawnTunnel_Portal.h"
+#include "Effect_May_Boots.h"
+#include "Effect_May_Boots_Walking_Particle.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -61,6 +63,7 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::Cody_Dead:
 		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Dead_Particle");
+		m_pGameInstance->Add_GameObject_Clone(1, szLayer, 1, L"GameObject_2D_Player_Dead", &Clone_Data);
 		break;
 	case Effect_Value::Cody_Revive:
 		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);
@@ -68,8 +71,16 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::May_Dead:
 		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
-		//lstrcpy(szPrototype, L"GameObject_2D_Player_Dead");
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Dead_Particle");
+		m_pGameInstance->Add_GameObject_Clone(1, szLayer, 1, L"GameObject_2D_Player_Dead", &Clone_Data);
+		break;
+	case Effect_Value::May_Revive:
+		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
+		lstrcpy(szPrototype, L"GameObject_2D_Player_Revive");
+		break;
+	case Effect_Value::May_Boots_Walking:
+		lstrcpy(szPrototype, L"GameObject_2D_May_Boots_Walking_Particle");
+		// 공간왜곡도 추가
 		break;
 	default:
 		break;
@@ -152,33 +163,38 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	// 2D Effect
 	if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_RespawnTunnel_Smoke"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_RespawnTunnel_Smoke",	CEffect_RespawnTunnel_Smoke::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_RespawnTunnel_Smoke",			CEffect_RespawnTunnel_Smoke::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_FireDoor",				CEffect_FireDoor::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_FireDoor",						CEffect_FireDoor::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Walking_Smoke"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Walking_Smoke",		CEffect_Walking_Smoke::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Walking_Smoke",				CEffect_Walking_Smoke::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Landing_Smoke"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Landing_Smoke",		CEffect_Landing_Smoke::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Landing_Smoke",				CEffect_Landing_Smoke::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Dash"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Dash",					CEffect_Dash::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Dash",							CEffect_Dash::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Dead"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead",			CEffect_Player_Dead::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead",					CEffect_Player_Dead::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Dead_Particle"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead_Particle",	CEffect_Player_Dead_Particle::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead_Particle",			CEffect_Player_Dead_Particle::Create(pDevice, pDeviceContext, pData));
 	
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Revive"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Revive",		CEffect_Player_Revive::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Revive",				CEffect_Player_Revive::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Cody_Size"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Cody_Size",			CEffect_Cody_Size::Create(pDevice, pDeviceContext, pData));
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Cody_Size",					CEffect_Cody_Size::Create(pDevice, pDeviceContext, pData));
 
-	//
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_May_Boots"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_May_Boots",					CEffect_May_Boots::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_May_Boots_Walking_Particle"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_May_Boots_Walking_Particle",	CEffect_May_Boots_Walking_Particle::Create(pDevice, pDeviceContext, pData));
+
 	// 3D Effect
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel", CEffect_RespawnTunnel::Create(pDevice, pDeviceContext, pData));
@@ -208,7 +224,10 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 		, CVIBuffer_Rect_TripleUV::Create(pDevice, pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Rect.hlsl"), "DefaultTechnique")), E_FAIL);
 
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom")
-		, CVIBuffer_PointInstance_Custom::Create(pDevice, pDeviceContext, 10000, TEXT("../Bin/ShaderFiles/Shader_PointCustom.hlsl"), "DefaultTechnique")), E_FAIL);
+		, CVIBuffer_PointInstance_Custom_ST::Create(pDevice, pDeviceContext, 10000, TEXT("../Bin/ShaderFiles/Shader_PointCustom.hlsl"), "DefaultTechnique")), E_FAIL);
+
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT")
+		, CVIBuffer_PointInstance_Custom_STT::Create(pDevice, pDeviceContext, 10000, TEXT("../Bin/ShaderFiles/Shader_PointCustom_STT.hlsl"), "DefaultTechnique")), E_FAIL);
 
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_RectInstance_Custom")
 		, CVIBuffer_RectInstance_Custom::Create(pDevice, pDeviceContext, 100, TEXT("../Bin/ShaderFiles/Shader_RectCustom.hlsl"), "DefaultTechnique")), E_FAIL);
@@ -232,6 +251,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Circle_Alpha"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Circle_Alpha.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_distortion"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/distortion_01_E2.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Dead_Cells"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Custom/Dead_Cells.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_DecalSplat"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/T_DecalSplat_01.png"))), E_FAIL);
 
 
 

@@ -11,9 +11,11 @@
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_PointInstance.h"
 #include "VIBuffer_RectInstance.h"
-#include "VIBuffer_PointInstance_Custom.h"
+#include "VIBuffer_PointInstance_Custom_ST.h"
 #include "VIBuffer_RectInstance_Custom.h"
 #include "VIBuffer_Rect_TripleUV.h"
+#include "VIBuffer_PointInstance_Custom_STT.h"
+
 
 #include "StaticActor.h"
 #include "DynamicActor.h"

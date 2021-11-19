@@ -194,6 +194,9 @@ private:
 	HRESULT Ready_Component();
 	void Add_LerpInfo_To_Model();
 
+private: // Effects
+	class CEffect_May_Boots* m_pEffect_GravityBoots = nullptr;
+
 	// Ä«¸Þ¶ó
 private:
 	class CSubCamera*	m_pCamera = nullptr;

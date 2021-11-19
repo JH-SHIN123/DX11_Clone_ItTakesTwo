@@ -6,7 +6,7 @@
 #include "GameObject.h"
 
 BEGIN(Engine)
-class CVIBuffer_PointInstance_Custom;
+class CVIBuffer_PointInstance_Custom_ST;
 class CTransform;
 class CRenderer;
 class CTextures;
@@ -133,15 +133,13 @@ protected:
 	_float2*		m_pInstance_UVCount			= nullptr;
 
 	_double			m_UVTime = 0.0;
-	//_double*		m_pInstance_UVTime			= nullptr;
-	//_double*		m_pInstance_vSizeTime		= nullptr;
 
 protected:
-	CRenderer*	m_pRendererCom = nullptr;
-	CTransform*	m_pTransformCom = nullptr;
-	CTextures*	m_pTexturesCom = nullptr;
-	CTextures*	m_pTexturesCom_Second = nullptr;
-	CVIBuffer_PointInstance_Custom* m_pPointInstanceCom = nullptr;
+	CRenderer*	m_pRendererCom			= nullptr;
+	CTransform*	m_pTransformCom			= nullptr;
+	CTextures*	m_pTexturesCom			= nullptr;
+	CTextures*	m_pTexturesCom_Second	= nullptr;
+	CVIBuffer_PointInstance_Custom_ST* m_pPointInstanceCom = nullptr;
 
 	CModel*		m_pModelCom = nullptr;
 

@@ -744,18 +744,16 @@ technique11		DefaultTechnique
 		GeometryShader = compile gs_5_0  GS_MAIN_DOUBLE_TEX();
 		PixelShader = compile ps_5_0  PS_MAIN_DOUBLE_TEX();
 	}
-	//pass Distortion_Dash //4
-	//{
-	//	SetRasterizerState(Rasterizer_NoCull);
-	//	SetDepthStencilState(DepthStecil_No_ZWrite, 0);
-	//	SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-	//	VertexShader = compile vs_5_0  VS_MAIN();
-	//	GeometryShader = compile gs_5_0  GS_MAIN_DIST_AXIS();
-	//	PixelShader = compile ps_5_0  PS_DISTORTION_DASH();
-	//	// size 10
-	//	// 그라디언트 2
-	//	// 리본 노이즈 0
-	//}
+
+	pass BLENDADD_G_COLOR // 5
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_MAIN_COLOR();
+	}
 };
 
 /*

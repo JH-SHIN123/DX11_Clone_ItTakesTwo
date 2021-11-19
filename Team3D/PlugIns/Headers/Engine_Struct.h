@@ -75,6 +75,18 @@ namespace Engine
 		XMFLOAT4	vTextureUV;
 	}VTXMATRIX_CUSTOM_ST;
 
+	typedef struct tagVertexMatrix_Custom_SizeTexUVTime
+	{
+		XMFLOAT4	vRight;
+		XMFLOAT4	vUp;
+		XMFLOAT4	vLook;
+		XMFLOAT4	vPosition;
+
+		XMFLOAT2	vSize;
+		XMFLOAT4	vTextureUV;
+		float		fTime;
+	}VTXMATRIX_CUSTOM_STT;
+
 	typedef struct tagVertexMesh
 	{
 		XMFLOAT3	vPosition;

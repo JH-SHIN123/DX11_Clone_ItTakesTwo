@@ -103,12 +103,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect">
       <UniqueIdentifier>{2597e457-f059-48c4-ac26-d228360d5248}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Member">
-      <UniqueIdentifier>{2d113bd5-2e8a-454e-ae74-7e78d42a438b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Member\00.FireDoor">
-      <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Rect">
       <UniqueIdentifier>{f180cbf3-2d57-4520-b579-6f6eda0e713e}</UniqueIdentifier>
     </Filter>
@@ -157,9 +151,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.Revive_Effect">
       <UniqueIdentifier>{9657cfa3-22bc-48ee-b205-3d702b0af337}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.CodySize">
-      <UniqueIdentifier>{f386c037-a6cf-4f8a-b0c5-48b528993dc8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\98.Interactive_Objects">
       <UniqueIdentifier>{80b9488d-6107-4ad3-ab4d-9ba4db640228}</UniqueIdentifier>
     </Filter>
@@ -180,6 +171,21 @@
     </Filter>
     <Filter Include="97.ShaderFiles\00.Effect">
       <UniqueIdentifier>{3c9102f7-871d-4ebb-8efa-a1b2b8ffdb02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object">
+      <UniqueIdentifier>{2d113bd5-2e8a-454e-ae74-7e78d42a438b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\00.FireDoor">
+      <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\03.May_Boots">
+      <UniqueIdentifier>{76573e6b-e368-4e59-80ca-f6191ddb9f76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.Cody_Size">
+      <UniqueIdentifier>{f386c037-a6cf-4f8a-b0c5-48b528993dc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle">
+      <UniqueIdentifier>{0683420e-60af-4eb9-974e-0929e6185c9c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -240,9 +246,6 @@
     <ClInclude Include="..\public\TileBox.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\TestEffect.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Test_EnvObject.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClInclude>
@@ -280,7 +283,7 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_FireDoor.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Member\00.FireDoor</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\00.FireDoor</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Walking_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\00.Walking_Smoke</Filter>
@@ -298,7 +301,7 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\02.RespawnTunnel_Smoke</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_Cody_Size.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.CodySize</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.Cody_Size</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Color.txt">
       <Filter>02.GameObject\05.Effect/Particle</Filter>
@@ -326,6 +329,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Dash.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_May_Boots.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\03.May_Boots</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_May_Boots_Walking_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TestEffect.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -411,7 +423,7 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_FireDoor.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Member\00.FireDoor</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\00.FireDoor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Walking_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\00.Walking_Smoke</Filter>
@@ -429,7 +441,7 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\02.RespawnTunnel_Smoke</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Cody_Size.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.CodySize</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.Cody_Size</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Rocket.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\00.Rocket</Filter>
@@ -445,6 +457,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Dash.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_May_Boots.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\03.May_Boots</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_May_Boots_Walking_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -488,6 +506,9 @@
       <Filter>97.ShaderFiles\00.Effect</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_RectCustom.hlsl">
+      <Filter>97.ShaderFiles\00.Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom_STT.hlsl">
       <Filter>97.ShaderFiles\00.Effect</Filter>
     </FxCompile>
   </ItemGroup>
