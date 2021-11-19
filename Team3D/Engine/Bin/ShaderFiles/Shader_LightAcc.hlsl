@@ -154,17 +154,18 @@ PS_OUT PS_POINT(PS_IN In)
 		discard;
 
 	vector	vLightDir	= vWorldPos - g_vLightPos;
-	float	fDistance	= length(vLightDir);
-	float	fAtt		= saturate((g_fRadius - fDistance) / g_fRadius);
+	float	fDistance	= length(vLightDir) / g_fRadius;
+	clip(1 - fDistance);
+	float	fAtt		= 0.5f * COS_ARR(3.14f * pow(fDistance, 1.5f)) + 0.5f;
 
 	Out.vShade		= (max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
 	Out.vShade.a = 0.f;
 
-	//vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Wrap_Sampler, In.vTexUV);
-	//vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
-	//vector	vReflect = reflect(normalize(g_vLightDir), vSpecSrcDesc);
-	//Out.vSpecular	= (pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular)) * fAtt;
-	//Out.vSpecular.a = 0.f;
+	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
+	vector	vReflect = reflect(normalize(g_vLightDir), vSpecSrcDesc);
+	Out.vSpecular	= (pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular)) * fAtt;
+	Out.vSpecular.a = 0.f;
 
 	return Out;
 }
@@ -178,8 +179,8 @@ technique11		DefaultTechnique
 	pass Directional
 	{		
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_No_ZTest, 0);
-		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Add, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
 		VertexShader	= compile vs_5_0 VS_MAIN();
 		GeometryShader	= NULL;
 		PixelShader		= compile ps_5_0 PS_DIRECTIONAL();
@@ -188,8 +189,8 @@ technique11		DefaultTechnique
 	pass Point
 	{
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_No_ZTest, 0);
-		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Add, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
 		VertexShader	= compile vs_5_0 VS_MAIN();
 		GeometryShader	= NULL;
 		PixelShader		= compile ps_5_0 PS_POINT();

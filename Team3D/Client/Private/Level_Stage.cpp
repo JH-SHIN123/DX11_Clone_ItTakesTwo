@@ -65,22 +65,22 @@ HRESULT CLevel_Stage::Ready_Lights()
 
 	LIGHT_DESC			LightDesc;
 
-	/* For.Directional */
+	/* For.Directional : Ambient / Specular Zero */
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
 	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
-	LightDesc.vDiffuse = XMFLOAT4(0.8f, 0.8f, 1.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.f);
-	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vDiffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
 
 	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
 		return E_FAIL;
 
 	/* For. Point */
 	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	LightDesc.vPosition = XMFLOAT3(15.f, 15.f, 15.f);
-	LightDesc.vDiffuse = XMFLOAT4(0.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+	LightDesc.vPosition = XMFLOAT3(10.f, 10.f, 10.f);
+	LightDesc.vDiffuse = XMFLOAT4(1.f, 0.f, 0.f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.fRadius = 20.f;
 
