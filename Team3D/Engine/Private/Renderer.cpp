@@ -50,6 +50,9 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	/* Target_Specular */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Specular_Src"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Specular_Src"), TEXT("MRT_Deferred")), E_FAIL);
+	/* Target_Emissive */
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Emissive"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Emissive"), TEXT("MRT_Deferred")), E_FAIL);
 
 	/* Target_Shade */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Shade"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 1.f)), E_FAIL);
@@ -74,6 +77,7 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Depth"), 0.f, fHeight * 2.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shadow"), 0.f, fHeight * 3.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular_Src"), 0.f, fHeight * 4.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Emissive"), 0.f, fHeight * 5.f, fWidth, fHeight), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shade"), fWidth, 0.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
@@ -232,6 +236,7 @@ HRESULT CRenderer::Render_Blend()
 	m_pVIBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Diffuse")));
 	m_pVIBuffer->Set_ShaderResourceView("g_ShadeTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Shade")));
 	m_pVIBuffer->Set_ShaderResourceView("g_SpecularTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Specular")));
+	m_pVIBuffer->Set_ShaderResourceView("g_EmissiveTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Emissive")));
 	m_pVIBuffer->Set_ShaderResourceView("g_ShadowTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Shadow")));
 
 	m_pVIBuffer->Render(0);

@@ -7,7 +7,7 @@
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
 texture2D	g_SpecularTexture;
-//texture2D	g_EmmesiveTexture;
+texture2D	g_EmissiveTexture;
 //texture2D	g_AmbientTexture;
 //texture2D	g_OpacityTexture;
 //texture2D	g_LightTexture;
@@ -228,6 +228,7 @@ struct PS_OUT
 	vector	vDepth		: SV_TARGET2;
 	vector	vShadow		: SV_TARGET3;
 	vector	vSpecular	: SV_TARGET4;
+	vector	vEmissive	: SV_TARGET5;
 };
 
 PS_OUT	PS_MAIN(PS_IN In)
@@ -245,6 +246,10 @@ PS_OUT	PS_MAIN(PS_IN In)
 
 	// Calculate Specular
 	if (g_IsMaterials.Is_Specular & 1) Out.vSpecular = TextureSampleToWorldSpace(g_SpecularTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
+	else Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
+
+	// Calculate Emissive
+	if (g_IsMaterials.Is_Emissive & 1) Out.vEmissive = g_EmissiveTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
 	// Calculate Shadow
 	int iIndex = -1;

@@ -300,7 +300,8 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _
 			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
 			Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
 			Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, iMaterialSetNum);
-
+			Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, iMaterialSetNum);
+			
 			FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 		}
 
