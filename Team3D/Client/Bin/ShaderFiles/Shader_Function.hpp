@@ -1,5 +1,23 @@
 
-// Relase시 사용 : 에러메시지뜨는데, 잘돌아감.
+float CalcAttenuation(float d, float falloffStart, float falloffEnd)
+{
+	// Linear falloff.
+	return saturate((falloffEnd - d) / (falloffEnd - falloffStart));
+}
+
+// Schlick gives an approximation to Fresnel reflectance (see pg. 233 "Real-Time Rendering 3rd Ed.").
+// R0 = ( (n-1)/(n+1) )^2, where n is the index of refraction.
+float3 SchlickFresnel(float3 R0, float3 normal, float3 lightVec)
+{
+	float cosIncidentAngle = saturate(dot(normal, lightVec));
+
+	float f0 = 1.0f - cosIncidentAngle;
+	float3 reflectPercent = R0 + (1.0f - R0) * (f0 * f0 * f0 * f0 * f0);
+
+	return reflectPercent;
+}
+
+
 int Get_CascadedShadowSliceIndex(uint iViewportIndex, vector vWorldPos) /* 1: Main 2: Sub*/
 {
 	int iIndex = -1;
@@ -82,5 +100,5 @@ float Get_ShadowFactor(uint iViewportIndex, uint iSliceIndex, vector vWorldPos)
 	percentLit /= 9.0f;
 	shadowFactor = 1.f - percentLit;
 
-	return shadowFactor;
+	return shadowFactor * 0.3f/*ShadowColor*/;
 }
