@@ -102,7 +102,6 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.vAt								= _float3(0.f, 0.f, 0.f);
 	CameraDesc.vAxisY							= _float3(0.f, 1.f, 0.f);
 
-	// MAY 로딩하면 램 터져서 잠시 비활성화.
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SubCamera"), &CameraDesc), E_FAIL);
 	return S_OK;
 }

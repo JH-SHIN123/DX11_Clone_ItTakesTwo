@@ -33,10 +33,10 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 	 
-	/*m_vPoints[0] = {0.f, 0.f, 0.f};
-	m_vPoints[1] = {10.f, 0.f, 10.f};
-	m_vPoints[2] = {40.f, 0.f, -10.f};
-	m_vPoints[3] = {10.f, 0.f, -20.f};*/
+	m_vPoints[0] = {72.f, 0.f, -120.f };
+	m_vPoints[1] = { 0.f, 0.f, 0.f };
+	m_vPoints[2] = {42.f, 0.f, 60};
+	m_vPoints[3] = {84.f, 0.f, 20.f};
 	return S_OK;
 }
 
@@ -101,18 +101,22 @@ _int CCody::Tick(_double dTimeDelta)
 	//Test 
 	if (m_pGameInstance->Key_Down(DIK_E))
 	{
-		//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(m_vPoints[1].x, m_vPoints[1].y, m_vPoints[1].z));
+		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind);
 
-		//if (m_IsTriggerPlaying == false)
-		//	m_IsTriggerPlaying = true;
-		//else
-		//	m_IsTriggerPlaying = false;
+		if (m_IsTriggerPlaying == false)
+			m_IsTriggerPlaying = true;
+		else
+			m_IsTriggerPlaying = false;
 	}
 	//Test
 
 #pragma region BasicActions
 	if (m_IsTriggerPlaying == false)
 	{
+		// 트리거 끝나고 애니메이션 초기화
+		Trigger_End(dTimeDelta);
+
 		m_IsFalling = m_pActorCom->Get_IsFalling();
 		m_pActorCom->Set_GroundPound(m_bGroundPound);
 
@@ -134,22 +138,36 @@ _int CCody::Tick(_double dTimeDelta)
 #pragma region TriggerActions
 	else
 	{
-		//if (m_dTestTime >= 1.0)
-		//{
-		//	m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(m_vPoints[1].x, m_vPoints[1].y, m_vPoints[1].z));
-		//	m_dTestTime = 0.0; //Points 1과 2사이를 곡선으로 보간 0과 3은 곡선이 어떤 형태를 띌지 수치 조절.
-		//	m_IsTriggerPlaying = false;
-		//	m_vPoints[1] = m_vPoints[2]; // 시작을 마지막 지점이였던 점으로
-		//	m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(m_vPoints[1].x, m_vPoints[1].y, m_vPoints[1].z));
-		//}
-		//m_dTestTime += dTimeDelta;
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Grind_Grapple_ToGrind))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
+			if (m_dTestTime < 1.0)
+			{
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
+			}
+		}
+		if (m_dTestTime >= 1.0)
+		{
+			_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), m_dTestTime), 1.f);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+			m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
 
-		//_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), m_dTestTime), 1.f);
-		//_vector vPhsixPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
-		//_vector vDir = XMVectorSetW(XMVector3Normalize(vPos - vPhsixPos), 0.f);
+			m_pModelCom->Set_Animation(ANI_C_Grind_Jump);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Land);
+			m_pActorCom->Jump_Start(2.6f);
 
-		//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
-		//m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta / 10.f);
+			m_dTestTime = 0.0; //Points 1과 2사이를 곡선으로 보간 0과 3은 곡선이 어떤 형태를 띌지 수치 조절.
+			m_IsTriggerPlaying = false;
+			return NO_EVENT;
+		}
+		m_dTestTime += dTimeDelta / 5.f;
+
+		_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), m_dTestTime), 1.f);
+		_vector vPhsixPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
+		_vector vDir = XMVectorSetW(XMVector3Normalize(vPos - vPhsixPos), 0.f);
+
+		m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
+		m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta / 10.f);
 	}
 		//_vector vCurPos = XMVectorSetW(XMVectorLerp(XMLoadFloat3(vCurNode), XMLoadFloat3(&m_vPoints[iCurNode + 1]), dProgress),1.f);
 		//_vector vPhsXPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
@@ -1167,6 +1185,14 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 		m_bCanMove = true;
 	}
 
+}
+bool CCody::Trigger_End(const _double dTimeDelta)
+{
+	if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jump_Land)
+	{
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+	}
+	return false;
 }
 void CCody::TriggerCheck(_double dTimeDelta)
 {

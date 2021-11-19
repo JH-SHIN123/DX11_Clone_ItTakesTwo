@@ -251,6 +251,7 @@ public:
 	void Jump(const _double dTimeDelta);
 	void Change_Size(const _double dTimeDelta);
 	void Ground_Pound(const _double dTimeDelta);
+	bool Trigger_End(const _double dTimeDelta);
 
 #pragma region BasicMovement
 private:
@@ -320,7 +321,7 @@ private:
 #pragma endregion
 
 
-	//_float3 m_vPoints[4] = {};
-	//_double	m_dTestTime = 0.0;
+	_float3 m_vPoints[4] = {};
+	_double	m_dTestTime = 0.0;
 };
 END
