@@ -65,11 +65,11 @@ HRESULT CTextures::NativeConstruct_Prototype(TEXTURE_TYPE eType, const _tchar * 
 
 		FAILED_CHECK_RETURN(hr, E_FAIL);
 
-		_uint iWidth = (_uint)SrcImage.GetImage(0, 0, 0)->width / 2;
-		_uint iHeight = (_uint)SrcImage.GetImage(0, 0, 0)->width / 2;
+		//_uint iWidth = (_uint)SrcImage.GetImage(0, 0, 0)->width / 2;
+		//_uint iHeight = (_uint)SrcImage.GetImage(0, 0, 0)->width / 2;
 
-		FAILED_CHECK_RETURN(Resize(*SrcImage.GetImage(0, 0 ,0), iWidth, iHeight, TEX_FILTER_DEFAULT, DstImage), E_FAIL);
-		FAILED_CHECK_RETURN(CreateShaderResourceView(m_pDevice, DstImage.GetImages(), DstImage.GetImageCount(), DstImage.GetMetadata(), &pShaderResourceView), E_FAIL);
+		//FAILED_CHECK_RETURN(Resize(*SrcImage.GetImage(0, 0 ,0), iWidth, iHeight, TEX_FILTER_DEFAULT, DstImage), E_FAIL);
+		FAILED_CHECK_RETURN(CreateShaderResourceView(m_pDevice, SrcImage.GetImages(), SrcImage.GetImageCount(), SrcImage.GetMetadata(), &pShaderResourceView), E_FAIL);
 
 		m_Textures.emplace_back(pShaderResourceView);
 	}
