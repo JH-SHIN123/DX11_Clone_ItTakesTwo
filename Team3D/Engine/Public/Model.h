@@ -40,12 +40,13 @@ public: /* Struct */
 	}LERP_INFO;
 
 public: /* Getter */
-	VTXMESH*		Get_Vertices() { return m_pVertices; }
-	const _uint		Get_VertexCount() { return m_iVertexCount; }
-	_fmatrix		Get_BoneMatrix(const char* pBoneName) const;
-	const _uint		Get_CurAnimIndex() const { return m_iCurAnimIndex; }
-	const _float	Get_ProgressAnim() const { return m_fProgressAnim; }
-	const _bool		Is_AnimFinished(_uint iAnimIndex) const { NULL_CHECK_RETURN(iAnimIndex < m_iAnimCount, false); return m_IsAnimFinished[iAnimIndex]; }
+	VTXMESH*					Get_Vertices() { return m_pVertices; }
+	const _uint					Get_VertexCount() { return m_iVertexCount; }
+	_fmatrix					Get_BoneMatrix(const char* pBoneName) const;
+	const _uint					Get_CurAnimIndex() const { return m_iCurAnimIndex; }
+	const _float				Get_ProgressAnim() const { return m_fProgressAnim; }
+	const _bool					Is_AnimFinished(_uint iAnimIndex) const { NULL_CHECK_RETURN(iAnimIndex < m_iAnimCount, false); return m_IsAnimFinished[iAnimIndex]; }
+	const vector<PX_TRIMESH>&	Get_PXTriMeshes() { return m_PxTriMeshes; }
 
 public: /* Setter */
 	HRESULT	Set_Animation(_uint iAnimIndex);

@@ -2,8 +2,6 @@
 #include "..\public\May.h"
 #include "GameInstance.h"
 #include "SubCamera.h"
-#include "Transform.h"
-#include "DataStorage.h"
 
 CMay::CMay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
@@ -57,18 +55,24 @@ HRESULT CMay::Ready_Component()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &PlayerTransformDesc), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
-	PxCapsuleControllerDesc CapsuleControllerDesc;
-	CapsuleControllerDesc.setToDefault();
-	CapsuleControllerDesc.height = 0.5f;
-	CapsuleControllerDesc.radius = 0.5f;
-	CapsuleControllerDesc.material = m_pGameInstance->Create_PxMaterial(0.5f, 0.5f, 0.5f);
-	CapsuleControllerDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
-	CapsuleControllerDesc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
-	CapsuleControllerDesc.contactOffset = 0.02f;
-	CapsuleControllerDesc.stepOffset = 0.5f;
-	CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
-	CapsuleControllerDesc.slopeLimit = 0.707f;
-	CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	CControllableActor::ARG_DESC ArgDesc;
+
+	m_UserData = USERDATA(GameID::eMAY, this);
+	ArgDesc.pUserData = &m_UserData;
+	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.fJumpGravity = -50.f;
+
+	ArgDesc.CapsuleControllerDesc.setToDefault();
+	ArgDesc.CapsuleControllerDesc.height = 0.5f;
+	ArgDesc.CapsuleControllerDesc.radius = 0.5f;
+	ArgDesc.CapsuleControllerDesc.material = m_pGameInstance->Get_BasePxMaterial();
+	ArgDesc.CapsuleControllerDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
+	ArgDesc.CapsuleControllerDesc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
+	ArgDesc.CapsuleControllerDesc.contactOffset = 0.02f;
+	ArgDesc.CapsuleControllerDesc.stepOffset = 0.5f;
+	ArgDesc.CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
+	ArgDesc.CapsuleControllerDesc.slopeLimit = 0.707f;
+	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	////CapsuleControllerDesc.reportCallback = NULL;
 	////CapsuleControllerDesc.behaviorCallback = NULL;
 	//CapsuleControllerDesc.density = 10.f;
@@ -77,7 +81,7 @@ HRESULT CMay::Ready_Component()
 	//CapsuleControllerDesc.maxJumpHeight = 10.f;
 	//CapsuleControllerDesc.volumeGrowth = 1.5f;
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom, CapsuleControllerDesc, -50.f)), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
 	return S_OK;
 }
@@ -394,9 +398,6 @@ void CMay::Move(const _double TimeDelta)
 
 		m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
 
-
-		PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
-
 		if (m_fJogAcceleration > 10.f)
 			m_fJogAcceleration -= (_float)TimeDelta * 50.f;
 		else
@@ -541,9 +542,6 @@ void CMay::Sprint(const _double TimeDelta)
 			m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta * 2.f);
 		else
 			m_pTransformCom->MoveDirectionOnLand(vDirection, TimeDelta);
-
-
-		PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 
 		if (m_fSprintAcceleration > 5.f)
 			m_fSprintAcceleration -= (_float)TimeDelta * 50.f;

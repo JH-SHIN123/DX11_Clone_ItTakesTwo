@@ -61,12 +61,6 @@
     <Filter Include="01.Maps\99.Stage%28Test%29">
       <UniqueIdentifier>{112fc71b-614e-424a-b3ab-164e9e68c037}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Tree">
-      <UniqueIdentifier>{9b2ce05d-80d0-464d-8dce-5a75d40f42db}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\99.Stage%28Test%29\01.Player">
-      <UniqueIdentifier>{b134e824-3c41-4f85-8703-7c00321fcce5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\99.Stage%28Test%29\03.Env">
       <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
     </Filter>
@@ -112,6 +106,12 @@
     <Filter Include="97.ShaderFiles\Include">
       <UniqueIdentifier>{87727c9a-6160-4971-88de-e99cb7b2333a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space">
+      <UniqueIdentifier>{9b2ce05d-80d0-464d-8dce-5a75d40f42db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Maps\04.Stage_Space">
+      <UniqueIdentifier>{5bbd0183-dea1-417a-b173-4e16c2288048}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -152,9 +152,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\SubCamera.h">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Player.h">
-      <Filter>02.GameObject\99.Stage%28Test%29\01.Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Cody.h">
       <Filter>02.GameObject\03.Character\00.Cody</Filter>
@@ -201,6 +198,9 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\TestObject01.h">
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -229,9 +229,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\SubCamera.cpp">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Player.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\01.Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Cody.cpp">
       <Filter>02.GameObject\03.Character\00.Cody</Filter>
@@ -265,6 +262,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\RobotHead.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TestObject01.cpp">
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

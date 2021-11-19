@@ -210,18 +210,8 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 
 			PxTriangleMeshGeometry geom(m_PxTriMeshes[iMeshIndex].pTriMesh, PxMeshScale(MH_PxVec3(vScale)));
 
-			m_ppActors[iActorIndex] = pPhysX->Create_StaticActor(MH_PxTransform(vRotQuat, vPosition), geom, ArgDesc.pMaterial, m_szActorName);
+			m_ppActors[iActorIndex] = pPhysX->Create_StaticActor(MH_PxTransform(vRotQuat, vPosition), geom);
 			NULL_CHECK_RETURN(m_ppActors[iActorIndex], E_FAIL);
-
-			PxShape* Shape;
-			m_ppActors[iActorIndex]->getShapes(&Shape, 1);
-			Shape->setContactOffset(0.02f);
-			Shape->setRestOffset(-0.5f);
-			//
-			Shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
-
-			pPhysX->Add_ActorToScene(m_ppActors[iActorIndex]);
-			Setup_PxFiltering(m_ppActors[iActorIndex], FilterGroup::eSTATIC, 0);
 		}
 	}
 
