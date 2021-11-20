@@ -180,6 +180,8 @@
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\Public\Arrowkeys_Fill.h" />
     <ClInclude Include="..\Public\Arrowkeys_Outline.h" />
+    <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\InputButton.h" />
     <ClInclude Include="..\public\InputButton_Frame.h" />
     <ClInclude Include="..\Public\Character.h" />
@@ -202,7 +204,6 @@
     <ClInclude Include="..\Public\RobotHead.h" />
     <ClInclude Include="..\Public\Rocket.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
-    <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\public\TileBox.h" />
     <ClInclude Include="..\Public\UFO.h" />
     <ClInclude Include="..\Public\UI_Generator.h" />
@@ -237,7 +238,6 @@
     <ClCompile Include="..\Private\RobotHead.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
-    <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\private\TileBox.cpp" />
     <ClCompile Include="..\Private\UFO.cpp" />
     <ClCompile Include="..\Private\UI_Generator.cpp" />

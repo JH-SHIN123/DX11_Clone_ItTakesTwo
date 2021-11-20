@@ -168,9 +168,6 @@
     <ClInclude Include="stdafx.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Client_Defines.h">
-      <Filter>98.Defines</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\MainApp.h">
       <Filter>00.MainApp</Filter>
     </ClInclude>
@@ -185,12 +182,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Client_Enum.h">
-      <Filter>98.Defines</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Terrain.h">
-      <Filter>02.GameObject\99.Stage%28Test%29\02.Terrain</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MainCamera.h">
       <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
@@ -221,9 +212,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\UISprite.h">
       <Filter>02.GameObject\05.UI\05.Sprite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Player.h">
-      <Filter>02.GameObject\99.Stage%28Test%29\01.Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Cody.h">
       <Filter>02.GameObject\03.Character\00.Cody</Filter>
@@ -264,7 +252,6 @@
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\Player.h" />
-    <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\SubCamera.h">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
@@ -277,6 +264,18 @@
       <Filter>02.GameObject\05.UI\99.Generator\00.UI_Generator</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="..\Public\Client_Defines.h">
+      <Filter>98.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Enum.h">
+      <Filter>98.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SubCamera.h">
+      <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Terrain.h">
+      <Filter>02.GameObject\99.Stage%28Test%29\02.Terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -293,9 +292,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Loading.cpp">
       <Filter>01.Maps\01.Loading\99.Loading</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Terrain.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\02.Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MainCamera.cpp">
       <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
@@ -326,9 +322,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.Sprite</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Player.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\01.Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Cody.cpp">
       <Filter>02.GameObject\03.Character\00.Cody</Filter>
@@ -364,7 +357,6 @@
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp" />
-    <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
@@ -375,6 +367,12 @@
       <Filter>02.GameObject\05.UI\99.Generator\00.UI_Generator</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp" />
+    <ClCompile Include="..\Private\SubCamera.cpp">
+      <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Terrain.cpp">
+      <Filter>02.GameObject\99.Stage%28Test%29\02.Terrain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
