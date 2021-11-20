@@ -226,7 +226,8 @@ PS_OUT	PS_MAIN(PS_IN In)
 		vNormal = vector(mul(TBN, normalize(vNormal.xyz)), 0.f);
 		Out.vNormal = vector(normalize(vNormal.xyz) * 0.5f + 0.5f, 0.f);
 	}
-	else Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	else 
+		Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 
 	// Calculate Shadow
 	int iIndex = -1;

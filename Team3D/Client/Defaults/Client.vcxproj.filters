@@ -91,9 +91,6 @@
     <Filter Include="02.GameObject\03.Character\03.Boss\01.MoonBaboon">
       <UniqueIdentifier>{f25b4c8e-4beb-4ec5-9404-fd56a08a7591}</UniqueIdentifier>
     </Filter>
-    <Filter Include="96.DataStorage">
-      <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\99.Stage%28Test%29\Environment">
       <UniqueIdentifier>{4ee4895b-516b-49e8-a45a-02920e3036d5}</UniqueIdentifier>
     </Filter>
@@ -123,6 +120,18 @@
     </Filter>
     <Filter Include="97.ShaderFiles\Include">
       <UniqueIdentifier>{87727c9a-6160-4971-88de-e99cb7b2333a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\Environment\Dynamic">
+      <UniqueIdentifier>{b83727b8-109e-4b4e-92a1-a1880a4000af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\Environment\Dynamic\PlanetRing">
+      <UniqueIdentifier>{6ccedae0-3b59-4ebb-9821-61849627cbfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\Environment\Dynamic\Planet">
+      <UniqueIdentifier>{3161c435-1f99-4edb-bb32-39c6ee57c0b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\Environment\Static\96.DataStorage">
+      <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -190,7 +199,7 @@
       <Filter>98.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\public\DataStorage.h">
-      <Filter>96.DataStorage</Filter>
+      <Filter>02.GameObject\99.Stage%28Test%29\Environment\Static\96.DataStorage</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Environment_Generator.h">
       <Filter>02.GameObject\99.Stage%28Test%29\Environment\Environment_Generator</Filter>
@@ -221,6 +230,12 @@
     </ClInclude>
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlanetRing.h">
+      <Filter>02.GameObject\99.Stage%28Test%29\Environment\Dynamic\PlanetRing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Planet.h">
+      <Filter>02.GameObject\99.Stage%28Test%29\Environment\Dynamic\Planet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -273,7 +288,7 @@
       <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
     </ClCompile>
     <ClCompile Include="..\private\DataStorage.cpp">
-      <Filter>96.DataStorage</Filter>
+      <Filter>02.GameObject\99.Stage%28Test%29\Environment\Static\96.DataStorage</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Instancing_Env.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\Environment\Instancing</Filter>
@@ -295,6 +310,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\RobotHead.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlanetRing.cpp">
+      <Filter>02.GameObject\99.Stage%28Test%29\Environment\Dynamic\PlanetRing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Planet.cpp">
+      <Filter>02.GameObject\99.Stage%28Test%29\Environment\Dynamic\Planet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
