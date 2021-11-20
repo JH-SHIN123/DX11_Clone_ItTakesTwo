@@ -42,7 +42,7 @@ private:
 	_float		m_fUpAcceleration = 0.f;
 	_bool		m_bLaunch = false;
 	_float		m_fLifeTime = 0.f;
-	_bool		m_IsCollide = true;
+	_bool		m_IsCollide = false;
 
 protected:
 	/* For.Component */

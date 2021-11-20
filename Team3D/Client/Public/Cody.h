@@ -210,10 +210,6 @@ public:
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render() override;
 
-	/* For.Trigger */
-	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
-
-
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
@@ -320,14 +316,24 @@ private:
 #pragma endregion
 
 #pragma region Trigger
-	_bool m_IsCollide = false;
+public:
+	void SetTriggerID(GameID::Enum eID, _bool IsCollide);
 
-	void Go_Grind(const _double dTimeDelta);
+private:
+	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
+	_bool m_IsCollide = false;
 
 
 	_bool m_IsOnGrind = false;
+	_bool m_IsHitStarBuddy = false;
+
+
+
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
+
+	void Go_Grind(const _double dTimeDelta);
+	void Hit_StarBuddy(const _double dTimeDelta);
 #pragma endregion
 
 };

@@ -93,23 +93,18 @@ HRESULT CStarBuddy::Render()
 
 void CStarBuddy::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	//// ui 생성
-	//1.pGameObject; -> 플레이어
-	//2.this; -> 별이야
-
-
-
-	//// 별의 포인터 
-	//// UI 내부에선 IF(m_pGameInstance->Key_Down(DIKI))
-	//{
-	//	pPlayer->신호
-	//	pStar->신호
-	//}
-
-	if (eStatus == TriggerStatus::eFOUND)
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eSTARBUDDY , true);
+		UI_Create(Cody, InputButton_InterActive);
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
-	else
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	{
 		m_IsCollide = false;
+		UI_Delete(Cody, InputButton_InterActive);
+	}
 }
 
 HRESULT CStarBuddy::InterActive_UI()
@@ -172,7 +167,6 @@ HRESULT CStarBuddy::Render_ShadowDepth()
 void CStarBuddy::Launch_StarBuddy(_double dTimeDelta)
 {
 	// 실제로 상호작용 할땐 Player -> StarBuddy Dir 방향으로 이동
-
 	m_pTransformCom->Move_ToTarget(XMVectorSet(100.f, 10.f, 100.f, 0.f), dTimeDelta * 5.f);
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta * 4.f);
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * 4.f);

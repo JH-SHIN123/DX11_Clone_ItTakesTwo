@@ -1143,6 +1143,64 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 	}
 
 }
+
+
+#pragma region Shader_Variables
+HRESULT CCody::Render_ShadowDepth()
+{
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+
+	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+
+	// Skinned: 2 / Normal: 3
+	m_pModelCom->Render_Model(2, 0, true);
+	return S_OK;
+}
+#pragma endregion
+
+#pragma region Trigger
+void CCody::SetTriggerID(GameID::Enum eID, _bool IsCollide)
+{
+	m_eTargetGameID = eID;
+	m_IsCollide = IsCollide;
+}
+
+_bool CCody::Trigger_Check(const _double dTimeDelta)
+{
+	if (m_IsCollide == true)
+	{
+		if (m_eTargetGameID == GameID::eSTARBUDDY && m_pGameInstance->Key_Down(DIK_E))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_PlanetPush_Large);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_IsHitStarBuddy = true;
+		}
+
+		if (m_eTargetGameID == GameID::eMOONBABOON && m_pGameInstance->Key_Down(DIK_E))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind);
+			m_IsOnGrind = true;
+		}
+	}
+
+	// Trigger 여따가 싹다모아~
+	if (m_IsOnGrind || m_IsHitStarBuddy)
+		return true;
+
+	return false;
+}
+_bool CCody::Trigger_End(const _double dTimeDelta)
+{
+	if (m_pModelCom->Get_CurAnimIndex() == 
+		(ANI_C_Jump_Land || ANI_C_Bhv_ChangeSize_PlanetPush_Large))
+	{
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+	}
+	return false;
+}
+#pragma endregion
+
 void CCody::Go_Grind(const _double dTimeDelta)
 {
 #pragma region Grind_Actions
@@ -1187,52 +1245,14 @@ void CCody::Go_Grind(const _double dTimeDelta)
 #pragma endregion
 }
 
-#pragma region Shader_Variables
-HRESULT CCody::Render_ShadowDepth()
+void CCody::Hit_StarBuddy(const _double dTimeDelta)
 {
-	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-
-	m_pModelCom->Set_DefaultVariables_ShadowDepth();
-
-	// Skinned: 2 / Normal: 3
-	m_pModelCom->Render_Model(2, 0, true);
-	return S_OK;
-}
-#pragma endregion
-
-#pragma region Trigger
-void CCody::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
-{
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::eSTARBUDDY)
+	if (m_IsHitStarBuddy == true)
 	{
-		m_IsCollide = true;
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_PlanetPush_Large))
+		{
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_IsHitStarBuddy = false;
+		}
 	}
-	else if (eStatus == TriggerStatus::eLOST)
-		m_IsCollide = false;
-
 }
-
-_bool CCody::Trigger_Check(const _double dTimeDelta)
-{
-	if (m_IsCollide && m_pGameInstance->Key_Down(DIK_F))
-	{
-		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind);
-		m_IsOnGrind = true;
-	}
-
-	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind)
-		return true;
-
-	return false;
-}
-_bool CCody::Trigger_End(const _double dTimeDelta)
-{
-	if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jump_Land)
-	{
-		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
-	}
-	return false;
-}
-#pragma endregion

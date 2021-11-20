@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\public\TestObject01.h"
 #include "GameInstance.h"
+#include "Cody.h"
+#include "May.h"
 
 CTestObject01::CTestObject01(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -31,7 +33,7 @@ HRESULT CTestObject01::NativeConstruct(void * pArg)
 
 	CTriggerActor::ARG_DESC ArgDesc;
 
-	m_UserData = USERDATA(GameID::eSTARBUDDY, this);
+	m_UserData = USERDATA(GameID::eMOONBABOON, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
 	ArgDesc.pGeometry = &PxSphereGeometry(0.5f);
@@ -68,8 +70,14 @@ HRESULT CTestObject01::Render()
 
 void CTestObject01::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	pGameObject->Trigger(eStatus, GameID::eSTARBUDDY, this);
-
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eMOONBABOON, true);
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eMOONBABOON, false);
+	}
 }
 
 HRESULT CTestObject01::Render_ShadowDepth()
