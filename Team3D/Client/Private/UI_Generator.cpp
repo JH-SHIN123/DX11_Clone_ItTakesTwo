@@ -34,6 +34,7 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 		return E_FAIL;
 
 	m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Font"));
+	m_pEngTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("EngFont"));
 	m_pVIBuffer_FontCom = (CVIBuffer_FontInstance*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"));
 	
 	m_VTXFONT = new VTXFONT[50];
@@ -193,13 +194,14 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 
 	_ulong iX, iY, iTextureWidth, iTextureHeigth, iFontWidth, iFontHeigth;
   	_int TextLen = lstrlen(pText);
+	_int iGsOption;
 
 	for (_int i = 0; i < TextLen; ++i)
 	{
 		_ulong iNumChar = pText[i];
 
 		/* 한글 */
-		if (44032 <= iNumChar)
+		if (44032 <= iNumChar) 		
 		{
 			iNumChar -= 44032;
 			iX = iNumChar % 132;
@@ -208,6 +210,21 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			iTextureHeigth = 4096;
 			iFontWidth = 31;
 			iFontHeigth = 46;
+		}
+		/* 영어 */
+		else if (65 <= iNumChar) 		
+		{
+			iNumChar -= 65 - 1;
+
+			if (14 <= iNumChar)
+				iNumChar += 1;
+
+			iX = iNumChar % 16;
+			iY = iNumChar / 16;
+			iTextureWidth = 512;
+			iTextureHeigth = 512;
+			iFontWidth = 34;
+			iFontHeigth = 45;
 		}
 
 		_float2 vLeftTop = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
@@ -234,6 +251,8 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			Viewport = pGameInstance->Get_ViewportInfo(1);
 			vMainViewPort = { Viewport.Width, Viewport.Height };
 
+			iGsOption = 0;
+
 			if (0.f < Viewport.Width)
 				ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
@@ -243,9 +262,13 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			Viewport = pGameInstance->Get_ViewportInfo(2);
 			vSubViewPort = { Viewport.Width, Viewport.Height };
 
+			iGsOption = 1;
+
 			if (0.f < Viewport.Width)
 				SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 		}
+
+		m_pVIBuffer_FontCom->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
 
 		m_pVIBuffer_FontCom->Set_Variable("g_MainViewPort", &vMainViewPort, sizeof(_float2));
 		m_pVIBuffer_FontCom->Set_Variable("g_SubViewPort", &vSubViewPort, sizeof(_float2));
@@ -256,7 +279,10 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 		m_pVIBuffer_FontCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
 		m_pVIBuffer_FontCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
 
-		m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+		if(0 == tFontDesc.iOption)
+			m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+		else
+			m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
 	}
 	
 	m_pVIBuffer_FontCom->Render(0, m_VTXFONT, TextLen);
@@ -451,6 +477,7 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("StickIcon"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/StickIcon.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("LoadingBook"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Loading/HakimSpinner.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Font"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_DDS, TEXT("../Bin/Resources/Texture/UI/Font/Font.dds"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("EngFont"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_DDS, TEXT("../Bin/Resources/Texture/UI/Font/EngFont.dds"))), E_FAIL);
 
 	return S_OK;
 }
@@ -469,6 +496,15 @@ HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, con
 	m_vecUIOBjects[ePlayer][eTrigger].push_back(pUIObject);
 
 	return S_OK;
+}
+
+void CUI_Generator::Set_TargetPos(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPos)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return;
+
+	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
+		UIObject->Set_TargetPos(vTargetPos);
 }
 
 void CUI_Generator::Free()
@@ -496,16 +532,8 @@ void CUI_Generator::Free()
 	}
 
 	Safe_Release(m_pTexturesCom);
+	Safe_Release(m_pEngTexturesCom);
 	Safe_Release(m_pVIBuffer_FontCom);
 
 	Safe_Delete_Array(m_VTXFONT);
-}
-
-void CUI_Generator::Set_TargetPos(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPos)
-{
-	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
-		return;
-
-	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
-		UIObject->Set_TargetPos(vTargetPos);
 }

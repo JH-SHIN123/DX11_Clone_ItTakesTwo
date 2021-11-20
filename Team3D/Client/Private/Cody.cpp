@@ -40,6 +40,8 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	UI_Create(May, StickIcon);
 
 	UI_Create(Cody, PlayerMarker);
+
+	UI_Create(Cody, InputButton_InterActive);
 	 
 	m_vPoints[0] = {72.f, 0.f, -120.f };
 	m_vPoints[1] = { 0.f, 0.f, 0.f };
@@ -145,7 +147,9 @@ _int CCody::Tick(_double dTimeDelta)
 	
 #pragma endregion
 
-	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);

@@ -84,6 +84,7 @@ HRESULT CPC_MouseButton::Set_UIVariables_Perspective()
 		return E_FAIL;
 
 	_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubViewMatrix, SubProjMatrix;
+	_int iGsOption;
 
 	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	ViewMatrix = XMMatrixIdentity();
@@ -96,6 +97,8 @@ HRESULT CPC_MouseButton::Set_UIVariables_Perspective()
 	{
 		Viewport = m_pGameInstance->Get_ViewportInfo(1);
 
+		iGsOption = 0;
+
 		if (0.f < Viewport.Width)
 			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
@@ -104,9 +107,13 @@ HRESULT CPC_MouseButton::Set_UIVariables_Perspective()
 	{
 		Viewport = m_pGameInstance->Get_ViewportInfo(2);
 
+		iGsOption = 1;
+
 		if (0.f < Viewport.Width)
 			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 	}
+
+	m_pVIBuffer_RectCom->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
 
 	m_pVIBuffer_RectCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
 	m_pVIBuffer_RectCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));

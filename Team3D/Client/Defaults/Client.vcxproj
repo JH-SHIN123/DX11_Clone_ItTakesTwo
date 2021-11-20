@@ -183,6 +183,7 @@
     <ClInclude Include="..\Public\Arrowkeys_Fill.h" />
     <ClInclude Include="..\Public\Arrowkeys_Outline.h" />
     <ClInclude Include="..\Public\Character.h" />
+    <ClInclude Include="..\Public\Client_Animation_Index_Define.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\Cody.h" />
@@ -213,7 +214,6 @@
     <ClInclude Include="..\Public\UISprite.h" />
     <ClInclude Include="..\Public\UI_Generator.h" />
     <ClInclude Include="Client.h" />
-    <ClInclude Include="Client_Animation_Index_Define.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />

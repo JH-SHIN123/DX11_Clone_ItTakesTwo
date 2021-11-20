@@ -137,6 +137,7 @@ void CPhysX::Remove_Actor(PxRigidStatic ** pActor)
 {
 	if (nullptr == *pActor) return;
 
+	(*pActor)->userData = nullptr;
 	m_pScene->removeActor(**pActor);
 	(*pActor)->release();
 	*pActor = nullptr;
@@ -146,6 +147,7 @@ void CPhysX::Remove_Actor(PxRigidDynamic ** pActor)
 {
 	if (nullptr == *pActor) return;
 
+	(*pActor)->userData = nullptr;
 	m_pScene->removeActor(**pActor);
 	(*pActor)->release();
 	*pActor = nullptr;

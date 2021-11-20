@@ -28,6 +28,7 @@ private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 
 private:
+	void Render_Font();
 	HRESULT Ready_Component();
 	void SetUp_Option();
 

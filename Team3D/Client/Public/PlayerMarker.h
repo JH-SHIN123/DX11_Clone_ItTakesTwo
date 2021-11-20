@@ -26,6 +26,7 @@ public:
 
 private:
 	_bool							m_IsRender = false;
+	_int							m_iColorOption = 0;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
