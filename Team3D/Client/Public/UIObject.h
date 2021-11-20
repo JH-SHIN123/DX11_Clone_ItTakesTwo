@@ -52,7 +52,9 @@ public:
 	void Set_Dead();
 	void Set_PlayerID(Player::ID ePlayerID);
 	void Set_PosX(_float fPosX);
-	void Set_TargetPos(_vector vPos);
+
+public:
+	virtual void Set_TargetPos(_vector vPos);
 
 protected:
 	UI_DESC						m_UIDesc;

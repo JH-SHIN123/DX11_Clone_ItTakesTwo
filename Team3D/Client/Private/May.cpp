@@ -4,6 +4,7 @@
 #include "SubCamera.h"
 #include "UI_Generator.h"
 #include "UIObject.h"
+#include "Cody.h"
 
 CMay::CMay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
@@ -125,7 +126,8 @@ _int CMay::Tick(_double dTimeDelta)
 	}
 	Ground_Pound(dTimeDelta);
 
-	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	CCody* pCody = (CCody*)DATABASE->GetCody();
+	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);

@@ -24,9 +24,14 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	void Set_TargetPos(_vector vPos) override;
+
 private:
 	_bool							m_IsRender = false;
 	_int							m_iColorOption = 0;
+
+	_float4							m_vMarkerTargetPos;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;

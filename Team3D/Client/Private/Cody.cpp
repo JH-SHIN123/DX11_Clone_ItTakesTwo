@@ -4,6 +4,7 @@
 #include "MainCamera.h"
 #include "UI_Generator.h"
 #include "UIObject.h"
+#include "May.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -121,9 +122,8 @@ _int CCody::Tick(_double dTimeDelta)
 	}
 	Ground_Pound(dTimeDelta);
 
-	//UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
+	CMay* pMay = (CMay*)DATABASE->GetMay();
+	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);

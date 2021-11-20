@@ -98,6 +98,7 @@ HRESULT CUIObject::Set_UIVariables_Perspective(CVIBuffer* pVIBuffer)
 		return E_FAIL;
 
 	_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubViewMatrix, SubProjMatrix;
+	_int iGSOption;
 
 	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	ViewMatrix = XMMatrixIdentity();
@@ -108,6 +109,8 @@ HRESULT CUIObject::Set_UIVariables_Perspective(CVIBuffer* pVIBuffer)
 	{
 		Viewport = m_pGameInstance->Get_ViewportInfo(1);
 
+		iGSOption = 0;
+
 		if (0.f < Viewport.Width)
 			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
@@ -116,9 +119,13 @@ HRESULT CUIObject::Set_UIVariables_Perspective(CVIBuffer* pVIBuffer)
 	{
 		Viewport = m_pGameInstance->Get_ViewportInfo(2);
 
+		iGSOption = 1;
+
 		if (0.f < Viewport.Width)
 			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 	}
+
+	pVIBuffer->Set_Variable("g_iGSOption", &iGSOption, sizeof(_int));
 
 	pVIBuffer->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
 	pVIBuffer->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));

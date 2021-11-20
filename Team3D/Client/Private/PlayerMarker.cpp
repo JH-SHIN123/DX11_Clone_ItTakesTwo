@@ -69,9 +69,15 @@ HRESULT CPlayerMarker::Render()
 	if (FAILED(Set_PlayerMarkerVariables_Perspective()))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(4);
+	if(true == m_IsRender)
+		m_pVIBuffer_RectCom->Render(4);
 
 	return S_OK;
+}
+
+void CPlayerMarker::Set_TargetPos(_vector vPos)
+{
+	XMStoreFloat4(&m_vMarkerTargetPos, vPos);
 }
 
 HRESULT CPlayerMarker::Ready_Component()
@@ -102,12 +108,21 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 		_vector vCodyUp = pCody->Get_Transform()->Get_State(CTransform::STATE_UP);
 
-		m_vTargetPos.y += 2.f;
+		m_vMarkerTargetPos.y += 2.f;
 
-		_vector vTargetPos = XMLoadFloat4(&m_vTargetPos);
+		_vector vTargetPos = XMLoadFloat4(&m_vMarkerTargetPos);
 
 		vConvertPos = ConvertToWindowPos(Viewport, vTargetPos);
 		vCodyConvertPos = ConvertToWindowPos(Viewport, vCodyPos);
+
+		if (Viewport.Width > vConvertPos.x && 0.f < vConvertPos.x &&
+			Viewport.Height > vConvertPos.y && 0.f < vConvertPos.y)
+		{
+			m_IsRender = false;
+			return S_OK;
+		}
+		else
+			m_IsRender = true;
 
 		// 고정 시키기전에 내적해서 각도구해야해서 저장해둠
 		_float3 vSavePos = vConvertPos;
@@ -172,12 +187,21 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 		_vector vMayUp = pMay->Get_Transform()->Get_State(CTransform::STATE_UP);
 
-		m_vTargetPos.y += 2.f;
+		m_vMarkerTargetPos.y += 2.f;
 
-		_vector vTargetPos = XMLoadFloat4(&m_vTargetPos);
+		_vector vTargetPos = XMLoadFloat4(&m_vMarkerTargetPos);
 
 		vConvertPos = ConvertToWindowPos(Viewport, vTargetPos);
 		vMayConvertPos = ConvertToWindowPos(Viewport, vMayPos);
+
+		if (Viewport.Width > vConvertPos.x && 0.f < vConvertPos.x &&
+			Viewport.Height > vConvertPos.y && 0.f < vConvertPos.y)
+		{
+			m_IsRender = false;
+			return S_OK;
+		}
+		else
+			m_IsRender = true;
 
 		_float3 vSavePos = vConvertPos;
 
@@ -225,6 +249,12 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		m_iColorOption = 1;
 		iGsOption = 1;
 	}
+
+
+	if (0.f > vConvertPos.y)
+		vConvertPos.y = Viewport.TopLeftY + 20.f;
+	else if (Viewport.Height < vConvertPos.y)
+		vConvertPos.y = Viewport.Height - 20.f;
 
 	// 이거 안하면 반대쪽 뷰포트 반짝거리는 오류 발생합니다.
 	m_pVIBuffer_RectCom->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
