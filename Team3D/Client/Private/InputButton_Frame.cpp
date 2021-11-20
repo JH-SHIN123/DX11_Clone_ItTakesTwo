@@ -2,6 +2,7 @@
 #include "..\Public\InputButton_Frame.h"
 
 #include "GameInstance.h"
+#include "UI_Generator.h"
 
 CInputButton_Frame::CInputButton_Frame(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -75,6 +76,8 @@ HRESULT CInputButton_Frame::Render()
 
 	m_pVIBuffer_RectCom->Render(1);
 
+	Render_Font();
+
 	return S_OK;
 }
 
@@ -85,6 +88,19 @@ void CInputButton_Frame::SetUp_Option()
 		m_iOption = 1;
 	else
 		m_iOption = 0;
+}
+
+
+void CInputButton_Frame::Render_Font()
+{
+	CUI_Generator::FONTDESC		tFontDesc;
+	tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
+	tFontDesc.vScale = { 40.f, 50.f };
+	tFontDesc.fInterval = 0.f;
+	tFontDesc.iOption = 1;
+
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_F")))
+		UI_Generator->Render_Font(TEXT("F"), tFontDesc, m_ePlayerID);
 }
 
 HRESULT CInputButton_Frame::Ready_Component()

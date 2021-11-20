@@ -41,7 +41,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 
 	UI_Create(Cody, PlayerMarker);
 
-	UI_Create(Cody, InputButton_OK);
+	UI_Create(Cody, InputButton_InterActive);
 	 
 
 	return S_OK;
@@ -121,7 +121,9 @@ _int CCody::Tick(_double dTimeDelta)
 	}
 	Ground_Pound(dTimeDelta);
 
-	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);

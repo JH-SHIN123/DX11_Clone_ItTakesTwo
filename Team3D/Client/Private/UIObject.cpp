@@ -183,6 +183,8 @@ HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
 		WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 		WorldMatrix.r[3].m128_f32[0] = vConvertPos.x;
 		WorldMatrix.r[3].m128_f32[1] = vConvertPos.y;
+		m_UIDesc.vPos.x = vConvertPos.x;
+		m_UIDesc.vPos.y = vConvertPos.y;
 
 		if (0.f < Viewport.Width)
 			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
@@ -230,9 +232,10 @@ HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
 		vConvertPos.z = 0.f;
 
 		WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-
 		WorldMatrix.r[3].m128_f32[0] = vConvertPos.x;
 		WorldMatrix.r[3].m128_f32[1] = vConvertPos.y;
+		m_UIDesc.vPos.x = vConvertPos.x;
+		m_UIDesc.vPos.y = vConvertPos.y;
 
 		if (0.f < Viewport.Width)
 			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
