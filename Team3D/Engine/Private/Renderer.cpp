@@ -241,7 +241,6 @@ HRESULT CRenderer::Render_Blend()
 
 	m_pVIBuffer->Render(0);
 
-
 	return S_OK;
 }
 

@@ -207,6 +207,7 @@ technique11		DefaultTechnique
 	{
 		VertexShader = NULL;
 		GeometryShader = NULL;
+		PixelShader = NULL;
 		ComputeShader = compile cs_5_0 CS_DOWNSCALE_FIRSTPASS();
 	}
 
@@ -214,6 +215,7 @@ technique11		DefaultTechnique
 	{
 		VertexShader = NULL;
 		GeometryShader = NULL;
+		PixelShader = NULL;
 		ComputeShader = compile cs_5_0 CS_DOWNSCALE_SECONDPASS();
 	}
 };

@@ -26,6 +26,7 @@ private:
 	HRESULT	Dispatch();
 
 	void	Clear_Buffer();
+	HRESULT Unbind_ShaderResources();
 
 private:
 	ID3D11Device* m_pDevice = nullptr;
