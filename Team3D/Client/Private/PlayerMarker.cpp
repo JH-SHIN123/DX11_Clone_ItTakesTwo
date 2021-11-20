@@ -69,7 +69,8 @@ HRESULT CPlayerMarker::Render()
 	if (FAILED(Set_PlayerMarkerVariables_Perspective()))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(0);
+	if(true == m_IsRender)
+		m_pVIBuffer_RectCom->Render(0);
 
 	return S_OK;
 }
@@ -112,14 +113,30 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 
 		// 뷰포트 밖으로 나가면 화면 고정
 		if (Viewport.Width < vConvertPos.x)
+		{
 			vConvertPos.x = Viewport.Width - 20.f;
+			m_IsRender = true;
+		}
 		else if (Viewport.TopLeftX > vConvertPos.x)
+		{
 			vConvertPos.x = Viewport.TopLeftX + 20.f;
+			m_IsRender = true;
+		}
+		else
+			m_IsRender = false;
 
 		if (0.f > vConvertPos.y)
+		{
 			vConvertPos.y = Viewport.TopLeftY + 20.f;
+			m_IsRender = true;
+		}
 		else if (Viewport.Height < vConvertPos.y)
+		{
 			vConvertPos.y = Viewport.Height - 20.f;
+			m_IsRender = true;
+		}
+		else
+			m_IsRender = false;
 
 		// 뷰스페이스로 변환
 		// 뷰 행렬에 좌표를 바로 줘서 직교하던 월드 스페이스에 주던 상관 없음 월드에 줬다고 하면 뷰 행렬은 항등으로 주고 직교 투영하기 때문임 ㅇㅇ
