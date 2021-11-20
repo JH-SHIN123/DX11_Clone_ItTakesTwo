@@ -7,6 +7,7 @@
 #include "May.h"
 #include "Pipeline.h"
 #include "MainCamera.h"
+#include "SubCamera.h"
 
 CPlayerMarker::CPlayerMarker(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -39,7 +40,7 @@ HRESULT CPlayerMarker::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
-	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x - 10.f, m_UIDesc.vScale.y - 10.f, 0.f, 0.f));
 
 	return S_OK;
 }
@@ -85,8 +86,7 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 	D3D11_VIEWPORT Viewport;
 
 	_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubViewMatrix, SubProjMatrix;
-	_float3 vConvertPos, vCodyConvertPos, vCodyConvertRight;
-	_float fRadian;
+	_float3 vConvertPos, vCodyConvertPos, vCodyConvertRight, vMayConvertPos, vMayConvertRight;
 
 	if (m_ePlayerID == Player::Cody)
 	{
@@ -95,9 +95,9 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		ViewMatrix = XMMatrixIdentity();
 		SubProjMatrix = XMMatrixIdentity();
 
+		// m_vTargetPos가 May포스임 
 		CCody* pCody = (CCody*)DATABASE->GetCody();
 		_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-		_vector vCodyLook = pCody->Get_Transform()->Get_State(CTransform::STATE_LOOK);
 		_vector vCodyUp = pCody->Get_Transform()->Get_State(CTransform::STATE_UP);
 
 		m_vTargetPos.y += 2.f;
@@ -141,12 +141,12 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		_float3 vSavePos = vConvertPos;
 
 		if (Viewport.Width < vConvertPos.x)
-			vConvertPos.x = Viewport.Width - 15.f;
+			vConvertPos.x = Viewport.Width - 20.f;
 		else if (Viewport.TopLeftX > vConvertPos.x)
-			vConvertPos.x = Viewport.TopLeftX + 15.f;
+			vConvertPos.x = Viewport.TopLeftX + 20.f;
 
 		if (0.f > vConvertPos.y)
-			vConvertPos.y = Viewport.TopLeftY + 15.f;
+			vConvertPos.y = Viewport.TopLeftY + 20.f;
 		else if (Viewport.Height < vConvertPos.y)
 			vConvertPos.y = Viewport.Height - 20.f;
 
@@ -162,7 +162,6 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		vCodyConvertPos.y = Viewport.Height - (1.f * (Viewport.Height / 2) + vCodyConvertPos.y);
 		vCodyConvertPos.z = 0.f;
 
-		//_vector vDir = XMLoadFloat3(&vCodyConvertPos) - XMLoadFloat3(&vSavePos);
 		_vector vDir = XMLoadFloat3(&vSavePos) - XMLoadFloat3(&vCodyConvertPos);
 		_vector vDot = XMVector3Dot(XMVector3Normalize(vDir), XMVector3Normalize(vCodyUp));
 		_float fRadian = acosf(XMVectorGetX(vDot));
@@ -170,10 +169,7 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		_float fAngle = 90.f - XMConvertToDegrees(fRadian);
 
 		CMainCamera* pMainCamera = (CMainCamera*)DATABASE->Get_MainCam();
-		_vector vCamUp = pMainCamera->Get_Transform()->Get_State(CTransform::STATE_UP);
-		_vector vCamRight = pMainCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
 		_vector vCamLook = pMainCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
-
 
 		WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 		WorldMatrix.r[3].m128_f32[0] = vConvertPos.x;
@@ -187,11 +183,6 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 			fAngle -= 180.f;
 		}
 
-		//if (0.f < vCamLook.m128_f32[2])
-		//{
-		//	fAngle *= 1.f;
-		//}
-
 		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(fAngle));
 
 		if (0.f < Viewport.Width)
@@ -204,6 +195,13 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		ViewMatrix = XMMatrixIdentity();
 		ProjMatrix = XMMatrixIdentity();
 
+		// m_vTargetPos가 Cody포스임 
+		CMay* pMay = (CMay*)DATABASE->GetMay();
+		_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		_vector vMayUp = pMay->Get_Transform()->Get_State(CTransform::STATE_UP);
+
+		m_vTargetPos.y += 2.f;
+
 		_matrix SubCombineViewMatirx = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_SUBVIEW);
 		_matrix SubCombineProjMatirx = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_SUBPROJ);
 
@@ -211,27 +209,43 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 
 		_vector vTargetPos = XMLoadFloat4(&m_vTargetPos);
 		vTargetPos = XMVector3TransformCoord(vTargetPos, matSubCombine);
+		vMayPos = XMVector3TransformCoord(vMayPos, matSubCombine);
 
 		XMStoreFloat3(&vConvertPos, vTargetPos);
 		vConvertPos.x += 1.f;
 		vConvertPos.y += 1.f;
 
+		XMStoreFloat3(&vMayConvertPos, vMayPos);
+		vMayConvertPos.x += 1.f;
+		vMayConvertPos.y += 1.f;
+
 		if (1.f <= vConvertPos.z)
 		{
-			vConvertPos.y *= -1.f;
 			vConvertPos.x *= -1.f;
+			vConvertPos.y *= -1.f;
+		}
+
+		if (1.f <= vMayConvertPos.z)
+		{
+			vMayConvertPos.x *= -1.f;
+			vMayConvertPos.y *= -1.f;
 		}
 
 		vConvertPos.x = ((Viewport.Width * (vConvertPos.x)) / 2.f);
 		vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f);
 
+		vMayConvertPos.x = ((Viewport.Width * (vMayConvertPos.x)) / 2.f);
+		vMayConvertPos.y = (Viewport.Height * (2.f - vMayConvertPos.y) / 2.f);
+
+		_float3 vSavePos = vConvertPos;
+
 		if (Viewport.Width < vConvertPos.x)
-			vConvertPos.x = Viewport.Width - 10.f;
+			vConvertPos.x = Viewport.Width - 20.f;
 		else if (0.f > vConvertPos.x)
-			vConvertPos.x = 10.f;
+			vConvertPos.x = 20.f;
 
 		if (0.f > vConvertPos.y)
-			vConvertPos.y = Viewport.TopLeftY + 10.f;
+			vConvertPos.y = Viewport.TopLeftY + 20.f;
 		else if (Viewport.Height < vConvertPos.y)
 			vConvertPos.y = Viewport.Height - 20.f;
 
@@ -239,10 +253,38 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		vConvertPos.y = Viewport.Height - (1.f * (Viewport.Height / 2) + vConvertPos.y);
 		vConvertPos.z = 0.f;
 
+		vSavePos.x = -1.f * (Viewport.Width / 2) + vSavePos.x;
+		vSavePos.y = Viewport.Height - (1.f * (Viewport.Height / 2) + vSavePos.y);
+		vSavePos.z = 0.f;
+
+		vMayConvertPos.x = -1.f * (Viewport.Width / 2) + vMayConvertPos.x;
+		vMayConvertPos.y = Viewport.Height - (1.f * (Viewport.Height / 2) + vMayConvertPos.y);
+		vMayConvertPos.z = 0.f;
+
+		//_vector vDir = XMLoadFloat3(&vCodyConvertPos) - XMLoadFloat3(&vSavePos);
+		_vector vDir = XMLoadFloat3(&vSavePos) - XMLoadFloat3(&vMayConvertPos);
+		_vector vDot = XMVector3Dot(XMVector3Normalize(vDir), XMVector3Normalize(vMayUp));
+		_float fRadian = acosf(XMVectorGetX(vDot));
+		// 텍스쳐 자체가 90도 회전한 텍스쳐라서 뺴줌
+		_float fAngle = 90.f - XMConvertToDegrees(fRadian);
+
+		CSubCamera* pSubCamera = (CSubCamera*)DATABASE->Get_SubCam();
+		_vector vCamLook = pSubCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
+
 		WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
 		WorldMatrix.r[3].m128_f32[0] = vConvertPos.x;
 		WorldMatrix.r[3].m128_f32[1] = vConvertPos.y;
+
+		_float fCCW = XMVectorGetZ(XMVector3Cross(XMVector3Normalize(vCamLook), XMVector3Normalize(vDir)));
+
+		if (0.f > fCCW)
+		{
+			fAngle *= -1.f;
+			fAngle -= 180.f;
+		}
+
+		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(fAngle));
 
 		if (0.f < Viewport.Width)
 			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);

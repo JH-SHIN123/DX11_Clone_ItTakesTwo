@@ -4,6 +4,8 @@
 #include "SubCamera.h"
 #include "Transform.h"
 #include "DataStorage.h"
+#include "UI_Generator.h"
+#include "Cody.h"
 
 CMay::CMay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
@@ -45,11 +47,11 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	CCharacter::NativeConstruct(pArg);
 	Ready_Component();
 
-
 	m_pModelCom->Set_Animation(ANI_M_Bounce4);
 	DATABASE->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
-	 
+
+	UI_Create(May, PlayerMarker);
 
 	return S_OK;
 }
@@ -124,6 +126,8 @@ _int CMay::Tick(_double dTimeDelta)
 	}
 	Ground_Pound(dTimeDelta);
 
+	CCody* pCody = (CCody*)DATABASE->GetCody();
+	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
