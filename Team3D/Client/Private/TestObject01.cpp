@@ -45,6 +45,9 @@ _int CTestObject01::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_L))
+		return EVENT_DEAD;
+
 	return NO_EVENT;
 }
 

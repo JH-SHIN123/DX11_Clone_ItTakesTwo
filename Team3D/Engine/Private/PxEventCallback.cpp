@@ -26,6 +26,9 @@ void CPxEventCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)
 {
 	for (PxU32 i = 0; i < count; ++i)
 	{
+		if ((nullptr == pairs[i].triggerActor->userData) || (nullptr == pairs[i].otherActor->userData))
+			continue;
+
 		if (pairs[i].status == PxPairFlag::eNOTIFY_TOUCH_FOUND)
 		{
 			USERDATA* pTriggerUserData	= static_cast<USERDATA*>(pairs[i].triggerActor->userData);
