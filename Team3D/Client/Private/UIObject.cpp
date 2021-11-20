@@ -137,6 +137,7 @@ HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
 
 	_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubViewMatrix, SubProjMatrix;
 	_float3 vConvertPos;
+	_int iGsOption;
 
 	if (m_ePlayerID == Player::Cody)
 	{
@@ -188,6 +189,8 @@ HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
 
 		if (0.f < Viewport.Width)
 			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+
+		iGsOption = 0;
 	}
 	else if (m_ePlayerID == Player::May)
 	{
@@ -239,7 +242,11 @@ HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
 
 		if (0.f < Viewport.Width)
 			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+
+		iGsOption = 1;
 	}
+
+	pVIBuffer->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
 
 	pVIBuffer->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
 	pVIBuffer->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));

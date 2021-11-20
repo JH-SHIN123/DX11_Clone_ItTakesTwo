@@ -10,6 +10,7 @@ matrix		g_UIProjMatrix;
 
 int		g_iShaderMouseOption;
 int		g_iColorOption;
+int		g_iGSOption;
 
 sampler	DiffuseSampler = sampler_state
 {
@@ -60,31 +61,38 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 {
 	GS_OUT Out = (GS_OUT)0;
 
-	for (uint i = 0; i < 3; i++)
+	if (0 == g_iGSOption)
 	{
-		matrix matVP = g_MainProjMatrix;
 
-		Out.vPosition = mul(In[i].vPosition, matVP);
-		Out.vTexUV = In[i].vTexUV;
-		Out.iViewportIndex = 1;
+		for (uint i = 0; i < 3; i++)
+		{
+			matrix matVP = g_MainProjMatrix;
 
-		TriStream.Append(Out);
+			Out.vPosition = mul(In[i].vPosition, matVP);
+			Out.vTexUV = In[i].vTexUV;
+			Out.iViewportIndex = 1;
+
+			TriStream.Append(Out);
+		}
+
+		TriStream.RestartStrip();
 	}
-
-	TriStream.RestartStrip();
-
-	for (uint j = 0; j < 3; j++)
+	else
 	{
-		matrix matVP = g_SubProjMatrix;
 
-		Out.vPosition = mul(In[j].vPosition, matVP);
-		Out.vTexUV = In[j].vTexUV;
-		Out.iViewportIndex = 2;
+		for (uint j = 0; j < 3; j++)
+		{
+			matrix matVP = g_SubProjMatrix;
 
-		TriStream.Append(Out);
+			Out.vPosition = mul(In[j].vPosition, matVP);
+			Out.vTexUV = In[j].vTexUV;
+			Out.iViewportIndex = 2;
+
+			TriStream.Append(Out);
+		}
+
+		TriStream.RestartStrip();
 	}
-
-	TriStream.RestartStrip();
 }
 
 ////////////////////////////////////////////////////////////

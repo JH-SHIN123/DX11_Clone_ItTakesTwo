@@ -38,21 +38,6 @@ struct VS_OUT
 		float2  vTexUV : TEXCOORD0;
 };
 
-//VS_OUT	VS_MAIN(VS_IN In)
-//{
-//	VS_OUT			Out = (VS_OUT)0;
-//
-//	matrix		matWV, matWVP;
-//
-//	matWV = mul(g_UIWorldMatrix, g_UIViewMatrix);
-//	matWVP = mul(matWV, g_UIProjMatrix);
-//
-//	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
-//	Out.vTexUV = In.vTexUV;
-//
-//	return Out;
-//}
-
 VS_OUT	VS_MAIN(VS_IN In)
 {
 	VS_OUT	Out = (VS_OUT)0;
@@ -146,7 +131,6 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 	}
 	else
 	{
-
 		for (uint j = 0; j < 3; j++)
 		{
 			matrix matVP = g_SubProjMatrix;

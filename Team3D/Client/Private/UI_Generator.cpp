@@ -194,6 +194,7 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 
 	_ulong iX, iY, iTextureWidth, iTextureHeigth, iFontWidth, iFontHeigth;
   	_int TextLen = lstrlen(pText);
+	_int iGsOption;
 
 	for (_int i = 0; i < TextLen; ++i)
 	{
@@ -250,6 +251,8 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			Viewport = pGameInstance->Get_ViewportInfo(1);
 			vMainViewPort = { Viewport.Width, Viewport.Height };
 
+			iGsOption = 0;
+
 			if (0.f < Viewport.Width)
 				ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
@@ -259,9 +262,13 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			Viewport = pGameInstance->Get_ViewportInfo(2);
 			vSubViewPort = { Viewport.Width, Viewport.Height };
 
+			iGsOption = 1;
+
 			if (0.f < Viewport.Width)
 				SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 		}
+
+		m_pVIBuffer_FontCom->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
 
 		m_pVIBuffer_FontCom->Set_Variable("g_MainViewPort", &vMainViewPort, sizeof(_float2));
 		m_pVIBuffer_FontCom->Set_Variable("g_SubViewPort", &vSubViewPort, sizeof(_float2));

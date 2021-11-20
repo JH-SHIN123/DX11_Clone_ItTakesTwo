@@ -8,6 +8,7 @@ matrix			g_UIProjMatrix;
 
 float2			g_MainViewPort;
 float2			g_SubViewPort;
+int				g_iGsOption;
 
 sampler DiffuseSampler = sampler_state
 {
@@ -64,91 +65,96 @@ void  GS_MAIN(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT
 	matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
 
 	float2	vSize = float2(In[0].vScale.x / g_MainViewPort.x, In[0].vScale.y / g_MainViewPort.y);
-	
-	/* 좌상 */
-	Out[0].vPosition = mul(In[0].vPosition, matVP);
-	Out[0].vPosition.x = Out[0].vPosition.x - vSize.x;
-	Out[0].vPosition.y = Out[0].vPosition.y + vSize.y;
-	Out[0].vTexUV = float2(In[0].vTexUV.x, In[0].vTexUV.y);
-	Out[0].iViewportIndex = 1;
 
-	/* 우상 */
-	Out[1].vPosition = mul(In[0].vPosition, matVP);
-	Out[1].vPosition.x = Out[1].vPosition.x + vSize.x;
-	Out[1].vPosition.y = Out[1].vPosition.y + vSize.y;
-	Out[1].vTexUV = float2(In[0].vTexUV.z, In[0].vTexUV.y);
-	Out[1].iViewportIndex = 1;
+	if (0 == g_iGsOption)
+	{
+		/* 좌상 */
+		Out[0].vPosition = mul(In[0].vPosition, matVP);
+		Out[0].vPosition.x = Out[0].vPosition.x - vSize.x;
+		Out[0].vPosition.y = Out[0].vPosition.y + vSize.y;
+		Out[0].vTexUV = float2(In[0].vTexUV.x, In[0].vTexUV.y);
+		Out[0].iViewportIndex = 1;
 
-	/* 우하 */
-	Out[2].vPosition = mul(In[0].vPosition, matVP);
-	Out[2].vPosition.x = Out[2].vPosition.x + vSize.x;
-	Out[2].vPosition.y = Out[2].vPosition.y - vSize.y;
-	Out[2].vTexUV = float2(In[0].vTexUV.z , In[0].vTexUV.w);
-	Out[2].iViewportIndex = 1;
+		/* 우상 */
+		Out[1].vPosition = mul(In[0].vPosition, matVP);
+		Out[1].vPosition.x = Out[1].vPosition.x + vSize.x;
+		Out[1].vPosition.y = Out[1].vPosition.y + vSize.y;
+		Out[1].vTexUV = float2(In[0].vTexUV.z, In[0].vTexUV.y);
+		Out[1].iViewportIndex = 1;
 
-	/* 좌하 */
-	Out[3].vPosition = mul(In[0].vPosition, matVP);
-	Out[3].vPosition.x = Out[3].vPosition.x - vSize.x;
-	Out[3].vPosition.y = Out[3].vPosition.y - vSize.y;
-	Out[3].vTexUV = float2(In[0].vTexUV.x, In[0].vTexUV.w);
-	Out[3].iViewportIndex = 1;
+		/* 우하 */
+		Out[2].vPosition = mul(In[0].vPosition, matVP);
+		Out[2].vPosition.x = Out[2].vPosition.x + vSize.x;
+		Out[2].vPosition.y = Out[2].vPosition.y - vSize.y;
+		Out[2].vTexUV = float2(In[0].vTexUV.z, In[0].vTexUV.w);
+		Out[2].iViewportIndex = 1;
 
-	TriStream.Append(Out[1]);
-	TriStream.Append(Out[0]);
-	TriStream.Append(Out[3]);
+		/* 좌하 */
+		Out[3].vPosition = mul(In[0].vPosition, matVP);
+		Out[3].vPosition.x = Out[3].vPosition.x - vSize.x;
+		Out[3].vPosition.y = Out[3].vPosition.y - vSize.y;
+		Out[3].vTexUV = float2(In[0].vTexUV.x, In[0].vTexUV.w);
+		Out[3].iViewportIndex = 1;
 
-	TriStream.RestartStrip();
+		TriStream.Append(Out[1]);
+		TriStream.Append(Out[0]);
+		TriStream.Append(Out[3]);
 
-	TriStream.Append(Out[3]);
-	TriStream.Append(Out[2]);
-	TriStream.Append(Out[1]);
+		TriStream.RestartStrip();
 
-	TriStream.RestartStrip();
+		TriStream.Append(Out[3]);
+		TriStream.Append(Out[2]);
+		TriStream.Append(Out[1]);
 
-	// 어쩌피 뷰 매트릭스는 항등
-	matVP = g_SubProjMatrix;
+		TriStream.RestartStrip();
+	}
+	else
+	{
+		// 어쩌피 뷰 매트릭스는 항등
+		matVP = g_SubProjMatrix;
 
-	vSize = float2(In[0].vScale.x / g_SubViewPort.x, In[0].vScale.y / g_SubViewPort.y);
+		vSize = float2(In[0].vScale.x / g_SubViewPort.x, In[0].vScale.y / g_SubViewPort.y);
 
-	/* 좌상 */
-	Out[4].vPosition = mul(In[0].vPosition, matVP);
-	Out[4].vPosition.x = Out[4].vPosition.x - vSize.x;
-	Out[4].vPosition.y = Out[4].vPosition.y + vSize.y;
-	Out[4].vTexUV = float2(In[0].vTexUV.x, In[0].vTexUV.y);
-	Out[4].iViewportIndex = 2;
+		/* 좌상 */
+		Out[4].vPosition = mul(In[0].vPosition, matVP);
+		Out[4].vPosition.x = Out[4].vPosition.x - vSize.x;
+		Out[4].vPosition.y = Out[4].vPosition.y + vSize.y;
+		Out[4].vTexUV = float2(In[0].vTexUV.x, In[0].vTexUV.y);
+		Out[4].iViewportIndex = 2;
 
-	/* 우상 */
-	Out[5].vPosition = mul(In[0].vPosition, matVP);
-	Out[5].vPosition.x = Out[5].vPosition.x + vSize.x;
-	Out[5].vPosition.y = Out[5].vPosition.y + vSize.y;
-	Out[5].vTexUV = float2(In[0].vTexUV.z, In[0].vTexUV.y);
-	Out[5].iViewportIndex = 2;
+		/* 우상 */
+		Out[5].vPosition = mul(In[0].vPosition, matVP);
+		Out[5].vPosition.x = Out[5].vPosition.x + vSize.x;
+		Out[5].vPosition.y = Out[5].vPosition.y + vSize.y;
+		Out[5].vTexUV = float2(In[0].vTexUV.z, In[0].vTexUV.y);
+		Out[5].iViewportIndex = 2;
 
-	/* 우하 */
-	Out[6].vPosition = mul(In[0].vPosition, matVP);
-	Out[6].vPosition.x = Out[6].vPosition.x + vSize.x;
-	Out[6].vPosition.y = Out[6].vPosition.y - vSize.y;
-	Out[6].vTexUV = float2(In[0].vTexUV.z, In[0].vTexUV.w);
-	Out[6].iViewportIndex = 2;
+		/* 우하 */
+		Out[6].vPosition = mul(In[0].vPosition, matVP);
+		Out[6].vPosition.x = Out[6].vPosition.x + vSize.x;
+		Out[6].vPosition.y = Out[6].vPosition.y - vSize.y;
+		Out[6].vTexUV = float2(In[0].vTexUV.z, In[0].vTexUV.w);
+		Out[6].iViewportIndex = 2;
 
-	/* 좌하 */
-	Out[7].vPosition = mul(In[0].vPosition, matVP);
-	Out[7].vPosition.x = Out[7].vPosition.x - vSize.x;
-	Out[7].vPosition.y = Out[7].vPosition.y - vSize.y;
-	Out[7].vTexUV = float2(In[0].vTexUV.x, In[0].vTexUV.w);
-	Out[7].iViewportIndex = 2;
+		/* 좌하 */
+		Out[7].vPosition = mul(In[0].vPosition, matVP);
+		Out[7].vPosition.x = Out[7].vPosition.x - vSize.x;
+		Out[7].vPosition.y = Out[7].vPosition.y - vSize.y;
+		Out[7].vTexUV = float2(In[0].vTexUV.x, In[0].vTexUV.w);
+		Out[7].iViewportIndex = 2;
 
-	TriStream.Append(Out[5]);
-	TriStream.Append(Out[4]);
-	TriStream.Append(Out[7]);
+		TriStream.Append(Out[5]);
+		TriStream.Append(Out[4]);
+		TriStream.Append(Out[7]);
 
-	TriStream.RestartStrip();
+		TriStream.RestartStrip();
 
-	TriStream.Append(Out[7]);
-	TriStream.Append(Out[6]);
-	TriStream.Append(Out[5]);
+		TriStream.Append(Out[7]);
+		TriStream.Append(Out[6]);
+		TriStream.Append(Out[5]);
 
-	TriStream.RestartStrip();
+		TriStream.RestartStrip();
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////

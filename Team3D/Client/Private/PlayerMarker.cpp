@@ -87,6 +87,7 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 
 	_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubViewMatrix, SubProjMatrix;
 	_float3 vConvertPos, vCodyConvertPos, vCodyConvertRight, vMayConvertPos, vMayConvertRight;
+	_int iGsOption;
 
 	if (m_ePlayerID == Player::Cody)
 	{
@@ -94,6 +95,7 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 
 		ViewMatrix = XMMatrixIdentity();
 		SubProjMatrix = XMMatrixIdentity();
+
 
 		// m_vTargetPos가 May포스임 
 		CCody* pCody = (CCody*)DATABASE->GetCody();
@@ -156,6 +158,7 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
 		m_iColorOption = 0;
+		iGsOption = 0;
 	}
 	else if (m_ePlayerID == Player::May)
 	{
@@ -220,8 +223,11 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
 		m_iColorOption = 1;
+		iGsOption = 1;
 	}
 
+	// 이거 안하면 반대쪽 뷰포트 반짝거리는 오류 발생합니다.
+	m_pVIBuffer_RectCom->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
 	m_pVIBuffer_RectCom->Set_Variable("g_iColorOption", &m_iColorOption, sizeof(_int));
 
 	m_pVIBuffer_RectCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
