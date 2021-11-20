@@ -417,10 +417,9 @@
     <ClInclude Include="..\public\PxContactCallback.h">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\Public\Shadow_Manager.h">
       <Filter>02.Utility\05.Shadow\99.Manager</Filter>
-=======
+    </ClInclude>
     <ClInclude Include="..\public\PxControllerFilterCallback.h">
       <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\02.FilterCallback</Filter>
     </ClInclude>
@@ -435,7 +434,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Sprite.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite</Filter>
->>>>>>> origin/main
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -585,10 +583,9 @@
     <ClCompile Include="..\private\PxContactCallback.cpp">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\Private\Model.cpp">
       <Filter>02.Utility\02.Component\05.Model\00.Main\00.Normal</Filter>
-=======
+    </ClCompile>
     <ClCompile Include="..\private\PxControllerFilterCallback.cpp">
       <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\02.FilterCallback</Filter>
     </ClCompile>
@@ -600,7 +597,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Sprite.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite</Filter>
->>>>>>> origin/main
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

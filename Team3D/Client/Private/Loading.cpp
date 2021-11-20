@@ -5,11 +5,11 @@
 #include "SubCamera.h"
 #include "Terrain.h"
 #include "TileBox.h"
-<<<<<<< HEAD
+
 #include"Cam_Helper.h"
-=======
+
 #include "UI_Generator.h"
->>>>>>> origin/main
+
 
 #include "Cody.h"
 #include "May.h"

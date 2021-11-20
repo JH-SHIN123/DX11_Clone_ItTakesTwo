@@ -35,7 +35,6 @@ public:
 	void	Update_Cam(_double dTimeDelta);
 	void	Jump_Start(_float fJumpForce);
 	void	Jump_Higher(_float fJumpForce);
-<<<<<<< HEAD
 
 	PxController* Get_Controller() { return m_pController; }
 
@@ -43,14 +42,6 @@ public:
 	//void	Kinematic_Off() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false); }
 
 
-	/* Setter */
-	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
-	void    Set_Jump(_bool bJump) { m_bJump = bJump; }
-
-	/* Getter */
-	_bool  Get_IsJump() { return m_bJump; }
-=======
->>>>>>> origin/main
 
 private:
 	PxController*						m_pController = nullptr;

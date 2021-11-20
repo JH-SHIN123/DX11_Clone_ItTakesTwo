@@ -29,13 +29,9 @@ public:
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
-<<<<<<< HEAD:Team3D/Client/Public/Player.h
+
 public:
-	CTransform* Get_Transform() { return m_pTransformCom; }
-
-
-=======
->>>>>>> origin/main:Team3D/Client/Public/TestObject01.h
+	 CTransform* Get_Transform() { return m_pTransformCom; }
 private:
 
 	/* For.Component */

@@ -4,6 +4,7 @@
 #include "MainCamera.h"
 #include "UI_Generator.h"
 #include "UIObject.h"
+#include"DataStorage.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

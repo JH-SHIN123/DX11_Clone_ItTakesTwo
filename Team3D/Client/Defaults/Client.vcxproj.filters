@@ -111,10 +111,9 @@
     <Filter Include="97.ShaderFiles\Include">
       <UniqueIdentifier>{87727c9a-6160-4971-88de-e99cb7b2333a}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
     <Filter Include="02.GameObject\00.Public\04.GrindLine">
       <UniqueIdentifier>{5afae0a9-03c7-460f-9b5c-96a5c6791b03}</UniqueIdentifier>
-=======
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space">
       <UniqueIdentifier>{9b2ce05d-80d0-464d-8dce-5a75d40f42db}</UniqueIdentifier>
     </Filter>
@@ -159,7 +158,6 @@
     </Filter>
     <Filter Include="02.GameObject\05.UI\05.UISprite">
       <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
->>>>>>> origin/main
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -250,10 +248,9 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\public\GrindLine.h">
       <Filter>02.GameObject\00.Public\04.GrindLine</Filter>
-=======
+    </ClInclude>
     <ClInclude Include="..\public\TestObject01.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClInclude>
@@ -286,7 +283,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h">
       <Filter>98.Defines</Filter>
->>>>>>> origin/main
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -317,24 +313,6 @@
     <ClCompile Include="..\Private\SubCamera.cpp">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Cody.cpp">
-      <Filter>02.GameObject\03.Character\00.Cody</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Character.cpp">
-      <Filter>02.GameObject\03.Character\99.Parent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\May.cpp">
-      <Filter>02.GameObject\03.Character\01.May</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\TileBox.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\MoonBaboon.cpp">
-      <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UFO.cpp">
-      <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\DataStorage.cpp">
       <Filter>96.DataStorage</Filter>
     </ClCompile>
@@ -356,10 +334,9 @@
     <ClCompile Include="..\Private\RobotHead.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\private\GrindLine.cpp">
       <Filter>02.GameObject\00.Public\04.GrindLine</Filter>
-=======
+    </ClCompile>
     <ClCompile Include="..\private\TestObject01.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClCompile>
@@ -389,7 +366,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
->>>>>>> origin/main
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
