@@ -118,6 +118,7 @@ _int CMay::Tick(_double dTimeDelta)
 		Go_Grind(dTimeDelta);
 		Hit_StarBuddy(dTimeDelta);
 		Hit_Rocket(dTimeDelta);
+		Activate_RobotLever(dTimeDelta);
 	}
 	else
 	{
@@ -787,6 +788,12 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsHitRocket = true;
 		}
+		else if (m_eTargetGameID == GameID::eROBOTLEVER && m_pGameInstance->Key_Down(DIK_E))
+		{
+			m_pModelCom->Set_Animation(ANI_M_Lever_Right);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+			m_IsActivateRobotLever = true;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
@@ -797,9 +804,10 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 }
 _bool CMay::Trigger_End(const _double dTimeDelta)
 {
-	if (m_pModelCom->Get_CurAnimIndex() == (ANI_M_Jump_Land || ANI_M_RocketFirework || ANI_M_BruteCombat_Attack_Var1))
+	if (m_pModelCom->Get_CurAnimIndex() == (ANI_M_Jump_Land || ANI_M_RocketFirework || ANI_M_BruteCombat_Attack_Var1 || ANI_M_Lever_Right))
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+		m_IsCollide = false;
 	}
 	return false;
 }
@@ -808,6 +816,7 @@ _bool CMay::Trigger_End(const _double dTimeDelta)
 void CMay::Go_Grind(const _double dTimeDelta)
 {
 }
+
 void CMay::Hit_StarBuddy(const _double dTimeDelta)
 {
 	if (m_IsHitStarBuddy == true)
@@ -831,6 +840,20 @@ void CMay::Hit_Rocket(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_M_MH);
 			m_IsHitRocket = false;
 		}
+	}
+}
+
+void CMay::Activate_RobotLever(const _double dTimeDelta)
+{
+	if (m_IsActivateRobotLever == true)
+	{
+		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
+		if (m_pModelCom->Is_AnimFinished(ANI_M_Lever_Right))
+		{
+			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_IsActivateRobotLever = false;
+		}
+
 	}
 }
 

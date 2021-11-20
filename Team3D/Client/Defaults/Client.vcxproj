@@ -201,6 +201,7 @@
     <ClInclude Include="..\Public\PlayerMarker.h" />
     <ClInclude Include="..\Public\Robot.h" />
     <ClInclude Include="..\Public\RobotHead.h" />
+    <ClInclude Include="..\Public\RobotLever.h" />
     <ClInclude Include="..\Public\Rocket.h" />
     <ClInclude Include="..\Public\SecurityCamera.h" />
     <ClInclude Include="..\Public\SecurityCameraHandle.h" />
@@ -237,6 +238,7 @@
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />
     <ClCompile Include="..\Private\RobotHead.cpp" />
+    <ClCompile Include="..\Private\RobotLever.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
     <ClCompile Include="..\Private\SecurityCamera.cpp" />
     <ClCompile Include="..\Private\SecurityCameraHandle.cpp" />

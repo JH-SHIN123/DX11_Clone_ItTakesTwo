@@ -276,6 +276,9 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h">
       <Filter>98.Defines</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RobotLever.h">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\Interaction</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -373,6 +376,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\RobotHead.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot\NoneInteraction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RobotLever.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\Interaction</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

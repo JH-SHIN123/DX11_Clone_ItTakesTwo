@@ -121,6 +121,7 @@ _int CCody::Tick(_double dTimeDelta)
 		Go_Grind(dTimeDelta);
 		Hit_StarBuddy(dTimeDelta);
 		Hit_Rocket(dTimeDelta);
+		Activate_RobotLever(dTimeDelta);
 	}
 	else
 	{
@@ -1197,18 +1198,23 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsHitRocket = true;
 		}
+		else if (m_eTargetGameID == GameID::eROBOTLEVER && m_pGameInstance->Key_Down(DIK_E))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Lever_Right);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_IsActivateRobotLever = true;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket)
+	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever)
 		return true;
 
 	return false;
 }
 _bool CCody::Trigger_End(const _double dTimeDelta)
 {
-	if (m_pModelCom->Get_CurAnimIndex() == 
-		(ANI_C_Jump_Land || ANI_C_Bhv_ChangeSize_PlanetPush_Large || ANI_C_Bhv_RocketFirework))
+	if ((m_pModelCom->Get_CurAnimIndex() == (ANI_C_Jump_Land || ANI_C_Bhv_ChangeSize_PlanetPush_Large || ANI_C_Bhv_RocketFirework || ANI_C_Bhv_Lever_Right)))
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 	}
@@ -1270,6 +1276,7 @@ void CCody::Hit_StarBuddy(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_IsHitStarBuddy = false;
+			m_IsCollide = false;
 		}
 	}
 }
@@ -1283,6 +1290,23 @@ void CCody::Hit_Rocket(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_IsHitRocket = false;
+			m_IsCollide = false;
 		}
 	}
+}
+
+void CCody::Activate_RobotLever(const _double dTimeDelta)
+{
+	if (m_IsActivateRobotLever == true)
+	{
+		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Lever_Right))
+		{
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_IsActivateRobotLever = false;
+			m_IsCollide = false;
+		}
+
+	}
+
 }
