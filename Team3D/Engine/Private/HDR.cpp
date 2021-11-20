@@ -40,40 +40,46 @@ HRESULT CHDR::Dispatch()
 	// For. First Pass
 	NULL_CHECK_RETURN(m_pEffect_CS, E_FAIL);
 
-	//ID3D11ShaderResourceView* pSRV[8] = { nullptr };
-	//m_pDeviceContext->CSSetShaderResources(0, 8, pSRV);
+	ID3D11ShaderResourceView* pNullSRV[8] = { nullptr };
+	ID3D11UnorderedAccessView* pNullUAV[1] = { 0 };
 
-	// Set HDR Texture : Input
+	// Set HDR Texture
 	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
 	ID3D11ShaderResourceView* pHDRTexture = pGraphicDevice->Get_ShaderResourceView();
 	NULL_CHECK_RETURN(pHDRTexture, E_FAIL);
-	Set_ShaderResourceView("g_HDRTex", pHDRTexture);
 
-	// Set SRV : For.Output
+	NULL_CHECK_RETURN(Set_ShaderResourceView("g_HDRTex", pHDRTexture),E_FAIL);
 	NULL_CHECK_RETURN(Set_ShaderResourceView("g_AverageValues1D", m_pShaderResourceView_Lum), E_FAIL);
-
-	// Set UAV : For.Output
-	NULL_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_Lum),E_FAIL);
+	NULL_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_Lum), E_FAIL);
 
 	m_InputLayouts_CS[0].pPass->Apply(0, m_pDeviceContext);
 	m_pDeviceContext->Dispatch(1024, 1,1);
 
+	// Reset Views
+	m_pDeviceContext->CSSetShaderResources(0, 8, pNullSRV);
+	m_pDeviceContext->CSSetUnorderedAccessViews(0, 1, pNullUAV, 0);
+
 	// For. Second Pass
-	NULL_CHECK_RETURN(Set_ShaderResourceView("g_AverageValues1D", m_pShaderResourceView_Lum), E_FAIL);
-	NULL_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_LumAve), E_FAIL);
+	Set_ShaderResourceView("g_AverageValues1D", m_pShaderResourceView_Lum);
+	Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_LumAve);
 
 	// MAX_GROUPS : 64
 	m_InputLayouts_CS[1].pPass->Apply(0, m_pDeviceContext);
 	m_pDeviceContext->Dispatch(MAX_GROUPS_THREAD, 1, 1);
 
+	// Reset Views
+	m_pDeviceContext->CSSetShaderResources(0, 8, pNullSRV);
+	m_pDeviceContext->CSSetUnorderedAccessViews(0, 1, pNullUAV, 0);
+
 	// PS ---------------------------------------------------------------------------
-	// Tone Mapping
-	NULL_CHECK_RETURN(m_pVIBuffer_ToneMapping, E_FAIL);
+	//// Tone Mapping
+	//NULL_CHECK_RETURN(m_pVIBuffer_ToneMapping, E_FAIL);
 
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_HDRTex", pHDRTexture);
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
+	////m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_HDRTex", pHDRTexture);
+	//m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_HDRTex", pHDRTexture);
+	//m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
-	m_pVIBuffer_ToneMapping->Render(0);
+	//m_pVIBuffer_ToneMapping->Render(0);
 	
 	return S_OK;
 }
@@ -188,8 +194,11 @@ HRESULT CHDR::Build_ComputeShaders(const _tchar* pShaderFilePath, const char* pT
 
 HRESULT CHDR::Set_ShaderResourceView(const char* pConstantName, ID3D11ShaderResourceView* pResourceView)
 {
+	NULL_CHECK_RETURN(m_pEffect_CS, E_FAIL);
+
 	ID3DX11EffectShaderResourceVariable* pSrvVariable = m_pEffect_CS->GetVariableByName(pConstantName)->AsShaderResource();
 	NULL_CHECK_RETURN(pSrvVariable, E_FAIL);
+
 	return pSrvVariable->SetResource(pResourceView);
 }
 
