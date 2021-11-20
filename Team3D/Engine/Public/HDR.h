@@ -20,18 +20,23 @@ private:
 	HRESULT Build_SecondPassResources(); /* 부동소수점 형태로 평균 휘도 값을 저장 */
 	HRESULT Build_ComputeShaders(const _tchar* pShaderFilePath, const char* pTechniqueName);
 
+	HRESULT	Set_Variable(const char* pConstantName, void* pData, _uint iByteSize);
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, ID3D11ShaderResourceView* pResourceView);
 	HRESULT	Set_UnorderedAccessView(const char* pConstantName, ID3D11UnorderedAccessView* pResourceView);
 
 	HRESULT	Dispatch();
 
-	void	Clear_Buffer();
 	HRESULT Unbind_ShaderResources();
 
 private:
 	ID3D11Device* m_pDevice = nullptr;
 	ID3D11DeviceContext* m_pDeviceContext = nullptr;
-
+	
+private:
+	_uint	m_iWinSize[2] = {0, 0};
+	_float	m_fMiddleGrey = 0.f;
+	_float	m_fLumWhiteSqr = 0.f;
+	
 private: /* For. CS - First Pass */
 	ID3D11Buffer*				m_pHDRBuffer_Lum = nullptr;
 	ID3D11UnorderedAccessView*	m_pUnorderedAccessView_Lum = nullptr; // Ouput
@@ -50,13 +55,16 @@ private: /* For. PS - ToneMapping */
 	class CVIBuffer_RectRHW* m_pVIBuffer_ToneMapping = nullptr;
 
 public:
-	virtual void Free() override;
+	void			Clear_Buffer();
+	virtual void	Free() override;
 
 #ifdef _DEBUG
 public:
-	HRESULT Ready_DebugBuffer(const _tchar* pRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
-	HRESULT Render_DebugBuffer(const _tchar* pMRTTag);
-	void	Clear_Buffers();
+	HRESULT Ready_DebugBuffer(_float fX, _float fY, _float fSizeX, _float fSizeY);
+	HRESULT Render_DebugBuffer();
+	void	Clear_DebugBuffers();
+private:
+	class CVIBuffer_RectRHW* m_pVIBuffer_Debug = nullptr;
 #endif
 };
 END

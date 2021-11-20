@@ -369,9 +369,10 @@ void CGameInstance::Release_Engine()
 	CComponent_Manager::GetInstance()->Clear_All();
 	CLight_Manager::GetInstance()->Clear_Buffer();
 	CLevel_Manager::GetInstance()->Clear_Level();
-	CHDR::GetInstance()->Clear_Buffers();
+	CHDR::GetInstance()->Clear_Buffer();
 
 #ifdef _DEBUG
+	CHDR::GetInstance()->Clear_DebugBuffers();
 	CRenderTarget_Manager::GetInstance()->Clear_Buffers();
 #endif
 

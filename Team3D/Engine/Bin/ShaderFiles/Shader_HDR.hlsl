@@ -2,15 +2,15 @@
 #include "Shader_Include.hpp"
 
 ////////////////////////////////////////////////////////////
-Texture2D				g_HDRTex;
+Texture2D<float4>		g_HDRTex;
 StructuredBuffer<float> g_AverageLum;
 
 static const float4 LUM_FACTOR = float4(0.299, 0.587, 0.114, 0);
 
 cbuffer FinalPassDesc
 {
-	float g_MiddleGrey;
-	float g_LumWhiteSqr;
+	float g_MiddleGrey = 0.f;
+	float g_LumWhiteSqr = 0.f;
 };
 
 ////////////////////////////////////////////////////////////

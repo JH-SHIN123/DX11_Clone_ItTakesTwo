@@ -15,13 +15,13 @@ static const float4 LUM_FACTOR = float4(0.299, 0.587, 0.114, 0);
 
 cbuffer DownScaleDesc
 {
-	uint2 g_Res;		// 다운스케일 해상도 계산 : width. height
+	uint2 g_Res = { 1280 / 4 ,720 / 4 };		// 다운스케일 해상도 계산 : width. height
 						// 백 버퍼의 높이와 너비를 4로 나눈 값
 	
-	uint g_Domain;		// 다운스케일 이미지의 총 픽셀 수
+	uint g_Domain = 1280 * 720 / 16;		// 다운스케일 이미지의 총 픽셀 수
 						// 백 버퍼의 높이와 너비를 곱한 후 16으로 나눈 값
 
-	uint g_GroupSize;	// 첫 패스에 적용된 그룹 수 계산
+	uint g_GroupSize = 1280 * 720 / 16 * 1024;	// 첫 패스에 적용된 그룹 수 계산
 						// 백 버퍼의 높이와 너비를 곱한 후 16으로 나눈 다음 1024를 곱한값
 };
 

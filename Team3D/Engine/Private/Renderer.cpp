@@ -60,8 +60,9 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_CascadedShadow_Depth"), SHADOWMAP_SIZE, SHADOWMAP_SIZE * MAX_CASCADES, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f), true), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_CascadedShadow_Depth"), TEXT("MRT_CascadedShadow")), E_FAIL);
 
-	/* MRT_ShadowDepth */
-
+	/* MRT_Blend */
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Blend"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(1.f, 1.f, 1.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Blend"), TEXT("MRT_Blend")), E_FAIL);
 
 	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width, ViewportDesc.Height, TEXT("../Bin/ShaderFiles/Shader_Blend.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
@@ -79,8 +80,11 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shade"), fWidth, 0.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Blend"), fWidth, fHeight * 2.f, fWidth, fHeight), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_CascadedShadow_Depth"), fWidth * 2.f, 0.f, fWidth, fHeight * MAX_CASCADES), E_FAIL);
+
+	FAILED_CHECK_RETURN(CHDR::GetInstance()->Ready_DebugBuffer(fWidth * 3.f, 0.f, fWidth, fHeight),E_FAIL);
 #endif
 
 	return S_OK;
@@ -115,10 +119,9 @@ HRESULT CRenderer::Draw_Renderer()
 
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
-
-	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_PostProcessing(),E_FAIL);
 
+	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
 #ifdef _DEBUG
@@ -130,7 +133,10 @@ HRESULT CRenderer::Draw_Renderer()
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Deferred"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_LightAcc"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_CascadedShadow"));
+		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Blend"));
 	}
+
+	FAILED_CHECK_RETURN(CHDR::GetInstance()->Render_DebugBuffer(), E_FAIL);
 #endif
 
 	return S_OK;
@@ -233,6 +239,7 @@ HRESULT CRenderer::Render_Blend()
 {
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
 
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Blend")), E_FAIL);
 	m_pVIBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Diffuse")));
 	m_pVIBuffer->Set_ShaderResourceView("g_ShadeTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Shade")));
 	m_pVIBuffer->Set_ShaderResourceView("g_SpecularTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Specular")));
@@ -240,6 +247,7 @@ HRESULT CRenderer::Render_Blend()
 	m_pVIBuffer->Set_ShaderResourceView("g_ShadowTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Shadow")));
 
 	m_pVIBuffer->Render(0);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Blend")), E_FAIL);
 
 	return S_OK;
 }
