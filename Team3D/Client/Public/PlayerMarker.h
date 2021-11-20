@@ -25,6 +25,9 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	_bool							m_IsRender = false;
+
+private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 
 private:
