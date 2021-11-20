@@ -72,11 +72,11 @@ void CTestObject01::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 {
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eMOONBABOON, true);
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eMOONBABOON, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eMOONBABOON, false);
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eMOONBABOON, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	}
 }
 

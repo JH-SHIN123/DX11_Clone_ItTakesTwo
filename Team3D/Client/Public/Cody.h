@@ -317,10 +317,11 @@ private:
 
 #pragma region Trigger
 public:
-	void SetTriggerID(GameID::Enum eID, _bool IsCollide);
+	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos);
 
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
+	_float3				m_vTriggerTargetPos = {};
 	_bool m_IsCollide = false;
 
 

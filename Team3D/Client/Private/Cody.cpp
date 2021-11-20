@@ -1164,10 +1164,11 @@ HRESULT CCody::Render_ShadowDepth()
 #pragma endregion
 
 #pragma region Trigger
-void CCody::SetTriggerID(GameID::Enum eID, _bool IsCollide)
+void CCody::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos)
 {
 	m_eTargetGameID = eID;
 	m_IsCollide = IsCollide;
+	XMStoreFloat3(&m_vTriggerTargetPos, vTriggerTargetPos);
 }
 
 _bool CCody::Trigger_Check(const _double dTimeDelta)
@@ -1259,6 +1260,8 @@ void CCody::Hit_StarBuddy(const _double dTimeDelta)
 {
 	if (m_IsHitStarBuddy == true)
 	{
+		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
+
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_PlanetPush_Large))
 		{
 			m_pModelCom->Set_Animation(ANI_C_MH);
@@ -1271,6 +1274,7 @@ void CCody::Hit_Rocket(const _double dTimeDelta)
 {
 	if (m_IsHitRocket == true)
 	{
+		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_RocketFirework))
 		{
 			m_pModelCom->Set_Animation(ANI_C_MH);
