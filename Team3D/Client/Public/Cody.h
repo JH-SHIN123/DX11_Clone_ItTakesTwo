@@ -248,8 +248,6 @@ public:
 	void Jump(const _double dTimeDelta);
 	void Change_Size(const _double dTimeDelta);
 	void Ground_Pound(const _double dTimeDelta);
-	_bool Trigger_End(const _double dTimeDelta);
-	_bool Trigger_Check(const _double dTimeDelta);
 
 
 #pragma region BasicMovement
@@ -325,7 +323,7 @@ private:
 	_bool m_IsCollide = false;
 
 
-	_bool m_IsOnGrind = false;
+	_bool m_IsOnGrind = false;\
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 
@@ -337,6 +335,9 @@ private:
 	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);
 	void Hit_Rocket(const _double dTimeDelta);
+
+	_bool Trigger_End(const _double dTimeDelta);
+	_bool Trigger_Check(const _double dTimeDelta);
 #pragma endregion
 
 };

@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CRenderer;
 class CTransform;
 class CModel;
+class CStaticActor;
 END
 
 BEGIN(Client)
@@ -38,6 +39,7 @@ protected:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
+	CStaticActor*		m_pStaticActorCom = nullptr;
 
 public:
 	static CRobot* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

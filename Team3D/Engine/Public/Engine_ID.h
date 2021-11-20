@@ -12,7 +12,18 @@ namespace Engine
 			eUFO,
 			eMOONBABOON,
 			eSTARBUDDY,
-			eROCKET
+			eROCKET,
+			eROBOT,
+			eROBOTHEAD,
+			eROBOTBATTERY,
+			eROBOTLEVER,
+			eVALVE,
+			eUMBRELLA,
+			eVERTICALDOOR,
+			eBIGBUTTON,
+			eROPEBASE,
+			eGRINDRAIL,
+			ePLANET
 		};
 	};
 

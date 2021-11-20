@@ -148,6 +148,12 @@
     <Filter Include="02.GameObject\05.UI\05.UISprite">
       <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\03.Robot\Interaction">
+      <UniqueIdentifier>{1c2f6626-67b0-482c-a1ec-122b03c25042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\03.Robot\NoneInteraction">
+      <UniqueIdentifier>{52929ebb-0420-4a62-9b53-eddeed4bac1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -219,12 +225,6 @@
     <ClInclude Include="..\Public\StarBuddy.h">
       <Filter>02.GameObject\98.Interactive_Objects\01.StarBuddy</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Robot.h">
-      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\RobotHead.h">
-      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\SecurityCameraHandle.h">
       <Filter>02.GameObject\98.Interactive_Objects\02.SecurityCamera</Filter>
     </ClInclude>
@@ -269,6 +269,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\UISprite.h">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Robot.h">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\NoneInteraction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RobotHead.h">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\NoneInteraction</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -326,12 +332,6 @@
     <ClCompile Include="..\Private\StarBuddy.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\01.StarBuddy</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Robot.cpp">
-      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\RobotHead.cpp">
-      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\SecurityCameraHandle.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\02.SecurityCamera</Filter>
     </ClCompile>
@@ -367,6 +367,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Robot.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\NoneInteraction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RobotHead.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\NoneInteraction</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -38,8 +38,9 @@ HRESULT CControllableActor::NativeConstruct(void * pArg)
 	m_pFilterCallback = new CPxControllerFilterCallback;
 	m_pFilters = new PxControllerFilters(0, 0, m_pFilterCallback);
 	ArgDesc.CapsuleControllerDesc.behaviorCallback = m_pCallback;
-
+	
 	m_pController = m_pPhysX->Create_CapsuleController(ArgDesc.CapsuleControllerDesc);
+
 	m_pCallback->Set_Controller(m_pController);
 	m_pActor = m_pController->getActor();
 	m_pActor->userData = ArgDesc.pUserData;

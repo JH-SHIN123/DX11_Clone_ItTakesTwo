@@ -111,8 +111,8 @@ _int CCody::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
-#pragma region BasicActions
 
+#pragma region BasicActions
 	/////////////////////////////////////////////
 	if (Trigger_Check(dTimeDelta))
 	{
@@ -1204,7 +1204,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 _bool CCody::Trigger_End(const _double dTimeDelta)
 {
 	if (m_pModelCom->Get_CurAnimIndex() == 
-		(ANI_C_Jump_Land || ANI_C_Bhv_ChangeSize_PlanetPush_Large))
+		(ANI_C_Jump_Land || ANI_C_Bhv_ChangeSize_PlanetPush_Large || ANI_C_Bhv_RocketFirework))
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 	}

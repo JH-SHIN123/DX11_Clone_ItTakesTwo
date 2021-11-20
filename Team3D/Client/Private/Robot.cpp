@@ -28,8 +28,14 @@ HRESULT CRobot::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Robot"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(15.f, 0.f, 20.f, 1.f));
+
+	CStaticActor::ARG_DESC ArgDesc;
+	ArgDesc.pModel = m_pModelCom;
+	ArgDesc.pTransform = m_pTransformCom;
+	m_UserData = USERDATA(GameID::eROBOT, this);
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 
 	return S_OK;
 }
@@ -98,6 +104,7 @@ CGameObject * CRobot::Clone_GameObject(void * pArg)
 
 void CRobot::Free()
 {
+	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);

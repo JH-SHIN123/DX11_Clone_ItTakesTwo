@@ -185,8 +185,6 @@ public:
 	// Tick 에서 호출될 함수들
 private:
 	virtual void KeyInput(_double dTimeDelta);
-	void StateCheck(_double dTimeDelta);
-	void TriggerCheck(_double dTimeDelta);
 
 
 
@@ -292,6 +290,33 @@ private:
 
 	// Sprint
 	_float m_fSprintAcceleration = 35.f;
+
+#pragma region Trigger
+public:
+	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos);
+
+private:
+	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
+	_float3				m_vTriggerTargetPos = {};
+	_bool m_IsCollide = false;
+
+
+	_bool m_IsOnGrind = false;
+	_bool m_IsHitStarBuddy = false;
+	_bool m_IsHitRocket = false;
+
+
+
+	_float3 m_vPoints[4] = {};
+	_double	m_dTestTime = 0.0;
+
+	void Go_Grind(const _double dTimeDelta);
+	void Hit_StarBuddy(const _double dTimeDelta);
+	void Hit_Rocket(const _double dTimeDelta);
+
+	_bool Trigger_End(const _double dTimeDelta);
+	_bool Trigger_Check(const _double dTimeDelta);
+#pragma endregion
 
 
 };
