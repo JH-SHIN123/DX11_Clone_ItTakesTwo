@@ -33,9 +33,8 @@ private:
 	ID3D11DeviceContext* m_pDeviceContext = nullptr;
 	
 private:
-	_uint	m_iWinSize[2] = {0, 0};
-	_float	m_fMiddleGrey = 0.f;
-	_float	m_fLumWhiteSqr = 0.f;
+	_float	m_fMiddleGrey = 0.5f;
+	_float	m_fLumWhiteSqr = 5.7f;
 	
 private: /* For. CS - First Pass */
 	ID3D11Buffer*				m_pHDRBuffer_Lum = nullptr;
@@ -57,14 +56,5 @@ private: /* For. PS - ToneMapping */
 public:
 	void			Clear_Buffer();
 	virtual void	Free() override;
-
-#ifdef _DEBUG
-public:
-	HRESULT Ready_DebugBuffer(_float fX, _float fY, _float fSizeX, _float fSizeY);
-	HRESULT Render_DebugBuffer();
-	void	Clear_DebugBuffers();
-private:
-	class CVIBuffer_RectRHW* m_pVIBuffer_Debug = nullptr;
-#endif
 };
 END

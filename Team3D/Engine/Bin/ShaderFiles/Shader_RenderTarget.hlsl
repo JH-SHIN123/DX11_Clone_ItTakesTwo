@@ -2,7 +2,6 @@
 #include "Shader_Include.hpp"
 
 texture2D g_DiffuseTexture;
-StructuredBuffer<float> g_HDRDebugBuffer;
 
 ////////////////////////////////////////////////////////////
 
@@ -50,14 +49,6 @@ PS_OUT PS_MAIN(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_HDR(PS_IN In)
-{
-	PS_OUT		Out = (PS_OUT)0;
-
-	Out.vColor = g_HDRDebugBuffer[0];
-
-	return Out;
-}
 ////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
@@ -73,16 +64,6 @@ technique11		DefaultTechnique
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}	
-
-	pass HDR
-	{
-		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_No_ZTest, 0);
-		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_MAIN();
-		GeometryShader = NULL;
-		PixelShader = compile ps_5_0 PS_HDR();
-	}
 };
 
 

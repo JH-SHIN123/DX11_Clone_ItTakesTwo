@@ -372,7 +372,6 @@ void CGameInstance::Release_Engine()
 	CHDR::GetInstance()->Clear_Buffer();
 
 #ifdef _DEBUG
-	CHDR::GetInstance()->Clear_DebugBuffers();
 	CRenderTarget_Manager::GetInstance()->Clear_Buffers();
 #endif
 

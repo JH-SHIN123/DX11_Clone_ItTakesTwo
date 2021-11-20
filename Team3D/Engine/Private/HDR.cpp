@@ -14,9 +14,6 @@ HRESULT CHDR::Ready_HDR(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceConte
 	Safe_AddRef(pDevice);
 	Safe_AddRef(pDeviceContext);
 
-	m_iWinSize[0] = (_uint)fBufferWidth;
-	m_iWinSize[1] = (_uint)fBufferHeight;
-
 	m_pVIBuffer_ToneMapping = CVIBuffer_RectRHW::Create(pDevice, pDeviceContext, 0.f, 0.f, fBufferWidth, fBufferHeight, TEXT("../Bin/ShaderFiles/Shader_HDR.hlsl"), "DefaultTechnique");
 
 	FAILED_CHECK_RETURN(Build_FirstPassResources(fBufferWidth, fBufferHeight),E_FAIL);
@@ -37,14 +34,14 @@ HRESULT CHDR::Render_HDR()
 	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
 
 	if (GetAsyncKeyState(VK_F1) & 0x8000)
-		m_fMiddleGrey += 0.01f;
+		m_fMiddleGrey += 0.0001f;
 	else if (GetAsyncKeyState(VK_F2) & 0x8000)
-		m_fMiddleGrey -= 0.01f;
+		m_fMiddleGrey -= 0.0001f;
 
 	if (GetAsyncKeyState(VK_F3) & 0x8000)
-		m_fLumWhiteSqr += 0.01f;
+		m_fLumWhiteSqr += 0.0001f;
 	else if (GetAsyncKeyState(VK_F4) & 0x8000)
-		m_fLumWhiteSqr -= 0.01f;
+		m_fLumWhiteSqr -= 0.0001f;
 
 	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &m_fMiddleGrey, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &m_fLumWhiteSqr, sizeof(_float));
@@ -63,14 +60,6 @@ HRESULT CHDR::Dispatch()
 	NULL_CHECK_RETURN(m_pEffect_CS, E_FAIL);
 
 	// CS ---------------------------------------------------------------------------
-	// Set Constant Buffer
-	//_uint iRes[2] = { m_iWinSize[0] / 4, m_iWinSize[1] / 4 };
-	//FAILED_CHECK_RETURN(Set_Variable("g_Res", iRes, sizeof(_uint)  * 2), E_FAIL);
-	//_uint iDomain = m_iWinSize[0] * m_iWinSize[1] / 16;
-	//FAILED_CHECK_RETURN(Set_Variable("g_Domain", &iDomain, sizeof(_uint)), E_FAIL);
-	//_uint iGroupSize = m_iWinSize[0] * m_iWinSize[1] / 16 * 1024;
-	//FAILED_CHECK_RETURN(Set_Variable("g_GroupSize", &iGroupSize, sizeof(_uint)), E_FAIL);
-
 	// For. First Pass
 	// Set HDR Texture
 	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
@@ -266,22 +255,3 @@ void CHDR::Free()
 	Safe_Release(m_pDevice);
 }
 
-#ifdef _DEBUG
-HRESULT CHDR::Ready_DebugBuffer(_float fX, _float fY, _float fSizeX, _float fSizeY)
-{
-	m_pVIBuffer_Debug = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, fX, fY, fSizeX, fSizeY, TEXT("../Bin/ShaderFiles/Shader_RenderTarget.hlsl"), "DefaultTechnique");
-	NULL_CHECK_RETURN(m_pVIBuffer_Debug, E_FAIL);
-	return S_OK;
-}
-HRESULT CHDR::Render_DebugBuffer()
-{
-	m_pVIBuffer_Debug->Set_ShaderResourceView("g_HDRDebugBuffer", m_pShaderResourceView_LumAve);
-	m_pVIBuffer_Debug->Render(1);
-
-	return S_OK;
-}
-void CHDR::Clear_DebugBuffers()
-{
-	Safe_Release(m_pVIBuffer_Debug);
-}
-#endif

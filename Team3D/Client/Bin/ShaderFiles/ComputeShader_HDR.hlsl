@@ -1,11 +1,13 @@
 #define MAX_GROUPS 64
+#define WINCX 1280
+#define WINCY 720
 
 groupshared float g_SharedPositions[1024];
 groupshared float g_SharedAvgFinal[MAX_GROUPS];
 
 Texture2D g_HDRTex;								// Input : HDR 텍스쳐
 RWStructuredBuffer<float>	g_AverageLum;		// Output : UAV
-StructuredBuffer<float>		g_AverageValues1D;	// Output : SRV (픽셀셰이더에서 사용할 리소스)
+StructuredBuffer<float>		g_AverageValues1D;	// Output : SRV
 
 
 // 컴퓨트 셰이더가 실행되는 동안, 우리는 쓰레드 그룹의 공유 메모리에 즉시 저장할거다.
@@ -15,14 +17,16 @@ static const float4 LUM_FACTOR = float4(0.299, 0.587, 0.114, 0);
 
 cbuffer DownScaleDesc
 {
-	uint2 g_Res = { 1280 / 4 ,720 / 4 };		// 다운스케일 해상도 계산 : width. height
+	uint2 g_Res = { WINCX / 4 ,WINCY / 4 };		// 다운스케일 해상도 계산 : width. height
 						// 백 버퍼의 높이와 너비를 4로 나눈 값
 	
-	uint g_Domain = 1280 * 720 / 16;		// 다운스케일 이미지의 총 픽셀 수
+	uint g_Domain = WINCX * WINCY / 16;		// 다운스케일 이미지의 총 픽셀 수
 						// 백 버퍼의 높이와 너비를 곱한 후 16으로 나눈 값
 
-	uint g_GroupSize = 1280 * 720 / 16 * 1024;	// 첫 패스에 적용된 그룹 수 계산
+	uint g_GroupSize = WINCX * WINCY / 16 * 1024;	// 첫 패스에 적용된 그룹 수 계산
 						// 백 버퍼의 높이와 너비를 곱한 후 16으로 나눈 다음 1024를 곱한값
+
+	float g_Adaptation = 0.016f / 1.f; // 임시값
 };
 
 // 각 스레드에 대해 4x4 다운스케일 수행
@@ -196,7 +200,8 @@ void CS_DOWNSCALE_SECONDPASS(uint3 groupID : SV_GroupID, uint3 groupThreadID : S
 			g_SharedAvgFinal[dispatchThreadID.x + 48] : avgLum;
 		fFinalLumValue /= 64.0;
 
-		g_AverageLum[0] = max(fFinalLumValue, 0.001);
+		float fAdaptedAverageLum = lerp(g_AverageLum[0], fFinalLumValue, g_Adaptation);
+		g_AverageLum[0] = max(fAdaptedAverageLum, 0.001);
 	}
 }
 
