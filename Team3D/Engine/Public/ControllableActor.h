@@ -17,10 +17,15 @@ public: /* Struct */
 		class CTransform*		pTransform;
 		PxCapsuleControllerDesc	CapsuleControllerDesc;
 		_float					fJumpGravity;
-
-		tagArgumentDesc() {}
-		tagArgumentDesc(class CTransform* _pTransform, PxCapsuleControllerDesc _CapsuleControllerDesc, _float _fJumpGravity) : pTransform(_pTransform), CapsuleControllerDesc(_CapsuleControllerDesc), fJumpGravity(_fJumpGravity) {}
+		USERDATA*				pUserData;
 	}ARG_DESC;
+
+public: /* Getter */
+	_bool  Get_IsJump() { return m_bJump; }
+
+public: /* Setter */
+	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
+	void    Set_Jump(_bool bJump) { m_bJump = bJump; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -30,6 +35,7 @@ public:
 	void	Update_Cam(_double dTimeDelta);
 	void	Jump_Start(_float fJumpForce);
 	void	Jump_Higher(_float fJumpForce);
+<<<<<<< HEAD
 
 	PxController* Get_Controller() { return m_pController; }
 
@@ -43,26 +49,29 @@ public:
 
 	/* Getter */
 	_bool  Get_IsJump() { return m_bJump; }
+=======
+>>>>>>> origin/main
 
 private:
-	PxController*					m_pController = nullptr;
-	PxRigidDynamic*					m_pActor = nullptr;
-	class CTransform*				m_pTransform = nullptr;
-	class CPxControllerCallback*	m_pCallback = nullptr;
+	PxController*						m_pController = nullptr;
+	PxRigidDynamic*						m_pActor = nullptr;
+	PxRigidStatic*						m_pTrigger = nullptr;
+	PxControllerFilters*				m_pFilters = nullptr;
+	class CTransform*					m_pTransform = nullptr;
+	class CPxControllerCallback*		m_pCallback = nullptr;
+	class CPxControllerFilterCallback*	m_pFilterCallback = nullptr;
 	/* For.Jump */
 	_float	m_fJumpTime = 0.f;
 	_float	m_fHeightDelta = 0.f;
 	_float	m_fJumpForce = 0.f;
 	_float	m_fBaseJumpForce = 0.f;
 	_bool	m_bJump = false;
-
 	/* For.Gravity */
 	_float m_fGravity = -9.8f;
 
 private:
 	void	Jump_Stop();
 	_float	Get_Height(_double dTimeDelta);
-
 
 public:
 	static CControllableActor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -9,27 +9,13 @@ PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData fi
 {
 	PX_UNUSED(constantBlockSize);
 	PX_UNUSED(constantBlock);
+	PX_UNUSED(filterData0);
+	PX_UNUSED(filterData1);
 
-	if (PxFilterObjectIsKinematic(attributes0) || PxFilterObjectIsKinematic(attributes1))
-	{
-		//pairFlags = PxPairFlag::eMODIFY_CONTACTS;
-		//MSG_BOX("a");
-	}
-	else if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
-	{
+	if (PxFilterObjectIsTrigger(attributes0) != PxFilterObjectIsTrigger(attributes1))
 		pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
-		//MSG_BOX("b");
-	}
-	else if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
-	{
-		pairFlags = PxPairFlag::eCONTACT_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_TOUCH_LOST /*| PxPairFlag::eMODIFY_CONTACTS*/;
-	}
 	else
-	{
-		//pairFlags = PxPairFlag::eMODIFY_CONTACTS;
-	}
-
-	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+		pairFlags = PxPairFlag::eCONTACT_DEFAULT;
 
 	return PxFilterFlag::eDEFAULT;
 }
@@ -68,9 +54,7 @@ HRESULT CPhysX::Ready_PhysX()
 	SceneDesc.filterShader = FilterShader;
 	SceneDesc.simulationEventCallback = m_pEventCallback;
 	SceneDesc.contactModifyCallback = m_pContactCallback;
-	SceneDesc.flags |= PxSceneFlag::eENABLE_KINEMATIC_PAIRS;
 	SceneDesc.flags |= PxSceneFlag::eENABLE_KINEMATIC_STATIC_PAIRS;
-	//SceneDesc.flags |= PxSceneFlag::
 
 	m_pScene = m_pPhysics->createScene(SceneDesc);
 	NULL_CHECK_RETURN(m_pScene, E_FAIL);
@@ -91,8 +75,6 @@ HRESULT CPhysX::Ready_PhysX()
 	PxMaterial* pMaerial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
 	PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *pMaerial);
 	groundPlane->setName("Ground");
-	Setup_PxFiltering(groundPlane, FilterGroup::eSTATIC, FilterGroup::ePLAYER | FilterGroup::eSTATIC | FilterGroup::eDYNAMIC);
-
 	m_pScene->addActor(*groundPlane);
 
 	return S_OK;
@@ -106,23 +88,38 @@ _int CPhysX::Tick()
 	return NO_EVENT;
 }
 
-PxRigidStatic * CPhysX::Create_StaticActor(PxTransform Transform, PxGeometry & Geometry, PxMaterial * pMaterial, const char * pActorName)
+PxRigidStatic * CPhysX::Create_StaticActor(PxTransform Transform, PxGeometry & Geometry)
 {
-	PxRigidStatic* pRigidBody = PxCreateStatic(*m_pPhysics, Transform, Geometry, *pMaterial);
+	PxRigidStatic* pRigidBody = PxCreateStatic(*m_pPhysics, Transform, Geometry, *m_pMaterial);
+	NULL_CHECK_RETURN(pRigidBody, nullptr);
 
-	pRigidBody->setName(pActorName);
+	Set_ShapeOption(pRigidBody, 0.02f, -0.5f);
+
+	m_pScene->addActor(*pRigidBody);
 
 	return pRigidBody;
 }
 
-PxRigidDynamic * CPhysX::Create_DynamicActor(PxTransform Transform, PxGeometry & Geometry, PxMaterial * pMaterial, const char * pActorName, const PxVec3 vVelocity)
+PxRigidStatic * CPhysX::Create_TriggerActor(PxTransform Transform, PxGeometry & Geometry)
 {
-	PxRigidDynamic* pRigidBody = PxCreateDynamic(*m_pPhysics, Transform, Geometry, *pMaterial, 5.f);
+	PxRigidStatic* pRigidBody = PxCreateStatic(*m_pPhysics, Transform, Geometry, *m_pMaterial);
+	NULL_CHECK_RETURN(pRigidBody, nullptr);
 
-	pRigidBody->setAngularDamping(1.f);
-	pRigidBody->setLinearDamping(0.5f);
-	pRigidBody->setLinearVelocity(vVelocity);
-	pRigidBody->setName(pActorName);
+	Set_TriggerOption(pRigidBody);
+
+	m_pScene->addActor(*pRigidBody);
+
+	return pRigidBody;
+}
+
+PxRigidDynamic * CPhysX::Create_DynamicActor(PxTransform Transform, PxGeometry & Geometry, _float fDensity, const PxVec3 vVelocity)
+{
+	PxRigidDynamic* pRigidBody = PxCreateDynamic(*m_pPhysics, Transform, Geometry, *m_pMaterial, fDensity);
+	NULL_CHECK_RETURN(pRigidBody, nullptr);
+
+	Set_DynamicOption(pRigidBody, 1.f, 0.5f, vVelocity);
+
+	m_pScene->addActor(*pRigidBody);
 
 	return pRigidBody;
 }
@@ -132,17 +129,15 @@ PxController * CPhysX::Create_CapsuleController(PxCapsuleControllerDesc CapsuleC
 	PxControllerDesc* ControllerDesc = &CapsuleControllerDesc;
 
 	PxController* Controller = static_cast<PxCapsuleController*>(m_pControllerManager->createController(*ControllerDesc));
+	NULL_CHECK_RETURN(Controller, nullptr);
 
 	return Controller;
 }
 
-void CPhysX::Add_ActorToScene(PxActor * pActor)
-{
-	m_pScene->addActor(*pActor);
-}
-
 void CPhysX::Remove_Actor(PxRigidStatic ** pActor)
 {
+	if (nullptr == *pActor) return;
+
 	m_pScene->removeActor(**pActor);
 	(*pActor)->release();
 	*pActor = nullptr;
@@ -150,6 +145,8 @@ void CPhysX::Remove_Actor(PxRigidStatic ** pActor)
 
 void CPhysX::Remove_Actor(PxRigidDynamic ** pActor)
 {
+	if (nullptr == *pActor) return;
+
 	m_pScene->removeActor(**pActor);
 	(*pActor)->release();
 	*pActor = nullptr;
@@ -172,10 +169,6 @@ PxTriangleMesh* CPhysX::Create_Mesh(MESHACTOR_DESC pMeshActorDesc)
 	Params.meshPreprocessParams &= ~static_cast<PxMeshPreprocessingFlags>(PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH);
 	Params.meshPreprocessParams &= ~static_cast<PxMeshPreprocessingFlags>(PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE);
 
-	//Params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH;
-	//Params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE);
-
-	//Params.midphaseDesc.mBVH33Desc.meshCookingHint = PxMeshCookingHint::eCOOKING_PERFORMANCE;
 	Params.midphaseDesc.mBVH33Desc.meshCookingHint = PxMeshCookingHint::eSIM_PERFORMANCE;
 	Params.midphaseDesc.mBVH33Desc.meshSizePerformanceTradeOff = 0.55f;
 
@@ -192,21 +185,50 @@ PxTriangleMesh* CPhysX::Create_Mesh(MESHACTOR_DESC pMeshActorDesc)
 	return TriMesh;
 }
 
-PxMaterial * CPhysX::Create_Material(PxReal StaticFriction, PxReal DynamicFriction, PxReal Restitution)
-{
-	PxMaterial* pMaterial = nullptr;
-
-	pMaterial = m_pPhysics->createMaterial(StaticFriction, DynamicFriction, Restitution);
-	NULL_CHECK_RETURN(pMaterial, nullptr);
-
-	return pMaterial;
-}
-
 _bool CPhysX::Raycast(PxRaycastBuffer & RaycastHit, _fvector vSrc, _fvector vDst, _float fDist)
 {
 	_vector vRayDir = XMVector3Normalize(vDst - vSrc);
 
 	return m_pScene->raycast(MH_PxVec3(vSrc), MH_PxVec3(vRayDir), fDist, RaycastHit);
+}
+
+void CPhysX::Set_TriggerOption(PxRigidActor * pActor)
+{
+	const PxU32 iShapeCount = pActor->getNbShapes();
+	PxShape** Shapes = new PxShape*[iShapeCount];
+	pActor->getShapes(Shapes, iShapeCount);
+
+	for (PxU32 iIndex = 0; iIndex < iShapeCount; ++iIndex)
+	{
+		PxShape* pShape = Shapes[iIndex];
+		pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+		pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	}
+
+	Safe_Delete_Array(Shapes);
+}
+
+void CPhysX::Set_ShapeOption(PxRigidActor * pActor, _float fContactOffset, _float fRestOffset)
+{
+	const PxU32 iShapeCount = pActor->getNbShapes();
+	PxShape** Shapes = new PxShape*[iShapeCount];
+	pActor->getShapes(Shapes, iShapeCount);
+
+	for (PxU32 iIndex = 0; iIndex < iShapeCount; ++iIndex)
+	{
+		PxShape* pShape = Shapes[iIndex];
+		pShape->setContactOffset(fContactOffset);
+		pShape->setRestOffset(fRestOffset);
+	}
+
+	Safe_Delete_Array(Shapes);
+}
+
+void CPhysX::Set_DynamicOption(PxRigidDynamic * pActor, _float fAngularDamping, _float LinearDamping, PxVec3 vLinearVelocity)
+{
+	pActor->setAngularDamping(fAngularDamping);
+	pActor->setLinearDamping(LinearDamping);
+	pActor->setLinearVelocity(vLinearVelocity);
 }
 
 void CPhysX::Free()
@@ -246,49 +268,5 @@ void CPhysX::Free()
 //	else
 //		Params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
 //}
-// 메시 액터 생성
-//PxRigidStatic * CPhysX::Create_MeshActor(MESHACTOR_DESC pMeshActorDesc, PxMaterial * pMaterial)
-//{
-//	PxTriangleMeshDesc MeshDesc;
-//	MeshDesc.points.count = pMeshActorDesc.iVertexCount;
-//	MeshDesc.points.data = pMeshActorDesc.pVertices;
-//	MeshDesc.points.stride = sizeof(_vector);
-//	MeshDesc.triangles.count = pMeshActorDesc.iFaceCount;
-//	MeshDesc.triangles.data = pMeshActorDesc.pFaces;
-//	MeshDesc.triangles.stride = sizeof(POLYGON_INDICES32);
-//
-//	PxCookingParams Params = m_pCooking->getParams();
-//	Params.midphaseDesc = PxMeshMidPhase::eBVH33;
-//
-//	Set_CommomCookingParams(Params, false, false);
-//	//Params.midphaseDesc.mBVH33Desc.meshCookingHint = PxMeshCookingHint::eCOOKING_PERFORMANCE;
-//	Params.midphaseDesc.mBVH33Desc.meshCookingHint = PxMeshCookingHint::eSIM_PERFORMANCE;
-//	Params.midphaseDesc.mBVH33Desc.meshSizePerformanceTradeOff = 0.55f;
-//
-//	m_pCooking->setParams(Params);
-//
-//	PxTriangleMesh* TriMesh = nullptr;
-//	PxU32 iMeshSize = 0;//
-//
-//	PxDefaultMemoryOutputStream OutBuffer;
-//	m_pCooking->cookTriangleMesh(MeshDesc, OutBuffer);
-//
-//	PxDefaultMemoryInputData stream(OutBuffer.getData(), OutBuffer.getSize());
-//	TriMesh = m_pPhysics->createTriangleMesh(stream);
-//
-//	iMeshSize = OutBuffer.getSize();//
-//
-//	PxTriangleMeshGeometry Geom(TriMesh);
-//	PxRigidStatic* MeshActor = m_pPhysics->createRigidStatic(PxTransform(PxVec3(0, 0, 0)));
-//	MeshActor->createShape(Geom, *pMaterial);
-//
-//	PxShape* Shape;
-//	MeshActor->getShapes(&Shape, 1);
-//	Shape->setContactOffset(0.02f);
-//	// A negative rest offset helps to avoid jittering when the deformed mesh moves away from objects resting on it.
-//	Shape->setRestOffset(-0.5f);
-//
-//	TriMesh->release();
-//
-//	return MeshActor;
-//}
+// 머티리얼 생성
+// PxMaterial* pMaterial = m_pPhysics->createMaterial(StaticFriction, DynamicFriction, Restitution);

@@ -254,3 +254,9 @@ FakesAssemblies/
 
 # Directory
 Team3D/Client/Bin/Resources/
+
+# Others
+*.cso
+*.lib
+*.exp
+*.dll

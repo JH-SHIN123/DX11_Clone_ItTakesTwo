@@ -181,13 +181,21 @@
     <ClInclude Include="..\public\Cam_Helper.h" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp" />
+    <ClInclude Include="..\Public\Arrowkeys_Fill.h" />
+    <ClInclude Include="..\Public\Arrowkeys_Outline.h" />
     <ClInclude Include="..\Public\Character.h" />
+    <ClInclude Include="..\Public\Client_Animation_Index_Define.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\Cody.h" />
     <ClInclude Include="..\public\DataStorage.h" />
+<<<<<<< HEAD
     <ClInclude Include="..\public\Film.h" />
     <ClInclude Include="..\public\GrindLine.h" />
+=======
+    <ClInclude Include="..\Public\InputButton.h" />
+    <ClInclude Include="..\Public\InputButton_Frame.h" />
+>>>>>>> origin/main
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
     <ClInclude Include="..\public\Loading.h" />
@@ -195,28 +203,42 @@
     <ClInclude Include="..\Public\MainCamera.h" />
     <ClInclude Include="..\Public\May.h" />
     <ClInclude Include="..\Public\MoonBaboon.h" />
-    <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\PC_MouseButton.h" />
+    <ClInclude Include="..\Public\PlayerMarker.h" />
     <ClInclude Include="..\Public\Robot.h" />
     <ClInclude Include="..\Public\RobotHead.h" />
     <ClInclude Include="..\Public\Rocket.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="..\public\TestObject01.h" />
     <ClInclude Include="..\public\TileBox.h" />
     <ClInclude Include="..\Public\UFO.h" />
+    <ClInclude Include="..\Public\UIObject.h" />
+    <ClInclude Include="..\Public\UISprite.h" />
+    <ClInclude Include="..\Public\UI_Generator.h" />
     <ClInclude Include="Client.h" />
-    <ClInclude Include="Client_Animation_Index_Define.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <ClCompile Include="..\private\Cam_Helper.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
     <ClCompile Include="..\private\DataStorage.cpp" />
     <ClCompile Include="..\private\Film.cpp" />
     <ClCompile Include="..\private\GrindLine.cpp" />
+=======
+    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
+    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
+    <ClCompile Include="..\Private\Character.cpp" />
+    <ClCompile Include="..\Private\Cody.cpp" />
+    <ClCompile Include="..\private\DataStorage.cpp" />
+    <ClCompile Include="..\Private\InputButton.cpp" />
+    <ClCompile Include="..\Private\InputButton_Frame.cpp" />
+>>>>>>> origin/main
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />
@@ -224,15 +246,20 @@
     <ClCompile Include="..\Private\MainCamera.cpp" />
     <ClCompile Include="..\Private\May.cpp" />
     <ClCompile Include="..\Private\MoonBaboon.cpp" />
-    <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\PC_MouseButton.cpp" />
+    <ClCompile Include="..\Private\PlayerMarker.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />
     <ClCompile Include="..\Private\RobotHead.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
+    <ClCompile Include="..\private\TestObject01.cpp" />
     <ClCompile Include="..\private\TileBox.cpp" />
     <ClCompile Include="..\Private\UFO.cpp" />
+    <ClCompile Include="..\Private\UIObject.cpp" />
+    <ClCompile Include="..\Private\UISprite.cpp" />
+    <ClCompile Include="..\Private\UI_Generator.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -250,9 +277,12 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Default.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Font.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Sprite.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

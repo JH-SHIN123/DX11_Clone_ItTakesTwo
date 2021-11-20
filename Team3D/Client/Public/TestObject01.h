@@ -7,17 +7,17 @@ BEGIN(Engine)
 class CRenderer;
 class CTransform;
 class CModel;
-class CControllableActor;
+class CTriggerActor;
 END
 
 BEGIN(Client)
 
-class CPlayer : public CGameObject
+class CTestObject01 final : public CGameObject
 {
-protected:
-	explicit CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CPlayer(const CPlayer& rhs);
-	virtual ~CPlayer() = default;
+private:
+	explicit CTestObject01(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CTestObject01(const CTestObject01& rhs);
+	virtual ~CTestObject01() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -29,21 +29,27 @@ public:
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
+<<<<<<< HEAD:Team3D/Client/Public/Player.h
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 
+=======
+>>>>>>> origin/main:Team3D/Client/Public/TestObject01.h
 private:
 
 	/* For.Component */
-	CRenderer*			m_pRendererCom = nullptr;
-	CTransform*			m_pTransformCom = nullptr;
-	CModel*				m_pModelCom = nullptr;
-	CControllableActor* m_pActorCom = nullptr;
+	CRenderer*		m_pRendererCom = nullptr;
+	CTransform*		m_pTransformCom = nullptr;
+	CModel*			m_pModelCom = nullptr;
+	CTriggerActor*	m_pTriggerCom = nullptr;
+
 public:
-	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CTestObject01* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
 
 END
+
+// 트리거 테스트 중

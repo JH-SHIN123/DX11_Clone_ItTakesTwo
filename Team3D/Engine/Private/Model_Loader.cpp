@@ -96,11 +96,11 @@ HRESULT CModel_Loader::Load_ModelFromFile(ID3D11Device * pDevice, ID3D11DeviceCo
 				lstrcat(szMaterialFullPath, szMaterialName);
 
 				if (!lstrcmp(szExt, TEXT(".dds")))
-					pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_DDS, szMaterialFullPath, iMaterialSetCount);
+					pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_DDS, szMaterialFullPath, iMaterialSetCount, iTextureType);
 				else if (!lstrcmp(szExt, TEXT(".tga")))
-					pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_TGA, szMaterialFullPath, iMaterialSetCount);
+					pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_TGA, szMaterialFullPath, iMaterialSetCount, iTextureType);
 				else
-					pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, szMaterialFullPath, iMaterialSetCount);
+					pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, szMaterialFullPath, iMaterialSetCount, iTextureType);
 			}
 		}
 		Materials.emplace_back(pMaterial);

@@ -7,13 +7,16 @@
 #include "Transform.h"
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Color.h"
+#include "VIBuffer_Sprite.h"
 #include "VIBuffer_RectRHW.h"
 #include "VIBuffer_Terrain.h"
-#include "VIBuffer_PointInstance.h"
 #include "VIBuffer_RectInstance.h"
+#include "VIBuffer_FontInstance.h"
+#include "VIBuffer_PointInstance.h"
 #include "StaticActor.h"
 #include "DynamicActor.h"
 #include "ControllableActor.h"
+#include "TriggerActor.h"
 
 BEGIN(Engine)
 

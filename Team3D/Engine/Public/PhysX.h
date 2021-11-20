@@ -5,16 +5,6 @@
 
 BEGIN(Engine)
 
-struct ENGINE_DLL FilterGroup
-{
-	enum Enum
-	{
-		ePLAYER = (1 << 0),
-		eSTATIC = (1 << 1),
-		eDYNAMIC = (1 << 2)
-	};
-};
-
 class ENGINE_DLL CPhysX final : public CBase
 {
 	DECLARE_SINGLETON(CPhysX)
@@ -30,17 +20,15 @@ public:
 
 	_int	Tick();
 	/* For.Actor */
-	PxRigidStatic*	Create_StaticActor(PxTransform Transform, PxGeometry& Geometry, PxMaterial* pMaterial, const char* pActorName);
-	PxRigidDynamic*	Create_DynamicActor(PxTransform Transform, PxGeometry& Geometry, PxMaterial* pMaterial, const char* pActorName, const PxVec3 vVelocity);
+	PxRigidStatic*	Create_StaticActor(PxTransform Transform, PxGeometry& Geometry);
+	PxRigidStatic*	Create_TriggerActor(PxTransform Transform, PxGeometry& Geometry);
+	PxRigidDynamic*	Create_DynamicActor(PxTransform Transform, PxGeometry& Geometry, _float fDensity, const PxVec3 vVelocity);
 	PxController*	Create_CapsuleController(PxCapsuleControllerDesc CapsuleControllerDesc);
-	void			Add_ActorToScene(PxActor* pActor);
 	void			Remove_Actor(PxRigidStatic** ppActor);
 	void			Remove_Actor(PxRigidDynamic** ppActor);
 	/* For.Shape */
 	PxTriangleMesh*	Create_Mesh(MESHACTOR_DESC pMeshActorDesc);
-	/* For.Material */
-	PxMaterial*		Create_Material(PxReal StaticFriction, PxReal DynamicFriction, PxReal Restitution);
-	/* For.Raycast */
+	/* For.Fuction */
 	_bool			Raycast(PxRaycastBuffer& RaycastHit, _fvector vSrc, _fvector vDst, _float fDist);
 private:
 	PxDefaultAllocator			m_Allocator;
@@ -54,6 +42,10 @@ private:
 	PxMaterial*					m_pMaterial = nullptr;
 	class CPxEventCallback*		m_pEventCallback = nullptr;
 	class CPxContactCallback*	m_pContactCallback = nullptr;
+private:
+	void Set_TriggerOption(PxRigidActor* pActor);
+	void Set_ShapeOption(PxRigidActor* pActor, _float fContactOffset, _float fRestOffset);
+	void Set_DynamicOption(PxRigidDynamic* pActor, _float fAngularDamping, _float LinearDamping, PxVec3 vLinearVelocity);
 
 public:
 	virtual void Free() override;
