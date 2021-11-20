@@ -76,9 +76,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\3D">
       <UniqueIdentifier>{bbc8ca2e-31e3-4a88-ba86-0624f18e40f5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\3D\00.RespawnTunnel">
-      <UniqueIdentifier>{571d88ca-fe85-4b2f-a090-6bbccd9e5679}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Effect_Generator">
       <UniqueIdentifier>{1efce119-1cf1-4fab-92f2-6371aba8b2a3}</UniqueIdentifier>
     </Filter>
@@ -142,12 +139,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle">
       <UniqueIdentifier>{40f62ada-3b9b-4df1-b0b0-07d2420974ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\3D\01.RespawnTunnel_Portal">
-      <UniqueIdentifier>{7d4c2d2d-d347-4771-b7b6-dbd3daee18be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\3D\02.Wormhole">
-      <UniqueIdentifier>{dac8b6db-4fef-46a2-8e97-07dea945da6c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.Revive_Effect">
       <UniqueIdentifier>{9657cfa3-22bc-48ee-b205-3d702b0af337}</UniqueIdentifier>
     </Filter>
@@ -195,6 +186,21 @@
     </Filter>
     <Filter Include="02.GameObject\99.Stage%28Test%29\03.Test">
       <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object">
+      <UniqueIdentifier>{57086f47-9651-4c97-879a-fb50562cd8cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\00.RespawnTunnel">
+      <UniqueIdentifier>{571d88ca-fe85-4b2f-a090-6bbccd9e5679}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\01.RespawnTunnel_Portal">
+      <UniqueIdentifier>{7d4c2d2d-d347-4771-b7b6-dbd3daee18be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\02.Wormhole">
+      <UniqueIdentifier>{dac8b6db-4fef-46a2-8e97-07dea945da6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe">
+      <UniqueIdentifier>{1cdda357-4a1a-47f1-9b8f-3998a06a1e6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -265,7 +271,7 @@
       <Filter>96.DataStorage</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_Wormhole.h">
-      <Filter>02.GameObject\05.Effect/Particle\3D\02.Wormhole</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\02.Wormhole</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\InGameEffect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point</Filter>
@@ -292,10 +298,10 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\00.Walking_Smoke</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_RespawnTunnel.h">
-      <Filter>02.GameObject\05.Effect/Particle\3D\00.RespawnTunnel</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\00.RespawnTunnel</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_RespawnTunnel_Portal.h">
-      <Filter>02.GameObject\05.Effect/Particle\3D\01.RespawnTunnel_Portal</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\01.RespawnTunnel_Portal</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_Landing_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\01.Landing_Smoke</Filter>
@@ -344,6 +350,9 @@
     </ClInclude>
     <ClInclude Include="..\public\TestObject01.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect_GravityPipe.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -402,7 +411,7 @@
       <Filter>96.DataStorage</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Wormhole.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\3D\02.Wormhole</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\02.Wormhole</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\InGameEffect.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point</Filter>
@@ -429,10 +438,10 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\00.Walking_Smoke</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_RespawnTunnel.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\3D\00.RespawnTunnel</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\00.RespawnTunnel</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_RespawnTunnel_Portal.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\3D\01.RespawnTunnel_Portal</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\01.RespawnTunnel_Portal</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Landing_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\01.Landing_Smoke</Filter>
@@ -466,6 +475,9 @@
     </ClCompile>
     <ClCompile Include="..\private\TestObject01.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect_GravityPipe.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -26,6 +26,7 @@ private:
 	HRESULT Ready_Layer_MoonBaboon(const _tchar* pLayerTag);
 
 	HRESULT Test_Layer_Effect(const _tchar* pLayerTag);
+	HRESULT Test_Layer_Object_Effect(const _tchar* pLayerTag);
 	/* Interactive Objects */
 	HRESULT Ready_Layer_Rocket(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_StarBuddy(const _tchar* pLayerTag);

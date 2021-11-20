@@ -54,18 +54,6 @@ HRESULT CInGameEffect_Model::Ready_Component(void * pArg)
 
 	if(1 < lstrlen(m_EffectDesc_Prototype.TextureName))
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName, TEXT("Com_Textrue"), (CComponent**)&m_pTexturesCom), E_FAIL);
-	
-
-
-	CModel_Instance::ARG_DESC Data;
-	char szActorName[MAX_PATH] = "";
-	WideCharToMultiByte(CP_ACP, 0, m_EffectDesc_Prototype.ModelName, MAX_PATH, szActorName, MAX_PATH, NULL, NULL);
-	Data.pActorName		= szActorName;
-	Data.fCullingRadius = m_EffectDesc_Clone.fCullingRadius;
-	Data.pWorldMatrices = m_pInstanceBuffer;
-	Data.iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelInstanceCom, &Data), E_FAIL);
-
 
 
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);

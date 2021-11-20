@@ -1,0 +1,37 @@
+#pragma once
+
+#ifndef __EFFECT_GRAVITYPIPE_H__
+#include "InGameEffect_Model.h"
+class CEffect_GravityPipe final : public CInGameEffect_Model
+{
+private:
+	explicit CEffect_GravityPipe(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_GravityPipe(const CEffect_GravityPipe& rhs);
+	virtual ~CEffect_GravityPipe() = default;
+
+public:
+	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
+	virtual HRESULT	NativeConstruct(void* pArg) override;
+	virtual _int	Tick(_double TimeDelta) override;
+	virtual _int	Late_Tick(_double TimeDelta) override;
+	virtual HRESULT	Render() override;
+	virtual void	SetUp_WorldMatrix(_fmatrix WorldMatrix) override;
+
+public:
+	HRESULT Ready_Instance();
+
+private:
+	_double m_dAngle = 0.0;
+	_float m_fTime = 0.f;
+	_float m_fColorRamp_U = 0.f;
+	CTextures* m_pTexturesCom_ColorRamp = nullptr;
+	CTextures* m_pTexturesCom_Distortion = nullptr;
+
+public:
+	static CEffect_GravityPipe* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	virtual CGameObject* Clone_GameObject(void* pArg) override;
+	virtual void Free() override;
+};
+
+#define __EFFECT_GRAVITYPIPE_H__
+#endif

@@ -59,6 +59,7 @@ _int CEffect_May_Boots::Late_Tick(_double TimeDelta)
 		Reset_UpdateTime();
 		return NO_EVENT;
 	}
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_ALPHA, this);
 }
 
@@ -178,21 +179,15 @@ _int CEffect_May_Boots::Respawn_Smoke(_int iIndex)
 	{
 		m_pInstance_LocalPos[iIndex]		= { 0.f, 0.f, 0.f, 1.f };
 		m_pInstance_Pos_UpdateTime[iIndex]	= m_dRespawnTime_Smoke;
+		m_pInstance_RenderTerm[iIndex] = 0.0;
 		m_pInstanceBuffer_Smoke[iIndex].fTime = 0.5f;
 		XMStoreFloat3(&m_pInstance_Dir[iIndex], Get_RandDir());
 		return NO_EVENT;
 	}
 	else
 	{
- 		m_pInstance_Pos_UpdateTime[iIndex] = 0.1f;
- 		m_pInstanceBuffer_Smoke[iIndex].fTime = 0.0f;
- 		m_pInstance_RenderTerm[iIndex] = 0.25 * (_float)iIndex;
- 		if (iIndex >= m_iInstanceCount_Smoke >> 1)
- 			m_pInstance_RenderTerm[iIndex] = 0.25 * _float(iIndex - (m_iInstanceCount_Smoke >> 1));
- 	
- 		m_pInstanceBuffer_Smoke[iIndex].vSize = { 0.f, 0.f };
+ 		m_pInstance_RenderTerm[iIndex] = m_dRespawnTime_Smoke; 	
 		m_pInstanceBuffer_Smoke[iIndex].fTime = 0.0f;
-
 		m_pInstanceBuffer_Smoke[iIndex].vSize = { 0.f, 0.f };
 		return EVENT_DEAD;
 	}
@@ -241,7 +236,19 @@ void CEffect_May_Boots::Set_Shader_Data()
 
 void CEffect_May_Boots::Reset_UpdateTime()
 {
+	for (_int iIndex = 0; iIndex < m_iInstanceCount_Smoke; ++iIndex)
+	{
+		m_pInstance_Pos_UpdateTime[iIndex] = m_dRespawnTime_Smoke * (_float)iIndex;
+		if (iIndex >= m_iInstanceCount_Smoke >> 1)
+			m_pInstance_Pos_UpdateTime[iIndex] = m_dRespawnTime_Smoke * _float(iIndex - (m_iInstanceCount_Smoke >> 1));
 
+		m_pInstanceBuffer_Smoke[iIndex].vPosition	= { 0.f, 0.f, 0.f, 1.f };
+		m_pInstanceBuffer_Smoke[iIndex].vSize		= m_vDefaultSize_Smoke;
+		m_pInstanceBuffer_Smoke[iIndex].vTextureUV	= { 0.f, 0.f, 1.f, 1.f };
+		m_pInstanceBuffer_Smoke[iIndex].fTime		= 0.0f;
+		m_pInstance_LocalPos[iIndex]				= { 0.f, 0.f, 0.f, 1.f };
+		m_pInstance_RenderTerm[iIndex]				= 0.0;
+	}
 }
 
 HRESULT CEffect_May_Boots::Ready_Component(void * pArg)
@@ -287,7 +294,9 @@ HRESULT CEffect_May_Boots::Ready_Instance()
 
 	for (_int i = 0; i < iInstanceCount; ++i)
 	{
-		dUpdateTerm = 0.25 * (_float)i;
+		dUpdateTerm = /*0.25 **/ (_double)i;
+		if (i >= iInstanceCount >> 1)
+			dUpdateTerm = _double(i - (iInstanceCount >> 1));
 
 		m_pInstanceBuffer_Smoke[i].vRight		= { 1.f, 0.f, 0.f, 0.f };
 		m_pInstanceBuffer_Smoke[i].vUp			= { 0.f, 1.f, 0.f, 0.f };
@@ -295,10 +304,10 @@ HRESULT CEffect_May_Boots::Ready_Instance()
 		m_pInstanceBuffer_Smoke[i].vPosition	= vPos;
 		m_pInstanceBuffer_Smoke[i].vSize		= m_vDefaultSize_Smoke;
 		m_pInstanceBuffer_Smoke[i].vTextureUV	= { 0.f, 0.f, 1.f, 1.f };
-		m_pInstanceBuffer_Smoke[i].fTime		= 0.5f;
+		m_pInstanceBuffer_Smoke[i].fTime		= 0.0f;
 		m_pInstance_LocalPos[i]					= vPos;
-		m_pInstance_RenderTerm[i]				= dUpdateTerm;
-		m_pInstance_Pos_UpdateTime[i]			= dUpdateTerm;
+		m_pInstance_RenderTerm[i]				= 0.0;
+		m_pInstance_Pos_UpdateTime[i]			= 0.0;
 		XMStoreFloat3(&m_pInstance_Dir[i], Get_RandDir());
 	}
 

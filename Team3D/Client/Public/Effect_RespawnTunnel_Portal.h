@@ -24,6 +24,15 @@ public:
 public:
 	HRESULT Ready_Instance();
 
+private:
+	void Color_Check(_double TimeDelta);
+
+private:
+	_double m_dAngle = 0.0;
+	_float4 m_vColor;
+	_float m_fColorRamp_U = 0.f;
+	CTextures* m_pTexturesCom_ColorRamp = nullptr;
+
 public:
 	static CEffect_RespawnTunnel_Portal* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

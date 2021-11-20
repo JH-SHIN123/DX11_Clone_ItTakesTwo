@@ -52,6 +52,7 @@ private:
 
 private:
 	_bool		m_IsActivate	= false;
+	_bool		m_IsActivateFirst = false;
 	_bool		m_IsRendering	= false;
 	CModel*		m_pTargetModel	= nullptr;
 	_float4x4	m_BoneMatrix_Left;	// LeftToeBase

@@ -18,6 +18,7 @@
 #include "Effect_RespawnTunnel_Portal.h"
 #include "Effect_May_Boots.h"
 #include "Effect_May_Boots_Walking_Particle.h"
+#include "Effect_GravityPipe.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -122,7 +123,6 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 	while (true)
 	{
 		EFFECT_DESC_PROTO* Data = new EFFECT_DESC_PROTO;
-
 		ReadFile(hFile, Data, sizeof(EFFECT_DESC_PROTO), &dwByte, nullptr);
 
 		if (0 == dwByte)
@@ -140,8 +140,8 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 			lstrcat(szPrototypeName, wstrName.c_str());
 
 			FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Data->iLevelIndex, Data->ModelName
-				, CModel_Instance::Create(pDevice, pDeviceContext, 1, TEXT("../Bin/Resources/Effect/3D/")
-					, szPrototypeName, TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", 1
+				, CModel_Instance::Create(pDevice, pDeviceContext, Data->iInstanceCount, TEXT("../Bin/Resources/Effect/3D/")
+					, szPrototypeName, TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", 1
 					, Compute_Pivot(XMLoadFloat3(&Data->vPivotScale), XMLoadFloat3(&Data->vPivotRotate_Degree)))), E_FAIL);
 		}
 
@@ -150,6 +150,17 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 		Safe_Delete(Data);
 	}
 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(1, L"Test_GarvityPipe"
+		, CModel_Instance::Create(pDevice, pDeviceContext, 1, TEXT("../Bin/Resources/Effect/3D/")
+			, L"Gravity_Pipe", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", 1
+			, Compute_Pivot(XMVectorSet(0.05f, 0.05f, 0.0025f,0.f), XMVectorSet(90.f, 0.f, 0.f, 0.f)))), E_FAIL);
+	CGameInstance* pInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pInstance, E_FAIL);
+	EFFECT_DESC_PROTO* pData = new EFFECT_DESC_PROTO;
+	lstrcpy(pData->EffectName, L"Test");
+	pData->iInstanceCount = 1;
+	pInstance->Add_GameObject_Prototype(1, L"GameObject_3D_GravityPipe", CEffect_GravityPipe::Create(pDevice, pDeviceContext, pData));
+	Safe_Delete(pData);
 
 	CloseHandle(hFile);
 
@@ -233,6 +244,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 		, CVIBuffer_RectInstance_Custom::Create(pDevice, pDeviceContext, 100, TEXT("../Bin/ShaderFiles/Shader_RectCustom.hlsl"), "DefaultTechnique")), E_FAIL);
 
 #pragma region Texture
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp/Color_Ramp_%d.png"), 12)), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Clouds_01"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Clouds_01.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Clouds_01_xbox"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Clouds_01_xbox.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Cloud_Texture_1k"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Cloud_Texture_1k.png"))), E_FAIL);
@@ -242,7 +254,6 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Flow_02"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Smoke/Smoke_Flow_02_E%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Puff_01"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Smoke/Smoke_Puff_01_E%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Puff_02"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Smoke/Smoke_Puff_02_E%d.png"), 2)), E_FAIL);
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp/Color_Ramp_%d.png"), 10)), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Noise/Tilling_Noise_0%d.png"), 3)), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Cloud"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Tilling_Cloud/Tilling_Cloud_0%d.png"), 3)), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Ribbon_Noise"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Ribbon_Noise/Ribbon_Noise_0%d.png"), 2)), E_FAIL);
@@ -252,10 +263,8 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_distortion"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/distortion_01_E2.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Dead_Cells"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Custom/Dead_Cells.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_DecalSplat"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/T_DecalSplat_01.png"))), E_FAIL);
-
-
-
-
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_flowmaptest"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/flowmaptest_01.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Wormhole_Noise"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Wormhole_Noise/Wormhole_Noise_%d.png"), 2)), E_FAIL);
 
 #pragma endregion
 
