@@ -144,8 +144,6 @@ HRESULT CUISprite::Set_UIVariables_Perspective()
 		m_pVIBuffer_SpriteCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
 	}
 
-	//d
-
 	m_pVIBuffer_SpriteCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
 
 	return S_OK;

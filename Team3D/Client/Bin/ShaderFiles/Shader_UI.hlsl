@@ -9,6 +9,7 @@ matrix		g_UIViewMatrix;
 matrix		g_UIProjMatrix;
 
 int		g_iShaderMouseOption;
+int		g_iColorOption;
 
 sampler	DiffuseSampler = sampler_state
 {
@@ -31,34 +32,6 @@ struct VS_OUT
 	float2	vTexUV		: TEXCOORD0;
 };
 
-//struct VS_SPRITE_IN
-//{
-//	float3	vPosition	: POSITION;
-//	float3	vVTXNum		: NORMAL;
-//	float2	vTexUV		: TEXCOORD0;
-//};
-//
-//struct VS_SPRITE_OUT
-//{
-//	float4  vPosition : SV_POSITION;
-//	float2  vTexUV : TEXCOORD0;
-//};
-
-//VS_OUT	VS_MAIN(VS_IN In)
-//{
-//	VS_OUT			Out = (VS_OUT)0;
-//
-//	matrix		matWV, matWVP;
-//
-//	matWV = mul(g_UIWorldMatrix, g_UIViewMatrix);
-//	matWVP = mul(matWV, g_UIProjMatrix);
-//
-//	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
-//	Out.vTexUV = In.vTexUV;
-//
-//	return Out;
-//}
-
 VS_OUT	VS_MAIN(VS_IN In)
 {
 	VS_OUT	Out = (VS_OUT)0;
@@ -68,33 +41,6 @@ VS_OUT	VS_MAIN(VS_IN In)
 
 	return Out;
 }
-
-//VS_SPRITE_OUT VS_SPRITE(VS_SPRITE_IN In)
-//{
-//	VS_SPRITE_OUT		Out = (VS_SPRITE_OUT)0;
-//
-//	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
-//
-//	switch (In.vVTXNum.x)
-//	{
-//	case 0:
-//		Out.vTexUV = vLeftTopUV;
-//		break;
-//	case 1:
-//		Out.vTexUV = vRightTopUV;
-//		break;
-//	case 2:
-//		Out.vTexUV = vRightBottomUV;
-//		break;
-//	case 3:
-//		Out.vTexUV = vLeftBottomUV;
-//		break;
-//	}
-//
-//	return Out;
-//}
-
-////////////////////////////////////////////////////////////
 
 struct GS_IN
 {
@@ -189,7 +135,6 @@ PS_OUT PS_PC_MOUSE(PS_IN In)
 	return Out;
 }
 
-
 PS_OUT PS_Fill(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -202,12 +147,27 @@ PS_OUT PS_Fill(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_PLAYERMARKER(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (0 == g_iColorOption)
+		Out.vColor.rgb = float3(0.74f, 1.f, 0.f);
+	else if(1 == g_iColorOption)
+		Out.vColor.rgb = float3(0.31f, 0.73f, 0.87f);
+
+	return Out;
+}
+
 
 
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
 {
+	// 0
 	pass Default
 	{
 		SetRasterizerState(Rasterizer_Solid);
@@ -218,6 +178,7 @@ technique11 DefaultTechnique
 		PixelShader		= compile ps_5_0 PS_MAIN();
 	}
 
+	// 1
 	pass Frame
 	{
 		SetRasterizerState(Rasterizer_Solid);
@@ -228,6 +189,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_FRAME();
 	}
 
+	// 2
 	pass Mouse
 	{
 		SetRasterizerState(Rasterizer_Solid);
@@ -238,6 +200,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_PC_MOUSE();
 	}
 	
+	// 3
 	pass Fill
 	{
 		SetRasterizerState(Rasterizer_Solid);
@@ -248,6 +211,15 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_Fill();
 	}
 
-
+	// 4
+	pass PlayerMarker
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PLAYERMARKER();
+	}
 
 };

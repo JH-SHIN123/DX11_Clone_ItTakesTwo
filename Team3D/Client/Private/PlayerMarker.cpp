@@ -69,7 +69,7 @@ HRESULT CPlayerMarker::Render()
 	if (FAILED(Set_PlayerMarkerVariables_Perspective()))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(0);
+	m_pVIBuffer_RectCom->Render(4);
 
 	return S_OK;
 }
@@ -154,6 +154,8 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 
 		if (0.f < Viewport.Width)
 			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+
+		m_iColorOption = 0;
 	}
 	else if (m_ePlayerID == Player::May)
 	{
@@ -216,7 +218,11 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 
 		if (0.f < Viewport.Width)
 			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+
+		m_iColorOption = 1;
 	}
+
+	m_pVIBuffer_RectCom->Set_Variable("g_iColorOption", &m_iColorOption, sizeof(_int));
 
 	m_pVIBuffer_RectCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
 	m_pVIBuffer_RectCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));

@@ -40,6 +40,8 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	UI_Create(May, StickIcon);
 
 	UI_Create(Cody, PlayerMarker);
+
+	UI_Create(Cody, InputButton_OK);
 	 
 
 	return S_OK;
