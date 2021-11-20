@@ -11,6 +11,8 @@ matrix		g_UIProjMatrix;
 int		g_iShaderMouseOption;
 int		g_iColorOption;
 int		g_iGSOption;
+float	g_fAlpha;
+float	g_f1Alpha;
 
 sampler	DiffuseSampler = sampler_state
 {
@@ -161,15 +163,21 @@ PS_OUT PS_PLAYERMARKER(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	if (0 == g_iColorOption)
-		Out.vColor.rgb = float3(0.74f, 1.f, 0.f);
-	else if(1 == g_iColorOption)
-		Out.vColor.rgb = float3(0.31f, 0.73f, 0.87f);
+	if (Out.vColor.a < 0.35f)
+		discard;
+		
+	float3 Green = float3(0.74f, 0.99f, 0.1f);
+	float3 SkyBlue = float3(0.31f, 0.73f, 0.87f);
+
+	if (0 == g_iColorOption && Out.vColor.a > 0.8f)
+		Out.vColor.rgb = Green;
+	else if (1 == g_iColorOption && Out.vColor.a > 0.8f)
+		Out.vColor.rgb = SkyBlue;
+
+	Out.vColor.a = g_fAlpha;
 
 	return Out;
 }
-
-
 
 ////////////////////////////////////////////////////////////
 
@@ -224,7 +232,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
-		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.5f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_PLAYERMARKER();
