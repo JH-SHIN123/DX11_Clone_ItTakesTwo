@@ -207,9 +207,6 @@
     <ClInclude Include="..\Public\UFO.h">
       <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
     </ClInclude>
-    <ClInclude Include="Client_Animation_Index_Define.h">
-      <Filter>98.Defines</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\DataStorage.h">
       <Filter>96.DataStorage</Filter>
     </ClInclude>
@@ -263,6 +260,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UISprite.h">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Animation_Index_Define.h">
+      <Filter>98.Defines</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
