@@ -37,7 +37,7 @@ HRESULT CRocket::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eROCKET, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = &PxSphereGeometry(0.5f);
+	ArgDesc.pGeometry = &PxSphereGeometry(1.5f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 
@@ -48,14 +48,17 @@ _int CRocket::Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_9) && m_IsCollide == true)
+	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide == true)
 		m_bLaunch = true;
 
 	if (m_bLaunch == true)
 	{
-		Launch_Rocket(dTimeDelta);
 		m_fLifeTime += (_float)dTimeDelta;
-		if (m_fLifeTime > 3.5f)
+
+		if(m_fLifeTime > 0.65f)
+			Launch_Rocket(dTimeDelta);
+
+		else if (m_fLifeTime > 3.5f)
 			return EVENT_DEAD;
 	}
 
@@ -83,7 +86,7 @@ void CRocket::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 {
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eSTARBUDDY, true);
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eROCKET, true);
 		UI_Create(Cody, InputButton_InterActive);
 		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
@@ -121,7 +124,7 @@ void CRocket::Launch_Rocket(_double dTimeDelta)
 
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), m_fUpAcceleration);
 	m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), (m_fUpAcceleration - 0.06f) * (m_fUpAcceleration - 0.06f)/*/ 4.f*/);
-	m_pTransformCom->Go_Up(m_fUpAcceleration / 8.f);
+	m_pTransformCom->Go_Up(m_fUpAcceleration / 6.f);
 }
 
 

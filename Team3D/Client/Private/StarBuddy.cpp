@@ -37,7 +37,7 @@ HRESULT CStarBuddy::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eSTARBUDDY, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = &PxSphereGeometry(0.5f);
+	ArgDesc.pGeometry = &PxSphereGeometry(1.5f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 
@@ -61,9 +61,16 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 
 	else if (m_bLaunch == true)
 	{
-		Launch_StarBuddy(dTimeDelta);
 		m_fLifeTime += (_float)dTimeDelta;
-		if (m_fLifeTime > 3.5f)
+		if (m_fLifeTime <= 0.71f)
+		{
+			m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
+			m_pTransformCom->RotatePitch(dTimeDelta * 0.2f);
+		}
+		else if(m_fLifeTime > 0.71f)
+			Launch_StarBuddy(dTimeDelta);
+
+		else if (m_fLifeTime > 3.5f)
 			return EVENT_DEAD; // 
 	}
 

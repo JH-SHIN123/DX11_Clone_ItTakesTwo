@@ -117,6 +117,8 @@ _int CCody::Tick(_double dTimeDelta)
 	if (Trigger_Check(dTimeDelta))
 	{
 		Go_Grind(dTimeDelta);
+		Hit_StarBuddy(dTimeDelta);
+		Hit_Rocket(dTimeDelta);
 	}
 	else
 	{
@@ -1178,17 +1180,22 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsHitStarBuddy = true;
 		}
-
-		if (m_eTargetGameID == GameID::eMOONBABOON && m_pGameInstance->Key_Down(DIK_E))
+		else if (m_eTargetGameID == GameID::eMOONBABOON && m_pGameInstance->Key_Down(DIK_E))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind);
 			m_IsOnGrind = true;
 		}
+		else if (m_eTargetGameID == GameID::eROCKET && m_pGameInstance->Key_Down(DIK_E))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_RocketFirework);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_IsHitRocket = true;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind || m_IsHitStarBuddy)
+	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket)
 		return true;
 
 	return false;
@@ -1256,6 +1263,18 @@ void CCody::Hit_StarBuddy(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_IsHitStarBuddy = false;
+		}
+	}
+}
+
+void CCody::Hit_Rocket(const _double dTimeDelta)
+{
+	if (m_IsHitRocket == true)
+	{
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_RocketFirework))
+		{
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_IsHitRocket = false;
 		}
 	}
 }

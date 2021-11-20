@@ -326,6 +326,7 @@ private:
 
 	_bool m_IsOnGrind = false;
 	_bool m_IsHitStarBuddy = false;
+	_bool m_IsHitRocket = false;
 
 
 
@@ -334,6 +335,7 @@ private:
 
 	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);
+	void Hit_Rocket(const _double dTimeDelta);
 #pragma endregion
 
 };
