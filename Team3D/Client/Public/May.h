@@ -279,6 +279,7 @@ private:
 	_bool m_bJumpAnimationOnce = false;
 	_bool m_bDoubleJump = false;
 	_uint m_iJumpCount = 0;
+	_uint m_iAirDashCount = 0;
 
 
 

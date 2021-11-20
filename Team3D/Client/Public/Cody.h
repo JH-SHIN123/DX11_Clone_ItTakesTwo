@@ -307,7 +307,7 @@ private:
 
 	// 점프관련 변수
 	_uint m_iJumpCount = 0;
-
+	_uint m_iAirDashCount = 0;
 
 
 

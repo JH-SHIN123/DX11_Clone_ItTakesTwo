@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "..\public\Rocket.h"
 #include "GameInstance.h"
-#include "DataStorage.h"
+#include "UI_Generator.h"
+#include "Cody.h"
+#include "May.h"
 
 CRocket::CRocket(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -30,6 +32,15 @@ HRESULT CRocket::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(25.f, 0.f, 25.f, 1.f));
 
+	CTriggerActor::ARG_DESC ArgDesc;
+
+	m_UserData = USERDATA(GameID::eROCKET, this);
+	ArgDesc.pUserData = &m_UserData;
+	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.pGeometry = &PxSphereGeometry(0.5f);
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
+
 	return S_OK;
 }
 
@@ -37,7 +48,7 @@ _int CRocket::Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_9))
+	if (m_pGameInstance->Key_Down(DIK_9) && m_IsCollide == true)
 		m_bLaunch = true;
 
 	if (m_bLaunch == true)
@@ -66,6 +77,22 @@ HRESULT CRocket::Render()
 	m_pModelCom->Render_Model(1, 0);
 
 	return S_OK;
+}
+
+void CRocket::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eSTARBUDDY, true);
+		UI_Create(Cody, InputButton_InterActive);
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_IsCollide = true;
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	{
+		m_IsCollide = false;
+		UI_Delete(Cody, InputButton_InterActive);
+	}
 }
 
 HRESULT CRocket::Render_ShadowDepth()

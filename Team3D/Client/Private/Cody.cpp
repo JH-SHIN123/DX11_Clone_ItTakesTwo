@@ -363,8 +363,9 @@ void CCody::KeyInput(_double dTimeDelta)
 		}
 		else
 		{
-			if (m_pModelCom->Get_CurAnimIndex() != ANI_C_AirDash_Start)
+			if (m_pModelCom->Get_CurAnimIndex() != ANI_C_AirDash_Start && m_iAirDashCount == 0)
 			{
+				m_iAirDashCount += 1;
 				m_fAcceleration = 5.f;
 				m_pActorCom->Jump_Start(1.2f);
 				m_pModelCom->Set_Animation(ANI_C_AirDash_Start);
@@ -922,6 +923,7 @@ void CCody::Jump(const _double dTimeDelta)
 	}
 	if (m_IsJumping == true && m_pActorCom->Get_IsJump() == false)
 	{
+		m_iAirDashCount = 0;
 		m_bSprint = false;
 		if (m_pGameInstance->Key_Pressing(DIK_W) || m_pGameInstance->Key_Pressing(DIK_A) || m_pGameInstance->Key_Pressing(DIK_S) || m_pGameInstance->Key_Pressing(DIK_D))
 		{
@@ -1015,6 +1017,7 @@ void CCody::Jump(const _double dTimeDelta)
 		m_bFallAniOnce = false;
 		m_IsJumping = false;
 		m_iJumpCount = 0;
+		m_iAirDashCount = 0;
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_SPACE) && m_IsFalling == true)

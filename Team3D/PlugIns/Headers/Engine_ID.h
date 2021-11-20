@@ -11,7 +11,8 @@ namespace Engine
 			eCAMERA,
 			eUFO,
 			eMOONBABOON,
-			eSTARBUDDY
+			eSTARBUDDY,
+			eROCKET
 		};
 	};
 

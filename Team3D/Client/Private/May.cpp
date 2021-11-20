@@ -345,8 +345,9 @@ void CMay::KeyInput(_double dTimeDelta)
 		}
 		else
 		{
-			if (m_pModelCom->Get_CurAnimIndex() != ANI_C_AirDash_Start)
+			if (m_pModelCom->Get_CurAnimIndex() != ANI_C_AirDash_Start && m_iAirDashCount == 0)
 			{
+				m_iAirDashCount += 1;
 				m_fAcceleration = 5.f;
 				m_pActorCom->Jump_Start(1.2f);
 				m_pModelCom->Set_Animation(ANI_M_AirDash_Start);
@@ -648,6 +649,7 @@ void CMay::Jump(const _double dTimeDelta)
 	if (m_IsJumping == true && m_pActorCom->Get_IsJump() == false)
 	{
 		m_bSprint = false;
+		m_iAirDashCount = 0;
 
 		if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Key_Pressing(DIK_DOWN) || m_pGameInstance->Key_Pressing(DIK_LEFT))
 		{
@@ -697,6 +699,7 @@ void CMay::Jump(const _double dTimeDelta)
 		m_bFallAniOnce = false;
 		m_IsJumping = false;
 		m_iJumpCount = 0;
+		m_iAirDashCount = 0;
 	}
 	if (m_pGameInstance->Key_Down(DIK_RCONTROL) && m_IsFalling == true)
 	{
