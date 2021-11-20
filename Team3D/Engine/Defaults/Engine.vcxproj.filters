@@ -384,9 +384,6 @@
     <ClInclude Include="..\public\Model_Instance.h">
       <Filter>02.Utility\02.Component\05.Model\00.Main\01.Instance</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Shadow_Manager.h">
-      <Filter>02.Utility\05.Shadow\99.Manager</Filter>
-    </ClInclude>
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
@@ -413,6 +410,9 @@
     </ClInclude>
     <ClInclude Include="..\public\PxContactCallback.h">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shadow_Manager.h">
+      <Filter>02.Utility\05.Shadow\99.Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -514,9 +514,6 @@
     <ClCompile Include="..\Private\Model.cpp">
       <Filter>02.Utility\02.Component\05.Model\00.Main</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Model.cpp">
-      <Filter>02.Utility\02.Component\05.Model\00.Main</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\HierarchyNode.cpp">
       <Filter>02.Utility\02.Component\05.Model\02.Node</Filter>
     </ClCompile>
@@ -567,6 +564,9 @@
     </ClCompile>
     <ClCompile Include="..\private\PxContactCallback.cpp">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>02.Utility\02.Component\05.Model\00.Main\00.Normal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

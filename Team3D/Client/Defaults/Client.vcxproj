@@ -187,6 +187,7 @@
     <ClInclude Include="..\Public\Cody.h" />
     <ClInclude Include="..\public\DataStorage.h" />
     <ClInclude Include="..\public\Film.h" />
+    <ClInclude Include="..\public\GrindLine.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
     <ClInclude Include="..\public\Loading.h" />
@@ -215,6 +216,7 @@
     <ClCompile Include="..\Private\Cody.cpp" />
     <ClCompile Include="..\private\DataStorage.cpp" />
     <ClCompile Include="..\private\Film.cpp" />
+    <ClCompile Include="..\private\GrindLine.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />

@@ -266,15 +266,15 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 
 	
 #pragma region PhsyX Check
-	//_vector vResultPos = XMVectorZero();
-	//m_bPhsXCollision = OffSetPhsX(dTimeDelta, matRev , &vResultPos); //로컬에서 공전후에 충돌검사함
-	//if (true == m_bPhsXCollision)
-	//{
-	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
-	//	//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vResultPos), XMVectorGetY(vResultPos), XMVectorGetZ(vResultPos)));
-	//}
-	//else
-	//	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matBeginWorld));
+	_vector vResultPos = XMVectorZero();
+	m_bPhsXCollision = OffSetPhsX(dTimeDelta, matRev , &vResultPos); //로컬에서 공전후에 충돌검사함
+	if (true == m_bPhsXCollision)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
+		//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vResultPos), XMVectorGetY(vResultPos), XMVectorGetZ(vResultPos)));
+	}
+	else
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matBeginWorld));
 #pragma endregion
 
 	XMStoreFloat4x4(&m_matPreRev, matRev);
@@ -465,9 +465,15 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		m_pCamHelper->Start_Film(L"Eye_Bezier4", CFilm::LScreen);
 		return NO_EVENT;
 	}
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
+	{
+		m_pCamHelper->Start_Film(L"Eye_Straight", CFilm::LScreen);
+		return NO_EVENT;
+	}
+
 	if (m_pGameInstance->Key_Down(DIK_T))
 	{
-		StartCamEffect_Shake(5.f);
+		StartCamEffect_Shake(10.f);
 	}
 
 	m_fChangeCamModeTime <= 1.f ? m_eCurCamMode = CamMode::Cam_AutoToFree : m_eCurCamMode = CamMode::Cam_Free;
