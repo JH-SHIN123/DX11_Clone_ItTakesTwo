@@ -136,9 +136,6 @@
     <Filter Include="02.Utility\04.RenderTarget\99.Manager">
       <UniqueIdentifier>{c6bda199-67ba-4e33-bca9-b71aafbb5d08}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utility\99.Others\03.DebugDraw">
-      <UniqueIdentifier>{98ae10e7-740c-44f3-9c10-b3920b90f822}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97.ShaderFiles">
       <UniqueIdentifier>{a8ed466c-5a7f-4c33-8d5f-c5e1f36e60f1}</UniqueIdentifier>
     </Filter>
@@ -178,12 +175,6 @@
     <Filter Include="02.Utility\02.Component\06.Actor\01.StaticActor">
       <UniqueIdentifier>{fc097fb8-7543-49a5-8c52-ec5fd9315090}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\02.DynamicActor">
-      <UniqueIdentifier>{90169c14-bd08-4bc2-a0f0-15ef5a785553}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\03.ControllableActor">
-      <UniqueIdentifier>{cac120a9-d36f-4d60-865e-3ef195712813}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99.Defines\00.Main">
       <UniqueIdentifier>{cc736e6d-a6b6-4257-86a5-51d8da2b593a}</UniqueIdentifier>
     </Filter>
@@ -214,12 +205,6 @@
     <Filter Include="97.ShaderFiles\Include">
       <UniqueIdentifier>{9654196f-e3ab-4f25-a09c-cb0ad655fa08}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\03.ControllableActor\00.Main">
-      <UniqueIdentifier>{ac03b7c4-87d1-4087-8e49-c826a101e55d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\03.ControllableActor\01.Callback">
-      <UniqueIdentifier>{551be4d3-8b36-4350-b615-a5af8be67e8d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX\00.Main">
       <UniqueIdentifier>{17b0b8f3-b04a-48ed-987f-777e587dab3a}</UniqueIdentifier>
     </Filter>
@@ -234,6 +219,24 @@
     </Filter>
     <Filter Include="02.Utility\02.Component\04.VIBuffer\03.Instance\05.Point_Custom_STT">
       <UniqueIdentifier>{4bb82dbb-a8aa-49d2-886f-f7640374d50b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\03.DynamicActor">
+      <UniqueIdentifier>{90169c14-bd08-4bc2-a0f0-15ef5a785553}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\04.ControllableActor">
+      <UniqueIdentifier>{cac120a9-d36f-4d60-865e-3ef195712813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\04.ControllableActor\00.Main">
+      <UniqueIdentifier>{ac03b7c4-87d1-4087-8e49-c826a101e55d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\04.ControllableActor\01.BehaviorCallback">
+      <UniqueIdentifier>{551be4d3-8b36-4350-b615-a5af8be67e8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\04.ControllableActor\02.FilterCallback">
+      <UniqueIdentifier>{0aadee54-b9c5-4b43-9a44-1a0efef2d506}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\06.Actor\02.TriggerActor">
+      <UniqueIdentifier>{da8c58ce-c82c-4cb7-a7b6-5c2e3e9d576c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -297,9 +300,6 @@
     <ClInclude Include="..\public\Timer_Manager.h">
       <Filter>01.System\02.Timer\99.Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\DebugDraw.h">
-      <Filter>02.Utility\99.Others\03.DebugDraw</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\VIBuffer_Rect.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\01.Tex</Filter>
     </ClInclude>
@@ -358,7 +358,7 @@
       <Filter>02.Utility\02.Component\06.Actor\01.StaticActor</Filter>
     </ClInclude>
     <ClInclude Include="..\public\DynamicActor.h">
-      <Filter>02.Utility\02.Component\06.Actor\02.DynamicActor</Filter>
+      <Filter>02.Utility\02.Component\06.Actor\03.DynamicActor</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Engine_Defines.h">
       <Filter>99.Defines\00.Main</Filter>
@@ -406,10 +406,10 @@
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.TripleUV</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ControllableActor.h">
-      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor\00.Main</Filter>
+      <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\00.Main</Filter>
     </ClInclude>
     <ClInclude Include="..\public\PxControllerCallback.h">
-      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor\01.Callback</Filter>
+      <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\01.BehaviorCallback</Filter>
     </ClInclude>
     <ClInclude Include="..\public\PhysX.h">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\00.Main</Filter>
@@ -425,6 +425,15 @@
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer_PointInstance_Custom_STT.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\05.Point_Custom_STT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PxControllerFilterCallback.h">
+      <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\02.FilterCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerActor.h">
+      <Filter>02.Utility\02.Component\06.Actor\02.TriggerActor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Engine_ID.h">
+      <Filter>99.Defines\01.Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -488,9 +497,6 @@
     <ClCompile Include="..\private\Timer_Manager.cpp">
       <Filter>01.System\02.Timer\99.Manager</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\DebugDraw.cpp">
-      <Filter>02.Utility\99.Others\03.DebugDraw</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Rect.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\01.Tex</Filter>
     </ClCompile>
@@ -549,7 +555,7 @@
       <Filter>02.Utility\02.Component\06.Actor\01.StaticActor</Filter>
     </ClCompile>
     <ClCompile Include="..\private\DynamicActor.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\02.DynamicActor</Filter>
+      <Filter>02.Utility\02.Component\06.Actor\03.DynamicActor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Model.cpp">
       <Filter>02.Utility\02.Component\05.Model\00.Main\00.Normal</Filter>
@@ -570,10 +576,10 @@
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.TripleUV</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ControllableActor.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor\00.Main</Filter>
+      <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\00.Main</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PxControllerCallback.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\03.ControllableActor\01.Callback</Filter>
+      <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\01.BehaviorCallback</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PhysX.cpp">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\00.Main</Filter>
@@ -586,6 +592,12 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_PointInstance_Custom_STT.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\05.Point_Custom_STT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PxControllerFilterCallback.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\02.FilterCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerActor.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\02.TriggerActor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

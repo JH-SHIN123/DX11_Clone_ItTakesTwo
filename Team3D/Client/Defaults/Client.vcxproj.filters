@@ -187,6 +187,15 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle">
       <UniqueIdentifier>{0683420e-60af-4eb9-974e-0929e6185c9c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space">
+      <UniqueIdentifier>{9b2ce05d-80d0-464d-8dce-5a75d40f42db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Maps\04.Stage_Space">
+      <UniqueIdentifier>{5bbd0183-dea1-417a-b173-4e16c2288048}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\03.Test">
+      <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -231,9 +240,6 @@
     <ClInclude Include="..\public\Effect_Generator.h">
       <Filter>95.Effect_Generator</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Player.h">
-      <Filter>02.GameObject\99.Stage%28Test%29\01.Player</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Cody.h">
       <Filter>02.GameObject\03.Character\00.Cody</Filter>
     </ClInclude>
@@ -244,10 +250,7 @@
       <Filter>02.GameObject\03.Character\01.May</Filter>
     </ClInclude>
     <ClInclude Include="..\public\TileBox.h">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Test_EnvObject.h">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MoonBaboon.h">
       <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
@@ -339,6 +342,9 @@
     <ClInclude Include="..\Public\TestEffect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\TestObject01.h">
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -371,9 +377,6 @@
     <ClCompile Include="..\private\Effect_Generator.cpp">
       <Filter>95.Effect_Generator</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Player.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\01.Player</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Cody.cpp">
       <Filter>02.GameObject\03.Character\00.Cody</Filter>
     </ClCompile>
@@ -384,13 +387,10 @@
       <Filter>02.GameObject\03.Character\01.May</Filter>
     </ClCompile>
     <ClCompile Include="..\private\TileBox.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TestEffect.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Test_EnvObject.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Env</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MoonBaboon.cpp">
       <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
@@ -463,6 +463,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_May_Boots_Walking_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TestObject01.cpp">
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

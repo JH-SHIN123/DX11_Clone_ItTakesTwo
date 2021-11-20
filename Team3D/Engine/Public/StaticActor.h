@@ -14,21 +14,19 @@ private:
 public: /* Struct */
 	typedef struct tagArgumentDesc
 	{
-		_matrix			WorldMatrix;
-		PxGeometry*		pGeometry;
-		PxMaterial*		pMaterial;
-		const char*		pActorName;
-
-		tagArgumentDesc() {}
-		tagArgumentDesc(_fmatrix _WorldMatrix, PxGeometry* _pGeometry, PxMaterial* _pMaterial, const char* pName) : WorldMatrix(_WorldMatrix), pGeometry(_pGeometry), pMaterial(_pMaterial), pActorName(pName) {}
+		class CTransform*	pTransform;
+		class CModel*		pModel;
+		USERDATA*			pUserData;
 	}ARG_DESC;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
+	void			Update_StaticActor();
 
 private:
-	PxRigidStatic* m_pActor = nullptr;
+	class CTransform*		m_pTransform = nullptr;
+	vector<PxRigidStatic*>	m_pActors;
 
 public:
 	static CStaticActor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -37,3 +35,10 @@ public:
 };
 
 END
+
+/*
+	Static 액터의 Update는 Transform 위치로 액터를 이동시킴.
+	Dynamic 액터의 Update는 액터의 위치로 Transform을 이동시킴.
+
+	Static 액터는 메쉬 형태의 액터만 만듦.
+*/

@@ -193,10 +193,10 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\public\Component_Manager.h" />
     <ClInclude Include="..\public\ControllableActor.h" />
-    <ClInclude Include="..\public\DebugDraw.h" />
     <ClInclude Include="..\public\DynamicActor.h" />
     <ClInclude Include="..\public\Engine_Defines.h" />
     <ClInclude Include="..\public\Engine_Function.h" />
+    <ClInclude Include="..\Public\Engine_ID.h" />
     <ClInclude Include="..\public\Engine_Macro.h" />
     <ClInclude Include="..\public\Engine_Struct.h" />
     <ClInclude Include="..\public\Engine_Typedef.h" />
@@ -222,6 +222,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\Public\Pipeline.h" />
     <ClInclude Include="..\public\PxContactCallback.h" />
     <ClInclude Include="..\public\PxControllerCallback.h" />
+    <ClInclude Include="..\public\PxControllerFilterCallback.h" />
     <ClInclude Include="..\public\PxEventCallback.h" />
     <ClInclude Include="..\public\Renderer.h" />
     <ClInclude Include="..\public\RenderTarget.h" />
@@ -233,6 +234,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\public\Timer.h" />
     <ClInclude Include="..\public\Timer_Manager.h" />
     <ClInclude Include="..\public\Transform.h" />
+    <ClInclude Include="..\Public\TriggerActor.h" />
     <ClInclude Include="..\public\VIBuffer.h" />
     <ClInclude Include="..\public\VIBuffer_Color.h" />
     <ClInclude Include="..\public\VIBuffer_PointInstance.h" />
@@ -254,7 +256,6 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\private\Component_Manager.cpp" />
     <ClCompile Include="..\private\ControllableActor.cpp" />
-    <ClCompile Include="..\private\DebugDraw.cpp" />
     <ClCompile Include="..\private\DynamicActor.cpp" />
     <ClCompile Include="..\private\Frustum.cpp" />
     <ClCompile Include="..\private\GameInstance.cpp" />
@@ -276,6 +277,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\Private\Pipeline.cpp" />
     <ClCompile Include="..\private\PxContactCallback.cpp" />
     <ClCompile Include="..\private\PxControllerCallback.cpp" />
+    <ClCompile Include="..\private\PxControllerFilterCallback.cpp" />
     <ClCompile Include="..\private\PxEventCallback.cpp" />
     <ClCompile Include="..\private\Renderer.cpp" />
     <ClCompile Include="..\private\RenderTarget.cpp" />
@@ -287,6 +289,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\private\Timer.cpp" />
     <ClCompile Include="..\private\Timer_Manager.cpp" />
     <ClCompile Include="..\private\Transform.cpp" />
+    <ClCompile Include="..\Private\TriggerActor.cpp" />
     <ClCompile Include="..\private\VIBuffer.cpp" />
     <ClCompile Include="..\private\VIBuffer_Color.cpp" />
     <ClCompile Include="..\private\VIBuffer_PointInstance.cpp" />

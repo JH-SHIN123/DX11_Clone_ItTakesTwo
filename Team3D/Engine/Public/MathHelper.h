@@ -65,6 +65,11 @@ namespace Engine
 		return XMVectorSet(vPx.x, vPx.y, vPx.z, 0.f);
 	}
 
+	static _vector MH_XMVec3(PxExtendedVec3 vPx)
+	{
+		return XMVectorSet((_float)vPx.x, (_float)vPx.y, (_float)vPx.z, 0.f);
+	}
+
 	static PxExtendedVec3 MH_PxExtendedVec3(_fvector vVector)
 	{
 		PxExtendedVec3 vPxVector;
@@ -101,10 +106,18 @@ namespace Engine
 	{
 		return XMVectorSet(Matrix._41, Matrix._42, Matrix._43, Matrix._44);
 	}
-	
-// 	enum TRANSTORM_STATE {TS_RIGHT, TS_UP, TS_LOOK, TS_POSITION, TS_END};
-// 	static _vector MH_GetState(_float4x4 Matrix, TRANSTORM_STATE eState)
-// 	{
-// 		return XMVectorSet(Matrix.m[eState][0], Matrix.m[eState][1], Matrix.m[eState][2], Matrix.m[eState][3]);
-// 	}
+
+	static _matrix MH_XMMatrix(PxMat44 PxMatrix)
+	{
+		_matrix XmMatrix;
+
+		memcpy(&XmMatrix, &PxMatrix, sizeof(_matrix));
+
+		return XmMatrix;
+	}
+
+	static _float MH_Dist(_fvector vSrc, _fvector vDst)
+	{
+		return XMVectorGetX(XMVector3Length(vSrc - vDst));
+	}
 }
