@@ -5,6 +5,7 @@
 #include "SubCamera.h"
 #include "Terrain.h"
 #include "TileBox.h"
+#include "UI_Generator.h"
 
 #include "Cody.h"
 #include "May.h"
@@ -19,6 +20,8 @@
 
 /* Test */
 #include "TestObject01.h"
+
+
 
 CLoading::CLoading(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice			(pDevice)
@@ -180,6 +183,8 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		//PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f));
 		//FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/_Test/Model/"), TEXT("MoonBaboon"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 		//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon"), CMoonBaboon::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+		FAILED_CHECK_RETURN(UI_Generator->Load_Data(TEXT("../Bin/Resources/Data/UIData/UI.dat")), E_FAIL);
 	}
 
 	return S_OK;

@@ -56,6 +56,13 @@ namespace Engine
 		XMFLOAT2	vTexUV;
 	}VTXNORTEX;
 
+	typedef struct tagVertexFont
+	{
+		XMFLOAT3	vPosition;
+		XMFLOAT2	vScale;
+		XMFLOAT4	vTexUV;
+	}VTXFONT;
+
 	typedef struct tagVertexMesh
 	{
 		XMFLOAT3	vPosition;

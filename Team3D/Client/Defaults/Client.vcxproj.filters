@@ -112,6 +112,42 @@
     <Filter Include="02.GameObject\99.Stage%28Test%29\03.Test">
       <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.UI">
+      <UniqueIdentifier>{655701b4-ca8c-4776-ab23-332f0781581e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\99.UI_Generator">
+      <UniqueIdentifier>{bd3f9c54-ec94-480a-ac35-1cd4435104d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\00.Main">
+      <UniqueIdentifier>{9d5bee89-c474-4dcf-8a8e-0ef5ff96d410}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\01.InputButton">
+      <UniqueIdentifier>{d9199cbc-2ae9-4773-afeb-f18849604ce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\01.InputButton\00.Frame">
+      <UniqueIdentifier>{4d84e6aa-f786-4cfe-b5af-558be0ab16c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\01.InputButton\01.Button">
+      <UniqueIdentifier>{6125b4bd-a6d4-4be5-b3cb-6ee056b3a81f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\02.PC_MouseButton">
+      <UniqueIdentifier>{3c2d527a-22db-4fc8-a7c5-05df63b7b482}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\03.ArrowKeys">
+      <UniqueIdentifier>{bfd01cf1-003b-4352-b521-cb1c85869051}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\03.ArrowKeys\00.Fill">
+      <UniqueIdentifier>{6cd715f8-54d9-4c02-a292-f8479a2adc01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\03.ArrowKeys\01.Outline">
+      <UniqueIdentifier>{d5a77603-7991-4752-b0d8-628b31ebc1ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\04.PlayerMarker">
+      <UniqueIdentifier>{12f10e88-ed42-4a3e-b44a-e48946eccdcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\05.UISprite">
+      <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -201,6 +237,33 @@
     <ClInclude Include="..\public\TestObject01.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Generator.h">
+      <Filter>02.GameObject\05.UI\99.UI_Generator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIObject.h">
+      <Filter>02.GameObject\05.UI\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InputButton_Frame.h">
+      <Filter>02.GameObject\05.UI\01.InputButton\00.Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InputButton.h">
+      <Filter>02.GameObject\05.UI\01.InputButton\01.Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PC_MouseButton.h">
+      <Filter>02.GameObject\05.UI\02.PC_MouseButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Arrowkeys_Fill.h">
+      <Filter>02.GameObject\05.UI\03.ArrowKeys\00.Fill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Arrowkeys_Outline.h">
+      <Filter>02.GameObject\05.UI\03.ArrowKeys\01.Outline</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerMarker.h">
+      <Filter>02.GameObject\05.UI\04.PlayerMarker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UISprite.h">
+      <Filter>02.GameObject\05.UI\05.UISprite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -266,6 +329,33 @@
     <ClCompile Include="..\private\TestObject01.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UI_Generator.cpp">
+      <Filter>02.GameObject\05.UI\99.UI_Generator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIObject.cpp">
+      <Filter>02.GameObject\05.UI\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InputButton.cpp">
+      <Filter>02.GameObject\05.UI\01.InputButton\01.Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InputButton_Frame.cpp">
+      <Filter>02.GameObject\05.UI\01.InputButton\00.Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PC_MouseButton.cpp">
+      <Filter>02.GameObject\05.UI\02.PC_MouseButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp">
+      <Filter>02.GameObject\05.UI\03.ArrowKeys\00.Fill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp">
+      <Filter>02.GameObject\05.UI\03.ArrowKeys\01.Outline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerMarker.cpp">
+      <Filter>02.GameObject\05.UI\04.PlayerMarker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UISprite.cpp">
+      <Filter>02.GameObject\05.UI\05.UISprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -296,6 +386,15 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Font.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Sprite.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
