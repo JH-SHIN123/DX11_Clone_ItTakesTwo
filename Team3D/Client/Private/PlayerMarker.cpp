@@ -102,44 +102,15 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 
 		m_vTargetPos.y += 2.f;
 
-		_matrix MainViewMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_MAINVIEW);
-		_matrix MainProjMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_MAINPROJ);
-
-		_matrix matMainCombine = MainViewMatrix * MainProjMatrix;
-
 		_vector vTargetPos = XMLoadFloat4(&m_vTargetPos);
-		vTargetPos = XMVector3TransformCoord(vTargetPos, matMainCombine);
-		
-		vCodyPos = XMVector3TransformCoord(vCodyPos, matMainCombine);
 
-		XMStoreFloat3(&vConvertPos, vTargetPos);
-		vConvertPos.x += 1.f;
-		vConvertPos.y += 1.f;
+		vConvertPos = ConvertToWindowPos(Viewport, vTargetPos);
+		vCodyConvertPos = ConvertToWindowPos(Viewport, vCodyPos);
 
-		XMStoreFloat3(&vCodyConvertPos, vCodyPos);
-		vCodyConvertPos.x += 1.f;
-		vCodyConvertPos.y += 1.f;
-
-		if (1.f <= vConvertPos.z)
-		{
-			vConvertPos.x *= -1.f;
-			vConvertPos.y *= -1.f;
-		}
-
-		if (1.f <= vCodyConvertPos.z)
-		{
-			vCodyConvertPos.x *= -1.f;
-			vCodyConvertPos.y *= -1.f;
-		}
-
-		vConvertPos.x = ((Viewport.Width * (vConvertPos.x)) / 2.f + Viewport.TopLeftX);
-		vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f + Viewport.TopLeftY);
-
-		vCodyConvertPos.x = ((Viewport.Width * (vCodyConvertPos.x)) / 2.f + Viewport.TopLeftX);
-		vCodyConvertPos.y = (Viewport.Height * (2.f - vCodyConvertPos.y) / 2.f + Viewport.TopLeftY);
-
+		// 고정 시키기전에 내적해서 각도구해야해서 저장해둠
 		_float3 vSavePos = vConvertPos;
 
+		// 뷰포트 밖으로 나가면 화면 고정
 		if (Viewport.Width < vConvertPos.x)
 			vConvertPos.x = Viewport.Width - 20.f;
 		else if (Viewport.TopLeftX > vConvertPos.x)
@@ -150,17 +121,13 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		else if (Viewport.Height < vConvertPos.y)
 			vConvertPos.y = Viewport.Height - 20.f;
 
-		vConvertPos.x = -1.f * (Viewport.Width / 2) + vConvertPos.x;
-		vConvertPos.y = Viewport.Height - (1.f * (Viewport.Height / 2) + vConvertPos.y);
-		vConvertPos.z = 0.f;
-
-		vSavePos.x = -1.f * (Viewport.Width / 2) + vSavePos.x;
-		vSavePos.y = Viewport.Height - (1.f * (Viewport.Height / 2) + vSavePos.y);
-		vSavePos.z = 0.f;
-
-		vCodyConvertPos.x = -1.f * (Viewport.Width / 2) + vCodyConvertPos.x;
-		vCodyConvertPos.y = Viewport.Height - (1.f * (Viewport.Height / 2) + vCodyConvertPos.y);
-		vCodyConvertPos.z = 0.f;
+		// 뷰스페이스로 변환
+		// 뷰 행렬에 좌표를 바로 줘서 직교하던 월드 스페이스에 주던 상관 없음 월드에 줬다고 하면 뷰 행렬은 항등으로 주고 직교 투영하기 때문임 ㅇㅇ
+		// 고정시킨 좌표는 직교투영 시킬 매트릭스에 던져주자
+		vConvertPos = ConvertToViewPos(Viewport, vConvertPos);
+		// 얘는 내적하기 위해 고정시키키 전에 저장해놨던 좌표임
+		vSavePos = ConvertToViewPos(Viewport, vSavePos);
+		vCodyConvertPos = ConvertToViewPos(Viewport, vCodyConvertPos);
 
 		_vector vDir = XMLoadFloat3(&vSavePos) - XMLoadFloat3(&vCodyConvertPos);
 		_vector vDot = XMVector3Dot(XMVector3Normalize(vDir), XMVector3Normalize(vCodyUp));
@@ -202,40 +169,10 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 
 		m_vTargetPos.y += 2.f;
 
-		_matrix SubCombineViewMatirx = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_SUBVIEW);
-		_matrix SubCombineProjMatirx = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_SUBPROJ);
-
-		_matrix matSubCombine = SubCombineViewMatirx * SubCombineProjMatirx;
-
 		_vector vTargetPos = XMLoadFloat4(&m_vTargetPos);
-		vTargetPos = XMVector3TransformCoord(vTargetPos, matSubCombine);
-		vMayPos = XMVector3TransformCoord(vMayPos, matSubCombine);
 
-		XMStoreFloat3(&vConvertPos, vTargetPos);
-		vConvertPos.x += 1.f;
-		vConvertPos.y += 1.f;
-
-		XMStoreFloat3(&vMayConvertPos, vMayPos);
-		vMayConvertPos.x += 1.f;
-		vMayConvertPos.y += 1.f;
-
-		if (1.f <= vConvertPos.z)
-		{
-			vConvertPos.x *= -1.f;
-			vConvertPos.y *= -1.f;
-		}
-
-		if (1.f <= vMayConvertPos.z)
-		{
-			vMayConvertPos.x *= -1.f;
-			vMayConvertPos.y *= -1.f;
-		}
-
-		vConvertPos.x = ((Viewport.Width * (vConvertPos.x)) / 2.f);
-		vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f);
-
-		vMayConvertPos.x = ((Viewport.Width * (vMayConvertPos.x)) / 2.f);
-		vMayConvertPos.y = (Viewport.Height * (2.f - vMayConvertPos.y) / 2.f);
+		vConvertPos = ConvertToWindowPos(Viewport, vTargetPos);
+		vMayConvertPos = ConvertToWindowPos(Viewport, vMayPos);
 
 		_float3 vSavePos = vConvertPos;
 
@@ -249,19 +186,10 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		else if (Viewport.Height < vConvertPos.y)
 			vConvertPos.y = Viewport.Height - 20.f;
 
-		vConvertPos.x = -1.f * (Viewport.Width / 2) + vConvertPos.x;
-		vConvertPos.y = Viewport.Height - (1.f * (Viewport.Height / 2) + vConvertPos.y);
-		vConvertPos.z = 0.f;
+		vConvertPos = ConvertToViewPos(Viewport, vConvertPos);
+		vSavePos = ConvertToViewPos(Viewport, vSavePos);
+		vMayConvertPos = ConvertToViewPos(Viewport, vMayConvertPos);
 
-		vSavePos.x = -1.f * (Viewport.Width / 2) + vSavePos.x;
-		vSavePos.y = Viewport.Height - (1.f * (Viewport.Height / 2) + vSavePos.y);
-		vSavePos.z = 0.f;
-
-		vMayConvertPos.x = -1.f * (Viewport.Width / 2) + vMayConvertPos.x;
-		vMayConvertPos.y = Viewport.Height - (1.f * (Viewport.Height / 2) + vMayConvertPos.y);
-		vMayConvertPos.z = 0.f;
-
-		//_vector vDir = XMLoadFloat3(&vCodyConvertPos) - XMLoadFloat3(&vSavePos);
 		_vector vDir = XMLoadFloat3(&vSavePos) - XMLoadFloat3(&vMayConvertPos);
 		_vector vDot = XMVector3Dot(XMVector3Normalize(vDir), XMVector3Normalize(vMayUp));
 		_float fRadian = acosf(XMVectorGetX(vDot));
@@ -299,6 +227,52 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
 
 	return S_OK;
+}
+
+_float3 CPlayerMarker::ConvertToWindowPos(D3D11_VIEWPORT Viewprot, _vector vPos)
+{
+	_matrix CombineViewMatrix, CombineProjMatrix;
+
+	if (m_ePlayerID == Player::Cody)
+	{
+		CombineViewMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_MAINVIEW);
+		CombineProjMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_MAINPROJ);
+	}
+	else
+	{
+		CombineViewMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_SUBVIEW);
+		CombineProjMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_SUBPROJ);
+	}
+
+	_matrix matCombineMatrix = CombineViewMatrix * CombineProjMatrix;
+
+	vPos = XMVector3TransformCoord(vPos, matCombineMatrix);
+
+	_float3 vConvertPos;
+
+	XMStoreFloat3(&vConvertPos, vPos);
+	vConvertPos.x += 1.f;
+	vConvertPos.y += 1.f;
+
+	if (1.f <= vConvertPos.z)
+	{
+		vConvertPos.x *= -1.f;
+		vConvertPos.y *= -1.f;
+	}
+
+	vConvertPos.x = ((Viewprot.Width * (vConvertPos.x)) / 2.f);
+	vConvertPos.y = (Viewprot.Height * (2.f - vConvertPos.y) / 2.f);
+
+	return vConvertPos;
+}
+
+_float3 CPlayerMarker::ConvertToViewPos(D3D11_VIEWPORT Viewport, _float3 vPos)
+{
+	vPos.x = -1.f * (Viewport.Width / 2) + vPos.x;
+	vPos.y = Viewport.Height - (1.f * (Viewport.Height / 2) + vPos.y);
+	vPos.z = 0.f;
+
+	return vPos;
 }
 
 CPlayerMarker * CPlayerMarker::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
