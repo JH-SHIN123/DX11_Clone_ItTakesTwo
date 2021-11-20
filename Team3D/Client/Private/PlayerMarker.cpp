@@ -265,12 +265,12 @@ _bool CPlayerMarker::IsCheckCharacterInViewport(D3D11_VIEWPORT Viewport, _float3
 	if (Viewport.Width > vConvertPos.x && 0.f < vConvertPos.x &&
 		Viewport.Height > vConvertPos.y && 0.f < vConvertPos.y)
 	{
-//		m_fAlpha -= m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
+		//m_fAlpha -= m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
 		m_fAlpha -= 0.0016f * 5.f;
 
 		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-90.f));
 		m_pVIBuffer_RectCom->Set_Variable("g_fAlpha", &m_fAlpha, sizeof(_float));
-	
+
 		if (m_fAlpha <= 0.f)
 		{
 			m_IsRender = false;
