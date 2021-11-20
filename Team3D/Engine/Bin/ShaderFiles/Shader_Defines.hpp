@@ -108,6 +108,14 @@ cbuffer ShadowDesc
 };
 
 /* Sampler */
+sampler	Point_Sampler = sampler_state
+{
+	AddressU = CLAMP;
+	AddressV = CLAMP;
+	AddressW = CLAMP;
+	Filter = MIN_MAG_MIP_POINT;
+};
+
 sampler	Wrap_Sampler = sampler_state
 {
 	AddressU = Wrap;

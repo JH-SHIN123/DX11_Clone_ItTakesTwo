@@ -220,6 +220,15 @@
     <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback">
       <UniqueIdentifier>{7217416e-7088-47ec-b7c5-df5d4f4d2af0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\06.HDR">
+      <UniqueIdentifier>{3ed05aec-d931-4bdb-bbd2-2b54d2cdf11d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles\Compute">
+      <UniqueIdentifier>{f646baae-80f9-4651-9890-ce59df45393d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles\Graphics">
+      <UniqueIdentifier>{6eab9865-2cc7-49ee-a2b1-ca7271aad865}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\GameInstance.h">
@@ -396,6 +405,9 @@
     <ClInclude Include="..\public\PxContactCallback.h">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\HDR.h">
+      <Filter>02.Utility\06.HDR</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -542,16 +554,25 @@
     <ClCompile Include="..\private\PxContactCallback.cpp">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\HDR.cpp">
+      <Filter>02.Utility\06.HDR</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\bin\ShaderFiles\Shader_RenderTarget.hlsl">
-      <Filter>97.ShaderFiles</Filter>
-    </FxCompile>
     <FxCompile Include="..\bin\ShaderFiles\Shader_Blend.hlsl">
-      <Filter>97.ShaderFiles</Filter>
+      <Filter>97.ShaderFiles\Graphics</Filter>
     </FxCompile>
     <FxCompile Include="..\bin\ShaderFiles\Shader_LightAcc.hlsl">
-      <Filter>97.ShaderFiles</Filter>
+      <Filter>97.ShaderFiles\Graphics</Filter>
+    </FxCompile>
+    <FxCompile Include="..\bin\ShaderFiles\Shader_RenderTarget.hlsl">
+      <Filter>97.ShaderFiles\Graphics</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_HDR.hlsl">
+      <Filter>97.ShaderFiles\Compute</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_HDR.hlsl">
+      <Filter>97.ShaderFiles\Graphics</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -16,6 +16,7 @@ CGameInstance::CGameInstance()
 	, m_pPipeline			(CPipeline::GetInstance())
 	, m_pFrustum			(CFrustum::GetInstance())
 	, m_pShadow_Manager		(CShadow_Manager::GetInstance())
+	, m_pHDR				(CHDR::GetInstance())
 {
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pInput_Device);
@@ -29,6 +30,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pPipeline);
 	Safe_AddRef(m_pFrustum);
 	Safe_AddRef(m_pShadow_Manager);
+	Safe_AddRef(m_pHDR);
 }
 
 #pragma region GameInstance
@@ -49,6 +51,7 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 	FAILED_CHECK_RETURN(m_pPhysX->Ready_PhysX(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pFrustum->Ready_Frustum(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShadow_Manager->Ready_ShadowManager(*ppDevice, *ppDeviceContext), E_FAIL);
+	FAILED_CHECK_RETURN(m_pHDR->Ready_HDR(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
 
 	return S_OK;
 }
@@ -385,6 +388,8 @@ void CGameInstance::Release_Engine()
 		MSG_BOX("Failed to Release CShadow_Manager.");
 	if (CLight_Manager::GetInstance()->DestroyInstance())
 		MSG_BOX("Failed to Release CLight_Manager.");
+	if (CHDR::GetInstance()->DestroyInstance())
+		MSG_BOX("Failed to Release CHDR.");
 	if (CPhysX::GetInstance()->DestroyInstance())
 		MSG_BOX("Failed to Release CPhysX.");
 	if (CRenderTarget_Manager::GetInstance()->DestroyInstance())
@@ -405,6 +410,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pHDR);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pTimer_Manager);

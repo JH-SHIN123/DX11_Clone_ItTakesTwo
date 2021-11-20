@@ -206,6 +206,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\public\GameObject_Manager.h" />
     <ClInclude Include="..\Public\GlobalFunction.h" />
     <ClInclude Include="..\public\Graphic_Device.h" />
+    <ClInclude Include="..\Public\HDR.h" />
     <ClInclude Include="..\Public\HierarchyNode.h" />
     <ClInclude Include="..\public\Input_Device.h" />
     <ClInclude Include="..\public\Layer.h" />
@@ -257,6 +258,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\private\GameObject.cpp" />
     <ClCompile Include="..\private\GameObject_Manager.cpp" />
     <ClCompile Include="..\private\Graphic_Device.cpp" />
+    <ClCompile Include="..\Private\HDR.cpp" />
     <ClCompile Include="..\Private\HierarchyNode.cpp" />
     <ClCompile Include="..\private\Input_Device.cpp" />
     <ClCompile Include="..\private\Layer.cpp" />
@@ -292,7 +294,9 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_HDR.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Blend.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_HDR.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_LightAcc.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_RenderTarget.hlsl" />
   </ItemGroup>

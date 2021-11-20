@@ -16,10 +16,11 @@ public: /* Enum */
 	enum VIEWPORT_TYPE	{ VP_FULL, VP_MAIN, VP_SUB, VP_END };
 
 public: /* Getter */
-	const D3D11_VIEWPORT	Get_ViewportInfo(_uint iViewportIndex) const;
-	const _float4			Get_ViewportUVInfo(_uint iViewportIndex) const;
-	const _float4			Get_ViewportRadioInfo(_uint iViewportIndex) const;
-	const _float			Get_ViewportAspect(_uint iViewportIndex) const;
+	ID3D11ShaderResourceView*		Get_ShaderResourceView() const;
+	const D3D11_VIEWPORT			Get_ViewportInfo(_uint iViewportIndex) const;
+	const _float4					Get_ViewportUVInfo(_uint iViewportIndex) const;
+	const _float4					Get_ViewportRadioInfo(_uint iViewportIndex) const;
+	const _float					Get_ViewportAspect(_uint iViewportIndex) const;
 
 public: /* Setter */
 	void Set_ViewportInfo(_fvector vMainViewportInfo, _fvector vSubViewportInfo); /* 뷰포트 사이즈 바로 세팅 */
@@ -34,11 +35,13 @@ public:
 	void	Tick(_double dTimeDelta);
 
 private:
-	ID3D11Device*			m_pDevice = nullptr;
-	ID3D11DeviceContext*	m_pDeviceContext = nullptr;
-	IDXGISwapChain*			m_pSwapChain = nullptr;
-	ID3D11RenderTargetView*	m_pBackBufferView = nullptr;
-	ID3D11DepthStencilView*	m_pDepthStencilView = nullptr;
+	ID3D11Device*				m_pDevice = nullptr;
+	ID3D11DeviceContext*		m_pDeviceContext = nullptr;
+	IDXGISwapChain*				m_pSwapChain = nullptr;
+	ID3D11RenderTargetView*		m_pBackBufferView = nullptr;
+	ID3D11ShaderResourceView*	m_pBackBufferSRV = nullptr;
+	ID3D11DepthStencilView*		m_pDepthStencilView = nullptr;
+	DXGI_FORMAT					m_eBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	/* For.DevideViewport */
 	D3D11_VIEWPORT	m_Viewports[VP_END];
 	_float4			m_vViewportInfo[VP_END];	/* x = TopLeftX, y = TopLeftY, z = Width, w = Height, 0.f ~ 1.f */

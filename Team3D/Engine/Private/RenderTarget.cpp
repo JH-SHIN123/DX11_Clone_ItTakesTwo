@@ -25,12 +25,6 @@ HRESULT CRenderTarget::NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT 
 	TextureDesc.Usage				= D3D11_USAGE_DEFAULT;
 	TextureDesc.BindFlags			= D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 
-	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pTargetTexture)))
-	{
-		MSG_BOX("Failed to Create Texture2D - CRenderTarget");
-		return E_FAIL;
-	}
-
 	m_IsDepthStencil = isDepthBuffer;
 	if (m_IsDepthStencil)
 	{
@@ -68,6 +62,12 @@ HRESULT CRenderTarget::NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT 
 	}
 	else
 	{
+		if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pTargetTexture)))
+		{
+			MSG_BOX("Failed to Create Texture2D - CRenderTarget");
+			return E_FAIL;
+		}
+
 		D3D11_RENDER_TARGET_VIEW_DESC RenderTargetViewDesc;
 		ZeroMemory(&RenderTargetViewDesc, sizeof(D3D11_RENDER_TARGET_VIEW_DESC));
 		RenderTargetViewDesc.Format = eFormat;
