@@ -44,13 +44,15 @@ private:
 	_float		m_fLifeTime = 0.f;
 	_bool		m_IsCollide = true;
 
-
 protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 	CTriggerActor*	m_pTriggerCom = nullptr;
+
+private:
+	HRESULT InterActive_UI();
 
 public:
 	static CStarBuddy* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

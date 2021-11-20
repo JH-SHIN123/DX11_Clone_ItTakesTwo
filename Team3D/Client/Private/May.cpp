@@ -2,6 +2,8 @@
 #include "..\public\May.h"
 #include "GameInstance.h"
 #include "SubCamera.h"
+#include "UI_Generator.h"
+#include "UIObject.h"
 
 CMay::CMay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
@@ -40,6 +42,8 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	m_pModelCom->Set_Animation(ANI_M_Bounce4);
 	CDataStorage::GetInstance()->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
+
+	UI_Create(May, PlayerMarker);
 	 
 
 	return S_OK;
@@ -125,6 +129,7 @@ _int CMay::Tick(_double dTimeDelta)
 	}
 	Ground_Pound(dTimeDelta);
 
+	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);

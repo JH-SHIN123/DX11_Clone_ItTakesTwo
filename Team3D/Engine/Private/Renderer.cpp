@@ -172,6 +172,8 @@ HRESULT CRenderer::Render_Alpha()
 
 HRESULT CRenderer::Render_UI()
 {
+	Sort_GameObjects(m_RenderObjects[RENDER_UI]);
+
 	for (auto& pGameObject : m_RenderObjects[RENDER_UI])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render(), E_FAIL);

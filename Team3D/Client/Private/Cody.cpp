@@ -2,6 +2,8 @@
 #include "..\public\Cody.h"
 #include "GameInstance.h"
 #include "MainCamera.h"
+#include "UI_Generator.h"
+#include "UIObject.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -30,6 +32,14 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	m_pModelCom->Set_Animation(ANI_C_MH);
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
+
+	UI_Create(Cody, PC_Mouse_Reduction);
+	UI_Create(Cody, PC_Mouse_Enlargement);
+	UI_Create(Default, LoadingBook);
+	UI_Create(May, Arrowkeys_Side);
+	UI_Create(May, StickIcon);
+
+	UI_Create(Cody, PlayerMarker);
 	 
 	m_vPoints[0] = {72.f, 0.f, -120.f };
 	m_vPoints[1] = { 0.f, 0.f, 0.f };
@@ -132,6 +142,8 @@ _int CCody::Tick(_double dTimeDelta)
 
 	
 #pragma endregion
+
+	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
