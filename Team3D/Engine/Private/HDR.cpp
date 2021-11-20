@@ -1,6 +1,7 @@
 #include "..\Public\HDR.h"
 #include "RenderTarget_Manager.h"
 #include "VIBuffer_RectRHW.h"
+#include "Timer_Manager.h"
 
 IMPLEMENT_SINGLETON(CHDR)
 
@@ -18,6 +19,7 @@ HRESULT CHDR::Ready_HDR(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceConte
 
 	FAILED_CHECK_RETURN(Build_FirstPassResources(fBufferWidth, fBufferHeight),E_FAIL);
 	FAILED_CHECK_RETURN(Build_SecondPassResources(),E_FAIL);
+	FAILED_CHECK_RETURN(Build_PrevLumAvgResources(), E_FAIL);
 	FAILED_CHECK_RETURN(Build_ComputeShaders(TEXT("../Bin/ShaderFiles/ComputeShader_HDR.hlsl"), "DefaultTechnique"), E_FAIL);
 
 	return S_OK;
@@ -25,7 +27,10 @@ HRESULT CHDR::Ready_HDR(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceConte
 
 HRESULT CHDR::Render_HDR()
 {
-	Dispatch();
+	// Adaptation Time Check
+
+
+	FAILED_CHECK_RETURN(Calculate_LuminanceAvg(), E_FAIL);
 
 	// PS ---------------------------------------------------------------------------
 	// Tone Mapping
@@ -34,19 +39,21 @@ HRESULT CHDR::Render_HDR()
 	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
 
 	if (GetAsyncKeyState(VK_F1) & 0x8000)
-		m_fMiddleGrey += 0.0001f;
+		m_fMiddleGrey += 0.05f;
 	else if (GetAsyncKeyState(VK_F2) & 0x8000)
-		m_fMiddleGrey -= 0.0001f;
+		m_fMiddleGrey -= 0.05f;
 
 	if (GetAsyncKeyState(VK_F3) & 0x8000)
-		m_fLumWhiteSqr += 0.0001f;
+		m_fLumWhiteSqr += 0.05f;
 	else if (GetAsyncKeyState(VK_F4) & 0x8000)
-		m_fLumWhiteSqr -= 0.0001f;
+		m_fLumWhiteSqr -= 0.05f;
+
+	_float fLumWhiteSqrt = powf(sqrtf(m_fLumWhiteSqr),2);
 
 	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &m_fMiddleGrey, sizeof(_float));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &m_fLumWhiteSqr, sizeof(_float));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqrt, sizeof(_float));
 
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Blend")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_HDR")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
 	m_pVIBuffer_ToneMapping->Render(0);
@@ -54,7 +61,7 @@ HRESULT CHDR::Render_HDR()
 	return S_OK;
 }
 
-HRESULT CHDR::Dispatch()
+HRESULT CHDR::Calculate_LuminanceAvg()
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 	NULL_CHECK_RETURN(m_pEffect_CS, E_FAIL);
@@ -64,7 +71,7 @@ HRESULT CHDR::Dispatch()
 	// Set HDR Texture
 	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
 
-	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Blend"))),E_FAIL);
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_HDR"))),E_FAIL);
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageValues1D", m_pShaderResourceView_Lum), E_FAIL);
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_Lum), E_FAIL);
 	
@@ -74,10 +81,17 @@ HRESULT CHDR::Dispatch()
 	// For. Second Pass
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageValues1D", m_pShaderResourceView_Lum), E_FAIL);
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_LumAve), E_FAIL);
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_PrevAverageLum", m_pShaderResourceView_LumAve), E_FAIL);
 
 	// MAX_GROUPS : 64
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[1].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 	m_pDeviceContext->Dispatch(MAX_GROUPS_THREAD, 1, 1);
+
+	// Swap Cur LumAvg - Prev LumAvg
+	// 두 버퍼의 값을 교체하고, 현재 프레임의 평균 휘도를 다음프레임의 "prevLumAvg"로 저장한다.
+	swap(m_pHDRBuffer_PrevLumAve, m_pHDRBuffer_LumAve);
+	swap(m_pUnorderedAccessView_PrevLumAve, m_pUnorderedAccessView_LumAve);
+	swap(m_pShaderResourceView_PrevLumAve, m_pShaderResourceView_LumAve);
 
 	// Reset Views
 	Unbind_ShaderResources();
@@ -162,6 +176,36 @@ HRESULT CHDR::Build_SecondPassResources()
 	return S_OK;
 }
 
+HRESULT CHDR::Build_PrevLumAvgResources()
+{
+	/* 부동소수점 형태로 평균 휘도 값을 저장 */
+	NULL_CHECK_RETURN(m_pDevice, E_FAIL);
+
+	D3D11_BUFFER_DESC BufferDesc;
+	ZeroMemory(&BufferDesc, sizeof(D3D11_BUFFER_DESC));
+	BufferDesc.StructureByteStride = sizeof(float);
+	BufferDesc.ByteWidth = 4;
+	BufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+	BufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	FAILED_CHECK_RETURN(m_pDevice->CreateBuffer(&BufferDesc, nullptr, &m_pHDRBuffer_PrevLumAve), E_FAIL);
+
+	D3D11_UNORDERED_ACCESS_VIEW_DESC UAVDesc;
+	ZeroMemory(&UAVDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
+	UAVDesc.Format = DXGI_FORMAT_UNKNOWN;
+	UAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+	UAVDesc.Buffer.NumElements = 1;
+	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pHDRBuffer_PrevLumAve, &UAVDesc, &m_pUnorderedAccessView_PrevLumAve), E_FAIL);
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
+	ZeroMemory(&SRVDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+	SRVDesc.Format = DXGI_FORMAT_UNKNOWN;
+	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+	SRVDesc.Buffer.NumElements = 1;
+	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pHDRBuffer_PrevLumAve, &SRVDesc, &m_pShaderResourceView_PrevLumAve), E_FAIL);
+
+	return S_OK;
+}
+
 HRESULT CHDR::Build_ComputeShaders(const _tchar* pShaderFilePath, const char* pTechniqueName)
 {
 	_uint iFlag = 0;
@@ -239,6 +283,10 @@ void CHDR::Free()
 	Safe_Release(m_pUnorderedAccessView_LumAve);
 	Safe_Release(m_pShaderResourceView_LumAve);
 	Safe_Release(m_pHDRBuffer_LumAve);
+
+	Safe_Release(m_pUnorderedAccessView_PrevLumAve);
+	Safe_Release(m_pShaderResourceView_PrevLumAve);
+	Safe_Release(m_pHDRBuffer_PrevLumAve);
 
 	for (auto& InputLayout : m_InputLayouts_CS)
 	{

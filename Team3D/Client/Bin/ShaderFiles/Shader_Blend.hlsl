@@ -69,7 +69,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
 technique11		DefaultTechnique
 {
-	pass Directional
+	pass Default
 	{		
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_No_ZTest, 0);

@@ -16,7 +16,6 @@ public: /* Enum */
 	enum VIEWPORT_TYPE	{ VP_FULL, VP_MAIN, VP_SUB, VP_END };
 
 public: /* Getter */
-	ID3D11ShaderResourceView*		Get_ShaderResourceView() const;
 	const D3D11_VIEWPORT			Get_ViewportInfo(_uint iViewportIndex) const;
 	const _float4					Get_ViewportUVInfo(_uint iViewportIndex) const;
 	const _float4					Get_ViewportRadioInfo(_uint iViewportIndex) const;
@@ -39,7 +38,6 @@ private:
 	ID3D11DeviceContext*		m_pDeviceContext = nullptr;
 	IDXGISwapChain*				m_pSwapChain = nullptr;
 	ID3D11RenderTargetView*		m_pBackBufferView = nullptr;
-	ID3D11ShaderResourceView*	m_pBackBufferSRV = nullptr;
 	ID3D11DepthStencilView*		m_pDepthStencilView = nullptr;
 	DXGI_FORMAT					m_eBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	/* For.DevideViewport */

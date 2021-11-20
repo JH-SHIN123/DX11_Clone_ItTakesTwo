@@ -2,13 +2,6 @@
 
 IMPLEMENT_SINGLETON(CGraphic_Device)
 
-ID3D11ShaderResourceView* CGraphic_Device::Get_ShaderResourceView() const
-{
-	if(nullptr == m_pBackBufferSRV) return nullptr;
-
-	return m_pBackBufferSRV;
-}
-
 const D3D11_VIEWPORT CGraphic_Device::Get_ViewportInfo(_uint iViewportIndex) const
 {
 	NULL_CHECK_RETURN(iViewportIndex < VP_END, D3D11_VIEWPORT());
@@ -245,7 +238,7 @@ HRESULT CGraphic_Device::Ready_SwapChain(WINMODE eWinMode, HWND hWnd, _uint iWin
 	SwapChainDesc.BufferDesc.ScanlineOrdering			= DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	SwapChainDesc.BufferDesc.Scaling					= DXGI_MODE_SCALING_UNSPECIFIED;
 	SwapChainDesc.BufferCount							= 1;
-	SwapChainDesc.BufferUsage							= DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT;
+	SwapChainDesc.BufferUsage							= DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	SwapChainDesc.OutputWindow							= hWnd;
 	SwapChainDesc.Windowed								= eWinMode;
 	SwapChainDesc.SwapEffect							= DXGI_SWAP_EFFECT_DISCARD;
@@ -270,14 +263,6 @@ HRESULT CGraphic_Device::Ready_BackBufferRenderTargetView()
 
 	FAILED_CHECK_RETURN(m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBuffer), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateRenderTargetView(pBackBuffer, nullptr, &m_pBackBufferView), E_FAIL);
-	
-	// Create SRV for BackBuffer.
-	D3D11_SHADER_RESOURCE_VIEW_DESC	 ShaderResourceViewDesc;
-	ZeroMemory(&ShaderResourceViewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-	ShaderResourceViewDesc.Format = m_eBackBufferFormat;
-	ShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	ShaderResourceViewDesc.Texture2D.MipLevels = 1;
-	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(pBackBuffer, &ShaderResourceViewDesc, &m_pBackBufferSRV), E_FAIL);
 
 	Safe_Release(pBackBuffer);
 
@@ -315,7 +300,6 @@ void CGraphic_Device::Free()
 {
 	m_pSwapChain->SetFullscreenState(false, nullptr);
 
-	Safe_Release(m_pBackBufferSRV);
 	Safe_Release(m_pDepthStencilView);
 	Safe_Release(m_pBackBufferView);
 	Safe_Release(m_pSwapChain);
