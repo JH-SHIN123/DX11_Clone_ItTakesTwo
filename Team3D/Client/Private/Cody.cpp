@@ -1240,6 +1240,7 @@ void CCody::Go_Grind(const _double dTimeDelta)
 #pragma region Grind_Actions
 	if (m_IsOnGrind == true)
 	{
+		//
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Grind_Grapple_ToGrind))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
