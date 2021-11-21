@@ -91,3 +91,20 @@ enum aiTextureType
 #define MAX_CASCADES		4
 #define SHADOWMAP_SIZE		1024 /* Width size equal height Size */
 #pragma endregion
+
+#pragma region Input_GamePad
+#define DIP_X			0
+#define DIP_B			1
+#define DIP_A			2
+#define DIP_Y			3
+#define DIP_LB			4
+#define DIP_RB			5
+#define DIP_LT			6
+#define DIP_RT			7
+#define DIP_SHARE		8
+#define DIP_OPTION		9
+#define DIP_LS			10
+#define DIP_RS			11
+#define DIP_PS			12
+#define DIP_GUIDE		13
+#pragma endregion
