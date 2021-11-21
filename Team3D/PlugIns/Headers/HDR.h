@@ -37,6 +37,9 @@ private:
 	_float	m_fMiddleGrey = 0.72f;
 	_float	m_fLumWhiteSqr = 1.5f;
 	
+	_float m_fAdaptationDeltaT = 0.f;
+	_float m_fAdaptation = 0.f;
+
 private: /* For. CS - First Pass */
 	ID3D11Buffer*				m_pHDRBuffer_Lum = nullptr;
 	ID3D11UnorderedAccessView*	m_pUnorderedAccessView_Lum = nullptr; // Ouput
