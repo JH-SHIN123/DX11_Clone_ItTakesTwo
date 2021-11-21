@@ -47,6 +47,8 @@ _int CButtonIndicator::Tick(_double TimeDelta)
 
 	CUIObject::Tick(TimeDelta);
 
+	Scale_Effect(TimeDelta);
+
 	return _int();
 }
 
@@ -69,6 +71,29 @@ HRESULT CButtonIndicator::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
+void CButtonIndicator::Scale_Effect(_double TimeDelta)
+{
+	m_Time += TimeDelta;
+
+	_float fChange = 1.f;
+
+	if (1 == m_iScaleChangeCount % 2)
+		fChange *= -1.f;
+
+	if (m_Time < 0.1)
+	{
+		m_UIDesc.vScale.x -= 5.f * fChange;
+		m_UIDesc.vScale.y -= 5.f * fChange;
+		m_UIDesc.vPos.y -= 1.5f * fChange;
+		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f , 1.f));
+	}
+	else if (0.2 < m_Time)
+	{
+		m_Time = 0;
+		++m_iScaleChangeCount;
+	}
+}
 
 HRESULT CButtonIndicator::Ready_Component()
 {

@@ -80,6 +80,10 @@ void CUIObject::Set_TargetPos(_vector vPos)
 	XMStoreFloat4(&m_vTargetPos, vPos);
 }
 
+void CUIObject::Set_ScaleEffect(_double TimeDelta)
+{
+}
+
 HRESULT CUIObject::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);

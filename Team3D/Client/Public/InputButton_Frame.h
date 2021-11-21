@@ -24,6 +24,15 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+public:
+	virtual void Set_ScaleEffect(_double TimeDelta) override;
+
+private:
+	_double							m_Time = 0.0;
+	_uint							m_iScaleChangeCount = 0;
+	_float2							m_vStartScale;
+	_float							m_fPower = 0.f;
+
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 

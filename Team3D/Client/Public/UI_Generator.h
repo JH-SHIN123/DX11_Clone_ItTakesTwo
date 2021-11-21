@@ -50,6 +50,7 @@ public:
 public:
 	void Set_TriggerOn();
 	void Set_TargetPos(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPos);
+	void Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger);
 
 public:
 	void UI_RETutorial(Player::ID ePlayer, UI::TRIGGER eTrigger);

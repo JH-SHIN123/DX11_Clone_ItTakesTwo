@@ -36,8 +36,12 @@ HRESULT CInputButton_Frame::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	m_vStartScale = m_UIDesc.vScale;
 
 	SetUp_Option();
+
+	if (2 == m_iOption)
+		m_fPower = 20.f;
 
 	return S_OK;
 }
@@ -48,6 +52,18 @@ _int CInputButton_Frame::Tick(_double TimeDelta)
 		return EVENT_DEAD;
 
 	CUIObject::Tick(TimeDelta);
+
+	if (2 == m_iOption)
+	{
+		if (m_vStartScale.x >= m_UIDesc.vScale.x)
+		{
+			m_UIDesc.vScale.x += m_fPower / 4.f;
+			m_UIDesc.vScale.y += m_fPower / 4.f;
+			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+		}
+	}
+
+
 
 	return _int();
 }
@@ -63,7 +79,7 @@ HRESULT CInputButton_Frame::Render(RENDER_GROUP::Enum eGroup)
 {
 	CUIObject::Render(eGroup);
 
-	if (0 == m_iOption)
+	if (0 == m_iOption || 2 == m_iOption)
 	{
 		if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
 			return E_FAIL;
@@ -86,8 +102,41 @@ void CInputButton_Frame::SetUp_Option()
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_F")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Dot")) ||
 		!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_PS_Triangle")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_PS_R1")))
 		m_iOption = 1;
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_E")))
+		m_iOption = 2;
 	else
 		m_iOption = 0;
+}
+
+void CInputButton_Frame::Set_ScaleEffect(_double TimeDelta)
+{
+	if (2 != m_iOption && 10.f >= m_UIDesc.vScale.x)
+		return;
+
+	m_UIDesc.vScale.x -= m_fPower;
+	m_UIDesc.vScale.y -= m_fPower;
+	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+
+	//_float2 vScale = m_UIDesc.vScale;
+
+	//m_Time += TimeDelta;
+
+	//_float fChange = 1.f;
+
+	//if (1 == m_iScaleChangeCount % 2)
+	//	fChange *= -1.f;
+
+	//if (m_Time < 0.1)
+	//{
+	//	m_UIDesc.vScale.x -= 2.f * fChange;
+	//	m_UIDesc.vScale.y -= 2.f * fChange;
+	//	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	//}
+	//else if (0.2 < m_Time)
+	//{
+	//	m_Time = 0;
+	//	++m_iScaleChangeCount;
+	//}
 }
 
 

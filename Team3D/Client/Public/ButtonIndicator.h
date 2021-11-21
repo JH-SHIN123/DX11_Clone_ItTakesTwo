@@ -24,11 +24,19 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+public:
+	void Scale_Effect(_double TimeDelta);
+
+private:
+	_double							m_Time = 0.0;
+	_uint							m_iScaleChangeCount = 0;
+
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 
 private:
 	HRESULT Ready_Component();
+
 
 public:
 	static CButtonIndicator* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

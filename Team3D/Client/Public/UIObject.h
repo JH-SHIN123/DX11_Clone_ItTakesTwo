@@ -55,6 +55,7 @@ public:
 
 public:
 	virtual void Set_TargetPos(_vector vPos);
+	virtual void Set_ScaleEffect(_double TimeDelta = 0.0);
 
 protected:
 	UI_DESC						m_UIDesc;

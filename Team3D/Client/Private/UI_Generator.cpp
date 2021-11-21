@@ -546,6 +546,16 @@ void CUI_Generator::Set_TargetPos(Player::ID ePlayer, UI::TRIGGER eTrigger, _vec
 		UIObject->Set_TargetPos(vTargetPos);
 }
 
+
+void CUI_Generator::Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return;
+
+	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
+		UIObject->Set_ScaleEffect();
+}
+
 void CUI_Generator::Free()
 {
 	Safe_Release(m_pDevice);
@@ -576,3 +586,4 @@ void CUI_Generator::Free()
 
 	Safe_Delete_Array(m_VTXFONT);
 }
+

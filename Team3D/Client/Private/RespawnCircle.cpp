@@ -63,6 +63,7 @@ _int CRespawnCircle::Late_Tick(_double TimeDelta)
 		if (1.5f <= m_Time)
 			m_Time = 0.5f;
 
+		UI_Generator->Set_ScaleEffect(Player::Cody, UI::RespawnCircle);
 	}
 	else
 	{
