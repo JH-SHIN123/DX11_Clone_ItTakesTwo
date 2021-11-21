@@ -20,6 +20,9 @@ public:
 	virtual HRESULT	Render() override;
 	virtual void SetUp_WorldMatrix(_fmatrix WorldMatrix) override;
 
+private:
+	CTextures* m_pTexturesCom_ColorRamp = nullptr;
+
 public:
 	static CEffect_RespawnTunnel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

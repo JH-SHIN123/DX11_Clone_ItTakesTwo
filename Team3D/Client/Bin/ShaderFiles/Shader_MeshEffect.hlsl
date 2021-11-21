@@ -435,7 +435,7 @@ PS_OUT	PS_MAIN_WORMHOLE(PS_IN_TRIPLE_UV In) // 사실상 포탈전용
 {
 	PS_OUT Out = (PS_OUT)0;
 	float2 vFlipUV; 
-	vFlipUV.x = In.vTexUV.y + g_fTime * 0.25;;
+	vFlipUV.x = In.vTexUV.y;
 	vFlipUV.y = In.vTexUV.x;
 	In.vTexUV.x += g_fTime * 0.25;
 	In.vTexUV.y += g_fTime;

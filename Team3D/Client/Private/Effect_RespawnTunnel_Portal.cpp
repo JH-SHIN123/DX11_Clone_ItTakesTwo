@@ -39,7 +39,7 @@ HRESULT CEffect_RespawnTunnel_Portal::NativeConstruct(void * pArg)
 	}
 	//D3D11_BLEND_DESC
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelInstanceCom, &Data), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Color_Ramp", TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_ColorRamp, &Data), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Color_Ramp", TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_VIBuffer_PointInstance_Custom_STT", TEXT("Com_PointBuffer_Smoke"), (CComponent**)&m_pPointInstanceCom_Smoke), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Smoke_Flow_02", TEXT("Com_Textures_Smoke"), (CComponent**)&m_pTexturesCom_Smoke), E_FAIL);

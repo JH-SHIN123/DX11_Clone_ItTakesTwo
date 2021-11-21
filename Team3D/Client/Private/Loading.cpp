@@ -124,7 +124,7 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MainCamera"), CMainCamera::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SubCamera"), CSubCamera::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
-		CEffect_Generator::GetInstance()->Load_EffectData(TEXT("../Bin/Data/Effect/Stage1_Effect.dat"), m_pDevice, m_pDeviceContext);
+		CEffect_Generator::GetInstance()->Load_EffectData(TEXT("../Bin/Resources/Effect/Stage1_Effect.dat"), m_pDevice, m_pDeviceContext);
 
 		_matrix	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 		PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f));
