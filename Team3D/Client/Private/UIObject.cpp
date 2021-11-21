@@ -47,9 +47,9 @@ _int CUIObject::Late_Tick(_double TimeDelta)
 	return NO_EVENT;
 }
 
-HRESULT CUIObject::Render()
+HRESULT CUIObject::Render(RENDER_GROUP::Enum eGroup)
 {
-	CGameObject::Render();
+	CGameObject::Render(eGroup);
 
 	return S_OK;
 }

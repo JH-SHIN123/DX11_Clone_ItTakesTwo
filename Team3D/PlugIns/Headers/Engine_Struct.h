@@ -143,4 +143,9 @@ namespace Engine
 		tagMeshActorDesc() { }
 		tagMeshActorDesc(uint32_t _iVertexCount, void* _pVertices, uint32_t _iFaceCount, void* _pFaces) : iVertexCount(_iVertexCount), pVertices(_pVertices), iFaceCount(_iFaceCount), pFaces(_pFaces){}
 	}MESHACTOR_DESC;
+
+	typedef struct tagRenderGroup
+	{
+		enum Enum { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_ALPHA, RENDER_UI, RENDER_END };
+	}RENDER_GROUP;
 }

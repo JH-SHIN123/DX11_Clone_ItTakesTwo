@@ -58,12 +58,12 @@ _int CUISprite::Late_Tick(_double TimeDelta)
 
 	Update_Frame(TimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_UI, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
-HRESULT CUISprite::Render()
+HRESULT CUISprite::Render(RENDER_GROUP::Enum eGroup)
 {
-	CUIObject::Render();
+	CUIObject::Render(eGroup);
 
 	if (FAILED(Set_UIVariables_Perspective()))
 		return E_FAIL;

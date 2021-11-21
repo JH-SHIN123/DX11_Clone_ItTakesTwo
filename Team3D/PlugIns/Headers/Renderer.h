@@ -11,22 +11,19 @@ private:
 	explicit CRenderer(const CRenderer& rhs);
 	virtual ~CRenderer() = default;
 
-public: /* Enum */
-	enum RENDER_GROUP { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_ALPHA, RENDER_UI, RENDER_END };
-
 public:
 	ID3D11ShaderResourceView* Get_ShaderResourceView_RenderTargetManager(const _tchar* pRenderTargetTag);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype();
 	virtual HRESULT	NativeConstruct(void* pArg);
-	HRESULT			Add_GameObject_ToRenderGroup(RENDER_GROUP eGroup, class CGameObject* pGameObject);
+	HRESULT			Add_GameObject_ToRenderGroup(RENDER_GROUP::Enum eGroup, class CGameObject* pGameObject);
 	HRESULT			Draw_Renderer();
 
 private: /* Typedef */
 	typedef list<class CGameObject*> RENDER_OBJECTS;
 private:
-	RENDER_OBJECTS					m_RenderObjects[RENDER_END];
+	RENDER_OBJECTS					m_RenderObjects[RENDER_GROUP::RENDER_END];
 	class CRenderTarget_Manager*	m_pRenderTarget_Manager = nullptr;
 	class CVIBuffer_RectRHW*		m_pVIBuffer = nullptr;
 

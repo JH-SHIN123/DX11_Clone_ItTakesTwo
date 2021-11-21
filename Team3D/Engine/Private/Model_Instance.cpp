@@ -25,6 +25,7 @@ CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
 	, m_SortedMeshes				(rhs.m_SortedMeshes)
 	, m_iMaterialSetCount			(rhs.m_iMaterialSetCount)
 	, m_PxTriMeshes					(rhs.m_PxTriMeshes)
+	, m_bMultiRenderGroup			(false)
 	, m_pVB							(rhs.m_pVB)
 	, m_iVertexCount				(rhs.m_iVertexCount)
 	, m_iVertexStride				(rhs.m_iVertexStride)
@@ -60,6 +61,16 @@ CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
 		Safe_AddRef(InputLayout.pLayout);
 		Safe_AddRef(InputLayout.pPass);
 	}
+}
+
+HRESULT CModel_Instance::Set_MeshRenderGroup(_uint iMeshIndex, RENDER_GROUP::Enum eGroup)
+{
+	if (iMeshIndex >= m_iMaterialCount) return E_FAIL;
+
+	m_Meshes[iMeshIndex]->Set_RenderGroup(eGroup);
+	m_bMultiRenderGroup = true;
+
+	return S_OK;
 }
 
 HRESULT CModel_Instance::Set_Variable(const char * pConstantName, void * pData, _uint iByteSize)
@@ -253,7 +264,7 @@ HRESULT CModel_Instance::Update_Model(_fmatrix TransformMatrix)
 	return S_OK;
 }
 
-HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite)
+HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite, RENDER_GROUP::Enum eGroup)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 
@@ -296,7 +307,10 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _
 		FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
-			m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
+		{
+			if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
+				m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
+		}
 	}
 
 	return S_OK;
@@ -337,7 +351,7 @@ HRESULT CModel_Instance::Bind_GBuffers(_uint iRenderCount)
 	return S_OK;
 }
 
-HRESULT CModel_Instance::Render_ModelByPass(_uint iRenderCount, _uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite)
+HRESULT CModel_Instance::Render_ModelByPass(_uint iRenderCount, _uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite, RENDER_GROUP::Enum eGroup)
 {
 	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
 
@@ -347,7 +361,10 @@ HRESULT CModel_Instance::Render_ModelByPass(_uint iRenderCount, _uint iMaterialI
 	FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 	for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
-		m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
+	{
+		if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
+			m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
+	}
 
 	return S_OK;
 }

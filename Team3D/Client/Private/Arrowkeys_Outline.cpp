@@ -54,12 +54,12 @@ _int CArrowkeys_Outline::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 	
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_UI, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
-HRESULT CArrowkeys_Outline::Render()
+HRESULT CArrowkeys_Outline::Render(RENDER_GROUP::Enum eGroup)
 {
-	CUIObject::Render();
+	CUIObject::Render(eGroup);
 
 	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
