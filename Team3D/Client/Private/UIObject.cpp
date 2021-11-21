@@ -80,7 +80,7 @@ void CUIObject::Set_TargetPos(_vector vPos)
 	XMStoreFloat4(&m_vTargetPos, vPos);
 }
 
-void CUIObject::Set_ScaleEffect(_double TimeDelta)
+void CUIObject::Set_ScaleEffect()
 {
 }
 

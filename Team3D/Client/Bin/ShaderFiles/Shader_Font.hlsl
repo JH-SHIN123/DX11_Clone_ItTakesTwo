@@ -177,6 +177,9 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
+	if (Out.vColor.r == 0.f && Out.vColor.b == 0.f && Out.vColor.g == 0.f)
+		discard;
+
 	return Out;
 }
 

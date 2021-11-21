@@ -80,7 +80,7 @@ private:
 	HRESULT Add_Prototype_Texture();
 
 private:
-	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag);
+	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag, void* pArg = nullptr);
 
 public:
 	virtual void Free() override;

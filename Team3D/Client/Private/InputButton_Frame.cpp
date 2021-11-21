@@ -108,7 +108,7 @@ void CInputButton_Frame::SetUp_Option()
 		m_iOption = 0;
 }
 
-void CInputButton_Frame::Set_ScaleEffect(_double TimeDelta)
+void CInputButton_Frame::Set_ScaleEffect()
 {
 	if (2 != m_iOption && 10.f >= m_UIDesc.vScale.x)
 		return;
@@ -116,40 +116,31 @@ void CInputButton_Frame::Set_ScaleEffect(_double TimeDelta)
 	m_UIDesc.vScale.x -= m_fPower;
 	m_UIDesc.vScale.y -= m_fPower;
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
-
-	//_float2 vScale = m_UIDesc.vScale;
-
-	//m_Time += TimeDelta;
-
-	//_float fChange = 1.f;
-
-	//if (1 == m_iScaleChangeCount % 2)
-	//	fChange *= -1.f;
-
-	//if (m_Time < 0.1)
-	//{
-	//	m_UIDesc.vScale.x -= 2.f * fChange;
-	//	m_UIDesc.vScale.y -= 2.f * fChange;
-	//	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
-	//}
-	//else if (0.2 < m_Time)
-	//{
-	//	m_Time = 0;
-	//	++m_iScaleChangeCount;
-	//}
 }
 
 
 void CInputButton_Frame::Render_Font()
 {
 	CUI_Generator::FONTDESC		tFontDesc;
-	tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
-	tFontDesc.vScale = { 40.f, 50.f };
-	tFontDesc.fInterval = 0.f;
-	tFontDesc.iOption = 1;
 
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_F")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
+		tFontDesc.vScale = { 40.f, 50.f };
+		tFontDesc.fInterval = 0.f;
+		tFontDesc.iOption = 1;
+
 		UI_Generator->Render_Font(TEXT("F"), tFontDesc, m_ePlayerID);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_E")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
+		tFontDesc.vScale = { m_UIDesc.vScale.x / 2.f, m_UIDesc.vScale.y / 1.2f };
+		tFontDesc.fInterval = 0.f;
+		tFontDesc.iOption = 1;
+
+		UI_Generator->Render_Font(TEXT("E"), tFontDesc, m_ePlayerID);
+	}
 }
 
 HRESULT CInputButton_Frame::Ready_Component()

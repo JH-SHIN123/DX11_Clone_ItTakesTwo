@@ -26,13 +26,21 @@ public:
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
 private:
+	_float							m_fTime = 0.5f;
+	_uint							m_iPassNum = 0;
+	_float2							m_vStartScale;
+	_bool							m_IsSpawnEnd = false;
+	_int							m_iRespawnOption = 0;
+	_float							m_fColorChangeTime = 0.f;
+
+private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 	CTextures*						m_pSubTexturesCom = nullptr;
 
-	_float							m_Time = 0.5f;
-
 private:
 	HRESULT Ready_Component();
+	void Set_Gauge(_double TimeDelta);
+	void Spawn_Effect(_double TimeDelta);
 
 public:
 	static CRespawnCircle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

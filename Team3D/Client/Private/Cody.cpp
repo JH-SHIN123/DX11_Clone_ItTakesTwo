@@ -43,6 +43,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 
 	//UI_Create(Cody, InputButton_InterActive);
 
+
 	return S_OK;
 }
 
@@ -122,6 +123,14 @@ _int CCody::Tick(_double dTimeDelta)
 
 	CMay* pMay = (CMay*)DATABASE->GetMay();
 	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+
+	//Å×½ºÆ®////////////////////////////////////////////////
+	if(m_pGameInstance->Key_Down(DIK_3))
+		UI_Create(Cody, RespawnCircle);
+
+	if (m_pGameInstance->Key_Down(DIK_4))
+		UI_Delete(Cody, RespawnCircle);
+	///////////////////////////////////////////////////////
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);

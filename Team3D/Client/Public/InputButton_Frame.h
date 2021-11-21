@@ -25,7 +25,7 @@ public:
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
 public:
-	virtual void Set_ScaleEffect(_double TimeDelta) override;
+	virtual void Set_ScaleEffect() override;
 
 private:
 	_double							m_Time = 0.0;

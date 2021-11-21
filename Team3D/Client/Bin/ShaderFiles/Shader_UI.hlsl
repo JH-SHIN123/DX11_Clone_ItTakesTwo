@@ -12,10 +12,13 @@ matrix		g_UIProjMatrix;
 int		g_iShaderMouseOption;
 int		g_iColorOption;
 int		g_iGSOption;
+int		g_iRespawnOption;
+
 float	g_fAlpha;
-float	g_f1Alpha;
+
 
 float  g_Time;
+
 
 sampler	DiffuseSampler = sampler_state
 {
@@ -123,7 +126,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_FRAME(PS_IN In)
+PS_OUT PS_Frame(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
@@ -135,7 +138,7 @@ PS_OUT PS_FRAME(PS_IN In)
 
 }
 
-PS_OUT PS_PC_MOUSE(PS_IN In)
+PS_OUT PS_PC_Mouse(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
@@ -160,7 +163,7 @@ PS_OUT PS_Fill(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_PLAYERMARKER(PS_IN In)
+PS_OUT PS_PlayerMarker(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
@@ -182,7 +185,7 @@ PS_OUT PS_PLAYERMARKER(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_RESPAWNCIRCLE(PS_IN In)
+PS_OUT PS_RespawnCircle(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
@@ -235,6 +238,31 @@ PS_OUT PS_RESPAWNCIRCLE(PS_IN In)
 	return Out;
 }
 
+
+PS_OUT PS_RespawnCircleHeart(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	vector SubColor = g_DiffuseSubTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (0.f >= Out.vColor.a && 0.f >= Out.vColor.b)
+		discard;
+
+	if (0 == g_iRespawnOption)
+	{
+		Out.vColor.rgb = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.f;
+		Out.vColor *= vector(10.0f, 1.0f, 0.1f, 1.f);
+	}
+	else
+	{
+		Out.vColor.rgb = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 0.2f;
+	}
+
+	return Out;
+}
+
+
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
@@ -258,7 +286,7 @@ technique11 DefaultTechnique
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
-		PixelShader = compile ps_5_0 PS_FRAME();
+		PixelShader = compile ps_5_0 PS_Frame();
 	}
 
 	// 2
@@ -269,7 +297,7 @@ technique11 DefaultTechnique
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
-		PixelShader = compile ps_5_0 PS_PC_MOUSE();
+		PixelShader = compile ps_5_0 PS_PC_Mouse();
 	}
 	
 	// 3
@@ -291,7 +319,7 @@ technique11 DefaultTechnique
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.5f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
-		PixelShader = compile ps_5_0 PS_PLAYERMARKER();
+		PixelShader = compile ps_5_0 PS_PlayerMarker();
 	}
 
 	// 5
@@ -302,7 +330,18 @@ technique11 DefaultTechnique
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
-		PixelShader = compile ps_5_0 PS_RESPAWNCIRCLE();
+		PixelShader = compile ps_5_0 PS_RespawnCircle();
+	}
+
+	// 6
+	pass RespawnCircleHeart
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_RespawnCircleHeart();
 	}
 
 };

@@ -92,6 +92,8 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 	if (false == m_IsTrigger || ePlayer >= Player::PLAYER_END || eTrigger >= UI::TRIGGER_END)
 		return S_OK;
 
+	_uint iOption = 1;
+
 	switch (eTrigger)
 	{
 	case UI::InputButton_Dot:
@@ -174,6 +176,7 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"));
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_E"));
 		SetUp_Clone(ePlayer, eTrigger, TEXT("ButtonIndicator"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), &iOption);
 		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
@@ -521,7 +524,7 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 	return S_OK;
 }
 
-HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag)
+HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, void* pArg)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
@@ -529,7 +532,7 @@ HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, con
 	CGameObject* pGameObject = nullptr;
 	CUIObject* pUIObject = nullptr;
 
-	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, PrototypeTag, nullptr, &pGameObject), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, PrototypeTag, pArg, &pGameObject), E_FAIL);
 	pUIObject = static_cast<CUIObject*>(pGameObject);
 	pUIObject->Set_PlayerID(ePlayer);
 	m_vecUIOBjects[ePlayer][eTrigger].push_back(pUIObject);
