@@ -129,6 +129,13 @@ sampler	Wrap_MinMagMipLinear_Sampler = sampler_state
 	Filter = MIN_MAG_MIP_LINEAR;
 };
 
+sampler	Clamp_MinMagMipLinear_Sampler = sampler_state
+{
+	AddressU = CLAMP;
+	AddressV = CLAMP;
+	Filter = MIN_MAG_MIP_LINEAR;
+};
+
 SamplerComparisonState ShadowSampler = sampler_state
 {
 	Filter = COMPARISON_MIN_MAG_LINEAR_MIP_POINT;

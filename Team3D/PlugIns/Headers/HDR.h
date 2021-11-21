@@ -19,7 +19,7 @@ private:
 	HRESULT Build_FirstPassResources(_float iWidth, _float iHeight); /* 휘도의 중간값을 저장하기 위한 리소스들 */
 	HRESULT Build_SecondPassResources(); /* 부동소수점 형태로 평균 휘도 값을 저장 */
 	HRESULT Build_PrevLumAvgResources();
-	HRESULT Build_BloomResources();
+	HRESULT Build_BloomResources(_float iWidth, _float iHeight);
 	HRESULT Build_ComputeShaders(const _tchar* pShaderFilePath, const char* pTechniqueName);
 
 	HRESULT	Set_Variable(const char* pConstantName, void* pData, _uint iByteSize);
@@ -36,6 +36,8 @@ private:
 	ID3D11DeviceContext* m_pDeviceContext = nullptr;
 	
 private:
+	_uint	m_iWinSize[2] = { 0,0 };
+
 	_float	m_fMiddleGrey = 0.0008f;
 	_float	m_fLumWhiteSqr = 5.9f;
 	
@@ -62,6 +64,10 @@ private: /* For. Bloom */
 	ID3D11UnorderedAccessView*	m_pUnorderedAccessView_DownScaledHDR = nullptr;
 	ID3D11ShaderResourceView*	m_pShaderResourceView_DownScaledHDR = nullptr;
 
+	ID3D11Texture2D*			m_pBloomTex_Temp = nullptr; // g_Bloom
+	ID3D11UnorderedAccessView*	m_pUnorderedAccessView_Bloom_Temp = nullptr;
+	ID3D11ShaderResourceView*	m_pShaderResourceView_Bloom_Temp = nullptr;
+	
 	ID3D11Texture2D*			m_pBloomTex = nullptr; // g_Bloom
 	ID3D11UnorderedAccessView*	m_pUnorderedAccessView_Bloom = nullptr;
 	ID3D11ShaderResourceView*	m_pShaderResourceView_Bloom = nullptr;

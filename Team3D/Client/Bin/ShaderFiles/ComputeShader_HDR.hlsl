@@ -125,6 +125,7 @@ void DownScale4to1(uint dispatchThreadID, uint groupThreadID, uint groupID, floa
 }
 
 // 이 컴퓨트 셰이더는 X값 (Total back buffer pixels / 16*1024)에 따라 처리할 수 있다.
+// witdh x height -> 1x1
 [numthreads(1024,1,1)]
 void CS_DOWNSCALE_FIRSTPASS(uint3 groupID : SV_GroupID, uint3 dispatchThreadID : SV_DispatchThreadID, uint3 groupThreadID : SV_GroupThreadID)
 {
@@ -232,9 +233,75 @@ void CS_BRIGHTPASS(uint3 dispatchThreadID : SV_DispatchThreadID)
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* For. Bloom */
+static const float g_SampleWeights[13] =
+{
+	0.002216, 0.008764, 0.026995, 0.064759, 0.120985, 0.176033, 0.199471, 0.176033, 0.120985, 0.064759, 0.026995, 0.008764, 0.002216
+};
+
+#define KERNERLHALF 6
+#define GROUPTHREADS 128
+
+Texture2D <float4 > g_Input;
+RWTexture2D <float4 > g_Output;
+
+groupshared float4 g_SharedInput[GROUPTHREADS];
+
+[numthreads(GROUPTHREADS, 1, 1)]
+void CS_VERTICAL_FILTER(uint3 Gid : SV_GroupID, uint GI : SV_GroupIndex)
+{
+	uint2 coord = int2(Gid.x, GI - KERNERLHALF + (GROUPTHREADS - KERNERLHALF * 2) * Gid.y);
+	coord = clamp(coord, int2(0, 0), int2(g_Res.x - 1, g_Res.y - 1));
+	g_SharedInput[GI] = g_Input.Load(int3(coord, 0));
+
+	GroupMemoryBarrierWithGroupSync();
+
+	// 수직방향 블러
+	if (GI > KERNERLHALF && GI < (GROUPTHREADS - KERNERLHALF) &&
+		((GI - KERNERLHALF + (GROUPTHREADS - KERNERLHALF * 2) * Gid.y) < g_Res.y))
+	{
+		float4 vOut = 0;
+
+		[unroll]
+		for (int i = -KERNERLHALF; i <= KERNERLHALF; ++i)
+		{
+			vOut += g_SharedInput[GI + i] * g_SampleWeights[i + KERNERLHALF];
+		}
+
+		g_Output[coord] = float4(vOut.rgb, 1.f);
+	}
+}
+
+[numthreads(GROUPTHREADS, 1, 1)]
+void CS_HORIZONTAL_FILTER(uint3 Gid : SV_GroupID, uint GI : SV_GroupIndex)
+{
+	int2 coord = int2(GI - KERNERLHALF + (GROUPTHREADS - KERNERLHALF * 2) * Gid.x, Gid.y);
+	coord = clamp(coord, int2(0, 0), int2(g_Res.x - 1, g_Res.y - 1));
+	g_SharedInput[GI] = g_Input.Load(int3(coord, 0));
+
+	GroupMemoryBarrierWithGroupSync();
+
+	// 수평방향 블러
+	if (GI > KERNERLHALF && GI < (GROUPTHREADS - KERNERLHALF) &&
+		((Gid.x * (GROUPTHREADS - 2 * KERNERLHALF) + GI - KERNERLHALF) < g_Res.x))
+	{
+		float4 vOut = 0;
+
+		[unroll]
+		for (int i = -KERNERLHALF; i <= KERNERLHALF; ++i)
+		{
+			vOut += g_SharedInput[GI + i] * g_SampleWeights[i + KERNERLHALF];
+		}
+
+		g_Output[coord] = float4(vOut.rgb, 1.f);
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 technique11		DefaultTechnique
 {
-	pass DownScaleFirstPass
+	pass DownScaleFirstPass // 0
 	{
 		VertexShader = NULL;
 		GeometryShader = NULL;
@@ -242,7 +309,7 @@ technique11		DefaultTechnique
 		ComputeShader = compile cs_5_0 CS_DOWNSCALE_FIRSTPASS();
 	}
 
-	pass DownScaleSecondPass
+	pass DownScaleSecondPass // 1
 	{
 		VertexShader = NULL;
 		GeometryShader = NULL;
@@ -250,12 +317,28 @@ technique11		DefaultTechnique
 		ComputeShader = compile cs_5_0 CS_DOWNSCALE_SECONDPASS();
 	}
 
-	pass BrightPass
+	pass BrightPass // 2
 	{
 		VertexShader = NULL;
 		GeometryShader = NULL;
 		PixelShader = NULL;
 		ComputeShader = compile cs_5_0 CS_BRIGHTPASS();
+	}
+
+	pass VerticalFilter // 3
+	{
+		VertexShader = NULL;
+		GeometryShader = NULL;
+		PixelShader = NULL;
+		ComputeShader = compile cs_5_0 CS_VERTICAL_FILTER();
+	}
+
+	pass HorizontalFilter // 4
+	{
+		VertexShader = NULL;
+		GeometryShader = NULL;
+		PixelShader = NULL;
+		ComputeShader = compile cs_5_0 CS_HORIZONTAL_FILTER();
 	}
 };
 
