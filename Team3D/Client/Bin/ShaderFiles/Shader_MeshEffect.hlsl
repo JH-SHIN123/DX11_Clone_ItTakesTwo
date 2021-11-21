@@ -23,7 +23,25 @@ cbuffer Effect
 {
 	float	g_fAlpha;
 };
+BlendState BlendState_Alpha2
+{
+	BlendEnable[0] = true;
+	SrcBlend = SRC_COLOR;
+	DestBlend = INV_SRC_COLOR;
+	BlendOp = Add;
+};
+BlendState BlendState_Alpha3
+{
+	BlendEnable[0] = true;
+	BlendEnable[1] = true;
+	SrcBlend = INV_SRC_ALPHA;
+	DestBlend = SRC_ALPHA;
+	BlendOp = Add;
 
+	SrcBlendAlpha = ONE;
+	DestBlendAlpha = ONE;
+	BlendOpAlpha = Add;
+};
 sampler	Mirror_MinMagMipLinear_Sampler = sampler_state
 {
 	AddressU = mirror;
@@ -377,8 +395,8 @@ PS_OUT	PS_MAIN_RESPAWN_PORTAL(PS_IN_TRIPLE_UV In) // 사실상 포탈전용
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV + fWeight);
 
-	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV) * 5.f;
-
+	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV) * 3.f;
+	Out.vDiffuse.a = Out.vDiffuse.b * 0.9f;
 	//vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	//if (0.f < vFX_tex.a)
 	//	Out.vDiffuse.rgb = (vMtrlDiffuse.a) * g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV + 0.5f) * 5.f;
@@ -396,13 +414,37 @@ PS_OUT	PS_MAIN_GRAVITYPIPE(PS_IN_TRIPLE_UV In) // 사실상 포탈전용
 	float2 vDistortionUV = In.vTexUV;
 	vDistortionUV.x += g_fTime * 0.33333333f;
 	vDistortionUV.y += g_fTime;
-	float4 vFX_tex = g_DistortionTexture.Sample(Mirror_MinMagMipLinear_Sampler, vDistortionUV);
+	float4 vFX_tex = g_DistortionTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistortionUV);
 	float fWeight = (vFX_tex.b * 0.5f);
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV + fWeight);
 
-	vector vColor = g_ColorRampTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	float2 vflipUV = { In.vTexUV.y, In.vTexUV.x };
+	vflipUV += g_fTime * 0.33333333f;
+	vector vColor = g_ColorRampTexture.Sample(Wrap_MinMagMipLinear_Sampler, vflipUV - fWeight);
 	Out.vDiffuse.rgb = vMtrlDiffuse.r * vColor.rgb;
+	Out.vDiffuse.a = Out.vDiffuse.r * 0.9f;
+
+	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+	return Out;
+}
+
+PS_OUT	PS_MAIN_WORMHOLE(PS_IN_TRIPLE_UV In) // 사실상 포탈전용
+{
+	PS_OUT Out = (PS_OUT)0;
+	float2 vFlipUV; 
+	vFlipUV.x = In.vTexUV.y + g_fTime * 0.25;;
+	vFlipUV.y = In.vTexUV.x;
+	In.vTexUV.x += g_fTime * 0.25;
+	In.vTexUV.y += g_fTime;
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+
+	vector vColor = g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, vFlipUV);
+	Out.vDiffuse.rgb = (vMtrlDiffuse.r * 2.f ) * vColor.rgb;
+	Out.vDiffuse.a = Out.vDiffuse.r;
 
 	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
@@ -475,8 +517,8 @@ technique11 DefaultTechnique
 	pass RespawnPortal // 4
 	{
 		SetRasterizerState(Rasterizer_NoCull);
-		SetDepthStencilState(DepthStecil_Default, 0);
-		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_TRIPLE_UV();
 		GeometryShader = compile gs_5_0 GS_TRIPLE_UV();
 		PixelShader = compile ps_5_0 PS_MAIN_RESPAWN_PORTAL();
@@ -485,10 +527,20 @@ technique11 DefaultTechnique
 	pass GravityPipe // 5
 	{
 		SetRasterizerState(Rasterizer_NoCull);
-		SetDepthStencilState(DepthStecil_Default, 0);
-		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_TRIPLE_UV();
 		GeometryShader = compile gs_5_0 GS_TRIPLE_UV();
 		PixelShader = compile ps_5_0 PS_MAIN_GRAVITYPIPE();
+	}
+
+	pass Wormhole // 6
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_TRIPLE_UV();
+		GeometryShader = compile gs_5_0 GS_TRIPLE_UV();
+		PixelShader = compile ps_5_0 PS_MAIN_WORMHOLE();
 	}
 };

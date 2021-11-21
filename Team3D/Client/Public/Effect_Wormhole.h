@@ -24,6 +24,11 @@ public:
 public:
 	HRESULT Ready_Instance();
 
+private:
+	CTextures* m_pTexturesCom_ColorRamp = nullptr;
+	_float m_fTime = 3.5f;
+	_float m_fRadianAngle = 0.f;
+
 public:
 	static CEffect_Wormhole* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
