@@ -148,6 +148,12 @@
     <Filter Include="02.GameObject\05.UI\05.UISprite">
       <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.UI\06.RespawnCircle">
+      <UniqueIdentifier>{32c02485-1865-4c7a-8089-c3bd39b4b08c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\07.Portrait">
+      <UniqueIdentifier>{f56e4d4e-96be-46f6-91d6-d0ec0b8dd449}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -264,6 +270,12 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h">
       <Filter>98.Defines</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RespawnCircle.h">
+      <Filter>02.GameObject\05.UI\06.RespawnCircle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Portrait.h">
+      <Filter>02.GameObject\05.UI\07.Portrait</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -355,6 +367,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RespawnCircle.cpp">
+      <Filter>02.GameObject\05.UI\06.RespawnCircle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Portrait.cpp">
+      <Filter>02.GameObject\05.UI\07.Portrait</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

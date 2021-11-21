@@ -36,14 +36,12 @@ HRESULT CCody::NativeConstruct(void* pArg)
 
 	UI_Create(Cody, PC_Mouse_Reduction);
 	UI_Create(Cody, PC_Mouse_Enlargement);
-	UI_Create(Default, LoadingBook);
-	UI_Create(May, Arrowkeys_Side);
-	UI_Create(May, StickIcon);
-
 	UI_Create(Cody, PlayerMarker);
+	//UI_Create(Cody, Portrait_Cody);
+	//UI_Create(May, Portrait_May);
+	UI_Create(Cody, RespawnCircle);
 
-	UI_Create(Cody, InputButton_InterActive);
-	 
+	//UI_Create(Cody, InputButton_InterActive);
 
 	return S_OK;
 }

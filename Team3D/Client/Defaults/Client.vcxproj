@@ -199,6 +199,8 @@
     <ClInclude Include="..\Public\MoonBaboon.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
     <ClInclude Include="..\Public\PlayerMarker.h" />
+    <ClInclude Include="..\Public\Portrait.h" />
+    <ClInclude Include="..\Public\RespawnCircle.h" />
     <ClInclude Include="..\Public\Robot.h" />
     <ClInclude Include="..\Public\RobotHead.h" />
     <ClInclude Include="..\Public\Rocket.h" />
@@ -233,6 +235,8 @@
     <ClCompile Include="..\Private\MoonBaboon.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
+    <ClCompile Include="..\Private\Portrait.cpp" />
+    <ClCompile Include="..\Private\RespawnCircle.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />
     <ClCompile Include="..\Private\RobotHead.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />

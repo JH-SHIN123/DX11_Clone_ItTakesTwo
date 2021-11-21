@@ -179,6 +179,18 @@ PS_OUT PS_PLAYERMARKER(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_RESPAWNCIRCLE(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	Out.vColor.a = 0.f;
+
+
+	return Out;
+}
+
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
@@ -236,6 +248,17 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_PLAYERMARKER();
+	}
+
+	// 5
+	pass RespawnCircle
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.5f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_RESPAWNCIRCLE();
 	}
 
 };
