@@ -20,6 +20,7 @@ HRESULT CHDR::Ready_HDR(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceConte
 	FAILED_CHECK_RETURN(Build_FirstPassResources(fBufferWidth, fBufferHeight),E_FAIL);
 	FAILED_CHECK_RETURN(Build_SecondPassResources(),E_FAIL);
 	FAILED_CHECK_RETURN(Build_PrevLumAvgResources(), E_FAIL);
+	FAILED_CHECK_RETURN(Build_BloomResources(), E_FAIL);
 	FAILED_CHECK_RETURN(Build_ComputeShaders(TEXT("../Bin/ShaderFiles/ComputeShader_HDR.hlsl"), "DefaultTechnique"), E_FAIL);
 
 	return S_OK;
@@ -28,6 +29,7 @@ HRESULT CHDR::Ready_HDR(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceConte
 HRESULT CHDR::Render_HDR()
 {
 	FAILED_CHECK_RETURN(Calculate_LuminanceAvg(), E_FAIL);
+	FAILED_CHECK_RETURN(Calculate_BrightPassForBloom(), E_FAIL);
 
 	// PS ---------------------------------------------------------------------------
 	// Tone Mapping
@@ -75,6 +77,7 @@ HRESULT CHDR::Calculate_LuminanceAvg()
 	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
 
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_HDR"))),E_FAIL);
+	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_HDRDownScale", m_pUnorderedAccessView_DownScaledHDR), E_FAIL); // HDR 다운스케일 텍스쳐 제작
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageValues1D", m_pShaderResourceView_Lum), E_FAIL);
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_Lum), E_FAIL);
 	
@@ -96,6 +99,23 @@ HRESULT CHDR::Calculate_LuminanceAvg()
 	return S_OK;
 }
 
+HRESULT CHDR::Calculate_BrightPassForBloom()
+{
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_HDRDownScaleTex", m_pShaderResourceView_DownScaledHDR), E_FAIL);
+	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_LumAve), E_FAIL);
+	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Bloom", m_pUnorderedAccessView_Bloom_Temp), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_InputLayouts_CS[2].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+	m_pDeviceContext->Dispatch(1024, 1, 1);
+
+	// 수직 / 수평 가우시안 블러
+
+	// Reset Views
+	Unbind_ShaderResources();
+
+	return S_OK;
+}
+
 void CHDR::Clear_Buffer()
 {
 	Safe_Release(m_pVIBuffer_ToneMapping);
@@ -103,11 +123,11 @@ void CHDR::Clear_Buffer()
 
 HRESULT CHDR::Unbind_ShaderResources()
 {
-	ID3D11ShaderResourceView* pNullSRV[2] = { 0,0};
-	ID3D11UnorderedAccessView* pNullUAV[1] = { 0 };
+	ID3D11ShaderResourceView* pNullSRV[8] = { 0 };
+	ID3D11UnorderedAccessView* pNullUAV[8] = { 0 };
 
-	m_pDeviceContext->CSSetShaderResources(0, 2, pNullSRV);
-	m_pDeviceContext->CSSetUnorderedAccessViews(0, 1, pNullUAV, 0);
+	m_pDeviceContext->CSSetShaderResources(0, 8, pNullSRV);
+	m_pDeviceContext->CSSetUnorderedAccessViews(0, 8, pNullUAV, 0);
 	//m_pDeviceContext->CSSetShader(0, 0, 0);
 
 	return S_OK;
@@ -203,6 +223,23 @@ HRESULT CHDR::Build_PrevLumAvgResources()
 	return S_OK;
 }
 
+HRESULT CHDR::Build_BloomResources()
+{
+	
+	ID3D11Texture2D* m_pDownScaledHDRTex = nullptr; // g_HDRDownScale
+	ID3D11UnorderedAccessView* m_pUnorderedAccessView_DownScaledHDR = nullptr;
+	ID3D11ShaderResourceView* m_pShaderResourceView_DownScaledHDR = nullptr;
+
+	ID3D11Texture2D* m_pBloomTex = nullptr; // g_Bloom
+	ID3D11UnorderedAccessView* m_pUnorderedAccessView_Bloom = nullptr;
+	ID3D11ShaderResourceView* m_pShaderResourceView_Bloom = nullptr; 
+
+
+
+
+	return S_OK;
+}
+
 HRESULT CHDR::Build_ComputeShaders(const _tchar* pShaderFilePath, const char* pTechniqueName)
 {
 	_uint iFlag = 0;
@@ -273,6 +310,15 @@ HRESULT CHDR::Set_UnorderedAccessView(const char* pConstantName, ID3D11Unordered
 
 void CHDR::Free()
 {
+	Safe_Release(m_pShaderResourceView_DownScaledHDR);
+	Safe_Release(m_pUnorderedAccessView_DownScaledHDR);
+	Safe_Release(m_pDownScaledHDRTex);
+
+	Safe_Release(m_pUnorderedAccessView_Bloom_Temp);
+	Safe_Release(m_pShaderResourceView_Bloom_Temp);
+	Safe_Release(m_pBloomTex_Temp);
+
+
 	Safe_Release(m_pUnorderedAccessView_Lum);
 	Safe_Release(m_pShaderResourceView_Lum);
 	Safe_Release(m_pHDRBuffer_Lum);

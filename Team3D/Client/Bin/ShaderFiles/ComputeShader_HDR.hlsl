@@ -5,10 +5,16 @@
 groupshared float g_SharedPositions[1024];
 groupshared float g_SharedAvgFinal[MAX_GROUPS];
 
-Texture2D g_HDRTex;								// Input : HDR 텍스쳐
+Texture2D			g_HDRTex;					// Input : HDR 텍스쳐
+
+Texture2D<float4>	g_HDRDownScaleTex;
+RWTexture2D<float4>	g_HDRDownScale;				
+RWTexture2D<float4>	g_Bloom;
+
 RWStructuredBuffer<float>	g_AverageLum;		// Output : UAV
 StructuredBuffer<float>		g_PrevAverageLum;
 StructuredBuffer<float>		g_AverageValues1D;	// Output : SRV
+
 
 // 컴퓨트 셰이더가 실행되는 동안, 우리는 쓰레드 그룹의 공유 메모리에 즉시 저장할거다.
 // 결과 : groupshared float SharedPositions[1024];
@@ -27,6 +33,8 @@ cbuffer DownScaleDesc
 													// 백 버퍼의 높이와 너비를 곱한 후 16으로 나눈 다음 1024를 곱한값
 
 	float g_Adaptation = 0.0016f / 0.5f; // TimeDelta / 임시값
+
+	float fBloomThreshold = 0.5f;// 블룸 임계값 비율
 };
 
 // 각 스레드에 대해 4x4 다운스케일 수행
@@ -50,10 +58,9 @@ float4 DownScale4x4(uint2 curPixel, uint groupThreadID)
 				downScaled += g_HDRTex.Load(nFullResPos, int2(j, i));
 			}
 		}
-		downScaled /= 16.0;
-
-		// 픽셀별 휘도 값 계산
-		avgLum = dot(downScaled, LUM_FACTOR);
+		downScaled /= 16.0; // 평균
+		g_HDRDownScale[curPixel.xy] = downScaled; // 블룸 : HDR Tex 다운스케일한값 따로 저장
+		avgLum = dot(downScaled, LUM_FACTOR); // 픽셀별 휘도 값 계산
 
 		// 공유 메모리에 결과 기록
 		g_SharedPositions[groupThreadID] = avgLum;
@@ -205,6 +212,25 @@ void CS_DOWNSCALE_SECONDPASS(uint3 groupID : SV_GroupID, uint3 groupThreadID : S
 	}
 }
 
+[numthreads(1024,1,1)]
+void CS_BRIGHTPASS(uint3 dispatchThreadID : SV_DispatchThreadID)
+{
+	uint2 CurPixel = uint2(dispatchThreadID.x % g_Res.x, dispatchThreadID.x / g_Res.x);
+
+	// 픽셀 결합 생략
+	if (CurPixel.y < g_Res.y)
+	{
+		float4 color = g_HDRDownScaleTex.Load(int3(CurPixel, 0));
+		float Lum = dot(color, LUM_FACTOR);
+		float avgLum = g_AverageLum[0];
+
+		// 색상 스케일 계산
+		float colorScale = saturate(Lum - avgLum * fBloomThreshold);
+
+		// 블룸 스케일 조정후 저장
+		g_Bloom[CurPixel.xy] = color * colorScale;
+	}
+}
 
 technique11		DefaultTechnique
 {
@@ -222,6 +248,14 @@ technique11		DefaultTechnique
 		GeometryShader = NULL;
 		PixelShader = NULL;
 		ComputeShader = compile cs_5_0 CS_DOWNSCALE_SECONDPASS();
+	}
+
+	pass BrightPass
+	{
+		VertexShader = NULL;
+		GeometryShader = NULL;
+		PixelShader = NULL;
+		ComputeShader = compile cs_5_0 CS_BRIGHTPASS();
 	}
 };
 
