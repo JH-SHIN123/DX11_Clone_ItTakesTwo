@@ -45,6 +45,10 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 	TransformMatrix.r[3] = XMVectorSet(0.f, 30.f, 10.f, 1.f);
 	m_pModelCom->Update_Model(TransformMatrix);
 
+	/* RenderGroup, 메시별 그룹 지정 */
+	//m_pModelCom->Set_MeshRenderGroup(0, RENDER_GROUP::RENDER_NONALPHA);
+	//m_pModelCom->Set_MeshRenderGroup(1, RENDER_GROUP::RENDER_ALPHA);
+
 	return S_OK;
 }
 
@@ -73,17 +77,23 @@ _int CTileBox::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+	/* RenderGroup, 여러 그룹에 그려야 하는 경우 모두 추가 */
+	//m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+
+	return NO_EVENT;
 }
 
-HRESULT CTileBox::Render()
+HRESULT CTileBox::Render(RENDER_GROUP::Enum eGroup)
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
 	m_pModelCom->Set_DefaultVariables_Perspective();
 	// Alpha : Not Process Shadow 
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(0, m_iRenderNum);
+	m_pModelCom->Render_Model(0, m_iRenderNum, false);
+	/* RenderGroup, 메시별로 렌더 그룹을 지정해줘야 하는 경우 eGroup인자 넘겨줘야함. */
+	//m_pModelCom->Render_Model(0, m_iRenderNum, false, eGroup);
 
 	/* Window Render Code */
 	//_uint iRenderCount = m_pModelCom->Frustum_Culling();

@@ -161,12 +161,12 @@ _int CCody::Tick(_double dTimeDelta)
 _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
-HRESULT CCody::Render()
+HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 {
-	CCharacter::Render();
+	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
@@ -1076,6 +1076,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_SMALL)
 		{
+			m_pActorCom->Set_Scale(0.05f, 0.05f);
 			if (m_vScale.x > 0.5f)
 			{
 				m_vScale.x -= (_float)dTimeDelta * 10.f;
@@ -1093,6 +1094,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_SMALL && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
+			m_pActorCom->Set_Scale(0.5f, 0.5f);
 			if (m_vScale.x < 1.f)
 			{
 				m_vScale.x += (_float)dTimeDelta * 10.f;

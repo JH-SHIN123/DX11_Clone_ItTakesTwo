@@ -59,12 +59,12 @@ _int CPC_MouseButton::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 	
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_UI, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
-HRESULT CPC_MouseButton::Render()
+HRESULT CPC_MouseButton::Render(RENDER_GROUP::Enum eGroup)
 {
-	CUIObject::Render();
+	CUIObject::Render(eGroup);
 
 	// ¾ë ÀÚ±â²¨ ½á¾ßÇÔ
 	if (FAILED(Set_UIVariables_Perspective()))

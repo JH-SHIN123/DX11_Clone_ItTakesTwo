@@ -8,7 +8,7 @@ matrix			g_UIProjMatrix;
 
 float2			g_MainViewPort;
 float2			g_SubViewPort;
-int				g_iGsOption;
+int				g_iGSOption;
 
 sampler DiffuseSampler = sampler_state
 {
@@ -66,7 +66,7 @@ void  GS_MAIN(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT
 
 	float2	vSize = float2(In[0].vScale.x / g_MainViewPort.x, In[0].vScale.y / g_MainViewPort.y);
 
-	if (0 == g_iGsOption)
+	if (0 == g_iGSOption)
 	{
 		/* 좌상 */
 		Out[0].vPosition = mul(In[0].vPosition, matVP);

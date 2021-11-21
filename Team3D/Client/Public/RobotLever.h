@@ -25,7 +25,7 @@ public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double dTimeDelta) override;
 	virtual _int	Late_Tick(_double dTimeDelta) override;
-	virtual HRESULT	Render() override;
+	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;

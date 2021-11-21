@@ -150,18 +150,16 @@ _int CMay::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
-HRESULT CMay::Render()
+HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 {
-	CCharacter::Render();
+	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(0);
-
-	return S_OK;
 
 	return S_OK;
 }

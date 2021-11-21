@@ -19,7 +19,18 @@ public: /* Struct */
 		_float					fJumpGravity;
 		USERDATA*				pUserData;
 	}ARG_DESC;
+
 	PxController* Get_Controller() { return m_pController; }
+
+public: /* Getter */
+	_bool  Get_IsJump() { return m_bJump; }
+	_bool  Get_IsFalling() { return m_IsFalling; }
+
+public: /* Setter */
+	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
+	void    Set_Jump(_bool bJump) { m_bJump = bJump; }
+	void	Set_Scale(_float fRadius, _float fHeight);
+	void	Set_GroundPound(_bool bGroundPound) { m_bGroundPound = bGroundPound; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -32,15 +43,6 @@ public:
 
 	//void	Kinematic_On() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true); }
 	//void	Kinematic_Off() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false); }
-
-	/* Setter */
-	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
-	void    Set_Jump(_bool bJump) { m_bJump = bJump; }
-	void	Set_GroundPound(_bool bGroundPound) { m_bGroundPound = bGroundPound; }
-
-	/* Getter */
-	_bool  Get_IsJump() { return m_bJump; }
-	_bool  Get_IsFalling() { return m_IsFalling; }
 
 private:
 	PxController*						m_pController = nullptr;
