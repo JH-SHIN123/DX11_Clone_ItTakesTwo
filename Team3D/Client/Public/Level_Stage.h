@@ -31,6 +31,7 @@ private:
 	HRESULT Ready_Layer_Robot(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_RobotHead(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_RobotLever(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_RobotBattery(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_SecurityCameraHandle(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_SecurityCamera(const _tchar* pLayerTag);
 
