@@ -56,7 +56,7 @@ HRESULT CHDR::Render_HDR()
 	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqrt, sizeof(_float));
 
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_HDR")));
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_BloomTexture", m_pShaderResourceView_Bloom);
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_BloomTexture", m_pShaderResourceView_Bloom); // -> 이거생기니까 마크생김
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
 	m_pVIBuffer_ToneMapping->Render(0);
@@ -127,21 +127,25 @@ HRESULT CHDR::Calculate_BrightPassForBloom()
 	// 첫 패스에서 휘도 다운스케일에 쓰인 그룹숫자만큼의 컴퓨트셰이더를 적용한다.
 	// 0 pass : 첫째 임시 텍스쳐 SRV(m_pShaderResourceView_Bloom_Temp)로부터 픽셀을 수평방향으로 필터링해 둘째 임시 텍스쳐 UAV(m_pUnorderedAccessView_Bloom)로 저장한다.
 
+	// Vertical
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Bloom_Temp), E_FAIL);
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Bloom), E_FAIL);
-
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[3].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
-	// GroupThread : 128
-	_uint x = (_uint)(ceil(m_iWinSize[0] / 16.f));
-	_uint y = (_uint)ceil((m_iWinSize[1] / 16.f) / ((128 - 12) + 1));
+	//_uint x = (_uint)(ceil(m_iWinSize[0]));
+	//_uint y = (_uint)ceil((m_iWinSize[1]) / 16.f / ((128 - 12) + 1));
+
+	_uint x = (_uint)(ceil(m_iWinSize[0] / 4.f));
+	_uint y = (_uint)ceil((m_iWinSize[1] / 4.f));
+	//_uint y = (_uint)ceil((m_iWinSize[1] / 4.f) / ((128 - 12) + 1));
+
 	m_pDeviceContext->Dispatch(x, y, 1);
 
 	Unbind_ShaderResources();
 
+	// Horizontal
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Bloom), E_FAIL);
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Bloom), E_FAIL);
-
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[4].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 	// GroupThread : 128
@@ -268,7 +272,7 @@ HRESULT CHDR::Build_BloomResources(_float iWidth, _float iHeight)
 	TextureDesc.Height = (_uint)iHeight / 4;
 	TextureDesc.MipLevels = 1;
 	TextureDesc.ArraySize = 1;
-	TextureDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	TextureDesc.SampleDesc.Count = 1;
 	TextureDesc.SampleDesc.Quality = 0;
 	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -281,7 +285,7 @@ HRESULT CHDR::Build_BloomResources(_float iWidth, _float iHeight)
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC	 ShaderResourceViewDesc;
 	ZeroMemory(&ShaderResourceViewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-	ShaderResourceViewDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	ShaderResourceViewDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	ShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	ShaderResourceViewDesc.Texture2D.MipLevels = 1;
 
@@ -291,7 +295,7 @@ HRESULT CHDR::Build_BloomResources(_float iWidth, _float iHeight)
 
 	D3D11_UNORDERED_ACCESS_VIEW_DESC UnorderedAccessViewDesc;
 	ZeroMemory(&UnorderedAccessViewDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
-	UnorderedAccessViewDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	UnorderedAccessViewDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	UnorderedAccessViewDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 
 	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pDownScaledHDRTex, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_DownScaledHDR), E_FAIL);
