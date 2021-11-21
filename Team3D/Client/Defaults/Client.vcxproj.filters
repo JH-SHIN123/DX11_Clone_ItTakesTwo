@@ -154,6 +154,12 @@
     <Filter Include="02.GameObject\98.Interactive_Objects\03.Robot\NoneInteraction">
       <UniqueIdentifier>{52929ebb-0420-4a62-9b53-eddeed4bac1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\04.TutorialDoor">
+      <UniqueIdentifier>{6d013226-dd4d-47df-845f-f9034ed1d948}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\05.BigButton">
+      <UniqueIdentifier>{e542390a-f37e-411e-8fa0-b1338584a8eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -282,6 +288,9 @@
     <ClInclude Include="..\Public\RobotBattery.h">
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot\Interaction</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TutorialDoor.h">
+      <Filter>02.GameObject\98.Interactive_Objects\04.TutorialDoor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -385,6 +394,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\RobotBattery.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot\Interaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TutorialDoor.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\04.TutorialDoor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

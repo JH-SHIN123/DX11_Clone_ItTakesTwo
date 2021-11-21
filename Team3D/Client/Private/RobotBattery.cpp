@@ -57,6 +57,7 @@ _int CRobotBattery::Tick(_double dTimeDelta)
 	if (m_IsCollide && m_pGameInstance->Key_Down(DIK_E))
 	{
 		m_bRotate = true;
+		UI_Delete(Cody, InputButton_InterActive);
 	}
 
 	if (m_bRotate == true)

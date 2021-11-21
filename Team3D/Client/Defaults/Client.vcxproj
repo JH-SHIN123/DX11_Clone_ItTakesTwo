@@ -211,6 +211,7 @@
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\public\TestObject01.h" />
     <ClInclude Include="..\public\TileBox.h" />
+    <ClInclude Include="..\Public\TutorialDoor.h" />
     <ClInclude Include="..\Public\UFO.h" />
     <ClInclude Include="..\Public\UIObject.h" />
     <ClInclude Include="..\Public\UISprite.h" />
@@ -249,6 +250,7 @@
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\private\TestObject01.cpp" />
     <ClCompile Include="..\private\TileBox.cpp" />
+    <ClCompile Include="..\Private\TutorialDoor.cpp" />
     <ClCompile Include="..\Private\UFO.cpp" />
     <ClCompile Include="..\Private\UIObject.cpp" />
     <ClCompile Include="..\Private\UISprite.cpp" />

@@ -306,6 +306,7 @@ private:
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
+	_bool m_IsPullVerticalDoor = false;
 
 
 
@@ -316,6 +317,7 @@ private:
 	void Hit_StarBuddy(const _double dTimeDelta);
 	void Hit_Rocket(const _double dTimeDelta);
 	void Activate_RobotLever(const _double dTimeDelta);
+	void Pull_VerticalDoor(const _double dTimeDelta);
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);

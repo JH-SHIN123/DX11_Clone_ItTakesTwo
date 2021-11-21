@@ -119,6 +119,7 @@ _int CMay::Tick(_double dTimeDelta)
 		Hit_StarBuddy(dTimeDelta);
 		Hit_Rocket(dTimeDelta);
 		Activate_RobotLever(dTimeDelta);
+		Pull_VerticalDoor(dTimeDelta);
 	}
 	else
 	{
@@ -792,17 +793,26 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsActivateRobotLever = true;
 		}
+		else if (m_eTargetGameID == GameID::eVERTICALDOOR && m_pGameInstance->Key_Down(DIK_E))
+		{
+			m_pModelCom->Set_Animation(ANI_M_Bounce2); // Trees/DoorInteraction 추출해야함.
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+			m_IsPullVerticalDoor = true;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket)
+	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor)
 		return true;
 
 	return false;
 }
 _bool CMay::Trigger_End(const _double dTimeDelta)
 {
-	if (m_pModelCom->Get_CurAnimIndex() == (ANI_M_Jump_Land || ANI_M_RocketFirework || ANI_M_BruteCombat_Attack_Var1 || ANI_M_Lever_Right))
+	if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jump_Land || 
+		m_pModelCom->Get_CurAnimIndex() == ANI_M_RocketFirework || 
+		m_pModelCom->Get_CurAnimIndex() == ANI_M_BruteCombat_Attack_Var1 ||
+		m_pModelCom->Get_CurAnimIndex() == ANI_M_Lever_Right)
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 		m_IsCollide = false;
@@ -825,6 +835,7 @@ void CMay::Hit_StarBuddy(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_M_MH);
 			m_IsHitStarBuddy = false;
+			m_IsCollide = false;
 		}
 	}
 }
@@ -837,6 +848,7 @@ void CMay::Hit_Rocket(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_M_MH);
 			m_IsHitRocket = false;
+			m_IsCollide = false;
 		}
 	}
 }
@@ -850,6 +862,22 @@ void CMay::Activate_RobotLever(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_M_MH);
 			m_IsActivateRobotLever = false;
+			m_IsCollide = false;
+		}
+
+	}
+}
+
+void CMay::Pull_VerticalDoor(const _double dTimeDelta)
+{
+	if (m_IsPullVerticalDoor == true)
+	{
+		
+		if (m_pModelCom->Is_AnimFinished(ANI_M_Bounce2))
+		{
+			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_IsPullVerticalDoor = false;
+			m_IsCollide = false;
 		}
 
 	}

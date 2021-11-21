@@ -56,6 +56,7 @@ _int CRobotLever::Tick(_double dTimeDelta)
 
 	if (m_IsCollide && m_pGameInstance->Key_Down(DIK_E))
 	{
+		UI_Delete(May, InputButton_InterActive);
 		m_bRotate = true;
 	}
 

@@ -1250,7 +1250,7 @@ void CCody::Go_Grind(const _double dTimeDelta)
 		}
 		if (m_dTestTime >= 1.0)
 		{
-			_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), m_dTestTime), 1.f);
+			_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), (_float)m_dTestTime), 1.f);
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 			m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
 
@@ -1262,10 +1262,10 @@ void CCody::Go_Grind(const _double dTimeDelta)
 			m_IsOnGrind = false;
 			return;
 		}
-		m_dTestTime += dTimeDelta / 5.f;
+		m_dTestTime += (_float)dTimeDelta / 5.f;
 
-		_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), m_dTestTime), 1.f);
-		_vector vPhsixPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
+		_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), (_float)m_dTestTime), 1.f);
+		_vector vPhsixPos = XMVectorSet((_float)m_pActorCom->Get_Controller()->getPosition().x, (_float)m_pActorCom->Get_Controller()->getPosition().y, (_float)m_pActorCom->Get_Controller()->getPosition().z, 1.f);
 		_vector vDir = XMVectorSetW(XMVector3Normalize(vPos - vPhsixPos), 0.f);
 
 		m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
