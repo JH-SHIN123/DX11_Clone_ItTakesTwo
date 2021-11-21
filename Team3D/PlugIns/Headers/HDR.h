@@ -34,8 +34,8 @@ private:
 	ID3D11DeviceContext* m_pDeviceContext = nullptr;
 	
 private:
-	_float	m_fMiddleGrey = 0.72f;
-	_float	m_fLumWhiteSqr = 1.5f;
+	_float	m_fMiddleGrey = 0.0008f;
+	_float	m_fLumWhiteSqr = 5.9f;
 	
 	_float m_fAdaptationDeltaT = 0.f;
 	_float m_fAdaptation = 0.f;

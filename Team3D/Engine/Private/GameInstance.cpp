@@ -38,14 +38,17 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 {
 	NULL_CHECK_RETURN(m_pGraphic_Device, E_FAIL);
 	NULL_CHECK_RETURN(m_pInput_Device, E_FAIL);
+	NULL_CHECK_RETURN(m_pTimer_Manager, E_FAIL);
 	NULL_CHECK_RETURN(m_pSound_Manager, E_FAIL);
 	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
 	NULL_CHECK_RETURN(m_pPhysX, E_FAIL);
 	NULL_CHECK_RETURN(m_pFrustum, E_FAIL);
 	NULL_CHECK_RETURN(m_pShadow_Manager, E_FAIL);
-	
+	NULL_CHECK_RETURN(m_pHDR, E_FAIL);
+
 	FAILED_CHECK_RETURN(m_pGraphic_Device->Ready_GraphicDevice(eWinMode, hWnd, iWinSizeX, iWinSizeY, ppDevice, ppDeviceContext), E_FAIL);
 	FAILED_CHECK_RETURN(m_pInput_Device->Ready_InputDevice(hInst, hWnd), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTimer_Manager->Ready_TimeManager(), E_FAIL);
 	//FAILED_CHECK_RETURN(m_pSound_Manager->Ready_SoundManager(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pLight_Manager->Ready_LightManager(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
 	FAILED_CHECK_RETURN(m_pPhysX->Ready_PhysX(), E_FAIL);
@@ -191,6 +194,11 @@ HRESULT CGameInstance::Add_Timer(const _tchar * pTimerTag)
 {
 	NULL_CHECK_RETURN(m_pTimer_Manager, E_FAIL);
 	return m_pTimer_Manager->Add_Timer(pTimerTag);
+}
+_double CGameInstance::Compute_ImmediateTimeDelta()
+{
+	NULL_CHECK_RETURN(m_pTimer_Manager, 0.0);
+	return m_pTimer_Manager->Compute_ImmediateTimeDelta();
 }
 _double CGameInstance::Compute_TimeDelta(const _tchar * pTimerTag)
 {

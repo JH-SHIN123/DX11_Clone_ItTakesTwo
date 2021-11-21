@@ -26,7 +26,7 @@ cbuffer DownScaleDesc
 	uint g_GroupSize = WINCX * WINCY / 16 * 1024;	// 첫 패스에 적용된 그룹 수 계산
 													// 백 버퍼의 높이와 너비를 곱한 후 16으로 나눈 다음 1024를 곱한값
 
-	float g_Adaptation = 0.016f / 0.5f; // TimeDelta / 임시값
+	float g_Adaptation = 0.0016f / 0.5f; // TimeDelta / 임시값
 };
 
 // 각 스레드에 대해 4x4 다운스케일 수행
@@ -201,7 +201,7 @@ void CS_DOWNSCALE_SECONDPASS(uint3 groupID : SV_GroupID, uint3 groupThreadID : S
 		fFinalLumValue /= 64.0;
 
 		float fAdaptedAverageLum = lerp(g_PrevAverageLum[0], fFinalLumValue, g_Adaptation);
-		g_AverageLum[0] = max(fAdaptedAverageLum, 0.001);
+		g_AverageLum[0] = max(fAdaptedAverageLum, 0.0001);
 	}
 }
 

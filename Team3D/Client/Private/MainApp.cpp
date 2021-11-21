@@ -27,7 +27,7 @@ HRESULT CMainApp::Run_App()
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
-	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
+	m_dFrameAcc += m_pGameInstance->Compute_ImmediateTimeDelta();
 
 	if (m_dFrameAcc >= 1.0 / 60.0)
 	{
@@ -75,7 +75,6 @@ HRESULT CMainApp::Render()
 
 HRESULT CMainApp::Ready_Timer()
 {
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_Timer(TEXT("Timer_Default")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Timer(TEXT("Timer_60")), E_FAIL);
 
 	return S_OK;

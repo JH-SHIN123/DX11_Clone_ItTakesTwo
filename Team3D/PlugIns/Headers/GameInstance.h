@@ -55,6 +55,7 @@ public:
 
 #pragma region Timer_Manager
 	HRESULT	Add_Timer(const _tchar* pTimerTag);
+	_double Compute_ImmediateTimeDelta();
 	_double	Compute_TimeDelta(const _tchar* pTimerTag);
 #pragma endregion
 

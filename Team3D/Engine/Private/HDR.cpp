@@ -27,9 +27,6 @@ HRESULT CHDR::Ready_HDR(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceConte
 
 HRESULT CHDR::Render_HDR()
 {
-	// Adaptation Time Check
-
-
 	FAILED_CHECK_RETURN(Calculate_LuminanceAvg(), E_FAIL);
 
 	// PS ---------------------------------------------------------------------------
@@ -39,9 +36,9 @@ HRESULT CHDR::Render_HDR()
 	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
 
 	if (GetAsyncKeyState(VK_F1) & 0x8000)
-		m_fMiddleGrey += 0.05f;
+		m_fMiddleGrey += 0.0005f;
 	else if (GetAsyncKeyState(VK_F2) & 0x8000)
-		m_fMiddleGrey -= 0.05f;
+		m_fMiddleGrey -= 0.0005f;
 
 	if (GetAsyncKeyState(VK_F3) & 0x8000)
 		m_fLumWhiteSqr += 0.05f;
@@ -57,6 +54,12 @@ HRESULT CHDR::Render_HDR()
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
 	m_pVIBuffer_ToneMapping->Render(0);
+
+	// Swap Cur LumAvg - Prev LumAvg
+	// 두 버퍼의 값을 교체하고, 현재 프레임의 평균 휘도를 다음프레임의 "prevLumAvg"로 저장한다.
+	//swap(m_pHDRBuffer_PrevLumAve, m_pHDRBuffer_LumAve);
+	swap(m_pUnorderedAccessView_PrevLumAve, m_pUnorderedAccessView_LumAve);
+	swap(m_pShaderResourceView_PrevLumAve, m_pShaderResourceView_LumAve);
 
 	return S_OK;
 }
@@ -87,12 +90,6 @@ HRESULT CHDR::Calculate_LuminanceAvg()
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[1].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 	m_pDeviceContext->Dispatch(MAX_GROUPS_THREAD, 1, 1);
 
-	// Swap Cur LumAvg - Prev LumAvg
-	// 두 버퍼의 값을 교체하고, 현재 프레임의 평균 휘도를 다음프레임의 "prevLumAvg"로 저장한다.
-	swap(m_pHDRBuffer_PrevLumAve, m_pHDRBuffer_LumAve);
-	swap(m_pUnorderedAccessView_PrevLumAve, m_pUnorderedAccessView_LumAve);
-	swap(m_pShaderResourceView_PrevLumAve, m_pShaderResourceView_LumAve);
-
 	// Reset Views
 	Unbind_ShaderResources();
 
@@ -106,10 +103,10 @@ void CHDR::Clear_Buffer()
 
 HRESULT CHDR::Unbind_ShaderResources()
 {
-	ID3D11ShaderResourceView* pNullSRV[1] = { 0 };
+	ID3D11ShaderResourceView* pNullSRV[2] = { 0,0};
 	ID3D11UnorderedAccessView* pNullUAV[1] = { 0 };
 
-	m_pDeviceContext->CSSetShaderResources(0, 1, pNullSRV);
+	m_pDeviceContext->CSSetShaderResources(0, 2, pNullSRV);
 	m_pDeviceContext->CSSetUnorderedAccessViews(0, 1, pNullUAV, 0);
 	//m_pDeviceContext->CSSetShader(0, 0, 0);
 
