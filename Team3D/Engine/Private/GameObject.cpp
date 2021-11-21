@@ -53,7 +53,7 @@ _int CGameObject::Late_Tick(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-HRESULT CGameObject::Render()
+HRESULT CGameObject::Render(RENDER_GROUP::Enum eGroup)
 {
 	return S_OK;
 }

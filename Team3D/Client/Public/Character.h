@@ -31,7 +31,7 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 
 public:
-	virtual HRESULT	Render() override;
+	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 

@@ -15,6 +15,12 @@ CControllableActor::CControllableActor(const CControllableActor & rhs)
 {
 }
 
+void CControllableActor::Set_Scale(_float fRadius, _float fHeight)
+{
+	m_pController->resize(fHeight);
+	static_cast<PxCapsuleController*>(m_pController)->setRadius(fRadius);
+}
+
 HRESULT CControllableActor::NativeConstruct_Prototype()
 {
 	CActor::NativeConstruct_Prototype();
