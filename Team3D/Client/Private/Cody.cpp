@@ -946,6 +946,9 @@ void CCody::Change_Size(const _double TimeDelta)
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_LARGE;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+
+				//UI
+				UI_Generator->UI_RETutorial(Player::Cody, UI::PC_Mouse_Enlargement);
 			}
 		}
 		else if (m_eCurPlayerSize == SIZE_LARGE && m_eNextPlayerSize == SIZE_MEDIUM)
@@ -980,6 +983,9 @@ void CCody::Change_Size(const _double TimeDelta)
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_SMALL;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+
+				//UI
+				UI_Generator->UI_RETutorial(Player::Cody, UI::PC_Mouse_Reduction);
 			}
 		}
 		else if (m_eCurPlayerSize == SIZE_SMALL && m_eNextPlayerSize == SIZE_MEDIUM)

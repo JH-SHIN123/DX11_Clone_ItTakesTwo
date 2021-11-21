@@ -9,6 +9,7 @@
 #include "RespawnCircle.h"
 #include "PC_MouseButton.h"
 #include "Arrowkeys_Fill.h"
+#include "ButtonIndicator.h"
 #include "InputButton_Frame.h"
 #include "Arrowkeys_Outline.h"
 
@@ -171,6 +172,8 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 		break;
 	case UI::RespawnCircle:
 		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_E"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("ButtonIndicator"));
 		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
@@ -446,10 +449,6 @@ HRESULT CUI_Generator::Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc)
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CUISprite::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
-	else if (!lstrcmp(UIDesc->szUITag, L"ButtonIndicator"))
-	{
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CUISprite::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
-	}
 	else if (!lstrcmp(UIDesc->szUITag, L"Portrait_Cody"))
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CPortrait::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
@@ -461,6 +460,14 @@ HRESULT CUI_Generator::Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc)
 	else if (!lstrcmp(UIDesc->szUITag, L"RespawnCircle"))
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CRespawnCircle::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Frame_E"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"ButtonIndicator"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CButtonIndicator::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
 
 	return S_OK;
@@ -510,7 +517,6 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Portrait_May"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/Portrait_May2021.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("ButtonIndicator"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/ButtonIndicator.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("CoolDown"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/CoolDown.png"))), E_FAIL);
-
 
 	return S_OK;
 }

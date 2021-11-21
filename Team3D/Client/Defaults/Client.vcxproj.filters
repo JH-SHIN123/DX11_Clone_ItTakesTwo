@@ -154,6 +154,9 @@
     <Filter Include="02.GameObject\05.UI\07.Portrait">
       <UniqueIdentifier>{f56e4d4e-96be-46f6-91d6-d0ec0b8dd449}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.UI\08.ButtonIndicator">
+      <UniqueIdentifier>{29414170-35a7-4279-8f62-05b5997957f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -276,6 +279,9 @@
     <ClInclude Include="..\Public\Portrait.h">
       <Filter>02.GameObject\05.UI\07.Portrait</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ButtonIndicator.h">
+      <Filter>02.GameObject\05.UI\08.ButtonIndicator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -373,6 +379,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Portrait.cpp">
       <Filter>02.GameObject\05.UI\07.Portrait</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ButtonIndicator.cpp">
+      <Filter>02.GameObject\05.UI\08.ButtonIndicator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

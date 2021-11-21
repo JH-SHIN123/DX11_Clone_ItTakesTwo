@@ -194,17 +194,26 @@ PS_OUT PS_RESPAWNCIRCLE(PS_IN In)
 
 	float fColor = g_Time - SubColor.a;
 
+	// 이거는 rgb에 r채널만 줘서 게이지를 띄위기 위함
 	Out.vColor.rgb = Out.vColor.r/* + Out.vColor.b*/;
+	// 여기서 이제 r채널만 띄웠으니까 알파 값을 조절해주자
+	//Out.vColor.a = Out.vColor.r * 0.25f /* + Out.vColor.b + Out.vColor.a*/;
 	Out.vColor.a = Out.vColor.r * 0.25f /* + Out.vColor.b + Out.vColor.a*/;
 
-	if (fColor <= 0.015f)
-		Out.vColor.rgb *= Out.vColor.r * 2.f;
-
-	if (SubColor.a <= g_Time)
+	if (Out.vColor.r <= 0.411f != Out.vColor.r >= 0.42f)
 	{
-		Out.vColor.rgb *= float3(1.000000000f, 0.270588249f, 0.000000000f) * 2.f;
-		Out.vColor.a = Out.vColor.r;
+
+		if (fColor <= 0.015f)
+			Out.vColor.rgb *= Out.vColor.r * 100.f;
+
+		if (SubColor.a <= g_Time)
+		{
+			Out.vColor.rgb *= float3(1.f, 0.09882f, 0.f) * 2.f;
+			Out.vColor.a = Out.vColor.r;
+		}
 	}
+	else
+		Out.vColor.a = 0.8f;
 
 	//if (Out.vColor.r <= 0.05f && Out.vColor.g <= 0.05f && Out.vColor.b <= 0.05f)
 	//	discard;
@@ -222,7 +231,6 @@ PS_OUT PS_RESPAWNCIRCLE(PS_IN In)
 
 	//if (Out.vColor.b != 0.f)
 	//	Out.vColor.a = 0.f;
-
 
 	return Out;
 }
