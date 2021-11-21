@@ -291,6 +291,9 @@
     <ClInclude Include="..\Public\TutorialDoor.h">
       <Filter>02.GameObject\98.Interactive_Objects\04.TutorialDoor</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BigButton.h">
+      <Filter>02.GameObject\98.Interactive_Objects\05.BigButton</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -397,6 +400,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TutorialDoor.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\04.TutorialDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BigButton.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\05.BigButton</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

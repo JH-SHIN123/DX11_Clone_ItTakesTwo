@@ -18,7 +18,6 @@ CRobotBattery::CRobotBattery(const CRobotBattery & rhs)
 HRESULT CRobotBattery::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
-
 	return S_OK;
 }
 

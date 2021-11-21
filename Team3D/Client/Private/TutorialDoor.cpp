@@ -51,26 +51,25 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide)
 	{
 		m_bPull = true;
-		UI_Delete(Cody, InputButton_InterActive);
+		UI_Delete(May, InputButton_InterActive);
 	}
 
 	if (m_bPull == false)
 	{
+		if (m_fMoveDist > 0.f)
+		{
+			m_pTransformCom->Go_Up(dTimeDelta);
+			m_fMoveDist -= (_float)dTimeDelta;
+		}
 	}
 
 	else if (m_bPull == true)
 	{
-		m_fLifeTime += (_float)dTimeDelta;
-		if (m_fLifeTime <= 0.71f)
+		if (m_fMoveDist < 2.f)
 		{
-			m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
-			m_pTransformCom->RotatePitch(dTimeDelta * 0.2f);
+			m_pTransformCom->Go_Down(dTimeDelta);
+			m_fMoveDist += (_float)dTimeDelta;
 		}
-		else if(m_fLifeTime > 0.71f)
-			Pull_TutorialDoor(dTimeDelta);
-
-		if (m_fLifeTime > 3.5f)
-			return EVENT_DEAD; // 
 	}
 
 	return NO_EVENT;
@@ -115,32 +114,15 @@ void CTutorialDoor::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 
 HRESULT CTutorialDoor::InterActive_UI()
 {
-	CCody* pCody = (CCody*)DATABASE->GetCody();
-	NULL_CHECK_RETURN(pCody, E_FAIL);
 	CMay* pMay = (CMay*)DATABASE->GetMay();
 	NULL_CHECK_RETURN(pMay, E_FAIL);
 
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 	_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 
-	_vector vCodyComparePos = vPos - vCodyPos;
 	_vector vMayComparePos = vPos - vMayPos;
 
 	_float fRange = 20.f;
-
-	_float vCodyComparePosX = abs(XMVectorGetX(vCodyComparePos));
-	_float vCodyComparePosZ = abs(XMVectorGetZ(vCodyComparePos));
-
-	if (fRange >= vCodyComparePosX && fRange >= vCodyComparePosZ)
-	{
-		if (UI_Generator->Get_EmptyCheck(Player::Cody, UI::InputButton_Dot))
-			UI_Create(Cody, InputButton_Dot);
-
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	}
-	else
-		UI_Delete(Cody, InputButton_Dot);
 
 	_float vMayComparePosX = abs(XMVectorGetX(vMayComparePos));
 	_float vMayComparePosZ = abs(XMVectorGetZ(vMayComparePos));

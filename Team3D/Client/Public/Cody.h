@@ -216,6 +216,7 @@ public:
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
+	CModel*		Get_Model() { return m_pModelCom;  }
 
 	// Tick 에서 호출될 함수들
 private:

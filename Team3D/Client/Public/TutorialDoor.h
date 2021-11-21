@@ -43,8 +43,8 @@ public:
 
 private:
 	_float		m_fUpAcceleration = 0.f;
+	_float		m_fMoveDist = 0.f;
 	_bool		m_bPull = false;
-	_float		m_fLifeTime = 0.f;
 	_bool		m_IsCollide = false;
 
 protected:
