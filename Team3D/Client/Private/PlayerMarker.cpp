@@ -102,7 +102,7 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		ViewMatrix = XMMatrixIdentity();
 		SubProjMatrix = XMMatrixIdentity();
 
-		// m_vTargetPos가 May포스임 
+		// m_vMarkerTargetPos가 May포스임 
 		CCody* pCody = (CCody*)DATABASE->GetCody();
 		_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 		_vector vCodyUp = pCody->Get_Transform()->Get_State(CTransform::STATE_UP);
@@ -307,6 +307,7 @@ _float3 CPlayerMarker::ConvertToWindowPos(D3D11_VIEWPORT Viewprot, _vector vPos)
 
 	_float3 vConvertPos;
 
+	// 보정
 	XMStoreFloat3(&vConvertPos, vPos);
 	vConvertPos.x += 1.f;
 	vConvertPos.y += 1.f;

@@ -37,6 +37,8 @@ HRESULT CRespawnCircle::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
+	m_pSubTexturesCom = (CTextures*)m_pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("CoolDown"));
+
 	return S_OK;
 }
 
@@ -54,6 +56,22 @@ _int CRespawnCircle::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_E))
+	{
+		m_Time += TimeDelta * 2.f;
+
+		if (1.5f <= m_Time)
+			m_Time = 0.5f;
+
+	}
+	else
+	{
+		m_Time -= TimeDelta * 0.05f;
+
+		if (0.f >= m_Time)
+			m_Time = 0.f;
+	}
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
@@ -63,6 +81,10 @@ HRESULT CRespawnCircle::Render(RENDER_GROUP::Enum eGroup)
 
 	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
+
+	m_pVIBuffer_RectCom->Set_Variable("g_Time", &m_Time, sizeof(_float));
+
+	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseSubTexture", m_pSubTexturesCom->Get_ShaderResourceView(0));
 
 	m_pVIBuffer_RectCom->Render(5);
 
@@ -105,6 +127,7 @@ CGameObject * CRespawnCircle::Clone_GameObject(void * pArg)
 void CRespawnCircle::Free()
 {
 	Safe_Release(m_pVIBuffer_RectCom);
+	Safe_Release(m_pSubTexturesCom);
 
 	CUIObject::Free();
 }

@@ -509,6 +509,8 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Portrait_Cody"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/Portrait_Cody2021.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Portrait_May"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/Portrait_May2021.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("ButtonIndicator"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/ButtonIndicator.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("CoolDown"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/CoolDown.png"))), E_FAIL);
+
 
 	return S_OK;
 }

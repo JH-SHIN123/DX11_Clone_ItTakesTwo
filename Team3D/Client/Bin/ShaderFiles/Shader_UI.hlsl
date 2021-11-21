@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////
 
 texture2D	g_DiffuseTexture;
+texture2D	g_DiffuseSubTexture;
 texture2D	g_SubTexture;
 matrix		g_UIWorldMatrix;
 matrix		g_UIViewMatrix;
@@ -13,6 +14,8 @@ int		g_iColorOption;
 int		g_iGSOption;
 float	g_fAlpha;
 float	g_f1Alpha;
+
+float  g_Time;
 
 sampler	DiffuseSampler = sampler_state
 {
@@ -184,8 +187,41 @@ PS_OUT PS_RESPAWNCIRCLE(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	vector SubColor = g_DiffuseSubTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	Out.vColor.a = 0.f;
+	if (0.f >= Out.vColor.r && 0.f >= Out.vColor.b)
+		discard;
+
+	float fColor = g_Time - SubColor.a;
+
+	Out.vColor.rgb = Out.vColor.r/* + Out.vColor.b*/;
+	Out.vColor.a = Out.vColor.r * 0.25f /* + Out.vColor.b + Out.vColor.a*/;
+
+	if (fColor <= 0.015f)
+		Out.vColor.rgb *= Out.vColor.r * 2.f;
+
+	if (SubColor.a <= g_Time)
+	{
+		Out.vColor.rgb *= float3(1.000000000f, 0.270588249f, 0.000000000f) * 2.f;
+		Out.vColor.a = Out.vColor.r;
+	}
+
+	//if (Out.vColor.r <= 0.05f && Out.vColor.g <= 0.05f && Out.vColor.b <= 0.05f)
+	//	discard;
+
+	//if (Out.vColor.r == 0.f && Out.vColor.g == 0.f && Out.vColor.b == 0.f && Out.vColor.a == 0.f)
+	//	discard;
+
+	//Out.vColor.g = 0.f;
+
+	//if (Out.vColor.r >= 0.7f)
+	//	Out.vColor.a = 0.f;
+
+	//Out.vColor.rgb = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.f;
+	//Out.vColor *= vector(10.0f, 1.9f, 5.0f, 1.f);
+
+	//if (Out.vColor.b != 0.f)
+	//	Out.vColor.a = 0.f;
 
 
 	return Out;
@@ -255,7 +291,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
-		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.5f), 0xffffffff);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_RESPAWNCIRCLE();
