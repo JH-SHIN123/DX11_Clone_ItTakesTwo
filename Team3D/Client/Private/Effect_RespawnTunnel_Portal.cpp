@@ -30,7 +30,7 @@ HRESULT CEffect_RespawnTunnel_Portal::NativeConstruct(void * pArg)
 	Data.fCullingRadius = m_EffectDesc_Clone.fCullingRadius;
 	Data.pWorldMatrices = m_pInstanceBuffer;
 	Data.iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
-
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(10.f, 5.f, 10.f, 1.f));
 	for (_uint i = 0; i < Data.iInstanceCount; ++i)
 	{
 		XMStoreFloat4x4(&Data.pWorldMatrices[i],m_pTransformCom->Get_WorldMatrix());

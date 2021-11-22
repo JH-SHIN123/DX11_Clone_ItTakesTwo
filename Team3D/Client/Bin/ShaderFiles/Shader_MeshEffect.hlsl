@@ -469,18 +469,17 @@ PS_OUT	PS_MAIN_RESPAWNTENNEL(PS_IN_TRIPLE_UV In)
 {
 	PS_OUT Out = (PS_OUT)0;
 	float2 vDistortionUV = In.vTexUV;
-	vDistortionUV.y += g_fTime;
+	vDistortionUV.y -= g_fTime;
 	float4 vFX_tex = g_DistortionTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistortionUV);
-	float fWeight = (vFX_tex.b * 0.5f);
+	float fWeight = (vFX_tex.b);
 
 	float2 vDiffTexUV = In.vTexUV;
-	vDiffTexUV.y -= fWeight;
-
+	vDiffTexUV.y += fWeight;
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDiffTexUV);
 
 
-	vector vColor = g_ColorRampTexture.Sample(Clamp_MinMagMipLinear_Sampler, vDiffTexUV);
-	Out.vDiffuse.rgb = vColor.rgb;
+	vector vColor = g_ColorRampTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
+	Out.vDiffuse.rgb = fWeight * vColor.rgb * 2.5f;
 	Out.vDiffuse.a = 1.f;
 
 	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
