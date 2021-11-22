@@ -72,7 +72,7 @@ _int CRespawnCircle::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 
-	m_fSubTime += TimeDelta * 2.f;
+	m_fSubTime += TimeDelta * 3.f;
 
 	if (360.f <= m_fSubTime)
 		m_fSubTime = 0.f;

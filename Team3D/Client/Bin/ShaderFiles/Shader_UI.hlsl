@@ -247,7 +247,10 @@ PS_OUT PS_RespawnCircle(PS_IN In)
 	{
 		if (fColor <= 0.015f && Out.vColor.r == 1.f && Out.vColor.g == 1.f)
 		{
-			//Out.vColor.rgb *= Out.vColor.r * 50.f;
+			// 노란색 꼬랑지에만 노이즈
+			//Out.vColor.rgb *= Out.vColor.r * 50.f * Noise.r * 50.f;
+			// 게이지에 노이즈
+			Out.vColor.rgb *= Out.vColor.r * 50.f * Noise.r * 50.f;
 			Out.vColor.rgb *= Noise.rgb;
 			//Out.vColor.r = Noise.a;
 			//Out.vColor.a = 1.f;
