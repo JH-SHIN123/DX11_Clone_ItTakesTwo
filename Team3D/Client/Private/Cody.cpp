@@ -129,6 +129,7 @@ _int CCody::Tick(_double dTimeDelta)
 		Hit_Rocket(dTimeDelta);
 		Activate_RobotLever(dTimeDelta);
 		Push_Battery(dTimeDelta);
+		Rotate_Valve(dTimeDelta);
 	}
 	else
 	{
@@ -1238,10 +1239,16 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
 			m_IsPushingBattery = true;
 		}
+		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_E))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Valve_Rotate_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Valve_Rotate_MH);
+			m_IsEnterValve = true;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery)
+	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve)
 		return true;
 
 	return false;
@@ -1252,7 +1259,8 @@ _bool CCody::Trigger_End(const _double dTimeDelta)
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ChangeSize_PlanetPush_Large
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_RocketFirework
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Lever_Left
-		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Exit))
+		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Exit
+		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Valve_Rotate_MH))
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 	}
@@ -1367,6 +1375,31 @@ void CCody::Push_Battery(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
 			m_IsPushingBattery = false;
 			m_IsCollide = false;
+		}
+	}
+}
+
+void CCody::Rotate_Valve(const _double dTimeDelta)
+{
+	if (m_IsEnterValve == true)
+	{
+		if (m_pGameInstance->Key_Down(DIK_D) && m_pModelCom->Get_CurAnimIndex() != ANI_C_Bhv_Valve_Rotate_R && m_bStruggle == false)
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Valve_Rotate_R);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Valve_Rotate_MH);
+			m_iRotateCount += 1;
+		}
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Valve_Rotate_R))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Valve_Rotate_MH);
+			//m_IsEnterValve = false;
+			//m_IsCollide = false;
+			if (m_iRotateCount == 3)
+			{
+				m_bStruggle = true;
+				m_pModelCom->Set_Animation(ANI_C_Bhv_Valve_StruggleRightEnter);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Valve_StruggleRight);
+			}
 		}
 	}
 }

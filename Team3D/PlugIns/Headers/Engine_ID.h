@@ -24,7 +24,8 @@ namespace Engine
 			eROPEBASE,
 			eGRINDRAIL,
 			ePLANET,
-			eNOBATTERYSIGN
+			eNOBATTERYSIGN,
+			eSPACEVALVE,
 		};
 	};
 

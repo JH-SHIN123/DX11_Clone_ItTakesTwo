@@ -26,6 +26,7 @@
 #include "BigButton.h"
 #include "TutorialDoor.h"
 #include "NoBatterySign.h"
+#include "SpaceValve.h"
 
 /* Test */
 #include "TestObject01.h"
@@ -238,6 +239,12 @@ HRESULT CLoading::LoadingForInteractive_Objects()
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.f));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_TutorialDoor"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("DoorWay"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_TutorialDoor"), CTutorialDoor::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* SpaceValve */
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.f));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SpaceValve"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/InteractiveModels/"), TEXT("SpaceValve"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SpaceValve"), CSpaceValve::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
 
 	
 	//Test

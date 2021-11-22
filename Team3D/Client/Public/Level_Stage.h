@@ -39,6 +39,7 @@ private:
 	HRESULT Ready_Layer_TutorialDoor(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_BigButton(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_NoBatterySign(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_SpaceValve(const _tchar* pLayerTag);
 
 	/* For.Test */
 	HRESULT Ready_Layer_Test();
