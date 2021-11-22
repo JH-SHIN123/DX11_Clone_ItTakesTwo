@@ -2,6 +2,8 @@
 #include "..\public\Cody.h"
 #include "GameInstance.h"
 #include "MainCamera.h"
+#include "UI_Generator.h"
+#include "UIObject.h"
 
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
@@ -33,6 +35,16 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	m_pModelCom->Set_Animation(ANI_C_MH);
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
+
+	UI_Create(Cody, PC_Mouse_Reduction);
+	UI_Create(Cody, PC_Mouse_Enlargement);
+	UI_Create(Default, LoadingBook);
+	UI_Create(May, Arrowkeys_Side);
+	UI_Create(May, StickIcon);
+
+	UI_Create(Cody, PlayerMarker);
+
+	UI_Create(Cody, InputButton_InterActive);
 	 
 
 	return S_OK;
@@ -117,6 +129,10 @@ _int CCody::Tick(_double dTimeDelta)
 	}
 	Ground_Pound(dTimeDelta);
 
+	//UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
@@ -127,13 +143,12 @@ _int CCody::Tick(_double dTimeDelta)
 _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
-
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
-HRESULT CCody::Render()
+HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 {
-	CCharacter::Render();
+	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();

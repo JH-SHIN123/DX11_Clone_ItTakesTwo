@@ -62,10 +62,10 @@ _int CEffect_May_Boots_Walking_Particle::Tick(_double TimeDelta)
 
 _int CEffect_May_Boots_Walking_Particle::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
 }
 
-HRESULT CEffect_May_Boots_Walking_Particle::Render()
+HRESULT CEffect_May_Boots_Walking_Particle::Render(RENDER_GROUP::Enum eGroup)
 {
 	SetUp_Shader_Data();
 

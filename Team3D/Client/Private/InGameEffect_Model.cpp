@@ -38,7 +38,7 @@ _int CInGameEffect_Model::Late_Tick(_double TimeDelta)
 	return _int();
 }
 
-HRESULT CInGameEffect_Model::Render()
+HRESULT CInGameEffect_Model::Render(RENDER_GROUP::Enum eGroup)
 {
 	return S_OK;
 }

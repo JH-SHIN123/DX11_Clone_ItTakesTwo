@@ -100,9 +100,9 @@ _int CCharacter::Late_Tick(_double dTimeDelta)
 	return CGameObject::Tick(dTimeDelta);
 }
 
-HRESULT CCharacter::Render()
+HRESULT CCharacter::Render(RENDER_GROUP::Enum eGroup)
 {
-	return CGameObject::Render();
+	return CGameObject::Render(eGroup);
 }
 
 HRESULT CCharacter::Render_ShadowDepth()

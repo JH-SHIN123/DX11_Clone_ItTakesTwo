@@ -62,10 +62,10 @@ _int CEffect_Wormhole::Tick(_double TimeDelta)
 
 _int CEffect_Wormhole::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
 }
 
-HRESULT CEffect_Wormhole::Render()
+HRESULT CEffect_Wormhole::Render(RENDER_GROUP::Enum eGroup)
 {
 	m_pModelInstanceCom->Set_Variable("g_fTime", &m_fTime, sizeof(_float));
 	m_pModelInstanceCom->Set_ShaderResourceView("g_ColorRampTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(2));

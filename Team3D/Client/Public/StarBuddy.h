@@ -23,7 +23,7 @@ public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
-	virtual HRESULT	Render() override;
+	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
@@ -38,12 +38,15 @@ private:
 	_bool		m_bLaunch = false;
 	_float		m_fLifeTime = 0.f;
 
-
 protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
+
+private:
+	HRESULT InterActive_UI();
+
 public:
 	static CStarBuddy* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

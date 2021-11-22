@@ -47,10 +47,10 @@ _int CEffect_Cody_Size::Late_Tick(_double TimeDelta)
 	if(0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return NO_EVENT;
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
-HRESULT CEffect_Cody_Size::Render()
+HRESULT CEffect_Cody_Size::Render(RENDER_GROUP::Enum eGroup)
 {
 	SetUp_Shader_Data();
 

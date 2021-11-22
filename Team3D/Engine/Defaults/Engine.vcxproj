@@ -237,6 +237,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\Public\TriggerActor.h" />
     <ClInclude Include="..\public\VIBuffer.h" />
     <ClInclude Include="..\public\VIBuffer_Color.h" />
+    <ClInclude Include="..\Public\VIBuffer_FontInstance.h" />
     <ClInclude Include="..\public\VIBuffer_PointInstance.h" />
     <ClInclude Include="..\Public\VIBuffer_PointInstance_Custom_ST.h" />
     <ClInclude Include="..\public\VIBuffer_PointInstance_Custom_STT.h" />
@@ -245,6 +246,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\Public\VIBuffer_RectInstance_Custom.h" />
     <ClInclude Include="..\public\VIBuffer_RectRHW.h" />
     <ClInclude Include="..\public\VIBuffer_Rect_TripleUV.h" />
+    <ClInclude Include="..\Public\VIBuffer_Sprite.h" />
     <ClInclude Include="..\public\VIBuffer_Terrain.h" />
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +294,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\Private\TriggerActor.cpp" />
     <ClCompile Include="..\private\VIBuffer.cpp" />
     <ClCompile Include="..\private\VIBuffer_Color.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_FontInstance.cpp" />
     <ClCompile Include="..\private\VIBuffer_PointInstance.cpp" />
     <ClCompile Include="..\Private\VIBuffer_PointInstance_Custom_ST.cpp" />
     <ClCompile Include="..\private\VIBuffer_PointInstance_Custom_STT.cpp" />
@@ -300,6 +303,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\Private\VIBuffer_RectInstance_Custom.cpp" />
     <ClCompile Include="..\private\VIBuffer_RectRHW.cpp" />
     <ClCompile Include="..\private\VIBuffer_Rect_TripleUV.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_Sprite.cpp" />
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>

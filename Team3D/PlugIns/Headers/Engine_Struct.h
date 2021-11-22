@@ -87,6 +87,13 @@ namespace Engine
 		float		fTime;
 	}VTXMATRIX_CUSTOM_STT;
 
+	typedef struct tagVertexFont
+	{
+		XMFLOAT3	vPosition;
+		XMFLOAT2	vScale;
+		XMFLOAT4	vTexUV;
+	}VTXFONT;
+
 	typedef struct tagVertexMesh
 	{
 		XMFLOAT3	vPosition;
@@ -167,4 +174,9 @@ namespace Engine
 		tagMeshActorDesc() { }
 		tagMeshActorDesc(uint32_t _iVertexCount, void* _pVertices, uint32_t _iFaceCount, void* _pFaces) : iVertexCount(_iVertexCount), pVertices(_pVertices), iFaceCount(_iFaceCount), pFaces(_pFaces){}
 	}MESHACTOR_DESC;
+
+	typedef struct tagRenderGroup
+	{
+		enum Enum { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_ALPHA, RENDER_UI, RENDER_END };
+	}RENDER_GROUP;
 }

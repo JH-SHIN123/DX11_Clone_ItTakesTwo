@@ -21,7 +21,7 @@ public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
-	virtual HRESULT	Render() override;
+	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 public:
 	void Check_Scale(_double TimeDelta, _uint iIndex);

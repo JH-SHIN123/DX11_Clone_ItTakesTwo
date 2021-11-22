@@ -35,10 +35,10 @@ _int CInGameEffect::Tick(_double TimeDelta)
 
 _int CInGameEffect::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
 }
 
-HRESULT CInGameEffect::Render()
+HRESULT CInGameEffect::Render(RENDER_GROUP::Enum eGroup)
 {
 	SetUp_Shader_Data();
 

@@ -2,6 +2,8 @@
 #include "..\public\May.h"
 #include "GameInstance.h"
 #include "SubCamera.h"
+#include "UI_Generator.h"
+#include "UIObject.h"
 
 #include "Transform.h"
 
@@ -46,6 +48,8 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	m_pModelCom->Set_Animation(ANI_M_Bounce4);
 	CDataStorage::GetInstance()->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
+
+	UI_Create(May, PlayerMarker);
 	 
 
 	return S_OK;
@@ -131,6 +135,7 @@ _int CMay::Tick(_double dTimeDelta)
 	}
 	Ground_Pound(dTimeDelta);
 
+	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
@@ -142,18 +147,16 @@ _int CMay::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
-HRESULT CMay::Render()
+HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 {
-	CCharacter::Render();
+	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(0);
-
-	return S_OK;
 
 	return S_OK;
 }

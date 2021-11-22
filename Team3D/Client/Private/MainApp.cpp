@@ -5,6 +5,7 @@
 
 #include "Effect_Generator.h"
 #include "DataStorage.h"
+#include "UI_Generator.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -21,6 +22,7 @@ HRESULT CMainApp::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Timer(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Prototype_ForStatic(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
+	UI_Generator->NativeConstruct(m_pDevice, m_pDeviceContext);
 
 	// Test Ä¿¹Ô
 
@@ -99,6 +101,12 @@ HRESULT CMainApp::Ready_Prototype_ForStatic()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Component_Transform"), CTransform::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	/* VI_Buffer_Rect */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Default.hlsl"), "DefaultTechnique")), E_FAIL);
+	/* VI_Buffer_Rect_UI */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), CVIBuffer_Rect::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_UI.hlsl"), "DefaultTechnique")), E_FAIL);
+	/* VI_Buffer_Sprite */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Sprite"), CVIBuffer_Sprite::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Sprite.hlsl"), "DefaultTechnique")), E_FAIL);
+	/* VI_Buffer_FontInstance */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"), CVIBuffer_FontInstance::Create(m_pDevice, m_pDeviceContext, 50, TEXT("../Bin/ShaderFiles/Shader_Font.hlsl"), "DefaultTechnique")), E_FAIL);
 
 	/* For.GameObject */
 
@@ -135,6 +143,7 @@ void CMainApp::Free()
 	Safe_Release(m_pGameInstance);
 
 	CEffect_Generator::DestroyInstance(); // ÀÌÆåÆ® Á¦¾î±â
+	UI_Generator->DestroyInstance();
 	CDataStorage::GetInstance()->DestroyInstance();
 
 	CGameInstance::Release_Engine();

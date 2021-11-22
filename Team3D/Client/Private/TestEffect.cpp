@@ -40,9 +40,9 @@ _int CTestEffect::Late_Tick(_double TimeDelta)
 	return __super::Late_Tick(TimeDelta);
 }
 
-HRESULT CTestEffect::Render()
+HRESULT CTestEffect::Render(RENDER_GROUP::Enum eGroup)
 {
-	__super::Render();
+	__super::Render(eGroup);
 
 
 

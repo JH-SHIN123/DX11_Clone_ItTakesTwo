@@ -51,6 +51,7 @@ public: /* Getter */
 public: /* Setter */
 	HRESULT	Set_Animation(_uint iAnimIndex);
 	HRESULT	Set_NextAnimIndex(_uint iAnimIndex);
+	HRESULT Set_MeshRenderGroup(_uint iMeshIndex, RENDER_GROUP::Enum eGroup);
 	/* For.Shader */
 	HRESULT	Set_Variable(const char* pConstantName, void* pData, _uint iByteSize);
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, ID3D11ShaderResourceView* pShaderResourceView);
@@ -67,11 +68,11 @@ public:
 	/* For.Client */
 	HRESULT Add_LerpInfo(_uint iCurAnimIndex, _uint iNextAnimIndex, _bool bGoingToLerp, _float fLerpSpeed = 5.f);
 	HRESULT	Update_Animation(_double dTimeDelta);
-	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false); /* ShadowWrite시, 텍스쳐 세팅안함. */
+	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END); /* ShadowWrite시, 텍스쳐 세팅안함. */
 
 public:
 	HRESULT Bind_GBuffers();
-	HRESULT	Render_ModelByPass(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false); /* 텍스쳐 외부에서 따로 연결해줘야함. */
+	HRESULT	Render_ModelByPass(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END); /* 텍스쳐 외부에서 따로 연결해줘야함. */
 
 private: /* Typedef */
 	typedef vector<class CMesh*>			MESHES;
@@ -121,8 +122,10 @@ private:
 	vector<PX_TRIMESH>			m_PxTriMeshes;
 	/* For.MaterialSet */
 	_uint						m_iMaterialSetCount			= 0;
-	/*For. Check Bind Materials */
+	/* For.Check Bind Materials */
 	_uint						m_IsBindMaterials[AI_TEXTURE_TYPE_MAX];
+	/* For.MultiRenderGroup */
+	_bool						m_bMultiRenderGroup			= false;
 private:
 	HRESULT	Sort_MeshesByMaterial();
 	HRESULT	Set_CenterBone(const char* pCenterBoneName = "");

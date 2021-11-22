@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "..\public\StarBuddy.h"
 #include "GameInstance.h"
+#include "UI_Generator.h"
+#include "Cody.h"
+#include "May.h"
 
 CStarBuddy::CStarBuddy(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -56,19 +59,68 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+
 _int CStarBuddy::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+
+	InterActive_UI();
+
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
-HRESULT CStarBuddy::Render()
+HRESULT CStarBuddy::Render(RENDER_GROUP::Enum eGroup)
 {
-	CGameObject::Render();
+	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(1);
+
+	return S_OK;
+}
+
+HRESULT CStarBuddy::InterActive_UI()
+{
+	CCody* pCody = (CCody*)DATABASE->GetCody();
+	NULL_CHECK_RETURN(pCody, E_FAIL);
+	CMay* pMay = (CMay*)DATABASE->GetMay();
+	NULL_CHECK_RETURN(pMay, E_FAIL);
+
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+
+	_vector vCodyComparePos = vPos - vCodyPos;
+	_vector vMayComparePos = vPos - vMayPos;
+
+	_float fRange = 20.f;
+
+	_float vCodyComparePosX = abs(XMVectorGetX(vCodyComparePos));
+	_float vCodyComparePosZ = abs(XMVectorGetZ(vCodyComparePos));
+
+	if (fRange >= vCodyComparePosX && fRange >= vCodyComparePosZ)
+	{
+		if (UI_Generator->Get_EmptyCheck(Player::Cody, UI::InputButton_Dot))
+			UI_Create(Cody, InputButton_Dot);
+
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	}
+	else
+		UI_Delete(Cody, InputButton_Dot);
+
+	_float vMayComparePosX = abs(XMVectorGetX(vMayComparePos));
+	_float vMayComparePosZ = abs(XMVectorGetZ(vMayComparePos));
+
+	if (fRange >= vMayComparePosX && fRange >= vMayComparePosZ)
+	{
+		if (UI_Generator->Get_EmptyCheck(Player::May, UI::InputButton_Dot))
+			UI_Create(May, InputButton_Dot);
+
+		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	}
+	else
+		UI_Delete(May, InputButton_Dot);
 
 	return S_OK;
 }

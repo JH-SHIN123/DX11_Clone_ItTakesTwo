@@ -40,9 +40,9 @@ _int CEffect_RespawnTunnel_Smoke::Late_Tick(_double TimeDelta)
 	return __super::Late_Tick(TimeDelta);
 }
 
-HRESULT CEffect_RespawnTunnel_Smoke::Render()
+HRESULT CEffect_RespawnTunnel_Smoke::Render(RENDER_GROUP::Enum eGroup)
 {
-	__super::Render();
+	__super::Render(eGroup);
 
 
 

@@ -40,10 +40,10 @@ _int CTerrain::Late_Tick(_double TimeDelta)
 {
 	NULL_CHECK_RETURN(m_pRendererCom, EVENT_ERROR);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
-HRESULT CTerrain::Render()
+HRESULT CTerrain::Render(RENDER_GROUP::Enum eGroup)
 {
 	NULL_CHECK_RETURN(m_pVIBufferCom, E_FAIL);
 	NULL_CHECK_RETURN(m_pTextureCom, E_FAIL);

@@ -48,10 +48,10 @@ _int CEffect_Walking_Smoke::Late_Tick(_double TimeDelta)
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
 }
 
-HRESULT CEffect_Walking_Smoke::Render()
+HRESULT CEffect_Walking_Smoke::Render(RENDER_GROUP::Enum eGroup)
 {
 	SetUp_Shader_Data();
 

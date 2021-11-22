@@ -23,7 +23,7 @@ public:
 	virtual HRESULT	NativeConstruct(void* pArg);
 	virtual _int	Tick(_double dTimeDelta);
 	virtual _int	Late_Tick(_double dTimeDelta);
-	virtual HRESULT	Render();
+	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup);
 	/* For.Write Shadow Depth */
 	virtual HRESULT Render_ShadowDepth();
 	/* For.Trigger */
