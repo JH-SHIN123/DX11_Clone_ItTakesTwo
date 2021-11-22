@@ -447,6 +447,9 @@
     <ClInclude Include="..\Public\BigButton.h">
       <Filter>02.GameObject\98.Interactive_Objects\05.BigButton</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\NoBatterySign.h">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\Interaction</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -616,6 +619,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\BigButton.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\05.BigButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NoBatterySign.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\Interaction</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

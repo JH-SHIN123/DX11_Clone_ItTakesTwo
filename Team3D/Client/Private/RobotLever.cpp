@@ -5,6 +5,7 @@
 #include "May.h"
 #include "UI_Generator.h"
 #include "RobotHead.h"
+#include "NoBatterySign.h"
 
 CRobotLever::CRobotLever(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -96,33 +97,35 @@ HRESULT CRobotLever::Render(RENDER_GROUP::Enum eGroup)
 void CRobotLever::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	// Cody
+	if (m_bUpdate == true)
+	{
+		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+		{
+			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTLEVER, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			UI_Create(Cody, InputButton_InterActive);
+			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCollide = true;
+		}
+		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+		{
+			m_IsCollide = false;
+			UI_Delete(Cody, InputButton_InterActive);
+		}
 
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTLEVER, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(Cody, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
-	}
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-	{
-		m_IsCollide = false;
-		UI_Delete(Cody, InputButton_InterActive);
-	}
+		// May
 
-	// May
-
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
-	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTLEVER, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(May, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
-	}
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-	{
-		m_IsCollide = false;
-		UI_Delete(May, InputButton_InterActive);
+		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+		{
+			((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTLEVER, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			UI_Create(May, InputButton_InterActive);
+			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCollide = true;
+		}
+		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+		{
+			m_IsCollide = false;
+			UI_Delete(May, InputButton_InterActive);
+		}
 	}
 }
 
@@ -152,6 +155,7 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 			if (m_bNoBatteryHit == false)
 			{
 				((CRobotHead*)DATABASE->Get_RobotHead())->Set_Lever_Hit_When_NoBattery(true);
+				((CNoBatterySign*)DATABASE->Get_NoBatterySign())->Set_HitLever(true);
 				m_bNoBatteryHit = true;
 			}
 		}
@@ -175,6 +179,7 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 			_vector vDir = XMVector3Normalize(XMVectorSet(-1.f, 0.f, 0.f, 0.f) + XMVectorSet(0.f, 0.f, 1.f, 0.f) / 2.f);
 			m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
 			((CRobotHead*)DATABASE->Get_RobotHead())->Set_Lever_Active(true);
+			((CNoBatterySign*)DATABASE->Get_NoBatterySign())->Set_BatteryCharged(true);
 		}
 		else if (m_fStopDelay > 0.4f)
 		{

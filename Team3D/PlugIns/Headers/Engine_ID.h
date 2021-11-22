@@ -23,7 +23,8 @@ namespace Engine
 			eBIGBUTTON,
 			eROPEBASE,
 			eGRINDRAIL,
-			ePLANET
+			ePLANET,
+			eNOBATTERYSIGN
 		};
 	};
 

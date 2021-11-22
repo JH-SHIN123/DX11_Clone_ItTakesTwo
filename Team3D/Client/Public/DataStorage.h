@@ -41,6 +41,9 @@ public:
 	void Set_RobotHeadPtr(CGameObject* pRobotHead) { m_pRobotHead = pRobotHead; }
 	CGameObject* Get_RobotHead() { return m_pRobotHead; }
 
+	void Set_NoBatterySignPtr(CGameObject* pNoBatterySign) { m_pNoBatterySign = pNoBatterySign; }
+	CGameObject* Get_NoBatterySign() { return m_pNoBatterySign; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -55,6 +58,7 @@ private:
 	CGameObject* m_pRobotLever = nullptr;
 	CGameObject* m_pRobotBattery = nullptr;
 	CGameObject* m_pRobotHead = nullptr;
+	CGameObject* m_pNoBatterySign = nullptr;
 
 public:
 	virtual void Free() override;
