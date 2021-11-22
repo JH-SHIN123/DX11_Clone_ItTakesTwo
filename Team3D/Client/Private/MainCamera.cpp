@@ -5,6 +5,7 @@
 #include"Level.h"
 #include"DataStorage.h"
 #include "Cody.h"
+#include"PhysX.h"
 
 
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -29,29 +30,30 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 {
 	CCamera::NativeConstruct(pArg);
 
+	CControllableActor::ARG_DESC ArgDesc;
 
-	PxCapsuleControllerDesc CapsuleControllerDesc;
-	CapsuleControllerDesc.setToDefault();
-	CapsuleControllerDesc.height = 0.1f;
-	CapsuleControllerDesc.radius = 0.5f;
-	CapsuleControllerDesc.material = m_pGameInstance->Create_PxMaterial(0.5f, 0.5f, 0.5f);
-	CapsuleControllerDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
-	CapsuleControllerDesc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
-	CapsuleControllerDesc.contactOffset = 0.02f;
-	CapsuleControllerDesc.stepOffset = 0.5f;
-	CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
-	CapsuleControllerDesc.slopeLimit = 0.707f;
-	CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	////CapsuleControllerDesc.reportCallback = NULL;
-	////CapsuleControllerDesc.behaviorCallback = NULL;
-	//CapsuleControllerDesc.density = 10.f;
-	//CapsuleControllerDesc.scaleCoeff = 0.8f;
-	//CapsuleControllerDesc.invisibleWallHeight = 0.f;
-	//CapsuleControllerDesc.maxJumpHeight = 10.f;
-	//CapsuleControllerDesc.volumeGrowth = 1.5f;
+	m_UserData = USERDATA(GameID::eCAMERA, this);
+	ArgDesc.pUserData = &m_UserData;
+	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.fJumpGravity = 0.f;
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom, CapsuleControllerDesc, 0.f)), E_FAIL);
+	ArgDesc.CapsuleControllerDesc.setToDefault();
+	ArgDesc.CapsuleControllerDesc.height = 0.1f;
+	ArgDesc.CapsuleControllerDesc.radius =m_fCamRadius= 0.4f;
+	ArgDesc.CapsuleControllerDesc.material = m_pGameInstance->Get_BasePxMaterial();
+	ArgDesc.CapsuleControllerDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
+	ArgDesc.CapsuleControllerDesc.climbingMode = PxCapsuleClimbingMode::eEASY;
+	ArgDesc.CapsuleControllerDesc.contactOffset = 0.01f;
+	ArgDesc.CapsuleControllerDesc.stepOffset = 0.707f;
+	ArgDesc.CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
+	ArgDesc.CapsuleControllerDesc.slopeLimit = 0.f;
+	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
+
+	m_pActorCom->Set_Scale(m_fCamRadius, 0.f);
+
+	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
 
 	
@@ -60,14 +62,14 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 
 	m_eCurCamMode = CamMode::Cam_AutoToFree;
 	m_eCurCamEffect = CamEffect::CamEffect_None;
-	m_bPhsXCollision = false;
+
 	
 
 	CDataStorage::GetInstance()->Set_MainCamPtr(this);
 
 	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_SMALL], MakeViewMatrix(_float3(0.f, 3.f, -4.f), _float3(0.f, 1.f, 0.f)));
 	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_MEDIUM], MakeViewMatrix(_float3(0.f, 8.f, -7.f), _float3(0.f, 2.f, 0.f)));
-	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_LARGE], MakeViewMatrix(_float3(0.f, 7.f, -12.f), _float3(0.f, 3.f, 2.f)));
+	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_LARGE], MakeViewMatrix(_float3(0.f, 7.f, -12.f), _float3(0.f, 3.f, 0.f)));
 
 
 	return S_OK;
@@ -207,6 +209,7 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
 	matWorld *= XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_matPreRev));
 	m_pTransformCom->Set_WorldMatrix(matWorld);
+
 	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
 	//마우스 체크
@@ -268,15 +271,14 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 	
 #pragma region PhsyX Check
 	_vector vResultPos = XMVectorZero();
-	m_bPhsXCollision = OffSetPhsX(dTimeDelta, matRev , &vResultPos); //로컬에서 공전후에 충돌검사함
-	if (true == m_bPhsXCollision)
+	if (OffSetPhsX(dTimeDelta, matRev, &vResultPos))
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
+		//XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 		//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vResultPos), XMVectorGetY(vResultPos), XMVectorGetZ(vResultPos)));
 	}
-	else
-		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matBeginWorld));
 #pragma endregion
+
 
 	XMStoreFloat4x4(&m_matPreRev, matRev);
 
@@ -349,32 +351,45 @@ _bool CMainCamera::OffSetPhsX(_double dTimeDelta, _fmatrix matRev,_vector * pOut
 {
 	//카메라 공전 전의 월드
 	_matrix matWorld =	XMLoadFloat4x4(&m_matBeginWorld);
-	matWorld *= matRev; 
+	matWorld *= matRev; //현재 월드
 	_vector vPos = matWorld.r[3];
-	_vector vPhsXPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
-	//공전 시킨후 카메라쪽으로 피직스 움직임.
-	_vector vDir = XMVector4Normalize(vPos - vPhsXPos);
-	_float fCamWithPhsXDist =XMVectorGetX(XMVector4Length(vPos - vPhsXPos));
-	if (fCamWithPhsXDist < 0.001f)
-		return false;
-	//PxControllerState tState;
-	//m_pActorCom->Get_Controller()->getState(tState);
-	if (m_pActorCom->Get_Controller()->move(MH_PxVec3(vDir), 0.f, dTimeDelta, PxControllerFilters()) & PxControllerCollisionFlag::eCOLLISION_DOWN) // phsX -> Cam if Collision
-	{
-		if (nullptr == m_pTargetObj)
-			return false;
-		_vector vPlayerPos = dynamic_cast<CCody*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-		vPhsXPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
-		PxRaycastBuffer tBuffer;
-		if (false == CPhysX::GetInstance()->Raycast(tBuffer, vPlayerPos, vPhsXPos, 1000)) //플레이어에서 광선쏴서 처음충돌하는 위치
-			return false;
-		/*else
-		{
-			
-			m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(tBuffer.block.position.x, tBuffer.block.position.y, tBuffer.block.position.z));
-		}*/
 
-		_vector vResultPos = XMVectorSet(tBuffer.block.position.x, tBuffer.block.position.y, tBuffer.block.position.z, 1.f);
+	PxMat44 matPhsX = PxMat44(m_pActorCom->Get_Actor()->getGlobalPose());
+	_vector vPhsXPos = XMVectorSet(matPhsX.column3.x, matPhsX.column3.y, matPhsX.column3.z, 1.f);
+	//공전 시킨후 카메라쪽으로 피직스 움직임.
+
+	_vector vDir = vPos - vPhsXPos;
+	
+	PxControllerCollisionFlags eCollisionFlag = m_pActorCom->Get_Controller()->move(MH_PxVec3(vDir), 0.000f, dTimeDelta, PxControllerFilters());
+	if (eCollisionFlag & PxControllerCollisionFlag::eCOLLISION_DOWN ||
+		eCollisionFlag & PxControllerCollisionFlag::eCOLLISION_UP||
+		eCollisionFlag & PxControllerCollisionFlag::eCOLLISION_SIDES) // phsX -> Cam if Collision
+	{
+		////if()
+
+		//if (nullptr == m_pTargetObj)
+		//	return false;
+		//_vector vPlayerPos = dynamic_cast<CCody*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		//switch (m_eCurPlayerSize)
+		//{
+		//case Client::CCody::SIZE_SMALL: vPlayerPos = XMVectorSetY(vPlayerPos, XMVectorGetY(vPlayerPos) + 1.f);
+		//	break;
+		//case Client::CCody::SIZE_MEDIUM: vPlayerPos = XMVectorSetY(vPlayerPos, XMVectorGetY(vPlayerPos) + 2.f);
+		//	break;
+		//case Client::CCody::SIZE_LARGE: vPlayerPos = XMVectorSetY(vPlayerPos, XMVectorGetY(vPlayerPos) + 3.f);
+		//	break;
+		//}
+		//PxMat44 matPhsX = PxMat44(m_pActorCom->Get_Actor()->getGlobalPose());
+		//_vector vPhsXPos = XMVectorSet(matPhsX.column3.x, matPhsX.column3.y, matPhsX.column3.z, 1.f);
+		//PxRaycastBuffer tBuffer;
+		//
+		//_vector vPhsXResult
+		//	= XMVectorSet(tBuffer.block.position.x, tBuffer.block.position.y, tBuffer.block.position.z, 1.f) + m_fCamRadius * XMVector4Normalize(vPlayerPos - vPhsXPos); /*+XMVector4Normalize(vPhsXPos - vPlayerPos) * m_fCamRadius*/;
+		//
+		while (m_pActorCom->Get_Controller()->move(MH_PxVec3(matWorld.r[2]), 0.f, 0.f, PxControllerFilters()));
+
+		//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPhsXResult), XMVectorGetY(vPhsXResult), XMVectorGetZ(vPhsXResult)));
+		_vector vResultPos = XMVectorSet(matPhsX.column3.x, matPhsX.column3.y, matPhsX.column3.z, 1.f);
 
 		*pOut = XMVector3TransformCoord(vResultPos, XMMatrixInverse(nullptr, matRev));
 	
@@ -431,11 +446,6 @@ _fmatrix CMainCamera::Tick_CamEffect_ShakeCamera(_double dTimeDelta) //Gara
 	{
 		vPosition = XMVectorSetY(vPosition,
 			XMVectorGetY(vPosition) + sinf(m_dCamEffectTime * 8.f) * pow(0.5f, m_dCamEffectTime));
-			//(sinf(2.f * MATH_PI * m_dCamEffectTime * 2.f) * 30.f +
-			//	//Phase
-			//	sinf(2.f * MATH_PI * m_dCamEffectTime * 7 + 0.2f) * 10.1f +
-			//	//amp														//decaysec
-			//	sinf(2.f * MATH_PI * m_dCamEffectTime * 15 + 0.5f) * 1.1f) * (m_fDecaysec - m_dCamEffectTime) / m_fDecaysec);
 	}
 	else
 		m_eCurCamEffect = CamEffect::CamEffect_None;

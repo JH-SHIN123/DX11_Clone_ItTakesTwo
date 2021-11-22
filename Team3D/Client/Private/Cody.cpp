@@ -36,7 +36,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 
 	Add_LerpInfo_To_Model();
 
-	UI_Create(Cody, PC_Mouse_Reduction);
+	/*UI_Create(Cody, PC_Mouse_Reduction);
 	UI_Create(Cody, PC_Mouse_Enlargement);
 	UI_Create(Default, LoadingBook);
 	UI_Create(May, Arrowkeys_Side);
@@ -45,7 +45,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	UI_Create(Cody, PlayerMarker);
 
 	UI_Create(Cody, InputButton_InterActive);
-	 
+	*/ 
 
 	return S_OK;
 }
@@ -120,7 +120,7 @@ _int CCody::Tick(_double dTimeDelta)
 		if(m_eCurPlayerSize != SIZE_LARGE)
 		Roll(dTimeDelta);
 		Jump(dTimeDelta);
-		Change_Size(dTimeDelta);
+		//Change_Size(dTimeDelta);
 	}
 	Ground_Pound(dTimeDelta);
 

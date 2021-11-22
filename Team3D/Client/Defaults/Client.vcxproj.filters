@@ -367,6 +367,24 @@
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Character.cpp">
+      <Filter>02.GameObject\03.Character\99.Parent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Cody.cpp">
+      <Filter>02.GameObject\03.Character\00.Cody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\May.cpp">
+      <Filter>02.GameObject\03.Character\01.May</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboon.cpp">
+      <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UFO.cpp">
+      <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TileBox.cpp">
+      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

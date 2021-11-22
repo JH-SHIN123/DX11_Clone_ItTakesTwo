@@ -4,7 +4,7 @@
 #include "SubCamera.h"
 #include "UI_Generator.h"
 #include "UIObject.h"
-
+#include"DataStorage.h"
 CMay::CMay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
 {

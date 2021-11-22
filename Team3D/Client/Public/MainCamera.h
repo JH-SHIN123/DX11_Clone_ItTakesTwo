@@ -83,7 +83,6 @@ private:
 	CCody::PLAYER_SIZE m_eCurPlayerSize;
 	CCody::PLAYER_SIZE m_ePrePlayerSize;
 
-	_bool m_bPhsXCollision = false;
 
 	_float4x4	m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_END];
 
@@ -92,6 +91,10 @@ private:
 
 	//For.CameraShake
 	_float		m_fDecaysec = 0.f;
+
+	//For.SpringCamera
+	_float m_fCamRadius = 0.f;
+	
 
 };
 
