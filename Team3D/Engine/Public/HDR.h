@@ -66,7 +66,7 @@ private: /* For. Bloom */
 	ID3D11UnorderedAccessView*	m_pUnorderedAccessView_DownScaledHDR = nullptr;
 	ID3D11ShaderResourceView*	m_pShaderResourceView_DownScaledHDR = nullptr;
 
-	ID3D11Texture2D*			m_pBloomTex_Temp = nullptr; // g_Bloom
+	ID3D11Texture2D*			m_pBloomTex_Temp = nullptr;
 	ID3D11UnorderedAccessView*	m_pUnorderedAccessView_Bloom_Temp = nullptr;
 	ID3D11ShaderResourceView*	m_pShaderResourceView_Bloom_Temp = nullptr;
 	

@@ -2,19 +2,19 @@
 #define WINCX 1280
 #define WINCY 720
 
-groupshared float g_SharedPositions[1024];
-groupshared float g_SharedAvgFinal[MAX_GROUPS];
+groupshared float g_SharedPositions[1024];			// 중간휘도값을 저장하기위한 공유메모리 (0패스에서 사용)
+groupshared float g_SharedAvgFinal[MAX_GROUPS];		// 
 
-Texture2D			g_HDRTex;					// Input : HDR 텍스쳐
+Texture2D					g_HDRTex;					// Input : HDR 텍스쳐
 
 Texture2D<float4>			g_HDRDownScaleTex;
 StructuredBuffer<float>		g_AverageLum1D;
 RWTexture2D<float4>			g_HDRDownScale;				
 RWTexture2D<float4>			g_Bloom;
 
-RWStructuredBuffer<float>	g_AverageLum;		// Output : UAV
+RWStructuredBuffer<float>	g_AverageLum;
 StructuredBuffer<float>		g_PrevAverageLum;
-StructuredBuffer<float>		g_AverageValues1D;	// Output : SRV
+StructuredBuffer<float>		g_AverageValues1D;
 
 
 // 컴퓨트 셰이더가 실행되는 동안, 우리는 쓰레드 그룹의 공유 메모리에 즉시 저장할거다.

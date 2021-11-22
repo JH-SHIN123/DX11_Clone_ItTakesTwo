@@ -55,7 +55,7 @@ HRESULT CHDR::Render_HDR(_double TimeDelta)
 	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqrt, sizeof(_float));
 
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_HDR")));
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_BloomTexture", m_pShaderResourceView_Bloom); // -> 이거생기니까 마크생김
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_BloomTexture", m_pShaderResourceView_Bloom);
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
 	m_pVIBuffer_ToneMapping->Render(0);
@@ -155,13 +155,12 @@ HRESULT CHDR::Calculate_BrightPassForBloom()
 
 	_uint x = (_uint)(ceil(m_iWinSize[0] / 4.f));
 	_uint y = (_uint)(ceil((m_iWinSize[1] / 4.f) / ((128 - 12) + 1)));
-
 	m_pDeviceContext->Dispatch(x, y, 1);
 
 	Unbind_ShaderResources();
 
 	// Horizontal
-	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Bloom), E_FAIL);
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Bloom_Temp), E_FAIL);
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Bloom), E_FAIL);
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[4].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
@@ -301,7 +300,7 @@ HRESULT CHDR::Build_BloomResources(_float iWidth, _float iHeight)
 	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pDownScaledHDRTex), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pBloomTex_Temp), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pBloomTex), E_FAIL);
-
+	
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC	 ShaderResourceViewDesc;
 	ZeroMemory(&ShaderResourceViewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));

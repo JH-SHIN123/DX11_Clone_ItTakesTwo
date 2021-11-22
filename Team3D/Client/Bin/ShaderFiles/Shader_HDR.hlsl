@@ -12,7 +12,7 @@ cbuffer FinalPassDesc
 {
 	float g_MiddleGrey = 0.f;
 	float g_LumWhiteSqr = 0.f;
-	float g_BloomScale = 2.f; // 蝴阑 汝副 胶纳老
+	float g_BloomScale = 20.f; // 蝴阑 汝副 胶纳老
 };
 
 ////////////////////////////////////////////////////////////
