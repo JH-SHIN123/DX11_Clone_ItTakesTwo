@@ -49,6 +49,13 @@ sampler	Mirror_MinMagMipLinear_Sampler = sampler_state
 	Filter = MIN_MAG_MIP_LINEAR;
 };
 
+sampler	Clamp_MinMagMipLinear_Sampler = sampler_state
+{
+	AddressU = clamp;
+	AddressV = clamp;
+	Filter = MIN_MAG_MIP_LINEAR;
+};
+
 RasterizerState Rasterizer_CCW
 {
 	FillMode = Solid;
@@ -67,7 +74,6 @@ struct VS_IN
 
 	uint4				vBlendIndex		: BLENDINDEX;
 	float4				vBlendWeight	: BLENDWEIGHT;
-	row_major matrix	WorldMatrix		: WORLD;
 };
 
 struct VS_OUT
@@ -100,9 +106,9 @@ VS_OUT VS_MAIN(VS_IN In)
 {
 	VS_OUT Out = (VS_OUT)0;
 
-	Out.vPosition = mul(vector(In.vPosition, 1.f), In.WorldMatrix);
-	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), In.WorldMatrix));
-	Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), In.WorldMatrix));
+	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
+	Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), g_WorldMatrix));
 	Out.vBiNormal = normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
 	Out.vTexUV = In.vTexUV;
 
@@ -113,9 +119,9 @@ VS_OUT_TRIPLE_UV VS_TRIPLE_UV(VS_IN In)
 {
 	VS_OUT_TRIPLE_UV Out = (VS_OUT_TRIPLE_UV)0;
 
-	Out.vPosition = mul(vector(In.vPosition, 1.f), In.WorldMatrix);
-	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), In.WorldMatrix));
-	Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), In.WorldMatrix));
+	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
+	Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), g_WorldMatrix));
 	Out.vBiNormal = normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
 	Out.vTexUV = In.vTexUV;
 
@@ -142,7 +148,7 @@ VS_OUT_CSM_DEPTH VS_MAIN_CSM_DEPTH(VS_IN In)
 {
 	VS_OUT_CSM_DEPTH Out = (VS_OUT_CSM_DEPTH)0;
 
-	Out.vPosition = mul(vector(In.vPosition, 1.f), In.WorldMatrix);
+	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 
 	return Out;
 }
@@ -462,13 +468,18 @@ PS_OUT	PS_MAIN_WORMHOLE(PS_IN_TRIPLE_UV In)
 PS_OUT	PS_MAIN_RESPAWNTENNEL(PS_IN_TRIPLE_UV In)
 {
 	PS_OUT Out = (PS_OUT)0;
-	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	float2 vDistortionUV = In.vTexUV;
+	vDistortionUV.y += g_fTime;
+	float4 vFX_tex = g_DistortionTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistortionUV);
+	float fWeight = (vFX_tex.b * 0.5f);
 
-	float2 vFlipUV;
-	vFlipUV.x= In.vTexUV.y + 1.f;
-	vFlipUV.y= In.vTexUV.x;
+	float2 vDiffTexUV = In.vTexUV;
+	vDiffTexUV.y -= fWeight;
 
-	vector vColor = g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, vFlipUV);
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDiffTexUV);
+
+
+	vector vColor = g_ColorRampTexture.Sample(Clamp_MinMagMipLinear_Sampler, vDiffTexUV);
 	Out.vDiffuse.rgb = vColor.rgb;
 	Out.vDiffuse.a = 1.f;
 

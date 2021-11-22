@@ -21,7 +21,9 @@ public:
 	virtual void SetUp_WorldMatrix(_fmatrix WorldMatrix) override;
 
 private:
-	CTextures* m_pTexturesCom_ColorRamp = nullptr;
+	CTextures*	m_pTexturesCom_Distortion	= nullptr;
+	CTextures*	m_pTexturesCom_ColorRamp	= nullptr;
+	_float		m_fTime_UV = 0.f;
 
 public:
 	static CEffect_RespawnTunnel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

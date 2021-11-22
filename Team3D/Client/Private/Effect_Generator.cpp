@@ -141,7 +141,7 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 			lstrcat(szPrototypeName, wstrName.c_str());
 
 			FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Data->iLevelIndex, Data->ModelName
-				, CModel_Instance::Create(pDevice, pDeviceContext, Data->iInstanceCount, TEXT("../Bin/Resources/Effect/3D/")
+				, CModel::Create(pDevice, pDeviceContext, TEXT("../Bin/Resources/Effect/3D/")
 					, szPrototypeName, TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", 1
 					, Compute_Pivot(XMLoadFloat3(&Data->vPivotScale), XMLoadFloat3(&Data->vPivotRotate_Degree)))), E_FAIL);
 		}
@@ -150,29 +150,6 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 		Create_Prototype(Data->iLevelIndex, Data->EffectName, pDevice, pDeviceContext, Data);
 		Safe_Delete(Data);
 	}
-
-// 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(1, L"Test_GarvityPipe"
-// 		, CModel_Instance::Create(pDevice, pDeviceContext, 1, TEXT("../Bin/Resources/Effect/3D/")
-// 			, L"Gravity_Pipe", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", 1
-// 			, Compute_Pivot(XMVectorSet(0.05f, 0.05f, 0.0025f,0.f), XMVectorSet(90.f, 0.f, 0.f, 0.f)))), E_FAIL);
-// 	CGameInstance* pInstance = CGameInstance::GetInstance();
-// 	NULL_CHECK_RETURN(pInstance, E_FAIL);
-// 
-// 	EFFECT_DESC_PROTO* pData = new EFFECT_DESC_PROTO;
-// 	lstrcpy(pData->EffectName, L"Test");
-// 	pData->iInstanceCount = 1;
-// 	pInstance->Add_GameObject_Prototype(1, L"GameObject_3D_GravityPipe", CEffect_GravityPipe::Create(pDevice, pDeviceContext, pData));
-// 	Safe_Delete(pData);
-// 
-// 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(1, L"Test_Wormhole"
-// 		, CModel_Instance::Create(pDevice, pDeviceContext, 1, TEXT("../Bin/Resources/Effect/3D/")
-// 			, L"Wormhole", TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", 1
-// 			, Compute_Pivot(XMVectorSet(0.01f, 0.01f, 0.01f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 0.f)))), E_FAIL);
-// 	pData = new EFFECT_DESC_PROTO;
-// 	lstrcpy(pData->EffectName, L"Test");
-// 	pData->iInstanceCount = 1;
-// 	pInstance->Add_GameObject_Prototype(1, L"GameObject_3D_Wormhole", CEffect_Wormhole::Create(pDevice, pDeviceContext, pData));
-// 	Safe_Delete(pData);
 
 	CloseHandle(hFile);
 
@@ -263,7 +240,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 		, CVIBuffer_RectInstance_Custom::Create(pDevice, pDeviceContext, 100, TEXT("../Bin/ShaderFiles/Shader_RectCustom.hlsl"), "DefaultTechnique")), E_FAIL);
 
 #pragma region Texture
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp/Color_Ramp_%d.png"), 12)), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp/Color_Ramp_%d.png"), 13)), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Clouds_01"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Clouds_01.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Clouds_01_xbox"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Clouds_01_xbox.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Cloud_Texture_1k"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Cloud_Texture_1k.png"))), E_FAIL);

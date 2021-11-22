@@ -38,7 +38,7 @@ HRESULT CEffect_RespawnTunnel_Portal::NativeConstruct(void * pArg)
 		//Data.pWorldMatrices[i]._43 = _float((i / 100) * 10.f);
 	}
 	//D3D11_BLEND_DESC
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelInstanceCom, &Data), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom, &Data), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Color_Ramp", TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_VIBuffer_PointInstance_Custom_STT", TEXT("Com_PointBuffer_Smoke"), (CComponent**)&m_pPointInstanceCom_Smoke), E_FAIL);
@@ -73,17 +73,17 @@ _int CEffect_RespawnTunnel_Portal::Late_Tick(_double TimeDelta)
 
 HRESULT CEffect_RespawnTunnel_Portal::Render(RENDER_GROUP::Enum eGroup)
 {
-	NULL_CHECK_RETURN(m_pModelInstanceCom, E_FAIL);
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
 	_float fRadian = XMConvertToRadians((_float)m_dAngle);
 	//g_vColor
 
 	_float2 vColorRampUV = { m_fColorRamp_U, 0.f };
-	m_pModelInstanceCom->Set_Variable("g_vColorRamp_UV",&vColorRampUV,	sizeof(_float2));
-	m_pModelInstanceCom->Set_Variable("g_fRadianAngle",&fRadian,	sizeof(_float));
-	m_pModelInstanceCom->Set_ShaderResourceView("g_ColorRampTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(11));
-	m_pModelInstanceCom->Set_DefaultVariables_Perspective();
-	m_pModelInstanceCom->Render_Model(4);
+	m_pModelCom->Set_Variable("g_vColorRamp_UV",&vColorRampUV,	sizeof(_float2));
+	m_pModelCom->Set_Variable("g_fRadianAngle",&fRadian,	sizeof(_float));
+	m_pModelCom->Set_ShaderResourceView("g_ColorRampTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(11));
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Render_Model(4);
 
 
 	// Smoke

@@ -100,6 +100,8 @@ void CInGameEffect_Model::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pTexturesCom);
 	Safe_Release(m_pModelInstanceCom);
+	Safe_Release(m_pModelCom);
+
 
 	//Safe_Delete_Array(m_pInstanceBuffer);
 
