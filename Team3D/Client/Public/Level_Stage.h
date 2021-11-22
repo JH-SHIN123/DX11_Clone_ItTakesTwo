@@ -34,6 +34,8 @@ private:
 	HRESULT Ready_Layer_RobotBattery(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_SecurityCameraHandle(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_SecurityCamera(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_TutorialDoor(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_BigButton(const _tchar* pLayerTag);
 
 	/* For.Test */
 	HRESULT Ready_Layer_Test();

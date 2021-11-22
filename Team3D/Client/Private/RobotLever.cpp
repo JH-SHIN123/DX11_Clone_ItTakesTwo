@@ -4,6 +4,7 @@
 #include "Cody.h"
 #include "May.h"
 #include "UI_Generator.h"
+#include "RobotHead.h"
 
 CRobotLever::CRobotLever(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -43,10 +44,12 @@ HRESULT CRobotLever::NativeConstruct(void * pArg)
 
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTransformCom;
-	TriggerArgDesc.pGeometry = &PxSphereGeometry(2.5f);
+	TriggerArgDesc.pGeometry = &PxSphereGeometry(1.7f);
 	m_UserData = USERDATA(GameID::eROBOTLEVER, this);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
+
+	DATABASE->Set_RobotLeverPtr(this);
 
 	return S_OK;
 }
@@ -93,35 +96,33 @@ HRESULT CRobotLever::Render(RENDER_GROUP::Enum eGroup)
 void CRobotLever::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	// Cody
-	if (m_bBatteryCharged == false)
+
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-		{
-			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTLEVER, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			UI_Create(Cody, InputButton_InterActive);
-			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			m_IsCollide = true;
-		}
-		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-		{
-			m_IsCollide = false;
-			UI_Delete(Cody, InputButton_InterActive);
-		}
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTLEVER, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		UI_Create(Cody, InputButton_InterActive);
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_IsCollide = true;
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	{
+		m_IsCollide = false;
+		UI_Delete(Cody, InputButton_InterActive);
+	}
 
-		// May
+	// May
 
-		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
-		{
-			((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTLEVER, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			UI_Create(May, InputButton_InterActive);
-			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			m_IsCollide = true;
-		}
-		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-		{
-			m_IsCollide = false;
-			UI_Delete(May, InputButton_InterActive);
-		}
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+	{
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTLEVER, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		UI_Create(May, InputButton_InterActive);
+		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_IsCollide = true;
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+	{
+		m_IsCollide = false;
+		UI_Delete(May, InputButton_InterActive);
 	}
 }
 
@@ -147,6 +148,12 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 		{
 			_vector vDir = XMVector3Normalize(XMVectorSet(-1.f, 0.f, 0.f, 0.f) + XMVectorSet(0.f, 0.f, 1.f, 0.f) / 2.f);
 			m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
+
+			if (m_bNoBatteryHit == false)
+			{
+				((CRobotHead*)DATABASE->Get_RobotHead())->Set_Lever_Hit_When_NoBattery(true);
+				m_bNoBatteryHit = true;
+			}
 		}
 		else if (m_fStopDelay > 1.f && m_fStopDelay <= 1.2f)
 		{
@@ -155,6 +162,7 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 		}
 		else if (m_fStopDelay > 1.2f)
 		{
+			m_bNoBatteryHit = false;
 			m_fStopDelay = 0.f;
 			m_bRotate = false;
 		}
@@ -164,7 +172,13 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 		m_fStopDelay += (_float)dTimeDelta;
 		if (m_fStopDelay > 0.2f && m_fStopDelay <= 0.4f)
 		{
-			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f ,0.f), -dTimeDelta * 3.6f);
+			_vector vDir = XMVector3Normalize(XMVectorSet(-1.f, 0.f, 0.f, 0.f) + XMVectorSet(0.f, 0.f, 1.f, 0.f) / 2.f);
+			m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
+			((CRobotHead*)DATABASE->Get_RobotHead())->Set_Lever_Active(true);
+		}
+		else if (m_fStopDelay > 0.4f)
+		{
+			m_bNoBatteryHit = false;
 			m_fStopDelay = 0.f;
 			m_bRotate = false;
 			m_bUpdate = false;

@@ -31,12 +31,26 @@ public:
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
+	void Set_Battery_Charged(_bool _bBatteryCharged) { m_bBatteryCharged = _bBatteryCharged; }
+	void Set_Lever_Active(_bool _bLeverActive) { m_bLeverActive = _bLeverActive; }
+	void Set_Lever_Hit_When_NoBattery(_bool _bHitLeverInActive) { m_bHitLeverInActive = _bHitLeverInActive; }
+
+private:
+	void Hit_Lever_InActive(_double dTimeDelta);
+
+private:
+	_bool		m_bBatteryCharged = false;
+	_bool		m_bLeverActive = false;
+
+	// 배터리업는데 레버쳤을때
+	_bool		m_bHitLeverInActive = false;
 
 protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
+
 public:
 	static CRobotHead* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

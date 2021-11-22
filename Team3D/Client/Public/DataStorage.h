@@ -29,6 +29,18 @@ public:
 	void Set_UFOPtr(CGameObject* pUFO) { m_pUFO = pUFO; }
 	CGameObject* Get_UFO() { return m_pUFO; }
 
+	void Set_RobotPtr(CGameObject* pRobot) { m_pRobot = pRobot; }
+	CGameObject* Get_Robot() { return m_pRobot; }
+
+	void Set_RobotLeverPtr(CGameObject* pRobotLever) { m_pRobotLever = pRobotLever; }
+	CGameObject* Get_RobotLever() { return m_pRobotLever; }
+
+	void Set_RobotBatteryPtr(CGameObject* pRobotBattery) { m_pRobotBattery = pRobotBattery; }
+	CGameObject* Get_RobotBattery() { return m_pRobotBattery; }
+
+	void Set_RobotHeadPtr(CGameObject* pRobotHead) { m_pRobotHead = pRobotHead; }
+	CGameObject* Get_RobotHead() { return m_pRobotHead; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -37,6 +49,12 @@ private:
 
 	// UFO
 	CGameObject* m_pUFO = nullptr;
+
+	// Interactive Objects
+	CGameObject* m_pRobot = nullptr;
+	CGameObject* m_pRobotLever = nullptr;
+	CGameObject* m_pRobotBattery = nullptr;
+	CGameObject* m_pRobotHead = nullptr;
 
 public:
 	virtual void Free() override;

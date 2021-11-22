@@ -30,47 +30,46 @@ HRESULT CBigButton::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_BigButton"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(50.f, 1.f, 25.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(10.f, 0.f, 5.f, 1.f));
+
+	CStaticActor::ARG_DESC StaticDesc;
+	m_UserData = USERDATA(GameID::eBIGBUTTON, this);
+	StaticDesc.pModel = m_pModelCom;
+	StaticDesc.pTransform = m_pTransformCom;
+	StaticDesc.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &StaticDesc), E_FAIL);
 
 	CTriggerActor::ARG_DESC ArgDesc;
-
 	m_UserData = USERDATA(GameID::eBIGBUTTON, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = &PxSphereGeometry(1.5f);
+	ArgDesc.pGeometry = &PxSphereGeometry(5.5f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
-
 	return S_OK;
 }
 
 _int CBigButton::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
-
-
-	if (m_bPressed == true)
+	if (m_bUpdate == true)
 	{
-		if (m_fMoveDist > 0.5f)
+		Check_Collision_PlayerAnim();
+
+		if (m_bPressed == true)
 		{
-			m_fMoveDist += (_float)dTimeDelta;
-			m_pTransformCom->Go_Down(dTimeDelta);
-		}
-		else if (m_fMoveDist >= 0.5f)
-		{
-			m_bPressed = false;
+			if (m_fMoveDist < 0.5f)
+			{
+				m_fMoveDist += (_float)dTimeDelta;
+				m_pTransformCom->Go_Down(dTimeDelta * 0.2f);
+			}
+			if (m_fMoveDist >= 0.5f)
+			{
+				m_bUpdate = false;
+			}
 		}
 	}
-
-	else if (m_bPressed == false)
-	{
-		if (m_fMoveDist > 0.f)
-		{
-			m_fMoveDist -= (_float)dTimeDelta;
-			m_pTransformCom->Go_Up(dTimeDelta);
-		}
-	}
-
 	return NO_EVENT;
 }
 
@@ -96,15 +95,17 @@ HRESULT CBigButton::Render(RENDER_GROUP::Enum eGroup)
 void CBigButton::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	// Cody
-
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	if (m_bUpdate == true)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBIGBUTTON , true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
-	}
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-	{
-		m_IsCollide = false;
+		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+		{
+			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBIGBUTTON, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCollide = true;
+		}
+		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+		{
+			m_IsCollide = false;
+		}
 	}
 }
 
@@ -122,7 +123,8 @@ HRESULT CBigButton::Render_ShadowDepth()
 
 void CBigButton::Check_Collision_PlayerAnim()
 {
-	if (m_IsCollide == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land)
+	if (m_IsCollide == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land
+		&& (((CCody*)DATABASE->GetCody())->Get_Player_Size() == CCody::PLAYER_SIZE::SIZE_LARGE))
 	{
 		m_bPressed = true;
 	}
@@ -159,6 +161,7 @@ CGameObject * CBigButton::Clone_GameObject(void * pArg)
 void CBigButton::Free()
 {
 	Safe_Release(m_pTriggerCom);
+	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);

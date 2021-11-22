@@ -47,6 +47,8 @@ private:
 	_bool		m_bUpdate = true;
 	_float		m_fStopDelay = 0.f;
 
+	_bool		m_bNoBatteryHit = false;
+
 protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;

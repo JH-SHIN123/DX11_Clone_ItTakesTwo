@@ -30,14 +30,14 @@ HRESULT CTutorialDoor::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_TutorialDoor"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(35.f, 1.f, 25.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 15.f, 25.f, 1.f));
 
 	CTriggerActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eVERTICALDOOR, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = &PxSphereGeometry(1.5f);
+	ArgDesc.pGeometry = &PxSphereGeometry(25.5f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 
@@ -65,7 +65,7 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 
 	else if (m_bPull == true)
 	{
-		if (m_fMoveDist < 2.f)
+		if (m_fMoveDist > 0.5f && m_fMoveDist < 0.7f)
 		{
 			m_pTransformCom->Go_Down(dTimeDelta);
 			m_fMoveDist += (_float)dTimeDelta;

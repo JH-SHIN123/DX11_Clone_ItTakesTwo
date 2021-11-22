@@ -42,6 +42,9 @@ private:
 private:
 	_bool		m_bRotate = false;
 	_bool		m_IsCollide = false;
+	_bool		m_bUpdate = true;
+
+	_float		m_fRotateDelay = 0.f;
 
 protected:
 	/* For.Component */

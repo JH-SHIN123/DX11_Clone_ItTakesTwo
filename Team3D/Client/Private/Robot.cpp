@@ -36,6 +36,8 @@ HRESULT CRobot::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eROBOT, this);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
+	
+	DATABASE->Set_RobotPtr(this);
 
 	return S_OK;
 }

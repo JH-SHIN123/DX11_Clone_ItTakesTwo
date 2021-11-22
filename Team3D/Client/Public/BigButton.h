@@ -8,6 +8,7 @@ class CRenderer;
 class CTransform;
 class CModel;
 class CTriggerActor;
+class CStaticActor;
 END
 
 BEGIN(Client)
@@ -44,16 +45,17 @@ private:
 	void Check_Collision_PlayerAnim();
 
 private:
-	_float		m_fUpAcceleration = 0.f;
 	_float		m_fMoveDist = 0.f;
 	_bool		m_bPressed = false;
 	_bool		m_IsCollide = false;
+	_bool		m_bUpdate = true;
 
 protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
+	CStaticActor*		m_pStaticActorCom = nullptr;
 	CTriggerActor*		m_pTriggerCom = nullptr;
 
 public:
