@@ -7,9 +7,10 @@ groupshared float g_SharedAvgFinal[MAX_GROUPS];
 
 Texture2D			g_HDRTex;					// Input : HDR 텍스쳐
 
-Texture2D<float4>	g_HDRDownScaleTex;
-RWTexture2D<float4>	g_HDRDownScale;				
-RWTexture2D<float4>	g_Bloom;
+Texture2D<float4>			g_HDRDownScaleTex;
+StructuredBuffer<float>		g_AverageLum1D;
+RWTexture2D<float4>			g_HDRDownScale;				
+RWTexture2D<float4>			g_Bloom;
 
 RWStructuredBuffer<float>	g_AverageLum;		// Output : UAV
 StructuredBuffer<float>		g_PrevAverageLum;
@@ -34,7 +35,7 @@ cbuffer DownScaleDesc
 
 	float g_Adaptation = 0.0016f / 0.5f; // TimeDelta / 임시값
 
-	float g_fBloomThreshold = 0.5f;// 블룸 임계값 비율
+	float g_fBloomThreshold = 0.9f; // 어느 정도의 밝기 이상의 픽셀만 흘릴건지 지정
 };
 
 // 각 스레드에 대해 4x4 다운스케일 수행
@@ -223,7 +224,7 @@ void CS_BRIGHTPASS(uint3 dispatchThreadID : SV_DispatchThreadID)
 	{
 		float4 color = g_HDRDownScaleTex.Load(int3(CurPixel, 0));
 		float Lum = dot(color, LUM_FACTOR);
-		float avgLum = g_AverageLum[0];
+		float avgLum = g_AverageLum1D[0];
 
 		// 색상 스케일 계산
 		float colorScale = saturate(Lum - avgLum * g_fBloomThreshold);

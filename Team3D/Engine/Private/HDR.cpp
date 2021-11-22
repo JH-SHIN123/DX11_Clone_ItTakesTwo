@@ -134,7 +134,7 @@ HRESULT CHDR::Calculate_BrightPassForBloom()
 	// Downscale & BrightRight
 	// 다운스케일된 HDR과 SRV의 평균휘도를 계산한후, 임시로 UAV(m_pUnorderedAccessView_Bloom_Temp)로 저장한다.
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_HDRDownScaleTex", m_pShaderResourceView_DownScaledHDR), E_FAIL);
-	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_LumAve), E_FAIL);
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageLum1D", m_pShaderResourceView_LumAve), E_FAIL);
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Bloom", m_pUnorderedAccessView_Bloom_Temp), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[2].pPass->Apply(0, m_pDeviceContext), E_FAIL);
@@ -189,7 +189,7 @@ HRESULT CHDR::Unbind_ShaderResources()
 	m_pDeviceContext->CSSetShaderResources(0, 8, pNullSRV);
 	m_pDeviceContext->CSSetUnorderedAccessViews(0, 8, pNullUAV, 0);
 
-	m_pDeviceContext->CSSetShader(0, 0, 0);
+	//m_pDeviceContext->CSSetShader(0, 0, 0);
 
 	return S_OK;
 }
