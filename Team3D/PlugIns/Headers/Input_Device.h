@@ -30,6 +30,13 @@ public: /* Getter */
 	_bool	Mouse_Down(MOUSE_KEYSTATE eMouseKeyState);
 	_bool	Mouse_Pressing(MOUSE_KEYSTATE eMouseKeyState);
 	_long	Mouse_Move(MOUSE_MOVESTATE eMouseMoveState);
+	_bool	Pad_Key_Up(_ubyte byPadKeyID);
+	_bool	Pad_Key_Down(_ubyte byPadKeyID);
+	_bool	Pad_Key_Pressing(_ubyte byPadKeyID);
+	_long	Get_Pad_LStickX();
+	_long	Get_Pad_LStickY();
+	_long	Get_Pad_RStickX();
+	_long	Get_Pad_RStickY();
 
 public:
 	HRESULT	Ready_InputDevice(HINSTANCE hInst, HWND hWnd);
@@ -51,6 +58,11 @@ private:
 	DIMOUSESTATE			m_MouseState_Up_Buffer;
 	DIMOUSESTATE			m_MouseState_Down_Buffer;
 	DIJOYSTATE				m_JoyStickState;
+	DIJOYSTATE				m_JoyStickState_Up;
+	DIJOYSTATE				m_JoyStickState_Down;
+	DIJOYSTATE				m_JoyStickState_Up_Buffer;
+	DIJOYSTATE				m_JoyStickState_Down_Buffer;
+
 public:
 	virtual void Free() override;
 };

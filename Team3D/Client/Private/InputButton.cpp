@@ -56,12 +56,12 @@ _int CInputButton::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 	
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_UI, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
-HRESULT CInputButton::Render()
+HRESULT CInputButton::Render(RENDER_GROUP::Enum eGroup)
 {
-	CUIObject::Render();
+	CUIObject::Render(eGroup);
 
 	if (0 == m_iOption)
 	{

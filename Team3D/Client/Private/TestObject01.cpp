@@ -45,6 +45,9 @@ _int CTestObject01::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_L))
+		return EVENT_DEAD;
+
 	return NO_EVENT;
 }
 
@@ -52,10 +55,10 @@ _int CTestObject01::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
-HRESULT CTestObject01::Render()
+HRESULT CTestObject01::Render(RENDER_GROUP::Enum eGroup)
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 

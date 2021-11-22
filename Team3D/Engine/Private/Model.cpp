@@ -42,6 +42,7 @@ CModel::CModel(const CModel & rhs)
 	, m_vAnimDistFromCenter			(rhs.m_vAnimDistFromCenter)
 	, m_iMaterialSetCount			(rhs.m_iMaterialSetCount)
 	, m_PxTriMeshes					(rhs.m_PxTriMeshes)
+	, m_bMultiRenderGroup			(false)
 	, m_pVB							(rhs.m_pVB)
 	, m_iVertexCount				(rhs.m_iVertexCount)
 	, m_iVertexStride				(rhs.m_iVertexStride)
@@ -152,6 +153,16 @@ HRESULT CModel::Set_NextAnimIndex(_uint iAnimIndex)
 	NULL_CHECK_RETURN(iAnimIndex < m_iAnimCount, E_FAIL);
 
 	m_iNextAnimIndex = iAnimIndex;
+
+	return S_OK;
+}
+
+HRESULT CModel::Set_MeshRenderGroup(_uint iMeshIndex, RENDER_GROUP::Enum eGroup)
+{
+	if (iMeshIndex >= m_iMaterialCount) return E_FAIL;
+
+	m_Meshes[iMeshIndex]->Set_RenderGroup(eGroup);
+	m_bMultiRenderGroup = true;
 
 	return S_OK;
 }
@@ -388,7 +399,7 @@ HRESULT CModel::Update_Animation(_double dTimeDelta)
 	return S_OK;
 }
 
-HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite)
+HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite, RENDER_GROUP::Enum eGroup)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 
@@ -417,12 +428,14 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 			
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
 			{
-				ZeroMemory(BoneMatrices, sizeof(_matrix) * 256);
-				pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
-				Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
+				if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
+				{
+					ZeroMemory(BoneMatrices, sizeof(_matrix) * 256);
+					pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
+					Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
 
-
-				m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+					m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+				}
 			}
 		}
 	}
@@ -443,7 +456,10 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
-				m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+			{
+				if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
+					m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+			}
 		}
 	}
 
@@ -461,7 +477,7 @@ HRESULT CModel::Bind_GBuffers()
 	return S_OK;
 }
 
-HRESULT CModel::Render_ModelByPass(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite)
+HRESULT CModel::Render_ModelByPass(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite, RENDER_GROUP::Enum eGroup)
 {
 	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
 
@@ -476,17 +492,23 @@ HRESULT CModel::Render_ModelByPass(_uint iMaterialIndex, _uint iPassIndex, _bool
 
 		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
 		{
-			ZeroMemory(BoneMatrices, sizeof(_matrix) * 256);
-			pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
-			Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
+			if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
+			{
+				ZeroMemory(BoneMatrices, sizeof(_matrix) * 256);
+				pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
+				Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
 
-			m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+				m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+			}
 		}
 	}
 	else
 	{
 		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
-			m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+		{
+			if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
+				m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+		}
 	}
 
 	return S_OK;

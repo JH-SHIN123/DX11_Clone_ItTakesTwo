@@ -22,7 +22,7 @@ public:
 	virtual HRESULT NativeConstruct(void * pArg) override;
 	virtual _int Tick(_double TimeDelta) override;
 	virtual _int Late_Tick(_double TimeDelta) override;
-	virtual HRESULT Render() override;
+	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
 private:
 	 _double						m_UpDownTime = 0;

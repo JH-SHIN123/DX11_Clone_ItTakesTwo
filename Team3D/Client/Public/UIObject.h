@@ -43,7 +43,7 @@ public:
 	virtual HRESULT	NativeConstruct(void* pArg) PURE;
 	virtual _int	Tick(_double TimeDelta) PURE;
 	virtual _int	Late_Tick(_double TimeDelta) PURE;
-	virtual HRESULT	Render() PURE;
+	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) PURE;
 
 public:
 	virtual _float Get_DistanceFromCamera() override;
