@@ -16,8 +16,6 @@ HRESULT CEffect_Wormhole::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	lstrcpy(m_EffectDesc_Prototype.ModelName, L"Test_Wormhole");
-
 	return S_OK;
 }
 

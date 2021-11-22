@@ -64,6 +64,7 @@ private: // Smoke 0~9Left, 10~18Right
 	const _float2						m_vDefaultSize_Smoke			= { 0.5f, 0.5f };
 	const _float						m_fSpeedPerSec_Smoke			= 15.f;
 	_float4*							m_pInstance_LocalPos			= nullptr;
+// 	_double								m_pInstance_Re
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_Smoke			= nullptr;
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT			= nullptr;
 	
