@@ -50,6 +50,13 @@ public:
 	_bool	Mouse_Down(CInput_Device::MOUSE_KEYSTATE eMouseKeyState);
 	_bool	Mouse_Pressing(CInput_Device::MOUSE_KEYSTATE eMouseKeyState);
 	_long	Mouse_Move(CInput_Device::MOUSE_MOVESTATE eMouseMoveState);
+	_bool	Pad_Key_Up(_ubyte byPadKeyID);
+	_bool	Pad_Key_Down(_ubyte byPadKeyID);
+	_bool	Pad_Key_Pressing(_ubyte byPadKeyID);
+	_long	Get_Pad_LStickX();
+	_long	Get_Pad_LStickY();
+	_long	Get_Pad_RStickX();
+	_long	Get_Pad_RStickY();
 #pragma endregion
 
 #pragma region Timer_Manager

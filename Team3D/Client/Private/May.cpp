@@ -5,6 +5,12 @@
 #include "UI_Generator.h"
 #include "UIObject.h"
 
+#include "Transform.h"
+
+#include "DataStorage.h"
+#include "Effect_Generator.h"
+#include "Effect_May_Boots.h"
+
 CMay::CMay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
 {
@@ -87,6 +93,10 @@ HRESULT CMay::Ready_Component()
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
+	//Effect 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_May_Boots"), nullptr, (CGameObject**)&m_pEffect_GravityBoots), E_FAIL);
+	m_pEffect_GravityBoots->Set_Model(m_pModelCom);
+
 	return S_OK;
 }
 
@@ -144,6 +154,7 @@ _int CMay::Tick(_double dTimeDelta)
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
+	m_pEffect_GravityBoots->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 	return NO_EVENT;
 }
 
@@ -199,6 +210,7 @@ void CMay::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pEffect_GravityBoots);
 	CCharacter::Free();
 }
 
@@ -406,6 +418,15 @@ void CMay::KeyInput(_double dTimeDelta)
 
 #pragma endregion 
 
+#pragma region Effet Test
+	if (m_pGameInstance->Key_Down(DIK_P))
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+	if (m_pGameInstance->Key_Pressing(DIK_TAB))
+		m_pEffect_GravityBoots->Set_IsActivate_GravityBoots();
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
+		m_pEffect_GravityBoots->Add_WalkingParticle(true);
+
+#pragma  endregion
 }
 
 void CMay::Move(const _double dTimeDelta)

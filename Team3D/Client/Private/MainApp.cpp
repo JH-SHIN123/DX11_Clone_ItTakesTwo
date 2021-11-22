@@ -2,6 +2,8 @@
 #include "..\public\MainApp.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
+
+#include "Effect_Generator.h"
 #include "DataStorage.h"
 #include "UI_Generator.h"
 
@@ -21,6 +23,8 @@ HRESULT CMainApp::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Prototype_ForStatic(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
 	UI_Generator->NativeConstruct(m_pDevice, m_pDeviceContext);
+
+	// Test Ä¿¹Ô
 
 	return S_OK;
 }
@@ -64,7 +68,7 @@ HRESULT CMainApp::Render()
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 	NULL_CHECK_RETURN(m_pRenderer, E_FAIL);
 
-	m_pGameInstance->Clear_BackBuffer(_float4(0.f, 0.f, 1.f, 1.f));
+	m_pGameInstance->Clear_BackBuffer(_float4(0.f, 0.f, 0.f, 1.f));
 	m_pGameInstance->Clear_DepthStencilBuffer();
 
 	FAILED_CHECK_RETURN(m_pRenderer->Draw_Renderer(), E_FAIL);
@@ -138,6 +142,7 @@ void CMainApp::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pGameInstance);
 
+	CEffect_Generator::DestroyInstance(); // ÀÌÆåÆ® Á¦¾î±â
 	UI_Generator->DestroyInstance();
 	CDataStorage::GetInstance()->DestroyInstance();
 

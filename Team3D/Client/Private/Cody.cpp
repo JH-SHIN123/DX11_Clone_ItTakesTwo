@@ -5,6 +5,9 @@
 #include "UI_Generator.h"
 #include "UIObject.h"
 
+#include "Effect_Generator.h"
+#include "Effect_Cody_Size.h"
+
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
@@ -87,6 +90,10 @@ HRESULT CCody::Ready_Component()
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
+	//Effect 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Cody_Size"), nullptr, (CGameObject**)&m_pEffect_Size), E_FAIL);
+	m_pEffect_Size->Set_Model(m_pModelCom);
+
 	return S_OK;
 }
 
@@ -112,7 +119,6 @@ _int CCody::Tick(_double dTimeDelta)
 	m_pCamera = (CMainCamera*)CDataStorage::GetInstance()->Get_MainCam();
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
-
 
 #pragma region BasicActions
 	/////////////////////////////////////////////
@@ -155,6 +161,8 @@ _int CCody::Tick(_double dTimeDelta)
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
+	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
+
 	return NO_EVENT;
 }
 
@@ -211,6 +219,7 @@ void CCody::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pEffect_Size);
 	CCharacter::Free();
 }
 
@@ -360,6 +369,8 @@ void CCody::KeyInput(_double dTimeDelta)
 	{
 		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 		if (m_IsJumping == false)
 		{
 			m_fAcceleration = 5.f;
@@ -405,7 +416,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Mouse_LButton
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
+	if (m_pGameInstance->/*Key_Down(DIK_NUMPAD8)*/Mouse_Down(CInput_Device::DIM_LB))
 	{
 		// 커져라
 		switch (m_eCurPlayerSize)
@@ -424,7 +435,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Mouse_RButton
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB))
+	if (m_pGameInstance->/*Key_Down(DIK_NUMPAD9)*/Mouse_Down(CInput_Device::DIM_RB))
 	{
 		// 작아져라
 		switch (m_eCurPlayerSize)
@@ -471,8 +482,14 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_bGroundPound = true;
 	}
 
-#pragma endregion 
+#pragma endregion
 
+#pragma region Effet Test
+	if (m_pGameInstance->Key_Down(DIK_O))
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+	if (m_pGameInstance->Key_Down(DIK_I))
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+#pragma  endregion
 }
 void CCody::Move(const _double dTimeDelta)
 {
@@ -1042,6 +1059,8 @@ void CCody::Change_Size(const _double dTimeDelta)
 	{
 		if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_LARGE)
 		{
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_LARGE);
+
 			if (m_vScale.x < 5.f)
 			{
 				m_vScale.x += (_float)dTimeDelta * 20.f;
@@ -1052,13 +1071,15 @@ void CCody::Change_Size(const _double dTimeDelta)
 			else
 			{
 				m_vScale = { 5.f, 5.f, 5.f };
-				m_IsSizeChanging = false;
+				m_IsSizeChanging = false; 
 				m_eCurPlayerSize = SIZE_LARGE;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 			}
 		}
 		else if (m_eCurPlayerSize == SIZE_LARGE && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_LARGE_MIDDLE);
+
 			if (m_vScale.x > 1.f)
 			{
 				m_vScale.x -= (_float)dTimeDelta * 20.f;
@@ -1077,6 +1098,8 @@ void CCody::Change_Size(const _double dTimeDelta)
 		else if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_SMALL)
 		{
 			m_pActorCom->Set_Scale(0.05f, 0.05f);
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_SMALL);
+
 			if (m_vScale.x > 0.5f)
 			{
 				m_vScale.x -= (_float)dTimeDelta * 10.f;
@@ -1095,6 +1118,8 @@ void CCody::Change_Size(const _double dTimeDelta)
 		else if (m_eCurPlayerSize == SIZE_SMALL && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
 			m_pActorCom->Set_Scale(0.5f, 0.5f);
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_SMALL_MIDDLE);
+
 			if (m_vScale.x < 1.f)
 			{
 				m_vScale.x += (_float)dTimeDelta * 10.f;
