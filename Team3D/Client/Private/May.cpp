@@ -789,7 +789,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eROBOTLEVER && m_pGameInstance->Key_Down(DIK_E))
 		{
-			m_pModelCom->Set_Animation(ANI_M_Lever_Right);
+			m_pModelCom->Set_Animation(ANI_M_Lever_Left);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsActivateRobotLever = true;
 		}
@@ -812,7 +812,7 @@ _bool CMay::Trigger_End(const _double dTimeDelta)
 	if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jump_Land || 
 		m_pModelCom->Get_CurAnimIndex() == ANI_M_RocketFirework || 
 		m_pModelCom->Get_CurAnimIndex() == ANI_M_BruteCombat_Attack_Var1 ||
-		m_pModelCom->Get_CurAnimIndex() == ANI_M_Lever_Right)
+		m_pModelCom->Get_CurAnimIndex() == ANI_M_Lever_Left)
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 		m_IsCollide = false;
@@ -858,7 +858,7 @@ void CMay::Activate_RobotLever(const _double dTimeDelta)
 	if (m_IsActivateRobotLever == true)
 	{
 		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pModelCom->Is_AnimFinished(ANI_M_Lever_Right))
+		if (m_pModelCom->Is_AnimFinished(ANI_M_Lever_Left))
 		{
 			m_pModelCom->Set_Animation(ANI_M_MH);
 			m_IsActivateRobotLever = false;

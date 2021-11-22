@@ -35,6 +35,7 @@ public:
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
+	void Set_BatteryCharged(_bool _bBatteryCharged) { m_bBatteryCharged = _bBatteryCharged; }
 
 private:
 	void Activate_Lever(_double dTimeDelta);
@@ -42,6 +43,9 @@ private:
 private:
 	_bool		m_bRotate = false;
 	_bool		m_IsCollide = false;
+	_bool		m_bBatteryCharged = false;
+	_bool		m_bUpdate = true;
+	_float		m_fStopDelay = 0.f;
 
 protected:
 	/* For.Component */

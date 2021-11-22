@@ -1203,7 +1203,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eROBOTLEVER && m_pGameInstance->Key_Down(DIK_E))
 		{
-			m_pModelCom->Set_Animation(ANI_C_Bhv_Lever_Right);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Lever_Left);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsActivateRobotLever = true;
 		}
@@ -1226,7 +1226,7 @@ _bool CCody::Trigger_End(const _double dTimeDelta)
 	if ((m_pModelCom->Get_CurAnimIndex() == ANI_C_Jump_Land 
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ChangeSize_PlanetPush_Large
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_RocketFirework
-		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Lever_Right
+		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Lever_Left
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Exit))
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
@@ -1314,7 +1314,7 @@ void CCody::Activate_RobotLever(const _double dTimeDelta)
 	if (m_IsActivateRobotLever == true)
 	{
 		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Lever_Right))
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Lever_Left))
 		{
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_IsActivateRobotLever = false;
