@@ -75,25 +75,25 @@ HRESULT CHDR::Calculate_LuminanceAvg(_double TimeDelta)
 	NULL_CHECK_RETURN(m_pEffect_CS, E_FAIL);
 	
 	// Set Adaptation
-	m_fAdaptationDeltaT += (_float)TimeDelta;
+	//m_fAdaptationDeltaT += (_float)TimeDelta;
 
-	_float fAdaptNorm = 0.f;
-	if (m_bAdaptationFirstTime)
-	{
-		fAdaptNorm = 0.f;
-		m_bAdaptationFirstTime = false;
-	}
-	else
-	{
-		if(m_fAdaptationDeltaT > m_fAdapt)
-		{
-			m_fAdaptationDeltaT -= m_fAdapt;
-		}
+	//_float fAdaptNorm = 0.f;
+	//if (m_bAdaptationFirstTime)
+	//{
+	//	fAdaptNorm = 0.f;
+	//	m_bAdaptationFirstTime = false;
+	//}
+	//else
+	//{
+	//	if(m_fAdaptationDeltaT > m_fAdapt)
+	//	{
+	//		m_fAdaptationDeltaT -= m_fAdapt;
+	//	}
 
-		fAdaptNorm = min(m_fAdapt < 0.0001f ? m_fAdapt : (m_fAdaptationDeltaT / m_fAdapt), m_fAdapt - 0.0001f);
-	}
+	//	fAdaptNorm = min(m_fAdapt < 0.0001f ? m_fAdapt : (m_fAdaptationDeltaT / m_fAdapt), m_fAdapt - 0.0001f);
+	//}
 
-	m_fAdaptation = fAdaptNorm;
+	//m_fAdaptation = fAdaptNorm;
 
 	// CS ---------------------------------------------------------------------------
 	// For. First Pass
@@ -114,7 +114,7 @@ HRESULT CHDR::Calculate_LuminanceAvg(_double TimeDelta)
 	Unbind_ShaderResources();
 
 	// For. Second Pass
-	FAILED_CHECK_RETURN(Set_Variable("g_Adaptation", &m_fAdaptation, sizeof(_float)), E_FAIL);
+	//FAILED_CHECK_RETURN(Set_Variable("g_Adaptation", &m_fAdaptation, sizeof(_float)), E_FAIL);
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageValues1D", m_pShaderResourceView_Lum), E_FAIL);
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_LumAve), E_FAIL);
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_PrevAverageLum", m_pShaderResourceView_LumAve), E_FAIL);
@@ -131,9 +131,6 @@ HRESULT CHDR::Calculate_LuminanceAvg(_double TimeDelta)
 
 HRESULT CHDR::Calculate_BrightPassForBloom()
 {
-	// Set Constant Buffer
-	//static _float fBloomThreshold = 0.f;
-
 	// Downscale & BrightRight
 	// 다운스케일된 HDR과 SRV의 평균휘도를 계산한후, 임시로 UAV(m_pUnorderedAccessView_Bloom_Temp)로 저장한다.
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_HDRDownScaleTex", m_pShaderResourceView_DownScaledHDR), E_FAIL);
