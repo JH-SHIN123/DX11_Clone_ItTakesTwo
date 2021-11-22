@@ -1383,6 +1383,16 @@ void CCody::Rotate_Valve(const _double dTimeDelta)
 {
 	if (m_IsEnterValve == true)
 	{
+		if (DATABASE->Get_ValveCount() == 6)
+		{
+			m_bStruggle = false;
+			m_iRotateCount = 0;
+			m_IsEnterValve = false;
+			m_IsCollide = false;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+		}
+
+		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 		if (m_pGameInstance->Key_Down(DIK_D) && m_pModelCom->Get_CurAnimIndex() != ANI_C_Bhv_Valve_Rotate_R && m_bStruggle == false)
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Valve_Rotate_R);
@@ -1399,6 +1409,7 @@ void CCody::Rotate_Valve(const _double dTimeDelta)
 				m_bStruggle = true;
 				m_pModelCom->Set_Animation(ANI_C_Bhv_Valve_StruggleRightEnter);
 				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Valve_StruggleRight);
+				DATABASE->Set_ValveCount(m_iRotateCount);
 			}
 		}
 	}

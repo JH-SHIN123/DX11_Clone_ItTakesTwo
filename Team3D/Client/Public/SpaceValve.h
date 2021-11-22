@@ -39,11 +39,14 @@ public:
 	void Rotate_SpaceValve(_double dTimeDelta);
 
 private:
+	_uint		m_iTargetPlayer = 0;
+
 	_bool		m_IsCollide = false;
 	_bool		m_bEnterValve = false;
 
 	_bool		m_bRotate = false;
 	_float		m_fRotateDelay = 0.f;
+	_uint		m_iRotateCount = 0;
 
 
 protected:

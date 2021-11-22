@@ -5,6 +5,9 @@
 #include "Cody.h"
 #include "May.h"
 
+#include "InGameEffect.h"
+#include "Effect_Generator.h"
+
 CSpaceValve::CSpaceValve(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -30,7 +33,21 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_SpaceValve"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 1.5f, 25.f, 1.f));
+
+	EFFECT_DESC_CLONE a;
+	if (nullptr != pArg)
+		memcpy(&a, pArg, sizeof(EFFECT_DESC_CLONE));
+
+	if (a.iPlayerValue == 1)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 1.5f, 25.f, 1.f));
+		m_iTargetPlayer = GameID::eCODY;
+	}
+	else if (a.iPlayerValue == 2)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 1.5f, 20.f, 1.f));
+		m_iTargetPlayer = GameID::eMAY;
+	}
 
 	CTriggerActor::ARG_DESC ArgDesc;
 
@@ -127,25 +144,52 @@ HRESULT CSpaceValve::Render_ShadowDepth()
 void CSpaceValve::Rotate_SpaceValve(_double dTimeDelta)
 {
 	// 축은 맵찍고나서 수정해야함.
-
-	if (m_pGameInstance->Key_Down(DIK_D) && m_bRotate == false)
+	if (m_iTargetPlayer == GameID::eCODY)
 	{
-		m_bRotate = true;
+		if (m_pGameInstance->Key_Down(DIK_D) && m_bRotate == false && m_iRotateCount < 3)
+		{
+			m_iRotateCount += 1;
+			m_bRotate = true;
+		}
+
+		if (m_bRotate == true)
+		{
+			m_fRotateDelay += (_float)dTimeDelta;
+			if (m_fRotateDelay < 2.1f)
+			{
+				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta);
+			}
+			else if (m_fRotateDelay >= 2.1f)
+			{
+				m_bRotate = false;
+				m_fRotateDelay = 0.f;
+			}
+
+		}
 	}
 
-	if (m_bRotate == true)
+	else if (m_iTargetPlayer == GameID::eMAY)
 	{
-		m_fRotateDelay += (_float)dTimeDelta;
-		if (m_fRotateDelay < 2.1f)
+		if (m_pGameInstance->Key_Down(DIK_RIGHT) && m_bRotate == false && m_iRotateCount < 3)
 		{
-			m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta);
-		}
-		else if (m_fRotateDelay >= 2.1f)
-		{
-			m_bRotate = false;
-			m_fRotateDelay = 0.f;
+			m_iRotateCount += 1;
+			m_bRotate = true;
 		}
 
+		if (m_bRotate == true)
+		{
+			m_fRotateDelay += (_float)dTimeDelta;
+			if (m_fRotateDelay < 2.1f)
+			{
+				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta);
+			}
+			else if (m_fRotateDelay >= 2.1f)
+			{
+				m_bRotate = false;
+				m_fRotateDelay = 0.f;
+			}
+
+		}
 	}
 }
 

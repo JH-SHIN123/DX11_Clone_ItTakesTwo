@@ -255,7 +255,13 @@ HRESULT CLevel_Stage::Ready_Layer_NoBatterySign(const _tchar * pLayerTag)
 }
 HRESULT CLevel_Stage::Ready_Layer_SpaceValve(const _tchar * pLayerTag)
 {
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SpaceValve")), E_FAIL);
+	EFFECT_DESC_CLONE a;
+	a.iPlayerValue = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SpaceValve"), &a), E_FAIL);
+	a.iPlayerValue = 2;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SpaceValve"), &a), E_FAIL);
+
+
 	return S_OK;
 }
 HRESULT CLevel_Stage::Ready_Layer_Test()
