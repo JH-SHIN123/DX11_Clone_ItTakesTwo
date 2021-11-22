@@ -19,7 +19,7 @@ HRESULT CMainApp::NativeConstruct()
 	FAILED_CHECK_RETURN(m_pGameInstance->Reserve_Container(Level::LEVEL_END), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Timer(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Prototype_ForStatic(), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_LOGO), E_FAIL);
 	UI_Generator->NativeConstruct(m_pDevice, m_pDeviceContext);
 
 	return S_OK;

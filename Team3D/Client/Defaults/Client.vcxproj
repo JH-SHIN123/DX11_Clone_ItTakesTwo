@@ -193,6 +193,7 @@
     <ClInclude Include="..\Public\InputButton.h" />
     <ClInclude Include="..\Public\InputButton_Frame.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
+    <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
     <ClInclude Include="..\public\Loading.h" />
     <ClInclude Include="..\public\MainApp.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="..\Private\InputButton.cpp" />
     <ClCompile Include="..\Private\InputButton_Frame.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
+    <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />

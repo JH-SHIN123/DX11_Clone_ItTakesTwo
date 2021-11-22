@@ -291,6 +291,9 @@
     <ClInclude Include="..\Public\AlphaScreen.h">
       <Filter>02.GameObject\05.UI\09.Screen\00.AlphaScreen</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_Logo.h">
+      <Filter>01.Maps\02.Logo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -394,6 +397,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\AlphaScreen.cpp">
       <Filter>02.GameObject\05.UI\09.Screen\00.AlphaScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Logo.cpp">
+      <Filter>01.Maps\02.Logo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

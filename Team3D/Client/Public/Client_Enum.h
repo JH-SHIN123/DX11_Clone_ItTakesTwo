@@ -2,7 +2,7 @@
 
 namespace Level
 {
-	enum ID { LEVEL_STATIC, LEVEL_STAGE, LEVEL_END };
+	enum ID { LEVEL_STATIC, LEVEL_LOGO, LEVEL_STAGE, LEVEL_END };
 }
 
 namespace Player
