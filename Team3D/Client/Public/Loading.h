@@ -41,6 +41,7 @@ private:
 	THREAD_ARG*				m_arrThreadArgs;
 	_bool*					m_arrFinished;
 private:
+	HRESULT LoadingForLogo(_uint iThreadIndex);
 	HRESULT LoadingForStage(_uint iThreadIndex); /* 예시, 테스트용 Level */
 
 public:

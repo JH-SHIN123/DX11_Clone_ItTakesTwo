@@ -73,9 +73,14 @@ _int CRespawnCircle::Late_Tick(_double TimeDelta)
 	CUIObject::Late_Tick(TimeDelta);
 
 	m_fSubTime += TimeDelta * 3.f;
+	m_fHeartTime += TimeDelta * 5.f;
 
 	if (360.f <= m_fSubTime)
 		m_fSubTime = 0.f;
+
+	if (360.f <= m_fHeartTime)
+		m_fHeartTime = 0.f;
+	
 
 	Set_Gauge(TimeDelta);
 
@@ -95,6 +100,7 @@ HRESULT CRespawnCircle::Render(RENDER_GROUP::Enum eGroup)
 	if (0 == m_iOption)
 	{
 		m_pVIBuffer_RectCom->Set_Variable("g_Angle", &m_fSubTime, sizeof(_float));
+		m_pVIBuffer_RectCom->Set_Variable("g_fHeartTime", &m_fHeartTime, sizeof(_float));
 
 		m_pVIBuffer_RectCom->Set_Variable("g_Time", &m_fTime, sizeof(_float));
 		m_pVIBuffer_RectCom->Set_Variable("g_UV", &m_vUV, sizeof(_float2));

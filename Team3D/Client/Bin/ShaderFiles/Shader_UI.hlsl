@@ -19,6 +19,7 @@ int		g_iRespawnOption;
 float	g_fAlpha;
 float	g_Time;
 float	g_Angle;
+float	g_fHeartTime;
 float2  g_UV;
 
 
@@ -248,7 +249,7 @@ PS_OUT PS_RespawnCircle(PS_IN In)
 		if (fColor <= 0.015f && Out.vColor.r == 1.f && Out.vColor.g == 1.f)
 		{
 			// 노란색 꼬랑지에만 노이즈
-			Out.vColor.rgb *= Out.vColor.r * 50.f * Noise.r * 50.f;
+			Out.vColor.rgb *= Out.vColor.r * 50.f * Noise.r;
 			// 게이지에 노이즈
 			//Out.vColor.rgb *= Noise.rgb;
 			//Out.vColor.r = Noise.a;
@@ -299,15 +300,23 @@ PS_OUT PS_RespawnCircleHeart(PS_IN In)
 	if (0.f >= Out.vColor.a && 0.f >= Out.vColor.b)
 		discard;
 
-	if (0 == g_iRespawnOption)
+	float fHeartTime = abs(sin(g_fHeartTime));
+
+	if (Out.vColor.b <= fHeartTime)
 	{
-		Out.vColor.rgb = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.f;
-		Out.vColor *= vector(10.0f, 1.0f, 0.1f, 1.f);
+		if (0 == g_iRespawnOption)
+		{
+			Out.vColor.rgb = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.f;
+			Out.vColor *= vector(10.0f, 1.0f, 0.1f, 1.f);
+		}
+		else
+		{
+			Out.vColor.rgb = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 0.5f;
+			Out.vColor *= vector(1000.0f, 1.9f, 0.0f, 1.f);
+		}
 	}
 	else
-	{
-		Out.vColor.rgb = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 0.2f;
-	}
+		discard;
 
 	return Out;
 }

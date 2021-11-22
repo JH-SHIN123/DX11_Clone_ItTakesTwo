@@ -12,6 +12,10 @@
 #include "UFO.h"
 #include "MoonBaboon.h"
 
+
+/* Logo Objects */
+#include "SplashScreen.h"
+
 /* Interactive Objects */
 #include "Rocket.h"
 #include "StarBuddy.h"
@@ -98,9 +102,28 @@ HRESULT CLoading::NativeConstruct(Level::ID ePreLevelID, Level::ID eNextLevelID)
 HRESULT CLoading::Loading(Level::ID ePreLevelID, Level::ID eNextLevelID, _uint iThreadIndex)
 {
 	if (Level::LEVEL_STAGE == eNextLevelID)
+	{
 		FAILED_CHECK_RETURN(LoadingForStage(iThreadIndex), E_FAIL);
+	}
+	else if (Level::LEVEL_LOGO == eNextLevelID)
+	{
+		FAILED_CHECK_RETURN(LoadingForLogo(iThreadIndex), E_FAIL);
+	}
 
 	m_arrFinished[iThreadIndex] = true;
+
+	return S_OK;
+}
+
+HRESULT CLoading::LoadingForLogo(_uint iThreadIndex)
+{
+	if (0 == iThreadIndex)
+	{
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("SplashScreen"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_TGA, TEXT("../Bin/Resources/_Test/Texture/Grass_0.tga"))), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("SplashScreen_Mask"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_TGA, TEXT("../Bin/Resources/_Test/Texture/Grass_0.tga"))), E_FAIL);
+
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_LOGO, TEXT("SplashScreen"), CSplashScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	}
 
 	return S_OK;
 }

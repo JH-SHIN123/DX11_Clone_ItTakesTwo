@@ -40,6 +40,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	//UI_Create(Cody, Portrait_Cody);
 	//UI_Create(May, Portrait_May);
 	UI_Create(Cody, RespawnCircle);
+	UI_Create(May, StickIcon);
 
 	//UI_Create(Cody, InputButton_InterActive);
 

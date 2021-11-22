@@ -12,6 +12,8 @@ HRESULT CLevel_Logo::NativeConstruct()
 {
 	CLevel::NativeConstruct();
 
+	Ready_Layer_SplashScreen();
+
 	return S_OK;
 }
 
@@ -24,6 +26,16 @@ _int CLevel_Logo::Tick(_double dTimedelta)
 
 HRESULT CLevel_Logo::Render()
 {
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Layer_SplashScreen()
+{
+	if (nullptr == m_pGameInstance)
+		return E_FAIL;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_LOGO, TEXT("Layer_UI"), Level::LEVEL_LOGO, TEXT("SplashScreen")), E_FAIL);
+
 	return S_OK;
 }
 

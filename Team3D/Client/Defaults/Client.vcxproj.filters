@@ -163,6 +163,9 @@
     <Filter Include="02.GameObject\05.UI\09.Screen\00.AlphaScreen">
       <UniqueIdentifier>{120844a3-2edb-4b1e-b9ea-4d3159964372}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\02.Logo\00.SplashScreen">
+      <UniqueIdentifier>{b6ee4c02-42a5-430a-ba23-db3336551b31}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -294,6 +297,9 @@
     <ClInclude Include="..\Public\Level_Logo.h">
       <Filter>01.Maps\02.Logo</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SplashScreen.h">
+      <Filter>02.GameObject\02.Logo\00.SplashScreen</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -400,6 +406,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Logo.cpp">
       <Filter>01.Maps\02.Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SplashScreen.cpp">
+      <Filter>02.GameObject\02.Logo\00.SplashScreen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

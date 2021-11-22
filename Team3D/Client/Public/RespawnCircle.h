@@ -34,6 +34,7 @@ private:
 	_float							m_fColorChangeTime = 0.f;
 	_float2							m_vUV;
 	_float							m_fSubTime = 0.f;
+	_float							m_fHeartTime = 0.f;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
