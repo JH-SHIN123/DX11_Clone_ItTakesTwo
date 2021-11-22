@@ -29,7 +29,7 @@ private:
 	_double					m_dFrameAcc			= 0.0; /* 1프레임시간 누적 */
 private:
 	_int	Tick(_double dTimeDelta);
-	HRESULT	Render();
+	HRESULT	Render(_double dTimeDelta);
 	HRESULT Ready_Timer();
 	HRESULT	Ready_Prototype_ForStatic();
 	HRESULT	Ready_DefaultLevel(Level::ID eLevelID);

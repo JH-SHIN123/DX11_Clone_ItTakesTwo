@@ -2,22 +2,6 @@
 
 IMPLEMENT_SINGLETON(CTimer_Manager)
 
-HRESULT CTimer_Manager::Ready_TimeManager()
-{
-	FAILED_CHECK_RETURN(Add_Timer(TEXT("Timer_Immediate")), E_FAIL);
-	m_pImmediateTimer = Find_Timer(TEXT("Timer_Immediate"));
-	Safe_AddRef(m_pImmediateTimer);
-
-	return S_OK;
-}
-
-_double CTimer_Manager::Compute_ImmediateTimeDelta()
-{
-	NULL_CHECK_RETURN(m_pImmediateTimer, 0.0);
-
-	return m_pImmediateTimer->Compute_TimeDelta();;
-}
-
 HRESULT CTimer_Manager::Add_Timer(const _tchar * pTimerTag)
 {
 	NOT_NULL_CHECK_RETURN(Find_Timer(pTimerTag), E_FAIL);
@@ -50,8 +34,6 @@ CTimer * CTimer_Manager::Find_Timer(const _tchar * pTimerTag)
 
 void CTimer_Manager::Free()
 {
-	Safe_Release(m_pImmediateTimer);
-
 	for (auto& Pair : m_Timers)
 		Safe_Release(Pair.second);
 	m_Timers.clear();

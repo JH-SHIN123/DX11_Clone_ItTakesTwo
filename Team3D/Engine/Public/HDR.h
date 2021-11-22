@@ -13,7 +13,7 @@ public:
 
 public:
 	HRESULT Ready_HDR(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight);
-	HRESULT Render_HDR();
+	HRESULT Render_HDR(_double TimeDelta);
 
 private:
 	HRESULT Build_FirstPassResources(_float iWidth, _float iHeight); /* 휘도의 중간값을 저장하기 위한 리소스들 */
@@ -26,7 +26,7 @@ private:
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, ID3D11ShaderResourceView* pResourceView);
 	HRESULT	Set_UnorderedAccessView(const char* pConstantName, ID3D11UnorderedAccessView* pResourceView);
 
-	HRESULT	Calculate_LuminanceAvg();
+	HRESULT	Calculate_LuminanceAvg(_double TimeDelta);
 	HRESULT	Calculate_BrightPassForBloom();
 
 	HRESULT Unbind_ShaderResources();
@@ -43,7 +43,7 @@ private:
 	
 	_bool	m_bAdaptationFirstTime = true;
 	_float	m_fAdaptationDeltaT = 0.f;
-	_float	m_fAdapt = 1.f;
+	_float	m_fAdapt = 4.f;
 	_float	m_fAdaptation = 0.f;
 
 private: /* For. CS - First Pass */

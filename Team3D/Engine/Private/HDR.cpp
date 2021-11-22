@@ -1,7 +1,6 @@
 #include "..\Public\HDR.h"
 #include "RenderTarget_Manager.h"
 #include "VIBuffer_RectRHW.h"
-#include "Timer_Manager.h"
 
 IMPLEMENT_SINGLETON(CHDR)
 
@@ -29,9 +28,9 @@ HRESULT CHDR::Ready_HDR(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceConte
 	return S_OK;
 }
 
-HRESULT CHDR::Render_HDR()
+HRESULT CHDR::Render_HDR(_double TimeDelta)
 {
-	FAILED_CHECK_RETURN(Calculate_LuminanceAvg(), E_FAIL);
+	FAILED_CHECK_RETURN(Calculate_LuminanceAvg(TimeDelta), E_FAIL);
 	FAILED_CHECK_RETURN(Calculate_BrightPassForBloom(), E_FAIL);
 
 	// PS ---------------------------------------------------------------------------
@@ -70,13 +69,13 @@ HRESULT CHDR::Render_HDR()
 	return S_OK;
 }
 
-HRESULT CHDR::Calculate_LuminanceAvg()
+HRESULT CHDR::Calculate_LuminanceAvg(_double TimeDelta)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 	NULL_CHECK_RETURN(m_pEffect_CS, E_FAIL);
 	
 	// Set Adaptation
-	m_fAdaptationDeltaT += (_float)CTimer_Manager::GetInstance()->Compute_ImmediateTimeDelta();
+	m_fAdaptationDeltaT += (_float)TimeDelta;
 
 	_float fAdaptNorm = 0.f;
 	if (m_bAdaptationFirstTime)
@@ -115,7 +114,7 @@ HRESULT CHDR::Calculate_LuminanceAvg()
 	Unbind_ShaderResources();
 
 	// For. Second Pass
-	//FAILED_CHECK_RETURN(Set_Variable("g_Adaptation", &m_fAdaptation, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(Set_Variable("g_Adaptation", &m_fAdaptation, sizeof(_float)), E_FAIL);
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageValues1D", m_pShaderResourceView_Lum), E_FAIL);
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_LumAve), E_FAIL);
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_PrevAverageLum", m_pShaderResourceView_LumAve), E_FAIL);

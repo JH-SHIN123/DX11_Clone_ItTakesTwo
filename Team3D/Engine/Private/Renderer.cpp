@@ -107,7 +107,7 @@ HRESULT CRenderer::Add_GameObject_ToRenderGroup(RENDER_GROUP eGroup, CGameObject
 	return S_OK;
 }
 
-HRESULT CRenderer::Draw_Renderer()
+HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 {
 	// 0 - pass
 	FAILED_CHECK_RETURN(Render_ShadowsForAllCascades(), E_FAIL);
@@ -118,7 +118,7 @@ HRESULT CRenderer::Draw_Renderer()
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_PostProcessing(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_PostProcessing(TimeDelta), E_FAIL);
 
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
@@ -252,10 +252,10 @@ HRESULT CRenderer::Render_Blend()
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_PostProcessing()
+HRESULT CRenderer::Render_PostProcessing(_double TimeDelta)
 {
 	CHDR* pHDR = CHDR::GetInstance();
-	FAILED_CHECK_RETURN(pHDR->Render_HDR(),E_FAIL);
+	FAILED_CHECK_RETURN(pHDR->Render_HDR(TimeDelta),E_FAIL);
 
 	return S_OK;
 }
