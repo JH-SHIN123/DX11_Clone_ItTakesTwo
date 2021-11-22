@@ -258,7 +258,7 @@ void CS_VERTICAL_FILTER(uint3 Gid : SV_GroupID, uint GI : SV_GroupIndex)
 	GroupMemoryBarrierWithGroupSync();
 
 	// 수직방향 블러
-	if (GI > KERNERLHALF && GI < (GROUPTHREADS - KERNERLHALF) &&
+	if (GI >= KERNERLHALF && GI < (GROUPTHREADS - KERNERLHALF) &&
 		((GI - KERNERLHALF + (GROUPTHREADS - KERNERLHALF * 2) * Gid.y) < g_Res.y))
 	{
 		float4 vOut = 0;
@@ -283,7 +283,7 @@ void CS_HORIZONTAL_FILTER(uint3 Gid : SV_GroupID, uint GI : SV_GroupIndex)
 	GroupMemoryBarrierWithGroupSync();
 
 	// 수평방향 블러
-	if (GI > KERNERLHALF && GI < (GROUPTHREADS - KERNERLHALF) &&
+	if (GI >= KERNERLHALF && GI < (GROUPTHREADS - KERNERLHALF) &&
 		((Gid.x * (GROUPTHREADS - 2 * KERNERLHALF) + GI - KERNERLHALF) < g_Res.x))
 	{
 		float4 vOut = 0;

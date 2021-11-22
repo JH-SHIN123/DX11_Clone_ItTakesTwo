@@ -132,12 +132,8 @@ HRESULT CHDR::Calculate_BrightPassForBloom()
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Bloom), E_FAIL);
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[3].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
-	//_uint x = (_uint)(ceil(m_iWinSize[0]));
-	//_uint y = (_uint)ceil((m_iWinSize[1]) / 16.f / ((128 - 12) + 1));
-
 	_uint x = (_uint)(ceil(m_iWinSize[0] / 4.f));
-	_uint y = (_uint)ceil((m_iWinSize[1] / 4.f));
-	//_uint y = (_uint)ceil((m_iWinSize[1] / 4.f) / ((128 - 12) + 1));
+	_uint y = (_uint)(ceil((m_iWinSize[1] / 4.f) / ((128 - 12) + 1)));
 
 	m_pDeviceContext->Dispatch(x, y, 1);
 
@@ -149,7 +145,9 @@ HRESULT CHDR::Calculate_BrightPassForBloom()
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[4].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 	// GroupThread : 128
-	m_pDeviceContext->Dispatch(y, x, 1);
+	x = (_uint)(ceil(m_iWinSize[1] / 4.f) / ((128 - 12) + 1));
+	y = (_uint)(ceil(m_iWinSize[1] / 4.f));
+	m_pDeviceContext->Dispatch(x, y, 1);
 
 	// Reset Views
 	Unbind_ShaderResources();
