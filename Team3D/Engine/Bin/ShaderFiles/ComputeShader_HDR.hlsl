@@ -34,7 +34,7 @@ cbuffer DownScaleDesc
 
 	float g_Adaptation = 0.0016f / 0.5f; // TimeDelta / 임시값
 
-	float fBloomThreshold = 0.5f;// 블룸 임계값 비율
+	float g_fBloomThreshold = 0.5f;// 블룸 임계값 비율
 };
 
 // 각 스레드에 대해 4x4 다운스케일 수행
@@ -226,7 +226,7 @@ void CS_BRIGHTPASS(uint3 dispatchThreadID : SV_DispatchThreadID)
 		float avgLum = g_AverageLum[0];
 
 		// 색상 스케일 계산
-		float colorScale = saturate(Lum - avgLum * fBloomThreshold);
+		float colorScale = saturate(Lum - avgLum * g_fBloomThreshold);
 
 		// 블룸 스케일 조정후 저장
 		g_Bloom[CurPixel.xy] = color * colorScale;
