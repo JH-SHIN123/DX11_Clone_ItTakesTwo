@@ -104,7 +104,7 @@ HRESULT CHDR::Calculate_LuminanceAvg(_double TimeDelta)
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_HDRDownScale", m_pUnorderedAccessView_DownScaledHDR), E_FAIL); // HDR 다운스케일 텍스쳐 제작
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageValues1D", m_pShaderResourceView_Lum), E_FAIL);
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_Lum), E_FAIL);
-	
+
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[0].pPass->Apply(0, m_pDeviceContext),E_FAIL);
 
 	 _uint x = (_uint)(ceil((m_iWinSize[0] / 1024.f) * (m_iWinSize[1] / 16.f)));
@@ -117,7 +117,7 @@ HRESULT CHDR::Calculate_LuminanceAvg(_double TimeDelta)
 	//FAILED_CHECK_RETURN(Set_Variable("g_Adaptation", &m_fAdaptation, sizeof(_float)), E_FAIL);
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageValues1D", m_pShaderResourceView_Lum), E_FAIL);
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_LumAve), E_FAIL);
-	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_PrevAverageLum", m_pShaderResourceView_LumAve), E_FAIL);
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_PrevAverageLum", m_pShaderResourceView_PrevLumAve), E_FAIL);
 
 	// MAX_GROUPS : 64
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[1].pPass->Apply(0, m_pDeviceContext), E_FAIL);
@@ -188,6 +188,7 @@ HRESULT CHDR::Unbind_ShaderResources()
 
 	m_pDeviceContext->CSSetShaderResources(0, 8, pNullSRV);
 	m_pDeviceContext->CSSetUnorderedAccessViews(0, 8, pNullUAV, 0);
+
 	m_pDeviceContext->CSSetShader(0, 0, 0);
 
 	return S_OK;
@@ -418,13 +419,20 @@ void CHDR::Free()
 	Safe_Release(m_pShaderResourceView_PrevLumAve);
 	Safe_Release(m_pHDRBuffer_PrevLumAve);
 
+	for (auto& InputLayout : m_InputLayouts_CS_Bloom)
+	{
+		Safe_Release(InputLayout.pPass);
+		Safe_Release(InputLayout.pLayout);
+	}
+	m_InputLayouts_CS_Bloom.clear();
+	Safe_Release(m_pEffect_CS_Bloom);
+
 	for (auto& InputLayout : m_InputLayouts_CS)
 	{
 		Safe_Release(InputLayout.pPass);
 		Safe_Release(InputLayout.pLayout);
 	}
 	m_InputLayouts_CS.clear();
-
 	Safe_Release(m_pEffect_CS);
 
 	Safe_Release(m_pVIBuffer_ToneMapping);

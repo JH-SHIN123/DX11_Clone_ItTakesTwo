@@ -20,13 +20,6 @@ CRenderer::CRenderer(const CRenderer & rhs)
 {
 }
 
-ID3D11ShaderResourceView* CRenderer::Get_ShaderResourceView_RenderTargetManager(const _tchar* pRenderTargetTag)
-{
-	if (nullptr == m_pRenderTarget_Manager) return nullptr;
-
-	return m_pRenderTarget_Manager->Get_ShaderResourceView(pRenderTargetTag);
-}
-
 HRESULT CRenderer::NativeConstruct_Prototype()
 {
 	CComponent::NativeConstruct_Prototype();

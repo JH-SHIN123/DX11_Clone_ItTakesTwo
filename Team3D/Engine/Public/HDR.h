@@ -78,6 +78,10 @@ private: /* For.CS - Shader */
 	ID3DX11Effect* m_pEffect_CS = nullptr;
 	vector<INPUT_LAYOUT_DESC>	m_InputLayouts_CS;
 
+private:
+	ID3DX11Effect* m_pEffect_CS_Bloom = nullptr;
+	vector<INPUT_LAYOUT_DESC>	m_InputLayouts_CS_Bloom;
+
 private: /* For. PS - ToneMapping */
 	class CVIBuffer_RectRHW* m_pVIBuffer_ToneMapping = nullptr;
 

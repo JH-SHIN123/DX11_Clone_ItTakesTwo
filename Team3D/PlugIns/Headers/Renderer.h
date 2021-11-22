@@ -12,9 +12,6 @@ private:
 	virtual ~CRenderer() = default;
 
 public:
-	ID3D11ShaderResourceView* Get_ShaderResourceView_RenderTargetManager(const _tchar* pRenderTargetTag);
-
-public:
 	virtual HRESULT	NativeConstruct_Prototype();
 	virtual HRESULT	NativeConstruct(void* pArg);
 
