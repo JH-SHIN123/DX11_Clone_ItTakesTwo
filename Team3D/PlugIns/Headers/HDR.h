@@ -43,7 +43,7 @@ private:
 	
 	_bool	m_bAdaptationFirstTime = true;
 	_float	m_fAdaptationDeltaT = 0.f;
-	_float	m_fAdapt = 0.1f;
+	_float	m_fAdapt = 4.f;
 	_float	m_fAdaptation = 0.f;
 
 private: /* For. CS - First Pass */
