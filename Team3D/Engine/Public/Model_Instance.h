@@ -32,6 +32,7 @@ public: /* Struct */
 	}PX_TRIMESH;
 
 public: /* Setter */
+	HRESULT Set_MeshRenderGroup(_uint iMeshIndex, RENDER_GROUP::Enum eGroup);
 	/* For.Shader */
 	HRESULT	Set_Variable(const char* pConstantName, void* pData, _uint iByteSize);
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, ID3D11ShaderResourceView* pShaderResourceView);
@@ -47,12 +48,12 @@ public:
 	HRESULT	Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials);
 	/* For.Client */
 	HRESULT Update_Model(_fmatrix TransformMatrix);
-	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false);
+	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
 
 public:
 	_uint	Frustum_Culling(); /* @Return : RenderCount */
 	HRESULT Bind_GBuffers(_uint iRenderCount);
-	HRESULT	Render_ModelByPass(_uint iRenderCount, _uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false); /* 텍스쳐 외부에서 따로 연결해줘야함. */
+	HRESULT	Render_ModelByPass(_uint iRenderCount, _uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END); /* 텍스쳐 외부에서 따로 연결해줘야함. */
 
 private: /* Typedef */
 	typedef vector<class CMesh*>	MESHES;
@@ -79,6 +80,8 @@ private:
 	_uint					m_iMaterialSetCount = 0;
 	/*For. Check Bind Materials */
 	_uint					m_IsBindMaterials[AI_TEXTURE_TYPE_MAX];
+	/* For.MultiRenderGroup */
+	_bool					m_bMultiRenderGroup = false;
 private:
 	HRESULT	Sort_MeshesByMaterial();
 	HRESULT	Apply_PivotMatrix(_fmatrix PivotMatrix);

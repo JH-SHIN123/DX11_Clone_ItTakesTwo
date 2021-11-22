@@ -20,15 +20,17 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Cody(TEXT("Layer_Cody")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_May(TEXT("Layer_May")), E_FAIL);
 
-	//FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
-
+	FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
 
 	/* For.Interactive Objects */
-	//FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_Robot(TEXT("Layer_Robot")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_RobotHead(TEXT("Layer_RobotHead")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Robot(TEXT("Layer_Robot")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_RobotHead(TEXT("Layer_RobotHead")), E_FAIL);
+
+	/* For.Test */
+	FAILED_CHECK_RETURN(Ready_Layer_Test(), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Map", Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
 
@@ -69,22 +71,22 @@ HRESULT CLevel_Stage::Ready_Lights()
 	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
 	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
 	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.f);
-	LightDesc.vSpecular = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.f);
+	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
 		return E_FAIL;
 
 	/* For. Point */
-	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	LightDesc.vPosition = XMFLOAT3(5.f, 5.f, 10.f);
-	LightDesc.vDiffuse = XMFLOAT4(1.f, 0.f, 0.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.f);
-	LightDesc.vSpecular = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.f);
-	LightDesc.fRange = 15.f;
+	//LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	//LightDesc.vPosition = XMFLOAT3(5.f, 5.f, 10.f);
+	//LightDesc.vDiffuse = XMFLOAT4(1.f, 0.f, 0.f, 1.f);
+	//LightDesc.vAmbient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.f);
+	//LightDesc.vSpecular = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.f);
+	//LightDesc.fRange = 15.f;
 
-	if (FAILED(pGameInstance->Add_Light(L"Point1", LightDesc)))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_Light(L"Point1", LightDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -168,6 +170,12 @@ HRESULT CLevel_Stage::Ready_Layer_Robot(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_RobotHead(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_RobotHead")), E_FAIL);
+	return S_OK;
+}
+
+HRESULT CLevel_Stage::Ready_Layer_Test()
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Test"), Level::LEVEL_STAGE, TEXT("GameObject_TestObject01")), E_FAIL);
 	return S_OK;
 }
 

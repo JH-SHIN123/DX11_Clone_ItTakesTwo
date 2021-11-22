@@ -30,12 +30,12 @@ const _float4 CGraphic_Device::Get_ViewportRadioInfo(_uint iViewportIndex) const
 
 const _float CGraphic_Device::Get_ViewportAspect(_uint iViewportIndex) const
 {
-	if (0.f >= m_Viewports[iViewportIndex].Height)
+	if (0.001f >= m_Viewports[iViewportIndex].Height)
 		return 1.f;
 
 	_float fAspect = m_Viewports[iViewportIndex].Width / m_Viewports[iViewportIndex].Height;
 
-	if (0.f >= fAspect)
+	if (0.001f >= fAspect)
 		return 1.f;
 
 	return fAspect;

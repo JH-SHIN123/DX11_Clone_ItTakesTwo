@@ -186,6 +186,41 @@ _long CGameInstance::Mouse_Move(CInput_Device::MOUSE_MOVESTATE eMouseMoveState)
 	NULL_CHECK_RETURN(m_pInput_Device, 0);
 	return m_pInput_Device->Mouse_Move(eMouseMoveState);
 }
+_bool CGameInstance::Pad_Key_Up(_ubyte byPadKeyID)
+{
+	NULL_CHECK_RETURN(m_pInput_Device, false);
+	return m_pInput_Device->Pad_Key_Up(byPadKeyID);
+}
+_bool CGameInstance::Pad_Key_Down(_ubyte byPadKeyID)
+{
+	NULL_CHECK_RETURN(m_pInput_Device, false);
+	return m_pInput_Device->Pad_Key_Down(byPadKeyID);
+}
+_bool CGameInstance::Pad_Key_Pressing(_ubyte byPadKeyID)
+{
+	NULL_CHECK_RETURN(m_pInput_Device, false);
+	return m_pInput_Device->Pad_Key_Pressing(byPadKeyID);
+}
+_long CGameInstance::Get_Pad_LStickX()
+{
+	NULL_CHECK_RETURN(m_pInput_Device, 0);
+	return m_pInput_Device->Get_Pad_LStickX();
+}
+_long CGameInstance::Get_Pad_LStickY()
+{
+	NULL_CHECK_RETURN(m_pInput_Device, 0);
+	return m_pInput_Device->Get_Pad_LStickY();
+}
+_long CGameInstance::Get_Pad_RStickX()
+{
+	NULL_CHECK_RETURN(m_pInput_Device, 0);
+	return m_pInput_Device->Get_Pad_RStickX();
+}
+_long CGameInstance::Get_Pad_RStickY()
+{
+	NULL_CHECK_RETURN(m_pInput_Device, 0);
+	return m_pInput_Device->Get_Pad_RStickY();
+}
 #pragma endregion 
 
 #pragma region Timer_Manager
@@ -311,11 +346,6 @@ PxMaterial * CGameInstance::Get_BasePxMaterial()
 {
 	NULL_CHECK_RETURN(m_pPhysX, nullptr);
 	return m_pPhysX->Get_BaseMaterial();
-}
-PxMaterial * CGameInstance::Create_PxMaterial(PxReal StaticFriction, PxReal DynamicFriction, PxReal Restitution)
-{
-	NULL_CHECK_RETURN(m_pPhysX, nullptr);
-	return m_pPhysX->Create_Material(StaticFriction, DynamicFriction, Restitution);
 }
 PxTriangleMesh * CGameInstance::Create_PxMesh(MESHACTOR_DESC pMeshActorDesc)
 {

@@ -18,7 +18,7 @@ public: /* Getter */
 	ID3D11ShaderResourceView* Get_ShaderResourceView(_uint iIndex);
 
 public:
-	virtual HRESULT	NativeConstruct_Prototype(TEXTURE_TYPE eType, const _tchar* pTextureFilePath, _uint iTextureCount);
+	virtual HRESULT	NativeConstruct_Prototype(TEXTURE_TYPE eType, const _tchar* pTextureFilePath, _uint iTextureCount, _uint iTextureType);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 
 private: /* Typedef */
@@ -26,9 +26,11 @@ private: /* Typedef */
 private:
 	TEXTURES	m_Textures;
 	_uint		m_iTextureCount = 0;
+private:
+	HRESULT Save_ProcessedImage(ScratchImage* pSrcImage, const _tchar* pTextureFilePath);
 
 public:
-	static CTextures* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, TEXTURE_TYPE eType, const _tchar* pTextureFilePath, _uint iTextureCount = 1);
+	static CTextures* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, TEXTURE_TYPE eType, const _tchar* pTextureFilePath, _uint iTextureCount = 1, _uint iTextureType = AI_TEXTURE_TYPE_MAX);
 	virtual CComponent* Clone_Component(void* pArg) override;
 	virtual void Free() override;
 };

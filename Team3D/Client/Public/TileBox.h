@@ -22,7 +22,7 @@ public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
-	virtual HRESULT	Render() override;
+	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
@@ -32,7 +32,8 @@ private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CModel_Instance*	m_pModelCom = nullptr;
 	_uint				m_iRenderNum = 0;
-	PxRigidDynamic*		m_pTest = nullptr;
+	//PxRigidDynamic*		m_pTest = nullptr;
+	PxRigidStatic*		m_pTest = nullptr;
 
 public:
 	static CTileBox* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

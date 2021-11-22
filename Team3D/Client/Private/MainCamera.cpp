@@ -12,6 +12,7 @@ CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceCo
 CMainCamera::CMainCamera(const CMainCamera & rhs)
 	: CCamera(rhs)
 {
+	// ddd
 }
 
 HRESULT CMainCamera::NativeConstruct_Prototype()

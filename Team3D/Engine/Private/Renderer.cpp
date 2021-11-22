@@ -96,9 +96,9 @@ HRESULT CRenderer::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-HRESULT CRenderer::Add_GameObject_ToRenderGroup(RENDER_GROUP eGroup, CGameObject * pGameObject)
+HRESULT CRenderer::Add_GameObject_ToRenderGroup(RENDER_GROUP::Enum eGroup, CGameObject * pGameObject)
 {
-	if (eGroup >= RENDER_END) { return E_FAIL; }
+	if (eGroup >= RENDER_GROUP::RENDER_END) { return E_FAIL; }
 	NULL_CHECK_RETURN(pGameObject, E_FAIL);
 
 	m_RenderObjects[eGroup].emplace_back(pGameObject);
@@ -141,12 +141,12 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 HRESULT CRenderer::Render_Priority()
 {
 	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_HDR"));
-	for (auto& pGameObject : m_RenderObjects[RENDER_PRIORITY])
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_PRIORITY])
 	{
-		FAILED_CHECK_RETURN(pGameObject->Render(), E_FAIL);
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_PRIORITY), E_FAIL);
 		Safe_Release(pGameObject);
 	}
-	m_RenderObjects[RENDER_PRIORITY].clear();
+	m_RenderObjects[RENDER_GROUP::RENDER_PRIORITY].clear();
 	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_HDR"));
 
 	return S_OK;
@@ -156,12 +156,12 @@ HRESULT CRenderer::Render_NonAlpha()
 {
 	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Deferred"));
 
-	for (auto& pGameObject : m_RenderObjects[RENDER_NONALPHA])
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_NONALPHA])
 	{
-		FAILED_CHECK_RETURN(pGameObject->Render(), E_FAIL);
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_NONALPHA), E_FAIL);
 		Safe_Release(pGameObject);
 	}
-	m_RenderObjects[RENDER_NONALPHA].clear();
+	m_RenderObjects[RENDER_GROUP::RENDER_NONALPHA].clear();
 
 	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Deferred"));
 
@@ -170,15 +170,15 @@ HRESULT CRenderer::Render_NonAlpha()
 
 HRESULT CRenderer::Render_Alpha()
 {
-	Sort_GameObjects(m_RenderObjects[RENDER_ALPHA]);
+	Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_ALPHA]);
 
 	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_HDR"), false);
-	for (auto& pGameObject : m_RenderObjects[RENDER_ALPHA])
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_ALPHA])
 	{
-		FAILED_CHECK_RETURN(pGameObject->Render(), E_FAIL);
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_ALPHA), E_FAIL);
 		Safe_Release(pGameObject);
 	}
-	m_RenderObjects[RENDER_ALPHA].clear();
+	m_RenderObjects[RENDER_GROUP::RENDER_ALPHA].clear();
 	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_HDR"));
 
 	return S_OK;
@@ -186,12 +186,14 @@ HRESULT CRenderer::Render_Alpha()
 
 HRESULT CRenderer::Render_UI()
 {
-	for (auto& pGameObject : m_RenderObjects[RENDER_UI])
+	Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_UI]);
+
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_UI])
 	{
-		FAILED_CHECK_RETURN(pGameObject->Render(), E_FAIL);
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_UI), E_FAIL);
 		Safe_Release(pGameObject);
 	}
-	m_RenderObjects[RENDER_UI].clear();
+	m_RenderObjects[RENDER_GROUP::RENDER_UI].clear();
 
 	return S_OK;
 }
@@ -210,7 +212,7 @@ HRESULT CRenderer::Render_ShadowsForAllCascades()
 	FAILED_CHECK_RETURN(pShadowManager->RSSet_CascadedViewports(), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_CascadedShadow")), E_FAIL);
-	for (auto& pGameObject : m_RenderObjects[RENDER_NONALPHA])
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_NONALPHA])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render_ShadowDepth(), E_FAIL);
 	}
@@ -287,7 +289,7 @@ CComponent * CRenderer::Clone_Component(void * pArg)
 
 void CRenderer::Free()
 {
-	for (_uint iRenderGroupIndex = 0; iRenderGroupIndex < RENDER_END; ++iRenderGroupIndex)
+	for (_uint iRenderGroupIndex = 0; iRenderGroupIndex < RENDER_GROUP::RENDER_END; ++iRenderGroupIndex)
 	{
 		for (auto& pGameObject : m_RenderObjects[iRenderGroupIndex])
 			Safe_Release(pGameObject);

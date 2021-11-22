@@ -1,5 +1,6 @@
 #include "..\Public\Actor.h"
 #include "PhysX.h"
+#include "GameObject.h"
 
 CActor::CActor(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)

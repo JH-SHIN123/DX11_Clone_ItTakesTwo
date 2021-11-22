@@ -31,6 +31,9 @@ private:
 	HRESULT Ready_Layer_Robot(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_RobotHead(const _tchar* pLayerTag);
 
+	/* For.Test */
+	HRESULT Ready_Layer_Test();
+
 public:
 	static CLevel_Stage* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

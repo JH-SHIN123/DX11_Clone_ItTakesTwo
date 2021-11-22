@@ -1,0 +1,31 @@
+#pragma once
+
+namespace Engine
+{
+	struct GameID
+	{
+		enum Enum
+		{ 
+			eCODY,
+			eMAY,
+			eCAMERA,
+			eUFO,
+			eMOONBABOON,
+			eSTARBUDDY
+		};
+	};
+
+	typedef struct tagUserData
+	{
+		GameID::Enum		eID;
+		class CGameObject*	pGameObject;
+
+		tagUserData() {}
+		tagUserData(GameID::Enum _eID, class CGameObject* _pGameObject) : eID(_eID), pGameObject(_pGameObject) {}
+	}USERDATA;
+
+	struct TriggerStatus
+	{
+		enum Enum { eFOUND, eLOST };
+	};
+}

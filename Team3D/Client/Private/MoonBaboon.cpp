@@ -70,7 +70,6 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 	During_Animation_Behavior(dTimeDelta);
 	Fix_MoonBaboon_Chair(dTimeDelta);
 
-	PxMaterial* pMaterial = CPhysX::GetInstance()->Create_Material(0.5f, 0.5f, 0.f);
 	//m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
 
@@ -81,7 +80,7 @@ _int CMoonBaboon::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(CRenderer::RENDER_NONALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
 
@@ -120,9 +119,9 @@ void CMoonBaboon::Fix_MoonBaboon_Chair(_double TimeDelta)
 	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
 }
 
-HRESULT CMoonBaboon::Render()
+HRESULT CMoonBaboon::Render(RENDER_GROUP::Enum eGroup)
 {
-	CGameObject::Render();
+	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
