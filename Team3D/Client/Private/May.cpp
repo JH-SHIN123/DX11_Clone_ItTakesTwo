@@ -780,11 +780,14 @@ void CMay::Ground_Pound(const _double dTimeDelta)
 
 
 #pragma region Trigger
-void CMay::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos)
+void CMay::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName)
 {
 	m_eTargetGameID = eID;
 	m_IsCollide = IsCollide;
 	XMStoreFloat3(&m_vTriggerTargetPos, vTriggerTargetPos);
+
+	/* For.Valve */
+	m_iValvePlayerName = _iPlayerName;
 }
 
 _bool CMay::Trigger_Check(const _double dTimeDelta)
@@ -821,7 +824,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsPullVerticalDoor = true;
 		}
-		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_E))
+		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_END) && m_iValvePlayerName == Player::May)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Valve_Rotate_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Valve_Rotate_MH);

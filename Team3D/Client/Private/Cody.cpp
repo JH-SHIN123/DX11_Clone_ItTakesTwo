@@ -1198,11 +1198,14 @@ HRESULT CCody::Render_ShadowDepth()
 #pragma endregion
 
 #pragma region Trigger
-void CCody::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos)
+void CCody::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName)
 {
 	m_eTargetGameID = eID;
 	m_IsCollide = IsCollide;
 	XMStoreFloat3(&m_vTriggerTargetPos, vTriggerTargetPos);
+
+	/* For.Valve */
+	m_iValvePlayerName = _iPlayerName;
 }
 
 _bool CCody::Trigger_Check(const _double dTimeDelta)
@@ -1239,7 +1242,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
 			m_IsPushingBattery = true;
 		}
-		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_E))
+		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_E) && m_iValvePlayerName == Player::Cody)
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Valve_Rotate_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Valve_Rotate_MH);

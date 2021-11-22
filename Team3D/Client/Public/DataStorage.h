@@ -45,7 +45,9 @@ public:
 	CGameObject* Get_NoBatterySign() { return m_pNoBatterySign; }
 
 	void Set_ValveCount(_uint _iValveRotateCount) { m_iValveRotateCount += _iValveRotateCount; }
+	void Set_ValveTarget(_uint _iValveTarget) { m_iValveTarget = _iValveTarget; }
 	_uint Get_ValveCount() { return m_iValveRotateCount; }
+
 
 private:
 	CGameObject* m_pCody = nullptr;
@@ -67,6 +69,7 @@ private:
 private:
 	/* For.Valve */
 	_uint m_iValveRotateCount = 0;
+	_uint m_iValveTarget = 0;
 
 public:
 	virtual void Free() override;

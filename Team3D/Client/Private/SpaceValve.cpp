@@ -40,12 +40,13 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 
 	if (a.iPlayerValue == 1)
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 1.5f, 25.f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 1.5f, 20.f, 1.f));
 		m_iTargetPlayer = GameID::eCODY;
 	}
 	else if (a.iPlayerValue == 2)
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 1.5f, 20.f, 1.f));
+		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-180.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(35.f, 1.5f, 20.f, 1.f));
 		m_iTargetPlayer = GameID::eMAY;
 	}
 
@@ -65,14 +66,29 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide == true)
+	if (m_iTargetPlayer == GameID::eCODY)
 	{
-		UI_Delete(May, InputButton_InterActive);
-		UI_Delete(Cody, InputButton_InterActive);
+		if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide == true)
+		{
+			UI_Delete(May, InputButton_InterActive);
+			UI_Delete(Cody, InputButton_InterActive);
 
-		m_bEnterValve = true;
-		// 키보드 화살표 UI 생성.
+			m_bEnterValve = true;
+			// 키보드 화살표 UI 생성.
+		}
 	}
+	else if (m_iTargetPlayer == GameID::eMAY)
+	{
+		if (m_pGameInstance->Key_Down(DIK_END) && m_IsCollide == true)
+		{
+			UI_Delete(May, InputButton_InterActive);
+			UI_Delete(Cody, InputButton_InterActive);
+
+			m_bEnterValve = true;
+			// 키보드 화살표 UI 생성.
+		}
+	}
+
 
 	if (m_bEnterValve == true)
 	{
@@ -102,31 +118,36 @@ HRESULT CSpaceValve::Render(RENDER_GROUP::Enum eGroup)
 void CSpaceValve::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	// Cody
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	if (m_iTargetPlayer == Player::Cody)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eSPACEVALVE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(Cody, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
+		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+		{
+			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eSPACEVALVE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION), Player::Cody);
+			UI_Create(Cody, InputButton_InterActive);
+			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCollide = true;
+		}
+		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+		{
+			m_IsCollide = false;
+			UI_Delete(Cody, InputButton_InterActive);
+		}
 	}
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-	{
-		m_IsCollide = false;
-		UI_Delete(Cody, InputButton_InterActive);
-	}
-
 	//May
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+	if (m_iTargetPlayer == Player::May)
 	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eSPACEVALVE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(May, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
-	}
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-	{
-		m_IsCollide = false;
-		UI_Delete(May, InputButton_InterActive);
+		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+		{
+			((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eSPACEVALVE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION), Player::May);
+			UI_Create(May, InputButton_InterActive);
+			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCollide = true;
+		}
+		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+		{
+			m_IsCollide = false;
+			UI_Delete(May, InputButton_InterActive);
+		}
 	}
 }
 

@@ -322,7 +322,7 @@ private:
 
 #pragma region Trigger
 public:
-	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos);
+	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
 
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
@@ -339,6 +339,7 @@ private:
 	_bool m_IsEnterValve = false;
 	_bool m_bStruggle = false;
 	_uint m_iRotateCount = 0;
+	_uint m_iValvePlayerName = Player::Cody;
 
 
 

@@ -263,7 +263,7 @@ HRESULT CLevel_Stage::Ready_Layer_SpaceValve(const _tchar * pLayerTag)
 
 
 	return S_OK;
-}
+}  
 HRESULT CLevel_Stage::Ready_Layer_Test()
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Test"), Level::LEVEL_STAGE, TEXT("GameObject_TestObject01")), E_FAIL);
