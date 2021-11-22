@@ -66,8 +66,8 @@ _int CSplashScreen::Late_Tick(_double dTimeDelta)
 	if (1.f <= m_fScreenAlpha)
 		m_fScreenAlpha = 1.f;
 
-	m_vMaskUV.x += 0.002f;
-	m_vMaskUV.y += 0.005f;
+	m_vMaskUV.x += 0.0005f;
+	m_vMaskUV.y += 0.0005f;
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
@@ -80,6 +80,13 @@ HRESULT CSplashScreen::Render(RENDER_GROUP::Enum eGroup)
 		return E_FAIL;
 
 	m_pVIBuffer_RectCom->Render(m_iPassNum);
+	
+	if (1 == m_iOption)
+	{
+		m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(0));
+		m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseMaskTexture", m_pSubTextureCom->Get_ShaderResourceView(0));
+	}
+	m_pVIBuffer_RectCom->Render(10);
 
 	return S_OK;
 }

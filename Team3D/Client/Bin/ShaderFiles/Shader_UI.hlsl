@@ -364,18 +364,38 @@ PS_OUT PS_SplashScreen(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-	In.vTexUV += g_vScreenMaskUV;
-	vector Mask = g_DiffuseMaskTexture.Sample(DiffuseSampler, In.vTexUV);
+	
+	//if (Out.vColor.r >= 0.8f)
+	//	In.vTexUV.x += g_vScreenMaskUV.x;
+	//else if (Out.vColor.g >= 0.8f)
+	//	In.vTexUV.y -= g_vScreenMaskUV.y;
+	//else if (Out.vColor.b >= 0.8f)
+	//	In.vTexUV.x -= g_vScreenMaskUV.x;
+
+	//vector Mask = g_DiffuseMaskTexture.Sample(DiffuseSampler, In.vTexUV);
 
 	if(0.999f < Out.vColor.a)
 		Out.vColor.a = g_fScreenAlpha;
 
-	Out.vColor.rgb += Mask;
-
+	//Out.vColor.rgb += Mask;
 
 	return Out;
 }
 
+
+PS_OUT PS_SplashScreenMask(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseMaskTexture.Sample(DiffuseSampler, In.vTexUV);
+	vector Screen = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	
+	if (Out.vColor.r <= 0.5f && Out.vColor.g <= 0.5f && Out.vColor.b <= 0.5f)
+		discard;
+
+
+	return Out;
+}
 
 ////////////////////////////////////////////////////////////
 
@@ -489,6 +509,17 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_LOGO();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_SplashScreen();
+	}
+
+	// 10
+	pass SplashScreenMask
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_SplashScreenMask();
 	}
 
 };
