@@ -5,6 +5,7 @@
 texture2D	g_DiffuseTexture;
 texture2D	g_DiffuseSubTexture;
 texture2D	g_SubTexture;
+texture2D   g_DiffuseNoiseTexture;
 matrix		g_UIWorldMatrix;
 matrix		g_UIViewMatrix;
 matrix		g_UIProjMatrix;
@@ -14,10 +15,11 @@ int		g_iColorOption;
 int		g_iGSOption;
 int		g_iRespawnOption;
 
+
 float	g_fAlpha;
-
-
-float  g_Time;
+float	g_Time;
+float	g_Angle;
+float2  g_UV;
 
 
 sampler	DiffuseSampler = sampler_state
@@ -39,6 +41,7 @@ struct VS_OUT
 {           
 	float4	vPosition	: SV_POSITION;
 	float2	vTexUV		: TEXCOORD0;
+	float2  vSubUV		: TEXCOORD1;
 };
 
 VS_OUT	VS_MAIN(VS_IN In)
@@ -51,16 +54,46 @@ VS_OUT	VS_MAIN(VS_IN In)
 	return Out;
 }
 
+VS_OUT	VS_RespawnCirle(VS_IN In)
+{
+	VS_OUT	Out = (VS_OUT)0;
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vTexUV = In.vTexUV;
+
+	float2 SubUV = In.vTexUV;
+	SubUV.x -= 0.5f;
+	SubUV.y -= 0.5f;
+
+	float fCos, fSin;
+
+	fCos = cos(g_Angle);
+	fSin = sin(g_Angle);
+
+	float2x2 dd;
+
+	dd = float2x2(fCos, -fSin, fSin, fCos);
+	SubUV = mul(SubUV, dd);
+	SubUV.x += 0.5f;
+	SubUV.y += 0.5f;
+
+	Out.vSubUV = SubUV;
+
+	return Out;
+}
+
 struct GS_IN
 {
 	float4	vPosition	: SV_POSITION;
 	float2	vTexUV		: TEXCOORD0;
+	float2  vSubUV		: TEXCOORD1;
 };
 
 struct GS_OUT
 {
 	float4	vPosition		: SV_POSITION;
 	float2	vTexUV			: TEXCOORD0;
+	float2  vSubUV			: TEXCOORD1;
 	uint	iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 };
 
@@ -78,6 +111,7 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 
 			Out.vPosition = mul(In[i].vPosition, matVP);
 			Out.vTexUV = In[i].vTexUV;
+			Out.vSubUV = In[i].vSubUV;
 			Out.iViewportIndex = 1;
 
 			TriStream.Append(Out);
@@ -94,6 +128,7 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 
 			Out.vPosition = mul(In[j].vPosition, matVP);
 			Out.vTexUV = In[j].vTexUV;
+			Out.vSubUV = In[j].vSubUV;
 			Out.iViewportIndex = 2;
 
 			TriStream.Append(Out);
@@ -109,6 +144,7 @@ struct PS_IN
 {
 	float4	vPosition	: SV_POSITION;
 	float2	vTexUV		: TEXCOORD0;
+	float2  vSubUV		: TEXCOORD1;
 };
 
 struct PS_OUT
@@ -192,6 +228,10 @@ PS_OUT PS_RespawnCircle(PS_IN In)
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 	vector SubColor = g_DiffuseSubTexture.Sample(DiffuseSampler, In.vTexUV);
 
+	//In.vTexUV += g_UV;
+	vector Noise = g_DiffuseNoiseTexture.Sample(DiffuseSampler, In.vSubUV);
+
+
 	if (0.f >= Out.vColor.r && 0.f >= Out.vColor.b)
 		discard;
 
@@ -205,14 +245,22 @@ PS_OUT PS_RespawnCircle(PS_IN In)
 
 	if (Out.vColor.r <= 0.411f != Out.vColor.r >= 0.42f)
 	{
-
-		if (fColor <= 0.015f)
-			Out.vColor.rgb *= Out.vColor.r * 100.f;
+		if (fColor <= 0.015f && Out.vColor.r == 1.f && Out.vColor.g == 1.f)
+		{
+			//Out.vColor.rgb *= Out.vColor.r * 50.f;
+			Out.vColor.rgb *= Noise.rgb;
+			//Out.vColor.r = Noise.a;
+			//Out.vColor.a = 1.f;
+			//Out.vColor.ra = 1.f;
+			//Out.vColor.a = Noise.r;
+		}
 
 		if (SubColor.a <= g_Time)
 		{
-			Out.vColor.rgb *= float3(1.f, 0.09882f, 0.f) * 2.f;
+			Out.vColor.rgb *= float3(1.f, 0.09882f, 0.f) * 2.f * Noise.r;
+			//Out.vColor.r = Noise.r;
 			Out.vColor.a = Out.vColor.r;
+
 		}
 	}
 	else
@@ -340,7 +388,7 @@ technique11 DefaultTechnique
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_MAIN();
+		VertexShader = compile vs_5_0 VS_RespawnCirle();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_RespawnCircle();
 	}

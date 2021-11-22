@@ -44,11 +44,14 @@ HRESULT CRespawnCircle::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
 	m_pSubTexturesCom = (CTextures*)m_pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("CoolDown"));
+	m_pNoiseTextureCom = (CTextures*)m_pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Noise"));
 
 	if (1 == m_iOption)
 		m_iPassNum = 6;
 	else
 		m_iPassNum = 5;
+
+	m_vUV = { 0.f, 0.f };
 
 	return S_OK;
 }
@@ -69,7 +72,15 @@ _int CRespawnCircle::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 
+	m_fSubTime += TimeDelta * 2.f;
+
+	if (360.f <= m_fSubTime)
+		m_fSubTime = 0.f;
+
 	Set_Gauge(TimeDelta);
+
+	m_vUV.x += TimeDelta * 0.5f;
+	m_vUV.y += TimeDelta * 0.5f;
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
@@ -83,8 +94,13 @@ HRESULT CRespawnCircle::Render(RENDER_GROUP::Enum eGroup)
 
 	if (0 == m_iOption)
 	{
+		m_pVIBuffer_RectCom->Set_Variable("g_Angle", &m_fSubTime, sizeof(_float));
+
 		m_pVIBuffer_RectCom->Set_Variable("g_Time", &m_fTime, sizeof(_float));
+		m_pVIBuffer_RectCom->Set_Variable("g_UV", &m_vUV, sizeof(_float2));
 		m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseSubTexture", m_pSubTexturesCom->Get_ShaderResourceView(0));
+		m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseNoiseTexture", m_pNoiseTextureCom->Get_ShaderResourceView(0));
+
 	}
 
 	m_pVIBuffer_RectCom->Render(m_iPassNum);
@@ -182,6 +198,7 @@ void CRespawnCircle::Free()
 {
 	Safe_Release(m_pVIBuffer_RectCom);
 	Safe_Release(m_pSubTexturesCom);
+	Safe_Release(m_pNoiseTextureCom);
 
 	CUIObject::Free();
 }

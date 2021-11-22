@@ -32,10 +32,13 @@ private:
 	_bool							m_IsSpawnEnd = false;
 	_int							m_iRespawnOption = 0;
 	_float							m_fColorChangeTime = 0.f;
+	_float2							m_vUV;
+	_float							m_fSubTime = 0.f;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 	CTextures*						m_pSubTexturesCom = nullptr;
+	CTextures*						m_pNoiseTextureCom = nullptr;
 
 private:
 	HRESULT Ready_Component();

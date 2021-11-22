@@ -63,7 +63,6 @@ HRESULT CAlphaScreen::Render(RENDER_GROUP::Enum eGroup)
 {
 	CUIObject::Render(eGroup);
 
-
 	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
