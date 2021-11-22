@@ -61,9 +61,9 @@ HRESULT CEffect_RespawnTunnel::Render(RENDER_GROUP::Enum eGroup)
 // 
 // 	m_pModelInstanceCom->Set_Variable("g_vColorRamp_UV", &vColorRampUV, sizeof(_float2));
 // 	m_pModelInstanceCom->Set_Variable("g_fRadianAngle", &fRadian, sizeof(_float));
-	m_pModelInstanceCom->Set_ShaderResourceView("g_ColorRampTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(11));
+	m_pModelInstanceCom->Set_ShaderResourceView("g_ColorRampTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(4));
 	m_pModelInstanceCom->Set_DefaultVariables_Perspective();
-	m_pModelInstanceCom->Render_Model(4);
+	m_pModelInstanceCom->Render_Model(7);
 
 	return S_OK;
 }
