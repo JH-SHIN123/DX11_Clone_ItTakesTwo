@@ -12,6 +12,7 @@
 #include "ButtonIndicator.h"
 #include "InputButton_Frame.h"
 #include "Arrowkeys_Outline.h"
+#include "AlphaScreen.h"
 
 IMPLEMENT_SINGLETON(CUI_Generator)
 
@@ -40,6 +41,8 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	m_pEngTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("EngFont"));
 	m_pVIBuffer_FontCom = (CVIBuffer_FontInstance*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"));
 	
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("AlphaScreen"), CAlphaScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
 	m_VTXFONT = new VTXFONT[50];
 
 	return S_OK;
@@ -177,6 +180,7 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_E"));
 		SetUp_Clone(ePlayer, eTrigger, TEXT("ButtonIndicator"));
 		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), &iOption);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"));
 		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
@@ -473,6 +477,7 @@ HRESULT CUI_Generator::Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc)
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CButtonIndicator::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
 
+
 	return S_OK;
 }
 
@@ -520,6 +525,7 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Portrait_May"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/Portrait_May2021.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("ButtonIndicator"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/ButtonIndicator.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("CoolDown"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/CoolDown.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("AlphaScreen"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/SplashScreen/AlphaScreen.png"))), E_FAIL);
 
 	return S_OK;
 }

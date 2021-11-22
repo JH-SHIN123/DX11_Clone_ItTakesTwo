@@ -157,6 +157,12 @@
     <Filter Include="02.GameObject\05.UI\08.ButtonIndicator">
       <UniqueIdentifier>{29414170-35a7-4279-8f62-05b5997957f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.UI\09.Screen">
+      <UniqueIdentifier>{7f60ca2f-feec-410e-a00a-ada95f56603a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\09.Screen\00.AlphaScreen">
+      <UniqueIdentifier>{120844a3-2edb-4b1e-b9ea-4d3159964372}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -282,6 +288,9 @@
     <ClInclude Include="..\Public\ButtonIndicator.h">
       <Filter>02.GameObject\05.UI\08.ButtonIndicator</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\AlphaScreen.h">
+      <Filter>02.GameObject\05.UI\09.Screen\00.AlphaScreen</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -382,6 +391,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ButtonIndicator.cpp">
       <Filter>02.GameObject\05.UI\08.ButtonIndicator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AlphaScreen.cpp">
+      <Filter>02.GameObject\05.UI\09.Screen\00.AlphaScreen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
