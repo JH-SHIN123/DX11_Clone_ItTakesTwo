@@ -26,12 +26,8 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
-
-
 public:
-	void Launch_SplashScreen(_double TimeDelta);
-
-private:
+	virtual _float Get_DistanceFromCamera() override;
 
 private:
 	CRenderer*			m_pRendererCom = nullptr;
@@ -41,6 +37,14 @@ private:
 	CVIBuffer_Rect*		m_pVIBuffer_RectCom = nullptr;
 
 private:
+	_uint				m_iOption = 0;
+	_uint				m_iPassNum = 0;
+	_float				m_fSortOrder = 0.f;
+	_float				m_fScreenAlpha = 0.f;
+	_float2				m_vMaskUV;
+
+private:
+	HRESULT Ready_Component();
 	HRESULT Set_UIVariables_Perspective();
 
 public:

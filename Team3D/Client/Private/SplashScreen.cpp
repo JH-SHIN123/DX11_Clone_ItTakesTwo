@@ -24,10 +24,28 @@ HRESULT CSplashScreen::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_LOGO, TEXT("SplashScreen"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_LOGO, TEXT("SplashScreen_Mask"), TEXT("Com_SubTexture"), (CComponent**)&m_pSubTextureCom), E_FAIL);
+	if (nullptr != pArg)
+		memcpy(&m_iOption, pArg, sizeof(_uint));
+
+	if (FAILED(Ready_Component()))
+		return E_FAIL;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+
+	if (0 == m_iOption)
+	{
+		m_fSortOrder = 1.f;
+		m_iPassNum = 8;
+		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 720.f, 0.f, 0.f));
+	}
+	else
+	{
+		m_fSortOrder = 0.f;
+		m_iPassNum = 9;
+		m_pTransformCom->Set_Scale(XMVectorSet(900.f, 400.f, 0.f, 0.f));
+	}
+	
+	m_vMaskUV = { 0.f ,0.f };
 
 	return S_OK;
 }
@@ -43,7 +61,15 @@ _int CSplashScreen::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	m_fScreenAlpha += (_float)dTimeDelta;
+
+	if (1.f <= m_fScreenAlpha)
+		m_fScreenAlpha = 1.f;
+
+	m_vMaskUV.x += 0.002f;
+	m_vMaskUV.y += 0.005f;
+
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
 HRESULT CSplashScreen::Render(RENDER_GROUP::Enum eGroup)
@@ -53,7 +79,32 @@ HRESULT CSplashScreen::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(Set_UIVariables_Perspective()))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(0);
+	m_pVIBuffer_RectCom->Render(m_iPassNum);
+
+	return S_OK;
+}
+
+_float CSplashScreen::Get_DistanceFromCamera()
+{
+	return m_fSortOrder;
+}
+
+HRESULT CSplashScreen::Ready_Component()
+{
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
+
+	if (0 == m_iOption)
+	{
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_LOGO, TEXT("SplashBackScreen"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom), E_FAIL);
+	}
+	else
+	{
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_LOGO, TEXT("SplashScreen"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_LOGO, TEXT("SplashScreen_Mask"), TEXT("Com_SubTexture"), (CComponent**)&m_pSubTextureCom), E_FAIL);
+
+	}
 
 	return S_OK;
 }
@@ -63,17 +114,25 @@ HRESULT CSplashScreen::Set_UIVariables_Perspective()
 	if (nullptr == m_pVIBuffer_RectCom || nullptr == m_pTextureCom)
 		return E_FAIL;
 
-	_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubViewMatrix, SubProjMatrix;
+	_matrix WorldMatrix, ViewMatrix, ProjMatrix;
 
 	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	ViewMatrix = XMMatrixIdentity();
-	ProjMatrix = XMMatrixOrthographicLH(g_iWinCX, g_iWinCY, 0.f, 1.f);
+	ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
 
+	m_pVIBuffer_RectCom->Set_Variable("g_fScreenAlpha", &m_fScreenAlpha, sizeof(_float));
+	
 	m_pVIBuffer_RectCom->Set_Variable("g_UIWorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
 	m_pVIBuffer_RectCom->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
 	m_pVIBuffer_RectCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
 
 	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(0));
+
+	if (1 == m_iOption)
+	{
+		m_pVIBuffer_RectCom->Set_Variable("g_vScreenMaskUV", &m_vMaskUV, sizeof(_float2));
+		m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseMaskTexture", m_pSubTextureCom->Get_ShaderResourceView(0));
+	}
 
 	return S_OK;
 }

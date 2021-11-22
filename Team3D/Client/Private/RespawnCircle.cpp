@@ -72,8 +72,8 @@ _int CRespawnCircle::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 
-	m_fSubTime += TimeDelta * 3.f;
-	m_fHeartTime += TimeDelta * 5.f;
+	m_fSubTime += (_float)TimeDelta * 3.f;
+	m_fHeartTime += (_float)TimeDelta * 5.f;
 
 	if (360.f <= m_fSubTime)
 		m_fSubTime = 0.f;
@@ -84,8 +84,8 @@ _int CRespawnCircle::Late_Tick(_double TimeDelta)
 
 	Set_Gauge(TimeDelta);
 
-	m_vUV.x += TimeDelta * 0.5f;
-	m_vUV.y += TimeDelta * 0.5f;
+	m_vUV.x += (_float)TimeDelta * 0.5f;
+	m_vUV.y += (_float)TimeDelta * 0.5f;
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }

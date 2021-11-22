@@ -34,7 +34,10 @@ HRESULT CLevel_Logo::Ready_Layer_SplashScreen()
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_LOGO, TEXT("Layer_UI"), Level::LEVEL_LOGO, TEXT("SplashScreen")), E_FAIL);
+	_uint iOption = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_LOGO, TEXT("Layer_UI"), Level::LEVEL_LOGO, TEXT("SplashScreen"), &iOption), E_FAIL);
+	iOption = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_LOGO, TEXT("Layer_UI"), Level::LEVEL_LOGO, TEXT("SplashScreen"), &iOption), E_FAIL);
 
 	return S_OK;
 }

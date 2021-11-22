@@ -6,6 +6,8 @@ texture2D	g_DiffuseTexture;
 texture2D	g_DiffuseSubTexture;
 texture2D	g_SubTexture;
 texture2D   g_DiffuseNoiseTexture;
+texture2D   g_DiffuseMaskTexture;
+
 matrix		g_UIWorldMatrix;
 matrix		g_UIViewMatrix;
 matrix		g_UIProjMatrix;
@@ -15,14 +17,14 @@ int		g_iColorOption;
 int		g_iGSOption;
 int		g_iRespawnOption;
 
-
 float	g_fAlpha;
 float	g_Time;
 float	g_Angle;
 float	g_fHeartTime;
+float	g_fScreenAlpha;
 float2  g_UV;
-
-
+float2  g_vScreenMaskUV;
+ 
 sampler	DiffuseSampler = sampler_state
 {
 	Filter = MIN_MAG_MIP_LINEAR;
@@ -79,6 +81,21 @@ VS_OUT	VS_RespawnCirle(VS_IN In)
 	SubUV.y += 0.5f;
 
 	Out.vSubUV = SubUV;
+
+	return Out;
+}
+
+VS_OUT	VS_LOGO(VS_IN In)
+{
+	VS_OUT			Out = (VS_OUT)0;
+
+	matrix	matWV, matWVP;
+
+	matWV = mul(g_UIWorldMatrix, g_UIViewMatrix);
+	matWVP = mul(matWV, g_UIProjMatrix);
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+	Out.vTexUV = In.vTexUV;
 
 	return Out;
 }
@@ -332,6 +349,32 @@ PS_OUT PS_AlphaScreen(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_SplashScreenBack(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	return Out;
+}
+
+
+PS_OUT PS_SplashScreen(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	In.vTexUV += g_vScreenMaskUV;
+	vector Mask = g_DiffuseMaskTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if(0.999f < Out.vColor.a)
+		Out.vColor.a = g_fScreenAlpha;
+
+	Out.vColor.rgb += Mask;
+
+
+	return Out;
+}
 
 
 ////////////////////////////////////////////////////////////
@@ -426,5 +469,26 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_AlphaScreen();
 	}
 
+	// 8
+	pass SplashScreenBack
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_SplashScreenBack();
+	}
+
+	// 9
+	pass SplashScreen
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_SplashScreen();
+	}
 
 };
