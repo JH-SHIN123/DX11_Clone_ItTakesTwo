@@ -5,6 +5,7 @@
 
 BEGIN(Engine)
 class CModel_Instance;
+class CModel;
 END
 
 BEGIN(Client)
@@ -45,6 +46,7 @@ protected:
 	CTransform*			m_pTransformCom		= nullptr;
 	CTextures*			m_pTexturesCom		= nullptr;
 	CModel_Instance*	m_pModelInstanceCom = nullptr;
+	CModel*				m_pModelCom			= nullptr;
 
 
 public:

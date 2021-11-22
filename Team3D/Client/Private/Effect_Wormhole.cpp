@@ -37,7 +37,7 @@ HRESULT CEffect_Wormhole::NativeConstruct(void * pArg)
 		//Data.pWorldMatrices[i]._41 = _float((i % 100) * 10.f) + m_;
 		//Data.pWorldMatrices[i]._43 = _float((i / 100) * 10.f);
 	}
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelInstanceCom, &Data), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom, &Data), E_FAIL);
 	//
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Textrue_Color"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
 
@@ -65,10 +65,10 @@ _int CEffect_Wormhole::Late_Tick(_double TimeDelta)
 
 HRESULT CEffect_Wormhole::Render(RENDER_GROUP::Enum eGroup)
 {
-	m_pModelInstanceCom->Set_Variable("g_fTime", &m_fTime, sizeof(_float));
-	m_pModelInstanceCom->Set_ShaderResourceView("g_ColorRampTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(2));
-	m_pModelInstanceCom->Set_DefaultVariables_Perspective();
-	m_pModelInstanceCom->Render_Model(6);
+	m_pModelCom->Set_Variable("g_fTime", &m_fTime, sizeof(_float));
+	m_pModelCom->Set_ShaderResourceView("g_ColorRampTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(2));
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Render_Model(6);
 
 
 	return S_OK;

@@ -51,6 +51,7 @@ _int CEffect_May_Boots::Tick(_double TimeDelta)
 
 _int CEffect_May_Boots::Late_Tick(_double TimeDelta)
 {
+	m_IsActivateStart = false;
 
 	m_IsActivate = false;
 
@@ -94,6 +95,9 @@ void CEffect_May_Boots::Update_Matrix(_fmatrix WorldMatrix)
 
 void CEffect_May_Boots::Set_IsActivate_GravityBoots()
 {
+	if(false == m_IsActivate && false == m_IsRendering)
+		m_IsActivateStart = true;
+
 	m_IsActivate = true;
 }
 
@@ -141,22 +145,13 @@ void CEffect_May_Boots::Update_Smoke(_double TimeDelta, _int iStartIndex, _int i
 
 	for (_int iIndex = iStartIndex; iIndex < iEndIndex; ++iIndex)
 	{
-
-		/*
-		if (0.0 <= m_pInstanceBuffer_Smoke_Spawn[iIndex])
-		{
-			m_pInstanceBuffer_Smoke_Spawn[iIndex] -= TimeDelta;
-			continue;
-		}
-
-		*/
-		//if (0.0 < m_pInstance_RenderTerm[iIndex])
-		//	m_pInstanceBuffer_Smoke[iIndex].vSize = { 0.f, 0.f };
 		if (0.0 < m_pInstance_RenderTerm[iIndex])
 		{
 			m_pInstance_RenderTerm[iIndex] -= TimeDelta;
 			m_pInstanceBuffer_Smoke[iIndex].fTime = 0.f;
-			continue;
+
+			if(false == m_IsActivateStart)
+				continue;
 		}
 
 		m_pInstance_Pos_UpdateTime[iIndex]	-= TimeDelta;
@@ -166,8 +161,8 @@ void CEffect_May_Boots::Update_Smoke(_double TimeDelta, _int iStartIndex, _int i
 				continue;
 		}
 
-		_float fTime = m_dRespawnTime_Smoke * 0.5f;
-		if (fTime <= m_pInstance_Pos_UpdateTime[iIndex])
+		_double dTime = m_dRespawnTime_Smoke * 0.5f;
+		if (dTime <= m_pInstance_Pos_UpdateTime[iIndex])
 			m_pInstanceBuffer_Smoke[iIndex].fTime += (_float)TimeDelta * 0.5f;
 		else
 			m_pInstanceBuffer_Smoke[iIndex].fTime -= (_float)TimeDelta * 0.5f;
@@ -196,7 +191,7 @@ _int CEffect_May_Boots::Respawn_Smoke(_int iIndex)
 {
 	if (true == m_IsActivate)
 	{
-		m_pInstance_LocalPos[iIndex]		= { 0.f, 0.f, 0.f, 1.f };
+		m_pInstance_LocalPos[iIndex] = { 0.f, 0.f, 0.f, 1.f };
 		m_pInstance_Pos_UpdateTime[iIndex]	= m_dRespawnTime_Smoke;
 		m_pInstance_RenderTerm[iIndex] = 0.0;
 		m_pInstanceBuffer_Smoke[iIndex].fTime = 0.0f;
@@ -205,6 +200,8 @@ _int CEffect_May_Boots::Respawn_Smoke(_int iIndex)
 	}
 	else
 	{
+		m_pInstance_LocalPos[iIndex] = { 0.f, 0.f, 0.f, 1.f };
+
  		m_pInstance_RenderTerm[iIndex] = m_dRespawnTime_Smoke; 	
 		m_pInstanceBuffer_Smoke[iIndex].fTime = 0.0f;
 		m_pInstanceBuffer_Smoke[iIndex].vSize = { 0.f, 0.f };
@@ -255,19 +252,22 @@ void CEffect_May_Boots::Set_Shader_Data()
 
 void CEffect_May_Boots::Reset_UpdateTime()
 {
+	_float fInstanceCountHalf = m_iInstanceCount_Smoke * 0.5f;
 	for (_int iIndex = 0; iIndex < m_iInstanceCount_Smoke; ++iIndex)
 	{
-		m_pInstance_Pos_UpdateTime[iIndex] = m_dRespawnTime_Smoke * (_float)iIndex;
-		if (iIndex >= m_iInstanceCount_Smoke >> 1)
-			m_pInstance_Pos_UpdateTime[iIndex] = m_dRespawnTime_Smoke * _float(iIndex - (m_iInstanceCount_Smoke >> 1));
+// 		m_pInstance_Pos_UpdateTime[iIndex] = m_dRespawnTime_Smoke * (_float)iIndex;
+// 		if (iIndex >= m_iInstanceCount_Smoke >> 1)
+// 			m_pInstance_Pos_UpdateTime[iIndex] = m_dRespawnTime_Smoke * _float(iIndex - (m_iInstanceCount_Smoke >> 1));
 
 		m_pInstanceBuffer_Smoke[iIndex].vPosition	= { 0.f, 0.f, 0.f, 1.f };
 		m_pInstanceBuffer_Smoke[iIndex].vSize		= m_vDefaultSize_Smoke;
 		m_pInstanceBuffer_Smoke[iIndex].vTextureUV	= { 0.f, 0.f, 1.f, 1.f };
 		m_pInstanceBuffer_Smoke[iIndex].fTime		= 0.0f;
 		m_pInstance_LocalPos[iIndex]				= { 0.f, 0.f, 0.f, 1.f };
-		m_pInstance_RenderTerm[iIndex]				= m_dRespawnTime_Smoke / _float(m_iInstanceCount_Smoke >> 1) * iIndex;
-		m_pInstance_Pos_UpdateTime[iIndex] = m_dRespawnTime_Smoke;
+		m_pInstance_Pos_UpdateTime[iIndex]			= m_dRespawnTime_Smoke;
+		m_pInstance_RenderTerm[iIndex]				= m_dRespawnTime_Smoke / fInstanceCountHalf * _float(iIndex - fInstanceCountHalf) + 0.001;
+		if (0 >= m_pInstance_RenderTerm[iIndex])
+			m_pInstance_RenderTerm[iIndex] *= -1.f;
 	}
 }
 
@@ -311,6 +311,7 @@ HRESULT CEffect_May_Boots::Ready_Instance()
 	_vector vDir		= XMLoadFloat3(&m_EffectDesc_Clone.vDir);
 	_float2 vSize		= { m_EffectDesc_Prototype.vSize.x ,m_EffectDesc_Prototype.vSize.y };
 	_double	dUpdateTerm = 0.0;
+	_float fInstanceCountHalf = m_iInstanceCount_Smoke * 0.5f;
 
 	for (_int i = 0; i < iInstanceCount; ++i)
 	{
@@ -326,9 +327,12 @@ HRESULT CEffect_May_Boots::Ready_Instance()
 		m_pInstanceBuffer_Smoke[i].vTextureUV	= { 0.f, 0.f, 1.f, 1.f };
 		m_pInstanceBuffer_Smoke[i].fTime		= 0.0f;
 		m_pInstance_LocalPos[i]					= vPos;
-		m_pInstance_RenderTerm[i]				= m_dRespawnTime_Smoke / _float(iInstanceCount >> 1) * i;
 		m_pInstance_Pos_UpdateTime[i]			= 0.0;
 		XMStoreFloat3(&m_pInstance_Dir[i], Get_RandDir());
+
+		m_pInstance_RenderTerm[i] = m_dRespawnTime_Smoke / fInstanceCountHalf * _float(i - fInstanceCountHalf) + 0.001;
+		if (0 >= m_pInstance_RenderTerm[i])
+			m_pInstance_RenderTerm[i] *= -1.f;
 	}
 
 	return S_OK;
