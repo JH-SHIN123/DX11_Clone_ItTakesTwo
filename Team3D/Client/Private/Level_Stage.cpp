@@ -261,7 +261,6 @@ HRESULT CLevel_Stage::Ready_Layer_SpaceValve(const _tchar * pLayerTag)
 	a.iPlayerValue = 2;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SpaceValve"), &a), E_FAIL);
 
-
 	return S_OK;
 }  
 HRESULT CLevel_Stage::Ready_Layer_Test()

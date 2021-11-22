@@ -48,6 +48,7 @@ HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, c
 	MULTIPLE_RENDER_TARGET* pMRT = Find_MRT(pMRTTag);
 	NULL_CHECK_RETURN(pMRT, E_FAIL);
 
+
 	pDeviceContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
 	m_pBackBufferView->Release();
 	m_pDepthStencilView->Release();

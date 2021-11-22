@@ -48,7 +48,7 @@ HRESULT CMainApp::Run_App()
 			return E_FAIL;
 
 #ifdef _DEBUG
-		Show_FPS(dTimeDelta);
+		Show_FPS(0.016666666666666666);
 #endif
 
 	}

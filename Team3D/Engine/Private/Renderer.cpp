@@ -200,7 +200,7 @@ HRESULT CRenderer::Render_ShadowsForAllCascades()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_CascadedShadow")), E_FAIL);
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_NONALPHA])
 	{
-		FAILED_CHECK_RETURN(pGameObject->Render_ShadowDepth(), E_FAIL);
+		FAILED_CHECK_RETURN(pGameObject->Render_ShadowDepth(), E_FAIL);;
 	}
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_CascadedShadow")), E_FAIL);
 

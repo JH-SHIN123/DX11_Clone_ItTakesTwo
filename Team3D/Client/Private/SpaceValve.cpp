@@ -64,7 +64,7 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 
 _int CSpaceValve::Tick(_double dTimeDelta)
 {
-	CGameObject::Late_Tick(dTimeDelta);
+	CGameObject::Tick(dTimeDelta);
 
 	if (m_iTargetPlayer == GameID::eCODY)
 	{
@@ -100,7 +100,7 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 
 _int CSpaceValve::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
