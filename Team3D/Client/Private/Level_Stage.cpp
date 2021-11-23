@@ -31,7 +31,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	//FAILED_CHECK_RETURN(Ready_Layer_RobotHead(TEXT("Layer_RobotHead")), E_FAIL);
 
 	/* For.Test */
-	//FAILED_CHECK_RETURN(Ready_Layer_Test(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Test(), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Map", Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
 

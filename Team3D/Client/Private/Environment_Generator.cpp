@@ -79,6 +79,8 @@ HRESULT CEnvironment_Generator::Load_Model_Instancing()
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel_Instance::Create(m_pDevice, m_pDeviceContext, 1000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
 	}
 	CloseHandle(hFile);
+
+	return S_OK;
 }
 
 HRESULT CEnvironment_Generator::Load_Environment_Model_Prototype()
