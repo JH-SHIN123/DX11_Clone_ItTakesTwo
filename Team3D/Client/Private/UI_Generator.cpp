@@ -209,7 +209,7 @@ HRESULT CUI_Generator::Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 	return S_OK;
 }
 
-HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::ID ePlayer)
+HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::ID ePlayer, _bool IsAlpha)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
@@ -260,6 +260,9 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			iFontHeigth = 45;
 			iOption = 1;
 		}
+		/* ¶ç¾î¾²±â */
+		else if (32 == iNumChar)
+			continue;
 
 		_float2 vLeftTop = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
 		_float2 vRightBottom = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
@@ -276,7 +279,13 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 
 		WorldMatrix = XMMatrixIdentity();
 		ViewMatrix = XMMatrixIdentity();
-	
+
+		//if (true == IsAlpha)
+		//{
+		//	m_fFontAlpha = tFontDesc.fAlpha;
+		//	m_pVIBuffer_FontCom->Set_Variable("g_fFontAlpha", &m_fFontAlpha, sizeof(_float));
+		//}
+
 		_float2 vMainViewPort, vSubViewPort, vDefaultViewPort;
 		D3D11_VIEWPORT Viewport;
 
@@ -318,8 +327,7 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			else
 				m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
 
-			m_pVIBuffer_FontCom->Render(1, m_VTXFONT, TextLen);
-
+			m_pVIBuffer_FontCom->Render(tFontDesc.iShaderPassNum, m_VTXFONT, TextLen);
 		}
 		else
 		{
@@ -339,7 +347,7 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			else
 				m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
 
-			m_pVIBuffer_FontCom->Render(0, m_VTXFONT, TextLen);
+			m_pVIBuffer_FontCom->Render(tFontDesc.iShaderPassNum, m_VTXFONT, TextLen);
 		}
 	}
 

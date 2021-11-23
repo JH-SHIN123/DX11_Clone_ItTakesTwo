@@ -12,6 +12,8 @@ float2			g_SubViewPort;
 float2			g_DefaultViewPort;
 int				g_iGSOption;
 
+float			g_fAlpha;
+
 sampler DiffuseSampler = sampler_state
 {
 	Filter = MIN_MAG_MIP_LINEAR;
@@ -234,8 +236,18 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	//if (Out.vColor.r == 0.f && Out.vColor.g == 0.f && Out.vColor.b == 0.f && Out.vColor.a <= 1.f)
-	//	discard;
+	Out.vColor.rgb = 1.f;
+
+	Out.vColor.rgb *= float3(1.f, 1.f, 0.f);
+
+
+	//if (Out.vColor.r >= 0.5f)
+	//{
+	//	Out.vColor.rgb = float3(0.7078f, 0.63f, 0.605f);
+	//	Out.vColor.a = 0.1f;
+	//}
+
+	//Out.vColor.a = g_fAlpha;
 
 	return Out;
 }

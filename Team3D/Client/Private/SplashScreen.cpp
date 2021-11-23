@@ -61,7 +61,6 @@ _int CSplashScreen::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-
 	m_fScreenAlpha += (_float)dTimeDelta * 0.6f;
 
 	if (1.f <= m_fScreenAlpha)
@@ -70,6 +69,7 @@ _int CSplashScreen::Late_Tick(_double dTimeDelta)
 	m_vMaskUV.x -= (_float)dTimeDelta * 0.02f;
 	m_vMaskUV.y -= (_float)dTimeDelta * 0.02f;
 
+	m_fFontAlpha -= (_float)dTimeDelta;
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
@@ -115,11 +115,13 @@ _float CSplashScreen::Get_DistanceFromCamera()
 void CSplashScreen::Render_Font()
 {
 	CUI_Generator::FONTDESC tFontDesc;
-	tFontDesc.vPosition = { 0.f, -300.f };
+	tFontDesc.vPosition = { -100.f, -270.f };
 	tFontDesc.vScale = { 15.f, 20.f };
-	tFontDesc.fInterval = 0.f;
+	tFontDesc.fInterval = -12.f;
+	tFontDesc.iShaderPassNum = 1;
+	tFontDesc.fAlpha = m_fFontAlpha;
 
-	UI_Generator->Render_Font(TEXT("버튼을눌러계속하세요"), tFontDesc, Player::Default);
+	UI_Generator->Render_Font(TEXT("버튼을 눌러 계속하세요"), tFontDesc, Player::Default, true);
 }
 
 HRESULT CSplashScreen::Ready_Component()

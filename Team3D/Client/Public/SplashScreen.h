@@ -43,6 +43,7 @@ private:
 	_float				m_fSortOrder = 0.f;
 	_float				m_fScreenAlpha = 0.f;
 	_float2				m_vMaskUV;
+	_float				m_fFontAlpha = 1.f;
 
 private:
 	HRESULT Ready_Component();
