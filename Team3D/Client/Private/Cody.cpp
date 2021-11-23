@@ -1002,7 +1002,8 @@ void CCody::Jump(const _double dTimeDelta)
 
 		if (m_bFallAniOnce == false)
 		{
-			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Roll_Start || ANI_C_Roll_Stop)
+			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Roll_Start || 
+				m_pModelCom->Get_CurAnimIndex() == ANI_C_Roll_Stop)
 			{
 				m_pModelCom->Set_Animation(ANI_C_Jump_180R);
 				m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Falling);

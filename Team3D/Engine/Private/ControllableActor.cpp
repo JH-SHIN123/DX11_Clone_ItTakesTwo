@@ -113,7 +113,7 @@ void CControllableActor::Update(_double dTimeDelta)
 			m_IsFalling = true;
 			m_fFallingTime += (_float)dTimeDelta;
 			// ÀÚÀ¯³«ÇÏ
-			vDist = PxVec3(0, (0.4f * -m_fGravity * 0.8f * m_fFallingTime * m_fFallingTime), 0);
+			vDist = PxVec3(0, (0.4f * m_fGravity * 0.8f * m_fFallingTime * m_fFallingTime), 0);
 			m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
 		}
 
