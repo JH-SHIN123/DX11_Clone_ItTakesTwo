@@ -202,11 +202,6 @@ HRESULT CHDR::Calculate_BrightPassForBloom()
 	return S_OK;
 }
 
-void CHDR::Clear_Buffer()
-{
-	Safe_Release(m_pVIBuffer_ToneMapping);
-}
-
 HRESULT CHDR::Unbind_ShaderResources()
 {
 	ID3D11ShaderResourceView* pNullSRV[8] = { 0 };
@@ -474,3 +469,7 @@ void CHDR::Free()
 	Safe_Release(m_pDevice);
 }
 
+void CHDR::Clear_Buffer()
+{
+	Safe_Release(m_pVIBuffer_ToneMapping);
+}

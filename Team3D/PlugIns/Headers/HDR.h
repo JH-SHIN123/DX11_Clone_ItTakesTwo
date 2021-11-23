@@ -90,7 +90,7 @@ private: /* For. PS - ToneMapping */
 	class CVIBuffer_RectRHW* m_pVIBuffer_ToneMapping = nullptr;
 
 public:
-	void			Clear_Buffer();
 	virtual void	Free() override;
+	void			Clear_Buffer();
 };
 END
