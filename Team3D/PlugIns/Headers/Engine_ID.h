@@ -26,6 +26,7 @@ namespace Engine
 			ePLANET,
 			eNOBATTERYSIGN,
 			eSPACEVALVE,
+			eGRAVITYPIPE,
 		};
 	};
 

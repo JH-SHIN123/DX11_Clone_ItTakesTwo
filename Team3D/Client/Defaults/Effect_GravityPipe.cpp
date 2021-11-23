@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "Effect_GravityPipe.h"
 #include "GameInstance.h"
+#include "TriggerActor.h"
+#include "Cody.h"
+#include "May.h"
 
 CEffect_GravityPipe::CEffect_GravityPipe(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
@@ -43,6 +46,22 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Wormhole_Noise", TEXT("Com_Texture_Distortion"), (CComponent**)&m_pTexturesCom_Distortion), E_FAIL);
 	//
 
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform2"), (CComponent**)&m_pPhysxTransformCom), E_FAIL);
+
+	_matrix PhysxWorldMatrix = XMMatrixIdentity();
+	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	PhysxWorldMatrix = XMMatrixRotationZ(XMConvertToRadians(90.f)) * XMMatrixTranslation(XMVectorGetX(vTrans), XMVectorGetY(vTrans), XMVectorGetZ(vTrans));
+	m_pPhysxTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_pPhysxTransformCom->Set_WorldMatrix(PhysxWorldMatrix);
+
+
+	CTriggerActor::ARG_DESC ArgDesc;
+	m_UserData = USERDATA(GameID::eGRAVITYPIPE, this);
+	ArgDesc.pUserData = &m_UserData;
+	ArgDesc.pTransform = m_pPhysxTransformCom;
+	ArgDesc.pGeometry = &PxCapsuleGeometry(3.f, 20.f);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
+
 	return S_OK;
 }
 
@@ -52,6 +71,7 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 
 	if (3.f <= m_fTime)
 		m_fTime = 0.f;
+
 
 	return _int();
 }
@@ -74,6 +94,31 @@ HRESULT CEffect_GravityPipe::Render(RENDER_GROUP::Enum eGroup)
 
 void CEffect_GravityPipe::SetUp_WorldMatrix(_fmatrix WorldMatrix)
 {
+}
+
+void CEffect_GravityPipe::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+	// Cody
+
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eGRAVITYPIPE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eGRAVITYPIPE, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	}
+
+	// May
+
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+	{
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eGRAVITYPIPE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+	{
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eGRAVITYPIPE, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	}
 }
 
 HRESULT CEffect_GravityPipe::Ready_Instance()
@@ -105,6 +150,7 @@ CGameObject * CEffect_GravityPipe::Clone_GameObject(void * pArg)
 
 void CEffect_GravityPipe::Free()
 {
+	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTexturesCom_Distortion);
 	Safe_Release(m_pTexturesCom_ColorRamp);
 	__super::Free();

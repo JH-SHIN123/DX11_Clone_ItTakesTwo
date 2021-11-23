@@ -2,6 +2,11 @@
 
 #ifndef __EFFECT_GRAVITYPIPE_H__
 #include "InGameEffect_Model.h"
+
+BEGIN(Engine)
+class CTriggerActor;
+END
+
 class CEffect_GravityPipe final : public CInGameEffect_Model
 {
 private:
@@ -17,6 +22,9 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 	virtual void	SetUp_WorldMatrix(_fmatrix WorldMatrix) override;
 
+	/* For.Trigger */
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+
 public:
 	HRESULT Ready_Instance();
 
@@ -26,6 +34,11 @@ private:
 	_float m_fColorRamp_U = 0.f;
 	CTextures* m_pTexturesCom_ColorRamp = nullptr;
 	CTextures* m_pTexturesCom_Distortion = nullptr;
+
+	/* For.Trigger */
+	CTriggerActor*	m_pTriggerCom = nullptr;
+	CTransform*		m_pPhysxTransformCom = nullptr;
+
 
 public:
 	static CEffect_GravityPipe* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

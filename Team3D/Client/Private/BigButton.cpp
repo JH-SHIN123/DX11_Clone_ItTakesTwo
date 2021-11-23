@@ -30,7 +30,7 @@ HRESULT CBigButton::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_BigButton"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(10.f, 0.f, 5.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 0.f, 5.f, 1.f));
 
 	CStaticActor::ARG_DESC StaticDesc;
 	m_UserData = USERDATA(GameID::eBIGBUTTON, this);
@@ -44,7 +44,7 @@ HRESULT CBigButton::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eBIGBUTTON, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = &PxSphereGeometry(5.5f);
+	ArgDesc.pGeometry = &PxSphereGeometry(5.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	return S_OK;

@@ -31,7 +31,6 @@ HRESULT CSecurityCamera::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_SecurityCamera"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(35.f, 1.f, 31.85f, 1.f));
-
 	return S_OK;
 }
 

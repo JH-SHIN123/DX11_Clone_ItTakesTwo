@@ -335,7 +335,10 @@ private:
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
 	_bool m_IsPushingBattery = false;
+	_bool m_IsInGravityPipe = false;
 
+
+	/* For.Valve */
 	_bool m_IsEnterValve = false;
 	_bool m_bStruggle = false;
 	_uint m_iRotateCount = 0;
@@ -352,6 +355,7 @@ private:
 	void Activate_RobotLever(const _double dTimeDelta);
 	void Push_Battery(const _double dTimeDelta);
 	void Rotate_Valve(const _double dTimeDelta);
+	void In_GravityPipe(const _double dTimeDelta);
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);

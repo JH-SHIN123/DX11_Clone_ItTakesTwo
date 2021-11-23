@@ -4,6 +4,7 @@
 #include "MainCamera.h"
 #include "UI_Generator.h"
 #include "UIObject.h"
+#include "MathHelper.h"
 
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
@@ -32,7 +33,8 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CCharacter::NativeConstruct(pArg);
 	Ready_Component();
 
-	m_pModelCom->Set_Animation(ANI_C_MH);
+	//m_pModelCom->Set_Animation(ANI_C_MH);
+	m_pModelCom->Set_Animation(0);
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
@@ -93,7 +95,6 @@ HRESULT CCody::Ready_Component()
 	//Effect 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Cody_Size"), nullptr, (CGameObject**)&m_pEffect_Size), E_FAIL);
 	m_pEffect_Size->Set_Model(m_pModelCom);
-
 	return S_OK;
 }
 
@@ -130,6 +131,7 @@ _int CCody::Tick(_double dTimeDelta)
 		Activate_RobotLever(dTimeDelta);
 		Push_Battery(dTimeDelta);
 		Rotate_Valve(dTimeDelta);
+		In_GravityPipe(dTimeDelta);
 	}
 	else
 	{
@@ -1248,10 +1250,16 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Valve_Rotate_MH);
 			m_IsEnterValve = true;
 		}
+		else if (m_eTargetGameID == GameID::eGRAVITYPIPE)
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_PlayRoom_ZeroGravity_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_PlayRoom_ZeroGravity_MH);
+			m_IsInGravityPipe = true;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve)
+	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe)
 		return true;
 
 	return false;
@@ -1263,7 +1271,8 @@ _bool CCody::Trigger_End(const _double dTimeDelta)
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_RocketFirework
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Lever_Left
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Exit
-		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Valve_Rotate_MH))
+		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Valve_Rotate_MH
+		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_PlayRoom_ZeroGravity_MH))
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 	}
@@ -1415,5 +1424,71 @@ void CCody::Rotate_Valve(const _double dTimeDelta)
 				DATABASE->Set_ValveCount(m_iRotateCount);
 			}
 		}
+	}
+}
+
+void CCody::In_GravityPipe(const _double dTimeDelta)
+{
+	if (m_IsInGravityPipe && m_IsCollide == true)
+	{
+		m_pActorCom->Set_Gravity(0.f);
+		if (m_pGameInstance->Key_Pressing(DIK_SPACE))
+		{
+			m_pTransformCom->Rotate_Axis(XMVector3Normalize(XMVectorSet(1.f, 0.f, 0.f, 0.f)), dTimeDelta * 0.1f);
+			m_pTransformCom->Rotate_Axis(XMVector3Normalize(XMVectorSet(0.f, 0.f, 1.f, 0.f)), dTimeDelta * 0.1f);
+
+			_float3 MoveDir = {0.f, 1.f, 0.f};
+			_vector vDirection = XMVector3Normalize(XMLoadFloat3(&MoveDir));
+			m_pActorCom->Move(vDirection * 1.2f, dTimeDelta);
+		}
+
+		if (m_pGameInstance->Key_Pressing(DIK_LCONTROL))
+		{
+			m_pTransformCom->Rotate_Axis(XMVector3Normalize(XMVectorSet(1.f, 0.f, 0.f, 0.f)), dTimeDelta * 0.1f);
+			m_pTransformCom->Rotate_Axis(XMVector3Normalize(XMVectorSet(0.f, 0.f, 1.f, 0.f)), dTimeDelta * 0.1f);
+			
+			_float3 MoveDir = { 0.f, -1.f, 0.f };
+			_vector vDirection = XMVector3Normalize(XMLoadFloat3(&MoveDir));
+			m_pActorCom->Move(vDirection * 1.2f, dTimeDelta);
+		}
+
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+		{
+			_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK), 0.f));
+			m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta);
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
+			m_pModelCom->Set_Animation(ANI_C_Bhv_PlayRoom_ZeroGravity_Fwd);
+		}
+		if (m_pGameInstance->Key_Pressing(DIK_A))
+		{
+			_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT) * -1.f , 0.f));
+			m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta);
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
+			m_pModelCom->Set_Animation(ANI_C_Bhv_PlayRoom_ZeroGravity_Left);
+		}
+		if (m_pGameInstance->Key_Pressing(DIK_S))
+		{
+			_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK) * -1.f, 0.f));
+			m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta);
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
+			m_pModelCom->Set_Animation(ANI_C_Bhv_PlayRoom_ZeroGravity_Back);
+		}
+		if (m_pGameInstance->Key_Pressing(DIK_D))
+		{
+			_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT), 0.f));
+			m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta);
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
+			m_pModelCom->Set_Animation(ANI_C_Bhv_PlayRoom_ZeroGravity_Right);
+		}
+	}
+	else if (m_IsCollide == false)
+	{
+		m_IsInGravityPipe = false;
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pActorCom->Set_Gravity(-9.8f);
 	}
 }

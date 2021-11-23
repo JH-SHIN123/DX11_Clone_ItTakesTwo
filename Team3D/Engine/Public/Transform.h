@@ -57,6 +57,9 @@ public:
 	void	RotateYaw(const _double TimeDelta);
 	void	RotatePitch(const _double TimeDelta);
 
+	void    MoveToDir(const _fvector& vMoveDir, const _double TimeDelta, const _double dAcceleration = 1.f, class CNavigation* pNavigation = nullptr);
+
+
 private:
 	_float4x4		m_WorldMatrix;
 	TRANSFORM_DESC	m_TransformDesc;
