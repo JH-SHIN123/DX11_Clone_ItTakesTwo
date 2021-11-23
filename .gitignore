@@ -260,3 +260,5 @@ Team3D/Client/Bin/Resources/
 *.lib
 *.exp
 *.dll
+*.iobj
+*.ipdb

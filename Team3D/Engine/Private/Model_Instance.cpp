@@ -45,6 +45,12 @@ CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
 	for (auto& pMesh : m_Meshes)
 		Safe_AddRef(pMesh);
 
+	for (auto& Meshes : m_SortedMeshes)
+	{
+		for (auto& pMesh : Meshes)
+			Safe_AddRef(pMesh);
+	}
+
 	for (auto& pMaterial : m_Materials)
 	{
 		for (auto& pTexture : pMaterial->pMaterialTexture)
