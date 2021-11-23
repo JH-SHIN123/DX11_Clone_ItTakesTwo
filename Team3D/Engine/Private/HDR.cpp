@@ -1,6 +1,8 @@
 #include "..\Public\HDR.h"
 #include "RenderTarget_Manager.h"
 #include "VIBuffer_RectRHW.h"
+#include "Pipeline.h"
+#include "Graphic_Device.h"
 
 IMPLEMENT_SINGLETON(CHDR)
 
@@ -37,7 +39,9 @@ HRESULT CHDR::Render_HDR(_double TimeDelta)
 	// Tone Mapping
 	NULL_CHECK_RETURN(m_pVIBuffer_ToneMapping, E_FAIL);
 	
+	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
 	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
+	CPipeline* pPipeline = CPipeline::GetInstance();
 
 	if (GetAsyncKeyState(VK_F1) & 0x8000)
 		m_fMiddleGrey += 0.0005f;
@@ -50,12 +54,31 @@ HRESULT CHDR::Render_HDR(_double TimeDelta)
 		m_fLumWhiteSqr -= 0.05f;
 
 	_float fLumWhiteSqrt = powf(sqrtf(m_fLumWhiteSqr),2);
-
 	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &m_fMiddleGrey, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqrt, sizeof(_float));
 
+	_float	fCamFar;
+	_matrix	ProjMatrixInverse;
+	_float4	vViewportUVInfo;
+
+	fCamFar = pPipeline->Get_MainCamFar();
+	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_MAINPROJ_INVERSE);
+	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_MAIN);
+	m_pVIBuffer_ToneMapping->Set_Variable("g_fMainCamFar", &fCamFar, sizeof(fCamFar));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_MainProjMatrixInverse", &ProjMatrixInverse, sizeof(ProjMatrixInverse));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_vMainViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
+
+	fCamFar = pPipeline->Get_SubCamFar();
+	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_SUBPROJ_INVERSE);
+	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_SUB);
+	m_pVIBuffer_ToneMapping->Set_Variable("g_fSubCamFar", &fCamFar, sizeof(fCamFar));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_SubProjMatrixInverse", &ProjMatrixInverse, sizeof(ProjMatrixInverse));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
+
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_HDR")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_BloomTexture", m_pShaderResourceView_Bloom);
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DOFBlurTex", m_pShaderResourceView_DownScaledHDR);
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DepthTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Depth")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
 	m_pVIBuffer_ToneMapping->Render(0);
