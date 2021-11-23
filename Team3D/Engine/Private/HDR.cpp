@@ -202,11 +202,6 @@ HRESULT CHDR::Calculate_BrightPassForBloom()
 	return S_OK;
 }
 
-void CHDR::Clear_Buffer()
-{
-	Safe_Release(m_pVIBuffer_ToneMapping);
-}
-
 HRESULT CHDR::Unbind_ShaderResources()
 {
 	ID3D11ShaderResourceView* pNullSRV[8] = { 0 };
@@ -420,6 +415,11 @@ HRESULT CHDR::Set_UnorderedAccessView(const char* pConstantName, ID3D11Unordered
 	ID3DX11EffectUnorderedAccessViewVariable* pUavVariable = m_pEffect_CS->GetVariableByName(pConstantName)->AsUnorderedAccessView();
 	NULL_CHECK_RETURN(pUavVariable, E_FAIL);
 	return pUavVariable->SetUnorderedAccessView(pResourceView);
+}
+
+void CHDR::Clear_Buffer()
+{
+	Safe_Release(m_pVIBuffer_ToneMapping);
 }
 
 void CHDR::Free()
