@@ -148,6 +148,7 @@
     <Filter Include="02.GameObject\05.UI\05.UISprite">
       <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
     </Filter>
+<<<<<<< HEAD
     <Filter Include="02.GameObject\05.UI\06.RespawnCircle">
       <UniqueIdentifier>{32c02485-1865-4c7a-8089-c3bd39b4b08c}</UniqueIdentifier>
     </Filter>
@@ -165,6 +166,10 @@
     </Filter>
     <Filter Include="02.GameObject\02.Logo\00.SplashScreen">
       <UniqueIdentifier>{b6ee4c02-42a5-430a-ba23-db3336551b31}</UniqueIdentifier>
+=======
+    <Filter Include="02.GameObject\06.Sky">
+      <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
+>>>>>>> main
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -282,6 +287,7 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h">
       <Filter>98.Defines</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="..\Public\RespawnCircle.h">
       <Filter>02.GameObject\05.UI\06.RespawnCircle</Filter>
     </ClInclude>
@@ -299,6 +305,10 @@
     </ClInclude>
     <ClInclude Include="..\Public\SplashScreen.h">
       <Filter>02.GameObject\02.Logo\00.SplashScreen</Filter>
+=======
+    <ClInclude Include="..\public\Sky.h">
+      <Filter>02.GameObject\06.Sky</Filter>
+>>>>>>> main
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -392,6 +402,7 @@
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="..\Private\RespawnCircle.cpp">
       <Filter>02.GameObject\05.UI\06.RespawnCircle</Filter>
     </ClCompile>
@@ -409,6 +420,10 @@
     </ClCompile>
     <ClCompile Include="..\Private\SplashScreen.cpp">
       <Filter>02.GameObject\02.Logo\00.SplashScreen</Filter>
+=======
+    <ClCompile Include="..\private\Sky.cpp">
+      <Filter>02.GameObject\06.Sky</Filter>
+>>>>>>> main
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -449,6 +464,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

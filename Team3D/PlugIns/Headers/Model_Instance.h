@@ -17,12 +17,9 @@ public: /* Struct */
 		_float4x4*		pWorldMatrices;
 		_uint			iInstanceCount;
 		_float			fCullingRadius;
-		PxMaterial*		pMaterial;
-		const char*		pActorName;
 
 		tagArgumentDesc() {}
-		tagArgumentDesc(_float4x4* _pWorldMatrices, _uint _iInstanceCount, _float _fCullingRadius, PxMaterial* _pMaterial, const char* pName)
-			: pWorldMatrices(_pWorldMatrices), iInstanceCount(_iInstanceCount), fCullingRadius(_fCullingRadius), pMaterial(_pMaterial), pActorName(pName) {}
+		tagArgumentDesc(_float4x4* _pWorldMatrices, _uint _iInstanceCount, _float _fCullingRadius) : pWorldMatrices(_pWorldMatrices), iInstanceCount(_iInstanceCount), fCullingRadius(_fCullingRadius) {}
 	}ARG_DESC;
 	typedef struct tagPxTriMesh
 	{
@@ -75,7 +72,6 @@ private:
 	/* For.PhyX */
 	PxRigidStatic**			m_ppActors = nullptr;
 	vector<PX_TRIMESH>		m_PxTriMeshes;
-	char					m_szActorName[MAX_PATH];
 	/* For.MaterialSet */
 	_uint					m_iMaterialSetCount = 0;
 	/*For. Check Bind Materials */
