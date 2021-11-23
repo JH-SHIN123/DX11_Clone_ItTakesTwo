@@ -116,10 +116,10 @@ void CSplashScreen::Render_Font()
 {
 	CUI_Generator::FONTDESC tFontDesc;
 	tFontDesc.vPosition = { 0.f, -300.f };
-	tFontDesc.vScale = { 20.f, 20.f };
+	tFontDesc.vScale = { 15.f, 20.f };
 	tFontDesc.fInterval = 0.f;
 
-	UI_Generator->Render_Font(TEXT("폰트가 심각하게 구리네요"), tFontDesc, Player::Default);
+	UI_Generator->Render_Font(TEXT("버튼을눌러계속하세요"), tFontDesc, Player::Default);
 }
 
 HRESULT CSplashScreen::Ready_Component()

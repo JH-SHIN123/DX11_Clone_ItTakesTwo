@@ -170,7 +170,7 @@ void  GS_Default(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_
 
 	// 어쩌피 뷰 매트릭스는 항등
 	matrix matVP = mul(g_UIViewMatrix, g_UIProjMatrix);
-	float2	vSize = float2(In[0].vScale.x / g_DefaultViewPort.x, In[0].vScale.y / g_DefaultViewPort.y);
+	float2	vSize = float2(In[0].vScale.x / g_DefaultViewPort.x - 0.0075f, In[0].vScale.y / g_DefaultViewPort.y - 0.0075f);
 
 	/* 좌상 */
 	Out[0].vPosition = mul(In[0].vPosition, matVP);
@@ -234,8 +234,8 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	if (Out.vColor.r == 0.f && Out.vColor.b == 0.f && Out.vColor.g == 0.f)
-		discard;
+	//if (Out.vColor.r == 0.f && Out.vColor.g == 0.f && Out.vColor.b == 0.f && Out.vColor.a <= 1.f)
+	//	discard;
 
 	return Out;
 }

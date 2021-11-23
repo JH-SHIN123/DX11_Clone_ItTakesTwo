@@ -8,6 +8,7 @@
 BEGIN(ENGINE)
 class CTextures;
 class CVIBuffer_FontInstance;
+class CVIBuffer_Rect;
 END
 
 #define UI_Create(ePlayer, eTrigger)															\
@@ -68,6 +69,7 @@ private:
 	CTextures*						m_pTexturesCom = nullptr;
 	CTextures*						m_pEngTexturesCom = nullptr;
 	CVIBuffer_FontInstance*			m_pVIBuffer_FontCom = nullptr;
+	CVIBuffer_Rect*					m_pVIBuffer_Rect = nullptr;
 
 private:
 	ID3D11Device*					m_pDevice = nullptr;

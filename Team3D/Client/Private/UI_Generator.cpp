@@ -40,6 +40,7 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Font"));
 	m_pEngTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("EngFont"));
 	m_pVIBuffer_FontCom = (CVIBuffer_FontInstance*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"));
+	m_pVIBuffer_Rect = (CVIBuffer_Rect*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect"));
 	
 	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("AlphaScreen"), CAlphaScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
@@ -233,6 +234,15 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			iFontWidth = 31;
 			iFontHeigth = 46;
 			iOption = 0;
+
+			//iNumChar -= 44032;
+			//iX = iNumChar % 195;
+			//iY = iNumChar / 195;
+			//iTextureWidth = 4096;
+			//iTextureHeigth = 4096;
+			//iFontWidth = 21;
+			//iFontHeigth = 33;
+			//iOption = 0;
 		}
 		/* ¿µ¾î */
 		else if (65 <= iNumChar) 		
@@ -309,6 +319,7 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 				m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
 
 			m_pVIBuffer_FontCom->Render(1, m_VTXFONT, TextLen);
+
 		}
 		else
 		{
@@ -617,6 +628,7 @@ void CUI_Generator::Free()
 	Safe_Release(m_pTexturesCom);
 	Safe_Release(m_pEngTexturesCom);
 	Safe_Release(m_pVIBuffer_FontCom);
+	Safe_Release(m_pVIBuffer_Rect);
 
 	Safe_Delete_Array(m_VTXFONT);
 }
