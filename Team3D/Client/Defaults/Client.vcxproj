@@ -202,6 +202,7 @@
     <ClInclude Include="..\Public\Robot.h" />
     <ClInclude Include="..\Public\RobotHead.h" />
     <ClInclude Include="..\Public\Rocket.h" />
+    <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
@@ -236,6 +237,7 @@
     <ClCompile Include="..\Private\Robot.cpp" />
     <ClCompile Include="..\Private\RobotHead.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
+    <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
@@ -265,6 +267,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Font.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sprite.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl" />
