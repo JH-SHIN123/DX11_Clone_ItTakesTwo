@@ -70,6 +70,10 @@ private: /* For. Bloom */
 	ID3D11UnorderedAccessView*	m_pUnorderedAccessView_Bloom_Temp = nullptr;
 	ID3D11ShaderResourceView*	m_pShaderResourceView_Bloom_Temp = nullptr;
 	
+	ID3D11Texture2D*			m_pBloomTex_Temp2 = nullptr;
+	ID3D11UnorderedAccessView*	m_pUnorderedAccessView_Bloom_Temp2 = nullptr;
+	ID3D11ShaderResourceView*	m_pShaderResourceView_Bloom_Temp2 = nullptr;
+
 	ID3D11Texture2D*			m_pBloomTex = nullptr; // g_Bloom
 	ID3D11UnorderedAccessView*	m_pUnorderedAccessView_Bloom = nullptr;
 	ID3D11ShaderResourceView*	m_pShaderResourceView_Bloom = nullptr;

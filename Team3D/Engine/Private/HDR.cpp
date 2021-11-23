@@ -53,8 +53,9 @@ HRESULT CHDR::Render_HDR(_double TimeDelta)
 	else if (GetAsyncKeyState(VK_F4) & 0x8000)
 		m_fLumWhiteSqr -= 0.05f;
 
-	_float fLumWhiteSqrt = powf(sqrtf(m_fLumWhiteSqr),2);
-	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &m_fMiddleGrey, sizeof(_float));
+	_float fMiddleGrey = powf(sqrtf(m_fMiddleGrey), 2);
+	_float fLumWhiteSqrt = powf(sqrtf(m_fLumWhiteSqr), 2);
+	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &fMiddleGrey, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqrt, sizeof(_float));
 
 	_float	fCamFar;
@@ -77,7 +78,7 @@ HRESULT CHDR::Render_HDR(_double TimeDelta)
 
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_HDR")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_BloomTexture", m_pShaderResourceView_Bloom);
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DOFBlurTex", m_pShaderResourceView_DownScaledHDR);
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DOFBlurTex", m_pShaderResourceView_Bloom_Temp);
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DepthTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Depth")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
@@ -162,7 +163,10 @@ HRESULT CHDR::Calculate_BrightPassForBloom()
 
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[2].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
-	m_pDeviceContext->Dispatch(1, 1, 1);
+	//_uint x = (_uint)(ceil(m_iWinSize[0] / 16.f));
+	//_uint y = (_uint)(ceil(m_iWinSize[1] / 16.f));
+	_uint brightPassX = (_uint)(ceil((m_iWinSize[0] / 1024.f) * (m_iWinSize[1] / 16.f)));
+	m_pDeviceContext->Dispatch(brightPassX, 1, 1);
 
 	Unbind_ShaderResources();
 
@@ -173,7 +177,7 @@ HRESULT CHDR::Calculate_BrightPassForBloom()
 
 	// Vertical
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Bloom_Temp), E_FAIL);
-	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Bloom), E_FAIL);
+	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Bloom_Temp2), E_FAIL);
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[3].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 	_uint x = (_uint)(ceil(m_iWinSize[0] / 4.f));
@@ -183,12 +187,12 @@ HRESULT CHDR::Calculate_BrightPassForBloom()
 	Unbind_ShaderResources();
 
 	// Horizontal
-	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Bloom_Temp), E_FAIL);
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Bloom_Temp2), E_FAIL);
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Bloom), E_FAIL);
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[4].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 	// GroupThread : 128
-	x = (_uint)(ceil(m_iWinSize[1] / 4.f) / ((128 - 12) + 1));
+	x = (_uint)(ceil(m_iWinSize[1] / 4.f) / 60.f);
 	y = (_uint)(ceil(m_iWinSize[1] / 4.f));
 	m_pDeviceContext->Dispatch(x, y, 1);
 
@@ -314,7 +318,7 @@ HRESULT CHDR::Build_BloomResources(_float iWidth, _float iHeight)
 	TextureDesc.Height = (_uint)iHeight / 4;
 	TextureDesc.MipLevels = 1;
 	TextureDesc.ArraySize = 1;
-	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	TextureDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
 	TextureDesc.SampleDesc.Count = 1;
 	TextureDesc.SampleDesc.Quality = 0;
 	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -322,27 +326,30 @@ HRESULT CHDR::Build_BloomResources(_float iWidth, _float iHeight)
 
 	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pDownScaledHDRTex), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pBloomTex_Temp), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pBloomTex_Temp2), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pBloomTex), E_FAIL);
 	
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC	 ShaderResourceViewDesc;
 	ZeroMemory(&ShaderResourceViewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-	ShaderResourceViewDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	ShaderResourceViewDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
 	ShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	ShaderResourceViewDesc.Texture2D.MipLevels = 1;
 
 	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pDownScaledHDRTex, &ShaderResourceViewDesc, &m_pShaderResourceView_DownScaledHDR), E_FAIL);
-	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pDownScaledHDRTex, &ShaderResourceViewDesc, &m_pShaderResourceView_Bloom_Temp), E_FAIL);
-	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pDownScaledHDRTex, &ShaderResourceViewDesc, &m_pShaderResourceView_Bloom), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pBloomTex_Temp, &ShaderResourceViewDesc, &m_pShaderResourceView_Bloom_Temp), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pBloomTex_Temp2, &ShaderResourceViewDesc, &m_pShaderResourceView_Bloom_Temp2), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pBloomTex, &ShaderResourceViewDesc, &m_pShaderResourceView_Bloom), E_FAIL);
 
 	D3D11_UNORDERED_ACCESS_VIEW_DESC UnorderedAccessViewDesc;
 	ZeroMemory(&UnorderedAccessViewDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
-	UnorderedAccessViewDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	UnorderedAccessViewDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
 	UnorderedAccessViewDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 
 	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pDownScaledHDRTex, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_DownScaledHDR), E_FAIL);
-	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pDownScaledHDRTex, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_Bloom_Temp), E_FAIL);
-	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pDownScaledHDRTex, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_Bloom), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pBloomTex_Temp, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_Bloom_Temp), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pBloomTex_Temp2, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_Bloom_Temp2), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pBloomTex, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_Bloom), E_FAIL);
 
 	return S_OK;
 }
@@ -424,6 +431,10 @@ void CHDR::Free()
 	Safe_Release(m_pUnorderedAccessView_Bloom_Temp);
 	Safe_Release(m_pShaderResourceView_Bloom_Temp);
 	Safe_Release(m_pBloomTex_Temp);
+
+	Safe_Release(m_pUnorderedAccessView_Bloom_Temp2);
+	Safe_Release(m_pShaderResourceView_Bloom_Temp2);
+	Safe_Release(m_pBloomTex_Temp2);
 
 	Safe_Release(m_pUnorderedAccessView_Bloom);
 	Safe_Release(m_pShaderResourceView_Bloom);

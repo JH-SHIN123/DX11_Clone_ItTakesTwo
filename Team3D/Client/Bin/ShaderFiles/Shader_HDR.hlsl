@@ -14,7 +14,7 @@ cbuffer FinalPassDesc
 {
 	float	g_MiddleGrey = 0.f;
 	float	g_LumWhiteSqr = 0.f;
-	float	g_BloomScale = 20.f; // 빛을 흘릴 스케일
+	float	g_BloomScale = 1.5f; // 빛을 흘릴 스케일
 	float2	g_DOFFarValues = { 10.f, 20.f }; // 초점이 맞지 않기 시작하는 거리와, 완전히 초점이 나가버리는 범위 값
 };
 
@@ -35,7 +35,7 @@ float3 DistanceDOF(float3 colorFocus, float3 colorBlurred, float depth)
 {
 	float blurFactor = saturate((depth - g_DOFFarValues.x) * g_DOFFarValues.y);
 
-	return lerp(colorFocus, colorBlurred, 0.9f);
+	return lerp(colorFocus, colorBlurred, blurFactor);
 }
 ////////////////////////////////////////////////////////////
 
@@ -80,6 +80,11 @@ struct PS_OUT
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
+
+	//// TEST
+	//float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	//Out.vColor = vector(colorBlurred , 1.f);
+	//return Out;
 
 	float3 vColor = g_HDRTex.Sample(Point_Sampler, In.vTexUV).xyz;
 

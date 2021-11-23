@@ -35,7 +35,7 @@ cbuffer DownScaleDesc
 
 	float g_Adaptation = 0.0016f / 0.5f; // TimeDelta / 임시값
 
-	float g_fBloomThreshold = 0.9f; // 어느 정도의 밝기 이상의 픽셀만 흘릴건지 지정
+	float g_fBloomThreshold = 0.5f; // 어느 정도의 밝기 이상의 픽셀만 흘릴건지 지정
 };
 
 // 각 스레드에 대해 4x4 다운스케일 수행
