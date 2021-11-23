@@ -387,12 +387,40 @@ PS_OUT PS_SplashScreenMask(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	Out.vColor = g_DiffuseMaskTexture.Sample(DiffuseSampler, In.vTexUV);
 	vector Screen = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 	
-	if (Out.vColor.r <= 0.5f && Out.vColor.g <= 0.5f && Out.vColor.b <= 0.5f)
+	float2 vWeight = { g_vScreenMaskUV.x, g_vScreenMaskUV.y };
+
+	if (0 == g_iColorOption)
+	{
+		In.vTexUV.x += vWeight.x;
+		In.vTexUV.y += vWeight.y;
+	}
+	else if (1 == g_iColorOption)
+	{
+		In.vTexUV.x -= vWeight.x;
+		In.vTexUV.y += vWeight.y;
+	}
+	else
+	{
+		In.vTexUV.x -= vWeight.x;
+		In.vTexUV.y -= vWeight.y;
+	}
+
+	vector vColor = g_DiffuseMaskTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (vColor.r <= 0.1f && vColor.g <= 0.1f && vColor.b <= 0.1f)
 		discard;
 
+	if (Screen.a == 0.f)
+		discard;
+
+	if (vColor.r > 0.1f && 0 == g_iColorOption)
+		Out.vColor.rgba = 1.f;
+	else if (vColor.g > 0.1f && 1 == g_iColorOption)
+		Out.vColor.rgba = 1.f;
+	else if (vColor.b > 0.1f && 2 == g_iColorOption)
+		Out.vColor.rgba = 1.f;
 
 	return Out;
 }
