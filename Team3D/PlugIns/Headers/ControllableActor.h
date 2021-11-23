@@ -31,11 +31,14 @@ public: /* Setter */
 	void    Set_Jump(_bool bJump) { m_bJump = bJump; }
 	void	Set_Scale(_float fRadius, _float fHeight);
 	void	Set_GroundPound(_bool bGroundPound) { m_bGroundPound = bGroundPound; }
+	void    Set_ZeroGravity(_bool bZeroGravity, _bool IsGoUp, _bool IsStatic) { m_bZeroGravity = bZeroGravity; m_IsGoUp = IsGoUp; m_bStatic = IsStatic; }
+	void	Set_IsFalling(_bool IsFalling) { m_IsFalling = IsFalling; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	void	Move(_fvector vMove, _double dTimeDelta);
+
 	void	Update(_double dTimeDelta);
 	void	Update_Cam(_double dTimeDelta);
 	void	Jump_Start(_float fJumpForce);
@@ -60,6 +63,9 @@ private:
 	_bool	m_bJump = false;
 	_bool	m_bGroundPound = false;
 	_bool	m_IsFalling = false;
+	_bool   m_bZeroGravity = false;
+	_bool	m_IsGoUp = false;
+	_bool   m_bStatic = false;
 
 	_float  m_fFallingTime = 0.f;
 
