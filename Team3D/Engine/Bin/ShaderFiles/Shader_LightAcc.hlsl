@@ -24,7 +24,7 @@ cbuffer LightColor
 
 cbuffer MtrlDesc
 {
-	float	g_fPower		= 50.f; // 16.f
+	float	g_fPower		= 16.f; // 16.f
 	vector	g_vMtrlDiffuse	= (vector)1.f;
 	vector	g_vMtrlAmbient	= (vector)1.f;
 	vector	g_vMtrlSpecular = (vector)1.f;
