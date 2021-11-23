@@ -4,6 +4,7 @@
 #include "Level_Loading.h"
 #include "DataStorage.h"
 #include "UI_Generator.h"
+#include "Environment_Generator.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -19,8 +20,9 @@ HRESULT CMainApp::NativeConstruct()
 	FAILED_CHECK_RETURN(m_pGameInstance->Reserve_Container(Level::LEVEL_END), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Timer(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Prototype_ForStatic(), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
+	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->NativeConstruct_Environment_Generator(m_pDevice, m_pDeviceContext), E_FAIL);
 	UI_Generator->NativeConstruct(m_pDevice, m_pDeviceContext);
+	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
 
 	return S_OK;
 }
@@ -31,13 +33,13 @@ HRESULT CMainApp::Run_App()
 
 	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
 
-	if (m_dFrameAcc >= 1.0 / 60.0)
+	if (m_dFrameAcc >= 1.0 / 100.0)
 	{
 		m_dFrameAcc = 0.0;
 
 		_double dTimeDelta = m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
 
-		if (Tick(0.016666666666666666) & 0x80000000)
+		if (Tick(dTimeDelta) & 0x80000000)
 			return E_FAIL;
 
 		if (FAILED(Render()))
@@ -140,6 +142,7 @@ void CMainApp::Free()
 
 	UI_Generator->DestroyInstance();
 	CDataStorage::GetInstance()->DestroyInstance();
+	CEnvironment_Generator::GetInstance()->DestroyInstance();
 
 	CGameInstance::Release_Engine();
 }
