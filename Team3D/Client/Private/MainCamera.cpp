@@ -50,6 +50,7 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_SubActor"), (CComponent**)&m_pSubActorCom, &ArgDesc), E_FAIL);
 
 	m_pActorCom->Set_Scale(m_fCamRadius, 0.f);
 
@@ -360,12 +361,13 @@ _bool CMainCamera::OffSetPhsX(_double dTimeDelta, _fmatrix matRev,_vector * pOut
 
 	_vector vDir = vPos - vPhsXPos;
 	
-	PxControllerCollisionFlags eCollisionFlag = m_pActorCom->Get_Controller()->move(MH_PxVec3(vDir), 0.000f, dTimeDelta, PxControllerFilters());
+	PxControllerCollisionFlags eCollisionFlag = m_pActorCom->Get_Controller()->move(MH_PxVec3(vDir), 0.f, dTimeDelta, PxControllerFilters());
 	if (eCollisionFlag & PxControllerCollisionFlag::eCOLLISION_DOWN ||
 		eCollisionFlag & PxControllerCollisionFlag::eCOLLISION_UP||
-		eCollisionFlag & PxControllerCollisionFlag::eCOLLISION_SIDES) // phsX -> Cam if Collision
+		eCollisionFlag & PxControllerCollisionFlag::eCOLLISION_SIDES) // MainPhsX -> Cam if Collision
 	{
-		////if()
+		_vector vPlayerPos = dynamic_cast<CCody*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		//m_pSubActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPlayerPos), XMVectorGetX(vPlayerPos), XMVectorGetX(vPlayerPos), ))
 
 		//if (nullptr == m_pTargetObj)
 		//	return false;
@@ -382,7 +384,7 @@ _bool CMainCamera::OffSetPhsX(_double dTimeDelta, _fmatrix matRev,_vector * pOut
 		//PxMat44 matPhsX = PxMat44(m_pActorCom->Get_Actor()->getGlobalPose());
 		//_vector vPhsXPos = XMVectorSet(matPhsX.column3.x, matPhsX.column3.y, matPhsX.column3.z, 1.f);
 		//PxRaycastBuffer tBuffer;
-		//
+		//if(CPhysX::Raycast())
 		//_vector vPhsXResult
 		//	= XMVectorSet(tBuffer.block.position.x, tBuffer.block.position.y, tBuffer.block.position.z, 1.f) + m_fCamRadius * XMVector4Normalize(vPlayerPos - vPhsXPos); /*+XMVector4Normalize(vPhsXPos - vPlayerPos) * m_fCamRadius*/;
 		//

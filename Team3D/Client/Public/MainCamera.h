@@ -39,6 +39,8 @@ public:
 
 private:
 	CControllableActor* m_pActorCom = nullptr;
+	CControllableActor* m_pSubActorCom = nullptr;
+
 	CCam_Helper* m_pCamHelper = nullptr;
 private:
 	//For Free.
