@@ -14,7 +14,7 @@ cbuffer FinalPassDesc
 {
 	float	g_MiddleGrey = 0.f;
 	float	g_LumWhiteSqr = 0.f;
-	float	g_BloomScale = 0.4f; // 빛을 흘릴 스케일
+	float	g_BloomScale = 0.8f; // 빛을 흘릴 스케일
 	float2	g_DOFFarValues = { 20., 100.f }; // 초점이 맞지 않기 시작하는 거리와, 완전히 초점이 나가버리는 범위 값
 };
 

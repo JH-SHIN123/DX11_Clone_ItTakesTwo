@@ -99,25 +99,25 @@ HRESULT CHDR::Calculate_LuminanceAvg(_double TimeDelta)
 	NULL_CHECK_RETURN(m_pEffect_CS, E_FAIL);
 	
 	// Set Adaptation
-	//m_fAdaptationDeltaT += (_float)TimeDelta;
+	m_fAdaptationDeltaT += (_float)TimeDelta;
 
-	//_float fAdaptNorm = 0.f;
-	//if (m_bAdaptationFirstTime)
-	//{
-	//	fAdaptNorm = 0.f;
-	//	m_bAdaptationFirstTime = false;
-	//}
-	//else
-	//{
-	//	if(m_fAdaptationDeltaT > m_fAdapt)
-	//	{
-	//		m_fAdaptationDeltaT -= m_fAdapt;
-	//	}
+	_float fAdaptNorm = 0.f;
+	if (m_bAdaptationFirstTime)
+	{
+		fAdaptNorm = 0.f;
+		m_bAdaptationFirstTime = false;
+	}
+	else
+	{
+		if(m_fAdaptationDeltaT > m_fAdapt)
+		{
+			m_fAdaptationDeltaT -= m_fAdapt;
+		}
 
-	//	fAdaptNorm = min(m_fAdapt < 0.0001f ? m_fAdapt : (m_fAdaptationDeltaT / m_fAdapt), m_fAdapt - 0.0001f);
-	//}
+		fAdaptNorm = min(m_fAdapt < 0.0001f ? m_fAdapt : (m_fAdaptationDeltaT / m_fAdapt), m_fAdapt - 0.0001f);
+	}
 
-	//m_fAdaptation = fAdaptNorm;
+	m_fAdaptation = fAdaptNorm;
 
 	// CS ---------------------------------------------------------------------------
 	// For. First Pass
@@ -138,7 +138,7 @@ HRESULT CHDR::Calculate_LuminanceAvg(_double TimeDelta)
 	Unbind_ShaderResources();
 
 	// For. Second Pass
-	//FAILED_CHECK_RETURN(Set_Variable("g_Adaptation", &m_fAdaptation, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(Set_Variable("g_Adaptation", &m_fAdaptation, sizeof(_float)), E_FAIL);
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageValues1D", m_pShaderResourceView_Lum), E_FAIL);
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_LumAve), E_FAIL);
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_PrevAverageLum", m_pShaderResourceView_PrevLumAve), E_FAIL);
