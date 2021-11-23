@@ -14,21 +14,33 @@ cbuffer FinalPassDesc
 {
 	float	g_MiddleGrey = 0.f;
 	float	g_LumWhiteSqr = 0.f;
-	float	g_BloomScale = 1.5f; // 빛을 흘릴 스케일
-	float2	g_DOFFarValues = { 10.f, 20.f }; // 초점이 맞지 않기 시작하는 거리와, 완전히 초점이 나가버리는 범위 값
+	float	g_BloomScale = 0.4f; // 빛을 흘릴 스케일
+	float2	g_DOFFarValues = { 20., 100.f }; // 초점이 맞지 않기 시작하는 거리와, 완전히 초점이 나가버리는 범위 값
 };
 
 ////////////////////////////////////////////////////////////
 /* Function */
+
 float3 ToneMapping(float3 HDRColor)
 {
 	// 현재 픽셀에 대한 휘도 스케일 계산
-	float LScale = dot(HDRColor, LUM_FACTOR);
-	LScale *= g_MiddleGrey / g_AverageLum[0];
-	LScale = (LScale + LScale * LScale / g_LumWhiteSqr) / (1.0 + LScale);
-
 	// 휘도 스케일을 픽셀 색상에 적용
-	return HDRColor * LScale;
+
+	// DX Sample
+	//float LScale = dot(HDRColor, LUM_FACTOR);
+	//LScale *= g_MiddleGrey / g_AverageLum[0];
+	//LScale = (LScale + LScale * LScale / g_LumWhiteSqr) / (1.0 + LScale);
+	//return HDRColor * LScale;
+
+	// EA studio
+	//float3 Color = pow(tex2D(Sampler, TexUV), 2.2f);
+	//float3 x = max(0.f, Color - 0.004);
+	//Color = (x * (6.2f * x + 0.5f)) / (x * (6.2f * x + 1.7f) + 0.06f);
+	//return float4(Color, 1.f);
+	float3 Color = pow(HDRColor, 2.2f);
+	float3 x = max(0.f, Color - g_MiddleGrey);
+	Color = (x * (g_LumWhiteSqr * x + 0.5f)) / (x * (g_LumWhiteSqr * x + 1.7f) + 0.06f);
+	return Color;
 }
 
 float3 DistanceDOF(float3 colorFocus, float3 colorBlurred, float depth)

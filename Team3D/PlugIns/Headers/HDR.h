@@ -38,8 +38,8 @@ private:
 private:
 	_uint	m_iWinSize[2] = { 0,0 };
 
-	_float	m_fMiddleGrey = 0.0008f;
-	_float	m_fLumWhiteSqr = 5.9f;
+	_float	m_fMiddleGrey = 0.097f; // 0.0008f
+	_float	m_fLumWhiteSqr = 0.899f;
 	
 	_bool	m_bAdaptationFirstTime = true;
 	_float	m_fAdaptationDeltaT = 0.f;

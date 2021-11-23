@@ -44,19 +44,19 @@ HRESULT CHDR::Render_HDR(_double TimeDelta)
 	CPipeline* pPipeline = CPipeline::GetInstance();
 
 	if (GetAsyncKeyState(VK_F1) & 0x8000)
-		m_fMiddleGrey += 0.0005f;
+		m_fMiddleGrey += 0.5f; // 0.0005
 	else if (GetAsyncKeyState(VK_F2) & 0x8000)
-		m_fMiddleGrey -= 0.0005f;
+		m_fMiddleGrey -= 0.5f;
 
 	if (GetAsyncKeyState(VK_F3) & 0x8000)
 		m_fLumWhiteSqr += 0.05f;
 	else if (GetAsyncKeyState(VK_F4) & 0x8000)
 		m_fLumWhiteSqr -= 0.05f;
+	//_float fMiddleGrey = powf(sqrtf(m_fMiddleGrey), 2);
+	//_float fLumWhiteSqrt = powf(sqrtf(m_fLumWhiteSqr), 2);
 
-	_float fMiddleGrey = powf(sqrtf(m_fMiddleGrey), 2);
-	_float fLumWhiteSqrt = powf(sqrtf(m_fLumWhiteSqr), 2);
-	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &fMiddleGrey, sizeof(_float));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqrt, sizeof(_float));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &m_fMiddleGrey, sizeof(_float));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &m_fLumWhiteSqr, sizeof(_float));
 
 	_float	fCamFar;
 	_matrix	ProjMatrixInverse;

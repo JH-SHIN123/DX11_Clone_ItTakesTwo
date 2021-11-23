@@ -72,22 +72,22 @@ HRESULT CLevel_Stage::Ready_Lights()
 	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
 	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
 	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
 		return E_FAIL;
 
 	/* For. Point */
-	//LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	//LightDesc.vPosition = XMFLOAT3(5.f, 5.f, 10.f);
-	//LightDesc.vDiffuse = XMFLOAT4(1.f, 0.f, 0.f, 1.f);
-	//LightDesc.vAmbient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.f);
-	//LightDesc.vSpecular = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.f);
-	//LightDesc.fRange = 15.f;
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = XMFLOAT3(5.f, 5.f, 10.f);
+	LightDesc.vDiffuse = XMFLOAT4(1.f, 0.f, 0.f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+	LightDesc.fRange = 15.f;
 
-	//if (FAILED(pGameInstance->Add_Light(L"Point1", LightDesc)))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Light(L"Point1", LightDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }
