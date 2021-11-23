@@ -28,6 +28,7 @@ public:
 
 public:
 	virtual _float Get_DistanceFromCamera() override;
+	void Render_Font();
 
 private:
 	CRenderer*			m_pRendererCom = nullptr;

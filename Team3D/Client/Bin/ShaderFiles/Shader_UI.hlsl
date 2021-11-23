@@ -416,12 +416,23 @@ PS_OUT PS_SplashScreenMask(PS_IN In)
 		discard;
 
 	if (vColor.r > 0.1f && 0 == g_iColorOption)
+	{
 		Out.vColor.rgba = 1.f;
+		//Out.vColor.rgb = 1.f;
+		//Out.vColor.a = 0.7f;
+	}
 	else if (vColor.g > 0.1f && 1 == g_iColorOption)
+	{
 		Out.vColor.rgba = 1.f;
+		//Out.vColor.rgb = 1.f;
+		//Out.vColor.a = 0.7f;
+	}
 	else if (vColor.b > 0.1f && 2 == g_iColorOption)
+	{
 		Out.vColor.rgba = 1.f;
-
+		//Out.vColor.rgb = 1.f;
+		//Out.vColor.a = 0.7f;
+	}
 	return Out;
 }
 

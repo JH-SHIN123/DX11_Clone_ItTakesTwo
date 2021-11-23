@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\public\SplashScreen.h"
 #include "GameInstance.h"
-#include "DataStorage.h"
+#include "UI_Generator.h"
 
 CSplashScreen::CSplashScreen(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -102,6 +102,7 @@ HRESULT CSplashScreen::Render(RENDER_GROUP::Enum eGroup)
 		m_pVIBuffer_RectCom->Render(10);
 	}
 
+	Render_Font();
 
 	return S_OK;
 }
@@ -109,6 +110,16 @@ HRESULT CSplashScreen::Render(RENDER_GROUP::Enum eGroup)
 _float CSplashScreen::Get_DistanceFromCamera()
 {
 	return m_fSortOrder;
+}
+
+void CSplashScreen::Render_Font()
+{
+	CUI_Generator::FONTDESC tFontDesc;
+	tFontDesc.vPosition = { 0.f, -300.f };
+	tFontDesc.vScale = { 20.f, 20.f };
+	tFontDesc.fInterval = 0.f;
+
+	UI_Generator->Render_Font(TEXT("폰트가 심각하게 구리네요"), tFontDesc, Player::Default);
 }
 
 HRESULT CSplashScreen::Ready_Component()

@@ -128,7 +128,6 @@ void CInputButton_Frame::Render_Font()
 		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
 		tFontDesc.vScale = { 40.f, 50.f };
 		tFontDesc.fInterval = 0.f;
-		tFontDesc.iOption = 1;
 
 		UI_Generator->Render_Font(TEXT("F"), tFontDesc, m_ePlayerID);
 	}
@@ -137,7 +136,6 @@ void CInputButton_Frame::Render_Font()
 		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
 		tFontDesc.vScale = { m_UIDesc.vScale.x / 2.f, m_UIDesc.vScale.y / 1.2f };
 		tFontDesc.fInterval = 0.f;
-		tFontDesc.iOption = 1;
 
 		UI_Generator->Render_Font(TEXT("E"), tFontDesc, m_ePlayerID);
 	}

@@ -27,7 +27,6 @@ public:
 		_float2 vPosition = { 0.f, 0.f };
 		_float2 vScale = { 100.f, 100.f };
 		_float  fInterval = 0.f;
-		_uint	iOption = 0;
 	}FONTDESC;
 
 private:
