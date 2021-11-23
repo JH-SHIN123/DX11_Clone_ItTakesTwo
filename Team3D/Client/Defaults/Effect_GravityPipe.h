@@ -2,6 +2,8 @@
 
 #ifndef __EFFECT_GRAVITYPIPE_H__
 #include "InGameEffect_Model.h"
+
+BEGIN(Client)
 class CEffect_GravityPipe final : public CInGameEffect_Model
 {
 private:
@@ -27,11 +29,15 @@ private:
 	CTextures* m_pTexturesCom_ColorRamp = nullptr;
 	CTextures* m_pTexturesCom_Distortion = nullptr;
 
+private:
+	class CEffect_Env_Particle* m_pParticle = nullptr;
+
 public:
 	static CEffect_GravityPipe* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
 
+END
 #define __EFFECT_GRAVITYPIPE_H__
 #endif

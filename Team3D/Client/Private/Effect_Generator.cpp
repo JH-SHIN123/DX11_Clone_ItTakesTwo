@@ -6,7 +6,6 @@
 #pragma  region Effect Include
 #include "TestEffect.h"
 #include "Effect_RespawnTunnel.h"
-#include "Effect_RespawnTunnel_Smoke.h"
 #include "Effect_FireDoor.h"
 #include "Effect_Walking_Smoke.h"
 #include "Effect_Landing_Smoke.h"
@@ -20,6 +19,7 @@
 #include "Effect_May_Boots_Walking_Particle.h"
 #include "Effect_GravityPipe.h"
 #include "Effect_Wormhole.h"
+#include "Effect_Env_Particle.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -162,10 +162,7 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	NULL_CHECK_RETURN(pInstance, E_FAIL);
 
 	// 2D Effect
-	if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_RespawnTunnel_Smoke"))
-		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_RespawnTunnel_Smoke",			CEffect_RespawnTunnel_Smoke::Create(pDevice, pDeviceContext, pData));
-
-	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
+	if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_FireDoor",						CEffect_FireDoor::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Walking_Smoke"))
@@ -194,6 +191,10 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_May_Boots_Walking_Particle"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_May_Boots_Walking_Particle",	CEffect_May_Boots_Walking_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Env_Particle"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Env_Particle",					CEffect_Env_Particle::Create(pDevice, pDeviceContext, pData));
+
 
 	// 3D Effect
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
@@ -263,7 +264,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Wormhole_Noise"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Wormhole_Noise/Wormhole_Noise_%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Level_Preview"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Level_Preview/%d.png"), 7)), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Slime_Cloud"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Shockwave_02_E1.png"))), E_FAIL);
-	//
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Dot"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Custom/Dot.png"))), E_FAIL);
 
 #pragma endregion
 

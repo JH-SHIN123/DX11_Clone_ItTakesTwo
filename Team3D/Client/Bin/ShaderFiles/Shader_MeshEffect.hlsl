@@ -408,8 +408,11 @@ PS_OUT	PS_MAIN_RESPAWN_PORTAL(PS_IN_TRIPLE_UV In)
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV + fWeight);
 
-	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV) * 3.f;
+	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV) * 5.f;
 	Out.vDiffuse.a = Out.vDiffuse.b * 0.9f;
+
+	//if (0.f >= Out.vDiffuse.a)
+	//	discard;
 	//vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	//if (0.f < vFX_tex.a)
 	//	Out.vDiffuse.rgb = (vMtrlDiffuse.a) * g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV + 0.5f) * 5.f;
@@ -436,7 +439,7 @@ PS_OUT	PS_MAIN_GRAVITYPIPE(PS_IN_TRIPLE_UV In)
 	vflipUV += g_fTime * 0.33333333f;
 	vector vColor = g_ColorRampTexture.Sample(Wrap_MinMagMipLinear_Sampler, vflipUV - fWeight);
 	Out.vDiffuse.rgb = vMtrlDiffuse.r * vColor.rgb;
-	Out.vDiffuse.a = Out.vDiffuse.r * 0.9f;
+	Out.vDiffuse.a = Out.vDiffuse.r;
 
 	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
@@ -480,7 +483,7 @@ PS_OUT	PS_MAIN_RESPAWNTENNEL(PS_IN_TRIPLE_UV In)
 
 	vector vColor = g_ColorRampTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vDiffuse.rgb = fWeight * vColor.rgb * 2.5f;
-	Out.vDiffuse.a = 1.f;
+	//Out.vDiffuse.a = 1.f;
 
 	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
@@ -553,8 +556,8 @@ technique11 DefaultTechnique
 	pass RespawnPortal // 4
 	{
 		SetRasterizerState(Rasterizer_NoCull);
-		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
-		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_TRIPLE_UV();
 		GeometryShader = compile gs_5_0 GS_TRIPLE_UV();
 		PixelShader = compile ps_5_0 PS_MAIN_RESPAWN_PORTAL();

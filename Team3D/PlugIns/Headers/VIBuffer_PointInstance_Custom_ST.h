@@ -18,6 +18,7 @@ public:
 	virtual HRESULT Render(_uint iPassIndex) override;
 	HRESULT			Render(_uint iPassIndex, void* VertexMatrices, _uint iInstanceCount, _uint iStartIndex = 0);
 	VTXMATRIX_CUSTOM_ST*		Get_InstanceBuffer() { return m_pInstanceVertices; }
+	HRESULT Set_DefaultVariables();
 
 private:
 	ID3D11Buffer*			m_pVBInstance = nullptr;

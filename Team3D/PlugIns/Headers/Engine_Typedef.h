@@ -44,4 +44,7 @@ namespace Engine
 	typedef		vector<BoundingBox*>			AABB_GROUP;
 	typedef		vector<BoundingOrientedBox*>	OBB_GROUP;
 	typedef		vector<BoundingSphere*>			SBB_GROUP;
+
+	typedef		XMINT3		_int3;
+
 }

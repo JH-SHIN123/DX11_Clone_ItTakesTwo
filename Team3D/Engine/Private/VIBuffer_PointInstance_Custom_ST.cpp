@@ -1,4 +1,5 @@
 #include "VIBuffer_PointInstance_Custom_ST.h"
+#include "Pipeline.h"
 
 CVIBuffer_PointInstance_Custom_ST::CVIBuffer_PointInstance_Custom_ST(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CVIBuffer(pDevice, pDeviceContext)
@@ -101,6 +102,29 @@ HRESULT CVIBuffer_PointInstance_Custom_ST::Render(_uint iPassIndex, void * Verte
 	FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 	m_pDeviceContext->DrawInstanced(1, iInstanceCount, iStartIndex, iStartIndex);
+
+	return S_OK;
+}
+
+HRESULT CVIBuffer_PointInstance_Custom_ST::Set_DefaultVariables()
+{
+	CPipeline* pPipeline = CPipeline::GetInstance();
+	NULL_CHECK_RETURN(pPipeline, E_FAIL);
+
+	Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINVIEW)), sizeof(_matrix));
+	Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINPROJ)), sizeof(_matrix));
+	Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBVIEW)), sizeof(_matrix));
+	Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBPROJ)), sizeof(_matrix));
+
+	_float	fMainCamFar = pPipeline->Get_MainCamFar();
+	_float	fSubCamFar = pPipeline->Get_SubCamFar();
+	_vector vMainCamPosition = pPipeline->Get_MainCamPosition();
+	_vector vSubCamPosition = pPipeline->Get_SubCamPosition();
+
+	Set_Variable("g_fMainCamFar", &fMainCamFar, sizeof(_float));
+	Set_Variable("g_fSubCamFar", &fSubCamFar, sizeof(_float));
+	Set_Variable("g_vMainCamPosition", &vMainCamPosition, sizeof(_vector));
+	Set_Variable("g_vSubCamPosition", &vSubCamPosition, sizeof(_vector));
 
 	return S_OK;
 }

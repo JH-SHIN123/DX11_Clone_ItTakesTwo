@@ -49,7 +49,7 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
 
-	UI_Create(May, PlayerMarker);
+// 	UI_Create(May, PlayerMarker);
 	 
 
 	return S_OK;
@@ -135,7 +135,7 @@ _int CMay::Tick(_double dTimeDelta)
 	}
 	Ground_Pound(dTimeDelta);
 
-	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);

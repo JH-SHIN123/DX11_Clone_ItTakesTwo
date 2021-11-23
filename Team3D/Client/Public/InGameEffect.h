@@ -115,6 +115,8 @@ public:
 public:
 	_float4 Set_UV(_int iIndex);
 	void SetUp_Shader_Data();
+	_float4 Get_TexUV_Rand(_uint iTexture_U, _uint iTexture_V);
+	_float3 Get_Dir_Rand(_int3 vRandDirPower);
 
 protected:
 	// 프로토타입에 기본 세팅을 하고 클론에서 상황에 맞는 추가적인 데이터를 넘기자

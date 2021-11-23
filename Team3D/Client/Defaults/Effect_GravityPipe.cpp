@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Effect_GravityPipe.h"
 #include "GameInstance.h"
+#include "Effect_Env_Particle.h"
 
 CEffect_GravityPipe::CEffect_GravityPipe(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
@@ -23,25 +24,12 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
 
-// 	CModel_Instance::ARG_DESC Data;
-// 	char szActorName[MAX_PATH] = "";
-// 	WideCharToMultiByte(CP_ACP, 0, m_EffectDesc_Prototype.ModelName, MAX_PATH, szActorName, MAX_PATH, NULL, NULL);
-// 	Data.pActorName = szActorName;
-// 	Data.fCullingRadius = m_EffectDesc_Clone.fCullingRadius;
-// 	Data.pWorldMatrices = m_pInstanceBuffer;
-// 	Data.iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
-// 
-// 	for (_uint i = 0; i < Data.iInstanceCount; ++i)
-// 	{
-// 		Data.pWorldMatrices[i] = MH_XMFloat4x4Identity();
-// 		Data.pWorldMatrices[i]._41 = 10.f;
-// 		Data.pWorldMatrices[i]._43 = _float((i / 100) * 10.f);
-// 	}
-
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_flowmaptest", TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Wormhole_Noise", TEXT("Com_Texture_Distortion"), (CComponent**)&m_pTexturesCom_Distortion), E_FAIL);
-	//
+
+	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObject_2D_Env_Particle", nullptr, (CGameObject**)&m_pParticle);
+	m_pParticle->Set_InstanceCount(5000);
 
 	return S_OK;
 }
@@ -53,6 +41,14 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 	if (3.f <= m_fTime)
 		m_fTime = 0.f;
 
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
+		m_pParticle->Set_IsActivateParticles(true);
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD6))
+		m_pParticle->Set_IsActivateParticles(false);
+
+	m_pParticle->Set_ParentMatrix(m_pTransformCom->Get_WorldMatrix());
+
+	m_pParticle->Set_Particle_Radius(_float3(5.f, 40.f, 5.f));
 	return _int();
 }
 
@@ -107,5 +103,7 @@ void CEffect_GravityPipe::Free()
 {
 	Safe_Release(m_pTexturesCom_Distortion);
 	Safe_Release(m_pTexturesCom_ColorRamp);
+
+	Safe_Release(m_pParticle); 
 	__super::Free();
 }

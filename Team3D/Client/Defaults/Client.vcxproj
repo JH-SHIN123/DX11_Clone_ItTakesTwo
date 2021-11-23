@@ -195,6 +195,7 @@
     <ClInclude Include="..\public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Color.txt" />
     <ClInclude Include="..\Public\Effect_Dash.h" />
+    <ClInclude Include="..\public\Effect_Env_Particle.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
     <ClInclude Include="..\public\Effect_May_Boots.h" />
     <ClInclude Include="..\public\Effect_May_Boots_Walking_Particle.h" />
@@ -220,7 +221,6 @@
     <ClInclude Include="..\public\Effect_Player_Dead_Particle.h" />
     <ClInclude Include="..\public\Effect_RespawnTunnel.h" />
     <ClInclude Include="..\public\Effect_RespawnTunnel_Portal.h" />
-    <ClInclude Include="..\public\Effect_RespawnTunnel_Smoke.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
     <ClInclude Include="..\Public\PlayerMarker.h" />
     <ClInclude Include="..\Public\Robot.h" />
@@ -246,6 +246,7 @@
   <ItemGroup>
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
+    <ClCompile Include="..\private\Effect_Env_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Generator.cpp" />
     <ClCompile Include="..\private\Effect_May_Boots.cpp" />
     <ClCompile Include="..\private\Effect_May_Boots_Walking_Particle.cpp" />
@@ -274,7 +275,6 @@
     <ClCompile Include="..\private\Effect_Player_Dead_Particle.cpp" />
     <ClCompile Include="..\private\Effect_RespawnTunnel.cpp" />
     <ClCompile Include="..\private\Effect_RespawnTunnel_Portal.cpp" />
-    <ClCompile Include="..\private\Effect_RespawnTunnel_Smoke.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />

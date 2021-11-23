@@ -85,18 +85,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point">
       <UniqueIdentifier>{f1297b94-aa6d-4d1e-9f97-4bfe51b57a14}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Smoke">
-      <UniqueIdentifier>{d69c61a0-2dcc-4700-b565-44e359f06816}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Smoke\00.Walking_Smoke">
-      <UniqueIdentifier>{04cb3247-05c6-4c7f-a7f1-64176fb9a4f1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Smoke\01.Landing_Smoke">
-      <UniqueIdentifier>{5268a6b4-0c71-43a4-b934-31ce7bc3a010}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Smoke\02.RespawnTunnel_Smoke">
-      <UniqueIdentifier>{536a0e19-aa1f-4e8d-a60f-a160ab01514a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect">
       <UniqueIdentifier>{2597e457-f059-48c4-ac26-d228360d5248}</UniqueIdentifier>
     </Filter>
@@ -238,6 +226,15 @@
     <Filter Include="02.GameObject\05.UI\05.UISprite">
       <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29">
+      <UniqueIdentifier>{3a519e7a-f348-4809-a94f-055799138e50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\05.Walking_Smoke">
+      <UniqueIdentifier>{04cb3247-05c6-4c7f-a7f1-64176fb9a4f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\06.Landing_Smoke">
+      <UniqueIdentifier>{5268a6b4-0c71-43a4-b934-31ce7bc3a010}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -328,7 +325,7 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\00.FireDoor</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Walking_Smoke.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\00.Walking_Smoke</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\05.Walking_Smoke</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_RespawnTunnel.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\00.RespawnTunnel</Filter>
@@ -337,10 +334,7 @@
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\01.RespawnTunnel_Portal</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_Landing_Smoke.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\01.Landing_Smoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_RespawnTunnel_Smoke.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\02.RespawnTunnel_Smoke</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\06.Landing_Smoke</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_Cody_Size.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.Cody_Size</Filter>
@@ -416,6 +410,9 @@
     </ClInclude>
     <ClInclude Include="Effect_GravityPipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Env_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -498,7 +495,7 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\00.FireDoor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Walking_Smoke.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\00.Walking_Smoke</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\05.Walking_Smoke</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_RespawnTunnel.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\00.RespawnTunnel</Filter>
@@ -507,10 +504,7 @@
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\01.RespawnTunnel_Portal</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Landing_Smoke.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\01.Landing_Smoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_RespawnTunnel_Smoke.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Smoke\02.RespawnTunnel_Smoke</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\06.Landing_Smoke</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Cody_Size.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.Cody_Size</Filter>
@@ -568,6 +562,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Env_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

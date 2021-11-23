@@ -17,6 +17,7 @@ public:
 	virtual HRESULT NativeConstruct(void* pArg) override;
 	virtual HRESULT Render(_uint iPassIndex) override;
 	HRESULT			Render(_uint iPassIndex, void* VertexMatrices, _uint iInstanceCount);
+	HRESULT			Set_DefaultVariables();
 
 private:
 	ID3D11Buffer*	m_pVBInstance = nullptr;
