@@ -207,7 +207,6 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 	m_RealTimeMatrices.resize(m_iInstanceCount, MH_XMFloat4x4Identity());
 	m_fCullingRadius = ArgDesc.fCullingRadius;
 
-	strcpy(m_szActorName, ArgDesc.pActorName);
 	m_ppActors = new PxRigidStatic*[m_iInstanceCount * m_iMeshCount];
 
 	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
