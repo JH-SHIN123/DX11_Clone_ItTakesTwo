@@ -254,8 +254,10 @@ HRESULT CModel::Set_DefaultVariables_Shadow()
 	return S_OK;
 }
 
-HRESULT CModel::Set_DefaultVariables_ShadowDepth()
+HRESULT CModel::Set_DefaultVariables_ShadowDepth(_fmatrix WorldMatrix)
 {
+	Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+
 	_matrix ShadowViewProj[MAX_CASCADES];
 
 	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();

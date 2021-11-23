@@ -20,7 +20,7 @@ public:
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, ID3D11ShaderResourceView* pResourceView);
 	HRESULT	Set_DefaultVariables_Perspective(_fmatrix WorldMatrix);
 	HRESULT	Set_DefaultVariables_Shadow();
-	HRESULT	Set_DefaultVariables_ShadowDepth();
+	HRESULT	Set_DefaultVariables_ShadowDepth(_fmatrix WorldMatrix);
 
 protected:
 	/* For.Vertices */
