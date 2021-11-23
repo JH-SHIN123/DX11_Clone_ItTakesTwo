@@ -61,13 +61,13 @@ _int CSplashScreen::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	m_fScreenAlpha += (_float)dTimeDelta;
+	m_fScreenAlpha += (_float)dTimeDelta * 0.6f;
 
 	if (1.f <= m_fScreenAlpha)
 		m_fScreenAlpha = 1.f;
 
-	m_vMaskUV.x += 0.0005f;
-	m_vMaskUV.y += 0.0005f;
+	m_vMaskUV.x -= (_float)dTimeDelta * 0.008f;
+	m_vMaskUV.y -= (_float)dTimeDelta * 0.008f;
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
@@ -83,10 +83,23 @@ HRESULT CSplashScreen::Render(RENDER_GROUP::Enum eGroup)
 	
 	if (1 == m_iOption)
 	{
+		m_pVIBuffer_RectCom->Set_Variable("g_vScreenMaskUV", &m_vMaskUV, sizeof(_float2));
 		m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(0));
 		m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseMaskTexture", m_pSubTextureCom->Get_ShaderResourceView(0));
+
+		_int iCioror = 0;
+		m_pVIBuffer_RectCom->Set_Variable("g_iColorOption", &iCioror, 4);
+		m_pVIBuffer_RectCom->Render(10);
+		++iCioror;
+
+		m_pVIBuffer_RectCom->Set_Variable("g_iColorOption", &iCioror, 4);
+		m_pVIBuffer_RectCom->Render(10);
+
+		++iCioror;
+		m_pVIBuffer_RectCom->Set_Variable("g_iColorOption", &iCioror, 4);
+		m_pVIBuffer_RectCom->Render(10);
+
 	}
-	m_pVIBuffer_RectCom->Render(10);
 
 	return S_OK;
 }
@@ -110,7 +123,6 @@ HRESULT CSplashScreen::Ready_Component()
 	{
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_LOGO, TEXT("SplashScreen"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom), E_FAIL);
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_LOGO, TEXT("SplashScreen_Mask"), TEXT("Com_SubTexture"), (CComponent**)&m_pSubTextureCom), E_FAIL);
-
 	}
 
 	return S_OK;

@@ -24,6 +24,7 @@ float	g_fHeartTime;
 float	g_fScreenAlpha;
 float2  g_UV;
 float2  g_vScreenMaskUV;
+
  
 sampler	DiffuseSampler = sampler_state
 {
@@ -86,6 +87,21 @@ VS_OUT	VS_RespawnCirle(VS_IN In)
 }
 
 VS_OUT	VS_LOGO(VS_IN In)
+{
+	VS_OUT			Out = (VS_OUT)0;
+
+	matrix	matWV, matWVP;
+
+	matWV = mul(g_UIWorldMatrix, g_UIViewMatrix);
+	matWVP = mul(matWV, g_UIProjMatrix);
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+	Out.vTexUV = In.vTexUV;
+
+	return Out;
+}
+
+VS_OUT	VS_LOGOMask(VS_IN In)
 {
 	VS_OUT			Out = (VS_OUT)0;
 
@@ -364,20 +380,9 @@ PS_OUT PS_SplashScreen(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-	
-	//if (Out.vColor.r >= 0.8f)
-	//	In.vTexUV.x += g_vScreenMaskUV.x;
-	//else if (Out.vColor.g >= 0.8f)
-	//	In.vTexUV.y -= g_vScreenMaskUV.y;
-	//else if (Out.vColor.b >= 0.8f)
-	//	In.vTexUV.x -= g_vScreenMaskUV.x;
-
-	//vector Mask = g_DiffuseMaskTexture.Sample(DiffuseSampler, In.vTexUV);
 
 	if(0.999f < Out.vColor.a)
 		Out.vColor.a = g_fScreenAlpha;
-
-	//Out.vColor.rgb += Mask;
 
 	return Out;
 }
@@ -387,12 +392,39 @@ PS_OUT PS_SplashScreenMask(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	Out.vColor = g_DiffuseMaskTexture.Sample(DiffuseSampler, In.vTexUV);
 	vector Screen = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-	
-	if (Out.vColor.r <= 0.5f && Out.vColor.g <= 0.5f && Out.vColor.b <= 0.5f)
+	float2 vWeight = { g_vScreenMaskUV.x,g_vScreenMaskUV.y };
+
+	if (0 == g_iColorOption)
+	{
+		In.vTexUV.x += vWeight.x;
+		In.vTexUV.y += vWeight.y;
+	}
+	else if (1 == g_iColorOption)
+	{
+		In.vTexUV.x -= vWeight.x;
+		In.vTexUV.y += vWeight.y;
+	}
+	else
+	{
+		In.vTexUV.x -= vWeight.x;
+		In.vTexUV.y -= vWeight.y;
+	}
+
+	vector vColor = g_DiffuseMaskTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (vColor.r <= 0.1f && vColor.g <= 0.1f && vColor.b <= 0.1f)
 		discard;
 
+	if (Screen.a == 0.f)
+		discard;
+
+	if (vColor.r > 0.1f && 0 == g_iColorOption)
+		Out.vColor.rgba = 1.f;
+	else if (vColor.g > 0.1f && 1 == g_iColorOption)
+		Out.vColor.rgba = 1.f;
+	else if (vColor.b > 0.1f && 2 == g_iColorOption)
+		Out.vColor.rgba = 1.f;
 
 	return Out;
 }
@@ -517,7 +549,7 @@ technique11 DefaultTechnique
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_LOGO();
+		VertexShader = compile vs_5_0 VS_LOGOMask();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_SplashScreenMask();
 	}
