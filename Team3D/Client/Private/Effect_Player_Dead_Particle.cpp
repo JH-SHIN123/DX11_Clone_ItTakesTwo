@@ -16,7 +16,7 @@ HRESULT CEffect_Player_Dead_Particle::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-
+	//TEst
 	return S_OK;
 }
 
