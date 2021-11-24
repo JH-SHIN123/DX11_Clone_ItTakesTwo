@@ -199,7 +199,12 @@ struct PS_OUT
 	vector	vEmissive			: SV_TARGET5;
 };
 
-PS_OUT	PS_MAIN(PS_IN In)
+struct PS_OUT_ALPHA
+{
+	vector	vDiffuse			: SV_TARGET0;
+};
+
+PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
@@ -231,9 +236,9 @@ PS_OUT	PS_MAIN(PS_IN In)
 	return Out;
 }
 
-PS_OUT	PS_MAIN_ALPHA(PS_IN In, uniform bool isOpaque)
+PS_OUT_ALPHA PS_MAIN_ALPHA(PS_IN In, uniform bool isOpaque)
 {
-	PS_OUT Out = (PS_OUT)0;
+	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vDiffuse = vMtrlDiffuse * g_Material.vDiffuse;
 	if (true == isOpaque) Out.vDiffuse.w = 1.f;
