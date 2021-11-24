@@ -28,6 +28,10 @@ public:
 	virtual void Set_ScaleEffect() override;
 
 private:
+	_bool							m_IsRender = false;
+	_float2							m_vFontPos;
+
+private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 
 private:

@@ -37,7 +37,6 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
-<<<<<<< HEAD
 	UI_Create(Cody, PC_Mouse_Reduction);
 	UI_Create(Cody, PC_Mouse_Enlargement);
 	UI_Create(Cody, PlayerMarker);
@@ -47,19 +46,6 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	UI_Create(May, StickIcon);
 
 	//UI_Create(Cody, InputButton_InterActive);
-
-=======
- 	UI_Create(Cody, PC_Mouse_Reduction);
- 	UI_Create(Cody, PC_Mouse_Enlargement);
- 	UI_Create(Default, LoadingBook);
- 	UI_Create(May, Arrowkeys_Side);
- 	UI_Create(May, StickIcon);
- 
- 	UI_Create(Cody, PlayerMarker);
- 
- 	UI_Create(Cody, InputButton_InterActive);
-	 
->>>>>>> main
 
 	return S_OK;
 }
@@ -143,17 +129,12 @@ _int CCody::Tick(_double dTimeDelta)
 	}
 	Ground_Pound(dTimeDelta);
 
-<<<<<<< HEAD
 	CMay* pMay = (CMay*)DATABASE->GetMay();
 	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 
 	//Å×½ºÆ®////////////////////////////////////////////////
 	if(m_pGameInstance->Key_Down(DIK_3))
 		UI_Create(Cody, RespawnCircle);
-=======
-	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
->>>>>>> main
 
 	if (m_pGameInstance->Key_Down(DIK_4))
 		UI_Delete(Cody, RespawnCircle);

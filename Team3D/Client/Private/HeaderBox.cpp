@@ -37,6 +37,9 @@ HRESULT CHeaderBox::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
+	m_vFontPos.x = m_UIDesc.vPos.x - 100.f;
+	m_vFontPos.y = m_UIDesc.vPos.y;
+
 	return S_OK;
 }
 
@@ -64,7 +67,8 @@ HRESULT CHeaderBox::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(10);
+	if(true == m_IsRender)
+		m_pVIBuffer_RectCom->Render(11);
 
 	Render_Font();
 
@@ -84,24 +88,45 @@ void CHeaderBox::Set_ScaleEffect()
 
 void CHeaderBox::Render_Font()
 {
-	//CUI_Generator::FONTDESC		tFontDesc;
+	CUI_Generator::FONTDESC		tFontDesc;
 
-	//if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_F")))
-	//{
-	//	tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
-	//	tFontDesc.vScale = { 40.f, 50.f };
-	//	tFontDesc.fInterval = 0.f;
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Start")))
+	{
+ 		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
+		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.fInterval = 0.f;
+		tFontDesc.iShaderPassNum = 1;
 
-	//	UI_Generator->Render_Font(TEXT("F"), tFontDesc, m_ePlayerID);
-	//}
-	//else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_E")))
-	//{
-	//	tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
-	//	tFontDesc.vScale = { m_UIDesc.vScale.x / 2.f, m_UIDesc.vScale.y / 1.2f };
-	//	tFontDesc.fInterval = 0.f;
+		UI_Generator->Render_Font(TEXT("게임 시작"), tFontDesc, Player::Default);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Option")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
+		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.fInterval = 0.f;
+		tFontDesc.iShaderPassNum = 1;
 
-	//	UI_Generator->Render_Font(TEXT("E"), tFontDesc, m_ePlayerID);
-	//}
+		UI_Generator->Render_Font(TEXT("옵션"), tFontDesc, Player::Default);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Creator")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
+		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.fInterval = 0.f;
+		tFontDesc.iShaderPassNum = 1;
+
+		UI_Generator->Render_Font(TEXT("제작진"), tFontDesc, Player::Default);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Exit")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
+		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.fInterval = 0.f;
+		tFontDesc.iShaderPassNum = 1;
+
+		UI_Generator->Render_Font(TEXT("종료"), tFontDesc, Player::Default);
+	}
+
 }
 
 HRESULT CHeaderBox::Ready_Component()

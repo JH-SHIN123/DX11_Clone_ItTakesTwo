@@ -64,7 +64,7 @@ HRESULT CMenuScreen::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(10);
+	m_pVIBuffer_RectCom->Render(11);
 
 	Render_Font();
 

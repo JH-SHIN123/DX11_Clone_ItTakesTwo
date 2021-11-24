@@ -89,7 +89,7 @@ private:
 	HRESULT Create_Logo();
 
 private:
-	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag, void* pArg = nullptr);
+	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag, Level::ID eLevel, void* pArg = nullptr);
 
 public:
 	virtual void Free() override;

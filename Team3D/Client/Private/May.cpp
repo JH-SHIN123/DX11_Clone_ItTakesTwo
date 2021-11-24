@@ -136,12 +136,9 @@ _int CMay::Tick(_double dTimeDelta)
 	}
 	Ground_Pound(dTimeDelta);
 
-<<<<<<< HEAD
 	CCody* pCody = (CCody*)DATABASE->GetCody();
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-=======
-	//UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
->>>>>>> main
+
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);

@@ -1,30 +1,22 @@
 #include "stdafx.h"
 #include "..\Public\UI_Generator.h"
 
-<<<<<<< HEAD
 #include "Pipeline.h"
 #include "UISprite.h"
 #include "Portrait.h"
 #include "HeaderBox.h"
 #include "MenuScreen.h"
 #include "AlphaScreen.h"
-=======
 #include "GameInstance.h"
-#include "InputButton_Frame.h"
->>>>>>> main
 #include "InputButton.h"
 #include "SplashScreen.h"
 #include "PlayerMarker.h"
 #include "RespawnCircle.h"
 #include "PC_MouseButton.h"
 #include "Arrowkeys_Fill.h"
-<<<<<<< HEAD
 #include "ButtonIndicator.h"
 #include "InputButton_Frame.h"
 #include "Arrowkeys_Outline.h"
-=======
-#include "UISprite.h"
->>>>>>> main
 
 IMPLEMENT_SINGLETON(CUI_Generator)
 
@@ -124,87 +116,87 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 	switch (eTrigger)
 	{
 	case UI::InputButton_Dot:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Dot"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC);
 	    break;  
 	case UI::InputButton_InterActive:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_F"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_F"), Level::LEVEL_STATIC);
 		break;
 	case UI::InputButton_PS_InterActive:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Triangle"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Triangle"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Triangle"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Triangle"), Level::LEVEL_STATIC);
 		break;
 	case UI::PC_Mouse_Reduction:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("PC_Mouse_Reduction"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("PC_Mouse_Reduction"), Level::LEVEL_STATIC);
 		break;
 	case UI::PC_Mouse_Enlargement:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("PC_Mouse_Enlargement"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("PC_Mouse_Enlargement"), Level::LEVEL_STATIC);
 		break;
 	case UI::InputButton_Cancle:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Cancle"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Cancle"), Level::LEVEL_STATIC);
 		break;
 	case UI::InputButton_PS_Cancle:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Cancle"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Cancle"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Cancle"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Cancle"), Level::LEVEL_STATIC);
 		break;
 	case UI::InputButton_Up:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Up"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Up"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Up"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Up"), Level::LEVEL_STATIC);
 		break;
 	case UI::InputButton_Down:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Down"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Down"), Level::LEVEL_STATIC);
 		break;
 	case UI::InputButton_PS_Up:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Up"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Up"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Up"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Up"), Level::LEVEL_STATIC);
 		break;
 	case UI::InputButton_PS_Down:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Down"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Down"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Down"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Down"), Level::LEVEL_STATIC);
 		break;
 	case UI::PlayerMarker:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("PlayerMarker"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("PlayerMarker"), Level::LEVEL_STATIC);
 		break;
 	case UI::InputButton_PS_R1:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R1"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R1"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R1"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R1"), Level::LEVEL_STATIC);
 		break;
 	case UI::Arrowkeys_Side:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Outline"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Left"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Right"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Outline"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Left"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Right"), Level::LEVEL_STATIC);
 		break;
 	case UI::Arrowkeys_UpDown:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Outline"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Up"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Down"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Outline"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Up"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Down"), Level::LEVEL_STATIC);
 		break;
 	case UI::InputButton_PS_L2:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_L2"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_L2"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_L2"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_L2"), Level::LEVEL_STATIC);
 		break;
 	case UI::InputButton_PS_R2:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R2"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R2"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R2"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R2"), Level::LEVEL_STATIC);
 		break;
 	case UI::StickIcon:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("StickIcon"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("StickIcon"), Level::LEVEL_STATIC);
 		break;
 	case UI::LoadingBook:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("LoadingBook"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("LoadingBook"), Level::LEVEL_STATIC);
 		break;
 	case UI::Portrait_Cody:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Portrait_Cody"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Portrait_Cody"), Level::LEVEL_STATIC);
 		break;
 	case UI::Portrait_May:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Portrait_May"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Portrait_May"), Level::LEVEL_STATIC);
 		break;
 	case UI::RespawnCircle:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_E"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("ButtonIndicator"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), &iOption);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_E"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("ButtonIndicator"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, &iOption);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC);
 		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
@@ -646,7 +638,7 @@ HRESULT CUI_Generator::Add_Prototype_LogoTexture()
 }
 
 
-HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, void* pArg)
+HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void* pArg)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
@@ -654,7 +646,7 @@ HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, con
 	CGameObject* pGameObject = nullptr;
 	CUIObject* pUIObject = nullptr;
 
-	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, PrototypeTag, pArg, &pGameObject), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(eLevel, TEXT("Layer_UI"), eLevel, PrototypeTag, pArg, &pGameObject), E_FAIL);
 	pUIObject = static_cast<CUIObject*>(pGameObject);
 	pUIObject->Set_PlayerID(ePlayer);
 	m_vecUIOBjects[ePlayer][eTrigger].push_back(pUIObject);
@@ -683,11 +675,11 @@ void CUI_Generator::Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger)
 
 HRESULT CUI_Generator::Create_Logo()
 {
-	SetUp_Clone(Player::Default, UI::MenuScreen, TEXT("MenuBackScreen"));
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Start"));
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Option"));
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Creator"));
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Exit"));
+	SetUp_Clone(Player::Default, UI::MenuScreen, TEXT("MenuBackScreen"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Start"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Option"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Creator"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Exit"), Level::LEVEL_LOGO);
 
 	return S_OK;
 }

@@ -98,7 +98,7 @@ HRESULT CUIObject::Ready_Component()
 
 HRESULT CUIObject::Set_UIDefaultVariables_Perspective(CVIBuffer * pVIBuffer)
 {
-	_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubViewMatrix, SubProjMatrix;
+	_matrix WorldMatrix, ViewMatrix, ProjMatrix;
 
 	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	ViewMatrix = XMMatrixIdentity();

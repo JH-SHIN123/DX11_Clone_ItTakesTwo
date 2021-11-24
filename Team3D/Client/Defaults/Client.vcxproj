@@ -189,13 +189,10 @@
     <ClInclude Include="..\Public\AlphaScreen.h" />
     <ClInclude Include="..\Public\Arrowkeys_Fill.h" />
     <ClInclude Include="..\Public\Arrowkeys_Outline.h" />
-<<<<<<< HEAD
     <ClInclude Include="..\Public\ButtonIndicator.h" />
-=======
     <ClInclude Include="..\Public\CameraActor.h" />
     <ClInclude Include="..\Public\CameraBehaviorCallback.h" />
     <ClInclude Include="..\Public\CameraFilterCallback.h" />
->>>>>>> main
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
@@ -218,11 +215,8 @@
     <ClInclude Include="..\public\Effect_Landing_Smoke.h" />
     <ClInclude Include="..\Public\Cody.h" />
     <ClInclude Include="..\public\DataStorage.h" />
-<<<<<<< HEAD
     <ClInclude Include="..\Public\HeaderBox.h" />
-=======
     <ClInclude Include="..\Public\Environment_Generator.h" />
->>>>>>> main
     <ClInclude Include="..\Public\InputButton.h" />
     <ClInclude Include="..\Public\InputButton_Frame.h" />
     <ClInclude Include="..\Public\Instancing_Env.h" />
@@ -266,7 +260,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClCompile Include="..\Private\AlphaScreen.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
@@ -275,7 +268,6 @@
     <ClCompile Include="..\Private\Cody.cpp" />
     <ClCompile Include="..\private\DataStorage.cpp" />
     <ClCompile Include="..\Private\HeaderBox.cpp" />
-=======
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
     <ClCompile Include="..\private\Effect_Dead_Particle_Fire.cpp" />
@@ -300,7 +292,6 @@
     <ClCompile Include="..\Private\Cody.cpp" />
     <ClCompile Include="..\private\DataStorage.cpp" />
     <ClCompile Include="..\Private\Environment_Generator.cpp" />
->>>>>>> main
     <ClCompile Include="..\Private\InputButton.cpp" />
     <ClCompile Include="..\Private\InputButton_Frame.cpp" />
     <ClCompile Include="..\Private\Instancing_Env.cpp" />

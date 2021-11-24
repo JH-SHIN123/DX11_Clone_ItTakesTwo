@@ -174,7 +174,6 @@ PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
 	return Out;
@@ -564,7 +563,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_SplashScreenMask();
 	}
 
-	// 10
+	// 11
 	pass Menu
 	{
 		SetRasterizerState(Rasterizer_Solid);
