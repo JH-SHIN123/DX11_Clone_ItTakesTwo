@@ -33,13 +33,16 @@ HRESULT CMainApp::Run_App()
 
 	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
 
-	if (m_dFrameAcc >= 1.0 / 200.0)
+	if (m_dFrameAcc >= 1.0 / 60.0)
 	{
 		m_dFrameAcc = 0.0;
 
 		_double dTimeDelta = m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
 
-		if (Tick(dTimeDelta) & 0x80000000)
+		//m_dTimeDelta = dTimeDelta;
+		m_dTimeDelta = 0.016666666666666666;
+
+		if (Tick(m_dTimeDelta) & 0x80000000)
 			return E_FAIL;
 
 		if (FAILED(Render()))
@@ -139,6 +142,7 @@ void CMainApp::Free()
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pGameInstance);
+
 
 	UI_Generator->DestroyInstance();
 	CDataStorage::GetInstance()->DestroyInstance();

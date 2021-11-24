@@ -29,6 +29,7 @@ HRESULT CComponent_Manager::Add_Component_Prototype(_uint iLevelIndex, const _tc
 	NOT_NULL_CHECK_RETURN(pPrototype, E_FAIL);
 
 	m_pPrototypes[iLevelIndex].emplace(pTag, pComponent);
+
 	g_mutex.unlock();
 
 	return S_OK;

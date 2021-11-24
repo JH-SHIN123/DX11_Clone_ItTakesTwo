@@ -209,7 +209,7 @@ void CCody::KeyInput(_double TimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_3)) /* 2스테이지 입구 */
 		m_pActorCom->Set_Position(XMVectorSet(620.f, 760.f, 195.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_4)) /* 2스테이지 */
-		m_pActorCom->Set_Position(XMVectorSet(960.f, 710.f, 193.f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(960.f, 720.f, 193.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_5))/* 3스테이지 */
 		m_pActorCom->Set_Position(XMVectorSet(-610.f, 760.f, 195.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_6))/* 3층 */
