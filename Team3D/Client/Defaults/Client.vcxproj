@@ -260,7 +260,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\AlphaScreen.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />

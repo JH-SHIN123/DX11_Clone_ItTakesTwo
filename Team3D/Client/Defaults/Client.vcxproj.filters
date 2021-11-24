@@ -554,9 +554,6 @@
     <ClCompile Include="..\private\Effect_Generator.cpp">
       <Filter>95.Effect_Generator</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Character.cpp">
-      <Filter>02.GameObject\03.Character\99.Parent</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\May.cpp">
       <Filter>02.GameObject\03.Character\01.May</Filter>
     </ClCompile>
@@ -722,12 +719,12 @@
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp">
       <Filter>02.GameObject\05.UI\03.ArrowKeys\01.Outline</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\.cpp">
-      <Filter>02.GameObject\03.Character\99.Parent</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp">
       <Filter>96.DataStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Character.cpp">
+      <Filter>02.GameObject\03.Character\99.Parent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
