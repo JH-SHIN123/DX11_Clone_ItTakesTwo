@@ -112,8 +112,10 @@ public:
 #pragma endregion
 
 #pragma region Frustum
-	_bool	IsIn_WorldSpace(_fvector vPosition, _float fRadius = 0.f);
-	_bool	IsIn_LocalSpace(_fvector vPosition, _float fRadius = 0.f);
+	_bool	IsIn_WorldSpace_Main(_fvector vPosition, _float fRadius);
+	_bool	IsIn_WorldSpace_Sub(_fvector vPosition, _float fRadius);
+	_bool	IsIn_LocalSpace_Main(_fvector vPosition, _float fRadius);
+	_bool	IsIn_LocalSpace_Sub(_fvector vPosition, _float fRadius);
 #pragma endregion
 
 private:

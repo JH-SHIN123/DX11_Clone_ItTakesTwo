@@ -96,7 +96,7 @@ HRESULT CModel_Instance::Set_ShaderResourceView(const char * pConstantName, ID3D
 	ID3DX11EffectShaderResourceVariable* pVariable = m_pEffect->GetVariableByName(pConstantName)->AsShaderResource();
 	NULL_CHECK_RETURN(pVariable, E_FAIL);
 
-	return pVariable->SetResource(pShaderResourceView);
+	return pVariable->SetResource(pShaderResourceView); 
 }
 
 HRESULT CModel_Instance::Set_ShaderResourceView(const char * pConstantName, _uint iMaterialIndex, aiTextureType eTextureType, _uint iTextureIndex)
@@ -274,19 +274,19 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 
 	/* For.Culling */
-	_uint iRenderCount = 0;
+	//_uint iRenderCount = 0;
 
-	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
-	{
-		if (CFrustum::GetInstance()->IsIn_WorldSpace(MH_GetXMPosition(m_pWorldMatrices[iIndex]), m_fCullingRadius))
-			m_RealTimeMatrices[iRenderCount++] = m_pWorldMatrices[iIndex];
-	}
+	//for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+	//{
+	//	if (CFrustum::GetInstance()->IsIn_WorldSpace(MH_GetXMPosition(m_pWorldMatrices[iIndex]), m_fCullingRadius))
+	//		m_RealTimeMatrices[iRenderCount++] = m_pWorldMatrices[iIndex];
+	//}
 
 	/* For.UpdateBuffer */
 	D3D11_MAPPED_SUBRESOURCE MappedSubResource;
 
 	m_pDeviceContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedSubResource);
-	memcpy(MappedSubResource.pData, &m_RealTimeMatrices[0], sizeof(VTXMATRIX) * iRenderCount);
+	memcpy(MappedSubResource.pData, &m_pWorldMatrices[0], sizeof(VTXMATRIX) * m_iInstanceCount);
 	m_pDeviceContext->Unmap(m_pVBInstance, 0);
 
 	/* For.Render */
@@ -316,7 +316,7 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _
 		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
 		{
 			if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
-				m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
+				m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), m_iInstanceCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
 		}
 	}
 
@@ -328,11 +328,11 @@ _uint CModel_Instance::Frustum_Culling()
 	/* For.Culling */
 	_uint iRenderCount = 0;
 
-	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
-	{
-		if (CFrustum::GetInstance()->IsIn_WorldSpace(MH_GetXMPosition(m_pWorldMatrices[iIndex]), m_fCullingRadius))
-			m_RealTimeMatrices[iRenderCount++] = m_pWorldMatrices[iIndex];
-	}
+	//for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+	//{
+	//	if (CFrustum::GetInstance()->IsIn_WorldSpace(MH_GetXMPosition(m_pWorldMatrices[iIndex]), m_fCullingRadius))
+	//		m_RealTimeMatrices[iRenderCount++] = m_pWorldMatrices[iIndex];
+	//}
 
 	return iRenderCount;
 }

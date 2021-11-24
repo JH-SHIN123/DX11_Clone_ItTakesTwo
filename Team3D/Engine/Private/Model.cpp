@@ -10,6 +10,7 @@
 #include "Graphic_Device.h"
 #include "Shadow_Manager.h"
 #include "RenderTarget_Manager.h"
+#include "Frustum.h"
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CComponent		(pDevice, pDeviceContext)
@@ -218,6 +219,7 @@ HRESULT CModel::Set_DefaultVariables_Perspective(_fmatrix WorldMatrix)
 	CPipeline* pPipeline = CPipeline::GetInstance();
 	NULL_CHECK_RETURN(pPipeline, E_FAIL);
 
+	Set_Variable("g_iViewportDrawInfo", &m_iViewportDrawInfo, sizeof(_uint));
 	Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
 	Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINVIEW)), sizeof(_matrix));
 	Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINPROJ)), sizeof(_matrix));
@@ -474,6 +476,21 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 	}
 
 	return S_OK;
+}
+
+_uint CModel::Culling(_fvector vPosition, _float fCullingRadius)
+{
+	CFrustum* pFrustum = CFrustum::GetInstance();
+	NULL_CHECK_RETURN(pFrustum, 0);
+
+	m_iViewportDrawInfo = 0;
+
+	if (pFrustum->IsIn_WorldSpace_Main(vPosition, fCullingRadius))
+		m_iViewportDrawInfo += 1;
+	if (pFrustum->IsIn_WorldSpace_Sub(vPosition, fCullingRadius))
+		m_iViewportDrawInfo += 2;
+
+	return m_iViewportDrawInfo;
 }
 
 HRESULT CModel::Bind_GBuffers()

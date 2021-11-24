@@ -383,15 +383,25 @@ const _float CGameInstance::Get_SubCamFar() const
 #pragma endregion
 
 #pragma region Frustum
-_bool CGameInstance::IsIn_WorldSpace(_fvector vPosition, _float fRadius)
+_bool CGameInstance::IsIn_WorldSpace_Main(_fvector vPosition, _float fRadius)
 {
 	NULL_CHECK_RETURN(m_pFrustum, false);
-	return m_pFrustum->IsIn_WorldSpace(vPosition, fRadius);
+	return m_pFrustum->IsIn_WorldSpace_Main(vPosition, fRadius);
 }
-_bool CGameInstance::IsIn_LocalSpace(_fvector vPosition, _float fRadius)
+_bool CGameInstance::IsIn_WorldSpace_Sub(_fvector vPosition, _float fRadius)
 {
 	NULL_CHECK_RETURN(m_pFrustum, false);
-	return m_pFrustum->IsIn_LocalSpace(vPosition, fRadius);
+	return m_pFrustum->IsIn_WorldSpace_Sub(vPosition, fRadius);
+}
+_bool CGameInstance::IsIn_LocalSpace_Main(_fvector vPosition, _float fRadius)
+{
+	NULL_CHECK_RETURN(m_pFrustum, false);
+	return m_pFrustum->IsIn_LocalSpace_Main(vPosition, fRadius);
+}
+_bool CGameInstance::IsIn_LocalSpace_Sub(_fvector vPosition, _float fRadius)
+{
+	NULL_CHECK_RETURN(m_pFrustum, false);
+	return m_pFrustum->IsIn_LocalSpace_Sub(vPosition, fRadius);
 }
 #pragma endregion
 

@@ -69,6 +69,7 @@ public:
 	HRESULT Add_LerpInfo(_uint iCurAnimIndex, _uint iNextAnimIndex, _bool bGoingToLerp, _float fLerpSpeed = 5.f);
 	HRESULT	Update_Animation(_double dTimeDelta);
 	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END); /* ShadowWrite시, 텍스쳐 세팅안함. */
+	_uint	Culling(_fvector vPosition, _float fCullingRadius);
 
 public:
 	HRESULT Bind_GBuffers();
@@ -126,6 +127,8 @@ private:
 	_uint						m_IsBindMaterials[AI_TEXTURE_TYPE_MAX];
 	/* For.MultiRenderGroup */
 	_bool						m_bMultiRenderGroup			= false;
+	/* For.Draw */
+	_uint						m_iViewportDrawInfo			= 0;
 private:
 	HRESULT	Sort_MeshesByMaterial();
 	HRESULT	Set_CenterBone(const char* pCenterBoneName = "");
