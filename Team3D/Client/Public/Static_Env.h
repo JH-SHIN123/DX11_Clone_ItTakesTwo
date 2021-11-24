@@ -25,6 +25,7 @@ public:/* Struct */
 		_float4x4		WorldMatrix;
 		_tchar			szModelTag[MAX_PATH];
 		_uint			iMaterialIndex;
+		_float			fCullRadius;
 		GameID::Enum	eGameID;
 
 	}STATIC_ENV_DESC;
@@ -41,8 +42,8 @@ private:
 	CTransform*			m_pTransformCom = nullptr;
 	CRenderer*			m_pRendererCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
-
 	CStaticActor*		m_pStaticActorCom = nullptr;
+
 	STATIC_ENV_DESC		m_Static_Env_Desc;
 
 public:

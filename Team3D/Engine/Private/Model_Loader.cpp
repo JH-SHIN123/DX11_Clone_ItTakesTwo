@@ -85,22 +85,27 @@ HRESULT CModel_Loader::Load_ModelFromFile(ID3D11Device * pDevice, ID3D11DeviceCo
 			if (true == bCheck)
 			{
 				_tchar szMaterialFullPath[MAX_PATH] = TEXT("");
+				_tchar szMaterialFileName[MAX_PATH] = TEXT("");
 				_tchar szMaterialName[MAX_PATH] = TEXT("");
 				_tchar szExt[MAX_PATH] = TEXT("");
 
-				ReadFile(hFile, szMaterialName, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
-				_wsplitpath_s(szMaterialName, nullptr, 0, nullptr, 0, nullptr, 0, szExt, MAX_PATH);
+				ReadFile(hFile, szMaterialFileName, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+				_wsplitpath_s(szMaterialFileName, nullptr, 0, nullptr, 0, szMaterialName, MAX_PATH, szExt, MAX_PATH);
 
 				lstrcpy(szMaterialFullPath, szBasePath);
 				lstrcat(szMaterialFullPath, TEXT("Material/"));
+				//lstrcat(szMaterialFullPath, szMaterialFileName);
 				lstrcat(szMaterialFullPath, szMaterialName);
+				lstrcat(szMaterialFullPath, TEXT(".tga"));
 
-				if (!lstrcmp(szExt, TEXT(".dds")))
-					pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_DDS, szMaterialFullPath, iMaterialSetCount, iTextureType);
-				else if (!lstrcmp(szExt, TEXT(".tga")))
-					pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_TGA, szMaterialFullPath, iMaterialSetCount, iTextureType);
-				else
-					pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, szMaterialFullPath, iMaterialSetCount, iTextureType);
+				pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_TGA, szMaterialFullPath, iMaterialSetCount, iTextureType);
+
+				//if (!lstrcmp(szExt, TEXT(".dds")))
+				//	pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_DDS, szMaterialFullPath, iMaterialSetCount, iTextureType);
+				//else if (!lstrcmp(szExt, TEXT(".tga")))
+				//	pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_TGA, szMaterialFullPath, iMaterialSetCount, iTextureType);
+				//else
+				//	pMaterial->pMaterialTexture[iTextureType] = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, szMaterialFullPath, iMaterialSetCount, iTextureType);
 			}
 		}
 		Materials.emplace_back(pMaterial);

@@ -1,4 +1,7 @@
 #include "..\public\Component_Manager.h"
+#include <mutex>
+
+std::mutex g_mutex;
 
 IMPLEMENT_SINGLETON(CComponent_Manager)
 
@@ -14,6 +17,8 @@ HRESULT CComponent_Manager::Reserve_Container(_uint iLevelCount)
 
 HRESULT CComponent_Manager::Add_Component_Prototype(_uint iLevelIndex, const _tchar * const pPrototypeTag, CComponent * pComponent)
 {
+	g_mutex.lock();
+
 	NULL_CHECK_RETURN(pComponent, E_FAIL);
 	NULL_CHECK_RETURN(iLevelIndex < m_iLevelCount, E_FAIL);
 
@@ -24,6 +29,7 @@ HRESULT CComponent_Manager::Add_Component_Prototype(_uint iLevelIndex, const _tc
 	NOT_NULL_CHECK_RETURN(pPrototype, E_FAIL);
 
 	m_pPrototypes[iLevelIndex].emplace(pTag, pComponent);
+	g_mutex.unlock();
 
 	return S_OK;
 }

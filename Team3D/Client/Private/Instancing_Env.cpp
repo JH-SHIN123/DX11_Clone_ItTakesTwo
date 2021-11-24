@@ -54,6 +54,10 @@ HRESULT CInstancing_Env::Render(RENDER_GROUP::Enum eGroup)
 
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
+	m_Ins_Env_Desc.szModelTag;
+
+	int ia = 0;
+
 	m_pModelCom->Set_DefaultVariables_Perspective();
 	m_pModelCom->Set_DefaultVariables_Shadow();
 
