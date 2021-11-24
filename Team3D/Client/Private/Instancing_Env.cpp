@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Instancing_Env.h"
 
-
 CInstancing_Env::CInstancing_Env(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -25,7 +24,7 @@ HRESULT CInstancing_Env::NativeConstruct(void * pArg)
 
 	if (nullptr != pArg)
 		memcpy(&m_Ins_Env_Desc, pArg, sizeof(INS_ENV_DESC));
-	this;
+	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_Ins_Env_Desc.szModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom, &m_Ins_Env_Desc.Instancing_Arg), E_FAIL);
 
@@ -43,7 +42,7 @@ _int CInstancing_Env::Late_Tick(_double TimeDelta)
 {
 	CGameObject::Late_Tick(TimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
 	return NO_EVENT;
 }
@@ -53,10 +52,6 @@ HRESULT CInstancing_Env::Render(RENDER_GROUP::Enum eGroup)
 	CGameObject::Render(eGroup);
 
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-
-	m_Ins_Env_Desc.szModelTag;
-
-	int ia = 0;
 
 	m_pModelCom->Set_DefaultVariables_Perspective();
 	m_pModelCom->Set_DefaultVariables_Shadow();
