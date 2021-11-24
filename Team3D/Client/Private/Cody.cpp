@@ -117,9 +117,21 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Bhv_GroundPound_Start, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Bhv_GroundPound_Start, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Sprint, ANI_C_SprintTurnAround, true, 20.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd, ANI_C_SprintTurnAround, true, 20.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd_Exhausted, ANI_C_SprintTurnAround, true, 20.f);
+
+
+
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jump_Land_Jog, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_MH, true, 10.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_180R, true);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_180R, true, 2.f);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Start_Fwd, ANI_C_Jump_Falling, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd, ANI_C_Jump_Falling, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jog, ANI_C_Jump_Falling, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Falling, ANI_C_Jump_Land, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Jump_Land, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Jump_Land_Jog, false);
 	//ANI_C_Roll_Start, ANI_C_Roll_Stop;
 	return;
 }
@@ -146,6 +158,7 @@ _int CCody::Tick(_double dTimeDelta)
 		Push_Battery(dTimeDelta);
 		Rotate_Valve(dTimeDelta);
 		In_GravityPipe(dTimeDelta);
+		Hit_Planet(dTimeDelta);
 	}
 	else
 	{
@@ -289,45 +302,49 @@ void CCody::KeyInput(_double dTimeDelta)
 			{
 				if (m_pGameInstance->Key_Pressing(DIK_A) && m_iSavedKeyPress == RIGHT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 				{
-					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted)) && m_IsTurnAround == false)
+					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted) /*|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash*/) && m_IsTurnAround == false)
 					{
 						m_fSprintAcceleration = 15.f;
 						bMove[1] = !bMove[1];
 						m_pModelCom->Set_Animation(ANI_C_SprintTurnAround);
 						m_IsTurnAround = true;
+						m_iSavedKeyPress = LEFT;
 						return;
 					}
 				}
 				if (m_pGameInstance->Key_Pressing(DIK_D) && m_iSavedKeyPress == LEFT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 				{
-					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted)) && m_IsTurnAround == false)
+					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted) /*|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash*/) && m_IsTurnAround == false)
 					{
 						m_fSprintAcceleration = 15.f;
 						bMove[1] = !bMove[1];
 						m_pModelCom->Set_Animation(ANI_C_SprintTurnAround);
 						m_IsTurnAround = true;
+						m_iSavedKeyPress = RIGHT;
 						return;
 					}
 				}
 				if (m_pGameInstance->Key_Pressing(DIK_W) && m_iSavedKeyPress == DOWN)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 				{
-					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted)) && m_IsTurnAround == false)
+					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted) /*|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash*/) && m_IsTurnAround == false)
 					{
 						m_fSprintAcceleration = 15.f;
 						bMove[0] = !bMove[0];
 						m_pModelCom->Set_Animation(ANI_C_SprintTurnAround);
 						m_IsTurnAround = true;
+						m_iSavedKeyPress = UP;
 						return;
 					}
 				}
 				if (m_pGameInstance->Key_Pressing(DIK_S) && m_iSavedKeyPress == UP)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 				{
-					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted)) && m_IsTurnAround == false)
+					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted) || m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash) && m_IsTurnAround == false)
 					{
 						m_fSprintAcceleration = 15.f;
 						bMove[0] = !bMove[0];
 						m_pModelCom->Set_Animation(ANI_C_SprintTurnAround);
 						m_IsTurnAround = true;
+						m_iSavedKeyPress = DOWN;
 						return;
 					}
 				}
@@ -1279,10 +1296,30 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			}
 			m_IsInGravityPipe = true;
 		}
+		if (m_eTargetGameID == GameID::ePLANET && m_pGameInstance->Key_Down(DIK_E))
+		{
+			if (m_eCurPlayerSize == SIZE_SMALL)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ChagneSize_PlanetPush_Small);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			}
+			else if (m_eCurPlayerSize == SIZE_MEDIUM)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_PlanetPush_Medium);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			}
+			else if (m_eCurPlayerSize == SIZE_LARGE)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_PlanetPush_Large);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+				m_IsHitPlanet = true;
+			}
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe)
+	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
+		|| m_IsHitPlanet)
 		return true;
 
 	return false;
@@ -1295,7 +1332,8 @@ _bool CCody::Trigger_End(const _double dTimeDelta)
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Lever_Left
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Exit
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Valve_Rotate_MH
-		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_PlayRoom_ZeroGravity_MH))
+		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_PlayRoom_ZeroGravity_MH
+		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ChangeSize_PlanetPush_Large))
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 	}
@@ -1543,6 +1581,21 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 			m_pActorCom->Set_Gravity(-9.8f);
 			m_IsInGravityPipe = false;
 			m_pModelCom->Set_Animation(ANI_C_MH);
+		}
+	}
+}
+
+void CCody::Hit_Planet(const _double dTimeDelta)
+{
+	if (m_IsHitPlanet == true)
+	{
+		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
+
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_PlanetPush_Large))
+		{
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_IsHitPlanet = false;
+			m_IsCollide = false;
 		}
 	}
 }

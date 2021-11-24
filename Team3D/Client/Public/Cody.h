@@ -348,6 +348,9 @@ private:
 	_uint m_iRotateCount = 0;
 	_uint m_iValvePlayerName = Player::Cody;
 
+	/* For.Planet */
+	_bool m_IsHitPlanet = false;
+
 
 
 	_float3 m_vPoints[4] = {};
@@ -360,6 +363,7 @@ private:
 	void Push_Battery(const _double dTimeDelta);
 	void Rotate_Valve(const _double dTimeDelta);
 	void In_GravityPipe(const _double dTimeDelta);
+	void Hit_Planet(const _double dTimeDelta);
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);

@@ -253,6 +253,9 @@
     <Filter Include="02.GameObject\98.Interactive_Objects\06.SpaceValve">
       <UniqueIdentifier>{220b96f2-3a32-467d-a590-dc1504fa0045}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\07.BigPlanet">
+      <UniqueIdentifier>{cde19c6b-aaa3-40d0-8a31-9981b800428b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -456,6 +459,9 @@
     <ClInclude Include="..\Public\SpaceValve.h">
       <Filter>02.GameObject\98.Interactive_Objects\06.SpaceValve</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BigPlanet.h">
+      <Filter>02.GameObject\98.Interactive_Objects\07.BigPlanet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -631,6 +637,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\SpaceValve.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\06.SpaceValve</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BigPlanet.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\07.BigPlanet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
