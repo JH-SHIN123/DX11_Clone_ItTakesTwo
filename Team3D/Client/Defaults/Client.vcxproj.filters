@@ -61,6 +61,39 @@
     <Filter Include="01.Maps\99.Stage%28Test%29">
       <UniqueIdentifier>{112fc71b-614e-424a-b3ab-164e9e68c037}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Tree">
+      <UniqueIdentifier>{9b2ce05d-80d0-464d-8dce-5a75d40f42db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\01.Player">
+      <UniqueIdentifier>{b134e824-3c41-4f85-8703-7c00321fcce5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96.DataBase">
+      <UniqueIdentifier>{9d471ce0-e768-450b-9d91-9b678d9ec778}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle">
+      <UniqueIdentifier>{4034cc9d-5a92-4ac0-ac7d-533f2b23bdc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D">
+      <UniqueIdentifier>{bbc8ca2e-31e3-4a88-ba86-0624f18e40f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Effect_Generator">
+      <UniqueIdentifier>{1efce119-1cf1-4fab-92f2-6371aba8b2a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\99.Stage%28Test%29\03.Env">
+      <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point">
+      <UniqueIdentifier>{f1297b94-aa6d-4d1e-9f97-4bfe51b57a14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect">
+      <UniqueIdentifier>{2597e457-f059-48c4-ac26-d228360d5248}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Rect">
+      <UniqueIdentifier>{f180cbf3-2d57-4520-b579-6f6eda0e713e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Rect\Dash">
+      <UniqueIdentifier>{0d8baa14-37cc-4ac6-9958-4521a5dab802}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\03.Character">
       <UniqueIdentifier>{7e996727-b5b0-41d9-b6b8-6b873902fd9e}</UniqueIdentifier>
     </Filter>
@@ -85,6 +118,18 @@
     <Filter Include="96.DataStorage">
       <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May">
+      <UniqueIdentifier>{611bc1d3-0276-4f21-b082-4231462adca0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect">
+      <UniqueIdentifier>{25a9338e-4725-412e-b28b-91fa9da3c1b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle">
+      <UniqueIdentifier>{40f62ada-3b9b-4df1-b0b0-07d2420974ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.Revive_Effect">
+      <UniqueIdentifier>{9657cfa3-22bc-48ee-b205-3d702b0af337}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\98.Interactive_Objects">
       <UniqueIdentifier>{80b9488d-6107-4ad3-ab4d-9ba4db640228}</UniqueIdentifier>
     </Filter>
@@ -103,6 +148,24 @@
     <Filter Include="97.ShaderFiles\Include">
       <UniqueIdentifier>{87727c9a-6160-4971-88de-e99cb7b2333a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97.ShaderFiles\00.Effect">
+      <UniqueIdentifier>{3c9102f7-871d-4ebb-8efa-a1b2b8ffdb02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object">
+      <UniqueIdentifier>{2d113bd5-2e8a-454e-ae74-7e78d42a438b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\00.FireDoor">
+      <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\03.May_Boots">
+      <UniqueIdentifier>{76573e6b-e368-4e59-80ca-f6191ddb9f76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.Cody_Size">
+      <UniqueIdentifier>{f386c037-a6cf-4f8a-b0c5-48b528993dc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle">
+      <UniqueIdentifier>{0683420e-60af-4eb9-974e-0929e6185c9c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space">
       <UniqueIdentifier>{9b2ce05d-80d0-464d-8dce-5a75d40f42db}</UniqueIdentifier>
     </Filter>
@@ -111,6 +174,21 @@
     </Filter>
     <Filter Include="02.GameObject\99.Stage%28Test%29\03.Test">
       <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object">
+      <UniqueIdentifier>{57086f47-9651-4c97-879a-fb50562cd8cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\00.RespawnTunnel">
+      <UniqueIdentifier>{571d88ca-fe85-4b2f-a090-6bbccd9e5679}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\01.RespawnTunnel_Portal">
+      <UniqueIdentifier>{7d4c2d2d-d347-4771-b7b6-dbd3daee18be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\02.Wormhole">
+      <UniqueIdentifier>{dac8b6db-4fef-46a2-8e97-07dea945da6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe">
+      <UniqueIdentifier>{1cdda357-4a1a-47f1-9b8f-3998a06a1e6b}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.UI">
       <UniqueIdentifier>{655701b4-ca8c-4776-ab23-332f0781581e}</UniqueIdentifier>
@@ -148,6 +226,15 @@
     <Filter Include="02.GameObject\05.UI\05.UISprite">
       <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29">
+      <UniqueIdentifier>{3a519e7a-f348-4809-a94f-055799138e50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\05.Walking_Smoke">
+      <UniqueIdentifier>{04cb3247-05c6-4c7f-a7f1-64176fb9a4f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\06.Landing_Smoke">
+      <UniqueIdentifier>{5268a6b4-0c71-43a4-b934-31ce7bc3a010}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\01.Environment">
       <UniqueIdentifier>{e056b0e9-9d57-4825-aae6-dc4576b4077f}</UniqueIdentifier>
     </Filter>
@@ -180,6 +267,9 @@
     </Filter>
     <Filter Include="03.Component\01.CameraActor\02.FilterCallback">
       <UniqueIdentifier>{c1859efc-d3f6-40da-a6c5-24deb0b7e05b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
+      <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -222,6 +312,9 @@
     <ClInclude Include="..\Public\SubCamera.h">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Generator.h">
+      <Filter>95.Effect_Generator</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Cody.h">
       <Filter>02.GameObject\03.Character\00.Cody</Filter>
     </ClInclude>
@@ -243,6 +336,48 @@
     <ClInclude Include="..\public\DataStorage.h">
       <Filter>96.DataStorage</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Wormhole.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\02.Wormhole</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InGameEffect.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InGameEffect_Rect.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Rect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\InGameEffect_Model.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Player_Revive.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.Revive_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Player_Dead.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Player_Dead_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_FireDoor.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\00.FireDoor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Walking_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\05.Walking_Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_RespawnTunnel.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\00.RespawnTunnel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_RespawnTunnel_Portal.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\01.RespawnTunnel_Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Landing_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\06.Landing_Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Cody_Size.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.Cody_Size</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Color.txt">
+      <Filter>02.GameObject\05.Effect/Particle</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Rocket.h">
       <Filter>02.GameObject\98.Interactive_Objects\00.Rocket</Filter>
     </ClInclude>
@@ -263,6 +398,18 @@
     </ClInclude>
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Dash.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_May_Boots.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\03.May_Boots</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_May_Boots_Walking_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TestEffect.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
     </ClInclude>
     <ClInclude Include="..\public\TestObject01.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
@@ -297,6 +444,9 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h">
       <Filter>98.Defines</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Env_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Environment_Generator.h">
       <Filter>02.GameObject\04.Stage_Space\01.Environment\Environment_Generator</Filter>
     </ClInclude>
@@ -317,6 +467,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\CameraActor.h">
       <Filter>03.Component\01.CameraActor\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Dead_Particle_Fire.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_GravityPipe.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -344,6 +500,9 @@
     <ClCompile Include="..\Private\SubCamera.cpp">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_Generator.cpp">
+      <Filter>95.Effect_Generator</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Cody.cpp">
       <Filter>02.GameObject\03.Character\00.Cody</Filter>
     </ClCompile>
@@ -356,6 +515,9 @@
     <ClCompile Include="..\private\TileBox.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\TestEffect.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\MoonBaboon.cpp">
       <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
     </ClCompile>
@@ -364,6 +526,45 @@
     </ClCompile>
     <ClCompile Include="..\private\DataStorage.cpp">
       <Filter>96.DataStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Wormhole.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\02.Wormhole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InGameEffect.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InGameEffect_Rect.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Rect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\InGameEffect_Model.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Player_Revive.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.Revive_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Player_Dead.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Player_Dead_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_FireDoor.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\00.FireDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Walking_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\05.Walking_Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_RespawnTunnel.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\00.RespawnTunnel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_RespawnTunnel_Portal.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\01.RespawnTunnel_Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Landing_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\06.Landing_Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Cody_Size.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.Cody_Size</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Rocket.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\00.Rocket</Filter>
@@ -376,6 +577,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\RobotHead.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Dash.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_May_Boots.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\03.May_Boots</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_May_Boots_Walking_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\private\TestObject01.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
@@ -407,6 +617,9 @@
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_Env_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Environment_Generator.cpp">
       <Filter>02.GameObject\04.Stage_Space\01.Environment\Environment_Generator</Filter>
     </ClCompile>
@@ -430,6 +643,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\CameraFilterCallback.cpp">
       <Filter>03.Component\01.CameraActor\02.FilterCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Dead_Particle_Fire.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_GravityPipe.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -462,6 +681,21 @@
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl">
       <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
+      <Filter>97.ShaderFiles\00.Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl">
+      <Filter>97.ShaderFiles\00.Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect.hlsl">
+      <Filter>97.ShaderFiles\00.Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_RectCustom.hlsl">
+      <Filter>97.ShaderFiles\00.Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom_STT.hlsl">
+      <Filter>97.ShaderFiles\00.Effect</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Font.hlsl">
       <Filter>97.ShaderFiles</Filter>

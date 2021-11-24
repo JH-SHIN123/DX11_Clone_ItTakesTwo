@@ -217,7 +217,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vDiffuse			= vMtrlDiffuse;
 	Out.vDepth				= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
-
+	
 	// Calculate Normal
 	if (g_IsMaterials.Is_Normals & 1) // Normal Mapping
 	{
