@@ -23,7 +23,7 @@ HRESULT CMainApp::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Timer(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Prototype_ForStatic(), E_FAIL);
 	UI_Generator->NativeConstruct(m_pDevice, m_pDeviceContext);
-	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_LOGO), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->NativeConstruct_Environment_Generator(m_pDevice, m_pDeviceContext), E_FAIL);
 
 
@@ -75,7 +75,7 @@ HRESULT CMainApp::Render(_double dTimeDelta)
 	m_pGameInstance->Clear_BackBuffer(_float4(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Clear_DepthStencilBuffer();
 
-	FAILED_CHECK_RETURN(m_pRenderer->Draw_Renderer(dTimeDelta), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderer->Draw_Renderer(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Render_Level(), E_FAIL);
 
 	m_pGameInstance->Present();
