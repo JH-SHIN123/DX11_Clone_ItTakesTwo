@@ -1,0 +1,522 @@
+#include "stdafx.h"
+#include "..\Public\Environment_Generator.h"
+/* Load */
+#include "TileBox.h"
+#include <fstream>
+
+IMPLEMENT_SINGLETON(CEnvironment_Generator)
+CEnvironment_Generator::CEnvironment_Generator()
+{
+	m_pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(m_pGameInstance);
+}
+
+HRESULT CEnvironment_Generator::NativeConstruct_Environment_Generator(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+{
+	m_pDevice = pDevice;
+	m_pDeviceContext = pDeviceContext;
+
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pDeviceContext);
+
+	return S_OK;
+}
+
+HRESULT CEnvironment_Generator::Load_Model_Others(_tchar * pFilePath)
+{
+	DWORD		dwByte;
+	_uint		iLevelIndex = 1;
+	_tchar		szPrototypeTag[MAX_PATH] = L"";
+	_tchar		szFolderName[MAX_PATH] = L"";
+	_uint		iNumMaterial = 1;
+
+	/* Others */
+	HANDLE hFile = CreateFile(pFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, szFolderName, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &iNumMaterial, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
+	}
+	CloseHandle(hFile);
+	return S_OK;
+}
+
+HRESULT CEnvironment_Generator::Load_Model_Instancing()
+{
+	DWORD		dwByte;
+	_uint		iLevelIndex = 1;
+	_tchar		szPrototypeTag[MAX_PATH] = L"";
+	_tchar		szFilePath[MAX_PATH] = L"";
+	_tchar		szFolderName[MAX_PATH] = L"";
+	_uint		iNumMaterial = 1;
+
+	/* Instancing Model */
+	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/PrototypeData/Model_Instancing.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, szFolderName, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &iNumMaterial, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel_Instance::Create(m_pDevice, m_pDeviceContext, 1000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
+	}
+	CloseHandle(hFile);
+
+	return S_OK;
+}
+
+HRESULT CEnvironment_Generator::Load_Environment_Model_Prototype()
+{
+	DWORD		dwByte;
+	_uint		iLevelIndex = 1;
+	_tchar		szPrototypeTag[MAX_PATH] = L"";
+	_tchar		szFilePath[MAX_PATH] = L"";
+	_tchar		szFolderName[MAX_PATH] = L"";
+	_uint		iNumMaterial = 1;
+
+	/* Instancing Model */
+	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/PrototypeData/Model_Instancing.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, szFolderName, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &iNumMaterial, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel_Instance::Create(m_pDevice, m_pDeviceContext, 1000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
+	}
+	CloseHandle(hFile);
+
+	/* Others */
+	hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/PrototypeData/Model_Others.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, szFolderName, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &iNumMaterial, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
+	}
+	CloseHandle(hFile);
+	return S_OK;
+}
+
+HRESULT CEnvironment_Generator::Load_Environment_GameObject_Prototype()
+{
+	DWORD		dwByte;
+	_uint		iLevelIndex = 1;
+	_tchar		szPrototypeTag[MAX_PATH] = L"";
+	_tchar		szModelTag[MAX_PATH] = L"";
+
+	/* Instancing Model */
+	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/PrototypeData/Object.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	/* 기본 프로토타입 생성 */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Instancing_Env"), CInstancing_Env::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Static_Env"), CStatic_Env::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, szPrototypeTag, Create_Class(szPrototypeTag, m_pDevice, m_pDeviceContext)), E_FAIL);
+	}
+	CloseHandle(hFile);
+	return S_OK;
+}
+
+HRESULT CEnvironment_Generator::Load_Model_Data_TXT(_tchar * pFilePath)
+{
+	_tchar		szLevelIndex[MAX_PATH] = L"";
+	_tchar		szPrototypeTag[MAX_PATH] = L"";
+	_tchar		szFolderName[MAX_PATH] = L"";
+	_tchar		szNumMaterial[MAX_PATH] = L"";
+	_uint		iNumMaterial = 1;
+	_uint		iLevelIndex = 0;;
+
+	/* Others */
+
+	char pFileName[MAX_PATH];
+	WideCharToMultiByte(CP_ACP, 0, pFilePath, MAX_PATH, pFileName, MAX_PATH, 0, 0);
+
+	wifstream fin;
+	fin.open(pFileName);
+
+	if (!fin.fail())
+	{
+		while (true)
+		{
+			// Text 파일 로드
+			fin.getline(szLevelIndex, MAX_PATH, L'|');
+			fin.getline(szPrototypeTag, MAX_PATH, L'|');
+			fin.getline(szFolderName, MAX_PATH, L'|');
+			fin.getline(szNumMaterial, MAX_PATH);
+
+			iLevelIndex = _ttoi(szLevelIndex);
+			iNumMaterial = _ttoi(szNumMaterial);
+
+			_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
+
+			if (fin.eof())
+				break;
+		}
+	}
+	fin.close();
+
+	return S_OK;
+}
+
+HRESULT CEnvironment_Generator::Load_Model_Instancing_TXT()
+{
+	_tchar		szLevelIndex[MAX_PATH] = L"";
+	_tchar		szPrototypeTag[MAX_PATH] = L"";
+	_tchar		szFolderName[MAX_PATH] = L"";
+	_tchar		szNumMaterial[MAX_PATH] = L"";
+	_uint		iNumMaterial = 1;
+	_uint		iLevelIndex = 0;;
+
+	/* Instancing Model */
+	wifstream fin;
+	fin.open("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Instancing.txt");
+
+	if (!fin.fail())
+	{
+		while (true)
+		{
+			// 인스턴싱 Text 파일 로드
+			fin.getline(szLevelIndex, MAX_PATH, L'|');
+			fin.getline(szPrototypeTag, MAX_PATH, L'|');
+			fin.getline(szFolderName, MAX_PATH, L'|');
+			fin.getline(szNumMaterial, MAX_PATH);
+
+
+			iLevelIndex = _ttoi(szLevelIndex);
+			iNumMaterial = _ttoi(szNumMaterial);
+
+			_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel_Instance::Create(m_pDevice, m_pDeviceContext, 1000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
+
+			if (fin.eof())
+				break;
+		}
+	}
+	fin.close();
+
+	return S_OK;
+}
+
+HRESULT CEnvironment_Generator::Load_Environment_Space()
+{
+	DWORD		dwByte;
+	_uint		iNumClone = 0;
+	_tchar		szPrototypeTag[MAX_PATH] = L"";
+	_tchar		szActorName[MAX_PATH] = L"";
+	_float4x4	World;
+	_uint		iLevelIndex = 0;
+
+	CInstancing_Env::INS_ENV_DESC Ins_Env_Desc;
+	CStatic_Env::STATIC_ENV_DESC  Static_Env_Desc;
+
+	/* Instancing */
+	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/Space_Instancing.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		ReadFile(hFile, &szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, Ins_Env_Desc.szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &Ins_Env_Desc.iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &Ins_Env_Desc.Instancing_Arg.iInstanceCount, sizeof(_uint), &dwByte, nullptr);
+		Ins_Env_Desc.Instancing_Arg.pWorldMatrices = new _float4x4[Ins_Env_Desc.Instancing_Arg.iInstanceCount];
+		ReadFile(hFile, Ins_Env_Desc.Instancing_Arg.pWorldMatrices, sizeof(_float4x4) * Ins_Env_Desc.Instancing_Arg.iInstanceCount, &dwByte, nullptr);
+
+		Ins_Env_Desc.Instancing_Arg.fCullingRadius = 10.f;
+
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, TEXT("GameObject_Instancing_Env"), &Ins_Env_Desc), E_FAIL);
+	}
+	CloseHandle(hFile);
+
+	/* Static */
+	hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/Space_Static.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		ReadFile(hFile, &szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, Static_Env_Desc.szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &Static_Env_Desc.iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &Static_Env_Desc.WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+
+		Static_Env_Desc.eGameID = GameID::Enum::eENVIRONMENT;
+		Set_Info_Model(Static_Env_Desc);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, TEXT("GameObject_Static_Env"), &Static_Env_Desc), E_FAIL);
+	}
+	CloseHandle(hFile);
+
+	///* Dynamic */
+	//hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/Space_Dynamic.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	//if (INVALID_HANDLE_VALUE == hFile)
+	//	return E_FAIL;
+
+	//for (_uint i = 0; i < iNumClone; ++i)
+	//{
+	//	ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+
+	//	if (0 == dwByte)
+	//		break;
+
+	//	ReadFile(hFile, &szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+	//	ReadFile(hFile, &World, sizeof(_float4x4), &dwByte, nullptr);
+
+	//	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, szPrototypeTag, &World), E_FAIL);
+	//}
+	//CloseHandle(hFile);
+
+	return S_OK;
+}
+
+HRESULT CEnvironment_Generator::Load_Environment_Space_Boss()
+{
+	DWORD		dwByte;
+	_uint		iNumClone = 0;
+	_tchar		szPrototypeTag[MAX_PATH] = L"";
+	_tchar		szActorName[MAX_PATH] = L"";
+	_float4x4	World;
+	_uint		iLevelIndex = 0;
+
+	CInstancing_Env::INS_ENV_DESC Ins_Env_Desc;
+	CStatic_Env::STATIC_ENV_DESC  Static_Env_Desc;
+
+	/* Instancing */
+	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/SpaceBoss_Instancing.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		ReadFile(hFile, &szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, Ins_Env_Desc.szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &Ins_Env_Desc.iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &Ins_Env_Desc.Instancing_Arg.iInstanceCount, sizeof(_uint), &dwByte, nullptr);
+		Ins_Env_Desc.Instancing_Arg.pWorldMatrices = new _float4x4[Ins_Env_Desc.Instancing_Arg.iInstanceCount];
+		ReadFile(hFile, Ins_Env_Desc.Instancing_Arg.pWorldMatrices, sizeof(_float4x4) * Ins_Env_Desc.Instancing_Arg.iInstanceCount, &dwByte, nullptr);
+
+		Ins_Env_Desc.Instancing_Arg.fCullingRadius = 10.f;
+
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Boss"), Level::LEVEL_STAGE, TEXT("GameObject_Instancing_Env"), &Ins_Env_Desc), E_FAIL);
+	}
+	CloseHandle(hFile);
+
+	/* Static */
+	hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/SpaceBoss_Static.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		ReadFile(hFile, &szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, Static_Env_Desc.szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &Static_Env_Desc.iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &Static_Env_Desc.WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+
+		Static_Env_Desc.eGameID = GameID::Enum::eENVIRONMENT;
+		Set_Info_Model(Static_Env_Desc);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Boss"), Level::LEVEL_STAGE, TEXT("GameObject_Static_Env"), &Static_Env_Desc), E_FAIL);
+	}
+	CloseHandle(hFile);
+
+	///* Dynamic */
+	//hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/Space_Dynamic.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	//if (INVALID_HANDLE_VALUE == hFile)
+	//	return E_FAIL;
+
+	//for (_uint i = 0; i < iNumClone; ++i)
+	//{
+	//	ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+
+	//	if (0 == dwByte)
+	//		break;
+
+	//	ReadFile(hFile, &szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+	//	ReadFile(hFile, &World, sizeof(_float4x4), &dwByte, nullptr);
+
+	//	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, szPrototypeTag, &World), E_FAIL);
+	//}
+	//CloseHandle(hFile);
+
+	return S_OK;
+}
+
+HRESULT CEnvironment_Generator::Load_Environment_Interactive_Instancing()
+{
+	DWORD		dwByte;
+	_uint		iNumClone = 0;
+	_tchar		szPrototypeTag[MAX_PATH] = L"";
+	_tchar		szActorName[MAX_PATH] = L"";
+	_float4x4	World;
+	_uint		iLevelIndex = 0;
+
+	CInstancing_Env::INS_ENV_DESC Ins_Env_Desc;
+	CStatic_Env::STATIC_ENV_DESC  Static_Env_Desc;
+
+	/* Instancing */
+	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/SpaceBridge_Instancing.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		ReadFile(hFile, &szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, Ins_Env_Desc.szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &Ins_Env_Desc.iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &Ins_Env_Desc.Instancing_Arg.iInstanceCount, sizeof(_uint), &dwByte, nullptr);
+		Ins_Env_Desc.Instancing_Arg.pWorldMatrices = new _float4x4[Ins_Env_Desc.Instancing_Arg.iInstanceCount];
+		ReadFile(hFile, Ins_Env_Desc.Instancing_Arg.pWorldMatrices, sizeof(_float4x4) * Ins_Env_Desc.Instancing_Arg.iInstanceCount, &dwByte, nullptr);
+
+		Ins_Env_Desc.Instancing_Arg.fCullingRadius = 10.f;
+
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, TEXT("GameObject_Instancing_Env"), &Ins_Env_Desc), E_FAIL);
+	}
+	CloseHandle(hFile);
+
+	return S_OK;
+}
+
+CGameObject* CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+{
+	CGameObject* pInstance = nullptr;
+
+	if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_DoorWay")))
+	{
+		pInstance = CTileBox::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - GameObject_DoorWay");
+	}
+	//else if ()
+	//{
+
+	//}
+	return pInstance;
+}
+
+void CEnvironment_Generator::Set_Info_Model(CStatic_Env::STATIC_ENV_DESC & tInfo)
+{
+	tInfo.fCullRadius = 10.f;
+
+	if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail01"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail02"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail03"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail04"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail05"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail06"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Moon_01_Plushie"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetWall"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetFloor"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetFloorRing"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh01"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh02"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh03"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh04"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh05"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh06"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh07"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh08"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh12"))
+		tInfo.fCullRadius = 100.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh13"))
+		tInfo.fCullRadius = 100.f;
+}
+
+void CEnvironment_Generator::Free()
+{
+	Safe_Release(m_pGameInstance);
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pDeviceContext);
+}

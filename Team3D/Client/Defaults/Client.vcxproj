@@ -188,8 +188,10 @@
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\Cody.h" />
     <ClInclude Include="..\public\DataStorage.h" />
+    <ClInclude Include="..\Public\Environment_Generator.h" />
     <ClInclude Include="..\Public\InputButton.h" />
     <ClInclude Include="..\Public\InputButton_Frame.h" />
+    <ClInclude Include="..\Public\Instancing_Env.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
     <ClInclude Include="..\public\Loading.h" />
@@ -204,6 +206,7 @@
     <ClInclude Include="..\Public\Rocket.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
+    <ClInclude Include="..\Public\Static_Env.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\public\TestObject01.h" />
@@ -223,8 +226,10 @@
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
     <ClCompile Include="..\private\DataStorage.cpp" />
+    <ClCompile Include="..\Private\Environment_Generator.cpp" />
     <ClCompile Include="..\Private\InputButton.cpp" />
     <ClCompile Include="..\Private\InputButton_Frame.cpp" />
+    <ClCompile Include="..\Private\Instancing_Env.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />
@@ -239,6 +244,7 @@
     <ClCompile Include="..\Private\Rocket.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
+    <ClCompile Include="..\Private\Static_Env.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\private\TestObject01.cpp" />

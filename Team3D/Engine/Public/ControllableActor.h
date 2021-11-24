@@ -27,6 +27,7 @@ public: /* Setter */
 	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
 	void    Set_Jump(_bool bJump) { m_bJump = bJump; }
 	void	Set_Scale(_float fRadius, _float fHeight);
+	void	Set_Position(_fvector vPosition);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
