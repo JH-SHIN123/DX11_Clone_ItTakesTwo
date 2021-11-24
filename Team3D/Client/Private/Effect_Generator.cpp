@@ -65,7 +65,7 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::Cody_Dead:
 		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Dead_Particle");
-		m_pGameInstance->Add_GameObject_Clone(1, szLayer, 1, L"GameObject_2D_Player_Dead", &Clone_Data);
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, L"GameObject_2D_Player_Dead", &Clone_Data);
 		break;
 	case Effect_Value::Cody_Revive:
 		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);
@@ -74,7 +74,7 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::May_Dead:
 		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Dead_Particle");
-		m_pGameInstance->Add_GameObject_Clone(1, szLayer, 1, L"GameObject_2D_Player_Dead", &Clone_Data);
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, L"GameObject_2D_Player_Dead", &Clone_Data);
 		break;
 	case Effect_Value::May_Revive:
 		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
