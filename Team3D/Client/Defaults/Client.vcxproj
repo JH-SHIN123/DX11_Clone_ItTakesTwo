@@ -256,10 +256,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClCompile Include="..\Private\CamEffect.cpp" />
     <ClCompile Include="..\private\Cam_Helper.cpp" />
-=======
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
     <ClCompile Include="..\private\Effect_Dead_Particle_Fire.cpp" />
@@ -280,7 +278,6 @@
     <ClCompile Include="..\Private\CameraActor.cpp" />
     <ClCompile Include="..\Private\CameraBehaviorCallback.cpp" />
     <ClCompile Include="..\Private\CameraFilterCallback.cpp" />
->>>>>>> main
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
     <ClCompile Include="..\private\DataStorage.cpp" />

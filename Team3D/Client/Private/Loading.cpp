@@ -11,10 +11,8 @@
 #include "UI_Generator.h"
 #include "Environment_Generator.h"
 
-<<<<<<< HEAD
-=======
 #include "Effect_Generator.h"
->>>>>>> main
+
 
 #include "Cody.h"
 #include "May.h"
@@ -127,15 +125,13 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), CTriggerActor::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), CDynamicActor::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), CControllableActor::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-<<<<<<< HEAD
+
 
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), CCam_Helper::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 
-=======
-		
 		CEffect_Generator::GetInstance()->Create_Prototype_Resource_Stage1(m_pDevice, m_pDeviceContext);
->>>>>>> main
+
 		_matrix	PivotMatrix = XMMatrixScaling(0.05f, 0.05f, 0.05f);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Sky_Space"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Sky/"), TEXT("Sky_Space"), TEXT("../Bin/ShaderFiles/Shader_Sky.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Sky_Space"), CSky::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
@@ -201,13 +197,11 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), CStarBuddy::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 		////Test
 		//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_TestObject01"), CTestObject01::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-<<<<<<< HEAD
+
 
 		//* For. UFO */
 
-=======
-		///* For. UFO */
->>>>>>> main
+
 		//PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 		//PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f));
 		//FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_UFO"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("UFO"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);

@@ -118,7 +118,6 @@
     <Filter Include="96.DataStorage">
       <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
     <Filter Include="02.GameObject\00.Public\03.Cam_Helper">
       <UniqueIdentifier>{a3a6fff7-bf95-4b71-a03c-4caea40e84ed}</UniqueIdentifier>
     </Filter>
@@ -126,7 +125,7 @@
       <UniqueIdentifier>{25fa91e7-22b9-488f-a881-4902b0783881}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\98.Interaction_Deco">
-=======
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May">
       <UniqueIdentifier>{611bc1d3-0276-4f21-b082-4231462adca0}</UniqueIdentifier>
     </Filter>
@@ -138,7 +137,6 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.Revive_Effect">
       <UniqueIdentifier>{9657cfa3-22bc-48ee-b205-3d702b0af337}</UniqueIdentifier>
->>>>>>> main
     </Filter>
     <Filter Include="02.GameObject\98.Interactive_Objects">
       <UniqueIdentifier>{80b9488d-6107-4ad3-ab4d-9ba4db640228}</UniqueIdentifier>
@@ -158,10 +156,9 @@
     <Filter Include="97.ShaderFiles\Include">
       <UniqueIdentifier>{87727c9a-6160-4971-88de-e99cb7b2333a}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
     <Filter Include="02.GameObject\00.Public\04.GrindLine">
       <UniqueIdentifier>{5afae0a9-03c7-460f-9b5c-96a5c6791b03}</UniqueIdentifier>
-=======
+    </Filter>
     <Filter Include="97.ShaderFiles\00.Effect">
       <UniqueIdentifier>{3c9102f7-871d-4ebb-8efa-a1b2b8ffdb02}</UniqueIdentifier>
     </Filter>
@@ -179,7 +176,6 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle">
       <UniqueIdentifier>{0683420e-60af-4eb9-974e-0929e6185c9c}</UniqueIdentifier>
->>>>>>> main
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space">
       <UniqueIdentifier>{9b2ce05d-80d0-464d-8dce-5a75d40f42db}</UniqueIdentifier>
@@ -241,10 +237,9 @@
     <Filter Include="02.GameObject\05.UI\05.UISprite">
       <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
     <Filter Include="02.GameObject\00.Public\03.Cam_Helper\CamEffect">
       <UniqueIdentifier>{fb6abacd-7350-4cd6-bc75-133e14471971}</UniqueIdentifier>
-=======
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29">
       <UniqueIdentifier>{3a519e7a-f348-4809-a94f-055799138e50}</UniqueIdentifier>
     </Filter>
@@ -253,7 +248,6 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\06.Landing_Smoke">
       <UniqueIdentifier>{5268a6b4-0c71-43a4-b934-31ce7bc3a010}</UniqueIdentifier>
->>>>>>> main
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\01.Environment">
       <UniqueIdentifier>{e056b0e9-9d57-4825-aae6-dc4576b4077f}</UniqueIdentifier>
@@ -356,13 +350,12 @@
     <ClInclude Include="..\public\DataStorage.h">
       <Filter>96.DataStorage</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\public\Cam_Helper.h">
       <Filter>02.GameObject\00.Public\03.Cam_Helper</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Film.h">
       <Filter>02.GameObject\00.Public\03.Cam_Helper\Film</Filter>
-=======
+    </ClInclude>
     <ClInclude Include="..\public\Effect_Wormhole.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\02.Wormhole</Filter>
     </ClInclude>
@@ -404,7 +397,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Color.txt">
       <Filter>02.GameObject\05.Effect/Particle</Filter>
->>>>>>> main
     </ClInclude>
     <ClInclude Include="..\Public\Rocket.h">
       <Filter>02.GameObject\98.Interactive_Objects\00.Rocket</Filter>
@@ -427,10 +419,9 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\public\GrindLine.h">
       <Filter>02.GameObject\00.Public\04.GrindLine</Filter>
-=======
+    </ClInclude>
     <ClInclude Include="..\Public\Effect_Dash.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
     </ClInclude>
@@ -442,7 +433,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\TestEffect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
->>>>>>> main
     </ClInclude>
     <ClInclude Include="..\public\TestObject01.h">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
@@ -477,13 +467,11 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h">
       <Filter>98.Defines</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\Public\CamEffect.h">
       <Filter>02.GameObject\00.Public\03.Cam_Helper\CamEffect</Filter>
-=======
+    </ClInclude>
     <ClInclude Include="..\public\Effect_Env_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
->>>>>>> main
     </ClInclude>
     <ClInclude Include="..\Public\Environment_Generator.h">
       <Filter>02.GameObject\04.Stage_Space\01.Environment\Environment_Generator</Filter>
@@ -538,7 +526,6 @@
     <ClCompile Include="..\Private\SubCamera.cpp">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\private\DataStorage.cpp">
       <Filter>96.DataStorage</Filter>
     </ClCompile>
@@ -547,7 +534,7 @@
     </ClCompile>
     <ClCompile Include="..\private\Film.cpp">
       <Filter>02.GameObject\00.Public\03.Cam_Helper\Film</Filter>
-=======
+    </ClCompile>
     <ClCompile Include="..\private\Effect_Generator.cpp">
       <Filter>95.Effect_Generator</Filter>
     </ClCompile>
@@ -613,7 +600,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Cody_Size.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.Cody_Size</Filter>
->>>>>>> main
     </ClCompile>
     <ClCompile Include="..\Private\Rocket.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\00.Rocket</Filter>
@@ -627,10 +613,9 @@
     <ClCompile Include="..\Private\RobotHead.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\private\GrindLine.cpp">
       <Filter>02.GameObject\00.Public\04.GrindLine</Filter>
-=======
+    </ClCompile>
     <ClCompile Include="..\Private\Effect_Dash.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
     </ClCompile>
@@ -639,7 +624,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_May_Boots_Walking_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle</Filter>
->>>>>>> main
     </ClCompile>
     <ClCompile Include="..\private\TestObject01.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
@@ -671,7 +655,6 @@
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
     </ClCompile>
@@ -692,10 +675,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CamEffect.cpp">
       <Filter>02.GameObject\00.Public\03.Cam_Helper\CamEffect</Filter>
-=======
+    </ClCompile>
     <ClCompile Include="..\private\Effect_Env_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
->>>>>>> main
     </ClCompile>
     <ClCompile Include="..\Private\Environment_Generator.cpp">
       <Filter>02.GameObject\04.Stage_Space\01.Environment\Environment_Generator</Filter>

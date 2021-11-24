@@ -343,13 +343,14 @@ void CFilm::ReSet_CamNodeTime_Progress_End(ScreenType eScreenType, CamMoveOption
 		m_dCamMoveTime[eScreenType][(_uint)eOption] = 0.0;
 		for (_uint i = 0; i < Bezier_End; i++)
 			m_iCurEye_BezierNode[eScreenType][i] = -1;
-
+		m_bCurEye_StartBezier[eScreenType] = false;
 	}
 	break;
 	case CFilm::CamNodeVectorType::At:
 		m_dCamAtMoveTime[eScreenType][(_uint)eOption] = 0.0;
 		for (_uint i = 0; i < Bezier_End; i++)
 			m_iCurAt_BezierNode[eScreenType][i] = -1;
+		m_bCurAt_StartBezier[eScreenType] = false;
 		break;
 	}
 }
@@ -359,6 +360,7 @@ HRESULT CFilm::Check_CamNodeProgress(ScreenType eScreenType, CamMoveOption eOpti
 	switch (eOption)
 	{
 	case CamMoveOption::Move_Jump:
+		ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType);
 		m_bCurNodeEnd[eScreenType][(_uint)eType] = false;
 		break;
 	case CamMoveOption::Move_Straight:

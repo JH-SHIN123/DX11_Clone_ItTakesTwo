@@ -55,18 +55,10 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
 
-	/*if (m_pGameInstance->Key_Down(DIK_1))
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 0.f, 1.f) );
-	if (m_pGameInstance->Key_Down(DIK_2))
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_3))
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
-<<<<<<< HEAD
-*/
-=======
+
 
 	CEffect_Generator::GetInstance()->LoopSpawner(dTimedelta);
->>>>>>> main
+
 
 	return NO_EVENT;
 }

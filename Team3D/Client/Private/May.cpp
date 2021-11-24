@@ -4,9 +4,6 @@
 #include "SubCamera.h"
 #include "UI_Generator.h"
 #include "UIObject.h"
-<<<<<<< HEAD
-#include"DataStorage.h"
-=======
 
 #include "Transform.h"
 
@@ -14,7 +11,7 @@
 #include "Effect_Generator.h"
 #include "Effect_May_Boots.h"
 
->>>>>>> main
+
 CMay::CMay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
 {

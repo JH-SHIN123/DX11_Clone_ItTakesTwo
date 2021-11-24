@@ -417,15 +417,12 @@
     <ClInclude Include="..\public\Model_Instance.h">
       <Filter>02.Utility\02.Component\05.Model\00.Main\01.Instance</Filter>
     </ClInclude>
-<<<<<<< HEAD
-=======
     <ClInclude Include="..\Public\VIBuffer_RectInstance_Custom.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\04.Rect_Custom</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Shadow_Manager.h">
       <Filter>02.Utility\05.Shadow\99.Manager</Filter>
     </ClInclude>
->>>>>>> main
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
@@ -456,10 +453,9 @@
     <ClInclude Include="..\public\PxContactCallback.h">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\Public\Shadow_Manager.h">
       <Filter>02.Utility\05.Shadow\99.Manager</Filter>
-=======
+    </ClInclude>
     <ClInclude Include="..\Public\PostFX.h">
       <Filter>02.Utility\06.PostFX</Filter>
     </ClInclude>
@@ -468,7 +464,6 @@
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer_PointInstance_Custom_STT.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\05.Point_Custom_STT</Filter>
->>>>>>> main
     </ClInclude>
     <ClInclude Include="..\public\PxControllerFilterCallback.h">
       <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\02.FilterCallback</Filter>
@@ -522,8 +517,6 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\00.Main</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Textures.cpp">
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\02.Terrain</Filter>
@@ -642,10 +635,9 @@
     <ClCompile Include="..\private\PxContactCallback.cpp">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\Private\Model.cpp">
       <Filter>02.Utility\02.Component\05.Model\00.Main\00.Normal</Filter>
-=======
+    </ClCompile>
     <ClCompile Include="..\Private\PostFX.cpp">
       <Filter>02.Utility\06.PostFX</Filter>
     </ClCompile>
@@ -654,7 +646,6 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_PointInstance_Custom_STT.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\05.Point_Custom_STT</Filter>
->>>>>>> main
     </ClCompile>
     <ClCompile Include="..\private\PxControllerFilterCallback.cpp">
       <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\02.FilterCallback</Filter>
@@ -667,6 +658,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Sprite.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Textures.cpp">
+      <Filter>02.Utility\02.Component\03.Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
