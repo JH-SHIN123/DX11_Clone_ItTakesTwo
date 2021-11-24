@@ -6,7 +6,8 @@
 
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
-//texture2D	g_EmmesiveTexture;
+texture2D	g_SpecularTexture;
+texture2D	g_EmissiveTexture;
 //texture2D	g_AmbientTexture;
 //texture2D	g_OpacityTexture;
 //texture2D	g_LightTexture;
@@ -14,11 +15,6 @@ texture2D	g_NormalTexture;
 cbuffer BoneMatrixDesc
 {
 	BONEMATRICES	g_BoneMatrices;
-};
-
-cbuffer EffectDesc
-{
-	float	g_fAlpha;
 };
 
 cbuffer ViewportInfo

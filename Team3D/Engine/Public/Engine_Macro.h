@@ -88,8 +88,9 @@ enum aiTextureType
 #pragma endregion
 
 #pragma region PostProcessing
+#define MAX_GROUPS_THREAD	64
 #define MAX_CASCADES		4
-#define SHADOWMAP_SIZE		1024 /* Width size equal height Size */
+#define SHADOWMAP_SIZE		2048 /* Width size equal height Size */
 #pragma endregion
 
 #pragma region Input_GamePad

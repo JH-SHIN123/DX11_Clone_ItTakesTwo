@@ -1,6 +1,32 @@
 
-// Relase시 사용 : 에러메시지뜨는데, 잘돌아감.
-//#define PCF 0
+float CalcAttenuation(float d, float falloffStart, float falloffEnd)
+{
+	// Linear falloff.
+	return saturate((falloffEnd - d) / (falloffEnd - falloffStart));
+}
+
+// Schlick gives an approximation to Fresnel reflectance (see pg. 233 "Real-Time Rendering 3rd Ed.").
+// R0 = ( (n-1)/(n+1) )^2, where n is the index of refraction.
+float3 SchlickFresnel(float3 R0, float3 normal, float3 lightVec)
+{
+	float cosIncidentAngle = saturate(dot(normal, lightVec));
+
+	float f0 = 1.0f - cosIncidentAngle;
+	float3 reflectPercent = R0 + (1.0f - R0) * (f0 * f0 * f0 * f0 * f0);
+
+	return reflectPercent;
+}
+
+vector TextureSampleToWorldSpace(float3 mapSample, float3 tangetW, float3 biNormalW, float3 normalW)
+{
+	vector vReturn = vector(mapSample, 0.f) * 2.f - 1.f;
+
+	float3x3 TBN = transpose(float3x3(tangetW, biNormalW, normalW));
+	vReturn = vector(mul(TBN, normalize(vReturn.xyz)), 0.f);
+	vReturn = vector(normalize(vReturn.xyz) * 0.5f + 0.5f, 0.f);
+
+	return vReturn;
+}
 
 int Get_CascadedShadowSliceIndex(uint iViewportIndex, vector vWorldPos) /* 1: Main 2: Sub*/
 {
@@ -59,7 +85,6 @@ float Get_ShadowFactor(uint iViewportIndex, uint iSliceIndex, vector vWorldPos)
 	float percentLit = 0.0f;
 	float depth = shadowPosH.z; // 그릴 객체들의 깊이값. (그림자 ndc로 이동한)
 
-#ifdef PCF
 	// PCF 적용
 	uint width, height, numMips;
 	g_CascadedShadowDepthTexture.GetDimensions(0, width, height, numMips);
@@ -75,6 +100,7 @@ float Get_ShadowFactor(uint iViewportIndex, uint iSliceIndex, vector vWorldPos)
 		float2(-dx, +dy), float2(0.0f, +dy), float2(dx, +dy)
 	};
 
+	// - 0.002f
 	[unroll]
 	for (int i = 0; i < 9; ++i)
 	{
@@ -82,17 +108,7 @@ float Get_ShadowFactor(uint iViewportIndex, uint iSliceIndex, vector vWorldPos)
 			vShadowUV + offsets[i], depth).r;
 	}
 	percentLit /= 9.0f;
-	shadowFactor = percentLit;
-#else
-	percentLit = g_CascadedShadowDepthTexture.Sample(Wrap_Sampler, vShadowUV).r;
-	if (percentLit < depth)
-		shadowFactor = percentLit;
-#endif
+	shadowFactor = 1.f - percentLit;
 
-	if (depth < shadowFactor + 0.002f)
-	{
-		shadowFactor = 0.f;
-	}
-
-	return shadowFactor;
+	return shadowFactor * 0.3f/*ShadowColor*/;
 }

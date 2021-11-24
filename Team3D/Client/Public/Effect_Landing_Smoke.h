@@ -1,0 +1,40 @@
+#pragma once
+
+#ifndef __EFFECT_ANDING_SMOKE_H__
+
+#include "InGameEffect.h"
+class CEffect_Landing_Smoke final : public CInGameEffect
+{
+private:
+	explicit CEffect_Landing_Smoke(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_Landing_Smoke(const CEffect_Landing_Smoke& rhs);
+	virtual ~CEffect_Landing_Smoke() = default; public:
+
+public:
+	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
+	virtual HRESULT	NativeConstruct(void* pArg) override;
+	virtual _int	Tick(_double TimeDelta) override;
+	virtual _int	Late_Tick(_double TimeDelta) override;
+	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
+
+public:
+	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0) override;
+	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0) override;
+	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0) override;
+
+public:
+	void Control_Alpha(_double TimeDelta);
+	void Control_Instance(_double TimeDelta);
+
+private:
+	_double m_dAlphaTime = 1.5;
+	_bool	m_IsDisapear = false;
+
+public:
+	static CEffect_Landing_Smoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	virtual CGameObject* Clone_GameObject(void* pArg) override;
+	virtual void Free() override;
+};
+
+#define __EFFECT_LANDING_SMOKE_H__
+#endif // !__LANDING_SMOKE_H__

@@ -17,9 +17,9 @@ HRESULT CGameObject_Manager::Reserve_Container(_uint iLevelCount)
 	NOT_NULL_CHECK_RETURN(m_pLayers, E_FAIL);
 	NOT_NULL_CHECK_RETURN(m_pPrototypes, E_FAIL);
 
-	m_iLevelCount	= iLevelCount;
-	m_pLayers		= new LAYERS[iLevelCount];
-	m_pPrototypes	= new PROTOTYPES[iLevelCount];
+	m_iLevelCount = iLevelCount;
+	m_pLayers = new LAYERS[iLevelCount];
+	m_pPrototypes = new PROTOTYPES[iLevelCount];
 
 	return S_OK;
 }
@@ -187,8 +187,6 @@ CLayer * CGameObject_Manager::Find_Layer(_uint iLevelIndex, const _tchar * pLaye
 
 void CGameObject_Manager::Free()
 {
-	Clear_All();
-
 	Safe_Delete_Array(m_pLayers);
 	Safe_Delete_Array(m_pPrototypes);
 }

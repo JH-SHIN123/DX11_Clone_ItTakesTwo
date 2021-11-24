@@ -6,6 +6,9 @@
 #include "UIObject.h"
 #include"DataStorage.h"
 
+#include "Effect_Generator.h"
+#include "Effect_Cody_Size.h"
+
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
@@ -36,6 +39,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 
 	Add_LerpInfo_To_Model();
 
+<<<<<<< HEAD
 	/*UI_Create(Cody, PC_Mouse_Reduction);
 	UI_Create(Cody, PC_Mouse_Enlargement);
 	UI_Create(Default, LoadingBook);
@@ -46,6 +50,18 @@ HRESULT CCody::NativeConstruct(void* pArg)
 
 	UI_Create(Cody, InputButton_InterActive);
 	*/ 
+=======
+ 	UI_Create(Cody, PC_Mouse_Reduction);
+ 	UI_Create(Cody, PC_Mouse_Enlargement);
+ 	UI_Create(Default, LoadingBook);
+ 	UI_Create(May, Arrowkeys_Side);
+ 	UI_Create(May, StickIcon);
+ 
+ 	UI_Create(Cody, PlayerMarker);
+ 
+ 	//UI_Create(Cody, InputButton_InterActive);
+	 
+>>>>>>> main
 
 	return S_OK;
 }
@@ -87,6 +103,10 @@ HRESULT CCody::Ready_Component()
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
+	//Effect 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Cody_Size"), nullptr, (CGameObject**)&m_pEffect_Size), E_FAIL);
+	m_pEffect_Size->Set_Model(m_pModelCom);
+
 	return S_OK;
 }
 
@@ -112,6 +132,7 @@ _int CCody::Tick(_double dTimeDelta)
 		return NO_EVENT;
 
 	KeyInput(dTimeDelta);
+
 	if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
 	{
 		TriggerCheck(dTimeDelta);
@@ -124,12 +145,14 @@ _int CCody::Tick(_double dTimeDelta)
 	}
 	Ground_Pound(dTimeDelta);
 
-	//UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
+	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
+
 	return NO_EVENT;
 }
 
@@ -186,6 +209,7 @@ void CCody::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pEffect_Size);
 	CCharacter::Free();
 }
 
@@ -354,6 +378,8 @@ void CCody::KeyInput(_double TimeDelta)
 	{
 		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 		if (m_IsJumping == false)
 		{
 			m_fAcceleration = 5.f;
@@ -462,8 +488,14 @@ void CCody::KeyInput(_double TimeDelta)
 		m_bGroundPound = true;
 	}
 
-#pragma endregion 
+#pragma endregion
 
+#pragma region Effet Test
+	if (m_pGameInstance->Key_Down(DIK_O))
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+	if (m_pGameInstance->Key_Down(DIK_I))
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+#pragma  endregion
 }
 void CCody::Move(const _double TimeDelta)
 {
@@ -958,6 +990,8 @@ void CCody::Change_Size(const _double TimeDelta)
 	{
 		if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_LARGE)
 		{
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_LARGE);
+
 			if (m_vScale.x < 5.f)
 			{
 				m_vScale.x += (_float)TimeDelta * 20.f;
@@ -968,13 +1002,15 @@ void CCody::Change_Size(const _double TimeDelta)
 			else
 			{
 				m_vScale = { 5.f, 5.f, 5.f };
-				m_IsSizeChanging = false;
+				m_IsSizeChanging = false; 
 				m_eCurPlayerSize = SIZE_LARGE;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 			}
 		}
 		else if (m_eCurPlayerSize == SIZE_LARGE && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_LARGE_MIDDLE);
+
 			if (m_vScale.x > 1.f)
 			{
 				m_vScale.x -= (_float)TimeDelta * 20.f;
@@ -992,6 +1028,8 @@ void CCody::Change_Size(const _double TimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_SMALL)
 		{
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_SMALL);
+
 			if (m_vScale.x > 0.5f)
 			{
 				m_vScale.x -= (_float)TimeDelta * 10.f;
@@ -1009,6 +1047,8 @@ void CCody::Change_Size(const _double TimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_SMALL && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_SMALL_MIDDLE);
+
 			if (m_vScale.x < 1.f)
 			{
 				m_vScale.x += (_float)TimeDelta * 10.f;
@@ -1082,7 +1122,7 @@ HRESULT CCody::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(2, 0, true);

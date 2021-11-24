@@ -206,6 +206,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\public\GameObject_Manager.h" />
     <ClInclude Include="..\Public\GlobalFunction.h" />
     <ClInclude Include="..\public\Graphic_Device.h" />
+    <ClInclude Include="..\Public\PostFX.h" />
     <ClInclude Include="..\Public\HierarchyNode.h" />
     <ClInclude Include="..\public\Input_Device.h" />
     <ClInclude Include="..\public\Layer.h" />
@@ -239,9 +240,13 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\public\VIBuffer_Color.h" />
     <ClInclude Include="..\Public\VIBuffer_FontInstance.h" />
     <ClInclude Include="..\public\VIBuffer_PointInstance.h" />
+    <ClInclude Include="..\Public\VIBuffer_PointInstance_Custom_ST.h" />
+    <ClInclude Include="..\public\VIBuffer_PointInstance_Custom_STT.h" />
     <ClInclude Include="..\public\VIBuffer_Rect.h" />
     <ClInclude Include="..\public\VIBuffer_RectInstance.h" />
+    <ClInclude Include="..\Public\VIBuffer_RectInstance_Custom.h" />
     <ClInclude Include="..\public\VIBuffer_RectRHW.h" />
+    <ClInclude Include="..\public\VIBuffer_Rect_TripleUV.h" />
     <ClInclude Include="..\Public\VIBuffer_Sprite.h" />
     <ClInclude Include="..\public\VIBuffer_Terrain.h" />
   </ItemGroup>
@@ -260,6 +265,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\private\GameObject.cpp" />
     <ClCompile Include="..\private\GameObject_Manager.cpp" />
     <ClCompile Include="..\private\Graphic_Device.cpp" />
+    <ClCompile Include="..\Private\PostFX.cpp" />
     <ClCompile Include="..\Private\HierarchyNode.cpp" />
     <ClCompile Include="..\private\Input_Device.cpp" />
     <ClCompile Include="..\private\Layer.cpp" />
@@ -292,14 +298,20 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\private\VIBuffer_Color.cpp" />
     <ClCompile Include="..\Private\VIBuffer_FontInstance.cpp" />
     <ClCompile Include="..\private\VIBuffer_PointInstance.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_PointInstance_Custom_ST.cpp" />
+    <ClCompile Include="..\private\VIBuffer_PointInstance_Custom_STT.cpp" />
     <ClCompile Include="..\private\VIBuffer_Rect.cpp" />
     <ClCompile Include="..\private\VIBuffer_RectInstance.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_RectInstance_Custom.cpp" />
     <ClCompile Include="..\private\VIBuffer_RectRHW.cpp" />
+    <ClCompile Include="..\private\VIBuffer_Rect_TripleUV.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Sprite.cpp" />
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_PostFX.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Blend.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_PostFX.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_LightAcc.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_RenderTarget.hlsl" />
   </ItemGroup>

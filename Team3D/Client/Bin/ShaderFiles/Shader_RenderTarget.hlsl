@@ -60,8 +60,8 @@ technique11		DefaultTechnique
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_No_ZTest, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		GeometryShader = NULL;
 		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}	
 };

@@ -1,5 +1,4 @@
 #pragma once
-
 namespace Engine
 {
 	static _float4x4 MH_XMFloat4x4Identity()
