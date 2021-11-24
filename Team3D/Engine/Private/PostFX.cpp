@@ -31,6 +31,8 @@ HRESULT CPostFX::Ready_HDR(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCo
 
 HRESULT CPostFX::PostProcessing(_double TimeDelta)
 {
+	FAILED_CHECK_RETURN(Tick_Adaptation(TimeDelta), E_FAIL);
+
 	FAILED_CHECK_RETURN(DownScale(TimeDelta), E_FAIL);
 	FAILED_CHECK_RETURN(Bloom(), E_FAIL);;
 	FAILED_CHECK_RETURN(Blur(), E_FAIL);;
@@ -49,23 +51,6 @@ HRESULT CPostFX::DownScale(_double TimeDelta)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 	NULL_CHECK_RETURN(m_pEffect_CS, E_FAIL);
-
-	// Set Adaptation
-	m_fAdaptationDeltaT += (_float)TimeDelta;
-
-	static _bool bAdaptationFirstTime = true;
-	_float fAdaptNorm = 0.f;
-	if (bAdaptationFirstTime)
-	{
-		fAdaptNorm = 0.f;
-		bAdaptationFirstTime = false;
-	}
-	else
-	{
-		fAdaptNorm = min(m_fAdapt < 0.0001f ? 1.f : (m_fAdaptationDeltaT / m_fAdapt), 0.9999f);
-	}
-
-	m_fAdaptation = fAdaptNorm;
 
 	// CS ---------------------------------------------------------------------------
 	// For. First Pass
@@ -165,9 +150,9 @@ HRESULT CPostFX::FinalPass()
 	CPipeline* pPipeline = CPipeline::GetInstance();
 
 	if (GetAsyncKeyState(VK_F1) & 0x8000)
-		m_fMiddleGrey += 0.5f; // 0.0005
+		m_fMiddleGrey += 0.005f; // 0.0005
 	else if (GetAsyncKeyState(VK_F2) & 0x8000)
-		m_fMiddleGrey -= 0.5f;
+		m_fMiddleGrey -= 0.005f;
 
 	if (GetAsyncKeyState(VK_F3) & 0x8000)
 		m_fLumWhiteSqr += 0.05f;
@@ -204,6 +189,28 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
 	m_pVIBuffer_ToneMapping->Render(0);
+
+	return S_OK;
+}
+
+HRESULT CPostFX::Tick_Adaptation(_double TimeDelta)
+{
+	// Set Adaptation
+	m_fAdaptationDeltaT += (_float)TimeDelta;
+
+	static _bool bAdaptationFirstTime = true;
+	_float fAdaptNorm = 0.f;
+	if (bAdaptationFirstTime)
+	{
+		fAdaptNorm = 0.f;
+		bAdaptationFirstTime = false;
+	}
+	else
+	{
+		fAdaptNorm = min(m_fAdaptTime < 0.0001f ? 1.f : (m_fAdaptationDeltaT / m_fAdaptTime), 0.9999f);
+	}
+
+	m_fAdaptation = fAdaptNorm;
 
 	return S_OK;
 }

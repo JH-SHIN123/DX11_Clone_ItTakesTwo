@@ -21,6 +21,8 @@ private:
 	HRESULT Blur();
 	HRESULT FinalPass();
 
+	HRESULT Tick_Adaptation(_double TimeDelta);
+
 private:
 	HRESULT Build_LuminanceBuffer(_float iWidth, _float iHeight); /* 휘도의 중간값을 저장하기 위한 리소스들 & 부동소수점 형태로 평균 휘도 값을 저장 */
 	HRESULT Build_BloomResources(_float iWidth, _float iHeight);
@@ -43,8 +45,8 @@ private:
 	_float	m_fMiddleGrey = 0.0025f; 
 	_float	m_fLumWhiteSqr = 1.5f;
 	
+	_float	m_fAdaptTime = 1.f;
 	_float	m_fAdaptationDeltaT = 0.f;
-	_float	m_fAdapt = 1.f;
 	_float	m_fAdaptation = 0.f;
 
 private: /* For. CS - First Pass */
