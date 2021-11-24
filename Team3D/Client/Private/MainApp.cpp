@@ -31,21 +31,21 @@ HRESULT CMainApp::Run_App()
 
 	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
 
-	if (m_dFrameAcc >= 1.0 / 60.0)
+	if (m_dFrameAcc >= 1.0 / 1000.0)
 	{
 		m_dFrameAcc = 0.0;
 
 		_double dTimeDelta = m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
 
-		if (Tick(0.016666666666666666) & 0x80000000)
+		if (Tick(dTimeDelta) & 0x80000000)
 			return E_FAIL;
 
 		if (FAILED(Render(dTimeDelta)))
 			return E_FAIL;
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 		Show_FPS(dTimeDelta);
-#endif
+//#endif
 
 	}
 
@@ -144,7 +144,7 @@ void CMainApp::Free()
 	CGameInstance::Release_Engine();
 }
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 void CMainApp::Show_FPS(_double dTimeDelta)
 {
 	++m_iRenderCount;
@@ -158,4 +158,4 @@ void CMainApp::Show_FPS(_double dTimeDelta)
 		m_iRenderCount = 0;
 	}
 }
-#endif
+//#endif

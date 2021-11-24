@@ -34,9 +34,12 @@ HRESULT CTestObject01::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eSTARBUDDY, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = &PxSphereGeometry(0.5f);
+	//ArgDesc.pGeometry = &PxSphereGeometry(0.5f);
+	ArgDesc.pGeometry = new PxSphereGeometry(0.5f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
+
+	Safe_Delete(ArgDesc.pGeometry);
 
 	return S_OK;
 }

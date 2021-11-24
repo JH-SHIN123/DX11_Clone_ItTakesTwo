@@ -38,7 +38,7 @@ public:
 	static CMainApp* Create();
 	virtual void Free() override;
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	/* For.FPS */
 private:
 	_double	m_dSecondAcc		= 0.0; /* 1ÃÊ ´©Àû  */
@@ -46,7 +46,7 @@ private:
 	_uint	m_iRenderCount		= 0;
 private:
 	void	Show_FPS(_double dTimeDelta);
-#endif
+//#endif
 };
 
 END
