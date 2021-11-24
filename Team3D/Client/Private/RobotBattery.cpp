@@ -47,10 +47,12 @@ HRESULT CRobotBattery::NativeConstruct(void * pArg)
 
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTransformCom;
-	TriggerArgDesc.pGeometry = &PxSphereGeometry(1.5f);
+	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.5f);
 	m_UserData = USERDATA(GameID::eROBOTBATTERY, this);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
+
+	Safe_Delete(TriggerArgDesc.pGeometry);
 
 	DATABASE->Set_RobotBatteryPtr(this);
 
@@ -133,7 +135,7 @@ HRESULT CRobotBattery::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(3, 0, true);

@@ -47,8 +47,9 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eGRAVITYPIPE, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pPhysxTransformCom;
-	ArgDesc.pGeometry = &PxCapsuleGeometry(4.f, 20.f);
+	ArgDesc.pGeometry = new PxCapsuleGeometry(4.f, 20.f);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
+	Safe_Delete(ArgDesc.pGeometry);
 
 	return S_OK;
 }

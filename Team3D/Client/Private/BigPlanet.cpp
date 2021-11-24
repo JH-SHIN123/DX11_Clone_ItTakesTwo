@@ -28,7 +28,7 @@ HRESULT CBigPlanet::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_BigPlanet"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_HangingPlanet"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform2"), (CComponent**)&m_pPhysxTransformCom), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 42.f, 5.f, 1.f));
@@ -47,11 +47,11 @@ HRESULT CBigPlanet::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::ePLANET, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pPhysxTransformCom;
-	ArgDesc.pGeometry = &PxSphereGeometry(6.5f);
-
+	ArgDesc.pGeometry = new PxSphereGeometry(6.5f);
 
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
+	Safe_Delete(ArgDesc.pGeometry);
 
 	CStaticActor::ARG_DESC Arg;
 	Arg.pModel = m_pModelCom;
@@ -191,7 +191,7 @@ HRESULT CBigPlanet::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(3, 0, true);
@@ -201,7 +201,7 @@ HRESULT CBigPlanet::Render_ShadowDepth()
 
 void CBigPlanet::Pendulum(_double dTimeDelta)
 {
-	m_fRotateTime += dTimeDelta;
+	m_fRotateTime += (_float)dTimeDelta;
 	
 
 	if(m_fRotateTime < 1.f)

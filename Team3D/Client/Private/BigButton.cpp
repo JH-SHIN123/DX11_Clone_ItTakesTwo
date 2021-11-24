@@ -44,9 +44,10 @@ HRESULT CBigButton::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eBIGBUTTON, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = &PxSphereGeometry(5.f);
+	ArgDesc.pGeometry = new PxSphereGeometry(5.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
+	Safe_Delete(ArgDesc.pGeometry);
 	return S_OK;
 }
 
@@ -113,7 +114,7 @@ HRESULT CBigButton::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(3, 0, true);

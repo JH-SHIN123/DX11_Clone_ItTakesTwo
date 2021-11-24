@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CTriggerActor;
 END
 
+BEGIN(Client)
 class CEffect_GravityPipe final : public CInGameEffect_Model
 {
 private:
@@ -35,15 +36,12 @@ private:
 	CTextures* m_pTexturesCom_ColorRamp = nullptr;
 	CTextures* m_pTexturesCom_Distortion = nullptr;
 
-<<<<<<< HEAD:Team3D/Client/Defaults/Effect_GravityPipe.h
 	/* For.Trigger */
 	CTriggerActor*	m_pTriggerCom = nullptr;
 	CTransform*		m_pPhysxTransformCom = nullptr;
 
-=======
 private:
 	class CEffect_Env_Particle* m_pParticle = nullptr;
->>>>>>> main:Team3D/Client/Public/Effect_GravityPipe.h
 
 public:
 	static CEffect_GravityPipe* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
