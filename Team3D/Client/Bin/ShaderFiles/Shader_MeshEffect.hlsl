@@ -42,6 +42,14 @@ BlendState BlendState_Alpha3
 	DestBlendAlpha = ONE;
 	BlendOpAlpha = Add;
 };
+
+DepthStencilState DepthStecil_Test
+{
+	DepthEnable = true;
+	DepthWriteMask = All;
+	DepthFunc = Less;
+};
+
 sampler	Mirror_MinMagMipLinear_Sampler = sampler_state
 {
 	AddressU = mirror;
@@ -408,7 +416,7 @@ PS_OUT	PS_MAIN_RESPAWN_PORTAL(PS_IN_TRIPLE_UV In)
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV + fWeight);
 
-	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV) * 5.f;
+	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV) * 10.f;
 	Out.vDiffuse.a = Out.vDiffuse.b * 0.9f;
 
 	//if (0.f >= Out.vDiffuse.a)
@@ -483,10 +491,10 @@ PS_OUT	PS_MAIN_RESPAWNTENNEL(PS_IN_TRIPLE_UV In)
 
 	vector vColor = g_ColorRampTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vDiffuse.rgb = fWeight * vColor.rgb * 2.5f;
-	//Out.vDiffuse.a = 1.f;
+	Out.vDiffuse.a = 1;// Out.vDiffuse.r + Out.vDiffuse.g + Out.vDiffuse.b;
 
-	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	//Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+	//Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 
 	return Out;
 }
@@ -557,7 +565,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_Default, 0);
-		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_TRIPLE_UV();
 		GeometryShader = compile gs_5_0 GS_TRIPLE_UV();
 		PixelShader = compile ps_5_0 PS_MAIN_RESPAWN_PORTAL();
@@ -586,7 +594,7 @@ technique11 DefaultTechnique
 	pass RespawnTennel // 7
 	{
 		SetRasterizerState(Rasterizer_CCW);
-		SetDepthStencilState(DepthStecil_Default, 0);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_TRIPLE_UV();
 		GeometryShader = compile gs_5_0 GS_TRIPLE_UV();
