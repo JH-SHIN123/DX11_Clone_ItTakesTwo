@@ -61,7 +61,7 @@ _int CEffect_May_Boots::Late_Tick(_double TimeDelta)
 		return NO_EVENT;
 	}
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_May_Boots::Render(RENDER_GROUP::Enum eGroup)

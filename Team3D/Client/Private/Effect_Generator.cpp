@@ -20,6 +20,7 @@
 #include "Effect_GravityPipe.h"
 #include "Effect_Wormhole.h"
 #include "Effect_Env_Particle.h"
+#include "Effect_Dead_Particle_Fire.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -67,6 +68,10 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Dead_Particle");
 		m_pGameInstance->Add_GameObject_Clone(1, szLayer, 1, L"GameObject_2D_Player_Dead", &Clone_Data);
 		break;
+	case Effect_Value::Cody_Dead_Fire:
+		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);
+		lstrcpy(szPrototype, L"GameObject_2D_Player_Dead_Particle_Fire");
+		break;
 	case Effect_Value::Cody_Revive:
 		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Revive");
@@ -76,13 +81,16 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Dead_Particle");
 		m_pGameInstance->Add_GameObject_Clone(1, szLayer, 1, L"GameObject_2D_Player_Dead", &Clone_Data);
 		break;
+	case Effect_Value::May_Dead_Fire:
+		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
+		lstrcpy(szPrototype, L"GameObject_2D_Player_Dead_Particle_Fire");
+		break;
 	case Effect_Value::May_Revive:
 		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Revive");
 		break;
 	case Effect_Value::May_Boots_Walking:
 		lstrcpy(szPrototype, L"GameObject_2D_May_Boots_Walking_Particle");
-		// 공간왜곡도 추가
 		break;
 	default:
 		break;
@@ -180,6 +188,9 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Dead_Particle"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead_Particle",			CEffect_Player_Dead_Particle::Create(pDevice, pDeviceContext, pData));
 	
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Dead_Particle_Fire"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead_Particle_Fire",	CEffect_Player_Dead_Particle_Fire::Create(pDevice, pDeviceContext, pData));
+
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Revive"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Revive",				CEffect_Player_Revive::Create(pDevice, pDeviceContext, pData));
 
@@ -228,7 +239,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	CGameInstance* pInstance = CGameInstance::GetInstance();
 	NULL_CHECK_RETURN(pInstance, E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV")
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV")
 		, CVIBuffer_Rect_TripleUV::Create(pDevice, pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Rect.hlsl"), "DefaultTechnique")), E_FAIL);
 
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom")
@@ -265,7 +276,10 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Level_Preview"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Level_Preview/%d.png"), 7)), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Slime_Cloud"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Shockwave_02_E1.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Dot"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Custom/Dot.png"))), E_FAIL);
-
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Fire_Tiled"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/T_Fire_Tiled.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_SoftCLoud"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/SoftCLoud_01.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Explosion7x7"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Explosion/Explosion7x7_%d.png"), 2)), E_FAIL);
+	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Explosion8x8"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Explosion/Explosion8x8_%d.png"), 2)), E_FAIL);
 #pragma endregion
 
 	return S_OK;

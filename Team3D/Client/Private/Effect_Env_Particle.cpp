@@ -46,7 +46,7 @@ _int CEffect_Env_Particle::Late_Tick(_double TimeDelta)
 	if (0.0 == m_dControl_Time)
 		return NO_EVENT;
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Env_Particle::Render(RENDER_GROUP::Enum eGroup)

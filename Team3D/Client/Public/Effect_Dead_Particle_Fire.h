@@ -4,6 +4,10 @@
 
 #include "InGameEffect.h"
 
+BEGIN(Engine)
+class CVIBuffer_Rect_TripleUV;
+END
+
 BEGIN(Client)
 class CEffect_Player_Dead_Particle_Fire final : public CInGameEffect
 {
@@ -24,16 +28,44 @@ public:
 	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0) override;
 
 private:
-	HRESULT Ready_Instance();
+	HRESULT Ready_Instance();		// 파티클
+	HRESULT Ready_Point();			// 스모크
+	HRESULT Ready_Point_Small();	// 스모크 2
 	_float4 Set_particleUV(_int iIndex, _int U, _int V);
-	void	Set_VtxColor(_int iIndex, _uint iVtxIndex);
 
 private:
-	_double m_dAlphaTime = 1.5;
-	_bool	m_IsDisapear = false;
-	CTextures* m_pTexturesCom_Particle = nullptr;
-	CTextures* m_pTexturesCom_Particle_Mask = nullptr;
-	CModel* m_pTargetModel = nullptr;
+	_float2 Get_RandSize();
+	_float3 Get_Dir_Defulat(_int3 vDirPower, _fmatrix WorldMatrix);
+	_float3 Get_Dir(_int3 vDirPower, _fmatrix WorldMatrix);
+	_float3 Get_Dir_Random(_int3 vDirPower, _fmatrix WorldMatrix);
+
+private:
+	void Update_Point(_double TimeDelta);
+	void Update_Point_Small(_double TimeDelta);
+
+
+private:
+	_double		m_dAlphaTime = 1.5;
+	_bool		m_IsDisapear = false;
+	CModel*		m_pTargetModel = nullptr;
+	_float4*	m_pInstance_LocalPos = nullptr;
+
+private:
+	CTextures*				m_pTexturesCom_Point_Smoke		= nullptr;
+	VTXMATRIX_CUSTOM_ST*	m_pPointBuffer_Smoke			= nullptr;
+	_float					m_fPointInstance_Alpha			= 0.f;
+	const _float			m_fUVCheckTime_Max = 0.01f;
+	_float					m_fUVCheckTime = 0.f;
+
+private:
+	CTextures*				m_pTexturesCom_Point_Diff		= nullptr;
+	CTextures*				m_pTexturesCom_Point_Sprite		= nullptr;
+	VTXMATRIX_CUSTOM_ST*	m_pPointBuffer_Smoke_Small		= nullptr;
+	_float3*				m_vPointBuffer_Small_Dir		= nullptr;
+	const _int				m_iPointInstanceCount_Small		= 5;
+	_float					m_fPointInstance_Small_Alpha	= 0.f;
+	_bool					m_IsPointInstance_Small_Alpha_Add = true;
+
 
 public:
 	static CEffect_Player_Dead_Particle_Fire* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

@@ -55,7 +55,7 @@ _int CEffect_RespawnTunnel::Tick(_double TimeDelta)
 
 _int CEffect_RespawnTunnel::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_RespawnTunnel::Render(RENDER_GROUP::Enum eGroup)

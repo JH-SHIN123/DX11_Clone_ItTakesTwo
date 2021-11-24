@@ -69,7 +69,7 @@ _int CEffect_FireDoor::Tick(_double TimeDelta)
 
 _int CEffect_FireDoor::Late_Tick(_double TimeDelta)
 {
-	return  m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return  m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_FireDoor::Render(RENDER_GROUP::Enum eGroup)

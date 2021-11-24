@@ -45,7 +45,7 @@ _int CEffect_Wormhole::Tick(_double TimeDelta)
 
 _int CEffect_Wormhole::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Wormhole::Render(RENDER_GROUP::Enum eGroup)

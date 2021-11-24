@@ -135,12 +135,6 @@ HRESULT CInGameEffect::Ready_Component(void * pArg)
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom), E_FAIL);
 
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
-
-	for (_int i = 0; i < 3; ++i)
-		XMVector3Normalize(WolrdMatrix.r[i]);
-
-
-
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 
 	return S_OK;
@@ -454,6 +448,23 @@ void CInGameEffect::SetUp_Shader_Data()
 	}
 
 	return;
+}
+
+_float4 CInGameEffect::Get_TexUV(_uint iTexture_U, _uint iTexture_V, _bool IsInitialize)
+{
+	_float4	vUV;
+	if (true == IsInitialize)
+		vUV	= { 0.f, 0.f, _float(1.f / iTexture_U), _float(1.f / iTexture_V) };
+	else
+	{
+		_float fLeft	= _float(1.f / iTexture_U) *  iTexture_U;
+		_float fTop		= _float(1.f / iTexture_V) *  iTexture_V;
+		_float fRight	= _float(1.f / iTexture_U) * (iTexture_U + 1.f);
+		_float fBottom	= _float(1.f / iTexture_V) * (iTexture_V + 1.f);
+
+		vUV = { fLeft, fTop, fRight, fBottom };
+	}
+	return vUV;
 }
 
 _float4 CInGameEffect::Get_TexUV_Rand(_uint iTexture_U, _uint iTexture_V)

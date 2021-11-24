@@ -3,6 +3,7 @@
 #ifndef __VIBUFFER_RECT_TRIPLEUV_H__
 
 #include "VIBuffer.h"
+BEGIN(Engine)
 class ENGINE_DLL CVIBuffer_Rect_TripleUV final : public CVIBuffer
 {
 private:
@@ -20,5 +21,6 @@ public:
 	virtual void Free() override;
 };
 
+END
 #define __VIBUFFER_RECT_TRIPLEUV_H__
 #endif // !__VIBUFFER_RECT_TRIPLEUV_H__

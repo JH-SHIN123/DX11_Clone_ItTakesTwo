@@ -34,8 +34,6 @@ HRESULT CEffect_Player_Dead_Particle::NativeConstruct(void * pArg)
 	else if (EFFECT_DESC_CLONE::PV_CODY_L == m_EffectDesc_Clone.iPlayerValue)
 		m_EffectDesc_Prototype.iInstanceCount = 5000;
 
-	m_EffectDesc_Clone.UVTime = 0.01;
-	m_EffectDesc_Clone.vRandDirPower = { 10.f,10.f,10.f };
 
 	Ready_Instance();
 
@@ -68,7 +66,7 @@ _int CEffect_Player_Dead_Particle::Late_Tick(_double TimeDelta)
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Player_Dead_Particle::Render(RENDER_GROUP::Enum eGroup)

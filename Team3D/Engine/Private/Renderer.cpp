@@ -111,6 +111,7 @@ HRESULT CRenderer::Draw_Renderer()
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
 #ifdef _DEBUG
@@ -166,6 +167,20 @@ HRESULT CRenderer::Render_Alpha()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_GROUP::RENDER_ALPHA].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Effect()
+{
+	Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_EFFECT]);
+
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_EFFECT])
+	{
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_EFFECT), E_FAIL);
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[RENDER_GROUP::RENDER_EFFECT].clear();
 
 	return S_OK;
 }
