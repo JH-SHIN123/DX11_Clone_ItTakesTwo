@@ -178,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
+    <ClInclude Include="..\Public\CamEffect.h" />
     <ClInclude Include="..\public\Cam_Helper.h" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\CamEffect.cpp" />
     <ClCompile Include="..\private\Cam_Helper.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />

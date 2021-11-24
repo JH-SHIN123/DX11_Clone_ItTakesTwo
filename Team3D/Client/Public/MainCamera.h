@@ -53,6 +53,8 @@ private:
 
 
 
+	void ChangeViewPort();
+
 private:
 	_int	ReSet_Cam_FreeToAuto();		//변수 초기화용
 	_bool	OffSetPhsX(_double dTimeDelta,_fmatrix matRev,_vector * pOut);
@@ -60,8 +62,8 @@ private:
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 private:
-	void	StopCamEffect();
-	void	StartCamEffect_Shake(_float fDecaysec);
+
+
 	_fmatrix	Tick_CamEffect_ShakeCamera(_double dTimeDelta);
 private:
 	CGameObject* m_pTargetObj = nullptr;

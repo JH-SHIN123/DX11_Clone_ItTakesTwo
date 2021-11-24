@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Film.h"
 #include"Graphic_Device.h"
-
+#include"GameInstance.h"
 
 CFilm::CFilm()
 {
@@ -83,44 +83,50 @@ HRESULT CFilm::Tick_Film(_double dTimeDelta, ScreenType eScreenType)
 			XMStoreFloat4x4(&m_matCam[eScreenType], MakeCurCamMatrix(dTimeDelta, pCurNode, eScreenType));
 
 			//ºäÆ÷Æ® ¼³Á¤
-
-			/*if (nullptr == m_pGraphicDeivce)
-			return E_FAIL;
-			switch (m_eCurViewPortOption)
+			if (m_eCurViewPortOption != m_ePreViewPortOption)
 			{
-			case ViewPortOption::LScreenType_Split_Immediate:
-			m_pGraphicDeivce->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
-			XMVectorSet(tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY, 1.f, 1.f));
-			break;
-			case ViewPortOption::LScreenType_Split_Lerp:
-			m_pGraphicDeivce->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
-			XMVectorSet(tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY, 1.f, 1.f), tDesc.fViewPortLerpSpeed);
-			break;
-			case ViewPortOption::LScreenType_Merge_Immediate:
-			m_pGraphicDeivce->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 0.f),
-			XMVectorSet(0.f,0.f, 1.f, 1.f));
-			break;
-			case ViewPortOption::LScreenType_Merge_Lerp:
-			m_pGraphicDeivce->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 0.f),
-			XMVectorSet(0.f, 0.f, 1.f, 1.f),tDesc.fViewPortLerpSpeed);
-			break;
-			case ViewPortOption::RScreenType_Split_Immediate:
-			m_pGraphicDeivce->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
-			XMVectorSet(tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY, 1.f, 1.f));
-			break;
-			case ViewPortOption::RScreenType_Split_Lerp:
-			m_pGraphicDeivce->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
-			XMVectorSet(tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY, 1.f, 1.f), tDesc.fViewPortLerpSpeed);
-			break;
-			case ViewPortOption::RScreenType_Merge_Immediate:
-			m_pGraphicDeivce->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
-			XMVectorSet(0.f, 0.f, 0.f, 0.f));
-			break;
-			case ViewPortOption::RScreenType_Merge_Lerp:
-			m_pGraphicDeivce->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
-			XMVectorSet(0.f, 0.f, 0.f, 0.f),tDesc.fViewPortLerpSpeed);
-			break;
-			}*/
+				CGameInstance* pGameInstance = CGameInstance::GetInstance();
+				switch (m_eCurViewPortOption)
+				{
+				case Client::CFilm::ViewPortOption::LScreenType_Split_Immediate:
+					pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f),
+						XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+					break;
+				case Client::CFilm::ViewPortOption::LScreenType_Split_Lerp:
+					pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
+						XMVectorSet(0.f, 0.f, 1.f, 1.f));
+					pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f),
+						XMVectorSet(0.5f, 0.f, 0.5f, 1.f), pCurNode->fViewPortLerpSpeed);
+					break;
+				case Client::CFilm::ViewPortOption::LScreenType_Merge_Immediate:
+					pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
+						XMVectorSet(0.f, 0.f, 1.f, 1.f));
+					break;
+				case Client::CFilm::ViewPortOption::LScreenType_Merge_Lerp:
+					pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
+						XMVectorSet(0.f, 0.f, 1.f, 1.f), pCurNode->fViewPortLerpSpeed);
+					break;
+				case Client::CFilm::ViewPortOption::RScreenType_Split_Immediate:
+					pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, pCurNode->fTargetViewPortCenterX, pCurNode->fTargetViewPortCenterY),
+						XMVectorSet(pCurNode->fTargetViewPortCenterX, 0.f, pCurNode->fTargetViewPortCenterX, 1.f));
+					break;
+				case Client::CFilm::ViewPortOption::RScreenType_Split_Lerp:
+					pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
+						XMVectorSet(1.f, 0.f, 1.f, 1.f));
+					pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f),
+						XMVectorSet(0.5, 0.f, 0.5f, 1.f), pCurNode->fViewPortLerpSpeed);
+					break;
+				case Client::CFilm::ViewPortOption::RScreenType_Merge_Immediate:
+					pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
+						XMVectorSet(1.f, 0.f, 1.f, 1.f));
+					break;
+				case Client::CFilm::ViewPortOption::RScreenType_Merge_Lerp:
+					pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
+						XMVectorSet(1.f, 0.f, 1.f, 1.f), pCurNode->fViewPortLerpSpeed);
+					break;
+				}
+				m_ePreViewPortOption = m_eCurViewPortOption;
+			}
 
 		}
 

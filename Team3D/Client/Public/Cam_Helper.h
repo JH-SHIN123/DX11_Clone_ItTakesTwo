@@ -3,7 +3,7 @@
 #include"Client_Defines.h"
 #include "Component.h"
 #include"Film.h"
-
+#include"CamEffect.h"
 
 BEGIN(Engine)
 class CTransform;
@@ -47,18 +47,40 @@ private:
 	typedef unordered_map<const _tchar*,CFilm*> FILMS;
 	FILMS m_Films;
 
-	CFilm*				m_pCurFilm[CFilm::ScreenType_End] = { nullptr ,nullptr };
-	_bool				m_bIsPlayingAct[CFilm::ScreenType_End] = { false ,false };
-	_double				m_dTime[CFilm::ScreenType_End] = { 0.f,0.f };
+	CFilm*				m_pCurFilm[CFilm::Screen_End] = { nullptr ,nullptr };
+	_bool				m_bIsPlayingAct[CFilm::Screen_End] = { false ,false };
+	_double				m_dTime[CFilm::Screen_End] = { 0.f,0.f };
 
 	//For.CamNode
-	_bool				m_bIsSeeCamNode[CFilm::ScreenType_End] = { false,false };
-	_float				m_fCamNodeLerpTime[CFilm::ScreenType_End] = { 0.f,0.f };
-	_float4x4			m_matCamNode[CFilm::ScreenType_End];
+	_bool				m_bIsSeeCamNode[CFilm::Screen_End] = { false,false };
+	_float				m_fCamNodeLerpTime[CFilm::Screen_End] = { 0.f,0.f };
+	_float4x4			m_matCamNode[CFilm::Screen_End];
 private:
 	CFilm* Find_Film(const _tchar* pFilm);
 
-	CamHelperState m_eState[CFilm::ScreenType_End] = { CamHelperState::Helper_End,CamHelperState::Helper_End };
+private: //For.CamEffect
+		 //카메라 효과는 필름이나 카메라상태하고는 상관관계없이 호출되면 끝날때까지 지속
+	typedef unordered_map<const _tchar*, CCamEffect*> CAMEFFECTS;
+	CAMEFFECTS m_CamEffects;
+
+	CCamEffect*	m_pCurEffect[CFilm::Screen_End] = { nullptr,nullptr };
+	_bool				m_bIsPlayingCamEffect[CFilm::Screen_End] = { false,false };
+
+public:
+	_bool			Get_IsCamEffectPlaying(CFilm::ScreenType eScreen) { return m_bIsPlayingCamEffect[eScreen]; }
+	_bool			Tick_CamEffect(CFilm::ScreenType eScreen, _double dTimeDelta, _fmatrix matIn);
+	HRESULT			Add_CamEffect(const _tchar* pCamEffectTag, CCamEffect* pCamEffect);
+	HRESULT			Add_CamShakeCycleDesc(const _tchar* pCamEffectTag,CCamEffect::CamShakeCycleDesc* pDesc);
+	HRESULT			Start_CamEffect(const _tchar* pEffectName, CFilm::ScreenType eScreen);
+	_fmatrix		Get_CurApplyCamEffectMatrix(CFilm::ScreenType eScreen);
+	HRESULT			Render_CamNodeRoot();
+private:
+	class CCamEffect* Find_CamEffect(const _tchar* pCamEffectName);
+
+
+
+private: //For.System
+	CamHelperState m_eState[CFilm::Screen_End] = { CamHelperState::Helper_End,CamHelperState::Helper_End };
 public:
 	static CCam_Helper* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
 	virtual CComponent* Clone_Component(void* pArg = nullptr)override;

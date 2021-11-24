@@ -9,7 +9,7 @@ class CFilm : public CBase
 {
 
 public:
-	enum	   ScreenType { LScreen, RScreen, ScreenType_End };
+	enum	   ScreenType { LScreen, RScreen, Screen_End };
 	enum class CamMoveOption { Move_Jump, Move_Straight, Move_Bezier_3, Move_Bezier_4, End };
 	enum class CamNodeVectorType { Eye, At, End };
 	enum class ViewPortOption
@@ -81,27 +81,28 @@ private:
 	
 	TCHAR m_szFilmName[MAX_PATH] = L"";
 	vector<CamNode*> m_CamNodes;
-	_uint m_iCurrentNode[ScreenType_End];
-	_bool m_bIsEnd[ScreenType_End];
-	_float4x4 m_matCam[ScreenType_End];
-	_double m_dTime[ScreenType_End];
+	_uint m_iCurrentNode[Screen_End];
+	_bool m_bIsEnd[Screen_End];
+	_float4x4 m_matCam[Screen_End];
+	_double m_dTime[Screen_End];
 	_double m_dDuration;
 	ViewPortOption m_eCurViewPortOption;
+	ViewPortOption m_ePreViewPortOption;
 
 	//For.CamEye
 	CamMoveOption m_eCurEye_CamMoveOption;
 
-	_double m_dCamMoveTime[ScreenType_End][(_uint)CamMoveOption::End];
-	_bool m_bCurEye_StartBezier[ScreenType_End] = { false,false };
-	_uint m_iCurEye_BezierNode[ScreenType_End][Bezier_End];
+	_double m_dCamMoveTime[Screen_End][(_uint)CamMoveOption::End];
+	_bool m_bCurEye_StartBezier[Screen_End] = { false,false };
+	_uint m_iCurEye_BezierNode[Screen_End][Bezier_End];
 	//For.CamAt
 	CamMoveOption m_eCurAt_CamMoveOption;
 
-	_double m_dCamAtMoveTime[ScreenType_End][(_uint)CamMoveOption::End];
-	_bool m_bCurAt_StartBezier[ScreenType_End] = { false,false };
-	_uint m_iCurAt_BezierNode[ScreenType_End][Bezier_End];
+	_double m_dCamAtMoveTime[Screen_End][(_uint)CamMoveOption::End];
+	_bool m_bCurAt_StartBezier[Screen_End] = { false,false };
+	_uint m_iCurAt_BezierNode[Screen_End][Bezier_End];
 
-	_bool m_bCurNodeEnd[ScreenType_End][(_uint)CamNodeVectorType::End];
+	_bool m_bCurNodeEnd[Screen_End][(_uint)CamNodeVectorType::End];
 
 };
 END

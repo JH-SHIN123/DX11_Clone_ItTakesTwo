@@ -159,6 +159,9 @@
     <Filter Include="02.GameObject\05.UI\05.UISprite">
       <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\00.Public\03.Cam_Helper\CamEffect">
+      <UniqueIdentifier>{fb6abacd-7350-4cd6-bc75-133e14471971}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -284,6 +287,9 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h">
       <Filter>98.Defines</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CamEffect.h">
+      <Filter>02.GameObject\00.Public\03.Cam_Helper\CamEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -384,6 +390,9 @@
     </ClCompile>
     <ClCompile Include="..\private\TileBox.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CamEffect.cpp">
+      <Filter>02.GameObject\00.Public\03.Cam_Helper\CamEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
