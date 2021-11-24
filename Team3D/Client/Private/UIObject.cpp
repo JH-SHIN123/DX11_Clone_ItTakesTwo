@@ -96,6 +96,23 @@ HRESULT CUIObject::Ready_Component()
 	return S_OK;
 }
 
+HRESULT CUIObject::Set_UIDefaultVariables_Perspective(CVIBuffer * pVIBuffer)
+{
+	_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubViewMatrix, SubProjMatrix;
+
+	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	ViewMatrix = XMMatrixIdentity();
+	ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
+
+	pVIBuffer->Set_Variable("g_UIWorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+	pVIBuffer->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+	pVIBuffer->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
+
+	pVIBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
+
+	return S_OK;
+}
+
 HRESULT CUIObject::Set_UIVariables_Perspective(CVIBuffer* pVIBuffer)
 {
 	if (nullptr == pVIBuffer || nullptr == m_pTextureCom)

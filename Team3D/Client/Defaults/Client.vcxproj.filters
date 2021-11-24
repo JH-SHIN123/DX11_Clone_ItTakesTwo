@@ -169,6 +169,15 @@
     <Filter Include="02.GameObject\06.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.UI\10.Menu">
+      <UniqueIdentifier>{2c177276-9cd8-4cd1-9b02-729ba9e0d7a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\10.Menu\00.Screen">
+      <UniqueIdentifier>{43442957-b4fa-435a-842c-2889b82d3f5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.UI\10.Menu\01.HeaderBox">
+      <UniqueIdentifier>{3d06338d-2d98-4faa-8163-518d639a3457}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -306,6 +315,12 @@
     <ClInclude Include="..\public\Sky.h">
       <Filter>02.GameObject\06.Sky</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\HeaderBox.h">
+      <Filter>02.GameObject\05.UI\10.Menu\01.HeaderBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MenuScreen.h">
+      <Filter>02.GameObject\05.UI\10.Menu\00.Screen</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -418,6 +433,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Sky.cpp">
       <Filter>02.GameObject\06.Sky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HeaderBox.cpp">
+      <Filter>02.GameObject\05.UI\10.Menu\01.HeaderBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MenuScreen.cpp">
+      <Filter>02.GameObject\05.UI\10.Menu\00.Screen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

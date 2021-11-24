@@ -190,6 +190,7 @@
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\Cody.h" />
     <ClInclude Include="..\public\DataStorage.h" />
+    <ClInclude Include="..\Public\HeaderBox.h" />
     <ClInclude Include="..\Public\InputButton.h" />
     <ClInclude Include="..\Public\InputButton_Frame.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
@@ -199,6 +200,7 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\MainCamera.h" />
     <ClInclude Include="..\Public\May.h" />
+    <ClInclude Include="..\Public\MenuScreen.h" />
     <ClInclude Include="..\Public\MoonBaboon.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
     <ClInclude Include="..\Public\PlayerMarker.h" />
@@ -231,6 +233,7 @@
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
     <ClCompile Include="..\private\DataStorage.cpp" />
+    <ClCompile Include="..\Private\HeaderBox.cpp" />
     <ClCompile Include="..\Private\InputButton.cpp" />
     <ClCompile Include="..\Private\InputButton_Frame.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
@@ -240,6 +243,7 @@
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\MainCamera.cpp" />
     <ClCompile Include="..\Private\May.cpp" />
+    <ClCompile Include="..\Private\MenuScreen.cpp" />
     <ClCompile Include="..\Private\MoonBaboon.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
     <ClCompile Include="..\Private\PlayerMarker.cpp" />

@@ -74,6 +74,7 @@ protected:
 
 protected:
 	HRESULT Ready_Component();
+	HRESULT Set_UIDefaultVariables_Perspective(CVIBuffer* pVIBuffer);
 	HRESULT Set_UIVariables_Perspective(CVIBuffer* pVIBuffer);
 	HRESULT Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer);
 
