@@ -235,6 +235,27 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\06.Landing_Smoke">
       <UniqueIdentifier>{5268a6b4-0c71-43a4-b934-31ce7bc3a010}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment">
+      <UniqueIdentifier>{e056b0e9-9d57-4825-aae6-dc4576b4077f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\Instancing_Env">
+      <UniqueIdentifier>{0961f270-4107-4546-8b54-2207c540708a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\Static_Env">
+      <UniqueIdentifier>{f3321f61-76e8-4d95-85e5-630c61340bbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\Dynamic_Env">
+      <UniqueIdentifier>{41e68147-d11e-4913-a0ba-ca2aa591f1a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\Environment_Generator">
+      <UniqueIdentifier>{a8d8c8a6-5681-43c5-bb21-cb5353391f70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.Sky">
+      <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
+      <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -414,6 +435,21 @@
     <ClInclude Include="..\public\Effect_Env_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Environment_Generator.h">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\Environment_Generator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Static_Env.h">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\Static_Env</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Instancing_Env.h">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\Instancing_Env</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Sky.h">
+      <Filter>02.GameObject\06.Sky</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Dead_Particle_Fire.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -427,9 +463,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Level_Loading.cpp">
       <Filter>01.Maps\01.Loading\00.Main</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Loading.cpp">
-      <Filter>01.Maps\01.Loading\99.Loading</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\02.Terrain</Filter>
@@ -566,6 +599,24 @@
     <ClCompile Include="..\private\Effect_Env_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Environment_Generator.cpp">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\Environment_Generator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Static_Env.cpp">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\Static_Env</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Instancing_Env.cpp">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\Instancing_Env</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Loading.cpp">
+      <Filter>01.Maps\01.Loading\99.Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Sky.cpp">
+      <Filter>02.GameObject\06.Sky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Dead_Particle_Fire.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -620,6 +671,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

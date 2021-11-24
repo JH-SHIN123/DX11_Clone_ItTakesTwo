@@ -28,7 +28,7 @@ HRESULT CStarBuddy::NativeConstruct(void * pArg)
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_StarBuddy"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Com"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(15.f, 1.f, 10.f, 1.f));
 
@@ -39,22 +39,22 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_0))
-		m_bLaunch = true;
+	//if (m_pGameInstance->Key_Down(DIK_0))
+	//	m_bLaunch = true;
 
-	if (m_bLaunch == false)
-	{
-		m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
-		m_pTransformCom->RotatePitch(dTimeDelta * 0.2f);
-	}
+	//if (m_bLaunch == false)
+	//{
+	//	m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
+	//	m_pTransformCom->RotatePitch(dTimeDelta * 0.2f);
+	//}
 
-	else if (m_bLaunch == true)
-	{
-		Launch_StarBuddy(dTimeDelta);
-		m_fLifeTime += (_float)dTimeDelta;
-		if (m_fLifeTime > 3.5f)
-			return EVENT_DEAD; // 
-	}
+	//else if (m_bLaunch == true)
+	//{
+	//	Launch_StarBuddy(dTimeDelta);
+	//	m_fLifeTime += (_float)dTimeDelta;
+	//	if (m_fLifeTime > 3.5f)
+	//		return EVENT_DEAD; // 
+	//}
 
 	return NO_EVENT;
 }
