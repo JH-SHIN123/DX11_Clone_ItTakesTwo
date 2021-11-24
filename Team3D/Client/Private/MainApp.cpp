@@ -75,7 +75,7 @@ HRESULT CMainApp::Render(_double dTimeDelta)
 	m_pGameInstance->Clear_BackBuffer(_float4(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Clear_DepthStencilBuffer();
 
-	FAILED_CHECK_RETURN(m_pRenderer->Draw_Renderer(), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderer->Draw_Renderer(dTimeDelta), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Render_Level(), E_FAIL);
 
 	m_pGameInstance->Present();

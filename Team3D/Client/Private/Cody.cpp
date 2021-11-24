@@ -42,7 +42,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	UI_Create(Cody, PlayerMarker);
 	//UI_Create(Cody, Portrait_Cody);
 	//UI_Create(May, Portrait_May);
-	UI_Create(Cody, RespawnCircle);
+	//UI_Create(Cody, RespawnCircle);
 	UI_Create(May, StickIcon);
 
 	//UI_Create(Cody, InputButton_InterActive);
@@ -88,9 +88,6 @@ HRESULT CCody::Ready_Component()
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
-	//Effect 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Cody_Size"), nullptr, (CGameObject**)&m_pEffect_Size), E_FAIL);
-	m_pEffect_Size->Set_Model(m_pModelCom);
 
 	return S_OK;
 }

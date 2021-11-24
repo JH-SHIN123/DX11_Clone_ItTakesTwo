@@ -554,9 +554,6 @@
     <ClCompile Include="..\private\Effect_Generator.cpp">
       <Filter>95.Effect_Generator</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Cody.cpp">
-      <Filter>02.GameObject\03.Character\00.Cody</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
     </ClCompile>
@@ -574,9 +571,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\UFO.cpp">
       <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\DataStorage.cpp">
-      <Filter>96.DataStorage</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Wormhole.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\02.Wormhole</Filter>
@@ -656,12 +650,6 @@
     <ClCompile Include="..\Private\PC_MouseButton.cpp">
       <Filter>02.GameObject\05.UI\02.PC_MouseButton</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp">
-      <Filter>02.GameObject\05.UI\03.ArrowKeys\00.Fill</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp">
-      <Filter>02.GameObject\05.UI\03.ArrowKeys\01.Outline</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\PlayerMarker.cpp">
       <Filter>02.GameObject\05.UI\04.PlayerMarker</Filter>
     </ClCompile>
@@ -724,6 +712,22 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Cody.cpp">
+      <Filter>02.GameObject\03.Character\00.Cody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp">
+      <Filter>02.GameObject\05.UI\03.ArrowKeys\00.Fill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp">
+      <Filter>02.GameObject\05.UI\03.ArrowKeys\01.Outline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\.cpp">
+      <Filter>02.GameObject\03.Character\99.Parent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Character.cpp" />
+    <ClCompile Include="..\Private\DataStorage.cpp">
+      <Filter>96.DataStorage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
