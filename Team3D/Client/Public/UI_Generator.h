@@ -3,13 +3,14 @@
 #include "Client_Defines.h"
 #include "Base.h"
 #include "UIObject.h"
-#include "GameInstance.h"
 
-BEGIN(ENGINE)
+BEGIN(Engine)
 class CTextures;
 class CVIBuffer_FontInstance;
 class CVIBuffer_Rect;
 END
+
+BEGIN(Client)
 
 #define UI_Create(ePlayer, eTrigger)															\
 	CUI_Generator::GetInstance()->Set_TriggerOn();												\
@@ -94,3 +95,5 @@ public:
 	virtual void Free() override;
 
 };
+
+END

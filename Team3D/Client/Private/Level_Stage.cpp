@@ -1,7 +1,11 @@
 #include "stdafx.h"
 #include "..\Public\Level_Stage.h"
 #include "GameInstance.h"
+#include "Environment_Generator.h"
 #include "Camera.h"
+
+#include "InGameEffect.h"
+#include "Effect_Generator.h"
 
 CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -21,19 +25,26 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Cody(TEXT("Layer_Cody")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_May(TEXT("Layer_May")), E_FAIL);
 
+	FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
+
 	//FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
 
 	/* For.Interactive Objects */
-	FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_Robot(TEXT("Layer_Robot")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_RobotHead(TEXT("Layer_RobotHead")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_Robot(TEXT("Layer_Robot")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_RobotHead(TEXT("Layer_RobotHead")), E_FAIL);
 
 	/* For.Test */
-	FAILED_CHECK_RETURN(Ready_Layer_Test(), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_Test(), E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Map", Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Map", Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
+
+	/* For. Environment */
+	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space(), E_FAIL);
+	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space_Boss(), E_FAIL);
+	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Interactive_Instancing(), E_FAIL);
 
 	return S_OK;
 }
@@ -49,6 +60,8 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	if (m_pGameInstance->Key_Down(DIK_3))
 		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
 
+
+	CEffect_Generator::GetInstance()->LoopSpawner(dTimedelta);
 
 	return NO_EVENT;
 }
@@ -134,6 +147,40 @@ HRESULT CLevel_Stage::Ready_Layer_Cody(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_May(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_May")), E_FAIL);
+	return S_OK;
+}
+
+HRESULT CLevel_Stage::Test_Layer_Effect(const _tchar * pLayerTag)
+{
+	EFFECT_DESC_CLONE Data;
+
+	_matrix WorldMatrix = XMMatrixIdentity();
+	WorldMatrix.r[3] = { 5.f,2.f,5.f,1.f };
+	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
+
+	//	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
+	//	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Stage::Test_Layer_Object_Effect(const _tchar * pLayerTag)
+{
+	EFFECT_DESC_CLONE Data;
+	_matrix WorldMatrix = XMMatrixIdentity();
+	WorldMatrix.r[3] = { 0.f,2.f,5.f,1.f };
+	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel"), &Data), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
+
+	WorldMatrix.r[3] = { 10.f,2.f,5.f,1.f };
+	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Gravity_Pipe"), &Data), E_FAIL);	
+	
+	WorldMatrix.r[3] = { -5.f,2.f,5.f,1.f };
+	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Wormhole"), &Data), E_FAIL);
+
 	return S_OK;
 }
 

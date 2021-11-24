@@ -6,6 +6,9 @@
 #include "UIObject.h"
 #include "May.h"
 
+#include "Effect_Generator.h"
+#include "Effect_Cody_Size.h"
+
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
@@ -34,6 +37,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
+<<<<<<< HEAD
 	UI_Create(Cody, PC_Mouse_Reduction);
 	UI_Create(Cody, PC_Mouse_Enlargement);
 	UI_Create(Cody, PlayerMarker);
@@ -44,6 +48,18 @@ HRESULT CCody::NativeConstruct(void* pArg)
 
 	//UI_Create(Cody, InputButton_InterActive);
 
+=======
+ 	UI_Create(Cody, PC_Mouse_Reduction);
+ 	UI_Create(Cody, PC_Mouse_Enlargement);
+ 	UI_Create(Default, LoadingBook);
+ 	UI_Create(May, Arrowkeys_Side);
+ 	UI_Create(May, StickIcon);
+ 
+ 	UI_Create(Cody, PlayerMarker);
+ 
+ 	UI_Create(Cody, InputButton_InterActive);
+	 
+>>>>>>> main
 
 	return S_OK;
 }
@@ -85,6 +101,10 @@ HRESULT CCody::Ready_Component()
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
+	//Effect 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Cody_Size"), nullptr, (CGameObject**)&m_pEffect_Size), E_FAIL);
+	m_pEffect_Size->Set_Model(m_pModelCom);
+
 	return S_OK;
 }
 
@@ -110,6 +130,7 @@ _int CCody::Tick(_double dTimeDelta)
 		return NO_EVENT;
 
 	KeyInput(dTimeDelta);
+
 	if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
 	{
 		TriggerCheck(dTimeDelta);
@@ -122,12 +143,17 @@ _int CCody::Tick(_double dTimeDelta)
 	}
 	Ground_Pound(dTimeDelta);
 
+<<<<<<< HEAD
 	CMay* pMay = (CMay*)DATABASE->GetMay();
 	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 
 	//테스트////////////////////////////////////////////////
 	if(m_pGameInstance->Key_Down(DIK_3))
 		UI_Create(Cody, RespawnCircle);
+=======
+	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+>>>>>>> main
 
 	if (m_pGameInstance->Key_Down(DIK_4))
 		UI_Delete(Cody, RespawnCircle);
@@ -135,6 +161,8 @@ _int CCody::Tick(_double dTimeDelta)
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
+	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
+
 	return NO_EVENT;
 }
 
@@ -191,6 +219,7 @@ void CCody::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pEffect_Size);
 	CCharacter::Free();
 }
 
@@ -209,6 +238,26 @@ void CCody::KeyInput(_double TimeDelta)
 	_bool bRoll = false;
 #pragma endregion
 
+#pragma region Teleport
+	if (m_pGameInstance->Key_Down(DIK_1)) /* 스타트 지점 */
+		m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_2)) /* 2층 */
+		m_pActorCom->Set_Position(XMVectorSet(60.f, 125.f, 170.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_3)) /* 2스테이지 입구 */
+		m_pActorCom->Set_Position(XMVectorSet(620.f, 760.f, 195.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_4)) /* 2스테이지 */
+		m_pActorCom->Set_Position(XMVectorSet(960.f, 720.f, 193.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_5))/* 3스테이지 */
+		m_pActorCom->Set_Position(XMVectorSet(-610.f, 760.f, 195.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_6))/* 3층 */
+		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_7))/* Boss */
+		m_pActorCom->Set_Position(XMVectorSet(62.f, 250.f, 187.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_8))/* Moon */
+		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
+		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+#pragma endregion
 #pragma region 8Way_Move
 	
 
@@ -339,6 +388,8 @@ void CCody::KeyInput(_double TimeDelta)
 	{
 		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 		if (m_IsJumping == false)
 		{
 			m_fAcceleration = 5.f;
@@ -447,8 +498,14 @@ void CCody::KeyInput(_double TimeDelta)
 		m_bGroundPound = true;
 	}
 
-#pragma endregion 
+#pragma endregion
 
+#pragma region Effet Test
+	if (m_pGameInstance->Key_Down(DIK_O))
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+	if (m_pGameInstance->Key_Down(DIK_I))
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+#pragma  endregion
 }
 void CCody::Move(const _double TimeDelta)
 {
@@ -943,6 +1000,8 @@ void CCody::Change_Size(const _double TimeDelta)
 	{
 		if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_LARGE)
 		{
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_LARGE);
+
 			if (m_vScale.x < 5.f)
 			{
 				m_vScale.x += (_float)TimeDelta * 20.f;
@@ -953,7 +1012,7 @@ void CCody::Change_Size(const _double TimeDelta)
 			else
 			{
 				m_vScale = { 5.f, 5.f, 5.f };
-				m_IsSizeChanging = false;
+				m_IsSizeChanging = false; 
 				m_eCurPlayerSize = SIZE_LARGE;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 
@@ -963,6 +1022,8 @@ void CCody::Change_Size(const _double TimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_LARGE && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_LARGE_MIDDLE);
+
 			if (m_vScale.x > 1.f)
 			{
 				m_vScale.x -= (_float)TimeDelta * 20.f;
@@ -980,6 +1041,8 @@ void CCody::Change_Size(const _double TimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_SMALL)
 		{
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_SMALL);
+
 			if (m_vScale.x > 0.5f)
 			{
 				m_vScale.x -= (_float)TimeDelta * 10.f;
@@ -1000,6 +1063,8 @@ void CCody::Change_Size(const _double TimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_SMALL && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
+			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_SMALL_MIDDLE);
+
 			if (m_vScale.x < 1.f)
 			{
 				m_vScale.x += (_float)TimeDelta * 10.f;

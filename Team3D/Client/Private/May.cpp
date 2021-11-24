@@ -6,6 +6,12 @@
 #include "UIObject.h"
 #include "Cody.h"
 
+#include "Transform.h"
+
+#include "DataStorage.h"
+#include "Effect_Generator.h"
+#include "Effect_May_Boots.h"
+
 CMay::CMay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
 {
@@ -44,7 +50,7 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
 
-	UI_Create(May, PlayerMarker);
+// 	UI_Create(May, PlayerMarker);
 	 
 
 	return S_OK;
@@ -88,6 +94,10 @@ HRESULT CMay::Ready_Component()
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
+	//Effect 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_May_Boots"), nullptr, (CGameObject**)&m_pEffect_GravityBoots), E_FAIL);
+	m_pEffect_GravityBoots->Set_Model(m_pModelCom);
+
 	return S_OK;
 }
 
@@ -126,18 +136,22 @@ _int CMay::Tick(_double dTimeDelta)
 	}
 	Ground_Pound(dTimeDelta);
 
+<<<<<<< HEAD
 	CCody* pCody = (CCody*)DATABASE->GetCody();
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+=======
+	//UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+>>>>>>> main
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
+	m_pEffect_GravityBoots->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 	return NO_EVENT;
 }
 
 _int CMay::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
-
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
@@ -186,6 +200,7 @@ void CMay::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pEffect_GravityBoots);
 	CCharacter::Free();
 }
 
@@ -389,6 +404,15 @@ void CMay::KeyInput(_double TimeDelta)
 
 #pragma endregion 
 
+#pragma region Effet Test
+	if (m_pGameInstance->Key_Down(DIK_P))
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+	if (m_pGameInstance->Key_Pressing(DIK_TAB))
+		m_pEffect_GravityBoots->Set_IsActivate_GravityBoots();
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
+		m_pEffect_GravityBoots->Add_WalkingParticle(true);
+
+#pragma  endregion
 }
 
 void CMay::Move(const _double TimeDelta)

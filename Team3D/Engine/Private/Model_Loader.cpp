@@ -94,7 +94,7 @@ HRESULT CModel_Loader::Load_ModelFromFile(ID3D11Device * pDevice, ID3D11DeviceCo
 
 				lstrcpy(szMaterialFullPath, szBasePath);
 				lstrcat(szMaterialFullPath, TEXT("Material/"));
-				lstrcat(szMaterialFullPath, szMaterialFileName);
+				//lstrcat(szMaterialFullPath, szMaterialFileName);
 				lstrcat(szMaterialFullPath, szMaterialName);
 				lstrcat(szMaterialFullPath, TEXT(".tga"));
 

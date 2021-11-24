@@ -254,6 +254,7 @@ FakesAssemblies/
 
 # Directory
 Team3D/Client/Bin/Resources/
+Team3D/PlugIns/
 
 # Others
 *.cso

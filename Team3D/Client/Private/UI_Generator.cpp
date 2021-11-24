@@ -1,21 +1,30 @@
 #include "stdafx.h"
 #include "..\Public\UI_Generator.h"
 
+<<<<<<< HEAD
 #include "Pipeline.h"
 #include "UISprite.h"
 #include "Portrait.h"
 #include "HeaderBox.h"
 #include "MenuScreen.h"
 #include "AlphaScreen.h"
+=======
+#include "GameInstance.h"
+#include "InputButton_Frame.h"
+>>>>>>> main
 #include "InputButton.h"
 #include "SplashScreen.h"
 #include "PlayerMarker.h"
 #include "RespawnCircle.h"
 #include "PC_MouseButton.h"
 #include "Arrowkeys_Fill.h"
+<<<<<<< HEAD
 #include "ButtonIndicator.h"
 #include "InputButton_Frame.h"
 #include "Arrowkeys_Outline.h"
+=======
+#include "UISprite.h"
+>>>>>>> main
 
 IMPLEMENT_SINGLETON(CUI_Generator)
 
