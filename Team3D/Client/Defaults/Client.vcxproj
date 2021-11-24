@@ -198,6 +198,7 @@
     <ClInclude Include="..\public\Effect_Dead_Particle_Fire.h" />
     <ClInclude Include="..\public\Effect_Env_Particle.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
+    <ClInclude Include="..\Public\Effect_GravityPipe.h" />
     <ClInclude Include="..\public\Effect_May_Boots.h" />
     <ClInclude Include="..\public\Effect_May_Boots_Walking_Particle.h" />
     <ClInclude Include="..\public\Effect_Player_Revive.h" />
@@ -243,7 +244,6 @@
     <ClInclude Include="..\Public\UISprite.h" />
     <ClInclude Include="..\Public\UI_Generator.h" />
     <ClInclude Include="Client.h" />
-    <ClInclude Include="Effect_GravityPipe.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -254,6 +254,7 @@
     <ClCompile Include="..\private\Effect_Dead_Particle_Fire.cpp" />
     <ClCompile Include="..\private\Effect_Env_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Generator.cpp" />
+    <ClCompile Include="..\Private\Effect_GravityPipe.cpp" />
     <ClCompile Include="..\private\Effect_May_Boots.cpp" />
     <ClCompile Include="..\private\Effect_May_Boots_Walking_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Player_Revive.cpp" />
@@ -302,7 +303,6 @@
     <ClCompile Include="..\Private\UISprite.cpp" />
     <ClCompile Include="..\Private\UI_Generator.cpp" />
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="Effect_GravityPipe.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
