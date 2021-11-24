@@ -34,13 +34,13 @@ HRESULT CSplashScreen::NativeConstruct(void * pArg)
 
 	if (0 == m_iOption)
 	{
-		m_fSortOrder = 1.f;
+		m_fSortOrder = 0.f * -1.f;
 		m_iPassNum = 8;
 		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 720.f, 0.f, 0.f));
 	}
 	else
 	{
-		m_fSortOrder = 0.f;
+		m_fSortOrder = 1.f * -1.f;
 		m_iPassNum = 9;
 		m_pTransformCom->Set_Scale(XMVectorSet(900.f, 400.f, 0.f, 0.f));
 	}

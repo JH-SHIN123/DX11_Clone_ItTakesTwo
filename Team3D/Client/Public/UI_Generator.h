@@ -40,7 +40,7 @@ public:
 	HRESULT NativeConstruct(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
 
 public:
-	HRESULT Load_Data(const _tchar* pFilePath);
+	HRESULT Load_Data(const _tchar* pFilePath, Level::ID eLevel);
 	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	HRESULT Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	HRESULT Render_Font(_tchar* pText, FONTDESC tFontDesc, Player::ID ePlayer, _bool IsAlpha = false);

@@ -49,7 +49,7 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	return S_OK;
 }
 
-HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath)
+HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath, Level::ID eLevel)
 {
 	HANDLE hFile = CreateFile(pFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
@@ -79,11 +79,18 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath)
 
 	for (auto PSData : m_vecPSData)
 	{
-		if (FAILED(Add_Prototype_Interactive_UI(PSData)))
-			return E_FAIL;
+		if (eLevel == Level::LEVEL_LOGO)
+		{
 
-		if (FAILED(Add_Prototype_Fixed_UI(PSData)))
-			return E_FAIL;
+		}
+		else if (eLevel == Level::LEVEL_STAGE)
+		{
+			if (FAILED(Add_Prototype_Interactive_UI(PSData)))
+				return E_FAIL;
+
+			if (FAILED(Add_Prototype_Fixed_UI(PSData)))
+				return E_FAIL;
+		}
 	}
 
 	CloseHandle(hFile);
