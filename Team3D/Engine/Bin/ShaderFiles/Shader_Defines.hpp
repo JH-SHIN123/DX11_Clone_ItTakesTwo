@@ -136,6 +136,13 @@ sampler	Clamp_MinMagMipLinear_Sampler = sampler_state
 	Filter = MIN_MAG_MIP_LINEAR;
 };
 
+sampler	Mirror_MinMagMipLinear_Sampler = sampler_state
+{
+	AddressU = mirror;
+	AddressV = mirror;
+	Filter = MIN_MAG_MIP_LINEAR;
+};
+
 SamplerComparisonState ShadowSampler = sampler_state
 {
 	Filter = COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
@@ -166,6 +173,12 @@ RasterizerState Rasterizer_NoCull
 {
 	FillMode = Solid;
 	CullMode = None;
+};
+RasterizerState Rasterizer_CCW
+{
+	FillMode = Solid;
+	CullMode = Front;
+	FrontCounterClockwise = true;
 };
 RasterizerState Rasterizer_Shadow
 {

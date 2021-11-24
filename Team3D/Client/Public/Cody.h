@@ -227,10 +227,12 @@ private:
 	HRESULT Ready_Component();
 	void Add_LerpInfo_To_Model();
 
+private: // Effects
+	class CEffect_Cody_Size* m_pEffect_Size = nullptr;
+
 	// Components
 private:
 	class CMainCamera*	m_pCamera = nullptr;
-
 
 	// 积己 棺 家戈 包访
 public:

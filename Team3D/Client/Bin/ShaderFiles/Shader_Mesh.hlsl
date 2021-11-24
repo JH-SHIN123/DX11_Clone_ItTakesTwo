@@ -16,11 +16,6 @@ cbuffer BoneMatrixDesc
 {
 	BONEMATRICES	g_BoneMatrices;
 };
-
-cbuffer EffectDesc
-{
-	float	g_fAlpha;
-};
 ////////////////////////////////////////////////////////////
 
 struct VS_IN

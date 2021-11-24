@@ -17,11 +17,6 @@ cbuffer BoneMatrixDesc
 	BONEMATRICES	g_BoneMatrices;
 };
 
-cbuffer EffectDesc
-{
-	float	g_fAlpha;
-};
-
 cbuffer ViewportInfo
 {
 	int		g_iViewportIndex;

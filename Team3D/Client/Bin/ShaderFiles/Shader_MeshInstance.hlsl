@@ -13,11 +13,6 @@ texture2D	g_EmissiveTexture;
 //texture2D	g_OpacityTexture;
 //texture2D	g_LightTexture;
 
-cbuffer Effect
-{
-	float	g_fAlpha;
-};
-
 ////////////////////////////////////////////////////////////
 
 struct VS_IN
