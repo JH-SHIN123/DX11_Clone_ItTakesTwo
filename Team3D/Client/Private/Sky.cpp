@@ -1,0 +1,100 @@
+#include "stdafx.h"
+#include "..\Public\Sky.h"
+#include "GameInstance.h"
+
+CSky::CSky(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+	: CGameObject(pDevice, pDeviceContext)
+{
+}
+
+CSky::CSky(const CSky & rhs)
+	: CGameObject(rhs)
+{
+}
+
+HRESULT CSky::NativeConstruct_Prototype()
+{
+	CGameObject::NativeConstruct_Prototype();
+
+	return S_OK;
+}
+
+HRESULT CSky::NativeConstruct(void * pArg)
+{
+	CGameObject::NativeConstruct(pArg);
+
+	NULL_CHECK_RETURN(pArg, E_FAIL);
+	m_iViewportIndex = *(_uint*)pArg;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Sky_Space"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
+
+	return S_OK;
+}
+
+_int CSky::Tick(_double dTimeDelta)
+{
+	CGameObject::Tick(dTimeDelta);
+
+	return NO_EVENT;
+}
+
+_int CSky::Late_Tick(_double dTimeDelta)
+{
+	if (1 == m_iViewportIndex)
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pGameInstance->Get_MainCamPosition());
+	else if (2 == m_iViewportIndex)
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pGameInstance->Get_SubCamPosition());
+
+	m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_PRIORITY, this);
+
+	return NO_EVENT;
+}
+
+HRESULT CSky::Render(RENDER_GROUP::Enum eGroup)
+{
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+
+	m_pModelCom->Set_Variable("g_iViewportIndex", &m_iViewportIndex, sizeof(_uint));
+
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Render_Model(0);
+
+	return S_OK;
+}
+
+CSky * CSky::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+{
+	CSky* pInstance = new CSky(pDevice, pDeviceContext);
+
+	if (FAILED(pInstance->NativeConstruct_Prototype()))
+	{
+		MSG_BOX("Failed to Create Instance - CSky");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CGameObject * CSky::Clone_GameObject(void * pArg)
+{
+	CSky* pInstance = new CSky(*this);
+
+	if (FAILED(pInstance->NativeConstruct(pArg)))
+	{
+		MSG_BOX("Failed to Clone Instance - CSky");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CSky::Free()
+{
+	Safe_Release(m_pTransformCom);
+	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pModelCom);
+
+	CGameObject::Free();
+}

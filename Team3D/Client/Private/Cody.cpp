@@ -204,6 +204,26 @@ void CCody::KeyInput(_double TimeDelta)
 	_bool bRoll = false;
 #pragma endregion
 
+#pragma region Teleport
+	if (m_pGameInstance->Key_Down(DIK_1)) /* 스타트 지점 */
+		m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_2)) /* 2층 */
+		m_pActorCom->Set_Position(XMVectorSet(60.f, 125.f, 170.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_3)) /* 2스테이지 입구 */
+		m_pActorCom->Set_Position(XMVectorSet(620.f, 760.f, 195.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_4)) /* 2스테이지 */
+		m_pActorCom->Set_Position(XMVectorSet(960.f, 720.f, 193.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_5))/* 3스테이지 */
+		m_pActorCom->Set_Position(XMVectorSet(-610.f, 760.f, 195.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_6))/* 3층 */
+		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_7))/* Boss */
+		m_pActorCom->Set_Position(XMVectorSet(62.f, 250.f, 187.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_8))/* Moon */
+		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
+		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+#pragma endregion
 #pragma region 8Way_Move
 	
 

@@ -5,13 +5,14 @@ namespace Engine
 	struct GameID
 	{
 		enum Enum
-		{ 
+		{
 			eCODY,
 			eMAY,
 			eCAMERA,
 			eUFO,
 			eMOONBABOON,
-			eSTARBUDDY
+			eSTARBUDDY,
+			eENVIRONMENT
 		};
 	};
 

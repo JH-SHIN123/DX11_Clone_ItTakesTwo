@@ -45,6 +45,12 @@ CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
 	for (auto& pMesh : m_Meshes)
 		Safe_AddRef(pMesh);
 
+	for (auto& Meshes : m_SortedMeshes)
+	{
+		for (auto& pMesh : Meshes)
+			Safe_AddRef(pMesh);
+	}
+
 	for (auto& pMaterial : m_Materials)
 	{
 		for (auto& pTexture : pMaterial->pMaterialTexture)
@@ -207,7 +213,6 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 	m_RealTimeMatrices.resize(m_iInstanceCount, MH_XMFloat4x4Identity());
 	m_fCullingRadius = ArgDesc.fCullingRadius;
 
-	strcpy(m_szActorName, ArgDesc.pActorName);
 	m_ppActors = new PxRigidStatic*[m_iInstanceCount * m_iMeshCount];
 
 	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)

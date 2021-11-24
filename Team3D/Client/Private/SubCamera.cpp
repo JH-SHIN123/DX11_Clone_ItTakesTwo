@@ -142,7 +142,7 @@ void CSubCamera::Free()
 _int CSubCamera::Tick_Cam_Free(_double dTimeDelta)
 {
 	if (nullptr == m_pTargetObj)
-		return EVENT_ERROR;
+		return NO_EVENT;
 	CTransform* pPlayerTransform = dynamic_cast<CMay*>(m_pTargetObj)->Get_Transform();
 
 

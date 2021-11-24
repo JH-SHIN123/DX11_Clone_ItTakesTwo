@@ -27,6 +27,7 @@ private:
 	ID3D11DeviceContext*	m_pDeviceContext	= nullptr;
 	/* For.Timer */
 	_double					m_dFrameAcc			= 0.0; /* 1프레임시간 누적 */
+	_double					m_dTimeDelta		= 0.0;
 private:
 	_int	Tick(_double dTimeDelta);
 	HRESULT	Render();
@@ -38,7 +39,7 @@ public:
 	static CMainApp* Create();
 	virtual void Free() override;
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	/* For.FPS */
 private:
 	_double	m_dSecondAcc		= 0.0; /* 1초 누적  */
@@ -46,7 +47,7 @@ private:
 	_uint	m_iRenderCount		= 0;
 private:
 	void	Show_FPS(_double dTimeDelta);
-#endif
+//#endif
 };
 
 END
