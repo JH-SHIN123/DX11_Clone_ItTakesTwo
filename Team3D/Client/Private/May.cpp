@@ -12,6 +12,7 @@
 #include "Effect_Generator.h"
 #include "Effect_May_Boots.h"
 
+
 CMay::CMay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
 {

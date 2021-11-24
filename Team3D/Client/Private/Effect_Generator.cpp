@@ -88,7 +88,7 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	}
 
-	m_pGameInstance->Add_GameObject_Clone(1, szLayer, 1, szPrototype, &Clone_Data);
+	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
 
 	return S_OK;
 }

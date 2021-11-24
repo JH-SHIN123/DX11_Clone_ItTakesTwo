@@ -10,8 +10,8 @@ class CModel;
 class CControllableActor;
 END
 
-BEGIN(Client)
 
+BEGIN(Client)
 class CUFO : public CGameObject
 {
 protected:
@@ -114,5 +114,4 @@ public:
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
-
 END

@@ -255,6 +255,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\public\Engine_Defines.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\GameInstance.h">
       <Filter>00.GameInstance</Filter>
     </ClInclude>
@@ -263,6 +266,18 @@
     </ClInclude>
     <ClInclude Include="..\public\Graphic_Device.h">
       <Filter>01.System\00.Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Function.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Macro.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Struct.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Typedef.h">
+      <Filter>99.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Manager.h">
       <Filter>02.Utility\00.Level\99.Manager</Filter>
@@ -290,6 +305,9 @@
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Textures.h">
+      <Filter>02.Utility\02.Component\03.Texture</Filter>
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer_Terrain.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\02.Terrain</Filter>
@@ -435,6 +453,9 @@
     <ClInclude Include="..\public\PxContactCallback.h">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Shadow_Manager.h">
+      <Filter>02.Utility\05.Shadow\99.Manager</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\PostFX.h">
       <Filter>02.Utility\06.PostFX</Filter>
     </ClInclude>
@@ -551,6 +572,9 @@
     <ClCompile Include="..\Private\Pipeline.cpp">
       <Filter>02.Utility\99.Others\01.Pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>02.Utility\02.Component\05.Model\00.Main</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\HierarchyNode.cpp">
       <Filter>02.Utility\02.Component\05.Model\02.Node</Filter>
     </ClCompile>
@@ -611,6 +635,9 @@
     <ClCompile Include="..\private\PxContactCallback.cpp">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>02.Utility\02.Component\05.Model\00.Main\00.Normal</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\PostFX.cpp">
       <Filter>02.Utility\06.PostFX</Filter>
     </ClCompile>
@@ -631,6 +658,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Sprite.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Textures.cpp">
+      <Filter>02.Utility\02.Component\03.Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

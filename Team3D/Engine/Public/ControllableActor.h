@@ -38,6 +38,13 @@ public:
 	void	Jump_Start(_float fJumpForce);
 	void	Jump_Higher(_float fJumpForce);
 
+	PxController* Get_Controller() { return m_pController; }
+	PxRigidDynamic* Get_Actor() { return m_pActor; }
+	//void	Kinematic_On() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true); }
+	//void	Kinematic_Off() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false); }
+
+
+
 private:
 	PxController*						m_pController = nullptr;
 	PxRigidDynamic*						m_pActor = nullptr;

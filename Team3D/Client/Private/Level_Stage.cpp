@@ -31,9 +31,12 @@ HRESULT CLevel_Stage::NativeConstruct()
 	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
 
 	/* For.Interactive Objects */
+
+
 	//FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_Robot(TEXT("Layer_Robot")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_RobotHead(TEXT("Layer_RobotHead")), E_FAIL);
+
 
 	/* For.Test */
 	//FAILED_CHECK_RETURN(Ready_Layer_Test(), E_FAIL);
@@ -44,6 +47,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space_Boss(), E_FAIL);
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Interactive_Instancing(), E_FAIL);
 
+
 	return S_OK;
 }
 
@@ -51,14 +55,10 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
 
-	if (m_pGameInstance->Key_Down(DIK_1))
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 0.f, 1.f) );
-	if (m_pGameInstance->Key_Down(DIK_2))
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_3))
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+
 
 	CEffect_Generator::GetInstance()->LoopSpawner(dTimedelta);
+
 
 	return NO_EVENT;
 }
@@ -67,6 +67,7 @@ HRESULT CLevel_Stage::Render()
 {
 	return S_OK;
 }
+
 
 HRESULT CLevel_Stage::Ready_Lights()
 {
@@ -102,12 +103,14 @@ HRESULT CLevel_Stage::Ready_Lights()
 	return S_OK;
 }
 
+
 HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
+
 	CCamera::CAMERA_DESC CameraDesc;
 	CameraDesc.iViewportIndex					= 1;
 	CameraDesc.vEye								= _float3(0.f, 8.f, -7.f);
-	CameraDesc.vAt								= _float3(0.f, 0.f, 0.f);
+	CameraDesc.vAt								= _float3(0.f, 2.f, 0.f);
 	CameraDesc.vAxisY							= _float3(0.f, 1.f, 0.f);
 	CameraDesc.fFovY							= XMConvertToRadians(60.f);
 	CameraDesc.fFullScreenAspect				= (_float)g_iWinCX / (_float)g_iWinCY;

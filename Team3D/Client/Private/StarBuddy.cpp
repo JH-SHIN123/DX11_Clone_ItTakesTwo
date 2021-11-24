@@ -4,6 +4,7 @@
 #include "UI_Generator.h"
 #include "Cody.h"
 #include "May.h"
+#include"DataStorage.h"
 
 CStarBuddy::CStarBuddy(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)

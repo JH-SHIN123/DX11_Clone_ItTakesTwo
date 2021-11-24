@@ -184,6 +184,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
+    <ClInclude Include="..\Public\CamEffect.h" />
+    <ClInclude Include="..\public\Cam_Helper.h" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp" />
     <ClInclude Include="..\Public\AlphaScreen.h" />
@@ -216,6 +218,8 @@
     <ClInclude Include="..\Public\Cody.h" />
     <ClInclude Include="..\public\DataStorage.h" />
     <ClInclude Include="..\Public\HeaderBox.h" />
+    <ClInclude Include="..\public\Film.h" />
+    <ClInclude Include="..\public\GrindLine.h" />
     <ClInclude Include="..\Public\Environment_Generator.h" />
     <ClInclude Include="..\Public\InputButton.h" />
     <ClInclude Include="..\Public\InputButton_Frame.h" />
@@ -268,6 +272,8 @@
     <ClCompile Include="..\Private\Cody.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp" />
     <ClCompile Include="..\Private\HeaderBox.cpp" />
+    <ClCompile Include="..\Private\CamEffect.cpp" />
+    <ClCompile Include="..\private\Cam_Helper.cpp" />
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
     <ClCompile Include="..\private\Effect_Dead_Particle_Fire.cpp" />
@@ -286,6 +292,8 @@
     <ClCompile Include="..\Private\CameraActor.cpp" />
     <ClCompile Include="..\Private\CameraBehaviorCallback.cpp" />
     <ClCompile Include="..\Private\CameraFilterCallback.cpp" />
+    <ClCompile Include="..\private\Film.cpp" />
+    <ClCompile Include="..\private\GrindLine.cpp" />
     <ClCompile Include="..\Private\Environment_Generator.cpp" />
     <ClCompile Include="..\Private\InputButton.cpp" />
     <ClCompile Include="..\Private\InputButton_Frame.cpp" />

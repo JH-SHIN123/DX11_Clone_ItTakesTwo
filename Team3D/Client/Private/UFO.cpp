@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "..\public\UFO.h"
 #include "GameInstance.h"
-#include "DataStorage.h"
 #include "May.h"
 #include "Cody.h"
-
+#include"DataStorage.h"
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
