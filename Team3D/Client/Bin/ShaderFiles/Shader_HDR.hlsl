@@ -45,7 +45,7 @@ float3 ToneMapping(float3 HDRColor)
 
 float3 DistanceDOF(float3 colorFocus, float3 colorBlurred, float depth)
 {
-	float blurFactor = saturate((depth - g_DOFFarValues.x) * g_DOFFarValues.y);
+	float blurFactor = saturate((depth - g_DOFFarValues.x) / (g_DOFFarValues.y - g_DOFFarValues.x));
 
 	return lerp(colorFocus, colorBlurred, blurFactor);
 }
