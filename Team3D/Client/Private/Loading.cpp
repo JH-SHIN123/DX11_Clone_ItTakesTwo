@@ -89,7 +89,7 @@ HRESULT CLoading::NativeConstruct(Level::ID ePreLevelID, Level::ID eNextLevelID)
 	m_ePreLevelID = ePreLevelID;
 	m_eNextLevelID = eNextLevelID;
 
-	m_iThreadCount = 16;
+	m_iThreadCount = 6;
 	m_arrThreads = new HANDLE[m_iThreadCount];
 	m_arrCriticalSections = new CRITICAL_SECTION[m_iThreadCount];
 	m_arrThreadArgs = new THREAD_ARG[m_iThreadCount];
@@ -156,36 +156,36 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		/* For. Characters */
 		LoadingForCharacters();
 
-		/* For. Map Resources */
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Instancing_TXT(), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_GameObject_Prototype(), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others01.txt")), E_FAIL);
+		///* For. Map Resources */
+		//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Instancing_TXT(), E_FAIL);
+		//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_GameObject_Prototype(), E_FAIL);
+		//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others01.txt")), E_FAIL);
 	}
-	else if (3 == iThreadIndex)
-	{
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others02.txt")), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others03.txt")), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others04.txt")), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others05.txt")), E_FAIL);
-	}
-	else if (4 == iThreadIndex)
-	{
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others06.txt")), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others07.txt")), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others08.txt")), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others09.txt")), E_FAIL);
-	}
-	else if (5 == iThreadIndex)
-	{
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others10.txt")), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others11.txt")), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others12.txt")), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others13.txt")), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others14.txt")), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others15.txt")), E_FAIL);
-		/* For. Interactive_Objects */
-		LoadingForInteractive_Objects();
-	}
+	//else if (3 == iThreadIndex)
+	//{
+	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others02.txt")), E_FAIL);
+	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others03.txt")), E_FAIL);
+	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others04.txt")), E_FAIL);
+	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others05.txt")), E_FAIL);
+	//}
+	//else if (4 == iThreadIndex)
+	//{
+	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others06.txt")), E_FAIL);
+	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others07.txt")), E_FAIL);
+	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others08.txt")), E_FAIL);
+	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others09.txt")), E_FAIL);
+	//}
+	//else if (5 == iThreadIndex)
+	//{
+	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others10.txt")), E_FAIL);
+	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others11.txt")), E_FAIL);
+	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others12.txt")), E_FAIL);
+	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others13.txt")), E_FAIL);
+	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others14.txt")), E_FAIL);
+	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others15.txt")), E_FAIL);
+	//	/* For. Interactive_Objects */
+	//	LoadingForInteractive_Objects();
+	//}
 
 	return S_OK;
 }

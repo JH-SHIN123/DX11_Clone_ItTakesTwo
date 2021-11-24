@@ -27,19 +27,19 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
 
 	///* For.Interactive Objects */
-	FAILED_CHECK_RETURN(Ready_Layer_NoBatterySign(TEXT("Layer_NoBatterySign")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_Robot(TEXT("Layer_Robot")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_RobotHead(TEXT("Layer_RobotHead")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_RobotLever(TEXT("Layer_RobotLever")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_RobotBattery(TEXT("Layer_RobotBattery")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_SecurityCameraHandle(TEXT("Layer_SecurityCameraHandle")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_SecurityCamera(TEXT("Layer_SecurityCamera")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_TutorialDoor(TEXT("Layer_TutorialDoor")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_BigButton(TEXT("Layer_BigButton")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_SpaceValve(TEXT("Layer_SpaceValve")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_BigPlanet(TEXT("Layer_BigPlanet")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_NoBatterySign(TEXT("Layer_NoBatterySign")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_Robot(TEXT("Layer_Robot")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_RobotHead(TEXT("Layer_RobotHead")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_RobotLever(TEXT("Layer_RobotLever")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_RobotBattery(TEXT("Layer_RobotBattery")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_SecurityCameraHandle(TEXT("Layer_SecurityCameraHandle")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_SecurityCamera(TEXT("Layer_SecurityCamera")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_TutorialDoor(TEXT("Layer_TutorialDoor")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_BigButton(TEXT("Layer_BigButton")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_SpaceValve(TEXT("Layer_SpaceValve")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_BigPlanet(TEXT("Layer_BigPlanet")), E_FAIL);
 
 	//FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
@@ -49,9 +49,9 @@ HRESULT CLevel_Stage::NativeConstruct()
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Map", Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
 
 	/* For. Environment */
-	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space(), E_FAIL);
-	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space_Boss(), E_FAIL);
-	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Interactive_Instancing(), E_FAIL);
+	//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space(), E_FAIL);
+	//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space_Boss(), E_FAIL);
+	//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Interactive_Instancing(), E_FAIL);
 
 	return S_OK;
 }

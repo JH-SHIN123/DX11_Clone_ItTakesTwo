@@ -11,6 +11,11 @@
 #include "Effect_Generator.h"
 #include "Effect_May_Boots.h"
 
+// m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
+// m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
+// m_pGameInstance->Get_Pad_LStickY() > 20000 (Down)
+// m_pGameInstance->Get_Pad_LStickY() < 44000 (Up)
+
 CMay::CMay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
 {
@@ -242,25 +247,29 @@ void CMay::KeyInput(_double dTimeDelta)
 	if (m_IsAirDash == false)
 	{
 		// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
-		if (m_pGameInstance->Key_Pressing(DIK_UP) && m_pGameInstance->Key_Pressing(DIK_RIGHT))
+		// 오른쪽윈
+		if (m_pGameInstance->Get_Pad_LStickX() > 44000 && m_pGameInstance->Get_Pad_LStickY() < 34000)
 		{
 			bMove[0] = !bMove[0];
 			bMove[1] = !bMove[1];
 			XMStoreFloat3(&m_vMoveDirection, (vCameraLook + vCameraRight) / 2.f);
 		}
-		else if (m_pGameInstance->Key_Pressing(DIK_UP) && m_pGameInstance->Key_Pressing(DIK_LEFT))
+		// 왼쪽위
+		else if (m_pGameInstance->Get_Pad_LStickX() < 20000 && m_pGameInstance->Get_Pad_LStickY() < 34000)
 		{
 			bMove[0] = !bMove[0];
 			bMove[1] = !bMove[1];
 			XMStoreFloat3(&m_vMoveDirection, (vCameraLook - vCameraRight) / 2.f);
 		}
-		else if (m_pGameInstance->Key_Pressing(DIK_DOWN) && m_pGameInstance->Key_Pressing(DIK_RIGHT))
+		// 오른쪽아래
+		else if (m_pGameInstance->Get_Pad_LStickX() > 44000 && m_pGameInstance->Get_Pad_LStickY() > 44000)
 		{
 			bMove[0] = !bMove[0];
 			bMove[1] = !bMove[1];
 			XMStoreFloat3(&m_vMoveDirection, (-vCameraLook + vCameraRight) / 2.f);
 		}
-		else if (m_pGameInstance->Key_Pressing(DIK_DOWN) && m_pGameInstance->Key_Pressing(DIK_LEFT))
+		// 왼쪽아래
+		else if (m_pGameInstance->Get_Pad_LStickX() < 20000 && m_pGameInstance->Get_Pad_LStickY() > 44000)
 		{
 			bMove[0] = !bMove[0];
 			bMove[1] = !bMove[1];
@@ -313,26 +322,26 @@ void CMay::KeyInput(_double dTimeDelta)
 				}
 			}
 
-			if (m_pGameInstance->Key_Pressing(DIK_UP))
+			if (m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Get_Pad_LStickY() < 44000)
 			{
 				bMove[0] = !bMove[0];
 				XMStoreFloat3(&m_vMoveDirection, vCameraLook);
 				m_iSavedKeyPress = UP;
 			}
-			if (m_pGameInstance->Key_Pressing(DIK_DOWN))
+			if (m_pGameInstance->Key_Pressing(DIK_DOWN) || m_pGameInstance->Get_Pad_LStickY() > 20000)
 			{
 				bMove[0] = !bMove[0];
 				XMStoreFloat3(&m_vMoveDirection, -vCameraLook);
 				m_iSavedKeyPress = DOWN;
 			}
 
-			if (m_pGameInstance->Key_Pressing(DIK_LEFT))
+			if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
 			{
 				bMove[1] = !bMove[1];
 				XMStoreFloat3(&m_vMoveDirection, -vCameraRight);
 				m_iSavedKeyPress = LEFT;
 			}
-			if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 44000)
 			{
 				bMove[1] = !bMove[1];
 				XMStoreFloat3(&m_vMoveDirection, vCameraRight);
@@ -359,8 +368,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 #pragma endregion
 
-#pragma region Keyboard_Right_Shift_Button
-	if (m_pGameInstance->Key_Down(DIK_RSHIFT) && m_bRoll == false && m_bCanMove == true)
+#pragma region Pad Square
+	if (m_pGameInstance->Pad_Key_Down(DIP_X) && m_bRoll == false && m_bCanMove == true)
 	{
 		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
@@ -387,16 +396,16 @@ void CMay::KeyInput(_double dTimeDelta)
 	}
 #pragma endregion
 
-#pragma region Keyboard_RCtrl
-	if (m_pGameInstance->Key_Down(DIK_RCONTROL) && m_iJumpCount < 2)
+#pragma region PAD X
+	if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount < 2)
 	{
 		m_bShortJump = true;
 		m_iJumpCount += 1;
 	}
 #pragma endregion
 
-#pragma region Key_M
-	if (m_pGameInstance->Key_Down(DIK_M) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jog_Exhausted_Start && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jog_Stop_Exhausted && m_pModelCom->Get_CurAnimIndex() != ANI_M_Sprint_Start_FromDash)
+#pragma region LS_Click
+	if (m_pGameInstance->Pad_Key_Down(DIP_LS) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jog_Exhausted_Start && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jog_Stop_Exhausted && m_pModelCom->Get_CurAnimIndex() != ANI_M_Sprint_Start_FromDash)
 	{
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint)
 		{
@@ -415,9 +424,9 @@ void CMay::KeyInput(_double dTimeDelta)
 	}
 #pragma endregion
 
-#pragma region Key_RAlt
+#pragma region PAD O
 
-	if (m_pGameInstance->Key_Down(DIK_RALT) && m_pActorCom->Get_IsJump() == true)
+	if (m_pGameInstance->Pad_Key_Down(DIP_A) && m_pActorCom->Get_IsJump() == true)
 	{
 		m_fAcceleration = 5.0f;
 		m_fJogAcceleration = 25.f;
@@ -690,7 +699,8 @@ void CMay::Jump(const _double dTimeDelta)
 		m_bSprint = false;
 		m_iAirDashCount = 0;
 
-		if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Key_Pressing(DIK_DOWN) || m_pGameInstance->Key_Pressing(DIK_LEFT))
+
+		if (m_pGameInstance->Get_Pad_LStickX() > 44000 || m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Get_Pad_LStickY() > 20000 || m_pGameInstance->Get_Pad_LStickY() < 44000)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Jump_Land_Jog);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
@@ -724,7 +734,7 @@ void CMay::Jump(const _double dTimeDelta)
 	}
 	else if (m_IsJumping == false && m_IsFalling == false && m_bFallAniOnce == true && m_bRoll == false && m_bGroundPound == false)
 	{
-		if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Key_Pressing(DIK_DOWN) || m_pGameInstance->Key_Pressing(DIK_LEFT))
+		if (m_pGameInstance->Get_Pad_LStickX() > 44000 || m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Get_Pad_LStickY() > 20000 || m_pGameInstance->Get_Pad_LStickY() < 44000)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Jump_Land_Jog);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
@@ -1014,8 +1024,11 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 				m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));*/
 			}
-
-			if (m_pGameInstance->Key_Pressing(DIK_UP))
+			// m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
+			// m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
+			// m_pGameInstance->Get_Pad_LStickY() > 20000 (Down)
+			// m_pGameInstance->Get_Pad_LStickY() < 44000 (Up)
+			if (m_pGameInstance->Get_Pad_LStickY() < 44000)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
@@ -1025,21 +1038,21 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 				//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
 				//m_pModelCom->Set_Animation(ANI_C_Bhv_PlayRoom_ZeroGravity_Fwd);
 			}
-			if (m_pGameInstance->Key_Pressing(DIK_LEFT))
+			if (m_pGameInstance->Get_Pad_LStickX() < 20000)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT) * -1.f, 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
 				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
-			if (m_pGameInstance->Key_Pressing(DIK_DOWN))
+			if (m_pGameInstance->Get_Pad_LStickY() > 20000)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK) * -1.f, 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
 				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
-			if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
+			if (m_pGameInstance->Get_Pad_LStickX() > 44000)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
