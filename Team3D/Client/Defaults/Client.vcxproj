@@ -182,6 +182,9 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp" />
     <ClInclude Include="..\Public\Arrowkeys_Fill.h" />
     <ClInclude Include="..\Public\Arrowkeys_Outline.h" />
+    <ClInclude Include="..\Public\CameraActor.h" />
+    <ClInclude Include="..\Public\CameraBehaviorCallback.h" />
+    <ClInclude Include="..\Public\CameraFilterCallback.h" />
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
@@ -223,6 +226,9 @@
   <ItemGroup>
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
+    <ClCompile Include="..\Private\CameraActor.cpp" />
+    <ClCompile Include="..\Private\CameraBehaviorCallback.cpp" />
+    <ClCompile Include="..\Private\CameraFilterCallback.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
     <ClCompile Include="..\private\DataStorage.cpp" />

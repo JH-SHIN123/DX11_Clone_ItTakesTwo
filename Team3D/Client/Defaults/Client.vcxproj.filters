@@ -166,6 +166,21 @@
     <Filter Include="02.GameObject\06.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.Component">
+      <UniqueIdentifier>{6f424d55-06aa-4b07-a102-2829f8dd72e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.CameraActor">
+      <UniqueIdentifier>{71f0cc81-3265-4b0d-9a45-cf89b506bd13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.CameraActor\00.Main">
+      <UniqueIdentifier>{0cbed854-cdf5-4121-8dab-ff10dad003dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.CameraActor\01.BehaviorCallback">
+      <UniqueIdentifier>{68b731cf-de3f-4fda-b4e7-8040040943d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.CameraActor\02.FilterCallback">
+      <UniqueIdentifier>{c1859efc-d3f6-40da-a6c5-24deb0b7e05b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -294,6 +309,15 @@
     <ClInclude Include="..\public\Sky.h">
       <Filter>02.GameObject\06.Sky</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CameraBehaviorCallback.h">
+      <Filter>03.Component\01.CameraActor\01.BehaviorCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraFilterCallback.h">
+      <Filter>03.Component\01.CameraActor\02.FilterCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraActor.h">
+      <Filter>03.Component\01.CameraActor\00.Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -397,6 +421,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Sky.cpp">
       <Filter>02.GameObject\06.Sky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraActor.cpp">
+      <Filter>03.Component\01.CameraActor\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraBehaviorCallback.cpp">
+      <Filter>03.Component\01.CameraActor\01.BehaviorCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraFilterCallback.cpp">
+      <Filter>03.Component\01.CameraActor\02.FilterCallback</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
