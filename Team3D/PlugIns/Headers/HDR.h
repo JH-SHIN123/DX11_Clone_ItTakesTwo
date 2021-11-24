@@ -13,21 +13,22 @@ public:
 
 public:
 	HRESULT Ready_HDR(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight);
-	HRESULT Render_HDR(_double TimeDelta);
+	HRESULT PostProcessing(_double TimeDelta);
 
 private:
-	HRESULT Build_FirstPassResources(_float iWidth, _float iHeight); /* 휘도의 중간값을 저장하기 위한 리소스들 */
-	HRESULT Build_SecondPassResources(); /* 부동소수점 형태로 평균 휘도 값을 저장 */
-	HRESULT Build_PrevLumAvgResources();
+	HRESULT DownScale(_double TimeDelta);
+	HRESULT Bloom();
+	HRESULT Blur();
+	HRESULT FinalPass();
+
+private:
+	HRESULT Build_LuminanceBuffer(_float iWidth, _float iHeight); /* 휘도의 중간값을 저장하기 위한 리소스들 & 부동소수점 형태로 평균 휘도 값을 저장 */
 	HRESULT Build_BloomResources(_float iWidth, _float iHeight);
 	HRESULT Build_ComputeShaders(const _tchar* pShaderFilePath, const char* pTechniqueName);
 
 	HRESULT	Set_Variable(const char* pConstantName, void* pData, _uint iByteSize);
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, ID3D11ShaderResourceView* pResourceView);
 	HRESULT	Set_UnorderedAccessView(const char* pConstantName, ID3D11UnorderedAccessView* pResourceView);
-
-	HRESULT	Calculate_LuminanceAvg(_double TimeDelta);
-	HRESULT	Calculate_BrightPassForBloom();
 
 	HRESULT Unbind_ShaderResources();
 
@@ -37,11 +38,11 @@ private:
 	
 private:
 	_uint	m_iWinSize[2] = { 0,0 };
+	_uint	m_iDownScaleGroups = 0;
 
-	_float	m_fMiddleGrey = 0.097f; // 0.0008f
-	_float	m_fLumWhiteSqr = 0.899f;
+	_float	m_fMiddleGrey = 0.0025f; 
+	_float	m_fLumWhiteSqr = 1.5f;
 	
-	_bool	m_bAdaptationFirstTime = true;
 	_float	m_fAdaptationDeltaT = 0.f;
 	_float	m_fAdapt = 1.f;
 	_float	m_fAdaptation = 0.f;

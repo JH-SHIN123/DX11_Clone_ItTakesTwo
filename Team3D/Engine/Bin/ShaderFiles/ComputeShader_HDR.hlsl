@@ -6,16 +6,15 @@ groupshared float g_SharedPositions[1024];			// 중간휘도값을 저장하기위한 공유메
 groupshared float g_SharedAvgFinal[MAX_GROUPS];		// 
 
 Texture2D					g_HDRTex;					// Input : HDR 텍스쳐
-
 Texture2D<float4>			g_HDRDownScaleTex;
+
+StructuredBuffer<float>		g_AverageValues1D;
+StructuredBuffer<float>		g_PrevAverageLum;
 StructuredBuffer<float>		g_AverageLum1D;
-RWTexture2D<float4>			g_HDRDownScale;				
-RWTexture2D<float4>			g_Bloom;
 
 RWStructuredBuffer<float>	g_AverageLum;
-StructuredBuffer<float>		g_PrevAverageLum;
-StructuredBuffer<float>		g_AverageValues1D;
-
+RWTexture2D<float4>			g_HDRDownScale;				
+RWTexture2D<float4>			g_Bloom;
 
 // 컴퓨트 셰이더가 실행되는 동안, 우리는 쓰레드 그룹의 공유 메모리에 즉시 저장할거다.
 // 결과 : groupshared float SharedPositions[1024];
@@ -24,18 +23,11 @@ static const float4 LUM_FACTOR = float4(0.299, 0.587, 0.114, 0);
 
 cbuffer DownScaleDesc
 {
-	uint2 g_Res = { WINCX / 4 ,WINCY / 4 };		// 다운스케일 해상도 계산 : width. height
-												// 백 버퍼의 높이와 너비를 4로 나눈 값
-	
-	uint g_Domain = WINCX * WINCY / 16;		// 다운스케일 이미지의 총 픽셀 수
-											// 백 버퍼의 높이와 너비를 곱한 후 16으로 나눈 값
-
-	uint g_GroupSize = WINCX * WINCY / 16 * 1024;	// 첫 패스에 적용된 그룹 수 계산
-													// 백 버퍼의 높이와 너비를 곱한 후 16으로 나눈 다음 1024를 곱한값
-
-	float g_Adaptation = 0.0016f / 0.5f; // TimeDelta / 임시값
-
-	float g_fBloomThreshold = 50.f; // 어느 정도의 밝기 이상의 픽셀만 흘릴건지 지정
+	uint2	g_Res = { WINCX / 4 ,WINCY / 4 };									// 다운스케일 해상도 계산 : width. height & 백 버퍼의 높이와 너비를 4로 나눈 값
+	uint	g_Domain = WINCX * WINCY / 16;										// 다운스케일 이미지의 총 픽셀 수 & 백 버퍼의 높이와 너비를 곱한 후 16으로 나눈 값
+	uint	g_GroupSize = (uint)ceil((float)(WINCX * WINCY / 16) / 1024.0f);	// 첫 패스에 적용된 그룹 수 계산 & 백 버퍼의 높이와 너비를 곱한 후 16으로 나눈 다음 1024를 곱한값
+	float	g_Adaptation = 0.0016f / 0.5f;										// TimeDelta / 임시값
+	float	g_fBloomThreshold = 2.f;											// 어느 정도의 밝기 이상의 픽셀만 흘릴건지 지정
 };
 
 // 각 스레드에 대해 4x4 다운스케일 수행
@@ -163,12 +155,9 @@ void CS_DOWNSCALE_SECONDPASS(uint3 groupID : SV_GroupID, uint3 groupThreadID : S
 	{
 		// 휘도 값 합산
 		float stepAvgLum = avgLum;
-		stepAvgLum += dispatchThreadID.x + 1 < g_GroupSize ?
-			g_SharedAvgFinal[dispatchThreadID.x + 1] : avgLum;
-		stepAvgLum += dispatchThreadID.x + 2 < g_GroupSize ?
-			g_SharedAvgFinal[dispatchThreadID.x + 2] : avgLum;
-		stepAvgLum += dispatchThreadID.x + 3 < g_GroupSize ?
-			g_SharedAvgFinal[dispatchThreadID.x + 3] : avgLum;
+		stepAvgLum += dispatchThreadID.x + 1 < g_GroupSize ? g_SharedAvgFinal[dispatchThreadID.x + 1] : avgLum;
+		stepAvgLum += dispatchThreadID.x + 2 < g_GroupSize ? g_SharedAvgFinal[dispatchThreadID.x + 2] : avgLum;
+		stepAvgLum += dispatchThreadID.x + 3 < g_GroupSize ? g_SharedAvgFinal[dispatchThreadID.x + 3] : avgLum;
 
 		// 결과 값 저장
 		avgLum = stepAvgLum;
@@ -182,12 +171,9 @@ void CS_DOWNSCALE_SECONDPASS(uint3 groupID : SV_GroupID, uint3 groupThreadID : S
 	{
 		// 휘도 값 합산
 		float stepAvgLum = avgLum;
-		stepAvgLum += dispatchThreadID.x + 4 < g_GroupSize ?
-			g_SharedAvgFinal[dispatchThreadID.x + 4] : avgLum;
-		stepAvgLum += dispatchThreadID.x + 8 < g_GroupSize ?
-			g_SharedAvgFinal[dispatchThreadID.x + 8] : avgLum;
-		stepAvgLum += dispatchThreadID.x + 12 < g_GroupSize ?
-			g_SharedAvgFinal[dispatchThreadID.x + 12] : avgLum;
+		stepAvgLum += dispatchThreadID.x + 4 < g_GroupSize ? g_SharedAvgFinal[dispatchThreadID.x + 4] : avgLum;
+		stepAvgLum += dispatchThreadID.x + 8 < g_GroupSize ? g_SharedAvgFinal[dispatchThreadID.x + 8] : avgLum;
+		stepAvgLum += dispatchThreadID.x + 12 < g_GroupSize ? g_SharedAvgFinal[dispatchThreadID.x + 12] : avgLum;
 
 		// 결과 값 저장
 		avgLum = stepAvgLum;
@@ -201,12 +187,9 @@ void CS_DOWNSCALE_SECONDPASS(uint3 groupID : SV_GroupID, uint3 groupThreadID : S
 	{
 		// 평균 휘도 값 계산
 		float fFinalLumValue = avgLum;
-		fFinalLumValue += dispatchThreadID.x + 16 < g_GroupSize.x ?
-			g_SharedAvgFinal[dispatchThreadID.x + 16] : avgLum;
-		fFinalLumValue += dispatchThreadID.x + 32 < g_GroupSize.x ?
-			g_SharedAvgFinal[dispatchThreadID.x + 32] : avgLum;
-		fFinalLumValue += dispatchThreadID.x + 48 < g_GroupSize.x ?
-			g_SharedAvgFinal[dispatchThreadID.x + 48] : avgLum;
+		fFinalLumValue += dispatchThreadID.x + 16 < g_GroupSize.x ? g_SharedAvgFinal[dispatchThreadID.x + 16] : avgLum;
+		fFinalLumValue += dispatchThreadID.x + 32 < g_GroupSize.x ? g_SharedAvgFinal[dispatchThreadID.x + 32] : avgLum;
+		fFinalLumValue += dispatchThreadID.x + 48 < g_GroupSize.x ? g_SharedAvgFinal[dispatchThreadID.x + 48] : avgLum;
 		fFinalLumValue /= 64.0;
 
 		float fAdaptedAverageLum = lerp(g_PrevAverageLum[0], fFinalLumValue, g_Adaptation);
@@ -236,9 +219,20 @@ void CS_BRIGHTPASS(uint3 dispatchThreadID : SV_DispatchThreadID)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* For. Bloom */
-static const float g_SampleWeights[13] =
-{
-	0.002216, 0.008764, 0.026995, 0.064759, 0.120985, 0.176033, 0.199471, 0.176033, 0.120985, 0.064759, 0.026995, 0.008764, 0.002216
+static const float g_SampleWeights[13] = {
+	0.002216,
+	0.008764,
+	0.026995,
+	0.064759,
+	0.120985,
+	0.176033,
+	0.199471,
+	0.176033,
+	0.120985,
+	0.064759,
+	0.026995,
+	0.008764,
+	0.002216,
 };
 
 #define KERNERLHALF 6
@@ -246,7 +240,6 @@ static const float g_SampleWeights[13] =
 
 Texture2D <float4 > g_Input;
 RWTexture2D <float4 > g_Output;
-
 groupshared float4 g_SharedInput[GROUPTHREADS];
 
 [numthreads(GROUPTHREADS, 1, 1)]

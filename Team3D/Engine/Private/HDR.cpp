@@ -18,27 +18,148 @@ HRESULT CHDR::Ready_HDR(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceConte
 
 	m_iWinSize[0] = (_uint)fBufferWidth;
 	m_iWinSize[1] = (_uint)fBufferHeight;
+	m_iDownScaleGroups = (_uint)ceil((_float)(fBufferWidth * fBufferHeight / 16) / 1024.0f);
 
 	m_pVIBuffer_ToneMapping = CVIBuffer_RectRHW::Create(pDevice, pDeviceContext, 0.f, 0.f, fBufferWidth, fBufferHeight, TEXT("../Bin/ShaderFiles/Shader_HDR.hlsl"), "DefaultTechnique");
 
-	FAILED_CHECK_RETURN(Build_FirstPassResources(fBufferWidth, fBufferHeight),E_FAIL);
-	FAILED_CHECK_RETURN(Build_SecondPassResources(),E_FAIL);
-	FAILED_CHECK_RETURN(Build_PrevLumAvgResources(), E_FAIL);
+	FAILED_CHECK_RETURN(Build_LuminanceBuffer(fBufferWidth, fBufferHeight),E_FAIL);
 	FAILED_CHECK_RETURN(Build_BloomResources(fBufferWidth, fBufferHeight), E_FAIL);
 	FAILED_CHECK_RETURN(Build_ComputeShaders(TEXT("../Bin/ShaderFiles/ComputeShader_HDR.hlsl"), "DefaultTechnique"), E_FAIL);
 
 	return S_OK;
 }
 
-HRESULT CHDR::Render_HDR(_double TimeDelta)
+HRESULT CHDR::PostProcessing(_double TimeDelta)
 {
-	FAILED_CHECK_RETURN(Calculate_LuminanceAvg(TimeDelta), E_FAIL);
-	FAILED_CHECK_RETURN(Calculate_BrightPassForBloom(), E_FAIL);
+	FAILED_CHECK_RETURN(DownScale(TimeDelta), E_FAIL);
+	FAILED_CHECK_RETURN(Bloom(), E_FAIL);;
+	FAILED_CHECK_RETURN(Blur(), E_FAIL);;
+	FAILED_CHECK_RETURN(FinalPass(),E_FAIL);
 
-	// PS ---------------------------------------------------------------------------
-	// Tone Mapping
-	NULL_CHECK_RETURN(m_pVIBuffer_ToneMapping, E_FAIL);
+	// Swap Cur LumAvg - Prev LumAvg
+	// 두 버퍼의 값을 교체하고, 현재 프레임의 평균 휘도를 다음프레임의 "prevLumAvg"로 저장한다.
+	swap(m_pHDRBuffer_PrevLumAve, m_pHDRBuffer_LumAve);
+	swap(m_pUnorderedAccessView_PrevLumAve, m_pUnorderedAccessView_LumAve);
+	swap(m_pShaderResourceView_PrevLumAve, m_pShaderResourceView_LumAve);
+
+	return S_OK;
+}
+
+HRESULT CHDR::DownScale(_double TimeDelta)
+{
+	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
+	NULL_CHECK_RETURN(m_pEffect_CS, E_FAIL);
+
+	// Set Adaptation
+	m_fAdaptationDeltaT += (_float)TimeDelta;
+
+	static _bool bAdaptationFirstTime = true;
+	_float fAdaptNorm = 0.f;
+	if (bAdaptationFirstTime)
+	{
+		fAdaptNorm = 0.f;
+		bAdaptationFirstTime = false;
+	}
+	else
+	{
+		fAdaptNorm = min(m_fAdapt < 0.0001f ? 1.f : (m_fAdaptationDeltaT / m_fAdapt), 0.9999f);
+	}
+
+	m_fAdaptation = fAdaptNorm;
+
+	// CS ---------------------------------------------------------------------------
+	// For. First Pass
+	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
+
+	/* Input */
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_HDR"))), E_FAIL);
+
+	/* Output */
+	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_Lum), E_FAIL);
+	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_HDRDownScale", m_pUnorderedAccessView_DownScaledHDR), E_FAIL); // HDR 다운스케일 텍스쳐 제작
+
+	FAILED_CHECK_RETURN(m_InputLayouts_CS[0].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
+	m_pDeviceContext->Dispatch(m_iDownScaleGroups, 1, 1);
+	Unbind_ShaderResources(); // Reset Views
+
+	// For. Second Pass
+	/* Constant */
+	FAILED_CHECK_RETURN(Set_Variable("g_Adaptation", &m_fAdaptation, sizeof(_float)), E_FAIL);
 	
+	/* Input */
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageValues1D", m_pShaderResourceView_Lum), E_FAIL);
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_PrevAverageLum", m_pShaderResourceView_PrevLumAve), E_FAIL);
+
+	/* Ouput */
+	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_LumAve), E_FAIL);
+
+	// MAX_GROUPS : 64
+	FAILED_CHECK_RETURN(m_InputLayouts_CS[1].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+	m_pDeviceContext->Dispatch(1, 1, 1);
+	Unbind_ShaderResources(); // Reset Views
+
+	return S_OK;
+}
+
+HRESULT CHDR::Bloom()
+{
+	// BrightRight - 다운스케일된 HDR과 SRV의 평균휘도를 계산한후, 임시로 UAV(m_pUnorderedAccessView_Bloom_Temp)로 저장한다.
+	
+	/* Input */
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_HDRDownScaleTex", m_pShaderResourceView_DownScaledHDR), E_FAIL);
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageLum1D", m_pShaderResourceView_LumAve), E_FAIL);
+
+	/* Output */
+	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Bloom", m_pUnorderedAccessView_Bloom_Temp), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_InputLayouts_CS[2].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+	m_pDeviceContext->Dispatch(m_iDownScaleGroups, 1, 1);
+	Unbind_ShaderResources();
+
+	return S_OK;
+}
+
+HRESULT CHDR::Blur()
+{
+	//> 2 pass - verticla & horizontal
+	// 수직 / 수평 가우시안 블러 & 첫 패스에서 휘도 다운스케일에 쓰인 그룹숫자만큼의 컴퓨트셰이더를 적용한다.
+	// 0 pass : 첫째 임시 텍스쳐 SRV(m_pShaderResourceView_Bloom_Temp)로부터 픽셀을 수평방향으로 필터링해 둘째 임시 텍스쳐 UAV(m_pUnorderedAccessView_Bloom)로 저장한다.
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Horizontal
+	/* Input */
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Bloom_Temp), E_FAIL);
+	/* Output */
+	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Bloom_Temp2), E_FAIL);
+	FAILED_CHECK_RETURN(m_InputLayouts_CS[4].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
+	_uint x = (_uint)ceil((m_iWinSize[0] / 4.0f) / (128.0f - 12.0f));
+	_uint y = (_uint)ceil(m_iWinSize[1] / 4.0f);
+	m_pDeviceContext->Dispatch(x, y, 1);
+	Unbind_ShaderResources();
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Vertical
+	/* Input */
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Bloom_Temp2), E_FAIL);
+	/* Output */
+	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Bloom), E_FAIL);
+	FAILED_CHECK_RETURN(m_InputLayouts_CS[3].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
+	x = (_uint)ceil(m_iWinSize[0] / 4.0f);
+	y = (_uint)ceil((m_iWinSize[1] / 4.0f) / (128.0f - 12.0f));
+	m_pDeviceContext->Dispatch(x, y, 1);
+	Unbind_ShaderResources();
+
+	return S_OK;
+}
+
+HRESULT CHDR::FinalPass()
+{
+	// PS - Tone Mapping
+	NULL_CHECK_RETURN(m_pVIBuffer_ToneMapping, E_FAIL);
+
 	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
 	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
 	CPipeline* pPipeline = CPipeline::GetInstance();
@@ -84,121 +205,6 @@ HRESULT CHDR::Render_HDR(_double TimeDelta)
 
 	m_pVIBuffer_ToneMapping->Render(0);
 
-	// Swap Cur LumAvg - Prev LumAvg
-	// 두 버퍼의 값을 교체하고, 현재 프레임의 평균 휘도를 다음프레임의 "prevLumAvg"로 저장한다.
-	swap(m_pHDRBuffer_PrevLumAve, m_pHDRBuffer_LumAve);
-	swap(m_pUnorderedAccessView_PrevLumAve, m_pUnorderedAccessView_LumAve);
-	swap(m_pShaderResourceView_PrevLumAve, m_pShaderResourceView_LumAve);
-
-	return S_OK;
-}
-
-HRESULT CHDR::Calculate_LuminanceAvg(_double TimeDelta)
-{
-	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
-	NULL_CHECK_RETURN(m_pEffect_CS, E_FAIL);
-	
-	// Set Adaptation
-	m_fAdaptationDeltaT += (_float)TimeDelta;
-
-	_float fAdaptNorm = 0.f;
-	if (m_bAdaptationFirstTime)
-	{
-		fAdaptNorm = 0.f;
-		m_bAdaptationFirstTime = false;
-	}
-	else
-	{
-		if(m_fAdaptationDeltaT > m_fAdapt)
-		{
-			m_fAdaptationDeltaT -= m_fAdapt;
-		}
-
-		fAdaptNorm = min(m_fAdapt < 0.0001f ? m_fAdapt : (m_fAdaptationDeltaT / m_fAdapt), m_fAdapt - 0.0001f);
-	}
-
-	m_fAdaptation = fAdaptNorm;
-
-	// CS ---------------------------------------------------------------------------
-	// For. First Pass
-	// Set HDR Texture
-	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
-
-	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_HDR"))),E_FAIL);
-	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_HDRDownScale", m_pUnorderedAccessView_DownScaledHDR), E_FAIL); // HDR 다운스케일 텍스쳐 제작
-	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageValues1D", m_pShaderResourceView_Lum), E_FAIL);
-	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_Lum), E_FAIL);
-
-	FAILED_CHECK_RETURN(m_InputLayouts_CS[0].pPass->Apply(0, m_pDeviceContext),E_FAIL);
-
-	 _uint x = (_uint)(ceil((m_iWinSize[0] / 1024.f) * (m_iWinSize[1] / 16.f)));
-	m_pDeviceContext->Dispatch(x, 1,1); 
-
-	// Reset Views
-	Unbind_ShaderResources();
-
-	// For. Second Pass
-	FAILED_CHECK_RETURN(Set_Variable("g_Adaptation", &m_fAdaptation, sizeof(_float)), E_FAIL);
-	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageValues1D", m_pShaderResourceView_Lum), E_FAIL);
-	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_AverageLum", m_pUnorderedAccessView_LumAve), E_FAIL);
-	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_PrevAverageLum", m_pShaderResourceView_PrevLumAve), E_FAIL);
-
-	// MAX_GROUPS : 64
-	FAILED_CHECK_RETURN(m_InputLayouts_CS[1].pPass->Apply(0, m_pDeviceContext), E_FAIL);
-	m_pDeviceContext->Dispatch(1, 1, 1);
-
-	// Reset Views
-	Unbind_ShaderResources();
-
-	return S_OK;
-}
-
-HRESULT CHDR::Calculate_BrightPassForBloom()
-{
-	// Downscale & BrightRight
-	// 다운스케일된 HDR과 SRV의 평균휘도를 계산한후, 임시로 UAV(m_pUnorderedAccessView_Bloom_Temp)로 저장한다.
-	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_HDRDownScaleTex", m_pShaderResourceView_DownScaledHDR), E_FAIL);
-	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageLum1D", m_pShaderResourceView_LumAve), E_FAIL);
-	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Bloom", m_pUnorderedAccessView_Bloom_Temp), E_FAIL);
-
-	FAILED_CHECK_RETURN(m_InputLayouts_CS[2].pPass->Apply(0, m_pDeviceContext), E_FAIL);
-
-	//_uint x = (_uint)(ceil(m_iWinSize[0] / 16.f));
-	//_uint y = (_uint)(ceil(m_iWinSize[1] / 16.f));
-	_uint brightPassX = (_uint)(ceil((m_iWinSize[0] / 1024.f) * (m_iWinSize[1] / 16.f)));
-	m_pDeviceContext->Dispatch(brightPassX, 1, 1);
-
-	Unbind_ShaderResources();
-
-	//> 2 pass - verticla & horizontal
-	// 수직 / 수평 가우시안 블러
-	// 첫 패스에서 휘도 다운스케일에 쓰인 그룹숫자만큼의 컴퓨트셰이더를 적용한다.
-	// 0 pass : 첫째 임시 텍스쳐 SRV(m_pShaderResourceView_Bloom_Temp)로부터 픽셀을 수평방향으로 필터링해 둘째 임시 텍스쳐 UAV(m_pUnorderedAccessView_Bloom)로 저장한다.
-
-	// Vertical
-	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Bloom_Temp), E_FAIL);
-	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Bloom_Temp2), E_FAIL);
-	FAILED_CHECK_RETURN(m_InputLayouts_CS[3].pPass->Apply(0, m_pDeviceContext), E_FAIL);
-
-	_uint x = (_uint)(ceil(m_iWinSize[0] / 4.f));
-	_uint y = (_uint)(ceil((m_iWinSize[1] / 4.f) / ((128 - 12) + 1)));
-	m_pDeviceContext->Dispatch(x, y, 1);
-
-	Unbind_ShaderResources();
-
-	// Horizontal
-	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Bloom_Temp2), E_FAIL);
-	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Bloom), E_FAIL);
-	FAILED_CHECK_RETURN(m_InputLayouts_CS[4].pPass->Apply(0, m_pDeviceContext), E_FAIL);
-
-	// GroupThread : 128
-	x = (_uint)(ceil(m_iWinSize[1] / 4.f) / 60.f);
-	y = (_uint)(ceil(m_iWinSize[1] / 4.f));
-	m_pDeviceContext->Dispatch(x, y, 1);
-
-	// Reset Views
-	Unbind_ShaderResources();
-
 	return S_OK;
 }
 
@@ -215,91 +221,48 @@ HRESULT CHDR::Unbind_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CHDR::Build_FirstPassResources(_float iWidth, _float iHeight)
+HRESULT CHDR::Build_LuminanceBuffer(_float iWidth, _float iHeight)
 {
-	/* 휘도의 중간값을 저장하기 위한 리소스들 */
 	NULL_CHECK_RETURN(m_pDevice, E_FAIL);
 
+	/* 휘도의 중간값을 저장하기 위한 리소스들 */
 	D3D11_BUFFER_DESC BufferDesc;
 	ZeroMemory(&BufferDesc, sizeof(D3D11_BUFFER_DESC));
-	BufferDesc.StructureByteStride = sizeof(float);
-	BufferDesc.ByteWidth = (_uint)(4 * iWidth * iHeight / 16 * 1024);
+	BufferDesc.StructureByteStride = sizeof(_float);
+	BufferDesc.ByteWidth = m_iDownScaleGroups * BufferDesc.StructureByteStride;
 	BufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
 	BufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	BufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	FAILED_CHECK_RETURN(m_pDevice->CreateBuffer(&BufferDesc, nullptr, &m_pHDRBuffer_Lum), E_FAIL);
 
 	D3D11_UNORDERED_ACCESS_VIEW_DESC UAVDesc;
 	ZeroMemory(&UAVDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
 	UAVDesc.Format = DXGI_FORMAT_UNKNOWN;
 	UAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-	UAVDesc.Buffer.NumElements = (_uint)(iWidth * iHeight / 16 * 1024);
+	UAVDesc.Buffer.FirstElement = 0;
+	UAVDesc.Buffer.NumElements = m_iDownScaleGroups;
 	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pHDRBuffer_Lum, &UAVDesc, &m_pUnorderedAccessView_Lum), E_FAIL);
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
 	ZeroMemory(&SRVDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
 	SRVDesc.Format = DXGI_FORMAT_UNKNOWN;
 	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-	SRVDesc.Buffer.NumElements = (_uint)(iWidth * iHeight / 16 * 1024);
+	SRVDesc.Buffer.FirstElement = 0;
+	SRVDesc.Buffer.NumElements = m_iDownScaleGroups;
 	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pHDRBuffer_Lum, &SRVDesc, &m_pShaderResourceView_Lum), E_FAIL);
 
-	return S_OK;
-}
-
-HRESULT CHDR::Build_SecondPassResources()
-{
-	/* 부동소수점 형태로 평균 휘도 값을 저장 */
-	NULL_CHECK_RETURN(m_pDevice, E_FAIL);
-
-	D3D11_BUFFER_DESC BufferDesc;
-	ZeroMemory(&BufferDesc, sizeof(D3D11_BUFFER_DESC));
-	BufferDesc.StructureByteStride = sizeof(float);
-	BufferDesc.ByteWidth = 4;
-	BufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-	BufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	/* 부동소수점 형태로 평균 휘도 값을 저장 (현재, 이전) */
+	BufferDesc.ByteWidth = sizeof(_float);
+	BufferDesc.StructureByteStride = sizeof(_float);
 	FAILED_CHECK_RETURN(m_pDevice->CreateBuffer(&BufferDesc, nullptr, &m_pHDRBuffer_LumAve), E_FAIL);
-
-	D3D11_UNORDERED_ACCESS_VIEW_DESC UAVDesc;
-	ZeroMemory(&UAVDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
-	UAVDesc.Format = DXGI_FORMAT_UNKNOWN;
-	UAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-	UAVDesc.Buffer.NumElements = 1;
-	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pHDRBuffer_LumAve, &UAVDesc, &m_pUnorderedAccessView_LumAve), E_FAIL);
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
-	ZeroMemory(&SRVDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-	SRVDesc.Format = DXGI_FORMAT_UNKNOWN;
-	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-	SRVDesc.Buffer.NumElements = 1;
-	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pHDRBuffer_LumAve, &SRVDesc, &m_pShaderResourceView_LumAve), E_FAIL);
-
-	return S_OK;
-}
-
-HRESULT CHDR::Build_PrevLumAvgResources()
-{
-	/* 부동소수점 형태로 평균 휘도 값을 저장 */
-	NULL_CHECK_RETURN(m_pDevice, E_FAIL);
-
-	D3D11_BUFFER_DESC BufferDesc;
-	ZeroMemory(&BufferDesc, sizeof(D3D11_BUFFER_DESC));
-	BufferDesc.StructureByteStride = sizeof(float);
-	BufferDesc.ByteWidth = 4;
-	BufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-	BufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 	FAILED_CHECK_RETURN(m_pDevice->CreateBuffer(&BufferDesc, nullptr, &m_pHDRBuffer_PrevLumAve), E_FAIL);
 
-	D3D11_UNORDERED_ACCESS_VIEW_DESC UAVDesc;
-	ZeroMemory(&UAVDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
-	UAVDesc.Format = DXGI_FORMAT_UNKNOWN;
-	UAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
 	UAVDesc.Buffer.NumElements = 1;
+	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pHDRBuffer_LumAve, &UAVDesc, &m_pUnorderedAccessView_LumAve), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pHDRBuffer_PrevLumAve, &UAVDesc, &m_pUnorderedAccessView_PrevLumAve), E_FAIL);
 
-	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
-	ZeroMemory(&SRVDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-	SRVDesc.Format = DXGI_FORMAT_UNKNOWN;
-	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
 	SRVDesc.Buffer.NumElements = 1;
+	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pHDRBuffer_LumAve, &SRVDesc, &m_pShaderResourceView_LumAve), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pHDRBuffer_PrevLumAve, &SRVDesc, &m_pShaderResourceView_PrevLumAve), E_FAIL);
 
 	return S_OK;
@@ -313,7 +276,7 @@ HRESULT CHDR::Build_BloomResources(_float iWidth, _float iHeight)
 	TextureDesc.Height = (_uint)iHeight / 4;
 	TextureDesc.MipLevels = 1;
 	TextureDesc.ArraySize = 1;
-	TextureDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	TextureDesc.Format = DXGI_FORMAT_R16G16B16A16_TYPELESS;
 	TextureDesc.SampleDesc.Count = 1;
 	TextureDesc.SampleDesc.Quality = 0;
 	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -340,6 +303,8 @@ HRESULT CHDR::Build_BloomResources(_float iWidth, _float iHeight)
 	ZeroMemory(&UnorderedAccessViewDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
 	UnorderedAccessViewDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
 	UnorderedAccessViewDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+	UnorderedAccessViewDesc.Buffer.FirstElement = 0;
+	UnorderedAccessViewDesc.Buffer.NumElements = m_iWinSize[0] * m_iWinSize[1] / 16;
 
 	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pDownScaledHDRTex, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_DownScaledHDR), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pBloomTex_Temp, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_Bloom_Temp), E_FAIL);

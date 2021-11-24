@@ -250,7 +250,7 @@ HRESULT CRenderer::Render_Blend()
 HRESULT CRenderer::Render_PostProcessing(_double TimeDelta)
 {
 	CHDR* pHDR = CHDR::GetInstance();
-	FAILED_CHECK_RETURN(pHDR->Render_HDR(TimeDelta),E_FAIL);
+	FAILED_CHECK_RETURN(pHDR->PostProcessing(TimeDelta),E_FAIL);
 
 	return S_OK;
 }

@@ -14,7 +14,7 @@ cbuffer FinalPassDesc
 {
 	float	g_MiddleGrey = 0.f;
 	float	g_LumWhiteSqr = 0.f;
-	float	g_BloomScale = 0.8f; // 빛을 흘릴 스케일
+	float	g_BloomScale = 0.1f; // 빛을 흘릴 스케일
 	float2	g_DOFFarValues = { 20., 100.f }; // 초점이 맞지 않기 시작하는 거리와, 완전히 초점이 나가버리는 범위 값
 };
 
@@ -27,20 +27,20 @@ float3 ToneMapping(float3 HDRColor)
 	// 휘도 스케일을 픽셀 색상에 적용
 
 	// DX Sample
-	//float LScale = dot(HDRColor, LUM_FACTOR);
-	//LScale *= g_MiddleGrey / g_AverageLum[0];
-	//LScale = (LScale + LScale * LScale / g_LumWhiteSqr) / (1.0 + LScale);
-	//return HDRColor * LScale;
+	float LScale = dot(HDRColor, LUM_FACTOR);
+	LScale *= g_MiddleGrey / g_AverageLum[0];
+	LScale = (LScale + LScale * LScale / g_LumWhiteSqr) / (1.0 + LScale);
+	return HDRColor * LScale;
 
 	// EA studio
 	//float3 Color = pow(tex2D(Sampler, TexUV), 2.2f);
 	//float3 x = max(0.f, Color - 0.004);
 	//Color = (x * (6.2f * x + 0.5f)) / (x * (6.2f * x + 1.7f) + 0.06f);
 	//return float4(Color, 1.f);
-	float3 Color = pow(HDRColor, 2.2f);
-	float3 x = max(0.f, Color - g_MiddleGrey);
-	Color = (x * (g_LumWhiteSqr * x + 0.5f)) / (x * (g_LumWhiteSqr * x + 1.7f) + 0.06f);
-	return Color;
+	//float3 Color = pow(HDRColor, 2.2f);
+	//float3 x = max(0.f, Color - g_MiddleGrey);
+	//Color = (x * (g_LumWhiteSqr * x + 0.5f)) / (x * (g_LumWhiteSqr * x + 1.7f) + 0.06f);
+	//return Color;
 }
 
 float3 DistanceDOF(float3 colorFocus, float3 colorBlurred, float depth)
@@ -100,36 +100,36 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	float3 vColor = g_HDRTex.Sample(Point_Sampler, In.vTexUV).xyz;
 
-	// 먼 평면에 없는 픽셀에 대해서만 거리 DOF 계산
-	vector	vDepthDesc = g_DepthTex.Sample(Point_Sampler, In.vTexUV);
-	vector	vViewPos = vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
-	float	vViewZ = 0.f;
+	//// 먼 평면에 없는 픽셀에 대해서만 거리 DOF 계산
+	//vector	vDepthDesc = g_DepthTex.Sample(Point_Sampler, In.vTexUV);
+	//vector	vViewPos = vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
+	//float	vViewZ = 0.f;
 
-	if (vViewPos.z < 1.0)
-	{
-		if (In.vTexUV.x >= g_vMainViewportUVInfo.x && In.vTexUV.x <= g_vMainViewportUVInfo.z &&
-			In.vTexUV.y >= g_vMainViewportUVInfo.y && In.vTexUV.y <= g_vMainViewportUVInfo.w)
-		{
-			// View space Z
-			vViewZ = vDepthDesc.x * g_fMainCamFar;
-			vViewPos = vViewPos * vViewZ;
-			vViewPos = mul(vViewPos, g_MainProjMatrixInverse);
-		}
-		else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
-			In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
-		{
-			// View space Z
-			vViewZ = vDepthDesc.x * g_fSubCamFar;
-			vViewPos = vViewPos * vViewZ;
-			vViewPos = mul(vViewPos, g_SubProjMatrixInverse);
-		}
-		else discard;
+	//if (vViewPos.z < 1.0)
+	//{
+	//	if (In.vTexUV.x >= g_vMainViewportUVInfo.x && In.vTexUV.x <= g_vMainViewportUVInfo.z &&
+	//		In.vTexUV.y >= g_vMainViewportUVInfo.y && In.vTexUV.y <= g_vMainViewportUVInfo.w)
+	//	{
+	//		// View space Z
+	//		vViewZ = vDepthDesc.x * g_fMainCamFar;
+	//		vViewPos = vViewPos * vViewZ;
+	//		vViewPos = mul(vViewPos, g_MainProjMatrixInverse);
+	//	}
+	//	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
+	//		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
+	//	{
+	//		// View space Z
+	//		vViewZ = vDepthDesc.x * g_fSubCamFar;
+	//		vViewPos = vViewPos * vViewZ;
+	//		vViewPos = mul(vViewPos, g_SubProjMatrixInverse);
+	//	}
+	//	else discard;
 
-		float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	//	float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
-		// 거리 DOF 색상 계산
-		vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z);
-	}
+	//	// 거리 DOF 색상 계산
+	//	vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z);
+	//}
 
 	vColor += g_BloomScale * g_BloomTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV.xy).xyz;
 
