@@ -205,9 +205,6 @@
     <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback">
       <UniqueIdentifier>{7217416e-7088-47ec-b7c5-df5d4f4d2af0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utility\06.HDR">
-      <UniqueIdentifier>{3ed05aec-d931-4bdb-bbd2-2b54d2cdf11d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97.ShaderFiles\Compute">
       <UniqueIdentifier>{f646baae-80f9-4651-9890-ce59df45393d}</UniqueIdentifier>
     </Filter>
@@ -237,6 +234,9 @@
     </Filter>
     <Filter Include="02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite">
       <UniqueIdentifier>{d7e64caf-3994-464e-b585-a700b1c3cdff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\06.PostFX">
+      <UniqueIdentifier>{3ed05aec-d931-4bdb-bbd2-2b54d2cdf11d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -411,8 +411,8 @@
     <ClInclude Include="..\public\PxContactCallback.h">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\HDR.h">
-      <Filter>02.Utility\06.HDR</Filter>
+    <ClInclude Include="..\Public\PostFX.h">
+      <Filter>02.Utility\06.PostFX</Filter>
     </ClInclude>
     <ClInclude Include="..\public\PxControllerFilterCallback.h">
       <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\02.FilterCallback</Filter>
@@ -572,8 +572,8 @@
     <ClCompile Include="..\private\PxContactCallback.cpp">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\HDR.cpp">
-      <Filter>02.Utility\06.HDR</Filter>
+    <ClCompile Include="..\Private\PostFX.cpp">
+      <Filter>02.Utility\06.PostFX</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PxControllerFilterCallback.cpp">
       <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\02.FilterCallback</Filter>

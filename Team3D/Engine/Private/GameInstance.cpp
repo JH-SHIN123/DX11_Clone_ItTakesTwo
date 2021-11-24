@@ -16,7 +16,7 @@ CGameInstance::CGameInstance()
 	, m_pPipeline			(CPipeline::GetInstance())
 	, m_pFrustum			(CFrustum::GetInstance())
 	, m_pShadow_Manager		(CShadow_Manager::GetInstance())
-	, m_pHDR				(CHDR::GetInstance())
+	, m_pPostFX				(CPostFX::GetInstance())
 {
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pInput_Device);
@@ -30,7 +30,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pPipeline);
 	Safe_AddRef(m_pFrustum);
 	Safe_AddRef(m_pShadow_Manager);
-	Safe_AddRef(m_pHDR);
+	Safe_AddRef(m_pPostFX);
 }
 
 #pragma region GameInstance
@@ -44,7 +44,7 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 	NULL_CHECK_RETURN(m_pPhysX, E_FAIL);
 	NULL_CHECK_RETURN(m_pFrustum, E_FAIL);
 	NULL_CHECK_RETURN(m_pShadow_Manager, E_FAIL);
-	NULL_CHECK_RETURN(m_pHDR, E_FAIL);
+	NULL_CHECK_RETURN(m_pPostFX, E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGraphic_Device->Ready_GraphicDevice(eWinMode, hWnd, iWinSizeX, iWinSizeY, ppDevice, ppDeviceContext), E_FAIL);
 	FAILED_CHECK_RETURN(m_pInput_Device->Ready_InputDevice(hInst, hWnd), E_FAIL);
@@ -53,7 +53,7 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 	FAILED_CHECK_RETURN(m_pPhysX->Ready_PhysX(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pFrustum->Ready_Frustum(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShadow_Manager->Ready_ShadowManager(*ppDevice, *ppDeviceContext), E_FAIL);
-	FAILED_CHECK_RETURN(m_pHDR->Ready_HDR(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
+	FAILED_CHECK_RETURN(m_pPostFX->Ready_HDR(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
 
 	return S_OK;
 }
@@ -401,7 +401,7 @@ void CGameInstance::Release_Engine()
 	CComponent_Manager::GetInstance()->Clear_All();
 	CLight_Manager::GetInstance()->Clear_Buffer();
 	CLevel_Manager::GetInstance()->Clear_Level();
-	CHDR::GetInstance()->Clear_Buffer();
+	CPostFX::GetInstance()->Clear_Buffer();
 
 #ifdef _DEBUG
 	CRenderTarget_Manager::GetInstance()->Clear_Buffers();
@@ -421,8 +421,8 @@ void CGameInstance::Release_Engine()
 		MSG_BOX("Failed to Release CShadow_Manager.");
 	if (CLight_Manager::GetInstance()->DestroyInstance())
 		MSG_BOX("Failed to Release CLight_Manager.");
-	if (CHDR::GetInstance()->DestroyInstance())
-		MSG_BOX("Failed to Release CHDR.");
+	if (CPostFX::GetInstance()->DestroyInstance())
+		MSG_BOX("Failed to Release CPostFX.");
 	if (CPhysX::GetInstance()->DestroyInstance())
 		MSG_BOX("Failed to Release CPhysX.");
 	if (CRenderTarget_Manager::GetInstance()->DestroyInstance())
@@ -443,7 +443,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
-	Safe_Release(m_pHDR);
+	Safe_Release(m_pPostFX);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pTimer_Manager);

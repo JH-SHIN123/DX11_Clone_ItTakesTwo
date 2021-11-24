@@ -35,7 +35,9 @@ private:
 	HRESULT Render_ShadowsForAllCascades();
 	HRESULT Render_LightAcc();
 	HRESULT Render_Blend();
-	HRESULT Render_PostProcessing(_double TimeDelta);
+
+private:
+	HRESULT PostProcessing(_double TimeDelta);
 
 private:
 	void	Sort_GameObjects(RENDER_OBJECTS& GameObjects);

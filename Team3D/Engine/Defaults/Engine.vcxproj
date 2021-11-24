@@ -206,7 +206,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\public\GameObject_Manager.h" />
     <ClInclude Include="..\Public\GlobalFunction.h" />
     <ClInclude Include="..\public\Graphic_Device.h" />
-    <ClInclude Include="..\Public\HDR.h" />
+    <ClInclude Include="..\Public\PostFX.h" />
     <ClInclude Include="..\Public\HierarchyNode.h" />
     <ClInclude Include="..\public\Input_Device.h" />
     <ClInclude Include="..\public\Layer.h" />
@@ -261,7 +261,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\private\GameObject.cpp" />
     <ClCompile Include="..\private\GameObject_Manager.cpp" />
     <ClCompile Include="..\private\Graphic_Device.cpp" />
-    <ClCompile Include="..\Private\HDR.cpp" />
+    <ClCompile Include="..\Private\PostFX.cpp" />
     <ClCompile Include="..\Private\HierarchyNode.cpp" />
     <ClCompile Include="..\private\Input_Device.cpp" />
     <ClCompile Include="..\private\Layer.cpp" />

@@ -6,7 +6,7 @@
 #include "Graphic_Device.h"
 #include "Shadow_Manager.h"
 #include "Input_Device.h"
-#include "HDR.h"
+#include "PostFX.h"
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)
@@ -111,7 +111,8 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_PostProcessing(TimeDelta), E_FAIL);
+
+	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
@@ -247,9 +248,9 @@ HRESULT CRenderer::Render_Blend()
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_PostProcessing(_double TimeDelta)
+HRESULT CRenderer::PostProcessing(_double TimeDelta)
 {
-	CHDR* pHDR = CHDR::GetInstance();
+	CPostFX* pHDR = CPostFX::GetInstance();
 	FAILED_CHECK_RETURN(pHDR->PostProcessing(TimeDelta),E_FAIL);
 
 	return S_OK;

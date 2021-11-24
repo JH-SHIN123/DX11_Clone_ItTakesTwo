@@ -13,7 +13,7 @@
 #include "Sound_Manager.h"
 #include "Timer_Manager.h"
 #include "Shadow_Manager.h"
-#include "HDR.h"
+#include "PostFX.h"
 
 BEGIN(Engine)
 
@@ -129,7 +129,7 @@ private:
 	CPhysX*					m_pPhysX				= nullptr;
 	CPipeline*				m_pPipeline				= nullptr;
 	CFrustum*				m_pFrustum				= nullptr;
-	CHDR*					m_pHDR					= nullptr;
+	CPostFX*				m_pPostFX				= nullptr;
 
 public:
 	static void Release_Engine();
