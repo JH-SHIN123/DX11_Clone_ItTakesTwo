@@ -13,6 +13,12 @@ public:
 
 public:
 	virtual bool filter(const PxController & a, const PxController & b) override;
+
+public:
+	void Set_Controller(PxController* pController) { m_pController = pController; }
+
+private:
+	PxController* m_pController = nullptr;
 };
 
 END
