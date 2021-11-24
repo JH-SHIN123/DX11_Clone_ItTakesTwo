@@ -232,7 +232,7 @@ HRESULT CGraphic_Device::Ready_SwapChain(WINMODE eWinMode, HWND hWnd, _uint iWin
 	DXGI_SWAP_CHAIN_DESC SwapChainDesc;
 	SwapChainDesc.BufferDesc.Width						= iWinSizeX;
 	SwapChainDesc.BufferDesc.Height						= iWinSizeY;
-	SwapChainDesc.BufferDesc.Format						= DXGI_FORMAT_R8G8B8A8_UNORM;
+	SwapChainDesc.BufferDesc.Format						= m_eBackBufferFormat;
 	SwapChainDesc.BufferDesc.RefreshRate.Denominator	= 60;
 	SwapChainDesc.BufferDesc.RefreshRate.Numerator		= 1;
 	SwapChainDesc.BufferDesc.ScanlineOrdering			= DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;

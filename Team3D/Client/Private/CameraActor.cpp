@@ -44,6 +44,7 @@ HRESULT CCameraActor::NativeConstruct(void * pArg)
 	ArgDesc.CapsuleControllerDesc.behaviorCallback = m_pBehaviorCallback;
 
 	m_pBehaviorCallback->Set_Controller(m_pController);
+	m_pFilterCallback->Set_Controller(m_pController);
 	m_pController = m_pPhysX->Create_CapsuleController(ArgDesc.CapsuleControllerDesc);
 	m_pActor = m_pController->getActor();
 	m_pActor->userData = ArgDesc.pUserData;

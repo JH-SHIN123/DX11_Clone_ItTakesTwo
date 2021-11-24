@@ -84,7 +84,5 @@ CComponent * CComponent_Manager::Find_Prototype(_uint iLevelIndex, const _tchar 
 
 void CComponent_Manager::Free()
 {
-	Clear_All();
-
 	Safe_Delete_Array(m_pPrototypes);
 }

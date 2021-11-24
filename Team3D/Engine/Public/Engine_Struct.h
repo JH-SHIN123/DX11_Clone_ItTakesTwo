@@ -9,8 +9,10 @@ namespace Engine
 		LIGHTTYPE	eType;
 		XMFLOAT3	vDirection;
 		XMFLOAT3	vPosition;
-		float		fRadius;
+		float		fRange;
 		float		fAtt;
+		//float		fAngleOuterCone;
+		//float		fAngleInnerCone;
 		XMFLOAT4	vDiffuse;
 		XMFLOAT4	vAmbient;
 		XMFLOAT4	vSpecular;

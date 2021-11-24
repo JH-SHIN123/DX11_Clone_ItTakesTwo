@@ -187,8 +187,6 @@ CLayer * CGameObject_Manager::Find_Layer(_uint iLevelIndex, const _tchar * pLaye
 
 void CGameObject_Manager::Free()
 {
-	Clear_All();
-
 	Safe_Delete_Array(m_pLayers);
 	Safe_Delete_Array(m_pPrototypes);
 }

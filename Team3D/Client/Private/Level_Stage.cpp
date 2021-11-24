@@ -32,13 +32,11 @@ HRESULT CLevel_Stage::NativeConstruct()
 
 	/* For.Interactive Objects */
 	//FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_Robot(TEXT("Layer_Robot")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_RobotHead(TEXT("Layer_RobotHead")), E_FAIL);
 
 	/* For.Test */
 	//FAILED_CHECK_RETURN(Ready_Layer_Test(), E_FAIL);
-
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Map", Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
 
 	/* For. Environment */
@@ -60,7 +58,6 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	if (m_pGameInstance->Key_Down(DIK_3))
 		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
 
-
 	CEffect_Generator::GetInstance()->LoopSpawner(dTimedelta);
 
 	return NO_EVENT;
@@ -81,15 +78,26 @@ HRESULT CLevel_Stage::Ready_Lights()
 
 	LIGHT_DESC			LightDesc;
 
-	/* For.Directional */
+	/* For.Directional : Ambient / Specular Zero */
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
 	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
 	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
+		return E_FAIL;
+
+	/* For. Point */
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = XMFLOAT3(5.f, 5.f, 10.f);
+	LightDesc.vDiffuse = XMFLOAT4(1.f, 0.f, 0.f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.f);
+	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+	LightDesc.fRange = 15.f;
+
+	if (FAILED(pGameInstance->Add_Light(L"Point1", LightDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -106,7 +114,7 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.fFullScreenAspect				= (_float)g_iWinCX / (_float)g_iWinCY;
 	CameraDesc.fAspect							= 1.f;
 	CameraDesc.fNear							= 0.3f;
-	CameraDesc.fFar								= 300.f;
+	CameraDesc.fFar								= 250.f;
 	CameraDesc.TransformDesc.dSpeedPerSec		= 10.f;
 	CameraDesc.TransformDesc.dRotationPerSec	= XMConvertToRadians(90.f);
 

@@ -37,6 +37,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
+<<<<<<< HEAD
 	UI_Create(Cody, PC_Mouse_Reduction);
 	UI_Create(Cody, PC_Mouse_Enlargement);
 	UI_Create(Cody, PlayerMarker);
@@ -46,6 +47,18 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	UI_Create(May, StickIcon);
 
 	//UI_Create(Cody, InputButton_InterActive);
+=======
+ 	UI_Create(Cody, PC_Mouse_Reduction);
+ 	UI_Create(Cody, PC_Mouse_Enlargement);
+ 	UI_Create(Default, LoadingBook);
+ 	UI_Create(May, Arrowkeys_Side);
+ 	UI_Create(May, StickIcon);
+ 
+ 	UI_Create(Cody, PlayerMarker);
+ 
+ 	//UI_Create(Cody, InputButton_InterActive);
+	 
+>>>>>>> main
 
 	return S_OK;
 }
@@ -1119,7 +1132,7 @@ HRESULT CCody::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(2, 0, true);

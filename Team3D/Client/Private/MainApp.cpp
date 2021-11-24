@@ -48,7 +48,7 @@ HRESULT CMainApp::Run_App()
 		if (Tick(m_dTimeDelta) & 0x80000000)
 			return E_FAIL;
 
-		if (FAILED(Render()))
+		if (FAILED(Render(dTimeDelta)))
 			return E_FAIL;
 
 //#ifdef _DEBUG
@@ -67,7 +67,7 @@ _int CMainApp::Tick(_double dTimeDelta)
 	return m_pGameInstance->Tick(dTimeDelta);
 }
 
-HRESULT CMainApp::Render()
+HRESULT CMainApp::Render(_double dTimeDelta)
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 	NULL_CHECK_RETURN(m_pRenderer, E_FAIL);
@@ -75,7 +75,7 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Clear_BackBuffer(_float4(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Clear_DepthStencilBuffer();
 
-	FAILED_CHECK_RETURN(m_pRenderer->Draw_Renderer(), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderer->Draw_Renderer(dTimeDelta), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Render_Level(), E_FAIL);
 
 	m_pGameInstance->Present();
