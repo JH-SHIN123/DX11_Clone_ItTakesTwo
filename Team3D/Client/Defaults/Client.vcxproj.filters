@@ -159,10 +159,9 @@
     <Filter Include="02.GameObject\05.UI\05.UISprite">
       <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
     <Filter Include="02.GameObject\00.Public\03.Cam_Helper\CamEffect">
       <UniqueIdentifier>{fb6abacd-7350-4cd6-bc75-133e14471971}</UniqueIdentifier>
-=======
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\01.Environment">
       <UniqueIdentifier>{e056b0e9-9d57-4825-aae6-dc4576b4077f}</UniqueIdentifier>
     </Filter>
@@ -180,7 +179,6 @@
     </Filter>
     <Filter Include="02.GameObject\06.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
->>>>>>> main
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -307,10 +305,9 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h">
       <Filter>98.Defines</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\Public\CamEffect.h">
       <Filter>02.GameObject\00.Public\03.Cam_Helper\CamEffect</Filter>
-=======
+    </ClInclude>
     <ClInclude Include="..\Public\Environment_Generator.h">
       <Filter>02.GameObject\04.Stage_Space\01.Environment\Environment_Generator</Filter>
     </ClInclude>
@@ -322,7 +319,6 @@
     </ClInclude>
     <ClInclude Include="..\public\Sky.h">
       <Filter>02.GameObject\06.Sky</Filter>
->>>>>>> main
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -404,7 +400,6 @@
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
     </ClCompile>
@@ -425,7 +420,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\CamEffect.cpp">
       <Filter>02.GameObject\00.Public\03.Cam_Helper\CamEffect</Filter>
-=======
+    </ClCompile>
     <ClCompile Include="..\Private\Environment_Generator.cpp">
       <Filter>02.GameObject\04.Stage_Space\01.Environment\Environment_Generator</Filter>
     </ClCompile>
@@ -440,7 +435,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Sky.cpp">
       <Filter>02.GameObject\06.Sky</Filter>
->>>>>>> main
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

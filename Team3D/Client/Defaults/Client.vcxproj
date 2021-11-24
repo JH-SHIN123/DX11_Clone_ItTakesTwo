@@ -190,12 +190,9 @@
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\Cody.h" />
     <ClInclude Include="..\public\DataStorage.h" />
-<<<<<<< HEAD
     <ClInclude Include="..\public\Film.h" />
     <ClInclude Include="..\public\GrindLine.h" />
-=======
     <ClInclude Include="..\Public\Environment_Generator.h" />
->>>>>>> main
     <ClInclude Include="..\Public\InputButton.h" />
     <ClInclude Include="..\Public\InputButton_Frame.h" />
     <ClInclude Include="..\Public\Instancing_Env.h" />
@@ -233,14 +230,11 @@
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
     <ClCompile Include="..\private\DataStorage.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="..\private\Film.cpp" />
     <ClCompile Include="..\private\GrindLine.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
-=======
     <ClCompile Include="..\Private\Environment_Generator.cpp" />
->>>>>>> main
     <ClCompile Include="..\Private\InputButton.cpp" />
     <ClCompile Include="..\Private\InputButton_Frame.cpp" />
     <ClCompile Include="..\Private\Instancing_Env.cpp" />
