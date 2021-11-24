@@ -18,6 +18,7 @@ HRESULT CHDR::Ready_HDR(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceConte
 
 	m_iWinSize[0] = (_uint)fBufferWidth;
 	m_iWinSize[1] = (_uint)fBufferHeight;
+	m_iDownScaleGroups = (_uint)ceil((_float)(fBufferWidth * fBufferHeight / 16) / 1024.f);
 
 	m_pVIBuffer_ToneMapping = CVIBuffer_RectRHW::Create(pDevice, pDeviceContext, 0.f, 0.f, fBufferWidth, fBufferHeight, TEXT("../Bin/ShaderFiles/Shader_HDR.hlsl"), "DefaultTechnique");
 
@@ -222,24 +223,27 @@ HRESULT CHDR::Build_FirstPassResources(_float iWidth, _float iHeight)
 
 	D3D11_BUFFER_DESC BufferDesc;
 	ZeroMemory(&BufferDesc, sizeof(D3D11_BUFFER_DESC));
-	BufferDesc.StructureByteStride = sizeof(float);
-	BufferDesc.ByteWidth = (_uint)(4 * iWidth * iHeight / 16 * 1024);
+	BufferDesc.StructureByteStride = sizeof(_float);
+	BufferDesc.ByteWidth = m_iDownScaleGroups * BufferDesc.StructureByteStride;
 	BufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
 	BufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	BufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	FAILED_CHECK_RETURN(m_pDevice->CreateBuffer(&BufferDesc, nullptr, &m_pHDRBuffer_Lum), E_FAIL);
 
 	D3D11_UNORDERED_ACCESS_VIEW_DESC UAVDesc;
 	ZeroMemory(&UAVDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
 	UAVDesc.Format = DXGI_FORMAT_UNKNOWN;
 	UAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-	UAVDesc.Buffer.NumElements = (_uint)(iWidth * iHeight / 16 * 1024);
+	UAVDesc.Buffer.FirstElement = 0;
+	UAVDesc.Buffer.NumElements = m_iDownScaleGroups;
 	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pHDRBuffer_Lum, &UAVDesc, &m_pUnorderedAccessView_Lum), E_FAIL);
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
 	ZeroMemory(&SRVDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
 	SRVDesc.Format = DXGI_FORMAT_UNKNOWN;
 	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-	SRVDesc.Buffer.NumElements = (_uint)(iWidth * iHeight / 16 * 1024);
+	SRVDesc.Buffer.FirstElement = 0;
+	SRVDesc.Buffer.NumElements = m_iDownScaleGroups;
 	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pHDRBuffer_Lum, &SRVDesc, &m_pShaderResourceView_Lum), E_FAIL);
 
 	return S_OK;
@@ -253,9 +257,10 @@ HRESULT CHDR::Build_SecondPassResources()
 	D3D11_BUFFER_DESC BufferDesc;
 	ZeroMemory(&BufferDesc, sizeof(D3D11_BUFFER_DESC));
 	BufferDesc.StructureByteStride = sizeof(float);
-	BufferDesc.ByteWidth = 4;
+	BufferDesc.ByteWidth = sizeof(_float);
 	BufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
 	BufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	BufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	FAILED_CHECK_RETURN(m_pDevice->CreateBuffer(&BufferDesc, nullptr, &m_pHDRBuffer_LumAve), E_FAIL);
 
 	D3D11_UNORDERED_ACCESS_VIEW_DESC UAVDesc;
