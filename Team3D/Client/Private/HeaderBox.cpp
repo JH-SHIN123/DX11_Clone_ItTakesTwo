@@ -92,14 +92,23 @@ void CHeaderBox::Render_Font()
 {
 	CUI_Generator::FONTDESC		tFontDesc;
 
-	if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Start")))
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_LocalPlay")))
 	{
  		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
 		tFontDesc.vScale = { 15.f, 20.f };
 		tFontDesc.fInterval = 0.f;
 		tFontDesc.iShaderPassNum = 1;
 
-		UI_Generator->Render_Font(TEXT("게임 시작"), tFontDesc, Player::Default);
+		UI_Generator->Render_Font(TEXT("로컬 플레이"), tFontDesc, Player::Default);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_OnlinePlay")))
+	{
+		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
+		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.fInterval = 0.f;
+		tFontDesc.iShaderPassNum = 1;
+
+		UI_Generator->Render_Font(TEXT("온라인 플레이"), tFontDesc, Player::Default);
 	}
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Option")))
 	{
@@ -109,6 +118,15 @@ void CHeaderBox::Render_Font()
 		tFontDesc.iShaderPassNum = 1;
 
 		UI_Generator->Render_Font(TEXT("옵션"), tFontDesc, Player::Default);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Option2")))
+	{
+		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
+		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.fInterval = 0.f;
+		tFontDesc.iShaderPassNum = 1;
+
+		UI_Generator->Render_Font(TEXT("접근성 옵션"), tFontDesc, Player::Default);
 	}
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Creator")))
 	{
@@ -143,10 +161,6 @@ void CHeaderBox::Mouse_Picking()
 	POINT	pt = {};
 	GetCursorPos(&pt);
 	ScreenToClient(g_hWnd, &pt);
-
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_float4 vConvertPos;
-	XMStoreFloat4(&vConvertPos, vPos);
 
 	D3D11_VIEWPORT Viewport;
 	Viewport = m_pGameInstance->Get_ViewportInfo(0);

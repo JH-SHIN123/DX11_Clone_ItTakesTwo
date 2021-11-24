@@ -548,11 +548,19 @@ HRESULT CUI_Generator::Add_Prototype_Menu(CUIObject::UI_DESC* UIDesc)
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMenuScreen::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
-	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Start"))
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_LocalPlay"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_OnlinePlay"))
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
 	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Option"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Option2"))
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
@@ -564,6 +572,7 @@ HRESULT CUI_Generator::Add_Prototype_Menu(CUIObject::UI_DESC* UIDesc)
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
+	
 
 	return S_OK;
 }
@@ -676,8 +685,10 @@ void CUI_Generator::Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger)
 HRESULT CUI_Generator::Create_Logo()
 {
 	SetUp_Clone(Player::Default, UI::MenuScreen, TEXT("MenuBackScreen"), Level::LEVEL_LOGO);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Start"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_LocalPlay"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_OnlinePlay"), Level::LEVEL_LOGO);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Option"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Option2"), Level::LEVEL_LOGO);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Creator"), Level::LEVEL_LOGO);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Exit"), Level::LEVEL_LOGO);
 
