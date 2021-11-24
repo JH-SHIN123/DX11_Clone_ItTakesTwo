@@ -23,22 +23,8 @@ HRESULT CEffect_RespawnTunnel_Portal::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
 
-	CModel_Instance::ARG_DESC Data;
-	char szActorName[MAX_PATH] = "";
-	WideCharToMultiByte(CP_ACP, 0, m_EffectDesc_Prototype.ModelName, MAX_PATH, szActorName, MAX_PATH, NULL, NULL);
-	Data.pActorName = szActorName;
-	Data.fCullingRadius = m_EffectDesc_Clone.fCullingRadius;
-	Data.pWorldMatrices = m_pInstanceBuffer;
-	Data.iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
-
-	for (_uint i = 0; i < Data.iInstanceCount; ++i)
-	{
-		XMStoreFloat4x4(&Data.pWorldMatrices[i],m_pTransformCom->Get_WorldMatrix());
-		//Data.pWorldMatrices[i]._41 = _float((i % 100) * 10.f) + m_;
-		//Data.pWorldMatrices[i]._43 = _float((i / 100) * 10.f);
-	}
 	//D3D11_BLEND_DESC
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom, &Data), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Color_Ramp", TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_VIBuffer_PointInstance_Custom_STT", TEXT("Com_PointBuffer_Smoke"), (CComponent**)&m_pPointInstanceCom_Smoke), E_FAIL);
@@ -46,6 +32,12 @@ HRESULT CEffect_RespawnTunnel_Portal::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Smoke_Flow_01", TEXT("Com_Textures_Smoke2"), (CComponent**)&m_pTexturesCom_Smoke2), E_FAIL);
 
 	Ready_Instance();
+
+	_matrix mat = m_pTransformCom->Get_WorldMatrix();
+
+	mat.r[0] = { -1.f, 0.f, 0.f, 0.f };
+	mat.r[2] = { 0.f, 0.f, -1.f, 0.f };
+
 	
 	return S_OK;
 }

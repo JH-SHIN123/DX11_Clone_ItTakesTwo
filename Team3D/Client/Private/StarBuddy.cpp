@@ -28,7 +28,7 @@ HRESULT CStarBuddy::NativeConstruct(void * pArg)
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_StarBuddy"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Com"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(35.f, 1.f, 25.f, 1.f));
 
@@ -55,12 +55,6 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 		UI_Delete(Cody, InputButton_InterActive);
 	}
 
-	if (m_bLaunch == false)
-	{
-		m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
-		m_pTransformCom->RotatePitch(dTimeDelta * 0.2f);
-	}
-
 	else if (m_bLaunch == true)
 	{
 		m_fLifeTime += (_float)dTimeDelta;
@@ -75,6 +69,7 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 		if (m_fLifeTime > 3.5f)
 			return EVENT_DEAD; // 
 	}
+
 
 	return NO_EVENT;
 }
@@ -182,7 +177,7 @@ HRESULT CStarBuddy::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(3, 0, true);

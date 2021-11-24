@@ -3,17 +3,16 @@
 
 texture2D	g_NormalTexture;
 texture2D	g_DepthTexture;
+texture2D	g_SpecularSrcTexture;
 
 
-cbuffer Directional
+cbuffer LightDesc
 {
-	vector	g_vLightDir;
-}
-
-cbuffer Point
-{
-	vector	g_vLightPos;
-	float	g_fRadius;
+	vector	g_vLightDir;		// only use directional / spot
+	vector	g_vLightPos;		// only use point / spot
+	float	g_fRange;			// only use point / spot
+	//float	g_fAngleOuterCone;	// only use spot
+	//float	g_fAngleInnerCone;	// only use spot
 }
 
 cbuffer LightColor
@@ -25,7 +24,7 @@ cbuffer LightColor
 
 cbuffer MtrlDesc
 {
-	float	g_fPower		= 20.f;
+	float	g_fPower		= 16.f; // 16.f
 	vector	g_vMtrlDiffuse	= (vector)1.f;
 	vector	g_vMtrlAmbient	= (vector)1.f;
 	vector	g_vMtrlSpecular = (vector)1.f;
@@ -77,6 +76,7 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	vector	vNormalDesc = g_NormalTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vNormal		= vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 	vector	vDepthDesc	= g_DepthTexture.Sample(Wrap_Sampler, In.vTexUV);
+	
 	vector	vWorldPos	= vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
 	float	fViewZ		= 0.f;
 	vector	vLook		= (vector)0.f;
@@ -103,12 +103,20 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	else
 		discard;
 
-	vector vReflect = reflect(normalize(g_vLightDir), vNormal);
 
 	Out.vShade		= max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient);
 	Out.vShade.a = 0.f;
-	Out.vSpecular	= pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
-	Out.vSpecular.a = 0.f;
+
+	/* Specular */
+	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Wrap_Sampler, In.vTexUV);
+
+	if (vSpecSrcDesc.w < 0.5f) // w is specular on/off flag
+	{
+		vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
+		vector vReflect = reflect(normalize(g_vLightDir), vSpecSrc);
+		Out.vSpecular = pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
+		Out.vSpecular.a = 0.f;
+	}
 
 	return Out;
 }
@@ -144,18 +152,21 @@ PS_OUT PS_POINT(PS_IN In)
 		discard;
 
 	vector	vLightDir	= vWorldPos - g_vLightPos;
-	float	fDistance	= length(vLightDir);
-	float	fAtt		= saturate((g_fRadius - fDistance) / g_fRadius);
-	vector	vReflect	= reflect(normalize(g_vLightDir), vNormal);
+	float	fDistance	= length(vLightDir) / g_fRange;
+	clip(1 - fDistance);
+	float	fAtt		= 0.5f * COS_ARR(3.14f * pow(fDistance, 1.5f)) + 0.5f;
 
 	Out.vShade		= (max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
 	Out.vShade.a = 0.f;
+
+	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
+	vector	vReflect = reflect(normalize(vLightDir), vSpecSrcDesc);
 	Out.vSpecular	= (pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular)) * fAtt;
 	Out.vSpecular.a = 0.f;
 
 	return Out;
 }
-
 ////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
@@ -165,8 +176,8 @@ technique11		DefaultTechnique
 	pass Directional
 	{		
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_No_ZTest, 0);
-		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Add, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
 		VertexShader	= compile vs_5_0 VS_MAIN();
 		GeometryShader	= NULL;
 		PixelShader		= compile ps_5_0 PS_DIRECTIONAL();
@@ -175,8 +186,8 @@ technique11		DefaultTechnique
 	pass Point
 	{
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_No_ZTest, 0);
-		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Add, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
 		VertexShader	= compile vs_5_0 VS_MAIN();
 		GeometryShader	= NULL;
 		PixelShader		= compile ps_5_0 PS_POINT();

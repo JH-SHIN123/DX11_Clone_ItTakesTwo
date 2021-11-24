@@ -43,7 +43,7 @@ HRESULT CRenderTarget_Manager::Add_MRT(const _tchar * pRenderTargetTag, const _t
 	return S_OK;
 }
 
-HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, const _tchar * pMRTTag)
+HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, const _tchar * pMRTTag, _bool isClear)
 {
 	MULTIPLE_RENDER_TARGET* pMRT = Find_MRT(pMRTTag);
 	NULL_CHECK_RETURN(pMRT, E_FAIL);
@@ -60,8 +60,12 @@ HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, c
 
 	for (auto& pRenderTarget : *pMRT)
 	{
-		pRenderTarget->Clear_View();
-		pRenderTarget->Clear_Depth_Stencil_Buffer();
+		if (true == isClear)
+		{
+			pRenderTarget->Clear_View();
+			pRenderTarget->Clear_Depth_Stencil_Buffer();
+		}
+
 		RenderTargets[iRenderTargetIndex] = pRenderTarget->Get_RenderTargetView();
 		DepthStencil = pRenderTarget->Get_DepthStencilView();
 		++iRenderTargetIndex;

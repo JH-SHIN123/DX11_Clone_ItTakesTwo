@@ -86,7 +86,7 @@ HRESULT CEffect_Dash::Render(RENDER_GROUP::Enum eGroup)
 
 	_float fTime = (_float)m_dAlphaTime;
 	m_pRectCom->Set_Variable("g_fTime", &fTime, sizeof(_float));
-	m_pRectCom->Set_ShaderResourceView("g_SecondTexture",	m_pTexturesCom->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum));
+	m_pRectCom->Set_ShaderResourceView("g_MaskTexture",	m_pTexturesCom->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum));
 	m_pRectCom->Set_ShaderResourceView("g_DiffuseTexture",	m_pTexturesCom_Second->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum_Second));
 	m_pRectCom->Set_ShaderResourceView("g_ColorTexture",	m_pTexturesCom_Color->Get_ShaderResourceView(9));
 

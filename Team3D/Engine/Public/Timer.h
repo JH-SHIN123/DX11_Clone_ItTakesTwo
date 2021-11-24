@@ -11,6 +11,9 @@ private:
 	virtual ~CTimer() = default;
 
 public:
+	_double Get_TimeDelta() const { return m_dTimeDelta; }
+
+public:
 	HRESULT	NativeConstruct();
 	_double	Compute_TimeDelta();
 

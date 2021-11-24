@@ -190,6 +190,9 @@
     <ClInclude Include="..\Public\Arrowkeys_Outline.h" />
     <ClInclude Include="..\Public\BigButton.h" />
     <ClInclude Include="..\Public\BigPlanet.h" />
+    <ClInclude Include="..\Public\CameraActor.h" />
+    <ClInclude Include="..\Public\CameraBehaviorCallback.h" />
+    <ClInclude Include="..\Public\CameraFilterCallback.h" />
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
@@ -197,7 +200,10 @@
     <ClInclude Include="..\public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Color.txt" />
     <ClInclude Include="..\Public\Effect_Dash.h" />
+    <ClInclude Include="..\public\Effect_Dead_Particle_Fire.h" />
+    <ClInclude Include="..\public\Effect_Env_Particle.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
+    <ClInclude Include="..\Public\Effect_GravityPipe.h" />
     <ClInclude Include="..\public\Effect_May_Boots.h" />
     <ClInclude Include="..\public\Effect_May_Boots_Walking_Particle.h" />
     <ClInclude Include="..\public\Effect_Player_Revive.h" />
@@ -209,8 +215,10 @@
     <ClInclude Include="..\public\Effect_Landing_Smoke.h" />
     <ClInclude Include="..\Public\Cody.h" />
     <ClInclude Include="..\public\DataStorage.h" />
+    <ClInclude Include="..\Public\Environment_Generator.h" />
     <ClInclude Include="..\Public\InputButton.h" />
     <ClInclude Include="..\Public\InputButton_Frame.h" />
+    <ClInclude Include="..\Public\Instancing_Env.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
     <ClInclude Include="..\public\Loading.h" />
@@ -234,7 +242,9 @@
     <ClInclude Include="..\Public\SecurityCamera.h" />
     <ClInclude Include="..\Public\SecurityCameraHandle.h" />
     <ClInclude Include="..\Public\SpaceValve.h" />
+    <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
+    <ClInclude Include="..\Public\Static_Env.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TestEffect.h" />
@@ -247,7 +257,6 @@
     <ClInclude Include="..\Public\UISprite.h" />
     <ClInclude Include="..\Public\UI_Generator.h" />
     <ClInclude Include="Client.h" />
-    <ClInclude Include="Effect_GravityPipe.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -256,7 +265,10 @@
     <ClCompile Include="..\Private\BigPlanet.cpp" />
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
+    <ClCompile Include="..\private\Effect_Dead_Particle_Fire.cpp" />
+    <ClCompile Include="..\private\Effect_Env_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Generator.cpp" />
+    <ClCompile Include="..\Private\Effect_GravityPipe.cpp" />
     <ClCompile Include="..\private\Effect_May_Boots.cpp" />
     <ClCompile Include="..\private\Effect_May_Boots_Walking_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Player_Revive.cpp" />
@@ -269,11 +281,16 @@
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\BigButton.cpp" />
+    <ClCompile Include="..\Private\CameraActor.cpp" />
+    <ClCompile Include="..\Private\CameraBehaviorCallback.cpp" />
+    <ClCompile Include="..\Private\CameraFilterCallback.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
     <ClCompile Include="..\private\DataStorage.cpp" />
+    <ClCompile Include="..\Private\Environment_Generator.cpp" />
     <ClCompile Include="..\Private\InputButton.cpp" />
     <ClCompile Include="..\Private\InputButton_Frame.cpp" />
+    <ClCompile Include="..\Private\Instancing_Env.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />
@@ -297,7 +314,9 @@
     <ClCompile Include="..\Private\SecurityCamera.cpp" />
     <ClCompile Include="..\Private\SecurityCameraHandle.cpp" />
     <ClCompile Include="..\Private\SpaceValve.cpp" />
+    <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
+    <ClCompile Include="..\Private\Static_Env.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TestEffect.cpp" />
@@ -310,7 +329,6 @@
     <ClCompile Include="..\Private\UISprite.cpp" />
     <ClCompile Include="..\Private\UI_Generator.cpp" />
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="Effect_GravityPipe.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -335,6 +353,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom_STT.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_RectCustom.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sprite.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl" />

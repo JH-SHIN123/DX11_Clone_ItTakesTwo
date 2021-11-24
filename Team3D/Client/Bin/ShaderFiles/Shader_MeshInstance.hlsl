@@ -7,15 +7,11 @@
 
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
-//texture2D	g_EmmesiveTexture;
+texture2D	g_SpecularTexture;
+texture2D	g_EmissiveTexture;
 //texture2D	g_AmbientTexture;
 //texture2D	g_OpacityTexture;
 //texture2D	g_LightTexture;
-
-cbuffer Effect
-{
-	float	g_fAlpha;
-};
 
 ////////////////////////////////////////////////////////////
 
@@ -199,16 +195,8 @@ struct PS_OUT
 	vector	vNormal				: SV_TARGET1;
 	vector	vDepth				: SV_TARGET2;
 	vector	vShadow				: SV_TARGET3;
-};
-
-struct PS_IN_CSM_DEPTH
-{
-	float4 vPosition : SV_POSITION;
-};
-
-struct PS_OUT_CSM_DEPTH
-{
-	vector	vShadowDepth : SV_TARGET0;
+	vector	vSpecular			: SV_TARGET4;
+	vector	vEmissive			: SV_TARGET5;
 };
 
 PS_OUT	PS_MAIN(PS_IN In)
@@ -217,20 +205,21 @@ PS_OUT	PS_MAIN(PS_IN In)
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vDiffuse			= vMtrlDiffuse;
 	Out.vDepth				= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
-	
-	// Calculate Normal
-	if (g_IsMaterials.Is_Normals & 1) // Normal Mapping
-	{
-		vector vNormal = vector(g_NormalTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, 0.f) * 2.f - 1.f;
-		float3x3 TBN = transpose(float3x3(In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz));
-		vNormal = vector(mul(TBN, normalize(vNormal.xyz)), 0.f);
-		Out.vNormal = vector(normalize(vNormal.xyz) * 0.5f + 0.5f, 0.f);
-	}
+
+	// Calculate Normal Mapping
+	if (g_IsMaterials.Is_Normals & 1) Out.vNormal = TextureSampleToWorldSpace(g_NormalTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
 	else Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 
 	// Calculate Shadow
 	int iIndex = -1;
 	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex,In.vWorldPosition);
+
+	// Calculate Specular
+	if (g_IsMaterials.Is_Specular & 1) Out.vSpecular = TextureSampleToWorldSpace(g_SpecularTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
+	else Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
+
+	// Calculate Emissive
+	if (g_IsMaterials.Is_Emissive & 1) Out.vEmissive = g_EmissiveTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
 	// Get_ShadowFactor
 	float fShadowFactor = 0.f;
@@ -253,13 +242,6 @@ PS_OUT	PS_MAIN_ALPHA(PS_IN In, uniform bool isOpaque)
 
 	return Out;
 }
-
-PS_OUT_CSM_DEPTH PS_MAIN_CSM_DEPTH(PS_IN_CSM_DEPTH In)
-{
-	PS_OUT_CSM_DEPTH		Out = (PS_OUT_CSM_DEPTH)0;
-	Out.vShadowDepth = vector(In.vPosition.z, In.vPosition.z, In.vPosition.z, 1.f); /* NDC X 투영공간의 z*/
-	return Out;
-}
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
@@ -277,12 +259,12 @@ technique11 DefaultTechnique
 	// 1
 	pass Write_CascadedShadowDepth
 	{
-		SetRasterizerState(Rasterizer_Solid);
+		SetRasterizerState(Rasterizer_Shadow);
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile		vs_5_0 VS_MAIN_CSM_DEPTH();
 		GeometryShader = compile	gs_5_0 GS_MAIN_CSM_DEPTH();
-		PixelShader = compile		ps_5_0 PS_MAIN_CSM_DEPTH();
+		PixelShader = NULL;
 	}
 	// 2
 	pass Default_Alpha

@@ -456,6 +456,42 @@ void CInGameEffect::SetUp_Shader_Data()
 	return;
 }
 
+_float4 CInGameEffect::Get_TexUV_Rand(_uint iTexture_U, _uint iTexture_V)
+{
+	_float2 vRandUV = { _float(rand() % iTexture_U), _float(rand() % iTexture_V) };
+
+	_float fLeft	= _float(1.f / iTexture_U) *  vRandUV.x;
+	_float fTop		= _float(1.f / iTexture_V) *  vRandUV.y;
+	_float fRight	= _float(1.f / iTexture_U) * (vRandUV.x + 1.f);
+	_float fBottom	= _float(1.f / iTexture_V) * (vRandUV.y + 1.f);
+
+	_float4 vUV = { fLeft, fTop, fRight, fBottom };
+
+	return vUV;
+}
+
+_float3 CInGameEffect::Get_Dir_Rand(_int3 vRandDirPower)
+{
+	_vector vRandDir	= XMVectorZero();
+	_float3 vDir		= {0.f, 0.f, 0.f};
+	_int iRandPower[3];
+	iRandPower[0] = vRandDirPower.x;
+	iRandPower[1] = vRandDirPower.y;
+	iRandPower[2] = vRandDirPower.z;
+
+	for (_int i = 0; i < 3; ++i)
+	{
+		_float fRand = _float(rand() % iRandPower[i] + 1);
+		if (rand() % 2 == 0) fRand *= -1.f;
+		vRandDir.m128_f32[i] = fRand;
+	}
+
+	vRandDir = XMVector3Normalize(vRandDir);
+	XMStoreFloat3(&vDir, vRandDir);
+
+	return vDir;
+}
+
 CGameObject * CInGameEffect::Clone_GameObject(void * pArg)
 {
 	return nullptr;

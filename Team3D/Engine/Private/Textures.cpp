@@ -70,19 +70,8 @@ HRESULT CTextures::NativeConstruct_Prototype(TEXTURE_TYPE eType, const _tchar * 
 				break;
 			}
 
-			if (iTextureType == aiTextureType_DIFFUSE)
-			{
-				ScratchImage DstImage;
-				FAILED_CHECK_RETURN(Resize(SrcImage.GetImages(), SrcImage.GetImageCount(), SrcImage.GetMetadata(), SrcImage.GetMetadata().width / 4, SrcImage.GetMetadata().height / 4, TEX_FILTER_DEFAULT, DstImage), E_FAIL);
-
-				Save_ProcessedImage(&DstImage, szProcessedTextureFileName);
-				FAILED_CHECK_RETURN(CreateShaderResourceView(m_pDevice, DstImage.GetImages(), DstImage.GetImageCount(), DstImage.GetMetadata(), &pShaderResourceView), E_FAIL);
-			}
-			else
-			{
-				Save_ProcessedImage(&SrcImage, szProcessedTextureFileName);
-				FAILED_CHECK_RETURN(CreateShaderResourceView(m_pDevice, SrcImage.GetImages(), SrcImage.GetImageCount(), SrcImage.GetMetadata(), &pShaderResourceView), E_FAIL);
-			}
+			Save_ProcessedImage(&SrcImage, szProcessedTextureFileName);
+			FAILED_CHECK_RETURN(CreateShaderResourceView(m_pDevice, SrcImage.GetImages(), SrcImage.GetImageCount(), SrcImage.GetMetadata(), &pShaderResourceView), E_FAIL);
 
 			m_Textures.emplace_back(pShaderResourceView);
 		}

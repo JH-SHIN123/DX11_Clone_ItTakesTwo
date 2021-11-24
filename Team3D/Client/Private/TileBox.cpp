@@ -24,17 +24,15 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 	CGameObject::NativeConstruct(pArg);
 
 	CModel_Instance::ARG_DESC Arg;
-	Arg.iInstanceCount = 1;
+	Arg.iInstanceCount = 50;
 	Arg.fCullingRadius = 10.f;
-	Arg.pActorName = "TileBox";
 	Arg.pWorldMatrices = new _float4x4[Arg.iInstanceCount];
-	Arg.pMaterial = m_pGameInstance->Get_BasePxMaterial();
 
 	for (_uint i = 0; i < Arg.iInstanceCount; ++i)
 	{
 		Arg.pWorldMatrices[i] = MH_XMFloat4x4Identity();
-		Arg.pWorldMatrices[i]._41 = 20.f;//((i % 100) * 10.f);
-		Arg.pWorldMatrices[i]._43 = 10.f;//((i / 100) * 10.f);
+		Arg.pWorldMatrices[i]._41 = ((i % 100) * 10.f);
+		Arg.pWorldMatrices[i]._43 = ((i / 100) * 10.f);
 	}
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);

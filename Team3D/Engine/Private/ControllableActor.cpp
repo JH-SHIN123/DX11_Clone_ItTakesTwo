@@ -21,6 +21,11 @@ void CControllableActor::Set_Scale(_float fRadius, _float fHeight)
 	static_cast<PxCapsuleController*>(m_pController)->setRadius(fRadius);
 }
 
+void CControllableActor::Set_Position(_fvector vPosition)
+{
+	m_pController->setPosition(MH_PxExtendedVec3(vPosition));
+}
+
 HRESULT CControllableActor::NativeConstruct_Prototype()
 {
 	CActor::NativeConstruct_Prototype();

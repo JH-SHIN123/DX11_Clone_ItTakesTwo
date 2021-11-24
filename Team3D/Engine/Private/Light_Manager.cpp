@@ -100,9 +100,12 @@ HRESULT CLight_Manager::Render_Lights()
 	NULL_CHECK_RETURN(pNormalShaderResourceView, E_FAIL);
 	ID3D11ShaderResourceView* pDepthShaderResourceView = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_Depth"));
 	NULL_CHECK_RETURN(pDepthShaderResourceView, E_FAIL);
+	ID3D11ShaderResourceView* pSpecSrcShaderResourceView = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_Specular_Src"));
+	NULL_CHECK_RETURN(pNormalShaderResourceView, E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_NormalTexture", pNormalShaderResourceView), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_DepthTexture", pDepthShaderResourceView), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_SpecularSrcTexture", pSpecSrcShaderResourceView), E_FAIL);
 
 	_float	fCamFar;
 	_vector vCamPosition;

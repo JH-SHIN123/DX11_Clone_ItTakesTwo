@@ -45,6 +45,12 @@ CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
 	for (auto& pMesh : m_Meshes)
 		Safe_AddRef(pMesh);
 
+	for (auto& Meshes : m_SortedMeshes)
+	{
+		for (auto& pMesh : Meshes)
+			Safe_AddRef(pMesh);
+	}
+
 	for (auto& pMaterial : m_Materials)
 	{
 		for (auto& pTexture : pMaterial->pMaterialTexture)
@@ -207,7 +213,6 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 	m_RealTimeMatrices.resize(m_iInstanceCount, MH_XMFloat4x4Identity());
 	m_fCullingRadius = ArgDesc.fCullingRadius;
 
-	strcpy(m_szActorName, ArgDesc.pActorName);
 	m_ppActors = new PxRigidStatic*[m_iInstanceCount * m_iMeshCount];
 
 	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
@@ -300,7 +305,9 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _
 		if (false == bShadowWrite) {
 			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
 			Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
-
+			Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, iMaterialSetNum);
+			Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, iMaterialSetNum);
+			
 			FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 		}
 

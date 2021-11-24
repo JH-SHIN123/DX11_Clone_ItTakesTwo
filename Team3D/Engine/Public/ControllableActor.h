@@ -33,6 +33,7 @@ public: /* Setter */
 	void	Set_GroundPound(_bool bGroundPound) { m_bGroundPound = bGroundPound; }
 	void    Set_ZeroGravity(_bool bZeroGravity, _bool IsGoUp, _bool IsStatic) { m_bZeroGravity = bZeroGravity; m_IsGoUp = IsGoUp; m_bStatic = IsStatic; }
 	void	Set_IsFalling(_bool IsFalling) { m_IsFalling = IsFalling; }
+	void	Set_Position(_fvector vPosition);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;

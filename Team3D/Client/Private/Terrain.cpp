@@ -60,8 +60,7 @@ HRESULT CTerrain::Render(RENDER_GROUP::Enum eGroup)
 
 HRESULT CTerrain::Render_ShadowDepth()
 {
-	m_pVIBufferCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-	m_pVIBufferCom->Set_DefaultVariables_ShadowDepth();
+	m_pVIBufferCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	m_pVIBufferCom->Render(1);
 

@@ -59,6 +59,12 @@ CModel::CModel(const CModel & rhs)
 	for (auto& pMesh : m_Meshes)
 		Safe_AddRef(pMesh);
 
+	for (auto& Meshes : m_SortedMeshes)
+	{
+		for (auto& pMesh : Meshes)
+			Safe_AddRef(pMesh);
+	}
+
 	for (auto& pMaterial : m_Materials)
 	{
 		for (auto& pTexture : pMaterial->pMaterialTexture)
@@ -254,8 +260,10 @@ HRESULT CModel::Set_DefaultVariables_Shadow()
 	return S_OK;
 }
 
-HRESULT CModel::Set_DefaultVariables_ShadowDepth()
+HRESULT CModel::Set_DefaultVariables_ShadowDepth(_fmatrix WorldMatrix)
 {
+	Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+
 	_matrix ShadowViewProj[MAX_CASCADES];
 
 	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();
@@ -420,6 +428,8 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 			{
 				Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
 				Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+				Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, iMaterialSetNum);
+				Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, iMaterialSetNum);
 
 				FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 			}
@@ -447,6 +457,8 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 			{
 				Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
 				Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+				Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, iMaterialSetNum);
+				Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, iMaterialSetNum);
 
 				FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 			}

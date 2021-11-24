@@ -39,6 +39,7 @@ HRESULT CRobot::NativeConstruct(void * pArg)
 	
 	DATABASE->Set_RobotPtr(this);
 
+
 	return S_OK;
 }
 
@@ -70,7 +71,7 @@ HRESULT CRobot::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(3, 0, true);

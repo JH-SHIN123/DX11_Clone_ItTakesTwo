@@ -637,6 +637,7 @@ PS_OUT  PS_MAIN_DOUBLE_TEX(PS_IN_DOUBLE_UV In)
 
 	vector vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vColorUV);
 	Out.vColor = vColor;
+	Out.vColor.a = 1.f;
 	//Out.vColor.a = 1.f;
 	float fColor = Out.vColor.r + Out.vColor.g + Out.vColor.b;
 

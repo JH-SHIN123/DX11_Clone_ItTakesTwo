@@ -38,15 +38,15 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
-	UI_Create(Cody, PC_Mouse_Reduction);
-	UI_Create(Cody, PC_Mouse_Enlargement);
-	UI_Create(Default, LoadingBook);
-	UI_Create(May, Arrowkeys_Side);
-	UI_Create(May, StickIcon);
-
-	UI_Create(Cody, PlayerMarker);
-
-	UI_Create(Cody, InputButton_InterActive);
+ 	UI_Create(Cody, PC_Mouse_Reduction);
+ 	UI_Create(Cody, PC_Mouse_Enlargement);
+ 	UI_Create(Default, LoadingBook);
+ 	UI_Create(May, Arrowkeys_Side);
+ 	UI_Create(May, StickIcon);
+ 
+ 	UI_Create(Cody, PlayerMarker);
+ 
+ 	//UI_Create(Cody, InputButton_InterActive);
 	 
 	m_vPoints[0] = {72.f, 0.f, -120.f };
 	m_vPoints[1] = { 0.f, 0.f, 0.f };
@@ -185,7 +185,7 @@ _int CCody::Tick(_double dTimeDelta)
 	
 #pragma endregion
 
-	//UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 
@@ -268,6 +268,26 @@ void CCody::KeyInput(_double dTimeDelta)
 	_bool bRoll = false;
 #pragma endregion
 
+#pragma region Teleport
+	if (m_pGameInstance->Key_Down(DIK_1)) /* 스타트 지점 */
+		m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_2)) /* 2층 */
+		m_pActorCom->Set_Position(XMVectorSet(60.f, 125.f, 170.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_3)) /* 2스테이지 입구 */
+		m_pActorCom->Set_Position(XMVectorSet(620.f, 760.f, 195.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_4)) /* 2스테이지 */
+		m_pActorCom->Set_Position(XMVectorSet(960.f, 720.f, 193.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_5))/* 3스테이지 */
+		m_pActorCom->Set_Position(XMVectorSet(-610.f, 760.f, 195.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_6))/* 3층 */
+		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_7))/* Boss */
+		m_pActorCom->Set_Position(XMVectorSet(62.f, 250.f, 187.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_8))/* Moon */
+		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
+		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+#pragma endregion
 #pragma region 8Way_Move
 	
 	if (m_IsAirDash == false)
@@ -450,7 +470,8 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Mouse_LButton
-	if (m_pGameInstance->/*Key_Down(DIK_NUMPAD8)*/Mouse_Down(CInput_Device::DIM_LB))
+
+	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
 	{
 		// 커져라
 		switch (m_eCurPlayerSize)
@@ -469,7 +490,8 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Mouse_RButton
-	if (m_pGameInstance->/*Key_Down(DIK_NUMPAD9)*/Mouse_Down(CInput_Device::DIM_RB))
+
+	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB))
 	{
 		// 작아져라
 		switch (m_eCurPlayerSize)
@@ -1223,7 +1245,7 @@ HRESULT CCody::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(2, 0, true);
