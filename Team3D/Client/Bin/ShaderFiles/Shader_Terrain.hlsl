@@ -171,30 +171,24 @@ struct PS_OUT
 	vector	vNormal				: SV_TARGET1;
 	vector	vDepth				: SV_TARGET2;
 	vector	vShadow				: SV_TARGET3;
-};
-
-struct PS_IN_CSM_DEPTH
-{
-	float4 vPosition : SV_POSITION;
-};
-
-struct PS_OUT_CSM_DEPTH
-{
-	vector	vShadowDepth : SV_TARGET0;
+	vector	vSpecular			: SV_TARGET4;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	//Out.vDiffuse			= g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-	Out.vDiffuse			= vector(0.3f, 0.3f, 0.4f, 1.f);
+	Out.vDiffuse			= g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	//Out.vDiffuse			= vector(0.3f, 0.3f, 0.4f, 1.f);
 	Out.vNormal				= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth				= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 
 	// Calculate Shadow
 	int iIndex = -1;
 	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
+
+	// Calculate Specular
+	Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
 
 	// Get_ShadowFactor
 	float fShadowFactor = 0.f;
@@ -206,14 +200,6 @@ PS_OUT PS_MAIN(PS_IN In)
 	return Out;
 }
 
-PS_OUT_CSM_DEPTH PS_MAIN_CSM_DEPTH(PS_IN_CSM_DEPTH In)
-{
-	PS_OUT_CSM_DEPTH		Out = (PS_OUT_CSM_DEPTH)0;
-
-	Out.vShadowDepth = vector(In.vPosition.z, In.vPosition.z, In.vPosition.z, 1.f); /* NDC X 투영공간의 z*/
-
-	return Out;
-}
 ////////////////////////////////////////////////////////////
 
 technique11	DefaultTechnique
@@ -229,11 +215,11 @@ technique11	DefaultTechnique
 	}
 	pass Write_CascadedShadowDepth // 1
 	{
-		SetRasterizerState(Rasterizer_Solid);
+		SetRasterizerState(Rasterizer_Shadow);
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile		vs_5_0 VS_MAIN_CSM_DEPTH();
 		GeometryShader = compile	gs_5_0 GS_MAIN_CSM_DEPTH();
-		PixelShader = compile		ps_5_0 PS_MAIN_CSM_DEPTH();
+		PixelShader = NULL;
 	}
 };
