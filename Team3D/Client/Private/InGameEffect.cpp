@@ -124,9 +124,9 @@ HRESULT CInGameEffect::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
 	if (true == m_IsResourceName[RESOURCE_TEXTURE])
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName, TEXT("Com_Textrue"), (CComponent**)&m_pTexturesCom), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName, TEXT("Com_Texture"), (CComponent**)&m_pTexturesCom), E_FAIL);
 	if (true == m_IsResourceName[RESOURCE_TEXTURE_SECOND])
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName_Second, TEXT("Com_Textrue_Second"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName_Second, TEXT("Com_Texture_Second"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
 
 	if (true == m_IsResourceName[RESOURCE_MESH])
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
@@ -287,6 +287,40 @@ _float4 CInGameEffect::Check_UV(_double TimeDelta, _int iIndex, _bool IsLoop)
 
 		vUV = { fLeft, fTop, fRight, fBottom };
 	}
+
+	return vUV;
+}
+
+_float4 CInGameEffect::Check_UV(_int iTextureMax_U, _int iTextureMax_V, _int* pTextureNow_U, _int* pTextureNow_V, _bool IsLoop)
+{
+	_float4 vUV;
+
+	if (false == IsLoop)
+	{
+		if (*pTextureNow_U == iTextureMax_V - 1)
+		{
+			if (*pTextureNow_U == iTextureMax_U - 1)
+				return vUV = { 1.f, 1.f, 1.f, 1.f };
+		}
+	}
+
+	if (*pTextureNow_U >= iTextureMax_U - 1)
+	{
+		*pTextureNow_U = 0;
+		++*pTextureNow_V;
+	}
+	else
+		++*pTextureNow_U;
+
+	if (*pTextureNow_V >= iTextureMax_V)
+		*pTextureNow_V = 0;
+
+	_float fLeft	= (1.f / iTextureMax_U) *  *pTextureNow_U;
+	_float fTop		= (1.f / iTextureMax_V) *  *pTextureNow_V;
+	_float fRight	= (1.f / iTextureMax_U) * (*pTextureNow_U + 1);
+	_float fBottom	= (1.f / iTextureMax_V) * (*pTextureNow_V + 1);
+
+	vUV = { fLeft, fTop, fRight, fBottom };	
 
 	return vUV;
 }

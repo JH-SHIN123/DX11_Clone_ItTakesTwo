@@ -22,7 +22,7 @@ HRESULT CEffect_FireDoor::NativeConstruct_Prototype(void * pArg)
 HRESULT CEffect_FireDoor::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Textrue_ColorRamp"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_ColorRamp"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
 	
 	m_pInstanceBuffer[0].vTextureUV = _float4(0.f, 0.f, 1.f, 1.f);
 	m_vWeight = m_pInstanceBuffer[0].vTextureUV;

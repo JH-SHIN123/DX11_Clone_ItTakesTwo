@@ -103,6 +103,7 @@ public: // 기본적인 기능
 	void	Check_Color(_double TimeDelta);
 	void	Check_Gravity(_double TimeDelta);
 	_float4 Check_UV(_double TimeDelta, _int iIndex = 0, _bool IsLoop = true);
+	_float4 Check_UV(_int iTextureMax_U, _int iTextureMax_V, _int* pTextureNow_U, _int* pTextureNow_V, _bool IsLoop = true);
 	_float2 Check_Size(_double TimeDelta, _int iIndex = 0);
 	_float4 Check_Move(_double TimeDelta, _int iIndex = 0);
 

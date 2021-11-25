@@ -56,6 +56,8 @@ private:
 	_float					m_fPointInstance_Alpha			= 0.f;
 	const _float			m_fUVCheckTime_Max = 0.01f;
 	_float					m_fUVCheckTime = 0.f;
+	_int					m_iPointInstance_Texture_U = 0;
+	_int					m_iPointInstance_Texture_V = 0;
 
 private:
 	CTextures*				m_pTexturesCom_Point_Diff		= nullptr;

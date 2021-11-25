@@ -26,8 +26,8 @@ HRESULT CEffect_Dash::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Textrue_Color"), (CComponent**)&m_pTexturesCom_Color), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV"), TEXT("Com_Rect"), (CComponent**)&m_pRectCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_Color), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV"), TEXT("Com_RectO"), (CComponent**)&m_pRectCom), E_FAIL);
 
 	//
 	//_vector vRight = XMLoadFloat4(&m_pInstanceBuffer[0].vRight);
@@ -44,6 +44,10 @@ HRESULT CEffect_Dash::NativeConstruct(void * pArg)
 
 _int CEffect_Dash::Tick(_double TimeDelta)
 {
+	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
+		return EVENT_DEAD;
+
+
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
 	m_dAlphaTime -= TimeDelta;
 
@@ -56,8 +60,6 @@ _int CEffect_Dash::Tick(_double TimeDelta)
 
 _int CEffect_Dash::Late_Tick(_double TimeDelta)
 {
-	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
-		return EVENT_DEAD;
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
@@ -140,7 +142,6 @@ CGameObject * CEffect_Dash::Clone_GameObject(void * pArg)
 
 void CEffect_Dash::Free()
 {
-	Safe_Release(m_pTexturesCom_Color);
 	Safe_Release(m_pRectCom);
 
 	__super::Free();
