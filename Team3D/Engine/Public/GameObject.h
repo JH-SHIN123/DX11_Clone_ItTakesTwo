@@ -12,8 +12,9 @@ protected:
 	virtual ~CGameObject() = default;
 
 public: /* Getter */
-	virtual _float	Get_DistanceFromCamera();
-	const _bool		Is_Dead() const { return m_isDead; }
+	virtual _float		Get_DistanceFromCamera();
+	virtual _fvector	Get_Position();
+	const _bool			Is_Dead() const { return m_isDead; }
 
 public: /* Setter */
 	void Set_Dead();

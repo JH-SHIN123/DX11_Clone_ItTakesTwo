@@ -9,6 +9,7 @@ class CModel_Instance;
 END
 
 BEGIN(Client)
+
 class CTileBox final : public CGameObject
 {
 private:

@@ -44,6 +44,9 @@ HRESULT CEffect_Dash::NativeConstruct(void * pArg)
 
 _int CEffect_Dash::Tick(_double TimeDelta)
 {
+	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
+		return EVENT_DEAD;
+
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
 	m_dAlphaTime -= TimeDelta;
 
@@ -56,9 +59,6 @@ _int CEffect_Dash::Tick(_double TimeDelta)
 
 _int CEffect_Dash::Late_Tick(_double TimeDelta)
 {
-	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
-		return EVENT_DEAD;
-
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
 }
 
@@ -140,7 +140,6 @@ CGameObject * CEffect_Dash::Clone_GameObject(void * pArg)
 
 void CEffect_Dash::Free()
 {
-	Safe_Release(m_pTexturesCom_Color);
 	Safe_Release(m_pRectCom);
 
 	__super::Free();

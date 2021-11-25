@@ -33,7 +33,8 @@ public: /* Struct */
 	}CAMERA_DESC;
 
 public: /* Getter */
-	CCamera::CAMERA_DESC Get_CameraDesc() { return m_CameraDesc; }
+	CCamera::CAMERA_DESC	Get_CameraDesc() { return m_CameraDesc; }
+	virtual _fvector		Get_Position();
 
 public: /* Setter */
 	void Set_CamWorld(_fmatrix WorldMatrix) { m_pTransformCom->Set_WorldMatrix(WorldMatrix); }

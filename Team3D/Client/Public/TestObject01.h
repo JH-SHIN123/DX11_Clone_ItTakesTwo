@@ -19,21 +19,18 @@ private:
 	explicit CTestObject01(const CTestObject01& rhs);
 	virtual ~CTestObject01() = default;
 
+public: /* Getter */
+	CTransform* Get_Transform() { return m_pTransformCom; }
+
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-public:
 	virtual HRESULT Render_ShadowDepth() override;
 
-
-public:
-	 CTransform* Get_Transform() { return m_pTransformCom; }
 private:
-
 	/* For.Component */
 	CRenderer*		m_pRendererCom = nullptr;
 	CTransform*		m_pTransformCom = nullptr;

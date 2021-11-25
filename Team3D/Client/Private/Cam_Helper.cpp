@@ -580,5 +580,6 @@ void CCam_Helper::Free()
 		Safe_Release(rPair.second);
 	m_CamEffects.clear();
 
+	CComponent::Free();
 }
 

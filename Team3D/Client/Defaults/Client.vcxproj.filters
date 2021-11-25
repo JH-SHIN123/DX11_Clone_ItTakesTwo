@@ -124,8 +124,6 @@
     <Filter Include="02.GameObject\00.Public\03.Cam_Helper\Film">
       <UniqueIdentifier>{25fa91e7-22b9-488f-a881-4902b0783881}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\98.Interaction_Deco">
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May">
       <UniqueIdentifier>{611bc1d3-0276-4f21-b082-4231462adca0}</UniqueIdentifier>
     </Filter>
@@ -541,9 +539,6 @@
     <ClCompile Include="..\Private\SubCamera.cpp">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\DataStorage.cpp">
-      <Filter>96.DataStorage</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Cam_Helper.cpp">
       <Filter>02.GameObject\00.Public\03.Cam_Helper</Filter>
     </ClCompile>
@@ -669,24 +664,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Character.cpp">
-      <Filter>02.GameObject\03.Character\99.Parent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Cody.cpp">
-      <Filter>02.GameObject\03.Character\00.Cody</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\May.cpp">
-      <Filter>02.GameObject\03.Character\01.May</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\MoonBaboon.cpp">
-      <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UFO.cpp">
-      <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\TileBox.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CamEffect.cpp">
       <Filter>02.GameObject\00.Public\03.Cam_Helper\CamEffect</Filter>

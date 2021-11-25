@@ -1,4 +1,3 @@
-
 #include "..\Public\PhysX.h"
 #include "PxEventCallback.h"
 #include "PxContactCallback.h"
@@ -187,11 +186,9 @@ PxTriangleMesh* CPhysX::Create_Mesh(MESHACTOR_DESC pMeshActorDesc)
 	return TriMesh;
 }
 
-_bool CPhysX::Raycast(PxRaycastBuffer & RaycastHit, _fvector vSrc, _fvector vDst, _float fDist)
+_bool CPhysX::Raycast(const PxVec3 & origin, const PxVec3 & unitDir, const PxReal distance, PxRaycastCallback & hitCall, PxHitFlags hitFlags, const PxQueryFilterData & filterData, PxQueryFilterCallback * filterCall, const PxQueryCache * cache)
 {
-	_vector vRayDir = XMVector3Normalize(vDst - vSrc);
-
-	return m_pScene->raycast(MH_PxVec3(vSrc), MH_PxVec3(vRayDir), fDist, RaycastHit);
+	return m_pScene->raycast(origin, unitDir, distance, hitCall, hitFlags, filterData, filterCall, cache);
 }
 
 void CPhysX::Set_TriggerOption(PxRigidActor * pActor)

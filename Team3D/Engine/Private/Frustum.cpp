@@ -153,62 +153,44 @@ void CFrustum::Transform_ToLocalSpace(_fmatrix WorldMatrix)
 	XMStoreFloat4(&m_Frustum[1].PlaneLocal[5], XMPlaneFromPoints(vPoints_Local[0], vPoints_Local[1], vPoints_Local[2]));
 }
 
-_bool CFrustum::IsIn_WorldSpace(_fvector vPosition, _float fRadius)
+_bool CFrustum::IsIn_WorldSpace_Main(_fvector vPosition, _float fRadius)
 {
-	_bool isIn_MainViewport	= true;
-	_bool isIn_SubViewport	= true;
-
 	for (_uint iIndex = 0; iIndex < 6; ++iIndex)
 	{
 		if (fRadius < XMVectorGetX(XMPlaneDotCoord(XMLoadFloat4(&m_Frustum[0].PlaneWorld[iIndex]), XMVectorSetW(vPosition, 1.f))))
-		{
-			isIn_MainViewport = false;
-			break;
-		}
+			return false;
 	}
+	return true;
+}
 
+_bool CFrustum::IsIn_WorldSpace_Sub(_fvector vPosition, _float fRadius)
+{
 	for (_uint iIndex = 0; iIndex < 6; ++iIndex)
 	{
 		if (fRadius < XMVectorGetX(XMPlaneDotCoord(XMLoadFloat4(&m_Frustum[1].PlaneWorld[iIndex]), XMVectorSetW(vPosition, 1.f))))
-		{
-			isIn_SubViewport = false;
-			break;
-		}
+			return false;
 	}
-
-	if (isIn_MainViewport || isIn_SubViewport)
-		return true;
-	
-	return false;
+	return true;
 }
 
-_bool CFrustum::IsIn_LocalSpace(_fvector vPosition, _float fRadius)
+_bool CFrustum::IsIn_LocalSpace_Main(_fvector vPosition, _float fRadius)
 {
-	_bool isIn_MainViewport = true;
-	_bool isIn_SubViewport = true;
-
 	for (_uint iIndex = 0; iIndex < 6; ++iIndex)
 	{
 		if (fRadius < XMVectorGetX(XMPlaneDotCoord(XMLoadFloat4(&m_Frustum[0].PlaneLocal[iIndex]), XMVectorSetW(vPosition, 1.f))))
-		{
-			isIn_MainViewport = false;
-			break;
-		}
+			return false;
 	}
+	return true;
+}
 
+_bool CFrustum::IsIn_LocalSpace_Sub(_fvector vPosition, _float fRadius)
+{
 	for (_uint iIndex = 0; iIndex < 6; ++iIndex)
 	{
 		if (fRadius < XMVectorGetX(XMPlaneDotCoord(XMLoadFloat4(&m_Frustum[1].PlaneLocal[iIndex]), XMVectorSetW(vPosition, 1.f))))
-		{
-			isIn_SubViewport = false;
-			break;
-		}
+			return false;
 	}
-
-	if (isIn_MainViewport || isIn_SubViewport)
-		return true;
-
-	return false;
+	return true;
 }
 
 void CFrustum::Free()

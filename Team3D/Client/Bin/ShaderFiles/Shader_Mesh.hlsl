@@ -127,42 +127,46 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 	GS_OUT Out = (GS_OUT)0;
 
 	/* Main Viewport */
-	for (uint i = 0; i < 3; i++)
+	if (g_iViewportDrawInfo & 1)
 	{
-		matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
+		for (uint i = 0; i < 3; i++)
+		{
+			matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
 
-		Out.vPosition		= mul(In[i].vPosition, matVP);
-		Out.vNormal			= In[i].vNormal;
-		Out.vTangent		= In[i].vTangent;
-		Out.vBiNormal		= In[i].vBiNormal;
-		Out.vTexUV			= In[i].vTexUV;
-		Out.vProjPosition	= Out.vPosition;
-		Out.vWorldPosition = In[i].vPosition;
-		Out.iViewportIndex	= 1;
+			Out.vPosition = mul(In[i].vPosition, matVP);
+			Out.vNormal = In[i].vNormal;
+			Out.vTangent = In[i].vTangent;
+			Out.vBiNormal = In[i].vBiNormal;
+			Out.vTexUV = In[i].vTexUV;
+			Out.vProjPosition = Out.vPosition;
+			Out.vWorldPosition = In[i].vPosition;
+			Out.iViewportIndex = 1;
 
-		TriStream.Append(Out);
+			TriStream.Append(Out);
+		}
+		TriStream.RestartStrip();
 	}
-
-	TriStream.RestartStrip();
-
-	/* Sub Viewport */
-	for (uint j = 0; j < 3; j++)
+	
+	if (g_iViewportDrawInfo & 2)
 	{
-		matrix matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+		/* Sub Viewport */
+		for (uint j = 0; j < 3; j++)
+		{
+			matrix matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
 
-		Out.vPosition		= mul(In[j].vPosition, matVP);
-		Out.vNormal			= In[j].vNormal;
-		Out.vTangent		= In[j].vTangent;
-		Out.vBiNormal		= In[j].vBiNormal;
-		Out.vTexUV			= In[j].vTexUV;
-		Out.vProjPosition	= Out.vPosition;
-		Out.vWorldPosition = In[j].vPosition;
-		Out.iViewportIndex	= 2;
+			Out.vPosition = mul(In[j].vPosition, matVP);
+			Out.vNormal = In[j].vNormal;
+			Out.vTangent = In[j].vTangent;
+			Out.vBiNormal = In[j].vBiNormal;
+			Out.vTexUV = In[j].vTexUV;
+			Out.vProjPosition = Out.vPosition;
+			Out.vWorldPosition = In[j].vPosition;
+			Out.iViewportIndex = 2;
 
-		TriStream.Append(Out);
+			TriStream.Append(Out);
+		}
+		TriStream.RestartStrip();
 	}
-
-	TriStream.RestartStrip();
 }
 
 [maxvertexcount(MAX_VERTICES)]
@@ -226,6 +230,11 @@ struct PS_OUT
 	vector	vEmissive	: SV_TARGET5;
 };
 
+struct PS_OUT_ALPHA
+{
+	vector	vDiffuse			: SV_TARGET0;
+};
+
 PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -260,6 +269,28 @@ PS_OUT	PS_MAIN(PS_IN In)
 	return Out;
 }
 ////////////////////////////////////////////////////////////
+PS_OUT_ALPHA PS_MAIN_ALPHA(PS_IN In)
+{
+	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	Out.vDiffuse = vMtrlDiffuse * g_Material.vDiffuse;
+
+	//Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	//Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+
+	return Out;
+}
+
+PS_OUT_ALPHA PS_MAIN_ALPHA_MOONBABOON_GLASSWALL(PS_IN In)
+{
+	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	Out.vDiffuse = vMtrlDiffuse * g_Material.vDiffuse;
+	Out.vDiffuse.w += 0.1;
+
+	return Out;
+}
+
 
 technique11 DefaultTechnique
 {
@@ -302,5 +333,25 @@ technique11 DefaultTechnique
 		VertexShader = compile		vs_5_0 VS_MAIN_CSM_DEPTH(false);
 		GeometryShader = compile	gs_5_0 GS_MAIN_CSM_DEPTH();
 		PixelShader = NULL;
+	}
+	// 4
+	pass Default_Alpha
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_ALPHA();
+	}
+	// 5
+	pass Default_Alpha_MoonBaboon_GlassWall
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_ALPHA_MOONBABOON_GLASSWALL();
 	}
 };

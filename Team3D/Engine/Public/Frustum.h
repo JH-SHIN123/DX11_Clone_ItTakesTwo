@@ -34,8 +34,10 @@ public:
 	HRESULT	Ready_Frustum();
 	void	Transform_ToWorldSpace();
 	void	Transform_ToLocalSpace(_fmatrix WorldMatrix);
-	_bool	IsIn_WorldSpace(_fvector vPosition, _float fRadius);
-	_bool	IsIn_LocalSpace(_fvector vPosition, _float fRadius);
+	_bool	IsIn_WorldSpace_Main(_fvector vPosition, _float fRadius);
+	_bool	IsIn_WorldSpace_Sub(_fvector vPosition, _float fRadius);
+	_bool	IsIn_LocalSpace_Main(_fvector vPosition, _float fRadius);
+	_bool	IsIn_LocalSpace_Sub(_fvector vPosition, _float fRadius);
 
 private:
 	_float3			m_vPoints[8];

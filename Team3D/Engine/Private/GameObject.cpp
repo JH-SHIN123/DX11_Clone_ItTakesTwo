@@ -28,6 +28,11 @@ _float CGameObject::Get_DistanceFromCamera()
 	return 0.f;
 }
 
+_fvector CGameObject::Get_Position()
+{
+	return XMVectorSet(0.f, 0.f, 0.f, 1.f);
+}
+
 void CGameObject::Set_Dead()
 {
 	m_isDead = true;
