@@ -14,7 +14,7 @@ cbuffer FinalPassDesc
 {
 	float	g_MiddleGrey = 0.f;
 	float	g_LumWhiteSqr = 0.f;
-	float	g_BloomScale = 0.8f; // 빛을 흘릴 스케일
+	float	g_BloomScale = 0.3f; // 빛을 흘릴 스케일
 	float2	g_DOFFarValues = { 20., 100.f }; // 초점이 맞지 않기 시작하는 거리와, 완전히 초점이 나가버리는 범위 값
 };
 
@@ -37,13 +37,13 @@ float3 ToneMapping(float3 HDRColor)
 	//float3 x = max(0.f, Color - 0.004);
 	//Color = (x * (6.2f * x + 0.5f)) / (x * (6.2f * x + 1.7f) + 0.06f);
 	//return float4(Color, 1.f);
-	//float3 Color = pow(HDRColor, 2.2f);
-	//float3 x = max(0.f, Color - g_MiddleGrey);
-	//Color = (x * (g_LumWhiteSqr * x + 0.5f)) / (x * (g_LumWhiteSqr * x + 1.7f) + 0.06f);
-
-	float3 Color = pow(HDRColor, g_MiddleGrey / g_AverageLum[0]);
-	float3 x = max(0.f, Color - 0.004);
+	float3 Color = pow(HDRColor, 2.2f);
+	float3 x = max(0.f, Color - g_MiddleGrey);
 	Color = (x * (g_LumWhiteSqr * x + 0.5f)) / (x * (g_LumWhiteSqr * x + 1.7f) + 0.06f);
+
+	//float3 Color = pow(HDRColor, g_MiddleGrey / g_AverageLum[0]);
+	//float3 x = max(0.f, Color - 0.004);
+	//Color = (x * (g_LumWhiteSqr * x + 0.5f)) / (x * (g_LumWhiteSqr * x + 1.7f) + 0.06f);
 
 	return Color;
 }

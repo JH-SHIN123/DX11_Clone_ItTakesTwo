@@ -66,16 +66,17 @@ HRESULT CInstancing_Env::Render(RENDER_GROUP::Enum eGroup)
 		_uint iRenderCount = m_pModelCom->Frustum_Culling();
 		m_pModelCom->Bind_GBuffers(iRenderCount);
 
+		/* 렌더순서 주의 - 논알파 -> 알파 */
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 1, aiTextureType_DIFFUSE, m_Ins_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", 1, aiTextureType_NORMALS, m_Ins_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", 1, aiTextureType_SPECULAR, m_Ins_Env_Desc.iMaterialIndex);
+		m_pModelCom->Render_ModelByPass(iRenderCount, 1, 0, false, tagRenderGroup::RENDER_NONALPHA);
+
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 0, aiTextureType_DIFFUSE, m_Ins_Env_Desc.iMaterialIndex);
 		//m_pModelCom->Set_ShaderResourceView("g_NormalTexture", 0, aiTextureType_NORMALS, m_Ins_Env_Desc.iMaterialIndex);
 		//m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", 0, aiTextureType_SPECULAR, m_Ins_Env_Desc.iMaterialIndex);
 		//m_pModelCom->Set_ShaderResourceView("g_ReflectTexture", 0, aiTextureType_REFLECTION, m_Ins_Env_Desc.iMaterialIndex);
 		m_pModelCom->Render_ModelByPass(iRenderCount, 0, 2, false, tagRenderGroup::RENDER_ALPHA);
-
-		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 1, aiTextureType_DIFFUSE, m_Ins_Env_Desc.iMaterialIndex);
-		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", 1, aiTextureType_NORMALS, m_Ins_Env_Desc.iMaterialIndex);
-		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", 1, aiTextureType_SPECULAR, m_Ins_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iRenderCount, 1, 0, false, tagRenderGroup::RENDER_NONALPHA);
 	}
 	else
 	{
