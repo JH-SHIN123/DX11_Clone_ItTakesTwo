@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "UI_Generator.h"
+#include "HeaderBox.h"
 
 CMenuScreen::CMenuScreen(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -54,6 +55,9 @@ _int CMenuScreen::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 
+	Input_SelectButton();
+
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
@@ -98,6 +102,47 @@ HRESULT CMenuScreen::Ready_Component()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
 
 	return S_OK;
+}
+
+void CMenuScreen::Input_SelectButton()
+{
+
+	if (m_pGameInstance->Key_Down(DIK_UP))
+	{
+		--m_iHeaderIndex;
+		m_IsHeaderBoxChange = true;
+
+		if (0 > m_iHeaderIndex)
+			m_iHeaderIndex = 0;
+	}
+	else if (m_pGameInstance->Key_Down(DIK_DOWN))
+	{
+		++m_iHeaderIndex;
+		m_IsHeaderBoxChange = true;
+
+		if (5 < m_iHeaderIndex)
+			m_iHeaderIndex = 5;
+	}
+
+	if (true == m_IsHeaderBoxChange)
+	{
+		if (true == m_IsFirst)
+		{
+			m_pHeaderBox = UI_Generator->Get_HeaderBox(0);
+			m_pHeaderBox->Set_PreviousSelect();
+
+			m_IsFirst = false;
+		}
+
+		if (nullptr != m_pHeaderBox)
+			m_pHeaderBox->Set_PreviousSelect();
+
+		m_pHeaderBox = UI_Generator->Get_HeaderBox(m_iHeaderIndex);
+		m_pHeaderBox->Set_NextSelect();
+
+		m_IsHeaderBoxChange = false;
+
+	}
 }
 
 CMenuScreen * CMenuScreen::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

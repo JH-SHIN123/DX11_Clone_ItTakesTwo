@@ -29,6 +29,10 @@ private:
 	_uint							m_iScaleChangeCount = 0;
 	_float2							m_vStartScale;
 	_float							m_fPower = 0.f;
+	_int							m_iHeaderIndex = 0;
+	_bool							m_IsHeaderBoxChange = false;
+	_bool							m_IsFirst = true;
+	class CHeaderBox*				m_pHeaderBox = nullptr;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
@@ -36,6 +40,7 @@ private:
 private:
 	void Render_Font();
 	HRESULT Ready_Component();
+	void Input_SelectButton();
 
 public:
 	static CMenuScreen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

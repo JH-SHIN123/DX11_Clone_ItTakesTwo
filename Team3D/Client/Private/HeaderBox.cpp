@@ -40,6 +40,12 @@ HRESULT CHeaderBox::NativeConstruct(void * pArg)
 	m_vFontPos.x = m_UIDesc.vPos.x - 200.f;
 	m_vFontPos.y = m_UIDesc.vPos.y;
 
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_LocalPlay")))
+	{
+		m_vFontPos.x = m_UIDesc.vPos.x - 100.f;
+		m_IsRender = true;
+	}
+
 	return S_OK;
 }
 
@@ -85,6 +91,19 @@ void CHeaderBox::Set_ScaleEffect()
 	//m_UIDesc.vScale.x -= m_fPower;
 	//m_UIDesc.vScale.y -= m_fPower;
 	//m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+}
+
+void CHeaderBox::Set_NextSelect()
+{
+	m_vFontPos.x = m_UIDesc.vPos.x - 100.f;
+	m_IsRender = true;
+}
+
+void CHeaderBox::Set_PreviousSelect()
+{
+	m_vFontPos.x = m_UIDesc.vPos.x - 150.f;
+
+	m_IsRender = false;
 }
 
 
@@ -174,15 +193,13 @@ void CHeaderBox::Mouse_Picking()
 
 	if (PtInRect(&rc, pt))
 	{
-		m_vFontPos.x = m_UIDesc.vPos.x - 100.f;
-		m_vFontPos.y = m_UIDesc.vPos.y;
-		m_IsRender = true;
+		//m_vFontPos.x = m_UIDesc.vPos.x - 100.f;
+		//m_vFontPos.y = m_UIDesc.vPos.y;
 	}
 	else
 	{
-		m_vFontPos.x = m_UIDesc.vPos.x - 150.f;
-		m_vFontPos.y = m_UIDesc.vPos.y;
-		m_IsRender = false;
+		//m_vFontPos.x = m_UIDesc.vPos.x - 150.f;
+		//m_vFontPos.y = m_UIDesc.vPos.y;
 	}
 }
 

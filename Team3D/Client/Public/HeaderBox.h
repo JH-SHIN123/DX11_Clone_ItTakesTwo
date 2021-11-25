@@ -26,6 +26,8 @@ public:
 
 public:
 	virtual void Set_ScaleEffect() override;
+	void Set_NextSelect();
+	void Set_PreviousSelect();
 
 private:
 	_bool							m_IsRender = false;

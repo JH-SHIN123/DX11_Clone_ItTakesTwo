@@ -663,6 +663,16 @@ HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, con
 	return S_OK;
 }
 
+HRESULT CUI_Generator::SetUp_Clone_Ptr(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void* pArg, CGameObject** pGameObject)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(eLevel, TEXT("Layer_UI"), eLevel, PrototypeTag, pArg, pGameObject), E_FAIL);
+
+	return S_OK;
+}
+
 void CUI_Generator::Set_TargetPos(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPos)
 {
 	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
@@ -684,13 +694,23 @@ void CUI_Generator::Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger)
 
 HRESULT CUI_Generator::Create_Logo()
 {
+	CGameObject* pGameObject = nullptr;
+	m_vecHeaderBox.reserve(6);
+
 	SetUp_Clone(Player::Default, UI::MenuScreen, TEXT("MenuBackScreen"), Level::LEVEL_LOGO);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_LocalPlay"), Level::LEVEL_LOGO);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_OnlinePlay"), Level::LEVEL_LOGO);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Option"), Level::LEVEL_LOGO);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Option2"), Level::LEVEL_LOGO);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Creator"), Level::LEVEL_LOGO);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Exit"), Level::LEVEL_LOGO);
+
+	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_LocalPlay"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
+	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_OnlinePlay"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
+	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Option"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
+	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Option2"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
+	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Creator"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
+	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Exit"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
 
 	return S_OK;
 }
@@ -718,6 +738,11 @@ void CUI_Generator::Free()
 			}
 		}
 	}
+
+	for (auto pHeaderBox : m_vecHeaderBox)
+		Safe_Release(pHeaderBox);
+
+	m_vecHeaderBox.clear();
 
 	Safe_Release(m_pTexturesCom);
 	Safe_Release(m_pEngTexturesCom);

@@ -49,6 +49,7 @@ public:
 public:
 	CUIObject* Get_UIObject(Player::ID ePlayer, UI::TRIGGER eTrigger) { return m_vecUIOBjects[ePlayer][eTrigger].front(); };
 	_bool Get_EmptyCheck(Player::ID ePlayer, UI::TRIGGER eTrigger) { return m_vecUIOBjects[ePlayer][eTrigger].empty(); };
+	class CHeaderBox* Get_HeaderBox(_int iIndex) { if (true == m_vecHeaderBox.empty()) return nullptr; return m_vecHeaderBox[iIndex]; }
 
 public:
 	void Set_TriggerOn();
@@ -68,6 +69,7 @@ private:
 private:
 	vector<CUIObject::UI_DESC*>		m_vecPSData;
 	vector<CUIObject*>				m_vecUIOBjects[Player::PLAYER_END][UI::TRIGGER_END];
+	vector<class CHeaderBox*>		m_vecHeaderBox;
 
 private:
 	CTextures*						m_pTexturesCom = nullptr;
@@ -90,6 +92,7 @@ private:
 
 private:
 	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag, Level::ID eLevel, void* pArg = nullptr);
+	HRESULT SetUp_Clone_Ptr(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void * pArg, CGameObject** pGameObject);
 
 public:
 	virtual void Free() override;
