@@ -262,6 +262,21 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\01.Fire\Dead_Particle_Fire">
       <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\04.Gravity_Umbrella">
+      <UniqueIdentifier>{0e9afc0b-547c-49be-9832-18d17154215d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\01.Robot_Battery_Spark">
+      <UniqueIdentifier>{61f2a2e3-61fb-4b3b-b340-fdaadb28c443}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail">
+      <UniqueIdentifier>{4473fc56-392d-424e-a8d6-96ba1259f992}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail\Lail_Smoke">
+      <UniqueIdentifier>{a523cf1b-a6af-4abe-9b83-88ea11aa2868}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail\Lail_Particle">
+      <UniqueIdentifier>{273af194-8b17-435c-943e-7cf203217bb8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -456,6 +471,13 @@
     <ClInclude Include="..\public\Effect_Player_Dead.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Gravity_Umbrella.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\04.Gravity_Umbrella</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Robot_Battery_Spark.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Robot_Battery_Spark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Player_Lail.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -623,6 +645,13 @@
     <ClCompile Include="..\private\Effect_Player_Dead.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_Gravity_Umbrella.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\04.Gravity_Umbrella</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Robot_Battery_Spark.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Robot_Battery_Spark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Player_Lail.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

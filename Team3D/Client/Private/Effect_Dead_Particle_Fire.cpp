@@ -35,7 +35,7 @@ HRESULT CEffect_Player_Dead_Particle_Fire::NativeConstruct(void * pArg)
 		m_EffectDesc_Prototype.iInstanceCount = 6000; // 2500 500
 
 	FAILED_CHECK_RETURN(Ready_Instance(),	 E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Point(),		 E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Point(),		 E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Point_Small(), E_FAIL);
 
 	return S_OK;
@@ -54,7 +54,7 @@ _int CEffect_Player_Dead_Particle_Fire::Tick(_double TimeDelta)
 		Instance_Size((_float)TimeDelta, iIndex);
 	}
 
-	Update_Point(TimeDelta);
+	//Update_Point(TimeDelta);
 	Update_Point_Small(TimeDelta);
 
 	return _int();
@@ -324,8 +324,8 @@ _float3 CEffect_Player_Dead_Particle_Fire::Get_Dir_Random(_int3 vDirPower, _fmat
 	return vDirfloat3;
 }
 
-void CEffect_Player_Dead_Particle_Fire::Update_Point(_double TimeDelta)
-{
+//void CEffect_Player_Dead_Particle_Fire::Update_Point(_double TimeDelta)
+//{
 // 	m_pPointBuffer_Smoke[0].vSize.x += (_float)TimeDelta * 0.25f;
 // 	m_pPointBuffer_Smoke[0].vSize.y += (_float)TimeDelta * 0.25f;
 // 
@@ -337,7 +337,7 @@ void CEffect_Player_Dead_Particle_Fire::Update_Point(_double TimeDelta)
 // 
 // 	m_fUVCheckTime = 0.02f;
 // 	m_pPointBuffer_Smoke[0].vTextureUV = Check_UV(7, 7, &m_iPointInstance_Texture_U, &m_iPointInstance_Texture_V, true);
-}
+//}
 
 void CEffect_Player_Dead_Particle_Fire::Update_Point_Small(_double TimeDelta)
 {

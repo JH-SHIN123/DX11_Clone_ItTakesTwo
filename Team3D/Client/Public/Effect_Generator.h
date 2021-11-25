@@ -22,6 +22,7 @@ enum class Effect_Value
 	May_Dead, May_Dead_Fire,
 	May_Revive,
 	May_Boots_Walking,
+	RobotBattery_Spark,
 	Effect_Value_End
 };
 

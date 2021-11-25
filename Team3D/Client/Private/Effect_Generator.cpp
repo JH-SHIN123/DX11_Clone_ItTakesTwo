@@ -21,6 +21,7 @@
 #include "Effect_Wormhole.h"
 #include "Effect_Env_Particle.h"
 #include "Effect_Dead_Particle_Fire.h"
+#include "Effect_Robot_Battery_Spark.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -91,6 +92,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::May_Boots_Walking:
 		lstrcpy(szPrototype, L"GameObject_2D_May_Boots_Walking_Particle");
+		break;
+	case Effect_Value::RobotBattery_Spark:
+		lstrcpy(szPrototype, L"GameObject_2D_Robot_Battery_Spark");
 		break;
 	default:
 		break;
@@ -205,6 +209,9 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Env_Particle"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Env_Particle",					CEffect_Env_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Robot_Battery_Spark"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Robot_Battery_Spark",			CEffect_Robot_Battery_Spark::Create(pDevice, pDeviceContext, pData));
 
 
 	// 3D Effect
