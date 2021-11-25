@@ -26,7 +26,6 @@ HRESULT CMainApp::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_LOGO), E_FAIL);
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->NativeConstruct_Environment_Generator(m_pDevice, m_pDeviceContext), E_FAIL);
 
-
 	return S_OK;
 }
 

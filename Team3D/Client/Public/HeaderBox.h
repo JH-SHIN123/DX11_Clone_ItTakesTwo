@@ -32,12 +32,14 @@ public:
 	virtual void Set_ScaleEffect() override;
 	void Set_NextSelect();
 	void Set_PreviousSelect();
+	void Set_LogoDisappear();
 
 
 private:
 	_bool							m_IsRender = false;
 	_float2							m_vFontPos;
 	_bool							m_IsMousePicking = false;
+	_bool							m_IsLogoDisappear = false;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;

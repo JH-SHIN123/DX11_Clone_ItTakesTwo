@@ -236,19 +236,6 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	Out.vColor.rgb = 1.f;
-
-	Out.vColor.rgb *= float3(1.f, 1.f, 0.f);
-
-
-	//if (Out.vColor.r >= 0.5f)
-	//{
-	//	Out.vColor.rgb = float3(0.7078f, 0.63f, 0.605f);
-	//	Out.vColor.a = 0.1f;
-	//}
-
-	//Out.vColor.a = g_fAlpha;
-
 	return Out;
 }
 
