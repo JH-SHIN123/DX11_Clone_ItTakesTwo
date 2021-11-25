@@ -17,10 +17,10 @@ public:
 	virtual PxControllerBehaviorFlags getBehaviorFlags(const PxObstacle & obstacle) override;
 
 public:
-	void Set_Controller(PxController* pController) { m_pController = pController; }
+	void Set_CameraActorPtr(class CCameraActor* pCameraActor) { m_pCameraActor = pCameraActor; }
 
 private:
-	PxController* m_pController = nullptr;
+	class CCameraActor* m_pCameraActor = nullptr;
 };
 
 END

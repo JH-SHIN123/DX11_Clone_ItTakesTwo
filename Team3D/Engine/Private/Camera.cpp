@@ -16,6 +16,14 @@ CCamera::CCamera(const CCamera & rhs)
 	Safe_AddRef(m_pPipeline);
 }
 
+_fvector CCamera::Get_Position()
+{
+	if (nullptr == m_pTransformCom)
+		return XMVectorSet(0.f, 0.f, 0.f, 1.f);
+
+	return m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+}
+
 HRESULT CCamera::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
