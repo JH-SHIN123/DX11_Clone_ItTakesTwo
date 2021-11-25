@@ -197,6 +197,8 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
+    <ClInclude Include="..\public\CutScene.h" />
+    <ClInclude Include="..\public\CutScenePlayer.h" />
     <ClInclude Include="..\public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Color.txt" />
     <ClInclude Include="..\Public\Effect_Dash.h" />
@@ -256,8 +258,12 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
+    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\CamEffect.cpp" />
     <ClCompile Include="..\private\Cam_Helper.cpp" />
+    <ClCompile Include="..\private\CutScene.cpp" />
+    <ClCompile Include="..\private\CutScenePlayer.cpp" />
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
     <ClCompile Include="..\private\Effect_Dead_Particle_Fire.cpp" />
@@ -273,8 +279,6 @@
     <ClCompile Include="..\private\InGameEffect_Model.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Rect.cpp" />
     <ClCompile Include="..\private\Effect_Landing_Smoke.cpp" />
-    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
-    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\CameraActor.cpp" />
     <ClCompile Include="..\Private\CameraBehaviorCallback.cpp" />
     <ClCompile Include="..\Private\CameraFilterCallback.cpp" />
@@ -283,8 +287,6 @@
     <ClCompile Include="..\private\DataStorage.cpp" />
     <ClCompile Include="..\private\Film.cpp" />
     <ClCompile Include="..\private\GrindLine.cpp" />
-    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
-    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\Environment_Generator.cpp" />
     <ClCompile Include="..\Private\InputButton.cpp" />
     <ClCompile Include="..\Private\InputButton_Frame.cpp" />

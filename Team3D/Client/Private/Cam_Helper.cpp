@@ -572,9 +572,13 @@ CComponent * CCam_Helper::Clone_Component(void * pArg)
 
 void CCam_Helper::Free()
 {
+	__super::Free();
 	for (auto& rPair : m_Films)
 		Safe_Release(rPair.second);
 	m_Films.clear();
+	for (auto& rPair : m_CamEffects)
+		Safe_Release(rPair.second);
+	m_CamEffects.clear();
 
 }
 

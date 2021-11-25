@@ -136,6 +136,8 @@ CGameObject * CSubCamera::Clone_GameObject(void * pArg)
 void CSubCamera::Free()
 {
 	CCamera::Free();
+	Safe_Release(m_pTargetObj);
+
 	
 }
 

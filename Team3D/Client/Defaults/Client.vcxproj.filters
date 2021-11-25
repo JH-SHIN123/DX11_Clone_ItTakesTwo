@@ -285,6 +285,15 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
       <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene">
+      <UniqueIdentifier>{58a25e3b-2a4f-42cb-bba8-de9837c18e26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\Main">
+      <UniqueIdentifier>{246e9c74-e74f-4fa8-9e3f-6b6bf8e5061f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\CutScenePlayer">
+      <UniqueIdentifier>{03d71d9f-2446-4c44-bd4c-e4e68ff222f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -500,6 +509,12 @@
     <ClInclude Include="..\Public\Effect_GravityPipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CutScene.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CutScenePlayer.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\CutScenePlayer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -708,6 +723,20 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
+    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
+    <ClCompile Include="..\private\CutScene.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CutScenePlayer.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\CutScenePlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp">
+      <Filter>02.GameObject\05.UI\03.ArrowKeys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp">
+      <Filter>02.GameObject\05.UI\03.ArrowKeys</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
