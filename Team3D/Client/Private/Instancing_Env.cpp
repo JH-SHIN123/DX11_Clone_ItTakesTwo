@@ -66,7 +66,7 @@ HRESULT CInstancing_Env::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth();
-	m_pModelCom->Render_Model(1, 0, true);
+	m_pModelCom->Render_Model(1, 0, true);;
 
 	return S_OK;
 }
