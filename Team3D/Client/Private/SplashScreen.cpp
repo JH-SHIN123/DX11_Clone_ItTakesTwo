@@ -2,6 +2,7 @@
 #include "..\public\SplashScreen.h"
 #include "GameInstance.h"
 #include "UI_Generator.h"
+#include "HeaderBox.h"
 
 CSplashScreen::CSplashScreen(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -107,7 +108,8 @@ HRESULT CSplashScreen::Render(RENDER_GROUP::Enum eGroup)
 		m_pVIBuffer_RectCom->Render(10);
 	}
 
-	Render_Font();
+	if(false == m_IsDisappear && 1 == m_iOption)
+		Render_Font();
 
 	return S_OK;
 }
@@ -201,7 +203,12 @@ void CSplashScreen::Logo_DisAppearing(_double TimeDelta)
 		m_fScreenAlpha -= (_float)TimeDelta * 0.4f;
 
 		if (0.f >= m_fScreenAlpha)
+		{
 			m_IsDead = true;
+
+			for (_uint i = 0; i < 6; ++i)
+				UI_Generator->Get_HeaderBox(i)->Set_LogoDisappear();
+		}
 	}
 	else
 	{

@@ -70,6 +70,9 @@ _int CHeaderBox::Late_Tick(_double TimeDelta)
 
 HRESULT CHeaderBox::Render(RENDER_GROUP::Enum eGroup)
 {
+	if (false == m_IsLogoDisappear)
+		return S_OK;
+
 	CUIObject::Render(eGroup);
 
 	if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
@@ -78,7 +81,7 @@ HRESULT CHeaderBox::Render(RENDER_GROUP::Enum eGroup)
 	if(true == m_IsRender)
 		m_pVIBuffer_RectCom->Render(11);
 
-	//Render_Font();
+	Render_Font();
 
 	return S_OK;
 }
@@ -104,6 +107,11 @@ void CHeaderBox::Set_PreviousSelect()
 	m_vFontPos.x = m_UIDesc.vPos.x - 150.f;
 
 	m_IsRender = false;
+}
+
+void CHeaderBox::Set_LogoDisappear()
+{
+	m_IsLogoDisappear = true;
 }
 
 
