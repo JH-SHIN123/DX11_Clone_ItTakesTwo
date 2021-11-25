@@ -1684,8 +1684,6 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 			_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION),0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
 			m_pTransformCom->RotateYawDirectionOnLand(vTriggerToPlayer, dTimeDelta);
 
-			
-
 			if (m_pGameInstance->Key_Pressing(DIK_W))
 			{
 				vPosition.m128_f32[2] += 3.f * dTimeDelta;
