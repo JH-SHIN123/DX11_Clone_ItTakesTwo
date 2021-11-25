@@ -572,9 +572,6 @@
     <ClCompile Include="..\Private\Pipeline.cpp">
       <Filter>02.Utility\99.Others\01.Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Model.cpp">
-      <Filter>02.Utility\02.Component\05.Model\00.Main</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\HierarchyNode.cpp">
       <Filter>02.Utility\02.Component\05.Model\02.Node</Filter>
     </ClCompile>
@@ -661,6 +658,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Textures.cpp">
       <Filter>02.Utility\02.Component\03.Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>02.Utility\02.Component\05.Model\00.Main\00.Normal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

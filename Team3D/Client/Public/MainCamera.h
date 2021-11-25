@@ -15,8 +15,8 @@ class CMainCamera final : public CCamera
 	enum CamRev {Rev_Holizontal,Rev_Prependicul,Rev_End};
 
 	enum class CamMode{Cam_Free,Cam_AutoToFree,Cam_End};
-
-	enum class CamEffect{ CamEffect_None,CamEffect_Shake,CamEffect_End };
+	//O CamFreeMove P FollowPlayer
+	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_End };
 
 private:
 	explicit CMainCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -46,6 +46,9 @@ private:
 	//For Free.
 	_int	Tick_Cam_Free(_double dTimeDelta);				//자유이동
 	_int	Tick_Cam_AutoToFree(_double dTimeDelta);		//연출 카메라 -> 자유이동시 보간
+	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);	//카메라가 플레이어를쫓아가며 이동(메인 카메라)
+	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);		//카메라가 자유롭게 이동함
+
 	//CamHelper State(현재 )
 	_int	Tick_CamHelperNone(_double dTimeDelta);			//현재 아무것도 재생안함
 	_int	Tick_CamHelper_Act(_double dTimeDelta);			//재생중
@@ -54,17 +57,14 @@ private:
 
 
 	void ChangeViewPort();
-
+	void KeyCheck(_double dTimeDelta);
 private:
 	_int	ReSet_Cam_FreeToAuto();		//변수 초기화용
 	_bool	OffSetPhsX(_double dTimeDelta,_fmatrix matRev,_vector * pOut);
 	_fmatrix MakeViewMatrix(_float3 Eye, _float3 At);
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
-private:
 
-
-	_fmatrix	Tick_CamEffect_ShakeCamera(_double dTimeDelta);
 private:
 	CGameObject* m_pTargetObj = nullptr;
 	_float m_fMouseRevSpeed[Rev_End] = { 2.5f,2.5f };
@@ -90,11 +90,7 @@ private:
 
 	_float4x4	m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_END];
 
-	CamEffect	m_eCurCamEffect = CamEffect::CamEffect_End;
-	_double		m_dCamEffectTime = 0.f;
-
-	//For.CameraShake
-	_float		m_fDecaysec = 0.f;
+	CamFreeOption m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
 
 	//For.SpringCamera
 	_float m_fCamRadius = 0.f;

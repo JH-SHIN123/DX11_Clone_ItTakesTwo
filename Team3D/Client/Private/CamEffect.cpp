@@ -51,21 +51,21 @@ _fmatrix CCamEffect::MakeShakeMatrix_Location(_fmatrix matIn, _double dCurrentTi
 
 	_float fZ =
 		tDesc.bOnCamShakeOption[(_uint)CamShakeOption::CamShake_Loc_Look] ?
-		(sinf(fProgressPercentage * MATH_PI)* (bElapseMiddleTime ?
-			tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Look].dMinForce :
-			tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Look].dMaxForce)) : 0.f,
+		(sinf(fProgressPercentage * (_float)MATH_PI)* (bElapseMiddleTime ?
+			(_float)tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Look].dMinForce :
+			(_float)tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Look].dMaxForce)) : 0.f,
 
 		fX =
 		tDesc.bOnCamShakeOption[(_uint)CamShakeOption::CamShake_Loc_Right] ?
-		(sinf(fProgressPercentage * MATH_PI)* (bElapseMiddleTime ?
-			tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Right].dMinForce :
-			tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Right].dMaxForce)) : 0.f,
+		(_float)(sinf(fProgressPercentage * (_float)MATH_PI)* (_float)(bElapseMiddleTime ?
+			(_float)tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Right].dMinForce :
+			(_float)tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Right].dMaxForce)) : 0.f,
 
 		fY =
 		tDesc.bOnCamShakeOption[(_uint)CamShakeOption::CamShake_Loc_Up] ?
-		(sinf(fProgressPercentage * MATH_PI)* (bElapseMiddleTime ?
-			tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Up].dMinForce :
-			tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Up].dMaxForce)) : 0.f;
+		(_float)(sinf(fProgressPercentage * (_float)MATH_PI)* (_float)(bElapseMiddleTime ?
+			(_float)tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Up].dMinForce :
+			(_float)tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Up].dMaxForce)) : 0.f;
 	
 	matResult.r[3] += XMVectorSet(fX, fY, fZ, 0.f);
 	return matResult;
@@ -87,21 +87,21 @@ _fmatrix CCamEffect::MakeShakeMatrix_QuarternionRot(_fmatrix matIn, _double dCur
 
 	_float fRoll =
 		tDesc.bOnCamShakeOption[(_uint)CamShakeOption::CamShake_Rot_Look] ? 
-		(sinf(fProgressPercentage * MATH_PI)* (bElapseMiddleTime ?
-		tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Look].dMinForce :
-		tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Look].dMaxForce)) : 0.f, 
+		(sinf(fProgressPercentage * (_float)MATH_PI)* (bElapseMiddleTime ?
+			(_float)tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Look].dMinForce :
+			(_float)tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Look].dMaxForce)) : 0.f,
 		
 		fPitch =
 		tDesc.bOnCamShakeOption[(_uint)CamShakeOption::CamShake_Rot_Right] ? 
-		(sinf(fProgressPercentage * MATH_PI)* (bElapseMiddleTime ?
-		tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Right].dMinForce :
-		tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Right].dMaxForce)) : 0.f, 
+		(sinf(fProgressPercentage * (_float)MATH_PI)* (bElapseMiddleTime ?
+			(_float)tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Right].dMinForce :
+			(_float)tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Right].dMaxForce)) : 0.f,
 
 		fYaw= 
 		tDesc.bOnCamShakeOption[(_uint)CamShakeOption::CamShake_Rot_Up] ? 
-		(sinf(fProgressPercentage * MATH_PI)* (bElapseMiddleTime ?
-		tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Up].dMinForce :
-		tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Up].dMaxForce)) : 0.f;
+		(sinf(fProgressPercentage * (_float)MATH_PI)* (bElapseMiddleTime ?
+			(_float)tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Up].dMinForce :
+			(_float)tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Up].dMaxForce)) : 0.f;
 	_vector vPos = matResult.r[3];
 	matResult.r[3] = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 	matResult = matResult*
@@ -144,7 +144,7 @@ HRESULT CCamEffect::Tick_CamEffect(CFilm::ScreenType eScreen, _double dTimeDelta
 		>= m_dDuration  +(m_bIsBlendIn ? m_fBlendInTime : 0.0) + (m_bIsBlendOut ? m_fBlendOutTime : 0.0))//전체길이
 		m_bFinish[eScreen] = true;
 
-	_uint iLastIdx = m_ShakeDescs.size();
+	_uint iLastIdx =(_uint)m_ShakeDescs.size();
 	if (m_dDuration <= m_dTime[eScreen] && !eBlendState) //블렌딩중?
 	{
 		XMStoreFloat4x4(&m_matApplyEffectMatrix[eScreen], matIn);

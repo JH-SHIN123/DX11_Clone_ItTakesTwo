@@ -430,10 +430,9 @@ void CCam_Helper::SeeCamNode(CFilm::CamNode * pCamNode, CFilm::ScreenType eScree
 
 _fmatrix CCam_Helper::Get_CamNodeMatrix(CTransform* pCamTransform, _double dTimeDelta, CFilm::ScreenType eScreenTypeIdx)
 {
-	m_fCamNodeLerpTime[eScreenTypeIdx] += dTimeDelta;
+	m_fCamNodeLerpTime[eScreenTypeIdx] += (_float)dTimeDelta;
 	_matrix matNode = XMLoadFloat4x4(&m_matCamNode[eScreenTypeIdx]);
 	_vector vNodePos = matNode.r[3];
-	m_fCamNodeLerpTime[eScreenTypeIdx] += dTimeDelta;
 	_matrix matWorld = pCamTransform->Get_WorldMatrix();
 	_matrix matNext = matNode;
 
