@@ -37,7 +37,7 @@ HRESULT CHeaderBox::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
-	m_vFontPos.x = m_UIDesc.vPos.x - 200.f;
+	m_vFontPos.x = m_UIDesc.vPos.x - 150.f;
 	m_vFontPos.y = m_UIDesc.vPos.y;
 
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_LocalPlay")))

@@ -59,6 +59,7 @@ public:
 public:
 	void UI_RETutorial(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	HRESULT Add_Prototype_LogoTexture();
+	HRESULT Create_Logo();
 
 private:
 	_bool							m_IsTrigger = true;
@@ -88,7 +89,7 @@ private:
 
 private:
 	HRESULT Add_Prototype_Texture();
-	HRESULT Create_Logo();
+	
 
 private:
 	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag, Level::ID eLevel, void* pArg = nullptr);

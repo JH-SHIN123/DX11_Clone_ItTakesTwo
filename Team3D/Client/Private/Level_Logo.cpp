@@ -2,6 +2,7 @@
 #include "..\Public\Level_Logo.h"
 #include "GameInstance.h"
 #include "Camera.h"
+#include "UI_Generator.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -38,6 +39,8 @@ HRESULT CLevel_Logo::Ready_Layer_SplashScreen()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_LOGO, TEXT("Layer_UI"), Level::LEVEL_LOGO, TEXT("SplashScreen"), &iOption), E_FAIL);
 	iOption = 1;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_LOGO, TEXT("Layer_UI"), Level::LEVEL_LOGO, TEXT("SplashScreen"), &iOption), E_FAIL);
+
+	UI_Generator->Create_Logo();
 
 	return S_OK;
 }

@@ -98,8 +98,8 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath, Level::ID eLevel)
 		}
 	}
 
-	if (eLevel == Level::LEVEL_LOGO)
-		Create_Logo();
+	//if (eLevel == Level::LEVEL_LOGO)
+	//	Create_Logo();
 
 	CloseHandle(hFile);
 
