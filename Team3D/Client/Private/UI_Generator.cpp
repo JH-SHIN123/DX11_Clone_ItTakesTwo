@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\UI_Generator.h"
 
+#include "PC_Enter.h"
 #include "Pipeline.h"
 #include "UISprite.h"
 #include "Portrait.h"
@@ -12,6 +13,8 @@
 #include "SplashScreen.h"
 #include "PlayerMarker.h"
 #include "RespawnCircle.h"
+#include "ChapterSelect.h"
+#include "ControllerIcon.h"
 #include "PC_MouseButton.h"
 #include "Arrowkeys_Fill.h"
 #include "ButtonIndicator.h"
@@ -53,7 +56,7 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	return S_OK;
 }
 
-HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath, Level::ID eLevel)
+HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath, Level::ID eLevel, _uint iOption)
 {
 	HANDLE hFile = CreateFile(pFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
@@ -85,8 +88,16 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath, Level::ID eLevel)
 	{
 		if (eLevel == Level::LEVEL_LOGO)
 		{
-			if (FAILED(Add_Prototype_Menu(PSData)))
-				return E_FAIL;
+			if (0 == iOption)
+			{
+				if (FAILED(Add_Prototype_Menu(PSData)))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(Add_Prototype_Chapter(PSData)))
+					return E_FAIL;
+			}
 		}
 		else if (eLevel == Level::LEVEL_STAGE)
 		{
@@ -97,9 +108,6 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath, Level::ID eLevel)
 				return E_FAIL;
 		}
 	}
-
-	//if (eLevel == Level::LEVEL_LOGO)
-	//	Create_Logo();
 
 	CloseHandle(hFile);
 
@@ -197,6 +205,11 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 		SetUp_Clone(ePlayer, eTrigger, TEXT("ButtonIndicator"), Level::LEVEL_STATIC);
 		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, &iOption);
 		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC);
+		break;
+	case UI::ControllerIcon:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_E"), Level::LEVEL_STATIC);
+
 		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
@@ -572,11 +585,99 @@ HRESULT CUI_Generator::Add_Prototype_Menu(CUIObject::UI_DESC* UIDesc)
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
-	
+
 
 	return S_OK;
 }
 
+HRESULT CUI_Generator::Add_Prototype_Chapter(CUIObject::UI_DESC * UIDesc)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	if (!lstrcmp(UIDesc->szUITag, L"ChapterLocalPlay"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_NewGame"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Continue"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_ChapterSelect"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Minigame"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"ChapterSelectAlpha"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CChapterSelect::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"ChapterSelect_1"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CChapterSelect::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Cancle"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_1p_Ready"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_2p_Ready"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"ControllerIcon_KeyBoard"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CControllerIcon::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"ControllerIcon_Pad"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CControllerIcon::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Frame_Right"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"PC_Enter"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CPC_Enter::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Right_TriAngle"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Left_TriAngle"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Frame_Left"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"PC_Enter_Right"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CPC_Enter::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Banner"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Banner_Back"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+
+	return S_OK;
+}
 
 
 void CUI_Generator::UI_RETutorial(Player::ID ePlayer, UI::TRIGGER eTrigger)
@@ -629,6 +730,7 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 }
 
 
+
 HRESULT CUI_Generator::Add_Prototype_LogoTexture()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance(); 
@@ -639,14 +741,13 @@ HRESULT CUI_Generator::Add_Prototype_LogoTexture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("SplashBackScreen"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Logo/SplashBackScreen.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_LOGO, TEXT("SplashScreen"), CSplashScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
-	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("Border_Banner_Texture"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/Border_Banner_Texture.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("ButtonArrow"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/ButtonArrow.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("ChapterselectImageAlpha"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/ChapterselectImageAlpha.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("ChapterSelect"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/ChapterSelect%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("ControllerIcon"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/ControllerIcon%d.png"), 2)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("HeaderBox"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/HeaderBox%d.png"), 3)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("HeaderBox"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/HeaderBox%d.png"), 4)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("MenuBackScreen"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/MenuBackScreen.png"))), E_FAIL);
-	//FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("ChapterselectImageAlpha"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/ChapterselectImageAlpha.png"))), E_FAIL);
-	//FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("ChapterSelect"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/ChapterSelect.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("PC_Enter"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/PC_Enter.png"))), E_FAIL);
+
 
 	return S_OK;
 }
@@ -691,7 +792,7 @@ void CUI_Generator::Set_TargetPos(Player::ID ePlayer, UI::TRIGGER eTrigger, _vec
 void CUI_Generator::Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger)
 {
 	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
-		return;
+		return; 
 
 	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
 		UIObject->Set_ScaleEffect();
@@ -719,6 +820,36 @@ HRESULT CUI_Generator::Create_Logo()
 
 	return S_OK;
 }
+
+HRESULT CUI_Generator::Create_ChapterSelect()
+{
+	_uint iOption = 1;
+
+	SetUp_Clone(Player::Default, UI::MenuScreen, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ChapterLocalPlay"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Banner"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_NewGame"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Continue"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_ChapterSelect"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Minigame"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ChapterSelectAlpha"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ChapterSelect_1"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Banner_Back"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Cancle"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_1p_Ready"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_2p_Ready"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ControllerIcon_KeyBoard"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ControllerIcon_Pad"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("InputButton_Frame_Right"), Level::LEVEL_STATIC);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("PC_Enter"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("InputButton_Frame_Left"), Level::LEVEL_STATIC);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("InputButton_Right_TriAngle"), Level::LEVEL_STATIC);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("InputButton_Left_TriAngle"), Level::LEVEL_STATIC);
+
+	return S_OK;
+}
+
 
 void CUI_Generator::Free()
 {

@@ -48,6 +48,7 @@ private:
 	void Render_Font();
 	HRESULT Ready_Component();
 	void Mouse_Picking();
+	void Set_Option();
 
 public:
 	static CHeaderBox* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

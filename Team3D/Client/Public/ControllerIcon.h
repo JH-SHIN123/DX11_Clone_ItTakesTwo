@@ -9,12 +9,12 @@ END
 
 BEGIN(Client)
 
-class CInputButton_Frame final : public CUIObject
-{
+class CControllerIcon final : public CUIObject
+ {
 private:
-	explicit CInputButton_Frame(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CInputButton_Frame(const CUIObject& rhs);
-	virtual ~CInputButton_Frame() = default;
+	explicit CControllerIcon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CControllerIcon(const CUIObject& rhs);
+	virtual ~CControllerIcon() = default;
 
 public:
 	virtual HRESULT NativeConstruct_Prototype() override;
@@ -24,26 +24,15 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
-public:
-	virtual void Set_ScaleEffect() override;
-
-private:
-	_double							m_Time = 0.0;
-	_uint							m_iScaleChangeCount = 0;
-	_float2							m_vStartScale;
-	_float							m_fPower = 0.f;
-	_uint							m_iShaderPassNum = 0;
-
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 
 private:
-	void Render_Font();
 	HRESULT Ready_Component();
 	void SetUp_Option();
 
 public:
-	static CInputButton_Frame* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CControllerIcon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject * Clone_GameObject(void * pArg) override;
 	virtual void Free() override;
 

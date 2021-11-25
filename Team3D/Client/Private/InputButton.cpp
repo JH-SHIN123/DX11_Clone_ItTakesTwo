@@ -68,13 +68,18 @@ HRESULT CInputButton::Render(RENDER_GROUP::Enum eGroup)
 		if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
 			return E_FAIL;
 	}
-	else
+	else if(1 == m_iOption)
 	{
 		if (FAILED(CUIObject::Set_InterActiveVariables_Perspective(m_pVIBuffer_RectCom)))
 			return E_FAIL;
 	}
+	else
+	{
+		if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
+			return E_FAIL;
+	}
 
-	m_pVIBuffer_RectCom->Render(0);
+	m_pVIBuffer_RectCom->Render(m_iShaderPassNum);
 
 	return S_OK;
 }
@@ -83,9 +88,20 @@ void CInputButton::SetUp_Option()
 {
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Dot")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_PS_Triangle")) ||
 		!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_PS_R1")))
+	{
 		m_iOption = 1;
+		m_iShaderPassNum = 0;
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Right_TriAngle")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Left_TriAngle")))
+	{
+		m_iOption = 2;
+		m_iShaderPassNum = 11;
+	}
 	else
+	{
 		m_iOption = 0;
+		m_iShaderPassNum = 0;
+	}
 }
 
 HRESULT CInputButton::Ready_Component()
