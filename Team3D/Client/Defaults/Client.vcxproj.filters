@@ -238,18 +238,6 @@
     <Filter Include="02.GameObject\04.Stage_Space\01.Environment">
       <UniqueIdentifier>{e056b0e9-9d57-4825-aae6-dc4576b4077f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\Instancing_Env">
-      <UniqueIdentifier>{0961f270-4107-4546-8b54-2207c540708a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\Static_Env">
-      <UniqueIdentifier>{f3321f61-76e8-4d95-85e5-630c61340bbd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\Dynamic_Env">
-      <UniqueIdentifier>{41e68147-d11e-4913-a0ba-ca2aa591f1a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\Environment_Generator">
-      <UniqueIdentifier>{a8d8c8a6-5681-43c5-bb21-cb5353391f70}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\06.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
     </Filter>
@@ -270,6 +258,24 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
       <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\99.SavePoint">
+      <UniqueIdentifier>{5d84ef85-2a0a-4117-88bf-3372447ab931}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\98.DeadLine">
+      <UniqueIdentifier>{4ce27b49-53fc-47a8-b4ef-a76cf4790bc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\00.Environment_Generator">
+      <UniqueIdentifier>{a8d8c8a6-5681-43c5-bb21-cb5353391f70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\01.Instancing_Env">
+      <UniqueIdentifier>{0961f270-4107-4546-8b54-2207c540708a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\02.Static_Env">
+      <UniqueIdentifier>{f3321f61-76e8-4d95-85e5-630c61340bbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env">
+      <UniqueIdentifier>{41e68147-d11e-4913-a0ba-ca2aa591f1a8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -448,13 +454,13 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Environment_Generator.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\Environment_Generator</Filter>
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\00.Environment_Generator</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Static_Env.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\Static_Env</Filter>
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\02.Static_Env</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Instancing_Env.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\Instancing_Env</Filter>
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\01.Instancing_Env</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Sky.h">
       <Filter>02.GameObject\06.Sky</Filter>
@@ -473,6 +479,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_GravityPipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SavePoint.h">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\99.SavePoint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DeadLine.h">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\98.DeadLine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -621,13 +633,13 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Environment_Generator.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\Environment_Generator</Filter>
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\00.Environment_Generator</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Static_Env.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\Static_Env</Filter>
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\02.Static_Env</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Instancing_Env.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\Instancing_Env</Filter>
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\01.Instancing_Env</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Loading.cpp">
       <Filter>01.Maps\01.Loading\99.Loading</Filter>
@@ -649,6 +661,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SavePoint.cpp">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\99.SavePoint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DeadLine.cpp">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\98.DeadLine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

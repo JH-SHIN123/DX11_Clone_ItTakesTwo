@@ -60,6 +60,21 @@ void CTransform::Set_WorldMatrix(_fmatrix WorldMatrix)
 	XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix);
 }
 
+void CTransform::Set_Rotaion(_fvector vRotation)
+{
+	_vector	vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f) * Get_Scale(CTransform::STATE_RIGHT);
+	_vector	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f) * Get_Scale(CTransform::STATE_UP);
+	_vector	vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f) * Get_Scale(CTransform::STATE_LOOK);
+
+	_matrix	RotateMatrix = XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(XMVectorGetX(vRotation))) *
+		XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(XMVectorGetY(vRotation))) *
+		XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(XMVectorGetZ(vRotation)));
+
+	Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(vRight, RotateMatrix));
+	Set_State(CTransform::STATE_UP, XMVector3TransformNormal(vUp, RotateMatrix));
+	Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
+}
+
 HRESULT CTransform::NativeConstruct_Prototype()
 {
 	CComponent::NativeConstruct_Prototype();

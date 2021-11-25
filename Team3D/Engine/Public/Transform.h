@@ -34,6 +34,7 @@ public: /* Setter */
 	void	Set_Scale(_fvector vScale);
 	void	Set_RotateAxis(_fvector vAxis, _float fRadian);
 	void	Set_WorldMatrix(_fmatrix WorldMatrix);
+	void	Set_Rotaion(_fvector vRotation);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;

@@ -19,23 +19,18 @@ private:
 	virtual ~CEnvironment_Generator() = default;
 
 public:
-	HRESULT Load_Environment_GameObject_Prototype();
-
 	/* 프로토타입 생성 */
 	/* TXT 파일 로드 */
-	HRESULT Load_Model_Data_TXT(_tchar* pFilePath);
-	HRESULT Load_Model_Instancing_TXT();
+	HRESULT Load_Prototype_Model_Others_TXT(_tchar* pFilePath);
+	HRESULT Load_Prototype_Model_Instancing_TXT();
 	/* DAT 파일 로드 */
-	HRESULT Load_Model_Others(_tchar* pFilePath);
-	HRESULT Load_Model_Instancing();
+	HRESULT Load_Prototype_Model_Others(_tchar* pFilePath);
+	HRESULT Load_Prototype_Model_Instancing();
+	HRESULT Load_Prototype_GameObject();
 
 	/* 클론 로드 */
-	HRESULT Load_Environment_Space();
-	HRESULT Load_Environment_Space_Boss();
-	HRESULT Load_Environment_Interactive_Instancing();
-
-	HRESULT Load_Environment_Model_Prototype();
-
+	HRESULT Load_Stage_Space();
+	
 public:
 	HRESULT NativeConstruct_Environment_Generator(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 
@@ -46,7 +41,13 @@ private:
 
 private:
 	CGameObject* Create_Class(_tchar* pPrototypeTag, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	void Set_Info_Model(CStatic_Env::STATIC_ENV_DESC& tInfo);
+	void Set_Info_Model(CStatic_Env::ARG_DESC& tInfo);
+
+private:
+	HRESULT Load_Environment_Space();
+	HRESULT Load_Environment_Space_Boss();
+	HRESULT Load_Environment_Interactive_Instancing();
+	HRESULT Load_Environment_Trigger();
 
 public:
 	virtual void Free() override;

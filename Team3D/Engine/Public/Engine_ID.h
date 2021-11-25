@@ -12,7 +12,9 @@ namespace Engine
 			eUFO,
 			eMOONBABOON,
 			eSTARBUDDY,
-			eENVIRONMENT
+			eENVIRONMENT,
+			eSAVEPOINT,
+			eDEADLINE
 		};
 	};
 

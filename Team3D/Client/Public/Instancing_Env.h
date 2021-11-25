@@ -19,12 +19,12 @@ private:
 	virtual ~CInstancing_Env() = default;
 
 public:/* Struct */
-	typedef struct tagInstancing_Env_Desc
+	typedef struct tagArgumentDesc
 	{
 		CModel_Instance::ARG_DESC	Instancing_Arg;
 		_tchar						szModelTag[MAX_PATH];
 		_uint						iMaterialIndex;
-	}INS_ENV_DESC;
+	}ARG_DESC;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -41,7 +41,7 @@ private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CModel_Instance*	m_pModelCom = nullptr;
 
-	INS_ENV_DESC		m_Ins_Env_Desc;
+	ARG_DESC			m_Ins_Env_Desc;
 
 public:
 	static CInstancing_Env* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

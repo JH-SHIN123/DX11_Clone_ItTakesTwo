@@ -25,7 +25,7 @@ HRESULT CStatic_Env::NativeConstruct(void * pArg)
 	CGameObject::NativeConstruct(pArg);
 
 	if (nullptr != pArg)
-		memcpy(&m_Static_Env_Desc, pArg, sizeof(STATIC_ENV_DESC));
+		memcpy(&m_Static_Env_Desc, pArg, sizeof(ARG_DESC));
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
