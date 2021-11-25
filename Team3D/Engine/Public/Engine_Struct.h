@@ -113,11 +113,20 @@ namespace Engine
 
 	typedef struct tagVertexMatrix
 	{
-		XMFLOAT4	vRight;
-		XMFLOAT4	vUp;
-		XMFLOAT4	vLook;
-		XMFLOAT4	vPosition;
+		XMFLOAT4		vRight;
+		XMFLOAT4		vUp;
+		XMFLOAT4		vLook;
+		XMFLOAT4		vPosition;
 	}VTXMATRIX;
+
+	typedef struct tagVertexMatrix2
+	{
+		XMFLOAT4		vRight;
+		XMFLOAT4		vUp;
+		XMFLOAT4		vLook;
+		XMFLOAT4		vPosition;
+		unsigned int 	iViewportDrawInfo;
+	}VTXMATRIX2;
 
 	typedef struct tagVertexPoint
 	{

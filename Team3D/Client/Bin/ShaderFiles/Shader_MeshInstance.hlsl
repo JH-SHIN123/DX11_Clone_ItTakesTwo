@@ -17,22 +17,24 @@ texture2D	g_EmissiveTexture;
 
 struct VS_IN
 {
-	float3				vPosition		: POSITION;
-	float3				vNormal			: NORMAL;
-	float3				vTangent		: TANGENT;
-	float2				vTexUV			: TEXCOORD0;
-	uint4				vBlendIndex		: BLENDINDEX;
-	float4				vBlendWeight	: BLENDWEIGHT;
-	row_major matrix	WorldMatrix		: WORLD;
+	float3				vPosition			: POSITION;
+	float3				vNormal				: NORMAL;
+	float3				vTangent			: TANGENT;
+	float2				vTexUV				: TEXCOORD0;
+	uint4				vBlendIndex			: BLENDINDEX;
+	float4				vBlendWeight		: BLENDWEIGHT;
+	row_major matrix	WorldMatrix			: WORLD;
+	uint				iViewportDrawInfo	: TEXCOORD1;
 };
 
 struct VS_OUT
 {
-	float4 vPosition	: SV_POSITION;
-	float4 vNormal		: NORMAL;
-	float3 vTangent		: TANGENT;
-	float3 vBiNormal	: BINORMAL;
-	float2 vTexUV		: TEXCOORD0;
+	float4	vPosition			: SV_POSITION;
+	float4	vNormal				: NORMAL;
+	float3	vTangent			: TANGENT;
+	float3	vBiNormal			: BINORMAL;
+	float2	vTexUV				: TEXCOORD0;
+	uint	iViewportDrawInfo	: TEXCOORD1;
 };
 
 struct VS_OUT_CSM_DEPTH
@@ -49,6 +51,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vTangent	= normalize(mul(vector(In.vTangent, 0.f), In.WorldMatrix));
 	Out.vBiNormal	= normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
 	Out.vTexUV		= In.vTexUV;
+	Out.iViewportDrawInfo = In.iViewportDrawInfo;
 
 	return Out;
 }
@@ -66,11 +69,12 @@ VS_OUT_CSM_DEPTH VS_MAIN_CSM_DEPTH(VS_IN In)
 
 struct GS_IN
 {
-	float4 vPosition	: SV_POSITION;
-	float4 vNormal		: NORMAL;
-	float3 vTangent		: TANGENT;
-	float3 vBiNormal	: BINORMAL;
-	float2 vTexUV		: TEXCOORD0;
+	float4	vPosition			: SV_POSITION;
+	float4	vNormal				: NORMAL;
+	float3	vTangent			: TANGENT;
+	float3	vBiNormal			: BINORMAL;
+	float2	vTexUV				: TEXCOORD0;
+	uint	iViewportDrawInfo	: TEXCOORD1;
 };
 
 struct GS_OUT
@@ -82,7 +86,7 @@ struct GS_OUT
 	float2 vTexUV				: TEXCOORD0;
 	float4 vProjPosition		: TEXCOORD1;
 	float4 vWorldPosition		: TEXCOORD2;
-	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
+	uint   iViewportIndex		: SV_VIEWPORTARRAYINDEX;
 };
 
 struct GS_IN_CSM_DEPTH
@@ -102,40 +106,46 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 	GS_OUT Out = (GS_OUT)0;
 
 	/* Main Viewport */
-	for (uint i = 0; i < 3; i++)
+	if (In[0].iViewportDrawInfo & 1)
 	{
-		matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
+		for (uint i = 0; i < 3; i++)
+		{
+			matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
 
-		Out.vPosition			= mul(In[i].vPosition, matVP);
-		Out.vNormal				= In[i].vNormal;
-		Out.vTangent			= In[i].vTangent;
-		Out.vBiNormal			= In[i].vBiNormal;
-		Out.vTexUV				= In[i].vTexUV;
-		Out.vProjPosition		= Out.vPosition;
-		Out.vWorldPosition		= In[i].vPosition;
-		Out.iViewportIndex		= 1;
+			Out.vPosition = mul(In[i].vPosition, matVP);
+			Out.vNormal = In[i].vNormal;
+			Out.vTangent = In[i].vTangent;
+			Out.vBiNormal = In[i].vBiNormal;
+			Out.vTexUV = In[i].vTexUV;
+			Out.vProjPosition = Out.vPosition;
+			Out.vWorldPosition = In[i].vPosition;
+			Out.iViewportIndex = 1;
 
-		TriStream.Append(Out);
+			TriStream.Append(Out);
+		}
+		TriStream.RestartStrip();
 	}
-	TriStream.RestartStrip();
 	
 	/* Sub Viewport */
-	for (uint j = 0; j < 3; j++)
+	if (In[0].iViewportDrawInfo & 2)
 	{
-		matrix matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+		for (uint j = 0; j < 3; j++)
+		{
+			matrix matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
 
-		Out.vPosition		= mul(In[j].vPosition, matVP);
-		Out.vNormal			= In[j].vNormal;
-		Out.vTangent		= In[j].vTangent;
-		Out.vBiNormal		= In[j].vBiNormal;
-		Out.vTexUV			= In[j].vTexUV;
-		Out.vProjPosition	= Out.vPosition;
-		Out.vWorldPosition	= In[j].vPosition;
-		Out.iViewportIndex	= 2;
+			Out.vPosition = mul(In[j].vPosition, matVP);
+			Out.vNormal = In[j].vNormal;
+			Out.vTangent = In[j].vTangent;
+			Out.vBiNormal = In[j].vBiNormal;
+			Out.vTexUV = In[j].vTexUV;
+			Out.vProjPosition = Out.vPosition;
+			Out.vWorldPosition = In[j].vPosition;
+			Out.iViewportIndex = 2;
 
-		TriStream.Append(Out);
+			TriStream.Append(Out);
+		}
+		TriStream.RestartStrip();
 	}
-	TriStream.RestartStrip();
 }
 
 [maxvertexcount(MAX_VERTICES)]

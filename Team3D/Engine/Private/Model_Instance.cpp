@@ -96,7 +96,7 @@ HRESULT CModel_Instance::Set_ShaderResourceView(const char * pConstantName, ID3D
 	ID3DX11EffectShaderResourceVariable* pVariable = m_pEffect->GetVariableByName(pConstantName)->AsShaderResource();
 	NULL_CHECK_RETURN(pVariable, E_FAIL);
 
-	return pVariable->SetResource(pShaderResourceView);
+	return pVariable->SetResource(pShaderResourceView); 
 }
 
 HRESULT CModel_Instance::Set_ShaderResourceView(const char * pConstantName, _uint iMaterialIndex, aiTextureType eTextureType, _uint iTextureIndex)
@@ -206,11 +206,12 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 	CPhysX* pPhysX = CPhysX::GetInstance();
 	ARG_DESC ArgDesc = *static_cast<ARG_DESC*>(pArg);
 
-	m_pWorldMatrices = ArgDesc.pWorldMatrices;
 	m_iInstanceCount = ArgDesc.iInstanceCount;
 	NULL_CHECK_RETURN(m_iInstanceCount <= m_iMaxInstanceCount, E_FAIL);
+	m_arrWorldMatrices = ArgDesc.pWorldMatrices;
+	m_arrRealTimeMatrices = new VTXMATRIX2[m_iInstanceCount];
+	m_arrViewportDrawInfo = new _uint[m_iInstanceCount];
 
-	m_RealTimeMatrices.resize(m_iInstanceCount, MH_XMFloat4x4Identity());
 	m_fCullingRadius = ArgDesc.fCullingRadius;
 
 	m_ppActors = new PxRigidStatic*[m_iInstanceCount * m_iMeshCount];
@@ -218,7 +219,7 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
 	{
 		_vector vScale, vRotQuat, vPosition;
-		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_pWorldMatrices[iIndex]));
+		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_arrWorldMatrices[iIndex]));
 
 		for (_uint iMeshIndex = 0; iMeshIndex < m_iMeshCount; ++iMeshIndex)
 		{
@@ -250,14 +251,41 @@ HRESULT CModel_Instance::Bring_Containers(VTXMESH * pVertices, _uint iVertexCoun
 	return S_OK;
 }
 
+_uint CModel_Instance::Culling()
+{
+	CFrustum* pFrustum = CFrustum::GetInstance();
+	NULL_CHECK_RETURN(pFrustum, 0);
+
+	m_iRealDrawCount = 0;
+
+	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
+	{
+		m_arrViewportDrawInfo[iIndex] = 0;
+
+		if (CFrustum::GetInstance()->IsIn_WorldSpace_Main(MH_GetXMPosition(m_arrWorldMatrices[iIndex]), m_fCullingRadius))
+			m_arrViewportDrawInfo[iIndex] += 1;
+		if (CFrustum::GetInstance()->IsIn_WorldSpace_Sub(MH_GetXMPosition(m_arrWorldMatrices[iIndex]), m_fCullingRadius))
+			m_arrViewportDrawInfo[iIndex] += 2;
+
+		if (m_arrViewportDrawInfo[iIndex] > 0)
+		{
+			memcpy(&m_arrRealTimeMatrices[m_iRealDrawCount], &m_arrWorldMatrices[iIndex], sizeof(_float4x4));
+			memcpy(&m_arrRealTimeMatrices[m_iRealDrawCount].iViewportDrawInfo, &m_arrViewportDrawInfo[iIndex], sizeof(_uint));
+			++m_iRealDrawCount;
+		}
+	}
+
+	return m_iRealDrawCount;
+}
+
 HRESULT CModel_Instance::Update_Model(_fmatrix TransformMatrix)
 {
 	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
 	{
-		XMStoreFloat4x4(&m_pWorldMatrices[iIndex], XMLoadFloat4x4(&m_pWorldMatrices[iIndex]) * TransformMatrix);
+		XMStoreFloat4x4(&m_arrWorldMatrices[iIndex], XMLoadFloat4x4(&m_arrWorldMatrices[iIndex]) * TransformMatrix);
 
 		_vector vScale, vRotQuat, vPosition;
-		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_pWorldMatrices[iIndex]));
+		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_arrWorldMatrices[iIndex]));
 
 		for (_uint iMeshIndex = 0; iMeshIndex < m_iMeshCount; ++iMeshIndex)
 		{
@@ -273,25 +301,16 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 
-	/* For.Culling */
-	_uint iRenderCount = 0;
-
-	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
-	{
-		if (CFrustum::GetInstance()->IsIn_WorldSpace(MH_GetXMPosition(m_pWorldMatrices[iIndex]), m_fCullingRadius))
-			m_RealTimeMatrices[iRenderCount++] = m_pWorldMatrices[iIndex];
-	}
-
 	/* For.UpdateBuffer */
 	D3D11_MAPPED_SUBRESOURCE MappedSubResource;
 
 	m_pDeviceContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedSubResource);
-	memcpy(MappedSubResource.pData, &m_RealTimeMatrices[0], sizeof(VTXMATRIX) * iRenderCount);
+	memcpy(MappedSubResource.pData, m_arrRealTimeMatrices, sizeof(VTXMATRIX2) * m_iRealDrawCount);
 	m_pDeviceContext->Unmap(m_pVBInstance, 0);
 
 	/* For.Render */
 	ID3D11Buffer* pBuffers[2] = { m_pVB, m_pVBInstance };
-	_uint iStrides[2] = { sizeof(VTXMESH), sizeof(VTXMATRIX) };
+	_uint iStrides[2] = { sizeof(VTXMESH), sizeof(VTXMATRIX2) };
 	_uint iOffsets[2] = { 0, 0 };
 
 	m_pDeviceContext->IASetVertexBuffers(0, m_iVertexBufferCount, pBuffers, iStrides, iOffsets);
@@ -316,39 +335,25 @@ HRESULT CModel_Instance::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _
 		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
 		{
 			if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
-				m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
+				m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), m_iRealDrawCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
 		}
 	}
 
 	return S_OK;
 }
 
-_uint CModel_Instance::Frustum_Culling()
-{
-	/* For.Culling */
-	_uint iRenderCount = 0;
-
-	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
-	{
-		if (CFrustum::GetInstance()->IsIn_WorldSpace(MH_GetXMPosition(m_pWorldMatrices[iIndex]), m_fCullingRadius))
-			m_RealTimeMatrices[iRenderCount++] = m_pWorldMatrices[iIndex];
-	}
-
-	return iRenderCount;
-}
-
-HRESULT CModel_Instance::Bind_GBuffers(_uint iRenderCount)
+HRESULT CModel_Instance::Sepd_Bind_Buffer()
 {
 	/* For.UpdateBuffer */
 	D3D11_MAPPED_SUBRESOURCE MappedSubResource;
 
 	m_pDeviceContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedSubResource);
-	memcpy(MappedSubResource.pData, &m_RealTimeMatrices[0], sizeof(VTXMATRIX) * iRenderCount);
+	memcpy(MappedSubResource.pData, m_arrRealTimeMatrices, sizeof(VTXMATRIX2) * m_iRealDrawCount);
 	m_pDeviceContext->Unmap(m_pVBInstance, 0);
 
 	/* For.Render */
 	ID3D11Buffer* pBuffers[2] = { m_pVB, m_pVBInstance };
-	_uint iStrides[2] = { sizeof(VTXMESH), sizeof(VTXMATRIX) };
+	_uint iStrides[2] = { sizeof(VTXMESH), sizeof(VTXMATRIX2) };
 	_uint iOffsets[2] = { 0, 0 };
 
 	m_pDeviceContext->IASetVertexBuffers(0, m_iVertexBufferCount, pBuffers, iStrides, iOffsets);
@@ -358,7 +363,7 @@ HRESULT CModel_Instance::Bind_GBuffers(_uint iRenderCount)
 	return S_OK;
 }
 
-HRESULT CModel_Instance::Render_ModelByPass(_uint iRenderCount, _uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite, RENDER_GROUP::Enum eGroup)
+HRESULT CModel_Instance::Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite, RENDER_GROUP::Enum eGroup)
 {
 	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
 
@@ -370,7 +375,7 @@ HRESULT CModel_Instance::Render_ModelByPass(_uint iRenderCount, _uint iMaterialI
 	for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
 	{
 		if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
-			m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), iRenderCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
+			m_pDeviceContext->DrawIndexedInstanced(3 * pMesh->Get_FaceCount(), m_iRealDrawCount, 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex(), 0);
 	}
 
 	return S_OK;
@@ -491,7 +496,7 @@ HRESULT CModel_Instance::Create_VIBuffer(const _tchar * pShaderFilePath, const c
 	Safe_Delete_Array(m_pFaces);
 
 	/* For.InstanceBuffer */
-	m_pInstanceVertices = new VTXMATRIX[m_iMaxInstanceCount];
+	m_pInstanceVertices = new VTXMATRIX2[m_iMaxInstanceCount];
 
 	for (_uint iIndex = 0; iIndex < m_iMaxInstanceCount; ++iIndex)
 	{
@@ -499,8 +504,9 @@ HRESULT CModel_Instance::Create_VIBuffer(const _tchar * pShaderFilePath, const c
 		m_pInstanceVertices[iIndex].vUp = _float4(0.f, 1.f, 0.f, 0.f);
 		m_pInstanceVertices[iIndex].vLook = _float4(0.f, 0.f, 1.f, 0.f);
 		m_pInstanceVertices[iIndex].vPosition = _float4(0.f, 0.f, 0.f, 1.f);
+		m_pInstanceVertices[iIndex].iViewportDrawInfo = 0;
 	}
-	Create_Buffer(&m_pVBInstance, m_iMaxInstanceCount * sizeof(VTXMATRIX), D3D11_USAGE_DYNAMIC, D3D11_BIND_VERTEX_BUFFER, D3D11_CPU_ACCESS_WRITE, 0, sizeof(VTXMATRIX), m_pInstanceVertices);
+	Create_Buffer(&m_pVBInstance, m_iMaxInstanceCount * sizeof(VTXMATRIX2), D3D11_USAGE_DYNAMIC, D3D11_BIND_VERTEX_BUFFER, D3D11_CPU_ACCESS_WRITE, 0, sizeof(VTXMATRIX2), m_pInstanceVertices);
 
 	/* For.InputLayouts*/
 	D3D11_INPUT_ELEMENT_DESC	ElementDesc[] =
@@ -514,9 +520,10 @@ HRESULT CModel_Instance::Create_VIBuffer(const _tchar * pShaderFilePath, const c
 		{ "WORLD",			0, DXGI_FORMAT_R32G32B32A32_FLOAT,	1, 0,	D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 		{ "WORLD",			1, DXGI_FORMAT_R32G32B32A32_FLOAT,	1, 16,	D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 		{ "WORLD",			2, DXGI_FORMAT_R32G32B32A32_FLOAT,	1, 32,	D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-		{ "WORLD",			3, DXGI_FORMAT_R32G32B32A32_FLOAT,	1, 48,	D3D11_INPUT_PER_INSTANCE_DATA, 1 }
+		{ "WORLD",			3, DXGI_FORMAT_R32G32B32A32_FLOAT,	1, 48,	D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "TEXCOORD",		1, DXGI_FORMAT_R32_UINT,			1, 64,	D3D11_INPUT_PER_INSTANCE_DATA, 1 }
 	};
-	FAILED_CHECK_RETURN(SetUp_InputLayouts(ElementDesc, 10, pShaderFilePath, pTechniqueName), E_FAIL);
+	FAILED_CHECK_RETURN(SetUp_InputLayouts(ElementDesc, 11, pShaderFilePath, pTechniqueName), E_FAIL);
 
 	return S_OK;
 }
@@ -637,8 +644,9 @@ void CModel_Instance::Free()
 		m_PxTriMeshes.clear();
 	}
 
-	Safe_Delete_Array(m_pWorldMatrices);
-	m_RealTimeMatrices.clear();
+	Safe_Delete_Array(m_arrWorldMatrices);
+	Safe_Delete_Array(m_arrViewportDrawInfo);
+	Safe_Delete_Array(m_arrRealTimeMatrices);
 
 	if (true == m_isClone)
 	{

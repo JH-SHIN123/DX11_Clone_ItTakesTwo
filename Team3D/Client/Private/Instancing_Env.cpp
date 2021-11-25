@@ -63,20 +63,22 @@ HRESULT CInstancing_Env::Render(RENDER_GROUP::Enum eGroup)
 		!lstrcmp(TEXT("Component_Model_GlassWall01"), m_Ins_Env_Desc.szModelTag) ||
 		!lstrcmp(TEXT("Component_Model_GlassWall01_Half"), m_Ins_Env_Desc.szModelTag))
 	{
-		_uint iRenderCount = m_pModelCom->Frustum_Culling();
-		m_pModelCom->Bind_GBuffers(iRenderCount);
+		_uint iMaterialIndex = 0;
+		m_pModelCom->Sepd_Bind_Buffer();
 
 		/* 렌더순서 주의 - 논알파 -> 알파 */
-		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 1, aiTextureType_DIFFUSE, m_Ins_Env_Desc.iMaterialIndex);
-		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", 1, aiTextureType_NORMALS, m_Ins_Env_Desc.iMaterialIndex);
-		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", 1, aiTextureType_SPECULAR, m_Ins_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iRenderCount, 1, 0, false, eGroup);
+		iMaterialIndex = 1;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Ins_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Ins_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Ins_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
 
-		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", 0, aiTextureType_DIFFUSE, m_Ins_Env_Desc.iMaterialIndex);
+		iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Ins_Env_Desc.iMaterialIndex);
 		//m_pModelCom->Set_ShaderResourceView("g_NormalTexture", 0, aiTextureType_NORMALS, m_Ins_Env_Desc.iMaterialIndex);
 		//m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", 0, aiTextureType_SPECULAR, m_Ins_Env_Desc.iMaterialIndex);
 		//m_pModelCom->Set_ShaderResourceView("g_ReflectTexture", 0, aiTextureType_REFLECTION, m_Ins_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iRenderCount, 0, 2, false, eGroup);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 2, false, eGroup);
 	}
 	else
 	{
@@ -110,15 +112,18 @@ HRESULT CInstancing_Env::Set_MeshRenderGroup()
 
 HRESULT CInstancing_Env::Add_GameObject_ToRenderGroup()
 {
-	if (!lstrcmp(TEXT("Component_Model_GlassWall_Beveled"), m_Ins_Env_Desc.szModelTag) ||
-		!lstrcmp(TEXT("Component_Model_GlassWall01"), m_Ins_Env_Desc.szModelTag) ||
-		!lstrcmp(TEXT("Component_Model_GlassWall01_Half"), m_Ins_Env_Desc.szModelTag))
+	if (0 < m_pModelCom->Culling())
 	{
-		m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_ALPHA, this);
-		m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_NONALPHA, this);
+		if (!lstrcmp(TEXT("Component_Model_GlassWall_Beveled"), m_Ins_Env_Desc.szModelTag) ||
+			!lstrcmp(TEXT("Component_Model_GlassWall01"), m_Ins_Env_Desc.szModelTag) ||
+			!lstrcmp(TEXT("Component_Model_GlassWall01_Half"), m_Ins_Env_Desc.szModelTag))
+		{
+			m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_ALPHA, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_NONALPHA, this);
+		}
+		else
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 	}
-	else 
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
 	return S_OK;
 }

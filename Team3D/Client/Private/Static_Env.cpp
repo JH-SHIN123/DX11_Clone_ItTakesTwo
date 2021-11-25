@@ -75,55 +75,55 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
 	_uint iMaterialIndex = 0;
 	if (!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_01"), m_Static_Env_Desc.szModelTag))
 	{
-		m_pModelCom->Bind_GBuffers();
+		m_pModelCom->Sepd_Bind_Buffer();
 
 		/* 렌더순서 주의 - 논알파 -> 알파 */
 		iMaterialIndex = 1;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 1, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eRender);
 
 		// 4: Alpha / 5: GlassWall Custom Alpha
 		iMaterialIndex = 0;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 5, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 5, false, eRender);
 	}
 	else if (!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_02"), m_Static_Env_Desc.szModelTag))
 	{
-		m_pModelCom->Bind_GBuffers();
+		m_pModelCom->Sepd_Bind_Buffer();
 
 		iMaterialIndex = 1;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 1, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eRender);
 
 		iMaterialIndex = 2;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 1, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eRender);
 
 		iMaterialIndex = 0;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 5, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 5, false, eRender);
 	}
 	else if (!lstrcmp(TEXT("Component_Model_GlassWall_End"), m_Static_Env_Desc.szModelTag))
 	{
-		m_pModelCom->Bind_GBuffers();
+		m_pModelCom->Sepd_Bind_Buffer();
 
 		iMaterialIndex = 2;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 1, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eRender);
 
 		iMaterialIndex = 0;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 4, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eRender);
 
 		iMaterialIndex = 1;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 4, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eRender);
 	}
 	else
 		m_pModelCom->Render_Model(1);
@@ -166,8 +166,7 @@ HRESULT CStatic_Env::Set_MeshRenderGroup()
 
 HRESULT CStatic_Env::Add_GameObject_ToRenderGroup()
 {
-
-	if (true == m_pGameInstance->IsIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_Static_Env_Desc.fCullRadius))
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_Static_Env_Desc.fCullRadius))
 	{
 		if (!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_01"), m_Static_Env_Desc.szModelTag) ||
 			!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_02"), m_Static_Env_Desc.szModelTag) ||
