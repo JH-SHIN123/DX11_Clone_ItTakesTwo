@@ -356,13 +356,20 @@ private:
 	_vector m_vHookUFOAxis = {};
 	_bool m_bGoToHooker = false;
 
-	_float m_faArmLength = 5.f;
+	_float m_faArmLength = 0.f;
 	_float m_faVelocity = 0.f;
 	_float m_faAcceleration = 0.f;
-	_float m_fRopeAngle = 45.f;
+	_float m_fRopeAngle = 0.f;
+
+	//right vec
+	_float m_fRopeAngleRight = 0.f;
+	_float m_fXAcceleration = 0.f;
+	_float m_fXVelocity = 0.f;
+
 
 	// Arbitrary damping
 	_float m_faDamping = 0.995f;
+
 	// Arbitrary ball radius
 
 

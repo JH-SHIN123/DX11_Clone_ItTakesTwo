@@ -1654,51 +1654,66 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 
 			_vector vDir = vTargetPos - vPlayerPos;
 			_float  fDist = XMVectorGetX(XMVector3Length(vDir));
-			m_pActorCom->Move(XMVector3Normalize(vDir) * fDist / 20.f, dTimeDelta);
-			_float  fEpsilon = 5.2f;
+			_float  fEpsilon = 0.2f;
 
-			if (fDist <= m_vTriggerTargetPos.y + fEpsilon)
+			if (fDist <= 5.f)
 			{
 				m_bGoToHooker = false;
-			}
+				_vector vFixUp = XMVectorSet(0.f, -1.f, 0.f, 0.f);
+				_vector vTriggerToPlayer = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat3(&m_vTriggerTargetPos));
+				m_fRopeAngle = XMVectorGetX(XMVector3AngleBetweenNormals(vFixUp, vTriggerToPlayer));
 
-			_vector vFixUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-			_vector vTriggerToPlayer = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat3(&m_vTriggerTargetPos));
-			m_fRopeAngle = XMVectorGetX(XMVector3AngleBetweenNormals(vFixUp, vTriggerToPlayer));
-			m_faArmLength = fDist;
+				_vector vFixRight = m_vHookUFOAxis;
+				vTriggerToPlayer = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat3(&m_vTriggerTargetPos));
+				m_fRopeAngleRight = XMVectorGetX(XMVector3AngleBetweenNormals(vFixRight, vTriggerToPlayer));
+
+				m_faArmLength = fDist;
+			}
+			m_pActorCom->Move(XMVector3Normalize(vDir) * fDist / 25.f, dTimeDelta);
 		}
 		else
 		{
 			//TEST
 			m_pActorCom->Set_ZeroGravity(true, false, true);
-			_float Gravity = -0.4f;
+			
+			_float Gravity = -0.3f;
+
+			// ZY
 			m_faAcceleration = (-1.f * Gravity / m_faArmLength) * sin(m_fRopeAngle);
 			m_faVelocity += m_faAcceleration;
 			m_faVelocity *= m_faDamping;
 			m_fRopeAngle += m_faVelocity / 15.f;
 			
+			// X
+			m_fXAcceleration = (-1.f * Gravity / m_faArmLength) * sin(m_fRopeAngleRight);
+			m_fXVelocity += m_fXAcceleration;
+			m_fXVelocity *= m_faDamping / 4.f;
+			m_fRopeAngleRight += m_fXVelocity / 30.f;
 
-			_vector vPosition = XMVectorSet(0.f, m_faArmLength * cos(m_fRopeAngle), m_faArmLength * sin(m_fRopeAngle), 1.f) + XMVectorSetW(XMLoadFloat3(&m_vTriggerTargetPos), 1.f);
+
+			_vector vPosition = XMVectorSet(m_faArmLength * sin(m_fRopeAngleRight) , m_faArmLength * cos(m_fRopeAngle), m_faArmLength * sin(m_fRopeAngle), 1.f) + XMVectorSetW(XMLoadFloat3(&m_vTriggerTargetPos), 1.f);
+			
 			m_pActorCom->Set_Position(vPosition);
 
-			_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION),0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
-			m_pTransformCom->RotateYawDirectionOnLand(vTriggerToPlayer, dTimeDelta);
+			_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
+
+			m_pTransformCom->RotateYawDirectionOnLand(vTriggerToPlayer, dTimeDelta / 2.f);
 
 			if (m_pGameInstance->Key_Pressing(DIK_W))
 			{
-				vPosition.m128_f32[2] += 3.f * dTimeDelta;
+				m_faVelocity += m_faAcceleration / 15.f;
 			}
 			if (m_pGameInstance->Key_Pressing(DIK_A))
 			{
-				vPosition.m128_f32[0] += 3.f * dTimeDelta;
+				m_fXVelocity += m_fXAcceleration / 15.f;
 			}
 			if (m_pGameInstance->Key_Pressing(DIK_S))
 			{
-				vPosition.m128_f32[2] += -3.f * dTimeDelta;
+				m_faVelocity -= m_faAcceleration / 15.f;
 			}
 			if (m_pGameInstance->Key_Pressing(DIK_D))
 			{
-				vPosition.m128_f32[0] += 3.f * dTimeDelta;
+				m_fXVelocity -= m_fXAcceleration / 15.f;
 			}
 
 			/*_matrix matWorld, matRotX, matTrans, matRot, matParent = XMMatrixIdentity();

@@ -118,8 +118,8 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
 	CCamera::CAMERA_DESC CameraDesc;
 	CameraDesc.iViewportIndex					= 1;
-	CameraDesc.vEye								= _float3(0.f, 8.f, -7.f);
-	CameraDesc.vAt								= _float3(0.f, 0.f, 0.f);
+	CameraDesc.vEye								= /*_float3(0.f, 8.f, -7.f);*/_float3(0.f, 8.f, -11.f);
+	CameraDesc.vAt								= /*_float3(0.f, 0.f, 0.f);*/_float3(0.f, 4.5f, 0.f);
 	CameraDesc.vAxisY							= _float3(0.f, 1.f, 0.f);
 	CameraDesc.fFovY							= XMConvertToRadians(60.f);
 	CameraDesc.fFullScreenAspect				= (_float)g_iWinCX / (_float)g_iWinCY;
