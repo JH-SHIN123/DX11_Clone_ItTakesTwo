@@ -27,7 +27,7 @@ public:
 	/* For.Shape */
 	PxTriangleMesh*	Create_Mesh(MESHACTOR_DESC pMeshActorDesc);
 	/* For.Fuction */
-	_bool			Raycast(PxRaycastBuffer& RaycastHit, _fvector vSrc, _fvector vDst, _float fDist);
+	_bool			Raycast(const PxVec3& origin, const PxVec3& unitDir, const PxReal distance, PxRaycastCallback& hitCall, PxHitFlags hitFlags = PxHitFlags(PxHitFlag::eDEFAULT), const PxQueryFilterData& filterData = PxQueryFilterData(), PxQueryFilterCallback* filterCall = NULL, const PxQueryCache* cache = NULL);
 
 private:
 	PxDefaultAllocator			m_Allocator;

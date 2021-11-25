@@ -28,6 +28,8 @@ HRESULT CInstancing_Env::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_Ins_Env_Desc.szModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom, &m_Ins_Env_Desc.Instancing_Arg), E_FAIL);
 
+	Set_MeshRenderGroup();;
+
 	return S_OK;
 }
 
@@ -42,8 +44,7 @@ _int CInstancing_Env::Late_Tick(_double TimeDelta)
 {
 	CGameObject::Late_Tick(TimeDelta);
 
-	if (0 < m_pModelCom->Culling())
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	Add_GameObject_ToRenderGroup();
 
 	return NO_EVENT;
 }
@@ -57,7 +58,32 @@ HRESULT CInstancing_Env::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom->Set_DefaultVariables_Perspective();
 	m_pModelCom->Set_DefaultVariables_Shadow();
 
-	m_pModelCom->Render_Model(0, m_Ins_Env_Desc.iMaterialIndex);
+	// 모델 태그로 구분 : szModelTag
+	if (!lstrcmp(TEXT("Component_Model_GlassWall_Beveled"), m_Ins_Env_Desc.szModelTag) ||
+		!lstrcmp(TEXT("Component_Model_GlassWall01"), m_Ins_Env_Desc.szModelTag) ||
+		!lstrcmp(TEXT("Component_Model_GlassWall01_Half"), m_Ins_Env_Desc.szModelTag))
+	{
+		_uint iMaterialIndex = 0;
+		m_pModelCom->Sepd_Bind_Buffer();
+
+		/* 렌더순서 주의 - 논알파 -> 알파 */
+		iMaterialIndex = 1;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Ins_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Ins_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Ins_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
+
+		iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Ins_Env_Desc.iMaterialIndex);
+		//m_pModelCom->Set_ShaderResourceView("g_NormalTexture", 0, aiTextureType_NORMALS, m_Ins_Env_Desc.iMaterialIndex);
+		//m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", 0, aiTextureType_SPECULAR, m_Ins_Env_Desc.iMaterialIndex);
+		//m_pModelCom->Set_ShaderResourceView("g_ReflectTexture", 0, aiTextureType_REFLECTION, m_Ins_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 2, false, eGroup);
+	}
+	else
+	{
+		m_pModelCom->Render_Model(0, m_Ins_Env_Desc.iMaterialIndex);
+	}
 
 	return S_OK;
 }
@@ -66,7 +92,38 @@ HRESULT CInstancing_Env::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth();
-	m_pModelCom->Render_Model(1, 0, true);
+	m_pModelCom->Render_Model(1, 0, true);;
+
+	return S_OK;
+}
+
+HRESULT CInstancing_Env::Set_MeshRenderGroup()
+{
+	if (!lstrcmp(TEXT("Component_Model_GlassWall_Beveled"), m_Ins_Env_Desc.szModelTag) ||
+		!lstrcmp(TEXT("Component_Model_GlassWall01"), m_Ins_Env_Desc.szModelTag) || 
+		!lstrcmp(TEXT("Component_Model_GlassWall01_Half"), m_Ins_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_ALPHA);
+		m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_NONALPHA);
+	}
+
+	return S_OK;
+}
+
+HRESULT CInstancing_Env::Add_GameObject_ToRenderGroup()
+{
+	if (0 < m_pModelCom->Culling())
+	{
+		if (!lstrcmp(TEXT("Component_Model_GlassWall_Beveled"), m_Ins_Env_Desc.szModelTag) ||
+			!lstrcmp(TEXT("Component_Model_GlassWall01"), m_Ins_Env_Desc.szModelTag) ||
+			!lstrcmp(TEXT("Component_Model_GlassWall01_Half"), m_Ins_Env_Desc.szModelTag))
+		{
+			m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_ALPHA, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_NONALPHA, this);
+		}
+		else
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	}
 
 	return S_OK;
 }
