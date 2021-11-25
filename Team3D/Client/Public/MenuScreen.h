@@ -32,6 +32,8 @@ private:
 	_int							m_iHeaderIndex = 0;
 	_bool							m_IsHeaderBoxChange = false;
 	_bool							m_IsFirst = true;
+	_bool							m_IsChapterScreenCreate = false;
+
 	class CHeaderBox*				m_pHeaderBox = nullptr;
 
 private:

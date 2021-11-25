@@ -74,7 +74,7 @@ HRESULT CHeaderBox::Render(RENDER_GROUP::Enum eGroup)
 		return S_OK;
 
 	CUIObject::Render(eGroup);
-
+	
 	if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 

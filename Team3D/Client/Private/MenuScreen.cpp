@@ -57,6 +57,26 @@ _int CMenuScreen::Late_Tick(_double TimeDelta)
 
 	Input_SelectButton();
 
+	if (m_pGameInstance->Key_Down(DIK_RETURN))
+	{
+		for (_uint i = 0; i < 6; ++i)
+		{
+			if (true == UI_Generator->Get_HeaderBox(i)->Get_Render() && true == UI_Generator->Get_HeaderBox(i)->Get_LocalPlayer())
+			{
+				m_IsChapterScreenCreate = true;
+				break;
+			}
+		}
+
+		if (true == m_IsChapterScreenCreate)
+		{
+			for (_uint i = 0; i < 6; ++i)
+				UI_Generator->Get_HeaderBox(i)->Set_Dead();
+
+
+		}
+	}
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
@@ -140,7 +160,6 @@ void CMenuScreen::Input_SelectButton()
 		m_pHeaderBox->Set_NextSelect();
 
 		m_IsHeaderBoxChange = false;
-
 	}
 }
 
