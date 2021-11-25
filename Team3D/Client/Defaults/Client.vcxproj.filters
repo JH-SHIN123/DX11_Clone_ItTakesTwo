@@ -271,12 +271,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail">
       <UniqueIdentifier>{4473fc56-392d-424e-a8d6-96ba1259f992}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail\Lail_Smoke">
-      <UniqueIdentifier>{a523cf1b-a6af-4abe-9b83-88ea11aa2868}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail\Lail_Particle">
-      <UniqueIdentifier>{273af194-8b17-435c-943e-7cf203217bb8}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -477,7 +471,9 @@
     <ClInclude Include="..\public\Effect_Robot_Battery_Spark.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Robot_Battery_Spark</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_Player_Lail.h" />
+    <ClInclude Include="..\public\Effect_Player_Lail.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -651,7 +647,9 @@
     <ClCompile Include="..\private\Effect_Robot_Battery_Spark.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Robot_Battery_Spark</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Effect_Player_Lail.cpp" />
+    <ClCompile Include="..\private\Effect_Player_Lail.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
