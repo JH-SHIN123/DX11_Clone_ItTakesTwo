@@ -774,7 +774,7 @@ HRESULT CUI_Generator::SetUp_Clone_Ptr(Player::ID ePlayer, UI::TRIGGER eTrigger,
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(eLevel, TEXT("Layer_UI"), eLevel, PrototypeTag, pArg, pGameObject), E_FAIL);
-
+	//d
 	return S_OK;
 }
 
