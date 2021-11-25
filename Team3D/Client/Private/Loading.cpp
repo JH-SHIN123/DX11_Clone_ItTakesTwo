@@ -25,8 +25,6 @@
 #include "TestObject01.h"
 #include "Sky.h"
 
-
-
 CLoading::CLoading(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice			(pDevice)
 	, m_pDeviceContext	(pDeviceContext)

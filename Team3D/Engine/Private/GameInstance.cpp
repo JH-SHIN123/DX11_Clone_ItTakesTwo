@@ -417,37 +417,37 @@ void CGameInstance::Release_Engine()
 	CRenderTarget_Manager::GetInstance()->Clear_Buffers();
 #endif
 
-	if (CGameInstance::GetInstance()->DestroyInstance())
+	if (CGameInstance::DestroyInstance())
 		MSG_BOX("Failed to Release CGameInstance.");
-	if (CLevel_Manager::GetInstance()->DestroyInstance())
+	if (CLevel_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CLevel_Manager.");
-	if (CGameObject_Manager::GetInstance()->DestroyInstance())
+	if (CGameObject_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CGameObject_Manager.");
-	if (CComponent_Manager::GetInstance()->DestroyInstance())
+	if (CComponent_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CComponent_Manager.");
-	if (CModel_Loader::GetInstance()->DestroyInstance())
+	if (CModel_Loader::DestroyInstance())
 		MSG_BOX("Failed to Release CModel_Loader.");
-	if (CShadow_Manager::GetInstance()->DestroyInstance())
+	if (CShadow_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CShadow_Manager.");
-	if (CLight_Manager::GetInstance()->DestroyInstance())
+	if (CLight_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CLight_Manager.");
-	if (CPostFX::GetInstance()->DestroyInstance())
+	if (CPostFX::DestroyInstance())
 		MSG_BOX("Failed to Release CPostFX.");
-	if (CPhysX::GetInstance()->DestroyInstance())
+	if (CPhysX::DestroyInstance())
 		MSG_BOX("Failed to Release CPhysX.");
-	if (CRenderTarget_Manager::GetInstance()->DestroyInstance())
+	if (CRenderTarget_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CRenderTarget_Manager.");
-	if (CFrustum::GetInstance()->DestroyInstance())
+	if (CFrustum::DestroyInstance())
 		MSG_BOX("Failed to Release CFrustum.");
-	if (CPipeline::GetInstance()->DestroyInstance())
+	if (CPipeline::DestroyInstance())
 		MSG_BOX("Failed to Release CPipeline.");
-	if (CSound_Manager::GetInstance()->DestroyInstance())
+	if (CSound_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CSound_Manager.");
-	if (CTimer_Manager::GetInstance()->DestroyInstance())
+	if (CTimer_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CTimer_Manager.");
-	if (CInput_Device::GetInstance()->DestroyInstance())
+	if (CInput_Device::DestroyInstance())
 		MSG_BOX("Failed to Release CInput_Device.");
-	if (CGraphic_Device::GetInstance()->DestroyInstance())
+	if (CGraphic_Device::DestroyInstance())
 		MSG_BOX("Failed to Release CGraphic_Device.");
 }
 

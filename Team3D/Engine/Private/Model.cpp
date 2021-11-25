@@ -409,6 +409,21 @@ HRESULT CModel::Update_Animation(_double dTimeDelta)
 	return S_OK;
 }
 
+_uint CModel::Culling(_fvector vPosition, _float fCullingRadius)
+{
+	CFrustum* pFrustum = CFrustum::GetInstance();
+	NULL_CHECK_RETURN(pFrustum, 0);
+
+	m_iViewportDrawInfo = 0;
+
+	if (pFrustum->IsIn_WorldSpace_Main(vPosition, fCullingRadius))
+		m_iViewportDrawInfo += 1;
+	if (pFrustum->IsIn_WorldSpace_Sub(vPosition, fCullingRadius))
+		m_iViewportDrawInfo += 2;
+
+	return m_iViewportDrawInfo;
+}
+
 HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite, RENDER_GROUP::Enum eGroup)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
@@ -478,22 +493,7 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 	return S_OK;
 }
 
-_uint CModel::Culling(_fvector vPosition, _float fCullingRadius)
-{
-	CFrustum* pFrustum = CFrustum::GetInstance();
-	NULL_CHECK_RETURN(pFrustum, 0);
-
-	m_iViewportDrawInfo = 0;
-
-	if (pFrustum->IsIn_WorldSpace_Main(vPosition, fCullingRadius))
-		m_iViewportDrawInfo += 1;
-	if (pFrustum->IsIn_WorldSpace_Sub(vPosition, fCullingRadius))
-		m_iViewportDrawInfo += 2;
-
-	return m_iViewportDrawInfo;
-}
-
-HRESULT CModel::Bind_GBuffers()
+HRESULT CModel::Sepd_Bind_Buffer()
 {
 	_uint iOffSet = 0;
 
@@ -504,7 +504,7 @@ HRESULT CModel::Bind_GBuffers()
 	return S_OK;
 }
 
-HRESULT CModel::Render_ModelByPass(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite, RENDER_GROUP::Enum eGroup)
+HRESULT CModel::Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite, RENDER_GROUP::Enum eGroup)
 {
 	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
 

@@ -42,7 +42,8 @@ _int CInstancing_Env::Late_Tick(_double TimeDelta)
 {
 	CGameObject::Late_Tick(TimeDelta);
 
-	m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	if (0 < m_pModelCom->Culling())
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
 	return NO_EVENT;
 }
