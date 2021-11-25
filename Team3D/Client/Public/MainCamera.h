@@ -69,10 +69,7 @@ private:
 	CGameObject* m_pTargetObj = nullptr;
 	_float m_fMouseRevSpeed[Rev_End] = { 2.5f,2.5f };
 	_float m_fMouseRev[Rev_End] = { 0.0f,0.0f };
-	
-	
-	_float m_fCamDist = 4.f;
-
+	_float m_fCurMouseRev[Rev_End] = { 0.f,0.f };
 
 	CamMode m_eCurCamMode = CamMode::Cam_End;
 
@@ -90,12 +87,22 @@ private:
 
 	_float4x4	m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_END];
 
-	CamFreeOption m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
+	CamFreeOption m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 
 	//For.SpringCamera
 	_float m_fCamRadius = 0.f;
-	
 
+
+	//For.SoftMove
+	_float3 m_vPlayerPos = { 0.f,0.f,0.f };
+	//회전 보간용
+	_float4x4 m_matQuternionRev;
+
+
+
+
+
+	
 };
 
 END
