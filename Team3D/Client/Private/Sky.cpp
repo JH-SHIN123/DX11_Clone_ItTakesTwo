@@ -62,22 +62,20 @@ HRESULT CSky::Render(RENDER_GROUP::Enum eGroup)
 	// 0: 전체를 감싸고 있는 구 (알파블랜딩)
 	// 1: 4개짜리 클라우드 껍데기 -> G 채널
 	// 2: 2개짜리 클라우드 껍데기 -> R 채널
-	//m_pModelCom->Sepd_Bind_Buffer();
+	m_pModelCom->Sepd_Bind_Buffer();
 
 	_uint iMaterialIndex = 0;
-	//m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
-	//m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
-	m_pModelCom->Render_Model(0, iMaterialIndex);
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
+	m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0); // 잘못연결한거아님, 모델을 잘못뽑음.
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0);
 
 	iMaterialIndex = 1;
-	//m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
-	//m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
-	m_pModelCom->Render_Model(1, iMaterialIndex);
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false);
 
 	iMaterialIndex = 2;
-	//m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
-	//m_pModelCom->Sepd_Render_Model(iMaterialIndex, 2, false, eGroup);
-	m_pModelCom->Render_Model(2, iMaterialIndex);
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 2, false);
 
 	return S_OK;
 }
