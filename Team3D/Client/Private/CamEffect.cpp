@@ -51,19 +51,19 @@ _fmatrix CCamEffect::MakeShakeMatrix_Location(_fmatrix matIn, _double dCurrentTi
 
 	_float fZ =
 		tDesc.bOnCamShakeOption[(_uint)CamShakeOption::CamShake_Loc_Look] ?
-		(sinf(fProgressPercentage * MATH_PI)* (bElapseMiddleTime ?
+		(_float)(sinf(fProgressPercentage * MATH_PI)* (_float)(bElapseMiddleTime ?
 			tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Look].dMinForce :
 			tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Look].dMaxForce)) : 0.f,
 
 		fX =
 		tDesc.bOnCamShakeOption[(_uint)CamShakeOption::CamShake_Loc_Right] ?
-		(sinf(fProgressPercentage * MATH_PI)* (bElapseMiddleTime ?
+		(_float)(sinf(fProgressPercentage * MATH_PI)* (_float)(bElapseMiddleTime ?
 			tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Right].dMinForce :
 			tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Right].dMaxForce)) : 0.f,
 
 		fY =
 		tDesc.bOnCamShakeOption[(_uint)CamShakeOption::CamShake_Loc_Up] ?
-		(sinf(fProgressPercentage * MATH_PI)* (bElapseMiddleTime ?
+		(_float)(sinf(fProgressPercentage * MATH_PI)* (_float)(bElapseMiddleTime ?
 			tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Up].dMinForce :
 			tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Loc_Up].dMaxForce)) : 0.f;
 	
