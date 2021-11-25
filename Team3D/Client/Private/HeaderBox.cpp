@@ -78,7 +78,7 @@ HRESULT CHeaderBox::Render(RENDER_GROUP::Enum eGroup)
 	if(true == m_IsRender)
 		m_pVIBuffer_RectCom->Render(11);
 
-	Render_Font();
+	//Render_Font();
 
 	return S_OK;
 }

@@ -42,12 +42,17 @@ private:
 	_uint				m_iPassNum = 0;
 	_float				m_fSortOrder = 0.f;
 	_float				m_fScreenAlpha = 0.f;
-	_float2				m_vMaskUV;
 	_float				m_fFontAlpha = 1.f;
+	_float2				m_vMaskUV;
+	_bool				m_IsDisappear = false;
+	_bool				m_IsDead = false;
+	_bool				m_IsBackScreenAlpha = false;
 
 private:
 	HRESULT Ready_Component();
 	HRESULT Set_UIVariables_Perspective();
+	void Logo_DisAppearing(_double TimeDelta);
+
 
 public:
 	static CSplashScreen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

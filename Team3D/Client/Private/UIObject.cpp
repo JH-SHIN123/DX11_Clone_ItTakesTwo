@@ -34,7 +34,7 @@ HRESULT CUIObject::NativeConstruct(void * pArg)
 
 _int CUIObject::Tick(_double TimeDelta)
 {
-
+	
 	CGameObject::Tick(TimeDelta);
 
 	return NO_EVENT;

@@ -363,7 +363,10 @@ PS_OUT PS_SplashScreen(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-	
+
+	if (0.999f >= Out.vColor.a)
+		discard;
+
 	//if (Out.vColor.r >= 0.8f)
 	//	In.vTexUV.x += g_vScreenMaskUV.x;
 	//else if (Out.vColor.g >= 0.8f)
@@ -373,8 +376,7 @@ PS_OUT PS_SplashScreen(PS_IN In)
 
 	//vector Mask = g_DiffuseMaskTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	if(0.999f < Out.vColor.a)
-		Out.vColor.a = g_fScreenAlpha;
+	Out.vColor.a = g_fScreenAlpha;
 
 	//Out.vColor.rgb += Mask;
 

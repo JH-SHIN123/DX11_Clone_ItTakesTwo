@@ -37,15 +37,20 @@ HRESULT CSplashScreen::NativeConstruct(void * pArg)
 		m_fSortOrder = 0.f * -1.f;
 		m_iPassNum = 8;
 		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 720.f, 0.f, 0.f));
+		m_fSortOrder = -2.f;
 	}
 	else
 	{
 		m_fSortOrder = 1.f * -1.f;
 		m_iPassNum = 9;
 		m_pTransformCom->Set_Scale(XMVectorSet(900.f, 400.f, 0.f, 0.f));
+		m_fSortOrder = -3.f;
 	}
 	
 	m_vMaskUV = { 0.f ,0.f };
+
+	if (0 == m_iOption)
+		m_fScreenAlpha = 1.f;
 
 	return S_OK;
 }
@@ -59,12 +64,12 @@ _int CSplashScreen::Tick(_double dTimeDelta)
 
 _int CSplashScreen::Late_Tick(_double dTimeDelta)
 {
+	if (true == m_IsDead)
+		return EVENT_DEAD;
+
 	CGameObject::Tick(dTimeDelta);
 
-	m_fScreenAlpha += (_float)dTimeDelta * 0.6f;
-
-	if (1.f <= m_fScreenAlpha)
-		m_fScreenAlpha = 1.f;
+	Logo_DisAppearing(dTimeDelta);
 
 	m_vMaskUV.x -= (_float)dTimeDelta * 0.02f;
 	m_vMaskUV.y -= (_float)dTimeDelta * 0.02f;
@@ -170,6 +175,41 @@ HRESULT CSplashScreen::Set_UIVariables_Perspective()
 	}
 
 	return S_OK;
+}
+
+void CSplashScreen::Logo_DisAppearing(_double TimeDelta)
+{
+	if (m_pGameInstance->Key_Down(DIK_RETURN))
+		m_IsDisappear = true;
+
+	if (true == m_IsDisappear)
+	{
+		m_fScreenAlpha -= (_float)TimeDelta * 0.4f;
+
+		if (0.f >= m_fScreenAlpha && 1 == m_iOption)
+			m_IsDead = true;
+		else if (0.f >= m_fScreenAlpha && 0 == m_iOption)
+		{
+			m_IsBackScreenAlpha = true;
+			m_IsDisappear = false;
+			m_fScreenAlpha = 1.f;
+			m_iPassNum = 9;
+		}
+	}
+	else if (true == m_IsBackScreenAlpha && 0 == m_iOption)
+	{
+		m_fScreenAlpha -= (_float)TimeDelta * 0.4f;
+
+		if (0.f >= m_fScreenAlpha)
+			m_IsDead = true;
+	}
+	else
+	{
+		m_fScreenAlpha += (_float)TimeDelta * 0.6f;
+
+		if (1.f <= m_fScreenAlpha)
+			m_fScreenAlpha = 1.f;
+	}
 }
 
 CSplashScreen * CSplashScreen::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
