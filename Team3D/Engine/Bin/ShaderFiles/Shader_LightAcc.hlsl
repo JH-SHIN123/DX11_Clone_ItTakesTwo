@@ -8,11 +8,11 @@ texture2D	g_SpecularSrcTexture;
 
 cbuffer LightDesc
 {
-	vector	g_vLightDir;		// only use directional / spot
-	vector	g_vLightPos;		// only use point / spot
-	float	g_fRange;			// only use point / spot
-	//float	g_fAngleOuterCone;	// only use spot
-	//float	g_fAngleInnerCone;	// only use spot
+	vector	g_vLightDir;			// only use directional / spot
+	vector	g_vLightPos;			// only use point / spot
+	float	g_fRange;				// only use point / spot
+	//float	g_fSpotCosOuterCone;	// only use spot
+	//float	g_fSpotConeAttRange;	// only use spot
 }
 
 cbuffer LightColor
@@ -162,13 +162,61 @@ PS_OUT PS_POINT(PS_IN In)
 	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
 	vector	vReflect = reflect(normalize(vLightDir), vSpecSrcDesc);
-	Out.vSpecular	= (pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular)) * fAtt;
+	Out.vSpecular	= (pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular));
 	Out.vSpecular.a = 0.f;
 
 	return Out;
 }
 ////////////////////////////////////////////////////////////
-
+//PS_OUT PS_SPOT(PS_IN In)
+//{
+//	PS_OUT Out = (PS_OUT)0;
+//
+//	vector	vNormalDesc = g_NormalTexture.Sample(Wrap_Sampler, In.vTexUV);
+//	vector	vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+//	vector	vDepthDesc = g_DepthTexture.Sample(Wrap_Sampler, In.vTexUV);
+//	vector	vWorldPos = vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
+//	float	fViewZ = 0.f;
+//	vector	vLook = (vector)0.f;
+//
+//	if (In.vTexUV.x >= g_vMainViewportUVInfo.x && In.vTexUV.x <= g_vMainViewportUVInfo.z && In.vTexUV.y >= g_vMainViewportUVInfo.y && In.vTexUV.y <= g_vMainViewportUVInfo.w)
+//	{
+//		fViewZ = vDepthDesc.x * g_fMainCamFar;
+//		vWorldPos = vWorldPos * fViewZ;
+//		vWorldPos = mul(vWorldPos, g_MainProjMatrixInverse);
+//		vWorldPos = mul(vWorldPos, g_MainViewMatrixInverse);
+//		vLook = normalize(vWorldPos - g_vMainCamPosition);
+//	}
+//	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z && In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
+//	{
+//		fViewZ = vDepthDesc.x * g_fSubCamFar;
+//		vWorldPos = vWorldPos * fViewZ;
+//		vWorldPos = mul(vWorldPos, g_SubProjMatrixInverse);
+//		vWorldPos = mul(vWorldPos, g_SubViewMatrixInverse);
+//		vLook = normalize(vWorldPos - g_vSubCamPosition);
+//	}
+//	else
+//		discard;
+//
+//	vector	vLightDir = g_vLightPos - vWorldPos;
+//	float	fDistance = length(vLightDir) / g_fRange;
+//	clip(1 - fDistance);
+//
+//	// Diffuse
+//	Out.vShade = (max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
+//	Out.vShade.a = 0.f;
+//
+//	float fCosAng = dot(vLightDir, );
+//	float	fAtt = 0.5f * COS_ARR(3.14f * pow(fDistance, 1.5f)) + 0.5f;
+//
+//	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Wrap_Sampler, In.vTexUV);
+//	vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
+//	vector	vReflect = reflect(normalize(vLightDir), vSpecSrcDesc);
+//	Out.vSpecular = (pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular)) * fAtt;
+//	Out.vSpecular.a = 0.f;
+//
+//	return Out;
+//}
 ////////////////////////////////////////////////////////////
 
 technique11		DefaultTechnique
