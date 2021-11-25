@@ -1,11 +1,10 @@
 #include "stdafx.h"
 #include "..\public\MainCamera.h"
 #include "GameInstance.h"
-#include"ControllableActor.h"
-#include"Level.h"
-#include"DataStorage.h"
+#include "ControllableActor.h"
+#include "Level.h"
 #include "Cody.h"
-#include"PhysX.h"
+#include "PhysX.h"
 
 
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -50,7 +49,6 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_SubActor"), (CComponent**)&m_pSubActorCom, &ArgDesc), E_FAIL);
 
 	m_pActorCom->Set_Scale(m_fCamRadius, 0.f);
 
@@ -162,11 +160,11 @@ CGameObject * CMainCamera::Clone_GameObject(void * pArg)
 
 void CMainCamera::Free()
 {
-	CCamera::Free();
-
+	Safe_Release(m_pTargetObj);
 	Safe_Release(m_pCamHelper);
 	Safe_Release(m_pActorCom);
 
+	CCamera::Free();
 }
 
 void CMainCamera::Check_Player(_double dTimeDelta)

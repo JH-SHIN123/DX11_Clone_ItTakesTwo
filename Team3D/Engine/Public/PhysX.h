@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "Base.h"
@@ -17,7 +16,6 @@ public: /* Getter */
 
 public:
 	HRESULT Ready_PhysX();
-
 	_int	Tick();
 	/* For.Actor */
 	PxRigidStatic*	Create_StaticActor(PxTransform Transform, PxGeometry& Geometry);
@@ -30,6 +28,7 @@ public:
 	PxTriangleMesh*	Create_Mesh(MESHACTOR_DESC pMeshActorDesc);
 	/* For.Fuction */
 	_bool			Raycast(PxRaycastBuffer& RaycastHit, _fvector vSrc, _fvector vDst, _float fDist);
+
 private:
 	PxDefaultAllocator			m_Allocator;
 	PxDefaultErrorCallback		m_ErrorCallback;

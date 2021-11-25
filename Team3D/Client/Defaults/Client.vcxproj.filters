@@ -124,8 +124,6 @@
     <Filter Include="02.GameObject\00.Public\03.Cam_Helper\Film">
       <UniqueIdentifier>{25fa91e7-22b9-488f-a881-4902b0783881}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\98.Interaction_Deco">
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May">
       <UniqueIdentifier>{611bc1d3-0276-4f21-b082-4231462adca0}</UniqueIdentifier>
     </Filter>
@@ -576,9 +574,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\SubCamera.cpp">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\DataStorage.cpp">
-      <Filter>96.DataStorage</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Cam_Helper.cpp">
       <Filter>02.GameObject\00.Public\03.Cam_Helper</Filter>

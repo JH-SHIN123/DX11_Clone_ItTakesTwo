@@ -12,8 +12,8 @@ class CDataStorage final : public CBase
 private:
 	explicit CDataStorage() = default;
 	virtual ~CDataStorage() = default;
-public:
 
+public:
 	void Set_CodyPtr(CGameObject* pCody) { m_pCody = pCody; }
 	CGameObject* GetCody() { return m_pCody; }
 

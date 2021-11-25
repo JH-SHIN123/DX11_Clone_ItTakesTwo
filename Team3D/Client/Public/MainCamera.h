@@ -90,7 +90,7 @@ private:
 
 	_float4x4	m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_END];
 
-	CamFreeOption m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
+	CamFreeOption m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 
 	//For.SpringCamera
 	_float m_fCamRadius = 0.f;

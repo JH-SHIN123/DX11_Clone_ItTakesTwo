@@ -575,6 +575,10 @@ void CCam_Helper::Free()
 	for (auto& rPair : m_Films)
 		Safe_Release(rPair.second);
 	m_Films.clear();
+	for (auto& rPair : m_CamEffects)
+		Safe_Release(rPair.second);
+	m_CamEffects.clear();
 
+	CComponent::Free();
 }
 
