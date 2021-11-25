@@ -140,10 +140,8 @@ void CMenuScreen::Input_SelectButton()
 		m_pHeaderBox->Set_NextSelect();
 
 		m_IsHeaderBoxChange = false;
-	}
 
-	if (m_pGameInstance->Key_Down(DIK_M))
-		UI_Generator->Create_ChapterSelect();
+	}
 }
 
 CMenuScreen * CMenuScreen::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

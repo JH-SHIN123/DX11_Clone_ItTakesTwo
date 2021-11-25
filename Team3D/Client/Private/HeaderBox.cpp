@@ -34,19 +34,11 @@ HRESULT CHeaderBox::NativeConstruct(void * pArg)
 	if (FAILED(Ready_Component()))
 		return E_FAIL;
 
-	if (nullptr != pArg)
-		memcpy(&m_iOption, pArg, sizeof(_uint));
-
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
-	if (1 == m_iOption)
-		m_IsRender = true;
-	else
-	{
-		m_vFontPos.x = m_UIDesc.vPos.x - 150.f;
-		m_vFontPos.y = m_UIDesc.vPos.y;
-	}
+	m_vFontPos.x = m_UIDesc.vPos.x - 150.f;
+	m_vFontPos.y = m_UIDesc.vPos.y;
 
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_LocalPlay")))
 	{
@@ -78,7 +70,7 @@ _int CHeaderBox::Late_Tick(_double TimeDelta)
 
 HRESULT CHeaderBox::Render(RENDER_GROUP::Enum eGroup)
 {
-	if (false == m_IsLogoDisappear && 1 != m_iOption)
+	if (false == m_IsLogoDisappear)
 		return S_OK;
 
 	CUIObject::Render(eGroup);
@@ -223,10 +215,6 @@ void CHeaderBox::Mouse_Picking()
 
 		m_IsMousePicking = false;
 	}
-}
-
-void CHeaderBox::Set_Option()
-{
 }
 
 CHeaderBox * CHeaderBox::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

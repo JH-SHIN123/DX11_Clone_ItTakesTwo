@@ -84,18 +84,13 @@ HRESULT CInputButton_Frame::Render(RENDER_GROUP::Enum eGroup)
 		if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
 			return E_FAIL;
 	}
-	else if (3 == m_iOption)
-	{
-		if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
-			return E_FAIL;
-	}
 	else
 	{
 		if (FAILED(CUIObject::Set_InterActiveVariables_Perspective(m_pVIBuffer_RectCom)))
 			return E_FAIL;
 	}
 
-	m_pVIBuffer_RectCom->Render(m_iShaderPassNum);
+	m_pVIBuffer_RectCom->Render(1);
 
 	Render_Font();
 
@@ -106,25 +101,11 @@ void CInputButton_Frame::SetUp_Option()
 {
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_F")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Dot")) ||
 		!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_PS_Triangle")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_PS_R1")))
-	{
 		m_iOption = 1;
-		m_iShaderPassNum = 1;
-	}
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_E")))
-	{
 		m_iOption = 2;
-		m_iShaderPassNum = 1;
-	}
-	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Left")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Right")))
-	{
-		m_iOption = 3;
-		m_iShaderPassNum = 11;
-	}
 	else
-	{
 		m_iOption = 0;
-		m_iShaderPassNum = 1; 
-	}
 }
 
 void CInputButton_Frame::Set_ScaleEffect()

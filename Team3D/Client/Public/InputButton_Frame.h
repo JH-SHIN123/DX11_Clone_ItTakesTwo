@@ -32,7 +32,6 @@ private:
 	_uint							m_iScaleChangeCount = 0;
 	_float2							m_vStartScale;
 	_float							m_fPower = 0.f;
-	_uint							m_iShaderPassNum = 0;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;

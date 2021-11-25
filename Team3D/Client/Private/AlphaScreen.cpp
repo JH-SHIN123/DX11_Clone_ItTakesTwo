@@ -26,7 +26,6 @@ HRESULT CAlphaScreen::NativeConstruct_Prototype(void* pArg)
 
 	lstrcpy(m_UIDesc.szTextureTag, TEXT("AlphaScreen"));
 
-
 	return S_OK;
 }
 
@@ -37,21 +36,8 @@ HRESULT CAlphaScreen::NativeConstruct(void * pArg)
 	if (FAILED(Ready_Component()))
 		return E_FAIL;
 
-	if (nullptr != pArg)
-		memcpy(&m_iOption, pArg, sizeof(_uint));
-
-	if (1 == m_iOption)
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 720.f, 0.f, 0.f));
-		m_fSortOrder = -2.f;
-	}
-	else
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-		m_pTransformCom->Set_Scale(XMVectorSet(640.f, 720.f, 0.f, 0.f));
-		m_fSortOrder = -1.f;
-	}
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	m_pTransformCom->Set_Scale(XMVectorSet(640.f, 720.f, 0.f, 0.f));
 
 	return S_OK;
 }
@@ -77,20 +63,10 @@ HRESULT CAlphaScreen::Render(RENDER_GROUP::Enum eGroup)
 {
 	CUIObject::Render(eGroup);
 
-	if (1 == m_iOption)
-	{
-		if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
-			return E_FAIL;
+	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
+		return E_FAIL;
 
-		m_pVIBuffer_RectCom->Render(12);
-	}
-	else
-	{
-		if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
-			return E_FAIL;
-
-		m_pVIBuffer_RectCom->Render(7);
-	}
+	m_pVIBuffer_RectCom->Render(7);
 
 	return S_OK;
 }

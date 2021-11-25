@@ -217,6 +217,9 @@
     <Filter Include="02.GameObject\05.UI\01.InputButton\01.Button">
       <UniqueIdentifier>{6125b4bd-a6d4-4be5-b3cb-6ee056b3a81f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.UI\02.PC_MouseButton">
+      <UniqueIdentifier>{3c2d527a-22db-4fc8-a7c5-05df63b7b482}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.UI\03.ArrowKeys">
       <UniqueIdentifier>{bfd01cf1-003b-4352-b521-cb1c85869051}</UniqueIdentifier>
     </Filter>
@@ -306,24 +309,6 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
       <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\02.ButtonIcon">
-      <UniqueIdentifier>{3c2d527a-22db-4fc8-a7c5-05df63b7b482}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\02.ButtonIcon\PC">
-      <UniqueIdentifier>{d168a74d-d928-4c37-842d-4a44a641f92c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\02.ButtonIcon\PC\Mouse">
-      <UniqueIdentifier>{d2f7148a-cea6-49b1-947f-604017fc1f0c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\02.ButtonIcon\PC\Enter">
-      <UniqueIdentifier>{f90769d6-e9cf-4089-aab7-cd3d224cdf4f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\02.ButtonIcon\Controller">
-      <UniqueIdentifier>{6f0a4b12-efac-48a1-9f58-087c7651fd4f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\11.ChapterSelect">
-      <UniqueIdentifier>{f0c03c84-48c4-479e-86d2-76c7f04a52ce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -489,6 +474,9 @@
     <ClInclude Include="..\Public\InputButton.h">
       <Filter>02.GameObject\05.UI\01.InputButton\01.Button</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PC_MouseButton.h">
+      <Filter>02.GameObject\05.UI\02.PC_MouseButton</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Arrowkeys_Fill.h">
       <Filter>02.GameObject\05.UI\03.ArrowKeys\00.Fill</Filter>
     </ClInclude>
@@ -560,18 +548,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_GravityPipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\PC_MouseButton.h">
-      <Filter>02.GameObject\05.UI\02.ButtonIcon\PC\Mouse</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\PC_Enter.h">
-      <Filter>02.GameObject\05.UI\02.ButtonIcon\PC\Enter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ControllerIcon.h">
-      <Filter>02.GameObject\05.UI\02.ButtonIcon\Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ChapterSelect.h">
-      <Filter>02.GameObject\05.UI\11.ChapterSelect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -701,6 +677,9 @@
     <ClCompile Include="..\Private\InputButton_Frame.cpp">
       <Filter>02.GameObject\05.UI\01.InputButton\00.Frame</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\PC_MouseButton.cpp">
+      <Filter>02.GameObject\05.UI\02.PC_MouseButton</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\PlayerMarker.cpp">
       <Filter>02.GameObject\05.UI\04.PlayerMarker</Filter>
     </ClCompile>
@@ -800,18 +779,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\PC_MouseButton.cpp">
-      <Filter>02.GameObject\05.UI\02.ButtonIcon\PC\Mouse</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\PC_Enter.cpp">
-      <Filter>02.GameObject\05.UI\02.ButtonIcon\PC\Enter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ControllerIcon.cpp">
-      <Filter>02.GameObject\05.UI\02.ButtonIcon\Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ChapterSelect.cpp">
-      <Filter>02.GameObject\05.UI\11.ChapterSelect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

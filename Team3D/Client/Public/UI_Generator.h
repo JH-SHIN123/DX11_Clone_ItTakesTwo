@@ -41,7 +41,7 @@ public:
 	HRESULT NativeConstruct(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
 
 public:
-	HRESULT Load_Data(const _tchar* pFilePath, Level::ID eLevel, _uint iOption = 0);
+	HRESULT Load_Data(const _tchar* pFilePath, Level::ID eLevel);
 	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	HRESULT Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	HRESULT Render_Font(_tchar* pText, FONTDESC tFontDesc, Player::ID ePlayer, _bool IsAlpha = false);
@@ -57,14 +57,9 @@ public:
 	void Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger);
 
 public:
-	HRESULT Add_Prototype_LogoTexture();
-
-public:
-	HRESULT Create_Logo();
-	HRESULT Create_ChapterSelect();
-
-public:
 	void UI_RETutorial(Player::ID ePlayer, UI::TRIGGER eTrigger);
+	HRESULT Add_Prototype_LogoTexture();
+	HRESULT Create_Logo();
 
 private:
 	_bool							m_IsTrigger = true;
@@ -91,7 +86,6 @@ private:
 	HRESULT Add_Prototype_Interactive_UI(CUIObject::UI_DESC* UIDesc);
 	HRESULT Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc);
 	HRESULT Add_Prototype_Menu(CUIObject::UI_DESC* UIDesc);
-	HRESULT Add_Prototype_Chapter(CUIObject::UI_DESC* UIDesc);
 
 private:
 	HRESULT Add_Prototype_Texture();

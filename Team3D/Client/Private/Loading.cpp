@@ -125,7 +125,6 @@ HRESULT CLoading::LoadingForLogo(_uint iThreadIndex)
 	{
 		UI_Generator->Add_Prototype_LogoTexture();
 		FAILED_CHECK_RETURN(UI_Generator->Load_Data(TEXT("../Bin/Resources/Data/UIData/Menu.dat"), Level::LEVEL_LOGO), E_FAIL);
-		FAILED_CHECK_RETURN(UI_Generator->Load_Data(TEXT("../Bin/Resources/Data/UIData/ChapterSelect.dat"), Level::LEVEL_LOGO, 1), E_FAIL);
 	}
 
 	return S_OK;
