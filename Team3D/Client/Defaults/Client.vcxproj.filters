@@ -289,6 +289,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
       <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\08.HookUFO">
+      <UniqueIdentifier>{7f50933c-0671-40a9-ab76-5da48106a69e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -519,6 +522,12 @@
     <ClInclude Include="..\Public\Effect_GravityPipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_RespawnTunnel_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HookUFO.h">
+      <Filter>02.GameObject\98.Interactive_Objects\08.HookUFO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -721,6 +730,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_RespawnTunnel_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HookUFO.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\08.HookUFO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

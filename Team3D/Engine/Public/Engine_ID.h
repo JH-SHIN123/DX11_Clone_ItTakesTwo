@@ -27,6 +27,7 @@ namespace Engine
 			eNOBATTERYSIGN,
 			eSPACEVALVE,
 			eGRAVITYPIPE,
+			eHOOKUFO,
 			eENVIRONMENT
 		};
 	};

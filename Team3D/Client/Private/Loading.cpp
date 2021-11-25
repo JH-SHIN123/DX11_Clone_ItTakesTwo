@@ -29,6 +29,7 @@
 #include "NoBatterySign.h"
 #include "SpaceValve.h"
 #include "BigPlanet.h"
+#include "HookUFO.h"
 
 /* Test */
 #include "TestObject01.h"
@@ -156,7 +157,9 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		/* For. Characters */
 		LoadingForCharacters();
 
-		///* For. Map Resources */
+		LoadingForInteractive_Objects();
+
+		/////* For. Map Resources */
 		//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Instancing_TXT(), E_FAIL);
 		//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_GameObject_Prototype(), E_FAIL);
 		//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others01.txt")), E_FAIL);
@@ -184,7 +187,6 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others14.txt")), E_FAIL);
 	//	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others15.txt")), E_FAIL);
 	//	/* For. Interactive_Objects */
-	//	LoadingForInteractive_Objects();
 	//}
 
 	return S_OK;
@@ -281,8 +283,10 @@ HRESULT CLoading::LoadingForInteractive_Objects()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_BigPlanet"), CBigPlanet::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.f));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Hook_UFO"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Hook_UFO"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_HookUFO"), CHookUFO::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
-	//
 	////Test
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_TestObject01"), CTestObject01::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 

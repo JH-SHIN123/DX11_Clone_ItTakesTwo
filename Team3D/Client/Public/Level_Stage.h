@@ -41,6 +41,7 @@ private:
 	HRESULT Ready_Layer_BigButton(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_NoBatterySign(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_SpaceValve(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Hook_UFO(const _tchar* pLayerTag);
 
 	HRESULT Ready_Layer_BigPlanet(const _tchar* pLayerTag);
 

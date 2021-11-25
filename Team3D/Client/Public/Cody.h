@@ -351,6 +351,20 @@ private:
 	/* For.Planet */
 	_bool m_IsHitPlanet = false;
 
+	/* For.HookUFO */
+	_bool m_IsHookUFO = false;
+	_vector m_vHookUFOAxis = {};
+	_bool m_bGoToHooker = false;
+
+	_float m_faArmLength = 5.f;
+	_float m_faVelocity = 0.f;
+	_float m_faAcceleration = 0.f;
+	_float m_fRopeAngle = 45.f;
+
+	// Arbitrary damping
+	_float m_faDamping = 0.995f;
+	// Arbitrary ball radius
+
 
 
 	_float3 m_vPoints[4] = {};
@@ -364,6 +378,7 @@ private:
 	void Rotate_Valve(const _double dTimeDelta);
 	void In_GravityPipe(const _double dTimeDelta);
 	void Hit_Planet(const _double dTimeDelta);
+	void Hook_UFO(const _double dTimeDelta);
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);

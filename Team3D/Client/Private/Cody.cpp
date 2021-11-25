@@ -159,6 +159,7 @@ _int CCody::Tick(_double dTimeDelta)
 		Rotate_Valve(dTimeDelta);
 		In_GravityPipe(dTimeDelta);
 		Hit_Planet(dTimeDelta);
+		Hook_UFO(dTimeDelta);
 	}
 	else
 	{
@@ -1318,7 +1319,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			}
 			m_IsInGravityPipe = true;
 		}
-		if (m_eTargetGameID == GameID::ePLANET && m_pGameInstance->Key_Down(DIK_E))
+		else if (m_eTargetGameID == GameID::ePLANET && m_pGameInstance->Key_Down(DIK_E))
 		{
 			if (m_eCurPlayerSize == SIZE_SMALL)
 			{
@@ -1337,11 +1338,31 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 				m_IsHitPlanet = true;
 			}
 		}
+		else if (m_eTargetGameID == GameID::eHOOKUFO && m_pGameInstance->Key_Down(DIK_E) && m_IsHookUFO == false)
+		{
+			// 최초 1회 OffSet 조정
+			if (m_IsHookUFO == false)
+			{
+				m_vTriggerTargetPos.y = m_vTriggerTargetPos.y - 5.f;
+				_vector vPlayerPos = XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f);
+				_vector vTriggerPos = XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f);
+				_vector vPlayerToTrigger = XMVector3Normalize(vTriggerPos - vPlayerPos);
+				_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+				_vector vRight = XMVector3Cross(vPlayerToTrigger, vUp);
+				m_vHookUFOAxis = vRight;
+				//m_pTransformCom->Rotate_ToTarget(XMLoadFloat3(&m_vTriggerTargetPos));
+			}
+
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Swinging_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Swinging_Fwd);
+			m_IsHookUFO = true;
+			m_bGoToHooker = true;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet)
+		|| m_IsHitPlanet || m_IsHookUFO)
 		return true;
 
 	return false;
@@ -1617,6 +1638,95 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_IsHitPlanet = false;
+			m_IsCollide = false;
+		}
+	}
+}
+
+void CCody::Hook_UFO(const _double dTimeDelta)
+{
+	if (m_IsHookUFO == true)
+	{
+		if (m_bGoToHooker == true)
+		{
+			_vector vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			_vector vTargetPos = XMLoadFloat3(&m_vTriggerTargetPos);
+
+			_vector vDir = vTargetPos - vPlayerPos;
+			_float  fDist = XMVectorGetX(XMVector3Length(vDir));
+			m_pActorCom->Move(XMVector3Normalize(vDir) * fDist / 20.f, dTimeDelta);
+			_float  fEpsilon = 5.2f;
+
+			if (fDist <= m_vTriggerTargetPos.y + fEpsilon)
+			{
+				m_bGoToHooker = false;
+			}
+
+			_vector vFixUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+			_vector vTriggerToPlayer = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat3(&m_vTriggerTargetPos));
+			m_fRopeAngle = XMVectorGetX(XMVector3AngleBetweenNormals(vFixUp, vTriggerToPlayer));
+			m_faArmLength = fDist;
+		}
+		else
+		{
+			//TEST
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			_float Gravity = -0.4f;
+			m_faAcceleration = (-1.f * Gravity / m_faArmLength) * sin(m_fRopeAngle);
+			m_faVelocity += m_faAcceleration;
+			m_faVelocity *= m_faDamping;
+			m_fRopeAngle += m_faVelocity / 15.f;
+			
+
+			_vector vPosition = XMVectorSet(0.f, m_faArmLength * cos(m_fRopeAngle), m_faArmLength * sin(m_fRopeAngle), 1.f) + XMVectorSetW(XMLoadFloat3(&m_vTriggerTargetPos), 1.f);
+			m_pActorCom->Set_Position(vPosition);
+
+			_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION),0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
+			m_pTransformCom->RotateYawDirectionOnLand(vTriggerToPlayer, dTimeDelta);
+
+			
+
+			if (m_pGameInstance->Key_Pressing(DIK_W))
+			{
+				vPosition.m128_f32[2] += 3.f * dTimeDelta;
+			}
+			if (m_pGameInstance->Key_Pressing(DIK_A))
+			{
+				vPosition.m128_f32[0] += 3.f * dTimeDelta;
+			}
+			if (m_pGameInstance->Key_Pressing(DIK_S))
+			{
+				vPosition.m128_f32[2] += -3.f * dTimeDelta;
+			}
+			if (m_pGameInstance->Key_Pressing(DIK_D))
+			{
+				vPosition.m128_f32[0] += 3.f * dTimeDelta;
+			}
+
+			/*_matrix matWorld, matRotX, matTrans, matRot, matParent = XMMatrixIdentity();
+
+			matTrans = XMMatrixTranslation(0.f, 6.f, 0.f);
+			matRot = XMMatrixRotationAxis(m_vHookUFOAxis, m_fRotate);
+			matParent = XMMatrixTranslation(m_vTriggerTargetPos.x, m_vTriggerTargetPos.y, m_vTriggerTargetPos.z);
+			matWorld = matTrans * matRot * matParent;
+
+			m_pTransformCom->Set_WorldMatrix(matWorld);
+			_vector vPosition = { matWorld.r[3].m128_f32[0], matWorld.r[3].m128_f32[1], matWorld.r[3].m128_f32[2], 1.f };*/
+
+			//m_pActorCom->Set_Position(vPosition);
+		}
+		if (m_pGameInstance->Key_Down(DIK_Q)) // 로프 놓기
+		{
+			m_bGoToHooker = false;
+			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Swinging_ExitFwd);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Land);
+			m_pActorCom->Set_IsFalling(true);
+			m_pActorCom->Jump_Start(1.5f);
+			m_pActorCom->Set_Jump(true);
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_pActorCom->Set_Gravity(-9.8f);
+			m_IsHookUFO = false;
 			m_IsCollide = false;
 		}
 	}

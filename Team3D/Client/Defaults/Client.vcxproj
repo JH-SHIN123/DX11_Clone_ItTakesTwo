@@ -209,6 +209,7 @@
     <ClInclude Include="..\public\Effect_Player_Revive.h" />
     <ClInclude Include="..\public\Effect_Wormhole.h" />
     <ClInclude Include="..\public\Effect_FireDoor.h" />
+    <ClInclude Include="..\Public\HookUFO.h" />
     <ClInclude Include="..\Public\InGameEffect.h" />
     <ClInclude Include="..\public\InGameEffect_Model.h" />
     <ClInclude Include="..\Public\InGameEffect_Rect.h" />
@@ -274,6 +275,7 @@
     <ClCompile Include="..\private\Effect_Player_Revive.cpp" />
     <ClCompile Include="..\private\Effect_Wormhole.cpp" />
     <ClCompile Include="..\private\Effect_FireDoor.cpp" />
+    <ClCompile Include="..\Private\HookUFO.cpp" />
     <ClCompile Include="..\Private\InGameEffect.cpp" />
     <ClCompile Include="..\private\InGameEffect_Model.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Rect.cpp" />
