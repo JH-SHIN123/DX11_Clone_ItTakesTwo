@@ -242,6 +242,14 @@ private:
 	_bool m_bRoll = false;
 	_bool m_IsTurnAround = false;
 	_int m_iSavedKeyPress = 0;
+	
+	_int	m_iFrameCount = 0;
+	_long	m_i10FrameChangedX = 0;
+	_long	m_i10FrameChangedY = 0;
+	_long	m_iPrePadX = 0;
+	_long	m_iPrePadY = 0;
+	_bool	m_bPadKeyChangedX = false;
+	_bool	m_bPadKeyChangedY= false;
 
 	_float3 m_vMoveDirection = {};
 	_bool	m_bMove = false;
@@ -295,6 +303,7 @@ private:
 
 	// Sprint
 	_float m_fSprintAcceleration = 35.f;
+
 
 #pragma region Trigger
 public:

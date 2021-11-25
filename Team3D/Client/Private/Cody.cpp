@@ -322,7 +322,7 @@ void CCody::KeyInput(_double dTimeDelta)
 			{
 				if (m_pGameInstance->Key_Pressing(DIK_A) && m_iSavedKeyPress == RIGHT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 				{
-					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted) /*|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash*/) && m_IsTurnAround == false)
+					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted)*/ /*|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash*/) && m_IsTurnAround == false)
 					{
 						m_fSprintAcceleration = 15.f;
 						bMove[1] = !bMove[1];
@@ -334,7 +334,7 @@ void CCody::KeyInput(_double dTimeDelta)
 				}
 				if (m_pGameInstance->Key_Pressing(DIK_D) && m_iSavedKeyPress == LEFT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 				{
-					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted) /*|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash*/) && m_IsTurnAround == false)
+					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted)*/ /*|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash*/) && m_IsTurnAround == false)
 					{
 						m_fSprintAcceleration = 15.f;
 						bMove[1] = !bMove[1];
@@ -346,7 +346,7 @@ void CCody::KeyInput(_double dTimeDelta)
 				}
 				if (m_pGameInstance->Key_Pressing(DIK_W) && m_iSavedKeyPress == DOWN)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 				{
-					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted) /*|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash*/) && m_IsTurnAround == false)
+					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted)*/ /*|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash*/) && m_IsTurnAround == false)
 					{
 						m_fSprintAcceleration = 15.f;
 						bMove[0] = !bMove[0];
@@ -358,7 +358,7 @@ void CCody::KeyInput(_double dTimeDelta)
 				}
 				if (m_pGameInstance->Key_Pressing(DIK_S) && m_iSavedKeyPress == UP)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 				{
-					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted) || m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash) && m_IsTurnAround == false)
+					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted)*/ || m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash) && m_IsTurnAround == false)
 					{
 						m_fSprintAcceleration = 15.f;
 						bMove[0] = !bMove[0];
