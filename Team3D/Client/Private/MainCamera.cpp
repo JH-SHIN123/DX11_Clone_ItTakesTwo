@@ -298,8 +298,8 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 		else if (m_fMouseRev[Rev_Prependicul] < -90.f)
 			m_fMouseRev[Rev_Prependicul] = -90.f;
 	}
-	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * dTimeDelta * 10.f;
-	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * dTimeDelta * 10.f;
+	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * dTimeDelta * 14.f;
+	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * dTimeDelta * 14.f;
 
 
 	//카메라 회전에 따른 거리체크
@@ -334,7 +334,7 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vPrePlayerPos = XMVectorSetW(XMLoadFloat3(&m_vPlayerPos),1.f);
 	_vector vCurPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 	//카메라와 플레이어의 실제 거리
-	_vector vPlayerPos = XMVectorLerp(vPrePlayerPos, vCurPlayerPos, XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta);
+	_vector vPlayerPos = XMVectorLerp(vPrePlayerPos, vCurPlayerPos, XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 2.f);
 		XMStoreFloat3(&m_vPlayerPos, vPlayerPos);
 	
 	//회전 보간
@@ -657,7 +657,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 //		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 //	}
 //#endif
-	ChangeViewPort();
+	//ChangeViewPort();
 	m_fChangeCamModeTime <= 1.f ? m_eCurCamMode = CamMode::Cam_AutoToFree : m_eCurCamMode = CamMode::Cam_Free;
 
 	_int iResult = NO_EVENT;
