@@ -467,9 +467,9 @@ PS_OUT  PS_MAIN(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	Out.vColor = 1;
-	if (0.01f >= Out.vColor.a)
-		discard;
+	Out.vColor.a *= 2;
+	//if (0.01f >= Out.vColor.a)
+	//	discard;
 
 	return Out;
 }
@@ -489,6 +489,19 @@ PS_OUT  PS_MAIN_COLOR(PS_IN In)
 
 	if (0.01f >= Out.vColor.a)
 		discard;
+
+	return Out;
+}
+
+PS_OUT  PS_MAIN_ALPHATIME(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	Out.vColor.a *= g_fTime;
+	//if (0.01f >= Out.vColor.a)
+	//	discard;
 
 	return Out;
 }
@@ -653,6 +666,17 @@ technique11		DefaultTechnique
 		GeometryShader = compile gs_5_0  GS_MAIN_DOUBLE_TEX();
 		PixelShader = compile ps_5_0  PS_MAIN_DIFF_SPRITE();
 	}
+
+	pass Default_ALPHATIME // 7
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_MAIN_ALPHATIME();
+	}
+	//
 };
 
 /*

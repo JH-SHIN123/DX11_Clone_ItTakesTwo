@@ -78,9 +78,10 @@ HRESULT CEffect_Player_Dead_Particle_Fire::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	m_pPointInstanceCom->Render(4, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
 
-
-	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Point_Smoke->Get_ShaderResourceView(0));
-	m_pPointInstanceCom->Render(0, m_pPointBuffer_Smoke, 1);
+	//
+// 	m_pPointInstanceCom->Set_Variable("g_fTime", &m_fSmokeAlphaTime, sizeof(_float));
+// 	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Point_Smoke->Get_ShaderResourceView(0));
+// 	m_pPointInstanceCom->Render(7, m_pPointBuffer_Smoke, 1);
 
 	m_pPointInstanceCom->Set_Variable("g_fTime", &m_fPointInstance_Small_Alpha, sizeof(_float));
 	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Point_Diff->Get_ShaderResourceView(0));
@@ -169,28 +170,28 @@ HRESULT CEffect_Player_Dead_Particle_Fire::Ready_Instance()
 	return S_OK;
 }
 
-HRESULT CEffect_Player_Dead_Particle_Fire::Ready_Point()
-{
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Explosion7x7"), TEXT("Com_Texture_Smoke"), (CComponent**)&m_pTexturesCom_Point_Smoke), E_FAIL);
-
-	_float fSizeX = m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
-	_float fSizeY = m_pTransformCom->Get_Scale(CTransform::STATE_UP);
-
-	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	_float4 vWorldPos;
-	XMStoreFloat4(&vWorldPos, WorldMatrix.r[3]);
-	vWorldPos.y += fSizeY;
-
-	m_pPointBuffer_Smoke				= new VTXMATRIX_CUSTOM_ST[1];
-	m_pPointBuffer_Smoke[0].vRight		= { 1.f, 0.f, 0.f, 0.f };
-	m_pPointBuffer_Smoke[0].vUp			= { 0.f, 1.f, 0.f, 0.f };
-	m_pPointBuffer_Smoke[0].vLook		= { 0.f, 0.f, 1.f, 0.f };
-	m_pPointBuffer_Smoke[0].vPosition	= vWorldPos;
-	m_pPointBuffer_Smoke[0].vSize		= { fSizeX, fSizeY };
-	m_pPointBuffer_Smoke[0].vTextureUV	= Get_TexUV(7, 7, true);
-
-	return S_OK;
-}
+// HRESULT CEffect_Player_Dead_Particle_Fire::Ready_Point()
+// {
+// 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Explosion7x7"), TEXT("Com_Texture_Smoke"), (CComponent**)&m_pTexturesCom_Point_Smoke), E_FAIL);
+// 
+// 	_float fSizeX = m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
+// 	_float fSizeY = m_pTransformCom->Get_Scale(CTransform::STATE_UP);
+// 
+// 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+// 	_float4 vWorldPos;
+// 	XMStoreFloat4(&vWorldPos, WorldMatrix.r[3]);
+// 	vWorldPos.y += fSizeY;
+// 
+// 	m_pPointBuffer_Smoke				= new VTXMATRIX_CUSTOM_ST[1];
+// 	m_pPointBuffer_Smoke[0].vRight		= { 1.f, 0.f, 0.f, 0.f };
+// 	m_pPointBuffer_Smoke[0].vUp			= { 0.f, 1.f, 0.f, 0.f };
+// 	m_pPointBuffer_Smoke[0].vLook		= { 0.f, 0.f, 1.f, 0.f };
+// 	m_pPointBuffer_Smoke[0].vPosition	= vWorldPos;
+// 	m_pPointBuffer_Smoke[0].vSize		= { fSizeX, fSizeY };
+// 	m_pPointBuffer_Smoke[0].vTextureUV	= Get_TexUV(7, 7, true);
+// 
+// 	return S_OK;
+// }
 
 HRESULT CEffect_Player_Dead_Particle_Fire::Ready_Point_Small()
 {
@@ -325,15 +326,17 @@ _float3 CEffect_Player_Dead_Particle_Fire::Get_Dir_Random(_int3 vDirPower, _fmat
 
 void CEffect_Player_Dead_Particle_Fire::Update_Point(_double TimeDelta)
 {
-	m_pPointBuffer_Smoke[0].vSize.x += (_float)TimeDelta * 0.25f;
-	m_pPointBuffer_Smoke[0].vSize.y += (_float)TimeDelta * 0.25f;
-
-	m_fUVCheckTime -= (_float)TimeDelta;
-	if (0 <= m_fUVCheckTime)
-		return;
-
-	m_fUVCheckTime = m_fUVCheckTime_Max;
-	m_pPointBuffer_Smoke[0].vTextureUV = Check_UV(7, 7, &m_iPointInstance_Texture_U, &m_iPointInstance_Texture_V, false);
+// 	m_pPointBuffer_Smoke[0].vSize.x += (_float)TimeDelta * 0.25f;
+// 	m_pPointBuffer_Smoke[0].vSize.y += (_float)TimeDelta * 0.25f;
+// 
+// 	m_fSmokeAlphaTime -= (_float)TimeDelta * 0.333f;
+// 
+// 	m_fUVCheckTime -= (_float)TimeDelta;
+// 	if (0 <= m_fUVCheckTime)
+// 		return;
+// 
+// 	m_fUVCheckTime = 0.02f;
+// 	m_pPointBuffer_Smoke[0].vTextureUV = Check_UV(7, 7, &m_iPointInstance_Texture_U, &m_iPointInstance_Texture_V, true);
 }
 
 void CEffect_Player_Dead_Particle_Fire::Update_Point_Small(_double TimeDelta)
@@ -387,16 +390,16 @@ CGameObject * CEffect_Player_Dead_Particle_Fire::Clone_GameObject(void * pArg)
 
 void CEffect_Player_Dead_Particle_Fire::Free()
 {
-	Safe_Release(m_pTexturesCom_Point_Smoke);
 	Safe_Release(m_pTexturesCom_Point_Diff);
 	Safe_Release(m_pTexturesCom_Point_Sprite);
 
 
 	Safe_Delete_Array(m_pInstance_LocalPos);
-	Safe_Delete_Array(m_pPointBuffer_Smoke);
 	Safe_Delete_Array(m_pPointBuffer_Smoke_Small);
 	Safe_Delete_Array(m_vPointBuffer_Small_Dir);
 
+// 	Safe_Release(m_pTexturesCom_Point_Smoke);
+// 	Safe_Delete_Array(m_pPointBuffer_Smoke);
 
 	__super::Free();
 }
