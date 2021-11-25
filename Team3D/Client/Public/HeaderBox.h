@@ -24,9 +24,6 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
-public:
-	_float2 Get_Position() { return m_UIDesc.vPos; }
-	_float2 Get_Scale() { return m_UIDesc.vScale; }
 
 public:
 	virtual void Set_ScaleEffect() override;

@@ -740,7 +740,6 @@ HRESULT CUI_Generator::Add_Prototype_LogoTexture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("SplashScreen_Mask"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Logo/SplashScreen_Masks.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("SplashBackScreen"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Logo/SplashBackScreen.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_LOGO, TEXT("SplashScreen"), CSplashScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("ButtonArrow"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/ButtonArrow.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("ChapterSelect"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/ChapterSelect%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("ControllerIcon"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/ControllerIcon%d.png"), 2)), E_FAIL);
@@ -843,6 +842,7 @@ HRESULT CUI_Generator::Create_ChapterSelect()
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ControllerIcon_Pad"), Level::LEVEL_LOGO);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("InputButton_Frame_Right"), Level::LEVEL_STATIC);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("PC_Enter"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("PC_Enter_Right"), Level::LEVEL_LOGO);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("InputButton_Frame_Left"), Level::LEVEL_STATIC);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("InputButton_Right_TriAngle"), Level::LEVEL_STATIC);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("InputButton_Left_TriAngle"), Level::LEVEL_STATIC);
