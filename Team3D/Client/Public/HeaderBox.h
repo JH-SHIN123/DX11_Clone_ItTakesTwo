@@ -25,13 +25,19 @@ public:
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
 public:
+	_float2 Get_Position() { return m_UIDesc.vPos; }
+	_float2 Get_Scale() { return m_UIDesc.vScale; }
+
+public:
 	virtual void Set_ScaleEffect() override;
 	void Set_NextSelect();
 	void Set_PreviousSelect();
 
+
 private:
 	_bool							m_IsRender = false;
 	_float2							m_vFontPos;
+	_bool							m_IsMousePicking = false;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;

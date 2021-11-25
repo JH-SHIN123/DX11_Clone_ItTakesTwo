@@ -57,7 +57,6 @@ _int CMenuScreen::Late_Tick(_double TimeDelta)
 
 	Input_SelectButton();
 
-
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 

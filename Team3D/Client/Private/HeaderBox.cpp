@@ -63,7 +63,7 @@ _int CHeaderBox::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 
-	Mouse_Picking();
+	//Mouse_Picking();
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
@@ -193,13 +193,19 @@ void CHeaderBox::Mouse_Picking()
 
 	if (PtInRect(&rc, pt))
 	{
-		//m_vFontPos.x = m_UIDesc.vPos.x - 100.f;
-		//m_vFontPos.y = m_UIDesc.vPos.y;
+		m_vFontPos.x = m_UIDesc.vPos.x - 100.f;
+		m_vFontPos.y = m_UIDesc.vPos.y;
+		m_IsRender = true;
+
+		m_IsMousePicking = true;
 	}
 	else
 	{
-		//m_vFontPos.x = m_UIDesc.vPos.x - 150.f;
-		//m_vFontPos.y = m_UIDesc.vPos.y;
+		m_vFontPos.x = m_UIDesc.vPos.x - 150.f;
+		m_vFontPos.y = m_UIDesc.vPos.y;
+		m_IsRender = false;
+
+		m_IsMousePicking = false;
 	}
 }
 
