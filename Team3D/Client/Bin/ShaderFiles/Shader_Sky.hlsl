@@ -1,9 +1,5 @@
 #include "Shader_Include.hpp"
 ////////////////////////////////////////////////////////////
-#define MAX_VERTICES NUM_VERTICES * MAX_CASCADES * NUM_VIEWPORTS
-#define NUM_VERTICES 3
-#define NUM_VIEWPORTS 2
-
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
 texture2D	g_SpecularTexture;
@@ -11,11 +7,6 @@ texture2D	g_EmissiveTexture;
 //texture2D	g_AmbientTexture;
 //texture2D	g_OpacityTexture;
 //texture2D	g_LightTexture;
-
-cbuffer BoneMatrixDesc
-{
-	BONEMATRICES	g_BoneMatrices;
-};
 
 cbuffer ViewportInfo
 {
@@ -106,17 +97,37 @@ PS_OUT	PS_MAIN(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-
-	Out.vColor = vMtrlDiffuse * 5.f;
+	Out.vColor = vMtrlDiffuse;
 
 	return Out;
 }
 
+PS_OUT	PS_CLOUD_NEAR(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vMtrlDiffuse = vector(1.f, 0.f, 0.f, 1.f);
+	vMtrlDiffuse.a = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).r;
+	Out.vColor = vMtrlDiffuse;
+
+	return Out;
+}
+
+PS_OUT	PS_CLOUD_FAR(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vMtrlDiffuse = vector(0.f, 0.f, 1.f, 1.f);
+	vMtrlDiffuse.a = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).g;
+	Out.vColor = vMtrlDiffuse;
+
+	return Out;
+}
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
 {
-	pass Default_Skinned
+	pass BackGround
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_Default, 0);
@@ -124,5 +135,25 @@ technique11 DefaultTechnique
 		VertexShader	= compile vs_5_0 VS_MAIN();
 		GeometryShader	= compile gs_5_0 GS_MAIN();
 		PixelShader		= compile ps_5_0 PS_MAIN();
+	}
+
+	pass Cloud_Near // 1
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_CLOUD_NEAR();
+	}
+
+	pass Cloud_Far // 2
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_CLOUD_FAR();
 	}
 };

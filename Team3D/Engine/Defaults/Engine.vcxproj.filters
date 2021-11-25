@@ -253,6 +253,9 @@
     <Filter Include="02.Utility\06.PostFX">
       <UniqueIdentifier>{3ed05aec-d931-4bdb-bbd2-2b54d2cdf11d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\06.PostFX\Blur">
+      <UniqueIdentifier>{8f45eb1d-d291-4813-8959-c1f5b9b74d60}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\GameInstance.h">
@@ -459,6 +462,9 @@
     <ClInclude Include="..\Public\VIBuffer_Sprite.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Blur.h">
+      <Filter>02.Utility\06.PostFX\Blur</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -631,6 +637,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Sprite.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Blur.cpp">
+      <Filter>02.Utility\06.PostFX\Blur</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

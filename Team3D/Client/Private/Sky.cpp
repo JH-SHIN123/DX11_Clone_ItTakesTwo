@@ -57,9 +57,27 @@ HRESULT CSky::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
 	m_pModelCom->Set_Variable("g_iViewportIndex", &m_iViewportIndex, sizeof(_uint));
-
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Render_Model(0);
+
+	// 0: 전체를 감싸고 있는 구 (알파블랜딩)
+	// 1: 4개짜리 클라우드 껍데기 -> G 채널
+	// 2: 2개짜리 클라우드 껍데기 -> R 채널
+	//m_pModelCom->Sepd_Bind_Buffer();
+
+	_uint iMaterialIndex = 0;
+	//m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	//m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
+	m_pModelCom->Render_Model(0, iMaterialIndex);
+
+	iMaterialIndex = 1;
+	//m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	//m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
+	m_pModelCom->Render_Model(1, iMaterialIndex);
+
+	iMaterialIndex = 2;
+	//m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	//m_pModelCom->Sepd_Render_Model(iMaterialIndex, 2, false, eGroup);
+	m_pModelCom->Render_Model(2, iMaterialIndex);
 
 	return S_OK;
 }

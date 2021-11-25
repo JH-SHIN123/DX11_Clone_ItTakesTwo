@@ -105,36 +105,31 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	float3 vColor = g_HDRTex.Sample(Point_Sampler, In.vTexUV).xyz;
 
-	//// 먼 평면에 없는 픽셀에 대해서만 거리 DOF 계산
-	//vector	vDepthDesc = g_DepthTex.Sample(Point_Sampler, In.vTexUV);
-	//vector	vViewPos = vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
-	//float	vViewZ = 0.f;
+	// 먼 평면에 없는 픽셀에 대해서만 거리 DOF 계산
+	vector	vDepthDesc = g_DepthTex.Sample(Point_Sampler, In.vTexUV);
+	vector	vViewPos = vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
+	float	vViewZ = 0.f;
 
-	//if (vViewPos.z < 1.0)
-	//{
-	//	if (In.vTexUV.x >= g_vMainViewportUVInfo.x && In.vTexUV.x <= g_vMainViewportUVInfo.z &&
-	//		In.vTexUV.y >= g_vMainViewportUVInfo.y && In.vTexUV.y <= g_vMainViewportUVInfo.w)
-	//	{
-	//		// View space Z
-	//		vViewZ = vDepthDesc.x * g_fMainCamFar;
-	//		vViewPos = vViewPos * vViewZ;
-	//		vViewPos = mul(vViewPos, g_MainProjMatrixInverse);
-	//	}
-	//	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
-	//		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
-	//	{
-	//		// View space Z
-	//		vViewZ = vDepthDesc.x * g_fSubCamFar;
-	//		vViewPos = vViewPos * vViewZ;
-	//		vViewPos = mul(vViewPos, g_SubProjMatrixInverse);
-	//	}
-	//	else discard;
+	if (In.vTexUV.x >= g_vMainViewportUVInfo.x && In.vTexUV.x <= g_vMainViewportUVInfo.z &&
+		In.vTexUV.y >= g_vMainViewportUVInfo.y && In.vTexUV.y <= g_vMainViewportUVInfo.w)
+	{
+		// View space Z
+		vViewZ = vDepthDesc.x * g_fMainCamFar;
+		vViewPos = vViewPos * vViewZ;
+		vViewPos = mul(vViewPos, g_MainProjMatrixInverse);
+	}
+	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
+		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
+	{
+		// View space Z
+		vViewZ = vDepthDesc.x * g_fSubCamFar;
+		vViewPos = vViewPos * vViewZ;
+		vViewPos = mul(vViewPos, g_SubProjMatrixInverse);
+	}
+	else discard;
 
-	//	float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-
-	//	// 거리 DOF 색상 계산
-	//	vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z);
-	//}
+	float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
 
 	vColor += g_BloomScale * g_BloomTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV.xy).xyz;
 
