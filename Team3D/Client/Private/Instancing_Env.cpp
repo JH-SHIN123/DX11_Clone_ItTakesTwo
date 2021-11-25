@@ -28,7 +28,7 @@ HRESULT CInstancing_Env::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_Ins_Env_Desc.szModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom, &m_Ins_Env_Desc.Instancing_Arg), E_FAIL);
 
-	Set_MeshRenderGroup();
+	Set_MeshRenderGroup();;
 
 	return S_OK;
 }
