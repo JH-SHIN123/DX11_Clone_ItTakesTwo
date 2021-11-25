@@ -74,6 +74,16 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
 	return S_OK;
 }
 
+HRESULT CStatic_Env::Render_ShadowDepth()
+{
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
+	// Skinned: 2 / Normal: 3
+	m_pModelCom->Render_Model(3, 0, true);
+
+	return S_OK;
+}
+
 CStatic_Env * CStatic_Env::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CStatic_Env* pInstance = new CStatic_Env(pDevice, pDeviceContext);

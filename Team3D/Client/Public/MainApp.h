@@ -30,7 +30,7 @@ private:
 	_double					m_dTimeDelta		= 0.0;
 private:
 	_int	Tick(_double dTimeDelta);
-	HRESULT	Render();
+	HRESULT	Render(_double dTimeDelta);
 	HRESULT Ready_Timer();
 	HRESULT	Ready_Prototype_ForStatic();
 	HRESULT	Ready_DefaultLevel(Level::ID eLevelID);

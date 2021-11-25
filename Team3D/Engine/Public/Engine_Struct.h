@@ -9,8 +9,10 @@ namespace Engine
 		LIGHTTYPE	eType;
 		XMFLOAT3	vDirection;
 		XMFLOAT3	vPosition;
-		float		fRadius;
+		float		fRange;
 		float		fAtt;
+		//float		fAngleOuterCone;
+		//float		fAngleInnerCone;
 		XMFLOAT4	vDiffuse;
 		XMFLOAT4	vAmbient;
 		XMFLOAT4	vSpecular;
@@ -43,6 +45,14 @@ namespace Engine
 		XMFLOAT2	vTexUV;
 	}VTXTEX;
 
+	typedef struct tagVertexTexture_Triple
+	{
+		XMFLOAT3	vPosition;
+		XMFLOAT2	vTexUV;
+		XMFLOAT2	vTexUV_2;
+		XMFLOAT2	vTexUV_3;
+	}VTXTEX_TRIPLE;
+
 	typedef struct tagVertexColor
 	{
 		XMFLOAT3	vPosition;
@@ -55,6 +65,29 @@ namespace Engine
 		XMFLOAT3	vNormal;
 		XMFLOAT2	vTexUV;
 	}VTXNORTEX;
+
+	typedef struct tagVertexMatrix_Custom_SizeTexUV
+	{
+		XMFLOAT4	vRight;
+		XMFLOAT4	vUp;
+		XMFLOAT4	vLook;
+		XMFLOAT4	vPosition;
+
+		XMFLOAT2	vSize;
+		XMFLOAT4	vTextureUV;
+	}VTXMATRIX_CUSTOM_ST;
+
+	typedef struct tagVertexMatrix_Custom_SizeTexUVTime
+	{
+		XMFLOAT4	vRight;
+		XMFLOAT4	vUp;
+		XMFLOAT4	vLook;
+		XMFLOAT4	vPosition;
+
+		XMFLOAT2	vSize;
+		XMFLOAT4	vTextureUV;
+		float		fTime;
+	}VTXMATRIX_CUSTOM_STT;
 
 	typedef struct tagVertexFont
 	{

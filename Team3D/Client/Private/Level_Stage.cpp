@@ -4,6 +4,9 @@
 #include "Environment_Generator.h"
 #include "Camera.h"
 
+#include "InGameEffect.h"
+#include "Effect_Generator.h"
+
 CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
 {
@@ -22,18 +25,18 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Cody(TEXT("Layer_Cody")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_May(TEXT("Layer_May")), E_FAIL);
 
+	FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
+
 	//FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
 
 	/* For.Interactive Objects */
 	//FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_Robot(TEXT("Layer_Robot")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_RobotHead(TEXT("Layer_RobotHead")), E_FAIL);
 
 	/* For.Test */
 	//FAILED_CHECK_RETURN(Ready_Layer_Test(), E_FAIL);
-
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Map", Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
 
 	/* For. Environment */
@@ -55,6 +58,7 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	if (m_pGameInstance->Key_Down(DIK_3))
 		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
 
+	CEffect_Generator::GetInstance()->LoopSpawner(dTimedelta);
 
 	return NO_EVENT;
 }
@@ -74,15 +78,26 @@ HRESULT CLevel_Stage::Ready_Lights()
 
 	LIGHT_DESC			LightDesc;
 
-	/* For.Directional */
+	/* For.Directional : Ambient / Specular Zero */
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
 	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
 	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
+		return E_FAIL;
+
+	/* For. Point */
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = XMFLOAT3(5.f, 5.f, 10.f);
+	LightDesc.vDiffuse = XMFLOAT4(1.f, 0.f, 0.f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.f);
+	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+	LightDesc.fRange = 15.f;
+
+	if (FAILED(pGameInstance->Add_Light(L"Point1", LightDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -99,7 +114,7 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.fFullScreenAspect				= (_float)g_iWinCX / (_float)g_iWinCY;
 	CameraDesc.fAspect							= 1.f;
 	CameraDesc.fNear							= 0.3f;
-	CameraDesc.fFar								= 300.f;
+	CameraDesc.fFar								= 250.f;
 	CameraDesc.TransformDesc.dSpeedPerSec		= 10.f;
 	CameraDesc.TransformDesc.dRotationPerSec	= XMConvertToRadians(90.f);
 
@@ -140,6 +155,40 @@ HRESULT CLevel_Stage::Ready_Layer_Cody(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_May(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_May")), E_FAIL);
+	return S_OK;
+}
+
+HRESULT CLevel_Stage::Test_Layer_Effect(const _tchar * pLayerTag)
+{
+	EFFECT_DESC_CLONE Data;
+
+	_matrix WorldMatrix = XMMatrixIdentity();
+	WorldMatrix.r[3] = { 5.f,2.f,5.f,1.f };
+	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
+
+	//	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
+	//	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Stage::Test_Layer_Object_Effect(const _tchar * pLayerTag)
+{
+	EFFECT_DESC_CLONE Data;
+	_matrix WorldMatrix = XMMatrixIdentity();
+	WorldMatrix.r[3] = { 0.f,2.f,5.f,1.f };
+	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel"), &Data), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
+
+	WorldMatrix.r[3] = { 10.f,2.f,5.f,1.f };
+	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Gravity_Pipe"), &Data), E_FAIL);	
+	
+	WorldMatrix.r[3] = { -5.f,2.f,5.f,1.f };
+	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Wormhole"), &Data), E_FAIL);
+
 	return S_OK;
 }
 

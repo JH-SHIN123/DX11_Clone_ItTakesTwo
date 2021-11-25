@@ -37,6 +37,9 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eRender) override;
 
+public:
+	virtual HRESULT Render_ShadowDepth() override;
+
 private:
 	/* For.Component */
 	CTransform*			m_pTransformCom = nullptr;

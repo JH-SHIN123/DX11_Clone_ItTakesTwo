@@ -19,6 +19,7 @@ private: /* Typedef */
 	typedef unordered_map<const _tchar*, CTimer*> TIMERS;
 private:
 	TIMERS	m_Timers;
+
 private:
 	CTimer*	Find_Timer(const _tchar* pTimerTag);
 
