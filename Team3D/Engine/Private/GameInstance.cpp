@@ -352,6 +352,11 @@ PxTriangleMesh * CGameInstance::Create_PxMesh(MESHACTOR_DESC pMeshActorDesc)
 	NULL_CHECK_RETURN(m_pPhysX, nullptr);
 	return m_pPhysX->Create_Mesh(pMeshActorDesc);
 }
+_bool CGameInstance::Raycast(const PxVec3 & origin, const PxVec3 & unitDir, const PxReal distance, PxRaycastCallback & hitCall, PxHitFlags hitFlags, const PxQueryFilterData & filterData, PxQueryFilterCallback * filterCall, const PxQueryCache * cache)
+{
+	NULL_CHECK_RETURN(m_pPhysX, false);
+	return m_pPhysX->Raycast(origin, unitDir, distance, hitCall, hitFlags, filterData, filterCall, cache);
+}
 #pragma endregion 
 
 #pragma region Pipeline_Manager

@@ -1,11 +1,10 @@
 #include "stdafx.h"
 #include "..\public\MainCamera.h"
 #include "GameInstance.h"
-#include "ControllableActor.h"
 #include "Level.h"
 #include "Cody.h"
 #include "PhysX.h"
-
+#include "CameraActor.h"
 
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
@@ -38,20 +37,19 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 
 	ArgDesc.CapsuleControllerDesc.setToDefault();
 	ArgDesc.CapsuleControllerDesc.height = 0.1f;
-	ArgDesc.CapsuleControllerDesc.radius =m_fCamRadius= 0.4f;
+	ArgDesc.CapsuleControllerDesc.radius = m_fCamRadius = 0.4f;
 	ArgDesc.CapsuleControllerDesc.material = m_pGameInstance->Get_BasePxMaterial();
 	ArgDesc.CapsuleControllerDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
 	ArgDesc.CapsuleControllerDesc.climbingMode = PxCapsuleClimbingMode::eEASY;
 	ArgDesc.CapsuleControllerDesc.contactOffset = 0.01f;
 	ArgDesc.CapsuleControllerDesc.stepOffset = 0.707f;
-	ArgDesc.CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
 	ArgDesc.CapsuleControllerDesc.slopeLimit = 0.f;
+	ArgDesc.CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
 	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
 	m_pActorCom->Set_Scale(m_fCamRadius, 0.f);
-
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
 
@@ -86,7 +84,6 @@ _int CMainCamera::Tick(_double dTimeDelta)
 
 	if (nullptr == m_pCamHelper)
 		return EVENT_ERROR;
-
 
 	//return CCamera::Tick(dTimeDelta);
 	//Check
