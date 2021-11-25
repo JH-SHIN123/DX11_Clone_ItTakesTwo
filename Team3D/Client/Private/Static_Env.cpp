@@ -81,12 +81,12 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
 		iMaterialIndex = 1;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 1, false, tagRenderGroup::RENDER_NONALPHA);
+		m_pModelCom->Render_ModelByPass(iMaterialIndex, 1, false, eRender);
 
 		// 4: Alpha / 5: GlassWall Custom Alpha
 		iMaterialIndex = 0;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 5, false, tagRenderGroup::RENDER_ALPHA);
+		m_pModelCom->Render_ModelByPass(iMaterialIndex, 5, false, eRender);
 	}
 	else if (!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_02"), m_Static_Env_Desc.szModelTag))
 	{
@@ -96,32 +96,34 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 1, false, tagRenderGroup::RENDER_NONALPHA);
+		m_pModelCom->Render_ModelByPass(iMaterialIndex, 1, false, eRender);
 
 		iMaterialIndex = 2;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 1, false, tagRenderGroup::RENDER_NONALPHA);
+		m_pModelCom->Render_ModelByPass(iMaterialIndex, 1, false, eRender);
 
 		iMaterialIndex = 0;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 5, false, tagRenderGroup::RENDER_ALPHA);
+		m_pModelCom->Render_ModelByPass(iMaterialIndex, 5, false, eRender);
 	}
 	else if (!lstrcmp(TEXT("Component_Model_GlassWall_End"), m_Static_Env_Desc.szModelTag))
 	{
+		m_pModelCom->Bind_GBuffers();
+
 		iMaterialIndex = 2;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 1, false, tagRenderGroup::RENDER_NONALPHA);
+		m_pModelCom->Render_ModelByPass(iMaterialIndex, 1, false, eRender);
 
 		iMaterialIndex = 0;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 4, false, tagRenderGroup::RENDER_ALPHA);
+		m_pModelCom->Render_ModelByPass(iMaterialIndex, 4, false, eRender);
 
 		iMaterialIndex = 1;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Render_ModelByPass(iMaterialIndex, 4, false, tagRenderGroup::RENDER_ALPHA);
+		m_pModelCom->Render_ModelByPass(iMaterialIndex, 4, false, eRender);
 	}
 	else
 		m_pModelCom->Render_Model(1);

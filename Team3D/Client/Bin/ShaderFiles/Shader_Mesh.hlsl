@@ -282,7 +282,7 @@ PS_OUT_ALPHA PS_MAIN_ALPHA_MOONBABOON_GLASSWALL(PS_IN In)
 	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vDiffuse = vMtrlDiffuse * g_Material.vDiffuse;
-	Out.vDiffuse.w += 0.2;
+	Out.vDiffuse.w += 0.1;
 
 	return Out;
 }
