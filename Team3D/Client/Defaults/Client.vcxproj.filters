@@ -67,9 +67,6 @@
     <Filter Include="02.GameObject\99.Stage%28Test%29\01.Player">
       <UniqueIdentifier>{b134e824-3c41-4f85-8703-7c00321fcce5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="96.DataBase">
-      <UniqueIdentifier>{9d471ce0-e768-450b-9d91-9b678d9ec778}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle">
       <UniqueIdentifier>{4034cc9d-5a92-4ac0-ac7d-533f2b23bdc9}</UniqueIdentifier>
     </Filter>
