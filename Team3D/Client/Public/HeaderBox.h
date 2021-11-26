@@ -24,12 +24,19 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+public:
+	_bool Get_Render() { return m_IsRender;  }
+	_bool Get_LocalPlayRender();
+	_bool Get_LogoDisappear() { return m_IsLogoDisappear; }
+	_bool Get_Ready() { return m_IsReady; }
 
 public:
 	virtual void Set_ScaleEffect() override;
 	void Set_NextSelect();
 	void Set_PreviousSelect();
 	void Set_LogoDisappear();
+	void Set_Ready(_bool IsCheck);
+	void Set_ColorChange();
 
 
 private:
@@ -37,6 +44,8 @@ private:
 	_float2							m_vFontPos;
 	_bool							m_IsMousePicking = false;
 	_bool							m_IsLogoDisappear = false;
+	_int							m_iShaderOption = 0;
+	_bool							m_IsReady = false;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
@@ -46,6 +55,8 @@ private:
 	HRESULT Ready_Component();
 	void Mouse_Picking();
 	void Set_Option();
+	void Set_ShaderOption();
+
 
 public:
 	static CHeaderBox* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

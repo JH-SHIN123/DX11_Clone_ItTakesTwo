@@ -16,6 +16,7 @@ int		g_iShaderMouseOption;
 int		g_iColorOption;
 int		g_iGSOption;
 int		g_iRespawnOption;
+int		g_iHeaderBoxOption;
 
 float	g_fAlpha;
 float	g_Time;
@@ -348,16 +349,6 @@ PS_OUT PS_AlphaScreen(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_SplashScreenBack(PS_IN In)
-{
-	PS_OUT Out = (PS_OUT)0;
-
-	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-
-	return Out;
-}
-
-
 PS_OUT PS_SplashScreen(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -437,6 +428,30 @@ PS_OUT PS_SplashScreenMask(PS_IN In)
 		//Out.vColor.rgb = 1.f;
 		//Out.vColor.a = 0.7f;
 	}
+	return Out;
+}
+
+PS_OUT PS_HeaderBox(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	switch (g_iHeaderBoxOption)
+	{
+	case 0:
+		break;
+	case 1:
+		Out.vColor.rgb = float3(0.41f, 0.f, 0.f);
+		break;
+	case 2:
+		Out.vColor.rgb = float3(0.99f, 0.878f, 0.815f);
+		break;
+	case 3:
+		Out.vColor.rgb = float3(1.f, 0.83f, 0.25f);
+		break;
+	}
+	
 	return Out;
 }
 
@@ -540,7 +555,7 @@ technique11 DefaultTechnique
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_LOGO();
 		GeometryShader = NULL;
-		PixelShader = compile ps_5_0 PS_SplashScreenBack();
+		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
 	// 9
@@ -585,5 +600,16 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_LOGO();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_AlphaScreen();
+	}
+
+	// 13
+	pass HeaderBox
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_HeaderBox();
 	}
 };

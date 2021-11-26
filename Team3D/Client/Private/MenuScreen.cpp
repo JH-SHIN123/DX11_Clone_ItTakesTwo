@@ -57,6 +57,36 @@ _int CMenuScreen::Late_Tick(_double TimeDelta)
 
 	Input_SelectButton();
 
+	if (false == m_IsChapterScreenRender)
+		Input_ChapterScreenCreate();
+
+	if (m_pGameInstance->Key_Down(DIK_N) && true == m_IsChapterScreenRender)
+		m_IsReady_1P = true;
+	else if (m_pGameInstance->Key_Down(DIK_M) && true == m_IsChapterScreenRender)
+		m_IsReady_2P = true;
+
+	if (true == m_IsReady_1P)
+	{
+		UI_Delete(Default, HeaderBox1P);
+		UI_Create(Default, ControllerIcon_KeyBoard);
+
+		m_IsReady_1P = false;
+
+		CHeaderBox* pHeaderBox = (CHeaderBox*)UI_Generator->Get_UIObject(Player::Default, UI::HeaderBox_1p_Ready);
+		pHeaderBox->Set_ColorChange();
+	}
+	
+	if (true == m_IsReady_2P)
+	{
+		UI_Delete(Default, HeaderBox2P);
+		UI_Create(Default, ControllerIcon_Pad);
+
+		m_IsReady_2P = false;
+
+		CHeaderBox* pHeaderBox = (CHeaderBox*)UI_Generator->Get_UIObject(Player::Default, UI::HeaderBox_2p_Ready);
+		pHeaderBox->Set_ColorChange();
+	}
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
@@ -141,9 +171,32 @@ void CMenuScreen::Input_SelectButton()
 
 		m_IsHeaderBoxChange = false;
 	}
+}
 
-	if (m_pGameInstance->Key_Down(DIK_M))
-		UI_Generator->Create_ChapterSelect();
+void CMenuScreen::Input_ChapterScreenCreate()
+{
+	if (m_pGameInstance->Key_Down(DIK_RETURN))
+	{
+		for (_uint i = 0; i < 6; ++i)
+		{
+			if (true == UI_Generator->Get_HeaderBox(i)->Get_LocalPlayRender() && true == UI_Generator->Get_HeaderBox(i)->Get_LogoDisappear())
+			{
+				m_IsChapterScreenCreate = true;
+				break;
+			}
+		}
+
+		if (true == m_IsChapterScreenCreate)
+		{
+			for (_uint i = 0; i < 6; ++i)
+				UI_Generator->Get_HeaderBox(i)->Set_Dead();
+
+			UI_Generator->Create_ChapterSelect();
+
+			m_IsChapterScreenCreate = false;
+			m_IsChapterScreenRender = true;
+		}
+	}
 }
 
 CMenuScreen * CMenuScreen::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

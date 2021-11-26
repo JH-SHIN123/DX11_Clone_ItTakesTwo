@@ -32,6 +32,12 @@ private:
 	_int							m_iHeaderIndex = 0;
 	_bool							m_IsHeaderBoxChange = false;
 	_bool							m_IsFirst = true;
+	_bool							m_IsChapterScreenCreate = false;
+	_bool							m_IsChapterScreenRender = false;
+	_bool							m_IsReady_1P = false;
+	_bool							m_IsReady_2P = false;
+
+private:
 	class CHeaderBox*				m_pHeaderBox = nullptr;
 
 private:
@@ -41,6 +47,8 @@ private:
 	void Render_Font();
 	HRESULT Ready_Component();
 	void Input_SelectButton();
+	void Input_ChapterScreenCreate();
+
 
 public:
 	static CMenuScreen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

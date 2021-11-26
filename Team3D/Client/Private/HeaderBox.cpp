@@ -86,12 +86,22 @@ HRESULT CHeaderBox::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
+	Set_ShaderOption();
+
 	if(true == m_IsRender)
-		m_pVIBuffer_RectCom->Render(11);
+		m_pVIBuffer_RectCom->Render(13);
 
 	Render_Font();
 
 	return S_OK;
+}
+
+_bool CHeaderBox::Get_LocalPlayRender()
+{
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_LocalPlay")))
+		return m_IsRender;
+
+	return false;
 }
 
 void CHeaderBox::Set_ScaleEffect()
@@ -122,6 +132,16 @@ void CHeaderBox::Set_LogoDisappear()
 	m_IsLogoDisappear = true;
 }
 
+void CHeaderBox::Set_Ready(_bool IsCheck)
+{
+	m_IsReady = IsCheck;
+}
+
+void CHeaderBox::Set_ColorChange()
+{
+	m_IsReady = true;
+	m_iShaderOption = 3;
+}
 
 void CHeaderBox::Render_Font()
 {
@@ -181,7 +201,78 @@ void CHeaderBox::Render_Font()
 
 		UI_Generator->Render_Font(TEXT("종료"), tFontDesc, Player::Default);
 	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("ChapterLocalPlay")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x - 60.f, m_UIDesc.vPos.y };
+		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.fInterval = -10.f;
+		tFontDesc.iShaderPassNum = 1;
 
+		UI_Generator->Render_Font(TEXT("로컬 플레이"), tFontDesc, Player::Default);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_NewGame")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x - 50.f, m_UIDesc.vPos.y };
+		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.fInterval = -10.f;
+		tFontDesc.iShaderPassNum = 1;
+
+		UI_Generator->Render_Font(TEXT("새 게임"), tFontDesc, Player::Default);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Continue")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x - 50.f, m_UIDesc.vPos.y };
+		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.fInterval = -10.f;
+		tFontDesc.iShaderPassNum = 1;
+
+		UI_Generator->Render_Font(TEXT("계속"), tFontDesc, Player::Default);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_ChapterSelect")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x - 50.f, m_UIDesc.vPos.y };
+		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.fInterval = -10.f;
+		tFontDesc.iShaderPassNum = 1;
+
+		UI_Generator->Render_Font(TEXT("챕터 선택"), tFontDesc, Player::Default);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Minigame")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x - 40.f, m_UIDesc.vPos.y };
+		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.fInterval = -10.f;
+		tFontDesc.iShaderPassNum = 1;
+
+		UI_Generator->Render_Font(TEXT("미니 게임"), tFontDesc, Player::Default);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Cancle")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x - 40.f, m_UIDesc.vPos.y };
+		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.fInterval = -10.f;
+		tFontDesc.iShaderPassNum = 1;
+
+		UI_Generator->Render_Font(TEXT("취소"), tFontDesc, Player::Default);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_1p_Ready")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x - 10.f, m_UIDesc.vPos.y + 40.f };
+		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.fInterval = -10.f;
+		tFontDesc.iShaderPassNum = 1;
+
+		UI_Generator->Render_Font(TEXT("참여"), tFontDesc, Player::Default);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_2p_Ready")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x - 10.f, m_UIDesc.vPos.y + 40.f };
+		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.fInterval = -10.f;
+		tFontDesc.iShaderPassNum = 1;
+
+		UI_Generator->Render_Font(TEXT("참여"), tFontDesc, Player::Default);
+	}
 }
 
 HRESULT CHeaderBox::Ready_Component()
@@ -227,6 +318,32 @@ void CHeaderBox::Mouse_Picking()
 
 void CHeaderBox::Set_Option()
 {
+}
+
+void CHeaderBox::Set_ShaderOption()
+{
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("ChapterLocalPlay")))
+		m_iShaderOption = 0;
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_NewGame")))
+		m_iShaderOption = 1;
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Continue")))
+		m_iShaderOption = 1;
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_ChapterSelect")))
+		m_iShaderOption = 1;
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Minigame")))
+		m_iShaderOption = 1;
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Cancle")))
+		m_iShaderOption = 1;
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_1p_Ready")) && false == m_IsReady)
+		m_iShaderOption = 0;
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_2p_Ready")) && false == m_IsReady)
+		m_iShaderOption = 0;
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Banner")))
+		m_iShaderOption = 2;
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Banner_Back")))
+		m_iShaderOption = 2;
+
+	m_pVIBuffer_RectCom->Set_Variable("g_iHeaderBoxOption", &m_iShaderOption, sizeof(_int));
 }
 
 CHeaderBox * CHeaderBox::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

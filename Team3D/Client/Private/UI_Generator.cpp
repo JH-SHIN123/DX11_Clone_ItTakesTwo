@@ -206,10 +206,11 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, &iOption);
 		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC);
 		break;
-	case UI::ControllerIcon:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_E"), Level::LEVEL_STATIC);
-
+	case UI::ControllerIcon_KeyBoard:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("ControllerIcon_KeyBoard"), Level::LEVEL_LOGO);
+		break;
+	case UI::ControllerIcon_Pad:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("ControllerIcon_Pad"), Level::LEVEL_LOGO);
 		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
@@ -836,16 +837,14 @@ HRESULT CUI_Generator::Create_ChapterSelect()
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ChapterSelect_1"), Level::LEVEL_LOGO);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Banner_Back"), Level::LEVEL_LOGO, &iOption);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Cancle"), Level::LEVEL_LOGO, &iOption);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_1p_Ready"), Level::LEVEL_LOGO, &iOption);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_2p_Ready"), Level::LEVEL_LOGO, &iOption);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ControllerIcon_KeyBoard"), Level::LEVEL_LOGO);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ControllerIcon_Pad"), Level::LEVEL_LOGO);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("InputButton_Frame_Right"), Level::LEVEL_STATIC);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("PC_Enter"), Level::LEVEL_LOGO);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("PC_Enter_Right"), Level::LEVEL_LOGO);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("InputButton_Frame_Left"), Level::LEVEL_STATIC);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("InputButton_Right_TriAngle"), Level::LEVEL_STATIC);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("InputButton_Left_TriAngle"), Level::LEVEL_STATIC);
+	SetUp_Clone(Player::Default, UI::HeaderBox_1p_Ready, TEXT("HeaderBox_1p_Ready"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox_2p_Ready, TEXT("HeaderBox_2p_Ready"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox1P, TEXT("PC_Enter_Right"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox1P, TEXT("InputButton_Frame_Left"), Level::LEVEL_STATIC);
+	SetUp_Clone(Player::Default, UI::HeaderBox1P, TEXT("InputButton_Left_TriAngle"), Level::LEVEL_STATIC);
+	SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("InputButton_Right_TriAngle"), Level::LEVEL_STATIC);
+	SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("InputButton_Frame_Right"), Level::LEVEL_STATIC);
+	SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("PC_Enter"), Level::LEVEL_LOGO);
 
 	return S_OK;
 }
