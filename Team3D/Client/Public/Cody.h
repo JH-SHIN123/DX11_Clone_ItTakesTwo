@@ -360,11 +360,8 @@ private:
 	_float m_faVelocity = 0.f;
 	_float m_faAcceleration = 0.f;
 	_float m_fRopeAngle = 0.f;
-
-	//right vec
-	_float m_fRopeAngleRight = 0.f;
-	_float m_fXAcceleration = 0.f;
-	_float m_fXVelocity = 0.f;
+	_float3 m_vStartPosition = {};
+	_float3 m_vDstPosition = {};
 
 
 	// Arbitrary damping

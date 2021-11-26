@@ -1350,13 +1350,30 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 				_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 				_vector vRight = XMVector3Cross(vPlayerToTrigger, vUp);
 				m_vHookUFOAxis = vRight;
+
+
 				//m_pTransformCom->Rotate_ToTarget(XMLoadFloat3(&m_vTriggerTargetPos));
+				_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				_vector vTargetPos = XMLoadFloat3(&m_vTriggerTargetPos);
+
+				_vector vDir = vTargetPos - vTestPos;
+				_float  fDist = XMVectorGetX(XMVector3Length(vDir));
+
+				_vector vFixUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);/*m_vHookUFOAxis*/;
+				_vector vTriggerToPlayer = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat3(&m_vTriggerTargetPos));
+				m_fRopeAngle = XMVectorGetX(XMVector3AngleBetweenNormals(vFixUp, vTriggerToPlayer));
+				m_faArmLength = fDist;
+
+				//_vector vPosition = XMVectorSet(XMVectorGetX(vTestPos), m_faArmLength * cos(m_fRopeAngle), m_faArmLength * sin(m_fRopeAngle), 1.f) + XMVectorSetW(XMLoadFloat3(&m_vTriggerTargetPos), 1.f);
+				XMStoreFloat3(&m_vStartPosition, XMVectorSet(XMVectorGetX(vTestPos), XMVectorGetY(vTestPos), XMVectorGetZ(vTestPos), 1.f)/* + (XMLoadFloat3(&m_vTriggerTargetPos)*/);
+
 			}
 
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Swinging_Enter);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Swinging_Fwd);
 			m_IsHookUFO = true;
 			m_bGoToHooker = true;
+			m_pActorCom->Set_ZeroGravity(true, false, true);
 		}
 	}
 
@@ -1647,95 +1664,39 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 {
 	if (m_IsHookUFO == true)
 	{
-		if (m_bGoToHooker == true)
-		{
-			_vector vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-			_vector vTargetPos = XMLoadFloat3(&m_vTriggerTargetPos);
+		_float Gravity = -0.3f;
 
-			_vector vDir = vTargetPos - vPlayerPos;
-			_float  fDist = XMVectorGetX(XMVector3Length(vDir));
-			_float  fEpsilon = 0.2f;
+		// ZY
+		m_faAcceleration = (-1.f * Gravity / m_faArmLength) * sin(m_fRopeAngle);
+		m_faVelocity += m_faAcceleration;
+		m_faVelocity *= m_faDamping;
+		m_fRopeAngle += m_faVelocity / 15.f;
+		
 
-			if (fDist <= 5.f)
-			{
-				m_bGoToHooker = false;
-				_vector vFixUp = XMVectorSet(0.f, -1.f, 0.f, 0.f);
-				_vector vTriggerToPlayer = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat3(&m_vTriggerTargetPos));
-				m_fRopeAngle = XMVectorGetX(XMVector3AngleBetweenNormals(vFixUp, vTriggerToPlayer));
+		_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x-m_vStartPosition.x )/**2.f*/ * sin(-m_fRopeAngle), 
+			/*m_faArmLength **/(m_vTriggerTargetPos.y + m_vStartPosition.y) *2.f* cos(m_fRopeAngle)
+			, (/*m_faArmLength*/(m_vTriggerTargetPos.z - m_vStartPosition.z)/**2.f*/ * sin(-m_fRopeAngle)), 0.f)/* + XMLoadFloat3(&m_vTriggerTargetPos)*/;
+		m_pActorCom->Set_Position(XMLoadFloat3(&m_vTriggerTargetPos) + vPosition);
 
-				_vector vFixRight = m_vHookUFOAxis;
-				vTriggerToPlayer = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat3(&m_vTriggerTargetPos));
-				m_fRopeAngleRight = XMVectorGetX(XMVector3AngleBetweenNormals(vFixRight, vTriggerToPlayer));
+		_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
+		m_pTransformCom->RotateYawDirectionOnLand(-vTriggerToPlayer, dTimeDelta / 2.f);
 
-				m_faArmLength = fDist;
-			}
-			m_pActorCom->Move(XMVector3Normalize(vDir) * fDist / 25.f, dTimeDelta);
-		}
-		else
-		{
-			//TEST
-			m_pActorCom->Set_ZeroGravity(true, false, true);
-			
-			_float Gravity = -0.3f;
+		
 
-			// ZY
-			m_faAcceleration = (-1.f * Gravity / m_faArmLength) * sin(m_fRopeAngle);
-			m_faVelocity += m_faAcceleration;
-			m_faVelocity *= m_faDamping;
-			m_fRopeAngle += m_faVelocity / 15.f;
-			
-			// X
-			m_fXAcceleration = (-1.f * Gravity / m_faArmLength) * sin(m_fRopeAngleRight);
-			m_fXVelocity += m_fXAcceleration;
-			m_fXVelocity *= m_faDamping / 4.f;
-			m_fRopeAngleRight += m_fXVelocity / 30.f;
+		////////////////////////////////////////
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_faVelocity += m_faAcceleration / 15.f;
+		if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_faVelocity -= m_faAcceleration / 15.f;
 
-
-			_vector vPosition = XMVectorSet(m_faArmLength * sin(m_fRopeAngleRight) , m_faArmLength * cos(m_fRopeAngle), m_faArmLength * sin(m_fRopeAngle), 1.f) + XMVectorSetW(XMLoadFloat3(&m_vTriggerTargetPos), 1.f);
-			
-			m_pActorCom->Set_Position(vPosition);
-
-			_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
-
-			m_pTransformCom->RotateYawDirectionOnLand(vTriggerToPlayer, dTimeDelta / 2.f);
-
-			if (m_pGameInstance->Key_Pressing(DIK_W))
-			{
-				m_faVelocity += m_faAcceleration / 15.f;
-			}
-			if (m_pGameInstance->Key_Pressing(DIK_A))
-			{
-				m_fXVelocity += m_fXAcceleration / 15.f;
-			}
-			if (m_pGameInstance->Key_Pressing(DIK_S))
-			{
-				m_faVelocity -= m_faAcceleration / 15.f;
-			}
-			if (m_pGameInstance->Key_Pressing(DIK_D))
-			{
-				m_fXVelocity -= m_fXAcceleration / 15.f;
-			}
-
-			/*_matrix matWorld, matRotX, matTrans, matRot, matParent = XMMatrixIdentity();
-
-			matTrans = XMMatrixTranslation(0.f, 6.f, 0.f);
-			matRot = XMMatrixRotationAxis(m_vHookUFOAxis, m_fRotate);
-			matParent = XMMatrixTranslation(m_vTriggerTargetPos.x, m_vTriggerTargetPos.y, m_vTriggerTargetPos.z);
-			matWorld = matTrans * matRot * matParent;
-
-			m_pTransformCom->Set_WorldMatrix(matWorld);
-			_vector vPosition = { matWorld.r[3].m128_f32[0], matWorld.r[3].m128_f32[1], matWorld.r[3].m128_f32[2], 1.f };*/
-
-			//m_pActorCom->Set_Position(vPosition);
-		}
-		if (m_pGameInstance->Key_Down(DIK_Q)) // 로프 놓기
+		if (m_pGameInstance->Key_Down(DIK_SPACE)) // 로프 놓기
 		{
 			m_bGoToHooker = false;
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Swinging_ExitFwd);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Land);
 			m_pActorCom->Set_IsFalling(true);
-			m_pActorCom->Jump_Start(1.5f);
+			m_pActorCom->Jump_Start(3.5f);
 			m_pActorCom->Set_Jump(true);
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_pActorCom->Set_Gravity(-9.8f);
