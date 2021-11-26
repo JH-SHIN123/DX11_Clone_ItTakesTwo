@@ -3,12 +3,6 @@
 #include "Client_Defines.h"
 #include "Character.h"
 
-BEGIN(Engine)
-class CRenderer;
-class CTransform;
-class CModel;
-END
-
 BEGIN(Client)
 class CCody final : public CCharacter
 {
