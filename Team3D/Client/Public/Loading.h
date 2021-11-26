@@ -59,6 +59,16 @@ private:
 private:
 	HRESULT LoadingForStage(_uint iThreadIndex); /* 예시, 테스트용 Level */
 
+private:
+	/* 각자 GameObject 프로토타입 생성 함수 */
+	HRESULT Create_GameObjects_SpaceStage_Se();
+	HRESULT Create_GameObjects_SpaceStage_Jung();
+	HRESULT Create_GameObjects_SpaceStage_Hye();
+	HRESULT Create_GameObjects_SpaceStage_Won();
+	HRESULT Create_GameObjects_SpaceStage_Yoon();
+	HRESULT Create_GameObjects_SpaceStage_Jin();
+	HRESULT Create_GameObjects_SpaceStage_Jun();
+
 public:
 	static CLoading* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, Level::ID ePreLevelID, Level::ID eNextLevelID);
 	virtual void Free() override;

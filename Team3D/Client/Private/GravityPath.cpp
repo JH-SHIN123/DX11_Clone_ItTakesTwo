@@ -22,12 +22,9 @@ HRESULT CGravityPath::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
-	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_Static_Env_Desc.szModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-
-	m_pGameInstance->Mouse_Pressing(CInput_Device::DIM_LB);
-	m_pRendererCom;
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_GravityPath_01_Bend_01"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	return S_OK;
 }
@@ -58,6 +55,32 @@ HRESULT CGravityPath::Render_ShadowDepth()
 	CGameObject::Render_ShadowDepth();
 
 	return S_OK;
+}
+
+CGravityPath * CGravityPath::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+{
+	CGravityPath* pInstance = new CGravityPath(pDevice, pDeviceContext);
+
+	if (FAILED(pInstance->NativeConstruct_Prototype()))
+	{
+		MSG_BOX("Failed to Create Instance - CGravityPath");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CGameObject * CGravityPath::Clone_GameObject(void * pArg)
+{
+	CGravityPath* pInstance = new CGravityPath(*this);
+
+	if (FAILED(pInstance->NativeConstruct(pArg)))
+	{
+		MSG_BOX("Failed to Clone Instance - CGravityPath");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
 }
 
 void CGravityPath::Free()

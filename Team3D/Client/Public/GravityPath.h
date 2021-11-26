@@ -27,6 +27,8 @@ private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 
 public:
+	static CGravityPath* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
 

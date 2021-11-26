@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "..\Public\Level_Stage.h"
-#include "GameInstance.h"
 #include "Environment_Generator.h"
-#include "Camera.h"
-
-#include "InGameEffect.h"
 #include "Effect_Generator.h"
+#include "InGameEffect.h"
+#include "Camera.h"
 
 CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -16,11 +14,9 @@ HRESULT CLevel_Stage::NativeConstruct()
 {
 	CLevel::NativeConstruct();
 
-	//로딩시간 체크중
 	FAILED_CHECK_RETURN(Ready_Lights(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Camera(TEXT("Layer_Camera")), E_FAIL);
 
-	//FAILED_CHECK_RETURN(Ready_Layer_Terrain(TEXT("Layer_Terrain")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Sky(TEXT("Layer_Sky")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Cody(TEXT("Layer_Cody")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_May(TEXT("Layer_May")), E_FAIL);
@@ -38,6 +34,9 @@ HRESULT CLevel_Stage::NativeConstruct()
 	/* For.Test */
 	//FAILED_CHECK_RETURN(Ready_Layer_Test(), E_FAIL);
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Map", Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
+
+	/* Se */
+	FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);
 
 	/* For. Environment */
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space(), E_FAIL);
@@ -136,12 +135,6 @@ HRESULT CLevel_Stage::Ready_Layer_Sky(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Stage::Ready_Layer_Terrain(const _tchar * pLayerTag)
-{
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Terrain")), E_FAIL);
-	return S_OK;
-}
-
 HRESULT CLevel_Stage::Ready_Layer_Cody(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Cody")), E_FAIL);
@@ -210,7 +203,6 @@ HRESULT CLevel_Stage::Ready_Layer_StarBuddy(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy")), E_FAIL);
 	return S_OK;
-
 }
 
 HRESULT CLevel_Stage::Ready_Layer_Robot(const _tchar * pLayerTag)
@@ -222,6 +214,12 @@ HRESULT CLevel_Stage::Ready_Layer_Robot(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_RobotHead(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_RobotHead")), E_FAIL);
+	return S_OK;
+}
+
+HRESULT CLevel_Stage::Ready_Layer_GravityPath(const _tchar * pLayerTag)
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_GravityPath")), E_FAIL);
 	return S_OK;
 }
 
