@@ -227,6 +227,7 @@ HRESULT CLevel_Stage::Ready_Layer_StarBuddy(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_Robot(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Robot")), E_FAIL);
+
 	return S_OK;
 }
 
@@ -239,12 +240,14 @@ HRESULT CLevel_Stage::Ready_Layer_RobotHead(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_RobotLever(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_RobotLever")), E_FAIL);
+
 	return S_OK;
 }
 
 HRESULT CLevel_Stage::Ready_Layer_RobotBattery(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_RobotBattery")), E_FAIL);
+
 	return S_OK;
 }
 

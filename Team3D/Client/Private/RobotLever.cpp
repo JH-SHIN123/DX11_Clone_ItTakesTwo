@@ -32,6 +32,7 @@ HRESULT CRobotLever::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_RobotLever"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
+
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(15.f, 1.2f, 18.3f, 1.f));
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(35.f));
 
