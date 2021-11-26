@@ -134,7 +134,6 @@ void CPC_MouseButton::Render_Font()
 	CUI_Generator::FONTDESC		tFontDesc;
 	tFontDesc.vPosition = { m_UIDesc.vPos.x - 7.f , m_UIDesc.vPos.y - 50.f };
 	tFontDesc.vScale = { 25.f, 25.f };
-	tFontDesc.fInterval = -10.f;
 
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("PC_Mouse_Reduction")))
 		UI_Generator->Render_Font(TEXT("√‡º“"), tFontDesc, m_ePlayerID);

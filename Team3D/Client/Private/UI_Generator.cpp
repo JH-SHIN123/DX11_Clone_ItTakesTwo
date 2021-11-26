@@ -293,15 +293,15 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 		else if (32 == iNumChar)
 			continue;
 
-		_float fInterval = ((_float)TextLen * iFontWidth) / (tFontDesc.vScale.x * 2 * TextLen);
+		_float fInterval = ((_float)TextLen * iFontWidth) / (tFontDesc.vScale.x * 2.f * (_float)TextLen);
+
 
 		_float2 vLeftTop = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
 		_float2 vRightBottom = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
 		//_float2 vRightTop = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
 		//_float2 vLeftBottom = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
 
-		_float fPositionX = (tFontDesc.vPosition.x + (_float)i * iFontWidth) / fInterval/* + ((_float)i * tFontDesc.fInterval)*/;
-		//_float fPositionX = tFontDesc.vPosition.x + (_float)i * fInterval;
+		_float fPositionX = (tFontDesc.vPosition.x + (_float)i * iFontWidth) / fInterval + tFontDesc.vPosition.x;
 
 		m_VTXFONT[i].vPosition = _float3(fPositionX, tFontDesc.vPosition.y, 0.f);
 		m_VTXFONT[i].vScale = _float2(tFontDesc.vScale.x, tFontDesc.vScale.y);

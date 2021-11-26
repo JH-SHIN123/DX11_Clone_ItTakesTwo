@@ -122,9 +122,8 @@ _float CSplashScreen::Get_DistanceFromCamera()
 void CSplashScreen::Render_Font()
 {
 	CUI_Generator::FONTDESC tFontDesc;
-	tFontDesc.vPosition = { -100.f, -270.f };
+	tFontDesc.vPosition = { 0.f, -270.f };
 	tFontDesc.vScale = { 10.f, 20.f };
-	tFontDesc.fInterval = 25.f;
 	tFontDesc.iShaderPassNum = 2;
 	tFontDesc.fAlpha = m_fFontAlpha;
 
