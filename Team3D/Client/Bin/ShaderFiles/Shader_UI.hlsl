@@ -348,7 +348,7 @@ PS_OUT PS_AlphaScreen(PS_IN In)
 
 	if (1 == g_iAlphaOption)
 		Out.vColor.a = 0.6f;
-	else if (2 == g_iAlphaOption)
+	else
 		Out.vColor.a = 0.5f;
 
 	return Out;
