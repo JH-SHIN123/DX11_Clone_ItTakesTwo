@@ -7,25 +7,26 @@ BEGIN(Engine)
 class CRenderer;
 class CTransform;
 class CModel;
+class CStaticActor;
 class CTriggerActor;
 END
 
 BEGIN(Client)
 
-class CRocket : public CGameObject
+class CNoBatterySign : public CGameObject
 {
 protected:
-	explicit CRocket(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CRocket(const CRocket& rhs);
-	virtual ~CRocket() = default;
+	explicit CNoBatterySign(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CNoBatterySign(const CNoBatterySign& rhs);
+	virtual ~CNoBatterySign() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-
-	virtual _int	Tick(_double TimeDelta) override;
-	virtual _int	Late_Tick(_double TimeDelta) override;
+	virtual _int	Tick(_double dTimeDelta) override;
+	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
+
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
@@ -34,26 +35,23 @@ public:
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
-
-public:
-	void Launch_Rocket(_double dTimeDelta);
+	void Set_BatteryCharged(_bool _bBatteryCharged) { m_bBatteryCharged = _bBatteryCharged; }
+	void Set_HitLever(_bool _bHitLever) { m_bHitLever = _bHitLever; }
 
 private:
-	_float		m_fUpAcceleration = 0.f;
-	_bool		m_bLaunch = false;
-	_float		m_fLifeTime = 0.f;
-	_bool		m_IsCollide = false;
-
+	_bool		m_bBatteryCharged = false;
+	_bool		m_bHitLever = false;
+	_float		m_fRotateTime = 0.f;
 
 protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
-	CTriggerActor*		m_pTriggerCom = nullptr;
+	CStaticActor*		m_pStaticActorCom = nullptr;
 
 public:
-	static CRocket* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CNoBatterySign* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

@@ -1,50 +1,71 @@
 #include "stdafx.h"
-#include "..\public\StarBuddy.h"
+#include "..\public\HookUFO.h"
 #include "GameInstance.h"
 #include "UI_Generator.h"
 #include "Cody.h"
 #include "May.h"
 
-CStarBuddy::CStarBuddy(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CHookUFO::CHookUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
 }
 
-CStarBuddy::CStarBuddy(const CStarBuddy & rhs)
+CHookUFO::CHookUFO(const CHookUFO & rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CStarBuddy::NativeConstruct_Prototype()
+HRESULT CHookUFO::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
-HRESULT CStarBuddy::NativeConstruct(void * pArg)
+HRESULT CHookUFO::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 	
+
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_StarBuddy"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Hook_UFO"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(35.f, 1.f, 25.f, 1.f));
+	static int i = 0;
+
+	if (i == 0) {
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(25.f , 15.f, 30.f, 1.f));
+		i = 1;
+	}
+	else if (i == 1) {
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(25.f, 15.f, 61.f, 1.f));
+		i = 2;
+	}
+	else if (i == 2) {
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(25.f, 15.f, 92.f, 1.f));
+		i = 3;
+	}
+	else if (i == 3) {
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(25.f, 15.f, 123.f, 1.f));
+		i = 4;
+	}
+	
+
+
 
 	CTriggerActor::ARG_DESC ArgDesc;
 
-	m_UserData = USERDATA(GameID::eSTARBUDDY, this);
+	m_UserData = USERDATA(GameID::eHOOKUFO, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = new PxSphereGeometry(1.5f);
+	ArgDesc.pGeometry = new PxSphereGeometry(15.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
 	return S_OK;
 }
 
-_int CStarBuddy::Tick(_double dTimeDelta)
+_int CHookUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
@@ -57,17 +78,7 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 
 	else if (m_bLaunch == true)
 	{
-		m_fLifeTime += (_float)dTimeDelta;
-		if (m_fLifeTime <= 0.71f)
-		{
-			m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
-			m_pTransformCom->RotatePitch(dTimeDelta * 0.2f);
-		}
-		else if(m_fLifeTime > 0.71f)
-			Launch_StarBuddy(dTimeDelta);
 
-		if (m_fLifeTime > 3.5f)
-			return EVENT_DEAD; // 
 	}
 
 
@@ -75,7 +86,7 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 }
 
 
-_int CStarBuddy::Late_Tick(_double dTimeDelta)
+_int CHookUFO::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
@@ -87,7 +98,7 @@ _int CStarBuddy::Late_Tick(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-HRESULT CStarBuddy::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CHookUFO::Render(RENDER_GROUP::Enum eGroup)
 {
 	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -98,13 +109,13 @@ HRESULT CStarBuddy::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-void CStarBuddy::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+void CHookUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	// Cody
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eSTARBUDDY , true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		UI_Create(Cody, InputButton_InterActive);
 		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
@@ -119,7 +130,7 @@ void CStarBuddy::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eSTARBUDDY, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		UI_Create(May, InputButton_InterActive);
 		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
@@ -131,7 +142,7 @@ void CStarBuddy::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 	}
 }
 
-HRESULT CStarBuddy::InterActive_UI()
+HRESULT CHookUFO::InterActive_UI()
 {
 	CCody* pCody = (CCody*)DATABASE->GetCody();
 	NULL_CHECK_RETURN(pCody, E_FAIL);
@@ -176,7 +187,7 @@ HRESULT CStarBuddy::InterActive_UI()
 	return S_OK;
 }
 
-HRESULT CStarBuddy::Render_ShadowDepth()
+HRESULT CHookUFO::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
@@ -188,43 +199,39 @@ HRESULT CStarBuddy::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CStarBuddy::Launch_StarBuddy(_double dTimeDelta)
+void CHookUFO::Launch_HookUFO(_double dTimeDelta)
 {
-	// 실제로 상호작용 할땐 Player -> StarBuddy Dir 방향으로 이동
-	m_pTransformCom->Move_ToTarget(XMVectorSet(100.f, 10.f, 100.f, 0.f), dTimeDelta * 5.f);
-	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta * 4.f);
-	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * 4.f);
 	
 }
 
 
-CStarBuddy * CStarBuddy::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CHookUFO * CHookUFO::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
-	CStarBuddy* pInstance = new CStarBuddy(pDevice, pDeviceContext);
+	CHookUFO* pInstance = new CHookUFO(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSG_BOX("Failed to Create Instance - CStarBuddy");
+		MSG_BOX("Failed to Create Instance - CHookUFO");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CStarBuddy::Clone_GameObject(void * pArg)
+CGameObject * CHookUFO::Clone_GameObject(void * pArg)
 {
-	CStarBuddy* pInstance = new CStarBuddy(*this);
+	CHookUFO* pInstance = new CHookUFO(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CStarBuddy");
+		MSG_BOX("Failed to Clone Instance - CHookUFO");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CStarBuddy::Free()
+void CHookUFO::Free()
 {
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTransformCom);

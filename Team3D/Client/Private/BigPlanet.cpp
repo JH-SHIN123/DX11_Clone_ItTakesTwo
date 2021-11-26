@@ -1,81 +1,110 @@
 #include "stdafx.h"
-#include "..\public\StarBuddy.h"
+#include "..\public\BigPlanet.h"
 #include "GameInstance.h"
 #include "UI_Generator.h"
 #include "Cody.h"
 #include "May.h"
 
-CStarBuddy::CStarBuddy(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CBigPlanet::CBigPlanet(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
 }
 
-CStarBuddy::CStarBuddy(const CStarBuddy & rhs)
+CBigPlanet::CBigPlanet(const CBigPlanet & rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CStarBuddy::NativeConstruct_Prototype()
+HRESULT CBigPlanet::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
-HRESULT CStarBuddy::NativeConstruct(void * pArg)
+HRESULT CBigPlanet::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
-	
+
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_StarBuddy"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_HangingPlanet"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform2"), (CComponent**)&m_pPhysxTransformCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(35.f, 1.f, 25.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 42.f, 5.f, 1.f));
+
+	_matrix PhysxWorldMatrix = XMMatrixIdentity();
+	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	PhysxWorldMatrix = XMMatrixRotationZ(XMConvertToRadians(90.f)) * XMMatrixTranslation(XMVectorGetX(vTrans), 1.f, XMVectorGetZ(vTrans));
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPos = XMVectorSetY(vPos, 1.f);
+	m_pPhysxTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+	m_pPhysxTransformCom->Set_WorldMatrix(PhysxWorldMatrix);
+
 
 	CTriggerActor::ARG_DESC ArgDesc;
 
-	m_UserData = USERDATA(GameID::eSTARBUDDY, this);
+	m_UserData = USERDATA(GameID::ePLANET, this);
 	ArgDesc.pUserData = &m_UserData;
-	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = new PxSphereGeometry(1.5f);
+	ArgDesc.pTransform = m_pPhysxTransformCom;
+	ArgDesc.pGeometry = new PxSphereGeometry(6.5f);
+
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
+
+	CStaticActor::ARG_DESC Arg;
+	Arg.pModel = m_pModelCom;
+	Arg.pTransform = m_pTransformCom;
+	Arg.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &Arg), E_FAIL);
+
+
 	return S_OK;
 }
 
-_int CStarBuddy::Tick(_double dTimeDelta)
+_int CBigPlanet::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide)
+	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide )
 	{
-		m_bLaunch = true;
-		UI_Delete(May, InputButton_InterActive);
 		UI_Delete(Cody, InputButton_InterActive);
-	}
-
-	else if (m_bLaunch == true)
-	{
-		m_fLifeTime += (_float)dTimeDelta;
-		if (m_fLifeTime <= 0.71f)
+		if (((CCody*)DATABASE->GetCody())->Get_Player_Size() == CCody::SIZE_LARGE)
 		{
-			m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
-			m_pTransformCom->RotatePitch(dTimeDelta * 0.2f);
-		}
-		else if(m_fLifeTime > 0.71f)
-			Launch_StarBuddy(dTimeDelta);
+			m_bLaunch = true;
 
-		if (m_fLifeTime > 3.5f)
-			return EVENT_DEAD; // 
+			_vector vCodyPos = XMVectorSetY((((CCody*)DATABASE->GetCody())->Get_Transform()->Get_State(CTransform::STATE_POSITION)), 0.f);
+			_vector vPlanetPos = XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f);
+
+			_vector vDir = XMVector3Normalize(vCodyPos - vPlanetPos);
+			_vector vUp = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
+
+			_vector vRight = XMVector3Cross(vDir, vUp);
+
+			XMStoreFloat3(&m_vRotateDir, vRight);
+		}
 	}
 
+	if (m_bLaunch == true)
+	{
+		m_fDelay += (_float)dTimeDelta;
+		if (m_fDelay <= 0.71f)
+		{
+
+		}
+		else if (m_fDelay > 0.71f)
+		{
+			Pendulum(dTimeDelta);
+		}
+	}
 
 	return NO_EVENT;
 }
 
 
-_int CStarBuddy::Late_Tick(_double dTimeDelta)
+_int CBigPlanet::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
@@ -87,7 +116,7 @@ _int CStarBuddy::Late_Tick(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-HRESULT CStarBuddy::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CBigPlanet::Render(RENDER_GROUP::Enum eGroup)
 {
 	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -98,13 +127,13 @@ HRESULT CStarBuddy::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-void CStarBuddy::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+void CBigPlanet::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	// Cody
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eSTARBUDDY , true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePLANET, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		UI_Create(Cody, InputButton_InterActive);
 		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
@@ -114,24 +143,9 @@ void CStarBuddy::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		m_IsCollide = false;
 		UI_Delete(Cody, InputButton_InterActive);
 	}
-
-	// May
-
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
-	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eSTARBUDDY, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(May, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
-	}
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-	{
-		m_IsCollide = false;
-		UI_Delete(May, InputButton_InterActive);
-	}
 }
 
-HRESULT CStarBuddy::InterActive_UI()
+HRESULT CBigPlanet::InterActive_UI()
 {
 	CCody* pCody = (CCody*)DATABASE->GetCody();
 	NULL_CHECK_RETURN(pCody, E_FAIL);
@@ -176,7 +190,7 @@ HRESULT CStarBuddy::InterActive_UI()
 	return S_OK;
 }
 
-HRESULT CStarBuddy::Render_ShadowDepth()
+HRESULT CBigPlanet::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
@@ -188,44 +202,60 @@ HRESULT CStarBuddy::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CStarBuddy::Launch_StarBuddy(_double dTimeDelta)
+void CBigPlanet::Pendulum(_double dTimeDelta)
 {
-	// 실제로 상호작용 할땐 Player -> StarBuddy Dir 방향으로 이동
-	m_pTransformCom->Move_ToTarget(XMVectorSet(100.f, 10.f, 100.f, 0.f), dTimeDelta * 5.f);
-	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta * 4.f);
-	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * 4.f);
+	m_fRotateTime += (_float)dTimeDelta;
 	
+
+	if(m_fRotateTime < 1.f)
+		m_pTransformCom->Rotate_Axis(XMLoadFloat3(&m_vRotateDir), (-dTimeDelta) / 5.f);
+	else if (m_fRotateTime >= 1.f && m_fRotateTime < 2.2f)
+	{
+		m_pTransformCom->Rotate_Axis(XMLoadFloat3(&m_vRotateDir), (dTimeDelta) / 5.f);
+	}
+	else if (m_fRotateTime >= 2.2f && m_fRotateTime < 2.4f)
+	{
+		m_pTransformCom->Rotate_Axis(XMLoadFloat3(&m_vRotateDir), -(dTimeDelta) / 5.f);
+	}
+	else if (m_fRotateTime >= 2.4f)
+	{
+		m_fRotateTime = 0.f;
+		m_IsCollide = false;
+		m_bLaunch = false;
+		m_fDelay = 0.f;
+	}
 }
 
-
-CStarBuddy * CStarBuddy::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CBigPlanet * CBigPlanet::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
-	CStarBuddy* pInstance = new CStarBuddy(pDevice, pDeviceContext);
+	CBigPlanet* pInstance = new CBigPlanet(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSG_BOX("Failed to Create Instance - CStarBuddy");
+		MSG_BOX("Failed to Create Instance - CBigPlanet");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CStarBuddy::Clone_GameObject(void * pArg)
+CGameObject * CBigPlanet::Clone_GameObject(void * pArg)
 {
-	CStarBuddy* pInstance = new CStarBuddy(*this);
+	CBigPlanet* pInstance = new CBigPlanet(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CStarBuddy");
+		MSG_BOX("Failed to Clone Instance - CBigPlanet");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CStarBuddy::Free()
+void CBigPlanet::Free()
 {
+	Safe_Release(m_pPhysxTransformCom);
+	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);

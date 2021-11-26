@@ -22,8 +22,8 @@ HRESULT CGravityPath::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_GravityPath_01_Bend_01"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	return S_OK;
@@ -85,10 +85,10 @@ CGameObject * CGravityPath::Clone_GameObject(void * pArg)
 
 void CGravityPath::Free()
 {
-	Safe_Release(m_pStaticActorCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pRendererCom);
-	Safe_Release(m_pModelCom);
+	//Safe_Release(m_pStaticActorCom);
+	//Safe_Release(m_pTransformCom);
+	//Safe_Release(m_pRendererCom);
+	//Safe_Release(m_pModelCom);
 
 	CGameObject::Free();
 }
