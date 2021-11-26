@@ -31,12 +31,12 @@ HRESULT CTerrain::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CTerrain::Tick(_double TimeDelta)
+_int CTerrain::Tick(_double dTimeDelta)
 {
 	return NO_EVENT;
 }
 
-_int CTerrain::Late_Tick(_double TimeDelta)
+_int CTerrain::Late_Tick(_double dTimeDelta)
 {
 	NULL_CHECK_RETURN(m_pRendererCom, EVENT_ERROR);
 
@@ -60,8 +60,7 @@ HRESULT CTerrain::Render(RENDER_GROUP::Enum eGroup)
 
 HRESULT CTerrain::Render_ShadowDepth()
 {
-	m_pVIBufferCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-	m_pVIBufferCom->Set_DefaultVariables_ShadowDepth();
+	m_pVIBufferCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	m_pVIBufferCom->Render(1);
 

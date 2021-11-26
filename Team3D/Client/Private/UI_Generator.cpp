@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\UI_Generator.h"
 
+#include "GameInstance.h"
 #include "InputButton_Frame.h"
 #include "InputButton.h"
 #include "PC_MouseButton.h"
@@ -8,7 +9,6 @@
 #include "Arrowkeys_Outline.h"
 #include "Arrowkeys_Fill.h"
 #include "UISprite.h"
-#include "Pipeline.h"
 
 IMPLEMENT_SINGLETON(CUI_Generator)
 

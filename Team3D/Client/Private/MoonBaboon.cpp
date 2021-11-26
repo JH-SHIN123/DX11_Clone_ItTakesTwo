@@ -78,14 +78,14 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 
 _int CMoonBaboon::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
 
 
-CMoonBaboon::MOON_STATE CMoonBaboon::Check_State(_double TimeDelta)
+CMoonBaboon::MOON_STATE CMoonBaboon::Check_State(_double dTimeDelta)
 {
 	if (m_eNextState != m_eCurState)
 	{
@@ -95,7 +95,7 @@ CMoonBaboon::MOON_STATE CMoonBaboon::Check_State(_double TimeDelta)
 	return m_eCurState;
 }
 
-void CMoonBaboon::Change_State(_double TimeDelta)
+void CMoonBaboon::Change_State(_double dTimeDelta)
 {
 	if (m_eTarget == TARGET_CODY)
 	{
@@ -107,11 +107,11 @@ void CMoonBaboon::Change_State(_double TimeDelta)
 	}
 }
 
-void CMoonBaboon::During_Animation_Behavior(_double TimeDelta)
+void CMoonBaboon::During_Animation_Behavior(_double dTimeDelta)
 {
 }
 
-void CMoonBaboon::Fix_MoonBaboon_Chair(_double TimeDelta)
+void CMoonBaboon::Fix_MoonBaboon_Chair(_double dTimeDelta)
 {
 	_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
 	_float4x4 matWorld, matScale; // 우주선 안에있을때 유리밖으로 꼬리 튀어나와서 100->95정도로 줄임.
@@ -135,7 +135,7 @@ HRESULT CMoonBaboon::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(2, 0, true);

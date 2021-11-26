@@ -1,13 +1,10 @@
 #include "Shader_Include.hpp"
 
 ////////////////////////////////////////////////////////////
-#define MAX_VERTICES NUM_VERTICES * MAX_CASCADES * NUM_VIEWPORTS
-#define NUM_VERTICES 3
-#define NUM_VIEWPORTS 2
-
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
-//texture2D	g_EmmesiveTexture;
+texture2D	g_SpecularTexture;
+texture2D	g_EmissiveTexture;
 //texture2D	g_AmbientTexture;
 //texture2D	g_OpacityTexture;
 //texture2D	g_LightTexture;
@@ -23,25 +20,25 @@ cbuffer Effect
 {
 	float	g_fAlpha;
 };
-BlendState BlendState_Alpha2
-{
-	BlendEnable[0] = true;
-	SrcBlend = SRC_COLOR;
-	DestBlend = INV_SRC_COLOR;
-	BlendOp = Add;
-};
-BlendState BlendState_Alpha3
-{
-	BlendEnable[0] = true;
-	BlendEnable[1] = true;
-	SrcBlend = INV_SRC_ALPHA;
-	DestBlend = SRC_ALPHA;
-	BlendOp = Add;
-
-	SrcBlendAlpha = ONE;
-	DestBlendAlpha = ONE;
-	BlendOpAlpha = Add;
-};
+//BlendState BlendState_Alpha2
+//{
+//	BlendEnable[0] = true;
+//	SrcBlend = SRC_COLOR;
+//	DestBlend = INV_SRC_COLOR;
+//	BlendOp = Add;
+//};
+//BlendState BlendState_Alpha3
+//{
+//	BlendEnable[0] = true;
+//	BlendEnable[1] = true;
+//	SrcBlend = INV_SRC_ALPHA;
+//	DestBlend = SRC_ALPHA;
+//	BlendOp = Add;
+//
+//	SrcBlendAlpha = ONE;
+//	DestBlendAlpha = ONE;
+//	BlendOpAlpha = Add;
+//};
 
 DepthStencilState DepthStecil_Test
 {
@@ -50,26 +47,6 @@ DepthStencilState DepthStecil_Test
 	DepthFunc = Less;
 };
 
-sampler	Mirror_MinMagMipLinear_Sampler = sampler_state
-{
-	AddressU = mirror;
-	AddressV = mirror;
-	Filter = MIN_MAG_MIP_LINEAR;
-};
-
-sampler	Clamp_MinMagMipLinear_Sampler = sampler_state
-{
-	AddressU = clamp;
-	AddressV = clamp;
-	Filter = MIN_MAG_MIP_LINEAR;
-};
-
-RasterizerState Rasterizer_CCW
-{
-	FillMode = Solid;
-	CullMode = Front;
-	FrontCounterClockwise = true;
-};
 
 ////////////////////////////////////////////////////////////
 
@@ -103,11 +80,6 @@ struct VS_OUT_TRIPLE_UV
 	float2 vTexUV_2		: TEXCOORD1;
 	float2 vTexUV_3		: TEXCOORD2;
 
-};
-
-struct VS_OUT_CSM_DEPTH
-{
-	float4 vPosition : SV_POSITION;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -148,15 +120,6 @@ VS_OUT_TRIPLE_UV VS_TRIPLE_UV(VS_IN In)
 	RotateUV = mul(RotateUV, RotateMatrix);
 	RotateUV += 0.5f;
 	Out.vTexUV_3 = RotateUV;
-
-	return Out;
-}
-
-VS_OUT_CSM_DEPTH VS_MAIN_CSM_DEPTH(VS_IN In)
-{
-	VS_OUT_CSM_DEPTH Out = (VS_OUT_CSM_DEPTH)0;
-
-	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 
 	return Out;
 }
@@ -286,55 +249,6 @@ void GS_TRIPLE_UV(triangle VS_OUT_TRIPLE_UV In[3], inout TriangleStream<GS_OUT_T
 	TriStream.RestartStrip();
 }
 
-struct GS_IN_CSM_DEPTH
-{
-	float4 vPosition : SV_POSITION;
-};
-
-struct GS_OUT_CSM_DEPTH
-{
-	float4 vPosition		: SV_POSITION;
-	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
-};
-
-
-[maxvertexcount(MAX_VERTICES)]
-void GS_MAIN_CSM_DEPTH(triangle GS_IN_CSM_DEPTH In[3], inout TriangleStream<GS_OUT_CSM_DEPTH> TriStream)
-{
-	GS_OUT_CSM_DEPTH Out = (GS_OUT_CSM_DEPTH)0;
-
-	/* Main Viewport - Viewport 0, 1, 2 */
-	[unroll]
-	for (uint mainViewIndex = 0; mainViewIndex < MAX_CASCADES; ++mainViewIndex)
-	{
-		[unroll]
-		for (uint i = 0; i < 3; i++)
-		{
-			Out.vPosition = mul(In[i].vPosition, g_ShadowTransforms_Main[mainViewIndex]);
-			Out.iViewportIndex = mainViewIndex;
-
-			TriStream.Append(Out);
-		}
-
-		TriStream.RestartStrip();
-	}
-
-	/* Sub Viewport - Viewport 3, 4, 5 */
-	[unroll]
-	for (uint subViewIndex = 0; subViewIndex < MAX_CASCADES; ++subViewIndex)
-	{
-		[unroll]
-		for (uint j = 0; j < 3; j++)
-		{
-			Out.vPosition = mul(In[j].vPosition, g_ShadowTransforms_Sub[subViewIndex]);
-			Out.iViewportIndex = MAX_CASCADES + subViewIndex;
-
-			TriStream.Append(Out);
-		}
-
-		TriStream.RestartStrip();
-	}
-}
 ////////////////////////////////////////////////////////////
 
 struct PS_IN
@@ -366,43 +280,15 @@ struct PS_IN_TRIPLE_UV
 struct PS_OUT
 {
 	vector	vDiffuse			: SV_TARGET0;
-	vector	vNormal				: SV_TARGET1;
-	vector	vDepth				: SV_TARGET2;
-	vector	vShadow				: SV_TARGET3;
-};
-
-struct PS_IN_CSM_DEPTH
-{
-	float4 vPosition : SV_POSITION;
-};
-
-struct PS_OUT_CSM_DEPTH
-{
-	vector	vShadowDepth : SV_TARGET0;
 };
 
 PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
-	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vDiffuse.rgb = vMtrlDiffuse.b;
 	Out.vDiffuse.a = 1.f;
-
-	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
-
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-
-	//// Calculate Shadow
-	//int iIndex = -1;
-	//iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
-	//
-	//// Get_ShadowFactor
-	//float fShadowFactor = 0.f;
-	//fShadowFactor = Get_ShadowFactor(In.iViewportIndex, iIndex, In.vWorldPosition);
-	//
-	//Out.vShadow = 1.f - fShadowFactor;
-	//Out.vShadow.a = 1.f;
 
 	return Out;
 }
@@ -426,9 +312,6 @@ PS_OUT	PS_MAIN_RESPAWN_PORTAL(PS_IN_TRIPLE_UV In)
 	//	Out.vDiffuse.rgb = (vMtrlDiffuse.a) * g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV + 0.5f) * 5.f;
 
 
-	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-
 	return Out;
 }
 
@@ -449,9 +332,6 @@ PS_OUT	PS_MAIN_GRAVITYPIPE(PS_IN_TRIPLE_UV In)
 	Out.vDiffuse.rgb = vMtrlDiffuse.r * vColor.rgb;
 	Out.vDiffuse.a = Out.vDiffuse.r;
 
-	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-
 	return Out;
 }
 
@@ -469,9 +349,6 @@ PS_OUT	PS_MAIN_WORMHOLE(PS_IN_TRIPLE_UV In)
 	vector vColor = g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, vFlipUV);
 	Out.vDiffuse.rgb = (vMtrlDiffuse.r * 2.f ) * vColor.rgb;
 	Out.vDiffuse.a = Out.vDiffuse.r;
-
-	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 
 	return Out;
 }
@@ -493,28 +370,6 @@ PS_OUT	PS_MAIN_RESPAWNTENNEL(PS_IN_TRIPLE_UV In)
 	Out.vDiffuse.rgb = fWeight * vColor.rgb * 2.5f;
 	Out.vDiffuse.a = 1;// Out.vDiffuse.r + Out.vDiffuse.g + Out.vDiffuse.b;
 
-	//Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
-	//Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-
-	return Out;
-}
-
-PS_OUT	PS_MAIN_ALPHA(PS_IN In, uniform bool isOpaque)
-{
-	PS_OUT Out = (PS_OUT)0;
-	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-	Out.vDiffuse = vMtrlDiffuse * g_Material.vDiffuse;
-	if (true == isOpaque) Out.vDiffuse.w = 1.f;
-	//Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-	//Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
-
-	return Out;
-}
-
-PS_OUT_CSM_DEPTH PS_MAIN_CSM_DEPTH(PS_IN_CSM_DEPTH In)
-{
-	PS_OUT_CSM_DEPTH		Out = (PS_OUT_CSM_DEPTH)0;
-	Out.vShadowDepth = vector(In.vPosition.z, In.vPosition.z, In.vPosition.z, 1.f); /* NDC X 투영공간의 z*/
 	return Out;
 }
 ////////////////////////////////////////////////////////////
@@ -536,9 +391,9 @@ technique11 DefaultTechnique
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile		vs_5_0 VS_MAIN_CSM_DEPTH();
-		GeometryShader = compile	gs_5_0 GS_MAIN_CSM_DEPTH();
-		PixelShader = compile		ps_5_0 PS_MAIN_CSM_DEPTH();
+		VertexShader = compile		vs_5_0 VS_MAIN();
+		GeometryShader = compile	gs_5_0 GS_MAIN();
+		PixelShader = compile		ps_5_0 PS_MAIN();
 	}
 
 	pass Default_Alpha // 2
@@ -548,7 +403,7 @@ technique11 DefaultTechnique
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
-		PixelShader = compile ps_5_0 PS_MAIN_ALPHA(false);
+		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
 	pass Default_Alpha_Opaque // 3
@@ -558,7 +413,7 @@ technique11 DefaultTechnique
 		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
-		PixelShader = compile ps_5_0 PS_MAIN_ALPHA(true);
+		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
 	pass RespawnPortal // 4

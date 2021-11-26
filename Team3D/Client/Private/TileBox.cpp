@@ -24,7 +24,7 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 	CGameObject::NativeConstruct(pArg);
 
 	CModel_Instance::ARG_DESC Arg;
-	Arg.iInstanceCount = 10;
+	Arg.iInstanceCount = 50;
 	Arg.fCullingRadius = 10.f;
 	Arg.pWorldMatrices = new _float4x4[Arg.iInstanceCount];
 
@@ -39,7 +39,8 @@ HRESULT CTileBox::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_TileBox"), TEXT("Com_Model"), (CComponent**)&m_pModelCom, &Arg), E_FAIL);
 
 	_matrix TransformMatrix = XMMatrixIdentity();
-	TransformMatrix.r[3] = XMVectorSet(0.f, 0.f, 10.f, 1.f);
+	//TransformMatrix.r[3] = XMVectorSet(0.f, 0.f, 10.f, 1.f);
+	TransformMatrix.r[3] = XMVectorSet(0.f, 30.f, 10.f, 1.f);
 	m_pModelCom->Update_Model(TransformMatrix);
 
 	/* RenderGroup, 메시별 그룹 지정 */
@@ -53,7 +54,7 @@ _int CTileBox::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	_matrix TransformMatrix= XMMatrixRotationY(XMConvertToRadians((_float)-dTimeDelta * 10.f));
+	_matrix TransformMatrix= XMMatrixRotationZ(XMConvertToRadians((_float)-dTimeDelta * 10.f));
 
 	if (m_pGameInstance->Key_Down(DIK_0))
 		m_pModelCom->Update_Model(TransformMatrix);

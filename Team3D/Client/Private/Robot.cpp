@@ -31,6 +31,16 @@ HRESULT CRobot::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(15.f, 0.f, 20.f, 1.f));
 
+	CStaticActor::ARG_DESC ArgDesc;
+	ArgDesc.pModel = m_pModelCom;
+	ArgDesc.pTransform = m_pTransformCom;
+	m_UserData = USERDATA(GameID::eROBOT, this);
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
+	
+	DATABASE->Set_RobotPtr(this);
+
+
 	return S_OK;
 }
 
@@ -65,7 +75,7 @@ HRESULT CRobot::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(3, 0, true);
@@ -101,6 +111,7 @@ CGameObject * CRobot::Clone_GameObject(void * pArg)
 
 void CRobot::Free()
 {
+	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);

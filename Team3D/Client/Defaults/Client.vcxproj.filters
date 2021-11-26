@@ -25,9 +25,6 @@
     <Filter Include="02.GameObject\02.Logo">
       <UniqueIdentifier>{6e3ecc34-09e4-48a8-b8b4-f1dd9d96c681}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\03.Title">
-      <UniqueIdentifier>{c6f20a96-3c8d-4d61-acd8-53abeea0b007}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Maps\01.Loading">
       <UniqueIdentifier>{6fc0b5cb-e4c3-4c8d-8e2e-a4ec808b25df}</UniqueIdentifier>
     </Filter>
@@ -223,6 +220,21 @@
     <Filter Include="02.GameObject\05.UI\05.UISprite">
       <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\03.Robot\Interaction">
+      <UniqueIdentifier>{1c2f6626-67b0-482c-a1ec-122b03c25042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\03.Robot\NoneInteraction">
+      <UniqueIdentifier>{52929ebb-0420-4a62-9b53-eddeed4bac1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\04.TutorialDoor">
+      <UniqueIdentifier>{6d013226-dd4d-47df-845f-f9034ed1d948}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\05.BigButton">
+      <UniqueIdentifier>{e542390a-f37e-411e-8fa0-b1338584a8eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\06.SpaceValve">
+      <UniqueIdentifier>{220b96f2-3a32-467d-a590-dc1504fa0045}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29">
       <UniqueIdentifier>{3a519e7a-f348-4809-a94f-055799138e50}</UniqueIdentifier>
     </Filter>
@@ -271,8 +283,32 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail">
       <UniqueIdentifier>{4473fc56-392d-424e-a8d6-96ba1259f992}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\98.Interactive_Objects\04.DoorWay">
-      <UniqueIdentifier>{11a66e98-3323-4bda-ae39-5a498333cf0c}</UniqueIdentifier>
+    <Filter Include="03.Component">
+      <UniqueIdentifier>{6f424d55-06aa-4b07-a102-2829f8dd72e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.CameraActor">
+      <UniqueIdentifier>{71f0cc81-3265-4b0d-9a45-cf89b506bd13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.CameraActor\00.Main">
+      <UniqueIdentifier>{0cbed854-cdf5-4121-8dab-ff10dad003dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.CameraActor\01.BehaviorCallback">
+      <UniqueIdentifier>{68b731cf-de3f-4fda-b4e7-8040040943d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.CameraActor\02.FilterCallback">
+      <UniqueIdentifier>{c1859efc-d3f6-40da-a6c5-24deb0b7e05b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
+      <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\08.HookUFO">
+      <UniqueIdentifier>{7f50933c-0671-40a9-ab76-5da48106a69e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\06.SpaceValve\07.BigPlanet">
+      <UniqueIdentifier>{cde19c6b-aaa3-40d0-8a31-9981b800428b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\03.Character\03.Title">
+      <UniqueIdentifier>{c6f20a96-3c8d-4d61-acd8-53abeea0b007}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -384,11 +420,11 @@
     <ClInclude Include="..\Public\StarBuddy.h">
       <Filter>02.GameObject\98.Interactive_Objects\01.StarBuddy</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Robot.h">
-      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    <ClInclude Include="..\Public\SecurityCameraHandle.h">
+      <Filter>02.GameObject\98.Interactive_Objects\02.SecurityCamera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\RobotHead.h">
-      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    <ClInclude Include="..\Public\SecurityCamera.h">
+      <Filter>02.GameObject\98.Interactive_Objects\02.SecurityCamera</Filter>
     </ClInclude>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
@@ -441,8 +477,35 @@
     <ClInclude Include="..\Public\UISprite.h">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Robot.h">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\NoneInteraction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RobotHead.h">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\NoneInteraction</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h">
       <Filter>98.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RobotLever.h">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\Interaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RobotBattery.h">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\Interaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TutorialDoor.h">
+      <Filter>02.GameObject\98.Interactive_Objects\04.TutorialDoor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BigButton.h">
+      <Filter>02.GameObject\98.Interactive_Objects\05.BigButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NoBatterySign.h">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\Interaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SpaceValve.h">
+      <Filter>02.GameObject\98.Interactive_Objects\06.SpaceValve</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BigPlanet.h">
+      <Filter>02.GameObject\98.Interactive_Objects\06.SpaceValve\07.BigPlanet</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_Env_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
@@ -458,6 +521,15 @@
     </ClInclude>
     <ClInclude Include="..\public\Sky.h">
       <Filter>02.GameObject\06.Sky</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraBehaviorCallback.h">
+      <Filter>03.Component\01.CameraActor\01.BehaviorCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraFilterCallback.h">
+      <Filter>03.Component\01.CameraActor\02.FilterCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraActor.h">
+      <Filter>03.Component\01.CameraActor\00.Main</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_Dead_Particle_Fire.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\01.Fire\Dead_Particle_Fire</Filter>
@@ -477,8 +549,11 @@
     <ClInclude Include="..\public\Effect_Player_Lail.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\DoorWay.h">
-      <Filter>02.GameObject\98.Interactive_Objects\04.DoorWay</Filter>
+    <ClInclude Include="..\public\Effect_RespawnTunnel_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HookUFO.h">
+      <Filter>02.GameObject\98.Interactive_Objects\08.HookUFO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -575,11 +650,11 @@
     <ClCompile Include="..\Private\StarBuddy.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\01.StarBuddy</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Robot.cpp">
-      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    <ClCompile Include="..\Private\SecurityCameraHandle.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\02.SecurityCamera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\RobotHead.cpp">
-      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    <ClCompile Include="..\Private\SecurityCamera.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\02.SecurityCamera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Dash.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash</Filter>
@@ -620,6 +695,33 @@
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Robot.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\NoneInteraction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RobotHead.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\NoneInteraction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RobotLever.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\Interaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RobotBattery.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\Interaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TutorialDoor.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\04.TutorialDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BigButton.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\05.BigButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NoBatterySign.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot\Interaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SpaceValve.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\06.SpaceValve</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BigPlanet.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\06.SpaceValve\07.BigPlanet</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\Effect_Env_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
     </ClCompile>
@@ -637,6 +739,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Sky.cpp">
       <Filter>02.GameObject\06.Sky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraActor.cpp">
+      <Filter>03.Component\01.CameraActor\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraBehaviorCallback.cpp">
+      <Filter>03.Component\01.CameraActor\01.BehaviorCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraFilterCallback.cpp">
+      <Filter>03.Component\01.CameraActor\02.FilterCallback</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Dead_Particle_Fire.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\01.Fire\Dead_Particle_Fire</Filter>
@@ -656,8 +767,11 @@
     <ClCompile Include="..\private\Effect_Player_Lail.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\DoorWay.cpp">
-      <Filter>02.GameObject\98.Interactive_Objects\04.DoorWay</Filter>
+    <ClCompile Include="..\private\Effect_RespawnTunnel_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HookUFO.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\08.HookUFO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

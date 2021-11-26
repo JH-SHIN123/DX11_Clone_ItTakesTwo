@@ -260,8 +260,10 @@ HRESULT CModel::Set_DefaultVariables_Shadow()
 	return S_OK;
 }
 
-HRESULT CModel::Set_DefaultVariables_ShadowDepth()
+HRESULT CModel::Set_DefaultVariables_ShadowDepth(_fmatrix WorldMatrix)
 {
+	Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+
 	_matrix ShadowViewProj[MAX_CASCADES];
 
 	CShadow_Manager* pShadowManager = CShadow_Manager::GetInstance();
@@ -426,6 +428,8 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 			{
 				Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
 				Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+				Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, iMaterialSetNum);
+				Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, iMaterialSetNum);
 
 				FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 			}
@@ -453,6 +457,8 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 			{
 				Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, iMaterialSetNum);
 				Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, iMaterialSetNum);
+				Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, iMaterialSetNum);
+				Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, iMaterialSetNum);
 
 				FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 			}
@@ -603,7 +609,7 @@ HRESULT CModel::Store_TriMeshes()
 
 void CModel::Update_AnimTransformations(_double dTimeDelta)
 {
-	if (m_fLerpRatio > 0.9f) // 이렇게 했을때 왜 더 애니메이션이 이쁠까?
+	if (m_fLerpRatio > 0.f) // 이렇게 했을때 왜 더 애니메이션이 이쁠까?
 	{
 		m_Anims[m_iCurAnimIndex]->Update_Transformations_Blend(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations, m_PreAnimKeyFrames, m_fLerpRatio);
 		m_fLerpRatio -= (_float)dTimeDelta * m_fLerpSpeed;

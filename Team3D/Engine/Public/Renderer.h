@@ -12,13 +12,11 @@ private:
 	virtual ~CRenderer() = default;
 
 public:
-	ID3D11ShaderResourceView* Get_ShaderResourceView_RenderTargetManager(const _tchar* pRenderTargetTag);
-
-public:
 	virtual HRESULT	NativeConstruct_Prototype();
 	virtual HRESULT	NativeConstruct(void* pArg);
+
 	HRESULT			Add_GameObject_ToRenderGroup(RENDER_GROUP::Enum eGroup, class CGameObject* pGameObject);
-	HRESULT			Draw_Renderer();
+	HRESULT			Draw_Renderer(_double TimeDelta);
 
 private: /* Typedef */
 	typedef list<class CGameObject*> RENDER_OBJECTS;
@@ -38,6 +36,9 @@ private:
 	HRESULT Render_ShadowsForAllCascades();
 	HRESULT Render_LightAcc();
 	HRESULT Render_Blend();
+
+private:
+	HRESULT PostProcessing(_double TimeDelta);
 
 private:
 	void	Sort_GameObjects(RENDER_OBJECTS& GameObjects);

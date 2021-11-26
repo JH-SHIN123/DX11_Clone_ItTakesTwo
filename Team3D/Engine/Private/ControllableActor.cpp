@@ -49,8 +49,9 @@ HRESULT CControllableActor::NativeConstruct(void * pArg)
 	m_pFilterCallback = new CPxControllerFilterCallback;
 	m_pFilters = new PxControllerFilters(0, 0, m_pFilterCallback);
 	ArgDesc.CapsuleControllerDesc.behaviorCallback = m_pCallback;
-
+	
 	m_pController = m_pPhysX->Create_CapsuleController(ArgDesc.CapsuleControllerDesc);
+
 	m_pCallback->Set_Controller(m_pController);
 	m_pActor = m_pController->getActor();
 	m_pActor->userData = ArgDesc.pUserData;
@@ -67,21 +68,64 @@ void CControllableActor::Move(_fvector vMove, _double dTimeDelta)
 
 void CControllableActor::Update(_double dTimeDelta)
 {
-	m_fHeightDelta = Get_Height(dTimeDelta);
-	_float fY;
+	if (m_bZeroGravity == true && m_bStatic == true)
+	{
+		m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+		return;
+	}
 
-	if (m_fHeightDelta != 0.f)
-		fY = m_fHeightDelta * 0.5f;
+	else if (m_bZeroGravity == true && m_IsGoUp == true)
+	{
+		PxVec3 vDist = { 0.f, (_float)(dTimeDelta * 4.f), 0.f };
+		m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
+		m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+		return;
+	}
+	else if (m_bZeroGravity == true && m_IsGoUp == false)
+	{
+		PxVec3 vDist = { 0.f, (_float)(-dTimeDelta * 4.f), 0.f };
+		m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
+		m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+		return;
+	}
 	else
-		fY = m_fGravity * (_float)dTimeDelta;
+	{
+		m_fHeightDelta = Get_Height(dTimeDelta);
+		_float fY;
 
-	PxVec3 vDist = PxVec3(0, fY, 0);
-	PxU32 iFlags = m_pController->move(vDist, 0.f, (_float)dTimeDelta, *m_pFilters);
 
-	if (PxControllerCollisionFlag::eCOLLISION_DOWN & iFlags)
-		Jump_Stop();
+		if (m_fHeightDelta != 0.f)
+		{
+			fY = m_fHeightDelta * 0.5f;
+		}
+		else
+		{
+			fY = m_fGravity * (_float)dTimeDelta;
+		}
 
-	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+
+		PxVec3 vDist = PxVec3(0, fY, 0);
+		PxU32 iFlags = m_pController->move(vDist, 0.f, (_float)dTimeDelta, *m_pFilters);
+
+		if (PxControllerCollisionFlag::eCOLLISION_DOWN & iFlags)
+		{
+			m_fFallingTime = 0.f;
+			m_IsFalling = false;
+			Jump_Stop();
+		}
+		else if (!(PxControllerCollisionFlag::eCOLLISION_DOWN & iFlags) && !m_bJump && !m_bGroundPound && !m_bZeroGravity)
+		{
+			m_IsFalling = true;
+			m_fFallingTime += (_float)dTimeDelta;
+			// ÀÚÀ¯³«ÇÏ
+			vDist = PxVec3(0, (0.4f * m_fGravity * 0.8f * m_fFallingTime * m_fFallingTime), 0);
+			m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
+		}
+
+
+
+		m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+	}
 }
 
 void CControllableActor::Update_Cam(_double dTimeDelta)

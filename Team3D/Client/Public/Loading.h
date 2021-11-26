@@ -43,6 +43,10 @@ private:
 private:
 	HRESULT LoadingForStage(_uint iThreadIndex); /* 예시, 테스트용 Level */
 
+private:
+	HRESULT LoadingForCharacters();
+	HRESULT LoadingForInteractive_Objects();
+
 public:
 	static CLoading* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, Level::ID ePreLevelID, Level::ID eNextLevelID);
 	virtual void Free() override;

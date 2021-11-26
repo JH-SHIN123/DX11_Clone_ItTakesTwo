@@ -27,16 +27,58 @@ HRESULT CRobotHead::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_RobotHead"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
+
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(15.f, 4.f, 20.f, 1.f));
-	m_pModelCom->Set_Animation(0);
-	m_pModelCom->Set_NextAnimIndex(0);
-	
+	m_pModelCom->Set_Animation(3);
+	m_pModelCom->Set_NextAnimIndex(3);
+
+	DATABASE->Set_RobotHeadPtr(this);
 	return S_OK;
 }
 
 _int CRobotHead::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	if (m_bBatteryCharged == false && m_bLeverActive == false)
+	{
+		if (m_bHitLeverInActive == true)
+		{
+			Hit_Lever_InActive(dTimeDelta);
+			m_bHitLeverInActive = false;
+		}
+		else
+		{
+			if(m_pModelCom->Get_CurAnimIndex() != R_InActive_Lever)
+				m_pModelCom->Set_Animation(R_InActive_Idle);
+		}
+	}
+	else if (m_bBatteryCharged == true && m_bLeverActive == false)
+	{
+		if (m_pModelCom->Is_AnimFinished(R_InActive_Idle))
+		{
+			m_pModelCom->Set_Animation(R_InActive_Battery_Idle);
+			m_pModelCom->Set_NextAnimIndex(R_InActive_Battery_Idle);
+		}
+		if (m_pModelCom->Is_AnimFinished(R_InActive_Battery_Idle))
+		{
+			m_pModelCom->Set_Animation(R_InActive_Battery_Idle);
+		}
+	}
+	else if (m_bBatteryCharged == true && m_bLeverActive == true)
+	{
+		if (m_pModelCom->Is_AnimFinished(R_InActive_Battery_Idle))
+		{
+			m_pModelCom->Set_Animation(R_Active_Start);
+			m_pModelCom->Set_NextAnimIndex(R_Active_Idle);
+		}
+		if (m_pModelCom->Is_AnimFinished(R_Active_Idle))
+		{
+			m_pModelCom->Set_Animation(R_Active_Idle);
+			m_pModelCom->Set_NextAnimIndex(R_Active_Idle);
+		}
+	}
+
 
 	m_pModelCom->Update_Animation(dTimeDelta);
 
@@ -65,11 +107,17 @@ HRESULT CRobotHead::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(2, 0, true);
 	return S_OK; 
+}
+
+void CRobotHead::Hit_Lever_InActive(_double dTimeDelta)
+{
+	m_pModelCom->Set_Animation(R_InActive_Lever);
+	m_pModelCom->Set_NextAnimIndex(R_InActive_Idle);
 }
 
 CRobotHead * CRobotHead::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

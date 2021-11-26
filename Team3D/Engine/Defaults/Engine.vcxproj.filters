@@ -211,6 +211,12 @@
     <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback">
       <UniqueIdentifier>{7217416e-7088-47ec-b7c5-df5d4f4d2af0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97.ShaderFiles\Compute">
+      <UniqueIdentifier>{f646baae-80f9-4651-9890-ce59df45393d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles\Graphics">
+      <UniqueIdentifier>{6eab9865-2cc7-49ee-a2b1-ca7271aad865}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.Utility\02.Component\04.VIBuffer\03.Instance\03.Point_Custom_ST">
       <UniqueIdentifier>{6d41aa0b-71aa-4a15-b120-0c6ce1595b1f}</UniqueIdentifier>
     </Filter>
@@ -240,6 +246,9 @@
     </Filter>
     <Filter Include="02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite">
       <UniqueIdentifier>{d7e64caf-3994-464e-b585-a700b1c3cdff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\06.PostFX">
+      <UniqueIdentifier>{3ed05aec-d931-4bdb-bbd2-2b54d2cdf11d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -420,6 +429,9 @@
     <ClInclude Include="..\public\PxContactCallback.h">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PostFX.h">
+      <Filter>02.Utility\06.PostFX</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_PointInstance_Custom_ST.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\03.Point_Custom_ST</Filter>
     </ClInclude>
@@ -593,6 +605,9 @@
     <ClCompile Include="..\private\PxContactCallback.cpp">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\PostFX.cpp">
+      <Filter>02.Utility\06.PostFX</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_PointInstance_Custom_ST.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\03.Point_Custom_ST</Filter>
     </ClCompile>
@@ -616,14 +631,20 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\bin\ShaderFiles\Shader_RenderTarget.hlsl">
-      <Filter>97.ShaderFiles</Filter>
-    </FxCompile>
     <FxCompile Include="..\bin\ShaderFiles\Shader_Blend.hlsl">
-      <Filter>97.ShaderFiles</Filter>
+      <Filter>97.ShaderFiles\Graphics</Filter>
     </FxCompile>
     <FxCompile Include="..\bin\ShaderFiles\Shader_LightAcc.hlsl">
-      <Filter>97.ShaderFiles</Filter>
+      <Filter>97.ShaderFiles\Graphics</Filter>
+    </FxCompile>
+    <FxCompile Include="..\bin\ShaderFiles\Shader_RenderTarget.hlsl">
+      <Filter>97.ShaderFiles\Graphics</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_PostFX.hlsl">
+      <Filter>97.ShaderFiles\Graphics</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_PostFX.hlsl">
+      <Filter>97.ShaderFiles\Compute</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -33,7 +33,18 @@ private:
 	HRESULT Ready_Layer_StarBuddy(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Robot(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_RobotHead(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_DoorWay(const _tchar* pLayerTag);
+
+	HRESULT Ready_Layer_RobotLever(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_RobotBattery(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_SecurityCameraHandle(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_SecurityCamera(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_TutorialDoor(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_BigButton(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_NoBatterySign(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_SpaceValve(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Hook_UFO(const _tchar* pLayerTag);
+
+	HRESULT Ready_Layer_BigPlanet(const _tchar* pLayerTag);
 
 	/* For.Test */
 	HRESULT Ready_Layer_Test();

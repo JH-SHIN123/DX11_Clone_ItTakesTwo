@@ -61,6 +61,15 @@ HRESULT CInstancing_Env::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
+HRESULT CInstancing_Env::Render_ShadowDepth()
+{
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+	m_pModelCom->Set_DefaultVariables_ShadowDepth();
+	m_pModelCom->Render_Model(1, 0, true);
+
+	return S_OK;
+}
+
 CInstancing_Env * CInstancing_Env::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CInstancing_Env* pInstance = new CInstancing_Env(pDevice, pDeviceContext);
