@@ -1368,7 +1368,6 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 				XMStoreFloat3(&m_vStartPosition, XMVectorSet(XMVectorGetX(vTestPos), XMVectorGetY(vTestPos), XMVectorGetZ(vTestPos), 1.f)/* + (XMLoadFloat3(&m_vTriggerTargetPos)*/);
 
 			}
-
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Swinging_Enter);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Swinging_Fwd);
 			m_IsHookUFO = true;
@@ -1668,26 +1667,29 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 
 		// ZY
 		m_faAcceleration = (-1.f * Gravity / m_faArmLength) * sin(m_fRopeAngle);
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_faAcceleration += dTimeDelta;
+		if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_faAcceleration -= dTimeDelta;
 		m_faVelocity += m_faAcceleration;
 		m_faVelocity *= m_faDamping;
 		m_fRopeAngle += m_faVelocity / 15.f;
 		
 
 		_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x-m_vStartPosition.x )/**2.f*/ * sin(-m_fRopeAngle), 
-			/*m_faArmLength **/(m_vTriggerTargetPos.y + m_vStartPosition.y) *2.f* cos(m_fRopeAngle)
+			/*m_faArmLength **/(m_vTriggerTargetPos.y - m_vStartPosition.y) *2.f* cos(m_fRopeAngle)
 			, (/*m_faArmLength*/(m_vTriggerTargetPos.z - m_vStartPosition.z)/**2.f*/ * sin(-m_fRopeAngle)), 0.f)/* + XMLoadFloat3(&m_vTriggerTargetPos)*/;
 		m_pActorCom->Set_Position(XMLoadFloat3(&m_vTriggerTargetPos) + vPosition);
 
-		_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
+		_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION),0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
+		vTriggerToPlayer = XMVectorSetW(vTriggerToPlayer, 1.f);
 		m_pTransformCom->RotateYawDirectionOnLand(-vTriggerToPlayer, dTimeDelta / 2.f);
+		//m_pTransformCom->Set_RotateAxis(m_vHookUFOAxis, sin(-m_fRopeAngle));
 
 		
 
 		////////////////////////////////////////
-		if (m_pGameInstance->Key_Pressing(DIK_W))
-			m_faVelocity += m_faAcceleration / 15.f;
-		if (m_pGameInstance->Key_Pressing(DIK_S))
-			m_faVelocity -= m_faAcceleration / 15.f;
+
 
 		if (m_pGameInstance->Key_Down(DIK_SPACE)) // 로프 놓기
 		{
@@ -1695,11 +1697,11 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Swinging_ExitFwd);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Land);
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_pActorCom->Set_Gravity(-9.8f);
 			m_pActorCom->Set_IsFalling(true);
 			m_pActorCom->Jump_Start(3.5f);
 			m_pActorCom->Set_Jump(true);
-			m_pActorCom->Set_ZeroGravity(false, false, false);
-			m_pActorCom->Set_Gravity(-9.8f);
 			m_IsHookUFO = false;
 			m_IsCollide = false;
 		}
