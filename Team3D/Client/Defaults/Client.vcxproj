@@ -246,6 +246,10 @@
     <ClInclude Include="..\Public\Effect_Walking_Smoke.h" />
     <ClInclude Include="..\public\TestObject01.h" />
     <ClInclude Include="..\public\TileBox.h" />
+    <ClInclude Include="..\Public\ToyBoxButton.h" />
+    <ClInclude Include="..\Public\ToyBoxButton_Button.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\UFO.h" />
     <ClInclude Include="..\Public\UIObject.h" />
     <ClInclude Include="..\Public\UISprite.h" />
@@ -312,6 +316,10 @@
     <ClCompile Include="..\Private\Effect_Walking_Smoke.cpp" />
     <ClCompile Include="..\private\TestObject01.cpp" />
     <ClCompile Include="..\private\TileBox.cpp" />
+    <ClCompile Include="..\Private\ToyBoxButton.cpp" />
+    <ClCompile Include="..\Private\ToyBoxButton_Button.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\UFO.cpp" />
     <ClCompile Include="..\Private\UIObject.cpp" />
     <ClCompile Include="..\Private\UISprite.cpp" />

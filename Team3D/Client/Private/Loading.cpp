@@ -6,6 +6,7 @@
 #include "Cam_Helper.h"
 #include "Terrain.h"
 #include "TileBox.h"
+#include "Sky.h"
 
 #include "UI_Generator.h"
 #include "Environment_Generator.h"
@@ -21,10 +22,10 @@
 #include "StarBuddy.h"
 #include "Robot.h"
 #include "RobotHead.h"
+#include "ToyBoxButton.h"
 
 /* Test */
 #include "TestObject01.h"
-#include "Sky.h"
 #include "CameraActor.h"
 
 CLoading::CLoading(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -131,6 +132,8 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Sky_Space"), CSky::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others15.txt")), E_FAIL);
+
+		LoadingForWT(iThreadIndex);
 	}
 	else if (1 == iThreadIndex)
 	{
@@ -143,6 +146,7 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f));
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_May"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("May"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_May"), CMay::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
 
 		/* For. Map */
 		//PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
@@ -263,6 +267,17 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 	//else if (15 == iThreadIndex)
 	//{
 	//}
+
+	return S_OK;
+}
+
+HRESULT CLoading::LoadingForWT(_uint ilThreadIndex)
+{
+	/* ToyBoxButton */
+	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	PivotMatrix *= XMMatrixRotationZ(XMConvertToRadians(-90.f));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_ToyBoxButton"), CToyBoxButton::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_BigButton"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("BigButton"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 
 	return S_OK;
 }

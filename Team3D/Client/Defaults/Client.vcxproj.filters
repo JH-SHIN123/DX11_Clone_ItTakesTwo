@@ -283,6 +283,12 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
       <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\04.ToyBoxButton">
+      <UniqueIdentifier>{dfbe6885-e8a3-4a33-8253-0a288257cfba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\04.ToyBoxButton\Button">
+      <UniqueIdentifier>{b83c4cca-3671-4128-b7b6-719f76510393}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -498,6 +504,12 @@
     <ClInclude Include="..\Public\Effect_GravityPipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ToyBoxButton.h">
+      <Filter>02.GameObject\98.Interactive_Objects\04.ToyBoxButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToyBoxButton_Button.h">
+      <Filter>02.GameObject\98.Interactive_Objects\04.ToyBoxButton\Button</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -685,6 +697,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToyBoxButton.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\04.ToyBoxButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToyBoxButton_Button.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\04.ToyBoxButton\Button</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
