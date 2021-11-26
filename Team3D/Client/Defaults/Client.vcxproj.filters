@@ -199,9 +199,6 @@
     <Filter Include="02.GameObject\05.UI\09.Screen\00.AlphaScreen">
       <UniqueIdentifier>{120844a3-2edb-4b1e-b9ea-4d3159964372}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\02.Logo\00.SplashScreen">
-      <UniqueIdentifier>{b6ee4c02-42a5-430a-ba23-db3336551b31}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\00.Public\03.Cam_Helper\CamEffect">
       <UniqueIdentifier>{fb6abacd-7350-4cd6-bc75-133e14471971}</UniqueIdentifier>
     </Filter>
@@ -229,7 +226,6 @@
     <Filter Include="02.GameObject\04.Stage_Space\01.Environment\Environment_Generator">
       <UniqueIdentifier>{a8d8c8a6-5681-43c5-bb21-cb5353391f70}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
     <Filter Include="02.GameObject\06.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
     </Filter>
@@ -242,8 +238,6 @@
     <Filter Include="02.GameObject\05.UI\10.Menu\01.HeaderBox">
       <UniqueIdentifier>{3d06338d-2d98-4faa-8163-518d639a3457}</UniqueIdentifier>
     </Filter>
-=======
->>>>>>> main
     <Filter Include="03.Component">
       <UniqueIdentifier>{6f424d55-06aa-4b07-a102-2829f8dd72e4}</UniqueIdentifier>
     </Filter>
@@ -262,7 +256,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
       <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
     <Filter Include="02.GameObject\05.UI\02.ButtonIcon">
       <UniqueIdentifier>{3c2d527a-22db-4fc8-a7c5-05df63b7b482}</UniqueIdentifier>
     </Filter>
@@ -280,7 +273,7 @@
     </Filter>
     <Filter Include="02.GameObject\05.UI\11.ChapterSelect">
       <UniqueIdentifier>{f0c03c84-48c4-479e-86d2-76c7f04a52ce}</UniqueIdentifier>
-=======
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon">
       <UniqueIdentifier>{307d7217-2819-471f-be94-d8cf74b19ac9}</UniqueIdentifier>
     </Filter>
@@ -343,7 +336,6 @@
     </Filter>
     <Filter Include="02.GameObject\02.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
->>>>>>> main
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -497,12 +489,6 @@
     <ClInclude Include="..\Public\InputButton.h">
       <Filter>02.GameObject\05.UI\01.InputButton\01.Button</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Arrowkeys_Fill.h">
-      <Filter>02.GameObject\05.UI\03.ArrowKeys\00.Fill</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Arrowkeys_Outline.h">
-      <Filter>02.GameObject\05.UI\03.ArrowKeys\01.Outline</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\PlayerMarker.h">
       <Filter>02.GameObject\05.UI\04.PlayerMarker</Filter>
     </ClInclude>
@@ -518,7 +504,6 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h">
       <Filter>98.Defines</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\Public\RespawnCircle.h">
       <Filter>02.GameObject\05.UI\06.RespawnCircle</Filter>
     </ClInclude>
@@ -534,9 +519,6 @@
     <ClInclude Include="..\Public\Level_Logo.h">
       <Filter>01.Maps\02.Logo</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\SplashScreen.h">
-      <Filter>02.GameObject\02.Logo\00.SplashScreen</Filter>
-=======
     <ClInclude Include="..\Public\RobotLever.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
     </ClInclude>
@@ -557,7 +539,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\BigPlanet.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\07.BigPlanet</Filter>
->>>>>>> main
     </ClInclude>
     <ClInclude Include="..\Public\CamEffect.h">
       <Filter>02.GameObject\00.Public\03.Cam_Helper\CamEffect</Filter>
@@ -598,7 +579,6 @@
     <ClInclude Include="..\Public\Effect_GravityPipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\Public\PC_MouseButton.h">
       <Filter>02.GameObject\05.UI\02.ButtonIcon\PC\Mouse</Filter>
     </ClInclude>
@@ -610,7 +590,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\ChapterSelect.h">
       <Filter>02.GameObject\05.UI\11.ChapterSelect</Filter>
-=======
+    </ClInclude>
     <ClInclude Include="..\Public\HookUFO.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO</Filter>
     </ClInclude>
@@ -619,7 +599,13 @@
     </ClInclude>
     <ClInclude Include="..\public\Level_Stage.h">
       <Filter>01.Maps\04.Stage_Space</Filter>
->>>>>>> main
+    </ClInclude>
+    <ClInclude Include="..\Public\SplashScreen.h" />
+    <ClInclude Include="..\Public\Arrowkeys_Fill.h">
+      <Filter>02.GameObject\05.UI\03.ArrowKeys\00.Fill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Arrowkeys_Outline.h">
+      <Filter>02.GameObject\05.UI\03.ArrowKeys\01.Outline</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -743,7 +729,6 @@
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\Private\RespawnCircle.cpp">
       <Filter>02.GameObject\05.UI\06.RespawnCircle</Filter>
     </ClCompile>
@@ -758,9 +743,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Logo.cpp">
       <Filter>01.Maps\02.Logo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\SplashScreen.cpp">
-      <Filter>02.GameObject\02.Logo\00.SplashScreen</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
@@ -777,9 +759,6 @@
     <ClCompile Include="..\Private\UFO.cpp">
       <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\TileBox.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
-=======
     <ClCompile Include="..\Private\Robot.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\NoneInteraction</Filter>
     </ClCompile>
@@ -806,7 +785,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\BigPlanet.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\07.BigPlanet</Filter>
->>>>>>> main
     </ClCompile>
     <ClCompile Include="..\Private\CamEffect.cpp">
       <Filter>02.GameObject\00.Public\03.Cam_Helper\CamEffect</Filter>
@@ -850,15 +828,8 @@
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\Private\Cody.cpp">
       <Filter>02.GameObject\03.Character\00.Cody</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp">
-      <Filter>02.GameObject\05.UI\03.ArrowKeys\00.Fill</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp">
-      <Filter>02.GameObject\05.UI\03.ArrowKeys\01.Outline</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp">
@@ -878,7 +849,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\ChapterSelect.cpp">
       <Filter>02.GameObject\05.UI\11.ChapterSelect</Filter>
-=======
+    </ClCompile>
     <ClCompile Include="..\Private\HookUFO.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO</Filter>
     </ClCompile>
@@ -887,7 +858,13 @@
     </ClCompile>
     <ClCompile Include="..\private\Level_Stage.cpp">
       <Filter>01.Maps\04.Stage_Space</Filter>
->>>>>>> main
+    </ClCompile>
+    <ClCompile Include="..\Private\SplashScreen.cpp" />
+    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp">
+      <Filter>02.GameObject\05.UI\03.ArrowKeys\00.Fill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp">
+      <Filter>02.GameObject\05.UI\03.ArrowKeys\01.Outline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\public\UIObject.h"
-#include "GameInstance.h"
 
 CUIObject::CUIObject(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)

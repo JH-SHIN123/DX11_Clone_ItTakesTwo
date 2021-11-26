@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\ChapterSelect.h"
 
-#include "GameInstance.h"
 #include "Pipeline.h"
 
 CChapterSelect::CChapterSelect(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	

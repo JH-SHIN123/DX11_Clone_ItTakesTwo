@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\InputButton_Frame.h"
 
-#include "GameInstance.h"
 #include "UI_Generator.h"
 
 CInputButton_Frame::CInputButton_Frame(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	

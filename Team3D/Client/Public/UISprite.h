@@ -3,10 +3,6 @@
 #include "Client_Defines.h"
 #include "UIObject.h"
 
-BEGIN(Engine)
-class CVIBuffer_Sprite;
-END
-
 BEGIN(Client)
 
 class CUISprite final : public CUIObject

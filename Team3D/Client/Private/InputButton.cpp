@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\InputButton.h"
 
-#include "GameInstance.h"
 #include "Pipeline.h"
 
 CInputButton::CInputButton(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	

@@ -4,12 +4,6 @@
 #include "Base.h"
 #include "UIObject.h"
 
-BEGIN(Engine)
-class CTextures;
-class CVIBuffer_FontInstance;
-class CVIBuffer_Rect;
-END
-
 BEGIN(Client)
 
 #define UI_Create(ePlayer, eTrigger)															\

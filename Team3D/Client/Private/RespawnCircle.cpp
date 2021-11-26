@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\RespawnCircle.h"
 
-#include "GameInstance.h"
 #include "UI_Generator.h"
 
 CRespawnCircle::CRespawnCircle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	

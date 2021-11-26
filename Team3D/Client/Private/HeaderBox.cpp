@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\HeaderBox.h"
 
-#include "GameInstance.h"
 #include "UI_Generator.h"
 
 CHeaderBox::CHeaderBox(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	

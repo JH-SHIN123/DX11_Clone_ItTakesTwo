@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\UISprite.h"
 
-#include "GameInstance.h"
 #include "UI_Generator.h"
 
 CUISprite::CUISprite(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	

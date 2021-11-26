@@ -4,12 +4,9 @@
 #include "MainCamera.h"
 #include "UI_Generator.h"
 #include "UIObject.h"
-<<<<<<< HEAD
 #include "May.h"
 #include"DataStorage.h"
-=======
 #include "MathHelper.h"
->>>>>>> main
 
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
@@ -43,7 +40,6 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
-<<<<<<< HEAD
 	UI_Create(Cody, PC_Mouse_Reduction);
 	UI_Create(Cody, PC_Mouse_Enlargement);
 	UI_Create(Cody, PlayerMarker);
@@ -51,13 +47,6 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	UI_Create(May, StickIcon);
 	UI_Create(Default, LoadingBook);
 
-=======
- 	UI_Create(Cody, PC_Mouse_Reduction);
- 	UI_Create(Cody, PC_Mouse_Enlargement);
- 	UI_Create(Default, LoadingBook);
- 	UI_Create(May, Arrowkeys_Side);
- 	UI_Create(May, StickIcon);
- 
  	UI_Create(Cody, PlayerMarker);
  
  	//UI_Create(Cody, InputButton_InterActive);
@@ -66,7 +55,6 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	m_vPoints[1] = { 0.f, 0.f, 0.f };
 	m_vPoints[2] = {42.f, 0.f, 60};
 	m_vPoints[3] = {84.f, 0.f, 20.f};
->>>>>>> main
 	return S_OK;
 }
 

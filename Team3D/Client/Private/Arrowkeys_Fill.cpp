@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Arrowkeys_Fill.h"
 
-#include "GameInstance.h"
-
 CArrowkeys_Fill::CArrowkeys_Fill(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
 {

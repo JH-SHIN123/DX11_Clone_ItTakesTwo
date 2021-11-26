@@ -3,14 +3,6 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 
-BEGIN(Engine)
-class CRenderer;
-class CTextures;
-class CTransform;
-class CVIBuffer_Terrain;
-class CVIBuffer;
-END
-
 BEGIN(Client)
 
 class CUIObject abstract : public CGameObject

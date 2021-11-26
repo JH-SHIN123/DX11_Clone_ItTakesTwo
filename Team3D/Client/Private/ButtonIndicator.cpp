@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\ButtonIndicator.h"
 
-#include "GameInstance.h"
 #include "UI_Generator.h"
 
 CButtonIndicator::CButtonIndicator(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	

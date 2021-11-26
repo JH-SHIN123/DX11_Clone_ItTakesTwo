@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\CameraActor.h"
-#include "GameInstance.h"
+
 #include "CameraBehaviorCallback.h"
 #include "CameraFilterCallback.h"
 

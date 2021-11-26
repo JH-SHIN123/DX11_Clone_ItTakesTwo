@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\MenuScreen.h"
 
-#include "GameInstance.h"
 #include "UI_Generator.h"
 #include "HeaderBox.h"
 

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\AlphaScreen.h"
 
-#include "GameInstance.h"
 #include "UI_Generator.h"
 
 CAlphaScreen::CAlphaScreen(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Portrait.h"
 
-#include "GameInstance.h"
 #include "UI_Generator.h"
 
 CPortrait::CPortrait(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	

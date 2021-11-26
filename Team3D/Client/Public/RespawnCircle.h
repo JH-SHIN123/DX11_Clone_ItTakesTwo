@@ -3,11 +3,6 @@
 #include "Client_Defines.h"
 #include "UIObject.h"
 
-BEGIN(Engine)
-class CVIBuffer_Rect;
-class CTextures;
-END
-
 BEGIN(Client)
 
 class CRespawnCircle final : public CUIObject

@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Arrowkeys_Outline.h"
 
-#include "GameInstance.h"
-
 CArrowkeys_Outline::CArrowkeys_Outline(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
 {
