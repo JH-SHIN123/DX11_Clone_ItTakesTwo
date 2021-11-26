@@ -55,7 +55,7 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
 
-// 	UI_Create(May, PlayerMarker);
+	UI_Create(May, PlayerMarker);
 	 
 
 	return S_OK;
