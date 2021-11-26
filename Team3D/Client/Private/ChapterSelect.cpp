@@ -37,6 +37,8 @@ HRESULT CChapterSelect::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
+	//m_pSubTextureCom = (CTextures*)m_pGameInstance->Add_Component_Clone(Level::LEVEL_LOGO, TEXT("ChapterSelectAlpha"));
+
 	return S_OK;
 }
 
@@ -64,7 +66,9 @@ HRESULT CChapterSelect::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(11);
+    m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseAlphaTexture", m_pTextureCom->Get_ShaderResourceView(0));
+
+	m_pVIBuffer_RectCom->Render(14);
 
 	return S_OK;
 }
@@ -105,6 +109,7 @@ CGameObject * CChapterSelect::Clone_GameObject(void * pArg)
 void CChapterSelect::Free()
 {
 	Safe_Release(m_pVIBuffer_RectCom);
+	Safe_Release(m_pSubTextureCom);
 
 	CUIObject::Free();
 }

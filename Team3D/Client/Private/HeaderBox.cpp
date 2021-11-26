@@ -262,7 +262,13 @@ void CHeaderBox::Render_Font()
 		tFontDesc.fInterval = -10.f;
 		tFontDesc.iShaderPassNum = 1;
 
-		UI_Generator->Render_Font(TEXT("참여"), tFontDesc, Player::Default);
+		if(false == m_IsReady)
+			UI_Generator->Render_Font(TEXT("참여"), tFontDesc, Player::Default);
+		else
+		{
+			tFontDesc.vPosition = { m_UIDesc.vPos.x - 30.f, m_UIDesc.vPos.y + 40.f };
+			UI_Generator->Render_Font(TEXT("불꽃남자"), tFontDesc, Player::Default);
+		}
 	}
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_2p_Ready")))
 	{
@@ -271,7 +277,13 @@ void CHeaderBox::Render_Font()
 		tFontDesc.fInterval = -10.f;
 		tFontDesc.iShaderPassNum = 1;
 
-		UI_Generator->Render_Font(TEXT("참여"), tFontDesc, Player::Default);
+		if (false == m_IsReady)
+			UI_Generator->Render_Font(TEXT("참여"), tFontDesc, Player::Default);
+		else
+		{
+			tFontDesc.vPosition = { m_UIDesc.vPos.x - 40.f, m_UIDesc.vPos.y + 40.f };
+			UI_Generator->Render_Font(TEXT("든든한국밥"), tFontDesc, Player::Default);
+		}
 	}
 }
 

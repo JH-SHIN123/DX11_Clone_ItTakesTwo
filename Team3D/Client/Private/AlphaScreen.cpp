@@ -40,7 +40,13 @@ HRESULT CAlphaScreen::NativeConstruct(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_iOption, pArg, sizeof(_uint));
 
-	if (1 == m_iOption)
+	if (2 == m_iOption)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 50.f, 0.f, 1.f));
+		m_pTransformCom->Set_Scale(XMVectorSet(400.f, 300.f, 0.f, 0.f));
+		m_fSortOrder = -3.f;
+	}
+	else if (1 == m_iOption)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 720.f, 0.f, 0.f));
@@ -77,10 +83,12 @@ HRESULT CAlphaScreen::Render(RENDER_GROUP::Enum eGroup)
 {
 	CUIObject::Render(eGroup);
 
-	if (1 == m_iOption)
+	if (1 == m_iOption || 2 == m_iOption)
 	{
 		if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
 			return E_FAIL;
+
+		m_pVIBuffer_RectCom->Set_Variable("g_iAlphaOption", &m_iOption, sizeof(_int));
 
 		m_pVIBuffer_RectCom->Render(12);
 	}

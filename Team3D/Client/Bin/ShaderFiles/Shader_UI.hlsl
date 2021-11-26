@@ -7,6 +7,7 @@ texture2D	g_DiffuseSubTexture;
 texture2D	g_SubTexture;
 texture2D   g_DiffuseNoiseTexture;
 texture2D   g_DiffuseMaskTexture;
+texture2D   g_DiffuseAlphaTexture;
 
 matrix		g_UIWorldMatrix;
 matrix		g_UIViewMatrix;
@@ -17,6 +18,7 @@ int		g_iColorOption;
 int		g_iGSOption;
 int		g_iRespawnOption;
 int		g_iHeaderBoxOption;
+int		g_iAlphaOption;
 
 float	g_fAlpha;
 float	g_Time;
@@ -344,7 +346,10 @@ PS_OUT PS_AlphaScreen(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	Out.vColor.a = 0.6f;
+	if (1 == g_iAlphaOption)
+		Out.vColor.a = 0.6f;
+	else if (2 == g_iAlphaOption)
+		Out.vColor.a = 0.5f;
 
 	return Out;
 }
@@ -452,6 +457,19 @@ PS_OUT PS_HeaderBox(PS_IN In)
 		break;
 	}
 	
+	return Out;
+}
+
+PS_OUT PS_ChapterSelect(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	vector AlphaTex = g_DiffuseAlphaTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (AlphaTex.r < 1.f)
+		Out.vColor.a = AlphaTex.r;
+
 	return Out;
 }
 
@@ -611,5 +629,16 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_LOGO();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_HeaderBox();
+	}
+
+	// 14
+	pass ChapterSelect
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_ChapterSelect();
 	}
 };

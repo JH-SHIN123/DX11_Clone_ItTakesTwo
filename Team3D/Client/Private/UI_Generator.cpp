@@ -747,7 +747,7 @@ HRESULT CUI_Generator::Add_Prototype_LogoTexture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("HeaderBox"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/HeaderBox%d.png"), 4)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("MenuBackScreen"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/MenuBackScreen.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("PC_Enter"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/PC_Enter.png"))), E_FAIL);
-
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("ChapterSelectAlpha"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/ChapterSelect0.png"))), E_FAIL);
 
 	return S_OK;
 }
@@ -824,7 +824,6 @@ HRESULT CUI_Generator::Create_Logo()
 HRESULT CUI_Generator::Create_ChapterSelect()
 {
 	_uint iOption = 1;
-
 	SetUp_Clone(Player::Default, UI::MenuScreen, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
 
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ChapterLocalPlay"), Level::LEVEL_LOGO, &iOption);
@@ -833,7 +832,6 @@ HRESULT CUI_Generator::Create_ChapterSelect()
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Continue"), Level::LEVEL_LOGO, &iOption);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_ChapterSelect"), Level::LEVEL_LOGO, &iOption);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Minigame"), Level::LEVEL_LOGO, &iOption);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ChapterSelectAlpha"), Level::LEVEL_LOGO);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ChapterSelect_1"), Level::LEVEL_LOGO);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Banner_Back"), Level::LEVEL_LOGO, &iOption);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Cancle"), Level::LEVEL_LOGO, &iOption);
@@ -845,6 +843,9 @@ HRESULT CUI_Generator::Create_ChapterSelect()
 	SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("InputButton_Right_TriAngle"), Level::LEVEL_STATIC);
 	SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("InputButton_Frame_Right"), Level::LEVEL_STATIC);
 	SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("PC_Enter"), Level::LEVEL_LOGO);
+
+	iOption = 2;
+	SetUp_Clone(Player::Default, UI::MenuScreen, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
 
 	return S_OK;
 }

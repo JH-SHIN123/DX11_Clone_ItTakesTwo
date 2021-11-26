@@ -5,6 +5,7 @@
 
 BEGIN(Engine)
 class CVIBuffer_Rect;
+class CTextures;
 END
 
 BEGIN(Client)
@@ -26,6 +27,7 @@ public:
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
+	CTextures*						m_pSubTextureCom = nullptr;
 
 private:
 	HRESULT Ready_Component();
