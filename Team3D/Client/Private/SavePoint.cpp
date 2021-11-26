@@ -67,6 +67,10 @@ _int CSavePoint::Late_Tick(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+void CSavePoint::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+}
+
 CSavePoint * CSavePoint::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CSavePoint* pInstance = new CSavePoint(pDevice, pDeviceContext);

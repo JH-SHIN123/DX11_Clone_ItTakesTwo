@@ -36,6 +36,9 @@ public:
 	virtual _int	Tick(_double dTimeDelta);
 	virtual _int	Late_Tick(_double dTimeDelta);
 
+public:
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject);
+
 private:
 	CTransform*		m_pTransformCom = nullptr;
 	CTriggerActor*	m_pTriggerActorCom = nullptr;

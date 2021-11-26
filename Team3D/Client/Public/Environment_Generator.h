@@ -23,6 +23,7 @@ public:
 	/* TXT 파일 로드 */
 	HRESULT Load_Prototype_Model_Others_TXT(_tchar* pFilePath);
 	HRESULT Load_Prototype_Model_Instancing_TXT();
+	HRESULT Load_Prototype_GameObject_TXT();
 	/* DAT 파일 로드 */
 	HRESULT Load_Prototype_Model_Others(_tchar* pFilePath);
 	HRESULT Load_Prototype_Model_Instancing();

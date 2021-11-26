@@ -289,6 +289,18 @@
     <Filter Include="02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env">
       <UniqueIdentifier>{41e68147-d11e-4913-a0ba-ca2aa591f1a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\Planet">
+      <UniqueIdentifier>{124044e2-ad2e-4ef2-9df3-e1f4e83e8723}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\01.Instancing_Env\Bridge">
+      <UniqueIdentifier>{23b62c01-35ce-4912-8d66-d1a41a2c766a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\00.Parent">
+      <UniqueIdentifier>{9a7e59c1-0f27-4391-8680-1319812ccda0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\PlanetRing">
+      <UniqueIdentifier>{70339247-3508-4736-96ff-59d5aaf012e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -510,6 +522,18 @@
     <ClInclude Include="..\public\DeadLine.h">
       <Filter>02.GameObject\04.Stage_Space\01.Environment\98.DeadLine</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Planet.h">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\Planet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Bridge.h">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\01.Instancing_Env\Bridge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Dynamic_Env.h">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\00.Parent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlanetRing.h">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\PlanetRing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -703,6 +727,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\DeadLine.cpp">
       <Filter>02.GameObject\04.Stage_Space\01.Environment\98.DeadLine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Planet.cpp">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\Planet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bridge.cpp">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\01.Instancing_Env\Bridge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Dynamic_Env.cpp">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\00.Parent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlanetRing.cpp">
+      <Filter>02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\PlanetRing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

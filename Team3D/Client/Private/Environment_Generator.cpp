@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "..\Public\Environment_Generator.h"
 /* Load */
-#include "TileBox.h"
 #include <fstream>
 #include "SavePoint.h"
 #include "DeadLine.h"
+#include "Bridge.h"
+#include "Planet.h"
+#include "PlanetRing.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -102,6 +104,7 @@ HRESULT CEnvironment_Generator::Load_Prototype_GameObject()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Static_Env"), CStatic_Env::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SavePoint"), CSavePoint::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_DeadLine"), CDeadLine::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Bridge"), CBridge::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	while (true)
 	{
@@ -112,7 +115,7 @@ HRESULT CEnvironment_Generator::Load_Prototype_GameObject()
 		if (0 == dwByte)
 			break;
 
-		//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, szPrototypeTag, Create_Class(szPrototypeTag, m_pDevice, m_pDeviceContext)), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, szPrototypeTag, Create_Class(szPrototypeTag, m_pDevice, m_pDeviceContext)), E_FAIL);
 	}
 	CloseHandle(hFile);
 	return S_OK;
@@ -208,6 +211,11 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_Instancing_TXT()
 	return S_OK;
 }
 
+HRESULT CEnvironment_Generator::Load_Prototype_GameObject_TXT()
+{
+	return E_NOTIMPL;
+}
+
 HRESULT CEnvironment_Generator::Load_Environment_Space()
 {
 	DWORD		dwByte;
@@ -217,6 +225,7 @@ HRESULT CEnvironment_Generator::Load_Environment_Space()
 
 	CInstancing_Env::ARG_DESC	tIns_Env_Desc;
 	CStatic_Env::ARG_DESC		tStatic_Env_Desc;
+	CDynamic_Env::ARG_DESC		tDynamic_Env_Desc;
 
 	/* Instancing */
 	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/Space_Instancing.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
@@ -266,24 +275,26 @@ HRESULT CEnvironment_Generator::Load_Environment_Space()
 	}
 	CloseHandle(hFile);
 
-	///* Dynamic */
-	//hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/Space_Dynamic.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-	//if (INVALID_HANDLE_VALUE == hFile)
-	//	return E_FAIL;
+	/* Dynamic */
+	hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/Space_Dynamic.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
 
-	//for (_uint i = 0; i < iNumClone; ++i)
-	//{
-	//	ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
 
-	//	if (0 == dwByte)
-	//		break;
+		if (0 == dwByte)
+			break;
 
-	//	ReadFile(hFile, &szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
-	//	ReadFile(hFile, &World, sizeof(_float4x4), &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.iMatrialIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.iOption, sizeof(_uint), &dwByte, nullptr);
 
-	//	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, szPrototypeTag, &World), E_FAIL);
-	//}
-	//CloseHandle(hFile);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, szPrototypeTag, &tDynamic_Env_Desc), E_FAIL);
+	}
+	CloseHandle(hFile);
 
 	return S_OK;
 }
@@ -382,7 +393,7 @@ HRESULT CEnvironment_Generator::Load_Environment_Interactive_Instancing()
 	CInstancing_Env::ARG_DESC	tIns_Env_Desc;
 	CStatic_Env::ARG_DESC		tStatic_Env_Desc;
 
-	/* Instancing */
+	/* Bridge */
 	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/SpaceBridge_Instancing.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 	if (INVALID_HANDLE_VALUE == hFile)
 		return E_FAIL;
@@ -403,7 +414,7 @@ HRESULT CEnvironment_Generator::Load_Environment_Interactive_Instancing()
 
 		tIns_Env_Desc.Instancing_Arg.fCullingRadius = 10.f;
 
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, TEXT("GameObject_Instancing_Env"), &tIns_Env_Desc), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, TEXT("GameObject_Bridge"), &tIns_Env_Desc), E_FAIL);
 	}
 	CloseHandle(hFile);
 
@@ -465,16 +476,18 @@ CGameObject* CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D11
 {
 	CGameObject* pInstance = nullptr;
 
-	if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_DoorWay")))
+	if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_Planet")))
 	{
-		pInstance = CTileBox::Create(pDevice, pDeviceContext);
+		pInstance = CPlanet::Create(pDevice, pDeviceContext);
 		if (nullptr == pInstance)
-			MSG_BOX("Failed to Create Instance - GameObject_DoorWay");
+			MSG_BOX("Failed to Create Instance - Planet");
 	}
-	//else if ()
-	//{
-
-	//}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PlanetRing")))
+	{
+		pInstance = CPlanetRing::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PlanetRing");
+	}
 	return pInstance;
 }
 

@@ -37,14 +37,14 @@ HRESULT CMainApp::Run_App()
 
 	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
 
-	if (m_dFrameAcc >= 1.0 / 160.0)
+	if (m_dFrameAcc >= 1.0 / 60.0)
 	{
 		m_dFrameAcc = 0.0;
 
 		_double dTimeDelta = m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
 
-		m_dTimeDelta = dTimeDelta;
-		//m_dTimeDelta = 0.016666666666666666;
+		//m_dTimeDelta = dTimeDelta;
+		m_dTimeDelta = 0.016666666666666666;
 
 		if (Tick(m_dTimeDelta) & 0x80000000)
 			return E_FAIL;

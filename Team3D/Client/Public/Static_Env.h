@@ -47,7 +47,10 @@ private:
 	CModel*				m_pModelCom = nullptr;
 	CStaticActor*		m_pStaticActorCom = nullptr;
 
-	ARG_DESC		m_Static_Env_Desc;
+	ARG_DESC			m_Static_Env_Desc;
+
+private:
+	HRESULT Ready_Component(void* pArg);
 
 public:
 	static CStatic_Env* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -60,6 +60,10 @@ _int CDeadLine::Late_Tick(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+void CDeadLine::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+}
+
 CDeadLine * CDeadLine::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CDeadLine* pInstance = new CDeadLine(pDevice, pDeviceContext);
