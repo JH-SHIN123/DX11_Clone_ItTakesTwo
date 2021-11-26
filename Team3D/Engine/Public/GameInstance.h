@@ -101,6 +101,7 @@ public:
 #pragma region PhysX
 	PxMaterial*		Get_BasePxMaterial();
 	PxTriangleMesh*	Create_PxMesh(MESHACTOR_DESC pMeshActorDesc);
+	_bool			Raycast(const PxVec3& origin, const PxVec3& unitDir, const PxReal distance, PxRaycastCallback& hitCall, PxHitFlags hitFlags = PxHitFlags(PxHitFlag::eDEFAULT), const PxQueryFilterData& filterData = PxQueryFilterData(), PxQueryFilterCallback* filterCall = NULL, const PxQueryCache* cache = NULL);
 #pragma endregion
 
 #pragma region Pipeline_Manager
@@ -112,8 +113,10 @@ public:
 #pragma endregion
 
 #pragma region Frustum
-	_bool	IsIn_WorldSpace(_fvector vPosition, _float fRadius = 0.f);
-	_bool	IsIn_LocalSpace(_fvector vPosition, _float fRadius = 0.f);
+	_bool	IsIn_WorldSpace_Main(_fvector vPosition, _float fRadius);
+	_bool	IsIn_WorldSpace_Sub(_fvector vPosition, _float fRadius);
+	_bool	IsIn_LocalSpace_Main(_fvector vPosition, _float fRadius);
+	_bool	IsIn_LocalSpace_Sub(_fvector vPosition, _float fRadius);
 #pragma endregion
 
 private:

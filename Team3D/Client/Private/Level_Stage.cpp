@@ -27,19 +27,19 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
 
 	///* For.Interactive Objects */
-	//FAILED_CHECK_RETURN(Ready_Layer_NoBatterySign(TEXT("Layer_NoBatterySign")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_Robot(TEXT("Layer_Robot")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_RobotHead(TEXT("Layer_RobotHead")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_RobotLever(TEXT("Layer_RobotLever")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_RobotBattery(TEXT("Layer_RobotBattery")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_SecurityCameraHandle(TEXT("Layer_SecurityCameraHandle")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_SecurityCamera(TEXT("Layer_SecurityCamera")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_TutorialDoor(TEXT("Layer_TutorialDoor")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_NoBatterySign(TEXT("Layer_NoBatterySign")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Robot(TEXT("Layer_Robot")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_RobotHead(TEXT("Layer_RobotHead")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_RobotLever(TEXT("Layer_RobotLever")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_RobotBattery(TEXT("Layer_RobotBattery")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_SecurityCameraHandle(TEXT("Layer_SecurityCameraHandle")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_SecurityCamera(TEXT("Layer_SecurityCamera")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_TutorialDoor(TEXT("Layer_TutorialDoor")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_BigButton(TEXT("Layer_BigButton")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_SpaceValve(TEXT("Layer_SpaceValve")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_BigPlanet(TEXT("Layer_BigPlanet")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_SpaceValve(TEXT("Layer_SpaceValve")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_BigPlanet(TEXT("Layer_BigPlanet")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Hook_UFO(TEXT("Layer_HookUFO")), E_FAIL);
 
 
@@ -51,9 +51,9 @@ HRESULT CLevel_Stage::NativeConstruct()
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Map", Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
 
 	/* For. Environment */
-	//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space(), E_FAIL);
-	//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space_Boss(), E_FAIL);
-	//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Interactive_Instancing(), E_FAIL);
+	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space(), E_FAIL);
+	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space_Boss(), E_FAIL);
+	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Interactive_Instancing(), E_FAIL);
 
 	return S_OK;
 }
@@ -62,14 +62,8 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
 
-	if (m_pGameInstance->Key_Down(DIK_1))
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 0.f, 1.f) );
-	if (m_pGameInstance->Key_Down(DIK_2))
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_3))
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
-
 	CEffect_Generator::GetInstance()->LoopSpawner(dTimedelta);
+
 
 	return NO_EVENT;
 }
@@ -78,6 +72,7 @@ HRESULT CLevel_Stage::Render()
 {
 	return S_OK;
 }
+
 
 HRESULT CLevel_Stage::Ready_Lights()
 {
@@ -103,7 +98,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 	/* For. Point */
 	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
 	LightDesc.vPosition = XMFLOAT3(5.f, 5.f, 10.f);
-	LightDesc.vDiffuse = XMFLOAT4(1.f, 0.f, 0.f, 1.f);
+	LightDesc.vDiffuse = XMFLOAT4(0.f, 0.f, 1.f, 1.f);
 	LightDesc.vAmbient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
 	LightDesc.fRange = 15.f;
@@ -114,12 +109,13 @@ HRESULT CLevel_Stage::Ready_Lights()
 	return S_OK;
 }
 
+
 HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
 	CCamera::CAMERA_DESC CameraDesc;
 	CameraDesc.iViewportIndex					= 1;
-	CameraDesc.vEye								= /*_float3(0.f, 8.f, -7.f);*/_float3(0.f, 8.f, -11.f);
-	CameraDesc.vAt								= /*_float3(0.f, 0.f, 0.f);*/_float3(0.f, 4.5f, 0.f);
+	CameraDesc.vEye								= _float3(0.f, 8.f, -7.f);
+	CameraDesc.vAt								= _float3(0.f, 2.f, 0.f);
 	CameraDesc.vAxisY							= _float3(0.f, 1.f, 0.f);
 	CameraDesc.fFovY							= XMConvertToRadians(60.f);
 	CameraDesc.fFullScreenAspect				= (_float)g_iWinCX / (_float)g_iWinCY;
@@ -132,8 +128,8 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MainCamera"), &CameraDesc), E_FAIL);
 
 	CameraDesc.iViewportIndex					= 2;
-	CameraDesc.vEye								= /*_float3(0.f, 8.f, -7.f);*/_float3(0.f, 8.f, -11.f);
-	CameraDesc.vAt								= /*_float3(0.f, 0.f, 0.f);*/_float3(0.f, 4.5f, 0.f);
+	CameraDesc.vEye								= _float3(0.f, 8.f, -7.f);
+	CameraDesc.vAt								= _float3(0.f, 0.f, 0.f);
 	CameraDesc.vAxisY							= _float3(0.f, 1.f, 0.f);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SubCamera"), &CameraDesc), E_FAIL);
@@ -298,7 +294,7 @@ HRESULT CLevel_Stage::Ready_Layer_Hook_UFO(const _tchar * pLayerTag)
 }
 HRESULT CLevel_Stage::Ready_Layer_BigPlanet(const _tchar * pLayerTag)
 {
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_BigPlanet")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HangingPlanet")), E_FAIL);
 	return S_OK;
 }
 HRESULT CLevel_Stage::Ready_Layer_Test()

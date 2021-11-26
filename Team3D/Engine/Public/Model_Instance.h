@@ -29,28 +29,73 @@ public: /* Struct */
 	}PX_TRIMESH;
 
 public: /* Setter */
+	/**
+	* Set_MeshRenderGroup
+	* 특정 메쉬의 렌더 그룹 지정.
+	* 하나라도 세팅하면 다른 메쉬들도 그룹을 지정해주어야 한다.
+	* Renderer에 추가할 때는 지정한 그룹에 모두 추가해주어야 한다.
+	*/
 	HRESULT Set_MeshRenderGroup(_uint iMeshIndex, RENDER_GROUP::Enum eGroup);
-	/* For.Shader */
+	/**
+	* Set_Variable
+	* 셰이더 상수 세팅.
+	*/
 	HRESULT	Set_Variable(const char* pConstantName, void* pData, _uint iByteSize);
+	/**
+	* Set_ShaderResourceView
+	* 셰이더 텍스쳐 세팅.
+	*/
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, ID3D11ShaderResourceView* pShaderResourceView);
 	HRESULT	Set_ShaderResourceView(const char* pConstantName, _uint iMaterialIndex, aiTextureType eTextureType, _uint iTextureIndex = 0);
+	/**
+	* Set_DefaultVariables_Perspective
+	* 셰이더 디폴트 상수버퍼 세팅.
+	*/
 	HRESULT	Set_DefaultVariables_Perspective();
+	/**
+	* Set_DefaultVariables_Shadow
+	* 셰이더 디폴트 그림자버퍼 세팅.
+	*/
 	HRESULT	Set_DefaultVariables_Shadow();
+	/**
+	* Set_DefaultVariables_ShadowDepth
+	* 셰이더 디폴트 그림자깊이버퍼 세팅.
+	*/
 	HRESULT	Set_DefaultVariables_ShadowDepth();
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(_uint iMaxInstanceCount, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-	/* For.ModelLoader */
-	HRESULT	Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials);
-	/* For.Client */
+	HRESULT			Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials);
+	/* Client */
+	/**
+	* Culling
+	* Render 하려면 반드시 먼저 호출.
+	* return, Culling되지 않은 인스턴스 수
+	*/
+	_uint Culling();
+	/**
+	* Update_Model
+	* 모델 전체 이동
+	* TransformMatrix, 부모 월드 행렬
+	*/
 	HRESULT Update_Model(_fmatrix TransformMatrix);
+	/**
+	* Render_Model
+	* iMaterialSetNum, 세팅할 텍스쳐세트 인덱스
+	*/
 	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
-
-public:
-	_uint	Frustum_Culling(); /* @Return : RenderCount */
-	HRESULT Bind_GBuffers(_uint iRenderCount);
-	HRESULT	Render_ModelByPass(_uint iRenderCount, _uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END); /* 텍스쳐 외부에서 따로 연결해줘야함. */
+	/**
+	* Separated_Bind_Buffer
+	* Sepd_Render_Model을 이용하는 경우 호출.
+	*/
+	HRESULT Sepd_Bind_Buffer();
+	/**
+	* Separated_Render_Model
+	* 텍스쳐 외부에서 따로 연결해줘야함.
+	* iMaterialIndex, 렌더할 머티리얼 그룹
+	*/
+	HRESULT	Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
 
 private: /* Typedef */
 	typedef vector<class CMesh*>	MESHES;
@@ -66,15 +111,17 @@ private:
 	vector<MESHES>			m_SortedMeshes;
 	/* For.Instance */
 	_uint					m_iInstanceCount = 0;
-	_float4x4*				m_pWorldMatrices = nullptr;
-	vector<_float4x4>		m_RealTimeMatrices;
+	_float4x4*				m_arrWorldMatrices = nullptr;
+	_uint*					m_arrViewportDrawInfo = nullptr;
+	_uint					m_iRealDrawCount = 0;
+	VTXMATRIX2*				m_arrRealTimeMatrices = nullptr;
 	_float					m_fCullingRadius = 0.f;
 	/* For.PhyX */
 	PxRigidStatic**			m_ppActors = nullptr;
 	vector<PX_TRIMESH>		m_PxTriMeshes;
 	/* For.MaterialSet */
 	_uint					m_iMaterialSetCount = 0;
-	/*For. Check Bind Materials */
+	/* For. Check Bind Materials */
 	_uint					m_IsBindMaterials[AI_TEXTURE_TYPE_MAX];
 	/* For.MultiRenderGroup */
 	_bool					m_bMultiRenderGroup = false;
@@ -98,7 +145,7 @@ private: /* For.Buffer */
 	D3D11_PRIMITIVE_TOPOLOGY	m_eTopology;
 	/* For.Instance */
 	ID3D11Buffer*				m_pVBInstance = nullptr;
-	VTXMATRIX*					m_pInstanceVertices = nullptr;
+	VTXMATRIX2*					m_pInstanceVertices = nullptr;
 	_uint						m_iMaxInstanceCount = 0;
 	/* For.Shader */
 	ID3DX11Effect*				m_pEffect = nullptr;

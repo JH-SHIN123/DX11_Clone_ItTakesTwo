@@ -5,6 +5,22 @@
 
 BEGIN(Client)
 
+/* 스레드 종료 시간 체크용 */
+//#define __THREADCHECK
+/** 
+* 각자 CPU 상태보다 높은 상태는 주석처리
+* 로딩에 코드 추가할 때 16/8/6 스레드별 함수 모두 세팅할 것.
+*/
+#define __6THREADS
+//#define __8THREADS
+//#define __16THREADS
+
+#ifdef __THREADCHECK
+#define __threadbreak __debugbreak();
+#else
+#define __threadbreak
+#endif
+
 class CLoading final : public CBase
 {
 public:

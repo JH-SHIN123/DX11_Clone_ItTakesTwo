@@ -77,7 +77,8 @@ _int CTileBox::Late_Tick(_double dTimeDelta)
 
 	/* RenderGroup, 여러 그룹에 그려야 하는 경우 모두 추가 */
 	//m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
-	m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	if (0 < m_pModelCom->Culling())
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
 	return NO_EVENT;
 }

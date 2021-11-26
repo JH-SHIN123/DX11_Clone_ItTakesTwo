@@ -19,6 +19,9 @@ private:
 	explicit CTestObject01(const CTestObject01& rhs);
 	virtual ~CTestObject01() = default;
 
+public: /* Getter */
+	CTransform* Get_Transform() { return m_pTransformCom; }
+
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;

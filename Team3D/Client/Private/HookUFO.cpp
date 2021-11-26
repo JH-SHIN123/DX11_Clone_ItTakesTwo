@@ -92,7 +92,10 @@ _int CHookUFO::Late_Tick(_double dTimeDelta)
 
 	InterActive_UI();
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+
+	return NO_EVENT;
 }
 
 HRESULT CHookUFO::Render(RENDER_GROUP::Enum eGroup)

@@ -52,7 +52,10 @@ _int CSecurityCamera::Tick(_double dTimeDelta)
 _int CSecurityCamera::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+
+	return NO_EVENT;
 }
 
 HRESULT CSecurityCamera::Render(RENDER_GROUP::Enum eGroup)

@@ -200,7 +200,11 @@ _int CCody::Tick(_double dTimeDelta)
 _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+
+	return NO_EVENT;
 }
 
 HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
@@ -1668,9 +1672,9 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 		// ZY
 		m_faAcceleration = (-1.f * Gravity / m_faArmLength) * sin(m_fRopeAngle);
 		if (m_pGameInstance->Key_Pressing(DIK_W))
-			m_faAcceleration += dTimeDelta;
+			m_faAcceleration += (_float)dTimeDelta;
 		if (m_pGameInstance->Key_Pressing(DIK_S))
-			m_faAcceleration -= dTimeDelta;
+			m_faAcceleration -= (_float)dTimeDelta;
 		m_faVelocity += m_faAcceleration;
 		m_faVelocity *= m_faDamping;
 		m_fRopeAngle += m_faVelocity / 15.f;
@@ -1683,7 +1687,7 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 
 		_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION),0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
 		vTriggerToPlayer = XMVectorSetW(vTriggerToPlayer, 1.f);
-		m_pTransformCom->RotateYawDirectionOnLand(-vTriggerToPlayer, dTimeDelta / 2.f);
+		m_pTransformCom->RotateYawDirectionOnLand(-vTriggerToPlayer, (_float)dTimeDelta / 2.f);
 		//m_pTransformCom->Set_RotateAxis(m_vHookUFOAxis, sin(-m_fRopeAngle));
 
 		

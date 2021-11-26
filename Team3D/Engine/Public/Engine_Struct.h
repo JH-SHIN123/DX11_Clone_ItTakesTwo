@@ -4,15 +4,14 @@ namespace Engine
 {
 	typedef struct tagLightDesc
 	{
-		enum LIGHTTYPE { TYPE_DIRECTIONAL, TYPE_POINT, TYPE_END };
+		enum LIGHTTYPE { TYPE_DIRECTIONAL, TYPE_POINT, TYPE_SPOT, TYPE_END };
 
 		LIGHTTYPE	eType;
 		XMFLOAT3	vDirection;
 		XMFLOAT3	vPosition;
 		float		fRange;
 		float		fAtt;
-		//float		fAngleOuterCone;
-		//float		fAngleInnerCone;
+		float		fSpotCosOuterCone;
 		XMFLOAT4	vDiffuse;
 		XMFLOAT4	vAmbient;
 		XMFLOAT4	vSpecular;
@@ -114,11 +113,20 @@ namespace Engine
 
 	typedef struct tagVertexMatrix
 	{
-		XMFLOAT4	vRight;
-		XMFLOAT4	vUp;
-		XMFLOAT4	vLook;
-		XMFLOAT4	vPosition;
+		XMFLOAT4		vRight;
+		XMFLOAT4		vUp;
+		XMFLOAT4		vLook;
+		XMFLOAT4		vPosition;
 	}VTXMATRIX;
+
+	typedef struct tagVertexMatrix2
+	{
+		XMFLOAT4		vRight;
+		XMFLOAT4		vUp;
+		XMFLOAT4		vLook;
+		XMFLOAT4		vPosition;
+		unsigned int 	iViewportDrawInfo;
+	}VTXMATRIX2;
 
 	typedef struct tagVertexPoint
 	{

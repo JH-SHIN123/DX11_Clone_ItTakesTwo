@@ -1,10 +1,7 @@
 #include "stdafx.h"
 #include "..\public\MainApp.h"
-#include "GameInstance.h"
 #include "Level_Loading.h"
-
 #include "Effect_Generator.h"
-#include "DataStorage.h"
 #include "UI_Generator.h"
 #include "Environment_Generator.h"
 
@@ -26,8 +23,6 @@ HRESULT CMainApp::NativeConstruct()
 	UI_Generator->NativeConstruct(m_pDevice, m_pDeviceContext);
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
 
-	// Test Ä¿¹Ô
-
 	return S_OK;
 }
 
@@ -37,14 +32,14 @@ HRESULT CMainApp::Run_App()
 
 	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
 
-	if (m_dFrameAcc >= 1.0 / 60.0)
+	if (m_dFrameAcc >= 1.0 / 160.0)
 	{
 		m_dFrameAcc = 0.0;
 
 		_double dTimeDelta = m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
 
-		//m_dTimeDelta = dTimeDelta;
-		m_dTimeDelta = 0.016666666666666666;
+		m_dTimeDelta = dTimeDelta;
+		//m_dTimeDelta = 0.016666666666666666;
 
 		if (Tick(m_dTimeDelta) & 0x80000000)
 			return E_FAIL;
@@ -148,11 +143,10 @@ void CMainApp::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pGameInstance);
 
-
 	CEffect_Generator::DestroyInstance(); // ÀÌÆåÆ® Á¦¾î±â
-	UI_Generator->DestroyInstance();
-	CDataStorage::GetInstance()->DestroyInstance();
-	CEnvironment_Generator::GetInstance()->DestroyInstance();
+	CUI_Generator::DestroyInstance();
+	CDataStorage::DestroyInstance();
+	CEnvironment_Generator::DestroyInstance();
 
 	CGameInstance::Release_Engine();
 }

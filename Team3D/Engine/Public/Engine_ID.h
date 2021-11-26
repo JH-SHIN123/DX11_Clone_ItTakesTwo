@@ -9,6 +9,8 @@ namespace Engine
 			eCODY,
 			eMAY,
 			eCAMERA,
+			eMAINCAMERA,
+			eSUBCAMERA,
 			eUFO,
 			eMOONBABOON,
 			eSTARBUDDY,
