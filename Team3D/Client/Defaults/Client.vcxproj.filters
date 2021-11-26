@@ -573,6 +573,9 @@
     <ClInclude Include="..\Public\GravityPath.h">
       <Filter>02.GameObject\04.Stage_Space\02.Se\01.GravityPath</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RobotParts.h">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -796,6 +799,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\GravityPath.cpp">
       <Filter>02.GameObject\04.Stage_Space\02.Se\01.GravityPath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RobotParts.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
