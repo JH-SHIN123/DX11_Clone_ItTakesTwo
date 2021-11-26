@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CRenderer;
 class CTransform;
 class CModel;
+class CStaticActor;
 END
 
 BEGIN(Client)
@@ -21,6 +22,7 @@ protected:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
+
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
@@ -38,6 +40,8 @@ protected:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
+	CStaticActor*		m_pStaticActorCom = nullptr;
+
 public:
 	static CRobot* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

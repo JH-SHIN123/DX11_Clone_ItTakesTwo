@@ -22,6 +22,8 @@ public: /* Struct */
 
 public: /* Getter */
 	_bool  Get_IsJump() { return m_bJump; }
+	_bool  Get_IsFalling() { return m_IsFalling; }
+
 	PxController* Get_Controller() { return m_pController; }
 	PxRigidDynamic* Get_Actor() { return m_pActor; }
 
@@ -29,16 +31,23 @@ public: /* Setter */
 	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
 	void    Set_Jump(_bool bJump) { m_bJump = bJump; }
 	void	Set_Scale(_float fRadius, _float fHeight);
+	void	Set_GroundPound(_bool bGroundPound) { m_bGroundPound = bGroundPound; }
+	void    Set_ZeroGravity(_bool bZeroGravity, _bool IsGoUp, _bool IsStatic) { m_bZeroGravity = bZeroGravity; m_IsGoUp = IsGoUp; m_bStatic = IsStatic; }
+	void	Set_IsFalling(_bool IsFalling) { m_IsFalling = IsFalling; }
 	void	Set_Position(_fvector vPosition);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	void	Move(_fvector vMove, _double dTimeDelta);
+
 	void	Update(_double dTimeDelta);
 	void	Update_Cam(_double dTimeDelta);
 	void	Jump_Start(_float fJumpForce);
 	void	Jump_Higher(_float fJumpForce);
+
+	//void	Kinematic_On() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true); }
+	//void	Kinematic_Off() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false); }
 
 private:
 	PxController*						m_pController = nullptr;
@@ -54,6 +63,15 @@ private:
 	_float	m_fJumpForce = 0.f;
 	_float	m_fBaseJumpForce = 0.f;
 	_bool	m_bJump = false;
+	_bool	m_bGroundPound = false;
+	_bool	m_IsFalling = false;
+	_bool   m_bZeroGravity = false;
+	_bool	m_IsGoUp = false;
+	_bool   m_bStatic = false;
+
+	_float  m_fFallingTime = 0.f;
+
+
 	/* For.Gravity */
 	_float m_fGravity = -9.8f;
 

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Environment_Generator.h"
 /* Load */
-#include "TileBox.h"
 #include <fstream>
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
@@ -455,12 +454,12 @@ CGameObject* CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D11
 {
 	CGameObject* pInstance = nullptr;
 
-	if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_DoorWay")))
-	{
-		pInstance = CTileBox::Create(pDevice, pDeviceContext);
-		if (nullptr == pInstance)
-			MSG_BOX("Failed to Create Instance - GameObject_DoorWay");
-	}
+	//if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_DoorWay")))
+	//{
+	//	pInstance = CTileBox::Create(pDevice, pDeviceContext);
+	//	if (nullptr == pInstance)
+	//		MSG_BOX("Failed to Create Instance - GameObject_DoorWay");
+	//}
 	//else if ()
 	//{
 

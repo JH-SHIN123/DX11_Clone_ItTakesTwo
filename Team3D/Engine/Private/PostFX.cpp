@@ -424,14 +424,6 @@ void CPostFX::Free()
 	Safe_Release(m_pShaderResourceView_PrevLumAve);
 	Safe_Release(m_pHDRBuffer_PrevLumAve);
 
-	for (auto& InputLayout : m_InputLayouts_CS_Bloom)
-	{
-		Safe_Release(InputLayout.pPass);
-		Safe_Release(InputLayout.pLayout);
-	}
-	m_InputLayouts_CS_Bloom.clear();
-	Safe_Release(m_pEffect_CS_Bloom);
-
 	for (auto& InputLayout : m_InputLayouts_CS)
 	{
 		Safe_Release(InputLayout.pPass);

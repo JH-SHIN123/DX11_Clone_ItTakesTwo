@@ -5,6 +5,22 @@
 
 BEGIN(Client)
 
+/* 스레드 종료 시간 체크용 */
+//#define __THREADCHECK
+/** 
+* 각자 CPU 상태보다 높은 상태는 주석처리
+* 로딩에 코드 추가할 때 16/8/6 스레드별 함수 모두 세팅할 것.
+*/
+#define __6THREADS
+#define __8THREADS
+#define __16THREADS
+
+#ifdef __THREADCHECK
+#define __threadbreak __debugbreak();
+#else
+#define __threadbreak
+#endif
+
 class CLoading final : public CBase
 {
 public:
@@ -43,6 +59,16 @@ private:
 private:
 	HRESULT LoadingForLogo(_uint iThreadIndex);
 	HRESULT LoadingForStage(_uint iThreadIndex); /* 예시, 테스트용 Level */
+
+private:
+	/* 각자 GameObject 프로토타입 생성 함수 */
+	HRESULT Create_GameObjects_SpaceStage_Se();
+	HRESULT Create_GameObjects_SpaceStage_Jung();
+	HRESULT Create_GameObjects_SpaceStage_Hye();
+	HRESULT Create_GameObjects_SpaceStage_Won();
+	HRESULT Create_GameObjects_SpaceStage_Yoon();
+	HRESULT Create_GameObjects_SpaceStage_Jin();
+	HRESULT Create_GameObjects_SpaceStage_Jun();
 
 public:
 	static CLoading* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, Level::ID ePreLevelID, Level::ID eNextLevelID);

@@ -19,6 +19,9 @@ protected:
 	explicit CCharacter(const CCharacter& rhs);
 	virtual ~CCharacter() = default;
 
+public: /* Getter */
+	virtual _fvector Get_Position();
+
 protected:
 	_float Compute_Distance(CTransform* pPlayerTransform, CTransform* pDstTransform);
 	_float Compute_Degree(CTransform* pPlayerTransform, CTransform* pDstTransform);
@@ -27,8 +30,8 @@ protected:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-	virtual _int	Tick(_double TimeDelta) override;
-	virtual _int	Late_Tick(_double TimeDelta) override;
+	virtual _int	Tick(_double dTimeDelta) override;
+	virtual _int	Late_Tick(_double dTimeDelta) override;
 
 public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
