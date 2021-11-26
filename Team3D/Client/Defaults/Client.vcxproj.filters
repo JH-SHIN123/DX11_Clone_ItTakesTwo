@@ -19,15 +19,6 @@
     <Filter Include="02.GameObject">
       <UniqueIdentifier>{b604bc39-7ea2-4ccb-a98b-f89e2d0279b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\01.Loading">
-      <UniqueIdentifier>{ac29aab8-7d55-49ae-bb11-1270e2049714}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\02.Logo">
-      <UniqueIdentifier>{6e3ecc34-09e4-48a8-b8b4-f1dd9d96c681}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\03.Title">
-      <UniqueIdentifier>{c6f20a96-3c8d-4d61-acd8-53abeea0b007}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Maps\01.Loading">
       <UniqueIdentifier>{6fc0b5cb-e4c3-4c8d-8e2e-a4ec808b25df}</UniqueIdentifier>
     </Filter>
@@ -52,24 +43,6 @@
     <Filter Include="02.GameObject\00.Public\02.SubCamera">
       <UniqueIdentifier>{4b2392a0-3625-4b99-8237-885ba87b80b5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\99.Stage%28Test%29">
-      <UniqueIdentifier>{3a31bfe3-5c29-46d4-83e7-8849231704c5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\99.Stage%28Test%29\02.Terrain">
-      <UniqueIdentifier>{704afc64-374d-4351-86c5-3f01bb2ccb2e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Maps\99.Stage%28Test%29">
-      <UniqueIdentifier>{112fc71b-614e-424a-b3ab-164e9e68c037}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Tree">
-      <UniqueIdentifier>{9b2ce05d-80d0-464d-8dce-5a75d40f42db}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\99.Stage%28Test%29\01.Player">
-      <UniqueIdentifier>{b134e824-3c41-4f85-8703-7c00321fcce5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="96.DataBase">
-      <UniqueIdentifier>{9d471ce0-e768-450b-9d91-9b678d9ec778}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle">
       <UniqueIdentifier>{4034cc9d-5a92-4ac0-ac7d-533f2b23bdc9}</UniqueIdentifier>
     </Filter>
@@ -78,9 +51,6 @@
     </Filter>
     <Filter Include="95.Effect_Generator">
       <UniqueIdentifier>{1efce119-1cf1-4fab-92f2-6371aba8b2a3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\99.Stage%28Test%29\03.Env">
-      <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point">
       <UniqueIdentifier>{f1297b94-aa6d-4d1e-9f97-4bfe51b57a14}</UniqueIdentifier>
@@ -136,21 +106,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.Revive_Effect">
       <UniqueIdentifier>{9657cfa3-22bc-48ee-b205-3d702b0af337}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\98.Interactive_Objects">
-      <UniqueIdentifier>{80b9488d-6107-4ad3-ab4d-9ba4db640228}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\98.Interactive_Objects\00.Rocket">
-      <UniqueIdentifier>{a4d27e3c-4021-47f3-bb3c-081dd7fb5758}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\98.Interactive_Objects\01.StarBuddy">
-      <UniqueIdentifier>{6be15374-eb26-4929-8e60-d673bd18461d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\98.Interactive_Objects\02.SecurityCamera">
-      <UniqueIdentifier>{db7e22fc-29b8-4ab2-a9be-83636efb01da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\98.Interactive_Objects\03.Robot">
-      <UniqueIdentifier>{cb5078d5-ca2a-48ea-ab02-93109613a458}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97.ShaderFiles\Include">
       <UniqueIdentifier>{87727c9a-6160-4971-88de-e99cb7b2333a}</UniqueIdentifier>
     </Filter>
@@ -180,9 +135,6 @@
     </Filter>
     <Filter Include="01.Maps\04.Stage_Space">
       <UniqueIdentifier>{5bbd0183-dea1-417a-b173-4e16c2288048}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\99.Stage%28Test%29\03.Test">
-      <UniqueIdentifier>{f2b26437-be50-49fb-ab11-bdedab09dd5b}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Object">
       <UniqueIdentifier>{57086f47-9651-4c97-879a-fb50562cd8cf}</UniqueIdentifier>
@@ -277,6 +229,7 @@
     <Filter Include="02.GameObject\04.Stage_Space\01.Environment\Environment_Generator">
       <UniqueIdentifier>{a8d8c8a6-5681-43c5-bb21-cb5353391f70}</UniqueIdentifier>
     </Filter>
+<<<<<<< HEAD
     <Filter Include="02.GameObject\06.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
     </Filter>
@@ -289,6 +242,8 @@
     <Filter Include="02.GameObject\05.UI\10.Menu\01.HeaderBox">
       <UniqueIdentifier>{3d06338d-2d98-4faa-8163-518d639a3457}</UniqueIdentifier>
     </Filter>
+=======
+>>>>>>> main
     <Filter Include="03.Component">
       <UniqueIdentifier>{6f424d55-06aa-4b07-a102-2829f8dd72e4}</UniqueIdentifier>
     </Filter>
@@ -307,6 +262,7 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
       <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
     </Filter>
+<<<<<<< HEAD
     <Filter Include="02.GameObject\05.UI\02.ButtonIcon">
       <UniqueIdentifier>{3c2d527a-22db-4fc8-a7c5-05df63b7b482}</UniqueIdentifier>
     </Filter>
@@ -324,6 +280,70 @@
     </Filter>
     <Filter Include="02.GameObject\05.UI\11.ChapterSelect">
       <UniqueIdentifier>{f0c03c84-48c4-479e-86d2-76c7f04a52ce}</UniqueIdentifier>
+=======
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon">
+      <UniqueIdentifier>{307d7217-2819-471f-be94-d8cf74b19ac9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung">
+      <UniqueIdentifier>{fec661ad-31f9-4dec-b790-1b4cb09030ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se">
+      <UniqueIdentifier>{4fcd64c3-f491-4bc2-b03e-7ee6a2091478}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye">
+      <UniqueIdentifier>{ade7861b-fc9f-4044-8e8a-b7432305af13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Won">
+      <UniqueIdentifier>{16b45242-49d0-49a2-a0ce-26a0faf7f9eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin">
+      <UniqueIdentifier>{36cb6d5b-c440-4edb-bdcf-2cd582b022db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\08.Jun">
+      <UniqueIdentifier>{0a4d8ed2-ea40-4cd4-bfdf-16db4b954909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\01.GravityPath">
+      <UniqueIdentifier>{f3a893e3-2973-442e-a466-ffed74b1f8dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\00.Rocket">
+      <UniqueIdentifier>{a4d27e3c-4021-47f3-bb3c-081dd7fb5758}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\01.StarBuddy">
+      <UniqueIdentifier>{6be15374-eb26-4929-8e60-d673bd18461d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\02.SecurityCamera">
+      <UniqueIdentifier>{db7e22fc-29b8-4ab2-a9be-83636efb01da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\03.Robot">
+      <UniqueIdentifier>{cb5078d5-ca2a-48ea-ab02-93109613a458}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction">
+      <UniqueIdentifier>{1c2f6626-67b0-482c-a1ec-122b03c25042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\03.Robot\NoneInteraction">
+      <UniqueIdentifier>{52929ebb-0420-4a62-9b53-eddeed4bac1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\04.TutorialDoor">
+      <UniqueIdentifier>{6d013226-dd4d-47df-845f-f9034ed1d948}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\05.BigButton">
+      <UniqueIdentifier>{e542390a-f37e-411e-8fa0-b1338584a8eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\06.SpaceValve">
+      <UniqueIdentifier>{220b96f2-3a32-467d-a590-dc1504fa0045}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\07.BigPlanet">
+      <UniqueIdentifier>{cde19c6b-aaa3-40d0-8a31-9981b800428b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO">
+      <UniqueIdentifier>{7f50933c-0671-40a9-ab76-5da48106a69e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\01.Intro">
+      <UniqueIdentifier>{6e3ecc34-09e4-48a8-b8b4-f1dd9d96c681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\02.Sky">
+      <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
+>>>>>>> main
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -354,14 +374,8 @@
     <ClInclude Include="..\Public\Client_Enum.h">
       <Filter>98.Defines</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Terrain.h">
-      <Filter>02.GameObject\99.Stage%28Test%29\02.Terrain</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\MainCamera.h">
       <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Level_Stage.h">
-      <Filter>01.Maps\99.Stage%28Test%29</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\SubCamera.h">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
@@ -377,9 +391,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\May.h">
       <Filter>02.GameObject\03.Character\01.May</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\TileBox.h">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MoonBaboon.h">
       <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
@@ -439,16 +450,16 @@
       <Filter>02.GameObject\05.Effect/Particle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Rocket.h">
-      <Filter>02.GameObject\98.Interactive_Objects\00.Rocket</Filter>
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\00.Rocket</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\StarBuddy.h">
-      <Filter>02.GameObject\98.Interactive_Objects\01.StarBuddy</Filter>
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\01.StarBuddy</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Robot.h">
-      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    <ClInclude Include="..\Public\SecurityCameraHandle.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\02.SecurityCamera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\RobotHead.h">
-      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    <ClInclude Include="..\Public\SecurityCamera.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\02.SecurityCamera</Filter>
     </ClInclude>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
@@ -474,9 +485,6 @@
     <ClInclude Include="..\Public\TestEffect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\TestObject01.h">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UI_Generator.h">
       <Filter>02.GameObject\05.UI\99.UI_Generator</Filter>
     </ClInclude>
@@ -501,9 +509,16 @@
     <ClInclude Include="..\Public\UISprite.h">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Robot.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\NoneInteraction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RobotHead.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\NoneInteraction</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h">
       <Filter>98.Defines</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="..\Public\RespawnCircle.h">
       <Filter>02.GameObject\05.UI\06.RespawnCircle</Filter>
     </ClInclude>
@@ -521,6 +536,28 @@
     </ClInclude>
     <ClInclude Include="..\Public\SplashScreen.h">
       <Filter>02.GameObject\02.Logo\00.SplashScreen</Filter>
+=======
+    <ClInclude Include="..\Public\RobotLever.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RobotBattery.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TutorialDoor.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\04.TutorialDoor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BigButton.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\05.BigButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NoBatterySign.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SpaceValve.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\06.SpaceValve</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BigPlanet.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\07.BigPlanet</Filter>
+>>>>>>> main
     </ClInclude>
     <ClInclude Include="..\Public\CamEffect.h">
       <Filter>02.GameObject\00.Public\03.Cam_Helper\CamEffect</Filter>
@@ -538,7 +575,7 @@
       <Filter>02.GameObject\04.Stage_Space\01.Environment\Instancing_Env</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Sky.h">
-      <Filter>02.GameObject\06.Sky</Filter>
+      <Filter>02.GameObject\02.Sky</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\HeaderBox.h">
       <Filter>02.GameObject\05.UI\10.Menu\01.HeaderBox</Filter>
@@ -561,6 +598,7 @@
     <ClInclude Include="..\Public\Effect_GravityPipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="..\Public\PC_MouseButton.h">
       <Filter>02.GameObject\05.UI\02.ButtonIcon\PC\Mouse</Filter>
     </ClInclude>
@@ -572,6 +610,16 @@
     </ClInclude>
     <ClInclude Include="..\Public\ChapterSelect.h">
       <Filter>02.GameObject\05.UI\11.ChapterSelect</Filter>
+=======
+    <ClInclude Include="..\Public\HookUFO.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GravityPath.h">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\01.GravityPath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Stage.h">
+      <Filter>01.Maps\04.Stage_Space</Filter>
+>>>>>>> main
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -587,14 +635,8 @@
     <ClCompile Include="..\private\Level_Loading.cpp">
       <Filter>01.Maps\01.Loading\00.Main</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Terrain.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\02.Terrain</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\MainCamera.cpp">
       <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Level_Stage.cpp">
-      <Filter>01.Maps\99.Stage%28Test%29</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\SubCamera.cpp">
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
@@ -610,9 +652,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\May.cpp">
       <Filter>02.GameObject\03.Character\01.May</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\TileBox.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TestEffect.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
@@ -663,16 +702,16 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.Cody_Size</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Rocket.cpp">
-      <Filter>02.GameObject\98.Interactive_Objects\00.Rocket</Filter>
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\00.Rocket</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\StarBuddy.cpp">
-      <Filter>02.GameObject\98.Interactive_Objects\01.StarBuddy</Filter>
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\01.StarBuddy</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Robot.cpp">
-      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    <ClCompile Include="..\Private\SecurityCameraHandle.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\02.SecurityCamera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\RobotHead.cpp">
-      <Filter>02.GameObject\98.Interactive_Objects\03.Robot</Filter>
+    <ClCompile Include="..\Private\SecurityCamera.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\02.SecurityCamera</Filter>
     </ClCompile>
     <ClCompile Include="..\private\GrindLine.cpp">
       <Filter>02.GameObject\00.Public\04.GrindLine</Filter>
@@ -685,9 +724,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_May_Boots_Walking_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\TestObject01.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Generator.cpp">
       <Filter>02.GameObject\05.UI\99.UI_Generator</Filter>
@@ -707,6 +743,7 @@
     <ClCompile Include="..\Private\UISprite.cpp">
       <Filter>02.GameObject\05.UI\05.UISprite</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="..\Private\RespawnCircle.cpp">
       <Filter>02.GameObject\05.UI\06.RespawnCircle</Filter>
     </ClCompile>
@@ -742,6 +779,34 @@
     </ClCompile>
     <ClCompile Include="..\private\TileBox.cpp">
       <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
+=======
+    <ClCompile Include="..\Private\Robot.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\NoneInteraction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RobotHead.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\NoneInteraction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RobotLever.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RobotBattery.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TutorialDoor.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\04.TutorialDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BigButton.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\05.BigButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NoBatterySign.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SpaceValve.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\06.SpaceValve</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BigPlanet.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\07.BigPlanet</Filter>
+>>>>>>> main
     </ClCompile>
     <ClCompile Include="..\Private\CamEffect.cpp">
       <Filter>02.GameObject\00.Public\03.Cam_Helper\CamEffect</Filter>
@@ -762,7 +827,7 @@
       <Filter>01.Maps\01.Loading\99.Loading</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Sky.cpp">
-      <Filter>02.GameObject\06.Sky</Filter>
+      <Filter>02.GameObject\02.Sky</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\HeaderBox.cpp">
       <Filter>02.GameObject\05.UI\10.Menu\01.HeaderBox</Filter>
@@ -785,6 +850,7 @@
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="..\Private\Cody.cpp">
       <Filter>02.GameObject\03.Character\00.Cody</Filter>
     </ClCompile>
@@ -812,6 +878,16 @@
     </ClCompile>
     <ClCompile Include="..\Private\ChapterSelect.cpp">
       <Filter>02.GameObject\05.UI\11.ChapterSelect</Filter>
+=======
+    <ClCompile Include="..\Private\HookUFO.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GravityPath.cpp">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\01.GravityPath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Stage.cpp">
+      <Filter>01.Maps\04.Stage_Space</Filter>
+>>>>>>> main
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

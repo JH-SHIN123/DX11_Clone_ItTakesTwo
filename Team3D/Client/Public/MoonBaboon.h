@@ -55,11 +55,11 @@ protected:
 	CTransform*			m_pUFOTransform = nullptr;
 
 public:
-	CMoonBaboon::MOON_STATE Check_State(_double TimeDelta);
-	void Change_State(_double TimeDelta);
-	void During_Animation_Behavior(_double TimeDelta);
+	CMoonBaboon::MOON_STATE Check_State(_double dTimeDelta);
+	void Change_State(_double dTimeDelta);
+	void During_Animation_Behavior(_double dTimeDelta);
 
-	void Fix_MoonBaboon_Chair(_double TimeDelta);
+	void Fix_MoonBaboon_Chair(_double dTimeDelta);
 
 
 private:

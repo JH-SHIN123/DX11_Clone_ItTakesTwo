@@ -294,7 +294,6 @@ void CEffect_RespawnTunnel_Portal::Free()
 	Safe_Release(m_pTexturesCom_Smoke);
 	Safe_Release(m_pTexturesCom_Smoke2);
 
-
 	Safe_Delete_Array(m_pInstanceBuffer_Smoke);
 	Safe_Delete_Array(m_pInstanceBuffer_Smoke_Dir);
 	Safe_Delete_Array(m_pInstanceBuffer_Smoke_Spawn);

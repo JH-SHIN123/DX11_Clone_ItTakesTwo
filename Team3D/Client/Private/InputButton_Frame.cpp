@@ -51,6 +51,8 @@ _int CInputButton_Frame::Tick(_double TimeDelta)
 	if (true == m_IsDead)
 		return EVENT_DEAD;
 
+	
+
 	CUIObject::Tick(TimeDelta);
 
 	if (2 == m_iOption)

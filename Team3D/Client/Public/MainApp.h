@@ -1,12 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "Base.h"
 #include "Loading.h"
-
-BEGIN(Engine)
-class CGameInstance;
-END
 
 BEGIN(Client)
 

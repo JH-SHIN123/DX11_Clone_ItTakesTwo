@@ -12,6 +12,14 @@ CCharacter::CCharacter(const CCharacter& rhs)
 {
 }
 
+_fvector CCharacter::Get_Position()
+{
+	if (nullptr == m_pTransformCom)
+		return XMVectorSet(0.f, 0.f, 0.f, 1.f);
+
+	return m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+}
+
 _float CCharacter::Compute_Distance(CTransform * pPlayerTransform, CTransform * pDstTransform)
 {
 	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
