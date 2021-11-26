@@ -60,7 +60,8 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	m_eCurCamMode = CamMode::Cam_AutoToFree;
 	
 
-	
+	//CameraDesc.vEye = /*_float3(0.f, 8.f, -7.f);*/_float3(0.f, 8.f, -11.f);
+	//CameraDesc.vAt = /*_float3(0.f, 0.f, 0.f);*/_float3(0.f, 4.5f, 0.f);
 
 	CDataStorage::GetInstance()->Set_MainCamPtr(this);
 
