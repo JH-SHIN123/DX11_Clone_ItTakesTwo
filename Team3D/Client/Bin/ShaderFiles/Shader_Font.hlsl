@@ -172,7 +172,7 @@ void  GS_Default(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_
 
 	// 어쩌피 뷰 매트릭스는 항등
 	matrix matVP = mul(g_UIViewMatrix, g_UIProjMatrix);
-	float2	vSize = float2(In[0].vScale.x / g_DefaultViewPort.x - 0.0075f, In[0].vScale.y / g_DefaultViewPort.y - 0.0075f);
+	float2	vSize = float2(In[0].vScale.x / g_DefaultViewPort.x /*- 0.0075f*/, In[0].vScale.y / g_DefaultViewPort.y /*- 0.0075f*/);
 
 	/* 좌상 */
 	Out[0].vPosition = mul(In[0].vPosition, matVP);
@@ -229,18 +229,45 @@ struct PS_OUT
 	vector	vColor : SV_TARGET;
 };
 
-/* 픽셀의 최종적인 색을 결정하낟. */
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
+	if (Out.vColor.r <= 0.f && Out.vColor.g <= 0.f && Out.vColor.b <= 0.f)
+		discard;
+
+	if (Out.vColor.r >= 0.01f && Out.vColor.r <= 0.99f)
+		Out.vColor.rgb = 1.f;
+
+	Out.vColor.rgb = float3(1.f, 0.83f, 0.25f);
+
+	return Out;
+}
+
+PS_OUT PS_LOGO(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	//Out.vColor.a = Out.vColor.r;
+	Out.vColor.rgb = float3(0.607f, 0.501f, 0.435f);
+
+	//if (Out.vColor.r <= 0.f && Out.vColor.g <= 0.f && Out.vColor.b <= 0.f)
+	//	discard;
+
+	//if (Out.vColor.r >= 0.01f && Out.vColor.r <= 0.99f)
+	//	Out.vColor.rgb = 1.f;
+
+	//Out.vColor.rgb = float3(0.607f, 0.501f, 0.435f);
+
 	return Out;
 }
 
 technique11		DefaultTechnique
 {
+	// 0
 	pass Font
 	{
 		SetRasterizerState(Rasterizer_NoCull);
@@ -251,6 +278,7 @@ technique11		DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
+	// 1
 	pass FontDefalut
 	{
 		SetRasterizerState(Rasterizer_NoCull);
@@ -259,6 +287,17 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0 VS_FONT();
 		GeometryShader = compile gs_5_0 GS_Default();
 		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	// 2
+	pass FontLogo
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_FONT();
+		GeometryShader = compile gs_5_0 GS_Default();
+		PixelShader = compile ps_5_0 PS_LOGO();
 	}
 };
 

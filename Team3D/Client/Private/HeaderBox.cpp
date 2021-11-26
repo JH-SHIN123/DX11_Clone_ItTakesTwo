@@ -159,8 +159,8 @@ void CHeaderBox::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_OnlinePlay")))
 	{
 		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
-		tFontDesc.vScale = { 15.f, 20.f };
-		tFontDesc.fInterval = 0.f;
+		tFontDesc.vScale = { 30.f, 40.f };
+		tFontDesc.fInterval = 10.f;
 		tFontDesc.iShaderPassNum = 1;
 
 		UI_Generator->Render_Font(TEXT("온라인 플레이"), tFontDesc, Player::Default);

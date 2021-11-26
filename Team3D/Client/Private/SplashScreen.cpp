@@ -123,12 +123,12 @@ void CSplashScreen::Render_Font()
 {
 	CUI_Generator::FONTDESC tFontDesc;
 	tFontDesc.vPosition = { -100.f, -270.f };
-	tFontDesc.vScale = { 15.f, 20.f };
-	tFontDesc.fInterval = -12.f;
-	tFontDesc.iShaderPassNum = 1;
+	tFontDesc.vScale = { 10.f, 20.f };
+	tFontDesc.fInterval = 25.f;
+	tFontDesc.iShaderPassNum = 2;
 	tFontDesc.fAlpha = m_fFontAlpha;
 
-	UI_Generator->Render_Font(TEXT("버튼을 눌러 계속하세요"), tFontDesc, Player::Default, true);
+	UI_Generator->Render_Font(TEXT("버튼을 눌러 계속하십시오라오라오라오라오라오라"), tFontDesc, Player::Default, true);
 }
 
 HRESULT CSplashScreen::Ready_Component()

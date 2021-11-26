@@ -255,23 +255,23 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 		/* 한글 */
 		if (44032 <= iNumChar) 		
 		{
+			//iNumChar -= 44032;
+			//iX = iNumChar % 132;
+			//iY = iNumChar / 132;
+			//iTextureWidth = 4096;
+			//iTextureHeigth = 4096;
+			//iFontWidth = 31;
+			//iFontHeigth = 46;
+			//iOption = 0;
+
 			iNumChar -= 44032;
 			iX = iNumChar % 132;
 			iY = iNumChar / 132;
-			iTextureWidth = 4096;
-			iTextureHeigth = 4096;
-			iFontWidth = 31;
-			iFontHeigth = 46;
+			iTextureWidth = 8192;
+			iTextureHeigth = 8192;
+			iFontWidth = 62;
+			iFontHeigth = 96;
 			iOption = 0;
-
-			//iNumChar -= 44032;
-			//iX = iNumChar % 195;
-			//iY = iNumChar / 195;
-			//iTextureWidth = 4096;
-			//iTextureHeigth = 4096;
-			//iFontWidth = 21;
-			//iFontHeigth = 33;
-			//iOption = 0;
 		}
 		/* 영어 */
 		else if (65 <= iNumChar) 		
@@ -293,12 +293,15 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 		else if (32 == iNumChar)
 			continue;
 
+		_float fInterval = ((_float)TextLen * iFontWidth) / (tFontDesc.vScale.x * 2 * TextLen);
+
 		_float2 vLeftTop = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
 		_float2 vRightBottom = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
 		//_float2 vRightTop = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
 		//_float2 vLeftBottom = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
 
-		_float fPositionX = (tFontDesc.vPosition.x + (_float)i * iFontWidth) + ((_float)i * tFontDesc.fInterval);
+		_float fPositionX = (tFontDesc.vPosition.x + (_float)i * iFontWidth) / fInterval/* + ((_float)i * tFontDesc.fInterval)*/;
+		//_float fPositionX = tFontDesc.vPosition.x + (_float)i * fInterval;
 
 		m_VTXFONT[i].vPosition = _float3(fPositionX, tFontDesc.vPosition.y, 0.f);
 		m_VTXFONT[i].vScale = _float2(tFontDesc.vScale.x, tFontDesc.vScale.y);
@@ -717,7 +720,7 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Arrowkeys_Fill"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/Arrowkeys_Fill.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("StickIcon"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/StickIcon.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("LoadingBook"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Loading/HakimSpinner.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Font"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_DDS, TEXT("../Bin/Resources/Texture/UI/Font/Font.dds"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Font"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_DDS, TEXT("../Bin/Resources/Texture/UI/Font/Font4_0.dds"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("EngFont"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_DDS, TEXT("../Bin/Resources/Texture/UI/Font/EngFont.dds"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("RespawnCircle"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/RespawnCircle.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Portrait_Cody"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/Portrait_Cody2021.png"))), E_FAIL);
