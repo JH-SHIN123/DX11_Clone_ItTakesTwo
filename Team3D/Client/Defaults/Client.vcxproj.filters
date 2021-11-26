@@ -61,9 +61,6 @@
     <Filter Include="01.Maps\99.Stage%28Test%29">
       <UniqueIdentifier>{112fc71b-614e-424a-b3ab-164e9e68c037}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Tree">
-      <UniqueIdentifier>{9b2ce05d-80d0-464d-8dce-5a75d40f42db}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\99.Stage%28Test%29\01.Player">
       <UniqueIdentifier>{b134e824-3c41-4f85-8703-7c00321fcce5}</UniqueIdentifier>
     </Filter>
@@ -282,6 +279,30 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
       <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon">
+      <UniqueIdentifier>{307d7217-2819-471f-be94-d8cf74b19ac9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung">
+      <UniqueIdentifier>{fec661ad-31f9-4dec-b790-1b4cb09030ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se">
+      <UniqueIdentifier>{4fcd64c3-f491-4bc2-b03e-7ee6a2091478}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye">
+      <UniqueIdentifier>{ade7861b-fc9f-4044-8e8a-b7432305af13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Won">
+      <UniqueIdentifier>{16b45242-49d0-49a2-a0ce-26a0faf7f9eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin">
+      <UniqueIdentifier>{36cb6d5b-c440-4edb-bdcf-2cd582b022db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\08.Jun">
+      <UniqueIdentifier>{0a4d8ed2-ea40-4cd4-bfdf-16db4b954909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\01.GravityPath">
+      <UniqueIdentifier>{f3a893e3-2973-442e-a466-ffed74b1f8dc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
