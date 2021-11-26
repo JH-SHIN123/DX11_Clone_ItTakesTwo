@@ -150,7 +150,7 @@ void CHeaderBox::Render_Font()
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_LocalPlay")))
 	{
  		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
-		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.vScale = { 10.f, 15.f };
 		tFontDesc.iShaderPassNum = 1;
 
 		UI_Generator->Render_Font(TEXT("로컬 플레이"), tFontDesc, Player::Default);
@@ -158,7 +158,7 @@ void CHeaderBox::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_OnlinePlay")))
 	{
 		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
-		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.vScale = { 10.f, 15.f };
 		tFontDesc.iShaderPassNum = 1;
 
 		UI_Generator->Render_Font(TEXT("온라인 플레이"), tFontDesc, Player::Default);
@@ -166,7 +166,7 @@ void CHeaderBox::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Option")))
 	{
 		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
-		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.vScale = { 10.f, 15.f };
 		tFontDesc.iShaderPassNum = 1;
 
 		UI_Generator->Render_Font(TEXT("옵션"), tFontDesc, Player::Default);
@@ -174,7 +174,7 @@ void CHeaderBox::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Option2")))
 	{
 		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
-		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.vScale = { 10.f, 15.f };
 		tFontDesc.iShaderPassNum = 1;
 
 		UI_Generator->Render_Font(TEXT("접근성 옵션"), tFontDesc, Player::Default);
@@ -182,7 +182,7 @@ void CHeaderBox::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Creator")))
 	{
 		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
-		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.vScale = { 10.f, 15.f };
 		tFontDesc.iShaderPassNum = 1;
 
 		UI_Generator->Render_Font(TEXT("제작진"), tFontDesc, Player::Default);
@@ -190,7 +190,7 @@ void CHeaderBox::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Exit")))
 	{
 		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
-		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.vScale = { 10.f, 15.f };
 		tFontDesc.iShaderPassNum = 1;
 
 		UI_Generator->Render_Font(TEXT("종료"), tFontDesc, Player::Default);
@@ -198,7 +198,7 @@ void CHeaderBox::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("ChapterLocalPlay")))
 	{
 		tFontDesc.vPosition = { m_UIDesc.vPos.x - 60.f, m_UIDesc.vPos.y };
-		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.vScale = { 10.f, 15.f };
 		tFontDesc.iShaderPassNum = 1;
 
 		UI_Generator->Render_Font(TEXT("로컬 플레이"), tFontDesc, Player::Default);
@@ -206,7 +206,7 @@ void CHeaderBox::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_NewGame")))
 	{
 		tFontDesc.vPosition = { m_UIDesc.vPos.x - 50.f, m_UIDesc.vPos.y };
-		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.vScale = { 10.f, 15.f };
 		tFontDesc.iShaderPassNum = 1;
 
 		UI_Generator->Render_Font(TEXT("새 게임"), tFontDesc, Player::Default);
@@ -214,7 +214,7 @@ void CHeaderBox::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Continue")))
 	{
 		tFontDesc.vPosition = { m_UIDesc.vPos.x - 50.f, m_UIDesc.vPos.y };
-		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.vScale = { 12.f, 17.f };
 		tFontDesc.iShaderPassNum = 1;
 
 		UI_Generator->Render_Font(TEXT("계속"), tFontDesc, Player::Default);
@@ -222,7 +222,7 @@ void CHeaderBox::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_ChapterSelect")))
 	{
 		tFontDesc.vPosition = { m_UIDesc.vPos.x - 50.f, m_UIDesc.vPos.y };
-		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.vScale = { 10.f, 15.f };
 		tFontDesc.iShaderPassNum = 1;
 
 		UI_Generator->Render_Font(TEXT("챕터 선택"), tFontDesc, Player::Default);
@@ -230,7 +230,7 @@ void CHeaderBox::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Minigame")))
 	{
 		tFontDesc.vPosition = { m_UIDesc.vPos.x - 40.f, m_UIDesc.vPos.y };
-		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.vScale = { 10.f, 15.f };
 		tFontDesc.iShaderPassNum = 1;
 
 		UI_Generator->Render_Font(TEXT("미니 게임"), tFontDesc, Player::Default);
@@ -238,7 +238,7 @@ void CHeaderBox::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Cancle")))
 	{
 		tFontDesc.vPosition = { m_UIDesc.vPos.x - 40.f, m_UIDesc.vPos.y };
-		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.vScale = { 10.f, 15.f };
 		tFontDesc.iShaderPassNum = 1;
 
 		UI_Generator->Render_Font(TEXT("취소"), tFontDesc, Player::Default);
@@ -246,7 +246,7 @@ void CHeaderBox::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_1p_Ready")))
 	{
 		tFontDesc.vPosition = { m_UIDesc.vPos.x - 10.f, m_UIDesc.vPos.y + 40.f };
-		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.vScale = { 10.f, 15.f };
 		tFontDesc.iShaderPassNum = 1;
 
 		if(false == m_IsReady)
@@ -260,7 +260,7 @@ void CHeaderBox::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_2p_Ready")))
 	{
 		tFontDesc.vPosition = { m_UIDesc.vPos.x - 10.f, m_UIDesc.vPos.y + 40.f };
-		tFontDesc.vScale = { 15.f, 20.f };
+		tFontDesc.vScale = { 10.f, 15.f };
 		tFontDesc.iShaderPassNum = 1;
 
 		if (false == m_IsReady)
