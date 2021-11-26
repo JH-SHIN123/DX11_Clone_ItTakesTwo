@@ -46,6 +46,9 @@ private:
 
 	HRESULT Ready_Layer_BigPlanet(const _tchar* pLayerTag);
 
+	HRESULT Ready_Layer_WarpGate(const _tchar* pLayerTag);
+
+
 	/* For.Test */
 	HRESULT Ready_Layer_Test();
 

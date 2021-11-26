@@ -160,6 +160,7 @@ _int CCody::Tick(_double dTimeDelta)
 		In_GravityPipe(dTimeDelta);
 		Hit_Planet(dTimeDelta);
 		Hook_UFO(dTimeDelta);
+		Warp_Wormhole(dTimeDelta);
 	}
 	else
 	{
@@ -1265,6 +1266,17 @@ void CCody::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTar
 	m_iValvePlayerName = _iPlayerName;
 }
 
+void CCody::SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName)
+{
+	m_eTargetGameID = eID;
+	m_IsCollide = IsCollide;
+	XMStoreFloat4x4(&m_TriggerTargetWorld, vTriggerTargetWorld);
+	XMStoreFloat3(&m_vTriggerTargetPos, vTriggerTargetWorld.r[3]);
+
+	/* For.Valve */
+	m_iValvePlayerName = _iPlayerName;
+}
+
 _bool CCody::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)
@@ -1358,11 +1370,23 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_IsHookUFO = true;
 			m_bGoToHooker = true;
 		}
+		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
+		{
+			// ÄÚµð Àü¿ë Æ÷Å»·Î ÀÌµ¿(¿úÈ¦)
+			m_pModelCom->Set_Animation(ANI_C_Slide_Enter_Dash);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Slide_Enter_Dash);
+
+			_vector vWormholePos = XMVectorSet(0.f, -100.f, -1000.f, 1.f);//XMLoadFloat3(&m_vTriggerTargetPos);
+			m_pActorCom->Set_Position(vWormholePos);	
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_fWarpTimer = 0.f;
+			m_IsWarpNextStage = true;
+		}
 	}
 
 	// Trigger ¿©µû°¡ ½Ï´Ù¸ð¾Æ~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet || m_IsHookUFO)
+		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage)
 		return true;
 
 	return false;
@@ -1376,7 +1400,8 @@ _bool CCody::Trigger_End(const _double dTimeDelta)
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Exit
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Valve_Rotate_MH
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_PlayRoom_ZeroGravity_MH
-		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ChangeSize_PlanetPush_Large))
+		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ChangeSize_PlanetPush_Large
+		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Slide_Enter_Dash))
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 	}
@@ -1742,5 +1767,25 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 			m_IsHookUFO = false;
 			m_IsCollide = false;
 		}
+	}
+}
+
+void CCody::Warp_Wormhole(const _double dTimeDelta)
+{
+	if (false == m_IsWarpNextStage)
+		return;
+
+	m_fWarpTimer += (_float)dTimeDelta;
+
+	if (m_fWarpTimer_Max <= m_fWarpTimer)
+	{
+		m_pActorCom->Set_ZeroGravity(false, false, false);
+
+		m_IsWarpNextStage = false;
+
+		_vector vNextStage_Pos = XMLoadFloat3(&m_vTriggerTargetPos);
+		vNextStage_Pos.m128_f32[3] = 1.f;
+
+		m_pActorCom->Set_Position(vNextStage_Pos);
 	}
 }

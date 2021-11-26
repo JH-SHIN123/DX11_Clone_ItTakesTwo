@@ -308,11 +308,13 @@ private:
 #pragma region Trigger
 public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
+	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
 
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
 	_float3				m_vTriggerTargetPos = {};
 	_bool m_IsCollide = false;
+	_float4x4 m_TriggerTargetWorld = {};
 
 
 	_bool m_IsOnGrind = false;
@@ -335,6 +337,10 @@ private:
 
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
+
+	// Warp NextStage
+	_bool m_IsWarpNextStage = false;
+
 
 	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);

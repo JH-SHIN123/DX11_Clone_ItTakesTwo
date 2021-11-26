@@ -813,6 +813,17 @@ void CMay::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTarg
 	m_iValvePlayerName = _iPlayerName;
 }
 
+void CMay::SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName)
+{
+	m_eTargetGameID = eID;
+	m_IsCollide = IsCollide;
+	XMStoreFloat4x4(&m_TriggerTargetWorld, vTriggerTargetWorld);
+	XMStoreFloat3(&m_vTriggerTargetPos, vTriggerTargetWorld.r[3]);
+
+	/* For.Valve */
+	m_iValvePlayerName = _iPlayerName;
+}
+
 _bool CMay::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)
@@ -867,10 +878,19 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			}
 			m_IsInGravityPipe = true;
 		}
+		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
+		{
+			if (false == m_IsWarpNextStage)
+			{
+				_vector vWormholePos = XMVectorZero();
+
+
+			}
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe)
+	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsWarpNextStage)
 		return true;
 
 	return false;

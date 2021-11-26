@@ -148,12 +148,10 @@ void CMainApp::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pGameInstance);
 
-
 	CEffect_Generator::DestroyInstance(); // 이펙트 제어기
 	UI_Generator->DestroyInstance();
 	CDataStorage::GetInstance()->DestroyInstance();
 	CEnvironment_Generator::GetInstance()->DestroyInstance();
-
 	CGameInstance::Release_Engine();
 }
 

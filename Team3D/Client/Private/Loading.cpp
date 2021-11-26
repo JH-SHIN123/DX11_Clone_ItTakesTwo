@@ -30,6 +30,7 @@
 #include "SpaceValve.h"
 #include "BigPlanet.h"
 #include "HookUFO.h"
+#include "WarpGate.h"
 
 /* Test */
 #include "TestObject01.h"
@@ -135,6 +136,7 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		_matrix	PivotMatrix = XMMatrixScaling(0.05f, 0.05f, 0.05f);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Sky_Space"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Sky/"), TEXT("Sky_Space"), TEXT("../Bin/ShaderFiles/Shader_Sky.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Sky_Space"), CSky::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), CWarpGate::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	}
 	else if (1 == iThreadIndex)

@@ -310,6 +310,9 @@
     <Filter Include="02.GameObject\03.Character\03.Title">
       <UniqueIdentifier>{c6f20a96-3c8d-4d61-acd8-53abeea0b007}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\WarpGate">
+      <UniqueIdentifier>{46db1f79-56e6-4784-b579-b8fb8cab29ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -549,11 +552,11 @@
     <ClInclude Include="..\public\Effect_Player_Lail.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_RespawnTunnel_Smoke.h">
-      <Filter>02.GameObject\05.Effect/Particle\3D</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\HookUFO.h">
       <Filter>02.GameObject\98.Interactive_Objects\08.HookUFO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\WarpGate.h">
+      <Filter>02.GameObject\98.Interactive_Objects\WarpGate</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -767,11 +770,11 @@
     <ClCompile Include="..\private\Effect_Player_Lail.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Effect_RespawnTunnel_Smoke.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\3D</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\HookUFO.cpp">
       <Filter>02.GameObject\98.Interactive_Objects\08.HookUFO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WarpGate.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\WarpGate</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

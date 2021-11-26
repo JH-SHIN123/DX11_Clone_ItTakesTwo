@@ -28,7 +28,9 @@ namespace Engine
 			eSPACEVALVE,
 			eGRAVITYPIPE,
 			eHOOKUFO,
-			eENVIRONMENT
+			eENVIRONMENT,
+			eWARPGATE, //sjh
+			eWORMHOLE //sjh
 		};
 	};
 
