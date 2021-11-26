@@ -48,6 +48,15 @@ HRESULT CEffect_Player_Lail::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
+HRESULT CEffect_Player_Lail::Set_Model(CModel * pModel)
+{
+	return E_NOTIMPL;
+}
+
+void CEffect_Player_Lail::Set_WorldMatrix(_fmatrix WorldMatrix)
+{
+}
+
 void CEffect_Player_Lail::Instance_Size(_float TimeDelta, _int iIndex)
 {
 }
@@ -137,7 +146,7 @@ void CEffect_Player_Lail::Update_Spark(_double TimeDelta, _int iStartIndex, _int
 	//ParentMatrix´Â ResetÇÒ ¶§¸¸ Pos¸¸ ¶È ¶¼¿À¼À
 	for (_int iIndex = iStartIndex; iIndex < iEndIndex; ++iIndex)
 	{
-		m_pInstanceBuffer_Spark[iIndex].fTime -= TimeDelta;
+		m_pInstanceBuffer_Spark[iIndex].fTime -= (_float)TimeDelta;
 		if (0.f >= m_pInstanceBuffer_Spark[iIndex].fTime)
 			Reset_Spark(iIndex, ParentMatrix);
 
@@ -164,7 +173,7 @@ void CEffect_Player_Lail::Reset_Spark(_int iIndex, _fmatrix ParentMatrix)
 	m_pInstanceBuffer_Spark[iIndex].vPosition	= vPos;
 	m_pInstanceBuffer_Spark[iIndex].vSize		= { 0.f, 0.f };
 	m_pInstanceBuffer_Spark[iIndex].vTextureUV	= { 0.f, 0.f, 0.f, 0.f };
-	m_pInstanceBuffer_Spark[iIndex].fTime		= m_fSpark_RespawnTime * ((_float)m_iInstanceCount_Spark >> 1) * iIndex;
+	m_pInstanceBuffer_Spark[iIndex].fTime		= m_fSpark_RespawnTime * (_float)(m_iInstanceCount_Spark >> 1) * iIndex;
 	m_pSpeedPerSec_Spark[iIndex]				= m_fSpeedPerSec_Spark;
 	m_pMoveDir_Spark[iIndex]					= Get_Dir_Spark(_int3(100, 100, 100));
 }
@@ -185,6 +194,11 @@ _float3 CEffect_Player_Lail::Get_Dir_Spark(_int3 vRandPower)
 	XMStoreFloat3(&vRandDir, vDir);
 
 	return vRandDir;
+}
+
+_float4 CEffect_Player_Lail::Get_UpVector_Rand(_int3 vRandPower)
+{
+	return _float4();
 }
 
 CEffect_Player_Lail * CEffect_Player_Lail::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

@@ -28,7 +28,7 @@ HRESULT CEffect_FireDoor::NativeConstruct(void * pArg)
 	m_vWeight = m_pInstanceBuffer[0].vTextureUV;
 
 	m_vWeight = _float4(0.25f, 0.25f, 0.75f, 0.75f);
-
+	PxPlaneGeometry
 	m_IsBillBoard = false;
 	return S_OK;
 }

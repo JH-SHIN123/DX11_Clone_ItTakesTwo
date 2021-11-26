@@ -20,6 +20,7 @@
 #include "StarBuddy.h"
 #include "Robot.h"
 #include "RobotHead.h"
+#include "DoorWay.h"
 
 /* Test */
 #include "TestObject01.h"
@@ -155,6 +156,10 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		//PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 		//FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RobotHead"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/InteractiveModels/"), TEXT("RobotHead"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 		//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_RobotHead"), CRobotHead::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+		///DoorWay
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_DoorWay"), CDoorWay::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
 
 	}
 	else if (2 == iThreadIndex)

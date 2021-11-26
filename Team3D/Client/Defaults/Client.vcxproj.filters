@@ -271,6 +271,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail">
       <UniqueIdentifier>{4473fc56-392d-424e-a8d6-96ba1259f992}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\98.Interactive_Objects\04.DoorWay">
+      <UniqueIdentifier>{11a66e98-3323-4bda-ae39-5a498333cf0c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -474,6 +477,9 @@
     <ClInclude Include="..\public\Effect_Player_Lail.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\DoorWay.h">
+      <Filter>02.GameObject\98.Interactive_Objects\04.DoorWay</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -649,6 +655,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Player_Lail.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DoorWay.cpp">
+      <Filter>02.GameObject\98.Interactive_Objects\04.DoorWay</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

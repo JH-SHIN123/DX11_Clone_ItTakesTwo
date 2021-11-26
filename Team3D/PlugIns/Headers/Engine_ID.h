@@ -12,7 +12,8 @@ namespace Engine
 			eUFO,
 			eMOONBABOON,
 			eSTARBUDDY,
-			eENVIRONMENT
+			eENVIRONMENT,
+			eDOORWAY
 		};
 	};
 
