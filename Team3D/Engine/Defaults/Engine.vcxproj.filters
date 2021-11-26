@@ -357,9 +357,6 @@
     <ClInclude Include="..\Public\Model_Loader.h">
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\PhysX.h">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\PxEventCallback.h">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\01.SimulCallback</Filter>
     </ClInclude>
@@ -455,6 +452,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Sprite.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PhysX.h">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\00.Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -563,9 +563,6 @@
     <ClCompile Include="..\Private\Model_Loader.cpp">
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\PhysX.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\PxEventCallback.cpp">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\01.SimulCallback</Filter>
     </ClCompile>
@@ -628,6 +625,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Sprite.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PhysX.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\00.Main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
