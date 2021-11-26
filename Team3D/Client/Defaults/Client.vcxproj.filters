@@ -519,6 +519,9 @@
     <ClInclude Include="..\Public\Effect_GravityPipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\GravityPath.h">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\01.GravityPath</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -706,6 +709,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GravityPath.cpp">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\01.GravityPath</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
