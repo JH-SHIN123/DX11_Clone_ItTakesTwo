@@ -26,8 +26,6 @@ HRESULT CMainApp::NativeConstruct()
 	UI_Generator->NativeConstruct(m_pDevice, m_pDeviceContext);
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
 
-	// Test Ä¿¹Ô
-
 	return S_OK;
 }
 
