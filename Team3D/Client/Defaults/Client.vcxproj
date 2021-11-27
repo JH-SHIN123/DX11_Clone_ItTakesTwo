@@ -236,6 +236,7 @@
     <ClInclude Include="..\public\Effect_Player_Dead_Particle.h" />
     <ClInclude Include="..\public\Effect_RespawnTunnel.h" />
     <ClInclude Include="..\public\Effect_RespawnTunnel_Portal.h" />
+    <ClInclude Include="..\Public\MoonBaboonCore.h" />
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
     <ClInclude Include="..\Public\PlayerActor.h" />
@@ -317,6 +318,7 @@
     <ClCompile Include="..\private\Effect_Player_Dead_Particle.cpp" />
     <ClCompile Include="..\private\Effect_RespawnTunnel.cpp" />
     <ClCompile Include="..\private\Effect_RespawnTunnel_Portal.cpp" />
+    <ClCompile Include="..\Private\MoonBaboonCore.cpp" />
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
     <ClCompile Include="..\Private\PlayerActor.cpp" />
