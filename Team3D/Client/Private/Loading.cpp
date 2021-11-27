@@ -172,15 +172,6 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 
 		FAILED_CHECK_RETURN(UI_Generator->Load_Data(TEXT("../Bin/Resources/Data/UIData/UI.dat")), E_FAIL);
 
-		///* For. Map Resources */
-		//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Instancing_TXT(), E_FAIL);
-		//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others01.txt")), E_FAIL);
-		//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_GameObject_Prototype(), E_FAIL);
-
-		//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others10.txt")), E_FAIL);
-		//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others11.txt")), E_FAIL);
-		//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others12.txt")), E_FAIL);
-
 		__threadbreak;
 	}
 	else if (2 == iThreadIndex)

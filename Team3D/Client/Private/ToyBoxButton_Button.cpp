@@ -20,11 +20,12 @@ void CToyBoxButton_Button::Set_ButtonOrigin()
 	CTransform* pParentTransform = m_pParent->Get_Transform();
 	if (nullptr == pParentTransform) return;
 
-	_matrix WorldMat, ScaleMat, TransMat, ParentMat;
+	_matrix WorldMat, ScaleMat,RotMat, TransMat, ParentMat;
 	ScaleMat = XMMatrixScaling(0.43f, 0.43f, 0.43f);
+	RotMat = XMMatrixRotationX(XMConvertToRadians(-90.f));
 	TransMat = XMMatrixTranslation(0.f, 1.95f, -6.f);
 	ParentMat = pParentTransform->Get_WorldMatrix();
-	WorldMat = ScaleMat * TransMat * ParentMat;
+	WorldMat = ScaleMat * RotMat * TransMat * ParentMat;
 	m_pTransformCom->Set_WorldMatrix(WorldMat);
 
 	m_pStaticActorCom->Update_StaticActor();
@@ -46,11 +47,12 @@ HRESULT CToyBoxButton_Button::NativeConstruct(void* pArg)
 	CTransform* pParentTransform = m_pParent->Get_Transform();
 	if (nullptr == pParentTransform) return -1;
 
-	_matrix WorldMat, ScaleMat, TransMat, ParentMat;
+	_matrix WorldMat, ScaleMat, RotMat, TransMat, ParentMat;
 	ScaleMat = XMMatrixScaling(0.43f, 0.43f, 0.43f);
+	RotMat = XMMatrixRotationX(XMConvertToRadians(-90.f));
 	TransMat = XMMatrixTranslation(0.f, 1.95f, -6.f);
 	ParentMat = pParentTransform->Get_WorldMatrix();
-	WorldMat = ScaleMat * TransMat * ParentMat;
+	WorldMat = ScaleMat * RotMat * TransMat * ParentMat;
 	m_pTransformCom->Set_WorldMatrix(WorldMat);
 
 	m_UserData.eID = GameID::eENVIRONMENT;
@@ -63,7 +65,7 @@ HRESULT CToyBoxButton_Button::NativeConstruct(void* pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
 
 	CTriggerActor::ARG_DESC tTriggerArg;
-	tTriggerArg.pGeometry = new PxBoxGeometry(1.5f,1.5f,1.f);
+	tTriggerArg.pGeometry = new PxBoxGeometry(1.5f,1.5f,0.5f);
 	tTriggerArg.pTransform = m_pTransformCom;
 	tTriggerArg.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArg), E_FAIL);
@@ -84,11 +86,12 @@ _int CToyBoxButton_Button::Tick(_double TimeDelta)
 		if (nullptr == pParentTransform) return -1;
 
 		_float fPressedButtonOffsetY = 0.5f;
-		_matrix WorldMat, ScaleMat, TransMat, ParentMat;
+		_matrix WorldMat, ScaleMat, RotMat, TransMat, ParentMat;
 		ScaleMat = XMMatrixScaling(0.43f, 0.43f, 0.43f);
+		RotMat = XMMatrixRotationX(XMConvertToRadians(-90.f));
 		TransMat = XMMatrixTranslation(0.f, 1.95f, -6.f + fPressedButtonOffsetY);
 		ParentMat = pParentTransform->Get_WorldMatrix();
-		WorldMat = ScaleMat * TransMat * ParentMat;
+		WorldMat = ScaleMat * RotMat * TransMat * ParentMat;
 		m_pTransformCom->Set_WorldMatrix(WorldMat);
 
 		m_pStaticActorCom->Update_StaticActor();
@@ -191,7 +194,7 @@ void CToyBoxButton_Button::OnPressed_Button(_double TimeDelta)
 		else
 		{
 			m_fTriggerDeltaMove += (_float)TimeDelta * fTriggerSpeed;
-			m_pTransformCom->Go_Straight(TimeDelta * fTriggerSpeed);
+			m_pTransformCom->Go_Down(TimeDelta * fTriggerSpeed);
 		}
 	}
 	else if (-1 == m_iCheckTrigger) // 내려가있다.
@@ -204,7 +207,7 @@ void CToyBoxButton_Button::OnPressed_Button(_double TimeDelta)
 		else
 		{
 			m_fTriggerDeltaMove -= (_float)TimeDelta * fTriggerSpeed;
-			m_pTransformCom->Go_Backward(TimeDelta * fTriggerSpeed);
+			m_pTransformCom->Go_Up(TimeDelta * fTriggerSpeed);
 		}
 	}
 

@@ -36,7 +36,7 @@ HRESULT CToyBoxButton::NativeConstruct(void* pArg)
 	
 	// TEST
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f,0.f, 5.f, 1.f));
-	m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f));
+	//m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f));
 
 	m_pTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 	m_UserData.eID = GameID::eENVIRONMENT;

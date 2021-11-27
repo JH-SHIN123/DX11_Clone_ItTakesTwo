@@ -310,6 +310,12 @@
     <Filter Include="03.Component\01.Actor\02.PlayerActor\02.FilterCallback">
       <UniqueIdentifier>{41965410-fff4-41fd-b7b2-3345a7005805}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton">
+      <UniqueIdentifier>{21595d8b-6915-472b-a79b-c4082c037ad6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton\Button">
+      <UniqueIdentifier>{1a2a860a-f721-42c9-90c7-133ab5676019}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -558,11 +564,11 @@
     <ClInclude Include="..\Public\PlayerFilterCallback.h">
       <Filter>03.Component\01.Actor\02.PlayerActor\02.FilterCallback</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ToyBoxButton_Button.h">
-      <Filter>02.GameObject\04.Stage_Space\05.Won</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\ToyBoxButton.h">
-      <Filter>02.GameObject\04.Stage_Space\05.Won</Filter>
+      <Filter>02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToyBoxButton_Button.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton\Button</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -785,11 +791,11 @@
     <ClCompile Include="..\Private\PlayerFilterCallback.cpp">
       <Filter>03.Component\01.Actor\02.PlayerActor\02.FilterCallback</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ToyBoxButton_Button.cpp">
-      <Filter>02.GameObject\04.Stage_Space\05.Won</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\ToyBoxButton.cpp">
-      <Filter>02.GameObject\04.Stage_Space\05.Won</Filter>
+      <Filter>02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToyBoxButton_Button.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton\Button</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
