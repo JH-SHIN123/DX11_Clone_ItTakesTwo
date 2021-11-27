@@ -17,6 +17,7 @@
 #include "Sky.h"
 #include "ToyBoxButton.h"
 #include "MoonBaboonCore.h"
+#include "MoonBaboon_MainLaser.h"
 /* Yoon */
 #include "Cody.h"
 #include "May.h"
@@ -474,7 +475,10 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 HRESULT CLoading::LoadingForTEST()
 {
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others06.txt")), E_FAIL);
+	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others07.txt")), E_FAIL);
+
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore"), CMoonBaboonCore::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_MainLaser"), CMoonBaboon_MainLaser::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
 }
@@ -497,8 +501,8 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Hye()
 
 HRESULT CLoading::Create_GameObjects_SpaceStage_Won()
 {
-	/* ToyBoxButton */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_ToyBoxButton"), CToyBoxButton::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_MainLaser"), CMoonBaboon_MainLaser::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
 }

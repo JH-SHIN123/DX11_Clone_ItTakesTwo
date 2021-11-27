@@ -58,6 +58,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 #endif
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"TEST", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"TEST", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_MainLaser")), E_FAIL);
 
 	return S_OK;
 }
