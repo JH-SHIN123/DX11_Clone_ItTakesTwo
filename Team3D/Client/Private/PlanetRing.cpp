@@ -41,10 +41,12 @@ _int CPlanetRing::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
-	if (m_tDynamic_Env_Desc.iOption == 1)
-		m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta);
-	else
+	if (m_tDynamic_Env_Desc.iOption == 0)
 		m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta);
+	else if(m_tDynamic_Env_Desc.iOption == 1)
+		m_pTransformCom->Rotate_Axis((m_pTransformCom->Get_State(CTransform::STATE_RIGHT) * -1.f), dTimeDelta);
+	else
+		m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta);
 
 	m_pStaticActorCom->Update_StaticActor();
 
