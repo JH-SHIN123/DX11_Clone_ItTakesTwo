@@ -57,6 +57,8 @@ HRESULT CLevel_Stage::NativeConstruct()
 	//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Interactive_Instancing(), E_FAIL);
 #endif
 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"TEST", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore")), E_FAIL);
+
 	return S_OK;
 }
 

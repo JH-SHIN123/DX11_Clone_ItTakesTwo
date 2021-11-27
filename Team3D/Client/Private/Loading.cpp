@@ -16,6 +16,7 @@
 /* Won */
 #include "Sky.h"
 #include "ToyBoxButton.h"
+#include "MoonBaboonCore.h"
 /* Yoon */
 #include "Cody.h"
 #include "May.h"
@@ -267,6 +268,7 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 
 	return S_OK;
 }
+
 #elif defined __8THREADS
 HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 {
@@ -311,6 +313,8 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 #ifndef __MAPLOADING_OFF
 		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others05.txt")), E_FAIL);
 #endif
+
+		LoadingForTEST();
 
 		__threadbreak;
 	}
@@ -467,6 +471,14 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 }
 #endif
 
+HRESULT CLoading::LoadingForTEST()
+{
+	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Model_Data_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others06.txt")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore"), CMoonBaboonCore::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	return S_OK;
+}
+
 HRESULT CLoading::Create_GameObjects_SpaceStage_Se()
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_GravityPath"), CGravityPath::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
@@ -486,7 +498,6 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Hye()
 HRESULT CLoading::Create_GameObjects_SpaceStage_Won()
 {
 	/* ToyBoxButton */
-	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_ToyBoxButton"), CToyBoxButton::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;

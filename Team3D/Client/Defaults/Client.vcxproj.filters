@@ -331,6 +331,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Button">
       <UniqueIdentifier>{228de401-14c0-453a-bbf2-c22fe0f54c99}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Won\02.MoonBaboon_MainLaser">
+      <UniqueIdentifier>{775f92c2-ddac-4603-a2e3-80b38fa3090d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -588,6 +591,12 @@
     <ClInclude Include="..\Public\MoonBaboonCore.h">
       <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboonCore_Pillar.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Pillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboonCore_Button.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Button</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -817,6 +826,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\MoonBaboonCore.cpp">
       <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboonCore_Pillar.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Pillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboonCore_Button.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Button</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

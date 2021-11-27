@@ -60,6 +60,9 @@ private:
 	HRESULT LoadingForStage(_uint iThreadIndex); /* 예시, 테스트용 Level */
 
 private:
+	HRESULT LoadingForTEST();
+
+private:
 	/* 각자 GameObject 프로토타입 생성 함수 */
 	HRESULT Create_GameObjects_SpaceStage_Se();
 	HRESULT Create_GameObjects_SpaceStage_Jung();
