@@ -1128,3 +1128,8 @@
 #define R_InActive_Lever 4
 
 #pragma endregion
+
+
+#define ST_GRAVITYPATH 0
+#define ST_PINBALL 1
+#define ST_RAIL 2

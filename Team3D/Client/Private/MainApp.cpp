@@ -32,7 +32,7 @@ HRESULT CMainApp::Run_App()
 
 	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
 
-	if (m_dFrameAcc >= 1.0 / 160.0)
+	if (m_dFrameAcc >= 1.0 / 60.f)
 	{
 		m_dFrameAcc = 0.0;
 

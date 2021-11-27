@@ -147,6 +147,9 @@ _int CCody::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
+	//tEST
+	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
 #pragma region BasicActions
 	/////////////////////////////////////////////
 	if (Trigger_Check(dTimeDelta))
@@ -1487,7 +1490,7 @@ void CCody::Activate_RobotLever(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
-			m_IsActivateRobotLever = false;
+			m_IsActivateRobotLever = false;	
 			m_IsCollide = false;
 
 		}

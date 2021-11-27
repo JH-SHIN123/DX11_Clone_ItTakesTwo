@@ -44,6 +44,7 @@ private:
 	HRESULT Ready_Layer_Hook_UFO(const _tchar* pLayerTag);
 
 	HRESULT Ready_Layer_BigPlanet(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_RobotParts(const _tchar* pLayerTag);
 
 	/* For.Test */
 	HRESULT Ready_Layer_Test();

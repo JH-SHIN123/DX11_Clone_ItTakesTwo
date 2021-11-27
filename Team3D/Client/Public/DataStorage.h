@@ -29,20 +29,17 @@ public:
 	void Set_UFOPtr(CGameObject* pUFO) { m_pUFO = pUFO; }
 	CGameObject* Get_UFO() { return m_pUFO; }
 
-	void Set_RobotPtr(CGameObject* pRobot) { m_pRobot = pRobot; }
-	CGameObject* Get_Robot() { return m_pRobot; }
+	/* Robots */
 
-	void Set_RobotLeverPtr(CGameObject* pRobotLever) { m_pRobotLever = pRobotLever; }
-	CGameObject* Get_RobotLever() { return m_pRobotLever; }
+	void Set_STGravityRobotPtr(CGameObject* pRobot) { m_pSTGravityRobot = pRobot; }
+	CGameObject* Get_STGravityRobot() { return m_pSTGravityRobot; }
 
-	void Set_RobotBatteryPtr(CGameObject* pRobotBattery) { m_pRobotBattery = pRobotBattery; }
-	CGameObject* Get_RobotBattery() { return m_pRobotBattery; }
+	void Set_STPinBallRobotPtr(CGameObject* pRobot) { m_pSTPinBallRobot = pRobot; }
+	CGameObject* Get_STPinBallRobot() { return m_pSTPinBallRobot; }
 
-	void Set_RobotHeadPtr(CGameObject* pRobotHead) { m_pRobotHead = pRobotHead; }
-	CGameObject* Get_RobotHead() { return m_pRobotHead; }
+	void Set_STPlanetRobotPtr(CGameObject* pRobot) { m_pSTPlanetRobot = pRobot; }
+	CGameObject* Get_STPlanetRobot() { return m_pSTPlanetRobot; }
 
-	void Set_NoBatterySignPtr(CGameObject* pNoBatterySign) { m_pNoBatterySign = pNoBatterySign; }
-	CGameObject* Get_NoBatterySign() { return m_pNoBatterySign; }
 
 	void Set_ValveCount(_uint _iValveRotateCount) { m_iValveRotateCount += _iValveRotateCount; }
 	void Set_ValveTarget(_uint _iValveTarget) { m_iValveTarget = _iValveTarget; }
@@ -59,11 +56,9 @@ private:
 	CGameObject* m_pUFO = nullptr;
 
 	// Interactive Objects
-	CGameObject* m_pRobot = nullptr;
-	CGameObject* m_pRobotLever = nullptr;
-	CGameObject* m_pRobotBattery = nullptr;
-	CGameObject* m_pRobotHead = nullptr;
-	CGameObject* m_pNoBatterySign = nullptr;
+	CGameObject* m_pSTGravityRobot = nullptr;
+	CGameObject* m_pSTPinBallRobot = nullptr;
+	CGameObject* m_pSTPlanetRobot = nullptr;
 
 
 private:
