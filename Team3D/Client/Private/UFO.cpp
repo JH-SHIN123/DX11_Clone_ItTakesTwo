@@ -1,7 +1,6 @@
 #include "stdafx.h"
-#include "..\public\UFO.h"
-#include "GameInstance.h"
-#include "DataStorage.h"
+#include "..\Public\UFO.h"
+#include "PlayerActor.h"
 #include "May.h"
 #include "Cody.h"
 
@@ -30,7 +29,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_UFO"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	CControllableActor::ARG_DESC ArgDesc;
+	CPlayerActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eUFO, this);
 	ArgDesc.pUserData = &m_UserData;
@@ -56,7 +55,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	//CapsuleControllerDesc.maxJumpHeight = 10.f;
 	//CapsuleControllerDesc.volumeGrowth = 1.5f;
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_PlayerActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
 
 	m_pCodyTransform = ((CCody*)CDataStorage::GetInstance()->GetCody())->Get_Transform();
@@ -107,7 +106,7 @@ _int CUFO::Tick(_double dTimeDelta)
 
 _int CUFO::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }

@@ -3,13 +3,8 @@
 #include "Client_Defines.h"
 #include "Character.h"
 
-BEGIN(Engine)
-class CRenderer;
-class CTransform;
-class CModel;
-END
-
 BEGIN(Client)
+
 class CCody final : public CCharacter
 {
 #pragma region Enum_STATE
@@ -206,6 +201,7 @@ private:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
+
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
@@ -214,13 +210,18 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
+	/* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
-	PLAYER_SIZE Get_CurSize() { return m_eCurPlayerSize; }
+	CModel*		Get_Model() { return m_pModelCom; }
+	PLAYER_SIZE Get_Player_Size() { return m_eCurPlayerSize; }
+	//PLAYER_SIZE Get_CurSize() { return m_eCurPlayerSize; }
+
 	// Tick 에서 호출될 함수들
 private:
-	virtual void KeyInput(_double TimeDelta);
-	void TriggerCheck(_double TimeDelta);
 
+	virtual void KeyInput(_double dTimeDelta);
+
+private:
 	// 단발성 함수들.
 	HRESULT Ready_Component();
 	void Add_LerpInfo_To_Model();
@@ -248,14 +249,15 @@ public:
 
 public:
 	// 상태 && 이동
-	void Move(const _double TimeDelta);
-	void Roll(const _double TimeDelta);
-	void Sprint(const _double TimeDelta);
-	void Jump(const _double TimeDelta);
-	void Change_Size(const _double TimeDelta);
-	void Ground_Pound(const _double TimeDelta);
+	void Move(const _double dTimeDelta);
+	void Roll(const _double dTimeDelta);
+	void Sprint(const _double dTimeDelta);
+	void Jump(const _double dTimeDelta);
+	void Change_Size(const _double dTimeDelta);
+	void Ground_Pound(const _double dTimeDelta);
 
 
+#pragma region BasicMovement
 private:
 	// 기본 움직임
 	_bool m_bSprint = false;
@@ -271,6 +273,8 @@ private:
 	// 점프 중이니
 	_bool m_IsJumping = false;
 	_bool m_IsAirDash = false;
+	_bool m_IsFalling = false;
+	_bool	m_bFallAniOnce = false;
 
 	_float3 m_vMoveDirection = {};
 	_int m_iSavedKeyPress = 0;
@@ -303,18 +307,81 @@ private:
 
 	// 점프관련 변수
 	_uint m_iJumpCount = 0;
+	_uint m_iAirDashCount = 0;
 
 
 
 	// 컷씬이라면
 	_bool m_IsCutScene = false;
+#pragma endregion
 
-	
-	// 트리거(상호작용) 진행중이라면
-	_bool m_IsTriggerPlaying = false;
+#pragma region Trigger
+public:
+	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
 
-	
+private:
+	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
+	_float3				m_vTriggerTargetPos = {};
+	_bool m_IsCollide = false;
 
+
+	_bool m_IsOnGrind = false;\
+	_bool m_IsHitStarBuddy = false;
+	_bool m_IsHitRocket = false;
+	_bool m_IsActivateRobotLever = false;
+	_bool m_IsPushingBattery = false;
+
+	/* For.GravityTunnel */
+	_bool m_bGoToGravityCenter = false;
+	_bool m_IsInGravityPipe = false;
+	_float m_fGoCenterTime = 0.f;
+
+
+	/* For.Valve */
+	_bool m_IsEnterValve = false;
+	_bool m_bStruggle = false;
+	_uint m_iRotateCount = 0;
+	_uint m_iValvePlayerName = Player::Cody;
+
+	/* For.Planet */
+	_bool m_IsHitPlanet = false;
+
+	/* For.HookUFO */
+	_bool m_IsHookUFO = false;
+	_vector m_vHookUFOAxis = {};
+	_bool m_bGoToHooker = false;
+
+	_float m_faArmLength = 0.f;
+	_float m_faVelocity = 0.f;
+	_float m_faAcceleration = 0.f;
+	_float m_fRopeAngle = 0.f;
+	_float3 m_vStartPosition = {};
+	_float3 m_vDstPosition = {};
+
+
+	// Arbitrary damping
+	_float m_faDamping = 0.995f;
+
+	// Arbitrary ball radius
+
+
+
+	_float3 m_vPoints[4] = {};
+	_double	m_dTestTime = 0.0;
+
+	void Go_Grind(const _double dTimeDelta);
+	void Hit_StarBuddy(const _double dTimeDelta);
+	void Hit_Rocket(const _double dTimeDelta);
+	void Activate_RobotLever(const _double dTimeDelta);
+	void Push_Battery(const _double dTimeDelta);
+	void Rotate_Valve(const _double dTimeDelta);
+	void In_GravityPipe(const _double dTimeDelta);
+	void Hit_Planet(const _double dTimeDelta);
+	void Hook_UFO(const _double dTimeDelta);
+
+	_bool Trigger_End(const _double dTimeDelta);
+	_bool Trigger_Check(const _double dTimeDelta);
+#pragma endregion
 
 };
 END

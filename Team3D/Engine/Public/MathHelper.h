@@ -120,4 +120,16 @@ namespace Engine
 	{
 		return XMVectorGetX(XMVector3Length(vSrc - vDst));
 	}
+
+	static _float	GetRandomFloat(_float lowBound, _float highBound)
+	{
+		if (lowBound >= highBound) // bad input
+			return lowBound;
+
+		// get random float in [0, 1] interval
+		_float f = (rand() % 10000) * 0.0001f;
+
+		// return float in [lowBound, highBound] interval. 
+		return (f * (highBound - lowBound)) + lowBound;
+	}
 }

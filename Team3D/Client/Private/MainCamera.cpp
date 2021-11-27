@@ -1,10 +1,8 @@
 #include "stdafx.h"
 #include "..\public\MainCamera.h"
-#include "GameInstance.h"
-#include "Level.h"
 #include "Cody.h"
-#include "PhysX.h"
 #include "CameraActor.h"
+#include "PlayerActor.h"
 
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
@@ -28,7 +26,7 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 {
 	CCamera::NativeConstruct(pArg);
 
-	CControllableActor::ARG_DESC ArgDesc;
+	CPlayerActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eCAMERA, this);
 	ArgDesc.pUserData = &m_UserData;
@@ -47,9 +45,9 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	ArgDesc.CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
 	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_PlayerActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
-	m_pActorCom->Set_Scale(m_fCamRadius, 0.f);
+	//m_pActorCom->Set_Scale(m_fCamRadius, 0.f);
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
 
@@ -60,7 +58,8 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	m_eCurCamMode = CamMode::Cam_AutoToFree;
 	
 
-	
+	//CameraDesc.vEye = /*_float3(0.f, 8.f, -7.f);*/_float3(0.f, 8.f, -11.f);
+	//CameraDesc.vAt = /*_float3(0.f, 0.f, 0.f);*/_float3(0.f, 4.5f, 0.f);
 
 	CDataStorage::GetInstance()->Set_MainCamPtr(this);
 
@@ -160,6 +159,7 @@ void CMainCamera::Free()
 	Safe_Release(m_pTargetObj);
 	Safe_Release(m_pCamHelper);
 	Safe_Release(m_pActorCom);
+	Safe_Release(m_pSubActorCom);
 
 	CCamera::Free();
 }
@@ -170,7 +170,7 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 		return;
 	CCody* pTargetPlayer = dynamic_cast<CCody*>(m_pTargetObj);
 
-	m_eCurPlayerSize = pTargetPlayer->Get_CurSize();
+	m_eCurPlayerSize = pTargetPlayer->Get_Player_Size();
 
 	if (m_eCurPlayerSize != m_ePrePlayerSize)
 	{

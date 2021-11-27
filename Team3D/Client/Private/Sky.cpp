@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Sky.h"
-#include "GameInstance.h"
 
 CSky::CSky(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)

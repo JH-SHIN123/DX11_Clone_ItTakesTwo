@@ -1,6 +1,5 @@
 #include "stdafx.h"
-#include "..\public\Character.h"
-#include "GameInstance.h"
+#include "..\Public\Character.h"
 
 CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -120,6 +119,5 @@ HRESULT CCharacter::Render_ShadowDepth()
 
 void CCharacter::Free()
 {
-
 	CGameObject::Free();
 }
