@@ -2,6 +2,10 @@
 #include "..\public\PressurePlate.h"
 #include "Cody.h"
 #include "May.h"
+#include "PressurePlateFrame.h"
+#include "SupportFrame.h"
+#include "PipeCurve.h"
+#include "PressurePlateLock.h"
 
 CPressurePlate::CPressurePlate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -28,8 +32,13 @@ HRESULT CPressurePlate::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_PressurePlate"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
+	FAILED_CHECK_RETURN(Ready_Layer_PipeCurve(TEXT("Layer_PipeCurve")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_PlateFrame(TEXT("Layer_PressurePlateFrame")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_SupportFrame(TEXT("Layer_SupportFrame")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_PlateLock(TEXT("Layer_PressurePlateLock")), E_FAIL);
+
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
+	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
 
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
@@ -48,6 +57,9 @@ HRESULT CPressurePlate::NativeConstruct(void * pArg)
 	Safe_Delete(TriggerArgDesc.pGeometry);
 	//DATABASE->Set_PressurePlatePtr(this);
 
+	SetUp_DefaultPositionSetting();
+
+
 	return S_OK;
 }
 
@@ -55,21 +67,8 @@ _int CPressurePlate::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	//if (m_bUpdate == true)
-	//{
-	//	if (m_IsCollide && m_pGameInstance->Key_Down(DIK_E))
-	//	{
-	//		UI_Delete(Cody, InputButton_InterActive);
-	//		UI_Delete(May, InputButton_InterActive);
-	//		m_IsCollide = false;
-	//		m_bRotate = true;
-	//	}
+	Button_Active(dTimeDelta);
 
-	//	if (m_bRotate == true)
-	//	{
-	//		Activate_Lever(dTimeDelta);
-	//	}
-	//}
 
 	return NO_EVENT;
 }
@@ -97,38 +96,156 @@ HRESULT CPressurePlate::Render(RENDER_GROUP::Enum eGroup)
 
 void CPressurePlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	//// Cody
-	//if (m_bUpdate == true)
-	//{
-	//	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-	//	{
-	//		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePressurePlate, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	//		UI_Create(Cody, InputButton_InterActive);
-	//		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	//		m_IsCollide = true;
-	//	}
-	//	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-	//	{
-	//		m_IsCollide = false;
-	//		UI_Delete(Cody, InputButton_InterActive);
-	//	}
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	{
+		m_IsButtonActive = true;
 
-	//	// May
+		for (auto pPressurePlateLock : m_vecPressurePlateLock)
+			pPressurePlateLock->Set_LockActive(true);
 
-	//	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
-	//	{
-	//		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::ePressurePlate, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	//		UI_Create(May, InputButton_InterActive);
-	//		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	//		m_IsCollide = true;
-	//	}
-	//	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-	//	{
-	//		m_IsCollide = false;
-	//		UI_Delete(May, InputButton_InterActive);
-	//	}
-	//}
+		m_pSupportFrame->Set_LockActive(true);
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	{
+		m_IsButtonActive = false;
+
+		for (auto pPressurePlateLock : m_vecPressurePlateLock)
+			pPressurePlateLock->Set_LockActive(false);
+
+		m_pSupportFrame->Set_LockActive(false);
+	}
+
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+	{
+		m_IsButtonActive = true;
+
+		for (auto pPressurePlateLock : m_vecPressurePlateLock)
+			pPressurePlateLock->Set_LockActive(true);
+
+		m_pSupportFrame->Set_LockActive(true);
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+	{
+		m_IsButtonActive = false;
+
+		for (auto pPressurePlateLock : m_vecPressurePlateLock)
+			pPressurePlateLock->Set_LockActive(false);
+
+		m_pSupportFrame->Set_LockActive(false);
+	}
+
 }
+
+void CPressurePlate::SetUp_DefaultPositionSetting()
+{
+	if (nullptr == m_pPressurePlateFrame || nullptr == m_pPipeCurve || 
+		nullptr == m_pSupportFrame || true == m_vecPressurePlateLock.empty())
+		return;
+		
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_float4 vConvertPos;
+	XMStoreFloat4(&vConvertPos, vPos);
+
+	vConvertPos.y -= 0.1f;
+	m_pPressurePlateFrame->Set_Position(XMLoadFloat4(&vConvertPos));
+
+	vConvertPos.y -= 2.f;
+	m_pPipeCurve->Set_Position(XMLoadFloat4(&vConvertPos));
+
+	vConvertPos.y -= 3.f;
+	m_pSupportFrame->Set_Position(XMLoadFloat4(&vConvertPos));
+
+	XMStoreFloat4(&vConvertPos, vPos);
+	vConvertPos.x += 1.f;
+	vConvertPos.z += 1.f;
+	m_vecPressurePlateLock[0]->Set_Position(XMLoadFloat4(&vConvertPos));
+
+	XMStoreFloat4(&vConvertPos, vPos);
+	vConvertPos.x -= 1.f;
+	vConvertPos.z += 1.f;
+	m_vecPressurePlateLock[1]->Set_Position(XMLoadFloat4(&vConvertPos));
+
+	XMStoreFloat4(&vConvertPos, vPos);
+	vConvertPos.x -= 1.f;
+	vConvertPos.z -= 1.f;
+	m_vecPressurePlateLock[2]->Set_Position(XMLoadFloat4(&vConvertPos));
+
+	XMStoreFloat4(&vConvertPos, vPos);
+	vConvertPos.x += 1.f;
+	vConvertPos.z -= 1.f;
+	m_vecPressurePlateLock[3]->Set_Position(XMLoadFloat4(&vConvertPos));
+}
+
+void CPressurePlate::Button_Active(_double TimeDelta)
+{
+
+	if (true == m_IsButtonActive)
+	{
+		if (0.3f > m_fMove)
+		{
+			m_fMove += (_float)TimeDelta;
+			m_pTransformCom->Go_Down(TimeDelta * 0.2f);
+		}
+		else
+			m_fMove = 0.3f;
+	}
+	else if (false == m_IsButtonActive)
+	{
+		if (0.f < m_fMove)
+		{
+			m_fMove -= (_float)TimeDelta;
+			m_pTransformCom->Go_Up(TimeDelta * 0.2f);
+		}
+		else
+			m_fMove = 0.f;
+	}
+
+	m_pStaticActorCom->Update_StaticActor();
+}
+
+HRESULT CPressurePlate::Ready_Layer_PlateFrame(const _tchar * pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PressurePlateFrame"), nullptr, &pGameObject), E_FAIL);
+	m_pPressurePlateFrame = static_cast<CPressurePlateFrame*>(pGameObject);
+	return S_OK;
+}
+
+HRESULT CPressurePlate::Ready_Layer_PipeCurve(const _tchar * pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PipeCurve"), nullptr, &pGameObject), E_FAIL);
+	m_pPipeCurve = static_cast<CPipeCurve*>(pGameObject);
+
+	return S_OK;
+}
+
+HRESULT CPressurePlate::Ready_Layer_SupportFrame(const _tchar * pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SupportFrame"), nullptr, &pGameObject), E_FAIL);
+	m_pSupportFrame = static_cast<CSupportFrame*>(pGameObject);
+	return S_OK;
+}
+
+HRESULT CPressurePlate::Ready_Layer_PlateLock(const _tchar * pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+	m_vecPressurePlateLock.reserve(4);
+	_uint iOption = 0;
+
+	for (_uint i = 0; i < 4; ++i)
+	{
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PressurePlateLock"), &iOption, &pGameObject), E_FAIL);
+		m_vecPressurePlateLock.emplace_back(static_cast<CPressurePlateLock*>(pGameObject));
+	}
+
+	return S_OK;
+}
+
 
 HRESULT CPressurePlate::Render_ShadowDepth()
 {
@@ -170,6 +287,16 @@ CGameObject * CPressurePlate::Clone_GameObject(void * pArg)
 
 void CPressurePlate::Free()
 {
+
+	Safe_Release(m_pPipeCurve);
+	Safe_Release(m_pSupportFrame);
+	Safe_Release(m_pPressurePlateFrame);
+
+	for (auto pPressurePlateLock : m_vecPressurePlateLock)
+		Safe_Release(pPressurePlateLock);
+
+	m_vecPressurePlateLock.clear();
+
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTransformCom);

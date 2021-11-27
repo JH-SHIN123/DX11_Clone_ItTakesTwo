@@ -250,6 +250,8 @@
     <ClInclude Include="..\Public\PlayerMarker.h" />
     <ClInclude Include="..\Public\Portrait.h" />
     <ClInclude Include="..\Public\PressurePlate.h" />
+    <ClInclude Include="..\Public\PressurePlateFrame.h" />
+    <ClInclude Include="..\Public\PressurePlateLock.h" />
     <ClInclude Include="..\Public\RespawnCircle.h" />
     <ClInclude Include="..\Public\Robot.h" />
     <ClInclude Include="..\Public\RobotBattery.h" />
@@ -264,6 +266,7 @@
     <ClInclude Include="..\Public\StarBuddy.h" />
     <ClInclude Include="..\Public\Static_Env.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
+    <ClInclude Include="..\Public\SupportFrame.h" />
     <ClInclude Include="..\Public\TestEffect.h" />
     <ClInclude Include="..\Public\Effect_Walking_Smoke.h" />
     <ClInclude Include="..\Public\TutorialDoor.h" />
@@ -337,6 +340,8 @@
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
     <ClCompile Include="..\Private\Portrait.cpp" />
     <ClCompile Include="..\Private\PressurePlate.cpp" />
+    <ClCompile Include="..\Private\PressurePlateFrame.cpp" />
+    <ClCompile Include="..\Private\PressurePlateLock.cpp" />
     <ClCompile Include="..\Private\RespawnCircle.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />
     <ClCompile Include="..\Private\RobotBattery.cpp" />
@@ -351,6 +356,7 @@
     <ClCompile Include="..\Private\StarBuddy.cpp" />
     <ClCompile Include="..\Private\Static_Env.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
+    <ClCompile Include="..\Private\SupportFrame.cpp" />
     <ClCompile Include="..\Private\TestEffect.cpp" />
     <ClCompile Include="..\Private\Effect_Walking_Smoke.cpp" />
     <ClCompile Include="..\Private\TutorialDoor.cpp" />

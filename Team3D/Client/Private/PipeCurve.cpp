@@ -28,7 +28,7 @@ HRESULT CPipeCurve::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_PipeCurve"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(20.f, 0.f, 0.f, 1.f));
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
 
 	CStaticActor::ARG_DESC ArgDesc;
@@ -128,6 +128,11 @@ void CPipeCurve::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 	//		UI_Delete(May, InputButton_InterActive);
 	//	}
 	//}
+}
+
+void CPipeCurve::Set_Position(_vector vPosition)
+{
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
 HRESULT CPipeCurve::Render_ShadowDepth()

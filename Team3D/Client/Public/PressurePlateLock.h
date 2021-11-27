@@ -5,12 +5,12 @@
 
 BEGIN(Client)
 
-class CPipeCurve : public CGameObject
+class CPressurePlateLock : public CGameObject
 {
 protected:
-	explicit CPipeCurve(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CPipeCurve(const CPipeCurve& rhs);
-	virtual ~CPipeCurve() = default;
+	explicit CPressurePlateLock(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CPressurePlateLock(const CPressurePlateLock& rhs);
+	virtual ~CPressurePlateLock() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -21,24 +21,21 @@ public:
 
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+
 public:
 	void Set_Position(_vector vPosition);
+	void Set_LockActive(_bool IsCheck);
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
-	void Set_BatteryCharged(_bool _bBatteryCharged) { m_bBatteryCharged = _bBatteryCharged; }
 
 private:
-	_bool		m_bRotate = false;
-	_bool		m_IsCollide = false;
-	_bool		m_bBatteryCharged = false;
-	_bool		m_bUpdate = true;
-	_float		m_fStopDelay = 0.f;
-
-	_bool		m_bNoBatteryHit = false;
+	_bool				m_IsLockActive = false;
+	_bool				m_IsLockDeActive = false;
+	_uint				m_iOption = 0;
 
 protected:
 	/* For.Component */
@@ -48,8 +45,11 @@ protected:
 	CStaticActor*		m_pStaticActorCom = nullptr;
 	CTriggerActor*		m_pTriggerCom = nullptr;
 
+private:
+	void  LockActive(_double TimeDelta);
+
 public:
-	static CPipeCurve* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CPressurePlateLock* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

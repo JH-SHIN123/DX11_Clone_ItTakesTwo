@@ -5,12 +5,12 @@
 
 BEGIN(Client)
 
-class CPipeCurve : public CGameObject
+class CSupportFrame : public CGameObject
 {
 protected:
-	explicit CPipeCurve(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CPipeCurve(const CPipeCurve& rhs);
-	virtual ~CPipeCurve() = default;
+	explicit CSupportFrame(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CSupportFrame(const CSupportFrame& rhs);
+	virtual ~CSupportFrame() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -21,35 +21,38 @@ public:
 
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+
 public:
 	void Set_Position(_vector vPosition);
+	void Set_LockActive(_bool IsCheck);
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
+
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
-	void Set_BatteryCharged(_bool _bBatteryCharged) { m_bBatteryCharged = _bBatteryCharged; }
 
 private:
-	_bool		m_bRotate = false;
-	_bool		m_IsCollide = false;
-	_bool		m_bBatteryCharged = false;
-	_bool		m_bUpdate = true;
-	_float		m_fStopDelay = 0.f;
-
-	_bool		m_bNoBatteryHit = false;
+	vector<class CPressurePlateLock*>			m_vecPressurePlateLock;
+	_bool										m_IsStart = true;
 
 protected:
 	/* For.Component */
-	CRenderer*			m_pRendererCom = nullptr;
-	CTransform*			m_pTransformCom = nullptr;
-	CModel*				m_pModelCom = nullptr;
-	CStaticActor*		m_pStaticActorCom = nullptr;
-	CTriggerActor*		m_pTriggerCom = nullptr;
+	CRenderer*									m_pRendererCom = nullptr;
+	CTransform*									m_pTransformCom = nullptr;
+	CModel*										m_pModelCom = nullptr;
+	CStaticActor*								m_pStaticActorCom = nullptr;
+	CTriggerActor*								m_pTriggerCom = nullptr;
+
+private:
+	void SetUp_DefaultPositionSetting();
+
+private:
+	HRESULT Ready_Layer_PlateLock(const _tchar * pLayerTag);
 
 public:
-	static CPipeCurve* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CSupportFrame* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

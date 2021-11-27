@@ -27,24 +27,34 @@ public:
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
-	void Set_BatteryCharged(_bool _bBatteryCharged) { m_bBatteryCharged = _bBatteryCharged; }
 
 private:
-	_bool		m_bRotate = false;
-	_bool		m_IsCollide = false;
-	_bool		m_bBatteryCharged = false;
-	_bool		m_bUpdate = true;
-	_float		m_fStopDelay = 0.f;
-
-	_bool		m_bNoBatteryHit = false;
+	_bool										m_IsButtonActive = false;
+	_float										m_fMove = 0.f;
 
 protected:
 	/* For.Component */
-	CRenderer*			m_pRendererCom = nullptr;
-	CTransform*			m_pTransformCom = nullptr;
-	CModel*				m_pModelCom = nullptr;
-	CStaticActor*		m_pStaticActorCom = nullptr;
-	CTriggerActor*		m_pTriggerCom = nullptr;
+	CRenderer*									m_pRendererCom = nullptr;
+	CTransform*									m_pTransformCom = nullptr;
+	CModel*										m_pModelCom = nullptr;
+	CStaticActor*								m_pStaticActorCom = nullptr;
+	CTriggerActor*								m_pTriggerCom = nullptr;
+
+private:
+	class CPipeCurve*							m_pPipeCurve = nullptr;
+	class CPressurePlateFrame*					m_pPressurePlateFrame = nullptr;
+	class CSupportFrame*						m_pSupportFrame = nullptr;
+	vector<class CPressurePlateLock*>			m_vecPressurePlateLock;
+
+private:
+	void SetUp_DefaultPositionSetting();
+	void Button_Active(_double TimeDelta);
+
+private:
+	HRESULT Ready_Layer_PlateFrame(const _tchar * pLayerTag);
+	HRESULT Ready_Layer_PipeCurve(const _tchar * pLayerTag);
+	HRESULT Ready_Layer_SupportFrame(const _tchar * pLayerTag);
+	HRESULT Ready_Layer_PlateLock(const _tchar * pLayerTag);
 
 public:
 	static CPressurePlate* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

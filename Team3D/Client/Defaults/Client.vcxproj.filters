@@ -343,6 +343,15 @@
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin\01.PressurePlate">
       <UniqueIdentifier>{8e4f12d8-fbcb-4560-bd25-99b8376df892}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\02.PressurePlateFrame">
+      <UniqueIdentifier>{b6367bed-2c7f-453b-8b78-8e4e39870938}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\03.PressurePlateLock">
+      <UniqueIdentifier>{6abed76e-adfe-484f-aefc-e948fcabeef9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\04.SupportFrame">
+      <UniqueIdentifier>{b4a2db38-2d82-4c2a-999a-aa74e76f2bb5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -619,6 +628,15 @@
     <ClInclude Include="..\Public\PressurePlate.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\01.PressurePlate</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SupportFrame.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\04.SupportFrame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PressurePlateFrame.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\02.PressurePlateFrame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PressurePlateLock.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\03.PressurePlateLock</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -883,6 +901,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\PressurePlate.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\01.PressurePlate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SupportFrame.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\04.SupportFrame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PressurePlateFrame.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\02.PressurePlateFrame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PressurePlateLock.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\03.PressurePlateLock</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
