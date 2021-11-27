@@ -24,14 +24,19 @@ HRESULT CSupportFrame::NativeConstruct_Prototype()
 HRESULT CSupportFrame::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
+
+	if (nullptr != pArg)
+		memcpy(&m_iOption, pArg, sizeof(_uint));
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_SupportFrame"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Layer_PlateLock(TEXT("Layer_PressurePlateLock")), E_FAIL);
+	/* Option 0 : BigFlate 프레임 / Option 1 : Plate 프레임 */
+	if(1 == m_iOption)
+		FAILED_CHECK_RETURN(Ready_Layer_PlateLock(TEXT("Layer_PressurePlateLock"), 4), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
@@ -39,15 +44,6 @@ HRESULT CSupportFrame::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 
-	CTriggerActor::ARG_DESC TriggerArgDesc;
-
-	TriggerArgDesc.pUserData = &m_UserData;
-	TriggerArgDesc.pTransform = m_pTransformCom;
-	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.7f);
-	m_UserData = USERDATA(GameID::eSUPPORTFRAME, this);
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
-	Safe_Delete(TriggerArgDesc.pGeometry);
 	//DATABASE->Set_SupportFramePtr(this);
 
 
@@ -146,13 +142,13 @@ HRESULT CSupportFrame::Render_ShadowDepth()
 	return S_OK;
 }
 
-HRESULT CSupportFrame::Ready_Layer_PlateLock(const _tchar * pLayerTag)
+HRESULT CSupportFrame::Ready_Layer_PlateLock(const _tchar * pLayerTag, _uint iCount)
 {
 	CGameObject* pGameObject = nullptr;
-	m_vecPressurePlateLock.reserve(4);
+	m_vecPressurePlateLock.reserve(iCount);
 	_uint iOption = 1;
 
-	for (_uint i = 0; i < 4; ++i)
+	for (_uint i = 0; i < iCount; ++i)
 	{
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PressurePlateLock"), &iOption, &pGameObject), E_FAIL);
 		m_vecPressurePlateLock.emplace_back(static_cast<CPressurePlateLock*>(pGameObject));
@@ -193,7 +189,6 @@ void CSupportFrame::Free()
 	for (auto pPressurePlate : m_vecPressurePlateLock)
 		Safe_Release(pPressurePlate);
 
-	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);

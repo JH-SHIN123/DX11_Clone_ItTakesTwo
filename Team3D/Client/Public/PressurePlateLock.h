@@ -46,7 +46,8 @@ protected:
 	CTriggerActor*		m_pTriggerCom = nullptr;
 
 private:
-	void  LockActive(_double TimeDelta);
+	void LockActive(_double TimeDelta);
+	void OptionSetting();
 
 public:
 	static CPressurePlateLock* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

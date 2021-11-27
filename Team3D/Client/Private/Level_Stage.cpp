@@ -46,10 +46,8 @@ HRESULT CLevel_Stage::NativeConstruct()
 	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
 
 	/* Jin */
-	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PipeCurve"), TEXT("GameObject_PipeCurve")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressurePlate"), TEXT("GameObject_PressurePlate")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressureBigPlate"), TEXT("GameObject_PressureBigPlate")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressurePlateFrame"), TEXT("GameObject_PressurePlateFrame")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressurePlateLock"), TEXT("GameObject_PressurePlateLock")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_SupportFrame"), TEXT("GameObject_SupportFrame")), E_FAIL);
 
 	/* Jun */

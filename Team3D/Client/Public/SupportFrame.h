@@ -34,8 +34,11 @@ public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
-	vector<class CPressurePlateLock*>			m_vecPressurePlateLock;
 	_bool										m_IsStart = true;
+	_uint										m_iOption = 0;
+
+private:
+	vector<class CPressurePlateLock*>			m_vecPressurePlateLock;
 
 protected:
 	/* For.Component */
@@ -43,13 +46,12 @@ protected:
 	CTransform*									m_pTransformCom = nullptr;
 	CModel*										m_pModelCom = nullptr;
 	CStaticActor*								m_pStaticActorCom = nullptr;
-	CTriggerActor*								m_pTriggerCom = nullptr;
 
 private:
 	void SetUp_DefaultPositionSetting();
 
 private:
-	HRESULT Ready_Layer_PlateLock(const _tchar * pLayerTag);
+	HRESULT Ready_Layer_PlateLock(const _tchar * pLayerTag, _uint iCount);
 
 public:
 	static CSupportFrame* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

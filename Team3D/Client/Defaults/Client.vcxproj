@@ -252,6 +252,7 @@
     <ClInclude Include="..\Public\PlayerFilterCallback.h" />
     <ClInclude Include="..\Public\PlayerMarker.h" />
     <ClInclude Include="..\Public\Portrait.h" />
+    <ClInclude Include="..\Public\PressureBigPlate.h" />
     <ClInclude Include="..\Public\PressurePlate.h" />
     <ClInclude Include="..\Public\PressurePlateFrame.h" />
     <ClInclude Include="..\Public\PressurePlateLock.h" />
@@ -345,6 +346,7 @@
     <ClCompile Include="..\Private\PlayerFilterCallback.cpp" />
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
     <ClCompile Include="..\Private\Portrait.cpp" />
+    <ClCompile Include="..\Private\PressureBigPlate.cpp" />
     <ClCompile Include="..\Private\PressurePlate.cpp" />
     <ClCompile Include="..\Private\PressurePlateFrame.cpp" />
     <ClCompile Include="..\Private\PressurePlateLock.cpp" />

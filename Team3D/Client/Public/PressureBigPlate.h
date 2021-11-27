@@ -5,12 +5,12 @@
 
 BEGIN(Client)
 
-class CPressurePlate : public CGameObject
+class CPressureBigPlate : public CGameObject
 {
 protected:
-	explicit CPressurePlate(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CPressurePlate(const CPressurePlate& rhs);
-	virtual ~CPressurePlate() = default;
+	explicit CPressureBigPlate(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CPressureBigPlate(const CPressureBigPlate& rhs);
+	virtual ~CPressureBigPlate() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -23,9 +23,7 @@ public:
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 public:
-	void Set_Position(_vector vPosition);
 
-public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
@@ -34,7 +32,12 @@ public:
 private:
 	_bool										m_IsButtonActive = false;
 	_float										m_fMove = 0.f;
-	_uint										m_iOption = 0;
+
+private:
+	class CPressurePlateLock*					m_pPlateLock = nullptr;
+	class CPressurePlateFrame*					m_pPlateFrame = nullptr;
+	class CSupportFrame*						m_pSupportFrame = nullptr;
+	vector<class CPressurePlate*>				m_vecPressurePlate;
 
 protected:
 	/* For.Component */
@@ -45,23 +48,18 @@ protected:
 	CTriggerActor*								m_pTriggerCom = nullptr;
 
 private:
-	class CPipeCurve*							m_pPipeCurve = nullptr;
-	class CPressurePlateFrame*					m_pPressurePlateFrame = nullptr;
-	class CSupportFrame*						m_pSupportFrame = nullptr;
-	vector<class CPressurePlateLock*>			m_vecPressurePlateLock;
-
-private:
 	void SetUp_DefaultPositionSetting();
+	void SetUp_PlatePositionSetting();
 	void Button_Active(_double TimeDelta);
 
 private:
-	HRESULT Ready_Layer_PlateFrame(const _tchar * pLayerTag);
-	HRESULT Ready_Layer_PipeCurve(const _tchar * pLayerTag);
+	HRESULT Ready_Layer_Plate(const _tchar * pLayerTag, _uint iCount);
+	HRESULT Ready_Layer_PlateLock(const _tchar * pLayerTag);
 	HRESULT Ready_Layer_SupportFrame(const _tchar * pLayerTag);
-	HRESULT Ready_Layer_PlateLock(const _tchar * pLayerTag, _uint iCount);
+	HRESULT Ready_Layer_PlateFrame(const _tchar * pLayerTag);
 
 public:
-	static CPressurePlate* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CPressureBigPlate* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

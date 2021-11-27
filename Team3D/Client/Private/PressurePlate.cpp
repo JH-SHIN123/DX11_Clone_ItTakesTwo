@@ -27,17 +27,25 @@ HRESULT CPressurePlate::NativeConstruct_Prototype()
 HRESULT CPressurePlate::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
-	
+
+	if (nullptr != pArg)
+		memcpy(&m_iOption, pArg, sizeof(_uint));
+
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_PressurePlate"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
+	if (0 == m_iOption)
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-10.f, 0.f, 0.f, 1.f));
+	else if (1 == m_iOption)
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(10.f, 0.f, 0.f, 1.f));
+
 	FAILED_CHECK_RETURN(Ready_Layer_PipeCurve(TEXT("Layer_PipeCurve")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_PlateFrame(TEXT("Layer_PressurePlateFrame")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_SupportFrame(TEXT("Layer_SupportFrame")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_PlateLock(TEXT("Layer_PressurePlateLock")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_PlateLock(TEXT("Layer_PressurePlateLock"), 4), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-10.f, 0.f, 0.f, 1.f));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-10.f, 0.f, 0.f, 1.f));
 	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
 
 	CStaticActor::ARG_DESC ArgDesc;
@@ -58,7 +66,6 @@ HRESULT CPressurePlate::NativeConstruct(void * pArg)
 	//DATABASE->Set_PressurePlatePtr(this);
 
 	SetUp_DefaultPositionSetting();
-
 
 	return S_OK;
 }
@@ -134,6 +141,11 @@ void CPressurePlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGam
 		m_pSupportFrame->Set_LockActive(false);
 	}
 
+}
+
+void CPressurePlate::Set_Position(_vector vPosition)
+{
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
 void CPressurePlate::SetUp_DefaultPositionSetting()
@@ -225,19 +237,20 @@ HRESULT CPressurePlate::Ready_Layer_PipeCurve(const _tchar * pLayerTag)
 HRESULT CPressurePlate::Ready_Layer_SupportFrame(const _tchar * pLayerTag)
 {
 	CGameObject* pGameObject = nullptr;
+	_uint iOption = 1;
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SupportFrame"), nullptr, &pGameObject), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SupportFrame"), &iOption, &pGameObject), E_FAIL);
 	m_pSupportFrame = static_cast<CSupportFrame*>(pGameObject);
 	return S_OK;
 }
 
-HRESULT CPressurePlate::Ready_Layer_PlateLock(const _tchar * pLayerTag)
+HRESULT CPressurePlate::Ready_Layer_PlateLock(const _tchar * pLayerTag, _uint iCount)
 {
 	CGameObject* pGameObject = nullptr;
-	m_vecPressurePlateLock.reserve(4);
+	m_vecPressurePlateLock.reserve(iCount);
 	_uint iOption = 0;
 
-	for (_uint i = 0; i < 4; ++i)
+	for (_uint i = 0; i < iCount; ++i)
 	{
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PressurePlateLock"), &iOption, &pGameObject), E_FAIL);
 		m_vecPressurePlateLock.emplace_back(static_cast<CPressurePlateLock*>(pGameObject));

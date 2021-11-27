@@ -47,7 +47,6 @@ protected:
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 	CStaticActor*		m_pStaticActorCom = nullptr;
-	CTriggerActor*		m_pTriggerCom = nullptr;
 
 public:
 	static CPressurePlateFrame* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

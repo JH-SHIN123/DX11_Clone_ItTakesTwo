@@ -355,6 +355,9 @@
     <Filter Include="02.GameObject\07.UI\09.Screen\01.ChapterScreen">
       <UniqueIdentifier>{f8527fcd-ef02-4951-8a62-1e30b5d9da75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\05.PressureBigPlate">
+      <UniqueIdentifier>{e5a868eb-b19a-4aab-9a06-a4f0e0a0e11a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -642,6 +645,12 @@
     <ClInclude Include="..\Public\SplashScreen.h">
       <Filter>02.GameObject\07.UI\09.Screen\01.ChapterScreen</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PlayerActor.h" />
+    <ClInclude Include="..\Public\PlayerBehaviorCallback.h" />
+    <ClInclude Include="..\Public\PlayerFilterCallback.h" />
+    <ClInclude Include="..\Public\PressureBigPlate.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\05.PressureBigPlate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -917,6 +926,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\SplashScreen.cpp">
       <Filter>02.GameObject\07.UI\09.Screen\01.ChapterScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerActor.cpp" />
+    <ClCompile Include="..\Private\PlayerBehaviorCallback.cpp" />
+    <ClCompile Include="..\Private\PlayerFilterCallback.cpp" />
+    <ClCompile Include="..\Private\PressureBigPlate.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\05.PressureBigPlate</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
