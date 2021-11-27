@@ -246,6 +246,7 @@
     <ClInclude Include="..\Public\PC_Enter.h" />
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
+    <ClInclude Include="..\Public\PipeCurve.h" />
     <ClInclude Include="..\Public\PlayerMarker.h" />
     <ClInclude Include="..\Public\Portrait.h" />
     <ClInclude Include="..\Public\RespawnCircle.h" />
@@ -331,6 +332,7 @@
     <ClCompile Include="..\Private\PC_Enter.cpp" />
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
+    <ClCompile Include="..\Private\PipeCurve.cpp" />
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
     <ClCompile Include="..\Private\Portrait.cpp" />
     <ClCompile Include="..\Private\RespawnCircle.cpp" />

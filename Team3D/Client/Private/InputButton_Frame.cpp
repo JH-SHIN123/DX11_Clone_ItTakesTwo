@@ -40,9 +40,6 @@ HRESULT CInputButton_Frame::NativeConstruct(void * pArg)
 
 	SetUp_Option();
 
-	if (2 == m_iOption)
-		m_fPower = 20.f;
-
 	return S_OK;
 }
 
@@ -51,10 +48,9 @@ _int CInputButton_Frame::Tick(_double TimeDelta)
 	if (true == m_IsDead)
 		return EVENT_DEAD;
 
-	
-
 	CUIObject::Tick(TimeDelta);
 
+	/* RespawnCircle */
 	if (2 == m_iOption)
 	{
 		if (m_vStartScale.x >= m_UIDesc.vScale.x)
@@ -64,8 +60,6 @@ _int CInputButton_Frame::Tick(_double TimeDelta)
 			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 		}
 	}
-
-
 
 	return _int();
 }
@@ -111,11 +105,13 @@ void CInputButton_Frame::SetUp_Option()
 	{
 		m_iOption = 1;
 		m_iShaderPassNum = 1;
+		m_IsScaleBigger = true;
 	}
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_E")))
 	{
 		m_iOption = 2;
 		m_iShaderPassNum = 1;
+		m_fPower = 20.f;
 	}
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Left")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Right")))
 	{
@@ -127,6 +123,11 @@ void CInputButton_Frame::SetUp_Option()
 		m_iOption = 0;
 		m_iShaderPassNum = 1; 
 	}
+}
+
+void CInputButton_Frame::Scale_Effect()
+{
+
 }
 
 void CInputButton_Frame::Set_ScaleEffect()

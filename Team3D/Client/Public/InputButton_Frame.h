@@ -33,6 +33,9 @@ private:
 	_float2							m_vStartScale;
 	_float							m_fPower = 0.f;
 	_uint							m_iShaderPassNum = 0;
+	_bool							m_IsScaleBigger = false;
+	_bool							m_IsScaleSmaller = false;
+
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
@@ -41,6 +44,7 @@ private:
 	void Render_Font();
 	HRESULT Ready_Component();
 	void SetUp_Option();
+	void Scale_Effect();
 
 public:
 	static CInputButton_Frame* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

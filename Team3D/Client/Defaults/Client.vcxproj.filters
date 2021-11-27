@@ -151,57 +151,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe">
       <UniqueIdentifier>{1cdda357-4a1a-47f1-9b8f-3998a06a1e6b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.UI">
-      <UniqueIdentifier>{655701b4-ca8c-4776-ab23-332f0781581e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\99.UI_Generator">
-      <UniqueIdentifier>{bd3f9c54-ec94-480a-ac35-1cd4435104d0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\00.Main">
-      <UniqueIdentifier>{9d5bee89-c474-4dcf-8a8e-0ef5ff96d410}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\01.InputButton">
-      <UniqueIdentifier>{d9199cbc-2ae9-4773-afeb-f18849604ce2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\01.InputButton\00.Frame">
-      <UniqueIdentifier>{4d84e6aa-f786-4cfe-b5af-558be0ab16c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\01.InputButton\01.Button">
-      <UniqueIdentifier>{6125b4bd-a6d4-4be5-b3cb-6ee056b3a81f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\03.ArrowKeys">
-      <UniqueIdentifier>{bfd01cf1-003b-4352-b521-cb1c85869051}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\03.ArrowKeys\00.Fill">
-      <UniqueIdentifier>{6cd715f8-54d9-4c02-a292-f8479a2adc01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\03.ArrowKeys\01.Outline">
-      <UniqueIdentifier>{d5a77603-7991-4752-b0d8-628b31ebc1ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\04.PlayerMarker">
-      <UniqueIdentifier>{12f10e88-ed42-4a3e-b44a-e48946eccdcd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\05.UISprite">
-      <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\06.RespawnCircle">
-      <UniqueIdentifier>{32c02485-1865-4c7a-8089-c3bd39b4b08c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\07.Portrait">
-      <UniqueIdentifier>{f56e4d4e-96be-46f6-91d6-d0ec0b8dd449}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\08.ButtonIndicator">
-      <UniqueIdentifier>{29414170-35a7-4279-8f62-05b5997957f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\09.Screen">
-      <UniqueIdentifier>{7f60ca2f-feec-410e-a00a-ada95f56603a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\09.Screen\00.AlphaScreen">
-      <UniqueIdentifier>{120844a3-2edb-4b1e-b9ea-4d3159964372}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\02.Logo\00.SplashScreen">
-      <UniqueIdentifier>{b6ee4c02-42a5-430a-ba23-db3336551b31}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\00.Public\03.Cam_Helper\CamEffect">
       <UniqueIdentifier>{fb6abacd-7350-4cd6-bc75-133e14471971}</UniqueIdentifier>
     </Filter>
@@ -232,15 +181,6 @@
     <Filter Include="02.GameObject\06.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.UI\10.Menu">
-      <UniqueIdentifier>{2c177276-9cd8-4cd1-9b02-729ba9e0d7a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\10.Menu\00.Screen">
-      <UniqueIdentifier>{43442957-b4fa-435a-842c-2889b82d3f5d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\10.Menu\01.HeaderBox">
-      <UniqueIdentifier>{3d06338d-2d98-4faa-8163-518d639a3457}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03.Component">
       <UniqueIdentifier>{6f424d55-06aa-4b07-a102-2829f8dd72e4}</UniqueIdentifier>
     </Filter>
@@ -258,24 +198,6 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
       <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\02.ButtonIcon">
-      <UniqueIdentifier>{3c2d527a-22db-4fc8-a7c5-05df63b7b482}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\02.ButtonIcon\PC">
-      <UniqueIdentifier>{d168a74d-d928-4c37-842d-4a44a641f92c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\02.ButtonIcon\PC\Mouse">
-      <UniqueIdentifier>{d2f7148a-cea6-49b1-947f-604017fc1f0c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\02.ButtonIcon\PC\Enter">
-      <UniqueIdentifier>{f90769d6-e9cf-4089-aab7-cd3d224cdf4f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\02.ButtonIcon\Controller">
-      <UniqueIdentifier>{6f0a4b12-efac-48a1-9f58-087c7651fd4f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.UI\11.ChapterSelect">
-      <UniqueIdentifier>{f0c03c84-48c4-479e-86d2-76c7f04a52ce}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon">
       <UniqueIdentifier>{307d7217-2819-471f-be94-d8cf74b19ac9}</UniqueIdentifier>
@@ -339,6 +261,84 @@
     </Filter>
     <Filter Include="02.GameObject\02.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI">
+      <UniqueIdentifier>{655701b4-ca8c-4776-ab23-332f0781581e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\99.UI_Generator">
+      <UniqueIdentifier>{bd3f9c54-ec94-480a-ac35-1cd4435104d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\00.Main">
+      <UniqueIdentifier>{9d5bee89-c474-4dcf-8a8e-0ef5ff96d410}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\01.InputButton">
+      <UniqueIdentifier>{d9199cbc-2ae9-4773-afeb-f18849604ce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\01.InputButton\00.Frame">
+      <UniqueIdentifier>{4d84e6aa-f786-4cfe-b5af-558be0ab16c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\01.InputButton\01.Button">
+      <UniqueIdentifier>{6125b4bd-a6d4-4be5-b3cb-6ee056b3a81f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\03.ArrowKeys">
+      <UniqueIdentifier>{bfd01cf1-003b-4352-b521-cb1c85869051}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\03.ArrowKeys\00.Fill">
+      <UniqueIdentifier>{6cd715f8-54d9-4c02-a292-f8479a2adc01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\03.ArrowKeys\01.Outline">
+      <UniqueIdentifier>{d5a77603-7991-4752-b0d8-628b31ebc1ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\04.PlayerMarker">
+      <UniqueIdentifier>{12f10e88-ed42-4a3e-b44a-e48946eccdcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\05.UISprite">
+      <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\06.RespawnCircle">
+      <UniqueIdentifier>{32c02485-1865-4c7a-8089-c3bd39b4b08c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\07.Portrait">
+      <UniqueIdentifier>{f56e4d4e-96be-46f6-91d6-d0ec0b8dd449}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\08.ButtonIndicator">
+      <UniqueIdentifier>{29414170-35a7-4279-8f62-05b5997957f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\09.Screen">
+      <UniqueIdentifier>{7f60ca2f-feec-410e-a00a-ada95f56603a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\09.Screen\00.AlphaScreen">
+      <UniqueIdentifier>{120844a3-2edb-4b1e-b9ea-4d3159964372}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\10.Menu">
+      <UniqueIdentifier>{2c177276-9cd8-4cd1-9b02-729ba9e0d7a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\10.Menu\00.Screen">
+      <UniqueIdentifier>{43442957-b4fa-435a-842c-2889b82d3f5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\10.Menu\01.HeaderBox">
+      <UniqueIdentifier>{3d06338d-2d98-4faa-8163-518d639a3457}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\02.ButtonIcon">
+      <UniqueIdentifier>{3c2d527a-22db-4fc8-a7c5-05df63b7b482}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\02.ButtonIcon\PC">
+      <UniqueIdentifier>{d168a74d-d928-4c37-842d-4a44a641f92c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\02.ButtonIcon\PC\Mouse">
+      <UniqueIdentifier>{d2f7148a-cea6-49b1-947f-604017fc1f0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\02.ButtonIcon\PC\Enter">
+      <UniqueIdentifier>{f90769d6-e9cf-4089-aab7-cd3d224cdf4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\02.ButtonIcon\Controller">
+      <UniqueIdentifier>{6f0a4b12-efac-48a1-9f58-087c7651fd4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\11.ChapterSelect">
+      <UniqueIdentifier>{f0c03c84-48c4-479e-86d2-76c7f04a52ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.PipeCurve">
+      <UniqueIdentifier>{c57472fb-766e-4142-a112-142e1b86bccf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -481,28 +481,28 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_Generator.h">
-      <Filter>02.GameObject\05.UI\99.UI_Generator</Filter>
+      <Filter>02.GameObject\07.UI\99.UI_Generator</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIObject.h">
-      <Filter>02.GameObject\05.UI\00.Main</Filter>
+      <Filter>02.GameObject\07.UI\00.Main</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\InputButton_Frame.h">
-      <Filter>02.GameObject\05.UI\01.InputButton\00.Frame</Filter>
+      <Filter>02.GameObject\07.UI\01.InputButton\00.Frame</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\InputButton.h">
-      <Filter>02.GameObject\05.UI\01.InputButton\01.Button</Filter>
+      <Filter>02.GameObject\07.UI\01.InputButton\01.Button</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Arrowkeys_Fill.h">
-      <Filter>02.GameObject\05.UI\03.ArrowKeys\00.Fill</Filter>
+      <Filter>02.GameObject\07.UI\03.ArrowKeys\00.Fill</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Arrowkeys_Outline.h">
-      <Filter>02.GameObject\05.UI\03.ArrowKeys\01.Outline</Filter>
+      <Filter>02.GameObject\07.UI\03.ArrowKeys\01.Outline</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PlayerMarker.h">
-      <Filter>02.GameObject\05.UI\04.PlayerMarker</Filter>
+      <Filter>02.GameObject\07.UI\04.PlayerMarker</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UISprite.h">
-      <Filter>02.GameObject\05.UI\05.UISprite</Filter>
+      <Filter>02.GameObject\07.UI\05.UISprite</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Robot.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\NoneInteraction</Filter>
@@ -514,22 +514,19 @@
       <Filter>98.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\RespawnCircle.h">
-      <Filter>02.GameObject\05.UI\06.RespawnCircle</Filter>
+      <Filter>02.GameObject\07.UI\06.RespawnCircle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Portrait.h">
-      <Filter>02.GameObject\05.UI\07.Portrait</Filter>
+      <Filter>02.GameObject\07.UI\07.Portrait</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ButtonIndicator.h">
-      <Filter>02.GameObject\05.UI\08.ButtonIndicator</Filter>
+      <Filter>02.GameObject\07.UI\08.ButtonIndicator</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AlphaScreen.h">
-      <Filter>02.GameObject\05.UI\09.Screen\00.AlphaScreen</Filter>
+      <Filter>02.GameObject\07.UI\09.Screen\00.AlphaScreen</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Logo.h">
       <Filter>01.Maps\02.Logo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\SplashScreen.h">
-      <Filter>02.GameObject\02.Logo\00.SplashScreen</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\RobotLever.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
@@ -571,10 +568,10 @@
       <Filter>02.GameObject\02.Sky</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\HeaderBox.h">
-      <Filter>02.GameObject\05.UI\10.Menu\01.HeaderBox</Filter>
+      <Filter>02.GameObject\07.UI\10.Menu\01.HeaderBox</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MenuScreen.h">
-      <Filter>02.GameObject\05.UI\10.Menu\00.Screen</Filter>
+      <Filter>02.GameObject\07.UI\10.Menu\00.Screen</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CameraBehaviorCallback.h">
       <Filter>03.Component\01.CameraActor\01.BehaviorCallback</Filter>
@@ -592,16 +589,16 @@
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PC_MouseButton.h">
-      <Filter>02.GameObject\05.UI\02.ButtonIcon\PC\Mouse</Filter>
+      <Filter>02.GameObject\07.UI\02.ButtonIcon\PC\Mouse</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PC_Enter.h">
-      <Filter>02.GameObject\05.UI\02.ButtonIcon\PC\Enter</Filter>
+      <Filter>02.GameObject\07.UI\02.ButtonIcon\PC\Enter</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ControllerIcon.h">
-      <Filter>02.GameObject\05.UI\02.ButtonIcon\Controller</Filter>
+      <Filter>02.GameObject\07.UI\02.ButtonIcon\Controller</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ChapterSelect.h">
-      <Filter>02.GameObject\05.UI\11.ChapterSelect</Filter>
+      <Filter>02.GameObject\07.UI\11.ChapterSelect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\HookUFO.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO</Filter>
@@ -611,6 +608,10 @@
     </ClInclude>
     <ClInclude Include="..\public\Level_Stage.h">
       <Filter>01.Maps\04.Stage_Space</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SplashScreen.h" />
+    <ClInclude Include="..\Public\PipeCurve.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.PipeCurve</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -717,40 +718,37 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Generator.cpp">
-      <Filter>02.GameObject\05.UI\99.UI_Generator</Filter>
+      <Filter>02.GameObject\07.UI\99.UI_Generator</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIObject.cpp">
-      <Filter>02.GameObject\05.UI\00.Main</Filter>
+      <Filter>02.GameObject\07.UI\00.Main</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\InputButton.cpp">
-      <Filter>02.GameObject\05.UI\01.InputButton\01.Button</Filter>
+      <Filter>02.GameObject\07.UI\01.InputButton\01.Button</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\InputButton_Frame.cpp">
-      <Filter>02.GameObject\05.UI\01.InputButton\00.Frame</Filter>
+      <Filter>02.GameObject\07.UI\01.InputButton\00.Frame</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PlayerMarker.cpp">
-      <Filter>02.GameObject\05.UI\04.PlayerMarker</Filter>
+      <Filter>02.GameObject\07.UI\04.PlayerMarker</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UISprite.cpp">
-      <Filter>02.GameObject\05.UI\05.UISprite</Filter>
+      <Filter>02.GameObject\07.UI\05.UISprite</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\RespawnCircle.cpp">
-      <Filter>02.GameObject\05.UI\06.RespawnCircle</Filter>
+      <Filter>02.GameObject\07.UI\06.RespawnCircle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Portrait.cpp">
-      <Filter>02.GameObject\05.UI\07.Portrait</Filter>
+      <Filter>02.GameObject\07.UI\07.Portrait</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ButtonIndicator.cpp">
-      <Filter>02.GameObject\05.UI\08.ButtonIndicator</Filter>
+      <Filter>02.GameObject\07.UI\08.ButtonIndicator</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AlphaScreen.cpp">
-      <Filter>02.GameObject\05.UI\09.Screen\00.AlphaScreen</Filter>
+      <Filter>02.GameObject\07.UI\09.Screen\00.AlphaScreen</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Logo.cpp">
       <Filter>01.Maps\02.Logo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\SplashScreen.cpp">
-      <Filter>02.GameObject\02.Logo\00.SplashScreen</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
@@ -766,9 +764,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\UFO.cpp">
       <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\TileBox.cpp">
-      <Filter>02.GameObject\99.Stage%28Test%29\03.Test</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Robot.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\NoneInteraction</Filter>
@@ -819,10 +814,10 @@
       <Filter>02.GameObject\02.Sky</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\HeaderBox.cpp">
-      <Filter>02.GameObject\05.UI\10.Menu\01.HeaderBox</Filter>
+      <Filter>02.GameObject\07.UI\10.Menu\01.HeaderBox</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MenuScreen.cpp">
-      <Filter>02.GameObject\05.UI\10.Menu\00.Screen</Filter>
+      <Filter>02.GameObject\07.UI\10.Menu\00.Screen</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CameraActor.cpp">
       <Filter>03.Component\01.CameraActor\00.Main</Filter>
@@ -843,10 +838,10 @@
       <Filter>02.GameObject\03.Character\00.Cody</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp">
-      <Filter>02.GameObject\05.UI\03.ArrowKeys\00.Fill</Filter>
+      <Filter>02.GameObject\07.UI\03.ArrowKeys\00.Fill</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp">
-      <Filter>02.GameObject\05.UI\03.ArrowKeys\01.Outline</Filter>
+      <Filter>02.GameObject\07.UI\03.ArrowKeys\01.Outline</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp">
@@ -856,16 +851,16 @@
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PC_MouseButton.cpp">
-      <Filter>02.GameObject\05.UI\02.ButtonIcon\PC\Mouse</Filter>
+      <Filter>02.GameObject\07.UI\02.ButtonIcon\PC\Mouse</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PC_Enter.cpp">
-      <Filter>02.GameObject\05.UI\02.ButtonIcon\PC\Enter</Filter>
+      <Filter>02.GameObject\07.UI\02.ButtonIcon\PC\Enter</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ControllerIcon.cpp">
-      <Filter>02.GameObject\05.UI\02.ButtonIcon\Controller</Filter>
+      <Filter>02.GameObject\07.UI\02.ButtonIcon\Controller</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ChapterSelect.cpp">
-      <Filter>02.GameObject\05.UI\11.ChapterSelect</Filter>
+      <Filter>02.GameObject\07.UI\11.ChapterSelect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\HookUFO.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO</Filter>
@@ -875,6 +870,10 @@
     </ClCompile>
     <ClCompile Include="..\private\Level_Stage.cpp">
       <Filter>01.Maps\04.Stage_Space</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SplashScreen.cpp" />
+    <ClCompile Include="..\Private\PipeCurve.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.PipeCurve</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

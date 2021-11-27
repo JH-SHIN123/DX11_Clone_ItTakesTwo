@@ -188,16 +188,18 @@ _int CCody::Tick(_double dTimeDelta)
 	
 #pragma endregion
 
-	CMay* pMay = (CMay*)DATABASE->GetMay();
-	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+	/* UI */
+	//CMay* pMay = (CMay*)DATABASE->GetMay();
+	//UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	//Å×½ºÆ®////////////////////////////////////////////////
+	/* UI */
 	if(m_pGameInstance->Key_Down(DIK_3))
 		UI_Create(Cody, RespawnCircle);
-
+	
+	/* UI */
 	if (m_pGameInstance->Key_Down(DIK_4))
 		UI_Delete(Cody, RespawnCircle);
-	///////////////////////////////////////////////////////
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
