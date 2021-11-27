@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Engine_Defines.h"
+#include "Client_Defines.h"
 
-BEGIN(Engine)
+BEGIN(Client)
 
-class CPxControllerCallback : public PxControllerBehaviorCallback
+class CPlayerBehaviorCallback : public PxControllerBehaviorCallback
 {
 public:
-	CPxControllerCallback() = default;
-	~CPxControllerCallback() = default;
+	CPlayerBehaviorCallback() = default;
+	~CPlayerBehaviorCallback() = default;
 
 public:
 	virtual PxControllerBehaviorFlags getBehaviorFlags(const PxShape & shape, const PxActor & actor) override;

@@ -1,6 +1,5 @@
 #include "stdafx.h"
-#include "..\public\Character.h"
-#include "GameInstance.h"
+#include "..\Public\Character.h"
 
 CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -10,6 +9,14 @@ CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContex
 CCharacter::CCharacter(const CCharacter& rhs)
 	: CGameObject(rhs)
 {
+}
+
+_fvector CCharacter::Get_Position()
+{
+	if (nullptr == m_pTransformCom)
+		return XMVectorSet(0.f, 0.f, 0.f, 1.f);
+
+	return m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 }
 
 _float CCharacter::Compute_Distance(CTransform * pPlayerTransform, CTransform * pDstTransform)
@@ -112,6 +119,5 @@ HRESULT CCharacter::Render_ShadowDepth()
 
 void CCharacter::Free()
 {
-
 	CGameObject::Free();
 }

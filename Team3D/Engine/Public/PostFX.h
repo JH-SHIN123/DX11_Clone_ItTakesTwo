@@ -42,7 +42,7 @@ private:
 	_uint	m_iWinSize[2] = { 0,0 };
 	_uint	m_iDownScaleGroups = 0;
 
-	_float	m_fMiddleGrey = 0.0025f; 
+	_float	m_fMiddleGrey = 0.03249f; 
 	_float	m_fLumWhiteSqr = 1.5f;
 	
 	_float	m_fAdaptTime = 1.f;
@@ -84,10 +84,6 @@ private: /* For. Bloom */
 private: /* For.CS - Shader */
 	ID3DX11Effect* m_pEffect_CS = nullptr;
 	vector<INPUT_LAYOUT_DESC>	m_InputLayouts_CS;
-
-private:
-	ID3DX11Effect* m_pEffect_CS_Bloom = nullptr;
-	vector<INPUT_LAYOUT_DESC>	m_InputLayouts_CS_Bloom;
 
 private: /* For. PS - ToneMapping */
 	class CVIBuffer_RectRHW* m_pVIBuffer_ToneMapping = nullptr;

@@ -37,6 +37,10 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 private:
+	HRESULT Set_MeshRenderGroup();
+	HRESULT Add_GameObject_ToRenderGroup();
+
+private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CModel_Instance*	m_pModelCom = nullptr;

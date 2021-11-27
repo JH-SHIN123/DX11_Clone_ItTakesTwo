@@ -344,6 +344,18 @@ void CTransform::RotatePitch(const _double TimeDelta)
 	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
 }
 
+void CTransform::MoveToDir(const _fvector & vMoveDir, const _double TimeDelta, const _double dAcceleration, CNavigation * pNavigation)
+{
+	if (0.0 == m_TransformDesc.dSpeedPerSec) return;
+
+	_vector vMoveDir_Norm = XMVector3Normalize(vMoveDir);
+	_vector vPosition = Get_State(CTransform::STATE_POSITION);
+	vPosition += vMoveDir_Norm * (_float)m_TransformDesc.dSpeedPerSec * (_float)TimeDelta;
+
+	Set_State(CTransform::STATE_POSITION, vPosition);
+
+}
+
 CTransform * CTransform::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CTransform* pInstance = new CTransform(pDevice, pDeviceContext);

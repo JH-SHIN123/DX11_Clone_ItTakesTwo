@@ -1,10 +1,7 @@
 #include "stdafx.h"
 #include "..\public\MainApp.h"
-#include "GameInstance.h"
 #include "Level_Loading.h"
-
 #include "Effect_Generator.h"
-#include "DataStorage.h"
 #include "UI_Generator.h"
 #include "Environment_Generator.h"
 
@@ -25,8 +22,6 @@ HRESULT CMainApp::NativeConstruct()
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->NativeConstruct_Environment_Generator(m_pDevice, m_pDeviceContext), E_FAIL);
 	UI_Generator->NativeConstruct(m_pDevice, m_pDeviceContext);
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
-
-	// Test Ä¿¹Ô
 
 	return S_OK;
 }
