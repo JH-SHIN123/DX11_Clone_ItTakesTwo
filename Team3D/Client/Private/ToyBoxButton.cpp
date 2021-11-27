@@ -30,7 +30,7 @@ HRESULT CToyBoxButton::NativeConstruct(void* pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(2.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_ToyBox09_Stars"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	
@@ -58,6 +58,8 @@ _int CToyBoxButton::Tick(_double TimeDelta)
 {
 	CGameObject::Tick(TimeDelta);
 
+	OnTrigger(TimeDelta);
+
 	m_pToyBoxButton_Button->Tick(TimeDelta);
 
 	return NO_EVENT;
@@ -65,7 +67,7 @@ _int CToyBoxButton::Tick(_double TimeDelta)
 
 _int CToyBoxButton::Late_Tick(_double TimeDelta)
 {
-	CGameObject::Tick(TimeDelta);
+	CGameObject::Late_Tick(TimeDelta);
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 20.f)) {
 		m_pToyBoxButton_Button->Late_Tick(TimeDelta);
@@ -96,6 +98,60 @@ HRESULT CToyBoxButton::Render_ShadowDepth()
 	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
+}
+
+void CToyBoxButton::OnTrigger(_double TimeDelta)
+{
+	if (m_bTrigger)
+	{
+		if (0 == m_bCheckTrigger)
+		{
+			_float fTriggerSpeed = 5.f;
+			if (m_fTriggerRatio >= 2.0)
+			{
+				m_bCheckTrigger = 1;
+				m_fTriggerRatio = 0;
+			}
+			else
+			{
+				m_fTriggerRatio += (_float)TimeDelta * fTriggerSpeed;
+				m_pTransformCom->Go_Straight(TimeDelta * fTriggerSpeed);
+			}
+		}
+		else if (1 == m_bCheckTrigger)
+		{
+			// 2.5 ÃÊ ´ë±â
+			if (m_fTriggerRatio >= 2.5f)
+			{
+				m_bCheckTrigger = 2;
+				m_fTriggerRatio = 0;
+			}
+			else
+			{
+				m_fTriggerRatio += (_float)TimeDelta;
+			}
+		}
+		else if (2 == m_bCheckTrigger)
+		{
+			_float fTriggerSpeed = 1.f;
+			if (m_fTriggerRatio >= 2.0)
+			{
+				// Set Button
+				if(m_pToyBoxButton_Button) m_pToyBoxButton_Button->Set_ButtonOrigin();
+
+				m_bCheckTrigger = 0;
+				m_fTriggerRatio = 0;
+				m_bTrigger = false;
+			}
+			else
+			{
+				m_fTriggerRatio += (_float)TimeDelta * fTriggerSpeed;
+				m_pTransformCom->Go_Backward(TimeDelta * fTriggerSpeed);
+			}
+		}
+
+		m_pStaticActorCom->Update_StaticActor();
+	}
 }
 
 CToyBoxButton* CToyBoxButton::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

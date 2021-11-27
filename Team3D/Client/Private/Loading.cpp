@@ -275,7 +275,6 @@ HRESULT CLoading::LoadingForWT(_uint ilThreadIndex)
 {
 	/* ToyBoxButton */
 	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	PivotMatrix *= XMMatrixRotationZ(XMConvertToRadians(-90.f));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_ToyBoxButton"), CToyBoxButton::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_BigButton"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("BigButton"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 

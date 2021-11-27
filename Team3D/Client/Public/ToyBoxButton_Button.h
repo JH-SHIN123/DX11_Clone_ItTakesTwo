@@ -12,12 +12,15 @@ class CTriggerActor;
 END
 
 BEGIN(Client)
-class CToyBoxButton_Button : public CGameObject
+class CToyBoxButton_Button final : public CGameObject
 {
-protected:
+private:
 	explicit CToyBoxButton_Button(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CToyBoxButton_Button(const CToyBoxButton_Button& rhs);
 	virtual ~CToyBoxButton_Button() = default;
+
+public:
+	void Set_ButtonOrigin();
 
 public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
@@ -27,8 +30,19 @@ public:
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject);
 
-protected:
+private:
+	void OnPressed_Button(_double TimeDelta);
+
+private:
+	_int	m_iCheckTrigger = 0;
+	_float	m_fTriggerDeltaMove = 0.f;
+
+private:
+	_float m_fPressedPercentage = 1.f;
+
+private:
 	/* For.Component */
 	CRenderer* m_pRendererCom = nullptr;
 	CTransform* m_pTransformCom = nullptr;
@@ -38,6 +52,10 @@ protected:
 
 private:
 	class CToyBoxButton* m_pParent = nullptr;
+
+private:
+	// 버튼 눌리면 일정량만큼 아래로 이동
+	// 트리거 아웃이면, 다시 일정량만큼 위로 이동
 
 public:
 	static CToyBoxButton_Button* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg = nullptr);

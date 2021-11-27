@@ -221,8 +221,6 @@ private:
 	virtual void KeyInput(_double TimeDelta);
 	void TriggerCheck(_double TimeDelta);
 
-
-
 	// 단발성 함수들.
 	HRESULT Ready_Component();
 	void Add_LerpInfo_To_Model();
@@ -246,6 +244,9 @@ public:
 ///////////////////////////////////////////////////////    상태 변환 관련 변수들   /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public:
+	_uint Get_CurState() const;
+
+public:
 	// 상태 && 이동
 	void Move(const _double TimeDelta);
 	void Roll(const _double TimeDelta);
@@ -256,11 +257,6 @@ public:
 
 
 private:
-	// 상태
-	CODY_STATE m_iCurState = CUTSCENE_HUB_SECOND_GENERATOR;
-	CODY_STATE m_iNextState = CUTSCENE_HUB_SECOND_GENERATOR;
-
-
 	// 기본 움직임
 	_bool m_bSprint = false;
 	_bool m_bRoll = false;

@@ -413,6 +413,13 @@ void CMay::KeyInput(_double TimeDelta)
 #pragma  endregion
 }
 
+_uint CMay::Get_CurState() const
+{
+	if (nullptr == m_pModelCom) return 0;
+
+	return m_pModelCom->Get_CurAnimIndex();
+}
+
 void CMay::Move(const _double TimeDelta)
 {
 	if (m_bSprint == false && m_bMove && m_pTransformCom)
