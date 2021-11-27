@@ -340,6 +340,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.PipeCurve">
       <UniqueIdentifier>{c57472fb-766e-4142-a112-142e1b86bccf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\01.PressurePlate">
+      <UniqueIdentifier>{8e4f12d8-fbcb-4560-bd25-99b8376df892}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -613,6 +616,9 @@
     <ClInclude Include="..\Public\PipeCurve.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\00.PipeCurve</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PressurePlate.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\01.PressurePlate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -874,6 +880,9 @@
     <ClCompile Include="..\Private\SplashScreen.cpp" />
     <ClCompile Include="..\Private\PipeCurve.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\00.PipeCurve</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PressurePlate.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\01.PressurePlate</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

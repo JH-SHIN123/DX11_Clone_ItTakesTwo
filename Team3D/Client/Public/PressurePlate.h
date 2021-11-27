@@ -5,12 +5,12 @@
 
 BEGIN(Client)
 
-class CPipeCurve : public CGameObject
+class CPressurePlate : public CGameObject
 {
 protected:
-	explicit CPipeCurve(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CPipeCurve(const CPipeCurve& rhs);
-	virtual ~CPipeCurve() = default;
+	explicit CPressurePlate(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CPressurePlate(const CPressurePlate& rhs);
+	virtual ~CPressurePlate() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -47,7 +47,7 @@ protected:
 	CTriggerActor*		m_pTriggerCom = nullptr;
 
 public:
-	static CPipeCurve* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CPressurePlate* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

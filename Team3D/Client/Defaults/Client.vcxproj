@@ -249,6 +249,7 @@
     <ClInclude Include="..\Public\PipeCurve.h" />
     <ClInclude Include="..\Public\PlayerMarker.h" />
     <ClInclude Include="..\Public\Portrait.h" />
+    <ClInclude Include="..\Public\PressurePlate.h" />
     <ClInclude Include="..\Public\RespawnCircle.h" />
     <ClInclude Include="..\Public\Robot.h" />
     <ClInclude Include="..\Public\RobotBattery.h" />
@@ -335,6 +336,7 @@
     <ClCompile Include="..\Private\PipeCurve.cpp" />
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
     <ClCompile Include="..\Private\Portrait.cpp" />
+    <ClCompile Include="..\Private\PressurePlate.cpp" />
     <ClCompile Include="..\Private\RespawnCircle.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />
     <ClCompile Include="..\Private\RobotBattery.cpp" />

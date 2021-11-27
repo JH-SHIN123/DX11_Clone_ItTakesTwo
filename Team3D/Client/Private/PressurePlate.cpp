@@ -1,32 +1,32 @@
 #include "stdafx.h"
-#include "..\public\PipeCurve.h"
+#include "..\public\PressurePlate.h"
 #include "Cody.h"
 #include "May.h"
 
-CPipeCurve::CPipeCurve(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CPressurePlate::CPressurePlate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
 }
 
-CPipeCurve::CPipeCurve(const CPipeCurve & rhs)
+CPressurePlate::CPressurePlate(const CPressurePlate & rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CPipeCurve::NativeConstruct_Prototype()
+HRESULT CPressurePlate::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
-HRESULT CPipeCurve::NativeConstruct(void * pArg)
+HRESULT CPressurePlate::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_PipeCurve"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_PressurePlate"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
@@ -42,16 +42,16 @@ HRESULT CPipeCurve::NativeConstruct(void * pArg)
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTransformCom;
 	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.7f);
-	m_UserData = USERDATA(GameID::ePIPECURVE, this);
+	m_UserData = USERDATA(GameID::ePRESSUREPLATE, this);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
-	//DATABASE->Set_PipeCurvePtr(this);
+	//DATABASE->Set_PressurePlatePtr(this);
 
 	return S_OK;
 }
 
-_int CPipeCurve::Tick(_double dTimeDelta)
+_int CPressurePlate::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
@@ -74,7 +74,7 @@ _int CPipeCurve::Tick(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-_int CPipeCurve::Late_Tick(_double dTimeDelta)
+_int CPressurePlate::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
@@ -84,7 +84,7 @@ _int CPipeCurve::Late_Tick(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-HRESULT CPipeCurve::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CPressurePlate::Render(RENDER_GROUP::Enum eGroup)
 {
 	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -95,14 +95,14 @@ HRESULT CPipeCurve::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-void CPipeCurve::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+void CPressurePlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	//// Cody
 	//if (m_bUpdate == true)
 	//{
 	//	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	//	{
-	//		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePIPECURVE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePressurePlate, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	//		UI_Create(Cody, InputButton_InterActive);
 	//		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	//		m_IsCollide = true;
@@ -117,7 +117,7 @@ void CPipeCurve::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 
 	//	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	//	{
-	//		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::ePIPECURVE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::ePressurePlate, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	//		UI_Create(May, InputButton_InterActive);
 	//		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	//		m_IsCollide = true;
@@ -130,7 +130,7 @@ void CPipeCurve::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 	//}
 }
 
-HRESULT CPipeCurve::Render_ShadowDepth()
+HRESULT CPressurePlate::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
@@ -142,33 +142,33 @@ HRESULT CPipeCurve::Render_ShadowDepth()
 	return S_OK;
 }
 
-CPipeCurve * CPipeCurve::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CPressurePlate * CPressurePlate::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
-	CPipeCurve* pInstance = new CPipeCurve(pDevice, pDeviceContext);
+	CPressurePlate* pInstance = new CPressurePlate(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSG_BOX("Failed to Create Instance - CPipeCurve");
+		MSG_BOX("Failed to Create Instance - CPressurePlate");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CPipeCurve::Clone_GameObject(void * pArg)
+CGameObject * CPressurePlate::Clone_GameObject(void * pArg)
 {
-	CPipeCurve* pInstance = new CPipeCurve(*this);
+	CPressurePlate* pInstance = new CPressurePlate(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CPipeCurve");
+		MSG_BOX("Failed to Clone Instance - CPressurePlate");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CPipeCurve::Free()
+void CPressurePlate::Free()
 {
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pStaticActorCom);

@@ -46,7 +46,7 @@ private:
 	HRESULT Ready_Layer_Hook_UFO(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_BigPlanet(const _tchar* pLayerTag);
 	/* Jin */
-	HRESULT Ready_Layer_PipeCurve(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_ControlRoomPuzzle(const _tchar* pLayerTag, const _tchar* pGameObjectTag);
 
 	/* Jun */
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);

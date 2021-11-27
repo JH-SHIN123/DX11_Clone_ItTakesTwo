@@ -46,7 +46,8 @@ HRESULT CLevel_Stage::NativeConstruct()
 	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
 
 	/* Jin */
-	FAILED_CHECK_RETURN(Ready_Layer_PipeCurve(TEXT("Layer_PipeCurve")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PipeCurve"), TEXT("GameObject_PipeCurve")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressurePlate"), TEXT("GameObject_PressurePlate")), E_FAIL);
 
 	/* Jun */
 
@@ -283,9 +284,9 @@ HRESULT CLevel_Stage::Ready_Layer_BigPlanet(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Stage::Ready_Layer_PipeCurve(const _tchar * pLayerTag)
+HRESULT CLevel_Stage::Ready_Layer_ControlRoomPuzzle(const _tchar * pLayerTag, const _tchar * pGameObjectTag)
 {
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PipeCurve")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, pGameObjectTag), E_FAIL);
 	return S_OK;
 }
 
