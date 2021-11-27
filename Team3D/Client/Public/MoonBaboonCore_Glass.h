@@ -11,12 +11,12 @@ class CStaticActor;
 END
 
 BEGIN(Client)
-class CMoonBaboonCore_Shield final : public CGameObject
+class CMoonBaboonCore_Glass final : public CGameObject
 {
 private:
-	explicit CMoonBaboonCore_Shield(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CMoonBaboonCore_Shield(const CMoonBaboonCore_Shield& rhs);
-	virtual ~CMoonBaboonCore_Shield() = default;
+	explicit CMoonBaboonCore_Glass(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CMoonBaboonCore_Glass(const CMoonBaboonCore_Glass& rhs);
+	virtual ~CMoonBaboonCore_Glass() = default;
 
 public:
 	void Set_WorldMatrix();
@@ -27,11 +27,11 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
-public:
-	virtual HRESULT Render_ShadowDepth() override;
-
 private:
 	void OnTrigger(_double TimeDelta);
+
+private:
+	_bool m_bBroken = false;
 
 private:
 	_float3 m_vOffsetPos = { 0.f, -4.f, 0.f };
@@ -44,12 +44,19 @@ private:
 private: /* For.Component */
 	CRenderer* m_pRendererCom = nullptr;
 	CTransform* m_pTransformCom = nullptr;
+	
 	CModel* m_pModelCom = nullptr;
-	CStaticActor* m_pStaticActorCom = nullptr;
+	CModel* m_pModelCom_Glass = nullptr;
+	CModel* m_pModelCom_GlassBroken = nullptr;
+
+	CModel* m_pModelCom_Pillar = nullptr;
+
+	CStaticActor*	m_pStaticActorCom = nullptr;
 
 public:
-	static CMoonBaboonCore_Shield* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg = nullptr);
+	static CMoonBaboonCore_Glass* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void* pArg = nullptr);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
 END
+

@@ -53,6 +53,8 @@ _int CMoonBaboonCore_Shield::Tick(_double TimeDelta)
 
 	if (0 != m_pParent->Get_ActiveCore())
 	{
+		OnTrigger(TimeDelta);
+
 		Set_WorldMatrix();
 		m_pStaticActorCom->Update_StaticActor();
 	}
@@ -92,6 +94,22 @@ HRESULT CMoonBaboonCore_Shield::Render_ShadowDepth()
 	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
+}
+
+void CMoonBaboonCore_Shield::OnTrigger(_double TimeDelta)
+{
+	// 몇초간 내려가기
+	_float fSpeed = 5.5f;
+	if (m_pParent->Get_bArrived())
+	{
+		if(m_vLocalPos.y > -4.f)
+			m_vLocalPos.y -= (_float)TimeDelta * fSpeed;
+	}
+	else // 몇초간 올라가기
+	{
+		if (m_vLocalPos.y < 0.f)
+			m_vLocalPos.y += (_float)TimeDelta * fSpeed;
+	}
 }
 
 CMoonBaboonCore_Shield* CMoonBaboonCore_Shield::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
