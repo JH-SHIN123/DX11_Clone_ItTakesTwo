@@ -41,6 +41,12 @@ HRESULT CStarBuddy::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
+
+	CStaticActor::ARG_DESC StaticActorDesc;
+	StaticActorDesc.pModel = m_pModelCom;
+	StaticActorDesc.pTransform = m_pTransformCom;
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &StaticActorDesc), E_FAIL);
+
 	return S_OK;
 }
 
@@ -58,12 +64,10 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 	else if (m_bLaunch == true)
 	{
 		m_fLifeTime += (_float)dTimeDelta;
-		if (m_fLifeTime <= 0.71f)
-		{
-			m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
-			m_pTransformCom->RotatePitch(dTimeDelta * 0.2f);
-		}
-		else if(m_fLifeTime > 0.71f)
+		m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
+		m_pTransformCom->RotatePitch(dTimeDelta * 0.2f);
+
+		if(m_fLifeTime > 0.71f)
 			Launch_StarBuddy(dTimeDelta);
 
 		if (m_fLifeTime > 3.5f)
@@ -108,11 +112,13 @@ void CStarBuddy::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		UI_Create(Cody, InputButton_InterActive);
 		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
+		m_PlayerID = GameID::eCODY;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
 		m_IsCollide = false;
 		UI_Delete(Cody, InputButton_InterActive);
+		m_PlayerID = GameID::eSTARBUDDY;
 	}
 
 	// May
@@ -123,11 +129,13 @@ void CStarBuddy::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		UI_Create(May, InputButton_InterActive);
 		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
+		m_PlayerID = GameID::eCODY;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
 		m_IsCollide = false;
 		UI_Delete(May, InputButton_InterActive);
+		m_PlayerID = GameID::eSTARBUDDY;
 	}
 }
 
@@ -191,7 +199,18 @@ HRESULT CStarBuddy::Render_ShadowDepth()
 void CStarBuddy::Launch_StarBuddy(_double dTimeDelta)
 {
 	// 실제로 상호작용 할땐 Player -> StarBuddy Dir 방향으로 이동
-	m_pTransformCom->Move_ToTarget(XMVectorSet(100.f, 10.f, 100.f, 0.f), dTimeDelta * 5.f);
+	_vector vPlayerPos = XMVectorZero();
+	if (m_PlayerID == GameID::eCODY)
+		vPlayerPos = XMVectorSetY(((CCody*)DATABASE->GetCody())->Get_Position(), 0.f);
+	else if (m_PlayerID == GameID::eMAY)
+		vPlayerPos = XMVectorSetY(((CMay*)DATABASE->GetMay())->Get_Position(), 0.f);
+
+
+	_vector vStarPos = XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f);
+	_vector vDir = XMVector3Normalize(vStarPos - vPlayerPos);
+
+	m_pTransformCom->MoveToDir(vDir, dTimeDelta * 5.f);
+
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta * 4.f);
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * 4.f);
 	
@@ -226,6 +245,7 @@ CGameObject * CStarBuddy::Clone_GameObject(void * pArg)
 
 void CStarBuddy::Free()
 {
+	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
