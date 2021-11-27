@@ -37,7 +37,7 @@ HRESULT CPressurePlate::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(Ready_Layer_SupportFrame(TEXT("Layer_SupportFrame")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_PlateLock(TEXT("Layer_PressurePlateLock")), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-10.f, 0.f, 0.f, 1.f));
 	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
 
 	CStaticActor::ARG_DESC ArgDesc;
@@ -149,10 +149,10 @@ void CPressurePlate::SetUp_DefaultPositionSetting()
 	vConvertPos.y -= 0.1f;
 	m_pPressurePlateFrame->Set_Position(XMLoadFloat4(&vConvertPos));
 
-	vConvertPos.y -= 2.f;
+	vConvertPos.y -= 1.f;
 	m_pPipeCurve->Set_Position(XMLoadFloat4(&vConvertPos));
 
-	vConvertPos.y -= 3.f;
+	vConvertPos.y -= 2.f;
 	m_pSupportFrame->Set_Position(XMLoadFloat4(&vConvertPos));
 
 	XMStoreFloat4(&vConvertPos, vPos);

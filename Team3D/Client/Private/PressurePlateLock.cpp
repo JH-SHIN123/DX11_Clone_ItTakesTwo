@@ -34,6 +34,9 @@ HRESULT CPressurePlateLock::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, -20.f, 1.f));
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
 
+	_vector vScale = {0.1f, m_pTransformCom->Get_Scale(CTransform::STATE_UP), m_pTransformCom->Get_Scale(CTransform::STATE_LOOK), 1.f };
+	m_pTransformCom->Set_Scale(vScale);
+
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
 	ArgDesc.pTransform = m_pTransformCom;
@@ -45,14 +48,10 @@ HRESULT CPressurePlateLock::NativeConstruct(void * pArg)
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTransformCom;
 	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.7f);
+	m_UserData = USERDATA(GameID::ePRESSUREPLATELOCK, this);
 
-	if(0 == m_iOption)
-		m_UserData = USERDATA(GameID::ePRESSUREPLATELOCKDOWN, this);
-	else if (1 == m_iOption)
-	{
-		m_UserData = USERDATA(GameID::ePRESSUREPLATELOCKUP, this);
+	if (1 == m_iOption)
 		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-90.f));
-	}
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
@@ -137,13 +136,13 @@ void CPressurePlateLock::LockActive(_double TimeDelta)
 {
 	if (true == m_IsLockActive)
 	{
-		_float fMaxScale = 3.f;
+		_float fMaxScale = 2.f;
 
 		_float fScaleX = m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
 		_float fScaleY = m_pTransformCom->Get_Scale(CTransform::STATE_UP);
 		_float fScaleZ = m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
 
-		fScaleX += (_float)TimeDelta * 0.2f;
+		fScaleX += (_float)TimeDelta * 2.5f;
 
 		if (fMaxScale <= fScaleX)
 			return;
@@ -154,13 +153,13 @@ void CPressurePlateLock::LockActive(_double TimeDelta)
 	}
 	else
 	{
-		_float fMaxScale = 1.f;
+		_float fMaxScale = 0.f;
 
 		_float fScaleX = m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
 		_float fScaleY = m_pTransformCom->Get_Scale(CTransform::STATE_UP);
 		_float fScaleZ = m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
 
-		fScaleX -= (_float)TimeDelta * 0.2f;
+		fScaleX -= (_float)TimeDelta * 2.5f;
 
 		if (fMaxScale >= fScaleX)
 			return;
