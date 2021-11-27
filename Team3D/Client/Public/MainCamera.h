@@ -4,9 +4,6 @@
 #include "Camera.h"
 #include"Cam_Helper.h"
 #include"Cody.h"
-BEGIN(Engine)
-class CControllableActor;
-END
 
 BEGIN(Client)
 
@@ -38,8 +35,8 @@ public:
 
 
 private:
-	CControllableActor* m_pActorCom = nullptr;
-	CControllableActor* m_pSubActorCom = nullptr;
+	class CPlayerActor* m_pActorCom = nullptr;
+	class CPlayerActor* m_pSubActorCom = nullptr;
 
 	CCam_Helper* m_pCamHelper = nullptr;
 private:

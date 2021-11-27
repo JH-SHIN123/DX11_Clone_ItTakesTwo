@@ -247,6 +247,9 @@
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
     <ClInclude Include="..\Public\PipeCurve.h" />
+    <ClInclude Include="..\Public\PlayerActor.h" />
+    <ClInclude Include="..\Public\PlayerBehaviorCallback.h" />
+    <ClInclude Include="..\Public\PlayerFilterCallback.h" />
     <ClInclude Include="..\Public\PlayerMarker.h" />
     <ClInclude Include="..\Public\Portrait.h" />
     <ClInclude Include="..\Public\PressurePlate.h" />
@@ -337,6 +340,9 @@
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
     <ClCompile Include="..\Private\PipeCurve.cpp" />
+    <ClCompile Include="..\Private\PlayerActor.cpp" />
+    <ClCompile Include="..\Private\PlayerBehaviorCallback.cpp" />
+    <ClCompile Include="..\Private\PlayerFilterCallback.cpp" />
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
     <ClCompile Include="..\Private\Portrait.cpp" />
     <ClCompile Include="..\Private\PressurePlate.cpp" />

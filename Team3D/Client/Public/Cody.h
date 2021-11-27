@@ -4,6 +4,7 @@
 #include "Character.h"
 
 BEGIN(Client)
+
 class CCody final : public CCharacter
 {
 #pragma region Enum_STATE
