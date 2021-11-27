@@ -304,7 +304,6 @@ private:
 	// Sprint
 	_float m_fSprintAcceleration = 35.f;
 
-
 #pragma region Trigger
 public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
@@ -321,7 +320,6 @@ private:
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
-	_bool m_IsPullVerticalDoor = false;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
@@ -341,6 +339,9 @@ private:
 	// Warp NextStage
 	_bool m_IsWarpNextStage = false;
 
+	// 상호작용 테스트용
+	_bool m_IsActivate_End = false;
+	_bool m_IsPullVerticalDoor = false;
 
 	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);

@@ -20,11 +20,12 @@ public: /* Struct */
 		USERDATA*				pUserData;
 	}ARG_DESC;
 
-	PxController* Get_Controller() { return m_pController; }
-
 public: /* Getter */
 	_bool  Get_IsJump() { return m_bJump; }
 	_bool  Get_IsFalling() { return m_IsFalling; }
+
+	PxController* Get_Controller() { return m_pController; }
+	PxRigidDynamic* Get_Actor() { return m_pActor; }
 
 public: /* Setter */
 	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }

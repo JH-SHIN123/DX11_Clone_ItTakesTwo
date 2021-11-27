@@ -70,6 +70,7 @@ HRESULT CMay::Ready_Component()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &PlayerTransformDesc), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 0.7f, 30.f, 1.f));
 	CControllableActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eMAY, this);
@@ -176,7 +177,11 @@ _int CMay::Tick(_double dTimeDelta)
 _int CMay::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+
+	return NO_EVENT;
 }
 
 HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
@@ -434,6 +439,19 @@ void CMay::KeyInput(_double dTimeDelta)
 	}
 
 #pragma endregion 
+
+#pragma region PAD RB
+	//m_IsActivate = false;
+	if (m_pGameInstance->Pad_Key_Down(DIP_RB))
+	{
+		//if (m_eTargetGameID == GameID::eVERTICALDOOR && false == m_IsPullVerticalDoor)
+		//	m_IsPullVerticalDoor = true;
+		//else
+		//	m_IsPullVerticalDoor = false;
+	}
+
+
+#pragma endregion
 
 #pragma region Effet Test
 	if (m_pGameInstance->Key_Down(DIK_P))
@@ -852,12 +870,12 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsActivateRobotLever = true;
 		}
-		else if (m_eTargetGameID == GameID::eVERTICALDOOR && m_pGameInstance->Key_Down(DIK_E))
-		{
-			m_pModelCom->Set_Animation(ANI_M_Bounce2); // Trees/DoorInteraction 추출해야함.
-			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
-			m_IsPullVerticalDoor = true;
-		}
+ 		else if (m_eTargetGameID == GameID::eVERTICALDOOR && m_pGameInstance->Pad_Key_Down(DIP_RB)) // 패드입력
+ 		{
+ 			m_pModelCom->Set_Animation(ANI_M_Bounce2); // Trees/DoorInteraction 추출해야함.
+ 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+ 			m_IsPullVerticalDoor = true;
+ 		}
 		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_END) && m_iValvePlayerName == Player::May)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Valve_Rotate_MH);
@@ -959,16 +977,30 @@ void CMay::Activate_RobotLever(const _double dTimeDelta)
 
 void CMay::Pull_VerticalDoor(const _double dTimeDelta)
 {
+	if (false == m_IsPullVerticalDoor)
+		return;
+
+	_bool IsTriggerEnd = false;
+	if (m_pGameInstance->Pad_Key_Down(DIP_LB) || m_pGameInstance->Key_Down(DIK_E))
+		IsTriggerEnd = true;
+
 	if (m_IsPullVerticalDoor == true)
 	{
-		
-		if (m_pModelCom->Is_AnimFinished(ANI_M_Bounce2))
-		{
-			m_pModelCom->Set_Animation(ANI_M_MH);
-			m_IsPullVerticalDoor = false;
-			m_IsCollide = false;
-		}
+		m_pModelCom->Set_Animation(ANI_M_RocketFirework);
 
+		_vector vSwitchPos = XMLoadFloat3(&m_vTriggerTargetPos);
+		vSwitchPos.m128_f32[3] = 1.f;
+
+		m_pActorCom->Set_ZeroGravity(true, false, true);
+		m_pActorCom->Set_Position(vSwitchPos);
+
+		if (true == IsTriggerEnd)
+		{
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_IsCollide = false;
+			m_IsPullVerticalDoor = false;
+		}
 	}
 }
 

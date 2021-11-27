@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_RespawnTunnel.h"
-#include "GameInstance.h"
 
 CEffect_RespawnTunnel::CEffect_RespawnTunnel(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
@@ -33,8 +32,13 @@ HRESULT CEffect_RespawnTunnel::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Circle_Alpha", TEXT("Com_Texture_Mask"), (CComponent**)&m_pTexturesCom_Masking), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_T_Slime_Cloud", TEXT("Com_Texture_Dist"), (CComponent**)&m_pTexturesCom_Distortion_2), E_FAIL);
 	//
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	WorldMatrix.r[0] *= -1.f;
+	WorldMatrix.r[2] *= -1.f;
+	WorldMatrix.r[3].m128_f32[1] += 7.f;
 
-	// = XMLoadFloat4x4(&m_LocalMatrix_Preview);
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+	m_pTransformCom->Set_Scale(XMVectorSet(0.4f, 0.4f, 0.4f, 0.f));
 
 	return S_OK;
 }

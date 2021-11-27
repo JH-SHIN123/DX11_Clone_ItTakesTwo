@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_FireDoor.h"
-#include "GameInstance.h"
 
 CEffect_FireDoor::CEffect_FireDoor(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -24,12 +23,37 @@ HRESULT CEffect_FireDoor::NativeConstruct(void * pArg)
 	__super::NativeConstruct(pArg);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_ColorRamp"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
 	
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPos += XMLoadFloat3(&m_vOffSet_Pos);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
 	m_pInstanceBuffer[0].vTextureUV = _float4(0.f, 0.f, 1.f, 1.f);
 	m_vWeight = m_pInstanceBuffer[0].vTextureUV;
-
 	m_vWeight = _float4(0.25f, 0.25f, 0.75f, 0.75f);
-// 	PxPlaneGeometry
+
+	//m_pTriggerCom	
+	CTriggerActor::ARG_DESC ArgDesc;
+	m_UserData = USERDATA(GameID::eFIREDOOR, this);
+	ArgDesc.pUserData = &m_UserData;
+	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.pGeometry = new PxBoxGeometry(6.f, 10.f, 0.001f);
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
+	Safe_Delete(ArgDesc.pGeometry);
+
 	m_IsBillBoard = false;
+
+	m_pInstanceBuffer[0].vTextureUV.x = 0.f;
+	m_pInstanceBuffer[0].vTextureUV.y = 0.f;
+	m_pInstanceBuffer[0].vTextureUV.z = 1.f;
+	m_pInstanceBuffer[0].vTextureUV.w = 1.f;
+
+	m_pInstanceBuffer[0].vSize = { 6.f, 10.25f };
+
+
+	XMStoreFloat4(&m_pInstanceBuffer[0].vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));// = { 10.f, 5.f, 10.f,1.f };
+
+
 	return S_OK;
 }
 
@@ -39,15 +63,8 @@ _int CEffect_FireDoor::Tick(_double TimeDelta)
 
 	_float Time = (_float)TimeDelta * 0.3f;
 
-	//m_vWeight.x += Time;
 	m_vWeight.y += Time;
-	//m_vWeight.z += TimeDelta * 0.15f;
 	m_vWeight.w += Time;
-
-	//m_pInstanceBuffer[0].vTextureUV.x = 0.f;
-	//m_pInstanceBuffer[0].vTextureUV.y += Time;
-	//m_pInstanceBuffer[0].vTextureUV.z = 0.f;
-	//m_pInstanceBuffer[0].vTextureUV.w += Time;
 
 	dResetTime += Time;
 	if (1.f <= dResetTime)
@@ -57,13 +74,6 @@ _int CEffect_FireDoor::Tick(_double TimeDelta)
 		m_pInstanceBuffer[0].vTextureUV = _float4(0.f, 0.f, 1.f, 1.f);
 	}
 
-	m_pInstanceBuffer[0].vTextureUV.x = 0.f;
-	m_pInstanceBuffer[0].vTextureUV.y = 0.f;
-	m_pInstanceBuffer[0].vTextureUV.z = 1.f;
-	m_pInstanceBuffer[0].vTextureUV.w = 1.f;
-
-	m_pInstanceBuffer[0].vSize = { 6.f, 10.25f };
-	m_pInstanceBuffer[0].vPosition = { 10.f, 5.f, 10.f,1.f };
 	return _int();
 }
 
@@ -88,6 +98,19 @@ HRESULT CEffect_FireDoor::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom->Render(3, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
+}
+
+void CEffect_FireDoor::Set_Pos(_fvector vPosition)
+{
+	_vector vOffSetPos = XMLoadFloat3(&m_vOffSet_Pos);
+	vOffSetPos += vPosition;
+
+	XMStoreFloat4(&m_pInstanceBuffer[0].vPosition, vOffSetPos);
+}
+
+void CEffect_FireDoor::Update_Trigger_Position()
+{
+	m_pTriggerCom->Update_TriggerActor();
 }
 
 void CEffect_FireDoor::Instance_Size(_float TimeDelta, _int iIndex)
@@ -127,6 +150,7 @@ CGameObject * CEffect_FireDoor::Clone_GameObject(void * pArg)
 void CEffect_FireDoor::Free()
 {
 	Safe_Release(m_pTexturesCom_ColorRamp);
+	Safe_Release(m_pTriggerCom);
 
 	__super::Free();
 }

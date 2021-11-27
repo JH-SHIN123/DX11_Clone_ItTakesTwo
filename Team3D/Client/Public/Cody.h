@@ -219,6 +219,7 @@ public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
 	PLAYER_SIZE Get_Player_Size() { return m_eCurPlayerSize; }
+	//PLAYER_SIZE Get_CurSize() { return m_eCurPlayerSize; }
 
 	// Tick 에서 호출될 함수들
 private:
@@ -362,11 +363,8 @@ private:
 	_float m_faVelocity = 0.f;
 	_float m_faAcceleration = 0.f;
 	_float m_fRopeAngle = 0.f;
-
-	//right vec
-	_float m_fRopeAngleRight = 0.f;
-	_float m_fXAcceleration = 0.f;
-	_float m_fXVelocity = 0.f;
+	_float3 m_vStartPosition = {};
+	_float3 m_vDstPosition = {};
 
 
 	// Arbitrary damping
@@ -382,7 +380,10 @@ private:
 	// Warp NextStage
 	_bool m_IsWarpNextStage = false;
 	_float m_fWarpTimer = 0.f;
+	_bool m_IsWarpDone = false;
+	const _float4 m_vWormholePos = { 0.f, -100.f, -1000.f, 1.f };
 	const _float m_fWarpTimer_Max = 2.f;
+
 
 	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);

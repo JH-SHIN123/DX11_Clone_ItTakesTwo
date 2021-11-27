@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Effect_Dash.h"
-#include "GameInstance.h"
 
 CEffect_Dash::CEffect_Dash(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Rect(pDevice, pDeviceContext)
@@ -47,7 +46,6 @@ _int CEffect_Dash::Tick(_double TimeDelta)
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
 
-
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
 	m_dAlphaTime -= TimeDelta;
 
@@ -60,7 +58,6 @@ _int CEffect_Dash::Tick(_double TimeDelta)
 
 _int CEffect_Dash::Late_Tick(_double TimeDelta)
 {
-
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 

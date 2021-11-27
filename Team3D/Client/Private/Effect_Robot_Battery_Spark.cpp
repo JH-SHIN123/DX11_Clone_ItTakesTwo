@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Robot_Battery_Spark.h"
-#include "GameInstance.h"
-
 
 CEffect_Robot_Battery_Spark::CEffect_Robot_Battery_Spark(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)

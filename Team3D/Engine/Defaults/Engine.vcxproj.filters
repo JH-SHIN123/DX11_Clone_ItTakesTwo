@@ -250,6 +250,9 @@
     <Filter Include="02.Utility\06.PostFX">
       <UniqueIdentifier>{3ed05aec-d931-4bdb-bbd2-2b54d2cdf11d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\06.PostFX\Blur">
+      <UniqueIdentifier>{8f45eb1d-d291-4813-8959-c1f5b9b74d60}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\GameInstance.h">
@@ -456,6 +459,9 @@
     <ClInclude Include="..\public\PhysX.h">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\00.Main</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Blur.h">
+      <Filter>02.Utility\06.PostFX\Blur</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -628,6 +634,9 @@
     </ClCompile>
     <ClCompile Include="..\private\PhysX.cpp">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Blur.cpp">
+      <Filter>02.Utility\06.PostFX\Blur</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

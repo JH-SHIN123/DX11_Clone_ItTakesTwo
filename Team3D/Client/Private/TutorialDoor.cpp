@@ -4,6 +4,7 @@
 #include "UI_Generator.h"
 #include "Cody.h"
 #include "May.h"
+#include "Effect_FireDoor.h"
 
 CTutorialDoor::CTutorialDoor(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -25,21 +26,38 @@ HRESULT CTutorialDoor::NativeConstruct_Prototype()
 HRESULT CTutorialDoor::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
-	
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(0.15f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_DoorWay"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 15.f, 25.f, 1.f));
-
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 0.7f, 36.15f, 1.f)); // º¯°æµÈ Pos
+	m_pTransformCom_Trigger = m_pTransformCom;
+	Safe_AddRef(m_pTransformCom_Trigger);
+	_vector vTriggerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//
 	CTriggerActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eVERTICALDOOR, this);
 	ArgDesc.pUserData = &m_UserData;
-	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.pTransform = m_pTransformCom_Trigger;
 	ArgDesc.pGeometry = new PxSphereGeometry(1.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
+
+	CStaticActor::ARG_DESC ArgDesc_Static;
+	ArgDesc_Static.pModel = m_pModelCom;
+	ArgDesc_Static.pTransform = m_pTransformCom;
+	ArgDesc_Static.pUserData = &m_UserData;
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &ArgDesc_Static), E_FAIL);
+
+
+	EFFECT_DESC_CLONE Effect_Data;
+	XMStoreFloat4x4(&Effect_Data.WorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_FireDoor"), Level::LEVEL_STAGE, TEXT("GameObject_2D_FireDoor"), &Effect_Data, (CGameObject**)&m_pEffectFireDoor), E_FAIL);
+	m_pEffectFireDoor->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+
 	Safe_Delete(ArgDesc.pGeometry);
 	return S_OK;
 }
@@ -47,30 +65,76 @@ HRESULT CTutorialDoor::NativeConstruct(void * pArg)
 _int CTutorialDoor::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+	//
 
-	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide)
+	if (m_pGameInstance->Pad_Key_Down(DIP_RB) && m_IsCollide)
 	{
 		m_bPull = true;
 		UI_Delete(May, InputButton_InterActive);
 	}
 
-	if (m_bPull == false)
+	if (m_pGameInstance->Pad_Key_Down(DIP_LB) && m_IsCollide)
 	{
-		if (m_fMoveDist > 0.f)
+		m_bPull = false;
+	}
+
+	if (true == m_IsCollide)
+	{
+		if (m_bPull == false)
 		{
-			m_pTransformCom->Go_Up(dTimeDelta);
+			m_IsPullMax = false;
+
 			m_fMoveDist -= (_float)dTimeDelta;
+			_float fMyPos_Y = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
+			if (1.f >= fMyPos_Y)
+			{
+				//			if (m_fMoveDist > 0.f)
+				m_pTransformCom->Go_Up(dTimeDelta);
+				m_IsPullMax_Once = true;
+			}
+			else
+			{
+				if (true == m_IsPullMax_Once)
+				{
+					m_IsPullMax_Once = false;
+					m_pEffectFireDoor->Update_Trigger_Position();
+					m_pStaticActorCom->Update_StaticActor();
+				}
+			}
+		}
+
+		else if (m_bPull == true)
+		{
+			m_IsPullMax_Once = false;
+
+			m_fMoveDist += (_float)dTimeDelta;
+			_float fMyPos_Y = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
+
+			if (3.f >= fMyPos_Y)
+			{
+				//			if (m_fMoveDist > 0.5f && m_fMoveDist < 0.7f)
+				m_pTransformCom->Go_Down(dTimeDelta);
+				m_IsPullMax = true;
+			}
+			else
+			{
+				if (true == m_IsPullMax)
+				{
+					m_pEffectFireDoor->Update_Trigger_Position();
+					m_pStaticActorCom->Update_StaticActor();
+					m_IsPullMax = false;
+				}
+			}
+
+			// 		if (0.698f <= m_fMoveDist && 0.7f > m_fMoveDist)
+			// 		{
+			// 			m_fMoveDist = 0.7001f;
+			// 		}
+
 		}
 	}
 
-	else if (m_bPull == true)
-	{
-		if (m_fMoveDist > 0.5f && m_fMoveDist < 0.7f)
-		{
-			m_pTransformCom->Go_Down(dTimeDelta);
-			m_fMoveDist += (_float)dTimeDelta;
-		}
-	}
+	m_pEffectFireDoor->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	return NO_EVENT;
 }
@@ -82,7 +146,10 @@ _int CTutorialDoor::Late_Tick(_double dTimeDelta)
 
 	InterActive_UI();
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+
+	return NO_EVENT;
 }
 
 HRESULT CTutorialDoor::Render(RENDER_GROUP::Enum eGroup)
@@ -104,6 +171,7 @@ void CTutorialDoor::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 		UI_Create(May, InputButton_InterActive);
 		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
+		m_IsPullMax = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
@@ -154,7 +222,7 @@ HRESULT CTutorialDoor::Render_ShadowDepth()
 
 void CTutorialDoor::Pull_TutorialDoor(_double dTimeDelta)
 {
-	
+
 }
 
 
@@ -190,6 +258,9 @@ void CTutorialDoor::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pStaticActorCom);
+	Safe_Release(m_pEffectFireDoor);
+	Safe_Release(m_pTransformCom_Trigger);
 
 	CGameObject::Free();
 }

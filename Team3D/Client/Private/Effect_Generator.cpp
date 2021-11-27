@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Generator.h"
-#include "GameInstance.h"
 #include "Effect_Generator.h"
 
 #pragma  region Effect Include

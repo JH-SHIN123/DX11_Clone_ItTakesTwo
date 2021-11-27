@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Effect_GravityPipe.h"
-#include "GameInstance.h"
 #include "TriggerActor.h"
 #include "Cody.h"
 #include "May.h"
@@ -154,9 +153,8 @@ void CEffect_GravityPipe::Free()
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTexturesCom_Distortion);
 	Safe_Release(m_pTexturesCom_ColorRamp);
-
-	Safe_Release(m_pParticle); 
-	Safe_Release(m_pPhysxTransformCom); // 나중에 지울 것
+	Safe_Release(m_pPhysxTransformCom);
+	Safe_Release(m_pParticle);
 
 	__super::Free();
 }

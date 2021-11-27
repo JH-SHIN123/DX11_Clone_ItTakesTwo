@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "Cody.h"
 #include "May.h"
+#include "Effect_RespawnTunnel.h"
+#include "Effect_RespawnTunnel_Portal.h"
 
 CWarpGate::CWarpGate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -36,7 +38,10 @@ _int CWarpGate::Tick(_double TimeDelta)
 
 _int CWarpGate::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+
+	return NO_EVENT;
 }
 
 HRESULT CWarpGate::Render(RENDER_GROUP::Enum eGroup)
@@ -111,6 +116,11 @@ HRESULT CWarpGate::Ready_Component()
 	Static_ArgDesc.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &Static_ArgDesc), E_FAIL);
 
+	//m_pRespawnTunnel_Portal
+	EFFECT_DESC_CLONE Effect_Desc;
+	XMStoreFloat4x4(&Effect_Desc.WorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_RespawnPortal"), Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel"), &Effect_Desc, (CGameObject**)&m_pRespawnTunnel), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_RespawnPortal"), Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Effect_Desc, (CGameObject**)&m_pRespawnTunnel_Portal), E_FAIL);
 
 	return S_OK;
 }
@@ -180,10 +190,12 @@ _fmatrix CWarpGate::Get_NextPortal_Matrix(STAGE_VALUE eValue)
 		break;
 	}
 
-	vPos.m128_f32[1] += 3.f;
+	vPos.m128_f32[1] += 5.f;
 
 	NextPortalMatrix = XMMatrixRotationY(XMConvertToRadians(fDegree));
 	NextPortalMatrix.r[3] = vPos;
+	_vector vDir = NextPortalMatrix.r[2];
+	NextPortalMatrix.r[3] += vDir;
 
 	return NextPortalMatrix;
 }
@@ -222,7 +234,8 @@ void CWarpGate::Free()
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTransformCom_Trigger);
-
+	Safe_Release(m_pRespawnTunnel);
+	Safe_Release(m_pRespawnTunnel_Portal);
 
 	__super::Free();
 }

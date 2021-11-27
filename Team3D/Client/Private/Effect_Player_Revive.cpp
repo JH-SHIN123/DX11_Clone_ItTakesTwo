@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Player_Revive.h"
-#include "GameInstance.h"
 
 CEffect_Player_Revive::CEffect_Player_Revive(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_May_Boots_Walking_Particle.h"
-#include "GameInstance.h"
 
 CEffect_May_Boots_Walking_Particle::CEffect_May_Boots_Walking_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)

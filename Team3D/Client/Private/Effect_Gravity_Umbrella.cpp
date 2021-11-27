@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Gravity_Umbrella.h"
-#include "GameInstance.h"
 #include "Effect_Env_Particle.h"
 
 CEffect_Gravity_Umbrella::CEffect_Gravity_Umbrella(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

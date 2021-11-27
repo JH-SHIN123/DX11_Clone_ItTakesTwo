@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Landing_Smoke.h"
-#include "GameInstance.h"
 
 CEffect_Landing_Smoke::CEffect_Landing_Smoke(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Player_Lail.h"
-#include "GameInstance.h"
 
 CEffect_Player_Lail::CEffect_Player_Lail(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)

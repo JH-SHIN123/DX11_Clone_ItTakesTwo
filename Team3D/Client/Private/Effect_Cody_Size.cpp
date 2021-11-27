@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Cody_Size.h"
-#include "GameInstance.h"
 
 CEffect_Cody_Size::CEffect_Cody_Size(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)

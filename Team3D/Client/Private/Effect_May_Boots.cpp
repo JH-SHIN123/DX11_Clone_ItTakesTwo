@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_May_Boots.h"
-#include "GameInstance.h"
 #include "Effect_May_Boots_Walking_Particle.h"
 
 CEffect_May_Boots::CEffect_May_Boots(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

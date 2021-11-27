@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Env_Particle.h"
-#include "GameInstance.h"
 
 CEffect_Env_Particle::CEffect_Env_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)

@@ -26,11 +26,32 @@ HRESULT CHookUFO::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 	
+
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Hook_UFO"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-15.f, 8.f, -10.f, 1.f));
+	static int i = 0;
+
+	if (i == 0) {
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(25.f , 15.f, 30.f, 1.f));
+		i = 1;
+	}
+	else if (i == 1) {
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(25.f, 15.f, 61.f, 1.f));
+		i = 2;
+	}
+	else if (i == 2) {
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(25.f, 15.f, 92.f, 1.f));
+		i = 3;
+	}
+	else if (i == 3) {
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(25.f, 15.f, 123.f, 1.f));
+		i = 4;
+	}
+	
+
+
 
 	CTriggerActor::ARG_DESC ArgDesc;
 
@@ -71,7 +92,10 @@ _int CHookUFO::Late_Tick(_double dTimeDelta)
 
 	InterActive_UI();
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+
+	return NO_EVENT;
 }
 
 HRESULT CHookUFO::Render(RENDER_GROUP::Enum eGroup)

@@ -3,6 +3,10 @@
 #ifndef __EFFECT_FIREDOOR_H__
 #include "InGameEffect.h"
 
+BEGIN(Engine)
+class CTriggerActor;
+END
+
 BEGIN(Client)
 class CEffect_FireDoor final : public CInGameEffect
 {
@@ -19,17 +23,22 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 public:
+	void Set_Pos(_fvector vPosition);
+	void Update_Trigger_Position();
+
+public:
 	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0) override;
 	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0) override;
 	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0) override;
-
 
 private:
 	_double dResetTime = 0.f;
 	_float4 m_vWeight = { 0.f, 0.f, 0.125f, 0.125f };
 
-	CTextures* m_pTexturesCom_ColorRamp = nullptr;
+	CTextures*		m_pTexturesCom_ColorRamp	= nullptr;
+	CTriggerActor*	m_pTriggerCom				= nullptr;
 
+	const _float3 m_vOffSet_Pos = { 0.f, 5.05f, 0.f};
 public:
 	static CEffect_FireDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

@@ -102,5 +102,6 @@ CGameObject * CEffect_Wormhole::Clone_GameObject(void * pArg)
 void CEffect_Wormhole::Free()
 {
 	Safe_Release(m_pTexturesCom_ColorRamp);
+
 	__super::Free();
 }

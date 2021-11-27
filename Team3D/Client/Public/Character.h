@@ -19,6 +19,9 @@ protected:
 	explicit CCharacter(const CCharacter& rhs);
 	virtual ~CCharacter() = default;
 
+public: /* Getter */
+	virtual _fvector Get_Position();
+
 protected:
 	_float Compute_Distance(CTransform* pPlayerTransform, CTransform* pDstTransform);
 	_float Compute_Degree(CTransform* pPlayerTransform, CTransform* pDstTransform);

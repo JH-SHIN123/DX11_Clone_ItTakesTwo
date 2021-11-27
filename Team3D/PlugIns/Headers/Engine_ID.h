@@ -9,6 +9,8 @@ namespace Engine
 			eCODY,
 			eMAY,
 			eCAMERA,
+			eMAINCAMERA,
+			eSUBCAMERA,
 			eUFO,
 			eMOONBABOON,
 			eSTARBUDDY,
@@ -30,7 +32,8 @@ namespace Engine
 			eHOOKUFO,
 			eENVIRONMENT,
 			eWARPGATE, //sjh
-			eWORMHOLE //sjh
+			eWORMHOLE, //sjh
+			eFIREDOOR
 		};
 	};
 

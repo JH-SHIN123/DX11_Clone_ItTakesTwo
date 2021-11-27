@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Player_Dead_Particle.h"
-#include "GameInstance.h"
 
 CEffect_Player_Dead_Particle::CEffect_Player_Dead_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)

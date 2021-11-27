@@ -89,6 +89,11 @@ HRESULT CInGameEffect_Model::Ready_InstanceBuffer(_bool IsRenderTerm)
 	return S_OK;
 }
 
+void CInGameEffect_Model::Set_Pos(_vector vPos)
+{
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+}
+
 _float4 CInGameEffect_Model::Set_UV(_int iIndex)
 {
 	return _float4();
@@ -107,16 +112,7 @@ void CInGameEffect_Model::Free()
 	Safe_Release(m_pModelInstanceCom);
 	Safe_Release(m_pModelCom);
 
-
 	Safe_Delete_Array(m_pInstanceBuffer);
-
-	/*
-	m_pRendererCom
-	m_pTransformCom
-	m_pTexturesCom
-	m_pModelInstanceCom
-	m_pModelCom
-	*/
 
 	__super::Free();
 }
