@@ -1,5 +1,9 @@
 #include "stdafx.h"
 #include "..\Public\DeadLine.h"
+#include "Cody.h"
+#include "May.h"
+#include "Effect_Generator.h"
+#include "DataStorage.h"
 
 CDeadLine::CDeadLine(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -62,6 +66,30 @@ _int CDeadLine::Late_Tick(_double dTimeDelta)
 
 void CDeadLine::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+	// Cody
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && false == m_IsCollide) 
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eDEADLINE, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+		m_IsCollide = true;
+	}
+
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eDEADLINE, false, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+		m_IsCollide = false;
+	}
+
+	// May
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY && false == m_IsCollide)
+	{
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eDEADLINE, true, ((CMay*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+		m_IsCollide = true;
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+	{
+		m_IsCollide = false;
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eDEADLINE, false, ((CMay*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+	}
 }
 
 CDeadLine * CDeadLine::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

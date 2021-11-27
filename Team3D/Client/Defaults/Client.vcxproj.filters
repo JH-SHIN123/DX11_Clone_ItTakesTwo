@@ -199,9 +199,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\06.Landing_Smoke">
       <UniqueIdentifier>{5268a6b4-0c71-43a4-b934-31ce7bc3a010}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment">
-      <UniqueIdentifier>{e056b0e9-9d57-4825-aae6-dc4576b4077f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\06.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
     </Filter>
@@ -301,34 +298,37 @@
     <Filter Include="03.Component\01.Actor\02.PlayerActor\02.FilterCallback">
       <UniqueIdentifier>{41965410-fff4-41fd-b7b2-3345a7005805}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\99.SavePoint">
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment">
+      <UniqueIdentifier>{e056b0e9-9d57-4825-aae6-dc4576b4077f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\99.SavePoint">
       <UniqueIdentifier>{5d84ef85-2a0a-4117-88bf-3372447ab931}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\98.DeadLine">
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\98.DeadLine">
       <UniqueIdentifier>{4ce27b49-53fc-47a8-b4ef-a76cf4790bc1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\00.Environment_Generator">
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\00.Environment_Generator">
       <UniqueIdentifier>{a8d8c8a6-5681-43c5-bb21-cb5353391f70}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\01.Instancing_Env">
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\01.Instancing_Env">
       <UniqueIdentifier>{0961f270-4107-4546-8b54-2207c540708a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\02.Static_Env">
-      <UniqueIdentifier>{f3321f61-76e8-4d95-85e5-630c61340bbd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env">
-      <UniqueIdentifier>{41e68147-d11e-4913-a0ba-ca2aa591f1a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\Planet">
-      <UniqueIdentifier>{124044e2-ad2e-4ef2-9df3-e1f4e83e8723}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\01.Instancing_Env\Bridge">
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\01.Instancing_Env\Bridge">
       <UniqueIdentifier>{23b62c01-35ce-4912-8d66-d1a41a2c766a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\00.Parent">
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\02.Static_Env">
+      <UniqueIdentifier>{f3321f61-76e8-4d95-85e5-630c61340bbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env">
+      <UniqueIdentifier>{41e68147-d11e-4913-a0ba-ca2aa591f1a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\Planet">
+      <UniqueIdentifier>{124044e2-ad2e-4ef2-9df3-e1f4e83e8723}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\00.Parent">
       <UniqueIdentifier>{9a7e59c1-0f27-4391-8680-1319812ccda0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\PlanetRing">
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PlanetRing">
       <UniqueIdentifier>{70339247-3508-4736-96ff-59d5aaf012e7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -535,13 +535,13 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Environment_Generator.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\00.Environment_Generator</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\00.Environment_Generator</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Static_Env.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\02.Static_Env</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\02.Static_Env</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Instancing_Env.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\01.Instancing_Env</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\01.Instancing_Env</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Sky.h">
       <Filter>02.GameObject\02.Sky</Filter>
@@ -562,22 +562,22 @@
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\SavePoint.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\99.SavePoint</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\99.SavePoint</Filter>
     </ClInclude>
     <ClInclude Include="..\public\DeadLine.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\98.DeadLine</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\98.DeadLine</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Planet.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\Planet</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\Planet</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Bridge.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\01.Instancing_Env\Bridge</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\01.Instancing_Env\Bridge</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Dynamic_Env.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\00.Parent</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\00.Parent</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PlanetRing.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\PlanetRing</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PlanetRing</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\HookUFO.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO</Filter>
@@ -771,13 +771,13 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Environment_Generator.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\00.Environment_Generator</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\00.Environment_Generator</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Static_Env.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\02.Static_Env</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\02.Static_Env</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Instancing_Env.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\01.Instancing_Env</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\01.Instancing_Env</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Loading.cpp">
       <Filter>01.Maps\01.Loading\99.Loading</Filter>
@@ -801,22 +801,22 @@
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\SavePoint.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\99.SavePoint</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\99.SavePoint</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\DeadLine.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\98.DeadLine</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\98.DeadLine</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Planet.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\Planet</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\Planet</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Bridge.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\01.Instancing_Env\Bridge</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\01.Instancing_Env\Bridge</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Dynamic_Env.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\00.Parent</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\00.Parent</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PlanetRing.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\03.Dynamic_Env\PlanetRing</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PlanetRing</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\HookUFO.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO</Filter>

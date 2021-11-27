@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\SavePoint.h"
+#include "Cody.h"
+#include "May.h"
 
 CSavePoint::CSavePoint(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -69,6 +71,13 @@ _int CSavePoint::Late_Tick(_double dTimeDelta)
 
 void CSavePoint::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+	// Cody
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eSAVEPOINT, true, XMLoadFloat3(&m_vSavePosition));
+
+	// May
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eSAVEPOINT, true, XMLoadFloat3(&m_vSavePosition));
 }
 
 CSavePoint * CSavePoint::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

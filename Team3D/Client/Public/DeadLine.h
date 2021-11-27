@@ -38,6 +38,8 @@ private:
 	CTransform*		m_pTransformCom = nullptr;
 	CTriggerActor*	m_pTriggerActorCom = nullptr;
 
+	_bool			m_IsCollide = false;
+
 public:
 	static CDeadLine* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject * Clone_GameObject(void * pArg) override;
