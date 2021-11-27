@@ -238,6 +238,9 @@
     <ClInclude Include="..\public\Effect_RespawnTunnel_Portal.h" />
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
+    <ClInclude Include="..\Public\PlayerActor.h" />
+    <ClInclude Include="..\Public\PlayerBehaviorCallback.h" />
+    <ClInclude Include="..\Public\PlayerFilterCallback.h" />
     <ClInclude Include="..\Public\PlayerMarker.h" />
     <ClInclude Include="..\Public\Robot.h" />
     <ClInclude Include="..\Public\RobotBattery.h" />
@@ -312,6 +315,9 @@
     <ClCompile Include="..\private\Effect_RespawnTunnel_Portal.cpp" />
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
+    <ClCompile Include="..\Private\PlayerActor.cpp" />
+    <ClCompile Include="..\Private\PlayerBehaviorCallback.cpp" />
+    <ClCompile Include="..\Private\PlayerFilterCallback.cpp" />
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />
     <ClCompile Include="..\Private\RobotBattery.cpp" />

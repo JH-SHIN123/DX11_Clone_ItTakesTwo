@@ -1,7 +1,7 @@
-#include "..\Public\PxControllerCallback.h"
-#include "PhysX.h"
+#include "stdafx.h"
+#include "..\Public\PlayerBehaviorCallback.h"
 
-PxControllerBehaviorFlags CPxControllerCallback::getBehaviorFlags(const PxShape & shape, const PxActor & actor)
+PxControllerBehaviorFlags CPlayerBehaviorCallback::getBehaviorFlags(const PxShape & shape, const PxActor & actor)
 {
 	PxRaycastBuffer Buffer;
 
@@ -11,12 +11,12 @@ PxControllerBehaviorFlags CPxControllerCallback::getBehaviorFlags(const PxShape 
 	return PxControllerBehaviorFlag::eCCT_CAN_RIDE_ON_OBJECT | PxControllerBehaviorFlag::eCCT_SLIDE;
 }
 
-PxControllerBehaviorFlags CPxControllerCallback::getBehaviorFlags(const PxController & controller)
+PxControllerBehaviorFlags CPlayerBehaviorCallback::getBehaviorFlags(const PxController & controller)
 {
 	return PxControllerBehaviorFlags();
 }
 
-PxControllerBehaviorFlags CPxControllerCallback::getBehaviorFlags(const PxObstacle & obstacle)
+PxControllerBehaviorFlags CPlayerBehaviorCallback::getBehaviorFlags(const PxObstacle & obstacle)
 {
 	return PxControllerBehaviorFlags();
 }

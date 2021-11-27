@@ -3,13 +3,8 @@
 #include "Client_Defines.h"
 #include "Character.h"
 
-BEGIN(Engine)
-class CRenderer;
-class CTransform;
-class CModel;
-END
-
 BEGIN(Client)
+
 class CMay final : public CCharacter
 {
 #pragma region Enum_STATE
@@ -350,4 +345,5 @@ private:
 
 
 };
+
 END

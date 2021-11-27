@@ -1,7 +1,5 @@
 #include "stdafx.h"
-#include "..\public\MoonBaboon.h"
-#include "GameInstance.h"
-#include "DataStorage.h"
+#include "..\Public\MoonBaboon.h"
 #include "May.h"
 #include "Cody.h"
 #include "UFO.h"

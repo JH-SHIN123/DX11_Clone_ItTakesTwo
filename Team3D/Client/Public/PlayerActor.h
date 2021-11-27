@@ -1,15 +1,16 @@
 #pragma once
 
+#include "Client_Defines.h"
 #include "Actor.h"
 
-BEGIN(Engine)
+BEGIN(Client)
 
-class ENGINE_DLL CControllableActor final : public CActor
+class CPlayerActor final : public CActor
 {
 private:
-	explicit CControllableActor(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CControllableActor(const CControllableActor& rhs);
-	virtual ~CControllableActor() = default;
+	explicit CPlayerActor(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CPlayerActor(const CPlayerActor& rhs);
+	virtual ~CPlayerActor() = default;
 
 public: /* Struct */
 	typedef struct tagArgumentDesc
@@ -42,21 +43,17 @@ public:
 	void	Move(_fvector vMove, _double dTimeDelta);
 
 	void	Update(_double dTimeDelta);
-	void	Update_Cam(_double dTimeDelta);
 	void	Jump_Start(_float fJumpForce);
 	void	Jump_Higher(_float fJumpForce);
 
-	//void	Kinematic_On() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true); }
-	//void	Kinematic_Off() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false); }
-
 private:
-	PxController*						m_pController = nullptr;
-	PxRigidDynamic*						m_pActor = nullptr;
-	PxRigidStatic*						m_pTrigger = nullptr;
-	PxControllerFilters*				m_pFilters = nullptr;
-	class CTransform*					m_pTransform = nullptr;
-	class CPxControllerCallback*		m_pCallback = nullptr;
-	class CPxControllerFilterCallback*	m_pFilterCallback = nullptr;
+	PxController*					m_pController = nullptr;
+	PxRigidDynamic*					m_pActor = nullptr;
+	PxRigidStatic*					m_pTrigger = nullptr;
+	PxControllerFilters*			m_pFilters = nullptr;
+	class CTransform*				m_pTransform = nullptr;
+	class CPlayerBehaviorCallback*	m_pBehaviorCallback = nullptr;
+	class CPlayerFilterCallback*	m_pFilterCallback = nullptr;
 	/* For.Jump */
 	_float	m_fJumpTime = 0.f;
 	_float	m_fHeightDelta = 0.f;
@@ -71,7 +68,6 @@ private:
 
 	_float  m_fFallingTime = 0.f;
 
-
 	/* For.Gravity */
 	_float m_fGravity = -9.8f;
 
@@ -80,7 +76,7 @@ private:
 	_float	Get_Height(_double dTimeDelta);
 
 public:
-	static CControllableActor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CPlayerActor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CComponent* Clone_Component(void* pArg) override;
 	virtual void Free() override;
 };

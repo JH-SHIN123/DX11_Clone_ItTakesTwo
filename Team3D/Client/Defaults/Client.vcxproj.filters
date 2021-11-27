@@ -217,18 +217,6 @@
     <Filter Include="03.Component">
       <UniqueIdentifier>{6f424d55-06aa-4b07-a102-2829f8dd72e4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.Component\01.CameraActor">
-      <UniqueIdentifier>{71f0cc81-3265-4b0d-9a45-cf89b506bd13}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.Component\01.CameraActor\00.Main">
-      <UniqueIdentifier>{0cbed854-cdf5-4121-8dab-ff10dad003dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.Component\01.CameraActor\01.BehaviorCallback">
-      <UniqueIdentifier>{68b731cf-de3f-4fda-b4e7-8040040943d1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.Component\01.CameraActor\02.FilterCallback">
-      <UniqueIdentifier>{c1859efc-d3f6-40da-a6c5-24deb0b7e05b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
       <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
     </Filter>
@@ -294,6 +282,33 @@
     </Filter>
     <Filter Include="02.GameObject\02.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor">
+      <UniqueIdentifier>{2ec58a84-d189-4974-a108-05b4f318d045}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\01.CameraActor">
+      <UniqueIdentifier>{71f0cc81-3265-4b0d-9a45-cf89b506bd13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\01.CameraActor\00.Main">
+      <UniqueIdentifier>{0cbed854-cdf5-4121-8dab-ff10dad003dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\01.CameraActor\01.BehaviorCallback">
+      <UniqueIdentifier>{68b731cf-de3f-4fda-b4e7-8040040943d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\01.CameraActor\02.FilterCallback">
+      <UniqueIdentifier>{c1859efc-d3f6-40da-a6c5-24deb0b7e05b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\02.PlayerActor">
+      <UniqueIdentifier>{9106a268-2938-43e6-bf2f-9be9c5610155}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\02.PlayerActor\00.Main">
+      <UniqueIdentifier>{6bbea7de-c1d5-47a9-8635-70ce8d8a39d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\02.PlayerActor\01.BehaviorCallback">
+      <UniqueIdentifier>{96207711-0402-4274-81fc-e032474726b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\02.PlayerActor\02.FilterCallback">
+      <UniqueIdentifier>{41965410-fff4-41fd-b7b2-3345a7005805}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -511,13 +526,13 @@
       <Filter>02.GameObject\02.Sky</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CameraBehaviorCallback.h">
-      <Filter>03.Component\01.CameraActor\01.BehaviorCallback</Filter>
+      <Filter>03.Component\01.Actor\01.CameraActor\01.BehaviorCallback</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CameraFilterCallback.h">
-      <Filter>03.Component\01.CameraActor\02.FilterCallback</Filter>
+      <Filter>03.Component\01.Actor\01.CameraActor\02.FilterCallback</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CameraActor.h">
-      <Filter>03.Component\01.CameraActor\00.Main</Filter>
+      <Filter>03.Component\01.Actor\01.CameraActor\00.Main</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_Dead_Particle_Fire.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire</Filter>
@@ -533,6 +548,15 @@
     </ClInclude>
     <ClInclude Include="..\public\Level_Stage.h">
       <Filter>01.Maps\04.Stage_Space</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerActor.h">
+      <Filter>03.Component\01.Actor\02.PlayerActor\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerBehaviorCallback.h">
+      <Filter>03.Component\01.Actor\02.PlayerActor\01.BehaviorCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerFilterCallback.h">
+      <Filter>03.Component\01.Actor\02.PlayerActor\02.FilterCallback</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -723,13 +747,13 @@
       <Filter>02.GameObject\02.Sky</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CameraActor.cpp">
-      <Filter>03.Component\01.CameraActor\00.Main</Filter>
+      <Filter>03.Component\01.Actor\01.CameraActor\00.Main</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CameraBehaviorCallback.cpp">
-      <Filter>03.Component\01.CameraActor\01.BehaviorCallback</Filter>
+      <Filter>03.Component\01.Actor\01.CameraActor\01.BehaviorCallback</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CameraFilterCallback.cpp">
-      <Filter>03.Component\01.CameraActor\02.FilterCallback</Filter>
+      <Filter>03.Component\01.Actor\01.CameraActor\02.FilterCallback</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Dead_Particle_Fire.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire</Filter>
@@ -745,6 +769,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Level_Stage.cpp">
       <Filter>01.Maps\04.Stage_Space</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerActor.cpp">
+      <Filter>03.Component\01.Actor\02.PlayerActor\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerBehaviorCallback.cpp">
+      <Filter>03.Component\01.Actor\02.PlayerActor\01.BehaviorCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerFilterCallback.cpp">
+      <Filter>03.Component\01.Actor\02.PlayerActor\02.FilterCallback</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
