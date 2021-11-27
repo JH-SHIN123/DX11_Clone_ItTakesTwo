@@ -44,9 +44,9 @@
 #pragma endregion
 
 CLoading::CLoading(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
-	: m_pDevice			(pDevice)
-	, m_pDeviceContext	(pDeviceContext)
-	, m_pGameInstance	(CGameInstance::GetInstance())
+	: m_pDevice(pDevice)
+	, m_pDeviceContext(pDeviceContext)
+	, m_pGameInstance(CGameInstance::GetInstance())
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -57,13 +57,13 @@ _uint APIENTRY ThreadMain(void* pArg)
 {
 	CLoading::THREAD_ARG* pThreadArg = (CLoading::THREAD_ARG*)pArg;
 
-	CLoading*	pLoading		= pThreadArg->pLoading;
-	_uint		iThreadIndex	= pThreadArg->iThreadIndex;
+	CLoading*	pLoading = pThreadArg->pLoading;
+	_uint		iThreadIndex = pThreadArg->iThreadIndex;
 
 	EnterCriticalSection(pLoading->Get_CriticalSectionPtr(iThreadIndex));
 
-	Level::ID ePreLevel		= pLoading->Get_PreLevelID();
-	Level::ID eNextLevel	= pLoading->Get_NextLevelID();
+	Level::ID ePreLevel = pLoading->Get_PreLevelID();
+	Level::ID eNextLevel = pLoading->Get_NextLevelID();
 
 	FAILED_CHECK_RETURN(pLoading->Loading(ePreLevel, eNextLevel, iThreadIndex), EVENT_ERROR);
 
@@ -93,20 +93,20 @@ const _bool CLoading::Is_FinishedToLoading() const
 
 HRESULT CLoading::NativeConstruct(Level::ID ePreLevelID, Level::ID eNextLevelID)
 {
-	m_ePreLevelID	= ePreLevelID;
-	m_eNextLevelID	= eNextLevelID;
+	m_ePreLevelID = ePreLevelID;
+	m_eNextLevelID = eNextLevelID;
 
-	m_iThreadCount			= 16;
-	m_arrThreads			= new HANDLE[m_iThreadCount];
-	m_arrCriticalSections	= new CRITICAL_SECTION[m_iThreadCount];
-	m_arrThreadArgs			= new THREAD_ARG[m_iThreadCount];
-	m_arrFinished			= new _bool[m_iThreadCount];
+	m_iThreadCount = 16;
+	m_arrThreads = new HANDLE[m_iThreadCount];
+	m_arrCriticalSections = new CRITICAL_SECTION[m_iThreadCount];
+	m_arrThreadArgs = new THREAD_ARG[m_iThreadCount];
+	m_arrFinished = new _bool[m_iThreadCount];
 	ZeroMemory(m_arrFinished, sizeof(_bool) * m_iThreadCount);
 
 	for (_uint iIndex = 0; iIndex < m_iThreadCount; ++iIndex)
 	{
-		m_arrThreadArgs[iIndex].pLoading		= this;
-		m_arrThreadArgs[iIndex].iThreadIndex	= iIndex;
+		m_arrThreadArgs[iIndex].pLoading = this;
+		m_arrThreadArgs[iIndex].iThreadIndex = iIndex;
 
 		InitializeCriticalSection(&m_arrCriticalSections[iIndex]);
 		m_arrThreads[iIndex] = (HANDLE)_beginthreadex(nullptr, 0, ThreadMain, &m_arrThreadArgs[iIndex], 0, nullptr);
@@ -142,6 +142,7 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Sky_Space"), CSky::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Prototype_Model_Others_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others15.txt")), E_FAIL);
+
 		__threadbreak;
 	}
 	else if (1 == iThreadIndex)
@@ -158,6 +159,7 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f));
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_May"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("May"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_May"), CMay::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("Cody"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Cody"), CCody::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
@@ -333,7 +335,6 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Prototype_Model_Others_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others11.txt")), E_FAIL);
 
 		__threadbreak;
->>>>>>> main
 	}
 	else if (5 == iThreadIndex)
 	{

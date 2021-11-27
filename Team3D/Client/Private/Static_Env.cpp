@@ -26,13 +26,6 @@ HRESULT CStatic_Env::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	CStaticActor::ARG_DESC tArg;
-	tArg.pModel = m_pModelCom;
-	tArg.pTransform = m_pTransformCom;
-	tArg.pUserData = &m_UserData;
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
-
 	Set_MeshRenderGroup();
 
 	return S_OK;
