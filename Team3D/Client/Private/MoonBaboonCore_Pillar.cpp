@@ -12,12 +12,20 @@ CMoonBaboonCore_Pillar::CMoonBaboonCore_Pillar(const CMoonBaboonCore_Pillar& rhs
 {
 }
 
+void CMoonBaboonCore_Pillar::Set_WorldMatrix()
+{
+    m_pTransformCom->Set_WorldMatrix(m_pParentTransform->Get_WorldMatrix());
+}
+
 HRESULT CMoonBaboonCore_Pillar::NativeConstruct(void* pArg)
 {
     if (nullptr != pArg)
-        m_pMoonBaboonCore = (CMoonBaboonCore*)pArg;
+        m_pParent = (CMoonBaboonCore*)pArg;
     else
         return E_FAIL;
+
+    m_pParentTransform = m_pParent->Get_Transform();
+    if (nullptr == m_pParentTransform) return E_FAIL;
 
     CGameObject::NativeConstruct(nullptr);
 
@@ -25,11 +33,7 @@ HRESULT CMoonBaboonCore_Pillar::NativeConstruct(void* pArg)
     FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
     FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon_CorePillar_01"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-    // TEST
-   CTransform* pTransform = m_pMoonBaboonCore->Get_Transform();
-   if (nullptr == pTransform) return E_FAIL;
-
-    m_pTransformCom->Set_WorldMatrix(pTransform->Get_WorldMatrix());
+    m_pTransformCom->Set_WorldMatrix(m_pParentTransform->Get_WorldMatrix());
     m_UserData.eID = GameID::eENVIRONMENT;
     m_UserData.pGameObject = this;
 
@@ -46,6 +50,12 @@ HRESULT CMoonBaboonCore_Pillar::NativeConstruct(void* pArg)
 _int CMoonBaboonCore_Pillar::Tick(_double TimeDelta)
 {
     CGameObject::Tick(TimeDelta);
+
+    if (0 != m_pParent->Get_ActiveCore())
+    {
+        Set_WorldMatrix();
+        m_pStaticActorCom->Update_StaticActor();
+    }
 
     return NO_EVENT;
 }

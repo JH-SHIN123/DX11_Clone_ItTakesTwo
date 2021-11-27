@@ -189,7 +189,7 @@ void CToyBoxButton_Button::OnPressed_Button(_double TimeDelta)
 		if (m_fTriggerDeltaMove > 0.2)
 		{
 			m_iCheckTrigger = 0;
-			m_fTriggerDeltaMove = 0.2f;
+			m_fTriggerDeltaMove = 0.2;
 		}
 		else
 		{
@@ -197,7 +197,8 @@ void CToyBoxButton_Button::OnPressed_Button(_double TimeDelta)
 			m_pTransformCom->Go_Down(TimeDelta * fTriggerSpeed);
 		}
 	}
-	else if (-1 == m_iCheckTrigger) // 내려가있다.
+
+	if (-1 == m_iCheckTrigger) // 내려가있다.
 	{
 		if (m_fTriggerDeltaMove < 0)
 		{

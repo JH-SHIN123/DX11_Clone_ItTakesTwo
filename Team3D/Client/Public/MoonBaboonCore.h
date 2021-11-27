@@ -12,7 +12,11 @@ private:
 	virtual ~CMoonBaboonCore() = default;
 
 public:
+	void Set_ActiveCore(_int iActive) { m_iActiveCore = iActive; }
+
+public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
+	_int Get_ActiveCore() const { return m_iActiveCore; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -21,7 +25,16 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 
 private:
+	void Active_Pillar(_double TimeDelta);
+
+private:
 	CTransform* m_pTransformCom = nullptr;
+
+private:
+	_int m_iActiveCore = 0;
+
+private:
+	_float	m_fMoveDelta = 0.f;
 
 private:
 	class CMoonBaboonCore_Pillar*	m_pCorePillar = nullptr;	// Àå½Ä

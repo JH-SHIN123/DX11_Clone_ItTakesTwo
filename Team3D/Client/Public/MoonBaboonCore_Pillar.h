@@ -19,6 +19,9 @@ private:
 	virtual ~CMoonBaboonCore_Pillar() = default;
 
 public:
+	void Set_WorldMatrix();
+
+public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
@@ -28,7 +31,8 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 private:
-	class CMoonBaboonCore* m_pMoonBaboonCore = nullptr;
+	class CMoonBaboonCore*	m_pParent = nullptr;
+	CTransform*				m_pParentTransform = nullptr;
 
 private: /* For.Component */
 	CRenderer* m_pRendererCom = nullptr;
