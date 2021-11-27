@@ -45,6 +45,7 @@ private:
 	void Set_Info_Model(CStatic_Env::ARG_DESC& tInfo);
 
 private:
+	HRESULT Load_Default_Prototype_GameObject();
 	HRESULT Load_Environment_Space();
 	HRESULT Load_Environment_Space_Boss();
 	HRESULT Load_Environment_Interactive_Instancing();

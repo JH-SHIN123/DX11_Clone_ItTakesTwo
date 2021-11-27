@@ -90,6 +90,8 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_Instancing()
 
 HRESULT CEnvironment_Generator::Load_Prototype_GameObject()
 {
+	FAILED_CHECK_RETURN(Load_Default_Prototype_GameObject(), E_FAIL);
+
 	DWORD		dwByte;
 	_uint		iLevelIndex = 1;
 	_tchar		szPrototypeTag[MAX_PATH] = L"";
@@ -98,13 +100,6 @@ HRESULT CEnvironment_Generator::Load_Prototype_GameObject()
 	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/PrototypeData/Object.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 	if (INVALID_HANDLE_VALUE == hFile)
 		return E_FAIL;
-
-	/* 기본 프로토타입 생성 */
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Instancing_Env"), CInstancing_Env::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Static_Env"), CStatic_Env::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SavePoint"), CSavePoint::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_DeadLine"), CDeadLine::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Bridge"), CBridge::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	while (true)
 	{
@@ -141,7 +136,6 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_Others_TXT(_tchar * pFilePa
 	_uint		iLevelIndex = 0;;
 
 	/* Others */
-
 	char pFileName[MAX_PATH];
 	WideCharToMultiByte(CP_ACP, 0, pFilePath, MAX_PATH, pFileName, MAX_PATH, 0, 0);
 
@@ -213,13 +207,53 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_Instancing_TXT()
 
 HRESULT CEnvironment_Generator::Load_Prototype_GameObject_TXT()
 {
-	return E_NOTIMPL;
+	FAILED_CHECK_RETURN(Load_Default_Prototype_GameObject(), E_FAIL);
+
+	_uint		iLevelIndex = 1;
+	_tchar		szLevelIndex[MAX_PATH] = L"";
+	_tchar		szPrototypeTag[MAX_PATH] = L"";
+	_tchar		szModelTag[MAX_PATH] = L"";
+
+	/* Instancing Model */
+	wifstream fin;
+	fin.open("../Bin/Resources/Data/MapData/PrototypeData/TXT/GameObject.txt");
+
+	if (!fin.fail())
+	{
+		while (true)
+		{
+			// 인스턴싱 Text 파일 로드
+			fin.getline(szLevelIndex, MAX_PATH, L'|');
+			fin.getline(szPrototypeTag, MAX_PATH, L'|');
+			fin.getline(szModelTag, MAX_PATH);
+
+			iLevelIndex = _ttoi(szLevelIndex);
+
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, szPrototypeTag, Create_Class(szPrototypeTag, m_pDevice, m_pDeviceContext)), E_FAIL);
+
+			if (fin.eof())
+				break;
+		}
+	}
+	fin.close();
+	return S_OK;
+}
+
+HRESULT CEnvironment_Generator::Load_Default_Prototype_GameObject()
+{
+	/* 기본 프로토타입 생성 */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Instancing_Env"), CInstancing_Env::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Static_Env"), CStatic_Env::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SavePoint"), CSavePoint::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_DeadLine"), CDeadLine::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Bridge"), CBridge::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	return S_OK;
 }
 
 HRESULT CEnvironment_Generator::Load_Environment_Space()
 {
 	DWORD		dwByte;
-
 	_tchar		szPrototypeTag[MAX_PATH] = L"";
 	_uint		iLevelIndex = 0;
 
@@ -287,6 +321,7 @@ HRESULT CEnvironment_Generator::Load_Environment_Space()
 		if (0 == dwByte)
 			break;
 
+		ReadFile(hFile, &szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 		ReadFile(hFile, &tDynamic_Env_Desc.szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
 		ReadFile(hFile, &tDynamic_Env_Desc.WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
 		ReadFile(hFile, &tDynamic_Env_Desc.iMatrialIndex, sizeof(_uint), &dwByte, nullptr);
@@ -476,7 +511,7 @@ CGameObject* CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D11
 {
 	CGameObject* pInstance = nullptr;
 
-	if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_Planet")))
+	if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_Planet")) || 0 == lstrcmp(pPrototypeTag, TEXT("GameObject_Saturn")))
 	{
 		pInstance = CPlanet::Create(pDevice, pDeviceContext);
 		if (nullptr == pInstance)
@@ -496,45 +531,45 @@ void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
 	tInfo.fCullRadius = 10.f;
 
 	if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail01"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail02"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail03"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail04"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail05"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail06"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Moon_01_Plushie"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetWall"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetFloor"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetFloorRing"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh01"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh02"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh03"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh04"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh05"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh06"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh07"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh08"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh12"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh13"))
-		tInfo.fCullRadius = 100.f;
+		tInfo.fCullRadius = 500.f;
 }
 
 void CEnvironment_Generator::Free()

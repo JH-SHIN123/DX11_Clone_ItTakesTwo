@@ -48,16 +48,20 @@ _int CBridge::Tick(_double dTimeDelta)
 
 	if (true == m_bTrigger)
 	{
-		if (m_fAngle >= 1.67f)
+		_float	fAngle = 45.f * (_float)dTimeDelta;
+
+		if (m_fAngle >= 70.f)
 		{
+			fAngle = 70.f - m_fAngle;
+
 			m_bTrigger = false;
 			m_fAngle = 0.f;
 		}
-
-		_matrix matTransform = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_matPivot)) * XMMatrixRotationX(XMConvertToRadians(m_fAngle)) * XMLoadFloat4x4(&m_matPivot);
+		
+		_matrix matTransform = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_matPivot)) * XMMatrixRotationX(XMConvertToRadians(fAngle)) * XMLoadFloat4x4(&m_matPivot);
 		m_pModelCom->Update_Model(matTransform);
 
-		m_fAngle += 0.02f;
+		m_fAngle += fAngle;
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_J))

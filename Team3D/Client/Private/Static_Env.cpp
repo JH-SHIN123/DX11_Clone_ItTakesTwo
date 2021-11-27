@@ -54,7 +54,7 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1);
+	m_pModelCom->Render_Model(1, m_Static_Env_Desc.iMaterialIndex);
 
 	return S_OK;
 }
@@ -64,7 +64,7 @@ HRESULT CStatic_Env::Render_ShadowDepth()
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 	// Skinned: 2 / Normal: 3
-	m_pModelCom->Render_Model(3, 0, true);
+	m_pModelCom->Render_Model(3, m_Static_Env_Desc.iMaterialIndex, true);
 
 	return S_OK;
 }

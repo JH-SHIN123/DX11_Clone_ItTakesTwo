@@ -75,6 +75,12 @@ void CTransform::Set_Rotaion(_fvector vRotation)
 	Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
 }
 
+void CTransform::Set_Speed(_double InSpeedPerSec, _double InRotationPerSec)
+{
+	m_TransformDesc.dSpeedPerSec = InSpeedPerSec;
+	m_TransformDesc.dRotationPerSec = InRotationPerSec;
+}
+
 HRESULT CTransform::NativeConstruct_Prototype()
 {
 	CComponent::NativeConstruct_Prototype();

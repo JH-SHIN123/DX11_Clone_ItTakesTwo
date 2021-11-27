@@ -32,6 +32,7 @@ HRESULT CPlanet::NativeConstruct(void * pArg)
 	tArg.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
+	m_pTransformCom->Set_Speed(5.f, 0.5f);
 
 	return S_OK;
 }
@@ -40,7 +41,8 @@ _int CPlanet::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
-	m_pTransformCom->RotateYaw(dTimeDelta);
+	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta);
+	m_pStaticActorCom->Update_StaticActor();
 
 	return NO_EVENT;
 }
@@ -63,7 +65,7 @@ HRESULT CPlanet::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1);
+	m_pModelCom->Render_Model(1, m_tDynamic_Env_Desc.iMatrialIndex);
 
 	return S_OK;
 }
