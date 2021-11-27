@@ -597,6 +597,9 @@
     <ClInclude Include="..\Public\MoonBaboonCore_Button.h">
       <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Button</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboonCore_Shield.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Shield</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -832,6 +835,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MoonBaboonCore_Button.cpp">
       <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboonCore_Shield.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Shield</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

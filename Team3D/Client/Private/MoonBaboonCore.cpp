@@ -2,6 +2,7 @@
 #include "..\Public\MoonBaboonCore.h"
 #include "MoonBaboonCore_Pillar.h"
 #include "MoonBaboonCore_Button.h"
+#include "MoonBaboonCore_Shield.h"
 
 CMoonBaboonCore::CMoonBaboonCore(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -30,6 +31,7 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 
 	m_pCorePillar = CMoonBaboonCore_Pillar::Create(m_pDevice, m_pDeviceContext, this);
 	m_pCoreButton = CMoonBaboonCore_Button::Create(m_pDevice, m_pDeviceContext, this);
+	m_pCoreShield = CMoonBaboonCore_Shield::Create(m_pDevice, m_pDeviceContext, this);
 
     return S_OK;
 }
@@ -40,6 +42,7 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 
 	m_pCorePillar->Tick(TimeDelta);
 	m_pCoreButton->Tick(TimeDelta);
+	m_pCoreShield->Tick(TimeDelta);
 
     return _int();
 }
@@ -48,6 +51,7 @@ _int CMoonBaboonCore::Late_Tick(_double TimeDelta)
 {
 	m_pCorePillar->Late_Tick(TimeDelta);
 	m_pCoreButton->Late_Tick(TimeDelta);
+	m_pCoreShield->Late_Tick(TimeDelta);
 
     return _int();
 }
@@ -56,7 +60,7 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 {
 	if (m_iActiveCore == 1)
 	{
-		if (m_fMoveDelta < 5.f)
+		if (m_fMoveDelta < 1.4f)
 		{
 			m_pTransformCom->Go_Up(TimeDelta);
 			m_fMoveDelta += (_float)TimeDelta;
@@ -66,6 +70,7 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 	{
 		if (m_fMoveDelta > 0.f)
 		{
+			// 내려가는중에, 실드 올라가기 트리거 실행
 			m_pTransformCom->Go_Down(TimeDelta);
 			m_fMoveDelta -= (_float)TimeDelta;
 		}
@@ -103,7 +108,7 @@ void CMoonBaboonCore::Free()
 {
 	Safe_Release(m_pCorePillar);
 	Safe_Release(m_pCoreButton);
-	//Safe_Release(m_pCoreShield);
+	Safe_Release(m_pCoreShield);
 	//Safe_Release(m_pCoreGlass);
 
 	Safe_Release(m_pTransformCom);

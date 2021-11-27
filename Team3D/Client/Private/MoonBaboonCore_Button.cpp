@@ -47,7 +47,7 @@ HRESULT CMoonBaboonCore_Button::NativeConstruct(void* pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
 
 	CTriggerActor::ARG_DESC tTriggerArg;
-	tTriggerArg.pGeometry = new PxBoxGeometry(1.1f, 0.4f, 1.1f);
+	tTriggerArg.pGeometry = new PxBoxGeometry(1.1f, 0.6f, 1.1f);
 	tTriggerArg.pTransform = m_pTransformCom;
 	tTriggerArg.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArg), E_FAIL);

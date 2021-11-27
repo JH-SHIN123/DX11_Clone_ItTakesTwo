@@ -239,6 +239,7 @@
     <ClInclude Include="..\Public\MoonBaboonCore.h" />
     <ClInclude Include="..\Public\MoonBaboonCore_Button.h" />
     <ClInclude Include="..\Public\MoonBaboonCore_Pillar.h" />
+    <ClInclude Include="..\Public\MoonBaboonCore_Shield.h" />
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
     <ClInclude Include="..\Public\PlayerActor.h" />
@@ -323,6 +324,7 @@
     <ClCompile Include="..\Private\MoonBaboonCore.cpp" />
     <ClCompile Include="..\Private\MoonBaboonCore_Button.cpp" />
     <ClCompile Include="..\Private\MoonBaboonCore_Pillar.cpp" />
+    <ClCompile Include="..\Private\MoonBaboonCore_Shield.cpp" />
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
     <ClCompile Include="..\Private\PlayerActor.cpp" />

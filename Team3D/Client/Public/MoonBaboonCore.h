@@ -39,7 +39,7 @@ private:
 private:
 	class CMoonBaboonCore_Pillar*	m_pCorePillar = nullptr;	// 장식
 	class CMoonBaboonCore_Button*	m_pCoreButton = nullptr;	// 밟으면 올라감
-	//class CMoonBaboonCore_Shield*	m_pCoreShield = nullptr;	// shield / pillar shield : 코어필러가 다올라오면 실드가 내려감
+	class CMoonBaboonCore_Shield*	m_pCoreShield = nullptr;	// shield / pillar shield : 코어필러가 다올라오면 실드가 내려감
 	//class CMoonBaboonCore_Glass*	m_pCoreGlass = nullptr;		// 데미지 달면, 부서지고, 코어 비활성화 (다내려가고, 버튼쪽 문닫힘)
 	// Core
 
