@@ -101,7 +101,7 @@ void CPressureBigPlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
-
+		//d
 	}
 }
 
