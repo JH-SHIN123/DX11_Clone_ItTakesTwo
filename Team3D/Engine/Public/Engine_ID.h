@@ -35,7 +35,9 @@ namespace Engine
 			eGRAVITYPATH,
 			eENVIRONMENT,
 			ePinBall,
-			eBlocked
+			eBlocked,
+			eGRAVITYPATH_CENTER,
+			eGRAVITYPATH_SIDE
 		};
 	};
 

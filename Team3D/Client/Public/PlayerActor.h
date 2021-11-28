@@ -41,10 +41,11 @@ public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	void	Move(_fvector vMove, _double dTimeDelta);
-
 	void	Update(_double dTimeDelta);
 	void	Jump_Start(_float fJumpForce);
 	void	Jump_Higher(_float fJumpForce);
+	void	Step_GravityPath(PxVec3 vNormal);
+	void	Reorder_Gravity();
 
 private:
 	PxController*					m_pController = nullptr;
@@ -54,6 +55,8 @@ private:
 	class CTransform*				m_pTransform = nullptr;
 	class CPlayerBehaviorCallback*	m_pBehaviorCallback = nullptr;
 	class CPlayerFilterCallback*	m_pFilterCallback = nullptr;
+	class CPlayerHitReport*			m_pHitReport = nullptr;
+	USERDATA*						m_pUserData = nullptr;
 	/* For.Jump */
 	_float	m_fJumpTime = 0.f;
 	_float	m_fHeightDelta = 0.f;
@@ -69,7 +72,11 @@ private:
 	_float  m_fFallingTime = 0.f;
 
 	/* For.Gravity */
-	_float m_fGravity = -9.8f;
+	_float	m_fGravity = -9.8f;
+	_bool	m_isGravityReordered = false;
+	_float3	m_vPlayerUpDir = _float3(0.f, 0.f, 0.f);
+	_float4 m_vQuatRotUp = _float4(0.f, 0.f, 0.f, 0.f);
+	_float4x4 m_vQuat;
 
 private:
 	void	Jump_Stop();

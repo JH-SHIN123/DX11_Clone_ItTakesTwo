@@ -566,7 +566,7 @@ CGameObject* CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D11
 		if (nullptr == pInstance)
 			MSG_BOX("Failed to Create Instance - PinBall_Blocked");
 	}
-	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_AlienScreen")))
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_AlienScreen")))
 	{
 		pInstance = CAlienScreen::Create(pDevice, pDeviceContext);
 		if (nullptr == pInstance)

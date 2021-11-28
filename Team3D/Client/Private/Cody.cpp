@@ -556,6 +556,14 @@ void CCody::KeyInput(_double dTimeDelta)
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 #pragma  endregion
 }
+
+_uint CCody::Get_CurState() const
+{
+	if (nullptr == m_pModelCom) return 0;
+
+	return m_pModelCom->Get_CurAnimIndex();
+}
+
 void CCody::Move(const _double dTimeDelta)
 {
 #pragma region Medium_Size

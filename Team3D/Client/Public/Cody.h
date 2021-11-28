@@ -218,6 +218,7 @@ public:
 
 	// Tick 에서 호출될 함수들
 private:
+
 	virtual void KeyInput(_double dTimeDelta);
 
 private:
@@ -244,6 +245,9 @@ public:
 ///////////////////////////////////////////////////////    상태 변환 관련 변수들   /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public:
+	_uint Get_CurState() const;
+
+public:
 	// 상태 && 이동
 	void Move(const _double dTimeDelta);
 	void Roll(const _double dTimeDelta);
@@ -255,11 +259,6 @@ public:
 
 #pragma region BasicMovement
 private:
-	// 상태
-	CODY_STATE m_iCurState = CUTSCENE_HUB_SECOND_GENERATOR;
-	CODY_STATE m_iNextState = CUTSCENE_HUB_SECOND_GENERATOR;
-
-
 	// 기본 움직임
 	_bool m_bSprint = false;
 	_bool m_bRoll = false;

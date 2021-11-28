@@ -34,8 +34,8 @@ HRESULT CPostFX::PostProcessing(_double TimeDelta)
 	FAILED_CHECK_RETURN(Tick_Adaptation(TimeDelta), E_FAIL);
 
 	FAILED_CHECK_RETURN(DownScale(TimeDelta), E_FAIL);
-	FAILED_CHECK_RETURN(Bloom(), E_FAIL);;
-	FAILED_CHECK_RETURN(Blur(), E_FAIL);;
+	FAILED_CHECK_RETURN(Bloom(), E_FAIL);
+	FAILED_CHECK_RETURN(Blur(), E_FAIL);
 	FAILED_CHECK_RETURN(FinalPass(),E_FAIL);
 
 	// Swap Cur LumAvg - Prev LumAvg

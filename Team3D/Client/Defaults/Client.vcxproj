@@ -240,6 +240,12 @@
     <ClInclude Include="..\public\Effect_Player_Dead_Particle.h" />
     <ClInclude Include="..\public\Effect_RespawnTunnel.h" />
     <ClInclude Include="..\public\Effect_RespawnTunnel_Portal.h" />
+    <ClInclude Include="..\Public\MoonBaboonCore.h" />
+    <ClInclude Include="..\Public\MoonBaboonCore_Button.h" />
+    <ClInclude Include="..\Public\MoonBaboonCore_Glass.h" />
+    <ClInclude Include="..\Public\MoonBaboonCore_Pillar.h" />
+    <ClInclude Include="..\Public\MoonBaboonCore_Shield.h" />
+    <ClInclude Include="..\Public\MoonBaboon_MainLaser.h" />
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
     <ClInclude Include="..\Public\PinBall.h" />
@@ -254,7 +260,9 @@
     <ClInclude Include="..\Public\PlayerActor.h" />
     <ClInclude Include="..\Public\PlayerBehaviorCallback.h" />
     <ClInclude Include="..\Public\PlayerFilterCallback.h" />
+    <ClInclude Include="..\Public\PlayerHitReport.h" />
     <ClInclude Include="..\Public\PlayerMarker.h" />
+    <ClInclude Include="..\Public\PxEventCallback.h" />
     <ClInclude Include="..\Public\Robot.h" />
     <ClInclude Include="..\Public\RobotBattery.h" />
     <ClInclude Include="..\Public\RobotHead.h" />
@@ -263,6 +271,7 @@
     <ClInclude Include="..\Public\SavePoint.h" />
     <ClInclude Include="..\Public\SecurityCamera.h" />
     <ClInclude Include="..\Public\SecurityCameraHandle.h" />
+    <ClInclude Include="..\Public\SepdStaticActor.h" />
     <ClInclude Include="..\Public\SpaceValve.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
@@ -270,6 +279,8 @@
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\TestEffect.h" />
     <ClInclude Include="..\Public\Effect_Walking_Smoke.h" />
+    <ClInclude Include="..\Public\ToyBoxButton.h" />
+    <ClInclude Include="..\Public\ToyBoxButton_Button.h" />
     <ClInclude Include="..\Public\TutorialDoor.h" />
     <ClInclude Include="..\Public\UFO.h" />
     <ClInclude Include="..\Public\UIObject.h" />
@@ -331,6 +342,12 @@
     <ClCompile Include="..\private\Effect_Player_Dead_Particle.cpp" />
     <ClCompile Include="..\private\Effect_RespawnTunnel.cpp" />
     <ClCompile Include="..\private\Effect_RespawnTunnel_Portal.cpp" />
+    <ClCompile Include="..\Private\MoonBaboonCore.cpp" />
+    <ClCompile Include="..\Private\MoonBaboonCore_Button.cpp" />
+    <ClCompile Include="..\Private\MoonBaboonCore_Glass.cpp" />
+    <ClCompile Include="..\Private\MoonBaboonCore_Pillar.cpp" />
+    <ClCompile Include="..\Private\MoonBaboonCore_Shield.cpp" />
+    <ClCompile Include="..\Private\MoonBaboon_MainLaser.cpp" />
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
     <ClCompile Include="..\Private\PinBall.cpp" />
@@ -345,7 +362,9 @@
     <ClCompile Include="..\Private\PlayerActor.cpp" />
     <ClCompile Include="..\Private\PlayerBehaviorCallback.cpp" />
     <ClCompile Include="..\Private\PlayerFilterCallback.cpp" />
+    <ClCompile Include="..\Private\PlayerHitReport.cpp" />
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
+    <ClCompile Include="..\Private\PxEventCallback.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />
     <ClCompile Include="..\Private\RobotBattery.cpp" />
     <ClCompile Include="..\Private\RobotHead.cpp" />
@@ -354,6 +373,7 @@
     <ClCompile Include="..\Private\SavePoint.cpp" />
     <ClCompile Include="..\Private\SecurityCamera.cpp" />
     <ClCompile Include="..\Private\SecurityCameraHandle.cpp" />
+    <ClCompile Include="..\Private\SepdStaticActor.cpp" />
     <ClCompile Include="..\Private\SpaceValve.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
@@ -361,6 +381,8 @@
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\TestEffect.cpp" />
     <ClCompile Include="..\Private\Effect_Walking_Smoke.cpp" />
+    <ClCompile Include="..\Private\ToyBoxButton.cpp" />
+    <ClCompile Include="..\Private\ToyBoxButton_Button.cpp" />
     <ClCompile Include="..\Private\TutorialDoor.cpp" />
     <ClCompile Include="..\Private\UFO.cpp" />
     <ClCompile Include="..\Private\UIObject.cpp" />

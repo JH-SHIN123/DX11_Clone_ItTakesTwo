@@ -27,6 +27,9 @@ private:
 	/* Won */
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_Sky(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_ToyBoxButton(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_MoonBaboonCore(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_MoonBaboon_MainLaser(const _tchar* pLayerTag);
 	/* Yoon */
 	HRESULT Ready_Layer_Cody(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_May(const _tchar* pLayerTag);
@@ -36,6 +39,7 @@ private:
 	HRESULT Ready_Layer_StarBuddy(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Robot(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_RobotHead(const _tchar* pLayerTag);
+
 	HRESULT Ready_Layer_RobotLever(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_RobotBattery(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_SecurityCameraHandle(const _tchar* pLayerTag);

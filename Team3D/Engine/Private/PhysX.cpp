@@ -1,6 +1,4 @@
 #include "..\Public\PhysX.h"
-#include "PxEventCallback.h"
-#include "PxContactCallback.h"
 
 IMPLEMENT_SINGLETON(CPhysX)
 
@@ -19,7 +17,7 @@ PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData fi
 	return PxFilterFlag::eDEFAULT;
 }
 
-HRESULT CPhysX::Ready_PhysX()
+HRESULT CPhysX::Ready_PhysX(PxSimulationEventCallback* pEventCallback)
 {
 	m_pFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, m_Allocator, m_ErrorCallback);
 	NULL_CHECK_RETURN(m_pFoundation, E_FAIL);
@@ -44,15 +42,13 @@ HRESULT CPhysX::Ready_PhysX()
 	NULL_CHECK_RETURN(m_pCooking, E_FAIL);
 
 	m_pDispatcher = PxDefaultCpuDispatcherCreate(2);
-	m_pEventCallback = new CPxEventCallback;
-	m_pContactCallback = new CPxContactCallback;
 
 	PxSceneDesc SceneDesc(m_pPhysics->getTolerancesScale());
 	SceneDesc.gravity = PxVec3(0.f, -GRAVITY, 0.f);
 	SceneDesc.cpuDispatcher = m_pDispatcher;
 	SceneDesc.filterShader = FilterShader;
-	SceneDesc.simulationEventCallback = m_pEventCallback;
-	SceneDesc.contactModifyCallback = m_pContactCallback;
+	SceneDesc.simulationEventCallback = pEventCallback;
+	SceneDesc.contactModifyCallback = NULL;
 	SceneDesc.flags |= PxSceneFlag::eENABLE_KINEMATIC_STATIC_PAIRS;
 
 	m_pScene = m_pPhysics->createScene(SceneDesc);
@@ -237,8 +233,6 @@ void CPhysX::Free()
 	m_pScene->release();
 	m_pDispatcher->release();
 
-	Safe_Delete(m_pContactCallback);
-	Safe_Delete(m_pEventCallback);
 	PxCloseExtensions();
 
 	m_pCooking->release();

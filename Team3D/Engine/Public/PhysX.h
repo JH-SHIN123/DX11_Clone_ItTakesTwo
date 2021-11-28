@@ -15,7 +15,7 @@ public: /* Getter */
 	PxMaterial* Get_BaseMaterial() { return m_pMaterial; }
 
 public:
-	HRESULT Ready_PhysX();
+	HRESULT Ready_PhysX(PxSimulationEventCallback* pEventCallback);
 	_int	Tick();
 	/* For.Actor */
 	PxRigidStatic*	Create_StaticActor(PxTransform Transform, PxGeometry& Geometry);
@@ -39,8 +39,6 @@ private:
 	PxCooking*					m_pCooking = nullptr;
 	PxControllerManager*		m_pControllerManager = nullptr;
 	PxMaterial*					m_pMaterial = nullptr;
-	class CPxEventCallback*		m_pEventCallback = nullptr;
-	class CPxContactCallback*	m_pContactCallback = nullptr;
 private:
 	void Set_TriggerOption(PxRigidActor* pActor);
 	void Set_ShapeOption(PxRigidActor* pActor, _float fContactOffset, _float fRestOffset);
