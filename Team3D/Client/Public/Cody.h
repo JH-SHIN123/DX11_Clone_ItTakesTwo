@@ -389,6 +389,9 @@ private:
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);
+
+
+	_bool m_bPinball = false;
 #pragma endregion
 
 };

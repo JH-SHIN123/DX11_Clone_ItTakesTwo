@@ -11,6 +11,11 @@ CPinBall::CPinBall(const CPinBall & rhs)
 {
 }
 
+void CPinBall::StartGame()
+{
+	m_IsStartGame = true;
+}
+
 HRESULT CPinBall::NativeConstruct_Prototype()
 {
 	CDynamic_Env::NativeConstruct_Prototype();
@@ -25,10 +30,12 @@ HRESULT CPinBall::NativeConstruct(void * pArg)
 	m_UserData.eID = GameID::ePinBall;
 	m_UserData.pGameObject = this;
 
+	PxGeometry* geom = new PxSphereGeometry(0.5f);
+
 	CDynamicActor::ARG_DESC tDynamicActorArg;
 	tDynamicActorArg.pTransform = m_pTransformCom;
 	tDynamicActorArg.fDensity = 1.f;
-	tDynamicActorArg.pGeometry = &PxSphereGeometry(1.f);
+	tDynamicActorArg.pGeometry = geom;
 	tDynamicActorArg.vVelocity = PxVec3(0.f, 0.f, 0.f);
 	tDynamicActorArg.pUserData = &m_UserData;
 
@@ -36,12 +43,10 @@ HRESULT CPinBall::NativeConstruct(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->setLinearDamping(10.f);
 	m_pDynamicActorCom->Get_Actor()->setAngularDamping(5.f);
 
-	CTriggerActor::ARG_DESC tTriggerActorArg;
-	tTriggerActorArg.pTransform = m_pTransformCom;
-	tTriggerActorArg.pGeometry = &PxSphereGeometry(1.5f);
-	tTriggerActorArg.pUserData = &m_UserData;
+	Safe_Delete(geom);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerActorArg), E_FAIL);
+	CDataStorage::GetInstance()->Set_Pinball(this);
+	XMStoreFloat3(&m_RespawnPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	return S_OK;
 }
@@ -50,9 +55,18 @@ _int CPinBall::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
+	//if (m_pGameInstance->Key_Down(DIK_G))
+	//{
+	//	_vector vScale, vRotQuat, vPosition;
+	//	XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, m_pTransformCom->Get_WorldMatrix());
+	//	//vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.1f);
+	//	//vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) + 0.1f);
+
+	//	(m_pDynamicActorCom->Get_Actor())->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
+	//	m_IsStartGame = true;
+	//}
+
 	MoveMent();
-	m_pDynamicActorCom->Update_DynamicActor();
-	m_pTriggerActorCom->Update_TriggerActor();
 
 	return NO_EVENT;
 }
@@ -96,16 +110,37 @@ void CPinBall::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObjec
 
 void CPinBall::MoveMent()
 {
-	m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(20.f, 0.f, 0.f));
+	if (false == m_IsStartGame)
+		return;
+
+	m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(-20.f, 0.f, 0.f));
+	m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(0.f, 0.f, -5.f));
 
 	if (m_pGameInstance->Key_Pressing(DIK_LEFT))
 		m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(-5.f, 0.f, 0.f));
 	if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
 		m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(5.f, 0.f, 0.f));
-	if (m_pGameInstance->Key_Pressing(DIK_UP))
-		m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(0.f, 0.f, 5.f));
-	if (m_pGameInstance->Key_Pressing(DIK_DOWN))
-		m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(0.f, 0.f, -5.f));
+
+	m_pDynamicActorCom->Update_DynamicActor();
+}
+
+void CPinBall::PlayerMove()
+{
+	_vector vScale, vRotQuat, vPosition;
+	XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, m_pTransformCom->Get_WorldMatrix());
+
+	_float fX = XMVectorGetX(CDataStorage::GetInstance()->GetCody()->Get_Position()) + 1.f;
+	vPosition = XMVectorSetX(vPosition, fX);
+	(m_pDynamicActorCom->Get_Actor())->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
+	m_pDynamicActorCom->Update_DynamicActor();
+}
+
+void CPinBall::Respawn()
+{
+	_vector vPos = XMLoadFloat3(&m_RespawnPos);
+	vPos = XMVectorSetW(vPos, 1.f);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 }
 
 CPinBall * CPinBall::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -134,7 +169,6 @@ CGameObject * CPinBall::Clone_GameObject(void * pArg)
 
 void CPinBall::Free()
 {
-	Safe_Release(m_pTriggerActorCom);
 	Safe_Release(m_pDynamicActorCom);
 
 	CDynamic_Env::Free();

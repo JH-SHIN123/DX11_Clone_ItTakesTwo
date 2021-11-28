@@ -8,6 +8,7 @@
 
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
+#include "PinBall_Handle.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -146,6 +147,22 @@ _int CCody::Tick(_double dTimeDelta)
 	m_pCamera = (CMainCamera*)CDataStorage::GetInstance()->Get_MainCam();
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
+
+	if (m_pGameInstance->Key_Down(DIK_G))
+	{
+		if (false == m_bPinball)
+		{
+			m_bPinball = true;
+			((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_Ready(true);
+		}
+		else
+		{
+			m_bPinball = false;
+			((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_Ready(false);
+			((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
+			((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_RespawnAngle(true);
+		}
+	}
 
 #pragma region BasicActions
 	/////////////////////////////////////////////
@@ -1172,6 +1189,8 @@ void CCody::Change_Size(const _double dTimeDelta)
 		else if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_SMALL)
 		{
 			m_pActorCom->Set_Scale(0.05f, 0.05f);
+			m_pActorCom->Get_Controller()->setSlopeLimit(0.02f);
+			m_pActorCom->Get_Controller()->setStepOffset(0.02f);
 			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_SMALL);
 
 			if (m_vScale.x > 0.5f)
@@ -1192,6 +1211,8 @@ void CCody::Change_Size(const _double dTimeDelta)
 		else if (m_eCurPlayerSize == SIZE_SMALL && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
 			m_pActorCom->Set_Scale(0.5f, 0.5f);
+			m_pActorCom->Get_Controller()->setSlopeLimit(0.5f);
+			m_pActorCom->Get_Controller()->setStepOffset(0.707f);
 			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_SMALL_MIDDLE);
 
 			if (m_vScale.x < 1.f)

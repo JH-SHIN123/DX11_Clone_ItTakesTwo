@@ -10,6 +10,9 @@ private:
 	virtual ~CPinBall() = default;
 
 public:
+	void StartGame();
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double dTimeDelta) override;
@@ -22,10 +25,14 @@ public:
 
 private:
 	CDynamicActor*		m_pDynamicActorCom = nullptr;
-	CTriggerActor*		m_pTriggerActorCom = nullptr;
 
-private:
+	_bool				m_IsStartGame = false;
+	_float3				m_RespawnPos;
+
+public:
 	void MoveMent();
+	void PlayerMove();
+	void Respawn();
 
 public:
 	static CPinBall* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -23,6 +23,12 @@ public:
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 
+	_bool			m_bReady = false;
+	_float			m_fAngle = 0.f;
+
+private:
+	void MoveMent(_double dTimeDelta);
+
 public:
 	static CPinBall_BallDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

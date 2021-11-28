@@ -30,7 +30,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);
 	/* Jung */
 	/* Hye */
-	FAILED_CHECK_RETURN(Ready_Layer_PinBall(TEXT("Layer_PinBall")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_PinBall(TEXT("Layer_PinBall")), E_FAIL);
 	/* Won */
 	FAILED_CHECK_RETURN(Ready_Layer_ToyBoxButton(TEXT("Layer_ToyBoxButton")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboonCore(TEXT("Layer_MoonBaboonCore")), E_FAIL);

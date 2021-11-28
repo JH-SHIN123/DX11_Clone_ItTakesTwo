@@ -13,14 +13,14 @@ CPinBall_BallDoor::CPinBall_BallDoor(const CPinBall_BallDoor & rhs)
 
 HRESULT CPinBall_BallDoor::NativeConstruct_Prototype()
 {
-	CGameObject::NativeConstruct_Prototype();
+	CDynamic_Env::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
 HRESULT CPinBall_BallDoor::NativeConstruct(void * pArg)
 {
-	CGameObject::NativeConstruct(pArg);
+	CDynamic_Env::NativeConstruct(pArg);
 
 	m_UserData.eID = GameID::eBlocked;
 	m_UserData.pGameObject = this;
@@ -30,20 +30,28 @@ HRESULT CPinBall_BallDoor::NativeConstruct(void * pArg)
 	tStaticActorArg.pModel = m_pModelCom;
 	tStaticActorArg.pUserData = &m_UserData;
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
 	return S_OK;
 }
 
 _int CPinBall_BallDoor::Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CDynamic_Env::Tick(dTimeDelta);
+
+
+	//if (m_pGameInstance->Key_Down(DIK_G))
+	//{
+	//	m_bReady = true;
+	//}
+
+	//MoveMent(dTimeDelta);
 
 	return NO_EVENT;
 }
 
 _int CPinBall_BallDoor::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Late_Tick(dTimeDelta);
+	CDynamic_Env::Late_Tick(dTimeDelta);
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -53,7 +61,7 @@ _int CPinBall_BallDoor::Late_Tick(_double dTimeDelta)
 
 HRESULT CPinBall_BallDoor::Render(RENDER_GROUP::Enum eGroup)
 {
-	CGameObject::Render(eGroup);
+	CDynamic_Env::Render(eGroup);
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
@@ -64,7 +72,7 @@ HRESULT CPinBall_BallDoor::Render(RENDER_GROUP::Enum eGroup)
 
 HRESULT CPinBall_BallDoor::Render_ShadowDepth()
 {
-	CGameObject::Render_ShadowDepth();
+	CDynamic_Env::Render_ShadowDepth();
 
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
@@ -76,6 +84,24 @@ HRESULT CPinBall_BallDoor::Render_ShadowDepth()
 
 void CPinBall_BallDoor::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+}
+
+void CPinBall_BallDoor::MoveMent(_double dTimeDelta)
+{
+	if (false == m_bReady)
+		return;
+
+	_float	fAngle = 100.f * (_float)dTimeDelta;
+	m_fAngle += fAngle;
+
+	if (m_fAngle >= 100.f)
+	{
+		m_bReady = false;
+	}
+	
+	m_pTransformCom->RotatePitch_Angle(dTimeDelta, 100.f);
+
+	m_pStaticActorCom->Update_StaticActor();
 }
 
 CPinBall_BallDoor * CPinBall_BallDoor::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -106,5 +132,5 @@ void CPinBall_BallDoor::Free()
 {
 	Safe_Release(m_pStaticActorCom);
 
-	CGameObject::Free();
+	CDynamic_Env::Free();
 }

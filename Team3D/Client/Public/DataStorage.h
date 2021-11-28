@@ -47,6 +47,18 @@ public:
 	void Set_ValveCount(_uint _iValveRotateCount) { m_iValveRotateCount += _iValveRotateCount; }
 	void Set_ValveTarget(_uint _iValveTarget) { m_iValveTarget = _iValveTarget; }
 	_uint Get_ValveCount() { return m_iValveRotateCount; }
+	
+	void Set_Pinball(CGameObject* pPinball) { m_pPinball = pPinball; }
+	CGameObject* Get_Pinball() { return m_pPinball; }
+
+	void Set_Pinball_Handle(CGameObject* pPinball_Handle) { m_pPinball_Handle = pPinball_Handle; }
+	CGameObject* Get_Pinball_Handle() { return m_pPinball_Handle; }
+
+	void Set_Pinball_HandleBase(CGameObject* pPinball_HandleBase) { m_pPinball_HandleBase = pPinball_HandleBase; }
+	CGameObject* Get_Pinball_HandleBase() { return m_pPinball_HandleBase; }
+
+	void Set_Pinball_Spring(CGameObject* pPinball_Spring) { m_pPinball_Spring = pPinball_Spring; }
+	CGameObject* Get_Pinball_Spring() { return m_pPinball_Spring; }
 
 
 private:
@@ -64,6 +76,11 @@ private:
 	CGameObject* m_pRobotBattery = nullptr;
 	CGameObject* m_pRobotHead = nullptr;
 	CGameObject* m_pNoBatterySign = nullptr;
+
+	CGameObject* m_pPinball = nullptr;
+	CGameObject* m_pPinball_Handle = nullptr;
+	CGameObject* m_pPinball_HandleBase = nullptr;
+	CGameObject* m_pPinball_Spring = nullptr;
 
 private:
 	/* For.Valve */

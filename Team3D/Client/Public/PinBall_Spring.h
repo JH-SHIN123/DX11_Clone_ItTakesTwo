@@ -22,6 +22,11 @@ public:
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
+	_float			m_fRespawnPosX = 0.f;
+
+public:
+	void PlayerMove();
+	void Respawn_Pos(_double dTimeDelta);
 
 public:
 	static CPinBall_Spring* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

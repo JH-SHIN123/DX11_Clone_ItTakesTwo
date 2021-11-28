@@ -10,6 +10,9 @@ private:
 	virtual ~CPInBall_Blocked() = default;
 
 public:
+	void Switching();
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double dTimeDelta) override;
@@ -22,6 +25,13 @@ public:
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
+
+	static _bool	m_IsSwitching;
+	static _float	m_fUpPosY;
+	static _float	m_fDownPosY;
+
+private:
+	void Movement(_double dTimeDelta);
 
 public:
 	static CPInBall_Blocked* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
