@@ -24,23 +24,7 @@ HRESULT CStatic_Env::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	if (nullptr != pArg)
-		memcpy(&m_Static_Env_Desc, pArg, sizeof(STATIC_ENV_DESC));
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_Static_Env_Desc.szModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-
-	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_Static_Env_Desc.WorldMatrix));
-	m_UserData.eID = m_Static_Env_Desc.eGameID;
-	m_UserData.pGameObject = this;
-
-	CStaticActor::ARG_DESC tArg;
-	tArg.pModel = m_pModelCom;
-	tArg.pTransform = m_pTransformCom;
-	tArg.pUserData = &m_UserData;
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
 	Set_MeshRenderGroup();
 
@@ -71,6 +55,7 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
+	m_pModelCom->Render_Model(1, m_Static_Env_Desc.iMaterialIndex);
 
 	_uint iMaterialIndex = 0;
 	if (!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_01"), m_Static_Env_Desc.szModelTag))
@@ -136,7 +121,30 @@ HRESULT CStatic_Env::Render_ShadowDepth()
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 	// Skinned: 2 / Normal: 3
-	m_pModelCom->Render_Model(3, 0, true);
+	m_pModelCom->Render_Model(3, m_Static_Env_Desc.iMaterialIndex, true);
+
+	return S_OK;
+}
+
+HRESULT CStatic_Env::Ready_Component(void * pArg)
+{
+	if (nullptr != pArg)
+		memcpy(&m_Static_Env_Desc, pArg, sizeof(ARG_DESC));
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_Static_Env_Desc.szModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_Static_Env_Desc.WorldMatrix));
+	m_UserData.eID = m_Static_Env_Desc.eGameID;
+	m_UserData.pGameObject = this;
+
+	CStaticActor::ARG_DESC tArg;
+	tArg.pModel = m_pModelCom;
+	tArg.pTransform = m_pTransformCom;
+	tArg.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
 
 	return S_OK;
 }

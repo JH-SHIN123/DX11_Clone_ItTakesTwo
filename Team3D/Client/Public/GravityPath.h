@@ -31,11 +31,12 @@ public:
 
 private:
 	/* For.Component */
-	CTransform*		m_pTransformCom = nullptr;
-	CRenderer*		m_pRendererCom = nullptr;
-	CModel*			m_pModelCom = nullptr;
-	CStaticActor*	m_pStaticActorCom = nullptr;
-	STATIC_ENV_DESC	m_Static_Env_Desc;
+	CTransform*				m_pTransformCom = nullptr;
+	CRenderer*				m_pRendererCom = nullptr;
+	CModel*					m_pModelCom = nullptr;
+	class CSepdStaticActor*	m_pStaticActorCom = nullptr;
+	STATIC_ENV_DESC			m_Static_Env_Desc;
+	USERDATA*				m_arrUserData = nullptr;
 
 public:
 	static CGravityPath* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

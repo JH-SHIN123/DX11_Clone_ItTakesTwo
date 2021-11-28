@@ -53,12 +53,9 @@ HRESULT CLevel_Stage::NativeConstruct()
 	/* Jin */
 	/* Jun */
 
-	///* For. Environment */
-	//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space(), E_FAIL);
-	//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space_Boss(), E_FAIL);
-	//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Interactive_Instancing(), E_FAIL);
+	/* For. Environment */
+	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Stage_Space(), E_FAIL);
 #endif
-
 
 	return S_OK;
 }

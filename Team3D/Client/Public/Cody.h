@@ -274,7 +274,7 @@ private:
 	_bool m_IsJumping = false;
 	_bool m_IsAirDash = false;
 	_bool m_IsFalling = false;
-	_bool	m_bFallAniOnce = false;
+	_bool m_bFallAniOnce = false;
 
 	_float3 m_vMoveDirection = {};
 	_int m_iSavedKeyPress = 0;
@@ -282,7 +282,7 @@ private:
 
 	// 움직임 가속
 	_float m_fAcceleration = 5.0;
-	_float	m_fJogAcceleration = 25.f;
+	_float m_fJogAcceleration = 25.f;
 	_float m_fSprintAcceleration = 35.f;
 	_float m_fGroundPoundAirDelay = 0.f; // 체공시간.
 
@@ -322,14 +322,20 @@ public:
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
 	_float3				m_vTriggerTargetPos = {};
+
 	_bool m_IsCollide = false;
-
-
-	_bool m_IsOnGrind = false;\
+	_bool m_IsOnGrind = false;
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
 	_bool m_IsPushingBattery = false;
+
+	/* 혜원::For.DeadLine, SavePoint */
+	_bool	 m_IsDeadLine = false;
+	_bool	 m_IsSavePoint = false;
+	_float3  m_vSavePoint = {};
+	_float	 m_fDeadTime = 0.f;
+	_float3	 m_DeadLinePos = {};
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
@@ -378,6 +384,8 @@ private:
 	void In_GravityPipe(const _double dTimeDelta);
 	void Hit_Planet(const _double dTimeDelta);
 	void Hook_UFO(const _double dTimeDelta);
+	/* 혜원::For.DeadLine, SavePoint */
+	void Falling_Dead(const _double dTimeDelta);
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);
