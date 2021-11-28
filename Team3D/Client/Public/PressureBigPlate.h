@@ -38,6 +38,7 @@ private:
 	_float										m_fMove = 0.f;
 	_float										m_fActiveMove = 0.f;
 	_float										m_fWaitingTime = 0.f;
+	_uint										m_iOption = 0;
 
 
 private:
@@ -56,7 +57,7 @@ protected:
 
 private:
 	void SetUp_DefaultPositionSetting();
-	void Button_Active(_double TimeDelta);
+	void RotationButton_Active(_double TimeDelta);
 	void Check_Collision_PlayerAnim();
 
 private:

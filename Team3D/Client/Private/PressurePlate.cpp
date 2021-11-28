@@ -36,9 +36,17 @@ HRESULT CPressurePlate::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_PressurePlate"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	if (0 == m_iOption)
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-3.f, 0.f, -1.f, 1.f));
+	{
+		/* 테스트 */
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-3.f, 0.f, -1.f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(55.1267f, 218.752f, 217.445f, 1.f));
+	}
 	else if (1 == m_iOption)
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(3.f, 0.f, -1.f, 1.f));
+	{
+		/* 테스트 */
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(3.f, 0.f, -1.f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(72.2947f, 218.752f, 227.324f, 1.f));
+	}
 
 	FAILED_CHECK_RETURN(Ready_Layer_PipeCurve(TEXT("Layer_PipeCurve")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_PlateFrame(TEXT("Layer_PressurePlateFrame")), E_FAIL);
@@ -157,22 +165,37 @@ void CPressurePlate::Set_PipeCurveRotate(_bool IsCheck)
 
 void CPressurePlate::SetUp_DefaultPositionSetting()
 {
-	if (nullptr == m_pPressurePlateFrame || nullptr == m_pPipeCurve || 
+	if (nullptr == m_pPressurePlateFrame || nullptr == m_pPipeCurve ||
 		nullptr == m_pSupportFrame || true == m_vecPressurePlateLock.empty())
 		return;
-		
+
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_float4 vConvertPos;
-	XMStoreFloat4(&vConvertPos, vPos);
 
+
+	if (0 == m_iOption)
+	{
+		//XMStoreFloat4(&vConvertPos, vPos);
+		//vConvertPos.y -= 4.f;
+		//m_pSupportFrame->Set_Position(XMLoadFloat4(&vConvertPos));
+		_vector vObjectPos = { 55.1267f, 215.752f, 217.445f, 1.f };
+		m_pSupportFrame->Set_Position(vObjectPos);
+
+		vObjectPos = { 55.8f, 216.152f, 217.446f, 1.f };
+		m_pPipeCurve->Set_Position(vObjectPos);
+	}
+	else if (1 == m_iOption)
+	{
+		_vector vObjectPos = { 72.2947f, 215.552f, 227.324f, 1.f };
+		m_pSupportFrame->Set_Position(vObjectPos);
+
+		vObjectPos = { 72.f, 216.152f, 227.324f, 1.f };
+		m_pPipeCurve->Set_Position(vObjectPos);
+	}
+
+	XMStoreFloat4(&vConvertPos, vPos);
 	vConvertPos.y -= 0.1f;
 	m_pPressurePlateFrame->Set_Position(XMLoadFloat4(&vConvertPos));
-
-	vConvertPos.y -= 1.f;
-	m_pPipeCurve->Set_Position(XMLoadFloat4(&vConvertPos));
-
-	vConvertPos.y -= 2.f;
-	m_pSupportFrame->Set_Position(XMLoadFloat4(&vConvertPos));
 
 	XMStoreFloat4(&vConvertPos, vPos);
 	vConvertPos.x += 1.f;

@@ -28,17 +28,36 @@ HRESULT CPressureBigPlate::NativeConstruct_Prototype()
 HRESULT CPressureBigPlate::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
+
+	if (nullptr != pArg)
+		memcpy(&m_iOption, pArg, sizeof(_uint));
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_PressurePlate"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Layer_Plate(TEXT("Layer_PressurePlate"), 2), E_FAIL);
+	/* Option 0 : 파이프 회전 시키는 버튼 / Option 1 : 전력 연결시키는 버튼 */
+	if (0 == m_iOption)
+	{
+		/* 테스트 용 */
+		//FAILED_CHECK_RETURN(Ready_Layer_Plate(TEXT("Layer_PressurePlate"), 2), E_FAIL);
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 1.f, -3.f, 1.f));
+
+		FAILED_CHECK_RETURN(Ready_Layer_Plate(TEXT("Layer_PressurePlate"), 2), E_FAIL);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(63.7634f, 219.8f, 210.848f, 1.f));
+	}
+	else if (1 == m_iOption)
+	{
+		/* 테스트 용 */
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.4f, -3.f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(81.101f, 219.f, 217.141f, 1.f));
+	}
+
 	FAILED_CHECK_RETURN(Ready_Layer_PlateLock(TEXT("Layer_PressurePlateLock")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_PlateFrame(TEXT("Layer_PressurePlateFrame")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_SupportFrame(TEXT("Layer_SupportFrame")), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 1.f, -3.f, 1.f));
+
 	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
 
 	CStaticActor::ARG_DESC ArgDesc;
@@ -69,7 +88,10 @@ _int CPressureBigPlate::Tick(_double dTimeDelta)
 
 	m_pTriggerCom->Update_TriggerActor();
 
-	Button_Active(dTimeDelta);
+	if(0 == m_iOption)
+		RotationButton_Active(dTimeDelta);
+
+
 
 	return NO_EVENT;
 }
@@ -97,30 +119,37 @@ HRESULT CPressureBigPlate::Render(RENDER_GROUP::Enum eGroup)
 
 void CPressureBigPlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	if (0 == m_iOption)
 	{
-		m_fMove = 0.f;
-		m_IsCollision = true;
+		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+		{
+			m_fMove = 0.f;
+			m_IsCollision = true;
 
-		Check_Collision_PlayerAnim();
-	}
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-	{
-		m_IsCollision = false;
-		m_IsButtonActive = false;
-	}
+			Check_Collision_PlayerAnim();
+		}
+		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+		{
+			m_IsCollision = false;
+			m_IsButtonActive = false;
+		}
 
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
-	{
-		m_fMove = 0.f;
-		m_IsCollision = true;
+		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+		{
+			m_fMove = 0.f;
+			m_IsCollision = true;
 
-		Check_Collision_PlayerAnim();
+			Check_Collision_PlayerAnim();
+		}
+		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+		{
+			m_IsCollision = false;
+			m_IsButtonActive = false;
+		}
 	}
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+	else if (1 == m_iOption)
 	{
-		m_IsCollision = false;
-		m_IsButtonActive = false;
+
 	}
 }
 
@@ -155,20 +184,43 @@ void CPressureBigPlate::SetUp_DefaultPositionSetting()
 	NULL_CHECK(m_pTransformCom);
 
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vObjectPos;
 	_float4 vConvertPos;
-	XMStoreFloat4(&vConvertPos, vPos);
 
+	if (0 == m_iOption)
+	{
+		//XMStoreFloat4(&vConvertPos, vPos);
+
+		//vConvertPos.y -= 1.2f;
+		//m_pSupportFrame->Set_Position(XMLoadFloat4(&vConvertPos));
+
+		vObjectPos = { 63.7634f, 218.987f, 210.838f, 1.f };
+		m_pPlateFrame->Set_Position(vObjectPos);
+
+		vObjectPos = { 63.7545f, 218.652f, 210.848f, 1.f };
+		m_pSupportFrame->Set_Position(vObjectPos);
+
+	}
+	else if (1 == m_iOption)
+	{
+		vObjectPos = { 81.1f, 219.f, 217.15f, 1.f };
+		m_pPlateFrame->Set_Position(vObjectPos);
+
+		vObjectPos = { 81.101f, 218.652f, 217.141f, 1.f };
+		m_pSupportFrame->Set_Position(vObjectPos);
+	}
+
+	//XMStoreFloat4(&vConvertPos, vPos);
+	//vConvertPos.y -= 0.4f;
+	//m_pPlateFrame->Set_Position(XMLoadFloat4(&vConvertPos));
+
+	XMStoreFloat4(&vConvertPos, vPos);
 	vConvertPos.y -= 0.1f;
 	m_pPlateLock->Set_Position(XMLoadFloat4(&vConvertPos));
 
-	vConvertPos.y = 0.4f;
-	m_pPlateFrame->Set_Position(XMLoadFloat4(&vConvertPos));
-
-	vConvertPos.y = 0.f;
-	m_pSupportFrame->Set_Position(XMLoadFloat4(&vConvertPos));
 }
 
-void CPressureBigPlate::Button_Active(_double TimeDelta)
+void CPressureBigPlate::RotationButton_Active(_double TimeDelta)
 {
 	/* 그냥 점프만 해서 올라 탔을 때*/
 	if (false == m_IsButtonActive && true == m_IsCollision)

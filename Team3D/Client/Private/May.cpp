@@ -247,6 +247,7 @@ void CMay::KeyInput(_double dTimeDelta)
 
 #pragma endregion
 
+
 #pragma region 8Way_Move
 
 	if (m_IsAirDash == false)
@@ -484,6 +485,9 @@ void CMay::KeyInputTest(_double dTimeDelta)
 	_bool bRoll = false;
 
 #pragma endregion
+
+	if (m_pGameInstance->Key_Down(DIK_Y))/* 3Ãþ */
+		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
 
 #pragma region 8Way_Move
 
