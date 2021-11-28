@@ -28,17 +28,17 @@ HRESULT CToyBoxButton::NativeConstruct_Prototype()
 
 HRESULT CToyBoxButton::NativeConstruct(void* pArg)
 {
-	CGameObject::NativeConstruct(pArg);
+	if (nullptr != pArg)
+		memcpy(&m_tDesc, pArg, sizeof(m_tDesc));
 
+	CGameObject::NativeConstruct(nullptr);
+	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(2.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_ToyBox09_Stars"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	
-	// TEST
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f,0.f, 5.f, 1.f));
-	//m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f));
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_tDesc.WorldMatrix));
 
-	m_pTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 	m_UserData.eID = GameID::eENVIRONMENT;
 	m_UserData.pGameObject = this;
 
