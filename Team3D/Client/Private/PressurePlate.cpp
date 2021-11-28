@@ -148,6 +148,13 @@ void CPressurePlate::Set_Position(_vector vPosition)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
+void CPressurePlate::Set_PipeCurveRotate(_bool IsCheck)
+{
+	NULL_CHECK(m_pPipeCurve);
+
+	m_pPipeCurve->Set_Rotate(IsCheck);
+}
+
 void CPressurePlate::SetUp_DefaultPositionSetting()
 {
 	if (nullptr == m_pPressurePlateFrame || nullptr == m_pPipeCurve || 

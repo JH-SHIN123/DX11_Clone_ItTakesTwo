@@ -24,6 +24,7 @@ public:
 
 public:
 	void Set_Position(_vector vPosition);
+	void Set_PipeCurveRotate(_bool IsCheck);
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;

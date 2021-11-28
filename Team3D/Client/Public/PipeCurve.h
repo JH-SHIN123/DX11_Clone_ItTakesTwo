@@ -23,22 +23,19 @@ public:
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 public:
 	void Set_Position(_vector vPosition);
+	void Set_Rotate(_bool IsCheck);
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
-	void Set_BatteryCharged(_bool _bBatteryCharged) { m_bBatteryCharged = _bBatteryCharged; }
 
 private:
-	_bool		m_bRotate = false;
-	_bool		m_IsCollide = false;
-	_bool		m_bBatteryCharged = false;
-	_bool		m_bUpdate = true;
-	_float		m_fStopDelay = 0.f;
+	_bool				m_IsRotate = false;
+	_float				m_fAngle = 0.f;
+	_float				m_fAngleIncreaseLimit = 0.f;
 
-	_bool		m_bNoBatteryHit = false;
 
 protected:
 	/* For.Component */
@@ -46,7 +43,6 @@ protected:
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 	CStaticActor*		m_pStaticActorCom = nullptr;
-	CTriggerActor*		m_pTriggerCom = nullptr;
 
 public:
 	static CPipeCurve* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

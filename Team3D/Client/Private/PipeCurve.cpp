@@ -29,24 +29,12 @@ HRESULT CPipeCurve::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_PipeCurve"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(20.f, 0.f, 0.f, 1.f));
-	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
 
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
 	ArgDesc.pTransform = m_pTransformCom;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
-
-	CTriggerActor::ARG_DESC TriggerArgDesc;
-
-	TriggerArgDesc.pUserData = &m_UserData;
-	TriggerArgDesc.pTransform = m_pTransformCom;
-	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.7f);
-	m_UserData = USERDATA(GameID::ePIPECURVE, this);
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
-	Safe_Delete(TriggerArgDesc.pGeometry);
-	//DATABASE->Set_PipeCurvePtr(this);
 
 	return S_OK;
 }
@@ -55,21 +43,48 @@ _int CPipeCurve::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	//if (m_bUpdate == true)
-	//{
-	//	if (m_IsCollide && m_pGameInstance->Key_Down(DIK_E))
-	//	{
-	//		UI_Delete(Cody, InputButton_InterActive);
-	//		UI_Delete(May, InputButton_InterActive);
-	//		m_IsCollide = false;
-	//		m_bRotate = true;
-	//	}
+	_float fRotateMaxAngle = 90.f;
 
-	//	if (m_bRotate == true)
-	//	{
-	//		Activate_Lever(dTimeDelta);
-	//	}
-	//}
+	if (true == m_IsRotate)
+	{
+
+		//_matrix matWorld, matScale, matRotateY, matTrans;
+		//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		//_float3 vConvertPos;
+		//XMStoreFloat3(&vConvertPos, vPos);
+
+		//_float fScaleX = m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
+		//_float fScaleY = m_pTransformCom->Get_Scale(CTransform::STATE_UP);
+		//_float fScaleZ = m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
+
+		m_fAngle += (_float)dTimeDelta * 100.f;
+		m_fAngleIncreaseLimit += (_float)dTimeDelta * 100.f;
+
+		if (fRotateMaxAngle <= m_fAngleIncreaseLimit)
+		{
+			_float fAngleDifference = m_fAngleIncreaseLimit - fRotateMaxAngle;
+			m_fAngle -= fAngleDifference;
+			m_IsRotate = false;
+		}
+
+
+		//matScale = XMMatrixScaling(fScaleX, fScaleY, fScaleZ);
+		//matTrans = XMMatrixTranslation(vConvertPos.x + 1.f, vConvertPos.y, vConvertPos.z);
+		//matRotateY = XMMatrixRotationY(m_fAngle);
+		//matWorld = matScale *  matRotateY * matTrans;
+
+		//XMStoreFloat3(&vConvertPos, vPos);
+		//matWorld.r[3].m128_f32[0] = vConvertPos.x;
+		//matWorld.r[3].m128_f32[1] = vConvertPos.y;
+		//matWorld.r[3].m128_f32[2] = vConvertPos.z;
+
+		//m_pTransformCom->Set_WorldMatrix(matWorld);
+
+		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
+
+	}
+	else
+		m_fAngleIncreaseLimit = 0.f;
 
 	return NO_EVENT;
 }
@@ -97,42 +112,16 @@ HRESULT CPipeCurve::Render(RENDER_GROUP::Enum eGroup)
 
 void CPipeCurve::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	//// Cody
-	//if (m_bUpdate == true)
-	//{
-	//	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-	//	{
-	//		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePIPECURVE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	//		UI_Create(Cody, InputButton_InterActive);
-	//		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	//		m_IsCollide = true;
-	//	}
-	//	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-	//	{
-	//		m_IsCollide = false;
-	//		UI_Delete(Cody, InputButton_InterActive);
-	//	}
-
-	//	// May
-
-	//	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
-	//	{
-	//		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::ePIPECURVE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	//		UI_Create(May, InputButton_InterActive);
-	//		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	//		m_IsCollide = true;
-	//	}
-	//	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-	//	{
-	//		m_IsCollide = false;
-	//		UI_Delete(May, InputButton_InterActive);
-	//	}
-	//}
 }
 
 void CPipeCurve::Set_Position(_vector vPosition)
 {
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+}
+
+void CPipeCurve::Set_Rotate(_bool IsCheck)
+{
+	m_IsRotate = IsCheck;
 }
 
 HRESULT CPipeCurve::Render_ShadowDepth()
@@ -175,7 +164,6 @@ CGameObject * CPipeCurve::Clone_GameObject(void * pArg)
 
 void CPipeCurve::Free()
 {
-	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);

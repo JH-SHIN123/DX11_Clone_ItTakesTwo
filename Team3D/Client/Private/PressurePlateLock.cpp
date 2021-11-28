@@ -119,6 +119,9 @@ HRESULT CPressurePlateLock::Render_ShadowDepth()
 
 void CPressurePlateLock::LockActive(_double TimeDelta)
 {
+	if (2 == m_iOption)
+		return;
+
 	if (true == m_IsLockActive)
 	{
 		_float fMaxScale = 2.f;
@@ -170,7 +173,6 @@ void CPressurePlateLock::OptionSetting()
 	}
 	else if (2 == m_iOption)
 	{
-
 	}
 }
 

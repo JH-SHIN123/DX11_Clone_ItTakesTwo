@@ -51,7 +51,7 @@ HRESULT CPressureBigPlate::NativeConstruct(void * pArg)
 
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTransformCom;
-	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.7f);
+	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.0f);
 	m_UserData = USERDATA(GameID::ePRESSUREBIGPLATE, this);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
@@ -67,8 +67,7 @@ _int CPressureBigPlate::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	//Button_Active(dTimeDelta);
-
+	Button_Active(dTimeDelta);
 
 	return NO_EVENT;
 }
@@ -98,12 +97,31 @@ void CPressureBigPlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 {
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
+		m_IsCollision = true;
+
+		Check_Collision_PlayerAnim();
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
-		//d
+		m_IsCollision = false;
+		m_IsButtonActive = false;
 	}
 }
+
+void CPressureBigPlate::Check_Collision_PlayerAnim()
+{
+	if (m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land)
+	{
+		m_IsButtonActive = true;
+
+		for (auto pPlate : m_vecPressurePlate)
+			pPlate->Set_PipeCurveRotate(true);
+	}
+
+	if (m_IsCollision == true && (((CCody*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land)
+		m_IsButtonActive = true;
+}
+
 
 void CPressureBigPlate::SetUp_DefaultPositionSetting()
 {
@@ -116,7 +134,7 @@ void CPressureBigPlate::SetUp_DefaultPositionSetting()
 	vConvertPos.y -= 0.3f;
 	m_pPlateLock->Set_Position(XMLoadFloat4(&vConvertPos));
 
-	vConvertPos.y = 0.5f;
+	vConvertPos.y = 0.4f;
 	m_pPlateFrame->Set_Position(XMLoadFloat4(&vConvertPos));
 
 	vConvertPos.y = 0.f;
@@ -125,26 +143,51 @@ void CPressureBigPlate::SetUp_DefaultPositionSetting()
 
 void CPressureBigPlate::Button_Active(_double TimeDelta)
 {
-
-	if (true == m_IsButtonActive)
+	if (false == m_IsButtonActive)
 	{
-		if (0.3f > m_fMove)
+		if (true == m_IsCollision)
 		{
-			m_fMove += (_float)TimeDelta;
-			m_pTransformCom->Go_Down(TimeDelta * 0.2f);
+			if (0.3f > m_fMove)
+			{
+				m_fMove += (_float)TimeDelta;
+				m_pTransformCom->Go_Down(TimeDelta * 0.2f);
+			}
+			else
+				m_fMove = 0.3f;
 		}
-		else
-			m_fMove = 0.3f;
+		else if (false == m_IsCollision)
+		{
+			if (0.f < m_fMove)
+			{
+				m_fMove -= (_float)TimeDelta;
+				m_pTransformCom->Go_Up(TimeDelta * 0.2f);
+			}
+			else
+				m_fMove = 0.f;
+		}
 	}
-	else if (false == m_IsButtonActive)
+	else
 	{
-		if (0.f < m_fMove)
+		if (true == m_IsCollision)
 		{
-			m_fMove -= (_float)TimeDelta;
-			m_pTransformCom->Go_Up(TimeDelta * 0.2f);
+			if (0.8f > m_fMove)
+			{
+				m_fMove += (_float)TimeDelta;
+				m_pTransformCom->Go_Down(TimeDelta * 0.2f);
+			}
+			else
+				m_fMove = 0.8f;
 		}
-		else
-			m_fMove = 0.f;
+		else if (false == m_IsCollision)
+		{
+			if (0.f < m_fMove)
+			{
+				m_fMove -= (_float)TimeDelta;
+				m_pTransformCom->Go_Up(TimeDelta * 0.2f);
+			}
+			else
+				m_fMove = 0.f;
+		}
 	}
 
 	m_pStaticActorCom->Update_StaticActor();
@@ -187,7 +230,6 @@ HRESULT CPressureBigPlate::Ready_Layer_PlateFrame(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-
 HRESULT CPressureBigPlate::Ready_Layer_SupportFrame(const _tchar * pLayerTag)
 {
 	CGameObject* pGameObject = nullptr;
@@ -209,6 +251,7 @@ HRESULT CPressureBigPlate::Render_ShadowDepth()
 
 	return S_OK;
 }
+
 
 CPressureBigPlate * CPressureBigPlate::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

@@ -131,8 +131,6 @@ void CBigButton::Check_Collision_PlayerAnim()
 	{
 		m_bPressed = true;
 	}
-	
-
 }
 
 CBigButton * CBigButton::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

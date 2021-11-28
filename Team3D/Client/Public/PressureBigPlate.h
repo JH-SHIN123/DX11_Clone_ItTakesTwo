@@ -22,6 +22,7 @@ public:
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
+
 public:
 
 	virtual HRESULT Render_ShadowDepth() override;
@@ -31,6 +32,8 @@ public:
 
 private:
 	_bool										m_IsButtonActive = false;
+	_bool										m_IsPipeCurveRotate = false;
+	_bool										m_IsCollision = false;
 	_float										m_fMove = 0.f;
 
 private:
@@ -49,8 +52,8 @@ protected:
 
 private:
 	void SetUp_DefaultPositionSetting();
-	void SetUp_PlatePositionSetting();
 	void Button_Active(_double TimeDelta);
+	void Check_Collision_PlayerAnim();
 
 private:
 	HRESULT Ready_Layer_Plate(const _tchar * pLayerTag, _uint iCount);
