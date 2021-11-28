@@ -146,6 +146,8 @@ _int CMay::Tick(_double dTimeDelta)
 		Pull_VerticalDoor(dTimeDelta);
 		Rotate_Valve(dTimeDelta);
 		In_GravityPipe(dTimeDelta);
+		Warp_Wormhole(dTimeDelta);
+		Touch_FireDoor(dTimeDelta);
 	}
 	else
 	{
@@ -908,7 +910,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 	}
 
 	// Trigger ¿©µû°¡ ½Ï´Ù¸ð¾Æ~
-	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsWarpNextStage)
+	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe 
+		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor)
 		return true;
 
 	return false;
@@ -971,7 +974,6 @@ void CMay::Activate_RobotLever(const _double dTimeDelta)
 			m_IsActivateRobotLever = false;
 			m_IsCollide = false;
 		}
-
 	}
 }
 
@@ -1136,6 +1138,69 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_M_MH);
 		}
 	}
+}
+
+void CMay::Warp_Wormhole(const _double dTimeDelta)
+{
+	if (false == m_IsWarpNextStage && false == m_IsWarpDone)
+		return;
+
+	_float4 vWormhole = m_vWormholePos;
+	vWormhole.z -= 1.f;
+	m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat4(&vWormhole));
+
+	m_fWarpTimer += (_float)dTimeDelta;
+
+	if (true == m_IsWarpNextStage)
+	{
+		if (m_fWarpTimer_Max <= m_fWarpTimer)
+		{
+			m_IsWarpNextStage = false;
+
+			_vector vNextStage_Pos = XMLoadFloat3(&m_vTriggerTargetPos);
+			vNextStage_Pos.m128_f32[3] = 1.f;
+
+			m_pActorCom->Set_Position(vNextStage_Pos);
+
+			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+			_vector vTriggerPos = PortalMatrix.r[3];
+			_vector vLook = PortalMatrix.r[2];
+			vTriggerPos += vLook * 20.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+		}
+	}
+	else
+	{
+		_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+		_vector vTriggerPos = PortalMatrix.r[3];
+		_vector vLook = PortalMatrix.r[2];
+		vTriggerPos += vLook * 20.f;
+		m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+
+		// ½´·ç·è
+		if (m_fWarpTimer_Max + 0.25f >= m_fWarpTimer)
+		{
+			_vector vDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+			vDir = XMVector3Normalize(vDir);
+			m_pActorCom->Move(vDir, dTimeDelta * 0.4f);
+		}
+		else
+		{
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_IsWarpDone = false;
+		}
+	}
+}
+
+void CMay::Touch_FireDoor(const _double dTimeDelta)
+{
+	if (false == m_IsTouchFireDoor)
+		return;
+
+	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
+	m_IsTouchFireDoor = false;
+	m_IsCollide = false;
+	// Get¸®½ºÆù
 }
 
 

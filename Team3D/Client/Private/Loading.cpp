@@ -8,6 +8,7 @@
 /* Jung */
 #include "Effect_Generator.h"
 #include "WarpGate.h"
+#include "Boss_Missile.h"
 /* Hye */
 #include "Environment_Generator.h"
 /* Won */
@@ -457,6 +458,7 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Se()
 HRESULT CLoading::Create_GameObjects_SpaceStage_Jung()
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), CWarpGate::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), CBoss_Missile::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
 }

@@ -30,18 +30,19 @@ HRESULT CTutorialDoor::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(0.15f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_DoorWay"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform_Trigger"), (CComponent**)&m_pTransformCom_Trigger, &CTransform::TRANSFORM_DESC(0.15f, XMConvertToRadians(90.f))), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 0.7f, 36.15f, 1.f)); // º¯°æµÈ Pos
-	m_pTransformCom_Trigger = m_pTransformCom;
-	Safe_AddRef(m_pTransformCom_Trigger);
 	_vector vTriggerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//
+	vTriggerPos.m128_f32[1] += 11.f;
+	m_pTransformCom_Trigger->Set_State(CTransform::STATE_POSITION, vTriggerPos);
 	CTriggerActor::ARG_DESC ArgDesc;
+
 
 	m_UserData = USERDATA(GameID::eVERTICALDOOR, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom_Trigger;
-	ArgDesc.pGeometry = new PxSphereGeometry(1.f);
+	ArgDesc.pGeometry = new PxSphereGeometry(3.f);//1
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 
@@ -70,26 +71,28 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 	if (m_pGameInstance->Pad_Key_Down(DIP_RB) && m_IsCollide)
 	{
 		m_bPull = true;
+		m_IsNoGrab = false;
 		UI_Delete(May, InputButton_InterActive);
 	}
 
 	if (m_pGameInstance->Pad_Key_Down(DIP_LB) && m_IsCollide)
 	{
 		m_bPull = false;
+		m_IsNoGrab = true;
 	}
 
 	if (true == m_IsCollide)
 	{
-		if (m_bPull == false)
+		if (m_bPull == true)
 		{
 			m_IsPullMax = false;
 
 			m_fMoveDist -= (_float)dTimeDelta;
 			_float fMyPos_Y = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
-			if (1.f >= fMyPos_Y)
+			if (1.5f >= fMyPos_Y)
 			{
-				//			if (m_fMoveDist > 0.f)
 				m_pTransformCom->Go_Up(dTimeDelta);
+				m_pTransformCom_Trigger->Go_Up(dTimeDelta);
 				m_IsPullMax_Once = true;
 			}
 			else
@@ -101,36 +104,31 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 					m_pStaticActorCom->Update_StaticActor();
 				}
 			}
-		}
+		}		
+	}
 
-		else if (m_bPull == true)
+	if (m_IsNoGrab == true)
+	{
+		m_IsPullMax_Once = false;
+
+		m_fMoveDist += (_float)dTimeDelta;
+		_float fMyPos_Y = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
+
+		if (0.7f <= fMyPos_Y)
 		{
-			m_IsPullMax_Once = false;
-
-			m_fMoveDist += (_float)dTimeDelta;
-			_float fMyPos_Y = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
-
-			if (3.f >= fMyPos_Y)
+			m_pTransformCom->Go_Down(dTimeDelta);
+			m_pTransformCom_Trigger->Go_Down(dTimeDelta);
+			m_IsPullMax = true;
+		}
+		else
+		{
+			if (true == m_IsPullMax)
 			{
-				//			if (m_fMoveDist > 0.5f && m_fMoveDist < 0.7f)
-				m_pTransformCom->Go_Down(dTimeDelta);
-				m_IsPullMax = true;
+				m_pEffectFireDoor->Update_Trigger_Position();
+				m_pStaticActorCom->Update_StaticActor();
+				m_IsPullMax = false;
+				m_IsNoGrab = false;
 			}
-			else
-			{
-				if (true == m_IsPullMax)
-				{
-					m_pEffectFireDoor->Update_Trigger_Position();
-					m_pStaticActorCom->Update_StaticActor();
-					m_IsPullMax = false;
-				}
-			}
-
-			// 		if (0.698f <= m_fMoveDist && 0.7f > m_fMoveDist)
-			// 		{
-			// 			m_fMoveDist = 0.7001f;
-			// 		}
-
 		}
 	}
 
@@ -167,9 +165,9 @@ void CTutorialDoor::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 {
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eVERTICALDOOR, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eVERTICALDOOR, true, m_pTransformCom_Trigger->Get_State(CTransform::STATE_POSITION));
 		UI_Create(May, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom_Trigger->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
 		m_IsPullMax = true;
 	}
@@ -200,7 +198,7 @@ HRESULT CTutorialDoor::InterActive_UI()
 		if (UI_Generator->Get_EmptyCheck(Player::May, UI::InputButton_Dot))
 			UI_Create(May, InputButton_Dot);
 
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_Dot, m_pTransformCom_Trigger->Get_State(CTransform::STATE_POSITION));
 	}
 	else
 		UI_Delete(May, InputButton_Dot);

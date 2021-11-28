@@ -162,6 +162,7 @@ _int CCody::Tick(_double dTimeDelta)
 		Hit_Planet(dTimeDelta);
 		Hook_UFO(dTimeDelta);
 		Warp_Wormhole(dTimeDelta);
+		Touch_FireDoor(dTimeDelta);
 	}
 	else
 	{
@@ -1403,11 +1404,15 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_IsWarpNextStage	= true;
 			m_IsWarpDone		= true;
 		}
+		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
+		{
+			m_IsTouchFireDoor = true;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone)
+		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor)
 		return true;
 
 	return false;
@@ -1789,3 +1794,23 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 		}
 	}
 }
+
+void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
+{
+	if (false == m_IsTouchFireDoor)
+		return;
+
+	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
+	m_IsTouchFireDoor = false;
+	m_IsCollide = false;
+	// Get리스폰
+}
+
+void CCody::Boss_Missile_Hit(const _double dTimeDelta)
+{
+}
+
+void CCody::Boss_Missile_Control(const _double dTimeDelta)
+{
+}
+

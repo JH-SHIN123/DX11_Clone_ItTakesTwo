@@ -20,6 +20,14 @@ _fvector CCharacter::Get_Position()
 	return m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 }
 
+_fmatrix CCharacter::Get_WorldMatrix()
+{
+	if (nullptr == m_pTransformCom)
+		return XMMatrixIdentity();
+
+	return m_pTransformCom->Get_WorldMatrix();
+}
+
 _float CCharacter::Compute_Distance(CTransform * pPlayerTransform, CTransform * pDstTransform)
 {
 	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);

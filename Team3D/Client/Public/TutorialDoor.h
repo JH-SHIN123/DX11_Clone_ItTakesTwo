@@ -48,6 +48,7 @@ private:
 	_bool		m_IsCollide = false;
 
 private:
+	_bool m_IsNoGrab		= false;
 	_bool m_IsPullMax		= false;
 	_bool m_IsPullMax_Once	= false;
 

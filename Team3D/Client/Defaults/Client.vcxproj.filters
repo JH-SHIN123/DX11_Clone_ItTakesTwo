@@ -310,9 +310,6 @@
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO">
       <UniqueIdentifier>{7f50933c-0671-40a9-ab76-5da48106a69e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\98.Interactive_Objects\06.SpaceValve\07.BigPlanet">
-      <UniqueIdentifier>{cde19c6b-aaa3-40d0-8a31-9981b800428b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\03.Character\03.Title">
       <UniqueIdentifier>{c6f20a96-3c8d-4d61-acd8-53abeea0b007}</UniqueIdentifier>
     </Filter>
@@ -333,6 +330,9 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\00.Robot_Battery_Spark">
       <UniqueIdentifier>{61f2a2e3-61fb-4b3b-b340-fdaadb28c443}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\01.Boss_Missile">
+      <UniqueIdentifier>{b6a72df0-6523-4590-a934-cd52c7bacae5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -585,6 +585,9 @@
     <ClInclude Include="..\public\WarpGate.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Boss_Missile.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\01.Boss_Missile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -808,6 +811,9 @@
     </ClCompile>
     <ClCompile Include="..\private\WarpGate.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boss_Missile.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\01.Boss_Missile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -48,7 +48,7 @@ HRESULT CEffect_FireDoor::NativeConstruct(void * pArg)
 	m_pInstanceBuffer[0].vTextureUV.z = 1.f;
 	m_pInstanceBuffer[0].vTextureUV.w = 1.f;
 
-	m_pInstanceBuffer[0].vSize = { 6.f, 10.25f };
+	m_pInstanceBuffer[0].vSize = { 6.f, 10.f };
 
 
 	XMStoreFloat4(&m_pInstanceBuffer[0].vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));// = { 10.f, 5.f, 10.f,1.f };

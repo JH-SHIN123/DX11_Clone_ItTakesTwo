@@ -384,6 +384,14 @@ private:
 	const _float4 m_vWormholePos = { 0.f, -100.f, -1000.f, 1.f };
 	const _float m_fWarpTimer_Max = 2.f;
 
+	// fire Door Dead
+	_bool m_IsTouchFireDoor = false;
+
+	// Boss Missile Hit
+	_bool m_IsBossMissile_Hit = false;
+
+	// Boss Missile Control
+	_bool m_IsBossMissile_Control = false;
 
 	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);
@@ -395,6 +403,9 @@ private:
 	void Hit_Planet(const _double dTimeDelta);
 	void Hook_UFO(const _double dTimeDelta);
 	void Warp_Wormhole(const _double dTimeDelta);
+	void Touch_FireDoor(const _double dTimeDelta);
+	void Boss_Missile_Hit(const _double dTimeDelta);
+	void Boss_Missile_Control(const _double dTimeDelta);
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);

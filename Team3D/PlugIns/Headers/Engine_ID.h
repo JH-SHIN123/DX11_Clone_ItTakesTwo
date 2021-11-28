@@ -33,7 +33,9 @@ namespace Engine
 			eENVIRONMENT,
 			eWARPGATE, //sjh
 			eWORMHOLE, //sjh
-			eFIREDOOR
+			eFIREDOOR,
+			eBOSSMISSILE_COMBAT,
+			eBOSSMISSILE_PLAYABLE,
 		};
 	};
 

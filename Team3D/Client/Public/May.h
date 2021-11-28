@@ -338,10 +338,17 @@ private:
 
 	// Warp NextStage
 	_bool m_IsWarpNextStage = false;
+	_float m_fWarpTimer = 0.f;
+	_bool m_IsWarpDone = false;
+	const _float4 m_vWormholePos = { 0.f, -100.f, -1000.f, 1.f };
+	const _float m_fWarpTimer_Max = 2.f;
 
 	// 상호작용 테스트용
 	_bool m_IsActivate_End = false;
 	_bool m_IsPullVerticalDoor = false;
+
+	_bool m_IsTouchFireDoor = false;
+
 
 	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);
@@ -350,6 +357,8 @@ private:
 	void Pull_VerticalDoor(const _double dTimeDelta);
 	void Rotate_Valve(const _double dTimeDelta);
 	void In_GravityPipe(const _double dTimeDelta);
+	void Warp_Wormhole(const _double dTimeDelta);
+	void Touch_FireDoor(const _double dTimeDelta);
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);
