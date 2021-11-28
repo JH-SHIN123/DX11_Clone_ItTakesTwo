@@ -559,52 +559,52 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	//외부에서 상태 설정 구간
 #ifdef _DEBUG
 
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
-	{
-		m_pCamHelper->Start_Film(L"Eye_Bezier3", CFilm::LScreen);
-		return NO_EVENT;
-	}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
+	//{
+	//	m_pCamHelper->Start_Film(L"Eye_Bezier3", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
 
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
-	{
-		m_pCamHelper->Start_Film(L"Eye_Bezier4", CFilm::LScreen);
-		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
-	{
-		m_pCamHelper->Start_Film(L"Eye_Straight", CFilm::LScreen);
-		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD7))
-	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Right", CFilm::LScreen);
-		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
-	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Up", CFilm::LScreen);
-		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
-	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Look", CFilm::LScreen);
-		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD4))
-	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Right", CFilm::LScreen);
-		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
-	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Up", CFilm::LScreen);
-		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD6))
-	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Look", CFilm::LScreen);
-		return NO_EVENT;
-	}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
+	//{
+	//	m_pCamHelper->Start_Film(L"Eye_Bezier4", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
+	//{
+	//	m_pCamHelper->Start_Film(L"Eye_Straight", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD7))
+	//{
+	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Right", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
+	//{
+	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Up", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
+	//{
+	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Look", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD4))
+	//{
+	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Right", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
+	//{
+	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Up", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD6))
+	//{
+	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Look", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
 	if (m_pGameInstance->Key_Down(DIK_O))
 	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;

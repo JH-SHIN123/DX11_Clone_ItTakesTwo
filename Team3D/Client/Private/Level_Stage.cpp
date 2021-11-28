@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "Loading.h"
 #include "ToyBoxButton.h"
+#include "MoonBaboonCore.h"
 
 CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -247,7 +248,26 @@ HRESULT CLevel_Stage::Ready_Layer_ToyBoxButton(const _tchar* pLayerTag)
 }
 HRESULT CLevel_Stage::Ready_Layer_MoonBaboonCore(const _tchar* pLayerTag)
 {
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore")), E_FAIL);
+	CMoonBaboonCore::MOONBABOONCORE_DESC tDesc;
+	
+	tDesc.iIndex = 0;
+	tDesc.WorldMatrix._41 = 78.945f;
+	tDesc.WorldMatrix._42 = 244.2567f;
+	tDesc.WorldMatrix._43 = 158.95f;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore"), &tDesc), E_FAIL);
+
+	tDesc.iIndex = 1;
+	tDesc.WorldMatrix._41 = 22.008f;
+	tDesc.WorldMatrix._42 = 244.2567f;
+	tDesc.WorldMatrix._43 = 212.40f;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore"), &tDesc), E_FAIL);
+
+	tDesc.iIndex = 2;
+	tDesc.WorldMatrix._41 = 100.05f;
+	tDesc.WorldMatrix._42 = 244.2567f;
+	tDesc.WorldMatrix._43 = 209.95f;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore"), &tDesc), E_FAIL);
+
 	return S_OK;
 }
 HRESULT CLevel_Stage::Ready_Layer_MoonBaboon_MainLaser(const _tchar* pLayerTag)
