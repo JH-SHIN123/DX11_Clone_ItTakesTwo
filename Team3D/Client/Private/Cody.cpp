@@ -163,6 +163,8 @@ _int CCody::Tick(_double dTimeDelta)
 		Hook_UFO(dTimeDelta);
 		Warp_Wormhole(dTimeDelta);
 		Touch_FireDoor(dTimeDelta);
+		Boss_Missile_Hit(dTimeDelta);
+		Boss_Missile_Control(dTimeDelta);
 	}
 	else
 	{
@@ -1408,11 +1410,21 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			m_IsTouchFireDoor = true;
 		}
+		else if (GameID::eBOSSMISSILE_COMBAT == m_eTargetGameID && false == m_IsBossMissile_Hit)
+		{
+			m_IsBossMissile_Hit = true;
+		}
+		else if (GameID::eBOSSMISSILE_PLAYABLE == m_eTargetGameID && false == m_IsBossMissile_Control)
+		{
+			m_IsBossMissile_Control = true;
+			m_IsBossMissile_Rodeo = false;
+			m_IsBossMissile_Rodeo_Ready = false;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor)
+		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control)
 		return true;
 
 	return false;
@@ -1803,14 +1815,84 @@ void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
 	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
 	m_IsTouchFireDoor = false;
 	m_IsCollide = false;
+
 	// Get리스폰
 }
 
 void CCody::Boss_Missile_Hit(const _double dTimeDelta)
 {
+	if (false == m_IsBossMissile_Hit)
+		return;
+
+	m_IsBossMissile_Hit = false;
+	m_IsCollide = false;
+	// 아악 아프다
 }
 
 void CCody::Boss_Missile_Control(const _double dTimeDelta)
 {
+	if (false == m_IsBossMissile_Control)
+		return;
+
+	if (false == m_IsBossMissile_Rodeo)
+	{
+		if (false == m_IsBossMissile_Rodeo_Ready)
+		{
+			if (m_pGameInstance->Key_Down(DIK_F))
+			{
+				m_IsBossMissile_Rodeo_Ready = true;
+				m_pActorCom->Set_ZeroGravity(true, false, false);
+			}
+		}
+
+		if (true == m_IsBossMissile_Rodeo_Ready)
+		{
+			_matrix TriggerMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+			for (_int i = 0; i < 3; ++i)
+				TriggerMatrix.r[i] = XMVector3Normalize(TriggerMatrix.r[i]);
+
+			// 회전
+			_vector vRotatePos = TriggerMatrix.r[3] + (TriggerMatrix.r[1] * 10.f);
+			m_pTransformCom->Rotate_ToTarget(vRotatePos);
+
+			// 이동
+			_vector vOffsetPos = { 0.f, 0.5f, 0.5f, 0.f };
+			TriggerMatrix.r[3] += TriggerMatrix.r[1] * 1.f;
+			_vector vNewLook = XMVector3Cross(TriggerMatrix.r[1], XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), TriggerMatrix.r[1]));
+			TriggerMatrix.r[3] += vNewLook * 0.8f;
+			//_vector vDir = XMVector3Normalize(TriggerMatrix.r[3] - m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_pActorCom->Set_Position(TriggerMatrix.r[3]);
+
+			//m_IsCollide = false;
+			m_IsBossMissile_Rodeo = true;
+			//m_IsBossMissile_Control = false;
+		}
+	}
+	else if (true == m_IsBossMissile_Rodeo)
+	{
+		if (m_pGameInstance->Key_Down(DIK_1)) /* 스타트 지점 */
+			m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
+
+		if (m_pGameInstance->Key_Pressing(DIK_W)) // 아래로 밀어
+			m_pTransformCom->RotatePitch(dTimeDelta * 0.7);
+		else if (m_pGameInstance->Key_Pressing(DIK_S)) // 위로 들어
+			m_pTransformCom->RotatePitch(dTimeDelta * -0.7);
+
+		if (m_pGameInstance->Key_Pressing(DIK_A)) // 좌
+			m_pTransformCom->RotateYaw(dTimeDelta * -1);
+		else if (m_pGameInstance->Key_Pressing(DIK_D)) // 우
+			m_pTransformCom->RotateYaw(dTimeDelta * 1);
+
+		_vector vUp		= m_pTransformCom->Get_State(CTransform::STATE_UP);
+		_vector vAxisY	= XMVectorSet(0.f, 1.f, 0.f, 0.f);
+		_float vRadian = XMVector3Dot(vUp, vAxisY).m128_f32[0];
+		
+		_float fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_RIGHT).m128_f32[1];
+		m_pTransformCom->RotateRoll(dTimeDelta * fRotateRoll_Check * -1.f);
+
+		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+		m_pActorCom->Move(vDir * 0.2f , dTimeDelta);
+	}
 }
+
 

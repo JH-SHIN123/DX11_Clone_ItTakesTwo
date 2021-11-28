@@ -118,27 +118,30 @@ void CBoss_Missile::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 		// Äâ±¤
 		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 		{
-			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSMISSILE_COMBAT, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			((CCody*)pGameObject)->SetTriggerID_Matrix(GameID::Enum::eBOSSMISSILE_PLAYABLE, true, m_pTransformCom->Get_WorldMatrix());
 			UI_Create(Cody, InputButton_InterActive);
 			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			m_IsExplosion = true;
 		}
 	}
 	else
-	{
+	{		
 		// Á¶Á¾
-		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+		if (false == m_IsPlayable)
 		{
-			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSMISSILE_PLAYABLE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			UI_Create(Cody, InputButton_InterActive);
-			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			m_IsPlayable_Ready = true;
+			if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+			{
+				((CCody*)pGameObject)->SetTriggerID_Matrix(GameID::Enum::eBOSSMISSILE_PLAYABLE, true, m_pTransformCom->Get_WorldMatrix());
+				UI_Create(Cody, InputButton_InterActive);
+				UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				m_IsPlayable_Ready = true;
 
-			m_eTarget_GameID = eID;
-		}
-		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-		{
+				m_eTarget_GameID = eID;
+			}
+			else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+			{
 
+			}
 		}
 
 
@@ -230,8 +233,8 @@ void CBoss_Missile::Playable_Mode(_double TimeDelta)
 		if (m_pGameInstance->Pad_Key_Down(DIP_RB) && GameID::Enum::eMAY == m_eTarget_GameID)
 			m_IsPlayable = true;
 
-		if (m_pGameInstance->Key_Down(DIK_F) && GameID::Enum::eCODY == m_eTarget_GameID)
-			m_IsPlayable = true;
+		//if (m_pGameInstance->Key_Down(DIK_F) && GameID::Enum::eCODY == m_eTarget_GameID)
+		//	m_IsPlayable = true;
 
 		if (true == m_IsPlayable)
 		{

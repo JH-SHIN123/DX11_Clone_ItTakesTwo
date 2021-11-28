@@ -323,6 +323,19 @@ void CTransform::RotatePitch(const _double TimeDelta)
 	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
 }
 
+void CTransform::RotateRoll(const _double TimeDelta)
+{
+	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
+	_vector		vUp = Get_State(CTransform::STATE_UP);
+	_vector		vLook = Get_State(CTransform::STATE_LOOK);
+
+	_matrix		RotateMatrix = XMMatrixRotationAxis(XMVector3Normalize(vLook), (_float)(TimeDelta * 5.f));
+
+	Set_State(STATE_RIGHT, XMVector3TransformNormal(vRight, RotateMatrix));
+	Set_State(STATE_UP, XMVector3TransformNormal(vUp, RotateMatrix));
+	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
+}
+
 void CTransform::MoveToDir(const _fvector & vMoveDir, const _double TimeDelta, const _double dAcceleration, CNavigation * pNavigation)
 {
 	if (0.0 == m_TransformDesc.dSpeedPerSec) return;
