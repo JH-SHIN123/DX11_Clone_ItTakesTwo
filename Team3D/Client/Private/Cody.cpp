@@ -1872,7 +1872,7 @@ void CCody::Boss_Missile_Control(const _double dTimeDelta)
 	{
 		m_fLandTime += (_float)dTimeDelta;
 		if(0.25f >= m_fLandTime)
-			m_pTransformCom->RotatePitch(dTimeDelta * -0.7);
+			m_pTransformCom->RotatePitch(dTimeDelta * -0.25);
 
 		else
 		{
