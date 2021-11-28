@@ -23,12 +23,20 @@ HRESULT CPipeCurve::NativeConstruct_Prototype()
 HRESULT CPipeCurve::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
-	
+
+	if (nullptr != pArg)
+		memcpy(&m_iOption, pArg, sizeof(_uint));
+
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_PipeCurve"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(20.f, 0.f, 0.f, 1.f));
+	/* Option 0 : 처음에 회전 안먹은거 / Option 1 : 회전 먹은거 ㅇㅇ */
+	if (1 == m_iOption)
+	{
+		m_fAngle = 180.f;
+		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
+	}
 
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;

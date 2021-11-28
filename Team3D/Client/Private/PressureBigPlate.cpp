@@ -38,7 +38,7 @@ HRESULT CPressureBigPlate::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(Ready_Layer_PlateFrame(TEXT("Layer_PressurePlateFrame")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_SupportFrame(TEXT("Layer_SupportFrame")), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 1.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 1.f, -3.f, 1.f));
 	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
 
 	CStaticActor::ARG_DESC ArgDesc;
@@ -51,7 +51,7 @@ HRESULT CPressureBigPlate::NativeConstruct(void * pArg)
 
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTransformCom;
-	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.0f);
+	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.f);
 	m_UserData = USERDATA(GameID::ePRESSUREBIGPLATE, this);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
@@ -66,6 +66,8 @@ HRESULT CPressureBigPlate::NativeConstruct(void * pArg)
 _int CPressureBigPlate::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	m_pTriggerCom->Update_TriggerActor();
 
 	Button_Active(dTimeDelta);
 
@@ -97,6 +99,7 @@ void CPressureBigPlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 {
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
+		m_fMove = 0.f;
 		m_IsCollision = true;
 
 		Check_Collision_PlayerAnim();
@@ -109,6 +112,7 @@ void CPressureBigPlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
+		m_fMove = 0.f;
 		m_IsCollision = true;
 
 		Check_Collision_PlayerAnim();
@@ -122,9 +126,19 @@ void CPressureBigPlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 
 void CPressureBigPlate::Check_Collision_PlayerAnim()
 {
+	/* 테스트*/
+	_uint i = ((CCody*)DATABASE->GetCody())->Get_Model()->Get_CurAnimIndex();  
+
 	if (m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land
-		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land)
+		|| m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Falling
+		|| m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Start
+		|| m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land_Exit
+		|| m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land_MH
+		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land
+		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land_Exit
+		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land_MH)
 	{
+		m_fMove = 0.f;
 		m_IsButtonActive = true;
 
 		for (auto pPlate : m_vecPressurePlate)
@@ -144,7 +158,7 @@ void CPressureBigPlate::SetUp_DefaultPositionSetting()
 	_float4 vConvertPos;
 	XMStoreFloat4(&vConvertPos, vPos);
 
-	vConvertPos.y -= 0.3f;
+	vConvertPos.y -= 0.1f;
 	m_pPlateLock->Set_Position(XMLoadFloat4(&vConvertPos));
 
 	vConvertPos.y = 0.4f;
@@ -156,58 +170,92 @@ void CPressureBigPlate::SetUp_DefaultPositionSetting()
 
 void CPressureBigPlate::Button_Active(_double TimeDelta)
 {
-	if (false == m_IsButtonActive)
+	/* 그냥 점프만 해서 올라 탔을 때*/
+	if (false == m_IsButtonActive && true == m_IsCollision)
 	{
-		if (true == m_IsCollision)
+		if (0.05f > m_fMove)
 		{
-			if (0.3f > m_fMove)
-			{
-				m_fMove += (_float)TimeDelta;
-				m_pTransformCom->Go_Down(TimeDelta * 0.2f);
-				m_pPlateLock->Get_Transform()->Go_Down(TimeDelta * 0.2f);
-			}
-			else
-				m_fMove = 0.3f;
+			m_fMove += (_float)TimeDelta;
+			m_pTransformCom->Go_Down(TimeDelta);
+			/* 피벗 땜시 ㅜㅜ */
+			m_pPlateLock->Get_Transform()->Go_Left(TimeDelta);
 		}
-		else if (false == m_IsCollision)
+		else
+			m_fMove = 0.05f;
+	}
+	/* 점프만 해서 올라 타고 버튼 위에서 그냥 내려올 때 */
+	else if (false == m_IsButtonActive && false == m_IsCollision)
+	{
+		if (0.f < m_fMove)
 		{
-			if (0.f < m_fMove)
-			{
-				m_fMove -= (_float)TimeDelta;
-				m_pTransformCom->Go_Up(TimeDelta * 0.2f);
-				m_pPlateLock->Get_Transform()->Go_Up(TimeDelta * 0.2f);
-			}
-			else
-				m_fMove = 0.f;
+			m_fMove -= (_float)TimeDelta;
+			m_pTransformCom->Go_Up(TimeDelta);
+			m_pPlateLock->Get_Transform()->Go_Right(TimeDelta);
+		}
+		else
+			m_fMove = 0.f;
+	}
+
+	/* 점프 찍기로 버튼을 활성화 했을 때 */
+	if (true == m_IsButtonActive && false == m_IsReset)
+	{
+		if (0.17f > m_fActiveMove)
+		{
+  			m_fActiveMove += (_float)TimeDelta;
+			m_pTransformCom->Go_Down(TimeDelta);
+			m_pPlateLock->Get_Transform()->Go_Left(TimeDelta);
+		}
+		/* 버튼이 활성화 됬을 때 눌린 상태로 조금 기다렸다가 리셋 하자 */
+		else if(0.17f <= m_fActiveMove)
+		{
+			m_fWaitingTime += (_float)TimeDelta;
+			m_fActiveMove = 0.17f;
+
+			if (0.5f <= m_fWaitingTime)
+				m_IsReset = true;
 		}
 	}
-	else
+	/* 버튼이 아직 활성화 되있고 대기 시간이 끝나서 리셋이 활성화 됬을 때 */
+	else if (true == m_IsButtonActive && true == m_IsReset)
 	{
+		/* 충돌하고 있다면 그냥 점프만해서 올라 탔을때의 높이로 가라 */
 		if (true == m_IsCollision)
 		{
-			if (0.8f > m_fMove)
+			if (0.f < m_fActiveMove)
 			{
-				m_fMove += (_float)TimeDelta;
-				m_pTransformCom->Go_Down(TimeDelta * 0.2f);
-				m_pPlateLock->Get_Transform()->Go_Down(TimeDelta * 0.2f);
+				m_fActiveMove -= (_float)TimeDelta;
+				m_pTransformCom->Go_Up(TimeDelta);
+				m_pPlateLock->Get_Transform()->Go_Right(TimeDelta);
 			}
 			else
-				m_fMove = 0.8f;
+			{
+				m_fActiveMove = 0.f;
+				m_fWaitingTime = 0.f;
+				m_IsReset = false;
+				m_IsButtonActive = false;
+			}
 		}
-		else if (false == m_IsCollision)
+		/* 충돌하지 않고 있다면 처음 높이로 가라 */
+		else 
 		{
-			if (0.f < m_fMove)
+			if (0.f < m_fActiveMove)
 			{
-				m_fMove -= (_float)TimeDelta;
-				m_pTransformCom->Go_Up(TimeDelta * 0.2f);
-				m_pPlateLock->Get_Transform()->Go_Up(TimeDelta * 0.2f);
+				m_fActiveMove -= (_float)TimeDelta;
+				m_pTransformCom->Go_Up(TimeDelta);
+				m_pPlateLock->Get_Transform()->Go_Right(TimeDelta);
 			}
 			else
-				m_fMove = 0.f;
+			{
+				m_fActiveMove = 0.f;
+				m_fWaitingTime = 0.f;
+				m_IsReset = false;
+				m_IsButtonActive = false;
+			}
 		}
 	}
 
 	m_pStaticActorCom->Update_StaticActor();
+	//m_pTriggerCom->Update_TriggerActor();
 }
 
 HRESULT CPressureBigPlate::Ready_Layer_Plate(const _tchar * pLayerTag, _uint iCount)

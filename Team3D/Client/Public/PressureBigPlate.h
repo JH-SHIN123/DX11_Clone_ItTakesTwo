@@ -34,7 +34,11 @@ private:
 	_bool										m_IsButtonActive = false;
 	_bool										m_IsPipeCurveRotate = false;
 	_bool										m_IsCollision = false;
+	_bool										m_IsReset = false;
 	_float										m_fMove = 0.f;
+	_float										m_fActiveMove = 0.f;
+	_float										m_fWaitingTime = 0.f;
+
 
 private:
 	class CPressurePlateLock*					m_pPlateLock = nullptr;

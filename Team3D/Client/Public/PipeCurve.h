@@ -35,6 +35,7 @@ private:
 	_bool				m_IsRotate = false;
 	_float				m_fAngle = 0.f;
 	_float				m_fAngleIncreaseLimit = 0.f;
+	_uint				m_iOption = 0;
 
 
 protected:
