@@ -32,7 +32,8 @@ namespace Engine
 			eSPACEVALVE,
 			eGRAVITYPIPE,
 			eHOOKUFO,
-			eGRAVITYPATH,
+			eGRAVITYPATH_CENTER,
+			eGRAVITYPATH_SIDE,
 			eENVIRONMENT
 		};
 	};

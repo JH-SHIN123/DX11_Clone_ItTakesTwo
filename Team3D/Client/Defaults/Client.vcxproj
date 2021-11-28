@@ -255,6 +255,7 @@
     <ClInclude Include="..\Public\SavePoint.h" />
     <ClInclude Include="..\Public\SecurityCamera.h" />
     <ClInclude Include="..\Public\SecurityCameraHandle.h" />
+    <ClInclude Include="..\Public\SepdStaticActor.h" />
     <ClInclude Include="..\Public\SpaceValve.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
@@ -338,6 +339,7 @@
     <ClCompile Include="..\Private\SavePoint.cpp" />
     <ClCompile Include="..\Private\SecurityCamera.cpp" />
     <ClCompile Include="..\Private\SecurityCameraHandle.cpp" />
+    <ClCompile Include="..\Private\SepdStaticActor.cpp" />
     <ClCompile Include="..\Private\SpaceValve.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
