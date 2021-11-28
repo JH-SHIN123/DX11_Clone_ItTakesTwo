@@ -202,15 +202,6 @@
     <Filter Include="97.ShaderFiles\Include">
       <UniqueIdentifier>{9654196f-e3ab-4f25-a09c-cb0ad655fa08}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX\00.Main">
-      <UniqueIdentifier>{17b0b8f3-b04a-48ed-987f-777e587dab3a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX\01.SimulCallback">
-      <UniqueIdentifier>{ad9c964c-c541-4c84-b8e0-d3843476fecf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback">
-      <UniqueIdentifier>{7217416e-7088-47ec-b7c5-df5d4f4d2af0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97.ShaderFiles\Compute">
       <UniqueIdentifier>{f646baae-80f9-4651-9890-ce59df45393d}</UniqueIdentifier>
     </Filter>
@@ -348,9 +339,6 @@
     <ClInclude Include="..\Public\Model_Loader.h">
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\PxEventCallback.h">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\01.SimulCallback</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Actor.h">
       <Filter>02.Utility\02.Component\06.Actor\00.Main</Filter>
     </ClInclude>
@@ -405,14 +393,8 @@
     <ClInclude Include="..\public\VIBuffer_Rect_TripleUV.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.TripleUV</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\PhysX.h">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\00.Main</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\GlobalFunction.h">
       <Filter>99.Defines\02.Convenience</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\PxContactCallback.h">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PostFX.h">
       <Filter>02.Utility\06.PostFX</Filter>
@@ -437,6 +419,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Blur.h">
       <Filter>02.Utility\06.PostFX\Blur</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PhysX.h">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -545,9 +530,6 @@
     <ClCompile Include="..\Private\Model_Loader.cpp">
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\PxEventCallback.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\01.SimulCallback</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Actor.cpp">
       <Filter>02.Utility\02.Component\06.Actor\00.Main</Filter>
     </ClCompile>
@@ -575,12 +557,6 @@
     <ClCompile Include="..\private\VIBuffer_Rect_TripleUV.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.TripleUV</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\PhysX.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\00.Main</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\PxContactCallback.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\PostFX.cpp">
       <Filter>02.Utility\06.PostFX</Filter>
     </ClCompile>
@@ -601,6 +577,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Blur.cpp">
       <Filter>02.Utility\06.PostFX\Blur</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PhysX.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

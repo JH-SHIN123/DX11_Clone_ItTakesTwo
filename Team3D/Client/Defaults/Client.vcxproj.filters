@@ -334,6 +334,12 @@
     <Filter Include="03.Component\01.Actor\03.SepdStaticActor">
       <UniqueIdentifier>{f808c0cd-b062-4b36-91f7-a2fcbd2813e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.Component\01.Actor\02.PlayerActor\03.HitReport">
+      <UniqueIdentifier>{c6e83dbb-95e5-47c8-a329-9d6d3d04c28b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\99.EventCallback">
+      <UniqueIdentifier>{e43d39f3-5732-46ee-85d4-9b5d0244f918}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -603,6 +609,12 @@
     <ClInclude Include="..\Public\SepdStaticActor.h">
       <Filter>03.Component\01.Actor\03.SepdStaticActor</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PlayerHitReport.h">
+      <Filter>03.Component\01.Actor\02.PlayerActor\03.HitReport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PxEventCallback.h">
+      <Filter>03.Component\01.Actor\99.EventCallback</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -844,6 +856,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\SepdStaticActor.cpp">
       <Filter>03.Component\01.Actor\03.SepdStaticActor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerHitReport.cpp">
+      <Filter>03.Component\01.Actor\02.PlayerActor\03.HitReport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PxEventCallback.cpp">
+      <Filter>03.Component\01.Actor\99.EventCallback</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

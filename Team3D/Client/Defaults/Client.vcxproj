@@ -246,7 +246,9 @@
     <ClInclude Include="..\Public\PlayerActor.h" />
     <ClInclude Include="..\Public\PlayerBehaviorCallback.h" />
     <ClInclude Include="..\Public\PlayerFilterCallback.h" />
+    <ClInclude Include="..\Public\PlayerHitReport.h" />
     <ClInclude Include="..\Public\PlayerMarker.h" />
+    <ClInclude Include="..\Public\PxEventCallback.h" />
     <ClInclude Include="..\Public\Robot.h" />
     <ClInclude Include="..\Public\RobotBattery.h" />
     <ClInclude Include="..\Public\RobotHead.h" />
@@ -330,7 +332,9 @@
     <ClCompile Include="..\Private\PlayerActor.cpp" />
     <ClCompile Include="..\Private\PlayerBehaviorCallback.cpp" />
     <ClCompile Include="..\Private\PlayerFilterCallback.cpp" />
+    <ClCompile Include="..\Private\PlayerHitReport.cpp" />
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
+    <ClCompile Include="..\Private\PxEventCallback.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />
     <ClCompile Include="..\Private\RobotBattery.cpp" />
     <ClCompile Include="..\Private\RobotHead.cpp" />

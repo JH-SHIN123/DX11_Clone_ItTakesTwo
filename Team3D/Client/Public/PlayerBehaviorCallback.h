@@ -16,9 +16,11 @@ public:
 	virtual PxControllerBehaviorFlags getBehaviorFlags(const PxObstacle & obstacle) override;
 
 public:
+	void Set_PlayerActorPtr(class CPlayerActor* pPlayerActor) { m_pPlayerActor = pPlayerActor; }
 	void Set_Controller(PxController* pController) { m_pController = pController; }
 
 private:
+	class CPlayerActor* m_pPlayerActor = nullptr;
 	PxController* m_pController = nullptr;
 };
 

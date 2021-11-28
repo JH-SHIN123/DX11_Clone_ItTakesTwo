@@ -34,7 +34,7 @@ CGameInstance::CGameInstance()
 }
 
 #pragma region GameInstance
-HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, HINSTANCE hInst, _uint iWinSizeX, _uint iWinSizeY, ID3D11Device** ppDevice, ID3D11DeviceContext** ppDeviceContext)
+HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, HINSTANCE hInst, _uint iWinSizeX, _uint iWinSizeY, ID3D11Device** ppDevice, ID3D11DeviceContext** ppDeviceContext, PxSimulationEventCallback* pEventCallback)
 {
 	NULL_CHECK_RETURN(m_pGraphic_Device, E_FAIL);
 	NULL_CHECK_RETURN(m_pInput_Device, E_FAIL);
@@ -50,7 +50,7 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 	FAILED_CHECK_RETURN(m_pInput_Device->Ready_InputDevice(hInst, hWnd), E_FAIL);
 	//FAILED_CHECK_RETURN(m_pSound_Manager->Ready_SoundManager(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pLight_Manager->Ready_LightManager(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
-	FAILED_CHECK_RETURN(m_pPhysX->Ready_PhysX(), E_FAIL);
+	FAILED_CHECK_RETURN(m_pPhysX->Ready_PhysX(pEventCallback), E_FAIL);
 	FAILED_CHECK_RETURN(m_pFrustum->Ready_Frustum(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShadow_Manager->Ready_ShadowManager(*ppDevice, *ppDeviceContext), E_FAIL);
 	FAILED_CHECK_RETURN(m_pPostFX->Ready_PostFX(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);

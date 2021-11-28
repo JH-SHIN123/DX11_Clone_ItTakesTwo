@@ -26,7 +26,7 @@ private:
 
 public:
 #pragma region GameInstance
-	HRESULT	Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, HINSTANCE hInst, _uint iWinSizeX, _uint iWinSizeY, ID3D11Device** ppDevice = nullptr, ID3D11DeviceContext** ppDeviceContext = nullptr);
+	HRESULT	Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, HINSTANCE hInst, _uint iWinSizeX, _uint iWinSizeY, ID3D11Device** ppDevice = nullptr, ID3D11DeviceContext** ppDeviceContext = nullptr, PxSimulationEventCallback* pEventCallback = nullptr);
 	HRESULT	Reserve_Container(_uint iLevelCount);
 	_int	Tick(_double dTimeDelta);
 	void	Clear_LevelResources(_uint iLevelIndex);
