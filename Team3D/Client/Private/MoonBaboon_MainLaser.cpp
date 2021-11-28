@@ -26,7 +26,7 @@ HRESULT CMoonBaboon_MainLaser::NativeConstruct(void* pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon_MainLaser_01"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, -5.f, 5.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 239.f, 195.f, 1.f));
 
 	m_UserData.eID = GameID::eENVIRONMENT;
 	m_UserData.pGameObject = this;
@@ -35,7 +35,6 @@ HRESULT CMoonBaboon_MainLaser::NativeConstruct(void* pArg)
 	tArg.pModel = m_pModelCom;
 	tArg.pTransform = m_pTransformCom;
 	tArg.pUserData = &m_UserData;
-
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
 
 	return S_OK;
@@ -101,6 +100,7 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 		{
 			m_pTransformCom->Go_Up(TimeDelta);
 			m_dPatternDeltaT += TimeDelta;
+			m_pStaticActorCom->Update_StaticActor();
 		}
 	}
 	else if (1 == m_iPatternState)
@@ -134,12 +134,14 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 		if (m_dPatternDeltaT >= 1.5)
 		{
 			m_dPatternDeltaT = 0.0;
-			m_iPatternState = 4;
+			//m_iPatternState = 4;
+			m_iPatternState = 0; // TEST
 		}
 		else
 		{
 			m_pTransformCom->Go_Down(TimeDelta);
 			m_dPatternDeltaT += TimeDelta;
+			m_pStaticActorCom->Update_StaticActor();
 		}
 	}
 }

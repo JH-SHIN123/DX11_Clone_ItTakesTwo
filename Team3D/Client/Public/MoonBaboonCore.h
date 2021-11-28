@@ -6,6 +6,13 @@
 BEGIN(Client)
 class CMoonBaboonCore final : public CGameObject
 {
+public:
+	typedef struct tagMoonBaboonCoreDesc
+	{
+		_float4x4	WorldMatrix = MH_XMFloat4x4Identity();
+		_uint		iIndex = 0;
+	}MOONBABOONCORE_DESC;
+
 private:
 	explicit CMoonBaboonCore(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CMoonBaboonCore(const CMoonBaboonCore& rhs);
@@ -28,6 +35,9 @@ public:
 
 private:
 	void Active_Pillar(_double TimeDelta);
+
+private:
+	MOONBABOONCORE_DESC m_tDesc;
 
 private:
 	CTransform* m_pTransformCom = nullptr;

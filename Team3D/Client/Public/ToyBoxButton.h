@@ -13,6 +13,13 @@ END
 BEGIN(Client)
 class CToyBoxButton final : public CGameObject
 {
+public:
+	typedef struct tagToyBoxButtonDesc
+	{
+		_float4x4	WorldMatrix = MH_XMFloat4x4Identity();
+		_uint		iIndex = 0;
+	}TOYBOXBUTTON_DESC;
+
 private:
 	explicit CToyBoxButton(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CToyBoxButton(const CToyBoxButton& rhs);
@@ -37,6 +44,9 @@ public:
 
 private:
 	void OnTrigger(_double TimeDelta);
+
+private:
+	TOYBOXBUTTON_DESC m_tDesc;
 
 private:
 	_bool	m_bTrigger = false;
