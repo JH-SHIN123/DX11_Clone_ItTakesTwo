@@ -3,15 +3,7 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 
-BEGIN(Engine)
-class CTransform;
-class CRenderer;
-class CModel;
-class CStaticActor;
-END
-
 BEGIN(Client)
-
 class CStatic_Env final : public CGameObject
 {
 private:
@@ -19,7 +11,7 @@ private:
 	explicit CStatic_Env(const CStatic_Env& rhs);
 	virtual ~CStatic_Env() = default;
 
-public:/* Struct */
+public:
 	typedef struct tagArgumentDesc
 	{
 		_float4x4		WorldMatrix;
@@ -41,11 +33,6 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 private:
-	HRESULT Set_MeshRenderGroup();
-	HRESULT Add_GameObject_ToRenderGroup();
-
-private:
-	/* For.Component */
 	CTransform*			m_pTransformCom = nullptr;
 	CRenderer*			m_pRendererCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
@@ -55,11 +42,12 @@ private:
 
 private:
 	HRESULT Ready_Component(void* pArg);
+	HRESULT Set_MeshRenderGroup();
+	HRESULT Add_GameObject_ToRenderGroup();
 
 public:
 	static CStatic_Env* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
-
 END

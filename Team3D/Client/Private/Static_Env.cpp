@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Static_Env.h"
-#include "GameInstance.h"
-
 
 CStatic_Env::CStatic_Env(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -55,7 +53,7 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1, m_Static_Env_Desc.iMaterialIndex);
+	//m_pModelCom->Render_Model(1, m_Static_Env_Desc.iMaterialIndex);
 
 	_uint iMaterialIndex = 0;
 	if (!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_01"), m_Static_Env_Desc.szModelTag))
@@ -110,8 +108,35 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eRender);
 	}
+	else if (!lstrcmp(TEXT("Component_Model_Space_Pinball_Frame"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Sepd_Bind_Buffer();
+
+		iMaterialIndex = 1;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eRender);
+
+		iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eRender);
+	}
+	else if (!lstrcmp(TEXT("Component_Model_Space_Pinball_BaseStar"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Sepd_Bind_Buffer();
+
+		iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eRender);
+
+		iMaterialIndex = 1;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eRender);
+	}
 	else
-		m_pModelCom->Render_Model(1);
+		m_pModelCom->Render_Model(1, m_Static_Env_Desc.iMaterialIndex);
 
 	return S_OK;
 }
@@ -168,6 +193,16 @@ HRESULT CStatic_Env::Set_MeshRenderGroup()
 		m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_ALPHA);
 		m_pModelCom->Set_MeshRenderGroup(2, tagRenderGroup::RENDER_NONALPHA);
 	}
+	else if (!lstrcmp(TEXT("Component_Model_Space_Pinball_Frame"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_ALPHA);
+		m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_NONALPHA);
+	}
+	else if (!lstrcmp(TEXT("Component_Model_Space_Pinball_BaseStar"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_NONALPHA);
+		m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_ALPHA);
+	}
 
 	return S_OK;
 }
@@ -178,7 +213,13 @@ HRESULT CStatic_Env::Add_GameObject_ToRenderGroup()
 	{
 		if (!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_01"), m_Static_Env_Desc.szModelTag) ||
 			!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_02"), m_Static_Env_Desc.szModelTag) ||
-			!lstrcmp(TEXT("Component_Model_GlassWall_End"), m_Static_Env_Desc.szModelTag))
+			!lstrcmp(TEXT("Component_Model_GlassWall_End"), m_Static_Env_Desc.szModelTag) || 
+			!lstrcmp(TEXT("Component_Model_Space_Pinball_Frame"), m_Static_Env_Desc.szModelTag))
+		{
+			m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_ALPHA, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_NONALPHA, this);
+		}
+		else if (!lstrcmp(TEXT("Component_Model_Space_Pinball_BaseStar"), m_Static_Env_Desc.szModelTag))
 		{
 			m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_ALPHA, this);
 			m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_NONALPHA, this);

@@ -33,7 +33,9 @@ namespace Engine
 			eGRAVITYPIPE,
 			eHOOKUFO,
 			eGRAVITYPATH,
-			eENVIRONMENT
+			eENVIRONMENT,
+			ePinBall,
+			eBlocked
 		};
 	};
 

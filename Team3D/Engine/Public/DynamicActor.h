@@ -22,6 +22,9 @@ public: /* Struct */
 	}ARG_DESC;
 
 public:
+	PxRigidDynamic*&	Get_Actor();
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	void			Update_DynamicActor();

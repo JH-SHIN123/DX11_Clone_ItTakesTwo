@@ -331,6 +331,30 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PlanetRing">
       <UniqueIdentifier>{70339247-3508-4736-96ff-59d5aaf012e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall">
+      <UniqueIdentifier>{0a218ec8-53d0-46bd-8b18-d3ea5014c180}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen">
+      <UniqueIdentifier>{cb99fc26-4d07-4ee9-bdf8-b9a43ea37b0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Spring">
+      <UniqueIdentifier>{a49fc090-bba8-4ba9-b85a-dcd44852134d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Blocked">
+      <UniqueIdentifier>{fdb5250a-06c3-4989-afa3-d4c018752460}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_BallDoor">
+      <UniqueIdentifier>{370c4da9-a04c-41ff-b9cd-f630c5964a66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Handle">
+      <UniqueIdentifier>{c965c395-0174-436b-86f6-2adb21e7f5cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_HandleBase">
+      <UniqueIdentifier>{80b2cd92-bcfd-4f15-9803-cdec78f76d31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Door">
+      <UniqueIdentifier>{f878d9ea-6a01-43bd-ba3e-9b686c612390}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -597,6 +621,30 @@
     <ClInclude Include="..\Public\PlayerFilterCallback.h">
       <Filter>03.Component\01.Actor\02.PlayerActor\02.FilterCallback</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PinBall.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AlienScreen.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PinBall_Door.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Door</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PinBall_HandleBase.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_HandleBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PinBall_Handle.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PinBall_BallDoor.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_BallDoor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PinBall_Spring.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Spring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PinBall_Blocked.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Blocked</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -835,6 +883,30 @@
     </ClCompile>
     <ClCompile Include="..\Private\PlayerFilterCallback.cpp">
       <Filter>03.Component\01.Actor\02.PlayerActor\02.FilterCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PinBall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AlienScreen.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PinBall_Door.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PinBall_HandleBase.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_HandleBase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PinBall_Handle.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Handle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PinBall_BallDoor.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_BallDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PinBall_Spring.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Spring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PinBall_Blocked.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Blocked</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

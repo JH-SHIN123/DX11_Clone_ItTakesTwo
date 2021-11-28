@@ -7,6 +7,13 @@
 #include "Bridge.h"
 #include "Planet.h"
 #include "PlanetRing.h"
+#include "PinBall.h"
+#include "PinBall_BallDoor.h"
+#include "PinBall_Spring.h"
+#include "PinBall_Handle.h"
+#include "PinBall_HandleBase.h"
+#include "PinBall_Blocked.h"
+#include "AlienScreen.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -522,6 +529,48 @@ CGameObject* CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D11
 		pInstance = CPlanetRing::Create(pDevice, pDeviceContext);
 		if (nullptr == pInstance)
 			MSG_BOX("Failed to Create Instance - PlanetRing");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall")))
+	{
+		pInstance = CPinBall::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_BallDoor")))
+	{
+		pInstance = CPinBall_BallDoor::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall_BallDoor");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_Spring")))
+	{
+		pInstance = CPinBall_Spring::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall_Spring");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_Handle")))
+	{
+		pInstance = CPinBall_Handle::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall_Handle");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_HandleBase")))
+	{
+		pInstance = CPinBall_HandleBase::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall_HandleBase");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_Blocked")))
+	{
+		pInstance = CPInBall_Blocked::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall_Blocked");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_AlienScreen")))
+	{
+		pInstance = CAlienScreen::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - AlienScreen");
 	}
 	return pInstance;
 }

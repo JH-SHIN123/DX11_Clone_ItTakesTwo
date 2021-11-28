@@ -4,6 +4,7 @@
 #include "Effect_Generator.h"
 #include "InGameEffect.h"
 #include "Camera.h"
+#include "Dynamic_Env.h"
 
 CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -26,6 +27,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);
 	/* Jung */
 	/* Hye */
+	FAILED_CHECK_RETURN(Ready_Layer_PinBall(TEXT("Layer_PinBall")), E_FAIL);
 	/* Won */
 	/* Yoon */
 	FAILED_CHECK_RETURN(Ready_Layer_NoBatterySign(TEXT("Layer_NoBatterySign")), E_FAIL);
@@ -113,6 +115,17 @@ HRESULT CLevel_Stage::Test_Layer_Object_Effect(const _tchar * pLayerTag)
 #pragma endregion
 
 #pragma region Hye
+HRESULT CLevel_Stage::Ready_Layer_PinBall(const _tchar * pLayerTag)
+{
+	CDynamic_Env::ARG_DESC tArg;
+	lstrcpy(tArg.szModelTag, TEXT("Component_Model_Space_Pinball_Ball"));
+	XMStoreFloat4x4(&tArg.WorldMatrix, XMMatrixIdentity());
+	tArg.iMatrialIndex = 0;
+	tArg.iOption = 0;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PinBall"), &tArg), E_FAIL);
+	return S_OK;
+}
 #pragma endregion
 
 #pragma region Won

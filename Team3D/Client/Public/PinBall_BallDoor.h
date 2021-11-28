@@ -1,0 +1,31 @@
+#pragma once
+#include "Dynamic_Env.h"
+
+BEGIN(Client)
+class CPinBall_BallDoor final : public CDynamic_Env
+{
+private:
+	explicit CPinBall_BallDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CPinBall_BallDoor(const CPinBall_BallDoor& rhs);
+	virtual ~CPinBall_BallDoor() = default;
+
+public:
+	virtual HRESULT	NativeConstruct_Prototype() override;
+	virtual HRESULT	NativeConstruct(void* pArg) override;
+	virtual _int	Tick(_double dTimeDelta) override;
+	virtual _int	Late_Tick(_double dTimeDelta) override;
+	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
+
+public:
+	virtual HRESULT Render_ShadowDepth() override;
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+
+private:
+	CStaticActor*	m_pStaticActorCom = nullptr;
+
+public:
+	static CPinBall_BallDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CGameObject* Clone_GameObject(void* pArg) override;
+	virtual void Free() override;
+};
+END

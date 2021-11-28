@@ -65,7 +65,6 @@ private:
 	CGameObject* m_pRobotHead = nullptr;
 	CGameObject* m_pNoBatterySign = nullptr;
 
-
 private:
 	/* For.Valve */
 	_uint m_iValveRotateCount = 0;

@@ -40,6 +40,7 @@
 #include "MainCamera.h"
 #include "SubCamera.h"
 #include "Cam_Helper.h"
+#include "PinBall.h"
 
 #pragma endregion
 
@@ -463,6 +464,9 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jung()
 
 HRESULT CLoading::Create_GameObjects_SpaceStage_Hye()
 {
+	/* PinBall */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PinBall"), CPinBall::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
 	return S_OK;
 }
 

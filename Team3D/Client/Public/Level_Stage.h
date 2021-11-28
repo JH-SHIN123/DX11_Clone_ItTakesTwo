@@ -23,6 +23,7 @@ private:
 	HRESULT Test_Layer_Effect(const _tchar* pLayerTag);
 	HRESULT Test_Layer_Object_Effect(const _tchar* pLayerTag);
 	/* Hye */
+	HRESULT Ready_Layer_PinBall(const _tchar* pLayerTag);
 	/* Won */
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_Sky(const _tchar* pLayerTag);

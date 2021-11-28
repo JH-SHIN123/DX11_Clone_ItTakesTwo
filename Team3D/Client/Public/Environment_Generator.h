@@ -1,13 +1,8 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameInstance.h"
 #include "Instancing_Env.h"
 #include "Static_Env.h"
-
-BEGIN(Engine)
-class CGameInstance;
-END
 
 BEGIN(Client)
 class CEnvironment_Generator final : public CBase

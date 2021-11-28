@@ -1,14 +1,7 @@
 #pragma once
 #include "Client_Defines.h"
 #include "GameObject.h"
-#include "GameInstance.h"
 #include "Instancing_Env.h"
-
-BEGIN(Engine)
-class CRenderer;
-class CTransform;
-class CModel_Instance;
-END
 
 BEGIN(Client)
 class CBridge final : public CGameObject

@@ -13,6 +13,11 @@ CDynamicActor::CDynamicActor(const CDynamicActor & rhs)
 {
 }
 
+PxRigidDynamic *& CDynamicActor::Get_Actor()
+{
+	return m_pActor;
+}
+
 HRESULT CDynamicActor::NativeConstruct_Prototype()
 {
 	CActor::NativeConstruct_Prototype();
