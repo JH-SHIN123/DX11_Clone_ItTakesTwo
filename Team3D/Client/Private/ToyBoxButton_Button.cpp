@@ -189,7 +189,7 @@ void CToyBoxButton_Button::OnPressed_Button(_double TimeDelta)
 		if (m_fTriggerDeltaMove > 0.2)
 		{
 			m_iCheckTrigger = 0;
-			m_fTriggerDeltaMove = 0.2;
+			m_fTriggerDeltaMove = 0.2f;
 		}
 		else
 		{
