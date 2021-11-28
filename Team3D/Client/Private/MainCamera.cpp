@@ -364,65 +364,65 @@ _int CMainCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 
 void CMainCamera::ChangeViewPort()
 {
-	CFilm::CamNode tDesc;
-	tDesc.fTargetViewPortCenterX = 0.5f;
-	tDesc.fTargetViewPortCenterY = 1.f;
-	tDesc.fViewPortLerpSpeed = 1.f;
-	//case ViewPortOption::LScreen_Split_Immediate:
-	if (m_pGameInstance->Key_Down(DIK_1))
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
-			XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f));
+	//CFilm::CamNode tDesc;
+	//tDesc.fTargetViewPortCenterX = 0.5f;
+	//tDesc.fTargetViewPortCenterY = 1.f;
+	//tDesc.fViewPortLerpSpeed = 1.f;
+	////case ViewPortOption::LScreen_Split_Immediate:
+	//if (m_pGameInstance->Key_Down(DIK_1))
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
+	//		XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f));
 
-	////case ViewPortOption::LScreen_Split_Lerp:
-	if (m_pGameInstance->Key_Down(DIK_2))
-	{
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
-			XMVectorSet(0.f, 0.f, 1.f, 1.f));
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
-			XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f), tDesc.fViewPortLerpSpeed);
-	}
+	//////case ViewPortOption::LScreen_Split_Lerp:
+	//if (m_pGameInstance->Key_Down(DIK_2))
+	//{
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
+	//		XMVectorSet(0.f, 0.f, 1.f, 1.f));
+	//	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
+	//		XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f), tDesc.fViewPortLerpSpeed);
+	//}
 
-	////case ViewPortOption::LScreen_Merge_Immediate:
-	if (m_pGameInstance->Key_Down(DIK_3))
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
-			XMVectorSet(0.f, 0.f, 1.f, 1.f));
+	//////case ViewPortOption::LScreen_Merge_Immediate:
+	//if (m_pGameInstance->Key_Down(DIK_3))
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
+	//		XMVectorSet(0.f, 0.f, 1.f, 1.f));
 
-	////case ViewPortOption::LScreen_Merge_Lerp:
-	if (m_pGameInstance->Key_Down(DIK_4))
-	{
+	//////case ViewPortOption::LScreen_Merge_Lerp:
+	//if (m_pGameInstance->Key_Down(DIK_4))
+	//{
 
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
-			XMVectorSet(0.f, 0.f, 1.f, 1.f), tDesc.fViewPortLerpSpeed);
-	}
+	//	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
+	//		XMVectorSet(0.f, 0.f, 1.f, 1.f), tDesc.fViewPortLerpSpeed);
+	//}
 
-	////case ViewPortOption::RScreen_Split_Immediate:
-	if (m_pGameInstance->Key_Down(DIK_5))
-	{
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
-			XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f));
-	}
+	//////case ViewPortOption::RScreen_Split_Immediate:
+	//if (m_pGameInstance->Key_Down(DIK_5))
+	//{
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
+	//		XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f));
+	//}
 
-	////case ViewPortOption::RScreen_Split_Lerp:
-	if (m_pGameInstance->Key_Down(DIK_6))
-	{
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
-			XMVectorSet(1.f, 0.f, 1.f, 1.f));
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f),
-			XMVectorSet(0.5, 0.f, 0.5f, 1.f), tDesc.fViewPortLerpSpeed);
-	}
+	//////case ViewPortOption::RScreen_Split_Lerp:
+	//if (m_pGameInstance->Key_Down(DIK_6))
+	//{
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
+	//		XMVectorSet(1.f, 0.f, 1.f, 1.f));
+	//	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f),
+	//		XMVectorSet(0.5, 0.f, 0.5f, 1.f), tDesc.fViewPortLerpSpeed);
+	//}
 
-	////case ViewPortOption::RScreen_Merge_Immediate:
-	if (m_pGameInstance->Key_Down(DIK_7))
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
-			XMVectorSet(1.f, 0.f, 1.f, 1.f));
+	//////case ViewPortOption::RScreen_Merge_Immediate:
+	//if (m_pGameInstance->Key_Down(DIK_7))
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
+	//		XMVectorSet(1.f, 0.f, 1.f, 1.f));
 
-	////case ViewPortOption::RScreen_Merge_Lerp:
-	if (m_pGameInstance->Key_Down(DIK_8))
-	{
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
-				XMVectorSet(1.f, 0.f, 1.f, 1.f), tDesc.fViewPortLerpSpeed);
+	//////case ViewPortOption::RScreen_Merge_Lerp:
+	//if (m_pGameInstance->Key_Down(DIK_8))
+	//{
+	//	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
+	//			XMVectorSet(1.f, 0.f, 1.f, 1.f), tDesc.fViewPortLerpSpeed);
 
-	}
+	//}
 }
 
 void CMainCamera::KeyCheck(_double dTimeDelta)

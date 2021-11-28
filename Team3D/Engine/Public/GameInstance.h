@@ -14,6 +14,7 @@
 #include "Timer_Manager.h"
 #include "Shadow_Manager.h"
 #include "PostFX.h"
+#include "Blur.h"
 
 BEGIN(Engine)
 
@@ -133,6 +134,7 @@ private:
 	CPipeline*				m_pPipeline				= nullptr;
 	CFrustum*				m_pFrustum				= nullptr;
 	CPostFX*				m_pPostFX				= nullptr;
+	CBlur*					m_pBlur					= nullptr;
 
 public:
 	static void Release_Engine();

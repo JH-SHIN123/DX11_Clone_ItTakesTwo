@@ -17,6 +17,7 @@ CGameInstance::CGameInstance()
 	, m_pFrustum			(CFrustum::GetInstance())
 	, m_pShadow_Manager		(CShadow_Manager::GetInstance())
 	, m_pPostFX				(CPostFX::GetInstance())
+	, m_pBlur				(CBlur::GetInstance())
 {
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pInput_Device);
@@ -31,6 +32,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pFrustum);
 	Safe_AddRef(m_pShadow_Manager);
 	Safe_AddRef(m_pPostFX);
+	Safe_AddRef(m_pBlur);
 }
 
 #pragma region GameInstance
@@ -45,6 +47,7 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 	NULL_CHECK_RETURN(m_pFrustum, E_FAIL);
 	NULL_CHECK_RETURN(m_pShadow_Manager, E_FAIL);
 	NULL_CHECK_RETURN(m_pPostFX, E_FAIL);
+	NULL_CHECK_RETURN(m_pBlur, E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGraphic_Device->Ready_GraphicDevice(eWinMode, hWnd, iWinSizeX, iWinSizeY, ppDevice, ppDeviceContext), E_FAIL);
 	FAILED_CHECK_RETURN(m_pInput_Device->Ready_InputDevice(hInst, hWnd), E_FAIL);
@@ -54,6 +57,7 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 	FAILED_CHECK_RETURN(m_pFrustum->Ready_Frustum(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShadow_Manager->Ready_ShadowManager(*ppDevice, *ppDeviceContext), E_FAIL);
 	FAILED_CHECK_RETURN(m_pPostFX->Ready_PostFX(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
+	FAILED_CHECK_RETURN(m_pBlur->Ready_Blur(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
 
 	return S_OK;
 }
@@ -438,6 +442,8 @@ void CGameInstance::Release_Engine()
 		MSG_BOX("Failed to Release CLight_Manager.");
 	if (CPostFX::DestroyInstance())
 		MSG_BOX("Failed to Release CPostFX.");
+	if (CBlur::DestroyInstance())
+		MSG_BOX("Failed to Release CBlur.");
 	if (CPhysX::DestroyInstance())
 		MSG_BOX("Failed to Release CPhysX.");
 	if (CRenderTarget_Manager::DestroyInstance())
@@ -458,6 +464,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pBlur);
 	Safe_Release(m_pPostFX);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pLevel_Manager);
