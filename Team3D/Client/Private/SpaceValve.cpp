@@ -31,7 +31,7 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_SpaceValve"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_SpaceValveTwo"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 
 	EFFECT_DESC_CLONE a;
@@ -40,13 +40,13 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 
 	if (a.iPlayerValue == 1)
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 1.5f, 20.f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(47.268f, 127.251f, 195.714f, 1.f));
 		m_iTargetPlayer = GameID::eCODY;
 	}
 	else if (a.iPlayerValue == 2)
 	{
 		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-180.f));
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(35.f, 1.5f, 20.f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(79.774f, 127.251f, 195.864f, 1.f));
 		m_iTargetPlayer = GameID::eMAY;
 	}
 
