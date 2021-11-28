@@ -81,6 +81,21 @@ void CTransform::Set_Speed(_double InSpeedPerSec, _double InRotationPerSec)
 	m_TransformDesc.dRotationPerSec = InRotationPerSec;
 }
 
+void CTransform::Set_RotateQuat(_matrix Quat)
+{
+	_float fScaleRight = Get_Scale(CTransform::STATE_RIGHT);
+	_float fScaleUp = Get_Scale(CTransform::STATE_UP);
+	_float fScaleLook = Get_Scale(CTransform::STATE_LOOK);
+
+	_vector	vRight = XMVector3Normalize(Get_State(CTransform::STATE_RIGHT));
+	_vector	vUp = XMVector3Normalize(Get_State(CTransform::STATE_UP));
+	_vector	vLook = XMVector3Normalize(Get_State(CTransform::STATE_LOOK));
+
+	Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(vRight, Quat) * fScaleRight);
+	Set_State(CTransform::STATE_UP, XMVector3TransformNormal(vUp, Quat) * fScaleUp);
+	Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(vLook, Quat) * fScaleLook);
+}
+
 HRESULT CTransform::NativeConstruct_Prototype()
 {
 	CComponent::NativeConstruct_Prototype();

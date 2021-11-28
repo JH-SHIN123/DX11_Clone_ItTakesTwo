@@ -36,6 +36,7 @@ public: /* Setter */
 	void	Set_WorldMatrix(_fmatrix WorldMatrix);
 	void	Set_Rotaion(_fvector vRotation);
 	void	Set_Speed(_double InSpeedPerSec, _double InRotationPerSec);
+	void	Set_RotateQuat(_matrix Quat);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;

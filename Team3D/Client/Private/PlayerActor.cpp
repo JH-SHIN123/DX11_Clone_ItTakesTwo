@@ -73,6 +73,7 @@ HRESULT CPlayerActor::NativeConstruct(void * pArg)
 
 void CPlayerActor::Move(_fvector vMove, _double dTimeDelta)
 {
+	//_vector vTemp = XMVector3TransformCoord(vMove, MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
 	m_pController->move(MH_PxVec3(vMove), 0.001f, (_float)dTimeDelta, *m_pFilters);
 }
 
@@ -132,6 +133,7 @@ void CPlayerActor::Update(_double dTimeDelta)
 			m_pController->move(vDist, 0.f, (_float)dTimeDelta, *m_pFilters);
 		}
 
+		//m_pTransform->Set_RotateQuat(MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
 		m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
 	}
 }
@@ -166,6 +168,7 @@ void CPlayerActor::Step_GravityPath(PxVec3 vNormal)
 
 	m_vPlayerUp = MH_XMFloat3(vNormal);
 
+	//m_pTransform->Set_RotateQuat(MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
 	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
 
 	//µð¹ö±×
@@ -212,6 +215,10 @@ void CPlayerActor::Reorder_Gravity()
 	m_pController->setUpDirection(MH_PxVec3(m_vPlayerUp));
 	m_isGravityReordered = true;
 
+	//m_vPlayerUp;
+	//_vector vTemp = XMVector3TransformCoord(XMVectorSet(-0.5f, 0.1f, 0.1f, 1.f), MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
+
+	//m_pTransform->Set_RotateQuat(MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
 	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
 }
 
