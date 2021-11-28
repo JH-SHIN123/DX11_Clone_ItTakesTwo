@@ -106,20 +106,33 @@ void CPressureBigPlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 		m_IsCollision = false;
 		m_IsButtonActive = false;
 	}
+
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+	{
+		m_IsCollision = true;
+
+		Check_Collision_PlayerAnim();
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+	{
+		m_IsCollision = false;
+		m_IsButtonActive = false;
+	}
 }
 
 void CPressureBigPlate::Check_Collision_PlayerAnim()
 {
-	if (m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land)
+	if (m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land
+		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land)
 	{
 		m_IsButtonActive = true;
 
 		for (auto pPlate : m_vecPressurePlate)
-			pPlate->Set_PipeCurveRotate(true);
+		{
+			if(false == pPlate->Get_ButtonActive())
+				pPlate->Set_PipeCurveRotate(true);
+		}
 	}
-
-	if (m_IsCollision == true && (((CCody*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land)
-		m_IsButtonActive = true;
 }
 
 
@@ -151,6 +164,7 @@ void CPressureBigPlate::Button_Active(_double TimeDelta)
 			{
 				m_fMove += (_float)TimeDelta;
 				m_pTransformCom->Go_Down(TimeDelta * 0.2f);
+				m_pPlateLock->Get_Transform()->Go_Down(TimeDelta * 0.2f);
 			}
 			else
 				m_fMove = 0.3f;
@@ -161,6 +175,7 @@ void CPressureBigPlate::Button_Active(_double TimeDelta)
 			{
 				m_fMove -= (_float)TimeDelta;
 				m_pTransformCom->Go_Up(TimeDelta * 0.2f);
+				m_pPlateLock->Get_Transform()->Go_Up(TimeDelta * 0.2f);
 			}
 			else
 				m_fMove = 0.f;
@@ -174,6 +189,7 @@ void CPressureBigPlate::Button_Active(_double TimeDelta)
 			{
 				m_fMove += (_float)TimeDelta;
 				m_pTransformCom->Go_Down(TimeDelta * 0.2f);
+				m_pPlateLock->Get_Transform()->Go_Down(TimeDelta * 0.2f);
 			}
 			else
 				m_fMove = 0.8f;
@@ -184,6 +200,7 @@ void CPressureBigPlate::Button_Active(_double TimeDelta)
 			{
 				m_fMove -= (_float)TimeDelta;
 				m_pTransformCom->Go_Up(TimeDelta * 0.2f);
+				m_pPlateLock->Get_Transform()->Go_Up(TimeDelta * 0.2f);
 			}
 			else
 				m_fMove = 0.f;

@@ -182,6 +182,7 @@ public:
 	// Tick 에서 호출될 함수들
 private:
 	virtual void KeyInput(_double dTimeDelta);
+	void KeyInputTest(_double dTimeDelta);
 
 
 

@@ -47,16 +47,6 @@ _int CPipeCurve::Tick(_double dTimeDelta)
 
 	if (true == m_IsRotate)
 	{
-
-		//_matrix matWorld, matScale, matRotateY, matTrans;
-		//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		//_float3 vConvertPos;
-		//XMStoreFloat3(&vConvertPos, vPos);
-
-		//_float fScaleX = m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
-		//_float fScaleY = m_pTransformCom->Get_Scale(CTransform::STATE_UP);
-		//_float fScaleZ = m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
-
 		m_fAngle += (_float)dTimeDelta * 100.f;
 		m_fAngleIncreaseLimit += (_float)dTimeDelta * 100.f;
 
@@ -66,19 +56,6 @@ _int CPipeCurve::Tick(_double dTimeDelta)
 			m_fAngle -= fAngleDifference;
 			m_IsRotate = false;
 		}
-
-
-		//matScale = XMMatrixScaling(fScaleX, fScaleY, fScaleZ);
-		//matTrans = XMMatrixTranslation(vConvertPos.x + 1.f, vConvertPos.y, vConvertPos.z);
-		//matRotateY = XMMatrixRotationY(m_fAngle);
-		//matWorld = matScale *  matRotateY * matTrans;
-
-		//XMStoreFloat3(&vConvertPos, vPos);
-		//matWorld.r[3].m128_f32[0] = vConvertPos.x;
-		//matWorld.r[3].m128_f32[1] = vConvertPos.y;
-		//matWorld.r[3].m128_f32[2] = vConvertPos.z;
-
-		//m_pTransformCom->Set_WorldMatrix(matWorld);
 
 		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
 

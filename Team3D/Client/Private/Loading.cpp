@@ -597,7 +597,7 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jin()
 {
 	_matrix PivotMatrix = XMMatrixIdentity();
 
-	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixTranslation(-1.f, 0.f, 0.f);
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixTranslation(-2.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_PipeCurve"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("ControlRoomPuzzle_PipeCurve_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PipeCurve"), CPipeCurve::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 

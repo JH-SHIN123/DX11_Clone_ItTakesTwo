@@ -36,9 +36,9 @@ HRESULT CPressurePlate::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_PressurePlate"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	if (0 == m_iOption)
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-10.f, 0.f, 0.f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-2.f, 0.f, 0.f, 1.f));
 	else if (1 == m_iOption)
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(10.f, 0.f, 0.f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(2.f, 0.f, 0.f, 1.f));
 
 	FAILED_CHECK_RETURN(Ready_Layer_PipeCurve(TEXT("Layer_PipeCurve")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_PlateFrame(TEXT("Layer_PressurePlateFrame")), E_FAIL);

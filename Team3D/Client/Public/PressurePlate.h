@@ -23,6 +23,9 @@ public:
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 public:
+	_bool Get_ButtonActive() { return m_IsButtonActive; }
+
+public:
 	void Set_Position(_vector vPosition);
 	void Set_PipeCurveRotate(_bool IsCheck);
 
