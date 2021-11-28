@@ -19,6 +19,7 @@ private:
 	HRESULT DownScale(_double TimeDelta);
 	HRESULT Bloom();
 	HRESULT Blur();
+	HRESULT Blur_Custom();
 	HRESULT FinalPass();
 
 	HRESULT Tick_Adaptation(_double TimeDelta);

@@ -3,6 +3,7 @@
 #include "RenderTarget_Manager.h"
 #include "Pipeline.h"
 #include "VIBuffer_RectRHW.h"
+#include "Blur.h"
 
 IMPLEMENT_SINGLETON(CPostFX)
 
@@ -34,8 +35,9 @@ HRESULT CPostFX::PostProcessing(_double TimeDelta)
 	FAILED_CHECK_RETURN(Tick_Adaptation(TimeDelta), E_FAIL);
 
 	FAILED_CHECK_RETURN(DownScale(TimeDelta), E_FAIL);
-	FAILED_CHECK_RETURN(Bloom(), E_FAIL);;
-	FAILED_CHECK_RETURN(Blur(), E_FAIL);;
+	FAILED_CHECK_RETURN(Bloom(), E_FAIL);
+	FAILED_CHECK_RETURN(Blur(), E_FAIL);
+	FAILED_CHECK_RETURN(Blur_Custom(), E_FAIL);
 	FAILED_CHECK_RETURN(FinalPass(),E_FAIL);
 
 	// Swap Cur LumAvg - Prev LumAvg
@@ -140,6 +142,15 @@ HRESULT CPostFX::Blur()
 	return S_OK;
 }
 
+HRESULT CPostFX::Blur_Custom()
+{
+	// Process to Blur - Emissive
+	CBlur* pBlur = CBlur::GetInstance();
+	FAILED_CHECK_RETURN(pBlur->Blur_Emissive(), E_FAIL);
+
+	return S_OK;
+}
+
 HRESULT CPostFX::FinalPass()
 {
 	// PS - Tone Mapping
@@ -148,6 +159,7 @@ HRESULT CPostFX::FinalPass()
 	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
 	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
 	CPipeline* pPipeline = CPipeline::GetInstance();
+	CBlur* pBlur = CBlur::GetInstance();
 
 	if (GetAsyncKeyState(VK_F1) & 0x8000)
 		m_fMiddleGrey += 0.005f; // 0.0005
@@ -187,6 +199,8 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DOFBlurTex", m_pShaderResourceView_Bloom_Temp);
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DepthTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Depth")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
+
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EmissiveTexture", pBlur->Get_ShaderResourceView_BlurEmissive());
 
 	m_pVIBuffer_ToneMapping->Render(0);
 
