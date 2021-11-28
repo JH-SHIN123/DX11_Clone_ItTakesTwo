@@ -36,6 +36,8 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform2"), (CComponent**)&m_pPhysxTransformCom), E_FAIL);
 
+	m_pTransformCom->Set_Scale(XMVectorSet(2.85f, 2.85f, 2.85f, 1.f));
+
 	_matrix PhysxWorldMatrix = XMMatrixIdentity();
 	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	PhysxWorldMatrix = XMMatrixRotationZ(XMConvertToRadians(90.f)) * XMMatrixTranslation(XMVectorGetX(vTrans), XMVectorGetY(vTrans), XMVectorGetZ(vTrans));
@@ -47,7 +49,7 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eGRAVITYPIPE, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pPhysxTransformCom;
-	ArgDesc.pGeometry = new PxCapsuleGeometry(4.f, 20.f);
+	ArgDesc.pGeometry = new PxCapsuleGeometry(14.5f, 90.f);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
 

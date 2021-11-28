@@ -27,7 +27,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 
 	FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
 
-	///* For.Interactive Objects */
+	/* For.Interactive Objects */
 	FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_BigButton(TEXT("Layer_BigButton")), E_FAIL);
@@ -40,13 +40,6 @@ HRESULT CLevel_Stage::NativeConstruct()
 	//FAILED_CHECK_RETURN(Ready_Layer_Hook_UFO(TEXT("Layer_HookUFO")), E_FAIL);
 
 
-
-	//FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
-
-	///* For.Test */
-	//FAILED_CHECK_RETURN(Ready_Layer_Test(), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Map", Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
 
 	/* For. Environment */
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Environment_Space(), E_FAIL);
@@ -185,8 +178,7 @@ HRESULT CLevel_Stage::Test_Layer_Object_Effect(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel"), &Data), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
 
-	WorldMatrix.r[3] = { 15.f,0.f,5.f,1.f };
-
+	WorldMatrix.r[3] = { 62.9901505f, 35.f, 195.674637f,1.f };
 	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Gravity_Pipe"), &Data), E_FAIL);	
 	
@@ -211,70 +203,56 @@ HRESULT CLevel_Stage::Ready_Layer_MoonBaboon(const _tchar * pLayerTag)
 
 HRESULT CLevel_Stage::Ready_Layer_Rocket(const _tchar * pLayerTag)
 {
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Rocket")), E_FAIL);
+	ROBOTDESC RocketDesc;
+	RocketDesc.vPosition = { 53.872f, 20.882f, 174.64f, 1.f };
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Rocket"), &RocketDesc), E_FAIL);
 	return S_OK;
 }
 
 HRESULT CLevel_Stage::Ready_Layer_StarBuddy(const _tchar * pLayerTag)
 {
+	ROBOTDESC StarDesc;
+	StarDesc.vPosition = {};
+
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy")), E_FAIL);
 	return S_OK;
 
 }
 
-HRESULT CLevel_Stage::Ready_Layer_Robot(const _tchar * pLayerTag)
-{
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Robot")), E_FAIL);
-
-	return S_OK;
-}
-
-HRESULT CLevel_Stage::Ready_Layer_RobotHead(const _tchar * pLayerTag)
-{
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_RobotHead")), E_FAIL);
-	return S_OK;
-}
-
-HRESULT CLevel_Stage::Ready_Layer_RobotLever(const _tchar * pLayerTag)
-{
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_RobotLever")), E_FAIL);
-
-	return S_OK;
-}
-
-HRESULT CLevel_Stage::Ready_Layer_RobotBattery(const _tchar * pLayerTag)
-{
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_RobotBattery")), E_FAIL);
-
-	return S_OK;
-}
-
 HRESULT CLevel_Stage::Ready_Layer_SecurityCameraHandle(const _tchar * pLayerTag)
 {
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SecurityCameraHandle")), E_FAIL);
+	ROBOTDESC SecurityCamHandle;
+	SecurityCamHandle.vPosition = { 57.356f, 24.812f, 180.39f, 1.f };
+
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SecurityCameraHandle"), &SecurityCamHandle), E_FAIL);
 	return S_OK;
 }
 
 HRESULT CLevel_Stage::Ready_Layer_SecurityCamera(const _tchar * pLayerTag)
 {
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SecurityCamera")), E_FAIL);
+	ROBOTDESC SecurityCam;
+	SecurityCam.vPosition = { 57.356f, 24.812f, 180.39f, 1.f };
+
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SecurityCamera"), &SecurityCam), E_FAIL);
 	return S_OK;
 }
+
+
 HRESULT CLevel_Stage::Ready_Layer_TutorialDoor(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_TutorialDoor")), E_FAIL);
 	return S_OK;
 }
+
 HRESULT CLevel_Stage::Ready_Layer_BigButton(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_BigButton")), E_FAIL);
 	return S_OK;
 }
-HRESULT CLevel_Stage::Ready_Layer_NoBatterySign(const _tchar * pLayerTag)
-{
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_NoBatterySign")), E_FAIL);
-	return S_OK;
-}
+
 HRESULT CLevel_Stage::Ready_Layer_SpaceValve(const _tchar * pLayerTag)
 {
 	EFFECT_DESC_CLONE a;
