@@ -8,9 +8,6 @@ Texture2D<float4>		g_DOFBlurTex; // 다운스케일링 -> 업스케일링(Linear)
 Texture2D				g_DepthTex; 
 StructuredBuffer<float> g_AverageLum;
 
-Texture2D<float4>		g_EmissiveTexture;
-Texture2D<float4>		g_EffectTexture;
-
 static const float4 LUM_FACTOR = float4(0.299, 0.587, 0.114, 0);
 
 cbuffer FinalPassDesc
@@ -135,11 +132,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
 
 	vColor += g_BloomScale * g_BloomTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV.xy).xyz;
-
 	vColor = ToneMapping(vColor);
-
-	// Emissive
-	vColor += g_EmissiveTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV.xy).xyz * 2.f;
 
 	Out.vColor = vector(vColor, 1.f);
 
