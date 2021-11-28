@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "..\public\StarBuddy.h"
-#include "GameInstance.h"
 #include "UI_Generator.h"
 #include "Cody.h"
 #include "May.h"
+#include "RobotParts.h"
 
 CStarBuddy::CStarBuddy(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -30,7 +30,11 @@ HRESULT CStarBuddy::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_StarBuddy"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(35.f, 1.f, 25.f, 1.f));
+	ROBOTDESC StarDesc;
+	if (nullptr != pArg)
+		memcpy(&StarDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, StarDesc.vPosition);
 
 	CTriggerActor::ARG_DESC ArgDesc;
 
@@ -54,6 +58,9 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
+	m_pTransformCom->RotatePitch(dTimeDelta * 0.2f);
+
 	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide)
 	{
 		m_bLaunch = true;
@@ -64,12 +71,13 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 	else if (m_bLaunch == true)
 	{
 		m_fLifeTime += (_float)dTimeDelta;
-		m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
-		m_pTransformCom->RotatePitch(dTimeDelta * 0.2f);
 
-		if(m_fLifeTime > 0.71f)
+		if (m_fLifeTime > 0.71f)
+		{
 			Launch_StarBuddy(dTimeDelta);
-
+			m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
+			m_pTransformCom->RotatePitch(dTimeDelta * 1.2f);
+		}
 		if (m_fLifeTime > 3.5f)
 			return EVENT_DEAD; // 
 	}

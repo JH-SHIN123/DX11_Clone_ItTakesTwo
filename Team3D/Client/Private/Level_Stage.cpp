@@ -213,9 +213,13 @@ HRESULT CLevel_Stage::Ready_Layer_Rocket(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_StarBuddy(const _tchar * pLayerTag)
 {
 	ROBOTDESC StarDesc;
-	StarDesc.vPosition = {};
+	StarDesc.vPosition = {34.998f, 126.441216f, 170.7718f, 1.f};
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), &StarDesc), E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy")), E_FAIL);
+	StarDesc.vPosition = { 102.0644f, 126.4629f, 195.2063f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), &StarDesc), E_FAIL);
+
+
 	return S_OK;
 
 }
