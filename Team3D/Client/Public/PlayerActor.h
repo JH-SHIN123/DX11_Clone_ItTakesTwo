@@ -72,11 +72,9 @@ private:
 	_float  m_fFallingTime = 0.f;
 
 	/* For.Gravity */
-	_float	m_fGravity = -9.8f;
 	_bool	m_isGravityReordered = false;
-	_float3	m_vPlayerUpDir = _float3(0.f, 0.f, 0.f);
-	_float4 m_vQuatRotUp = _float4(0.f, 0.f, 0.f, 0.f);
-	_float4x4 m_vQuat;
+	_float	m_fGravity = -9.8f;
+	_float3 m_vPlayerUp = _float3(0.f, 0.f, 0.f);
 
 private:
 	void	Jump_Stop();
