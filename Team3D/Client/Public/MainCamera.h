@@ -9,7 +9,7 @@ class CControllableActor;
 END
 
 BEGIN(Client)
-
+class CCameraActor;
 class CMainCamera final : public CCamera
 {
 	enum CamRev {Rev_Holizontal,Rev_Prependicul,Rev_End};
@@ -38,8 +38,7 @@ public:
 
 
 private:
-	CControllableActor* m_pActorCom = nullptr;
-	CControllableActor* m_pSubActorCom = nullptr;
+	CCameraActor* m_pActorCom = nullptr;
 
 	CCam_Helper* m_pCamHelper = nullptr;
 private:

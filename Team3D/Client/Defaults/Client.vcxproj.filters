@@ -292,6 +292,9 @@
     <Filter Include="02.GameObject\00.Public\05.CutScene\CutScenePlayer">
       <UniqueIdentifier>{03d71d9f-2446-4c44-bd4c-e4e68ff222f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\Performer">
+      <UniqueIdentifier>{b9fd1268-d7a7-484e-acc3-6d2d0cd711be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -513,6 +516,9 @@
     <ClInclude Include="..\public\CutScenePlayer.h">
       <Filter>02.GameObject\00.Public\05.CutScene\CutScenePlayer</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Performer.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\Performer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -714,6 +720,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp">
       <Filter>02.GameObject\05.UI\03.ArrowKeys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Performer.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\Performer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

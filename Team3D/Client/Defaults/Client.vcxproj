@@ -235,6 +235,7 @@
     <ClInclude Include="..\public\Effect_RespawnTunnel.h" />
     <ClInclude Include="..\public\Effect_RespawnTunnel_Portal.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
+    <ClInclude Include="..\public\Performer.h" />
     <ClInclude Include="..\Public\PlayerMarker.h" />
     <ClInclude Include="..\Public\Robot.h" />
     <ClInclude Include="..\Public\RobotHead.h" />
@@ -303,6 +304,7 @@
     <ClCompile Include="..\private\Effect_RespawnTunnel.cpp" />
     <ClCompile Include="..\private\Effect_RespawnTunnel_Portal.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
+    <ClCompile Include="..\private\Performer.cpp" />
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />
     <ClCompile Include="..\Private\RobotHead.cpp" />

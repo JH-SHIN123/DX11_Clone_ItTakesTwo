@@ -308,7 +308,9 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 	Add_CamEffect(TEXT("Cam_Shake_Loc_Look_Loc_Up"), pShake_Loc_Look_Loc_Up);
 
 #endif
-
+	
+	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Begin_Game.dat"))))
+		return E_FAIL;
 
 	
 	return S_OK;
@@ -380,16 +382,16 @@ CFilm * CCam_Helper::Get_Film(const _tchar * pFilmName)
 	return Find_Film(pFilmName);
 }
 
-_fmatrix CCam_Helper::Tick_Film(_double dTimeDelta, CFilm::ScreenType eScreenTypeIdx)
+_fmatrix CCam_Helper::Tick_Film(_double dTimeDelta, CFilm::ScreenType eScreenTypeIdx, _float* fOutFovY)
 {
 	if (nullptr == m_pCurFilm[eScreenTypeIdx])
 	{
 		MSG_BOX("pFilm is nullptr");
 		return XMMatrixIdentity();
 	}
-	m_pCurFilm[eScreenTypeIdx]->Tick_Film(dTimeDelta, eScreenTypeIdx);
+	m_pCurFilm[eScreenTypeIdx]->Tick_Film(dTimeDelta, eScreenTypeIdx,fOutFovY);
 
-	return m_pCurFilm[eScreenTypeIdx]->Get_CurNodeMatrix(eScreenTypeIdx);
+	return m_pCurFilm[eScreenTypeIdx]->Get_CurNodeMatrix(eScreenTypeIdx	,fOutFovY);
 }
 
 void CCam_Helper::Start_Film(const _tchar * pFilmName, CFilm::ScreenType eScreenTypeIdx)
@@ -549,6 +551,62 @@ CFilm * CCam_Helper::Find_Film(const _tchar * pFilm)
 		return nullptr;
 
 	return iter->second;
+}
+
+HRESULT CCam_Helper::Load_Film(const _tchar * pDataPath)
+{
+
+		HANDLE hFile = CreateFile(pDataPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			return E_FAIL;
+
+		DWORD dwByte = 0;
+		DWORD dwStrByte = 0;
+		ReadFile(hFile, &dwStrByte, sizeof(DWORD), &dwByte, nullptr);
+		TCHAR szLoadFilmName[MAX_PATH] = L"";
+		ReadFile(hFile, szLoadFilmName, dwStrByte, &dwByte, nullptr);
+		CFilm* pLoadFilm = CFilm::Create(szLoadFilmName);
+		_double dDuration = 0.0;
+		ReadFile(hFile, &dDuration, sizeof(_double), &dwByte, nullptr);
+		pLoadFilm->Set_Duration(dDuration);
+		while (true) //ReadNode
+		{
+			CFilm::CamNode tDesc;
+			ReadFile(hFile, &tDesc.dTime, sizeof(_double), &dwByte, nullptr);
+
+			ReadFile(hFile, &tDesc.vEye, sizeof(_float3), &dwByte, nullptr);
+			ReadFile(hFile, &tDesc.vAt, sizeof(_float3), &dwByte, nullptr);
+
+			ReadFile(hFile, &tDesc.eEyeMoveOption, sizeof(_uint), &dwByte, nullptr);
+			ReadFile(hFile, &tDesc.eAtMoveOption, sizeof(_uint), &dwByte, nullptr);
+
+			ReadFile(hFile, &tDesc.fTargetViewPortCenterX, sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &tDesc.fTargetViewPortCenterY, sizeof(_float), &dwByte, nullptr);
+
+			ReadFile(hFile, &tDesc.fViewPortLerpSpeed, sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &tDesc.eViewPortOption, sizeof(_uint), &dwByte, nullptr);
+
+			ReadFile(hFile, &tDesc.fFovY, sizeof(_float), &dwByte, nullptr);
+
+
+			if (0 == dwByte)
+				break;
+
+		
+
+			pLoadFilm->Add_Node(new CFilm::CamNode(tDesc));
+		}
+		if (FAILED(Add_Film(pLoadFilm->Get_Name(),pLoadFilm,pLoadFilm->Get_Duration())))
+		{
+			Safe_Release(pLoadFilm);
+			CloseHandle(hFile);
+			return E_FAIL;
+		}
+
+		CloseHandle(hFile);
+	
+	return S_OK;
 }
 
 CCam_Helper * CCam_Helper::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context)
