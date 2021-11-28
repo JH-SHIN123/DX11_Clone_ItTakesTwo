@@ -22,7 +22,7 @@ HRESULT CMoonBaboon_MainLaser::NativeConstruct(void* pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(2.f, XMConvertToRadians(30.f))), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(3.5f, XMConvertToRadians(35.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon_MainLaser_01"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
@@ -105,7 +105,7 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 	}
 	else if (1 == m_iPatternState)
 	{
-		if (m_dPatternDeltaT >= 10.0)
+		if (m_dPatternDeltaT >= 15)
 		{
 			m_dPatternDeltaT = 0.0;
 			m_iPatternState = 2;
@@ -118,7 +118,7 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 	}
 	else if (2 == m_iPatternState)
 	{
-		if (m_dPatternDeltaT >= 1.5)
+		if (m_dPatternDeltaT >= 2.0)
 		{
 			m_dPatternDeltaT = 0.0;
 			m_iPatternState = 3;
