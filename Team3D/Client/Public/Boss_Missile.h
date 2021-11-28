@@ -52,8 +52,8 @@ private:
 	_int Dead_Explosion();
 
 private:
-	_bool m_IsNull_Trigger = nullptr;
-	_bool m_IsExplosion = nullptr;
+	_bool m_IsNull_Trigger = false;
+	_bool m_IsExplosion = false;
 
 private:
 	_float m_fCurvePower = 10.f;

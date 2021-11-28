@@ -1856,7 +1856,6 @@ void CCody::Boss_Missile_Control(const _double dTimeDelta)
 			m_pTransformCom->Rotate_ToTarget(vRotatePos);
 
 			// 이동
-			_vector vOffsetPos = { 0.f, 0.5f, 0.5f, 0.f };
 			TriggerMatrix.r[3] += TriggerMatrix.r[1] * 1.f;
 			_vector vNewLook = XMVector3Cross(TriggerMatrix.r[1], XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), TriggerMatrix.r[1]));
 			TriggerMatrix.r[3] += vNewLook * 0.8f;
@@ -1865,33 +1864,43 @@ void CCody::Boss_Missile_Control(const _double dTimeDelta)
 
 			//m_IsCollide = false;
 			m_IsBossMissile_Rodeo = true;
+			m_fLandTime = 0.f;
 			//m_IsBossMissile_Control = false;
 		}
 	}
 	else if (true == m_IsBossMissile_Rodeo)
 	{
-		if (m_pGameInstance->Key_Down(DIK_1)) /* 스타트 지점 */
-			m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
-
-		if (m_pGameInstance->Key_Pressing(DIK_W)) // 아래로 밀어
-			m_pTransformCom->RotatePitch(dTimeDelta * 0.7);
-		else if (m_pGameInstance->Key_Pressing(DIK_S)) // 위로 들어
+		m_fLandTime += (_float)dTimeDelta;
+		if(0.25f >= m_fLandTime)
 			m_pTransformCom->RotatePitch(dTimeDelta * -0.7);
 
-		if (m_pGameInstance->Key_Pressing(DIK_A)) // 좌
-			m_pTransformCom->RotateYaw(dTimeDelta * -1);
-		else if (m_pGameInstance->Key_Pressing(DIK_D)) // 우
-			m_pTransformCom->RotateYaw(dTimeDelta * 1);
+		else
+		{
+			m_fLandTime = 0.25f;
 
-		_vector vUp		= m_pTransformCom->Get_State(CTransform::STATE_UP);
-		_vector vAxisY	= XMVectorSet(0.f, 1.f, 0.f, 0.f);
-		_float vRadian = XMVector3Dot(vUp, vAxisY).m128_f32[0];
-		
-		_float fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_RIGHT).m128_f32[1];
-		m_pTransformCom->RotateRoll(dTimeDelta * fRotateRoll_Check * -1.f);
+			if (m_pGameInstance->Key_Down(DIK_1)) /* 스타트 지점 */
+				m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
 
-		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-		m_pActorCom->Move(vDir * 0.2f , dTimeDelta);
+			if (m_pGameInstance->Key_Pressing(DIK_W)) // 아래로 밀어
+				m_pTransformCom->RotatePitch(dTimeDelta * 0.7);
+			else if (m_pGameInstance->Key_Pressing(DIK_S)) // 위로 들어
+				m_pTransformCom->RotatePitch(dTimeDelta * -0.7);
+
+			if (m_pGameInstance->Key_Pressing(DIK_A)) // 좌
+				m_pTransformCom->RotateYaw(dTimeDelta * -1);
+			else if (m_pGameInstance->Key_Pressing(DIK_D)) // 우
+				m_pTransformCom->RotateYaw(dTimeDelta * 1);
+
+			_vector vUp		= m_pTransformCom->Get_State(CTransform::STATE_UP);
+			_vector vAxisY	= XMVectorSet(0.f, 1.f, 0.f, 0.f);
+			_float vRadian = XMVector3Dot(vUp, vAxisY).m128_f32[0];
+			
+			_float fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_RIGHT).m128_f32[1];
+			m_pTransformCom->RotateRoll(dTimeDelta * fRotateRoll_Check * -1.f);
+
+			_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+			m_pActorCom->Move(vDir * 0.2f , dTimeDelta);
+		}
 	}
 }
 

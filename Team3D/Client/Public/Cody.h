@@ -395,6 +395,7 @@ private:
 	_bool m_IsBossMissile_Rodeo_Ready = false;
 	_float m_fBossMissile_Rodeo_Ready_Time = 0.f;
 	_bool m_IsBossMissile_Rodeo = false;
+	_float m_fLandTime = 0.f;
 
 	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);

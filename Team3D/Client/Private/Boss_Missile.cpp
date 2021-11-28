@@ -233,8 +233,8 @@ void CBoss_Missile::Playable_Mode(_double TimeDelta)
 		if (m_pGameInstance->Pad_Key_Down(DIP_RB) && GameID::Enum::eMAY == m_eTarget_GameID)
 			m_IsPlayable = true;
 
-		//if (m_pGameInstance->Key_Down(DIK_F) && GameID::Enum::eCODY == m_eTarget_GameID)
-		//	m_IsPlayable = true;
+		if (m_pGameInstance->Key_Down(DIK_F) && GameID::Enum::eCODY == m_eTarget_GameID)
+			m_IsPlayable = true;
 
 		if (true == m_IsPlayable)
 		{
@@ -245,16 +245,31 @@ void CBoss_Missile::Playable_Mode(_double TimeDelta)
 				for (_int i = 0; i < 3; ++i)
 					TargetMatrix.r[i] = XMVector3Normalize(TargetMatrix.r[i]);
 		
-				m_pTransformCom->Set_WorldMatrix(TargetMatrix);	
+				TargetMatrix = XMMatrixRotationAxis(TargetMatrix.r[0], -90.f);
+
+				TargetMatrix.r[0] = XMVector3TransformNormal(TargetMatrix.r[0], TargetMatrix);
+				TargetMatrix.r[1] = XMVector3TransformNormal(TargetMatrix.r[1], TargetMatrix);
+				TargetMatrix.r[2] = XMVector3TransformNormal(TargetMatrix.r[2], TargetMatrix);
+
+				TargetMatrix.r[3] -= (TargetMatrix.r[1]) + (TargetMatrix.r[2] * 0.8f);
+				m_pTransformCom->Set_WorldMatrix(TargetMatrix);
 			}
 
 			if (GameID::Enum::eCODY == m_eTarget_GameID)
 			{
-				_matrix TargetMatrix = ((CMay*)m_pTargetObject)->Get_WorldMatrix();
+				_matrix TargetMatrix = ((CCody*)m_pTargetObject)->Get_WorldMatrix(); // 이부분 고치기
 
-				for (_int i = 0; i < 3; ++i)
-					TargetMatrix.r[i] = XMVector3Normalize(TargetMatrix.r[i]);
+				_vector vRight	= XMVector3Normalize(TargetMatrix.r[0]);
+				_vector vUp		= XMVector3Normalize(TargetMatrix.r[1]);
+				_vector vLook	= XMVector3Normalize(TargetMatrix.r[2]);
 
+				TargetMatrix = XMMatrixRotationAxis(TargetMatrix.r[0], -90.f);
+
+				TargetMatrix.r[0] = XMVector3TransformNormal(vRight, TargetMatrix);
+				TargetMatrix.r[1] = XMVector3TransformNormal(vUp, TargetMatrix);
+				TargetMatrix.r[2] = XMVector3TransformNormal(vLook, TargetMatrix);
+
+				TargetMatrix.r[3] -= (TargetMatrix.r[1]) + (TargetMatrix.r[2] * 0.8f);
 				m_pTransformCom->Set_WorldMatrix(TargetMatrix);
 			}
 		}
@@ -301,6 +316,7 @@ void CBoss_Missile::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pTriggerCom_Combat);
 	Safe_Release(m_pTriggerCom_Playable);
+	Safe_Release(m_pTransformCom_Actor);
 
 	__super::Free();
 }
