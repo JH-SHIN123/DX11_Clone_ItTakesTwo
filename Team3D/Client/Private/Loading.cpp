@@ -20,6 +20,8 @@
 #include "ToyBoxButton.h"
 #include "MoonBaboonCore.h"
 #include "MoonBaboon_MainLaser.h"
+#include "SpaceRail.h"
+#include "SpaceRailData.h"
 /* Yoon */
 #include "Cody.h"
 #include "May.h"
@@ -290,9 +292,8 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Sky_Space"), CSky::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 		/* Test */
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Terrain"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TEXTURE_TYPE::TYPE_TGA, TEXT("../Bin/Resources/_Test/Texture/Grass_0.tga"))), E_FAIL);
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(m_pDevice, m_pDeviceContext, 129, 129,1.f, TEXT("../Bin/ShaderFiles/Shader_Terrain.hlsl"), "DefaultTechnique")), E_FAIL);
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Terrain"), CTerrain::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+		Create_GameObjects_SpaceStage_Test();
+
 
 #ifndef __MAPLOADING_OFF
 		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Prototype_Model_Others_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others15.txt")), E_FAIL);
@@ -480,6 +481,17 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 
 HRESULT CLoading::Create_GameObjects_SpaceStage_Test()
 {
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Terrain"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TEXTURE_TYPE::TYPE_TGA, TEXT("../Bin/Resources/_Test/Texture/Grass_0.tga"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(m_pDevice, m_pDeviceContext, 129, 129, 1.f, TEXT("../Bin/ShaderFiles/Shader_Terrain.hlsl"), "DefaultTechnique")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Terrain"), CTerrain::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	// Create Space Rail
+	CSpaceRailData* pSpaceRailData = CSpaceRailData::GetInstance();
+	pSpaceRailData->Load_SpaceRail(m_pDevice, m_pDeviceContext, TEXT("GrindLine_Dummy_0"), TEXT("../Bin/Resources/Data/RailData/Test/GrindLine_Dummy_0.dat"));
+	pSpaceRailData->Load_SpaceRail(m_pDevice, m_pDeviceContext, TEXT("GrindLine_Dummy_1"), TEXT("../Bin/Resources/Data/RailData/Test/GrindLine_Dummy_1.dat"));
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_SpaceRail"), CSpaceRail::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
 	return S_OK;
 }
 
@@ -504,6 +516,14 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Won()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_ToyBoxButton"), CToyBoxButton::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore"), CMoonBaboonCore::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_MainLaser"), CMoonBaboon_MainLaser::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	//// Create Space Rail
+	//CSpaceRailData* pSpaceRailData = CSpaceRailData::GetInstance();
+	//pSpaceRailData->Load_SpaceRail(m_pDevice, m_pDeviceContext, TEXT("GrindLine_Dummy0"), TEXT("../Bin/Resources/Data/RailData/Test/GrindLine_Dummy0.dat"));
+	//pSpaceRailData->Load_SpaceRail(m_pDevice, m_pDeviceContext, TEXT("GrindLine_Dummy1"), TEXT("../Bin/Resources/Data/RailData/Test/GrindLine_Dummy1.dat"));
+	//pSpaceRailData->Load_SpaceRail(m_pDevice, m_pDeviceContext, TEXT("GrindLine_Dummy2"), TEXT("../Bin/Resources/Data/RailData/Test/GrindLine_Dummy2.dat"));
+
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_SpaceRail"), CSpaceRail::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
 }

@@ -34,6 +34,7 @@ namespace Engine
 			eHOOKUFO,
 			eGRAVITYPATH_CENTER,
 			eGRAVITYPATH_SIDE,
+			eSPACERAIL,
 			eENVIRONMENT
 		};
 	};

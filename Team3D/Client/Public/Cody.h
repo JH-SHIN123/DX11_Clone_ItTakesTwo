@@ -255,7 +255,7 @@ public:
 	void Jump(const _double dTimeDelta);
 	void Change_Size(const _double dTimeDelta);
 	void Ground_Pound(const _double dTimeDelta);
-
+	void Riding_Rail();
 
 #pragma region BasicMovement
 private:
@@ -325,6 +325,7 @@ private:
 
 	_bool m_IsCollide = false;
 	_bool m_IsOnGrind = false;
+	_bool m_IsOnGrind_Start = false;
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;

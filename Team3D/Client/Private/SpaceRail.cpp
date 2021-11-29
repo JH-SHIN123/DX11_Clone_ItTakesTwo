@@ -1,67 +1,89 @@
 #include "stdafx.h"
 #include "SpaceRail.h"
 #include "Character.h"
+#include "SpaceRail_Node.h"
+#include "SpaceRailData.h"
 
 CSpaceRail::CSpaceRail(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: CGameObject(pDevice, pDeviceContext)
+	: CComponent(pDevice, pDeviceContext)
 {
 }
 
-_fmatrix CSpaceRail::Get_WorldMatrix() const
+CSpaceRail::CSpaceRail(const CSpaceRail& rhs)
+	: CComponent(rhs),
+	m_pRailData(rhs.m_pRailData)
 {
-	if (nullptr == m_pTransformCom) return XMMatrixIdentity();
-
-	return m_pTransformCom->Get_WorldMatrix();
 }
 
-_fvector CSpaceRail::Get_Position() const
+void CSpaceRail::RideOnRail(const _tchar* pRailTag, _uint iIndex, STATE eState)
 {
-	if (nullptr == m_pTransformCom) return XMVectorZero();
+	if (m_bRiding) return;
+	if (nullptr == pRailTag) return;
+	if (nullptr == m_pRailData) return;
 
-	return m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	m_pSpaceRailNodes = m_pRailData->Get_RailNodes(pRailTag);
+
+	m_iIndex_CurNode = iIndex;
+	m_eState = eState;
+	m_bRiding = true;
 }
 
-HRESULT CSpaceRail::NativeConstruct(void* pArg)
+void CSpaceRail::Riding(CCharacter* pSubject)
 {
-	//if (nullptr != pArg)
-	//	m_pParent = (CToyBoxButton*)pArg;
+	if (nullptr == pSubject) return;
+	if (false == m_bRiding) return;
+	if (nullptr == m_pSpaceRailNodes) return;
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
+	switch (m_eState)
+	{
+	case STATE_FORWARD:
+		if (m_pSpaceRailNodes->size()-1 > m_iIndex_CurNode) {
+			// 다음 노드에 도달했을때
+			++m_iIndex_CurNode;
+		}
+		else
+		{
+			m_pSpaceRailNodes = nullptr;
+			m_eState = STATE_END;
+			m_bRiding = false;
+			return;
+		}
+		break;
+	case STATE_BACKWARD:
+		if (0 < m_iIndex_CurNode) {
+			// 다음 노드에 도달했을때
+			--m_iIndex_CurNode;
+		}
+		else
+		{
+			m_pSpaceRailNodes = nullptr;
+			m_eState = STATE_END;
+			m_bRiding = false;
+			return;
+		}
+		break;
+	}
 
-	CGameObject::NativeConstruct(nullptr);
+	pSubject->Set_WorldMatrix((*m_pSpaceRailNodes)[m_iIndex_CurNode]->Get_WorldMatrix());
+}
 
-	m_UserData.eID = GameID::eSPACERAIL;
-	m_UserData.pGameObject = this;
-
-	CTriggerActor::ARG_DESC tTriggerArg;
-	tTriggerArg.pGeometry = new PxSphereGeometry(4.f);
-	tTriggerArg.pTransform = m_pTransformCom;
-	tTriggerArg.pUserData = &m_UserData;
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArg), E_FAIL);
-	Safe_Delete(tTriggerArg.pGeometry);
+HRESULT CSpaceRail::NativeConstruct_Prototype()
+{
+	m_pRailData = CSpaceRailData::GetInstance();
 
 	return S_OK;
 }
 
-void CSpaceRail::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject)
+HRESULT CSpaceRail::NativeConstruct(void* pArg)
 {
-	if (eID == GameID::eCODY || eID == GameID::eMAY)
-	{
-		CCharacter* pChar = (CCharacter*)pGameObject;
-		switch (eStatus)
-		{
-		case Engine::TriggerStatus::eFOUND:
-			pChar->Set_SpaceRail(this);
-			break;
-		}
-	}
+	return S_OK;
 }
 
-CSpaceRail* CSpaceRail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
+CSpaceRail* CSpaceRail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CSpaceRail* pInstance = new CSpaceRail(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct(pArg)))
+	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
 		MSG_BOX("Failed to Create Instance - CSpaceRail");
 		Safe_Release(pInstance);
@@ -70,10 +92,22 @@ CSpaceRail* CSpaceRail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDevi
 	return pInstance;
 }
 
+CComponent* CSpaceRail::Clone_Component(void* pArg)
+{
+	CSpaceRail* pInstance = new CSpaceRail(*this);
+
+	if (FAILED(pInstance->NativeConstruct(pArg)))
+	{
+		MSG_BOX("Failed to Clone Instance - CSpaceRail");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
 void CSpaceRail::Free()
 {
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pTriggerActorCom);
-
-	CGameObject::Free();
+	m_pRailData = nullptr;
+	m_pSpaceRailNodes = nullptr;
+	CComponent::Free();
 }

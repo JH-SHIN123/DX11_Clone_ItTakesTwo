@@ -45,7 +45,32 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
 	pFilm_Eye_Straight->Add_Node(pNode);
 
-	Add_Film(TEXT("Eye_Straight"), pFilm_Eye_Straight, 3.0);
+	pNode = new CFilm::CamNode;
+	pNode->vEye = { 0.f,4.f, 20.f };
+	pNode->vAt = vAt;
+	pNode->dTime = 4.0;
+	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
+	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
+	pFilm_Eye_Straight->Add_Node(pNode);
+
+	pNode = new CFilm::CamNode;
+	pNode->vEye = { 0.f,4.f, 20.f };
+	pNode->vAt = vAt;
+	pNode->dTime = 5.0;
+	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
+	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
+	pFilm_Eye_Straight->Add_Node(pNode);
+
+	pNode = new CFilm::CamNode;
+	pNode->vEye = { 8.f,4.f, 20.f };
+	pNode->vAt = vAt;
+	pNode->dTime = 6.0;
+	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
+	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
+	pFilm_Eye_Straight->Add_Node(pNode);
+
+
+	Add_Film(TEXT("Eye_Straight"), pFilm_Eye_Straight, 6.0);
 
 	CFilm* pFilm_Eye_Bezier3 = CFilm::Create(TEXT("Eye_Bezier3"));
 

@@ -265,6 +265,8 @@
     <ClInclude Include="..\Public\SecurityCameraHandle.h" />
     <ClInclude Include="..\Public\SepdStaticActor.h" />
     <ClInclude Include="..\Public\SpaceRail.h" />
+    <ClInclude Include="..\Public\SpaceRailData.h" />
+    <ClInclude Include="..\Public\SpaceRail_Node.h" />
     <ClInclude Include="..\Public\SpaceValve.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
@@ -361,6 +363,8 @@
     <ClCompile Include="..\Private\SecurityCameraHandle.cpp" />
     <ClCompile Include="..\Private\SepdStaticActor.cpp" />
     <ClCompile Include="..\Private\SpaceRail.cpp" />
+    <ClCompile Include="..\Private\SpaceRailData.cpp" />
+    <ClCompile Include="..\Private\SpaceRail_Node.cpp" />
     <ClCompile Include="..\Private\SpaceValve.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />

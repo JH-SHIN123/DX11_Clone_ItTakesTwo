@@ -559,11 +559,11 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	//외부에서 상태 설정 구간
 #ifdef _DEBUG
 
-	//if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
-	//{
-	//	m_pCamHelper->Start_Film(L"Eye_Bezier3", CFilm::LScreen);
-	//	return NO_EVENT;
-	//}
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
+	{
+		m_pCamHelper->Start_Film(L"Eye_Straight", CFilm::LScreen);
+		return NO_EVENT;
+	}
 
 	//if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 	//{

@@ -3,7 +3,7 @@
 #include "Client_Defines.h"
 
 BEGIN(Client)
-class CSpaceRail;
+class CSpaceRail_Node;
 class CCharacter abstract : public CGameObject
 {
 protected:
@@ -11,8 +11,9 @@ protected:
 	explicit CCharacter(const CCharacter& rhs);
 	virtual ~CCharacter() = default;
 
-public:
-	void Set_SpaceRail(CSpaceRail* pRail);
+public: /* Setter */
+	void Set_SpaceRailNode(CSpaceRail_Node* pRail);
+	void Set_WorldMatrix(_fmatrix WorldMatrix);
 
 public: /* Getter */
 	virtual _fvector Get_Position();
@@ -41,14 +42,15 @@ protected: /* For.Component */
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 	class CPlayerActor*		m_pActorCom = nullptr;
+	class CSpaceRail*		m_pSpaceRailCom = nullptr;
 
 protected:
 	_float m_fClockWise = 1.f; // 1이면 시계방향, -1이면 반시계방향.
 	//_uint  m_iViewPortNum = 0;
 
-protected:
-	vector<CSpaceRail*>		m_vecRideOnRails;
-	CSpaceRail*				m_pTargetSpaceRail = nullptr;
+protected: /* Space Rail */
+	vector<CSpaceRail_Node*>	m_vecRideOnRailNodes;
+	CSpaceRail_Node*			m_pTargetSpaceRailNode = nullptr;
 
 public:
 	virtual void Free() override;

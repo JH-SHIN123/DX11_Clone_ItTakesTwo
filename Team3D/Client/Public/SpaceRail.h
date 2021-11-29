@@ -1,41 +1,39 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
-
-BEGIN(Engine)
-class CTransform;
-class CTriggerActor;
-END
 
 BEGIN(Client)
-class CSpaceRail : public CGameObject
+class CSpaceRail_Node;
+class CSpaceRail : public CComponent
 {
 public:
+	enum STATE { STATE_FORWARD, STATE_BACKWARD, STATE_END };
 
 private:
 	explicit CSpaceRail(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CSpaceRail(const CSpaceRail& rhs) = delete;
+	explicit CSpaceRail(const CSpaceRail& rhs);
 	virtual ~CSpaceRail() = default;
 
 public:
-	_fmatrix Get_WorldMatrix() const;
-	_fvector Get_Position() const;
+	void	RideOnRail(const _tchar* pRailTag, _uint iIndex, STATE eState);
+	void	Riding(class CCharacter* pSubject);
 
 public:
-	virtual HRESULT	NativeConstruct(void* pArg) override;
-
-public:
-	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject);
+	virtual HRESULT	NativeConstruct_Prototype();
+	virtual HRESULT	NativeConstruct(void* pArg);
 
 private:
-	/* For.Component */
-	CTransform* m_pTransformCom = nullptr;
-	CTriggerActor* m_pTriggerActorCom = nullptr;
+	class CSpaceRailData*			m_pRailData = nullptr;
+	const vector<CSpaceRail_Node*>*	m_pSpaceRailNodes = nullptr;
+	
+private:
+	_bool m_bRiding = false;
+	STATE m_eState = STATE_END;
+	_uint m_iIndex_CurNode = 0;
 
 public:
-	static CSpaceRail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg = nullptr);
-	virtual CGameObject* Clone_GameObject(void* pArg) override { return nullptr; };
+	static CSpaceRail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CComponent* Clone_Component(void* pArg) override;
 	virtual void Free() override;
 };
 END

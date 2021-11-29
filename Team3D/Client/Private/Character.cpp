@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Character.h"
 #include "SpaceRail.h"
+#include "SpaceRail_Node.h"
 
 CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -12,11 +13,16 @@ CCharacter::CCharacter(const CCharacter& rhs)
 {
 }
 
-void CCharacter::Set_SpaceRail(CSpaceRail* pRail)
+void CCharacter::Set_SpaceRailNode(CSpaceRail_Node* pRail)
 {
 	if (nullptr == pRail) return;
 
-	m_vecRideOnRails.push_back(pRail);
+	m_vecRideOnRailNodes.push_back(pRail);
+}
+
+void CCharacter::Set_WorldMatrix(_fmatrix WorldMatrix)
+{
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 }
 
 _fvector CCharacter::Get_Position()
@@ -102,6 +108,7 @@ HRESULT CCharacter::NativeConstruct(void* pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_SpaceRail"), TEXT("Com_SpaceRail"), (CComponent**)&m_pSpaceRailCom), E_FAIL);
 
 	return S_OK;
 }
@@ -133,7 +140,7 @@ void CCharacter::Find_SpaceRailTarget()
 	_vector vPlayerPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector vRailPosition = XMVectorZero();
 	_float fDist = FLT_MAX;
-	for (auto& pRail : m_vecRideOnRails)
+	for (auto& pRail : m_vecRideOnRailNodes)
 	{
 		if(nullptr == pRail) continue;
 		vRailPosition = pRail->Get_Position();
@@ -141,16 +148,18 @@ void CCharacter::Find_SpaceRailTarget()
 		_float fToRailDist = XMVectorGetX(XMVector3Length(vPlayerPosition - vRailPosition));
 		if (fDist > fToRailDist)
 		{
-			m_pTargetSpaceRail = pRail;
+			m_pTargetSpaceRailNode = pRail;
 			fDist = fToRailDist;
 		}
 	}
 
 	// 등록된 스페이스 레일 비워주기
-	m_vecRideOnRails.clear();
+	m_vecRideOnRailNodes.clear();
 }
 
 void CCharacter::Free()
 {
+	Safe_Release(m_pSpaceRailCom);
+
 	CGameObject::Free();
 }

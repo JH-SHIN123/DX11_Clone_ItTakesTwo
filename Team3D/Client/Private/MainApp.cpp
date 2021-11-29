@@ -4,6 +4,7 @@
 #include "Effect_Generator.h"
 #include "UI_Generator.h"
 #include "Environment_Generator.h"
+#include "SpaceRailData.h"
 #include "PxEventCallback.h"
 
 CMainApp::CMainApp()
@@ -147,6 +148,7 @@ void CMainApp::Free()
 
 	Safe_Delete(m_pPxEventCallback);
 
+	CSpaceRailData::DestroyInstance();
 	CEffect_Generator::DestroyInstance(); // 이펙트 제어기
 	CUI_Generator::DestroyInstance();
 	CDataStorage::DestroyInstance();
