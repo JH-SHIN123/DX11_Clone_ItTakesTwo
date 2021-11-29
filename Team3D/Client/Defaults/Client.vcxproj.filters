@@ -361,6 +361,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin\06.ControlRoom_Door">
       <UniqueIdentifier>{7d68941f-ef9e-45f4-9a25-aae9935dc649}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\07.BetteryBox">
+      <UniqueIdentifier>{509900e3-ef54-404d-8bcc-2c05bc99434e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -657,6 +660,9 @@
     <ClInclude Include="..\Public\ControlRoom_Door.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\06.ControlRoom_Door</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BetteryBox.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\07.BetteryBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -941,6 +947,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ControlRoom_Door.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\06.ControlRoom_Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BetteryBox.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\07.BetteryBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

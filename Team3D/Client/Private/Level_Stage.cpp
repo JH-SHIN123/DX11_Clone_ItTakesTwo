@@ -47,6 +47,8 @@ HRESULT CLevel_Stage::NativeConstruct()
 
 	/* Jin */
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressureBigPlate"), TEXT("GameObject_PressureBigPlate")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_BetteryBox"), TEXT("GameObject_BetteryBox")), E_FAIL);
+
 	//FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressurePlateFrame"), TEXT("GameObject_PressurePlateFrame")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_SupportFrame"), TEXT("GameObject_SupportFrame")), E_FAIL);
 

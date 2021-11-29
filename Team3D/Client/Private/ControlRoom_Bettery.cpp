@@ -1,49 +1,36 @@
 #include "stdafx.h"
-#include "..\public\ControlRoom_Door.h"
+#include "..\public\BetteryBox.h"
 #include "Cody.h"
 #include "May.h"
-#include "PressurePlateLock.h"
 
-CControlRoom_Door::CControlRoom_Door(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CBetteryBox::CBetteryBox(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
 }
 
-CControlRoom_Door::CControlRoom_Door(const CControlRoom_Door & rhs)
+CBetteryBox::CBetteryBox(const CBetteryBox & rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CControlRoom_Door::NativeConstruct_Prototype()
+HRESULT CBetteryBox::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
-HRESULT CControlRoom_Door::NativeConstruct(void * pArg)
+HRESULT CBetteryBox::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	if (nullptr != pArg)
-		memcpy(&m_iOption, pArg, sizeof(_uint));
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_ControlRoom_Door"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_BetteryBox"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	if (0 == m_iOption)
-	{
-		//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f));
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(66.01f, 218.552f, 232.591f, 1.f));
-
-	}
-	else if (1 == m_iOption)
-	{
-		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-180.f));
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(62.3026f, 218.552f, 232.591f, 1.f));
-	}
-
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 0.f, 1.f));
+	
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
 	ArgDesc.pTransform = m_pTransformCom;
@@ -53,23 +40,14 @@ HRESULT CControlRoom_Door::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CControlRoom_Door::Tick(_double dTimeDelta)
+_int CBetteryBox::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
-
-	if (true == m_IsOpenDoor)
-	{
-		if (1.2f >= m_fMove)
-		{
-			m_fMove += (_float)dTimeDelta;
-			m_pTransformCom->Go_Right(dTimeDelta * 3.f);
-		}
-	}
 
 	return NO_EVENT;
 }
 
-_int CControlRoom_Door::Late_Tick(_double dTimeDelta)
+_int CBetteryBox::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
@@ -79,7 +57,7 @@ _int CControlRoom_Door::Late_Tick(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-HRESULT CControlRoom_Door::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CBetteryBox::Render(RENDER_GROUP::Enum eGroup)
 {
 	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -90,18 +68,12 @@ HRESULT CControlRoom_Door::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-void CControlRoom_Door::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+void CBetteryBox::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 
 }
 
-void CControlRoom_Door::Set_OpenDoor()
-{
-	m_IsOpenDoor = true;
-}
-
-
-HRESULT CControlRoom_Door::Render_ShadowDepth()
+HRESULT CBetteryBox::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
@@ -113,33 +85,33 @@ HRESULT CControlRoom_Door::Render_ShadowDepth()
 	return S_OK;
 }
 
-CControlRoom_Door * CControlRoom_Door::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CBetteryBox * CBetteryBox::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
-	CControlRoom_Door* pInstance = new CControlRoom_Door(pDevice, pDeviceContext);
+	CBetteryBox* pInstance = new CBetteryBox(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSG_BOX("Failed to Create Instance - CControlRoom_Door");
+		MSG_BOX("Failed to Create Instance - CBetteryBox");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CControlRoom_Door::Clone_GameObject(void * pArg)
+CGameObject * CBetteryBox::Clone_GameObject(void * pArg)
 {
-	CControlRoom_Door* pInstance = new CControlRoom_Door(*this);
+	CBetteryBox* pInstance = new CBetteryBox(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CControlRoom_Door");
+		MSG_BOX("Failed to Clone Instance - CBetteryBox");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CControlRoom_Door::Free()
+void CBetteryBox::Free()
 {
 	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTransformCom);

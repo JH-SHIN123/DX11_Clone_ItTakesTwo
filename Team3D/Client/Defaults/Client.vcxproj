@@ -184,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
+    <ClInclude Include="..\Public\BetteryBox.h" />
     <ClInclude Include="..\Public\CamEffect.h" />
     <ClInclude Include="..\public\Cam_Helper.h" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp" />
@@ -286,6 +287,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\AlphaScreen.cpp" />
+    <ClCompile Include="..\Private\BetteryBox.cpp" />
     <ClCompile Include="..\Private\ButtonIndicator.cpp" />
     <ClCompile Include="..\Private\ChapterSelect.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
