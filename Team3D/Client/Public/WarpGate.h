@@ -81,10 +81,6 @@ private:
 	const _float4	m_vWormhole_Cody		= {};
 	const _float4	m_vWormhole_May			= {};
 
-
-
-
-
 public:
 	static CWarpGate* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

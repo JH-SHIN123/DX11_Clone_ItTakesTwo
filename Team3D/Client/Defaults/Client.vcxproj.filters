@@ -268,9 +268,6 @@
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\03.Robot\NoneInteraction">
       <UniqueIdentifier>{52929ebb-0420-4a62-9b53-eddeed4bac1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\04.TutorialDoor">
-      <UniqueIdentifier>{6d013226-dd4d-47df-845f-f9034ed1d948}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\05.BigButton">
       <UniqueIdentifier>{e542390a-f37e-411e-8fa0-b1338584a8eb}</UniqueIdentifier>
     </Filter>
@@ -294,12 +291,6 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung\00.WarpGate">
       <UniqueIdentifier>{2650a767-00d4-4a91-bc33-20a9b360ce35}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\Interaction_Effect">
-      <UniqueIdentifier>{9ab4a4e1-e566-47db-87c1-0fb99c749050}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\Interaction_Effect\00.FireDoor">
-      <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\00.Robot_Battery_Spark">
       <UniqueIdentifier>{61f2a2e3-61fb-4b3b-b340-fdaadb28c443}</UniqueIdentifier>
@@ -403,6 +394,18 @@
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe">
       <UniqueIdentifier>{0e9afc0b-547c-49be-9832-18d17154215d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\02.FireDoor">
+      <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\03.WallLaserTrap">
+      <UniqueIdentifier>{fa6de605-6bf4-4a82-be5c-527474637da3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\04.TutorialDoor">
+      <UniqueIdentifier>{6d013226-dd4d-47df-845f-f9034ed1d948}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\04.TutorialDoor">
+      <UniqueIdentifier>{9504df9e-0d63-4641-8f31-8099b62bfdd7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -484,7 +487,7 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default\Dead_Particle</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_FireDoor.h">
-      <Filter>02.GameObject\05.Effect/Particle\Interaction_Effect\00.FireDoor</Filter>
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\02.FireDoor</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Walking_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\05.Walking_Smoke</Filter>
@@ -583,7 +586,7 @@
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TutorialDoor.h">
-      <Filter>02.GameObject\04.Stage_Space\06.Yoon\04.TutorialDoor</Filter>
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\04.TutorialDoor</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BigButton.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\05.BigButton</Filter>
@@ -717,6 +720,9 @@
     <ClInclude Include="..\public\Effect_Umbrella_Pipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\WallLaserTrap.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\03.WallLaserTrap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -786,7 +792,7 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default\Dead_Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_FireDoor.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\Interaction_Effect\00.FireDoor</Filter>
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\02.FireDoor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Walking_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\05.Walking_Smoke</Filter>
@@ -867,7 +873,7 @@
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TutorialDoor.cpp">
-      <Filter>02.GameObject\04.Stage_Space\06.Yoon\04.TutorialDoor</Filter>
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\04.TutorialDoor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BigButton.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\05.BigButton</Filter>
@@ -1003,6 +1009,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Umbrella_Pipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WallLaserTrap.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\03.WallLaserTrap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
