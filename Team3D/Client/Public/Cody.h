@@ -370,16 +370,16 @@ private:
 	_float3 m_vStartPosition = {};
 	_float3 m_vDstPosition = {};
 
-
 	// Arbitrary damping
 	_float m_faDamping = 0.995f;
 
-	// Arbitrary ball radius
-
-
-
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
+
+	/* For. WallJump */
+	_bool	m_bWallAttach = false;
+	_bool   m_IsWallJumping = false;
+	_float	m_fWallJumpingTime = 0.f;
 
 	// Warp NextStage
 	_bool m_IsWarpNextStage = false;
@@ -403,6 +403,7 @@ private:
 	_float	m_fBossMissile_HeroLanding_Time = 0.f;
 	_bool	m_IsBossMissile_RotateYawRoll_After = false;
 
+	// YYY
 	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);
 	void Hit_Rocket(const _double dTimeDelta);
@@ -412,6 +413,8 @@ private:
 	void In_GravityPipe(const _double dTimeDelta);
 	void Hit_Planet(const _double dTimeDelta);
 	void Hook_UFO(const _double dTimeDelta);
+	void Wall_Jump(const _double dTimeDelta);
+
 	// Á¤È£
 	void Warp_Wormhole(const _double dTimeDelta);
 	void Touch_FireDoor(const _double dTimeDelta);

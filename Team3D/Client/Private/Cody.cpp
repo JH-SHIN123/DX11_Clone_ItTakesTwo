@@ -160,6 +160,7 @@ _int CCody::Tick(_double dTimeDelta)
 
 #pragma region BasicActions
 	/////////////////////////////////////////////
+	Wall_Jump(dTimeDelta);
 	if (Trigger_Check(dTimeDelta))
 	{
 		Go_Grind(dTimeDelta);
@@ -176,6 +177,7 @@ _int CCody::Tick(_double dTimeDelta)
 		Boss_Missile_Hit(dTimeDelta);
 		Boss_Missile_Control(dTimeDelta);
 		Falling_Dead(dTimeDelta);
+		//Wall_Jump(dTimeDelta);
 	}
 	else
 	{
@@ -1505,13 +1507,19 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			/* 데드라인과 충돌시 */
 			/* 낙사 애니메이션인데 다음애니메이션이 뭔지 모르겠음 */
-			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
 			/* 왜 중력을 0으로 하면 추락하는지 모르겠음 */
 			m_pActorCom->Set_Gravity(1.f);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_IsDeadLine = true;
+		}
+		else if (m_eTargetGameID == GameID::eDUMMYWALL && m_bWallAttach == false && m_fWallJumpingTime <= 0.f)
+		{
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
+			m_bWallAttach = true;
 		}
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
 		{
@@ -1522,7 +1530,8 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine)
+		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
+		|| m_bWallAttach)
 		return true;
 
 	return false;
@@ -1848,6 +1857,41 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 			m_pActorCom->Set_Jump(true);
 			m_IsHookUFO = false;
 			m_IsCollide = false;
+		}
+	}
+}
+
+void CCody::Wall_Jump(const _double dTimeDelta)
+{
+	if (true == m_bWallAttach && false == m_IsWallJumping)
+	{
+		m_pActorCom->Set_ZeroGravity(true, false, true);
+
+		if (m_pModelCom->Is_AnimFinished(ANI_C_WallSlide_MH))
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_MH);
+
+		if (m_pGameInstance->Key_Down(DIK_SPACE))
+		{
+			m_bWallAttach = false;
+			m_IsWallJumping = true;
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_Jump);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_Enter);
+			m_pTransformCom->RotateYaw(180.f);
+		}
+	}
+
+	if (m_IsWallJumping == true)
+	{
+		// 이거 왜 010이 나오지
+		_vector vWallUp = { m_pActorCom->Get_Controller()->getUpDirection().x, m_pActorCom->Get_Controller()->getUpDirection().y, m_pActorCom->Get_Controller()->getUpDirection().z, 0.f };
+
+		m_pActorCom->Move(-vWallUp, dTimeDelta);
+
+		m_fWallJumpingTime += (_float)dTimeDelta;
+		if (m_fWallJumpingTime > 0.2f)
+		{
+			m_IsWallJumping = false;
+			m_fWallJumpingTime = 0.f;
 		}
 	}
 }

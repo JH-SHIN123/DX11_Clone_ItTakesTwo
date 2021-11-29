@@ -406,6 +406,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\04.TutorialDoor">
       <UniqueIdentifier>{9504df9e-0d63-4641-8f31-8099b62bfdd7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall">
+      <UniqueIdentifier>{fe876da6-8259-4e3e-90d8-354a88c44141}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -729,6 +732,9 @@
     <ClInclude Include="..\public\WallLaserTrap.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\03.WallLaserTrap</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DummyWall.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1024,6 +1030,9 @@
     </ClCompile>
     <ClCompile Include="..\private\WallLaserTrap.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\03.WallLaserTrap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DummyWall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

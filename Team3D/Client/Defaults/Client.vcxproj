@@ -203,6 +203,7 @@
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\public\DeadLine.h" />
+    <ClInclude Include="..\Public\DummyWall.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />
     <ClInclude Include="..\public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Color.txt" />
@@ -299,6 +300,7 @@
     <ClCompile Include="..\Private\Boss_Missile.cpp" />
     <ClCompile Include="..\Private\CamEffect.cpp" />
     <ClCompile Include="..\private\Cam_Helper.cpp" />
+    <ClCompile Include="..\Private\DummyWall.cpp" />
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
