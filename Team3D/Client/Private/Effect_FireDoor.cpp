@@ -38,7 +38,7 @@ HRESULT CEffect_FireDoor::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eFIREDOOR, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = new PxBoxGeometry(6.f, 10.f, 0.01f);
+	ArgDesc.pGeometry = new PxBoxGeometry(2.5f, 4.9f, 0.01f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
@@ -119,6 +119,8 @@ void CEffect_FireDoor::Set_Pos(_fvector vPosition)
 {
 	_vector vOffSetPos = XMLoadFloat3(&m_vOffSet_Pos);
 	vOffSetPos += vPosition;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vOffSetPos);
 
 	XMStoreFloat4(&m_pInstanceBuffer[0].vPosition, vOffSetPos);
 }
