@@ -36,7 +36,7 @@ public:
 
 	void Check_Player(_double dTimeDelta);
 
-
+	HRESULT Start_Film(const _tchar* pFilmTag);
 private:
 	CCameraActor* m_pActorCom = nullptr;
 
@@ -54,7 +54,7 @@ private:
 	_int	Tick_CamHelper_SeeCamNode(_double dTimeDelta);	//카메라노드를 처다봄
 
 
-
+	//For.Debug
 	void ChangeViewPort();
 	void KeyCheck(_double dTimeDelta);
 private:

@@ -7,6 +7,7 @@
 #include "DataStorage.h"
 #include "UI_Generator.h"
 #include "Environment_Generator.h"
+#include"CutScenePlayer.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -43,9 +44,11 @@ HRESULT CMainApp::Run_App()
 
 		_double dTimeDelta = m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
 
+		
 		m_dTimeDelta = dTimeDelta;
 		//m_dTimeDelta = 0.016666666666666666;
-
+		if(CCutScenePlayer::GetInstance()->Tick_CutScene())
+			CCutScenePlayer::GetInstance()->OffSetTimeDelta();
 		if (Tick(m_dTimeDelta) & 0x80000000)
 			return E_FAIL;
 

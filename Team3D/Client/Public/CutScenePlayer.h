@@ -9,18 +9,19 @@ public:
 	CCutScenePlayer();
 	virtual ~CCutScenePlayer() = default;
 
-	HRESULT NativeConstruct();
+	HRESULT NativeConstruct(ID3D11Device* pDevice,ID3D11DeviceContext* pDeviceContext);
 public:
 	HRESULT Add_CutScene(const _tchar* pCutSceneTag,CCutScene* pCutScene);
 
 	//if Finish,Return false;
-	_bool	Tick_CutScene(_double dTimeDelta);
-
+	_bool	Tick_CutScene();
+	void	OffSetTimeDelta();
 	HRESULT Start_CutScene(const _tchar* pCutSceneTag);
 public:
 	HRESULT		Add_Performer(const _tchar* pPerformerTag, CGameObject* pPerformer);
 	CGameObject* Find_Performer(const _tchar* pPerformerTag);
 	CCutScene* Find_CutScene(const _tchar* pCutSceneTag);
+	_double		Get_TimeDelta() { return m_dTimeDelta; };
 private:
 	typedef unordered_map<const _tchar*,CCutScene*> CUTSCENES;
 	CUTSCENES m_CutScenes;
@@ -30,9 +31,12 @@ private:
 	PERFORMERS m_Performers;
 
 	_bool m_bIsPlayingCutScene = false;
+	class CGameInstance* m_pGameInstance = nullptr;
+	ID3D11Device* m_pDevice = nullptr;
+	ID3D11DeviceContext* m_pDeviceContext = nullptr;
 
 
-	CGameInstance* m_pGameInstance = nullptr;
+	_double m_dTimeDelta = 0.0;
 public:
 	virtual void Free() override;
 

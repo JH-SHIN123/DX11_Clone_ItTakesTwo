@@ -27,6 +27,7 @@ private:
 	HRESULT Ready_CutScene_Intro();
 private:
 	HRESULT NativeConstruct(CutSceneOption eOption);
+	_fmatrix MakeRollPitchYawMatrix(_float3 vPos, _float3 vScale, _float3 vRot);
 private:
 	class CCutScenePlayer* m_pCutScenePlayer = nullptr;
 
@@ -34,6 +35,7 @@ private:
 	_double m_dDuration = 0.0;
 	_double m_dTime = 0.0;
 	CutSceneOption m_eCutSceneOption = CutSceneOption::CutScene_End;
+
 public:
 	static CCutScene* Create(CutSceneOption eOption);
 	virtual void Free() override;

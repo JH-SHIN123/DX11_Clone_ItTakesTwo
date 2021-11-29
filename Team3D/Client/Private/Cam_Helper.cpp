@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "..\public\Cam_Helper.h"
 #include"Transform.h"
-
-
+#include"GameInstance.h"
+#include"CutScenePlayer.h"
 CCam_Helper::CCam_Helper(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context)
 	:CComponent(pDevice, pDevice_Context)
 {
@@ -389,7 +389,8 @@ _fmatrix CCam_Helper::Tick_Film(_double dTimeDelta, CFilm::ScreenType eScreenTyp
 		MSG_BOX("pFilm is nullptr");
 		return XMMatrixIdentity();
 	}
-	m_pCurFilm[eScreenTypeIdx]->Tick_Film(dTimeDelta, eScreenTypeIdx,fOutFovY);
+
+	m_pCurFilm[eScreenTypeIdx]->Tick_Film(CCutScenePlayer::GetInstance()->Get_TimeDelta() * 0.63f, eScreenTypeIdx,fOutFovY);
 
 	return m_pCurFilm[eScreenTypeIdx]->Get_CurNodeMatrix(eScreenTypeIdx	,fOutFovY);
 }

@@ -5,6 +5,7 @@
 #include "Cody.h"
 #include "PhysX.h"
 #include "CameraActor.h"
+#include"CutScenePlayer.h"
 
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
@@ -200,6 +201,13 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 		m_fChangeCamModeLerpSpeed = 10.f;
 	}
 	
+}
+
+HRESULT CMainCamera::Start_Film(const _tchar * pFilmTag)
+{
+	m_pCamHelper->Start_Film(pFilmTag, CFilm::LScreen);
+
+	return S_OK;
 }
 
 _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
@@ -586,7 +594,8 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
-		m_pCamHelper->Start_Film(L"Film_Begin_Game", CFilm::LScreen);
+		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
+		//m_pCamHelper->Start_Film(L"Film_Begin_Game", CFilm::LScreen);
 		return NO_EVENT;
 	}
 

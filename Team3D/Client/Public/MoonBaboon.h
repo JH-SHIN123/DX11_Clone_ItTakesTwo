@@ -40,7 +40,7 @@ public:
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
-
+	HRESULT Set_Animation(_uint iAnimationIdx);
 protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;

@@ -47,7 +47,7 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 	ArgDesc.CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
 	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
 
 
@@ -164,7 +164,7 @@ void CSubCamera::Free()
 
 	Safe_Release(m_pTargetObj);
 	Safe_Release(m_pCamHelper);
-	Safe_Release(m_pActorCom);
+	//Safe_Release(m_pActorCom);
 
 	CCamera::Free();
 
@@ -195,42 +195,42 @@ _int CSubCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 	if (nullptr == m_pTargetObj)
 		return EVENT_ERROR;
 
-	_matrix matNext = XMLoadFloat4x4(&m_matBeginWorld); //목표 매트릭스
-	_matrix matRev = XMLoadFloat4x4(&m_matPreRev);
-	if (m_fChangeCamModeTime == 0.f) //처음 들어왓으면 한번만 공전매트릭스 구하고
-	{
-		_vector vPlayerPos = dynamic_cast<CMay*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-		_matrix matWorld = m_pTransformCom->Get_WorldMatrix(); //현재 매트릭스
-		XMStoreFloat4x4(&m_matCurWorld, matWorld);
-	}
+	//_matrix matNext = XMLoadFloat4x4(&m_matBeginWorld); //목표 매트릭스
+	//_matrix matRev = XMLoadFloat4x4(&m_matPreRev);
+	//if (m_fChangeCamModeTime == 0.f) //처음 들어왓으면 한번만 공전매트릭스 구하고
+	//{
+	//	_vector vPlayerPos = dynamic_cast<CMay*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	//	_matrix matWorld = m_pTransformCom->Get_WorldMatrix(); //현재 매트릭스
+	//	XMStoreFloat4x4(&m_matCurWorld, matWorld);
+	//}
 
-	_matrix matWorld = XMLoadFloat4x4(&m_matCurWorld);
-	m_fChangeCamModeTime += (_float)(dTimeDelta * m_fChangeCamModeLerpSpeed);
+	//_matrix matWorld = XMLoadFloat4x4(&m_matCurWorld);
+	//m_fChangeCamModeTime += (_float)(dTimeDelta * m_fChangeCamModeLerpSpeed);
 
-	matNext *= matRev;
+	//matNext *= matRev;
 
-	_vector	  vPreRight = matWorld.r[0], vNextRight = matNext.r[0]
-		, vPreUp = matWorld.r[1], vNextUp = matNext.r[1]
-		, vPreLook = matWorld.r[2], vNextLook = matNext.r[2]
-		, vPrePos = matWorld.r[3], vNextPos = matNext.r[3];
+	//_vector	  vPreRight = matWorld.r[0], vNextRight = matNext.r[0]
+	//	, vPreUp = matWorld.r[1], vNextUp = matNext.r[1]
+	//	, vPreLook = matWorld.r[2], vNextLook = matNext.r[2]
+	//	, vPrePos = matWorld.r[3], vNextPos = matNext.r[3];
 
-	_vector vCurRight = XMVectorLerp(vPreRight, vNextRight, m_fChangeCamModeTime),
-		vCurUp = XMVectorLerp(vPreUp, vNextUp, m_fChangeCamModeTime),
-		vCurLook = XMVectorLerp(vPreLook, vNextLook, m_fChangeCamModeTime),
-		vCurPos = XMVectorLerp(vPrePos, vNextPos, m_fChangeCamModeTime);
+	//_vector vCurRight = XMVectorLerp(vPreRight, vNextRight, m_fChangeCamModeTime),
+	//	vCurUp = XMVectorLerp(vPreUp, vNextUp, m_fChangeCamModeTime),
+	//	vCurLook = XMVectorLerp(vPreLook, vNextLook, m_fChangeCamModeTime),
+	//	vCurPos = XMVectorLerp(vPrePos, vNextPos, m_fChangeCamModeTime);
 
-	_matrix matCurWorld = XMMatrixIdentity();
-	matCurWorld.r[0] = vCurRight;
-	matCurWorld.r[1] = vCurUp;
-	matCurWorld.r[2] = vCurLook;
-	matCurWorld.r[3] = vCurPos;
+	//_matrix matCurWorld = XMMatrixIdentity();
+	//matCurWorld.r[0] = vCurRight;
+	//matCurWorld.r[1] = vCurUp;
+	//matCurWorld.r[2] = vCurLook;
+	//matCurWorld.r[3] = vCurPos;
 
 
-	m_pTransformCom->Set_WorldMatrix(matCurWorld);
-	if (m_fChangeCamModeTime >= 1.f)
-	{
-		m_eCurCamMode = CamMode::Cam_Free;
-	}
+	//m_pTransformCom->Set_WorldMatrix(matCurWorld);
+	//if (m_fChangeCamModeTime >= 1.f)
+	//{
+	//	m_eCurCamMode = CamMode::Cam_Free;
+	//}
 
 	return NO_EVENT;
 }
@@ -479,13 +479,6 @@ _int CSubCamera::Tick_CamHelperNone(_double dTimeDelta)
 	}
 	//외부에서 상태 설정 구간
 #ifdef _DEBUG
-
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
-	{
-		m_pCamHelper->Start_Film(L"Film_Begin_Game", CFilm::LScreen);
-		return NO_EVENT;
-	}
-
 
 	if (m_pGameInstance->Key_Down(DIK_O))
 	{
