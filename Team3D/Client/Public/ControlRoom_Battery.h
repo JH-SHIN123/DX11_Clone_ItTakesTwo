@@ -22,6 +22,8 @@ public:
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
+	HRESULT InterActive_UI();
+
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
@@ -31,6 +33,8 @@ public:
 
 private:
 	_float										m_fAngle = 0.f;
+	_float										m_fRotate = 0.f;
+	_bool										m_IsCameRange = false;
 
 protected:
 	/* For.Component */

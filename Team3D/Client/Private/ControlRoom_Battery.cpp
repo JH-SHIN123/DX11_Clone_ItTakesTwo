@@ -2,6 +2,7 @@
 #include "..\public\ControlRoom_Battery.h"
 #include "Cody.h"
 #include "May.h"
+#include "UI_Generator.h"
 
 CControlRoom_Battery::CControlRoom_Battery(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -29,7 +30,7 @@ HRESULT CControlRoom_Battery::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_ControlRoom_Battery"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.019f, 221.12184f, 224.74f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.659f, 221.12184f, 224.44f, 1.f));
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(25.f));
 	m_fAngle = 25.f;
 	
@@ -49,6 +50,8 @@ HRESULT CControlRoom_Battery::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
 
+	m_fRotate = 25.f;
+
 	return S_OK;
 }
 
@@ -59,27 +62,16 @@ _int CControlRoom_Battery::Tick(_double dTimeDelta)
 	m_pStaticActorCom->Update_StaticActor();
 	m_pTriggerCom->Update_TriggerActor();
 
-	//_vector vPos = DATABASE->GetCody()->Get_Position();
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, DATABASE->GetCody()->Get_Position());
-	////m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(46.138f, 220.669f, 223.875, 1.f));
 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.469f, 221.12184f, 223.58f, 1.f));
 
-	///* Å×½ºÆ® */
-	//if (m_pGameInstance->Key_Pressing(DIK_K))
-	//{
-	//	m_fTestAngle += dTimeDelta * 10.f;
-	//	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fTestAngle));
-	//}
+	if (m_pGameInstance->Key_Pressing(DIK_L))
+	{
+		m_fRotate += (_float)dTimeDelta * 2.f;
+		_vector vDir = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
+		m_pTransformCom->RotateYawDirectionOnLand(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fRotate);
+	}
 
-	//if (m_pGameInstance->Key_Pressing(DIK_L))
-	//{
-	//	m_fTestAngle += dTimeDelta * 10.f;
-	//	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-m_fTestAngle));
-	//}
 
-	//if (m_pGameInstance->Key_Down(DIK_J))
-	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, DATABASE->GetCody()->Get_Position());
 
 	return NO_EVENT;
 }
@@ -87,6 +79,8 @@ _int CControlRoom_Battery::Tick(_double dTimeDelta)
 _int CControlRoom_Battery::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	InterActive_UI();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -109,6 +103,38 @@ void CControlRoom_Battery::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID
 {
 
 }
+
+
+HRESULT CControlRoom_Battery::InterActive_UI()
+{
+	CCody* pCody = (CCody*)DATABASE->GetCody();
+	NULL_CHECK_RETURN(pCody, E_FAIL);
+
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+
+	_vector vCodyComparePos = vPos - vCodyPos;
+
+	_float fRange = 5.5f;
+
+	_float vCodyComparePosX = abs(XMVectorGetX(vCodyComparePos));
+	_float vCodyComparePosZ = abs(XMVectorGetZ(vCodyComparePos));
+
+	if (fRange >= vCodyComparePosX && fRange >= vCodyComparePosZ)
+	{
+		if (UI_Generator->Get_EmptyCheck(Player::Cody, UI::InputButton_Dot))
+			UI_Create(Cody, InputButton_Dot);
+
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+		m_IsCameRange = true;
+	}
+	else
+		UI_Delete(Cody, InputButton_Dot);
+
+	return S_OK;
+}
+
 
 HRESULT CControlRoom_Battery::Render_ShadowDepth()
 {
