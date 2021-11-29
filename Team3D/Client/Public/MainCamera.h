@@ -4,9 +4,6 @@
 #include "Camera.h"
 #include"Cam_Helper.h"
 #include"Cody.h"
-BEGIN(Engine)
-class CControllableActor;
-END
 
 BEGIN(Client)
 class CCameraActor;
@@ -38,7 +35,12 @@ public:
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
 private:
+<<<<<<< HEAD
 	CCameraActor* m_pActorCom = nullptr;
+=======
+	class CPlayerActor* m_pActorCom = nullptr;
+	class CPlayerActor* m_pSubActorCom = nullptr;
+>>>>>>> main
 
 	CCam_Helper* m_pCamHelper = nullptr;
 private:

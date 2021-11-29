@@ -26,6 +26,17 @@ namespace Engine
 		return Transform;
 	}
 
+	static _float3 MH_XMFloat3(PxVec3 vPxVector)
+	{
+		_float3 vVector;
+
+		vVector.x = vPxVector.x;
+		vVector.y = vPxVector.y;
+		vVector.z = vPxVector.z;
+
+		return vVector;
+	}
+
 	static PxVec3 MH_PxVec3(_fvector vVector)
 	{
 		PxVec3 vPxVector;
@@ -33,6 +44,28 @@ namespace Engine
 		vPxVector.x = XMVectorGetX(vVector);
 		vPxVector.y = XMVectorGetY(vVector);
 		vPxVector.z = XMVectorGetZ(vVector);
+
+		return vPxVector;
+	}
+
+	static PxVec3 MH_PxVec3(_float3 vVector)
+	{
+		PxVec3 vPxVector;
+
+		vPxVector.x = vVector.x;
+		vPxVector.y = vVector.y;
+		vPxVector.z = vVector.z;
+
+		return vPxVector;
+	}
+
+	static PxVec3 MH_PxVec3(_float3 vVector, _float fX)
+	{
+		PxVec3 vPxVector;
+
+		vPxVector.x = vVector.x * fX;
+		vPxVector.y = vVector.y * fX;
+		vPxVector.z = vVector.z * fX;
 
 		return vPxVector;
 	}
@@ -119,5 +152,32 @@ namespace Engine
 	static _float MH_Dist(_fvector vSrc, _fvector vDst)
 	{
 		return XMVectorGetX(XMVector3Length(vSrc - vDst));
+	}
+
+	static _float	GetRandomFloat(_float lowBound, _float highBound)
+	{
+		if (lowBound >= highBound) // bad input
+			return lowBound;
+
+		// get random float in [0, 1] interval
+		_float f = (rand() % 10000) * 0.0001f;
+
+		// return float in [lowBound, highBound] interval. 
+		return (f * (highBound - lowBound)) + lowBound;
+	}
+
+	static _matrix MH_GetQuaternion(_fvector v0, _fvector v1)
+	{
+		_vector vCross = XMVector3Cross(v0, v1);
+
+		_float fS = sqrtf((1.f + XMVectorGetX(XMVector3Dot(v0, v1))) * 2.f);
+
+		_float4 vQuat;
+		vQuat.x = XMVectorGetX(vCross) / fS;
+		vQuat.y = XMVectorGetY(vCross) / fS;
+		vQuat.z = XMVectorGetZ(vCross) / fS;
+		vQuat.w = XMVectorGetW(vCross) / 2.f;
+	
+		return XMMatrixRotationQuaternion(XMLoadFloat4(&vQuat));
 	}
 }

@@ -23,6 +23,9 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
+	/* For.Trigger */
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+
 public:
 	virtual void SetUp_WorldMatrix(_fmatrix WorldMatrix) PURE;
 
@@ -31,6 +34,7 @@ public:
 	HRESULT	Ready_InstanceBuffer(_bool IsRenderTerm = false);
 
 public:
+	void Set_Pos(_vector vPos);
 	_float4 Set_UV(_int iIndex);
 
 protected:

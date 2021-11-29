@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Effect_Dash.h"
-#include "GameInstance.h"
 
 CEffect_Dash::CEffect_Dash(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Rect(pDevice, pDeviceContext)
@@ -14,7 +13,7 @@ CEffect_Dash::CEffect_Dash(const CEffect_Dash & rhs)
 
 HRESULT CEffect_Dash::NativeConstruct_Prototype(void * pArg)
 {
-	__super::NativeConstruct_Prototype(pArg);
+	__super::NativeConstruct_Prototype(pArg); //
 
 	m_EffectDesc_Prototype.vSize = { 1.f,1.f,10.f };
 	m_EffectDesc_Prototype.fLifeTime = 3;
@@ -26,8 +25,8 @@ HRESULT CEffect_Dash::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Textrue_Color"), (CComponent**)&m_pTexturesCom_Color), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV"), TEXT("Com_Rect"), (CComponent**)&m_pRectCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_Color), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV"), TEXT("Com_RectO"), (CComponent**)&m_pRectCom), E_FAIL);
 
 	//
 	//_vector vRight = XMLoadFloat4(&m_pInstanceBuffer[0].vRight);
@@ -59,7 +58,7 @@ _int CEffect_Dash::Tick(_double TimeDelta)
 
 _int CEffect_Dash::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Dash::Render(RENDER_GROUP::Enum eGroup)

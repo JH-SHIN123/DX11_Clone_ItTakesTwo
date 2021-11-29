@@ -1117,3 +1117,14 @@
 #define DOWN 1
 #define LEFT 2
 #define RIGHT 3
+
+
+#pragma region RobotHead_Anim
+
+#define R_Active_Idle 0
+#define R_Active_Start 1
+#define R_InActive_Battery_Idle 2
+#define R_InActive_Idle 3
+#define R_InActive_Lever 4
+
+#pragma endregion

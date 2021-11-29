@@ -184,12 +184,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
+    <ClInclude Include="..\Public\Boss_Missile.h" />
+    <ClInclude Include="..\Public\Bridge.h" />
     <ClInclude Include="..\Public\CamEffect.h" />
     <ClInclude Include="..\public\Cam_Helper.h" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp" />
     <ClInclude Include="..\Public\Arrowkeys_Fill.h" />
     <ClInclude Include="..\Public\Arrowkeys_Outline.h" />
+    <ClInclude Include="..\Public\BigButton.h" />
+    <ClInclude Include="..\Public\BigPlanet.h" />
     <ClInclude Include="..\Public\CameraActor.h" />
     <ClInclude Include="..\Public\CameraBehaviorCallback.h" />
     <ClInclude Include="..\Public\CameraFilterCallback.h" />
@@ -197,8 +201,13 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
+<<<<<<< HEAD
     <ClInclude Include="..\public\CutScene.h" />
     <ClInclude Include="..\public\CutScenePlayer.h" />
+=======
+    <ClInclude Include="..\public\DeadLine.h" />
+    <ClInclude Include="..\Public\Dynamic_Env.h" />
+>>>>>>> main
     <ClInclude Include="..\public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Color.txt" />
     <ClInclude Include="..\Public\Effect_Dash.h" />
@@ -206,11 +215,16 @@
     <ClInclude Include="..\public\Effect_Env_Particle.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
     <ClInclude Include="..\Public\Effect_GravityPipe.h" />
+    <ClInclude Include="..\public\Effect_Gravity_Umbrella.h" />
     <ClInclude Include="..\public\Effect_May_Boots.h" />
     <ClInclude Include="..\public\Effect_May_Boots_Walking_Particle.h" />
+    <ClInclude Include="..\public\Effect_Player_Lail.h" />
     <ClInclude Include="..\public\Effect_Player_Revive.h" />
+    <ClInclude Include="..\public\Effect_Robot_Battery_Spark.h" />
     <ClInclude Include="..\public\Effect_Wormhole.h" />
     <ClInclude Include="..\public\Effect_FireDoor.h" />
+    <ClInclude Include="..\Public\HookUFO.h" />
+    <ClInclude Include="..\Public\GravityPath.h" />
     <ClInclude Include="..\Public\InGameEffect.h" />
     <ClInclude Include="..\public\InGameEffect_Model.h" />
     <ClInclude Include="..\Public\InGameEffect_Rect.h" />
@@ -234,52 +248,98 @@
     <ClInclude Include="..\public\Effect_Player_Dead_Particle.h" />
     <ClInclude Include="..\public\Effect_RespawnTunnel.h" />
     <ClInclude Include="..\public\Effect_RespawnTunnel_Portal.h" />
+    <ClInclude Include="..\Public\MoonBaboonCore.h" />
+    <ClInclude Include="..\Public\MoonBaboonCore_Button.h" />
+    <ClInclude Include="..\Public\MoonBaboonCore_Glass.h" />
+    <ClInclude Include="..\Public\MoonBaboonCore_Pillar.h" />
+    <ClInclude Include="..\Public\MoonBaboonCore_Shield.h" />
+    <ClInclude Include="..\Public\MoonBaboon_MainLaser.h" />
+    <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
+<<<<<<< HEAD
     <ClInclude Include="..\public\Performer.h" />
+=======
+    <ClInclude Include="..\Public\Planet.h" />
+    <ClInclude Include="..\Public\PlanetRing.h" />
+    <ClInclude Include="..\Public\PlayerActor.h" />
+    <ClInclude Include="..\Public\PlayerBehaviorCallback.h" />
+    <ClInclude Include="..\Public\PlayerFilterCallback.h" />
+    <ClInclude Include="..\Public\PlayerHitReport.h" />
+>>>>>>> main
     <ClInclude Include="..\Public\PlayerMarker.h" />
+    <ClInclude Include="..\Public\PxEventCallback.h" />
     <ClInclude Include="..\Public\Robot.h" />
+    <ClInclude Include="..\Public\RobotBattery.h" />
     <ClInclude Include="..\Public\RobotHead.h" />
+    <ClInclude Include="..\Public\RobotLever.h" />
     <ClInclude Include="..\Public\Rocket.h" />
+    <ClInclude Include="..\Public\SavePoint.h" />
+    <ClInclude Include="..\Public\SecurityCamera.h" />
+    <ClInclude Include="..\Public\SecurityCameraHandle.h" />
+    <ClInclude Include="..\Public\SepdStaticActor.h" />
+    <ClInclude Include="..\Public\SpaceValve.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
     <ClInclude Include="..\Public\Static_Env.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
-    <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TestEffect.h" />
     <ClInclude Include="..\Public\Effect_Walking_Smoke.h" />
-    <ClInclude Include="..\public\TestObject01.h" />
-    <ClInclude Include="..\public\TileBox.h" />
+    <ClInclude Include="..\Public\ToyBoxButton.h" />
+    <ClInclude Include="..\Public\ToyBoxButton_Button.h" />
+    <ClInclude Include="..\Public\TutorialDoor.h" />
     <ClInclude Include="..\Public\UFO.h" />
     <ClInclude Include="..\Public\UIObject.h" />
     <ClInclude Include="..\Public\UISprite.h" />
     <ClInclude Include="..\Public\UI_Generator.h" />
+    <ClInclude Include="..\public\WarpGate.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\CamEffect.cpp" />
     <ClCompile Include="..\private\Cam_Helper.cpp" />
     <ClCompile Include="..\private\CutScene.cpp" />
     <ClCompile Include="..\private\CutScenePlayer.cpp" />
+=======
+    <ClCompile Include="..\Private\Bridge.cpp" />
+    <ClCompile Include="..\Private\DeadLine.cpp" />
+    <ClCompile Include="..\Private\BigPlanet.cpp" />
+    <ClCompile Include="..\Private\Boss_Missile.cpp" />
+    <ClCompile Include="..\Private\CamEffect.cpp" />
+    <ClCompile Include="..\private\Cam_Helper.cpp" />
+    <ClCompile Include="..\Private\Dynamic_Env.cpp" />
+>>>>>>> main
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
     <ClCompile Include="..\private\Effect_Dead_Particle_Fire.cpp" />
     <ClCompile Include="..\private\Effect_Env_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Generator.cpp" />
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp" />
+    <ClCompile Include="..\private\Effect_Gravity_Umbrella.cpp" />
     <ClCompile Include="..\private\Effect_May_Boots.cpp" />
     <ClCompile Include="..\private\Effect_May_Boots_Walking_Particle.cpp" />
+    <ClCompile Include="..\private\Effect_Player_Lail.cpp" />
     <ClCompile Include="..\private\Effect_Player_Revive.cpp" />
+    <ClCompile Include="..\private\Effect_Robot_Battery_Spark.cpp" />
     <ClCompile Include="..\private\Effect_Wormhole.cpp" />
     <ClCompile Include="..\private\Effect_FireDoor.cpp" />
+    <ClCompile Include="..\Private\HookUFO.cpp" />
+    <ClCompile Include="..\Private\GravityPath.cpp" />
     <ClCompile Include="..\Private\InGameEffect.cpp" />
     <ClCompile Include="..\private\InGameEffect_Model.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Rect.cpp" />
     <ClCompile Include="..\private\Effect_Landing_Smoke.cpp" />
+<<<<<<< HEAD
+=======
+    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
+    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
+    <ClCompile Include="..\Private\BigButton.cpp" />
+>>>>>>> main
     <ClCompile Include="..\Private\CameraActor.cpp" />
     <ClCompile Include="..\Private\CameraBehaviorCallback.cpp" />
     <ClCompile Include="..\Private\CameraFilterCallback.cpp" />
@@ -303,25 +363,50 @@
     <ClCompile Include="..\private\Effect_Player_Dead_Particle.cpp" />
     <ClCompile Include="..\private\Effect_RespawnTunnel.cpp" />
     <ClCompile Include="..\private\Effect_RespawnTunnel_Portal.cpp" />
+    <ClCompile Include="..\Private\MoonBaboonCore.cpp" />
+    <ClCompile Include="..\Private\MoonBaboonCore_Button.cpp" />
+    <ClCompile Include="..\Private\MoonBaboonCore_Glass.cpp" />
+    <ClCompile Include="..\Private\MoonBaboonCore_Pillar.cpp" />
+    <ClCompile Include="..\Private\MoonBaboonCore_Shield.cpp" />
+    <ClCompile Include="..\Private\MoonBaboon_MainLaser.cpp" />
+    <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="..\private\Performer.cpp" />
+=======
+    <ClCompile Include="..\Private\Planet.cpp" />
+    <ClCompile Include="..\Private\PlanetRing.cpp" />
+    <ClCompile Include="..\Private\PlayerActor.cpp" />
+    <ClCompile Include="..\Private\PlayerBehaviorCallback.cpp" />
+    <ClCompile Include="..\Private\PlayerFilterCallback.cpp" />
+    <ClCompile Include="..\Private\PlayerHitReport.cpp" />
+>>>>>>> main
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
+    <ClCompile Include="..\Private\PxEventCallback.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />
+    <ClCompile Include="..\Private\RobotBattery.cpp" />
     <ClCompile Include="..\Private\RobotHead.cpp" />
+    <ClCompile Include="..\Private\RobotLever.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
+    <ClCompile Include="..\Private\SavePoint.cpp" />
+    <ClCompile Include="..\Private\SecurityCamera.cpp" />
+    <ClCompile Include="..\Private\SecurityCameraHandle.cpp" />
+    <ClCompile Include="..\Private\SepdStaticActor.cpp" />
+    <ClCompile Include="..\Private\SpaceValve.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
     <ClCompile Include="..\Private\Static_Env.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
-    <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TestEffect.cpp" />
     <ClCompile Include="..\Private\Effect_Walking_Smoke.cpp" />
-    <ClCompile Include="..\private\TestObject01.cpp" />
-    <ClCompile Include="..\private\TileBox.cpp" />
+    <ClCompile Include="..\Private\ToyBoxButton.cpp" />
+    <ClCompile Include="..\Private\ToyBoxButton_Button.cpp" />
+    <ClCompile Include="..\Private\TutorialDoor.cpp" />
     <ClCompile Include="..\Private\UFO.cpp" />
     <ClCompile Include="..\Private\UIObject.cpp" />
     <ClCompile Include="..\Private\UISprite.cpp" />
     <ClCompile Include="..\Private\UI_Generator.cpp" />
+    <ClCompile Include="..\private\WarpGate.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

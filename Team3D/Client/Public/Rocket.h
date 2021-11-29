@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CRenderer;
 class CTransform;
 class CModel;
+class CTriggerActor;
 END
 
 BEGIN(Client)
@@ -21,9 +22,13 @@ protected:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
+
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
+	/* For.Trigger */
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
@@ -31,12 +36,13 @@ public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 public:
-	void Launch_Rocket(_double TimeDelta);
+	void Launch_Rocket(_double dTimeDelta);
 
 private:
 	_float		m_fUpAcceleration = 0.f;
 	_bool		m_bLaunch = false;
 	_float		m_fLifeTime = 0.f;
+	_bool		m_IsCollide = false;
 
 
 protected:
@@ -44,6 +50,8 @@ protected:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
+	CTriggerActor*		m_pTriggerCom = nullptr;
+
 public:
 	static CRocket* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

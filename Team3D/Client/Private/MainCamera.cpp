@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "..\public\MainCamera.h"
-#include "GameInstance.h"
-#include "Level.h"
 #include "Cody.h"
-#include "PhysX.h"
 #include "CameraActor.h"
+<<<<<<< HEAD
 #include"CutScenePlayer.h"
+=======
+#include "PlayerActor.h"
+>>>>>>> main
 
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
@@ -29,7 +30,7 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 {
 	CCamera::NativeConstruct(pArg);
 
-	CControllableActor::ARG_DESC ArgDesc;
+	CPlayerActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eCAMERA, this);
 	ArgDesc.pUserData = &m_UserData;
@@ -48,10 +49,16 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	ArgDesc.CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
 	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
+<<<<<<< HEAD
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom,&ArgDesc), E_FAIL);
 
 
 	
+=======
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_PlayerActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
+
+	//m_pActorCom->Set_Scale(m_fCamRadius, 0.f);
+>>>>>>> main
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
 
@@ -62,7 +69,8 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	m_eCurCamMode = CamMode::Cam_AutoToFree;
 	
 
-	
+	//CameraDesc.vEye = /*_float3(0.f, 8.f, -7.f);*/_float3(0.f, 8.f, -11.f);
+	//CameraDesc.vAt = /*_float3(0.f, 0.f, 0.f);*/_float3(0.f, 4.5f, 0.f);
 
 	CDataStorage::GetInstance()->Set_MainCamPtr(this);
 
@@ -167,6 +175,7 @@ void CMainCamera::Free()
 	Safe_Release(m_pTargetObj);
 	Safe_Release(m_pCamHelper);
 	Safe_Release(m_pActorCom);
+	Safe_Release(m_pSubActorCom);
 
 	CCamera::Free();
 
@@ -178,7 +187,7 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 		return;
 	CCody* pTargetPlayer = static_cast<CCody*>(m_pTargetObj);
 
-	m_eCurPlayerSize = pTargetPlayer->Get_CurSize();
+	m_eCurPlayerSize = pTargetPlayer->Get_Player_Size();
 
 	if (m_eCurPlayerSize != m_ePrePlayerSize)
 	{
@@ -394,65 +403,65 @@ _int CMainCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 
 void CMainCamera::ChangeViewPort()
 {
-	CFilm::CamNode tDesc;
-	tDesc.fTargetViewPortCenterX = 0.5f;
-	tDesc.fTargetViewPortCenterY = 1.f;
-	tDesc.fViewPortLerpSpeed = 1.f;
-	//case ViewPortOption::LScreen_Split_Immediate:
-	if (m_pGameInstance->Key_Down(DIK_1))
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
-			XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f));
+	//CFilm::CamNode tDesc;
+	//tDesc.fTargetViewPortCenterX = 0.5f;
+	//tDesc.fTargetViewPortCenterY = 1.f;
+	//tDesc.fViewPortLerpSpeed = 1.f;
+	////case ViewPortOption::LScreen_Split_Immediate:
+	//if (m_pGameInstance->Key_Down(DIK_1))
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
+	//		XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f));
 
-	////case ViewPortOption::LScreen_Split_Lerp:
-	if (m_pGameInstance->Key_Down(DIK_2))
-	{
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
-			XMVectorSet(0.f, 0.f, 1.f, 1.f));
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
-			XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f), tDesc.fViewPortLerpSpeed);
-	}
+	//////case ViewPortOption::LScreen_Split_Lerp:
+	//if (m_pGameInstance->Key_Down(DIK_2))
+	//{
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
+	//		XMVectorSet(0.f, 0.f, 1.f, 1.f));
+	//	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
+	//		XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f), tDesc.fViewPortLerpSpeed);
+	//}
 
-	////case ViewPortOption::LScreen_Merge_Immediate:
-	if (m_pGameInstance->Key_Down(DIK_3))
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
-			XMVectorSet(0.f, 0.f, 1.f, 1.f));
+	//////case ViewPortOption::LScreen_Merge_Immediate:
+	//if (m_pGameInstance->Key_Down(DIK_3))
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
+	//		XMVectorSet(0.f, 0.f, 1.f, 1.f));
 
-	////case ViewPortOption::LScreen_Merge_Lerp:
-	if (m_pGameInstance->Key_Down(DIK_4))
-	{
+	//////case ViewPortOption::LScreen_Merge_Lerp:
+	//if (m_pGameInstance->Key_Down(DIK_4))
+	//{
 
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
-			XMVectorSet(0.f, 0.f, 1.f, 1.f), tDesc.fViewPortLerpSpeed);
-	}
+	//	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
+	//		XMVectorSet(0.f, 0.f, 1.f, 1.f), tDesc.fViewPortLerpSpeed);
+	//}
 
-	////case ViewPortOption::RScreen_Split_Immediate:
-	if (m_pGameInstance->Key_Down(DIK_5))
-	{
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
-			XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f));
-	}
+	//////case ViewPortOption::RScreen_Split_Immediate:
+	//if (m_pGameInstance->Key_Down(DIK_5))
+	//{
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
+	//		XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f));
+	//}
 
-	////case ViewPortOption::RScreen_Split_Lerp:
-	if (m_pGameInstance->Key_Down(DIK_6))
-	{
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
-			XMVectorSet(1.f, 0.f, 1.f, 1.f));
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f),
-			XMVectorSet(0.5, 0.f, 0.5f, 1.f), tDesc.fViewPortLerpSpeed);
-	}
+	//////case ViewPortOption::RScreen_Split_Lerp:
+	//if (m_pGameInstance->Key_Down(DIK_6))
+	//{
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
+	//		XMVectorSet(1.f, 0.f, 1.f, 1.f));
+	//	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f),
+	//		XMVectorSet(0.5, 0.f, 0.5f, 1.f), tDesc.fViewPortLerpSpeed);
+	//}
 
-	////case ViewPortOption::RScreen_Merge_Immediate:
-	if (m_pGameInstance->Key_Down(DIK_7))
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
-			XMVectorSet(1.f, 0.f, 1.f, 1.f));
+	//////case ViewPortOption::RScreen_Merge_Immediate:
+	//if (m_pGameInstance->Key_Down(DIK_7))
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
+	//		XMVectorSet(1.f, 0.f, 1.f, 1.f));
 
-	////case ViewPortOption::RScreen_Merge_Lerp:
-	if (m_pGameInstance->Key_Down(DIK_8))
-	{
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
-				XMVectorSet(1.f, 0.f, 1.f, 1.f), tDesc.fViewPortLerpSpeed);
+	//////case ViewPortOption::RScreen_Merge_Lerp:
+	//if (m_pGameInstance->Key_Down(DIK_8))
+	//{
+	//	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
+	//			XMVectorSet(1.f, 0.f, 1.f, 1.f), tDesc.fViewPortLerpSpeed);
 
-	}
+	//}
 }
 
 void CMainCamera::KeyCheck(_double dTimeDelta)
@@ -592,6 +601,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	//외부에서 상태 설정 구간
 #ifdef _DEBUG
 
+<<<<<<< HEAD
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
 		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
@@ -600,6 +610,54 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	}
 
 
+=======
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
+	//{
+	//	m_pCamHelper->Start_Film(L"Eye_Bezier3", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
+	//{
+	//	m_pCamHelper->Start_Film(L"Eye_Bezier4", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
+	//{
+	//	m_pCamHelper->Start_Film(L"Eye_Straight", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD7))
+	//{
+	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Right", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
+	//{
+	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Up", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
+	//{
+	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Look", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD4))
+	//{
+	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Right", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
+	//{
+	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Up", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD6))
+	//{
+	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Look", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
+>>>>>>> main
 	if (m_pGameInstance->Key_Down(DIK_O))
 	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;

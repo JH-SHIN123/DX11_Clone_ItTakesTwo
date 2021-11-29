@@ -1,13 +1,14 @@
 #include "stdafx.h"
 #include "..\public\MainApp.h"
-#include "GameInstance.h"
 #include "Level_Loading.h"
-
 #include "Effect_Generator.h"
-#include "DataStorage.h"
 #include "UI_Generator.h"
 #include "Environment_Generator.h"
+<<<<<<< HEAD
 #include"CutScenePlayer.h"
+=======
+#include "PxEventCallback.h"
+>>>>>>> main
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -19,15 +20,15 @@ HRESULT CMainApp::NativeConstruct()
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Initialize(CGraphic_Device::TYPE_WINMODE, g_hWnd, g_hInst, g_iWinCX, g_iWinCY, &m_pDevice, &m_pDeviceContext), E_FAIL);
+	m_pPxEventCallback = new CPxEventCallback;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Initialize(CGraphic_Device::TYPE_WINMODE, g_hWnd, g_hInst, g_iWinCX, g_iWinCY, &m_pDevice, &m_pDeviceContext, m_pPxEventCallback), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Reserve_Container(Level::LEVEL_END), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Timer(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Prototype_ForStatic(), E_FAIL);
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->NativeConstruct_Environment_Generator(m_pDevice, m_pDeviceContext), E_FAIL);
 	UI_Generator->NativeConstruct(m_pDevice, m_pDeviceContext);
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
-
-	// Test ƒøπ‘
 
 	return S_OK;
 }
@@ -38,17 +39,23 @@ HRESULT CMainApp::Run_App()
 
 	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
 
-	if (m_dFrameAcc >= 1.0 / 160.0)
+	if (m_dFrameAcc >= 1.0 / 60.0)
 	{
 		m_dFrameAcc = 0.0;
 
 		_double dTimeDelta = m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
 
+<<<<<<< HEAD
 		
 		m_dTimeDelta = dTimeDelta;
 		//m_dTimeDelta = 0.016666666666666666;
 		if(CCutScenePlayer::GetInstance()->Tick_CutScene())
 			CCutScenePlayer::GetInstance()->OffSetTimeDelta();
+=======
+		//m_dTimeDelta = dTimeDelta;
+		m_dTimeDelta = 0.016666666666666666;
+
+>>>>>>> main
 		if (Tick(m_dTimeDelta) & 0x80000000)
 			return E_FAIL;
 
@@ -149,6 +156,8 @@ void CMainApp::Free()
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pGameInstance);
+
+	Safe_Delete(m_pPxEventCallback);
 
 	CEffect_Generator::DestroyInstance(); // ¿Ã∆Â∆Æ ¡¶æÓ±‚
 	CUI_Generator::DestroyInstance();

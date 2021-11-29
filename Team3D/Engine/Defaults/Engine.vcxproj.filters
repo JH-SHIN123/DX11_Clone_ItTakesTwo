@@ -202,15 +202,6 @@
     <Filter Include="97.ShaderFiles\Include">
       <UniqueIdentifier>{9654196f-e3ab-4f25-a09c-cb0ad655fa08}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX\00.Main">
-      <UniqueIdentifier>{17b0b8f3-b04a-48ed-987f-777e587dab3a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX\01.SimulCallback">
-      <UniqueIdentifier>{ad9c964c-c541-4c84-b8e0-d3843476fecf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback">
-      <UniqueIdentifier>{7217416e-7088-47ec-b7c5-df5d4f4d2af0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97.ShaderFiles\Compute">
       <UniqueIdentifier>{f646baae-80f9-4651-9890-ce59df45393d}</UniqueIdentifier>
     </Filter>
@@ -226,18 +217,6 @@
     <Filter Include="02.Utility\02.Component\06.Actor\03.DynamicActor">
       <UniqueIdentifier>{90169c14-bd08-4bc2-a0f0-15ef5a785553}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\04.ControllableActor">
-      <UniqueIdentifier>{cac120a9-d36f-4d60-865e-3ef195712813}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\04.ControllableActor\00.Main">
-      <UniqueIdentifier>{ac03b7c4-87d1-4087-8e49-c826a101e55d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\04.ControllableActor\01.BehaviorCallback">
-      <UniqueIdentifier>{551be4d3-8b36-4350-b615-a5af8be67e8d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utility\02.Component\06.Actor\04.ControllableActor\02.FilterCallback">
-      <UniqueIdentifier>{0aadee54-b9c5-4b43-9a44-1a0efef2d506}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Utility\02.Component\06.Actor\02.TriggerActor">
       <UniqueIdentifier>{da8c58ce-c82c-4cb7-a7b6-5c2e3e9d576c}</UniqueIdentifier>
     </Filter>
@@ -249,6 +228,9 @@
     </Filter>
     <Filter Include="02.Utility\06.PostFX">
       <UniqueIdentifier>{3ed05aec-d931-4bdb-bbd2-2b54d2cdf11d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\06.PostFX\Blur">
+      <UniqueIdentifier>{8f45eb1d-d291-4813-8959-c1f5b9b74d60}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -357,12 +339,6 @@
     <ClInclude Include="..\Public\Model_Loader.h">
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\PhysX.h">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\PxEventCallback.h">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\01.SimulCallback</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Actor.h">
       <Filter>02.Utility\02.Component\06.Actor\00.Main</Filter>
     </ClInclude>
@@ -417,20 +393,8 @@
     <ClInclude Include="..\public\VIBuffer_Rect_TripleUV.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.TripleUV</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ControllableActor.h">
-      <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\00.Main</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\PxControllerCallback.h">
-      <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\01.BehaviorCallback</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\PhysX.h">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\00.Main</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\GlobalFunction.h">
       <Filter>99.Defines\02.Convenience</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\PxContactCallback.h">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PostFX.h">
       <Filter>02.Utility\06.PostFX</Filter>
@@ -440,9 +404,6 @@
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer_PointInstance_Custom_STT.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\05.Point_Custom_STT</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\PxControllerFilterCallback.h">
-      <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\02.FilterCallback</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TriggerActor.h">
       <Filter>02.Utility\02.Component\06.Actor\02.TriggerActor</Filter>
@@ -455,6 +416,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Sprite.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Blur.h">
+      <Filter>02.Utility\06.PostFX\Blur</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PhysX.h">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PhysX.h">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -563,12 +533,6 @@
     <ClCompile Include="..\Private\Model_Loader.cpp">
       <Filter>02.Utility\02.Component\05.Model\99.ModelLoader</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\PhysX.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\PxEventCallback.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\01.SimulCallback</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Actor.cpp">
       <Filter>02.Utility\02.Component\06.Actor\00.Main</Filter>
     </ClCompile>
@@ -596,18 +560,6 @@
     <ClCompile Include="..\private\VIBuffer_Rect_TripleUV.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.TripleUV</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ControllableActor.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\00.Main</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\PxControllerCallback.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\01.BehaviorCallback</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\PhysX.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\00.Main</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\PxContactCallback.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\99.PhysX\02.ContactCallback</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\PostFX.cpp">
       <Filter>02.Utility\06.PostFX</Filter>
     </ClCompile>
@@ -617,9 +569,6 @@
     <ClCompile Include="..\private\VIBuffer_PointInstance_Custom_STT.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\05.Point_Custom_STT</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\PxControllerFilterCallback.cpp">
-      <Filter>02.Utility\02.Component\06.Actor\04.ControllableActor\02.FilterCallback</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\TriggerActor.cpp">
       <Filter>02.Utility\02.Component\06.Actor\02.TriggerActor</Filter>
     </ClCompile>
@@ -628,6 +577,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Sprite.cpp">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Blur.cpp">
+      <Filter>02.Utility\06.PostFX\Blur</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PhysX.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PhysX.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -644,6 +602,9 @@
       <Filter>97.ShaderFiles\Graphics</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_PostFX.hlsl">
+      <Filter>97.ShaderFiles\Compute</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_Blur.hlsl">
       <Filter>97.ShaderFiles\Compute</Filter>
     </FxCompile>
   </ItemGroup>

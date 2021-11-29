@@ -34,8 +34,8 @@ HRESULT CPostFX::PostProcessing(_double TimeDelta)
 	FAILED_CHECK_RETURN(Tick_Adaptation(TimeDelta), E_FAIL);
 
 	FAILED_CHECK_RETURN(DownScale(TimeDelta), E_FAIL);
-	FAILED_CHECK_RETURN(Bloom(), E_FAIL);;
-	FAILED_CHECK_RETURN(Blur(), E_FAIL);;
+	FAILED_CHECK_RETURN(Bloom(), E_FAIL);
+	FAILED_CHECK_RETURN(Blur(), E_FAIL);
 	FAILED_CHECK_RETURN(FinalPass(),E_FAIL);
 
 	// Swap Cur LumAvg - Prev LumAvg
@@ -423,14 +423,6 @@ void CPostFX::Free()
 	Safe_Release(m_pUnorderedAccessView_PrevLumAve);
 	Safe_Release(m_pShaderResourceView_PrevLumAve);
 	Safe_Release(m_pHDRBuffer_PrevLumAve);
-
-	for (auto& InputLayout : m_InputLayouts_CS_Bloom)
-	{
-		Safe_Release(InputLayout.pPass);
-		Safe_Release(InputLayout.pLayout);
-	}
-	m_InputLayouts_CS_Bloom.clear();
-	Safe_Release(m_pEffect_CS_Bloom);
 
 	for (auto& InputLayout : m_InputLayouts_CS)
 	{

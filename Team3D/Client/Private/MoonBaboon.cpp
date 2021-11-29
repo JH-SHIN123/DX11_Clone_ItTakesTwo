@@ -1,7 +1,5 @@
 #include "stdafx.h"
-#include "..\public\MoonBaboon.h"
-#include "GameInstance.h"
-#include "DataStorage.h"
+#include "..\Public\MoonBaboon.h"
 #include "May.h"
 #include "Cody.h"
 #include "UFO.h"
@@ -81,7 +79,7 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 
 _int CMoonBaboon::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -89,7 +87,7 @@ _int CMoonBaboon::Late_Tick(_double dTimeDelta)
 
 
 
-CMoonBaboon::MOON_STATE CMoonBaboon::Check_State(_double TimeDelta)
+CMoonBaboon::MOON_STATE CMoonBaboon::Check_State(_double dTimeDelta)
 {
 	if (m_eNextState != m_eCurState)
 	{
@@ -99,7 +97,7 @@ CMoonBaboon::MOON_STATE CMoonBaboon::Check_State(_double TimeDelta)
 	return m_eCurState;
 }
 
-void CMoonBaboon::Change_State(_double TimeDelta)
+void CMoonBaboon::Change_State(_double dTimeDelta)
 {
 	if (m_eTarget == TARGET_CODY)
 	{
@@ -111,11 +109,11 @@ void CMoonBaboon::Change_State(_double TimeDelta)
 	}
 }
 
-void CMoonBaboon::During_Animation_Behavior(_double TimeDelta)
+void CMoonBaboon::During_Animation_Behavior(_double dTimeDelta)
 {
 }
 
-void CMoonBaboon::Fix_MoonBaboon_Chair(_double TimeDelta)
+void CMoonBaboon::Fix_MoonBaboon_Chair(_double dTimeDelta)
 {
 	//_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
 	//_float4x4 matWorld, matScale; // 우주선 안에있을때 유리밖으로 꼬리 튀어나와서 100->95정도로 줄임.

@@ -5,7 +5,7 @@
 #include "InGameEffect_Rect.h"
 
 BEGIN(Engine)
-class CVIBuffer_Rect;
+class CVIBuffer_Rect_TripleUV;
 END
 
 BEGIN(Client)
@@ -33,7 +33,7 @@ public:
 //	CTextures* m_pTexturesCom_Color = nullptr;
 
 private:
-	CVIBuffer_Rect* m_pRectCom = nullptr;
+	CVIBuffer_Rect_TripleUV* m_pRectCom = nullptr;
 
 public:
 	static CEffect_Dash* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

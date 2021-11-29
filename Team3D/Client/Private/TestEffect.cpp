@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\TestEffect.h"
-
+#include "GameInstance.h"
 
 CTestEffect::CTestEffect(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -28,16 +28,13 @@ HRESULT CTestEffect::NativeConstruct(void * pArg)
 
 _int CTestEffect::Tick(_double TimeDelta)
 {
-	__super::Tick(TimeDelta);
-
 
 	return _int();
 }
 
 _int CTestEffect::Late_Tick(_double TimeDelta)
 {
-
-	return __super::Late_Tick(TimeDelta);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CTestEffect::Render(RENDER_GROUP::Enum eGroup)

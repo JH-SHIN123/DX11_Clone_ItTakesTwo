@@ -3,13 +3,8 @@
 #include "Client_Defines.h"
 #include "Character.h"
 
-BEGIN(Engine)
-class CRenderer;
-class CTransform;
-class CModel;
-END
-
 BEGIN(Client)
+
 class CMay final : public CCharacter
 {
 #pragma region Enum_STATE
@@ -173,6 +168,7 @@ private:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
+
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
@@ -181,12 +177,12 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
+	CModel*		Get_Model() { return m_pModelCom; }
+	void		Update_Tirgger_Pos(_vector vPos);
 
 	// Tick 에서 호출될 함수들
 private:
-	virtual void KeyInput(_double TimeDelta);
-	void StateCheck(_double TimeDelta);
-	void TriggerCheck(_double TimeDelta);
+	virtual void KeyInput(_double dTimeDelta);
 
 
 
@@ -214,12 +210,15 @@ public:
 ///////////////////////////////////////////////////////    상태 변환 관련 변수들   /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public:
+	_uint Get_CurState() const;
+
+public:
 	// 상태 && 이동
-	void Move(const _double TimeDelta);
-	void Roll(const _double TimeDelta);
-	void Sprint(const _double TimeDelta);
-	void Jump(const _double TimeDelta);
-	void Ground_Pound(const _double TimeDelta);
+	void Move(const _double dTimeDelta);
+	void Roll(const _double dTimeDelta);
+	void Sprint(const _double dTimeDelta);
+	void Jump(const _double dTimeDelta);
+	void Ground_Pound(const _double dTimeDelta);
 
 
 private:
@@ -242,11 +241,21 @@ private:
 	_bool m_bRoll = false;
 	_bool m_IsTurnAround = false;
 	_int m_iSavedKeyPress = 0;
+	
+	_int	m_iFrameCount = 0;
+	_long	m_i10FrameChangedX = 0;
+	_long	m_i10FrameChangedY = 0;
+	_long	m_iPrePadX = 0;
+	_long	m_iPrePadY = 0;
+	_bool	m_bPadKeyChangedX = false;
+	_bool	m_bPadKeyChangedY= false;
 
 	_float3 m_vMoveDirection = {};
 	_bool	m_bMove = false;
 	_bool	m_bShortJump = false;
 	_bool	m_bLongJump = false;
+	_bool	m_IsFalling = false;
+	_bool	m_bFallAniOnce = false;
 
 	// 움직임 가속
 	_float m_fAcceleration = 5.0;
@@ -280,6 +289,7 @@ private:
 	_bool m_bJumpAnimationOnce = false;
 	_bool m_bDoubleJump = false;
 	_uint m_iJumpCount = 0;
+	_uint m_iAirDashCount = 0;
 
 
 
@@ -293,6 +303,67 @@ private:
 	// Sprint
 	_float m_fSprintAcceleration = 35.f;
 
+#pragma region Trigger
+public:
+	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
+	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
+
+private:
+	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
+	_float3				m_vTriggerTargetPos = {};
+	_bool m_IsCollide = false;
+	_float4x4 m_TriggerTargetWorld = {};
+
+
+	_bool m_IsOnGrind = false;
+	_bool m_IsHitStarBuddy = false;
+	_bool m_IsHitRocket = false;
+	_bool m_IsActivateRobotLever = false;
+
+	/* For.GravityTunnel */
+	_bool m_bGoToGravityCenter = false;
+	_bool m_IsInGravityPipe = false;
+	_float m_fGoCenterTime = 0.f;
+
+	/* For.Valve */
+	_bool m_IsEnterValve = false;
+	_bool m_bStruggle = false;
+	_uint m_iRotateCount = 0;
+	_uint m_iValvePlayerName = Player::May;
+
+
+	_float3 m_vPoints[4] = {};
+	_double	m_dTestTime = 0.0;
+
+	// Warp NextStage
+	_bool m_IsWarpNextStage = false;
+	_float m_fWarpTimer = 0.f;
+	_bool m_IsWarpDone = false;
+	const _float4 m_vWormholePos = { 0.f, -100.f, -1000.f, 1.f };
+	const _float m_fWarpTimer_Max = 2.f;
+
+	// 상호작용 테스트용
+	_bool m_IsActivate_End = false;
+	_bool m_IsPullVerticalDoor = false;
+
+	_bool m_IsTouchFireDoor = false;
+
+
+	void Go_Grind(const _double dTimeDelta);
+	void Hit_StarBuddy(const _double dTimeDelta);
+	void Hit_Rocket(const _double dTimeDelta);
+	void Activate_RobotLever(const _double dTimeDelta);
+	void Pull_VerticalDoor(const _double dTimeDelta);
+	void Rotate_Valve(const _double dTimeDelta);
+	void In_GravityPipe(const _double dTimeDelta);
+	void Warp_Wormhole(const _double dTimeDelta);
+	void Touch_FireDoor(const _double dTimeDelta);
+
+	_bool Trigger_End(const _double dTimeDelta);
+	_bool Trigger_Check(const _double dTimeDelta);
+#pragma endregion
+
 
 };
+
 END
