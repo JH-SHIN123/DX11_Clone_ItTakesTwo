@@ -17,7 +17,6 @@ CPinBall::CPinBall(const CPinBall & rhs)
 void CPinBall::ReadyGame()
 {
 	m_IsReady = true;
-	((CPinBall_BallDoor*)(CDataStorage::GetInstance()->Get_Pinball_BallDoor()))->Set_Dead();
 	Create_DynamicActor();
 }
 

@@ -927,6 +927,27 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		/* 혜원::For.PinBall */
 		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && m_pGameInstance->Key_Down(DIK_END))
 		{
+			// 회전
+			_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+			_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+			_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+
+			_vector vDir = XMVectorSet(0.f, 0.f, -1.f, 0.f);
+			_vector vLookDir = XMVector3Normalize(vLook);
+			_vector vRightDir = XMVector3Normalize(vRight);
+
+			_float fAngle = acosf(XMVectorGetX(XMVector3Dot(vDir, vLookDir)));
+
+			if (0 > XMVectorGetX(XMVector3Dot(vDir, vRightDir)))
+				fAngle *= -1.f;
+
+			_matrix RotateMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), fAngle);
+
+			m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(vRight, RotateMatrix));
+			m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3TransformNormal(vUp, RotateMatrix));
+			m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
+
+
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Enter);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
 
@@ -934,11 +955,16 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(true);
 
 			/* 플레이어 위치 조정, 최소, 최대X값 설정 */
-			m_vTriggerTargetPos.z -= 10.f;
-			m_vTriggerTargetPos.x -= 0.5f;
+			//m_vTriggerTargetPos.z -= 0.3f;
+			m_vTriggerTargetPos.x -= 0.95f;
 			m_MinMaxX.x = m_vTriggerTargetPos.x;
 			m_MinMaxX.y = m_vTriggerTargetPos.x - 5.f;
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_vTriggerTargetPos));
+
+			_vector vTriggerPos = XMLoadFloat3(&m_vTriggerTargetPos);
+			vTriggerPos = XMVectorSetW(vTriggerPos, 1.f);
+
+			//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTriggerPos);
+			m_pActorCom->Set_Position(vTriggerPos);
 
 			m_IsPinBall = true;
 		}

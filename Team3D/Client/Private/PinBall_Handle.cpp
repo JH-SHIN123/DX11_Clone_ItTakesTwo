@@ -104,7 +104,7 @@ void CPinBall_Handle::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGa
 	// May
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY && true == m_bFinish && false == m_bPlayerMove)
 	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALLHANDLE, true, ((CMay*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALLHANDLE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		UI_Create(May, InputButton_InterActive);
 		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	}
