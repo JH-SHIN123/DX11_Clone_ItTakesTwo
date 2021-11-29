@@ -216,7 +216,7 @@ void CBigPlanet::Pendulum(_double dTimeDelta)
 	else if (m_fRotateTime >= 1.f && m_fRotateTime < 2.2f)
 	{
 		//if(m_fRotateTime >= 1.f && m_fRotateTime < 1.5f)
-			m_fSpeed += dTimeDelta * 14.f;
+			m_fSpeed += dTimeDelta * 14.5f;
 		//else if (m_fRotateTime >= 1.5f && m_fRotateTime < 2.2f)
 		//	m_fSpeed -= dTimeDelta * 5.f;
 		 

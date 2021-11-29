@@ -150,6 +150,13 @@ _int CCody::Tick(_double dTimeDelta)
 	//tEST
 	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
+	if(m_pGameInstance->Key_Pressing(DIK_J))
+		m_pActorCom->Set_ZeroGravity(true, true, false);
+	if (m_pGameInstance->Key_Pressing(DIK_K))
+		m_pActorCom->Set_ZeroGravity(true, false, false);
+	if(m_pGameInstance->Key_Pressing(DIK_L))
+		m_pActorCom->Set_ZeroGravity(true, true, true);
+
 #pragma region BasicActions
 	/////////////////////////////////////////////
 	if (Trigger_Check(dTimeDelta))

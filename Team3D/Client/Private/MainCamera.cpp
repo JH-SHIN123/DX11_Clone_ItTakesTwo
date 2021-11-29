@@ -369,6 +369,7 @@ void CMainCamera::ChangeViewPort()
 	tDesc.fTargetViewPortCenterX = 0.5f;
 	tDesc.fTargetViewPortCenterY = 1.f;
 	tDesc.fViewPortLerpSpeed = 1.f;
+
 	////case ViewPortOption::LScreen_Split_Immediate:
 	//if (m_pGameInstance->Key_Down(DIK_1))
 	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
