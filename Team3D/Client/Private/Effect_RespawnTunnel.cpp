@@ -76,7 +76,7 @@ HRESULT CEffect_RespawnTunnel::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Render_Model(7);
 
-
+	// 
 
 	_matrix LocalMatrix = XMMatrixRotationX(XMConvertToRadians(-90.f));
 	LocalMatrix.r[0] *= 12.f;
