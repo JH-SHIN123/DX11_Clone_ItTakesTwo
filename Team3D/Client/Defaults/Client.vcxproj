@@ -210,7 +210,7 @@
     <ClInclude Include="..\public\Effect_Env_Particle.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
     <ClInclude Include="..\Public\Effect_GravityPipe.h" />
-    <ClInclude Include="..\public\Effect_Gravity_Umbrella.h" />
+    <ClInclude Include="..\public\Effect_Umbrella_Pipe.h" />
     <ClInclude Include="..\public\Effect_May_Boots.h" />
     <ClInclude Include="..\public\Effect_May_Boots_Walking_Particle.h" />
     <ClInclude Include="..\public\Effect_Player_Lail.h" />
@@ -282,6 +282,7 @@
     <ClInclude Include="..\Public\UIObject.h" />
     <ClInclude Include="..\Public\UISprite.h" />
     <ClInclude Include="..\Public\UI_Generator.h" />
+    <ClInclude Include="..\public\WallLaserTrap.h" />
     <ClInclude Include="..\public\WarpGate.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -302,7 +303,7 @@
     <ClCompile Include="..\private\Effect_Env_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Generator.cpp" />
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp" />
-    <ClCompile Include="..\private\Effect_Gravity_Umbrella.cpp" />
+    <ClCompile Include="..\private\Effect_Umbrella_Pipe.cpp" />
     <ClCompile Include="..\private\Effect_May_Boots.cpp" />
     <ClCompile Include="..\private\Effect_May_Boots_Walking_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Player_Lail.cpp" />
@@ -381,6 +382,7 @@
     <ClCompile Include="..\Private\UIObject.cpp" />
     <ClCompile Include="..\Private\UISprite.cpp" />
     <ClCompile Include="..\Private\UI_Generator.cpp" />
+    <ClCompile Include="..\private\WallLaserTrap.cpp" />
     <ClCompile Include="..\private\WarpGate.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -405,8 +407,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom_STT.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_RectCustom.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect_Effect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sprite.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl" />

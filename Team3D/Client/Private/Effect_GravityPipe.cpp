@@ -73,16 +73,48 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 	m_pParticle->Set_ParentMatrix(m_pTransformCom->Get_WorldMatrix());
 
 	m_pParticle->Set_Particle_Radius(_float3(5.f, 40.f, 5.f));
+
+	if (true == m_IsActivate)
+	{
+		m_dActivateTime += TimeDelta * 0.3;
+		if (1.0 <= m_dActivateTime)
+			m_dActivateTime = 1.0;
+	}
+	else
+	{
+		m_dActivateTime -= TimeDelta * 0.3;
+		if (0.0 >= m_dActivateTime)
+			m_dActivateTime = 0.0;
+	}
+
+#ifdef _DEBUG
+		if (m_pGameInstance->Key_Down(DIK_Z))
+			m_IsActivate = true;
+		if (m_pGameInstance->Key_Down(DIK_X))
+			m_IsActivate = false;
+	
+#endif // _DEBUG
+
+	m_pParticle->Set_ControlTime(m_dActivateTime);
 	return _int();
 }
 
 _int CEffect_GravityPipe::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+	if (0.0 >= m_dActivateTime)
+		return NO_EVENT;
+
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 200.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+
+	return NO_EVENT;
 }
 
 HRESULT CEffect_GravityPipe::Render(RENDER_GROUP::Enum eGroup)
 {
+	_float fControlAlpha = (_float)m_dActivateTime;
+
+	m_pModelCom->Set_Variable("g_fAlpha", &fControlAlpha, sizeof(_float));
 	m_pModelCom->Set_Variable("g_fTime", &m_fTime, sizeof(_float));
 	m_pModelCom->Set_ShaderResourceView("g_ColorRampTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(0));
 	m_pModelCom->Set_ShaderResourceView("g_DistortionTexture", m_pTexturesCom_Distortion->Get_ShaderResourceView(0));
@@ -98,8 +130,10 @@ void CEffect_GravityPipe::SetUp_WorldMatrix(_fmatrix WorldMatrix)
 
 void CEffect_GravityPipe::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	// Cody
+	if (0.0 >= m_dActivateTime)
+		return;
 
+	// Cody
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eGRAVITYPIPE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -124,6 +158,11 @@ void CEffect_GravityPipe::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID,
 HRESULT CEffect_GravityPipe::Ready_Instance()
 {
 	return S_OK;
+}
+
+void CEffect_GravityPipe::Set_Activate(_bool IsActivate)
+{
+	m_IsActivate = IsActivate;
 }
 
 CEffect_GravityPipe * CEffect_GravityPipe::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

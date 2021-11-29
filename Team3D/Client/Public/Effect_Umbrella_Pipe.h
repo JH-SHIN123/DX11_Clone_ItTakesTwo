@@ -1,16 +1,16 @@
 #pragma once
 
-#ifndef __EFFECT_GRAVITY_UMBRELLA_H__
+#ifndef __EFFECT_UMBRELLA_PIPE_H__
 
 #include "InGameEffect_Model.h"
 
 BEGIN(Client)
-class CEffect_Gravity_Umbrella final : public CInGameEffect_Model
+class CEffect_Umbrella_Pipe final : public CInGameEffect_Model
 {
 private:
-	explicit CEffect_Gravity_Umbrella(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CEffect_Gravity_Umbrella(const CEffect_Gravity_Umbrella& rhs);
-	virtual ~CEffect_Gravity_Umbrella() = default;
+	explicit CEffect_Umbrella_Pipe(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_Umbrella_Pipe(const CEffect_Umbrella_Pipe& rhs);
+	virtual ~CEffect_Umbrella_Pipe() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -34,11 +34,11 @@ private:
 	class CEffect_Env_Particle* m_pParticle = nullptr;
 
 public:
-	static CEffect_Gravity_Umbrella* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_Umbrella_Pipe* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
 
 END
-#define __EFFECT_GRAVITY_UMBRELLA_H__
-#endif // !__EFFECT_GRAVITY_UMBRELLA_H__
+#define __EFFECT_UMBRELLA_PIPE_H__
+#endif // !__EFFECT_UMBRELLA_PIPE_H__

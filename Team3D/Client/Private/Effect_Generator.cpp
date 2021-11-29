@@ -21,6 +21,7 @@
 #include "Effect_Env_Particle.h"
 #include "Effect_Dead_Particle_Fire.h"
 #include "Effect_Robot_Battery_Spark.h"
+#include "Effect_Umbrella_Pipe.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -225,7 +226,9 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Gravity_Pipe"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Gravity_Pipe", CEffect_GravityPipe::Create(pDevice, pDeviceContext, pData));
-
+	//
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Umbrella_Pipe"))
+		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Umbrella_Pipe", CEffect_Umbrella_Pipe::Create(pDevice, pDeviceContext, pData));
 
 	else
 	{
@@ -246,7 +249,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	NULL_CHECK_RETURN(pInstance, E_FAIL);
 
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV")
-		, CVIBuffer_Rect_TripleUV::Create(pDevice, pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Rect.hlsl"), "DefaultTechnique")), E_FAIL);
+		, CVIBuffer_Rect_TripleUV::Create(pDevice, pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Rect_Effect.hlsl"), "DefaultTechnique")), E_FAIL);
 
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom")
 		, CVIBuffer_PointInstance_Custom_ST::Create(pDevice, pDeviceContext, 10000, TEXT("../Bin/ShaderFiles/Shader_PointCustom.hlsl"), "DefaultTechnique")), E_FAIL);
@@ -254,8 +257,8 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT")
 		, CVIBuffer_PointInstance_Custom_STT::Create(pDevice, pDeviceContext, 10000, TEXT("../Bin/ShaderFiles/Shader_PointCustom_STT.hlsl"), "DefaultTechnique")), E_FAIL);
 
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_RectInstance_Custom")
-		, CVIBuffer_RectInstance_Custom::Create(pDevice, pDeviceContext, 100, TEXT("../Bin/ShaderFiles/Shader_RectCustom.hlsl"), "DefaultTechnique")), E_FAIL);
+// 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_RectInstance_Custom")
+// 		, CVIBuffer_RectInstance_Custom::Create(pDevice, pDeviceContext, 100, TEXT("../Bin/ShaderFiles/Shader_RectCustom.hlsl"), "DefaultTechnique")), E_FAIL);
 
 #pragma region Texture
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp/Color_Ramp_%d.png"), 13)), E_FAIL);
