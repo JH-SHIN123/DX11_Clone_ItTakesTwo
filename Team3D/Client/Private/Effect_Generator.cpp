@@ -246,7 +246,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	NULL_CHECK_RETURN(pInstance, E_FAIL);
 
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV")
-		, CVIBuffer_Rect_TripleUV::Create(pDevice, pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Rect.hlsl"), "DefaultTechnique")), E_FAIL);
+		, CVIBuffer_Rect_TripleUV::Create(pDevice, pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Rect_Effect.hlsl"), "DefaultTechnique")), E_FAIL);
 
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom")
 		, CVIBuffer_PointInstance_Custom_ST::Create(pDevice, pDeviceContext, 10000, TEXT("../Bin/ShaderFiles/Shader_PointCustom.hlsl"), "DefaultTechnique")), E_FAIL);
@@ -254,8 +254,8 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT")
 		, CVIBuffer_PointInstance_Custom_STT::Create(pDevice, pDeviceContext, 10000, TEXT("../Bin/ShaderFiles/Shader_PointCustom_STT.hlsl"), "DefaultTechnique")), E_FAIL);
 
-	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_RectInstance_Custom")
-		, CVIBuffer_RectInstance_Custom::Create(pDevice, pDeviceContext, 100, TEXT("../Bin/ShaderFiles/Shader_RectCustom.hlsl"), "DefaultTechnique")), E_FAIL);
+// 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_RectInstance_Custom")
+// 		, CVIBuffer_RectInstance_Custom::Create(pDevice, pDeviceContext, 100, TEXT("../Bin/ShaderFiles/Shader_RectCustom.hlsl"), "DefaultTechnique")), E_FAIL);
 
 #pragma region Texture
 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp/Color_Ramp_%d.png"), 13)), E_FAIL);

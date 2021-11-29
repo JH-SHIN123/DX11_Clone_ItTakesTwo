@@ -25,7 +25,7 @@ HRESULT CEffect_Dash::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_Color), E_FAIL);
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_Color), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV"), TEXT("Com_RectO"), (CComponent**)&m_pRectCom), E_FAIL);
 
 	//
@@ -47,7 +47,7 @@ _int CEffect_Dash::Tick(_double TimeDelta)
 		return EVENT_DEAD;
 
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
-	m_dAlphaTime -= TimeDelta;
+	m_dAlphaTime -= TimeDelta * 0.5f;
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 		Check_Scale(TimeDelta, iIndex);
@@ -84,10 +84,13 @@ HRESULT CEffect_Dash::Render(RENDER_GROUP::Enum eGroup)
 	m_pRectCom->Set_Variable("g_vSubCamPosition", &vSubCamPosition, sizeof(_vector));
 
 	_float fTime = (_float)m_dAlphaTime;
+	_float4 vColor = { 0.411764741f, 0.411764741f, 0.411764741f, 1.000000000f }; //DimGrey
 	m_pRectCom->Set_Variable("g_fTime", &fTime, sizeof(_float));
+	m_pRectCom->Set_Variable("g_vColor", &vColor, sizeof(_float4));
+
 	m_pRectCom->Set_ShaderResourceView("g_MaskTexture",	m_pTexturesCom->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum));
 	m_pRectCom->Set_ShaderResourceView("g_DiffuseTexture",	m_pTexturesCom_Second->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum_Second));
-	m_pRectCom->Set_ShaderResourceView("g_ColorTexture",	m_pTexturesCom_Color->Get_ShaderResourceView(9));
+	//m_pRectCom->Set_ShaderResourceView("g_ColorTexture",	m_pTexturesCom_Color->Get_ShaderResourceView(9));
 
 	m_pRectCom->Render(0);
 
@@ -139,7 +142,5 @@ CGameObject * CEffect_Dash::Clone_GameObject(void * pArg)
 
 void CEffect_Dash::Free()
 {
-	Safe_Release(m_pRectCom);
-
 	__super::Free();
 }
