@@ -463,6 +463,11 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma  endregion
 }
 
+void CMay::Update_Tirgger_Pos(_vector vPos)
+{
+	XMStoreFloat3(&m_vTriggerTargetPos, vPos);
+}
+
 _uint CMay::Get_CurState() const
 {
 	if (nullptr == m_pModelCom) return 0;
@@ -926,7 +931,8 @@ _bool CMay::Trigger_End(const _double dTimeDelta)
 		m_pModelCom->Get_CurAnimIndex() == ANI_M_RocketFirework || 
 		m_pModelCom->Get_CurAnimIndex() == ANI_M_BruteCombat_Attack_Var1 ||
 		m_pModelCom->Get_CurAnimIndex() == ANI_M_Lever_Left ||
-		m_pModelCom->Get_CurAnimIndex() == ANI_M_Valve_Rotate_MH)
+		m_pModelCom->Get_CurAnimIndex() == ANI_M_Valve_Rotate_MH ||
+		m_pModelCom->Get_CurAnimIndex() == ANI_M_Pull)
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 		m_IsCollide = false;
@@ -992,11 +998,11 @@ void CMay::Pull_VerticalDoor(const _double dTimeDelta)
 
 	if (m_IsPullVerticalDoor == true)
 	{
-		m_pModelCom->Set_Animation(ANI_M_RocketFirework);
+ 		m_pModelCom->Set_Animation(ANI_M_Pull);
 
 		_vector vSwitchPos = XMLoadFloat3(&m_vTriggerTargetPos);
 		vSwitchPos.m128_f32[3] = 1.f;
-
+		vSwitchPos.m128_f32[1] += 11.f;
 		m_pActorCom->Set_ZeroGravity(true, false, true);
 		m_pActorCom->Set_Position(vSwitchPos);
 

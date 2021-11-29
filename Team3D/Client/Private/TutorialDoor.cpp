@@ -27,14 +27,14 @@ HRESULT CTutorialDoor::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(0.15f, XMConvertToRadians(90.f))), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(0.3f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_DoorWay"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform_Trigger"), (CComponent**)&m_pTransformCom_Trigger, &CTransform::TRANSFORM_DESC(0.15f, XMConvertToRadians(90.f))), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 0.7f, 36.15f, 1.f)); // º¯°æµÈ Pos
 	_vector vTriggerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	vTriggerPos.m128_f32[1] += 11.f;
+	vTriggerPos.m128_f32[1] += 11.f;// +2.;
 	m_pTransformCom_Trigger->Set_State(CTransform::STATE_POSITION, vTriggerPos);
 	CTriggerActor::ARG_DESC ArgDesc;
 
@@ -75,7 +75,7 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 		UI_Delete(May, InputButton_InterActive);
 	}
 
-	if (m_pGameInstance->Pad_Key_Down(DIP_LB) && m_IsCollide)
+	if (m_pGameInstance->Pad_Key_Down(DIP_LB))
 	{
 		m_bPull = false;
 		m_IsNoGrab = true;
@@ -104,6 +104,9 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 					m_pStaticActorCom->Update_StaticActor();
 				}
 			}
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+			static_cast<CMay*>(CDataStorage::GetInstance()->GetMay())->Update_Tirgger_Pos(vPos);
 		}		
 	}
 
@@ -163,16 +166,19 @@ HRESULT CTutorialDoor::Render(RENDER_GROUP::Enum eGroup)
 
 void CTutorialDoor::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eVERTICALDOOR, true, m_pTransformCom_Trigger->Get_State(CTransform::STATE_POSITION));
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eVERTICALDOOR, true, vPos);
 		UI_Create(May, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom_Trigger->Get_State(CTransform::STATE_POSITION));
+		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, vPos);
 		m_IsCollide = true;
 		m_IsPullMax = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eVERTICALDOOR, false, vPos);
 		m_IsCollide = false;
 		UI_Delete(May, InputButton_InterActive);
 	}

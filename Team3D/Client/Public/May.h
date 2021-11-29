@@ -178,6 +178,7 @@ public:
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
+	void		Update_Tirgger_Pos(_vector vPos);
 
 	// Tick 에서 호출될 함수들
 private:
