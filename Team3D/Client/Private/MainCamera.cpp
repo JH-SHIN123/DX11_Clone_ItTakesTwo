@@ -200,6 +200,10 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 		m_fChangeCamModeTime = 0.f;
 		m_fChangeCamModeLerpSpeed = 10.f;
 	}
+
+	_matrix matPl
+	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	
 	
 }
 
