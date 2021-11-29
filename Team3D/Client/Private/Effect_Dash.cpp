@@ -26,7 +26,6 @@ HRESULT CEffect_Dash::NativeConstruct(void * pArg)
 	__super::NativeConstruct(pArg);
 
 	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_Color), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV"), TEXT("Com_RectO"), (CComponent**)&m_pRectCom), E_FAIL);
 
 	//
 	//_vector vRight = XMLoadFloat4(&m_pInstanceBuffer[0].vRight);
