@@ -184,7 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
-    <ClInclude Include="..\Public\BetteryBox.h" />
+    <ClInclude Include="..\Public\BatteryBox.h" />
     <ClInclude Include="..\Public\CamEffect.h" />
     <ClInclude Include="..\public\Cam_Helper.h" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp" />
@@ -204,6 +204,7 @@
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\ControllerIcon.h" />
+    <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
     <ClInclude Include="..\public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Color.txt" />
@@ -287,12 +288,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\AlphaScreen.cpp" />
-    <ClCompile Include="..\Private\BetteryBox.cpp" />
+    <ClCompile Include="..\Private\BatteryBox.cpp" />
     <ClCompile Include="..\Private\ButtonIndicator.cpp" />
     <ClCompile Include="..\Private\ChapterSelect.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
     <ClCompile Include="..\Private\ControllerIcon.cpp" />
+    <ClCompile Include="..\Private\ControlRoom_Battery.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Door.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp" />
     <ClCompile Include="..\Private\HeaderBox.cpp" />

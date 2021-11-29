@@ -1,35 +1,37 @@
 #include "stdafx.h"
-#include "..\public\BetteryBox.h"
+#include "..\public\BatteryBox.h"
 #include "Cody.h"
 #include "May.h"
 
-CBetteryBox::CBetteryBox(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CBatteryBox::CBatteryBox(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
 }
 
-CBetteryBox::CBetteryBox(const CBetteryBox & rhs)
+CBatteryBox::CBatteryBox(const CBatteryBox & rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CBetteryBox::NativeConstruct_Prototype()
+HRESULT CBatteryBox::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
-HRESULT CBetteryBox::NativeConstruct(void * pArg)
+HRESULT CBatteryBox::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_BetteryBox"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_BatteryBox"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.469f, 220.62184f, 224.38f, 1.f));
+
+	FAILED_CHECK_RETURN(Ready_Layer_ControlRoom_Battery(TEXT("Layer_ControlRoom_Battery")), E_FAIL);
 	
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
@@ -40,24 +42,29 @@ HRESULT CBetteryBox::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CBetteryBox::Tick(_double dTimeDelta)
+_int CBatteryBox::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	m_pStaticActorCom->Update_StaticActor();
 
 	return NO_EVENT;
 }
 
-_int CBetteryBox::Late_Tick(_double dTimeDelta)
+_int CBatteryBox::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.469f, 220.95084f, 224.66f, 1.f));
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+
 	return NO_EVENT;
 }
 
-HRESULT CBetteryBox::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CBatteryBox::Render(RENDER_GROUP::Enum eGroup)
 {
 	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -68,12 +75,12 @@ HRESULT CBetteryBox::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-void CBetteryBox::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+void CBatteryBox::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 
 }
 
-HRESULT CBetteryBox::Render_ShadowDepth()
+HRESULT CBatteryBox::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
@@ -85,33 +92,40 @@ HRESULT CBetteryBox::Render_ShadowDepth()
 	return S_OK;
 }
 
-CBetteryBox * CBetteryBox::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+HRESULT CBatteryBox::Ready_Layer_ControlRoom_Battery(const _tchar * pLayerTag)
 {
-	CBetteryBox* pInstance = new CBetteryBox(pDevice, pDeviceContext);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_ControlRoom_Battery")), E_FAIL);
+
+	return S_OK;
+}
+
+CBatteryBox * CBatteryBox::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+{
+	CBatteryBox* pInstance = new CBatteryBox(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSG_BOX("Failed to Create Instance - CBetteryBox");
+		MSG_BOX("Failed to Create Instance - CBatteryBox");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CBetteryBox::Clone_GameObject(void * pArg)
+CGameObject * CBatteryBox::Clone_GameObject(void * pArg)
 {
-	CBetteryBox* pInstance = new CBetteryBox(*this);
+	CBatteryBox* pInstance = new CBatteryBox(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CBetteryBox");
+		MSG_BOX("Failed to Clone Instance - CBatteryBox");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CBetteryBox::Free()
+void CBatteryBox::Free()
 {
 	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTransformCom);

@@ -8,6 +8,7 @@
 #include "PressurePlateFrame.h"
 #include "SupportFrame.h"
 #include "ControlRoom_Door.h"
+#include "BatteryBox.h"
 
 CPressureBigPlate::CPressureBigPlate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -52,6 +53,7 @@ HRESULT CPressureBigPlate::NativeConstruct(void * pArg)
 		/* 테스트 용 */
 		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.4f, -3.f, 1.f));
 		FAILED_CHECK_RETURN(Ready_Layer_Door(TEXT("Layer_ControlRoom_Door"), 2), E_FAIL);
+		FAILED_CHECK_RETURN(Ready_Layer_BatteryBox(TEXT("Layer_BatteryBox")), E_FAIL);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(81.101f, 219.f, 217.141f, 1.f));
 	}
 
@@ -494,6 +496,17 @@ HRESULT CPressureBigPlate::Ready_Layer_SupportFrame(const _tchar * pLayerTag)
 	return S_OK;
 }
 
+HRESULT CPressureBigPlate::Ready_Layer_BatteryBox(const _tchar * pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_BatteryBox"), nullptr, &pGameObject), E_FAIL);
+	m_pBatteryBox = static_cast<CBatteryBox*>(pGameObject);
+
+	return S_OK;
+}
+
+
 HRESULT CPressureBigPlate::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -538,6 +551,7 @@ void CPressureBigPlate::Free()
 	Safe_Release(m_pPlateLock);
 	Safe_Release(m_pPlateFrame);
 	Safe_Release(m_pSupportFrame);
+	Safe_Release(m_pBatteryBox);
 
 	for (auto pPressurePlate : m_vecPressurePlate)
 		Safe_Release(pPressurePlate);

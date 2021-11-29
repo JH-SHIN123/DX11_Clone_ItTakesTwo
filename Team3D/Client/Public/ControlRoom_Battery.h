@@ -5,12 +5,12 @@
 
 BEGIN(Client)
 
-class CBetteryBox : public CGameObject
+class CControlRoom_Battery : public CGameObject
 {
 protected:
-	explicit CBetteryBox(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CBetteryBox(const CBetteryBox& rhs);
-	virtual ~CBetteryBox() = default;
+	explicit CControlRoom_Battery(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CControlRoom_Battery(const CControlRoom_Battery& rhs);
+	virtual ~CControlRoom_Battery() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -29,16 +29,19 @@ public:
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
+private:
+	_float										m_fAngle = 0.f;
+
 protected:
 	/* For.Component */
 	CRenderer*									m_pRendererCom = nullptr;
 	CTransform*									m_pTransformCom = nullptr;
 	CModel*										m_pModelCom = nullptr;
 	CStaticActor*								m_pStaticActorCom = nullptr;
-
+	CTriggerActor*								m_pTriggerCom = nullptr;
 
 public:
-	static CBetteryBox* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CControlRoom_Battery* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

@@ -5,12 +5,12 @@
 
 BEGIN(Client)
 
-class CBetteryBox : public CGameObject
+class CBatteryBox : public CGameObject
 {
 protected:
-	explicit CBetteryBox(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CBetteryBox(const CBetteryBox& rhs);
-	virtual ~CBetteryBox() = default;
+	explicit CBatteryBox(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CBatteryBox(const CBatteryBox& rhs);
+	virtual ~CBatteryBox() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -25,7 +25,6 @@ public:
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
-
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
@@ -36,9 +35,11 @@ protected:
 	CModel*										m_pModelCom = nullptr;
 	CStaticActor*								m_pStaticActorCom = nullptr;
 
+private:
+	HRESULT Ready_Layer_ControlRoom_Battery(const _tchar * pLayerTag);
 
 public:
-	static CBetteryBox* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CBatteryBox* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

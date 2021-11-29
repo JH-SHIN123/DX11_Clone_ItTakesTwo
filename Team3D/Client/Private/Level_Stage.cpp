@@ -47,10 +47,6 @@ HRESULT CLevel_Stage::NativeConstruct()
 
 	/* Jin */
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressureBigPlate"), TEXT("GameObject_PressureBigPlate")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_BetteryBox"), TEXT("GameObject_BetteryBox")), E_FAIL);
-
-	//FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressurePlateFrame"), TEXT("GameObject_PressurePlateFrame")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_SupportFrame"), TEXT("GameObject_SupportFrame")), E_FAIL);
 
 	/* Jun */
 
@@ -287,6 +283,10 @@ HRESULT CLevel_Stage::Ready_Layer_BigPlanet(const _tchar * pLayerTag)
 	return S_OK;
 }
 
+#pragma endregion
+
+#pragma region Jin
+
 HRESULT CLevel_Stage::Ready_Layer_ControlRoomPuzzle(const _tchar * pLayerTag, const _tchar * pGameObjectTag)
 {
 	_uint iOption = 0;
@@ -296,13 +296,12 @@ HRESULT CLevel_Stage::Ready_Layer_ControlRoomPuzzle(const _tchar * pLayerTag, co
 		iOption = i;
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, pGameObjectTag, &iOption), E_FAIL);
 	}
-	
+
 	return S_OK;
 }
 
-#pragma endregion
 
-#pragma region Jin
+
 #pragma endregion
 
 #pragma region Jun

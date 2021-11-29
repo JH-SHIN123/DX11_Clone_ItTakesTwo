@@ -361,7 +361,10 @@
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin\06.ControlRoom_Door">
       <UniqueIdentifier>{7d68941f-ef9e-45f4-9a25-aae9935dc649}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\07.BetteryBox">
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\ControlRoom_Bettery">
+      <UniqueIdentifier>{624965be-0db4-446b-a7ed-ac33238a0f8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\07.ControlRoom_BetteryBox">
       <UniqueIdentifier>{509900e3-ef54-404d-8bcc-2c05bc99434e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -660,8 +663,11 @@
     <ClInclude Include="..\Public\ControlRoom_Door.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\06.ControlRoom_Door</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\BetteryBox.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\07.BetteryBox</Filter>
+    <ClInclude Include="..\Public\BatteryBox.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\07.ControlRoom_BetteryBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ControlRoom_Battery.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\ControlRoom_Bettery</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -948,8 +954,11 @@
     <ClCompile Include="..\Private\ControlRoom_Door.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\06.ControlRoom_Door</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\BetteryBox.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\07.BetteryBox</Filter>
+    <ClCompile Include="..\Private\BatteryBox.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\07.ControlRoom_BetteryBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ControlRoom_Battery.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\ControlRoom_Bettery</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
