@@ -604,7 +604,8 @@ void CCody::Move(const _double dTimeDelta)
 			m_bAction = false;
 
 			_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
-			vDirection = XMVectorSetY(vDirection, 0.f);
+			// 중력발판 위에 있을때는 SetY 안해야 함!
+			//vDirection = XMVectorSetY(vDirection, 0.f);
 			vDirection = XMVector3Normalize(vDirection);
 
 			m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);

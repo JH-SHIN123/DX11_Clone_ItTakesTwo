@@ -50,9 +50,16 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 		m_iTargetPlayer = GameID::eMAY;
 	}
 
-	CTriggerActor::ARG_DESC ArgDesc;
-
+	CStaticActor::ARG_DESC StaticDesc;
 	m_UserData = USERDATA(GameID::eSPACEVALVE, this);
+	StaticDesc.pModel = m_pModelCom;
+	StaticDesc.pTransform = m_pTransformCom;
+	StaticDesc.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &StaticDesc), E_FAIL);
+
+
+	CTriggerActor::ARG_DESC ArgDesc;
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
 	ArgDesc.pGeometry = new PxSphereGeometry(1.5f);
@@ -80,7 +87,7 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 	}
 	else if (m_iTargetPlayer == GameID::eMAY)
 	{
-		if (m_pGameInstance->Key_Down(DIK_END) && m_IsCollide == true)
+		if (m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 		{
 			UI_Delete(May, InputButton_InterActive);
 			UI_Delete(Cody, InputButton_InterActive);
@@ -247,6 +254,7 @@ CGameObject * CSpaceValve::Clone_GameObject(void * pArg)
 
 void CSpaceValve::Free()
 {
+	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);

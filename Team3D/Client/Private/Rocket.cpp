@@ -60,7 +60,7 @@ _int CRocket::Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide == true)
+	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide == true || m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 	{
 		m_bLaunch = true;
 		UI_Delete(May, InputButton_InterActive);

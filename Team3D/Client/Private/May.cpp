@@ -831,9 +831,6 @@ void CMay::Ground_Pound(const _double dTimeDelta)
 
 void CMay::Add_OffSet_Pos(_fvector vAddOffSet)
 {
-	PxExtendedVec3 ContactPos = m_pActorCom->Get_ContactPos();
-	_vector vPosition = {ContactPos.x, ContactPos.y , ContactPos.z };
-	m_pActorCom->Set_Position(vPosition);
 }
 
 
@@ -852,37 +849,37 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)
 	{
-		if (m_eTargetGameID == GameID::eSTARBUDDY && m_pGameInstance->Key_Down(DIK_E))
+		if (m_eTargetGameID == GameID::eSTARBUDDY && m_pGameInstance->Pad_Key_Down(DIP_Y))
 		{
 			m_pModelCom->Set_Animation(ANI_M_BruteCombat_Attack_Var1);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsHitStarBuddy = true;
 		}
-		else if (m_eTargetGameID == GameID::eMOONBABOON && m_pGameInstance->Key_Down(DIK_E))
+		else if (m_eTargetGameID == GameID::eMOONBABOON && m_pGameInstance->Pad_Key_Down(DIP_Y))
 		{
 			m_pModelCom->Set_Animation(ANI_M_Grind_Grapple_Enter);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Grind_Grapple_ToGrind);
 			m_IsOnGrind = true;
 		}
-		else if (m_eTargetGameID == GameID::eROCKET && m_pGameInstance->Key_Down(DIK_E))
+		else if (m_eTargetGameID == GameID::eROCKET && m_pGameInstance->Pad_Key_Down(DIP_Y))
 		{
 			m_pModelCom->Set_Animation(ANI_M_RocketFirework);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsHitRocket = true;
 		}
-		else if (m_eTargetGameID == GameID::eROBOTLEVER && m_pGameInstance->Key_Down(DIK_E))
+		else if (m_eTargetGameID == GameID::eROBOTLEVER && m_pGameInstance->Pad_Key_Down(DIP_Y))
 		{
 			m_pModelCom->Set_Animation(ANI_M_Lever_Left);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsActivateRobotLever = true;
 		}
-		else if (m_eTargetGameID == GameID::eVERTICALDOOR && m_pGameInstance->Key_Down(DIK_E))
+		else if (m_eTargetGameID == GameID::eVERTICALDOOR && m_pGameInstance->Pad_Key_Down(DIP_Y))
 		{
 			m_pModelCom->Set_Animation(ANI_M_Bounce2); // Trees/DoorInteraction 추출해야함.
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsPullVerticalDoor = true;
 		}
-		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_END) && m_iValvePlayerName == Player::May)
+		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Pad_Key_Down(DIP_Y) && m_iValvePlayerName == Player::May)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Valve_Rotate_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Valve_Rotate_MH);
@@ -1002,7 +999,7 @@ void CMay::Rotate_Valve(const _double dTimeDelta)
 		}
 
 		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pGameInstance->Key_Down(DIK_RIGHT) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Valve_Rotate_R && m_bStruggle == false)
+		if (m_pGameInstance->Key_Down(DIP_RB) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Valve_Rotate_R && m_bStruggle == false)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Valve_Rotate_R);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Valve_Rotate_MH);
@@ -1046,12 +1043,12 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 		if (m_IsInGravityPipe && m_IsCollide == true)
 		{
 			m_pActorCom->Set_ZeroGravity(true, true, true);
-			if (m_pGameInstance->Key_Pressing(DIK_RCONTROL))
+			if (m_pGameInstance->Key_Pressing(DIP_B))
 			{
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 			}
 
-			if (m_pGameInstance->Key_Pressing(DIK_RALT))
+			if (m_pGameInstance->Key_Pressing(DIP_A))
 			{
 				m_pActorCom->Set_ZeroGravity(true, false, false);
 				/*m_pTransformCom->Rotate_Axis(XMVector3Normalize(XMVectorSet(1.f, 0.f, 0.f, 0.f)), dTimeDelta * 0.1f);
@@ -1068,7 +1065,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			// m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
 			// m_pGameInstance->Get_Pad_LStickY() > 20000 (Down)
 			// m_pGameInstance->Get_Pad_LStickY() < 44000 (Up)
-			if (m_pGameInstance->Get_Pad_LStickY() < 44000)
+			if (m_pGameInstance->Get_Pad_LStickY() > 44000)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
@@ -1085,7 +1082,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
-			if (m_pGameInstance->Get_Pad_LStickY() > 20000)
+			if (m_pGameInstance->Get_Pad_LStickY() < 20000)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK) * -1.f, 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
