@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\public\Level_Loading.h"
-#include "GameInstance.h"
 #include "Level_Stage.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

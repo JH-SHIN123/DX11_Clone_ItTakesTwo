@@ -20,7 +20,7 @@ private:
 	virtual ~CStatic_Env() = default;
 
 public:/* Struct */
-	typedef struct tagStatic_Env_Dsec
+	typedef struct tagArgumentDesc
 	{
 		_float4x4		WorldMatrix;
 		_tchar			szModelTag[MAX_PATH];
@@ -28,7 +28,7 @@ public:/* Struct */
 		_float			fCullRadius;
 		GameID::Enum	eGameID;
 
-	}STATIC_ENV_DESC;
+	}ARG_DESC;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -51,7 +51,10 @@ private:
 	CModel*				m_pModelCom = nullptr;
 	CStaticActor*		m_pStaticActorCom = nullptr;
 
-	STATIC_ENV_DESC		m_Static_Env_Desc;
+	ARG_DESC			m_Static_Env_Desc;
+
+private:
+	HRESULT Ready_Component(void* pArg);
 
 public:
 	static CStatic_Env* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

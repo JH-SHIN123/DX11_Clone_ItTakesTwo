@@ -3,13 +3,8 @@
 #include "Client_Defines.h"
 #include "Character.h"
 
-BEGIN(Engine)
-class CRenderer;
-class CTransform;
-class CModel;
-END
-
 BEGIN(Client)
+
 class CMay final : public CCharacter
 {
 #pragma region Enum_STATE
@@ -214,6 +209,9 @@ public:
 ///////////////////////////////////////////////////////    상태 변환 관련 변수들   /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public:
+	_uint Get_CurState() const;
+
+public:
 	// 상태 && 이동
 	void Move(const _double dTimeDelta);
 	void Roll(const _double dTimeDelta);
@@ -350,4 +348,5 @@ private:
 
 
 };
+
 END

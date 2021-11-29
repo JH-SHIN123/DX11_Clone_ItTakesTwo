@@ -5,23 +5,24 @@
 
 BEGIN(Engine)
 class CRenderer;
-class CTextures;
 class CTransform;
-class CVIBuffer_Terrain;
+class CModel;
+class CStaticActor;
 END
 
 BEGIN(Client)
 
-class CTerrain final : public CGameObject
+class CBigButtonFrame : public CGameObject
 {
-private:
-	explicit CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CTerrain(const CTerrain& rhs);
-	virtual ~CTerrain() = default;
+protected:
+	explicit CBigButtonFrame(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CBigButtonFrame(const CBigButtonFrame& rhs);
+	virtual ~CBigButtonFrame() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
+
 
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
@@ -30,15 +31,19 @@ public:
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
-private:
+public:
+	CTransform* Get_Transform() { return m_pTransformCom; }
+
+
+protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
-	CTextures*			m_pTextureCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
-	CVIBuffer_Terrain*	m_pVIBufferCom = nullptr;
+	CModel*				m_pModelCom = nullptr;
+	CStaticActor*		m_pStaticActorCom = nullptr;
 
 public:
-	static CTerrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CBigButtonFrame* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

@@ -31,12 +31,12 @@ HRESULT CTerrain::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CTerrain::Tick(_double dTimeDelta)
+_int CTerrain::Tick(_double TimeDelta)
 {
 	return NO_EVENT;
 }
 
-_int CTerrain::Late_Tick(_double dTimeDelta)
+_int CTerrain::Late_Tick(_double TimeDelta)
 {
 	NULL_CHECK_RETURN(m_pRendererCom, EVENT_ERROR);
 
@@ -48,12 +48,12 @@ HRESULT CTerrain::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pVIBufferCom, E_FAIL);
 	NULL_CHECK_RETURN(m_pTextureCom, E_FAIL);
 
-	m_pVIBufferCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pVIBufferCom->Set_DefaultVariables_Shadow();
+	//m_pVIBufferCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	//m_pVIBufferCom->Set_DefaultVariables_Shadow();
 
-	m_pVIBufferCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(0));
+	//m_pVIBufferCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(0));
 
-	m_pVIBufferCom->Render(0);
+	//m_pVIBufferCom->Render(0);
 
 	return S_OK;
 }

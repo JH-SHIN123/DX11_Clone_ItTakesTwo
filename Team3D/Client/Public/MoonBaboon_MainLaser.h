@@ -7,47 +7,43 @@ BEGIN(Engine)
 class CRenderer;
 class CTransform;
 class CModel;
-class CTriggerActor;
+class CStaticActor;
 END
 
 BEGIN(Client)
-
-class CTestObject01 final : public CGameObject
+class CMoonBaboon_MainLaser final : public CGameObject
 {
 private:
-	explicit CTestObject01(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CTestObject01(const CTestObject01& rhs);
-	virtual ~CTestObject01() = default;
-
-public: /* Getter */
-	CTransform* Get_Transform() { return m_pTransformCom; }
+	explicit CMoonBaboon_MainLaser(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CMoonBaboon_MainLaser(const CMoonBaboon_MainLaser& rhs);
+	virtual ~CMoonBaboon_MainLaser() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-	/* For.Trigger */
-	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
-
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 private:
-	/* For.Component */
+	void Laser_AttackPattern(_double TimeDelta);
+
+private:
+	_uint	m_iPatternState = 0;
+	_double m_dPatternDeltaT = 0.0;
+
+private: /* For.Component */
 	CRenderer*		m_pRendererCom = nullptr;
 	CTransform*		m_pTransformCom = nullptr;
 	CModel*			m_pModelCom = nullptr;
-	CTriggerActor*	m_pTriggerCom = nullptr;
+	CStaticActor*	m_pStaticActorCom = nullptr;
 
 public:
-	static CTestObject01* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CMoonBaboon_MainLaser* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
-
 END

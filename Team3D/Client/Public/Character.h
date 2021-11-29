@@ -1,17 +1,9 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
-
-BEGIN(Engine)
-class CRenderer;
-class CTransform;
-class CModel;
-class CCamera;
-class CControllableActor;
-END
 
 BEGIN(Client)
+
 class CCharacter abstract : public CGameObject
 {
 protected:
@@ -39,10 +31,10 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 protected: /* For.Component */
-	CRenderer*	m_pRendererCom = nullptr;
-	CTransform* m_pTransformCom = nullptr;
-	CModel*		m_pModelCom = nullptr;
-	CControllableActor* m_pActorCom = nullptr;
+	CRenderer*			m_pRendererCom = nullptr;
+	CTransform*			m_pTransformCom = nullptr;
+	CModel*				m_pModelCom = nullptr;
+	class CPlayerActor*	m_pActorCom = nullptr;
 
 protected:
 	_float m_fClockWise = 1.f; // 1이면 시계방향, -1이면 반시계방향.
@@ -51,4 +43,5 @@ protected:
 public:
 	virtual void Free() override;
 };
+
 END

@@ -63,10 +63,10 @@ _int CBigButton::Tick(_double dTimeDelta)
 
 		if (m_bPressed == true)
 		{
-			if (m_fMoveDist < 0.5f)
+			if (m_fMoveDist < 0.6f)
 			{
 				m_fMoveDist += (_float)dTimeDelta;
-				m_pTransformCom->Go_Down(dTimeDelta * 0.2f);
+				m_pTransformCom->Go_Down(dTimeDelta * 0.4f);
 			}
 			if (m_fMoveDist >= 0.5f)
 			{

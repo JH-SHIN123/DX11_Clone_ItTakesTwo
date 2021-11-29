@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "..\public\Cody.h"
-#include "GameInstance.h"
+#include "..\Public\Cody.h"
 #include "MainCamera.h"
 #include "UI_Generator.h"
 #include "UIObject.h"
 #include "MathHelper.h"
+#include "PlayerActor.h"
 
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
@@ -64,7 +64,7 @@ HRESULT CCody::Ready_Component()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &PlayerTransformDesc), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	
-	CControllableActor::ARG_DESC ArgDesc;
+	CPlayerActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eCODY, this);
 	ArgDesc.pUserData = &m_UserData;
@@ -90,7 +90,7 @@ HRESULT CCody::Ready_Component()
 	//CapsuleControllerDesc.maxJumpHeight = 10.f;
 	//CapsuleControllerDesc.volumeGrowth = 1.5f;
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_PlayerActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
 	//Effect 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Cody_Size"), nullptr, (CGameObject**)&m_pEffect_Size), E_FAIL);
@@ -170,6 +170,7 @@ _int CCody::Tick(_double dTimeDelta)
 		In_GravityPipe(dTimeDelta);
 		Hit_Planet(dTimeDelta);
 		Hook_UFO(dTimeDelta);
+		Falling_Dead(dTimeDelta);
 	}
 	else
 	{
@@ -219,6 +220,9 @@ _int CCody::Late_Tick(_double dTimeDelta)
 
 HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 {
+	if (true == m_IsDeadLine)
+		return S_OK;
+
 	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
@@ -288,9 +292,9 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_2)) /* 2층 */
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 125.f, 170.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_3)) /* 2스테이지 입구 */
+	if (m_pGameInstance->Key_Down(DIK_F3)) /* 2스테이지 입구 */
 		m_pActorCom->Set_Position(XMVectorSet(620.f, 760.f, 195.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_4)) /* 2스테이지 */
+	if (m_pGameInstance->Key_Down(DIK_F4)) /* 2스테이지 */
 		m_pActorCom->Set_Position(XMVectorSet(960.f, 720.f, 193.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_5))/* 3스테이지 */
 		m_pActorCom->Set_Position(XMVectorSet(-610.f, 760.f, 195.f, 1.f));
@@ -385,16 +389,35 @@ void CCody::KeyInput(_double dTimeDelta)
 				}
 			}
 
+			///// 중력 테스트
+			//_vector vUp, vRight, vLook = XMVectorZero();
+			//_bool bGravityReordered = m_pActorCom->Get_IsGravityReordered();
+			//_vector WhenGravityReorderedDir = XMVectorZero();
+			//if (bGravityReordered == false) // 중력발판위에 있다면
+			//{
+			//	
+			//	//m_pActorCom->Set_ZeroGravity(true, true, true);
+			//	// -> 밟은지점의 노말 == 플레이어 Up.
+			//	// -> 중력발판의 Right 축을 가져오자.
+			//	// -> 둘이 외적하면 Look 나옴.
+			//	// -> 그걸 Dir로 쓴다면?
+			//	vUp = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
+			//	vRight = XMVector3Normalize(m_pActorCom->Get_GravityPath_RightVector());
+			//	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
+			//}
+			//////
+
 			if (m_pGameInstance->Key_Pressing(DIK_W))
 			{
 				bMove[0] = !bMove[0];
-				XMStoreFloat3(&m_vMoveDirection, vCameraLook);
+					XMStoreFloat3(&m_vMoveDirection, vCameraLook);
+
 				m_iSavedKeyPress = UP;
 			}
 			if (m_pGameInstance->Key_Pressing(DIK_S))
 			{
 				bMove[0] = !bMove[0];
-				XMStoreFloat3(&m_vMoveDirection, -vCameraLook);
+					XMStoreFloat3(&m_vMoveDirection, -vCameraLook);
 				m_iSavedKeyPress = DOWN;
 			}
 
@@ -562,6 +585,14 @@ void CCody::KeyInput(_double dTimeDelta)
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 #pragma  endregion
 }
+
+_uint CCody::Get_CurState() const
+{
+	if (nullptr == m_pModelCom) return 0;
+
+	return m_pModelCom->Get_CurAnimIndex();
+}
+
 void CCody::Move(const _double dTimeDelta)
 {
 #pragma region Medium_Size
@@ -1388,11 +1419,28 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_bGoToHooker = true;
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 		}
+		else if (m_eTargetGameID == GameID::eDEADLINE && false == m_IsDeadLine)
+		{
+			/* 데드라인과 충돌시 */
+			/* 낙사 애니메이션인데 다음애니메이션이 뭔지 모르겠음 */
+			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
+			/* 왜 중력을 0으로 하면 추락하는지 모르겠음 */
+			m_pActorCom->Set_Gravity(1.f);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			m_IsDeadLine = true;
+		}
+		else if (m_eTargetGameID == GameID::eSAVEPOINT)
+		{
+			/* 세이브포인트 트리거와 충돌시 세이브포인트 갱신 */
+			m_vSavePoint = m_vTriggerTargetPos;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet || m_IsHookUFO)
+		|| m_IsHitPlanet || m_IsHookUFO || m_IsDeadLine)
 		return true;
 
 	return false;
@@ -1718,6 +1766,35 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 			m_pActorCom->Set_Jump(true);
 			m_IsHookUFO = false;
 			m_IsCollide = false;
+		}
+	}
+}
+
+void CCody::Falling_Dead(const _double dTimeDelta)
+{
+	/* 데드라인과 충돌시 2초후에 리스폰 */
+	if (m_IsDeadLine == true)
+	{
+		m_fDeadTime += (_float)dTimeDelta;
+		if (m_fDeadTime >= 2.f)
+		{
+			_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
+			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+
+			m_pActorCom->Set_Position(vSavePosition);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pActorCom->Set_Gravity(-9.8f);
+			m_fDeadTime = 0.f;
+			m_IsDeadLine = false;
+		}
+		else
+		{
+			_vector vTriggerTargetPos = XMLoadFloat3(&m_vTriggerTargetPos);
+			vTriggerTargetPos = XMVectorSetW(vTriggerTargetPos, 1.f);
+			m_pActorCom->Set_Position(vTriggerTargetPos);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTriggerTargetPos);
 		}
 	}
 }

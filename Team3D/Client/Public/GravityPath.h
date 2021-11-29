@@ -11,6 +11,16 @@ private:
 	explicit CGravityPath(const CGravityPath& rhs);
 	virtual	~CGravityPath() = default;
 
+public:/* Struct */
+	typedef struct tagStatic_Env_Dsec
+	{
+		_float4x4		WorldMatrix;
+		_tchar			szModelTag[MAX_PATH];
+		_uint			iMaterialIndex;
+		_float			fCullRadius;
+		GameID::Enum	eGameID;
+	}STATIC_ENV_DESC;
+
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
@@ -19,14 +29,22 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eRender) override;
 	virtual HRESULT Render_ShadowDepth() override;
 
+public:
+	/* Getter */
+	CTransform* Get_Transform() { return m_pTransformCom; }
+
 private:
 	/* For.Component */
-	CTransform*		m_pTransformCom = nullptr;
-	CRenderer*		m_pRendererCom = nullptr;
-	CModel*			m_pModelCom = nullptr;
-	CStaticActor*	m_pStaticActorCom = nullptr;
+	CTransform*				m_pTransformCom = nullptr;
+	CRenderer*				m_pRendererCom = nullptr;
+	CModel*					m_pModelCom = nullptr;
+	class CSepdStaticActor*	m_pStaticActorCom = nullptr;
+	STATIC_ENV_DESC			m_Static_Env_Desc;
+	USERDATA*				m_arrUserData = nullptr;
 
 public:
+	static CGravityPath* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
 

@@ -100,7 +100,7 @@ _int CBigPlanet::Tick(_double dTimeDelta)
 			Pendulum(dTimeDelta);
 		}
 	}
-	m_pStaticActorCom->Update_StaticActor();
+	//m_pStaticActorCom->Update_StaticActor();
 	return NO_EVENT;
 }
 
@@ -211,12 +211,12 @@ void CBigPlanet::Pendulum(_double dTimeDelta)
 	if (m_fRotateTime < 1.f)
 	{
 		m_pTransformCom->Rotate_Axis(XMLoadFloat3(&m_vRotateDir), ((-dTimeDelta) * m_fSpeed) / 30.f);
-		m_fSpeed -= dTimeDelta * 20.f;
+		m_fSpeed -= (_float)dTimeDelta * 20.f;
 	}
 	else if (m_fRotateTime >= 1.f && m_fRotateTime < 2.2f)
 	{
 		//if(m_fRotateTime >= 1.f && m_fRotateTime < 1.5f)
-			m_fSpeed += dTimeDelta * 14.5f;
+			m_fSpeed += (_float)dTimeDelta * 14.5f;
 		//else if (m_fRotateTime >= 1.5f && m_fRotateTime < 2.2f)
 		//	m_fSpeed -= dTimeDelta * 5.f;
 		 
@@ -224,11 +224,12 @@ void CBigPlanet::Pendulum(_double dTimeDelta)
 	}
 	else if (m_fRotateTime >= 2.2f && m_fRotateTime < 2.4f)
 	{
-		m_fSpeed -= dTimeDelta * 120.f;
+		m_fSpeed -= (_float)dTimeDelta * 120.f;
 		m_pTransformCom->Rotate_Axis(XMLoadFloat3(&m_vRotateDir), -(dTimeDelta)* m_fSpeed / 30.f);
 	}
 	else if (m_fRotateTime >= 2.4f)
 	{
+		m_pStaticActorCom->Update_StaticActor();
 		m_fSpeed = 20.f;
 		m_fRotateTime = 0.f;
 		m_IsCollide = false;

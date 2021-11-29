@@ -202,24 +202,24 @@ _int CSubCamera::Tick_Cam_Free(_double dTimeDelta)
 _int CSubCamera::Tick_Cam_Auto(_double dTimeDelta)
 {
 
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD8))
-		m_pTransformCom->Go_Straight(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD4))
-		m_pTransformCom->Go_Left(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD2))
-		m_pTransformCom->Go_Backward(dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD6))
-		m_pTransformCom->Go_Right(dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_NUMPAD8))
+	//	m_pTransformCom->Go_Straight(dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_NUMPAD4))
+	//	m_pTransformCom->Go_Left(dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_NUMPAD2))
+	//	m_pTransformCom->Go_Backward(dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_NUMPAD6))
+	//	m_pTransformCom->Go_Right(dTimeDelta);
 
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD7))
-		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD9))
-		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_NUMPAD7))
+	//	m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_NUMPAD9))
+	//	m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -dTimeDelta);
 
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD1))
-		m_pTransformCom->Rotate_Axis(XMVectorSet(1.f, 0.f, 0.f, 0.f), dTimeDelta);
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD3))
-		m_pTransformCom->Rotate_Axis(XMVectorSet(1.f, 0.f, 0.f, 0.f), -dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_NUMPAD1))
+	//	m_pTransformCom->Rotate_Axis(XMVectorSet(1.f, 0.f, 0.f, 0.f), dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_NUMPAD3))
+	//	m_pTransformCom->Rotate_Axis(XMVectorSet(1.f, 0.f, 0.f, 0.f), -dTimeDelta);
 
 	return NO_EVENT;
 }

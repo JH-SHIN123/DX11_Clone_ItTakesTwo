@@ -152,7 +152,8 @@ void CEffect_GravityPipe::Free()
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTexturesCom_Distortion);
 	Safe_Release(m_pTexturesCom_ColorRamp);
+	Safe_Release(m_pPhysxTransformCom);
+	Safe_Release(m_pParticle);
 
-	Safe_Release(m_pParticle); 
 	__super::Free();
 }

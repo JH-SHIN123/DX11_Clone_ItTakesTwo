@@ -1,15 +1,16 @@
 #pragma once
 
+#include "Client_Defines.h"
 #include "Actor.h"
 
-BEGIN(Engine)
+BEGIN(Client)
 
-class ENGINE_DLL CControllableActor final : public CActor
+class CPlayerActor final : public CActor
 {
 private:
-	explicit CControllableActor(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CControllableActor(const CControllableActor& rhs);
-	virtual ~CControllableActor() = default;
+	explicit CPlayerActor(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CPlayerActor(const CPlayerActor& rhs);
+	virtual ~CPlayerActor() = default;
 
 public: /* Struct */
 	typedef struct tagArgumentDesc
@@ -23,6 +24,9 @@ public: /* Struct */
 public: /* Getter */
 	_bool  Get_IsJump() { return m_bJump; }
 	_bool  Get_IsFalling() { return m_IsFalling; }
+	_bool  Get_IsGravityReordered() { return m_isGravityReordered; }
+	_vector Get_GravityPath_RightVector() { return XMLoadFloat3(&m_vGravityPathRight); }
+	
 
 	PxController* Get_Controller() { return m_pController; }
 	PxRigidDynamic* Get_Actor() { return m_pActor; }
@@ -35,28 +39,28 @@ public: /* Setter */
 	void    Set_ZeroGravity(_bool bZeroGravity, _bool IsGoUp, _bool IsStatic) { m_bZeroGravity = bZeroGravity; m_IsGoUp = IsGoUp; m_bStatic = IsStatic; }
 	void	Set_IsFalling(_bool IsFalling) { m_IsFalling = IsFalling; }
 	void	Set_Position(_fvector vPosition);
+	void	Set_GravityPath_RightVector(_fvector vRightVector) { XMStoreFloat3(&m_vGravityPathRight, vRightVector);}
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	void	Move(_fvector vMove, _double dTimeDelta);
-
 	void	Update(_double dTimeDelta);
-	void	Update_Cam(_double dTimeDelta);
 	void	Jump_Start(_float fJumpForce);
 	void	Jump_Higher(_float fJumpForce);
-
-	//void	Kinematic_On() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true); }
-	//void	Kinematic_Off() { m_pActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false); }
+	void	Step_GravityPath(PxVec3 vNormal);
+	void	Reorder_Gravity();
 
 private:
-	PxController*						m_pController = nullptr;
-	PxRigidDynamic*						m_pActor = nullptr;
-	PxRigidStatic*						m_pTrigger = nullptr;
-	PxControllerFilters*				m_pFilters = nullptr;
-	class CTransform*					m_pTransform = nullptr;
-	class CPxControllerCallback*		m_pCallback = nullptr;
-	class CPxControllerFilterCallback*	m_pFilterCallback = nullptr;
+	PxController*					m_pController = nullptr;
+	PxRigidDynamic*					m_pActor = nullptr;
+	PxRigidStatic*					m_pTrigger = nullptr;
+	PxControllerFilters*			m_pFilters = nullptr;
+	class CTransform*				m_pTransform = nullptr;
+	class CPlayerBehaviorCallback*	m_pBehaviorCallback = nullptr;
+	class CPlayerFilterCallback*	m_pFilterCallback = nullptr;
+	class CPlayerHitReport*			m_pHitReport = nullptr;
+	USERDATA*						m_pUserData = nullptr;
 	/* For.Jump */
 	_float	m_fJumpTime = 0.f;
 	_float	m_fHeightDelta = 0.f;
@@ -71,16 +75,18 @@ private:
 
 	_float  m_fFallingTime = 0.f;
 
-
 	/* For.Gravity */
-	_float m_fGravity = -9.8f;
+	_bool	m_isGravityReordered = false;
+	_float	m_fGravity = -9.8f;
+	_float3 m_vPlayerUp = _float3(0.f, 0.f, 0.f);
+	_float3 m_vGravityPathRight = _float3(0.f, 0.f, 0.f);
 
 private:
 	void	Jump_Stop();
 	_float	Get_Height(_double dTimeDelta);
 
 public:
-	static CControllableActor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CPlayerActor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CComponent* Clone_Component(void* pArg) override;
 	virtual void Free() override;
 };
