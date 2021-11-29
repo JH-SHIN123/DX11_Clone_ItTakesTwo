@@ -195,6 +195,9 @@ _int CCody::Tick(_double dTimeDelta)
 	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 
+
+	Attack_BossMissile_After(dTimeDelta); // 미사일 공격이 끝나고 정상적인 회전갑승로 만들어주자
+
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
@@ -1249,6 +1252,40 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 
 }
 
+void CCody::Attack_BossMissile_After(_double dTimeDelta)
+{
+	if (true == m_IsBossMissile_RotateYawRoll_After)
+	{
+		m_fBossMissile_HeroLanding_Time += (_float)dTimeDelta;
+
+		if (2.f >= m_fBossMissile_HeroLanding_Time)
+		{
+			// 개꿀잼 회전값 보정을 원한다면
+			//	_float fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_RIGHT).m128_f32[1];
+			//	m_pTransformCom->RotateRoll(dTimeDelta * fRotateRoll_Check * -1.f);
+			//	fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_LOOK).m128_f32[1];
+			//	m_pTransformCom->RotatePitch(dTimeDelta * fRotateRoll_Check * -1.f);
+
+			_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+			_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+
+			vLook.m128_f32[1] = 0.f;
+			vRight.m128_f32[1] = 0.f;
+
+			vLook = XMVector3Normalize(vLook) * m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
+			vRight = XMVector3Normalize(vRight) * m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
+
+			_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * m_pTransformCom->Get_Scale(CTransform::STATE_UP);
+			m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+			m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+			m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+		}
+		else
+		{
+			m_IsBossMissile_RotateYawRoll_After = false;
+		}
+	}
+}
 
 #pragma region Shader_Variables
 HRESULT CCody::Render_ShadowDepth()
@@ -1782,6 +1819,8 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 			_vector vLook = PortalMatrix.r[2];
 			vTriggerPos += vLook * 20.f;
 			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+
 		}
 	}
 	else
@@ -1789,15 +1828,16 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 		_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
 		_vector vTriggerPos = PortalMatrix.r[3];
 		_vector vLook = PortalMatrix.r[2];
-		vTriggerPos += vLook * 20.f;
+		vTriggerPos += vLook * 30.f;
 		m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+		m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 
 		// 슈루룩
 		if (m_fWarpTimer_Max + 0.25f >= m_fWarpTimer)
 		{
 			_vector vDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 			vDir = XMVector3Normalize(vDir);
-			m_pActorCom->Move(vDir, dTimeDelta * 0.4f);
+			m_pActorCom->Move(vDir * 0.5f, dTimeDelta);
 		}
 		else
 		{
@@ -1812,7 +1852,7 @@ void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
 	if (false == m_IsTouchFireDoor)
 		return;
 
-	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
+	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 	m_IsTouchFireDoor = false;
 	m_IsCollide = false;
 
@@ -1838,15 +1878,18 @@ void CCody::Boss_Missile_Control(const _double dTimeDelta)
 	{
 		if (false == m_IsBossMissile_Rodeo_Ready)
 		{
-			if (m_pGameInstance->Key_Down(DIK_F))
+			if (m_pGameInstance->Key_Down(DIK_F)) // 탑승 하세요
 			{
 				m_IsBossMissile_Rodeo_Ready = true;
-				m_pActorCom->Set_ZeroGravity(true, false, false);
+				m_IsBoss_Missile_Explosion = false;
 			}
 		}
 
-		if (true == m_IsBossMissile_Rodeo_Ready)
+		if (true == m_IsBossMissile_Rodeo_Ready) // 탑승
 		{
+			m_fBossMissile_HeroLanding_Time = 0.f;
+			m_pActorCom->Set_ZeroGravity(true, false, false);
+
 			_matrix TriggerMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
 			for (_int i = 0; i < 3; ++i)
 				TriggerMatrix.r[i] = XMVector3Normalize(TriggerMatrix.r[i]);
@@ -1866,9 +1909,10 @@ void CCody::Boss_Missile_Control(const _double dTimeDelta)
 			m_IsBossMissile_Rodeo = true;
 			m_fLandTime = 0.f;
 			//m_IsBossMissile_Control = false;
+
 		}
 	}
-	else if (true == m_IsBossMissile_Rodeo)
+	else if (true == m_IsBossMissile_Rodeo && false == m_IsBoss_Missile_Explosion)
 	{
 		m_fLandTime += (_float)dTimeDelta;
 		if(0.25f >= m_fLandTime)
@@ -1900,8 +1944,21 @@ void CCody::Boss_Missile_Control(const _double dTimeDelta)
 
 			_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 			m_pActorCom->Move(vDir * 0.2f , dTimeDelta);
+
 		}
+	}
+	else if (true == m_IsBoss_Missile_Explosion)
+	{
+		m_pActorCom->Set_ZeroGravity(false, false, false);
+		
+		m_IsBossMissile_Control = false;
+		m_IsCollide = false;
+		m_IsBossMissile_RotateYawRoll_After = true;
 	}
 }
 
+void CCody::Set_BossMissile_Attack()
+{
+	m_IsBoss_Missile_Explosion = true;
+}
 

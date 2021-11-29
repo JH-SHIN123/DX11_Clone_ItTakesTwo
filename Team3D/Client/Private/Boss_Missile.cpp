@@ -49,16 +49,6 @@ HRESULT CBoss_Missile::NativeConstruct(void * pArg)
 
 	m_IsTargetCody = Data.IsTarget_Cody;
 
-	if (true == m_IsTargetCody)
-		m_pTargetObject = CDataStorage::GetInstance()->GetCody();
-	else
-		m_pTargetObject = CDataStorage::GetInstance()->GetMay();
-
-	if (nullptr == m_pTargetObject)
-		return E_FAIL;
-
-	Safe_AddRef(m_pTargetObject);
-
 	return S_OK;
 }
 
@@ -88,6 +78,9 @@ _int CBoss_Missile::Tick(_double TimeDelta)
 			m_IsUpadate_Trigger = false;
 		}
 	}
+
+	if (m_pGameInstance->Key_Down(DIK_H))
+		m_IsExplosion = true;
 
 	return _int();
 }
@@ -140,9 +133,21 @@ void CBoss_Missile::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 			}
 			else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 			{
-
+				_int i = 0;
 			}
 		}
+// 		else if (true == m_IsPlayable)
+// 		{
+// 			if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+// 			{
+// 				((CCody*)pGameObject)->SetTriggerID_Matrix(GameID::Enum::eBOSSMISSILE_PLAYABLE, false, m_pTransformCom->Get_WorldMatrix());
+// 				UI_Create(Cody, InputButton_InterActive);
+// 				UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+// 				m_IsPlayable_Ready = true;
+// 
+// 				m_eTarget_GameID = eID;
+// 			}
+// 		}
 
 
 		else if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eUFO)
@@ -180,7 +185,11 @@ void CBoss_Missile::Combat_Move(_double TimeDelta)
 	if (1.f >= m_fCurvePower)
 		m_fCurvePower = 1.f;
 
-	_vector vTargetPos		= m_pTargetObject->Get_Position();
+	_vector vTargetPos;
+	if (true == m_IsTargetCody)
+		vTargetPos = static_cast<CCody*>(CDataStorage::GetInstance()->GetCody())->Get_Position();
+	else
+		vTargetPos = static_cast<CMay*>(CDataStorage::GetInstance()->GetMay())->Get_Position();
 
 	_matrix WorldMatrix		= m_pTransformCom->Get_WorldMatrix();
 	_vector vRight			= WorldMatrix.r[0];
@@ -240,8 +249,8 @@ void CBoss_Missile::Playable_Mode(_double TimeDelta)
 		{
 			if (GameID::Enum::eMAY == m_eTarget_GameID)
 			{
-				_matrix TargetMatrix = ((CMay*)m_pTargetObject)->Get_WorldMatrix();
-		
+				_matrix TargetMatrix = static_cast<CCharacter*>(CDataStorage::GetInstance()->GetMay())->Get_WorldMatrix(); // 이부분 고치기
+
 				for (_int i = 0; i < 3; ++i)
 					TargetMatrix.r[i] = XMVector3Normalize(TargetMatrix.r[i]);
 		
@@ -257,19 +266,24 @@ void CBoss_Missile::Playable_Mode(_double TimeDelta)
 
 			if (GameID::Enum::eCODY == m_eTarget_GameID)
 			{
-				_matrix TargetMatrix = ((CCody*)m_pTargetObject)->Get_WorldMatrix(); // 이부분 고치기
+				_matrix TargetMatrix = static_cast<CCharacter*>(CDataStorage::GetInstance()->GetCody())->Get_WorldMatrix(); // 이부분 고치기
 
-				_vector vRight	= XMVector3Normalize(TargetMatrix.r[0]);
-				_vector vUp		= XMVector3Normalize(TargetMatrix.r[1]);
-				_vector vLook	= XMVector3Normalize(TargetMatrix.r[2]);
+				//_vector vRight	= XMVector3Normalize(TargetMatrix.r[0]);
+				_vector vUp		= TargetMatrix.r[2];
+				_vector vLook	= TargetMatrix.r[1];
+				TargetMatrix.r[1] = vUp;
+				TargetMatrix.r[2] = vLook * -1.f;
 
-				TargetMatrix = XMMatrixRotationAxis(TargetMatrix.r[0], -90.f);
+				for (_int i = 0; i < 3; ++i)
+					TargetMatrix.r[i] = XMVector3Normalize(TargetMatrix.r[i]);
 
-				TargetMatrix.r[0] = XMVector3TransformNormal(vRight, TargetMatrix);
-				TargetMatrix.r[1] = XMVector3TransformNormal(vUp, TargetMatrix);
-				TargetMatrix.r[2] = XMVector3TransformNormal(vLook, TargetMatrix);
+				//TargetMatrix = XMMatrixRotationAxis(TargetMatrix.r[0], -90.f);
+				//
+				//TargetMatrix.r[0] = XMVector3TransformNormal(vRight, TargetMatrix);
+				//TargetMatrix.r[1] = XMVector3TransformNormal(vUp, TargetMatrix);
+				//TargetMatrix.r[2] = XMVector3TransformNormal(vLook, TargetMatrix);
+				TargetMatrix.r[3] -= (TargetMatrix.r[1]) + (TargetMatrix.r[2] * -0.25f);
 
-				TargetMatrix.r[3] -= (TargetMatrix.r[1]) + (TargetMatrix.r[2] * 0.8f);
 				m_pTransformCom->Set_WorldMatrix(TargetMatrix);
 			}
 		}
@@ -278,6 +292,19 @@ void CBoss_Missile::Playable_Mode(_double TimeDelta)
 
 _int CBoss_Missile::Dead_Explosion()
 {
+	if (true == m_IsPlayable)
+	{
+		if (GameID::Enum::eMAY == m_eTarget_GameID)
+		{
+
+		}
+		else
+		{
+			static_cast<CCody*>(CDataStorage::GetInstance()->GetCody())->Set_BossMissile_Attack();
+		}
+	}
+
+
 	// 이펙트 빵빵
 	return EVENT_DEAD;
 }
@@ -310,7 +337,6 @@ CGameObject * CBoss_Missile::Clone_GameObject(void * pArg)
 
 void CBoss_Missile::Free()
 {
-	Safe_Release(m_pTargetObject);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);

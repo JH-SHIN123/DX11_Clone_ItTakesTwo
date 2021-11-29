@@ -82,9 +82,6 @@ protected:
 	CTriggerActor*		m_pTriggerCom_Combat	= nullptr;
 	CTriggerActor*		m_pTriggerCom_Playable	= nullptr;
 
-private:
-	CGameObject* m_pTargetObject = nullptr;
-
 public:
 	static CBoss_Missile* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

@@ -79,14 +79,13 @@ HRESULT CEffect_RespawnTunnel_Portal::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom->Render_Model(4);
 
 
-	// Smoke
-	Set_Shader_SmokeData();
+	//// Smoke
+	//Set_Shader_SmokeData();
+	//
+	//m_pPointInstanceCom_Smoke->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Smoke2->Get_ShaderResourceView(0));
+	//m_pPointInstanceCom_Smoke->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Smoke->Get_ShaderResourceView(0));
+	//m_pPointInstanceCom_Smoke->Render(0, m_pInstanceBuffer_Smoke, m_iInstanceCount_Smoke, 0);
 
-	m_pPointInstanceCom_Smoke->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Smoke2->Get_ShaderResourceView(0));
-	m_pPointInstanceCom_Smoke->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Smoke->Get_ShaderResourceView(0));
-	m_pPointInstanceCom_Smoke->Render(0, m_pInstanceBuffer_Smoke, m_iInstanceCount_Smoke, 0);
-
-// 	VTXMATRIX_CUSTOM_STT* pBuffer = 
 	return S_OK;
 }
 

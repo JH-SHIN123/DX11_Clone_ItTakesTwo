@@ -79,9 +79,9 @@ HRESULT CEffect_RespawnTunnel::Render(RENDER_GROUP::Enum eGroup)
 
 
 	_matrix LocalMatrix = XMMatrixRotationX(XMConvertToRadians(-90.f));
-	LocalMatrix.r[0] *= 3.f;
-	LocalMatrix.r[2] *= 3.f;
-	LocalMatrix.r[3] = XMVectorSet(0.f, 0.f, 12.5f, 1.f);
+	LocalMatrix.r[0] *= 12.f;
+	LocalMatrix.r[2] *= 12.f;
+	LocalMatrix.r[3] = XMVectorSet(0.f, 0.f, 60.5f, 1.f);
 	XMStoreFloat4x4(&m_LocalMatrix_Preview, LocalMatrix);
 	_matrix WorldMatrix = XMLoadFloat4x4(&m_LocalMatrix_Preview);
 	WorldMatrix *= m_pTransformCom->Get_WorldMatrix();

@@ -221,9 +221,13 @@ public:
 	PLAYER_SIZE Get_Player_Size() { return m_eCurPlayerSize; }
 	//PLAYER_SIZE Get_CurSize() { return m_eCurPlayerSize; }
 
+public:
+	void	Set_BossMissile_Attack(); // CBoss_Missile
+
 	// Tick 에서 호출될 함수들
 private:
 	virtual void KeyInput(_double dTimeDelta);
+	void Attack_BossMissile_After(_double dTimeDelta);
 
 private:
 	// 단발성 함수들.
@@ -391,11 +395,13 @@ private:
 	_bool m_IsBossMissile_Hit = false;
 
 	// Boss Missile Control
-	_bool m_IsBossMissile_Control = false;
-	_bool m_IsBossMissile_Rodeo_Ready = false;
-	_float m_fBossMissile_Rodeo_Ready_Time = 0.f;
-	_bool m_IsBossMissile_Rodeo = false;
-	_float m_fLandTime = 0.f;
+	_bool	m_IsBossMissile_Control = false;
+	_bool	m_IsBossMissile_Rodeo_Ready = false;
+	_bool	m_IsBossMissile_Rodeo = false;
+	_bool	m_IsBoss_Missile_Explosion = false;
+	_float	m_fLandTime = 0.f;
+	_float	m_fBossMissile_HeroLanding_Time = 0.f;
+	_bool	m_IsBossMissile_RotateYawRoll_After = false;
 
 	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);

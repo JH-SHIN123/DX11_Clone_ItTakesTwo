@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Effect_FireDoor.h"
+#include "May.h"
+#include "Cody.h"
 
 CEffect_FireDoor::CEffect_FireDoor(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -36,7 +38,7 @@ HRESULT CEffect_FireDoor::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eFIREDOOR, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = new PxBoxGeometry(6.f, 10.f, 0.001f);
+	ArgDesc.pGeometry = new PxBoxGeometry(6.f, 10.f, 0.01f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
@@ -98,6 +100,19 @@ HRESULT CEffect_FireDoor::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom->Render(3, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
+}
+
+void CEffect_FireDoor::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eFIREDOOR, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eFIREDOOR, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eFIREDOOR, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eFIREDOOR, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 }
 
 void CEffect_FireDoor::Set_Pos(_fvector vPosition)
