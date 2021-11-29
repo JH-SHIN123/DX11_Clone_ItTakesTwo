@@ -52,6 +52,8 @@ private:
 	/* Jin */
 	/* Jun */
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
+	/* Read_File */
+	HRESULT Clone_StaticGameObjects_ByFile(const _tchar* pFilePath, const _tchar* pLayerTag, const _tchar* pGameObjectTag, GameID::Enum eID, _float fCullRadius);
 
 public:
 	static CLevel_Stage* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
