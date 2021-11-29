@@ -22,7 +22,7 @@ HRESULT CPinBall_HandleBase::NativeConstruct(void * pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
 
-	m_UserData.eID = GameID::eBlocked;
+	m_UserData.eID = GameID::eENVIRONMENT;
 	m_UserData.pGameObject = this;
 
 	CStaticActor::ARG_DESC tStaticActorArg;
@@ -84,7 +84,7 @@ void CPinBall_HandleBase::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID,
 
 void CPinBall_HandleBase::PlayerMove()
 {
-	_float fX = XMVectorGetX(CDataStorage::GetInstance()->GetCody()->Get_Position()) + 1.f;
+	_float fX = XMVectorGetX(CDataStorage::GetInstance()->GetMay()->Get_Position()) + 1.f;
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vPos = XMVectorSetX(vPos, fX);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);

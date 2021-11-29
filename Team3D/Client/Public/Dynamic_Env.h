@@ -20,6 +20,9 @@ protected:
 	virtual ~CDynamic_Env() = default;
 
 public:
+	_fvector Get_Position();
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double dTimeDelta) override;

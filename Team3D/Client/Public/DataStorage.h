@@ -29,6 +29,9 @@ public:
 	void Set_UFOPtr(CGameObject* pUFO) { m_pUFO = pUFO; }
 	CGameObject* Get_UFO() { return m_pUFO; }
 
+	void Set_BridgePtr(CGameObject* pBridge) { m_pBridge = pBridge; }
+	CGameObject* Get_Bridge() { return m_pBridge; }
+
 	void Set_RobotPtr(CGameObject* pRobot) { m_pRobot = pRobot; }
 	CGameObject* Get_Robot() { return m_pRobot; }
 
@@ -48,6 +51,7 @@ public:
 	void Set_ValveTarget(_uint _iValveTarget) { m_iValveTarget = _iValveTarget; }
 	_uint Get_ValveCount() { return m_iValveRotateCount; }
 	
+	/* For.PinBall */
 	void Set_Pinball(CGameObject* pPinball) { m_pPinball = pPinball; }
 	CGameObject* Get_Pinball() { return m_pPinball; }
 
@@ -60,6 +64,11 @@ public:
 	void Set_Pinball_Spring(CGameObject* pPinball_Spring) { m_pPinball_Spring = pPinball_Spring; }
 	CGameObject* Get_Pinball_Spring() { return m_pPinball_Spring; }
 
+	void Set_Pinball_BallDoor(CGameObject* pPinball_BallDoor) { m_pPinBall_BallDoor = pPinball_BallDoor; }
+	CGameObject* Get_Pinball_BallDoor() { return m_pPinBall_BallDoor; }
+
+	void Set_Pinball_Blocked(CGameObject* pPinball_Blocked) { m_pPinBall_Blocked = pPinball_Blocked; }
+	CGameObject* Get_Pinball_Blocked() { return m_pPinBall_Blocked; }
 
 private:
 	CGameObject* m_pCody = nullptr;
@@ -70,6 +79,9 @@ private:
 	// UFO
 	CGameObject* m_pUFO = nullptr;
 
+	/* For.Bridge */
+	CGameObject* m_pBridge = nullptr;
+
 	// Interactive Objects
 	CGameObject* m_pRobot = nullptr;
 	CGameObject* m_pRobotLever = nullptr;
@@ -77,10 +89,13 @@ private:
 	CGameObject* m_pRobotHead = nullptr;
 	CGameObject* m_pNoBatterySign = nullptr;
 
+	/* For.PinBall */
 	CGameObject* m_pPinball = nullptr;
 	CGameObject* m_pPinball_Handle = nullptr;
 	CGameObject* m_pPinball_HandleBase = nullptr;
 	CGameObject* m_pPinball_Spring = nullptr;
+	CGameObject* m_pPinBall_BallDoor = nullptr;
+	CGameObject* m_pPinBall_Blocked = nullptr;
 
 private:
 	/* For.Valve */

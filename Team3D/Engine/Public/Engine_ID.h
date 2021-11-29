@@ -34,8 +34,9 @@ namespace Engine
 			eHOOKUFO,
 			eGRAVITYPATH,
 			eENVIRONMENT,
-			ePinBall,
-			eBlocked,
+			ePINBALL,
+			eBLOCKED,
+			ePINBALLHANDLE,
 			eGRAVITYPATH_CENTER,
 			eGRAVITYPATH_SIDE
 		};

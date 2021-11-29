@@ -4,6 +4,8 @@
 #include "UI_Generator.h"
 #include "Cody.h"
 #include "May.h"
+#include "DataStorage.h"
+#include "Bridge.h"
 
 CBigButton::CBigButton(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -68,6 +70,7 @@ _int CBigButton::Tick(_double dTimeDelta)
 			if (m_fMoveDist >= 0.5f)
 			{
 				m_bUpdate = false;
+				((CBridge*)(CDataStorage::GetInstance()->Get_Bridge()))->Call_Trigger();
 			}
 		}
 	}

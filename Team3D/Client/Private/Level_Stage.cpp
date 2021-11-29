@@ -126,7 +126,8 @@ HRESULT CLevel_Stage::Ready_Layer_PinBall(const _tchar * pLayerTag)
 {
 	CDynamic_Env::ARG_DESC tArg;
 	lstrcpy(tArg.szModelTag, TEXT("Component_Model_Space_Pinball_Ball"));
-	XMStoreFloat4x4(&tArg.WorldMatrix, XMMatrixIdentity());
+	_matrix World = XMMatrixScaling(5.f, 5.f, 5.f) * XMMatrixTranslation(10.f, 0.f, 10.f);
+	XMStoreFloat4x4(&tArg.WorldMatrix, World);
 	tArg.iMatrialIndex = 0;
 	tArg.iOption = 0;
 

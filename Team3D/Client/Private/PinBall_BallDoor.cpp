@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\PinBall_BallDoor.h"
+#include "PinBall_Handle.h"
+#include "PinBall.h"
 
 CPinBall_BallDoor::CPinBall_BallDoor(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -9,6 +11,12 @@ CPinBall_BallDoor::CPinBall_BallDoor(ID3D11Device * pDevice, ID3D11DeviceContext
 CPinBall_BallDoor::CPinBall_BallDoor(const CPinBall_BallDoor & rhs)
 	: CDynamic_Env(rhs)
 {
+}
+
+void CPinBall_BallDoor::Set_DoorState(_bool bDoorState)
+{
+	m_bReady = true;
+	m_bDoorState = bDoorState;
 }
 
 HRESULT CPinBall_BallDoor::NativeConstruct_Prototype()
@@ -22,7 +30,7 @@ HRESULT CPinBall_BallDoor::NativeConstruct(void * pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
 
-	m_UserData.eID = GameID::eBlocked;
+	m_UserData.eID = GameID::eENVIRONMENT;
 	m_UserData.pGameObject = this;
 
 	CStaticActor::ARG_DESC tStaticActorArg;
@@ -31,6 +39,10 @@ HRESULT CPinBall_BallDoor::NativeConstruct(void * pArg)
 	tStaticActorArg.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+
+	CDataStorage::GetInstance()->Set_Pinball_BallDoor(this);
+	Set_DoorState(false);
+
 	return S_OK;
 }
 
@@ -38,13 +50,7 @@ _int CPinBall_BallDoor::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
-
-	//if (m_pGameInstance->Key_Down(DIK_G))
-	//{
-	//	m_bReady = true;
-	//}
-
-	//MoveMent(dTimeDelta);
+	MoveMent(dTimeDelta);
 
 	return NO_EVENT;
 }
@@ -91,16 +97,30 @@ void CPinBall_BallDoor::MoveMent(_double dTimeDelta)
 	if (false == m_bReady)
 		return;
 
-	_float	fAngle = 100.f * (_float)dTimeDelta;
-	m_fAngle += fAngle;
-
-	if (m_fAngle >= 100.f)
+	if (false == m_bDoorState)
 	{
-		m_bReady = false;
-	}
-	
-	m_pTransformCom->RotatePitch_Angle(dTimeDelta, 100.f);
+		_float	fAngle = 100.f * (_float)dTimeDelta;
+		m_fAngle += fAngle;
 
+		if (m_fAngle >= 100.f)
+			m_bReady = false;
+
+		m_pTransformCom->RotatePitch_Angle(dTimeDelta, 100.f);
+	}
+	else
+	{
+		_float	fAngle = 100.f * -(_float)dTimeDelta;
+		m_fAngle += fAngle;
+
+		if (m_fAngle <= 0.f)
+		{
+			m_bReady = false;
+			((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_Ready(true);
+			((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->ReadyGame();
+		}
+
+		m_pTransformCom->RotatePitch_Angle(-dTimeDelta, 100.f);
+	}
 	m_pStaticActorCom->Update_StaticActor();
 }
 

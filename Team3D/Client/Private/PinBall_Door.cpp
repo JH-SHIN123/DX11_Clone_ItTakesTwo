@@ -22,7 +22,7 @@ HRESULT CPinBall_Door::NativeConstruct(void * pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
 
-	m_UserData.eID = GameID::eBlocked;
+	m_UserData.eID = GameID::eENVIRONMENT;
 	m_UserData.pGameObject = this;
 
 	CStaticActor::ARG_DESC tStaticActorArg;

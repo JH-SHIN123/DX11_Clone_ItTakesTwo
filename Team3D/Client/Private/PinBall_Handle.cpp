@@ -3,6 +3,8 @@
 #include "..\Public\PinBall_HandleBase.h"
 #include "PinBall_Spring.h"
 #include "PinBall.h"
+#include "May.h"
+#include "UI_Generator.h"
 
 CPinBall_Handle::CPinBall_Handle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -25,7 +27,7 @@ HRESULT CPinBall_Handle::NativeConstruct(void * pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
 
-	m_UserData.eID = GameID::eBlocked;
+	m_UserData.eID = GameID::ePINBALLHANDLE;
 	m_UserData.pGameObject = this;
 
 	CStaticActor::ARG_DESC tStaticActorArg;
@@ -34,8 +36,18 @@ HRESULT CPinBall_Handle::NativeConstruct(void * pArg)
 	tStaticActorArg.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
-	m_pTransformCom->Set_Speed(0.5f, 0.f);
 
+	PxGeometry* geom = new PxSphereGeometry(1.5f);
+	CTriggerActor::ARG_DESC tTriggerArgDesc;
+	tTriggerArgDesc.pGeometry = geom;
+	tTriggerArgDesc.pTransform = m_pTransformCom;
+	tTriggerArgDesc.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
+
+	Safe_Delete(geom);
+
+	m_pTransformCom->Set_Speed(0.5f, 0.f);
 	m_fRespawnPosX = XMVectorGetX(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	CDataStorage::GetInstance()->Set_Pinball_Handle(this);
 
@@ -50,17 +62,6 @@ _int CPinBall_Handle::Tick(_double dTimeDelta)
 	PlayerMove();
 	Respawn_Angle(dTimeDelta);
 	Respawn_Pos(dTimeDelta);
-
-
-
-
-
-	//if (m_pGameInstance->Key_Down(DIK_G))
-	//{
-	//	m_bReady = true;
-	//}
-
-	//MoveMent(dTimeDelta);
 
 	return NO_EVENT;
 }
@@ -100,6 +101,15 @@ HRESULT CPinBall_Handle::Render_ShadowDepth()
 
 void CPinBall_Handle::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+	// May
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY && true == m_bFinish && false == m_bPlayerMove)
+	{
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALLHANDLE, true, ((CMay*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+		UI_Create(May, InputButton_InterActive);
+		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+		UI_Delete(May, InputButton_InterActive);
 }
 
 void CPinBall_Handle::MoveMent(_double dTimeDelta)
@@ -128,7 +138,7 @@ void CPinBall_Handle::MoveMent(_double dTimeDelta)
 			m_fHandleAngle = 0.f;
 			m_bHandleReady = false;
 			m_bReady = false;
-			m_bPlayerMove = true;
+			m_bFinish = true;
 		}
 		m_pTransformCom->RotatePitch_Angle(dTimeDelta, 90.f);
 	}
@@ -139,7 +149,7 @@ void CPinBall_Handle::PlayerMove()
 {
 	if (true == m_bPlayerMove)
 	{
-		_float fX = XMVectorGetX(CDataStorage::GetInstance()->GetCody()->Get_Position()) + 1.f;
+		_float fX = XMVectorGetX(CDataStorage::GetInstance()->GetMay()->Get_Position()) + 1.f;
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		vPos = XMVectorSetX(vPos, fX);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
@@ -236,6 +246,7 @@ CGameObject * CPinBall_Handle::Clone_GameObject(void * pArg)
 void CPinBall_Handle::Free()
 {
 	Safe_Release(m_pStaticActorCom);
+	Safe_Release(m_pTriggerActorCom);
 
 	CDynamic_Env::Free();
 }

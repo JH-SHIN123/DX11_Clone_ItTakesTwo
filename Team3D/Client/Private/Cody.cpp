@@ -8,7 +8,8 @@
 
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
-#include "PinBall_Handle.h"
+/* For. PinBall */
+#include "PinBall.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -148,22 +149,6 @@ _int CCody::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
-	if (m_pGameInstance->Key_Down(DIK_G))
-	{
-		if (false == m_bPinball)
-		{
-			m_bPinball = true;
-			((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_Ready(true);
-		}
-		else
-		{
-			m_bPinball = false;
-			((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_Ready(false);
-			((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
-			((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_RespawnAngle(true);
-		}
-	}
-
 #pragma region BasicActions
 	/////////////////////////////////////////////
 	if (Trigger_Check(dTimeDelta))
@@ -178,6 +163,7 @@ _int CCody::Tick(_double dTimeDelta)
 		Hit_Planet(dTimeDelta);
 		Hook_UFO(dTimeDelta);
 		Falling_Dead(dTimeDelta);
+		PinBall(dTimeDelta);
 	}
 	else
 	{
@@ -299,12 +285,12 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_2)) /* 2층 */
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 125.f, 170.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_F3)) /* 2스테이지 입구 */
+	if (m_pGameInstance->Key_Down(DIK_3)) /* 2스테이지 입구 */
 		m_pActorCom->Set_Position(XMVectorSet(620.f, 760.f, 195.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_F4)) /* 2스테이지 */
+	if (m_pGameInstance->Key_Down(DIK_4)) /* 2스테이지 */
 		m_pActorCom->Set_Position(XMVectorSet(960.f, 720.f, 193.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_5))/* 3스테이지 */
-		m_pActorCom->Set_Position(XMVectorSet(-610.f, 760.f, 195.f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(-620.f, 760.f, 195.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_6))/* 3층 */
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_7))/* Boss */
@@ -1428,11 +1414,17 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			/* 세이브포인트 트리거와 충돌시 세이브포인트 갱신 */
 			m_vSavePoint = m_vTriggerTargetPos;
 		}
+		else if (m_eTargetGameID == GameID::ePINBALL && false == m_IsPinBall)
+		{
+			/* 핀볼모드 ON */
+			m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
+			m_IsPinBall = true;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet || m_IsHookUFO || m_IsDeadLine)
+		|| m_IsHitPlanet || m_IsHookUFO || m_IsDeadLine || m_IsPinBall)
 		return true;
 
 	return false;
@@ -1789,4 +1781,25 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTriggerTargetPos);
 		}
 	}
+}
+
+void CCody::PinBall(const _double dTimeDelta)
+{
+	m_pActorCom->Set_Position(((CDynamic_Env*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Position());
+
+	//if (m_pGameInstance->Key_Down(DIK_G))
+	//{
+	//	if (false == m_IsPinBall)
+	//	{
+	//		m_IsPinBall = true;
+	//		((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_Ready(true);
+	//	}
+	//	else
+	//	{
+	//		m_IsPinBall = false;
+	//		((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_Ready(false);
+	//		((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
+	//		((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_RespawnAngle(true);
+	//	}
+	//}
 }

@@ -16,8 +16,8 @@ CPInBall_Blocked::CPInBall_Blocked(const CPInBall_Blocked & rhs)
 }
 
 void CPInBall_Blocked::Switching()
-{
-	m_IsSwitching = true;
+{	
+	m_IsSwitching = !m_IsSwitching;
 }
 
 HRESULT CPInBall_Blocked::NativeConstruct_Prototype()
@@ -31,7 +31,7 @@ HRESULT CPInBall_Blocked::NativeConstruct(void * pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
 
-	m_UserData.eID = GameID::eBlocked;
+	m_UserData.eID = GameID::eBLOCKED;
 	m_UserData.pGameObject = this;
 
 	CStaticActor::ARG_DESC tStaticActorArg;
@@ -47,6 +47,8 @@ HRESULT CPInBall_Blocked::NativeConstruct(void * pArg)
 	else if (0 == lstrcmp(TEXT("Component_Model_Space_Pinball_Blockade02"), m_tDynamic_Env_Desc.szModelTag))
 		m_fDownPosY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
+	CDataStorage::GetInstance()->Set_Pinball_Blocked(this);
+
 	return S_OK;
 }
 
@@ -54,12 +56,7 @@ _int CPInBall_Blocked::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
-	//if (m_pGameInstance->Key_Down(DIK_G))
-	//{
-	//	m_IsSwitching = !m_IsSwitching;
-	//}
-
-	//Movement(dTimeDelta);
+	Movement(dTimeDelta);
 
 	return NO_EVENT;
 }

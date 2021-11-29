@@ -10,7 +10,10 @@ private:
 	virtual ~CPinBall() = default;
 
 public:
+	void ReadyGame();
 	void StartGame();
+	void PlayerMove();
+	void Respawn();
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -24,15 +27,20 @@ public:
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject);
 
 private:
+	CStaticActor*		m_pStaticActorCom = nullptr;
+	CTriggerActor*		m_pTriggerActorCom = nullptr;
 	CDynamicActor*		m_pDynamicActorCom = nullptr;
+	CModel*				m_pAttachBall = nullptr;
 
 	_bool				m_IsStartGame = false;
+	_bool				m_IsReady = false;
+
 	_float3				m_RespawnPos;
 
-public:
-	void MoveMent();
-	void PlayerMove();
-	void Respawn();
+private:
+	void MoveMent(_double dTimaDelta);
+	HRESULT Create_DynamicActor();
+	HRESULT Create_StaticActor();
 
 public:
 	static CPinBall* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

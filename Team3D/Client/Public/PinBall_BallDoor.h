@@ -10,6 +10,9 @@ private:
 	virtual ~CPinBall_BallDoor() = default;
 
 public:
+	void Set_DoorState(_bool bDoorState);
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double dTimeDelta) override;
@@ -24,6 +27,7 @@ private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 
 	_bool			m_bReady = false;
+	_bool			m_bDoorState = false;
 	_float			m_fAngle = 0.f;
 
 private:

@@ -28,9 +28,9 @@ private:
 
 	CInstancing_Env::ARG_DESC	m_Ins_Env_Desc;
 
-	_float4x4					m_matPivot;
-	_bool						m_bTrigger = false;
-	_float						m_fAngle = 0.f;
+	static _float4x4			m_matPivot;
+	static _bool				m_bTrigger;
+	_float						m_fAngle = 0;
 
 public:
 	static CBridge* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
