@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "..\public\Cody.h"
-#include "GameInstance.h"
+#include "..\Public\Cody.h"
 #include "MainCamera.h"
 #include "UI_Generator.h"
 #include "UIObject.h"
 #include "MathHelper.h"
+#include "PlayerActor.h"
 
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
@@ -64,8 +64,8 @@ HRESULT CCody::Ready_Component()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &PlayerTransformDesc), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 0.7f, 30.f, 1.f));
-	CControllableActor::ARG_DESC ArgDesc;
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 0.7f, 30.f, 1.f));// 적당한 시작지점
+	CPlayerActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eCODY, this);
 	ArgDesc.pUserData = &m_UserData;
@@ -91,7 +91,7 @@ HRESULT CCody::Ready_Component()
 	//CapsuleControllerDesc.maxJumpHeight = 10.f;
 	//CapsuleControllerDesc.volumeGrowth = 1.5f;
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_PlayerActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
 	//Effect 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Cody_Size"), nullptr, (CGameObject**)&m_pEffect_Size), E_FAIL);
@@ -165,6 +165,7 @@ _int CCody::Tick(_double dTimeDelta)
 		Touch_FireDoor(dTimeDelta);
 		Boss_Missile_Hit(dTimeDelta);
 		Boss_Missile_Control(dTimeDelta);
+		Falling_Dead(dTimeDelta);
 	}
 	else
 	{
@@ -217,6 +218,9 @@ _int CCody::Late_Tick(_double dTimeDelta)
 
 HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 {
+	if (true == m_IsDeadLine)
+		return S_OK;
+
 	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
@@ -286,9 +290,9 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_2)) /* 2층 */
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 125.f, 170.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_3)) /* 2스테이지 입구 */
+	if (m_pGameInstance->Key_Down(DIK_F3)) /* 2스테이지 입구 */
 		m_pActorCom->Set_Position(XMVectorSet(620.f, 760.f, 195.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_4)) /* 2스테이지 */
+	if (m_pGameInstance->Key_Down(DIK_F4)) /* 2스테이지 */
 		m_pActorCom->Set_Position(XMVectorSet(960.f, 720.f, 193.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_5))/* 3스테이지 */
 		m_pActorCom->Set_Position(XMVectorSet(-610.f, 760.f, 195.f, 1.f));
@@ -560,6 +564,14 @@ void CCody::KeyInput(_double dTimeDelta)
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 #pragma  endregion
 }
+
+_uint CCody::Get_CurState() const
+{
+	if (nullptr == m_pModelCom) return 0;
+
+	return m_pModelCom->Get_CurAnimIndex();
+}
+
 void CCody::Move(const _double dTimeDelta)
 {
 #pragma region Medium_Size
@@ -1457,11 +1469,28 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_IsBossMissile_Rodeo = false;
 			m_IsBossMissile_Rodeo_Ready = false;
 		}
+		else if (m_eTargetGameID == GameID::eDEADLINE && false == m_IsDeadLine)
+		{
+			/* 데드라인과 충돌시 */
+			/* 낙사 애니메이션인데 다음애니메이션이 뭔지 모르겠음 */
+			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
+			/* 왜 중력을 0으로 하면 추락하는지 모르겠음 */
+			m_pActorCom->Set_Gravity(1.f);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			m_IsDeadLine = true;
+		}
+		else if (m_eTargetGameID == GameID::eSAVEPOINT)
+		{
+			/* 세이브포인트 트리거와 충돌시 세이브포인트 갱신 */
+			m_vSavePoint = m_vTriggerTargetPos;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control)
+		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine)
 		return true;
 
 	return false;
@@ -1962,3 +1991,31 @@ void CCody::Set_BossMissile_Attack()
 	m_IsBoss_Missile_Explosion = true;
 }
 
+void CCody::Falling_Dead(const _double dTimeDelta)
+{
+	/* 데드라인과 충돌시 2초후에 리스폰 */
+	if (m_IsDeadLine == true)
+	{
+		m_fDeadTime += (_float)dTimeDelta;
+		if (m_fDeadTime >= 2.f)
+		{
+			_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
+			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+
+			m_pActorCom->Set_Position(vSavePosition);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pActorCom->Set_Gravity(-9.8f);
+			m_fDeadTime = 0.f;
+			m_IsDeadLine = false;
+		}
+		else
+		{
+			_vector vTriggerTargetPos = XMLoadFloat3(&m_vTriggerTargetPos);
+			vTriggerTargetPos = XMVectorSetW(vTriggerTargetPos, 1.f);
+			m_pActorCom->Set_Position(vTriggerTargetPos);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTriggerTargetPos);
+		}
+	}
+}

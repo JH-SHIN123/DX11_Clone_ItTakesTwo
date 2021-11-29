@@ -4,6 +4,7 @@
 #include "Effect_Generator.h"
 #include "UI_Generator.h"
 #include "Environment_Generator.h"
+#include "PxEventCallback.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -15,7 +16,9 @@ HRESULT CMainApp::NativeConstruct()
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Initialize(CGraphic_Device::TYPE_WINMODE, g_hWnd, g_hInst, g_iWinCX, g_iWinCY, &m_pDevice, &m_pDeviceContext), E_FAIL);
+	m_pPxEventCallback = new CPxEventCallback;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Initialize(CGraphic_Device::TYPE_WINMODE, g_hWnd, g_hInst, g_iWinCX, g_iWinCY, &m_pDevice, &m_pDeviceContext, m_pPxEventCallback), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Reserve_Container(Level::LEVEL_END), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Timer(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Prototype_ForStatic(), E_FAIL);
@@ -32,14 +35,14 @@ HRESULT CMainApp::Run_App()
 
 	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
 
-	if (m_dFrameAcc >= 1.0 / 160.0)
+	if (m_dFrameAcc >= 1.0 / 60.0)
 	{
 		m_dFrameAcc = 0.0;
 
 		_double dTimeDelta = m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
 
-		m_dTimeDelta = dTimeDelta;
-		//m_dTimeDelta = 0.016666666666666666;
+		//m_dTimeDelta = dTimeDelta;
+		m_dTimeDelta = 0.016666666666666666;
 
 		if (Tick(m_dTimeDelta) & 0x80000000)
 			return E_FAIL;
@@ -141,6 +144,8 @@ void CMainApp::Free()
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pGameInstance);
+
+	Safe_Delete(m_pPxEventCallback);
 
 	CEffect_Generator::DestroyInstance(); // 이펙트 제어기
 	CUI_Generator::DestroyInstance();

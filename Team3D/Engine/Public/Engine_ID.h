@@ -14,6 +14,8 @@ namespace Engine
 			eUFO,
 			eMOONBABOON,
 			eSTARBUDDY,
+			eSAVEPOINT,
+			eDEADLINE,
 			eROCKET,
 			eROBOT,
 			eROBOTHEAD,
@@ -30,12 +32,14 @@ namespace Engine
 			eSPACEVALVE,
 			eGRAVITYPIPE,
 			eHOOKUFO,
-			eENVIRONMENT,
-			eWARPGATE, //sjh
-			eWORMHOLE, //sjh
+			eWARPGATE,
+			eWORMHOLE,
 			eFIREDOOR,
 			eBOSSMISSILE_COMBAT,
 			eBOSSMISSILE_PLAYABLE,
+			eGRAVITYPATH_CENTER,
+			eGRAVITYPATH_SIDE,
+			eENVIRONMENT
 		};
 	};
 

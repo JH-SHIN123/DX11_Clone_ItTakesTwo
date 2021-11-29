@@ -79,6 +79,7 @@ public:
 	* 모델 전체 이동
 	* TransformMatrix, 부모 월드 행렬
 	*/
+	HRESULT Reset_WorldPos();
 	HRESULT Update_Model(_fmatrix TransformMatrix);
 	/**
 	* Render_Model

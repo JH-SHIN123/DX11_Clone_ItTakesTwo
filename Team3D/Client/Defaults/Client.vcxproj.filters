@@ -199,20 +199,8 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\06.Landing_Smoke">
       <UniqueIdentifier>{5268a6b4-0c71-43a4-b934-31ce7bc3a010}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment">
-      <UniqueIdentifier>{e056b0e9-9d57-4825-aae6-dc4576b4077f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\Instancing_Env">
-      <UniqueIdentifier>{0961f270-4107-4546-8b54-2207c540708a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\Static_Env">
-      <UniqueIdentifier>{f3321f61-76e8-4d95-85e5-630c61340bbd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\Dynamic_Env">
-      <UniqueIdentifier>{41e68147-d11e-4913-a0ba-ca2aa591f1a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\01.Environment\Environment_Generator">
-      <UniqueIdentifier>{a8d8c8a6-5681-43c5-bb21-cb5353391f70}</UniqueIdentifier>
+    <Filter Include="02.GameObject\06.Sky">
+      <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\06.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
@@ -237,18 +225,6 @@
     </Filter>
     <Filter Include="03.Component">
       <UniqueIdentifier>{6f424d55-06aa-4b07-a102-2829f8dd72e4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.Component\01.CameraActor">
-      <UniqueIdentifier>{71f0cc81-3265-4b0d-9a45-cf89b506bd13}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.Component\01.CameraActor\00.Main">
-      <UniqueIdentifier>{0cbed854-cdf5-4121-8dab-ff10dad003dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.Component\01.CameraActor\01.BehaviorCallback">
-      <UniqueIdentifier>{68b731cf-de3f-4fda-b4e7-8040040943d1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.Component\01.CameraActor\02.FilterCallback">
-      <UniqueIdentifier>{c1859efc-d3f6-40da-a6c5-24deb0b7e05b}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
       <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
@@ -333,6 +309,99 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung\01.Boss_Missile">
       <UniqueIdentifier>{b6a72df0-6523-4590-a934-cd52c7bacae5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor">
+      <UniqueIdentifier>{2ec58a84-d189-4974-a108-05b4f318d045}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\01.CameraActor">
+      <UniqueIdentifier>{71f0cc81-3265-4b0d-9a45-cf89b506bd13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\01.CameraActor\00.Main">
+      <UniqueIdentifier>{0cbed854-cdf5-4121-8dab-ff10dad003dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\01.CameraActor\01.BehaviorCallback">
+      <UniqueIdentifier>{68b731cf-de3f-4fda-b4e7-8040040943d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\01.CameraActor\02.FilterCallback">
+      <UniqueIdentifier>{c1859efc-d3f6-40da-a6c5-24deb0b7e05b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\02.PlayerActor">
+      <UniqueIdentifier>{9106a268-2938-43e6-bf2f-9be9c5610155}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\02.PlayerActor\00.Main">
+      <UniqueIdentifier>{6bbea7de-c1d5-47a9-8635-70ce8d8a39d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\02.PlayerActor\01.BehaviorCallback">
+      <UniqueIdentifier>{96207711-0402-4274-81fc-e032474726b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\02.PlayerActor\02.FilterCallback">
+      <UniqueIdentifier>{41965410-fff4-41fd-b7b2-3345a7005805}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton">
+      <UniqueIdentifier>{21595d8b-6915-472b-a79b-c4082c037ad6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton\Button">
+      <UniqueIdentifier>{1a2a860a-f721-42c9-90c7-133ab5676019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore">
+      <UniqueIdentifier>{8f43d1bd-58ec-498d-a993-9b4cfd01976f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Pillar">
+      <UniqueIdentifier>{850e5f76-dcf6-4531-8019-3bd9a0c92e61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Shield">
+      <UniqueIdentifier>{fb978188-0a8f-4c6d-a78d-84b804f1c4b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Glass">
+      <UniqueIdentifier>{dd56d154-6e3c-4b88-acf9-7781f85675a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Button">
+      <UniqueIdentifier>{228de401-14c0-453a-bbf2-c22fe0f54c99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Won\02.MoonBaboon_MainLaser">
+      <UniqueIdentifier>{775f92c2-ddac-4603-a2e3-80b38fa3090d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment">
+      <UniqueIdentifier>{e056b0e9-9d57-4825-aae6-dc4576b4077f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\99.SavePoint">
+      <UniqueIdentifier>{5d84ef85-2a0a-4117-88bf-3372447ab931}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\98.DeadLine">
+      <UniqueIdentifier>{4ce27b49-53fc-47a8-b4ef-a76cf4790bc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\00.Environment_Generator">
+      <UniqueIdentifier>{a8d8c8a6-5681-43c5-bb21-cb5353391f70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\01.Instancing_Env">
+      <UniqueIdentifier>{0961f270-4107-4546-8b54-2207c540708a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\01.Instancing_Env\Bridge">
+      <UniqueIdentifier>{23b62c01-35ce-4912-8d66-d1a41a2c766a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\02.Static_Env">
+      <UniqueIdentifier>{f3321f61-76e8-4d95-85e5-630c61340bbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env">
+      <UniqueIdentifier>{41e68147-d11e-4913-a0ba-ca2aa591f1a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\Planet">
+      <UniqueIdentifier>{124044e2-ad2e-4ef2-9df3-e1f4e83e8723}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\00.Parent">
+      <UniqueIdentifier>{9a7e59c1-0f27-4391-8680-1319812ccda0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PlanetRing">
+      <UniqueIdentifier>{70339247-3508-4736-96ff-59d5aaf012e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\03.SepdStaticActor">
+      <UniqueIdentifier>{f808c0cd-b062-4b36-91f7-a2fcbd2813e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\02.PlayerActor\03.HitReport">
+      <UniqueIdentifier>{c6e83dbb-95e5-47c8-a329-9d6d3d04c28b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\01.Actor\99.EventCallback">
+      <UniqueIdentifier>{e43d39f3-5732-46ee-85d4-9b5d0244f918}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -535,25 +604,25 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Environment_Generator.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\Environment_Generator</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\00.Environment_Generator</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Static_Env.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\Static_Env</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\02.Static_Env</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Instancing_Env.h">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\Instancing_Env</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\01.Instancing_Env</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Sky.h">
       <Filter>02.GameObject\02.Sky</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CameraBehaviorCallback.h">
-      <Filter>03.Component\01.CameraActor\01.BehaviorCallback</Filter>
+      <Filter>03.Component\01.Actor\01.CameraActor\01.BehaviorCallback</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CameraFilterCallback.h">
-      <Filter>03.Component\01.CameraActor\02.FilterCallback</Filter>
+      <Filter>03.Component\01.Actor\01.CameraActor\02.FilterCallback</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CameraActor.h">
-      <Filter>03.Component\01.CameraActor\00.Main</Filter>
+      <Filter>03.Component\01.Actor\01.CameraActor\00.Main</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_Dead_Particle_Fire.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\01.Fire\Dead_Particle_Fire</Filter>
@@ -573,6 +642,24 @@
     <ClInclude Include="..\public\Effect_Player_Lail.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SavePoint.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\99.SavePoint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DeadLine.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\98.DeadLine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Planet.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\Planet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Bridge.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\01.Instancing_Env\Bridge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Dynamic_Env.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\00.Parent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlanetRing.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PlanetRing</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\HookUFO.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO</Filter>
     </ClInclude>
@@ -587,6 +674,48 @@
     </ClInclude>
     <ClInclude Include="..\Public\Boss_Missile.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\01.Boss_Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerActor.h">
+      <Filter>03.Component\01.Actor\02.PlayerActor\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerBehaviorCallback.h">
+      <Filter>03.Component\01.Actor\02.PlayerActor\01.BehaviorCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerFilterCallback.h">
+      <Filter>03.Component\01.Actor\02.PlayerActor\02.FilterCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToyBoxButton.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToyBoxButton_Button.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboonCore.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboonCore_Pillar.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Pillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboonCore_Button.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboonCore_Shield.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Shield</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboonCore_Glass.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Glass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboon_MainLaser.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\02.MoonBaboon_MainLaser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SepdStaticActor.h">
+      <Filter>03.Component\01.Actor\03.SepdStaticActor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerHitReport.h">
+      <Filter>03.Component\01.Actor\02.PlayerActor\03.HitReport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PxEventCallback.h">
+      <Filter>03.Component\01.Actor\99.EventCallback</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -759,13 +888,13 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Environment_Generator.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\Environment_Generator</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\00.Environment_Generator</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Static_Env.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\Static_Env</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\02.Static_Env</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Instancing_Env.cpp">
-      <Filter>02.GameObject\04.Stage_Space\01.Environment\Instancing_Env</Filter>
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\01.Instancing_Env</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Loading.cpp">
       <Filter>01.Maps\01.Loading\99.Loading</Filter>
@@ -774,13 +903,13 @@
       <Filter>02.GameObject\02.Sky</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CameraActor.cpp">
-      <Filter>03.Component\01.CameraActor\00.Main</Filter>
+      <Filter>03.Component\01.Actor\01.CameraActor\00.Main</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CameraBehaviorCallback.cpp">
-      <Filter>03.Component\01.CameraActor\01.BehaviorCallback</Filter>
+      <Filter>03.Component\01.Actor\01.CameraActor\01.BehaviorCallback</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CameraFilterCallback.cpp">
-      <Filter>03.Component\01.CameraActor\02.FilterCallback</Filter>
+      <Filter>03.Component\01.Actor\01.CameraActor\02.FilterCallback</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Dead_Particle_Fire.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\01.Fire\Dead_Particle_Fire</Filter>
@@ -800,6 +929,24 @@
     <ClCompile Include="..\private\Effect_Player_Lail.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\SavePoint.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\99.SavePoint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DeadLine.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\98.DeadLine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Planet.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\Planet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bridge.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\01.Instancing_Env\Bridge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Dynamic_Env.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\00.Parent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlanetRing.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PlanetRing</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\HookUFO.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO</Filter>
     </ClCompile>
@@ -814,6 +961,48 @@
     </ClCompile>
     <ClCompile Include="..\Private\Boss_Missile.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\01.Boss_Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerActor.cpp">
+      <Filter>03.Component\01.Actor\02.PlayerActor\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerBehaviorCallback.cpp">
+      <Filter>03.Component\01.Actor\02.PlayerActor\01.BehaviorCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerFilterCallback.cpp">
+      <Filter>03.Component\01.Actor\02.PlayerActor\02.FilterCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToyBoxButton.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToyBoxButton_Button.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboonCore.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboonCore_Pillar.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Pillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboonCore_Button.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboonCore_Shield.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Shield</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboonCore_Glass.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Glass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboon_MainLaser.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\02.MoonBaboon_MainLaser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SepdStaticActor.cpp">
+      <Filter>03.Component\01.Actor\03.SepdStaticActor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerHitReport.cpp">
+      <Filter>03.Component\01.Actor\02.PlayerActor\03.HitReport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PxEventCallback.cpp">
+      <Filter>03.Component\01.Actor\99.EventCallback</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

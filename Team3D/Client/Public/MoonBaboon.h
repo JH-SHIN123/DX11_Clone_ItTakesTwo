@@ -1,14 +1,6 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
-
-BEGIN(Engine)
-class CRenderer;
-class CTransform;
-class CModel;
-class CControllableActor;
-END
 
 BEGIN(Client)
 

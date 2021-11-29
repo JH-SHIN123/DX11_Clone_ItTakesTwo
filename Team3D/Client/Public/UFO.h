@@ -1,14 +1,6 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
-
-BEGIN(Engine)
-class CRenderer;
-class CTransform;
-class CModel;
-class CControllableActor;
-END
 
 BEGIN(Client)
 
@@ -51,7 +43,7 @@ protected:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
-	CControllableActor* m_pActorCom = nullptr;
+	class CPlayerActor* m_pActorCom = nullptr;
 
 	CTransform*			m_pCodyTransform = nullptr;
 	CTransform*			m_pMayTransform = nullptr;
@@ -105,9 +97,6 @@ private:
 	_bool m_IsCoreExplode = false;
 	_bool m_IsCodyHold = false;
 	_bool m_IsMayLaserRippedOff = false;
-
-
-
 
 public:
 	static CUFO* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -193,7 +193,6 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\public\Camera.h" />
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\public\Component_Manager.h" />
-    <ClInclude Include="..\public\ControllableActor.h" />
     <ClInclude Include="..\public\DynamicActor.h" />
     <ClInclude Include="..\public\Engine_Defines.h" />
     <ClInclude Include="..\public\Engine_Function.h" />
@@ -222,10 +221,6 @@ call WinCmd_UpdateLib.bat</Command>
     <ClInclude Include="..\Public\Model_Loader.h" />
     <ClInclude Include="..\public\PhysX.h" />
     <ClInclude Include="..\Public\Pipeline.h" />
-    <ClInclude Include="..\public\PxContactCallback.h" />
-    <ClInclude Include="..\public\PxControllerCallback.h" />
-    <ClInclude Include="..\public\PxControllerFilterCallback.h" />
-    <ClInclude Include="..\public\PxEventCallback.h" />
     <ClInclude Include="..\public\Renderer.h" />
     <ClInclude Include="..\public\RenderTarget.h" />
     <ClInclude Include="..\public\RenderTarget_Manager.h" />
@@ -260,7 +255,6 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\private\Camera.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\private\Component_Manager.cpp" />
-    <ClCompile Include="..\private\ControllableActor.cpp" />
     <ClCompile Include="..\private\DynamicActor.cpp" />
     <ClCompile Include="..\private\Frustum.cpp" />
     <ClCompile Include="..\private\GameInstance.cpp" />
@@ -281,10 +275,6 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\Private\Model_Loader.cpp" />
     <ClCompile Include="..\private\PhysX.cpp" />
     <ClCompile Include="..\Private\Pipeline.cpp" />
-    <ClCompile Include="..\private\PxContactCallback.cpp" />
-    <ClCompile Include="..\private\PxControllerCallback.cpp" />
-    <ClCompile Include="..\private\PxControllerFilterCallback.cpp" />
-    <ClCompile Include="..\private\PxEventCallback.cpp" />
     <ClCompile Include="..\private\Renderer.cpp" />
     <ClCompile Include="..\private\RenderTarget.cpp" />
     <ClCompile Include="..\private\RenderTarget_Manager.cpp" />
@@ -311,6 +301,7 @@ call WinCmd_UpdateLib.bat</Command>
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_Blur.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_PostFX.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Blend.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PostFX.hlsl" />

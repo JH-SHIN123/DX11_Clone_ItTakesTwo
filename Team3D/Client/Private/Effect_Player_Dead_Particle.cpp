@@ -186,7 +186,6 @@ HRESULT CEffect_Player_Dead_Particle::Ready_Instance()
 		Set_VtxColor(i, iRandVtx);
 	}
 
-
 	Safe_Release(m_pTargetModel);
 
 	return S_OK;

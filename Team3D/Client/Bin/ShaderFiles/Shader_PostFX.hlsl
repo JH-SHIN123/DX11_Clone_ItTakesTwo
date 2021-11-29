@@ -132,8 +132,8 @@ PS_OUT PS_MAIN(PS_IN In)
 	vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
 
 	vColor += g_BloomScale * g_BloomTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV.xy).xyz;
-
 	vColor = ToneMapping(vColor);
+
 	Out.vColor = vector(vColor, 1.f);
 
 	return Out;

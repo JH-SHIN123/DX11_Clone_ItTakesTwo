@@ -3,10 +3,6 @@
 #include "Client_Defines.h"
 #include "Actor.h"
 
-BEGIN(Engine)
-class CTransform;
-END
-
 BEGIN(Client)
 
 class CCameraActor final : public CActor
