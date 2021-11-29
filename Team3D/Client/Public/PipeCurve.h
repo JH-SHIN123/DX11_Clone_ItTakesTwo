@@ -26,6 +26,9 @@ public:
 	void Set_Rotate(_bool IsCheck);
 
 public:
+	_bool Get_Connected();
+
+public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
@@ -36,7 +39,7 @@ private:
 	_float				m_fAngle = 0.f;
 	_float				m_fAngleIncreaseLimit = 0.f;
 	_uint				m_iOption = 0;
-
+	_bool				m_IsConnected = false;
 
 protected:
 	/* For.Component */
@@ -44,6 +47,9 @@ protected:
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 	CStaticActor*		m_pStaticActorCom = nullptr;
+
+private:
+	void CompareAngle(_float fAngle);
 
 public:
 	static CPipeCurve* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

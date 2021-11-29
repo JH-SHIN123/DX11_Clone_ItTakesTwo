@@ -24,6 +24,7 @@ public:
 
 public:
 	_bool Get_ButtonActive() { return m_IsButtonActive; }
+	_bool Get_PipeConnected();
 
 public:
 	void Set_Position(_vector vPosition);

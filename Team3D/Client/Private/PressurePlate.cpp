@@ -151,6 +151,11 @@ void CPressurePlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGam
 
 }
 
+_bool CPressurePlate::Get_PipeConnected()
+{
+	return m_pPipeCurve->Get_Connected();
+}
+
 void CPressurePlate::Set_Position(_vector vPosition)
 {
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);

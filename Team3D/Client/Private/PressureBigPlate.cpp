@@ -75,7 +75,12 @@ HRESULT CPressureBigPlate::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
-	//DATABASE->Set_PressureBigPlatePtr(this);
+
+	if (0 == m_iOption)
+		DATABASE->Set_PipeCurvePtr(m_vecPressurePlate);
+	else if (1 == m_iOption)
+		m_vecPressurePlate = DATABASE->Get_PressurePlate();
+
 
 	SetUp_DefaultPositionSetting();
 
@@ -88,10 +93,17 @@ _int CPressureBigPlate::Tick(_double dTimeDelta)
 
 	m_pTriggerCom->Update_TriggerActor();
 
-	if(0 == m_iOption)
+	switch (m_iOption)
+	{
+	case 0:
 		RotationButton_Active(dTimeDelta);
-
-
+		break;
+	case 1:
+		PowerConnectionButton_Active(dTimeDelta);
+		break;
+	default:
+		break;
+	}
 
 	return NO_EVENT;
 }
@@ -99,6 +111,11 @@ _int CPressureBigPlate::Tick(_double dTimeDelta)
 _int CPressureBigPlate::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	if (1 == m_iOption && true == m_vecPressurePlate[0]->Get_PipeConnected() && true == m_vecPressurePlate[1]->Get_PipeConnected())
+		m_IsPowerSupplyAvailable = true;
+	else
+		m_IsPowerSupplyAvailable = false;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -149,7 +166,27 @@ void CPressureBigPlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 	}
 	else if (1 == m_iOption)
 	{
+		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+		{
+			m_IsCollision = true;
+			Check_Collision_PlayerAnim();
+		}
+		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+		{
+			m_IsCollision = false;
+			m_IsButtonActive = false;
+		}
 
+		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+		{
+			m_IsCollision = true;
+			Check_Collision_PlayerAnim();
+		}
+		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+		{
+			m_IsCollision = false;
+			m_IsButtonActive = false;
+		}
 	}
 }
 
@@ -170,12 +207,81 @@ void CPressureBigPlate::Check_Collision_PlayerAnim()
 		m_fMove = 0.f;
 		m_IsButtonActive = true;
 
-		for (auto pPlate : m_vecPressurePlate)
+		if (0 == m_iOption)
 		{
-			if(false == pPlate->Get_ButtonActive())
-				pPlate->Set_PipeCurveRotate(true);
+			for (auto pPlate : m_vecPressurePlate)
+			{
+				if (false == pPlate->Get_ButtonActive())
+					pPlate->Set_PipeCurveRotate(true);
+			}
 		}
 	}
+}
+
+void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
+{
+	if (false == m_IsPowerSupplyAvailable)
+		return;
+
+	m_pTriggerCom->Update_TriggerActor();
+	m_pStaticActorCom->Update_StaticActor();
+		
+	if (true == m_IsPowerButtonUp)
+	{
+		if (0.17f > m_fMove)
+		{
+			m_fMove += (_float)TimeDelta;
+			m_pTransformCom->Go_Up(TimeDelta);
+			m_pPlateLock->Get_Transform()->Go_Right(TimeDelta);
+		}
+		else
+		{
+			m_fMove = 0.f;
+			m_IsPowerButtonUp = false;
+		}
+	}
+
+	if (false == m_IsPowerButtonUp)
+	{
+		if (false == m_IsButtonActive && true == m_IsCollision)
+		{
+			if (0.05f > m_fMove)
+			{
+				m_fMove += (_float)TimeDelta;
+				m_pTransformCom->Go_Down(TimeDelta);
+				m_pPlateLock->Get_Transform()->Go_Left(TimeDelta);
+			}
+			else
+				m_fMove = 0.05f;
+		}
+		/* 점프만 해서 올라 타고 버튼 위에서 그냥 내려올 때 */
+		else if (false == m_IsButtonActive && false == m_IsCollision)
+		{
+			if (0.f < m_fMove)
+			{
+				m_fMove -= (_float)TimeDelta;
+				m_pTransformCom->Go_Up(TimeDelta);
+				m_pPlateLock->Get_Transform()->Go_Right(TimeDelta);
+			}
+			else
+				m_fMove = 0.f;
+		}
+	}
+
+	/* 점프 찍기로 버튼을 활성화 했을 때 */
+	if (true == m_IsButtonActive && false == m_IsReset)
+	{
+		if (0.17f > m_fActiveMove)
+		{
+			m_fActiveMove += (_float)TimeDelta;
+			m_pTransformCom->Go_Down(TimeDelta);
+			m_pPlateLock->Get_Transform()->Go_Left(TimeDelta);
+		}
+
+	}
+
+
+
 }
 
 
@@ -222,6 +328,9 @@ void CPressureBigPlate::SetUp_DefaultPositionSetting()
 
 void CPressureBigPlate::RotationButton_Active(_double TimeDelta)
 {
+	if (0 == m_iOption && true == m_vecPressurePlate[0]->Get_PipeConnected() && true == m_vecPressurePlate[1]->Get_PipeConnected())
+		return;
+
 	/* 그냥 점프만 해서 올라 탔을 때*/
 	if (false == m_IsButtonActive && true == m_IsCollision)
 	{

@@ -309,7 +309,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		{
 			if (m_pGameInstance->Get_Pad_LStickX() <= 25000 && m_iSavedKeyPress == RIGHT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 			{
-				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
+				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)) && m_IsTurnAround == false)
 				{
 					m_fSprintAcceleration = 15.f;
 					bMove[1] = !bMove[1];
@@ -320,7 +320,7 @@ void CMay::KeyInput(_double dTimeDelta)
 			}
 			if (m_pGameInstance->Get_Pad_LStickX() >= 41000 && m_iSavedKeyPress == LEFT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 			{
-				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
+				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)) && m_IsTurnAround == false)
 				{
 					m_fSprintAcceleration = 15.f;
 					bMove[1] = !bMove[1];
@@ -331,7 +331,7 @@ void CMay::KeyInput(_double dTimeDelta)
 			}
 			if (m_pGameInstance->Get_Pad_LStickY() <= 25000 && m_iSavedKeyPress == DOWN)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 			{
-				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
+				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)) && m_IsTurnAround == false)
 				{
 					m_fSprintAcceleration = 15.f;
 					bMove[0] = !bMove[0];
@@ -342,7 +342,7 @@ void CMay::KeyInput(_double dTimeDelta)
 			}
 			if (m_pGameInstance->Get_Pad_LStickY() >= 41000 && m_iSavedKeyPress == UP)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 			{
-				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
+				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) || (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)) && m_IsTurnAround == false)
 				{
 					m_fSprintAcceleration = 15.f;
 					bMove[0] = !bMove[0];

@@ -35,6 +35,8 @@ private:
 	_bool										m_IsPipeCurveRotate = false;
 	_bool										m_IsCollision = false;
 	_bool										m_IsReset = false;
+	_bool										m_IsPowerButtonUp = true;
+	_bool										m_IsPowerSupplyAvailable = false;
 	_float										m_fMove = 0.f;
 	_float										m_fActiveMove = 0.f;
 	_float										m_fWaitingTime = 0.f;
@@ -59,6 +61,7 @@ private:
 	void SetUp_DefaultPositionSetting();
 	void RotationButton_Active(_double TimeDelta);
 	void Check_Collision_PlayerAnim();
+	void PowerConnectionButton_Active(_double TimeDelta);
 
 private:
 	HRESULT Ready_Layer_Plate(const _tchar * pLayerTag, _uint iCount);

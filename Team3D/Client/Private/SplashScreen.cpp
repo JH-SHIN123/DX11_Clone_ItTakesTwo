@@ -127,7 +127,7 @@ void CSplashScreen::Render_Font()
 	tFontDesc.iShaderPassNum = 2;
 	tFontDesc.fAlpha = m_fFontAlpha;
 	//d
-	UI_Generator->Render_Font(TEXT("버튼을 눌러 계속하십시오라오라오라오라오라오라"), tFontDesc, Player::Default, true);
+	UI_Generator->Render_Font(TEXT("버튼을 눌러 계속하십시오"), tFontDesc, Player::Default, true);
 }
 
 HRESULT CSplashScreen::Ready_Component()

@@ -34,7 +34,7 @@ HRESULT CPipeCurve::NativeConstruct(void * pArg)
 	/* Option 0 : 처음에 회전 안먹은거 / Option 1 : 회전 먹은거 ㅇㅇ */
 	if (1 == m_iOption)
 	{
-		m_fAngle = 180.f;
+		m_fAngle = 90.f;
 		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
 	}
 
@@ -60,10 +60,22 @@ _int CPipeCurve::Tick(_double dTimeDelta)
 
 		if (fRotateMaxAngle <= m_fAngleIncreaseLimit)
 		{
+			if (1 == m_iOption)
+				int i = 0;
+
 			_float fAngleDifference = m_fAngleIncreaseLimit - fRotateMaxAngle;
 			m_fAngle -= fAngleDifference;
 			m_IsRotate = false;
+
+			if (0 == m_iOption && 175.f <= m_fAngle && 185.f >= m_fAngle)
+				m_IsConnected = true;
+			else if (1 == m_iOption && 355.f <= m_fAngle && 365.f >= m_fAngle)
+				m_IsConnected = true;
+			else
+				m_IsConnected = false;
 		}
+
+		CompareAngle(m_fAngle);
 
 		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
 
@@ -109,6 +121,11 @@ void CPipeCurve::Set_Rotate(_bool IsCheck)
 	m_IsRotate = IsCheck;
 }
 
+_bool CPipeCurve::Get_Connected()
+{
+	return m_IsConnected;
+}
+
 HRESULT CPipeCurve::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -119,6 +136,24 @@ HRESULT CPipeCurve::Render_ShadowDepth()
 	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
+}
+
+void CPipeCurve::CompareAngle(_float fAngle)
+{
+	if (0 == m_iOption)
+	{
+		_float fCompareAngle = fabs(fAngle - 360.f);
+
+		if (0.1f >= fCompareAngle)
+			m_fAngle = 0.f;
+	}
+	else if (1 == m_iOption)
+	{
+		_float fCompareAngle = fabs(fAngle - 360.f);
+
+		if (0.1f >= fCompareAngle)
+			m_fAngle = 0.f;
+	}
 }
 
 CPipeCurve * CPipeCurve::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
