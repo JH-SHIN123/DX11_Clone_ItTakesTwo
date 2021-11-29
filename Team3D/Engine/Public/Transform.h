@@ -62,6 +62,7 @@ public:
 
 	void    MoveToDir(const _fvector& vMoveDir, const _double TimeDelta, const _double dAcceleration = 1.f, class CNavigation* pNavigation = nullptr);
 
+	void	RotateByUp(_fvector vUp);
 
 private:
 	_float4x4		m_WorldMatrix;

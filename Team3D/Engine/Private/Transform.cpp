@@ -371,6 +371,21 @@ void CTransform::MoveToDir(const _fvector & vMoveDir, const _double TimeDelta, c
 
 }
 
+void CTransform::RotateByUp(_fvector vUp)
+{
+	_float fScaleRight = Get_Scale(CTransform::STATE_RIGHT);
+	_float fScaleUp = Get_Scale(CTransform::STATE_UP);
+	_float fScaleLook = Get_Scale(CTransform::STATE_LOOK);
+
+	_vector	vLook = XMVector3Normalize(Get_State(CTransform::STATE_LOOK));
+	_vector	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
+	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
+
+	Set_State(STATE_RIGHT, vRight * fScaleRight);
+	Set_State(STATE_UP, XMVector3Normalize(vUp) * fScaleUp);
+	Set_State(STATE_LOOK, vLook * fScaleLook);
+}
+
 CTransform * CTransform::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CTransform* pInstance = new CTransform(pDevice, pDeviceContext);
