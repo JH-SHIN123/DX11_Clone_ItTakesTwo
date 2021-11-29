@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Character.h"
+#include "SpaceRail.h"
 
 CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -9,6 +10,13 @@ CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContex
 CCharacter::CCharacter(const CCharacter& rhs)
 	: CGameObject(rhs)
 {
+}
+
+void CCharacter::Set_SpaceRail(CSpaceRail* pRail)
+{
+	if (nullptr == pRail) return;
+
+	m_vecRideOnRails.push_back(pRail);
 }
 
 _fvector CCharacter::Get_Position()
@@ -94,6 +102,7 @@ HRESULT CCharacter::NativeConstruct(void* pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
+
 	return S_OK;
 }
 
@@ -115,6 +124,30 @@ HRESULT CCharacter::Render(RENDER_GROUP::Enum eGroup)
 HRESULT CCharacter::Render_ShadowDepth()
 {
 	return CGameObject::Render_ShadowDepth();
+}
+
+void CCharacter::Find_SpaceRailTarget()
+{
+	if (nullptr == m_pTransformCom) return;
+
+	_vector vPlayerPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vRailPosition = XMVectorZero();
+	_float fDist = FLT_MAX;
+	for (auto& pRail : m_vecRideOnRails)
+	{
+		if(nullptr == pRail) continue;
+		vRailPosition = pRail->Get_Position();
+
+		_float fToRailDist = XMVectorGetX(XMVector3Length(vPlayerPosition - vRailPosition));
+		if (fDist > fToRailDist)
+		{
+			m_pTargetSpaceRail = pRail;
+			fDist = fToRailDist;
+		}
+	}
+
+	// 등록된 스페이스 레일 비워주기
+	m_vecRideOnRails.clear();
 }
 
 void CCharacter::Free()

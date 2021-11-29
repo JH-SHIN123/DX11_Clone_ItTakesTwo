@@ -199,9 +199,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\06.Landing_Smoke">
       <UniqueIdentifier>{5268a6b4-0c71-43a4-b934-31ce7bc3a010}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\06.Sky">
-      <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03.Component">
       <UniqueIdentifier>{6f424d55-06aa-4b07-a102-2829f8dd72e4}</UniqueIdentifier>
     </Filter>
@@ -363,6 +360,12 @@
     </Filter>
     <Filter Include="03.Component\01.Actor\99.EventCallback">
       <UniqueIdentifier>{e43d39f3-5732-46ee-85d4-9b5d0244f918}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.Terrain%28Test%29">
+      <UniqueIdentifier>{f999b3e3-a399-493a-893b-bcebcfb781a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Won\03.SpaceRail">
+      <UniqueIdentifier>{d8dcba63-1b63-48d5-88bc-626fe12d38e4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -663,6 +666,12 @@
     <ClInclude Include="..\Public\PxEventCallback.h">
       <Filter>03.Component\01.Actor\99.EventCallback</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Terrain.h">
+      <Filter>02.GameObject\06.Terrain%28Test%29</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SpaceRail.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\03.SpaceRail</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -934,6 +943,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\PxEventCallback.cpp">
       <Filter>03.Component\01.Actor\99.EventCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Terrain.cpp">
+      <Filter>02.GameObject\06.Terrain%28Test%29</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SpaceRail.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Won\03.SpaceRail</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
