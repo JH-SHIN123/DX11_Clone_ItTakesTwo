@@ -13,7 +13,7 @@ CEffect_Dash::CEffect_Dash(const CEffect_Dash & rhs)
 
 HRESULT CEffect_Dash::NativeConstruct_Prototype(void * pArg)
 {
-	__super::NativeConstruct_Prototype(pArg);
+	__super::NativeConstruct_Prototype(pArg); //
 
 	m_EffectDesc_Prototype.vSize = { 1.f,1.f,10.f };
 	m_EffectDesc_Prototype.fLifeTime = 3;
