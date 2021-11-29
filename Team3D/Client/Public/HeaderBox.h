@@ -46,6 +46,7 @@ private:
 	_bool							m_IsLogoDisappear = false;
 	_int							m_iShaderOption = 0;
 	_bool							m_IsReady = false;
+	_uint							m_iPassNum = 1;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;

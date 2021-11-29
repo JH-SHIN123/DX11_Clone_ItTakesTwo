@@ -30,6 +30,8 @@ public:
 		_float2 vScale = { 100.f, 100.f };
 		_uint	iShaderPassNum = 0;
 		_float	fAlpha = 1.f;
+		_float3 vColor = { 1.f, 1.f, 1.f };
+
 	}FONTDESC;
 
 private:
@@ -43,7 +45,8 @@ public:
 	HRESULT Load_Data(const _tchar* pFilePath, Level::ID eLevel, _uint iOption = 0);
 	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	HRESULT Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
-	HRESULT Render_Font(_tchar* pText, FONTDESC tFontDesc, Player::ID ePlayer, _bool IsAlpha = false);
+	HRESULT Render_Font(_tchar* pText, FONTDESC tFontDesc, Player::ID ePlayer);
+	HRESULT Render_AlphaFont(_tchar * pText, FONTDESC tFontDesc, Player::ID ePlayer);
 
 public:
 	CUIObject* Get_UIObject(Player::ID ePlayer, UI::TRIGGER eTrigger) { return m_vecUIOBjects[ePlayer][eTrigger].front(); };
@@ -67,9 +70,12 @@ public:
 
 private:
 	_bool							m_IsTrigger = true;
-	_float							m_fFontAlpha = 0.f;
+	_float							m_fFontAlpha = 1.f;
+	_float							m_fTime = 0.f;
+	_float							m_fChange = 1;
 	VTXFONT*						m_VTXFONT;
 	FONTDESC						m_FontDesc;
+
 
 private:
 	vector<CUIObject::UI_DESC*>		m_vecPSData;

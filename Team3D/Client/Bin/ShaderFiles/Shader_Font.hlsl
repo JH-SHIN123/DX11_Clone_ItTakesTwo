@@ -12,7 +12,8 @@ float2			g_SubViewPort;
 float2			g_DefaultViewPort;
 int				g_iGSOption;
 
-float			g_fAlpha;
+float			g_fFontAlpha;
+float3			g_vColor;
 
 sampler DiffuseSampler = sampler_state
 {
@@ -241,7 +242,26 @@ PS_OUT PS_MAIN(PS_IN In)
 	if (Out.vColor.r >= 0.01f && Out.vColor.r <= 0.99f)
 		Out.vColor.rgb = 1.f;
 
-	Out.vColor.rgb = float3(1.f, 0.83f, 0.25f);
+	//Out.vColor.rgb = float3(1.f, 0.83f, 0.25f);
+	Out.vColor.rgb = float3(1.f, 1.f, 1.f);
+
+	return Out;
+}
+
+PS_OUT PS_DefaultMAIN(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.r <= 0.f && Out.vColor.g <= 0.f && Out.vColor.b <= 0.f)
+		discard;
+
+	if (Out.vColor.r >= 0.01f && Out.vColor.r <= 0.99f)
+		Out.vColor.rgb = 1.f;
+
+	if (Out.vColor.r <= 0.9f && Out.vColor.g <= 0.9f && Out.vColor.b <= 0.9f)
+		discard;
 
 	return Out;
 }
@@ -251,19 +271,68 @@ PS_OUT PS_LOGO(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-	//Out.vColor.a = Out.vColor.r;
+
+	if (Out.vColor.r <= 0.f && Out.vColor.g <= 0.f && Out.vColor.b <= 0.f)
+		discard;
+
 	Out.vColor.rgb = float3(0.607f, 0.501f, 0.435f);
 
-	//if (Out.vColor.r <= 0.f && Out.vColor.g <= 0.f && Out.vColor.b <= 0.f)
-	//	discard;
+
 
 	//if (Out.vColor.r >= 0.01f && Out.vColor.r <= 0.99f)
 	//	Out.vColor.rgb = 1.f;
 
 	//Out.vColor.rgb = float3(0.607f, 0.501f, 0.435f);
 
+
 	return Out;
 }
+
+PS_OUT PS_FontAlpha(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.r <= 0.f && Out.vColor.g <= 0.f && Out.vColor.b <= 0.f)
+		discard;
+
+	Out.vColor.rgb = float3(0.607f, 0.501f, 0.435f);
+
+	Out.vColor.a = g_fFontAlpha;
+
+	return Out;
+}
+
+
+PS_OUT PS_FontSelect(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.r <= 0.f && Out.vColor.g <= 0.f && Out.vColor.b <= 0.f)
+		discard;
+
+	Out.vColor.rgb = float3(0.4f, 0.145f, 0.019f);
+
+	return Out;
+}
+
+PS_OUT PS_FontColor(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.r <= 0.f && Out.vColor.g <= 0.f && Out.vColor.b <= 0.f)
+		discard;
+
+	Out.vColor.rgb = g_vColor;
+
+	return Out;
+}
+
 
 technique11		DefaultTechnique
 {
@@ -286,7 +355,7 @@ technique11		DefaultTechnique
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_FONT();
 		GeometryShader = compile gs_5_0 GS_Default();
-		PixelShader = compile ps_5_0 PS_MAIN();
+		PixelShader = compile ps_5_0 PS_DefaultMAIN();
 	}
 
 	// 2
@@ -298,6 +367,39 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0 VS_FONT();
 		GeometryShader = compile gs_5_0 GS_Default();
 		PixelShader = compile ps_5_0 PS_LOGO();
+	}
+
+	// 3
+	pass FontAlpha
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_FONT();
+		GeometryShader = compile gs_5_0 GS_Default();
+		PixelShader = compile ps_5_0 PS_FontAlpha();
+	}
+
+	// 4
+	pass FontSelect
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_FONT();
+		GeometryShader = compile gs_5_0 GS_Default();
+		PixelShader = compile ps_5_0 PS_FontSelect();
+	}
+
+	// 5
+	pass FontGold
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_FONT();
+		GeometryShader = compile gs_5_0 GS_Default();
+		PixelShader = compile ps_5_0 PS_FontColor();
 	}
 };
 

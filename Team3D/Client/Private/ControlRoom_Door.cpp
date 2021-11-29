@@ -63,7 +63,7 @@ _int CControlRoom_Door::Tick(_double dTimeDelta)
 
 	if (true == m_IsOpenDoor)
 	{
-		if (0.6 >= m_fMove)
+		if (1.2f >= m_fMove)
 		{
 			m_fMove += (_float)dTimeDelta;
 			m_pTransformCom->Go_Right(dTimeDelta * 3.f);

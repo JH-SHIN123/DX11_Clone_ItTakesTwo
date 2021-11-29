@@ -241,7 +241,7 @@ HRESULT CUI_Generator::Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 	return S_OK;
 }
 
-HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::ID ePlayer, _bool IsAlpha)
+HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::ID ePlayer)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
@@ -319,11 +319,158 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 		WorldMatrix = XMMatrixIdentity();
 		ViewMatrix = XMMatrixIdentity();
 
-		//if (true == IsAlpha)
-		//{
-		//	m_fFontAlpha = tFontDesc.fAlpha;
-		//	m_pVIBuffer_FontCom->Set_Variable("g_fFontAlpha", &m_fFontAlpha, sizeof(_float));
-		//}
+		_float2 vMainViewPort, vSubViewPort, vDefaultViewPort;
+		D3D11_VIEWPORT Viewport;
+
+		if (ePlayer == Player::Cody)
+		{
+			Viewport = pGameInstance->Get_ViewportInfo(1);
+			vMainViewPort = { Viewport.Width, Viewport.Height };
+
+			iGsOption = 0;
+
+			if (0.f < Viewport.Width)
+				ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+
+		}
+		else if (ePlayer == Player::May)
+		{
+			Viewport = pGameInstance->Get_ViewportInfo(2);
+			vSubViewPort = { Viewport.Width, Viewport.Height };
+
+			iGsOption = 1;
+
+			if (0.f < Viewport.Width)
+				SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+		}
+
+		if (ePlayer == Player::Default)
+		{
+			ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
+			vDefaultViewPort = { (_float)g_iWinCX / 2.f, (_float)g_iWinCY / 2.f };
+
+			m_pVIBuffer_FontCom->Set_Variable("g_DefaultViewPort", &vDefaultViewPort, sizeof(_float2));
+
+			m_pVIBuffer_FontCom->Set_Variable("g_UIWorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
+
+		}
+		else
+		{
+			m_pVIBuffer_FontCom->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
+
+			m_pVIBuffer_FontCom->Set_Variable("g_MainViewPort", &vMainViewPort, sizeof(_float2));
+			m_pVIBuffer_FontCom->Set_Variable("g_SubViewPort", &vSubViewPort, sizeof(_float2));
+
+			m_pVIBuffer_FontCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
+		}
+	}
+	m_pVIBuffer_FontCom->Set_Variable("g_vColor", &tFontDesc.vColor, sizeof(_float3));
+
+	if (0 == iOption)
+		m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+	else
+		m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
+
+	m_pVIBuffer_FontCom->Render(tFontDesc.iShaderPassNum, m_VTXFONT, TextLen);
+
+	return S_OK;
+}
+
+
+HRESULT CUI_Generator::Render_AlphaFont(_tchar * pText, FONTDESC tFontDesc, Player::ID ePlayer)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	_ulong iX, iY, iTextureWidth, iTextureHeigth, iFontWidth, iFontHeigth;
+	_int TextLen = lstrlen(pText);
+	_int iGsOption;
+	_int iOption;
+
+	for (_int i = 0; i < TextLen; ++i)
+	{
+		_ulong iNumChar = pText[i];
+
+		/* 한글 */
+		if (44032 <= iNumChar)
+		{
+			//iNumChar -= 44032;
+			//iX = iNumChar % 132;
+			//iY = iNumChar / 132;
+			//iTextureWidth = 4096;
+			//iTextureHeigth = 4096;
+			//iFontWidth = 31;
+			//iFontHeigth = 46;
+			//iOption = 0;
+			iNumChar -= 44032;
+			iX = iNumChar % 132;
+			iY = iNumChar / 132;
+			iTextureWidth = 8192;
+			iTextureHeigth = 8192;
+			iFontWidth = 62;
+			iFontHeigth = 96;
+			iOption = 0;
+
+		}
+		/* 영어 */
+		else if (65 <= iNumChar)
+		{
+			iNumChar -= 65 - 1;
+
+			if (14 <= iNumChar)
+				iNumChar += 1;
+
+			iX = iNumChar % 16;
+			iY = iNumChar / 16;
+			iTextureWidth = 512;
+			iTextureHeigth = 512;
+			iFontWidth = 34;
+			iFontHeigth = 45;
+			iOption = 1;
+		}
+		/* 띄어쓰기 */
+		else if (32 == iNumChar)
+			continue;
+
+		_float fTime = 0.0016f;
+
+		if (0.f >= m_fFontAlpha)
+			m_fChange *= -1.f;
+		else if (1.f <= m_fFontAlpha)
+			m_fChange = 1.f;
+
+		m_fFontAlpha -= fTime * m_fChange * 0.2f;
+
+		m_pVIBuffer_FontCom->Set_Variable("g_fFontAlpha", &m_fFontAlpha, sizeof(_float));
+
+		_float fInterval = ((_float)TextLen * iFontWidth) / (tFontDesc.vScale.x * 2.f * (_float)TextLen);
+		_float fValue = 1.f;
+
+		if (0.f <= tFontDesc.vPosition.x)
+			fValue *= -1.f;
+
+		_float2 vLeftTop = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
+		_float2 vRightBottom = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
+		//_float2 vRightTop = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
+		//_float2 vLeftBottom = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
+
+		//_float fPositionX = (tFontDesc.vPosition.x + (_float)i * iFontWidth) / fInterval + (tFontDesc.vPosition.x * fValue);
+		_float fPositionX = tFontDesc.vPosition.x + ((_float)i * iFontWidth / fInterval);
+
+		m_VTXFONT[i].vPosition = _float3(fPositionX, tFontDesc.vPosition.y, 0.f);
+		m_VTXFONT[i].vScale = _float2(tFontDesc.vScale.x, tFontDesc.vScale.y);
+		m_VTXFONT[i].vTexUV = _float4(vLeftTop.x, vLeftTop.y, vRightBottom.x, vRightBottom.y);
+
+		_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubProjMatrix;
+
+		WorldMatrix = XMMatrixIdentity();
+		ViewMatrix = XMMatrixIdentity();
 
 		_float2 vMainViewPort, vSubViewPort, vDefaultViewPort;
 		D3D11_VIEWPORT Viewport;
@@ -361,12 +508,11 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			m_pVIBuffer_FontCom->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
 			m_pVIBuffer_FontCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
 
-			if (0 == iOption)
-				m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-			else
-				m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
+			//if (0 == iOption)
+			//	m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+			//else
+			//	m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
 
-			m_pVIBuffer_FontCom->Render(tFontDesc.iShaderPassNum, m_VTXFONT, TextLen);
 		}
 		else
 		{
@@ -381,14 +527,22 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			m_pVIBuffer_FontCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
 			m_pVIBuffer_FontCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
 
-			if (0 == iOption)
-				m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-			else
-				m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
+			//if (0 == iOption)
+			//	m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+			//else
+			//	m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
 
-			m_pVIBuffer_FontCom->Render(tFontDesc.iShaderPassNum, m_VTXFONT, TextLen);
 		}
 	}
+
+	m_pVIBuffer_FontCom->Set_Variable("g_vColor", &tFontDesc.vColor, sizeof(_float3));
+
+	if (0 == iOption)
+		m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+	else
+		m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
+
+	m_pVIBuffer_FontCom->Render(tFontDesc.iShaderPassNum, m_VTXFONT, TextLen);
 
 	return S_OK;
 }
