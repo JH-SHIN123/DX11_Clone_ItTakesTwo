@@ -330,7 +330,7 @@ PS_OUT	PS_MAIN_GRAVITYPIPE(PS_IN_TRIPLE_UV In)
 	vflipUV += g_fTime * 0.33333333f;
 	vector vColor = g_ColorRampTexture.Sample(Wrap_MinMagMipLinear_Sampler, vflipUV - fWeight);
 	Out.vDiffuse.rgb = vMtrlDiffuse.r * vColor.rgb;
-	Out.vDiffuse.a = Out.vDiffuse.r;
+	Out.vDiffuse.a = Out.vDiffuse.r * g_fAlpha;
 
 	return Out;
 }
