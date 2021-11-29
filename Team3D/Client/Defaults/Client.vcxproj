@@ -201,13 +201,10 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
-<<<<<<< HEAD
     <ClInclude Include="..\public\CutScene.h" />
     <ClInclude Include="..\public\CutScenePlayer.h" />
-=======
     <ClInclude Include="..\public\DeadLine.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />
->>>>>>> main
     <ClInclude Include="..\public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Color.txt" />
     <ClInclude Include="..\Public\Effect_Dash.h" />
@@ -256,16 +253,13 @@
     <ClInclude Include="..\Public\MoonBaboon_MainLaser.h" />
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
-<<<<<<< HEAD
     <ClInclude Include="..\public\Performer.h" />
-=======
     <ClInclude Include="..\Public\Planet.h" />
     <ClInclude Include="..\Public\PlanetRing.h" />
     <ClInclude Include="..\Public\PlayerActor.h" />
     <ClInclude Include="..\Public\PlayerBehaviorCallback.h" />
     <ClInclude Include="..\Public\PlayerFilterCallback.h" />
     <ClInclude Include="..\Public\PlayerHitReport.h" />
->>>>>>> main
     <ClInclude Include="..\Public\PlayerMarker.h" />
     <ClInclude Include="..\Public\PxEventCallback.h" />
     <ClInclude Include="..\Public\Robot.h" />
@@ -298,22 +292,17 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\CamEffect.cpp" />
-    <ClCompile Include="..\private\Cam_Helper.cpp" />
+    <ClCompile Include="..\Private\Cam_Helper.cpp" />
     <ClCompile Include="..\private\CutScene.cpp" />
     <ClCompile Include="..\private\CutScenePlayer.cpp" />
-=======
     <ClCompile Include="..\Private\Bridge.cpp" />
     <ClCompile Include="..\Private\DeadLine.cpp" />
     <ClCompile Include="..\Private\BigPlanet.cpp" />
     <ClCompile Include="..\Private\Boss_Missile.cpp" />
-    <ClCompile Include="..\Private\CamEffect.cpp" />
-    <ClCompile Include="..\private\Cam_Helper.cpp" />
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
->>>>>>> main
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
     <ClCompile Include="..\private\Effect_Dead_Particle_Fire.cpp" />
@@ -334,12 +323,7 @@
     <ClCompile Include="..\private\InGameEffect_Model.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Rect.cpp" />
     <ClCompile Include="..\private\Effect_Landing_Smoke.cpp" />
-<<<<<<< HEAD
-=======
-    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
-    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\BigButton.cpp" />
->>>>>>> main
     <ClCompile Include="..\Private\CameraActor.cpp" />
     <ClCompile Include="..\Private\CameraBehaviorCallback.cpp" />
     <ClCompile Include="..\Private\CameraFilterCallback.cpp" />
@@ -371,16 +355,13 @@
     <ClCompile Include="..\Private\MoonBaboon_MainLaser.cpp" />
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="..\private\Performer.cpp" />
-=======
     <ClCompile Include="..\Private\Planet.cpp" />
     <ClCompile Include="..\Private\PlanetRing.cpp" />
     <ClCompile Include="..\Private\PlayerActor.cpp" />
     <ClCompile Include="..\Private\PlayerBehaviorCallback.cpp" />
     <ClCompile Include="..\Private\PlayerFilterCallback.cpp" />
     <ClCompile Include="..\Private\PlayerHitReport.cpp" />
->>>>>>> main
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
     <ClCompile Include="..\Private\PxEventCallback.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />

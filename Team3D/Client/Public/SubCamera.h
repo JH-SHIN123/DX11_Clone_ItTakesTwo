@@ -30,7 +30,7 @@ public:
 	virtual void Free() override;
 
 private:
-	//CCameraActor* m_pActorCom = nullptr;
+	class CCameraActor* m_pActorCom = nullptr;
 
 	CCam_Helper* m_pCamHelper = nullptr;
 private:

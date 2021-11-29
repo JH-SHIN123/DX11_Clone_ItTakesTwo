@@ -2,11 +2,8 @@
 #include "..\public\MainCamera.h"
 #include "Cody.h"
 #include "CameraActor.h"
-<<<<<<< HEAD
 #include"CutScenePlayer.h"
-=======
 #include "PlayerActor.h"
->>>>>>> main
 
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
@@ -49,16 +46,10 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	ArgDesc.CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
 	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-<<<<<<< HEAD
+
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom,&ArgDesc), E_FAIL);
 
 
-	
-=======
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_PlayerActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
-
-	//m_pActorCom->Set_Scale(m_fCamRadius, 0.f);
->>>>>>> main
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
 
@@ -175,7 +166,7 @@ void CMainCamera::Free()
 	Safe_Release(m_pTargetObj);
 	Safe_Release(m_pCamHelper);
 	Safe_Release(m_pActorCom);
-	Safe_Release(m_pSubActorCom);
+
 
 	CCamera::Free();
 
@@ -601,63 +592,13 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	//외부에서 상태 설정 구간
 #ifdef _DEBUG
 
-<<<<<<< HEAD
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
-	{
-		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
-		//m_pCamHelper->Start_Film(L"Film_Begin_Game", CFilm::LScreen);
-		return NO_EVENT;
-	}
-
-
-=======
 	//if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	//{
-	//	m_pCamHelper->Start_Film(L"Eye_Bezier3", CFilm::LScreen);
+	//	CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
+	//	//m_pCamHelper->Start_Film(L"Film_Begin_Game", CFilm::LScreen);
 	//	return NO_EVENT;
 	//}
 
-	//if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
-	//{
-	//	m_pCamHelper->Start_Film(L"Eye_Bezier4", CFilm::LScreen);
-	//	return NO_EVENT;
-	//}
-	//if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
-	//{
-	//	m_pCamHelper->Start_Film(L"Eye_Straight", CFilm::LScreen);
-	//	return NO_EVENT;
-	//}
-	//if (m_pGameInstance->Key_Down(DIK_NUMPAD7))
-	//{
-	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Right", CFilm::LScreen);
-	//	return NO_EVENT;
-	//}
-	//if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
-	//{
-	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Up", CFilm::LScreen);
-	//	return NO_EVENT;
-	//}
-	//if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
-	//{
-	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Look", CFilm::LScreen);
-	//	return NO_EVENT;
-	//}
-	//if (m_pGameInstance->Key_Down(DIK_NUMPAD4))
-	//{
-	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Right", CFilm::LScreen);
-	//	return NO_EVENT;
-	//}
-	//if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
-	//{
-	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Up", CFilm::LScreen);
-	//	return NO_EVENT;
-	//}
-	//if (m_pGameInstance->Key_Down(DIK_NUMPAD6))
-	//{
-	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Look", CFilm::LScreen);
-	//	return NO_EVENT;
-	//}
->>>>>>> main
 	if (m_pGameInstance->Key_Down(DIK_O))
 	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;

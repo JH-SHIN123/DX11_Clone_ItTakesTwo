@@ -35,12 +35,7 @@ public:
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
 private:
-<<<<<<< HEAD
 	CCameraActor* m_pActorCom = nullptr;
-=======
-	class CPlayerActor* m_pActorCom = nullptr;
-	class CPlayerActor* m_pSubActorCom = nullptr;
->>>>>>> main
 
 	CCam_Helper* m_pCamHelper = nullptr;
 private:

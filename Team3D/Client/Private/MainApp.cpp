@@ -4,11 +4,9 @@
 #include "Effect_Generator.h"
 #include "UI_Generator.h"
 #include "Environment_Generator.h"
-<<<<<<< HEAD
 #include"CutScenePlayer.h"
-=======
 #include "PxEventCallback.h"
->>>>>>> main
+
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -45,17 +43,12 @@ HRESULT CMainApp::Run_App()
 
 		_double dTimeDelta = m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
 
-<<<<<<< HEAD
 		
 		m_dTimeDelta = dTimeDelta;
 		//m_dTimeDelta = 0.016666666666666666;
 		if(CCutScenePlayer::GetInstance()->Tick_CutScene())
 			CCutScenePlayer::GetInstance()->OffSetTimeDelta();
-=======
-		//m_dTimeDelta = dTimeDelta;
-		m_dTimeDelta = 0.016666666666666666;
 
->>>>>>> main
 		if (Tick(m_dTimeDelta) & 0x80000000)
 			return E_FAIL;
 

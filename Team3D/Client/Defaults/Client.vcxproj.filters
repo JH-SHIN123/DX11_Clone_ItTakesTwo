@@ -642,7 +642,6 @@
     <ClInclude Include="..\Public\Effect_GravityPipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\public\CutScene.h">
       <Filter>02.GameObject\00.Public\05.CutScene\Main</Filter>
     </ClInclude>
@@ -651,7 +650,7 @@
     </ClInclude>
     <ClInclude Include="..\public\Performer.h">
       <Filter>02.GameObject\00.Public\05.CutScene\Performer</Filter>
-=======
+    </ClInclude>
     <ClInclude Include="..\public\Effect_Player_Dead.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default</Filter>
     </ClInclude>
@@ -738,7 +737,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\PxEventCallback.h">
       <Filter>03.Component\01.Actor\99.EventCallback</Filter>
->>>>>>> main
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -940,7 +938,6 @@
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\private\CutScene.cpp">
@@ -957,7 +954,7 @@
     </ClCompile>
     <ClCompile Include="..\private\Performer.cpp">
       <Filter>02.GameObject\00.Public\05.CutScene\Performer</Filter>
-=======
+    </ClCompile>
     <ClCompile Include="..\private\Effect_Player_Dead.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default</Filter>
     </ClCompile>
@@ -1044,8 +1041,10 @@
     </ClCompile>
     <ClCompile Include="..\Private\PxEventCallback.cpp">
       <Filter>03.Component\01.Actor\99.EventCallback</Filter>
->>>>>>> main
     </ClCompile>
+    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
+    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
+    <ClCompile Include="..\Private\CamEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

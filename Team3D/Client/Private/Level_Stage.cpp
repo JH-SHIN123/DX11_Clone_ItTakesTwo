@@ -8,14 +8,13 @@
 #include "ToyBoxButton.h"
 #include "MoonBaboonCore.h"
 
-<<<<<<< HEAD
 #include "InGameEffect.h"
 #include "Effect_Generator.h"
 #include"CutScenePlayer.h"
-=======
+
 #include "WarpGate.h"
 #include "Boss_Missile.h"
->>>>>>> main
+
 
 CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -32,7 +31,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Sky(TEXT("Layer_Sky")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Cody(TEXT("Layer_Cody")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_May(TEXT("Layer_May")), E_FAIL);
-<<<<<<< HEAD
+
 
 	FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
 
@@ -40,7 +39,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
 
 	/* For.Interactive Objects */
-=======
+
 	//FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
 
 #ifndef __MAPLOADING_OFF
@@ -56,7 +55,6 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon_MainLaser(TEXT("Layer_MoonBaboon_MainLaser")), E_FAIL);
 	/* Yoon */
 	//FAILED_CHECK_RETURN(Ready_Layer_NoBatterySign(TEXT("Layer_NoBatterySign")), E_FAIL);
->>>>>>> main
 	//FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_Robot(TEXT("Layer_Robot")), E_FAIL);
@@ -75,14 +73,6 @@ HRESULT CLevel_Stage::NativeConstruct()
 	/* Jin */
 	/* Jun */
 
-<<<<<<< HEAD
-	//FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
-
-	/* For.Test */
-	//FAILED_CHECK_RETURN(Ready_Layer_Test(), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Map", Level::LEVEL_STAGE, TEXT("GameObject_TileBox")), E_FAIL);
-=======
->>>>>>> main
 
 	/* For. Environment */
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Stage_Space(), E_FAIL);
