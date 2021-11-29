@@ -358,6 +358,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin\05.PressureBigPlate">
       <UniqueIdentifier>{e5a868eb-b19a-4aab-9a06-a4f0e0a0e11a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\06.ControlRoom_Door">
+      <UniqueIdentifier>{7d68941f-ef9e-45f4-9a25-aae9935dc649}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -651,6 +654,9 @@
     <ClInclude Include="..\Public\PressureBigPlate.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\05.PressureBigPlate</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ControlRoom_Door.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\06.ControlRoom_Door</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -932,6 +938,9 @@
     <ClCompile Include="..\Private\PlayerFilterCallback.cpp" />
     <ClCompile Include="..\Private\PressureBigPlate.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\05.PressureBigPlate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ControlRoom_Door.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\06.ControlRoom_Door</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

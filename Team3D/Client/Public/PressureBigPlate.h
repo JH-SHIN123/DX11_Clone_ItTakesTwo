@@ -37,9 +37,11 @@ private:
 	_bool										m_IsReset = false;
 	_bool										m_IsPowerButtonUp = true;
 	_bool										m_IsPowerSupplyAvailable = false;
+	_bool										m_IsDoorOpen = false;
 	_float										m_fMove = 0.f;
 	_float										m_fActiveMove = 0.f;
 	_float										m_fWaitingTime = 0.f;
+	_float										m_fOpenWaitTime = 0.f;
 	_uint										m_iOption = 0;
 
 
@@ -48,6 +50,7 @@ private:
 	class CPressurePlateFrame*					m_pPlateFrame = nullptr;
 	class CSupportFrame*						m_pSupportFrame = nullptr;
 	vector<class CPressurePlate*>				m_vecPressurePlate;
+	vector<class CControlRoom_Door*>			m_vecDoor;
 
 protected:
 	/* For.Component */
@@ -65,6 +68,7 @@ private:
 
 private:
 	HRESULT Ready_Layer_Plate(const _tchar * pLayerTag, _uint iCount);
+	HRESULT Ready_Layer_Door(const _tchar * pLayerTag, _uint iCount);
 	HRESULT Ready_Layer_PlateLock(const _tchar * pLayerTag);
 	HRESULT Ready_Layer_SupportFrame(const _tchar * pLayerTag);
 	HRESULT Ready_Layer_PlateFrame(const _tchar * pLayerTag);

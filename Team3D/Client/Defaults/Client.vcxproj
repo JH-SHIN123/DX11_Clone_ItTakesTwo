@@ -203,6 +203,7 @@
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\ControllerIcon.h" />
+    <ClInclude Include="..\Public\ControlRoom_Door.h" />
     <ClInclude Include="..\public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Color.txt" />
     <ClInclude Include="..\Public\Effect_Dash.h" />
@@ -290,6 +291,7 @@
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
     <ClCompile Include="..\Private\ControllerIcon.cpp" />
+    <ClCompile Include="..\Private\ControlRoom_Door.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp" />
     <ClCompile Include="..\Private\HeaderBox.cpp" />
     <ClCompile Include="..\Private\BigPlanet.cpp" />

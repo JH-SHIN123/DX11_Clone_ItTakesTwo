@@ -7,6 +7,7 @@
 #include "PressurePlate.h"
 #include "PressurePlateFrame.h"
 #include "SupportFrame.h"
+#include "ControlRoom_Door.h"
 
 CPressureBigPlate::CPressureBigPlate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -50,6 +51,7 @@ HRESULT CPressureBigPlate::NativeConstruct(void * pArg)
 	{
 		/* 테스트 용 */
 		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.4f, -3.f, 1.f));
+		FAILED_CHECK_RETURN(Ready_Layer_Door(TEXT("Layer_ControlRoom_Door"), 2), E_FAIL);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(81.101f, 219.f, 217.141f, 1.f));
 	}
 
@@ -269,13 +271,25 @@ void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 	}
 
 	/* 점프 찍기로 버튼을 활성화 했을 때 */
-	if (true == m_IsButtonActive && false == m_IsReset)
+	if (true == m_IsButtonActive)
 	{
 		if (0.17f > m_fActiveMove)
 		{
 			m_fActiveMove += (_float)TimeDelta;
 			m_pTransformCom->Go_Down(TimeDelta);
 			m_pPlateLock->Get_Transform()->Go_Left(TimeDelta);
+		}
+		else
+		{
+			m_fWaitingTime += (_float)TimeDelta;
+
+			if (1.f <= m_fWaitingTime)
+			{
+				for (auto pDoor : m_vecDoor)
+					pDoor->Set_OpenDoor();
+
+				m_IsPowerSupplyAvailable = false;
+			}
 		}
 
 	}
@@ -328,9 +342,6 @@ void CPressureBigPlate::SetUp_DefaultPositionSetting()
 
 void CPressureBigPlate::RotationButton_Active(_double TimeDelta)
 {
-	if (0 == m_iOption && true == m_vecPressurePlate[0]->Get_PipeConnected() && true == m_vecPressurePlate[1]->Get_PipeConnected())
-		return;
-
 	/* 그냥 점프만 해서 올라 탔을 때*/
 	if (false == m_IsButtonActive && true == m_IsCollision)
 	{
@@ -434,6 +445,23 @@ HRESULT CPressureBigPlate::Ready_Layer_Plate(const _tchar * pLayerTag, _uint iCo
 
 	return S_OK;
 }
+
+HRESULT CPressureBigPlate::Ready_Layer_Door(const _tchar * pLayerTag, _uint iCount)
+{
+	CGameObject* pGameObject = nullptr;
+	m_vecPressurePlate.reserve(iCount);
+	_uint iOption = 0;
+
+	for (_uint i = 0; i < iCount; ++i)
+	{
+		iOption = i;
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_ControlRoom_Door"), &iOption, &pGameObject), E_FAIL);
+		m_vecDoor.emplace_back(static_cast<CControlRoom_Door*>(pGameObject));
+	}
+
+	return S_OK;
+}
+
 
 HRESULT CPressureBigPlate::Ready_Layer_PlateLock(const _tchar * pLayerTag)
 {
