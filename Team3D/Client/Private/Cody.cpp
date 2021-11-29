@@ -64,6 +64,7 @@ HRESULT CCody::Ready_Component()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &PlayerTransformDesc), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 0.7f, 30.f, 1.f));// 적당한 시작지점
 	CPlayerActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eCODY, this);
@@ -170,6 +171,10 @@ _int CCody::Tick(_double dTimeDelta)
 		In_GravityPipe(dTimeDelta);
 		Hit_Planet(dTimeDelta);
 		Hook_UFO(dTimeDelta);
+		Warp_Wormhole(dTimeDelta);
+		Touch_FireDoor(dTimeDelta);
+		Boss_Missile_Hit(dTimeDelta);
+		Boss_Missile_Control(dTimeDelta);
 		Falling_Dead(dTimeDelta);
 	}
 	else
@@ -200,6 +205,9 @@ _int CCody::Tick(_double dTimeDelta)
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
+
+
+	Attack_BossMissile_After(dTimeDelta); // 미사일 공격이 끝나고 정상적인 회전갑승로 만들어주자
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
@@ -581,7 +589,7 @@ void CCody::KeyInput(_double dTimeDelta)
 
 #pragma region Effet Test
 	if (m_pGameInstance->Key_Down(DIK_O))
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 	if (m_pGameInstance->Key_Down(DIK_I))
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 #pragma  endregion
@@ -1287,6 +1295,40 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 
 }
 
+void CCody::Attack_BossMissile_After(_double dTimeDelta)
+{
+	if (true == m_IsBossMissile_RotateYawRoll_After)
+	{
+		m_fBossMissile_HeroLanding_Time += (_float)dTimeDelta;
+
+		if (2.f >= m_fBossMissile_HeroLanding_Time)
+		{
+			// 개꿀잼 회전값 보정을 원한다면
+			//	_float fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_RIGHT).m128_f32[1];
+			//	m_pTransformCom->RotateRoll(dTimeDelta * fRotateRoll_Check * -1.f);
+			//	fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_LOOK).m128_f32[1];
+			//	m_pTransformCom->RotatePitch(dTimeDelta * fRotateRoll_Check * -1.f);
+
+			_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+			_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+
+			vLook.m128_f32[1] = 0.f;
+			vRight.m128_f32[1] = 0.f;
+
+			vLook = XMVector3Normalize(vLook) * m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
+			vRight = XMVector3Normalize(vRight) * m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
+
+			_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * m_pTransformCom->Get_Scale(CTransform::STATE_UP);
+			m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+			m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+			m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+		}
+		else
+		{
+			m_IsBossMissile_RotateYawRoll_After = false;
+		}
+	}
+}
 
 #pragma region Shader_Variables
 HRESULT CCody::Render_ShadowDepth()
@@ -1312,8 +1354,20 @@ void CCody::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTar
 	m_iValvePlayerName = _iPlayerName;
 }
 
+void CCody::SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName)
+{
+	m_eTargetGameID = eID;
+	m_IsCollide = IsCollide;
+	XMStoreFloat4x4(&m_TriggerTargetWorld, vTriggerTargetWorld);
+	XMStoreFloat3(&m_vTriggerTargetPos, vTriggerTargetWorld.r[3]);
+
+	/* For.Valve */
+	m_iValvePlayerName = _iPlayerName;
+}
+
 _bool CCody::Trigger_Check(const _double dTimeDelta)
 {
+
 	if (m_IsCollide == true)
 	{
 		if (m_eTargetGameID == GameID::eSTARBUDDY && m_pGameInstance->Key_Down(DIK_E))
@@ -1421,6 +1475,32 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_bGoToHooker = true;
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 		}
+		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
+		{
+			// 코디 전용 포탈로 이동(웜홀)
+			m_pModelCom->Set_Animation(ANI_C_SpacePortal_Travel);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_SpacePortal_Exit);
+
+			m_pActorCom->Set_Position(XMLoadFloat4(&m_vWormholePos));
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_fWarpTimer = 0.f;
+			m_IsWarpNextStage	= true;
+			m_IsWarpDone		= true;
+		}
+		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
+		{
+			m_IsTouchFireDoor = true;
+		}
+		else if (GameID::eBOSSMISSILE_COMBAT == m_eTargetGameID && false == m_IsBossMissile_Hit)
+		{
+			m_IsBossMissile_Hit = true;
+		}
+		else if (GameID::eBOSSMISSILE_PLAYABLE == m_eTargetGameID && false == m_IsBossMissile_Control)
+		{
+			m_IsBossMissile_Control = true;
+			m_IsBossMissile_Rodeo = false;
+			m_IsBossMissile_Rodeo_Ready = false;
+		}
 		else if (m_eTargetGameID == GameID::eDEADLINE && false == m_IsDeadLine)
 		{
 			/* 데드라인과 충돌시 */
@@ -1442,7 +1522,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet || m_IsHookUFO || m_IsDeadLine)
+		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine)
 		return true;
 
 	return false;
@@ -1456,7 +1536,7 @@ _bool CCody::Trigger_End(const _double dTimeDelta)
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Exit
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Valve_Rotate_MH
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_PlayRoom_ZeroGravity_MH
-		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ChangeSize_PlanetPush_Large))
+		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Slide_Enter_Dash))
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 	}
@@ -1770,6 +1850,176 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 			m_IsCollide = false;
 		}
 	}
+}
+
+void CCody::Warp_Wormhole(const _double dTimeDelta)
+{
+	if (false == m_IsWarpNextStage && false == m_IsWarpDone)
+		return;
+
+	_float4 vWormhole = m_vWormholePos;
+	vWormhole.z -= 1.f;
+	m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat4(&vWormhole));
+
+	m_fWarpTimer += (_float)dTimeDelta;
+
+	if (true == m_IsWarpNextStage)
+	{
+		if (m_fWarpTimer_Max <= m_fWarpTimer)
+		{
+			m_IsWarpNextStage = false;
+			
+			_vector vNextStage_Pos = XMLoadFloat3(&m_vTriggerTargetPos);
+			vNextStage_Pos.m128_f32[3] = 1.f;
+
+			m_pActorCom->Set_Position(vNextStage_Pos);
+
+			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+			_vector vTriggerPos = PortalMatrix.r[3];
+			_vector vLook = PortalMatrix.r[2];
+			vTriggerPos += vLook * 20.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+
+		}
+	}
+	else
+	{
+		_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+		_vector vTriggerPos = PortalMatrix.r[3];
+		_vector vLook = PortalMatrix.r[2];
+		vTriggerPos += vLook * 30.f;
+		m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+		m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+
+		// 슈루룩
+		if (m_fWarpTimer_Max + 0.25f >= m_fWarpTimer)
+		{
+			_vector vDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+			vDir = XMVector3Normalize(vDir);
+			m_pActorCom->Move(vDir * 0.5f, dTimeDelta);
+		}
+		else
+		{
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_IsWarpDone = false;
+		}
+	}
+}
+
+void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
+{
+	if (false == m_IsTouchFireDoor)
+		return;
+
+	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+	m_IsTouchFireDoor = false;
+	m_IsCollide = false;
+
+	// Get리스폰
+}
+
+void CCody::Boss_Missile_Hit(const _double dTimeDelta)
+{
+	if (false == m_IsBossMissile_Hit)
+		return;
+
+	m_IsBossMissile_Hit = false;
+	m_IsCollide = false;
+	// 아악 아프다
+}
+
+void CCody::Boss_Missile_Control(const _double dTimeDelta)
+{
+	if (false == m_IsBossMissile_Control)
+		return;
+
+	if (false == m_IsBossMissile_Rodeo)
+	{
+		if (false == m_IsBossMissile_Rodeo_Ready)
+		{
+			if (m_pGameInstance->Key_Down(DIK_F)) // 탑승 하세요
+			{
+				m_IsBossMissile_Rodeo_Ready = true;
+				m_IsBoss_Missile_Explosion = false;
+			}
+		}
+
+		if (true == m_IsBossMissile_Rodeo_Ready) // 탑승
+		{
+			m_fBossMissile_HeroLanding_Time = 0.f;
+			m_pActorCom->Set_ZeroGravity(true, false, false);
+
+			_matrix TriggerMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+			for (_int i = 0; i < 3; ++i)
+				TriggerMatrix.r[i] = XMVector3Normalize(TriggerMatrix.r[i]);
+
+			// 회전
+			_vector vRotatePos = TriggerMatrix.r[3] + (TriggerMatrix.r[1] * 10.f);
+			m_pTransformCom->Rotate_ToTarget(vRotatePos);
+
+			// 이동
+			TriggerMatrix.r[3] += TriggerMatrix.r[1] * 1.f;
+			_vector vNewLook = XMVector3Cross(TriggerMatrix.r[1], XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), TriggerMatrix.r[1]));
+			TriggerMatrix.r[3] += vNewLook * 0.8f;
+			//_vector vDir = XMVector3Normalize(TriggerMatrix.r[3] - m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_pActorCom->Set_Position(TriggerMatrix.r[3]);
+
+			//m_IsCollide = false;
+			m_IsBossMissile_Rodeo = true;
+			m_fLandTime = 0.f;
+			//m_IsBossMissile_Control = false;
+
+		}
+	}
+	else if (true == m_IsBossMissile_Rodeo && false == m_IsBoss_Missile_Explosion)
+	{
+		m_fLandTime += (_float)dTimeDelta;
+		if(0.25f >= m_fLandTime)
+			m_pTransformCom->RotatePitch(dTimeDelta * -0.25);
+
+		else
+		{
+			m_fLandTime = 0.25f;
+
+			if (m_pGameInstance->Key_Down(DIK_1)) /* 스타트 지점 */
+				m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
+
+			if (m_pGameInstance->Key_Pressing(DIK_W)) // 아래로 밀어
+				m_pTransformCom->RotatePitch(dTimeDelta * 0.7);
+			else if (m_pGameInstance->Key_Pressing(DIK_S)) // 위로 들어
+				m_pTransformCom->RotatePitch(dTimeDelta * -0.7);
+
+			if (m_pGameInstance->Key_Pressing(DIK_A)) // 좌
+				m_pTransformCom->RotateYaw(dTimeDelta * -1);
+			else if (m_pGameInstance->Key_Pressing(DIK_D)) // 우
+				m_pTransformCom->RotateYaw(dTimeDelta * 1);
+
+			_vector vUp		= m_pTransformCom->Get_State(CTransform::STATE_UP);
+			_vector vAxisY	= XMVectorSet(0.f, 1.f, 0.f, 0.f);
+			_float vRadian = XMVector3Dot(vUp, vAxisY).m128_f32[0];
+			
+			_float fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_RIGHT).m128_f32[1];
+			m_pTransformCom->RotateRoll(dTimeDelta * fRotateRoll_Check * -1.f);
+
+			_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+			m_pActorCom->Move(vDir * 0.2f , dTimeDelta);
+
+		}
+	}
+	else if (true == m_IsBoss_Missile_Explosion)
+	{
+		m_pActorCom->Set_ZeroGravity(false, false, false);
+		
+		m_IsBossMissile_Control = false;
+		m_IsCollide = false;
+		m_IsBossMissile_RotateYawRoll_After = true;
+	}
+}
+
+void CCody::Set_BossMissile_Attack()
+{
+	m_IsBoss_Missile_Explosion = true;
 }
 
 void CCody::Falling_Dead(const _double dTimeDelta)

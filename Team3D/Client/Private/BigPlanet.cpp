@@ -46,7 +46,6 @@ HRESULT CBigPlanet::NativeConstruct(void * pArg)
 
 
 	CTriggerActor::ARG_DESC ArgDesc;
-
 	m_UserData = USERDATA(GameID::ePLANET, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pPhysxTransformCom;
@@ -150,7 +149,7 @@ void CBigPlanet::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 	{
 		m_IsMayCollide = true;
 	}
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
 		m_IsMayCollide = false;
 	}

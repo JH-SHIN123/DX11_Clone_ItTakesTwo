@@ -95,10 +95,10 @@ HRESULT CInGameEffect_Rect::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName, TEXT("Com_Textrue"), (CComponent**)&m_pTexturesCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName, TEXT("Com_Texture"), (CComponent**)&m_pTexturesCom), E_FAIL);
 
 	if (1 < lstrlen(m_EffectDesc_Prototype.TextureName_Second))
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName_Second, TEXT("Com_Textrue_Second"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName_Second, TEXT("Com_Texture_Second"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_RectInstance_Custom"), TEXT("Com_VIBuffer"), (CComponent**)&m_pRectInstanceCom), E_FAIL);
 
@@ -179,8 +179,8 @@ void CInGameEffect_Rect::Free()
 	Safe_Release(m_pTexturesCom_Color);
 	Safe_Release(m_pRectInstanceCom);
 
-	Safe_Delete(m_pInstanceBuffer);
-	Safe_Delete(m_pInstance_Dir);
+	Safe_Delete_Array(m_pInstanceBuffer);
+	Safe_Delete_Array(m_pInstance_Dir);
 
 	__super::Free();
 }

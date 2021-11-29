@@ -67,6 +67,7 @@ HRESULT CMay::Ready_Component()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &PlayerTransformDesc), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 0.7f, 30.f, 1.f)); // 대충 시작지점
 	CPlayerActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eMAY, this);
@@ -142,6 +143,8 @@ _int CMay::Tick(_double dTimeDelta)
 		Pull_VerticalDoor(dTimeDelta);
 		Rotate_Valve(dTimeDelta);
 		In_GravityPipe(dTimeDelta);
+		Warp_Wormhole(dTimeDelta);
+		Touch_FireDoor(dTimeDelta);
 	}
 	else
 	{
@@ -456,6 +459,19 @@ void CMay::KeyInput(_double dTimeDelta)
 
 #pragma endregion 
 
+#pragma region PAD RB
+	//m_IsActivate = false;
+	if (m_pGameInstance->Pad_Key_Down(DIP_RB))
+	{
+		//if (m_eTargetGameID == GameID::eVERTICALDOOR && false == m_IsPullVerticalDoor)
+		//	m_IsPullVerticalDoor = true;
+		//else
+		//	m_IsPullVerticalDoor = false;
+	}
+
+
+#pragma endregion
+
 #pragma region Effet Test
 	if (m_pGameInstance->Key_Down(DIK_P))
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
@@ -465,6 +481,11 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pEffect_GravityBoots->Add_WalkingParticle(true);
 
 #pragma  endregion
+}
+
+void CMay::Update_Tirgger_Pos(_vector vPos)
+{
+	XMStoreFloat3(&m_vTriggerTargetPos, vPos);
 }
 
 _uint CMay::Get_CurState() const
@@ -845,6 +866,17 @@ void CMay::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTarg
 	m_iValvePlayerName = _iPlayerName;
 }
 
+void CMay::SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName)
+{
+	m_eTargetGameID = eID;
+	m_IsCollide = IsCollide;
+	XMStoreFloat4x4(&m_TriggerTargetWorld, vTriggerTargetWorld);
+	XMStoreFloat3(&m_vTriggerTargetPos, vTriggerTargetWorld.r[3]);
+
+	/* For.Valve */
+	m_iValvePlayerName = _iPlayerName;
+}
+
 _bool CMay::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)
@@ -873,13 +905,13 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsActivateRobotLever = true;
 		}
-		else if (m_eTargetGameID == GameID::eVERTICALDOOR && m_pGameInstance->Pad_Key_Down(DIP_Y))
-		{
-			m_pModelCom->Set_Animation(ANI_M_Bounce2); // Trees/DoorInteraction 추출해야함.
-			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
-			m_IsPullVerticalDoor = true;
-		}
-		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Pad_Key_Down(DIP_Y) && m_iValvePlayerName == Player::May)
+ 		else if (m_eTargetGameID == GameID::eVERTICALDOOR && m_pGameInstance->Pad_Key_Down(DIP_Y)) // 패드입력
+ 		{
+ 			m_pModelCom->Set_Animation(ANI_M_Bounce2); // Trees/DoorInteraction 추출해야함.
+ 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+ 			m_IsPullVerticalDoor = true;
+ 		}
+		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Pad_Key_Down(DIP_RB) && m_iValvePlayerName == Player::May)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Valve_Rotate_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Valve_Rotate_MH);
@@ -899,10 +931,20 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			}
 			m_IsInGravityPipe = true;
 		}
+		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
+		{
+			if (false == m_IsWarpNextStage)
+			{
+				_vector vWormholePos = XMVectorZero();
+
+
+			}
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe)
+	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe 
+		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor)
 		return true;
 
 	return false;
@@ -913,7 +955,8 @@ _bool CMay::Trigger_End(const _double dTimeDelta)
 		m_pModelCom->Get_CurAnimIndex() == ANI_M_RocketFirework || 
 		m_pModelCom->Get_CurAnimIndex() == ANI_M_BruteCombat_Attack_Var1 ||
 		m_pModelCom->Get_CurAnimIndex() == ANI_M_Lever_Left ||
-		m_pModelCom->Get_CurAnimIndex() == ANI_M_Valve_Rotate_MH)
+		m_pModelCom->Get_CurAnimIndex() == ANI_M_Valve_Rotate_MH ||
+		m_pModelCom->Get_CurAnimIndex() == ANI_M_Pull)
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 		m_IsCollide = false;
@@ -965,22 +1008,35 @@ void CMay::Activate_RobotLever(const _double dTimeDelta)
 			m_IsActivateRobotLever = false;
 			m_IsCollide = false;
 		}
-
 	}
 }
 
 void CMay::Pull_VerticalDoor(const _double dTimeDelta)
 {
+	if (false == m_IsPullVerticalDoor)
+		return;
+
+	_bool IsTriggerEnd = false;
+	if (m_pGameInstance->Pad_Key_Down(DIP_LB) || m_pGameInstance->Key_Down(DIK_E))
+		IsTriggerEnd = true;
+
 	if (m_IsPullVerticalDoor == true)
 	{
-		
-		if (m_pModelCom->Is_AnimFinished(ANI_M_Bounce2))
-		{
-			m_pModelCom->Set_Animation(ANI_M_MH);
-			m_IsPullVerticalDoor = false;
-			m_IsCollide = false;
-		}
+ 		m_pModelCom->Set_Animation(ANI_M_Pull);
 
+		_vector vSwitchPos = XMLoadFloat3(&m_vTriggerTargetPos);
+		vSwitchPos.m128_f32[3] = 1.f;
+		vSwitchPos.m128_f32[1] += 11.f;
+		m_pActorCom->Set_ZeroGravity(true, false, true);
+		m_pActorCom->Set_Position(vSwitchPos);
+
+		if (true == IsTriggerEnd)
+		{
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_IsCollide = false;
+			m_IsPullVerticalDoor = false;
+		}
 	}
 }
 
@@ -999,7 +1055,7 @@ void CMay::Rotate_Valve(const _double dTimeDelta)
 		}
 
 		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pGameInstance->Key_Down(DIP_RB) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Valve_Rotate_R && m_bStruggle == false)
+		if (m_pGameInstance->Pad_Key_Down(DIP_RB) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Valve_Rotate_R && m_bStruggle == false)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Valve_Rotate_R);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Valve_Rotate_MH);
@@ -1043,12 +1099,12 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 		if (m_IsInGravityPipe && m_IsCollide == true)
 		{
 			m_pActorCom->Set_ZeroGravity(true, true, true);
-			if (m_pGameInstance->Key_Pressing(DIP_B))
+			if (m_pGameInstance->Pad_Key_Pressing(DIP_B))
 			{
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 			}
 
-			if (m_pGameInstance->Key_Pressing(DIP_A))
+			if (m_pGameInstance->Pad_Key_Pressing(DIP_A))
 			{
 				m_pActorCom->Set_ZeroGravity(true, false, false);
 				/*m_pTransformCom->Rotate_Axis(XMVector3Normalize(XMVectorSet(1.f, 0.f, 0.f, 0.f)), dTimeDelta * 0.1f);
@@ -1116,6 +1172,69 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_M_MH);
 		}
 	}
+}
+
+void CMay::Warp_Wormhole(const _double dTimeDelta)
+{
+	if (false == m_IsWarpNextStage && false == m_IsWarpDone)
+		return;
+
+	_float4 vWormhole = m_vWormholePos;
+	vWormhole.z -= 1.f;
+	m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat4(&vWormhole));
+
+	m_fWarpTimer += (_float)dTimeDelta;
+
+	if (true == m_IsWarpNextStage)
+	{
+		if (m_fWarpTimer_Max <= m_fWarpTimer)
+		{
+			m_IsWarpNextStage = false;
+
+			_vector vNextStage_Pos = XMLoadFloat3(&m_vTriggerTargetPos);
+			vNextStage_Pos.m128_f32[3] = 1.f;
+
+			m_pActorCom->Set_Position(vNextStage_Pos);
+
+			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+			_vector vTriggerPos = PortalMatrix.r[3];
+			_vector vLook = PortalMatrix.r[2];
+			vTriggerPos += vLook * 20.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+		}
+	}
+	else
+	{
+		_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+		_vector vTriggerPos = PortalMatrix.r[3];
+		_vector vLook = PortalMatrix.r[2];
+		vTriggerPos += vLook * 20.f;
+		m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+
+		// 슈루룩
+		if (m_fWarpTimer_Max + 0.25f >= m_fWarpTimer)
+		{
+			_vector vDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+			vDir = XMVector3Normalize(vDir);
+			m_pActorCom->Move(vDir, dTimeDelta * 0.4f);
+		}
+		else
+		{
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_IsWarpDone = false;
+		}
+	}
+}
+
+void CMay::Touch_FireDoor(const _double dTimeDelta)
+{
+	if (false == m_IsTouchFireDoor)
+		return;
+
+	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
+	m_IsTouchFireDoor = false;
+	m_IsCollide = false;
+	// Get리스폰
 }
 
 

@@ -22,6 +22,8 @@ private:
 	/* Jung */
 	HRESULT Test_Layer_Effect(const _tchar* pLayerTag);
 	HRESULT Test_Layer_Object_Effect(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_WarpGate(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Wormhole(const _tchar* pLayerTag);
 	/* Hye */
 	/* Won */
 	HRESULT Ready_Lights();

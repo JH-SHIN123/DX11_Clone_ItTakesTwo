@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\public\Robot.h"
+#include "Effect_Generator.h"
 
 CRobot::CRobot(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CRobotParts(pDevice, pDeviceContext)
@@ -47,6 +48,9 @@ HRESULT CRobot::NativeConstruct(void * pArg)
 _int CRobot::Tick(_double dTimeDelta)
 {
 	CRobotParts::Tick(dTimeDelta);
+
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD4))
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::RobotBattery_Spark, m_pTransformCom->Get_WorldMatrix());
 
 	return NO_EVENT;
 }

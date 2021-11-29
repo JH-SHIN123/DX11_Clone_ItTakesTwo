@@ -4,6 +4,10 @@
 
 #include "InGameEffect_Model.h"
 
+BEGIN(Engine)
+class CTriggerActor;
+END
+
 BEGIN(Client)
 class CEffect_Wormhole final : public CInGameEffect_Model
 {
@@ -18,8 +22,8 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-	virtual void SetUp_WorldMatrix(_fmatrix WorldMatrix) override;
-
+	virtual void	SetUp_WorldMatrix(_fmatrix WorldMatrix) override;
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 public:
 	HRESULT Ready_Instance();

@@ -216,10 +216,14 @@ public:
 	PLAYER_SIZE Get_Player_Size() { return m_eCurPlayerSize; }
 	//PLAYER_SIZE Get_CurSize() { return m_eCurPlayerSize; }
 
+public:
+	void	Set_BossMissile_Attack(); // CBoss_Missile
+
 	// Tick 에서 호출될 함수들
 private:
 
 	virtual void KeyInput(_double dTimeDelta);
+	void Attack_BossMissile_After(_double dTimeDelta);
 
 private:
 	// 단발성 함수들.
@@ -318,10 +322,12 @@ private:
 #pragma region Trigger
 public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
+	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
 
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
 	_float3				m_vTriggerTargetPos = {};
+	_float4x4			m_TriggerTargetWorld = {};
 
 	_bool m_IsCollide = false;
 	_bool m_IsOnGrind = false;
@@ -375,6 +381,28 @@ private:
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
 
+	// Warp NextStage
+	_bool m_IsWarpNextStage = false;
+	_float m_fWarpTimer = 0.f;
+	_bool m_IsWarpDone = false;
+	const _float4 m_vWormholePos = { 0.f, -100.f, -1000.f, 1.f };
+	const _float m_fWarpTimer_Max = 2.f;
+
+	// fire Door Dead
+	_bool m_IsTouchFireDoor = false;
+
+	// Boss Missile Hit
+	_bool m_IsBossMissile_Hit = false;
+
+	// Boss Missile Control
+	_bool	m_IsBossMissile_Control = false;
+	_bool	m_IsBossMissile_Rodeo_Ready = false;
+	_bool	m_IsBossMissile_Rodeo = false;
+	_bool	m_IsBoss_Missile_Explosion = false;
+	_float	m_fLandTime = 0.f;
+	_float	m_fBossMissile_HeroLanding_Time = 0.f;
+	_bool	m_IsBossMissile_RotateYawRoll_After = false;
+
 	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);
 	void Hit_Rocket(const _double dTimeDelta);
@@ -384,6 +412,11 @@ private:
 	void In_GravityPipe(const _double dTimeDelta);
 	void Hit_Planet(const _double dTimeDelta);
 	void Hook_UFO(const _double dTimeDelta);
+	// 정호
+	void Warp_Wormhole(const _double dTimeDelta);
+	void Touch_FireDoor(const _double dTimeDelta);
+	void Boss_Missile_Hit(const _double dTimeDelta);
+	void Boss_Missile_Control(const _double dTimeDelta);
 	/* 혜원::For.DeadLine, SavePoint */
 	void Falling_Dead(const _double dTimeDelta);
 

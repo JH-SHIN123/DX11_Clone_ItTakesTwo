@@ -185,6 +185,7 @@
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\Public\BigButtonFrame.h" />
+    <ClInclude Include="..\Public\Boss_Missile.h" />
     <ClInclude Include="..\Public\Bridge.h" />
     <ClInclude Include="..\Public\CamEffect.h" />
     <ClInclude Include="..\public\Cam_Helper.h" />
@@ -210,9 +211,12 @@
     <ClInclude Include="..\public\Effect_Env_Particle.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
     <ClInclude Include="..\Public\Effect_GravityPipe.h" />
+    <ClInclude Include="..\public\Effect_Gravity_Umbrella.h" />
     <ClInclude Include="..\public\Effect_May_Boots.h" />
     <ClInclude Include="..\public\Effect_May_Boots_Walking_Particle.h" />
+    <ClInclude Include="..\public\Effect_Player_Lail.h" />
     <ClInclude Include="..\public\Effect_Player_Revive.h" />
+    <ClInclude Include="..\public\Effect_Robot_Battery_Spark.h" />
     <ClInclude Include="..\public\Effect_Wormhole.h" />
     <ClInclude Include="..\public\Effect_FireDoor.h" />
     <ClInclude Include="..\Public\HookUFO.h" />
@@ -280,6 +284,7 @@
     <ClInclude Include="..\Public\UIObject.h" />
     <ClInclude Include="..\Public\UISprite.h" />
     <ClInclude Include="..\Public\UI_Generator.h" />
+    <ClInclude Include="..\public\WarpGate.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -290,6 +295,7 @@
     <ClCompile Include="..\Private\Bridge.cpp" />
     <ClCompile Include="..\Private\DeadLine.cpp" />
     <ClCompile Include="..\Private\BigPlanet.cpp" />
+    <ClCompile Include="..\Private\Boss_Missile.cpp" />
     <ClCompile Include="..\Private\CamEffect.cpp" />
     <ClCompile Include="..\private\Cam_Helper.cpp" />
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
@@ -299,9 +305,12 @@
     <ClCompile Include="..\private\Effect_Env_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Generator.cpp" />
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp" />
+    <ClCompile Include="..\private\Effect_Gravity_Umbrella.cpp" />
     <ClCompile Include="..\private\Effect_May_Boots.cpp" />
     <ClCompile Include="..\private\Effect_May_Boots_Walking_Particle.cpp" />
+    <ClCompile Include="..\private\Effect_Player_Lail.cpp" />
     <ClCompile Include="..\private\Effect_Player_Revive.cpp" />
+    <ClCompile Include="..\private\Effect_Robot_Battery_Spark.cpp" />
     <ClCompile Include="..\private\Effect_Wormhole.cpp" />
     <ClCompile Include="..\private\Effect_FireDoor.cpp" />
     <ClCompile Include="..\Private\HookUFO.cpp" />
@@ -376,6 +385,7 @@
     <ClCompile Include="..\Private\UIObject.cpp" />
     <ClCompile Include="..\Private\UISprite.cpp" />
     <ClCompile Include="..\Private\UI_Generator.cpp" />
+    <ClCompile Include="..\private\WarpGate.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

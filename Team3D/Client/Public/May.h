@@ -178,6 +178,7 @@ public:
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
+	void		Update_Tirgger_Pos(_vector vPos);
 
 	// Tick 에서 호출될 함수들
 private:
@@ -303,22 +304,22 @@ private:
 	// Sprint
 	_float m_fSprintAcceleration = 35.f;
 
-
 #pragma region Trigger
 public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
+	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
 
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
 	_float3				m_vTriggerTargetPos = {};
 	_bool m_IsCollide = false;
+	_float4x4 m_TriggerTargetWorld = {};
 
 
 	_bool m_IsOnGrind = false;
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
-	_bool m_IsPullVerticalDoor = false;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
@@ -335,6 +336,20 @@ private:
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
 
+	// Warp NextStage
+	_bool m_IsWarpNextStage = false;
+	_float m_fWarpTimer = 0.f;
+	_bool m_IsWarpDone = false;
+	const _float4 m_vWormholePos = { 0.f, -100.f, -1000.f, 1.f };
+	const _float m_fWarpTimer_Max = 2.f;
+
+	// 상호작용 테스트용
+	_bool m_IsActivate_End = false;
+	_bool m_IsPullVerticalDoor = false;
+
+	_bool m_IsTouchFireDoor = false;
+
+
 	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);
 	void Hit_Rocket(const _double dTimeDelta);
@@ -342,6 +357,8 @@ private:
 	void Pull_VerticalDoor(const _double dTimeDelta);
 	void Rotate_Valve(const _double dTimeDelta);
 	void In_GravityPipe(const _double dTimeDelta);
+	void Warp_Wormhole(const _double dTimeDelta);
+	void Touch_FireDoor(const _double dTimeDelta);
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);

@@ -103,6 +103,7 @@ public: // 기본적인 기능
 	void	Check_Color(_double TimeDelta);
 	void	Check_Gravity(_double TimeDelta);
 	_float4 Check_UV(_double TimeDelta, _int iIndex = 0, _bool IsLoop = true);
+	_float4 Check_UV(_int iTextureMax_U, _int iTextureMax_V, _int* pTextureNow_U, _int* pTextureNow_V, _bool IsLoop = true);
 	_float2 Check_Size(_double TimeDelta, _int iIndex = 0);
 	_float4 Check_Move(_double TimeDelta, _int iIndex = 0);
 
@@ -114,7 +115,8 @@ public:
 
 public:
 	_float4 Set_UV(_int iIndex);
-	void SetUp_Shader_Data();
+	void	SetUp_Shader_Data();
+	_float4 Get_TexUV(_uint iTexture_U, _uint iTexture_V, _bool IsInitialize = false);
 	_float4 Get_TexUV_Rand(_uint iTexture_U, _uint iTexture_V);
 	_float3 Get_Dir_Rand(_int3 vRandDirPower);
 

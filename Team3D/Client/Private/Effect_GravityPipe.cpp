@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Effect_GravityPipe.h"
-#include "GameInstance.h"
 #include "TriggerActor.h"
 #include "Cody.h"
 #include "May.h"
@@ -33,9 +32,10 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 
 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObject_2D_Env_Particle", nullptr, (CGameObject**)&m_pParticle);
 	m_pParticle->Set_InstanceCount(5000);
+	//m_pTransformCom->Set_Scale(XMVectorSet(3.05f, 1.65f, 3.05f, 0.f));
 
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(62.9901505f, 35.f, 195.674637f, 1.f));
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform2"), (CComponent**)&m_pPhysxTransformCom), E_FAIL);
-
 	m_pTransformCom->Set_Scale(XMVectorSet(2.85f, 2.85f, 2.85f, 1.f));
 
 	_matrix PhysxWorldMatrix = XMMatrixIdentity();
@@ -58,6 +58,7 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 
 _int CEffect_GravityPipe::Tick(_double TimeDelta)
 {
+
 	m_fTime += (_float)TimeDelta * 0.1f;
 
 	if (3.f <= m_fTime)
@@ -76,7 +77,7 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 
 _int CEffect_GravityPipe::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_GravityPipe::Render(RENDER_GROUP::Enum eGroup)

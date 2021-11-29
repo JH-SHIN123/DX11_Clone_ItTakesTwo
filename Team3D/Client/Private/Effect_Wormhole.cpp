@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Wormhole.h"
 #include "GameInstance.h"
+#include "Cody.h"
+#include "May.h"
 
 CEffect_Wormhole::CEffect_Wormhole(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
@@ -24,7 +26,10 @@ HRESULT CEffect_Wormhole::NativeConstruct(void * pArg)
 	__super::NativeConstruct(pArg);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Textrue_Color"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
+
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
+	//
 
 	return S_OK;
 }
@@ -45,7 +50,7 @@ _int CEffect_Wormhole::Tick(_double TimeDelta)
 
 _int CEffect_Wormhole::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Wormhole::Render(RENDER_GROUP::Enum eGroup)
@@ -60,6 +65,10 @@ HRESULT CEffect_Wormhole::Render(RENDER_GROUP::Enum eGroup)
 }
 
 void CEffect_Wormhole::SetUp_WorldMatrix(_fmatrix WorldMatrix)
+{
+}
+
+void CEffect_Wormhole::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 }
 
