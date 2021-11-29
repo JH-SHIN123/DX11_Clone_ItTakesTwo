@@ -1,25 +1,25 @@
 #include "stdafx.h"
-#include "..\Public\Effect_Gravity_Umbrella.h"
+#include "..\Public\Effect_Umbrella_Pipe.h"
 #include "Effect_Env_Particle.h"
 
-CEffect_Gravity_Umbrella::CEffect_Gravity_Umbrella(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_Umbrella_Pipe::CEffect_Umbrella_Pipe(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
 {
 }
 
-CEffect_Gravity_Umbrella::CEffect_Gravity_Umbrella(const CEffect_Gravity_Umbrella & rhs)
+CEffect_Umbrella_Pipe::CEffect_Umbrella_Pipe(const CEffect_Umbrella_Pipe & rhs)
 	: CInGameEffect_Model(rhs)
 {
 }
 
-HRESULT CEffect_Gravity_Umbrella::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_Umbrella_Pipe::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
 	return S_OK;
 }
 
-HRESULT CEffect_Gravity_Umbrella::NativeConstruct(void * pArg)
+HRESULT CEffect_Umbrella_Pipe::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
 
@@ -29,13 +29,12 @@ HRESULT CEffect_Gravity_Umbrella::NativeConstruct(void * pArg)
 
 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObject_2D_Env_Particle", nullptr, (CGameObject**)&m_pParticle);
 	m_pParticle->Set_InstanceCount(5000);
-	m_pTransformCom->Set_Scale(XMVectorSet(3.05f, 1.65f, 3.05f, 0.f));
 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(63.75f, 72.35f, 196.f, 1.f));
 	return S_OK;
 }
 
-_int CEffect_Gravity_Umbrella::Tick(_double TimeDelta)
+_int CEffect_Umbrella_Pipe::Tick(_double TimeDelta)
 {
 
 	m_fTime += (_float)TimeDelta * 0.1f;
@@ -54,12 +53,15 @@ _int CEffect_Gravity_Umbrella::Tick(_double TimeDelta)
 	return _int();
 }
 
-_int CEffect_Gravity_Umbrella::Late_Tick(_double TimeDelta)
+_int CEffect_Umbrella_Pipe::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 50.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+
+	return NO_EVENT;
 }
 
-HRESULT CEffect_Gravity_Umbrella::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CEffect_Umbrella_Pipe::Render(RENDER_GROUP::Enum eGroup)
 {
 	m_pModelCom->Set_Variable("g_fTime", &m_fTime, sizeof(_float));
 	m_pModelCom->Set_ShaderResourceView("g_ColorRampTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(0));
@@ -70,38 +72,38 @@ HRESULT CEffect_Gravity_Umbrella::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-void CEffect_Gravity_Umbrella::SetUp_WorldMatrix(_fmatrix WorldMatrix)
+void CEffect_Umbrella_Pipe::SetUp_WorldMatrix(_fmatrix WorldMatrix)
 {
 }
 
-HRESULT CEffect_Gravity_Umbrella::Ready_Instance()
+HRESULT CEffect_Umbrella_Pipe::Ready_Instance()
 {
 	return S_OK;
 }
 
-CEffect_Gravity_Umbrella * CEffect_Gravity_Umbrella::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CEffect_Umbrella_Pipe * CEffect_Umbrella_Pipe::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CEffect_Gravity_Umbrella*	pInstance = new CEffect_Gravity_Umbrella(pDevice, pDeviceContext);
+	CEffect_Umbrella_Pipe*	pInstance = new CEffect_Umbrella_Pipe(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CEffect_Gravity_Umbrella");
+		MSG_BOX("Failed to Create Instance - CEffect_Umbrella_Pipe");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CEffect_Gravity_Umbrella::Clone_GameObject(void * pArg)
+CGameObject * CEffect_Umbrella_Pipe::Clone_GameObject(void * pArg)
 {
-	CEffect_Gravity_Umbrella* pInstance = new CEffect_Gravity_Umbrella(*this);
+	CEffect_Umbrella_Pipe* pInstance = new CEffect_Umbrella_Pipe(*this);
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CEffect_Gravity_Umbrella");
+		MSG_BOX("Failed to Clone Instance - CEffect_Umbrella_Pipe");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CEffect_Gravity_Umbrella::Free()
+void CEffect_Umbrella_Pipe::Free()
 {
 	Safe_Release(m_pTexturesCom_Distortion);
 	Safe_Release(m_pTexturesCom_ColorRamp);

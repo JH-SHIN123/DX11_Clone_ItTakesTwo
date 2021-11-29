@@ -29,6 +29,12 @@ public:
 public:
 	HRESULT Ready_Instance();
 
+public:
+	void Set_Activate(_bool IsActivate);
+private:
+	_bool	m_IsActivate	= false; // 배터리와 연관이 있는
+	_double m_dActivateTime	= 0.f;
+
 private:
 	_double m_dAngle = 0.0;
 	_float m_fTime = 0.f;

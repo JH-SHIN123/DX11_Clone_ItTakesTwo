@@ -30,6 +30,9 @@ public:
 	void	Set_ParentMatrix(_fmatrix ParentMatrix);
 
 public:
+	void	Set_ControlTime(_double dControlTime);
+
+public:
 	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0) override;
 	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0) override;
 	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0) override;

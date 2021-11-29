@@ -273,7 +273,7 @@ PS_OUT  PS_DISTORTION_COLOR(PS_IN_DIST In)
 
 	float4 vColorRamp = g_ColorTexture.Sample(ColorSampler, In.vColorRamp_UV);
 	vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV + fWeight);
-	vColor.rgb *= vColorRamp.rgb;
+	vColor *= g_vColor;
 
 	if (0.1f >= vColor.r)
 		discard;
@@ -315,8 +315,8 @@ technique11 DefaultTechnique
 	pass Distortion
 	{
 		SetRasterizerState(Rasterizer_NoCull);
-		SetDepthStencilState(DepthStecil_Default, 0);
-		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN_DIST();
 		GeometryShader = compile gs_5_0 GS_MAIN_DIST();
 		PixelShader = compile ps_5_0 PS_DISTORTION_COLOR();
