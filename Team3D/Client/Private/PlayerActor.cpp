@@ -183,6 +183,8 @@ void CPlayerActor::Step_GravityPath(PxVec3 vNormal)
 	//	iBuffer = 0;
 }
 
+
+
 void CPlayerActor::Reorder_Gravity()
 {
 	if (m_pUserData->eID == GameID::eMAY) return;

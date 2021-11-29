@@ -70,6 +70,8 @@ private:
 	// Arbitrary damping
 	_float m_faDamping = 0.495f;
 
+	_bool m_IsMayCollide = false;
+
 
 
 protected:

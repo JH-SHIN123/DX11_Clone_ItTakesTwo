@@ -15,6 +15,13 @@ void CPlayerHitReport::onShapeHit(const PxControllerShapeHit & hit)
 			m_pPlayerActor->Step_GravityPath(hit.worldNormal);
 		}
 	}
+	else if (GameID::ePLANET == pUserData->eID)
+	{
+		if (hit.triangleIndex != PxU32(-1))
+		{
+			m_pPlayerActor->Set_ContactPos(hit.worldPos);
+		}
+	}
 }
 
 void CPlayerHitReport::onControllerHit(const PxControllersHit & hit)

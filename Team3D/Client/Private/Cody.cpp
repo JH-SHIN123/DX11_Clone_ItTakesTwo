@@ -307,6 +307,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
 #pragma endregion
+
 #pragma region 8Way_Move
 	
 	if (m_IsAirDash == false)

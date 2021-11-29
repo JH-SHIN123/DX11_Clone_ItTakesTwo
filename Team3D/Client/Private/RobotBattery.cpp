@@ -41,9 +41,11 @@ HRESULT CRobotBattery::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(9.f));
 
+	m_UserData = USERDATA(GameID::eROBOTBATTERY, this);
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
 	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 
@@ -52,7 +54,6 @@ HRESULT CRobotBattery::NativeConstruct(void * pArg)
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTransformCom;
 	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.5f);
-	m_UserData = USERDATA(GameID::eROBOTBATTERY, this);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 

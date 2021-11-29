@@ -44,7 +44,6 @@ HRESULT CBigButton::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &StaticDesc), E_FAIL);
 
 	CTriggerActor::ARG_DESC ArgDesc;
-	m_UserData = USERDATA(GameID::eBIGBUTTON, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
 	ArgDesc.pGeometry = new PxSphereGeometry(5.f);

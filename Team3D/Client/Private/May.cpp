@@ -75,7 +75,7 @@ HRESULT CMay::Ready_Component()
 	ArgDesc.fJumpGravity = -50.f;
 
 	ArgDesc.CapsuleControllerDesc.setToDefault();
-	ArgDesc.CapsuleControllerDesc.height = 0.5f;
+	ArgDesc.CapsuleControllerDesc.height = 0.5f; 
 	ArgDesc.CapsuleControllerDesc.radius = 0.5f;
 	ArgDesc.CapsuleControllerDesc.material = m_pGameInstance->Get_BasePxMaterial();
 	ArgDesc.CapsuleControllerDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
@@ -827,6 +827,13 @@ void CMay::Ground_Pound(const _double dTimeDelta)
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 	}
 
+}
+
+void CMay::Add_OffSet_Pos(_fvector vAddOffSet)
+{
+	PxExtendedVec3 ContactPos = m_pActorCom->Get_ContactPos();
+	_vector vPosition = {ContactPos.x, ContactPos.y , ContactPos.z };
+	m_pActorCom->Set_Position(vPosition);
 }
 
 

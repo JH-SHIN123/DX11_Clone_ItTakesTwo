@@ -26,7 +26,7 @@ public: /* Getter */
 	_bool  Get_IsFalling() { return m_IsFalling; }
 	_bool  Get_IsGravityReordered() { return m_isGravityReordered; }
 	_vector Get_GravityPath_RightVector() { return XMLoadFloat3(&m_vGravityPathRight); }
-	
+	PxExtendedVec3 Get_ContactPos() { return m_vContactPosition; }
 
 	PxController* Get_Controller() { return m_pController; }
 	PxRigidDynamic* Get_Actor() { return m_pActor; }
@@ -40,6 +40,7 @@ public: /* Setter */
 	void	Set_IsFalling(_bool IsFalling) { m_IsFalling = IsFalling; }
 	void	Set_Position(_fvector vPosition);
 	void	Set_GravityPath_RightVector(_fvector vRightVector) { XMStoreFloat3(&m_vGravityPathRight, vRightVector);}
+	void	Set_ContactPos(PxExtendedVec3 vPosition) { m_vContactPosition = vPosition; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -74,6 +75,8 @@ private:
 	_bool   m_bStatic = false;
 
 	_float  m_fFallingTime = 0.f;
+
+	PxExtendedVec3 m_vContactPosition = {};
 
 	/* For.Gravity */
 	_bool	m_isGravityReordered = false;

@@ -49,6 +49,7 @@ HRESULT CStarBuddy::NativeConstruct(void * pArg)
 	CStaticActor::ARG_DESC StaticActorDesc;
 	StaticActorDesc.pModel = m_pModelCom;
 	StaticActorDesc.pTransform = m_pTransformCom;
+	StaticActorDesc.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &StaticActorDesc), E_FAIL);
 
 	return S_OK;

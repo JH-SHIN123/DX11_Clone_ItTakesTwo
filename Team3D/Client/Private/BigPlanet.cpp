@@ -144,6 +144,16 @@ void CBigPlanet::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		m_IsCollide = false;
 		UI_Delete(Cody, InputButton_InterActive);
 	}
+
+	// May
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+	{
+		m_IsMayCollide = true;
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	{
+		m_IsMayCollide = false;
+	}
 }
 
 HRESULT CBigPlanet::InterActive_UI()
@@ -207,6 +217,10 @@ void CBigPlanet::Pendulum(_double dTimeDelta)
 {
 	m_fRotateTime += (_float)dTimeDelta;
 	
+	if (m_IsMayCollide == true)
+	{
+		((CMay*)DATABASE->GetMay())->Add_OffSet_Pos(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f));
+	}
 
 	if (m_fRotateTime < 1.f)
 	{
@@ -216,7 +230,7 @@ void CBigPlanet::Pendulum(_double dTimeDelta)
 	else if (m_fRotateTime >= 1.f && m_fRotateTime < 2.2f)
 	{
 		//if(m_fRotateTime >= 1.f && m_fRotateTime < 1.5f)
-			m_fSpeed += (_float)dTimeDelta * 14.5f;
+			m_fSpeed += (_float)dTimeDelta * 14.65f;
 		//else if (m_fRotateTime >= 1.5f && m_fRotateTime < 2.2f)
 		//	m_fSpeed -= dTimeDelta * 5.f;
 		 
@@ -229,6 +243,7 @@ void CBigPlanet::Pendulum(_double dTimeDelta)
 	}
 	else if (m_fRotateTime >= 2.4f)
 	{
+		m_pTriggerCom->Update_TriggerActor();
 		m_pStaticActorCom->Update_StaticActor();
 		m_fSpeed = 20.f;
 		m_fRotateTime = 0.f;

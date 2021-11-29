@@ -39,9 +39,13 @@ HRESULT CRobotLever::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 	// ·Îº¿ OffSet XMVectorSet(15.f, 0.f, 20.f, 1.f));
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-70.f));
+
+
+	m_UserData = USERDATA(GameID::eROBOTLEVER, this);
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
 	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 	
@@ -50,7 +54,6 @@ HRESULT CRobotLever::NativeConstruct(void * pArg)
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTransformCom;
 	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.7f);
-	m_UserData = USERDATA(GameID::eROBOTLEVER, this);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
