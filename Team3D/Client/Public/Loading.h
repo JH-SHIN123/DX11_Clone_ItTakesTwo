@@ -12,8 +12,8 @@ BEGIN(Client)
 */
 #define __MAPLOADING_OFF
 #define __6THREADS
- #define __8THREADS
- #define __16THREADS
+//  #define __8THREADS
+//  #define __16THREADS
 
 #ifdef __THREADCHECK
 #define __threadbreak __debugbreak();

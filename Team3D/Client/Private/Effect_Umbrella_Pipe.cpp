@@ -29,7 +29,6 @@ HRESULT CEffect_Umbrella_Pipe::NativeConstruct(void * pArg)
 
 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObject_2D_Env_Particle", nullptr, (CGameObject**)&m_pParticle);
 	m_pParticle->Set_InstanceCount(5000);
-	m_pTransformCom->Set_Scale(XMVectorSet(3.05f, 1.65f, 3.05f, 0.f));
 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(63.75f, 72.35f, 196.f, 1.f));
 	return S_OK;
