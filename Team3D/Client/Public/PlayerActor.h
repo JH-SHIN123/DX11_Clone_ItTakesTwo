@@ -46,6 +46,7 @@ public:
 	void	Jump_Higher(_float fJumpForce);
 	void	Step_GravityPath(PxVec3 vNormal);
 	void	Reorder_Gravity();
+	void	MoveToTarget(PxTransform PxTransform);
 
 private:
 	PxController*					m_pController = nullptr;

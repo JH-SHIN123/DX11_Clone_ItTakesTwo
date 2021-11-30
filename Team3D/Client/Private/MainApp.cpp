@@ -17,7 +17,6 @@ HRESULT CMainApp::NativeConstruct()
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
 	m_pPxEventCallback = new CPxEventCallback;
-	m_bMouseLock = true;
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Initialize(CGraphic_Device::TYPE_WINMODE, g_hWnd, g_hInst, g_iWinCX, g_iWinCY, &m_pDevice, &m_pDeviceContext, m_pPxEventCallback), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Reserve_Container(Level::LEVEL_END), E_FAIL);
@@ -34,7 +33,7 @@ HRESULT CMainApp::Run_App()
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
-	if (m_bMouseLock)
+	if (g_bWndActivate)
 		Lock_Mouse();
 
 	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
@@ -45,15 +44,11 @@ HRESULT CMainApp::Run_App()
 
 		_double dTimeDelta = m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
 
-		//m_dTimeDelta = dTimeDelta;
-		m_dTimeDelta = 0.016666666666666666;
+		m_dTimeDelta = dTimeDelta;
+		//m_dTimeDelta = 0.016666666666666666;
 
 		if (Tick(m_dTimeDelta) & 0x80000000)
 			return E_FAIL;
-
-		/* Lock_Mouse */
-		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_MB))
-			m_bMouseLock = !m_bMouseLock;
 
 		if (FAILED(Render(dTimeDelta)))
 			return E_FAIL;
@@ -90,7 +85,7 @@ _int CMainApp::Tick(_double dTimeDelta)
 {
 	NULL_CHECK_RETURN(m_pGameInstance, EVENT_ERROR);
 
-	return m_pGameInstance->Tick(dTimeDelta);
+	return m_pGameInstance->Tick(dTimeDelta, g_bWndActivate);
 }
 
 HRESULT CMainApp::Render(_double dTimeDelta)
