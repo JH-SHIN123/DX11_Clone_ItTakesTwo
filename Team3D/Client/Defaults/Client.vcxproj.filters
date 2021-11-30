@@ -409,6 +409,30 @@
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall">
       <UniqueIdentifier>{fe876da6-8259-4e3e-90d8-354a88c44141}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious">
+      <UniqueIdentifier>{2f43f579-02a4-4fed-ae3b-0ad23196e3d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction">
+      <UniqueIdentifier>{02d25f90-5a3d-4109-a65a-6252881bda16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction">
+      <UniqueIdentifier>{e2598d72-4016-4d6b-b7b8-9dda05344391}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotHead">
+      <UniqueIdentifier>{195a53e8-d60a-4b6a-acc2-e528f877d4bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotBody">
+      <UniqueIdentifier>{42706a67-5aea-4846-b91e-9da6e6697ac1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtNoBatterySign">
+      <UniqueIdentifier>{91b92e36-fb30-4bfb-9fcb-fa81f079a00c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtRobotBattery">
+      <UniqueIdentifier>{a9f8b886-803b-4d67-94cf-2d458546f1f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtRobotLever">
+      <UniqueIdentifier>{64304ba0-f4f3-4e64-9840-af570edea2fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -735,6 +759,24 @@
     <ClInclude Include="..\Public\DummyWall.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RotatedRobotParts.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotatedRobotLever.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtRobotLever</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotatedNoBatterySign.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtNoBatterySign</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotatedRobotBattery.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtRobotBattery</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotatedRobotBody.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotBody</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotatedRobotHead.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotHead</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1033,6 +1075,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\DummyWall.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotatedRobotParts.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotatedRobotLever.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtRobotLever</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotatedNoBatterySign.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtNoBatterySign</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotatedRobotBattery.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtRobotBattery</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotatedRobotBody.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotatedRobotHead.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotHead</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

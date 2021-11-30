@@ -267,6 +267,12 @@
     <ClInclude Include="..\Public\RobotLever.h" />
     <ClInclude Include="..\Public\RobotParts.h" />
     <ClInclude Include="..\Public\Rocket.h" />
+    <ClInclude Include="..\Public\RotatedNoBatterySign.h" />
+    <ClInclude Include="..\Public\RotatedRobotBattery.h" />
+    <ClInclude Include="..\Public\RotatedRobotBody.h" />
+    <ClInclude Include="..\Public\RotatedRobotHead.h" />
+    <ClInclude Include="..\Public\RotatedRobotLever.h" />
+    <ClInclude Include="..\Public\RotatedRobotParts.h" />
     <ClInclude Include="..\Public\SavePoint.h" />
     <ClInclude Include="..\Public\SecurityCamera.h" />
     <ClInclude Include="..\Public\SecurityCameraHandle.h" />
@@ -370,6 +376,12 @@
     <ClCompile Include="..\Private\RobotLever.cpp" />
     <ClCompile Include="..\Private\RobotParts.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
+    <ClCompile Include="..\Private\RotatedNoBatterySign.cpp" />
+    <ClCompile Include="..\Private\RotatedRobotBattery.cpp" />
+    <ClCompile Include="..\Private\RotatedRobotBody.cpp" />
+    <ClCompile Include="..\Private\RotatedRobotHead.cpp" />
+    <ClCompile Include="..\Private\RotatedRobotLever.cpp" />
+    <ClCompile Include="..\Private\RotatedRobotParts.cpp" />
     <ClCompile Include="..\Private\SavePoint.cpp" />
     <ClCompile Include="..\Private\SecurityCamera.cpp" />
     <ClCompile Include="..\Private\SecurityCameraHandle.cpp" />
