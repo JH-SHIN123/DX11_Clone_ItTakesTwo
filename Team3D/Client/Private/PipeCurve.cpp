@@ -38,9 +38,11 @@ HRESULT CPipeCurve::NativeConstruct(void * pArg)
 		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
 	}
 
+	m_UserData = USERDATA(GameID::ePIPECURVE, this);
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
 	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 
@@ -60,9 +62,6 @@ _int CPipeCurve::Tick(_double dTimeDelta)
 
 		if (fRotateMaxAngle <= m_fAngleIncreaseLimit)
 		{
-			if (1 == m_iOption)
-				int i = 0;
-
 			_float fAngleDifference = m_fAngleIncreaseLimit - fRotateMaxAngle;
 			m_fAngle -= fAngleDifference;
 			m_IsRotate = false;

@@ -14,6 +14,7 @@ public:
 public:
 	HRESULT	NativeConstruct();
 	HRESULT Run_App();
+	void	Lock_Mouse();
 
 private:
 	CGameInstance*			m_pGameInstance		= nullptr;
@@ -23,6 +24,7 @@ private:
 	/* For.Timer */
 	_double					m_dFrameAcc			= 0.0; /* 1프레임시간 누적 */
 	_double					m_dTimeDelta		= 0.0;
+	class CPxEventCallback* m_pPxEventCallback  = nullptr;
 private:
 	_int	Tick(_double dTimeDelta);
 	HRESULT	Render(_double dTimeDelta);

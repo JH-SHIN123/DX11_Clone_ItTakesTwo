@@ -5,6 +5,11 @@ namespace Level
 	enum ID { LEVEL_STATIC, LEVEL_STAGE, LEVEL_LOGO, LEVEL_END };
 }
 
+namespace Stage
+{
+	enum Stage { GravityPath, HitPlanet, ShootPinBall };
+}
+
 namespace Player
 {
 	enum ID { Cody, May, Default, PLAYER_END };

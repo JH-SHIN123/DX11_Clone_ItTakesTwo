@@ -23,7 +23,6 @@ public:
 	virtual void Free() override;
 };
 
-
 END
 
 #define __VIBUFFER_RECT_TRIPLEUV_H__

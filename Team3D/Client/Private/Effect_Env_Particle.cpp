@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Env_Particle.h"
-#include "GameInstance.h"
 
 CEffect_Env_Particle::CEffect_Env_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -46,13 +45,15 @@ _int CEffect_Env_Particle::Late_Tick(_double TimeDelta)
 	if (0.0 == m_dControl_Time)
 		return NO_EVENT;
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Env_Particle::Render(RENDER_GROUP::Enum eGroup)
 {
+	_float fAlpha = (_float)m_dControl_Time;
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
+	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fAlpha, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(0));
@@ -85,6 +86,14 @@ void CEffect_Env_Particle::Set_IsActivateParticles(_bool IsActivate)
 void CEffect_Env_Particle::Set_ParentMatrix(_fmatrix ParentMatrix)
 {
 	m_pTransformCom->Set_WorldMatrix(ParentMatrix);
+}
+
+void CEffect_Env_Particle::Set_ControlTime(_double dControlTime)
+{
+	if (0.0 >= dControlTime)
+		dControlTime = 0.0;
+
+	m_dControl_Time = dControlTime;
 }
 
 void CEffect_Env_Particle::Check_State(_double TimeDelta)

@@ -1,6 +1,5 @@
+#include "stdafx.h"
 #include "..\Public\PxEventCallback.h"
-#include "PxSimulationEventCallback.h"
-#include "GameObject.h"
 
 void CPxEventCallback::onConstraintBreak(PxConstraintInfo * constraints, PxU32 count)
 {

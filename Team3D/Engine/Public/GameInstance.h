@@ -14,6 +14,7 @@
 #include "Timer_Manager.h"
 #include "Shadow_Manager.h"
 #include "PostFX.h"
+#include "Blur.h"
 
 BEGIN(Engine)
 
@@ -26,9 +27,9 @@ private:
 
 public:
 #pragma region GameInstance
-	HRESULT	Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, HINSTANCE hInst, _uint iWinSizeX, _uint iWinSizeY, ID3D11Device** ppDevice = nullptr, ID3D11DeviceContext** ppDeviceContext = nullptr);
+	HRESULT	Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, HINSTANCE hInst, _uint iWinSizeX, _uint iWinSizeY, ID3D11Device** ppDevice = nullptr, ID3D11DeviceContext** ppDeviceContext = nullptr, PxSimulationEventCallback* pEventCallback = nullptr);
 	HRESULT	Reserve_Container(_uint iLevelCount);
-	_int	Tick(_double dTimeDelta);
+	_int	Tick(_double dTimeDelta, _bool bWndActivate);
 	void	Clear_LevelResources(_uint iLevelIndex);
 	void	Clear_LayerResources(_uint iLevelIndex, const _tchar* pLayerTag);
 #pragma endregion
@@ -133,6 +134,7 @@ private:
 	CPipeline*				m_pPipeline				= nullptr;
 	CFrustum*				m_pFrustum				= nullptr;
 	CPostFX*				m_pPostFX				= nullptr;
+	CBlur*					m_pBlur					= nullptr;
 
 public:
 	static void Release_Engine();

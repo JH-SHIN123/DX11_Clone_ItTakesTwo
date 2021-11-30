@@ -124,9 +124,9 @@ HRESULT CInGameEffect::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
 	if (true == m_IsResourceName[RESOURCE_TEXTURE])
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName, TEXT("Com_Textrue"), (CComponent**)&m_pTexturesCom), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName, TEXT("Com_Texture"), (CComponent**)&m_pTexturesCom), E_FAIL);
 	if (true == m_IsResourceName[RESOURCE_TEXTURE_SECOND])
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName_Second, TEXT("Com_Textrue_Second"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName_Second, TEXT("Com_Texture_Second"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
 
 	if (true == m_IsResourceName[RESOURCE_MESH])
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
@@ -135,12 +135,6 @@ HRESULT CInGameEffect::Ready_Component(void * pArg)
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom), E_FAIL);
 
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
-
-	for (_int i = 0; i < 3; ++i)
-		XMVector3Normalize(WolrdMatrix.r[i]);
-
-
-
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 
 	return S_OK;
@@ -293,6 +287,40 @@ _float4 CInGameEffect::Check_UV(_double TimeDelta, _int iIndex, _bool IsLoop)
 
 		vUV = { fLeft, fTop, fRight, fBottom };
 	}
+
+	return vUV;
+}
+
+_float4 CInGameEffect::Check_UV(_int iTextureMax_U, _int iTextureMax_V, _int* pTextureNow_U, _int* pTextureNow_V, _bool IsLoop)
+{
+	_float4 vUV;
+
+	if (false == IsLoop)
+	{
+		if (*pTextureNow_U == iTextureMax_V - 1)
+		{
+			if (*pTextureNow_U == iTextureMax_U - 1)
+				return vUV = { 1.f, 1.f, 1.f, 1.f };
+		}
+	}
+
+	if (*pTextureNow_U >= iTextureMax_U - 1)
+	{
+		*pTextureNow_U = 0;
+		++*pTextureNow_V;
+	}
+	else
+		++*pTextureNow_U;
+
+	if (*pTextureNow_V >= iTextureMax_V)
+		*pTextureNow_V = 0;
+
+	_float fLeft	= (1.f / iTextureMax_U) *  *pTextureNow_U;
+	_float fTop		= (1.f / iTextureMax_V) *  *pTextureNow_V;
+	_float fRight	= (1.f / iTextureMax_U) * (*pTextureNow_U + 1);
+	_float fBottom	= (1.f / iTextureMax_V) * (*pTextureNow_V + 1);
+
+	vUV = { fLeft, fTop, fRight, fBottom };	
 
 	return vUV;
 }
@@ -454,6 +482,23 @@ void CInGameEffect::SetUp_Shader_Data()
 	}
 
 	return;
+}
+
+_float4 CInGameEffect::Get_TexUV(_uint iTexture_U, _uint iTexture_V, _bool IsInitialize)
+{
+	_float4	vUV;
+	if (true == IsInitialize)
+		vUV	= { 0.f, 0.f, _float(1.f / iTexture_U), _float(1.f / iTexture_V) };
+	else
+	{
+		_float fLeft	= _float(1.f / iTexture_U) *  iTexture_U;
+		_float fTop		= _float(1.f / iTexture_V) *  iTexture_V;
+		_float fRight	= _float(1.f / iTexture_U) * (iTexture_U + 1.f);
+		_float fBottom	= _float(1.f / iTexture_V) * (iTexture_V + 1.f);
+
+		vUV = { fLeft, fTop, fRight, fBottom };
+	}
+	return vUV;
 }
 
 _float4 CInGameEffect::Get_TexUV_Rand(_uint iTexture_U, _uint iTexture_V)

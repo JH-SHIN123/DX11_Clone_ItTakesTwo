@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Player_Dead_Particle.h"
-#include "GameInstance.h"
 
 CEffect_Player_Dead_Particle::CEffect_Player_Dead_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -34,13 +33,11 @@ HRESULT CEffect_Player_Dead_Particle::NativeConstruct(void * pArg)
 	else if (EFFECT_DESC_CLONE::PV_CODY_L == m_EffectDesc_Clone.iPlayerValue)
 		m_EffectDesc_Prototype.iInstanceCount = 5000;
 
-	m_EffectDesc_Clone.UVTime = 0.01;
-	m_EffectDesc_Clone.vRandDirPower = { 10.f,10.f,10.f };
 
 	Ready_Instance();
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Dead_Cells"), TEXT("Com_Textrue_Particle"), (CComponent**)&m_pTexturesCom_Particle), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Circle_Alpha"), TEXT("Com_Textrue_Particle_Mask"), (CComponent**)&m_pTexturesCom_Particle_Mask), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Dead_Cells"), TEXT("Com_Texture_Particle"), (CComponent**)&m_pTexturesCom_Particle), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Circle_Alpha"), TEXT("Com_Texture_Particle_Mask"), (CComponent**)&m_pTexturesCom_Particle_Mask), E_FAIL);
 
 	return S_OK;
 }
@@ -68,7 +65,7 @@ _int CEffect_Player_Dead_Particle::Late_Tick(_double TimeDelta)
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Player_Dead_Particle::Render(RENDER_GROUP::Enum eGroup)
@@ -188,7 +185,6 @@ HRESULT CEffect_Player_Dead_Particle::Ready_Instance()
 
 		Set_VtxColor(i, iRandVtx);
 	}
-
 
 	Safe_Release(m_pTargetModel);
 

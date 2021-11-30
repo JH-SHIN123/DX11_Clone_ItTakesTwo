@@ -8,6 +8,7 @@
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
+bool		g_bWndActivate;
 HWND		g_hWnd;
 HINSTANCE	g_hInst;                            // 현재 인스턴스입니다.
 WCHAR		szTitle[MAX_LOADSTRING];            // 제목 표시줄 텍스트입니다.
@@ -45,6 +46,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     }
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
+
+	g_bWndActivate = true;
 
 	CMainApp* pMainApp = CMainApp::Create();
 	NULL_CHECK_RETURN(pMainApp, FALSE);
@@ -155,7 +158,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
-    default:
+	case WM_ACTIVATE:
+		if (wParam > 0)
+			g_bWndActivate = true;
+		else
+			g_bWndActivate = false;
+		break;
+	default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;

@@ -13,6 +13,7 @@ protected:
 
 public: /* Getter */
 	virtual _fvector Get_Position();
+	_fmatrix Get_WorldMatrix();
 
 protected:
 	_float Compute_Distance(CTransform* pPlayerTransform, CTransform* pDstTransform);
@@ -29,7 +30,6 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 public:
 	virtual HRESULT Render_ShadowDepth() override;
-
 
 protected: /* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;

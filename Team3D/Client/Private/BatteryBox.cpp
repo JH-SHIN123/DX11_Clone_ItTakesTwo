@@ -35,9 +35,12 @@ HRESULT CBatteryBox::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoom_Battery(TEXT("Layer_ControlRoom_Battery")), E_FAIL);
 	
+	m_UserData = USERDATA(GameID::eBATTERYBOX, this);
+
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
 	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 

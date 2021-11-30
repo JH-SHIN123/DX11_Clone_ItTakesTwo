@@ -45,16 +45,17 @@ public: /* Getter */
 	* 현재 모델의 Vertex 정보들을 가져온다.
 	* 애니메이션이 없는 모델만 해당.
 	*/
-	VTXMESH*					Get_Vertices() { return m_pVertices; }
-	const _uint					Get_VertexCount() { return m_iVertexCount; }
-	_fmatrix					Get_BoneMatrix(const char* pBoneName) const;
-	const _uint					Get_CurAnimIndex() const { return m_iCurAnimIndex; }
+	VTXMESH*	Get_Vertices() { return m_pVertices; }
+	const _uint	Get_VertexCount() { return m_iVertexCount; }
+	_fmatrix	Get_BoneMatrix(const char* pBoneName) const;
+	const _uint	Get_CurAnimIndex() const { return m_iCurAnimIndex; }
+	const _uint	Get_MeshCount() const { return m_iMeshCount; }
 	/**
 	* Get_ProgressAnim
 	* 현재 애니메이션 진행률
 	* 0.f ~ 1.f
 	*/
-	const _float				Get_ProgressAnim() const { return m_fProgressAnim; }
+	const _float Get_ProgressAnim() const { return m_fProgressAnim; }
 	/**
 	* Is_AnimFinished
 	* 특정 애니메이션이 종료되었는지 확인.

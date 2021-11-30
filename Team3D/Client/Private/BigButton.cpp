@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "..\public\BigButton.h"
-#include "GameInstance.h"
 #include "UI_Generator.h"
 #include "Cody.h"
 #include "May.h"
+#include "RobotParts.h"
 
 CBigButton::CBigButton(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -30,7 +30,10 @@ HRESULT CBigButton::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_BigButton"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 0.f, 5.f, 1.f));
+	ROBOTDESC BigButtonDesc;
+	if (nullptr != pArg)
+		memcpy(&BigButtonDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, BigButtonDesc.vPosition);
 
 	CStaticActor::ARG_DESC StaticDesc;
 	m_UserData = USERDATA(GameID::eBIGBUTTON, this);
@@ -41,7 +44,6 @@ HRESULT CBigButton::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &StaticDesc), E_FAIL);
 
 	CTriggerActor::ARG_DESC ArgDesc;
-	m_UserData = USERDATA(GameID::eBIGBUTTON, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
 	ArgDesc.pGeometry = new PxSphereGeometry(5.f);
@@ -60,10 +62,10 @@ _int CBigButton::Tick(_double dTimeDelta)
 
 		if (m_bPressed == true)
 		{
-			if (m_fMoveDist < 0.5f)
+			if (m_fMoveDist < 0.6f)
 			{
 				m_fMoveDist += (_float)dTimeDelta;
-				m_pTransformCom->Go_Down(dTimeDelta * 0.2f);
+				m_pTransformCom->Go_Down(dTimeDelta * 0.4f);
 			}
 			if (m_fMoveDist >= 0.5f)
 			{

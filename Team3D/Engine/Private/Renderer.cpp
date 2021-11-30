@@ -7,6 +7,7 @@
 #include "Shadow_Manager.h"
 #include "Input_Device.h"
 #include "PostFX.h"
+#include "Blur.h"
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)
@@ -117,6 +118,7 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
 	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
+	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
 #ifdef _DEBUG
@@ -181,6 +183,20 @@ HRESULT CRenderer::Render_Alpha()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_Effect()
+{
+	Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_EFFECT]);
+
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_EFFECT])
+	{
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_EFFECT), E_FAIL);
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[RENDER_GROUP::RENDER_EFFECT].clear();
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Render_UI()
 {
 	Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_UI]);
@@ -238,12 +254,17 @@ HRESULT CRenderer::Render_Blend()
 {
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
 
+	CBlur* pBlur = CBlur::GetInstance();
+	FAILED_CHECK_RETURN(pBlur->Blur_Emissive(), E_FAIL);
+
 	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX"), false);
 	m_pVIBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Diffuse")));
 	m_pVIBuffer->Set_ShaderResourceView("g_ShadeTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Shade")));
 	m_pVIBuffer->Set_ShaderResourceView("g_SpecularTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Specular")));
-	m_pVIBuffer->Set_ShaderResourceView("g_EmissiveTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Emissive")));
 	m_pVIBuffer->Set_ShaderResourceView("g_ShadowTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Shadow")));
+	
+	m_pVIBuffer->Set_ShaderResourceView("g_EmissiveTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Emissive")));
+	m_pVIBuffer->Set_ShaderResourceView("g_EmissiveBlurTexture", pBlur->Get_ShaderResourceView_BlurEmissive());
 
 	m_pVIBuffer->Render(0);
 	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_PostFX"));

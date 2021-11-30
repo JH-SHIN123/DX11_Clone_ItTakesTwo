@@ -28,7 +28,7 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 
 	CPlayerActor::ARG_DESC ArgDesc;
 
-	m_UserData = USERDATA(GameID::eCAMERA, this);
+	m_UserData = USERDATA(GameID::eMAINCAMERA, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
 	ArgDesc.fJumpGravity = 0.f;
@@ -45,17 +45,15 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	ArgDesc.CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
 	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_PlayerActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
-	//m_pActorCom->Set_Scale(m_fCamRadius, 0.f);
-	
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom,&ArgDesc), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
 
 	
 	XMStoreFloat4x4(&m_matPreRev, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_matQuternionRev, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
-
-	m_eCurCamMode = CamMode::Cam_AutoToFree;
+	m_eCurCamMode = CamMode::Cam_Free;
 	
 
 	//CameraDesc.vEye = /*_float3(0.f, 8.f, -7.f);*/_float3(0.f, 8.f, -11.f);
@@ -73,13 +71,19 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 
 _int CMainCamera::Tick(_double dTimeDelta)
 {
-
-	if (m_pTargetObj == nullptr)
+	if (false == m_bStart)
 	{
 		m_pTargetObj = CDataStorage::GetInstance()->GetCody();
 		if (m_pTargetObj)
+		{
+			XMStoreFloat3(&m_vPlayerPos, static_cast<CCody*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 			Safe_AddRef(m_pTargetObj);
+		}
+		else
+			return EVENT_ERROR;
+		m_bStart = true;
 	}
+
 
 	if (nullptr == m_pCamHelper)
 		return EVENT_ERROR;
@@ -156,19 +160,22 @@ CGameObject * CMainCamera::Clone_GameObject(void * pArg)
 
 void CMainCamera::Free()
 {
+
+
 	Safe_Release(m_pTargetObj);
 	Safe_Release(m_pCamHelper);
 	Safe_Release(m_pActorCom);
-	Safe_Release(m_pSubActorCom);
+
 
 	CCamera::Free();
+
 }
 
 void CMainCamera::Check_Player(_double dTimeDelta)
 {
 	if (nullptr == m_pTargetObj)
 		return;
-	CCody* pTargetPlayer = dynamic_cast<CCody*>(m_pTargetObj);
+	CCody* pTargetPlayer = static_cast<CCody*>(m_pTargetObj);
 
 	m_eCurPlayerSize = pTargetPlayer->Get_Player_Size();
 
@@ -192,7 +199,19 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 		m_fChangeCamModeTime = 0.f;
 		m_fChangeCamModeLerpSpeed = 10.f;
 	}
+	//For.May
+	_vector vPlayerUp = XMVector4Normalize(pTargetPlayer->Get_Transform()->Get_State(CTransform::STATE_UP));
+	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_float fTheta = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
+
 	
+}
+
+HRESULT CMainCamera::Start_Film(const _tchar * pFilmTag)
+{
+	m_pCamHelper->Start_Film(pFilmTag, CFilm::LScreen);
+
+	return S_OK;
 }
 
 _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
@@ -268,16 +287,20 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	matWorld *= XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_matPreRev));
 	m_pTransformCom->Set_WorldMatrix(matWorld);
 
-	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
 	//마우스 체크
 	_long MouseMove = 0;
 
+	//이전 회전값
+	
 	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
 	{
 		m_fMouseRev[Rev_Holizontal] += (_float)(MouseMove * dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal]);
 		if (m_fMouseRev[Rev_Holizontal] > 360.f || m_fMouseRev[Rev_Holizontal] < -360.f)
+		{
 			m_fMouseRev[Rev_Holizontal] = 0.f;
+			m_fCurMouseRev[Rev_Holizontal] = 0.f;
+		}
 	}
 	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
 	{
@@ -289,6 +312,8 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 		else if (m_fMouseRev[Rev_Prependicul] < -90.f)
 			m_fMouseRev[Rev_Prependicul] = -90.f;
 	}
+	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 14.f;
+	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 14.f;
 
 
 	//카메라 회전에 따른 거리체크
@@ -319,28 +344,42 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 	//카메라 움직임이 끝나고 체크할것들
 
-	_matrix matRevX = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(m_fMouseRev[Rev_Prependicul]));
-	_matrix matRevY = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fMouseRev[Rev_Holizontal]));
+	//SoftMoving
+	_vector vPrePlayerPos = XMVectorSetW(XMLoadFloat3(&m_vPlayerPos),1.f);
+	_vector vCurPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	//카메라와 플레이어의 실제 거리
+	_vector vPlayerPos = vCurPlayerPos;
+	if (XMVectorGetX(XMVector4Length(vPrePlayerPos - vCurPlayerPos)) < 10.f) //순간이동안했을때
+	vPlayerPos = XMVectorLerp(vPrePlayerPos, vCurPlayerPos, XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 2.f);
+		XMStoreFloat3(&m_vPlayerPos, vPlayerPos);
+	
+	//회전 보간
+	_vector vPreQuarternionRot = XMQuaternionRotationRollPitchYaw(
+		XMConvertToRadians(m_fCurMouseRev[Rev_Prependicul]), XMConvertToRadians(m_fCurMouseRev[Rev_Holizontal]),0.f);
+	_vector vCurQuarternionRot = XMQuaternionRotationRollPitchYaw(
+		XMConvertToRadians(m_fMouseRev[Rev_Prependicul]), XMConvertToRadians(m_fMouseRev[Rev_Holizontal]),0.f);
+
+	_matrix QuarRev = XMMatrixRotationQuaternion(
+		XMQuaternionSlerp(vPreQuarternionRot,vCurQuarternionRot,
+		(_float)dTimeDelta * XMVectorGetX(XMVector4Length(vPreQuarternionRot - vCurQuarternionRot))));
+
+	
 	_matrix matTrans = XMMatrixTranslation(XMVectorGetX(vPlayerPos), XMVectorGetY(vPlayerPos), XMVectorGetZ(vPlayerPos));
-	matRev = matRevX * matRevY* matTrans;
+
+
+	matRev = QuarRev * matTrans;
+
 
 
 #pragma region PhsyX Check
 	//_vector vResultPos = XMVectorZero();
-	//m_bPhsXCollision = OffSetPhsX(dTimeDelta, matRev , &vResultPos); //로컬에서 공전후에 충돌검사함
-	//if (true == m_bPhsXCollision)
+	//if (OffSetPhsX(dTimeDelta, matRev, &vResultPos))
 	//{
 	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
 	//	//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vResultPos), XMVectorGetY(vResultPos), XMVectorGetZ(vResultPos)));
 	//}
-	//else
-	//	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matBeginWorld));
 #pragma endregion
 	//Key_Check(dTimeDelta);
-
-	//CamEffect
-
-
 	XMStoreFloat4x4(&m_matPreRev, matRev);
 
 	m_pTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix() * matRev);
@@ -364,88 +403,90 @@ _int CMainCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 
 void CMainCamera::ChangeViewPort()
 {
-	CFilm::CamNode tDesc;
-	tDesc.fTargetViewPortCenterX = 0.5f;
-	tDesc.fTargetViewPortCenterY = 1.f;
-	tDesc.fViewPortLerpSpeed = 1.f;
-	//case ViewPortOption::LScreen_Split_Immediate:
-	if (m_pGameInstance->Key_Down(DIK_1))
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
-			XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f));
 
-	////case ViewPortOption::LScreen_Split_Lerp:
-	if (m_pGameInstance->Key_Down(DIK_2))
-	{
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
-			XMVectorSet(0.f, 0.f, 1.f, 1.f));
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
-			XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f), tDesc.fViewPortLerpSpeed);
-	}
+	//CFilm::CamNode tDesc;
+	//tDesc.fTargetViewPortCenterX = 0.5f;
+	//tDesc.fTargetViewPortCenterY = 1.f;
+	//tDesc.fViewPortLerpSpeed = 1.f;
 
-	////case ViewPortOption::LScreen_Merge_Immediate:
-	if (m_pGameInstance->Key_Down(DIK_3))
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
-			XMVectorSet(0.f, 0.f, 1.f, 1.f));
+	////case ViewPortOption::LScreen_Split_Immediate:
+	//if (m_pGameInstance->Key_Down(DIK_1))
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
+	//		XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f));
 
-	////case ViewPortOption::LScreen_Merge_Lerp:
-	if (m_pGameInstance->Key_Down(DIK_4))
-	{
+	//////case ViewPortOption::LScreen_Split_Lerp:
+	//if (m_pGameInstance->Key_Down(DIK_2))
+	//{
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
+	//		XMVectorSet(0.f, 0.f, 1.f, 1.f));
+	//	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
+	//		XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f), tDesc.fViewPortLerpSpeed);
+	//}
 
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
-			XMVectorSet(0.f, 0.f, 1.f, 1.f), tDesc.fViewPortLerpSpeed);
-	}
+	//////case ViewPortOption::LScreen_Merge_Immediate:
+	//if (m_pGameInstance->Key_Down(DIK_3))
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
+	//		XMVectorSet(0.f, 0.f, 1.f, 1.f));
 
-	////case ViewPortOption::RScreen_Split_Immediate:
-	if (m_pGameInstance->Key_Down(DIK_5))
-	{
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
-			XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f));
-	}
+	//////case ViewPortOption::LScreen_Merge_Lerp:
+	//if (m_pGameInstance->Key_Down(DIK_4))
+	//{
 
-	////case ViewPortOption::RScreen_Split_Lerp:
-	if (m_pGameInstance->Key_Down(DIK_6))
-	{
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
-			XMVectorSet(1.f, 0.f, 1.f, 1.f));
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f),
-			XMVectorSet(0.5, 0.f, 0.5f, 1.f), tDesc.fViewPortLerpSpeed);
-	}
+	//	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
+	//		XMVectorSet(0.f, 0.f, 1.f, 1.f), tDesc.fViewPortLerpSpeed);
+	//}
 
-	////case ViewPortOption::RScreen_Merge_Immediate:
-	if (m_pGameInstance->Key_Down(DIK_7))
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
-			XMVectorSet(1.f, 0.f, 1.f, 1.f));
+	//////case ViewPortOption::RScreen_Split_Immediate:
+	//if (m_pGameInstance->Key_Down(DIK_5))
+	//{
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
+	//		XMVectorSet(tDesc.fTargetViewPortCenterX, 0.f, tDesc.fTargetViewPortCenterX, 1.f));
+	//}
 
-	////case ViewPortOption::RScreen_Merge_Lerp:
-	if (m_pGameInstance->Key_Down(DIK_8))
-	{
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
-				XMVectorSet(1.f, 0.f, 1.f, 1.f), tDesc.fViewPortLerpSpeed);
+	//////case ViewPortOption::RScreen_Split_Lerp:
+	//if (m_pGameInstance->Key_Down(DIK_6))
+	//{
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
+	//		XMVectorSet(1.f, 0.f, 1.f, 1.f));
+	//	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f),
+	//		XMVectorSet(0.5, 0.f, 0.5f, 1.f), tDesc.fViewPortLerpSpeed);
+	//}
 
-	}
+	//////case ViewPortOption::RScreen_Merge_Immediate:
+	//if (m_pGameInstance->Key_Down(DIK_7))
+	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
+	//		XMVectorSet(1.f, 0.f, 1.f, 1.f));
+
+	//////case ViewPortOption::RScreen_Merge_Lerp:
+	//if (m_pGameInstance->Key_Down(DIK_8))
+	//{
+	//	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
+	//			XMVectorSet(1.f, 0.f, 1.f, 1.f), tDesc.fViewPortLerpSpeed);
+
+	//}
 }
 
 void CMainCamera::KeyCheck(_double dTimeDelta)
 {
-	if (m_pGameInstance->Key_Pressing(DIK_W))
-	{
-		m_pTransformCom->Go_Straight(dTimeDelta);
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_A))
-	{
-		m_pTransformCom->Go_Left(dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_W))
+	//{
+	//	m_pTransformCom->Go_Straight(dTimeDelta);
+	//}
+	//if (m_pGameInstance->Key_Pressing(DIK_A))
+	//{
+	//	m_pTransformCom->Go_Left(dTimeDelta);
 
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_S))
-	{
-		m_pTransformCom->Go_Backward(dTimeDelta);
+	//}
+	//if (m_pGameInstance->Key_Pressing(DIK_S))
+	//{
+	//	m_pTransformCom->Go_Backward(dTimeDelta);
 
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_D))
-	{
-		m_pTransformCom->Go_Right(dTimeDelta);
+	//}
+	//if (m_pGameInstance->Key_Pressing(DIK_D))
+	//{
+	//	m_pTransformCom->Go_Right(dTimeDelta);
 
-	}
+	//}
 	_long MouseMove = 0;
 	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
 	{
@@ -465,63 +506,66 @@ _int CMainCamera::ReSet_Cam_FreeToAuto()
 	XMStoreFloat4x4(&m_matPreRev,XMMatrixIdentity());
 	m_fChangeCamModeLerpSpeed = 6.f;
 	m_fChangeCamModeTime = 0.f;
-	m_fMouseRev[Rev_Holizontal] = 0.f;
-	m_fMouseRev[Rev_Prependicul] = 0.f;
-
+	for (_uint i = 0; i < Rev_End; i++)
+	{
+		m_fMouseRev[i] = 0.f;
+		m_fCurMouseRev[i] = 0.f;
+	}
+	
 	return NO_EVENT;
 }
 
 _bool CMainCamera::OffSetPhsX(_double dTimeDelta, _fmatrix matRev,_vector * pOut)
 {
 	//카메라 공전 전의 월드
-	_matrix matWorld =	XMLoadFloat4x4(&m_matBeginWorld);
-	matWorld *= matRev; //현재 월드
-	_vector vPos = matWorld.r[3];
+	//_matrix matWorld =	XMLoadFloat4x4(&m_matBeginWorld);
+	//matWorld *= matRev; //현재 월드
+	//_vector vPos = matWorld.r[3];
 
-	PxMat44 matPhsX = PxMat44(m_pActorCom->Get_Actor()->getGlobalPose());
-	_vector vPhsXPos = XMVectorSet(matPhsX.column3.x, matPhsX.column3.y, matPhsX.column3.z, 1.f);
-	//공전 시킨후 카메라쪽으로 피직스 움직임.
+	//PxMat44 matPhsX = PxMat44(m_pActorCom->Get_Actor()->getGlobalPose());
+	//_vector vPhsXPos = XMVectorSet(matPhsX.column3.x, matPhsX.column3.y, matPhsX.column3.z, 1.f);
+	////공전 시킨후 카메라쪽으로 피직스 움직임.
 
-	_vector vDir = vPos - vPhsXPos;
-	
-	PxControllerCollisionFlags eCollisionFlag = m_pActorCom->Get_Controller()->move(MH_PxVec3(vDir), 0.f, PxF32(dTimeDelta), PxControllerFilters());
-	if (eCollisionFlag & PxControllerCollisionFlag::eCOLLISION_DOWN ||
-		eCollisionFlag & PxControllerCollisionFlag::eCOLLISION_UP||
-		eCollisionFlag & PxControllerCollisionFlag::eCOLLISION_SIDES) // MainPhsX -> Cam if Collision
-	{
-		_vector vPlayerPos = dynamic_cast<CCody*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-		//m_pSubActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPlayerPos), XMVectorGetX(vPlayerPos), XMVectorGetX(vPlayerPos), ))
+	//_vector vDir = vPos - vPhsXPos;
+	//
+	//PxControllerCollisionFlags eCollisionFlag = m_pActorCom->Get_Controller()->move(MH_PxVec3(vDir), 0.f, PxF32(dTimeDelta), PxControllerFilters());
+	//if (eCollisionFlag & PxControllerCollisionFlag::eCOLLISION_DOWN ||
+	//	eCollisionFlag & PxControllerCollisionFlag::eCOLLISION_UP||
+	//	eCollisionFlag & PxControllerCollisionFlag::eCOLLISION_SIDES) // MainPhsX -> Cam if Collision
+	//{
+	//	_vector vPlayerPos = dynamic_cast<CCody*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	//	//m_pSubActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPlayerPos), XMVectorGetX(vPlayerPos), XMVectorGetX(vPlayerPos), ))
 
-		//if (nullptr == m_pTargetObj)
-		//	return false;
-		//_vector vPlayerPos = dynamic_cast<CCody*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-		//switch (m_eCurPlayerSize)
-		//{
-		//case Client::CCody::SIZE_SMALL: vPlayerPos = XMVectorSetY(vPlayerPos, XMVectorGetY(vPlayerPos) + 1.f);
-		//	break;
-		//case Client::CCody::SIZE_MEDIUM: vPlayerPos = XMVectorSetY(vPlayerPos, XMVectorGetY(vPlayerPos) + 2.f);
-		//	break;
-		//case Client::CCody::SIZE_LARGE: vPlayerPos = XMVectorSetY(vPlayerPos, XMVectorGetY(vPlayerPos) + 3.f);
-		//	break;
-		//}
-		//PxMat44 matPhsX = PxMat44(m_pActorCom->Get_Actor()->getGlobalPose());
-		//_vector vPhsXPos = XMVectorSet(matPhsX.column3.x, matPhsX.column3.y, matPhsX.column3.z, 1.f);
-		//PxRaycastBuffer tBuffer;
-		//if(CPhysX::Raycast())
-		//_vector vPhsXResult
-		//	= XMVectorSet(tBuffer.block.position.x, tBuffer.block.position.y, tBuffer.block.position.z, 1.f) + m_fCamRadius * XMVector4Normalize(vPlayerPos - vPhsXPos); /*+XMVector4Normalize(vPhsXPos - vPlayerPos) * m_fCamRadius*/;
-		//
-		while (m_pActorCom->Get_Controller()->move(MH_PxVec3(matWorld.r[2]), 0.f, 0.f, PxControllerFilters()));
+	//	//if (nullptr == m_pTargetObj)
+	//	//	return false;
+	//	//_vector vPlayerPos = dynamic_cast<CCody*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	//	//switch (m_eCurPlayerSize)
+	//	//{
+	//	//case Client::CCody::SIZE_SMALL: vPlayerPos = XMVectorSetY(vPlayerPos, XMVectorGetY(vPlayerPos) + 1.f);
+	//	//	break;
+	//	//case Client::CCody::SIZE_MEDIUM: vPlayerPos = XMVectorSetY(vPlayerPos, XMVectorGetY(vPlayerPos) + 2.f);
+	//	//	break;
+	//	//case Client::CCody::SIZE_LARGE: vPlayerPos = XMVectorSetY(vPlayerPos, XMVectorGetY(vPlayerPos) + 3.f);
+	//	//	break;
+	//	//}
+	//	//PxMat44 matPhsX = PxMat44(m_pActorCom->Get_Actor()->getGlobalPose());
+	//	//_vector vPhsXPos = XMVectorSet(matPhsX.column3.x, matPhsX.column3.y, matPhsX.column3.z, 1.f);
+	//	//PxRaycastBuffer tBuffer;
+	//	//if(CPhysX::Raycast())
+	//	//_vector vPhsXResult
+	//	//	= XMVectorSet(tBuffer.block.position.x, tBuffer.block.position.y, tBuffer.block.position.z, 1.f) + m_fCamRadius * XMVector4Normalize(vPlayerPos - vPhsXPos); /*+XMVector4Normalize(vPhsXPos - vPlayerPos) * m_fCamRadius*/;
+	//	//
+	//	while (m_pActorCom->Get_Controller()->move(MH_PxVec3(matWorld.r[2]), 0.f, 0.f, PxControllerFilters()));
 
-		//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPhsXResult), XMVectorGetY(vPhsXResult), XMVectorGetZ(vPhsXResult)));
-		_vector vResultPos = XMVectorSet(matPhsX.column3.x, matPhsX.column3.y, matPhsX.column3.z, 1.f);
+	//	//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPhsXResult), XMVectorGetY(vPhsXResult), XMVectorGetZ(vPhsXResult)));
+	//	_vector vResultPos = XMVectorSet(matPhsX.column3.x, matPhsX.column3.y, matPhsX.column3.z, 1.f);
 
-		*pOut = XMVector3TransformCoord(vResultPos, XMMatrixInverse(nullptr, matRev));
-	
-		return true;
-	}
-	return false;
-	
+	//	*pOut = XMVector3TransformCoord(vResultPos, XMMatrixInverse(nullptr, matRev));
+	//
+	//	return true;
+	//}
+	//return false;
+	return true;
 }
 
 _fmatrix CMainCamera::MakeViewMatrix(_float3 Eye, _float3 At)
@@ -550,61 +594,17 @@ _fmatrix CMainCamera::MakeViewMatrix(_float3 Eye, _float3 At)
 #pragma region Cam_Helper
 _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 {
-	if (m_pTargetObj == nullptr)
-	{
-		m_pTargetObj = CDataStorage::GetInstance()->GetCody();
-		if (m_pTargetObj)
-			Safe_AddRef(m_pTargetObj);
-	}
+
 	//외부에서 상태 설정 구간
 #ifdef _DEBUG
 
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
-	{
-		m_pCamHelper->Start_Film(L"Eye_Bezier3", CFilm::LScreen);
-		return NO_EVENT;
-	}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
+	//{
+	//	CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
+	//	//m_pCamHelper->Start_Film(L"Film_Begin_Game", CFilm::LScreen);
+	//	return NO_EVENT;
+	//}
 
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
-	{
-		m_pCamHelper->Start_Film(L"Eye_Bezier4", CFilm::LScreen);
-		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
-	{
-		m_pCamHelper->Start_Film(L"Eye_Straight", CFilm::LScreen);
-		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD7))
-	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Right", CFilm::LScreen);
-		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
-	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Up", CFilm::LScreen);
-		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
-	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Look", CFilm::LScreen);
-		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD4))
-	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Right", CFilm::LScreen);
-		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
-	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Up", CFilm::LScreen);
-		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD6))
-	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Look", CFilm::LScreen);
-		return NO_EVENT;
-	}
 	if (m_pGameInstance->Key_Down(DIK_O))
 	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
@@ -630,7 +630,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 	}
 #endif
-	ChangeViewPort();
+	//ChangeViewPort();
 	m_fChangeCamModeTime <= 1.f ? m_eCurCamMode = CamMode::Cam_AutoToFree : m_eCurCamMode = CamMode::Cam_Free;
 
 	_int iResult = NO_EVENT;
@@ -651,7 +651,11 @@ _int CMainCamera::Tick_CamHelper_Act(_double dTimeDelta)
 {
 	if (nullptr == m_pCamHelper)
 		return EVENT_ERROR;
-	m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Tick_Film(dTimeDelta, CFilm::LScreen));
+	_float fFovY = 0.f;
+	m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Tick_Film(dTimeDelta, CFilm::LScreen,&fFovY));
+	if (fFovY == 0.f)
+		return NO_EVENT;
+	m_CameraDesc.fFovY = XMConvertToRadians(fFovY);
 	return NO_EVENT;
 }
 

@@ -1,38 +1,42 @@
 #include "stdafx.h"
 #include "..\public\RobotHead.h"
-#include "GameInstance.h"
-#include "DataStorage.h"
+
 CRobotHead::CRobotHead(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
-	: CGameObject(pDevice, pDeviceContext)
+	: CRobotParts(pDevice, pDeviceContext)
 {
 }
 
-CRobotHead::CRobotHead(const CRobotHead & rhs)
-	: CGameObject(rhs)
+CRobotHead::CRobotHead(const CRobotParts & rhs)
+	: CRobotParts(rhs)
 {
 }
 
 HRESULT CRobotHead::NativeConstruct_Prototype()
 {
-	CGameObject::NativeConstruct_Prototype();
+	CRobotParts::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
 HRESULT CRobotHead::NativeConstruct(void * pArg)
 {
-	CGameObject::NativeConstruct(pArg);
-
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
+
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_RobotHead"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(15.f, 4.f, 20.f, 1.f));
+	if (nullptr != pArg)
+		memcpy(&m_tRobotPartsDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
+
+	_vector vPosition = m_tRobotPartsDesc.vPosition;
+	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 4.f);
+	// ·Îº¿ y += 4.f
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
 	m_pModelCom->Set_Animation(3);
 	m_pModelCom->Set_NextAnimIndex(3);
 
-	DATABASE->Set_RobotHeadPtr(this);
 	return S_OK;
 }
 
@@ -79,7 +83,6 @@ _int CRobotHead::Tick(_double dTimeDelta)
 		}
 	}
 
-
 	m_pModelCom->Update_Animation(dTimeDelta);
 
 	return NO_EVENT;
@@ -87,7 +90,7 @@ _int CRobotHead::Tick(_double dTimeDelta)
 
 _int CRobotHead::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -117,8 +120,19 @@ HRESULT CRobotHead::Render_ShadowDepth()
 	return S_OK; 
 }
 
+void CRobotHead::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+}
+
 void CRobotHead::Hit_Lever_InActive(_double dTimeDelta)
 {
+	m_tRobotPartsDesc.iStageNum;
+	int i = 0;
+
+	CRobotParts* a = ((CRobotParts*)DATABASE->Get_STGravityRobot());
+	CRobotParts* b = ((CRobotParts*)DATABASE->Get_STPinBallRobot());
+	CRobotParts* c= ((CRobotParts*)DATABASE->Get_STPlanetRobot());
+
 	m_pModelCom->Set_Animation(R_InActive_Lever);
 	m_pModelCom->Set_NextAnimIndex(R_InActive_Idle);
 }
@@ -155,5 +169,5 @@ void CRobotHead::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
 
-	CGameObject::Free();
+	CRobotParts::Free();
 }

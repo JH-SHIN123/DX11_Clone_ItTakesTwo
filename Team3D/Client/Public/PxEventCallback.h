@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Engine_Defines.h"
+#include "Client_Defines.h"
 
-BEGIN(Engine)
+BEGIN(Client)
 
 class CPxEventCallback : public PxSimulationEventCallback
 {

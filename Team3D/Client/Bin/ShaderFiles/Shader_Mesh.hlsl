@@ -291,6 +291,25 @@ PS_OUT_ALPHA PS_MAIN_ALPHA_MOONBABOON_GLASSWALL(PS_IN In)
 	return Out;
 }
 
+PS_OUT_ALPHA PS_MAIN_ALPHA_MOONBABOON_CORE_GLASS(PS_IN In)
+{
+	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
+	vector vMtrlDiffuse = g_NormalTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	Out.vDiffuse = vMtrlDiffuse * g_Material.vDiffuse;
+	Out.vDiffuse.w = 0.6;
+
+	return Out;
+}
+
+PS_OUT_ALPHA PS_MAIN_ALPHA_MOONBABOON_CORE_PILLAR_GLASS(PS_IN In)
+{
+	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	Out.vDiffuse = vMtrlDiffuse * g_Material.vDiffuse;
+	Out.vDiffuse.w = 0.6;
+
+	return Out;
+}
 
 
 technique11 DefaultTechnique
@@ -355,5 +374,25 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_MAIN_ALPHA_MOONBABOON_GLASSWALL();
 	}
-
+	
+	// 6
+	pass Default_Alpha_MoonBaboon_Core_Glass
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_ALPHA_MOONBABOON_CORE_GLASS();
+	}
+	// 7
+	pass Default_Alpha_MoonBaboon_Core_Pillar_Glass
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_ALPHA_MOONBABOON_CORE_PILLAR_GLASS();
+	}
 };

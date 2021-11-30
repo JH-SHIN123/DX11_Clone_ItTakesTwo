@@ -220,9 +220,14 @@ public:
 public:
 	void Set_PushingBattery() { m_IsPushingBattery = false; }
 
+public:
+	void	Set_BossMissile_Attack(); // CBoss_Missile
+
 	// Tick 에서 호출될 함수들
 private:
+
 	virtual void KeyInput(_double dTimeDelta);
+	void Attack_BossMissile_After(_double dTimeDelta);
 
 private:
 	// 단발성 함수들.
@@ -248,6 +253,9 @@ public:
 ///////////////////////////////////////////////////////    상태 변환 관련 변수들   /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public:
+	_uint Get_CurState() const;
+
+public:
 	// 상태 && 이동
 	void Move(const _double dTimeDelta);
 	void Roll(const _double dTimeDelta);
@@ -259,11 +267,6 @@ public:
 
 #pragma region BasicMovement
 private:
-	// 상태
-	CODY_STATE m_iCurState = CUTSCENE_HUB_SECOND_GENERATOR;
-	CODY_STATE m_iNextState = CUTSCENE_HUB_SECOND_GENERATOR;
-
-
 	// 기본 움직임
 	_bool m_bSprint = false;
 	_bool m_bRoll = false;
@@ -279,7 +282,7 @@ private:
 	_bool m_IsJumping = false;
 	_bool m_IsAirDash = false;
 	_bool m_IsFalling = false;
-	_bool	m_bFallAniOnce = false;
+	_bool m_bFallAniOnce = false;
 
 	_float3 m_vMoveDirection = {};
 	_int m_iSavedKeyPress = 0;
@@ -287,7 +290,7 @@ private:
 
 	// 움직임 가속
 	_float m_fAcceleration = 5.0;
-	_float	m_fJogAcceleration = 25.f;
+	_float m_fJogAcceleration = 25.f;
 	_float m_fSprintAcceleration = 35.f;
 	_float m_fGroundPoundAirDelay = 0.f; // 체공시간.
 
@@ -323,18 +326,26 @@ private:
 #pragma region Trigger
 public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
+	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
 
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
 	_float3				m_vTriggerTargetPos = {};
+	_float4x4			m_TriggerTargetWorld = {};
+
 	_bool m_IsCollide = false;
-
-
-	_bool m_IsOnGrind = false;\
+	_bool m_IsOnGrind = false;
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
 	_bool m_IsPushingBattery = false;
+
+	/* 혜원::For.DeadLine, SavePoint */
+	_bool	 m_IsDeadLine = false;
+	_bool	 m_IsSavePoint = false;
+	_float3  m_vSavePoint = {};
+	_float	 m_fDeadTime = 0.f;
+	_float3	 m_DeadLinePos = {};
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
@@ -363,17 +374,40 @@ private:
 	_float3 m_vStartPosition = {};
 	_float3 m_vDstPosition = {};
 
-
 	// Arbitrary damping
 	_float m_faDamping = 0.995f;
-
-	// Arbitrary ball radius
-
-
 
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
 
+	/* For. WallJump */
+	_bool	m_bWallAttach = false;
+	_bool   m_IsWallJumping = false;
+	_float	m_fWallJumpingTime = 0.f;
+
+	// Warp NextStage
+	_bool m_IsWarpNextStage = false;
+	_float m_fWarpTimer = 0.f;
+	_bool m_IsWarpDone = false;
+	const _float4 m_vWormholePos = { 0.f, -100.f, -1000.f, 1.f };
+	const _float m_fWarpTimer_Max = 2.f;
+
+	// fire Door Dead
+	_bool m_IsTouchFireDoor = false;
+
+	// Boss Missile Hit
+	_bool m_IsBossMissile_Hit = false;
+
+	// Boss Missile Control
+	_bool	m_IsBossMissile_Control = false;
+	_bool	m_IsBossMissile_Rodeo_Ready = false;
+	_bool	m_IsBossMissile_Rodeo = false;
+	_bool	m_IsBoss_Missile_Explosion = false;
+	_float	m_fLandTime = 0.f;
+	_float	m_fBossMissile_HeroLanding_Time = 0.f;
+	_bool	m_IsBossMissile_RotateYawRoll_After = false;
+
+	// YYY
 	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);
 	void Hit_Rocket(const _double dTimeDelta);
@@ -383,6 +417,15 @@ private:
 	void In_GravityPipe(const _double dTimeDelta);
 	void Hit_Planet(const _double dTimeDelta);
 	void Hook_UFO(const _double dTimeDelta);
+	void Wall_Jump(const _double dTimeDelta);
+
+	// 정호
+	void Warp_Wormhole(const _double dTimeDelta);
+	void Touch_FireDoor(const _double dTimeDelta);
+	void Boss_Missile_Hit(const _double dTimeDelta);
+	void Boss_Missile_Control(const _double dTimeDelta);
+	/* 혜원::For.DeadLine, SavePoint */
+	void Falling_Dead(const _double dTimeDelta);
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);

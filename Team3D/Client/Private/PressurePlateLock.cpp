@@ -36,9 +36,12 @@ HRESULT CPressurePlateLock::NativeConstruct(void * pArg)
 	/* Option 0 : 아래로 도킹 되는 놈 / Option 1 : 위로 도킹 되는 놈 / Option 2 : BigPlate 지지대 */
 	OptionSetting();
 
+	m_UserData = USERDATA(GameID::ePRESSUREPLATELOCK, this);
+
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
 	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 

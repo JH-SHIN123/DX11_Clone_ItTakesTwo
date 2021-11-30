@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Effect_GravityPipe.h"
-#include "GameInstance.h"
 #include "TriggerActor.h"
 #include "Cody.h"
 #include "May.h"
@@ -33,8 +32,11 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 
 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObject_2D_Env_Particle", nullptr, (CGameObject**)&m_pParticle);
 	m_pParticle->Set_InstanceCount(5000);
+	//m_pTransformCom->Set_Scale(XMVectorSet(3.05f, 1.65f, 3.05f, 0.f));
 
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(62.9901505f, 35.f, 195.674637f, 1.f));
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform2"), (CComponent**)&m_pPhysxTransformCom), E_FAIL);
+	m_pTransformCom->Set_Scale(XMVectorSet(2.85f, 2.85f, 2.85f, 1.f));
 
 	_matrix PhysxWorldMatrix = XMMatrixIdentity();
 	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -47,7 +49,7 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eGRAVITYPIPE, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pPhysxTransformCom;
-	ArgDesc.pGeometry = new PxCapsuleGeometry(4.f, 20.f);
+	ArgDesc.pGeometry = new PxCapsuleGeometry(14.5f, 90.f);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
 
@@ -56,6 +58,7 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 
 _int CEffect_GravityPipe::Tick(_double TimeDelta)
 {
+
 	m_fTime += (_float)TimeDelta * 0.1f;
 
 	if (3.f <= m_fTime)
@@ -69,16 +72,48 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 	m_pParticle->Set_ParentMatrix(m_pTransformCom->Get_WorldMatrix());
 
 	m_pParticle->Set_Particle_Radius(_float3(5.f, 40.f, 5.f));
+
+	if (true == m_IsActivate)
+	{
+		m_dActivateTime += TimeDelta * 0.3;
+		if (1.0 <= m_dActivateTime)
+			m_dActivateTime = 1.0;
+	}
+	else
+	{
+		m_dActivateTime -= TimeDelta * 0.3;
+		if (0.0 >= m_dActivateTime)
+			m_dActivateTime = 0.0;
+	}
+
+#ifdef _DEBUG
+		if (m_pGameInstance->Key_Down(DIK_Z))
+			m_IsActivate = true;
+		if (m_pGameInstance->Key_Down(DIK_X))
+			m_IsActivate = false;
+	
+#endif // _DEBUG
+
+	m_pParticle->Set_ControlTime(m_dActivateTime);
 	return _int();
 }
 
 _int CEffect_GravityPipe::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	if (0.0 >= m_dActivateTime)
+		return NO_EVENT;
+
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 200.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+
+	return NO_EVENT;
 }
 
 HRESULT CEffect_GravityPipe::Render(RENDER_GROUP::Enum eGroup)
 {
+	_float fControlAlpha = (_float)m_dActivateTime;
+
+	m_pModelCom->Set_Variable("g_fAlpha", &fControlAlpha, sizeof(_float));
 	m_pModelCom->Set_Variable("g_fTime", &m_fTime, sizeof(_float));
 	m_pModelCom->Set_ShaderResourceView("g_ColorRampTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(0));
 	m_pModelCom->Set_ShaderResourceView("g_DistortionTexture", m_pTexturesCom_Distortion->Get_ShaderResourceView(0));
@@ -94,8 +129,10 @@ void CEffect_GravityPipe::SetUp_WorldMatrix(_fmatrix WorldMatrix)
 
 void CEffect_GravityPipe::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	// Cody
+	if (0.0 >= m_dActivateTime)
+		return;
 
+	// Cody
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eGRAVITYPIPE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -122,6 +159,11 @@ HRESULT CEffect_GravityPipe::Ready_Instance()
 	return S_OK;
 }
 
+void CEffect_GravityPipe::Set_Activate(_bool IsActivate)
+{
+	m_IsActivate = IsActivate;
+}
+
 CEffect_GravityPipe * CEffect_GravityPipe::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
 	CEffect_GravityPipe*	pInstance = new CEffect_GravityPipe(pDevice, pDeviceContext);
@@ -146,6 +188,7 @@ CGameObject * CEffect_GravityPipe::Clone_GameObject(void * pArg)
 
 void CEffect_GravityPipe::Free()
 {
+	Safe_Release(m_pPhysxTransformCom);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTexturesCom_Distortion);
 	Safe_Release(m_pTexturesCom_ColorRamp);
