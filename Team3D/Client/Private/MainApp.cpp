@@ -17,6 +17,7 @@ HRESULT CMainApp::NativeConstruct()
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
 	m_pPxEventCallback = new CPxEventCallback;
+	m_bMouseLock = true;
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Initialize(CGraphic_Device::TYPE_WINMODE, g_hWnd, g_hInst, g_iWinCX, g_iWinCY, &m_pDevice, &m_pDeviceContext, m_pPxEventCallback), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Reserve_Container(Level::LEVEL_END), E_FAIL);
@@ -33,6 +34,9 @@ HRESULT CMainApp::Run_App()
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
+	if (m_bMouseLock)
+		Lock_Mouse();
+
 	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
 
 	if (m_dFrameAcc >= 1.0 / 60.0)
@@ -47,6 +51,10 @@ HRESULT CMainApp::Run_App()
 		if (Tick(m_dTimeDelta) & 0x80000000)
 			return E_FAIL;
 
+		/* Lock_Mouse */
+		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_MB))
+			m_bMouseLock = !m_bMouseLock;
+
 		if (FAILED(Render(dTimeDelta)))
 			return E_FAIL;
 
@@ -57,6 +65,25 @@ HRESULT CMainApp::Run_App()
 	}
 
 	return S_OK;
+}
+
+void CMainApp::Lock_Mouse()
+{
+	ShowCursor(false);
+
+	RECT rc;
+	POINT p1, p2;
+
+	GetClientRect(g_hWnd, &rc);
+	p1.x = rc.left;
+	p1.y = rc.top;
+	p2.x = rc.right;
+	p2.y = rc.bottom;
+
+	ClientToScreen(g_hWnd, &p1);
+	ClientToScreen(g_hWnd, &p2);
+
+	SetCursorPos((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
 }
 
 _int CMainApp::Tick(_double dTimeDelta)
