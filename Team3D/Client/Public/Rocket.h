@@ -8,6 +8,7 @@ class CRenderer;
 class CTransform;
 class CModel;
 class CTriggerActor;
+class CStaticActor;
 END
 
 BEGIN(Client)
@@ -44,6 +45,8 @@ private:
 	_float		m_fLifeTime = 0.f;
 	_bool		m_IsCollide = false;
 
+	GameID::Enum		m_PlayerID = GameID::eROCKET;
+
 
 protected:
 	/* For.Component */
@@ -51,6 +54,7 @@ protected:
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 	CTriggerActor*		m_pTriggerCom = nullptr;
+	CStaticActor*		m_pStaticActorCom = nullptr;
 
 public:
 	static CRocket* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

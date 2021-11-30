@@ -184,8 +184,6 @@ public:
 private:
 	virtual void KeyInput(_double dTimeDelta);
 
-
-
 	// 단발성 함수들.
 	HRESULT Ready_Component();
 	void Add_LerpInfo_To_Model();
@@ -219,6 +217,9 @@ public:
 	void Sprint(const _double dTimeDelta);
 	void Jump(const _double dTimeDelta);
 	void Ground_Pound(const _double dTimeDelta);
+
+	// Trigger에 의해 Position 변경해야 할 때.
+	void Add_OffSet_Pos(_fvector vAddOffSet);
 
 
 private:

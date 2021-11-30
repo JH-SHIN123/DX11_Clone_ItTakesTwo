@@ -226,7 +226,7 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Gravity_Pipe"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Gravity_Pipe", CEffect_GravityPipe::Create(pDevice, pDeviceContext, pData));
-	//
+
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Umbrella_Pipe"))
 		pInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Umbrella_Pipe", CEffect_Umbrella_Pipe::Create(pDevice, pDeviceContext, pData));
 

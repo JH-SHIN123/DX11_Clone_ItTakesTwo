@@ -4,6 +4,7 @@
 #include "UI_Generator.h"
 #include "Cody.h"
 #include "May.h"
+#include "RobotParts.h"
 
 CRocket::CRocket(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -30,7 +31,11 @@ HRESULT CRocket::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Rocket"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(25.f, 0.f, 25.f, 1.f));
+	ROBOTDESC RocketDesc;
+	if (nullptr != pArg)
+		memcpy(&RocketDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, RocketDesc.vPosition);
 
 	CTriggerActor::ARG_DESC ArgDesc;
 
@@ -42,6 +47,12 @@ HRESULT CRocket::NativeConstruct(void * pArg)
 
 	Safe_Delete(ArgDesc.pGeometry);
 
+	CStaticActor::ARG_DESC StaticActorDesc;
+	StaticActorDesc.pModel = m_pModelCom;
+	StaticActorDesc.pTransform = m_pTransformCom;
+	StaticActorDesc.pUserData = &m_UserData;
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &StaticActorDesc), E_FAIL);
+
 	return S_OK;
 }
 
@@ -49,7 +60,7 @@ _int CRocket::Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide == true)
+	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide == true || m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 	{
 		m_bLaunch = true;
 		UI_Delete(May, InputButton_InterActive);
@@ -99,11 +110,13 @@ void CRocket::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 		UI_Create(Cody, InputButton_InterActive);
 		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
+		m_PlayerID = GameID::eCODY;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
 		m_IsCollide = false;
 		UI_Delete(Cody, InputButton_InterActive);
+		m_PlayerID = GameID::eROCKET;
 	}
 
 	//May
@@ -113,11 +126,13 @@ void CRocket::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 		UI_Create(May, InputButton_InterActive);
 		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
+		m_PlayerID = GameID::eMAY;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
 		m_IsCollide = false;
 		UI_Delete(May, InputButton_InterActive);
+		m_PlayerID = GameID::eROCKET;
 	}
 }
 
@@ -141,8 +156,21 @@ void CRocket::Launch_Rocket(_double dTimeDelta)
 	if (m_fUpAcceleration < 0.092f)
 	{
 		// 실제로 상호작용 할땐 Player <-> Rocket Dir 을 축으로 회전해야함.
-		m_pTransformCom->Rotate_Axis(XMVectorSet(1.f, 0.f, 0.f, 0.f), dTimeDelta * 1.75f);
+		_vector vPlayerPos = XMVectorZero();
+		if (m_PlayerID == GameID::eCODY)
+			vPlayerPos = XMVectorSetY(((CCody*)DATABASE->GetCody())->Get_Position(), 0.f);
+		else if (m_PlayerID == GameID::eMAY)
+			vPlayerPos = XMVectorSetY(((CMay*)DATABASE->GetMay())->Get_Position(), 0.f);
+
+
+		_vector vRocketPos = XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f);
+		_vector vDir = XMVector3Normalize(vPlayerPos - vRocketPos);
+		_vector vUp = XMVectorSet(0.f, 1.f, 0.f ,0.f);
+
+		_vector vRight = XMVector3Normalize(XMVector3Cross(vDir, vUp));
+		m_pTransformCom->Rotate_Axis(vRight, dTimeDelta * 1.75f);
 		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), (m_fUpAcceleration - 0.06f) * (m_fUpAcceleration - 0.06f)/*/ 4.f*/);
+
 	}
 
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), m_fUpAcceleration);
@@ -179,6 +207,7 @@ CGameObject * CRocket::Clone_GameObject(void * pArg)
 
 void CRocket::Free()
 {
+	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);

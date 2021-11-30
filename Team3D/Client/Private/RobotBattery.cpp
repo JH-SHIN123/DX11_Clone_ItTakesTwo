@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\public\RobotBattery.h"
-#include "GameInstance.h"
 #include "Cody.h"
 #include "May.h"
 #include "UI_Generator.h"
@@ -8,25 +7,23 @@
 #include "RobotLever.h"
 
 CRobotBattery::CRobotBattery(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
-	: CGameObject(pDevice, pDeviceContext)
+	: CRobotParts(pDevice, pDeviceContext)
 {
 }
 
-CRobotBattery::CRobotBattery(const CRobotBattery & rhs)
-	: CGameObject(rhs)
+CRobotBattery::CRobotBattery(const CRobotParts & rhs)
+	: CRobotParts(rhs)
 {
 }
 
 HRESULT CRobotBattery::NativeConstruct_Prototype()
 {
-	CGameObject::NativeConstruct_Prototype();
+	CRobotParts::NativeConstruct_Prototype();
 	return S_OK;
 }
 
 HRESULT CRobotBattery::NativeConstruct(void * pArg)
 {
-	CGameObject::NativeConstruct(pArg);
-	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(10.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_RobotBattery"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
@@ -34,12 +31,21 @@ HRESULT CRobotBattery::NativeConstruct(void * pArg)
 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(15.f, 0.f, 20.f, 1.f)); -> 로봇위치 // 지우지말아주세용
 	// Robot <-> OffSet
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(14.54f, 2.566f, 21.441f, 1.f)); // 지우지말아주세용
+	if (nullptr != pArg)
+		memcpy(&m_tRobotPartsDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
+
+	_vector vPosition = m_tRobotPartsDesc.vPosition;
+	vPosition = XMVectorSetX(vPosition, XMVectorGetX(vPosition) - 0.46f);
+	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 2.566f);
+	vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) + 1.441f);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(9.f));
 
+	m_UserData = USERDATA(GameID::eROBOTBATTERY, this);
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
 	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 
@@ -48,20 +54,18 @@ HRESULT CRobotBattery::NativeConstruct(void * pArg)
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTransformCom;
 	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.5f);
-	m_UserData = USERDATA(GameID::eROBOTBATTERY, this);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 
 	Safe_Delete(TriggerArgDesc.pGeometry);
 
-	DATABASE->Set_RobotBatteryPtr(this);
 
 	return S_OK;
 }
 
 _int CRobotBattery::Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CRobotParts::Tick(dTimeDelta);
 
 	if (m_bUpdate)
 	{
@@ -81,7 +85,7 @@ _int CRobotBattery::Tick(_double dTimeDelta)
 
 _int CRobotBattery::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CRobotParts::Tick(dTimeDelta);
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
@@ -90,7 +94,7 @@ _int CRobotBattery::Late_Tick(_double dTimeDelta)
 
 HRESULT CRobotBattery::Render(RENDER_GROUP::Enum eGroup)
 {
-	CGameObject::Render(eGroup);
+	CRobotParts::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
@@ -158,8 +162,21 @@ void CRobotBattery::Push_Battery(_double dTimeDelta)
 	}
 	else if (m_fRotateDelay >= 2.1f)
 	{
-		((CRobotHead*)DATABASE->Get_RobotHead())->Set_Battery_Charged(true);
-		((CRobotLever*)DATABASE->Get_RobotLever())->Set_BatteryCharged(true);
+		switch (m_tRobotPartsDesc.iStageNum)
+		{
+		case ST_GRAVITYPATH:
+			((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_RobotHead()->Set_Battery_Charged(true);
+			((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_Robot_Lever()->Set_BatteryCharged(true);
+			break;
+		case ST_PINBALL:
+			((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_RobotHead()->Set_Battery_Charged(true);
+			((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_Robot_Lever()->Set_BatteryCharged(true);
+			break;
+		case ST_RAIL:
+			((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_RobotHead()->Set_Battery_Charged(true);
+			((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_Robot_Lever()->Set_BatteryCharged(true);
+			break;
+		}
 
 		m_IsCollide = false;
 		m_fRotateDelay = 0.f;

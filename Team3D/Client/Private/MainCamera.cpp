@@ -364,10 +364,12 @@ _int CMainCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 
 void CMainCamera::ChangeViewPort()
 {
+
 	//CFilm::CamNode tDesc;
 	//tDesc.fTargetViewPortCenterX = 0.5f;
 	//tDesc.fTargetViewPortCenterY = 1.f;
 	//tDesc.fViewPortLerpSpeed = 1.f;
+
 	////case ViewPortOption::LScreen_Split_Immediate:
 	//if (m_pGameInstance->Key_Down(DIK_1))
 	//	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, tDesc.fTargetViewPortCenterX, tDesc.fTargetViewPortCenterY),
@@ -427,25 +429,25 @@ void CMainCamera::ChangeViewPort()
 
 void CMainCamera::KeyCheck(_double dTimeDelta)
 {
-	if (m_pGameInstance->Key_Pressing(DIK_W))
-	{
-		m_pTransformCom->Go_Straight(dTimeDelta);
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_A))
-	{
-		m_pTransformCom->Go_Left(dTimeDelta);
+	//if (m_pGameInstance->Key_Pressing(DIK_W))
+	//{
+	//	m_pTransformCom->Go_Straight(dTimeDelta);
+	//}
+	//if (m_pGameInstance->Key_Pressing(DIK_A))
+	//{
+	//	m_pTransformCom->Go_Left(dTimeDelta);
 
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_S))
-	{
-		m_pTransformCom->Go_Backward(dTimeDelta);
+	//}
+	//if (m_pGameInstance->Key_Pressing(DIK_S))
+	//{
+	//	m_pTransformCom->Go_Backward(dTimeDelta);
 
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_D))
-	{
-		m_pTransformCom->Go_Right(dTimeDelta);
+	//}
+	//if (m_pGameInstance->Key_Pressing(DIK_D))
+	//{
+	//	m_pTransformCom->Go_Right(dTimeDelta);
 
-	}
+	//}
 	_long MouseMove = 0;
 	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
 	{
