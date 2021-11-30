@@ -211,7 +211,6 @@ _int CCody::Tick(_double dTimeDelta)
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 
-
 	return NO_EVENT;
 }
 
