@@ -388,6 +388,12 @@
     <Filter Include="03.Component\01.Actor\99.EventCallback">
       <UniqueIdentifier>{e43d39f3-5732-46ee-85d4-9b5d0244f918}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\SlideDoor">
+      <UniqueIdentifier>{0166b18b-acb2-413e-9e76-eba04906f5a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_BallGate">
+      <UniqueIdentifier>{55593a82-f1d2-4df1-9b50-df4b9d55f6d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -711,6 +717,12 @@
     <ClInclude Include="..\Public\PxEventCallback.h">
       <Filter>03.Component\01.Actor\99.EventCallback</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SlideDoor.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\SlideDoor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PinBall_BallGate.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_BallGate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1006,6 +1018,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\PxEventCallback.cpp">
       <Filter>03.Component\01.Actor\99.EventCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SlideDoor.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\SlideDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PinBall_BallGate.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_BallGate</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

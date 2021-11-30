@@ -10,6 +10,7 @@
 #include "Effect_Cody_Size.h"
 /* For. PinBall */
 #include "PinBall.h"
+#include "PinBall_Door.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -213,7 +214,7 @@ _int CCody::Late_Tick(_double dTimeDelta)
 
 HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 {
-	if (true == m_IsDeadLine)
+	if (true == m_IsDeadLine || m_IsPinBall)
 		return S_OK;
 
 	CCharacter::Render(eGroup);
@@ -290,7 +291,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_4)) /* 2스테이지 */
 		m_pActorCom->Set_Position(XMVectorSet(960.f, 720.f, 193.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_5))/* 3스테이지 */
-		m_pActorCom->Set_Position(XMVectorSet(-620.f, 760.f, 195.f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_6))/* 3층 */
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_7))/* Boss */
@@ -1400,18 +1401,16 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::eDEADLINE && false == m_IsDeadLine)
 		{
 			/* 데드라인과 충돌시 */
-			/* 낙사 애니메이션인데 다음애니메이션이 뭔지 모르겠음 */
 			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_Death_Fall_MH);
 
-			/* 왜 중력을 0으로 하면 추락하는지 모르겠음 */
-			m_pActorCom->Set_Gravity(1.f);
+			m_pActorCom->Set_Gravity(0.f);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_IsDeadLine = true;
 		}
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
 		{
-			/* 세이브포인트 트리거와 충돌시 세이브포인트 갱신 */
+			/* 세이브포인트->트리거와 충돌시 세이브포인트 갱신 */
 			m_vSavePoint = m_vTriggerTargetPos;
 		}
 		else if (m_eTargetGameID == GameID::ePINBALL && false == m_IsPinBall)
@@ -1419,6 +1418,11 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			/* 핀볼모드 ON */
 			m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
 			m_IsPinBall = true;
+		}
+		else if (m_eTargetGameID == GameID::ePINBALLDOOR && m_pGameInstance->Key_Down(DIK_E))
+		{
+			/* 핀볼 문열기 */
+			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(false);
 		}
 	}
 
@@ -1766,12 +1770,14 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
 
 			m_pActorCom->Set_Position(vSavePosition);
+			m_pActorCom->Set_Gravity(-9.8f);
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pModelCom->Set_Animation(ANI_C_MH);
-			m_pActorCom->Set_Gravity(-9.8f);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_fDeadTime = 0.f;
 			m_IsDeadLine = false;
+			m_IsCollide = false;
 		}
 		else
 		{
@@ -1785,21 +1791,22 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 
 void CCody::PinBall(const _double dTimeDelta)
 {
-	m_pActorCom->Set_Position(((CDynamic_Env*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Position());
+	if (true == m_IsPinBall)
+	{
+		if (false == ((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Ready())
+		{
+			m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
+			m_pActorCom->Update(dTimeDelta);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 
-	//if (m_pGameInstance->Key_Down(DIK_G))
-	//{
-	//	if (false == m_IsPinBall)
-	//	{
-	//		m_IsPinBall = true;
-	//		((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_Ready(true);
-	//	}
-	//	else
-	//	{
-	//		m_IsPinBall = false;
-	//		((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_Ready(false);
-	//		((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
-	//		((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_RespawnAngle(true);
-	//	}
-	//}
+			m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
+			m_IsPinBall = false;
+			m_IsCollide = false;
+			return;
+		}
+		m_pActorCom->Set_Position(((CDynamic_Env*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Position());
+	}
 }

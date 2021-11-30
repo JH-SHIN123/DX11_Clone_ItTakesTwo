@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\PinBall_Blocked.h"
+#include "PinBall.h"
+#include "PinBall_Handle.h"
 
 _float	CPInBall_Blocked::m_fUpPosY = 0.f;
 _float	CPInBall_Blocked::m_fDownPosY = 0.f;

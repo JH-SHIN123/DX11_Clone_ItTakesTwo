@@ -10,6 +10,10 @@ private:
 	virtual ~CPinBall_Door() = default;
 
 public:
+	/* false:Open, true:Close*/
+	void Set_DoorState(_bool bState);
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double dTimeDelta) override;
@@ -21,7 +25,16 @@ public:
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 private:
+	CTriggerActor*	m_pTriggerActorCom = nullptr;
 	CStaticActor*	m_pStaticActorCom = nullptr;
+
+	_bool			m_bTrigger = false;
+	_bool			m_bDoorState = false;
+	_float			m_fDistance = 0.f;
+	_float3			m_ResetPos = {};
+
+private:
+	void Movement(_double dTimeDelta);
 
 public:
 	static CPinBall_Door* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

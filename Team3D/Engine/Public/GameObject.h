@@ -29,6 +29,7 @@ public:
 	virtual HRESULT Render_ShadowDepth();
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject);
+	virtual void	OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject);
 
 protected: /* Typedef */
 	typedef unordered_map<const _tchar*, CComponent*> COMPONENTS;

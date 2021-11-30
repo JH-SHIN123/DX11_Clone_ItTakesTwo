@@ -3,6 +3,7 @@
 #include "Cody.h"
 #include "PinBall_BallDoor.h"
 #include "PinBall_Handle.h"
+#include "Effect_Generator.h"
 
 CPinBall::CPinBall(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -14,20 +15,30 @@ CPinBall::CPinBall(const CPinBall & rhs)
 {
 }
 
+void CPinBall::Goal(_fvector vGatePosition)
+{
+	m_pDynamicActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(vGatePosition)));
+
+	((CPinBall_Handle*)CDataStorage::GetInstance()->Get_Pinball_Handle())->Set_RespawnAngle(true);
+	m_bFailed = true;
+	m_IsStartGame = false;
+}
+
 void CPinBall::ReadyGame()
 {
 	m_IsReady = true;
-	Create_DynamicActor();
 }
 
 void CPinBall::StartGame()
 {
+	m_IsStartGame = true;
+
 	_vector vScale, vRotQuat, vPosition;
 	XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, m_pTransformCom->Get_WorldMatrix());
-	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.1f);
-	vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) + 0.1f);
-	(m_pDynamicActorCom->Get_Actor())->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
-	m_IsStartGame = true;
+
+	/* 초반 레일의 단차 보정 */
+	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.5f);
+	m_pDynamicActorCom->Get_Actor()->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
 }
 
 HRESULT CPinBall::NativeConstruct_Prototype()
@@ -44,21 +55,36 @@ HRESULT CPinBall::NativeConstruct(void * pArg)
 	m_UserData.eID = GameID::ePINBALL;
 	m_UserData.pGameObject = this;
 
-	FAILED_CHECK_RETURN(Create_StaticActor(), E_FAIL);
+	/* Dynamic */
+	PxGeometry* DynamicGeom = new PxSphereGeometry(0.5f);
+	CDynamicActor::ARG_DESC tDynamicActorArg;
+	tDynamicActorArg.pTransform = m_pTransformCom;
+	tDynamicActorArg.fDensity = 1.f;
+	tDynamicActorArg.pGeometry = DynamicGeom;
+	tDynamicActorArg.vVelocity = PxVec3(0.f, 0.f, 0.f);
+	tDynamicActorArg.pUserData = &m_UserData;
 
-	PxGeometry* geom = new PxSphereGeometry(0.2f);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
+	m_pDynamicActorCom->Get_Actor()->setLinearDamping(10.f);
+	m_pDynamicActorCom->Get_Actor()->setAngularDamping(5.f);
+	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+	Safe_Delete(DynamicGeom);
+
+	/* Trigger */
+	PxGeometry* TriggerGeom = new PxSphereGeometry(0.5f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
-	tTriggerArgDesc.pGeometry = geom;
+	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;
 	tTriggerArgDesc.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Space_Pinball_AttachBall"), TEXT("Com_AttachBall"), (CComponent**)&m_pAttachBall), E_FAIL);
+	Safe_Delete(TriggerGeom);
 
-	Safe_Delete(geom);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Space_Pinball_AttachBall"), TEXT("Com_AttachBall"), (CComponent**)&m_pAttachBall), E_FAIL);
 
 	CDataStorage::GetInstance()->Set_Pinball(this);
 	XMStoreFloat3(&m_RespawnPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 	return S_OK;
 }
 
@@ -74,9 +100,6 @@ _int CPinBall::Tick(_double dTimeDelta)
 _int CPinBall::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
-
-	if(nullptr != m_pDynamicActorCom)
-		m_pDynamicActorCom->Update_DynamicActor();
 
 	if (true == m_IsReady)
 	{
@@ -95,6 +118,9 @@ _int CPinBall::Late_Tick(_double dTimeDelta)
 HRESULT CPinBall::Render(RENDER_GROUP::Enum eGroup)
 {
 	CDynamic_Env::Render(eGroup);
+
+	if (true == m_bFailed)
+		return S_OK;
 
 	if (true == m_IsReady)
 	{
@@ -137,7 +163,7 @@ HRESULT CPinBall::Render_ShadowDepth()
 
 void CPinBall::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	// Cody
+	/* Cody */
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && false == m_IsReady)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALL, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
@@ -147,62 +173,44 @@ void CPinBall::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObjec
 	}
 }
 
+void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+	/* Blocked */
+	if (eStatus == ContactStatus::eFOUND && eID == GameID::Enum::eBLOCKED)
+	{
+		((CPinBall_Handle*)CDataStorage::GetInstance()->Get_Pinball_Handle())->Set_RespawnAngle(true);
+		m_bFailed = true;
+		m_IsStartGame = false;
+	}
+}
+
 void CPinBall::MoveMent(_double dTimeDelta)
 {
 	if (false == m_IsStartGame)
 		return;
 
-	m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(-30.f, 0.f, 0.f));
-	m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(0.f, 0.f, -10.f));
+	m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(-40.f, 0.f, 0.f));
+	m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(0.f, 0.f, -35.f));
 
 	if (m_pGameInstance->Key_Pressing(DIK_A))
-		m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(10.f, 0.f, -10.f));
+		m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(5.f, 0.f, -35.f));
 	if (m_pGameInstance->Key_Pressing(DIK_D))
-		m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(-10.f, 0.f, -10.f));
-}
+		m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(-5.f, 0.f, -35.f));
 
-HRESULT CPinBall::Create_DynamicActor()
-{
-	PxGeometry* geom = new PxSphereGeometry(0.8f);
-
-	CDynamicActor::ARG_DESC tDynamicActorArg;
-	tDynamicActorArg.pTransform = m_pTransformCom;
-	tDynamicActorArg.fDensity = 5.f;
-	tDynamicActorArg.pGeometry = geom;
-	tDynamicActorArg.vVelocity = PxVec3(0.f, 0.f, 0.f);
-	tDynamicActorArg.pUserData = &m_UserData;
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
-	m_pDynamicActorCom->Get_Actor()->setLinearDamping(10.f);
-	m_pDynamicActorCom->Get_Actor()->setAngularDamping(5.f);
-
-	Safe_Delete(geom);
-
-	return S_OK;
-}
-
-HRESULT CPinBall::Create_StaticActor()
-{
-	CStaticActor::ARG_DESC tStaticActorDesc;
-	tStaticActorDesc.pModel = m_pModelCom;
-	tStaticActorDesc.pTransform = m_pTransformCom;
-	tStaticActorDesc.pUserData = &m_UserData;
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorDesc), E_FAIL);
-
-	return S_OK;
+	/* Y값 보정 */
+	m_pDynamicActorCom->Update_DynamicActor(0.3f);
 }
 
 void CPinBall::PlayerMove()
 {
+	/* 메이가 조종할 때 */
 	_vector vScale, vRotQuat, vPosition;
 	XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, m_pTransformCom->Get_WorldMatrix());
 
 	_float fX = XMVectorGetX(CDataStorage::GetInstance()->GetMay()->Get_Position()) + 1.f;
 	vPosition = XMVectorSetX(vPosition, fX);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 	(m_pDynamicActorCom->Get_Actor())->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
-
-	m_pDynamicActorCom->Update_DynamicActor();
 }
 
 void CPinBall::Respawn()
@@ -210,7 +218,11 @@ void CPinBall::Respawn()
 	_vector vPos = XMLoadFloat3(&m_RespawnPos);
 	vPos = XMVectorSetW(vPos, 1.f);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+	m_pDynamicActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(vPos)));
+	m_pDynamicActorCom->Update_DynamicActor();
+
+	m_bFailed = false;
+	m_IsReady = false;
 }
 
 CPinBall * CPinBall::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -239,12 +251,7 @@ CGameObject * CPinBall::Clone_GameObject(void * pArg)
 
 void CPinBall::Free()
 {
-	if (nullptr != m_pStaticActorCom)
-		Safe_Release(m_pStaticActorCom);
-
-	if (nullptr != m_pDynamicActorCom)
-		Safe_Release(m_pDynamicActorCom);
-
+	Safe_Release(m_pDynamicActorCom);
 	Safe_Release(m_pTriggerActorCom);
 	Safe_Release(m_pAttachBall);
 

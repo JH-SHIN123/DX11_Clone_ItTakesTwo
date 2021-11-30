@@ -73,6 +73,11 @@ void CGameObject::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameOb
 	int i = 0;
 }
 
+void CGameObject::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+	int i = 0;
+}
+
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const _tchar * pPrototypeTag, const _tchar * pComponentTag, CComponent ** ppOut, void * pArg)
 {
 	_tchar* pTag = new _tchar[lstrlenW(pComponentTag) + 1];

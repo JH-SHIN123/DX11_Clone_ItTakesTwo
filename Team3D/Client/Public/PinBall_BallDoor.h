@@ -10,6 +10,7 @@ private:
 	virtual ~CPinBall_BallDoor() = default;
 
 public:
+	/* false:Open true:Close */
 	void Set_DoorState(_bool bDoorState);
 
 public:

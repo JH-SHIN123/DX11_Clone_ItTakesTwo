@@ -18,33 +18,27 @@ void CPxEventCallback::onSleep(PxActor ** actors, PxU32 count)
 
 void CPxEventCallback::onContact(const PxContactPairHeader & pairHeader, const PxContactPair * pairs, PxU32 nbPairs)
 {
-	PX_UNUSED(pairHeader); PX_UNUSED(pairs); PX_UNUSED(nbPairs);
+	for (PxU32 i = 0; i < nbPairs; i++)
+	{
+		const PxContactPair& cp = pairs[i];
 
-	//for (PxU32 i = 0; i < nbPairs; i++)
-	//{
-	//	const PxContactPair& cp = pairs[i];
+		if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND)
+		{
+			USERDATA* pUserData01 = static_cast<USERDATA*>(pairHeader.actors[0]->userData);
+			USERDATA* pUserData02 = static_cast<USERDATA*>(pairHeader.actors[1]->userData);
 
-	//	if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND)
-	//	{
-	//		//USERDATA* pTriggerUserData = static_cast<USERDATA*>(pairs[i].triggerActor->userData);
-	//		//USERDATA* pActorUserData = static_cast<USERDATA*>(pairs[i].otherActor->userData);
+			if(nullptr != pUserData02 && nullptr != pUserData02)
+				pUserData01->pGameObject->OnContact(ContactStatus::eFOUND, pUserData02->eID, pUserData02->pGameObject);
+		}
+		else
+		{
+			USERDATA* pUserData01 = static_cast<USERDATA*>(pairHeader.actors[0]->userData);
+			USERDATA* pUserData02 = static_cast<USERDATA*>(pairHeader.actors[1]->userData);
 
-	//		pTriggerUserData->pGameObject->Trigger(TriggerStatus::eFOUND, pActorUserData->eID, pActorUserData->pGameObject);
-
-	//		if ((pairHeader.actors[0]->getName() == "Tower") || (pairHeader.actors[1]->getName() == "Tower"))
-	//		{
-	//			PxActor* pActor = ("Tower" == pairHeader.actors[0]->getName()) ? pairHeader.actors[0] : pairHeader.actors[1];
-
-	//			if ((pairHeader.actors[0]->getName() == "Track") || (pairHeader.actors[1]->getName() == "Track"))
-	//				((USERDATA*)(pActor->userData))->bDead = true;
-
-	//			if ((pairHeader.actors[0]->getName() == "Player") || (pairHeader.actors[1]->getName() == "Player"))
-	//				((USERDATA*)(pActor->userData))->bCollision = true;
-
-	//			break;
-	//		}
-	//	}
-	//}
+			if (nullptr != pUserData02 && nullptr != pUserData02)
+				pUserData01->pGameObject->OnContact(ContactStatus::eLOST, pUserData02->eID, pUserData02->pGameObject);
+		}
+	}
 }
 
 void CPxEventCallback::onTrigger(PxTriggerPair * pairs, PxU32 count)

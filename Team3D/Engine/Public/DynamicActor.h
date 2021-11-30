@@ -28,6 +28,8 @@ public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	void			Update_DynamicActor();
+	/* Çý¿ø::Y°ª º¸Á¤ */
+	void			Update_DynamicActor(_float fDis);
 
 private:
 	class CTransform*	m_pTransform = nullptr;

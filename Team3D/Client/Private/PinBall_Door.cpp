@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\PinBall_Door.h"
+#include "Cody.h"
+#include "UI_Generator.h"
+#include "PinBall_BallDoor.h"
 
 CPinBall_Door::CPinBall_Door(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -9,6 +12,12 @@ CPinBall_Door::CPinBall_Door(ID3D11Device * pDevice, ID3D11DeviceContext * pDevi
 CPinBall_Door::CPinBall_Door(const CPinBall_Door & rhs)
 	: CDynamic_Env(rhs)
 {
+}
+
+void CPinBall_Door::Set_DoorState(_bool bState)
+{
+	m_bTrigger = true;
+	m_bDoorState = bState;
 }
 
 HRESULT CPinBall_Door::NativeConstruct_Prototype()
@@ -22,8 +31,18 @@ HRESULT CPinBall_Door::NativeConstruct(void * pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
 
-	m_UserData.eID = GameID::eENVIRONMENT;
+	m_UserData.eID = GameID::ePINBALLDOOR;
 	m_UserData.pGameObject = this;
+
+	/* Trigger */
+	PxGeometry* TriggerGeom = new PxSphereGeometry(0.3f);
+	CTriggerActor::ARG_DESC tTriggerArgDesc;
+	tTriggerArgDesc.pGeometry = TriggerGeom;
+	tTriggerArgDesc.pTransform = m_pTransformCom;
+	tTriggerArgDesc.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
+	Safe_Delete(TriggerGeom);
 
 	CStaticActor::ARG_DESC tStaticActorArg;
 	tStaticActorArg.pTransform = m_pTransformCom;
@@ -31,12 +50,23 @@ HRESULT CPinBall_Door::NativeConstruct(void * pArg)
 	tStaticActorArg.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) - 0.1f);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+	m_pTransformCom->Set_Speed(1.f, 45.f);
+	XMStoreFloat3(&m_ResetPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	CDataStorage::GetInstance()->Set_Pinball_Door(this);
+
 	return S_OK;
 }
 
 _int CPinBall_Door::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
+
+	Movement(dTimeDelta);
 
 	return NO_EVENT;
 }
@@ -76,6 +106,52 @@ HRESULT CPinBall_Door::Render_ShadowDepth()
 
 void CPinBall_Door::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+	// Cody
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && false == m_bTrigger && false == m_bDoorState)
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALLDOOR, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+		UI_Create(Cody, InputButton_InterActive);
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+		UI_Delete(Cody, InputButton_InterActive);
+}
+
+void CPinBall_Door::Movement(_double dTimeDelta)
+{
+	if (false == m_bTrigger)
+		return;
+
+	/* Open */
+	if (false == m_bDoorState)
+	{
+		_float	fDis = (_float)dTimeDelta;
+		m_fDistance += fDis;
+
+		if (m_fDistance >= 1.f)
+		{
+			((CPinBall_BallDoor*)(CDataStorage::GetInstance()->Get_Pinball_BallDoor()))->Set_DoorState(false);
+			m_bTrigger = false;
+			m_fDistance = 0.f;
+		}
+		m_pTransformCom->Go_Straight(dTimeDelta);
+	}
+	/* Close */
+	else
+	{
+		_float	fDis = (_float)dTimeDelta;
+		m_fDistance += fDis;
+
+		if (m_fDistance >= 1.f)
+		{
+			((CPinBall_BallDoor*)(CDataStorage::GetInstance()->Get_Pinball_BallDoor()))->Set_DoorState(true);
+			m_bTrigger = false;
+			m_fDistance = 0.f;
+		}
+		m_pTransformCom->Go_Straight(-dTimeDelta);
+	}
+
+	m_pStaticActorCom->Update_StaticActor();
 }
 
 CPinBall_Door * CPinBall_Door::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -104,6 +180,7 @@ CGameObject * CPinBall_Door::Clone_GameObject(void * pArg)
 
 void CPinBall_Door::Free()
 {
+	Safe_Release(m_pTriggerActorCom);
 	Safe_Release(m_pStaticActorCom);
 
 	CDynamic_Env::Free();

@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\AlienScreen.h"
+#include "PinBall.h"
+#include "PinBall_Handle.h"
+#include "DataStorage.h"
 
 CAlienScreen::CAlienScreen(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)

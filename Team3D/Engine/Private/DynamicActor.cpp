@@ -51,6 +51,17 @@ void CDynamicActor::Update_DynamicActor()
 	m_pTransform->Set_WorldMatrix(MH_XMMatrix(PxMat44(m_pActor->getGlobalPose())));
 }
 
+void CDynamicActor::Update_DynamicActor(_float fDis)
+{
+	_matrix World = MH_XMMatrix(PxMat44(m_pActor->getGlobalPose()));
+
+	_float4x4 Temp;
+	XMStoreFloat4x4(&Temp, World);
+	Temp._42 -= fDis;
+
+	m_pTransform->Set_WorldMatrix(XMLoadFloat4x4(&Temp));
+}
+
 CDynamicActor * CDynamicActor::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CDynamicActor* pInstance = new CDynamicActor(pDevice, pDeviceContext);

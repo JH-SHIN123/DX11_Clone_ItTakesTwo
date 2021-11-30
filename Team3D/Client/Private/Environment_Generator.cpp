@@ -1,7 +1,7 @@
 #include "stdafx.h"
+#include <fstream>
 #include "..\Public\Environment_Generator.h"
 /* Load */
-#include <fstream>
 #include "SavePoint.h"
 #include "DeadLine.h"
 #include "Bridge.h"
@@ -14,6 +14,9 @@
 #include "PinBall_HandleBase.h"
 #include "PinBall_Blocked.h"
 #include "AlienScreen.h"
+#include "PinBall_BallGate.h"
+#include "SlideDoor.h"
+#include "PinBall_Door.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -573,6 +576,24 @@ CGameObject* CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D11
 		pInstance = CAlienScreen::Create(pDevice, pDeviceContext);
 		if (nullptr == pInstance)
 			MSG_BOX("Failed to Create Instance - AlienScreen");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_BallGate")))
+	{
+		pInstance = CPinBall_BallGate::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall_BallGate");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_SlideDoor")))
+	{
+		pInstance = CSlideDoor::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - SlideDoor");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_Door")))
+	{
+		pInstance = CPinBall_Door::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall_Door");
 	}
 	return pInstance;
 }

@@ -38,7 +38,8 @@ namespace Engine
 			eBLOCKED,
 			ePINBALLHANDLE,
 			eGRAVITYPATH_CENTER,
-			eGRAVITYPATH_SIDE
+			eGRAVITYPATH_SIDE,
+			ePINBALLDOOR
 		};
 	};
 
@@ -52,6 +53,11 @@ namespace Engine
 	}USERDATA;
 
 	struct TriggerStatus
+	{
+		enum Enum { eFOUND, eLOST };
+	};
+
+	struct ContactStatus
 	{
 		enum Enum { eFOUND, eLOST };
 	};

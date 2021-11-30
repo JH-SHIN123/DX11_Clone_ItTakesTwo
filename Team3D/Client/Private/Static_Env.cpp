@@ -25,6 +25,7 @@ HRESULT CStatic_Env::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
 	Set_MeshRenderGroup();
+	Set_Simulation();
 
 	return S_OK;
 }
@@ -170,6 +171,15 @@ HRESULT CStatic_Env::Ready_Component(void * pArg)
 	tArg.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CStatic_Env::Set_Simulation()
+{
+	/* 피직스 시뮬레이션에서 제외해야하는 경우 */
+	if (!lstrcmp(TEXT("Component_Model_Space_Pinball_Attachment"), m_Static_Env_Desc.szModelTag))
+		m_pStaticActorCom->Set_Simulation(true);
 
 	return S_OK;
 }

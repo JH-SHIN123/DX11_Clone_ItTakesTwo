@@ -250,7 +250,7 @@ void CMay::KeyInput(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_4)) /* 2스테이지 */
 		m_pActorCom->Set_Position(XMVectorSet(960.f, 720.f, 193.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_5))/* 3스테이지 */
-		m_pActorCom->Set_Position(XMVectorSet(-620.f, 760.f, 195.f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_6))/* 3층 */
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_7))/* Boss */
@@ -927,7 +927,10 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		/* 혜원::For.PinBall */
 		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && m_pGameInstance->Key_Down(DIK_END))
 		{
-			// 회전
+			m_pModelCom->Set_Animation(ANI_M_PinBall_Enter);
+			m_pModelCom->Set_Animation(ANI_M_PinBall_MH);
+
+			/* 플레이어->핸들방향으로 플레이어 회전 */
 			_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 			_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 			_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
@@ -947,23 +950,16 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3TransformNormal(vUp, RotateMatrix));
 			m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
 
-
-			m_pModelCom->Set_Animation(ANI_M_PinBall_Enter);
-			m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
-
-			/* 핀볼 핸들 플레이어 위치로 고정시킴 */
+			/* 핸들->플레이어 위치로 고정시킴 */
 			((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(true);
 
-			/* 플레이어 위치 조정, 최소, 최대X값 설정 */
-			//m_vTriggerTargetPos.z -= 0.3f;
+			/* 플레이어->위치 조정, 핸들 최소, 최대X값 설정 */
 			m_vTriggerTargetPos.x -= 0.95f;
 			m_MinMaxX.x = m_vTriggerTargetPos.x;
 			m_MinMaxX.y = m_vTriggerTargetPos.x - 5.f;
 
 			_vector vTriggerPos = XMLoadFloat3(&m_vTriggerTargetPos);
 			vTriggerPos = XMVectorSetW(vTriggerPos, 1.f);
-
-			//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTriggerPos);
 			m_pActorCom->Set_Position(vTriggerPos);
 
 			m_IsPinBall = true;
@@ -982,7 +978,8 @@ _bool CMay::Trigger_End(const _double dTimeDelta)
 		m_pModelCom->Get_CurAnimIndex() == ANI_M_RocketFirework || 
 		m_pModelCom->Get_CurAnimIndex() == ANI_M_BruteCombat_Attack_Var1 ||
 		m_pModelCom->Get_CurAnimIndex() == ANI_M_Lever_Left ||
-		m_pModelCom->Get_CurAnimIndex() == ANI_M_Valve_Rotate_MH)
+		m_pModelCom->Get_CurAnimIndex() == ANI_M_Valve_Rotate_MH ||
+		m_pModelCom->Get_CurAnimIndex() == ANI_M_PinBall_MH)
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 		m_IsCollide = false;
@@ -1189,51 +1186,67 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 
 void CMay::PinBall(const _double dTimeDelta)
 {
-	_vector vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
-	_vector vLeft = XMVectorSet(-1.f, 0.f, 0.f, 0.f);
-	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-	// 오른쪽
-	if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
+	if (true == m_IsPinBall)
 	{
-		m_pModelCom->Set_Animation(ANI_M_PinBall_Right);
-		/* x값 범위 내에서 움직임 */
-		if(m_MinMaxX.y <= XMVectorGetX(vPosition))
-			m_pActorCom->Move(vLeft * 0.1f, dTimeDelta);
+		_vector vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+		_vector vLeft = XMVectorSet(-1.f, 0.f, 0.f, 0.f);
+		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-		//m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
-	}
-	// 왼쪽
-	else if (m_pGameInstance->Key_Pressing(DIK_LEFT))
-	{
-		m_pModelCom->Set_Animation(ANI_M_PinBall_Left);
-		/* x값 범위 내에서 움직임 */
-		if (m_MinMaxX.x >= XMVectorGetX(vPosition))
-			m_pActorCom->Move(vRight * 0.1f, dTimeDelta);
+		/* 공이 죽었을 때 or 골인 했을 때 */
+		if (true == ((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Failed())
+		{
+			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 
-		//m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
-	}
-	else
-		m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
+			m_IsPinBall = false;
+			m_IsCollide = false;
+			return;
+		}
 
-	/* 벽 올리고 내리고 */
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB))
-	{
-		m_pModelCom->Set_Animation(ANI_M_PinBall_Right_HitStart);
-		m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_Right_Hit);
+		/* 벽 올리고 내리고 */
+		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB))
+		{
+			m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_Right_Hit);
+			((CPInBall_Blocked*)(CDataStorage::GetInstance()->Get_Pinball_Blocked()))->Switching();
+		}
 
-		((CPInBall_Blocked*)(CDataStorage::GetInstance()->Get_Pinball_Blocked()))->Switching();
-	}
-	else
-		m_pModelCom->Set_Animation(ANI_M_PinBall_MH_Hit);
+		if (false == ((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_StartGame())
+		{
+			/* 오른쪽 */
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
+			{
+				m_pModelCom->Set_Animation(ANI_M_PinBall_Right);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
 
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
-	{
-		m_pModelCom->Set_Animation(ANI_M_PinBall_Right_HitStart);
-		m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_Left_Hit);
+				/* x값 범위 내에서 움직임 */
+				if (m_MinMaxX.y <= XMVectorGetX(vPosition))
+					m_pActorCom->Move(vLeft * 0.1f, dTimeDelta);
+			}
+			/* 왼쪽 */
+			else if (m_pGameInstance->Key_Pressing(DIK_LEFT))
+			{
+				m_pModelCom->Set_Animation(ANI_M_PinBall_Left);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
 
-		((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->StartGame();
-		((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
+				/* x값 범위 내에서 움직임 */
+				if (m_MinMaxX.x >= XMVectorGetX(vPosition))
+					m_pActorCom->Move(vRight * 0.1f, dTimeDelta);
+			}
+			/* 공 발사 */
+			else
+			{
+				m_pModelCom->Set_Animation(ANI_M_PinBall_MH);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
+			}
+
+			if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
+			{
+				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_Left_Hit);
+
+				((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->StartGame();
+				((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
+			}
+		}
 	}
 }
 

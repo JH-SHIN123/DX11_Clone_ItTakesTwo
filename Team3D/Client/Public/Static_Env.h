@@ -42,6 +42,7 @@ private:
 
 private:
 	HRESULT Ready_Component(void* pArg);
+	HRESULT Set_Simulation();
 	HRESULT Set_MeshRenderGroup();
 	HRESULT Add_GameObject_ToRenderGroup();
 

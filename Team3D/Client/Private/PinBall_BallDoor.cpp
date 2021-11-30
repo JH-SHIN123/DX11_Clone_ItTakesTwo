@@ -41,8 +41,6 @@ HRESULT CPinBall_BallDoor::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
 
 	CDataStorage::GetInstance()->Set_Pinball_BallDoor(this);
-	Set_DoorState(false);
-
 	return S_OK;
 }
 
@@ -68,6 +66,9 @@ _int CPinBall_BallDoor::Late_Tick(_double dTimeDelta)
 HRESULT CPinBall_BallDoor::Render(RENDER_GROUP::Enum eGroup)
 {
 	CDynamic_Env::Render(eGroup);
+
+	if (false == m_bReady && true == m_bDoorState)
+		return S_OK;
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
@@ -97,6 +98,7 @@ void CPinBall_BallDoor::MoveMent(_double dTimeDelta)
 	if (false == m_bReady)
 		return;
 
+	/* ¿­¸±¶§ */
 	if (false == m_bDoorState)
 	{
 		_float	fAngle = 100.f * (_float)dTimeDelta;
@@ -107,6 +109,7 @@ void CPinBall_BallDoor::MoveMent(_double dTimeDelta)
 
 		m_pTransformCom->RotatePitch_Angle(dTimeDelta, 100.f);
 	}
+	/* ´ÝÈú¶§ */
 	else
 	{
 		_float	fAngle = 100.f * -(_float)dTimeDelta;
