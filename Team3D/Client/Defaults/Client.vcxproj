@@ -294,13 +294,15 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
+    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
+    <ClCompile Include="..\Private\CamEffect.cpp" />
+    <ClCompile Include="..\Private\Cam_Helper.cpp" />
     <ClCompile Include="..\Private\BigButtonFrame.cpp" />
     <ClCompile Include="..\Private\Bridge.cpp" />
     <ClCompile Include="..\Private\DeadLine.cpp" />
     <ClCompile Include="..\Private\BigPlanet.cpp" />
     <ClCompile Include="..\Private\Boss_Missile.cpp" />
-    <ClCompile Include="..\Private\CamEffect.cpp" />
-    <ClCompile Include="..\private\Cam_Helper.cpp" />
     <ClCompile Include="..\Private\DummyWall.cpp" />
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
@@ -323,8 +325,6 @@
     <ClCompile Include="..\private\InGameEffect_Model.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Rect.cpp" />
     <ClCompile Include="..\private\Effect_Landing_Smoke.cpp" />
-    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
-    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\BigButton.cpp" />
     <ClCompile Include="..\Private\CameraActor.cpp" />
     <ClCompile Include="..\Private\CameraBehaviorCallback.cpp" />
