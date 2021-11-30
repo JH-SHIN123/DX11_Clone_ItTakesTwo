@@ -19,6 +19,11 @@ void CCameraActor::Set_Position(_fvector vPosition)
 	m_pController->setPosition(MH_PxExtendedVec3(vPosition));
 }
 
+_fvector CCameraActor::Get_Position()
+{
+	return XMVectorSet(m_pController->getPosition().x, m_pController->getPosition().y, m_pController->getPosition().z, 1.f);
+}
+
 HRESULT CCameraActor::NativeConstruct_Prototype()
 {
 	CActor::NativeConstruct_Prototype();
@@ -43,8 +48,8 @@ HRESULT CCameraActor::NativeConstruct(void * pArg)
 	m_pFilters = new PxControllerFilters(0, 0, m_pFilterCallback);
 
 	PxCapsuleControllerDesc CapsuleControllerDesc = PxCapsuleControllerDesc();
-	CapsuleControllerDesc.height = 1.f;
-	CapsuleControllerDesc.radius = 1.f;
+	CapsuleControllerDesc.height = 0.1f;
+	CapsuleControllerDesc.radius = 0.4f;
 	CapsuleControllerDesc.behaviorCallback = m_pBehaviorCallback;
 	CapsuleControllerDesc.material = m_pGameInstance->Get_BasePxMaterial();
 	CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransform->Get_State(CTransform::STATE_POSITION));
@@ -64,9 +69,9 @@ HRESULT CCameraActor::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-void CCameraActor::Move(_fvector vMove, _double dTimeDelta)
+PxControllerCollisionFlags CCameraActor::Move(_fvector vMove, _double dTimeDelta)
 {
-	m_pController->move(MH_PxVec3(vMove), 0.001f, (_float)dTimeDelta, *m_pFilters);
+	return m_pController->move(MH_PxVec3(vMove), 0.001f, (_float)dTimeDelta, *m_pFilters);
 }
 
 void CCameraActor::Update(_double dTimeDelta)
@@ -86,13 +91,16 @@ void CCameraActor::Set_CorrectPosition()
 			PxRaycastBuffer RaycastBuffer;
 
 			_vector vPlayerPos = DATABASE->GetCody()->Get_Position();
-			_vector vCameraPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
-			_vector vDir = vCameraPos - vPlayerPos;
-			_float	fDist = XMVectorGetX(XMVector3Length(vDir));
-			vPlayerPos += vDir;
-			vDir = XMVector3Normalize(vDir);
-
-			if (m_pGameInstance->Raycast(MH_PxVec3(vPlayerPos), MH_PxVec3(vDir), fDist, RaycastBuffer, PxHitFlag::ePOSITION))
+			_vector vOriginPos = Get_Position();
+			_vector vDir = vOriginPos - vPlayerPos;
+			
+			_float fDist = XMVectorGetX(XMVector4Length(vDir));
+			vPlayerPos += XMVector4Normalize(vDir) ;
+			
+			//_vector vDir = vCameraPos - vPlayerPos;
+		
+				
+			if (m_pGameInstance->Raycast(MH_PxVec3(vPlayerPos), MH_PxVec3(XMVector4Normalize(vDir)), fDist, RaycastBuffer, PxHitFlag::ePOSITION))
 				m_pController->setPosition(MH_PxExtendedVec3(RaycastBuffer.block.position));
 		}
 	}

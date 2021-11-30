@@ -21,11 +21,14 @@ public: /* Struct */
 
 public: /* Setter */
 	void	Set_Position(_fvector vPosition);
-
+	void	Set_IsCollision(_bool bSet) { m_bIsCollision = bSet; };
+	/*Getter*/
+	_fvector Get_Position();
+	_bool	Get_Collision() { return m_bIsCollision; }
 public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual HRESULT	NativeConstruct_Prototype() override;
-	void	Move(_fvector vMove, _double dTimeDelta);
+	PxControllerCollisionFlags	Move(_fvector vMove, _double dTimeDelta);
 	void	Update(_double dTimeDelta);
 	void	Set_CorrectPosition();
 
@@ -39,6 +42,7 @@ private:
 	class CCameraBehaviorCallback*	m_pBehaviorCallback = nullptr;
 	class CCameraFilterCallback*	m_pFilterCallback = nullptr;
 
+	_bool							m_bIsCollision = false;
 public:
 	static CCameraActor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CComponent* Clone_Component(void* pArg) override;

@@ -6,7 +6,6 @@
 #include"Cody.h"
 
 BEGIN(Client)
-class CCameraActor;
 class CMainCamera final : public CCamera
 {
 	enum CamRev {Rev_Holizontal,Rev_Prependicul,Rev_End};
@@ -35,7 +34,6 @@ public:
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
 private:
-	CCameraActor* m_pActorCom = nullptr;
 	CGameObject* m_pTargetObj = nullptr;
 	CCam_Helper* m_pCamHelper = nullptr;
 private:
@@ -52,7 +50,6 @@ private:
 
 
 	//For.Debug
-	void ChangeViewPort();
 	void KeyCheck(_double dTimeDelta);
 private:
 	_int	ReSet_Cam_FreeToAuto();		//변수 초기화용
@@ -86,9 +83,7 @@ private:
 	CamFreeOption m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 
 	//For.SpringCamera
-	_float m_fCamRadius = 0.f;
-
-
+	_bool m_bIsCollision = false;
 	//For.SoftMove
 	_float3 m_vPlayerPos = { 0.f,0.f,0.f };
 	//회전 보간용

@@ -13,7 +13,9 @@ PxControllerBehaviorFlags CCameraBehaviorCallback::getBehaviorFlags(const PxShap
 			return PxControllerBehaviorFlags();
 
 		if (pUserData->eID != GameID::eCODY && pUserData->eID != GameID::eMAY)
-			m_pCameraActor->Set_CorrectPosition();
+   			m_pCameraActor->Set_IsCollision(true);
+		else
+			m_pCameraActor->Set_IsCollision(false);
 	}
 
 	return PxControllerBehaviorFlags();
