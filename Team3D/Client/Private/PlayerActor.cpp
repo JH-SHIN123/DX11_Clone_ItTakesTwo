@@ -194,24 +194,24 @@ void CPlayerActor::Reorder_Gravity()
 
 	if (fX == fMax)
 	{
-		if (fX > 0.f)
-			m_vPlayerUp = _float3(-1.f, 0.f, 0.f);
-		else
+		if (m_vPlayerUp.x > 0.f)
 			m_vPlayerUp = _float3(1.f, 0.f, 0.f);
+		else
+			m_vPlayerUp = _float3(-1.f, 0.f, 0.f);
 	}
 	else if (fY == fMax)
 	{
-		if (fY > 0.f)
+		if (m_vPlayerUp.y > 0.f)
 			m_vPlayerUp = _float3(0.f, 1.f, 0.f);
 		else
 			m_vPlayerUp = _float3(0.f, -1.f, 0.f);
 	}
 	else if (fZ == fMax)
 	{
-		if (fZ > 0.f)
-			m_vPlayerUp = _float3(0.f, 0.f, -1.f);
-		else
+		if (m_vPlayerUp.z > 0.f)
 			m_vPlayerUp = _float3(0.f, 0.f, 1.f);
+		else
+			m_vPlayerUp = _float3(0.f, 0.f, -1.f);
 	}
 
 	m_pController->setUpDirection(MH_PxVec3(m_vPlayerUp));
