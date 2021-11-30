@@ -426,7 +426,7 @@ void CGameInstance::Release_Engine()
 	CRenderTarget_Manager::GetInstance()->Clear_Buffers();
 #endif
 
-	if (CGameInstance::DestroyInstance())
+	if (CGameInstance::GetInstance()->DestroyInstance())
 		MSG_BOX("Failed to Release CGameInstance.");
 	if (CLevel_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CLevel_Manager.");
