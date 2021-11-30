@@ -314,7 +314,7 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vPlayerUp = XMVector4Normalize(pPlayerTransform->Get_State(CTransform::STATE_UP));
 	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	m_fCulCalculateUp = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
-	m_fPreCalculateUp += (m_fCulCalculateUp - m_fPreCalculateUp) * dTimeDelta;
+	m_fPreCalculateUp += (m_fCulCalculateUp - m_fPreCalculateUp) * (_float)dTimeDelta;
 
 	
 	//카메라 회전에 따른 거리체크
