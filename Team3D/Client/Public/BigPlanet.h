@@ -51,7 +51,26 @@ private:
 
 	_float3		m_vRotateDir = {};
 	_float		m_fRotateTime = 0.f;
-	_float		m_fSpeed = 5.f;
+	_float		m_fSpeed = 20.f;
+
+
+	/* For.HookUFO */
+	_bool m_IsHookUFO = false;
+	_vector m_vHookUFOAxis = {};
+	_bool m_bGoToHooker = false;
+
+	_float m_faArmLength = 5.f;
+	_float m_faVelocity = 0.f;
+	_float m_faAcceleration = 0.f;
+	_float m_fRopeAngle = 0.f;
+	_float3 m_vStartPosition = {};
+	_float3 m_vDstPosition = {};
+
+
+	// Arbitrary damping
+	_float m_faDamping = 0.495f;
+
+	_bool m_IsMayCollide = false;
 
 
 

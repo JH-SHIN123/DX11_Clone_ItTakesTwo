@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "RobotParts.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -11,11 +11,11 @@ END
 
 BEGIN(Client)
 
-class CRobotHead : public CGameObject
+class CRobotHead final : public CRobotParts
 {
 protected:
 	explicit CRobotHead(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CRobotHead(const CRobotHead& rhs);
+	explicit CRobotHead(const CRobotParts& rhs);
 	virtual ~CRobotHead() = default;
 
 public:
@@ -28,6 +28,10 @@ public:
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
+
+
+	/* For.Trigger */
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
@@ -44,6 +48,7 @@ private:
 
 	// 배터리업는데 레버쳤을때
 	_bool		m_bHitLeverInActive = false;
+	ROBOTDESC	m_tRobotPartsDesc;
 
 protected:
 	/* For.Component */

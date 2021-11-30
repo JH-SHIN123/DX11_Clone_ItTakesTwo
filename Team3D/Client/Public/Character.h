@@ -31,7 +31,6 @@ public:
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
-
 protected: /* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;

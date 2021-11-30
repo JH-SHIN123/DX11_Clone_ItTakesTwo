@@ -32,12 +32,11 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 
 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObject_2D_Env_Particle", nullptr, (CGameObject**)&m_pParticle);
 	m_pParticle->Set_InstanceCount(5000);
-	m_pTransformCom->Set_Scale(XMVectorSet(3.05f, 1.65f, 3.05f, 0.f));
+	//m_pTransformCom->Set_Scale(XMVectorSet(3.05f, 1.65f, 3.05f, 0.f));
 
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(63.75f, 72.35f, 196.f, 1.f));
-
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(62.9901505f, 35.f, 195.674637f, 1.f));
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform2"), (CComponent**)&m_pPhysxTransformCom), E_FAIL);
+	m_pTransformCom->Set_Scale(XMVectorSet(2.85f, 2.85f, 2.85f, 1.f));
 
 	_matrix PhysxWorldMatrix = XMMatrixIdentity();
 	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -50,7 +49,7 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eGRAVITYPIPE, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pPhysxTransformCom;
-	ArgDesc.pGeometry = new PxCapsuleGeometry(12.f, 32.f);
+	ArgDesc.pGeometry = new PxCapsuleGeometry(14.5f, 90.f);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
 
@@ -189,6 +188,7 @@ CGameObject * CEffect_GravityPipe::Clone_GameObject(void * pArg)
 
 void CEffect_GravityPipe::Free()
 {
+	Safe_Release(m_pPhysxTransformCom);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTexturesCom_Distortion);
 	Safe_Release(m_pTexturesCom_ColorRamp);

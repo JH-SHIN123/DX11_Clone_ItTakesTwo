@@ -540,7 +540,15 @@
 #define ANI_C_WallSlide_Jump_Vertical 536
 #define ANI_C_WallSlide_MH 537
 #define ANI_C_WallSlide_MH_ReadyToDash 538
-
+#define ANI_C_Rocket_Down 539
+#define ANI_C_Rocket_Enter 540
+#define ANI_C_Rocket_Exit 541
+#define ANI_C_Rocket_Left 542
+#define ANI_C_Rocket_MH 543
+#define ANI_C_Rocket_Right 544
+#define ANI_C_Rocket_Up 545
+#define ANI_C_SpacePortal_Exit 546
+#define ANI_C_SpacePortal_Travel 547
 
 #pragma endregion
 
@@ -1128,3 +1136,8 @@
 #define R_InActive_Lever 4
 
 #pragma endregion
+
+
+#define ST_GRAVITYPATH 0
+#define ST_PINBALL 1
+#define ST_RAIL 2

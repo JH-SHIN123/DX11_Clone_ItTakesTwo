@@ -184,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
+    <ClInclude Include="..\Public\BigButtonFrame.h" />
     <ClInclude Include="..\Public\Boss_Missile.h" />
     <ClInclude Include="..\Public\Bridge.h" />
     <ClInclude Include="..\Public\CamEffect.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="..\public\CutScene.h" />
     <ClInclude Include="..\public\CutScenePlayer.h" />
     <ClInclude Include="..\public\DeadLine.h" />
+    <ClInclude Include="..\Public\DummyWall.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />
     <ClInclude Include="..\public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Color.txt" />
@@ -266,6 +268,7 @@
     <ClInclude Include="..\Public\RobotBattery.h" />
     <ClInclude Include="..\Public\RobotHead.h" />
     <ClInclude Include="..\Public\RobotLever.h" />
+    <ClInclude Include="..\Public\RobotParts.h" />
     <ClInclude Include="..\Public\Rocket.h" />
     <ClInclude Include="..\Public\SavePoint.h" />
     <ClInclude Include="..\Public\SecurityCamera.h" />
@@ -293,16 +296,26 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\CamEffect.cpp" />
     <ClCompile Include="..\Private\Cam_Helper.cpp" />
     <ClCompile Include="..\private\CutScene.cpp" />
     <ClCompile Include="..\private\CutScenePlayer.cpp" />
+=======
+    <ClCompile Include="..\Private\BigButtonFrame.cpp" />
+>>>>>>> main
     <ClCompile Include="..\Private\Bridge.cpp" />
     <ClCompile Include="..\Private\DeadLine.cpp" />
     <ClCompile Include="..\Private\BigPlanet.cpp" />
     <ClCompile Include="..\Private\Boss_Missile.cpp" />
+<<<<<<< HEAD
+=======
+    <ClCompile Include="..\Private\CamEffect.cpp" />
+    <ClCompile Include="..\private\Cam_Helper.cpp" />
+    <ClCompile Include="..\Private\DummyWall.cpp" />
+>>>>>>> main
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
@@ -369,6 +382,7 @@
     <ClCompile Include="..\Private\RobotBattery.cpp" />
     <ClCompile Include="..\Private\RobotHead.cpp" />
     <ClCompile Include="..\Private\RobotLever.cpp" />
+    <ClCompile Include="..\Private\RobotParts.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
     <ClCompile Include="..\Private\SavePoint.cpp" />
     <ClCompile Include="..\Private\SecurityCamera.cpp" />

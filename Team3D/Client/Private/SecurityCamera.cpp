@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "..\public\SecurityCamera.h"
-#include "GameInstance.h"
-#include "DataStorage.h"
 #include "May.h"
 #include "Cody.h"
+#include "RobotParts.h"
 
 CSecurityCamera::CSecurityCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -30,7 +29,11 @@ HRESULT CSecurityCamera::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_SecurityCamera"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(35.f, 1.f, 31.85f, 1.f));
+	ROBOTDESC SecurityCameraDesc;
+	if (nullptr != pArg)
+		memcpy(&SecurityCameraDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, SecurityCameraDesc.vPosition);
+
 	return S_OK;
 }
 

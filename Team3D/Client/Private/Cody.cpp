@@ -148,8 +148,19 @@ _int CCody::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
+	//tEST
+	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	if(m_pGameInstance->Key_Pressing(DIK_J))
+		m_pActorCom->Set_ZeroGravity(true, true, false);
+	if (m_pGameInstance->Key_Pressing(DIK_K))
+		m_pActorCom->Set_ZeroGravity(true, false, false);
+	if(m_pGameInstance->Key_Pressing(DIK_L))
+		m_pActorCom->Set_ZeroGravity(true, true, true);
+
 #pragma region BasicActions
 	/////////////////////////////////////////////
+	Wall_Jump(dTimeDelta);
 	if (Trigger_Check(dTimeDelta))
 	{
 		Go_Grind(dTimeDelta);
@@ -166,6 +177,7 @@ _int CCody::Tick(_double dTimeDelta)
 		Boss_Missile_Hit(dTimeDelta);
 		Boss_Missile_Control(dTimeDelta);
 		Falling_Dead(dTimeDelta);
+		//Wall_Jump(dTimeDelta);
 	}
 	else
 	{
@@ -290,9 +302,9 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_2)) /* 2층 */
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 125.f, 170.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_F3)) /* 2스테이지 입구 */
+	if (m_pGameInstance->Key_Down(DIK_3)) /* 2스테이지 입구 */
 		m_pActorCom->Set_Position(XMVectorSet(620.f, 760.f, 195.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_F4)) /* 2스테이지 */
+	if (m_pGameInstance->Key_Down(DIK_4)) /* 2스테이지 */
 		m_pActorCom->Set_Position(XMVectorSet(960.f, 720.f, 193.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_5))/* 3스테이지 */
 		m_pActorCom->Set_Position(XMVectorSet(-610.f, 760.f, 195.f, 1.f));
@@ -305,6 +317,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
 #pragma endregion
+
 #pragma region 8Way_Move
 	
 	if (m_IsAirDash == false)
@@ -387,16 +400,35 @@ void CCody::KeyInput(_double dTimeDelta)
 				}
 			}
 
+			///// 중력 테스트
+			//_vector vUp, vRight, vLook = XMVectorZero();
+			//_bool bGravityReordered = m_pActorCom->Get_IsGravityReordered();
+			//_vector WhenGravityReorderedDir = XMVectorZero();
+			//if (bGravityReordered == false) // 중력발판위에 있다면
+			//{
+			//	
+			//	//m_pActorCom->Set_ZeroGravity(true, true, true);
+			//	// -> 밟은지점의 노말 == 플레이어 Up.
+			//	// -> 중력발판의 Right 축을 가져오자.
+			//	// -> 둘이 외적하면 Look 나옴.
+			//	// -> 그걸 Dir로 쓴다면?
+			//	vUp = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
+			//	vRight = XMVector3Normalize(m_pActorCom->Get_GravityPath_RightVector());
+			//	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
+			//}
+			//////
+
 			if (m_pGameInstance->Key_Pressing(DIK_W))
 			{
 				bMove[0] = !bMove[0];
-				XMStoreFloat3(&m_vMoveDirection, vCameraLook);
+					XMStoreFloat3(&m_vMoveDirection, vCameraLook);
+
 				m_iSavedKeyPress = UP;
 			}
 			if (m_pGameInstance->Key_Pressing(DIK_S))
 			{
 				bMove[0] = !bMove[0];
-				XMStoreFloat3(&m_vMoveDirection, -vCameraLook);
+					XMStoreFloat3(&m_vMoveDirection, -vCameraLook);
 				m_iSavedKeyPress = DOWN;
 			}
 
@@ -582,7 +614,8 @@ void CCody::Move(const _double dTimeDelta)
 			m_bAction = false;
 
 			_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
-			vDirection = XMVectorSetY(vDirection, 0.f);
+			// 중력발판 위에 있을때는 SetY 안해야 함!
+			//vDirection = XMVectorSetY(vDirection, 0.f);
 			vDirection = XMVector3Normalize(vDirection);
 
 			m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);
@@ -1336,6 +1369,7 @@ void CCody::SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTri
 
 _bool CCody::Trigger_Check(const _double dTimeDelta)
 {
+
 	if (m_IsCollide == true)
 	{
 		if (m_eTargetGameID == GameID::eSTARBUDDY && m_pGameInstance->Key_Down(DIK_E))
@@ -1446,8 +1480,8 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
 		{
 			// 코디 전용 포탈로 이동(웜홀)
-			m_pModelCom->Set_Animation(ANI_C_Slide_Enter_Dash);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Slide_Enter_Dash);
+			m_pModelCom->Set_Animation(ANI_C_SpacePortal_Travel);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_SpacePortal_Exit);
 
 			m_pActorCom->Set_Position(XMLoadFloat4(&m_vWormholePos));
 			m_pActorCom->Set_ZeroGravity(true, false, true);
@@ -1473,13 +1507,19 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			/* 데드라인과 충돌시 */
 			/* 낙사 애니메이션인데 다음애니메이션이 뭔지 모르겠음 */
-			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
 			/* 왜 중력을 0으로 하면 추락하는지 모르겠음 */
 			m_pActorCom->Set_Gravity(1.f);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_IsDeadLine = true;
+		}
+		else if (m_eTargetGameID == GameID::eDUMMYWALL && m_bWallAttach == false && m_fWallJumpingTime <= 0.f)
+		{
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
+			m_bWallAttach = true;
 		}
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
 		{
@@ -1490,7 +1530,8 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine)
+		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
+		|| m_bWallAttach)
 		return true;
 
 	return false;
@@ -1504,7 +1545,6 @@ _bool CCody::Trigger_End(const _double dTimeDelta)
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Exit
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Valve_Rotate_MH
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_PlayRoom_ZeroGravity_MH
-		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ChangeSize_PlanetPush_Large
 		|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Slide_Enter_Dash))
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
@@ -1596,7 +1636,7 @@ void CCody::Activate_RobotLever(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
-			m_IsActivateRobotLever = false;
+			m_IsActivateRobotLever = false;	
 			m_IsCollide = false;
 
 		}
@@ -1817,6 +1857,41 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 			m_pActorCom->Set_Jump(true);
 			m_IsHookUFO = false;
 			m_IsCollide = false;
+		}
+	}
+}
+
+void CCody::Wall_Jump(const _double dTimeDelta)
+{
+	if (true == m_bWallAttach && false == m_IsWallJumping)
+	{
+		m_pActorCom->Set_ZeroGravity(true, false, true);
+
+		if (m_pModelCom->Is_AnimFinished(ANI_C_WallSlide_MH))
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_MH);
+
+		if (m_pGameInstance->Key_Down(DIK_SPACE))
+		{
+			m_bWallAttach = false;
+			m_IsWallJumping = true;
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_Jump);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_Enter);
+			m_pTransformCom->RotateYaw(180.f);
+		}
+	}
+
+	if (m_IsWallJumping == true)
+	{
+		// 이거 왜 010이 나오지
+		_vector vWallUp = { m_pActorCom->Get_Controller()->getUpDirection().x, m_pActorCom->Get_Controller()->getUpDirection().y, m_pActorCom->Get_Controller()->getUpDirection().z, 0.f };
+
+		m_pActorCom->Move(-vWallUp, dTimeDelta);
+
+		m_fWallJumpingTime += (_float)dTimeDelta;
+		if (m_fWallJumpingTime > 0.2f)
+		{
+			m_IsWallJumping = false;
+			m_fWallJumpingTime = 0.f;
 		}
 	}
 }
