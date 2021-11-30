@@ -85,7 +85,8 @@ HRESULT CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
 
 	/* Update_CombinedTransformations */
 	_matrix WorldMatrixTemp;
-	WorldMatrixTemp = XMLoadFloat4x4(&m_AnimTransformations[2]);
+
+	// Scale æ»∏‘¿”
 
 	_float3 fRotateAngle = Get_RotationAngles(m_AnimTransformations[1]);
 	_matrix RotateMatrix = XMMatrixRotationX((fRotateAngle.x));
@@ -95,8 +96,11 @@ HRESULT CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
 		RotateMatrix *= XMMatrixRotationY(XMConvertToRadians(180.f));
 	RotateMatrix *= XMMatrixRotationZ((fRotateAngle.y));
 
-	WorldMatrixTemp *= RotateMatrix;
+	WorldMatrixTemp = RotateMatrix;
 	WorldMatrixTemp *= XMLoadFloat4x4(&m_AnimTransformations[0]);
+	WorldMatrixTemp.r[3] *= 0.001f; // Pivot Scaling
+	WorldMatrixTemp.r[3] = XMVectorSetW(WorldMatrixTemp.r[3], 1.f);
+
 	WorldMatrix = WorldMatrixTemp;
 
 	/* Update Progress */
