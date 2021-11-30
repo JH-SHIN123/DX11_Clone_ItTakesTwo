@@ -201,6 +201,7 @@ _int CCody::Tick(_double dTimeDelta)
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	_bool isTakePath = m_pPathCom->Update_Animation(dTimeDelta, WorldMatrix);
 	if (true == isTakePath) {
+		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
 		m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 		m_pActorCom->Set_Position(WorldMatrix.r[3]);
 	}
@@ -1475,42 +1476,11 @@ void CCody::Go_Grind(const _double dTimeDelta)
 #pragma region Grind_Actions
 	if (m_IsOnGrind == true)
 	{
-		//
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Grind_Grapple_ToGrind))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
-			if (m_dTestTime < 1.0)
-			{
-				m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
-			}
 		}
-		if (m_dTestTime >= 1.0)
-		{
-			_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), (_float)m_dTestTime), 1.f);
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-			m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
-
-			m_pModelCom->Set_Animation(ANI_C_Grind_Jump);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Land);
-			m_pActorCom->Jump_Start(2.6f);
-
-			m_dTestTime = 0.0; //Points 1과 2사이를 곡선으로 보간 0과 3은 곡선이 어떤 형태를 띌지 수치 조절.
-			m_IsOnGrind = false;
-			return;
-		}
-		m_dTestTime += (_float)dTimeDelta / 5.f;
-
-		_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), (_float)m_dTestTime), 1.f);
-		_vector vPhsixPos = XMVectorSet((_float)m_pActorCom->Get_Controller()->getPosition().x, (_float)m_pActorCom->Get_Controller()->getPosition().y, (_float)m_pActorCom->Get_Controller()->getPosition().z, 1.f);
-		_vector vDir = XMVectorSetW(XMVector3Normalize(vPos - vPhsixPos), 0.f);
-
-		m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
-		m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta / 10.f);
 	}
-	//_vector vCurPos = XMVectorSetW(XMVectorLerp(XMLoadFloat3(vCurNode), XMLoadFloat3(&m_vPoints[iCurNode + 1]), dProgress),1.f);
-	//_vector vPhsXPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
-	//_vector vDir = XMVector4Normalize(vCurPos - vPhsXPos);
-
 
 #pragma endregion
 }

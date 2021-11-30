@@ -92,7 +92,7 @@ _bool CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
 	/* Update Progress */
 	m_fProgressAnim = _float(m_dCurrentTime / m_dDurationTime);
 
-	return S_OK;
+	return true;
 }
 
 HRESULT CPath::Update_AnimTransformations(_double dTimeDelta)
@@ -132,7 +132,7 @@ _fmatrix CPath::Update_CombinedTransformations()
 	RotateMatrix *= XMMatrixRotationZ((fRotateAngle.y));
 
 	/* Translation */
-	TransMatrix *= XMLoadFloat4x4(&m_AnimTransformations[CHANNEL_TRANSLATION]);
+	TransMatrix = XMLoadFloat4x4(&m_AnimTransformations[CHANNEL_TRANSLATION]);
 	TransMatrix.r[3] *= 0.001f; // Pivot Scaling
 	TransMatrix.r[3] = XMVectorSetW(TransMatrix.r[3], 1.f);
 
