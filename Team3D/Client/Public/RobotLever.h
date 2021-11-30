@@ -13,9 +13,9 @@ END
 
 BEGIN(Client)
 
-class CRobotLever : public CRobotParts
+class CRobotLever final : public CRobotParts
 {
-protected:
+private:
 	explicit CRobotLever(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CRobotLever(const CRobotParts& rhs);
 	virtual ~CRobotLever() = default;
@@ -51,7 +51,7 @@ private:
 
 	ROBOTDESC	m_tRobotPartsDesc;
 
-protected:
+private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;

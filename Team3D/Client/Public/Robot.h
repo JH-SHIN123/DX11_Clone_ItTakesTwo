@@ -12,9 +12,9 @@ END
 
 BEGIN(Client)
 
-class CRobot : public CRobotParts
+class CRobot final : public CRobotParts
 {
-protected:
+private:
 	explicit CRobot(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CRobot(const CRobotParts& rhs);
 	virtual ~CRobot() = default;
@@ -22,24 +22,19 @@ protected:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-public:
 	virtual HRESULT Render_ShadowDepth() override;
-
-	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
-public:
+public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
 	ROBOTDESC	m_tRobotPartsDesc;
 
-protected:
-	/* For.Component */
+private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;

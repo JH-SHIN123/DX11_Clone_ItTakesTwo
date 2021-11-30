@@ -201,12 +201,9 @@ private:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
@@ -217,7 +214,7 @@ public:
 	//PLAYER_SIZE Get_CurSize() { return m_eCurPlayerSize; }
 
 public:
-	void	Set_BossMissile_Attack(); // CBoss_Missile
+	void Set_BossMissile_Attack(); // CBoss_Missile
 
 	// Tick 에서 호출될 함수들
 private:
