@@ -1886,7 +1886,7 @@ void CCody::Wall_Jump(const _double dTimeDelta)
 	if (m_IsWallJumping == true)
 	{
 		if(m_fWallToWallSpeed <= 50.f)
-			m_fWallToWallSpeed += (_float)dTimeDelta * 70.f;
+			m_fWallToWallSpeed += (_float)dTimeDelta * 60.f;
 
 		PxVec3 vNormal = m_pActorCom->Get_CollideNormal();
 		_vector vWallUp = { vNormal.x, vNormal.y, vNormal.z, 0.f };

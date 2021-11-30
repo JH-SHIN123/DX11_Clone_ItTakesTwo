@@ -459,10 +459,10 @@ HRESULT CLevel_Stage::Ready_Layer_RobotParts(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_DummyWall(const _tchar * pLayerTag)
 {
 	ROBOTDESC DummyWallDesc;
-	DummyWallDesc.vPosition = { -820.801138f, 766.982971f, 196.254788f, 1.f };
+	DummyWallDesc.vPosition = { -805.311f, 767.083f, 189.47f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_DummyWall"), &DummyWallDesc), E_FAIL);
 
-	DummyWallDesc.vPosition = { -820.801138f, 766.982971f, 191.221255f, 1.f };
+	DummyWallDesc.vPosition = { -805.311f, 767.083f, 197.97f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_DummyWall"), &DummyWallDesc), E_FAIL);
 	return S_OK;
 }
