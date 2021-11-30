@@ -309,7 +309,10 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	}
 	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 14.f;
 	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 14.f;
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 
 	//플레이어 업에따른 회전체크(For.May)
 	_vector vPlayerUp = XMVector4Normalize(pPlayerTransform->Get_State(CTransform::STATE_UP));
@@ -366,8 +369,13 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 	_matrix QuarRev = XMMatrixRotationQuaternion(
 		XMQuaternionSlerp(vPreQuarternionRot,vCurQuarternionRot,
+<<<<<<< HEAD
 			dTimeDelta * XMVectorGetX(XMVector4Length(vPreQuarternionRot - vCurQuarternionRot))));
 	//XMConvertToRadians(180.f * fmod(m_fPreCalculateUp, 180.f)) if > 180  = 0.f
+=======
+		(_float)dTimeDelta * XMVectorGetX(XMVector4Length(vPreQuarternionRot - vCurQuarternionRot))));
+
+>>>>>>> main
 	
 	_matrix matTrans = XMMatrixTranslation(XMVectorGetX(vPlayerPos), XMVectorGetY(vPlayerPos), XMVectorGetZ(vPlayerPos));
 

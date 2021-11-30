@@ -243,13 +243,13 @@ void CBigPlanet::Pendulum(_double dTimeDelta)
 	else if (m_fRotateTime >= 2.4f)
 	{
 		m_pTriggerCom->Update_TriggerActor();
-		m_pStaticActorCom->Update_StaticActor();
 		m_fSpeed = 20.f;
 		m_fRotateTime = 0.f;
 		m_IsCollide = false;
 		m_bLaunch = false;
 		m_fDelay = 0.f;
 	}
+	m_pStaticActorCom->Update_StaticActor();
 }
 
 CBigPlanet * CBigPlanet::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

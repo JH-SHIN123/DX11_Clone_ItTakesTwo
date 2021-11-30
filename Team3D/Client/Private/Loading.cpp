@@ -136,7 +136,6 @@ HRESULT CLoading::Loading(Level::ID ePreLevelID, Level::ID eNextLevelID, _uint i
 	m_arrFinished[iThreadIndex] = true;
 
 	return S_OK;
-
 }
 
 #ifdef __16THREADS
