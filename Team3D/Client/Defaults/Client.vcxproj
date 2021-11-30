@@ -308,6 +308,8 @@
     <ClInclude Include="..\Public\UISprite.h" />
     <ClInclude Include="..\Public\UI_Generator.h" />
     <ClInclude Include="..\Public\UmbrellaBeam.h" />
+    <ClInclude Include="..\Public\UmbrellaBeam_Base.h" />
+    <ClInclude Include="..\Public\UmbrellaBeam_Stand.h" />
     <ClInclude Include="..\public\WallLaserTrap.h" />
     <ClInclude Include="..\public\WarpGate.h" />
     <ClInclude Include="Client.h" />
@@ -433,6 +435,8 @@
     <ClCompile Include="..\Private\UISprite.cpp" />
     <ClCompile Include="..\Private\UI_Generator.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam.cpp" />
+    <ClCompile Include="..\Private\UmbrellaBeam_Base.cpp" />
+    <ClCompile Include="..\Private\UmbrellaBeam_Stand.cpp" />
     <ClCompile Include="..\private\WallLaserTrap.cpp" />
     <ClCompile Include="..\private\WarpGate.cpp" />
     <ClCompile Include="Client.cpp" />

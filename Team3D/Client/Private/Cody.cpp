@@ -328,6 +328,8 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_9))/* 快林急 郴何 */
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_0))/* 快魂 */
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 #pragma endregion
 
 #pragma region 8Way_Move

@@ -174,9 +174,6 @@ void CPressurePlate::SetUp_DefaultPositionSetting()
 
 	if (0 == m_iOption)
 	{
-		//XMStoreFloat4(&vConvertPos, vPos);
-		//vConvertPos.y -= 4.f;
-		//m_pSupportFrame->Set_Position(XMLoadFloat4(&vConvertPos));
 		_vector vObjectPos = { 55.1267f, 215.752f, 217.445f, 1.f };
 		m_pSupportFrame->Set_Position(vObjectPos);
 
@@ -219,7 +216,6 @@ void CPressurePlate::SetUp_DefaultPositionSetting()
 
 void CPressurePlate::Button_Active(_double TimeDelta)
 {
-
 	if (true == m_IsButtonActive)
 	{
 		if (0.3f > m_fMove)

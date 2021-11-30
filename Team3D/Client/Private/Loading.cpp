@@ -67,6 +67,8 @@
 #include "ControlRoom_Battery.h"
 #include "ControlRoom_Glass.h"
 #include "UmbrellaBeam.h"
+#include "UmbrellaBeam_Base.h"
+#include "UmbrellaBeam_Stand.h"
 
 /* Jun */
 #include "MainCamera.h"
@@ -700,10 +702,17 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jin()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_ControlRoom_Glass"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Instancing/"), TEXT("GlassWall01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_ControlRoom_Glass"), CControlRoom_Glass::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
-	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) *  XMMatrixRotationX(XMConvertToRadians(90.f));
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) *  XMMatrixRotationX(XMConvertToRadians(90.f))*  XMMatrixRotationY(XMConvertToRadians(90.f));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_UmbrellaBeam"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("UmbrellaBeam_01_Umbrella"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_UmbrellaBeam"), CUmbrellaBeam::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) *  XMMatrixRotationX(XMConvertToRadians(90.f))*  XMMatrixRotationY(XMConvertToRadians(90.f));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_UmbrellaBeam_Base"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("UmbrellaBeam_01_Base"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_UmbrellaBeam_Base"), CUmbrellaBeam_Base::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) *  XMMatrixRotationX(XMConvertToRadians(90.f)) *  XMMatrixRotationY(XMConvertToRadians(90.f));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_UmbrellaBeam_Stand"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("UmbrellaBeam_01_Stand"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_UmbrellaBeam_Stand"), CUmbrellaBeam_Stand::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
 }

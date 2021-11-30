@@ -469,6 +469,12 @@
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin\10.UmbrellaBeam">
       <UniqueIdentifier>{8eb3042d-b959-4b89-8975-a23480dcb983}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\11.UmbrellaBeam_Base">
+      <UniqueIdentifier>{2de8008a-fd5c-4b35-9f23-b43c9d807520}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\12.UmbrellaBeam_Stand">
+      <UniqueIdentifier>{ce2d2122-1993-4567-bbbd-45c7d5a83e9c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -859,6 +865,12 @@
     <ClInclude Include="..\Public\UmbrellaBeam.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\10.UmbrellaBeam</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UmbrellaBeam_Stand.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\12.UmbrellaBeam_Stand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UmbrellaBeam_Base.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\11.UmbrellaBeam_Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1234,6 +1246,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UmbrellaBeam.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\10.UmbrellaBeam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UmbrellaBeam_Stand.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\12.UmbrellaBeam_Stand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UmbrellaBeam_Base.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\11.UmbrellaBeam_Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
