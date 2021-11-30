@@ -33,8 +33,10 @@ HRESULT CRotatedRobotBattery::NativeConstruct(void * pArg)
 		memcpy(&m_tRtRobotPartsDesc, (RTROBOTDESC*)pArg, sizeof(RTROBOTDESC));
 
 	_vector vPosition = m_tRtRobotPartsDesc.vPosition;
+	vPosition.m128_f32[0] += 2.55f;
+	vPosition.m128_f32[1] -= 1.44f;
+	vPosition.m128_f32[2] -= 0.59f;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(9.f));
 
 	m_UserData = USERDATA(GameID::eROBOTBATTERY, this);
 	CStaticActor::ARG_DESC ArgDesc;
@@ -59,6 +61,7 @@ HRESULT CRotatedRobotBattery::NativeConstruct(void * pArg)
 _int CRotatedRobotBattery::Tick(_double dTimeDelta)
 {
 	CRotatedRobotParts::Tick(dTimeDelta);
+
 
 	if (m_bUpdate)
 	{

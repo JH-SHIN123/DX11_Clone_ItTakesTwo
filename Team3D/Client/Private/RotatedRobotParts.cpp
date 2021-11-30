@@ -54,15 +54,17 @@ HRESULT CRotatedRobotParts::NativeConstruct(void* pArg)
 	m_tRtRobotDesc.RotZ = 0.f;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_RotatedRobotHead"), Level::LEVEL_STAGE, TEXT("GameObject_RotatedRobotHead"), &m_tRtRobotDesc, &pRobotHead), E_FAIL);
 
-	m_tRtRobotDesc.RotX = 0.f;
-	m_tRtRobotDesc.RotY = 0.f;
-	m_tRtRobotDesc.RotZ = 0.f;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_RotatedRobotLever"), Level::LEVEL_STAGE, TEXT("GameObject_RotatedRobotLever"), &m_tRtRobotDesc, &pRobotLever), E_FAIL);
 
 	m_tRtRobotDesc.RotX = 0.f;
 	m_tRtRobotDesc.RotY = 0.f;
 	m_tRtRobotDesc.RotZ = 0.f;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_RotatedRobotBattery"), Level::LEVEL_STAGE, TEXT("GameObject_RotatedRobotBattery"), &m_tRtRobotDesc, &pRobotBattery), E_FAIL);
+
+	m_tRtRobotDesc.RotX = 0.f;
+	m_tRtRobotDesc.RotY = 0.f;
+	m_tRtRobotDesc.RotZ = 0.f;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_RotatedRobotLever"), Level::LEVEL_STAGE, TEXT("GameObject_RotatedRobotLever"), &m_tRtRobotDesc, &pRobotLever), E_FAIL);
+
 
 	m_tRtRobotDesc.RotX = 0.f;
 	m_tRtRobotDesc.RotY = 0.f;

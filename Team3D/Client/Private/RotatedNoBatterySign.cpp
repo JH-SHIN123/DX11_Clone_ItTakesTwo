@@ -28,13 +28,16 @@ HRESULT CRotatedNoBatterySign::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_RotatedNoBatterySign"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-
 	if (nullptr != pArg)
 		memcpy(&m_tRtRotatedRobotPartsDesc, (RTROBOTDESC*)pArg, sizeof(RTROBOTDESC));
 
 	_vector vPosition = m_tRtRotatedRobotPartsDesc.vPosition;
+	vPosition.m128_f32[0] += 3.352f;
+	vPosition.m128_f32[1] -= 1.4f;
+	vPosition.m128_f32[2] += 1.4f;
+
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-	//m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f ,0.f), XMConvertToRadians(-90.f));
+	
 
 	CStaticActor::ARG_DESC ArgDesc;
 

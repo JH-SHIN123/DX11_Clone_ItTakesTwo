@@ -184,7 +184,6 @@ CGameObject * CEffect_GravityPipe::Clone_GameObject(void * pArg)
 
 void CEffect_GravityPipe::Free()
 {
-	Safe_Release(m_pPhysxTransformCom);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTexturesCom_Distortion);
 	Safe_Release(m_pTexturesCom_ColorRamp);

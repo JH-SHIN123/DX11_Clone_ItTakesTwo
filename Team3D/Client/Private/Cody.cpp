@@ -45,13 +45,8 @@ HRESULT CCody::NativeConstruct(void* pArg)
  	UI_Create(May, StickIcon);
  
  	UI_Create(Cody, PlayerMarker);
- 
  	//UI_Create(Cody, InputButton_InterActive);
 	 
-	m_vPoints[0] = {72.f, 0.f, -120.f };
-	m_vPoints[1] = { 0.f, 0.f, 0.f };
-	m_vPoints[2] = {42.f, 0.f, 60};
-	m_vPoints[3] = {84.f, 0.f, 20.f};
 	return S_OK;
 }
 

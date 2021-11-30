@@ -33,8 +33,10 @@ HRESULT CRotatedRobotLever::NativeConstruct(void * pArg)
 		memcpy(&m_tRtRobotPartsDesc, (RTROBOTDESC*)pArg, sizeof(RTROBOTDESC));
 
 	_vector vPosition = m_tRtRobotPartsDesc.vPosition;
+	vPosition.m128_f32[0] += 1.15f;
+	vPosition.m128_f32[1] -= 1.35f;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-70.f));
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-30.f));
 
 
 	m_UserData = USERDATA(GameID::eROBOTLEVER, this);
@@ -49,7 +51,7 @@ HRESULT CRotatedRobotLever::NativeConstruct(void * pArg)
 
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTransformCom;
-	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.7f);
+	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.5f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
