@@ -30,7 +30,8 @@ HRESULT CBatteryBox::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_BatteryBox"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.469f, 220.62184f, 224.38f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.469f, 220.95084f, 224.66f, 1.f));
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
 
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoom_Battery(TEXT("Layer_ControlRoom_Battery")), E_FAIL);
 	
@@ -58,9 +59,6 @@ _int CBatteryBox::Late_Tick(_double dTimeDelta)
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.469f, 220.95084f, 224.66f, 1.f));
-	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
 
 	return NO_EVENT;
 }

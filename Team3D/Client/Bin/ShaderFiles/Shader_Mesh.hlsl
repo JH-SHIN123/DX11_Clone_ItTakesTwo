@@ -292,6 +292,7 @@ PS_OUT_ALPHA PS_MAIN_ALPHA_MOONBABOON_GLASSWALL(PS_IN In)
 }
 
 
+
 technique11 DefaultTechnique
 {
 	// 0
@@ -354,4 +355,5 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_MAIN_ALPHA_MOONBABOON_GLASSWALL();
 	}
+
 };

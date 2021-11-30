@@ -206,6 +206,7 @@
     <ClInclude Include="..\Public\ControllerIcon.h" />
     <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
+    <ClInclude Include="..\Public\ControlRoom_Glass.h" />
     <ClInclude Include="..\public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Color.txt" />
     <ClInclude Include="..\Public\Effect_Dash.h" />
@@ -296,6 +297,7 @@
     <ClCompile Include="..\Private\ControllerIcon.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Battery.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Door.cpp" />
+    <ClCompile Include="..\Private\ControlRoom_Glass.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp" />
     <ClCompile Include="..\Private\HeaderBox.cpp" />
     <ClCompile Include="..\Private\BigPlanet.cpp" />

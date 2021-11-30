@@ -361,11 +361,14 @@
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin\06.ControlRoom_Door">
       <UniqueIdentifier>{7d68941f-ef9e-45f4-9a25-aae9935dc649}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\ControlRoom_Bettery">
-      <UniqueIdentifier>{624965be-0db4-446b-a7ed-ac33238a0f8b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin\07.ControlRoom_BetteryBox">
       <UniqueIdentifier>{509900e3-ef54-404d-8bcc-2c05bc99434e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\08.ControlRoom_Bettery">
+      <UniqueIdentifier>{624965be-0db4-446b-a7ed-ac33238a0f8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\09.ControlRoom_Glass">
+      <UniqueIdentifier>{7d31ddb1-8854-4643-b3cb-bf439128b2c1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -667,7 +670,10 @@
       <Filter>02.GameObject\04.Stage_Space\07.Jin\07.ControlRoom_BetteryBox</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ControlRoom_Battery.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\ControlRoom_Bettery</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\08.ControlRoom_Bettery</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ControlRoom_Glass.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\09.ControlRoom_Glass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -958,7 +964,10 @@
       <Filter>02.GameObject\04.Stage_Space\07.Jin\07.ControlRoom_BetteryBox</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ControlRoom_Battery.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\ControlRoom_Bettery</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\08.ControlRoom_Bettery</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ControlRoom_Glass.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\09.ControlRoom_Glass</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
