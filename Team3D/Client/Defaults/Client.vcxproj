@@ -270,6 +270,7 @@
     <ClInclude Include="..\Public\SepdStaticActor.h" />
     <ClInclude Include="..\Public\SpaceValve.h" />
     <ClInclude Include="..\public\Sky.h" />
+    <ClInclude Include="..\public\Space_Valve_Star.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
     <ClInclude Include="..\Public\Static_Env.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
@@ -371,6 +372,7 @@
     <ClCompile Include="..\Private\SepdStaticActor.cpp" />
     <ClCompile Include="..\Private\SpaceValve.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
+    <ClCompile Include="..\private\Space_Valve_Star.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
     <ClCompile Include="..\Private\Static_Env.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />

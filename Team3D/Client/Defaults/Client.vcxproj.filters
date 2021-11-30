@@ -409,6 +409,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung\04.WallLaserTrap_Button">
       <UniqueIdentifier>{11557409-6e38-46f9-bd46-3e3fd3d5834f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\05.Space_Valve_Star">
+      <UniqueIdentifier>{fd9a8160-d96b-47d1-bbc1-8925a4337c3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -729,6 +732,9 @@
     <ClInclude Include="..\Public\WallLaserTrap_Button.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\04.WallLaserTrap_Button</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Space_Valve_Star.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\05.Space_Valve_Star</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1021,6 +1027,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\WallLaserTrap_Button.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\04.WallLaserTrap_Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Space_Valve_Star.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\05.Space_Valve_Star</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
