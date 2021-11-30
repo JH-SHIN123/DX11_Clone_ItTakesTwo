@@ -19,9 +19,6 @@
     <Filter Include="02.GameObject">
       <UniqueIdentifier>{b604bc39-7ea2-4ccb-a98b-f89e2d0279b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\01.Loading">
-      <UniqueIdentifier>{ac29aab8-7d55-49ae-bb11-1270e2049714}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\02.Logo">
       <UniqueIdentifier>{6e3ecc34-09e4-48a8-b8b4-f1dd9d96c681}</UniqueIdentifier>
     </Filter>
@@ -423,9 +420,6 @@
     <ClInclude Include="..\public\Client_Defines.h">
       <Filter>98.Defines</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\MainApp.h">
-      <Filter>00.MainApp</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Level_Loading.h">
       <Filter>01.Maps\01.Loading\00.Main</Filter>
     </ClInclude>
@@ -735,6 +729,12 @@
     <ClInclude Include="..\Public\DummyWall.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MainApp.h">
+      <Filter>00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameOption.h">
+      <Filter>00.MainApp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -742,9 +742,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\MainApp.cpp">
-      <Filter>00.MainApp</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Loading.cpp">
       <Filter>01.Maps\01.Loading\00.Main</Filter>
@@ -1041,6 +1038,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\DummyWall.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MainApp.cpp">
+      <Filter>00.MainApp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

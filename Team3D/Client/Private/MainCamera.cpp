@@ -53,7 +53,7 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	XMStoreFloat4x4(&m_matPreRev, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_matQuternionRev, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
-	m_eCurCamMode = CamMode::Cam_AutoToFree;
+	m_eCurCamMode = CamMode::Cam_Free;
 	
 
 	//CameraDesc.vEye = /*_float3(0.f, 8.f, -7.f);*/_float3(0.f, 8.f, -11.f);

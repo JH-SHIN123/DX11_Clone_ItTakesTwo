@@ -202,6 +202,7 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
+    <ClInclude Include="..\Public\GameOption.h" />
     <ClInclude Include="..\public\DeadLine.h" />
     <ClInclude Include="..\Public\DummyWall.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />

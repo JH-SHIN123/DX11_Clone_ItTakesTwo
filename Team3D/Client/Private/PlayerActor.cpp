@@ -183,8 +183,6 @@ void CPlayerActor::Step_GravityPath(PxVec3 vNormal)
 	//	iBuffer = 0;
 }
 
-
-
 void CPlayerActor::Reorder_Gravity()
 {
 	if (m_pUserData->eID == GameID::eMAY) return;
@@ -228,6 +226,11 @@ void CPlayerActor::Reorder_Gravity()
 	//m_pTransform->Set_RotateQuat(MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
 	m_pTransform->RotateByUp(XMLoadFloat3(&m_vPlayerUp));
 	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+}
+
+void CPlayerActor::MoveToTarget(PxTransform PxTransform)
+{
+	m_pActor->setKinematicTarget(PxTransform);
 }
 
 void CPlayerActor::Jump_Stop()
