@@ -382,10 +382,15 @@ private:
 	void In_GravityPipe(const _double dTimeDelta);
 	void Hit_Planet(const _double dTimeDelta);
 	void Hook_UFO(const _double dTimeDelta);
+
 	/* Çý¿ø::For.DeadLine, SavePoint, PInBall */
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
 
+public:
+	void PinBall_Respawn(_double dTimeDelta);
+
+private:
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);
 

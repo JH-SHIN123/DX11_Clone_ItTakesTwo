@@ -19,8 +19,7 @@ void CPinBall::Goal(_fvector vGatePosition)
 {
 	m_pDynamicActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(vGatePosition)));
 
-	((CPinBall_Handle*)CDataStorage::GetInstance()->Get_Pinball_Handle())->Set_RespawnAngle(true);
-	m_bFailed = true;
+	((CPinBall_Handle*)CDataStorage::GetInstance()->Get_Pinball_Handle())->Set_Goal();
 	m_IsStartGame = false;
 }
 
@@ -56,7 +55,7 @@ HRESULT CPinBall::NativeConstruct(void * pArg)
 	m_UserData.pGameObject = this;
 
 	/* Dynamic */
-	PxGeometry* DynamicGeom = new PxSphereGeometry(0.5f);
+	PxGeometry* DynamicGeom = new PxSphereGeometry(0.3f);
 	CDynamicActor::ARG_DESC tDynamicActorArg;
 	tDynamicActorArg.pTransform = m_pTransformCom;
 	tDynamicActorArg.fDensity = 1.f;
@@ -222,7 +221,7 @@ void CPinBall::Respawn()
 	m_pDynamicActorCom->Update_DynamicActor();
 
 	m_bFailed = false;
-	m_IsReady = false;
+	//m_IsReady = false;
 }
 
 CPinBall * CPinBall::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

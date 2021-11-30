@@ -15,6 +15,10 @@ public:
 	_bool Get_Ready()	  { return m_IsReady; }
 
 public:
+	void Set_Ready() { m_IsReady = false; }
+	void Set_Failed() { m_bFailed = true; }
+
+public:
 	void Goal(_fvector vGatePosition);
 	void ReadyGame();
 	void PlayerMove();

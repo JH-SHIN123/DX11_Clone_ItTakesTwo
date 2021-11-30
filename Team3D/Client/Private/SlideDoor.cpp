@@ -11,6 +11,11 @@ CSlideDoor::CSlideDoor(const CSlideDoor & rhs)
 {
 }
 
+void CSlideDoor::Open_Door()
+{
+	m_bOpen = true;
+}
+
 HRESULT CSlideDoor::NativeConstruct_Prototype()
 {
 	CDynamic_Env::NativeConstruct_Prototype();
@@ -31,6 +36,10 @@ HRESULT CSlideDoor::NativeConstruct(void * pArg)
 	tStaticActorArg.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+	
+	m_pTransformCom->Set_Speed(2.f, 0.f);
+	CDataStorage::GetInstance()->Set_SlideDoor(this);
+	
 	return S_OK;
 }
 
@@ -38,6 +47,7 @@ _int CSlideDoor::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
+	Movement(dTimeDelta);
 	return NO_EVENT;
 }
 
@@ -76,6 +86,38 @@ HRESULT CSlideDoor::Render_ShadowDepth()
 
 void CSlideDoor::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+}
+
+void CSlideDoor::Movement(_double dTimeDelta)
+{
+	if (false == m_bOpen)
+		return;
+
+	if (m_tDynamic_Env_Desc.iOption == 0)
+	{
+		_float	fDis = (_float)dTimeDelta;
+		m_fDistance += fDis;
+
+		if (m_fDistance >= 1.f)
+		{
+			m_bOpen = false;
+			m_fDistance = 0.f;
+		}
+		m_pTransformCom->Go_Straight(dTimeDelta);
+	}
+	else
+	{
+		_float	fDis = (_float)dTimeDelta;
+		m_fDistance += fDis;
+
+		if (m_fDistance >= 1.f)
+		{
+			m_bOpen = false;
+			m_fDistance = 0.f;
+		}
+		m_pTransformCom->Go_Straight(-dTimeDelta);
+	}
+	m_pStaticActorCom->Update_StaticActor();
 }
 
 CSlideDoor * CSlideDoor::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

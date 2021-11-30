@@ -5,6 +5,9 @@
 #include "PinBall.h"
 #include "May.h"
 #include "UI_Generator.h"
+#include "Cody.h"
+#include "PinBall_Door.h"
+#include "SlideDoor.h"
 
 CPinBall_Handle::CPinBall_Handle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -58,10 +61,26 @@ _int CPinBall_Handle::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
-	MoveMent(dTimeDelta);
-	PlayerMove();
-	Respawn_Angle(dTimeDelta);
-	Respawn_Pos(dTimeDelta);
+	if (true == m_bGoal)
+	{
+		m_fGoalTime += (_float)dTimeDelta;
+		if (3.f <= m_fGoalTime && false == m_bGoalTimeCheck)
+		{
+			m_bGoalTimeCheck = true;
+			m_bRespawnAngle = true;
+			((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Set_Failed();
+			((CCody*)(CDataStorage::GetInstance()->GetCody()))->PinBall_Respawn(dTimeDelta);
+		}
+		Respawn_Angle(dTimeDelta);
+		Respawn_Pos(dTimeDelta);
+	}
+	else
+	{
+		MoveMent(dTimeDelta);
+		PlayerMove();
+		Respawn_Angle(dTimeDelta);
+		Respawn_Pos(dTimeDelta);
+	}
 
 	return NO_EVENT;
 }
@@ -190,6 +209,7 @@ void CPinBall_Handle::Respawn_Angle(_double dTimeDelta)
 			m_bReady = false;
 			m_fReady = 0.f;
 			m_bRespawnPos = true;
+			m_bFinish = false;
 		}
 		m_pStaticActorCom->Update_StaticActor();
 	}
@@ -214,7 +234,19 @@ void CPinBall_Handle::Respawn_Pos(_double dTimeDelta)
 			m_pStaticActorCom->Update_StaticActor();
 
 			m_bRespawnPos = false;
+			m_bReady = false;
+
 			((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Respawn();
+			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(true);
+
+			if (true == m_bGoalTimeCheck)
+			{
+				m_bGoal = false;
+				((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_Goal();
+				((CSlideDoor*)(CDataStorage::GetInstance()->Get_SlideDoor()))->Open_Door();
+			}
+			else
+				((CCody*)(CDataStorage::GetInstance()->GetCody()))->PinBall_Respawn(dTimeDelta);
 		}
 	}
 }

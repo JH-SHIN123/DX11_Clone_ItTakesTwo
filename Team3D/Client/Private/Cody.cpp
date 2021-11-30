@@ -1792,21 +1792,23 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 void CCody::PinBall(const _double dTimeDelta)
 {
 	if (true == m_IsPinBall)
-	{
-		if (false == ((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Ready())
-		{
-			m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
-			m_pActorCom->Update(dTimeDelta);
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 
-			m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
-			m_pModelCom->Set_Animation(ANI_C_MH);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
-
-			m_IsPinBall = false;
-			m_IsCollide = false;
-			return;
-		}
 		m_pActorCom->Set_Position(((CDynamic_Env*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Position());
-	}
+}
+
+void CCody::PinBall_Respawn(_double dTimeDelta)
+{
+	//_vector vSavePoint = XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f);
+	//m_pActorCom->Set_Position(vSavePoint);
+
+	m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
+	m_pActorCom->Update(dTimeDelta);
+
+	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+	m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
+	m_pModelCom->Set_Animation(ANI_C_MH);
+	m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
+	m_IsPinBall = false;
+	m_IsCollide = false;
 }

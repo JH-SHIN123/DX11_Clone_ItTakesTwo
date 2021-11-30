@@ -24,6 +24,8 @@ private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 	CTriggerActor*	m_pTriggerActorCom = nullptr;
 
+	_bool m_bGoal = false;
+
 public:
 	static CPinBall_BallGate* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

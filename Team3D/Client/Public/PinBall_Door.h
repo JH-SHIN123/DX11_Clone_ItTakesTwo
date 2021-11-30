@@ -12,6 +12,7 @@ private:
 public:
 	/* false:Open, true:Close*/
 	void Set_DoorState(_bool bState);
+	void Set_Goal() { m_bGoal = true; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -28,6 +29,7 @@ private:
 	CTriggerActor*	m_pTriggerActorCom = nullptr;
 	CStaticActor*	m_pStaticActorCom = nullptr;
 
+	_bool			m_bGoal = false;
 	_bool			m_bTrigger = false;
 	_bool			m_bDoorState = false;
 	_float			m_fDistance = 0.f;

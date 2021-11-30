@@ -88,8 +88,11 @@ HRESULT CPinBall_BallGate::Render_ShadowDepth()
 void CPinBall_BallGate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	/* PinBall */
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::ePINBALL)
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::ePINBALL && false == m_bGoal)
+	{
+		m_bGoal = true;
 		((CPinBall*)pGameObject)->Goal(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	}
 }
 
 CPinBall_BallGate * CPinBall_BallGate::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

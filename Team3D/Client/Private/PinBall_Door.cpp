@@ -3,6 +3,7 @@
 #include "Cody.h"
 #include "UI_Generator.h"
 #include "PinBall_BallDoor.h"
+#include "PinBall.h"
 
 CPinBall_Door::CPinBall_Door(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -107,11 +108,12 @@ HRESULT CPinBall_Door::Render_ShadowDepth()
 void CPinBall_Door::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	// Cody
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && false == m_bTrigger && false == m_bDoorState)
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && false == m_bTrigger && false == m_bDoorState && false == m_bGoal)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALLDOOR, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 		UI_Create(Cody, InputButton_InterActive);
 		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Set_Ready();
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 		UI_Delete(Cody, InputButton_InterActive);
@@ -133,25 +135,34 @@ void CPinBall_Door::Movement(_double dTimeDelta)
 			((CPinBall_BallDoor*)(CDataStorage::GetInstance()->Get_Pinball_BallDoor()))->Set_DoorState(false);
 			m_bTrigger = false;
 			m_fDistance = 0.f;
+			m_bDoorState = true;
 		}
 		m_pTransformCom->Go_Straight(dTimeDelta);
 	}
 	/* Close */
 	else
 	{
-		_float	fDis = (_float)dTimeDelta;
-		m_fDistance += fDis;
+		//_float	fDis = (_float)dTimeDelta;
+		//m_fDistance += fDis;
 
-		if (m_fDistance >= 1.f)
-		{
-			((CPinBall_BallDoor*)(CDataStorage::GetInstance()->Get_Pinball_BallDoor()))->Set_DoorState(true);
-			m_bTrigger = false;
-			m_fDistance = 0.f;
-		}
-		m_pTransformCom->Go_Straight(-dTimeDelta);
+		//if (m_fDistance >= 1.f)
+		//{
+		//	//((CPinBall_BallDoor*)(CDataStorage::GetInstance()->Get_Pinball_BallDoor()))->Set_DoorState(true);
+		//	m_bTrigger = false;
+		//	m_fDistance = 0.f;
+		//	m_bDoorState = false;
+		//}
+		//m_pTransformCom->Go_Straight(-dTimeDelta);
+
+		_vector vPos = XMLoadFloat3(&m_ResetPos);
+		vPos = XMVectorSetW(vPos, 1.f);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+		m_bTrigger = false;
+		m_bDoorState = false;
 	}
 
 	m_pStaticActorCom->Update_StaticActor();
+	m_pTriggerActorCom->Update_TriggerActor();
 }
 
 CPinBall_Door * CPinBall_Door::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

@@ -19,6 +19,7 @@ public:
 	void Set_RespawnAngle(_bool _bRespawnAngle) { m_bRespawnAngle = _bRespawnAngle; }
 	void Set_RespawnPos(_bool _bRespawnPos) { m_bRespawnPos = _bRespawnPos; }
 	void Set_Ready(_bool _bReady) { m_bReady = _bReady; }
+	void Set_Goal() { m_bGoal = true; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -42,6 +43,10 @@ private:
 	_bool			m_bRespawnAngle = false;
 	_bool			m_bRespawnPos = false;
 	_bool			m_bFinish = false;
+
+	_bool			m_bGoal = false;
+	_bool			m_bGoalTimeCheck = false;
+	_float			m_fGoalTime = 0.f;
 
 	_float			m_fReady = 0.f;
 	_float			m_fHandleAngle = 0.f;

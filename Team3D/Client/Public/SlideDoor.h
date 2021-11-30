@@ -10,6 +10,9 @@ private:
 	virtual ~CSlideDoor() = default;
 
 public:
+	void Open_Door();
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double dTimeDelta) override;
@@ -22,6 +25,11 @@ public:
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
+	_float			m_fDistance = 0.f;
+	_bool			m_bOpen = false;
+
+private:
+	void Movement(_double dTimeDelta);
 
 public:
 	static CSlideDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

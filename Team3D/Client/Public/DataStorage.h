@@ -73,6 +73,9 @@ public:
 	void Set_Pinball_Door(CGameObject* pPinBall_Door) { m_pPinBall_Door = pPinBall_Door; }
 	CGameObject* Get_Pinball_Door() { return m_pPinBall_Door; }
 
+	void Set_SlideDoor(CGameObject* pSlideDoor) { m_pSlideDoor = pSlideDoor; }
+	CGameObject* Get_SlideDoor() { return m_pSlideDoor; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -100,6 +103,7 @@ private:
 	CGameObject* m_pPinBall_BallDoor = nullptr;
 	CGameObject* m_pPinBall_Blocked = nullptr;
 	CGameObject* m_pPinBall_Door = nullptr;
+	CGameObject* m_pSlideDoor = nullptr;
 
 private:
 	/* For.Valve */
