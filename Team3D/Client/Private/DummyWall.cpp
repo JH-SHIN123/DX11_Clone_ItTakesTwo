@@ -69,8 +69,6 @@ HRESULT CDummyWall::NativeConstruct(void * pArg)
 _int CDummyWall::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
-	/*m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-795.311f, 767.083f, 197.07f, 1.f));
-	m_pStaticActorCom->Update_StaticActor();*/
 	return NO_EVENT;
 }
 

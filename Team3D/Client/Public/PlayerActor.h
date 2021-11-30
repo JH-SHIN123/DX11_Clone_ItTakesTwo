@@ -25,13 +25,13 @@ public: /* Getter */
 	_bool  Get_IsJump() { return m_bJump; }
 	_bool  Get_IsFalling() { return m_IsFalling; }
 	_bool  Get_IsGravityReordered() { return m_isGravityReordered; }
-	_vector Get_GravityPath_RightVector() { return XMLoadFloat3(&m_vGravityPathRight); }
 	PxExtendedVec3 Get_ContactPos() { return m_vContactPosition; }
 
 	PxController* Get_Controller() { return m_pController; }
 	PxRigidDynamic* Get_Actor() { return m_pActor; }
 	_bool	Get_IsWallCollide() { return m_IsWallCollide; }
 	PxVec3 Get_CollideNormal() { return m_vCollideNormal; }
+	_bool	Get_IsOnGravityPath() { return m_IsOnGravityPath; }
 
 public: /* Setter */
 	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
@@ -41,7 +41,7 @@ public: /* Setter */
 	void    Set_ZeroGravity(_bool bZeroGravity, _bool IsGoUp, _bool IsStatic) { m_bZeroGravity = bZeroGravity; m_IsGoUp = IsGoUp; m_bStatic = IsStatic; }
 	void	Set_IsFalling(_bool IsFalling) { m_IsFalling = IsFalling; }
 	void	Set_Position(_fvector vPosition);
-	void	Set_GravityPath_RightVector(_fvector vRightVector) { XMStoreFloat3(&m_vGravityPathRight, vRightVector); }
+	void	Set_IsOnGravityPath(_bool bOnGravityPath) { m_IsOnGravityPath = bOnGravityPath; }
 
 	/* Wall */
 	void	Set_ContactPos(PxExtendedVec3 vPosition) { m_vContactPosition = vPosition; }
@@ -87,7 +87,7 @@ private:
 	_bool	m_isGravityReordered = false;
 	_float	m_fGravity = -9.8f;
 	_float3 m_vPlayerUp = _float3(0.f, 0.f, 0.f);
-	_float3 m_vGravityPathRight = _float3(0.f, 0.f, 0.f);
+	_bool	m_IsOnGravityPath = false;
 
 	/* For.WallClimb */
 	_bool	m_IsWallCollide = false;

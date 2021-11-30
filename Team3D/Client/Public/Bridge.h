@@ -39,6 +39,8 @@ private:
 	_bool						m_bTrigger = false;
 	_float						m_fAngle = 0.f;
 
+	_bool						m_bUpdate = true;
+
 public:
 	static CBridge* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject * Clone_GameObject(void * pArg) override;

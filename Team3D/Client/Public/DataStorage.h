@@ -30,7 +30,6 @@ public:
 	CGameObject* Get_UFO() { return m_pUFO; }
 
 	/* Robots */
-
 	void Set_STGravityRobotPtr(CGameObject* pRobot) { m_pSTGravityRobot = pRobot; }
 	CGameObject* Get_STGravityRobot() { return m_pSTGravityRobot; }
 
@@ -41,10 +40,19 @@ public:
 	CGameObject* Get_STPlanetRobot() { return m_pSTPlanetRobot; }
 
 
+	// Stage Flow
 	void Set_ValveCount(_uint _iValveRotateCount) { m_iValveRotateCount += _iValveRotateCount; }
 	void Set_ValveTarget(_uint _iValveTarget) { m_iValveTarget = _iValveTarget; }
 	_uint Get_ValveCount() { return m_iValveRotateCount; }
 
+	void Set_BigButtonPressed(_bool IsBigButtonPressed) { m_IsBigButtonPressed = IsBigButtonPressed; }
+	_bool Get_BigButtonPressed() { return m_IsBigButtonPressed; }
+
+	void Set_GravityStageClear(_bool bGravityStageClear) { m_bGravityStageClear = bGravityStageClear; }
+	_bool Get_GravityStageClear() { return m_bGravityStageClear; }
+
+	void Set_PinBallStageClear(_bool bPinBallStageClear) { m_bPinBallStageClear = bPinBallStageClear; }
+	_bool Get_PinBallStageClear() { return m_bPinBallStageClear; }
 
 private:
 	CGameObject* m_pCody = nullptr;
@@ -65,6 +73,10 @@ private:
 	/* For.Valve */
 	_uint m_iValveRotateCount = 0;
 	_uint m_iValveTarget = 0;
+
+	_bool m_IsBigButtonPressed = false;
+	_bool m_bGravityStageClear = false;
+	_bool m_bPinBallStageClear = false;
 
 public:
 	virtual void Free() override;

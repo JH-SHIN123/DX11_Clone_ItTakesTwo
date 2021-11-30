@@ -105,7 +105,8 @@ void CCody::Add_LerpInfo_To_Model()
 	//m_pModelCom->Add_LerpInfo(1, 2, true, 8.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_Sprint, ANI_C_Sprint, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_MH, true, 10.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Walk_Large_Fwd, ANI_C_ChangeSize_Walk_Large_Fwd, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit, ANI_C_MH, true, 10.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Walk_Large_Fwd, ANI_C_ChangeSize_Walk_Large_Fwd, true, 20.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_Enter, ANI_C_Grind_Grapple_ToGrind, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_ToGrind, ANI_C_Grind_Slow_MH, false);
 
@@ -192,7 +193,9 @@ _int CCody::Tick(_double dTimeDelta)
 		m_pActorCom->Set_GroundPound(m_bGroundPound);
 
 		if ((m_bRoll == false || m_bSprint == true))
+		{
 			KeyInput(dTimeDelta);
+		}
 		if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
 		{
 			Sprint(dTimeDelta);
@@ -525,7 +528,7 @@ void CCody::KeyInput(_double dTimeDelta)
 
 #pragma region Mouse_LButton
 
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
+	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) && m_bSprint == false)
 	{
 		// 커져라
 		switch (m_eCurPlayerSize)
@@ -545,7 +548,7 @@ void CCody::KeyInput(_double dTimeDelta)
 
 #pragma region Mouse_RButton
 
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB))
+	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB) && m_bSprint == false)
 	{
 		// 작아져라
 		switch (m_eCurPlayerSize)
@@ -612,6 +615,10 @@ _uint CCody::Get_CurState() const
 void CCody::Move(const _double dTimeDelta)
 {
 #pragma region Medium_Size
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+
 	if (m_eCurPlayerSize == SIZE_MEDIUM)
 	{
 		if (m_bSprint == false && m_bMove && m_pTransformCom)
@@ -619,10 +626,11 @@ void CCody::Move(const _double dTimeDelta)
 			m_bAction = false;
 
 			_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
+
+		
+
 			// 중력발판 위에 있을때는 SetY 안해야 함!
 			//vDirection = XMVectorSetY(vDirection, 0.f);
-			vDirection = XMVector3Normalize(vDirection);
-
 			m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);
 
 			if (m_fJogAcceleration > 10.f)
@@ -737,12 +745,16 @@ void CCody::Move(const _double dTimeDelta)
 			{
 				// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
 				if (m_pModelCom->Is_AnimFinished(ANI_C_ChangeSize_Walk_Large_Start) == true) // JogStart -> Jog
+				{
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Fwd);
+					m_pModelCom->Set_NextAnimIndex(ANI_C_ChangeSize_Walk_Large_Fwd);
+				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_ChangeSize_Walk_Large_Fwd) == true) // Jog -> Jog // 보간속도 Up
 				{
-					//m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Fwd);
 				}
-				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_MH_Gesture_Small_Scratch || m_pModelCom->Get_CurAnimIndex() == ANI_C_ActionMH)	// Idle To Jog Start. -> Jog 예약
+				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_MH_Gesture_Small_Scratch
+					|| m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Fwd
+					|| m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Stop)	// Idle To Jog Start. -> Jog 예약
 				{
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Start);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_ChangeSize_Walk_Large_Fwd);
@@ -776,11 +788,6 @@ void CCody::Move(const _double dTimeDelta)
 							m_pModelCom->Set_Animation(ANI_C_Bhv_MH_Gesture_Small_Scratch); // 배 두들기는 애니메이션 재생
 							m_fIdleTime = 0.f;
 						}
-					}
-					else if (m_bAction == true)
-					{
-						m_pModelCom->Set_Animation(ANI_C_Idle_To_Action);
-						m_pModelCom->Set_NextAnimIndex(ANI_C_ActionMH);
 					}
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Idle_To_Action) == true && m_bAction == true)
@@ -1179,6 +1186,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 	{
 		if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_LARGE)
 		{
+			m_pActorCom->Set_Scale(5.f, 5.f);
 			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_LARGE);
 
 			if (m_vScale.x < 5.f)
@@ -1194,10 +1202,13 @@ void CCody::Change_Size(const _double dTimeDelta)
 				m_IsSizeChanging = false; 
 				m_eCurPlayerSize = SIZE_LARGE;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+				if(m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog)
+					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Fwd);
 			}
 		}
 		else if (m_eCurPlayerSize == SIZE_LARGE && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
+			m_pActorCom->Set_Scale(0.5f, 0.5f);
 			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_LARGE_MIDDLE);
 
 			if (m_vScale.x > 1.f)
@@ -1213,6 +1224,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_MEDIUM;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+				m_pModelCom->Set_Animation(ANI_C_MH);
 			}
 		}
 		else if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_SMALL)
@@ -1233,6 +1245,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_SMALL;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+				m_pModelCom->Set_Animation(ANI_C_MH);
 			}
 		}
 		else if (m_eCurPlayerSize == SIZE_SMALL && m_eNextPlayerSize == SIZE_MEDIUM)
@@ -1253,6 +1266,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_MEDIUM;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+				m_pModelCom->Set_Animation(ANI_C_MH);
 			}
 		}
 	}

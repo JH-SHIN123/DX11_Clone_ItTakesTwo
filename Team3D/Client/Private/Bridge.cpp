@@ -46,27 +46,32 @@ _int CBridge::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (true == m_bTrigger)
+	if (m_bUpdate == true)
 	{
-		_float	fAngle = 45.f * (_float)dTimeDelta;
-
-		if (m_fAngle >= 70.f)
+		if (true == m_bTrigger)
 		{
-			fAngle = 70.f - m_fAngle;
+			_float	fAngle = 45.f * (_float)dTimeDelta;
 
-			m_bTrigger = false;
-			m_fAngle = 0.f;
+			if (m_fAngle >= 70.f)
+			{
+				fAngle = 70.f - m_fAngle;
+
+				m_bTrigger = false;
+				m_bUpdate = false;
+				m_fAngle = 0.f;
+			}
+
+			_matrix matTransform = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_matPivot)) * XMMatrixRotationX(XMConvertToRadians(fAngle)) * XMLoadFloat4x4(&m_matPivot);
+			m_pModelCom->Update_Model(matTransform);
+
+			m_fAngle += fAngle;
 		}
-		
-		_matrix matTransform = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_matPivot)) * XMMatrixRotationX(XMConvertToRadians(fAngle)) * XMLoadFloat4x4(&m_matPivot);
-		m_pModelCom->Update_Model(matTransform);
 
-		m_fAngle += fAngle;
+		if (DATABASE->Get_BigButtonPressed() == true)
+		{
+			Call_Trigger();
+		}
 	}
-
-	if (m_pGameInstance->Key_Down(DIK_J))
-		Call_Trigger();
-
 	return NO_EVENT;
 }
 

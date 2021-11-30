@@ -86,13 +86,9 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 			m_dActivateTime = 0.0;
 	}
 
-#ifdef _DEBUG
-		if (m_pGameInstance->Key_Down(DIK_Z))
+		if (DATABASE->Get_GravityStageClear() == true)
 			m_IsActivate = true;
-		if (m_pGameInstance->Key_Down(DIK_X))
-			m_IsActivate = false;
 	
-#endif // _DEBUG
 
 	m_pParticle->Set_ControlTime(m_dActivateTime);
 	return _int();

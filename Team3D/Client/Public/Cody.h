@@ -297,8 +297,6 @@ private:
 	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
 	_float	m_fIdleTime = 0.f;
 
-	// 상호작용에 의한 움직임.
-
 	// 뭔가 들고있다면
 	_bool m_IsPickUp = false;
 
@@ -308,6 +306,7 @@ private:
 	PLAYER_SIZE m_eNextPlayerSize = SIZE_MEDIUM;
 	_float3 m_vScale = {1.f, 1.f, 1.f};
 	_bool m_IsSizeChanging = false;
+	_float m_fSizeDelayTime = 0.f;
 
 	// 점프관련 변수
 	_uint m_iJumpCount = 0;

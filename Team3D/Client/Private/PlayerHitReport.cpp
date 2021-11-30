@@ -13,6 +13,7 @@ void CPlayerHitReport::onShapeHit(const PxControllerShapeHit & hit)
 		if (hit.triangleIndex != PxU32(-1))
 		{
 			m_pPlayerActor->Step_GravityPath(hit.worldNormal);
+			m_pPlayerActor->Set_IsOnGravityPath(true);
 		}
 	}
 	if (GameID::eDUMMYWALL == pUserData->eID)
