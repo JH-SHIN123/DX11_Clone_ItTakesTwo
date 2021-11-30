@@ -197,6 +197,9 @@ _int CCody::Tick(_double dTimeDelta)
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	m_pPathCom->Update_Animation(dTimeDelta, WorldMatrix);
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 
 	return NO_EVENT;
 }
@@ -206,35 +209,20 @@ _int CCody::Late_Tick(_double dTimeDelta)
 	CCharacter::Late_Tick(dTimeDelta);
 
 	// TEST
-	if (m_pGameInstance->Key_Down(DIK_L)) /* 스타트 지점 */
-		m_IsOnGrind_Start = true;
-	Riding_Rail();
+	//if (m_pGameInstance->Key_Down(DIK_L)) /* 스타트 지점 */
+	//	m_IsOnGrind_Start = true;
+	//Riding_Rail();
 
+	//Find_SpaceRailTarget();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	Find_SpaceRailTarget();
-
-	if (m_IsOnGrind_Start)
-	{
-		if (m_pTargetSpaceRailNode) {
-			m_pSpaceRailCom->RideOnRail(m_pTargetSpaceRailNode->Get_RailTag(),m_pTargetSpaceRailNode->Get_Index(), CSpaceRail::STATE_FORWARD);
-			m_pTargetSpaceRailNode = nullptr;
-		}
-		m_IsOnGrind_Start = false;
-	}
+	//if (m_IsOnGrind_Start)
+	//{
+	//	if (m_pTargetSpaceRailNode) {
+	//		m_pSpaceRailCom->RideOnRail(m_pTargetSpaceRailNode->Get_RailTag(),m_pTargetSpaceRailNode->Get_Index(), CSpaceRail::STATE_FORWARD);
+	//		m_pTargetSpaceRailNode = nullptr;
+	//	}
+	//	m_IsOnGrind_Start = false;
+	//}
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -1292,8 +1280,8 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 
 void CCody::Riding_Rail()
 {
-	if (nullptr == m_pSpaceRailCom) return;
-	m_pSpaceRailCom->Riding(this);
+	//if (nullptr == m_pSpaceRailCom) return;
+	//m_pSpaceRailCom->Riding(this);
 }
 
 #pragma region Shader_Variables
@@ -1335,7 +1323,6 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind);
 			m_IsOnGrind = true;
-			m_IsOnGrind_Start = true;
 		}
 		else if (m_eTargetGameID == GameID::eROCKET && m_pGameInstance->Key_Down(DIK_E))
 		{

@@ -232,6 +232,9 @@
     <Filter Include="02.Utility\06.PostFX\Blur">
       <UniqueIdentifier>{8f45eb1d-d291-4813-8959-c1f5b9b74d60}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\02.Component\07.Path">
+      <UniqueIdentifier>{b3160846-520a-4bb2-bead-ebb4718dfba1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\GameInstance.h">
@@ -423,6 +426,9 @@
     <ClInclude Include="..\public\PhysX.h">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Path.h">
+      <Filter>02.Utility\02.Component\07.Path</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -580,6 +586,9 @@
     </ClCompile>
     <ClCompile Include="..\private\PhysX.cpp">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Path.cpp">
+      <Filter>02.Utility\02.Component\07.Path</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

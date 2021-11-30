@@ -23,12 +23,16 @@ public: /* Getter */
 	const _double	Get_TicksPerSecond() const { return m_AnimDesc.dTicksPerSecond; }
 	void			Get_PreAnimKeyFrames(_uint iPreAnimFrame, vector<KEY_FRAME>& PreAnimKeyFrames);
 	const vector<class CAnimChannel*>& Get_Channels() const { return m_Channels; }
+	const _uint		Get_ChannelCount() { return (_uint)m_Channels.size(); }
 
 public:
 	HRESULT	NativeConstruct(ANIM_DESC AnimDesc);
 	HRESULT	Bring_ChannelContainer(vector<class CAnimChannel*>& Channels);
 	HRESULT	Update_Transformations(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations);
 	HRESULT Update_Transformations_Blend(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations, vector<KEY_FRAME>& PreAnimKeyFrames, _float fLerpRatio);
+
+public:
+	HRESULT	Update_PathTransformation(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations);
 
 private: /* Typedef */
 	typedef vector<class CAnimChannel*>	CHANNELS;

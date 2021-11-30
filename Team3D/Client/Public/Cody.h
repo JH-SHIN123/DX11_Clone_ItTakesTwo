@@ -325,7 +325,6 @@ private:
 
 	_bool m_IsCollide = false;
 	_bool m_IsOnGrind = false;
-	_bool m_IsOnGrind_Start = false;
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
@@ -365,13 +364,10 @@ private:
 	_float3 m_vStartPosition = {};
 	_float3 m_vDstPosition = {};
 
-
 	// Arbitrary damping
 	_float m_faDamping = 0.995f;
 
 	// Arbitrary ball radius
-
-
 
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;

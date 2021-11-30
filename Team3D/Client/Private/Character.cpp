@@ -13,12 +13,12 @@ CCharacter::CCharacter(const CCharacter& rhs)
 {
 }
 
-void CCharacter::Set_SpaceRailNode(CSpaceRail_Node* pRail)
-{
-	if (nullptr == pRail) return;
-
-	m_vecRideOnRailNodes.push_back(pRail);
-}
+//void CCharacter::Set_SpaceRailNode(CSpaceRail_Node* pRail)
+//{
+//	if (nullptr == pRail) return;
+//
+//	m_vecRideOnRailNodes.push_back(pRail);
+//}
 
 void CCharacter::Set_WorldMatrix(_fmatrix WorldMatrix)
 {
@@ -113,7 +113,8 @@ HRESULT CCharacter::NativeConstruct(void* pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_SpaceRail"), TEXT("Com_SpaceRail"), (CComponent**)&m_pSpaceRailCom), E_FAIL);
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_SpaceRail"), TEXT("Com_SpaceRail"), (CComponent**)&m_pSpaceRailCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_SpaceRail0"), TEXT("Com_Path_SpaceRail0"), (CComponent**)&m_pPathCom), E_FAIL);
 
 	return S_OK;
 }
@@ -138,33 +139,34 @@ HRESULT CCharacter::Render_ShadowDepth()
 	return CGameObject::Render_ShadowDepth();
 }
 
-void CCharacter::Find_SpaceRailTarget()
-{
-	if (nullptr == m_pTransformCom) return;
-
-	_vector vPlayerPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vRailPosition = XMVectorZero();
-	_float fDist = FLT_MAX;
-	for (auto& pRail : m_vecRideOnRailNodes)
-	{
-		if(nullptr == pRail) continue;
-		vRailPosition = pRail->Get_Position();
-
-		_float fToRailDist = XMVectorGetX(XMVector3Length(vPlayerPosition - vRailPosition));
-		if (fDist > fToRailDist)
-		{
-			m_pTargetSpaceRailNode = pRail;
-			fDist = fToRailDist;
-		}
-	}
-
-	// 등록된 스페이스 레일 비워주기
-	m_vecRideOnRailNodes.clear();
-}
+//void CCharacter::Find_SpaceRailTarget()
+//{
+//	if (nullptr == m_pTransformCom) return;
+//
+//	_vector vPlayerPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+//	_vector vRailPosition = XMVectorZero();
+//	_float fDist = FLT_MAX;
+//	for (auto& pRail : m_vecRideOnRailNodes)
+//	{
+//		if(nullptr == pRail) continue;
+//		vRailPosition = pRail->Get_Position();
+//
+//		_float fToRailDist = XMVectorGetX(XMVector3Length(vPlayerPosition - vRailPosition));
+//		if (fDist > fToRailDist)
+//		{
+//			m_pTargetSpaceRailNode = pRail;
+//			fDist = fToRailDist;
+//		}
+//	}
+//
+//	// 등록된 스페이스 레일 비워주기
+//	m_vecRideOnRailNodes.clear();
+//}
 
 void CCharacter::Free()
 {
-	Safe_Release(m_pSpaceRailCom);
+	//Safe_Release(m_pSpaceRailCom);
+	Safe_Release(m_pPathCom);
 
 	CGameObject::Free();
 }

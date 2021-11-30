@@ -53,7 +53,7 @@ void CSpaceRail_Node::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGa
 		switch (eStatus)
 		{
 		case Engine::TriggerStatus::eFOUND:
-			pChar->Set_SpaceRailNode(this);
+			//pChar->Set_SpaceRailNode(this);
 			break;
 		}
 	}
