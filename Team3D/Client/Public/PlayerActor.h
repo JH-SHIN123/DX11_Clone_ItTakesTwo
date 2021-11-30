@@ -36,6 +36,8 @@ public: /* Setter */
 	void    Set_ZeroGravity(_bool bZeroGravity, _bool IsGoUp, _bool IsStatic) { m_bZeroGravity = bZeroGravity; m_IsGoUp = IsGoUp; m_bStatic = IsStatic; }
 	void	Set_IsFalling(_bool IsFalling) { m_IsFalling = IsFalling; }
 	void	Set_Position(_fvector vPosition);
+	void	Set_ReorderGravityStep(_uint iStep) { m_iReorderGravityStep = iStep; }
+	void	Set_HitNormal(PxVec3 vNormal) { m_vHitNormal = vNormal; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -69,6 +71,7 @@ private:
 	_bool   m_bZeroGravity = false;
 	_bool	m_IsGoUp = false;
 	_bool   m_bStatic = false;
+	_uint	m_iReorderGravityStep = 0;
 
 	_float  m_fFallingTime = 0.f;
 
@@ -76,6 +79,7 @@ private:
 	_bool	m_isGravityReordered = false;
 	_float	m_fGravity = -9.8f;
 	_float3 m_vPlayerUp = _float3(0.f, 0.f, 0.f);
+	PxVec3	m_vHitNormal;
 
 private:
 	void	Jump_Stop();
