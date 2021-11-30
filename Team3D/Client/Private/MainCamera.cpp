@@ -2,7 +2,6 @@
 #include "..\public\MainCamera.h"
 #include "Cody.h"
 #include "CameraActor.h"
-#include"CutScenePlayer.h"
 #include "PlayerActor.h"
 
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -80,6 +79,9 @@ _int CMainCamera::Tick(_double dTimeDelta)
 			XMStoreFloat3(&m_vPlayerPos, static_cast<CCody*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 			Safe_AddRef(m_pTargetObj);
 		}
+		else
+			return EVENT_ERROR;
+		m_bStart = true;
 	}
 
 

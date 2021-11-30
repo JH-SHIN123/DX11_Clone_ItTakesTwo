@@ -4,9 +4,7 @@
 #include "Effect_Generator.h"
 #include "UI_Generator.h"
 #include "Environment_Generator.h"
-#include"CutScenePlayer.h"
 #include "PxEventCallback.h"
-
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -47,10 +45,8 @@ HRESULT CMainApp::Run_App()
 
 		_double dTimeDelta = m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
 
-		
-		m_dTimeDelta = dTimeDelta;
-		//m_dTimeDelta = 0.016666666666666666;
-	
+		//m_dTimeDelta = dTimeDelta;
+		m_dTimeDelta = 0.016666666666666666;
 
 		if (Tick(m_dTimeDelta) & 0x80000000)
 			return E_FAIL;
@@ -93,7 +89,7 @@ void CMainApp::Lock_Mouse()
 _int CMainApp::Tick(_double dTimeDelta)
 {
 	NULL_CHECK_RETURN(m_pGameInstance, EVENT_ERROR);
-	
+
 	return m_pGameInstance->Tick(dTimeDelta);
 }
 
@@ -178,15 +174,12 @@ void CMainApp::Free()
 
 	Safe_Delete(m_pPxEventCallback);
 
-
 	CEffect_Generator::DestroyInstance(); // 이펙트 제어기
 	CUI_Generator::DestroyInstance();
 	CDataStorage::DestroyInstance();
 	CEnvironment_Generator::DestroyInstance();
-	//CCutScenePlayer::DestroyInstance();
-	
-	CGameInstance::Release_Engine();
 
+	CGameInstance::Release_Engine();
 }
 
 //#ifdef _DEBUG

@@ -2,7 +2,6 @@
 #include "..\public\Cam_Helper.h"
 #include"Transform.h"
 #include"GameInstance.h"
-#include"CutScenePlayer.h"
 CCam_Helper::CCam_Helper(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context)
 	:CComponent(pDevice, pDevice_Context)
 {

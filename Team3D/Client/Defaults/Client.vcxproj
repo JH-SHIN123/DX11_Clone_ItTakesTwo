@@ -202,8 +202,6 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
-    <ClInclude Include="..\public\CutScene.h" />
-    <ClInclude Include="..\public\CutScenePlayer.h" />
     <ClInclude Include="..\public\DeadLine.h" />
     <ClInclude Include="..\Public\DummyWall.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />
@@ -255,7 +253,6 @@
     <ClInclude Include="..\Public\MoonBaboon_MainLaser.h" />
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
-    <ClInclude Include="..\public\Performer.h" />
     <ClInclude Include="..\Public\Planet.h" />
     <ClInclude Include="..\Public\PlanetRing.h" />
     <ClInclude Include="..\Public\PlayerActor.h" />
@@ -300,8 +297,6 @@
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\CamEffect.cpp" />
     <ClCompile Include="..\Private\Cam_Helper.cpp" />
-    <ClCompile Include="..\private\CutScene.cpp" />
-    <ClCompile Include="..\private\CutScenePlayer.cpp" />
     <ClCompile Include="..\Private\BigButtonFrame.cpp" />
     <ClCompile Include="..\Private\Bridge.cpp" />
     <ClCompile Include="..\Private\DeadLine.cpp" />
@@ -361,7 +356,6 @@
     <ClCompile Include="..\Private\MoonBaboon_MainLaser.cpp" />
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
-    <ClCompile Include="..\private\Performer.cpp" />
     <ClCompile Include="..\Private\Planet.cpp" />
     <ClCompile Include="..\Private\PlanetRing.cpp" />
     <ClCompile Include="..\Private\PlayerActor.cpp" />

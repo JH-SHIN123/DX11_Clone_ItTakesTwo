@@ -36,7 +36,6 @@ HRESULT CStarBuddy::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, StarDesc.vPosition);
 
-
 	CTriggerActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eSTARBUDDY, this);

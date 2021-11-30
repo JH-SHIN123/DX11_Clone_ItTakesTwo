@@ -391,18 +391,6 @@
     <Filter Include="03.Component\01.Actor\99.EventCallback">
       <UniqueIdentifier>{e43d39f3-5732-46ee-85d4-9b5d0244f918}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\00.Public\05.CutScene">
-      <UniqueIdentifier>{58a25e3b-2a4f-42cb-bba8-de9837c18e26}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\00.Public\05.CutScene\Main">
-      <UniqueIdentifier>{246e9c74-e74f-4fa8-9e3f-6b6bf8e5061f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\00.Public\05.CutScene\CutScenePlayer">
-      <UniqueIdentifier>{03d71d9f-2446-4c44-bd4c-e4e68ff222f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\00.Public\05.CutScene\Performer">
-      <UniqueIdentifier>{b9fd1268-d7a7-484e-acc3-6d2d0cd711be}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe">
       <UniqueIdentifier>{0e9afc0b-547c-49be-9832-18d17154215d}</UniqueIdentifier>
     </Filter>
@@ -647,15 +635,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_GravityPipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\03.Gravity_Pipe</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\CutScene.h">
-      <Filter>02.GameObject\00.Public\05.CutScene\Main</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\CutScenePlayer.h">
-      <Filter>02.GameObject\00.Public\05.CutScene\CutScenePlayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Performer.h">
-      <Filter>02.GameObject\00.Public\05.CutScene\Performer</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_Player_Dead.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default</Filter>
@@ -958,20 +937,11 @@
     </ClCompile>
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
-    <ClCompile Include="..\private\CutScene.cpp">
-      <Filter>02.GameObject\00.Public\05.CutScene\Main</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\CutScenePlayer.cpp">
-      <Filter>02.GameObject\00.Public\05.CutScene\CutScenePlayer</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp">
       <Filter>02.GameObject\05.UI\03.ArrowKeys</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp">
       <Filter>02.GameObject\05.UI\03.ArrowKeys</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Performer.cpp">
-      <Filter>02.GameObject\00.Public\05.CutScene\Performer</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Player_Dead.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default</Filter>

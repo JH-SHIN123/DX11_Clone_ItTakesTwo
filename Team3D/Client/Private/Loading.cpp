@@ -54,10 +54,6 @@
 #include "SubCamera.h"
 #include "Cam_Helper.h"
 
-/* Test */
-#include "Sky.h"
-#include "CameraActor.h"
-#include"CutScenePlayer.h"
 #pragma endregion
 
 CLoading::CLoading(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -140,6 +136,7 @@ HRESULT CLoading::Loading(Level::ID ePreLevelID, Level::ID eNextLevelID, _uint i
 	m_arrFinished[iThreadIndex] = true;
 
 	return S_OK;
+
 }
 
 #ifdef __16THREADS
@@ -183,29 +180,7 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("Cody"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Cody"), CCody::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
-		//CCutScenePlayer::GetInstance()->NativeConstruct(m_pDevice, m_pDeviceContext);
-		/* For. Map */
-		//PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-		//PivotMatrix *= XMMatrixRotationX(XMConvertToRadians(90.f));
-		//FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_TileBox"), CModel_Instance::Create(m_pDevice, m_pDeviceContext, 10000, TEXT("../Bin/Resources/_Test/Model/"), TEXT("ToyBox01"), TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
-		//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_TileBox"), CTileBox::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-
-
-		/* Robot_Body */
-		//PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.f));
-		//FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Robot"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/_Test/Model/"), TEXT("ControlRoom_Computer_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
-		//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Robot"), CRobot::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-		
-		/*For. Interactive Objects */
-		///* Robot_Body */
-		//PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.f));
-		//FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Robot"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/InteractiveModels/"), TEXT("Robot"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
-		//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Robot"), CRobot::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-
-		/* Robot_Head */
-		//PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-		//FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RobotHead"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("RobotHead"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
-		//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_RobotHead"), CRobotHead::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+		__threadbreak;
 	}
 #ifndef __MAPLOADING_OFF
 	else if (2 == iThreadIndex)

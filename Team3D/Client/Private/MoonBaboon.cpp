@@ -3,7 +3,6 @@
 #include "May.h"
 #include "Cody.h"
 #include "UFO.h"
-#include"CutScenePlayer.h"
 
 CMoonBaboon::CMoonBaboon(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -33,8 +32,6 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
 
-	//FAILED_CHECK_RETURN((CCutScenePlayer::GetInstance()->Add_Performer(TEXT("Component_Model_MoonBaboon"), this)), E_FAIL);
-
 	m_pCodyTransform = ((CCody*)CDataStorage::GetInstance()->GetCody())->Get_Transform();
 	if (nullptr == m_pCodyTransform)
 		return E_FAIL;
@@ -45,15 +42,15 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 		return E_FAIL;
 	Safe_AddRef(m_pMayTransform);
 
-	//m_pUFOModel = ((CUFO*)CDataStorage::GetInstance()->Get_UFO())->Get_Model();
-	//if (nullptr == m_pUFOModel)
-	//	return E_FAIL;
-	//Safe_AddRef(m_pUFOModel);
+	m_pUFOModel = ((CUFO*)CDataStorage::GetInstance()->Get_UFO())->Get_Model();
+	if (nullptr == m_pUFOModel)
+		return E_FAIL;
+	Safe_AddRef(m_pUFOModel);
 
-	//m_pUFOTransform = ((CUFO*)CDataStorage::GetInstance()->Get_UFO())->Get_Transform();
-	//if (nullptr == m_pUFOTransform)
-	//	return E_FAIL;
-	//Safe_AddRef(m_pUFOModel);
+	m_pUFOTransform = ((CUFO*)CDataStorage::GetInstance()->Get_UFO())->Get_Transform();
+	if (nullptr == m_pUFOTransform)
+		return E_FAIL;
+	Safe_AddRef(m_pUFOModel);
 	
 	
 	m_pModelCom->Set_Animation(15);
@@ -72,7 +69,7 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 	Fix_MoonBaboon_Chair(dTimeDelta);
 
 	//m_pActorCom->Update(dTimeDelta);
-	m_pModelCom->Update_Animation(dTimeDelta/*CCutScenePlayer::GetInstance()->Get_TimeDelta()*/);
+	m_pModelCom->Update_Animation(dTimeDelta);
 
 	return NO_EVENT;
 }
@@ -81,7 +78,6 @@ _int CMoonBaboon::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
@@ -115,10 +111,10 @@ void CMoonBaboon::During_Animation_Behavior(_double dTimeDelta)
 
 void CMoonBaboon::Fix_MoonBaboon_Chair(_double dTimeDelta)
 {
-	//_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
-	//_float4x4 matWorld, matScale; // 우주선 안에있을때 유리밖으로 꼬리 튀어나와서 100->95정도로 줄임.
-	//XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f)  * BoneChair * m_pUFOTransform->Get_WorldMatrix());
-	//m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
+	_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
+	_float4x4 matWorld, matScale; // 우주선 안에있을때 유리밖으로 꼬리 튀어나와서 100->95정도로 줄임.
+	XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f)  * BoneChair * m_pUFOTransform->Get_WorldMatrix());
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
 }
 
 HRESULT CMoonBaboon::Render(RENDER_GROUP::Enum eGroup)
@@ -141,12 +137,6 @@ HRESULT CMoonBaboon::Render_ShadowDepth()
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(2, 0, true);
-	return S_OK;
-}
-
-HRESULT CMoonBaboon::Set_Animation(_uint iAnimationIdx)
-{
-	FAILED_CHECK_RETURN(m_pModelCom->Set_Animation(iAnimationIdx), E_FAIL);
 	return S_OK;
 }
 

@@ -9,13 +9,8 @@
 #include "ToyBoxButton.h"
 #include "MoonBaboonCore.h"
 
-#include "InGameEffect.h"
-#include "Effect_Generator.h"
-#include"CutScenePlayer.h"
-
 #include "WarpGate.h"
 #include "Boss_Missile.h"
-
 
 CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -32,10 +27,9 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Sky(TEXT("Layer_Sky")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Cody(TEXT("Layer_Cody")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_May(TEXT("Layer_May")), E_FAIL);
-
-
 	FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
 
+	/* For.Interactive Objects */
 #ifndef __MAPLOADING_OFF
 	/* Se */
 	FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);
