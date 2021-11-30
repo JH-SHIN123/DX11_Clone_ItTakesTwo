@@ -28,7 +28,7 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 
 	CPlayerActor::ARG_DESC ArgDesc;
 
-	m_UserData = USERDATA(GameID::eCAMERA, this);
+	m_UserData = USERDATA(GameID::eMAINCAMERA, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
 	ArgDesc.fJumpGravity = 0.f;
@@ -300,7 +300,10 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	{
 		m_fMouseRev[Rev_Holizontal] += (_float)(MouseMove * dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal]);
 		if (m_fMouseRev[Rev_Holizontal] > 360.f || m_fMouseRev[Rev_Holizontal] < -360.f)
+		{
 			m_fMouseRev[Rev_Holizontal] = 0.f;
+			m_fCurMouseRev[Rev_Holizontal] = 0.f;
+		}
 	}
 	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
 	{
