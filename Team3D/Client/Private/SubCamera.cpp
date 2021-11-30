@@ -49,14 +49,7 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 
-	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
-
-
-	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
-
-
-
-
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
 
 
@@ -80,8 +73,7 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 
 _int CSubCamera::Tick(_double dTimeDelta)
 {
-
-	if (m_pTargetObj == nullptr)
+	if (false == m_bStart)
 	{
 		m_pTargetObj = CDataStorage::GetInstance()->GetMay();
 		if (m_pTargetObj)
@@ -89,7 +81,9 @@ _int CSubCamera::Tick(_double dTimeDelta)
 			XMStoreFloat3(&m_vPlayerPos, static_cast<CMay*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 			Safe_AddRef(m_pTargetObj);
 		}
+		m_bStart = true;
 	}
+	
 
 	if (nullptr == m_pCamHelper)
 		return EVENT_ERROR;
@@ -102,7 +96,7 @@ _int CSubCamera::Tick(_double dTimeDelta)
 	_int iResult = NO_EVENT;
 
 
-	switch (m_pCamHelper->Tick(dTimeDelta, CFilm::LScreen))
+	switch (m_pCamHelper->Tick(dTimeDelta, CFilm::RScreen))
 	{
 	case CCam_Helper::CamHelperState::Helper_None:
 		iResult = Tick_CamHelperNone(dTimeDelta);
@@ -300,10 +294,10 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 	//CamEffect
 
-	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::LScreen))
+	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::RScreen))
 	{
-		if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, XMLoadFloat4x4(&m_matBeginWorld)))
-			m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen));
+		if (m_pCamHelper->Tick_CamEffect(CFilm::RScreen, dTimeDelta, XMLoadFloat4x4(&m_matBeginWorld)))
+			m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::RScreen));
 		//XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 	}
 
@@ -353,10 +347,10 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 _int CSubCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 {
-	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::LScreen))
+	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::RScreen))
 	{
-		if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, m_pTransformCom->Get_WorldMatrix()))
-			m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen));
+		if (m_pCamHelper->Tick_CamEffect(CFilm::RScreen, dTimeDelta, m_pTransformCom->Get_WorldMatrix()))
+			m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::RScreen));
 		//XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 	}
 	KeyCheck(dTimeDelta);
@@ -494,12 +488,7 @@ _fmatrix CSubCamera::MakeViewMatrix(_float3 Eye, _float3 At)
 #pragma region Cam_Helper
 _int CSubCamera::Tick_CamHelperNone(_double dTimeDelta)
 {
-	if (m_pTargetObj == nullptr)
-	{
-		m_pTargetObj = CDataStorage::GetInstance()->GetCody();
-		if (m_pTargetObj)
-			Safe_AddRef(m_pTargetObj);
-	}
+	
 	//외부에서 상태 설정 구간
 #ifdef _DEBUG
 
@@ -538,7 +527,7 @@ _int CSubCamera::Tick_CamHelper_Act(_double dTimeDelta)
 	if (nullptr == m_pCamHelper)
 		return EVENT_ERROR;
 	_float fFovY = 0.f;
-	m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Tick_Film(dTimeDelta, CFilm::LScreen, &fFovY));
+	m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Tick_Film(dTimeDelta, CFilm::RScreen, &fFovY));
 	if (fFovY == 0.f)
 		return NO_EVENT;
 	m_CameraDesc.fFovY = XMConvertToRadians(fFovY);
@@ -549,7 +538,7 @@ _int CSubCamera::Tick_CamHelper_SeeCamNode(_double dTimeDelta)
 {
 	if (m_pCamHelper == nullptr)
 		return EVENT_ERROR;
-	m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CamNodeMatrix(m_pTransformCom, dTimeDelta, CFilm::LScreen));
+	m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CamNodeMatrix(m_pTransformCom, dTimeDelta, CFilm::RScreen));
 	return NO_EVENT;
 }
 

@@ -62,6 +62,7 @@ public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
+	_bool m_bStart = false;
 	_float m_fMouseRevSpeed[Rev_End] = { 2.5f,2.5f };
 	_float m_fMouseRev[Rev_End] = { 0.0f,0.0f };
 	_float m_fCurMouseRev[Rev_End] = { 0.f,0.f };

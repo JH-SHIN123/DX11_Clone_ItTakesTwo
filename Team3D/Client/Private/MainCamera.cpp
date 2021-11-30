@@ -47,7 +47,7 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 
-	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom,&ArgDesc), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom,&ArgDesc), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
 
 	
@@ -72,8 +72,7 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 
 _int CMainCamera::Tick(_double dTimeDelta)
 {
-
-	if (m_pTargetObj == nullptr)
+	if (false == m_bStart)
 	{
 		m_pTargetObj = CDataStorage::GetInstance()->GetCody();
 		if (m_pTargetObj)
@@ -82,6 +81,7 @@ _int CMainCamera::Tick(_double dTimeDelta)
 			Safe_AddRef(m_pTargetObj);
 		}
 	}
+
 
 	if (nullptr == m_pCamHelper)
 		return EVENT_ERROR;
@@ -592,12 +592,7 @@ _fmatrix CMainCamera::MakeViewMatrix(_float3 Eye, _float3 At)
 #pragma region Cam_Helper
 _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 {
-	if (m_pTargetObj == nullptr)
-	{
-		m_pTargetObj = CDataStorage::GetInstance()->GetCody();
-		if (m_pTargetObj)
-			Safe_AddRef(m_pTargetObj);
-	}
+
 	//외부에서 상태 설정 구간
 #ifdef _DEBUG
 

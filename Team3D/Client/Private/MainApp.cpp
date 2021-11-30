@@ -50,8 +50,7 @@ HRESULT CMainApp::Run_App()
 		
 		m_dTimeDelta = dTimeDelta;
 		//m_dTimeDelta = 0.016666666666666666;
-	/*	if(CCutScenePlayer::GetInstance()->Tick_CutScene())
-			CCutScenePlayer::GetInstance()->OffSetTimeDelta();*/
+	
 
 		if (Tick(m_dTimeDelta) & 0x80000000)
 			return E_FAIL;
