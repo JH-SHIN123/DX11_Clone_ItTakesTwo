@@ -7,7 +7,7 @@ void CAnim::Get_PreAnimKeyFrames(_uint iPreAnimFrame, vector<KEY_FRAME>& PreAnim
 		PreAnimKeyFrames[pChannel->Get_ConnectedNodeIndex()] = pChannel->Get_KeyFrames()[iPreAnimFrame];
 }
 
-const _double CAnim::Get_KeyFrameTimeAvg(_int iIndex)
+const _double CAnim::Get_ChannelKeyFrameTimeAvg(_int iIndex)
 {
 	if (iIndex < 0) return 0.0;
 

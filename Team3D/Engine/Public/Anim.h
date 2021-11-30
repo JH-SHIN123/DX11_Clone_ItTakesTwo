@@ -24,7 +24,7 @@ public: /* Getter */
 	void			Get_PreAnimKeyFrames(_uint iPreAnimFrame, vector<KEY_FRAME>& PreAnimKeyFrames);
 	const vector<class CAnimChannel*>& Get_Channels() const { return m_Channels; }
 	const _uint		Get_ChannelCount() { return (_uint)m_Channels.size(); }
-	const _double	Get_KeyFrameTimeAvg(_int iIndex);
+	const _double	Get_ChannelKeyFrameTimeAvg(_int iIndex); /* 모든 채널의 해당 인덱스 프레임, 평균시간 */
 
 public:
 	HRESULT	NativeConstruct(ANIM_DESC AnimDesc);

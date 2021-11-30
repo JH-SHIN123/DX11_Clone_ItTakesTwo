@@ -199,13 +199,14 @@ _int CCody::Tick(_double dTimeDelta)
 		m_pPathCom->Start_Path(CPath::STATE_FORWARD, 30);
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	HRESULT hr = m_pPathCom->Update_Animation(dTimeDelta, WorldMatrix);
-	if (E_FAIL != hr) {
+	_bool isTakePath = m_pPathCom->Update_Animation(dTimeDelta, WorldMatrix);
+	if (true == isTakePath) {
 		m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 		m_pActorCom->Set_Position(WorldMatrix.r[3]);
 	}
-
-	//m_pActorCom->Update(dTimeDelta); // Set Position하면 이거 할필요없다.
+	else
+		m_pActorCom->Update(dTimeDelta); // Set Position하면 이거 할필요없다.
+	
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 

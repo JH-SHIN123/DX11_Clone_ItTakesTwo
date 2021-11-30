@@ -180,4 +180,44 @@ namespace Engine
 	
 		return XMMatrixRotationQuaternion(XMLoadFloat4(&vQuat));
 	}
+
+	/* @Return Radian */
+	static _float3 MH_GetRoatationAnglesToMatrix(const _float4x4& fRotateMatrix)
+	{
+		/*
+		Rotate Matrix
+		| r11 r12 r13  0 |
+		| r21 r22 r23  0 |
+		| r31 r32 r33  0 |
+		|  0   0   0   1 |
+		*/
+
+		return {
+			atan2(fRotateMatrix._23, fRotateMatrix._33),
+			atan2(-fRotateMatrix._13, sqrt(pow(fRotateMatrix._23, 2) + pow(fRotateMatrix._33, 2))),
+			atan2(fRotateMatrix._12, fRotateMatrix._11)
+		};
+	}
+
+	/* @Return Radian */
+	static _float3 MH_GetRoatationAnglesToMatrix(const _fmatrix fRotateMatrix)
+	{
+		/*
+		Rotate Matrix
+		| r11 r12 r13  0 |
+		| r21 r22 r23  0 |
+		| r31 r32 r33  0 |
+		|  0   0   0   1 |
+		*/
+		_float3 vRight, vUp, vLook;
+		XMStoreFloat3(&vRight, fRotateMatrix.r[0]);
+		XMStoreFloat3(&vUp, fRotateMatrix.r[1]);
+		XMStoreFloat3(&vLook, fRotateMatrix.r[2]);
+
+		return {
+			atan2(vUp.z, vLook.z),
+			atan2(-vRight.z, sqrt(pow(vUp.z, 2) + pow(vLook.z, 2))),
+			atan2(vRight.y, vRight.z)
+		};
+	}
 }

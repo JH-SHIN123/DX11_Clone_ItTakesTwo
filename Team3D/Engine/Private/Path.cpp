@@ -12,25 +12,11 @@ CPath::CPath(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 CPath::CPath(const CPath& rhs)
 	: CComponent(rhs),
 	m_pPathAnim(rhs.m_pPathAnim),
-	m_AnimTransformations(rhs.m_AnimTransformations)
+	m_AnimTransformations(rhs.m_AnimTransformations),
+	m_dDurationTime(rhs.m_dDurationTime)
 {
 	lstrcpy(m_szPathTag, rhs.m_szPathTag);
-
 	Safe_AddRef(m_pPathAnim);
-}
-
-HRESULT CPath::Start_Path(STATE eState, _uint iAnimFrame)
-{
-	if (m_bPlayAnimation) return S_OK;
-	NULL_CHECK_RETURN(m_pPathAnim, E_FAIL);
-
-	// 해당 프레임의 시간값으로 적용
-	m_dCurrentTime = m_pPathAnim->Get_KeyFrameTimeAvg(iAnimFrame);
-	m_eState = eState;
-	m_bPlayAnimation = true;
-	m_iCurAnimFrame = iAnimFrame;
-
-	return S_OK;
 }
 
 HRESULT CPath::NativeConstruct_Prototype(const _tchar* pFilePath, const _tchar* pPathTag)
@@ -41,10 +27,16 @@ HRESULT CPath::NativeConstruct_Prototype(const _tchar* pFilePath, const _tchar* 
 
 	CComponent::NativeConstruct_Prototype();
 
+	/* Set Path Tag */
 	lstrcpy(m_szPathTag, pPathTag);
 
+	/* Load Path Anim */
 	FAILED_CHECK_RETURN(m_pModel_Loader->Load_PathFromFile((void**)(&m_pPathAnim), pFilePath), E_FAIL);
+	
+	/* Set Duration */
+	m_dDurationTime = m_pPathAnim->Get_Duration();
 
+	/* Init Channel's Transformations Identity */
 	m_AnimTransformations.resize(m_pPathAnim->Get_ChannelCount());
 	for (auto& pAnimTransfomation : m_AnimTransformations)
 		pAnimTransfomation = MH_XMFloat4x4Identity();
@@ -54,76 +46,100 @@ HRESULT CPath::NativeConstruct_Prototype(const _tchar* pFilePath, const _tchar* 
 
 HRESULT CPath::NativeConstruct(void* pArg)
 {
-	CComponent::NativeConstruct(pArg);
+	if (nullptr != pArg)
+		memcpy(&m_tDesc, pArg, sizeof(m_tDesc));
+
+	CComponent::NativeConstruct(nullptr);
 
 	return S_OK;
 }
 
-HRESULT CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
+HRESULT CPath::Start_Path(STATE eState, _uint iAnimFrame)
 {
-	if (false == m_bPlayAnimation) return E_FAIL;
-
+	if (m_bPlayAnimation) return S_OK;
 	NULL_CHECK_RETURN(m_pPathAnim, E_FAIL);
 
-	_double dDuration = m_pPathAnim->Get_Duration();
+	m_eState = eState;
+	m_iCurAnimFrame = iAnimFrame;
+	m_dCurrentTime = m_pPathAnim->Get_ChannelKeyFrameTimeAvg(iAnimFrame); // 해당 프레임의 시간값으로 적용
+	m_bPlayAnimation = true;
+
+	return S_OK;
+}
+
+_bool CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
+{
+	if (nullptr == m_pPathAnim) return false;
+	if (false == m_bPlayAnimation) return false;
+
 	_double dTicksPerSecond = m_pPathAnim->Get_TicksPerSecond();
+	m_dCurrentTime += fmod(dTicksPerSecond * dTimeDelta, m_dDurationTime);
 
-	m_dCurrentTime += fmod(dTicksPerSecond * dTimeDelta, dDuration);
-
-	if (m_dCurrentTime >= dDuration) {
+	/* 애니메이션이 끝나면, 업데이트 종료 (멈추기) */
+	if (m_dCurrentTime >= m_dDurationTime)
+	{
+		m_eState = STATE_END;
 		m_bPlayAnimation = false;
-		return E_FAIL; // TEST
+		return false;
 	}
 
 	/* Update_AnimTransformations */
-	if(STATE_FORWARD == m_eState)
-		m_pPathAnim->Update_PathTransformation(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations);
-	else if (STATE_BACKWARD == m_eState) {
-		_double rewindTime = dDuration - m_dCurrentTime;
-		m_pPathAnim->Update_RewindPathTransformation(rewindTime, m_iCurAnimFrame, m_AnimTransformations);
-	}
+	Update_AnimTransformations(dTimeDelta);
 
 	/* Update_CombinedTransformations */
-	_matrix WorldMatrixTemp;
-
-	// Scale 안먹임
-
-	_float3 fRotateAngle = Get_RotationAngles(m_AnimTransformations[1]);
-	_matrix RotateMatrix = XMMatrixRotationX((fRotateAngle.x));
-	RotateMatrix *= XMMatrixRotationY((-fRotateAngle.z));
-	RotateMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f));
-	if (STATE_BACKWARD == m_eState)
-		RotateMatrix *= XMMatrixRotationY(XMConvertToRadians(180.f));
-	RotateMatrix *= XMMatrixRotationZ((fRotateAngle.y));
-
-	WorldMatrixTemp = RotateMatrix;
-	WorldMatrixTemp *= XMLoadFloat4x4(&m_AnimTransformations[0]);
-	WorldMatrixTemp.r[3] *= 0.001f; // Pivot Scaling
-	WorldMatrixTemp.r[3] = XMVectorSetW(WorldMatrixTemp.r[3], 1.f);
-
-	WorldMatrix = WorldMatrixTemp;
+	WorldMatrix = Update_CombinedTransformations();
 
 	/* Update Progress */
-	m_fProgressAnim = _float(m_dCurrentTime / dDuration);
+	m_fProgressAnim = _float(m_dCurrentTime / m_dDurationTime);
 
 	return S_OK;
 }
 
-_float3 CPath::Get_RotationAngles(const _float4x4& fRotateMatrix)
+HRESULT CPath::Update_AnimTransformations(_double dTimeDelta)
 {
-	/*
-	Rotate Matrix
-	| r11 r12 r13  0 |
-	| r21 r22 r23  0 |
-	| r31 r32 r33  0 |
-	|  0   0   0   1 |
-	*/
+	NULL_CHECK_RETURN(m_pPathAnim, E_FAIL);
 
-	return {
-		atan2(fRotateMatrix._23, fRotateMatrix._33),
-		atan2(-fRotateMatrix._13, sqrt(pow(fRotateMatrix._23, 2) + pow(fRotateMatrix._33, 2))),
-		atan2(fRotateMatrix._12, fRotateMatrix._11)
-	};
+	switch (m_eState)
+	{
+	case Engine::CPath::STATE_FORWARD:
+		m_pPathAnim->Update_PathTransformation(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations);
+		break;
+	case Engine::CPath::STATE_BACKWARD:
+	{
+		_double rewindTime = m_dDurationTime - m_dCurrentTime;
+		m_pPathAnim->Update_RewindPathTransformation(rewindTime, m_iCurAnimFrame, m_AnimTransformations);
+		break;
+	}
+	}
+
+	return S_OK;
+}
+
+_fmatrix CPath::Update_CombinedTransformations()
+{
+	/* Scale 적용 X */
+	_matrix WorldMatrix, RotateMatrix, TransMatrix;
+
+	/* Rotation */
+	_float3 fRotateAngle = MH_GetRoatationAnglesToMatrix(m_AnimTransformations[CHANNEL_ROTATION]);
+	
+	/* Pitch */
+	RotateMatrix = XMMatrixRotationX((fRotateAngle.x));
+	/* Yaw */
+	if (STATE_FORWARD == m_eState) RotateMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f)  -fRotateAngle.z);
+	else RotateMatrix *= XMMatrixRotationY(-fRotateAngle.z + XMConvertToRadians(90.f) + XMConvertToRadians(180.f));
+	/* Roll */
+	RotateMatrix *= XMMatrixRotationZ((fRotateAngle.y));
+
+	/* Translation */
+	TransMatrix *= XMLoadFloat4x4(&m_AnimTransformations[CHANNEL_TRANSLATION]);
+	TransMatrix.r[3] *= 0.001f; // Pivot Scaling
+	TransMatrix.r[3] = XMVectorSetW(TransMatrix.r[3], 1.f);
+
+	/* Final Cal */
+	WorldMatrix = XMLoadFloat4x4(&m_tDesc.WorldMatrix);
+
+	return WorldMatrix * RotateMatrix * TransMatrix;
 }
 
 CPath* CPath::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pFilePath, const _tchar* pPathTag)

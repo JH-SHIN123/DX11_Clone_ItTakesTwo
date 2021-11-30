@@ -6,7 +6,13 @@ BEGIN(Engine)
 class ENGINE_DLL CPath final : public CComponent
 {
 public:
-	enum STATE { STATE_FORWARD, STATE_BACKWARD, STATE_END };
+	enum CHANNELID	{ CHANNEL_TRANSLATION, CHANNEL_ROTATION, CHANNEL_SCALING };
+	enum STATE		{ STATE_FORWARD, STATE_BACKWARD, STATE_END };
+
+	typedef struct tagPathDesc 
+	{
+		_float4x4	WorldMatrix = MH_XMFloat4x4Identity();
+	}PATH_DESC;
 
 private:
 	explicit CPath(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -14,35 +20,39 @@ private:
 	virtual ~CPath() = default;
 
 public:
-	HRESULT Start_Path(STATE eState, _uint iAnimFrame);
+	_float Get_ProgressAnim() const { return m_fProgressAnim; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(const _tchar * pFilePath, const _tchar * pPathTag);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 
 public:
-	HRESULT	Update_Animation(_double dTimeDelta, _matrix& WorldMatrix);
+	HRESULT Start_Path(STATE eState, _uint iAnimFrame);
+	_bool	Update_Animation(_double dTimeDelta, _matrix& WorldMatrix);
 
 private:
-	_float3 Get_RotationAngles(const _float4x4& fRotateMatrix);
-
-private:
-	class CModel_Loader*	m_pModel_Loader = nullptr;
-	class CAnim*			m_pPathAnim = nullptr;
-	_tchar					m_szPathTag[MAX_PATH] = L"";
+	HRESULT		Update_AnimTransformations(_double dTimeDelta);
+	_fmatrix	Update_CombinedTransformations();
 
 private: /* Typedef */
 	typedef vector<_float4x4>				TRANSFORMATIONS;
 
-private:
+private: /* Prototype Info */
+	class CModel_Loader*	m_pModel_Loader = nullptr;
+	class CAnim*			m_pPathAnim = nullptr;
+	_tchar					m_szPathTag[MAX_PATH] = L"";
+	_double					m_dDurationTime = 0.0;
+
+private: /* Clone Info */
 	_bool					m_bPlayAnimation = false;
 	STATE					m_eState = STATE_END;
+	PATH_DESC				m_tDesc;
 
 private:
 	_double					m_dCurrentTime = 0.0;		// 현재 애니메이션 진행시간
 	_uint					m_iCurAnimFrame = 0;		// 현재 애니메이션 프레임
 	_float					m_fProgressAnim = 0.f;		// 애니메이션 진행도
-	TRANSFORMATIONS			m_AnimTransformations;		// 채널의 Transformation이 채워진 TransformationMatrix
+	TRANSFORMATIONS			m_AnimTransformations;		// Channel : Scaling / Rotation / Position
 
 public:
 	static CPath* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar* pFilePath, const _tchar* pPathTag);
