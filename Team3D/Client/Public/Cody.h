@@ -221,7 +221,6 @@ public:
 
 	// Tick 에서 호출될 함수들
 private:
-
 	virtual void KeyInput(_double dTimeDelta);
 	void Attack_BossMissile_After(_double dTimeDelta);
 

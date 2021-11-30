@@ -180,12 +180,15 @@ public:
 	CModel*		Get_Model() { return m_pModelCom; }
 	void		Update_Tirgger_Pos(_vector vPos);
 
+public:
+	void	Set_BossMissile_Attack(); // CBoss_Missile
+
 	// Tick 에서 호출될 함수들
 private:
 	virtual void KeyInput(_double dTimeDelta);
+	void Attack_BossMissile_After(_double dTimeDelta);
 
-
-
+private:
 	// 단발성 함수들.
 	HRESULT Ready_Component();
 	void Add_LerpInfo_To_Model();
@@ -320,6 +323,13 @@ private:
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
 
+	/* 혜원::For.DeadLine, SavePoint */
+	_bool	 m_IsDeadLine = false;
+	_bool	 m_IsSavePoint = false;
+	_float3  m_vSavePoint = {};
+	_float	 m_fDeadTime = 0.f;
+	_float3	 m_DeadLinePos = {};
+
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
 	_bool m_IsInGravityPipe = false;
@@ -346,7 +356,31 @@ private:
 	_bool m_IsActivate_End = false;
 	_bool m_IsPullVerticalDoor = false;
 
+	// fire Door Dead
 	_bool m_IsTouchFireDoor = false;
+
+	// Warp NextStage
+	_bool m_IsWarpNextStage = false;
+	_float m_fWarpTimer = 0.f;
+	_bool m_IsWarpDone = false;
+	const _float4 m_vWormholePos = { 0.f, -100.f, -1000.f, 1.f };
+	const _float m_fWarpTimer_Max = 2.f;
+
+	// Boss Missile Hit
+	_bool m_IsBossMissile_Hit = false;
+
+	// Boss Missile Control
+	_bool	m_IsBossMissile_Control = false;
+	_bool	m_IsBossMissile_Rodeo_Ready = false;
+	_bool	m_IsBossMissile_Rodeo = false;
+	_bool	m_IsBoss_Missile_Explosion = false;
+	_float	m_fLandTime = 0.f;
+	_float	m_fBossMissile_HeroLanding_Time = 0.f;
+	_bool	m_IsBossMissile_RotateYawRoll_After = false;
+
+	// touch WallLaserTrap
+	_bool m_IsWallLaserTrap_Touch = false;
+	_bool m_IsWallLaserTrap_Effect = false;
 
 
 	void Go_Grind(const _double dTimeDelta);
@@ -356,8 +390,14 @@ private:
 	void Pull_VerticalDoor(const _double dTimeDelta);
 	void Rotate_Valve(const _double dTimeDelta);
 	void In_GravityPipe(const _double dTimeDelta);
+	//정호
 	void Warp_Wormhole(const _double dTimeDelta);
 	void Touch_FireDoor(const _double dTimeDelta);
+	void Boss_Missile_Hit(const _double dTimeDelta);
+	void Boss_Missile_Control(const _double dTimeDelta);
+	void WallLaserTrap(const _double dTimeDelta);
+	/* 혜원::For.DeadLine, SavePoint */
+	void Falling_Dead(const _double dTimeDelta);
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);
