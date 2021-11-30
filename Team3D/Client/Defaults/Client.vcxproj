@@ -296,26 +296,18 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\CamEffect.cpp" />
     <ClCompile Include="..\Private\Cam_Helper.cpp" />
     <ClCompile Include="..\private\CutScene.cpp" />
     <ClCompile Include="..\private\CutScenePlayer.cpp" />
-=======
     <ClCompile Include="..\Private\BigButtonFrame.cpp" />
->>>>>>> main
     <ClCompile Include="..\Private\Bridge.cpp" />
     <ClCompile Include="..\Private\DeadLine.cpp" />
     <ClCompile Include="..\Private\BigPlanet.cpp" />
     <ClCompile Include="..\Private\Boss_Missile.cpp" />
-<<<<<<< HEAD
-=======
-    <ClCompile Include="..\Private\CamEffect.cpp" />
-    <ClCompile Include="..\private\Cam_Helper.cpp" />
     <ClCompile Include="..\Private\DummyWall.cpp" />
->>>>>>> main
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />

@@ -36,15 +36,6 @@ HRESULT CLevel_Stage::NativeConstruct()
 
 	FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
 
-<<<<<<< HEAD
-	//FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
-
-	// For.Interactive Objects 
-
-=======
-	/* For.Interactive Objects */
->>>>>>> main
 #ifndef __MAPLOADING_OFF
 	/* Se */
 	FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);

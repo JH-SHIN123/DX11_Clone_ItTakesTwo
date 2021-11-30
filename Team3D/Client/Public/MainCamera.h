@@ -36,7 +36,7 @@ public:
 	HRESULT Start_Film(const _tchar* pFilmTag);
 private:
 	CCameraActor* m_pActorCom = nullptr;
-
+	CGameObject* m_pTargetObj = nullptr;
 	CCam_Helper* m_pCamHelper = nullptr;
 private:
 	//For Free.
@@ -62,7 +62,6 @@ public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
-	CGameObject* m_pTargetObj = nullptr;
 	_float m_fMouseRevSpeed[Rev_End] = { 2.5f,2.5f };
 	_float m_fMouseRev[Rev_End] = { 0.0f,0.0f };
 	_float m_fCurMouseRev[Rev_End] = { 0.f,0.f };

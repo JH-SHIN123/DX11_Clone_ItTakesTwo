@@ -125,6 +125,7 @@ HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 		break;
 	}
 	m_pCutScenePlayer = CCutScenePlayer::GetInstance();
+	Safe_AddRef(m_pCutScenePlayer);
 	return S_OK;
 }
 
@@ -150,4 +151,5 @@ CCutScene * CCutScene::Create(CutSceneOption eOption)
 
 void CCutScene::Free()
 {
+	Safe_Release(m_pCutScenePlayer);
 }

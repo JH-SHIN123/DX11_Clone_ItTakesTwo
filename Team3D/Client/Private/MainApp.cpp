@@ -179,11 +179,13 @@ void CMainApp::Free()
 
 	Safe_Delete(m_pPxEventCallback);
 
+
 	CEffect_Generator::DestroyInstance(); // 이펙트 제어기
 	CUI_Generator::DestroyInstance();
 	CDataStorage::DestroyInstance();
 	CEnvironment_Generator::DestroyInstance();
-
+	CCutScenePlayer::DestroyInstance();
+	
 	CGameInstance::Release_Engine();
 }
 

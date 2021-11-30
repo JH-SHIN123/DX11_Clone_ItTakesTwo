@@ -501,18 +501,18 @@ _int CSubCamera::Tick_CamHelperNone(_double dTimeDelta)
 	//외부에서 상태 설정 구간
 #ifdef _DEBUG
 
-	if (m_pGameInstance->Key_Down(DIK_O))
-	{
-		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
-	}
-	if (m_pGameInstance->Key_Down(DIK_P))
-	{
+	//if (m_pGameInstance->Key_Down(DIK_O))
+	//{
+	//	m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_P))
+	//{
 
-		XMStoreFloat4x4(&m_matBeginWorld, XMLoadFloat4x4(&m_matLocal));
-		m_fChangeCamModeTime = 0.f;
-		m_fChangeCamModeLerpSpeed = 10.f;
-		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
-	}
+	//	XMStoreFloat4x4(&m_matBeginWorld, XMLoadFloat4x4(&m_matLocal));
+	//	m_fChangeCamModeTime = 0.f;
+	//	m_fChangeCamModeLerpSpeed = 10.f;
+	//	m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
+	//}
 #endif
 	//ChangeViewPort();
 	m_fChangeCamModeTime <= 1.f ? m_eCurCamMode = CamMode::Cam_AutoToFree : m_eCurCamMode = CamMode::Cam_Free;

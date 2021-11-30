@@ -48,9 +48,6 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom,&ArgDesc), E_FAIL);
-
-
-	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
 
 	
@@ -201,13 +198,13 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 		m_fChangeCamModeLerpSpeed = 10.f;
 	}
 	//For.May
-	_vector vPlayerUp = XMVector4Normalize(pTargetPlayer->Get_Transform()->Get_State(CTransform::STATE_UP));
-	_vector vPlayerRight = XMVector4Normalize(pTargetPlayer->Get_Transform()->Get_State(CTransform::STATE_RIGHT));
+	//_vector vPlayerUp = XMVector4Normalize(pTargetPlayer->Get_Transform()->Get_State(CTransform::STATE_UP));
+	//_vector vPlayerRight = XMVector4Normalize(pTargetPlayer->Get_Transform()->Get_State(CTransform::STATE_RIGHT));
 
-	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	_float fTheta = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
-	_matrix matQuat = XMMatrixRotationAxis(vPlayerRight, fTheta);
-	m_pTransformCom->Set_RotateQuat(matQuat);
+	//_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	//_float fTheta = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
+	//_matrix matQuat = XMMatrixRotationAxis(vPlayerRight, fTheta);
+	//m_pTransformCom->Set_RotateQuat(matQuat);
 	
 }
 

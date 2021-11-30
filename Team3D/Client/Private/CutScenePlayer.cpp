@@ -14,8 +14,9 @@ HRESULT CCutScenePlayer::NativeConstruct(ID3D11Device* pDevice, ID3D11DeviceCont
 	m_pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(m_pGameInstance);
 	m_pDevice = pDevice;
+	Safe_AddRef(m_pDevice);
 	m_pDeviceContext = pDeviceContext;
-
+	Safe_AddRef(m_pDeviceContext);
 	//¼ÒÇ°µé
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Performer"), CPerformer::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
@@ -128,7 +129,7 @@ _bool CCutScenePlayer::Tick_CutScene()
 
 void CCutScenePlayer::OffSetTimeDelta()
 {
-	m_dTimeDelta = m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"))	 * 3252.0* 1.02693;
+	m_dTimeDelta = CGameInstance::GetInstance()->Compute_TimeDelta(TEXT("Timer_60"))*3252.0*1.02693;
 }
 
 HRESULT CCutScenePlayer::Start_CutScene(const _tchar* pCutSceneTag)
@@ -175,6 +176,8 @@ void CCutScenePlayer::Free()
 		Safe_Release(rPair.second);
 	m_CutScenes.clear();
 	Safe_Release(m_pCurCutScene);
-
 	Safe_Release(m_pGameInstance);
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pDeviceContext);
+
 }
