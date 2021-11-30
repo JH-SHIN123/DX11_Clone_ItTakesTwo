@@ -37,14 +37,10 @@ HRESULT CPressurePlate::NativeConstruct(void * pArg)
 
 	if (0 == m_iOption)
 	{
-		/* 테스트 */
-		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-3.f, 0.f, -1.f, 1.f));
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(55.1267f, 218.752f, 217.445f, 1.f));
 	}
 	else if (1 == m_iOption)
 	{
-		/* 테스트 */
-		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(3.f, 0.f, -1.f, 1.f));
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(72.2947f, 218.752f, 227.324f, 1.f));
 	}
 
@@ -52,9 +48,6 @@ HRESULT CPressurePlate::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(Ready_Layer_PlateFrame(TEXT("Layer_PressurePlateFrame")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_SupportFrame(TEXT("Layer_SupportFrame")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_PlateLock(TEXT("Layer_PressurePlateLock"), 4), E_FAIL);
-
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-10.f, 0.f, 0.f, 1.f));
-	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
 
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
@@ -335,7 +328,6 @@ CGameObject * CPressurePlate::Clone_GameObject(void * pArg)
 
 void CPressurePlate::Free()
 {
-
 	Safe_Release(m_pPipeCurve);
 	Safe_Release(m_pSupportFrame);
 	Safe_Release(m_pPressurePlateFrame);

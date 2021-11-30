@@ -144,27 +144,6 @@ _int CControlRoom_Battery::Tick(_double dTimeDelta)
 		}
 	}
 
-	//if (m_pGameInstance->Key_Down(DIK_L))
-	//{
-	//	m_fAngle -= 1.f;
-
-	//	m_fRotate += (_float)dTimeDelta * 2.f;
-	//	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
-
-	//	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//	_float4 vConvertPos;
-	//	XMStoreFloat4(&vConvertPos, vPos);
-	//	vConvertPos.z += 0.01f;
-	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vConvertPos));
-	//}
-
-	//if (m_pGameInstance->Key_Down(DIK_K))
-	//{
-	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.719f, 221.12184f, 224.44f, 1.f));
-	//	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(25.f));
-	//	m_fAngle = 25.f;
-	//}
-
 	return NO_EVENT;
 }
 

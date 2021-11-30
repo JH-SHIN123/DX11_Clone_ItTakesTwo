@@ -43,7 +43,6 @@ protected:
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 	CStaticActor*		m_pStaticActorCom = nullptr;
-	CTriggerActor*		m_pTriggerCom = nullptr;
 
 private:
 	void LockActive(_double TimeDelta);

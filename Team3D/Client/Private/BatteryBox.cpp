@@ -136,7 +136,6 @@ CGameObject * CBatteryBox::Clone_GameObject(void * pArg)
 
 void CBatteryBox::Free()
 {
-
 	Safe_Release(m_pBattery);
 	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTransformCom);

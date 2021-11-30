@@ -29,7 +29,7 @@ HRESULT CControlRoom_Glass::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_ControlRoom_Glass"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(67.465, 218.752f, 223.54f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(67.465f, 218.752f, 223.54f, 1.f));
 
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
@@ -53,8 +53,6 @@ _int CControlRoom_Glass::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(77.465, 218.752f, 231.54f, 1.f));
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);

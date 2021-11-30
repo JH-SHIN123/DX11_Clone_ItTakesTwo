@@ -44,9 +44,6 @@ HRESULT CSupportFrame::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 
-	//DATABASE->Set_SupportFramePtr(this);
-
-
 	return S_OK;
 }
 

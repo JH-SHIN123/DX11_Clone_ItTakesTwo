@@ -41,17 +41,11 @@ HRESULT CPressureBigPlate::NativeConstruct(void * pArg)
 	/* Option 0 : 파이프 회전 시키는 버튼 / Option 1 : 전력 연결시키는 버튼 */
 	if (0 == m_iOption)
 	{
-		/* 테스트 용 */
-		//FAILED_CHECK_RETURN(Ready_Layer_Plate(TEXT("Layer_PressurePlate"), 2), E_FAIL);
-		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 1.f, -3.f, 1.f));
-
 		FAILED_CHECK_RETURN(Ready_Layer_Plate(TEXT("Layer_PressurePlate"), 2), E_FAIL);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(63.7634f, 219.8f, 210.848f, 1.f));
 	}
 	else if (1 == m_iOption)
 	{
-		/* 테스트 용 */
-		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.4f, -3.f, 1.f));
 		FAILED_CHECK_RETURN(Ready_Layer_BatteryBox(TEXT("Layer_BatteryBox")), E_FAIL);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(81.101f, 219.f, 217.141f, 1.f));
 		DATABASE->Set_PressureBigPlate(this);
@@ -59,10 +53,6 @@ HRESULT CPressureBigPlate::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Layer_PlateLock(TEXT("Layer_PressurePlateLock")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_PlateFrame(TEXT("Layer_PressurePlateFrame")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_SupportFrame(TEXT("Layer_SupportFrame")), E_FAIL);
-
-
-	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
 
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
@@ -324,30 +314,14 @@ void CPressureBigPlate::SetUp_DefaultPositionSetting()
 
 	if (0 == m_iOption)
 	{
-		//XMStoreFloat4(&vConvertPos, vPos);
-
-		//vConvertPos.y -= 1.2f;
-		//m_pSupportFrame->Set_Position(XMLoadFloat4(&vConvertPos));
-
 		vObjectPos = { 63.7634f, 218.987f, 210.838f, 1.f };
 		m_pPlateFrame->Set_Position(vObjectPos);
-
-		//vObjectPos = { 63.7545f, 218.652f, 210.848f, 1.f };
-		//m_pSupportFrame->Set_Position(vObjectPos);
-
 	}
 	else if (1 == m_iOption)
 	{
 		vObjectPos = { 81.1f, 219.f, 217.15f, 1.f };
 		m_pPlateFrame->Set_Position(vObjectPos);
-
-		//vObjectPos = { 81.101f, 218.652f, 217.141f, 1.f };
-		//m_pSupportFrame->Set_Position(vObjectPos);
 	}
-
-	//XMStoreFloat4(&vConvertPos, vPos);
-	//vConvertPos.y -= 0.4f;
-	//m_pPlateFrame->Set_Position(XMLoadFloat4(&vConvertPos));
 
 	XMStoreFloat4(&vConvertPos, vPos);
 	vConvertPos.y -= 0.1f;
@@ -483,16 +457,6 @@ HRESULT CPressureBigPlate::Ready_Layer_PlateFrame(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CPressureBigPlate::Ready_Layer_SupportFrame(const _tchar * pLayerTag)
-{
-	CGameObject* pGameObject = nullptr;
-	_uint iOption = 0;
-
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SupportFrame"), &iOption, &pGameObject), E_FAIL);
-	m_pSupportFrame = static_cast<CSupportFrame*>(pGameObject);
-	return S_OK;
-}
-
 HRESULT CPressureBigPlate::Ready_Layer_BatteryBox(const _tchar * pLayerTag)
 {
 	CGameObject* pGameObject = nullptr;
@@ -547,12 +511,17 @@ void CPressureBigPlate::Free()
 {
 	Safe_Release(m_pPlateLock);
 	Safe_Release(m_pPlateFrame);
-	Safe_Release(m_pBatteryBox);
 
-	for (auto pPressurePlate : m_vecPressurePlate)
-		Safe_Release(pPressurePlate);
+	if(1 == m_iOption)
+		Safe_Release(m_pBatteryBox);
 
-	m_vecPressurePlate.clear();
+	if (0 == m_iOption)
+	{
+		for (auto pPressurePlate : m_vecPressurePlate)
+			Safe_Release(pPressurePlate);
+
+		m_vecPressurePlate.clear();
+	}
 
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pStaticActorCom);

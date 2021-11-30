@@ -49,7 +49,6 @@ private:
 private:
 	class CPressurePlateLock*					m_pPlateLock = nullptr;
 	class CPressurePlateFrame*					m_pPlateFrame = nullptr;
-	class CSupportFrame*						m_pSupportFrame = nullptr;
 	class CBatteryBox*							m_pBatteryBox = nullptr;
 	vector<class CPressurePlate*>				m_vecPressurePlate;
 
@@ -70,9 +69,7 @@ private:
 
 private:
 	HRESULT Ready_Layer_Plate(const _tchar * pLayerTag, _uint iCount);
-	HRESULT Ready_Layer_Door(const _tchar * pLayerTag, _uint iCount);
 	HRESULT Ready_Layer_PlateLock(const _tchar * pLayerTag);
-	HRESULT Ready_Layer_SupportFrame(const _tchar * pLayerTag);
 	HRESULT Ready_Layer_BatteryBox(const _tchar * pLayerTag);
 	HRESULT Ready_Layer_PlateFrame(const _tchar * pLayerTag);
 

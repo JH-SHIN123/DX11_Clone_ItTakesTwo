@@ -77,22 +77,6 @@ HRESULT CPressurePlateLock::Render(RENDER_GROUP::Enum eGroup)
 
 void CPressurePlateLock::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	//if (0 == m_iOption)
-	//{
-	//	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::ePRESSUREPLATELOCKUP)
-	//	{
-	//		m_IsLockActive = false;
-	//	}
-
-	//}
-	//else if (1 == m_iOption)
-	//{
-	//	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::ePRESSUREPLATELOCKDOWN)
-	//	{
-	//		m_IsLockActive = false;
-	//	}
-
-	//}
 }
 
 void CPressurePlateLock::Set_Position(_vector vPosition)
