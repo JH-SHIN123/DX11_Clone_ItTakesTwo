@@ -24,10 +24,10 @@ public:
 
 
 public:
-
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
+	_bool Get_PowerSupplyActive() { return m_IsPowerSupplyActive; }
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
@@ -37,7 +37,8 @@ private:
 	_bool										m_IsReset = false;
 	_bool										m_IsPowerButtonUp = true;
 	_bool										m_IsPowerSupplyAvailable = false;
-	_bool										m_IsDoorOpen = false;
+	_bool										m_IsPowerSupplyActive = false;
+	_bool										m_IsBatteryCheck = false;
 	_float										m_fMove = 0.f;
 	_float										m_fActiveMove = 0.f;
 	_float										m_fWaitingTime = 0.f;
@@ -51,7 +52,7 @@ private:
 	class CSupportFrame*						m_pSupportFrame = nullptr;
 	class CBatteryBox*							m_pBatteryBox = nullptr;
 	vector<class CPressurePlate*>				m_vecPressurePlate;
-	vector<class CControlRoom_Door*>			m_vecDoor;
+
 
 protected:
 	/* For.Component */

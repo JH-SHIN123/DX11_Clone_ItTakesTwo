@@ -1279,7 +1279,7 @@ HRESULT CCody::Render_ShadowDepth()
 #pragma region Trigger
 void CCody::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName)
 {
-	m_eTargetGameID = eID;
+ 	m_eTargetGameID = eID;
 	m_IsCollide = IsCollide;
 	XMStoreFloat3(&m_vTriggerTargetPos, vTriggerTargetPos);
 
@@ -1315,7 +1315,8 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsActivateRobotLever = true;
 		}
-		else if (m_eTargetGameID == GameID::eROBOTBATTERY && m_pGameInstance->Key_Down(DIK_E))
+		else if (m_eTargetGameID == GameID::eROBOTBATTERY && m_pGameInstance->Key_Down(DIK_E) ||
+			m_eTargetGameID == GameID::eCONTROLROOMBATTERY && m_pGameInstance->Key_Down(DIK_E))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
@@ -1529,8 +1530,14 @@ void CCody::Push_Battery(const _double dTimeDelta)
 		if(m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_MH))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
-			m_IsPushingBattery = false;
 			m_IsCollide = false;
+
+			if (m_pGameInstance->Key_Down(DIK_Q))
+			{
+				m_IsPushingBattery = false;
+				m_pModelCom->Set_Animation(ANI_C_ActionMH);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_Fwd);
+			}
 		}
 	}
 }

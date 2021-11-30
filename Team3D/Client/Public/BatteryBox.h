@@ -27,6 +27,10 @@ public:
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
+	_bool Get_BatteryHolding();
+
+private:
+	class CControlRoom_Battery*					m_pBattery = nullptr;
 
 protected:
 	/* For.Component */

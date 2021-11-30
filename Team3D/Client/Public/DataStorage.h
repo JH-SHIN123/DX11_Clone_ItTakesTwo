@@ -44,6 +44,9 @@ public:
 	void Set_NoBatterySignPtr(CGameObject* pNoBatterySign) { m_pNoBatterySign = pNoBatterySign; }
 	CGameObject* Get_NoBatterySign() { return m_pNoBatterySign; }
 
+	void Set_PressureBigPlate(CGameObject* pPressureBigPlate) { m_pPressureBigPlate = pPressureBigPlate; }
+	CGameObject* Get_PressureBigPlate() { return m_pPressureBigPlate; }
+
 	void Set_PipeCurvePtr(vector<class CPressurePlate*> pPipeCurve) { m_vecPipeCurve = pPipeCurve; }
 	class vector<class CPressurePlate*> Get_PressurePlate() { return m_vecPipeCurve;  }
 
@@ -67,10 +70,12 @@ private:
 	CGameObject* m_pRobotBattery = nullptr;
 	CGameObject* m_pRobotHead = nullptr;
 	CGameObject* m_pNoBatterySign = nullptr;
+	CGameObject* m_pPressureBigPlate = nullptr;
 
 private:
 	// Interactive Objects
 	vector<class CPressurePlate*>	m_vecPipeCurve;
+
 
 
 

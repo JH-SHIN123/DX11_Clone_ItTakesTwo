@@ -52,14 +52,14 @@ HRESULT CPressureBigPlate::NativeConstruct(void * pArg)
 	{
 		/* 테스트 용 */
 		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.4f, -3.f, 1.f));
-		FAILED_CHECK_RETURN(Ready_Layer_Door(TEXT("Layer_ControlRoom_Door"), 2), E_FAIL);
 		FAILED_CHECK_RETURN(Ready_Layer_BatteryBox(TEXT("Layer_BatteryBox")), E_FAIL);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(81.101f, 219.f, 217.141f, 1.f));
+		DATABASE->Set_PressureBigPlate(this);
 	}
 
 	FAILED_CHECK_RETURN(Ready_Layer_PlateLock(TEXT("Layer_PressurePlateLock")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_PlateFrame(TEXT("Layer_PressurePlateFrame")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_SupportFrame(TEXT("Layer_SupportFrame")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_SupportFrame(TEXT("Layer_SupportFrame")), E_FAIL);
 
 
 	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
@@ -204,11 +204,13 @@ void CPressureBigPlate::Check_Collision_PlayerAnim()
 		|| m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Start
 		|| m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land_Exit
 		|| m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land_MH
+		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Falling
 		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land
 		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land_Exit
 		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land_MH)
 	{
 		m_fMove = 0.f;
+		m_fActiveMove = 0.f;
 		m_IsButtonActive = true;
 
 		if (0 == m_iOption)
@@ -224,7 +226,7 @@ void CPressureBigPlate::Check_Collision_PlayerAnim()
 
 void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 {
-	if (false == m_IsPowerSupplyAvailable)
+	if (false == m_IsPowerSupplyAvailable && false == m_IsPowerSupplyActive)
 		return;
 
 	m_pTriggerCom->Update_TriggerActor();
@@ -275,29 +277,40 @@ void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 	/* 점프 찍기로 버튼을 활성화 했을 때 */
 	if (true == m_IsButtonActive)
 	{
-		if (0.17f > m_fActiveMove)
+		if (0.17f > m_fActiveMove && false == m_IsBatteryCheck)
 		{
 			m_fActiveMove += (_float)TimeDelta;
 			m_pTransformCom->Go_Down(TimeDelta);
 			m_pPlateLock->Get_Transform()->Go_Left(TimeDelta);
 		}
 		else
-		{
-			m_fWaitingTime += (_float)TimeDelta;
-
-			if (1.f <= m_fWaitingTime)
-			{
-				for (auto pDoor : m_vecDoor)
-					pDoor->Set_OpenDoor();
-
-				m_IsPowerSupplyAvailable = false;
-			}
-		}
-
+			m_IsBatteryCheck = true;
 	}
 
+	if (true == m_IsBatteryCheck && true == m_pBatteryBox->Get_BatteryHolding())
+	{
+		m_fWaitingTime += (_float)TimeDelta;
 
-
+		if (1.f <= m_fWaitingTime)
+		{
+			m_IsPowerSupplyActive = true;
+			m_IsPowerSupplyAvailable = false;
+		}
+	}
+	else if (true == m_IsBatteryCheck &&  false == m_pBatteryBox->Get_BatteryHolding())
+	{
+		if (0.f <= m_fActiveMove)
+		{
+			m_fActiveMove -= (_float)TimeDelta;
+			m_pTransformCom->Go_Up(TimeDelta);
+			m_pPlateLock->Get_Transform()->Go_Right(TimeDelta);
+		}
+		else
+		{
+			m_IsBatteryCheck = false;
+			m_IsButtonActive = false;
+		}
+	}
 }
 
 
@@ -319,8 +332,8 @@ void CPressureBigPlate::SetUp_DefaultPositionSetting()
 		vObjectPos = { 63.7634f, 218.987f, 210.838f, 1.f };
 		m_pPlateFrame->Set_Position(vObjectPos);
 
-		vObjectPos = { 63.7545f, 218.652f, 210.848f, 1.f };
-		m_pSupportFrame->Set_Position(vObjectPos);
+		//vObjectPos = { 63.7545f, 218.652f, 210.848f, 1.f };
+		//m_pSupportFrame->Set_Position(vObjectPos);
 
 	}
 	else if (1 == m_iOption)
@@ -328,8 +341,8 @@ void CPressureBigPlate::SetUp_DefaultPositionSetting()
 		vObjectPos = { 81.1f, 219.f, 217.15f, 1.f };
 		m_pPlateFrame->Set_Position(vObjectPos);
 
-		vObjectPos = { 81.101f, 218.652f, 217.141f, 1.f };
-		m_pSupportFrame->Set_Position(vObjectPos);
+		//vObjectPos = { 81.101f, 218.652f, 217.141f, 1.f };
+		//m_pSupportFrame->Set_Position(vObjectPos);
 	}
 
 	//XMStoreFloat4(&vConvertPos, vPos);
@@ -448,22 +461,6 @@ HRESULT CPressureBigPlate::Ready_Layer_Plate(const _tchar * pLayerTag, _uint iCo
 	return S_OK;
 }
 
-HRESULT CPressureBigPlate::Ready_Layer_Door(const _tchar * pLayerTag, _uint iCount)
-{
-	CGameObject* pGameObject = nullptr;
-	m_vecPressurePlate.reserve(iCount);
-	_uint iOption = 0;
-
-	for (_uint i = 0; i < iCount; ++i)
-	{
-		iOption = i;
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_ControlRoom_Door"), &iOption, &pGameObject), E_FAIL);
-		m_vecDoor.emplace_back(static_cast<CControlRoom_Door*>(pGameObject));
-	}
-
-	return S_OK;
-}
-
 
 HRESULT CPressureBigPlate::Ready_Layer_PlateLock(const _tchar * pLayerTag)
 {
@@ -550,7 +547,6 @@ void CPressureBigPlate::Free()
 {
 	Safe_Release(m_pPlateLock);
 	Safe_Release(m_pPlateFrame);
-	Safe_Release(m_pSupportFrame);
 	Safe_Release(m_pBatteryBox);
 
 	for (auto pPressurePlate : m_vecPressurePlate)

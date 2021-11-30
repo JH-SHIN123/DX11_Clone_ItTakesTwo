@@ -3,6 +3,8 @@
 #include "Cody.h"
 #include "May.h"
 #include "UI_Generator.h"
+#include "ControlRoom_Door.h"
+#include "PressureBigPlate.h"
 
 CControlRoom_Battery::CControlRoom_Battery(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -27,12 +29,16 @@ HRESULT CControlRoom_Battery::NativeConstruct(void * pArg)
 
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_TriggerTransform"), (CComponent**)&m_pTriggerTransform, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_ControlRoom_Battery"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+
+	FAILED_CHECK_RETURN(Ready_Layer_Door(TEXT("Layer_ControlRoom_Door"), 2), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.659f, 221.12184f, 224.44f, 1.f));
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(25.f));
 	m_fAngle = 25.f;
+
 	
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
@@ -40,10 +46,16 @@ HRESULT CControlRoom_Battery::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_float4 vConvertPos;
+	XMStoreFloat4(&vConvertPos, vPos);
+	vConvertPos.y += 1.f;
+	m_pTriggerTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vConvertPos));
+
 	CTriggerActor::ARG_DESC TriggerArgDesc;
 
 	TriggerArgDesc.pUserData = &m_UserData;
-	TriggerArgDesc.pTransform = m_pTransformCom;
+	TriggerArgDesc.pTransform = m_pTriggerTransform;
 	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.f);
 	m_UserData = USERDATA(GameID::eCONTROLROOMBATTERY, this);
 
@@ -59,19 +71,99 @@ _int CControlRoom_Battery::Tick(_double dTimeDelta)
 {
  	CGameObject::Tick(dTimeDelta);
 	
-	m_pStaticActorCom->Update_StaticActor();
+	//m_pStaticActorCom->Update_StaticActor();
 	m_pTriggerCom->Update_TriggerActor();
 
+	if (true == m_IsCollision && m_pGameInstance->Key_Down(DIK_E) && false == m_IsPlayerInterActive)
+		m_IsPlayerInterActive = true;
 
-
-	if (m_pGameInstance->Key_Pressing(DIK_L))
+	if (true == m_IsPlayerInterActive)
 	{
-		m_fRotate += (_float)dTimeDelta * 2.f;
-		_vector vDir = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
-		m_pTransformCom->RotateYawDirectionOnLand(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fRotate);
+		m_fAngle -= (_float)dTimeDelta * 15.f;
+		m_fRotate += (_float)dTimeDelta * 15.f;
+
+		if (0.f >= m_fAngle)
+		{
+			m_IsPlayerInterActive = false;
+			m_IsBatteryHolding = true;
+		}
+
+		if (1.f <= m_fRotate)
+		{
+			m_fRotate = 0.f;
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			_float4 vConvertPos;
+			XMStoreFloat4(&vConvertPos, vPos);
+			vConvertPos.z += 0.01f;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vConvertPos));
+		}
+
+		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
+	}
+	else if (true == m_IsBatteryHolding)
+	{
+		CCody* pCody = (CCody*)DATABASE->GetCody();
+		NULL_CHECK_RETURN(pCody, -1);
+
+		if (false == pCody->Get_PushingBattery())
+		{
+			m_fAngle += (_float)dTimeDelta * 15.f;
+			m_fRotate += (_float)dTimeDelta * 15.f;
+
+			if (25.f <= m_fAngle)
+			{
+				m_IsBatteryHolding = false;
+				m_IsPlayerInterActive = false;
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.659f, 221.12184f, 224.44f, 1.f));
+			}
+
+			if (1.f <= m_fRotate)
+			{
+				m_fRotate = 0.f;
+				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				_float4 vConvertPos;
+				XMStoreFloat4(&vConvertPos, vPos);
+				vConvertPos.z -= 0.01f;
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vConvertPos));
+			}
+
+			m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
+		}
+		else
+		{
+			CPressureBigPlate* pBigPlate = (CPressureBigPlate*)DATABASE->Get_PressureBigPlate();
+			NULL_CHECK_RETURN(pBigPlate, -1);
+
+			if (true == pBigPlate->Get_PowerSupplyActive())
+			{
+				for (auto pDoor : m_vecDoor)
+					pDoor->Set_OpenDoor();
+
+				m_IsBatteryHolding = false;
+			}
+		}
 	}
 
+	//if (m_pGameInstance->Key_Down(DIK_L))
+	//{
+	//	m_fAngle -= 1.f;
 
+	//	m_fRotate += (_float)dTimeDelta * 2.f;
+	//	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
+
+	//	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//	_float4 vConvertPos;
+	//	XMStoreFloat4(&vConvertPos, vPos);
+	//	vConvertPos.z += 0.01f;
+	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vConvertPos));
+	//}
+
+	//if (m_pGameInstance->Key_Down(DIK_K))
+	//{
+	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.719f, 221.12184f, 224.44f, 1.f));
+	//	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(25.f));
+	//	m_fAngle = 25.f;
+	//}
 
 	return NO_EVENT;
 }
@@ -101,7 +193,14 @@ HRESULT CControlRoom_Battery::Render(RENDER_GROUP::Enum eGroup)
 
 void CControlRoom_Battery::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eCONTROLROOMBATTERY, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		//UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_IsCollision = true;
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+		m_IsCollision = false;
 }
 
 
@@ -134,6 +233,23 @@ HRESULT CControlRoom_Battery::InterActive_UI()
 
 	return S_OK;
 }
+
+HRESULT CControlRoom_Battery::Ready_Layer_Door(const _tchar * pLayerTag, _uint iCount)
+{
+	CGameObject* pGameObject = nullptr;
+	m_vecDoor.reserve(iCount);
+	_uint iOption = 0;
+
+	for (_uint i = 0; i < iCount; ++i)
+	{
+		iOption = i;
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_ControlRoom_Door"), &iOption, &pGameObject), E_FAIL);
+		m_vecDoor.emplace_back(static_cast<CControlRoom_Door*>(pGameObject));
+	}
+
+	return S_OK;
+}
+
 
 
 HRESULT CControlRoom_Battery::Render_ShadowDepth()
@@ -176,6 +292,12 @@ CGameObject * CControlRoom_Battery::Clone_GameObject(void * pArg)
 
 void CControlRoom_Battery::Free()
 {
+	for (auto pDoor : m_vecDoor)
+		Safe_Release(pDoor);
+
+	m_vecDoor.clear();
+
+	Safe_Release(m_pTriggerTransform);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTransformCom);

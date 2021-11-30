@@ -2,6 +2,7 @@
 #include "..\public\BatteryBox.h"
 #include "Cody.h"
 #include "May.h"
+#include "ControlRoom_Battery.h"
 
 CBatteryBox::CBatteryBox(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -92,9 +93,19 @@ HRESULT CBatteryBox::Render_ShadowDepth()
 	return S_OK;
 }
 
+_bool CBatteryBox::Get_BatteryHolding()
+{
+	NULL_CHECK_RETURN(m_pBattery, false);
+
+	return m_pBattery->Get_BatteryHolding();
+}
+
 HRESULT CBatteryBox::Ready_Layer_ControlRoom_Battery(const _tchar * pLayerTag)
 {
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_ControlRoom_Battery")), E_FAIL);
+	CGameObject* pGameObject = nullptr;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_ControlRoom_Battery"), nullptr, &pGameObject), E_FAIL);
+	m_pBattery = static_cast<CControlRoom_Battery*>(pGameObject);
 
 	return S_OK;
 }
@@ -127,6 +138,8 @@ CGameObject * CBatteryBox::Clone_GameObject(void * pArg)
 
 void CBatteryBox::Free()
 {
+
+	Safe_Release(m_pBattery);
 	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);

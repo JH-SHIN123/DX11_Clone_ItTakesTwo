@@ -22,7 +22,7 @@ public:
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
-	HRESULT InterActive_UI();
+
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
@@ -30,11 +30,19 @@ public:
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
+	_bool Get_BatteryHolding() { return m_IsBatteryHolding; }
 
 private:
 	_float										m_fAngle = 0.f;
 	_float										m_fRotate = 0.f;
+	_float4										m_vCodyPos;
 	_bool										m_IsCameRange = false;
+	_bool										m_IsCollision = false;
+	_bool										m_IsPlayerInterActive = false;
+	_bool										m_IsBatteryHolding = false;
+
+private:
+	vector<class CControlRoom_Door*>			m_vecDoor;
 
 protected:
 	/* For.Component */
@@ -43,6 +51,11 @@ protected:
 	CModel*										m_pModelCom = nullptr;
 	CStaticActor*								m_pStaticActorCom = nullptr;
 	CTriggerActor*								m_pTriggerCom = nullptr;
+	CTransform*									m_pTriggerTransform = nullptr;
+
+private:
+	HRESULT Ready_Layer_Door(const _tchar * pLayerTag, _uint iCount);
+	HRESULT InterActive_UI();
 
 public:
 	static CControlRoom_Battery* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
