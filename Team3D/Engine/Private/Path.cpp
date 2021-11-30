@@ -19,6 +19,20 @@ CPath::CPath(const CPath& rhs)
 	Safe_AddRef(m_pPathAnim);
 }
 
+HRESULT CPath::Start_Path(STATE eState, _uint iAnimFrame)
+{
+	if (m_bPlayAnimation) return S_OK;
+	NULL_CHECK_RETURN(m_pPathAnim, E_FAIL);
+
+	// 해당 프레임의 시간값으로 적용
+	m_dCurrentTime = m_pPathAnim->Get_KeyFrameTimeAvg(iAnimFrame);
+	m_eState = eState;
+	m_bPlayAnimation = true;
+	m_iCurAnimFrame = iAnimFrame;
+
+	return S_OK;
+}
+
 HRESULT CPath::NativeConstruct_Prototype(const _tchar* pFilePath, const _tchar* pPathTag)
 {
 	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
@@ -47,6 +61,8 @@ HRESULT CPath::NativeConstruct(void* pArg)
 
 HRESULT CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
 {
+	if (false == m_bPlayAnimation) return E_FAIL;
+
 	NULL_CHECK_RETURN(m_pPathAnim, E_FAIL);
 
 	_double dDuration = m_pPathAnim->Get_Duration();
@@ -55,30 +71,33 @@ HRESULT CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
 	m_dCurrentTime += fmod(dTicksPerSecond * dTimeDelta, dDuration);
 
 	if (m_dCurrentTime >= dDuration) {
-		m_dCurrentTime = 0.f;
-		m_iCurAnimFrame = 0;;
+		m_bPlayAnimation = false;
+		return E_FAIL; // TEST
 	}
 
 	/* Update_AnimTransformations */
-	m_pPathAnim->Update_PathTransformation(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations);
+	if(STATE_FORWARD == m_eState)
+		m_pPathAnim->Update_PathTransformation(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations);
+	else if (STATE_BACKWARD == m_eState) {
+		_double rewindTime = dDuration - m_dCurrentTime;
+		m_pPathAnim->Update_RewindPathTransformation(rewindTime, m_iCurAnimFrame, m_AnimTransformations);
+	}
+
 	/* Update_CombinedTransformations */
 	_matrix WorldMatrixTemp;
 	WorldMatrixTemp = XMLoadFloat4x4(&m_AnimTransformations[2]);
-	//WorldMatrix *= XMLoadFloat4x4(&m_AnimTransformations[1]);
 
 	_float3 fRotateAngle = Get_RotationAngles(m_AnimTransformations[1]);
 	_matrix RotateMatrix = XMMatrixRotationX((fRotateAngle.x));
 	RotateMatrix *= XMMatrixRotationY((-fRotateAngle.z));
 	RotateMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f));
+	if (STATE_BACKWARD == m_eState)
+		RotateMatrix *= XMMatrixRotationY(XMConvertToRadians(180.f));
 	RotateMatrix *= XMMatrixRotationZ((fRotateAngle.y));
 
 	WorldMatrixTemp *= RotateMatrix;
 	WorldMatrixTemp *= XMLoadFloat4x4(&m_AnimTransformations[0]);
 	WorldMatrix = WorldMatrixTemp;
-	//for (auto& pAnimTransforamtion : m_AnimTransformations)
-	//{
-	//	WorldMatrix *= XMLoadFloat4x4(&pAnimTransforamtion);
-	//}
 
 	/* Update Progress */
 	m_fProgressAnim = _float(m_dCurrentTime / dDuration);

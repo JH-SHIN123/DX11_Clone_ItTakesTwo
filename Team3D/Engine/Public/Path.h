@@ -5,10 +5,16 @@
 BEGIN(Engine)
 class ENGINE_DLL CPath final : public CComponent
 {
+public:
+	enum STATE { STATE_FORWARD, STATE_BACKWARD, STATE_END };
+
 private:
 	explicit CPath(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CPath(const CPath& rhs);
 	virtual ~CPath() = default;
+
+public:
+	HRESULT Start_Path(STATE eState, _uint iAnimFrame);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(const _tchar * pFilePath, const _tchar * pPathTag);
@@ -27,6 +33,10 @@ private:
 
 private: /* Typedef */
 	typedef vector<_float4x4>				TRANSFORMATIONS;
+
+private:
+	_bool					m_bPlayAnimation = false;
+	STATE					m_eState = STATE_END;
 
 private:
 	_double					m_dCurrentTime = 0.0;		// 현재 애니메이션 진행시간

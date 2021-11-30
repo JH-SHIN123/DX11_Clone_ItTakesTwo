@@ -24,6 +24,7 @@ public: /* Getter */
 	void			Get_PreAnimKeyFrames(_uint iPreAnimFrame, vector<KEY_FRAME>& PreAnimKeyFrames);
 	const vector<class CAnimChannel*>& Get_Channels() const { return m_Channels; }
 	const _uint		Get_ChannelCount() { return (_uint)m_Channels.size(); }
+	const _double	Get_KeyFrameTimeAvg(_int iIndex);
 
 public:
 	HRESULT	NativeConstruct(ANIM_DESC AnimDesc);
@@ -33,6 +34,7 @@ public:
 
 public:
 	HRESULT	Update_PathTransformation(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations);
+	HRESULT	Update_RewindPathTransformation(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations);
 
 private: /* Typedef */
 	typedef vector<class CAnimChannel*>	CHANNELS;

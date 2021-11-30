@@ -7,6 +7,20 @@ void CAnim::Get_PreAnimKeyFrames(_uint iPreAnimFrame, vector<KEY_FRAME>& PreAnim
 		PreAnimKeyFrames[pChannel->Get_ConnectedNodeIndex()] = pChannel->Get_KeyFrames()[iPreAnimFrame];
 }
 
+const _double CAnim::Get_KeyFrameTimeAvg(_int iIndex)
+{
+	if (iIndex < 0) return 0.0;
+
+	_double FrameTime = 0.0;
+
+	for (auto& pChannel : m_Channels)
+		FrameTime += pChannel->Get_KeyFrameTime(iIndex);
+
+	FrameTime /= m_Channels.size();
+
+	return FrameTime;
+}
+
 HRESULT CAnim::NativeConstruct(ANIM_DESC AnimDesc)
 {
 	memcpy(&m_AnimDesc, &AnimDesc, sizeof(ANIM_DESC));
@@ -157,8 +171,8 @@ HRESULT CAnim::Update_PathTransformation(_double& dCurrentTime, _uint& iCurAnimF
 		const vector<KEY_FRAME>& KeyFrames = pChannel->Get_KeyFrames();
 		if (KeyFrames.size() <= iCurAnimFrame + 1) continue;
 
-		KEY_FRAME	pFirst = KeyFrames.front();
-		KEY_FRAME	pLast = KeyFrames.back();
+		KEY_FRAME pFirst = KeyFrames.front();
+		KEY_FRAME pLast = KeyFrames.back();
 
 		_vector vScale, vRotation, vPosition;
 
@@ -195,6 +209,70 @@ HRESULT CAnim::Update_PathTransformation(_double& dCurrentTime, _uint& iCurAnimF
 			vDstScale = XMLoadFloat3(&KeyFrames[iCurAnimFrame + 1].vScale);
 			vDstRotation = XMLoadFloat4(&KeyFrames[iCurAnimFrame + 1].vRotation);
 			vDstPosition = XMLoadFloat3(&KeyFrames[iCurAnimFrame + 1].vPosition);
+			vDstPosition = XMVectorSetW(vSrcPosition, 1.f);
+
+			vScale = XMVectorLerp(vSrcScale, vDstScale, fRatio);
+			vRotation = XMQuaternionSlerp(vSrcRotation, vDstRotation, fRatio);
+			vPosition = XMVectorLerp(vSrcPosition, vDstPosition, fRatio);
+			vPosition = XMVectorSetW(vPosition, 1.f);
+		}
+		XMStoreFloat4x4(&Transformations[iIndex++], XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition));
+	}
+
+	return S_OK;
+}
+
+HRESULT CAnim::Update_RewindPathTransformation(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations)
+{
+	_uint iIndex = 0;
+	for (auto& pChannel : m_Channels)
+	{
+		const vector<KEY_FRAME>& KeyFrames = pChannel->Get_KeyFrames();
+		_int iKeyFrameSize = (_int)pChannel->Get_KeyFrameCount() - 1;
+
+		_int iCurFrame = iKeyFrameSize - iCurAnimFrame;
+		_int ilNextFrame = iKeyFrameSize - iCurAnimFrame - 1;
+
+		if (0 >= ilNextFrame) continue;
+
+		KEY_FRAME pFirst = KeyFrames.front();
+		KEY_FRAME pLast = KeyFrames.back();
+
+		_vector vScale, vRotation, vPosition;
+
+		if (dCurrentTime < pFirst.dTime)
+		{
+			vScale = XMLoadFloat3(&pFirst.vScale);
+			vRotation = XMLoadFloat4(&pFirst.vRotation);
+			vPosition = XMLoadFloat3(&pFirst.vPosition);
+			vPosition = XMVectorSetW(vPosition, 1.f);
+		}
+		else if (dCurrentTime >= pLast.dTime)
+		{
+			vScale = XMLoadFloat3(&pLast.vScale);
+			vRotation = XMLoadFloat4(&pLast.vRotation);
+			vPosition = XMLoadFloat3(&pLast.vPosition);
+			vPosition = XMVectorSetW(vPosition, 1.f);
+		}
+		else
+		{
+			if (dCurrentTime < KeyFrames[ilNextFrame].dTime)
+				++iCurAnimFrame;
+
+			_float fRatio = fabsf(_float((dCurrentTime - KeyFrames[iCurFrame].dTime) / (KeyFrames[ilNextFrame].dTime - KeyFrames[iCurFrame].dTime)));
+
+			_vector	vSrcScale, vDstScale;
+			_vector	vSrcRotation, vDstRotation;
+			_vector	vSrcPosition, vDstPosition;
+
+			vSrcScale = XMLoadFloat3(&KeyFrames[iCurFrame].vScale);
+			vSrcRotation = XMLoadFloat4(&KeyFrames[iCurFrame].vRotation);
+			vSrcPosition = XMLoadFloat3(&KeyFrames[iCurFrame].vPosition);
+			vSrcPosition = XMVectorSetW(vSrcPosition, 1.f);
+
+			vDstScale = XMLoadFloat3(&KeyFrames[ilNextFrame].vScale);
+			vDstRotation = XMLoadFloat4(&KeyFrames[ilNextFrame].vRotation);
+			vDstPosition = XMLoadFloat3(&KeyFrames[ilNextFrame].vPosition);
 			vDstPosition = XMVectorSetW(vSrcPosition, 1.f);
 
 			vScale = XMVectorLerp(vSrcScale, vDstScale, fRatio);

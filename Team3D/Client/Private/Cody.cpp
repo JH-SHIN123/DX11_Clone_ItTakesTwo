@@ -192,14 +192,23 @@ _int CCody::Tick(_double dTimeDelta)
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
+	// TEST
+	if (m_pGameInstance->Key_Down(DIK_L))
+		m_pPathCom->Start_Path(CPath::STATE_BACKWARD, 0);
+	else if (m_pGameInstance->Key_Down(DIK_K))
+		m_pPathCom->Start_Path(CPath::STATE_FORWARD, 30);
 
-	m_pActorCom->Update(dTimeDelta);
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	HRESULT hr = m_pPathCom->Update_Animation(dTimeDelta, WorldMatrix);
+	if (E_FAIL != hr) {
+		m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+		m_pActorCom->Set_Position(WorldMatrix.r[3]);
+	}
+
+	//m_pActorCom->Update(dTimeDelta); // Set Position하면 이거 할필요없다.
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 
-	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	m_pPathCom->Update_Animation(dTimeDelta, WorldMatrix);
-	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 
 	return NO_EVENT;
 }

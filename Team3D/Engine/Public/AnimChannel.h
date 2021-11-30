@@ -21,6 +21,8 @@ public: /* Getter */
 	const char*					Get_Name() const { return m_ChannelDesc.szChannelName; }
 	const _uint					Get_ConnectedNodeIndex() const { return m_ChannelDesc.iConnectedNodeIndex; }
 	const vector<KEY_FRAME>&	Get_KeyFrames() const { return m_KeyFrames; }
+	_uint						Get_KeyFrameCount() const { return (_uint)m_KeyFrames.size(); }
+	_double						Get_KeyFrameTime(_int iIndex) const;
 
 public:
 	HRESULT	NativeConstruct(CHANNEL_DESC ChannelDesc);
