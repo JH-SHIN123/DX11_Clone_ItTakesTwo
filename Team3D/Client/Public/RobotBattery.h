@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "RobotParts.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -13,11 +13,11 @@ END
 
 BEGIN(Client)
 
-class CRobotBattery : public CGameObject
+class CRobotBattery : public CRobotParts
 {
 protected:
 	explicit CRobotBattery(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CRobotBattery(const CRobotBattery& rhs);
+	explicit CRobotBattery(const CRobotParts& rhs);
 	virtual ~CRobotBattery() = default;
 
 public:
@@ -45,6 +45,7 @@ private:
 	_bool		m_bUpdate = true;
 
 	_float		m_fRotateDelay = 0.f;
+	ROBOTDESC	m_tRobotPartsDesc;
 
 protected:
 	/* For.Component */

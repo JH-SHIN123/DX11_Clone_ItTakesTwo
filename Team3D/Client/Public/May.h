@@ -223,6 +223,9 @@ public:
 	void Jump(const _double dTimeDelta);
 	void Ground_Pound(const _double dTimeDelta);
 
+	// Trigger에 의해 Position 변경해야 할 때.
+	void Add_OffSet_Pos(_fvector vAddOffSet);
+
 
 private:
 	// 상태
@@ -349,7 +352,7 @@ private:
 	_bool m_IsWarpNextStage = false;
 	_float m_fWarpTimer = 0.f;
 	_bool m_IsWarpDone = false;
-	const _float4 m_vWormholePos = { 0.f, -100.f, -1000.f, 1.f };
+	const _float4 m_vWormholePos = { 0.f, -100.f, -1500.f, 1.f };
 	const _float m_fWarpTimer_Max = 2.f;
 
 	// 상호작용 테스트용
@@ -358,13 +361,6 @@ private:
 
 	// fire Door Dead
 	_bool m_IsTouchFireDoor = false;
-
-	// Warp NextStage
-	_bool m_IsWarpNextStage = false;
-	_float m_fWarpTimer = 0.f;
-	_bool m_IsWarpDone = false;
-	const _float4 m_vWormholePos = { 0.f, -100.f, -1000.f, 1.f };
-	const _float m_fWarpTimer_Max = 2.f;
 
 	// Boss Missile Hit
 	_bool m_IsBossMissile_Hit = false;

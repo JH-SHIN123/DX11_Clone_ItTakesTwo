@@ -25,6 +25,7 @@ namespace Engine
 			eUMBRELLA,
 			eVERTICALDOOR,
 			eBIGBUTTON,
+			eBIGBUTTONFRAME,
 			eROPEBASE,
 			eGRINDRAIL,
 			ePLANET,
@@ -41,6 +42,7 @@ namespace Engine
 			eGRAVITYPATH_SIDE,
 			eWALLLASERTRAP,
 			eWALLLASERTRAP_BUTTON,
+			eDUMMYWALL,
 			eENVIRONMENT
 		};
 	};

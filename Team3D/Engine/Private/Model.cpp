@@ -451,7 +451,6 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 				FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 			}
 
-			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 			
 			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
 			{
@@ -460,6 +459,8 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 					ZeroMemory(BoneMatrices, sizeof(_matrix) * 256);
 					pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
 					Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
+
+					FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 					m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
 				}

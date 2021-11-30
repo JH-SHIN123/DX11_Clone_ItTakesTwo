@@ -8,6 +8,7 @@ class CRenderer;
 class CTransform;
 class CModel;
 class CTriggerActor;
+class CStaticActor;
 END
 
 BEGIN(Client)
@@ -47,12 +48,15 @@ private:
 	_float		m_fLifeTime = 0.f;
 	_bool		m_IsCollide = false;
 
+	GameID::Enum		m_PlayerID = GameID::eSTARBUDDY;
+
 protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 	CTriggerActor*		m_pTriggerCom = nullptr;
+	CStaticActor*		m_pStaticActorCom = nullptr;
 
 private:
 	HRESULT InterActive_UI();

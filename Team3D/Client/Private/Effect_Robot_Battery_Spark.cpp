@@ -190,5 +190,7 @@ CGameObject * CEffect_Robot_Battery_Spark::Clone_GameObject(void * pArg)
 
 void CEffect_Robot_Battery_Spark::Free()
 {
+	Safe_Delete_Array(m_pInstanceBuffer);
+
 	__super::Free();
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "RobotParts.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -13,11 +13,11 @@ END
 
 BEGIN(Client)
 
-class CNoBatterySign : public CGameObject
+class CNoBatterySign : public CRobotParts
 {
 protected:
 	explicit CNoBatterySign(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CNoBatterySign(const CNoBatterySign& rhs);
+	explicit CNoBatterySign(const CRobotParts& rhs);
 	virtual ~CNoBatterySign() = default;
 
 public:
@@ -43,6 +43,7 @@ private:
 	_bool		m_bHitLever = false;
 	_float		m_fRotateTime = 0.f;
 
+	ROBOTDESC	m_tRobotPartsDesc;
 protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;

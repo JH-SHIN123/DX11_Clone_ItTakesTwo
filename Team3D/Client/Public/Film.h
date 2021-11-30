@@ -29,13 +29,17 @@ public:
 		_float3			vEye = { 0.f,0.f,0.f };
 		_float3			vAt = { 0.f,0.f,0.f };
 
+		_float			fFovY = XMConvertToRadians(60.f);
 		CamMoveOption	eEyeMoveOption = CamMoveOption::End;
 		CamMoveOption	eAtMoveOption = CamMoveOption::End;
 		//For.ViewPort
 		_float			fTargetViewPortCenterX = 0.f;
 		_float			fTargetViewPortCenterY = 1.f;
 		_float			fViewPortLerpSpeed = 0.f;
+
 		ViewPortOption	eViewPortOption = ViewPortOption::End;
+	
+
 	}CamNode;
 
 	
@@ -58,9 +62,9 @@ public:
 
 	vector<CamNode*>* Get_CamNodes() { return &m_CamNodes; }
 	//얘가 매트릭스 만들고 뷰포트 설정하고
-	HRESULT Tick_Film(_double dTimeDelta, ScreenType eScreenType);
+	HRESULT Tick_Film(_double dTimeDelta, ScreenType eScreenType, _float* fOutFovY);
 	//Cam_Helper 가 이거 받아와서 카메라에 셋팅.
-	_fmatrix Get_CurNodeMatrix(ScreenType eScreenType);
+	_fmatrix Get_CurNodeMatrix(ScreenType eScreenType, _float* fOutFovY);
 
 	_fmatrix MakeCurCamMatrix(_double dTimeDelta, CamNode* pCurNode, ScreenType eScreenType);
 	void ReSetFilm(ScreenType eScreenType);
@@ -72,7 +76,7 @@ private:	//For.Camera
 	_fmatrix MakeMatrixLerp(_fmatrix matDst, _fmatrix matSour, _float fLerpTime);
 	_float3  VectorLerp(_float3& vDst, _float3& vSour, _float t);
 	HRESULT  Check_CamNodeProgress(ScreenType eScreenType, CamMoveOption eOption, CamNodeVectorType eType, _uint iCurrentNode, _uint iLastNode);
-	void	 ReSet_CamNodeTime_Progress_End(ScreenType eScreenType, CamMoveOption eOption, CamNodeVectorType eType);
+	void	 ReSet_CamNodeTime_Progress_End(ScreenType eScreenType, CamMoveOption eOption, CamNodeVectorType eType, _uint iCurrentNode);
 	_float3	 MakeBezier3(_float3& v1, _float3& v2, _float3& v3, _double dTime);
 	_float3	 MakeBezier4(_float3& v1, _float3& v2, _float3& v3, _float3& v4, _double dTime);
 
@@ -103,6 +107,8 @@ private:
 	_uint m_iCurAt_BezierNode[Screen_End][Bezier_End];
 
 	_bool m_bCurNodeEnd[Screen_End][(_uint)CamNodeVectorType::End];
+
+	_float m_fCurFovY[Screen_End];
 
 };
 END

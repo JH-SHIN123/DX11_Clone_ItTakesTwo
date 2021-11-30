@@ -1,52 +1,59 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "RobotParts.h"
+#include "GameObject.h"
 
 BEGIN(Engine)
 class CRenderer;
 class CTransform;
 class CModel;
+class CTriggerActor;
 class CStaticActor;
 END
 
 BEGIN(Client)
 
-class CRobot : public CRobotParts
+class CDummyWall : public CGameObject
 {
 protected:
-	explicit CRobot(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CRobot(const CRobotParts& rhs);
-	virtual ~CRobot() = default;
+	explicit CDummyWall(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CDummyWall(const CDummyWall& rhs);
+	virtual ~CDummyWall() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 
+
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-public:
-	virtual HRESULT Render_ShadowDepth() override;
 
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 public:
+	virtual HRESULT Render_ShadowDepth() override;
+
+public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
-	ROBOTDESC	m_tRobotPartsDesc;
+	_bool		m_IsCollide = false;
+
+	GameID::Enum		m_PlayerID = GameID::eDUMMYWALL;
 
 protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
+	CTriggerActor*		m_pTriggerCom = nullptr;
 	CStaticActor*		m_pStaticActorCom = nullptr;
+	CTransform*			m_pPhysxTransformCom = nullptr;
 
 public:
-	static CRobot* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CDummyWall* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

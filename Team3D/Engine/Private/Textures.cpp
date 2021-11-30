@@ -69,7 +69,7 @@ HRESULT CTextures::NativeConstruct_Prototype(TEXTURE_TYPE eType, const _tchar * 
 				FAILED_CHECK_RETURN(LoadFromWICFile(szTextureFileName, WIC_FLAGS_NONE, nullptr, SrcImage), E_FAIL);
 				break;
 			}
-
+			
 			Save_ProcessedImage(&SrcImage, szProcessedTextureFileName);
 			FAILED_CHECK_RETURN(CreateShaderResourceView(m_pDevice, SrcImage.GetImages(), SrcImage.GetImageCount(), SrcImage.GetMetadata(), &pShaderResourceView), E_FAIL);
 

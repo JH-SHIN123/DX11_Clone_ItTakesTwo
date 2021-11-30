@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "RobotParts.h"
+#include "GameObject.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -12,31 +12,28 @@ END
 
 BEGIN(Client)
 
-class CRobot : public CRobotParts
+class CBigButtonFrame : public CGameObject
 {
 protected:
-	explicit CRobot(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CRobot(const CRobotParts& rhs);
-	virtual ~CRobot() = default;
+	explicit CBigButtonFrame(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CBigButtonFrame(const CBigButtonFrame& rhs);
+	virtual ~CBigButtonFrame() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 
+
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
+
 public:
 	virtual HRESULT Render_ShadowDepth() override;
-
-	/* For.Trigger */
-	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
-private:
-	ROBOTDESC	m_tRobotPartsDesc;
 
 protected:
 	/* For.Component */
@@ -46,7 +43,7 @@ protected:
 	CStaticActor*		m_pStaticActorCom = nullptr;
 
 public:
-	static CRobot* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CBigButtonFrame* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

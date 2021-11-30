@@ -19,9 +19,6 @@
     <Filter Include="02.GameObject">
       <UniqueIdentifier>{b604bc39-7ea2-4ccb-a98b-f89e2d0279b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\01.Loading">
-      <UniqueIdentifier>{ac29aab8-7d55-49ae-bb11-1270e2049714}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\02.Logo">
       <UniqueIdentifier>{6e3ecc34-09e4-48a8-b8b4-f1dd9d96c681}</UniqueIdentifier>
     </Filter>
@@ -412,6 +409,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung\03.TutorialDoor">
       <UniqueIdentifier>{6d013226-dd4d-47df-845f-f9034ed1d948}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall">
+      <UniqueIdentifier>{fe876da6-8259-4e3e-90d8-354a88c44141}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -425,9 +425,6 @@
     </ClInclude>
     <ClInclude Include="..\public\Client_Defines.h">
       <Filter>98.Defines</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\MainApp.h">
-      <Filter>00.MainApp</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Loading.h">
       <Filter>01.Maps\01.Loading\00.Main</Filter>
@@ -723,6 +720,12 @@
     <ClInclude Include="..\Public\PxEventCallback.h">
       <Filter>03.Component\01.Actor\99.EventCallback</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RobotParts.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BigButtonFrame.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\05.BigButton</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Effect_Umbrella_Pipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe</Filter>
     </ClInclude>
@@ -735,6 +738,15 @@
     <ClInclude Include="..\public\Space_Valve_Star.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DummyWall.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MainApp.h">
+      <Filter>00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameOption.h">
+      <Filter>00.MainApp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -742,9 +754,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\MainApp.cpp">
-      <Filter>00.MainApp</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Loading.cpp">
       <Filter>01.Maps\01.Loading\00.Main</Filter>
@@ -1019,6 +1028,12 @@
     <ClCompile Include="..\Private\PxEventCallback.cpp">
       <Filter>03.Component\01.Actor\99.EventCallback</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\RobotParts.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BigButtonFrame.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\05.BigButton</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\Effect_Umbrella_Pipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe</Filter>
     </ClCompile>
@@ -1030,6 +1045,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Space_Valve_Star.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DummyWall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MainApp.cpp">
+      <Filter>00.MainApp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

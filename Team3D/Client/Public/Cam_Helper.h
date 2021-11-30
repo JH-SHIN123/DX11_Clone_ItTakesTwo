@@ -30,7 +30,7 @@ public:
 	CFilm*		Get_Film(const _tchar* pFilmName);
 
 	//필름에 설정된 카메라의 정보를 바탕으로 매트릭스 만들어서 리턴
-	_fmatrix	Tick_Film(_double dTimeDelta, CFilm::ScreenType eScreenTypeIdx);
+	_fmatrix	Tick_Film(_double dTimeDelta, CFilm::ScreenType eScreenTypeIdx, _float* fOutFovY);
 	//콜하면 필름찾고 연출 들어감.
 	void		Start_Film(const _tchar* pFilmName, CFilm::ScreenType eScreenTypeIdx);
 
@@ -73,7 +73,7 @@ public:
 	HRESULT			Add_CamShakeCycleDesc(const _tchar* pCamEffectTag,CCamEffect::CamShakeCycleDesc* pDesc);
 	HRESULT			Start_CamEffect(const _tchar* pEffectName, CFilm::ScreenType eScreen);
 	_fmatrix		Get_CurApplyCamEffectMatrix(CFilm::ScreenType eScreen);
-	HRESULT			Render_CamNodeRoot();
+
 private:
 	class CCamEffect* Find_CamEffect(const _tchar* pCamEffectName);
 
@@ -81,6 +81,7 @@ private:
 
 private: //For.System
 	CamHelperState m_eState[CFilm::Screen_End] = { CamHelperState::Helper_End,CamHelperState::Helper_End };
+	HRESULT Load_Film(const _tchar* pDataPath);
 public:
 	static CCam_Helper* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
 	virtual CComponent* Clone_Component(void* pArg = nullptr)override;
