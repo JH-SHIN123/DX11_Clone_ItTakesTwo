@@ -167,6 +167,7 @@ CGameObject * CDummyWall::Clone_GameObject(void * pArg)
 
 void CDummyWall::Free()
 {
+	Safe_Release(m_pPhysxTransformCom);
 	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTransformCom);
