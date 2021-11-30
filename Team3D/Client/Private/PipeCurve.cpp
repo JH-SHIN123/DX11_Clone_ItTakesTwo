@@ -72,9 +72,9 @@ _int CPipeCurve::Tick(_double dTimeDelta)
 				m_IsConnected = true;
 			else
 				m_IsConnected = false;
-		}
 
-		CompareAngle(m_fAngle);
+			CompareAngle(m_fAngle);
+		}
 
 		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
 
