@@ -312,8 +312,8 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 		else if (m_fMouseRev[Rev_Prependicul] < -90.f)
 			m_fMouseRev[Rev_Prependicul] = -90.f;
 	}
-	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * dTimeDelta * 14.f;
-	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * dTimeDelta * 14.f;
+	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 14.f;
+	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 14.f;
 
 
 	//카메라 회전에 따른 거리체크
@@ -361,7 +361,7 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 	_matrix QuarRev = XMMatrixRotationQuaternion(
 		XMQuaternionSlerp(vPreQuarternionRot,vCurQuarternionRot,
-			dTimeDelta * XMVectorGetX(XMVector4Length(vPreQuarternionRot - vCurQuarternionRot))));
+		(_float)dTimeDelta * XMVectorGetX(XMVector4Length(vPreQuarternionRot - vCurQuarternionRot))));
 
 	
 	_matrix matTrans = XMMatrixTranslation(XMVectorGetX(vPlayerPos), XMVectorGetY(vPlayerPos), XMVectorGetZ(vPlayerPos));
