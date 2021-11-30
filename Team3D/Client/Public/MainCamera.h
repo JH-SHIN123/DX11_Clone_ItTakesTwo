@@ -57,7 +57,7 @@ private:
 private:
 	_int	ReSet_Cam_FreeToAuto();		//변수 초기화용
 	_bool	OffSetPhsX(_double dTimeDelta,_fmatrix matRev,_vector * pOut);
-	_fmatrix MakeViewMatrix(_float3 Eye, _float3 At);
+	_fmatrix MakeViewMatrix(_float3 Eye, _float3 At, _float3 vAxisY);
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
@@ -93,6 +93,10 @@ private:
 	_float3 m_vPlayerPos = { 0.f,0.f,0.f };
 	//회전 보간용
 	_float4x4 m_matQuternionRev;
+	//플레이어 업 체크용
+	_float m_fCulCalculateUp = 0.f;
+	_float m_fPreCalculateUp = 0.f;
+
 };
 
 END

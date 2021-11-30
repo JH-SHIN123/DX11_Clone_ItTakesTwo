@@ -33,9 +33,9 @@ HRESULT CMainApp::Run_App()
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
-	if (g_bWndActivate)
+	/*if (g_bWndActivate)
 		Lock_Mouse();
-
+*/
 	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
 
 	if (m_dFrameAcc >= 1.0 / 60.0)

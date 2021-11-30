@@ -321,6 +321,11 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	}
 	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 14.f;
 	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 14.f;
+	//플레이어 업에따른 회전체크(For.May)
+	_vector vPlayerUp = XMVector4Normalize(pPlayerTransform->Get_State(CTransform::STATE_UP));
+	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	m_fCulCalculateUp = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
+	m_fPreCalculateUp += (m_fCulCalculateUp - m_fPreCalculateUp) * dTimeDelta;
 #endif
 	//카메라 회전에 따른 거리체크
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
@@ -361,9 +366,10 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 
 	_matrix matTrans = XMMatrixTranslation(XMVectorGetX(vPlayerPos), XMVectorGetY(vPlayerPos), XMVectorGetZ(vPlayerPos));
+	_matrix matCurUp = XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(
+		0.f, 0.f, -m_fPreCalculateUp));
 
-
-	matRev = QuarRev * matTrans;
+	matRev = QuarRev *matCurUp * matTrans;
 
 
 

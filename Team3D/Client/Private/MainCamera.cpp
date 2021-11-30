@@ -61,9 +61,9 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 
 	CDataStorage::GetInstance()->Set_MainCamPtr(this);
 
-	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_SMALL], MakeViewMatrix(_float3(0.f, 3.f, -4.f), _float3(0.f, 1.f, 0.f)));
-	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_MEDIUM], MakeViewMatrix(_float3(0.f, 8.f, -7.f), _float3(0.f, 2.f, 0.f)));
-	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_LARGE], MakeViewMatrix(_float3(0.f, 7.f, -12.f), _float3(0.f, 3.f, 0.f)));
+	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_SMALL], MakeViewMatrix(_float3(0.f, 3.f, -4.f), _float3(0.f, 1.f, 0.f), _float3(0.f, 1.f, 0.f)));
+	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_MEDIUM], MakeViewMatrix(_float3(0.f, 8.f, -7.f), _float3(0.f, 2.f, 0.f),_float3(0.f,1.f,0.f)));
+	XMStoreFloat4x4(&m_matPlayerSizeOffSetMatrix[CCody::PLAYER_SIZE::SIZE_LARGE], MakeViewMatrix(_float3(0.f, 7.f, -12.f), _float3(0.f, 3.f, 0.f),_float3(0.f,1.f,0.f)));
 
 
 	return S_OK;
@@ -199,12 +199,7 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 		m_fChangeCamModeTime = 0.f;
 		m_fChangeCamModeLerpSpeed = 10.f;
 	}
-	//For.May
-	_vector vPlayerUp = XMVector4Normalize(pTargetPlayer->Get_Transform()->Get_State(CTransform::STATE_UP));
-	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	_float fTheta = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
 
-	
 }
 
 HRESULT CMainCamera::Start_Film(const _tchar * pFilmTag)
@@ -312,10 +307,17 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 		else if (m_fMouseRev[Rev_Prependicul] < -90.f)
 			m_fMouseRev[Rev_Prependicul] = -90.f;
 	}
-	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * dTimeDelta * 14.f;
-	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * dTimeDelta * 14.f;
+	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 14.f;
+	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 14.f;
 
 
+	//플레이어 업에따른 회전체크(For.May)
+	_vector vPlayerUp = XMVector4Normalize(pPlayerTransform->Get_State(CTransform::STATE_UP));
+	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	m_fCulCalculateUp = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
+	m_fPreCalculateUp += (m_fCulCalculateUp - m_fPreCalculateUp) * dTimeDelta;
+
+	
 	//카메라 회전에 따른 거리체크
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 	_vector vPos = XMLoadFloat4x4(&m_matPlayerSizeOffSetMatrix[m_eCurPlayerSize]).r[3];
@@ -333,11 +335,11 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	}
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 
-	//CamEffect
 
+	//CamEffect
 	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::LScreen))
 	{
-		if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, XMLoadFloat4x4(&m_matBeginWorld)))
+		if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, XMLoadFloat4x4(&m_matBeginWorld))) //카메라의 원점 
 			m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen));
 		//XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 	}
@@ -353,21 +355,27 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	vPlayerPos = XMVectorLerp(vPrePlayerPos, vCurPlayerPos, XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 2.f);
 		XMStoreFloat3(&m_vPlayerPos, vPlayerPos);
 	
-	//회전 보간
-	_vector vPreQuarternionRot = XMQuaternionRotationRollPitchYaw(
-		XMConvertToRadians(m_fCurMouseRev[Rev_Prependicul]), XMConvertToRadians(m_fCurMouseRev[Rev_Holizontal]),0.f);
+	
+	//회전 보간(마우스)
+		_vector vPreQuarternionRot = XMQuaternionRotationRollPitchYaw(
+			XMConvertToRadians(m_fCurMouseRev[Rev_Prependicul]), XMConvertToRadians(m_fCurMouseRev[Rev_Holizontal]),
+			0.f);
 	_vector vCurQuarternionRot = XMQuaternionRotationRollPitchYaw(
-		XMConvertToRadians(m_fMouseRev[Rev_Prependicul]), XMConvertToRadians(m_fMouseRev[Rev_Holizontal]),0.f);
+		XMConvertToRadians(m_fMouseRev[Rev_Prependicul]) , XMConvertToRadians(m_fMouseRev[Rev_Holizontal]),
+		0.f);
 
 	_matrix QuarRev = XMMatrixRotationQuaternion(
 		XMQuaternionSlerp(vPreQuarternionRot,vCurQuarternionRot,
 			dTimeDelta * XMVectorGetX(XMVector4Length(vPreQuarternionRot - vCurQuarternionRot))));
-
+	//XMConvertToRadians(180.f * fmod(m_fPreCalculateUp, 180.f)) if > 180  = 0.f
 	
 	_matrix matTrans = XMMatrixTranslation(XMVectorGetX(vPlayerPos), XMVectorGetY(vPlayerPos), XMVectorGetZ(vPlayerPos));
 
-
-	matRev = QuarRev * matTrans;
+	_matrix matCurUp = XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(
+		0.f, 0.f, -m_fPreCalculateUp));
+	//XMMatrixRotationAxis(XMVectorSet(1.f,0.f, 0.f, 0.f), -m_fPreCalculateUp);
+	
+	matRev = QuarRev *matCurUp*   matTrans;
 
 
 
@@ -568,13 +576,12 @@ _bool CMainCamera::OffSetPhsX(_double dTimeDelta, _fmatrix matRev,_vector * pOut
 	return true;
 }
 
-_fmatrix CMainCamera::MakeViewMatrix(_float3 Eye, _float3 At)
+_fmatrix CMainCamera::MakeViewMatrix(_float3 Eye, _float3 At,_float3 vAxisY)
 {
 	_vector	vEye = XMVectorSetW(XMLoadFloat3(&Eye), 1.f);
 	_vector	vAt = XMVectorSetW(XMLoadFloat3(&At), 1.f);
-	_vector	vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	_vector	vLook = XMVector3Normalize(vAt - vEye);
-	_vector	vRight = XMVector3Normalize(XMVector3Cross(vAxisY, vLook));
+	_vector	vRight = XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&vAxisY), vLook));
 	_vector	vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
 
 
