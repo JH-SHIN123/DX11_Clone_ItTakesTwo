@@ -283,6 +283,7 @@
     <ClInclude Include="..\Public\UISprite.h" />
     <ClInclude Include="..\Public\UI_Generator.h" />
     <ClInclude Include="..\public\WallLaserTrap.h" />
+    <ClInclude Include="..\Public\WallLaserTrap_Button.h" />
     <ClInclude Include="..\public\WarpGate.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -383,6 +384,7 @@
     <ClCompile Include="..\Private\UISprite.cpp" />
     <ClCompile Include="..\Private\UI_Generator.cpp" />
     <ClCompile Include="..\private\WallLaserTrap.cpp" />
+    <ClCompile Include="..\Private\WallLaserTrap_Button.cpp" />
     <ClCompile Include="..\private\WarpGate.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -403,6 +403,11 @@ private:
 	_float	m_fBossMissile_HeroLanding_Time = 0.f;
 	_bool	m_IsBossMissile_RotateYawRoll_After = false;
 
+	// touch WallLaserTrap
+	_bool m_IsWallLaserTrap_Touch = false;
+	_bool m_IsWallLaserTrap_Effect = false;
+
+
 	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);
 	void Hit_Rocket(const _double dTimeDelta);
@@ -417,6 +422,7 @@ private:
 	void Touch_FireDoor(const _double dTimeDelta);
 	void Boss_Missile_Hit(const _double dTimeDelta);
 	void Boss_Missile_Control(const _double dTimeDelta);
+	void WallLaserTrap(const _double dTimeDelta);
 	/* Çý¿ø::For.DeadLine, SavePoint */
 	void Falling_Dead(const _double dTimeDelta);
 

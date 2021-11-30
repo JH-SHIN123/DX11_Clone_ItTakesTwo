@@ -166,6 +166,7 @@ _int CCody::Tick(_double dTimeDelta)
 		Boss_Missile_Hit(dTimeDelta);
 		Boss_Missile_Control(dTimeDelta);
 		Falling_Dead(dTimeDelta);
+		WallLaserTrap(dTimeDelta);
 	}
 	else
 	{
@@ -304,6 +305,8 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_0)) // 가라가라가라가라가라가라
+		m_pActorCom->Set_Position(XMVectorSet(-807.28f, 800.125f, 189.37f, 1.f));			 //(
 #pragma endregion
 #pragma region 8Way_Move
 	
@@ -440,10 +443,10 @@ void CCody::KeyInput(_double dTimeDelta)
 	{
 		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
-
 		if (m_IsJumping == false)
 		{
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 			m_fAcceleration = 5.f;
 			m_pModelCom->Set_Animation(ANI_C_Roll_Start);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Roll_Stop);
@@ -455,6 +458,8 @@ void CCody::KeyInput(_double dTimeDelta)
 		{
 			if (m_pModelCom->Get_CurAnimIndex() != ANI_C_AirDash_Start && m_iAirDashCount == 0)
 			{
+				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 				m_iAirDashCount += 1;
 				m_fAcceleration = 5.f;
 				m_pActorCom->Jump_Start(1.2f);
@@ -998,6 +1003,7 @@ void CCody::Sprint(const _double dTimeDelta)
 }
 void CCody::Jump(const _double dTimeDelta)
 {
+	m_iJumpCount = 1;
 	if (m_bShortJump == true)
 	{
 		if (m_iJumpCount == 1)
@@ -1486,11 +1492,22 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			/* 세이브포인트 트리거와 충돌시 세이브포인트 갱신 */
 			m_vSavePoint = m_vTriggerTargetPos;
 		}
+		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)
+		{
+			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_IsWallLaserTrap_Touch = true;
+		}
+
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine)
+		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine
+		|| m_IsWallLaserTrap_Touch)
 		return true;
 
 	return false;
@@ -1983,6 +2000,38 @@ void CCody::Boss_Missile_Control(const _double dTimeDelta)
 		m_IsBossMissile_Control = false;
 		m_IsCollide = false;
 		m_IsBossMissile_RotateYawRoll_After = true;
+	}
+}
+
+void CCody::WallLaserTrap(const _double dTimeDelta)
+{
+	if (false == m_IsWallLaserTrap_Touch)
+		return;
+
+	m_IsWallLaserTrap_Effect = true;
+	m_fDeadTime += (_float)dTimeDelta;
+	if (m_fDeadTime >= 2.f)
+	{
+		_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
+		vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+
+		m_pActorCom->Set_Position(vSavePosition);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		//m_pActorCom->Set_Gravity(-9.8f);
+		m_fDeadTime = 0.f;
+		m_IsCollide = false;
+		m_IsWallLaserTrap_Touch = false;
+		m_IsWallLaserTrap_Effect = false;
+		m_pActorCom->Set_ZeroGravity(false, false, false);
+	}
+	else
+	{
+// 		_vector vTriggerTargetPos = XMLoadFloat3(&m_vTriggerTargetPos);
+// 		vTriggerTargetPos = XMVectorSetW(vTriggerTargetPos, 1.f);
+// 		m_pActorCom->Set_Position(vTriggerTargetPos);
+// 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTriggerTargetPos);
 	}
 }
 

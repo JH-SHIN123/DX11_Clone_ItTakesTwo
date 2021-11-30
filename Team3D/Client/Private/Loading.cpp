@@ -14,6 +14,8 @@
 #include "Effect_Generator.h"
 #include "WarpGate.h"
 #include "Boss_Missile.h"
+#include "WallLaserTrap.h"
+#include "WallLaserTrap_Button.h"
 /* Hye */
 #include "Environment_Generator.h"
 /* Won */
@@ -489,6 +491,13 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jung()
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), CWarpGate::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), CBoss_Missile::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WallLaserTrap_Button"), CWallLaserTrap_Button::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WallLaserTrap"), CWallLaserTrap::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+#ifdef __MAPLOADING_OFF
+
+#endif // !__MAPLOADING_OFF
+
 
 	return S_OK;
 }
