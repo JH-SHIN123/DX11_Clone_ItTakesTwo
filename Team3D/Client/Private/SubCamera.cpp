@@ -167,7 +167,7 @@ _int CSubCamera::Tick_Cam_Free(_double dTimeDelta)
 		if (m_fMouseRev[Rev_Holizontal] > 360.f || m_fMouseRev[Rev_Holizontal] < -360.f)
 			m_fMouseRev[Rev_Holizontal] = 0.f;
 	}
-	if (MouseMove = /*m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y)*/(65535 - m_pGameInstance->Get_Pad_RStickY()) - 32767)
+	if (MouseMove = /*m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y)*/(/*65535 -*/m_pGameInstance->Get_Pad_RStickY()) - 32767)
 	{
 		if (abs(MouseMove) < 2000)
 			MouseMove = 0;

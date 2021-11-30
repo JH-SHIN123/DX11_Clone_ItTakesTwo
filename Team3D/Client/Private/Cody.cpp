@@ -133,6 +133,11 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Falling, ANI_C_Jump_Land, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Jump_Land, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Jump_Land_Jog, false);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_Jump, ANI_C_WallSlide_Enter, true, 20.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_Enter, ANI_C_WallSlide_MH, true, 20.f);
+
+	//m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_MH, ANI_C_WallSlide_Jump, true, 10.f);
 	//ANI_C_Roll_Start, ANI_C_Roll_Stop;
 	return;
 }
@@ -1511,16 +1516,19 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
 			/* 왜 중력을 0으로 하면 추락하는지 모르겠음 */
+			/* -> Actor에서 플레이어 y값세팅해주는데, 중력변수가 0 이면 방정식에서 곱셈할때 y가 0이 됩니다. */
 			m_pActorCom->Set_Gravity(1.f);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_IsDeadLine = true;
 		}
-		else if (m_eTargetGameID == GameID::eDUMMYWALL && m_bWallAttach == false && m_fWallJumpingTime <= 0.f)
+		else if (m_eTargetGameID == GameID::eDUMMYWALL && m_pActorCom->Get_IsWallCollide() == true && m_bWallAttach == false && m_pActorCom->Get_ContactPos().y >= 1.f)
 		{
 			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
 			m_bWallAttach = true;
+			m_pActorCom->Set_ZeroGravity(true, false, true);
 		}
+
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
 		{
 			/* 세이브포인트 트리거와 충돌시 세이브포인트 갱신 */
@@ -1865,34 +1873,51 @@ void CCody::Wall_Jump(const _double dTimeDelta)
 {
 	if (true == m_bWallAttach && false == m_IsWallJumping)
 	{
-		m_pActorCom->Set_ZeroGravity(true, false, true);
-
-		if (m_pModelCom->Is_AnimFinished(ANI_C_WallSlide_MH))
-			m_pModelCom->Set_Animation(ANI_C_WallSlide_MH);
-
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
-			m_bWallAttach = false;
+			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsWallJumping = true;
 			m_pModelCom->Set_Animation(ANI_C_WallSlide_Jump);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_Enter);
-			m_pTransformCom->RotateYaw(180.f);
+			m_pActorCom->Jump_Start(2.7f);
+			m_pActorCom->Set_WallCollide(false);
 		}
 	}
 
 	if (m_IsWallJumping == true)
 	{
-		// 이거 왜 010이 나오지
-		_vector vWallUp = { m_pActorCom->Get_Controller()->getUpDirection().x, m_pActorCom->Get_Controller()->getUpDirection().y, m_pActorCom->Get_Controller()->getUpDirection().z, 0.f };
+		if(m_fWallToWallSpeed <= 50.f)
+			m_fWallToWallSpeed += (_float)dTimeDelta * 70.f;
 
-		m_pActorCom->Move(-vWallUp, dTimeDelta);
+		PxVec3 vNormal = m_pActorCom->Get_CollideNormal();
+		_vector vWallUp = { vNormal.x, vNormal.y, vNormal.z, 0.f };
+		m_pActorCom->Move(XMVector3Normalize(vWallUp) / m_fWallToWallSpeed, dTimeDelta);
+		m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
 
-		m_fWallJumpingTime += (_float)dTimeDelta;
-		if (m_fWallJumpingTime > 0.2f)
+		if (m_pModelCom->Is_AnimFinished(ANI_C_WallSlide_Jump))
 		{
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_pModelCom->Set_Animation(ANI_C_Jump_Falling);
+			m_bWallAttach = false;
 			m_IsWallJumping = false;
 			m_fWallJumpingTime = 0.f;
+			m_fWallToWallSpeed = 0.5f;
 		}
+		if (m_pActorCom->Get_IsWallCollide() == true)
+		{
+			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);
+			m_pTransformCom->Rotate_ToTargetOnLand(vContactPos + (vWallUp));
+
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bWallAttach = true;
+			m_IsWallJumping = false;
+			m_fWallJumpingTime = 0.f;
+			m_fWallToWallSpeed = 0.5f;
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
+		}
+
+		m_fWallJumpingTime += (_float)dTimeDelta;
 	}
 }
 

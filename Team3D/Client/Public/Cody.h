@@ -380,6 +380,7 @@ private:
 	_bool	m_bWallAttach = false;
 	_bool   m_IsWallJumping = false;
 	_float	m_fWallJumpingTime = 0.f;
+	_float	m_fWallToWallSpeed = 0.5f;
 
 	// Warp NextStage
 	_bool m_IsWarpNextStage = false;

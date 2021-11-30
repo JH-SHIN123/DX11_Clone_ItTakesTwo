@@ -30,6 +30,8 @@ public: /* Getter */
 
 	PxController* Get_Controller() { return m_pController; }
 	PxRigidDynamic* Get_Actor() { return m_pActor; }
+	_bool	Get_IsWallCollide() { return m_IsWallCollide; }
+	PxVec3 Get_CollideNormal() { return m_vCollideNormal; }
 
 public: /* Setter */
 	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
@@ -39,8 +41,12 @@ public: /* Setter */
 	void    Set_ZeroGravity(_bool bZeroGravity, _bool IsGoUp, _bool IsStatic) { m_bZeroGravity = bZeroGravity; m_IsGoUp = IsGoUp; m_bStatic = IsStatic; }
 	void	Set_IsFalling(_bool IsFalling) { m_IsFalling = IsFalling; }
 	void	Set_Position(_fvector vPosition);
-	void	Set_GravityPath_RightVector(_fvector vRightVector) { XMStoreFloat3(&m_vGravityPathRight, vRightVector);}
+	void	Set_GravityPath_RightVector(_fvector vRightVector) { XMStoreFloat3(&m_vGravityPathRight, vRightVector); }
+
+	/* Wall */
 	void	Set_ContactPos(PxExtendedVec3 vPosition) { m_vContactPosition = vPosition; }
+	void	Set_WallCollide(_bool bWallCollide) { m_IsWallCollide = bWallCollide; }
+	void	Set_CollideNormal(PxVec3 vNormal) { m_vCollideNormal = vNormal; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -76,13 +82,17 @@ private:
 
 	_float  m_fFallingTime = 0.f;
 
-	PxExtendedVec3 m_vContactPosition = {};
 
 	/* For.Gravity */
 	_bool	m_isGravityReordered = false;
 	_float	m_fGravity = -9.8f;
 	_float3 m_vPlayerUp = _float3(0.f, 0.f, 0.f);
 	_float3 m_vGravityPathRight = _float3(0.f, 0.f, 0.f);
+
+	/* For.WallClimb */
+	_bool	m_IsWallCollide = false;
+	PxExtendedVec3 m_vContactPosition = {};
+	PxVec3 m_vCollideNormal = {0.f ,0.f ,0.f};
 
 private:
 	void	Jump_Stop();

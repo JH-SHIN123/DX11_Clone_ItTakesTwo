@@ -16,7 +16,7 @@ CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice
 	: CLevel(pDevice, pDeviceContext)
 {
 }
-
+ 
 HRESULT CLevel_Stage::NativeConstruct()
 {
 	CLevel::NativeConstruct();
@@ -61,7 +61,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	/* Jun */
 
 	/* For. Environment */
-	//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Stage_Space(), E_FAIL);
+	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Stage_Space(), E_FAIL);
 #endif
 
 	return S_OK;
@@ -459,10 +459,10 @@ HRESULT CLevel_Stage::Ready_Layer_RobotParts(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_DummyWall(const _tchar * pLayerTag)
 {
 	ROBOTDESC DummyWallDesc;
-	DummyWallDesc.vPosition = { 15.f, 0.f, 15.f, 1.f };
+	DummyWallDesc.vPosition = { -820.801138f, 766.982971f, 196.254788f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_DummyWall"), &DummyWallDesc), E_FAIL);
 
-	DummyWallDesc.vPosition = { 20.f, 0.f, 15.f, 1.f };
+	DummyWallDesc.vPosition = { -820.801138f, 766.982971f, 191.221255f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_DummyWall"), &DummyWallDesc), E_FAIL);
 	return S_OK;
 }
