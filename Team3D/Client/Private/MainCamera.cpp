@@ -200,13 +200,10 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 		m_fChangeCamModeLerpSpeed = 10.f;
 	}
 	//For.May
-	//_vector vPlayerUp = XMVector4Normalize(pTargetPlayer->Get_Transform()->Get_State(CTransform::STATE_UP));
-	//_vector vPlayerRight = XMVector4Normalize(pTargetPlayer->Get_Transform()->Get_State(CTransform::STATE_RIGHT));
+	_vector vPlayerUp = XMVector4Normalize(pTargetPlayer->Get_Transform()->Get_State(CTransform::STATE_UP));
+	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_float fTheta = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
 
-	//_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	//_float fTheta = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
-	//_matrix matQuat = XMMatrixRotationAxis(vPlayerRight, fTheta);
-	//m_pTransformCom->Set_RotateQuat(matQuat);
 	
 }
 
