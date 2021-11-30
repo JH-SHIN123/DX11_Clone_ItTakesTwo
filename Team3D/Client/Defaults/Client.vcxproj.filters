@@ -466,6 +466,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall">
       <UniqueIdentifier>{fe876da6-8259-4e3e-90d8-354a88c44141}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\10.UmbrellaBeam">
+      <UniqueIdentifier>{8eb3042d-b959-4b89-8975-a23480dcb983}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -853,6 +856,9 @@
     <ClInclude Include="..\Public\NoBatterySign.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UmbrellaBeam.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\10.UmbrellaBeam</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1225,6 +1231,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\NoBatterySign.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UmbrellaBeam.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\10.UmbrellaBeam</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

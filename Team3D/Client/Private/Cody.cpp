@@ -212,13 +212,13 @@ _int CCody::Tick(_double dTimeDelta)
 	//UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	/* UI */
-	if(m_pGameInstance->Key_Down(DIK_3))
-		UI_Create(Cody, RespawnCircle);
-	
-	/* UI */
-	if (m_pGameInstance->Key_Down(DIK_4))
-		UI_Delete(Cody, RespawnCircle);
+	///* UI */
+	//if(m_pGameInstance->Key_Down(DIK_3))
+	//	UI_Create(Cody, RespawnCircle);
+	//
+	///* UI */
+	//if (m_pGameInstance->Key_Down(DIK_4))
+	//	UI_Delete(Cody, RespawnCircle);
 
 
 	Attack_BossMissile_After(dTimeDelta); // 미사일 공격이 끝나고 정상적인 회전갑승로 만들어주자
