@@ -55,7 +55,7 @@ void CSpaceRail::Riding(CCharacter* pSubject)
 			--m_iIndex_CurNode;
 		}
 		else
-		{
+		{ 
 			m_pSpaceRailNodes = nullptr;
 			m_eState = STATE_END;
 			m_bRiding = false;

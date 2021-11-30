@@ -14,6 +14,7 @@ protected:
 public: /* Setter */
 	void Set_SpaceRailNode(CSpaceRail_Node* pRail);
 	void Set_WorldMatrix(_fmatrix WorldMatrix);
+	void Set_Position(_fvector WorldPos);
 
 public: /* Getter */
 	virtual _fvector Get_Position();

@@ -197,10 +197,6 @@ _int CCody::Tick(_double dTimeDelta)
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 
-	// TEST
-	if (m_pGameInstance->Key_Down(DIK_F10)) /* 스타트 지점 */
-		m_IsOnGrind_Start = true;
-	Riding_Rail();
 
 	return NO_EVENT;
 }
@@ -208,6 +204,26 @@ _int CCody::Tick(_double dTimeDelta)
 _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
+
+	// TEST
+	if (m_pGameInstance->Key_Down(DIK_L)) /* 스타트 지점 */
+		m_IsOnGrind_Start = true;
+	Riding_Rail();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	Find_SpaceRailTarget();
 

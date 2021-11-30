@@ -488,7 +488,6 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Test()
 	// Create Space Rail
 	CSpaceRailData* pSpaceRailData = CSpaceRailData::GetInstance();
 	pSpaceRailData->Load_SpaceRail(m_pDevice, m_pDeviceContext, TEXT("GrindLine_Dummy_0"), TEXT("../Bin/Resources/Data/RailData/Test/GrindLine_Dummy_0.dat"));
-	pSpaceRailData->Load_SpaceRail(m_pDevice, m_pDeviceContext, TEXT("GrindLine_Dummy_1"), TEXT("../Bin/Resources/Data/RailData/Test/GrindLine_Dummy_1.dat"));
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_SpaceRail"), CSpaceRail::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
