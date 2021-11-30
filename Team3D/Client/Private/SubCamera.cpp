@@ -49,7 +49,7 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
 
 	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
@@ -63,6 +63,7 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 	XMStoreFloat4x4(&m_matPreRev, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_matQuternionRev, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
+
 	m_eCurCamMode = CamMode::Cam_AutoToFree;
 
 
@@ -249,6 +250,7 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
 	matWorld *= XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_matPreRev));
 	m_pTransformCom->Set_WorldMatrix(matWorld);
+
 
 
 	//마우스 체크

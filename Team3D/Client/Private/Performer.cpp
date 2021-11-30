@@ -58,7 +58,7 @@ _int CPerformer::Tick(_double dTimeDelta)
 
 	
 
-	m_pModelCom->Update_Animation(CCutScenePlayer::GetInstance()->Get_TimeDelta());
+	m_pModelCom->Update_Animation(dTimeDelta/*CCutScenePlayer::GetInstance()->Get_TimeDelta()*/);
 
 	return NO_EVENT;
 }

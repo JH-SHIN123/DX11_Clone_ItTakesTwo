@@ -33,7 +33,7 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
 
-	FAILED_CHECK_RETURN((CCutScenePlayer::GetInstance()->Add_Performer(TEXT("Component_Model_MoonBaboon"), this)), E_FAIL);
+	//FAILED_CHECK_RETURN((CCutScenePlayer::GetInstance()->Add_Performer(TEXT("Component_Model_MoonBaboon"), this)), E_FAIL);
 
 	m_pCodyTransform = ((CCody*)CDataStorage::GetInstance()->GetCody())->Get_Transform();
 	if (nullptr == m_pCodyTransform)
@@ -72,7 +72,7 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 	Fix_MoonBaboon_Chair(dTimeDelta);
 
 	//m_pActorCom->Update(dTimeDelta);
-	m_pModelCom->Update_Animation(CCutScenePlayer::GetInstance()->Get_TimeDelta());
+	m_pModelCom->Update_Animation(dTimeDelta/*CCutScenePlayer::GetInstance()->Get_TimeDelta()*/);
 
 	return NO_EVENT;
 }

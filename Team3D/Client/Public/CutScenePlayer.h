@@ -31,9 +31,7 @@ private:
 	PERFORMERS m_Performers;
 
 	_bool m_bIsPlayingCutScene = false;
-	class CGameInstance* m_pGameInstance = nullptr;
-	ID3D11Device* m_pDevice = nullptr;
-	ID3D11DeviceContext* m_pDeviceContext = nullptr;
+
 
 
 	_double m_dTimeDelta = 0.0;

@@ -390,7 +390,7 @@ _fmatrix CCam_Helper::Tick_Film(_double dTimeDelta, CFilm::ScreenType eScreenTyp
 		return XMMatrixIdentity();
 	}
 
-	m_pCurFilm[eScreenTypeIdx]->Tick_Film(CCutScenePlayer::GetInstance()->Get_TimeDelta() * 0.63f, eScreenTypeIdx,fOutFovY);
+	m_pCurFilm[eScreenTypeIdx]->Tick_Film(dTimeDelta/*CCutScenePlayer::GetInstance()->Get_TimeDelta() * 0.63f*/, eScreenTypeIdx,fOutFovY);
 
 	return m_pCurFilm[eScreenTypeIdx]->Get_CurNodeMatrix(eScreenTypeIdx	,fOutFovY);
 }
