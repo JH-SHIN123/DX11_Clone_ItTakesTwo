@@ -390,7 +390,7 @@ private:
 	void	KeyInput_Rail(_double dTimeDelta);
 	void	Clear_TagerRailNodes();
 	void	Find_TargetSpaceRail(_fvector vCamPos, _vector vCamLook); // LateTick에서 호출되어야함.
-	void	MoveToTargetRail(_uint eState, _double dTimeDelta);
+	void	MoveToTargetRail(_double dTimeDelta);
 	void	TakeRail(_double dTimeDelta);
 
 private:

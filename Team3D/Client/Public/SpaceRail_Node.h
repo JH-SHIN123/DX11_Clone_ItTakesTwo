@@ -19,6 +19,7 @@ public:
 		_tchar		szRailTag[MAX_PATH] = L"";
 		_float4x4	WorldMatrix = MH_XMFloat4x4Identity();
 		_uint		iFrameIndex = 0;
+		_uint		iEdgeState = 0;
 	}SPACERAILNODE_DESC;
 
 private:
@@ -31,6 +32,7 @@ public:
 	_fvector		Get_Position() const;
 	_uint			Get_FrameIndex() const { return m_tDesc.iFrameIndex; };
 	const _tchar*	Get_RailTag() const { return m_tDesc.szRailTag; }
+	_uint			Get_EdgeState() const { return m_tDesc.iEdgeState; };
 
 public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;

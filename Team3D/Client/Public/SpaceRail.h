@@ -12,13 +12,16 @@ BEGIN(Client)
 class CSpaceRail_Node;
 class CSpaceRail : public CDynamic_Env
 {
+public:
+	enum EDGE { EDGE_START, EDGE_END };
+
 private:
 	explicit CSpaceRail(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CSpaceRail(const CSpaceRail& rhs);
 	virtual ~CSpaceRail() = default;
 
 public:
-	HRESULT Start_Path(CPath::STATE eState, _uint iAnimFrame);
+	HRESULT Start_Path(_uint eEdgeState, CPath::STATE eState, _uint iAnimFrame);
 	_bool	Take_Path(_double dTimeDelta, _matrix& WorldMatrix);
 
 public:
@@ -38,7 +41,7 @@ private:
 private:
 	vector<CSpaceRail_Node*>	m_vecSpaceRailNodes;
 	_tchar						m_szRailTag[MAX_PATH] = L"";
-	_uint						m_iPerNodesInteract = 2;
+	_uint						m_iPerNodesInteract = 1;
 
 public:
 	static CSpaceRail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

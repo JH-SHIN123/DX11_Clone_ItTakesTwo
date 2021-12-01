@@ -12,9 +12,19 @@ CSpaceRail::CSpaceRail(const CSpaceRail& rhs)
 {
 }
 
-HRESULT CSpaceRail::Start_Path(CPath::STATE eState, _uint iAnimFrame)
+HRESULT CSpaceRail::Start_Path(_uint eEdgeState, CPath::STATE eState, _uint iAnimFrame)
 {
 	if (nullptr == m_pPathCom) return E_FAIL;
+
+	CPath::STATE ePathState = CPath::STATE_END;
+	if (EDGE_END == eEdgeState)
+	{
+		if (CPath::STATE_BACKWARD == eState)
+			eState = CPath::STATE_FORWARD;
+		else 
+			eState = CPath::STATE_BACKWARD;
+	}
+	else ePathState = eState;
 
 	return m_pPathCom->Start_Path(eState, iAnimFrame);
 }
@@ -37,6 +47,9 @@ HRESULT CSpaceRail::NativeConstruct_Prototype()
 HRESULT CSpaceRail::NativeConstruct(void* pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
+
+	// Pivot Àû¿ë
+
 
 	m_UserData.eID = GameID::eSPACERAIL;
 	m_UserData.pGameObject = this;
@@ -68,11 +81,18 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 	CSpaceRail_Node::SPACERAILNODE_DESC nodeDesc;
 
 	_uint iFrameIndex = 0;
+	_uint iFrameCount = FrameMatrices.size();
 	for (auto& pFrameMat : FrameMatrices)
 	{
 		lstrcpy(nodeDesc.szRailTag, m_szRailTag);
 		nodeDesc.iFrameIndex = FrameIndices[iFrameIndex];
 		nodeDesc.WorldMatrix = pFrameMat;
+
+		if(iFrameIndex < iFrameCount * 0.5)
+			nodeDesc.iEdgeState = EDGE_START;
+		else
+			nodeDesc.iEdgeState = EDGE_END;
+
 		CSpaceRail_Node* pSpaceRailNode = CSpaceRail_Node::Create(m_pDevice, m_pDeviceContext, &nodeDesc);
 		m_vecSpaceRailNodes.push_back(pSpaceRailNode);
 

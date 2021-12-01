@@ -12,7 +12,7 @@ public:
 	typedef struct tagPathDesc 
 	{
 		_float4x4	WorldMatrix = MH_XMFloat4x4Identity();
-		_float		fPivotScale = 0.001f;
+		_float		fPivotScale = 0.001f; // pivot 0.01로 하니까 끊켜보인다. 100개보다 더 잘게 쪼개자.
 	}PATH_DESC;
 
 private:

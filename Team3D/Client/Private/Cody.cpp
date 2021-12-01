@@ -199,7 +199,7 @@ _int CCody::Tick(_double dTimeDelta)
 
 	/* 레일 타겟을 향해 날라가기 */
 	// Forward 조정
-	MoveToTargetRail(CPath::STATE_FORWARD, dTimeDelta);
+	MoveToTargetRail(dTimeDelta);
 
 	/* 레일타기 : 타겟을 찾지 못하면 타지않음. */
 	TakeRail(dTimeDelta);
@@ -1827,7 +1827,7 @@ void CCody::Find_TargetSpaceRail(_fvector vCamPos, _vector vCamLook)
 		m_bMoveToRail = true;
 	}
 }
-void CCody::MoveToTargetRail(_uint eState, _double dTimeDelta)
+void CCody::MoveToTargetRail(_double dTimeDelta)
 {
 	if (nullptr == m_pTransformCom || false == m_bMoveToRail || nullptr == m_pTargetRailNode) return;
 
@@ -1851,7 +1851,14 @@ void CCody::MoveToTargetRail(_uint eState, _double dTimeDelta)
 		}
 
 		/* 패스 지정 */
-		m_pTargetRail->Start_Path((CPath::STATE)(eState), m_pTargetRailNode->Get_FrameIndex());
+		CPath::STATE ePathState = CPath::STATE_END;
+		if(m_pGameInstance->Key_Down(DIK_W))
+			ePathState = CPath::STATE_FORWARD;
+		else if(m_pGameInstance->Key_Down(DIK_S))
+			ePathState = CPath::STATE_BACKWARD;
+
+		/* Edge State 지정 */
+		m_pTargetRail->Start_Path(m_pTargetRailNode->Get_EdgeState(), CPath::STATE_FORWARD, m_pTargetRailNode->Get_FrameIndex());
 
 		/* 레일 앞까지 도착, 레일 타기 시작 */
 		m_pTargetRailNode = nullptr;
@@ -1864,7 +1871,7 @@ void CCody::TakeRail(_double dTimeDelta)
 	if (nullptr == m_pTargetRail || false == m_bOnRail) return;
 
 	/* 타는 애니메이션으로 변경 */
-	m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
+	m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	m_bOnRail = m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);
@@ -1872,8 +1879,7 @@ void CCody::TakeRail(_double dTimeDelta)
 		m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 	else 
 	{
-		m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Falling);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_GroundPound_Falling);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // 자유낙하 애니메이션으로 변경해야함.
 		m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 	}
 }
