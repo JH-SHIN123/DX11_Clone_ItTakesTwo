@@ -13,6 +13,9 @@ private:
 	virtual ~CEffect_Umbrella_Pipe() = default;
 
 public:
+	void Set_ParentWorldMatrix(_matrix ParentMatrix);
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double TimeDelta) override;
@@ -27,6 +30,7 @@ private:
 	_double m_dAngle = 0.0;
 	_float m_fTime = 0.f;
 	_float m_fColorRamp_U = 0.f;
+	_float4x4 m_matParent;
 	CTextures* m_pTexturesCom_ColorRamp = nullptr;
 	CTextures* m_pTexturesCom_Distortion = nullptr;
 

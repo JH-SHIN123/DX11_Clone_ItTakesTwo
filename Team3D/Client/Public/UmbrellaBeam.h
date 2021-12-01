@@ -25,8 +25,17 @@ public:
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
+
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
+
+private:
+	_float										m_fVerticalAngle = 0.f;
+	_float										m_fHorizontalAngle = 0.f;
+
+private:
+	class CUmbrellaBeam_Stand*					m_pUmbrellaBeam_Stand = nullptr;
+	class CEffect_Umbrella_Pipe*				m_pUmbrellaBeam_Effect = nullptr;
 
 protected:
 	/* For.Component */
@@ -37,7 +46,13 @@ protected:
 	CTriggerActor*								m_pTriggerCom = nullptr;
 
 private:
+	void KeyInput_Rotate(_double TimeDelta);
+
+private:
 	HRESULT Ready_Layer_ControlRoom_Battery(const _tchar * pLayerTag);
+	HRESULT Ready_Layer_UmbrellaBeam_Stand(const _tchar * pLayerTag);
+
+	HRESULT Ready_Layer_UmbrellaBeam_Effect(const _tchar * pLayerTag);
 
 public:
 	static CUmbrellaBeam* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

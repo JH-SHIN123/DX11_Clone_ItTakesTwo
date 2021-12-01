@@ -12,6 +12,11 @@ CEffect_Umbrella_Pipe::CEffect_Umbrella_Pipe(const CEffect_Umbrella_Pipe & rhs)
 {
 }
 
+void CEffect_Umbrella_Pipe::Set_ParentWorldMatrix(_matrix ParentMatrix)
+{
+	XMStoreFloat4x4(&m_matParent, ParentMatrix);
+}
+
 HRESULT CEffect_Umbrella_Pipe::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
@@ -30,6 +35,13 @@ HRESULT CEffect_Umbrella_Pipe::NativeConstruct(void * pArg)
 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObject_2D_Env_Particle", nullptr, (CGameObject**)&m_pParticle);
 	m_pParticle->Set_InstanceCount(5000);
 
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vScale = XMVectorSet(1.f, 1.f, 1.5f, 1.f);
+	m_pTransformCom->Set_Scale(vScale);
+
+	vPos.m128_f32[1] += 6.f;
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(63.75f, 72.35f, 196.f, 1.f));
 	return S_OK;
 }
@@ -47,9 +59,20 @@ _int CEffect_Umbrella_Pipe::Tick(_double TimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD6))
 		m_pParticle->Set_IsActivateParticles(false);
 
+	_matrix matWorld, matScale, matRotX, matTrans;
+	//matTrans = m_pTransformCom->Get_WorldMatrix();
+	matTrans = XMMatrixTranslation(0.f, 0.f, 3.f);
+	matRotX = XMMatrixRotationX(XMConvertToRadians(90.f));
+	matWorld = matRotX * matTrans * XMLoadFloat4x4(&m_matParent);
+
+	m_pTransformCom->Set_WorldMatrix(matWorld);
+
 	m_pParticle->Set_ParentMatrix(m_pTransformCom->Get_WorldMatrix());
 
 	m_pParticle->Set_Particle_Radius(_float3(5.f, 40.f, 5.f));
+
+
+
 	return _int();
 }
 
@@ -67,7 +90,7 @@ HRESULT CEffect_Umbrella_Pipe::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom->Set_ShaderResourceView("g_ColorRampTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(0));
 	m_pModelCom->Set_ShaderResourceView("g_DistortionTexture", m_pTexturesCom_Distortion->Get_ShaderResourceView(0));
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Render_Model(5);
+	m_pModelCom->Render_Model(6);
 
 	return S_OK;
 }

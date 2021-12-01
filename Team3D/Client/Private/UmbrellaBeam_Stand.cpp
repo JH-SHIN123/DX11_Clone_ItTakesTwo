@@ -4,7 +4,6 @@
 #include "May.h"
 #include "DataStorage.h"
 #include "UmbrellaBeam_Base.h"
-#include "UmbrellaBeam.h"
 
 CUmbrellaBeam_Stand::CUmbrellaBeam_Stand(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -32,11 +31,10 @@ HRESULT CUmbrellaBeam_Stand::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_UmbrellaBeam_Stand"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Layer_UmbrellaBeam_Base(TEXT("Layer_PressurePlateLock")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_UmbrellaBeam(TEXT("Layer_PressurePlateFrame")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_UmbrellaBeam_Base(TEXT("Layer_UmbrellaBeam_Base")), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-789.319824f, 766.982971f, 189.852661f, 1.f));
-	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(45.f));
 
 	m_UserData = USERDATA(GameID::eUMBRELLABEAMSTAND, this);
 
@@ -63,14 +61,7 @@ _int CUmbrellaBeam_Stand::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	//CCody* pCody = (CCody*)DATABASE->GetCody();
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, pCody->Get_Position());
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-789.319824f, 766.982971f, 189.852661f, 1.f));
-	if(m_pGameInstance->Key_Pressing(DIK_L))
-	{
-		m_fAngle += dTimeDelta * 5.f;
-		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-m_fAngle));
-	}
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fHorizontalAngle));
 
 	return NO_EVENT;
 }
@@ -101,6 +92,11 @@ void CUmbrellaBeam_Stand::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID,
 
 }
 
+void CUmbrellaBeam_Stand::Set_HorizontalAngle(_float fAngle)
+{
+	m_fHorizontalAngle = fAngle;
+}
+
 HRESULT CUmbrellaBeam_Stand::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -116,12 +112,6 @@ HRESULT CUmbrellaBeam_Stand::Render_ShadowDepth()
 HRESULT CUmbrellaBeam_Stand::Ready_Layer_UmbrellaBeam_Base(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UmbrellaBeam_Base")), E_FAIL);
-	return S_OK;
-}
-
-HRESULT CUmbrellaBeam_Stand::Ready_Layer_UmbrellaBeam(const _tchar * pLayerTag)
-{
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UmbrellaBeam")), E_FAIL);
 	return S_OK;
 }
 
@@ -153,7 +143,6 @@ CGameObject * CUmbrellaBeam_Stand::Clone_GameObject(void * pArg)
 
 void CUmbrellaBeam_Stand::Free()
 {
-	Safe_Release(m_pUmbrellaBeam);
 	Safe_Release(m_pUmbrellaBeam_Base);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pStaticActorCom);

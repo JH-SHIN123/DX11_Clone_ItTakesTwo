@@ -3,6 +3,8 @@
 #include "Cody.h"
 #include "May.h"
 #include "DataStorage.h"
+#include "UmbrellaBeam_Stand.h"
+#include "Effect_Umbrella_Pipe.h"
 
 CUmbrellaBeam::CUmbrellaBeam(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -25,13 +27,18 @@ HRESULT CUmbrellaBeam::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(20.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_UmbrellaBeam"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-789.319824f, 766.982971f, 189.852661f, 1.f));
+	FAILED_CHECK_RETURN(Ready_Layer_UmbrellaBeam_Stand(TEXT("Layer_UmbrellaBeam_Stand")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_UmbrellaBeam_Effect(TEXT("Layer_UmbrellaBeam_Effect")), E_FAIL);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-789.319824f, 769.882971f, 189.852661f, 1.f));
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(45.f));
+
 	m_UserData = USERDATA(GameID::eUMBRELLABEAM, this);
+
 
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
@@ -49,6 +56,9 @@ HRESULT CUmbrellaBeam::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
 
+	m_fHorizontalAngle = 45.f;
+	m_fVerticalAngle = 0.f;
+
 	return S_OK;
 }
 
@@ -56,10 +66,9 @@ _int CUmbrellaBeam::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-789.319824f, 766.982971f, 189.852661f, 1.f));
-	//CCody* pCody = (CCody*)DATABASE->GetCody();
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, pCody->Get_Position());
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	KeyInput_Rotate(dTimeDelta);
+
+	m_pUmbrellaBeam_Effect->Set_ParentWorldMatrix(m_pTransformCom->Get_WorldMatrix());
 
 	return NO_EVENT;
 }
@@ -102,6 +111,63 @@ HRESULT CUmbrellaBeam::Render_ShadowDepth()
 	return S_OK;
 }
 
+void CUmbrellaBeam::KeyInput_Rotate(_double TimeDelta)
+{
+	_float fMaxHorizontalAngle = 90.f;
+	_float fMaxVerticalAngle = 45.f;
+	_float fRotationPerSec =  XMConvertToDegrees(m_pTransformCom->Get_RotationPerSec());
+
+	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+	if (m_pGameInstance->Key_Pressing(DIK_H) && fMaxVerticalAngle >= m_fVerticalAngle)
+	{
+		m_fVerticalAngle += (_float)TimeDelta * fRotationPerSec;
+		m_pTransformCom->Rotate_Axis(vRight, -TimeDelta);
+	}
+
+	if (m_pGameInstance->Key_Pressing(DIK_N) && 0.f <= m_fVerticalAngle)
+	{
+		m_fVerticalAngle -= (_float)TimeDelta * fRotationPerSec;
+		m_pTransformCom->Rotate_Axis(vRight, TimeDelta);
+	}
+
+	if (m_pGameInstance->Key_Pressing(DIK_M) && fMaxHorizontalAngle >= m_fHorizontalAngle)
+	{
+		m_fHorizontalAngle += (_float)TimeDelta * fRotationPerSec;
+		m_pTransformCom->Rotate_Axis(vUp, TimeDelta);
+	}
+
+	if (m_pGameInstance->Key_Pressing(DIK_B) && 0.f <= m_fHorizontalAngle)
+	{
+		m_fHorizontalAngle -= (_float)TimeDelta * fRotationPerSec;
+		m_pTransformCom->Rotate_Axis(vUp, -TimeDelta);
+	}
+
+	m_pUmbrellaBeam_Stand->Set_HorizontalAngle(m_fHorizontalAngle);
+}
+
+HRESULT CUmbrellaBeam::Ready_Layer_UmbrellaBeam_Stand(const _tchar * pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UmbrellaBeam_Stand"), nullptr, &pGameObject), E_FAIL);
+	m_pUmbrellaBeam_Stand = static_cast<CUmbrellaBeam_Stand*>(pGameObject);
+	
+	return S_OK;
+}
+
+HRESULT CUmbrellaBeam::Ready_Layer_UmbrellaBeam_Effect(const _tchar * pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Umbrella_Pipe"), nullptr, &pGameObject), E_FAIL);
+	m_pUmbrellaBeam_Effect = static_cast<CEffect_Umbrella_Pipe*>(pGameObject);
+	m_pUmbrellaBeam_Effect->Set_ParentWorldMatrix(m_pTransformCom->Get_WorldMatrix());
+
+	return S_OK;
+}
+
 CUmbrellaBeam * CUmbrellaBeam::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CUmbrellaBeam* pInstance = new CUmbrellaBeam(pDevice, pDeviceContext);
@@ -130,6 +196,8 @@ CGameObject * CUmbrellaBeam::Clone_GameObject(void * pArg)
 
 void CUmbrellaBeam::Free()
 {
+	Safe_Release(m_pUmbrellaBeam_Effect);
+	Safe_Release(m_pUmbrellaBeam_Stand);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTransformCom);
