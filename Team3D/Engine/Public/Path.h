@@ -25,7 +25,7 @@ public:
 	void	Get_FramesWorldMatrices(vector<_uint>& OutFrameIndices, vector<_float4x4>& OutMatrices, _uint iPerNodeInteract);
 
 public:
-	virtual HRESULT	NativeConstruct_Prototype(const _tchar * pFilePath, const _tchar * pPathTag);
+	virtual HRESULT	NativeConstruct_Prototype(const _tchar * pFilePath, const _tchar * pPathTag, _fmatrix PivotMatrix);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 
 public:
@@ -44,6 +44,7 @@ private: /* Prototype Info */
 	class CAnim*			m_pPathAnim = nullptr;
 	_tchar					m_szPathTag[MAX_PATH] = L"";
 	_double					m_dDurationTime = 0.0;
+	_float4x4				m_PivotMatrix;
 
 private: /* Clone Info */
 	_bool					m_bPlayAnimation = false;
@@ -57,7 +58,7 @@ private:
 	TRANSFORMATIONS			m_AnimTransformations;		// Channel : Scaling / Rotation / Position
 
 public:
-	static CPath* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar* pFilePath, const _tchar* pPathTag);
+	static CPath* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar* pFilePath, const _tchar* pPathTag, _fmatrix PivotMatrix);
 	virtual CComponent* Clone_Component(void* pArg) override;
 	virtual void Free() override;
 };

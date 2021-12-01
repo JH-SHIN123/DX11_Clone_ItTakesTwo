@@ -13,7 +13,8 @@ CPath::CPath(const CPath& rhs)
 	: CComponent(rhs),
 	m_pPathAnim(rhs.m_pPathAnim),
 	m_AnimTransformations(rhs.m_AnimTransformations),
-	m_dDurationTime(rhs.m_dDurationTime)
+	m_dDurationTime(rhs.m_dDurationTime),
+	m_PivotMatrix(rhs.m_PivotMatrix)
 {
 	lstrcpy(m_szPathTag, rhs.m_szPathTag);
 	Safe_AddRef(m_pPathAnim);
@@ -39,12 +40,7 @@ void CPath::Get_FramesWorldMatrices(vector<_uint>& OutFrameIndices, vector<_floa
 		m_pPathAnim->Update_PathTransformation(dCurrentTime, iCurAnimFrame, tTransformation, iPerNodeInteract);
 
 		/* Update_CombinedTransformations */
-		_matrix WorldMatrix, TransMatrix;
-		TransMatrix = XMLoadFloat4x4(&tTransformation[CHANNEL_TRANSLATION]);
-		TransMatrix.r[3] *= 0.01f; // Pivot Scaling
-		TransMatrix.r[3] = XMVectorSetW(TransMatrix.r[3], 1.f);
-		WorldMatrix = XMLoadFloat4x4(&m_tDesc.WorldMatrix);
-		XMStoreFloat4x4(&NodeWorldMatrix, WorldMatrix * TransMatrix);
+		XMStoreFloat4x4(&NodeWorldMatrix, XMLoadFloat4x4(&tTransformation[CHANNEL_TRANSLATION]) * XMLoadFloat4x4(&m_PivotMatrix) * XMLoadFloat4x4(&m_tDesc.WorldMatrix));
 		
 		FrameIndices.emplace_back(iCurAnimFrame);
 		FrameWorldMatrices.emplace_back(NodeWorldMatrix);
@@ -54,13 +50,16 @@ void CPath::Get_FramesWorldMatrices(vector<_uint>& OutFrameIndices, vector<_floa
 	OutMatrices.swap(FrameWorldMatrices);
 }
 
-HRESULT CPath::NativeConstruct_Prototype(const _tchar* pFilePath, const _tchar* pPathTag)
+HRESULT CPath::NativeConstruct_Prototype(const _tchar* pFilePath, const _tchar* pPathTag, _fmatrix PivotMatrix)
 {
 	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
 	NULL_CHECK_RETURN(pFilePath, E_FAIL);
 	NULL_CHECK_RETURN(pPathTag, E_FAIL);
 
 	CComponent::NativeConstruct_Prototype();
+
+	/* Set Pivot */
+	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);;
 
 	/* Set Path Tag */
 	lstrcpy(m_szPathTag, pPathTag);
@@ -152,36 +151,27 @@ HRESULT CPath::Update_AnimTransformations()
 
 _fmatrix CPath::Update_CombinedTransformations()
 {
-	/* Scale Àû¿ë X */
-	_matrix WorldMatrix, RotateMatrix, TransMatrix;
-
 	/* Rotation */
 	_float3 fRotateAngle = MH_GetRoatationAnglesToMatrix(m_AnimTransformations[CHANNEL_ROTATION]);
 	
 	/* Pitch */
-	RotateMatrix = XMMatrixRotationX((fRotateAngle.x));
+	_matrix RotateMatrix = XMMatrixRotationX((fRotateAngle.x));
 	/* Yaw */
-	if (STATE_FORWARD == m_eState) RotateMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f)  -fRotateAngle.z);
+	//if (STATE_FORWARD == m_eState) RotateMatrix *= XMMatrixRotationY(- fRotateAngle.z);
+	//else RotateMatrix *= XMMatrixRotationY(-fRotateAngle.z + XMConvertToRadians(180.f));
+	if (STATE_FORWARD == m_eState) RotateMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f) - fRotateAngle.z);
 	else RotateMatrix *= XMMatrixRotationY(-fRotateAngle.z + XMConvertToRadians(90.f) + XMConvertToRadians(180.f));
 	/* Roll */
 	RotateMatrix *= XMMatrixRotationZ((fRotateAngle.y));
 
-	/* Translation */
-	TransMatrix = XMLoadFloat4x4(&m_AnimTransformations[CHANNEL_TRANSLATION]);
-	TransMatrix.r[3] *= 0.01f; // Pivot Scaling
-	TransMatrix.r[3] = XMVectorSetW(TransMatrix.r[3], 1.f);
-
-	/* Final Cal */
-	WorldMatrix = XMLoadFloat4x4(&m_tDesc.WorldMatrix);
-
-	return WorldMatrix * RotateMatrix * TransMatrix;
+	return MH_RemoveScale(RotateMatrix * XMLoadFloat4x4(&m_AnimTransformations[CHANNEL_TRANSLATION]) * XMLoadFloat4x4(&m_PivotMatrix) * XMLoadFloat4x4(&m_tDesc.WorldMatrix));
 }
 
-CPath* CPath::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pFilePath, const _tchar* pPathTag)
+CPath* CPath::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pFilePath, const _tchar* pPathTag, _fmatrix PivotMatrix)
 {
 	CPath* pInstance = new CPath(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype(pFilePath, pPathTag)))
+	if (FAILED(pInstance->NativeConstruct_Prototype(pFilePath, pPathTag, PivotMatrix)))
 	{
 		MSG_BOX("Failed to Create Instance - CPath");
 		Safe_Release(pInstance);
