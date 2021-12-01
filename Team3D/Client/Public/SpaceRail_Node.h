@@ -9,7 +9,8 @@ class CTriggerActor;
 END
 
 BEGIN(Client)
-class CCharacter;
+class CCody;
+class CMay;
 class CSpaceRail_Node : public CGameObject
 {
 public:
@@ -44,9 +45,9 @@ private:
 	CTriggerActor*	m_pTriggerActorCom = nullptr;
 
 private:
-	_bool				m_bCollide = false;
-	CCharacter*			m_pCody = nullptr;
-	CCharacter*			m_pMay = nullptr;
+	_bool			m_bCollide = false;
+	CCody*			m_pCody = nullptr;
+	CMay*			m_pMay = nullptr;
 
 private:
 	SPACERAILNODE_DESC	m_tDesc;
