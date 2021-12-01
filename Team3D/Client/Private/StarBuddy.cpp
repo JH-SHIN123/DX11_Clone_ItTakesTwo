@@ -62,7 +62,7 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 	m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
 	m_pTransformCom->RotatePitch(dTimeDelta * 0.2f);
 
-	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide)
+	if (m_pGameInstance->Key_Down(DIK_F) && m_IsCollide)
 	{
 		m_bLaunch = true;
 		UI_Delete(May, InputButton_InterActive);
