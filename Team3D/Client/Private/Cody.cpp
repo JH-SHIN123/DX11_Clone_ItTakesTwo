@@ -1792,7 +1792,6 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 void CCody::PinBall(const _double dTimeDelta)
 {
 	if (true == m_IsPinBall)
-
 		m_pActorCom->Set_Position(((CDynamic_Env*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Position());
 }
 

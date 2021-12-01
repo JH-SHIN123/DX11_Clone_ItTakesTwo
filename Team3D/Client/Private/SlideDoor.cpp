@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\SlideDoor.h"
 
+_bool		CSlideDoor::m_bOpen = false;
+
 CSlideDoor::CSlideDoor(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
 {
@@ -40,6 +42,10 @@ HRESULT CSlideDoor::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_Speed(2.f, 0.f);
 	CDataStorage::GetInstance()->Set_SlideDoor(this);
 	
+	_uint iOption = m_tDynamic_Env_Desc.iOption;
+	if (iOption == 2)
+		m_bDirection = true;
+
 	return S_OK;
 }
 
@@ -93,19 +99,7 @@ void CSlideDoor::Movement(_double dTimeDelta)
 	if (false == m_bOpen)
 		return;
 
-	if (m_tDynamic_Env_Desc.iOption == 0)
-	{
-		_float	fDis = (_float)dTimeDelta;
-		m_fDistance += fDis;
-
-		if (m_fDistance >= 1.f)
-		{
-			m_bOpen = false;
-			m_fDistance = 0.f;
-		}
-		m_pTransformCom->Go_Straight(dTimeDelta);
-	}
-	else
+	if(false == m_bDirection)
 	{
 		_float	fDis = (_float)dTimeDelta;
 		m_fDistance += fDis;
@@ -117,6 +111,20 @@ void CSlideDoor::Movement(_double dTimeDelta)
 		}
 		m_pTransformCom->Go_Straight(-dTimeDelta);
 	}
+
+	if(true == m_bDirection)
+	{
+		_float	fDis = (_float)dTimeDelta;
+		m_fDistance += fDis;
+
+		if (m_fDistance >= 1.f)
+		{
+			m_bOpen = false;
+			m_fDistance = 0.f;
+		}
+		m_pTransformCom->Go_Straight(dTimeDelta);
+	}
+
 	m_pStaticActorCom->Update_StaticActor();
 }
 

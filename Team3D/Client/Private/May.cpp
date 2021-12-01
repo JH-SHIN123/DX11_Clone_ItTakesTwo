@@ -1195,7 +1195,7 @@ void CMay::PinBall(const _double dTimeDelta)
 		/* 공이 죽었을 때 or 골인 했을 때 */
 		if (true == ((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Failed())
 		{
-			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_Animation(ANI_M_PinBall_Exit);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 
 			m_IsPinBall = false;
@@ -1206,12 +1206,22 @@ void CMay::PinBall(const _double dTimeDelta)
 		/* 벽 올리고 내리고 */
 		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB))
 		{
-			m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_Right_Hit);
+			m_pModelCom->Set_Animation(ANI_M_PinBall_Right_Hit);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH_Hit);
 			((CPInBall_Blocked*)(CDataStorage::GetInstance()->Get_Pinball_Blocked()))->Switching();
 		}
 
 		if (false == ((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_StartGame())
 		{
+			/* 공 발사 */
+			if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
+			{
+				m_pModelCom->Set_Animation(ANI_M_PinBall_Left_Hit);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH_Hit);
+
+				((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->StartGame();
+				((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
+			}
 			/* 오른쪽 */
 			if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
 			{
@@ -1220,7 +1230,7 @@ void CMay::PinBall(const _double dTimeDelta)
 
 				/* x값 범위 내에서 움직임 */
 				if (m_MinMaxX.y <= XMVectorGetX(vPosition))
-					m_pActorCom->Move(vLeft * 0.1f, dTimeDelta);
+					m_pActorCom->Move(vLeft * 0.05f, dTimeDelta);
 			}
 			/* 왼쪽 */
 			else if (m_pGameInstance->Key_Pressing(DIK_LEFT))
@@ -1230,21 +1240,12 @@ void CMay::PinBall(const _double dTimeDelta)
 
 				/* x값 범위 내에서 움직임 */
 				if (m_MinMaxX.x >= XMVectorGetX(vPosition))
-					m_pActorCom->Move(vRight * 0.1f, dTimeDelta);
+					m_pActorCom->Move(vRight * 0.05f, dTimeDelta);
 			}
-			/* 공 발사 */
 			else
 			{
 				m_pModelCom->Set_Animation(ANI_M_PinBall_MH);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
-			}
-
-			if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
-			{
-				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_Left_Hit);
-
-				((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->StartGame();
-				((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
 			}
 		}
 	}

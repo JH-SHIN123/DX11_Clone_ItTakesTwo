@@ -386,7 +386,6 @@ private:
 	/* Çý¿ø::For.DeadLine, SavePoint, PInBall */
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
-
 public:
 	void PinBall_Respawn(_double dTimeDelta);
 

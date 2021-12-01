@@ -142,18 +142,6 @@ void CPinBall_Door::Movement(_double dTimeDelta)
 	/* Close */
 	else
 	{
-		//_float	fDis = (_float)dTimeDelta;
-		//m_fDistance += fDis;
-
-		//if (m_fDistance >= 1.f)
-		//{
-		//	//((CPinBall_BallDoor*)(CDataStorage::GetInstance()->Get_Pinball_BallDoor()))->Set_DoorState(true);
-		//	m_bTrigger = false;
-		//	m_fDistance = 0.f;
-		//	m_bDoorState = false;
-		//}
-		//m_pTransformCom->Go_Straight(-dTimeDelta);
-
 		_vector vPos = XMLoadFloat3(&m_ResetPos);
 		vPos = XMVectorSetW(vPos, 1.f);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);

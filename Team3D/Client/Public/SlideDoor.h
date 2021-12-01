@@ -26,7 +26,8 @@ public:
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 	_float			m_fDistance = 0.f;
-	_bool			m_bOpen = false;
+	static _bool	m_bOpen;
+	_bool			m_bDirection = false;
 
 private:
 	void Movement(_double dTimeDelta);

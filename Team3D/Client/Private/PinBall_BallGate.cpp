@@ -27,7 +27,7 @@ HRESULT CPinBall_BallGate::NativeConstruct(void * pArg)
 	m_UserData.pGameObject = this;
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(0.5f);
+	PxGeometry* TriggerGeom = new PxSphereGeometry(1.f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;
@@ -91,7 +91,7 @@ void CPinBall_BallGate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::ePINBALL && false == m_bGoal)
 	{
 		m_bGoal = true;
-		((CPinBall*)pGameObject)->Goal(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		((CPinBall*)pGameObject)->Goal(XMVectorSet(-672.6f, 755.9f, -163.f, 1.f));
 	}
 }
 

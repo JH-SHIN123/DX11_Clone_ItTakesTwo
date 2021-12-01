@@ -18,6 +18,8 @@ CPinBall::CPinBall(const CPinBall & rhs)
 void CPinBall::Goal(_fvector vGatePosition)
 {
 	m_pDynamicActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(vGatePosition)));
+	m_pDynamicActorCom->Get_Actor()->putToSleep();
+	m_pDynamicActorCom->Update_DynamicActor();
 
 	((CPinBall_Handle*)CDataStorage::GetInstance()->Get_Pinball_Handle())->Set_Goal();
 	m_IsStartGame = false;
@@ -36,7 +38,7 @@ void CPinBall::StartGame()
 	XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, m_pTransformCom->Get_WorldMatrix());
 
 	/* 초반 레일의 단차 보정 */
-	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.5f);
+	vPosition = XMVectorSet(XMVectorGetX(vPosition), 755.7f, 190.f, 1.f);
 	m_pDynamicActorCom->Get_Actor()->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
 }
 
@@ -67,6 +69,7 @@ HRESULT CPinBall::NativeConstruct(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->setLinearDamping(10.f);
 	m_pDynamicActorCom->Get_Actor()->setAngularDamping(5.f);
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+	m_pDynamicActorCom->Get_Actor()->putToSleep();
 	Safe_Delete(DynamicGeom);
 
 	/* Trigger */
@@ -92,6 +95,7 @@ _int CPinBall::Tick(_double dTimeDelta)
 	CDynamic_Env::Tick(dTimeDelta);
 
 	MoveMent(dTimeDelta);
+	m_pDynamicActorCom->Update_DynamicActor();
 
 	return NO_EVENT;
 }
@@ -195,9 +199,6 @@ void CPinBall::MoveMent(_double dTimeDelta)
 		m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(5.f, 0.f, -35.f));
 	if (m_pGameInstance->Key_Pressing(DIK_D))
 		m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(-5.f, 0.f, -35.f));
-
-	/* Y값 보정 */
-	m_pDynamicActorCom->Update_DynamicActor(0.3f);
 }
 
 void CPinBall::PlayerMove()
@@ -218,10 +219,8 @@ void CPinBall::Respawn()
 	vPos = XMVectorSetW(vPos, 1.f);
 
 	m_pDynamicActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(vPos)));
-	m_pDynamicActorCom->Update_DynamicActor();
-
+	m_pDynamicActorCom->Get_Actor()->putToSleep();
 	m_bFailed = false;
-	//m_IsReady = false;
 }
 
 CPinBall * CPinBall::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
