@@ -135,7 +135,6 @@ _int CMay::Tick(_double dTimeDelta)
 
 	if (Trigger_Check(dTimeDelta))
 	{
-		Go_Grind(dTimeDelta);
 		Hit_StarBuddy(dTimeDelta);
 		Hit_Rocket(dTimeDelta);
 		Activate_RobotLever(dTimeDelta);
@@ -897,10 +896,6 @@ _bool CMay::Trigger_End(const _double dTimeDelta)
 	return false;
 }
 #pragma endregion
-
-void CMay::Go_Grind(const _double dTimeDelta)
-{
-}
 
 void CMay::Hit_StarBuddy(const _double dTimeDelta)
 {

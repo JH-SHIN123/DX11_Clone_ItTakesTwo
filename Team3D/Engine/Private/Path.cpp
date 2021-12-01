@@ -137,7 +137,7 @@ HRESULT CPath::Update_AnimTransformations()
 	switch (m_eState)
 	{
 	case Engine::CPath::STATE_FORWARD:
-		m_pPathAnim->Update_PathTransformation(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations);
+		m_pPathAnim->Update_PathTransformation(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations);;
 		break;
 	case Engine::CPath::STATE_BACKWARD:
 	{

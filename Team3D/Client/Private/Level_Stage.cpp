@@ -63,12 +63,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 #else
 	/* Test */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Terrain", Level::LEVEL_STAGE, TEXT("GameObject_Terrain")), E_FAIL);
-
-	CDynamic_Env::ARG_DESC		tDynamic_Env_Desc;
-	lstrcpy(tDynamic_Env_Desc.szModelTag, L"Component_Model_RobotBattery");
-	tDynamic_Env_Desc.WorldMatrix = MH_XMFloat4x4Identity();
-	tDynamic_Env_Desc.iMatrialIndex = 0;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_SpaceRail", Level::LEVEL_STAGE, TEXT("GameObject_SpaceRail"), &tDynamic_Env_Desc), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_SpaceRail", Level::LEVEL_STAGE, TEXT("GameObject_SpaceRail")), E_FAIL);
 #endif
 
 	return S_OK;

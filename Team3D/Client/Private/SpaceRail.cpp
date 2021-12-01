@@ -36,17 +36,16 @@ HRESULT CSpaceRail::NativeConstruct_Prototype()
 
 HRESULT CSpaceRail::NativeConstruct(void* pArg)
 {
-	CDynamic_Env::NativeConstruct(pArg);
+	ARG_DESC tTest;
+	tTest.iMatrialIndex = 0;
+	tTest.iOption = 0;
+	lstrcpy(tTest.szModelTag, L"Component_Model_GrindRail02");
+	//_matrix Rotate = XMMatrixRotationY(XMConvertToRadians(90.f));
+	//_matrix Trans = XMMatrixTranslation(0.f,30.f,0.f);
+	//XMStoreFloat4x4(&tTest.WorldMatrix, Rotate * Trans);
+	tTest.WorldMatrix = MH_XMFloat4x4Identity();
 
-	m_UserData.eID = GameID::eSPACERAIL;
-	m_UserData.pGameObject = this;
-
-	/* Set Static */
-	CStaticActor::ARG_DESC tArg;
-	tArg.pModel = m_pModelCom;
-	tArg.pTransform = m_pTransformCom;
-	tArg.pUserData = &m_UserData;
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
+	CDynamic_Env::NativeConstruct(&tTest);
 
 	// Set Rail Tag
 	lstrcpy(m_szRailTag, m_tDynamic_Env_Desc.szModelTag);
@@ -164,7 +163,6 @@ void CSpaceRail::Free()
 		Safe_Release(pNode);
 	m_vecSpaceRailNodes.clear();
 
-	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pPathCom);
 
 	CDynamic_Env::Free();

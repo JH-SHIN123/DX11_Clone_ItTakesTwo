@@ -157,7 +157,6 @@ _int CCody::Tick(_double dTimeDelta)
 	{
 		if (Trigger_Check(dTimeDelta))
 		{
-			Go_Grind(dTimeDelta);
 			Hit_StarBuddy(dTimeDelta);
 			Hit_Rocket(dTimeDelta);
 			Activate_RobotLever(dTimeDelta);
@@ -1329,12 +1328,6 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsHitStarBuddy = true;
 		}
-		else if (m_eTargetGameID == GameID::eSPACERAIL && m_pGameInstance->Key_Down(DIK_E))
-		{
-			m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind);
-			m_IsOnGrind = true;
-		}
 		else if (m_eTargetGameID == GameID::eROCKET && m_pGameInstance->Key_Down(DIK_E))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_RocketFirework);
@@ -1448,7 +1441,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
+	if (m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsDeadLine)
 		return true;
 
@@ -1470,20 +1463,6 @@ _bool CCody::Trigger_End(const _double dTimeDelta)
 	return false;
 }
 #pragma endregion
-
-void CCody::Go_Grind(const _double dTimeDelta)
-{
-#pragma region Grind_Actions
-	if (m_IsOnGrind == true)
-	{
-		if (m_pModelCom->Is_AnimFinished(ANI_C_Grind_Grapple_ToGrind))
-		{
-			m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
-		}
-	}
-
-#pragma endregion
-}
 
 void CCody::Hit_StarBuddy(const _double dTimeDelta)
 {

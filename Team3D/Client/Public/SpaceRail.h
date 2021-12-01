@@ -32,7 +32,6 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 private:
-	CStaticActor*	m_pStaticActorCom = nullptr;
 	CPath*			m_pPathCom = nullptr;
 
 private:
