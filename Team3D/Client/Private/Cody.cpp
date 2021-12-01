@@ -113,7 +113,6 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Jump_Start, ANI_C_Bhv_ChangeSize_GroundPound_Start, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Start, ANI_C_Bhv_ChangeSize_GroundPound_Falling, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Falling, ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit, false);
-
 	
 
 	m_pModelCom->Add_LerpInfo(ANI_C_Sprint, ANI_C_Sprint, false);
@@ -1009,7 +1008,7 @@ void CCody::Roll(const _double dTimeDelta)
 
 		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta * m_fAcceleration);
 		if (m_eCurPlayerSize == SIZE_MEDIUM)
-			m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), dTimeDelta);
+			m_pActorCom->Move(vDirection * (m_fAcceleration / 15.f), dTimeDelta);
 		else if (m_eCurPlayerSize == SIZE_SMALL)
 			m_pActorCom->Move(vDirection * (m_fAcceleration / 40.f), dTimeDelta);
 	}

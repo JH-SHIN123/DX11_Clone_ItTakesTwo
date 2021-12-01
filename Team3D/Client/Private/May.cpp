@@ -538,36 +538,36 @@ void CMay::KeyInput(_double dTimeDelta)
 
 	if (m_IsAirDash == false)
 	{
-		//// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
-		//// 오른쪽윈
-		//if (m_pGameInstance->Get_Pad_LStickX() > 44000 && m_pGameInstance->Get_Pad_LStickY() < 34000)
-		//{
-		//	//bMove[0] = !bMove[0];
-		//	bMove[1] = !bMove[1];
-		//	XMStoreFloat3(&m_vMoveDirection, (vCameraLook + vCameraRight) / 2.f);
-		//}
-		//// 왼쪽위
-		//else if (m_pGameInstance->Get_Pad_LStickX() < 20000 && m_pGameInstance->Get_Pad_LStickY() < 34000)
-		//{
-		//	//bMove[0] = !bMove[0];
-		//	bMove[1] = !bMove[1];
-		//	XMStoreFloat3(&m_vMoveDirection, (vCameraLook - vCameraRight) / 2.f);
-		//}
-		//// 오른쪽아래
-		//else if (m_pGameInstance->Get_Pad_LStickX() > 44000 && m_pGameInstance->Get_Pad_LStickY() > 44000)
-		//{
-		//	bMove[0] = !bMove[0];
-		//	//bMove[1] = !bMove[1];
-		//	XMStoreFloat3(&m_vMoveDirection, (-vCameraLook + vCameraRight) / 2.f);
-		//}
-		//// 왼쪽아래
-		//else if (m_pGameInstance->Get_Pad_LStickX() < 20000 && m_pGameInstance->Get_Pad_LStickY() > 44000)
-		//{
-		//	bMove[0] = !bMove[0];
-		//	//bMove[1] = !bMove[1];
-		//	XMStoreFloat3(&m_vMoveDirection, (-vCameraLook - vCameraRight) / 2.f);
-		//}
-		if (m_pGameInstance->Key_Pressing(DIK_UP) && m_pGameInstance->Key_Pressing(DIK_RIGHT))
+		// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
+		// 오른쪽윈
+		if (m_pGameInstance->Get_Pad_LStickX() > 44000 && m_pGameInstance->Get_Pad_LStickY() < 34000)
+		{
+			//bMove[0] = !bMove[0];
+			bMove[1] = !bMove[1];
+			XMStoreFloat3(&m_vMoveDirection, (vCameraLook + vCameraRight) / 2.f);
+		}
+		// 왼쪽위
+		else if (m_pGameInstance->Get_Pad_LStickX() < 20000 && m_pGameInstance->Get_Pad_LStickY() < 34000)
+		{
+			//bMove[0] = !bMove[0];
+			bMove[1] = !bMove[1];
+			XMStoreFloat3(&m_vMoveDirection, (vCameraLook - vCameraRight) / 2.f);
+		}
+		// 오른쪽아래
+		else if (m_pGameInstance->Get_Pad_LStickX() > 44000 && m_pGameInstance->Get_Pad_LStickY() > 44000)
+		{
+			bMove[0] = !bMove[0];
+			//bMove[1] = !bMove[1];
+			XMStoreFloat3(&m_vMoveDirection, (-vCameraLook + vCameraRight) / 2.f);
+		}
+		// 왼쪽아래
+		else if (m_pGameInstance->Get_Pad_LStickX() < 20000 && m_pGameInstance->Get_Pad_LStickY() > 44000)
+		{
+			bMove[0] = !bMove[0];
+			//bMove[1] = !bMove[1];
+			XMStoreFloat3(&m_vMoveDirection, (-vCameraLook - vCameraRight) / 2.f);
+		}
+		/*if (m_pGameInstance->Key_Pressing(DIK_UP) && m_pGameInstance->Key_Pressing(DIK_RIGHT))
 		{
 			bMove[0] = !bMove[0];
 			bMove[1] = !bMove[1];
@@ -590,74 +590,74 @@ void CMay::KeyInput(_double dTimeDelta)
 			bMove[0] = !bMove[0];
 			bMove[1] = !bMove[1];
 			XMStoreFloat3(&m_vMoveDirection, (-vCameraLook - vCameraRight) / 2.f);
-		}
+		}*/
 		else
 		{
-			//if (m_pGameInstance->Get_Pad_LStickX() <= 25000 && m_iSavedKeyPress == RIGHT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
-			//{
-			//	if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
-			//	{
-			//		m_fSprintAcceleration = 15.f;
-			//		bMove[1] = !bMove[1];
-			//		m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
-			//		m_IsTurnAround = true;
-			//		return;
-			//	}
-			//}
-			//if (m_pGameInstance->Get_Pad_LStickX() >= 41000 && m_iSavedKeyPress == LEFT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
-			//{
-			//	if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
-			//	{
-			//		m_fSprintAcceleration = 15.f;
-			//		bMove[1] = !bMove[1];
-			//		m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
-			//		m_IsTurnAround = true;
-			//		return;
-			//	}
-			//}
-			//if (m_pGameInstance->Get_Pad_LStickY() <= 25000 && m_iSavedKeyPress == DOWN)// 이전에 눌렀엇던 키가 DIK_D였다면?)
-			//{
-			//	if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
-			//	{
-			//		m_fSprintAcceleration = 15.f;
-			//		bMove[0] = !bMove[0];
-			//		m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
-			//		m_IsTurnAround = true;
-			//		return;
-			//	}
-			//}
-			//if (m_pGameInstance->Get_Pad_LStickY() >= 41000 && m_iSavedKeyPress == UP)// 이전에 눌렀엇던 키가 DIK_D였다면?)
-			//{
-			//	if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
-			//	{
-			//		m_fSprintAcceleration = 15.f;
-			//		bMove[0] = !bMove[0];
-			//		m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
-			//		m_IsTurnAround = true;
-			//		return;
-			//	}
-			//}
+			if (m_pGameInstance->Get_Pad_LStickX() <= 25000 && m_iSavedKeyPress == RIGHT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
+			{
+				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
+				{
+					m_fSprintAcceleration = 15.f;
+					bMove[1] = !bMove[1];
+					m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
+					m_IsTurnAround = true;
+					return;
+				}
+			}
+			if (m_pGameInstance->Get_Pad_LStickX() >= 41000 && m_iSavedKeyPress == LEFT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
+			{
+				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
+				{
+					m_fSprintAcceleration = 15.f;
+					bMove[1] = !bMove[1];
+					m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
+					m_IsTurnAround = true;
+					return;
+				}
+			}
+			if (m_pGameInstance->Get_Pad_LStickY() <= 25000 && m_iSavedKeyPress == DOWN)// 이전에 눌렀엇던 키가 DIK_D였다면?)
+			{
+				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
+				{
+					m_fSprintAcceleration = 15.f;
+					bMove[0] = !bMove[0];
+					m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
+					m_IsTurnAround = true;
+					return;
+				}
+			}
+			if (m_pGameInstance->Get_Pad_LStickY() >= 41000 && m_iSavedKeyPress == UP)// 이전에 눌렀엇던 키가 DIK_D였다면?)
+			{
+				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
+				{
+					m_fSprintAcceleration = 15.f;
+					bMove[0] = !bMove[0];
+					m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
+					m_IsTurnAround = true;
+					return;
+				}
+			}
 
-			if (m_pGameInstance->Key_Pressing(DIK_UP) /*|| m_pGameInstance->Get_Pad_LStickY() < 20000*/)
+			if (/*m_pGameInstance->Key_Pressing(DIK_UP) ||*/ m_pGameInstance->Get_Pad_LStickY() < 20000)
 			{
 				bMove[0] = !bMove[0];
 				XMStoreFloat3(&m_vMoveDirection, vCameraLook);
 				m_iSavedKeyPress = UP;
 			}
-			if (m_pGameInstance->Key_Pressing(DIK_DOWN) /*|| m_pGameInstance->Get_Pad_LStickY() > 44000*/)
+			if (/*m_pGameInstance->Key_Pressing(DIK_DOWN) ||*/ m_pGameInstance->Get_Pad_LStickY() > 44000)
 			{
 				bMove[0] = !bMove[0];
 				XMStoreFloat3(&m_vMoveDirection, -vCameraLook);
 				m_iSavedKeyPress = DOWN;
 			}
 
-			if (m_pGameInstance->Key_Pressing(DIK_LEFT)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
+			if (/*m_pGameInstance->Key_Pressing(DIK_LEFT) || */m_pGameInstance->Get_Pad_LStickX() < 20000)
 			{
 				bMove[1] = !bMove[1];
 				XMStoreFloat3(&m_vMoveDirection, -vCameraRight);
 				m_iSavedKeyPress = LEFT;
 			}
-			if (m_pGameInstance->Key_Pressing(DIK_RIGHT)/* || m_pGameInstance->Get_Pad_LStickX() > 44000*/)
+			if (/*m_pGameInstance->Key_Pressing(DIK_RIGHT) ||*/ m_pGameInstance->Get_Pad_LStickX() > 44000)
 			{
 				bMove[1] = !bMove[1];
 				XMStoreFloat3(&m_vMoveDirection, vCameraRight);
@@ -685,7 +685,7 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Pad Square
-	if (m_pGameInstance->Key_Down(DIK_RSHIFT) && m_bRoll == false && m_bCanMove == true)
+	if (m_pGameInstance->Pad_Key_Down(DIP_X) && m_bRoll == false && m_bCanMove == true)
 	{
 		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
@@ -713,7 +713,7 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region PAD X
-	if (m_pGameInstance->Key_Down(DIK_RCONTROL) && m_iJumpCount < 2)
+	if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount < 2)
 	{
 		m_bShortJump = true;
 		m_iJumpCount += 1;
@@ -721,7 +721,7 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region LS_Click
-	if (m_pGameInstance->Key_Down(DIK_M) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jog_Exhausted_Start && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jog_Stop_Exhausted && m_pModelCom->Get_CurAnimIndex() != ANI_M_Sprint_Start_FromDash)
+	if (m_pGameInstance->Pad_Key_Down(DIP_LS) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jog_Exhausted_Start && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jog_Stop_Exhausted && m_pModelCom->Get_CurAnimIndex() != ANI_M_Sprint_Start_FromDash)
 	{
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint)
 		{
@@ -741,7 +741,7 @@ void CMay::KeyInput(_double dTimeDelta)
 
 #pragma region PAD O
 
-	if (m_pGameInstance->Key_Down(DIK_RALT) && m_pActorCom->Get_IsJump() == true)
+	if (m_pGameInstance->Pad_Key_Down(DIP_A) && m_pActorCom->Get_IsJump() == true)
 	{
 		m_fAcceleration = 5.0f;
 		m_fJogAcceleration = 25.f;
@@ -760,8 +760,6 @@ void CMay::KeyInput(_double dTimeDelta)
 		//else
 		//	m_IsPullVerticalDoor = false;
 	}
-
-
 #pragma endregion
 
 #pragma region Effet Test
@@ -972,7 +970,7 @@ void CMay::Roll(const _double dTimeDelta)
 		}
 
 		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta * m_fAcceleration);
-		m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), dTimeDelta);
+		m_pActorCom->Move(vDirection * (m_fAcceleration / 15.f), dTimeDelta);
 	}
 
 	if (m_IsAirDash && m_bCanMove == true && m_pTransformCom)
@@ -1346,7 +1344,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_IsInGravityPipe = true;
 		}
 		/* 혜원::For.PinBall */
-		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && m_pGameInstance->Key_Down(DIK_END))
+		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && (m_pGameInstance->Key_Down(DIK_END) || m_pGameInstance->Pad_Key_Down(DIP_Y)))
 		{
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Enter);
 			m_pModelCom->Set_Animation(ANI_M_PinBall_MH);
@@ -1684,7 +1682,7 @@ void CMay::PinBall(const _double dTimeDelta)
 		}
 
 		/* 벽 올리고 내리고 */
-		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB))
+		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB) || m_pGameInstance->Pad_Key_Down(DIP_RT))
 		{
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Right_Hit);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH_Hit);
@@ -1694,7 +1692,7 @@ void CMay::PinBall(const _double dTimeDelta)
 		if (false == ((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_StartGame())
 		{
 			/* 공 발사 */
-			if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
+			if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) || m_pGameInstance->Pad_Key_Down(DIP_Y))
 			{
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Left_Hit);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH_Hit);
@@ -1703,7 +1701,7 @@ void CMay::PinBall(const _double dTimeDelta)
 				((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
 			}
 			/* 오른쪽 */
-			if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 40000)
 			{
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Right);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
@@ -1713,7 +1711,7 @@ void CMay::PinBall(const _double dTimeDelta)
 					m_pActorCom->Move(vLeft * 0.05f, dTimeDelta);
 			}
 			/* 왼쪽 */
-			else if (m_pGameInstance->Key_Pressing(DIK_LEFT))
+			else if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
 			{
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Left);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
