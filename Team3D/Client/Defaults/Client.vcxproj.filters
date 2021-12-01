@@ -511,6 +511,12 @@
     <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.HangingPlanet">
       <UniqueIdentifier>{7bfbdffb-00e8-4343-bff3-44a6e744dba5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump">
+      <UniqueIdentifier>{230c6af8-ad57-4cfb-8938-94d484f62bf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump">
+      <UniqueIdentifier>{401d01cd-f72e-4e8c-8316-be81b655a327}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -861,9 +867,6 @@
     <ClInclude Include="..\public\WallLaserTrap.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\03.WallLaserTrap</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\DummyWall.h">
-      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\RotatedRobotParts.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious</Filter>
     </ClInclude>
@@ -887,6 +890,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\GameOption.h">
       <Filter>00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DummyWall.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MayJumpWall.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1211,9 +1220,6 @@
     <ClCompile Include="..\private\WallLaserTrap.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\03.WallLaserTrap</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\DummyWall.cpp">
-      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\RotatedRobotParts.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious</Filter>
     </ClCompile>
@@ -1234,6 +1240,12 @@
     </ClCompile>
     <ClCompile Include="..\private\MainApp.cpp">
       <Filter>00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DummyWall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MayJumpWall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

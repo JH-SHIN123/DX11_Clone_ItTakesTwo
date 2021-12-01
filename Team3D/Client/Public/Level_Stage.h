@@ -51,6 +51,7 @@ private:
 	HRESULT Ready_Layer_RobotParts(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_RotatedRobotParts(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_DummyWall(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_MayJumpWall(const _tchar* pLayerTag);
 
 
 	/* Jin */

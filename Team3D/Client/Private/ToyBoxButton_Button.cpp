@@ -152,7 +152,10 @@ void CToyBoxButton_Button::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID
 		if (eID == GameID::eMAY)
 		{
 			CMay* pMay = (CMay*)pGameObject;
-			//if (ANI_M_GroundPound_Land == pMay->Get_CurState())
+			if (ANI_M_GroundPound_Land == pMay->Get_CurState() ||
+				ANI_M_GroundPound_Falling == pMay->Get_CurState() ||
+				ANI_M_GroundPound_Land_Exit == pMay->Get_CurState() ||
+				ANI_M_GroundPound_Start == pMay->Get_CurState())
 				m_pParent->Set_Trigger();
 
 			m_iCheckTrigger = 1;
