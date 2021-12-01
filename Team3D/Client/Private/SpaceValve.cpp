@@ -42,7 +42,6 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(47.268f, 127.251f, 195.714f, 1.f));
 		m_iTargetPlayer = GameID::eCODY;
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 0.f, 35.f, 1.f));
 	}
 	else if (a.iPlayerValue == 2)
 	{
@@ -68,8 +67,12 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_SpaceValve_Deco"), Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Star"), nullptr, (CGameObject**)&m_pSpaceValve_Star), E_FAIL);
-	m_pSpaceValve_Star->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
+	_float4x4 WorldMatrix;
+	XMStoreFloat4x4(&WorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	_bool IsCody = true;
+	if (m_iTargetPlayer == GameID::eMAY)
+		IsCody = false;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_SpaceValve_Deco"), Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Star"), &CSpace_Valve_Star::tagValve_Star_Desc(WorldMatrix, IsCody), (CGameObject**)&m_pSpaceValve_Star), E_FAIL);
 	
 	return S_OK;
 }
@@ -77,6 +80,8 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 _int CSpaceValve::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	m_pSpaceValve_Star->Set_Clear_Level(true);
 
 	if (m_iTargetPlayer == GameID::eCODY)
 	{
@@ -263,6 +268,7 @@ void CSpaceValve::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pSpaceValve_Star);
 
 	CGameObject::Free();
 }

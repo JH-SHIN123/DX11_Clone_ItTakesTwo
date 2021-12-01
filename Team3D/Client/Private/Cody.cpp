@@ -1692,6 +1692,7 @@ void CCody::Rotate_Valve(const _double dTimeDelta)
 			m_IsEnterValve = false;
 			m_IsCollide = false;
 			m_pModelCom->Set_Animation(ANI_C_MH);
+			DATABASE->Add_ValveCount_Cody(true);
 		}
 
 		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
@@ -1700,6 +1701,7 @@ void CCody::Rotate_Valve(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Valve_Rotate_R);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Valve_Rotate_MH);
 			m_iRotateCount += 1;
+			DATABASE->Add_ValveCount_Cody(true);
 		}
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Valve_Rotate_R))
 		{
