@@ -36,7 +36,7 @@ HRESULT CEffect_Umbrella_Pipe::NativeConstruct(void * pArg)
 	m_pParticle->Set_InstanceCount(5000);
 
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vScale = XMVectorSet(1.f, 1.f, 1.5f, 1.f);
+	_vector vScale = XMVectorSet(2.f, 2.f, 1.5f, 1.f);
 	m_pTransformCom->Set_Scale(vScale);
 
 	vPos.m128_f32[1] += 6.f;

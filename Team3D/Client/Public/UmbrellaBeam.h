@@ -37,6 +37,7 @@ private:
 	_float										m_fHorizontalAngle = 0.f;
 	_bool										m_IsBeamActivate = false;
 	_bool										m_IsBeamEffectCreate = false;
+	_bool										m_IsPutGravitationalField = false;
 
 
 private:
@@ -53,6 +54,7 @@ protected:
 
 private:
 	void KeyInput_Rotate(_double TimeDelta);
+	void PutGravitationalField();
 
 private:
 	HRESULT Ready_Layer_UmbrellaBeam_Stand(const _tchar * pLayerTag);

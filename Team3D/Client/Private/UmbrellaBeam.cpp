@@ -87,6 +87,9 @@ _int CUmbrellaBeam::Late_Tick(_double dTimeDelta)
 	if (false == m_IsBeamActivate)
 		m_IsBeamEffectCreate = false;
 
+	PutGravitationalField();
+
+
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
@@ -173,6 +176,49 @@ void CUmbrellaBeam::KeyInput_Rotate(_double TimeDelta)
 	m_pUmbrellaBeam_Stand->Set_Rotate(m_fHorizontalAngle);
 	pJoystick->Set_OnParentRotate(m_pUmbrellaBeam_Stand->Get_Transform()->Get_WorldMatrix());
 	pCody->Set_OnParentRotate(pJoystick->Get_Transform()->Get_WorldMatrix());
+}
+
+void CUmbrellaBeam::PutGravitationalField()
+{
+	if (false == m_IsBeamActivate)
+		return;
+
+	CMay* pMay = (CMay*)DATABASE->GetMay();
+
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_float4 vConvertPos;
+	XMStoreFloat4(&vConvertPos, vPos);
+	vConvertPos.z += 40.f;
+
+	_matrix matWorld, matTrans, matParent, matTarget;
+	matParent = m_pTransformCom->Get_WorldMatrix();
+	matTrans = XMMatrixTranslation(0.f, 0.f, 40.f);
+	matWorld = matTrans * matParent;
+
+	if (true == m_IsPutGravitationalField)
+	{
+		pMay->Get_Transform()->Set_WorldMatrix(matWorld);
+		return;
+	}
+
+	matTarget = pMay->Get_Transform()->Get_WorldMatrix();
+
+	_vector vOffSetPos = XMLoadFloat4((_float4*)&matWorld.r[3].m128_f32[0]);
+	_vector vTargetPos = XMLoadFloat4((_float4*)&matTarget.r[3].m128_f32[0]);
+	_vector vComparePos = vTargetPos - vOffSetPos;
+
+	_float fRange = 3.f;
+	_float fRangeX = 0.7f;
+
+	_float vComparePosX = abs(XMVectorGetX(vComparePos));
+	_float vComparePosY = abs(XMVectorGetY(vComparePos));
+	_float vComparePosZ = abs(XMVectorGetZ(vComparePos));
+
+	if (fRangeX >= vComparePosX && fRange >= vComparePosY && fRange >= vComparePosZ)
+		m_IsPutGravitationalField = true;
+
+
+
 }
 
 HRESULT CUmbrellaBeam::Ready_Layer_UmbrellaBeam_Stand(const _tchar * pLayerTag)

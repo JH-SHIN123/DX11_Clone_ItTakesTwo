@@ -262,6 +262,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_9))/* 辦輿摹 頂睡 */
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+
 #pragma endregion
 
 #pragma region Local variable
@@ -274,6 +275,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_Y))/* 3類 */
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_O))/* 辦骯 */
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 
 #pragma region 8Way_Move
 
@@ -797,6 +800,8 @@ void CMay::KeyInputTest(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_Y))/* 3類 */
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_M))/* 辦骯 */
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 
 #pragma region 8Way_Move
 

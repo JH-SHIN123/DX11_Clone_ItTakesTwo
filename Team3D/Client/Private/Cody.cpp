@@ -1552,7 +1552,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eUMBRELLABEAMJOYSTICK && m_pGameInstance->Key_Down(DIK_E))
 		{
-			m_pModelCom->Set_Animation(ANI_M_ArcadeScreenLever_Fwd);
+			m_pModelCom->Set_Animation(ANI_M_ArcadeScreenLever_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_ArcadeScreenLever_MH);
 			m_IsControlJoystick = true;
 			CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
