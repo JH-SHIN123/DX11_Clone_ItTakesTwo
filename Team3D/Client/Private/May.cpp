@@ -771,9 +771,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pEffect_GravityBoots->Set_IsActivate_GravityBoots();
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
 		m_pEffect_GravityBoots->Add_WalkingParticle(true);
-<<<<<<< HEAD
 #pragma endregion
-=======
 
 #pragma  endregion
 #endif

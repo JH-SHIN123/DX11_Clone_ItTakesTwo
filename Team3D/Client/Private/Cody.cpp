@@ -512,7 +512,8 @@ void CCody::KeyInput(_double dTimeDelta)
 
 #pragma region Mouse_LButton
 
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) && m_bSprint == false)
+	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) &&
+		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false)
 	{
 		// 커져라
 		switch (m_eCurPlayerSize)
@@ -532,7 +533,8 @@ void CCody::KeyInput(_double dTimeDelta)
 
 #pragma region Mouse_RButton
 
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB) && m_bSprint == false)
+	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB) &&
+		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false)
 	{
 		// 작아져라
 		switch (m_eCurPlayerSize)
@@ -1288,9 +1290,12 @@ void CCody::Change_Size(const _double dTimeDelta)
 	{
 		if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_LARGE)
 		{
-			m_pActorCom->Set_Scale(5.f, 5.f);
-			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_LARGE);
-
+			if (m_bChangeSizeEffectOnce == false)
+			{
+				m_pActorCom->Set_Scale(2.f, 2.f);
+				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_LARGE);
+				m_bChangeSizeEffectOnce = true;
+			}
 			if (m_vScale.x < 5.f)
 			{
 				m_vScale.x += (_float)dTimeDelta * 20.f;
@@ -1300,6 +1305,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 			}
 			else
 			{
+				m_bChangeSizeEffectOnce = false;
 				m_vScale = { 5.f, 5.f, 5.f };
 				m_IsSizeChanging = false; 
 				m_eCurPlayerSize = SIZE_LARGE;
@@ -1318,9 +1324,12 @@ void CCody::Change_Size(const _double dTimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_LARGE && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
-			m_pActorCom->Set_Scale(0.5f, 0.5f);
-			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_LARGE_MIDDLE);
-
+			if (m_bChangeSizeEffectOnce == false)
+			{
+				m_pActorCom->Set_Scale(0.5f, 0.5f);
+				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_LARGE_MIDDLE);
+				m_bChangeSizeEffectOnce = true;
+			}
 			if (m_vScale.x > 1.f)
 			{
 				m_vScale.x -= (_float)dTimeDelta * 20.f;
@@ -1330,6 +1339,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 			}
 			else
 			{
+				m_bChangeSizeEffectOnce = false;
 				m_vScale = { 1.f, 1.f, 1.f };
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_MEDIUM;
@@ -1339,11 +1349,15 @@ void CCody::Change_Size(const _double dTimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_SMALL)
 		{
-			m_pActorCom->Set_Scale(0.05f, 0.05f);
 			m_pActorCom->Get_Controller()->setSlopeLimit(0.02f);
 			m_pActorCom->Get_Controller()->setStepOffset(0.02f);
-			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_SMALL);
 
+			if (m_bChangeSizeEffectOnce == false)
+			{
+				m_pActorCom->Set_Scale(0.05f, 0.05f);
+				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_SMALL);
+				m_bChangeSizeEffectOnce = true;
+			}
 			if (m_vScale.x > 0.5f)
 			{
 				m_vScale.x -= (_float)dTimeDelta * 10.f;
@@ -1353,6 +1367,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 			}
 			else
 			{
+				m_bChangeSizeEffectOnce = false;
 				m_vScale = { 0.2f, 0.2f, 0.2f };
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_SMALL;
@@ -1362,11 +1377,14 @@ void CCody::Change_Size(const _double dTimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_SMALL && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
-			m_pActorCom->Set_Scale(0.5f, 0.5f);
-			m_pActorCom->Get_Controller()->setSlopeLimit(0.5f);
-			m_pActorCom->Get_Controller()->setStepOffset(0.707f);
-			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_SMALL_MIDDLE);
-
+			if (m_bChangeSizeEffectOnce == false)
+			{
+				m_pActorCom->Set_Scale(0.5f, 0.5f);
+				m_pActorCom->Get_Controller()->setStepOffset(0.707f);
+				m_pActorCom->Get_Controller()->setSlopeLimit(0.5f);
+				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_SMALL_MIDDLE);
+				m_bChangeSizeEffectOnce = true;
+			}
 			if (m_vScale.x < 1.f)
 			{
 				m_vScale.x += (_float)dTimeDelta * 10.f;
@@ -1376,6 +1394,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 			}
 			else
 			{
+				m_bChangeSizeEffectOnce = false;
 				m_vScale = { 1.f, 1.f, 1.f };
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_MEDIUM;
@@ -1525,6 +1544,14 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eROBOTLEVER && m_pGameInstance->Key_Down(DIK_E))
 		{
+			if (DATABASE->Get_GravityStageClear() == false && DATABASE->Get_PinBallStageClear() == false && DATABASE->Get_RailStageClear() == false)
+				m_pActorCom->Set_Position(XMVectorSet(71.194f, 23.29f, 179.68f, 1.f));
+			else if (DATABASE->Get_GravityStageClear() == true && DATABASE->Get_PinBallStageClear() == false && DATABASE->Get_RailStageClear() == false)
+			{
+			}
+			else if (DATABASE->Get_GravityStageClear() == true && DATABASE->Get_PinBallStageClear() == true && DATABASE->Get_RailStageClear() == false)
+			{
+			}
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Lever_Left);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsActivateRobotLever = true;
@@ -1537,6 +1564,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_E) && m_iValvePlayerName == Player::Cody)
 		{
+			m_pActorCom->Set_Position(XMVectorSet(46.487f, 125.842f, 195.789f, 1.f));
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Valve_Rotate_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Valve_Rotate_MH);
 			m_IsEnterValve = true;
@@ -1806,19 +1834,6 @@ void CCody::Push_Battery(const _double dTimeDelta)
 	// 애니메이션 시작할때 WorldPos 저장. -> 끝나는 순간 마지막 위치로 WorldPos 변경 해야 함.
 	if (m_IsPushingBattery == true)
 	{
-		//m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (DATABASE->Get_GravityStageClear() == false && DATABASE->Get_PinBallStageClear() == false && DATABASE->Get_RailStageClear() == false)
-		{
-			m_pActorCom->Set_Position(XMVectorSet(71.194f, 23.29f, 179.68f, 1.f));
-		}
-		else if (DATABASE->Get_GravityStageClear() == true && DATABASE->Get_PinBallStageClear() == false && DATABASE->Get_RailStageClear() == false)
-		{
-			//m_pActorCom->Set_Position(XMVectorSet(71.194f, 23.29f, 179.68f, 1.f));
-		}
-		else if (DATABASE->Get_GravityStageClear() == true && DATABASE->Get_PinBallStageClear() == true && DATABASE->Get_RailStageClear() == false)
-		{
-			//m_pActorCom->Set_Position(XMVectorSet(71.194f, 23.29f, 179.68f, 1.f));
-		}
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_MH))
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
 	}
@@ -1856,7 +1871,6 @@ void CCody::Rotate_Valve(const _double dTimeDelta)
 {
 	if (m_IsEnterValve == true)
 	{
-		m_pActorCom->Set_Position(XMVectorSet(46.487f, 125.842f, 195.789f, 1.f));
 		if (DATABASE->Get_ValveCount() == 6)
 		{
 			m_bStruggle = false;
@@ -2025,8 +2039,6 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 		vTriggerToPlayer = XMVectorSetW(vTriggerToPlayer, 1.f);
 		m_pTransformCom->RotateYawDirectionOnLand(-vTriggerToPlayer, (_float)dTimeDelta / 2.f);
 		//m_pTransformCom->Set_RotateAxis(m_vHookUFOAxis, sin(-m_fRopeAngle));
-
-		
 
 		////////////////////////////////////////
 

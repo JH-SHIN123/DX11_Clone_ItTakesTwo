@@ -304,12 +304,11 @@ private:
 	_float3 m_vScale = {1.f, 1.f, 1.f};
 	_bool m_IsSizeChanging = false;
 	_float m_fSizeDelayTime = 0.f;
+	_bool m_bChangeSizeEffectOnce = false;
 
 	// 점프관련 변수
 	_uint m_iJumpCount = 0;
 	_uint m_iAirDashCount = 0;
-
-
 
 	// 컷씬이라면
 	_bool m_IsCutScene = false;
