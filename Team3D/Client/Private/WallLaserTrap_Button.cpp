@@ -99,9 +99,9 @@ HRESULT CWallLaserTrap_Button::Ready_Component()
 	vPivot *= XMMatrixRotationRollPitchYaw(
 		XMConvertToRadians(0.f),
 		XMConvertToRadians(0.f),
-		XMConvertToRadians(90.f));
+		XMConvertToRadians(-90.f));
 	m_pTransformCom->Set_WorldMatrix(vPivot);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-807.28f, 789.125f, 189.37f, 1.f));//Gara
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-803.32f, 789.125f, 189.37f, 1.f));//Gara
 	m_pTransformCom->Set_Scale(XMVectorSet(12.f, 3.f, 12.f, 0.f));
 
 	m_UserData = USERDATA(GameID::eWALLLASERTRAP_BUTTON, this);
