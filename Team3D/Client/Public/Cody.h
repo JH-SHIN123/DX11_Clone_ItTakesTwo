@@ -313,6 +313,10 @@ private:
 
 	// ÄÆ¾ÀÀÌ¶ó¸é
 	_bool m_IsCutScene = false;
+
+	_bool m_IsStGravityCleared = false;
+	_bool m_IsStRailCleared = false;
+	_bool m_IsStPinBallCleared = false;
 #pragma endregion
 
 #pragma region Trigger

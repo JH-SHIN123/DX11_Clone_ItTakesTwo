@@ -1464,6 +1464,7 @@ void CMay::Rotate_Valve(const _double dTimeDelta)
 
 	if (m_IsEnterValve == true)
 	{
+		m_pActorCom->Set_Position(XMVectorSet(80.7704391f, 125.251999f, 195.823730f, 1.f));
 		if (DATABASE->Get_ValveCount() == 6)
 		{
 			m_bStruggle = false;

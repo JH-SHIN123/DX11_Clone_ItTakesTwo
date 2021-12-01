@@ -195,7 +195,8 @@ _int CCody::Tick(_double dTimeDelta)
 		if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
 		{
 			Sprint(dTimeDelta);
-			Move(dTimeDelta);
+			if(m_IsSizeChanging == false)
+				Move(dTimeDelta);
 			if (m_eCurPlayerSize != SIZE_LARGE)
 				Roll(dTimeDelta);
 			Jump(dTimeDelta);
@@ -1299,8 +1300,16 @@ void CCody::Change_Size(const _double dTimeDelta)
 				m_IsSizeChanging = false; 
 				m_eCurPlayerSize = SIZE_LARGE;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
-				if(m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog)
+				if (m_pGameInstance->Key_Pressing(DIK_W) || m_pGameInstance->Key_Pressing(DIK_A) || m_pGameInstance->Key_Pressing(DIK_S) || m_pGameInstance->Key_Pressing(DIK_D))
+				{
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Fwd);
+					m_pModelCom->Set_NextAnimIndex(ANI_C_ChangeSize_Walk_Large_Fwd);
+				}
+				else
+				{
+					m_pModelCom->Set_Animation(ANI_C_MH);
+					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+				}
 			}
 		}
 		else if (m_eCurPlayerSize == SIZE_LARGE && m_eNextPlayerSize == SIZE_MEDIUM)
@@ -1774,27 +1783,59 @@ void CCody::Push_Battery(const _double dTimeDelta)
 {
 	// May가 배터리 들어온 상태에서 Lever 치고 컷씬이 등장하면 그때 -> ANI_C_MH
 	// 애니메이션 시작할때 WorldPos 저장. -> 끝나는 순간 마지막 위치로 WorldPos 변경 해야 함.
-	
-
 	if (m_IsPushingBattery == true)
 	{
 		//m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Battery_Fwd)
+		if (DATABASE->Get_GravityStageClear() == false && DATABASE->Get_PinBallStageClear() == false && DATABASE->Get_RailStageClear() == false)
 		{
+			m_pActorCom->Set_Position(XMVectorSet(71.194f, 23.29f, 179.68f, 1.f));
 		}
-		if(m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_MH))
+		else if (DATABASE->Get_GravityStageClear() == true && DATABASE->Get_PinBallStageClear() == false && DATABASE->Get_RailStageClear() == false)
 		{
+			//m_pActorCom->Set_Position(XMVectorSet(71.194f, 23.29f, 179.68f, 1.f));
+		}
+		else if (DATABASE->Get_GravityStageClear() == true && DATABASE->Get_PinBallStageClear() == true && DATABASE->Get_RailStageClear() == false)
+		{
+			//m_pActorCom->Set_Position(XMVectorSet(71.194f, 23.29f, 179.68f, 1.f));
+		}
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_MH))
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
-			m_IsPushingBattery = false;
-			m_IsCollide = false;
-		}
 	}
+	if (m_IsPushingBattery == true && m_IsStGravityCleared == false && DATABASE->Get_GravityStageClear() == true)
+	{
+		m_IsPushingBattery = false;
+		m_IsCollide = false;
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		m_IsStGravityCleared = true;
+	}
+
+	else if (m_IsPushingBattery == true && m_IsStRailCleared == false && DATABASE->Get_RailStageClear() == true)
+	{
+		m_IsPushingBattery = false;
+		m_IsCollide = false;
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		m_IsStRailCleared = true;
+	}
+
+	else if (m_IsPushingBattery == true && m_IsStPinBallCleared == false && DATABASE->Get_PinBallStageClear() == true)
+	{
+		m_IsPushingBattery = false;
+		m_IsCollide = false;
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		m_IsStPinBallCleared = true;
+	}
+
+	
 }
 
 void CCody::Rotate_Valve(const _double dTimeDelta)
 {
 	if (m_IsEnterValve == true)
 	{
+		m_pActorCom->Set_Position(XMVectorSet(46.487f, 125.842f, 195.789f, 1.f));
 		if (DATABASE->Get_ValveCount() == 6)
 		{
 			m_bStruggle = false;
