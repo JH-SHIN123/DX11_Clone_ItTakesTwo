@@ -23,6 +23,7 @@ _bool CSpaceRail::Take_Path(_double dTimeDelta, _matrix& WorldMatrix)
 {
 	if (nullptr == m_pPathCom) return false;
 
+	// 속도는 프레임개수로 조절하자.
 	return m_pPathCom->Update_Animation(dTimeDelta, WorldMatrix);
 }
 
@@ -41,6 +42,8 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 	tTest.iOption = 0;
 	lstrcpy(tTest.szModelTag, L"Component_Model_GrindRail02");
 	tTest.WorldMatrix = MH_XMFloat4x4Identity();
+
+	XMStoreFloat4x4(&tTest.WorldMatrix, XMMatrixRotationY(XMConvertToRadians(90.f)) * XMMatrixTranslation(0.f, -4.f, 0.f));
 
 	CDynamic_Env::NativeConstruct(&tTest);
 

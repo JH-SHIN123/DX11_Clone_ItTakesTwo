@@ -157,8 +157,6 @@ _fmatrix CPath::Update_CombinedTransformations()
 	/* Pitch */
 	_matrix RotateMatrix = XMMatrixRotationX((fRotateAngle.x));
 	/* Yaw */
-	//if (STATE_FORWARD == m_eState) RotateMatrix *= XMMatrixRotationY(- fRotateAngle.z);
-	//else RotateMatrix *= XMMatrixRotationY(-fRotateAngle.z + XMConvertToRadians(180.f));
 	if (STATE_FORWARD == m_eState) RotateMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f) - fRotateAngle.z);
 	else RotateMatrix *= XMMatrixRotationY(-fRotateAngle.z + XMConvertToRadians(90.f) + XMConvertToRadians(180.f));
 	/* Roll */
