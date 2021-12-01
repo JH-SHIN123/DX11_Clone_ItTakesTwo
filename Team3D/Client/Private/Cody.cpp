@@ -100,19 +100,30 @@ HRESULT CCody::Ready_Component()
 void CCody::Add_LerpInfo_To_Model()
 {
 	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_Jump_Start, false);
-	//m_pModelCom->Add_LerpInfo(1, 2, true, 8.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_Sprint, ANI_C_Sprint, false);
-	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_MH, true, 10.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit, ANI_C_MH, true, 10.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Walk_Large_Fwd, ANI_C_ChangeSize_Walk_Large_Fwd, true, 20.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_Enter, ANI_C_Grind_Grapple_ToGrind, false);
-	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_ToGrind, ANI_C_Grind_Slow_MH, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_Jump_Land, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Start, ANI_C_Bhv_GroundPound_Falling, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Start, ANI_C_Bhv_GroundPound_Land, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land, ANI_C_Bhv_GroundPound_Land_Exit, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land, ANI_C_ChangeSize_Walk_Large_Fwd, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Falling, ANI_C_Bhv_GroundPound_Land_Exit, false);
 
-	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Start, ANI_C_Roll_Stop, true);
-	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Stop, ANI_C_Roll_To_Jog, true, 30.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Start, ANI_C_Roll_To_Jog, true, 30.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Sprint, ANI_C_Sprint, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_MH, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit, ANI_C_MH, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Walk_Large_Fwd, ANI_C_ChangeSize_Walk_Large_Fwd, false);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Start, ANI_C_Roll_Stop, true, 60.f);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Stop, ANI_C_Roll_To_Jog, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Start, ANI_C_Roll_To_Jog, false);
+	//m_pModelCom->Add_LerpInfo(ANI_C_Roll_Stop, ANI_C_Roll_To_Jog, true, 30.f);
+	//m_pModelCom->Add_LerpInfo(ANI_C_Roll_Start, ANI_C_Roll_To_Jog, true, 30.f);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_DoubleJump, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_AirDash_Start, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land_Still_Jump, ANI_C_DoubleJump, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land_Still_Jump, ANI_C_AirDash_Start, false);
+
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_DoubleJump, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Bhv_GroundPound_Start, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Bhv_GroundPound_Start, false);
@@ -122,13 +133,26 @@ void CCody::Add_LerpInfo_To_Model()
 
 
 
-	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jump_Land_Jog, false);
-	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_MH, true, 10.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_180R, true, 2.f);
+	//m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_MH, true, 10.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_MH, false);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_180R, true, 10.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_Falling, true, 10.f);
 
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Start_Fwd, ANI_C_Jump_Falling, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd, ANI_C_Jump_Falling, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog, ANI_C_Jump_Falling, false);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jump_Land_Jog, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jog_Start_Fwd, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jog_Stop_Fwd, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jog, false);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jump_Land_Jog, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jog_Start_Fwd, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jog_Stop_Fwd, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jog, false);
+
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Falling, ANI_C_Jump_Land, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Jump_Land, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Jump_Land_Jog, false);
@@ -137,6 +161,8 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_Jump, ANI_C_WallSlide_Enter, true, 20.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_Enter, ANI_C_WallSlide_MH, true, 20.f);
 
+	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_Enter, ANI_C_Grind_Grapple_ToGrind, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_ToGrind, ANI_C_Grind_Slow_MH, false);
 	//m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_MH, ANI_C_WallSlide_Jump, true, 10.f);
 	//ANI_C_Roll_Start, ANI_C_Roll_Stop;
 	return;
@@ -1159,7 +1185,7 @@ void CCody::Jump(const _double dTimeDelta)
 			else
 				m_pActorCom->Jump_Start(1.5f);
 
-			m_pModelCom->Set_Animation(ANI_C_Jump_Land_Still_Jump);
+			m_pModelCom->Set_Animation(ANI_C_Jump_Start);
 			m_bShortJump = false;
 		}
 		if (m_iJumpCount == 2)
@@ -1410,7 +1436,7 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 	{
 		if (m_fGroundPoundAirDelay > 0.4f)
 		{
-			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Falling);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Land);
 			if (m_eCurPlayerSize == SIZE_MEDIUM || m_eCurPlayerSize == SIZE_LARGE)
 				m_pActorCom->Set_Gravity(-9.8f);
 			else if (m_eCurPlayerSize == SIZE_SMALL)
@@ -1429,19 +1455,16 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 		}
 	}
 
-	if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_GroundPound_Falling) && m_bPlayGroundPoundOnce == false)
+	if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_GroundPound_Land) && m_bPlayGroundPoundOnce == false)
 	{
 		m_bPlayGroundPoundOnce = true;
-		m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Land);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit);
-	}
-	if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_GroundPound_Land))
-	{
 		m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 	}
 	if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit))
 	{
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		m_bPlayGroundPoundOnce = false;
 		m_IsAirDash = false;
 		m_bCanMove = true;
