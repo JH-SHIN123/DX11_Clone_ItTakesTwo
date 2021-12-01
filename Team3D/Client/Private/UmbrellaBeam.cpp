@@ -139,7 +139,7 @@ void CUmbrellaBeam::KeyInput_Rotate(_double TimeDelta)
 
 	_float fMaxHorizontalAngle = 90.f;
 	_float fMaxVerticalAngle = 45.f;
-	_float fRotationPerSec = (_float)XMConvertToDegrees(m_pTransformCom->Get_RotationPerSec());
+	_float fRotationPerSec = XMConvertToDegrees((_float)m_pTransformCom->Get_RotationPerSec());
 
 	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
@@ -168,9 +168,9 @@ void CUmbrellaBeam::KeyInput_Rotate(_double TimeDelta)
 		m_pTransformCom->Rotate_Axis(vUp, -TimeDelta);
 	}
 
-	m_pUmbrellaBeam_Stand->Set_HorizontalAngle(m_fHorizontalAngle);
+	m_pUmbrellaBeam_Stand->Set_Rotate(m_fHorizontalAngle);
 	CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
-	pJoystick->Set_WorldMatrix(m_pUmbrellaBeam_Stand->Get_Transform()->Get_WorldMatrix());
+	pJoystick->Set_OnParentRotate(m_pUmbrellaBeam_Stand->Get_Transform()->Get_WorldMatrix());
 }
 
 HRESULT CUmbrellaBeam::Ready_Layer_UmbrellaBeam_Stand(const _tchar * pLayerTag)

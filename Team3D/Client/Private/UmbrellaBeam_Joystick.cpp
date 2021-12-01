@@ -135,11 +135,14 @@ void CUmbrellaBeam_Joystick::Set_Rotate(_float fAngle)
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fHorizontalAngle));
 }
 
-void CUmbrellaBeam_Joystick::Set_WorldMatrix(_matrix ParentMatrix)
+void CUmbrellaBeam_Joystick::Set_OnParentRotate(_matrix ParentMatrix)
 {
-	_matrix matWorld, matScale, matRotX, matTrans;
-	matTrans = XMMatrixTranslation(0.f, 0.07425f, -2.17012);
-	matWorld = matTrans * ParentMatrix;
+	_matrix matWorld, matRotY, matTrans;
+	_vector vMyPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	matTrans = XMMatrixTranslation(0.f, 0.1f, -2.2f);
+	matRotY = XMMatrixRotationY(XMConvertToRadians(-90.f));
+
+	matWorld = matRotY * matTrans * ParentMatrix;
 	m_pTransformCom->Set_WorldMatrix(matWorld);
 }
 

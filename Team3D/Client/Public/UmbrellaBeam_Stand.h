@@ -25,6 +25,7 @@ public:
 public:
 	void Set_HorizontalAngle(_float fAngle);
 	void Set_Rotate(_float fAngle);
+	void Set_RotateAxis(_double TimeDelta);
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
@@ -49,7 +50,6 @@ protected:
 
 private:
 	HRESULT Ready_Layer_UmbrellaBeam_Base(const _tchar * pLayerTag);
-	HRESULT Ready_Layer_UmbrellaBeam(const _tchar * pLayerTag);
 
 public:
 	static CUmbrellaBeam_Stand* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

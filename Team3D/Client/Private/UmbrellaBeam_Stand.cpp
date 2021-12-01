@@ -61,8 +61,6 @@ _int CUmbrellaBeam_Stand::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fHorizontalAngle));
-
 	return NO_EVENT;
 }
 
@@ -99,7 +97,12 @@ void CUmbrellaBeam_Stand::Set_HorizontalAngle(_float fAngle)
 
 void CUmbrellaBeam_Stand::Set_Rotate(_float fAngle)
 {
-	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fHorizontalAngle));
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fAngle));
+}
+
+void CUmbrellaBeam_Stand::Set_RotateAxis(_double TimeDelta)
+{
+	m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -TimeDelta);
 }
 
 HRESULT CUmbrellaBeam_Stand::Render_ShadowDepth()

@@ -26,7 +26,7 @@ public:
 	void Set_ControlActivate();
 	void Set_HorizontalAngle(_float fAngle);
 	void Set_Rotate(_float fAngle);
-	void Set_WorldMatrix(_matrix ParentMatrix);
+	void Set_OnParentRotate(_matrix ParentMatrix);
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
