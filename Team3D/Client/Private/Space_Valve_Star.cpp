@@ -318,16 +318,20 @@ void CSpace_Valve_Star::Open_ValveDoor()
 {
 	if (false == m_IsOpen)
 	{
+		_float fRotateAngle = 90.f;
+		if (false == m_IsCodyValve)
+			fRotateAngle += -180.f;
+
 		_float4 vPos;
 		XMStoreFloat4(&vPos, m_pTransformCom_Door_R->Get_State(CTransform::STATE_POSITION));
 		_matrix Matrix_Door = m_pTransformCom_Door_R->Get_WorldMatrix();
-		Matrix_Door = XMMatrixRotationY(XMConvertToRadians(90.f));
+		Matrix_Door = XMMatrixRotationY(XMConvertToRadians(fRotateAngle));
 		Matrix_Door.r[3] = XMLoadFloat4(&vPos);
 		m_pTransformCom_Door_R->Set_WorldMatrix(Matrix_Door);
 		
 		XMStoreFloat4(&vPos, m_pTransformCom_Door_L->Get_State(CTransform::STATE_POSITION));
 		Matrix_Door = m_pTransformCom_Door_L->Get_WorldMatrix();
-		Matrix_Door = XMMatrixRotationY(XMConvertToRadians(-90.f));
+		Matrix_Door = XMMatrixRotationY(XMConvertToRadians(-fRotateAngle));
 		Matrix_Door.r[3] = XMLoadFloat4(&vPos);
 		m_pTransformCom_Door_L->Set_WorldMatrix(Matrix_Door);
 
