@@ -34,6 +34,7 @@ public:
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
 private:
+	class CCameraActor* m_pActorCom = nullptr;
 	CGameObject* m_pTargetObj = nullptr;
 	CCam_Helper* m_pCamHelper = nullptr;
 private:
@@ -53,8 +54,9 @@ private:
 	void KeyCheck(_double dTimeDelta);
 private:
 	_int	ReSet_Cam_FreeToAuto();		//변수 초기화용
-	_bool	OffSetPhsX(_double dTimeDelta,_fmatrix matRev,_vector * pOut);
+	_bool	OffSetPhsX(_double dTimeDelta,_vector * pOut);
 	_fmatrix MakeViewMatrix(_float3 Eye, _float3 At, _float3 vAxisY);
+	_fvector MakeBlockPos(PxRaycastBuffer tBuffer);
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
@@ -84,6 +86,7 @@ private:
 
 	//For.SpringCamera
 	_bool m_bIsCollision = false;
+	_float4x4 m_matBeforeSpringCam;
 	//For.SoftMove
 	_float3 m_vPlayerPos = { 0.f,0.f,0.f };
 	//회전 보간용
