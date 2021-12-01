@@ -78,6 +78,15 @@ void CWallLaserTrap_Button::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eI
 	{
 		m_IsActivate = true;
 	}
+
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+	{
+		m_IsActivate = false;
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+	{
+		m_IsActivate = true;
+	}
 }
 
 HRESULT CWallLaserTrap_Button::Render_ShadowDepth()
@@ -118,10 +127,6 @@ HRESULT CWallLaserTrap_Button::Ready_Component()
 	Static_ArgDesc.pTransform = m_pTransformCom;
 	Static_ArgDesc.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &Static_ArgDesc), E_FAIL);
-
-// 	EFFECT_DESC_CLONE Effect_Desc;
-// 	XMStoreFloat4x4(&Effect_Desc.WorldMatrix, m_pTransformCom->Get_WorldMatrix());
-
 
 	_float4 vPos	= { -805.32f, 786.f, 191.37f, 1.f };
 	_float3 vAngle	= { 90.f,0.f,0.f };

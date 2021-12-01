@@ -1035,7 +1035,6 @@ void CCody::Sprint(const _double dTimeDelta)
 }
 void CCody::Jump(const _double dTimeDelta)
 {
-	m_iJumpCount = 1;
 	if (m_bShortJump == true)
 	{
 		if (m_iJumpCount == 1)
@@ -1337,6 +1336,34 @@ void CCody::Attack_BossMissile_After(_double dTimeDelta)
 	}
 }
 
+void CCody::Enforce_IdleState()
+{
+	m_bSprint = false;
+	m_bRoll = false;
+	m_bMove = false;
+	m_bShortJump = false;
+	m_bGroundPound = false;
+	m_IsTurnAround = false;
+
+	m_bAction = false;
+
+	m_IsJumping = false;
+	m_IsAirDash = false;
+	m_IsFalling = false;
+	m_bFallAniOnce = false;
+
+	m_bPlayGroundPoundOnce = false;
+	m_bCanMove = false;
+
+	m_fIdleTime = 0.f;
+
+	m_iJumpCount = 0;
+	m_iAirDashCount = 0;
+
+	m_pActorCom->Set_Jump(false);
+	m_pModelCom->Set_Animation(ANI_C_MH);
+}
+
 #pragma region Shader_Variables
 HRESULT CCody::Render_ShadowDepth()
 {
@@ -1496,6 +1523,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			Enforce_IdleState();
 			m_IsTouchFireDoor = true;
 		}
 		else if (GameID::eBOSSMISSILE_COMBAT == m_eTargetGameID && false == m_IsBossMissile_Hit)
@@ -1973,11 +2003,32 @@ void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
 	if (false == m_IsTouchFireDoor)
 		return;
 
-	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-	m_IsTouchFireDoor = false;
-	m_IsCollide = false;
+	m_fDeadTime += (_float)dTimeDelta;
+	if (m_fDeadTime >= 2.f && m_fDeadTime <= 2.4f)
+	{
+		_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
+		vSavePosition.m128_f32[1] += 0.7f;
+		vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+	
+		m_pActorCom->Set_Position(vSavePosition);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
 
-	// Get¸®½ºÆù
+		m_fDeadTime = 2.5f;
+	}
+	else if (m_fDeadTime >= 2.5f && m_fDeadTime <= 2.75f)
+	{
+
+	}
+	else if (m_fDeadTime >= 2.75f)
+	{
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		m_fDeadTime = 0.f;
+		m_IsCollide = false;
+		m_IsTouchFireDoor = false;
+		m_pActorCom->Set_ZeroGravity(false, false, false);
+	}
 }
 
 void CCody::Boss_Missile_Hit(const _double dTimeDelta)
