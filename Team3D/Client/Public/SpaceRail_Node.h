@@ -19,6 +19,7 @@ public:
 		_tchar		szRailTag[MAX_PATH] = L"";
 		_float4x4	WorldMatrix = MH_XMFloat4x4Identity();
 		_uint		iFrameIndex = 0;
+		_uint		iEdgeState = 0;
 	}SPACERAILNODE_DESC;
 
 private:

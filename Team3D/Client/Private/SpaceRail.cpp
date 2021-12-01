@@ -65,11 +65,21 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 	CSpaceRail_Node::SPACERAILNODE_DESC nodeDesc;
 
 	_uint iFrameIndex = 0;
+	_float fEdgeRadio = 0.3f;
+	_uint iNumFrames = (_uint)FrameMatrices.size();
 	for (auto& pFrameMat : FrameMatrices)
 	{
 		lstrcpy(nodeDesc.szRailTag, m_szRailTag);
 		nodeDesc.iFrameIndex = FrameIndices[iFrameIndex];
 		nodeDesc.WorldMatrix = pFrameMat;
+
+		if(iFrameIndex < iNumFrames * fEdgeRadio)
+			nodeDesc.iEdgeState = EDGE::EDGE_START;
+		else if(iFrameIndex >= iNumFrames * (1.f - fEdgeRadio))
+			nodeDesc.iEdgeState = EDGE::EDGE_END;
+		else
+			nodeDesc.iEdgeState = EDGE::EDGE_MID;
+
 		CSpaceRail_Node* pSpaceRailNode = CSpaceRail_Node::Create(m_pDevice, m_pDeviceContext, &nodeDesc);
 		m_vecSpaceRailNodes.push_back(pSpaceRailNode);
 

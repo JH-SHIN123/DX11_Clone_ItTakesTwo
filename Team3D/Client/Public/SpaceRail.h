@@ -13,6 +13,7 @@ class CSpaceRail_Node;
 class CSpaceRail : public CDynamic_Env
 {
 public:
+	enum EDGE {EDGE_START, EDGE_MID, EDGE_END };
 
 private:
 	explicit CSpaceRail(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
