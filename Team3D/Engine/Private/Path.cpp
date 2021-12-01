@@ -41,7 +41,7 @@ void CPath::Get_FramesWorldMatrices(vector<_uint>& OutFrameIndices, vector<_floa
 		/* Update_CombinedTransformations */
 		_matrix WorldMatrix, TransMatrix;
 		TransMatrix = XMLoadFloat4x4(&tTransformation[CHANNEL_TRANSLATION]);
-		TransMatrix.r[3] *= m_tDesc.fPivotScale; // Pivot Scaling
+		TransMatrix.r[3] *= 0.01f; // Pivot Scaling
 		TransMatrix.r[3] = XMVectorSetW(TransMatrix.r[3], 1.f);
 		WorldMatrix = XMLoadFloat4x4(&m_tDesc.WorldMatrix);
 		XMStoreFloat4x4(&NodeWorldMatrix, WorldMatrix * TransMatrix);
@@ -168,7 +168,7 @@ _fmatrix CPath::Update_CombinedTransformations()
 
 	/* Translation */
 	TransMatrix = XMLoadFloat4x4(&m_AnimTransformations[CHANNEL_TRANSLATION]);
-	TransMatrix.r[3] *= m_tDesc.fPivotScale; // Pivot Scaling
+	TransMatrix.r[3] *= 0.01f; // Pivot Scaling
 	TransMatrix.r[3] = XMVectorSetW(TransMatrix.r[3], 1.f);
 
 	/* Final Cal */
