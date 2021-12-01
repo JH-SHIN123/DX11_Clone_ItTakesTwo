@@ -68,7 +68,7 @@ _int CBigPlanet::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide )
+	if (m_pGameInstance->Key_Down(DIK_F) && m_IsCollide )
 	{
 		UI_Delete(Cody, InputButton_InterActive);
 		if (((CCody*)DATABASE->GetCody())->Get_Player_Size() == CCody::SIZE_LARGE)
