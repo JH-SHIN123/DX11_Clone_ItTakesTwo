@@ -11,8 +11,8 @@
 * 로딩에 코드 추가할 때 16/8/6 스레드별 함수 모두 세팅할 것.
 */
 #define __6THREADS
-//#define __8THREADS
-//#define __16THREADS
+#define __8THREADS
+#define __16THREADS
 
 /**
 * 맵 로딩 안 하려면 주석 처리.
@@ -22,4 +22,4 @@
 /**
 * 메이 키보드로 컨트롤하려면 주석 해제.
 */
-//#define __CONTROL_MAY_KEYBOARD
+#define __CONTROL_MAY_KEYBOARD
