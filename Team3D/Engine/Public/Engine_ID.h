@@ -46,7 +46,8 @@ namespace Engine
 			eFIREDOOR,
 			eBOSSMISSILE_COMBAT,
 			eBOSSMISSILE_PLAYABLE,
-			eDUMMYWALL
+			eDUMMYWALL,
+			eHANGINGPLANET
 		};
 	};
 

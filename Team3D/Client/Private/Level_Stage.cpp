@@ -12,6 +12,7 @@
 
 #include "WarpGate.h"
 #include "Boss_Missile.h"
+#include "HangingPlanet.h"
 
 CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -39,7 +40,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Wormhole(TEXT("Layer_Wormhole")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_TutorialDoor(TEXT("Layer_TutorialDoor")), E_FAIL);
 	/* Hye */
-	//FAILED_CHECK_RETURN(Ready_Layer_PinBall(TEXT("Layer_PinBall")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Planet(TEXT("Layer_Planet")), E_FAIL);
 	/* Won */
 	FAILED_CHECK_RETURN(Ready_Layer_ToyBoxButton(TEXT("Layer_ToyBoxButton")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboonCore(TEXT("Layer_MoonBaboonCore")), E_FAIL);
@@ -54,7 +55,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_SecurityCameraHandle(TEXT("Layer_SecurityCameraHandle")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_SecurityCamera(TEXT("Layer_SecurityCamera")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_SpaceValve(TEXT("Layer_SpaceValve")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_BigPlanet(TEXT("Layer_BigPlanet")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_BigPlanet(TEXT("Layer_BigPlanet")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Hook_UFO(TEXT("Layer_HookUFO")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_DummyWall(TEXT("Layer_DummyWall")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
@@ -160,17 +161,24 @@ HRESULT CLevel_Stage::Ready_Layer_Wormhole(const _tchar * pLayerTag)
 }
 #pragma endregion
 
-#pragma region Hye
-HRESULT CLevel_Stage::Ready_Layer_PinBall(const _tchar * pLayerTag)
+#pragma region Hye 
+HRESULT CLevel_Stage::Ready_Layer_Planet(const _tchar * pLayerTag)
 {
-	CDynamic_Env::ARG_DESC tArg;
-	lstrcpy(tArg.szModelTag, TEXT("Component_Model_Space_Pinball_Ball"));
-	_matrix World = XMMatrixScaling(5.f, 5.f, 5.f) * XMMatrixTranslation(10.f, 0.f, 10.f);
-	XMStoreFloat4x4(&tArg.WorldMatrix, World);
-	tArg.iMatrialIndex = 0;
-	tArg.iOption = 0;
+	CHangingPlanet::ARG_DESC tArg;
+	lstrcpy(tArg.DynamicDesc.szModelTag, TEXT("Component_Model_Hanging_Planet"));
+	_matrix World = XMMatrixIdentity();
+	XMStoreFloat4x4(&tArg.DynamicDesc.WorldMatrix, World);
+	tArg.DynamicDesc.iMatrialIndex = 0;
+	tArg.DynamicDesc.iOption = 0;
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PinBall"), &tArg), E_FAIL);
+	tArg.vJointPosition = _float3(1000.f, 740.f, 213.f);
+	tArg.vOffset = _float3(0.f, 33.f, 0.f);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_TestPlanet"), &tArg), E_FAIL);
+
+	tArg.vJointPosition = _float3(1000.f, 755.f, 176.5f);
+	tArg.vOffset = _float3(0.f, 38.f, 0.f);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_TestPlanet"), &tArg), E_FAIL);
 	return S_OK;
 }
 #pragma endregion

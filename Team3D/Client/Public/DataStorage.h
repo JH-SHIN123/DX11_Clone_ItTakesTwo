@@ -72,6 +72,9 @@ public:
 	void Set_SlideDoor(CGameObject* pSlideDoor) { m_pSlideDoor = pSlideDoor; }
 	CGameObject* Get_SlideDoor() { return m_pSlideDoor; }
 
+	void Set_HangingPlanet(CGameObject* pHangingPlanet) { m_pHangingPlanet = pHangingPlanet; }
+	CGameObject* Get_HangingPlanet() { return m_pHangingPlanet; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -98,6 +101,9 @@ private:
 	CGameObject* m_pPinBall_Blocked = nullptr;
 	CGameObject* m_pPinBall_Door = nullptr;
 	CGameObject* m_pSlideDoor = nullptr;
+
+	/* For.HangingPlanet */
+	CGameObject* m_pHangingPlanet = nullptr;
 
 private:
 	/* For.Valve */

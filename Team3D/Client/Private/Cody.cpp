@@ -11,6 +11,7 @@
 /* For. PinBall */
 #include "PinBall.h"
 #include "PinBall_Door.h"
+#include "HangingPlanet.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -1430,7 +1431,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			}
 			m_IsInGravityPipe = true;
 		}
-		else if (m_eTargetGameID == GameID::ePLANET && m_pGameInstance->Key_Down(DIK_E))
+		else if (m_eTargetGameID == GameID::ePLANET && m_pGameInstance->Key_Down(DIK_F))
 		{
 			if (m_eCurPlayerSize == SIZE_SMALL)
 			{

@@ -222,6 +222,7 @@
     <ClInclude Include="..\public\Effect_Robot_Battery_Spark.h" />
     <ClInclude Include="..\public\Effect_Wormhole.h" />
     <ClInclude Include="..\public\Effect_FireDoor.h" />
+    <ClInclude Include="..\Public\HangingPlanet.h" />
     <ClInclude Include="..\Public\HookUFO.h" />
     <ClInclude Include="..\Public\GravityPath.h" />
     <ClInclude Include="..\Public\InGameEffect.h" />
@@ -330,6 +331,7 @@
     <ClCompile Include="..\private\Effect_Robot_Battery_Spark.cpp" />
     <ClCompile Include="..\private\Effect_Wormhole.cpp" />
     <ClCompile Include="..\private\Effect_FireDoor.cpp" />
+    <ClCompile Include="..\Private\HangingPlanet.cpp" />
     <ClCompile Include="..\Private\HookUFO.cpp" />
     <ClCompile Include="..\Private\GravityPath.cpp" />
     <ClCompile Include="..\Private\InGameEffect.cpp" />
