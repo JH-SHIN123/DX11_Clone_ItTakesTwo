@@ -16,15 +16,15 @@ HRESULT CSpaceRail::Start_Path(_uint eEdgeState, CPath::STATE eState, _uint iAni
 {
 	if (nullptr == m_pPathCom) return E_FAIL;
 
-	CPath::STATE ePathState = CPath::STATE_END;
-	if (EDGE_END == eEdgeState)
-	{
-		if (CPath::STATE_BACKWARD == eState)
-			eState = CPath::STATE_FORWARD;
-		else 
-			eState = CPath::STATE_BACKWARD;
-	}
-	else ePathState = eState;
+	//CPath::STATE ePathState = CPath::STATE_END;
+	//if (EDGE_END == eEdgeState)
+	//{
+	//	if (CPath::STATE_BACKWARD == eState)
+	//		eState = CPath::STATE_FORWARD;
+	//	else 
+	//		eState = CPath::STATE_BACKWARD;
+	//}
+	//else ePathState = eState;
 
 	return m_pPathCom->Start_Path(eState, iAnimFrame);
 }
@@ -51,7 +51,13 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 	tTest.iMatrialIndex = 0;
 	tTest.iOption = 0;
 	lstrcpy(tTest.szModelTag, L"Component_Model_GrindRail02");
+	
+	//_matrix Rotate = XMMatrixRotationY(XMConvertToRadians(90.f));
+	//_matrix Trans = XMMatrixTranslation(0.f,30.f,0.f);
+	//XMStoreFloat4x4(&tTest.WorldMatrix, Rotate * Trans);
+
 	tTest.WorldMatrix = MH_XMFloat4x4Identity();
+
 	CDynamic_Env::NativeConstruct(&tTest);
 
 	//CDynamic_Env::NativeConstruct(pArg);

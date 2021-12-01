@@ -220,4 +220,16 @@ namespace Engine
 			atan2(vRight.y, vRight.z)
 		};
 	}
+
+	static _matrix MH_RemoveScale(_matrix Transform)
+	{
+		_matrix		Result;
+
+		Result.r[0] = XMVector3Normalize(Transform.r[0]);
+		Result.r[1] = XMVector3Normalize(Transform.r[1]);
+		Result.r[2] = XMVector3Normalize(Transform.r[2]);
+		Result.r[3] = Transform.r[3];
+
+		return Result;
+	}
 }
