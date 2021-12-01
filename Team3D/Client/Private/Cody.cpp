@@ -316,8 +316,6 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_0)) // 가라가라가라가라가라가라
-		m_pActorCom->Set_Position(XMVectorSet(-807.28f, 800.125f, 189.37f, 1.f));			 //(
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -1353,7 +1351,6 @@ void CCody::Enforce_IdleState()
 	m_bFallAniOnce = false;
 
 	m_bPlayGroundPoundOnce = false;
-	m_bCanMove = false;
 
 	m_fIdleTime = 0.f;
 
@@ -1513,7 +1510,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			// 코디 전용 포탈로 이동(웜홀)
 			m_pModelCom->Set_Animation(ANI_C_SpacePortal_Travel);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_SpacePortal_Exit);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_SpacePortal_Travel);
 
 			m_pActorCom->Set_Position(XMLoadFloat4(&m_vWormholePos));
 			m_pActorCom->Set_ZeroGravity(true, false, true);
@@ -1958,6 +1955,8 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 	{
 		if (m_fWarpTimer_Max <= m_fWarpTimer)
 		{
+			m_pModelCom->Set_Animation(ANI_C_SpacePortal_Exit);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsWarpNextStage = false;
 			
 			_vector vNextStage_Pos = XMLoadFloat3(&m_vTriggerTargetPos);
@@ -2025,6 +2024,7 @@ void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
 		m_pModelCom->Set_Animation(ANI_C_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		m_fDeadTime = 0.f;
+		m_bCanMove = true;
 		m_IsCollide = false;
 		m_IsTouchFireDoor = false;
 		m_pActorCom->Set_ZeroGravity(false, false, false);

@@ -33,6 +33,9 @@ HRESULT CWarpGate::NativeConstruct(void * pArg)
 
 _int CWarpGate::Tick(_double TimeDelta)
 {
+	if (m_eStageValue == CWarpGate::STAGE_UMBRELLA)
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-617.f, 755.f, 196.f, 1.f));
+
 	return _int();
 }
 
@@ -139,7 +142,7 @@ void CWarpGate::Check_Stage_Value()
 		break;
 	case Client::CWarpGate::STAGE_UMBRELLA:
 		m_vWarpPos = {};
-		vPos = XMVectorSet(-617.f, 754.f, 196.f, 1.f);
+		vPos = XMVectorSet(-617.f, 755.f, 196.f, 1.f);
 		fDegree = -90.f;
 		break;
 	case Client::CWarpGate::MAIN_PLANET:
