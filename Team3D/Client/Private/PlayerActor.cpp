@@ -137,6 +137,17 @@ void CPlayerActor::Update(_double dTimeDelta)
 		m_pTransform->RotateByUp(XMLoadFloat3(&m_vPlayerUp));
 		m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
 	}
+
+	if (m_iReorderGravityStep == 1)
+	{
+		Step_GravityPath(m_vHitNormal);
+		m_iReorderGravityStep = 2;
+	}
+	else if (m_iReorderGravityStep == 2)
+	{
+		Reorder_Gravity();
+		m_iReorderGravityStep = 0;
+	}
 }
 
 void CPlayerActor::Jump_Start(_float fJumpForce)
@@ -162,15 +173,12 @@ void CPlayerActor::Step_GravityPath(PxVec3 vNormal)
 {
 	NULL_CHECK(m_pController);
 
-	if (m_pUserData->eID == GameID::eMAY) return;
+	if (m_pUserData->eID == GameID::eCODY) return;
 
 	m_pController->setUpDirection(vNormal);
 	m_isGravityReordered = false;
 
 	m_vPlayerUp = MH_XMFloat3(vNormal);
-
-	// 여기서 카메라까지 회전을 시키면
-	// 플레이어가 그냥 카메라 Look, Right 방향으로 이동해도 문제가 되지 안흥ㄹ까.
 
 	//m_pTransform->Set_RotateQuat(MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
 	m_pTransform->RotateByUp(XMLoadFloat3(&m_vPlayerUp));
@@ -182,8 +190,6 @@ void CPlayerActor::Step_GravityPath(PxVec3 vNormal)
 	//if (iBuffer > 100)
 	//	iBuffer = 0;
 }
-
-
 
 void CPlayerActor::Reorder_Gravity()
 {
@@ -199,24 +205,24 @@ void CPlayerActor::Reorder_Gravity()
 
 	if (fX == fMax)
 	{
-		if (fX > 0.f)
-			m_vPlayerUp = _float3(-1.f, 0.f, 0.f);
-		else
+		if (m_vPlayerUp.x > 0.f)
 			m_vPlayerUp = _float3(1.f, 0.f, 0.f);
+		else
+			m_vPlayerUp = _float3(-1.f, 0.f, 0.f);
 	}
 	else if (fY == fMax)
 	{
-		if (fY > 0.f)
+		if (m_vPlayerUp.y > 0.f)
 			m_vPlayerUp = _float3(0.f, 1.f, 0.f);
 		else
 			m_vPlayerUp = _float3(0.f, -1.f, 0.f);
 	}
 	else if (fZ == fMax)
 	{
-		if (fZ > 0.f)
-			m_vPlayerUp = _float3(0.f, 0.f, -1.f);
-		else
+		if (m_vPlayerUp.z > 0.f)
 			m_vPlayerUp = _float3(0.f, 0.f, 1.f);
+		else
+			m_vPlayerUp = _float3(0.f, 0.f, -1.f);
 	}
 
 	m_pController->setUpDirection(MH_PxVec3(m_vPlayerUp));
@@ -228,6 +234,11 @@ void CPlayerActor::Reorder_Gravity()
 	//m_pTransform->Set_RotateQuat(MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
 	m_pTransform->RotateByUp(XMLoadFloat3(&m_vPlayerUp));
 	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+}
+
+void CPlayerActor::MoveToTarget(PxTransform PxTransform)
+{
+	m_pActor->setKinematicTarget(PxTransform);
 }
 
 void CPlayerActor::Jump_Stop()

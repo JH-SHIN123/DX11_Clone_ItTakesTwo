@@ -215,6 +215,7 @@ _int CCody::Tick(_double dTimeDelta)
 	Attack_BossMissile_After(dTimeDelta); // 미사일 공격이 끝나고 정상적인 회전갑승로 만들어주자
 
 	m_pActorCom->Update(dTimeDelta);
+	m_pActorCom->Set_IsOnGravityPath(false);
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 
@@ -305,9 +306,9 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_2)) /* 2층 */
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 125.f, 170.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_F3)) /* 2스테이지 입구 */
+	if (m_pGameInstance->Key_Down(DIK_3)) /* 2스테이지 입구 */
 		m_pActorCom->Set_Position(XMVectorSet(620.f, 760.f, 195.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_F4)) /* 2스테이지 */
+	if (m_pGameInstance->Key_Down(DIK_4)) /* 2스테이지 */
 		m_pActorCom->Set_Position(XMVectorSet(960.f, 720.f, 193.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_5))/* 3스테이지 */
 		m_pActorCom->Set_Position(XMVectorSet(-610.f, 760.f, 195.f, 1.f));
@@ -402,24 +403,6 @@ void CCody::KeyInput(_double dTimeDelta)
 					}
 				}
 			}
-
-			///// 중력 테스트
-			//_vector vUp, vRight, vLook = XMVectorZero();
-			//_bool bGravityReordered = m_pActorCom->Get_IsGravityReordered();
-			//_vector WhenGravityReorderedDir = XMVectorZero();
-			//if (bGravityReordered == false) // 중력발판위에 있다면
-			//{
-			//	
-			//	//m_pActorCom->Set_ZeroGravity(true, true, true);
-			//	// -> 밟은지점의 노말 == 플레이어 Up.
-			//	// -> 중력발판의 Right 축을 가져오자.
-			//	// -> 둘이 외적하면 Look 나옴.
-			//	// -> 그걸 Dir로 쓴다면?
-			//	vUp = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
-			//	vRight = XMVector3Normalize(m_pActorCom->Get_GravityPath_RightVector());
-			//	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
-			//}
-			//////
 
 			if (m_pGameInstance->Key_Pressing(DIK_W))
 			{
@@ -622,10 +605,38 @@ void CCody::Move(const _double dTimeDelta)
 
 			_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 
-		
+			if (m_pActorCom->Get_IsOnGravityPath() == false)
+			{
+				_vector vPlayerUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 
-			// 중력발판 위에 있을때는 SetY 안해야 함!
-			//vDirection = XMVectorSetY(vDirection, 0.f);
+				// 양수 일때?
+				_float fPlayerUpX = XMVectorGetX(vPlayerUp);
+				_float fPlayerUpY = XMVectorGetY(vPlayerUp);
+				_float fPlayerUpZ = XMVectorGetZ(vPlayerUp);
+
+				// xyz 성분중 가장 큰 친구를 찾자.
+				_float fAbsX = fabs(fPlayerUpX);
+				_float fAbsY = fabs(fPlayerUpY);
+				_float fAbsZ = fabs(fPlayerUpZ);
+
+				if ((fAbsX > fAbsY) && (fAbsX > fAbsZ))
+				{
+					// x가 z,y 보다 크다면 카메라LookVector의 X성분을 0으로 만들고 노말라이즈
+					vDirection = XMVector3Normalize(XMVectorSetX(vDirection, 0.f));
+				}
+
+				else if((fAbsY > fAbsX) && (fAbsY > fAbsZ))
+				{
+					// y가 x,z 보다 크다면 카메라 LookVector의 Y성분을 0으로 만들고 노말라이즈
+					vDirection = XMVector3Normalize(XMVectorSetY(vDirection, 0.f));
+				}
+
+				else if ((fAbsZ > fAbsX) && (fAbsZ > fAbsY))
+				{
+					// z가 x,y 보다 크다면 카메라 LookVector의 Z성분을 0으로 만들고 노말라이즈
+					vDirection = XMVector3Normalize(XMVectorSetZ(vDirection, 0.f));
+				}
+			}
 			m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);
 
 			if (m_fJogAcceleration > 10.f)
@@ -915,8 +926,38 @@ void CCody::Roll(const _double dTimeDelta)
 
 		m_fAcceleration -= (_float)dTimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
-		vDirection = XMVectorSetY(vDirection, 0.f);
-		vDirection = XMVector3Normalize(vDirection);
+		if (m_pActorCom->Get_IsOnGravityPath() == false)
+		{
+			_vector vPlayerUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+
+			// 양수 일때?
+			_float fPlayerUpX = XMVectorGetX(vPlayerUp);
+			_float fPlayerUpY = XMVectorGetY(vPlayerUp);
+			_float fPlayerUpZ = XMVectorGetZ(vPlayerUp);
+
+			// xyz 성분중 가장 큰 친구를 찾자.
+			_float fAbsX = fabs(fPlayerUpX);
+			_float fAbsY = fabs(fPlayerUpY);
+			_float fAbsZ = fabs(fPlayerUpZ);
+
+			if ((fAbsX > fAbsY) && (fAbsX > fAbsZ))
+			{
+				// x가 z,y 보다 크다면 카메라LookVector의 X성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetX(vDirection, 0.f));
+			}
+
+			else if ((fAbsY > fAbsX) && (fAbsY > fAbsZ))
+			{
+				// y가 x,z 보다 크다면 카메라 LookVector의 Y성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetY(vDirection, 0.f));
+			}
+
+			else if ((fAbsZ > fAbsX) && (fAbsZ > fAbsY))
+			{
+				// z가 x,y 보다 크다면 카메라 LookVector의 Z성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetZ(vDirection, 0.f));
+			}
+		}
 
 		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta * m_fAcceleration);
 		if (m_eCurPlayerSize == SIZE_MEDIUM)
@@ -936,8 +977,38 @@ void CCody::Roll(const _double dTimeDelta)
 		if(m_fAcceleration > 0.f)
 		m_fAcceleration -= (_float)dTimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
-		vDirection = XMVectorSetY(vDirection, 0.f);
-		vDirection = XMVector3Normalize(vDirection);
+		if (m_pActorCom->Get_IsOnGravityPath() == false)
+		{
+			_vector vPlayerUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+
+			// 양수 일때?
+			_float fPlayerUpX = XMVectorGetX(vPlayerUp);
+			_float fPlayerUpY = XMVectorGetY(vPlayerUp);
+			_float fPlayerUpZ = XMVectorGetZ(vPlayerUp);
+
+			// xyz 성분중 가장 큰 친구를 찾자.
+			_float fAbsX = fabs(fPlayerUpX);
+			_float fAbsY = fabs(fPlayerUpY);
+			_float fAbsZ = fabs(fPlayerUpZ);
+
+			if ((fAbsX > fAbsY) && (fAbsX > fAbsZ))
+			{
+				// x가 z,y 보다 크다면 카메라LookVector의 X성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetX(vDirection, 0.f));
+			}
+
+			else if ((fAbsY > fAbsX) && (fAbsY > fAbsZ))
+			{
+				// y가 x,z 보다 크다면 카메라 LookVector의 Y성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetY(vDirection, 0.f));
+			}
+
+			else if ((fAbsZ > fAbsX) && (fAbsZ > fAbsY))
+			{
+				// z가 x,y 보다 크다면 카메라 LookVector의 Z성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetZ(vDirection, 0.f));
+			}
+		}
 		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta * m_fAcceleration);
 
 		if(m_eCurPlayerSize == SIZE_MEDIUM)
@@ -955,8 +1026,38 @@ void CCody::Sprint(const _double dTimeDelta)
 		m_bAction = false;
 
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
-		vDirection = XMVectorSetY(vDirection, 0.f);
-		vDirection = XMVector3Normalize(vDirection);
+		if (m_pActorCom->Get_IsOnGravityPath() == false)
+		{
+			_vector vPlayerUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+
+			// 양수 일때?
+			_float fPlayerUpX = XMVectorGetX(vPlayerUp);
+			_float fPlayerUpY = XMVectorGetY(vPlayerUp);
+			_float fPlayerUpZ = XMVectorGetZ(vPlayerUp);
+
+			// xyz 성분중 가장 큰 친구를 찾자.
+			_float fAbsX = fabs(fPlayerUpX);
+			_float fAbsY = fabs(fPlayerUpY);
+			_float fAbsZ = fabs(fPlayerUpZ);
+
+			if ((fAbsX > fAbsY) && (fAbsX > fAbsZ))
+			{
+				// x가 z,y 보다 크다면 카메라LookVector의 X성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetX(vDirection, 0.f));
+			}
+
+			else if ((fAbsY > fAbsX) && (fAbsY > fAbsZ))
+			{
+				// y가 x,z 보다 크다면 카메라 LookVector의 Y성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetY(vDirection, 0.f));
+			}
+
+			else if ((fAbsZ > fAbsX) && (fAbsZ > fAbsY))
+			{
+				// z가 x,y 보다 크다면 카메라 LookVector의 Z성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetZ(vDirection, 0.f));
+			}
+		}
 
 		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);
 

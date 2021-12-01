@@ -29,10 +29,6 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eRender) override;
 	virtual HRESULT Render_ShadowDepth() override;
 
-public:
-	/* Getter */
-	CTransform* Get_Transform() { return m_pTransformCom; }
-
 private:
 	/* For.Component */
 	CTransform*				m_pTransformCom = nullptr;

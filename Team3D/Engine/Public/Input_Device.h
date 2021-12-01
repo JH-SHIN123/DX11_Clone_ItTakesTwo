@@ -40,7 +40,7 @@ public: /* Getter */
 
 public:
 	HRESULT	Ready_InputDevice(HINSTANCE hInst, HWND hWnd);
-	_int	Tick();
+	_int	Tick(_bool bWndActivate);
 
 private:
 	LPDIRECTINPUT8			m_pDInput = nullptr;
