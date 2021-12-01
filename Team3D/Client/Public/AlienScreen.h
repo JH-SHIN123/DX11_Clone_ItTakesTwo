@@ -1,14 +1,13 @@
 #pragma once
-#include "Client_Defines.h"
 #include "Dynamic_Env.h"
 
 BEGIN(Client)
-class CPlanet final : public CDynamic_Env
+class CAlienScreen final : public CDynamic_Env
 {
 private:
-	explicit CPlanet(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CPlanet(const CPlanet& rhs);
-	virtual ~CPlanet() = default;
+	explicit CAlienScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CAlienScreen(const CAlienScreen& rhs);
+	virtual ~CAlienScreen() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -18,14 +17,14 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 public:
-	virtual HRESULT Render_ShadowDepth();
-	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject);
+	virtual HRESULT Render_ShadowDepth() override;
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 
 public:
-	static CPlanet* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CAlienScreen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

@@ -332,6 +332,9 @@ private:
 	_uint m_iRotateCount = 0;
 	_uint m_iValvePlayerName = Player::May;
 
+	/* For.PinBall */
+	_bool	 m_IsPinBall = false;
+	_float2	 m_MinMaxX = {};
 
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
@@ -357,6 +360,7 @@ private:
 	void Pull_VerticalDoor(const _double dTimeDelta);
 	void Rotate_Valve(const _double dTimeDelta);
 	void In_GravityPipe(const _double dTimeDelta);
+	void PinBall(const _double dTimeDelta);
 	void Warp_Wormhole(const _double dTimeDelta);
 	void Touch_FireDoor(const _double dTimeDelta);
 

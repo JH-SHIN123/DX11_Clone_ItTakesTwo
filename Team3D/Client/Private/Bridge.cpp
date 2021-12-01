@@ -39,6 +39,8 @@ HRESULT CBridge::NativeConstruct(void * pArg)
 	_matrix matTransform = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_matPivot)) * XMMatrixRotationX(XMConvertToRadians(-70.f)) * XMLoadFloat4x4(&m_matPivot);
 	m_pModelCom->Update_Model(matTransform);
 
+	CDataStorage::GetInstance()->Set_BridgePtr(this);
+
 	return S_OK;
 }
 
@@ -63,9 +65,6 @@ _int CBridge::Tick(_double dTimeDelta)
 
 		m_fAngle += fAngle;
 	}
-
-	if (m_pGameInstance->Key_Down(DIK_J))
-		Call_Trigger();
 
 	return NO_EVENT;
 }

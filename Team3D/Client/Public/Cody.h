@@ -338,16 +338,17 @@ private:
 
 	/* Çý¿ø::For.DeadLine, SavePoint */
 	_bool	 m_IsDeadLine = false;
-	_bool	 m_IsSavePoint = false;
 	_float3  m_vSavePoint = {};
 	_float	 m_fDeadTime = 0.f;
 	_float3	 m_DeadLinePos = {};
+
+	/* Çý¿ø::For.PinBall*/
+	_bool m_IsPinBall = false;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
 	_bool m_IsInGravityPipe = false;
 	_float m_fGoCenterTime = 0.f;
-
 
 	/* For.Valve */
 	_bool m_IsEnterValve = false;
@@ -373,6 +374,7 @@ private:
 	// Arbitrary damping
 	_float m_faDamping = 0.995f;
 
+	// Arbitrary ball radius
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
 
@@ -420,11 +422,17 @@ private:
 	void Touch_FireDoor(const _double dTimeDelta);
 	void Boss_Missile_Hit(const _double dTimeDelta);
 	void Boss_Missile_Control(const _double dTimeDelta);
+
 	/* Çý¿ø::For.DeadLine, SavePoint */
 	void Falling_Dead(const _double dTimeDelta);
+	void PinBall(const _double dTimeDelta);
+public:
+	void PinBall_Respawn(_double dTimeDelta);
 
+private:
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);
+
 #pragma endregion
 
 };

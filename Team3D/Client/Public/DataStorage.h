@@ -29,8 +29,10 @@ public:
 	void Set_UFOPtr(CGameObject* pUFO) { m_pUFO = pUFO; }
 	CGameObject* Get_UFO() { return m_pUFO; }
 
-	/* Robots */
+	void Set_BridgePtr(CGameObject* pBridge) { m_pBridge = pBridge; }
+	CGameObject* Get_Bridge() { return m_pBridge; }
 
+	/* Robots */
 	void Set_STGravityRobotPtr(CGameObject* pRobot) { m_pSTGravityRobot = pRobot; }
 	CGameObject* Get_STGravityRobot() { return m_pSTGravityRobot; }
 
@@ -40,11 +42,35 @@ public:
 	void Set_STPlanetRobotPtr(CGameObject* pRobot) { m_pSTPlanetRobot = pRobot; }
 	CGameObject* Get_STPlanetRobot() { return m_pSTPlanetRobot; }
 
-
+	/* For.Valve */
 	void Set_ValveCount(_uint _iValveRotateCount) { m_iValveRotateCount += _iValveRotateCount; }
 	void Set_ValveTarget(_uint _iValveTarget) { m_iValveTarget = _iValveTarget; }
 	_uint Get_ValveCount() { return m_iValveRotateCount; }
+	
+	/* For.PinBall */
+	void Set_Pinball(CGameObject* pPinball) { m_pPinball = pPinball; }
+	CGameObject* Get_Pinball() { return m_pPinball; }
 
+	void Set_Pinball_Handle(CGameObject* pPinball_Handle) { m_pPinball_Handle = pPinball_Handle; }
+	CGameObject* Get_Pinball_Handle() { return m_pPinball_Handle; }
+
+	void Set_Pinball_HandleBase(CGameObject* pPinball_HandleBase) { m_pPinball_HandleBase = pPinball_HandleBase; }
+	CGameObject* Get_Pinball_HandleBase() { return m_pPinball_HandleBase; }
+
+	void Set_Pinball_Spring(CGameObject* pPinball_Spring) { m_pPinball_Spring = pPinball_Spring; }
+	CGameObject* Get_Pinball_Spring() { return m_pPinball_Spring; }
+
+	void Set_Pinball_BallDoor(CGameObject* pPinball_BallDoor) { m_pPinBall_BallDoor = pPinball_BallDoor; }
+	CGameObject* Get_Pinball_BallDoor() { return m_pPinBall_BallDoor; }
+
+	void Set_Pinball_Blocked(CGameObject* pPinball_Blocked) { m_pPinBall_Blocked = pPinball_Blocked; }
+	CGameObject* Get_Pinball_Blocked() { return m_pPinBall_Blocked; }
+
+	void Set_Pinball_Door(CGameObject* pPinBall_Door) { m_pPinBall_Door = pPinBall_Door; }
+	CGameObject* Get_Pinball_Door() { return m_pPinBall_Door; }
+
+	void Set_SlideDoor(CGameObject* pSlideDoor) { m_pSlideDoor = pSlideDoor; }
+	CGameObject* Get_SlideDoor() { return m_pSlideDoor; }
 
 private:
 	CGameObject* m_pCody = nullptr;
@@ -55,11 +81,23 @@ private:
 	// UFO
 	CGameObject* m_pUFO = nullptr;
 
+	/* For.Bridge */
+	CGameObject* m_pBridge = nullptr;
+
 	// Interactive Objects
 	CGameObject* m_pSTGravityRobot = nullptr;
 	CGameObject* m_pSTPinBallRobot = nullptr;
 	CGameObject* m_pSTPlanetRobot = nullptr;
 
+	/* For.PinBall */
+	CGameObject* m_pPinball = nullptr;
+	CGameObject* m_pPinball_Handle = nullptr;
+	CGameObject* m_pPinball_HandleBase = nullptr;
+	CGameObject* m_pPinball_Spring = nullptr;
+	CGameObject* m_pPinBall_BallDoor = nullptr;
+	CGameObject* m_pPinBall_Blocked = nullptr;
+	CGameObject* m_pPinBall_Door = nullptr;
+	CGameObject* m_pSlideDoor = nullptr;
 
 private:
 	/* For.Valve */

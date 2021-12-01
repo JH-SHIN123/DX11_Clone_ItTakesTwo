@@ -5,6 +5,7 @@
 #include "RobotParts.h"
 #include "InGameEffect.h"
 #include "Camera.h"
+#include "Dynamic_Env.h"
 #include "Loading.h"
 #include "ToyBoxButton.h"
 #include "MoonBaboonCore.h"
@@ -38,6 +39,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Wormhole(TEXT("Layer_Wormhole")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_TutorialDoor(TEXT("Layer_TutorialDoor")), E_FAIL);
 	/* Hye */
+	//FAILED_CHECK_RETURN(Ready_Layer_PinBall(TEXT("Layer_PinBall")), E_FAIL);
 	/* Won */
 	FAILED_CHECK_RETURN(Ready_Layer_ToyBoxButton(TEXT("Layer_ToyBoxButton")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboonCore(TEXT("Layer_MoonBaboonCore")), E_FAIL);
@@ -159,6 +161,18 @@ HRESULT CLevel_Stage::Ready_Layer_Wormhole(const _tchar * pLayerTag)
 #pragma endregion
 
 #pragma region Hye
+HRESULT CLevel_Stage::Ready_Layer_PinBall(const _tchar * pLayerTag)
+{
+	CDynamic_Env::ARG_DESC tArg;
+	lstrcpy(tArg.szModelTag, TEXT("Component_Model_Space_Pinball_Ball"));
+	_matrix World = XMMatrixScaling(5.f, 5.f, 5.f) * XMMatrixTranslation(10.f, 0.f, 10.f);
+	XMStoreFloat4x4(&tArg.WorldMatrix, World);
+	tArg.iMatrialIndex = 0;
+	tArg.iOption = 0;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PinBall"), &tArg), E_FAIL);
+	return S_OK;
+}
 #pragma endregion
 
 #pragma region Won

@@ -184,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
+    <ClInclude Include="..\Public\AlienScreen.h" />
     <ClInclude Include="..\Public\BigButtonFrame.h" />
     <ClInclude Include="..\Public\Boss_Missile.h" />
     <ClInclude Include="..\Public\Bridge.h" />
@@ -254,6 +255,14 @@
     <ClInclude Include="..\Public\MoonBaboon_MainLaser.h" />
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
+    <ClInclude Include="..\Public\PinBall.h" />
+    <ClInclude Include="..\Public\PinBall_BallDoor.h" />
+    <ClInclude Include="..\Public\PinBall_BallGate.h" />
+    <ClInclude Include="..\Public\PinBall_Blocked.h" />
+    <ClInclude Include="..\Public\PinBall_Door.h" />
+    <ClInclude Include="..\Public\PinBall_Handle.h" />
+    <ClInclude Include="..\Public\PinBall_HandleBase.h" />
+    <ClInclude Include="..\Public\PinBall_Spring.h" />
     <ClInclude Include="..\Public\Planet.h" />
     <ClInclude Include="..\Public\PlanetRing.h" />
     <ClInclude Include="..\Public\PlayerActor.h" />
@@ -272,6 +281,7 @@
     <ClInclude Include="..\Public\SecurityCamera.h" />
     <ClInclude Include="..\Public\SecurityCameraHandle.h" />
     <ClInclude Include="..\Public\SepdStaticActor.h" />
+    <ClInclude Include="..\Public\SlideDoor.h" />
     <ClInclude Include="..\Public\SpaceValve.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
@@ -294,6 +304,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\AlienScreen.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\CamEffect.cpp" />
@@ -357,6 +368,14 @@
     <ClCompile Include="..\Private\MoonBaboon_MainLaser.cpp" />
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
+    <ClCompile Include="..\Private\PinBall.cpp" />
+    <ClCompile Include="..\Private\PinBall_BallDoor.cpp" />
+    <ClCompile Include="..\Private\PinBall_BallGate.cpp" />
+    <ClCompile Include="..\Private\PinBall_Blocked.cpp" />
+    <ClCompile Include="..\Private\PinBall_Door.cpp" />
+    <ClCompile Include="..\Private\PinBall_Handle.cpp" />
+    <ClCompile Include="..\Private\PinBall_HandleBase.cpp" />
+    <ClCompile Include="..\Private\PinBall_Spring.cpp" />
     <ClCompile Include="..\Private\Planet.cpp" />
     <ClCompile Include="..\Private\PlanetRing.cpp" />
     <ClCompile Include="..\Private\PlayerActor.cpp" />
@@ -375,6 +394,7 @@
     <ClCompile Include="..\Private\SecurityCamera.cpp" />
     <ClCompile Include="..\Private\SecurityCameraHandle.cpp" />
     <ClCompile Include="..\Private\SepdStaticActor.cpp" />
+    <ClCompile Include="..\Private\SlideDoor.cpp" />
     <ClCompile Include="..\Private\SpaceValve.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />

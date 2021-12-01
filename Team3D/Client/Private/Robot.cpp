@@ -35,6 +35,9 @@ HRESULT CRobot::NativeConstruct(void * pArg)
 	m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_tRobotPartsDesc.RotY);
 	m_UserData = USERDATA(GameID::eROBOT, this);
 
+	m_UserData.eID = GameID::eROBOT;
+	m_UserData.pGameObject = this;
+
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
 	ArgDesc.pTransform = m_pTransformCom;

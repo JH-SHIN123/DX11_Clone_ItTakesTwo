@@ -239,6 +239,7 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	//마우스 체크
 	_long MouseMove = 0;
 
+
 #ifdef __CONTROL_MAY_KEYBOARD
 	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X)/*m_pGameInstance->Get_Pad_RStickX() - 32767*/)
 	{
