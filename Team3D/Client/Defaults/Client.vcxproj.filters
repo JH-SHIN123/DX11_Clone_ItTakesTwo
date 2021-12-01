@@ -406,6 +406,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall">
       <UniqueIdentifier>{fe876da6-8259-4e3e-90d8-354a88c44141}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.HangingPlanet">
+      <UniqueIdentifier>{7bfbdffb-00e8-4343-bff3-44a6e744dba5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
