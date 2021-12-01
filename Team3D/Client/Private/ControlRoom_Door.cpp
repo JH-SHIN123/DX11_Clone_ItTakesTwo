@@ -73,7 +73,7 @@ _int CControlRoom_Door::Tick(_double dTimeDelta)
 
 _int CControlRoom_Door::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);

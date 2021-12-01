@@ -374,6 +374,9 @@ private:
 	_float3 m_vStartPosition = {};
 	_float3 m_vDstPosition = {};
 
+	/* For.Umbrella */
+	_bool m_IsControlJoystick = false;
+
 	// Arbitrary damping
 	_float m_faDamping = 0.995f;
 

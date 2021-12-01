@@ -25,6 +25,9 @@ public:
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
+public:
+	void Set_BeamActivate(_bool IsCheck);
+	void Set_DeadEffect();
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
@@ -32,6 +35,9 @@ public:
 private:
 	_float										m_fVerticalAngle = 0.f;
 	_float										m_fHorizontalAngle = 0.f;
+	_bool										m_IsBeamActivate = false;
+	_bool										m_IsBeamEffectCreate = false;
+
 
 private:
 	class CUmbrellaBeam_Stand*					m_pUmbrellaBeam_Stand = nullptr;

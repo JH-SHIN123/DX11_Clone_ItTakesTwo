@@ -34,7 +34,7 @@ HRESULT CUmbrellaBeam_Stand::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(Ready_Layer_UmbrellaBeam_Base(TEXT("Layer_UmbrellaBeam_Base")), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-789.319824f, 766.982971f, 189.852661f, 1.f));
-	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(45.f));
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(45.f));
 
 	m_UserData = USERDATA(GameID::eUMBRELLABEAMSTAND, this);
 
@@ -68,7 +68,7 @@ _int CUmbrellaBeam_Stand::Tick(_double dTimeDelta)
 
 _int CUmbrellaBeam_Stand::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -95,6 +95,11 @@ void CUmbrellaBeam_Stand::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID,
 void CUmbrellaBeam_Stand::Set_HorizontalAngle(_float fAngle)
 {
 	m_fHorizontalAngle = fAngle;
+}
+
+void CUmbrellaBeam_Stand::Set_Rotate(_float fAngle)
+{
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fHorizontalAngle));
 }
 
 HRESULT CUmbrellaBeam_Stand::Render_ShadowDepth()

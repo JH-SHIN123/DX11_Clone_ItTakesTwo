@@ -4,6 +4,7 @@
 #include "May.h"
 #include "DataStorage.h"
 #include "UmbrellaBeam.h"
+#include "Cody.h"
 
 CUmbrellaBeam_Joystick::CUmbrellaBeam_Joystick(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -27,13 +28,20 @@ HRESULT CUmbrellaBeam_Joystick::NativeConstruct(void * pArg)
 	CGameObject::NativeConstruct(pArg);
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_TriggerTransform"), (CComponent**)&m_pTriggerTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_UmbrellaBeam_Joystick"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	FAILED_CHECK_RETURN(Ready_Layer_UmbrellaBeam(TEXT("Layer_UmbrellaBeam")), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-790.943604f, 767.497498f, 188.182541f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-790.943604f, 767.057498f, 188.182541f, 1.f));
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-45.f));
+
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_float4 vConvertPos;
+	XMStoreFloat4(&vConvertPos, vPos);
+	vConvertPos.y += 0.5f;
+	m_pTriggerTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vConvertPos));
 
 	m_UserData = USERDATA(GameID::eUMBRELLABEAMJOYSTICK, this);
 
@@ -47,11 +55,15 @@ HRESULT CUmbrellaBeam_Joystick::NativeConstruct(void * pArg)
 	CTriggerActor::ARG_DESC TriggerArgDesc;
 
 	TriggerArgDesc.pUserData = &m_UserData;
-	TriggerArgDesc.pTransform = m_pTransformCom;
-	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.f);
+	TriggerArgDesc.pTransform = m_pTriggerTransformCom;
+	TriggerArgDesc.pGeometry = new PxSphereGeometry(2.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
+
+	DATABASE->Set_Umbrella_JoystickPtr(this);
+
+	m_fHorizontalAngle = 45.f;
 
 	return S_OK;
 }
@@ -60,18 +72,20 @@ _int CUmbrellaBeam_Joystick::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-790.943604f, 767.057498f, 188.182541f, 1.f));
-
-
-	/*CCody* pCody = (CCody*)DATABASE->GetCody();
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, pCody->Get_Position());
-*/
 	return NO_EVENT;
 }
 
 _int CUmbrellaBeam_Joystick::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
+
+	if (true == m_IsControlActivate && true == m_IsCollision)
+	{
+		m_pUmbrellaBeam->Set_BeamActivate(true);
+		CCody* pCody = (CCody*)DATABASE->GetCody();
+		pCody->Get_Transform()->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_IsCollision = false;
+	}
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -92,7 +106,41 @@ HRESULT CUmbrellaBeam_Joystick::Render(RENDER_GROUP::Enum eGroup)
 
 void CUmbrellaBeam_Joystick::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eUMBRELLABEAMJOYSTICK, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		//UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_IsCollision = true;
 
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	{
+		m_pUmbrellaBeam->Set_BeamActivate(false);
+		m_pUmbrellaBeam->Set_DeadEffect();
+	}
+}
+
+void CUmbrellaBeam_Joystick::Set_ControlActivate()
+{
+	m_IsControlActivate = true;
+}
+
+void CUmbrellaBeam_Joystick::Set_HorizontalAngle(_float fAngle)
+{
+	m_fHorizontalAngle = fAngle;
+}
+
+void CUmbrellaBeam_Joystick::Set_Rotate(_float fAngle)
+{
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fHorizontalAngle));
+}
+
+void CUmbrellaBeam_Joystick::Set_WorldMatrix(_matrix ParentMatrix)
+{
+	_matrix matWorld, matScale, matRotX, matTrans;
+	matTrans = XMMatrixTranslation(0.f, 0.07425f, -2.17012);
+	matWorld = matTrans * ParentMatrix;
+	m_pTransformCom->Set_WorldMatrix(matWorld);
 }
 
 HRESULT CUmbrellaBeam_Joystick::Render_ShadowDepth()
@@ -145,6 +193,7 @@ CGameObject * CUmbrellaBeam_Joystick::Clone_GameObject(void * pArg)
 
 void CUmbrellaBeam_Joystick::Free()
 {
+	Safe_Release(m_pTriggerTransformCom);
 	Safe_Release(m_pUmbrellaBeam);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pStaticActorCom);

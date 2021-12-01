@@ -4,6 +4,7 @@
 #include "May.h"
 #include "DataStorage.h"
 #include "UmbrellaBeam_Stand.h"
+#include "UmbrellaBeam_Joystick.h"
 #include "Effect_Umbrella_Pipe.h"
 
 CUmbrellaBeam::CUmbrellaBeam(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -32,7 +33,6 @@ HRESULT CUmbrellaBeam::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_UmbrellaBeam"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	FAILED_CHECK_RETURN(Ready_Layer_UmbrellaBeam_Stand(TEXT("Layer_UmbrellaBeam_Stand")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_UmbrellaBeam_Effect(TEXT("Layer_UmbrellaBeam_Effect")), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-789.319824f, 769.882971f, 189.852661f, 1.f));
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(45.f));
@@ -67,15 +67,25 @@ _int CUmbrellaBeam::Tick(_double dTimeDelta)
 	CGameObject::Tick(dTimeDelta);
 
 	KeyInput_Rotate(dTimeDelta);
-
-	m_pUmbrellaBeam_Effect->Set_ParentWorldMatrix(m_pTransformCom->Get_WorldMatrix());
+	
+	if(nullptr != m_pUmbrellaBeam_Effect)
+		m_pUmbrellaBeam_Effect->Set_ParentWorldMatrix(m_pTransformCom->Get_WorldMatrix());
 
 	return NO_EVENT;
 }
 
 _int CUmbrellaBeam::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
+
+	if (true == m_IsBeamActivate && false == m_IsBeamEffectCreate)
+	{
+		FAILED_CHECK_RETURN(Ready_Layer_UmbrellaBeam_Effect(TEXT("Layer_UmbrellaBeam_Effect")), E_FAIL);
+		m_IsBeamEffectCreate = true;
+	}
+
+	if (false == m_IsBeamActivate)
+		m_IsBeamEffectCreate = false;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -111,40 +121,56 @@ HRESULT CUmbrellaBeam::Render_ShadowDepth()
 	return S_OK;
 }
 
+void CUmbrellaBeam::Set_BeamActivate(_bool IsCheck)
+{
+	m_IsBeamActivate = IsCheck;
+}
+
+void CUmbrellaBeam::Set_DeadEffect()
+{
+	if(nullptr != m_pUmbrellaBeam_Effect)
+		m_pUmbrellaBeam_Effect->Set_Dead();
+}
+
 void CUmbrellaBeam::KeyInput_Rotate(_double TimeDelta)
 {
+	if (false == m_IsBeamActivate)
+		return;
+
 	_float fMaxHorizontalAngle = 90.f;
 	_float fMaxVerticalAngle = 45.f;
-	_float fRotationPerSec =  XMConvertToDegrees(m_pTransformCom->Get_RotationPerSec());
+	_float fRotationPerSec = (_float)XMConvertToDegrees(m_pTransformCom->Get_RotationPerSec());
 
 	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 
-	if (m_pGameInstance->Key_Pressing(DIK_H) && fMaxVerticalAngle >= m_fVerticalAngle)
+	if (m_pGameInstance->Key_Pressing(DIK_W) && fMaxVerticalAngle >= m_fVerticalAngle)
 	{
 		m_fVerticalAngle += (_float)TimeDelta * fRotationPerSec;
 		m_pTransformCom->Rotate_Axis(vRight, -TimeDelta);
 	}
 
-	if (m_pGameInstance->Key_Pressing(DIK_N) && 0.f <= m_fVerticalAngle)
+	if (m_pGameInstance->Key_Pressing(DIK_S) && 0.f <= m_fVerticalAngle)
 	{
 		m_fVerticalAngle -= (_float)TimeDelta * fRotationPerSec;
 		m_pTransformCom->Rotate_Axis(vRight, TimeDelta);
 	}
 
-	if (m_pGameInstance->Key_Pressing(DIK_M) && fMaxHorizontalAngle >= m_fHorizontalAngle)
+	if (m_pGameInstance->Key_Pressing(DIK_D) && fMaxHorizontalAngle >= m_fHorizontalAngle)
 	{
 		m_fHorizontalAngle += (_float)TimeDelta * fRotationPerSec;
 		m_pTransformCom->Rotate_Axis(vUp, TimeDelta);
 	}
 
-	if (m_pGameInstance->Key_Pressing(DIK_B) && 0.f <= m_fHorizontalAngle)
+	if (m_pGameInstance->Key_Pressing(DIK_A) && 0.f <= m_fHorizontalAngle)
 	{
 		m_fHorizontalAngle -= (_float)TimeDelta * fRotationPerSec;
 		m_pTransformCom->Rotate_Axis(vUp, -TimeDelta);
 	}
 
 	m_pUmbrellaBeam_Stand->Set_HorizontalAngle(m_fHorizontalAngle);
+	CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
+	pJoystick->Set_WorldMatrix(m_pUmbrellaBeam_Stand->Get_Transform()->Get_WorldMatrix());
 }
 
 HRESULT CUmbrellaBeam::Ready_Layer_UmbrellaBeam_Stand(const _tchar * pLayerTag)
@@ -196,7 +222,9 @@ CGameObject * CUmbrellaBeam::Clone_GameObject(void * pArg)
 
 void CUmbrellaBeam::Free()
 {
-	Safe_Release(m_pUmbrellaBeam_Effect);
+	if(nullptr != m_pUmbrellaBeam_Effect)
+		Safe_Release(m_pUmbrellaBeam_Effect);
+
 	Safe_Release(m_pUmbrellaBeam_Stand);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pStaticActorCom);

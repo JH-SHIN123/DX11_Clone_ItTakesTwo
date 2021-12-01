@@ -7,7 +7,7 @@
 #include "DataStorage.h"
 #include "MathHelper.h"
 #include "PlayerActor.h"
-
+#include "UmbrellaBeam_Joystick.h"
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
 
@@ -233,6 +233,9 @@ _int CCody::Tick(_double dTimeDelta)
 _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
+
+	if(m_pGameInstance->Key_Down(DIK_V))
+		m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Trigger);
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -1547,16 +1550,25 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			/* 세이브포인트 트리거와 충돌시 세이브포인트 갱신 */
 			m_vSavePoint = m_vTriggerTargetPos;
 		}
+		else if (m_eTargetGameID == GameID::eUMBRELLABEAMJOYSTICK && m_pGameInstance->Key_Down(DIK_E))
+		{
+			m_pModelCom->Set_Animation(ANI_M_ArcadeScreenLever_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_ArcadeScreenLever_Fwd);
+			m_IsControlJoystick = true;
+			CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
+			pJoystick->Set_ControlActivate();
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
-		|| m_bWallAttach)
+		|| m_bWallAttach || m_IsControlJoystick)
 		return true;
 
 	return false;
 }
+
 _bool CCody::Trigger_End(const _double dTimeDelta)
 {
 	if ((m_pModelCom->Get_CurAnimIndex() == ANI_C_Jump_Land 

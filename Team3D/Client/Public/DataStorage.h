@@ -40,12 +40,14 @@ public:
 	void Set_STPlanetRobotPtr(CGameObject* pRobot) { m_pSTPlanetRobot = pRobot; }
 	CGameObject* Get_STPlanetRobot() { return m_pSTPlanetRobot; }
 
-
 	void Set_PressureBigPlate(CGameObject* pPressureBigPlate) { m_pPressureBigPlate = pPressureBigPlate; }
 	CGameObject* Get_PressureBigPlate() { return m_pPressureBigPlate; }
 
 	void Set_PipeCurvePtr(vector<class CPressurePlate*> pPipeCurve) { m_vecPipeCurve = pPipeCurve; }
 	class vector<class CPressurePlate*> Get_PressurePlate() { return m_vecPipeCurve;  }
+
+	void Set_Umbrella_JoystickPtr(CGameObject* pUmbrella_Joystick) { m_pUmbrella_Joystick = pUmbrella_Joystick; }
+	CGameObject* Get_Umbrella_JoystickPtr() { return m_pUmbrella_Joystick; }
 
 	void Set_ValveCount(_uint _iValveRotateCount) { m_iValveRotateCount += _iValveRotateCount; }
 	void Set_ValveTarget(_uint _iValveTarget) { m_iValveTarget = _iValveTarget; }
@@ -68,6 +70,7 @@ private:
 	CGameObject* m_pRobotHead = nullptr;
 	CGameObject* m_pNoBatterySign = nullptr;
 	CGameObject* m_pPressureBigPlate = nullptr;
+	CGameObject* m_pUmbrella_Joystick = nullptr;
 
 private:
 	// Interactive Objects

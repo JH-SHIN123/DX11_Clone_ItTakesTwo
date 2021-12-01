@@ -23,15 +23,22 @@ public:
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 public:
+	void Set_ControlActivate();
+	void Set_HorizontalAngle(_float fAngle);
+	void Set_Rotate(_float fAngle);
+	void Set_WorldMatrix(_matrix ParentMatrix);
+
+public:
 	virtual HRESULT Render_ShadowDepth() override;
-
-
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
-	_float										m_fAngle = 0.f;
+	_float										m_fHorizontalAngle = 0.f;
+	_float4x4									m_matParent;
+	_bool										m_IsControlActivate = false;
+	_bool										m_IsCollision = false;
 
 private:
 	class CUmbrellaBeam*						m_pUmbrellaBeam = nullptr;
@@ -43,6 +50,7 @@ protected:
 	CModel*										m_pModelCom = nullptr;
 	CStaticActor*								m_pStaticActorCom = nullptr;
 	CTriggerActor*								m_pTriggerCom = nullptr;
+	CTransform*									m_pTriggerTransformCom = nullptr;
 
 private:
 	HRESULT Ready_Layer_UmbrellaBeam(const _tchar * pLayerTag);

@@ -107,7 +107,7 @@ _int CPressureBigPlate::Tick(_double dTimeDelta)
 
 _int CPressureBigPlate::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
 
 	if (1 == m_iOption && true == m_vecPressurePlate[0]->Get_PipeConnected() && true == m_vecPressurePlate[1]->Get_PipeConnected())
 		m_IsPowerSupplyAvailable = true;

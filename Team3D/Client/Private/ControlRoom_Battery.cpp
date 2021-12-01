@@ -151,7 +151,7 @@ _int CControlRoom_Battery::Tick(_double dTimeDelta)
 
 _int CControlRoom_Battery::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
 
 	InterActive_UI();
 

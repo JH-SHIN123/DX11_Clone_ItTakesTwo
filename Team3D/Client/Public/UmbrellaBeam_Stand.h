@@ -24,6 +24,7 @@ public:
 
 public:
 	void Set_HorizontalAngle(_float fAngle);
+	void Set_Rotate(_float fAngle);
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
