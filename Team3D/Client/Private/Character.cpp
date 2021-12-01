@@ -13,13 +13,6 @@ CCharacter::CCharacter(const CCharacter& rhs)
 {
 }
 
-//void CCharacter::Set_SpaceRailNode(CSpaceRail_Node* pRail)
-//{
-//	if (nullptr == pRail) return;
-//
-//	m_vecRideOnRailNodes.push_back(pRail);
-//}
-
 void CCharacter::Set_WorldMatrix(_fmatrix WorldMatrix)
 {
 	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
@@ -29,7 +22,6 @@ void CCharacter::Set_Position(_fvector WorldPos)
 {
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, WorldPos);
 }
-
 _fvector CCharacter::Get_Position()
 {
 	if (nullptr == m_pTransformCom)
@@ -113,9 +105,6 @@ HRESULT CCharacter::NativeConstruct(void* pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_SpaceRail"), TEXT("Com_SpaceRail"), (CComponent**)&m_pSpaceRailCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_SpaceRail0"), TEXT("Com_Path_SpaceRail0"), (CComponent**)&m_pPathCom), E_FAIL);
-
 	return S_OK;
 }
 
@@ -139,34 +128,85 @@ HRESULT CCharacter::Render_ShadowDepth()
 	return CGameObject::Render_ShadowDepth();
 }
 
-//void CCharacter::Find_SpaceRailTarget()
-//{
-//	if (nullptr == m_pTransformCom) return;
-//
-//	_vector vPlayerPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-//	_vector vRailPosition = XMVectorZero();
-//	_float fDist = FLT_MAX;
-//	for (auto& pRail : m_vecRideOnRailNodes)
-//	{
-//		if(nullptr == pRail) continue;
-//		vRailPosition = pRail->Get_Position();
-//
-//		_float fToRailDist = XMVectorGetX(XMVector3Length(vPlayerPosition - vRailPosition));
-//		if (fDist > fToRailDist)
-//		{
-//			m_pTargetSpaceRailNode = pRail;
-//			fDist = fToRailDist;
-//		}
-//	}
-//
-//	// 등록된 스페이스 레일 비워주기
-//	m_vecRideOnRailNodes.clear();
-//}
+#pragma region WonTaek_Path
+void CCharacter::Set_SpaceRailNode(CSpaceRail_Node* pRail)
+{
+	if (nullptr == pRail) return;
+	m_vecTargetRailNodes.push_back(pRail);
+}
+void CCharacter::Find_TargetSpaceRail()
+{
+	if (nullptr == m_pTransformCom) return;
+	if (false == m_bSearchToRail) // 레일타기 키 눌렸을때
+	{
+		m_vecTargetRailNodes.clear();
+		m_bSearchToRail = false;
+		return;
+	}
+
+	if (m_vecTargetRailNodes.empty()) return; // 키가 눌렸지만, 충돌한 레일 트리거가 존재하지 않을때
+
+	// 거리가 아닌, 플레이어 Look 벡터와의 각도차로 계산
+	_vector vPlayerLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_vector vPlayerPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPlayerLook = XMVector3Normalize(vPlayerLook);
+
+	_vector vToTarget = XMVectorZero();
+	_vector vNodePosition = XMVectorZero();
+	_float fMinDegree = 360.f;
+	for (auto& pNode : m_vecTargetRailNodes)
+	{
+		if (nullptr == pNode) continue;
+		vNodePosition = pNode->Get_Position();
+
+		/* 각도 계산  */
+		vToTarget = XMVector3Normalize(vNodePosition - vPlayerPosition);
+		_float fDegree = XMConvertToDegrees(XMVectorGetX(XMVector3Dot(vPlayerLook, vToTarget)));
+		if (fDegree > 90.f) continue; /* 일정각도(45) 이상인 노드는 제외한다. */
+
+		/* 가장 각도가 적은 타겟노드 찾기 */
+		if (fMinDegree > fDegree)
+		{
+			m_pTargetRailNode = pNode;
+			fMinDegree = fDegree;
+		}
+	}
+
+	m_vecTargetRailNodes.clear();
+	m_bSearchToRail = false;
+	m_bMoveToRail = true;
+	
+}
+void CCharacter::MoveToTargetRail(_uint eState, _double dTimeDelta)
+{
+	if (false == m_bMoveToRail) return;
+	if (nullptr == m_pTargetRailNode) return;
+
+	_float fDist = m_pTransformCom->Move_ToTargetRange(m_pTargetRailNode->Get_Position(), 0.1f, dTimeDelta);
+	if (fDist < 0.2f)
+	{
+		m_pTargetRail = (CSpaceRail*)DATABASE->Get_SpaceRail(m_pTargetRailNode->Get_RailTag()); // 타야할 Path 지정
+		m_pTargetRail->Start_Path((CPath::STATE)(eState), m_pTargetRailNode->Get_FrameIndex()); // W : Forward / S : Backward
+		m_pTargetRailNode = nullptr;
+
+		m_bSearchToRail = false;
+		m_bOnRail = true;
+	}
+}
+_bool CCharacter::TakeRail(_double dTimeDelta, _matrix& WorldMatrix)
+{
+	if (nullptr == m_pTargetRail) return false;
+	if (false == m_bOnRail) return false;
+
+	return m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);
+}
+#pragma endregion
 
 void CCharacter::Free()
 {
-	//Safe_Release(m_pSpaceRailCom);
-	Safe_Release(m_pPathCom);
+	m_pTargetRail = nullptr;
+	m_pTargetRailNode = nullptr;
+	m_vecTargetRailNodes.clear();
 
 	CGameObject::Free();
 }

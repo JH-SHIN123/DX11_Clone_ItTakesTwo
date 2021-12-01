@@ -12,6 +12,7 @@ public:
 	typedef struct tagPathDesc 
 	{
 		_float4x4	WorldMatrix = MH_XMFloat4x4Identity();
+		_float		fPivotScale = 0.001f;
 	}PATH_DESC;
 
 private:
@@ -20,7 +21,8 @@ private:
 	virtual ~CPath() = default;
 
 public:
-	_float Get_ProgressAnim() const { return m_fProgressAnim; }
+	_float	Get_ProgressAnim() const { return m_fProgressAnim; }
+	void	Get_FramesWorldMatrices(vector<_uint>& OutFrameIndices, vector<_float4x4>& OutMatrices, _uint iPerNodeInteract);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(const _tchar * pFilePath, const _tchar * pPathTag);
@@ -31,7 +33,7 @@ public:
 	_bool	Update_Animation(_double dTimeDelta, _matrix& WorldMatrix);
 
 private:
-	HRESULT		Update_AnimTransformations(_double dTimeDelta);
+	HRESULT		Update_AnimTransformations();
 	_fmatrix	Update_CombinedTransformations();
 
 private: /* Typedef */

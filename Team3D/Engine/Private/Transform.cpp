@@ -212,6 +212,32 @@ void CTransform::Move_ToTarget(_fvector vTargetPos, _double dTimeDelta)
 	Rotate_ToTargetOnLand(vTargetPos);
 }
 
+_float CTransform::Move_ToTargetRange(_fvector vTargetPos, _float fRange, _double dTimeDelta)
+{
+	if (0.0 == m_TransformDesc.dSpeedPerSec || 0.0 == m_TransformDesc.dRotationPerSec) return 0.f;
+
+	_vector			vPosition, vDirection;
+	vPosition = Get_State(CTransform::STATE_POSITION);
+	vDirection = vTargetPos - vPosition;
+
+	// 일정 범위에 오면 리턴
+	_float fDistance = XMVectorGetX(XMVector3Length(vDirection));
+	if (fDistance <= fRange)
+	{
+		if (false == XMVector4Equal(vTargetPos, vPosition))
+			Rotate_ToTarget(vTargetPos);
+		return fDistance;
+	}
+
+	vPosition += XMVector3Normalize(vDirection) * (_float)dTimeDelta * (_float)m_TransformDesc.dSpeedPerSec;
+	Set_State(CTransform::STATE_POSITION, vPosition);
+
+	if (false == XMVector4Equal(vTargetPos, vPosition))
+		Rotate_ToTarget(vTargetPos);
+
+	return fDistance;
+}
+
 void CTransform::RotateYawDirectionOnLand(const _fvector & vMoveDir, const _double TimeDelta, const _double dAcceleration, CNavigation * pNavigation)
 {
 	if (0.0 == m_TransformDesc.dSpeedPerSec) return;

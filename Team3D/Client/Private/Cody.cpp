@@ -193,21 +193,31 @@ _int CCody::Tick(_double dTimeDelta)
 	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	// TEST
-	if (m_pGameInstance->Key_Down(DIK_L))
-		m_pPathCom->Start_Path(CPath::STATE_BACKWARD, 0);
-	else if (m_pGameInstance->Key_Down(DIK_K))
-		m_pPathCom->Start_Path(CPath::STATE_FORWARD, 30);
+	if (m_pGameInstance->Key_Down(DIK_L)) {
+		m_bSearchToRail = true;
+	}
+	else if (m_pGameInstance->Key_Down(DIK_K)) {
+		m_bSearchToRail = true;
+	}
+
+	Find_TargetSpaceRail();
+	if (m_bMoveToRail) m_pActorCom->Set_ZeroGravity(true, false, true);
+	MoveToTargetRail(CPath::STATE_FORWARD, dTimeDelta);
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	_bool isTakePath = m_pPathCom->Update_Animation(dTimeDelta, WorldMatrix);
+	_bool isTakePath = TakeRail(dTimeDelta, WorldMatrix);
 	if (true == isTakePath) {
 		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
 		m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 		m_pActorCom->Set_Position(WorldMatrix.r[3]);
 	}
+	else if (m_bMoveToRail)
+	{
+		m_pActorCom->Set_Position(WorldMatrix.r[3]);
+	}
 	else
 		m_pActorCom->Update(dTimeDelta); // Set Position하면 이거 할필요없다.
-	
+
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 
@@ -218,21 +228,6 @@ _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
 
-	// TEST
-	//if (m_pGameInstance->Key_Down(DIK_L)) /* 스타트 지점 */
-	//	m_IsOnGrind_Start = true;
-	//Riding_Rail();
-
-	//Find_SpaceRailTarget();
-
-	//if (m_IsOnGrind_Start)
-	//{
-	//	if (m_pTargetSpaceRailNode) {
-	//		m_pSpaceRailCom->RideOnRail(m_pTargetSpaceRailNode->Get_RailTag(),m_pTargetSpaceRailNode->Get_Index(), CSpaceRail::STATE_FORWARD);
-	//		m_pTargetSpaceRailNode = nullptr;
-	//	}
-	//	m_IsOnGrind_Start = false;
-	//}
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -1286,12 +1281,6 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 		m_bCanMove = true;
 	}
 
-}
-
-void CCody::Riding_Rail()
-{
-	//if (nullptr == m_pSpaceRailCom) return;
-	//m_pSpaceRailCom->Riding(this);
 }
 
 #pragma region Shader_Variables

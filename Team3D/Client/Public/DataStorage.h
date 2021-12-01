@@ -48,6 +48,8 @@ public:
 	void Set_ValveTarget(_uint _iValveTarget) { m_iValveTarget = _iValveTarget; }
 	_uint Get_ValveCount() { return m_iValveRotateCount; }
 
+	void Set_SpaceRails(const _tchar* pRailTag, CGameObject* pRail);
+	CGameObject* Get_SpaceRail(const _tchar* pRailTag);
 
 private:
 	CGameObject* m_pCody = nullptr;
@@ -65,6 +67,8 @@ private:
 	CGameObject* m_pRobotHead = nullptr;
 	CGameObject* m_pNoBatterySign = nullptr;
 
+	// Space Rails
+	unordered_map<const _tchar*, CGameObject*> m_SpaceRails;
 
 private:
 	/* For.Valve */

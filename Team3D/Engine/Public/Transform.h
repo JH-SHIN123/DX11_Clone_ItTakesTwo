@@ -51,6 +51,7 @@ public:
 	void	Rotate_ToTarget(_fvector vTargetPos);
 	void	Rotate_ToTargetOnLand(_fvector vTargetPos);
 	void	Move_ToTarget(_fvector vTargetPos, _double dTimeDelta);
+	_float	Move_ToTargetRange(_fvector vTargetPos, _float fRange, _double dTimeDelta);
 
 	void    RotateYawDirectionOnLand(const _fvector& vMoveDir, const _double TimeDelta, const _double dAcceleration = 1.f, class CNavigation* pNavigation = nullptr);
 	void    RotatePitchDirectionOnLand(const _fvector& vMoveDir, const _double TimeDelta, const _double dAcceleration = 1.f, class CNavigation* pNavigation = nullptr);

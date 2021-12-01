@@ -2,11 +2,8 @@
 
 #include "Client_Defines.h"
 
-BEGIN(Engine)
-class CPath;
-END
-
 BEGIN(Client)
+class CSpaceRail;
 class CSpaceRail_Node;
 class CCharacter abstract : public CGameObject
 {
@@ -16,7 +13,6 @@ protected:
 	virtual ~CCharacter() = default;
 
 public: /* Setter */
-	//void Set_SpaceRailNode(CSpaceRail_Node* pRail);
 	void Set_WorldMatrix(_fmatrix WorldMatrix);
 	void Set_Position(_fvector WorldPos);
 
@@ -39,9 +35,6 @@ public:
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
-//protected:
-//	void Find_SpaceRailTarget(); // LateTick에서 호출되어야함.
-
 protected: /* For.Component */
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
@@ -52,14 +45,24 @@ protected:
 	_float m_fClockWise = 1.f; // 1이면 시계방향, -1이면 반시계방향.
 	//_uint  m_iViewPortNum = 0;
 
-protected: /* WonTaek - Path */
-	CPath* m_pPathCom = nullptr;
+public: /*  WonTaek - Path */
+	void Set_SpaceRailNode(CSpaceRail_Node* pRail);
+	
+protected:
+	void Find_TargetSpaceRail(); // LateTick에서 호출되어야함.
+	void MoveToTargetRail(_uint eState, _double dTimeDelta);
+	_bool TakeRail(_double dTimeDelta, _matrix& WorldMatrix);
+	// 타겟 레일을 향해 날라가는함수, 그리고 레일타기시작
 
+protected:
+	_bool m_bSearchToRail = false;
+	_bool m_bMoveToRail = false;
+	_bool m_bOnRail = false;
 
-//protected: /* Space Rail */
-//	class CSpaceRail* m_pSpaceRailCom = nullptr;
-//	vector<CSpaceRail_Node*>	m_vecRideOnRailNodes;
-//	CSpaceRail_Node*			m_pTargetSpaceRailNode = nullptr;
+protected: 
+	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;
+	CSpaceRail*					m_pTargetRail = nullptr;
+	CSpaceRail_Node*			m_pTargetRailNode = nullptr;
 
 public:
 	virtual void Free() override;

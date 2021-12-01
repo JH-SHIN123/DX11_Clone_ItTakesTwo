@@ -19,6 +19,41 @@ CPath::CPath(const CPath& rhs)
 	Safe_AddRef(m_pPathAnim);
 }
 
+void CPath::Get_FramesWorldMatrices(vector<_uint>& OutFrameIndices, vector<_float4x4>& OutMatrices, _uint iPerNodeInteract)
+{
+	vector<_uint> FrameIndices;
+	vector<_float4x4> FrameWorldMatrices;
+	FrameIndices.reserve((size_t)(m_dDurationTime / iPerNodeInteract));;
+	FrameWorldMatrices.reserve((size_t)(m_dDurationTime / iPerNodeInteract));
+
+	_float4x4 NodeWorldMatrix = MH_XMFloat4x4Identity();
+	_uint iCurAnimFrame = 0;
+	_double dCurrentTime = 0;
+	
+	TRANSFORMATIONS tTransformation;
+	tTransformation.resize(m_pPathAnim->Get_ChannelCount());
+
+	for (; dCurrentTime < m_dDurationTime; dCurrentTime += iPerNodeInteract)
+	{
+		/* Update_AnimTransformations */
+		m_pPathAnim->Update_PathTransformation(dCurrentTime, iCurAnimFrame, tTransformation, iPerNodeInteract);
+
+		/* Update_CombinedTransformations */
+		_matrix WorldMatrix, TransMatrix;
+		TransMatrix = XMLoadFloat4x4(&tTransformation[CHANNEL_TRANSLATION]);
+		TransMatrix.r[3] *= m_tDesc.fPivotScale; // Pivot Scaling
+		TransMatrix.r[3] = XMVectorSetW(TransMatrix.r[3], 1.f);
+		WorldMatrix = XMLoadFloat4x4(&m_tDesc.WorldMatrix);
+		XMStoreFloat4x4(&NodeWorldMatrix, WorldMatrix * TransMatrix);
+		
+		FrameIndices.emplace_back(iCurAnimFrame);
+		FrameWorldMatrices.emplace_back(NodeWorldMatrix);
+	}
+
+	OutFrameIndices.swap(FrameIndices);
+	OutMatrices.swap(FrameWorldMatrices);
+}
+
 HRESULT CPath::NativeConstruct_Prototype(const _tchar* pFilePath, const _tchar* pPathTag)
 {
 	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
@@ -84,7 +119,7 @@ _bool CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
 	}
 
 	/* Update_AnimTransformations */
-	Update_AnimTransformations(dTimeDelta);
+	Update_AnimTransformations();
 
 	/* Update_CombinedTransformations */
 	WorldMatrix = Update_CombinedTransformations();
@@ -95,7 +130,7 @@ _bool CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
 	return true;
 }
 
-HRESULT CPath::Update_AnimTransformations(_double dTimeDelta)
+HRESULT CPath::Update_AnimTransformations()
 {
 	NULL_CHECK_RETURN(m_pPathAnim, E_FAIL);
 
@@ -133,7 +168,7 @@ _fmatrix CPath::Update_CombinedTransformations()
 
 	/* Translation */
 	TransMatrix = XMLoadFloat4x4(&m_AnimTransformations[CHANNEL_TRANSLATION]);
-	TransMatrix.r[3] *= 0.001f; // Pivot Scaling
+	TransMatrix.r[3] *= m_tDesc.fPivotScale; // Pivot Scaling
 	TransMatrix.r[3] = XMVectorSetW(TransMatrix.r[3], 1.f);
 
 	/* Final Cal */

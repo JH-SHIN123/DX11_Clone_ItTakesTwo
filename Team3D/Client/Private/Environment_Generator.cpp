@@ -7,6 +7,7 @@
 #include "Bridge.h"
 #include "Planet.h"
 #include "PlanetRing.h"
+#include "SpaceRail.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -122,7 +123,8 @@ HRESULT CEnvironment_Generator::Load_Stage_Space()
 	FAILED_CHECK_RETURN(Load_Environment_Space_Boss(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Interactive_Instancing(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Trigger(), E_FAIL);
-
+	FAILED_CHECK_RETURN(Load_Environment_SpaceRail(), E_FAIL);
+	
 	return S_OK;
 }
 
@@ -247,6 +249,7 @@ HRESULT CEnvironment_Generator::Load_Default_Prototype_GameObject()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SavePoint"), CSavePoint::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_DeadLine"), CDeadLine::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Bridge"), CBridge::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SpaceRail"), CSpaceRail::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
 }
@@ -456,6 +459,37 @@ HRESULT CEnvironment_Generator::Load_Environment_Interactive_Instancing()
 	return S_OK;
 }
 
+HRESULT CEnvironment_Generator::Load_Environment_SpaceRail()
+{
+	DWORD		dwByte;
+	_tchar		szPrototypeTag[MAX_PATH] = L"";
+	_uint		iLevelIndex = 0;
+
+	CDynamic_Env::ARG_DESC		tDynamic_Env_Desc;
+
+	// 보내준 파일 경로만 잡아주면됨
+	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/SpaceRail.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		ReadFile(hFile, &szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.iMatrialIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.iOption, sizeof(_uint), &dwByte, nullptr);
+
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, szPrototypeTag, &tDynamic_Env_Desc), E_FAIL);
+	}
+	CloseHandle(hFile);
+}
+
 HRESULT CEnvironment_Generator::Load_Environment_Trigger()
 {
 	DWORD		dwByte;
@@ -522,6 +556,12 @@ CGameObject* CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D11
 		pInstance = CPlanetRing::Create(pDevice, pDeviceContext);
 		if (nullptr == pInstance)
 			MSG_BOX("Failed to Create Instance - PlanetRing");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_SpaceRail")))
+	{
+		pInstance = CSpaceRail::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - CSpaceRail");
 	}
 	return pInstance;
 }

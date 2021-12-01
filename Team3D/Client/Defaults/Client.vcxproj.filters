@@ -370,9 +370,6 @@
     <Filter Include="02.GameObject\04.Stage_Space\05.Won\03.SpaceRail\SpaceRail_Node">
       <UniqueIdentifier>{079271c3-d6aa-4807-9ad3-430096f7ca3e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\05.Won\03.SpaceRail\Data">
-      <UniqueIdentifier>{749efc88-7af2-44df-8f3f-16549ccf131f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -681,9 +678,6 @@
     <ClInclude Include="..\Public\SpaceRail_Node.h">
       <Filter>02.GameObject\04.Stage_Space\05.Won\03.SpaceRail\SpaceRail_Node</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\SpaceRailData.h">
-      <Filter>02.GameObject\04.Stage_Space\05.Won\03.SpaceRail\Data</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -964,9 +958,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\SpaceRail_Node.cpp">
       <Filter>02.GameObject\04.Stage_Space\05.Won\03.SpaceRail\SpaceRail_Node</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\SpaceRailData.cpp">
-      <Filter>02.GameObject\04.Stage_Space\05.Won\03.SpaceRail\Data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

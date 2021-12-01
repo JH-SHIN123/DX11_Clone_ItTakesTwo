@@ -27,7 +27,6 @@ HRESULT CSpaceRail_Node::NativeConstruct(void* pArg)
 		memcpy(&m_tDesc, pArg, sizeof(m_tDesc));
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
-
 	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_tDesc.WorldMatrix));
 
 	CGameObject::NativeConstruct(nullptr);
@@ -36,7 +35,8 @@ HRESULT CSpaceRail_Node::NativeConstruct(void* pArg)
 	m_UserData.pGameObject = this;
 
 	CTriggerActor::ARG_DESC tTriggerArg;
-	tTriggerArg.pGeometry = new PxSphereGeometry(3.f);
+	tTriggerArg.pGeometry = new PxBoxGeometry(9.f, 7.5f, 9.f);
+	//tTriggerArg.pGeometry = new PxBoxGeometry(1.f, 1.f, 1.f);
 	tTriggerArg.pTransform = m_pTransformCom;
 	tTriggerArg.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArg), E_FAIL);
@@ -45,15 +45,39 @@ HRESULT CSpaceRail_Node::NativeConstruct(void* pArg)
 	return S_OK;
 }
 
+_int CSpaceRail_Node::Tick(_double dTimeDelta)
+{
+	if (m_bCollide)
+	{
+		if (m_pCody) 
+			m_pCody->Set_SpaceRailNode(this);
+		if (m_pMay) m_pMay->Set_SpaceRailNode(this);
+	}
+
+	return _int();
+}
+
 void CSpaceRail_Node::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject)
 {
 	if (eID == GameID::eCODY || eID == GameID::eMAY)
 	{
-		CCharacter* pChar = (CCharacter*)pGameObject;
 		switch (eStatus)
 		{
 		case Engine::TriggerStatus::eFOUND:
-			//pChar->Set_SpaceRailNode(this);
+			if (eID == GameID::eCODY)
+				m_pCody = (CCharacter*)pGameObject;
+			else if (eID == GameID::eMAY)
+				m_pMay = (CCharacter*)pGameObject;
+
+			m_bCollide = true;
+			break;
+		case Engine::TriggerStatus::eLOST:
+			if (eID == GameID::eCODY)
+				m_pCody = nullptr;
+			else if (eID == GameID::eMAY)
+				m_pMay = nullptr;
+
+			m_bCollide = false;
 			break;
 		}
 	}

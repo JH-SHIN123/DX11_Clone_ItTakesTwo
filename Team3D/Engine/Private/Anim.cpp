@@ -163,7 +163,7 @@ HRESULT CAnim::Update_Transformations_Blend(_double & dCurrentTime, _uint & iCur
 	return S_OK;
 }
 
-HRESULT CAnim::Update_PathTransformation(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations)
+HRESULT CAnim::Update_PathTransformation(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations, _uint iFrameInteract)
 {
 	_uint iIndex = 0;
 	for (auto& pChannel : m_Channels)
@@ -193,7 +193,7 @@ HRESULT CAnim::Update_PathTransformation(_double& dCurrentTime, _uint& iCurAnimF
 		else
 		{
 			if (dCurrentTime > KeyFrames[iCurAnimFrame + 1].dTime)
-				++iCurAnimFrame;
+				iCurAnimFrame += iFrameInteract;
 
 			_float fRatio = _float((dCurrentTime - KeyFrames[iCurAnimFrame].dTime) / (KeyFrames[iCurAnimFrame + 1].dTime - KeyFrames[iCurAnimFrame].dTime));
 
@@ -222,7 +222,7 @@ HRESULT CAnim::Update_PathTransformation(_double& dCurrentTime, _uint& iCurAnimF
 	return S_OK;
 }
 
-HRESULT CAnim::Update_RewindPathTransformation(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations)
+HRESULT CAnim::Update_RewindPathTransformation(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations, _uint iFrameInteract)
 {
 	_uint iIndex = 0;
 	for (auto& pChannel : m_Channels)
@@ -257,7 +257,7 @@ HRESULT CAnim::Update_RewindPathTransformation(_double& dCurrentTime, _uint& iCu
 		else
 		{
 			if (dCurrentTime < KeyFrames[ilNextFrame].dTime)
-				++iCurAnimFrame;
+				iCurAnimFrame += iFrameInteract;
 
 			_float fRatio = fabsf(_float((dCurrentTime - KeyFrames[iCurFrame].dTime) / (KeyFrames[ilNextFrame].dTime - KeyFrames[iCurFrame].dTime)));
 
