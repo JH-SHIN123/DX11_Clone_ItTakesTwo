@@ -201,7 +201,6 @@ _int CCody::Tick(_double dTimeDelta)
 	}
 
 	Find_TargetSpaceRail();
-	if (m_bMoveToRail) m_pActorCom->Set_ZeroGravity(true, false, true);
 	MoveToTargetRail(CPath::STATE_FORWARD, dTimeDelta);
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();

@@ -182,7 +182,8 @@ void CCharacter::MoveToTargetRail(_uint eState, _double dTimeDelta)
 	if (false == m_bMoveToRail) return;
 	if (nullptr == m_pTargetRailNode) return;
 
-	_float fDist = m_pTransformCom->Move_ToTargetRange(m_pTargetRailNode->Get_Position(), 0.1f, dTimeDelta);
+	_float fMoveToSpeed = 20.f;
+	_float fDist = m_pTransformCom->Move_ToTargetRange(m_pTargetRailNode->Get_Position(), 0.1f, dTimeDelta * fMoveToSpeed);
 	if (fDist < 0.2f)
 	{
 		m_pTargetRail = (CSpaceRail*)DATABASE->Get_SpaceRail(m_pTargetRailNode->Get_RailTag()); // 타야할 Path 지정
@@ -190,6 +191,7 @@ void CCharacter::MoveToTargetRail(_uint eState, _double dTimeDelta)
 		m_pTargetRailNode = nullptr;
 
 		m_bSearchToRail = false;
+		m_bMoveToRail = false;
 		m_bOnRail = true;
 	}
 }
