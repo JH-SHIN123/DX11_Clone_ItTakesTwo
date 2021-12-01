@@ -36,8 +36,8 @@ HRESULT CSpaceRail_Node::NativeConstruct(void* pArg)
 	m_UserData.pGameObject = this;
 
 	CTriggerActor::ARG_DESC tTriggerArg;
-	tTriggerArg.pGeometry = new PxBoxGeometry(12.f, 7.5f, 12.f);
-	//tTriggerArg.pGeometry = new PxBoxGeometry(1.f, 1.f, 1.f);
+	//tTriggerArg.pGeometry = new PxBoxGeometry(12.f, 7.5f, 12.f);
+	tTriggerArg.pGeometry = new PxBoxGeometry(1.f, 1.f, 1.f);
 	tTriggerArg.pTransform = m_pTransformCom;
 	tTriggerArg.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArg), E_FAIL);

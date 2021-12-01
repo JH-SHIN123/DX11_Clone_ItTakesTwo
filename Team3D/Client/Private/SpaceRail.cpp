@@ -46,10 +46,20 @@ HRESULT CSpaceRail::NativeConstruct_Prototype()
 
 HRESULT CSpaceRail::NativeConstruct(void* pArg)
 {
-	CDynamic_Env::NativeConstruct(pArg);
+	// TEST
+	ARG_DESC tTest;
+	tTest.iMatrialIndex = 0;
+	tTest.iOption = 0;
+	lstrcpy(tTest.szModelTag, L"Component_Model_GrindRail02");
+	tTest.WorldMatrix = MH_XMFloat4x4Identity();
+	CDynamic_Env::NativeConstruct(&tTest);
 
-	// Pivot 적용
+	//CDynamic_Env::NativeConstruct(pArg);
 
+	/* Setting Pivot */
+	//_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+	//_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	//m_pTransformCom->Set_WorldMatrix(WorldMatrix * PivotMatrix);
 
 	m_UserData.eID = GameID::eSPACERAIL;
 	m_UserData.pGameObject = this;
@@ -69,9 +79,31 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 	XMStoreFloat4x4(&pathDesc.WorldMatrix, m_pTransformCom->Get_WorldMatrix());
 
 	// 모델태그에 따라, 패스 지정해주기
-	//if (false == lstrcmp(m_szRailTag, TEXT("")))
-	//	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_SpaceRail0"), TEXT("Com_Path_SpaceRail0"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_SpaceRail0"), TEXT("Com_Path_SpaceRail0"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+	if (0 == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail01")))
+	{
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail01"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+	}
+	else if (0 == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail02")))
+	{
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail02"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+	}
+	else if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail03")))
+	{
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail03"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+	}
+	else if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail04")))
+	{
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail04"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+	}
+	else if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail05")))
+	{
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail05"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+	}
+	else if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail06")))
+	{
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail06"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+	}
+	
 
 	/* Space Rail Node 구성 */
 	vector<_uint> FrameIndices;

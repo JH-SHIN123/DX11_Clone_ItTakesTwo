@@ -12,7 +12,7 @@ public:
 	typedef struct tagPathDesc 
 	{
 		_float4x4	WorldMatrix = MH_XMFloat4x4Identity();
-		_float		fPivotScale = 0.001f; // pivot 0.01로 하니까 끊켜보인다. 100개보다 더 잘게 쪼개자.
+		_float		fPivotScale = 0.f; // pivot 0.01로 하니까 끊켜보인다. 100개보다 더 잘게 쪼개자.
 	}PATH_DESC;
 
 private:
@@ -25,7 +25,7 @@ public:
 	void	Get_FramesWorldMatrices(vector<_uint>& OutFrameIndices, vector<_float4x4>& OutMatrices, _uint iPerNodeInteract);
 
 public:
-	virtual HRESULT	NativeConstruct_Prototype(const _tchar * pFilePath, const _tchar * pPathTag);
+	virtual HRESULT	NativeConstruct_Prototype(const _tchar * pFilePath, const _tchar * pPathTag, _fmatrix PivotMatrix);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 
 public:
@@ -49,6 +49,7 @@ private: /* Clone Info */
 	_bool					m_bPlayAnimation = false;
 	STATE					m_eState = STATE_END;
 	PATH_DESC				m_tDesc;
+	_float4x4				m_PivotMatrix;
 
 private:
 	_double					m_dCurrentTime = 0.0;		// 현재 애니메이션 진행시간
@@ -57,7 +58,7 @@ private:
 	TRANSFORMATIONS			m_AnimTransformations;		// Channel : Scaling / Rotation / Position
 
 public:
-	static CPath* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar* pFilePath, const _tchar* pPathTag);
+	static CPath* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar* pFilePath, const _tchar* pPathTag, _fmatrix PivotMatrix);
 	virtual CComponent* Clone_Component(void* pArg) override;
 	virtual void Free() override;
 };
