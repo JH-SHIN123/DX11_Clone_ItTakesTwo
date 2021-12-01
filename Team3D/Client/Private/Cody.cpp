@@ -101,14 +101,22 @@ void CCody::Add_LerpInfo_To_Model()
 {
 	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_Jump_Start, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_Jump_Land, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jump_Land, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Start, ANI_C_Bhv_GroundPound_Falling, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Start, ANI_C_Bhv_GroundPound_Land, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land, ANI_C_Bhv_GroundPound_Land_Exit, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land, ANI_C_ChangeSize_Walk_Large_Fwd, false);
-	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Falling, ANI_C_Bhv_GroundPound_Land_Exit, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Falling, ANI_C_Bhv_GroundPound_Land_Exit, true, 5.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_MH, true, 5.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_Jog_Start_Fwd, true, 2.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_Jog, true, 2.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Jump_Start, ANI_C_Bhv_ChangeSize_GroundPound_Start, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Start, ANI_C_Bhv_ChangeSize_GroundPound_Falling, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Falling, ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit, false);
+
+	
 
 	m_pModelCom->Add_LerpInfo(ANI_C_Sprint, ANI_C_Sprint, false);
-	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_MH, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit, ANI_C_MH, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Walk_Large_Fwd, ANI_C_ChangeSize_Walk_Large_Fwd, false);
 
@@ -131,11 +139,15 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd, ANI_C_SprintTurnAround, true, 20.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd_Exhausted, ANI_C_SprintTurnAround, true, 20.f);
 
-
-
 	//m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_MH, true, 10.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_MH, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_ChangeSize_Jump_Start, false);
 
+	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Jump_Large_Land, ANI_C_MH, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Jump_Start, ANI_C_ChangeSize_Jump_Large_Land_Jog, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Jump_Start, ANI_C_ChangeSize_Jump_Large_Land, false);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_180L, true, 10.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_180R, true, 10.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_Falling, true, 10.f);
 
@@ -148,6 +160,7 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jog_Stop_Fwd, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jog, false);
 
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_Jump_Land_Jog, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jump_Land_Jog, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jog_Start_Fwd, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jog_Stop_Fwd, false);
@@ -214,7 +227,7 @@ _int CCody::Tick(_double dTimeDelta)
 	else
 	{
 		// 트리거 끝나고 애니메이션 초기화
-		Trigger_End(dTimeDelta);
+		//Trigger_End(dTimeDelta);
 		m_IsFalling = m_pActorCom->Get_IsFalling();
 		m_pActorCom->Set_GroundPound(m_bGroundPound);
 
@@ -241,8 +254,6 @@ _int CCody::Tick(_double dTimeDelta)
 
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
-
 
 	Attack_BossMissile_After(dTimeDelta); // 미사일 공격이 끝나고 정상적인 회전갑승로 만들어주자
 
@@ -522,6 +533,7 @@ void CCody::KeyInput(_double dTimeDelta)
 		{
 			m_bShortJump = true;
 			m_iJumpCount += 1;
+			m_IsJumping = true;
 		}
 	}
 	else
@@ -530,6 +542,7 @@ void CCody::KeyInput(_double dTimeDelta)
 		{
 			m_bShortJump = true;
 			m_iJumpCount += 1;
+			m_IsJumping = true;
 		}
 	}
 
@@ -605,6 +618,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pActorCom->Get_IsJump() == true)
 	{
 		m_bGroundPound = true;
+		m_IsJumping = false;
 	}
 
 #pragma endregion
@@ -1185,7 +1199,11 @@ void CCody::Jump(const _double dTimeDelta)
 			else
 				m_pActorCom->Jump_Start(1.5f);
 
-			m_pModelCom->Set_Animation(ANI_C_Jump_Start);
+			if (m_eCurPlayerSize == SIZE_LARGE)
+				m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Start); // 사이즈 클때 점프 애니메이션이 다름.
+			else
+				m_pModelCom->Set_Animation(ANI_C_Jump_Start);
+
 			m_bShortJump = false;
 		}
 		if (m_iJumpCount == 2)
@@ -1202,10 +1220,11 @@ void CCody::Jump(const _double dTimeDelta)
 			m_bShortJump = false;
 		}
 	}
-	if (m_IsJumping == true && m_pActorCom->Get_IsJump() == false)
+	if (m_IsJumping == true && m_pActorCom->Get_IsJump() == false && m_bGroundPound == false)
 	{
 		m_iAirDashCount = 0;
 		m_bSprint = false;
+		// 착지할때 키를 누르고 있는 상태라면 Jog 로 연결
 		if (m_pGameInstance->Key_Pressing(DIK_W) || m_pGameInstance->Key_Pressing(DIK_A) || m_pGameInstance->Key_Pressing(DIK_S) || m_pGameInstance->Key_Pressing(DIK_D))
 		{
 			if (m_eCurPlayerSize != SIZE_LARGE)
@@ -1219,17 +1238,20 @@ void CCody::Jump(const _double dTimeDelta)
 				m_pModelCom->Set_NextAnimIndex(ANI_C_ChangeSize_Walk_Large_Fwd);
 			}
 		}
-		else
+		else // 그게 아니라면 그냥 착지.
 		{
-			if (m_eCurPlayerSize != SIZE_LARGE)
+			if (m_eCurPlayerSize != SIZE_LARGE && m_bAfterGroundPound == false)
 			{
 				m_pModelCom->Set_Animation(ANI_C_Jump_Land);
 				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			}
-			else
+			else if (m_eCurPlayerSize == SIZE_LARGE  && m_bPlayGroundPoundOnce == false)
 			{
-				m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Large_Land);
-				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+				if (m_pModelCom->Get_CurAnimIndex() != ANI_C_ChangeSize_Jump_Falling)
+				{
+					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Large_Land);
+					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+				}
 			}
 		}
 		m_IsJumping = false;
@@ -1436,7 +1458,10 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 	{
 		if (m_fGroundPoundAirDelay > 0.4f)
 		{
-			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Land);
+			if (m_eCurPlayerSize != SIZE_LARGE)
+				m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Falling);
+			else
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Falling);
 			if (m_eCurPlayerSize == SIZE_MEDIUM || m_eCurPlayerSize == SIZE_LARGE)
 				m_pActorCom->Set_Gravity(-9.8f);
 			else if (m_eCurPlayerSize == SIZE_SMALL)
@@ -1447,27 +1472,66 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 		}
 		else
 		{
+			m_IsJumping = false;
 			m_bCanMove = false;
-			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Start);
+			if (m_eCurPlayerSize == SIZE_LARGE)
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Start);
+			else
+				m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Start);
 			m_pActorCom->Set_Jump(false);
 			m_pActorCom->Set_Gravity(0.f);
 			m_fGroundPoundAirDelay += (_float)dTimeDelta;
 		}
 	}
 
-	if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_GroundPound_Land) && m_bPlayGroundPoundOnce == false)
+	if (m_eCurPlayerSize != SIZE_LARGE)
 	{
-		m_bPlayGroundPoundOnce = true;
-		m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_GroundPound_Falling) && m_bPlayGroundPoundOnce == false)
+		{
+			m_bPlayGroundPoundOnce = true;
+			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Land_Exit);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		}
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_GroundPound_Land_Exit))
+		{
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_bPlayGroundPoundOnce = false;
+			m_IsAirDash = false;
+			//m_bCanMove = true;
+			m_bAfterGroundPound = true;
+		}
 	}
-	if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit))
+	else
 	{
-		m_pModelCom->Set_Animation(ANI_C_MH);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
-		m_bPlayGroundPoundOnce = false;
-		m_IsAirDash = false;
-		m_bCanMove = true;
+		if (m_pActorCom->Get_IsJump() == true && (m_pModelCom->Get_CurAnimIndex() == (ANI_C_Bhv_ChangeSize_GroundPound_Falling) && m_bPlayGroundPoundOnce == false))
+		{
+			m_bPlayGroundPoundOnce = true;
+			m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		}
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit))
+		{
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_bPlayGroundPoundOnce = false;
+			m_IsAirDash = false;
+			m_bCanMove = true;
+			m_iJumpCount = 0;
+		}
+	}
+
+	if (m_eCurPlayerSize != SIZE_LARGE)
+	{
+		if (m_bAfterGroundPound == true)
+			m_iAfterGroundPoundCount += 1;
+
+		if (m_iAfterGroundPoundCount >= 90) // 1.5초 경직
+		{
+			m_iAfterGroundPoundCount = 0;
+			m_bAfterGroundPound = false;
+			m_bCanMove = true;
+		}
 	}
 
 }
@@ -2011,12 +2075,13 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 			m_bRoll = false;
 
 			m_pActorCom->Set_IsFalling(true);
-			m_pActorCom->Jump_Start(1.5f);
+			m_pActorCom->Jump_Start(1.9f);
 			m_pActorCom->Set_Jump(true);
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_pActorCom->Set_Gravity(-9.8f);
 			m_IsInGravityPipe = false;
-			m_pModelCom->Set_Animation(ANI_C_MH);
+			//m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_Animation(ANI_C_Jump_180R);
 		}
 	}
 }

@@ -211,7 +211,7 @@ public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
 	PLAYER_SIZE Get_Player_Size() { return m_eCurPlayerSize; }
-	//PLAYER_SIZE Get_CurSize() { return m_eCurPlayerSize; }
+	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 
 public:
 	void Set_BossMissile_Attack(); // CBoss_Missile
@@ -290,6 +290,8 @@ private:
 	// GroundPound 관련
 	_bool m_bPlayGroundPoundOnce = false;
 	_bool m_bCanMove = true;
+	_bool m_bAfterGroundPound = false;
+	_uint m_iAfterGroundPoundCount = 0;
 
 	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
 	_float	m_fIdleTime = 0.f;
