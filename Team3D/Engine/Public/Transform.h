@@ -36,6 +36,7 @@ public: /* Setter */
 	void	Set_WorldMatrix(_fmatrix WorldMatrix);
 	void	Set_Rotaion(_fvector vRotation);
 	void	Set_Speed(_double InSpeedPerSec, _double InRotationPerSec);
+	void	Set_RotateQuat(_matrix Quat);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -59,9 +60,11 @@ public:
 	void	RotateYaw(const _double TimeDelta);
 	void	RotatePitch(const _double TimeDelta);
 	void	RotatePitch_Angle(const _double TimeDelta, _float fAngle);
+	void	RotateRoll(const _double TimeDelta);
 
 	void    MoveToDir(const _fvector& vMoveDir, const _double TimeDelta, const _double dAcceleration = 1.f, class CNavigation* pNavigation = nullptr);
 
+	void	RotateByUp(_fvector vUp);
 
 private:
 	_float4x4		m_WorldMatrix;

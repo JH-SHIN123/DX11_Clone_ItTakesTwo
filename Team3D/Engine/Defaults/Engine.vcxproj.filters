@@ -423,6 +423,9 @@
     <ClInclude Include="..\public\PhysX.h">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PhysX.h">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -577,6 +580,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Blur.cpp">
       <Filter>02.Utility\06.PostFX\Blur</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PhysX.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PhysX.cpp">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>

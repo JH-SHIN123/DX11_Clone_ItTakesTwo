@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "RobotParts.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -12,11 +12,11 @@ END
 
 BEGIN(Client)
 
-class CRobot : public CGameObject
+class CRobot : public CRobotParts
 {
 protected:
 	explicit CRobot(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CRobot(const CRobot& rhs);
+	explicit CRobot(const CRobotParts& rhs);
 	virtual ~CRobot() = default;
 
 public:
@@ -29,11 +29,14 @@ public:
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
+	/* For.Trigger */
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
-
+	ROBOTDESC	m_tRobotPartsDesc;
 
 protected:
 	/* For.Component */

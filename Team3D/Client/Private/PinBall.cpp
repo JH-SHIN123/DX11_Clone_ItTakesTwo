@@ -73,7 +73,7 @@ HRESULT CPinBall::NativeConstruct(void * pArg)
 	Safe_Delete(DynamicGeom);
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(0.5f);
+	PxGeometry* TriggerGeom = new PxSphereGeometry(0.4f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;
@@ -182,6 +182,7 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 	if (eStatus == ContactStatus::eFOUND && eID == GameID::Enum::eBLOCKED)
 	{
 		((CPinBall_Handle*)CDataStorage::GetInstance()->Get_Pinball_Handle())->Set_RespawnAngle(true);
+		m_pDynamicActorCom->Get_Actor()->putToSleep();
 		m_bFailed = true;
 		m_IsStartGame = false;
 	}

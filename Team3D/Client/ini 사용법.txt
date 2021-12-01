@@ -1,0 +1,19 @@
+// ini에서 파일읽어와서, 포지션 세팅하는부분
+
+#ifdef _DEBUG
+	_vector vPos = XMVectorZero();
+	TCHAR szBuff[256] = L"";
+	GetPrivateProfileString(L"Section_1", L"Key_1", L"0", szBuff, 256, L"../test.ini");
+	_float x = _ttof(szBuff);
+
+	GetPrivateProfileString(L"Section_1", L"Key_2", L"0", szBuff, 256, L"../test.ini");
+	_float y = _ttof(szBuff);
+
+	GetPrivateProfileString(L"Section_1", L"Key_3", L"0", szBuff, 256, L"../test.ini");
+	_float z = _ttof(szBuff);
+
+	vPos = XMVectorSet(x, y, z, 1.f);
+#endif // _DEBUG
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
+* 업데이트부분에 이 코드를 추가하고, ../Client/test.ini 메모장 열어서 위치 수정하시면됩니다.

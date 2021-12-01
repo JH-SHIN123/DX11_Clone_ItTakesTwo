@@ -1,37 +1,41 @@
 #include "stdafx.h"
 #include "..\public\NoBatterySign.h"
-#include "GameInstance.h"
 #include "Cody.h"
 #include "May.h"
 #include "UI_Generator.h"
 #include "RobotHead.h"
 
 CNoBatterySign::CNoBatterySign(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
-	: CGameObject(pDevice, pDeviceContext)
+	: CRobotParts(pDevice, pDeviceContext)
 {
 }
 
-CNoBatterySign::CNoBatterySign(const CNoBatterySign & rhs)
-	: CGameObject(rhs)
+CNoBatterySign::CNoBatterySign(const CRobotParts & rhs)
+	: CRobotParts(rhs)
 {
 }
 
 HRESULT CNoBatterySign::NativeConstruct_Prototype()
 {
-	CGameObject::NativeConstruct_Prototype();
+	CRobotParts::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
 HRESULT CNoBatterySign::NativeConstruct(void * pArg)
 {
-	CGameObject::NativeConstruct(pArg);
-	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_NoBatterySign"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(15.f, 2.2f, 15.3f, 1.f));
+
+	if (nullptr != pArg)
+		memcpy(&m_tRobotPartsDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
+
+	_vector vPosition = m_tRobotPartsDesc.vPosition;
+	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 2.2f);
+	vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) + 0.3f);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f ,0.f), XMConvertToRadians(-90.f));
 
 	CStaticActor::ARG_DESC ArgDesc;
@@ -43,14 +47,12 @@ HRESULT CNoBatterySign::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 
-	DATABASE->Set_NoBatterySignPtr(this);
-
 	return S_OK;
 }
 
 _int CNoBatterySign::Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CRobotParts::Tick(dTimeDelta);
 
 	if (m_bBatteryCharged == false && m_bHitLever == true)
 	{
@@ -74,7 +76,7 @@ _int CNoBatterySign::Tick(_double dTimeDelta)
 
 _int CNoBatterySign::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CRobotParts::Tick(dTimeDelta);
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
@@ -83,7 +85,7 @@ _int CNoBatterySign::Late_Tick(_double dTimeDelta)
 
 HRESULT CNoBatterySign::Render(RENDER_GROUP::Enum eGroup)
 {
-	CGameObject::Render(eGroup);
+	CRobotParts::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();

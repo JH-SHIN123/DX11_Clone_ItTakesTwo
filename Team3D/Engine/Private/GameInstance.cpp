@@ -71,7 +71,7 @@ HRESULT CGameInstance::Reserve_Container(_uint iLevelCount)
 
 	return S_OK;
 }
-_int CGameInstance::Tick(_double dTimeDelta)
+_int CGameInstance::Tick(_double dTimeDelta, _bool bWndActivate)
 {
 	NULL_CHECK_RETURN(m_pGraphic_Device, EVENT_ERROR);
 	NULL_CHECK_RETURN(m_pInput_Device, EVENT_ERROR);
@@ -81,7 +81,7 @@ _int CGameInstance::Tick(_double dTimeDelta)
 	NULL_CHECK_RETURN(m_pFrustum, EVENT_ERROR);
 
 	m_pGraphic_Device->Tick(dTimeDelta);
-	m_pInput_Device->Tick();
+	m_pInput_Device->Tick(bWndActivate);
 	m_pPhysX->Tick();
 
 	if (m_pGameObject_Manager->Tick(dTimeDelta) < 0)
@@ -426,7 +426,7 @@ void CGameInstance::Release_Engine()
 	CRenderTarget_Manager::GetInstance()->Clear_Buffers();
 #endif
 
-	if (CGameInstance::DestroyInstance())
+	if (CGameInstance::GetInstance()->DestroyInstance())
 		MSG_BOX("Failed to Release CGameInstance.");
 	if (CLevel_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CLevel_Manager.");

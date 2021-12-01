@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CRenderer;
 class CTransform;
 class CModel;
+class CStaticActor;
 class CTriggerActor;
 END
 
@@ -55,6 +56,7 @@ protected:
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 	CTriggerActor*		m_pTriggerCom = nullptr;
+	CStaticActor*		m_pStaticActorCom = nullptr;
 
 public:
 	static CSpaceValve* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

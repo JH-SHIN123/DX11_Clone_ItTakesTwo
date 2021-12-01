@@ -185,6 +185,8 @@
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\Public\AlienScreen.h" />
+    <ClInclude Include="..\Public\BigButtonFrame.h" />
+    <ClInclude Include="..\Public\Boss_Missile.h" />
     <ClInclude Include="..\Public\Bridge.h" />
     <ClInclude Include="..\Public\CamEffect.h" />
     <ClInclude Include="..\public\Cam_Helper.h" />
@@ -201,7 +203,9 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
+    <ClInclude Include="..\Public\GameOption.h" />
     <ClInclude Include="..\public\DeadLine.h" />
+    <ClInclude Include="..\Public\DummyWall.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />
     <ClInclude Include="..\public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Color.txt" />
@@ -210,9 +214,12 @@
     <ClInclude Include="..\public\Effect_Env_Particle.h" />
     <ClInclude Include="..\public\Effect_Generator.h" />
     <ClInclude Include="..\Public\Effect_GravityPipe.h" />
+    <ClInclude Include="..\public\Effect_Umbrella_Pipe.h" />
     <ClInclude Include="..\public\Effect_May_Boots.h" />
     <ClInclude Include="..\public\Effect_May_Boots_Walking_Particle.h" />
+    <ClInclude Include="..\public\Effect_Player_Lail.h" />
     <ClInclude Include="..\public\Effect_Player_Revive.h" />
+    <ClInclude Include="..\public\Effect_Robot_Battery_Spark.h" />
     <ClInclude Include="..\public\Effect_Wormhole.h" />
     <ClInclude Include="..\public\Effect_FireDoor.h" />
     <ClInclude Include="..\Public\HookUFO.h" />
@@ -268,6 +275,7 @@
     <ClInclude Include="..\Public\RobotBattery.h" />
     <ClInclude Include="..\Public\RobotHead.h" />
     <ClInclude Include="..\Public\RobotLever.h" />
+    <ClInclude Include="..\Public\RobotParts.h" />
     <ClInclude Include="..\Public\Rocket.h" />
     <ClInclude Include="..\Public\SavePoint.h" />
     <ClInclude Include="..\Public\SecurityCamera.h" />
@@ -288,6 +296,8 @@
     <ClInclude Include="..\Public\UIObject.h" />
     <ClInclude Include="..\Public\UISprite.h" />
     <ClInclude Include="..\Public\UI_Generator.h" />
+    <ClInclude Include="..\public\WallLaserTrap.h" />
+    <ClInclude Include="..\public\WarpGate.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -295,11 +305,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\AlienScreen.cpp" />
+    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
+    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
+    <ClCompile Include="..\Private\CamEffect.cpp" />
+    <ClCompile Include="..\Private\Cam_Helper.cpp" />
+    <ClCompile Include="..\Private\BigButtonFrame.cpp" />
     <ClCompile Include="..\Private\Bridge.cpp" />
     <ClCompile Include="..\Private\DeadLine.cpp" />
     <ClCompile Include="..\Private\BigPlanet.cpp" />
-    <ClCompile Include="..\Private\CamEffect.cpp" />
-    <ClCompile Include="..\private\Cam_Helper.cpp" />
+    <ClCompile Include="..\Private\Boss_Missile.cpp" />
+    <ClCompile Include="..\Private\DummyWall.cpp" />
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
     <ClCompile Include="..\private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
@@ -307,9 +322,12 @@
     <ClCompile Include="..\private\Effect_Env_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Generator.cpp" />
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp" />
+    <ClCompile Include="..\private\Effect_Umbrella_Pipe.cpp" />
     <ClCompile Include="..\private\Effect_May_Boots.cpp" />
     <ClCompile Include="..\private\Effect_May_Boots_Walking_Particle.cpp" />
+    <ClCompile Include="..\private\Effect_Player_Lail.cpp" />
     <ClCompile Include="..\private\Effect_Player_Revive.cpp" />
+    <ClCompile Include="..\private\Effect_Robot_Battery_Spark.cpp" />
     <ClCompile Include="..\private\Effect_Wormhole.cpp" />
     <ClCompile Include="..\private\Effect_FireDoor.cpp" />
     <ClCompile Include="..\Private\HookUFO.cpp" />
@@ -318,8 +336,6 @@
     <ClCompile Include="..\private\InGameEffect_Model.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Rect.cpp" />
     <ClCompile Include="..\private\Effect_Landing_Smoke.cpp" />
-    <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
-    <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
     <ClCompile Include="..\Private\BigButton.cpp" />
     <ClCompile Include="..\Private\CameraActor.cpp" />
     <ClCompile Include="..\Private\CameraBehaviorCallback.cpp" />
@@ -372,6 +388,7 @@
     <ClCompile Include="..\Private\RobotBattery.cpp" />
     <ClCompile Include="..\Private\RobotHead.cpp" />
     <ClCompile Include="..\Private\RobotLever.cpp" />
+    <ClCompile Include="..\Private\RobotParts.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
     <ClCompile Include="..\Private\SavePoint.cpp" />
     <ClCompile Include="..\Private\SecurityCamera.cpp" />
@@ -392,6 +409,8 @@
     <ClCompile Include="..\Private\UIObject.cpp" />
     <ClCompile Include="..\Private\UISprite.cpp" />
     <ClCompile Include="..\Private\UI_Generator.cpp" />
+    <ClCompile Include="..\private\WallLaserTrap.cpp" />
+    <ClCompile Include="..\private\WarpGate.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -415,8 +434,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom_STT.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_RectCustom.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect_Effect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sprite.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl" />

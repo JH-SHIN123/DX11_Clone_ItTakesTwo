@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Effect_Dash.h"
-#include "GameInstance.h"
 
 CEffect_Dash::CEffect_Dash(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Rect(pDevice, pDeviceContext)
@@ -14,7 +13,7 @@ CEffect_Dash::CEffect_Dash(const CEffect_Dash & rhs)
 
 HRESULT CEffect_Dash::NativeConstruct_Prototype(void * pArg)
 {
-	__super::NativeConstruct_Prototype(pArg);
+	__super::NativeConstruct_Prototype(pArg); //
 
 	m_EffectDesc_Prototype.vSize = { 1.f,1.f,10.f };
 	m_EffectDesc_Prototype.fLifeTime = 3;
@@ -26,8 +25,7 @@ HRESULT CEffect_Dash::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Textrue_Color"), (CComponent**)&m_pTexturesCom_Color), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV"), TEXT("Com_Rect"), (CComponent**)&m_pRectCom), E_FAIL);
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_Color), E_FAIL);
 
 	//
 	//_vector vRight = XMLoadFloat4(&m_pInstanceBuffer[0].vRight);
@@ -48,7 +46,7 @@ _int CEffect_Dash::Tick(_double TimeDelta)
 		return EVENT_DEAD;
 
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
-	m_dAlphaTime -= TimeDelta;
+	m_dAlphaTime -= TimeDelta * 0.5f;
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 		Check_Scale(TimeDelta, iIndex);
@@ -59,7 +57,7 @@ _int CEffect_Dash::Tick(_double TimeDelta)
 
 _int CEffect_Dash::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Dash::Render(RENDER_GROUP::Enum eGroup)
@@ -85,10 +83,13 @@ HRESULT CEffect_Dash::Render(RENDER_GROUP::Enum eGroup)
 	m_pRectCom->Set_Variable("g_vSubCamPosition", &vSubCamPosition, sizeof(_vector));
 
 	_float fTime = (_float)m_dAlphaTime;
+	_float4 vColor = { 0.411764741f, 0.411764741f, 0.411764741f, 1.000000000f }; //DimGrey
 	m_pRectCom->Set_Variable("g_fTime", &fTime, sizeof(_float));
+	m_pRectCom->Set_Variable("g_vColor", &vColor, sizeof(_float4));
+
 	m_pRectCom->Set_ShaderResourceView("g_MaskTexture",	m_pTexturesCom->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum));
 	m_pRectCom->Set_ShaderResourceView("g_DiffuseTexture",	m_pTexturesCom_Second->Get_ShaderResourceView(m_EffectDesc_Prototype.iTextureNum_Second));
-	m_pRectCom->Set_ShaderResourceView("g_ColorTexture",	m_pTexturesCom_Color->Get_ShaderResourceView(9));
+	//m_pRectCom->Set_ShaderResourceView("g_ColorTexture",	m_pTexturesCom_Color->Get_ShaderResourceView(9));
 
 	m_pRectCom->Render(0);
 
@@ -140,7 +141,5 @@ CGameObject * CEffect_Dash::Clone_GameObject(void * pArg)
 
 void CEffect_Dash::Free()
 {
-	Safe_Release(m_pRectCom);
-
 	__super::Free();
 }

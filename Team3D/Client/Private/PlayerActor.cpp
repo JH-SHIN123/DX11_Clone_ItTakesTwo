@@ -65,43 +65,43 @@ HRESULT CPlayerActor::NativeConstruct(void * pArg)
 	m_pActor->userData = ArgDesc.pUserData;
 
 	m_isGravityReordered = true;
-	XMStoreFloat3(&m_vPlayerUpDir, XMVectorSet(0.f, 1.f, 0.f, 0.f));
 
-	XMStoreFloat4x4(&m_vQuat, XMMatrixIdentity());
-
-	//m_fJumpGravity = ArgDesc.fJumpGravity;
+	XMStoreFloat3(&m_vPlayerUp, XMVectorSet(0.f, 1.f, 0.f, 0.f));
 
 	return S_OK;
 }
 
 void CPlayerActor::Move(_fvector vMove, _double dTimeDelta)
 {
-	//_vector vRotatedMove = XMVector3TransformCoord(vMove, XMLoadFloat4x4(&m_vQuat));
-
+	//_vector vTemp = XMVector3TransformCoord(vMove, MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
 	m_pController->move(MH_PxVec3(vMove), 0.001f, (_float)dTimeDelta, *m_pFilters);
 }
 
 void CPlayerActor::Update(_double dTimeDelta)
 {
-	if (m_bZeroGravity == true && m_bStatic == true)
+	if (m_bZeroGravity == true)
 	{
-		m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
-		return;
-	}
-
-	else if (m_bZeroGravity == true && m_IsGoUp == true)
-	{
-		PxVec3 vDist = MH_PxVec3(XMLoadFloat3(&m_vPlayerUpDir) * (_float)(dTimeDelta * 4.f));
-		m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
-		m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
-		return;
-	}
-	else if (m_bZeroGravity == true && m_IsGoUp == false)
-	{
-		PxVec3 vDist = MH_PxVec3(XMLoadFloat3(&m_vPlayerUpDir) * (_float)(-dTimeDelta * 4.f));
-		m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
-		m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
-		return;
+		if (true == m_bStatic)
+		{
+			m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+		}
+		else
+		{
+			if (true == m_IsGoUp)
+			{
+				//PxVec3 vDist = MH_PxVec3(m_vPlayerUp, (_float)(dTimeDelta * 4.f));
+				PxVec3 vDist = { 0.f, (_float)(dTimeDelta * 4.f), 0.f };
+				m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
+				m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+			}
+			else
+			{
+				//PxVec3 vDist = MH_PxVec3(m_vPlayerUp, (_float)(-dTimeDelta * 4.f));
+				PxVec3 vDist = { 0.f, (_float)(-dTimeDelta * 4.f), 0.f };
+				m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
+				m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+			}
+		}
 	}
 	else
 	{
@@ -109,15 +109,12 @@ void CPlayerActor::Update(_double dTimeDelta)
 		_float fY;
 
 		if (m_fHeightDelta != 0.f)
-		{
 			fY = m_fHeightDelta * 0.5f;
-		}
 		else
-		{
 			fY = m_fGravity * (_float)dTimeDelta;
-		}
 
-		PxVec3 vDist = MH_PxVec3(XMLoadFloat3(&m_vPlayerUpDir) * fY);
+		//PxVec3 vDist = PxVec3(0, fY, 0);
+		PxVec3 vDist = MH_PxVec3(m_vPlayerUp, fY);
 		PxU32 iFlags = m_pController->move(vDist, 0.f, (_float)dTimeDelta, *m_pFilters);
 
 		if (PxControllerCollisionFlag::eCOLLISION_DOWN & iFlags)
@@ -131,19 +128,30 @@ void CPlayerActor::Update(_double dTimeDelta)
 			m_IsFalling = true;
 			m_fFallingTime += (_float)dTimeDelta;
 			// 자유낙하
-			vDist = MH_PxVec3(XMLoadFloat3(&m_vPlayerUpDir) * (0.4f * m_fGravity * 0.8f * m_fFallingTime * m_fFallingTime));
-			m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
+			//vDist = PxVec3(0, (0.4f * m_fGravity * 0.8f * m_fFallingTime * m_fFallingTime), 0);
+			vDist = MH_PxVec3(m_vPlayerUp, (0.4f * m_fGravity * 0.8f * m_fFallingTime * m_fFallingTime));
+			m_pController->move(vDist, 0.f, (_float)dTimeDelta, *m_pFilters);
 		}
 
+		//m_pTransform->Set_RotateQuat(MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
+		m_pTransform->RotateByUp(XMLoadFloat3(&m_vPlayerUp));
 		m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+	}
+
+	if (m_iReorderGravityStep == 1)
+	{
+		Step_GravityPath(m_vHitNormal);
+		m_iReorderGravityStep = 2;
+	}
+	else if (m_iReorderGravityStep == 2)
+	{
+		Reorder_Gravity();
+		m_iReorderGravityStep = 0;
 	}
 }
 
 void CPlayerActor::Jump_Start(_float fJumpForce)
 {
-	/*if (m_bJump)
-		return;*/
-
 	m_fJumpTime = 0.f;
 	m_fJumpForce = fJumpForce;
 	m_fBaseJumpForce = fJumpForce;
@@ -170,12 +178,11 @@ void CPlayerActor::Step_GravityPath(PxVec3 vNormal)
 	m_pController->setUpDirection(vNormal);
 	m_isGravityReordered = false;
 
-	_vector vCross = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), MH_XMVec3(vNormal));
-	_float fSqrt = sqrtf((1.f + XMVectorGetX(XMVector3Dot(XMVectorSet(0.f, 1.f, 0.f, 0.f), MH_XMVec3(vNormal)))) * 2.f);
+	m_vPlayerUp = MH_XMFloat3(vNormal);
 
-	m_vQuatRotUp = { XMVectorGetX(vCross) / fSqrt, XMVectorGetY(vCross) / fSqrt, XMVectorGetZ(vCross) / fSqrt, XMVectorGetW(vCross) / 2.f };
-
-	XMStoreFloat4x4(&m_vQuat, XMMatrixRotationQuaternion(XMLoadFloat4(&m_vQuatRotUp)));
+	//m_pTransform->Set_RotateQuat(MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
+	m_pTransform->RotateByUp(XMLoadFloat3(&m_vPlayerUp));
+	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
 
 	//디버그
 	//static _uint iBuffer = 100;
@@ -190,62 +197,60 @@ void CPlayerActor::Reorder_Gravity()
 
 	if (true == m_isGravityReordered) return;
 
-	_vector vUpDir = MH_XMVec3(m_pController->getUpDirection());
+	_float fX = abs(m_vPlayerUp.x);
+	_float fY = abs(m_vPlayerUp.y);
+	_float fZ = abs(m_vPlayerUp.z);
 
-	_float fScalar[6];
-	_uint iMinScalarIndex = 0;
+	_float fMax = fmax(fmax(fX, fY), fZ);
 
-	fScalar[0] = XMVectorGetX(XMVector3Dot(vUpDir, XMVectorSet(1.f, 0.f, 0.f, 0.f)));
-	fScalar[1] = XMVectorGetX(XMVector3Dot(vUpDir, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-	fScalar[2] = XMVectorGetX(XMVector3Dot(vUpDir, XMVectorSet(0.f, 0.f, 1.f, 0.f)));
-	fScalar[3] = XMVectorGetX(XMVector3Dot(vUpDir, XMVectorSet(-1.f, 0.f, 0.f, 0.f)));
-	fScalar[4] = XMVectorGetX(XMVector3Dot(vUpDir, XMVectorSet(0.f, -1.f, 0.f, 0.f)));
-	fScalar[5] = XMVectorGetX(XMVector3Dot(vUpDir, XMVectorSet(0.f, 0.f, -1.f, 0.f)));
-
-	for (_uint iIndex = 0; iIndex < 5; ++iIndex)
+	if (fX == fMax)
 	{
-		if (fScalar[iIndex] > fScalar[iIndex + 1])
-			iMinScalarIndex = iIndex + 1;
+		if (m_vPlayerUp.x > 0.f)
+			m_vPlayerUp = _float3(1.f, 0.f, 0.f);
+		else
+			m_vPlayerUp = _float3(-1.f, 0.f, 0.f);
+	}
+	else if (fY == fMax)
+	{
+		if (m_vPlayerUp.y > 0.f)
+			m_vPlayerUp = _float3(0.f, 1.f, 0.f);
+		else
+			m_vPlayerUp = _float3(0.f, -1.f, 0.f);
+	}
+	else if (fZ == fMax)
+	{
+		if (m_vPlayerUp.z > 0.f)
+			m_vPlayerUp = _float3(0.f, 0.f, 1.f);
+		else
+			m_vPlayerUp = _float3(0.f, 0.f, -1.f);
 	}
 
-	switch (iMinScalarIndex)
-	{
-	case 0:
-		XMStoreFloat3(&m_vPlayerUpDir, XMVectorSet(1.f, 0.f, 0.f, 0.f));
-		break;
-	case 1:
-		XMStoreFloat3(&m_vPlayerUpDir, XMVectorSet(0.f, 1.f, 0.f, 0.f));
-		break;
-	case 2:
-		XMStoreFloat3(&m_vPlayerUpDir, XMVectorSet(0.f, 0.f, 1.f, 0.f));
-		break;
-	case 3:
-		XMStoreFloat3(&m_vPlayerUpDir, XMVectorSet(-1.f, 0.f, 0.f, 0.f));
-		break;
-	case 4:
-		XMStoreFloat3(&m_vPlayerUpDir, XMVectorSet(0.f, -1.f, 0.f, 0.f));
-		break;
-	case 5:
-		XMStoreFloat3(&m_vPlayerUpDir, XMVectorSet(0.f, 0.f, -1.f, 0.f));
-		break;
-	}
-
-	m_pController->setUpDirection(MH_PxVec3(m_vPlayerUpDir));
+	m_pController->setUpDirection(MH_PxVec3(m_vPlayerUp));
 	m_isGravityReordered = true;
+
+	//m_vPlayerUp;
+	//_vector vTemp = XMVector3TransformCoord(XMVectorSet(-0.5f, 0.1f, 0.1f, 1.f), MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
+
+	//m_pTransform->Set_RotateQuat(MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
+	m_pTransform->RotateByUp(XMLoadFloat3(&m_vPlayerUp));
+	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+}
+
+void CPlayerActor::MoveToTarget(PxTransform PxTransform)
+{
+	m_pActor->setKinematicTarget(PxTransform);
 }
 
 void CPlayerActor::Jump_Stop()
 {
-	if (!m_bJump)
-		return;
+	if (!m_bJump) return;
 
 	m_bJump = false;
 }
 
 _float CPlayerActor::Get_Height(_double dTimeDelta)
 {
-	if (!m_bJump)
-		return 0.f;
+	if (!m_bJump) return 0.f;
 
 	m_fJumpTime += (_float)dTimeDelta;
 

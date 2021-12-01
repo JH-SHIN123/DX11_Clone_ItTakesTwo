@@ -29,6 +29,7 @@ private:
 	HRESULT	Render_Priority();
 	HRESULT	Render_NonAlpha();
 	HRESULT	Render_Alpha();
+	HRESULT	Render_Effect();
 	HRESULT	Render_UI();
 
 private:

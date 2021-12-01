@@ -61,7 +61,7 @@ protected:
 	CTextures*						m_pTexturesCom			= nullptr;
 	CTextures*						m_pTexturesCom_Second	= nullptr;
 	CTextures*						m_pTexturesCom_Color	= nullptr;
-	CVIBuffer_RectInstance_Custom*	m_pRectInstanceCom		= nullptr;
+	CVIBuffer_Rect_TripleUV*		m_pRectCom				= nullptr;
 
 public:
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

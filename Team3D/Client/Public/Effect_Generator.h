@@ -17,11 +17,12 @@ enum class Effect_Value
 {
 	Walking_Smoke, Landing_Smoke, 
 	Dash,
-	Cody_Dead,
+	Cody_Dead, Cody_Dead_Fire,
 	Cody_Revive,
-	May_Dead,
+	May_Dead, May_Dead_Fire,
 	May_Revive,
 	May_Boots_Walking,
+	RobotBattery_Spark,
 	Effect_Value_End
 };
 

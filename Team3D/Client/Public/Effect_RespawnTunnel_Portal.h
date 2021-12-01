@@ -44,7 +44,7 @@ private:
 	CVIBuffer_PointInstance_Custom_STT*	m_pPointInstanceCom_Smoke			= nullptr;
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_Smoke				= nullptr;
 	CTextures*							m_pTexturesCom_Smoke				= nullptr;
-	CTextures*							m_pTexturesCom_Smoke2 = nullptr;
+	CTextures*							m_pTexturesCom_Smoke2				= nullptr;
 
 	_float3*							m_pInstanceBuffer_Smoke_Dir			= nullptr;
 	_double*							m_pInstanceBuffer_Smoke_PosReset	= nullptr;

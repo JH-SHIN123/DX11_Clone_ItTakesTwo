@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Bridge.h"
 
-_bool		CBridge::m_bTrigger = false;
-_float4x4	CBridge::m_matPivot;
-
 CBridge::CBridge(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {

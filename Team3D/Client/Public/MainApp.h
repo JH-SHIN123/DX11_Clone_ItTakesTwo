@@ -14,6 +14,7 @@ public:
 public:
 	HRESULT	NativeConstruct();
 	HRESULT Run_App();
+	void	Lock_Mouse();
 
 private:
 	CGameInstance*			m_pGameInstance		= nullptr;

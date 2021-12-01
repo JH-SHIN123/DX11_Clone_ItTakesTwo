@@ -24,11 +24,14 @@ HRESULT CMoonBaboonCore::NativeConstruct_Prototype()
 
 HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 {
-	CGameObject::NativeConstruct(pArg);
+	if (nullptr != pArg)
+		memcpy(&m_tDesc, pArg, sizeof(m_tDesc));
+
+	CGameObject::NativeConstruct(nullptr);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(4.f, 0.f)), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 5.f, 1.f));
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_tDesc.WorldMatrix));
 
 	m_pCorePillar = CMoonBaboonCore_Pillar::Create(m_pDevice, m_pDeviceContext, this);
 	m_pCoreButton = CMoonBaboonCore_Button::Create(m_pDevice, m_pDeviceContext, this);
@@ -40,6 +43,22 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 
 _int CMoonBaboonCore::Tick(_double TimeDelta)
 {
+//#ifdef _DEBUG
+//	_vector vPos = XMVectorZero();
+//	TCHAR szBuff[256] = L"";
+//	GetPrivateProfileString(L"Section_1", L"Key_1", L"0", szBuff, 256, L"../test.ini");
+//	_float x = _ttof(szBuff);
+//
+//	GetPrivateProfileString(L"Section_1", L"Key_2", L"0", szBuff, 256, L"../test.ini");
+//	_float y = _ttof(szBuff);
+//
+//	GetPrivateProfileString(L"Section_1", L"Key_3", L"0", szBuff, 256, L"../test.ini");
+//	_float z = _ttof(szBuff);
+//
+//	vPos = XMVectorSet(x, y, z, 1.f);
+//#endif // _DEBUG
+//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
 	if (m_bBroken)
 	{
 		if (false == m_bBrokenStart)
