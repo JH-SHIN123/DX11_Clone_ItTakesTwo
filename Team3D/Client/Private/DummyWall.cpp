@@ -41,7 +41,7 @@ HRESULT CDummyWall::NativeConstruct(void * pArg)
 
 	_matrix PhysxWorldMatrix = XMMatrixIdentity();
 	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans), XMVectorGetY(vTrans) + 15.f, XMVectorGetZ(vTrans));
+	PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans), XMVectorGetY(vTrans) + 5.f, XMVectorGetZ(vTrans));
 	m_pPhysxTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pPhysxTransformCom->Set_WorldMatrix(PhysxWorldMatrix);
 
@@ -51,7 +51,7 @@ HRESULT CDummyWall::NativeConstruct(void * pArg)
 	CTriggerActor::ARG_DESC ArgDesc;
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pPhysxTransformCom;
-	ArgDesc.pGeometry = new PxBoxGeometry(2.2f, 26.1f, 2.2f);
+	ArgDesc.pGeometry = new PxBoxGeometry(2.2f, 17.4f, 2.2f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);

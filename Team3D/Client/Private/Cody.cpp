@@ -130,6 +130,7 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Jump_Land, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Jump_Land_Jog, false);
 
+	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_MH, ANI_C_WallSlide_Jump, true, 20.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_Jump, ANI_C_WallSlide_Enter, true, 20.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_Enter, ANI_C_WallSlide_MH, true, 20.f);
 
@@ -1634,21 +1635,15 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::eDUMMYWALL && m_pActorCom->Get_IsWallCollide() == true && m_bWallAttach == false
 			&& m_IsJumping == true && m_IsFalling == false)
 		{
-			PxVec3 vNormal = m_pActorCom->Get_CollideNormal();
+			/*PxVec3 vNormal = m_pActorCom->Get_CollideNormal();
 			_vector vWallUp = { vNormal.x, vNormal.y, vNormal.z, 0.f };
 			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
-			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);*/
 
-			_matrix matHands = m_pModelCom->Get_BoneMatrix("Head") * m_pTransformCom->Get_WorldMatrix();
-			_float fHandsPosY = matHands.r[3].m128_f32[1];
-
-			if (vContactPos.m128_f32[1] > fHandsPosY)
-			{
-				m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
-				m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
-				m_pActorCom->Set_ZeroGravity(true, false, true);
-				m_bWallAttach = true;
-			}
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bWallAttach = true;
 		}
 
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
@@ -2009,7 +2004,7 @@ void CCody::Wall_Jump(const _double dTimeDelta)
 	if (m_IsWallJumping == true)
 	{
 		if(m_fWallToWallSpeed <= 50.f)
-			m_fWallToWallSpeed += (_float)dTimeDelta * 60.f;
+			m_fWallToWallSpeed += (_float)dTimeDelta * 57.f;
 
 		PxVec3 vNormal = m_pActorCom->Get_CollideNormal();
 		_vector vWallUp = { vNormal.x, vNormal.y, vNormal.z, 0.f };
@@ -2023,10 +2018,10 @@ void CCody::Wall_Jump(const _double dTimeDelta)
 			m_bWallAttach = false;
 			m_IsWallJumping = false;
 			m_fWallJumpingTime = 0.f;
-			m_fWallToWallSpeed = 0.5f;
+			m_fWallToWallSpeed = 0.55f;
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(179.f));
 		}
-		if (m_pActorCom->Get_IsWallCollide() == true)
+		if (m_pActorCom->Get_IsWallCollide() == true && m_IsCollide == true)
 		{
 			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
 			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);
@@ -2037,9 +2032,25 @@ void CCody::Wall_Jump(const _double dTimeDelta)
 			m_bWallAttach = true;
 			m_IsWallJumping = false;
 			m_fWallJumpingTime = 0.f;
-			m_fWallToWallSpeed = 0.5f;
+			m_fWallToWallSpeed = 0.55f;
 			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
+		}
+		else if (m_pActorCom->Get_IsWallCollide() == true && m_IsCollide == false)
+		{
+			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);
+			vWallUp.m128_f32[2] = 0.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(vContactPos + (vWallUp));
+			//m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_bWallAttach = false;
+			m_IsWallJumping = false;
+			m_fWallJumpingTime = 0.f;
+			m_fWallToWallSpeed = 0.5f;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_pActorCom->Set_WallCollide(false);
 		}
 
 		m_fWallJumpingTime += (_float)dTimeDelta;

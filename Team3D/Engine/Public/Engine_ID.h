@@ -43,6 +43,7 @@ namespace Engine
 			eGRAVITYPATH_CENTER,
 			eGRAVITYPATH_SIDE,
 			eDUMMYWALL,
+			eDUMMYCOLLIDER,
 			eENVIRONMENT
 		};
 	};
