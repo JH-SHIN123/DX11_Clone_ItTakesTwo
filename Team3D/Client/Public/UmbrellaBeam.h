@@ -55,9 +55,7 @@ private:
 	void KeyInput_Rotate(_double TimeDelta);
 
 private:
-	HRESULT Ready_Layer_ControlRoom_Battery(const _tchar * pLayerTag);
 	HRESULT Ready_Layer_UmbrellaBeam_Stand(const _tchar * pLayerTag);
-
 	HRESULT Ready_Layer_UmbrellaBeam_Effect(const _tchar * pLayerTag);
 
 public:

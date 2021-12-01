@@ -1552,8 +1552,8 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eUMBRELLABEAMJOYSTICK && m_pGameInstance->Key_Down(DIK_E))
 		{
-			m_pModelCom->Set_Animation(ANI_M_ArcadeScreenLever_MH);
-			m_pModelCom->Set_NextAnimIndex(ANI_M_ArcadeScreenLever_Fwd);
+			m_pModelCom->Set_Animation(ANI_M_ArcadeScreenLever_Fwd);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_ArcadeScreenLever_MH);
 			m_IsControlJoystick = true;
 			CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
 			pJoystick->Set_ControlActivate();
@@ -2098,6 +2098,16 @@ void CCody::Boss_Missile_Control(const _double dTimeDelta)
 		m_IsCollide = false;
 		m_IsBossMissile_RotateYawRoll_After = true;
 	}
+}
+
+void CCody::Set_OnParentRotate(_matrix ParentMatrix)
+{
+	_matrix matWorld, matRotY, matTrans;
+	matTrans = XMMatrixTranslation(-0.85f, 0.7f, -0.5f);
+	matRotY = XMMatrixRotationY(XMConvertToRadians(90.f));
+
+	matWorld = matRotY * matTrans * ParentMatrix;
+	m_pTransformCom->Set_WorldMatrix(matWorld);
 }
 
 void CCody::Set_BossMissile_Attack()

@@ -219,6 +219,7 @@ public:
 
 public:
 	void Set_PushingBattery() { m_IsPushingBattery = false; }
+	void Set_OnParentRotate(_matrix ParentMatrix);
 
 public:
 	void	Set_BossMissile_Attack(); // CBoss_Missile
@@ -233,6 +234,7 @@ private:
 	// 단발성 함수들.
 	HRESULT Ready_Component();
 	void Add_LerpInfo_To_Model();
+
 
 private: // Effects
 	class CEffect_Cody_Size* m_pEffect_Size = nullptr;
