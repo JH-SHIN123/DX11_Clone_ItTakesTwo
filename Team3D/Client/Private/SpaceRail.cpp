@@ -40,9 +40,6 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 	tTest.iMatrialIndex = 0;
 	tTest.iOption = 0;
 	lstrcpy(tTest.szModelTag, L"Component_Model_GrindRail02");
-	//_matrix Rotate = XMMatrixRotationY(XMConvertToRadians(90.f));
-	//_matrix Trans = XMMatrixTranslation(0.f,30.f,0.f);
-	//XMStoreFloat4x4(&tTest.WorldMatrix, Rotate * Trans);
 	tTest.WorldMatrix = MH_XMFloat4x4Identity();
 
 	CDynamic_Env::NativeConstruct(&tTest);
@@ -55,9 +52,7 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 	XMStoreFloat4x4(&pathDesc.WorldMatrix, m_pTransformCom->Get_WorldMatrix());
 
 	// 모델태그에 따라, 패스 지정해주기
-	//if (false == lstrcmp(m_szRailTag, TEXT("")))
-	//	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_SpaceRail0"), TEXT("Com_Path_SpaceRail0"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_SpaceRail0"), TEXT("Com_Path_SpaceRail0"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail02"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
 
 	/* Space Rail Node 구성 */
 	vector<_uint> FrameIndices;
