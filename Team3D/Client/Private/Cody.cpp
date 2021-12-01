@@ -1822,8 +1822,8 @@ void CCody::Find_TargetSpaceRail(_fvector vCamPos, _vector vCamLook)
 
 	if (m_pTargetRailNode) {
 		// 타겟을 찾았다면, 레일 탈 준비
-		//m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter); // 줄던지는거
-		//m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind); // 댕겨서 날라거는거
+		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter); // 줄던지는거
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind); // 댕겨서 날라거는거
 		m_bMoveToRail = true;
 	}
 }
@@ -1836,7 +1836,7 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 	if (fDist < 0.2f)
 	{
 		/* 타는 애니메이션으로 변경 */
-		//m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
 
 		/* 타야할 Path 지정 */
 		m_pTargetRail = (CSpaceRail*)DATABASE->Get_SpaceRail(m_pTargetRailNode->Get_RailTag());
@@ -1851,14 +1851,14 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 		}
 
 		/* 패스 지정 */
-		//CPath::STATE ePathState = CPath::STATE_END;
-		//if(m_pGameInstance->Key_Down(DIK_W))
-		//	ePathState = CPath::STATE_FORWARD;
-		//else if(m_pGameInstance->Key_Down(DIK_S))
-		//	ePathState = CPath::STATE_BACKWARD;
+		CPath::STATE ePathState = CPath::STATE_END;
+		if(m_pGameInstance->Key_Down(DIK_W))
+			ePathState = CPath::STATE_FORWARD;
+		else if(m_pGameInstance->Key_Down(DIK_S))
+			ePathState = CPath::STATE_BACKWARD;
 
 		/* Edge State 지정 */
-		m_pTargetRail->Start_Path(CPath::STATE_FORWARD, m_pTargetRailNode->Get_FrameIndex());
+		m_pTargetRail->Start_Path(ePathState, m_pTargetRailNode->Get_FrameIndex());
 
 		/* 레일 앞까지 도착, 레일 타기 시작 */
 		m_pTargetRailNode = nullptr;
@@ -1871,7 +1871,7 @@ void CCody::TakeRail(_double dTimeDelta)
 	if (nullptr == m_pTargetRail || false == m_bOnRail) return;
 
 	/* 타는 애니메이션으로 변경 */
-	//m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
+	m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	m_bOnRail = m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);
@@ -1879,7 +1879,7 @@ void CCody::TakeRail(_double dTimeDelta)
 		m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 	else
 	{
-		//m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // 자유낙하 애니메이션으로 변경해야함.
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // 자유낙하 애니메이션으로 변경해야함.
 		m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 	}
 }

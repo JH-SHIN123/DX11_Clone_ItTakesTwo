@@ -12,6 +12,8 @@ BEGIN(Client)
 class CSpaceRail_Node;
 class CSpaceRail : public CDynamic_Env
 {
+public:
+
 private:
 	explicit CSpaceRail(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CSpaceRail(const CSpaceRail& rhs);

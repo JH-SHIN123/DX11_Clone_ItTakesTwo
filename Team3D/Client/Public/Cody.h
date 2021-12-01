@@ -369,7 +369,6 @@ private:
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
 
-	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);
 	void Hit_Rocket(const _double dTimeDelta);
 	void Activate_RobotLever(const _double dTimeDelta);
