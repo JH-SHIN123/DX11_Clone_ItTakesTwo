@@ -5,12 +5,12 @@
 
 BEGIN(Client)
 
-class CUmbrellaBeam_Base : public CGameObject
+class CUmbrellaBeam_Joystick : public CGameObject
 {
 protected:
-	explicit CUmbrellaBeam_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CUmbrellaBeam_Base(const CUmbrellaBeam_Base& rhs);
-	virtual ~CUmbrellaBeam_Base() = default;
+	explicit CUmbrellaBeam_Joystick(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CUmbrellaBeam_Joystick(const CUmbrellaBeam_Joystick& rhs);
+	virtual ~CUmbrellaBeam_Joystick() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -25,11 +25,16 @@ public:
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
+
+
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
 	_float										m_fAngle = 0.f;
+
+private:
+	class CUmbrellaBeam*						m_pUmbrellaBeam = nullptr;
 
 protected:
 	/* For.Component */
@@ -37,9 +42,13 @@ protected:
 	CTransform*									m_pTransformCom = nullptr;
 	CModel*										m_pModelCom = nullptr;
 	CStaticActor*								m_pStaticActorCom = nullptr;
+	CTriggerActor*								m_pTriggerCom = nullptr;
+
+private:
+	HRESULT Ready_Layer_UmbrellaBeam(const _tchar * pLayerTag);
 
 public:
-	static CUmbrellaBeam_Base* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUmbrellaBeam_Joystick* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
