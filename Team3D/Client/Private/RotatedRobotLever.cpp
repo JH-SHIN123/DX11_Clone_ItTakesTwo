@@ -180,10 +180,7 @@ void CRotatedRobotLever::Activate_Lever(_double dTimeDelta)
 	}
 	else if (m_bBatteryCharged == true)
 	{
-		if (m_tRtRobotPartsDesc.iStageNum == ST_GRAVITYPATH)
-			DATABASE->Set_GravityStageClear(true);
-		else if (m_tRtRobotPartsDesc.iStageNum == ST_PINBALL)
-			DATABASE->Set_PinBallStageClear(true);
+		DATABASE->Set_PinBallStageClear(true);
 
 		m_fStopDelay += (_float)dTimeDelta;
 		if (m_fStopDelay > 0.2f && m_fStopDelay <= 0.6f)

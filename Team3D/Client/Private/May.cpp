@@ -10,8 +10,8 @@
 
 // m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
 // m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
-// m_pGameInstance->Get_Pad_LStickY() > 20000 (Down)
-// m_pGameInstance->Get_Pad_LStickY() < 44000 (Up)
+// m_pGameInstance->Get_Pad_LStickY() < 20000 (Down)
+// m_pGameInstance->Get_Pad_LStickY() > 44000 (Up)
 
 CMay::CMay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
@@ -145,6 +145,7 @@ _int CMay::Tick(_double dTimeDelta)
 		In_GravityPipe(dTimeDelta);
 		Warp_Wormhole(dTimeDelta);
 		Touch_FireDoor(dTimeDelta);
+		Hook_UFO(dTimeDelta);
 	}
 	else
 	{
@@ -1322,11 +1323,47 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			}
 		}
+		else if (m_eTargetGameID == GameID::eHOOKUFO && m_pGameInstance->Pad_Key_Down(DIP_Y) && m_IsHookUFO == false)
+		{
+			// 최초 1회 OffSet 조정
+			if (m_IsHookUFO == false)
+			{
+				m_vTriggerTargetPos.y = m_vTriggerTargetPos.y - 5.f;
+				_vector vPlayerPos = XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f);
+				_vector vTriggerPos = XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f);
+				_vector vPlayerToTrigger = XMVector3Normalize(vTriggerPos - vPlayerPos);
+				_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+				_vector vRight = XMVector3Cross(vPlayerToTrigger, vUp);
+				m_vHookUFOAxis = vRight;
+
+
+				//m_pTransformCom->Rotate_ToTarget(XMLoadFloat3(&m_vTriggerTargetPos));
+				_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				_vector vTargetPos = XMLoadFloat3(&m_vTriggerTargetPos);
+
+				_vector vDir = vTargetPos - vTestPos;
+				_float  fDist = XMVectorGetX(XMVector3Length(vDir));
+
+				_vector vFixUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);/*m_vHookUFOAxis*/;
+				_vector vTriggerToPlayer = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat3(&m_vTriggerTargetPos));
+				m_fRopeAngle = XMVectorGetX(XMVector3AngleBetweenNormals(vFixUp, vTriggerToPlayer));
+				m_faArmLength = fDist;
+
+				//_vector vPosition = XMVectorSet(XMVectorGetX(vTestPos), m_faArmLength * cos(m_fRopeAngle), m_faArmLength * sin(m_fRopeAngle), 1.f) + XMVectorSetW(XMLoadFloat3(&m_vTriggerTargetPos), 1.f);
+				XMStoreFloat3(&m_vStartPosition, XMVectorSet(XMVectorGetX(vTestPos), XMVectorGetY(vTestPos), XMVectorGetZ(vTestPos), 1.f)/* + (XMLoadFloat3(&m_vTriggerTargetPos)*/);
+
+			}
+			m_pModelCom->Set_Animation(ANI_M_Swinging_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_Swinging_Fwd);
+			m_IsHookUFO = true;
+			m_bGoToHooker = true;
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe 
-		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor)
+		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO)
 		return true;
 
 	return false;
@@ -1617,6 +1654,55 @@ void CMay::Touch_FireDoor(const _double dTimeDelta)
 	m_IsTouchFireDoor = false;
 	m_IsCollide = false;
 	// Get리스폰
+}
+
+void CMay::Hook_UFO(const _double dTimeDelta)
+{
+	if (m_IsHookUFO == true)
+	{
+		_float Gravity = -0.3f;
+
+		// ZY
+		m_faAcceleration = (-1.f * Gravity / m_faArmLength) * sin(m_fRopeAngle);
+		if (m_pGameInstance->Get_Pad_LStickY() > 44000)
+			m_faAcceleration += (_float)dTimeDelta;
+		if (m_pGameInstance->Get_Pad_LStickY() < 20000)
+			m_faAcceleration -= (_float)dTimeDelta;
+		m_faVelocity += m_faAcceleration;
+		m_faVelocity *= m_faDamping;
+		m_fRopeAngle += m_faVelocity / 15.f;
+
+
+		_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x - m_vStartPosition.x)/**2.f*/ * sin(-m_fRopeAngle),
+			/*m_faArmLength **/(m_vTriggerTargetPos.y - m_vStartPosition.y) *2.f* cos(m_fRopeAngle)
+			, (/*m_faArmLength*/(m_vTriggerTargetPos.z - m_vStartPosition.z)/**2.f*/ * sin(-m_fRopeAngle)), 0.f)/* + XMLoadFloat3(&m_vTriggerTargetPos)*/;
+		m_pActorCom->Set_Position(XMLoadFloat3(&m_vTriggerTargetPos) + vPosition);
+
+		_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
+		vTriggerToPlayer = XMVectorSetW(vTriggerToPlayer, 1.f);
+		m_pTransformCom->RotateYawDirectionOnLand(-vTriggerToPlayer, (_float)dTimeDelta / 2.f);
+		//m_pTransformCom->Set_RotateAxis(m_vHookUFOAxis, sin(-m_fRopeAngle));
+
+
+
+		////////////////////////////////////////
+
+
+		if (m_pGameInstance->Pad_Key_Down(DIP_B)) // 로프 놓기
+		{
+			m_bGoToHooker = false;
+			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+			m_pModelCom->Set_Animation(ANI_M_Swinging_Exit_Fwd);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_180R);
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_pActorCom->Set_Gravity(-9.8f);
+			m_pActorCom->Set_IsFalling(true);
+			m_pActorCom->Jump_Start(3.5f);
+			m_pActorCom->Set_Jump(true);
+			m_IsHookUFO = false;
+			m_IsCollide = false;
+		}
+	}
 }
 
 

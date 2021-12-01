@@ -1631,12 +1631,24 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_IsDeadLine = true;
 		}
-		else if (m_eTargetGameID == GameID::eDUMMYWALL && m_pActorCom->Get_IsWallCollide() == true && m_bWallAttach == false && m_pActorCom->Get_ContactPos().y >= 1.f)
+		else if (m_eTargetGameID == GameID::eDUMMYWALL && m_pActorCom->Get_IsWallCollide() == true && m_bWallAttach == false
+			&& m_IsJumping == true && m_IsFalling == false)
 		{
-			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
-			m_bWallAttach = true;
-			m_pActorCom->Set_ZeroGravity(true, false, true);
+			PxVec3 vNormal = m_pActorCom->Get_CollideNormal();
+			_vector vWallUp = { vNormal.x, vNormal.y, vNormal.z, 0.f };
+			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);
+
+			_matrix matHands = m_pModelCom->Get_BoneMatrix("Head") * m_pTransformCom->Get_WorldMatrix();
+			_float fHandsPosY = matHands.r[3].m128_f32[1];
+
+			if (vContactPos.m128_f32[1] > fHandsPosY)
+			{
+				m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
+				m_pActorCom->Set_ZeroGravity(true, false, true);
+				m_bWallAttach = true;
+			}
 		}
 
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
@@ -1983,6 +1995,7 @@ void CCody::Wall_Jump(const _double dTimeDelta)
 {
 	if (true == m_bWallAttach && false == m_IsWallJumping)
 	{
+		m_pActorCom->Move((-m_pTransformCom->Get_State(CTransform::STATE_UP) / 50.f), dTimeDelta);
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
 			m_pActorCom->Set_ZeroGravity(false, false, false);
@@ -2011,13 +2024,15 @@ void CCody::Wall_Jump(const _double dTimeDelta)
 			m_IsWallJumping = false;
 			m_fWallJumpingTime = 0.f;
 			m_fWallToWallSpeed = 0.5f;
+			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(179.f));
 		}
 		if (m_pActorCom->Get_IsWallCollide() == true)
 		{
 			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
 			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);
+			vWallUp.m128_f32[2] = 0.f;
 			m_pTransformCom->Rotate_ToTargetOnLand(vContactPos + (vWallUp));
-
+			//m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bWallAttach = true;
 			m_IsWallJumping = false;

@@ -315,11 +315,25 @@ private:
 	_bool m_IsCollide = false;
 	_float4x4 m_TriggerTargetWorld = {};
 
-
 	_bool m_IsOnGrind = false;
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
+
+	/* For.HookUFO */
+	_bool m_IsHookUFO = false;
+	_vector m_vHookUFOAxis = {};
+	_bool m_bGoToHooker = false;
+
+	_float m_faArmLength = 0.f;
+	_float m_faVelocity = 0.f;
+	_float m_faAcceleration = 0.f;
+	_float m_fRopeAngle = 0.f;
+	_float3 m_vStartPosition = {};
+	_float3 m_vDstPosition = {};
+
+	// Arbitrary damping
+	_float m_faDamping = 0.995f;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
@@ -359,6 +373,7 @@ private:
 	void In_GravityPipe(const _double dTimeDelta);
 	void Warp_Wormhole(const _double dTimeDelta);
 	void Touch_FireDoor(const _double dTimeDelta);
+	void Hook_UFO(const _double dTimeDelta);
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);

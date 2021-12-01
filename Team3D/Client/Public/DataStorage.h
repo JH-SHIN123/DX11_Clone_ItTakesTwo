@@ -54,6 +54,9 @@ public:
 	void Set_PinBallStageClear(_bool bPinBallStageClear) { m_bPinBallStageClear = bPinBallStageClear; }
 	_bool Get_PinBallStageClear() { return m_bPinBallStageClear; }
 
+	void Set_RailStageClear(_bool bRailStageClear) { m_bRailStageClear = bRailStageClear; }
+	_bool Get_RailStageClear() { return m_bRailStageClear; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -77,6 +80,7 @@ private:
 	_bool m_IsBigButtonPressed = false;
 	_bool m_bGravityStageClear = false;
 	_bool m_bPinBallStageClear = false;
+	_bool m_bRailStageClear = false;
 
 public:
 	virtual void Free() override;

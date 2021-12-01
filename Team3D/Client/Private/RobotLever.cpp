@@ -171,10 +171,6 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 					((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_RobotHead()->Set_Lever_Hit_When_NoBattery(true);
 					((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_NoBatterySign()->Set_HitLever(true);
 					break;
-				case ST_PINBALL:
-					((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_RobotHead()->Set_Lever_Hit_When_NoBattery(true);
-					((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_NoBatterySign()->Set_HitLever(true);
-					break;
 				case ST_RAIL:
 					((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_RobotHead()->Set_Lever_Hit_When_NoBattery(true);
 					((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_NoBatterySign()->Set_HitLever(true);
@@ -200,8 +196,8 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 	{
 		if (m_tRobotPartsDesc.iStageNum == ST_GRAVITYPATH)
 			DATABASE->Set_GravityStageClear(true);
-		else if (m_tRobotPartsDesc.iStageNum == ST_PINBALL)
-			DATABASE->Set_PinBallStageClear(true);
+		else if (m_tRobotPartsDesc.iStageNum == ST_RAIL)
+			DATABASE->Set_RailStageClear(true);
 
 		m_fStopDelay += (_float)dTimeDelta;
 		if (m_fStopDelay > 0.2f && m_fStopDelay <= 0.6f)
@@ -213,10 +209,6 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 			case ST_GRAVITYPATH:
 				((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_RobotHead()->Set_Lever_Active(true);
 				((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_NoBatterySign()->Set_BatteryCharged(true);
-				break;
-			case ST_PINBALL:
-				((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_RobotHead()->Set_Lever_Active(true);
-				((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_NoBatterySign()->Set_BatteryCharged(true);
 				break;
 			case ST_RAIL:
 				((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_RobotHead()->Set_Lever_Active(true);

@@ -77,8 +77,8 @@ _int CDummyWall::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 15.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	/*if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 15.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);*/
 
 	return NO_EVENT;
 }
@@ -86,10 +86,10 @@ _int CDummyWall::Late_Tick(_double dTimeDelta)
 HRESULT CDummyWall::Render(RENDER_GROUP::Enum eGroup)
 {
 	CGameObject::Render(eGroup);
-	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+	/*NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1);
+	m_pModelCom->Render_Model(1);*/
 
 	return S_OK;
 }
@@ -131,10 +131,10 @@ HRESULT CDummyWall::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
+	//m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
-	// Skinned: 2 / Normal: 3
-	m_pModelCom->Render_Model(3, 0, true);
+	//// Skinned: 2 / Normal: 3
+	//m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
 }
