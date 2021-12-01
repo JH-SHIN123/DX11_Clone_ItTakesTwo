@@ -38,7 +38,7 @@ private:
 private:
 	vector<CSpaceRail_Node*>	m_vecSpaceRailNodes;
 	_tchar						m_szRailTag[MAX_PATH] = L"";
-	_uint						m_iPerNodesInteract = 1;
+	_uint						m_iPerNodesInteract = 2;
 
 public:
 	static CSpaceRail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

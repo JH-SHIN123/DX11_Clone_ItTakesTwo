@@ -236,7 +236,6 @@ private:
 	_bool m_bTwoJumping = false;
 	_bool m_bClimb = false;
 	_bool m_bLedgeGrab = false;
-	_bool m_bOnGrind = false;
 	_bool m_bRoll = false;
 	_bool m_IsTurnAround = false;
 	_int m_iSavedKeyPress = 0;

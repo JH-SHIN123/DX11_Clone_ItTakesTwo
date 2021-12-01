@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SpaceRail_Node.h"
-#include "Character.h"
+#include "Cody.h"
+#include "May.h"
 
 CSpaceRail_Node::CSpaceRail_Node(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -35,7 +36,7 @@ HRESULT CSpaceRail_Node::NativeConstruct(void* pArg)
 	m_UserData.pGameObject = this;
 
 	CTriggerActor::ARG_DESC tTriggerArg;
-	tTriggerArg.pGeometry = new PxBoxGeometry(9.f, 7.5f, 9.f);
+	tTriggerArg.pGeometry = new PxBoxGeometry(12.f, 7.5f, 12.f);
 	//tTriggerArg.pGeometry = new PxBoxGeometry(1.f, 1.f, 1.f);
 	tTriggerArg.pTransform = m_pTransformCom;
 	tTriggerArg.pUserData = &m_UserData;
@@ -49,9 +50,8 @@ _int CSpaceRail_Node::Tick(_double dTimeDelta)
 {
 	if (m_bCollide)
 	{
-		if (m_pCody) 
-			m_pCody->Set_SpaceRailNode(this);
-		if (m_pMay) m_pMay->Set_SpaceRailNode(this);
+		if (m_pCody) m_pCody->Set_SpaceRailNode(this);
+		//if (m_pMay) m_pMay->Set_SpaceRailNode(this);
 	}
 
 	return _int();
@@ -64,19 +64,13 @@ void CSpaceRail_Node::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGa
 		switch (eStatus)
 		{
 		case Engine::TriggerStatus::eFOUND:
-			if (eID == GameID::eCODY)
-				m_pCody = (CCharacter*)pGameObject;
-			else if (eID == GameID::eMAY)
-				m_pMay = (CCharacter*)pGameObject;
-
+			if (eID == GameID::eCODY) m_pCody = (CCody*)pGameObject;
+			else if (eID == GameID::eMAY) m_pMay = (CMay*)pGameObject;
 			m_bCollide = true;
 			break;
 		case Engine::TriggerStatus::eLOST:
-			if (eID == GameID::eCODY)
-				m_pCody = nullptr;
-			else if (eID == GameID::eMAY)
-				m_pMay = nullptr;
-
+			if (eID == GameID::eCODY) m_pCody = nullptr;
+			else if (eID == GameID::eMAY) m_pMay = nullptr;
 			m_bCollide = false;
 			break;
 		}

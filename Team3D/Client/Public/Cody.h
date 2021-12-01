@@ -4,7 +4,8 @@
 #include "Character.h"
 
 BEGIN(Client)
-
+class CSpaceRail;
+class CSpaceRail_Node;
 class CCody final : public CCharacter
 {
 #pragma region Enum_STATE
@@ -320,7 +321,6 @@ private:
 	_float3				m_vTriggerTargetPos = {};
 
 	_bool m_IsCollide = false;
-	_bool m_IsOnGrind = false;
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
@@ -337,7 +337,6 @@ private:
 	_bool m_bGoToGravityCenter = false;
 	_bool m_IsInGravityPipe = false;
 	_float m_fGoCenterTime = 0.f;
-
 
 	/* For.Valve */
 	_bool m_IsEnterValve = false;
@@ -368,7 +367,6 @@ private:
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
 
-	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);
 	void Hit_Rocket(const _double dTimeDelta);
 	void Activate_RobotLever(const _double dTimeDelta);
@@ -380,8 +378,30 @@ private:
 	/* 혜원::For.DeadLine, SavePoint */
 	void Falling_Dead(const _double dTimeDelta);
 
-	_bool Trigger_End(const _double dTimeDelta);
-	_bool Trigger_Check(const _double dTimeDelta);
+	_bool	Trigger_End(const _double dTimeDelta);
+	_bool	Trigger_Check(const _double dTimeDelta);
+#pragma endregion
+
+#pragma region Rail
+public:
+	void	Set_SpaceRailNode(CSpaceRail_Node* pRail);
+
+private:
+	void	KeyInput_Rail(_double dTimeDelta);
+	void	Clear_TagerRailNodes();
+	void	Find_TargetSpaceRail(_fvector vCamPos, _vector vCamLook); // LateTick에서 호출되어야함.
+	void	MoveToTargetRail(_uint eState, _double dTimeDelta);
+	void	TakeRail(_double dTimeDelta);
+
+private:
+	_bool						m_bSearchToRail = false;
+	_bool						m_bMoveToRail = false;
+	_bool						m_bOnRail = false;
+
+private:
+	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;
+	CSpaceRail*					m_pTargetRail = nullptr;
+	CSpaceRail_Node*			m_pTargetRailNode = nullptr;
 #pragma endregion
 
 };

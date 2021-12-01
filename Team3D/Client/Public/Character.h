@@ -2,9 +2,11 @@
 
 #include "Client_Defines.h"
 
+BEGIN(Engine)
+class CCamera;
+END
+
 BEGIN(Client)
-class CSpaceRail;
-class CSpaceRail_Node;
 class CCharacter abstract : public CGameObject
 {
 protected:
@@ -44,25 +46,6 @@ protected: /* For.Component */
 protected:
 	_float m_fClockWise = 1.f; // 1이면 시계방향, -1이면 반시계방향.
 	//_uint  m_iViewPortNum = 0;
-
-public: /*  WonTaek - Path */
-	void Set_SpaceRailNode(CSpaceRail_Node* pRail);
-	
-protected:
-	void Find_TargetSpaceRail(); // LateTick에서 호출되어야함.
-	void MoveToTargetRail(_uint eState, _double dTimeDelta);
-	_bool TakeRail(_double dTimeDelta, _matrix& WorldMatrix);
-	// 타겟 레일을 향해 날라가는함수, 그리고 레일타기시작
-
-protected:
-	_bool m_bSearchToRail = false;
-	_bool m_bMoveToRail = false;
-	_bool m_bOnRail = false;
-
-protected: 
-	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;
-	CSpaceRail*					m_pTargetRail = nullptr;
-	CSpaceRail_Node*			m_pTargetRailNode = nullptr;
 
 public:
 	virtual void Free() override;
