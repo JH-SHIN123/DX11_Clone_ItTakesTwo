@@ -59,6 +59,7 @@ public:
 	void    MoveDirectionOnLand(const _fvector& vMoveDir, const _double TimeDelta, const _double dAcceleration = 1.f, class CNavigation* pNavigation = nullptr);
 	void	RotateYaw(const _double TimeDelta);
 	void	RotatePitch(const _double TimeDelta);
+	void	RotatePitch_Angle(const _double TimeDelta, _float fAngle);
 	void	RotateRoll(const _double TimeDelta);
 
 	void    MoveToDir(const _fvector& vMoveDir, const _double TimeDelta, const _double dAcceleration = 1.f, class CNavigation* pNavigation = nullptr);

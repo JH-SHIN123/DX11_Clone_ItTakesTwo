@@ -1,14 +1,7 @@
 #pragma once
 #include "Client_Defines.h"
 #include "GameObject.h"
-#include "GameInstance.h"
 #include "Instancing_Env.h"
-
-BEGIN(Engine)
-class CRenderer;
-class CTransform;
-class CModel_Instance;
-END
 
 BEGIN(Client)
 class CBridge final : public CGameObject
@@ -37,7 +30,7 @@ private:
 
 	_float4x4					m_matPivot;
 	_bool						m_bTrigger = false;
-	_float						m_fAngle = 0.f;
+	_float						m_fAngle = 0;
 
 	_bool						m_bUpdate = true;
 

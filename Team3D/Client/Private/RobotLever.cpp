@@ -50,7 +50,6 @@ HRESULT CRobotLever::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 	
 	CTriggerActor::ARG_DESC TriggerArgDesc;
-
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTransformCom;
 	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.7f);

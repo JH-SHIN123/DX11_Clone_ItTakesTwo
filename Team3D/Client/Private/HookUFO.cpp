@@ -112,6 +112,7 @@ void CHookUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObjec
 		UI_Delete(Cody, InputButton_InterActive);
 	}
 
+
 	// May
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)

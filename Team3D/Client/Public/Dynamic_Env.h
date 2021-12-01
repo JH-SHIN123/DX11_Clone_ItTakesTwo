@@ -1,13 +1,6 @@
 #pragma once
 #include "Client_Defines.h"
 #include "GameObject.h"
-#include "GameInstance.h"
-
-BEGIN(Engine)
-class CRenderer;
-class CTransform;
-class CModel;
-END
 
 BEGIN(Client)
 class CDynamic_Env : public CGameObject
@@ -25,6 +18,9 @@ protected:
 	explicit CDynamic_Env(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CDynamic_Env(const CDynamic_Env& rhs);
 	virtual ~CDynamic_Env() = default;
+
+public:
+	_fvector Get_Position();
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;

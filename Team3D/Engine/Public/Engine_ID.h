@@ -33,8 +33,15 @@ namespace Engine
 			ePLANET,
 			eNOBATTERYSIGN,
 			eSPACEVALVE,
+			eDUMMYWALL,
+			eDUMMYCOLLIDER,
 			eGRAVITYPIPE,
 			eHOOKUFO,
+			eGRAVITYPATH,
+			ePINBALL,
+			eBLOCKED,
+			ePINBALLHANDLE,
+			ePINBALLDOOR,
 			eWARPGATE,
 			eWORMHOLE,
 			eFIREDOOR,
@@ -42,8 +49,6 @@ namespace Engine
 			eBOSSMISSILE_PLAYABLE,
 			eGRAVITYPATH_CENTER,
 			eGRAVITYPATH_SIDE,
-			eDUMMYWALL,
-			eDUMMYCOLLIDER,
 			eENVIRONMENT
 		};
 	};
@@ -58,6 +63,11 @@ namespace Engine
 	}USERDATA;
 
 	struct TriggerStatus
+	{
+		enum Enum { eFOUND, eLOST };
+	};
+
+	struct ContactStatus
 	{
 		enum Enum { eFOUND, eLOST };
 	};
