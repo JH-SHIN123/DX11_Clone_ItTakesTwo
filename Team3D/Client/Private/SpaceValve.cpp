@@ -7,6 +7,7 @@
 
 #include "InGameEffect.h"
 #include "Effect_Generator.h"
+#include "Space_Valve_Star.h"
 
 CSpaceValve::CSpaceValve(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -33,7 +34,6 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_SpaceValveTwo"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-
 	EFFECT_DESC_CLONE a;
 	if (nullptr != pArg)
 		memcpy(&a, pArg, sizeof(EFFECT_DESC_CLONE));
@@ -42,6 +42,7 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(47.268f, 127.251f, 195.714f, 1.f));
 		m_iTargetPlayer = GameID::eCODY;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 0.f, 35.f, 1.f));
 	}
 	else if (a.iPlayerValue == 2)
 	{
@@ -67,6 +68,9 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_SpaceValve_Deco"), Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Star"), nullptr, (CGameObject**)&m_pSpaceValve_Star), E_FAIL);
+	m_pSpaceValve_Star->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
+	
 	return S_OK;
 }
 

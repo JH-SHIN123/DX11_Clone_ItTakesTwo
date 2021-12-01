@@ -49,6 +49,9 @@ private:
 	_float		m_fRotateDelay = 0.f;
 	_uint		m_iRotateCount = 0;
 
+private:
+	class CSpace_Valve_Star* m_pSpaceValve_Star = nullptr; //베이스, 유리창 포함
+
 
 protected:
 	/* For.Component */
