@@ -32,16 +32,11 @@ public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double dTimeDelta) override;
 	virtual _int	Late_Tick(_double dTimeDelta) override;
-
-public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 	virtual HRESULT Render_ShadowDepth() override;
-
-
-	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
-public:
+public: /* Getter */
 	CRobotParts* Get_Parent() { return this; }
 	CRobotBattery* Get_Robot_Battery() { return m_pRobotBattery;  }
 	CRobotLever* Get_Robot_Lever() { return m_pRobotLever; }

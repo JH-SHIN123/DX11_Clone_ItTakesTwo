@@ -1,11 +1,6 @@
 #pragma once
 #include "Client_Defines.h"
 #include "Dynamic_Env.h"
-#include "GameInstance.h"
-
-BEGIN(Engine)
-class CStaticActor;
-END
 
 BEGIN(Client)
 class CPlanet final : public CDynamic_Env

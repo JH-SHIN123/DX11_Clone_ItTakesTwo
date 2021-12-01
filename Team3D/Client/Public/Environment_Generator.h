@@ -1,13 +1,8 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameInstance.h"
 #include "Instancing_Env.h"
 #include "Static_Env.h"
-
-BEGIN(Engine)
-class CGameInstance;
-END
 
 BEGIN(Client)
 class CEnvironment_Generator final : public CBase
@@ -43,6 +38,7 @@ private:
 private:
 	CGameObject* Create_Class(_tchar* pPrototypeTag, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	void Set_Info_Model(CStatic_Env::ARG_DESC& tInfo);
+	void Adjustment_Model_Position(_tchar* pModelTag, _float4x4& rWorld);
 
 private:
 	HRESULT Load_Default_Prototype_GameObject();

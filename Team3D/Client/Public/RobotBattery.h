@@ -13,9 +13,9 @@ END
 
 BEGIN(Client)
 
-class CRobotBattery : public CRobotParts
+class CRobotBattery final : public CRobotParts
 {
-protected:
+private:
 	explicit CRobotBattery(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CRobotBattery(const CRobotParts& rhs);
 	virtual ~CRobotBattery() = default;
@@ -26,14 +26,10 @@ public:
 	virtual _int	Tick(_double dTimeDelta) override;
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-	/* For.Trigger */
+	virtual HRESULT Render_ShadowDepth() override;
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
-public:
-	virtual HRESULT Render_ShadowDepth() override;
-
-public:
+public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
@@ -43,12 +39,10 @@ private:
 	_bool		m_bRotate = false;
 	_bool		m_IsCollide = false;
 	_bool		m_bUpdate = true;
-
 	_float		m_fRotateDelay = 0.f;
 	ROBOTDESC	m_tRobotPartsDesc;
 
-protected:
-	/* For.Component */
+private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;

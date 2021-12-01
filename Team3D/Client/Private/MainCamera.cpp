@@ -30,12 +30,14 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eMAINCAMERA, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
+<<<<<<< HEAD
 	
+=======
+>>>>>>> main
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom,&ArgDesc), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
 
-	
 	XMStoreFloat4x4(&m_matPreRev, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_matQuternionRev, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
@@ -301,12 +303,19 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 
 	//플레이어 업에따른 회전체크(For.May)
+<<<<<<< HEAD
 	if (!static_cast<CCody*>(m_pTargetObj)->Get_IsInGravityPipe())
 	{
 		_vector vPlayerUp = XMVector4Normalize(pPlayerTransform->Get_State(CTransform::STATE_UP));
 		_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 		m_fCulCalculateUp = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
 		m_fPreCalculateUp += (m_fCulCalculateUp - m_fPreCalculateUp) * (_float)dTimeDelta;
+=======
+	_vector vPlayerUp = XMVector4Normalize(pPlayerTransform->Get_State(CTransform::STATE_UP));
+	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	m_fCulCalculateUp = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
+	m_fPreCalculateUp += (m_fCulCalculateUp - m_fPreCalculateUp) * (_float)dTimeDelta * 10.f;
+>>>>>>> main
 
 	}
 	

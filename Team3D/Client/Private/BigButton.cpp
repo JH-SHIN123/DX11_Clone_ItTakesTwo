@@ -70,6 +70,7 @@ _int CBigButton::Tick(_double dTimeDelta)
 			if (m_fMoveDist >= 0.5f)
 			{
 				m_bUpdate = false;
+				DATABASE->Set_BigButtonPressed(true);
 			}
 		}
 	}

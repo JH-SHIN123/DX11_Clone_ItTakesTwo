@@ -201,12 +201,9 @@ private:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
@@ -218,7 +215,7 @@ public:
 	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 
 public:
-	void	Set_BossMissile_Attack(); // CBoss_Missile
+	void Set_BossMissile_Attack(); // CBoss_Missile
 
 	// Tick 에서 호출될 함수들
 private:
@@ -298,8 +295,6 @@ private:
 	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
 	_float	m_fIdleTime = 0.f;
 
-	// 상호작용에 의한 움직임.
-
 	// 뭔가 들고있다면
 	_bool m_IsPickUp = false;
 
@@ -309,6 +304,7 @@ private:
 	PLAYER_SIZE m_eNextPlayerSize = SIZE_MEDIUM;
 	_float3 m_vScale = {1.f, 1.f, 1.f};
 	_bool m_IsSizeChanging = false;
+	_float m_fSizeDelayTime = 0.f;
 
 	// 점프관련 변수
 	_uint m_iJumpCount = 0;
@@ -318,6 +314,10 @@ private:
 
 	// 컷씬이라면
 	_bool m_IsCutScene = false;
+
+	_bool m_IsStGravityCleared = false;
+	_bool m_IsStRailCleared = false;
+	_bool m_IsStPinBallCleared = false;
 #pragma endregion
 
 #pragma region Trigger
@@ -339,16 +339,17 @@ private:
 
 	/* 혜원::For.DeadLine, SavePoint */
 	_bool	 m_IsDeadLine = false;
-	_bool	 m_IsSavePoint = false;
 	_float3  m_vSavePoint = {};
 	_float	 m_fDeadTime = 0.f;
 	_float3	 m_DeadLinePos = {};
+
+	/* 혜원::For.PinBall*/
+	_bool m_IsPinBall = false;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
 	_bool m_IsInGravityPipe = false;
 	_float m_fGoCenterTime = 0.f;
-
 
 	/* For.Valve */
 	_bool m_IsEnterValve = false;
@@ -374,6 +375,7 @@ private:
 	// Arbitrary damping
 	_float m_faDamping = 0.995f;
 
+	// Arbitrary ball radius
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
 
@@ -381,6 +383,7 @@ private:
 	_bool	m_bWallAttach = false;
 	_bool   m_IsWallJumping = false;
 	_float	m_fWallJumpingTime = 0.f;
+	_float	m_fWallToWallSpeed = 0.55f;
 
 	// Warp NextStage
 	_bool m_IsWarpNextStage = false;
@@ -421,11 +424,17 @@ private:
 	void Touch_FireDoor(const _double dTimeDelta);
 	void Boss_Missile_Hit(const _double dTimeDelta);
 	void Boss_Missile_Control(const _double dTimeDelta);
+
 	/* 혜원::For.DeadLine, SavePoint */
 	void Falling_Dead(const _double dTimeDelta);
+	void PinBall(const _double dTimeDelta);
+public:
+	void PinBall_Respawn(_double dTimeDelta);
 
+private:
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);
+
 #pragma endregion
 
 };

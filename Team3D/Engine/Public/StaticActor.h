@@ -20,6 +20,10 @@ public: /* Struct */
 	}ARG_DESC;
 
 public:
+	/* True면 피직스 물리 안먹음 */
+	void Set_Simulation(_bool bCheck);
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	void			Update_StaticActor();

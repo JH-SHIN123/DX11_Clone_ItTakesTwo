@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Planet.h"
 
-
 CPlanet::CPlanet(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
 {

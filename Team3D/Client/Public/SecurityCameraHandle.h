@@ -13,7 +13,7 @@ BEGIN(Client)
 
 class CSecurityCameraHandle final : public CGameObject
 {
-protected:
+private:
 	explicit CSecurityCameraHandle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CSecurityCameraHandle(const CSecurityCameraHandle& rhs);
 	virtual ~CSecurityCameraHandle() = default;
@@ -24,10 +24,9 @@ public:
 	virtual _int	Tick(_double dTimeDelta) override;
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-public:
 	virtual HRESULT Render_ShadowDepth() override;
 
-public:
+public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:

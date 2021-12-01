@@ -36,9 +36,6 @@ HRESULT CRobotParts::NativeConstruct(void* pArg)
 	case ST_GRAVITYPATH:
 		DATABASE->Set_STGravityRobotPtr(this);
 		break;
-	case ST_PINBALL:
-		DATABASE->Set_STPinBallRobotPtr(this);
-		break;
 	case ST_RAIL:
 		DATABASE->Set_STPlanetRobotPtr(this);
 		break;

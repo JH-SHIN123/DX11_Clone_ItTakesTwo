@@ -8,6 +8,9 @@
 
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
+/* For. PinBall */
+#include "PinBall.h"
+#include "PinBall_Door.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -45,13 +48,8 @@ HRESULT CCody::NativeConstruct(void* pArg)
  	UI_Create(May, StickIcon);
  
  	UI_Create(Cody, PlayerMarker);
- 
  	//UI_Create(Cody, InputButton_InterActive);
 	 
-	m_vPoints[0] = {72.f, 0.f, -120.f };
-	m_vPoints[1] = { 0.f, 0.f, 0.f };
-	m_vPoints[2] = {42.f, 0.f, 60};
-	m_vPoints[3] = {84.f, 0.f, 20.f};
 	return S_OK;
 }
 
@@ -105,7 +103,8 @@ void CCody::Add_LerpInfo_To_Model()
 	//m_pModelCom->Add_LerpInfo(1, 2, true, 8.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_Sprint, ANI_C_Sprint, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_MH, true, 10.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Walk_Large_Fwd, ANI_C_ChangeSize_Walk_Large_Fwd, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit, ANI_C_MH, true, 10.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Walk_Large_Fwd, ANI_C_ChangeSize_Walk_Large_Fwd, true, 20.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_Enter, ANI_C_Grind_Grapple_ToGrind, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_ToGrind, ANI_C_Grind_Slow_MH, false);
 
@@ -133,6 +132,12 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Falling, ANI_C_Jump_Land, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Jump_Land, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Jump_Land_Jog, false);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_MH, ANI_C_WallSlide_Jump, true, 20.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_Jump, ANI_C_WallSlide_Enter, true, 20.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_Enter, ANI_C_WallSlide_MH, true, 20.f);
+
+	//m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_MH, ANI_C_WallSlide_Jump, true, 10.f);
 	//ANI_C_Roll_Start, ANI_C_Roll_Stop;
 	return;
 }
@@ -177,6 +182,7 @@ _int CCody::Tick(_double dTimeDelta)
 		Boss_Missile_Hit(dTimeDelta);
 		Boss_Missile_Control(dTimeDelta);
 		Falling_Dead(dTimeDelta);
+		PinBall(dTimeDelta);
 		//Wall_Jump(dTimeDelta);
 	}
 	else
@@ -187,11 +193,14 @@ _int CCody::Tick(_double dTimeDelta)
 		m_pActorCom->Set_GroundPound(m_bGroundPound);
 
 		if ((m_bRoll == false || m_bSprint == true))
+		{
 			KeyInput(dTimeDelta);
+		}
 		if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
 		{
 			Sprint(dTimeDelta);
-			Move(dTimeDelta);
+			if(m_IsSizeChanging == false)
+				Move(dTimeDelta);
 			if (m_eCurPlayerSize != SIZE_LARGE)
 				Roll(dTimeDelta);
 			Jump(dTimeDelta);
@@ -212,6 +221,7 @@ _int CCody::Tick(_double dTimeDelta)
 	Attack_BossMissile_After(dTimeDelta); // 미사일 공격이 끝나고 정상적인 회전갑승로 만들어주자
 
 	m_pActorCom->Update(dTimeDelta);
+	m_pActorCom->Set_IsOnGravityPath(false);
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 
@@ -230,7 +240,7 @@ _int CCody::Late_Tick(_double dTimeDelta)
 
 HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 {
-	if (true == m_IsDeadLine)
+	if (true == m_IsDeadLine || m_IsPinBall)
 		return S_OK;
 
 	CCharacter::Render(eGroup);
@@ -301,13 +311,13 @@ void CCody::KeyInput(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_1)) /* 스타트 지점 */
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_2)) /* 2층 */
-		m_pActorCom->Set_Position(XMVectorSet(60.f, 125.f, 170.f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(60.f, 127.f, 170.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_3)) /* 2스테이지 입구 */
 		m_pActorCom->Set_Position(XMVectorSet(620.f, 760.f, 195.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_4)) /* 2스테이지 */
 		m_pActorCom->Set_Position(XMVectorSet(960.f, 720.f, 193.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_5))/* 3스테이지 */
-		m_pActorCom->Set_Position(XMVectorSet(-610.f, 760.f, 195.f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_6))/* 3층 */
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_7))/* Boss */
@@ -399,24 +409,6 @@ void CCody::KeyInput(_double dTimeDelta)
 					}
 				}
 			}
-
-			///// 중력 테스트
-			//_vector vUp, vRight, vLook = XMVectorZero();
-			//_bool bGravityReordered = m_pActorCom->Get_IsGravityReordered();
-			//_vector WhenGravityReorderedDir = XMVectorZero();
-			//if (bGravityReordered == false) // 중력발판위에 있다면
-			//{
-			//	
-			//	//m_pActorCom->Set_ZeroGravity(true, true, true);
-			//	// -> 밟은지점의 노말 == 플레이어 Up.
-			//	// -> 중력발판의 Right 축을 가져오자.
-			//	// -> 둘이 외적하면 Look 나옴.
-			//	// -> 그걸 Dir로 쓴다면?
-			//	vUp = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
-			//	vRight = XMVector3Normalize(m_pActorCom->Get_GravityPath_RightVector());
-			//	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
-			//}
-			//////
 
 			if (m_pGameInstance->Key_Pressing(DIK_W))
 			{
@@ -520,7 +512,7 @@ void CCody::KeyInput(_double dTimeDelta)
 
 #pragma region Mouse_LButton
 
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
+	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) && m_bSprint == false)
 	{
 		// 커져라
 		switch (m_eCurPlayerSize)
@@ -540,7 +532,7 @@ void CCody::KeyInput(_double dTimeDelta)
 
 #pragma region Mouse_RButton
 
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB))
+	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB) && m_bSprint == false)
 	{
 		// 작아져라
 		switch (m_eCurPlayerSize)
@@ -607,6 +599,10 @@ _uint CCody::Get_CurState() const
 void CCody::Move(const _double dTimeDelta)
 {
 #pragma region Medium_Size
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+
 	if (m_eCurPlayerSize == SIZE_MEDIUM)
 	{
 		if (m_bSprint == false && m_bMove && m_pTransformCom)
@@ -614,10 +610,39 @@ void CCody::Move(const _double dTimeDelta)
 			m_bAction = false;
 
 			_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
-			// 중력발판 위에 있을때는 SetY 안해야 함!
-			//vDirection = XMVectorSetY(vDirection, 0.f);
-			vDirection = XMVector3Normalize(vDirection);
 
+			if (m_pActorCom->Get_IsOnGravityPath() == false)
+			{
+				_vector vPlayerUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+
+				// 양수 일때?
+				_float fPlayerUpX = XMVectorGetX(vPlayerUp);
+				_float fPlayerUpY = XMVectorGetY(vPlayerUp);
+				_float fPlayerUpZ = XMVectorGetZ(vPlayerUp);
+
+				// xyz 성분중 가장 큰 친구를 찾자.
+				_float fAbsX = fabs(fPlayerUpX);
+				_float fAbsY = fabs(fPlayerUpY);
+				_float fAbsZ = fabs(fPlayerUpZ);
+
+				if ((fAbsX > fAbsY) && (fAbsX > fAbsZ))
+				{
+					// x가 z,y 보다 크다면 카메라LookVector의 X성분을 0으로 만들고 노말라이즈
+					vDirection = XMVector3Normalize(XMVectorSetX(vDirection, 0.f));
+				}
+
+				else if((fAbsY > fAbsX) && (fAbsY > fAbsZ))
+				{
+					// y가 x,z 보다 크다면 카메라 LookVector의 Y성분을 0으로 만들고 노말라이즈
+					vDirection = XMVector3Normalize(XMVectorSetY(vDirection, 0.f));
+				}
+
+				else if ((fAbsZ > fAbsX) && (fAbsZ > fAbsY))
+				{
+					// z가 x,y 보다 크다면 카메라 LookVector의 Z성분을 0으로 만들고 노말라이즈
+					vDirection = XMVector3Normalize(XMVectorSetZ(vDirection, 0.f));
+				}
+			}
 			m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);
 
 			if (m_fJogAcceleration > 10.f)
@@ -732,12 +757,16 @@ void CCody::Move(const _double dTimeDelta)
 			{
 				// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
 				if (m_pModelCom->Is_AnimFinished(ANI_C_ChangeSize_Walk_Large_Start) == true) // JogStart -> Jog
+				{
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Fwd);
+					m_pModelCom->Set_NextAnimIndex(ANI_C_ChangeSize_Walk_Large_Fwd);
+				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_ChangeSize_Walk_Large_Fwd) == true) // Jog -> Jog // 보간속도 Up
 				{
-					//m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Fwd);
 				}
-				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_MH_Gesture_Small_Scratch || m_pModelCom->Get_CurAnimIndex() == ANI_C_ActionMH)	// Idle To Jog Start. -> Jog 예약
+				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_MH_Gesture_Small_Scratch
+					|| m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Fwd
+					|| m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Stop)	// Idle To Jog Start. -> Jog 예약
 				{
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Start);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_ChangeSize_Walk_Large_Fwd);
@@ -771,11 +800,6 @@ void CCody::Move(const _double dTimeDelta)
 							m_pModelCom->Set_Animation(ANI_C_Bhv_MH_Gesture_Small_Scratch); // 배 두들기는 애니메이션 재생
 							m_fIdleTime = 0.f;
 						}
-					}
-					else if (m_bAction == true)
-					{
-						m_pModelCom->Set_Animation(ANI_C_Idle_To_Action);
-						m_pModelCom->Set_NextAnimIndex(ANI_C_ActionMH);
 					}
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Idle_To_Action) == true && m_bAction == true)
@@ -908,8 +932,38 @@ void CCody::Roll(const _double dTimeDelta)
 
 		m_fAcceleration -= (_float)dTimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
-		vDirection = XMVectorSetY(vDirection, 0.f);
-		vDirection = XMVector3Normalize(vDirection);
+		if (m_pActorCom->Get_IsOnGravityPath() == false)
+		{
+			_vector vPlayerUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+
+			// 양수 일때?
+			_float fPlayerUpX = XMVectorGetX(vPlayerUp);
+			_float fPlayerUpY = XMVectorGetY(vPlayerUp);
+			_float fPlayerUpZ = XMVectorGetZ(vPlayerUp);
+
+			// xyz 성분중 가장 큰 친구를 찾자.
+			_float fAbsX = fabs(fPlayerUpX);
+			_float fAbsY = fabs(fPlayerUpY);
+			_float fAbsZ = fabs(fPlayerUpZ);
+
+			if ((fAbsX > fAbsY) && (fAbsX > fAbsZ))
+			{
+				// x가 z,y 보다 크다면 카메라LookVector의 X성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetX(vDirection, 0.f));
+			}
+
+			else if ((fAbsY > fAbsX) && (fAbsY > fAbsZ))
+			{
+				// y가 x,z 보다 크다면 카메라 LookVector의 Y성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetY(vDirection, 0.f));
+			}
+
+			else if ((fAbsZ > fAbsX) && (fAbsZ > fAbsY))
+			{
+				// z가 x,y 보다 크다면 카메라 LookVector의 Z성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetZ(vDirection, 0.f));
+			}
+		}
 
 		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta * m_fAcceleration);
 		if (m_eCurPlayerSize == SIZE_MEDIUM)
@@ -929,8 +983,38 @@ void CCody::Roll(const _double dTimeDelta)
 		if(m_fAcceleration > 0.f)
 		m_fAcceleration -= (_float)dTimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
-		vDirection = XMVectorSetY(vDirection, 0.f);
-		vDirection = XMVector3Normalize(vDirection);
+		if (m_pActorCom->Get_IsOnGravityPath() == false)
+		{
+			_vector vPlayerUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+
+			// 양수 일때?
+			_float fPlayerUpX = XMVectorGetX(vPlayerUp);
+			_float fPlayerUpY = XMVectorGetY(vPlayerUp);
+			_float fPlayerUpZ = XMVectorGetZ(vPlayerUp);
+
+			// xyz 성분중 가장 큰 친구를 찾자.
+			_float fAbsX = fabs(fPlayerUpX);
+			_float fAbsY = fabs(fPlayerUpY);
+			_float fAbsZ = fabs(fPlayerUpZ);
+
+			if ((fAbsX > fAbsY) && (fAbsX > fAbsZ))
+			{
+				// x가 z,y 보다 크다면 카메라LookVector의 X성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetX(vDirection, 0.f));
+			}
+
+			else if ((fAbsY > fAbsX) && (fAbsY > fAbsZ))
+			{
+				// y가 x,z 보다 크다면 카메라 LookVector의 Y성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetY(vDirection, 0.f));
+			}
+
+			else if ((fAbsZ > fAbsX) && (fAbsZ > fAbsY))
+			{
+				// z가 x,y 보다 크다면 카메라 LookVector의 Z성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetZ(vDirection, 0.f));
+			}
+		}
 		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta * m_fAcceleration);
 
 		if(m_eCurPlayerSize == SIZE_MEDIUM)
@@ -948,8 +1032,38 @@ void CCody::Sprint(const _double dTimeDelta)
 		m_bAction = false;
 
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
-		vDirection = XMVectorSetY(vDirection, 0.f);
-		vDirection = XMVector3Normalize(vDirection);
+		if (m_pActorCom->Get_IsOnGravityPath() == false)
+		{
+			_vector vPlayerUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+
+			// 양수 일때?
+			_float fPlayerUpX = XMVectorGetX(vPlayerUp);
+			_float fPlayerUpY = XMVectorGetY(vPlayerUp);
+			_float fPlayerUpZ = XMVectorGetZ(vPlayerUp);
+
+			// xyz 성분중 가장 큰 친구를 찾자.
+			_float fAbsX = fabs(fPlayerUpX);
+			_float fAbsY = fabs(fPlayerUpY);
+			_float fAbsZ = fabs(fPlayerUpZ);
+
+			if ((fAbsX > fAbsY) && (fAbsX > fAbsZ))
+			{
+				// x가 z,y 보다 크다면 카메라LookVector의 X성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetX(vDirection, 0.f));
+			}
+
+			else if ((fAbsY > fAbsX) && (fAbsY > fAbsZ))
+			{
+				// y가 x,z 보다 크다면 카메라 LookVector의 Y성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetY(vDirection, 0.f));
+			}
+
+			else if ((fAbsZ > fAbsX) && (fAbsZ > fAbsY))
+			{
+				// z가 x,y 보다 크다면 카메라 LookVector의 Z성분을 0으로 만들고 노말라이즈
+				vDirection = XMVector3Normalize(XMVectorSetZ(vDirection, 0.f));
+			}
+		}
 
 		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);
 
@@ -1174,6 +1288,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 	{
 		if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_LARGE)
 		{
+			m_pActorCom->Set_Scale(5.f, 5.f);
 			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_LARGE);
 
 			if (m_vScale.x < 5.f)
@@ -1189,10 +1304,21 @@ void CCody::Change_Size(const _double dTimeDelta)
 				m_IsSizeChanging = false; 
 				m_eCurPlayerSize = SIZE_LARGE;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+				if (m_pGameInstance->Key_Pressing(DIK_W) || m_pGameInstance->Key_Pressing(DIK_A) || m_pGameInstance->Key_Pressing(DIK_S) || m_pGameInstance->Key_Pressing(DIK_D))
+				{
+					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Fwd);
+					m_pModelCom->Set_NextAnimIndex(ANI_C_ChangeSize_Walk_Large_Fwd);
+				}
+				else
+				{
+					m_pModelCom->Set_Animation(ANI_C_MH);
+					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+				}
 			}
 		}
 		else if (m_eCurPlayerSize == SIZE_LARGE && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
+			m_pActorCom->Set_Scale(0.5f, 0.5f);
 			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_LARGE_MIDDLE);
 
 			if (m_vScale.x > 1.f)
@@ -1208,11 +1334,14 @@ void CCody::Change_Size(const _double dTimeDelta)
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_MEDIUM;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+				m_pModelCom->Set_Animation(ANI_C_MH);
 			}
 		}
 		else if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_SMALL)
 		{
 			m_pActorCom->Set_Scale(0.05f, 0.05f);
+			m_pActorCom->Get_Controller()->setSlopeLimit(0.02f);
+			m_pActorCom->Get_Controller()->setStepOffset(0.02f);
 			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_SMALL);
 
 			if (m_vScale.x > 0.5f)
@@ -1228,11 +1357,14 @@ void CCody::Change_Size(const _double dTimeDelta)
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_SMALL;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+				m_pModelCom->Set_Animation(ANI_C_MH);
 			}
 		}
 		else if (m_eCurPlayerSize == SIZE_SMALL && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
 			m_pActorCom->Set_Scale(0.5f, 0.5f);
+			m_pActorCom->Get_Controller()->setSlopeLimit(0.5f);
+			m_pActorCom->Get_Controller()->setStepOffset(0.707f);
 			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_SMALL_MIDDLE);
 
 			if (m_vScale.x < 1.f)
@@ -1248,6 +1380,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_MEDIUM;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+				m_pModelCom->Set_Animation(ANI_C_MH);
 			}
 		}
 	}
@@ -1506,32 +1639,54 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::eDEADLINE && false == m_IsDeadLine)
 		{
 			/* 데드라인과 충돌시 */
+			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_Death_Fall_MH);
+
 			/* 낙사 애니메이션인데 다음애니메이션이 뭔지 모르겠음 */
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
 			/* 왜 중력을 0으로 하면 추락하는지 모르겠음 */
-			m_pActorCom->Set_Gravity(1.f);
+			m_pActorCom->Set_Gravity(0.f);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_IsDeadLine = true;
 		}
-		else if (m_eTargetGameID == GameID::eDUMMYWALL && m_bWallAttach == false && m_fWallJumpingTime <= 0.f)
+		else if (m_eTargetGameID == GameID::eDUMMYWALL && m_pActorCom->Get_IsWallCollide() == true && m_bWallAttach == false
+			&& m_IsJumping == true && m_IsFalling == false)
 		{
+			/*PxVec3 vNormal = m_pActorCom->Get_CollideNormal();
+			_vector vWallUp = { vNormal.x, vNormal.y, vNormal.z, 0.f };
+			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);*/
+
 			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bWallAttach = true;
 		}
+
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
 		{
-			/* 세이브포인트 트리거와 충돌시 세이브포인트 갱신 */
+			/* 세이브포인트->트리거와 충돌시 세이브포인트 갱신 */
 			m_vSavePoint = m_vTriggerTargetPos;
+		}
+		else if (m_eTargetGameID == GameID::ePINBALL && false == m_IsPinBall)
+		{
+			/* 핀볼모드 ON */
+			m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
+			m_IsPinBall = true;
+		}
+		else if (m_eTargetGameID == GameID::ePINBALLDOOR && m_pGameInstance->Key_Down(DIK_E))
+		{
+			/* 핀볼 문열기 */
+			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(false);
 		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
-		|| m_bWallAttach)
+		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine
+		|| m_bWallAttach || m_IsPinBall)
 		return true;
 
 	return false;
@@ -1649,27 +1804,59 @@ void CCody::Push_Battery(const _double dTimeDelta)
 {
 	// May가 배터리 들어온 상태에서 Lever 치고 컷씬이 등장하면 그때 -> ANI_C_MH
 	// 애니메이션 시작할때 WorldPos 저장. -> 끝나는 순간 마지막 위치로 WorldPos 변경 해야 함.
-	
-
 	if (m_IsPushingBattery == true)
 	{
 		//m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Battery_Fwd)
+		if (DATABASE->Get_GravityStageClear() == false && DATABASE->Get_PinBallStageClear() == false && DATABASE->Get_RailStageClear() == false)
 		{
+			m_pActorCom->Set_Position(XMVectorSet(71.194f, 23.29f, 179.68f, 1.f));
 		}
-		if(m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_MH))
+		else if (DATABASE->Get_GravityStageClear() == true && DATABASE->Get_PinBallStageClear() == false && DATABASE->Get_RailStageClear() == false)
 		{
+			//m_pActorCom->Set_Position(XMVectorSet(71.194f, 23.29f, 179.68f, 1.f));
+		}
+		else if (DATABASE->Get_GravityStageClear() == true && DATABASE->Get_PinBallStageClear() == true && DATABASE->Get_RailStageClear() == false)
+		{
+			//m_pActorCom->Set_Position(XMVectorSet(71.194f, 23.29f, 179.68f, 1.f));
+		}
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_MH))
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
-			m_IsPushingBattery = false;
-			m_IsCollide = false;
-		}
 	}
+	if (m_IsPushingBattery == true && m_IsStGravityCleared == false && DATABASE->Get_GravityStageClear() == true)
+	{
+		m_IsPushingBattery = false;
+		m_IsCollide = false;
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		m_IsStGravityCleared = true;
+	}
+
+	else if (m_IsPushingBattery == true && m_IsStRailCleared == false && DATABASE->Get_RailStageClear() == true)
+	{
+		m_IsPushingBattery = false;
+		m_IsCollide = false;
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		m_IsStRailCleared = true;
+	}
+
+	else if (m_IsPushingBattery == true && m_IsStPinBallCleared == false && DATABASE->Get_PinBallStageClear() == true)
+	{
+		m_IsPushingBattery = false;
+		m_IsCollide = false;
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		m_IsStPinBallCleared = true;
+	}
+
+	
 }
 
 void CCody::Rotate_Valve(const _double dTimeDelta)
 {
 	if (m_IsEnterValve == true)
 	{
+		m_pActorCom->Set_Position(XMVectorSet(46.487f, 125.842f, 195.789f, 1.f));
 		if (DATABASE->Get_ValveCount() == 6)
 		{
 			m_bStruggle = false;
@@ -1865,34 +2052,70 @@ void CCody::Wall_Jump(const _double dTimeDelta)
 {
 	if (true == m_bWallAttach && false == m_IsWallJumping)
 	{
-		m_pActorCom->Set_ZeroGravity(true, false, true);
-
-		if (m_pModelCom->Is_AnimFinished(ANI_C_WallSlide_MH))
-			m_pModelCom->Set_Animation(ANI_C_WallSlide_MH);
-
+		m_pActorCom->Move((-m_pTransformCom->Get_State(CTransform::STATE_UP) / 50.f), dTimeDelta);
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
-			m_bWallAttach = false;
+			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsWallJumping = true;
 			m_pModelCom->Set_Animation(ANI_C_WallSlide_Jump);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_Enter);
-			m_pTransformCom->RotateYaw(180.f);
+			m_pActorCom->Jump_Start(2.7f);
+			m_pActorCom->Set_WallCollide(false);
 		}
 	}
 
 	if (m_IsWallJumping == true)
 	{
-		// 이거 왜 010이 나오지
-		_vector vWallUp = { m_pActorCom->Get_Controller()->getUpDirection().x, m_pActorCom->Get_Controller()->getUpDirection().y, m_pActorCom->Get_Controller()->getUpDirection().z, 0.f };
+		if(m_fWallToWallSpeed <= 50.f)
+			m_fWallToWallSpeed += (_float)dTimeDelta * 57.f;
 
-		m_pActorCom->Move(-vWallUp, dTimeDelta);
+		PxVec3 vNormal = m_pActorCom->Get_CollideNormal();
+		_vector vWallUp = { vNormal.x, vNormal.y, vNormal.z, 0.f };
+		m_pActorCom->Move(XMVector3Normalize(vWallUp) / m_fWallToWallSpeed, dTimeDelta);
+		m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
 
-		m_fWallJumpingTime += (_float)dTimeDelta;
-		if (m_fWallJumpingTime > 0.2f)
+		if (m_pModelCom->Is_AnimFinished(ANI_C_WallSlide_Jump))
 		{
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_pModelCom->Set_Animation(ANI_C_Jump_Falling);
+			m_bWallAttach = false;
 			m_IsWallJumping = false;
 			m_fWallJumpingTime = 0.f;
+			m_fWallToWallSpeed = 0.55f;
+			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(179.f));
 		}
+		if (m_pActorCom->Get_IsWallCollide() == true && m_IsCollide == true)
+		{
+			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);
+			vWallUp.m128_f32[2] = 0.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(vContactPos + (vWallUp));
+			//m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bWallAttach = true;
+			m_IsWallJumping = false;
+			m_fWallJumpingTime = 0.f;
+			m_fWallToWallSpeed = 0.55f;
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
+		}
+		else if (m_pActorCom->Get_IsWallCollide() == true && m_IsCollide == false)
+		{
+			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);
+			vWallUp.m128_f32[2] = 0.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(vContactPos + (vWallUp));
+			//m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_bWallAttach = false;
+			m_IsWallJumping = false;
+			m_fWallJumpingTime = 0.f;
+			m_fWallToWallSpeed = 0.5f;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_pActorCom->Set_WallCollide(false);
+		}
+
+		m_fWallJumpingTime += (_float)dTimeDelta;
 	}
 }
 
@@ -2078,12 +2301,14 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
 
 			m_pActorCom->Set_Position(vSavePosition);
+			m_pActorCom->Set_Gravity(-9.8f);
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pModelCom->Set_Animation(ANI_C_MH);
-			m_pActorCom->Set_Gravity(-9.8f);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_fDeadTime = 0.f;
 			m_IsDeadLine = false;
+			m_IsCollide = false;
 		}
 		else
 		{
@@ -2093,4 +2318,27 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTriggerTargetPos);
 		}
 	}
+}
+
+void CCody::PinBall(const _double dTimeDelta)
+{
+	if (true == m_IsPinBall)
+		m_pActorCom->Set_Position(((CDynamic_Env*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Position());
+}
+
+void CCody::PinBall_Respawn(_double dTimeDelta)
+{
+	//_vector vSavePoint = XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f);
+	//m_pActorCom->Set_Position(vSavePoint);
+
+	m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
+	m_pActorCom->Update(dTimeDelta);
+
+	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+	m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
+	m_pModelCom->Set_Animation(ANI_C_MH);
+	m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
+	m_IsPinBall = false;
+	m_IsCollide = false;
 }

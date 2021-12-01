@@ -13,6 +13,7 @@ private:
 
 public: /* Getter */
 	PxMaterial* Get_BaseMaterial() { return m_pMaterial; }
+	PxPhysics*	Get_PxPhysics() { return m_pPhysics; }
 
 public:
 	HRESULT Ready_PhysX(PxSimulationEventCallback* pEventCallback);
