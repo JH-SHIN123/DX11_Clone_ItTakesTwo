@@ -203,5 +203,6 @@ void CUmbrellaBeam_Joystick::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
 
+
 	CGameObject::Free();
 }

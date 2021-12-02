@@ -36,10 +36,8 @@ HRESULT CEffect_Umbrella_Pipe::NativeConstruct(void * pArg)
 	m_pParticle->Set_InstanceCount(5000);
 
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vScale = XMVectorSet(2.f, 2.f, 1.5f, 1.f);
-	m_pTransformCom->Set_Scale(vScale);
 
-	vPos.m128_f32[1] += 6.f;
+	vPos.m128_f32[1] += 6.5f;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(63.75f, 72.35f, 196.f, 1.f));
@@ -61,9 +59,10 @@ _int CEffect_Umbrella_Pipe::Tick(_double TimeDelta)
 
 	_matrix matWorld, matScale, matRotX, matTrans;
 	//matTrans = m_pTransformCom->Get_WorldMatrix();
-	matTrans = XMMatrixTranslation(0.f, 0.f, 3.f);
+	matScale = XMMatrixScaling(1.5f, 3.f, 1.5f);
+	matTrans = XMMatrixTranslation(0.f, 0.5f, 3.f);
 	matRotX = XMMatrixRotationX(XMConvertToRadians(90.f));
-	matWorld = matRotX * matTrans * XMLoadFloat4x4(&m_matParent);
+	matWorld = matScale * matRotX * matTrans * XMLoadFloat4x4(&m_matParent);
 
 	m_pTransformCom->Set_WorldMatrix(matWorld);
 

@@ -2103,7 +2103,7 @@ void CCody::Boss_Missile_Control(const _double dTimeDelta)
 void CCody::Set_OnParentRotate(_matrix ParentMatrix)
 {
 	_matrix matWorld, matRotY, matTrans;
-	matTrans = XMMatrixTranslation(-0.85f, 0.7f, -0.5f);
+	matTrans = XMMatrixTranslation(-0.38f, 0.7f, -0.4f);
 	matRotY = XMMatrixRotationY(XMConvertToRadians(90.f));
 
 	matWorld = matRotY * matTrans * ParentMatrix;

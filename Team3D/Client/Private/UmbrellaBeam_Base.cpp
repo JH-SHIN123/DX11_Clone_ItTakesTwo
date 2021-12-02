@@ -48,16 +48,6 @@ _int CUmbrellaBeam_Base::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	//CCody* pCody = (CCody*)DATABASE->GetCody();
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, pCody->Get_Position());
-
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-789.319824f, 766.982971f, 189.852661f, 1.f));
-	if (m_pGameInstance->Key_Pressing(DIK_K))
-	{
-		m_fAngle += (_float)dTimeDelta * 5.f;
-		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-m_fAngle));
-	}
-
 	return NO_EVENT;
 }
 
