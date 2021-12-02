@@ -298,62 +298,7 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 14.f;
 
 
-	//플레이어 업에따른 회전체크(For.May)
-	if (!static_cast<CCody*>(m_pTargetObj)->Get_IsInGravityPipe())
-	{
-
-		_vector vCurUp= XMVector3Normalize(pPlayerTransform->Get_State(CTransform::STATE_UP));
-
-		_vector vAxis[CTransform::STATE_POSITION] = {	XMVectorSet(1.f, 0.f, 0.f, 0.f),
-														XMVectorSet(0.f, 1.f, 0.f, 0.f),
-														XMVectorSet(0.f, 0.f, 1.f, 0.f)};
-		
-		_vector vCurRight = XMVectorZero(), vCurLook = XMVectorZero();
-		
-		//현재 되야할 라업룩
-		_float fDotRight = XMVectorGetX(XMVector3Dot(vAxis[CTransform::STATE_RIGHT], vCurUp));
-		_float fDotUp = XMVectorGetX(XMVector3Dot(vAxis[CTransform::STATE_UP], vCurUp));
-		_float fDotLook = XMVectorGetX(XMVector3Dot(vAxis[CTransform::STATE_LOOK], vCurUp));
-		_vector vGetRightAxis = vAxis[CTransform::STATE_LOOK];
-		//if (fDotRight == -1.f) // Up == -1 0 0
-		//{
-		//	vGetRightAxis = vAxis[CTransform::STATE_LOOK];
-		//}
-		//if (fDotRight == 1.f) // Up == -1 0 0
-		//{
-		//	vGetRightAxis = vAxis[CTransform::STATE_LOOK];
-		//}
-		//if (fDotUp ==  -1.f) // Up == 0 -1 0
-		//{
-		//	vGetRightAxis = vAxis[CTransform::STATE_LOOK];
-		//}
-		//else if (fDotUp == 1.f) //Up == 0 1 0
-		//{
-		//	vGetRightAxis = -vAxis[CTransform::STATE_LOOK];   
-		//}
-		//if (fDotLook ==  -1.f) //Up == 0 0 -1
-		//{
-		//	vGetRightAxis = vAxis[CTransform::STATE_RIGHT];
-		//}
-		
 	
-	
-		vCurRight =  XMVector3Normalize(XMVector3Cross(vCurUp, vGetRightAxis));
-		vCurLook = XMVector3Normalize(XMVector3Cross(vCurRight, vCurUp));
-		//vCurRight = XMVector3TransformNormal(vCurUp, XMMatrixRotationX(XMConvertToRadians(90.f)));
-		//vCurLook = XMVector3TransformNormal(vCurUp, XMMatrixRotationZ(XMConvertToRadians(90.f)));
-
-
-		m_fTargetCalculateRight = acosf(XMVectorGetX(XMVector4Dot(vAxis[CTransform::STATE_RIGHT], vCurRight)));
-		//m_fCurCalculateRight = (m_fTargetCalculateRight - m_fCurCalculateRight) * (_float)dTimeDelta * 10.f;
-
-		m_fTargetCalculateUp = acosf(XMVectorGetX(XMVector4Dot(vAxis[CTransform::STATE_UP], vCurUp)));
-		//m_fCurCalculateUp = (m_fTargetCalculateUp - m_fCurCalculateUp) * (_float)dTimeDelta * 10.f;
-
-		m_fTargetCalculateLook = acosf(XMVectorGetX(XMVector4Dot(vAxis[CTransform::STATE_LOOK], vCurLook)));
-		//m_fCurCalculateLook = (m_fTargetCalculateLook - m_fCurCalculateLook) * (_float)dTimeDelta * 10.f;
-
-	}
 	
 	//카메라 회전에 따른 거리체크
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
@@ -408,16 +353,12 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	
 	_matrix matTrans = XMMatrixTranslation(XMVectorGetX(vPlayerPos), XMVectorGetY(vPlayerPos), XMVectorGetZ(vPlayerPos));
 
-	_matrix matCurUp = XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(
-		m_fTargetCalculateLook,
-		m_fTargetCalculateRight,
-		0*m_fTargetCalculateUp));
+	_vector vCurUp = XMVector3Normalize(pPlayerTransform->Get_State(CTransform::STATE_UP));
 	
 	
-	matRev = QuarRev *matCurUp*   matTrans;
+	matRev = QuarRev *  matTrans;
 
 
-	//Key_Check(dTimeDelta);
 	XMStoreFloat4x4(&m_matPreRev, matRev);
 
 	m_pTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix() * matRev);
@@ -427,7 +368,11 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	
 	if (m_bIsCollision = OffSetPhsX(dTimeDelta, &vResultPos)) //SpringCamera
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
+		_float3 vEye, vAt;
+		XMStoreFloat3(&vEye, vResultPos);
+		XMStoreFloat3(&vAt,vPlayerPos);
+		_matrix matCurWorld = MakeViewMatrix(vEye, vAt,_float3(0.f, 1.f, 0.f));
+		m_pTransformCom->Set_WorldMatrix(matCurWorld);
 	}
 	
 #pragma endregion
@@ -442,7 +387,7 @@ _int CMainCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 	{
 		if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, m_pTransformCom->Get_WorldMatrix()))
 			m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen));
-		//XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
+
 	}
 	KeyCheck(dTimeDelta);
 	return NO_EVENT;
@@ -452,25 +397,7 @@ _int CMainCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 
 void CMainCamera::KeyCheck(_double dTimeDelta)
 {
-	//if (m_pGameInstance->Key_Pressing(DIK_W))
-	//{
-	//	m_pTransformCom->Go_Straight(dTimeDelta);
-	//}
-	//if (m_pGameInstance->Key_Pressing(DIK_A))
-	//{
-	//	m_pTransformCom->Go_Left(dTimeDelta);
 
-	//}
-	//if (m_pGameInstance->Key_Pressing(DIK_S))
-	//{
-	//	m_pTransformCom->Go_Backward(dTimeDelta);
-
-	//}
-	//if (m_pGameInstance->Key_Pressing(DIK_D))
-	//{
-	//	m_pTransformCom->Go_Right(dTimeDelta);
-
-	//}
 	_long MouseMove = 0;
 	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
 	{
@@ -500,72 +427,33 @@ _int CMainCamera::ReSet_Cam_FreeToAuto()
 
 _bool CMainCamera::OffSetPhsX(_double dTimeDelta,_vector * pOut)
 {
-	//카메라 공전 전의 월드
-	//_matrix matWorld =	XMLoadFloat4x4(&m_matBeginWorld);
-	//matWorld *= matRev; //현재 월드
-	//
+	
 	if (nullptr == m_pActorCom)
 		return false;
 	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
 	_vector vPos = matWorld.r[3];
 	_vector vActorPos = m_pActorCom->Get_Position();
 	_vector vPlayerPos = XMVectorSetW(XMLoadFloat3(&m_vPlayerPos),1.f);
-	vPlayerPos = XMVectorSetY(vPlayerPos, XMVectorGetY(vPlayerPos) + m_matPlayerSizeOffSetMatrix[m_eCurPlayerSize]._42);
-	//m_pActorCom->Set_Position(vPos);
-	_vector vDir = vPos - vActorPos;
-	if (m_pActorCom->Move(vDir, XMVectorGetX(XMVector4Length(vPos - vActorPos)))) //액터가 이번프레임의 카메라 포스로 움직임
-	{
-		
-		//m_pActorCom->Set_Position(vPlayerPos);//액터를 플레이어 포스로 순간이동
 
-		//PxControllerCollisionFlags eFlag;
-		//do
-		//{
-		//	vActorPos = m_pActorCom->Get_Position();
-		//} while (!m_pActorCom->Move(vPos - vActorPos, XMVectorGetX(XMVector4Length(vPos - vActorPos)))); //플레이어에서 날라오다 충돌하면 멈추기
-		_vector vRayDir = vPos - vPlayerPos;
+	_vector vDir = vPos - vActorPos;
+	if (m_pActorCom->Move(vDir, XMVectorGetX(XMVector4Length(vPos - vActorPos))))
+	{
+		_vector vRayDir =  vPlayerPos - vPos ;
 		_float fDist = XMVectorGetX(XMVector4Length(vRayDir));
 		PxRaycastBuffer RaycastBuffer;
-		m_pGameInstance->Raycast(MH_PxVec3(vPlayerPos), MH_PxVec3(XMVector4Normalize(vRayDir)), fDist, RaycastBuffer, PxHitFlag::eDEFAULT); 
-		if (RaycastBuffer.hasBlock)
+		_float fRadius = 0.5f;
+		do 
 		{
-			//m_pActorCom->Set_Position(MakeBlockPos(RaycastBuffer));
-			*pOut = MakeBlockPos(RaycastBuffer);
-			//return true;
-		}
+			m_pGameInstance->Raycast(MH_PxVec3(vPos),
+				MH_PxVec3(XMVector4Normalize(vRayDir)), fRadius, RaycastBuffer, PxHitFlag::eDEFAULT);
+			vPos += XMVector4Normalize(vRayDir);
+			
+			
+		} while (RaycastBuffer.hasBlock);
+		*pOut = vPos;
+		return true;
 	}
-#pragma region RayCast
-	//_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
-	//_vector vPos = matWorld.r[3];
-	//_vector vPlayerPos = static_cast<CCody*>(m_pTargetObj)->Get_Transform()->Get_State(CTransform::STATE_POSITION);//XMVectorSetW(XMLoadFloat3(&m_vPlayerPos), 1.f);
-	///*_float fAtY = m_matPlayerSizeOffSetMatrix[m_eCurPlayerSize]._42;
-	//*/
-	//_vector vCurAt = vPlayerPos;//XMVectorSetY(vPlayerPos, XMVectorGetY(vPlayerPos) /*+ fAtY*/);
-	//_vector vRayDir = vPos - vCurAt;
-	//vCurAt += vRayDir * 0.99f;
-	////vRayDir = vPos - vCurAt;
-	//_float fDist = XMVectorGetX(XMVector4Length(vRayDir)); //플레이어에서 카메라방향으로 0.5 이동후 거리가 최대거리
-	//_float fMaxDist = fDist;
-	//vRayDir = XMVector4Normalize(vRayDir);
-	//PxRaycastBuffer RaycastBuffer;
 
-	//_bool bGetCurPos = false;
-	//_float fCamRadius = 0.01f;
-	//m_pGameInstance->Raycast(MH_PxVec3(vCurAt), MH_PxVec3(vRayDir), 0.1, RaycastBuffer, PxHitFlag::eDEFAULT); 
-	//
-	//if (false == RaycastBuffer.hasBlock)
-	//	return false;
-	//if (XMVectorGetX(XMVector4Length(vCurAt - MakeBlockPos(RaycastBuffer))) > 0.1f) //위에서 블록 안되면 충돌안함 //블록 안되면 끝
-	//{
-	//	m_pGameInstance->Raycast(MH_PxVec3(vCurAt), MH_PxVec3(XMVector4Normalize(vRayDir)), fDist, RaycastBuffer, PxHitFlag::eDEFAULT);
-	//	//vPos = XMVectorSet(RaycastBuffer.block.position.x, RaycastBuffer.block.position.y, RaycastBuffer.block.position.z, 1.f);
-	//}
-	//else
-
-	//return false;
-	////*pOut = vPos;
-	//return true;
-#pragma endregion
 	return false;
 }
 
