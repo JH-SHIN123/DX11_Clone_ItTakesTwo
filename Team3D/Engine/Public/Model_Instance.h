@@ -79,7 +79,6 @@ public:
 	* 모델 전체 이동
 	* TransformMatrix, 부모 월드 행렬
 	*/
-	HRESULT Reset_WorldPos();
 	HRESULT Update_Model(_fmatrix TransformMatrix);
 	/**
 	* Render_Model
@@ -97,6 +96,11 @@ public:
 	* iMaterialIndex, 렌더할 머티리얼 그룹
 	*/
 	HRESULT	Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
+	/**
+	* Coppy_WorldMatrix
+	* 갱신할 월드 행렬 동적 배열과 인스턴싱 개수.
+	*/
+	void Coppy_WorldMatrix(_float4x4* pWorldMatrix_Buffer, _uint iCopyInstanceIndex);
 
 private: /* Typedef */
 	typedef vector<class CMesh*>	MESHES;

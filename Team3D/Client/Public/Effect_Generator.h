@@ -6,12 +6,9 @@
 #include "Base.h"
 #include "InGameEffect.h"
 
-BEGIN(Engine)
-class CGameInstance;
-END
-
-
 BEGIN(Client)
+
+#define EFFECT CEffect_Generator::GetInstance()
 
 enum class Effect_Value
 {

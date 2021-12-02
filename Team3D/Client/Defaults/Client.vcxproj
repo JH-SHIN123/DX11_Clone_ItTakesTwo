@@ -310,6 +310,7 @@
     <ClInclude Include="..\Public\SlideDoor.h" />
     <ClInclude Include="..\Public\SpaceValve.h" />
     <ClInclude Include="..\public\Sky.h" />
+    <ClInclude Include="..\public\Space_Valve_Star.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
     <ClInclude Include="..\Public\Static_Env.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
@@ -328,6 +329,7 @@
     <ClInclude Include="..\Public\UmbrellaBeam_Joystick.h" />
     <ClInclude Include="..\Public\UmbrellaBeam_Stand.h" />
     <ClInclude Include="..\public\WallLaserTrap.h" />
+    <ClInclude Include="..\Public\WallLaserTrap_Button.h" />
     <ClInclude Include="..\public\WarpGate.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -454,6 +456,7 @@
     <ClCompile Include="..\Private\SlideDoor.cpp" />
     <ClCompile Include="..\Private\SpaceValve.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
+    <ClCompile Include="..\private\Space_Valve_Star.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
     <ClCompile Include="..\Private\Static_Env.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
@@ -472,6 +475,7 @@
     <ClCompile Include="..\Private\UmbrellaBeam_Joystick.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam_Stand.cpp" />
     <ClCompile Include="..\private\WallLaserTrap.cpp" />
+    <ClCompile Include="..\Private\WallLaserTrap_Button.cpp" />
     <ClCompile Include="..\private\WarpGate.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">

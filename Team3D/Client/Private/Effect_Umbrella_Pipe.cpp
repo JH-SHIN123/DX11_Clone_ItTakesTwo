@@ -130,5 +130,6 @@ void CEffect_Umbrella_Pipe::Free()
 	Safe_Release(m_pTexturesCom_ColorRamp);
 
 	Safe_Release(m_pParticle);
+
 	__super::Free();
 }
