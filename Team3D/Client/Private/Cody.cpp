@@ -1347,7 +1347,7 @@ void CCody::Jump(const _double dTimeDelta)
 	{
 		m_bShortJump = true;
 		m_IsJumping = true;
-		m_iJumpCount = 2;
+		m_iJumpCount = 1;
 		return;
 	}
 }
