@@ -42,8 +42,7 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 	tTest.iOption = 0;
 	lstrcpy(tTest.szModelTag, L"Component_Model_GrindRail02");
 	tTest.WorldMatrix = MH_XMFloat4x4Identity();
-
-	XMStoreFloat4x4(&tTest.WorldMatrix, XMMatrixRotationY(XMConvertToRadians(90.f)) * XMMatrixTranslation(0.f, -4.f, 0.f));
+	XMStoreFloat4x4(&tTest.WorldMatrix, XMMatrixTranslation(0.f, 5.f, 0.f));
 
 	CDynamic_Env::NativeConstruct(&tTest);
 
@@ -65,7 +64,7 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 	CSpaceRail_Node::SPACERAILNODE_DESC nodeDesc;
 
 	_uint iFrameIndex = 0;
-	_float fEdgeRadio = 0.3f;
+	_float fEdgeRadio = 0.1f;
 	_uint iNumFrames = (_uint)FrameMatrices.size();
 	for (auto& pFrameMat : FrameMatrices)
 	{

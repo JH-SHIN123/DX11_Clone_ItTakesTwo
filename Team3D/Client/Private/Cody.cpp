@@ -196,6 +196,11 @@ _int CCody::Tick(_double dTimeDelta)
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
+	//UI_Generator->UI_Create(Cody, InputButton_InterActive);
+	//if(m_pTargetRailNode)
+	//	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTargetRailNode->Get_Position());
+	//UI_Generator->UI_Delete(Cody, InputButton_InterActive);
+
 	// TEST
 	if (m_pGameInstance->Key_Down(DIK_L)) {
 		m_bSearchToRail = true;
@@ -1762,7 +1767,7 @@ void CCody::Set_SpaceRailNode(CSpaceRail_Node* pRail)
 }
 void CCody::KeyInput_Rail(_double dTimeDelta)
 {
-	if (m_pGameInstance->Key_Down(DIK_E))
+	if (m_pGameInstance->Key_Down(DIK_F))
 	{
 		m_bSearchToRail = true;
 	}
@@ -1771,6 +1776,8 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 	{
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
+			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+
 			m_iJumpCount = 1;
 			m_bShortJump = true;
 
@@ -1839,8 +1846,7 @@ void CCody::Find_TargetSpaceRail()
 
 	if (m_pTargetRailNode) {
 		// 타겟을 찾았다면, 레일 탈 준비
-		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter); // 줄던지는거
-		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind); // 댕겨서 날라거는거
+		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter); // 줄던지고 댕겨서 날라가기
 		m_bMoveToRail = true;
 	}
 }
@@ -1850,9 +1856,10 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 
 	_float fMoveToSpeed = 10.f;
 	_float fDist = m_pTransformCom->Move_ToTargetRange(m_pTargetRailNode->Get_Position(), 0.1f, dTimeDelta * fMoveToSpeed);
-	if (fDist < 0.2f)
+	if (fDist < 0.5f)
 	{
 		/* 타는 애니메이션으로 변경 */
+		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_ToGrind); // 레일 착지
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
 
 		/* 타야할 Path 지정 */
@@ -1906,13 +1913,22 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 			switch (iCCW)
 			{
 			case 1:		// 반시계
-				ePathState = CPath::STATE_BACKWARD;
+			{
+				if (CPath::STATE_FORWARD == ePathState)
+					ePathState = CPath::STATE_BACKWARD;
+				else if (CPath::STATE_BACKWARD == ePathState)
+					ePathState = CPath::STATE_FORWARD;
+				else if (CPath::STATE_END == ePathState)
+					ePathState = CPath::STATE_BACKWARD;
 				break;
+			}
 			case -1:	// 시계
-				ePathState = CPath::STATE_FORWARD;
+				if (CPath::STATE_END == ePathState)
+					ePathState = CPath::STATE_FORWARD;
 				break;
 			case 0:		// 일직선
-				ePathState = CPath::STATE_FORWARD;
+				if (CPath::STATE_END == ePathState)
+					ePathState = CPath::STATE_FORWARD;
 				break;
 			}
 		}

@@ -405,6 +405,7 @@ private:
 	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;
 	CSpaceRail*					m_pTargetRail = nullptr;
 	CSpaceRail_Node*			m_pTargetRailNode = nullptr;
+	CSpaceRail_Node*			m_pUITargetRailNode = nullptr;
 #pragma endregion
 };
 END

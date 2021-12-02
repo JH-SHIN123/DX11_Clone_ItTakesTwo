@@ -36,7 +36,7 @@ HRESULT CSpaceRail_Node::NativeConstruct(void* pArg)
 	m_UserData.pGameObject = this;
 
 	CTriggerActor::ARG_DESC tTriggerArg;
-	tTriggerArg.pGeometry = new PxBoxGeometry(9.f, 7.5f, 9.f);
+	tTriggerArg.pGeometry = new PxBoxGeometry(12.f, 10.f, 12.f);
 	//tTriggerArg.pGeometry = new PxBoxGeometry(1.f, 1.f, 1.f);
 	tTriggerArg.pTransform = m_pTransformCom;
 	tTriggerArg.pUserData = &m_UserData;
