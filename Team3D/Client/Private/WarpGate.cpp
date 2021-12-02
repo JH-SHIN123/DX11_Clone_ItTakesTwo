@@ -136,34 +136,28 @@ void CWarpGate::Check_Stage_Value()
 		m_vWarpPos = {};
 		vPos = XMVectorSet(31.f, 125.25f, 195.8f, 1.f);
 		fDegree = 90.f;
-		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
-		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
 		break;
 	case Client::CWarpGate::STAGE_UMBRELLA:
 		m_vWarpPos = {};
 		vPos = XMVectorSet(-617.f, 754.f, 196.f, 1.f);
 		fDegree = -90.f;
-		DATABASE->Set_May_Stage(ST_PINBALL);
-		DATABASE->Set_Cody_Stage(ST_PINBALL);
 		break;
 	case Client::CWarpGate::MAIN_PLANET:
 		m_vWarpPos = {};
 		vPos = XMVectorSet(97.8f, 125.25f, 195.8f, 1.f);
 		fDegree = -90.f;
-		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
-		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
 		break;
 	case Client::CWarpGate::STAGE_PLANET:
 		m_vWarpPos = {};
 		vPos = XMVectorSet(617.f, 755.f, 196.2f, 1.f);
 		fDegree = 90.f;
-		DATABASE->Set_May_Stage(ST_RAIL);
-		DATABASE->Set_Cody_Stage(ST_RAIL);
 		break;
 	default:
 		break;
 	}
 
+	DATABASE->Set_May_Stage(ST_GRAVITYPATH);
+	DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fDegree));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 }
@@ -181,18 +175,26 @@ _fmatrix CWarpGate::Get_NextPortal_Matrix(STAGE_VALUE eValue)
 	case Client::CWarpGate::MAIN_UMBRELLA:
 		vPos = XMVectorSet(-617.f, 754.f, 196.f, 1.f);
 		fDegree = -90.f;
+		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
+		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
 		break;
 	case Client::CWarpGate::STAGE_UMBRELLA:
 		vPos = XMVectorSet(31.f, 125.25f, 195.8f, 1.f);
 		fDegree = 90.f;
+		DATABASE->Set_May_Stage(ST_PINBALL);
+		DATABASE->Set_Cody_Stage(ST_PINBALL);
 		break;
 	case Client::CWarpGate::MAIN_PLANET:
 		vPos = XMVectorSet(617.f, 755.f, 196.2f, 1.f);
 		fDegree = 90.f;
+		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
+		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
 		break;
 	case Client::CWarpGate::STAGE_PLANET:
 		vPos = XMVectorSet(97.8f, 125.25f, 195.8f, 1.f);
 		fDegree = -90.f;
+		DATABASE->Set_May_Stage(ST_RAIL);
+		DATABASE->Set_Cody_Stage(ST_RAIL);
 		break;
 	default:
 		break;

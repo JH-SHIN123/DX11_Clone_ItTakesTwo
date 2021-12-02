@@ -67,7 +67,7 @@ _int CBigButton::Tick(_double dTimeDelta)
 				m_fMoveDist += (_float)dTimeDelta;
 				m_pTransformCom->Go_Down(dTimeDelta * 0.4f);
 			}
-			if (m_fMoveDist >= 0.6f)
+			if (m_fMoveDist >= 0.46f)
 			{
 				m_bUpdate = false;
 				DATABASE->Set_BigButtonPressed(true);
