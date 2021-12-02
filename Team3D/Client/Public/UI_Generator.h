@@ -11,9 +11,13 @@ END
 
 BEGIN(Client)
 
-#define UI_Create(ePlayer, eTrigger)															\
-	CUI_Generator::GetInstance()->Set_TriggerOn();												\
-	CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger);					\
+#define UI_Create(ePlayer, eTrigger)														\
+	CUI_Generator::GetInstance()->Set_TriggerOn();											\
+	CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger);				\
+
+#define UI_Create_Active(ePlayer, eTrigger, bActive)										\
+	CUI_Generator::GetInstance()->Set_TriggerOn();											\
+	CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger, bActive);		\
 
 #define UI_Generator CUI_Generator::GetInstance()
 #define UI_Delete(ePlayer, eTrigger) CUI_Generator::GetInstance()->Delete_UI(Player::ePlayer, UI::eTrigger);
@@ -40,7 +44,7 @@ public:
 
 public:
 	HRESULT Load_Data(const _tchar* pFilePath);
-	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
+	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger, _bool bActive = true);
 	HRESULT Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	HRESULT Render_Font(_tchar* pText, FONTDESC tFontDesc, Player::ID ePlayer);
 
@@ -51,10 +55,10 @@ public:
 public:
 	void Set_TriggerOn();
 	void Set_TargetPos(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPos);
+	void Set_Active(Player::ID ePlayer, UI::TRIGGER eTrigger, _bool bActive);
 
 public:
 	void UI_RETutorial(Player::ID ePlayer, UI::TRIGGER eTrigger);
-
 
 private:
 	_bool							m_IsTrigger = true;
@@ -80,7 +84,7 @@ private:
 	HRESULT Add_Prototype_Texture();
 
 private:
-	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag);
+	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag, _bool bActive);
 
 public:
 	virtual void Free() override;

@@ -392,8 +392,10 @@ private:
 	void	KeyInput_Rail(_double dTimeDelta);
 	void	Clear_TagerRailNodes();
 	void	Find_TargetSpaceRail(); // LateTick에서 호출되어야함.
+	void	Start_SpaceRail();
 	void	MoveToTargetRail(_double dTimeDelta);
 	void	TakeRail(_double dTimeDelta);
+	void	ShowRailTargetTriggerUI();
 
 private:
 	_bool						m_bSearchToRail = false;
@@ -404,8 +406,8 @@ private:
 private:
 	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;
 	CSpaceRail*					m_pTargetRail = nullptr;
+	CSpaceRail_Node*			m_pSearchTargetRailNode = nullptr;
 	CSpaceRail_Node*			m_pTargetRailNode = nullptr;
-	CSpaceRail_Node*			m_pUITargetRailNode = nullptr;
 #pragma endregion
 };
 END

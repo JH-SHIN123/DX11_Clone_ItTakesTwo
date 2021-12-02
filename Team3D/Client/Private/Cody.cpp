@@ -47,8 +47,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
  	UI_Create(May, StickIcon);
  
  	UI_Create(Cody, PlayerMarker);
- 
- 	//UI_Create(Cody, InputButton_InterActive);
+	UI_Create_Active(Cody, InputButton_InterActive, false);
 	 
 	m_vPoints[0] = {72.f, 0.f, -120.f };
 	m_vPoints[1] = { 0.f, 0.f, 0.f };
@@ -190,7 +189,6 @@ _int CCody::Tick(_double dTimeDelta)
 	}
 	/////////////////////////////////////////////
 
-	
 #pragma endregion
 
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -235,7 +233,8 @@ _int CCody::Late_Tick(_double dTimeDelta)
 	CCharacter::Late_Tick(dTimeDelta);
 
 	/* LateTick : 레일의 타겟 찾기*/
-	Find_TargetSpaceRail(); // 인자로 받지말고, 함수안에 넣어두자.
+	Find_TargetSpaceRail();
+	ShowRailTargetTriggerUI();
 	Clear_TagerRailNodes();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
@@ -290,6 +289,7 @@ CGameObject* CCody::Clone_GameObject(void* pArg)
 void CCody::Free()
 {
 	/* For. Rail */
+	m_pSearchTargetRailNode = nullptr;
 	m_pTargetRail = nullptr;
 	m_pTargetRailNode = nullptr;
 	m_vecTargetRailNodes.clear();
@@ -1770,6 +1770,7 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_F))
 	{
 		m_bSearchToRail = true;
+		Start_SpaceRail();
 	}
 
 	if (m_bMoveToRail || m_bOnRail)
@@ -1799,7 +1800,7 @@ void CCody::Clear_TagerRailNodes()
 void CCody::Find_TargetSpaceRail()
 {
 	// 레일타기 키 눌렸을때만, 타겟 찾기, 키가 눌렸지만, 충돌한 레일 트리거가 존재하지 않을때
-	if (false == m_bSearchToRail || m_vecTargetRailNodes.empty() || nullptr != m_pTargetRailNode) return;
+	if (m_vecTargetRailNodes.empty()) return;
 
 	CTransform* pCamTransform = m_pCamera->Get_Transform();
 	if (nullptr == pCamTransform) return;
@@ -1809,6 +1810,7 @@ void CCody::Find_TargetSpaceRail()
 	// 거리가 아닌, 카메라 Look 벡터와의 각도차로 계산
 	vCamLook = XMVector3Normalize(vCamLook);
 
+	_bool isSearch = false;
 	_vector vToTarget = XMVectorZero();
 	_vector vNodePosition = XMVectorZero();
 	_float fMinDegree = 360.f;
@@ -1839,13 +1841,23 @@ void CCody::Find_TargetSpaceRail()
 		/* 가장 각도가 적은 타겟노드 찾기 */
 		if (fMinDegree > fDegree)
 		{
-			m_pTargetRailNode = pNode;
+			m_pSearchTargetRailNode = pNode;
+			//m_pTargetRailNode = pNode;
 			fMinDegree = fDegree;
+			isSearch = true;
 		}
 	}
 
-	if (m_pTargetRailNode) {
+	if (false == isSearch)
+		m_pSearchTargetRailNode = nullptr;
+}
+void CCody::Start_SpaceRail()
+{
+	if (false == m_bSearchToRail || nullptr == m_pSearchTargetRailNode) return;
+
+	if (m_pSearchTargetRailNode) {
 		// 타겟을 찾았다면, 레일 탈 준비
+		m_pTargetRailNode = m_pSearchTargetRailNode;
 		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter); // 줄던지고 댕겨서 날라가기
 		m_bMoveToRail = true;
 	}
@@ -1959,5 +1971,16 @@ void CCody::TakeRail(_double dTimeDelta)
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // 자유낙하 애니메이션으로 변경해야함.
 		m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 	}
+}
+void CCody::ShowRailTargetTriggerUI()
+{
+	// Show UI
+	if (m_pSearchTargetRailNode)
+	{
+		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, true);
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pSearchTargetRailNode->Get_Position());
+	}
+	else
+		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, false);
 }
 #pragma endregion
