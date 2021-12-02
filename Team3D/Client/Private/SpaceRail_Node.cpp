@@ -36,7 +36,7 @@ HRESULT CSpaceRail_Node::NativeConstruct(void* pArg)
 	m_UserData.pGameObject = this;
 
 	CTriggerActor::ARG_DESC tTriggerArg;
-	tTriggerArg.pGeometry = new PxBoxGeometry(12.f, 10.f, 12.f);
+	tTriggerArg.pGeometry = new PxBoxGeometry(14.f, 10.f, 14.f);
 	//tTriggerArg.pGeometry = new PxBoxGeometry(1.f, 1.f, 1.f);
 	tTriggerArg.pTransform = m_pTransformCom;
 	tTriggerArg.pUserData = &m_UserData;
@@ -51,7 +51,7 @@ _int CSpaceRail_Node::Tick(_double dTimeDelta)
 	if (m_bCollide)
 	{
 		if (m_pCody) m_pCody->Set_SpaceRailNode(this);
-		//if (m_pMay) m_pMay->Set_SpaceRailNode(this);
+		if (m_pMay) m_pMay->Set_SpaceRailNode(this);
 	}
 
 	return _int();

@@ -1879,16 +1879,40 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 			return;
 		}
 
-		/* 패스 지정 */
+		/* 패스 지정 -> X */
 		CPath::STATE ePathState = CPath::STATE_END;
-		if(m_pGameInstance->Key_Down(DIK_W))
-			ePathState = CPath::STATE_FORWARD;
-		else if(m_pGameInstance->Key_Down(DIK_S))
+		//if(m_pGameInstance->Key_Down(DIK_W))
+		//	ePathState = CPath::STATE_FORWARD;
+		//else if(m_pGameInstance->Key_Down(DIK_S))
+		//	ePathState = CPath::STATE_BACKWARD;
+
+		/* 외적으로 방향 구하기 */
+		CTransform* pCamTransform = m_pCamera->Get_Transform();
+		if (nullptr == pCamTransform) return;
+		_vector vCamLook = pCamTransform->Get_State(CTransform::STATE_LOOK);
+		_vector vCamUp = pCamTransform->Get_State(CTransform::STATE_UP);
+		_vector vCamPos = pCamTransform->Get_State(CTransform::STATE_POSITION);
+
+		_vector vToTarget = m_pTargetRailNode->Get_Position() - vCamPos;
+		_int iCCW = MH_CrossCCW(vCamLook, vToTarget, vCamUp);  /* @Return CCW(1) CW(-1) Else(0) */
+
+		switch (iCCW)
+		{
+		case 1:		// 반시계
+		{
 			ePathState = CPath::STATE_BACKWARD;
+			break;
+		}
+		case -1:	// 시계
+			ePathState = CPath::STATE_FORWARD;
+			break;
+		case 0:		// 일직선
+			ePathState = CPath::STATE_FORWARD;
+			break;
+		}
 
 		/* Edge State 지정 */
-		// EdgeState 넣어주기
-		// Mid 일경우, 외적으로 방향구해서, Start or End 구해주기
+		// START / END 일경우, 방향 전환
 		_uint iEdgeState = m_pTargetRailNode->Get_EdgeState();
 		switch (iEdgeState)
 		{

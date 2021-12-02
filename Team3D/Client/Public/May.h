@@ -4,7 +4,8 @@
 #include "Character.h"
 
 BEGIN(Client)
-
+class CSpaceRail;
+class CSpaceRail_Node;
 class CMay final : public CCharacter
 {
 #pragma region Enum_STATE
@@ -183,8 +184,6 @@ public:
 private:
 	virtual void KeyInput(_double dTimeDelta);
 
-
-
 	// 단발성 함수들.
 	HRESULT Ready_Component();
 	void Add_LerpInfo_To_Model();
@@ -302,7 +301,6 @@ private:
 	// Sprint
 	_float m_fSprintAcceleration = 35.f;
 
-
 #pragma region Trigger
 public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
@@ -345,7 +343,30 @@ private:
 	_bool Trigger_Check(const _double dTimeDelta);
 #pragma endregion
 
+#pragma region Rail
+public:
+	void	Set_SpaceRailNode(CSpaceRail_Node* pRail);
 
+private:
+	void	KeyInput_Rail(_double dTimeDelta);
+	void	Clear_TagerRailNodes();
+	void	Find_TargetSpaceRail(); // LateTick에서 호출되어야함.
+	void	Start_SpaceRail();
+	void	MoveToTargetRail(_double dTimeDelta);
+	void	TakeRail(_double dTimeDelta);
+	void	ShowRailTargetTriggerUI();
+
+private:
+	_bool						m_bMoveToRail = false;
+	_bool						m_bOnRail = false;
+	_uint						m_iRailDir = 0;
+
+private:
+	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;
+	CSpaceRail* m_pTargetRail = nullptr;
+	CSpaceRail_Node* m_pSearchTargetRailNode = nullptr;
+	CSpaceRail_Node* m_pTargetRailNode = nullptr;
+#pragma endregion
 };
 
 END
