@@ -495,10 +495,13 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Test()
 
 HRESULT CLoading::Create_GameObjects_SpaceStage_Se()
 {
+<<<<<<< HEAD
 	_matrix PivotMatrix = XMMatrixIdentity();
 	_float3 vRot = {180.f,90.f,0.f};
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(vRot.x))* XMMatrixRotationY(XMConvertToRadians(vRot.y))  *XMMatrixRotationZ(XMConvertToRadians(vRot.z));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_GravityPath"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("GravityPath"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+=======
+>>>>>>> main
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_GravityPath"), CGravityPath::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	return S_OK;
 }
