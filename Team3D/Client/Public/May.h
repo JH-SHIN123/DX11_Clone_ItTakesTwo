@@ -188,6 +188,9 @@ private:
 	virtual void KeyInput(_double dTimeDelta);
 	void Attack_BossMissile_After(_double dTimeDelta);
 
+private: // 여기에 넣어놓아야 알거 같아서 여기에..		
+	void Enforce_IdleState(); /* 강제로 Idle 상태로 바꿈 */
+
 private:
 	// 단발성 함수들.
 	HRESULT Ready_Component();

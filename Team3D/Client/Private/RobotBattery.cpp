@@ -5,6 +5,7 @@
 #include "UI_Generator.h"
 #include "RobotHead.h"
 #include "RobotLever.h"
+#include "Effect_Generator.h"
 
 CRobotBattery::CRobotBattery(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CRobotParts(pDevice, pDeviceContext)
@@ -89,6 +90,10 @@ _int CRobotBattery::Late_Tick(_double dTimeDelta)
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
+	if(m_pGameInstance->Key_Down(DIK_N))
+		EFFECT->Add_Effect(Effect_Value::RobotBattery_Spark, m_pTransformCom->Get_WorldMatrix());
+
+
 	return NO_EVENT;
 }
 
@@ -167,14 +172,17 @@ void CRobotBattery::Push_Battery(_double dTimeDelta)
 		case ST_GRAVITYPATH:
 			((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_RobotHead()->Set_Battery_Charged(true);
 			((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_Robot_Lever()->Set_BatteryCharged(true);
+			EFFECT->Add_Effect(Effect_Value::RobotBattery_Spark, m_pTransformCom->Get_WorldMatrix());
 			break;
 		case ST_PINBALL:
 			((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_RobotHead()->Set_Battery_Charged(true);
 			((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_Robot_Lever()->Set_BatteryCharged(true);
+			EFFECT->Add_Effect(Effect_Value::RobotBattery_Spark, m_pTransformCom->Get_WorldMatrix());
 			break;
 		case ST_RAIL:
 			((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_RobotHead()->Set_Battery_Charged(true);
 			((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_Robot_Lever()->Set_BatteryCharged(true);
+			EFFECT->Add_Effect(Effect_Value::RobotBattery_Spark, m_pTransformCom->Get_WorldMatrix());
 			break;
 		}
 

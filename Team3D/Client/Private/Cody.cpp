@@ -222,6 +222,9 @@ _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
 
+	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine)
+		return NO_EVENT;
+
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
@@ -2005,9 +2008,17 @@ void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
 	m_fDeadTime += (_float)dTimeDelta;
 	if (m_fDeadTime >= 2.f && m_fDeadTime <= 2.4f)
 	{
+		_float fMyPosZ = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[2];
+		_float fTriggerPosZ = m_vTriggerTargetPos.z;
+
 		_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
-		vSavePosition.m128_f32[1] += 0.7f;
-		vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+		if (fTriggerPosZ < fMyPosZ)
+		{
+			vSavePosition.m128_f32[1] += 0.7f;
+			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+		}
+		else
+			vSavePosition = XMVectorSet(64.f, 0.9f, 25.f, 1.f);
 	
 		m_pActorCom->Set_Position(vSavePosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);

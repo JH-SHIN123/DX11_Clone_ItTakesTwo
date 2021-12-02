@@ -180,6 +180,9 @@ _int CMay::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
 
+	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine)
+		return NO_EVENT;
+
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
@@ -776,6 +779,33 @@ void CMay::Attack_BossMissile_After(_double dTimeDelta)
 	}
 }
 
+void CMay::Enforce_IdleState()
+{
+	m_bSprint = false;
+	m_bRoll = false;
+	m_bMove = false;
+	m_bShortJump = false;
+	m_bGroundPound = false;
+	m_IsTurnAround = false;
+
+	m_bAction = false;
+
+	m_IsJumping = false;
+	m_IsAirDash = false;
+	m_IsFalling = false;
+	m_bFallAniOnce = false;
+
+	m_bPlayGroundPoundOnce = false;
+
+	m_fIdleTime = 0.f;
+
+	m_iJumpCount = 0;
+	m_iAirDashCount = 0;
+
+	m_pActorCom->Set_Jump(false);
+	m_pModelCom->Set_Animation(ANI_M_MH);
+}
+
 void CMay::Update_Tirgger_Pos(_vector vPos)
 {
 	XMStoreFloat3(&m_vTriggerTargetPos, vPos);
@@ -1238,6 +1268,9 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			Enforce_IdleState();
 			m_IsTouchFireDoor = true;
 		}
 		else if (GameID::eBOSSMISSILE_COMBAT == m_eTargetGameID && false == m_IsBossMissile_Hit)
@@ -1555,10 +1588,41 @@ void CMay::Touch_FireDoor(const _double dTimeDelta)
 	if (false == m_IsTouchFireDoor)
 		return;
 
-	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-	m_IsTouchFireDoor = false;
-	m_IsCollide = false;
-	// Get¸®½ºÆù
+	m_fDeadTime += (_float)dTimeDelta;
+	if (m_fDeadTime >= 2.f && m_fDeadTime <= 2.4f)
+	{
+		_float fMyPosZ = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[2];
+		_float fTriggerPosZ = m_vTriggerTargetPos.z;
+
+		_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
+		if (fTriggerPosZ < fMyPosZ)
+		{
+			vSavePosition.m128_f32[1] += 0.7f;
+			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+		}
+		else
+			vSavePosition = XMVectorSet(64.f, 0.9f, 25.f, 1.f);
+
+		m_pActorCom->Set_Position(vSavePosition);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
+
+		m_fDeadTime = 2.5f;
+	}
+	else if (m_fDeadTime >= 2.5f && m_fDeadTime <= 2.75f)
+	{
+
+	}
+	else if (m_fDeadTime >= 2.75f)
+	{
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		m_fDeadTime = 0.f;
+		m_bCanMove = true;
+		m_IsCollide = false;
+		m_IsTouchFireDoor = false;
+		m_pActorCom->Set_ZeroGravity(false, false, false);
+	}
 }
 
 void CMay::Boss_Missile_Hit(const _double dTimeDelta)
