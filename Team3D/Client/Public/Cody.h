@@ -398,7 +398,6 @@ private:
 	void	ShowRailTargetTriggerUI();
 
 private:
-	_bool						m_bSearchToRail = false;
 	_bool						m_bMoveToRail = false;
 	_bool						m_bOnRail = false;
 	_uint						m_iRailDir = 0;

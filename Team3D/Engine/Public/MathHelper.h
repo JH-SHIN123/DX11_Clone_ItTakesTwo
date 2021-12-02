@@ -233,19 +233,19 @@ namespace Engine
 		return Result;
 	}
 
-	static _int MH_CrossCCW(_vector In1, _vector In2)
+	/* @Return CCW(1) CW(-1) Else(0) */
+	static _int MH_CrossCCW(_vector In1, _vector In2, _vector vUp)
 	{
 		In1 = XMVector3Normalize(In1);
 		In2 = XMVector3Normalize(In2);
+		vUp = XMVector3Normalize(vUp);
 
-		_vector vCross = XMVector3Cross(In1, In2);
-		_float fCrossZ = XMVectorGetZ(vCross);
-		
-		if (fCrossZ > 0) // 시계
-			return -1;
-		else if (fCrossZ < 0) // 반시계
+		_float fCCW = XMVectorGetX(XMVector3Dot(vUp, XMVector3Cross(In1, In2)));
+		if (fCCW > 0) // 반시계
 			return 1;
+		else if (fCCW < 0) // 시계
+			return -1;
 
-		return 0; // 일직선
+		return 0;
 	}
 }

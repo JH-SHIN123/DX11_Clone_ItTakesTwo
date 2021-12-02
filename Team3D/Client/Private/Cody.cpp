@@ -192,20 +192,7 @@ _int CCody::Tick(_double dTimeDelta)
 #pragma endregion
 
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
-	//UI_Generator->UI_Create(Cody, InputButton_InterActive);
-	//if(m_pTargetRailNode)
-	//	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTargetRailNode->Get_Position());
-	//UI_Generator->UI_Delete(Cody, InputButton_InterActive);
-
-	// TEST
-	if (m_pGameInstance->Key_Down(DIK_L)) {
-		m_bSearchToRail = true;
-	}
-	else if (m_pGameInstance->Key_Down(DIK_K)) {
-		m_bSearchToRail = true;
-	}
+	//UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	/* 레일 타겟을 향해 날라가기 */
 	// Forward 조정
@@ -1769,7 +1756,6 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_F))
 	{
-		m_bSearchToRail = true;
 		Start_SpaceRail();
 	}
 
@@ -1785,7 +1771,6 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 			m_pTargetRail = nullptr;
 			m_pTargetRailNode = nullptr;
 
-			m_bSearchToRail = false;
 			m_bMoveToRail = false;
 			m_bOnRail = false;
 			Clear_TagerRailNodes();
@@ -1794,7 +1779,6 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 }
 void CCody::Clear_TagerRailNodes()
 {
-	m_bSearchToRail = false; // Trigger 특성 적용 (딱 한번만 호출)
 	m_vecTargetRailNodes.clear();
 }
 void CCody::Find_TargetSpaceRail()
@@ -1806,9 +1790,11 @@ void CCody::Find_TargetSpaceRail()
 	if (nullptr == pCamTransform) return;
 	_vector vCamPos = pCamTransform->Get_State(CTransform::STATE_POSITION);
 	_vector vCamLook = pCamTransform->Get_State(CTransform::STATE_LOOK);
+	_vector vCamUp = pCamTransform->Get_State(CTransform::STATE_UP);
 
 	// 거리가 아닌, 카메라 Look 벡터와의 각도차로 계산
 	vCamLook = XMVector3Normalize(vCamLook);
+	vCamUp = XMVector3Normalize(vCamUp);
 
 	_bool isSearch = false;
 	_vector vToTarget = XMVectorZero();
@@ -1822,21 +1808,24 @@ void CCody::Find_TargetSpaceRail()
 		vToTarget = XMVector3Normalize(vNodePosition - vCamPos);
 		
 		/* 외적 : 방향 체크 */
+		_bool bEdge = false;
 		_uint iEdgeState = pNode->Get_EdgeState();
-		_int iCCW = MH_CrossCCW(vCamLook, vToTarget);
+		_int iCCW = MH_CrossCCW(vCamLook, vToTarget, vCamUp); /* @Return CCW(1) CW(-1) Else(0) */
 		switch (iEdgeState)
 		{
-		case CSpaceRail::EDGE_START:  
+		case CSpaceRail::EDGE_START:  // Edge Start 트리거노드가 존재하면, MID 노드는 체크하지 않는다.
 			if (1 == iCCW) continue; // 반시계방향에 존재하는 노드 건너뛰기
+			bEdge = true;
 		break;
 		case CSpaceRail::EDGE_END:
 			if (-1 == iCCW) continue; // 시계 방향에 존재하는 노드 건너뛰기
+			bEdge = true;
 		break;
 		}
 
 		/* 각도 계산  */
 		_float fDegree = XMConvertToDegrees(XMVectorGetX(XMVector3Dot(vCamLook, vToTarget)));
-		if (fDegree > 90.f) continue; /* 일정각도(90) 이상인 노드는 제외한다. */
+		if (fDegree > 60.f) continue; /* 일정각도(90) 이상인 노드는 제외한다. */
 
 		/* 가장 각도가 적은 타겟노드 찾기 */
 		if (fMinDegree > fDegree)
@@ -1845,6 +1834,9 @@ void CCody::Find_TargetSpaceRail()
 			//m_pTargetRailNode = pNode;
 			fMinDegree = fDegree;
 			isSearch = true;
+
+			if (bEdge) 
+				break;
 		}
 	}
 
@@ -1853,7 +1845,7 @@ void CCody::Find_TargetSpaceRail()
 }
 void CCody::Start_SpaceRail()
 {
-	if (false == m_bSearchToRail || nullptr == m_pSearchTargetRailNode) return;
+	if (nullptr == m_pSearchTargetRailNode) return;
 
 	if (m_pSearchTargetRailNode) {
 		// 타겟을 찾았다면, 레일 탈 준비
@@ -1868,7 +1860,7 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 
 	_float fMoveToSpeed = 10.f;
 	_float fDist = m_pTransformCom->Move_ToTargetRange(m_pTargetRailNode->Get_Position(), 0.1f, dTimeDelta * fMoveToSpeed);
-	if (fDist < 0.5f)
+	if (fDist < 0.2f)
 	{
 		/* 타는 애니메이션으로 변경 */
 		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_ToGrind); // 레일 착지
@@ -1897,7 +1889,6 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 		// EdgeState 넣어주기
 		// Mid 일경우, 외적으로 방향구해서, Start or End 구해주기
 		_uint iEdgeState = m_pTargetRailNode->Get_EdgeState();
-
 		switch (iEdgeState)
 		{
 		case CSpaceRail::EDGE_START:
@@ -1917,10 +1908,11 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 			CTransform* pCamTransform = m_pCamera->Get_Transform();
 			if (nullptr == pCamTransform) return;
 			_vector vCamLook = pCamTransform->Get_State(CTransform::STATE_LOOK);
+			_vector vCamUp = pCamTransform->Get_State(CTransform::STATE_UP);
 			_vector vCamPos = pCamTransform->Get_State(CTransform::STATE_POSITION);
 
 			_vector vToTarget = m_pTargetRailNode->Get_Position() - vCamPos;
-			_int iCCW = MH_CrossCCW(vCamLook, vToTarget);
+			_int iCCW = MH_CrossCCW(vCamLook, vToTarget, vCamUp);  /* @Return CCW(1) CW(-1) Else(0) */
 
 			switch (iCCW)
 			{
@@ -1975,7 +1967,7 @@ void CCody::TakeRail(_double dTimeDelta)
 void CCody::ShowRailTargetTriggerUI()
 {
 	// Show UI
-	if (m_pSearchTargetRailNode)
+	if (m_pSearchTargetRailNode && nullptr == m_pTargetRailNode)
 	{
 		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, true);
 		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pSearchTargetRailNode->Get_Position());
