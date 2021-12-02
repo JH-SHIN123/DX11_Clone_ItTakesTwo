@@ -116,13 +116,12 @@ void CUmbrellaBeam_Joystick::Trigger(TriggerStatus::Enum eStatus, GameID::Enum e
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
 		m_pUmbrellaBeam->Set_BeamActivate(false);
-		m_pUmbrellaBeam->Set_DeadEffect();
 	}
 }
 
-void CUmbrellaBeam_Joystick::Set_ControlActivate()
+void CUmbrellaBeam_Joystick::Set_ControlActivate(_bool IsCheck)
 {
-	m_IsControlActivate = true;
+	m_IsControlActivate = IsCheck;
 }
 
 void CUmbrellaBeam_Joystick::Set_HorizontalAngle(_float fAngle)

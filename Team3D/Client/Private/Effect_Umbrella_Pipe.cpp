@@ -46,6 +46,8 @@ HRESULT CEffect_Umbrella_Pipe::NativeConstruct(void * pArg)
 
 _int CEffect_Umbrella_Pipe::Tick(_double TimeDelta)
 {
+	if (true == m_IsDead)
+		return EVENT_DEAD;
 
 	m_fTime += (_float)TimeDelta * 0.1f;
 
@@ -96,6 +98,11 @@ void CEffect_Umbrella_Pipe::SetUp_WorldMatrix(_fmatrix WorldMatrix)
 HRESULT CEffect_Umbrella_Pipe::Ready_Instance()
 {
 	return S_OK;
+}
+
+void CEffect_Umbrella_Pipe::Set_Dead()
+{
+	m_IsDead = true;
 }
 
 CEffect_Umbrella_Pipe * CEffect_Umbrella_Pipe::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

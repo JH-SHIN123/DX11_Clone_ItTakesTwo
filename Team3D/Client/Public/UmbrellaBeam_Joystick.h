@@ -23,7 +23,7 @@ public:
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 public:
-	void Set_ControlActivate();
+	void Set_ControlActivate(_bool IsCheck);
 	void Set_HorizontalAngle(_float fAngle);
 	void Set_Rotate(_float fAngle);
 	void Set_OnParentRotate(_matrix ParentMatrix);

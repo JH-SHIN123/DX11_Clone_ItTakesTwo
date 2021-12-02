@@ -25,9 +25,11 @@ public:
 
 public:
 	HRESULT Ready_Instance();
+	void Set_Dead();
 
 private:
 	_double m_dAngle = 0.0;
+	_bool m_IsDead = false;
 	_float m_fTime = 0.f;
 	_float m_fColorRamp_U = 0.f;
 	_float4x4 m_matParent;

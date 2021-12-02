@@ -204,6 +204,16 @@ void CUmbrellaBeam::PutGravitationalField()
 		m_IsPutGravitationalField = false;
 		m_IsBeamActivate = false;
 		pMay->Set_ActorGravity(false, false, false);
+
+		CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
+		pJoystick->Set_ControlActivate(false);
+
+		CCody* pCody = (CCody*)DATABASE->GetCody();
+		pCody->Set_ControlJoystick(false);
+		pCody->Get_Model()->Set_Animation(ANI_C_ActionMH);
+
+		if(nullptr != m_pUmbrellaBeam_Effect)
+			m_pUmbrellaBeam_Effect->Set_Dead();
 	}
 
 	if (true == m_IsPutGravitationalField)
@@ -226,9 +236,6 @@ void CUmbrellaBeam::PutGravitationalField()
 
 	if (fRangeX >= vComparePosX && fRange >= vComparePosY && fRange >= vComparePosZ)
 		m_IsPutGravitationalField = true;
-
-
-
 }
 
 HRESULT CUmbrellaBeam::Ready_Layer_UmbrellaBeam_Stand(const _tchar * pLayerTag)

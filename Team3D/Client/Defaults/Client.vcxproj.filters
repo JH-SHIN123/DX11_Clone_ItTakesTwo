@@ -376,38 +376,8 @@
     <Filter Include="02.GameObject\07.UI\11.ChapterSelect">
       <UniqueIdentifier>{f0c03c84-48c4-479e-86d2-76c7f04a52ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.PipeCurve">
-      <UniqueIdentifier>{c57472fb-766e-4142-a112-142e1b86bccf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\01.PressurePlate">
-      <UniqueIdentifier>{8e4f12d8-fbcb-4560-bd25-99b8376df892}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\02.PressurePlateFrame">
-      <UniqueIdentifier>{b6367bed-2c7f-453b-8b78-8e4e39870938}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\03.PressurePlateLock">
-      <UniqueIdentifier>{6abed76e-adfe-484f-aefc-e948fcabeef9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\04.SupportFrame">
-      <UniqueIdentifier>{b4a2db38-2d82-4c2a-999a-aa74e76f2bb5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\07.UI\09.Screen\01.ChapterScreen">
       <UniqueIdentifier>{f8527fcd-ef02-4951-8a62-1e30b5d9da75}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\05.PressureBigPlate">
-      <UniqueIdentifier>{e5a868eb-b19a-4aab-9a06-a4f0e0a0e11a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\06.ControlRoom_Door">
-      <UniqueIdentifier>{7d68941f-ef9e-45f4-9a25-aae9935dc649}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\07.ControlRoom_BetteryBox">
-      <UniqueIdentifier>{509900e3-ef54-404d-8bcc-2c05bc99434e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\08.ControlRoom_Bettery">
-      <UniqueIdentifier>{624965be-0db4-446b-a7ed-ac33238a0f8b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\09.ControlRoom_Glass">
-      <UniqueIdentifier>{7d31ddb1-8854-4643-b3cb-bf439128b2c1}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton">
       <UniqueIdentifier>{21595d8b-6915-472b-a79b-c4082c037ad6}</UniqueIdentifier>
@@ -556,18 +526,6 @@
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall">
       <UniqueIdentifier>{fe876da6-8259-4e3e-90d8-354a88c44141}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\10.UmbrellaBeam">
-      <UniqueIdentifier>{8eb3042d-b959-4b89-8975-a23480dcb983}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\11.UmbrellaBeam_Base">
-      <UniqueIdentifier>{2de8008a-fd5c-4b35-9f23-b43c9d807520}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\12.UmbrellaBeam_Stand">
-      <UniqueIdentifier>{ce2d2122-1993-4567-bbbd-45c7d5a83e9c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\13.UmbrellaBeam_Joystick">
-      <UniqueIdentifier>{1222b103-dbd3-4206-a322-d20e64de8bb8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious">
       <UniqueIdentifier>{2f43f579-02a4-4fed-ae3b-0ad23196e3d6}</UniqueIdentifier>
     </Filter>
@@ -594,6 +552,54 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.HangingPlanet">
       <UniqueIdentifier>{7bfbdffb-00e8-4343-bff3-44a6e744dba5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.Pipe">
+      <UniqueIdentifier>{f1f7fac4-b8a7-4190-9db6-8122bd860e39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.Pipe\09.ControlRoom_Glass">
+      <UniqueIdentifier>{7d31ddb1-8854-4643-b3cb-bf439128b2c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.Pipe\08.ControlRoom_Bettery">
+      <UniqueIdentifier>{624965be-0db4-446b-a7ed-ac33238a0f8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.Pipe\07.ControlRoom_BetteryBox">
+      <UniqueIdentifier>{509900e3-ef54-404d-8bcc-2c05bc99434e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.Pipe\06.ControlRoom_Door">
+      <UniqueIdentifier>{7d68941f-ef9e-45f4-9a25-aae9935dc649}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.Pipe\05.PressureBigPlate">
+      <UniqueIdentifier>{e5a868eb-b19a-4aab-9a06-a4f0e0a0e11a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.Pipe\04.SupportFrame">
+      <UniqueIdentifier>{b4a2db38-2d82-4c2a-999a-aa74e76f2bb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.Pipe\03.PressurePlateLock">
+      <UniqueIdentifier>{6abed76e-adfe-484f-aefc-e948fcabeef9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.Pipe\02.PressurePlateFrame">
+      <UniqueIdentifier>{b6367bed-2c7f-453b-8b78-8e4e39870938}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.Pipe\01.PressurePlate">
+      <UniqueIdentifier>{8e4f12d8-fbcb-4560-bd25-99b8376df892}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.Pipe\00.PipeCurve">
+      <UniqueIdentifier>{c57472fb-766e-4142-a112-142e1b86bccf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\01.Umbrella">
+      <UniqueIdentifier>{dd4ec96d-685c-4691-ab41-2c930f96d5a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\10.UmbrellaBeam">
+      <UniqueIdentifier>{8eb3042d-b959-4b89-8975-a23480dcb983}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\11.UmbrellaBeam_Base">
+      <UniqueIdentifier>{2de8008a-fd5c-4b35-9f23-b43c9d807520}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\12.UmbrellaBeam_Stand">
+      <UniqueIdentifier>{ce2d2122-1993-4567-bbbd-45c7d5a83e9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\13.UmbrellaBeam_Joystick">
+      <UniqueIdentifier>{1222b103-dbd3-4206-a322-d20e64de8bb8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -877,19 +883,19 @@
       <Filter>01.Maps\04.Stage_Space</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PipeCurve.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.PipeCurve</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\00.PipeCurve</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PressurePlate.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\01.PressurePlate</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\01.PressurePlate</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\SupportFrame.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\04.SupportFrame</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\04.SupportFrame</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PressurePlateFrame.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\02.PressurePlateFrame</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\02.PressurePlateFrame</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PressurePlateLock.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\03.PressurePlateLock</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\03.PressurePlateLock</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\SplashScreen.h">
       <Filter>02.GameObject\07.UI\09.Screen\01.ChapterScreen</Filter>
@@ -898,13 +904,13 @@
     <ClInclude Include="..\Public\PlayerBehaviorCallback.h" />
     <ClInclude Include="..\Public\PlayerFilterCallback.h" />
     <ClInclude Include="..\Public\PressureBigPlate.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\05.PressureBigPlate</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\05.PressureBigPlate</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ControlRoom_Door.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\06.ControlRoom_Door</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\06.ControlRoom_Door</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BatteryBox.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\07.ControlRoom_BetteryBox</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\07.ControlRoom_BetteryBox</Filter>
     </ClInclude>
     <ClInclude Include="..\public\WarpGate.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
@@ -916,10 +922,10 @@
       <Filter>03.Component\01.Actor\02.PlayerActor\00.Main</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ControlRoom_Battery.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\08.ControlRoom_Bettery</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\08.ControlRoom_Bettery</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ControlRoom_Glass.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\09.ControlRoom_Glass</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\09.ControlRoom_Glass</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PinBall.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall</Filter>
@@ -1031,16 +1037,16 @@
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\07.BigPlanet</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UmbrellaBeam.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\10.UmbrellaBeam</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\10.UmbrellaBeam</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UmbrellaBeam_Stand.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\12.UmbrellaBeam_Stand</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\12.UmbrellaBeam_Stand</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UmbrellaBeam_Base.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\11.UmbrellaBeam_Base</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\11.UmbrellaBeam_Base</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UmbrellaBeam_Joystick.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\13.UmbrellaBeam_Joystick</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\13.UmbrellaBeam_Joystick</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\NoBatterySign.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
@@ -1319,19 +1325,19 @@
       <Filter>01.Maps\04.Stage_Space</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PipeCurve.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.PipeCurve</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\00.PipeCurve</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PressurePlate.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\01.PressurePlate</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\01.PressurePlate</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\SupportFrame.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\04.SupportFrame</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\04.SupportFrame</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PressurePlateFrame.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\02.PressurePlateFrame</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\02.PressurePlateFrame</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PressurePlateLock.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\03.PressurePlateLock</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\03.PressurePlateLock</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\SplashScreen.cpp">
       <Filter>02.GameObject\07.UI\09.Screen\01.ChapterScreen</Filter>
@@ -1340,13 +1346,13 @@
     <ClCompile Include="..\Private\PlayerBehaviorCallback.cpp" />
     <ClCompile Include="..\Private\PlayerFilterCallback.cpp" />
     <ClCompile Include="..\Private\PressureBigPlate.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\05.PressureBigPlate</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\05.PressureBigPlate</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ControlRoom_Door.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\06.ControlRoom_Door</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\06.ControlRoom_Door</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BatteryBox.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\07.ControlRoom_BetteryBox</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\07.ControlRoom_BetteryBox</Filter>
     </ClCompile>
     <ClCompile Include="..\private\WarpGate.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
@@ -1358,10 +1364,10 @@
       <Filter>03.Component\01.Actor\02.PlayerActor\00.Main</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ControlRoom_Battery.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\08.ControlRoom_Bettery</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\08.ControlRoom_Bettery</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ControlRoom_Glass.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\09.ControlRoom_Glass</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\09.ControlRoom_Glass</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PinBall.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall</Filter>
@@ -1470,16 +1476,16 @@
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\07.BigPlanet</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UmbrellaBeam.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\10.UmbrellaBeam</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\10.UmbrellaBeam</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UmbrellaBeam_Stand.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\12.UmbrellaBeam_Stand</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\12.UmbrellaBeam_Stand</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UmbrellaBeam_Base.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\11.UmbrellaBeam_Base</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\11.UmbrellaBeam_Base</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UmbrellaBeam_Joystick.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\13.UmbrellaBeam_Joystick</Filter>
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\13.UmbrellaBeam_Joystick</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\NoBatterySign.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>

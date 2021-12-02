@@ -1737,7 +1737,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_M_ArcadeScreenLever_MH);
 			m_IsControlJoystick = true;
 			CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
-			pJoystick->Set_ControlActivate();
+			pJoystick->Set_ControlActivate(true);
 		}
 		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)
 		{
@@ -2421,6 +2421,11 @@ void CCody::Set_OnParentRotate(_matrix ParentMatrix)
 
 	matWorld = matRotY * matTrans * ParentMatrix;
 	m_pTransformCom->Set_WorldMatrix(matWorld);
+}
+
+void CCody::Set_ControlJoystick(_bool IsCheck)
+{
+	m_IsControlJoystick = IsCheck;
 }
 
 void CCody::WallLaserTrap(const _double dTimeDelta)

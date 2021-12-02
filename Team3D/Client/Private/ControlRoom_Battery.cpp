@@ -197,8 +197,8 @@ HRESULT CControlRoom_Battery::InterActive_UI()
 
 	_float fRange = 5.5f;
 
-	_float vCodyComparePosX = abs(XMVectorGetX(vCodyComparePos));
-	_float vCodyComparePosZ = abs(XMVectorGetZ(vCodyComparePos));
+	_float vCodyComparePosX = fabs(XMVectorGetX(vCodyComparePos));
+	_float vCodyComparePosZ = fabs(XMVectorGetZ(vCodyComparePos));
 
 	if (fRange >= vCodyComparePosX && fRange >= vCodyComparePosZ)
 	{
