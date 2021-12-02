@@ -50,7 +50,6 @@ HRESULT CRobotLever::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 	
 	CTriggerActor::ARG_DESC TriggerArgDesc;
-
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTransformCom;
 	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.7f);
@@ -69,7 +68,7 @@ _int CRobotLever::Tick(_double dTimeDelta)
 
 	if (m_bUpdate == true)
 	{
-		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_E) || m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
+		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_F) || m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 		{
 			UI_Delete(Cody, InputButton_InterActive);
 			UI_Delete(May, InputButton_InterActive);
@@ -171,10 +170,6 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 					((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_RobotHead()->Set_Lever_Hit_When_NoBattery(true);
 					((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_NoBatterySign()->Set_HitLever(true);
 					break;
-				case ST_PINBALL:
-					((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_RobotHead()->Set_Lever_Hit_When_NoBattery(true);
-					((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_NoBatterySign()->Set_HitLever(true);
-					break;
 				case ST_RAIL:
 					((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_RobotHead()->Set_Lever_Hit_When_NoBattery(true);
 					((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_NoBatterySign()->Set_HitLever(true);
@@ -198,6 +193,11 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 	}
 	else if (m_bBatteryCharged == true)
 	{
+		if (m_tRobotPartsDesc.iStageNum == ST_GRAVITYPATH)
+			DATABASE->Set_GravityStageClear(true);
+		else if (m_tRobotPartsDesc.iStageNum == ST_RAIL)
+			DATABASE->Set_RailStageClear(true);
+
 		m_fStopDelay += (_float)dTimeDelta;
 		if (m_fStopDelay > 0.2f && m_fStopDelay <= 0.6f)
 		{
@@ -208,10 +208,6 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 			case ST_GRAVITYPATH:
 				((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_RobotHead()->Set_Lever_Active(true);
 				((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_NoBatterySign()->Set_BatteryCharged(true);
-				break;
-			case ST_PINBALL:
-				((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_RobotHead()->Set_Lever_Active(true);
-				((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_NoBatterySign()->Set_BatteryCharged(true);
 				break;
 			case ST_RAIL:
 				((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_RobotHead()->Set_Lever_Active(true);

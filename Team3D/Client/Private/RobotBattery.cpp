@@ -70,7 +70,7 @@ _int CRobotBattery::Tick(_double dTimeDelta)
 
 	if (m_bUpdate)
 	{
-		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_E))
+		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_F))
 		{
 			m_bRotate = true;
 			UI_Delete(Cody, InputButton_InterActive);
@@ -89,10 +89,6 @@ _int CRobotBattery::Late_Tick(_double dTimeDelta)
 	CRobotParts::Tick(dTimeDelta);
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
-
-	if(m_pGameInstance->Key_Down(DIK_N))
-		EFFECT->Add_Effect(Effect_Value::RobotBattery_Spark, m_pTransformCom->Get_WorldMatrix());
-
 
 	return NO_EVENT;
 }
@@ -172,11 +168,6 @@ void CRobotBattery::Push_Battery(_double dTimeDelta)
 		case ST_GRAVITYPATH:
 			((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_RobotHead()->Set_Battery_Charged(true);
 			((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_Robot_Lever()->Set_BatteryCharged(true);
-			EFFECT->Add_Effect(Effect_Value::RobotBattery_Spark, m_pTransformCom->Get_WorldMatrix());
-			break;
-		case ST_PINBALL:
-			((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_RobotHead()->Set_Battery_Charged(true);
-			((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_Robot_Lever()->Set_BatteryCharged(true);
 			EFFECT->Add_Effect(Effect_Value::RobotBattery_Spark, m_pTransformCom->Get_WorldMatrix());
 			break;
 		case ST_RAIL:

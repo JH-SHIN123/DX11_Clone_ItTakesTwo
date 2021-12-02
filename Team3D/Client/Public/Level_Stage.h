@@ -26,6 +26,7 @@ private:
 	HRESULT Ready_Layer_WallLaserTrap(const _tchar* pLayerTag);
 	HRESULT TestLayer(const _tchar* pLayerTag);
 	/* Hye */
+	HRESULT Ready_Layer_PinBall(const _tchar* pLayerTag);
 	/* Won */
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_Sky(const _tchar* pLayerTag);
@@ -49,6 +50,7 @@ private:
 	HRESULT Ready_Layer_Hook_UFO(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_BigPlanet(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_RobotParts(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_RotatedRobotParts(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_DummyWall(const _tchar* pLayerTag);
 
 

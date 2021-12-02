@@ -323,7 +323,6 @@ private:
 	_bool m_IsCollide = false;
 	_float4x4 m_TriggerTargetWorld = {};
 
-
 	_bool m_IsOnGrind = false;
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
@@ -336,6 +335,21 @@ private:
 	_float	 m_fDeadTime = 0.f;
 	_float3	 m_DeadLinePos = {};
 
+	/* For.HookUFO */
+	_bool m_IsHookUFO = false;
+	_vector m_vHookUFOAxis = {};
+	_bool m_bGoToHooker = false;
+
+	_float m_faArmLength = 0.f;
+	_float m_faVelocity = 0.f;
+	_float m_faAcceleration = 0.f;
+	_float m_fRopeAngle = 0.f;
+	_float3 m_vStartPosition = {};
+	_float3 m_vDstPosition = {};
+
+	// Arbitrary damping
+	_float m_faDamping = 0.995f;
+
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
 	_bool m_IsInGravityPipe = false;
@@ -347,6 +361,9 @@ private:
 	_uint m_iRotateCount = 0;
 	_uint m_iValvePlayerName = Player::May;
 
+	/* For.PinBall */
+	_bool	 m_IsPinBall = false;
+	_float2	 m_MinMaxX = {};
 
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
@@ -389,6 +406,7 @@ private:
 	void Pull_VerticalDoor(const _double dTimeDelta);
 	void Rotate_Valve(const _double dTimeDelta);
 	void In_GravityPipe(const _double dTimeDelta);
+	void Hook_UFO(const _double dTimeDelta);
 	//Á¤È£
 	void Warp_Wormhole(const _double dTimeDelta);
 	void Touch_FireDoor(const _double dTimeDelta);
@@ -397,6 +415,7 @@ private:
 	void WallLaserTrap(const _double dTimeDelta);
 	/* Çý¿ø::For.DeadLine, SavePoint */
 	void Falling_Dead(const _double dTimeDelta);
+	void PinBall(const _double dTimeDelta);
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);

@@ -13,9 +13,9 @@ END
 
 BEGIN(Client)
 
-class CSpaceValve : public CGameObject
+class CSpaceValve final : public CGameObject
 {
-protected:
+private:
 	explicit CSpaceValve(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CSpaceValve(const CSpaceValve& rhs);
 	virtual ~CSpaceValve() = default;
@@ -23,35 +23,28 @@ protected:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-	/* For.Trigger */
+	virtual HRESULT Render_ShadowDepth() override;
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
-public:
-	virtual HRESULT Render_ShadowDepth() override;
-
-public:
+public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
-public:
+private:
 	void Rotate_SpaceValve(_double dTimeDelta);
 
 private:
 	_uint		m_iTargetPlayer = 0;
-
 	_bool		m_IsCollide = false;
 	_bool		m_bEnterValve = false;
-
 	_bool		m_bRotate = false;
 	_float		m_fRotateDelay = 0.f;
 	_uint		m_iRotateCount = 0;
 
 private:
 	class CSpace_Valve_Star* m_pSpaceValve_Star = nullptr; //베이스, 유리창 포함
-
 
 protected:
 	/* For.Component */

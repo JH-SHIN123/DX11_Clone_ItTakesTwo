@@ -12,7 +12,12 @@ PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData fi
 	if (PxFilterObjectIsTrigger(attributes0) != PxFilterObjectIsTrigger(attributes1))
 		pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
 	else
-		pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+	{
+		pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT
+			| PxPairFlag::eNOTIFY_TOUCH_FOUND
+			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS
+			| PxPairFlag::eNOTIFY_CONTACT_POINTS;
+	}
 
 	return PxFilterFlag::eDEFAULT;
 }
@@ -63,7 +68,7 @@ HRESULT CPhysX::Ready_PhysX(PxSimulationEventCallback* pEventCallback)
 	pClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 #endif
 
-	m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+	m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.f);
 	m_pControllerManager = PxCreateControllerManager(*m_pScene);
 
 	// юс╫ц ╧ы╢з
@@ -112,7 +117,7 @@ PxRigidDynamic * CPhysX::Create_DynamicActor(PxTransform Transform, PxGeometry &
 	PxRigidDynamic* pRigidBody = PxCreateDynamic(*m_pPhysics, Transform, Geometry, *m_pMaterial, fDensity);
 	NULL_CHECK_RETURN(pRigidBody, nullptr);
 
-	Set_DynamicOption(pRigidBody, 1.f, 0.5f, vVelocity);
+	Set_DynamicOption(pRigidBody, 0.02f, 0.5f, vVelocity);
 
 	m_pScene->addActor(*pRigidBody);
 

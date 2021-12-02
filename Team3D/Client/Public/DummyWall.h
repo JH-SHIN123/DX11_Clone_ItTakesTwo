@@ -13,9 +13,9 @@ END
 
 BEGIN(Client)
 
-class CDummyWall : public CGameObject
+class CDummyWall final : public CGameObject
 {
-protected:
+private:
 	explicit CDummyWall(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CDummyWall(const CDummyWall& rhs);
 	virtual ~CDummyWall() = default;
@@ -23,28 +23,20 @@ protected:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-
-
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-	/* For.Trigger */
+	virtual HRESULT Render_ShadowDepth() override;
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
-public:
-	virtual HRESULT Render_ShadowDepth() override;
-
-public:
+public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
 	_bool		m_IsCollide = false;
-
 	GameID::Enum		m_PlayerID = GameID::eDUMMYWALL;
 
-protected:
-	/* For.Component */
+private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;

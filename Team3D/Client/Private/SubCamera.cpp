@@ -26,25 +26,11 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 {
 	CCamera::NativeConstruct(pArg);
 
-	CPlayerActor::ARG_DESC ArgDesc;
+	CCameraActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eSUBCAMERA, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.fJumpGravity = 0.f;
-
-	ArgDesc.CapsuleControllerDesc.setToDefault();
-	ArgDesc.CapsuleControllerDesc.height = 0.1f;
-	ArgDesc.CapsuleControllerDesc.radius = m_fCamRadius = 0.4f;
-	ArgDesc.CapsuleControllerDesc.material = m_pGameInstance->Get_BasePxMaterial();
-	ArgDesc.CapsuleControllerDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
-	ArgDesc.CapsuleControllerDesc.climbingMode = PxCapsuleClimbingMode::eEASY;
-	ArgDesc.CapsuleControllerDesc.contactOffset = 0.01f;
-	ArgDesc.CapsuleControllerDesc.stepOffset = 0.707f;
-	ArgDesc.CapsuleControllerDesc.slopeLimit = 0.f;
-	ArgDesc.CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
-	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
@@ -253,6 +239,7 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	//마우스 체크
 	_long MouseMove = 0;
 
+
 #ifdef __CONTROL_MAY_KEYBOARD
 	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X)/*m_pGameInstance->Get_Pad_RStickX() - 32767*/)
 	{
@@ -269,6 +256,7 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 			m_fCurMouseRev[Rev_Holizontal] = 0.f;
 		}
 	}
+
 	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y)/*(65535 - m_pGameInstance->Get_Pad_RStickY()) - 32767*/)
 	{
 		//if (abs(MouseMove) < 2000)
@@ -290,10 +278,10 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 #else
 	if (MouseMove = m_pGameInstance->Get_Pad_RStickX() - 32767)
 	{
-		//if (abs(MouseMove) < 2000)
-		//	MouseMove = 0;
-		//else
-		//	MouseMove = MouseMove / 800;
+		if (abs(MouseMove) < 2000)
+			MouseMove = 0;
+		else
+			MouseMove = MouseMove / 800;
 
 
 		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
@@ -305,10 +293,10 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	}
 	if (MouseMove = (65535 - m_pGameInstance->Get_Pad_RStickY()) - 32767)
 	{
-		//if (abs(MouseMove) < 2000)
-		//	MouseMove = 0;
-		//else
-		//	MouseMove = MouseMove / 2000;
+		if (abs(MouseMove) < 2000)
+			MouseMove = 0;
+		else
+			MouseMove = MouseMove / 2000;
 
 
 		m_fMouseRev[Rev_Prependicul] += (_float)MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * (_float)dTimeDelta;

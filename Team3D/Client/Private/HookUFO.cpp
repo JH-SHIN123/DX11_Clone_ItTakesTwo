@@ -52,7 +52,7 @@ _int CHookUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide || m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
+	if (m_pGameInstance->Key_Down(DIK_F) && m_IsCollide || m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 	{
 		m_bLaunch = true;
 		UI_Delete(May, InputButton_InterActive);
@@ -98,10 +98,13 @@ void CHookUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObjec
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(Cody, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
+		if (((CCody*)pGameObject)->Get_Position().m128_f32[1] < m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1])
+		{
+			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			UI_Create(Cody, InputButton_InterActive);
+			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCollide = true;
+		}
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
@@ -109,14 +112,18 @@ void CHookUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObjec
 		UI_Delete(Cody, InputButton_InterActive);
 	}
 
+
 	// May
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(May, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
+		if (((CMay*)pGameObject)->Get_Position().m128_f32[1] < m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1])
+		{
+			((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			UI_Create(May, InputButton_InterActive);
+			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCollide = true;
+		}
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{

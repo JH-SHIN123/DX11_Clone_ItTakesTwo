@@ -25,30 +25,15 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 {
 	CCamera::NativeConstruct(pArg);
 
-	CPlayerActor::ARG_DESC ArgDesc;
+	CCameraActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eMAINCAMERA, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.fJumpGravity = 0.f;
-
-	ArgDesc.CapsuleControllerDesc.setToDefault();
-	ArgDesc.CapsuleControllerDesc.height = 0.1f;
-	ArgDesc.CapsuleControllerDesc.radius = m_fCamRadius = 0.4f;
-	ArgDesc.CapsuleControllerDesc.material = m_pGameInstance->Get_BasePxMaterial();
-	ArgDesc.CapsuleControllerDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
-	ArgDesc.CapsuleControllerDesc.climbingMode = PxCapsuleClimbingMode::eEASY;
-	ArgDesc.CapsuleControllerDesc.contactOffset = 0.01f;
-	ArgDesc.CapsuleControllerDesc.stepOffset = 0.707f;
-	ArgDesc.CapsuleControllerDesc.slopeLimit = 0.f;
-	ArgDesc.CapsuleControllerDesc.upDirection = PxVec3(0.0, 1.0, 0.0);
-	ArgDesc.CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom,&ArgDesc), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
 
-	
 	XMStoreFloat4x4(&m_matPreRev, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_matQuternionRev, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
@@ -314,7 +299,7 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vPlayerUp = XMVector4Normalize(pPlayerTransform->Get_State(CTransform::STATE_UP));
 	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	m_fCulCalculateUp = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
-	m_fPreCalculateUp += (m_fCulCalculateUp - m_fPreCalculateUp) * (_float)dTimeDelta;
+	m_fPreCalculateUp += (m_fCulCalculateUp - m_fPreCalculateUp) * (_float)dTimeDelta * 10.f;
 
 	
 	//카메라 회전에 따른 거리체크

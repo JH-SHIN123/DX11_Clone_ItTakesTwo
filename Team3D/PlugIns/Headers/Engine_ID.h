@@ -21,6 +21,8 @@ namespace Engine
 			eROBOTHEAD,
 			eROBOTBATTERY,
 			eROBOTLEVER,
+			eROTATEDROBOTBODY,
+			eROTATEDROBOTHEAD,
 			eVALVE,
 			eUMBRELLA,
 			eVERTICALDOOR,
@@ -31,8 +33,14 @@ namespace Engine
 			ePLANET,
 			eNOBATTERYSIGN,
 			eSPACEVALVE,
+			eDUMMYCOLLIDER,
 			eGRAVITYPIPE,
 			eHOOKUFO,
+			eGRAVITYPATH,
+			ePINBALL,
+			eBLOCKED,
+			ePINBALLHANDLE,
+			ePINBALLDOOR,
 			eWARPGATE,
 			eWORMHOLE,
 			eFIREDOOR,
@@ -57,6 +65,11 @@ namespace Engine
 	}USERDATA;
 
 	struct TriggerStatus
+	{
+		enum Enum { eFOUND, eLOST };
+	};
+
+	struct ContactStatus
 	{
 		enum Enum { eFOUND, eLOST };
 	};
