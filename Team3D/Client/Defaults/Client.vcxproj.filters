@@ -193,9 +193,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\06.Landing_Smoke">
       <UniqueIdentifier>{5268a6b4-0c71-43a4-b934-31ce7bc3a010}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\06.Sky">
-      <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default">
       <UniqueIdentifier>{8ee023fd-0ab8-4432-8c7b-28309c0cb8b4}</UniqueIdentifier>
     </Filter>
