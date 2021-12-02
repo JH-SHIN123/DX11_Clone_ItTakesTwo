@@ -107,10 +107,14 @@ _bool CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
 	if (false == m_bPlayAnimation) return false;
 
 	_double dTicksPerSecond = m_pPathAnim->Get_TicksPerSecond();
-	m_dCurrentTime += fmod(dTicksPerSecond * dTimeDelta, m_dDurationTime);
+
+	if(STATE_FORWARD == m_eState)
+		m_dCurrentTime += fmod(dTicksPerSecond * dTimeDelta, m_dDurationTime);
+	else if (STATE_BACKWARD == m_eState)
+		m_dCurrentTime -= fmod(dTicksPerSecond * dTimeDelta, m_dDurationTime);
 
 	/* 애니메이션이 끝나면, 업데이트 종료 (멈추기) */
-	if (m_dCurrentTime >= m_dDurationTime)
+	if (m_dCurrentTime >= m_dDurationTime || m_dCurrentTime < 0)
 	{
 		m_eState = STATE_END;
 		m_bPlayAnimation = false;
@@ -124,7 +128,11 @@ _bool CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
 	WorldMatrix = Update_CombinedTransformations();
 
 	/* Update Progress */
-	m_fProgressAnim = _float(m_dCurrentTime / m_dDurationTime);
+
+	if (STATE_FORWARD == m_eState)
+		m_fProgressAnim = _float(m_dCurrentTime / m_dDurationTime);
+	else if (STATE_BACKWARD == m_eState)
+		m_fProgressAnim = _float((m_dDurationTime - m_dCurrentTime) / m_dDurationTime);
 
 	return true;
 }
@@ -139,11 +147,8 @@ HRESULT CPath::Update_AnimTransformations()
 		m_pPathAnim->Update_PathTransformation(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations);;
 		break;
 	case Engine::CPath::STATE_BACKWARD:
-	{
-		_double rewindTime = m_dDurationTime - m_dCurrentTime;
-		m_pPathAnim->Update_RewindPathTransformation(rewindTime, m_iCurAnimFrame, m_AnimTransformations);
+		m_pPathAnim->Update_RewindPathTransformation(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations);
 		break;
-	}
 	}
 
 	return S_OK;

@@ -230,8 +230,8 @@ HRESULT CAnim::Update_RewindPathTransformation(_double& dCurrentTime, _uint& iCu
 		const vector<KEY_FRAME>& KeyFrames = pChannel->Get_KeyFrames();
 		_int iKeyFrameSize = (_int)pChannel->Get_KeyFrameCount() - 1;
 
-		_int iCurFrame = iKeyFrameSize - iCurAnimFrame;
-		_int ilNextFrame = iKeyFrameSize - iCurAnimFrame - 1;
+		_int iCurFrame = iCurAnimFrame;
+		_int ilNextFrame = iCurAnimFrame - 1;
 
 		if (0 >= ilNextFrame) continue;
 
@@ -257,7 +257,7 @@ HRESULT CAnim::Update_RewindPathTransformation(_double& dCurrentTime, _uint& iCu
 		else
 		{
 			if (dCurrentTime < KeyFrames[ilNextFrame].dTime)
-				iCurAnimFrame += iFrameInteract;
+				iCurAnimFrame -= iFrameInteract;
 
 			_float fRatio = fabsf(_float((dCurrentTime - KeyFrames[iCurFrame].dTime) / (KeyFrames[ilNextFrame].dTime - KeyFrames[iCurFrame].dTime)));
 
