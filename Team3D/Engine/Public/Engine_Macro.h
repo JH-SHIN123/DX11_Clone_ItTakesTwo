@@ -94,6 +94,7 @@ enum aiTextureType
 #pragma endregion
 
 #pragma region Input_GamePad
+/* PS */
 #define DIP_X			0
 #define DIP_B			1
 #define DIP_A			2
@@ -108,4 +109,15 @@ enum aiTextureType
 #define DIP_RS			11
 #define DIP_PS			12
 #define DIP_GUIDE		13
+/* XBOX */
+#define XBOX_A			0
+#define XBOX_B			1
+#define XBOX_X			2
+#define XBOX_Y			3
+#define XBOX_LB			4
+#define XBOX_RB			5
+#define XBOX_LM			6
+#define XBOX_RM			7
+#define XBOX_LS			8
+#define XBOX_RS			9
 #pragma endregion

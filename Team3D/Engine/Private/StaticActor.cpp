@@ -14,6 +14,12 @@ CStaticActor::CStaticActor(const CStaticActor & rhs)
 {
 }
 
+void CStaticActor::Set_Simulation(_bool bCheck)
+{
+	for (auto& pActor : m_pActors)
+		pActor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, bCheck);
+}
+
 HRESULT CStaticActor::NativeConstruct_Prototype()
 {
 	CActor::NativeConstruct_Prototype();

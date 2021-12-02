@@ -69,7 +69,7 @@ _int CRobotBattery::Tick(_double dTimeDelta)
 
 	if (m_bUpdate)
 	{
-		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_E))
+		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_F))
 		{
 			m_bRotate = true;
 			UI_Delete(Cody, InputButton_InterActive);
@@ -167,10 +167,6 @@ void CRobotBattery::Push_Battery(_double dTimeDelta)
 		case ST_GRAVITYPATH:
 			((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_RobotHead()->Set_Battery_Charged(true);
 			((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_Robot_Lever()->Set_BatteryCharged(true);
-			break;
-		case ST_PINBALL:
-			((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_RobotHead()->Set_Battery_Charged(true);
-			((CRobotParts*)DATABASE->Get_STPinBallRobot())->Get_Robot_Lever()->Set_BatteryCharged(true);
 			break;
 		case ST_RAIL:
 			((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_RobotHead()->Set_Battery_Charged(true);

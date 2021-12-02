@@ -126,13 +126,6 @@ void CRobotHead::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 
 void CRobotHead::Hit_Lever_InActive(_double dTimeDelta)
 {
-	m_tRobotPartsDesc.iStageNum;
-	int i = 0;
-
-	CRobotParts* a = ((CRobotParts*)DATABASE->Get_STGravityRobot());
-	CRobotParts* b = ((CRobotParts*)DATABASE->Get_STPinBallRobot());
-	CRobotParts* c= ((CRobotParts*)DATABASE->Get_STPlanetRobot());
-
 	m_pModelCom->Set_Animation(R_InActive_Lever);
 	m_pModelCom->Set_NextAnimIndex(R_InActive_Idle);
 }

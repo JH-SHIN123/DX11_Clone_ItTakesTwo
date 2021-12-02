@@ -11,6 +11,11 @@ CDynamic_Env::CDynamic_Env(const CDynamic_Env & rhs)
 {
 }
 
+_fvector CDynamic_Env::Get_Position()
+{
+	return m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+}
+
 HRESULT CDynamic_Env::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();

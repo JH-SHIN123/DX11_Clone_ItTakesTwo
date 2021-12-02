@@ -12,15 +12,24 @@ void CPlayerHitReport::onShapeHit(const PxControllerShapeHit & hit)
 	{
 		if (hit.triangleIndex != PxU32(-1))
 		{
-			m_pPlayerActor->Step_GravityPath(hit.worldNormal);
+			m_pPlayerActor->Set_ReorderGravityStep(1);
+			m_pPlayerActor->Set_HitNormal(hit.worldNormal);
+			m_pPlayerActor->Set_IsOnGravityPath(true);
 		}
-		//
-		//
 	}
-	else if (GameID::ePLANET == pUserData->eID)
+	if (GameID::eDUMMYWALL == pUserData->eID)
 	{
-		m_pPlayerActor->MoveToTarget(hit.actor->getGlobalPose());
+		if (hit.triangleIndex != PxU32(-1))
+		{
+			m_pPlayerActor->Set_ContactPos(hit.worldPos);
+			m_pPlayerActor->Set_WallCollide(true);
+			m_pPlayerActor->Set_CollideNormal(hit.worldNormal);
+		}
 	}
+	//else if (GameID::ePLANET == pUserData->eID)
+	//{
+	//	m_pPlayerActor->MoveToTarget(hit.actor->getGlobalPose());
+	//}
 }
 
 void CPlayerHitReport::onControllerHit(const PxControllersHit & hit)

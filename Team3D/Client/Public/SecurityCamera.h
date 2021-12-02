@@ -13,7 +13,7 @@ BEGIN(Client)
 
 class CSecurityCamera final : public CGameObject
 {
-protected:
+private:
 	explicit CSecurityCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CSecurityCamera(const CSecurityCamera& rhs);
 	virtual ~CSecurityCamera() = default;
@@ -24,14 +24,11 @@ public:
 	virtual _int	Tick(_double dTimeDelta) override;
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-public:
 	virtual HRESULT Render_ShadowDepth() override;
 	
 	/* Getter */
 public:		
 	CTransform* Get_Transform() { return m_pTransformCom; }
-
 
 private:
 	void Find_Target(_double dTimeDelta);
@@ -41,12 +38,9 @@ private:
 	_bool m_bIsTargetNear = false;
 
 private:
-	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
-
-	//Target
 	CTransform* m_pTargetTransform = nullptr;
 
 public:

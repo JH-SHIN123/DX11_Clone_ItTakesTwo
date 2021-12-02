@@ -76,9 +76,8 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 
 	if (m_iTargetPlayer == GameID::eCODY)
 	{
-		if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide == true)
+		if (m_pGameInstance->Key_Down(DIK_F) && m_IsCollide == true)
 		{
-			UI_Delete(May, InputButton_InterActive);
 			UI_Delete(Cody, InputButton_InterActive);
 
 			m_bEnterValve = true;
@@ -90,7 +89,6 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 		if (m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 		{
 			UI_Delete(May, InputButton_InterActive);
-			UI_Delete(Cody, InputButton_InterActive);
 
 			m_bEnterValve = true;
 			// 키보드 화살표 UI 생성.

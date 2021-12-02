@@ -364,6 +364,19 @@ void CTransform::RotatePitch(const _double TimeDelta)
 	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
 }
 
+void CTransform::RotatePitch_Angle(const _double TimeDelta, _float fAngle)
+{
+	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
+	_vector		vUp = Get_State(CTransform::STATE_UP);
+	_vector		vLook = Get_State(CTransform::STATE_LOOK);
+
+	_matrix		RotateMatrix = XMMatrixRotationAxis(XMVector3Normalize(vRight), XMConvertToRadians((_float)(TimeDelta * fAngle)));
+
+	Set_State(STATE_RIGHT, XMVector3TransformNormal(vRight, RotateMatrix));
+	Set_State(STATE_UP, XMVector3TransformNormal(vUp, RotateMatrix));
+	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
+}
+
 void CTransform::RotateRoll(const _double TimeDelta)
 {
 	_vector		vRight = Get_State(CTransform::STATE_RIGHT);

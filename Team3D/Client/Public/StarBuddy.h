@@ -15,7 +15,7 @@ BEGIN(Client)
 
 class CStarBuddy : public CGameObject
 {
-protected:
+private:
 	explicit CStarBuddy(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CStarBuddy(const CStarBuddy& rhs);
 	virtual ~CStarBuddy() = default;
@@ -23,22 +23,16 @@ protected:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-
-
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-	/* For.Trigger */
+	virtual HRESULT Render_ShadowDepth() override;
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
-public:
-	virtual HRESULT Render_ShadowDepth() override;
-
-public:
+public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
-public:
+private:
 	void Set_Launch(_bool bLaunch) { m_bLaunch = bLaunch; }
 	void Launch_StarBuddy(_double dTimeDelta);
 
@@ -47,10 +41,9 @@ private:
 	_bool		m_bLaunch = false;
 	_float		m_fLifeTime = 0.f;
 	_bool		m_IsCollide = false;
-
 	GameID::Enum		m_PlayerID = GameID::eSTARBUDDY;
 
-protected:
+private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;

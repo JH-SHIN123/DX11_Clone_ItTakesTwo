@@ -12,9 +12,9 @@ END
 
 BEGIN(Client)
 
-class CBigButtonFrame : public CGameObject
+class CBigButtonFrame final : public CGameObject
 {
-protected:
+private:
 	explicit CBigButtonFrame(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CBigButtonFrame(const CBigButtonFrame& rhs);
 	virtual ~CBigButtonFrame() = default;
@@ -22,21 +22,15 @@ protected:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-
-
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-public:
 	virtual HRESULT Render_ShadowDepth() override;
 
-public:
+public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
-
-protected:
-	/* For.Component */
+private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
