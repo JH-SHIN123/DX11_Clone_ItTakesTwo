@@ -28,6 +28,8 @@ HRESULT CWarpGate::NativeConstruct(void * pArg)
 
 	Ready_Component();
 
+	m_pRespawnTunnel->Set_Stage_Viewer(m_eStageValue);
+
 	return S_OK;
 }
 

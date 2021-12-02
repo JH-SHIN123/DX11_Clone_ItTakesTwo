@@ -288,6 +288,11 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 
 #pragma endregion
 
+	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RespawnTunnel_MaskingMesh")
+		, CModel::Create(pDevice, pDeviceContext, TEXT("../Bin/Resources/Effect/3D/"), TEXT("RespawnTunnel_MaskingMesh"), TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+
+
 	return S_OK;
 }
 

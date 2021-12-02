@@ -30,14 +30,13 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Cody(TEXT("Layer_Cody")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_May(TEXT("Layer_May")), E_FAIL);
 
-///*Test*/FAILED_CHECK_RETURN(TestLayer(TEXT("Layer_Object_Effect")), E_FAIL);
-///*Test*/FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
 
 	/* For.Interactive Objects */
 #ifndef __MAPLOADING_OFF
 	/* Se */
 	FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);
 	/* Jung */
+///*Test*/FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_WarpGate(TEXT("Layer_WarpGate")), E_FAIL);	
 	FAILED_CHECK_RETURN(Ready_Layer_Wormhole(TEXT("Layer_Wormhole")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_WallLaserTrap(TEXT("Layer_WallLaserTrap")), E_FAIL);	
@@ -104,12 +103,12 @@ HRESULT CLevel_Stage::Ready_Layer_GravityPath(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Test_Layer_Object_Effect(const _tchar * pLayerTag)
 {
 	/////////////////////////////////////////////// 테스트용입니다
-	//EFFECT_DESC_CLONE Data;
-	//_matrix WorldMatrix = XMMatrixIdentity();
-	//WorldMatrix.r[3] = { 0.f,2.f,5.f,1.f };
-	//XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel"), &Data), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
+	EFFECT_DESC_CLONE Data;
+	_matrix WorldMatrix = XMMatrixIdentity();
+	WorldMatrix.r[3] = { 0.f,2.f,5.f,1.f };
+	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel"), &Data), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
 	//
 	//WorldMatrix.r[3] = { 0.f,0.f,5.f,1.f };
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Umbrella_Pipe"), &Data), E_FAIL);
@@ -149,12 +148,7 @@ HRESULT CLevel_Stage::Ready_Layer_WallLaserTrap(const _tchar * pLayerTag)
 
 	return S_OK;
 }
-HRESULT CLevel_Stage::TestLayer(const _tchar * pLayerTag)
-{
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Star")), E_FAIL);
 
-	return S_OK;
-}
 #pragma endregion
 
 #pragma region Hye

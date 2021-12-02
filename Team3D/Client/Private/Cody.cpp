@@ -1711,7 +1711,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-
+			Enforce_IdleState();
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_IsWallLaserTrap_Touch = true;
 		}
@@ -2373,11 +2373,15 @@ void CCody::WallLaserTrap(const _double dTimeDelta)
 	m_fDeadTime += (_float)dTimeDelta;
 	if (m_fDeadTime >= 2.f)
 	{
-		_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
-		vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+		_float fMyPosY = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
+		_float fTriggerY = m_vTriggerTargetPos.y;
 
-		m_pActorCom->Set_Position(vSavePosition);
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
+		_vector vRespawnPos = XMVectorSet(-803.f, 768.f, 193.f, 1.f);
+		if(fMyPosY > fTriggerY)
+			vRespawnPos = XMVectorSet(-805.f, 792.f, 198.f, 1.f);
+
+		m_pActorCom->Set_Position(vRespawnPos);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vRespawnPos);
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 		m_pModelCom->Set_Animation(ANI_C_MH);
 		m_fDeadTime = 0.f;
