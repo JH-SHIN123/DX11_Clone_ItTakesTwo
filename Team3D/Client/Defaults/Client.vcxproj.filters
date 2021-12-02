@@ -184,18 +184,6 @@
     <Filter Include="03.Component">
       <UniqueIdentifier>{6f424d55-06aa-4b07-a102-2829f8dd72e4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.Component\01.CameraActor">
-      <UniqueIdentifier>{71f0cc81-3265-4b0d-9a45-cf89b506bd13}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.Component\01.CameraActor\00.Main">
-      <UniqueIdentifier>{0cbed854-cdf5-4121-8dab-ff10dad003dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.Component\01.CameraActor\01.BehaviorCallback">
-      <UniqueIdentifier>{68b731cf-de3f-4fda-b4e7-8040040943d1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.Component\01.CameraActor\02.FilterCallback">
-      <UniqueIdentifier>{c1859efc-d3f6-40da-a6c5-24deb0b7e05b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
       <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
     </Filter>
@@ -822,15 +810,6 @@
     <ClInclude Include="..\Public\MenuScreen.h">
       <Filter>02.GameObject\07.UI\10.Menu\00.Screen</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CameraBehaviorCallback.h">
-      <Filter>03.Component\01.CameraActor\01.BehaviorCallback</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CameraFilterCallback.h">
-      <Filter>03.Component\01.CameraActor\02.FilterCallback</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CameraActor.h">
-      <Filter>03.Component\01.CameraActor\00.Main</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Effect_Dead_Particle_Fire.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\01.Fire\Dead_Particle_Fire</Filter>
     </ClInclude>
@@ -900,9 +879,6 @@
     <ClInclude Include="..\Public\SplashScreen.h">
       <Filter>02.GameObject\07.UI\09.Screen\01.ChapterScreen</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\PlayerActor.h" />
-    <ClInclude Include="..\Public\PlayerBehaviorCallback.h" />
-    <ClInclude Include="..\Public\PlayerFilterCallback.h" />
     <ClInclude Include="..\Public\PressureBigPlate.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\05.PressureBigPlate</Filter>
     </ClInclude>
@@ -1032,7 +1008,6 @@
     <ClInclude Include="..\Public\GameOption.h">
       <Filter>00.MainApp</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\PlayerHitReport.h" />
     <ClInclude Include="..\Public\BigPlanet.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\07.BigPlanet</Filter>
     </ClInclude>
@@ -1053,6 +1028,27 @@
     </ClInclude>
     <ClInclude Include="..\Public\PC_MouseButton.h">
       <Filter>02.GameObject\07.UI\02.ButtonIcon\PC\Mouse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerActor.h">
+      <Filter>03.Component\01.Actor\02.PlayerActor\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerBehaviorCallback.h">
+      <Filter>03.Component\01.Actor\02.PlayerActor\01.BehaviorCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerFilterCallback.h">
+      <Filter>03.Component\01.Actor\02.PlayerActor\02.FilterCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerHitReport.h">
+      <Filter>03.Component\01.Actor\02.PlayerActor\03.HitReport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraActor.h">
+      <Filter>03.Component\01.Actor\01.CameraActor\01.BehaviorCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraBehaviorCallback.h">
+      <Filter>03.Component\01.Actor\01.CameraActor\01.BehaviorCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraFilterCallback.h">
+      <Filter>03.Component\01.Actor\01.CameraActor\02.FilterCallback</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1248,15 +1244,6 @@
     <ClCompile Include="..\Private\MenuScreen.cpp">
       <Filter>02.GameObject\07.UI\10.Menu\00.Screen</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CameraActor.cpp">
-      <Filter>03.Component\01.CameraActor\00.Main</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CameraBehaviorCallback.cpp">
-      <Filter>03.Component\01.CameraActor\01.BehaviorCallback</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CameraFilterCallback.cpp">
-      <Filter>03.Component\01.CameraActor\02.FilterCallback</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Effect_Dead_Particle_Fire.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\01.Fire\Dead_Particle_Fire</Filter>
     </ClCompile>
@@ -1342,9 +1329,6 @@
     <ClCompile Include="..\Private\SplashScreen.cpp">
       <Filter>02.GameObject\07.UI\09.Screen\01.ChapterScreen</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\PlayerActor.cpp" />
-    <ClCompile Include="..\Private\PlayerBehaviorCallback.cpp" />
-    <ClCompile Include="..\Private\PlayerFilterCallback.cpp" />
     <ClCompile Include="..\Private\PressureBigPlate.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\05.PressureBigPlate</Filter>
     </ClCompile>
@@ -1471,7 +1455,6 @@
     <ClCompile Include="..\private\MainApp.cpp">
       <Filter>00.MainApp</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\PlayerHitReport.cpp" />
     <ClCompile Include="..\Private\BigPlanet.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\07.BigPlanet</Filter>
     </ClCompile>
@@ -1492,6 +1475,27 @@
     </ClCompile>
     <ClCompile Include="..\Private\PC_MouseButton.cpp">
       <Filter>02.GameObject\07.UI\02.ButtonIcon\PC\Mouse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerActor.cpp">
+      <Filter>03.Component\01.Actor\02.PlayerActor\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerBehaviorCallback.cpp">
+      <Filter>03.Component\01.Actor\02.PlayerActor\01.BehaviorCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerFilterCallback.cpp">
+      <Filter>03.Component\01.Actor\02.PlayerActor\02.FilterCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerHitReport.cpp">
+      <Filter>03.Component\01.Actor\02.PlayerActor\03.HitReport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraActor.cpp">
+      <Filter>03.Component\01.Actor\01.CameraActor\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraBehaviorCallback.cpp">
+      <Filter>03.Component\01.Actor\01.CameraActor\01.BehaviorCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraFilterCallback.cpp">
+      <Filter>03.Component\01.Actor\01.CameraActor\02.FilterCallback</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
