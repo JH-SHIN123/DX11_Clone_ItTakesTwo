@@ -87,8 +87,8 @@ void CDeadLine::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObje
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
-		m_IsCollide = false;
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eDEADLINE, false, ((CMay*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+		m_IsCollide = false;
 	}
 }
 

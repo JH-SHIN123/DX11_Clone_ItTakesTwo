@@ -179,6 +179,7 @@ public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
 	void		Update_Tirgger_Pos(_vector vPos);
+	CPlayerActor* Get_Actor() { return m_pActorCom; }
 
 public:
 	void	Set_BossMissile_Attack(); // CBoss_Missile

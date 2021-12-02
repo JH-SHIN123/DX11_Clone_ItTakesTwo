@@ -1694,11 +1694,12 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eDEADLINE && false == m_IsDeadLine)
 		{
+			Enforce_IdleState();
 			/* 데드라인 */
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Death_Fall_MH);
 
-			m_pActorCom->Set_Gravity(0.f);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_IsDeadLine = true;
 		}
@@ -2458,14 +2459,13 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
 
 			m_pActorCom->Set_Position(vSavePosition);
-			m_pActorCom->Set_Gravity(-9.8f);
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pModelCom->Set_Animation(ANI_C_MH);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_fDeadTime = 0.f;
-			m_IsDeadLine = false;
 			m_IsCollide = false;
+			m_IsDeadLine = false;
+			m_pActorCom->Set_ZeroGravity(false, false, false);
 		}
 		else
 		{
