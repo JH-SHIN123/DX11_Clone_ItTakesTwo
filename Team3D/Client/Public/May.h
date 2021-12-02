@@ -312,8 +312,9 @@ public:
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
 	_float3				m_vTriggerTargetPos = {};
-	_bool m_IsCollide = false;
-	_float4x4 m_TriggerTargetWorld = {};
+	_bool			    m_IsCollide = false;
+	_float4x4			m_TriggerTargetWorld = {};
+	_uint				m_iCurrentStageNum = ST_GRAVITYPATH;
 
 	_bool m_IsOnGrind = false;
 	_bool m_IsHitStarBuddy = false;
