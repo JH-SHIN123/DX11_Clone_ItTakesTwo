@@ -89,6 +89,10 @@ public:
 	void Set_RailStageClear(_bool bRailStageClear) { m_bRailStageClear = bRailStageClear; }
 	_bool Get_RailStageClear() { return m_bRailStageClear; }
 
+	void Set_HangingPlanet(CGameObject* pHangingPlanet) { m_pHangingPlanet = pHangingPlanet; }
+	CGameObject* Get_HangingPlanet() { return m_pHangingPlanet; }
+
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -115,6 +119,9 @@ private:
 	CGameObject* m_pPinBall_Blocked = nullptr;
 	CGameObject* m_pPinBall_Door = nullptr;
 	CGameObject* m_pSlideDoor = nullptr;
+
+	/* For.HangingPlanet */
+	CGameObject* m_pHangingPlanet = nullptr;
 
 private:
 	/* For.Valve */

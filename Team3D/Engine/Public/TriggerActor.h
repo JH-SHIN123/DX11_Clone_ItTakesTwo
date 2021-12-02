@@ -20,6 +20,9 @@ public: /* Struct */
 	}ARG_DESC;
 
 public:
+	PxRigidStatic* Get_Actor();
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	void			Update_TriggerActor();
