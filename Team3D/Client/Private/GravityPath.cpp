@@ -83,6 +83,7 @@ _int CGravityPath::Tick(_double TimeDelta)
 {
 	CGameObject::Tick(TimeDelta);
 
+
 	return NO_EVENT;
 }
 
