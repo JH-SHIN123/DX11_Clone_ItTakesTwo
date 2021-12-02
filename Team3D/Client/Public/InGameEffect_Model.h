@@ -34,6 +34,7 @@ public:
 	HRESULT	Ready_InstanceBuffer(_bool IsRenderTerm = false);
 
 public:
+	void Set_Pos(_vector vPos);
 	_float4 Set_UV(_int iIndex);
 
 protected:

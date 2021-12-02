@@ -16,6 +16,7 @@ public: /* Setter */
 
 public: /* Getter */
 	virtual _fvector Get_Position();
+	_fmatrix Get_WorldMatrix();
 
 protected:
 	_float Compute_Distance(CTransform* pPlayerTransform, CTransform* pDstTransform);

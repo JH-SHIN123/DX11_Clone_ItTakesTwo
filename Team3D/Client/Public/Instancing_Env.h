@@ -2,15 +2,8 @@
 
 #include "Client_Defines.h"
 #include "GameObject.h"
-#include "GameInstance.h"
-
-BEGIN(Engine)
-class CRenderer;
-class CModel_Instance;
-END
 
 BEGIN(Client)
-
 class CInstancing_Env final : public CGameObject
 {
 private:
@@ -18,7 +11,7 @@ private:
 	explicit CInstancing_Env(const CInstancing_Env& rhs);
 	virtual ~CInstancing_Env() = default;
 
-public:/* Struct */
+public:
 	typedef struct tagArgumentDesc
 	{
 		CModel_Instance::ARG_DESC	Instancing_Arg;
@@ -41,7 +34,6 @@ private:
 	HRESULT Add_GameObject_ToRenderGroup();
 
 private:
-	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CModel_Instance*	m_pModelCom = nullptr;
 
@@ -52,6 +44,5 @@ public:
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
-
 END
 

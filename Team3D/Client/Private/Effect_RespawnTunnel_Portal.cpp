@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_RespawnTunnel_Portal.h"
-#include "GameInstance.h"
 
 CEffect_RespawnTunnel_Portal::CEffect_RespawnTunnel_Portal(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
@@ -31,14 +30,16 @@ HRESULT CEffect_RespawnTunnel_Portal::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Smoke_Flow_02", TEXT("Com_Textures_Smoke"), (CComponent**)&m_pTexturesCom_Smoke), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Smoke_Flow_01", TEXT("Com_Textures_Smoke2"), (CComponent**)&m_pTexturesCom_Smoke2), E_FAIL);
 
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	WorldMatrix.r[0] *= -1.f;
+	WorldMatrix.r[2] *= -1.f;
+	WorldMatrix.r[3].m128_f32[1] += 7.f;
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+
+	m_pTransformCom->Set_Scale(XMVectorSet(0.5f, 0.5f, 0.5f, 0.f));
+
 	Ready_Instance();
 
-	_matrix mat = m_pTransformCom->Get_WorldMatrix();
-
-	mat.r[0] = { -1.f, 0.f, 0.f, 0.f };
-	mat.r[2] = { 0.f, 0.f, -1.f, 0.f };
-
-	
 	return S_OK;
 }
 
@@ -60,7 +61,10 @@ _int CEffect_RespawnTunnel_Portal::Tick(_double TimeDelta)
 
 _int CEffect_RespawnTunnel_Portal::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 20.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+
+	return NO_EVENT;
 }
 
 HRESULT CEffect_RespawnTunnel_Portal::Render(RENDER_GROUP::Enum eGroup)
@@ -78,14 +82,13 @@ HRESULT CEffect_RespawnTunnel_Portal::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom->Render_Model(4);
 
 
-	// Smoke
-	Set_Shader_SmokeData();
+	//// Smoke
+	//Set_Shader_SmokeData();
+	//
+	//m_pPointInstanceCom_Smoke->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Smoke2->Get_ShaderResourceView(0));
+	//m_pPointInstanceCom_Smoke->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Smoke->Get_ShaderResourceView(0));
+	//m_pPointInstanceCom_Smoke->Render(0, m_pInstanceBuffer_Smoke, m_iInstanceCount_Smoke, 0);
 
-	m_pPointInstanceCom_Smoke->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Smoke2->Get_ShaderResourceView(0));
-	m_pPointInstanceCom_Smoke->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Smoke->Get_ShaderResourceView(0));
-	m_pPointInstanceCom_Smoke->Render(0, m_pInstanceBuffer_Smoke, m_iInstanceCount_Smoke, 0);
-
-// 	VTXMATRIX_CUSTOM_STT* pBuffer = 
 	return S_OK;
 }
 

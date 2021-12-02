@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "..\public\HookUFO.h"
-#include "GameInstance.h"
 #include "UI_Generator.h"
 #include "Cody.h"
+#include "RobotParts.h"
 #include "May.h"
 
 CHookUFO::CHookUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -31,27 +31,10 @@ HRESULT CHookUFO::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Hook_UFO"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	static int i = 0;
-
-	if (i == 0) {
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(25.f , 15.f, 30.f, 1.f));
-		i = 1;
-	}
-	else if (i == 1) {
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(25.f, 15.f, 61.f, 1.f));
-		i = 2;
-	}
-	else if (i == 2) {
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(25.f, 15.f, 92.f, 1.f));
-		i = 3;
-	}
-	else if (i == 3) {
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(25.f, 15.f, 123.f, 1.f));
-		i = 4;
-	}
-	
-
-
+	ROBOTDESC HookUFODesc;
+	if (nullptr != pArg)
+		memcpy(&HookUFODesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, HookUFODesc.vPosition);
 
 	CTriggerActor::ARG_DESC ArgDesc;
 
@@ -69,7 +52,7 @@ _int CHookUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide)
+	if (m_pGameInstance->Key_Down(DIK_F) && m_IsCollide || m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 	{
 		m_bLaunch = true;
 		UI_Delete(May, InputButton_InterActive);
@@ -115,10 +98,13 @@ void CHookUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObjec
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(Cody, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
+		if (((CCody*)pGameObject)->Get_Position().m128_f32[1] < m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1])
+		{
+			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			UI_Create(Cody, InputButton_InterActive);
+			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCollide = true;
+		}
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
@@ -126,14 +112,18 @@ void CHookUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObjec
 		UI_Delete(Cody, InputButton_InterActive);
 	}
 
+
 	// May
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(May, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
+		if (((CMay*)pGameObject)->Get_Position().m128_f32[1] < m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1])
+		{
+			((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			UI_Create(May, InputButton_InterActive);
+			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCollide = true;
+		}
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{

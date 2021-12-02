@@ -46,7 +46,7 @@ HRESULT CGameObject_Manager::Add_GameObject_Clone(_uint iLayerLevelIndex, const 
 	NULL_CHECK_RETURN(iLayerLevelIndex < m_iLevelCount, E_FAIL);
 	NULL_CHECK_RETURN(iPrototypeLevelIndex < m_iLevelCount, E_FAIL);
 
-	CGameObject* pPrototype = Find_Prototype(iPrototypeLevelIndex, pPrototypeTag);
+	CGameObject* pPrototype = Find_Prototype(iPrototypeLevelIndex, pPrototypeTag);	
 	NULL_CHECK_RETURN(pPrototype, E_FAIL);
 
 	CGameObject* pClone = pPrototype->Clone_GameObject(pArg);

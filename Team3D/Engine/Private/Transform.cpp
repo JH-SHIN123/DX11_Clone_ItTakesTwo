@@ -81,6 +81,21 @@ void CTransform::Set_Speed(_double InSpeedPerSec, _double InRotationPerSec)
 	m_TransformDesc.dRotationPerSec = InRotationPerSec;
 }
 
+void CTransform::Set_RotateQuat(_matrix Quat)
+{
+	_float fScaleRight = Get_Scale(CTransform::STATE_RIGHT);
+	_float fScaleUp = Get_Scale(CTransform::STATE_UP);
+	_float fScaleLook = Get_Scale(CTransform::STATE_LOOK);
+
+	_vector	vRight = XMVector3Normalize(Get_State(CTransform::STATE_RIGHT));
+	_vector	vUp = XMVector3Normalize(Get_State(CTransform::STATE_UP));
+	_vector	vLook = XMVector3Normalize(Get_State(CTransform::STATE_LOOK));
+
+	Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(vRight, Quat) * fScaleRight);
+	Set_State(CTransform::STATE_UP, XMVector3TransformNormal(vUp, Quat) * fScaleUp);
+	Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(vLook, Quat) * fScaleLook);
+}
+
 HRESULT CTransform::NativeConstruct_Prototype()
 {
 	CComponent::NativeConstruct_Prototype();
@@ -370,6 +385,32 @@ void CTransform::RotatePitch(const _double TimeDelta)
 	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
 }
 
+void CTransform::RotatePitch_Angle(const _double TimeDelta, _float fAngle)
+{
+	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
+	_vector		vUp = Get_State(CTransform::STATE_UP);
+	_vector		vLook = Get_State(CTransform::STATE_LOOK);
+
+	_matrix		RotateMatrix = XMMatrixRotationAxis(XMVector3Normalize(vRight), XMConvertToRadians((_float)(TimeDelta * fAngle)));
+
+	Set_State(STATE_RIGHT, XMVector3TransformNormal(vRight, RotateMatrix));
+	Set_State(STATE_UP, XMVector3TransformNormal(vUp, RotateMatrix));
+	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
+}
+
+void CTransform::RotateRoll(const _double TimeDelta)
+{
+	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
+	_vector		vUp = Get_State(CTransform::STATE_UP);
+	_vector		vLook = Get_State(CTransform::STATE_LOOK);
+
+	_matrix		RotateMatrix = XMMatrixRotationAxis(XMVector3Normalize(vLook), (_float)(TimeDelta * 5.f));
+
+	Set_State(STATE_RIGHT, XMVector3TransformNormal(vRight, RotateMatrix));
+	Set_State(STATE_UP, XMVector3TransformNormal(vUp, RotateMatrix));
+	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
+}
+
 void CTransform::MoveToDir(const _fvector & vMoveDir, const _double TimeDelta, const _double dAcceleration, CNavigation * pNavigation)
 {
 	if (0.0 == m_TransformDesc.dSpeedPerSec) return;
@@ -380,6 +421,21 @@ void CTransform::MoveToDir(const _fvector & vMoveDir, const _double TimeDelta, c
 
 	Set_State(CTransform::STATE_POSITION, vPosition);
 
+}
+
+void CTransform::RotateByUp(_fvector vUp)
+{
+	_float fScaleRight = Get_Scale(CTransform::STATE_RIGHT);
+	_float fScaleUp = Get_Scale(CTransform::STATE_UP);
+	_float fScaleLook = Get_Scale(CTransform::STATE_LOOK);
+
+	_vector	vLook = XMVector3Normalize(Get_State(CTransform::STATE_LOOK));
+	_vector	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
+	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
+
+	Set_State(STATE_RIGHT, vRight * fScaleRight);
+	Set_State(STATE_UP, XMVector3Normalize(vUp) * fScaleUp);
+	Set_State(STATE_LOOK, vLook * fScaleLook);
 }
 
 CTransform * CTransform::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

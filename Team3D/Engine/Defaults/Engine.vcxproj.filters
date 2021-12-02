@@ -429,6 +429,9 @@
     <ClInclude Include="..\Public\Path.h">
       <Filter>02.Utility\02.Component\07.Path</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PhysX.h">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -589,6 +592,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Path.cpp">
       <Filter>02.Utility\02.Component\07.Path</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PhysX.cpp">
+      <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

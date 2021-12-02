@@ -13,6 +13,11 @@ CTriggerActor::CTriggerActor(const CTriggerActor & rhs)
 {
 }
 
+PxRigidStatic * CTriggerActor::Get_Actor()
+{
+	return m_pActor;
+}
+
 HRESULT CTriggerActor::NativeConstruct_Prototype()
 {
 	CActor::NativeConstruct_Prototype();

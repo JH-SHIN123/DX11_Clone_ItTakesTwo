@@ -202,12 +202,9 @@ private:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
@@ -215,11 +212,19 @@ public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
 	PLAYER_SIZE Get_Player_Size() { return m_eCurPlayerSize; }
+	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	//PLAYER_SIZE Get_CurSize() { return m_eCurPlayerSize; }
+
+public:
+	void Set_BossMissile_Attack(); // CBoss_Missile
 
 	// Tick 에서 호출될 함수들
 private:
 	virtual void KeyInput(_double dTimeDelta);
+	void Attack_BossMissile_After(_double dTimeDelta);
+
+private: // 여기에 넣어놓아야 알거 같아서 여기에..		
+	void Enforce_IdleState(); /* 강제로 Idle 상태로 바꿈 */
 
 private:
 	// 단발성 함수들.
@@ -257,12 +262,12 @@ public:
 #pragma region BasicMovement
 private:
 	// 기본 움직임
-	_bool m_bSprint = false;
-	_bool m_bRoll = false;
-	_bool m_bMove = false;
-	_bool m_bShortJump = false;
-	_bool m_bGroundPound = false;
-	_bool m_IsTurnAround = false;
+	_bool m_bSprint			= false;
+	_bool m_bRoll			= false;
+	_bool m_bMove			= false;
+	_bool m_bShortJump		= false;
+	_bool m_bGroundPound	= false;
+	_bool m_IsTurnAround	= false;
 
 	// 구르기 관련
 	_bool m_bAction = false;
@@ -290,8 +295,6 @@ private:
 	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
 	_float	m_fIdleTime = 0.f;
 
-	// 상호작용에 의한 움직임.
-
 	// 뭔가 들고있다면
 	_bool m_IsPickUp = false;
 
@@ -301,6 +304,7 @@ private:
 	PLAYER_SIZE m_eNextPlayerSize = SIZE_MEDIUM;
 	_float3 m_vScale = {1.f, 1.f, 1.f};
 	_bool m_IsSizeChanging = false;
+	_float m_fSizeDelayTime = 0.f;
 
 	// 점프관련 변수
 	_uint m_iJumpCount = 0;
@@ -310,15 +314,23 @@ private:
 
 	// 컷씬이라면
 	_bool m_IsCutScene = false;
+
+	_bool m_IsStGravityCleared = false;
+	_bool m_IsStRailCleared = false;
+	_bool m_IsStPinBallCleared = false;
 #pragma endregion
 
 #pragma region Trigger
 public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
+	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
+	void SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject* pTargetPtr);
 
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
 	_float3				m_vTriggerTargetPos = {};
+	_float4x4			m_TriggerTargetWorld = {};
+	CGameObject*		m_pTargetPtr = nullptr;
 
 	_bool m_IsCollide = false;
 	_bool m_IsOnGrind = false;
@@ -327,18 +339,20 @@ private:
 	_bool m_IsActivateRobotLever = false;
 	_bool m_IsPushingBattery = false;
 
-	/* 혜원::For.DeadLine, SavePoint */
+	/* Hye::For.DeadLine, SavePoint */
 	_bool	 m_IsDeadLine = false;
-	_bool	 m_IsSavePoint = false;
 	_float3  m_vSavePoint = {};
 	_float	 m_fDeadTime = 0.f;
 	_float3	 m_DeadLinePos = {};
+	/* Hye::For.PinBall*/
+	_bool m_IsPinBall = false;
+	/* Hye::For.Tube*/
+	_bool m_IsTube = false;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
 	_bool m_IsInGravityPipe = false;
 	_float m_fGoCenterTime = 0.f;
-
 
 	/* For.Valve */
 	_bool m_IsEnterValve = false;
@@ -365,10 +379,42 @@ private:
 	_float m_faDamping = 0.995f;
 
 	// Arbitrary ball radius
-
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
 
+	/* For. WallJump */
+	_bool	m_bWallAttach = false;
+	_bool   m_IsWallJumping = false;
+	_float	m_fWallJumpingTime = 0.f;
+	_float	m_fWallToWallSpeed = 0.55f;
+
+	// Warp NextStage
+	_bool m_IsWarpNextStage = false;
+	_float m_fWarpTimer = 0.f;
+	_bool m_IsWarpDone = false;
+	const _float4 m_vWormholePos = { 0.f, -100.f, -1000.f, 1.f };
+	const _float m_fWarpTimer_Max = 2.f;
+
+	// fire Door Dead
+	_bool m_IsTouchFireDoor = false;
+
+	// Boss Missile Hit
+	_bool m_IsBossMissile_Hit = false;
+
+	// Boss Missile Control
+	_bool	m_IsBossMissile_Control = false;
+	_bool	m_IsBossMissile_Rodeo_Ready = false;
+	_bool	m_IsBossMissile_Rodeo = false;
+	_bool	m_IsBoss_Missile_Explosion = false;
+	_float	m_fLandTime = 0.f;
+	_float	m_fBossMissile_HeroLanding_Time = 0.f;
+	_bool	m_IsBossMissile_RotateYawRoll_After = false;
+
+	// touch WallLaserTrap
+	_bool m_IsWallLaserTrap_Touch = false;
+	_bool m_IsWallLaserTrap_Effect = false;
+
+	// YYY
 	void Hit_StarBuddy(const _double dTimeDelta);
 	void Hit_Rocket(const _double dTimeDelta);
 	void Activate_RobotLever(const _double dTimeDelta);
@@ -377,11 +423,25 @@ private:
 	void In_GravityPipe(const _double dTimeDelta);
 	void Hit_Planet(const _double dTimeDelta);
 	void Hook_UFO(const _double dTimeDelta);
-	/* 혜원::For.DeadLine, SavePoint */
-	void Falling_Dead(const _double dTimeDelta);
+	void Wall_Jump(const _double dTimeDelta);
 
+	// 정호
+	void Warp_Wormhole(const _double dTimeDelta);
+	void Touch_FireDoor(const _double dTimeDelta);
+	void Boss_Missile_Hit(const _double dTimeDelta);
+	void Boss_Missile_Control(const _double dTimeDelta);
+	void WallLaserTrap(const _double dTimeDelta);
+
+	/* Hye*/
+	void Falling_Dead(const _double dTimeDelta);
+	void PinBall(const _double dTimeDelta);
+public:
+	void PinBall_Respawn(_double dTimeDelta);
+
+private:
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);
+
 #pragma endregion
 
 #pragma region Rail

@@ -32,7 +32,7 @@ HRESULT CFilm::Add_Node(CamNode * pNode)
 	return S_OK;
 }
 
-HRESULT CFilm::Tick_Film(_double dTimeDelta, ScreenType eScreenType)
+HRESULT CFilm::Tick_Film(_double dTimeDelta, ScreenType eScreenType, _float* fOutFovY)
 {
 	//카메라 매트릭스 갱신, 뷰포트 갱신
 	m_dTime[eScreenType] += dTimeDelta;
@@ -79,6 +79,7 @@ HRESULT CFilm::Tick_Film(_double dTimeDelta, ScreenType eScreenType)
 			m_eCurAt_CamMoveOption = pCurNode->eAtMoveOption;
 
 			m_eCurViewPortOption = pCurNode->eViewPortOption;
+			m_fCurFovY[eScreenType] = pCurNode->fFovY;
 			//뷰매트릭스 설정
 			XMStoreFloat4x4(&m_matCam[eScreenType], MakeCurCamMatrix(dTimeDelta, pCurNode, eScreenType));
 
@@ -135,8 +136,9 @@ HRESULT CFilm::Tick_Film(_double dTimeDelta, ScreenType eScreenType)
 }
 
 
-_fmatrix CFilm::Get_CurNodeMatrix(ScreenType eScreenType)
+_fmatrix CFilm::Get_CurNodeMatrix(ScreenType eScreenType, _float* fOutFovY)
 {
+	*fOutFovY = m_fCurFovY[eScreenType];
 	return XMLoadFloat4x4(&m_matCam[eScreenType]);
 }
 
@@ -176,7 +178,6 @@ _fmatrix CFilm::MakeCurCamMatrix(_double dTimeDelta, CamNode * pCurNode, ScreenT
 	switch (m_eCurEye_CamMoveOption) //Eye
 	{
 	case CamMoveOption::Move_Jump:
-		vNextNodeEye = vCurNodeEye;
 		break;
 	case CamMoveOption::Move_Straight:
 	{
@@ -191,8 +192,6 @@ _fmatrix CFilm::MakeCurCamMatrix(_double dTimeDelta, CamNode * pCurNode, ScreenT
 		CamNode tNode2 = *m_CamNodes[m_iCurEye_BezierNode[eScreenType][Bezier_2]];
 		CamNode tNode3 = *m_CamNodes[m_iCurEye_BezierNode[eScreenType][Bezier_3]];
 		vNextNodeEye = MakeBezier3(tNode1.vEye, tNode2.vEye, tNode3.vEye, m_dCamMoveTime[eScreenType][(_uint)CamMoveOption::Move_Bezier_3]);
-		if (m_dCamMoveTime[eScreenType][(_uint)CamMoveOption::Move_Bezier_3] >= 1.f)
-			m_bCurEye_StartBezier[eScreenType] = false;
 		_double dPlusTime = dTimeDelta / (tNode3.dTime - tNode1.dTime);
 		m_dCamMoveTime[eScreenType][(_uint)CamMoveOption::Move_Bezier_3] += dPlusTime;
 	}
@@ -204,8 +203,6 @@ _fmatrix CFilm::MakeCurCamMatrix(_double dTimeDelta, CamNode * pCurNode, ScreenT
 		CamNode tNode3 =*m_CamNodes[m_iCurEye_BezierNode[eScreenType][Bezier_3]];
 		CamNode tNode4 =*m_CamNodes[m_iCurEye_BezierNode[eScreenType][Bezier_4]];
 		vNextNodeEye = MakeBezier4(tNode1.vEye, tNode2.vEye, tNode3.vEye, tNode4.vEye, m_dCamMoveTime[eScreenType][(_uint)CamMoveOption::Move_Bezier_4]);
-		if (m_dCamMoveTime[eScreenType][(_uint)CamMoveOption::Move_Bezier_4] >= 1.f)
-			m_bCurEye_StartBezier[eScreenType] = false;
 		m_dCamMoveTime[eScreenType][(_uint)CamMoveOption::Move_Bezier_4] += dTimeDelta / (tNode4.dTime - tNode1.dTime);
 	}
 	break;
@@ -214,7 +211,6 @@ _fmatrix CFilm::MakeCurCamMatrix(_double dTimeDelta, CamNode * pCurNode, ScreenT
 	switch (m_eCurAt_CamMoveOption) //At
 	{
 	case CamMoveOption::Move_Jump:
-		vNextNodeAt = vCurNodeAt;
 		break;
 	case CamMoveOption::Move_Straight:
 	{
@@ -228,8 +224,6 @@ _fmatrix CFilm::MakeCurCamMatrix(_double dTimeDelta, CamNode * pCurNode, ScreenT
 		CamNode tNode2 = *m_CamNodes[m_iCurAt_BezierNode[eScreenType][Bezier_2]];
 		CamNode tNode3 = *m_CamNodes[m_iCurAt_BezierNode[eScreenType][Bezier_3]];
 		vNextNodeAt = MakeBezier3(tNode1.vAt, tNode2.vAt, tNode3.vAt, m_dCamAtMoveTime[eScreenType][(_uint)CamMoveOption::Move_Bezier_3]);
-		if (m_dCamAtMoveTime[eScreenType][(_uint)CamMoveOption::Move_Bezier_3] >= 1.f)
-			m_bCurAt_StartBezier[eScreenType] = false;
 		m_dCamAtMoveTime[eScreenType][(_uint)CamMoveOption::Move_Bezier_3] += dTimeDelta / (tNode3.dTime - tNode1.dTime);
 	}
 	break;
@@ -240,8 +234,6 @@ _fmatrix CFilm::MakeCurCamMatrix(_double dTimeDelta, CamNode * pCurNode, ScreenT
 		CamNode tNode3 = *m_CamNodes[m_iCurAt_BezierNode[eScreenType][Bezier_3]];
 		CamNode tNode4 = *m_CamNodes[m_iCurAt_BezierNode[eScreenType][Bezier_4]];
 		vNextNodeAt = MakeBezier4(tNode1.vAt, tNode2.vAt, tNode3.vAt, tNode4.vAt, m_dCamAtMoveTime[eScreenType][(_uint)CamMoveOption::Move_Bezier_4]);
-		if (m_dCamAtMoveTime[eScreenType][(_uint)CamMoveOption::Move_Bezier_4] >= 1.f)
-			m_bCurAt_StartBezier[eScreenType] = false;
 		m_dCamAtMoveTime[eScreenType][(_uint)CamMoveOption::Move_Bezier_4] += dTimeDelta / (tNode4.dTime - tNode1.dTime);
 	}
 	break;
@@ -334,86 +326,173 @@ _float3 CFilm::VectorLerp(_float3& vDst, _float3& vSour, _float t)
 	return vReturn;
 }
 
-void CFilm::ReSet_CamNodeTime_Progress_End(ScreenType eScreenType, CamMoveOption eOption, CamNodeVectorType eType)
+void CFilm::ReSet_CamNodeTime_Progress_End(ScreenType eScreenType, CamMoveOption eOption, CamNodeVectorType eType, _uint iCurrentNode)
 {
 	switch (eType)
 	{
 	case CFilm::CamNodeVectorType::Eye:
 	{
-		m_dCamMoveTime[eScreenType][(_uint)eOption] = 0.0;
-		for (_uint i = 0; i < Bezier_End; i++)
-			m_iCurEye_BezierNode[eScreenType][i] = -1;
-		m_bCurEye_StartBezier[eScreenType] = false;
+		if (m_bCurEye_StartBezier[eScreenType]) //이전에 베지어 진행중? 
+		{
+			if (iCurrentNode != 0 && iCurrentNode != m_iCurEye_BezierNode[eScreenType][Bezier_1])
+			{
+				CamNode* pPreNode = m_CamNodes[iCurrentNode - 1];
+				switch (pPreNode->eEyeMoveOption) //이전 노드가 베지어로진행했나?
+				{
+				case CamMoveOption::Move_Bezier_3:
+					if (m_iCurEye_BezierNode[eScreenType][Bezier_3] == iCurrentNode)  //세번째 베지어노드가 새로들어온 노드면 초기화 (이후 다시 베지어 노드 채움)
+					{
+						for (_uint i = 0; i < Bezier_End; i++)
+							m_iCurEye_BezierNode[eScreenType][i] = -1;
+						m_bCurEye_StartBezier[eScreenType] = false;
+					}
+					break;
+				case CamMoveOption::Move_Bezier_4:
+					if (m_iCurEye_BezierNode[eScreenType][Bezier_4] == iCurrentNode)//네번째 베지어노드가 새로들어온 노드면 초기화(이후 다시 베지어 노드 채움)
+					{
+						for (_uint i = 0; i < Bezier_End; i++)
+							m_iCurEye_BezierNode[eScreenType][i] = -1;
+						m_bCurEye_StartBezier[eScreenType] = false;
+					}
+					break;
+				}
+				m_dCamMoveTime[eScreenType][(_uint)eOption] = 0.0;
+			}
+		}
+		else {
+			for (_uint i = 0; i < Bezier_End; i++)
+				m_iCurEye_BezierNode[eScreenType][i] = -1;
+			m_bCurEye_StartBezier[eScreenType] = false;
+			m_dCamMoveTime[eScreenType][(_uint)eOption] = 0.0;
+		}
+		break;
+
 	}
 	break;
 	case CFilm::CamNodeVectorType::At:
-		m_dCamAtMoveTime[eScreenType][(_uint)eOption] = 0.0;
-		for (_uint i = 0; i < Bezier_End; i++)
-			m_iCurAt_BezierNode[eScreenType][i] = -1;
-		m_bCurAt_StartBezier[eScreenType] = false;
+		if (m_bCurAt_StartBezier[eScreenType]) //이전에 베지어 진행중? 
+		{
+			if (iCurrentNode != 0 && iCurrentNode != m_iCurAt_BezierNode[eScreenType][Bezier_1]) //첫번째가 아니면?
+			{
+				CamNode* pPreNode = m_CamNodes[iCurrentNode - 1];
+				switch (pPreNode->eAtMoveOption) //이전 노드가 베지어로진행했나?
+				{
+				case CamMoveOption::Move_Bezier_3:
+					if (m_iCurAt_BezierNode[eScreenType][Bezier_3] == iCurrentNode)  //세번째 베지어노드가 새로들어온 노드면 초기화 (이후 다시 베지어 노드 채움)
+					{
+						for (_uint i = 0; i < Bezier_End; i++)
+							m_iCurAt_BezierNode[eScreenType][i] = -1;
+						m_bCurAt_StartBezier[eScreenType] = false;
+					}
+					break;
+				case CamMoveOption::Move_Bezier_4:
+					if (m_iCurAt_BezierNode[eScreenType][Bezier_4] == iCurrentNode)//네번째 베지어노드가 새로들어온 노드면 초기화(이후 다시 베지어 노드 채움)
+					{
+						for (_uint i = 0; i < Bezier_End; i++)
+							m_iCurEye_BezierNode[eScreenType][i] = -1;
+						m_bCurAt_StartBezier[eScreenType] = false;
+					}
+					break;
+				}
+				m_dCamMoveTime[eScreenType][(_uint)eOption] = 0.0;
+			}
+		}
+		else
+		{
+			for (_uint i = 0; i < Bezier_End; i++)
+				m_iCurAt_BezierNode[eScreenType][i] = -1;
+			m_bCurAt_StartBezier[eScreenType] = false;
+			m_dCamAtMoveTime[eScreenType][(_uint)eOption] = 0.0;
+		}
 		break;
 	}
 }
 
 HRESULT CFilm::Check_CamNodeProgress(ScreenType eScreenType, CamMoveOption eOption, CamNodeVectorType eType, _uint iCurrentNode, _uint iLastNode)
 {
+	//새로운 노드에 들어옴
 	switch (eOption)
 	{
 	case CamMoveOption::Move_Jump:
-		ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType);
+		ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType, iCurrentNode);
 		m_bCurNodeEnd[eScreenType][(_uint)eType] = false;
 		break;
 	case CamMoveOption::Move_Straight:
-		ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType);
+		ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType, iCurrentNode);
 		m_bCurNodeEnd[eScreenType][(_uint)eType] = false;
 		break;
 	case CamMoveOption::Move_Bezier_3:
-		if (!m_bCurEye_StartBezier[eScreenType]) //베지어 시작
+		switch (eType)
 		{
-			ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType);
-			m_bCurEye_StartBezier[eScreenType] = true;
-			if (iCurrentNode + 2 > iLastNode)
+		case CFilm::CamNodeVectorType::Eye:
+			ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType, iCurrentNode); //현재 드가있는 마지막 베지어 노드가 아니면 초기화안해줌
+			if (!m_bCurEye_StartBezier[eScreenType]) //베지어 시작
 			{
-				MSG_BOX("Not Enough Bezier Node(3)");
-				return E_FAIL;
-			}
-			switch (eType)
-			{
-			case CFilm::CamNodeVectorType::Eye:
+				m_bCurEye_StartBezier[eScreenType] = true;
+				if (iCurrentNode + 2 >= iLastNode)
+				{
+					MSG_BOX("Not Enough Bezier Node(3)");
+					return E_FAIL;
+				}
+				if (m_CamNodes[iCurrentNode + 1]->eEyeMoveOption != CamMoveOption::Move_Bezier_3)
+					m_CamNodes[iCurrentNode + 1]->eEyeMoveOption = (CamMoveOption::Move_Bezier_3);
 				for (_uint i = 0; i < Bezier_4; i++)
 					m_iCurEye_BezierNode[eScreenType][i] = iCurrentNode + i;
-				break;
-			case CFilm::CamNodeVectorType::At:
+			}
+			break;
+		case CFilm::CamNodeVectorType::At:
+			ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType, iCurrentNode);
+			if (!m_bCurAt_StartBezier[eScreenType]) //베지어 시작
+			{
+				m_bCurAt_StartBezier[eScreenType] = true;
+				if (iCurrentNode + 2 >= iLastNode)
+				{
+					MSG_BOX("Not Enough Bezier Node(3)");
+					return E_FAIL;
+				}
+
 				for (_uint i = 0; i < Bezier_4; i++)
 					m_iCurAt_BezierNode[eScreenType][i] = iCurrentNode + i;
-				break;
 			}
-			m_bCurNodeEnd[eScreenType][(_uint)eType] = false;
+			break;
 		}
+		m_bCurNodeEnd[eScreenType][(_uint)eType] = false;
 		break;
 	case CamMoveOption::Move_Bezier_4:
-		if (!m_bCurEye_StartBezier[eScreenType]) //베지어 시작
+		switch (eType)
 		{
-			ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType);
-			m_bCurEye_StartBezier[eScreenType] = true;
-			if (iCurrentNode + 3 > iLastNode)
+		case CFilm::CamNodeVectorType::Eye:
+			ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType, iCurrentNode); //베지어 진행중이면 초기화안해줌
+			if (!m_bCurEye_StartBezier[eScreenType]) //베지어 시작
 			{
-				MSG_BOX("Not Enough Bezier Node(4)");
-				return E_FAIL;
-			}
-			switch (eType)
-			{
-			case CFilm::CamNodeVectorType::Eye:
+				m_bCurEye_StartBezier[eScreenType] = true;
+				if (iCurrentNode + 3 >= iLastNode)
+				{
+					MSG_BOX("Not Enough Bezier Node(4)");
+					return E_FAIL;
+				}
+
 				for (_uint i = 0; i < Bezier_End; i++)
 					m_iCurEye_BezierNode[eScreenType][i] = iCurrentNode + i;
-				break;
-			case CFilm::CamNodeVectorType::At:
+			}
+			break;
+		case CFilm::CamNodeVectorType::At:
+			ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType, iCurrentNode);
+			if (!m_bCurAt_StartBezier[eScreenType]) //베지어 시작
+			{
+				m_bCurAt_StartBezier[eScreenType] = true;
+				if (iCurrentNode + 3 >= iLastNode)
+				{
+					MSG_BOX("Not Enough Bezier Node(4)");
+					return E_FAIL;
+				}
+	
 				for (_uint i = 0; i < Bezier_End; i++)
 					m_iCurAt_BezierNode[eScreenType][i] = iCurrentNode + i;
-				break;
 			}
-			m_bCurNodeEnd[eScreenType][(_uint)eType] = false;
+			break;
 		}
+		m_bCurNodeEnd[eScreenType][(_uint)eType] = false;
 		break;
 	}
 	return S_OK;

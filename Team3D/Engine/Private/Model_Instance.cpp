@@ -381,6 +381,14 @@ HRESULT CModel_Instance::Sepd_Render_Model(_uint iMaterialIndex, _uint iPassInde
 	return S_OK;
 }
 
+void CModel_Instance::Coppy_WorldMatrix(_float4x4 * pWorldMatrix_Buffer, _uint iCopyInstanceIndex)
+{
+	if (m_iInstanceCount < iCopyInstanceIndex)
+		return;
+
+	m_arrWorldMatrices[iCopyInstanceIndex] = pWorldMatrix_Buffer[iCopyInstanceIndex];
+}
+
 HRESULT CModel_Instance::Sort_MeshesByMaterial()
 {
 	m_SortedMeshes.resize(m_iMaterialCount);

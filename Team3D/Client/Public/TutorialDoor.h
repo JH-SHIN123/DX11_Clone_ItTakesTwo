@@ -47,12 +47,24 @@ private:
 	_bool		m_bPull = false;
 	_bool		m_IsCollide = false;
 
+private:
+	_bool m_IsNoGrab		= false;
+	_bool m_IsPullMax		= false;
+	_bool m_IsPullMax_Once	= false;
+
 protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 	CTriggerActor*		m_pTriggerCom = nullptr;
+	CStaticActor*		m_pStaticActorCom = nullptr;
+
+	CTransform*			m_pTransformCom_Trigger = nullptr;
+
+
+private:
+	class CEffect_FireDoor* m_pEffectFireDoor = nullptr;
 
 private:
 	HRESULT InterActive_UI();

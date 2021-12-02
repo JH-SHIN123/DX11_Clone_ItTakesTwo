@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "RobotParts.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -13,11 +13,11 @@ END
 
 BEGIN(Client)
 
-class CNoBatterySign : public CGameObject
+class CNoBatterySign final : public CRobotParts
 {
-protected:
+private:
 	explicit CNoBatterySign(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CNoBatterySign(const CNoBatterySign& rhs);
+	explicit CNoBatterySign(const CRobotParts& rhs);
 	virtual ~CNoBatterySign() = default;
 
 public:
@@ -26,25 +26,23 @@ public:
 	virtual _int	Tick(_double dTimeDelta) override;
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-	/* For.Trigger */
+	virtual HRESULT Render_ShadowDepth() override;
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
-public:
-	virtual HRESULT Render_ShadowDepth() override;
-
-public:
+public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
+
+public: /* Setter */
 	void Set_BatteryCharged(_bool _bBatteryCharged) { m_bBatteryCharged = _bBatteryCharged; }
 	void Set_HitLever(_bool _bHitLever) { m_bHitLever = _bHitLever; }
 
 private:
-	_bool		m_bBatteryCharged = false;
-	_bool		m_bHitLever = false;
-	_float		m_fRotateTime = 0.f;
+	_bool				m_bBatteryCharged = false;
+	_bool				m_bHitLever = false;
+	_float				m_fRotateTime = 0.f;
+	ROBOTDESC			m_tRobotPartsDesc;
 
-protected:
-	/* For.Component */
+private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;

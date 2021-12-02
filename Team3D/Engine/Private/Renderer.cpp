@@ -62,6 +62,12 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect"), TEXT("MRT_Effect")), E_FAIL);
 
+	/* MRT_Effect_Mesh_Masking */
+// 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect_Mask_Diffuse"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+// 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect_Diffuse"), TEXT("MRT_Effect_MEsh_Masking")), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect_Mask"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect_Diffuse"), TEXT("MRT_Effect_MEsh_Masking")), E_FAIL);
+
 	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width, ViewportDesc.Height, TEXT("../Bin/ShaderFiles/Shader_Blend.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
 
@@ -118,6 +124,8 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
 	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
+	FAILED_CHECK_RETURN(Render_Effect_Mesh_Masking(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
 #ifdef _DEBUG
@@ -178,6 +186,34 @@ HRESULT CRenderer::Render_Alpha()
 	}
 	m_RenderObjects[RENDER_GROUP::RENDER_ALPHA].clear();
 	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_PostFX"));
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Effect_Mesh_Masking()
+{
+	Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING]);
+
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING])
+	{
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING), E_FAIL);
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Effect()
+{
+	Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_EFFECT]);
+
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_EFFECT])
+	{
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_EFFECT), E_FAIL);
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[RENDER_GROUP::RENDER_EFFECT].clear();
 
 	return S_OK;
 }

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Cody_Size.h"
-#include "GameInstance.h"
 
 CEffect_Cody_Size::CEffect_Cody_Size(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -47,7 +46,7 @@ _int CEffect_Cody_Size::Late_Tick(_double TimeDelta)
 	if(0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return NO_EVENT;
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Cody_Size::Render(RENDER_GROUP::Enum eGroup)

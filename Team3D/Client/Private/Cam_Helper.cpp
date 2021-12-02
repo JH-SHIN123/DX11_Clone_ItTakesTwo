@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Cam_Helper.h"
 #include"Transform.h"
-
-
+#include"GameInstance.h"
 CCam_Helper::CCam_Helper(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context)
 	:CComponent(pDevice, pDevice_Context)
 {
@@ -17,325 +16,300 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 {
 	__super::NativeConstruct_Prototype();
 
-#ifdef _DEBUG
-	CFilm* pFilm_Eye_Straight = CFilm::Create(TEXT("Eye_Straight"));
-
-	_float3 vAt = { 0.f,4.f,0.f };
-	CFilm::CamNode* pNode = new CFilm::CamNode;
-	pNode->vEye = { 10.f,4.f, 0.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 0.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Straight->Add_Node(pNode);
-
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 10.f,4.f, 10.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 1.5;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Straight->Add_Node(pNode);
-
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 0.f,4.f, 10.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 3.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Straight->Add_Node(pNode);
-
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 0.f,4.f, 20.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 4.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Straight->Add_Node(pNode);
-
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 0.f,4.f, 20.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 5.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Straight->Add_Node(pNode);
-
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 8.f,4.f, 20.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 6.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Straight->Add_Node(pNode);
-
-
-	Add_Film(TEXT("Eye_Straight"), pFilm_Eye_Straight, 6.0);
-
-	CFilm* pFilm_Eye_Bezier3 = CFilm::Create(TEXT("Eye_Bezier3"));
-
-	
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 10.f,4.f, 0.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 0.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Bezier3->Add_Node(pNode);
-
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 10.f,4.f, 10.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 1.5;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Bezier3->Add_Node(pNode);
-
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 0.f,4.f, 10.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 3.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Bezier3->Add_Node(pNode);
-
-	Add_Film(TEXT("Eye_Bezier3"), pFilm_Eye_Bezier3, 3.0);
-
-	CFilm* pFilm_Eye_Bezier4 = CFilm::Create(TEXT("Eye_Bezier4"));
-
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 10.f,4.f, -10.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 0.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_4;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Jump;
-	pFilm_Eye_Bezier4->Add_Node(pNode);
-
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { -30.f,4.f, 30.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 1.5;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_4;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Jump;
-	pFilm_Eye_Bezier4->Add_Node(pNode);
-
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 30.f,4.f, 30.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 3.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_4;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Jump;
-	pFilm_Eye_Bezier4->Add_Node(pNode);
-
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { -10.f,4.f, -10.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 4.5;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_4;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Jump;
-	pFilm_Eye_Bezier4->Add_Node(pNode);
-
-	Add_Film(TEXT("Eye_Bezier4"), pFilm_Eye_Bezier4, 4.5);
-
-	CCamEffect* pShake_Loc_Right = CCamEffect::Create(TEXT("Cam_Shake_Loc_Right"));
-	{
-		_double dDuration = 5.0;
-		pShake_Loc_Right->Set_Duration(dDuration);
-		for (_double i = 0.0; i <= dDuration; i += 1.0)
-		{
-			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
-			pCycleDesc->dStartTime = i;
-			pCycleDesc->dMiddleTime = i + 0.5;
-			pCycleDesc->dFinishTime = i + 1.0;
-			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMaxForce = 1.0 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMinForce = -1.0 / (i + 1) * 2.0;
-
-			pShake_Loc_Right->Add_CamShakeCycleDesc(pCycleDesc);
-		}
-	}
-	Add_CamEffect(TEXT("Cam_Shake_Loc_Right"), pShake_Loc_Right);
-
-	CCamEffect* pShake_Loc_Up = CCamEffect::Create(TEXT("Cam_Shake_Loc_Up"));
-	{
-		_double dDuration = 5.0;
-		pShake_Loc_Up->Set_Duration(dDuration);
-		for (_double i = 0.0; i <= dDuration; i += 1.0)
-		{
-			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
-			pCycleDesc->dStartTime = i;
-			pCycleDesc->dMiddleTime = i + 0.5;
-			pCycleDesc->dFinishTime = i + 1.0;
-			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMaxForce = 1.0 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMinForce = -1.0 / (i + 1);
-
-			pShake_Loc_Up->Add_CamShakeCycleDesc(pCycleDesc);
-		}
-	}
-	Add_CamEffect(TEXT("Cam_Shake_Loc_Up"), pShake_Loc_Up);
-
-	CCamEffect* pShake_Loc_Look = CCamEffect::Create(TEXT("Cam_Shake_Loc_Look"));
-	{
-		_double dDuration = 5.0;
-		pShake_Loc_Look->Set_Duration(dDuration);
-		for (_double i = 0.0; i <= dDuration; i += 1.0)
-		{
-			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
-			pCycleDesc->dStartTime = i;
-			pCycleDesc->dMiddleTime = i + 0.5;
-			pCycleDesc->dFinishTime = i + 1.0;
-			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look].dMaxForce = 1.0 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look].dMinForce = -1.0 / (i + 1);
-
-			pShake_Loc_Look->Add_CamShakeCycleDesc(pCycleDesc);
-		}
-	}
-	Add_CamEffect(TEXT("Cam_Shake_Loc_Look"), pShake_Loc_Look);
-
-	CCamEffect* pShake_Rot_Right = CCamEffect::Create(TEXT("Cam_Shake_Rot_Right"));
-	{
-		_double dDuration = 5.0;
-		pShake_Rot_Right->Set_Duration(dDuration);
-		for (_double i = 0.0; i <= dDuration; i += 1.0)
-		{
-			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
-			pCycleDesc->dStartTime = i;
-			pCycleDesc->dMiddleTime = i + 0.5;
-			pCycleDesc->dFinishTime = i + 1.0;
-			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right].dMaxForce = 0.1 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right].dMinForce = -0.1 / (i + 1);
-
-			/*		pCycleDesc->bOnCamShakeOption[(_uint)CamShakeOption::CamShake_Rot_Up] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Up].dMaxForce = 1.0 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Up].dMinForce = -1.0 / (i + 1);
-
-			pCycleDesc->bOnCamShakeOption[(_uint)CamShakeOption::CamShake_Rot_Look] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Look].dMaxForce = 1.0 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Look].dMinForce = -1.0 / (i + 1);*/
-
-
-			pShake_Rot_Right->Add_CamShakeCycleDesc(pCycleDesc);
-		}
-	}
-	Add_CamEffect(TEXT("Cam_Shake_Rot_Right"), pShake_Rot_Right);
-
-	CCamEffect* pShake_Rot_Up = CCamEffect::Create(TEXT("Cam_Shake_Rot_Up"));
-	{
-		_double dDuration = 5.0;
-		pShake_Rot_Up->Set_Duration(dDuration);
-		for (_double i = 0.0; i <= dDuration; i += 1.0)
-		{
-			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
-			pCycleDesc->dStartTime = i;
-			pCycleDesc->dMiddleTime = i + 0.5;
-			pCycleDesc->dFinishTime = i + 1.0;
-			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMaxForce = 0.1 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMinForce = -0.1 / (i + 1);
-
-			pShake_Rot_Up->Add_CamShakeCycleDesc(pCycleDesc);
-		}
-	}
-	Add_CamEffect(TEXT("Cam_Shake_Rot_Up"), pShake_Rot_Up);
-
-	CCamEffect* pShake_Rot_Look = CCamEffect::Create(TEXT("Cam_Shake_Rot_Look"));
-	{
-		_double dDuration = 5.0;
-		pShake_Rot_Look->Set_Duration(dDuration);
-		for (_double i = 0.0; i <= dDuration; i += 1.0)
-		{
-			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
-			pCycleDesc->dStartTime = i;
-			pCycleDesc->dMiddleTime = i + 0.5;
-			pCycleDesc->dFinishTime = i + 1.0;
-			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMaxForce = 0.1 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMinForce = -0.1 / (i + 1);
-
-			pShake_Rot_Look->Add_CamShakeCycleDesc(pCycleDesc);
-		}
-	}
-	Add_CamEffect(TEXT("Cam_Shake_Rot_Look"), pShake_Rot_Look);
-
-
-	CCamEffect* pShake_Rot_Look_Loc_Up = CCamEffect::Create(TEXT("Cam_Shake_Rot_Look_Loc_Up"));
-	{
-		_double dDuration = 5.0;
-		pShake_Rot_Look_Loc_Up->Set_Duration(dDuration);
-		for (_double i = 0.0; i <= dDuration; i += 1.0)
-		{
-			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
-			pCycleDesc->dStartTime = i;
-			pCycleDesc->dMiddleTime = i + 0.5;
-			pCycleDesc->dFinishTime = i + 1.0;
-			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMaxForce = 1.0 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMinForce = -1.0 / (i + 1);
-			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMaxForce = 0.1 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMinForce = -0.1 / (i + 1);
-
-			pShake_Rot_Look_Loc_Up->Add_CamShakeCycleDesc(pCycleDesc);
-		}
-	}
-	Add_CamEffect(TEXT("Cam_Shake_Rot_Look_Loc_Up"), pShake_Rot_Look_Loc_Up);
-
-
-	CCamEffect* pShake_Rot_Look_Rot_Up = CCamEffect::Create(TEXT("Cam_Shake_Rot_Right_Rot_Up"));
-	{
-		_double dDuration = 5.0;
-		pShake_Rot_Look_Rot_Up->Set_Duration(dDuration);
-		for (_double i = 0.0; i <= dDuration; i += 1.0)
-		{
-			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
-			pCycleDesc->dStartTime = i;
-			pCycleDesc->dMiddleTime = i + 0.5;
-			pCycleDesc->dFinishTime = i + 1.0;
-
-			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMaxForce = 0.1 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMinForce = -0.1 / (i + 1);
-
-			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right].dMaxForce = 0.1 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right].dMinForce = -0.1 / (i + 1);
-
-			pShake_Rot_Look_Rot_Up->Add_CamShakeCycleDesc(pCycleDesc);
-		}
-	}
-	Add_CamEffect(TEXT("Cam_Shake_Rot_Right_Rot_Up"), pShake_Rot_Look_Rot_Up);
-
-	CCamEffect* pShake_Loc_Look_Loc_Up = CCamEffect::Create(TEXT("Cam_Shake_Loc_Look_Loc_Up"));
-	{
-		_double dDuration = 5.0;
-		pShake_Loc_Look_Loc_Up->Set_Duration(dDuration);
-		for (_double i = 0.0; i <= dDuration; i += 1.0)
-		{
-			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
-			pCycleDesc->dStartTime = i;
-			pCycleDesc->dMiddleTime = i + 0.5;
-			pCycleDesc->dFinishTime = i + 1.0;
-
-			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMaxForce = 1.0 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMinForce = -1.0 / (i + 1);
-
-			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look].dMaxForce = 1.0 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look].dMinForce = -1.0 / (i + 1);
-
-			pShake_Loc_Look_Loc_Up->Add_CamShakeCycleDesc(pCycleDesc);
-		}
-	}
-	Add_CamEffect(TEXT("Cam_Shake_Loc_Look_Loc_Up"), pShake_Loc_Look_Loc_Up);
-
-#endif
-
-
-	
+//#ifdef _DEBUG
+//	CFilm* pFilm_Eye_Straight = CFilm::Create(TEXT("Eye_Straight"));
+//
+//	_float3 vAt = { 0.f,4.f,0.f };
+//	CFilm::CamNode* pNode = new CFilm::CamNode;
+//	pNode->vEye = { 10.f,4.f, 0.f };
+//	pNode->vAt = vAt;
+//	pNode->dTime = 0.0;
+//	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Straight;
+//	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
+//	pFilm_Eye_Straight->Add_Node(pNode);
+//
+//	pNode = new CFilm::CamNode;
+//	pNode->vEye = { 10.f,4.f, 10.f };
+//	pNode->vAt = vAt;
+//	pNode->dTime = 1.5;
+//	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Straight;
+//	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
+//	pFilm_Eye_Straight->Add_Node(pNode);
+//
+//	pNode = new CFilm::CamNode;
+//	pNode->vEye = { 0.f,4.f, 10.f };
+//	pNode->vAt = vAt;
+//	pNode->dTime = 3.0;
+//	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Straight;
+//	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
+//	pFilm_Eye_Straight->Add_Node(pNode);
+//
+//	Add_Film(TEXT("Eye_Straight"), pFilm_Eye_Straight, 3.0);
+//
+//	CFilm* pFilm_Eye_Bezier3 = CFilm::Create(TEXT("Eye_Bezier3"));
+//
+//	
+//	pNode = new CFilm::CamNode;
+//	pNode->vEye = { 10.f,4.f, 0.f };
+//	pNode->vAt = vAt;
+//	pNode->dTime = 0.0;
+//	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
+//	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
+//	pFilm_Eye_Bezier3->Add_Node(pNode);
+//
+//	pNode = new CFilm::CamNode;
+//	pNode->vEye = { 10.f,4.f, 10.f };
+//	pNode->vAt = vAt;
+//	pNode->dTime = 1.5;
+//	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
+//	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
+//	pFilm_Eye_Bezier3->Add_Node(pNode);
+//
+//	pNode = new CFilm::CamNode;
+//	pNode->vEye = { 0.f,4.f, 10.f };
+//	pNode->vAt = vAt;
+//	pNode->dTime = 3.0;
+//	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
+//	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
+//	pFilm_Eye_Bezier3->Add_Node(pNode);
+//
+//	Add_Film(TEXT("Eye_Bezier3"), pFilm_Eye_Bezier3, 3.0);
+//
+//	CFilm* pFilm_Eye_Bezier4 = CFilm::Create(TEXT("Eye_Bezier4"));
+//
+//	pNode = new CFilm::CamNode;
+//	pNode->vEye = { 10.f,4.f, -10.f };
+//	pNode->vAt = vAt;
+//	pNode->dTime = 0.0;
+//	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_4;
+//	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Jump;
+//	pFilm_Eye_Bezier4->Add_Node(pNode);
+//
+//	pNode = new CFilm::CamNode;
+//	pNode->vEye = { -30.f,4.f, 30.f };
+//	pNode->vAt = vAt;
+//	pNode->dTime = 1.5;
+//	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_4;
+//	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Jump;
+//	pFilm_Eye_Bezier4->Add_Node(pNode);
+//
+//	pNode = new CFilm::CamNode;
+//	pNode->vEye = { 30.f,4.f, 30.f };
+//	pNode->vAt = vAt;
+//	pNode->dTime = 3.0;
+//	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_4;
+//	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Jump;
+//	pFilm_Eye_Bezier4->Add_Node(pNode);
+//
+//	pNode = new CFilm::CamNode;
+//	pNode->vEye = { -10.f,4.f, -10.f };
+//	pNode->vAt = vAt;
+//	pNode->dTime = 4.5;
+//	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_4;
+//	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Jump;
+//	pFilm_Eye_Bezier4->Add_Node(pNode);
+//
+//	Add_Film(TEXT("Eye_Bezier4"), pFilm_Eye_Bezier4, 4.5);
+//
+//	CCamEffect* pShake_Loc_Right = CCamEffect::Create(TEXT("Cam_Shake_Loc_Right"));
+//	{
+//		_double dDuration = 5.0;
+//		pShake_Loc_Right->Set_Duration(dDuration);
+//		for (_double i = 0.0; i <= dDuration; i += 1.0)
+//		{
+//			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+//			pCycleDesc->dStartTime = i;
+//			pCycleDesc->dMiddleTime = i + 0.5;
+//			pCycleDesc->dFinishTime = i + 1.0;
+//			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right] = true;
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMaxForce = 1.0 / (i + 1);
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMinForce = -1.0 / (i + 1) * 2.0;
+//
+//			pShake_Loc_Right->Add_CamShakeCycleDesc(pCycleDesc);
+//		}
+//	}
+//	Add_CamEffect(TEXT("Cam_Shake_Loc_Right"), pShake_Loc_Right);
+//
+//	CCamEffect* pShake_Loc_Up = CCamEffect::Create(TEXT("Cam_Shake_Loc_Up"));
+//	{
+//		_double dDuration = 5.0;
+//		pShake_Loc_Up->Set_Duration(dDuration);
+//		for (_double i = 0.0; i <= dDuration; i += 1.0)
+//		{
+//			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+//			pCycleDesc->dStartTime = i;
+//			pCycleDesc->dMiddleTime = i + 0.5;
+//			pCycleDesc->dFinishTime = i + 1.0;
+//			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up] = true;
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMaxForce = 1.0 / (i + 1);
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMinForce = -1.0 / (i + 1);
+//
+//			pShake_Loc_Up->Add_CamShakeCycleDesc(pCycleDesc);
+//		}
+//	}
+//	Add_CamEffect(TEXT("Cam_Shake_Loc_Up"), pShake_Loc_Up);
+//
+//	CCamEffect* pShake_Loc_Look = CCamEffect::Create(TEXT("Cam_Shake_Loc_Look"));
+//	{
+//		_double dDuration = 5.0;
+//		pShake_Loc_Look->Set_Duration(dDuration);
+//		for (_double i = 0.0; i <= dDuration; i += 1.0)
+//		{
+//			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+//			pCycleDesc->dStartTime = i;
+//			pCycleDesc->dMiddleTime = i + 0.5;
+//			pCycleDesc->dFinishTime = i + 1.0;
+//			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look] = true;
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look].dMaxForce = 1.0 / (i + 1);
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look].dMinForce = -1.0 / (i + 1);
+//
+//			pShake_Loc_Look->Add_CamShakeCycleDesc(pCycleDesc);
+//		}
+//	}
+//	Add_CamEffect(TEXT("Cam_Shake_Loc_Look"), pShake_Loc_Look);
+//
+//	CCamEffect* pShake_Rot_Right = CCamEffect::Create(TEXT("Cam_Shake_Rot_Right"));
+//	{
+//		_double dDuration = 5.0;
+//		pShake_Rot_Right->Set_Duration(dDuration);
+//		for (_double i = 0.0; i <= dDuration; i += 1.0)
+//		{
+//			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+//			pCycleDesc->dStartTime = i;
+//			pCycleDesc->dMiddleTime = i + 0.5;
+//			pCycleDesc->dFinishTime = i + 1.0;
+//			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right] = true;
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right].dMaxForce = 0.1 / (i + 1);
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right].dMinForce = -0.1 / (i + 1);
+//
+//			/*		pCycleDesc->bOnCamShakeOption[(_uint)CamShakeOption::CamShake_Rot_Up] = true;
+//			pCycleDesc->tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Up].dMaxForce = 1.0 / (i + 1);
+//			pCycleDesc->tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Up].dMinForce = -1.0 / (i + 1);
+//
+//			pCycleDesc->bOnCamShakeOption[(_uint)CamShakeOption::CamShake_Rot_Look] = true;
+//			pCycleDesc->tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Look].dMaxForce = 1.0 / (i + 1);
+//			pCycleDesc->tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Look].dMinForce = -1.0 / (i + 1);*/
+//
+//
+//			pShake_Rot_Right->Add_CamShakeCycleDesc(pCycleDesc);
+//		}
+//	}
+//	Add_CamEffect(TEXT("Cam_Shake_Rot_Right"), pShake_Rot_Right);
+//
+//	CCamEffect* pShake_Rot_Up = CCamEffect::Create(TEXT("Cam_Shake_Rot_Up"));
+//	{
+//		_double dDuration = 5.0;
+//		pShake_Rot_Up->Set_Duration(dDuration);
+//		for (_double i = 0.0; i <= dDuration; i += 1.0)
+//		{
+//			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+//			pCycleDesc->dStartTime = i;
+//			pCycleDesc->dMiddleTime = i + 0.5;
+//			pCycleDesc->dFinishTime = i + 1.0;
+//			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up] = true;
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMaxForce = 0.1 / (i + 1);
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMinForce = -0.1 / (i + 1);
+//
+//			pShake_Rot_Up->Add_CamShakeCycleDesc(pCycleDesc);
+//		}
+//	}
+//	Add_CamEffect(TEXT("Cam_Shake_Rot_Up"), pShake_Rot_Up);
+//
+//	CCamEffect* pShake_Rot_Look = CCamEffect::Create(TEXT("Cam_Shake_Rot_Look"));
+//	{
+//		_double dDuration = 5.0;
+//		pShake_Rot_Look->Set_Duration(dDuration);
+//		for (_double i = 0.0; i <= dDuration; i += 1.0)
+//		{
+//			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+//			pCycleDesc->dStartTime = i;
+//			pCycleDesc->dMiddleTime = i + 0.5;
+//			pCycleDesc->dFinishTime = i + 1.0;
+//			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look] = true;
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMaxForce = 0.1 / (i + 1);
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMinForce = -0.1 / (i + 1);
+//
+//			pShake_Rot_Look->Add_CamShakeCycleDesc(pCycleDesc);
+//		}
+//	}
+//	Add_CamEffect(TEXT("Cam_Shake_Rot_Look"), pShake_Rot_Look);
+//
+//
+//	CCamEffect* pShake_Rot_Look_Loc_Up = CCamEffect::Create(TEXT("Cam_Shake_Rot_Look_Loc_Up"));
+//	{
+//		_double dDuration = 5.0;
+//		pShake_Rot_Look_Loc_Up->Set_Duration(dDuration);
+//		for (_double i = 0.0; i <= dDuration; i += 1.0)
+//		{
+//			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+//			pCycleDesc->dStartTime = i;
+//			pCycleDesc->dMiddleTime = i + 0.5;
+//			pCycleDesc->dFinishTime = i + 1.0;
+//			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up] = true;
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMaxForce = 1.0 / (i + 1);
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMinForce = -1.0 / (i + 1);
+//			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look] = true;
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMaxForce = 0.1 / (i + 1);
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMinForce = -0.1 / (i + 1);
+//
+//			pShake_Rot_Look_Loc_Up->Add_CamShakeCycleDesc(pCycleDesc);
+//		}
+//	}
+//	Add_CamEffect(TEXT("Cam_Shake_Rot_Look_Loc_Up"), pShake_Rot_Look_Loc_Up);
+//
+//
+//	CCamEffect* pShake_Rot_Look_Rot_Up = CCamEffect::Create(TEXT("Cam_Shake_Rot_Right_Rot_Up"));
+//	{
+//		_double dDuration = 5.0;
+//		pShake_Rot_Look_Rot_Up->Set_Duration(dDuration);
+//		for (_double i = 0.0; i <= dDuration; i += 1.0)
+//		{
+//			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+//			pCycleDesc->dStartTime = i;
+//			pCycleDesc->dMiddleTime = i + 0.5;
+//			pCycleDesc->dFinishTime = i + 1.0;
+//
+//			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up] = true;
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMaxForce = 0.1 / (i + 1);
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMinForce = -0.1 / (i + 1);
+//
+//			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right] = true;
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right].dMaxForce = 0.1 / (i + 1);
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right].dMinForce = -0.1 / (i + 1);
+//
+//			pShake_Rot_Look_Rot_Up->Add_CamShakeCycleDesc(pCycleDesc);
+//		}
+//	}
+//	Add_CamEffect(TEXT("Cam_Shake_Rot_Right_Rot_Up"), pShake_Rot_Look_Rot_Up);
+//
+//	CCamEffect* pShake_Loc_Look_Loc_Up = CCamEffect::Create(TEXT("Cam_Shake_Loc_Look_Loc_Up"));
+//	{
+//		_double dDuration = 5.0;
+//		pShake_Loc_Look_Loc_Up->Set_Duration(dDuration);
+//		for (_double i = 0.0; i <= dDuration; i += 1.0)
+//		{
+//			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+//			pCycleDesc->dStartTime = i;
+//			pCycleDesc->dMiddleTime = i + 0.5;
+//			pCycleDesc->dFinishTime = i + 1.0;
+//
+//			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up] = true;
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMaxForce = 1.0 / (i + 1);
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMinForce = -1.0 / (i + 1);
+//
+//			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look] = true;
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look].dMaxForce = 1.0 / (i + 1);
+//			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look].dMinForce = -1.0 / (i + 1);
+//
+//			pShake_Loc_Look_Loc_Up->Add_CamShakeCycleDesc(pCycleDesc);
+//		}
+//	}
+//	Add_CamEffect(TEXT("Cam_Shake_Loc_Look_Loc_Up"), pShake_Loc_Look_Loc_Up);
+//
+//#endif
+//	
+//	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Begin_Game.dat"))))
+//		return E_FAIL;
 	return S_OK;
 }
 
@@ -405,16 +379,17 @@ CFilm * CCam_Helper::Get_Film(const _tchar * pFilmName)
 	return Find_Film(pFilmName);
 }
 
-_fmatrix CCam_Helper::Tick_Film(_double dTimeDelta, CFilm::ScreenType eScreenTypeIdx)
+_fmatrix CCam_Helper::Tick_Film(_double dTimeDelta, CFilm::ScreenType eScreenTypeIdx, _float* fOutFovY)
 {
 	if (nullptr == m_pCurFilm[eScreenTypeIdx])
 	{
 		MSG_BOX("pFilm is nullptr");
 		return XMMatrixIdentity();
 	}
-	m_pCurFilm[eScreenTypeIdx]->Tick_Film(dTimeDelta, eScreenTypeIdx);
 
-	return m_pCurFilm[eScreenTypeIdx]->Get_CurNodeMatrix(eScreenTypeIdx);
+	m_pCurFilm[eScreenTypeIdx]->Tick_Film(dTimeDelta/*CCutScenePlayer::GetInstance()->Get_TimeDelta() * 0.63f*/, eScreenTypeIdx,fOutFovY);
+
+	return m_pCurFilm[eScreenTypeIdx]->Get_CurNodeMatrix(eScreenTypeIdx	,fOutFovY);
 }
 
 void CCam_Helper::Start_Film(const _tchar * pFilmName, CFilm::ScreenType eScreenTypeIdx)
@@ -576,6 +551,62 @@ CFilm * CCam_Helper::Find_Film(const _tchar * pFilm)
 	return iter->second;
 }
 
+HRESULT CCam_Helper::Load_Film(const _tchar * pDataPath)
+{
+
+		HANDLE hFile = CreateFile(pDataPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			return E_FAIL;
+
+		DWORD dwByte = 0;
+		DWORD dwStrByte = 0;
+		ReadFile(hFile, &dwStrByte, sizeof(DWORD), &dwByte, nullptr);
+		TCHAR szLoadFilmName[MAX_PATH] = L"";
+		ReadFile(hFile, szLoadFilmName, dwStrByte, &dwByte, nullptr);
+		CFilm* pLoadFilm = CFilm::Create(szLoadFilmName);
+		_double dDuration = 0.0;
+		ReadFile(hFile, &dDuration, sizeof(_double), &dwByte, nullptr);
+		pLoadFilm->Set_Duration(dDuration);
+		while (true) //ReadNode
+		{
+			CFilm::CamNode tDesc;
+			ReadFile(hFile, &tDesc.dTime, sizeof(_double), &dwByte, nullptr);
+
+			ReadFile(hFile, &tDesc.vEye, sizeof(_float3), &dwByte, nullptr);
+			ReadFile(hFile, &tDesc.vAt, sizeof(_float3), &dwByte, nullptr);
+
+			ReadFile(hFile, &tDesc.eEyeMoveOption, sizeof(_uint), &dwByte, nullptr);
+			ReadFile(hFile, &tDesc.eAtMoveOption, sizeof(_uint), &dwByte, nullptr);
+
+			ReadFile(hFile, &tDesc.fTargetViewPortCenterX, sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &tDesc.fTargetViewPortCenterY, sizeof(_float), &dwByte, nullptr);
+
+			ReadFile(hFile, &tDesc.fViewPortLerpSpeed, sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &tDesc.eViewPortOption, sizeof(_uint), &dwByte, nullptr);
+
+			ReadFile(hFile, &tDesc.fFovY, sizeof(_float), &dwByte, nullptr);
+
+
+			if (0 == dwByte)
+				break;
+
+		
+
+			pLoadFilm->Add_Node(new CFilm::CamNode(tDesc));
+		}
+		if (FAILED(Add_Film(pLoadFilm->Get_Name(),pLoadFilm,pLoadFilm->Get_Duration())))
+		{
+			Safe_Release(pLoadFilm);
+			CloseHandle(hFile);
+			return E_FAIL;
+		}
+
+		CloseHandle(hFile);
+	
+	return S_OK;
+}
+
 CCam_Helper * CCam_Helper::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context)
 {
 	CCam_Helper* pInstance = new CCam_Helper(pDevice, pDevice_Context);
@@ -592,8 +623,6 @@ CComponent * CCam_Helper::Clone_Component(void * pArg)
 	Safe_AddRef(this);
 	return this;
 }
-
-
 
 void CCam_Helper::Free()
 {

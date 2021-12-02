@@ -73,6 +73,7 @@ HRESULT CPlayerActor::NativeConstruct(void * pArg)
 
 void CPlayerActor::Move(_fvector vMove, _double dTimeDelta)
 {
+	//_vector vTemp = XMVector3TransformCoord(vMove, MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
 	m_pController->move(MH_PxVec3(vMove), 0.001f, (_float)dTimeDelta, *m_pFilters);
 }
 
@@ -132,7 +133,20 @@ void CPlayerActor::Update(_double dTimeDelta)
 			m_pController->move(vDist, 0.f, (_float)dTimeDelta, *m_pFilters);
 		}
 
+		//m_pTransform->Set_RotateQuat(MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
+		m_pTransform->RotateByUp(XMLoadFloat3(&m_vPlayerUp));
 		m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+	}
+
+	if (m_iReorderGravityStep == 1)
+	{
+		Step_GravityPath(m_vHitNormal);
+		m_iReorderGravityStep = 2;
+	}
+	else if (m_iReorderGravityStep == 2)
+	{
+		Reorder_Gravity();
+		m_iReorderGravityStep = 0;
 	}
 }
 
@@ -159,13 +173,15 @@ void CPlayerActor::Step_GravityPath(PxVec3 vNormal)
 {
 	NULL_CHECK(m_pController);
 
-	if (m_pUserData->eID == GameID::eMAY) return;
+	//if (m_pUserData->eID == GameID::eCODY) return;
 
 	m_pController->setUpDirection(vNormal);
 	m_isGravityReordered = false;
 
 	m_vPlayerUp = MH_XMFloat3(vNormal);
 
+	//m_pTransform->Set_RotateQuat(MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
+	m_pTransform->RotateByUp(XMLoadFloat3(&m_vPlayerUp));
 	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
 
 	//µð¹ö±×
@@ -177,7 +193,7 @@ void CPlayerActor::Step_GravityPath(PxVec3 vNormal)
 
 void CPlayerActor::Reorder_Gravity()
 {
-	if (m_pUserData->eID == GameID::eMAY) return;
+	//if (m_pUserData->eID == GameID::eCODY) return;
 
 	if (true == m_isGravityReordered) return;
 
@@ -189,30 +205,40 @@ void CPlayerActor::Reorder_Gravity()
 
 	if (fX == fMax)
 	{
-		if (fX > 0.f)
-			m_vPlayerUp = _float3(-1.f, 0.f, 0.f);
-		else
+		if (m_vPlayerUp.x > 0.f)
 			m_vPlayerUp = _float3(1.f, 0.f, 0.f);
+		else
+			m_vPlayerUp = _float3(-1.f, 0.f, 0.f);
 	}
 	else if (fY == fMax)
 	{
-		if (fY > 0.f)
+		if (m_vPlayerUp.y > 0.f)
 			m_vPlayerUp = _float3(0.f, 1.f, 0.f);
 		else
 			m_vPlayerUp = _float3(0.f, -1.f, 0.f);
 	}
 	else if (fZ == fMax)
 	{
-		if (fZ > 0.f)
-			m_vPlayerUp = _float3(0.f, 0.f, -1.f);
-		else
+		if (m_vPlayerUp.z > 0.f)
 			m_vPlayerUp = _float3(0.f, 0.f, 1.f);
+		else
+			m_vPlayerUp = _float3(0.f, 0.f, -1.f);
 	}
 
 	m_pController->setUpDirection(MH_PxVec3(m_vPlayerUp));
 	m_isGravityReordered = true;
 
+	//m_vPlayerUp;
+	//_vector vTemp = XMVector3TransformCoord(XMVectorSet(-0.5f, 0.1f, 0.1f, 1.f), MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
+
+	//m_pTransform->Set_RotateQuat(MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
+	m_pTransform->RotateByUp(XMLoadFloat3(&m_vPlayerUp));
 	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+}
+
+void CPlayerActor::MoveToTarget(PxTransform PxTransform)
+{
+	m_pActor->setKinematicTarget(PxTransform);
 }
 
 void CPlayerActor::Jump_Stop()

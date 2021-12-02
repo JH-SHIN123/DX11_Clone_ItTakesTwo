@@ -179,11 +179,20 @@ public:
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
+	void		Update_Tirgger_Pos(_vector vPos);
+
+public:
+	void	Set_BossMissile_Attack(); // CBoss_Missile
 
 	// Tick 에서 호출될 함수들
 private:
 	virtual void KeyInput(_double dTimeDelta);
+	void Attack_BossMissile_After(_double dTimeDelta);
 
+private: // 여기에 넣어놓아야 알거 같아서 여기에..		
+	void Enforce_IdleState(); /* 강제로 Idle 상태로 바꿈 */
+
+private:
 	// 단발성 함수들.
 	HRESULT Ready_Component();
 	void Add_LerpInfo_To_Model();
@@ -217,6 +226,9 @@ public:
 	void Sprint(const _double dTimeDelta);
 	void Jump(const _double dTimeDelta);
 	void Ground_Pound(const _double dTimeDelta);
+
+	// Trigger에 의해 Position 변경해야 할 때.
+	void Add_OffSet_Pos(_fvector vAddOffSet);
 
 
 private:
@@ -304,18 +316,40 @@ private:
 #pragma region Trigger
 public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
+	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
 
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
 	_float3				m_vTriggerTargetPos = {};
 	_bool m_IsCollide = false;
-
+	_float4x4 m_TriggerTargetWorld = {};
 
 	_bool m_IsOnGrind = false;
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
-	_bool m_IsPullVerticalDoor = false;
+
+	/* 혜원::For.DeadLine, SavePoint */
+	_bool	 m_IsDeadLine = false;
+	_bool	 m_IsSavePoint = false;
+	_float3  m_vSavePoint = {};
+	_float	 m_fDeadTime = 0.f;
+	_float3	 m_DeadLinePos = {};
+
+	/* For.HookUFO */
+	_bool m_IsHookUFO = false;
+	_vector m_vHookUFOAxis = {};
+	_bool m_bGoToHooker = false;
+
+	_float m_faArmLength = 0.f;
+	_float m_faVelocity = 0.f;
+	_float m_faAcceleration = 0.f;
+	_float m_fRopeAngle = 0.f;
+	_float3 m_vStartPosition = {};
+	_float3 m_vDstPosition = {};
+
+	// Arbitrary damping
+	_float m_faDamping = 0.995f;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
@@ -328,9 +362,42 @@ private:
 	_uint m_iRotateCount = 0;
 	_uint m_iValvePlayerName = Player::May;
 
+	/* For.PinBall */
+	_bool	 m_IsPinBall = false;
+	_float2	 m_MinMaxX = {};
 
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
+
+	// Warp NextStage
+	_bool m_IsWarpNextStage = false;
+	_float m_fWarpTimer = 0.f;
+	_bool m_IsWarpDone = false;
+	const _float4 m_vWormholePos = { 0.f, -100.f, -1500.f, 1.f };
+	const _float m_fWarpTimer_Max = 2.f;
+
+	// 상호작용 테스트용
+	_bool m_IsActivate_End = false;
+	_bool m_IsPullVerticalDoor = false;
+
+	// fire Door Dead
+	_bool m_IsTouchFireDoor = false;
+
+	// Boss Missile Hit
+	_bool m_IsBossMissile_Hit = false;
+
+	// Boss Missile Control
+	_bool	m_IsBossMissile_Control = false;
+	_bool	m_IsBossMissile_Rodeo_Ready = false;
+	_bool	m_IsBossMissile_Rodeo = false;
+	_bool	m_IsBoss_Missile_Explosion = false;
+	_float	m_fLandTime = 0.f;
+	_float	m_fBossMissile_HeroLanding_Time = 0.f;
+	_bool	m_IsBossMissile_RotateYawRoll_After = false;
+
+	// touch WallLaserTrap
+	_bool m_IsWallLaserTrap_Touch = false;
+	_bool m_IsWallLaserTrap_Effect = false;
 
 	void Hit_StarBuddy(const _double dTimeDelta);
 	void Hit_Rocket(const _double dTimeDelta);
@@ -338,6 +405,16 @@ private:
 	void Pull_VerticalDoor(const _double dTimeDelta);
 	void Rotate_Valve(const _double dTimeDelta);
 	void In_GravityPipe(const _double dTimeDelta);
+	void Hook_UFO(const _double dTimeDelta);
+	//정호
+	void Warp_Wormhole(const _double dTimeDelta);
+	void Touch_FireDoor(const _double dTimeDelta);
+	void Boss_Missile_Hit(const _double dTimeDelta);
+	void Boss_Missile_Control(const _double dTimeDelta);
+	void WallLaserTrap(const _double dTimeDelta);
+	/* 혜원::For.DeadLine, SavePoint */
+	void Falling_Dead(const _double dTimeDelta);
+	void PinBall(const _double dTimeDelta);
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);

@@ -7,6 +7,7 @@
 
 #include "InGameEffect.h"
 #include "Effect_Generator.h"
+#include "Space_Valve_Star.h"
 
 CSpaceValve::CSpaceValve(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -31,8 +32,7 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_SpaceValve"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_SpaceValveTwo"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	EFFECT_DESC_CLONE a;
 	if (nullptr != pArg)
@@ -40,19 +40,26 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 
 	if (a.iPlayerValue == 1)
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 1.5f, 20.f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(47.268f, 127.251f, 195.714f, 1.f));
 		m_iTargetPlayer = GameID::eCODY;
 	}
 	else if (a.iPlayerValue == 2)
 	{
 		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-180.f));
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(35.f, 1.5f, 20.f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(79.774f, 127.251f, 195.864f, 1.f));
 		m_iTargetPlayer = GameID::eMAY;
 	}
 
-	CTriggerActor::ARG_DESC ArgDesc;
-
+	CStaticActor::ARG_DESC StaticDesc;
 	m_UserData = USERDATA(GameID::eSPACEVALVE, this);
+	StaticDesc.pModel = m_pModelCom;
+	StaticDesc.pTransform = m_pTransformCom;
+	StaticDesc.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &StaticDesc), E_FAIL);
+
+
+	CTriggerActor::ARG_DESC ArgDesc;
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
 	ArgDesc.pGeometry = new PxSphereGeometry(1.5f);
@@ -60,6 +67,13 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
 
+	_float4x4 WorldMatrix;
+	XMStoreFloat4x4(&WorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	_bool IsCody = true;
+	if (m_iTargetPlayer == GameID::eMAY)
+		IsCody = false;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_SpaceValve_Deco"), Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Star"), &CSpace_Valve_Star::tagValve_Star_Desc(WorldMatrix, IsCody), (CGameObject**)&m_pSpaceValve_Star), E_FAIL);
+	
 	return S_OK;
 }
 
@@ -67,11 +81,12 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	m_pSpaceValve_Star->Set_Clear_Level(true);
+
 	if (m_iTargetPlayer == GameID::eCODY)
 	{
-		if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide == true)
+		if (m_pGameInstance->Key_Down(DIK_F) && m_IsCollide == true)
 		{
-			UI_Delete(May, InputButton_InterActive);
 			UI_Delete(Cody, InputButton_InterActive);
 
 			m_bEnterValve = true;
@@ -80,10 +95,9 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 	}
 	else if (m_iTargetPlayer == GameID::eMAY)
 	{
-		if (m_pGameInstance->Key_Down(DIK_END) && m_IsCollide == true)
+		if (m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 		{
 			UI_Delete(May, InputButton_InterActive);
-			UI_Delete(Cody, InputButton_InterActive);
 
 			m_bEnterValve = true;
 			// 키보드 화살표 UI 생성.
@@ -247,10 +261,12 @@ CGameObject * CSpaceValve::Clone_GameObject(void * pArg)
 
 void CSpaceValve::Free()
 {
+	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pSpaceValve_Star);
 
 	CGameObject::Free();
 }

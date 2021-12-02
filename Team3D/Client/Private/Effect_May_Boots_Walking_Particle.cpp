@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_May_Boots_Walking_Particle.h"
-#include "GameInstance.h"
 
 CEffect_May_Boots_Walking_Particle::CEffect_May_Boots_Walking_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -62,7 +61,7 @@ _int CEffect_May_Boots_Walking_Particle::Tick(_double TimeDelta)
 
 _int CEffect_May_Boots_Walking_Particle::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_May_Boots_Walking_Particle::Render(RENDER_GROUP::Enum eGroup)

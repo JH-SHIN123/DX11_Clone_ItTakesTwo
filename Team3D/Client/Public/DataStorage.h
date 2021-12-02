@@ -29,24 +29,68 @@ public:
 	void Set_UFOPtr(CGameObject* pUFO) { m_pUFO = pUFO; }
 	CGameObject* Get_UFO() { return m_pUFO; }
 
-	void Set_RobotPtr(CGameObject* pRobot) { m_pRobot = pRobot; }
-	CGameObject* Get_Robot() { return m_pRobot; }
+	void Set_BridgePtr(CGameObject* pBridge) { m_pBridge = pBridge; }
+	CGameObject* Get_Bridge() { return m_pBridge; }
 
-	void Set_RobotLeverPtr(CGameObject* pRobotLever) { m_pRobotLever = pRobotLever; }
-	CGameObject* Get_RobotLever() { return m_pRobotLever; }
+	/* Robots */
+	void Set_STGravityRobotPtr(CGameObject* pRobot) { m_pSTGravityRobot = pRobot; }
+	CGameObject* Get_STGravityRobot() { return m_pSTGravityRobot; }
 
-	void Set_RobotBatteryPtr(CGameObject* pRobotBattery) { m_pRobotBattery = pRobotBattery; }
-	CGameObject* Get_RobotBattery() { return m_pRobotBattery; }
+	void Set_STPinBallRobotPtr(CGameObject* pRobot) { m_pSTPinBallRobot = pRobot; }
+	CGameObject* Get_STPinBallRobot() { return m_pSTPinBallRobot; }
 
-	void Set_RobotHeadPtr(CGameObject* pRobotHead) { m_pRobotHead = pRobotHead; }
-	CGameObject* Get_RobotHead() { return m_pRobotHead; }
+	void Set_STPlanetRobotPtr(CGameObject* pRobot) { m_pSTPlanetRobot = pRobot; }
+	CGameObject* Get_STPlanetRobot() { return m_pSTPlanetRobot; }
 
-	void Set_NoBatterySignPtr(CGameObject* pNoBatterySign) { m_pNoBatterySign = pNoBatterySign; }
-	CGameObject* Get_NoBatterySign() { return m_pNoBatterySign; }
-
+	/* For.Valve */
 	void Set_ValveCount(_uint _iValveRotateCount) { m_iValveRotateCount += _iValveRotateCount; }
 	void Set_ValveTarget(_uint _iValveTarget) { m_iValveTarget = _iValveTarget; }
 	_uint Get_ValveCount() { return m_iValveRotateCount; }
+	/*For.Valve_Star*/void	Add_ValveCount_Cody(_bool IsCody) { true == IsCody ? ++m_iCody_Valve_Count : ++m_iMay_Valve_Count; }
+	/*For.Valve_Star*/_uint	Get_ValveCount_Cody(_bool IsCody);
+	/*For.Valve_Star*/void	Reset_ValveCount_Cody(_bool IsCody) { true == IsCody ? m_iCody_Valve_Count = 0 : m_iMay_Valve_Count = 0; }
+	
+	/* For.PinBall */
+	void Set_Pinball(CGameObject* pPinball) { m_pPinball = pPinball; }
+	CGameObject* Get_Pinball() { return m_pPinball; }
+
+	void Set_Pinball_Handle(CGameObject* pPinball_Handle) { m_pPinball_Handle = pPinball_Handle; }
+	CGameObject* Get_Pinball_Handle() { return m_pPinball_Handle; }
+
+	void Set_Pinball_HandleBase(CGameObject* pPinball_HandleBase) { m_pPinball_HandleBase = pPinball_HandleBase; }
+	CGameObject* Get_Pinball_HandleBase() { return m_pPinball_HandleBase; }
+
+
+	void Set_Pinball_Spring(CGameObject* pPinball_Spring) { m_pPinball_Spring = pPinball_Spring; }
+	CGameObject* Get_Pinball_Spring() { return m_pPinball_Spring; }
+
+	void Set_Pinball_BallDoor(CGameObject* pPinball_BallDoor) { m_pPinBall_BallDoor = pPinball_BallDoor; }
+	CGameObject* Get_Pinball_BallDoor() { return m_pPinBall_BallDoor; }
+
+	void Set_Pinball_Blocked(CGameObject* pPinball_Blocked) { m_pPinBall_Blocked = pPinball_Blocked; }
+	CGameObject* Get_Pinball_Blocked() { return m_pPinBall_Blocked; }
+
+	void Set_Pinball_Door(CGameObject* pPinBall_Door) { m_pPinBall_Door = pPinBall_Door; }
+	CGameObject* Get_Pinball_Door() { return m_pPinBall_Door; }
+
+	void Set_SlideDoor(CGameObject* pSlideDoor) { m_pSlideDoor = pSlideDoor; }
+	CGameObject* Get_SlideDoor() { return m_pSlideDoor; }
+
+	// Stage Flow
+	void Set_BigButtonPressed(_bool IsBigButtonPressed) { m_IsBigButtonPressed = IsBigButtonPressed; }
+	_bool Get_BigButtonPressed() { return m_IsBigButtonPressed; }
+	
+	void Set_GravityStageClear(_bool bGravityStageClear) { m_bGravityStageClear = bGravityStageClear; }
+	_bool Get_GravityStageClear() { return m_bGravityStageClear; }
+	
+	void Set_PinBallStageClear(_bool bPinBallStageClear) { m_bPinBallStageClear = bPinBallStageClear; }
+	_bool Get_PinBallStageClear() { return m_bPinBallStageClear; }
+	
+	void Set_RailStageClear(_bool bRailStageClear) { m_bRailStageClear = bRailStageClear; }
+	_bool Get_RailStageClear() { return m_bRailStageClear; }
+
+	void Set_HangingPlanet(CGameObject* pHangingPlanet) { m_pHangingPlanet = pHangingPlanet; }
+	CGameObject* Get_HangingPlanet() { return m_pHangingPlanet; }
 
 	void Set_SpaceRails(const _tchar* pRailTag, CGameObject* pRail);
 	CGameObject* Get_SpaceRail(const _tchar* pRailTag);
@@ -60,20 +104,41 @@ private:
 	// UFO
 	CGameObject* m_pUFO = nullptr;
 
-	// Interactive Objects
-	CGameObject* m_pRobot = nullptr;
-	CGameObject* m_pRobotLever = nullptr;
-	CGameObject* m_pRobotBattery = nullptr;
-	CGameObject* m_pRobotHead = nullptr;
-	CGameObject* m_pNoBatterySign = nullptr;
+	/* For.Bridge */
+	CGameObject* m_pBridge = nullptr;
 
 	// Space Rails
 	unordered_map<const _tchar*, CGameObject*> m_SpaceRails;
+
+	// Interactive Objects
+	CGameObject* m_pSTGravityRobot = nullptr;
+	CGameObject* m_pSTPinBallRobot = nullptr;
+	CGameObject* m_pSTPlanetRobot = nullptr;
+
+	/* For.PinBall */
+	CGameObject* m_pPinball = nullptr;
+	CGameObject* m_pPinball_Handle = nullptr;
+	CGameObject* m_pPinball_HandleBase = nullptr;
+	CGameObject* m_pPinball_Spring = nullptr;
+	CGameObject* m_pPinBall_BallDoor = nullptr;
+	CGameObject* m_pPinBall_Blocked = nullptr;
+	CGameObject* m_pPinBall_Door = nullptr;
+	CGameObject* m_pSlideDoor = nullptr;
+
+	/* For.HangingPlanet */
+	CGameObject* m_pHangingPlanet = nullptr;
 
 private:
 	/* For.Valve */
 	_uint m_iValveRotateCount = 0;
 	_uint m_iValveTarget = 0;
+	_uint m_iCody_Valve_Count = 0;
+	_uint m_iMay_Valve_Count = 0;
+
+	_bool m_IsBigButtonPressed = false;
+	_bool m_bGravityStageClear = false;
+	_bool m_bPinBallStageClear = false;
+	_bool m_bRailStageClear = false;
 
 public:
 	virtual void Free() override;

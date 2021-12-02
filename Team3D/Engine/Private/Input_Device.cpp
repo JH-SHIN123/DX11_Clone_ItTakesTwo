@@ -217,23 +217,46 @@ HRESULT CInput_Device::Ready_InputDevice(HINSTANCE hInst, HWND hWnd)
 	return S_OK;
 }
 
-_int CInput_Device::Tick()
+_int CInput_Device::Tick(_bool bWndActivate)
 {
-	FAILED_CHECK_RETURN(m_pKeyboard->GetDeviceState(256, m_byKeyState), EVENT_ERROR);
-	FAILED_CHECK_RETURN(m_pMouse->GetDeviceState(sizeof(DIMOUSESTATE), &m_MouseState), EVENT_ERROR);
-
-	if (m_pJoyStick)
+	if (bWndActivate)
 	{
-		if (FAILED(m_pJoyStick->GetDeviceState(sizeof(DIJOYSTATE), &m_JoyStickState)))
-			Safe_Release(m_pJoyStick);
-	}
+		FAILED_CHECK_RETURN(m_pKeyboard->GetDeviceState(256, m_byKeyState), EVENT_ERROR);
+		FAILED_CHECK_RETURN(m_pMouse->GetDeviceState(sizeof(DIMOUSESTATE), &m_MouseState), EVENT_ERROR);
 
-	memcpy(m_byKeyState_Up, m_byKeyState_Up_Buffer, sizeof(_byte) * 256);
-	memcpy(m_byKeyState_Down, m_byKeyState_Down_Buffer, sizeof(_byte) * 256);
-	memcpy(&m_MouseState_Up, &m_MouseState_Up_Buffer, sizeof(DIMOUSESTATE));
-	memcpy(&m_MouseState_Down, &m_MouseState_Down_Buffer, sizeof(DIMOUSESTATE));
-	memcpy(&m_JoyStickState_Up, &m_JoyStickState_Up_Buffer, sizeof(DIJOYSTATE));
-	memcpy(&m_JoyStickState_Down, &m_JoyStickState_Down_Buffer, sizeof(DIJOYSTATE));
+		if (m_pJoyStick)
+		{
+			if (FAILED(m_pJoyStick->GetDeviceState(sizeof(DIJOYSTATE), &m_JoyStickState)))
+				Safe_Release(m_pJoyStick);
+		}
+
+#ifdef _DEBUG
+		//µð¹ö±×
+		////static _uint iBuffer = 100;
+		////++iBuffer;
+		////if (iBuffer > 100)
+		////{
+		////	iBuffer = 0;
+		////	iBuffer = 0;
+		////	iBuffer = 0;
+		////	iBuffer = 0;
+		////	iBuffer = 0;
+		////	iBuffer = 0;
+		////	iBuffer = 0;
+		////}
+#endif
+
+		memcpy(m_byKeyState_Up, m_byKeyState_Up_Buffer, sizeof(_byte) * 256);
+		memcpy(m_byKeyState_Down, m_byKeyState_Down_Buffer, sizeof(_byte) * 256);
+		memcpy(&m_MouseState_Up, &m_MouseState_Up_Buffer, sizeof(DIMOUSESTATE));
+		memcpy(&m_MouseState_Down, &m_MouseState_Down_Buffer, sizeof(DIMOUSESTATE));
+		memcpy(&m_JoyStickState_Up, &m_JoyStickState_Up_Buffer, sizeof(DIJOYSTATE));
+		memcpy(&m_JoyStickState_Down, &m_JoyStickState_Down_Buffer, sizeof(DIJOYSTATE));
+	}
+	else
+	{
+		ZeroMemory(&m_MouseState, sizeof(DIMOUSESTATE));
+	}
 
 	return NO_EVENT;
 }

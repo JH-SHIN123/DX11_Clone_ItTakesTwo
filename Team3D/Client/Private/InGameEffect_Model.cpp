@@ -58,7 +58,7 @@ HRESULT CInGameEffect_Model::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
 	if(1 < lstrlen(m_EffectDesc_Prototype.TextureName))
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName, TEXT("Com_Textrue"), (CComponent**)&m_pTexturesCom), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName, TEXT("Com_Texture"), (CComponent**)&m_pTexturesCom), E_FAIL);
 
 
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
@@ -87,6 +87,11 @@ HRESULT CInGameEffect_Model::Ready_InstanceBuffer(_bool IsRenderTerm)
 	}
 
 	return S_OK;
+}
+
+void CInGameEffect_Model::Set_Pos(_vector vPos)
+{
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 }
 
 _float4 CInGameEffect_Model::Set_UV(_int iIndex)

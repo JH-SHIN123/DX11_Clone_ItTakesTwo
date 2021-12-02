@@ -23,6 +23,14 @@ CGameObject* CDataStorage::Get_SpaceRail(const _tchar* pRailTag)
 	return iter->second;
 }
 
+_uint CDataStorage::Get_ValveCount_Cody(_bool IsCody)
+{
+	if (true == IsCody)
+		return m_iCody_Valve_Count;
+	else
+		return m_iMay_Valve_Count;
+}
+
 void CDataStorage::Free()
 {
 	m_pCody = nullptr;
@@ -32,13 +40,6 @@ void CDataStorage::Free()
 
 	// UFO
 	m_pUFO = nullptr;
-
-	// Interactive Objects
-	m_pRobot = nullptr;
-	m_pRobotLever = nullptr;
-	m_pRobotBattery = nullptr;
-	m_pRobotHead = nullptr;
-	m_pNoBatterySign = nullptr;
 
 	m_SpaceRails.clear();
 }

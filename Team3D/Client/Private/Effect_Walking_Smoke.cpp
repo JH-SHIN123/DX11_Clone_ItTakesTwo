@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Walking_Smoke.h"
-#include "GameInstance.h"
 
 CEffect_Walking_Smoke::CEffect_Walking_Smoke(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -48,7 +47,7 @@ _int CEffect_Walking_Smoke::Late_Tick(_double TimeDelta)
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Walking_Smoke::Render(RENDER_GROUP::Enum eGroup)

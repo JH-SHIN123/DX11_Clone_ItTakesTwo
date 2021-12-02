@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\public\RobotLever.h"
-#include "GameInstance.h"
 #include "Cody.h"
 #include "May.h"
 #include "UI_Generator.h"
@@ -8,60 +7,68 @@
 #include "NoBatterySign.h"
 
 CRobotLever::CRobotLever(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
-	: CGameObject(pDevice, pDeviceContext)
+	: CRobotParts(pDevice, pDeviceContext)
 {
 }
 
-CRobotLever::CRobotLever(const CRobotLever & rhs)
-	: CGameObject(rhs)
+CRobotLever::CRobotLever(const CRobotParts & rhs)
+	: CRobotParts(rhs)
 {
 }
 
 HRESULT CRobotLever::NativeConstruct_Prototype()
 {
-	CGameObject::NativeConstruct_Prototype();
+	CRobotParts::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
 HRESULT CRobotLever::NativeConstruct(void * pArg)
 {
-	CGameObject::NativeConstruct(pArg);
-	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_RobotLever"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_RealRobotLever"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(15.f, 1.2f, 18.3f, 1.f));
-	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(35.f));
 
+	if (nullptr != pArg)
+		memcpy(&m_tRobotPartsDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
+
+	_vector vPosition = m_tRobotPartsDesc.vPosition;
+	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.2f);
+	vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - 1.7f);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+	// ·Îº¿ OffSet XMVectorSet(15.f, 0.f, 20.f, 1.f));
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-70.f));
+
+
+	m_UserData = USERDATA(GameID::eROBOTLEVER, this);
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
 	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
-
+	
 	CTriggerActor::ARG_DESC TriggerArgDesc;
-
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTransformCom;
 	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.7f);
-	m_UserData = USERDATA(GameID::eROBOTLEVER, this);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
-	DATABASE->Set_RobotLeverPtr(this);
 
 	return S_OK;
 }
 
 _int CRobotLever::Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CRobotParts::Tick(dTimeDelta);
+
+
 
 	if (m_bUpdate == true)
 	{
-		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_E))
+		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_F) || m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 		{
 			UI_Delete(Cody, InputButton_InterActive);
 			UI_Delete(May, InputButton_InterActive);
@@ -79,7 +86,7 @@ _int CRobotLever::Tick(_double dTimeDelta)
 
 _int CRobotLever::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(dTimeDelta);
+	CRobotParts::Tick(dTimeDelta);
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
@@ -88,7 +95,7 @@ _int CRobotLever::Late_Tick(_double dTimeDelta)
 
 HRESULT CRobotLever::Render(RENDER_GROUP::Enum eGroup)
 {
-	CGameObject::Render(eGroup);
+	CRobotParts::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
@@ -150,24 +157,34 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 	if (m_bBatteryCharged == false)
 	{
 		m_fStopDelay += (_float)dTimeDelta;
-		if (m_fStopDelay > 0.2f && m_fStopDelay <= 0.4f)
+		if (m_fStopDelay > 0.2f && m_fStopDelay <= 0.6f)
 		{
-			_vector vDir = XMVector3Normalize(XMVectorSet(-1.f, 0.f, 0.f, 0.f) + XMVectorSet(0.f, 0.f, 1.f, 0.f) / 2.f);
+			_vector vDir = XMVector3Normalize((XMVectorSet(-1.f, 0.f, 0.f, 0.f) + XMVectorSet(0.f, 0.f, -1.f, 0.f) * 2.f));
 			m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
 
 			if (m_bNoBatteryHit == false)
 			{
-				((CRobotHead*)DATABASE->Get_RobotHead())->Set_Lever_Hit_When_NoBattery(true);
-				((CNoBatterySign*)DATABASE->Get_NoBatterySign())->Set_HitLever(true);
+				switch (m_tRobotPartsDesc.iStageNum)
+				{
+				case ST_GRAVITYPATH:
+					((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_RobotHead()->Set_Lever_Hit_When_NoBattery(true);
+					((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_NoBatterySign()->Set_HitLever(true);
+					break;
+				case ST_RAIL:
+					((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_RobotHead()->Set_Lever_Hit_When_NoBattery(true);
+					((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_NoBatterySign()->Set_HitLever(true);
+					break;
+				}
+				
 				m_bNoBatteryHit = true;
 			}
 		}
-		else if (m_fStopDelay > 1.f && m_fStopDelay <= 1.2f)
+		else if (m_fStopDelay > 1.f && m_fStopDelay <= 1.4f)
 		{
-			_vector vDir = XMVector3Normalize(XMVectorSet(1.f, 0.f, 0.f, 0.f) + XMVectorSet(0.f, 0.f, 1.f, 0.f) / 2.f);
+			_vector vDir = XMVector3Normalize((XMVectorSet(-1.f, 0.f, 0.1f, 0.f) + XMVectorSet(0.f, 0.f, -1.f, 0.f) / 8.f));
 			m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
 		}
-		else if (m_fStopDelay > 1.2f)
+		else if (m_fStopDelay > 1.4f)
 		{
 			m_bNoBatteryHit = false;
 			m_fStopDelay = 0.f;
@@ -176,15 +193,29 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 	}
 	else if (m_bBatteryCharged == true)
 	{
+		if (m_tRobotPartsDesc.iStageNum == ST_GRAVITYPATH)
+			DATABASE->Set_GravityStageClear(true);
+		else if (m_tRobotPartsDesc.iStageNum == ST_RAIL)
+			DATABASE->Set_RailStageClear(true);
+
 		m_fStopDelay += (_float)dTimeDelta;
-		if (m_fStopDelay > 0.2f && m_fStopDelay <= 0.4f)
+		if (m_fStopDelay > 0.2f && m_fStopDelay <= 0.6f)
 		{
-			_vector vDir = XMVector3Normalize(XMVectorSet(-1.f, 0.f, 0.f, 0.f) + XMVectorSet(0.f, 0.f, 1.f, 0.f) / 2.f);
+			_vector vDir = XMVector3Normalize((XMVectorSet(-1.f, 0.f, 0.f, 0.f) + XMVectorSet(0.f, 0.f, -1.f, 0.f) * 2.f));
 			m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
-			((CRobotHead*)DATABASE->Get_RobotHead())->Set_Lever_Active(true);
-			((CNoBatterySign*)DATABASE->Get_NoBatterySign())->Set_BatteryCharged(true);
+			switch (m_tRobotPartsDesc.iStageNum)
+			{
+			case ST_GRAVITYPATH:
+				((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_RobotHead()->Set_Lever_Active(true);
+				((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_NoBatterySign()->Set_BatteryCharged(true);
+				break;
+			case ST_RAIL:
+				((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_RobotHead()->Set_Lever_Active(true);
+				((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_NoBatterySign()->Set_BatteryCharged(true);
+				break;
+			}
 		}
-		else if (m_fStopDelay > 0.4f)
+		else if (m_fStopDelay > 0.6f)
 		{
 			m_bNoBatteryHit = false;
 			m_fStopDelay = 0.f;

@@ -13,9 +13,9 @@ END
 
 BEGIN(Client)
 
-class CBigButton : public CGameObject
+class CBigButton final : public CGameObject
 {
-protected:
+private:
 	explicit CBigButton(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CBigButton(const CBigButton& rhs);
 	virtual ~CBigButton() = default;
@@ -23,22 +23,16 @@ protected:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-
-
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-	/* For.Trigger */
+	virtual HRESULT Render_ShadowDepth() override;
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
-public:
-	virtual HRESULT Render_ShadowDepth() override;
-
-public:
+public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
-public:
+public: /* Setter */
 	void Set_Press(_bool bPressed) { m_bPressed = bPressed; }
 
 private:
@@ -50,8 +44,7 @@ private:
 	_bool		m_IsCollide = false;
 	_bool		m_bUpdate = true;
 
-protected:
-	/* For.Component */
+private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;

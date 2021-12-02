@@ -1,13 +1,25 @@
 #include "stdafx.h"
+#include <fstream>
 #include "..\Public\Environment_Generator.h"
 /* Load */
-#include <fstream>
 #include "SavePoint.h"
 #include "DeadLine.h"
 #include "Bridge.h"
 #include "Planet.h"
 #include "PlanetRing.h"
 #include "SpaceRail.h"
+#include "PinBall.h"
+#include "PinBall_BallDoor.h"
+#include "PinBall_Spring.h"
+#include "PinBall_Handle.h"
+#include "PinBall_HandleBase.h"
+#include "PinBall_Blocked.h"
+#include "AlienScreen.h"
+#include "PinBall_BallGate.h"
+#include "SlideDoor.h"
+#include "PinBall_Door.h"
+#include "HookahTube.h"
+#include "HangingPlanet.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -250,6 +262,7 @@ HRESULT CEnvironment_Generator::Load_Default_Prototype_GameObject()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_DeadLine"), CDeadLine::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Bridge"), CBridge::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SpaceRail"), CSpaceRail::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), CHangingPlanet::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
 }
@@ -308,6 +321,7 @@ HRESULT CEnvironment_Generator::Load_Environment_Space()
 
 		tStatic_Env_Desc.eGameID = GameID::Enum::eENVIRONMENT;
 		Set_Info_Model(tStatic_Env_Desc);
+		Adjustment_Model_Position(tStatic_Env_Desc.szModelTag, tStatic_Env_Desc.WorldMatrix);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, TEXT("GameObject_Static_Env"), &tStatic_Env_Desc), E_FAIL);
 	}
 	CloseHandle(hFile);
@@ -330,6 +344,7 @@ HRESULT CEnvironment_Generator::Load_Environment_Space()
 		ReadFile(hFile, &tDynamic_Env_Desc.iMatrialIndex, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, &tDynamic_Env_Desc.iOption, sizeof(_uint), &dwByte, nullptr);
 
+		Adjustment_Model_Position(tDynamic_Env_Desc.szModelTag, tDynamic_Env_Desc.WorldMatrix);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, szPrototypeTag, &tDynamic_Env_Desc), E_FAIL);
 	}
 	CloseHandle(hFile);
@@ -565,6 +580,72 @@ CGameObject* CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D11
 		if (nullptr == pInstance)
 			MSG_BOX("Failed to Create Instance - CSpaceRail");
 	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall")))
+	{
+		pInstance = CPinBall::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_BallDoor")))
+	{
+		pInstance = CPinBall_BallDoor::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall_BallDoor");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_Spring")))
+	{
+		pInstance = CPinBall_Spring::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall_Spring");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_Handle")))
+	{
+		pInstance = CPinBall_Handle::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall_Handle");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_HandleBase")))
+	{
+		pInstance = CPinBall_HandleBase::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall_HandleBase");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_Blocked01")) || 0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_Blocked02")) || 0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_BlockedHalf")))
+	{
+		pInstance = CPInBall_Blocked::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall_Blocked");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_AlienScreen")))
+	{
+		pInstance = CAlienScreen::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - AlienScreen");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_BallGate")))
+	{
+		pInstance = CPinBall_BallGate::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall_BallGate");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_SlideDoor")))
+	{
+		pInstance = CSlideDoor::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - SlideDoor");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_Door")))
+	{
+		pInstance = CPinBall_Door::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - PinBall_Door");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_HookahTube")))
+	{
+		pInstance = CHookahTube::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - HookahTube");
+	}
 	return pInstance;
 }
 
@@ -585,13 +666,15 @@ void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail06"))
 		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Moon_01_Plushie"))
-		tInfo.fCullRadius = 500.f;
+		tInfo.fCullRadius = 1000.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetWall"))
-		tInfo.fCullRadius = 500.f;
+		tInfo.fCullRadius = 1000.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetFloor"))
-		tInfo.fCullRadius = 500.f;
+		tInfo.fCullRadius = 1000.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetFloorRing"))
-		tInfo.fCullRadius = 500.f;
+		tInfo.fCullRadius = 1000.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PLanetLamp03"))
+		tInfo.fCullRadius = 1000.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh01"))
 		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh02"))
@@ -612,6 +695,18 @@ void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
 		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh13"))
 		tInfo.fCullRadius = 500.f;
+}
+
+void CEnvironment_Generator::Adjustment_Model_Position(_tchar* pModelTag, _float4x4& rWorld)
+{
+	if ((0 == lstrcmp(pModelTag, L"Component_Model_Space_Pinball_Attachment")) || (0 == lstrcmp(pModelTag, L"Component_Model_Space_Pinball_Ball"))
+		|| (0 == lstrcmp(pModelTag, L"Component_Model_Space_Pinball_BallDoor")) || (0 == lstrcmp(pModelTag, L"Component_Model_Space_Pinball_BallSpring"))
+		|| (0 == lstrcmp(pModelTag, L"Component_Model_Space_Pinball_BallSpring_Handle")) || (0 == lstrcmp(pModelTag, L"Component_Model_Space_Pinball_BallSpring_HandleBase"))
+		|| (0 == lstrcmp(pModelTag, L"Component_Model_Space_Pinball_Base")) || (0 == lstrcmp(pModelTag, L"Component_Model_Space_Pinball_BaseStar"))
+		|| (0 == lstrcmp(pModelTag, L"Component_Model_Space_Pinball_Blockade_Half")) || (0 == lstrcmp(pModelTag, L"Component_Model_Space_Pinball_Blockade01"))
+		|| (0 == lstrcmp(pModelTag, L"Component_Model_Space_Pinball_Blockade02")) || (0 == lstrcmp(pModelTag, L"Component_Model_Space_Pinball_Frame"))
+		|| (0 == lstrcmp(pModelTag, L"Component_Model_Space_Pinball_Frame_Open")))
+		rWorld._42 -= 0.1f;
 }
 
 void CEnvironment_Generator::Free()

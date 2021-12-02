@@ -6,7 +6,7 @@
 #include"Cody.h"
 
 BEGIN(Client)
-
+class CCameraActor;
 class CMainCamera final : public CCamera
 {
 	enum CamRev {Rev_Holizontal,Rev_Prependicul,Rev_End};
@@ -33,11 +33,10 @@ public:
 
 	void Check_Player(_double dTimeDelta);
 
-
+	HRESULT Start_Film(const _tchar* pFilmTag);
 private:
-	class CPlayerActor* m_pActorCom = nullptr;
-	class CPlayerActor* m_pSubActorCom = nullptr;
-
+	CCameraActor* m_pActorCom = nullptr;
+	CGameObject* m_pTargetObj = nullptr;
 	CCam_Helper* m_pCamHelper = nullptr;
 private:
 	//For Free.
@@ -52,24 +51,21 @@ private:
 	_int	Tick_CamHelper_SeeCamNode(_double dTimeDelta);	//카메라노드를 처다봄
 
 
-
+	//For.Debug
 	void ChangeViewPort();
 	void KeyCheck(_double dTimeDelta);
 private:
 	_int	ReSet_Cam_FreeToAuto();		//변수 초기화용
 	_bool	OffSetPhsX(_double dTimeDelta,_fmatrix matRev,_vector * pOut);
-	_fmatrix MakeViewMatrix(_float3 Eye, _float3 At);
+	_fmatrix MakeViewMatrix(_float3 Eye, _float3 At, _float3 vAxisY);
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
-	CGameObject* m_pTargetObj = nullptr;
+	_bool m_bStart = false;
 	_float m_fMouseRevSpeed[Rev_End] = { 2.5f,2.5f };
 	_float m_fMouseRev[Rev_End] = { 0.0f,0.0f };
-	
-	
-	_float m_fCamDist = 4.f;
-
+	_float m_fCurMouseRev[Rev_End] = { 0.f,0.f };
 
 	CamMode m_eCurCamMode = CamMode::Cam_End;
 
@@ -91,8 +87,21 @@ private:
 
 	//For.SpringCamera
 	_float m_fCamRadius = 0.f;
-	
 
+
+	//For.SoftMove
+	_float3 m_vPlayerPos = { 0.f,0.f,0.f };
+	//회전 보간용
+	_float4x4 m_matQuternionRev;
+	//플레이어 업 체크용
+	_float m_fCulCalculateUp = 0.f;
+	_float m_fPreCalculateUp = 0.f;
+
+
+	// Sehoon
+	_float4x4	m_BaseMatrix;
+	WORLDMATRIX	m_PreWorld;
+	WORLDMATRIX	m_NextWorld;
 };
 
 END

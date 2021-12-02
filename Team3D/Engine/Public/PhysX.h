@@ -13,6 +13,7 @@ private:
 
 public: /* Getter */
 	PxMaterial* Get_BaseMaterial() { return m_pMaterial; }
+	PxPhysics*	Get_PxPhysics() { return m_pPhysics; }
 
 public:
 	HRESULT Ready_PhysX(PxSimulationEventCallback* pEventCallback);
@@ -28,6 +29,8 @@ public:
 	PxTriangleMesh*	Create_Mesh(MESHACTOR_DESC pMeshActorDesc);
 	/* For.Fuction */
 	_bool			Raycast(const PxVec3& origin, const PxVec3& unitDir, const PxReal distance, PxRaycastCallback& hitCall, PxHitFlags hitFlags = PxHitFlags(PxHitFlag::eDEFAULT), const PxQueryFilterData& filterData = PxQueryFilterData(), PxQueryFilterCallback* filterCall = NULL, const PxQueryCache* cache = NULL);
+
+	PxSphericalJoint*		Create_Joint(PxRigidActor* Actor1, PxTransform Transform1, PxRigidActor* Actor2, PxTransform Transform2);
 
 private:
 	PxDefaultAllocator			m_Allocator;
