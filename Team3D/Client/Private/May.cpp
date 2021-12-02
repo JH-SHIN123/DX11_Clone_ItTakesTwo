@@ -129,9 +129,9 @@ void CMay::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_M_ZeroGravity_MH, ANI_M_Jump_180R, true, 10.f);
 	m_pModelCom->Add_LerpInfo(ANI_M_ZeroGravity_MH, ANI_M_Jump_Falling, true, 10.f);
 
-	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_MH, ANI_M_WallSlide_Jump, false);
-	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_Jump, ANI_M_WallSlide_Enter, true, 2.f);
-	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_Enter, ANI_M_WallSlide_MH, true, 2.f);
+	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_MH, ANI_M_WallSlide_Jump, true, 30.f);
+	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_Jump, ANI_M_WallSlide_Enter, true, 20.f);
+	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_Enter, ANI_M_WallSlide_MH, true, 30.f);
 
 
 	return;

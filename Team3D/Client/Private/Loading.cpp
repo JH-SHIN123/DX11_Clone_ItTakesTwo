@@ -414,7 +414,6 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Prototype_Model_Others_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others07.txt")), E_FAIL);
 		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Prototype_Model_Others_TXT(TEXT("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Others15.txt")), E_FAIL);
 #endif
-
 		__threadbreak;
 	}
 	else if (1 == iThreadIndex)

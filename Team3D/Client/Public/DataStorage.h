@@ -42,8 +42,6 @@ public:
 	void Set_STPlanetRobotPtr(CGameObject* pRobot) { m_pSTPlanetRobot = pRobot; }
 	CGameObject* Get_STPlanetRobot() { return m_pSTPlanetRobot; }
 
-
-
 	/* For.Valve */
 	void Set_ValveCount(_uint _iValveRotateCount) { m_iValveRotateCount += _iValveRotateCount; }
 	void Set_ValveTarget(_uint _iValveTarget) { m_iValveTarget = _iValveTarget; }
