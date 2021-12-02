@@ -32,6 +32,9 @@ public:
 	void Set_BridgePtr(CGameObject* pBridge) { m_pBridge = pBridge; }
 	CGameObject* Get_Bridge() { return m_pBridge; }
 
+	void Set_MenuScreen(CGameObject* pMenuScreen) { m_pMenuScreen = pMenuScreen; }
+	CGameObject* Get_MenuScreen() { return m_pMenuScreen; }
+
 	/* Robots */
 	void Set_STGravityRobotPtr(CGameObject* pRobot) { m_pSTGravityRobot = pRobot; }
 	CGameObject* Get_STGravityRobot() { return m_pSTGravityRobot; }
@@ -118,6 +121,7 @@ private:
 	CGameObject* m_pNoBatterySign = nullptr;
 	CGameObject* m_pPressureBigPlate = nullptr;
 	CGameObject* m_pUmbrella_Joystick = nullptr;
+	CGameObject* m_pMenuScreen = nullptr;
 
 private:
 	// Interactive Objects

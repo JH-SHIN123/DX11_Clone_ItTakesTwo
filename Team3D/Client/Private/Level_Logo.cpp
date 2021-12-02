@@ -3,6 +3,9 @@
 #include "GameInstance.h"
 #include "Camera.h"
 #include "UI_Generator.h"
+#include "DataStorage.h"
+#include "MenuScreen.h"
+#include "Level_Loading.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -22,6 +25,24 @@ _int CLevel_Logo::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
 
+	CMenuScreen* pMenu = (CMenuScreen*)DATABASE->Get_MenuScreen();
+	NULL_CHECK_RETURN(pMenu, EVENT_ERROR);
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (true == pMenu->Get_1p_Ready() && true == pMenu->Get_2p_Ready() && pGameInstance->Key_Down(DIK_RETURN))
+	{
+		if (FAILED(pGameInstance->Change_CurrentLevel(CLevel_Loading::Create(m_pDevice, m_pDeviceContext, Level::LEVEL_LOGO, Level::LEVEL_STAGE))))
+		{
+			MSG_BOX("Failed to Change_CurrentLevel, Error to CMenuScreen::Late_Tick");
+			return EVENT_ERROR;
+		}
+
+		pGameInstance->Clear_LevelResources(Level::LEVEL_LOGO);
+		UI_Delete(Default, AlphaScreen);
+
+	}
+
 	return NO_EVENT;
 }
 
@@ -30,7 +51,7 @@ HRESULT CLevel_Logo::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_Logo::Ready_Layer_SplashScreen()
+HRESULT CLevel_Logo::Ready_Layer_SplashScreen()\
 {
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;

@@ -18,6 +18,7 @@ HRESULT CMainApp::NativeConstruct()
 
 	m_pPxEventCallback = new CPxEventCallback;
 
+
 	FAILED_CHECK_RETURN(m_pGameInstance->Initialize(CGraphic_Device::TYPE_WINMODE, g_hWnd, g_hInst, g_iWinCX, g_iWinCY, &m_pDevice, &m_pDeviceContext, m_pPxEventCallback), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Reserve_Container(Level::LEVEL_END), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Timer(), E_FAIL);

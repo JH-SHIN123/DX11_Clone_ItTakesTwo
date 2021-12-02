@@ -50,8 +50,22 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	m_pVIBuffer_Rect = (CVIBuffer_Rect*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect"));
 	
 	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("AlphaScreen"), CAlphaScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	
+	//CUIObject::UI_DESC UIDesc;
+	//UIDesc.iLevelIndex = 0;
+	//UIDesc.iRenderGroup = 1;
+	//UIDesc.iSubTextureNum = 0;
+	//UIDesc.iTextureLevelIndex = 0;
+	//UIDesc.iTextureRenderIndex = 0;
+	//lstrcpy(UIDesc.szSubTextureTag, TEXT(""));
+	//lstrcpy(UIDesc.szTextureTag, TEXT("LoadingBook"));
+	//lstrcpy(UIDesc.szSubTextureTag, TEXT("Loading_Book"));
+	//UIDesc.vPos = _float2(583.f, -307.f);
+	//UIDesc.vScale = _float2(100.f, 100.f);
+	//FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("Loading_Book"), CUISprite::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	m_VTXFONT = new VTXFONT[50];
+
 
 	return S_OK;
 }
@@ -988,7 +1002,7 @@ HRESULT CUI_Generator::Create_Logo()
 HRESULT CUI_Generator::Create_ChapterSelect()
 {
 	_uint iOption = 1;
-	SetUp_Clone(Player::Default, UI::MenuScreen, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+	SetUp_Clone(Player::Default, UI::AlphaScreen, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
 
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ChapterLocalPlay"), Level::LEVEL_LOGO, &iOption);
 	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Banner"), Level::LEVEL_LOGO, &iOption);
@@ -1009,7 +1023,7 @@ HRESULT CUI_Generator::Create_ChapterSelect()
 	SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("PC_Enter"), Level::LEVEL_LOGO);
 
 	iOption = 2;
-	SetUp_Clone(Player::Default, UI::MenuScreen, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+	SetUp_Clone(Player::Default, UI::AlphaScreen, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
 
 	return S_OK;
 }

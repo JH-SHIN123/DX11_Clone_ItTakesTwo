@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Level_Logo.h"
 #include "Level_Stage.h"
+#include "UI_Generator.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -45,8 +46,9 @@ _int CLevel_Loading::Tick(_double dTimedelta)
 		NULL_CHECK_RETURN(pLevel, EVENT_ERROR);
 
 		m_pGameInstance->Change_CurrentLevel(pLevel);
-		//m_pGameInstance->Clear_Level(m_ePreLevelID);
+		//m_pGameInstance->Clear_LevelResources(m_ePreLevelID);
 		//m_pGameInstance->Clear_Level(Level::LEVEL_LOADING);
+
 	}
 
 	return NO_EVENT;

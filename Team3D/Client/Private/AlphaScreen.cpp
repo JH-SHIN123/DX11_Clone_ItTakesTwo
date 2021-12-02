@@ -26,7 +26,6 @@ HRESULT CAlphaScreen::NativeConstruct_Prototype(void* pArg)
 
 	lstrcpy(m_UIDesc.szTextureTag, TEXT("AlphaScreen"));
 
-
 	return S_OK;
 }
 

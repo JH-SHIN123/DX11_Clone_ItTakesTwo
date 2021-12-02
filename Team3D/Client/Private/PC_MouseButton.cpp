@@ -29,6 +29,10 @@ HRESULT CPC_MouseButton::NativeConstruct_Prototype(void* pArg)
 	else
 		m_iShaderMouseOption = 1;
 
+
+	m_UIDesc.iRenderGroup *= -1;
+
+
 	return S_OK;
 }
 

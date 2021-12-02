@@ -24,6 +24,8 @@ HRESULT CInputButton::NativeConstruct_Prototype(void* pArg)
 	if (nullptr != pArg)
 		memcpy(&m_UIDesc, pArg, sizeof(UI_DESC));
 
+	m_UIDesc.iRenderGroup *= -1;
+
 	return S_OK;
 }
 

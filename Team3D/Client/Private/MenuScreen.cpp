@@ -4,6 +4,8 @@
 #include "GameInstance.h"
 #include "UI_Generator.h"
 #include "HeaderBox.h"
+#include "Level_Loading.h"
+#include "DataStorage.h"
 
 CMenuScreen::CMenuScreen(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -38,6 +40,8 @@ HRESULT CMenuScreen::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
+	DATABASE->Set_MenuScreen(this);
+
 	return S_OK;
 }
 
@@ -60,32 +64,27 @@ _int CMenuScreen::Late_Tick(_double TimeDelta)
 	if (false == m_IsChapterScreenRender)
 		Input_ChapterScreenCreate();
 
-	if (m_pGameInstance->Key_Down(DIK_RETURN) && true == m_IsChapterScreenRender)
-		m_IsReady_1P = true;
-	else if (m_pGameInstance->Pad_Key_Down(DIP_Y) && true == m_IsChapterScreenRender)
-		m_IsReady_2P = true;
-
-	if (true == m_IsReady_1P)
+	if (m_pGameInstance->Key_Down(DIK_SPACE) && true == m_IsChapterScreenRender && false == m_IsReady_1P)
 	{
+		m_IsReady_1P = true;
+
 		UI_Delete(Default, HeaderBox1P);
 		UI_Create(Default, ControllerIcon_KeyBoard);
-
-		m_IsReady_1P = false;
 
 		CHeaderBox* pHeaderBox = (CHeaderBox*)UI_Generator->Get_UIObject(Player::Default, UI::HeaderBox_1p_Ready);
 		pHeaderBox->Set_ColorChange();
 	}
-	
-	if (true == m_IsReady_2P)
+	else if (/*m_pGameInstance->Pad_Key_Down(DIP_Y)*/ m_pGameInstance->Key_Down(DIK_M) && true == m_IsChapterScreenRender && false == m_IsReady_2P)
 	{
+		m_IsReady_2P = true;
+
 		UI_Delete(Default, HeaderBox2P);
 		UI_Create(Default, ControllerIcon_Pad);
-
-		m_IsReady_2P = false;
 
 		CHeaderBox* pHeaderBox = (CHeaderBox*)UI_Generator->Get_UIObject(Player::Default, UI::HeaderBox_2p_Ready);
 		pHeaderBox->Set_ColorChange();
 	}
+
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
@@ -102,6 +101,16 @@ HRESULT CMenuScreen::Render(RENDER_GROUP::Enum eGroup)
 	Render_Font();
 
 	return S_OK;
+}
+
+_bool CMenuScreen::Get_1p_Ready() const
+{
+	return m_IsReady_1P;
+}
+
+_bool CMenuScreen::Get_2p_Ready() const
+{
+	return m_IsReady_2P;
 }
 
 void CMenuScreen::Render_Font()

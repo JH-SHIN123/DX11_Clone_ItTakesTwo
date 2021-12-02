@@ -28,6 +28,8 @@ HRESULT CSplashScreen::NativeConstruct(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_iOption, pArg, sizeof(_uint));
 
+	m_fSortOrder = 1.f;
+
 	if (FAILED(Ready_Component()))
 		return E_FAIL;
 

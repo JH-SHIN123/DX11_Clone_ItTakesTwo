@@ -65,7 +65,7 @@ namespace Engine
 			eWALLLASERTRAP,
 			eWALLLASERTRAP_BUTTON,
 			eDUMMYWALL,
-			eENVIRONMENT,
+			eENVIRONMENT
 		};
 	};
 

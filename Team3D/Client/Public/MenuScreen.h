@@ -24,6 +24,10 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+public:
+	_bool Get_1p_Ready() const;
+	_bool Get_2p_Ready() const;
+
 private:
 	_double							m_Time = 0.0;
 	_uint							m_iScaleChangeCount = 0;
@@ -36,6 +40,7 @@ private:
 	_bool							m_IsChapterScreenRender = false;
 	_bool							m_IsReady_1P = false;
 	_bool							m_IsReady_2P = false;
+	_bool							m_IsDelete = false;
 
 private:
 	class CHeaderBox*				m_pHeaderBox = nullptr;
@@ -48,7 +53,6 @@ private:
 	HRESULT Ready_Component();
 	void Input_SelectButton();
 	void Input_ChapterScreenCreate();
-
 
 public:
 	static CMenuScreen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
