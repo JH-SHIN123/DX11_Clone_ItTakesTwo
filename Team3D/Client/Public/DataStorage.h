@@ -42,12 +42,13 @@ public:
 	void Set_STPlanetRobotPtr(CGameObject* pRobot) { m_pSTPlanetRobot = pRobot; }
 	CGameObject* Get_STPlanetRobot() { return m_pSTPlanetRobot; }
 
-
-
 	/* For.Valve */
 	void Set_ValveCount(_uint _iValveRotateCount) { m_iValveRotateCount += _iValveRotateCount; }
 	void Set_ValveTarget(_uint _iValveTarget) { m_iValveTarget = _iValveTarget; }
 	_uint Get_ValveCount() { return m_iValveRotateCount; }
+	/*For.Valve_Star*/void	Add_ValveCount_Cody(_bool IsCody) { true == IsCody ? ++m_iCody_Valve_Count : ++m_iMay_Valve_Count; }
+	/*For.Valve_Star*/_uint	Get_ValveCount_Cody(_bool IsCody);
+	/*For.Valve_Star*/void	Reset_ValveCount_Cody(_bool IsCody) { true == IsCody ? m_iCody_Valve_Count = 0 : m_iMay_Valve_Count = 0; }
 	
 	/* For.PinBall */
 	void Set_Pinball(CGameObject* pPinball) { m_pPinball = pPinball; }
@@ -119,6 +120,8 @@ private:
 	/* For.Valve */
 	_uint m_iValveRotateCount = 0;
 	_uint m_iValveTarget = 0;
+	_uint m_iCody_Valve_Count = 0;
+	_uint m_iMay_Valve_Count = 0;
 
 	_bool m_IsBigButtonPressed = false;
 	_bool m_bGravityStageClear = false;

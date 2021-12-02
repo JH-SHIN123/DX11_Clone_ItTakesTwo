@@ -51,17 +51,17 @@ HRESULT CGravityPath::NativeConstruct(void * pArg)
 		m_arrUserData[iMeshIndex].pGameObject = this;
 
 		//클라
-		if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath01")) && (iMeshIndex == 3 || iMeshIndex == 6))
+		if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath01")) && (iMeshIndex == 3 || iMeshIndex == 4))
 			m_arrUserData[iMeshIndex].eID = GameID::eGRAVITYPATH_CENTER;
 		else if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath02")) && iMeshIndex == 2)
 			m_arrUserData[iMeshIndex].eID = GameID::eGRAVITYPATH_CENTER;
-		else if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath03")) && (iMeshIndex == 0 || iMeshIndex == 2 || iMeshIndex == 5 || iMeshIndex == 8))
+		else if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath03")) && (iMeshIndex == 2 || iMeshIndex == 5 || iMeshIndex == 7 || iMeshIndex == 10))
 			m_arrUserData[iMeshIndex].eID = GameID::eGRAVITYPATH_CENTER;
-		else if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath04")) && (iMeshIndex == 1 || iMeshIndex == 3 || iMeshIndex == 8))
+		else if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath04")) && (iMeshIndex == 3 || iMeshIndex == 4 || iMeshIndex == 10))
 			m_arrUserData[iMeshIndex].eID = GameID::eGRAVITYPATH_CENTER;
-		else if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath05")) && (iMeshIndex == 2 || iMeshIndex == 4))
+		else if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath05")) && (iMeshIndex == 0 || iMeshIndex == 2))
 			m_arrUserData[iMeshIndex].eID = GameID::eGRAVITYPATH_CENTER;
-		else if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath06")) && (iMeshIndex == 2 || iMeshIndex == 4))
+		else if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath06")) && (iMeshIndex == 2 || iMeshIndex == 5))
 			m_arrUserData[iMeshIndex].eID = GameID::eGRAVITYPATH_CENTER;
 
 		//테스트

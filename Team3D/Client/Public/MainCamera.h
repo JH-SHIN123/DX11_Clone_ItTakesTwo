@@ -95,6 +95,11 @@ private:
 
 
 
+
+	// Sehoon
+	_float4x4	m_BaseMatrix;
+	WORLDMATRIX	m_PreWorld;
+	WORLDMATRIX	m_NextWorld;
 };
 
 END

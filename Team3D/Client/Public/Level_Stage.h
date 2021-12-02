@@ -20,10 +20,11 @@ private:
 	/* Se */
 	HRESULT Ready_Layer_GravityPath(const _tchar* pLayerTag);
 	/* Jung */
-	HRESULT Test_Layer_Effect(const _tchar* pLayerTag);
 	HRESULT Test_Layer_Object_Effect(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_WarpGate(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Wormhole(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_WallLaserTrap(const _tchar* pLayerTag);
+	HRESULT TestLayer(const _tchar* pLayerTag);
 	/* Hye */
 	HRESULT Ready_Layer_PinBall(const _tchar* pLayerTag);
 	/* Won */
