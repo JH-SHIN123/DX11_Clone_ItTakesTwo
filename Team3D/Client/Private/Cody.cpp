@@ -522,10 +522,10 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_IsSizeChanging = true;
 			m_pActorCom->Set_Gravity(-9.8f);
 			break;
-		case Client::CCody::SIZE_MEDIUM:
-			m_eNextPlayerSize = SIZE_LARGE;
-			m_IsSizeChanging = true;
-			break;
+		//case Client::CCody::SIZE_MEDIUM:
+		//	m_eNextPlayerSize = SIZE_LARGE;
+		//	m_IsSizeChanging = true;
+		//	break;
 		}
 	}
 #pragma endregion

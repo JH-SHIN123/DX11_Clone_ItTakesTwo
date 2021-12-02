@@ -92,8 +92,16 @@ private:
 	//회전 보간용
 	_float4x4 m_matQuternionRev;
 	//플레이어 업 체크용
-	_float m_fCulCalculateUp = 0.f;
-	_float m_fPreCalculateUp = 0.f;
+	_float m_fTargetCalculateUp = 0.f;
+	_float m_fCurCalculateUp = 0.f;
+
+	_float m_fTargetCalculateRight = 0.f;
+	_float m_fCurCalculateRight = 0.f;
+
+	_float m_fTargetCalculateLook = 0.f;
+	_float m_fCurCalculateLook = 0.f;
+
+
 
 };
 
