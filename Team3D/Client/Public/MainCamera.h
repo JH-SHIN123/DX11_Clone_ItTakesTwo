@@ -70,7 +70,6 @@ private:
 
 	_float4x4 m_matBeginWorld;
 	_float4x4 m_matCurWorld;
-	_float4x4 m_matPreRev;
 
 	//if Free -> AutotoFree  m_fChangeCamModeTime=0.f
 	_float m_fChangeCamModeTime = 0.f;
@@ -89,15 +88,9 @@ private:
 	_float4x4 m_matBeforeSpringCam;
 	//For.SoftMove
 	_float3 m_vPlayerPos = { 0.f,0.f,0.f };
-	//회전 보간용
-	_float4x4 m_matQuternionRev;
-
-
-
 
 
 	// Sehoon
-	_float4x4	m_BaseMatrix;
 	WORLDMATRIX	m_PreWorld;
 	WORLDMATRIX	m_NextWorld;
 };

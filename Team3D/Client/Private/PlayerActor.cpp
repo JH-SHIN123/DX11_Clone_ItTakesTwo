@@ -173,11 +173,8 @@ void CPlayerActor::Step_GravityPath(PxVec3 vNormal)
 {
 	NULL_CHECK(m_pController);
 
-<<<<<<< HEAD
-	if (m_pUserData->eID == GameID::eMAY) return;
-=======
+
 	//if (m_pUserData->eID == GameID::eCODY) return;
->>>>>>> main
 
 	m_pController->setUpDirection(vNormal);
 	m_isGravityReordered = false;

@@ -178,6 +178,7 @@ public:
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
+	CPlayerActor* Get_Actor() { return m_pActorCom; }
 	void		Update_Tirgger_Pos(_vector vPos);
 
 public:

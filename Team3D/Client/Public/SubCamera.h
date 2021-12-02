@@ -30,8 +30,6 @@ public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 
-	void Check_Player(_double dTimeDelta);
-
 	HRESULT Start_Film(const _tchar* pFilmTag);
 private:
 	CCameraActor* m_pActorCom = nullptr;
@@ -84,9 +82,10 @@ private:
 	_float3 m_vPlayerPos = { 0.f,0.f,0.f };
 	//회전 보간용
 	_float4x4 m_matQuternionRev;
-	//플레이어 업 체크용
-	_float m_fCulCalculateUp = 0.f;
-	_float m_fPreCalculateUp = 0.f;
+	
+	// Sehoon
+	WORLDMATRIX	m_PreWorld;
+	WORLDMATRIX	m_NextWorld;
 };
 
 END

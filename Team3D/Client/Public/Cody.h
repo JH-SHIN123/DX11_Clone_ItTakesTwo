@@ -213,7 +213,7 @@ public:
 	PLAYER_SIZE Get_Player_Size() { return m_eCurPlayerSize; }
 	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	//PLAYER_SIZE Get_CurSize() { return m_eCurPlayerSize; }
-	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
+
 
 public:
 	void Set_BossMissile_Attack(); // CBoss_Missile
