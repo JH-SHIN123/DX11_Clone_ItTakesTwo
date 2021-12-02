@@ -121,7 +121,7 @@ void CToyBoxButton::OnTrigger(_double TimeDelta)
 		else if (1 == m_bCheckTrigger)
 		{
 			// 2.5 ÃÊ ´ë±â
-			if (m_fTriggerRatio >= 2.5f)
+			if (m_fTriggerRatio >= 3.5)
 			{
 				m_bCheckTrigger = 2;
 				m_fTriggerRatio = 0;

@@ -17,6 +17,8 @@
 #include "PinBall_BallGate.h"
 #include "SlideDoor.h"
 #include "PinBall_Door.h"
+#include "HookahTube.h"
+#include "HangingPlanet.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -257,6 +259,7 @@ HRESULT CEnvironment_Generator::Load_Default_Prototype_GameObject()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SavePoint"), CSavePoint::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_DeadLine"), CDeadLine::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Bridge"), CBridge::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), CHangingPlanet::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
 }
@@ -595,6 +598,12 @@ CGameObject* CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D11
 		if (nullptr == pInstance)
 			MSG_BOX("Failed to Create Instance - PinBall_Door");
 	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_HookahTube")))
+	{
+		pInstance = CHookahTube::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - HookahTube");
+	}
 	return pInstance;
 }
 
@@ -615,13 +624,15 @@ void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail06"))
 		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Moon_01_Plushie"))
-		tInfo.fCullRadius = 500.f;
+		tInfo.fCullRadius = 1000.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetWall"))
-		tInfo.fCullRadius = 500.f;
+		tInfo.fCullRadius = 1000.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetFloor"))
-		tInfo.fCullRadius = 500.f;
+		tInfo.fCullRadius = 1000.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetFloorRing"))
-		tInfo.fCullRadius = 500.f;
+		tInfo.fCullRadius = 1000.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PLanetLamp03"))
+		tInfo.fCullRadius = 1000.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh01"))
 		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh02"))

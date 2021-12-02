@@ -13,6 +13,7 @@
 
 #include "WarpGate.h"
 #include "Boss_Missile.h"
+#include "HangingPlanet.h"
 
 CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -30,20 +31,19 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Cody(TEXT("Layer_Cody")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_May(TEXT("Layer_May")), E_FAIL);
 
-///*Test*/FAILED_CHECK_RETURN(TestLayer(TEXT("Layer_Object_Effect")), E_FAIL);
-///*Test*/FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
 
 	/* For.Interactive Objects */
 #ifndef __MAPLOADING_OFF
 	/* Se */
 	FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);
 	/* Jung */
+///*Test*/FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_WarpGate(TEXT("Layer_WarpGate")), E_FAIL);	
 	FAILED_CHECK_RETURN(Ready_Layer_Wormhole(TEXT("Layer_Wormhole")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_WallLaserTrap(TEXT("Layer_WallLaserTrap")), E_FAIL);	
 	FAILED_CHECK_RETURN(Ready_Layer_TutorialDoor(TEXT("Layer_TutorialDoor")), E_FAIL);
 	/* Hye */
-	//FAILED_CHECK_RETURN(Ready_Layer_PinBall(TEXT("Layer_PinBall")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Planet(TEXT("Layer_Planet")), E_FAIL);
 	/* Won */
 	FAILED_CHECK_RETURN(Ready_Layer_ToyBoxButton(TEXT("Layer_ToyBoxButton")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboonCore(TEXT("Layer_MoonBaboonCore")), E_FAIL);
@@ -58,7 +58,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_SecurityCameraHandle(TEXT("Layer_SecurityCameraHandle")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_SecurityCamera(TEXT("Layer_SecurityCamera")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_SpaceValve(TEXT("Layer_SpaceValve")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_BigPlanet(TEXT("Layer_BigPlanet")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_BigPlanet(TEXT("Layer_BigPlanet")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Hook_UFO(TEXT("Layer_HookUFO")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_DummyWall(TEXT("Layer_DummyWall")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_RotatedRobotParts(TEXT("Layer_RotatedRobotParts")), E_FAIL);
@@ -109,12 +109,12 @@ HRESULT CLevel_Stage::Ready_Layer_GravityPath(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Test_Layer_Object_Effect(const _tchar * pLayerTag)
 {
 	/////////////////////////////////////////////// 테스트용입니다
-	//EFFECT_DESC_CLONE Data;
-	//_matrix WorldMatrix = XMMatrixIdentity();
-	//WorldMatrix.r[3] = { 0.f,2.f,5.f,1.f };
-	//XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel"), &Data), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
+	EFFECT_DESC_CLONE Data;
+	_matrix WorldMatrix = XMMatrixIdentity();
+	WorldMatrix.r[3] = { 0.f,2.f,5.f,1.f };
+	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel"), &Data), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
 	//
 	//WorldMatrix.r[3] = { 0.f,0.f,5.f,1.f };
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Umbrella_Pipe"), &Data), E_FAIL);
@@ -154,25 +154,39 @@ HRESULT CLevel_Stage::Ready_Layer_WallLaserTrap(const _tchar * pLayerTag)
 
 	return S_OK;
 }
-HRESULT CLevel_Stage::TestLayer(const _tchar * pLayerTag)
-{
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Star")), E_FAIL);
 
-	return S_OK;
-}
 #pragma endregion
 
-#pragma region Hye
-HRESULT CLevel_Stage::Ready_Layer_PinBall(const _tchar * pLayerTag)
+#pragma region Hye 
+HRESULT CLevel_Stage::Ready_Layer_Planet(const _tchar * pLayerTag)
 {
-	CDynamic_Env::ARG_DESC tArg;
-	lstrcpy(tArg.szModelTag, TEXT("Component_Model_Space_Pinball_Ball"));
-	_matrix World = XMMatrixScaling(5.f, 5.f, 5.f) * XMMatrixTranslation(10.f, 0.f, 10.f);
-	XMStoreFloat4x4(&tArg.WorldMatrix, World);
-	tArg.iMatrialIndex = 0;
-	tArg.iOption = 0;
+	/* 행성밀기 */
+	CHangingPlanet::ARG_DESC tPlanetArg;
+	_matrix World = XMMatrixIdentity();
+	lstrcpy(tPlanetArg.DynamicDesc.szModelTag, TEXT("Component_Model_Hanging_Planet"));
+	XMStoreFloat4x4(&tPlanetArg.DynamicDesc.WorldMatrix, World);
+	tPlanetArg.DynamicDesc.iMatrialIndex = 0;
+	tPlanetArg.DynamicDesc.iOption = 0;
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PinBall"), &tArg), E_FAIL);
+	tPlanetArg.vJointPosition = _float3(1000.f, 740.f, 213.f);
+	tPlanetArg.vOffset = _float3(0.f, 33.f, 0.f);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), &tPlanetArg), E_FAIL);
+
+	tPlanetArg.vJointPosition = _float3(1000.f, 755.f, 176.5f);
+	tPlanetArg.vOffset = _float3(0.f, 40.f, 0.f);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), &tPlanetArg), E_FAIL);
+
+	/* 튜브 */
+	//CDynamic_Env::ARG_DESC tArg;
+	//lstrcpy(tArg.szModelTag, TEXT("Component_Model_Tube"));
+	//World = XMMatrixTranslation(20.f, 0.f, 60.f);
+	//XMStoreFloat4x4(&tArg.WorldMatrix, World);
+	//tArg.iMatrialIndex = 0;
+	//tArg.iOption = 0;
+
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HooKahTube"), &tArg), E_FAIL);
+
 	return S_OK;
 }
 #pragma endregion

@@ -3,6 +3,7 @@
 #ifndef __EFFECT_RESPAWNTUNNEL_H__
 
 #include "InGameEffect_Model.h"
+#include "WarpGate.h"
 
 BEGIN(Engine)
 class CVIBuffer_Rect;
@@ -26,11 +27,17 @@ public:
 
 public:
 	_fmatrix Calcul_WorldMatrix(_float4 vLocalPos);
+	void	 Set_Stage_Viewer(CWarpGate::STAGE_VALUE eValue);
 
 private:
 	CTextures*	m_pTexturesCom_Distortion		= nullptr;
 	CTextures*	m_pTexturesCom_ColorRamp		= nullptr;
 	_float		m_fTime_UV = 0.f;
+	_int		m_iStageViewer = 0;
+
+private:
+	CModel* m_pModelCom_Mask = nullptr;
+	_float4x4 m_MatrixMask;
 
 private: //비쳐보이는 스테이지
 	CVIBuffer_Rect*		m_pBufferRectCom_Preview	= nullptr;

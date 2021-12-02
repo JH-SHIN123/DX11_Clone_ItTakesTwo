@@ -13,6 +13,7 @@
 /* For. PinBall */
 #include "PinBall.h"
 #include "PinBall_Door.h"
+#include "HangingPlanet.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -45,9 +46,9 @@ HRESULT CCody::NativeConstruct(void* pArg)
 
  	UI_Create(Cody, PC_Mouse_Reduction);
  	UI_Create(Cody, PC_Mouse_Enlargement);
- 	UI_Create(Default, LoadingBook);
- 	UI_Create(May, Arrowkeys_Side);
- 	UI_Create(May, StickIcon);
+ 	//UI_Create(Default, LoadingBook);
+ 	//UI_Create(May, Arrowkeys_Side);
+ 	//UI_Create(May, StickIcon);
  
  	UI_Create(Cody, PlayerMarker);
  	//UI_Create(Cody, InputButton_InterActive);
@@ -304,6 +305,9 @@ void CCody::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pEffect_Size);
+
+	if (nullptr != m_pTargetPtr)
+		Safe_Release(m_pTargetPtr);
 	CCharacter::Free();
 }
 
@@ -316,8 +320,8 @@ void CCody::Free()
 void CCody::KeyInput(_double dTimeDelta)
 {
 #pragma region Local variable
-	_vector vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
-	_vector vCameraRight = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
+	_vector vCameraLook = XMVectorSetW(XMVector3Normalize(XMVector3Cross(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT), m_pTransformCom->Get_State(CTransform::STATE_UP))), 0.f);
+	_vector vCameraRight = XMVectorSetW(XMVector3Normalize(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT)), 0.f);
 	_bool bMove[2] = { false, false };
 	_bool bRoll = false;
 #pragma endregion
@@ -1551,9 +1555,19 @@ void CCody::SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTri
 	m_iValvePlayerName = _iPlayerName;
 }
 
+void CCody::SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject * pTargetPtr)
+{
+	if (nullptr != m_pTargetPtr)
+		Safe_Release(m_pTargetPtr);
+
+	m_eTargetGameID = eID;
+	m_IsCollide = IsCollide;
+	m_pTargetPtr = pTargetPtr;
+	Safe_AddRef(m_pTargetPtr);
+}
+
 _bool CCody::Trigger_Check(const _double dTimeDelta)
 {
-
 	if (m_IsCollide == true)
 	{
 		if (m_eTargetGameID == GameID::eSTARBUDDY && m_pGameInstance->Key_Down(DIK_F))
@@ -1629,6 +1643,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			{
 				m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_PlanetPush_Large);
 				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
 				m_IsHitPlanet = true;
 			}
 		}
@@ -1697,17 +1712,18 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_IsBossMissile_Rodeo = false;
 			m_IsBossMissile_Rodeo_Ready = false;
 		}
+		else if (m_eTargetGameID == GameID::eDUMMYWALL && m_bWallAttach == false && m_fWallJumpingTime <= 0.f)
+		{
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
+			m_bWallAttach = true;
+		}
 		else if (m_eTargetGameID == GameID::eDEADLINE && false == m_IsDeadLine)
 		{
-			/* 데드라인과 충돌시 */
-			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
-			m_pModelCom->Set_NextAnimIndex(ANI_M_Death_Fall_MH);
-
-			/* 낙사 애니메이션인데 다음애니메이션이 뭔지 모르겠음 */
+			/* 데드라인 */
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Death_Fall_MH);
 
-			/* 왜 중력을 0으로 하면 추락하는지 모르겠음 */
 			m_pActorCom->Set_Gravity(0.f);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_IsDeadLine = true;
@@ -1725,7 +1741,6 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bWallAttach = true;
 		}
-
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
 		{
 			/* 세이브포인트->트리거와 충돌시 세이브포인트 갱신 */
@@ -1744,7 +1759,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-
+			Enforce_IdleState();
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_IsWallLaserTrap_Touch = true;
 		}
@@ -1758,6 +1773,36 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			/* 핀볼 문열기 */
 			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(false);
+		}
+		else if (m_eTargetGameID == GameID::eHOOKAHTUBE)
+		{
+			/* 튜브*/
+			m_pActorCom->Jump_Start(4.f);
+
+			_uint iRandom = rand() % 4;
+			switch (iRandom)
+			{
+			case 0:
+				m_pModelCom->Set_Animation(ANI_C_Bhv_Bounce_01);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Bounce_01);
+				break;
+			case 1:
+				m_pModelCom->Set_Animation(ANI_C_Bhv_Bounce_02);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Bounce_02);
+				break;
+			case 2:
+				m_pModelCom->Set_Animation(ANI_C_Bhv_Bounce_03);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Bounce_03);
+				break;
+			case 3:
+				m_pModelCom->Set_Animation(ANI_C_Bhv_Bounce_04);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Bounce_04);
+				break;
+			default:
+				break;
+			}
+
+			m_IsCollide = false;
 		}
 	}
 
@@ -2085,7 +2130,11 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 {
 	if (m_IsHitPlanet == true)
 	{
-		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
+		if (0.3f <= m_pModelCom->Get_ProgressAnim())
+		{
+			((CHangingPlanet*)(m_pTargetPtr))->Set_Trigger(true);
+			((CHangingPlanet*)(m_pTargetPtr))->Add_Force(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+		}
 
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_PlanetPush_Large))
 		{
@@ -2437,11 +2486,15 @@ void CCody::WallLaserTrap(const _double dTimeDelta)
 	m_fDeadTime += (_float)dTimeDelta;
 	if (m_fDeadTime >= 2.f)
 	{
-		_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
-		vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+		_float fMyPosY = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
+		_float fTriggerY = m_vTriggerTargetPos.y;
 
-		m_pActorCom->Set_Position(vSavePosition);
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
+		_vector vRespawnPos = XMVectorSet(-803.f, 768.f, 193.f, 1.f);
+		if(fMyPosY > fTriggerY)
+			vRespawnPos = XMVectorSet(-805.f, 792.f, 198.f, 1.f);
+
+		m_pActorCom->Set_Position(vRespawnPos);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vRespawnPos);
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 		m_pModelCom->Set_Animation(ANI_C_MH);
 		m_fDeadTime = 0.f;
@@ -2496,9 +2549,6 @@ void CCody::PinBall(const _double dTimeDelta)
 
 void CCody::PinBall_Respawn(_double dTimeDelta)
 {
-	//_vector vSavePoint = XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f);
-	//m_pActorCom->Set_Position(vSavePoint);
-
 	m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
 	m_pActorCom->Update(dTimeDelta);
 

@@ -1756,7 +1756,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-
+			Enforce_IdleState();
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_IsWallLaserTrap_Touch = true;
 			if (false == m_IsWarpNextStage)
@@ -2311,8 +2311,7 @@ void CMay::WallLaserTrap(const _double dTimeDelta)
 	m_fDeadTime += (_float)dTimeDelta;
 	if (m_fDeadTime >= 2.f)
 	{
-		_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
-		vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+		_vector vSavePosition = XMVectorSet(-803.32f, 789.125f, 189.37f, 1.f);
 
 		m_pActorCom->Set_Position(vSavePosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
