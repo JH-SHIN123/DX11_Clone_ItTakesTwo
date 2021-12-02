@@ -193,7 +193,7 @@ void CPlayerActor::Step_GravityPath(PxVec3 vNormal)
 
 void CPlayerActor::Reorder_Gravity()
 {
-	//if (m_pUserData->eID == GameID::eCODY) return;
+	if (m_pUserData->eID == GameID::eCODY) return;
 
 	if (true == m_isGravityReordered) return;
 

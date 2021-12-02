@@ -122,20 +122,20 @@ void CRobotBattery::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 			UI_Delete(Cody, InputButton_InterActive);
 		}
 
-		// May
+		//// May
 
-		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
-		{
-			((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTBATTERY, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			UI_Create(May, InputButton_InterActive);
-			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			m_IsCollide = true;
-		}
-		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-		{
-			m_IsCollide = false;
-			UI_Delete(May, InputButton_InterActive);
-		}
+		//if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+		//{
+		//	((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTBATTERY, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		//	UI_Create(May, InputButton_InterActive);
+		//	UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		//	m_IsCollide = true;
+		//}
+		//else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+		//{
+		//	m_IsCollide = false;
+		//	UI_Delete(May, InputButton_InterActive);
+		//}
 	}
 }
 

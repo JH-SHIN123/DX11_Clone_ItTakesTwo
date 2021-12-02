@@ -307,6 +307,15 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	//////////////////////////////////////////////////////////////	m_fCulCalculateUp = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
 	//////////////////////////////////////////////////////////////	m_fPreCalculateUp += (m_fCulCalculateUp - m_fPreCalculateUp) * (_float)dTimeDelta * 10.f;
 	//////////////////////////////////////////////////////////////}
+
+	//플레이어 업에따른 회전체크(For.May)
+	//if (((CCody*)DATABASE->GetCody())->Get_IsInGravityPipe() == false)
+	//{
+	//	_vector vPlayerUp = XMVector4Normalize(pPlayerTransform->Get_State(CTransform::STATE_UP));
+	//	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	//	m_fCulCalculateUp = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
+	//	m_fPreCalculateUp += (m_fCulCalculateUp - m_fPreCalculateUp) * (_float)dTimeDelta * 10.f;
+	//}
 	
 	//카메라 회전에 따른 거리체크
 	_vector vLook	= m_pTransformCom->Get_State(CTransform::STATE_LOOK);

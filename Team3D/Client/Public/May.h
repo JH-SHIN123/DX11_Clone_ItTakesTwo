@@ -168,16 +168,19 @@ private:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-public:
 	virtual HRESULT Render_ShadowDepth() override;
-public:
+
+public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
+	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
+	_bool		Get_IsGroundPound() { return m_bGroundPound; }
+	_bool		Get_IsGroundPoundVarious() { return m_bPlayGroundPoundOnce; }
+
+public:
 	void		Update_Tirgger_Pos(_vector vPos);
 
 public:
@@ -320,8 +323,9 @@ public:
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
 	_float3				m_vTriggerTargetPos = {};
-	_bool m_IsCollide = false;
-	_float4x4 m_TriggerTargetWorld = {};
+	_bool			    m_IsCollide = false;
+	_float4x4			m_TriggerTargetWorld = {};
+	_uint				m_iCurrentStageNum = ST_GRAVITYPATH;
 
 	_bool m_IsOnGrind = false;
 	_bool m_IsHitStarBuddy = false;
@@ -360,6 +364,12 @@ private:
 	_bool m_bStruggle = false;
 	_uint m_iRotateCount = 0;
 	_uint m_iValvePlayerName = Player::May;
+
+	/* For. WallJump */
+	_bool	m_bWallAttach = false;
+	_bool   m_IsWallJumping = false;
+	_float	m_fWallJumpingTime = 0.f;
+	_float	m_fWallToWallSpeed = 0.55f;
 
 	/* For.PinBall */
 	_bool	 m_IsPinBall = false;
@@ -407,6 +417,7 @@ private:
 	void Rotate_Valve(const _double dTimeDelta);
 	void In_GravityPipe(const _double dTimeDelta);
 	void Hook_UFO(const _double dTimeDelta);
+	void Wall_Jump(const _double dTimeDelta);
 	//Á¤È£
 	void Warp_Wormhole(const _double dTimeDelta);
 	void Touch_FireDoor(const _double dTimeDelta);

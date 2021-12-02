@@ -244,6 +244,7 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\MainCamera.h" />
     <ClInclude Include="..\Public\May.h" />
+    <ClInclude Include="..\Public\MayJumpWall.h" />
     <ClInclude Include="..\Public\MoonBaboon.h" />
     <ClInclude Include="..\public\Effect_Player_Dead.h" />
     <ClInclude Include="..\public\Effect_Player_Dead_Particle.h" />
@@ -367,6 +368,7 @@
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\MainCamera.cpp" />
     <ClCompile Include="..\Private\May.cpp" />
+    <ClCompile Include="..\Private\MayJumpWall.cpp" />
     <ClCompile Include="..\Private\MoonBaboon.cpp" />
     <ClCompile Include="..\private\Effect_Player_Dead.cpp" />
     <ClCompile Include="..\private\Effect_Player_Dead_Particle.cpp" />

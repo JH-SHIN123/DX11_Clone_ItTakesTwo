@@ -77,6 +77,14 @@ public:
 	CGameObject* Get_SlideDoor() { return m_pSlideDoor; }
 
 	// Stage Flow
+	void Set_Valve_Activate(_bool bValveActivate) { m_IsValveActivated = bValveActivate; }
+	_bool Get_IsValve_Activated() { return m_IsValveActivated; }
+
+	void Set_May_Stage(_uint iNumStage) { m_iMayStageNum = iNumStage; }
+	_uint Get_May_Stage() {	return m_iMayStageNum; }
+	void Set_Cody_Stage(_uint iNumStage) { m_iCodyStageNum = iNumStage; }
+	_uint Get_Cody_Stage() { return m_iCodyStageNum; }
+
 	void Set_BigButtonPressed(_bool IsBigButtonPressed) { m_IsBigButtonPressed = IsBigButtonPressed; }
 	_bool Get_BigButtonPressed() { return m_IsBigButtonPressed; }
 	
@@ -134,6 +142,11 @@ private:
 	_bool m_bGravityStageClear = false;
 	_bool m_bPinBallStageClear = false;
 	_bool m_bRailStageClear = false;
+	_bool m_IsValveActivated = false;
+
+	_uint m_iMayStageNum = 0;
+	_uint m_iCodyStageNum = 0;
+
 
 public:
 	virtual void Free() override;

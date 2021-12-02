@@ -212,7 +212,6 @@ public:
 	CModel*		Get_Model() { return m_pModelCom; }
 	PLAYER_SIZE Get_Player_Size() { return m_eCurPlayerSize; }
 	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
-	//PLAYER_SIZE Get_CurSize() { return m_eCurPlayerSize; }
 
 public:
 	void Set_BossMissile_Attack(); // CBoss_Missile
@@ -293,6 +292,8 @@ private:
 	// GroundPound 관련
 	_bool m_bPlayGroundPoundOnce = false;
 	_bool m_bCanMove = true;
+	_bool m_bAfterGroundPound = false;
+	_uint m_iAfterGroundPoundCount = 0;
 
 	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
 	_float	m_fIdleTime = 0.f;
@@ -307,12 +308,11 @@ private:
 	_float3 m_vScale = {1.f, 1.f, 1.f};
 	_bool m_IsSizeChanging = false;
 	_float m_fSizeDelayTime = 0.f;
+	_bool m_bChangeSizeEffectOnce = false;
 
 	// 점프관련 변수
 	_uint m_iJumpCount = 0;
 	_uint m_iAirDashCount = 0;
-
-
 
 	// 컷씬이라면
 	_bool m_IsCutScene = false;
@@ -333,6 +333,7 @@ private:
 	_float3				m_vTriggerTargetPos = {};
 	_float4x4			m_TriggerTargetWorld = {};
 	CGameObject*		m_pTargetPtr = nullptr;
+	_uint				m_iCurrentStageNum = ST_GRAVITYPATH;
 
 	_bool m_IsCollide = false;
 	_bool m_IsOnGrind = false;
