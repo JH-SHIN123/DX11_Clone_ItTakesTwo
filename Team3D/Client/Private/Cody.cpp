@@ -405,6 +405,8 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_0))/* 우산 */
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+	if(m_pGameInstance->Key_Down(DIK_Z)) /* 파이프 베터리 */
+		m_pActorCom->Set_Position(XMVectorSet(44.8652f, 220.9396f, 223.94134f, 1.f));
 #pragma endregion
 
 #pragma region 8Way_Move

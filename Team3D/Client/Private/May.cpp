@@ -575,7 +575,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-830.374512f, 793.359192f, 192.788605f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_Y))/* 3Ãþ */
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_M))/* ¿ì»ê */
+	if (m_pGameInstance->Key_Down(DIK_X))/* ¿ì»ê */
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 #pragma endregion
 
