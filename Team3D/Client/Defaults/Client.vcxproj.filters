@@ -397,12 +397,6 @@
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung\02.FireDoor">
       <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\03.WallLaserTrap">
-      <UniqueIdentifier>{fa6de605-6bf4-4a82-be5c-527474637da3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\04.TutorialDoor">
-      <UniqueIdentifier>{6d013226-dd4d-47df-845f-f9034ed1d948}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\02.Se">
       <UniqueIdentifier>{4fcd64c3-f491-4bc2-b03e-7ee6a2091478}</UniqueIdentifier>
     </Filter>
@@ -510,6 +504,18 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\08.Jun">
       <UniqueIdentifier>{0a4d8ed2-ea40-4cd4-bfdf-16db4b954909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\03.TutorialDoor">
+      <UniqueIdentifier>{6d013226-dd4d-47df-845f-f9034ed1d948}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\04.WallLaserTrap">
+      <UniqueIdentifier>{fa6de605-6bf4-4a82-be5c-527474637da3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\05.WallLaserTrap_Button">
+      <UniqueIdentifier>{2cb7fbb3-db23-46a9-b38f-330d5c77105f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star">
+      <UniqueIdentifier>{4b2fcde0-cecd-4f8f-9cbb-2fc26ba1b1fd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -687,9 +693,6 @@
     <ClInclude Include="..\Public\RobotBattery.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\TutorialDoor.h">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\04.TutorialDoor</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\BigButton.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\05.BigButton</Filter>
     </ClInclude>
@@ -858,9 +861,6 @@
     <ClInclude Include="..\public\Effect_Umbrella_Pipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\WallLaserTrap.h">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\03.WallLaserTrap</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\DummyWall.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
     </ClInclude>
@@ -887,6 +887,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\GameOption.h">
       <Filter>00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\WallLaserTrap.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\04.WallLaserTrap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\WallLaserTrap_Button.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\05.WallLaserTrap_Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Space_Valve_Star.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TutorialDoor.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\03.TutorialDoor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1033,9 +1045,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\RobotBattery.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\TutorialDoor.cpp">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\04.TutorialDoor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BigButton.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\05.BigButton</Filter>
@@ -1208,9 +1217,6 @@
     <ClCompile Include="..\private\Effect_Umbrella_Pipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\WallLaserTrap.cpp">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\03.WallLaserTrap</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\DummyWall.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
     </ClCompile>
@@ -1234,6 +1240,18 @@
     </ClCompile>
     <ClCompile Include="..\private\MainApp.cpp">
       <Filter>00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WallLaserTrap.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\04.WallLaserTrap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WallLaserTrap_Button.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\05.WallLaserTrap_Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Space_Valve_Star.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TutorialDoor.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\03.TutorialDoor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

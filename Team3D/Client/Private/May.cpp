@@ -150,6 +150,9 @@ _int CMay::Tick(_double dTimeDelta)
 		PinBall(dTimeDelta);
 		Warp_Wormhole(dTimeDelta);
 		Touch_FireDoor(dTimeDelta);
+		Boss_Missile_Hit(dTimeDelta);
+		Boss_Missile_Control(dTimeDelta);
+		WallLaserTrap(dTimeDelta);
 		Hook_UFO(dTimeDelta);
 	}
 	else
@@ -183,6 +186,9 @@ _int CMay::Tick(_double dTimeDelta)
 _int CMay::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
+
+	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine)
+		return NO_EVENT;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -771,12 +777,65 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pEffect_GravityBoots->Set_IsActivate_GravityBoots();
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
 		m_pEffect_GravityBoots->Add_WalkingParticle(true);
-<<<<<<< HEAD
-#pragma endregion
-=======
 
 #pragma  endregion
 #endif
+}
+
+void CMay::Attack_BossMissile_After(_double dTimeDelta)
+{
+	if (true == m_IsBossMissile_RotateYawRoll_After)
+	{
+		m_fBossMissile_HeroLanding_Time += (_float)dTimeDelta;
+
+		if (2.f >= m_fBossMissile_HeroLanding_Time)
+		{
+			_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+			_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+
+			vLook.m128_f32[1] = 0.f;
+			vRight.m128_f32[1] = 0.f;
+
+			vLook = XMVector3Normalize(vLook) * m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
+			vRight = XMVector3Normalize(vRight) * m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
+
+			_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * m_pTransformCom->Get_Scale(CTransform::STATE_UP);
+			m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+			m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+			m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+		}
+		else
+		{
+			m_IsBossMissile_RotateYawRoll_After = false;
+		}
+	}
+}
+
+void CMay::Enforce_IdleState()
+{
+	m_bSprint = false;
+	m_bRoll = false;
+	m_bMove = false;
+	m_bShortJump = false;
+	m_bGroundPound = false;
+	m_IsTurnAround = false;
+
+	m_bAction = false;
+
+	m_IsJumping = false;
+	m_IsAirDash = false;
+	m_IsFalling = false;
+	m_bFallAniOnce = false;
+
+	m_bPlayGroundPoundOnce = false;
+
+	m_fIdleTime = 0.f;
+
+	m_iJumpCount = 0;
+	m_iAirDashCount = 0;
+
+	m_pActorCom->Set_Jump(false);
+	m_pModelCom->Set_Animation(ANI_M_MH);
 }
 
 void CMay::Update_Tirgger_Pos(_vector vPos)
@@ -1389,6 +1448,41 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
 		{
+			// 메이 전용 포탈로 이동(웜홀)
+			m_pModelCom->Set_Animation(ANI_M_SpacePortal_Travel_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_SpacePortal_Travel_MH);
+
+			m_pActorCom->Set_Position(XMLoadFloat4(&m_vWormholePos));
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_fWarpTimer = 0.f;
+			m_IsWarpNextStage = true;
+			m_IsWarpDone = true;
+		}
+		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
+		{
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			Enforce_IdleState();
+			m_IsTouchFireDoor = true;
+		}
+		else if (GameID::eBOSSMISSILE_COMBAT == m_eTargetGameID && false == m_IsBossMissile_Hit)
+		{
+			m_IsBossMissile_Hit = true;
+		}
+		else if (GameID::eBOSSMISSILE_PLAYABLE == m_eTargetGameID && false == m_IsBossMissile_Control)
+		{
+			m_IsBossMissile_Control = true;
+			m_IsBossMissile_Rodeo = false;
+			m_IsBossMissile_Rodeo_Ready = false;
+		}
+		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)
+		{
+			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_IsWallLaserTrap_Touch = true;
 			if (false == m_IsWarpNextStage)
 			{
 				_vector vWormholePos = XMVectorZero();
@@ -1434,7 +1528,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsPinBall
-		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO)
+		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsWallLaserTrap_Touch)
 		return true;
 
 	return false;
@@ -1544,6 +1638,7 @@ void CMay::Rotate_Valve(const _double dTimeDelta)
 			m_IsEnterValve = false;
 			m_IsCollide = false;
 			m_pModelCom->Set_Animation(ANI_M_MH);
+			DATABASE->Add_ValveCount_Cody(false);
 		}
 
 		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
@@ -1552,6 +1647,7 @@ void CMay::Rotate_Valve(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_M_Valve_Rotate_R);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Valve_Rotate_MH);
 			m_iRotateCount += 1;
+			DATABASE->Add_ValveCount_Cody(false);
 		}
 		if (m_pModelCom->Is_AnimFinished(ANI_M_Valve_Rotate_R))
 		{
@@ -1748,6 +1844,8 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 	{
 		if (m_fWarpTimer_Max <= m_fWarpTimer)
 		{
+			m_pModelCom->Set_Animation(ANI_M_SpacePortal_Travel_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsWarpNextStage = false;
 
 			_vector vNextStage_Pos = XMLoadFloat3(&m_vTriggerTargetPos);
@@ -1760,6 +1858,8 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 			_vector vLook = PortalMatrix.r[2];
 			vTriggerPos += vLook * 20.f;
 			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+
 		}
 	}
 	else
@@ -1767,15 +1867,16 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 		_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
 		_vector vTriggerPos = PortalMatrix.r[3];
 		_vector vLook = PortalMatrix.r[2];
-		vTriggerPos += vLook * 20.f;
+		vTriggerPos += vLook * 30.f;
 		m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+		m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 
 		// 슈루룩
 		if (m_fWarpTimer_Max + 0.25f >= m_fWarpTimer)
 		{
 			_vector vDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 			vDir = XMVector3Normalize(vDir);
-			m_pActorCom->Move(vDir, dTimeDelta * 0.4f);
+			m_pActorCom->Move(vDir * 0.5f, dTimeDelta);
 		}
 		else
 		{
@@ -1790,10 +1891,172 @@ void CMay::Touch_FireDoor(const _double dTimeDelta)
 	if (false == m_IsTouchFireDoor)
 		return;
 
-	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
-	m_IsTouchFireDoor = false;
+	m_fDeadTime += (_float)dTimeDelta;
+	if (m_fDeadTime >= 2.f && m_fDeadTime <= 2.4f)
+	{
+		_float fMyPosZ = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[2];
+		_float fTriggerPosZ = m_vTriggerTargetPos.z;
+
+		_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
+		if (fTriggerPosZ < fMyPosZ)
+		{
+			vSavePosition.m128_f32[1] += 0.7f;
+			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+		}
+		else
+			vSavePosition = XMVectorSet(64.f, 0.9f, 25.f, 1.f);
+
+		m_pActorCom->Set_Position(vSavePosition);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
+
+		m_fDeadTime = 2.5f;
+	}
+	else if (m_fDeadTime >= 2.5f && m_fDeadTime <= 2.75f)
+	{
+
+	}
+	else if (m_fDeadTime >= 2.75f)
+	{
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		m_fDeadTime = 0.f;
+		m_bCanMove = true;
+		m_IsCollide = false;
+		m_IsTouchFireDoor = false;
+		m_pActorCom->Set_ZeroGravity(false, false, false);
+	}
+}
+
+void CMay::Boss_Missile_Hit(const _double dTimeDelta)
+{
+	if (false == m_IsBossMissile_Hit)
+		return;
+
+	m_IsBossMissile_Hit = false;
 	m_IsCollide = false;
-	// Get리스폰
+	// 아악 아프다
+}
+
+void CMay::Boss_Missile_Control(const _double dTimeDelta)
+{
+	if (false == m_IsBossMissile_Control)
+		return;
+
+	if (false == m_IsBossMissile_Rodeo)
+	{
+		if (false == m_IsBossMissile_Rodeo_Ready)
+		{
+			if (m_pGameInstance->Key_Down(DIK_F)) // 탑승 하세요
+			{
+				m_IsBossMissile_Rodeo_Ready = true;
+				m_IsBoss_Missile_Explosion = false;
+			}
+		}
+
+		if (true == m_IsBossMissile_Rodeo_Ready) // 탑승
+		{
+			m_fBossMissile_HeroLanding_Time = 0.f;
+			m_pActorCom->Set_ZeroGravity(true, false, false);
+
+			_matrix TriggerMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+			for (_int i = 0; i < 3; ++i)
+				TriggerMatrix.r[i] = XMVector3Normalize(TriggerMatrix.r[i]);
+
+			// 회전
+			_vector vRotatePos = TriggerMatrix.r[3] + (TriggerMatrix.r[1] * 10.f);
+			m_pTransformCom->Rotate_ToTarget(vRotatePos);
+
+			// 이동
+			TriggerMatrix.r[3] += TriggerMatrix.r[1] * 1.f;
+			_vector vNewLook = XMVector3Cross(TriggerMatrix.r[1], XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), TriggerMatrix.r[1]));
+			TriggerMatrix.r[3] += vNewLook * 0.8f;
+			//_vector vDir = XMVector3Normalize(TriggerMatrix.r[3] - m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_pActorCom->Set_Position(TriggerMatrix.r[3]);
+
+			//m_IsCollide = false;
+			m_IsBossMissile_Rodeo = true;
+			m_fLandTime = 0.f;
+			//m_IsBossMissile_Control = false;
+
+		}
+	}
+	else if (true == m_IsBossMissile_Rodeo && false == m_IsBoss_Missile_Explosion)
+	{
+		m_fLandTime += (_float)dTimeDelta;
+		if (0.25f >= m_fLandTime)
+			m_pTransformCom->RotatePitch(dTimeDelta * -0.25);
+
+		else
+		{
+			m_fLandTime = 0.25f;
+
+			if (m_pGameInstance->Key_Down(DIK_1)) /* 스타트 지점 */
+				m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
+
+			if (m_pGameInstance->Key_Pressing(DIK_W)) // 아래로 밀어
+				m_pTransformCom->RotatePitch(dTimeDelta * 0.7);
+			else if (m_pGameInstance->Key_Pressing(DIK_S)) // 위로 들어
+				m_pTransformCom->RotatePitch(dTimeDelta * -0.7);
+
+			if (m_pGameInstance->Key_Pressing(DIK_A)) // 좌
+				m_pTransformCom->RotateYaw(dTimeDelta * -1);
+			else if (m_pGameInstance->Key_Pressing(DIK_D)) // 우
+				m_pTransformCom->RotateYaw(dTimeDelta * 1);
+
+			_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+			_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+			_float vRadian = XMVector3Dot(vUp, vAxisY).m128_f32[0];
+
+			_float fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_RIGHT).m128_f32[1];
+			m_pTransformCom->RotateRoll(dTimeDelta * fRotateRoll_Check * -1.f);
+
+			_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+			m_pActorCom->Move(vDir * 0.2f, dTimeDelta);
+
+		}
+	}
+	else if (true == m_IsBoss_Missile_Explosion)
+	{
+		m_pActorCom->Set_ZeroGravity(false, false, false);
+
+		m_IsBossMissile_Control = false;
+		m_IsCollide = false;
+		m_IsBossMissile_RotateYawRoll_After = true;
+	}
+}
+
+void CMay::WallLaserTrap(const _double dTimeDelta)
+{
+	if (false == m_IsWallLaserTrap_Touch)
+		return;
+
+	m_IsWallLaserTrap_Effect = true;
+	m_fDeadTime += (_float)dTimeDelta;
+	if (m_fDeadTime >= 2.f)
+	{
+		_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
+		vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+
+		m_pActorCom->Set_Position(vSavePosition);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_fDeadTime = 0.f;
+		m_IsCollide = false;
+		m_IsWallLaserTrap_Touch = false;
+		m_IsWallLaserTrap_Effect = false;
+		m_pActorCom->Set_ZeroGravity(false, false, false);
+	}
+}
+
+void CMay::Set_BossMissile_Attack()
+{
+	m_IsBoss_Missile_Explosion = true;
+}
+
+void CMay::Falling_Dead(const _double dTimeDelta)
+{
 }
 
 void CMay::Hook_UFO(const _double dTimeDelta)
