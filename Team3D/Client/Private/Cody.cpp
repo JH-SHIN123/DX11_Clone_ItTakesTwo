@@ -3,9 +3,11 @@
 #include "MainCamera.h"
 #include "UI_Generator.h"
 #include "UIObject.h"
+#include "May.h"
+#include "DataStorage.h"
 #include "MathHelper.h"
 #include "PlayerActor.h"
-
+#include "UmbrellaBeam_Joystick.h"
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
 /* For. PinBall */
@@ -41,11 +43,12 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
+
  	UI_Create(Cody, PC_Mouse_Reduction);
  	UI_Create(Cody, PC_Mouse_Enlargement);
- 	UI_Create(Default, LoadingBook);
- 	UI_Create(May, Arrowkeys_Side);
- 	UI_Create(May, StickIcon);
+ 	//UI_Create(Default, LoadingBook);
+ 	//UI_Create(May, Arrowkeys_Side);
+ 	//UI_Create(May, StickIcon);
  
  	UI_Create(Cody, PlayerMarker);
  	//UI_Create(Cody, InputButton_InterActive);
@@ -252,9 +255,10 @@ _int CCody::Tick(_double dTimeDelta)
 	
 #pragma endregion
 
+	/* UI */
+	//CMay* pMay = (CMay*)DATABASE->GetMay();
+	//UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
 	Attack_BossMissile_After(dTimeDelta); // 미사일 공격이 끝나고 정상적인 회전갑승로 만들어주자
 
 	m_pActorCom->Update(dTimeDelta);
@@ -396,6 +400,8 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_0))/* 우산 */
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -1393,6 +1399,9 @@ void CCody::Change_Size(const _double dTimeDelta)
 				m_IsSizeChanging = false; 
 				m_eCurPlayerSize = SIZE_LARGE;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+
+				//UI
+				UI_Generator->UI_RETutorial(Player::Cody, UI::PC_Mouse_Enlargement);
 				if (m_pGameInstance->Key_Pressing(DIK_W) || m_pGameInstance->Key_Pressing(DIK_A) || m_pGameInstance->Key_Pressing(DIK_S) || m_pGameInstance->Key_Pressing(DIK_D))
 				{
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Fwd);
@@ -1455,6 +1464,8 @@ void CCody::Change_Size(const _double dTimeDelta)
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_SMALL;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+				//UI
+				UI_Generator->UI_RETutorial(Player::Cody, UI::PC_Mouse_Reduction);
 				m_pModelCom->Set_Animation(ANI_C_MH);
 			}
 		}
@@ -1579,25 +1590,25 @@ void CCody::Attack_BossMissile_After(_double dTimeDelta)
 
 		if (2.f >= m_fBossMissile_HeroLanding_Time)
 		{
-			// 개꿀잼 회전값 보정을 원한다면
-			//	_float fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_RIGHT).m128_f32[1];
-			//	m_pTransformCom->RotateRoll(dTimeDelta * fRotateRoll_Check * -1.f);
-			//	fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_LOOK).m128_f32[1];
-			//	m_pTransformCom->RotatePitch(dTimeDelta * fRotateRoll_Check * -1.f);
+		// 개꿀잼 회전값 보정을 원한다면
+		//	_float fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_RIGHT).m128_f32[1];
+		//	m_pTransformCom->RotateRoll(dTimeDelta * fRotateRoll_Check * -1.f);
+		//	fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_LOOK).m128_f32[1];
+		//	m_pTransformCom->RotatePitch(dTimeDelta * fRotateRoll_Check * -1.f);
 
-			_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-			_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+		_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 
-			vLook.m128_f32[1] = 0.f;
-			vRight.m128_f32[1] = 0.f;
+		vLook.m128_f32[1] = 0.f;
+		vRight.m128_f32[1] = 0.f;
 
-			vLook = XMVector3Normalize(vLook) * m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
-			vRight = XMVector3Normalize(vRight) * m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
+		vLook = XMVector3Normalize(vLook) * m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
+		vRight = XMVector3Normalize(vRight) * m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
 
-			_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * m_pTransformCom->Get_Scale(CTransform::STATE_UP);
-			m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-			m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
-			m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+		_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * m_pTransformCom->Get_Scale(CTransform::STATE_UP);
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+		m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
 		}
 		else
 		{
@@ -1721,7 +1732,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsActivateRobotLever = true;
 		}
-		else if (m_eTargetGameID == GameID::eROBOTBATTERY && m_pGameInstance->Key_Down(DIK_F))
+		else if (m_eTargetGameID == GameID::eROBOTBATTERY && m_pGameInstance->Key_Down(DIK_E))
 		{
 			if (DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
 			{
@@ -1741,6 +1752,13 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
 			m_IsPushingBattery = true;
+		}
+		else if (m_eTargetGameID == GameID::eCONTROLROOMBATTERY && m_pGameInstance->Key_Down(DIK_E))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
+			m_IsPushingBattery = true;
+			m_IsPipeBattery = true;
 		}
 		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_F) && m_iValvePlayerName == Player::Cody)
 		{
@@ -1883,7 +1901,14 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			/* 세이브포인트->트리거와 충돌시 세이브포인트 갱신 */
 			m_vSavePoint = m_vTriggerTargetPos;
 		}
-
+		else if (m_eTargetGameID == GameID::eUMBRELLABEAMJOYSTICK && m_pGameInstance->Key_Down(DIK_E))
+		{
+			m_pModelCom->Set_Animation(ANI_M_ArcadeScreenLever_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_ArcadeScreenLever_MH);
+			m_IsControlJoystick = true;
+			CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
+			pJoystick->Set_ControlActivate(true);
+		}
 		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
@@ -1893,7 +1918,6 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_IsWallLaserTrap_Touch = true;
 		}
-
 		else if (m_eTargetGameID == GameID::ePINBALL && false == m_IsPinBall)
 		{
 			/* 핀볼모드 ON */
@@ -1939,12 +1963,13 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine
-		|| m_bWallAttach || m_IsPinBall || m_IsWallLaserTrap_Touch)
+		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
+		|| m_bWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch)
 		return true;
 
 	return false;
 }
+
 _bool CCody::Trigger_End(const _double dTimeDelta)
 {
 	if ((m_pModelCom->Get_CurAnimIndex() == ANI_C_Jump_Land 
@@ -2060,6 +2085,22 @@ void CCody::Push_Battery(const _double dTimeDelta)
 	// 애니메이션 시작할때 WorldPos 저장. -> 끝나는 순간 마지막 위치로 WorldPos 변경 해야 함.
 	if (m_IsPushingBattery == true)
 	{
+		if (true == m_IsPipeBattery)
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
+			m_IsCollide = false;
+
+			if (m_pGameInstance->Key_Down(DIK_Q))
+			{
+				m_IsPushingBattery = false;
+				m_IsPipeBattery = false;
+				m_pModelCom->Set_Animation(ANI_C_ActionMH);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_Fwd);
+			}
+
+			return;
+		}
+
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_MH))
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
 	}
@@ -2546,6 +2587,21 @@ void CCody::Boss_Missile_Control(const _double dTimeDelta)
 		m_IsCollide = false;
 		m_IsBossMissile_RotateYawRoll_After = true;
 	}
+}
+
+void CCody::Set_OnParentRotate(_matrix ParentMatrix)
+{
+	_matrix matWorld, matRotY, matTrans;
+	matTrans = XMMatrixTranslation(-0.38f, 0.7f, -0.4f);
+	matRotY = XMMatrixRotationY(XMConvertToRadians(90.f));
+
+	matWorld = matRotY * matTrans * ParentMatrix;
+	m_pTransformCom->Set_WorldMatrix(matWorld);
+}
+
+void CCody::Set_ControlJoystick(_bool IsCheck)
+{
+	m_IsControlJoystick = IsCheck;
 }
 
 void CCody::WallLaserTrap(const _double dTimeDelta)

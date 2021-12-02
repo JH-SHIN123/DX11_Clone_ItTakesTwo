@@ -67,7 +67,12 @@ HRESULT CLevel_Stage::NativeConstruct()
 
 	//FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
+
 	/* Jin */
+	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressureBigPlate"), TEXT("GameObject_PressureBigPlate")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_ControlRoom_Glass(TEXT("Layer_ControlRoom_Glass")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Umbrella_Joystick(TEXT("Layer_UmbrellaBeam_Joystick")), E_FAIL);
+
 	/* Jun */
 
 	/* For. Environment */
@@ -234,7 +239,6 @@ HRESULT CLevel_Stage::Ready_Lights()
 	LightDesc.vDiffuse = XMFLOAT4(0.f, 0.f, 1.f, 1.f);
 	LightDesc.vAmbient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
-	LightDesc.fRange = 15.f;
 
 	if (FAILED(pGameInstance->Add_Light(L"Point1", LightDesc)))
 		return E_FAIL;
@@ -452,11 +456,11 @@ HRESULT CLevel_Stage::Ready_Layer_NoBatterySign(const _tchar * pLayerTag)
 
 HRESULT CLevel_Stage::Ready_Layer_SpaceValve(const _tchar * pLayerTag)
 {
-	EFFECT_DESC_CLONE a;
-	a.iPlayerValue = 1;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SpaceValve"), &a), E_FAIL);
-	a.iPlayerValue = 2;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SpaceValve"), &a), E_FAIL);
+	//EFFECT_DESC_CLONE a;
+	//a.iPlayerValue = 1;
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SpaceValve"), &a), E_FAIL);
+	//a.iPlayerValue = 2;
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SpaceValve"), &a), E_FAIL);
 
 	return S_OK;
 }
@@ -534,6 +538,32 @@ HRESULT CLevel_Stage::Ready_Layer_MayJumpWall(const _tchar * pLayerTag)
 #pragma endregion
 
 #pragma region Jin
+
+HRESULT CLevel_Stage::Ready_Layer_ControlRoomPuzzle(const _tchar * pLayerTag, const _tchar * pGameObjectTag)
+{
+	_uint iOption = 0;
+
+	for (_uint i = 0; i < 2; ++i)
+	{
+		iOption = i;
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, pGameObjectTag, &iOption), E_FAIL);
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Stage::Ready_Layer_ControlRoom_Glass(const _tchar * pLayerTag)
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_ControlRoom_Glass")), E_FAIL);
+	return S_OK;
+}
+
+HRESULT CLevel_Stage::Ready_Layer_Umbrella_Joystick(const _tchar * pLayerTag)
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UmbrellaBeam_Joystick")), E_FAIL);
+	return S_OK;
+}
+
 #pragma endregion
 
 #pragma region Jun

@@ -299,6 +299,14 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 14.f;
 	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 14.f;
 
+
+
+	//플레이어 업에따른 회전체크(For.May)
+	_vector vPlayerUp = XMVector4Normalize(pPlayerTransform->Get_State(CTransform::STATE_UP));
+	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	m_fCulCalculateUp = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
+	m_fPreCalculateUp += (m_fCulCalculateUp - m_fPreCalculateUp) * (_float)dTimeDelta * 10.f;
+
 	////////////////////////////////////////////////////////////////플레이어 업에따른 회전체크(For.May)
 	//////////////////////////////////////////////////////////////if (((CCody*)DATABASE->GetCody())->Get_IsInGravityPipe() == false)
 	//////////////////////////////////////////////////////////////{

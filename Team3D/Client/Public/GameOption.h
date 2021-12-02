@@ -17,7 +17,6 @@
 /**
 * 맵 로딩 안 하려면 주석 처리.
 */
-
 //#define __MAPLOADING_OFF
 
 /**

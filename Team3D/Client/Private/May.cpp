@@ -3,6 +3,7 @@
 #include "SubCamera.h"
 #include "UI_Generator.h"
 #include "UIObject.h"
+#include "Cody.h"
 #include "PlayerActor.h"
 
 #include "Effect_Generator.h"
@@ -55,7 +56,7 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
 
-// 	UI_Create(May, PlayerMarker);
+	UI_Create(May, PlayerMarker);
 	 
 
 	return S_OK;
@@ -100,7 +101,6 @@ HRESULT CMay::Ready_Component()
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_PlayerActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
-	//Effect 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_May_Boots"), nullptr, (CGameObject**)&m_pEffect_GravityBoots), E_FAIL);
 	m_pEffect_GravityBoots->Set_Model(m_pModelCom);
 
@@ -184,7 +184,10 @@ _int CMay::Tick(_double dTimeDelta)
 		Ground_Pound(dTimeDelta);
 	}
 
-	//UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//CCody* pCody = (CCody*)DATABASE->GetCody();
+	//UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+
+	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	m_pActorCom->Update(dTimeDelta);
 	m_pActorCom->Set_IsOnGravityPath(false);
@@ -282,6 +285,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+
 #pragma endregion
 
 #pragma region Local variable
@@ -294,6 +298,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_Y))/* 3층 */
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_O))/* 우산 */
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 
 #pragma region 8Way_Move
 
@@ -568,6 +574,10 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_0))/* 벽점프 전 */
 		m_pActorCom->Set_Position(XMVectorSet(-830.374512f, 793.359192f, 192.788605f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_Y))/* 3층 */
+		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_M))/* 우산 */
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -1241,6 +1251,7 @@ void CMay::Sprint(const _double dTimeDelta)
 
 	}
 }
+
 void CMay::Jump(const _double dTimeDelta)
 {
 	if (m_bShortJump == true)
@@ -2105,6 +2116,16 @@ void CMay::WallLaserTrap(const _double dTimeDelta)
 void CMay::Set_BossMissile_Attack()
 {
 	m_IsBoss_Missile_Explosion = true;
+}
+
+void CMay::Set_ActorPosition(_vector vPosition)
+{
+	m_pActorCom->Set_Position(vPosition);
+}
+
+void CMay::Set_ActorGravity(_bool IsZeroGravity, _bool IsUp, _bool _bStatic)
+{
+	m_pActorCom->Set_ZeroGravity(IsZeroGravity, IsUp, _bStatic);
 }
 
 void CMay::Falling_Dead(const _double dTimeDelta)

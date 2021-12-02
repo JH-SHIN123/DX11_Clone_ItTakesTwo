@@ -32,6 +32,9 @@ public:
 	void Set_BridgePtr(CGameObject* pBridge) { m_pBridge = pBridge; }
 	CGameObject* Get_Bridge() { return m_pBridge; }
 
+	void Set_MenuScreen(CGameObject* pMenuScreen) { m_pMenuScreen = pMenuScreen; }
+	CGameObject* Get_MenuScreen() { return m_pMenuScreen; }
+
 	/* Robots */
 	void Set_STGravityRobotPtr(CGameObject* pRobot) { m_pSTGravityRobot = pRobot; }
 	CGameObject* Get_STGravityRobot() { return m_pSTGravityRobot; }
@@ -41,6 +44,15 @@ public:
 
 	void Set_STPlanetRobotPtr(CGameObject* pRobot) { m_pSTPlanetRobot = pRobot; }
 	CGameObject* Get_STPlanetRobot() { return m_pSTPlanetRobot; }
+
+	void Set_PressureBigPlate(CGameObject* pPressureBigPlate) { m_pPressureBigPlate = pPressureBigPlate; }
+	CGameObject* Get_PressureBigPlate() { return m_pPressureBigPlate; }
+
+	void Set_PipeCurvePtr(vector<class CPressurePlate*> pPipeCurve) { m_vecPipeCurve = pPipeCurve; }
+	class vector<class CPressurePlate*> Get_PressurePlate() { return m_vecPipeCurve;  }
+
+	void Set_Umbrella_JoystickPtr(CGameObject* pUmbrella_Joystick) { m_pUmbrella_Joystick = pUmbrella_Joystick; }
+	CGameObject* Get_Umbrella_JoystickPtr() { return m_pUmbrella_Joystick; }
 
 	/* For.Valve */
 	void Set_ValveCount(_uint _iValveRotateCount) { m_iValveRotateCount += _iValveRotateCount; }
@@ -114,6 +126,20 @@ private:
 	CGameObject* m_pBridge = nullptr;
 
 	// Interactive Objects
+	CGameObject* m_pRobot = nullptr;
+	CGameObject* m_pRobotLever = nullptr;
+	CGameObject* m_pRobotBattery = nullptr;
+	CGameObject* m_pRobotHead = nullptr;
+	CGameObject* m_pNoBatterySign = nullptr;
+	CGameObject* m_pPressureBigPlate = nullptr;
+	CGameObject* m_pUmbrella_Joystick = nullptr;
+	CGameObject* m_pMenuScreen = nullptr;
+
+private:
+	// Interactive Objects
+	vector<class CPressurePlate*>	m_vecPipeCurve;
+
+
 	CGameObject* m_pSTGravityRobot = nullptr;
 	CGameObject* m_pSTPinBallRobot = nullptr;
 	CGameObject* m_pSTPlanetRobot = nullptr;
