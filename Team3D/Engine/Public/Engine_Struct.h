@@ -189,4 +189,11 @@ namespace Engine
 	{
 		enum Enum { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_ALPHA, RENDER_EFFECT, RENDER_UI, RENDER_END };
 	}RENDER_GROUP;
+
+	typedef struct tagWorldMatrix
+	{
+		XMFLOAT4	vScale;
+		XMFLOAT4	vRotQuat;
+		XMFLOAT4	vTrans;
+	}WORLDMATRIX;
 }
