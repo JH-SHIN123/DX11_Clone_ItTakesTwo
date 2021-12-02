@@ -304,8 +304,8 @@ void CCody::Free()
 void CCody::KeyInput(_double dTimeDelta)
 {
 #pragma region Local variable
-	_vector vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
-	_vector vCameraRight = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
+	_vector vCameraLook = XMVectorSetW(XMVector3Normalize(XMVector3Cross(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT), m_pTransformCom->Get_State(CTransform::STATE_UP))), 0.f);
+	_vector vCameraRight = XMVectorSetW(XMVector3Normalize(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT)), 0.f);
 	_bool bMove[2] = { false, false };
 	_bool bRoll = false;
 #pragma endregion

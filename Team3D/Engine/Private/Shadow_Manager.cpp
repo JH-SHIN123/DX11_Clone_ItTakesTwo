@@ -169,7 +169,9 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(TYPE eType)
 			float dist = XMVectorGetX(XMVector3Length(cascadeFrustumCornersW[i] - cascadeFrustumCenter));
 			sphereRadius = max(sphereRadius, dist);
 		}
-		sphereRadius = std::ceil(sphereRadius * 16.0f) / 16.0f;
+		//sphereRadius = std::ceil(sphereRadius * 16.0f) / 16.0f;
+		sphereRadius = std::ceil(sphereRadius);
+
 
 		_vector mins = XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, 0.f);
 		_vector maxes = XMVectorSet(-FLT_MAX, -FLT_MAX, -FLT_MAX, 0.f);
