@@ -391,7 +391,7 @@ public:
 private:
 	void	KeyInput_Rail(_double dTimeDelta);
 	void	Clear_TagerRailNodes();
-	void	Find_TargetSpaceRail(_fvector vCamPos, _vector vCamLook); // LateTick에서 호출되어야함.
+	void	Find_TargetSpaceRail(); // LateTick에서 호출되어야함.
 	void	MoveToTargetRail(_double dTimeDelta);
 	void	TakeRail(_double dTimeDelta);
 
@@ -399,11 +399,12 @@ private:
 	_bool						m_bSearchToRail = false;
 	_bool						m_bMoveToRail = false;
 	_bool						m_bOnRail = false;
+	_uint						m_iRailDir = 0;
 
 private:
 	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;
-	CSpaceRail* m_pTargetRail = nullptr;
-	CSpaceRail_Node* m_pTargetRailNode = nullptr;
+	CSpaceRail*					m_pTargetRail = nullptr;
+	CSpaceRail_Node*			m_pTargetRailNode = nullptr;
 #pragma endregion
 };
 END

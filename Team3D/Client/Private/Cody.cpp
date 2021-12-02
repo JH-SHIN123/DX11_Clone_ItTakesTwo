@@ -230,9 +230,7 @@ _int CCody::Late_Tick(_double dTimeDelta)
 	CCharacter::Late_Tick(dTimeDelta);
 
 	/* LateTick : 레일의 타겟 찾기*/
-	CTransform* pCamTransform = m_pCamera->Get_Transform();
-	if (nullptr == pCamTransform) return -1;
-	Find_TargetSpaceRail(pCamTransform->Get_State(CTransform::STATE_POSITION), pCamTransform->Get_State(CTransform::STATE_LOOK));
+	Find_TargetSpaceRail(); // 인자로 받지말고, 함수안에 넣어두자.
 	Clear_TagerRailNodes();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
@@ -1791,10 +1789,15 @@ void CCody::Clear_TagerRailNodes()
 	m_bSearchToRail = false; // Trigger 특성 적용 (딱 한번만 호출)
 	m_vecTargetRailNodes.clear();
 }
-void CCody::Find_TargetSpaceRail(_fvector vCamPos, _vector vCamLook)
+void CCody::Find_TargetSpaceRail()
 {
 	// 레일타기 키 눌렸을때만, 타겟 찾기, 키가 눌렸지만, 충돌한 레일 트리거가 존재하지 않을때
 	if (false == m_bSearchToRail || m_vecTargetRailNodes.empty() || nullptr != m_pTargetRailNode) return;
+
+	CTransform* pCamTransform = m_pCamera->Get_Transform();
+	if (nullptr == pCamTransform) return;
+	_vector vCamPos = pCamTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vCamLook = pCamTransform->Get_State(CTransform::STATE_LOOK);
 
 	// 거리가 아닌, 카메라 Look 벡터와의 각도차로 계산
 	vCamLook = XMVector3Normalize(vCamLook);
@@ -1805,10 +1808,24 @@ void CCody::Find_TargetSpaceRail(_fvector vCamPos, _vector vCamLook)
 	for (auto& pNode : m_vecTargetRailNodes)
 	{
 		if (nullptr == pNode) continue;
+		
 		vNodePosition = pNode->Get_Position();
+		vToTarget = XMVector3Normalize(vNodePosition - vCamPos);
+		
+		/* 외적 : 방향 체크 */
+		_uint iEdgeState = pNode->Get_EdgeState();
+		_int iCCW = MH_CrossCCW(vCamLook, vToTarget);
+		switch (iEdgeState)
+		{
+		case CSpaceRail::EDGE_START:  
+			if (1 == iCCW) continue; // 반시계방향에 존재하는 노드 건너뛰기
+		break;
+		case CSpaceRail::EDGE_END:
+			if (-1 == iCCW) continue; // 시계 방향에 존재하는 노드 건너뛰기
+		break;
+		}
 
 		/* 각도 계산  */
-		vToTarget = XMVector3Normalize(vNodePosition - vCamPos);
 		_float fDegree = XMConvertToDegrees(XMVectorGetX(XMVector3Dot(vCamLook, vToTarget)));
 		if (fDegree > 90.f) continue; /* 일정각도(90) 이상인 노드는 제외한다. */
 
@@ -1858,6 +1875,50 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 			ePathState = CPath::STATE_BACKWARD;
 
 		/* Edge State 지정 */
+		// EdgeState 넣어주기
+		// Mid 일경우, 외적으로 방향구해서, Start or End 구해주기
+		_uint iEdgeState = m_pTargetRailNode->Get_EdgeState();
+
+		switch (iEdgeState)
+		{
+		case CSpaceRail::EDGE_START:
+			if(CPath::STATE_END == ePathState)
+				ePathState = CPath::STATE_FORWARD;
+			break;
+		case CSpaceRail::EDGE_END:
+			if (CPath::STATE_FORWARD == ePathState)
+				ePathState = CPath::STATE_BACKWARD;
+			else if (CPath::STATE_BACKWARD == ePathState)
+				ePathState = CPath::STATE_FORWARD;
+			else if (CPath::STATE_END == ePathState)
+				ePathState = CPath::STATE_BACKWARD;
+			break;
+		case CSpaceRail::EDGE_MID:
+		{
+			CTransform* pCamTransform = m_pCamera->Get_Transform();
+			if (nullptr == pCamTransform) return;
+			_vector vCamLook = pCamTransform->Get_State(CTransform::STATE_LOOK);
+			_vector vCamPos = pCamTransform->Get_State(CTransform::STATE_POSITION);
+
+			_vector vToTarget = m_pTargetRailNode->Get_Position() - vCamPos;
+			_int iCCW = MH_CrossCCW(vCamLook, vToTarget);
+
+			switch (iCCW)
+			{
+			case 1:		// 반시계
+				ePathState = CPath::STATE_BACKWARD;
+				break;
+			case -1:	// 시계
+				ePathState = CPath::STATE_FORWARD;
+				break;
+			case 0:		// 일직선
+				ePathState = CPath::STATE_FORWARD;
+				break;
+			}
+		}
+			break;
+		}
+
 		m_pTargetRail->Start_Path(ePathState, m_pTargetRailNode->Get_FrameIndex());
 
 		/* 레일 앞까지 도착, 레일 타기 시작 */

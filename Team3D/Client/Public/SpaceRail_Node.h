@@ -32,6 +32,7 @@ public:
 	_fvector		Get_Position() const;
 	_uint			Get_FrameIndex() const { return m_tDesc.iFrameIndex; };
 	const _tchar*	Get_RailTag() const { return m_tDesc.szRailTag; }
+	_uint			Get_EdgeState() const { return m_tDesc.iEdgeState; }
 
 public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
