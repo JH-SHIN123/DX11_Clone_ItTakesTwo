@@ -1257,8 +1257,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
 		{
 			// ¸ÞÀÌ Àü¿ë Æ÷Å»·Î ÀÌµ¿(¿úÈ¦)
-			m_pModelCom->Set_Animation(ANI_C_Slide_Enter_Dash);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Slide_Enter_Dash);
+			m_pModelCom->Set_Animation(ANI_M_SpacePortal_Travel_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_SpacePortal_Travel_MH);
 
 			m_pActorCom->Set_Position(XMLoadFloat4(&m_vWormholePos));
 			m_pActorCom->Set_ZeroGravity(true, false, true);
@@ -1543,6 +1543,8 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 	{
 		if (m_fWarpTimer_Max <= m_fWarpTimer)
 		{
+			m_pModelCom->Set_Animation(ANI_M_SpacePortal_Travel_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsWarpNextStage = false;
 
 			_vector vNextStage_Pos = XMLoadFloat3(&m_vTriggerTargetPos);

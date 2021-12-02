@@ -1958,7 +1958,7 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 	{
 		if (m_fWarpTimer_Max <= m_fWarpTimer)
 		{
-			m_pModelCom->Set_Animation(ANI_C_SpacePortal_Exit);
+			m_pModelCom->Set_Animation(ANI_C_SpacePortal_Travel);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsWarpNextStage = false;
 			
