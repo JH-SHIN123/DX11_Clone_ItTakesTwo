@@ -60,8 +60,6 @@ _int CMenuScreen::Late_Tick(_double TimeDelta)
 	if (false == m_IsChapterScreenRender)
 		Input_ChapterScreenCreate();
 
-	//d
-
 	if (m_pGameInstance->Key_Down(DIK_RETURN) && true == m_IsChapterScreenRender)
 		m_IsReady_1P = true;
 	else if (m_pGameInstance->Pad_Key_Down(DIP_Y) && true == m_IsChapterScreenRender)
