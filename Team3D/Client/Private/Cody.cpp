@@ -1754,12 +1754,12 @@ void CCody::Set_SpaceRailNode(CSpaceRail_Node* pRail)
 }
 void CCody::KeyInput_Rail(_double dTimeDelta)
 {
-	if (m_pGameInstance->Key_Down(DIK_F))
+	if (m_pGameInstance->Key_Down(DIK_F) && false == m_bOnRail)
 	{
 		Start_SpaceRail();
 	}
 
-	if (m_bMoveToRail || m_bOnRail)
+	if (m_bOnRail)
 	{
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
@@ -1769,6 +1769,7 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 			m_bShortJump = true;
 
 			m_pTargetRail = nullptr;
+			m_pSearchTargetRailNode = nullptr;
 			m_pTargetRailNode = nullptr;
 
 			m_bMoveToRail = false;
@@ -1856,7 +1857,7 @@ void CCody::Start_SpaceRail()
 }
 void CCody::MoveToTargetRail(_double dTimeDelta)
 {
-	if (nullptr == m_pTransformCom || false == m_bMoveToRail || nullptr == m_pTargetRailNode) return;
+	if (nullptr == m_pTransformCom || false == m_bMoveToRail || nullptr == m_pTargetRailNode || true == m_bOnRail) return;
 
 	_float fMoveToSpeed = 10.f;
 	_float fDist = m_pTransformCom->Move_ToTargetRange(m_pTargetRailNode->Get_Position(), 0.1f, dTimeDelta * fMoveToSpeed);

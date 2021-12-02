@@ -113,8 +113,6 @@ _bool CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
 	if (m_dCurrentTime >= m_dDurationTime)
 	{
 		m_eState = STATE_END;
-		m_iCurAnimFrame = 0;
-		m_dCurrentTime = 0;
 		m_bPlayAnimation = false;
 		return false;
 	}

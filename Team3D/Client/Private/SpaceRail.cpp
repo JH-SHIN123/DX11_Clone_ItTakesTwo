@@ -64,7 +64,7 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 	CSpaceRail_Node::SPACERAILNODE_DESC nodeDesc;
 
 	_uint iFrameIndex = 0;
-	_float fEdgeRadio = 0.1f;
+	_float fEdgeRadio = 0.4f;
 	_uint iNumFrames = (_uint)FrameMatrices.size();
 	for (auto& pFrameMat : FrameMatrices)
 	{
