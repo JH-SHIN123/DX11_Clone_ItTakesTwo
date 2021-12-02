@@ -743,10 +743,20 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region PAD X
-	if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount < 2)
+	if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount == 0)
 	{
 		m_bShortJump = true;
 		m_iJumpCount += 1;
+		m_IsJumping = true;
+		m_pModelCom->Set_Animation(ANI_M_Jump_Start);
+	}
+
+	else if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount == 1)
+	{
+		m_bShortJump = true;
+		m_iJumpCount += 1;
+		m_IsJumping = true;
+		m_pModelCom->Set_Animation(ANI_M_DoubleJump);
 	}
 #pragma endregion
 
@@ -1179,14 +1189,12 @@ void CMay::Jump(const _double dTimeDelta)
 		{
 			m_IsJumping = true;
 			m_pActorCom->Jump_Start(2.6f);
-			m_pModelCom->Set_Animation(ANI_M_Jump_Start);
 			m_bShortJump = false;
 		}
 		if (m_iJumpCount == 2)
 		{
 			m_IsJumping = true;
 			m_pActorCom->Jump_Start(2.6f);
-			m_pModelCom->Set_Animation(ANI_M_DoubleJump);
 			m_bShortJump = false;
 		}
 	}
@@ -1194,7 +1202,6 @@ void CMay::Jump(const _double dTimeDelta)
 	{
 		m_bSprint = false;
 		m_iAirDashCount = 0;
-
 
 		if (m_pGameInstance->Get_Pad_LStickX() > 44000 || m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Get_Pad_LStickY() > 44000)
 		{
@@ -1250,7 +1257,7 @@ void CMay::Jump(const _double dTimeDelta)
 	{
 		m_bShortJump = true;
 		m_IsJumping = true;
-		m_iJumpCount = 2;
+		m_iJumpCount = 1;
 		return;
 	}
 
@@ -1277,7 +1284,7 @@ void CMay::Ground_Pound(const _double dTimeDelta)
 		}
 	}
 
-	if (m_pModelCom->Is_AnimFinished(ANI_M_GroundPound_Falling) && m_bPlayGroundPoundOnce == false)
+	if ((m_IsJumping == false && m_pActorCom->Get_IsJump() == true) || (m_pModelCom->Is_AnimFinished(ANI_M_GroundPound_Falling) && m_bPlayGroundPoundOnce == false))
 	{
 		m_bPlayGroundPoundOnce = true;
 		m_pModelCom->Set_Animation(ANI_M_Jump_Land);
@@ -1287,6 +1294,7 @@ void CMay::Ground_Pound(const _double dTimeDelta)
 		m_IsAirDash = false;
 		m_bPlayGroundPoundOnce = false;
 		m_bCanMove = true;
+		m_pModelCom->Set_Animation(ANI_M_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 	}
 
@@ -1369,9 +1377,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsPullVerticalDoor = true;
 		}
-		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Pad_Key_Down(DIP_RB) && m_iValvePlayerName == Player::May)
+		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Pad_Key_Down(DIP_Y) && m_iValvePlayerName == Player::May)
 		{
-
 			m_pModelCom->Set_Animation(ANI_M_Valve_Rotate_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Valve_Rotate_MH);
 			m_IsEnterValve = true;
@@ -1604,6 +1611,7 @@ void CMay::Rotate_Valve(const _double dTimeDelta)
 			m_IsEnterValve = false;
 			m_IsCollide = false;
 			m_pModelCom->Set_Animation(ANI_M_MH);
+			DATABASE->Set_Valve_Activate(true);
 		}
 
 		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));

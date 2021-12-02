@@ -34,7 +34,10 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 	m_pParticle->Set_InstanceCount(5000);
 	//m_pTransformCom->Set_Scale(XMVectorSet(3.05f, 1.65f, 3.05f, 0.f));
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(62.9901505f, 35.f, 195.674637f, 1.f));
+	_float4 vPos;
+	memcpy(&vPos, &m_EffectDesc_Clone.WorldMatrix.m[3][0], sizeof(_float4));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION,XMLoadFloat4(&vPos));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(62.9901505f, 35.f, 195.674637f, 1.f));
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform2"), (CComponent**)&m_pPhysxTransformCom), E_FAIL);
 	m_pTransformCom->Set_Scale(XMVectorSet(2.85f, 2.85f, 2.85f, 1.f));
 
@@ -64,11 +67,6 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 	if (3.f <= m_fTime)
 		m_fTime = 0.f;
 
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
-		m_pParticle->Set_IsActivateParticles(true);
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD6))
-		m_pParticle->Set_IsActivateParticles(false);
-
 	m_pParticle->Set_ParentMatrix(m_pTransformCom->Get_WorldMatrix());
 
 	m_pParticle->Set_Particle_Radius(_float3(5.f, 40.f, 5.f));
@@ -86,9 +84,12 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 			m_dActivateTime = 0.0;
 	}
 
-		if (DATABASE->Get_GravityStageClear() == true)
-			m_IsActivate = true;
-	
+	if (m_EffectDesc_Clone.iPlayerValue == 0 && DATABASE->Get_GravityStageClear() == true)
+		m_IsActivate = true;
+
+
+	if (m_EffectDesc_Clone.iPlayerValue == 1 && DATABASE->Get_IsValve_Activated() == true)
+		m_IsActivate = true;
 
 	m_pParticle->Set_ControlTime(m_dActivateTime);
 	return _int();

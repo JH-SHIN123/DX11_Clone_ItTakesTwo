@@ -76,6 +76,8 @@ public:
 	CGameObject* Get_SlideDoor() { return m_pSlideDoor; }
 
 	// Stage Flow
+	void Set_Valve_Activate(_bool bValveActivate) { m_IsValveActivated = bValveActivate; }
+	_bool Get_IsValve_Activated() { return m_IsValveActivated; }
 
 	void Set_May_Stage(_uint iNumStage) { m_iMayStageNum = iNumStage; }
 	_uint Get_May_Stage() {	return m_iMayStageNum; }
@@ -130,6 +132,7 @@ private:
 	_bool m_bGravityStageClear = false;
 	_bool m_bPinBallStageClear = false;
 	_bool m_bRailStageClear = false;
+	_bool m_IsValveActivated = false;
 
 	_uint m_iMayStageNum = 0;
 	_uint m_iCodyStageNum = 0;

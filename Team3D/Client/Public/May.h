@@ -177,6 +177,9 @@ public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
 	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
+	_bool		Get_IsGroundPound() { return m_bGroundPound; }
+	_bool		Get_IsGroundPoundVarious() { return m_bPlayGroundPoundOnce; }
+
 public:
 	void		Update_Tirgger_Pos(_vector vPos);
 
