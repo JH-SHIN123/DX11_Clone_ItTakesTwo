@@ -58,7 +58,6 @@ _int CEffect_Umbrella_Pipe::Tick(_double TimeDelta)
 		m_pParticle->Set_IsActivateParticles(false);
 
 	_matrix matWorld, matScale, matRotX, matTrans;
-	//matTrans = m_pTransformCom->Get_WorldMatrix();
 	matScale = XMMatrixScaling(1.5f, 3.f, 1.5f);
 	matTrans = XMMatrixTranslation(0.f, 0.5f, 3.f);
 	matRotX = XMMatrixRotationX(XMConvertToRadians(90.f));
