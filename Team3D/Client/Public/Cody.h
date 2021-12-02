@@ -213,7 +213,6 @@ public:
 	PLAYER_SIZE Get_Player_Size() { return m_eCurPlayerSize; }
 	//PLAYER_SIZE Get_CurSize() { return m_eCurPlayerSize; }
 	_bool		Get_PushingBattery() { return m_IsPushingBattery; }
-
 public:
 	void Set_PushingBattery() { m_IsPushingBattery = false; }
 	void Set_OnParentRotate(_matrix ParentMatrix);

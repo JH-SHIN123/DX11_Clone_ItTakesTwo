@@ -2331,6 +2331,16 @@ void CMay::Set_BossMissile_Attack()
 	m_IsBoss_Missile_Explosion = true;
 }
 
+void CMay::Set_ActorPosition(_vector vPosition)
+{
+	m_pActorCom->Set_Position(vPosition);
+}
+
+void CMay::Set_ActorGravity(_bool IsZeroGravity, _bool IsUp, _bool _bStatic)
+{
+	m_pActorCom->Set_ZeroGravity(IsZeroGravity, IsUp, _bStatic);
+}
+
 void CMay::Falling_Dead(const _double dTimeDelta)
 {
 }

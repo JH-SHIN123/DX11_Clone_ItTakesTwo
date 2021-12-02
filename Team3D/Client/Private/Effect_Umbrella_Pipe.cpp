@@ -62,14 +62,10 @@ _int CEffect_Umbrella_Pipe::Tick(_double TimeDelta)
 	matTrans = XMMatrixTranslation(0.f, 0.5f, 3.f);
 	matRotX = XMMatrixRotationX(XMConvertToRadians(90.f));
 	matWorld = matScale * matRotX * matTrans * XMLoadFloat4x4(&m_matParent);
-
 	m_pTransformCom->Set_WorldMatrix(matWorld);
 
 	m_pParticle->Set_ParentMatrix(m_pTransformCom->Get_WorldMatrix());
-
 	m_pParticle->Set_Particle_Radius(_float3(5.f, 40.f, 5.f));
-
-
 
 	return _int();
 }

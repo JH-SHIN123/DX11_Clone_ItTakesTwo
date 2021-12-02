@@ -182,6 +182,8 @@ public:
 
 public:
 	void	Set_BossMissile_Attack(); // CBoss_Missile
+	void	Set_ActorPosition(_vector vPosition);
+	void	Set_ActorGravity(_bool IsZeroGravity ,_bool IsUp ,_bool _bStatic);
 
 	// Tick 에서 호출될 함수들
 private:
