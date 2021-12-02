@@ -313,12 +313,16 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	}
 	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 14.f;
 	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 14.f;
+
 #endif
 	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matBeginWorld));
 	_vector vLook = XMLoadFloat4x4(&m_matBeginWorld).r[2];
 	_vector vPos = XMLoadFloat4x4(&m_matStart).r[3];
 	_vector vDir = XMVectorZero();
-	vDir = (vLook*(m_fMouseRev[Rev_Prependicul]) * 0.12f);
+	/*if(static_cast<CMay*>(m_pTargetObj)->Get_Actor()->Get_IsOnGravityPath())
+		vDir = (vLook*(m_fMouseRev[Rev_Prependicul]) * 0.3f);
+	else*/
+		vDir = (vLook*(m_fMouseRev[Rev_Prependicul]) * 0.12f);
 
 	_vector vTargetPos = vPos - vDir;
 
@@ -359,7 +363,8 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vScale, vRotQuat, vTrans;
 	_vector  vCurRotQuat, vCurTrans;
 	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) * matQuat *
-		MH_RotationMatrixByUp(pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos));
+		MH_RotationMatrixByUp(
+		((CMay*)DATABASE->GetMay())->Get_IsInGravityPipe() ? XMVectorSet(0.f, 1.f, 0.f, 0.f) : pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos));
 
 
 	XMStoreFloat4(&m_NextWorld.vRotQuat, vRotQuat);

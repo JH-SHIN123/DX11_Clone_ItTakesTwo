@@ -302,7 +302,6 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 14.f;
 	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 14.f;
 
-
 	//카메라 회전에 따른 거리체크
 	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matBeginWorld));
 	_vector vLook = XMLoadFloat4x4(&m_matBeginWorld).r[2];
@@ -358,7 +357,8 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vScale, vRotQuat, vTrans;
 	_vector  vCurRotQuat, vCurTrans;
 	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) * matQuat *
-		MH_RotationMatrixByUp(pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos));
+		MH_RotationMatrixByUp(
+		((CCody*)DATABASE->GetCody())->Get_IsInGravityPipe() ? XMVectorSet(0.f,1.f,0.f,0.f) : pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos));
 
 
 	XMStoreFloat4(&m_NextWorld.vRotQuat, vRotQuat);

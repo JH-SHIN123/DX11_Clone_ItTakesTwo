@@ -408,6 +408,7 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_MAIN_ALPHA_MOONBABOON_GLASSWALL();
 	}
+	
 	// 6
 	pass Default_Alpha_MoonBaboon_Core_Glass
 	{

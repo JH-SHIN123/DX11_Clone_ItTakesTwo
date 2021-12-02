@@ -212,7 +212,11 @@ public:
 	CModel*		Get_Model() { return m_pModelCom; }
 	PLAYER_SIZE Get_Player_Size() { return m_eCurPlayerSize; }
 	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
-	//PLAYER_SIZE Get_CurSize() { return m_eCurPlayerSize; }
+	_bool		Get_PushingBattery() { return m_IsPushingBattery; }
+public:
+	void Set_PushingBattery() { m_IsPushingBattery = false; }
+	void Set_OnParentRotate(_matrix ParentMatrix);
+	void Set_ControlJoystick(_bool IsCheck);
 
 public:
 	void Set_BossMissile_Attack(); // CBoss_Missile
@@ -229,6 +233,7 @@ private:
 	// 단발성 함수들.
 	HRESULT Ready_Component();
 	void Add_LerpInfo_To_Model();
+
 
 private: // Effects
 	class CEffect_Cody_Size* m_pEffect_Size = nullptr;
@@ -293,6 +298,8 @@ private:
 	// GroundPound 관련
 	_bool m_bPlayGroundPoundOnce = false;
 	_bool m_bCanMove = true;
+	_bool m_bAfterGroundPound = false;
+	_uint m_iAfterGroundPoundCount = 0;
 
 	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
 	_float	m_fIdleTime = 0.f;
@@ -307,12 +314,11 @@ private:
 	_float3 m_vScale = {1.f, 1.f, 1.f};
 	_bool m_IsSizeChanging = false;
 	_float m_fSizeDelayTime = 0.f;
+	_bool m_bChangeSizeEffectOnce = false;
 
 	// 점프관련 변수
 	_uint m_iJumpCount = 0;
 	_uint m_iAirDashCount = 0;
-
-
 
 	// 컷씬이라면
 	_bool m_IsCutScene = false;
@@ -333,6 +339,7 @@ private:
 	_float3				m_vTriggerTargetPos = {};
 	_float4x4			m_TriggerTargetWorld = {};
 	CGameObject*		m_pTargetPtr = nullptr;
+	_uint				m_iCurrentStageNum = ST_GRAVITYPATH;
 
 	_bool m_IsCollide = false;
 	_bool m_IsOnGrind = false;
@@ -356,6 +363,9 @@ private:
 	_bool m_IsInGravityPipe = false;
 	_float m_fGoCenterTime = 0.f;
 
+	/* For.Pipe*/
+	_bool m_IsPipeBattery = false;
+
 	/* For.Valve */
 	_bool m_IsEnterValve = false;
 	_bool m_bStruggle = false;
@@ -376,6 +386,9 @@ private:
 	_float m_fRopeAngle = 0.f;
 	_float3 m_vStartPosition = {};
 	_float3 m_vDstPosition = {};
+
+	/* For.Umbrella */
+	_bool m_IsControlJoystick = false;
 
 	// Arbitrary damping
 	_float m_faDamping = 0.995f;

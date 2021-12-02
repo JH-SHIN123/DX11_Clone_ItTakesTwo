@@ -176,7 +176,10 @@ PS_OUT	PS_STICK(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	Out.vColor.b = 0.f;
+	Out.vColor.rgb = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.f;
+	Out.vColor *= vector(0.0f, 1.9f, 200.f, 1.f);
+
+	//Out.vColor.b = 0.f;
 
 	return Out;
 }

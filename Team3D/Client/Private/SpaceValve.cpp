@@ -81,7 +81,7 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Pad_Key_Down(DIP_RB)) // 보험
+	if (m_pGameInstance->Pad_Key_Down(DIK_INSERT)) // 보험
 		m_pSpaceValve_Star->Set_Clear_Level(true);
 
 	if(DATABASE->Get_PinBallStageClear() && DATABASE->Get_GravityStageClear() && DATABASE->Get_RailStageClear())

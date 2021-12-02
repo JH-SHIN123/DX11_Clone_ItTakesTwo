@@ -65,7 +65,7 @@ HRESULT CToyBoxButton_Button::NativeConstruct(void* pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
 
 	CTriggerActor::ARG_DESC tTriggerArg;
-	tTriggerArg.pGeometry = new PxBoxGeometry(1.5f,0.95f,1.5f);
+	tTriggerArg.pGeometry = new PxBoxGeometry(1.5f,1.5f,1.5f);
 	tTriggerArg.pTransform = m_pTransformCom;
 	tTriggerArg.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArg), E_FAIL);
@@ -152,24 +152,17 @@ void CToyBoxButton_Button::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID
 		if (eID == GameID::eMAY)
 		{
 			CMay* pMay = (CMay*)pGameObject;
-			//if (ANI_M_GroundPound_Land == pMay->Get_CurState())
+			if (ANI_M_GroundPound_Land == pMay->Get_CurState() ||
+				ANI_M_GroundPound_Falling == pMay->Get_CurState() ||
+				ANI_M_GroundPound_Land_Exit == pMay->Get_CurState() ||
+				ANI_M_GroundPound_Start == pMay->Get_CurState() ||
+				pMay->Get_IsGroundPound() == true ||
+				pMay->Get_IsGroundPoundVarious() == true
+				)
 				m_pParent->Set_Trigger();
 
 			m_iCheckTrigger = 1;
 		}
-		else if (eID == GameID::eCODY)
-		{
-			CCody* pCody = (CCody*)pGameObject;
-			if (ANI_C_Bhv_GroundPound_Land == pCody->Get_CurState() ||
-				ANI_C_Bhv_ChangeSize_GroundPound_Land_MH == pCody->Get_CurState() ||
-				ANI_C_Bhv_ChangeSize_GroundPound_Falling == pCody->Get_CurState() ||
-				ANI_C_Bhv_GroundPound_Land_MH == pCody->Get_CurState() ||
-				ANI_C_Bhv_GroundPound_Start == pCody->Get_CurState())
-				m_pParent->Set_Trigger();
-			
-			m_iCheckTrigger = 1;
-		}
-		break;
 	}
 	case Engine::TriggerStatus::eLOST:
 	{
