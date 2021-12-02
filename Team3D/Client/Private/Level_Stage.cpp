@@ -164,21 +164,33 @@ HRESULT CLevel_Stage::Ready_Layer_Wormhole(const _tchar * pLayerTag)
 #pragma region Hye 
 HRESULT CLevel_Stage::Ready_Layer_Planet(const _tchar * pLayerTag)
 {
-	CHangingPlanet::ARG_DESC tArg;
-	lstrcpy(tArg.DynamicDesc.szModelTag, TEXT("Component_Model_Hanging_Planet"));
+	/* 행성밀기 */
+	CHangingPlanet::ARG_DESC tPlanetArg;
 	_matrix World = XMMatrixIdentity();
-	XMStoreFloat4x4(&tArg.DynamicDesc.WorldMatrix, World);
-	tArg.DynamicDesc.iMatrialIndex = 0;
-	tArg.DynamicDesc.iOption = 0;
+	lstrcpy(tPlanetArg.DynamicDesc.szModelTag, TEXT("Component_Model_Hanging_Planet"));
+	XMStoreFloat4x4(&tPlanetArg.DynamicDesc.WorldMatrix, World);
+	tPlanetArg.DynamicDesc.iMatrialIndex = 0;
+	tPlanetArg.DynamicDesc.iOption = 0;
 
-	tArg.vJointPosition = _float3(1000.f, 740.f, 213.f);
-	tArg.vOffset = _float3(0.f, 33.f, 0.f);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_TestPlanet"), &tArg), E_FAIL);
+	tPlanetArg.vJointPosition = _float3(1000.f, 740.f, 213.f);
+	tPlanetArg.vOffset = _float3(0.f, 33.f, 0.f);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), &tPlanetArg), E_FAIL);
 
-	tArg.vJointPosition = _float3(1000.f, 755.f, 176.5f);
-	tArg.vOffset = _float3(0.f, 38.f, 0.f);
+	tPlanetArg.vJointPosition = _float3(1000.f, 755.f, 176.5f);
+	tPlanetArg.vOffset = _float3(0.f, 40.f, 0.f);
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_TestPlanet"), &tArg), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), &tPlanetArg), E_FAIL);
+
+	/* 튜브 */
+	//CDynamic_Env::ARG_DESC tArg;
+	//lstrcpy(tArg.szModelTag, TEXT("Component_Model_Tube"));
+	//World = XMMatrixTranslation(20.f, 0.f, 60.f);
+	//XMStoreFloat4x4(&tArg.WorldMatrix, World);
+	//tArg.iMatrialIndex = 0;
+	//tArg.iOption = 0;
+
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HooKahTube"), &tArg), E_FAIL);
+
 	return S_OK;
 }
 #pragma endregion

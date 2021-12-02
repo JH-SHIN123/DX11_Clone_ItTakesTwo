@@ -490,6 +490,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\HangingPlanet">
       <UniqueIdentifier>{af51de69-3b99-45c1-b5aa-252f99b34954}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\HookahTube">
+      <UniqueIdentifier>{1b526f22-7759-4389-b11e-96a8f3f774f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -852,6 +855,9 @@
     <ClInclude Include="..\Public\HangingPlanet.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\HangingPlanet</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\HookahTube.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\HookahTube</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1183,6 +1189,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\HangingPlanet.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\HangingPlanet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HookahTube.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\HookahTube</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

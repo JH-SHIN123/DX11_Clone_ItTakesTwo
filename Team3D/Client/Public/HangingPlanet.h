@@ -18,6 +18,7 @@ private:
 	virtual ~CHangingPlanet() = default;
 
 public:
+	void Set_Trigger(_bool bTrigger);
 	void Add_Force(_fvector vForce);
 
 public:

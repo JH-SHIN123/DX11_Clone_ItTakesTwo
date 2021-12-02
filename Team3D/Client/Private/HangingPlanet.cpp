@@ -13,15 +13,23 @@ CHangingPlanet::CHangingPlanet(const CHangingPlanet & rhs)
 {
 }
 
+void CHangingPlanet::Set_Trigger(_bool bTrigger)
+{
+	m_bTrigger = bTrigger;
+}
+
 void CHangingPlanet::Add_Force(_fvector vForce)
 {
+	if (false == m_bTrigger)
+		return;
+
 	_vector vLookForce;
 
 	vLookForce = XMVector3Normalize(vForce);
 	vLookForce = XMVectorSetY(vLookForce, 0.f);
 
-	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLookForce) * 6000000.f, 0.f, XMVectorGetZ(vLookForce) * 6000000.f));
-	m_bTrigger = true;
+	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLookForce) * 150000.f, 0.f, XMVectorGetZ(vLookForce) * 150000.f));
+	m_bTrigger = false;
 }
 
 HRESULT CHangingPlanet::NativeConstruct_Prototype()
@@ -43,25 +51,26 @@ HRESULT CHangingPlanet::NativeConstruct(void * pArg)
 	m_UserData.pGameObject = this;
 
 	/* Dynamic */
-	PxGeometry* geom = new PxSphereGeometry(5.f);
+	PxGeometry* geom1 = new PxSphereGeometry(5.f);
 	CDynamicActor::ARG_DESC tDynamicActorArg;
 	tDynamicActorArg.pTransform = m_pTransformCom;
-	tDynamicActorArg.fDensity = 5.f;
-	tDynamicActorArg.pGeometry = geom;
+	tDynamicActorArg.fDensity = 10.f;
+	tDynamicActorArg.pGeometry = geom1;
 	tDynamicActorArg.vVelocity = PxVec3(0.f, 0.f, 0.f);
 	tDynamicActorArg.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
+	Safe_Delete(geom1);
 
 	/* Trigger */
-	geom = new PxSphereGeometry(7.f);
+	PxGeometry* geom2 = new PxSphereGeometry(7.f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
-	tTriggerArgDesc.pGeometry = geom;
+	tTriggerArgDesc.pGeometry = geom2;
 	tTriggerArgDesc.pTransform = m_pTransformCom;
 	tTriggerArgDesc.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
-	Safe_Delete(geom);
+	Safe_Delete(geom2);
 
 	m_pJoint = CPhysX::GetInstance()->Create_Joint(m_pDynamicActorCom->Get_Actor(), PxTransform(PxVec3(tArg.vOffset.x, tArg.vOffset.y, tArg.vOffset.z)), nullptr, PxTransform(PxVec3(tArg.vJointPosition.x, tArg.vJointPosition.y, tArg.vJointPosition.z)));
 	CDataStorage::GetInstance()->Set_HangingPlanet(this);
@@ -72,12 +81,6 @@ HRESULT CHangingPlanet::NativeConstruct(void * pArg)
 _int CHangingPlanet::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
-
-	if (true == m_bCollider && m_pGameInstance->Key_Down(DIK_F))
-		Add_Force(((CCody*)(CDataStorage::GetInstance()->GetCody()))->Get_Transform()->Get_State(CTransform::STATE_LOOK));
-
-	if (m_pDynamicActorCom->Get_Actor()->isSleeping())
-		m_bTrigger = false;
 
 	return NO_EVENT;
 }
@@ -122,17 +125,12 @@ void CHangingPlanet::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGam
 {
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && false == m_bTrigger)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePLANET, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::ePLANET, true, this);
 		UI_Create(Cody, InputButton_InterActive);
 		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
-		m_bCollider = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-	{
 		UI_Delete(Cody, InputButton_InterActive);
-		m_bCollider = false;
-	}
 }
 
 CHangingPlanet * CHangingPlanet::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -161,8 +159,8 @@ CGameObject * CHangingPlanet::Clone_GameObject(void * pArg)
 
 void CHangingPlanet::Free()
 {
-	m_pJoint->release();
 	Safe_Release(m_pDynamicActorCom);
+	Safe_Release(m_pTriggerActorCom);
 
 	CDynamic_Env::Free();
 }

@@ -323,11 +323,13 @@ private:
 public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
 	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
+	void SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject* pTargetPtr);
 
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
 	_float3				m_vTriggerTargetPos = {};
 	_float4x4			m_TriggerTargetWorld = {};
+	CGameObject*		m_pTargetPtr = nullptr;
 
 	_bool m_IsCollide = false;
 	_bool m_IsOnGrind = false;
@@ -336,14 +338,15 @@ private:
 	_bool m_IsActivateRobotLever = false;
 	_bool m_IsPushingBattery = false;
 
-	/* Çý¿ø::For.DeadLine, SavePoint */
+	/* Hye::For.DeadLine, SavePoint */
 	_bool	 m_IsDeadLine = false;
 	_float3  m_vSavePoint = {};
 	_float	 m_fDeadTime = 0.f;
 	_float3	 m_DeadLinePos = {};
-
-	/* Çý¿ø::For.PinBall*/
+	/* Hye::For.PinBall*/
 	_bool m_IsPinBall = false;
+	/* Hye::For.Tube*/
+	_bool m_IsTube = false;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
@@ -423,7 +426,7 @@ private:
 	void Boss_Missile_Hit(const _double dTimeDelta);
 	void Boss_Missile_Control(const _double dTimeDelta);
 
-	/* Çý¿ø::For.DeadLine, SavePoint */
+	/* Hye*/
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
 public:
