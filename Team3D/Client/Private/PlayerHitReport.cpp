@@ -26,6 +26,15 @@ void CPlayerHitReport::onShapeHit(const PxControllerShapeHit & hit)
 			m_pPlayerActor->Set_CollideNormal(hit.worldNormal);
 		}
 	}
+	if (GameID::eMAYJUMPWALL == pUserData->eID)
+	{
+		if (hit.triangleIndex != PxU32(-1))
+		{
+			m_pPlayerActor->Set_ContactPos(hit.worldPos);
+			m_pPlayerActor->Set_WallCollide(true);
+			m_pPlayerActor->Set_CollideNormal(hit.worldNormal);
+		}
+	}
 	//else if (GameID::ePLANET == pUserData->eID)
 	//{
 	//	m_pPlayerActor->MoveToTarget(hit.actor->getGlobalPose());
