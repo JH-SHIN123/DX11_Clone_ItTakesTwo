@@ -168,16 +168,16 @@ private:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-public:
 	virtual HRESULT Render_ShadowDepth() override;
-public:
+
+public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
+	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
+public:
 	void		Update_Tirgger_Pos(_vector vPos);
 
 	// Tick 에서 호출될 함수들
@@ -346,6 +346,12 @@ private:
 	_uint m_iRotateCount = 0;
 	_uint m_iValvePlayerName = Player::May;
 
+	/* For. WallJump */
+	_bool	m_bWallAttach = false;
+	_bool   m_IsWallJumping = false;
+	_float	m_fWallJumpingTime = 0.f;
+	_float	m_fWallToWallSpeed = 0.55f;
+
 	/* For.PinBall */
 	_bool	 m_IsPinBall = false;
 	_float2	 m_MinMaxX = {};
@@ -378,6 +384,7 @@ private:
 	void Warp_Wormhole(const _double dTimeDelta);
 	void Touch_FireDoor(const _double dTimeDelta);
 	void Hook_UFO(const _double dTimeDelta);
+	void Wall_Jump(const _double dTimeDelta);
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);

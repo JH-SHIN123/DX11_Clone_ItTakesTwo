@@ -125,6 +125,15 @@ void CMay::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_M_Jump_Start, ANI_M_AirDash_Start, false);
 	m_pModelCom->Add_LerpInfo(ANI_M_DoubleJump, ANI_M_AirDash_Start, false);
 
+	m_pModelCom->Add_LerpInfo(ANI_M_ZeroGravity_MH, ANI_M_Jump_180L, true, 10.f);
+	m_pModelCom->Add_LerpInfo(ANI_M_ZeroGravity_MH, ANI_M_Jump_180R, true, 10.f);
+	m_pModelCom->Add_LerpInfo(ANI_M_ZeroGravity_MH, ANI_M_Jump_Falling, true, 10.f);
+
+	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_MH, ANI_M_WallSlide_Jump, true, 20.f);
+	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_Jump, ANI_M_WallSlide_Enter, true, 20.f);
+	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_Enter, ANI_M_WallSlide_MH, true, 20.f);
+
+
 	return;
 }
 
@@ -138,6 +147,7 @@ _int CMay::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
+	Wall_Jump(dTimeDelta);
 	if (Trigger_Check(dTimeDelta))
 	{
 		Go_Grind(dTimeDelta);
@@ -532,6 +542,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_0))/* 벽점프 전 */
+		m_pActorCom->Set_Position(XMVectorSet(-830.374512f, 793.359192f, 192.788605f, 1.f));
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -794,7 +806,7 @@ void CMay::Move(const _double dTimeDelta)
 		m_bAction = false;
 
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
-		if (m_pActorCom->Get_IsOnGravityPath() == false)
+		if (m_pActorCom->Get_IsOnGravityPath() == false) // 중력 발판 위에 있지 않을때. ( 중력발판 위에 있으면 그냥 카메라 Look으로 움직이게 하면 잘 돌아감 ㅇㅇ )
 		{
 			_vector vPlayerUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 
@@ -1325,6 +1337,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Pad_Key_Down(DIP_RB) && m_iValvePlayerName == Player::May)
 		{
+
 			m_pModelCom->Set_Animation(ANI_M_Valve_Rotate_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Valve_Rotate_MH);
 			m_IsEnterValve = true;
@@ -1426,11 +1439,24 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_bGoToHooker = true;
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 		}
+		else if ((m_eTargetGameID == GameID::eMAYJUMPWALL || m_eTargetGameID == GameID::eDUMMYWALL) && m_pActorCom->Get_IsWallCollide() == true && m_bWallAttach == false
+			&& m_IsJumping == true && m_IsFalling == false)
+		{
+			/*PxVec3 vNormal = m_pActorCom->Get_CollideNormal();
+			_vector vWallUp = { vNormal.x, vNormal.y, vNormal.z, 0.f };
+			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);*/
+
+			m_pModelCom->Set_Animation(ANI_M_WallSlide_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_WallSlide_MH);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bWallAttach = true;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsPinBall
-		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO)
+		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_bWallAttach)
 		return true;
 
 	return false;
@@ -1510,17 +1536,21 @@ void CMay::Pull_VerticalDoor(const _double dTimeDelta)
 	if (m_IsPullVerticalDoor == true)
 	{
  		m_pModelCom->Set_Animation(ANI_M_Pull);
+		m_pModelCom->Set_NextAnimIndex(ANI_M_Pull);
 
 		_vector vSwitchPos = XMLoadFloat3(&m_vTriggerTargetPos);
 		vSwitchPos.m128_f32[3] = 1.f;
+		vSwitchPos.m128_f32[2] -= 1.f;
 		vSwitchPos.m128_f32[1] += 11.f;
 		m_pActorCom->Set_ZeroGravity(true, false, true);
 		m_pActorCom->Set_Position(vSwitchPos);
 
+		m_pTransformCom->RotateYawDirectionOnLand(XMVectorSet(0.f, 0.f, 1.f, 0.f), dTimeDelta);
+
 		if (true == IsTriggerEnd)
 		{
 			m_pActorCom->Set_ZeroGravity(false, false, false);
-			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_Animation(ANI_M_Jump_Land);
 			m_IsCollide = false;
 			m_IsPullVerticalDoor = false;
 		}
@@ -1595,29 +1625,13 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			if (m_pGameInstance->Pad_Key_Pressing(DIP_A))
 			{
 				m_pActorCom->Set_ZeroGravity(true, false, false);
-				/*m_pTransformCom->Rotate_Axis(XMVector3Normalize(XMVectorSet(1.f, 0.f, 0.f, 0.f)), dTimeDelta * 0.1f);
-				m_pTransformCom->Rotate_Axis(XMVector3Normalize(XMVectorSet(0.f, 0.f, 1.f, 0.f)), dTimeDelta * 0.1f);
-
-				_float3 MoveDir = { 0.f, -1.f, 0.f };
-				_vector vDirection = XMVector3Normalize(XMLoadFloat3(&MoveDir));
-				m_pActorCom->Move(vDirection * 1.2f, dTimeDelta);*/
-				/*m_pTransformCom->Go_Down(dTimeDelta);
-				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-				m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));*/
 			}
-			// m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
-			// m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
-			// m_pGameInstance->Get_Pad_LStickY() > 20000 (Down)
-			// m_pGameInstance->Get_Pad_LStickY() < 44000 (Up)
 			if (m_pGameInstance->Get_Pad_LStickY() > 44000)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
 				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
-				//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-				//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
-				//m_pModelCom->Set_Animation(ANI_C_Bhv_PlayRoom_ZeroGravity_Fwd);
 			}
 			if (m_pGameInstance->Get_Pad_LStickX() < 20000)
 			{
@@ -1657,7 +1671,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_pActorCom->Set_Gravity(-9.8f);
 			m_IsInGravityPipe = false;
-			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_Animation(ANI_M_Jump_180R);
 		}
 	}
 }
@@ -1671,7 +1685,7 @@ void CMay::PinBall(const _double dTimeDelta)
 		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 		/* 공이 죽었을 때 or 골인 했을 때 */
-		if (true == ((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Failed())
+		if (true == ((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Failed() || m_pGameInstance->Key_Down(DIK_R))
 		{
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Exit);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
@@ -1692,7 +1706,7 @@ void CMay::PinBall(const _double dTimeDelta)
 		if (false == ((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_StartGame())
 		{
 			/* 공 발사 */
-			if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) || m_pGameInstance->Pad_Key_Down(DIP_Y))
+			if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) || m_pGameInstance->Pad_Key_Down(DIP_LT))
 			{
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Left_Hit);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH_Hit);
@@ -1838,6 +1852,77 @@ void CMay::Hook_UFO(const _double dTimeDelta)
 			m_IsHookUFO = false;
 			m_IsCollide = false;
 		}
+	}
+}
+
+void CMay::Wall_Jump(const _double dTimeDelta)
+{
+	if (true == m_bWallAttach && false == m_IsWallJumping)
+	{
+		m_pActorCom->Move((-m_pTransformCom->Get_State(CTransform::STATE_UP) / 50.f), dTimeDelta);
+		if (m_pGameInstance->Pad_Key_Down(DIP_B))
+		{
+			m_pTransformCom->RotateYaw(XMConvertToRadians(-180.f));
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_IsWallJumping = true;
+			m_pModelCom->Set_Animation(ANI_M_WallSlide_Jump);
+			m_pActorCom->Jump_Start(2.7f);
+			m_pActorCom->Set_WallCollide(false);
+		}
+	}
+
+	if (m_IsWallJumping == true)
+	{
+		if (m_fWallToWallSpeed <= 50.f)
+			m_fWallToWallSpeed += (_float)dTimeDelta * 57.f;
+
+		PxVec3 vNormal = m_pActorCom->Get_CollideNormal();
+		_vector vWallUp = { vNormal.x, vNormal.y, vNormal.z, 0.f };
+		m_pActorCom->Move(XMVector3Normalize(vWallUp) / m_fWallToWallSpeed, dTimeDelta);
+		m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
+
+		if (m_pModelCom->Is_AnimFinished(ANI_M_WallSlide_Jump))
+		{
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_pModelCom->Set_Animation(ANI_M_Jump_Falling);
+			m_bWallAttach = false;
+			m_IsWallJumping = false;
+			m_fWallJumpingTime = 0.f;
+			m_fWallToWallSpeed = 0.55f;
+			//m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(-179.f));
+		}
+		if (m_pActorCom->Get_IsWallCollide() == true && m_IsCollide == true)
+		{
+			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);
+			vWallUp.m128_f32[0] = 0.f;
+			m_pTransformCom->RotateYaw(XMConvertToRadians(-180.f));
+			//m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bWallAttach = true;
+			m_IsWallJumping = false;
+			m_fWallJumpingTime = 0.f;
+			m_fWallToWallSpeed = 0.55f;
+			m_pModelCom->Set_Animation(ANI_M_WallSlide_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_WallSlide_MH);
+		}
+		else if (m_pActorCom->Get_IsWallCollide() == true && m_IsCollide == false)
+		{
+			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);
+			vWallUp.m128_f32[0] = 0.f;
+			m_pTransformCom->RotateYaw(XMConvertToRadians(-180.f));
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_bWallAttach = false;
+			m_IsWallJumping = false;
+			m_fWallJumpingTime = 0.f;
+			m_fWallToWallSpeed = 0.5f;
+			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+			m_pActorCom->Set_WallCollide(false);
+		}
+
+		m_fWallJumpingTime += (_float)dTimeDelta;
 	}
 }
 

@@ -2019,15 +2019,6 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 			if (m_pGameInstance->Key_Pressing(DIK_LCONTROL))
 			{
 				m_pActorCom->Set_ZeroGravity(true, false, false);
-				/*m_pTransformCom->Rotate_Axis(XMVector3Normalize(XMVectorSet(1.f, 0.f, 0.f, 0.f)), dTimeDelta * 0.1f);
-				m_pTransformCom->Rotate_Axis(XMVector3Normalize(XMVectorSet(0.f, 0.f, 1.f, 0.f)), dTimeDelta * 0.1f);
-
-				_float3 MoveDir = { 0.f, -1.f, 0.f };
-				_vector vDirection = XMVector3Normalize(XMLoadFloat3(&MoveDir));
-				m_pActorCom->Move(vDirection * 1.2f, dTimeDelta);*/
-				/*m_pTransformCom->Go_Down(dTimeDelta);
-				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-				m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));*/
 			}
 
 			if (m_pGameInstance->Key_Pressing(DIK_W))
@@ -2035,11 +2026,7 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
 				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
-
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
-				//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-				//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
-				//m_pModelCom->Set_Animation(ANI_C_Bhv_PlayRoom_ZeroGravity_Fwd);
 			}
 			if (m_pGameInstance->Key_Pressing(DIK_A))
 			{

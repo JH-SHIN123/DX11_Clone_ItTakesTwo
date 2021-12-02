@@ -40,7 +40,7 @@ HRESULT CMayJumpWall::NativeConstruct(void * pArg)
 
 	_matrix PhysxWorldMatrix = XMMatrixIdentity();
 	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans) + 5.f, XMVectorGetY(vTrans), XMVectorGetZ(vTrans));
+	PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans), XMVectorGetY(vTrans), XMVectorGetZ(vTrans) - 2.f);
 	m_pPhysxTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pPhysxTransformCom->Set_WorldMatrix(PhysxWorldMatrix);
 
@@ -49,7 +49,7 @@ HRESULT CMayJumpWall::NativeConstruct(void * pArg)
 	CTriggerActor::ARG_DESC ArgDesc;
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pPhysxTransformCom;
-	ArgDesc.pGeometry = new PxBoxGeometry(17.5f, 2.2f, 2.2f);
+	ArgDesc.pGeometry = new PxBoxGeometry(18.5f, 2.f, 2.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
@@ -67,6 +67,7 @@ HRESULT CMayJumpWall::NativeConstruct(void * pArg)
 _int CMayJumpWall::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
 	return NO_EVENT;
 }
 
