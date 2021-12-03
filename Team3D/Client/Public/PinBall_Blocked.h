@@ -21,21 +21,25 @@ public:
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
-	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
+	PxRigidStatic*	m_pWall01 = nullptr;
+	PxRigidStatic*	m_pWall02 = nullptr;
 
-	static _bool	m_IsSwitching;
+	static _bool	m_bSwitching;
 	static _float	m_fUpPosY;
 	static _float	m_fDownPosY;
 
 private:
 	void Movement(_double dTimeDelta);
 
+private:
+	HRESULT Ready_Component(void* pArg);
+
 public:
-	static CPInBall_Blocked* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	virtual CGameObject* Clone_GameObject(void* pArg) override;
-	virtual void Free() override;
+	static  CPInBall_Blocked* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CGameObject*      Clone_GameObject(void* pArg) override;
+	virtual void              Free() override;
 };
 END

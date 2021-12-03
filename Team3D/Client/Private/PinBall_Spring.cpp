@@ -25,15 +25,10 @@ HRESULT CPinBall_Spring::NativeConstruct(void * pArg)
 	m_UserData.eID = GameID::eENVIRONMENT;
 	m_UserData.pGameObject = this;
 
-	CStaticActor::ARG_DESC tStaticActorArg;
-	tStaticActorArg.pTransform = m_pTransformCom;
-	tStaticActorArg.pModel = m_pModelCom;
-	tStaticActorArg.pUserData = &m_UserData;
+	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
-	
 	m_fRespawnPosX = XMVectorGetX(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	CDataStorage::GetInstance()->Set_Pinball_Spring(this);
+	DATABASE->Set_Pinball_Spring(this);
 
 	return S_OK;
 }
@@ -72,14 +67,10 @@ HRESULT CPinBall_Spring::Render_ShadowDepth()
 
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	// Skinned: 2 / Normal: 3
+	/* Skinned: 2 / Normal: 3 */
 	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
-}
-
-void CPinBall_Spring::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
-{
 }
 
 void CPinBall_Spring::PlayerMove()
@@ -104,6 +95,19 @@ void CPinBall_Spring::Respawn_Pos(_double dTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 		m_pStaticActorCom->Update_StaticActor();
 	}
+}
+
+HRESULT CPinBall_Spring::Ready_Component(void * pArg)
+{
+	/* Static */
+	CStaticActor::ARG_DESC tStaticActorArg;
+	tStaticActorArg.pTransform = m_pTransformCom;
+	tStaticActorArg.pModel = m_pModelCom;
+	tStaticActorArg.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+
+	return S_OK;
 }
 
 CPinBall_Spring * CPinBall_Spring::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

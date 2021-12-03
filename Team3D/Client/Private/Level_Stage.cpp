@@ -197,16 +197,6 @@ HRESULT CLevel_Stage::Ready_Layer_Planet(const _tchar * pLayerTag)
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), &tPlanetArg), E_FAIL);
 
-	/* Æ©ºê */
-	//CDynamic_Env::ARG_DESC tArg;
-	//lstrcpy(tArg.szModelTag, TEXT("Component_Model_Tube"));
-	//World = XMMatrixTranslation(20.f, 0.f, 60.f);
-	//XMStoreFloat4x4(&tArg.WorldMatrix, World);
-	//tArg.iMatrialIndex = 0;
-	//tArg.iOption = 0;
-
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HooKahTube"), &tArg), E_FAIL);
-
 	return S_OK;
 }
 #pragma endregion

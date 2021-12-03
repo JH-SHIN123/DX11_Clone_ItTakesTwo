@@ -2265,11 +2265,8 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 {
 	if (m_IsHitPlanet == true)
 	{
-		if (0.3f <= m_pModelCom->Get_ProgressAnim())
-		{
-			((CHangingPlanet*)(m_pTargetPtr))->Set_Trigger(true);
-			((CHangingPlanet*)(m_pTargetPtr))->Add_Force(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-		}
+		if (0.2f <= m_pModelCom->Get_ProgressAnim())
+			((CHangingPlanet*)(m_pTargetPtr))->Hit_Planet(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_PlanetPush_Large))
 		{

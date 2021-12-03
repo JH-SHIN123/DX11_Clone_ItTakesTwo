@@ -33,14 +33,10 @@ HRESULT CPinBall_BallDoor::NativeConstruct(void * pArg)
 	m_UserData.eID = GameID::eENVIRONMENT;
 	m_UserData.pGameObject = this;
 
-	CStaticActor::ARG_DESC tStaticActorArg;
-	tStaticActorArg.pTransform = m_pTransformCom;
-	tStaticActorArg.pModel = m_pModelCom;
-	tStaticActorArg.pUserData = &m_UserData;
+	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+	DATABASE->Set_Pinball_BallDoor(this);
 
-	CDataStorage::GetInstance()->Set_Pinball_BallDoor(this);
 	return S_OK;
 }
 
@@ -83,14 +79,10 @@ HRESULT CPinBall_BallDoor::Render_ShadowDepth()
 
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	// Skinned: 2 / Normal: 3
+	/* Skinned: 2 / Normal: 3 */
 	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
-}
-
-void CPinBall_BallDoor::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
-{
 }
 
 void CPinBall_BallDoor::MoveMent(_double dTimeDelta)
@@ -98,7 +90,7 @@ void CPinBall_BallDoor::MoveMent(_double dTimeDelta)
 	if (false == m_bReady)
 		return;
 
-	/* ¿­¸±¶§ */
+	/* Open */
 	if (false == m_bDoorState)
 	{
 		_float	fAngle = 100.f * (_float)dTimeDelta;
@@ -109,7 +101,7 @@ void CPinBall_BallDoor::MoveMent(_double dTimeDelta)
 
 		m_pTransformCom->RotatePitch_Angle(dTimeDelta, 100.f);
 	}
-	/* ´ÝÈú¶§ */
+	/* Close */
 	else
 	{
 		_float	fAngle = 100.f * -(_float)dTimeDelta;
@@ -118,13 +110,26 @@ void CPinBall_BallDoor::MoveMent(_double dTimeDelta)
 		if (m_fAngle <= 0.f)
 		{
 			m_bReady = false;
-			((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_Ready(true);
-			((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->ReadyGame();
+			((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Set_Ready(true);
+			((CPinBall*)(DATABASE->Get_Pinball()))->Set_Ready(true);
 		}
-
 		m_pTransformCom->RotatePitch_Angle(-dTimeDelta, 100.f);
 	}
+
 	m_pStaticActorCom->Update_StaticActor();
+}
+
+HRESULT CPinBall_BallDoor::Ready_Component(void * pArg)
+{
+	/* Static */
+	CStaticActor::ARG_DESC tStaticActorArg;
+	tStaticActorArg.pTransform = m_pTransformCom;
+	tStaticActorArg.pModel = m_pModelCom;
+	tStaticActorArg.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+
+	return S_OK;
 }
 
 CPinBall_BallDoor * CPinBall_BallDoor::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

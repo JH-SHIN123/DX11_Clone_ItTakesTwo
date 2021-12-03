@@ -33,26 +33,11 @@ HRESULT CPinBall_Handle::NativeConstruct(void * pArg)
 	m_UserData.eID = GameID::ePINBALLHANDLE;
 	m_UserData.pGameObject = this;
 
-	CStaticActor::ARG_DESC tStaticActorArg;
-	tStaticActorArg.pTransform = m_pTransformCom;
-	tStaticActorArg.pModel = m_pModelCom;
-	tStaticActorArg.pUserData = &m_UserData;
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
-
-	PxGeometry* geom = new PxSphereGeometry(1.5f);
-	CTriggerActor::ARG_DESC tTriggerArgDesc;
-	tTriggerArgDesc.pGeometry = geom;
-	tTriggerArgDesc.pTransform = m_pTransformCom;
-	tTriggerArgDesc.pUserData = &m_UserData;
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
-
-	Safe_Delete(geom);
+	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
 	m_pTransformCom->Set_Speed(0.5f, 0.f);
 	m_fRespawnPosX = XMVectorGetX(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	CDataStorage::GetInstance()->Set_Pinball_Handle(this);
+	DATABASE->Set_Pinball_Handle(this);
 
 	return S_OK;
 }
@@ -68,8 +53,8 @@ _int CPinBall_Handle::Tick(_double dTimeDelta)
 		{
 			m_bGoalTimeCheck = true;
 			m_bRespawnAngle = true;
-			((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Set_Failed();
-			((CCody*)(CDataStorage::GetInstance()->GetCody()))->PinBall_Respawn(dTimeDelta);
+			((CPinBall*)(DATABASE->Get_Pinball()))->Set_Failed();
+			((CCody*)(DATABASE->GetCody()))->PinBall_Respawn(dTimeDelta);
 		}
 		Respawn_Angle(dTimeDelta);
 		Respawn_Pos(dTimeDelta);
@@ -112,7 +97,7 @@ HRESULT CPinBall_Handle::Render_ShadowDepth()
 
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	// Skinned: 2 / Normal: 3
+	/* Skinned: 2 / Normal: 3 */
 	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
@@ -174,9 +159,9 @@ void CPinBall_Handle::PlayerMove()
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 		m_pStaticActorCom->Update_StaticActor();
 
-		((CPinBall_HandleBase*)(CDataStorage::GetInstance()->Get_Pinball_HandleBase()))->PlayerMove();
-		((CPinBall_Spring*)(CDataStorage::GetInstance()->Get_Pinball_Spring()))->PlayerMove();
-		((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->PlayerMove();
+		((CPinBall_HandleBase*)(DATABASE->Get_Pinball_HandleBase()))->PlayerMove();
+		((CPinBall_Spring*)(DATABASE->Get_Pinball_Spring()))->PlayerMove();
+		((CPinBall*)(DATABASE->Get_Pinball()))->PlayerMove();
 	}
 }
 
@@ -224,8 +209,8 @@ void CPinBall_Handle::Respawn_Pos(_double dTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 		m_pStaticActorCom->Update_StaticActor();
 
-		((CPinBall_HandleBase*)(CDataStorage::GetInstance()->Get_Pinball_HandleBase()))->Respawn_Pos(dTimeDelta);
-		((CPinBall_Spring*)(CDataStorage::GetInstance()->Get_Pinball_Spring()))->Respawn_Pos(dTimeDelta);
+		((CPinBall_HandleBase*)(DATABASE->Get_Pinball_HandleBase()))->Respawn_Pos(dTimeDelta);
+		((CPinBall_Spring*)(DATABASE->Get_Pinball_Spring()))->Respawn_Pos(dTimeDelta);
 
 		if (0.1f >= (m_fRespawnPosX - XMVectorGetX(vPos)))
 		{
@@ -236,19 +221,42 @@ void CPinBall_Handle::Respawn_Pos(_double dTimeDelta)
 			m_bRespawnPos = false;
 			m_bReady = false;
 
-			((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Respawn();
-			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(true);
+			((CPinBall*)(DATABASE->Get_Pinball()))->Respawn();
+			((CPinBall_Door*)(DATABASE->Get_Pinball_Door()))->Set_DoorState(true);
 
 			if (true == m_bGoalTimeCheck)
 			{
 				m_bGoal = false;
-				((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_Goal();
-				((CSlideDoor*)(CDataStorage::GetInstance()->Get_SlideDoor()))->Open_Door();
+				((CPinBall_Door*)(DATABASE->Get_Pinball_Door()))->Set_Goal();
+				((CSlideDoor*)(DATABASE->Get_SlideDoor()))->Open_Door();
 			}
 			else
-				((CCody*)(CDataStorage::GetInstance()->GetCody()))->PinBall_Respawn(dTimeDelta);
+				((CCody*)(DATABASE->GetCody()))->PinBall_Respawn(dTimeDelta);
 		}
 	}
+}
+
+HRESULT CPinBall_Handle::Ready_Component(void * pArg)
+{
+	/* Static */
+	CStaticActor::ARG_DESC tStaticActorArg;
+	tStaticActorArg.pTransform = m_pTransformCom;
+	tStaticActorArg.pModel = m_pModelCom;
+	tStaticActorArg.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+
+	/* Trigger */
+	PxGeometry* geom = new PxSphereGeometry(1.5f);
+	CTriggerActor::ARG_DESC tTriggerArgDesc;
+	tTriggerArgDesc.pGeometry = geom;
+	tTriggerArgDesc.pTransform = m_pTransformCom;
+	tTriggerArgDesc.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
+	Safe_Delete(geom);
+
+	return S_OK;
 }
 
 CPinBall_Handle * CPinBall_Handle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

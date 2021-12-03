@@ -26,27 +26,11 @@ HRESULT CDeadLine::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	ARG_DESC tDeadLineArg;
-	if (nullptr != pArg)
-		memcpy(&tDeadLineArg, pArg, sizeof(ARG_DESC));
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&tDeadLineArg.vPosition));
-	m_pTransformCom->Set_Rotaion(XMLoadFloat3(&tDeadLineArg.vRotation));
-
-	CTriggerActor::ARG_DESC tArg;
-
-	PxGeometry* pGeom = new PxBoxGeometry(tDeadLineArg.vScale.x, tDeadLineArg.vScale.y, tDeadLineArg.vScale.z);
 	m_UserData.eID = GameID::eDEADLINE;
 	m_UserData.pGameObject = this;
 
-	tArg.pTransform = m_pTransformCom;
-	tArg.pGeometry = pGeom;
-	tArg.pUserData = &m_UserData;
+	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerActorCom, &tArg), E_FAIL);
-
-	Safe_Delete(pGeom);
 	return S_OK;
 }
 
@@ -66,30 +50,55 @@ _int CDeadLine::Late_Tick(_double dTimeDelta)
 
 void CDeadLine::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+	CGameObject::Trigger(eStatus, eID, pGameObject);
+
 	// Cody
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && false == m_IsCollide) 
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && false == m_bTrigger)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eDEADLINE, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
+		m_bTrigger = true;
 	}
-
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eDEADLINE, false, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = false;
+		m_bTrigger = false;
 	}
 
 	// May
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY && false == m_IsCollide)
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY && false == m_bTrigger)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eDEADLINE, true, ((CMay*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
+		m_bTrigger = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eDEADLINE, false, ((CMay*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = false;
+		m_bTrigger = false;
 	}
+}
+
+HRESULT CDeadLine::Ready_Component(void * pArg)
+{
+	ARG_DESC tDeadLineArg;
+	if (nullptr != pArg)
+		memcpy(&tDeadLineArg, pArg, sizeof(ARG_DESC));
+
+	/* Transform */
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&tDeadLineArg.vPosition));
+	m_pTransformCom->Set_Rotaion(XMLoadFloat3(&tDeadLineArg.vRotation));
+
+	/* Trigger */
+	CTriggerActor::ARG_DESC tArg;
+	PxGeometry* pGeom = new PxBoxGeometry(tDeadLineArg.vScale.x, tDeadLineArg.vScale.y, tDeadLineArg.vScale.z);
+	tArg.pTransform = m_pTransformCom;
+	tArg.pGeometry = pGeom;
+	tArg.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerActorCom, &tArg), E_FAIL);
+	Safe_Delete(pGeom);
+
+	return S_OK;
 }
 
 CDeadLine * CDeadLine::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

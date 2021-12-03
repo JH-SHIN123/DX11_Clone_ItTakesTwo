@@ -4,8 +4,8 @@
 BEGIN(Client)
 class CHangingPlanet final : public CDynamic_Env
 {
-public:
-	typedef struct tagArumentDesc
+public:/* Struct */
+	typedef struct tagArgumentDesc
 	{
 		CDynamic_Env::ARG_DESC	DynamicDesc;
 		_float3					vJointPosition;
@@ -18,8 +18,7 @@ private:
 	virtual ~CHangingPlanet() = default;
 
 public:
-	void Set_Trigger(_bool bTrigger);
-	void Add_Force(_fvector vForce);
+	void Hit_Planet(_fvector vForce);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -37,12 +36,12 @@ private:
 	CTriggerActor*			m_pTriggerActorCom = nullptr;
 	PxSphericalJoint*		m_pJoint = nullptr;
 
-	_bool					m_bTrigger = false;
-	_bool					m_bCollider = false;
+private:
+	HRESULT Ready_Component(void* pArg);
 
 public:
-	static CHangingPlanet* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	virtual CGameObject* Clone_GameObject(void* pArg) override;
-	virtual void Free() override;
+	static	CHangingPlanet* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CGameObject*    Clone_GameObject(void* pArg) override;
+	virtual void            Free() override;
 };
 END

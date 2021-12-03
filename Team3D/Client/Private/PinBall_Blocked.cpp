@@ -5,7 +5,7 @@
 
 _float	CPInBall_Blocked::m_fUpPosY = 0.f;
 _float	CPInBall_Blocked::m_fDownPosY = 0.f;
-_bool	CPInBall_Blocked::m_IsSwitching = false;
+_bool	CPInBall_Blocked::m_bSwitching = false;
 
 CPInBall_Blocked::CPInBall_Blocked(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -19,7 +19,7 @@ CPInBall_Blocked::CPInBall_Blocked(const CPInBall_Blocked & rhs)
 
 void CPInBall_Blocked::Switching()
 {	
-	m_IsSwitching = !m_IsSwitching;
+	m_bSwitching = !m_bSwitching;
 }
 
 HRESULT CPInBall_Blocked::NativeConstruct_Prototype()
@@ -36,12 +36,8 @@ HRESULT CPInBall_Blocked::NativeConstruct(void * pArg)
 	m_UserData.eID = GameID::eBLOCKED;
 	m_UserData.pGameObject = this;
 
-	CStaticActor::ARG_DESC tStaticActorArg;
-	tStaticActorArg.pTransform = m_pTransformCom;
-	tStaticActorArg.pModel = m_pModelCom;
-	tStaticActorArg.pUserData = &m_UserData;
+	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
 	m_pTransformCom->Set_Speed(5.f, 0.f);
 
 	if (0 == lstrcmp(TEXT("Component_Model_Space_Pinball_Blockade01"), m_tDynamic_Env_Desc.szModelTag))
@@ -49,7 +45,7 @@ HRESULT CPInBall_Blocked::NativeConstruct(void * pArg)
 	else if (0 == lstrcmp(TEXT("Component_Model_Space_Pinball_Blockade02"), m_tDynamic_Env_Desc.szModelTag))
 		m_fDownPosY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	CDataStorage::GetInstance()->Set_Pinball_Blocked(this);
+	DATABASE->Set_Pinball_Blocked(this);
 
 	return S_OK;
 }
@@ -90,21 +86,17 @@ HRESULT CPInBall_Blocked::Render_ShadowDepth()
 
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	// Skinned: 2 / Normal: 3
+	/* Skinned: 2 / Normal: 3 */
 	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
-}
-
-void CPInBall_Blocked::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
-{
 }
 
 void CPInBall_Blocked::Movement(_double dTimeDelta)
 {
 	if (0 == lstrcmp(TEXT("Component_Model_Space_Pinball_Blockade01"), m_tDynamic_Env_Desc.szModelTag))
 	{
-		if (true == m_IsSwitching)
+		if (true == m_bSwitching)
 		{
 			if (m_fDownPosY < XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
 				m_pTransformCom->Go_Down(dTimeDelta);
@@ -117,7 +109,7 @@ void CPInBall_Blocked::Movement(_double dTimeDelta)
 	}
 	else if (0 == lstrcmp(TEXT("Component_Model_Space_Pinball_Blockade02"), m_tDynamic_Env_Desc.szModelTag))
 	{
-		if (true == m_IsSwitching)
+		if (true == m_bSwitching)
 		{
 			if (m_fUpPosY > XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
 				m_pTransformCom->Go_Up(dTimeDelta);
@@ -130,7 +122,7 @@ void CPInBall_Blocked::Movement(_double dTimeDelta)
 	}
 	else if (0 == lstrcmp(TEXT("Component_Model_Space_Pinball_Blockade_Half"), m_tDynamic_Env_Desc.szModelTag))
 	{
-		if (true == m_IsSwitching)
+		if (true == m_bSwitching)
 		{
 			if (m_fUpPosY > XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
 				m_pTransformCom->Go_Up(dTimeDelta);
@@ -143,6 +135,22 @@ void CPInBall_Blocked::Movement(_double dTimeDelta)
 	}
 
 	m_pStaticActorCom->Update_StaticActor();
+}
+
+HRESULT CPInBall_Blocked::Ready_Component(void * pArg)
+{
+	/* Static */
+	CStaticActor::ARG_DESC tStaticActorArg;
+	tStaticActorArg.pTransform = m_pTransformCom;
+	tStaticActorArg.pModel = m_pModelCom;
+	tStaticActorArg.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+
+	m_pWall01 = CPhysX::GetInstance()->Create_StaticActor(PxTransform(PxVec3(-669.5f, 756.75f, -9.165f)), PxBoxGeometry(0.2f, 2.f, 199.f));
+	m_pWall02 = CPhysX::GetInstance()->Create_StaticActor(PxTransform(PxVec3(-675.68, 756.75, -9.165)), PxBoxGeometry(0.2f, 2.f, 199.f));
+
+	return S_OK;
 }
 
 CPInBall_Blocked * CPInBall_Blocked::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

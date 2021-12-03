@@ -5,7 +5,7 @@
 BEGIN(Client)
 class CDynamic_Env : public CGameObject
 {
-public:
+public:/* Struct */
 	typedef struct tagArgumentDesc
 	{
 		_float4x4	WorldMatrix;
@@ -19,7 +19,7 @@ protected:
 	explicit CDynamic_Env(const CDynamic_Env& rhs);
 	virtual ~CDynamic_Env() = default;
 
-public:
+public:/* Getter */
 	_fvector Get_Position();
 
 public:
@@ -32,6 +32,7 @@ public:
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+	virtual void	OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 protected:
 	CRenderer*		m_pRendererCom = nullptr;

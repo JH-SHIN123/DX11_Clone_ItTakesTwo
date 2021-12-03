@@ -27,28 +27,7 @@ HRESULT CHookahTube::NativeConstruct(void * pArg)
 	m_UserData.eID = GameID::eHOOKAHTUBE;
 	m_UserData.pGameObject = this;
 
-	/* Static */
-	CStaticActor::ARG_DESC tStaticActorArg;
-	tStaticActorArg.pTransform = m_pTransformCom;
-	tStaticActorArg.pModel = m_pModelCom;
-	tStaticActorArg.pUserData = &m_UserData;
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
-
-	/* Trigger */
-	PxGeometry* geom = new PxSphereGeometry(2.5f);
-	CTriggerActor::ARG_DESC tTriggerArgDesc;
-	tTriggerArgDesc.pGeometry = geom;
-	tTriggerArgDesc.pTransform = m_pTransformCom;
-	tTriggerArgDesc.pUserData = &m_UserData;
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
-	Safe_Delete(geom);
-
-	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) - 0.7f);
-
-	m_pTriggerActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(vPosition)));
+	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
 	return S_OK;
 }
@@ -89,7 +68,7 @@ HRESULT CHookahTube::Render_ShadowDepth()
 
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	// Skinned: 2 / Normal: 3
+	/* Skinned: 2 / Normal: 3 */
 	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
@@ -97,12 +76,15 @@ HRESULT CHookahTube::Render_ShadowDepth()
 
 void CHookahTube::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
+
 	/* Cody */
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKAHTUBE, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 		m_bTrigger = true;
 	}
+
 	/* May */
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
@@ -116,7 +98,7 @@ void CHookahTube::Movement(_double dTimeDelta)
 	if (false == m_bTrigger)
 		return;
 
-	if (false == m_bChange)
+	if (false == m_bScaleChange)
 	{
 		_float	fScale = (_float)dTimeDelta;
 		m_fScale += fScale;
@@ -125,7 +107,7 @@ void CHookahTube::Movement(_double dTimeDelta)
 		{
 			m_fScale = 1.1f;
 			fScale = 0.f;
-			m_bChange = true;
+			m_bScaleChange = true;
 		}
 	}
 	else
@@ -137,11 +119,39 @@ void CHookahTube::Movement(_double dTimeDelta)
 		{
 			m_fScale = 1.f;
 			fScale = 0.f;
-			m_bChange = false;
+			m_bScaleChange = false;
 			m_bTrigger = false;
 		}
 	}
+
 	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 0.f));
+}
+
+HRESULT CHookahTube::Ready_Component(void * pArg)
+{
+	/* Static */
+	CStaticActor::ARG_DESC tStaticActorArg;
+	tStaticActorArg.pTransform = m_pTransformCom;
+	tStaticActorArg.pModel = m_pModelCom;
+	tStaticActorArg.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+
+	/* Trigger */
+	PxGeometry* geom = new PxSphereGeometry(2.5f);
+	CTriggerActor::ARG_DESC tTriggerArgDesc;
+	tTriggerArgDesc.pGeometry = geom;
+	tTriggerArgDesc.pTransform = m_pTransformCom;
+	tTriggerArgDesc.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
+	Safe_Delete(geom);
+
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) - 0.7f);
+	m_pTriggerActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(vPosition)));
+
+	return S_OK;
 }
 
 CHookahTube * CHookahTube::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

@@ -25,12 +25,8 @@ HRESULT CPlanet::NativeConstruct(void * pArg)
 	m_UserData.eID = GameID::eENVIRONMENT;
 	m_UserData.pGameObject = this;
 
-	CStaticActor::ARG_DESC tArg;
-	tArg.pModel = m_pModelCom;
-	tArg.pTransform = m_pTransformCom;
-	tArg.pUserData = &m_UserData;
+	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
 	m_pTransformCom->Set_Speed(5.f, 0.5f);
 
 	return S_OK;
@@ -69,21 +65,29 @@ HRESULT CPlanet::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
+HRESULT CPlanet::Ready_Component(void * pArg)
+{
+	/* Static */
+	CStaticActor::ARG_DESC tArg;
+	tArg.pModel = m_pModelCom;
+	tArg.pTransform = m_pTransformCom;
+	tArg.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
+
+	return S_OK;
+}
+
 HRESULT CPlanet::Render_ShadowDepth()
 {
 	CDynamic_Env::Render_ShadowDepth();
 
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	// Skinned: 2 / Normal: 3
+	/* Skinned: 2 / Normal: 3 */
 	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
-}
-
-void CPlanet::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
-{
-	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
 }
 
 CPlanet * CPlanet::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

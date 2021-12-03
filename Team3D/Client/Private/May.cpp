@@ -1821,7 +1821,7 @@ void CMay::PinBall(const _double dTimeDelta)
 		}
 
 		/* 벽 올리고 내리고 */
-		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB) || m_pGameInstance->Pad_Key_Down(DIP_RT))
+		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB)/* || m_pGameInstance->Pad_Key_Down(DIP_RT)*/)
 		{
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Right_Hit);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH_Hit);
@@ -1831,7 +1831,7 @@ void CMay::PinBall(const _double dTimeDelta)
 		if (false == ((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_StartGame())
 		{
 			/* 공 발사 */
-			if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) || m_pGameInstance->Pad_Key_Down(DIP_LT))
+			if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB)/* || m_pGameInstance->Pad_Key_Down(DIP_LT)*/)
 			{
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Left_Hit);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH_Hit);
@@ -1840,7 +1840,7 @@ void CMay::PinBall(const _double dTimeDelta)
 				((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
 			}
 			/* 오른쪽 */
-			if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 40000)
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT)/* || m_pGameInstance->Get_Pad_LStickX() > 40000*/)
 			{
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Right);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
@@ -1850,7 +1850,7 @@ void CMay::PinBall(const _double dTimeDelta)
 					m_pActorCom->Move(vLeft * 0.05f, dTimeDelta);
 			}
 			/* 왼쪽 */
-			else if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
+			else if (m_pGameInstance->Key_Pressing(DIK_LEFT)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
 			{
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Left);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);

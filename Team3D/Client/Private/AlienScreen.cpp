@@ -1,8 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\AlienScreen.h"
-#include "PinBall.h"
-#include "PinBall_Handle.h"
-#include "DataStorage.h"
 
 CAlienScreen::CAlienScreen(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -28,12 +25,8 @@ HRESULT CAlienScreen::NativeConstruct(void * pArg)
 	m_UserData.eID = GameID::eBLOCKED;
 	m_UserData.pGameObject = this;
 
-	CStaticActor::ARG_DESC tStaticActorArg;
-	tStaticActorArg.pTransform = m_pTransformCom;
-	tStaticActorArg.pModel = m_pModelCom;
-	tStaticActorArg.pUserData = &m_UserData;
+	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
 	return S_OK;
 }
 
@@ -71,14 +64,23 @@ HRESULT CAlienScreen::Render_ShadowDepth()
 
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	// Skinned: 2 / Normal: 3
+	/* Skinned: 2 / Normal: 3 */
 	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
 }
 
-void CAlienScreen::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+HRESULT CAlienScreen::Ready_Component(void * pArg)
 {
+	/* Static */
+	CStaticActor::ARG_DESC tStaticActorArg;
+	tStaticActorArg.pTransform = m_pTransformCom;
+	tStaticActorArg.pModel = m_pModelCom;
+	tStaticActorArg.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+
+	return S_OK;
 }
 
 CAlienScreen * CAlienScreen::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
