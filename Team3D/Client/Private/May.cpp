@@ -3,6 +3,7 @@
 #include "SubCamera.h"
 #include "UI_Generator.h"
 #include "UIObject.h"
+#include "Cody.h"
 #include "PlayerActor.h"
 #include "SpaceRail.h"
 #include "SpaceRail_Node.h"
@@ -57,9 +58,8 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
 
-// 	UI_Create(May, PlayerMarker);
+	UI_Create(May, PlayerMarker);
 	UI_Create_Active(May, InputButton_InterActive, false);
-
 
 	return S_OK;
 }
@@ -83,7 +83,7 @@ HRESULT CMay::Ready_Component()
 	ArgDesc.fJumpGravity = -50.f;
 
 	ArgDesc.CapsuleControllerDesc.setToDefault();
-	ArgDesc.CapsuleControllerDesc.height = 0.5f; 
+	ArgDesc.CapsuleControllerDesc.height = 0.5f;
 	ArgDesc.CapsuleControllerDesc.radius = 0.5f;
 	ArgDesc.CapsuleControllerDesc.material = m_pGameInstance->Get_BasePxMaterial();
 	ArgDesc.CapsuleControllerDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
@@ -103,7 +103,6 @@ HRESULT CMay::Ready_Component()
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_PlayerActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 
-	//Effect 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_May_Boots"), nullptr, (CGameObject**)&m_pEffect_GravityBoots), E_FAIL);
 	m_pEffect_GravityBoots->Set_Model(m_pModelCom);
 
@@ -132,9 +131,9 @@ void CMay::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_M_ZeroGravity_MH, ANI_M_Jump_180R, true, 10.f);
 	m_pModelCom->Add_LerpInfo(ANI_M_ZeroGravity_MH, ANI_M_Jump_Falling, true, 10.f);
 
-	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_MH, ANI_M_WallSlide_Jump, false);
-	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_Jump, ANI_M_WallSlide_Enter, true, 2.f);
-	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_Enter, ANI_M_WallSlide_MH, true, 2.f);
+	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_MH, ANI_M_WallSlide_Jump, true, 30.f);
+	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_Jump, ANI_M_WallSlide_Enter, true, 30.f);
+	m_pModelCom->Add_LerpInfo(ANI_M_WallSlide_Enter, ANI_M_WallSlide_MH, true, 30.f);
 
 
 	return;
@@ -142,8 +141,10 @@ void CMay::Add_LerpInfo_To_Model()
 
 _int CMay::Tick(_double dTimeDelta)
 {
-	//s
 	CCharacter::Tick(dTimeDelta);
+
+	/* UI */
+	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	m_pCamera = (CSubCamera*)CDataStorage::GetInstance()->Get_SubCam();
 	if (nullptr == m_pCamera)
@@ -189,7 +190,6 @@ _int CMay::Tick(_double dTimeDelta)
 			Ground_Pound(dTimeDelta);
 		}
 	}
-	//UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	/* 레일 타겟을 향해 날라가기 */
 	// Forward 조정
@@ -245,7 +245,7 @@ HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 
 CMay* CMay::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CMay* pInstance = new CMay(pDevice, pDeviceContext);																																																																	
+	CMay* pInstance = new CMay(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
@@ -313,6 +313,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+
 #pragma endregion
 
 #pragma region Local variable
@@ -325,6 +326,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_Y))/* 3층 */
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_O))/* 우산 */
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 
 #pragma region 8Way_Move
 
@@ -599,6 +602,10 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_0))/* 벽점프 전 */
 		m_pActorCom->Set_Position(XMVectorSet(-830.374512f, 793.359192f, 192.788605f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_Y))/* 3층 */
+		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_X))/* 우산 */
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -634,30 +641,6 @@ void CMay::KeyInput(_double dTimeDelta)
 			//bMove[1] = !bMove[1];
 			XMStoreFloat3(&m_vMoveDirection, (-vCameraLook - vCameraRight) / 2.f);
 		}
-		/*if (m_pGameInstance->Key_Pressing(DIK_UP) && m_pGameInstance->Key_Pressing(DIK_RIGHT))
-		{
-			bMove[0] = !bMove[0];
-			bMove[1] = !bMove[1];
-			XMStoreFloat3(&m_vMoveDirection, (vCameraLook + vCameraRight) / 2.f);
-		}
-		else if (m_pGameInstance->Key_Pressing(DIK_UP) && m_pGameInstance->Key_Pressing(DIK_LEFT))
-		{
-			bMove[0] = !bMove[0];
-			bMove[1] = !bMove[1];
-			XMStoreFloat3(&m_vMoveDirection, (vCameraLook - vCameraRight) / 2.f);
-		}
-		else if (m_pGameInstance->Key_Pressing(DIK_DOWN) && m_pGameInstance->Key_Pressing(DIK_RIGHT))
-		{
-			bMove[0] = !bMove[0];
-			bMove[1] = !bMove[1];
-			XMStoreFloat3(&m_vMoveDirection, (-vCameraLook + vCameraRight) / 2.f);
-		}
-		else if (m_pGameInstance->Key_Pressing(DIK_DOWN) && m_pGameInstance->Key_Pressing(DIK_LEFT))
-		{
-			bMove[0] = !bMove[0];
-			bMove[1] = !bMove[1];
-			XMStoreFloat3(&m_vMoveDirection, (-vCameraLook - vCameraRight) / 2.f);
-		}*/
 		else
 		{
 			if (m_pGameInstance->Get_Pad_LStickX() <= 25000 && m_iSavedKeyPress == RIGHT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
@@ -705,26 +688,26 @@ void CMay::KeyInput(_double dTimeDelta)
 				}
 			}
 
-			if (/*m_pGameInstance->Key_Pressing(DIK_UP) ||*/ m_pGameInstance->Get_Pad_LStickY() < 20000)
+			if ( m_pGameInstance->Get_Pad_LStickY() < 20000)
 			{
 				bMove[0] = !bMove[0];
 				XMStoreFloat3(&m_vMoveDirection, vCameraLook);
 				m_iSavedKeyPress = UP;
 			}
-			if (/*m_pGameInstance->Key_Pressing(DIK_DOWN) ||*/ m_pGameInstance->Get_Pad_LStickY() > 44000)
+			if ( m_pGameInstance->Get_Pad_LStickY() > 44000)
 			{
 				bMove[0] = !bMove[0];
 				XMStoreFloat3(&m_vMoveDirection, -vCameraLook);
 				m_iSavedKeyPress = DOWN;
 			}
 
-			if (/*m_pGameInstance->Key_Pressing(DIK_LEFT) || */m_pGameInstance->Get_Pad_LStickX() < 20000)
+			if (m_pGameInstance->Get_Pad_LStickX() < 20000)
 			{
 				bMove[1] = !bMove[1];
 				XMStoreFloat3(&m_vMoveDirection, -vCameraRight);
 				m_iSavedKeyPress = LEFT;
 			}
-			if (/*m_pGameInstance->Key_Pressing(DIK_RIGHT) ||*/ m_pGameInstance->Get_Pad_LStickX() > 44000)
+			if (m_pGameInstance->Get_Pad_LStickX() > 44000)
 			{
 				bMove[1] = !bMove[1];
 				XMStoreFloat3(&m_vMoveDirection, vCameraRight);
@@ -1057,8 +1040,8 @@ void CMay::Roll(const _double dTimeDelta)
 		{
 			m_fAcceleration = 5.0;
 			m_pModelCom->Set_Animation(ANI_M_Roll_Stop);
-			if(m_bMove == false)
-			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+			if (m_bMove == false)
+				m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 
 			m_bRoll = false;
 			m_bAction = true;
@@ -1112,7 +1095,7 @@ void CMay::Roll(const _double dTimeDelta)
 		}
 
 		if (m_fAcceleration > 0.f)
-		m_fAcceleration -= (_float)dTimeDelta * 10.f;
+			m_fAcceleration -= (_float)dTimeDelta * 10.f;
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
 		if (m_pActorCom->Get_IsOnGravityPath() == false)
 		{
@@ -1149,7 +1132,7 @@ void CMay::Roll(const _double dTimeDelta)
 		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta * m_fAcceleration);
 		m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), dTimeDelta);
 	}
-	
+
 }
 void CMay::Sprint(const _double dTimeDelta)
 {
@@ -1272,6 +1255,7 @@ void CMay::Sprint(const _double dTimeDelta)
 
 	}
 }
+
 void CMay::Jump(const _double dTimeDelta)
 {
 	if (m_bShortJump == true)
@@ -1630,8 +1614,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 }
 _bool CMay::Trigger_End(const _double dTimeDelta)
 {
-	if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jump_Land || 
-		m_pModelCom->Get_CurAnimIndex() == ANI_M_RocketFirework || 
+	if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jump_Land ||
+		m_pModelCom->Get_CurAnimIndex() == ANI_M_RocketFirework ||
 		m_pModelCom->Get_CurAnimIndex() == ANI_M_BruteCombat_Attack_Var1 ||
 		m_pModelCom->Get_CurAnimIndex() == ANI_M_Lever_Left ||
 		m_pModelCom->Get_CurAnimIndex() == ANI_M_Valve_Rotate_MH ||
@@ -1698,7 +1682,7 @@ void CMay::Pull_VerticalDoor(const _double dTimeDelta)
 
 	if (m_IsPullVerticalDoor == true)
 	{
- 		m_pModelCom->Set_Animation(ANI_M_Pull);
+		m_pModelCom->Set_Animation(ANI_M_Pull);
 		m_pModelCom->Set_NextAnimIndex(ANI_M_Pull);
 
 		_vector vSwitchPos = XMLoadFloat3(&m_vTriggerTargetPos);
@@ -2132,6 +2116,16 @@ void CMay::WallLaserTrap(const _double dTimeDelta)
 void CMay::Set_BossMissile_Attack()
 {
 	m_IsBoss_Missile_Explosion = true;
+}
+
+void CMay::Set_ActorPosition(_vector vPosition)
+{
+	m_pActorCom->Set_Position(vPosition);
+}
+
+void CMay::Set_ActorGravity(_bool IsZeroGravity, _bool IsUp, _bool _bStatic)
+{
+	m_pActorCom->Set_ZeroGravity(IsZeroGravity, IsUp, _bStatic);
 }
 
 void CMay::Falling_Dead(const _double dTimeDelta)

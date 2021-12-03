@@ -53,7 +53,10 @@ public:
 	void Set_Dead();
 	void Set_PlayerID(Player::ID ePlayerID);
 	void Set_PosX(_float fPosX);
-	void Set_TargetPos(_vector vPos);
+
+public:
+	virtual void Set_TargetPos(_vector vPos);
+	virtual void Set_ScaleEffect();
 
 protected:
 	_bool m_bActive = false;
@@ -75,6 +78,7 @@ protected:
 
 protected:
 	HRESULT Ready_Component();
+	HRESULT Set_UIDefaultVariables_Perspective(CVIBuffer* pVIBuffer);
 	HRESULT Set_UIVariables_Perspective(CVIBuffer* pVIBuffer);
 	HRESULT Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer);
 

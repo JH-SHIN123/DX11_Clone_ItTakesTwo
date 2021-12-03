@@ -26,6 +26,11 @@ _matrix CTransform::Get_WorldMatrix() const
 	return XMLoadFloat4x4(&m_WorldMatrix);
 }
 
+_double CTransform::Get_RotationPerSec() const
+{
+	return m_TransformDesc.dRotationPerSec;
+}
+
 void CTransform::Set_State(STATE eState, _fvector vState)
 {
 	memcpy(&m_WorldMatrix.m[eState][0], &vState, sizeof(_vector));

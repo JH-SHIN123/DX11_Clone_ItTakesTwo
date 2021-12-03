@@ -213,6 +213,11 @@ public:
 	CModel*		Get_Model() { return m_pModelCom; }
 	PLAYER_SIZE Get_Player_Size() { return m_eCurPlayerSize; }
 	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
+	_bool		Get_PushingBattery() { return m_IsPushingBattery; }
+public:
+	void Set_PushingBattery() { m_IsPushingBattery = false; }
+	void Set_OnParentRotate(_matrix ParentMatrix);
+	void Set_ControlJoystick(_bool IsCheck);
 
 public:
 	void Set_BossMissile_Attack(); // CBoss_Missile
@@ -229,6 +234,7 @@ private:
 	// 단발성 함수들.
 	HRESULT Ready_Component();
 	void Add_LerpInfo_To_Model();
+
 
 private: // Effects
 	class CEffect_Cody_Size* m_pEffect_Size = nullptr;
@@ -355,6 +361,9 @@ private:
 	_bool m_IsInGravityPipe = false;
 	_float m_fGoCenterTime = 0.f;
 
+	/* For.Pipe*/
+	_bool m_IsPipeBattery = false;
+
 	/* For.Valve */
 	_bool m_IsEnterValve = false;
 	_bool m_bStruggle = false;
@@ -375,6 +384,9 @@ private:
 	_float m_fRopeAngle = 0.f;
 	_float3 m_vStartPosition = {};
 	_float3 m_vDstPosition = {};
+
+	/* For.Umbrella */
+	_bool m_IsControlJoystick = false;
 
 	// Arbitrary damping
 	_float m_faDamping = 0.995f;

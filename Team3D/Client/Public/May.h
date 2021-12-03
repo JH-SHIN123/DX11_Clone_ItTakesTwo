@@ -105,7 +105,6 @@ public:
 		 
 		 /* For. Pull/Push Actions */
 		 PULL, PUSH_ENTER, PUSH_EXIT, PUSH_FWD, PUSH_MH, PUSH_STRUGGLE, HOLDBUTTON_ENTER, HOLDBUTTON_EXIT, HOLDBUTTON_MH, PUSHBUTTON_VAR1, PUSHBUTTON_VAR2, PUSHBUTTON_VAR2_MIRROR, PUSHBUTTON_VAR2_SNIPER, 
-		 
 		 /* For.Skydive Actions (낙하) */
 		 SKYDIVE_FALLING, SKYDIVE_FALLING_BCK, SKYDIVE_FALLING_FWD, SKYDIVE_FALLING_LEFT, SKYDIVE_FALLING_RIGHT, SKYDIVE_START, 
 		 
@@ -183,9 +182,12 @@ public: /* Getter */
 
 public:
 	void		Update_Tirgger_Pos(_vector vPos);
+	CPlayerActor* Get_Actor() { return m_pActorCom; }
 
 public:
 	void	Set_BossMissile_Attack(); // CBoss_Missile
+	void	Set_ActorPosition(_vector vPosition);
+	void	Set_ActorGravity(_bool IsZeroGravity ,_bool IsUp ,_bool _bStatic);
 
 	// Tick 에서 호출될 함수들
 private:

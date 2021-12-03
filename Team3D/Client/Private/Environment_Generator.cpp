@@ -296,8 +296,7 @@ HRESULT CEnvironment_Generator::Load_Environment_Space()
 		tIns_Env_Desc.Instancing_Arg.pWorldMatrices = new _float4x4[tIns_Env_Desc.Instancing_Arg.iInstanceCount];
 		ReadFile(hFile, tIns_Env_Desc.Instancing_Arg.pWorldMatrices, sizeof(_float4x4) * tIns_Env_Desc.Instancing_Arg.iInstanceCount, &dwByte, nullptr);
 
-		tIns_Env_Desc.Instancing_Arg.fCullingRadius = 10.f;
-
+		Set_Info_Model(tIns_Env_Desc);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, TEXT("GameObject_Instancing_Env"), &tIns_Env_Desc), E_FAIL);
 	}
 	CloseHandle(hFile);
@@ -648,6 +647,21 @@ CGameObject* CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D11
 	}
 	return pInstance;
 }
+void CEnvironment_Generator::Set_Info_Model(CInstancing_Env::ARG_DESC & tInfo)
+{
+	tInfo.Instancing_Arg.fCullingRadius = 10.f;
+
+	if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox_Platform"))
+		tInfo.Instancing_Arg.fCullingRadius = 50.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox08_Chunk"))
+		tInfo.Instancing_Arg.fCullingRadius = 50.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox06_Wall02"))
+		tInfo.Instancing_Arg.fCullingRadius = 50.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox06_Wall01"))
+		tInfo.Instancing_Arg.fCullingRadius = 50.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox06_Wall03"))
+		tInfo.Instancing_Arg.fCullingRadius = 50.f;
+}
 
 void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
 {
@@ -666,15 +680,15 @@ void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail06"))
 		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Moon_01_Plushie"))
-		tInfo.fCullRadius = 1000.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetWall"))
-		tInfo.fCullRadius = 1000.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetFloor"))
-		tInfo.fCullRadius = 1000.f;
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PlanetFloorRing"))
-		tInfo.fCullRadius = 1000.f;
-	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_PLanetLamp03"))
-		tInfo.fCullRadius = 1000.f;
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Planet_Lamp03"))
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh01"))
 		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh02"))
