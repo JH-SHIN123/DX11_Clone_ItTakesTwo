@@ -473,7 +473,6 @@ HRESULT CUI_Generator::Render_AlphaFont(_tchar * pText, FONTDESC tFontDesc, Play
 		//_float2 vRightTop = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
 		//_float2 vLeftBottom = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
 
-		//_float fPositionX = (tFontDesc.vPosition.x + (_float)i * iFontWidth) / fInterval + (tFontDesc.vPosition.x * fValue);
 		_float fPositionX = tFontDesc.vPosition.x + ((_float)i * iFontWidth / fInterval);
 
 		m_VTXFONT[i].vPosition = _float3(fPositionX, tFontDesc.vPosition.y, 0.f);
@@ -520,12 +519,6 @@ HRESULT CUI_Generator::Render_AlphaFont(_tchar * pText, FONTDESC tFontDesc, Play
 			m_pVIBuffer_FontCom->Set_Variable("g_UIWorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
 			m_pVIBuffer_FontCom->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
 			m_pVIBuffer_FontCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
-
-			//if (0 == iOption)
-			//	m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-			//else
-			//	m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
-
 		}
 		else
 		{
@@ -539,11 +532,6 @@ HRESULT CUI_Generator::Render_AlphaFont(_tchar * pText, FONTDESC tFontDesc, Play
 			m_pVIBuffer_FontCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
 			m_pVIBuffer_FontCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
 			m_pVIBuffer_FontCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
-
-			//if (0 == iOption)
-			//	m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-			//else
-			//	m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
 
 		}
 	}
