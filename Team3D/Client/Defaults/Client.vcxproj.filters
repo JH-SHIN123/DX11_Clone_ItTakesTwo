@@ -19,9 +19,6 @@
     <Filter Include="02.GameObject">
       <UniqueIdentifier>{b604bc39-7ea2-4ccb-a98b-f89e2d0279b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\02.Logo">
-      <UniqueIdentifier>{6e3ecc34-09e4-48a8-b8b4-f1dd9d96c681}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Maps\01.Loading">
       <UniqueIdentifier>{6fc0b5cb-e4c3-4c8d-8e2e-a4ec808b25df}</UniqueIdentifier>
     </Filter>
@@ -117,9 +114,6 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle">
       <UniqueIdentifier>{0683420e-60af-4eb9-974e-0929e6185c9c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Maps\04.Stage_Space">
-      <UniqueIdentifier>{5bbd0183-dea1-417a-b173-4e16c2288048}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Object">
       <UniqueIdentifier>{57086f47-9651-4c97-879a-fb50562cd8cf}</UniqueIdentifier>
@@ -640,6 +634,9 @@
     <Filter Include="98.Defines\01.Client">
       <UniqueIdentifier>{8431b0ed-43da-4c43-8cf2-69a00ab6b479}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Maps\03.Stage_Space">
+      <UniqueIdentifier>{5bbd0183-dea1-417a-b173-4e16c2288048}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -898,7 +895,7 @@
       <Filter>02.GameObject\04.Stage_Space\02.Se\01.GravityPath</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Stage.h">
-      <Filter>01.Maps\04.Stage_Space</Filter>
+      <Filter>01.Maps\03.Stage_Space</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PipeCurve.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\00.PipeCurve</Filter>
@@ -1384,7 +1381,7 @@
       <Filter>02.GameObject\04.Stage_Space\02.Se\01.GravityPath</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Stage.cpp">
-      <Filter>01.Maps\04.Stage_Space</Filter>
+      <Filter>01.Maps\03.Stage_Space</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PipeCurve.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\00.PipeCurve</Filter>
