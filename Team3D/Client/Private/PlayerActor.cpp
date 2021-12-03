@@ -91,14 +91,14 @@ void CPlayerActor::Update(_double dTimeDelta)
 			if (true == m_IsGoUp)
 			{
 				//PxVec3 vDist = MH_PxVec3(m_vPlayerUp, (_float)(dTimeDelta * 4.f));
-				PxVec3 vDist = { 0.f, (_float)(dTimeDelta * 4.f), 0.f };
+				PxVec3 vDist = { 0.f, (_float)(dTimeDelta * 12.f), 0.f };
 				m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
 				m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
 			}
 			else
 			{
 				//PxVec3 vDist = MH_PxVec3(m_vPlayerUp, (_float)(-dTimeDelta * 4.f));
-				PxVec3 vDist = { 0.f, (_float)(-dTimeDelta * 4.f), 0.f };
+				PxVec3 vDist = { 0.f, (_float)(-dTimeDelta * 12.f), 0.f };
 				m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
 				m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
 			}
