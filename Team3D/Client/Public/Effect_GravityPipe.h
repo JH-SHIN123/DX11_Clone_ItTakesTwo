@@ -10,6 +10,14 @@ END
 BEGIN(Client)
 class CEffect_GravityPipe final : public CInGameEffect_Model
 {
+	struct tagGravity_Desc
+	{
+		_float4 vPosition;
+		tagGravity_Desc() {}
+		tagGravity_Desc(_float4 vPos)
+			: vPosition(vPos){}
+	};
+	
 private:
 	explicit CEffect_GravityPipe(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CEffect_GravityPipe(const CEffect_GravityPipe& rhs);

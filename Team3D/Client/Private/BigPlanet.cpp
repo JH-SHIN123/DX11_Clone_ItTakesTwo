@@ -130,7 +130,6 @@ HRESULT CBigPlanet::Render(RENDER_GROUP::Enum eGroup)
 void CBigPlanet::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	// Cody
-
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePLANET, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));

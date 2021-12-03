@@ -12,6 +12,11 @@ CEffect_Umbrella_Pipe::CEffect_Umbrella_Pipe(const CEffect_Umbrella_Pipe & rhs)
 {
 }
 
+void CEffect_Umbrella_Pipe::Set_ParentWorldMatrix(_matrix ParentMatrix)
+{
+	XMStoreFloat4x4(&m_matParent, ParentMatrix);
+}
+
 HRESULT CEffect_Umbrella_Pipe::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
@@ -34,17 +39,34 @@ HRESULT CEffect_Umbrella_Pipe::NativeConstruct(void * pArg)
 
 	m_pParticle->Set_Particle_Radius(_float3(5.f, 40.f, 5.f));
 
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	vPos.m128_f32[1] += 6.5f;
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(63.75f, 72.35f, 196.f, 1.f));
 	return S_OK;
 }
 
 _int CEffect_Umbrella_Pipe::Tick(_double TimeDelta)
 {
+	if (true == m_IsDead)
+		return EVENT_DEAD;
+
 	m_fTime += (_float)TimeDelta * 0.1f;
 
 	if (3.f <= m_fTime)
 		m_fTime = 0.f;
 
+	_matrix matWorld, matScale, matRotX, matTrans;
+	matScale = XMMatrixScaling(1.5f, 3.f, 1.5f);
+	matTrans = XMMatrixTranslation(0.f, 0.5f, 3.f);
+	matRotX = XMMatrixRotationX(XMConvertToRadians(90.f));
+	matWorld = matScale * matRotX * matTrans * XMLoadFloat4x4(&m_matParent);
+	m_pTransformCom->Set_WorldMatrix(matWorld);
+
 	m_pParticle->Set_ParentMatrix(m_pTransformCom->Get_WorldMatrix());
+	m_pParticle->Set_Particle_Radius(_float3(5.f, 40.f, 5.f));
 
 	return _int();
 }
@@ -77,6 +99,11 @@ HRESULT CEffect_Umbrella_Pipe::Ready_Instance()
 	return S_OK;
 }
 
+void CEffect_Umbrella_Pipe::Set_Dead()
+{
+	m_IsDead = true;
+}
+
 CEffect_Umbrella_Pipe * CEffect_Umbrella_Pipe::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
 	CEffect_Umbrella_Pipe*	pInstance = new CEffect_Umbrella_Pipe(pDevice, pDeviceContext);
@@ -105,5 +132,6 @@ void CEffect_Umbrella_Pipe::Free()
 	Safe_Release(m_pTexturesCom_ColorRamp);
 
 	Safe_Release(m_pParticle);
+
 	__super::Free();
 }

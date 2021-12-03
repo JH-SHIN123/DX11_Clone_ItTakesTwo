@@ -91,15 +91,7 @@ private:
 
 	//For.SoftMove
 	_float3 m_vPlayerPos = { 0.f,0.f,0.f };
-	//회전 보간용
-	_float4x4 m_matQuternionRev;
-	//플레이어 업 체크용
-	_float m_fCulCalculateUp = 0.f;
-	_float m_fPreCalculateUp = 0.f;
 
-
-	// Sehoon
-	_float4x4	m_BaseMatrix;
 	WORLDMATRIX	m_PreWorld;
 	WORLDMATRIX	m_NextWorld;
 };

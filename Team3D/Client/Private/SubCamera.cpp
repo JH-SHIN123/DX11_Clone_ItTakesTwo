@@ -26,6 +26,7 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 {
 	CCamera::NativeConstruct(pArg);
 
+
 	CCameraActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eSUBCAMERA, this);
@@ -33,21 +34,25 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 	ArgDesc.pTransform = m_pTransformCom;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
+
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
 
+	CDataStorage::GetInstance()->Set_SubCamPtr(this);
 
 	XMStoreFloat4x4(&m_matPreRev, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_matQuternionRev, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 	XMStoreFloat4x4(&m_matStart, m_pTransformCom->Get_WorldMatrix());
+	m_eCurCamMode = CamMode::Cam_AutoToFree;
 
-	m_eCurCamMode = CamMode::Cam_Free;
 
+	m_PreWorld.vScale = _float4(1.f, 1.f, 1.f, 0.f);
+	m_PreWorld.vRotQuat = _float4(0.f, 0.f, 0.f, 1.f);
+	m_PreWorld.vTrans = _float4(0.f, 0.f, 0.f, 1.f);
 
-	//CameraDesc.vEye = /*_float3(0.f, 8.f, -7.f);*/_float3(0.f, 8.f, -11.f);
-	//CameraDesc.vAt = /*_float3(0.f, 0.f, 0.f);*/_float3(0.f, 4.5f, 0.f);
-
-	CDataStorage::GetInstance()->Set_SubCamPtr(this);
+	m_NextWorld.vScale = _float4(1.f, 1.f, 1.f, 0.f);
+	m_NextWorld.vRotQuat = _float4(0.f, 0.f, 0.f, 1.f);
+	m_NextWorld.vTrans = _float4(0.f, 0.f, 0.f, 1.f);
 
 	return S_OK;
 }
@@ -182,6 +187,7 @@ _int CSubCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 {
 
 
+
 	if (nullptr == m_pTargetObj)
 		return EVENT_ERROR;
 
@@ -230,15 +236,13 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_matrix matRev = XMMatrixIdentity();
 	CTransform* pPlayerTransform = dynamic_cast<CMay*>(m_pTargetObj)->Get_Transform();
 
-
 	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
-	matWorld *= XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_matPreRev));
-	m_pTransformCom->Set_WorldMatrix(matWorld);
+	m_pActorCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION)); //이전 프레임으로 컨트롤러 순간이동
+																					   /*if (true == m_bIsCollision)
+																					   matWorld = XMLoadFloat4x4(&m_matBeforeSpringCam);
+																					   */
 
-
-	//마우스 체크
 	_long MouseMove = 0;
-
 
 #ifdef __CONTROL_MAY_KEYBOARD
 	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X)/*m_pGameInstance->Get_Pad_RStickX() - 32767*/)
@@ -309,17 +313,20 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	}
 	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 14.f;
 	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 14.f;
-	//플레이어 업에따른 회전체크(For.May)
-	_vector vPlayerUp = XMVector4Normalize(pPlayerTransform->Get_State(CTransform::STATE_UP));
-	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	m_fCulCalculateUp = acosf(XMVectorGetX(XMVector4Dot(vAxisY, vPlayerUp)));
-	m_fPreCalculateUp += (m_fCulCalculateUp - m_fPreCalculateUp) * (_float)dTimeDelta;
+
 #endif
-	//카메라 회전에 따른 거리체크
-	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matBeginWorld));
+	_vector vLook = XMLoadFloat4x4(&m_matBeginWorld).r[2];
 	_vector vPos = XMLoadFloat4x4(&m_matStart).r[3];
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos - (vLook*(m_fMouseRev[Rev_Prependicul]) * 0.12f));
-	
+	_vector vDir = XMVectorZero();
+	/*if(static_cast<CMay*>(m_pTargetObj)->Get_Actor()->Get_IsOnGravityPath())
+		vDir = (vLook*(m_fMouseRev[Rev_Prependicul]) * 0.3f);
+	else*/
+		vDir = (vLook*(m_fMouseRev[Rev_Prependicul]) * 0.12f);
+
+	_vector vTargetPos = vPos - vDir;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos - vDir);
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 
 	//CamEffect
@@ -328,36 +335,48 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	{
 		if (m_pCamHelper->Tick_CamEffect(CFilm::RScreen, dTimeDelta, XMLoadFloat4x4(&m_matBeginWorld)))
 			m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::RScreen));
-		//XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 	}
 
 	//카메라 움직임이 끝나고 체크할것들
 
+	//카메라 움직임이 끝나고 체크할것들
 	//SoftMoving
 	_vector vPrePlayerPos = XMVectorSetW(XMLoadFloat3(&m_vPlayerPos), 1.f);
 	_vector vCurPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 	//카메라와 플레이어의 실제 거리
 	_vector vPlayerPos = vCurPlayerPos;
+
 	if (XMVectorGetX(XMVector4Length(vPrePlayerPos - vCurPlayerPos)) < 10.f) //순간이동안했을때
-		vPlayerPos = XMVectorLerp(vPrePlayerPos, vCurPlayerPos, XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 2.f);
+		vPlayerPos = XMVectorLerp(vPrePlayerPos, vCurPlayerPos,
+			XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 2.f);
+
+
 	XMStoreFloat3(&m_vPlayerPos, vPlayerPos);
 
-	//회전 보간
-	_vector vPreQuarternionRot = XMQuaternionRotationRollPitchYaw(
-		XMConvertToRadians(m_fCurMouseRev[Rev_Prependicul]), XMConvertToRadians(m_fCurMouseRev[Rev_Holizontal]), 0.f);
-	_vector vCurQuarternionRot = XMQuaternionRotationRollPitchYaw(
-		XMConvertToRadians(m_fMouseRev[Rev_Prependicul]), XMConvertToRadians(m_fMouseRev[Rev_Holizontal]), 0.f);
+	//회전 보간(마우스)
+	_vector vCurQuartRot = XMQuaternionRotationRollPitchYaw(XMConvertToRadians(
+		m_fCurMouseRev[Rev_Prependicul]), XMConvertToRadians(m_fCurMouseRev[Rev_Holizontal]), 0.f);
+	//Sehoon
 
-	_matrix QuarRev = XMMatrixRotationQuaternion(
-		XMQuaternionSlerp(vPreQuarternionRot, vCurQuarternionRot,
-			(_float)dTimeDelta * XMVectorGetX(XMVector4Length(vPreQuarternionRot - vCurQuarternionRot))));
+	_matrix matQuat = XMMatrixRotationQuaternion(vCurQuartRot);
+
+	_vector vScale, vRotQuat, vTrans;
+	_vector  vCurRotQuat, vCurTrans;
+	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) * matQuat *
+		MH_RotationMatrixByUp(
+		((CMay*)DATABASE->GetMay())->Get_IsInGravityPipe() ? XMVectorSet(0.f, 1.f, 0.f, 0.f) : pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos));
 
 
-	_matrix matTrans = XMMatrixTranslation(XMVectorGetX(vPlayerPos), XMVectorGetY(vPlayerPos), XMVectorGetZ(vPlayerPos));
-	_matrix matCurUp = XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(
-		0.f, 0.f, -m_fPreCalculateUp));
+	XMStoreFloat4(&m_NextWorld.vRotQuat, vRotQuat);
+	XMStoreFloat4(&m_NextWorld.vTrans, vTrans);
 
-	matRev = QuarRev *matCurUp * matTrans;
+	vCurRotQuat = XMQuaternionSlerp(XMLoadFloat4(&m_PreWorld.vRotQuat), vRotQuat, 0.1f);
+	vCurTrans = XMVectorLerp(XMLoadFloat4(&m_PreWorld.vTrans), vTrans, 0.1f);
+
+
+	XMStoreFloat4(&m_PreWorld.vRotQuat, vCurRotQuat);
+	XMStoreFloat4(&m_PreWorld.vTrans, vCurTrans);
+
 
 
 
@@ -369,10 +388,9 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	//	//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vResultPos), XMVectorGetY(vResultPos), XMVectorGetZ(vResultPos)));
 	//}
 #pragma endregion
-	//Key_Check(dTimeDelta);
-	XMStoreFloat4x4(&m_matPreRev, matRev);
 
-	m_pTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix() * matRev);
+
+	m_pTransformCom->Set_WorldMatrix(XMMatrixAffineTransformation(XMVectorSet(1.f, 1.f, 1.f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 1.f), vCurRotQuat, vCurTrans));
 
 	return NO_EVENT;
 }
