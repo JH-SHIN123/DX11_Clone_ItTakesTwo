@@ -213,7 +213,7 @@ _int CCody::Tick(_double dTimeDelta)
 	/////////////////////////////////////////////
 	KeyInput_Rail(dTimeDelta);
 
-	if (false == m_bMoveToRail && false == m_bOnRail)
+	if (false == m_bMoveToRail && false == m_bOnRail && false == m_bOnRailEnd)
 	{
 		Wall_Jump(dTimeDelta);
 		if (Trigger_Check(dTimeDelta))
@@ -267,8 +267,9 @@ _int CCody::Tick(_double dTimeDelta)
 
 	/* 레일타기 : 타겟을 찾지 못하면 타지않음. */
 	TakeRail(dTimeDelta);
+	TakeRailEnd(dTimeDelta);
 
-	if (true == m_bOnRail || true == m_bMoveToRail)
+	if (true == m_bOnRail || true == m_bMoveToRail || true == m_bOnRailEnd)
 	{
 		_vector vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		m_pActorCom->Set_Position(vPlayerPos);
@@ -2815,7 +2816,26 @@ void CCody::TakeRail(_double dTimeDelta)
 	{
 		m_pTargetRail = nullptr;
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // 자유낙하 애니메이션으로 변경해야함.
-		m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+		m_bOnRailEnd = true;
+	}
+}
+void CCody::TakeRailEnd(_double dTimeDelta)
+{
+	if (m_bOnRailEnd)
+	{
+		_double dRailEndForceTime = 0.2;
+		if (m_dRailEnd_ForceDeltaT >= dRailEndForceTime)
+		{
+			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+			
+			m_dRailEnd_ForceDeltaT = 0.0;
+			m_bOnRailEnd = false;
+		}
+		else 
+		{
+			m_pTransformCom->Go_Straight((dRailEndForceTime - m_dRailEnd_ForceDeltaT) * 4.f);
+			m_dRailEnd_ForceDeltaT += dTimeDelta;
+		}
 	}
 }
 void CCody::ShowRailTargetTriggerUI()
