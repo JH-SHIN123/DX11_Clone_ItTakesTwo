@@ -19,7 +19,7 @@
 /**
 * 맵 로딩하려면 주석 처리.
 */
-#define __MAPLOADING_OFF
+//#define __MAPLOADING_OFF
 
 
 /**
