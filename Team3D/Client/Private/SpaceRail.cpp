@@ -24,8 +24,15 @@ _bool CSpaceRail::Take_Path(_double dTimeDelta, _matrix& WorldMatrix)
 {
 	if (nullptr == m_pPathCom) return false;
 
+	// 1번 : 0.2
+	// 2번 : 0.2
+	// 3번 : 0.2
+	// 4번 : 0.8
+	// 5번 : 1.0
+	// 6번 : 1.0
+
 	// 속도는 프레임개수로 조절하자.
-	return m_pPathCom->Update_Animation(dTimeDelta * 0.2, WorldMatrix);
+	return m_pPathCom->Update_Animation(dTimeDelta * 1.0, WorldMatrix);
 }
 
 
@@ -60,21 +67,27 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 	// 모델태그에 따라, 패스 지정해주기
 	if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail01"))) {
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail01"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+		m_fRailSpeed = 0.2f;
 	}
 	else if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail02"))){
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail02"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+		m_fRailSpeed = 0.2f;
 	}
 	else if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail03"))) {
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail03"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+		m_fRailSpeed = 0.2f;
 	}
 	else if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail04"))) {
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail04"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+		m_fRailSpeed = 0.8f;
 	}
 	else if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail05"))) {
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail05"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+		m_fRailSpeed = 1.f;
 	}
 	else if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail06"))) {
 		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail06"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+		m_fRailSpeed = 1.f;
 	}
 
 	/* Space Rail Node 구성 */
