@@ -48,7 +48,7 @@ HRESULT CMainApp::Run_App()
 		//m_dTimeDelta = dTimeDelta;
 		m_dTimeDelta = 0.016666666666666666;
 
-		if (Tick(m_dTimeDelta) & 0x80000000)
+		if (Tick(dTimeDelta) & 0x80000000)
 			return E_FAIL;
 
 		if (FAILED(Render(dTimeDelta)))

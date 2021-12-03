@@ -90,7 +90,7 @@ HRESULT CPath::NativeConstruct(void* pArg)
 
 HRESULT CPath::Start_Path(STATE eState, _uint iAnimFrame, _bool bStop)
 {
-	m_bPlayAnimation = bStop;
+	if (bStop) m_bPlayAnimation = false;
 
 	if (m_bPlayAnimation) return S_OK;
 	NULL_CHECK_RETURN(m_pPathAnim, E_FAIL);
