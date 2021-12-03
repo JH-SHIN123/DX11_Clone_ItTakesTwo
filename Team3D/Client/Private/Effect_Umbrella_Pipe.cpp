@@ -27,29 +27,25 @@ HRESULT CEffect_Umbrella_Pipe::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_flowmaptest", TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Wormhole_Noise", TEXT("Com_Texture_Distortion"), (CComponent**)&m_pTexturesCom_Distortion), E_FAIL);
 
-	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObject_2D_Env_Particle", nullptr, (CGameObject**)&m_pParticle);
-	m_pParticle->Set_InstanceCount(5000);
+	CEffect_Env_Particle::EParticle_Type Particle_Type;
+	Particle_Type = CEffect_Env_Particle::Umbrella;
+	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObject_2D_Env_Particle", &Particle_Type, (CGameObject**)&m_pParticle);
+	m_pParticle->Set_InstanceCount(2500);
 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(63.75f, 72.35f, 196.f, 1.f));
+	m_pParticle->Set_Particle_Radius(_float3(5.f, 40.f, 5.f));
+
 	return S_OK;
 }
 
 _int CEffect_Umbrella_Pipe::Tick(_double TimeDelta)
 {
-
 	m_fTime += (_float)TimeDelta * 0.1f;
 
 	if (3.f <= m_fTime)
 		m_fTime = 0.f;
 
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
-		m_pParticle->Set_IsActivateParticles(true);
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD6))
-		m_pParticle->Set_IsActivateParticles(false);
-
 	m_pParticle->Set_ParentMatrix(m_pTransformCom->Get_WorldMatrix());
 
-	m_pParticle->Set_Particle_Radius(_float3(5.f, 40.f, 5.f));
 	return _int();
 }
 
@@ -67,7 +63,7 @@ HRESULT CEffect_Umbrella_Pipe::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom->Set_ShaderResourceView("g_ColorRampTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(0));
 	m_pModelCom->Set_ShaderResourceView("g_DistortionTexture", m_pTexturesCom_Distortion->Get_ShaderResourceView(0));
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Render_Model(5);
+	m_pModelCom->Render_Model(6);
 
 	return S_OK;
 }

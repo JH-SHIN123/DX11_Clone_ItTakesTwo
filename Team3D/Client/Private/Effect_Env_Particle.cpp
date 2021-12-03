@@ -21,7 +21,8 @@ HRESULT CEffect_Env_Particle::NativeConstruct_Prototype(void * pArg)
 HRESULT CEffect_Env_Particle::NativeConstruct(void * pArg)
 {
 	if (nullptr != pArg)
-		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
+		memcpy(&m_eParticle_Type, pArg, sizeof(EParticle_Type));
+
 	//m_pRendererCom
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
@@ -109,14 +110,8 @@ void CEffect_Env_Particle::Check_State(_double TimeDelta)
 	case  CEffect_Env_Particle::STATE_DISAPPEAR:
 		State_Disappear(TimeDelta);
 		break;
-	case CEffect_Env_Particle::STATE_ON:
-		State_On(TimeDelta);
-		break;
-	case CEffect_Env_Particle::STATE_OFF:
-		State_Off(TimeDelta);
-		break;
 	default:
-		m_eStateValue_Next = STATE_OFF;
+		m_eStateValue_Next = STATE_DISAPPEAR;
 		break;
 	}
 }
@@ -161,7 +156,10 @@ void CEffect_Env_Particle::State_Disappear(_double TimeDelta)
 
 	m_dControl_Time -= TimeDelta * 0.1;
 	if (0.0 >= m_dControl_Time)
+	{
 		m_dControl_Time = 0.0;
+		return;
+	}
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
@@ -185,14 +183,6 @@ void CEffect_Env_Particle::State_Disappear(_double TimeDelta)
 		if (0.f >= m_pInstanceBuffer_STT[iIndex].vSize.x)
 			m_pInstanceBuffer_STT[iIndex].vSize = { 0.f, 0.f };
 	}
-}
-
-void CEffect_Env_Particle::State_On(_double TimeDelta)
-{
-}
-
-void CEffect_Env_Particle::State_Off(_double TimeDelta)
-{
 }
 
 _float4 CEffect_Env_Particle::Get_Rand_Pos()

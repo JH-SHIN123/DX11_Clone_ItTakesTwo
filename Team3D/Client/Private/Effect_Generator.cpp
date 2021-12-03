@@ -146,7 +146,6 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 
 		if (1 < lstrlen(Data->ModelName))
 		{
-			// ¼öÁ¤
 			wstring	 wstrName = Data->ModelName;
 			wstrName.erase(0, 16);
 			_tchar szPrototypeName[MAX_PATH] = L"";
@@ -284,14 +283,8 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Explosion7x7"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Explosion/Explosion7x7_%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Explosion8x8"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Explosion/Explosion8x8_%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Ember_Texture"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/T_Ember_Texture_256.png"))), E_FAIL);
-//
 
 #pragma endregion
-
-	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RespawnTunnel_MaskingMesh")
-		, CModel::Create(pDevice, pDeviceContext, TEXT("../Bin/Resources/Effect/3D/"), TEXT("RespawnTunnel_MaskingMesh"), TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
-
 
 	return S_OK;
 }
@@ -307,7 +300,7 @@ void CEffect_Generator::LoopSpawner(_double TimeDelta)
 
 		_matrix WorldMatrix = XMMatrixIdentity();
 		
-		WorldMatrix.r[3] = { 5.f, 0.f, 5.f, 1.f };
+		WorldMatrix.r[3] = { 30.f, 0.f, 30.f, 1.f };
 		//Add_Effect(Effect_Value::Cody_DeadEffect, WorldMatrix);
 	}
 #endif // _DEBUG

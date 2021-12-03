@@ -196,9 +196,6 @@
     <Filter Include="02.GameObject\06.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\06.Sky">
-      <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default">
       <UniqueIdentifier>{8ee023fd-0ab8-4432-8c7b-28309c0cb8b4}</UniqueIdentifier>
     </Filter>
@@ -262,6 +259,45 @@
     <Filter Include="03.Component\01.Actor\99.EventCallback">
       <UniqueIdentifier>{e43d39f3-5732-46ee-85d4-9b5d0244f918}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space">
+      <UniqueIdentifier>{9b2ce05d-80d0-464d-8dce-5a75d40f42db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon">
+      <UniqueIdentifier>{307d7217-2819-471f-be94-d8cf74b19ac9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\00.Rocket">
+      <UniqueIdentifier>{a4d27e3c-4021-47f3-bb3c-081dd7fb5758}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\01.StarBuddy">
+      <UniqueIdentifier>{6be15374-eb26-4929-8e60-d673bd18461d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\02.SecurityCamera">
+      <UniqueIdentifier>{db7e22fc-29b8-4ab2-a9be-83636efb01da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\03.Robot">
+      <UniqueIdentifier>{cb5078d5-ca2a-48ea-ab02-93109613a458}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction">
+      <UniqueIdentifier>{1c2f6626-67b0-482c-a1ec-122b03c25042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\03.Robot\NoneInteraction">
+      <UniqueIdentifier>{52929ebb-0420-4a62-9b53-eddeed4bac1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\05.BigButton">
+      <UniqueIdentifier>{e542390a-f37e-411e-8fa0-b1338584a8eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\06.SpaceValve">
+      <UniqueIdentifier>{220b96f2-3a32-467d-a590-dc1504fa0045}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\07.BigPlanet">
+      <UniqueIdentifier>{cde19c6b-aaa3-40d0-8a31-9981b800428b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO">
+      <UniqueIdentifier>{7f50933c-0671-40a9-ab76-5da48106a69e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung">
+      <UniqueIdentifier>{fec661ad-31f9-4dec-b790-1b4cb09030ce}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\03.Character\03.Title">
       <UniqueIdentifier>{c6f20a96-3c8d-4d61-acd8-53abeea0b007}</UniqueIdentifier>
     </Filter>
@@ -271,8 +307,14 @@
     <Filter Include="02.GameObject\02.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\00.WarpGate">
+      <UniqueIdentifier>{2650a767-00d4-4a91-bc33-20a9b360ce35}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\00.Robot_Battery_Spark">
       <UniqueIdentifier>{61f2a2e3-61fb-4b3b-b340-fdaadb28c443}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\01.Boss_Missile">
+      <UniqueIdentifier>{b6a72df0-6523-4590-a934-cd52c7bacae5}</UniqueIdentifier>
     </Filter>
     <Filter Include="03.Component\01.Actor">
       <UniqueIdentifier>{2ec58a84-d189-4974-a108-05b4f318d045}</UniqueIdentifier>
@@ -316,95 +358,11 @@
     <Filter Include="02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Shield">
       <UniqueIdentifier>{fb978188-0a8f-4c6d-a78d-84b804f1c4b0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe">
-      <UniqueIdentifier>{0e9afc0b-547c-49be-9832-18d17154215d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space">
-      <UniqueIdentifier>{9b2ce05d-80d0-464d-8dce-5a75d40f42db}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon">
-      <UniqueIdentifier>{307d7217-2819-471f-be94-d8cf74b19ac9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\00.Rocket">
-      <UniqueIdentifier>{a4d27e3c-4021-47f3-bb3c-081dd7fb5758}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\01.StarBuddy">
-      <UniqueIdentifier>{6be15374-eb26-4929-8e60-d673bd18461d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\02.SecurityCamera">
-      <UniqueIdentifier>{db7e22fc-29b8-4ab2-a9be-83636efb01da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\03.Robot">
-      <UniqueIdentifier>{cb5078d5-ca2a-48ea-ab02-93109613a458}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction">
-      <UniqueIdentifier>{1c2f6626-67b0-482c-a1ec-122b03c25042}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\03.Robot\NoneInteraction">
-      <UniqueIdentifier>{52929ebb-0420-4a62-9b53-eddeed4bac1f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\05.BigButton">
-      <UniqueIdentifier>{e542390a-f37e-411e-8fa0-b1338584a8eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\06.SpaceValve">
-      <UniqueIdentifier>{220b96f2-3a32-467d-a590-dc1504fa0045}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\07.BigPlanet">
-      <UniqueIdentifier>{cde19c6b-aaa3-40d0-8a31-9981b800428b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO">
-      <UniqueIdentifier>{7f50933c-0671-40a9-ab76-5da48106a69e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\04.TutorialDoor">
-      <UniqueIdentifier>{9504df9e-0d63-4641-8f31-8099b62bfdd7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall">
-      <UniqueIdentifier>{fe876da6-8259-4e3e-90d8-354a88c44141}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious">
-      <UniqueIdentifier>{2f43f579-02a4-4fed-ae3b-0ad23196e3d6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction">
-      <UniqueIdentifier>{02d25f90-5a3d-4109-a65a-6252881bda16}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtNoBatterySign">
-      <UniqueIdentifier>{91b92e36-fb30-4bfb-9fcb-fa81f079a00c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtRobotBattery">
-      <UniqueIdentifier>{a9f8b886-803b-4d67-94cf-2d458546f1f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtRobotLever">
-      <UniqueIdentifier>{64304ba0-f4f3-4e64-9840-af570edea2fb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction">
-      <UniqueIdentifier>{e2598d72-4016-4d6b-b7b8-9dda05344391}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotHead">
-      <UniqueIdentifier>{195a53e8-d60a-4b6a-acc2-e528f877d4bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotBody">
-      <UniqueIdentifier>{42706a67-5aea-4846-b91e-9da6e6697ac1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\03.Jung">
-      <UniqueIdentifier>{fec661ad-31f9-4dec-b790-1b4cb09030ce}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\00.WarpGate">
-      <UniqueIdentifier>{2650a767-00d4-4a91-bc33-20a9b360ce35}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\01.Boss_Missile">
-      <UniqueIdentifier>{b6a72df0-6523-4590-a934-cd52c7bacae5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\02.FireDoor">
-      <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\02.Se">
       <UniqueIdentifier>{4fcd64c3-f491-4bc2-b03e-7ee6a2091478}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\02.Se\01.GravityPath">
       <UniqueIdentifier>{f3a893e3-2973-442e-a466-ffed74b1f8dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.HangingPlanet">
-      <UniqueIdentifier>{7bfbdffb-00e8-4343-bff3-44a6e744dba5}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye">
       <UniqueIdentifier>{ade7861b-fc9f-4044-8e8a-b7432305af13}</UniqueIdentifier>
@@ -505,17 +463,56 @@
     <Filter Include="02.GameObject\04.Stage_Space\08.Jun">
       <UniqueIdentifier>{0a4d8ed2-ea40-4cd4-bfdf-16db4b954909}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\03.TutorialDoor">
-      <UniqueIdentifier>{6d013226-dd4d-47df-845f-f9034ed1d948}</UniqueIdentifier>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe">
+      <UniqueIdentifier>{0e9afc0b-547c-49be-9832-18d17154215d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\02.FireDoor">
+      <UniqueIdentifier>{c64558d0-50ff-40c0-8322-0064f0b61528}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\04.TutorialDoor">
+      <UniqueIdentifier>{9504df9e-0d63-4641-8f31-8099b62bfdd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star">
+      <UniqueIdentifier>{fd9a8160-d96b-47d1-bbc1-8925a4337c3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\05.WallLaserTrap_Button">
+      <UniqueIdentifier>{11557409-6e38-46f9-bd46-3e3fd3d5834f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung\04.WallLaserTrap">
       <UniqueIdentifier>{fa6de605-6bf4-4a82-be5c-527474637da3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\05.WallLaserTrap_Button">
-      <UniqueIdentifier>{2cb7fbb3-db23-46a9-b38f-330d5c77105f}</UniqueIdentifier>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\03.TutorialDoor">
+      <UniqueIdentifier>{6d013226-dd4d-47df-845f-f9034ed1d948}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star">
-      <UniqueIdentifier>{4b2fcde0-cecd-4f8f-9cbb-2fc26ba1b1fd}</UniqueIdentifier>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall">
+      <UniqueIdentifier>{fe876da6-8259-4e3e-90d8-354a88c44141}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious">
+      <UniqueIdentifier>{2f43f579-02a4-4fed-ae3b-0ad23196e3d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction">
+      <UniqueIdentifier>{02d25f90-5a3d-4109-a65a-6252881bda16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction">
+      <UniqueIdentifier>{e2598d72-4016-4d6b-b7b8-9dda05344391}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotHead">
+      <UniqueIdentifier>{195a53e8-d60a-4b6a-acc2-e528f877d4bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotBody">
+      <UniqueIdentifier>{42706a67-5aea-4846-b91e-9da6e6697ac1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtNoBatterySign">
+      <UniqueIdentifier>{91b92e36-fb30-4bfb-9fcb-fa81f079a00c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtRobotBattery">
+      <UniqueIdentifier>{a9f8b886-803b-4d67-94cf-2d458546f1f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\Interaction\RtRobotLever">
+      <UniqueIdentifier>{64304ba0-f4f3-4e64-9840-af570edea2fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.HangingPlanet">
+      <UniqueIdentifier>{7bfbdffb-00e8-4343-bff3-44a6e744dba5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -693,6 +690,9 @@
     <ClInclude Include="..\Public\RobotBattery.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TutorialDoor.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\03.TutorialDoor</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\BigButton.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\05.BigButton</Filter>
     </ClInclude>
@@ -861,6 +861,15 @@
     <ClInclude Include="..\public\Effect_Umbrella_Pipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\WallLaserTrap.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\04.WallLaserTrap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\WallLaserTrap_Button.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\05.WallLaserTrap_Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Space_Valve_Star.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\DummyWall.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
     </ClInclude>
@@ -887,18 +896,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\GameOption.h">
       <Filter>00.MainApp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\WallLaserTrap.h">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\04.WallLaserTrap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\WallLaserTrap_Button.h">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\05.WallLaserTrap_Button</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Space_Valve_Star.h">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\TutorialDoor.h">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\03.TutorialDoor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1045,6 +1042,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\RobotBattery.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\Interaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TutorialDoor.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\03.TutorialDoor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BigButton.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\05.BigButton</Filter>
@@ -1217,6 +1217,15 @@
     <ClCompile Include="..\private\Effect_Umbrella_Pipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\WallLaserTrap.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\04.WallLaserTrap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WallLaserTrap_Button.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\05.WallLaserTrap_Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Space_Valve_Star.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\DummyWall.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
     </ClCompile>
@@ -1240,18 +1249,6 @@
     </ClCompile>
     <ClCompile Include="..\private\MainApp.cpp">
       <Filter>00.MainApp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\WallLaserTrap.cpp">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\04.WallLaserTrap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\WallLaserTrap_Button.cpp">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\05.WallLaserTrap_Button</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Space_Valve_Star.cpp">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\TutorialDoor.cpp">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\03.TutorialDoor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

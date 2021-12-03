@@ -25,7 +25,6 @@ HRESULT CEffect_RespawnTunnel::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise"), TEXT("Com_Texture_Distor"), (CComponent**)&m_pTexturesCom_Distortion), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model_Mask"), (CComponent**)&m_pModelCom_Mask), E_FAIL);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV"), TEXT("Com_VIBuffer"), (CComponent**)&m_pBufferRectCom_Preview), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Level_Preview"), TEXT("Com_Texture_Preview"), (CComponent**)&m_pTexturesCom_Preview), E_FAIL);
@@ -41,9 +40,9 @@ HRESULT CEffect_RespawnTunnel::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_Scale(XMVectorSet(0.4f, 0.4f, 0.4f, 0.f));
 	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
-	WorldMatrix.r[0] = XMVector3Normalize(WorldMatrix.r[0]) * 0.42f;
-	WorldMatrix.r[1] = XMVector3Normalize(WorldMatrix.r[1]) * 0.42f;
-	WorldMatrix.r[2] = XMVector3Normalize(WorldMatrix.r[2]) * 0.42f;
+	WorldMatrix.r[0] = XMVector3Normalize(WorldMatrix.r[0]) * 0.41f;
+	WorldMatrix.r[1] = XMVector3Normalize(WorldMatrix.r[1]) * 0.41f;
+	WorldMatrix.r[2] = XMVector3Normalize(WorldMatrix.r[2]) * 0.41f;
 
 	XMStoreFloat4x4(&m_MatrixMask, WorldMatrix);
 
@@ -60,25 +59,13 @@ _int CEffect_RespawnTunnel::Tick(_double TimeDelta)
 	if (360.f <= m_fRadianAngle)
 		m_fRadianAngle = 0.f;
 
-	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-
-	WorldMatrix.r[0] = XMVector3Normalize(WorldMatrix.r[0]) * 0.41f;
-	WorldMatrix.r[1] = XMVector3Normalize(WorldMatrix.r[1]) * 0.41f;
-	WorldMatrix.r[2] = XMVector3Normalize(WorldMatrix.r[2]) * 0.41f;
-
-	XMStoreFloat4x4(&m_MatrixMask, WorldMatrix);
-
 	return _int();
 }
 
 _int CEffect_RespawnTunnel::Late_Tick(_double TimeDelta)
-{
-	
-	if (0 < m_pModelCom_Mask->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 50.f))
-	{
-		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 50.f))
-			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING, this);
-	}
+{	
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 50.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING, this);
 
 	return NO_EVENT;
 }
@@ -87,8 +74,8 @@ HRESULT CEffect_RespawnTunnel::Render(RENDER_GROUP::Enum eGroup)
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	m_pModelCom_Mask->Set_DefaultVariables_Perspective(XMLoadFloat4x4(&m_MatrixMask));
-	m_pModelCom_Mask->Render_Model(8);
+	m_pModelCom->Set_DefaultVariables_Perspective(XMLoadFloat4x4(&m_MatrixMask));
+	m_pModelCom->Render_Model(8);
 
 	m_pModelCom->Set_Variable("g_fTime", &m_fTime_UV, sizeof(_float));
 	m_pModelCom->Set_ShaderResourceView("g_DistortionTexture",	m_pTexturesCom_Distortion->Get_ShaderResourceView(2));
@@ -140,14 +127,8 @@ void CEffect_RespawnTunnel::Set_Stage_Viewer(CWarpGate::STAGE_VALUE eValue)
 	case Client::CWarpGate::MAIN_UMBRELLA:
 		m_iStageViewer = 1;
 		break;
-	case Client::CWarpGate::STAGE_UMBRELLA:
-		m_iStageViewer = 0;
-		break;
 	case Client::CWarpGate::MAIN_PLANET:
 		m_iStageViewer = 4;
-		break;
-	case Client::CWarpGate::STAGE_PLANET:
-		m_iStageViewer = 0;
 		break;
 	default:
 		m_iStageViewer = 0;
@@ -179,7 +160,6 @@ CGameObject * CEffect_RespawnTunnel::Clone_GameObject(void * pArg)
 
 void CEffect_RespawnTunnel::Free()
 {
-	Safe_Release(m_pModelCom_Mask);
 	Safe_Release(m_pTexturesCom_Distortion);
 	Safe_Release(m_pTexturesCom_ColorRamp);
 

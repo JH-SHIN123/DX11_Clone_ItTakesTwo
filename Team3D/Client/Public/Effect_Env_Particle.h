@@ -11,6 +11,15 @@ BEGIN(Client)
 // 메쉬 안에서 뿌릴 애들
 class CEffect_Env_Particle final : public CInGameEffect
 {
+public:
+	enum  EParticle_Type { Default, Umbrella, Portal, Type_End };
+	struct tagEnvParticle
+	{
+		EParticle_Type eParticle_Type;
+		tagEnvParticle() {}
+		tagEnvParticle(EParticle_Type eType)
+			: eParticle_Type(eType) {}
+	};
 private:
 	explicit CEffect_Env_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CEffect_Env_Particle(const CEffect_Env_Particle& rhs);
@@ -42,8 +51,6 @@ private:
 	void Check_State(_double TimeDelta);
 	void State_Start(_double TimeDelta);
 	void State_Disappear(_double TimeDelta);
-	void State_On(_double TimeDelta);
-	void State_Off(_double TimeDelta);
 
 private:
 	_float4 Get_Rand_Pos();
@@ -51,6 +58,9 @@ private:
 	HRESULT Reset_Instance(_int iIndex);
 	HRESULT Reset_Instance_All();
 	HRESULT Initialize_Instance();
+
+private:
+	EParticle_Type m_eParticle_Type = Type_End;
 
 private: // 전체적인 인스턴싱을 제어함
 	enum STATE_VALUE {STATE_START, STATE_DISAPPEAR, STATE_ON, STATE_OFF, STATE_END};
