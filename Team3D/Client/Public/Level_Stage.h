@@ -24,6 +24,7 @@ private:
 	HRESULT Ready_Layer_WarpGate(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Wormhole(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_WallLaserTrap(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_GravityPipe(const _tchar* pLayerTag);
 	/* Hye */
 	HRESULT Ready_Layer_Planet(const _tchar* pLayerTag);
 	/* Won */
@@ -51,6 +52,7 @@ private:
 	HRESULT Ready_Layer_RobotParts(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_RotatedRobotParts(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_DummyWall(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_MayJumpWall(const _tchar* pLayerTag);
 
 
 	/* Jin */

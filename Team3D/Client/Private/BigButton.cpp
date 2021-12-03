@@ -67,7 +67,7 @@ _int CBigButton::Tick(_double dTimeDelta)
 				m_fMoveDist += (_float)dTimeDelta;
 				m_pTransformCom->Go_Down(dTimeDelta * 0.4f);
 			}
-			if (m_fMoveDist >= 0.5f)
+			if (m_fMoveDist >= 0.46f)
 			{
 				m_bUpdate = false;
 				DATABASE->Set_BigButtonPressed(true);
@@ -129,7 +129,7 @@ HRESULT CBigButton::Render_ShadowDepth()
 
 void CBigButton::Check_Collision_PlayerAnim()
 {
-	if (m_IsCollide == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land
+	if (m_IsCollide == true && ((((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_ChangeSize_GroundPound_Falling || (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit)
 		&& (((CCody*)DATABASE->GetCody())->Get_Player_Size() == CCody::PLAYER_SIZE::SIZE_LARGE))
 	{
 		m_bPressed = true;

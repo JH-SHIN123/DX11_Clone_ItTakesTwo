@@ -192,7 +192,7 @@ namespace Engine
 		|  0   0   0   1 |
 		*/
 
-		return{
+		return {
 			atan2(fRotateMatrix._23, fRotateMatrix._33),
 			atan2(-fRotateMatrix._13, sqrt(pow(fRotateMatrix._23, 2) + pow(fRotateMatrix._33, 2))),
 			atan2(fRotateMatrix._12, fRotateMatrix._11)
@@ -214,7 +214,7 @@ namespace Engine
 		XMStoreFloat3(&vUp, fRotateMatrix.r[1]);
 		XMStoreFloat3(&vLook, fRotateMatrix.r[2]);
 
-		return{
+		return {
 			atan2(vUp.z, vLook.z),
 			atan2(-vRight.z, sqrt(pow(vUp.z, 2) + pow(vLook.z, 2))),
 			atan2(vRight.y, vRight.z)
@@ -263,6 +263,22 @@ namespace Engine
 		Result.r[3] = WorldMatrix.r[3];
 
 		return Result;
+	}
+
+	/* @Return CCW(1) CW(-1) Else(0) */
+	static _int MH_CrossCCW(_vector In1, _vector In2, _vector vUp)
+	{
+		In1 = XMVector3Normalize(In1);
+		In2 = XMVector3Normalize(In2);
+		vUp = XMVector3Normalize(vUp);
+
+		_float fCCW = XMVectorGetX(XMVector3Dot(vUp, XMVector3Cross(In1, In2)));
+		if (fCCW > 0) // 반시계
+			return 1;
+		else if (fCCW < 0) // 시계
+			return -1;
+
+		return 0;
 	}
 
 	static _matrix MH_RotationMatrixByUp(_fvector vUp, _fvector vPos = XMVectorSet(0.f, 0.f, 0.f, 1.f))

@@ -89,6 +89,14 @@ public:
 	CGameObject* Get_SlideDoor() { return m_pSlideDoor; }
 
 	// Stage Flow
+	void Set_Valve_Activate(_bool bValveActivate) { m_IsValveActivated = bValveActivate; }
+	_bool Get_IsValve_Activated() { return m_IsValveActivated; }
+
+	void Set_May_Stage(_uint iNumStage) { m_iMayStageNum = iNumStage; }
+	_uint Get_May_Stage() {	return m_iMayStageNum; }
+	void Set_Cody_Stage(_uint iNumStage) { m_iCodyStageNum = iNumStage; }
+	_uint Get_Cody_Stage() { return m_iCodyStageNum; }
+
 	void Set_BigButtonPressed(_bool IsBigButtonPressed) { m_IsBigButtonPressed = IsBigButtonPressed; }
 	_bool Get_BigButtonPressed() { return m_IsBigButtonPressed; }
 	
@@ -104,6 +112,8 @@ public:
 	void Set_HangingPlanet(CGameObject* pHangingPlanet) { m_pHangingPlanet = pHangingPlanet; }
 	CGameObject* Get_HangingPlanet() { return m_pHangingPlanet; }
 
+	void Set_SpaceRails(const _tchar* pRailTag, CGameObject* pRail);
+	CGameObject* Get_SpaceRail(const _tchar* pRailTag);
 
 private:
 	CGameObject* m_pCody = nullptr;
@@ -116,6 +126,9 @@ private:
 
 	/* For.Bridge */
 	CGameObject* m_pBridge = nullptr;
+
+	// Space Rails
+	unordered_map<const _tchar*, CGameObject*> m_SpaceRails;
 
 	// Interactive Objects
 	CGameObject* m_pRobot = nullptr;
@@ -160,6 +173,11 @@ private:
 	_bool m_bGravityStageClear = false;
 	_bool m_bPinBallStageClear = false;
 	_bool m_bRailStageClear = false;
+	_bool m_IsValveActivated = false;
+
+	_uint m_iMayStageNum = 0;
+	_uint m_iCodyStageNum = 0;
+
 
 public:
 	virtual void Free() override;

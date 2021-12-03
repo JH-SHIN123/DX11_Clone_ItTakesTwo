@@ -12,7 +12,7 @@ HRESULT CLight::NativeConstruct(const LIGHT_DESC & LightDesc, _bool isActive)
 
 HRESULT CLight::Render_Light(CVIBuffer_RectRHW * pVIBuffer)
 {
-	NULL_CHECK_RETURN(pVIBuffer, E_FAIL);
+	NULL_CHECK_RETURN(pVIBuffer, E_FAIL);;
 
 	FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_vLightDiffuse", &m_LightDesc.vDiffuse, sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_vLightAmbient", &m_LightDesc.vAmbient, sizeof(_float4)), E_FAIL);

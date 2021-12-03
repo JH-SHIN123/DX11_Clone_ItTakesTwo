@@ -22,7 +22,7 @@ void CPlayerActor::Set_Scale(_float fRadius, _float fHeight)
 
 void CPlayerActor::Set_Position(_fvector vPosition)
 {
-	m_pController->setPosition(MH_PxExtendedVec3(vPosition));
+	m_pController->setFootPosition(MH_PxExtendedVec3(vPosition));
 }
 
 HRESULT CPlayerActor::NativeConstruct_Prototype()
@@ -193,7 +193,7 @@ void CPlayerActor::Step_GravityPath(PxVec3 vNormal)
 
 void CPlayerActor::Reorder_Gravity()
 {
-	//if (m_pUserData->eID == GameID::eCODY) return;
+	if (m_pUserData->eID == GameID::eCODY) return;
 
 	if (true == m_isGravityReordered) return;
 

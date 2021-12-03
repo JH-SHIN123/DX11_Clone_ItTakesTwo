@@ -81,7 +81,11 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	m_pSpaceValve_Star->Set_Clear_Level(true);
+	if (m_pGameInstance->Pad_Key_Down(DIK_INSERT)) // º¸Çè
+		m_pSpaceValve_Star->Set_Clear_Level(true);
+
+	if(DATABASE->Get_PinBallStageClear() && DATABASE->Get_GravityStageClear() && DATABASE->Get_RailStageClear())
+		m_pSpaceValve_Star->Set_Clear_Level(true);
 
 	if (m_iTargetPlayer == GameID::eCODY)
 	{

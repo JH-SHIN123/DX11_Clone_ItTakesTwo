@@ -198,22 +198,41 @@ PS_OUT PS_POINT(PS_IN In)
 //	else
 //		discard;
 //
-//	vector	vLightDir = g_vLightPos - vWorldPos;
-//	float	fDistance = length(vLightDir) / g_fRange;
-//	clip(1 - fDistance);
+//	// Get World Position
+//	float3 ToLight = vWorldPos - g_vLightPos;
+//	float DistToLight = length(ToLight);
 //
+//	// Phong / Specular
 //	// Diffuse
-//	Out.vShade = (max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
+//	Out.vShade = (max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient));
 //	Out.vShade.a = 0.f;
-//
-//	float fCosAng = dot(vLightDir, );
-//	float	fAtt = 0.5f * COS_ARR(3.14f * pow(fDistance, 1.5f)) + 0.5f;
 //
 //	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Wrap_Sampler, In.vTexUV);
 //	vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
 //	vector	vReflect = reflect(normalize(vLightDir), vSpecSrcDesc);
-//	Out.vSpecular = (pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular)) * fAtt;
+//	Out.vSpecular = (pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular));
 //	Out.vSpecular.a = 0.f;
+//
+//	// Cone Att
+//	ToLight *= -1.f;
+//	float cosAng = dot(g_vLightDir, ToLight);
+//
+//	// Att
+//
+//
+//
+//	//vector	vLightDir = g_vLightPos - vWorldPos;
+//	//float	fDistance = length(vLightDir) / g_fRange;
+//	//clip(1 - fDistance);
+//
+//	//float fCosAng = dot(vLightDir, );
+//	//float	fAtt = 0.5f * COS_ARR(3.14f * pow(fDistance, 1.5f)) + 0.5f;
+//
+//	//vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Wrap_Sampler, In.vTexUV);
+//	//vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
+//	//vector	vReflect = reflect(normalize(vLightDir), vSpecSrcDesc);
+//	//Out.vSpecular = (pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular)) * fAtt;
+//	//Out.vSpecular.a = 0.f;
 //
 //	return Out;
 //}

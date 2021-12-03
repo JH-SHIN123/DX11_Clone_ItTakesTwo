@@ -6,9 +6,13 @@
 
  BEGIN(Client)
 
-#define UI_Create(ePlayer, eTrigger)															\
-	CUI_Generator::GetInstance()->Set_TriggerOn();												\
-	CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger);					\
+#define UI_Create(ePlayer, eTrigger)														\
+	CUI_Generator::GetInstance()->Set_TriggerOn();											\
+	CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger);				\
+
+#define UI_Create_Active(ePlayer, eTrigger, bActive)										\
+	CUI_Generator::GetInstance()->Set_TriggerOn();											\
+	CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger, bActive);		\
 
 #define UI_CreateOnlyOnce(ePlayer, eTrigger)													\
 	if(true == CUI_Generator::GetInstance()->Get_EmptyCheck(Player::ePlayer, UI::eTrigger))	{	\
@@ -44,7 +48,7 @@ public:
 
 public:
 	HRESULT Load_Data(const _tchar* pFilePath, Level::ID eLevel, _uint iOption = 0);
-	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
+	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger, void* pArg = nullptr, _bool bActive = true);
 	HRESULT Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	HRESULT Render_Font(_tchar* pText, FONTDESC tFontDesc, Player::ID ePlayer);
 	HRESULT Render_AlphaFont(_tchar * pText, FONTDESC tFontDesc, Player::ID ePlayer);
@@ -57,6 +61,7 @@ public:
 public:
 	void Set_TriggerOn();
 	void Set_TargetPos(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPos);
+	void Set_Active(Player::ID ePlayer, UI::TRIGGER eTrigger, _bool bActive);
 	void Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger);
 
 public:
@@ -108,7 +113,7 @@ private:
 	HRESULT Add_Prototype_Texture();
 	
 private:
-	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag, Level::ID eLevel, void* pArg = nullptr);
+	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag, Level::ID eLevel, void* pArg = nullptr, _bool bActive = true);
 	HRESULT SetUp_Clone_Ptr(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void * pArg, CGameObject** pGameObject);
 
 public:

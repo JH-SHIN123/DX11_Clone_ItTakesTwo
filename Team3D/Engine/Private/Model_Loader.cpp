@@ -1,6 +1,7 @@
 #include "..\public\Model_Loader.h"
 #include "Model.h"
 #include "Model_Instance.h"
+#include "Path.h"
 #include "Mesh.h"
 #include "Textures.h"
 #include "HierarchyNode.h"
@@ -201,6 +202,53 @@ HRESULT CModel_Loader::Load_ModelFromFile(ID3D11Device * pDevice, ID3D11DeviceCo
 		static_cast<CModel*>(pModel)->Bring_Containers(pVertices, iVertexCount, pFaces, iFaceCount, Meshes, Materials, Nodes, Transformations, Anims);
 	else
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CModel_Loader::Load_PathFromFile(void** ppOutput, const _tchar* pPathFilePath)
+{
+	HANDLE hFile = CreateFile(pPathFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	if (INVALID_HANDLE_VALUE == hFile) return E_FAIL;
+
+	_ulong dwByte = 0;
+	_uint	iCount = 0;
+
+	/* For.Anim */
+	// 애니메이션 이름 상관없음.
+	// 패스태그를 이름으로 사용 (애니메이션 이름 중복 상관X)
+	CAnim::ANIM_DESC AnimDesc;
+	ReadFile(hFile, &AnimDesc, sizeof(CAnim::ANIM_DESC), &dwByte, nullptr);
+	CAnim* pAnim = CAnim::Create(AnimDesc);
+
+	CHANNELS Channels;
+	ReadFile(hFile, &iCount, sizeof(_uint), &dwByte, nullptr);
+	Channels.reserve(iCount);
+
+	for (_uint iChannelIndex = 0; iChannelIndex < iCount; ++iChannelIndex)
+	{
+		CAnimChannel::CHANNEL_DESC ChannelDesc;
+		ReadFile(hFile, &ChannelDesc, sizeof(CAnimChannel::CHANNEL_DESC), &dwByte, nullptr);
+		CAnimChannel* pChannel = CAnimChannel::Create(ChannelDesc);
+
+		_uint iKeyFrameCount;
+		ReadFile(hFile, &iKeyFrameCount, sizeof(_uint), &dwByte, nullptr);
+
+		if (iKeyFrameCount > 0)
+		{
+			KEYFRAMES KeyFrames;
+			KeyFrames.resize(iKeyFrameCount);
+			ReadFile(hFile, &KeyFrames[0], sizeof(KEY_FRAME) * iKeyFrameCount, &dwByte, nullptr);
+			pChannel->Bring_KeyFrameContainer(KeyFrames);
+		}
+		Channels.emplace_back(pChannel);
+	}
+	pAnim->Bring_ChannelContainer(Channels);
+
+	CloseHandle(hFile);
+
+	/* Copy to Anim Pointer */
+	(*ppOutput) = pAnim;
 
 	return S_OK;
 }

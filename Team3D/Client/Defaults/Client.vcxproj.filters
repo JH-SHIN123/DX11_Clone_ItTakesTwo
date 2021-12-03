@@ -157,12 +157,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\06.Landing_Smoke">
       <UniqueIdentifier>{5268a6b4-0c71-43a4-b934-31ce7bc3a010}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\06.Sky">
-      <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\06.Sky">
-      <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default">
       <UniqueIdentifier>{8ee023fd-0ab8-4432-8c7b-28309c0cb8b4}</UniqueIdentifier>
     </Filter>
@@ -529,21 +523,6 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_BallGate">
       <UniqueIdentifier>{55593a82-f1d2-4df1-9b50-df4b9d55f6d6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton">
-      <UniqueIdentifier>{21595d8b-6915-472b-a79b-c4082c037ad6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton\Button">
-      <UniqueIdentifier>{1a2a860a-f721-42c9-90c7-133ab5676019}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore">
-      <UniqueIdentifier>{8f43d1bd-58ec-498d-a993-9b4cfd01976f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Pillar">
-      <UniqueIdentifier>{850e5f76-dcf6-4531-8019-3bd9a0c92e61}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Shield">
-      <UniqueIdentifier>{fb978188-0a8f-4c6d-a78d-84b804f1c4b0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin">
       <UniqueIdentifier>{36cb6d5b-c440-4edb-bdcf-2cd582b022db}</UniqueIdentifier>
     </Filter>
@@ -594,6 +573,21 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\05.Teak\02.MoonBaboon_MainLaser">
       <UniqueIdentifier>{775f92c2-ddac-4603-a2e3-80b38fa3090d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.Terrain%28Test%29">
+      <UniqueIdentifier>{f999b3e3-a399-493a-893b-bcebcfb781a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Teak\03.SpaceRail">
+      <UniqueIdentifier>{decf12b3-f207-4b3b-bb9c-e598a618be9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Teak\03.SpaceRail\Node">
+      <UniqueIdentifier>{db1e11fc-2bd9-4a41-9c3c-2ae1d4e0a7ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump">
+      <UniqueIdentifier>{230c6af8-ad57-4cfb-8938-94d484f62bf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump">
+      <UniqueIdentifier>{401d01cd-f72e-4e8c-8316-be81b655a327}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin\00.Pipe">
       <UniqueIdentifier>{f1f7fac4-b8a7-4190-9db6-8122bd860e39}</UniqueIdentifier>
@@ -1008,6 +1002,9 @@
     <ClInclude Include="..\Public\PxEventCallback.h">
       <Filter>03.Component\01.Actor\99.EventCallback</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Terrain.h">
+      <Filter>02.GameObject\06.Terrain%28Test%29</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\SlideDoor.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\SlideDoor</Filter>
     </ClInclude>
@@ -1109,6 +1106,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\HookahTube.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\HookahTube</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SpaceRail.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Teak\03.SpaceRail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SpaceRail_Node.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Teak\03.SpaceRail\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DummyWall.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MayJumpWall.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1464,6 +1473,9 @@
     <ClCompile Include="..\Private\PxEventCallback.cpp">
       <Filter>03.Component\01.Actor\99.EventCallback</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Terrain.cpp">
+      <Filter>02.GameObject\06.Terrain%28Test%29</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\SlideDoor.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\SlideDoor</Filter>
     </ClCompile>
@@ -1562,6 +1574,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\HookahTube.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\HookahTube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SpaceRail.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Teak\03.SpaceRail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SpaceRail_Node.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Teak\03.SpaceRail\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DummyWall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MayJumpWall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
