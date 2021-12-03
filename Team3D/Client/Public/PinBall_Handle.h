@@ -48,6 +48,9 @@ private:
 	_bool			m_bGoalTimeCheck = false;
 	_float			m_fGoalTime = 0.f;
 
+	/* UI */
+	_bool			m_IsCollision = false;
+
 	_float			m_fReady = 0.f;
 	_float			m_fHandleAngle = 0.f;
 	_float			m_fRespawnPosX = 0.f;

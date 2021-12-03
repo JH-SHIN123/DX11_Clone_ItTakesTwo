@@ -5,6 +5,7 @@
 #include "DataStorage.h"
 #include "UmbrellaBeam.h"
 #include "Cody.h"
+#include "UI_Generator.h"
 
 CUmbrellaBeam_Joystick::CUmbrellaBeam_Joystick(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -71,6 +72,8 @@ HRESULT CUmbrellaBeam_Joystick::NativeConstruct(void * pArg)
 _int CUmbrellaBeam_Joystick::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	return NO_EVENT;
 }

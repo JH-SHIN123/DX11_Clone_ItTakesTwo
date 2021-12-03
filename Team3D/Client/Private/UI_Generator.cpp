@@ -1026,35 +1026,70 @@ HRESULT CUI_Generator::Create_ChapterSelect()
 	return S_OK;
 }
 
-HRESULT CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPosition)
-{	//CCody* pCody = (CCody*)DATABASE->GetCody();
-	//NULL_CHECK_RETURN(pCody, E_FAIL);
-	//CMay* pMay = (CMay*)DATABASE->GetMay();
-	//NULL_CHECK_RETURN(pMay, E_FAIL);
+HRESULT CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPosition, _bool IsCollision)
+{	
+	_vector vComparePos;
 
-	//_vector vCodyComparePos = vTargetPosition - vCodyPos;
-	//_vector vMayComparePos = vTargetPosition - vMayPos;
+	if (ePlayer == Player::Cody)
+	{
+		// 객체와 충돌 했다라면 상호작용 UI키 띄워주자
+		if (true == IsCollision)
+		{
+			Delete_UI(ePlayer, eTrigger);
+			UI_CreateOnlyOnce(Cody, InputButton_InterActive);
+			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, vTargetPosition);
 
-	//_float fRange = 20.f;
+			return S_OK;
+		}
+		else
+			UI_Delete(Cody, InputButton_InterActive);
 
-	//_float vCodyComparePosX = abs(XMVectorGetX(vCodyComparePos));
-	//_float vCodyComparePosZ = abs(XMVectorGetZ(vCodyComparePos));
+		CCody* pCody = (CCody*)DATABASE->GetCody();
+		NULL_CHECK_RETURN(pCody, E_FAIL);
 
-	//if (fRange >= vCodyComparePosX && fRange >= vCodyComparePosZ)
-	//{
-	//	if (UI_Generator->Get_EmptyCheck(ePlayer, eTrigger))
-	//		Generator_UI();
+		_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		vComparePos = vTargetPosition - vCodyPos;
+	}
+	else if (ePlayer == Player::May)
+	{
+		if (true == IsCollision)
+		{
+			Delete_UI(ePlayer, eTrigger);
+			UI_CreateOnlyOnce(May, InputButton_PS_InterActive);
+			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_PS_InterActive, vTargetPosition);
 
+			return S_OK;
+		}
+		else
+			UI_Delete(May, InputButton_PS_InterActive);
 
-	//	UI_Generator->Set_TargetPos(ePlayer, eTrigger, vTargetPosition);
-	//}
-	//else
-	//	Delete_UI(ePlayer, eTrigger);
+		CMay* pMay = (CMay*)DATABASE->GetMay();
+		NULL_CHECK_RETURN(pMay, E_FAIL);
 
-	//return S_OK;
+		_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		vComparePos = vTargetPosition - vMayPos;
+	}
+
+	/* 객체와 충돌을 하지 않았다 그럼 그냥 닷 UI생성해주자*/
+	_float fRange = 20.f;
+	_float vComparePosX = abs(XMVectorGetX(vComparePos));
+	_float vComparePosZ = abs(XMVectorGetZ(vComparePos));
+
+	if (fRange >= vComparePosX && fRange >= vComparePosZ)
+	{
+		if (true == UI_Generator->Get_EmptyCheck(ePlayer, eTrigger))
+		{
+			m_IsTrigger = true;
+			Generator_UI(ePlayer, eTrigger);
+		}
+
+		UI_Generator->Set_TargetPos(ePlayer, eTrigger, vTargetPosition);
+	}
+	else
+		Delete_UI(ePlayer, eTrigger);
+
 
 	return S_OK;
-
 }
 
 void CUI_Generator::Free()

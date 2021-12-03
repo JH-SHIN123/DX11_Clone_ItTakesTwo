@@ -76,7 +76,8 @@ public:
 
 public:
 	/* 타겟 오브젝트와 플레이어의 범위에 따라 InterActive UI생성 삭제 해주는 함수 */
-	HRESULT CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPosition);
+	/* Collision은 충돌 했을 때 트리거에서 바꿔주는 bool값 하나 넘겨주면 됨 */
+	HRESULT CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPosition, _bool m_IsCollision = false);
 
 	
 public:
