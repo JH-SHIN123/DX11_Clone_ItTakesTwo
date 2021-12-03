@@ -74,14 +74,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>../Bin/</OutDir>
+    <OutDir>../Bin/Debug/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>../Bin/</OutDir>
+    <OutDir>../Bin/Release/</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -109,12 +109,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./;../public/;../../PlugIns/Headers/;../../PlugIns/Headers/PhysX/;../../PlugIns/Headers/PhysX/PxShared/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../Public/;../../PlugIns/Headers/;../../PlugIns/Headers/PhysX/;../../PlugIns/Headers/PhysX/PxShared/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../PlugIns/Libraries/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../PlugIns/Libraries/Debug/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>10485760</StackReserveSize>
       <LargeAddressAware>true</LargeAddressAware>
@@ -156,14 +156,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./;../public/;../../PlugIns/Headers/;../../PlugIns/Headers/PhysX/;../../PlugIns/Headers/PhysX/PxShared/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../Public/;../../PlugIns/Headers/;../../PlugIns/Headers/PhysX/;../../PlugIns/Headers/PhysX/PxShared/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../PlugIns/Libraries/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../PlugIns/Libraries/Release/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>10485760</StackReserveSize>
       <LargeAddressAware>true</LargeAddressAware>
@@ -187,10 +187,10 @@
     <ClInclude Include="..\Public\BatteryBox.h" />
     <ClInclude Include="..\Public\AlienScreen.h" />
     <ClInclude Include="..\Public\BigButtonFrame.h" />
-    <ClInclude Include="..\Public\BigPlanet.h" />
     <ClInclude Include="..\Public\Boss_Missile.h" />
     <ClInclude Include="..\Public\Bridge.h" />
     <ClInclude Include="..\Public\CamEffect.h" />
+    <ClInclude Include="..\Public\CameraHitReport.h" />
     <ClInclude Include="..\public\Cam_Helper.h" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp" />
@@ -207,6 +207,8 @@
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
+    <ClInclude Include="..\Public\Client_MathHelper.h" />
+    <ClInclude Include="..\Public\Client_Struct.h" />
     <ClInclude Include="..\Public\ControllerIcon.h" />
     <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
@@ -345,8 +347,8 @@
   <ItemGroup>
     <ClCompile Include="..\Private\AlphaScreen.cpp" />
     <ClCompile Include="..\Private\BatteryBox.cpp" />
-    <ClCompile Include="..\Private\BigPlanet.cpp" />
     <ClCompile Include="..\Private\ButtonIndicator.cpp" />
+    <ClCompile Include="..\Private\CameraHitReport.cpp" />
     <ClCompile Include="..\Private\ChapterSelect.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />

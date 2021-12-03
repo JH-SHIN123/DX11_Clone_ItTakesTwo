@@ -5,7 +5,6 @@
 #include "UIObject.h"
 #include "May.h"
 #include "DataStorage.h"
-#include "MathHelper.h"
 #include "PlayerActor.h"
 #include "SpaceRail.h"
 #include "SpaceRail_Node.h"
@@ -279,7 +278,6 @@ _int CCody::Tick(_double dTimeDelta)
 
 	Attack_BossMissile_After(dTimeDelta); // 미사일 공격이 끝나고 정상적인 회전갑승로 만들어주자
 
-	m_pActorCom->Set_IsOnGravityPath(false);
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 

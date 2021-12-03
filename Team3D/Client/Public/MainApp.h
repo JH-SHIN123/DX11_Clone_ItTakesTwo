@@ -5,6 +5,9 @@
 
 BEGIN(Client)
 
+/**
+* 건드리지 마세요.
+*/
 class CMainApp final : public CBase
 {
 public:

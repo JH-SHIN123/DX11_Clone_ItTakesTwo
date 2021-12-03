@@ -142,6 +142,7 @@ HRESULT CEnvironment_Generator::Load_Stage_Space()
 
 HRESULT CEnvironment_Generator::Load_Prototype_Model_Others_TXT(_tchar * pFilePath)
 {
+#ifndef __MAPLOADING_OFF
 	_tchar		szLevelIndex[MAX_PATH] = L"";
 	_tchar		szPrototypeTag[MAX_PATH] = L"";
 	_tchar		szFolderName[MAX_PATH] = L"";
@@ -177,12 +178,14 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_Others_TXT(_tchar * pFilePa
 		}
 	}
 	fin.close();
+#endif // !__MAPLOADING_OFF
 
 	return S_OK;
 }
 
 HRESULT CEnvironment_Generator::Load_Prototype_Model_Instancing_TXT()
 {
+#ifndef __MAPLOADING_OFF
 	_tchar		szLevelIndex[MAX_PATH] = L"";
 	_tchar		szPrototypeTag[MAX_PATH] = L"";
 	_tchar		szFolderName[MAX_PATH] = L"";
@@ -215,12 +218,14 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_Instancing_TXT()
 		}
 	}
 	fin.close();
+#endif // !__MAPLOADING_OFF
 
 	return S_OK;
 }
 
 HRESULT CEnvironment_Generator::Load_Prototype_GameObject_TXT()
 {
+#ifndef __MAPLOADING_OFF
 	FAILED_CHECK_RETURN(Load_Default_Prototype_GameObject(), E_FAIL);
 
 	_uint		iLevelIndex = 1;
@@ -250,6 +255,8 @@ HRESULT CEnvironment_Generator::Load_Prototype_GameObject_TXT()
 		}
 	}
 	fin.close();
+#endif // !__MAPLOADING_OFF
+
 	return S_OK;
 }
 
