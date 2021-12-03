@@ -27,7 +27,6 @@ public:
 
 public:
 	void Set_BeamActivate(_bool IsCheck);
-	void Set_DeadEffect();
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
@@ -38,7 +37,6 @@ private:
 	_bool										m_IsBeamActivate = false;
 	_bool										m_IsBeamEffectCreate = false;
 	_bool										m_IsPutGravitationalField = false;
-
 
 private:
 	class CUmbrellaBeam_Stand*					m_pUmbrellaBeam_Stand = nullptr;

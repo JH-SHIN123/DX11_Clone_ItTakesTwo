@@ -1027,6 +1027,13 @@ HRESULT CUI_Generator::Create_ChapterSelect()
 	return S_OK;
 }
 
+
+void CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPosition)
+{
+
+}
+
+
 void CUI_Generator::Free()
 {
 	Safe_Release(m_pDevice);

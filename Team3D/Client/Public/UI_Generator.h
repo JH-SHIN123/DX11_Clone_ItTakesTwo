@@ -32,6 +32,7 @@ public:
 		_float	fAlpha = 1.f;
 		_float3 vColor = { 1.f, 1.f, 1.f };
 
+
 	}FONTDESC;
 
 private:
@@ -65,6 +66,11 @@ public:
 	HRESULT Create_Logo();
 	HRESULT Create_ChapterSelect();
 
+public:
+	/* 타겟 오브젝트와 플레이어의 범위에 따라 InterActive UI생성 삭제 해주는 함수 */
+	void CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPosition);
+
+	
 public:
 	void UI_RETutorial(Player::ID ePlayer, UI::TRIGGER eTrigger);
 
@@ -101,7 +107,6 @@ private:
 private:
 	HRESULT Add_Prototype_Texture();
 	
-
 private:
 	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag, Level::ID eLevel, void* pArg = nullptr);
 	HRESULT SetUp_Clone_Ptr(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void * pArg, CGameObject** pGameObject);

@@ -128,12 +128,6 @@ void CUmbrellaBeam::Set_BeamActivate(_bool IsCheck)
 	m_IsBeamActivate = IsCheck;
 }
 
-void CUmbrellaBeam::Set_DeadEffect()
-{
-	if(nullptr != m_pUmbrellaBeam_Effect)
-		m_pUmbrellaBeam_Effect->Set_Dead();
-}
-
 void CUmbrellaBeam::KeyInput_Rotate(_double TimeDelta)
 {
 	if (false == m_IsBeamActivate)
@@ -214,6 +208,7 @@ void CUmbrellaBeam::PutGravitationalField()
 
 		if(nullptr != m_pUmbrellaBeam_Effect)
 			m_pUmbrellaBeam_Effect->Set_Dead();
+
 	}
 
 	if (true == m_IsPutGravitationalField)
