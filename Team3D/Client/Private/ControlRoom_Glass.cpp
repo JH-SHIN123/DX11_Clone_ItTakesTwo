@@ -64,7 +64,7 @@ _int CControlRoom_Glass::Late_Tick(_double dTimeDelta)
 		m_pTransformCom->Set_Scale(vScale);
 	}
 
-	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 70.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
 
 	return NO_EVENT;
