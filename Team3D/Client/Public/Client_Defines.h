@@ -13,7 +13,6 @@ extern bool			g_bWndActivate;
 
 #include "Client_Enum.h"
 #include "Client_Animation_Index_Define.h"
-#include "GameOption.h"
 #include "DataStorage.h"
 #include "GameInstance.h"
 

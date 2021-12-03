@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
+#include "GameOption.h"
 
 BEGIN(Client)
 
@@ -57,7 +58,7 @@ private:
 	HRESULT Create_GameObjects_SpaceStage_Se();
 	HRESULT Create_GameObjects_SpaceStage_Jung();
 	HRESULT Create_GameObjects_SpaceStage_Hye();
-	HRESULT Create_GameObjects_SpaceStage_Won();
+	HRESULT Create_GameObjects_SpaceStage_Taek();
 	HRESULT Create_GameObjects_SpaceStage_Yoon();
 	HRESULT Create_GameObjects_SpaceStage_Jin();
 	HRESULT Create_GameObjects_SpaceStage_Jun();
