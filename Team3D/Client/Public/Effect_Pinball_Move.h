@@ -24,12 +24,10 @@ public:
 	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0) override;
 	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0) override;
 
-
 public:
 	static CEffect_Pinball_Move* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
-
 };
 
 END
