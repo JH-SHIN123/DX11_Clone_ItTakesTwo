@@ -174,7 +174,7 @@ _int CMay::Tick(_double dTimeDelta)
 		else
 		{
 			// 트리거 끝나고 애니메이션 초기화
-			Trigger_End(dTimeDelta);
+			//Trigger_End(dTimeDelta);
 			m_IsFalling = m_pActorCom->Get_IsFalling();
 			m_pActorCom->Set_GroundPound(m_bGroundPound);
 
@@ -495,7 +495,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		}
 		else
 		{
-			if (m_pModelCom->Get_CurAnimIndex() != ANI_C_AirDash_Start && m_iAirDashCount == 0)
+			if (m_pModelCom->Get_CurAnimIndex() != ANI_M_AirDash_Start && m_iAirDashCount == 0)
 			{
 				m_iAirDashCount += 1;
 				m_fAcceleration = 5.f;
@@ -508,10 +508,21 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region PAD X
-	if (m_pGameInstance->Key_Down(DIK_RCONTROL) && m_iJumpCount < 2)
+
+	if (m_pGameInstance->Key_Down(DIK_RCONTROL) && m_iJumpCount == 0)
 	{
 		m_bShortJump = true;
 		m_iJumpCount += 1;
+		m_IsJumping = true;
+		m_pModelCom->Set_Animation(ANI_M_Jump_Start);
+	}
+
+	else if (m_pGameInstance->Key_Down(DIK_RCONTROL) && m_iJumpCount == 1)
+	{
+		m_bShortJump = true;
+		m_iJumpCount += 1;
+		m_IsJumping = true;
+		m_pModelCom->Set_Animation(ANI_M_DoubleJump);
 	}
 #pragma endregion
 
@@ -744,7 +755,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		}
 		else
 		{
-			if (m_pModelCom->Get_CurAnimIndex() != ANI_C_AirDash_Start && m_iAirDashCount == 0)
+			if (m_pModelCom->Get_CurAnimIndex() != ANI_M_AirDash_Start && m_iAirDashCount == 0)
 			{
 				m_iAirDashCount += 1;
 				m_fAcceleration = 5.f;
@@ -757,7 +768,7 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region PAD X
-	if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount == 0)
+	if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount == 0 && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jump_Falling && m_bCanMove == true)
 	{
 		m_bShortJump = true;
 		m_iJumpCount += 1;
@@ -765,7 +776,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pModelCom->Set_Animation(ANI_M_Jump_Start);
 	}
 
-	else if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount == 1)
+	else if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount == 1 && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jump_Falling && m_bCanMove == true)
 	{
 		m_bShortJump = true;
 		m_iJumpCount += 1;
@@ -791,7 +802,7 @@ void CMay::KeyInput(_double dTimeDelta)
 
 #pragma region PAD O
 
-	if (m_pGameInstance->Pad_Key_Down(DIP_A) && m_pActorCom->Get_IsJump() == true)
+	if (m_pGameInstance->Pad_Key_Down(DIP_A) && m_pActorCom->Get_IsJump() == true && m_iJumpCount > 0 && m_bAfterGroundPound == false)
 	{
 		m_fAcceleration = 5.0f;
 		m_fJogAcceleration = 25.f;
@@ -1295,8 +1306,8 @@ void CMay::Jump(const _double dTimeDelta)
 		}
 		else
 		{
-			m_pModelCom->Set_Animation(ANI_M_Jump_Land);
-			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+			//m_pModelCom->Set_Animation(ANI_M_Jump_Land);
+			//m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 		}
 
 		m_bFallAniOnce = false;
@@ -1330,25 +1341,37 @@ void CMay::Ground_Pound(const _double dTimeDelta)
 			m_bCanMove = false;
 			m_pModelCom->Set_Animation(ANI_M_GroundPound_Start);
 			m_pActorCom->Set_Jump(false);
+			m_IsJumping = false;
+			m_bShortJump = false;
 			m_pActorCom->Set_Gravity(0.f);
 			m_fGroundPoundAirDelay += (_float)dTimeDelta;
 		}
 	}
 
-	if ((m_IsJumping == false && m_pActorCom->Get_IsJump() == true) || (m_pModelCom->Is_AnimFinished(ANI_M_GroundPound_Falling) && m_bPlayGroundPoundOnce == false))
+	if (m_pModelCom->Is_AnimFinished(ANI_M_GroundPound_Falling) && m_bPlayGroundPoundOnce == false)
 	{
 		m_bPlayGroundPoundOnce = true;
-		m_pModelCom->Set_Animation(ANI_M_Jump_Land);
-	}
-	if (m_pModelCom->Is_AnimFinished(ANI_M_Jump_Land))
-	{
-		m_IsAirDash = false;
-		m_bPlayGroundPoundOnce = false;
-		m_bCanMove = true;
-		m_pModelCom->Set_Animation(ANI_M_MH);
+		m_pModelCom->Set_Animation(ANI_M_GroundPound_Land_Exit);
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 	}
+	if (m_pModelCom->Is_AnimFinished(ANI_M_GroundPound_Land_Exit))
+	{
+		m_pModelCom->Set_Animation(ANI_M_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+		m_bPlayGroundPoundOnce = false;
+		m_IsAirDash = false;
+		//m_bCanMove = true;
+		m_bAfterGroundPound = true;
+	}
+	if (m_bAfterGroundPound == true)
+		m_iAfterGroundPoundCount += 1;
 
+	if (m_iAfterGroundPoundCount >= 10) // 1.5초 경직
+	{
+		m_iAfterGroundPoundCount = 0;
+		m_bAfterGroundPound = false;
+		m_bCanMove = true;
+	}
 }
 
 void CMay::Add_OffSet_Pos(_fvector vAddOffSet)
@@ -1955,8 +1978,8 @@ void CMay::Touch_FireDoor(const _double dTimeDelta)
 	else if (m_fDeadTime >= 2.75f)
 	{
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-		m_pModelCom->Set_Animation(ANI_C_MH);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		m_pModelCom->Set_Animation(ANI_M_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 		m_fDeadTime = 0.f;
 		m_bCanMove = true;
 		m_IsCollide = false;
@@ -2077,7 +2100,7 @@ void CMay::WallLaserTrap(const _double dTimeDelta)
 		m_pActorCom->Set_Position(vSavePosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pModelCom->Set_Animation(ANI_M_MH);
 		m_fDeadTime = 0.f;
 		m_IsCollide = false;
 		m_IsWallLaserTrap_Touch = false;

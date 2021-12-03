@@ -601,7 +601,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma region Keyboard_Space_Button
 	if (m_eCurPlayerSize != SIZE_LARGE)
 	{
-		if (m_pGameInstance->Key_Down(DIK_SPACE) && m_iJumpCount < 2)
+		if (m_pGameInstance->Key_Down(DIK_SPACE) && m_iJumpCount < 2 && m_pModelCom->Get_CurAnimIndex() != ANI_C_Jump_Falling && m_bCanMove == true)
 		{
 			m_bShortJump = true;
 			m_iJumpCount += 1;
@@ -610,7 +610,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	}
 	else
 	{
-		if (m_pGameInstance->Key_Down(DIK_SPACE) && m_iJumpCount < 1)
+		if (m_pGameInstance->Key_Down(DIK_SPACE) && m_iJumpCount < 1 && m_pModelCom->Get_CurAnimIndex() != ANI_C_Jump_Falling && m_bCanMove == true)
 		{
 			m_bShortJump = true;
 			m_iJumpCount += 1;
@@ -1603,6 +1603,18 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 		if (m_bAfterGroundPound == true)
 			m_iAfterGroundPoundCount += 1;
 
+		if (m_iAfterGroundPoundCount >= 10) // 1.5초 경직
+		{
+			m_iAfterGroundPoundCount = 0;
+			m_bAfterGroundPound = false;
+			m_bCanMove = true;
+		}
+	}
+	else if (m_eCurPlayerSize == SIZE_LARGE)
+	{
+		if (m_bAfterGroundPound == true)
+			m_iAfterGroundPoundCount += 1;
+
 		if (m_iAfterGroundPoundCount >= 90) // 1.5초 경직
 		{
 			m_iAfterGroundPoundCount = 0;
@@ -1935,15 +1947,15 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eUMBRELLABEAMJOYSTICK && m_pGameInstance->Key_Down(DIK_E))
 		{
-			m_pModelCom->Set_Animation(ANI_M_ArcadeScreenLever_MH);
-			m_pModelCom->Set_NextAnimIndex(ANI_M_ArcadeScreenLever_MH);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
 			m_IsControlJoystick = true;
 			CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
 			pJoystick->Set_ControlActivate(true);
 		}
 		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)
 		{
-			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			Enforce_IdleState();
