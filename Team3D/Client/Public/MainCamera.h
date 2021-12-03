@@ -25,18 +25,12 @@ public:
 	virtual _int	Tick(_double dTimeDelta) override;
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 
-public:
-	static CMainCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	virtual CGameObject* Clone_GameObject(void* pArg = nullptr) override;
-	virtual void Free() override;
+
 
 	void Check_Player(_double dTimeDelta);
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
-private:
-	class CCameraActor* m_pActorCom = nullptr;
-	CGameObject* m_pTargetObj = nullptr;
-	CCam_Helper* m_pCamHelper = nullptr;
+
 private:
 	//For Free.
 	_int	Tick_Cam_Free(_double dTimeDelta);				//자유이동
@@ -92,7 +86,16 @@ private:
 
 	// Sehoon
 	WORLDMATRIX	m_PreWorld;
-	WORLDMATRIX	m_NextWorld;
+
+
+private:
+	class CCameraActor* m_pActorCom = nullptr;
+	CGameObject* m_pTargetObj = nullptr;
+	CCam_Helper* m_pCamHelper = nullptr;
+public:
+	static CMainCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CGameObject* Clone_GameObject(void* pArg = nullptr) override;
+	virtual void Free() override;
 };
 
 END

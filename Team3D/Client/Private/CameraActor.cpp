@@ -57,6 +57,7 @@ HRESULT CCameraActor::NativeConstruct(void * pArg)
 	CapsuleControllerDesc.stepOffset = 0.707f;
 	CapsuleControllerDesc.slopeLimit = 0.f;
 
+
 	m_pBehaviorCallback->Set_CameraActorPtr(this);
 	m_pFilterCallback->Set_Controller(m_pController);
 	m_pController = m_pPhysX->Create_CapsuleController(CapsuleControllerDesc);
@@ -71,14 +72,11 @@ HRESULT CCameraActor::NativeConstruct(void * pArg)
 
 PxControllerCollisionFlags CCameraActor::Move(_fvector vMove, _double dTimeDelta)
 {
-	return m_pController->move(MH_PxVec3(vMove), 0.f, (_float)dTimeDelta, *m_pFilters);
+	return m_pController->move(MH_PxVec3(vMove), 0.01f, (_float)dTimeDelta, *m_pFilters);
 }
 
 void CCameraActor::Update(_double dTimeDelta)
 {
-
-
-	//m_pTransform->Set_WorldMatrix();
 	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getPosition(), 1.f));
 }
 
