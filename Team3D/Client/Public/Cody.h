@@ -4,7 +4,8 @@
 #include "Character.h"
 
 BEGIN(Client)
-
+class CSpaceRail;
+class CSpaceRail_Node;
 class CCody final : public CCharacter
 {
 #pragma region Enum_STATE
@@ -248,8 +249,6 @@ public:
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 
-	
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////    상태 변환 관련 변수들   /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -264,7 +263,6 @@ public:
 	void Jump(const _double dTimeDelta);
 	void Change_Size(const _double dTimeDelta);
 	void Ground_Pound(const _double dTimeDelta);
-
 
 #pragma region BasicMovement
 private:
@@ -430,7 +428,6 @@ private:
 	_bool m_IsWallLaserTrap_Effect = false;
 
 	// YYY
-	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);
 	void Hit_Rocket(const _double dTimeDelta);
 	void Activate_RobotLever(const _double dTimeDelta);
@@ -460,5 +457,29 @@ private:
 
 #pragma endregion
 
+#pragma region Rail
+public:
+	void	Set_SpaceRailNode(CSpaceRail_Node* pRail);
+
+private:
+	void	KeyInput_Rail(_double dTimeDelta);
+	void	Clear_TagerRailNodes();
+	void	Find_TargetSpaceRail(); // LateTick에서 호출되어야함.
+	void	Start_SpaceRail();
+	void	MoveToTargetRail(_double dTimeDelta);
+	void	TakeRail(_double dTimeDelta);
+	void	ShowRailTargetTriggerUI();
+
+private:
+	_bool						m_bMoveToRail = false;
+	_bool						m_bOnRail = false;
+	_uint						m_iRailDir = 0;
+
+private:
+	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;
+	CSpaceRail*					m_pTargetRail = nullptr;
+	CSpaceRail_Node*			m_pSearchTargetRailNode = nullptr;
+	CSpaceRail_Node*			m_pTargetRailNode = nullptr;
+#pragma endregion
 };
 END

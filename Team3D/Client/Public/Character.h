@@ -3,13 +3,16 @@
 #include "Client_Defines.h"
 
 BEGIN(Client)
-
 class CCharacter abstract : public CGameObject
 {
 protected:
 	explicit CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CCharacter(const CCharacter& rhs);
 	virtual ~CCharacter() = default;
+
+public: /* Setter */
+	void Set_WorldMatrix(_fmatrix WorldMatrix);
+	void Set_Position(_fvector WorldPos);
 
 public: /* Getter */
 	virtual _fvector Get_Position();
@@ -32,10 +35,10 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 protected: /* For.Component */
-	CRenderer*			m_pRendererCom = nullptr;
-	CTransform*			m_pTransformCom = nullptr;
-	CModel*				m_pModelCom = nullptr;
-	class CPlayerActor*	m_pActorCom = nullptr;
+	CRenderer*				m_pRendererCom = nullptr;
+	CTransform*				m_pTransformCom = nullptr;
+	CModel*					m_pModelCom = nullptr;
+	class CPlayerActor*		m_pActorCom = nullptr;
 
 protected:
 	_float m_fClockWise = 1.f; // 1이면 시계방향, -1이면 반시계방향.

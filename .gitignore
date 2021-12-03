@@ -258,7 +258,6 @@ Team3D/PlugIns/
 
 # Others
 *.cso
-*.suo
 *.lib
 *.exp
 *.dll

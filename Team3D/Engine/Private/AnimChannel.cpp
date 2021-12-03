@@ -1,5 +1,12 @@
 #include "..\public\AnimChannel.h"
 
+_double CAnimChannel::Get_KeyFrameTime(_int iIndex) const
+{
+	if (iIndex < 0 || iIndex >= m_KeyFrames.size()) return 0.0;
+
+	return m_KeyFrames[iIndex].dTime;
+}
+
 HRESULT CAnimChannel::NativeConstruct(CHANNEL_DESC ChannelDesc)
 {
 	memcpy(&m_ChannelDesc, &ChannelDesc, sizeof(CHANNEL_DESC));

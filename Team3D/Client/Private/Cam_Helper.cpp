@@ -310,8 +310,6 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 //	
 //	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Begin_Game.dat"))))
 //		return E_FAIL;
-
-	
 	return S_OK;
 }
 
@@ -626,11 +624,8 @@ CComponent * CCam_Helper::Clone_Component(void * pArg)
 	return this;
 }
 
-
-
 void CCam_Helper::Free()
 {
-	
 	for (auto& rPair : m_Films)
 		Safe_Release(rPair.second);
 	m_Films.clear();
