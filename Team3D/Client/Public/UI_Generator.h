@@ -6,14 +6,17 @@
 
  BEGIN(Client)
 
+/* 같은 UI 여러 개 생성할 수 있음 아니면 걍 트리거에서 호출 해주세용*/
 #define UI_Create(ePlayer, eTrigger)														\
 	CUI_Generator::GetInstance()->Set_TriggerOn();											\
 	CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger);				\
 
+/* bActive 랜더 끌건지 안끌건지 */
 #define UI_Create_Active(ePlayer, eTrigger, bActive)										\
 	CUI_Generator::GetInstance()->Set_TriggerOn();											\
 	CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger, bActive);		\
 
+/* Tick LateTick에서 그냥 조건없이 한번만 생성해주는 애 대신 같은 UI 여러 개 생성할꺼면 얘 쓰면 안됩니다 */
 #define UI_CreateOnlyOnce(ePlayer, eTrigger)													\
 	if(true == CUI_Generator::GetInstance()->Get_EmptyCheck(Player::ePlayer, UI::eTrigger))	{	\
 		CUI_Generator::GetInstance()->Set_TriggerOn();											\
@@ -73,7 +76,7 @@ public:
 
 public:
 	/* 타겟 오브젝트와 플레이어의 범위에 따라 InterActive UI생성 삭제 해주는 함수 */
-	void CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPosition);
+	HRESULT CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPosition);
 
 	
 public:

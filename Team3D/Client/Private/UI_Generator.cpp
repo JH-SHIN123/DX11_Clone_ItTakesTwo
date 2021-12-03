@@ -20,6 +20,9 @@
 #include "InputButton_Frame.h"
 #include "Arrowkeys_Outline.h"
 
+#include "Cody.h"
+#include "May.h"
+
 IMPLEMENT_SINGLETON(CUI_Generator)
 
 CUI_Generator::CUI_Generator()
@@ -1023,8 +1026,34 @@ HRESULT CUI_Generator::Create_ChapterSelect()
 	return S_OK;
 }
 
-void CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPosition)
-{
+HRESULT CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPosition)
+{	//CCody* pCody = (CCody*)DATABASE->GetCody();
+	//NULL_CHECK_RETURN(pCody, E_FAIL);
+	//CMay* pMay = (CMay*)DATABASE->GetMay();
+	//NULL_CHECK_RETURN(pMay, E_FAIL);
+
+	//_vector vCodyComparePos = vTargetPosition - vCodyPos;
+	//_vector vMayComparePos = vTargetPosition - vMayPos;
+
+	//_float fRange = 20.f;
+
+	//_float vCodyComparePosX = abs(XMVectorGetX(vCodyComparePos));
+	//_float vCodyComparePosZ = abs(XMVectorGetZ(vCodyComparePos));
+
+	//if (fRange >= vCodyComparePosX && fRange >= vCodyComparePosZ)
+	//{
+	//	if (UI_Generator->Get_EmptyCheck(ePlayer, eTrigger))
+	//		Generator_UI();
+
+
+	//	UI_Generator->Set_TargetPos(ePlayer, eTrigger, vTargetPosition);
+	//}
+	//else
+	//	Delete_UI(ePlayer, eTrigger);
+
+	//return S_OK;
+
+	return S_OK;
 
 }
 
