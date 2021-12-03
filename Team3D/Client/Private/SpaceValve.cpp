@@ -7,6 +7,7 @@
 
 #include "InGameEffect.h"
 #include "Effect_Generator.h"
+#include "Space_Valve_Star.h"
 
 CSpaceValve::CSpaceValve(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -32,7 +33,6 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_SpaceValveTwo"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-
 
 	EFFECT_DESC_CLONE a;
 	if (nullptr != pArg)
@@ -67,12 +67,25 @@ HRESULT CSpaceValve::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
 
+	_float4x4 WorldMatrix;
+	XMStoreFloat4x4(&WorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	_bool IsCody = true;
+	if (m_iTargetPlayer == GameID::eMAY)
+		IsCody = false;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_SpaceValve_Deco"), Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Star"), &CSpace_Valve_Star::tagValve_Star_Desc(WorldMatrix, IsCody), (CGameObject**)&m_pSpaceValve_Star), E_FAIL);
+	
 	return S_OK;
 }
 
 _int CSpaceValve::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	if (m_pGameInstance->Pad_Key_Down(DIK_INSERT)) // º¸Çè
+		m_pSpaceValve_Star->Set_Clear_Level(true);
+
+	if(DATABASE->Get_PinBallStageClear() && DATABASE->Get_GravityStageClear() && DATABASE->Get_RailStageClear())
+		m_pSpaceValve_Star->Set_Clear_Level(true);
 
 	if (m_iTargetPlayer == GameID::eCODY)
 	{
@@ -255,6 +268,7 @@ void CSpaceValve::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pSpaceValve_Star);
 
 	CGameObject::Free();
 }

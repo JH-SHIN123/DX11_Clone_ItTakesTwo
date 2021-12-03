@@ -3,7 +3,12 @@
 ////////////////////////////////////////////////////////////
 
 texture2D	g_DiffuseTexture;
+texture2D	g_DiffuseSubTexture;
 texture2D	g_SubTexture;
+texture2D   g_DiffuseNoiseTexture;
+texture2D   g_DiffuseMaskTexture;
+texture2D   g_DiffuseAlphaTexture;
+
 matrix		g_UIWorldMatrix;
 matrix		g_UIViewMatrix;
 matrix		g_UIProjMatrix;
@@ -11,7 +16,18 @@ matrix		g_UIProjMatrix;
 int		g_iShaderMouseOption;
 int		g_iColorOption;
 int		g_iGSOption;
+int		g_iRespawnOption;
+int		g_iHeaderBoxOption;
+int		g_iAlphaOption;
 
+float	g_fAlpha;
+float	g_Time;
+float	g_Angle;
+float	g_fHeartTime;
+float	g_fScreenAlpha;
+float2  g_UV;
+float2  g_vScreenMaskUV;
+ 
 sampler	DiffuseSampler = sampler_state
 {
 	Filter = MIN_MAG_MIP_LINEAR;
@@ -31,6 +47,7 @@ struct VS_OUT
 {           
 	float4	vPosition	: SV_POSITION;
 	float2	vTexUV		: TEXCOORD0;
+	float2  vSubUV		: TEXCOORD1;
 };
 
 VS_OUT	VS_MAIN(VS_IN In)
@@ -43,16 +60,61 @@ VS_OUT	VS_MAIN(VS_IN In)
 	return Out;
 }
 
+VS_OUT	VS_RespawnCirle(VS_IN In)
+{
+	VS_OUT	Out = (VS_OUT)0;
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vTexUV = In.vTexUV;
+
+	float2 SubUV = In.vTexUV;
+	SubUV.x -= 0.5f;
+	SubUV.y -= 0.5f;
+
+	float fCos, fSin;
+
+	fCos = cos(g_Angle);
+	fSin = sin(g_Angle);
+
+	float2x2 dd;
+
+	dd = float2x2(fCos, -fSin, fSin, fCos);
+	SubUV = mul(SubUV, dd);
+	SubUV.x += 0.5f;
+	SubUV.y += 0.5f;
+
+	Out.vSubUV = SubUV;
+
+	return Out;
+}
+
+VS_OUT	VS_LOGO(VS_IN In)
+{
+	VS_OUT			Out = (VS_OUT)0;
+
+	matrix	matWV, matWVP;
+
+	matWV = mul(g_UIWorldMatrix, g_UIViewMatrix);
+	matWVP = mul(matWV, g_UIProjMatrix);
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+	Out.vTexUV = In.vTexUV;
+
+	return Out;
+}
+
 struct GS_IN
 {
 	float4	vPosition	: SV_POSITION;
 	float2	vTexUV		: TEXCOORD0;
+	float2  vSubUV		: TEXCOORD1;
 };
 
 struct GS_OUT
 {
 	float4	vPosition		: SV_POSITION;
 	float2	vTexUV			: TEXCOORD0;
+	float2  vSubUV			: TEXCOORD1;
 	uint	iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 };
 
@@ -70,6 +132,7 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 
 			Out.vPosition = mul(In[i].vPosition, matVP);
 			Out.vTexUV = In[i].vTexUV;
+			Out.vSubUV = In[i].vSubUV;
 			Out.iViewportIndex = 1;
 
 			TriStream.Append(Out);
@@ -86,6 +149,7 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 
 			Out.vPosition = mul(In[j].vPosition, matVP);
 			Out.vTexUV = In[j].vTexUV;
+			Out.vSubUV = In[j].vSubUV;
 			Out.iViewportIndex = 2;
 
 			TriStream.Append(Out);
@@ -101,6 +165,7 @@ struct PS_IN
 {
 	float4	vPosition	: SV_POSITION;
 	float2	vTexUV		: TEXCOORD0;
+	float2  vSubUV		: TEXCOORD1;
 };
 
 struct PS_OUT
@@ -112,13 +177,12 @@ PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
 	return Out;
 }
 
-PS_OUT PS_FRAME(PS_IN In)
+PS_OUT PS_Frame(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
@@ -130,7 +194,7 @@ PS_OUT PS_FRAME(PS_IN In)
 
 }
 
-PS_OUT PS_PC_MOUSE(PS_IN In)
+PS_OUT PS_PC_Mouse(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
@@ -155,21 +219,259 @@ PS_OUT PS_Fill(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_PLAYERMARKER(PS_IN In)
+PS_OUT PS_PlayerMarker(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	if (0 == g_iColorOption)
-		Out.vColor.rgb = float3(0.74f, 1.f, 0.f);
-	else if(1 == g_iColorOption)
-		Out.vColor.rgb = float3(0.31f, 0.73f, 0.87f);
+	if (Out.vColor.a < 0.35f)
+		discard;
+		
+	float3 Green = float3(0.74f, 0.99f, 0.1f);
+	float3 SkyBlue = float3(0.31f, 0.73f, 0.87f);
+
+	if (0 == g_iColorOption && Out.vColor.a > 0.8f)
+		Out.vColor.rgb = Green;
+	else if (1 == g_iColorOption && Out.vColor.a > 0.8f)
+		Out.vColor.rgb = SkyBlue;
+
+	Out.vColor.a = g_fAlpha;
+
+	return Out;
+}
+
+PS_OUT PS_RespawnCircle(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	vector SubColor = g_DiffuseSubTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	//In.vTexUV += g_UV;
+	vector Noise = g_DiffuseNoiseTexture.Sample(DiffuseSampler, In.vSubUV);
+
+
+	if (0.f >= Out.vColor.r && 0.f >= Out.vColor.b)
+		discard;
+
+	float fColor = g_Time - SubColor.a;
+
+	// 이거는 rgb에 r채널만 줘서 게이지를 띄위기 위함
+	Out.vColor.rgb = Out.vColor.r/* + Out.vColor.b*/;
+	// 여기서 이제 r채널만 띄웠으니까 알파 값을 조절해주자
+	//Out.vColor.a = Out.vColor.r * 0.25f /* + Out.vColor.b + Out.vColor.a*/;
+	Out.vColor.a = Out.vColor.r * 0.25f /* + Out.vColor.b + Out.vColor.a*/;
+
+	if (Out.vColor.r <= 0.411f != Out.vColor.r >= 0.42f)
+	{
+		if (fColor <= 0.015f && Out.vColor.r == 1.f && Out.vColor.g == 1.f)
+		{
+			// 노란색 꼬랑지에만 노이즈
+			Out.vColor.rgb *= Out.vColor.r * 50.f * Noise.r;
+			// 게이지에 노이즈
+			//Out.vColor.rgb *= Noise.rgb;
+			//Out.vColor.r = Noise.a;
+			//Out.vColor.a = 1.f;
+			//Out.vColor.ra = 1.f;
+			//Out.vColor.a = Noise.r;
+		}
+
+		if (SubColor.a <= g_Time)
+		{
+			Out.vColor.rgb *= float3(1.f, 0.09882f, 0.f) * 2.f * Noise.r;
+			//Out.vColor.r = Noise.r;
+			Out.vColor.a = Out.vColor.r;
+
+		}
+	}
+	else
+		Out.vColor.a = 0.8f;
+
+	//if (Out.vColor.r <= 0.05f && Out.vColor.g <= 0.05f && Out.vColor.b <= 0.05f)
+	//	discard;
+
+	//if (Out.vColor.r == 0.f && Out.vColor.g == 0.f && Out.vColor.b == 0.f && Out.vColor.a == 0.f)
+	//	discard;
+
+	//Out.vColor.g = 0.f;
+
+	//if (Out.vColor.r >= 0.7f)
+	//	Out.vColor.a = 0.f;
+
+	//Out.vColor.rgb = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.f;
+	//Out.vColor *= vector(10.0f, 1.9f, 5.0f, 1.f);
+
+	//if (Out.vColor.b != 0.f)
+	//	Out.vColor.a = 0.f;
 
 	return Out;
 }
 
 
+PS_OUT PS_RespawnCircleHeart(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	vector SubColor = g_DiffuseSubTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (0.f >= Out.vColor.a && 0.f >= Out.vColor.b)
+		discard;
+
+	float fHeartTime = abs(sin(g_fHeartTime));
+
+	if (Out.vColor.b <= fHeartTime)
+	{
+		if (0 == g_iRespawnOption)
+		{
+			Out.vColor.rgb = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.f;
+			Out.vColor *= vector(10.0f, 1.0f, 0.1f, 1.f);
+		}
+		else
+		{
+			Out.vColor.rgb = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 0.5f;
+			Out.vColor *= vector(1000.0f, 1.9f, 0.0f, 1.f);
+		}
+	}
+	else
+		discard;
+
+	return Out;
+}
+
+PS_OUT PS_AlphaScreen(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (1 == g_iAlphaOption)
+		Out.vColor.a = 0.6f;
+	else
+		Out.vColor.a = 0.5f;
+
+	return Out;
+}
+
+PS_OUT PS_SplashScreen(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (0.999f >= Out.vColor.a)
+		discard;
+
+	//if (Out.vColor.r >= 0.8f)
+	//	In.vTexUV.x += g_vScreenMaskUV.x;
+	//else if (Out.vColor.g >= 0.8f)
+	//	In.vTexUV.y -= g_vScreenMaskUV.y;
+	//else if (Out.vColor.b >= 0.8f)
+	//	In.vTexUV.x -= g_vScreenMaskUV.x;
+
+	//vector Mask = g_DiffuseMaskTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	Out.vColor.a = g_fScreenAlpha;
+
+	//Out.vColor.rgb += Mask;
+
+	return Out;
+}
+
+
+PS_OUT PS_SplashScreenMask(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector Screen = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	
+	float2 vWeight = { g_vScreenMaskUV.x, g_vScreenMaskUV.y };
+
+	if (0 == g_iColorOption)
+	{
+		In.vTexUV.x += vWeight.x;
+		In.vTexUV.y += vWeight.y;
+	}
+	else if (1 == g_iColorOption)
+	{
+		In.vTexUV.x -= vWeight.x;
+		In.vTexUV.y += vWeight.y;
+	}
+	else
+	{
+		In.vTexUV.x -= vWeight.x;
+		In.vTexUV.y -= vWeight.y;
+	}
+
+	vector vColor = g_DiffuseMaskTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (vColor.r <= 0.1f && vColor.g <= 0.1f && vColor.b <= 0.1f)
+		discard;
+
+	if (Screen.a == 0.f)
+		discard;
+
+	if (vColor.r > 0.1f && 0 == g_iColorOption)
+	{
+		//Out.vColor.rgba = 1.f;
+		Out.vColor.rgba = vector(1.f, 1.f, 0.1f, 1.f);
+		//Out.vColor.rgb = 1.f;
+		//Out.vColor.a = 0.7f;
+	}
+	else if (vColor.g > 0.1f && 1 == g_iColorOption)
+	{
+		//Out.vColor.rgba = 1.f;
+		Out.vColor.rgba = vector(1.f, 1.f, 0.1f, 1.f);
+		//Out.vColor.rgb = 1.f;
+		//Out.vColor.a = 0.7f;
+	}
+	else if (vColor.b > 0.1f && 2 == g_iColorOption)
+	{
+		//Out.vColor.rgba = 1.f;
+		Out.vColor.rgba = vector(1.f, 1.f, 0.1f, 1.f);
+		//Out.vColor.rgb = 1.f;
+		//Out.vColor.a = 0.7f;
+	}
+	return Out;
+}
+
+PS_OUT PS_HeaderBox(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	switch (g_iHeaderBoxOption)
+	{
+	case 0:
+		break;
+	case 1:
+		Out.vColor.rgb = float3(0.41f, 0.f, 0.f);
+		break;
+	case 2:
+		Out.vColor.rgb = float3(0.99f, 0.878f, 0.815f);
+		break;
+	case 3:
+		Out.vColor.rgb = float3(1.f, 0.83f, 0.25f);
+		break;
+	}
+	
+	return Out;
+}
+
+PS_OUT PS_ChapterSelect(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	vector AlphaTex = g_DiffuseAlphaTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (AlphaTex.r < 1.f)
+		Out.vColor.a = AlphaTex.r;
+
+	return Out;
+}
 
 ////////////////////////////////////////////////////////////
 
@@ -194,7 +496,7 @@ technique11 DefaultTechnique
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
-		PixelShader = compile ps_5_0 PS_FRAME();
+		PixelShader = compile ps_5_0 PS_Frame();
 	}
 
 	// 2
@@ -205,7 +507,7 @@ technique11 DefaultTechnique
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
-		PixelShader = compile ps_5_0 PS_PC_MOUSE();
+		PixelShader = compile ps_5_0 PS_PC_Mouse();
 	}
 	
 	// 3
@@ -224,10 +526,119 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.5f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PlayerMarker();
+	}
+
+	// 5
+	pass RespawnCircle
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_RespawnCirle();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_RespawnCircle();
+	}
+
+	// 6
+	pass RespawnCircleHeart
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
-		PixelShader = compile ps_5_0 PS_PLAYERMARKER();
+		PixelShader = compile ps_5_0 PS_RespawnCircleHeart();
 	}
 
+	// 7
+	pass AlphaScreen
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_AlphaScreen();
+	}
+
+	// 8
+	pass SplashScreenBack
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	// 9
+	pass SplashScreen
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_SplashScreen();
+	}
+
+	// 10
+	pass SplashScreenMask
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_SplashScreenMask();
+	}
+
+	// 11
+	pass Menu
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	// 12
+	pass AlphaScreenMenu
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_AlphaScreen();
+	}
+
+	// 13
+	pass HeaderBox
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_HeaderBox();
+	}
+
+	// 14
+	pass ChapterSelect
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_ChapterSelect();
+	}
 };

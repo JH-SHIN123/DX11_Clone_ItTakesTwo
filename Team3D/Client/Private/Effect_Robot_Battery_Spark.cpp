@@ -22,6 +22,7 @@ HRESULT CEffect_Robot_Battery_Spark::NativeConstruct(void * pArg)
 {
 	__super::Ready_Component(pArg);
 
+	m_EffectDesc_Prototype.iInstanceCount = 20;
 	m_EffectDesc_Prototype.fLifeTime = 0.25f;
 	m_fResetTime = m_EffectDesc_Prototype.fLifeTime;
 
@@ -90,7 +91,7 @@ HRESULT CEffect_Robot_Battery_Spark::Ready_Instance()
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
 		m_pInstanceBuffer[iIndex].vPosition		= vPos;
-		m_pInstanceBuffer[iIndex].vSize			= { 0.15f, 0.15f };
+		m_pInstanceBuffer[iIndex].vSize			= { 0.2f, 0.2f };
 		m_pInstanceBuffer[iIndex].vTextureUV	= Get_TexUV_Rand(8, 8);
 
 		_vector vUp = Get_RandDir(_int3(100, 100, 100), vDir);
@@ -140,7 +141,7 @@ void CEffect_Robot_Battery_Spark::Check_Particle_UV(_double TimeDelta)
 		for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 		{
 			m_pInstanceBuffer[iIndex].vPosition = vPos;
-			m_pInstanceBuffer[iIndex].vSize = { 0.15f, 0.15f };
+			m_pInstanceBuffer[iIndex].vSize = { 0.5f, 0.2f };
 			m_pInstanceBuffer[iIndex].vTextureUV = Get_TexUV_Rand(8, 8);
 
 			_vector vUp = Get_RandDir(_int3(100, 100, 100), vDir);
@@ -190,5 +191,7 @@ CGameObject * CEffect_Robot_Battery_Spark::Clone_GameObject(void * pArg)
 
 void CEffect_Robot_Battery_Spark::Free()
 {
+	Safe_Delete_Array(m_pInstanceBuffer);
+
 	__super::Free();
 }

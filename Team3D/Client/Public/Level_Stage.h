@@ -20,12 +20,13 @@ private:
 	/* Se */
 	HRESULT Ready_Layer_GravityPath(const _tchar* pLayerTag);
 	/* Jung */
-	HRESULT Test_Layer_Effect(const _tchar* pLayerTag);
 	HRESULT Test_Layer_Object_Effect(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_WarpGate(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Wormhole(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_WallLaserTrap(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_GravityPipe(const _tchar* pLayerTag);
 	/* Hye */
-	HRESULT Ready_Layer_PinBall(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Planet(const _tchar* pLayerTag);
 	/* Won */
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_Sky(const _tchar* pLayerTag);
@@ -55,6 +56,10 @@ private:
 
 
 	/* Jin */
+	HRESULT Ready_Layer_ControlRoomPuzzle(const _tchar* pLayerTag, const _tchar* pGameObjectTag);
+	HRESULT Ready_Layer_ControlRoom_Glass(const _tchar * pLayerTag);
+	HRESULT Ready_Layer_Umbrella_Joystick(const _tchar * pLayerTag);
+
 	/* Jun */
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	/* Read_File */

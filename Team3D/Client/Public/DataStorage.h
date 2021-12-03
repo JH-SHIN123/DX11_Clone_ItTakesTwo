@@ -32,6 +32,9 @@ public:
 	void Set_BridgePtr(CGameObject* pBridge) { m_pBridge = pBridge; }
 	CGameObject* Get_Bridge() { return m_pBridge; }
 
+	void Set_MenuScreen(CGameObject* pMenuScreen) { m_pMenuScreen = pMenuScreen; }
+	CGameObject* Get_MenuScreen() { return m_pMenuScreen; }
+
 	/* Robots */
 	void Set_STGravityRobotPtr(CGameObject* pRobot) { m_pSTGravityRobot = pRobot; }
 	CGameObject* Get_STGravityRobot() { return m_pSTGravityRobot; }
@@ -42,10 +45,23 @@ public:
 	void Set_STPlanetRobotPtr(CGameObject* pRobot) { m_pSTPlanetRobot = pRobot; }
 	CGameObject* Get_STPlanetRobot() { return m_pSTPlanetRobot; }
 
+
+	void Set_PressureBigPlate(CGameObject* pPressureBigPlate) { m_pPressureBigPlate = pPressureBigPlate; }
+	CGameObject* Get_PressureBigPlate() { return m_pPressureBigPlate; }
+
+	void Set_PipeCurvePtr(vector<class CPressurePlate*> pPipeCurve) { m_vecPipeCurve = pPipeCurve; }
+	class vector<class CPressurePlate*> Get_PressurePlate() { return m_vecPipeCurve;  }
+
+	void Set_Umbrella_JoystickPtr(CGameObject* pUmbrella_Joystick) { m_pUmbrella_Joystick = pUmbrella_Joystick; }
+	CGameObject* Get_Umbrella_JoystickPtr() { return m_pUmbrella_Joystick; }
+
 	/* For.Valve */
 	void Set_ValveCount(_uint _iValveRotateCount) { m_iValveRotateCount += _iValveRotateCount; }
 	void Set_ValveTarget(_uint _iValveTarget) { m_iValveTarget = _iValveTarget; }
 	_uint Get_ValveCount() { return m_iValveRotateCount; }
+	/*For.Valve_Star*/void	Add_ValveCount_Cody(_bool IsCody) { true == IsCody ? ++m_iCody_Valve_Count : ++m_iMay_Valve_Count; }
+	/*For.Valve_Star*/_uint	Get_ValveCount_Cody(_bool IsCody);
+	/*For.Valve_Star*/void	Reset_ValveCount_Cody(_bool IsCody) { true == IsCody ? m_iCody_Valve_Count = 0 : m_iMay_Valve_Count = 0; }
 	
 	/* For.PinBall */
 	void Set_Pinball(CGameObject* pPinball) { m_pPinball = pPinball; }
@@ -94,6 +110,10 @@ public:
 	void Set_RailStageClear(_bool bRailStageClear) { m_bRailStageClear = bRailStageClear; }
 	_bool Get_RailStageClear() { return m_bRailStageClear; }
 
+	void Set_HangingPlanet(CGameObject* pHangingPlanet) { m_pHangingPlanet = pHangingPlanet; }
+	CGameObject* Get_HangingPlanet() { return m_pHangingPlanet; }
+
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -107,6 +127,19 @@ private:
 	CGameObject* m_pBridge = nullptr;
 
 	// Interactive Objects
+	CGameObject* m_pRobot = nullptr;
+	CGameObject* m_pRobotLever = nullptr;
+	CGameObject* m_pRobotBattery = nullptr;
+	CGameObject* m_pRobotHead = nullptr;
+	CGameObject* m_pNoBatterySign = nullptr;
+	CGameObject* m_pPressureBigPlate = nullptr;
+	CGameObject* m_pUmbrella_Joystick = nullptr;
+	CGameObject* m_pMenuScreen = nullptr;
+
+private:
+	// Interactive Objects
+	vector<class CPressurePlate*>	m_vecPipeCurve;
+
 	CGameObject* m_pSTGravityRobot = nullptr;
 	CGameObject* m_pSTPinBallRobot = nullptr;
 	CGameObject* m_pSTPlanetRobot = nullptr;
@@ -121,10 +154,15 @@ private:
 	CGameObject* m_pPinBall_Door = nullptr;
 	CGameObject* m_pSlideDoor = nullptr;
 
+	/* For.HangingPlanet */
+	CGameObject* m_pHangingPlanet = nullptr;
+
 private:
 	/* For.Valve */
 	_uint m_iValveRotateCount = 0;
 	_uint m_iValveTarget = 0;
+	_uint m_iCody_Valve_Count = 0;
+	_uint m_iMay_Valve_Count = 0;
 
 	_bool m_IsBigButtonPressed = false;
 	_bool m_bGravityStageClear = false;

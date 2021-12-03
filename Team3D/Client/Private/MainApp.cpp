@@ -18,12 +18,13 @@ HRESULT CMainApp::NativeConstruct()
 
 	m_pPxEventCallback = new CPxEventCallback;
 
+
 	FAILED_CHECK_RETURN(m_pGameInstance->Initialize(CGraphic_Device::TYPE_WINMODE, g_hWnd, g_hInst, g_iWinCX, g_iWinCY, &m_pDevice, &m_pDeviceContext, m_pPxEventCallback), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Reserve_Container(Level::LEVEL_END), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Timer(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Prototype_ForStatic(), E_FAIL);
-	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->NativeConstruct_Environment_Generator(m_pDevice, m_pDeviceContext), E_FAIL);
 	UI_Generator->NativeConstruct(m_pDevice, m_pDeviceContext);
+	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->NativeConstruct_Environment_Generator(m_pDevice, m_pDeviceContext), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
 
 	return S_OK;
@@ -33,8 +34,8 @@ HRESULT CMainApp::Run_App()
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
-	/*if (g_bWndActivate)
-		Lock_Mouse();*/
+	if (g_bWndActivate)
+		Lock_Mouse();
 
 	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
 

@@ -5,6 +5,7 @@
 #include "UI_Generator.h"
 #include "RobotHead.h"
 #include "RobotLever.h"
+#include "Effect_Generator.h"
 
 CRobotBattery::CRobotBattery(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CRobotParts(pDevice, pDeviceContext)
@@ -167,10 +168,12 @@ void CRobotBattery::Push_Battery(_double dTimeDelta)
 		case ST_GRAVITYPATH:
 			((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_RobotHead()->Set_Battery_Charged(true);
 			((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_Robot_Lever()->Set_BatteryCharged(true);
+			EFFECT->Add_Effect(Effect_Value::RobotBattery_Spark, m_pTransformCom->Get_WorldMatrix());
 			break;
 		case ST_RAIL:
 			((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_RobotHead()->Set_Battery_Charged(true);
 			((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_Robot_Lever()->Set_BatteryCharged(true);
+			EFFECT->Add_Effect(Effect_Value::RobotBattery_Spark, m_pTransformCom->Get_WorldMatrix());
 			break;
 		}
 

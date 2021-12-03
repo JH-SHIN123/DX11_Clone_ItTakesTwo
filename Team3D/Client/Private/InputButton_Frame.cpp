@@ -36,6 +36,7 @@ HRESULT CInputButton_Frame::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	m_vStartScale = m_UIDesc.vScale;
 
 	SetUp_Option();
 
@@ -47,9 +48,18 @@ _int CInputButton_Frame::Tick(_double TimeDelta)
 	if (true == m_IsDead)
 		return EVENT_DEAD;
 
-	
-
 	CUIObject::Tick(TimeDelta);
+
+	/* RespawnCircle */
+	if (2 == m_iOption)
+	{
+		if (m_vStartScale.x >= m_UIDesc.vScale.x)
+		{
+			m_UIDesc.vScale.x += m_fPower / 4.f;
+			m_UIDesc.vScale.y += m_fPower / 4.f;
+			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+		}
+	}
 
 	return _int();
 }
@@ -65,9 +75,14 @@ HRESULT CInputButton_Frame::Render(RENDER_GROUP::Enum eGroup)
 {
 	CUIObject::Render(eGroup);
 
-	if (0 == m_iOption)
+	if (0 == m_iOption || 2 == m_iOption)
 	{
 		if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
+			return E_FAIL;
+	}
+	else if (3 == m_iOption)
+	{
+		if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
 			return E_FAIL;
 	}
 	else
@@ -76,7 +91,7 @@ HRESULT CInputButton_Frame::Render(RENDER_GROUP::Enum eGroup)
 			return E_FAIL;
 	}
 
-	m_pVIBuffer_RectCom->Render(1);
+	m_pVIBuffer_RectCom->Render(m_iShaderPassNum);
 
 	Render_Font();
 
@@ -87,22 +102,63 @@ void CInputButton_Frame::SetUp_Option()
 {
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_F")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Dot")) ||
 		!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_PS_Triangle")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_PS_R1")))
+	{
 		m_iOption = 1;
+		m_iShaderPassNum = 1;
+		m_IsScaleBigger = true;
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_E")))
+	{
+		m_iOption = 2;
+		m_iShaderPassNum = 1;
+		m_fPower = 20.f;
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Left")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Right")))
+	{
+		m_iOption = 3;
+		m_iShaderPassNum = 11;
+	}
 	else
+	{
 		m_iOption = 0;
+		m_iShaderPassNum = 1; 
+	}
+}
+
+void CInputButton_Frame::Scale_Effect()
+{
+
+}
+
+void CInputButton_Frame::Set_ScaleEffect()
+{
+	if (2 != m_iOption && 10.f >= m_UIDesc.vScale.x)
+		return;
+
+	m_UIDesc.vScale.x -= m_fPower;
+	m_UIDesc.vScale.y -= m_fPower;
+	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 }
 
 
 void CInputButton_Frame::Render_Font()
 {
 	CUI_Generator::FONTDESC		tFontDesc;
-	tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
-	tFontDesc.vScale = { 40.f, 50.f };
-	tFontDesc.fInterval = 0.f;
-	tFontDesc.iOption = 1;
 
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_F")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
+		tFontDesc.vScale = { 40.f, 50.f };
+
 		UI_Generator->Render_Font(TEXT("F"), tFontDesc, m_ePlayerID);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_E")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
+		tFontDesc.vScale = { m_UIDesc.vScale.x / 2.f, m_UIDesc.vScale.y / 1.2f };
+
+		UI_Generator->Render_Font(TEXT("E"), tFontDesc, m_ePlayerID);
+	}
 }
 
 HRESULT CInputButton_Frame::Ready_Component()
