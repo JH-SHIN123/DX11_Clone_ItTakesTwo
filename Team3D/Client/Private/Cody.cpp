@@ -1937,15 +1937,15 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eUMBRELLABEAMJOYSTICK && m_pGameInstance->Key_Down(DIK_E))
 		{
-			m_pModelCom->Set_Animation(ANI_M_ArcadeScreenLever_MH);
-			m_pModelCom->Set_NextAnimIndex(ANI_M_ArcadeScreenLever_MH);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
 			m_IsControlJoystick = true;
 			CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
 			pJoystick->Set_ControlActivate(true);
 		}
 		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)
 		{
-			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			Enforce_IdleState();
@@ -2767,13 +2767,14 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 {
 	if (nullptr == m_pTransformCom || false == m_bMoveToRail || nullptr == m_pTargetRailNode || true == m_bOnRail) return;
 
+	m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind); // 레일 착지
+
 	_float fMoveToSpeed = 5.f;
 	_float fDist = m_pTransformCom->Move_ToTargetRange(m_pTargetRailNode->Get_Position(), 0.1f, dTimeDelta * fMoveToSpeed);
 	if (fDist < 0.15f)
 	{
 		/* 타는 애니메이션으로 변경 */
-		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_ToGrind); // 레일 착지
-		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
+		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
 
 		/* 타야할 Path 지정 */
 		m_pTargetRail = (CSpaceRail*)DATABASE->Get_SpaceRail(m_pTargetRailNode->Get_RailTag());
