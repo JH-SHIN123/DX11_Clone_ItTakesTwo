@@ -178,9 +178,6 @@
     <Filter Include="99.Defines\01.Engine">
       <UniqueIdentifier>{761c450f-e718-4655-b80b-2ee79310a6a6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="99.Defines\02.Convenience">
-      <UniqueIdentifier>{da9222d9-50c2-4853-af74-9fb3bfb8ad10}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Utility\02.Component\05.Model\00.Main\00.Normal">
       <UniqueIdentifier>{30ffa4e5-d430-4267-8f5b-c88bed9c2fb9}</UniqueIdentifier>
     </Filter>
@@ -366,9 +363,6 @@
     <ClInclude Include="..\public\Engine_Typedef.h">
       <Filter>99.Defines\01.Engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\MathHelper.h">
-      <Filter>99.Defines\02.Convenience</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Model.h">
       <Filter>02.Utility\02.Component\05.Model\00.Main\00.Normal</Filter>
     </ClInclude>
@@ -395,9 +389,6 @@
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer_Rect_TripleUV.h">
       <Filter>02.Utility\02.Component\04.VIBuffer\01.Rect\04.TripleUV</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\GlobalFunction.h">
-      <Filter>99.Defines\02.Convenience</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PostFX.h">
       <Filter>02.Utility\06.PostFX</Filter>
@@ -431,6 +422,9 @@
     </ClInclude>
     <ClInclude Include="..\public\PhysX.h">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_MathHelper.h">
+      <Filter>99.Defines\01.Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

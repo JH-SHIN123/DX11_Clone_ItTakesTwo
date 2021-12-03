@@ -57,6 +57,7 @@ HRESULT CPlayerActor::NativeConstruct(void * pArg)
 	m_pBehaviorCallback->Set_PlayerActorPtr(this);
 	m_pBehaviorCallback->Set_Controller(m_pController);
 	m_pHitReport->Set_PlayerActorPtr(this);
+	//m_pHitReport->Set_PlayerID():
 
 	m_pActor = m_pController->getActor();
 	m_pController->setUserData(ArgDesc.pUserData);
@@ -64,7 +65,7 @@ HRESULT CPlayerActor::NativeConstruct(void * pArg)
 	m_pUserData = ArgDesc.pUserData;
 	m_pActor->userData = ArgDesc.pUserData;
 
-	m_isGravityReordered = true;
+	m_IsOnGravityPath = false;
 
 	XMStoreFloat3(&m_vPlayerUp, XMVectorSet(0.f, 1.f, 0.f, 0.f));
 
@@ -140,7 +141,7 @@ void CPlayerActor::Update(_double dTimeDelta)
 
 	if (m_iReorderGravityStep == 1)
 	{
-		Step_GravityPath(m_vHitNormal);
+		Step_GravityPath();
 		m_iReorderGravityStep = 2;
 	}
 	else if (m_iReorderGravityStep == 2)
@@ -169,16 +170,16 @@ void CPlayerActor::Jump_Higher(_float fJumpForce)
 	m_fJumpForce += fJumpForce;
 }
 
-void CPlayerActor::Step_GravityPath(PxVec3 vNormal)
+void CPlayerActor::Step_GravityPath()
 {
 	NULL_CHECK(m_pController);
 
-	//if (m_pUserData->eID == GameID::eCODY) return;
+	if (m_pUserData->eID == GameID::eCODY) return;
 
-	m_pController->setUpDirection(vNormal);
-	m_isGravityReordered = false;
+	m_pController->setUpDirection(m_vHitNormal);
+	m_IsOnGravityPath = true;
 
-	m_vPlayerUp = MH_XMFloat3(vNormal);
+	m_vPlayerUp = MH_XMFloat3(m_vHitNormal);
 
 	//m_pTransform->Set_RotateQuat(MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));
 	m_pTransform->RotateByUp(XMLoadFloat3(&m_vPlayerUp));
@@ -195,7 +196,7 @@ void CPlayerActor::Reorder_Gravity()
 {
 	if (m_pUserData->eID == GameID::eCODY) return;
 
-	if (true == m_isGravityReordered) return;
+	if (false == m_IsOnGravityPath) return;
 
 	_float fX = abs(m_vPlayerUp.x);
 	_float fY = abs(m_vPlayerUp.y);
@@ -226,7 +227,7 @@ void CPlayerActor::Reorder_Gravity()
 	}
 
 	m_pController->setUpDirection(MH_PxVec3(m_vPlayerUp));
-	m_isGravityReordered = true;
+	m_IsOnGravityPath = false;
 
 	//m_vPlayerUp;
 	//_vector vTemp = XMVector3TransformCoord(XMVectorSet(-0.5f, 0.1f, 0.1f, 1.f), MH_GetQuaternion(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMLoadFloat3(&m_vPlayerUp)));

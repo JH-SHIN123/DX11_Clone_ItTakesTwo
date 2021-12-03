@@ -19,9 +19,6 @@
     <Filter Include="02.GameObject">
       <UniqueIdentifier>{b604bc39-7ea2-4ccb-a98b-f89e2d0279b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\02.Logo">
-      <UniqueIdentifier>{6e3ecc34-09e4-48a8-b8b4-f1dd9d96c681}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Maps\01.Loading">
       <UniqueIdentifier>{6fc0b5cb-e4c3-4c8d-8e2e-a4ec808b25df}</UniqueIdentifier>
     </Filter>
@@ -33,9 +30,6 @@
     </Filter>
     <Filter Include="01.Maps\02.Logo">
       <UniqueIdentifier>{f9f8ae9e-d45b-4aea-93db-52b3d0ea79d6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Maps\03.Title">
-      <UniqueIdentifier>{8c305b83-6566-4ea4-9b5a-49bd9e062009}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\00.Public">
       <UniqueIdentifier>{660aeb5f-c069-42dd-a6c5-03c98bb19ca8}</UniqueIdentifier>
@@ -51,9 +45,6 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\3D">
       <UniqueIdentifier>{bbc8ca2e-31e3-4a88-ba86-0624f18e40f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Effect_Generator">
-      <UniqueIdentifier>{1efce119-1cf1-4fab-92f2-6371aba8b2a3}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point">
       <UniqueIdentifier>{f1297b94-aa6d-4d1e-9f97-4bfe51b57a14}</UniqueIdentifier>
@@ -87,9 +78,6 @@
     </Filter>
     <Filter Include="02.GameObject\03.Character\03.Boss\01.MoonBaboon">
       <UniqueIdentifier>{f25b4c8e-4beb-4ec5-9404-fd56a08a7591}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="96.DataStorage">
-      <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\00.Public\03.Cam_Helper">
       <UniqueIdentifier>{a3a6fff7-bf95-4b71-a03c-4caea40e84ed}</UniqueIdentifier>
@@ -126,9 +114,6 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle">
       <UniqueIdentifier>{0683420e-60af-4eb9-974e-0929e6185c9c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Maps\04.Stage_Space">
-      <UniqueIdentifier>{5bbd0183-dea1-417a-b173-4e16c2288048}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Object">
       <UniqueIdentifier>{57086f47-9651-4c97-879a-fb50562cd8cf}</UniqueIdentifier>
@@ -295,9 +280,6 @@
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\06.SpaceValve">
       <UniqueIdentifier>{220b96f2-3a32-467d-a590-dc1504fa0045}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\07.BigPlanet">
-      <UniqueIdentifier>{cde19c6b-aaa3-40d0-8a31-9981b800428b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\08.HookUFO">
       <UniqueIdentifier>{7f50933c-0671-40a9-ab76-5da48106a69e}</UniqueIdentifier>
     </Filter>
@@ -327,9 +309,6 @@
     </Filter>
     <Filter Include="03.Component\01.Actor">
       <UniqueIdentifier>{2ec58a84-d189-4974-a108-05b4f318d045}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\99.UI_Generator">
-      <UniqueIdentifier>{bd3f9c54-ec94-480a-ac35-1cd4435104d0}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\07.UI\00.Main">
       <UniqueIdentifier>{9d5bee89-c474-4dcf-8a8e-0ef5ff96d410}</UniqueIdentifier>
@@ -450,9 +429,6 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\02.Se\01.GravityPath">
       <UniqueIdentifier>{f3a893e3-2973-442e-a466-ffed74b1f8dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.HangingPlanet">
-      <UniqueIdentifier>{7bfbdffb-00e8-4343-bff3-44a6e744dba5}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye">
       <UniqueIdentifier>{ade7861b-fc9f-4044-8e8a-b7432305af13}</UniqueIdentifier>
@@ -637,6 +613,30 @@
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\13.UmbrellaBeam_Joystick">
       <UniqueIdentifier>{1222b103-dbd3-4206-a322-d20e64de8bb8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.Component\01.Actor\01.CameraActor\03.HitReport">
+      <UniqueIdentifier>{61caba6e-99d1-4b69-8e49-44f221628a22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Generator">
+      <UniqueIdentifier>{fa624244-9579-4ddb-a779-eca5b4d72d3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Generator\01.Effect_Generator">
+      <UniqueIdentifier>{1efce119-1cf1-4fab-92f2-6371aba8b2a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Generator\02.UI_Generator">
+      <UniqueIdentifier>{bd3f9c54-ec94-480a-ac35-1cd4435104d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.DataStorage">
+      <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Defines\00.Main">
+      <UniqueIdentifier>{1409ee53-5af4-47f0-9fe4-0f256118b981}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Defines\01.Client">
+      <UniqueIdentifier>{8431b0ed-43da-4c43-8cf2-69a00ab6b479}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Maps\03.Stage_Space">
+      <UniqueIdentifier>{5bbd0183-dea1-417a-b173-4e16c2288048}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -648,9 +648,6 @@
     <ClInclude Include="stdafx.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Client_Defines.h">
-      <Filter>98.Defines</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Level_Loading.h">
       <Filter>01.Maps\01.Loading\00.Main</Filter>
     </ClInclude>
@@ -660,9 +657,6 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Client_Enum.h">
-      <Filter>98.Defines</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\MainCamera.h">
       <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
     </ClInclude>
@@ -670,7 +664,7 @@
       <Filter>02.GameObject\00.Public\02.SubCamera</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_Generator.h">
-      <Filter>95.Effect_Generator</Filter>
+      <Filter>04.Generator\01.Effect_Generator</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Cody.h">
       <Filter>02.GameObject\03.Character\00.Cody</Filter>
@@ -688,7 +682,7 @@
       <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
     </ClInclude>
     <ClInclude Include="..\public\DataStorage.h">
-      <Filter>96.DataStorage</Filter>
+      <Filter>05.DataStorage</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Cam_Helper.h">
       <Filter>02.GameObject\00.Public\03.Cam_Helper</Filter>
@@ -772,7 +766,7 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_Generator.h">
-      <Filter>02.GameObject\07.UI\99.UI_Generator</Filter>
+      <Filter>04.Generator\02.UI_Generator</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIObject.h">
       <Filter>02.GameObject\07.UI\00.Main</Filter>
@@ -800,9 +794,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\RobotHead.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\03.Robot\NoneInteraction</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Client_Animation_Index_Define.h">
-      <Filter>98.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\RespawnCircle.h">
       <Filter>02.GameObject\07.UI\06.RespawnCircle</Filter>
@@ -904,7 +895,7 @@
       <Filter>02.GameObject\04.Stage_Space\02.Se\01.GravityPath</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Stage.h">
-      <Filter>01.Maps\04.Stage_Space</Filter>
+      <Filter>01.Maps\03.Stage_Space</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PipeCurve.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\00.PipeCurve</Filter>
@@ -1047,9 +1038,6 @@
     <ClInclude Include="..\Public\GameOption.h">
       <Filter>00.MainApp</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\BigPlanet.h">
-      <Filter>02.GameObject\04.Stage_Space\06.Yoon\07.BigPlanet</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UmbrellaBeam.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\10.UmbrellaBeam</Filter>
     </ClInclude>
@@ -1079,9 +1067,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\PlayerHitReport.h">
       <Filter>03.Component\01.Actor\02.PlayerActor\03.HitReport</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CameraActor.h">
-      <Filter>03.Component\01.Actor\01.CameraActor\01.BehaviorCallback</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CameraBehaviorCallback.h">
       <Filter>03.Component\01.Actor\01.CameraActor\01.BehaviorCallback</Filter>
@@ -1119,6 +1104,27 @@
     <ClInclude Include="..\Public\MayJumpWall.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CameraHitReport.h">
+      <Filter>03.Component\01.Actor\01.CameraActor\03.HitReport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraActor.h">
+      <Filter>03.Component\01.Actor\01.CameraActor\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Client_Defines.h">
+      <Filter>98.Defines\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Animation_Index_Define.h">
+      <Filter>98.Defines\01.Client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Enum.h">
+      <Filter>98.Defines\01.Client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Struct.h">
+      <Filter>98.Defines\01.Client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_MathHelper.h">
+      <Filter>98.Defines\01.Client</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1143,7 +1149,7 @@
       <Filter>02.GameObject\00.Public\03.Cam_Helper\Film</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Generator.cpp">
-      <Filter>95.Effect_Generator</Filter>
+      <Filter>04.Generator\01.Effect_Generator</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\May.cpp">
       <Filter>02.GameObject\03.Character\01.May</Filter>
@@ -1218,7 +1224,7 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\04.May_Boots_Walking_Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Generator.cpp">
-      <Filter>02.GameObject\07.UI\99.UI_Generator</Filter>
+      <Filter>04.Generator\02.UI_Generator</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIObject.cpp">
       <Filter>02.GameObject\07.UI\00.Main</Filter>
@@ -1327,7 +1333,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp">
-      <Filter>96.DataStorage</Filter>
+      <Filter>05.DataStorage</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
@@ -1375,7 +1381,7 @@
       <Filter>02.GameObject\04.Stage_Space\02.Se\01.GravityPath</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Stage.cpp">
-      <Filter>01.Maps\04.Stage_Space</Filter>
+      <Filter>01.Maps\03.Stage_Space</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PipeCurve.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\00.PipeCurve</Filter>
@@ -1515,9 +1521,6 @@
     <ClCompile Include="..\private\MainApp.cpp">
       <Filter>00.MainApp</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\BigPlanet.cpp">
-      <Filter>02.GameObject\04.Stage_Space\06.Yoon\07.BigPlanet</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UmbrellaBeam.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\10.UmbrellaBeam</Filter>
     </ClCompile>
@@ -1586,6 +1589,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MayJumpWall.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraHitReport.cpp">
+      <Filter>03.Component\01.Actor\01.CameraActor\03.HitReport</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

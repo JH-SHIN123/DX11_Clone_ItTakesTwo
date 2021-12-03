@@ -38,6 +38,7 @@ private:
 	CTransform*						m_pTransform = nullptr;
 	class CCameraBehaviorCallback*	m_pBehaviorCallback = nullptr;
 	class CCameraFilterCallback*	m_pFilterCallback = nullptr;
+	class CCameraHitReport*			m_pHitReport = nullptr;
 
 public:
 	static CCameraActor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
