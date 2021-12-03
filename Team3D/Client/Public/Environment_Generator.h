@@ -46,6 +46,7 @@ private:
 	HRESULT Load_Environment_Space();
 	HRESULT Load_Environment_Space_Boss();
 	HRESULT Load_Environment_Interactive_Instancing();
+	HRESULT Load_Environment_SpaceRail();
 	HRESULT Load_Environment_Trigger();
 
 public:

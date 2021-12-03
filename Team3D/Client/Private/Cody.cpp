@@ -5,8 +5,9 @@
 #include "UIObject.h"
 #include "May.h"
 #include "DataStorage.h"
-#include "MathHelper.h"
 #include "PlayerActor.h"
+#include "SpaceRail.h"
+#include "SpaceRail_Node.h"
 #include "UmbrellaBeam_Joystick.h"
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
@@ -51,7 +52,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
  	//UI_Create(May, StickIcon);
  
  	UI_Create(Cody, PlayerMarker);
- 	//UI_Create(Cody, InputButton_InterActive);
+	UI_Create_Active(Cody, InputButton_InterActive, false);
 	 
 	return S_OK;
 }
@@ -190,6 +191,9 @@ _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
 
+	/* UI */
+	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 	m_pCamera = (CMainCamera*)CDataStorage::GetInstance()->Get_MainCam();
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
@@ -206,62 +210,73 @@ _int CCody::Tick(_double dTimeDelta)
 
 #pragma region BasicActions
 	/////////////////////////////////////////////
-	Wall_Jump(dTimeDelta);
-	if (Trigger_Check(dTimeDelta))
-	{
-		Go_Grind(dTimeDelta);
-		Hit_StarBuddy(dTimeDelta);
-		Hit_Rocket(dTimeDelta);
-		Activate_RobotLever(dTimeDelta);
-		Push_Battery(dTimeDelta);
-		Rotate_Valve(dTimeDelta);
-		In_GravityPipe(dTimeDelta);
-		Hit_Planet(dTimeDelta);
-		Hook_UFO(dTimeDelta);
-		Warp_Wormhole(dTimeDelta);
-		Touch_FireDoor(dTimeDelta);
-		Boss_Missile_Hit(dTimeDelta);
-		Boss_Missile_Control(dTimeDelta);
-		Falling_Dead(dTimeDelta);
-		WallLaserTrap(dTimeDelta);
-		PinBall(dTimeDelta);
-		//Wall_Jump(dTimeDelta);
-	}
-	else
-	{
-		// 트리거 끝나고 애니메이션 초기화
-		//Trigger_End(dTimeDelta);
-		m_IsFalling = m_pActorCom->Get_IsFalling();
-		m_pActorCom->Set_GroundPound(m_bGroundPound);
+	KeyInput_Rail(dTimeDelta);
 
-		if ((m_bRoll == false || m_bSprint == true))
+	if (false == m_bMoveToRail && false == m_bOnRail)
+	{
+		Wall_Jump(dTimeDelta);
+		if (Trigger_Check(dTimeDelta))
 		{
-			KeyInput(dTimeDelta);
+			Hit_StarBuddy(dTimeDelta);
+			Hit_Rocket(dTimeDelta);
+			Activate_RobotLever(dTimeDelta);
+			Push_Battery(dTimeDelta);
+			Rotate_Valve(dTimeDelta);
+			In_GravityPipe(dTimeDelta);
+			Hit_Planet(dTimeDelta);
+			Hook_UFO(dTimeDelta);
+			Warp_Wormhole(dTimeDelta);
+			Touch_FireDoor(dTimeDelta);
+			Boss_Missile_Hit(dTimeDelta);
+			Boss_Missile_Control(dTimeDelta);
+			Falling_Dead(dTimeDelta);
+			WallLaserTrap(dTimeDelta);
+			PinBall(dTimeDelta);
 		}
-		if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
+		else
 		{
-			Sprint(dTimeDelta);
-			if(m_IsSizeChanging == false)
-				Move(dTimeDelta);
-			if (m_eCurPlayerSize != SIZE_LARGE)
-				Roll(dTimeDelta);
-			Jump(dTimeDelta);
-			Change_Size(dTimeDelta);
+			// 트리거 끝나고 애니메이션 초기화
+			m_IsFalling = m_pActorCom->Get_IsFalling();
+			m_pActorCom->Set_GroundPound(m_bGroundPound);
+
+			if ((m_bRoll == false || m_bSprint == true))
+			{
+				KeyInput(dTimeDelta);
+			}
+			if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
+			{
+				Sprint(dTimeDelta);
+				if (m_IsSizeChanging == false)
+					Move(dTimeDelta);
+				if (m_eCurPlayerSize != SIZE_LARGE)
+					Roll(dTimeDelta);
+				Jump(dTimeDelta);
+				Change_Size(dTimeDelta);
+			}
+			Ground_Pound(dTimeDelta);
 		}
-		Ground_Pound(dTimeDelta);
 	}
 	/////////////////////////////////////////////
 
-	
 #pragma endregion
 
-	/* UI */
-	//CMay* pMay = (CMay*)DATABASE->GetMay();
-	//UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	/* 레일 타겟을 향해 날라가기 */
+	// Forward 조정
+	MoveToTargetRail(dTimeDelta);
+
+	/* 레일타기 : 타겟을 찾지 못하면 타지않음. */
+	TakeRail(dTimeDelta);
+
+	if (true == m_bOnRail || true == m_bMoveToRail)
+	{
+		_vector vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		m_pActorCom->Set_Position(vPlayerPos);
+	}
+	else
+		m_pActorCom->Update(dTimeDelta); // Set Position하면 이거 할필요없다.
+
 	Attack_BossMissile_After(dTimeDelta); // 미사일 공격이 끝나고 정상적인 회전갑승로 만들어주자
 
-	m_pActorCom->Update(dTimeDelta);
 	m_pActorCom->Set_IsOnGravityPath(false);
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
@@ -272,6 +287,11 @@ _int CCody::Tick(_double dTimeDelta)
 _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
+
+	/* LateTick : 레일의 타겟 찾기*/
+	Find_TargetSpaceRail();
+	ShowRailTargetTriggerUI();
+	Clear_TagerRailNodes();
 
 	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine)
 		return NO_EVENT;
@@ -327,6 +347,12 @@ CGameObject* CCody::Clone_GameObject(void* pArg)
 
 void CCody::Free()
 {
+	/* For. Rail */
+	m_pSearchTargetRailNode = nullptr;
+	m_pTargetRail = nullptr;
+	m_pTargetRailNode = nullptr;
+	m_vecTargetRailNodes.clear();
+
 	//Safe_Release(m_pCamera);
 	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
@@ -1968,7 +1994,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
+	if (m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
 		|| m_bWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch)
 		return true;
@@ -1992,51 +2018,6 @@ _bool CCody::Trigger_End(const _double dTimeDelta)
 	return false;
 }
 #pragma endregion
-
-void CCody::Go_Grind(const _double dTimeDelta)
-{
-#pragma region Grind_Actions
-	if (m_IsOnGrind == true)
-	{
-		//
-		if (m_pModelCom->Is_AnimFinished(ANI_C_Grind_Grapple_ToGrind))
-		{
-			m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
-			if (m_dTestTime < 1.0)
-			{
-				m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
-			}
-		}
-		if (m_dTestTime >= 1.0)
-		{
-			_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), (_float)m_dTestTime), 1.f);
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-			m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
-
-			m_pModelCom->Set_Animation(ANI_C_Grind_Jump);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Land);
-			m_pActorCom->Jump_Start(2.6f);
-
-			m_dTestTime = 0.0; //Points 1과 2사이를 곡선으로 보간 0과 3은 곡선이 어떤 형태를 띌지 수치 조절.
-			m_IsOnGrind = false;
-			return;
-		}
-		m_dTestTime += (_float)dTimeDelta / 5.f;
-
-		_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), (_float)m_dTestTime), 1.f);
-		_vector vPhsixPos = XMVectorSet((_float)m_pActorCom->Get_Controller()->getPosition().x, (_float)m_pActorCom->Get_Controller()->getPosition().y, (_float)m_pActorCom->Get_Controller()->getPosition().z, 1.f);
-		_vector vDir = XMVectorSetW(XMVector3Normalize(vPos - vPhsixPos), 0.f);
-
-		m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
-		m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta / 10.f);
-	}
-	//_vector vCurPos = XMVectorSetW(XMVectorLerp(XMLoadFloat3(vCurNode), XMLoadFloat3(&m_vPoints[iCurNode + 1]), dProgress),1.f);
-	//_vector vPhsXPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
-	//_vector vDir = XMVector4Normalize(vCurPos - vPhsXPos);
-
-
-#pragma endregion
-}
 
 void CCody::Hit_StarBuddy(const _double dTimeDelta)
 {
@@ -2672,6 +2653,262 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 		}
 	}
 }
+
+#pragma region Path
+void CCody::Set_SpaceRailNode(CSpaceRail_Node* pRail)
+{
+	if (nullptr == pRail) return;
+	m_vecTargetRailNodes.push_back(pRail);
+}
+void CCody::KeyInput_Rail(_double dTimeDelta)
+{
+	if (m_pGameInstance->Key_Down(DIK_F) && false == m_bOnRail)
+	{
+		Start_SpaceRail();
+	}
+
+	if (m_bOnRail)
+	{
+		if (m_pGameInstance->Key_Down(DIK_SPACE))
+		{
+			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+
+			m_iJumpCount = 1;
+			m_bShortJump = true;
+
+			m_pTargetRail = nullptr;
+			m_pSearchTargetRailNode = nullptr;
+			m_pTargetRailNode = nullptr;
+
+			m_bMoveToRail = false;
+			m_bOnRail = false;
+			Clear_TagerRailNodes();
+		}
+	}
+}
+void CCody::Clear_TagerRailNodes()
+{
+	m_vecTargetRailNodes.clear();
+}
+void CCody::Find_TargetSpaceRail()
+{
+	// 레일타기 키 눌렸을때만, 타겟 찾기, 키가 눌렸지만, 충돌한 레일 트리거가 존재하지 않을때
+	if (m_vecTargetRailNodes.empty()) return;
+
+	CTransform* pCamTransform = m_pCamera->Get_Transform();
+	if (nullptr == pCamTransform) return;
+	_vector vCamPos = pCamTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vCamLook = pCamTransform->Get_State(CTransform::STATE_LOOK);
+	_vector vCamUp = pCamTransform->Get_State(CTransform::STATE_UP);
+
+	// 거리가 아닌, 카메라 Look 벡터와의 각도차로 계산
+	vCamLook = XMVector3Normalize(vCamLook);
+	vCamUp = XMVector3Normalize(vCamUp);
+
+	_bool isSearch = false;
+	_vector vToTarget = XMVectorZero();
+	_vector vNodePosition = XMVectorZero();
+	_float fMinDegree = 360.f;
+	for (auto& pNode : m_vecTargetRailNodes)
+	{
+		if (nullptr == pNode) continue;
+		
+		vNodePosition = pNode->Get_Position();
+		vToTarget = XMVector3Normalize(vNodePosition - vCamPos);
+		
+		/* 외적 : 방향 체크 */
+		_bool bEdge = false;
+		_uint iEdgeState = pNode->Get_EdgeState();
+		_int iCCW = MH_CrossCCW(vCamLook, vToTarget, vCamUp); /* @Return CCW(1) CW(-1) Else(0) */
+		switch (iEdgeState)
+		{
+		case CSpaceRail::EDGE_START:  // Edge Start 트리거노드가 존재하면, MID 노드는 체크하지 않는다.
+			if (1 == iCCW) continue; // 반시계방향에 존재하는 노드 건너뛰기
+			bEdge = true;
+		break;
+		case CSpaceRail::EDGE_END:
+			if (-1 == iCCW) continue; // 시계 방향에 존재하는 노드 건너뛰기
+			bEdge = true;
+		break;
+		}
+
+		/* 각도 계산  */
+		_float fDegree = XMConvertToDegrees(XMVectorGetX(XMVector3Dot(vCamLook, vToTarget)));
+		if (fDegree > 60.f) continue; /* 일정각도(90) 이상인 노드는 제외한다. */
+
+		/* 가장 각도가 적은 타겟노드 찾기 */
+		if (fMinDegree > fDegree)
+		{
+			m_pSearchTargetRailNode = pNode;
+			//m_pTargetRailNode = pNode;
+			fMinDegree = fDegree;
+			isSearch = true;
+
+			if (bEdge) 
+				break;
+		}
+	}
+
+	if (false == isSearch)
+		m_pSearchTargetRailNode = nullptr;
+}
+void CCody::Start_SpaceRail()
+{
+	if (nullptr == m_pSearchTargetRailNode) return;
+
+	if (m_pSearchTargetRailNode) {
+		// 타겟을 찾았다면, 레일 탈 준비
+		m_pTargetRailNode = m_pSearchTargetRailNode;
+		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter); // 줄던지고 댕겨서 날라가기
+		m_bMoveToRail = true;
+	}
+}
+void CCody::MoveToTargetRail(_double dTimeDelta)
+{
+	if (nullptr == m_pTransformCom || false == m_bMoveToRail || nullptr == m_pTargetRailNode || true == m_bOnRail) return;
+
+	_float fMoveToSpeed = 10.f;
+	_float fDist = m_pTransformCom->Move_ToTargetRange(m_pTargetRailNode->Get_Position(), 0.1f, dTimeDelta * fMoveToSpeed);
+	if (fDist < 0.2f)
+	{
+		/* 타는 애니메이션으로 변경 */
+		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_ToGrind); // 레일 착지
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
+
+		/* 타야할 Path 지정 */
+		m_pTargetRail = (CSpaceRail*)DATABASE->Get_SpaceRail(m_pTargetRailNode->Get_RailTag());
+
+		/* 예외처리 - 레일 태그 틀렸을 경우 */
+		if (nullptr == m_pTargetRail)
+		{
+			m_pTargetRailNode = nullptr;
+			m_bOnRail = false;
+			m_bMoveToRail = false;
+			return;
+		}
+
+		/* 패스 지정 -> X */
+		CPath::STATE ePathState = CPath::STATE_END;
+		//if(m_pGameInstance->Key_Down(DIK_W))
+		//	ePathState = CPath::STATE_FORWARD;
+		//else if(m_pGameInstance->Key_Down(DIK_S))
+		//	ePathState = CPath::STATE_BACKWARD;
+
+		/* 외적으로 방향 구하기 */
+		CTransform* pCamTransform = m_pCamera->Get_Transform();
+		if (nullptr == pCamTransform) return;
+		_vector vCamLook = pCamTransform->Get_State(CTransform::STATE_LOOK);
+		_vector vCamUp = pCamTransform->Get_State(CTransform::STATE_UP);
+		_vector vCamPos = pCamTransform->Get_State(CTransform::STATE_POSITION);
+
+		_vector vToTarget = m_pTargetRailNode->Get_Position() - vCamPos;
+		_int iCCW = MH_CrossCCW(vCamLook, vToTarget, vCamUp);  /* @Return CCW(1) CW(-1) Else(0) */
+
+		switch (iCCW)
+		{
+		case 1:		// 반시계
+		{
+			ePathState = CPath::STATE_BACKWARD;
+			break;
+		}
+		case -1:	// 시계
+			ePathState = CPath::STATE_FORWARD;
+			break;
+		case 0:		// 일직선
+			ePathState = CPath::STATE_FORWARD;
+			break;
+		}
+
+		/* Edge State 지정 */
+		// START / END 일경우, 방향 전환
+		_uint iEdgeState = m_pTargetRailNode->Get_EdgeState();
+		switch (iEdgeState)
+		{
+		case CSpaceRail::EDGE_START:
+			if(CPath::STATE_END == ePathState)
+				ePathState = CPath::STATE_FORWARD;
+			break;
+		case CSpaceRail::EDGE_END:
+			if (CPath::STATE_FORWARD == ePathState)
+				ePathState = CPath::STATE_BACKWARD;
+			else if (CPath::STATE_BACKWARD == ePathState)
+				ePathState = CPath::STATE_FORWARD;
+			else if (CPath::STATE_END == ePathState)
+				ePathState = CPath::STATE_BACKWARD;
+			break;
+		case CSpaceRail::EDGE_MID:
+		{
+			CTransform* pCamTransform = m_pCamera->Get_Transform();
+			if (nullptr == pCamTransform) return;
+			_vector vCamLook = pCamTransform->Get_State(CTransform::STATE_LOOK);
+			_vector vCamUp = pCamTransform->Get_State(CTransform::STATE_UP);
+			_vector vCamPos = pCamTransform->Get_State(CTransform::STATE_POSITION);
+
+			_vector vToTarget = m_pTargetRailNode->Get_Position() - vCamPos;
+			_int iCCW = MH_CrossCCW(vCamLook, vToTarget, vCamUp);  /* @Return CCW(1) CW(-1) Else(0) */
+
+			switch (iCCW)
+			{
+			case 1:		// 반시계
+			{
+				if (CPath::STATE_FORWARD == ePathState)
+					ePathState = CPath::STATE_BACKWARD;
+				else if (CPath::STATE_BACKWARD == ePathState)
+					ePathState = CPath::STATE_FORWARD;
+				else if (CPath::STATE_END == ePathState)
+					ePathState = CPath::STATE_BACKWARD;
+				break;
+			}
+			case -1:	// 시계
+				if (CPath::STATE_END == ePathState)
+					ePathState = CPath::STATE_FORWARD;
+				break;
+			case 0:		// 일직선
+				if (CPath::STATE_END == ePathState)
+					ePathState = CPath::STATE_FORWARD;
+				break;
+			}
+		}
+			break;
+		}
+
+		m_pTargetRail->Start_Path(ePathState, m_pTargetRailNode->Get_FrameIndex());
+
+		/* 레일 앞까지 도착, 레일 타기 시작 */
+		m_pTargetRailNode = nullptr;
+		m_bOnRail = true;
+		m_bMoveToRail = false;
+	}
+}
+void CCody::TakeRail(_double dTimeDelta)
+{
+	if (nullptr == m_pTargetRail || false == m_bOnRail) return;
+
+	/* 타는 애니메이션으로 변경 */
+	m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
+
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	m_bOnRail = m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);
+	if (m_bOnRail)
+		m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+	else
+	{
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // 자유낙하 애니메이션으로 변경해야함.
+		m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+	}
+}
+void CCody::ShowRailTargetTriggerUI()
+{
+	// Show UI
+	if (m_pSearchTargetRailNode && nullptr == m_pTargetRailNode)
+	{
+		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, true);
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pSearchTargetRailNode->Get_Position());
+	}
+	else
+		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, false);
+}
+#pragma endregion
 
 void CCody::PinBall(const _double dTimeDelta)
 {

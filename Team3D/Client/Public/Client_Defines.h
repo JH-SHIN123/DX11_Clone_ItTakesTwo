@@ -11,10 +11,15 @@ extern bool			g_bWndActivate;
 
 #define MATH_PI 3.141592
 
-#include "Client_Enum.h"
-#include "Client_Animation_Index_Define.h"
-#include "DataStorage.h"
+/* Engine */
 #include "GameInstance.h"
+/* Client */
+#include "Client_Animation_Index_Define.h"
+#include "Client_Enum.h"
+#include "Client_Struct.h"
+#include "Client_MathHelper.h"
+
+#include "DataStorage.h"
 
 namespace Client {}
 using namespace Client;
