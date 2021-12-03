@@ -25,7 +25,7 @@ _bool CSpaceRail::Take_Path(_double dTimeDelta, _matrix& WorldMatrix)
 	if (nullptr == m_pPathCom) return false;
 
 	// 속도는 프레임개수로 조절하자.
-	return m_pPathCom->Update_Animation(dTimeDelta * 0.1, WorldMatrix);
+	return m_pPathCom->Update_Animation(dTimeDelta * 0.2, WorldMatrix);
 }
 
 
