@@ -177,17 +177,17 @@ public:
 public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
-<<<<<<< HEAD
+
 	CPlayerActor* Get_Actor() { return m_pActorCom; }
-=======
+
 	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool		Get_IsGroundPound() { return m_bGroundPound; }
 	_bool		Get_IsGroundPoundVarious() { return m_bPlayGroundPoundOnce; }
 
 public:
->>>>>>> main
+
 	void		Update_Tirgger_Pos(_vector vPos);
-	CPlayerActor* Get_Actor() { return m_pActorCom; }
+
 
 public:
 	void	Set_BossMissile_Attack(); // CBoss_Missile
