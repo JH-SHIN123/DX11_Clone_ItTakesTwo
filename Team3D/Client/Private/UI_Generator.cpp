@@ -8,7 +8,6 @@
 #include "HeaderBox.h"
 #include "MenuScreen.h"
 #include "AlphaScreen.h"
-#include "GameInstance.h"
 #include "InputButton.h"
 #include "SplashScreen.h"
 #include "PlayerMarker.h"
@@ -1027,7 +1026,6 @@ HRESULT CUI_Generator::Create_ChapterSelect()
 
 	return S_OK;
 }
-
 
 void CUI_Generator::Free()
 {

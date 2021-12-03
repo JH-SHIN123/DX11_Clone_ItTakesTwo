@@ -4,17 +4,17 @@
 #include "Base.h"
 #include "UIObject.h"
 
-BEGIN(Engine)
-class CTextures;
-class CVIBuffer_FontInstance;
-class CVIBuffer_Rect;
-END
-
-BEGIN(Client)
+ BEGIN(Client)
 
 #define UI_Create(ePlayer, eTrigger)															\
 	CUI_Generator::GetInstance()->Set_TriggerOn();												\
 	CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger);					\
+
+#define UI_CreateOnlyOnce(ePlayer, eTrigger)													\
+	if(true == CUI_Generator::GetInstance()->Get_EmptyCheck(Player::ePlayer, UI::eTrigger))	{	\
+		CUI_Generator::GetInstance()->Set_TriggerOn();											\
+		CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger);				\
+	}																							\
 
 #define UI_Generator CUI_Generator::GetInstance()
 #define UI_Delete(ePlayer, eTrigger) CUI_Generator::GetInstance()->Delete_UI(Player::ePlayer, UI::eTrigger);

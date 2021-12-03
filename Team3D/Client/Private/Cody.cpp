@@ -156,6 +156,9 @@ _int CCody::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
+	UI_CreateOnlyOnce(Cody, Arrowkeys_Side);
+	UI_CreateOnlyOnce(Cody, StickIcon);
+
 	//tEST
 	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
