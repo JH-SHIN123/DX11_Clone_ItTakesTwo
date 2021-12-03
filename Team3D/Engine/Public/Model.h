@@ -114,7 +114,7 @@ public: /* Setter */
 	HRESULT	Set_DefaultVariables_ShadowDepth(_fmatrix WorldMatrix);
 
 public:
-	virtual HRESULT	NativeConstruct_Prototype(const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName);
+	virtual HRESULT	NativeConstruct_Prototype(const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName, _bool IsPointTopology);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	HRESULT			Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials, vector<class CHierarchyNode*>& Nodes, vector<_float4x4>& Transformations, vector<class CAnim*>& Anims);
 	/* For.Client */
@@ -138,7 +138,7 @@ public:
 	* iMaterialSetNum, 세팅할 텍스쳐세트 인덱스
 	* ShadowWrite == true, 텍스쳐 세팅안함.
 	*/
-	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
+	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false, _bool IsPointTopology = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
 	/**
 	* Separated_Bind_Buffer
 	* Sepd_Render_Model을 이용하는 경우 호출.
@@ -150,6 +150,8 @@ public:
 	* iMaterialIndex, 렌더할 머티리얼 그룹
 	*/
 	HRESULT	Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
+
+	HRESULT	Render_Model_VERTEX(_uint iPassIndex, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
 
 private: /* Typedef */
 	typedef vector<class CMesh*>			MESHES;
@@ -232,12 +234,12 @@ private: /* For.Buffer */
 private:
 	/* For.Buffer */
 	HRESULT		Create_Buffer(ID3D11Buffer** ppBuffer, _uint iByteWidth, D3D11_USAGE Usage, _uint iBindFlags, _uint iCPUAccessFlags, _uint iMiscFlags, _uint iStructureByteStride, void* pSysMem, _uint iSysMemPitch = 0, _uint iSysMemSlicePitch = 0);
-	HRESULT		Create_VIBuffer(const _tchar* pShaderFilePath, const char* pTechniqueName);
+	HRESULT		Create_VIBuffer(const _tchar* pShaderFilePath, const char* pTechniqueName, _bool IsPointTopology);
 	HRESULT		SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC* pInputElementDesc, _uint iElementCount, const _tchar* pShaderFilePath, const char* pTechniqueName);
 #pragma endregion
 
 public:
-	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount = 1, _fmatrix PivotMatrix = XMMatrixIdentity(), _bool bNeedCenterBone = false, const char* pCenterBoneName = "");
+	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount = 1, _fmatrix PivotMatrix = XMMatrixIdentity(), _bool bNeedCenterBone = false, const char* pCenterBoneName = "", _bool IsPointTopology = false);
 	virtual CComponent* Clone_Component(void* pArg) override;
 	virtual void Free() override;
 };

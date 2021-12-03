@@ -279,7 +279,7 @@ HRESULT CModel::Set_DefaultVariables_ShadowDepth(_fmatrix WorldMatrix)
 	return S_OK;
 }
 
-HRESULT CModel::NativeConstruct_Prototype(const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
+HRESULT CModel::NativeConstruct_Prototype(const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName, _bool IsPointTopology)
 {
 	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
 
@@ -292,7 +292,7 @@ HRESULT CModel::NativeConstruct_Prototype(const _tchar * pModelFilePath, const _
 	FAILED_CHECK_RETURN(m_pModel_Loader->Load_ModelFromFile(m_pDevice, m_pDeviceContext, CModel_Loader::TYPE_NORMAL, this, pModelFilePath, pModelFileName, iMaterialSetCount), E_FAIL);
 	FAILED_CHECK_RETURN(Apply_PivotMatrix(PivotMatrix), E_FAIL);
 	FAILED_CHECK_RETURN(Store_TriMeshes(), E_FAIL);
-	FAILED_CHECK_RETURN(Create_VIBuffer(pShaderFilePath, pTechniqueName), E_FAIL);
+	FAILED_CHECK_RETURN(Create_VIBuffer(pShaderFilePath, pTechniqueName, IsPointTopology), E_FAIL);
 	FAILED_CHECK_RETURN(Sort_MeshesByMaterial(), E_FAIL);
 
 	if (true == m_bNeedCenterBone)
@@ -424,7 +424,7 @@ _uint CModel::Culling(_fvector vPosition, _float fCullingRadius)
 	return m_iViewportDrawInfo;
 }
 
-HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite, RENDER_GROUP::Enum eGroup)
+HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite, _bool IsPointTopology, RENDER_GROUP::Enum eGroup)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 
@@ -432,7 +432,11 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 
 	m_pDeviceContext->IASetVertexBuffers(0, m_iVertexBufferCount, &m_pVB, &m_iVertexStride, &iOffSet);
 	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
-	m_pDeviceContext->IASetPrimitiveTopology(m_eTopology);
+	if(false == IsPointTopology)
+		m_pDeviceContext->IASetPrimitiveTopology(m_eTopology);
+	else
+		m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+
 	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
 
 	if (0 < m_iAnimCount)
@@ -537,6 +541,53 @@ HRESULT CModel::Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool 
 			if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
 				m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
 		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel::Render_Model_VERTEX(_uint iPassIndex, RENDER_GROUP::Enum eGroup)
+{
+	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
+
+	_uint iOffSet = 0;
+
+	m_pDeviceContext->IASetVertexBuffers(0, m_iVertexBufferCount, &m_pVB, &m_iVertexStride, &iOffSet);
+	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
+	m_pDeviceContext->IASetPrimitiveTopology(m_eTopology);
+	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
+
+	if (0 < m_iAnimCount)
+	{
+		_matrix	BoneMatrices[256];
+
+		for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
+		{
+			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+			Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+			Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
+			Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, 0);
+
+			FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
+
+			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
+			{
+				if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
+				{
+					ZeroMemory(BoneMatrices, sizeof(_matrix) * 256);
+					pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
+					Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
+
+					FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
+					m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+				}
+			}
+		}
+	}
+	else
+	{
+
 	}
 
 	return S_OK;
@@ -689,7 +740,7 @@ HRESULT CModel::Create_Buffer(ID3D11Buffer ** ppBuffer, _uint iByteWidth, D3D11_
 
 	return S_OK;
 }
-HRESULT CModel::Create_VIBuffer(const _tchar * pShaderFilePath, const char * pTechniqueName)
+HRESULT CModel::Create_VIBuffer(const _tchar * pShaderFilePath, const char * pTechniqueName, _bool IsPointTopology)
 {
 	/* For.VertexBuffer */
 	m_iVertexBufferCount = 1;
@@ -703,6 +754,9 @@ HRESULT CModel::Create_VIBuffer(const _tchar * pShaderFilePath, const char * pTe
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
 	m_iFaceStride = sizeof(POLYGON_INDICES32);
 	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	if (true == IsPointTopology)
+		m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+
 	Create_Buffer(&m_pIB, m_iFaceCount * m_iFaceStride, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, 0, m_pFaces);
 	Safe_Delete_Array(m_pFaces);
 
@@ -764,11 +818,11 @@ HRESULT CModel::SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC * pInputElementDesc,
 }
 #pragma endregion
 
-CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
+CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName, _bool IsPointTopology)
 {
 	CModel* pInstance = new CModel(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype(pModelFilePath, pModelFileName, pShaderFilePath, pTechniqueName, iMaterialSetCount, PivotMatrix, bNeedCenterBone, pCenterBoneName)))
+	if (FAILED(pInstance->NativeConstruct_Prototype(pModelFilePath, pModelFileName, pShaderFilePath, pTechniqueName, iMaterialSetCount, PivotMatrix, bNeedCenterBone, pCenterBoneName, IsPointTopology)))
 	{
 		MSG_BOX("Failed to Create Instance - CModel");
 		Safe_Release(pInstance);

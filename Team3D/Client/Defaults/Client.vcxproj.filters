@@ -1768,5 +1768,8 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect_Effect.hlsl">
       <Filter>97.ShaderFiles\00.Effect</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Effect_Mesh_Test.hlsl">
+      <Filter>97.ShaderFiles\00.Effect</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

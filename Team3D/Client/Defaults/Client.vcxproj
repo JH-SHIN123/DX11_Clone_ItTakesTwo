@@ -511,6 +511,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Default.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Effect_Mesh_Test.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Font.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl" />

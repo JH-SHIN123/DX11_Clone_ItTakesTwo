@@ -255,6 +255,12 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT")
 		, CVIBuffer_PointInstance_Custom_STT::Create(pDevice, pDeviceContext, 10000, TEXT("../Bin/ShaderFiles/Shader_PointCustom_STT.hlsl"), "DefaultTechnique")), E_FAIL);
 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Cody_Effect")
+		, CModel::Create(pDevice, pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/")
+			, TEXT("Cody"), TEXT("../Bin/ShaderFiles/Shader_Effect_Mesh_Test.hlsl"), "DefaultTechnique", 1, Compute_Pivot(XMVectorSet(0.01f, 0.01f, 0.01f, 0.f), XMVectorSet(0.f, -90.f, 0.f, 0.f)), false, "", true)), E_FAIL);
+
+
+
 // 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_RectInstance_Custom")
 // 		, CVIBuffer_RectInstance_Custom::Create(pDevice, pDeviceContext, 100, TEXT("../Bin/ShaderFiles/Shader_RectCustom.hlsl"), "DefaultTechnique")), E_FAIL);
 
