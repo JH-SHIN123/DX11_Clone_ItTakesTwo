@@ -17,6 +17,9 @@ HRESULT CGrindLine::NativeConstruct(const _tchar * pGrindLineName)
 
 	for (_uint i = 0; i < 2; i++)
 		ReSetGrindLine((ScreenType)i);
+
+
+
 	return S_OK;
 }
 

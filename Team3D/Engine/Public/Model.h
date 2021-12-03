@@ -71,8 +71,9 @@ public: /* Setter */
 	/**
 	* Set_Animation
 	* 애니메이션 교체
+	* dAnimTime, dAnimTime이 지난 시점부터 재생
 	*/
-	HRESULT	Set_Animation(_uint iAnimIndex);
+	HRESULT	Set_Animation(_uint iAnimIndex, _double dAnimTime = 0.0);
 	/**
 	* Set_NextAnimIndex
 	* 다음 애니메이션 예약

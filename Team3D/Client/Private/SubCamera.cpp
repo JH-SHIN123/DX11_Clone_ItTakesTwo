@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "..\public\SubCamera.h"
 #include "GameInstance.h"
-#include "DataStorage.h"
-#include"PlayerActor.h"
+#include "PlayerActor.h"
 #include "May.h"
-#include"CameraActor.h"
+#include "CameraActor.h"
+
 CSubCamera::CSubCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
