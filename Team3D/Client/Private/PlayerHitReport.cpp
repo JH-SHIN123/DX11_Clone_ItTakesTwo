@@ -14,7 +14,6 @@ void CPlayerHitReport::onShapeHit(const PxControllerShapeHit & hit)
 		{
 			m_pPlayerActor->Set_ReorderGravityStep(1);
 			m_pPlayerActor->Set_HitNormal(hit.worldNormal);
-			m_pPlayerActor->Set_IsOnGravityPath(true);
 		}
 	}
 	if (GameID::eDUMMYWALL == pUserData->eID)

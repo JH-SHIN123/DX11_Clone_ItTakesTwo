@@ -112,6 +112,8 @@ public:
 	void Set_HangingPlanet(CGameObject* pHangingPlanet) { m_pHangingPlanet = pHangingPlanet; }
 	CGameObject* Get_HangingPlanet() { return m_pHangingPlanet; }
 
+	void Set_SpaceRails(const _tchar* pRailTag, CGameObject* pRail);
+	CGameObject* Get_SpaceRail(const _tchar* pRailTag);
 
 private:
 	CGameObject* m_pCody = nullptr;
@@ -124,6 +126,9 @@ private:
 
 	/* For.Bridge */
 	CGameObject* m_pBridge = nullptr;
+
+	// Space Rails
+	unordered_map<const _tchar*, CGameObject*> m_SpaceRails;
 
 	// Interactive Objects
 	CGameObject* m_pRobot = nullptr;

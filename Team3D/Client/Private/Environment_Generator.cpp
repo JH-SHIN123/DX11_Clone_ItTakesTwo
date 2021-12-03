@@ -7,6 +7,7 @@
 #include "Bridge.h"
 #include "Planet.h"
 #include "PlanetRing.h"
+#include "SpaceRail.h"
 #include "PinBall.h"
 #include "PinBall_BallDoor.h"
 #include "PinBall_Spring.h"
@@ -29,6 +30,8 @@ CEnvironment_Generator::CEnvironment_Generator()
 
 HRESULT CEnvironment_Generator::Load_Prototype_Model_Instancing_TXT()
 {
+#ifndef __MAPLOADING_OFF
+
 	/* 인스턴싱 모델 프로토타입 생성 */
 	_tchar		szLevelIndex[MAX_PATH] = L"";
 	_tchar		szPrototypeTag[MAX_PATH] = L"";
@@ -61,11 +64,14 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_Instancing_TXT()
 	}
 	fin.close();
 
+#endif //__MAPLOADING_OFF
 	return S_OK;
 }
 
 HRESULT CEnvironment_Generator::Load_Prototype_Model_Others_TXT(_tchar * pFilePath)
 {
+#ifndef __MAPLOADING_OFF
+
 	/* 모델 프로토타입 생성 */
 	_tchar		szLevelIndex[MAX_PATH] = L"";
 	_tchar		szPrototypeTag[MAX_PATH] = L"";
@@ -101,11 +107,14 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_Others_TXT(_tchar * pFilePa
 	}
 	fin.close();
 
+#endif //__MAPLOADING_OFF
 	return S_OK;
 }
 
 HRESULT CEnvironment_Generator::Load_Prototype_GameObject_TXT()
 {
+#ifndef __MAPLOADING_OFF
+
 	/* 객체 프로토타입 생성 */
 	FAILED_CHECK_RETURN(Load_Default_Prototype_GameObject(), E_FAIL);
 
@@ -134,6 +143,8 @@ HRESULT CEnvironment_Generator::Load_Prototype_GameObject_TXT()
 		}
 	}
 	fin.close();
+
+#endif //__MAPLOADING_OFF
 
 	return S_OK;
 }
@@ -231,11 +242,15 @@ HRESULT CEnvironment_Generator::Load_Prototype_GameObject()
 
 HRESULT CEnvironment_Generator::Load_Stage_Space()
 {
+#ifndef __MAPLOADING_OFF
+
 	FAILED_CHECK_RETURN(Load_Environment_Space(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Space_Boss(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Interactive_Instancing(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Trigger(), E_FAIL);
+	FAILED_CHECK_RETURN(Load_Environment_SpaceRail(), E_FAIL);
 
+#endif //__MAPLOADING_OFF
 	return S_OK;
 }
 
@@ -250,7 +265,23 @@ HRESULT CEnvironment_Generator::NativeConstruct_Environment_Generator(ID3D11Devi
 	return S_OK;
 }
 
-CGameObject* CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+void CEnvironment_Generator::Set_Info_Model(CInstancing_Env::ARG_DESC & tInfo)
+{
+	tInfo.Instancing_Arg.fCullingRadius = 10.f;
+
+	if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox_Platform"))
+		tInfo.Instancing_Arg.fCullingRadius = 50.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox08_Chunk"))
+		tInfo.Instancing_Arg.fCullingRadius = 50.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox06_Wall02"))
+		tInfo.Instancing_Arg.fCullingRadius = 50.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox06_Wall01"))
+		tInfo.Instancing_Arg.fCullingRadius = 50.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox06_Wall03"))
+		tInfo.Instancing_Arg.fCullingRadius = 50.f;
+}
+
+CGameObject * CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CGameObject* pInstance = nullptr;
 
@@ -335,22 +366,6 @@ CGameObject* CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D11
 	return pInstance;
 }
 
-void CEnvironment_Generator::Set_Info_Model(CInstancing_Env::ARG_DESC & tInfo)
-{
-	tInfo.Instancing_Arg.fCullingRadius = 10.f;
-
-	if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox_Platform"))
-		tInfo.Instancing_Arg.fCullingRadius = 50.f;
-	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox08_Chunk"))
-		tInfo.Instancing_Arg.fCullingRadius = 50.f;
-	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox06_Wall02"))
-		tInfo.Instancing_Arg.fCullingRadius = 50.f;
-	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox06_Wall01"))
-		tInfo.Instancing_Arg.fCullingRadius = 50.f;
-	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ToyBox06_Wall03"))
-		tInfo.Instancing_Arg.fCullingRadius = 50.f;
-}
-
 void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
 {
 	tInfo.fCullRadius = 10.f;
@@ -419,6 +434,7 @@ HRESULT CEnvironment_Generator::Load_Default_Prototype_GameObject()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SavePoint"), CSavePoint::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_DeadLine"), CDeadLine::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Bridge"), CBridge::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SpaceRail"), CSpaceRail::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), CHangingPlanet::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
@@ -628,6 +644,39 @@ HRESULT CEnvironment_Generator::Load_Environment_Interactive_Instancing()
 		tIns_Env_Desc.Instancing_Arg.fCullingRadius = 10.f;
 
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, TEXT("GameObject_Bridge"), &tIns_Env_Desc), E_FAIL);
+	}
+	CloseHandle(hFile);
+
+	return S_OK;
+}
+
+HRESULT CEnvironment_Generator::Load_Environment_SpaceRail()
+{
+	DWORD		dwByte;
+	_tchar		szPrototypeTag[MAX_PATH] = L"";
+	_uint		iLevelIndex = 0;
+
+	CDynamic_Env::ARG_DESC		tDynamic_Env_Desc;
+
+	/* Space Rail */
+	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/SpaceRail.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		ReadFile(hFile, &szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.iMatrialIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.iOption, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment"), Level::LEVEL_STAGE, szPrototypeTag, &tDynamic_Env_Desc), E_FAIL);
 	}
 	CloseHandle(hFile);
 

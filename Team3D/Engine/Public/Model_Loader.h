@@ -16,6 +16,7 @@ public: /* Enum */
 
 public:
 	HRESULT	Load_ModelFromFile(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, MODEL_TYPE eModelType, void* pModel, const _tchar* pModelFilePath, const _tchar* pModelFileName, _uint iMaterialSetCount);
+	HRESULT Load_PathFromFile(void** ppOutput, const _tchar* pPathFilePath);
 
 private: /* Typedef */
 	typedef vector<class CMesh*>			MESHES;

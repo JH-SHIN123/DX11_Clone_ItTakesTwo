@@ -1,5 +1,5 @@
 #pragma once
-
+#include "GameOption.h"
 #include "Client_Defines.h"
 #include "Instancing_Env.h"
 #include "Static_Env.h"
@@ -16,12 +16,12 @@ private:
 public:
 	/* 프로토타입 생성 */
 	/* TXT 파일 로드 */
-	HRESULT Load_Prototype_Model_Others_TXT(_tchar* pFilePath);
 	HRESULT Load_Prototype_Model_Instancing_TXT();
+	HRESULT Load_Prototype_Model_Others_TXT(_tchar* pFilePath);
 	HRESULT Load_Prototype_GameObject_TXT();
 	/* DAT 파일 로드 */
-	HRESULT Load_Prototype_Model_Others(_tchar* pFilePath);
 	HRESULT Load_Prototype_Model_Instancing();
+	HRESULT Load_Prototype_Model_Others(_tchar* pFilePath);
 	HRESULT Load_Prototype_GameObject();
 
 	/* 클론 생성 */
@@ -46,6 +46,7 @@ private:
 	HRESULT Load_Environment_Space();
 	HRESULT Load_Environment_Space_Boss();
 	HRESULT Load_Environment_Interactive_Instancing();
+	HRESULT Load_Environment_SpaceRail();
 	HRESULT Load_Environment_Trigger();
 
 public:

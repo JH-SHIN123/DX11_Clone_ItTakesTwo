@@ -49,6 +49,7 @@ public:
 	virtual _float Get_DistanceFromCamera() override;
 
 public:
+	void Set_Active(_bool bActive) { m_bActive = bActive; }
 	void Set_Dead();
 	void Set_PlayerID(Player::ID ePlayerID);
 	void Set_PosX(_float fPosX);
@@ -56,6 +57,9 @@ public:
 public:
 	virtual void Set_TargetPos(_vector vPos);
 	virtual void Set_ScaleEffect();
+
+protected:
+	_bool m_bActive = false;
 
 protected:
 	UI_DESC						m_UIDesc;
