@@ -109,7 +109,7 @@ _fmatrix CModel::Get_BoneMatrix(const char * pBoneName) const
 	return XMMatrixIdentity();
 }
 
-HRESULT CModel::Set_Animation(_uint iAnimIndex)
+HRESULT CModel::Set_Animation(_uint iAnimIndex, _double dAnimTime)
 {
 	if (iAnimIndex == m_iCurAnimIndex)
 		return S_OK;
@@ -146,7 +146,7 @@ HRESULT CModel::Set_Animation(_uint iAnimIndex)
 	m_IsAnimFinished[m_iCurAnimIndex] = true;
 
 	/* For.Update */
-	m_dCurrentTime = 0.0;
+	m_dCurrentTime = dAnimTime;
 
 	m_iCurAnimIndex = iAnimIndex;
 	m_iCurAnimFrame = 0;
