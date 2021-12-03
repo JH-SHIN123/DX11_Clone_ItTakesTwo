@@ -545,11 +545,11 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Test()
 
 	/* Rail Model */
 	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_GrindRail02"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources//Model/Environment/Others/"), TEXT("GrindRail05"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_GrindRail02"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources//Model/Environment/Others/"), TEXT("GrindRail01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 
 	/* Rail Path */
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f));
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail02"), CPath::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Data/PathData/Space/rail5.Anim"), TEXT("GrindRail02"), PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail02"), CPath::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Data/PathData/Space/rail1.Anim"), TEXT("GrindRail02"), PivotMatrix)), E_FAIL);
 
 	/* Rail Object */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SpaceRail"), CSpaceRail::Create(m_pDevice, m_pDeviceContext)), E_FAIL);

@@ -2754,6 +2754,9 @@ void CCody::Start_SpaceRail()
 	if (nullptr == m_pSearchTargetRailNode) return;
 
 	if (m_pSearchTargetRailNode) {
+		// 타겟 지정시, 연기이펙트
+		EFFECT->Add_Effect(Effect_Value::Landing_Smoke, m_pSearchTargetRailNode->Get_WorldMatrix());
+		
 		// 타겟을 찾았다면, 레일 탈 준비
 		m_pTargetRailNode = m_pSearchTargetRailNode;
 		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter); // 줄던지고 댕겨서 날라가기
@@ -2764,9 +2767,9 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 {
 	if (nullptr == m_pTransformCom || false == m_bMoveToRail || nullptr == m_pTargetRailNode || true == m_bOnRail) return;
 
-	_float fMoveToSpeed = 10.f;
+	_float fMoveToSpeed = 5.f;
 	_float fDist = m_pTransformCom->Move_ToTargetRange(m_pTargetRailNode->Get_Position(), 0.1f, dTimeDelta * fMoveToSpeed);
-	if (fDist < 0.35f)
+	if (fDist < 0.15f)
 	{
 		/* 타는 애니메이션으로 변경 */
 		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_ToGrind); // 레일 착지
@@ -2795,6 +2798,9 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 
 		m_pTargetRail->Start_Path(ePathState, m_pTargetRailNode->Get_FrameIndex(), true);
 
+		/* 카메라가 레일타는 방향으로 세팅 */
+		//m_pCamera->Get_Transform()->Set_State();
+
 		/* 레일 앞까지 도착, 레일 타기 시작 */
 		m_pTargetRailNode = nullptr;
 		m_bOnRail = true;
@@ -2806,7 +2812,12 @@ void CCody::TakeRail(_double dTimeDelta)
 	if (nullptr == m_pTargetRail || false == m_bOnRail) return;
 
 	/* 타는 애니메이션으로 변경 */
-	m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
+	if(m_pGameInstance->Key_Pressing(DIK_A))
+		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH_Left);
+	else if (m_pGameInstance->Key_Pressing(DIK_D))
+		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH_Right);
+	else
+		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	m_bOnRail = m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);
@@ -2841,13 +2852,14 @@ void CCody::TakeRailEnd(_double dTimeDelta)
 void CCody::ShowRailTargetTriggerUI()
 {
 	// Show UI
-	if (m_pSearchTargetRailNode && nullptr == m_pTargetRailNode)
+	if (m_pSearchTargetRailNode && nullptr == m_pTargetRailNode && false == m_bOnRail)
 	{
 		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, true);
 		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pSearchTargetRailNode->Get_Position());
 	}
-	else
+	else {
 		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, false);
+	}
 }
 #pragma endregion
 
