@@ -7,13 +7,18 @@
 BEGIN(Engine)
 class CTextures;
 class CVIBuffer_FontInstance;
+class CVIBuffer_Rect;
 END
 
 BEGIN(Client)
 
-#define UI_Create(ePlayer, eTrigger)															\
-	CUI_Generator::GetInstance()->Set_TriggerOn();												\
-	CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger);					\
+#define UI_Create(ePlayer, eTrigger)														\
+	CUI_Generator::GetInstance()->Set_TriggerOn();											\
+	CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger);				\
+
+#define UI_Create_Active(ePlayer, eTrigger, bActive)										\
+	CUI_Generator::GetInstance()->Set_TriggerOn();											\
+	CUI_Generator::GetInstance()->Generator_UI(Player::ePlayer, UI::eTrigger, bActive);		\
 
 #define UI_Generator CUI_Generator::GetInstance()
 #define UI_Delete(ePlayer, eTrigger) CUI_Generator::GetInstance()->Delete_UI(Player::ePlayer, UI::eTrigger);
@@ -27,8 +32,10 @@ public:
 	{
 		_float2 vPosition = { 0.f, 0.f };
 		_float2 vScale = { 100.f, 100.f };
-		_float  fInterval = 0.f;
-		_uint	iOption = 0;
+		_uint	iShaderPassNum = 0;
+		_float	fAlpha = 1.f;
+		_float3 vColor = { 1.f, 1.f, 1.f };
+
 	}FONTDESC;
 
 private:
@@ -39,36 +46,52 @@ public:
 	HRESULT NativeConstruct(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
 
 public:
-	HRESULT Load_Data(const _tchar* pFilePath);
-	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
+	HRESULT Load_Data(const _tchar* pFilePath, Level::ID eLevel, _uint iOption = 0);
+	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger, void* pArg = nullptr, _bool bActive = true);
 	HRESULT Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	HRESULT Render_Font(_tchar* pText, FONTDESC tFontDesc, Player::ID ePlayer);
+	HRESULT Render_AlphaFont(_tchar * pText, FONTDESC tFontDesc, Player::ID ePlayer);
 
 public:
 	CUIObject* Get_UIObject(Player::ID ePlayer, UI::TRIGGER eTrigger) { return m_vecUIOBjects[ePlayer][eTrigger].front(); };
 	_bool Get_EmptyCheck(Player::ID ePlayer, UI::TRIGGER eTrigger) { return m_vecUIOBjects[ePlayer][eTrigger].empty(); };
+	class CHeaderBox* Get_HeaderBox(_int iIndex) { if (true == m_vecHeaderBox.empty()) return nullptr; return m_vecHeaderBox[iIndex]; }
 
 public:
 	void Set_TriggerOn();
 	void Set_TargetPos(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPos);
+	void Set_Active(Player::ID ePlayer, UI::TRIGGER eTrigger, _bool bActive);
+	void Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger);
+
+public:
+	HRESULT Add_Prototype_LogoTexture();
+
+public:
+	HRESULT Create_Logo();
+	HRESULT Create_ChapterSelect();
 
 public:
 	void UI_RETutorial(Player::ID ePlayer, UI::TRIGGER eTrigger);
 
-
 private:
 	_bool							m_IsTrigger = true;
+	_float							m_fFontAlpha = 1.f;
+	_float							m_fTime = 0.f;
+	_float							m_fChange = 1;
 	VTXFONT*						m_VTXFONT;
 	FONTDESC						m_FontDesc;
+
 
 private:
 	vector<CUIObject::UI_DESC*>		m_vecPSData;
 	vector<CUIObject*>				m_vecUIOBjects[Player::PLAYER_END][UI::TRIGGER_END];
+	vector<class CHeaderBox*>		m_vecHeaderBox;
 
 private:
 	CTextures*						m_pTexturesCom = nullptr;
 	CTextures*						m_pEngTexturesCom = nullptr;
 	CVIBuffer_FontInstance*			m_pVIBuffer_FontCom = nullptr;
+	CVIBuffer_Rect*					m_pVIBuffer_Rect = nullptr;
 
 private:
 	ID3D11Device*					m_pDevice = nullptr;
@@ -77,10 +100,16 @@ private:
 private:
 	HRESULT Add_Prototype_Interactive_UI(CUIObject::UI_DESC* UIDesc);
 	HRESULT Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc);
-	HRESULT Add_Prototype_Texture();
+	HRESULT Add_Prototype_Menu(CUIObject::UI_DESC* UIDesc);
+	HRESULT Add_Prototype_Chapter(CUIObject::UI_DESC* UIDesc);
 
 private:
-	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag);
+	HRESULT Add_Prototype_Texture();
+	
+
+private:
+	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag, Level::ID eLevel, void* pArg = nullptr, _bool bActive = true);
+	HRESULT SetUp_Clone_Ptr(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void * pArg, CGameObject** pGameObject);
 
 public:
 	virtual void Free() override;

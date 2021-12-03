@@ -3,14 +3,18 @@
 #include "MainCamera.h"
 #include "UI_Generator.h"
 #include "UIObject.h"
-#include "MathHelper.h"
+#include "May.h"
+#include "DataStorage.h"
 #include "PlayerActor.h"
-
+#include "SpaceRail.h"
+#include "SpaceRail_Node.h"
+#include "UmbrellaBeam_Joystick.h"
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
 /* For. PinBall */
 #include "PinBall.h"
 #include "PinBall_Door.h"
+#include "HangingPlanet.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -40,14 +44,15 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
+
  	UI_Create(Cody, PC_Mouse_Reduction);
  	UI_Create(Cody, PC_Mouse_Enlargement);
- 	UI_Create(Default, LoadingBook);
- 	UI_Create(May, Arrowkeys_Side);
- 	UI_Create(May, StickIcon);
+ 	//UI_Create(Default, LoadingBook);
+ 	//UI_Create(May, Arrowkeys_Side);
+ 	//UI_Create(May, StickIcon);
  
  	UI_Create(Cody, PlayerMarker);
- 	//UI_Create(Cody, InputButton_InterActive);
+	UI_Create_Active(Cody, InputButton_InterActive, false);
 	 
 	return S_OK;
 }
@@ -99,19 +104,37 @@ HRESULT CCody::Ready_Component()
 void CCody::Add_LerpInfo_To_Model()
 {
 	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_Jump_Start, false);
-	//m_pModelCom->Add_LerpInfo(1, 2, true, 8.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_Sprint, ANI_C_Sprint, false);
-	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_MH, true, 10.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit, ANI_C_MH, true, 10.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Walk_Large_Fwd, ANI_C_ChangeSize_Walk_Large_Fwd, true, 20.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_Enter, ANI_C_Grind_Grapple_ToGrind, false);
-	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_ToGrind, ANI_C_Grind_Slow_MH, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_Jump_Land, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jump_Land, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Start, ANI_C_Bhv_GroundPound_Falling, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Start, ANI_C_Bhv_GroundPound_Land, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land, ANI_C_Bhv_GroundPound_Land_Exit, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land, ANI_C_ChangeSize_Walk_Large_Fwd, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Falling, ANI_C_Bhv_GroundPound_Land_Exit, true, 5.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_MH, true, 5.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_Jog_Start_Fwd, true, 2.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_Jog, true, 2.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Jump_Start, ANI_C_Bhv_ChangeSize_GroundPound_Start, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Start, ANI_C_Bhv_ChangeSize_GroundPound_Falling, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Falling, ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit, false);
+	
 
-	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Start, ANI_C_Roll_Stop, true);
-	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Stop, ANI_C_Roll_To_Jog, true, 30.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Start, ANI_C_Roll_To_Jog, true, 30.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Sprint, ANI_C_Sprint, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit, ANI_C_MH, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Walk_Large_Fwd, ANI_C_ChangeSize_Walk_Large_Fwd, false);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Start, ANI_C_Roll_Stop, true, 60.f);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Stop, ANI_C_Roll_To_Jog, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Start, ANI_C_Roll_To_Jog, false);
+	//m_pModelCom->Add_LerpInfo(ANI_C_Roll_Stop, ANI_C_Roll_To_Jog, true, 30.f);
+	//m_pModelCom->Add_LerpInfo(ANI_C_Roll_Start, ANI_C_Roll_To_Jog, true, 30.f);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_DoubleJump, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_AirDash_Start, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land_Still_Jump, ANI_C_DoubleJump, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land_Still_Jump, ANI_C_AirDash_Start, false);
+
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_DoubleJump, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Bhv_GroundPound_Start, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Bhv_GroundPound_Start, false);
@@ -119,15 +142,33 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd, ANI_C_SprintTurnAround, true, 20.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd_Exhausted, ANI_C_SprintTurnAround, true, 20.f);
 
+	//m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_MH, true, 10.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_MH, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_ChangeSize_Jump_Start, false);
 
+	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Jump_Large_Land, ANI_C_MH, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Jump_Start, ANI_C_ChangeSize_Jump_Large_Land_Jog, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Jump_Start, ANI_C_ChangeSize_Jump_Large_Land, false);
 
-	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jump_Land_Jog, false);
-	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_MH, true, 10.f);
-	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_180R, true, 2.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_180L, true, 10.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_180R, true, 10.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_Falling, true, 10.f);
 
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Start_Fwd, ANI_C_Jump_Falling, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd, ANI_C_Jump_Falling, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog, ANI_C_Jump_Falling, false);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jump_Land_Jog, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jog_Start_Fwd, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jog_Stop_Fwd, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jog, false);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_Jump_Land_Jog, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jump_Land_Jog, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jog_Start_Fwd, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jog_Stop_Fwd, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jog, false);
+
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Falling, ANI_C_Jump_Land, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Jump_Land, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Jump_Land_Jog, false);
@@ -136,6 +177,8 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_Jump, ANI_C_WallSlide_Enter, true, 20.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_Enter, ANI_C_WallSlide_MH, true, 20.f);
 
+	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_Enter, ANI_C_Grind_Grapple_ToGrind, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_ToGrind, ANI_C_Grind_Slow_MH, false);
 	//m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_MH, ANI_C_WallSlide_Jump, true, 10.f);
 	//ANI_C_Roll_Start, ANI_C_Roll_Stop;
 	return;
@@ -147,6 +190,9 @@ void CCody::Add_LerpInfo_To_Model()
 _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
+
+	/* UI */
+	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	m_pCamera = (CMainCamera*)CDataStorage::GetInstance()->Get_MainCam();
 	if (nullptr == m_pCamera)
@@ -164,63 +210,73 @@ _int CCody::Tick(_double dTimeDelta)
 
 #pragma region BasicActions
 	/////////////////////////////////////////////
-	Wall_Jump(dTimeDelta);
-	if (Trigger_Check(dTimeDelta))
-	{
-		Go_Grind(dTimeDelta);
-		Hit_StarBuddy(dTimeDelta);
-		Hit_Rocket(dTimeDelta);
-		Activate_RobotLever(dTimeDelta);
-		Push_Battery(dTimeDelta);
-		Rotate_Valve(dTimeDelta);
-		In_GravityPipe(dTimeDelta);
-		Hit_Planet(dTimeDelta);
-		Hook_UFO(dTimeDelta);
-		Warp_Wormhole(dTimeDelta);
-		Touch_FireDoor(dTimeDelta);
-		Boss_Missile_Hit(dTimeDelta);
-		Boss_Missile_Control(dTimeDelta);
-		Falling_Dead(dTimeDelta);
-		WallLaserTrap(dTimeDelta);
-		PinBall(dTimeDelta);
-		//Wall_Jump(dTimeDelta);
-	}
-	else
-	{
-		// 트리거 끝나고 애니메이션 초기화
-		Trigger_End(dTimeDelta);
-		m_IsFalling = m_pActorCom->Get_IsFalling();
-		m_pActorCom->Set_GroundPound(m_bGroundPound);
+	KeyInput_Rail(dTimeDelta);
 
-		if ((m_bRoll == false || m_bSprint == true))
+	if (false == m_bMoveToRail && false == m_bOnRail)
+	{
+		Wall_Jump(dTimeDelta);
+		if (Trigger_Check(dTimeDelta))
 		{
-			KeyInput(dTimeDelta);
+			Hit_StarBuddy(dTimeDelta);
+			Hit_Rocket(dTimeDelta);
+			Activate_RobotLever(dTimeDelta);
+			Push_Battery(dTimeDelta);
+			Rotate_Valve(dTimeDelta);
+			In_GravityPipe(dTimeDelta);
+			Hit_Planet(dTimeDelta);
+			Hook_UFO(dTimeDelta);
+			Warp_Wormhole(dTimeDelta);
+			Touch_FireDoor(dTimeDelta);
+			Boss_Missile_Hit(dTimeDelta);
+			Boss_Missile_Control(dTimeDelta);
+			Falling_Dead(dTimeDelta);
+			WallLaserTrap(dTimeDelta);
+			PinBall(dTimeDelta);
 		}
-		if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
+		else
 		{
-			Sprint(dTimeDelta);
-			if(m_IsSizeChanging == false)
-				Move(dTimeDelta);
-			if (m_eCurPlayerSize != SIZE_LARGE)
-				Roll(dTimeDelta);
-			Jump(dTimeDelta);
-			Change_Size(dTimeDelta);
+			// 트리거 끝나고 애니메이션 초기화
+			m_IsFalling = m_pActorCom->Get_IsFalling();
+			m_pActorCom->Set_GroundPound(m_bGroundPound);
+
+			if ((m_bRoll == false || m_bSprint == true))
+			{
+				KeyInput(dTimeDelta);
+			}
+			if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
+			{
+				Sprint(dTimeDelta);
+				if (m_IsSizeChanging == false)
+					Move(dTimeDelta);
+				if (m_eCurPlayerSize != SIZE_LARGE)
+					Roll(dTimeDelta);
+				Jump(dTimeDelta);
+				Change_Size(dTimeDelta);
+			}
+			Ground_Pound(dTimeDelta);
 		}
-		Ground_Pound(dTimeDelta);
 	}
 	/////////////////////////////////////////////
 
-	
 #pragma endregion
 
-	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	/* 레일 타겟을 향해 날라가기 */
+	// Forward 조정
+	MoveToTargetRail(dTimeDelta);
 
+	/* 레일타기 : 타겟을 찾지 못하면 타지않음. */
+	TakeRail(dTimeDelta);
 
+	if (true == m_bOnRail || true == m_bMoveToRail)
+	{
+		_vector vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		m_pActorCom->Set_Position(vPlayerPos);
+	}
+	else
+		m_pActorCom->Update(dTimeDelta); // Set Position하면 이거 할필요없다.
 
 	Attack_BossMissile_After(dTimeDelta); // 미사일 공격이 끝나고 정상적인 회전갑승로 만들어주자
 
-	m_pActorCom->Update(dTimeDelta);
 	m_pActorCom->Set_IsOnGravityPath(false);
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
@@ -231,6 +287,11 @@ _int CCody::Tick(_double dTimeDelta)
 _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
+
+	/* LateTick : 레일의 타겟 찾기*/
+	Find_TargetSpaceRail();
+	ShowRailTargetTriggerUI();
+	Clear_TagerRailNodes();
 
 	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine)
 		return NO_EVENT;
@@ -286,12 +347,21 @@ CGameObject* CCody::Clone_GameObject(void* pArg)
 
 void CCody::Free()
 {
+	/* For. Rail */
+	m_pSearchTargetRailNode = nullptr;
+	m_pTargetRail = nullptr;
+	m_pTargetRailNode = nullptr;
+	m_vecTargetRailNodes.clear();
+
 	//Safe_Release(m_pCamera);
 	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pEffect_Size);
+
+	if (nullptr != m_pTargetPtr)
+		Safe_Release(m_pTargetPtr);
 	CCharacter::Free();
 }
 
@@ -311,16 +381,46 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Teleport
+	if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_F5))
+		DATABASE->Set_GravityStageClear(true);
+	if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_F6))
+		DATABASE->Set_RailStageClear(true);
+	if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_F7))
+		DATABASE->Set_PinBallStageClear(true);
+
+	if (m_pGameInstance->Key_Down(DIK_C)) /* 파이프 베터리 */
+		m_pActorCom->Set_Position(XMVectorSet(44.8652f, 220.9396f, 223.94134f, 1.f));
+
 	if (m_pGameInstance->Key_Down(DIK_1)) /* 스타트 지점 */
+	{
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
+		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
+		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
+	}
 	if (m_pGameInstance->Key_Down(DIK_2)) /* 2층 */
+	{
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 127.f, 170.f, 1.f));
+		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
+		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
+	}
 	if (m_pGameInstance->Key_Down(DIK_3)) /* 2스테이지 입구 */
+	{
 		m_pActorCom->Set_Position(XMVectorSet(620.f, 760.f, 195.f, 1.f));
+		DATABASE->Set_May_Stage(ST_RAIL);
+		DATABASE->Set_Cody_Stage(ST_RAIL);
+	}
 	if (m_pGameInstance->Key_Down(DIK_4)) /* 2스테이지 */
+	{
 		m_pActorCom->Set_Position(XMVectorSet(960.f, 720.f, 193.f, 1.f));
+		DATABASE->Set_May_Stage(ST_RAIL);
+		DATABASE->Set_Cody_Stage(ST_RAIL);
+	}
 	if (m_pGameInstance->Key_Down(DIK_5))/* 3스테이지 */
+	{
 		m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
+		DATABASE->Set_May_Stage(ST_PINBALL);
+		DATABASE->Set_Cody_Stage(ST_PINBALL);
+	}
 	if (m_pGameInstance->Key_Down(DIK_6))/* 3층 */
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_7))/* Boss */
@@ -329,6 +429,10 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_0))/* 우산 */
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+	if(m_pGameInstance->Key_Down(DIK_Z)) /* 파이프 베터리 */
+		m_pActorCom->Set_Position(XMVectorSet(44.8652f, 220.9396f, 223.94134f, 1.f));
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -501,6 +605,7 @@ void CCody::KeyInput(_double dTimeDelta)
 		{
 			m_bShortJump = true;
 			m_iJumpCount += 1;
+			m_IsJumping = true;
 		}
 	}
 	else
@@ -509,6 +614,7 @@ void CCody::KeyInput(_double dTimeDelta)
 		{
 			m_bShortJump = true;
 			m_iJumpCount += 1;
+			m_IsJumping = true;
 		}
 	}
 
@@ -517,7 +623,8 @@ void CCody::KeyInput(_double dTimeDelta)
 
 #pragma region Mouse_LButton
 
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) && m_bSprint == false)
+	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) &&
+		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false)
 	{
 		// 커져라
 		switch (m_eCurPlayerSize)
@@ -537,7 +644,8 @@ void CCody::KeyInput(_double dTimeDelta)
 
 #pragma region Mouse_RButton
 
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB) && m_bSprint == false)
+	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB) &&
+		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false)
 	{
 		// 작아져라
 		switch (m_eCurPlayerSize)
@@ -582,6 +690,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pActorCom->Get_IsJump() == true)
 	{
 		m_bGroundPound = true;
+		m_IsJumping = false;
 	}
 
 #pragma endregion
@@ -972,7 +1081,7 @@ void CCody::Roll(const _double dTimeDelta)
 
 		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta * m_fAcceleration);
 		if (m_eCurPlayerSize == SIZE_MEDIUM)
-			m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), dTimeDelta);
+			m_pActorCom->Move(vDirection * (m_fAcceleration / 15.f), dTimeDelta);
 		else if (m_eCurPlayerSize == SIZE_SMALL)
 			m_pActorCom->Move(vDirection * (m_fAcceleration / 40.f), dTimeDelta);
 	}
@@ -1162,7 +1271,11 @@ void CCody::Jump(const _double dTimeDelta)
 			else
 				m_pActorCom->Jump_Start(1.5f);
 
-			m_pModelCom->Set_Animation(ANI_C_Jump_Land_Still_Jump);
+			if (m_eCurPlayerSize == SIZE_LARGE)
+				m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Start); // 사이즈 클때 점프 애니메이션이 다름.
+			else
+				m_pModelCom->Set_Animation(ANI_C_Jump_Start);
+
 			m_bShortJump = false;
 		}
 		if (m_iJumpCount == 2)
@@ -1179,10 +1292,11 @@ void CCody::Jump(const _double dTimeDelta)
 			m_bShortJump = false;
 		}
 	}
-	if (m_IsJumping == true && m_pActorCom->Get_IsJump() == false)
+	if (m_IsJumping == true && m_pActorCom->Get_IsJump() == false && m_bGroundPound == false)
 	{
 		m_iAirDashCount = 0;
 		m_bSprint = false;
+		// 착지할때 키를 누르고 있는 상태라면 Jog 로 연결
 		if (m_pGameInstance->Key_Pressing(DIK_W) || m_pGameInstance->Key_Pressing(DIK_A) || m_pGameInstance->Key_Pressing(DIK_S) || m_pGameInstance->Key_Pressing(DIK_D))
 		{
 			if (m_eCurPlayerSize != SIZE_LARGE)
@@ -1196,17 +1310,20 @@ void CCody::Jump(const _double dTimeDelta)
 				m_pModelCom->Set_NextAnimIndex(ANI_C_ChangeSize_Walk_Large_Fwd);
 			}
 		}
-		else
+		else // 그게 아니라면 그냥 착지.
 		{
-			if (m_eCurPlayerSize != SIZE_LARGE)
+			if (m_eCurPlayerSize != SIZE_LARGE && m_bAfterGroundPound == false)
 			{
 				m_pModelCom->Set_Animation(ANI_C_Jump_Land);
 				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			}
-			else
+			else if (m_eCurPlayerSize == SIZE_LARGE  && m_bPlayGroundPoundOnce == false)
 			{
-				m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Large_Land);
-				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+				if (m_pModelCom->Get_CurAnimIndex() != ANI_C_ChangeSize_Jump_Falling)
+				{
+					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Large_Land);
+					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+				}
 			}
 		}
 		m_IsJumping = false;
@@ -1283,7 +1400,7 @@ void CCody::Jump(const _double dTimeDelta)
 	{
 		m_bShortJump = true;
 		m_IsJumping = true;
-		m_iJumpCount = 2;
+		m_iJumpCount = 1;
 		return;
 	}
 }
@@ -1293,9 +1410,12 @@ void CCody::Change_Size(const _double dTimeDelta)
 	{
 		if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_LARGE)
 		{
-			m_pActorCom->Set_Scale(5.f, 5.f);
-			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_LARGE);
-
+			if (m_bChangeSizeEffectOnce == false)
+			{
+				m_pActorCom->Set_Scale(2.f, 2.f);
+				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_LARGE);
+				m_bChangeSizeEffectOnce = true;
+			}
 			if (m_vScale.x < 5.f)
 			{
 				m_vScale.x += (_float)dTimeDelta * 20.f;
@@ -1305,10 +1425,14 @@ void CCody::Change_Size(const _double dTimeDelta)
 			}
 			else
 			{
+				m_bChangeSizeEffectOnce = false;
 				m_vScale = { 5.f, 5.f, 5.f };
 				m_IsSizeChanging = false; 
 				m_eCurPlayerSize = SIZE_LARGE;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+
+				//UI
+				UI_Generator->UI_RETutorial(Player::Cody, UI::PC_Mouse_Enlargement);
 				if (m_pGameInstance->Key_Pressing(DIK_W) || m_pGameInstance->Key_Pressing(DIK_A) || m_pGameInstance->Key_Pressing(DIK_S) || m_pGameInstance->Key_Pressing(DIK_D))
 				{
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Fwd);
@@ -1323,9 +1447,12 @@ void CCody::Change_Size(const _double dTimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_LARGE && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
-			m_pActorCom->Set_Scale(0.5f, 0.5f);
-			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_LARGE_MIDDLE);
-
+			if (m_bChangeSizeEffectOnce == false)
+			{
+				m_pActorCom->Set_Scale(0.5f, 0.5f);
+				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_LARGE_MIDDLE);
+				m_bChangeSizeEffectOnce = true;
+			}
 			if (m_vScale.x > 1.f)
 			{
 				m_vScale.x -= (_float)dTimeDelta * 20.f;
@@ -1335,6 +1462,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 			}
 			else
 			{
+				m_bChangeSizeEffectOnce = false;
 				m_vScale = { 1.f, 1.f, 1.f };
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_MEDIUM;
@@ -1344,11 +1472,15 @@ void CCody::Change_Size(const _double dTimeDelta)
 		}
 		else if (m_eCurPlayerSize == SIZE_MEDIUM && m_eNextPlayerSize == SIZE_SMALL)
 		{
-			m_pActorCom->Set_Scale(0.05f, 0.05f);
 			m_pActorCom->Get_Controller()->setSlopeLimit(0.02f);
 			m_pActorCom->Get_Controller()->setStepOffset(0.02f);
-			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_SMALL);
 
+			if (m_bChangeSizeEffectOnce == false)
+			{
+				m_pActorCom->Set_Scale(0.05f, 0.05f);
+				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_SMALL);
+				m_bChangeSizeEffectOnce = true;
+			}
 			if (m_vScale.x > 0.5f)
 			{
 				m_vScale.x -= (_float)dTimeDelta * 10.f;
@@ -1358,20 +1490,26 @@ void CCody::Change_Size(const _double dTimeDelta)
 			}
 			else
 			{
+				m_bChangeSizeEffectOnce = false;
 				m_vScale = { 0.2f, 0.2f, 0.2f };
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_SMALL;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+				//UI
+				UI_Generator->UI_RETutorial(Player::Cody, UI::PC_Mouse_Reduction);
 				m_pModelCom->Set_Animation(ANI_C_MH);
 			}
 		}
 		else if (m_eCurPlayerSize == SIZE_SMALL && m_eNextPlayerSize == SIZE_MEDIUM)
 		{
-			m_pActorCom->Set_Scale(0.5f, 0.5f);
-			m_pActorCom->Get_Controller()->setSlopeLimit(0.5f);
-			m_pActorCom->Get_Controller()->setStepOffset(0.707f);
-			m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_SMALL_MIDDLE);
-
+			if (m_bChangeSizeEffectOnce == false)
+			{
+				m_pActorCom->Set_Scale(0.5f, 0.5f);
+				m_pActorCom->Get_Controller()->setStepOffset(0.707f);
+				m_pActorCom->Get_Controller()->setSlopeLimit(0.5f);
+				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_SMALL_MIDDLE);
+				m_bChangeSizeEffectOnce = true;
+			}
 			if (m_vScale.x < 1.f)
 			{
 				m_vScale.x += (_float)dTimeDelta * 10.f;
@@ -1381,6 +1519,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 			}
 			else
 			{
+				m_bChangeSizeEffectOnce = false;
 				m_vScale = { 1.f, 1.f, 1.f };
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_MEDIUM;
@@ -1396,7 +1535,10 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 	{
 		if (m_fGroundPoundAirDelay > 0.4f)
 		{
-			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Falling);
+			if (m_eCurPlayerSize != SIZE_LARGE)
+				m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Falling);
+			else
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Falling);
 			if (m_eCurPlayerSize == SIZE_MEDIUM || m_eCurPlayerSize == SIZE_LARGE)
 				m_pActorCom->Set_Gravity(-9.8f);
 			else if (m_eCurPlayerSize == SIZE_SMALL)
@@ -1407,30 +1549,66 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 		}
 		else
 		{
+			m_IsJumping = false;
 			m_bCanMove = false;
-			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Start);
+			if (m_eCurPlayerSize == SIZE_LARGE)
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Start);
+			else
+				m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Start);
 			m_pActorCom->Set_Jump(false);
 			m_pActorCom->Set_Gravity(0.f);
 			m_fGroundPoundAirDelay += (_float)dTimeDelta;
 		}
 	}
 
-	if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_GroundPound_Falling) && m_bPlayGroundPoundOnce == false)
+	if (m_eCurPlayerSize != SIZE_LARGE)
 	{
-		m_bPlayGroundPoundOnce = true;
-		m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Land);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit);
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_GroundPound_Falling) && m_bPlayGroundPoundOnce == false)
+		{
+			m_bPlayGroundPoundOnce = true;
+			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Land_Exit);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		}
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_GroundPound_Land_Exit))
+		{
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_bPlayGroundPoundOnce = false;
+			m_IsAirDash = false;
+			//m_bCanMove = true;
+			m_bAfterGroundPound = true;
+		}
 	}
-	if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_GroundPound_Land))
+	else
 	{
-		m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		if (m_pActorCom->Get_IsJump() == true && (m_pModelCom->Get_CurAnimIndex() == (ANI_C_Bhv_ChangeSize_GroundPound_Falling) && m_bPlayGroundPoundOnce == false))
+		{
+			m_bPlayGroundPoundOnce = true;
+			m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		}
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit))
+		{
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_bPlayGroundPoundOnce = false;
+			m_IsAirDash = false;
+			m_bCanMove = true;
+			m_iJumpCount = 0;
+		}
 	}
-	if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit))
+
+	if (m_eCurPlayerSize != SIZE_LARGE)
 	{
-		m_bPlayGroundPoundOnce = false;
-		m_IsAirDash = false;
-		m_bCanMove = true;
+		if (m_bAfterGroundPound == true)
+			m_iAfterGroundPoundCount += 1;
+
+		if (m_iAfterGroundPoundCount >= 90) // 1.5초 경직
+		{
+			m_iAfterGroundPoundCount = 0;
+			m_bAfterGroundPound = false;
+			m_bCanMove = true;
+		}
 	}
 
 }
@@ -1443,25 +1621,25 @@ void CCody::Attack_BossMissile_After(_double dTimeDelta)
 
 		if (2.f >= m_fBossMissile_HeroLanding_Time)
 		{
-			// 개꿀잼 회전값 보정을 원한다면
-			//	_float fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_RIGHT).m128_f32[1];
-			//	m_pTransformCom->RotateRoll(dTimeDelta * fRotateRoll_Check * -1.f);
-			//	fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_LOOK).m128_f32[1];
-			//	m_pTransformCom->RotatePitch(dTimeDelta * fRotateRoll_Check * -1.f);
+		// 개꿀잼 회전값 보정을 원한다면
+		//	_float fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_RIGHT).m128_f32[1];
+		//	m_pTransformCom->RotateRoll(dTimeDelta * fRotateRoll_Check * -1.f);
+		//	fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_LOOK).m128_f32[1];
+		//	m_pTransformCom->RotatePitch(dTimeDelta * fRotateRoll_Check * -1.f);
 
-			_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-			_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+		_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 
-			vLook.m128_f32[1] = 0.f;
-			vRight.m128_f32[1] = 0.f;
+		vLook.m128_f32[1] = 0.f;
+		vRight.m128_f32[1] = 0.f;
 
-			vLook = XMVector3Normalize(vLook) * m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
-			vRight = XMVector3Normalize(vRight) * m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
+		vLook = XMVector3Normalize(vLook) * m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
+		vRight = XMVector3Normalize(vRight) * m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
 
-			_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * m_pTransformCom->Get_Scale(CTransform::STATE_UP);
-			m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-			m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
-			m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+		_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * m_pTransformCom->Get_Scale(CTransform::STATE_UP);
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+		m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
 		}
 		else
 		{
@@ -1532,9 +1710,19 @@ void CCody::SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTri
 	m_iValvePlayerName = _iPlayerName;
 }
 
+void CCody::SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject * pTargetPtr)
+{
+	if (nullptr != m_pTargetPtr)
+		Safe_Release(m_pTargetPtr);
+
+	m_eTargetGameID = eID;
+	m_IsCollide = IsCollide;
+	m_pTargetPtr = pTargetPtr;
+	Safe_AddRef(m_pTargetPtr);
+}
+
 _bool CCody::Trigger_Check(const _double dTimeDelta)
 {
-
 	if (m_IsCollide == true)
 	{
 		if (m_eTargetGameID == GameID::eSTARBUDDY && m_pGameInstance->Key_Down(DIK_F))
@@ -1557,18 +1745,55 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eROBOTLEVER && m_pGameInstance->Key_Down(DIK_F))
 		{
+			if (DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
+			{
+				m_pActorCom->Set_Position(XMVectorSet(70.5799332f, 21.3829994f, 174.975174f, 1.f));
+				m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(0.f));
+			}
+			else if (DATABASE->Get_Cody_Stage() == ST_PINBALL)
+			{
+				//
+			}
+			else if (DATABASE->Get_Cody_Stage() == ST_RAIL)
+			{
+				m_pActorCom->Set_Position(XMVectorSet(1035.06592f, 740.905029f, 212.1604f, 1.f));
+				m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(0.f));
+			}
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Lever_Left);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsActivateRobotLever = true;
 		}
-		else if (m_eTargetGameID == GameID::eROBOTBATTERY && m_pGameInstance->Key_Down(DIK_F))
+		else if (m_eTargetGameID == GameID::eROBOTBATTERY && m_pGameInstance->Key_Down(DIK_E))
 		{
+			if (DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
+			{
+				m_pActorCom->Set_Position(XMVectorSet(71.1877518f, 23.28266802f, 179.620789f, 1.f));
+				m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(0.f));
+			}
+			else if (DATABASE->Get_Cody_Stage() == ST_PINBALL)
+			{
+				m_pActorCom->Set_Position(XMVectorSet(-814.433655f, 791.810059f, 228.490845f, 1.f));
+				m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-90.f));
+			}
+			else if (DATABASE->Get_Cody_Stage() == ST_RAIL)
+			{
+				m_pActorCom->Set_Position(XMVectorSet(1035.42493f, 743.288574f, 216.862808f, 1.f));
+				m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(0.f));
+			}
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
 			m_IsPushingBattery = true;
 		}
+		else if (m_eTargetGameID == GameID::eCONTROLROOMBATTERY && m_pGameInstance->Key_Down(DIK_E))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
+			m_IsPushingBattery = true;
+			m_IsPipeBattery = true;
+		}
 		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_F) && m_iValvePlayerName == Player::Cody)
 		{
+			m_pActorCom->Set_Position(XMVectorSet(46.487f, 125.842f, 195.789f, 1.f));
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Valve_Rotate_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Valve_Rotate_MH);
 			m_IsEnterValve = true;
@@ -1603,6 +1828,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			{
 				m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_PlanetPush_Large);
 				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
 				m_IsHitPlanet = true;
 			}
 		}
@@ -1645,6 +1871,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
 		{
 			// 코디 전용 포탈로 이동(웜홀)
+			
 			m_pModelCom->Set_Animation(ANI_C_SpacePortal_Travel);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_SpacePortal_Travel);
 
@@ -1671,18 +1898,20 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_IsBossMissile_Rodeo = false;
 			m_IsBossMissile_Rodeo_Ready = false;
 		}
+		else if (m_eTargetGameID == GameID::eDUMMYWALL && m_bWallAttach == false && m_fWallJumpingTime <= 0.f)
+		{
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
+			m_bWallAttach = true;
+		}
 		else if (m_eTargetGameID == GameID::eDEADLINE && false == m_IsDeadLine)
 		{
-			/* 데드라인과 충돌시 */
-			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
-			m_pModelCom->Set_NextAnimIndex(ANI_M_Death_Fall_MH);
-
-			/* 낙사 애니메이션인데 다음애니메이션이 뭔지 모르겠음 */
+			Enforce_IdleState();
+			/* 데드라인 */
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Death_Fall_MH);
 
-			/* 왜 중력을 0으로 하면 추락하는지 모르겠음 */
-			m_pActorCom->Set_Gravity(0.f);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_IsDeadLine = true;
 		}
@@ -1699,23 +1928,28 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bWallAttach = true;
 		}
-
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
 		{
 			/* 세이브포인트->트리거와 충돌시 세이브포인트 갱신 */
 			m_vSavePoint = m_vTriggerTargetPos;
 		}
-
+		else if (m_eTargetGameID == GameID::eUMBRELLABEAMJOYSTICK && m_pGameInstance->Key_Down(DIK_E))
+		{
+			m_pModelCom->Set_Animation(ANI_M_ArcadeScreenLever_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_ArcadeScreenLever_MH);
+			m_IsControlJoystick = true;
+			CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
+			pJoystick->Set_ControlActivate(true);
+		}
 		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-
+			Enforce_IdleState();
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_IsWallLaserTrap_Touch = true;
 		}
-
 		else if (m_eTargetGameID == GameID::ePINBALL && false == m_IsPinBall)
 		{
 			/* 핀볼모드 ON */
@@ -1727,16 +1961,47 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			/* 핀볼 문열기 */
 			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(false);
 		}
+		else if (m_eTargetGameID == GameID::eHOOKAHTUBE)
+		{
+			/* 튜브*/
+			m_pActorCom->Jump_Start(4.f);
+
+			_uint iRandom = rand() % 4;
+			switch (iRandom)
+			{
+			case 0:
+				m_pModelCom->Set_Animation(ANI_C_Bhv_Bounce_01);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Bounce_01);
+				break;
+			case 1:
+				m_pModelCom->Set_Animation(ANI_C_Bhv_Bounce_02);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Bounce_02);
+				break;
+			case 2:
+				m_pModelCom->Set_Animation(ANI_C_Bhv_Bounce_03);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Bounce_03);
+				break;
+			case 3:
+				m_pModelCom->Set_Animation(ANI_C_Bhv_Bounce_04);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Bounce_04);
+				break;
+			default:
+				break;
+			}
+
+			m_IsCollide = false;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine
-		|| m_bWallAttach || m_IsPinBall || m_IsWallLaserTrap_Touch)
+	if (m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
+		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
+		|| m_bWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch)
 		return true;
 
 	return false;
 }
+
 _bool CCody::Trigger_End(const _double dTimeDelta)
 {
 	if ((m_pModelCom->Get_CurAnimIndex() == ANI_C_Jump_Land 
@@ -1753,51 +2018,6 @@ _bool CCody::Trigger_End(const _double dTimeDelta)
 	return false;
 }
 #pragma endregion
-
-void CCody::Go_Grind(const _double dTimeDelta)
-{
-#pragma region Grind_Actions
-	if (m_IsOnGrind == true)
-	{
-		//
-		if (m_pModelCom->Is_AnimFinished(ANI_C_Grind_Grapple_ToGrind))
-		{
-			m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
-			if (m_dTestTime < 1.0)
-			{
-				m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
-			}
-		}
-		if (m_dTestTime >= 1.0)
-		{
-			_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), (_float)m_dTestTime), 1.f);
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-			m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
-
-			m_pModelCom->Set_Animation(ANI_C_Grind_Jump);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Land);
-			m_pActorCom->Jump_Start(2.6f);
-
-			m_dTestTime = 0.0; //Points 1과 2사이를 곡선으로 보간 0과 3은 곡선이 어떤 형태를 띌지 수치 조절.
-			m_IsOnGrind = false;
-			return;
-		}
-		m_dTestTime += (_float)dTimeDelta / 5.f;
-
-		_vector vPos = XMVectorSetW(XMVectorCatmullRom(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]), XMLoadFloat3(&m_vPoints[3]), (_float)m_dTestTime), 1.f);
-		_vector vPhsixPos = XMVectorSet((_float)m_pActorCom->Get_Controller()->getPosition().x, (_float)m_pActorCom->Get_Controller()->getPosition().y, (_float)m_pActorCom->Get_Controller()->getPosition().z, 1.f);
-		_vector vDir = XMVectorSetW(XMVector3Normalize(vPos - vPhsixPos), 0.f);
-
-		m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
-		m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta / 10.f);
-	}
-	//_vector vCurPos = XMVectorSetW(XMVectorLerp(XMLoadFloat3(vCurNode), XMLoadFloat3(&m_vPoints[iCurNode + 1]), dProgress),1.f);
-	//_vector vPhsXPos = XMVectorSet(m_pActorCom->Get_Controller()->getPosition().x, m_pActorCom->Get_Controller()->getPosition().y, m_pActorCom->Get_Controller()->getPosition().z, 1.f);
-	//_vector vDir = XMVector4Normalize(vCurPos - vPhsXPos);
-
-
-#pragma endregion
-}
 
 void CCody::Hit_StarBuddy(const _double dTimeDelta)
 {
@@ -1852,23 +2072,26 @@ void CCody::Push_Battery(const _double dTimeDelta)
 	// 애니메이션 시작할때 WorldPos 저장. -> 끝나는 순간 마지막 위치로 WorldPos 변경 해야 함.
 	if (m_IsPushingBattery == true)
 	{
-		//m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (DATABASE->Get_GravityStageClear() == false && DATABASE->Get_PinBallStageClear() == false && DATABASE->Get_RailStageClear() == false)
+		if (true == m_IsPipeBattery)
 		{
-			m_pActorCom->Set_Position(XMVectorSet(71.194f, 23.29f, 179.68f, 1.f));
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
+			m_IsCollide = false;
+
+			if (m_pGameInstance->Key_Down(DIK_Q))
+			{
+				m_IsPushingBattery = false;
+				m_IsPipeBattery = false;
+				m_pModelCom->Set_Animation(ANI_C_ActionMH);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_Fwd);
+			}
+
+			return;
 		}
-		else if (DATABASE->Get_GravityStageClear() == true && DATABASE->Get_PinBallStageClear() == false && DATABASE->Get_RailStageClear() == false)
-		{
-			//m_pActorCom->Set_Position(XMVectorSet(71.194f, 23.29f, 179.68f, 1.f));
-		}
-		else if (DATABASE->Get_GravityStageClear() == true && DATABASE->Get_PinBallStageClear() == true && DATABASE->Get_RailStageClear() == false)
-		{
-			//m_pActorCom->Set_Position(XMVectorSet(71.194f, 23.29f, 179.68f, 1.f));
-		}
+
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_MH))
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
 	}
-	if (m_IsPushingBattery == true && m_IsStGravityCleared == false && DATABASE->Get_GravityStageClear() == true)
+	if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
 	{
 		m_IsPushingBattery = false;
 		m_IsCollide = false;
@@ -1877,7 +2100,7 @@ void CCody::Push_Battery(const _double dTimeDelta)
 		m_IsStGravityCleared = true;
 	}
 
-	else if (m_IsPushingBattery == true && m_IsStRailCleared == false && DATABASE->Get_RailStageClear() == true)
+	else if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_RAIL)
 	{
 		m_IsPushingBattery = false;
 		m_IsCollide = false;
@@ -1886,7 +2109,7 @@ void CCody::Push_Battery(const _double dTimeDelta)
 		m_IsStRailCleared = true;
 	}
 
-	else if (m_IsPushingBattery == true && m_IsStPinBallCleared == false && DATABASE->Get_PinBallStageClear() == true)
+	else if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_PINBALL)
 	{
 		m_IsPushingBattery = false;
 		m_IsCollide = false;
@@ -1902,7 +2125,6 @@ void CCody::Rotate_Valve(const _double dTimeDelta)
 {
 	if (m_IsEnterValve == true)
 	{
-		m_pActorCom->Set_Position(XMVectorSet(46.487f, 125.842f, 195.789f, 1.f));
 		if (DATABASE->Get_ValveCount() == 6)
 		{
 			m_bStruggle = false;
@@ -1967,15 +2189,6 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 			if (m_pGameInstance->Key_Pressing(DIK_LCONTROL))
 			{
 				m_pActorCom->Set_ZeroGravity(true, false, false);
-				/*m_pTransformCom->Rotate_Axis(XMVector3Normalize(XMVectorSet(1.f, 0.f, 0.f, 0.f)), dTimeDelta * 0.1f);
-				m_pTransformCom->Rotate_Axis(XMVector3Normalize(XMVectorSet(0.f, 0.f, 1.f, 0.f)), dTimeDelta * 0.1f);
-
-				_float3 MoveDir = { 0.f, -1.f, 0.f };
-				_vector vDirection = XMVector3Normalize(XMLoadFloat3(&MoveDir));
-				m_pActorCom->Move(vDirection * 1.2f, dTimeDelta);*/
-				/*m_pTransformCom->Go_Down(dTimeDelta);
-				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-				m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));*/
 			}
 
 			if (m_pGameInstance->Key_Pressing(DIK_W))
@@ -1983,11 +2196,7 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
 				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
-
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
-				//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-				//m_pActorCom->Get_Controller()->setPosition(PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos)));
-				//m_pModelCom->Set_Animation(ANI_C_Bhv_PlayRoom_ZeroGravity_Fwd);
 			}
 			if (m_pGameInstance->Key_Pressing(DIK_A))
 			{
@@ -2022,12 +2231,13 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 			m_bRoll = false;
 
 			m_pActorCom->Set_IsFalling(true);
-			m_pActorCom->Jump_Start(1.5f);
+			m_pActorCom->Jump_Start(1.9f);
 			m_pActorCom->Set_Jump(true);
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_pActorCom->Set_Gravity(-9.8f);
 			m_IsInGravityPipe = false;
-			m_pModelCom->Set_Animation(ANI_C_MH);
+			//m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_Animation(ANI_C_Jump_180R);
 		}
 	}
 }
@@ -2036,7 +2246,11 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 {
 	if (m_IsHitPlanet == true)
 	{
-		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
+		if (0.3f <= m_pModelCom->Get_ProgressAnim())
+		{
+			((CHangingPlanet*)(m_pTargetPtr))->Set_Trigger(true);
+			((CHangingPlanet*)(m_pTargetPtr))->Add_Force(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+		}
 
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_PlanetPush_Large))
 		{
@@ -2073,8 +2287,6 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 		vTriggerToPlayer = XMVectorSetW(vTriggerToPlayer, 1.f);
 		m_pTransformCom->RotateYawDirectionOnLand(-vTriggerToPlayer, (_float)dTimeDelta / 2.f);
 		//m_pTransformCom->Set_RotateAxis(m_vHookUFOAxis, sin(-m_fRopeAngle));
-
-		
 
 		////////////////////////////////////////
 
@@ -2364,6 +2576,21 @@ void CCody::Boss_Missile_Control(const _double dTimeDelta)
 	}
 }
 
+void CCody::Set_OnParentRotate(_matrix ParentMatrix)
+{
+	_matrix matWorld, matRotY, matTrans;
+	matTrans = XMMatrixTranslation(-0.38f, 0.7f, -0.4f);
+	matRotY = XMMatrixRotationY(XMConvertToRadians(90.f));
+
+	matWorld = matRotY * matTrans * ParentMatrix;
+	m_pTransformCom->Set_WorldMatrix(matWorld);
+}
+
+void CCody::Set_ControlJoystick(_bool IsCheck)
+{
+	m_IsControlJoystick = IsCheck;
+}
+
 void CCody::WallLaserTrap(const _double dTimeDelta)
 {
 	if (false == m_IsWallLaserTrap_Touch)
@@ -2373,11 +2600,15 @@ void CCody::WallLaserTrap(const _double dTimeDelta)
 	m_fDeadTime += (_float)dTimeDelta;
 	if (m_fDeadTime >= 2.f)
 	{
-		_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
-		vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+		_float fMyPosY = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
+		_float fTriggerY = m_vTriggerTargetPos.y;
 
-		m_pActorCom->Set_Position(vSavePosition);
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
+		_vector vRespawnPos = XMVectorSet(-803.f, 768.f, 193.f, 1.f);
+		if(fMyPosY > fTriggerY)
+			vRespawnPos = XMVectorSet(-805.f, 792.f, 198.f, 1.f);
+
+		m_pActorCom->Set_Position(vRespawnPos);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vRespawnPos);
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 		m_pModelCom->Set_Animation(ANI_C_MH);
 		m_fDeadTime = 0.f;
@@ -2405,14 +2636,13 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
 
 			m_pActorCom->Set_Position(vSavePosition);
-			m_pActorCom->Set_Gravity(-9.8f);
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pModelCom->Set_Animation(ANI_C_MH);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_fDeadTime = 0.f;
-			m_IsDeadLine = false;
 			m_IsCollide = false;
+			m_IsDeadLine = false;
+			m_pActorCom->Set_ZeroGravity(false, false, false);
 		}
 		else
 		{
@@ -2424,6 +2654,262 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 	}
 }
 
+#pragma region Path
+void CCody::Set_SpaceRailNode(CSpaceRail_Node* pRail)
+{
+	if (nullptr == pRail) return;
+	m_vecTargetRailNodes.push_back(pRail);
+}
+void CCody::KeyInput_Rail(_double dTimeDelta)
+{
+	if (m_pGameInstance->Key_Down(DIK_F) && false == m_bOnRail)
+	{
+		Start_SpaceRail();
+	}
+
+	if (m_bOnRail)
+	{
+		if (m_pGameInstance->Key_Down(DIK_SPACE))
+		{
+			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+
+			m_iJumpCount = 1;
+			m_bShortJump = true;
+
+			m_pTargetRail = nullptr;
+			m_pSearchTargetRailNode = nullptr;
+			m_pTargetRailNode = nullptr;
+
+			m_bMoveToRail = false;
+			m_bOnRail = false;
+			Clear_TagerRailNodes();
+		}
+	}
+}
+void CCody::Clear_TagerRailNodes()
+{
+	m_vecTargetRailNodes.clear();
+}
+void CCody::Find_TargetSpaceRail()
+{
+	// 레일타기 키 눌렸을때만, 타겟 찾기, 키가 눌렸지만, 충돌한 레일 트리거가 존재하지 않을때
+	if (m_vecTargetRailNodes.empty()) return;
+
+	CTransform* pCamTransform = m_pCamera->Get_Transform();
+	if (nullptr == pCamTransform) return;
+	_vector vCamPos = pCamTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vCamLook = pCamTransform->Get_State(CTransform::STATE_LOOK);
+	_vector vCamUp = pCamTransform->Get_State(CTransform::STATE_UP);
+
+	// 거리가 아닌, 카메라 Look 벡터와의 각도차로 계산
+	vCamLook = XMVector3Normalize(vCamLook);
+	vCamUp = XMVector3Normalize(vCamUp);
+
+	_bool isSearch = false;
+	_vector vToTarget = XMVectorZero();
+	_vector vNodePosition = XMVectorZero();
+	_float fMinDegree = 360.f;
+	for (auto& pNode : m_vecTargetRailNodes)
+	{
+		if (nullptr == pNode) continue;
+		
+		vNodePosition = pNode->Get_Position();
+		vToTarget = XMVector3Normalize(vNodePosition - vCamPos);
+		
+		/* 외적 : 방향 체크 */
+		_bool bEdge = false;
+		_uint iEdgeState = pNode->Get_EdgeState();
+		_int iCCW = MH_CrossCCW(vCamLook, vToTarget, vCamUp); /* @Return CCW(1) CW(-1) Else(0) */
+		switch (iEdgeState)
+		{
+		case CSpaceRail::EDGE_START:  // Edge Start 트리거노드가 존재하면, MID 노드는 체크하지 않는다.
+			if (1 == iCCW) continue; // 반시계방향에 존재하는 노드 건너뛰기
+			bEdge = true;
+		break;
+		case CSpaceRail::EDGE_END:
+			if (-1 == iCCW) continue; // 시계 방향에 존재하는 노드 건너뛰기
+			bEdge = true;
+		break;
+		}
+
+		/* 각도 계산  */
+		_float fDegree = XMConvertToDegrees(XMVectorGetX(XMVector3Dot(vCamLook, vToTarget)));
+		if (fDegree > 60.f) continue; /* 일정각도(90) 이상인 노드는 제외한다. */
+
+		/* 가장 각도가 적은 타겟노드 찾기 */
+		if (fMinDegree > fDegree)
+		{
+			m_pSearchTargetRailNode = pNode;
+			//m_pTargetRailNode = pNode;
+			fMinDegree = fDegree;
+			isSearch = true;
+
+			if (bEdge) 
+				break;
+		}
+	}
+
+	if (false == isSearch)
+		m_pSearchTargetRailNode = nullptr;
+}
+void CCody::Start_SpaceRail()
+{
+	if (nullptr == m_pSearchTargetRailNode) return;
+
+	if (m_pSearchTargetRailNode) {
+		// 타겟을 찾았다면, 레일 탈 준비
+		m_pTargetRailNode = m_pSearchTargetRailNode;
+		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter); // 줄던지고 댕겨서 날라가기
+		m_bMoveToRail = true;
+	}
+}
+void CCody::MoveToTargetRail(_double dTimeDelta)
+{
+	if (nullptr == m_pTransformCom || false == m_bMoveToRail || nullptr == m_pTargetRailNode || true == m_bOnRail) return;
+
+	_float fMoveToSpeed = 10.f;
+	_float fDist = m_pTransformCom->Move_ToTargetRange(m_pTargetRailNode->Get_Position(), 0.1f, dTimeDelta * fMoveToSpeed);
+	if (fDist < 0.2f)
+	{
+		/* 타는 애니메이션으로 변경 */
+		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_ToGrind); // 레일 착지
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
+
+		/* 타야할 Path 지정 */
+		m_pTargetRail = (CSpaceRail*)DATABASE->Get_SpaceRail(m_pTargetRailNode->Get_RailTag());
+
+		/* 예외처리 - 레일 태그 틀렸을 경우 */
+		if (nullptr == m_pTargetRail)
+		{
+			m_pTargetRailNode = nullptr;
+			m_bOnRail = false;
+			m_bMoveToRail = false;
+			return;
+		}
+
+		/* 패스 지정 -> X */
+		CPath::STATE ePathState = CPath::STATE_END;
+		//if(m_pGameInstance->Key_Down(DIK_W))
+		//	ePathState = CPath::STATE_FORWARD;
+		//else if(m_pGameInstance->Key_Down(DIK_S))
+		//	ePathState = CPath::STATE_BACKWARD;
+
+		/* 외적으로 방향 구하기 */
+		CTransform* pCamTransform = m_pCamera->Get_Transform();
+		if (nullptr == pCamTransform) return;
+		_vector vCamLook = pCamTransform->Get_State(CTransform::STATE_LOOK);
+		_vector vCamUp = pCamTransform->Get_State(CTransform::STATE_UP);
+		_vector vCamPos = pCamTransform->Get_State(CTransform::STATE_POSITION);
+
+		_vector vToTarget = m_pTargetRailNode->Get_Position() - vCamPos;
+		_int iCCW = MH_CrossCCW(vCamLook, vToTarget, vCamUp);  /* @Return CCW(1) CW(-1) Else(0) */
+
+		switch (iCCW)
+		{
+		case 1:		// 반시계
+		{
+			ePathState = CPath::STATE_BACKWARD;
+			break;
+		}
+		case -1:	// 시계
+			ePathState = CPath::STATE_FORWARD;
+			break;
+		case 0:		// 일직선
+			ePathState = CPath::STATE_FORWARD;
+			break;
+		}
+
+		/* Edge State 지정 */
+		// START / END 일경우, 방향 전환
+		_uint iEdgeState = m_pTargetRailNode->Get_EdgeState();
+		switch (iEdgeState)
+		{
+		case CSpaceRail::EDGE_START:
+			if(CPath::STATE_END == ePathState)
+				ePathState = CPath::STATE_FORWARD;
+			break;
+		case CSpaceRail::EDGE_END:
+			if (CPath::STATE_FORWARD == ePathState)
+				ePathState = CPath::STATE_BACKWARD;
+			else if (CPath::STATE_BACKWARD == ePathState)
+				ePathState = CPath::STATE_FORWARD;
+			else if (CPath::STATE_END == ePathState)
+				ePathState = CPath::STATE_BACKWARD;
+			break;
+		case CSpaceRail::EDGE_MID:
+		{
+			CTransform* pCamTransform = m_pCamera->Get_Transform();
+			if (nullptr == pCamTransform) return;
+			_vector vCamLook = pCamTransform->Get_State(CTransform::STATE_LOOK);
+			_vector vCamUp = pCamTransform->Get_State(CTransform::STATE_UP);
+			_vector vCamPos = pCamTransform->Get_State(CTransform::STATE_POSITION);
+
+			_vector vToTarget = m_pTargetRailNode->Get_Position() - vCamPos;
+			_int iCCW = MH_CrossCCW(vCamLook, vToTarget, vCamUp);  /* @Return CCW(1) CW(-1) Else(0) */
+
+			switch (iCCW)
+			{
+			case 1:		// 반시계
+			{
+				if (CPath::STATE_FORWARD == ePathState)
+					ePathState = CPath::STATE_BACKWARD;
+				else if (CPath::STATE_BACKWARD == ePathState)
+					ePathState = CPath::STATE_FORWARD;
+				else if (CPath::STATE_END == ePathState)
+					ePathState = CPath::STATE_BACKWARD;
+				break;
+			}
+			case -1:	// 시계
+				if (CPath::STATE_END == ePathState)
+					ePathState = CPath::STATE_FORWARD;
+				break;
+			case 0:		// 일직선
+				if (CPath::STATE_END == ePathState)
+					ePathState = CPath::STATE_FORWARD;
+				break;
+			}
+		}
+			break;
+		}
+
+		m_pTargetRail->Start_Path(ePathState, m_pTargetRailNode->Get_FrameIndex());
+
+		/* 레일 앞까지 도착, 레일 타기 시작 */
+		m_pTargetRailNode = nullptr;
+		m_bOnRail = true;
+		m_bMoveToRail = false;
+	}
+}
+void CCody::TakeRail(_double dTimeDelta)
+{
+	if (nullptr == m_pTargetRail || false == m_bOnRail) return;
+
+	/* 타는 애니메이션으로 변경 */
+	m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
+
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	m_bOnRail = m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);
+	if (m_bOnRail)
+		m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+	else
+	{
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // 자유낙하 애니메이션으로 변경해야함.
+		m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+	}
+}
+void CCody::ShowRailTargetTriggerUI()
+{
+	// Show UI
+	if (m_pSearchTargetRailNode && nullptr == m_pTargetRailNode)
+	{
+		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, true);
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pSearchTargetRailNode->Get_Position());
+	}
+	else
+		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, false);
+}
+#pragma endregion
+
 void CCody::PinBall(const _double dTimeDelta)
 {
 	if (true == m_IsPinBall)
@@ -2432,9 +2918,6 @@ void CCody::PinBall(const _double dTimeDelta)
 
 void CCody::PinBall_Respawn(_double dTimeDelta)
 {
-	//_vector vSavePoint = XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f);
-	//m_pActorCom->Set_Position(vSavePoint);
-
 	m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
 	m_pActorCom->Update(dTimeDelta);
 

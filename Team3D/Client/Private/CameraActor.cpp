@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "CameraBehaviorCallback.h"
 #include "CameraFilterCallback.h"
+#include "CameraHitReport.h"
 
 CCameraActor::CCameraActor(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CActor(pDevice, pDeviceContext)
@@ -45,12 +46,14 @@ HRESULT CCameraActor::NativeConstruct(void * pArg)
 
 	m_pBehaviorCallback = new CCameraBehaviorCallback;
 	m_pFilterCallback = new CCameraFilterCallback;
+	m_pHitReport = new CCameraHitReport;
 	m_pFilters = new PxControllerFilters(0, 0, m_pFilterCallback);
 
 	PxCapsuleControllerDesc CapsuleControllerDesc = PxCapsuleControllerDesc();
 	CapsuleControllerDesc.height = 0.1f;
 	CapsuleControllerDesc.radius = 0.4f;
 	CapsuleControllerDesc.behaviorCallback = m_pBehaviorCallback;
+	CapsuleControllerDesc.reportCallback = m_pHitReport;
 	CapsuleControllerDesc.material = m_pGameInstance->Get_BasePxMaterial();
 	CapsuleControllerDesc.position = MH_PxExtendedVec3(m_pTransform->Get_State(CTransform::STATE_POSITION));
 	CapsuleControllerDesc.contactOffset = 0.01f;
@@ -60,6 +63,8 @@ HRESULT CCameraActor::NativeConstruct(void * pArg)
 
 	m_pBehaviorCallback->Set_CameraActorPtr(this);
 	m_pFilterCallback->Set_Controller(m_pController);
+	m_pHitReport->Set_CameraActorPtr(this);
+
 	m_pController = m_pPhysX->Create_CapsuleController(CapsuleControllerDesc);
 	m_pActor = m_pController->getActor();
 	m_pActor->userData = ArgDesc.pUserData;
@@ -151,6 +156,7 @@ void CCameraActor::Free()
 	if (true == m_isClone)
 	{
 		Safe_Delete(m_pFilters);
+		Safe_Delete(m_pHitReport);
 		Safe_Delete(m_pFilterCallback);
 		Safe_Delete(m_pBehaviorCallback);
 		m_pPhysX->Remove_Actor(&m_pTrigger);

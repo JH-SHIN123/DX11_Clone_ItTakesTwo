@@ -83,8 +83,11 @@ private:
 	//For.SoftMove
 	_float3 m_vPlayerPos = { 0.f,0.f,0.f };
 
+<<<<<<< HEAD
 
 	// Sehoon
+=======
+>>>>>>> main
 	WORLDMATRIX	m_PreWorld;
 
 

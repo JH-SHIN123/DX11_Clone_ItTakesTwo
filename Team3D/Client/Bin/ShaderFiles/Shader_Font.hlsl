@@ -2,13 +2,18 @@
 #include "Shader_Defines.hpp"
 
 texture2D		g_DiffuseTexture;
+
 matrix			g_UIWorldMatrix;
 matrix			g_UIViewMatrix;
 matrix			g_UIProjMatrix;
 
 float2			g_MainViewPort;
 float2			g_SubViewPort;
+float2			g_DefaultViewPort;
 int				g_iGSOption;
+
+float			g_fFontAlpha;
+float3			g_vColor;
 
 sampler DiffuseSampler = sampler_state
 {
@@ -159,6 +164,61 @@ void  GS_MAIN(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT
 
 ////////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////
+
+[maxvertexcount(6)]
+void  GS_Default(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT> TriStream)
+{
+	GS_OUT		Out[4];
+
+	// 어쩌피 뷰 매트릭스는 항등
+	matrix matVP = mul(g_UIViewMatrix, g_UIProjMatrix);
+	float2	vSize = float2(In[0].vScale.x / g_DefaultViewPort.x /*- 0.0075f*/, In[0].vScale.y / g_DefaultViewPort.y /*- 0.0075f*/);
+
+	/* 좌상 */
+	Out[0].vPosition = mul(In[0].vPosition, matVP);
+	Out[0].vPosition.x = Out[0].vPosition.x - vSize.x;
+	Out[0].vPosition.y = Out[0].vPosition.y + vSize.y;
+	Out[0].vTexUV = float2(In[0].vTexUV.x, In[0].vTexUV.y);
+	Out[0].iViewportIndex = 0;
+
+	/* 우상 */
+	Out[1].vPosition = mul(In[0].vPosition, matVP);
+	Out[1].vPosition.x = Out[1].vPosition.x + vSize.x;
+	Out[1].vPosition.y = Out[1].vPosition.y + vSize.y;
+	Out[1].vTexUV = float2(In[0].vTexUV.z, In[0].vTexUV.y);
+	Out[1].iViewportIndex = 0;
+
+	/* 우하 */
+	Out[2].vPosition = mul(In[0].vPosition, matVP);
+	Out[2].vPosition.x = Out[2].vPosition.x + vSize.x;
+	Out[2].vPosition.y = Out[2].vPosition.y - vSize.y;
+	Out[2].vTexUV = float2(In[0].vTexUV.z, In[0].vTexUV.w);
+	Out[2].iViewportIndex = 0;
+
+	/* 좌하 */
+	Out[3].vPosition = mul(In[0].vPosition, matVP);
+	Out[3].vPosition.x = Out[3].vPosition.x - vSize.x;
+	Out[3].vPosition.y = Out[3].vPosition.y - vSize.y;
+	Out[3].vTexUV = float2(In[0].vTexUV.x, In[0].vTexUV.w);
+	Out[3].iViewportIndex = 0;
+
+	TriStream.Append(Out[1]);
+	TriStream.Append(Out[0]);
+	TriStream.Append(Out[3]);
+
+	TriStream.RestartStrip();
+
+	TriStream.Append(Out[3]);
+	TriStream.Append(Out[2]);
+	TriStream.Append(Out[1]);
+
+	TriStream.RestartStrip();
+	
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 struct PS_IN
 {
 	float4 vPosition : SV_POSITION;
@@ -170,18 +230,113 @@ struct PS_OUT
 	vector	vColor : SV_TARGET;
 };
 
-/* 픽셀의 최종적인 색을 결정하낟. */
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
+	if (Out.vColor.r <= 0.f && Out.vColor.g <= 0.f && Out.vColor.b <= 0.f)
+		discard;
+
+	if (Out.vColor.r >= 0.01f && Out.vColor.r <= 0.99f)
+		Out.vColor.rgb = 1.f;
+
+	//Out.vColor.rgb = float3(1.f, 0.83f, 0.25f);
+	Out.vColor.rgb = float3(1.f, 1.f, 1.f);
+
 	return Out;
 }
 
+PS_OUT PS_DefaultMAIN(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.r <= 0.f && Out.vColor.g <= 0.f && Out.vColor.b <= 0.f)
+		discard;
+
+	if (Out.vColor.r >= 0.01f && Out.vColor.r <= 0.99f)
+		Out.vColor.rgb = 1.f;
+
+	if (Out.vColor.r <= 0.9f && Out.vColor.g <= 0.9f && Out.vColor.b <= 0.9f)
+		discard;
+
+	return Out;
+}
+
+PS_OUT PS_LOGO(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.r <= 0.f && Out.vColor.g <= 0.f && Out.vColor.b <= 0.f)
+		discard;
+
+	Out.vColor.rgb = float3(0.607f, 0.501f, 0.435f);
+
+
+
+	//if (Out.vColor.r >= 0.01f && Out.vColor.r <= 0.99f)
+	//	Out.vColor.rgb = 1.f;
+
+	//Out.vColor.rgb = float3(0.607f, 0.501f, 0.435f);
+
+
+	return Out;
+}
+
+PS_OUT PS_FontAlpha(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.r <= 0.f && Out.vColor.g <= 0.f && Out.vColor.b <= 0.f)
+		discard;
+
+	Out.vColor.rgb = float3(0.607f, 0.501f, 0.435f);
+
+	Out.vColor.a = g_fFontAlpha;
+
+	return Out;
+}
+
+
+PS_OUT PS_FontSelect(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.r <= 0.f && Out.vColor.g <= 0.f && Out.vColor.b <= 0.f)
+		discard;
+
+	Out.vColor.rgb = float3(0.4f, 0.145f, 0.019f);
+
+	return Out;
+}
+
+PS_OUT PS_FontColor(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.r <= 0.f && Out.vColor.g <= 0.f && Out.vColor.b <= 0.f)
+		discard;
+
+	Out.vColor.rgb = g_vColor;
+
+	return Out;
+}
+
+
 technique11		DefaultTechnique
 {
+	// 0
 	pass Font
 	{
 		SetRasterizerState(Rasterizer_NoCull);
@@ -190,6 +345,61 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0 VS_FONT();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	// 1
+	pass FontDefalut
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_FONT();
+		GeometryShader = compile gs_5_0 GS_Default();
+		PixelShader = compile ps_5_0 PS_DefaultMAIN();
+	}
+
+	// 2
+	pass FontLogo
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_FONT();
+		GeometryShader = compile gs_5_0 GS_Default();
+		PixelShader = compile ps_5_0 PS_LOGO();
+	}
+
+	// 3
+	pass FontAlpha
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_FONT();
+		GeometryShader = compile gs_5_0 GS_Default();
+		PixelShader = compile ps_5_0 PS_FontAlpha();
+	}
+
+	// 4
+	pass FontSelect
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_FONT();
+		GeometryShader = compile gs_5_0 GS_Default();
+		PixelShader = compile ps_5_0 PS_FontSelect();
+	}
+
+	// 5
+	pass FontGold
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_FONT();
+		GeometryShader = compile gs_5_0 GS_Default();
+		PixelShader = compile ps_5_0 PS_FontColor();
 	}
 };
 

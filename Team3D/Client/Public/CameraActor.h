@@ -41,6 +41,7 @@ private:
 	CTransform*						m_pTransform = nullptr;
 	class CCameraBehaviorCallback*	m_pBehaviorCallback = nullptr;
 	class CCameraFilterCallback*	m_pFilterCallback = nullptr;
+	class CCameraHitReport*			m_pHitReport = nullptr;
 
 	_bool							m_bIsCollision = false;
 public:

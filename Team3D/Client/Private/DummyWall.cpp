@@ -111,13 +111,11 @@ void CDummyWall::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		m_PlayerID = GameID::eDUMMYWALL;
 	}
 
-	// May
-
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eDUMMYWALL, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
-		m_PlayerID = GameID::eCODY;
+		m_PlayerID = GameID::eMAY;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{

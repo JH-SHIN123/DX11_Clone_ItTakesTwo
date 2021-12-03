@@ -28,6 +28,7 @@ public: /* Getter */
 	_vector	Get_State(STATE eState) const;
 	_float	Get_Scale(STATE eSTate) const;
 	_matrix	Get_WorldMatrix() const;
+	_double  Get_RotationPerSec() const;
 
 public: /* Setter */
 	void	Set_State(STATE eState, _fvector vState);
@@ -52,6 +53,7 @@ public:
 	void	Rotate_ToTarget(_fvector vTargetPos);
 	void	Rotate_ToTargetOnLand(_fvector vTargetPos);
 	void	Move_ToTarget(_fvector vTargetPos, _double dTimeDelta);
+	_float	Move_ToTargetRange(_fvector vTargetPos, _float fRange, _double dTimeDelta);
 
 	void    RotateYawDirectionOnLand(const _fvector& vMoveDir, const _double TimeDelta, const _double dAcceleration = 1.f, class CNavigation* pNavigation = nullptr);
 	void    RotatePitchDirectionOnLand(const _fvector& vMoveDir, const _double TimeDelta, const _double dAcceleration = 1.f, class CNavigation* pNavigation = nullptr);

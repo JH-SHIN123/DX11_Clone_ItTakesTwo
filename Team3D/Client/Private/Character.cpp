@@ -11,6 +11,15 @@ CCharacter::CCharacter(const CCharacter& rhs)
 {
 }
 
+void CCharacter::Set_WorldMatrix(_fmatrix WorldMatrix)
+{
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+}
+
+void CCharacter::Set_Position(_fvector WorldPos)
+{
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, WorldPos);
+}
 _fvector CCharacter::Get_Position()
 {
 	if (nullptr == m_pTransformCom)

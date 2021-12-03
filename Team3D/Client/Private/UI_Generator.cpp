@@ -1,14 +1,25 @@
 #include "stdafx.h"
 #include "..\Public\UI_Generator.h"
 
-#include "GameInstance.h"
-#include "InputButton_Frame.h"
-#include "InputButton.h"
-#include "PC_MouseButton.h"
-#include "PlayerMarker.h"
-#include "Arrowkeys_Outline.h"
-#include "Arrowkeys_Fill.h"
+#include "PC_Enter.h"
+#include "Pipeline.h"
 #include "UISprite.h"
+#include "Portrait.h"
+#include "HeaderBox.h"
+#include "MenuScreen.h"
+#include "AlphaScreen.h"
+#include "GameInstance.h"
+#include "InputButton.h"
+#include "SplashScreen.h"
+#include "PlayerMarker.h"
+#include "RespawnCircle.h"
+#include "ChapterSelect.h"
+#include "ControllerIcon.h"
+#include "PC_MouseButton.h"
+#include "Arrowkeys_Fill.h"
+#include "ButtonIndicator.h"
+#include "InputButton_Frame.h"
+#include "Arrowkeys_Outline.h"
 
 IMPLEMENT_SINGLETON(CUI_Generator)
 
@@ -36,13 +47,30 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Font"));
 	m_pEngTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("EngFont"));
 	m_pVIBuffer_FontCom = (CVIBuffer_FontInstance*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"));
+	m_pVIBuffer_Rect = (CVIBuffer_Rect*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect"));
 	
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("AlphaScreen"), CAlphaScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	
+	//CUIObject::UI_DESC UIDesc;
+	//UIDesc.iLevelIndex = 0;
+	//UIDesc.iRenderGroup = 1;
+	//UIDesc.iSubTextureNum = 0;
+	//UIDesc.iTextureLevelIndex = 0;
+	//UIDesc.iTextureRenderIndex = 0;
+	//lstrcpy(UIDesc.szSubTextureTag, TEXT(""));
+	//lstrcpy(UIDesc.szTextureTag, TEXT("LoadingBook"));
+	//lstrcpy(UIDesc.szSubTextureTag, TEXT("Loading_Book"));
+	//UIDesc.vPos = _float2(583.f, -307.f);
+	//UIDesc.vScale = _float2(100.f, 100.f);
+	//FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("Loading_Book"), CUISprite::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
 	m_VTXFONT = new VTXFONT[50];
+
 
 	return S_OK;
 }
 
-HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath)
+HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath, Level::ID eLevel, _uint iOption)
 {
 	HANDLE hFile = CreateFile(pFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
@@ -72,11 +100,27 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath)
 
 	for (auto PSData : m_vecPSData)
 	{
-		if (FAILED(Add_Prototype_Interactive_UI(PSData)))
-			return E_FAIL;
+		if (eLevel == Level::LEVEL_LOGO)
+		{
+			if (0 == iOption)
+			{
+				if (FAILED(Add_Prototype_Menu(PSData)))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(Add_Prototype_Chapter(PSData)))
+					return E_FAIL;
+			}
+		}
+		else if (eLevel == Level::LEVEL_STAGE)
+		{
+			if (FAILED(Add_Prototype_Interactive_UI(PSData)))
+				return E_FAIL;
 
-		if (FAILED(Add_Prototype_Fixed_UI(PSData)))
-			return E_FAIL;
+			if (FAILED(Add_Prototype_Fixed_UI(PSData)))
+				return E_FAIL;
+		}
 	}
 
 	CloseHandle(hFile);
@@ -84,82 +128,106 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath)
 	return S_OK;
 }
 
-HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
+HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,void* pArg, _bool bActive)
 {
 	if (false == m_IsTrigger || ePlayer >= Player::PLAYER_END || eTrigger >= UI::TRIGGER_END)
 		return S_OK;
 
+	_uint iOption = 1;
+
 	switch (eTrigger)
 	{
 	case UI::InputButton_Dot:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Dot"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg, bActive);
 	    break;  
 	case UI::InputButton_InterActive:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_F"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_F"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::InputButton_PS_InterActive:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Triangle"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Triangle"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Triangle"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Triangle"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::PC_Mouse_Reduction:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("PC_Mouse_Reduction"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("PC_Mouse_Reduction"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::PC_Mouse_Enlargement:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("PC_Mouse_Enlargement"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("PC_Mouse_Enlargement"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::InputButton_Cancle:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Cancle"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Cancle"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::InputButton_PS_Cancle:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Cancle"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Cancle"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Cancle"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Cancle"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::InputButton_Up:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Up"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Up"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Up"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Up"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::InputButton_Down:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Down"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Down"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::InputButton_PS_Up:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Up"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Up"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Up"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Up"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::InputButton_PS_Down:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Down"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Down"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Down"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Down"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::PlayerMarker:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("PlayerMarker"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("PlayerMarker"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::InputButton_PS_R1:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R1"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R1"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R1"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R1"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::Arrowkeys_Side:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Outline"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Left"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Right"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Outline"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Left"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Right"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::Arrowkeys_UpDown:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Outline"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Up"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Down"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Outline"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Up"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Down"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::InputButton_PS_L2:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_L2"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_L2"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_L2"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_L2"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::InputButton_PS_R2:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R2"));
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R2"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R2"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R2"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::StickIcon:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("StickIcon"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("StickIcon"), Level::LEVEL_STATIC, pArg, bActive);
 		break;
 	case UI::LoadingBook:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("LoadingBook"));
+		SetUp_Clone(ePlayer, eTrigger, TEXT("LoadingBook"), Level::LEVEL_STATIC, pArg, bActive);
+		break;
+	case UI::Portrait_Cody:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Portrait_Cody"), Level::LEVEL_STATIC, pArg, bActive);
+		break;
+	case UI::Portrait_May:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Portrait_May"), Level::LEVEL_STATIC, pArg, bActive);
+		break;
+	case UI::RespawnCircle:
+		/* 리스폰 서클 게이지 바 */
+		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_E"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("ButtonIndicator"), Level::LEVEL_STATIC, pArg, bActive);
+		/* 리스폰 서클 하트 */
+		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, &iOption, bActive);
+		iOption = 0;
+		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption, bActive);
+		break;
+	case UI::ControllerIcon_KeyBoard:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("ControllerIcon_KeyBoard"), Level::LEVEL_LOGO, pArg, bActive);
+		break;
+	case UI::ControllerIcon_Pad:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("ControllerIcon_Pad"), Level::LEVEL_LOGO, pArg, bActive);
 		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
@@ -195,6 +263,7 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 	_ulong iX, iY, iTextureWidth, iTextureHeigth, iFontWidth, iFontHeigth;
   	_int TextLen = lstrlen(pText);
 	_int iGsOption;
+	_int iOption;
 
 	for (_int i = 0; i < TextLen; ++i)
 	{
@@ -203,13 +272,23 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 		/* 한글 */
 		if (44032 <= iNumChar) 		
 		{
+			//iNumChar -= 44032;
+			//iX = iNumChar % 132;
+			//iY = iNumChar / 132;
+			//iTextureWidth = 4096;
+			//iTextureHeigth = 4096;
+			//iFontWidth = 31;
+			//iFontHeigth = 46;
+			//iOption = 0;
 			iNumChar -= 44032;
 			iX = iNumChar % 132;
 			iY = iNumChar / 132;
-			iTextureWidth = 4096;
-			iTextureHeigth = 4096;
-			iFontWidth = 31;
-			iFontHeigth = 46;
+			iTextureWidth = 8192;
+			iTextureHeigth = 8192;
+			iFontWidth = 62;
+			iFontHeigth = 96;
+			iOption = 0;
+
 		}
 		/* 영어 */
 		else if (65 <= iNumChar) 		
@@ -225,14 +304,25 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			iTextureHeigth = 512;
 			iFontWidth = 34;
 			iFontHeigth = 45;
+			iOption = 1;
 		}
+		/* 띄어쓰기 */
+		else if (32 == iNumChar)
+			continue;
+
+		_float fInterval = ((_float)TextLen * iFontWidth) / (tFontDesc.vScale.x * 2.f * (_float)TextLen);
+		_float fValue = 1.f;
+
+		if (0.f <= tFontDesc.vPosition.x)
+			fValue *= -1.f;
 
 		_float2 vLeftTop = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
 		_float2 vRightBottom = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
 		//_float2 vRightTop = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
 		//_float2 vLeftBottom = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
 
-		_float fPositionX = (tFontDesc.vPosition.x + (_float)i * iFontWidth) + ((_float)i * tFontDesc.fInterval);
+		//_float fPositionX = (tFontDesc.vPosition.x + (_float)i * iFontWidth) / fInterval + (tFontDesc.vPosition.x * fValue);
+		_float fPositionX = tFontDesc.vPosition.x + ((_float)i * iFontWidth / fInterval);
 
 		m_VTXFONT[i].vPosition = _float3(fPositionX, tFontDesc.vPosition.y, 0.f);
 		m_VTXFONT[i].vScale = _float2(tFontDesc.vScale.x, tFontDesc.vScale.y);
@@ -242,8 +332,8 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 
 		WorldMatrix = XMMatrixIdentity();
 		ViewMatrix = XMMatrixIdentity();
-	
-		_float2 vMainViewPort, vSubViewPort;
+
+		_float2 vMainViewPort, vSubViewPort, vDefaultViewPort;
 		D3D11_VIEWPORT Viewport;
 
 		if (ePlayer == Player::Cody)
@@ -268,24 +358,205 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 				SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 		}
 
-		m_pVIBuffer_FontCom->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
+		if (ePlayer == Player::Default)
+		{
+			ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
+			vDefaultViewPort = { (_float)g_iWinCX / 2.f, (_float)g_iWinCY / 2.f };
 
-		m_pVIBuffer_FontCom->Set_Variable("g_MainViewPort", &vMainViewPort, sizeof(_float2));
-		m_pVIBuffer_FontCom->Set_Variable("g_SubViewPort", &vSubViewPort, sizeof(_float2));
+			m_pVIBuffer_FontCom->Set_Variable("g_DefaultViewPort", &vDefaultViewPort, sizeof(_float2));
 
-		m_pVIBuffer_FontCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
-		m_pVIBuffer_FontCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-		m_pVIBuffer_FontCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
-		m_pVIBuffer_FontCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
-		m_pVIBuffer_FontCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_UIWorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
 
-		if(0 == tFontDesc.iOption)
-			m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+		}
 		else
-			m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
+		{
+			m_pVIBuffer_FontCom->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
+
+			m_pVIBuffer_FontCom->Set_Variable("g_MainViewPort", &vMainViewPort, sizeof(_float2));
+			m_pVIBuffer_FontCom->Set_Variable("g_SubViewPort", &vSubViewPort, sizeof(_float2));
+
+			m_pVIBuffer_FontCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
+		}
 	}
-	
-	m_pVIBuffer_FontCom->Render(0, m_VTXFONT, TextLen);
+	m_pVIBuffer_FontCom->Set_Variable("g_vColor", &tFontDesc.vColor, sizeof(_float3));
+
+	if (0 == iOption)
+		m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+	else
+		m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
+
+	m_pVIBuffer_FontCom->Render(tFontDesc.iShaderPassNum, m_VTXFONT, TextLen);
+
+	return S_OK;
+}
+
+
+HRESULT CUI_Generator::Render_AlphaFont(_tchar * pText, FONTDESC tFontDesc, Player::ID ePlayer)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	_ulong iX, iY, iTextureWidth, iTextureHeigth, iFontWidth, iFontHeigth;
+	_int TextLen = lstrlen(pText);
+	_int iGsOption;
+	_int iOption;
+
+	for (_int i = 0; i < TextLen; ++i)
+	{
+		_ulong iNumChar = pText[i];
+
+		/* 한글 */
+		if (44032 <= iNumChar)
+		{
+			//iNumChar -= 44032;
+			//iX = iNumChar % 132;
+			//iY = iNumChar / 132;
+			//iTextureWidth = 4096;
+			//iTextureHeigth = 4096;
+			//iFontWidth = 31;
+			//iFontHeigth = 46;
+			//iOption = 0;
+			iNumChar -= 44032;
+			iX = iNumChar % 132;
+			iY = iNumChar / 132;
+			iTextureWidth = 8192;
+			iTextureHeigth = 8192;
+			iFontWidth = 62;
+			iFontHeigth = 96;
+			iOption = 0;
+
+		}
+		/* 영어 */
+		else if (65 <= iNumChar)
+		{
+			iNumChar -= 65 - 1;
+
+			if (14 <= iNumChar)
+				iNumChar += 1;
+
+			iX = iNumChar % 16;
+			iY = iNumChar / 16;
+			iTextureWidth = 512;
+			iTextureHeigth = 512;
+			iFontWidth = 34;
+			iFontHeigth = 45;
+			iOption = 1;
+		}
+		/* 띄어쓰기 */
+		else if (32 == iNumChar)
+			continue;
+
+		_float fTime = 0.0016f;
+
+		if (0.f >= m_fFontAlpha)
+			m_fChange *= -1.f;
+		else if (1.f <= m_fFontAlpha)
+			m_fChange = 1.f;
+
+		m_fFontAlpha -= fTime * m_fChange * 0.2f;
+
+		m_pVIBuffer_FontCom->Set_Variable("g_fFontAlpha", &m_fFontAlpha, sizeof(_float));
+
+		_float fInterval = ((_float)TextLen * iFontWidth) / (tFontDesc.vScale.x * 2.f * (_float)TextLen);
+		_float fValue = 1.f;
+
+		if (0.f <= tFontDesc.vPosition.x)
+			fValue *= -1.f;
+
+		_float2 vLeftTop = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
+		_float2 vRightBottom = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
+		//_float2 vRightTop = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
+		//_float2 vLeftBottom = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
+
+		//_float fPositionX = (tFontDesc.vPosition.x + (_float)i * iFontWidth) / fInterval + (tFontDesc.vPosition.x * fValue);
+		_float fPositionX = tFontDesc.vPosition.x + ((_float)i * iFontWidth / fInterval);
+
+		m_VTXFONT[i].vPosition = _float3(fPositionX, tFontDesc.vPosition.y, 0.f);
+		m_VTXFONT[i].vScale = _float2(tFontDesc.vScale.x, tFontDesc.vScale.y);
+		m_VTXFONT[i].vTexUV = _float4(vLeftTop.x, vLeftTop.y, vRightBottom.x, vRightBottom.y);
+
+		_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubProjMatrix;
+
+		WorldMatrix = XMMatrixIdentity();
+		ViewMatrix = XMMatrixIdentity();
+
+		_float2 vMainViewPort, vSubViewPort, vDefaultViewPort;
+		D3D11_VIEWPORT Viewport;
+
+		if (ePlayer == Player::Cody)
+		{
+			Viewport = pGameInstance->Get_ViewportInfo(1);
+			vMainViewPort = { Viewport.Width, Viewport.Height };
+
+			iGsOption = 0;
+
+			if (0.f < Viewport.Width)
+				ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+
+		}
+		else if (ePlayer == Player::May)
+		{
+			Viewport = pGameInstance->Get_ViewportInfo(2);
+			vSubViewPort = { Viewport.Width, Viewport.Height };
+
+			iGsOption = 1;
+
+			if (0.f < Viewport.Width)
+				SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
+		}
+
+		if (ePlayer == Player::Default)
+		{
+			ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
+			vDefaultViewPort = { (_float)g_iWinCX / 2.f, (_float)g_iWinCY / 2.f };
+
+			m_pVIBuffer_FontCom->Set_Variable("g_DefaultViewPort", &vDefaultViewPort, sizeof(_float2));
+
+			m_pVIBuffer_FontCom->Set_Variable("g_UIWorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
+
+			//if (0 == iOption)
+			//	m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+			//else
+			//	m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
+
+		}
+		else
+		{
+			m_pVIBuffer_FontCom->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
+
+			m_pVIBuffer_FontCom->Set_Variable("g_MainViewPort", &vMainViewPort, sizeof(_float2));
+			m_pVIBuffer_FontCom->Set_Variable("g_SubViewPort", &vSubViewPort, sizeof(_float2));
+
+			m_pVIBuffer_FontCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+			m_pVIBuffer_FontCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(SubProjMatrix), sizeof(_matrix));
+
+			//if (0 == iOption)
+			//	m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+			//else
+			//	m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
+
+		}
+	}
+
+	m_pVIBuffer_FontCom->Set_Variable("g_vColor", &tFontDesc.vColor, sizeof(_float3));
+
+	if (0 == iOption)
+		m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+	else
+		m_pVIBuffer_FontCom->Set_ShaderResourceView("g_DiffuseTexture", m_pEngTexturesCom->Get_ShaderResourceView(0));
+
+	m_pVIBuffer_FontCom->Render(tFontDesc.iShaderPassNum, m_VTXFONT, TextLen);
 
 	return S_OK;
 }
@@ -435,6 +706,154 @@ HRESULT CUI_Generator::Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc)
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CUISprite::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
+	else if (!lstrcmp(UIDesc->szUITag, L"Portrait_Cody"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CPortrait::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"Portrait_May"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CPortrait::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"RespawnCircle"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CRespawnCircle::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Frame_E"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"ButtonIndicator"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CButtonIndicator::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+
+
+	return S_OK;
+}
+
+HRESULT CUI_Generator::Add_Prototype_Menu(CUIObject::UI_DESC* UIDesc)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	if (!lstrcmp(UIDesc->szUITag, L"MenuBackScreen"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMenuScreen::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_LocalPlay"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_OnlinePlay"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Option"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Option2"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Creator"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Exit"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+
+
+	return S_OK;
+}
+
+HRESULT CUI_Generator::Add_Prototype_Chapter(CUIObject::UI_DESC * UIDesc)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	if (!lstrcmp(UIDesc->szUITag, L"ChapterLocalPlay"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_NewGame"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Continue"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_ChapterSelect"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Minigame"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"ChapterSelectAlpha"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CChapterSelect::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"ChapterSelect_1"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CChapterSelect::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Cancle"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_1p_Ready"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_2p_Ready"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"ControllerIcon_KeyBoard"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CControllerIcon::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"ControllerIcon_Pad"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CControllerIcon::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Frame_Right"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"PC_Enter"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CPC_Enter::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Right_TriAngle"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Left_TriAngle"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Frame_Left"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"PC_Enter_Right"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CPC_Enter::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Banner"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"HeaderBox_Banner_Back"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
 
 	return S_OK;
 }
@@ -476,13 +895,42 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Arrowkeys_Fill"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/Arrowkeys_Fill.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("StickIcon"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/StickIcon.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("LoadingBook"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Loading/HakimSpinner.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Font"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_DDS, TEXT("../Bin/Resources/Texture/UI/Font/Font.dds"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Font"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_DDS, TEXT("../Bin/Resources/Texture/UI/Font/Font4_0.dds"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("EngFont"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_DDS, TEXT("../Bin/Resources/Texture/UI/Font/EngFont.dds"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("RespawnCircle"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/RespawnCircle.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Portrait_Cody"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/Portrait_Cody2021.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Portrait_May"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/Portrait_May2021.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("ButtonIndicator"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/ButtonIndicator.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("CoolDown"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/CoolDown.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("AlphaScreen"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/SplashScreen/AlphaScreen.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Noise"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/RespawnCircle_Noise.png"))), E_FAIL);
 
 	return S_OK;
 }
 
-HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag)
+
+
+HRESULT CUI_Generator::Add_Prototype_LogoTexture()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance(); 
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("SplashScreen"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Logo/SplashScreen.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("SplashScreen_Mask"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Logo/SplashScreen_Masks.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("SplashBackScreen"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Logo/SplashBackScreen.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_LOGO, TEXT("SplashScreen"), CSplashScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("ButtonArrow"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/ButtonArrow.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("ChapterSelect"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/ChapterSelect%d.png"), 2)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("ControllerIcon"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/ControllerIcon%d.png"), 2)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("HeaderBox"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/HeaderBox%d.png"), 4)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("MenuBackScreen"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/MenuBackScreen.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("PC_Enter"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/PC_Enter.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("ChapterSelectAlpha"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Menu/ChapterSelect0.png"))), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void* pArg, _bool bActive)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
@@ -490,11 +938,22 @@ HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, con
 	CGameObject* pGameObject = nullptr;
 	CUIObject* pUIObject = nullptr;
 
-	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, PrototypeTag, nullptr, &pGameObject), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(eLevel, TEXT("Layer_UI"), eLevel, PrototypeTag, pArg, &pGameObject), E_FAIL);
 	pUIObject = static_cast<CUIObject*>(pGameObject);
 	pUIObject->Set_PlayerID(ePlayer);
+	pUIObject->Set_Active(bActive);
 	m_vecUIOBjects[ePlayer][eTrigger].push_back(pUIObject);
 
+	return S_OK;
+}
+
+HRESULT CUI_Generator::SetUp_Clone_Ptr(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void* pArg, CGameObject** pGameObject)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(eLevel, TEXT("Layer_UI"), eLevel, PrototypeTag, pArg, pGameObject), E_FAIL);
+	//d
 	return S_OK;
 }
 
@@ -505,6 +964,76 @@ void CUI_Generator::Set_TargetPos(Player::ID ePlayer, UI::TRIGGER eTrigger, _vec
 
 	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
 		UIObject->Set_TargetPos(vTargetPos);
+}
+
+void CUI_Generator::Set_Active(Player::ID ePlayer, UI::TRIGGER eTrigger, _bool bActive)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return;
+
+	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
+		UIObject->Set_Active(bActive);
+}
+
+void CUI_Generator::Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return; 
+
+	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
+		UIObject->Set_ScaleEffect();
+}
+
+HRESULT CUI_Generator::Create_Logo()
+{
+	CGameObject* pGameObject = nullptr;
+	m_vecHeaderBox.reserve(6);
+
+	SetUp_Clone(Player::Default, UI::MenuScreen, TEXT("MenuBackScreen"), Level::LEVEL_LOGO);
+
+	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_LocalPlay"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
+	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_OnlinePlay"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
+	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Option"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
+	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Option2"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
+	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Creator"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
+	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Exit"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
+
+	return S_OK;
+}
+
+HRESULT CUI_Generator::Create_ChapterSelect()
+{
+	_uint iOption = 1;
+	SetUp_Clone(Player::Default, UI::AlphaScreen, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ChapterLocalPlay"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Banner"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_NewGame"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Continue"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_ChapterSelect"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Minigame"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ChapterSelect_1"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Banner_Back"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Cancle"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox_1p_Ready, TEXT("HeaderBox_1p_Ready"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox_2p_Ready, TEXT("HeaderBox_2p_Ready"), Level::LEVEL_LOGO, &iOption);
+	SetUp_Clone(Player::Default, UI::HeaderBox1P, TEXT("PC_Enter_Right"), Level::LEVEL_LOGO);
+	SetUp_Clone(Player::Default, UI::HeaderBox1P, TEXT("InputButton_Frame_Left"), Level::LEVEL_STATIC);
+	SetUp_Clone(Player::Default, UI::HeaderBox1P, TEXT("InputButton_Left_TriAngle"), Level::LEVEL_STATIC);
+	SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("InputButton_Right_TriAngle"), Level::LEVEL_STATIC);
+	SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("InputButton_Frame_Right"), Level::LEVEL_STATIC);
+	SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("PC_Enter"), Level::LEVEL_LOGO);
+
+	iOption = 2;
+	SetUp_Clone(Player::Default, UI::AlphaScreen, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+
+	return S_OK;
 }
 
 void CUI_Generator::Free()
@@ -531,9 +1060,15 @@ void CUI_Generator::Free()
 		}
 	}
 
+	for (auto pHeaderBox : m_vecHeaderBox)
+		Safe_Release(pHeaderBox);
+
+	m_vecHeaderBox.clear();
+
 	Safe_Release(m_pTexturesCom);
 	Safe_Release(m_pEngTexturesCom);
 	Safe_Release(m_pVIBuffer_FontCom);
+	Safe_Release(m_pVIBuffer_Rect);
 
 	Safe_Delete_Array(m_VTXFONT);
 }

@@ -54,7 +54,6 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	//m_pModelCom->Render_Model(1, m_Static_Env_Desc.iMaterialIndex);
 
 	_uint iMaterialIndex = 0;
 	if (!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_01"), m_Static_Env_Desc.szModelTag))

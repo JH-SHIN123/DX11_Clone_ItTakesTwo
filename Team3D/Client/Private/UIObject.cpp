@@ -34,7 +34,7 @@ HRESULT CUIObject::NativeConstruct(void * pArg)
 
 _int CUIObject::Tick(_double TimeDelta)
 {
-
+	
 	CGameObject::Tick(TimeDelta);
 
 	return NO_EVENT;
@@ -80,6 +80,10 @@ void CUIObject::Set_TargetPos(_vector vPos)
 	XMStoreFloat4(&m_vTargetPos, vPos);
 }
 
+void CUIObject::Set_ScaleEffect()
+{
+}
+
 HRESULT CUIObject::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
@@ -92,12 +96,30 @@ HRESULT CUIObject::Ready_Component()
 	return S_OK;
 }
 
+HRESULT CUIObject::Set_UIDefaultVariables_Perspective(CVIBuffer * pVIBuffer)
+{
+	_matrix WorldMatrix, ViewMatrix, ProjMatrix;
+
+	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	ViewMatrix = XMMatrixIdentity();
+	ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
+
+	pVIBuffer->Set_Variable("g_UIWorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
+	pVIBuffer->Set_Variable("g_UIViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
+	pVIBuffer->Set_Variable("g_UIProjMatrix", &XMMatrixTranspose(ProjMatrix), sizeof(_matrix));
+
+	pVIBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
+
+	return S_OK;
+}
+
 HRESULT CUIObject::Set_UIVariables_Perspective(CVIBuffer* pVIBuffer)
 {
 	if (nullptr == pVIBuffer || nullptr == m_pTextureCom)
 		return E_FAIL;
 
 	_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubViewMatrix, SubProjMatrix;
+	_int iGSOption;
 
 	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	ViewMatrix = XMMatrixIdentity();
@@ -108,6 +130,8 @@ HRESULT CUIObject::Set_UIVariables_Perspective(CVIBuffer* pVIBuffer)
 	{
 		Viewport = m_pGameInstance->Get_ViewportInfo(1);
 
+		iGSOption = 0;
+
 		if (0.f < Viewport.Width)
 			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
@@ -116,9 +140,13 @@ HRESULT CUIObject::Set_UIVariables_Perspective(CVIBuffer* pVIBuffer)
 	{
 		Viewport = m_pGameInstance->Get_ViewportInfo(2);
 
+		iGSOption = 1;
+
 		if (0.f < Viewport.Width)
 			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 	}
+
+	pVIBuffer->Set_Variable("g_iGSOption", &iGSOption, sizeof(_int));
 
 	pVIBuffer->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
 	pVIBuffer->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));

@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "..\public\SubCamera.h"
 #include "GameInstance.h"
-#include "DataStorage.h"
-#include"PlayerActor.h"
+#include "PlayerActor.h"
 #include "May.h"
-#include"CameraActor.h"
+#include "CameraActor.h"
+
 CSubCamera::CSubCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -44,6 +44,7 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 	XMStoreFloat4x4(&m_matStart, m_pTransformCom->Get_WorldMatrix());
 	m_eCurCamMode = CamMode::Cam_AutoToFree;
+<<<<<<< HEAD
 
 
 	m_PreWorld.vScale = _float4(1.f, 1.f, 1.f, 0.f);
@@ -57,6 +58,17 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 
 
 
+=======
+
+
+	m_PreWorld.vScale = _float4(1.f, 1.f, 1.f, 0.f);
+	m_PreWorld.vRotQuat = _float4(0.f, 0.f, 0.f, 1.f);
+	m_PreWorld.vTrans = _float4(0.f, 0.f, 0.f, 1.f);
+
+	m_NextWorld.vScale = _float4(1.f, 1.f, 1.f, 0.f);
+	m_NextWorld.vRotQuat = _float4(0.f, 0.f, 0.f, 1.f);
+	m_NextWorld.vTrans = _float4(0.f, 0.f, 0.f, 1.f);
+>>>>>>> main
 
 	return S_OK;
 }
@@ -188,6 +200,7 @@ _int CSubCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 {
 
 
+
 	if (nullptr == m_pTargetObj)
 		return EVENT_ERROR;
 
@@ -238,6 +251,7 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
 	m_pActorCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION)); //이전 프레임으로 컨트롤러 순간이동
+<<<<<<< HEAD
 	/*if (true == m_bIsCollision)
 		matWorld = XMLoadFloat4x4(&m_matBeforeSpringCam);
 */
@@ -316,15 +330,105 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 //#endif
 	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matBeginWorld));
 	//카메라 회전에 따른 거리체크
+=======
+																					   /*if (true == m_bIsCollision)
+																					   matWorld = XMLoadFloat4x4(&m_matBeforeSpringCam);
+																					   */
+
+	_long MouseMove = 0;
+
+#ifdef __CONTROL_MAY_KEYBOARD
+	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X)/*m_pGameInstance->Get_Pad_RStickX() - 32767*/)
+	{
+		//if (abs(MouseMove) < 2000)
+		//	MouseMove = 0;
+		//else
+		//	MouseMove = MouseMove / 800;
+
+
+		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
+		if (m_fMouseRev[Rev_Holizontal] > 360.f || m_fMouseRev[Rev_Holizontal] < -360.f)
+		{
+			m_fMouseRev[Rev_Holizontal] = 0.f;
+			m_fCurMouseRev[Rev_Holizontal] = 0.f;
+		}
+	}
+
+	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y)/*(65535 - m_pGameInstance->Get_Pad_RStickY()) - 32767*/)
+	{
+		//if (abs(MouseMove) < 2000)
+		//	MouseMove = 0;
+		//else
+		//	MouseMove = MouseMove / 2000;
+
+
+		m_fMouseRev[Rev_Prependicul] += (_float)MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * (_float)dTimeDelta;
+		if (m_fMouseRev[Rev_Prependicul] > 360.f || m_fMouseRev[Rev_Prependicul] < -360.f)
+			m_fMouseRev[Rev_Prependicul] = 0.f;
+		if (m_fMouseRev[Rev_Prependicul] > 30.f)
+			m_fMouseRev[Rev_Prependicul] = 30.f;
+		if (m_fMouseRev[Rev_Prependicul] < -90.f)
+			m_fMouseRev[Rev_Prependicul] = -90.f;
+	}
+	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 14.f;
+	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 14.f;
+#else
+	if (MouseMove = m_pGameInstance->Get_Pad_RStickX() - 32767)
+	{
+		if (abs(MouseMove) < 2000)
+			MouseMove = 0;
+		else
+			MouseMove = MouseMove / 800;
+
+
+		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
+		if (m_fMouseRev[Rev_Holizontal] > 360.f || m_fMouseRev[Rev_Holizontal] < -360.f)
+		{
+			m_fMouseRev[Rev_Holizontal] = 0.f;
+			m_fCurMouseRev[Rev_Holizontal] = 0.f;
+		}
+	}
+	if (MouseMove = (65535 - m_pGameInstance->Get_Pad_RStickY()) - 32767)
+	{
+		if (abs(MouseMove) < 2000)
+			MouseMove = 0;
+		else
+			MouseMove = MouseMove / 2000;
+
+
+		m_fMouseRev[Rev_Prependicul] += (_float)MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * (_float)dTimeDelta;
+		if (m_fMouseRev[Rev_Prependicul] > 360.f || m_fMouseRev[Rev_Prependicul] < -360.f)
+			m_fMouseRev[Rev_Prependicul] = 0.f;
+		if (m_fMouseRev[Rev_Prependicul] > 30.f)
+			m_fMouseRev[Rev_Prependicul] = 30.f;
+		if (m_fMouseRev[Rev_Prependicul] < -90.f)
+			m_fMouseRev[Rev_Prependicul] = -90.f;
+	}
+	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 14.f;
+	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 14.f;
+
+#endif
+>>>>>>> main
 	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matBeginWorld));
 	_vector vLook = XMLoadFloat4x4(&m_matBeginWorld).r[2];
 	_vector vPos = XMLoadFloat4x4(&m_matStart).r[3];
 	_vector vDir = XMVectorZero();
+<<<<<<< HEAD
 
 	vDir = (vLook*(m_fMouseRev[Rev_Prependicul]) * 0.12f);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos - vDir);
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
+=======
+	/*if(static_cast<CMay*>(m_pTargetObj)->Get_Actor()->Get_IsOnGravityPath())
+		vDir = (vLook*(m_fMouseRev[Rev_Prependicul]) * 0.3f);
+	else*/
+		vDir = (vLook*(m_fMouseRev[Rev_Prependicul]) * 0.12f);
+
+	_vector vTargetPos = vPos - vDir;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos - vDir);
+>>>>>>> main
 	XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
 
 	//CamEffect
@@ -361,7 +465,12 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vScale, vRotQuat, vTrans;
 	_vector  vCurRotQuat, vCurTrans;
 	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) * matQuat *
+<<<<<<< HEAD
 		MH_RotationMatrixByUp(pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos));
+=======
+		MH_RotationMatrixByUp(
+		((CMay*)DATABASE->GetMay())->Get_IsInGravityPipe() ? XMVectorSet(0.f, 1.f, 0.f, 0.f) : pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos));
+>>>>>>> main
 
 
 	XMStoreFloat4(&m_NextWorld.vRotQuat, vRotQuat);

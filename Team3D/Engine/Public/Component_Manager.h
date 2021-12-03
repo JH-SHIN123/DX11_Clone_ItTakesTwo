@@ -23,6 +23,8 @@
 #include "DynamicActor.h"
 #include "TriggerActor.h"
 
+#include "Path.h"
+
 BEGIN(Engine)
 
 class CComponent_Manager final : public CBase

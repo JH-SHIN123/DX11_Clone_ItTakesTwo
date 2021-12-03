@@ -2,8 +2,11 @@
 
 #include "Client_Defines.h"
 #include "Camera.h"
-#include"Cam_Helper.h"
+#include "Cam_Helper.h"
+#include "GameOption.h"
+
 BEGIN(Client)
+
 class CCameraActor;
 class CSubCamera final : public CCamera
 {
@@ -82,7 +85,11 @@ private:
 	_float3 m_vPlayerPos = { 0.f,0.f,0.f };
 	//회전 보간용
 	_float4x4 m_matQuternionRev;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> main
 	// Sehoon
 	WORLDMATRIX	m_PreWorld;
 	WORLDMATRIX	m_NextWorld;

@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Client_Defines.h"
+#include "GameOption.h"
 #include "Character.h"
 
 BEGIN(Client)
-
+class CSpaceRail;
+class CSpaceRail_Node;
 class CMay final : public CCharacter
 {
 #pragma region Enum_STATE
@@ -104,7 +106,6 @@ public:
 		 
 		 /* For. Pull/Push Actions */
 		 PULL, PUSH_ENTER, PUSH_EXIT, PUSH_FWD, PUSH_MH, PUSH_STRUGGLE, HOLDBUTTON_ENTER, HOLDBUTTON_EXIT, HOLDBUTTON_MH, PUSHBUTTON_VAR1, PUSHBUTTON_VAR2, PUSHBUTTON_VAR2_MIRROR, PUSHBUTTON_VAR2_SNIPER, 
-		 
 		 /* For.Skydive Actions (낙하) */
 		 SKYDIVE_FALLING, SKYDIVE_FALLING_BCK, SKYDIVE_FALLING_FWD, SKYDIVE_FALLING_LEFT, SKYDIVE_FALLING_RIGHT, SKYDIVE_START, 
 		 
@@ -168,21 +169,30 @@ private:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-public:
 	virtual HRESULT Render_ShadowDepth() override;
-public:
+
+public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
+<<<<<<< HEAD
 	CPlayerActor* Get_Actor() { return m_pActorCom; }
+=======
+	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
+	_bool		Get_IsGroundPound() { return m_bGroundPound; }
+	_bool		Get_IsGroundPoundVarious() { return m_bPlayGroundPoundOnce; }
+
+public:
+>>>>>>> main
 	void		Update_Tirgger_Pos(_vector vPos);
+	CPlayerActor* Get_Actor() { return m_pActorCom; }
 
 public:
 	void	Set_BossMissile_Attack(); // CBoss_Missile
+	void	Set_ActorPosition(_vector vPosition);
+	void	Set_ActorGravity(_bool IsZeroGravity ,_bool IsUp ,_bool _bStatic);
 
 	// Tick 에서 호출될 함수들
 private:
@@ -321,8 +331,9 @@ public:
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
 	_float3				m_vTriggerTargetPos = {};
-	_bool m_IsCollide = false;
-	_float4x4 m_TriggerTargetWorld = {};
+	_bool			    m_IsCollide = false;
+	_float4x4			m_TriggerTargetWorld = {};
+	_uint				m_iCurrentStageNum = ST_GRAVITYPATH;
 
 	_bool m_IsOnGrind = false;
 	_bool m_IsHitStarBuddy = false;
@@ -362,6 +373,12 @@ private:
 	_uint m_iRotateCount = 0;
 	_uint m_iValvePlayerName = Player::May;
 
+	/* For. WallJump */
+	_bool	m_bWallAttach = false;
+	_bool   m_IsWallJumping = false;
+	_float	m_fWallJumpingTime = 0.f;
+	_float	m_fWallToWallSpeed = 0.55f;
+
 	/* For.PinBall */
 	_bool	 m_IsPinBall = false;
 	_float2	 m_MinMaxX = {};
@@ -399,8 +416,6 @@ private:
 	_bool m_IsWallLaserTrap_Touch = false;
 	_bool m_IsWallLaserTrap_Effect = false;
 
-
-	void Go_Grind(const _double dTimeDelta);
 	void Hit_StarBuddy(const _double dTimeDelta);
 	void Hit_Rocket(const _double dTimeDelta);
 	void Activate_RobotLever(const _double dTimeDelta);
@@ -408,6 +423,7 @@ private:
 	void Rotate_Valve(const _double dTimeDelta);
 	void In_GravityPipe(const _double dTimeDelta);
 	void Hook_UFO(const _double dTimeDelta);
+	void Wall_Jump(const _double dTimeDelta);
 	//정호
 	void Warp_Wormhole(const _double dTimeDelta);
 	void Touch_FireDoor(const _double dTimeDelta);
@@ -422,7 +438,30 @@ private:
 	_bool Trigger_Check(const _double dTimeDelta);
 #pragma endregion
 
+#pragma region Rail
+public:
+	void	Set_SpaceRailNode(CSpaceRail_Node* pRail);
 
+private:
+	void	KeyInput_Rail(_double dTimeDelta);
+	void	Clear_TagerRailNodes();
+	void	Find_TargetSpaceRail(); // LateTick에서 호출되어야함.
+	void	Start_SpaceRail();
+	void	MoveToTargetRail(_double dTimeDelta);
+	void	TakeRail(_double dTimeDelta);
+	void	ShowRailTargetTriggerUI();
+
+private:
+	_bool						m_bMoveToRail = false;
+	_bool						m_bOnRail = false;
+	_uint						m_iRailDir = 0;
+
+private:
+	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;
+	CSpaceRail* m_pTargetRail = nullptr;
+	CSpaceRail_Node* m_pSearchTargetRailNode = nullptr;
+	CSpaceRail_Node* m_pTargetRailNode = nullptr;
+#pragma endregion
 };
 
 END

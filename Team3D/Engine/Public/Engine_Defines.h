@@ -51,9 +51,6 @@ using namespace physx;
 #include "Engine_Typedef.h"
 #include "Engine_Function.h"
 #include "Engine_ID.h"
-
-/* Convenience */
-#include "MathHelper.h"
-#include "GlobalFunction.h"
+#include "Engine_MathHelper.h"
 
 using namespace Engine;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
+#include "GameOption.h"
 
 BEGIN(Client)
 
@@ -10,6 +11,11 @@ BEGIN(Client)
 #define __threadbreak
 #endif
 
+/**
+* 프로토타입 추가할 때는 자기 이름 함수에 추가해주세요.
+* 다른 위치에 만들어야하는 경우에는 따로 알려주세요.
+* 자기 이름 함수 이외의 부분은 건드리지 마세요.
+*/
 class CLoading final : public CBase
 {
 public:
@@ -46,17 +52,14 @@ private:
 	THREAD_ARG*				m_arrThreadArgs;
 	_bool*					m_arrFinished;
 private:
-	HRESULT LoadingForStage(_uint iThreadIndex); /* 예시, 테스트용 Level */
-
-private:
-	HRESULT Create_GameObjects_SpaceStage_Test(); /* TEST용 */
-
+	HRESULT LoadingForLogo(_uint iThreadIndex);
+	HRESULT LoadingForStage(_uint iThreadIndex);
 private:
 	/* 각자 GameObject 프로토타입 생성 함수 */
 	HRESULT Create_GameObjects_SpaceStage_Se();
 	HRESULT Create_GameObjects_SpaceStage_Jung();
 	HRESULT Create_GameObjects_SpaceStage_Hye();
-	HRESULT Create_GameObjects_SpaceStage_Won();
+	HRESULT Create_GameObjects_SpaceStage_Taek();
 	HRESULT Create_GameObjects_SpaceStage_Yoon();
 	HRESULT Create_GameObjects_SpaceStage_Jin();
 	HRESULT Create_GameObjects_SpaceStage_Jun();
@@ -67,12 +70,3 @@ public:
 };
 
 END
-
-/*
-	// 추가 방법
-	"LoadingFor_레벨이름"으로 함수 정의.
-	인자로 스레드 인덱스를 받고, 인덱스에 따라 처리할 내용들을 정의한다.
-	인덱스 범위는 0 ~ m_iThreadCount - 1
-
-	특정 스레드가 먼저 종료되어야 하는 경우에는 WaitForSingleObject(m_arrThreads[iIndex], INFINITE); 추가
-*/

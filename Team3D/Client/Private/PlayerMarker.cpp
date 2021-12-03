@@ -69,9 +69,15 @@ HRESULT CPlayerMarker::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(Set_PlayerMarkerVariables_Perspective()))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(4);
+	if(true == m_IsRender)
+		m_pVIBuffer_RectCom->Render(4);
 
 	return S_OK;
+}
+
+void CPlayerMarker::Set_TargetPos(_vector vPos)
+{
+	XMStoreFloat4(&m_vMarkerTargetPos, vPos);
 }
 
 HRESULT CPlayerMarker::Ready_Component()
@@ -96,18 +102,21 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		ViewMatrix = XMMatrixIdentity();
 		SubProjMatrix = XMMatrixIdentity();
 
-
-		// m_vTargetPos가 May포스임 
+		// m_vMarkerTargetPos가 May포스임 
 		CCody* pCody = (CCody*)DATABASE->GetCody();
 		_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 		_vector vCodyUp = pCody->Get_Transform()->Get_State(CTransform::STATE_UP);
 
-		m_vTargetPos.y += 2.f;
+		m_vMarkerTargetPos.y += 1.f;
 
-		_vector vTargetPos = XMLoadFloat4(&m_vTargetPos);
+		_vector vTargetPos = XMLoadFloat4(&m_vMarkerTargetPos);
 
 		vConvertPos = ConvertToWindowPos(Viewport, vTargetPos);
 		vCodyConvertPos = ConvertToWindowPos(Viewport, vCodyPos);
+
+		// 뷰포트안에 있으면 회전 180도로 고정시키고 알파값 줄여주고 랜더 안타게 해주는 함수
+		if (false == IsCheckCharacterInViewport(Viewport, vConvertPos))
+			return S_OK;
 
 		// 고정 시키기전에 내적해서 각도구해야해서 저장해둠
 		_float3 vSavePos = vConvertPos;
@@ -172,12 +181,15 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 		_vector vMayUp = pMay->Get_Transform()->Get_State(CTransform::STATE_UP);
 
-		m_vTargetPos.y += 2.f;
+		m_vMarkerTargetPos.y += 1.f;
 
-		_vector vTargetPos = XMLoadFloat4(&m_vTargetPos);
+		_vector vTargetPos = XMLoadFloat4(&m_vMarkerTargetPos);
 
 		vConvertPos = ConvertToWindowPos(Viewport, vTargetPos);
 		vMayConvertPos = ConvertToWindowPos(Viewport, vMayPos);
+
+		if (false == IsCheckCharacterInViewport(Viewport, vConvertPos))
+			return S_OK;
 
 		_float3 vSavePos = vConvertPos;
 
@@ -226,9 +238,16 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 		iGsOption = 1;
 	}
 
+
+	if (0.f > vConvertPos.y)
+		vConvertPos.y = Viewport.TopLeftY + 20.f;
+	else if (Viewport.Height < vConvertPos.y)
+		vConvertPos.y = Viewport.Height - 20.f;
+
 	// 이거 안하면 반대쪽 뷰포트 반짝거리는 오류 발생합니다.
 	m_pVIBuffer_RectCom->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
 	m_pVIBuffer_RectCom->Set_Variable("g_iColorOption", &m_iColorOption, sizeof(_int));
+	m_pVIBuffer_RectCom->Set_Variable("g_fAlpha", &m_fAlpha, sizeof(_float));
 
 	m_pVIBuffer_RectCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(WorldMatrix), sizeof(_matrix));
 	m_pVIBuffer_RectCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(ViewMatrix), sizeof(_matrix));
@@ -239,6 +258,32 @@ HRESULT CPlayerMarker::Set_PlayerMarkerVariables_Perspective()
 	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(m_UIDesc.iTextureRenderIndex));
 
 	return S_OK;
+}
+
+_bool CPlayerMarker::IsCheckCharacterInViewport(D3D11_VIEWPORT Viewport, _float3 vConvertPos)
+{
+	if (Viewport.Width > vConvertPos.x && 0.f < vConvertPos.x &&
+		Viewport.Height > vConvertPos.y && 0.f < vConvertPos.y)
+	{
+		//m_fAlpha -= m_pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
+		m_fAlpha -= 0.0016f * 5.f;
+
+		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-90.f));
+		m_pVIBuffer_RectCom->Set_Variable("g_fAlpha", &m_fAlpha, sizeof(_float));
+
+		if (m_fAlpha <= 0.f)
+		{
+			m_IsRender = false;
+			return m_IsRender;
+		}
+	}
+	else
+	{
+		m_fAlpha = 1.f;
+		m_IsRender = true;
+	}
+
+	return m_IsRender;
 }
 
 _float3 CPlayerMarker::ConvertToWindowPos(D3D11_VIEWPORT Viewprot, _vector vPos)
@@ -262,6 +307,7 @@ _float3 CPlayerMarker::ConvertToWindowPos(D3D11_VIEWPORT Viewprot, _vector vPos)
 
 	_float3 vConvertPos;
 
+	// 보정
 	XMStoreFloat3(&vConvertPos, vPos);
 	vConvertPos.x += 1.f;
 	vConvertPos.y += 1.f;
