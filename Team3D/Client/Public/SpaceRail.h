@@ -13,8 +13,7 @@ class CSpaceRail_Node;
 class CSpaceRail : public CDynamic_Env
 {
 public:
-	enum EDGE {EDGE_START, EDGE_MID, EDGE_END };
-	enum DIR { DIR_FORWARD, DIR_BACKWARD };
+	enum EDGE {EDGE_FIRST, EDGE_LAST, EDGE_FIRST_END, EDGE_LAST_END };
 
 private:
 	explicit CSpaceRail(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -22,7 +21,7 @@ private:
 	virtual ~CSpaceRail() = default;
 
 public:
-	HRESULT Start_Path(CPath::STATE eState, _uint iAnimFrame);
+	HRESULT Start_Path(CPath::STATE eState, _uint iAnimFrame, _bool bStop);
 	_bool	Take_Path(_double dTimeDelta, _matrix& WorldMatrix);
 
 public:

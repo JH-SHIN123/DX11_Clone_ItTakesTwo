@@ -13,11 +13,11 @@ CSpaceRail::CSpaceRail(const CSpaceRail& rhs)
 {
 }
 
-HRESULT CSpaceRail::Start_Path(CPath::STATE eState, _uint iAnimFrame)
+HRESULT CSpaceRail::Start_Path(CPath::STATE eState, _uint iAnimFrame, _bool bStop)
 {
 	if (nullptr == m_pPathCom) return E_FAIL;
 
-	return m_pPathCom->Start_Path(eState, iAnimFrame);
+	return m_pPathCom->Start_Path(eState, iAnimFrame, bStop);
 }
 
 _bool CSpaceRail::Take_Path(_double dTimeDelta, _matrix& WorldMatrix)
@@ -85,7 +85,6 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 	CSpaceRail_Node::SPACERAILNODE_DESC nodeDesc;
 
 	_uint iFrameIndex = 0;
-	_float fEdgeRadio = 0.4f;
 	_uint iNumFrames = (_uint)FrameMatrices.size();
 	for (auto& pFrameMat : FrameMatrices)
 	{
@@ -93,12 +92,14 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 		nodeDesc.iFrameIndex = FrameIndices[iFrameIndex];
 		nodeDesc.WorldMatrix = pFrameMat;
 
-		if(iFrameIndex < iNumFrames * fEdgeRadio)
-			nodeDesc.iEdgeState = EDGE::EDGE_START;
-		else if(iFrameIndex >= iNumFrames * (1.f - fEdgeRadio))
-			nodeDesc.iEdgeState = EDGE::EDGE_END;
-		else
-			nodeDesc.iEdgeState = EDGE::EDGE_MID;
+		if(0 == iFrameIndex)
+			nodeDesc.iEdgeState = EDGE::EDGE_FIRST_END;
+		else if(iNumFrames - 1 == iFrameIndex)
+			nodeDesc.iEdgeState = EDGE::EDGE_LAST_END;
+		else if(iFrameIndex < iNumFrames * 0.5f)
+			nodeDesc.iEdgeState = EDGE::EDGE_FIRST;
+		else if(iFrameIndex >= iNumFrames * 0.5f)
+			nodeDesc.iEdgeState = EDGE::EDGE_LAST;
 
 		CSpaceRail_Node* pSpaceRailNode = CSpaceRail_Node::Create(m_pDevice, m_pDeviceContext, &nodeDesc);
 		m_vecSpaceRailNodes.push_back(pSpaceRailNode);

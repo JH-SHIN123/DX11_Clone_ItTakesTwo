@@ -29,7 +29,7 @@ public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 
 public:
-	HRESULT Start_Path(STATE eState, _uint iAnimFrame);
+	HRESULT Start_Path(STATE eState, _uint iAnimFrame, _bool bStop);
 	_bool	Update_Animation(_double dTimeDelta, _matrix& WorldMatrix);
 
 private:

@@ -235,7 +235,6 @@ private:
 	HRESULT Ready_Component();
 	void Add_LerpInfo_To_Model();
 
-
 private: // Effects
 	class CEffect_Cody_Size* m_pEffect_Size = nullptr;
 
@@ -473,7 +472,6 @@ private:
 private:
 	_bool						m_bMoveToRail = false;
 	_bool						m_bOnRail = false;
-	_uint						m_iRailDir = 0;
 
 private:
 	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;
