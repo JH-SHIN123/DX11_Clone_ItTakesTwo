@@ -62,11 +62,6 @@ struct Material
 };
 
 /* cbuffer */
-cbuffer PassConstant
-{
-	float g_fTimeDelta = 0.f;
-}
-
 cbuffer Matrices
 {
 	matrix	g_WorldMatrix;
