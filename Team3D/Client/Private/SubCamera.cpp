@@ -295,7 +295,7 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 			m_fCurMouseRev[Rev_Holizontal] = 0.f;
 		}
 	}
-	if (MouseMove = (65535 - m_pGameInstance->Get_Pad_RStickY()) - 32767)
+	if (MouseMove = (/*65535 - */m_pGameInstance->Get_Pad_RStickY()) - 32767)
 	{
 		if (abs(MouseMove) < 2000)
 			MouseMove = 0;
