@@ -2818,7 +2818,7 @@ void CCody::TakeRail(_double dTimeDelta)
 	else if (m_pGameInstance->Key_Pressing(DIK_D))
 		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH_Right);
 	else
-		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	m_bOnRail = m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);

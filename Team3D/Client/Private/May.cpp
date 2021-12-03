@@ -2414,7 +2414,7 @@ void CMay::TakeRail(_double dTimeDelta)
 	else if (m_pGameInstance->Get_Pad_LStickX() > 44000)
 		m_pModelCom->Set_Animation(ANI_M_Grind_Slow_MH_Right);
 	else
-		m_pModelCom->Set_Animation(ANI_M_Grind_Slow_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_M_Grind_Slow_MH);
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	m_bOnRail = m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);
@@ -2451,11 +2451,11 @@ void CMay::ShowRailTargetTriggerUI()
 	// Show UI
 	if (m_pSearchTargetRailNode && nullptr == m_pTargetRailNode && false == m_bOnRail)
 	{
-		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, true);
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pSearchTargetRailNode->Get_Position());
+		UI_Generator->Set_Active(Player::May, UI::InputButton_InterActive, true);
+		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pSearchTargetRailNode->Get_Position());
 	}
 	else {
-		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, false);
+		UI_Generator->Set_Active(Player::May, UI::InputButton_InterActive, false);
 	}
 }
 #pragma endregion
