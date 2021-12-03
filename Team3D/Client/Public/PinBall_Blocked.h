@@ -24,8 +24,8 @@ public:
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
-	PxRigidStatic*	m_pWall01 = nullptr;
-	PxRigidStatic*	m_pWall02 = nullptr;
+	PxRigidStatic*	m_pRightWall = nullptr;
+	PxRigidStatic*	m_pLeftWall = nullptr;
 
 	static _bool	m_bSwitching;
 	static _float	m_fUpPosY;

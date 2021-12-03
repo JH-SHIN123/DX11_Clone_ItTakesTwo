@@ -92,7 +92,7 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_Others_TXT(_tchar * pFilePa
 		{
 			fin.getline(szLevelIndex, MAX_PATH, L'|');
 			fin.getline(szPrototypeTag, MAX_PATH, L'|');
-			fin.getline(szFolderName, MAX_PATH, L'|');
+			fin.getline(szFolderName, MAX_PATH, L'|'); 
 			fin.getline(szNumMaterial, MAX_PATH);
 
 			iLevelIndex = _ttoi(szLevelIndex);

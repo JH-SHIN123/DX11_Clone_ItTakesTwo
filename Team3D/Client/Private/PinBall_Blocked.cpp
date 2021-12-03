@@ -147,8 +147,8 @@ HRESULT CPInBall_Blocked::Ready_Component(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
 
-	m_pWall01 = CPhysX::GetInstance()->Create_StaticActor(PxTransform(PxVec3(-669.5f, 756.75f, -9.165f)), PxBoxGeometry(0.2f, 2.f, 199.f));
-	m_pWall02 = CPhysX::GetInstance()->Create_StaticActor(PxTransform(PxVec3(-675.68, 756.75, -9.165)), PxBoxGeometry(0.2f, 2.f, 199.f));
+	m_pRightWall = CPhysX::GetInstance()->Create_StaticActor(PxTransform(PxVec3(-669.5f, 756.75f, -9.165f)), PxBoxGeometry(0.2f, 2.f, 199.f));
+	m_pLeftWall = CPhysX::GetInstance()->Create_StaticActor(PxTransform(PxVec3(-675.68f, 756.75f, -9.165f)), PxBoxGeometry(0.2f, 2.f, 199.f));
 
 	return S_OK;
 }

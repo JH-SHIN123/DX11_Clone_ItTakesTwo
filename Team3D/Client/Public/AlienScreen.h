@@ -21,7 +21,9 @@ private:
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
+	CTextures*		m_pTextureCom = nullptr;
 
+	_float			m_fTimeDelta = 0.f;
 private:
 	HRESULT Ready_Component(void* pArg);
 

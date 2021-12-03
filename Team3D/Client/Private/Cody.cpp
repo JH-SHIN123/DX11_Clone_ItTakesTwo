@@ -236,22 +236,18 @@ _int CCody::Tick(_double dTimeDelta)
 		else
 		{
 			// 트리거 끝나고 애니메이션 초기화
+			Trigger_End(dTimeDelta);
 			m_IsFalling = m_pActorCom->Get_IsFalling();
 			m_pActorCom->Set_GroundPound(m_bGroundPound);
 
-			if ((m_bRoll == false || m_bSprint == true))
-			{
+			if (m_bRoll == false || m_bSprint == true)
 				KeyInput(dTimeDelta);
-			}
 			if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
 			{
 				Sprint(dTimeDelta);
-				if (m_IsSizeChanging == false)
-					Move(dTimeDelta);
-				if (m_eCurPlayerSize != SIZE_LARGE)
-					Roll(dTimeDelta);
+				Move(dTimeDelta);
+				Roll(dTimeDelta);
 				Jump(dTimeDelta);
-				Change_Size(dTimeDelta);
 			}
 			Ground_Pound(dTimeDelta);
 		}
@@ -1905,7 +1901,6 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eDEADLINE && false == m_IsDeadLine)
 		{
-			Enforce_IdleState();
 			/* 데드라인 */
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Death_Fall_MH);
@@ -1963,7 +1958,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::eHOOKAHTUBE)
 		{
 			/* 튜브*/
-			m_pActorCom->Jump_Start(4.f);
+			m_pActorCom->Jump_Start(3.f);
 
 			_uint iRandom = rand() % 4;
 			switch (iRandom)
@@ -1987,7 +1982,6 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			default:
 				break;
 			}
-
 			m_IsCollide = false;
 		}
 	}

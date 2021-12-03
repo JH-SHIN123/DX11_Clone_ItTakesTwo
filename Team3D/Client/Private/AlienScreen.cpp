@@ -33,7 +33,7 @@ HRESULT CAlienScreen::NativeConstruct(void * pArg)
 _int CAlienScreen::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
-
+	m_fTimeDelta = (_float)dTimeDelta;
 	return NO_EVENT;
 }
 
@@ -53,7 +53,21 @@ HRESULT CAlienScreen::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1, m_tDynamic_Env_Desc.iMatrialIndex);
+	m_pModelCom->Sepd_Bind_Buffer();
+
+	_uint iMaterialIndex = 0;
+
+	// Screen
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_EmissiveTexture", m_pTextureCom->Get_ShaderResourceView(0));
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 9, false);
+	m_pModelCom->Set_Variable("g_fTimeDelta", &m_fTimeDelta, sizeof(_float));
+
+	// Body
+	iMaterialIndex = 1;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false);
 
 	return S_OK;
 }
@@ -67,6 +81,7 @@ HRESULT CAlienScreen::Render_ShadowDepth()
 	/* Skinned: 2 / Normal: 3 */
 	m_pModelCom->Render_Model(3, 0, true);
 
+
 	return S_OK;
 }
 
@@ -79,6 +94,9 @@ HRESULT CAlienScreen::Ready_Component(void * pArg)
 	tStaticActorArg.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+
+	/* Texture */
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Alien"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom), E_FAIL);
 
 	return S_OK;
 }
@@ -109,6 +127,7 @@ CGameObject * CAlienScreen::Clone_GameObject(void * pArg)
 
 void CAlienScreen::Free()
 {
+	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pStaticActorCom);
 
 	CDynamic_Env::Free();

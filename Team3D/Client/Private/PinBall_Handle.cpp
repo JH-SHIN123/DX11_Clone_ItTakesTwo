@@ -247,7 +247,7 @@ HRESULT CPinBall_Handle::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
 
 	/* Trigger */
-	PxGeometry* geom = new PxSphereGeometry(1.5f);
+	PxGeometry* geom = new PxSphereGeometry(2.f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = geom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;
@@ -255,6 +255,11 @@ HRESULT CPinBall_Handle::Ready_Component(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
 	Safe_Delete(geom);
+
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPosition = XMVectorSetX(vPosition, XMVectorGetX(vPosition) - 2.f);
+	m_pTriggerActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(vPosition)));
+
 
 	return S_OK;
 }
