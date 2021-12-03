@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\AlienScreen.h"
+#include "PinBall_Handle.h"
 
 CAlienScreen::CAlienScreen(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -33,7 +34,15 @@ HRESULT CAlienScreen::NativeConstruct(void * pArg)
 _int CAlienScreen::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
-	m_fTimeDelta = (_float)dTimeDelta;
+
+	if (true == ((CPinBall_Handle*)DATABASE->Get_Pinball_Handle())->Get_Goal() && 1 == m_tDynamic_Env_Desc.iOption)
+		m_fFrame += (_float)dTimeDelta * 10.f;
+	else
+		m_fFrame += (_float)dTimeDelta;
+
+	if (m_fFrame >= 4.f)
+		m_fFrame = 0.f;
+
 	return NO_EVENT;
 }
 
@@ -55,14 +64,16 @@ HRESULT CAlienScreen::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Sepd_Bind_Buffer();
 
-	_uint iMaterialIndex = 0;
-
 	// Screen
+	_uint iMaterialIndex = 0;
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
-	m_pModelCom->Set_ShaderResourceView("g_EmissiveTexture", m_pTextureCom->Get_ShaderResourceView(0));
-	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 9, false);
-	m_pModelCom->Set_Variable("g_fTimeDelta", &m_fTimeDelta, sizeof(_float));
+	m_pModelCom->Set_ShaderResourceView("g_EmissiveTexture", m_pTextureCom->Get_ShaderResourceView((_uint)m_fFrame));
 
+	if (m_tDynamic_Env_Desc.iOption == 0)
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 9, false);
+	else
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 10, false);
+	
 	// Body
 	iMaterialIndex = 1;
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);

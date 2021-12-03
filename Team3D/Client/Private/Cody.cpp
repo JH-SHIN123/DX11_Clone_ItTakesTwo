@@ -248,6 +248,7 @@ _int CCody::Tick(_double dTimeDelta)
 				Move(dTimeDelta);
 				Roll(dTimeDelta);
 				Jump(dTimeDelta);
+				Change_Size(dTimeDelta);
 			}
 			Ground_Pound(dTimeDelta);
 		}

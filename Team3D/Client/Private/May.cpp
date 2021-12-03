@@ -1477,7 +1477,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_IsInGravityPipe = true;
 		}
 		/* For.PinBall */
-		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && (m_pGameInstance->Key_Down(DIK_END)/* || m_pGameInstance->Pad_Key_Down(DIP_Y)*/))
+		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && (m_pGameInstance->Key_Down(DIK_END)/* || m_pGameInstance->Pad_Key_Down(DIP_Y)*/) && false == m_IsPinBall)
 		{
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Enter);
 			m_pModelCom->Set_Animation(ANI_M_PinBall_MH);

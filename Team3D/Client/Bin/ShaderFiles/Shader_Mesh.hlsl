@@ -318,6 +318,7 @@ PS_OUT	PS_LOW_EMISSIVE(PS_IN In)
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
 	Out.vDiffuse = vMtrlDiffuse;
+	Out.vDiffuse.w = 1.f;
 	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 
 	// Calculate Normal
@@ -330,7 +331,7 @@ PS_OUT	PS_LOW_EMISSIVE(PS_IN In)
 
 	// Calculate Emissive
 	if (g_IsMaterials.Is_Emissive & 1) Out.vEmissive = g_EmissiveTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-	Out.vEmissive = 0.f;
+	Out.vEmissive *= 0.2f;
 
 	// Calculate Shadow
 	int iIndex = -1;
@@ -351,9 +352,11 @@ PS_OUT	PS_ALIENSCREEN(PS_IN In, uniform bool isGreen)
 	PS_OUT Out = (PS_OUT)0;
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-	
+
 	if(isGreen)
 		Out.vDiffuse = vMtrlDiffuse * vector(0.f, 1.f, 0.f, 1.f);
+	else
+		Out.vDiffuse = vMtrlDiffuse * vector(0.f, 0.f, 1.f, 1.f);
 
 	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 
@@ -472,7 +475,7 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_LOW_EMISSIVE();
 	}
-	// 9 Blue Alien
+	// 9
 	pass Default_Alien_Blue
 	{
 		SetRasterizerState(Rasterizer_Solid);
