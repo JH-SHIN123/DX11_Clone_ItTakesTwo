@@ -307,14 +307,8 @@
     <Filter Include="03.Component\01.Actor\02.PlayerActor\02.FilterCallback">
       <UniqueIdentifier>{41965410-fff4-41fd-b7b2-3345a7005805}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton">
-      <UniqueIdentifier>{21595d8b-6915-472b-a79b-c4082c037ad6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\05.Won\00.ToyBoxButton\Button">
       <UniqueIdentifier>{1a2a860a-f721-42c9-90c7-133ab5676019}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore">
-      <UniqueIdentifier>{8f43d1bd-58ec-498d-a993-9b4cfd01976f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\05.Won\01.MoonBaboonCore\Pillar">
       <UniqueIdentifier>{850e5f76-dcf6-4531-8019-3bd9a0c92e61}</UniqueIdentifier>
@@ -1223,6 +1217,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\MayJumpWall.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines_Effect.hpp">
+      <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

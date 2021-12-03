@@ -1,20 +1,9 @@
-
 #include "Shader_Defines.hpp"
+#include "Shader_Defines_Effect.hpp"
 
 texture2D		g_DiffuseTexture;
 texture2D		g_SecondTexture;
 texture2D		g_ColorTexture;
-
-vector			g_vMainCamUp;
-vector			g_vSubCamUp;
-
-float2			g_vSize;
-float4			g_vColor;
-float			g_fTime;
-float4			g_vUV;
-float4			g_vColorRamp_UV;
-int				g_IsBillBoard;
-int				g_RotateAxis; // x0, y1, z2
 
 sampler DiffuseSampler = sampler_state
 {
@@ -236,7 +225,7 @@ void  GS_MAIN_NO_BILL_Y(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStr
 
 	float3		vUp = In[0].vPointAxis;
 
-	float3		vCamDir = normalize(g_vMainCamPosition - In[0].vPosition);
+	float3		vCamDir = normalize(g_vMainCamPosition - In[0].vPosition).xyz;
 	float3		vRight = normalize(cross(vCamDir, vUp));
 	float3		vLook = normalize(cross(vRight, vUp));
 
@@ -288,7 +277,7 @@ void  GS_MAIN_NO_BILL_Y(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStr
 	// Sub View 0,1
 
 	vUp = In[0].vPointAxis;
-	vCamDir = normalize(g_vSubCamPosition - In[0].vPosition);
+	vCamDir = normalize(g_vSubCamPosition - In[0].vPosition).xyz;
 	vRight = normalize(cross(vCamDir, vUp));
 	vLook = normalize(cross(vRight, vUp));
 

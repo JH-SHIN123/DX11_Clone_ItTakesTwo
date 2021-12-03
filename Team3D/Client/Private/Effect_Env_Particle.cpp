@@ -43,7 +43,7 @@ _int CEffect_Env_Particle::Tick(_double TimeDelta)
 
 _int CEffect_Env_Particle::Late_Tick(_double TimeDelta)
 {
-	if (0.0 == m_dControl_Time)
+	if (0.0 >= m_dControl_Time)
 		return NO_EVENT;
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
@@ -75,14 +75,14 @@ void CEffect_Env_Particle::Set_Particle_Radius(_float3 vRadiusXYZ)
 	m_vParticleRadius.z = vRadiusXYZ.z;
 }
 
-void CEffect_Env_Particle::Set_IsActivateParticles(_bool IsActivate)
-{
-	if (true == IsActivate)
-		m_eStateValue_Next = CEffect_Env_Particle::STATE_START;
-
-	else
-		m_eStateValue_Next = CEffect_Env_Particle::STATE_DISAPPEAR;
-}
+// void CEffect_Env_Particle::Set_IsActivateParticles(_bool IsActivate)
+// {
+// 	if (true == IsActivate)
+// 		m_eStateValue_Next = CEffect_Env_Particle::STATE_START;
+// 
+// 	else
+// 		m_eStateValue_Next = CEffect_Env_Particle::STATE_DISAPPEAR;
+// }
 
 void CEffect_Env_Particle::Set_ParentMatrix(_fmatrix ParentMatrix)
 {
@@ -91,8 +91,13 @@ void CEffect_Env_Particle::Set_ParentMatrix(_fmatrix ParentMatrix)
 
 void CEffect_Env_Particle::Set_ControlTime(_double dControlTime)
 {
+	m_eStateValue_Next = CEffect_Env_Particle::STATE_START;
+
 	if (0.0 >= dControlTime)
+	{
 		dControlTime = 0.0;
+		m_eStateValue_Next = CEffect_Env_Particle::STATE_DISAPPEAR;
+	}
 
 	m_dControl_Time = dControlTime;
 }
@@ -121,9 +126,9 @@ void CEffect_Env_Particle::State_Start(_double TimeDelta)
 	_float fTimeDelta = (_float)TimeDelta;
 	_fmatrix ParentMatrix = m_pTransformCom->Get_WorldMatrix(); // NULL
 
-	m_dControl_Time += TimeDelta * 0.1;
-	if (1.0 <= m_dControl_Time)
-		m_dControl_Time = 1.0;
+//  	m_dControl_Time += TimeDelta * 0.1;
+ 	if (1.0 <= m_dControl_Time)
+ 		m_dControl_Time = 1.0;
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
@@ -154,7 +159,7 @@ void CEffect_Env_Particle::State_Disappear(_double TimeDelta)
 	_float fTimeDelta = (_float)TimeDelta;
 	_fmatrix ParentMatrix = m_pTransformCom->Get_WorldMatrix();
 
-	m_dControl_Time -= TimeDelta * 0.1;
+//  	m_dControl_Time -= TimeDelta * 0.1;
 	if (0.0 >= m_dControl_Time)
 	{
 		m_dControl_Time = 0.0;
@@ -187,25 +192,21 @@ void CEffect_Env_Particle::State_Disappear(_double TimeDelta)
 
 _float4 CEffect_Env_Particle::Get_Rand_Pos()
 {
-	_vector vRandPos = XMVectorZero();
-//  vRandPos.m128_f32[0] = (m_vParticleRadius.x / 100.f) * _float(rand() % 100);
-//  vRandPos.m128_f32[1] = (m_vParticleRadius.y / 100.f) * _float(rand() % 100);
-//  vRandPos.m128_f32[2] = (m_vParticleRadius.z / 100.f) * _float(rand() % 100);
-//  vRandPos.m128_f32[0] = m_vParticleRadius.x / 100.f ;//* m_vParticleRadius.x;
-// 	vRandPos.m128_f32[1] = m_vParticleRadius.y / 100.f ;//* m_vParticleRadius.y;
-// 	vRandPos.m128_f32[2] = m_vParticleRadius.z / 100.f ;//* m_vParticleRadius.z;
-// 	vRandPos.m128_f32[0] *= rand() % 2 == 1 ? 1.f : -1.f;
-// 	vRandPos.m128_f32[1] *= rand() % 2 == 1 ? 1.f : -1.f;
-// 	vRandPos.m128_f32[2] *= rand() % 2 == 1 ? 1.f : -1.f;
-	vRandPos.m128_f32[3] = 1.f;
+	_vector vRandPos = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 
-	_vector vDir = XMLoadFloat3(&Get_Dir_Rand(_int3(100, 100, 100)));
-
-	vDir.m128_f32[0] *= m_vParticleRadius.x / _float(rand() % 5 + 1);
-	vDir.m128_f32[1] *= m_vParticleRadius.y;
-	vDir.m128_f32[2] *= m_vParticleRadius.z / _float(rand() % 5 + 1);
-
-	vRandPos += vDir;
+	switch (m_eParticle_Type)
+	{
+	case CEffect_Env_Particle::Default:
+		vRandPos = Set_RandPos_Default();
+		break;
+	case CEffect_Env_Particle::Umbrella:
+		vRandPos = Set_RandPos_Umbrella();
+		break;
+	case CEffect_Env_Particle::Portal:
+		break;
+	default:
+		break;
+	}
 
 	_float4 vPos;
 	XMStoreFloat4(&vPos, vRandPos);
@@ -223,6 +224,12 @@ _float2 CEffect_Env_Particle::Get_Rand_Size()
 		vRandSize.y -= 0.02f;
 	}
 	else if (1 == iRand)
+	{
+		vRandSize.x += 0.02f;
+		vRandSize.y += 0.02f;
+	}
+
+	if (Umbrella == m_eParticle_Type)
 	{
 		vRandSize.x += 0.02f;
 		vRandSize.y += 0.02f;
@@ -279,10 +286,37 @@ HRESULT CEffect_Env_Particle::Initialize_Instance()
 		m_pInstanceBuffer_STT[iIndex].fTime			= 0.0f;
 		m_pInstance_Pos_UpdateTime[iIndex]			= m_fResetPosTime * 0.05f * _float(iIndex);
 		m_pInstanceBuffer_LocalPos[iIndex]			= { 0.f, 0.f, 0.f, 1.f };
-		m_pInstance_Dir[iIndex]						= Get_Dir_Rand(_int3(100, 100, 100));
+		m_pInstance_Dir[iIndex]						= Get_Dir_Rand(m_ivRandPower);
 	}
 
 	return S_OK;
+}
+
+_vector CEffect_Env_Particle::Set_RandPos_Default()
+{
+	_vector vDir	 = XMLoadFloat3(&Get_Dir_Rand(m_ivRandPower));
+
+	vDir.m128_f32[0] *= m_vParticleRadius.x / _float(rand() % 5 + 1);
+	vDir.m128_f32[1] *= m_vParticleRadius.y;
+	vDir.m128_f32[2] *= m_vParticleRadius.z / _float(rand() % 5 + 1);
+
+	return vDir;
+}
+
+_vector CEffect_Env_Particle::Set_RandPos_Umbrella()
+{
+	_vector vRandPos = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	_vector vDir	 = XMLoadFloat3(&Get_Dir_Rand(m_ivRandPower));
+
+	vRandPos.m128_f32[1] = m_vParticleRadius.y;
+	vRandPos.m128_f32[1] *= _float(rand() % m_ivRandPower.y + 1) / m_ivRandPower.y;
+	vDir.m128_f32[0] *= m_vParticleRadius.x / _float(rand() % 5 + 1);
+	vDir.m128_f32[1] = 0.f;
+	vDir.m128_f32[2] *= m_vParticleRadius.z / _float(rand() % 5 + 1);
+
+	vRandPos += vDir;
+
+	return vRandPos;
 }
 
 void CEffect_Env_Particle::Instance_Size(_float TimeDelta, _int iIndex)

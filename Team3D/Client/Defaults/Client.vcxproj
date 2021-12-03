@@ -184,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_Defines.hpp" />
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines_Effect.hpp" />
     <ClInclude Include="..\Public\BatteryBox.h" />
     <ClInclude Include="..\Public\AlienScreen.h" />
     <ClInclude Include="..\Public\BigButtonFrame.h" />
