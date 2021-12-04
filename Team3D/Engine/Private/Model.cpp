@@ -424,7 +424,7 @@ _uint CModel::Culling(_fvector vPosition, _float fCullingRadius)
 	return m_iViewportDrawInfo;
 }
 
-HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite, _bool IsPointTopology, RENDER_GROUP::Enum eGroup)
+HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite, RENDER_GROUP::Enum eGroup)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 
@@ -432,11 +432,7 @@ HRESULT CModel::Render_Model(_uint iPassIndex, _uint iMaterialSetNum, _bool bSha
 
 	m_pDeviceContext->IASetVertexBuffers(0, m_iVertexBufferCount, &m_pVB, &m_iVertexStride, &iOffSet);
 	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
-	if(false == IsPointTopology)
-		m_pDeviceContext->IASetPrimitiveTopology(m_eTopology);
-	else
-		m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-
+	m_pDeviceContext->IASetPrimitiveTopology(m_eTopology);
 	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
 
 	if (0 < m_iAnimCount)
@@ -554,7 +550,7 @@ HRESULT CModel::Render_Model_VERTEX(_uint iPassIndex, RENDER_GROUP::Enum eGroup)
 
 	m_pDeviceContext->IASetVertexBuffers(0, m_iVertexBufferCount, &m_pVB, &m_iVertexStride, &iOffSet);
 	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
-	m_pDeviceContext->IASetPrimitiveTopology(m_eTopology);
+	m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
 
 	if (0 < m_iAnimCount)

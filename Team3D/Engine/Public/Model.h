@@ -138,7 +138,7 @@ public:
 	* iMaterialSetNum, 세팅할 텍스쳐세트 인덱스
 	* ShadowWrite == true, 텍스쳐 세팅안함.
 	*/
-	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false, _bool IsPointTopology = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
+	HRESULT	Render_Model(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
 	/**
 	* Separated_Bind_Buffer
 	* Sepd_Render_Model을 이용하는 경우 호출.
