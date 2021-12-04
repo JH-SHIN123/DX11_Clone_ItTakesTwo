@@ -403,6 +403,19 @@ void CTransform::RotatePitch_Angle(const _double TimeDelta, _float fAngle)
 	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
 }
 
+void CTransform::RotateRoll_Angle(_float fAngle)
+{
+	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
+	_vector		vUp = Get_State(CTransform::STATE_UP);
+	_vector		vLook = Get_State(CTransform::STATE_LOOK);
+
+	_matrix		RotateMatrix = XMMatrixRotationAxis(XMVector3Normalize(vLook), XMConvertToRadians(fAngle));
+
+	Set_State(STATE_RIGHT, XMVector3TransformNormal(vRight, RotateMatrix));
+	Set_State(STATE_UP, XMVector3TransformNormal(vUp, RotateMatrix));
+	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
+}
+
 void CTransform::RotateRoll(const _double TimeDelta)
 {
 	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
@@ -441,6 +454,45 @@ void CTransform::RotateByUp(_fvector vUp)
 	Set_State(STATE_RIGHT, vRight * fScaleRight);
 	Set_State(STATE_UP, XMVector3Normalize(vUp) * fScaleUp);
 	Set_State(STATE_LOOK, vLook * fScaleLook);
+}
+
+void CTransform::RotateYaw_Speed(const _double TimeDelta)
+{
+	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
+	_vector		vUp = Get_State(CTransform::STATE_UP);
+	_vector		vLook = Get_State(CTransform::STATE_LOOK);
+
+	_matrix		RotateMatrix = XMMatrixRotationAxis(XMVector3Normalize(vUp), XMConvertToRadians((_float)(m_TransformDesc.dRotationPerSec * TimeDelta)));
+
+	Set_State(STATE_RIGHT, XMVector3TransformNormal(vRight, RotateMatrix));
+	Set_State(STATE_UP, XMVector3TransformNormal(vUp, RotateMatrix));
+	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
+}
+
+void CTransform::RotatePitch_Speed(const _double TimeDelta)
+{
+	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
+	_vector		vUp = Get_State(CTransform::STATE_UP);
+	_vector		vLook = Get_State(CTransform::STATE_LOOK);
+
+	_matrix		RotateMatrix = XMMatrixRotationAxis(XMVector3Normalize(vRight), XMConvertToRadians((_float)(m_TransformDesc.dRotationPerSec * TimeDelta)));
+
+	Set_State(STATE_RIGHT, XMVector3TransformNormal(vRight, RotateMatrix));
+	Set_State(STATE_UP, XMVector3TransformNormal(vUp, RotateMatrix));
+	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
+}
+
+void CTransform::RotateRoll_Speed(const _double TimeDelta)
+{
+	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
+	_vector		vUp = Get_State(CTransform::STATE_UP);
+	_vector		vLook = Get_State(CTransform::STATE_LOOK);
+
+	_matrix		RotateMatrix = XMMatrixRotationAxis(XMVector3Normalize(vLook), XMConvertToRadians((_float)(m_TransformDesc.dRotationPerSec * TimeDelta)));
+
+	Set_State(STATE_RIGHT, XMVector3TransformNormal(vRight, RotateMatrix));
+	Set_State(STATE_UP, XMVector3TransformNormal(vUp, RotateMatrix));
+	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotateMatrix));
 }
 
 CTransform * CTransform::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

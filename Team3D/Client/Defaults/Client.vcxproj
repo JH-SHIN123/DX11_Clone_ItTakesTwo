@@ -216,6 +216,9 @@
     <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
     <ClInclude Include="..\Public\ControlRoom_Glass.h" />
+    <ClInclude Include="..\Public\EjectionButton.h" />
+    <ClInclude Include="..\Public\ElectricBox.h" />
+    <ClInclude Include="..\Public\ElectricWall.h" />
     <ClInclude Include="..\Public\GameOption.h" />
     <ClInclude Include="..\public\DeadLine.h" />
     <ClInclude Include="..\Public\DummyWall.h" />
@@ -269,6 +272,7 @@
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_Enter.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
+    <ClInclude Include="..\Public\Pedal.h" />
     <ClInclude Include="..\Public\PipeCurve.h" />
     <ClInclude Include="..\Public\MoonBaboonCore.h" />
     <ClInclude Include="..\Public\MoonBaboonCore_Button.h" />
@@ -292,6 +296,7 @@
     <ClInclude Include="..\Public\PlayerHitReport.h" />
     <ClInclude Include="..\Public\PlayerMarker.h" />
     <ClInclude Include="..\Public\Portrait.h" />
+    <ClInclude Include="..\Public\Press.h" />
     <ClInclude Include="..\Public\PressureBigPlate.h" />
     <ClInclude Include="..\Public\PressurePlate.h" />
     <ClInclude Include="..\Public\PressurePlateFrame.h" />
@@ -304,6 +309,10 @@
     <ClInclude Include="..\Public\RobotLever.h" />
     <ClInclude Include="..\Public\RobotParts.h" />
     <ClInclude Include="..\Public\Rocket.h" />
+    <ClInclude Include="..\Public\RotationBox.h" />
+    <ClInclude Include="..\Public\RotationCylinder.h" />
+    <ClInclude Include="..\Public\RotationFan.h" />
+    <ClInclude Include="..\Public\RotationFan_Base.h" />
     <ClInclude Include="..\Public\SplashScreen.h" />
     <ClInclude Include="..\Public\RotatedNoBatterySign.h" />
     <ClInclude Include="..\Public\RotatedRobotBattery.h" />
@@ -360,6 +369,9 @@
     <ClCompile Include="..\Private\ControlRoom_Door.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Glass.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp" />
+    <ClCompile Include="..\Private\EjectionButton.cpp" />
+    <ClCompile Include="..\Private\ElectricBox.cpp" />
+    <ClCompile Include="..\Private\ElectricWall.cpp" />
     <ClCompile Include="..\Private\HeaderBox.cpp" />
     <ClCompile Include="..\Private\AlienScreen.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
@@ -421,6 +433,7 @@
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_Enter.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
+    <ClCompile Include="..\Private\Pedal.cpp" />
     <ClCompile Include="..\Private\PipeCurve.cpp" />
     <ClCompile Include="..\Private\MoonBaboonCore.cpp" />
     <ClCompile Include="..\Private\MoonBaboonCore_Button.cpp" />
@@ -444,6 +457,7 @@
     <ClCompile Include="..\Private\PlayerHitReport.cpp" />
     <ClCompile Include="..\Private\PlayerMarker.cpp" />
     <ClCompile Include="..\Private\Portrait.cpp" />
+    <ClCompile Include="..\Private\Press.cpp" />
     <ClCompile Include="..\Private\PressureBigPlate.cpp" />
     <ClCompile Include="..\Private\PressurePlate.cpp" />
     <ClCompile Include="..\Private\PressurePlateFrame.cpp" />
@@ -456,6 +470,10 @@
     <ClCompile Include="..\Private\RobotLever.cpp" />
     <ClCompile Include="..\Private\RobotParts.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
+    <ClCompile Include="..\Private\RotationBox.cpp" />
+    <ClCompile Include="..\Private\RotationCylinder.cpp" />
+    <ClCompile Include="..\Private\RotationFan.cpp" />
+    <ClCompile Include="..\Private\RotationFan_Base.cpp" />
     <ClCompile Include="..\Private\SplashScreen.cpp" />
     <ClCompile Include="..\Private\RotatedNoBatterySign.cpp" />
     <ClCompile Include="..\Private\RotatedRobotBattery.cpp" />

@@ -637,6 +637,36 @@
     <Filter Include="01.Maps\03.Stage_Space">
       <UniqueIdentifier>{5bbd0183-dea1-417a-b173-4e16c2288048}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship">
+      <UniqueIdentifier>{e39e76f6-8053-4a1f-9615-f101745a8762}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\ElectricBox">
+      <UniqueIdentifier>{89f17ae9-9bd3-456d-b707-1d335a397f05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\RotationBox">
+      <UniqueIdentifier>{27b08717-ea4c-4935-98a4-db8bee7b36e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\Pedal">
+      <UniqueIdentifier>{c592b6c2-9b64-4ee1-801d-247757c49466}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\RotationFan_Base">
+      <UniqueIdentifier>{820ae016-b1ad-4b20-81f1-93786b589975}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\RotationFan">
+      <UniqueIdentifier>{7147f01e-c5b7-4622-8080-f1f4862b156a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\Press">
+      <UniqueIdentifier>{10ab7d00-f93c-4416-afd2-cccab1baf770}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\RotationCylinder">
+      <UniqueIdentifier>{d8d85a2c-d5c8-4a08-9b97-afa7aa1b800e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\ElectricWall">
+      <UniqueIdentifier>{64afff93-3b39-42a6-8e8a-62bbba79d3a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\EjectionButton">
+      <UniqueIdentifier>{fc581ad8-9a0b-4716-878e-395de6d1472a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1125,6 +1155,33 @@
     <ClInclude Include="..\Public\Client_MathHelper.h">
       <Filter>98.Defines\01.Client</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ElectricBox.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\ElectricBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ElectricWall.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\ElectricWall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EjectionButton.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\EjectionButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotationCylinder.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\RotationCylinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Press.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\Press</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotationFan.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\RotationFan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotationFan_Base.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\RotationFan_Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Pedal.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\Pedal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotationBox.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\RotationBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1592,6 +1649,33 @@
     </ClCompile>
     <ClCompile Include="..\Private\CameraHitReport.cpp">
       <Filter>03.Component\01.Actor\01.CameraActor\03.HitReport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ElectricBox.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\ElectricBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ElectricWall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\ElectricWall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EjectionButton.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\EjectionButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotationCylinder.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\RotationCylinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Press.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\Press</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotationFan.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\RotationFan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotationFan_Base.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\RotationFan_Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Pedal.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\Pedal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotationBox.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\RotationBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

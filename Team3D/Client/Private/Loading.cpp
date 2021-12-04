@@ -21,9 +21,8 @@
 
 /* Hye */
 #include "Environment_Generator.h"
-#include "PinBall.h"
 #include "HangingPlanet.h"
-#include "HookahTube.h"
+#include "RotationCylinder.h"
 
 /* Taek */
 #include "Terrain.h" /*Test*/
@@ -86,6 +85,7 @@
 #include "MainCamera.h"
 #include "SubCamera.h"
 #include "Cam_Helper.h"
+#include "RotationBox.h"
 
 #pragma endregion
 
@@ -677,6 +677,18 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Hye()
 {
 	/* Alien Screen Texture */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Alien"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TEXTURE_TYPE::TYPE_TGA, TEXT("../Bin/Resources/Model/Environment/Others/Alien_Screen_01/Material/Alien_Screen_01%d.tga"), 4)), E_FAIL);
+
+#ifdef __TEST_HYE
+	/* 회전 원통 */
+	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_SpinningTunnel_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_SpinningTunnel_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_RotationCylinder"), CRotaionCylinder::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* 회전 박스 */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_InteriorPlatform_Medium_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_InteriorPlatform_Medium_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_RotationBox"), CRotationBox::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+#endif //__TEST_HYE
+
 	return S_OK;
 }
 
