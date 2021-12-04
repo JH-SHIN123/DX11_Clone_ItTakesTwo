@@ -45,47 +45,47 @@ HRESULT CLevel_Stage::NativeConstruct()
 
 	/* For.Interactive Objects */
 #ifndef __MAPLOADING_OFF
-	///* Se */
-	//FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);
-	///* Jung */
- //   //FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_WarpGate(TEXT("Layer_WarpGate")), E_FAIL);	
-	//FAILED_CHECK_RETURN(Ready_Layer_Wormhole(TEXT("Layer_Wormhole")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_WallLaserTrap(TEXT("Layer_WallLaserTrap")), E_FAIL);	
-	//FAILED_CHECK_RETURN(Ready_Layer_TutorialDoor(TEXT("Layer_TutorialDoor")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_GravityPipe(TEXT("Layer_GravityPipe")), E_FAIL);
-	///* Hye */
-	//FAILED_CHECK_RETURN(Ready_Layer_Planet(TEXT("Layer_Planet")), E_FAIL);
-	///* Taek */
-	//FAILED_CHECK_RETURN(Ready_Layer_ToyBoxButton(TEXT("Layer_ToyBoxButton")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboonCore(TEXT("Layer_MoonBaboonCore")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon_MainLaser(TEXT("Layer_MoonBaboon_MainLaser")), E_FAIL);
-	///* Yoon */
-	////FAILED_CHECK_RETURN(Ready_Layer_NoBatterySign(TEXT("Layer_NoBatterySign")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_BigButton(TEXT("Layer_BigButton")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_BigButtonFrame(TEXT("Layer_BigButtonFrame")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_RobotParts(TEXT("Layer_RobotParts")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_RotatedRobotParts(TEXT("Layer_RotatedRobotParts")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_SecurityCameraHandle(TEXT("Layer_SecurityCameraHandle")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_SecurityCamera(TEXT("Layer_SecurityCamera")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_SpaceValve(TEXT("Layer_SpaceValve")), E_FAIL);
-	////FAILED_CHECK_RETURN(Ready_Layer_BigPlanet(TEXT("Layer_BigPlanet")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_Hook_UFO(TEXT("Layer_HookUFO")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_DummyWall(TEXT("Layer_DummyWall")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_MayJumpWall(TEXT("Layer_MayJumpWall")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_RotatedRobotParts(TEXT("Layer_RotatedRobotParts")), E_FAIL);
-	////FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
-	////FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
-	///* Jin */
-	//FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressureBigPlate"), TEXT("GameObject_PressureBigPlate")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_ControlRoom_Glass(TEXT("Layer_ControlRoom_Glass")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_Umbrella_Joystick(TEXT("Layer_UmbrellaBeam_Joystick")), E_FAIL);
-	///* Jun */
+	/* Se */
+	FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);
+	/* Jung */
+    //FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_WarpGate(TEXT("Layer_WarpGate")), E_FAIL);	
+	FAILED_CHECK_RETURN(Ready_Layer_Wormhole(TEXT("Layer_Wormhole")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_WallLaserTrap(TEXT("Layer_WallLaserTrap")), E_FAIL);	
+	FAILED_CHECK_RETURN(Ready_Layer_TutorialDoor(TEXT("Layer_TutorialDoor")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_GravityPipe(TEXT("Layer_GravityPipe")), E_FAIL);
+	/* Hye */
+	FAILED_CHECK_RETURN(Ready_Layer_Planet(TEXT("Layer_Planet")), E_FAIL);
+	/* Taek */
+	FAILED_CHECK_RETURN(Ready_Layer_ToyBoxButton(TEXT("Layer_ToyBoxButton")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboonCore(TEXT("Layer_MoonBaboonCore")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon_MainLaser(TEXT("Layer_MoonBaboon_MainLaser")), E_FAIL);
+	/* Yoon */
+	//FAILED_CHECK_RETURN(Ready_Layer_NoBatterySign(TEXT("Layer_NoBatterySign")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_BigButton(TEXT("Layer_BigButton")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_BigButtonFrame(TEXT("Layer_BigButtonFrame")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_RobotParts(TEXT("Layer_RobotParts")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_RotatedRobotParts(TEXT("Layer_RotatedRobotParts")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_SecurityCameraHandle(TEXT("Layer_SecurityCameraHandle")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_SecurityCamera(TEXT("Layer_SecurityCamera")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_SpaceValve(TEXT("Layer_SpaceValve")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_BigPlanet(TEXT("Layer_BigPlanet")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Hook_UFO(TEXT("Layer_HookUFO")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_DummyWall(TEXT("Layer_DummyWall")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_MayJumpWall(TEXT("Layer_MayJumpWall")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_RotatedRobotParts(TEXT("Layer_RotatedRobotParts")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
+	/* Jin */
+	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressureBigPlate"), TEXT("GameObject_PressureBigPlate")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_ControlRoom_Glass(TEXT("Layer_ControlRoom_Glass")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Umbrella_Joystick(TEXT("Layer_UmbrellaBeam_Joystick")), E_FAIL);
+	/* Jun */
 
-	///* For. Environment */
-	//FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Stage_Space(), E_FAIL);
+	/* For. Environment */
+	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Stage_Space(), E_FAIL);
 #else
 	FAILED_CHECK_RETURN(Ready_Test(), E_FAIL);
 #endif

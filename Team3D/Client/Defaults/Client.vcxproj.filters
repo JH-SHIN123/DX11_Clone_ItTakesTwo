@@ -1011,9 +1011,6 @@
     <ClInclude Include="..\public\Effect_Umbrella_Pipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\DummyWall.h">
-      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\RotatedRobotParts.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious</Filter>
     </ClInclude>
@@ -1124,6 +1121,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Client_MathHelper.h">
       <Filter>98.Defines\01.Client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DummyWall.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1497,9 +1497,6 @@
     <ClCompile Include="..\private\Effect_Umbrella_Pipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\DummyWall.cpp">
-      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\RotatedRobotParts.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious</Filter>
     </ClCompile>
@@ -1592,6 +1589,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CameraHitReport.cpp">
       <Filter>03.Component\01.Actor\01.CameraActor\03.HitReport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DummyWall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

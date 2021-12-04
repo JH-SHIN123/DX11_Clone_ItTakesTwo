@@ -315,7 +315,6 @@ private:
 	_float m_fSizeDelayTime = 0.f;
 	_bool m_bChangeSizeEffectOnce = false;
 
-
 	// ÄÆ¾ÀÀÌ¶ó¸é
 	_bool m_IsCutScene = false;
 

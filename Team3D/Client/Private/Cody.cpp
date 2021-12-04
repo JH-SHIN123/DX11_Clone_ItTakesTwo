@@ -128,8 +128,6 @@ void CCody::Add_LerpInfo_To_Model()
 
 	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Stop, ANI_C_Roll_To_Jog, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Start, ANI_C_Roll_To_Jog, false);
-	//m_pModelCom->Add_LerpInfo(ANI_C_Roll_Stop, ANI_C_Roll_To_Jog, true, 30.f);
-	//m_pModelCom->Add_LerpInfo(ANI_C_Roll_Start, ANI_C_Roll_To_Jog, true, 30.f);
 
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_DoubleJump, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_AirDash_Start, false);
@@ -143,7 +141,6 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd, ANI_C_SprintTurnAround, true, 20.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd_Exhausted, ANI_C_SprintTurnAround, true, 20.f);
 
-	//m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_MH, true, 10.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_MH, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_ChangeSize_Jump_Start, false);
 
@@ -180,8 +177,6 @@ void CCody::Add_LerpInfo_To_Model()
 
 	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_Enter, ANI_C_Grind_Grapple_ToGrind, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_ToGrind, ANI_C_Grind_Slow_MH, false);
-	//m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_MH, ANI_C_WallSlide_Jump, true, 10.f);
-	//ANI_C_Roll_Start, ANI_C_Roll_Stop;
 	return;
 }
 
@@ -201,14 +196,6 @@ _int CCody::Tick(_double dTimeDelta)
 
 	//tEST
 	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-	if(m_pGameInstance->Key_Pressing(DIK_J))
-		m_pActorCom->Set_ZeroGravity(true, true, false);
-	if (m_pGameInstance->Key_Pressing(DIK_K))
-		m_pActorCom->Set_ZeroGravity(true, false, false);
-	if(m_pGameInstance->Key_Pressing(DIK_L))
-		m_pActorCom->Set_ZeroGravity(true, true, true);
-
 #pragma region BasicActions
 	/////////////////////////////////////////////
 	KeyInput_Rail(dTimeDelta);
@@ -381,13 +368,6 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Teleport
-	if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_F5))
-		DATABASE->Set_GravityStageClear(true);
-	if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_F6))
-		DATABASE->Set_RailStageClear(true);
-	if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_F7))
-		DATABASE->Set_PinBallStageClear(true);
-
 	if (m_pGameInstance->Key_Down(DIK_C)) /* 파이프 베터리 */
 		m_pActorCom->Set_Position(XMVectorSet(44.8652f, 220.9396f, 223.94134f, 1.f));
 
@@ -442,24 +422,20 @@ void CCody::KeyInput(_double dTimeDelta)
 		if (m_pGameInstance->Key_Pressing(DIK_W) && m_pGameInstance->Key_Pressing(DIK_D))
 		{
 			bMove[0] = !bMove[0];
-			bMove[1] = !bMove[1];
 			XMStoreFloat3(&m_vMoveDirection, (vCameraLook + vCameraRight) / 2.f);
 		}
 		else if (m_pGameInstance->Key_Pressing(DIK_W) && m_pGameInstance->Key_Pressing(DIK_A))
 		{
 			bMove[0] = !bMove[0];
-			bMove[1] = !bMove[1];
 			XMStoreFloat3(&m_vMoveDirection, (vCameraLook - vCameraRight) / 2.f);
 		}
 		else if (m_pGameInstance->Key_Pressing(DIK_S) && m_pGameInstance->Key_Pressing(DIK_D))
 		{
-			bMove[0] = !bMove[0];
 			bMove[1] = !bMove[1];
 			XMStoreFloat3(&m_vMoveDirection, (-vCameraLook + vCameraRight) / 2.f);
 		}
 		else if (m_pGameInstance->Key_Pressing(DIK_S) && m_pGameInstance->Key_Pressing(DIK_A))
 		{
-			bMove[0] = !bMove[0];
 			bMove[1] = !bMove[1];
 			XMStoreFloat3(&m_vMoveDirection, (-vCameraLook - vCameraRight) / 2.f);
 		}
@@ -469,7 +445,7 @@ void CCody::KeyInput(_double dTimeDelta)
 			{
 				if (m_pGameInstance->Key_Pressing(DIK_A) && m_iSavedKeyPress == RIGHT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 				{
-					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted)*/ /*|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash*/) && m_IsTurnAround == false)
+					if ((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) && m_IsTurnAround == false)
 					{
 						m_fSprintAcceleration = 15.f;
 						bMove[1] = !bMove[1];
@@ -481,7 +457,7 @@ void CCody::KeyInput(_double dTimeDelta)
 				}
 				if (m_pGameInstance->Key_Pressing(DIK_D) && m_iSavedKeyPress == LEFT)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 				{
-					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted)*/ /*|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash*/) && m_IsTurnAround == false)
+					if ((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) && m_IsTurnAround == false)
 					{
 						m_fSprintAcceleration = 15.f;
 						bMove[1] = !bMove[1];
@@ -493,7 +469,7 @@ void CCody::KeyInput(_double dTimeDelta)
 				}
 				if (m_pGameInstance->Key_Pressing(DIK_W) && m_iSavedKeyPress == DOWN)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 				{
-					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted)*/ /*|| m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash*/) && m_IsTurnAround == false)
+					if ((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) && m_IsTurnAround == false)
 					{
 						m_fSprintAcceleration = 15.f;
 						bMove[0] = !bMove[0];
@@ -505,7 +481,7 @@ void CCody::KeyInput(_double dTimeDelta)
 				}
 				if (m_pGameInstance->Key_Pressing(DIK_S) && m_iSavedKeyPress == UP)// 이전에 눌렀엇던 키가 DIK_D였다면?)
 				{
-					if (((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted)*/ || m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash) && m_IsTurnAround == false)
+					if ((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) && m_IsTurnAround == false)
 					{
 						m_fSprintAcceleration = 15.f;
 						bMove[0] = !bMove[0];
@@ -520,14 +496,13 @@ void CCody::KeyInput(_double dTimeDelta)
 			if (m_pGameInstance->Key_Pressing(DIK_W))
 			{
 				bMove[0] = !bMove[0];
-					XMStoreFloat3(&m_vMoveDirection, vCameraLook);
-
+				XMStoreFloat3(&m_vMoveDirection, vCameraLook);
 				m_iSavedKeyPress = UP;
 			}
 			if (m_pGameInstance->Key_Pressing(DIK_S))
 			{
 				bMove[0] = !bMove[0];
-					XMStoreFloat3(&m_vMoveDirection, -vCameraLook);
+				XMStoreFloat3(&m_vMoveDirection, -vCameraLook);
 				m_iSavedKeyPress = DOWN;
 			}
 
@@ -545,22 +520,16 @@ void CCody::KeyInput(_double dTimeDelta)
 			}
 		}
 
-
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_SprintTurnAround)
 		{
 			if (m_fSprintAcceleration < 12.f)
 				m_fSprintAcceleration += (_float)dTimeDelta * 20.f;
 		}
 		if (m_pModelCom->Is_AnimFinished(ANI_C_SprintTurnAround))
-		{
 			m_IsTurnAround = false;
-		}
-
 
 		if (bMove[0] || bMove[1])
-		{
 			m_bMove = true;
-		}
 	}
 
 #pragma endregion
