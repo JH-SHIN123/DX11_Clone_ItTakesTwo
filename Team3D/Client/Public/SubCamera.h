@@ -25,15 +25,12 @@ public:
 	virtual _int	Tick(_double dTimeDelta) override;
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 
-public:
-	static CSubCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	virtual CGameObject* Clone_GameObject(void* pArg = nullptr) override;
-	virtual void Free() override;
 
 	CTransform* Get_Transform() { return m_pTransformCom; }
-
-
 	HRESULT Start_Film(const _tchar* pFilmTag);
+private:
+	void	Check_Player(_double dTimeDelta);
+	void	Set_Zoom(_float fZoomVal,_double dTimeDelta);
 private:
 	CCameraActor* m_pActorCom = nullptr;
 	CGameObject* m_pTargetObj = nullptr;
@@ -55,8 +52,10 @@ private:
 	
 private:
 	_int	ReSet_Cam_FreeToAuto();		//변수 초기화용
-	_bool	OffSetPhsX(_double dTimeDelta, _fmatrix matRev, _vector * pOut);
-	_fmatrix MakeViewMatrix(_float3 Eye, _float3 At);
+	_bool	OffSetPhsX(_fmatrix matWorld,_double dTimeDelta, _vector * pOut);
+
+	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At, _fvector vUp);
+	_fmatrix MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime);
 
 private:
 	_bool m_bStart = false;
@@ -69,7 +68,10 @@ private:
 	_float4x4 m_matStart;
 	_float4x4 m_matBeginWorld;
 	_float4x4 m_matCurWorld;
-	_float4x4 m_matPreRev;
+
+	_float4 m_vStartEye = { 0.f,0.f, 0.f, 1.f };
+	_float4 m_vStartAt = { 0.f,0.f, 0.f, 1.f };
+
 
 	//if Free -> AutotoFree  m_fChangeCamModeTime=0.f
 	_float m_fChangeCamModeTime = 0.f;
@@ -78,17 +80,25 @@ private:
 	CamFreeOption m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 
 	//For.SpringCamera
-	_float m_fCamRadius = 0.f;
-
+	_bool m_bIsCollision = false;
+	_float4x4 m_matBeforeSpringCam;
+	_float m_fSpringCamLerpTime = 0.f;
 
 	//For.SoftMove
-	_float3 m_vPlayerPos = { 0.f,0.f,0.f };
-	//회전 보간용
-	_float4x4 m_matQuternionRev;
+	_float4		m_vPlayerPos = { 0.f,0.f,0.f,1.f };
+	_float4		m_vPlayerUp = { 0.f,1.f,0.f,0.f };
+
+	//For.Zoom
+	_float m_fCamZoomVal = 0.f;
 
 
 	WORLDMATRIX	m_PreWorld;
-	WORLDMATRIX	m_NextWorld;
+
+public:
+	static CSubCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CGameObject* Clone_GameObject(void* pArg = nullptr) override;
+	virtual void Free() override;
+
 };
 
 END

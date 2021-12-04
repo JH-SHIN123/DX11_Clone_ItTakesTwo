@@ -174,12 +174,9 @@ void CPlayerActor::Step_GravityPath()
 {
 	NULL_CHECK(m_pController);
 
-<<<<<<< HEAD
 
-	//if (m_pUserData->eID == GameID::eCODY) return;
-=======
 	if (m_pUserData->eID == GameID::eCODY) return;
->>>>>>> origin/main
+
 
 	m_pController->setUpDirection(m_vHitNormal);
 	m_IsOnGravityPath = true;

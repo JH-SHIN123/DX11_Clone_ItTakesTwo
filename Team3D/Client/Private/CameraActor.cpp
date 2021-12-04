@@ -22,8 +22,10 @@ void CCameraActor::Set_Position(_fvector vPosition)
 
 _fvector CCameraActor::Get_Position()
 {
-	return XMVectorSet(m_pController->getPosition().x, m_pController->getPosition().y, m_pController->getPosition().z, 1.f);
+	return MH_ConvertToXMVector(m_pController->getPosition(), 1.f);
 }
+
+
 
 HRESULT CCameraActor::NativeConstruct_Prototype()
 {
@@ -51,7 +53,7 @@ HRESULT CCameraActor::NativeConstruct(void * pArg)
 
 	PxCapsuleControllerDesc CapsuleControllerDesc = PxCapsuleControllerDesc();
 	CapsuleControllerDesc.height = 0.1f;
-	CapsuleControllerDesc.radius = 0.4f;
+	CapsuleControllerDesc.radius = 0.8f;
 	CapsuleControllerDesc.behaviorCallback = m_pBehaviorCallback;
 	CapsuleControllerDesc.reportCallback = m_pHitReport;
 	CapsuleControllerDesc.material = m_pGameInstance->Get_BasePxMaterial();
@@ -72,12 +74,14 @@ HRESULT CCameraActor::NativeConstruct(void * pArg)
 
 	m_eID = ArgDesc.pUserData->eID;
 
+	m_pController->resize(0.f);
+	static_cast<PxCapsuleController*>(m_pController)->setRadius(0.1f);
 	return S_OK;
 }
 
 PxControllerCollisionFlags CCameraActor::Move(_fvector vMove, _double dTimeDelta)
 {
-	return m_pController->move(MH_PxVec3(vMove), 0.01f, (_float)dTimeDelta, *m_pFilters);
+	return m_pController->move(MH_PxVec3(vMove), 0.f, (_float)dTimeDelta, *m_pFilters);
 }
 
 void CCameraActor::Update(_double dTimeDelta)

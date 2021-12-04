@@ -206,7 +206,7 @@ _int CMay::Tick(_double dTimeDelta)
 	else
 		m_pActorCom->Update(dTimeDelta); // Set Position하면 이거 할필요없다.
 
-	m_pActorCom->Set_IsOnGravityPath(false);
+	//m_pActorCom->Set_IsOnGravityPath(false);
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_GravityBoots->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 
