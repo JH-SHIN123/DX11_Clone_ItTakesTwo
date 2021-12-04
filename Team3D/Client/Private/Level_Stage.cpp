@@ -244,7 +244,7 @@ HRESULT CLevel_Stage::Ready_Layer_Planet(const _tchar * pLayerTag)
 	_matrix World = XMMatrixIdentity();
 	lstrcpy(tPlanetArg.DynamicDesc.szModelTag, TEXT("Component_Model_Hanging_Planet"));
 	XMStoreFloat4x4(&tPlanetArg.DynamicDesc.WorldMatrix, World);
-	tPlanetArg.DynamicDesc.iMatrialIndex = 0;
+	tPlanetArg.DynamicDesc.iMaterialIndex = 0;
 	tPlanetArg.DynamicDesc.iOption = 0;
 
 	tPlanetArg.vJointPosition = _float3(1000.f, 740.f, 213.f);
@@ -255,16 +255,6 @@ HRESULT CLevel_Stage::Ready_Layer_Planet(const _tchar * pLayerTag)
 	tPlanetArg.vOffset = _float3(0.f, 40.f, 0.f);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), &tPlanetArg), E_FAIL);
-
-	/* Æ©ºê */
-	//CDynamic_Env::ARG_DESC tArg;
-	//lstrcpy(tArg.szModelTag, TEXT("Component_Model_Tube"));
-	//World = XMMatrixTranslation(20.f, 0.f, 60.f);
-	//XMStoreFloat4x4(&tArg.WorldMatrix, World);
-	//tArg.iMatrialIndex = 0;
-	//tArg.iOption = 0;
-
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HooKahTube"), &tArg), E_FAIL);
 
 	return S_OK;
 }

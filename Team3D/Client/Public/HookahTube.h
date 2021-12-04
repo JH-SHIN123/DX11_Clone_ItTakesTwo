@@ -8,6 +8,9 @@ private:
 	explicit CHookahTube(const CHookahTube& rhs);
 	virtual ~CHookahTube() = default;
 
+public:/* Getter */
+	_uint Get_Option();
+
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
@@ -24,15 +27,18 @@ private:
 	CTriggerActor*	m_pTriggerActorCom = nullptr;
 
 	_bool			m_bTrigger = false;
-	_bool			m_bChange = false;
+	_bool			m_bScaleChange = false;
 	_float			m_fScale = 1.f;
 
 private:
 	void Movement(_double dTimeDelta);
 
+private:
+	HRESULT Ready_Component(void* pArg);
+
 public:
-	static CHookahTube* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	virtual CGameObject* Clone_GameObject(void* pArg) override;
-	virtual void Free() override;
+	static	CHookahTube*  Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CGameObject*  Clone_GameObject(void* pArg) override;
+	virtual void		  Free() override;
 };
 

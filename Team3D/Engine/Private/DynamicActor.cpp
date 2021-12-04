@@ -57,7 +57,7 @@ void CDynamicActor::Update_DynamicActor(_float fDis)
 
 	_float4x4 Temp;
 	XMStoreFloat4x4(&Temp, World);
-	Temp._42 -= fDis;
+	Temp._42 = fDis;
 
 	m_pTransform->Set_WorldMatrix(XMLoadFloat4x4(&Temp));
 }

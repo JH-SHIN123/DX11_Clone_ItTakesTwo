@@ -9,7 +9,7 @@ private:
 	explicit CPinBall_Door(const CPinBall_Door& rhs);
 	virtual ~CPinBall_Door() = default;
 
-public:
+public:/* Setter */
 	/* false:Open, true:Close*/
 	void Set_DoorState(_bool bState);
 	void Set_Goal() { m_bGoal = true; }
@@ -39,9 +39,12 @@ private:
 private:
 	void Movement(_double dTimeDelta);
 
+private:
+	HRESULT Ready_Component(void* pArg);
+
 public:
-	static CPinBall_Door* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	virtual CGameObject* Clone_GameObject(void* pArg) override;
-	virtual void Free() override;
+	static  CPinBall_Door* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CGameObject*   Clone_GameObject(void* pArg) override;
+	virtual void		   Free() override;
 };
 END

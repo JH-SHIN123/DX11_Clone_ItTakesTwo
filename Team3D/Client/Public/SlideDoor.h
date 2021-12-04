@@ -21,20 +21,22 @@ public:
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
-	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
+
 	_float			m_fDistance = 0.f;
 	static _bool	m_bOpen;
-	_bool			m_bDirection = false;
 
 private:
 	void Movement(_double dTimeDelta);
 
+private:
+	HRESULT Ready_Component(void* pArg);
+
 public:
-	static CSlideDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static  CSlideDoor*  Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
-	virtual void Free() override;
+	virtual void		 Free() override;
 };
 END

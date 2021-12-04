@@ -14,6 +14,8 @@
 #include "PinBall_Handle.h"
 #include "PinBall_Blocked.h"
 #include "PinBall.h"
+/* For.Tube*/
+#include "HookahTube.h"
 
 // m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
 // m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
@@ -169,6 +171,7 @@ _int CMay::Tick(_double dTimeDelta)
 			Boss_Missile_Control(dTimeDelta);
 			WallLaserTrap(dTimeDelta);
 			Hook_UFO(dTimeDelta);
+			Falling_Dead(dTimeDelta);
 		}
 		else
 		{
@@ -232,6 +235,9 @@ _int CMay::Late_Tick(_double dTimeDelta)
 
 HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 {
+	if (true == m_IsDeadLine)
+		return S_OK;
+
 	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
@@ -277,6 +283,7 @@ void CMay::Free()
 	m_vecTargetRailNodes.clear();
 
 	//Safe_Release(m_pCamera);
+	Safe_Release(m_pTargetPtr);
 	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
@@ -1401,6 +1408,17 @@ void CMay::SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTrig
 	m_iValvePlayerName = _iPlayerName;
 }
 
+void CMay::SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject * pTargetPtr)
+{
+	if (nullptr != m_pTargetPtr)
+		Safe_Release(m_pTargetPtr);
+
+	m_eTargetGameID = eID;
+	m_IsCollide = IsCollide;
+	m_pTargetPtr = pTargetPtr;
+	Safe_AddRef(m_pTargetPtr);
+}
+
 _bool CMay::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)
@@ -1471,8 +1489,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			}
 			m_IsInGravityPipe = true;
 		}
-		/* 혜원::For.PinBall */
-		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && (m_pGameInstance->Key_Down(DIK_END) || m_pGameInstance->Pad_Key_Down(DIP_Y)))
+		/* For.PinBall */
+		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && (m_pGameInstance->Key_Down(DIK_END)/* || m_pGameInstance->Pad_Key_Down(DIP_Y)*/) && false == m_IsPinBall)
 		{
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Enter);
 			m_pModelCom->Set_Animation(ANI_M_PinBall_MH);
@@ -1502,6 +1520,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			/* 플레이어->위치 조정, 핸들 최소, 최대X값 설정 */
 			m_vTriggerTargetPos.x -= 0.95f;
+			m_vTriggerTargetPos.y = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			m_MinMaxX.x = m_vTriggerTargetPos.x;
 			m_MinMaxX.y = m_vTriggerTargetPos.x - 5.f;
 
@@ -1602,10 +1621,57 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bWallAttach = true;
 		}
+		else if (m_eTargetGameID == GameID::eDEADLINE && false == m_IsDeadLine)
+		{
+			/* 데드라인 */
+			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_Death_Fall_MH);
+
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			m_IsDeadLine = true;
+		}
+		else if (m_eTargetGameID == GameID::eSAVEPOINT)
+		{
+			/* 세이브포인트->트리거와 충돌시 세이브포인트 갱신 */
+			m_vSavePoint = m_vTriggerTargetPos;
+		}
+		else if (m_eTargetGameID == GameID::eHOOKAHTUBE)
+		{
+			/* 튜브*/
+			if (2 == ((CHookahTube*)m_pTargetPtr)->Get_Option())
+				m_pActorCom->Jump_Start(6.f);
+			else
+				m_pActorCom->Jump_Start(4.f);
+
+			_uint iRandom = rand() % 4;
+			switch (iRandom)
+			{
+			case 0:
+				m_pModelCom->Set_Animation(ANI_M_Bounce1);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Bounce1);
+				break;
+			case 1:
+				m_pModelCom->Set_Animation(ANI_M_Bounce2);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Bounce2);
+				break;
+			case 2:
+				m_pModelCom->Set_Animation(ANI_M_Bounce3);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Bounce3);
+				break;
+			case 3:
+				m_pModelCom->Set_Animation(ANI_M_Bounce4);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Bounce4);
+				break;
+			default:
+				break;
+			}
+			m_IsCollide = false;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsPinBall
+	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsPinBall || m_IsDeadLine
 		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsWallLaserTrap_Touch || m_bWallAttach)
 		return true;
 
@@ -1834,7 +1900,7 @@ void CMay::PinBall(const _double dTimeDelta)
 		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 		/* 공이 죽었을 때 or 골인 했을 때 */
-		if (true == ((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Failed() || m_pGameInstance->Key_Down(DIK_R))
+		if (true == ((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Failed()/* || m_pGameInstance->Key_Down(DIK_R)*/)
 		{
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Exit);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
@@ -1845,7 +1911,7 @@ void CMay::PinBall(const _double dTimeDelta)
 		}
 
 		/* 벽 올리고 내리고 */
-		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB) || m_pGameInstance->Pad_Key_Down(DIP_RT))
+		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB)/* || m_pGameInstance->Pad_Key_Down(DIP_RT)*/)
 		{
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Right_Hit);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH_Hit);
@@ -1855,7 +1921,7 @@ void CMay::PinBall(const _double dTimeDelta)
 		if (false == ((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_StartGame())
 		{
 			/* 공 발사 */
-			if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) || m_pGameInstance->Pad_Key_Down(DIP_LT))
+			if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB)/* || m_pGameInstance->Pad_Key_Down(DIP_LT)*/)
 			{
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Left_Hit);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH_Hit);
@@ -1864,7 +1930,7 @@ void CMay::PinBall(const _double dTimeDelta)
 				((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
 			}
 			/* 오른쪽 */
-			if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 40000)
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT)/* || m_pGameInstance->Get_Pad_LStickX() > 40000*/)
 			{
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Right);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
@@ -1874,7 +1940,7 @@ void CMay::PinBall(const _double dTimeDelta)
 					m_pActorCom->Move(vLeft * 0.05f, dTimeDelta);
 			}
 			/* 왼쪽 */
-			else if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
+			else if (m_pGameInstance->Key_Pressing(DIK_LEFT)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
 			{
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Left);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
@@ -2129,6 +2195,32 @@ void CMay::Set_ActorGravity(_bool IsZeroGravity, _bool IsUp, _bool _bStatic)
 
 void CMay::Falling_Dead(const _double dTimeDelta)
 {
+	/* 데드라인과 충돌시 2초후에 리스폰 */
+	if (m_IsDeadLine == true)
+	{
+		m_fDeadTime += (_float)dTimeDelta;
+		if (m_fDeadTime >= 2.f)
+		{
+			_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
+			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+
+			m_pActorCom->Set_Position(vSavePosition);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_fDeadTime = 0.f;
+			m_IsCollide = false;
+			m_IsDeadLine = false;
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+		}
+		else
+		{
+			_vector vTriggerTargetPos = XMLoadFloat3(&m_vTriggerTargetPos);
+			vTriggerTargetPos = XMVectorSetW(vTriggerTargetPos, 1.f);
+			m_pActorCom->Set_Position(vTriggerTargetPos);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTriggerTargetPos);
+		}
+	}
 }
 
 void CMay::Hook_UFO(const _double dTimeDelta)
