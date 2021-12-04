@@ -73,7 +73,6 @@ _int CHookUFO::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	InterActive_UI();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -132,51 +131,6 @@ void CHookUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObjec
 	}
 }
 
-HRESULT CHookUFO::InterActive_UI()
-{
-	CCody* pCody = (CCody*)DATABASE->GetCody();
-	NULL_CHECK_RETURN(pCody, E_FAIL);
-	CMay* pMay = (CMay*)DATABASE->GetMay();
-	NULL_CHECK_RETURN(pMay, E_FAIL);
-
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-	_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-
-	_vector vCodyComparePos = vPos - vCodyPos;
-	_vector vMayComparePos = vPos - vMayPos;
-
-	_float fRange = 20.f;
-
-	_float vCodyComparePosX = abs(XMVectorGetX(vCodyComparePos));
-	_float vCodyComparePosZ = abs(XMVectorGetZ(vCodyComparePos));
-
-	if (fRange >= vCodyComparePosX && fRange >= vCodyComparePosZ)
-	{
-		if (UI_Generator->Get_EmptyCheck(Player::Cody, UI::InputButton_Dot))
-			UI_Create(Cody, InputButton_Dot);
-
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	}
-	else
-		UI_Delete(Cody, InputButton_Dot);
-
-	_float vMayComparePosX = abs(XMVectorGetX(vMayComparePos));
-	_float vMayComparePosZ = abs(XMVectorGetZ(vMayComparePos));
-
-	if (fRange >= vMayComparePosX && fRange >= vMayComparePosZ)
-	{
-		if (UI_Generator->Get_EmptyCheck(Player::May, UI::InputButton_Dot))
-			UI_Create(May, InputButton_Dot);
-
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	}
-	else
-		UI_Delete(May, InputButton_Dot);
-
-	return S_OK;
-}
-
 HRESULT CHookUFO::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -193,7 +147,6 @@ void CHookUFO::Launch_HookUFO(_double dTimeDelta)
 {
 	
 }
-
 
 CHookUFO * CHookUFO::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

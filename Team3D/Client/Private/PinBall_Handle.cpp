@@ -82,7 +82,7 @@ _int CPinBall_Handle::Tick(_double dTimeDelta)
 		Respawn_Pos(dTimeDelta);
 	}
 
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_IsCollision);
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::PinBall_Handle, m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f, m_IsCollision);
 
 	return NO_EVENT;
 }
@@ -124,14 +124,9 @@ void CPinBall_Handle::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGa
 {
 	// May
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY/* && true == m_bFinish*/ && false == m_bPlayerMove)
-	{
 		m_IsCollision = true;
-
-	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-	{
 		m_IsCollision = false;
-	}
 }
 
 void CPinBall_Handle::MoveMent(_double dTimeDelta)

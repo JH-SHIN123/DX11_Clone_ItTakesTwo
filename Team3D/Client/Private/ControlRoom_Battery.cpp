@@ -73,78 +73,11 @@ _int CControlRoom_Battery::Tick(_double dTimeDelta)
 {
  	CGameObject::Tick(dTimeDelta);
 	
-	//m_pStaticActorCom->Update_StaticActor();
 	m_pTriggerCom->Update_TriggerActor();
 
-	if (true == m_IsCollision && m_pGameInstance->Key_Down(DIK_E) && false == m_IsPlayerInterActive)
-		m_IsPlayerInterActive = true;
+	InterActive_Battery(dTimeDelta);
 
-	if (true == m_IsPlayerInterActive)
-	{
-		m_fAngle -= (_float)dTimeDelta * 15.f;
-		m_fRotate += (_float)dTimeDelta * 15.f;
-
-		if (0.f >= m_fAngle)
-		{
-			m_IsPlayerInterActive = false;
-			m_IsBatteryHolding = true;
-		}
-
-		if (1.f <= m_fRotate)
-		{
-			m_fRotate = 0.f;
-			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-			_float4 vConvertPos;
-			XMStoreFloat4(&vConvertPos, vPos);
-			vConvertPos.z += 0.01f;
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vConvertPos));
-		}
-
-		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
-	}
-	else if (true == m_IsBatteryHolding)
-	{
-		CCody* pCody = (CCody*)DATABASE->GetCody();
-		NULL_CHECK_RETURN(pCody, -1);
-
-		if (false == pCody->Get_PushingBattery())
-		{
-			m_fAngle += (_float)dTimeDelta * 15.f;
-			m_fRotate += (_float)dTimeDelta * 15.f;
-
-			if (25.f <= m_fAngle)
-			{
-				m_IsBatteryHolding = false;
-				m_IsPlayerInterActive = false;
-				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.659f, 221.12184f, 224.44f, 1.f));
-			}
-
-			if (1.f <= m_fRotate)
-			{
-				m_fRotate = 0.f;
-				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-				_float4 vConvertPos;
-				XMStoreFloat4(&vConvertPos, vPos);
-				vConvertPos.z -= 0.01f;
-				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vConvertPos));
-			}
-
-			m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
-		}
-		else
-		{
-			CPressureBigPlate* pBigPlate = (CPressureBigPlate*)DATABASE->Get_PressureBigPlate();
-			NULL_CHECK_RETURN(pBigPlate, -1);
-
-			if (true == pBigPlate->Get_PowerSupplyActive())
-			{
-				for (auto pDoor : m_vecDoor)
-					pDoor->Set_OpenDoor();
-
-				m_IsBatteryHolding = false;
-			}
-		}
-	}
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::ControlRoom_Battery, m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCollision);
 
 	return NO_EVENT;
 }
@@ -152,8 +85,6 @@ _int CControlRoom_Battery::Tick(_double dTimeDelta)
 _int CControlRoom_Battery::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
-
-	InterActive_UI();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -177,7 +108,6 @@ void CControlRoom_Battery::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eCONTROLROOMBATTERY, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		//UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollision = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
@@ -185,34 +115,80 @@ void CControlRoom_Battery::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID
 }
 
 
-HRESULT CControlRoom_Battery::InterActive_UI()
+_int CControlRoom_Battery::InterActive_Battery(_double TimeDelta)
 {
-	CCody* pCody = (CCody*)DATABASE->GetCody();
-	NULL_CHECK_RETURN(pCody, E_FAIL);
 
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	if (true == m_IsCollision && m_pGameInstance->Key_Down(DIK_F) && false == m_IsPlayerInterActive)
+		m_IsPlayerInterActive = true;
 
-	_vector vCodyComparePos = vPos - vCodyPos;
-
-	_float fRange = 5.5f;
-
-	_float vCodyComparePosX = fabs(XMVectorGetX(vCodyComparePos));
-	_float vCodyComparePosZ = fabs(XMVectorGetZ(vCodyComparePos));
-
-	if (fRange >= vCodyComparePosX && fRange >= vCodyComparePosZ)
+	if (true == m_IsPlayerInterActive)
 	{
-		if (UI_Generator->Get_EmptyCheck(Player::Cody, UI::InputButton_Dot))
-			UI_Create(Cody, InputButton_Dot);
+		m_fAngle -= (_float)TimeDelta * 15.f;
+		m_fRotate += (_float)TimeDelta * 15.f;
 
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		if (0.f >= m_fAngle)
+		{
+			m_IsPlayerInterActive = false;
+			m_IsBatteryHolding = true;
+		}
 
-		m_IsCameRange = true;
+		if (1.f <= m_fRotate)
+		{
+			m_fRotate = 0.f;
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			_float4 vConvertPos;
+			XMStoreFloat4(&vConvertPos, vPos);
+			vConvertPos.z += 0.01f;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vConvertPos));
+		}
+
+		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
 	}
-	else
-		UI_Delete(Cody, InputButton_Dot);
+	else if (true == m_IsBatteryHolding)
+	{
+		CCody* pCody = (CCody*)DATABASE->GetCody();
+		NULL_CHECK_RETURN(pCody, EVENT_ERROR);
 
-	return S_OK;
+		if (false == pCody->Get_PushingBattery())
+		{
+			m_fAngle += (_float)TimeDelta * 15.f;
+			m_fRotate += (_float)TimeDelta * 15.f;
+
+			if (25.f <= m_fAngle)
+			{
+				m_IsBatteryHolding = false;
+				m_IsPlayerInterActive = false;
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.659f, 221.12184f, 224.44f, 1.f));
+			}
+
+			if (1.f <= m_fRotate)
+			{
+				m_fRotate = 0.f;
+				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				_float4 vConvertPos;
+				XMStoreFloat4(&vConvertPos, vPos);
+				vConvertPos.z -= 0.01f;
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vConvertPos));
+			}
+
+			m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
+		}
+		else
+		{
+			CPressureBigPlate* pBigPlate = (CPressureBigPlate*)DATABASE->Get_PressureBigPlate();
+			NULL_CHECK_RETURN(pBigPlate, EVENT_ERROR);
+
+			if (true == pBigPlate->Get_PowerSupplyActive())
+			{
+				for (auto pDoor : m_vecDoor)
+					pDoor->Set_OpenDoor();
+
+				m_IsBatteryHolding = false;
+			}
+		}
+	}
+
+	return NO_EVENT;
 }
 
 HRESULT CControlRoom_Battery::Ready_Layer_Door(const _tchar * pLayerTag, _uint iCount)

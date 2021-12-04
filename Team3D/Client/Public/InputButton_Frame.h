@@ -36,7 +36,6 @@ private:
 	_bool							m_IsScaleBigger = false;
 	_bool							m_IsScaleSmaller = false;
 
-
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 

@@ -59,7 +59,6 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	Add_LerpInfo_To_Model();
 
 	UI_Create(May, PlayerMarker);
-	UI_Create_Active(May, InputButton_InterActive, false);
 
 	return S_OK;
 }

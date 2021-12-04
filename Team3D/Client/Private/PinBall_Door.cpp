@@ -70,6 +70,8 @@ _int CPinBall_Door::Tick(_double dTimeDelta)
 
 	Movement(dTimeDelta);
 
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::PinBall_Door, m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f, m_IsCollision);
+
 	return NO_EVENT;
 }
 
@@ -111,13 +113,14 @@ void CPinBall_Door::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 	// Cody
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && false == m_bTrigger && false == m_bDoorState && false == m_bGoal)
 	{
+		m_IsCollision = true;
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALLDOOR, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-		UI_Create(Cody, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Set_Ready();
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-		UI_Delete(Cody, InputButton_InterActive);
+	{
+		m_IsCollision = false;
+	}
 }
 
 void CPinBall_Door::Movement(_double dTimeDelta)

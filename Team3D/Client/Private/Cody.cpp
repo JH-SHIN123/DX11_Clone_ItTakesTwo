@@ -44,15 +44,9 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
-
  	UI_Create(Cody, PC_Mouse_Reduction);
  	UI_Create(Cody, PC_Mouse_Enlargement);
- 	//UI_Create(Default, LoadingBook);
- 	//UI_Create(May, Arrowkeys_Side);
- 	//UI_Create(May, StickIcon);
- 
  	UI_Create(Cody, PlayerMarker);
-	UI_Create_Active(Cody, InputButton_InterActive, false);
 	 
 	return S_OK;
 }
@@ -2853,11 +2847,12 @@ void CCody::ShowRailTargetTriggerUI()
 	// Show UI
 	if (m_pSearchTargetRailNode && nullptr == m_pTargetRailNode && false == m_bOnRail)
 	{
-		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, true);
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pSearchTargetRailNode->Get_Position());
+		//UI_Create(Cody, InputButton_InterActive);
+		//UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pSearchTargetRailNode->Get_Position());
 	}
-	else {
-		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, false);
+	else 
+	{
+		//UI_Delete(Cody, InputButton_InterActive);
 	}
 }
 #pragma endregion

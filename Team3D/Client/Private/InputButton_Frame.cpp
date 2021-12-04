@@ -72,8 +72,8 @@ _int CInputButton_Frame::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 
-	if (false == m_bActive)
-		return 0;
+	//if (false == m_bActive)
+	//	return 0;
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }

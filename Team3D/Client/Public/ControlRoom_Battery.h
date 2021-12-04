@@ -22,8 +22,6 @@ public:
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
-
-
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
@@ -52,6 +50,9 @@ protected:
 	CStaticActor*								m_pStaticActorCom = nullptr;
 	CTriggerActor*								m_pTriggerCom = nullptr;
 	CTransform*									m_pTriggerTransform = nullptr;
+
+private:
+	_int InterActive_Battery(_double TimeDelta);
 
 private:
 	HRESULT Ready_Layer_Door(const _tchar * pLayerTag, _uint iCount);

@@ -92,8 +92,6 @@ _int CStarBuddy::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	InterActive_UI();
-
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
@@ -118,15 +116,12 @@ void CStarBuddy::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eSTARBUDDY , true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(Cody, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
 		m_PlayerID = GameID::eCODY;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
 		m_IsCollide = false;
-		UI_Delete(Cody, InputButton_InterActive);
 		m_PlayerID = GameID::eSTARBUDDY;
 	}
 
@@ -135,15 +130,12 @@ void CStarBuddy::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eSTARBUDDY, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(May, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
 		m_PlayerID = GameID::eCODY;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
 		m_IsCollide = false;
-		UI_Delete(May, InputButton_InterActive);
 		m_PlayerID = GameID::eSTARBUDDY;
 	}
 }

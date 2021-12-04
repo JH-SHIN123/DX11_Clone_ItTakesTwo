@@ -130,7 +130,7 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath, Level::ID eLevel, _ui
 	return S_OK;
 }
 
-HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,void* pArg, _bool bActive)
+HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,void* pArg)
 {
 	if (false == m_IsTrigger || ePlayer >= Player::PLAYER_END || eTrigger >= UI::TRIGGER_END)
 		return S_OK;
@@ -140,96 +140,99 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 	switch (eTrigger)
 	{
 	case UI::InputButton_Dot:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg, bActive);
-	    break;  
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg);
+		break;
 	case UI::InputButton_InterActive:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_F"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_F"), Level::LEVEL_STATIC, pArg);
+		break;
+	case UI::InputButton_InterActive_Render:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_F"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::InputButton_PS_InterActive:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Triangle"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Triangle"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Triangle"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Triangle"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::PC_Mouse_Reduction:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("PC_Mouse_Reduction"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("PC_Mouse_Reduction"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::PC_Mouse_Enlargement:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("PC_Mouse_Enlargement"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("PC_Mouse_Enlargement"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::InputButton_Cancle:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Cancle"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Cancle"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::InputButton_PS_Cancle:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Cancle"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Cancle"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Cancle"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Cancle"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::InputButton_Up:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Up"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Up"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Up"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Up"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::InputButton_Down:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Down"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_Down"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::InputButton_PS_Up:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Up"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Up"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Up"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Up"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::InputButton_PS_Down:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Down"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Down"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Down"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Down"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::PlayerMarker:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("PlayerMarker"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("PlayerMarker"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::InputButton_PS_R1:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R1"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R1"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R1"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R1"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::Arrowkeys_Side:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Outline"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Left"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Right"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Outline"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Left"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Right"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::Arrowkeys_UpDown:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Outline"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Up"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Down"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Outline"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Up"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Down"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::InputButton_PS_L2:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_L2"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_L2"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_L2"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_L2"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::InputButton_PS_R2:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R2"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R2"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_R2"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_R2"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::StickIcon:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("StickIcon"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("StickIcon"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::LoadingBook:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("LoadingBook"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("LoadingBook"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::Portrait_Cody:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Portrait_Cody"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Portrait_Cody"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::Portrait_May:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Portrait_May"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Portrait_May"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::RespawnCircle:
 		/* 리스폰 서클 게이지 바 */
-		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_E"), Level::LEVEL_STATIC, pArg, bActive);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("ButtonIndicator"), Level::LEVEL_STATIC, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_E"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("ButtonIndicator"), Level::LEVEL_STATIC, pArg);
 		/* 리스폰 서클 하트 */
-		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, &iOption, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, &iOption);
 		iOption = 0;
-		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
 		break;
 	case UI::ControllerIcon_KeyBoard:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("ControllerIcon_KeyBoard"), Level::LEVEL_LOGO, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("ControllerIcon_KeyBoard"), Level::LEVEL_LOGO, pArg);
 		break;
 	case UI::ControllerIcon_Pad:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("ControllerIcon_Pad"), Level::LEVEL_LOGO, pArg, bActive);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("ControllerIcon_Pad"), Level::LEVEL_LOGO, pArg);
 		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
@@ -240,6 +243,41 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 
 	return S_OK;
 }
+
+
+HRESULT CUI_Generator::Generator_InterActive_UI(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, void * pArg)
+{
+	if (false == m_IsTrigger || ePlayer >= Player::PLAYER_END || eTrigger >= UI::INTERACTIVE_ID_END)
+		return S_OK;
+
+	switch (eTrigger)
+	{
+	case UI::ControlRoom_Battery:
+		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg);
+		break;
+	case UI::PinBall_Door:
+		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg);
+		break;
+	case UI::StarBuddy:
+		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg);
+		break;
+	case UI::PinBall_Handle:
+		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg);
+		break;
+	default:
+		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
+		break;
+	}
+
+
+
+	return S_OK;
+}
+
 
 HRESULT CUI_Generator::Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 {
@@ -253,6 +291,22 @@ HRESULT CUI_Generator::Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 	}
 
 	m_vecUIOBjects[ePlayer][eTrigger].clear();
+
+	return S_OK;
+}
+
+HRESULT CUI_Generator::Delete_InterActive_UI(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger)
+{
+	if (true == m_vecInterActiveUI[ePlayer][eTrigger].empty())
+		return S_OK;
+
+	for (auto UIObject : m_vecInterActiveUI[ePlayer][eTrigger])
+	{
+		UIObject->Set_Dead();
+		Safe_Release(UIObject);
+	}
+
+	m_vecInterActiveUI[ePlayer][eTrigger].clear();
 
 	return S_OK;
 }
@@ -920,7 +974,7 @@ HRESULT CUI_Generator::Add_Prototype_LogoTexture()
 	return S_OK;
 }
 
-HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void* pArg, _bool bActive)
+HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void* pArg)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
@@ -931,11 +985,27 @@ HRESULT CUI_Generator::SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, con
 	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(eLevel, TEXT("Layer_UI"), eLevel, PrototypeTag, pArg, &pGameObject), E_FAIL);
 	pUIObject = static_cast<CUIObject*>(pGameObject);
 	pUIObject->Set_PlayerID(ePlayer);
-	pUIObject->Set_Active(bActive);
 	m_vecUIOBjects[ePlayer][eTrigger].push_back(pUIObject);
 
 	return S_OK;
 }
+
+HRESULT CUI_Generator::SetUp_Clone_InterActive(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void* pArg)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	CGameObject* pGameObject = nullptr;
+	CUIObject* pUIObject = nullptr;
+
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(eLevel, TEXT("Layer_UI"), eLevel, PrototypeTag, pArg, &pGameObject), E_FAIL);
+	pUIObject = static_cast<CUIObject*>(pGameObject);
+	pUIObject->Set_PlayerID(ePlayer);
+	m_vecInterActiveUI[ePlayer][eTrigger].push_back(pUIObject);
+
+	return S_OK;
+}
+
 
 HRESULT CUI_Generator::SetUp_Clone_Ptr(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void* pArg, CGameObject** pGameObject)
 {
@@ -955,6 +1025,16 @@ void CUI_Generator::Set_TargetPos(Player::ID ePlayer, UI::TRIGGER eTrigger, _vec
 	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
 		UIObject->Set_TargetPos(vTargetPos);
 }
+
+void CUI_Generator::Set_InterActive_TargetPos(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, _vector vTargetPos)
+{
+	if (true == m_vecInterActiveUI[ePlayer][eTrigger].empty())
+		return;
+
+	for (auto UIObject : m_vecInterActiveUI[ePlayer][eTrigger])
+		UIObject->Set_TargetPos(vTargetPos);
+}
+
 
 void CUI_Generator::Set_Active(Player::ID ePlayer, UI::TRIGGER eTrigger, _bool bActive)
 {
@@ -1026,77 +1106,117 @@ HRESULT CUI_Generator::Create_ChapterSelect()
 	return S_OK;
 }
 
-HRESULT CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::TRIGGER eTrigger, _vector vTargetPosition, _bool IsCollision)
-{	
+HRESULT CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, _vector vTargetPosition, _float fRange, _bool IsCollision, _bool IsDisable)
+{
+	if (true == IsDisable)
+		return S_OK;
+
 	_vector vComparePos;
 
 	if (ePlayer == Player::Cody)
 	{
-		// 객체와 충돌 했다라면 상호작용 UI키 띄워주자
-		if (true == IsCollision)
-		{
-			Delete_UI(ePlayer, eTrigger);
-			UI_CreateOnlyOnce(Cody, InputButton_InterActive);
-			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, vTargetPosition);
-
-			return S_OK;
-		}
-		else
-			UI_Delete(Cody, InputButton_InterActive);
-
 		CCody* pCody = (CCody*)DATABASE->GetCody();
-		NULL_CHECK_RETURN(pCody, E_FAIL);
+		NULL_CHECK_RETURN(pCody, false);
 
 		_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 		vComparePos = vTargetPosition - vCodyPos;
 	}
 	else if (ePlayer == Player::May)
 	{
-		if (true == IsCollision)
-		{
-			Delete_UI(ePlayer, eTrigger);
-			UI_CreateOnlyOnce(May, InputButton_PS_InterActive);
-			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_PS_InterActive, vTargetPosition);
-
-			return S_OK;
-		}
-		else
-			UI_Delete(May, InputButton_PS_InterActive);
-
 		CMay* pMay = (CMay*)DATABASE->GetMay();
-		NULL_CHECK_RETURN(pMay, E_FAIL);
+		NULL_CHECK_RETURN(pMay, false);
 
 		_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 		vComparePos = vTargetPosition - vMayPos;
 	}
 
-	/* 객체와 충돌을 하지 않았다 그럼 그냥 닷 UI생성해주자*/
-	_float fRange = 20.f;
-	_float vComparePosX = abs(XMVectorGetX(vComparePos));
-	_float vComparePosZ = abs(XMVectorGetZ(vComparePos));
+	_float vComparePosX = fabs(XMVectorGetX(vComparePos));
+	_float vComparePosY = fabs(XMVectorGetY(vComparePos));
+	_float vComparePosZ = fabs(XMVectorGetZ(vComparePos));
 
-	if (fRange >= vComparePosX && fRange >= vComparePosZ)
+	/* 범위 안에 있다*/
+	if (fRange >= vComparePosX && fRange >= vComparePosY && fRange >= vComparePosZ)
 	{
-		if (true == UI_Generator->Get_EmptyCheck(ePlayer, eTrigger))
+		/* 충돌해서 트리거가 켜졌다면 InterActive UI 만들어주자 */
+		if (ePlayer == Player::Cody)
 		{
-			m_IsTrigger = true;
-			Generator_UI(ePlayer, eTrigger);
+			if (true == IsCollision)
+			{
+				/* 충돌을 했다라면 InputButton Dot 삭제해주자 안에서 예외처리 하기때문에 걍 호출해도 상관없음 */
+				Delete_InterActive_UI(ePlayer, eTrigger);
+				UI_CreateOnlyOnce(Cody, InputButton_InterActive);
+				UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, vTargetPosition);
+
+				return S_OK;
+			}
+			else /* 만약에 충돌을 하고 트리거가 꺼졌을 때 InterActive UI 삭제해주자 */
+				UI_Delete(Cody, InputButton_InterActive);
+		}
+		else if (ePlayer == Player::May)
+		{
+			if (true == IsCollision)
+			{
+				Delete_InterActive_UI(ePlayer, eTrigger);
+				UI_CreateOnlyOnce(May, InputButton_PS_InterActive);
+				UI_Generator->Set_TargetPos(Player::May, UI::InputButton_PS_InterActive, vTargetPosition);
+
+				return S_OK;
+			}
+			else
+				UI_Delete(May, InputButton_PS_InterActive);
 		}
 
-		UI_Generator->Set_TargetPos(ePlayer, eTrigger, vTargetPosition);
+		/* 충돌을 아직 안했다면 그냥 InputButton Dot 만들어주자 */
+		if (true == UI_Generator->Get_InterActive_UI_EmptyCheck(ePlayer, eTrigger))
+		{
+			m_IsTrigger = true;
+			Generator_InterActive_UI(ePlayer, eTrigger);
+		}
+
+		UI_Generator->Set_InterActive_TargetPos(ePlayer, eTrigger, vTargetPosition);
 	}
 	else
-		Delete_UI(ePlayer, eTrigger);
-
+		Delete_InterActive_UI(ePlayer, eTrigger);
 
 	return S_OK;
 }
 
+_bool CUI_Generator::RangeCheck(Player::ID ePlayer, _vector vTargetPosition, _float fRange, _bool IsDisable)
+{
+	if (true == IsDisable)
+		return false;
+
+	_vector vComparePos;
+
+	if (ePlayer == Player::Cody)
+	{
+		CCody* pCody = (CCody*)DATABASE->GetCody();
+		NULL_CHECK_RETURN(pCody, false);
+
+		_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		vComparePos = vTargetPosition - vCodyPos;
+	}
+	else if (ePlayer == Player::May)
+	{
+		CMay* pMay = (CMay*)DATABASE->GetMay();
+		NULL_CHECK_RETURN(pMay, false);
+
+		_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		vComparePos = vTargetPosition - vMayPos;
+	}
+
+	_float vComparePosX = fabs(XMVectorGetX(vComparePos));
+	_float vComparePosY = fabs(XMVectorGetY(vComparePos));
+	_float vComparePosZ = fabs(XMVectorGetZ(vComparePos));
+
+	if (fRange >= vComparePosX && fRange >= vComparePosY && fRange >= vComparePosZ)
+		return true;
+
+	return false;
+}
+
 void CUI_Generator::Free()
 {
-	Safe_Release(m_pDevice);
-	Safe_Release(m_pDeviceContext);
-
 	for (auto PSData : m_vecPSData)
 		Safe_Delete(PSData);
 
@@ -1116,6 +1236,20 @@ void CUI_Generator::Free()
 		}
 	}
 
+	for (_uint i = 0; i < Player::PLAYER_END; ++i)
+	{
+		for (_uint j = 0; j < UI::INTERACTIVE_ID_END; ++j)
+		{
+			if (0 != m_vecInterActiveUI[i][j].size())
+			{
+				for (auto UIObject : m_vecInterActiveUI[i][j])
+					Safe_Release(UIObject);
+
+				m_vecInterActiveUI[i][j].clear();
+			}
+		}
+	}
+
 	for (auto pHeaderBox : m_vecHeaderBox)
 		Safe_Release(pHeaderBox);
 
@@ -1127,4 +1261,7 @@ void CUI_Generator::Free()
 	Safe_Release(m_pVIBuffer_Rect);
 
 	Safe_Delete_Array(m_VTXFONT);
+
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pDeviceContext);
 }
