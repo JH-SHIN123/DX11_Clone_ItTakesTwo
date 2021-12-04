@@ -20,7 +20,6 @@
 #include "PinBall_Door.h"
 #include "HookahTube.h"
 #include "HangingPlanet.h"
-#include "GameOption.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()

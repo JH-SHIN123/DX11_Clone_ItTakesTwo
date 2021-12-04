@@ -28,6 +28,8 @@ private:
 	_double					m_dFrameAcc			= 0.0; /* 1프레임시간 누적 */
 	_double					m_dTimeDelta		= 0.0;
 	class CPxEventCallback* m_pPxEventCallback  = nullptr;
+	/* For.MouseLock */
+	_bool					m_bMouseLock		= false;
 private:
 	_int	Tick(_double dTimeDelta);
 	HRESULT	Render(_double dTimeDelta);
