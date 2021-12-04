@@ -1728,8 +1728,8 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			if (DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
 			{
-				m_pActorCom->Set_Position(XMVectorSet(70.5799332f, 21.3829994f, 174.975174f, 1.f));
-				m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(0.f));
+				/*m_pActorCom->Set_Position(XMVectorSet(70.5799332f, 21.3829994f, 174.975174f, 1.f));
+				m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(0.f));*/
 			}
 			else if (DATABASE->Get_Cody_Stage() == ST_PINBALL)
 			{
