@@ -7,7 +7,6 @@
 #include "PlayerActor.h"
 #include "SpaceRail.h"
 #include "SpaceRail_Node.h"
-#include "GameOption.h"
 
 #include "Effect_Generator.h"
 #include "Effect_May_Boots.h"

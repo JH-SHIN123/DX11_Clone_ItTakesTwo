@@ -2,7 +2,6 @@
 #include "SpaceRail.h"
 #include "SpaceRail_Node.h"
 #include "Loading.h"
-#include "GameOption.h"
 
 CSpaceRail::CSpaceRail(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)

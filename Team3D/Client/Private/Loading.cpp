@@ -7,7 +7,6 @@
 #include "PlayerActor.h"
 #include "CameraActor.h"
 #include "SepdStaticActor.h"
-#include "GameOption.h"
 
 /* Se */
 #include "GravityPath.h"
