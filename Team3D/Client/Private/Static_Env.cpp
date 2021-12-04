@@ -46,9 +46,9 @@ _int CStatic_Env::Late_Tick(_double TimeDelta)
 	return NO_EVENT;
 }
 
-HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
+HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eGroup)
 {
-	CGameObject::Render(eRender);
+	CGameObject::Render(eGroup);
 
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
@@ -64,12 +64,12 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
 		iMaterialIndex = 1;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
 
 		// 4: Alpha / 5: GlassWall Custom Alpha
 		iMaterialIndex = 0;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 5, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 5, false, eGroup);
 	}
 	else if (!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_02"), m_Static_Env_Desc.szModelTag))
 	{
@@ -79,16 +79,16 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
 
 		iMaterialIndex = 2;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
 
 		iMaterialIndex = 0;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 5, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 5, false, eGroup);
 	}
 	else if (!lstrcmp(TEXT("Component_Model_GlassWall_End"), m_Static_Env_Desc.szModelTag))
 	{
@@ -98,15 +98,15 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
 
 		iMaterialIndex = 0;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eGroup);
 
 		iMaterialIndex = 1;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eGroup);
 	}
 	else if (!lstrcmp(TEXT("Component_Model_Space_Pinball_Frame"), m_Static_Env_Desc.szModelTag))
 	{
@@ -116,11 +116,11 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
 
 		iMaterialIndex = 0;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eGroup);
 	}
 	else if (!lstrcmp(TEXT("Component_Model_Space_Pinball_BaseStar"), m_Static_Env_Desc.szModelTag))
 	{
@@ -129,12 +129,56 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eRender)
 		iMaterialIndex = 0;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
 
 		iMaterialIndex = 1;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eRender);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eGroup);
 	}
+	else if (!lstrcmp(TEXT("Component_Model_Saturn"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Sepd_Bind_Buffer();
+
+		iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
+
+		iMaterialIndex = 2;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 8, false, eGroup);
+
+		iMaterialIndex = 1;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eGroup);
+	}
+	else if (!lstrcmp(TEXT("Component_Model_PlanetFloor"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Sepd_Bind_Buffer();
+
+		iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eGroup);
+
+		iMaterialIndex = 1;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 8, false, eGroup);
+
+		iMaterialIndex = 2;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
+	}
+	else if(!lstrcmp(TEXT("Component_Model_Planet"), m_Static_Env_Desc.szModelTag) ||
+			!lstrcmp(TEXT("Component_Model_LavaLamp"), m_Static_Env_Desc.szModelTag))
+		m_pModelCom->Render_Model(8, m_Static_Env_Desc.iMaterialIndex);
 	else
 		m_pModelCom->Render_Model(1, m_Static_Env_Desc.iMaterialIndex);
 
@@ -212,6 +256,18 @@ HRESULT CStatic_Env::Set_MeshRenderGroup()
 		m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_NONALPHA);
 		m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_ALPHA);
 	}
+	else if (!lstrcmp(TEXT("Component_Model_Saturn"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_NONALPHA);
+		m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_ALPHA);
+		m_pModelCom->Set_MeshRenderGroup(2, tagRenderGroup::RENDER_NONALPHA);
+	}
+	else if (!lstrcmp(TEXT("Component_Model_PlanetFloor"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_ALPHA);
+		m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_NONALPHA);
+		m_pModelCom->Set_MeshRenderGroup(2, tagRenderGroup::RENDER_NONALPHA);
+	}
 
 	return S_OK;
 }
@@ -223,12 +279,10 @@ HRESULT CStatic_Env::Add_GameObject_ToRenderGroup()
 		if (!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_01"), m_Static_Env_Desc.szModelTag) ||
 			!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_02"), m_Static_Env_Desc.szModelTag) ||
 			!lstrcmp(TEXT("Component_Model_GlassWall_End"), m_Static_Env_Desc.szModelTag) || 
-			!lstrcmp(TEXT("Component_Model_Space_Pinball_Frame"), m_Static_Env_Desc.szModelTag))
-		{
-			m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_ALPHA, this);
-			m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_NONALPHA, this);
-		}
-		else if (!lstrcmp(TEXT("Component_Model_Space_Pinball_BaseStar"), m_Static_Env_Desc.szModelTag))
+			!lstrcmp(TEXT("Component_Model_Space_Pinball_Frame"), m_Static_Env_Desc.szModelTag) ||
+			!lstrcmp(TEXT("Component_Model_Space_Pinball_BaseStar"), m_Static_Env_Desc.szModelTag) ||
+			!lstrcmp(TEXT("Component_Model_Saturn"), m_Static_Env_Desc.szModelTag) ||
+			!lstrcmp(TEXT("Component_Model_PlanetFloor"), m_Static_Env_Desc.szModelTag))
 		{
 			m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_ALPHA, this);
 			m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_NONALPHA, this);

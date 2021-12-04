@@ -244,7 +244,7 @@ HRESULT CLevel_Stage::Ready_Layer_Planet(const _tchar * pLayerTag)
 	_matrix World = XMMatrixIdentity();
 	lstrcpy(tPlanetArg.DynamicDesc.szModelTag, TEXT("Component_Model_Hanging_Planet"));
 	XMStoreFloat4x4(&tPlanetArg.DynamicDesc.WorldMatrix, World);
-	tPlanetArg.DynamicDesc.iMatrialIndex = 0;
+	tPlanetArg.DynamicDesc.iMaterialIndex = 0;
 	tPlanetArg.DynamicDesc.iOption = 0;
 
 	tPlanetArg.vJointPosition = _float3(1000.f, 740.f, 213.f);

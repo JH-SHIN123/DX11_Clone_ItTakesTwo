@@ -10,7 +10,7 @@ public:/* Struct */
 	{
 		_float4x4	WorldMatrix;
 		_tchar		szModelTag[MAX_PATH];
-		_uint		iMatrialIndex;
+		_uint		iMaterialIndex;
 		_uint		iOption;
 	}ARG_DESC;
 

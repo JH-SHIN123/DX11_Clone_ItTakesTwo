@@ -40,7 +40,7 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 {
 #ifdef __MAPLOADING_OFF
 	ARG_DESC tTest;
-	tTest.iMatrialIndex = 0;
+	tTest.iMaterialIndex = 0;
 	tTest.iOption = 0;
 	lstrcpy(tTest.szModelTag, L"Component_Model_GrindRail02");
 	tTest.WorldMatrix = MH_XMFloat4x4Identity();
@@ -142,7 +142,7 @@ HRESULT CSpaceRail::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1, m_tDynamic_Env_Desc.iMatrialIndex);
+	m_pModelCom->Render_Model(1, m_tDynamic_Env_Desc.iMaterialIndex);
 
 	return S_OK;
 }

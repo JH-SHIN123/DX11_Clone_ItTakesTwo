@@ -1507,7 +1507,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			/* 플레이어->위치 조정, 핸들 최소, 최대X값 설정 */
 			m_vTriggerTargetPos.x -= 0.95f;
-			m_vTriggerTargetPos.y -= 0.1f;
+			m_vTriggerTargetPos.y = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			m_MinMaxX.x = m_vTriggerTargetPos.x;
 			m_MinMaxX.y = m_vTriggerTargetPos.x - 5.f;
 

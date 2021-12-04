@@ -29,6 +29,12 @@ HRESULT CPlanet::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_Speed(5.f, 0.5f);
 
+	if (!lstrcmp(TEXT("Component_Model_Saturn"), m_tDynamic_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_NONALPHA);
+		m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_ALPHA);
+		m_pModelCom->Set_MeshRenderGroup(2, tagRenderGroup::RENDER_NONALPHA);
+	}
 	return S_OK;
 }
 
@@ -47,7 +53,15 @@ _int CPlanet::Late_Tick(_double dTimeDelta)
 	CDynamic_Env::Late_Tick(dTimeDelta);
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	{
+		if (!lstrcmp(TEXT("Component_Model_Saturn"), m_tDynamic_Env_Desc.szModelTag))
+		{
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+		}
+		else
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	}
 
 	return NO_EVENT;
 }
@@ -60,10 +74,32 @@ HRESULT CPlanet::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(8, m_tDynamic_Env_Desc.iMatrialIndex);
 
+	_uint iMaterialIndex = 0;
+	if (!lstrcmp(TEXT("Component_Model_Saturn"), m_tDynamic_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Sepd_Bind_Buffer();
 
+		/* 렌더순서 주의 - 논알파 -> 알파 */
+		iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_tDynamic_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_tDynamic_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
 
+		// 4: Alpha / 5: GlassWall Custom Alpha
+		iMaterialIndex = 2;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_tDynamic_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_tDynamic_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, m_tDynamic_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 8, false, eGroup);
+
+		iMaterialIndex = 1;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_tDynamic_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_tDynamic_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eGroup);
+	}
+	else
+		m_pModelCom->Render_Model(8, m_tDynamic_Env_Desc.iMaterialIndex);
 
 	return S_OK;
 }
