@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <fstream>
 #include "..\Public\Environment_Generator.h"
+#include "GameOption.h"
 /* Load */
 #include "SavePoint.h"
 #include "DeadLine.h"

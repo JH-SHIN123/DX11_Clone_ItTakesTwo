@@ -4,6 +4,7 @@
 #include "PlayerActor.h"
 #include "May.h"
 #include "CameraActor.h"
+#include "GameOption.h"
 
 CSubCamera::CSubCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)

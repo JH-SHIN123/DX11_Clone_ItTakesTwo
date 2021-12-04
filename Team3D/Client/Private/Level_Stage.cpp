@@ -5,6 +5,7 @@
 
 /* Framework */
 #include "Loading.h"
+#include "GameOption.h"
 /* Se */
 /* Jung */
 #include "Effect_Generator.h"
