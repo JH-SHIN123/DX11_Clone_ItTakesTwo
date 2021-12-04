@@ -77,7 +77,7 @@ _int CControlRoom_Battery::Tick(_double dTimeDelta)
 
 	InterActive_Battery(dTimeDelta);
 
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::ControlRoom_Battery, m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCollision);
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::ControlRoom_Battery, m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCollision, false);
 
 	return NO_EVENT;
 }
