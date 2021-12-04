@@ -137,6 +137,10 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 
 	m_pEffectFireDoor->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
+
+
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::TutorialDoor, m_pTransformCom->Get_State(CTransform::STATE_POSITION), 20.f, m_IsCollide);
+
 	return NO_EVENT;
 }
 
@@ -169,8 +173,8 @@ void CTutorialDoor::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eVERTICALDOOR, true, vPos);
-		UI_Create(May, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, vPos);
+		//UI_Create(May, InputButton_InterActive);
+		//UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, vPos);
 		m_IsCollide = true;
 		m_IsPullMax = true;
 	}
@@ -178,7 +182,7 @@ void CTutorialDoor::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eVERTICALDOOR, false, vPos);
 		m_IsCollide = false;
-		UI_Delete(May, InputButton_InterActive);
+		/*UI_Delete(May, InputButton_InterActive);*/
 	}
 }
 

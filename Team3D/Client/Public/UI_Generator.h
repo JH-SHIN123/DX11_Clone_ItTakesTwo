@@ -90,7 +90,6 @@ public:
 	/* eTrigger는 상호작용 해야하는 객체 UI::INTERACTIVE_ID enum에 추가해서 그거 던져 주면 됨 */
 	/* Collision은 충돌 했을 때 트리거에서 바꿔주는 bool값 하나 넘겨주면 됨 */
 	/* 해당 오브젝트의 조건을 만족했을 때 그 bool값 IsActive로 던져주면 됨 굳이 인자로 안주고 해당 오브젝트 안에서 조건문으로 이 함수 호출해주면 됨 */
-	_bool RangeCheck(Player::ID ePlayer, _vector vTargetPosition, _float fRange, _bool IsDisable = false);
 	HRESULT CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, _vector vTargetPosition, _float fRange, _bool IsCollision = false, _bool IsDisable = false);
 	
 public:

@@ -268,8 +268,12 @@ HRESULT CUI_Generator::Generator_InterActive_UI(Player::ID ePlayer, UI::INTERACT
 		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg);
 		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg);
 		break;
+	case UI::TutorialDoor:
+		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg);
+		break;
 	default:
-		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
+		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_InterActive_UI");
 		break;
 	}
 
@@ -1179,40 +1183,6 @@ HRESULT CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI
 		Delete_InterActive_UI(ePlayer, eTrigger);
 
 	return S_OK;
-}
-
-_bool CUI_Generator::RangeCheck(Player::ID ePlayer, _vector vTargetPosition, _float fRange, _bool IsDisable)
-{
-	if (true == IsDisable)
-		return false;
-
-	_vector vComparePos;
-
-	if (ePlayer == Player::Cody)
-	{
-		CCody* pCody = (CCody*)DATABASE->GetCody();
-		NULL_CHECK_RETURN(pCody, false);
-
-		_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-		vComparePos = vTargetPosition - vCodyPos;
-	}
-	else if (ePlayer == Player::May)
-	{
-		CMay* pMay = (CMay*)DATABASE->GetMay();
-		NULL_CHECK_RETURN(pMay, false);
-
-		_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-		vComparePos = vTargetPosition - vMayPos;
-	}
-
-	_float vComparePosX = fabs(XMVectorGetX(vComparePos));
-	_float vComparePosY = fabs(XMVectorGetY(vComparePos));
-	_float vComparePosZ = fabs(XMVectorGetZ(vComparePos));
-
-	if (fRange >= vComparePosX && fRange >= vComparePosY && fRange >= vComparePosZ)
-		return true;
-
-	return false;
 }
 
 void CUI_Generator::Free()
