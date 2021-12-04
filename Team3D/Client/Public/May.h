@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameOption.h"
 #include "Character.h"
 
 BEGIN(Client)
@@ -445,12 +444,16 @@ private:
 	void	Start_SpaceRail();
 	void	MoveToTargetRail(_double dTimeDelta);
 	void	TakeRail(_double dTimeDelta);
+	void	TakeRailEnd(_double dTimeDelta);
 	void	ShowRailTargetTriggerUI();
 
 private:
 	_bool						m_bMoveToRail = false;
 	_bool						m_bOnRail = false;
-	_uint						m_iRailDir = 0;
+	_bool						m_bOnRailEnd = false;
+
+private:
+	_double						m_dRailEnd_ForceDeltaT = 0.0;
 
 private:
 	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;
