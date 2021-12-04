@@ -301,6 +301,11 @@ HRESULT CRenderer::PostProcessing(_double TimeDelta)
 	return S_OK;
 }
 
+HRESULT CRenderer::SSAO()
+{
+	return S_OK;
+}
+
 void CRenderer::Sort_GameObjects(RENDER_OBJECTS & GameObjects)
 {
 	GameObjects.sort([](CGameObject* pFirst, CGameObject* pSecond) { return pFirst->Get_DistanceFromCamera() > pSecond->Get_DistanceFromCamera(); });

@@ -228,6 +228,7 @@ call WinCmd_UpdateLib_Release.bat</Command>
     <ClInclude Include="..\public\RenderTarget_Manager.h" />
     <ClInclude Include="..\Public\Shadow_Manager.h" />
     <ClInclude Include="..\public\Sound_Manager.h" />
+    <ClInclude Include="..\Public\SSAO.h" />
     <ClInclude Include="..\public\StaticActor.h" />
     <ClInclude Include="..\public\Textures.h" />
     <ClInclude Include="..\public\Timer.h" />
@@ -283,6 +284,7 @@ call WinCmd_UpdateLib_Release.bat</Command>
     <ClCompile Include="..\private\RenderTarget_Manager.cpp" />
     <ClCompile Include="..\Private\Shadow_Manager.cpp" />
     <ClCompile Include="..\private\Sound_Manager.cpp" />
+    <ClCompile Include="..\Private\SSAO.cpp" />
     <ClCompile Include="..\private\StaticActor.cpp" />
     <ClCompile Include="..\private\Textures.cpp" />
     <ClCompile Include="..\private\Timer.cpp" />

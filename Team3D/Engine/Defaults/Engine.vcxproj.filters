@@ -232,6 +232,9 @@
     <Filter Include="02.Utility\02.Component\07.Path">
       <UniqueIdentifier>{b3160846-520a-4bb2-bead-ebb4718dfba1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\07.ScreenSpaceFX">
+      <UniqueIdentifier>{f8703f99-bdd8-431a-8150-5af3df778c9a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\GameInstance.h">
@@ -426,6 +429,9 @@
     <ClInclude Include="..\public\Engine_MathHelper.h">
       <Filter>99.Defines\01.Engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SSAO.h">
+      <Filter>02.Utility\07.ScreenSpaceFX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -589,6 +595,9 @@
     </ClCompile>
     <ClCompile Include="..\private\PhysX.cpp">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SSAO.cpp">
+      <Filter>02.Utility\07.ScreenSpaceFX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
