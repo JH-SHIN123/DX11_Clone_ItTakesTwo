@@ -14,6 +14,8 @@
 #include "PinBall_Handle.h"
 #include "PinBall_Blocked.h"
 #include "PinBall.h"
+/* For.Tube*/
+#include "HookahTube.h"
 
 // m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
 // m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
@@ -282,6 +284,7 @@ void CMay::Free()
 	m_vecTargetRailNodes.clear();
 
 	//Safe_Release(m_pCamera);
+	Safe_Release(m_pTargetPtr);
 	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
@@ -1406,6 +1409,17 @@ void CMay::SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTrig
 	m_iValvePlayerName = _iPlayerName;
 }
 
+void CMay::SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject * pTargetPtr)
+{
+	if (nullptr != m_pTargetPtr)
+		Safe_Release(m_pTargetPtr);
+
+	m_eTargetGameID = eID;
+	m_IsCollide = IsCollide;
+	m_pTargetPtr = pTargetPtr;
+	Safe_AddRef(m_pTargetPtr);
+}
+
 _bool CMay::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)
@@ -1626,7 +1640,10 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::eHOOKAHTUBE)
 		{
 			/* Æ©ºê*/
-			m_pActorCom->Jump_Start(3.f);
+			if (2 == ((CHookahTube*)m_pTargetPtr)->Get_Option())
+				m_pActorCom->Jump_Start(5.f);
+			else
+				m_pActorCom->Jump_Start(3.f);
 
 			_uint iRandom = rand() % 4;
 			switch (iRandom)

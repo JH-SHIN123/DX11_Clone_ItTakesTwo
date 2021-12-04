@@ -8,6 +8,9 @@ private:
 	explicit CHookahTube(const CHookahTube& rhs);
 	virtual ~CHookahTube() = default;
 
+public:/* Getter */
+	_uint Get_Option();
+
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;

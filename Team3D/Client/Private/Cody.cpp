@@ -15,6 +15,8 @@
 #include "PinBall.h"
 #include "PinBall_Door.h"
 #include "HangingPlanet.h"
+/* For.Tube*/
+#include "HookahTube.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -1960,7 +1962,10 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::eHOOKAHTUBE)
 		{
 			/* Æ©ºê*/
-			m_pActorCom->Jump_Start(3.f);
+			if(2 == ((CHookahTube*)m_pTargetPtr)->Get_Option())
+				m_pActorCom->Jump_Start(5.f);
+			else
+				m_pActorCom->Jump_Start(3.f);
 
 			_uint iRandom = rand() % 4;
 			switch (iRandom)

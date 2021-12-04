@@ -13,6 +13,11 @@ CHookahTube::CHookahTube(const CHookahTube & rhs)
 {
 }
 
+_uint CHookahTube::Get_Option()
+{
+	return m_tDynamic_Env_Desc.iOption;
+}
+
 HRESULT CHookahTube::NativeConstruct_Prototype()
 {
 	CDynamic_Env::NativeConstruct_Prototype();
@@ -29,12 +34,17 @@ HRESULT CHookahTube::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
+	m_pTransformCom->Set_Speed(5.f, 1.f);
+
 	return S_OK;
 }
 
 _int CHookahTube::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
+
+	if (0 != m_tDynamic_Env_Desc.iOption)
+		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta);
 
 	Movement(dTimeDelta);
 
@@ -81,14 +91,14 @@ void CHookahTube::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameOb
 	/* Cody */
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKAHTUBE, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eHOOKAHTUBE, true, this);
 		m_bTrigger = true;
 	}
 
 	/* May */
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKAHTUBE, true, ((CMay*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+		((CMay*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eHOOKAHTUBE, true, this);
 		m_bTrigger = true;
 	}
 }

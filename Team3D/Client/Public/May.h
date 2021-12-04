@@ -322,12 +322,14 @@ private:
 public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
 	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
+	void SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject* pTargetPtr);
 
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
 	_float3				m_vTriggerTargetPos = {};
 	_bool			    m_IsCollide = false;
 	_float4x4			m_TriggerTargetWorld = {};
+	CGameObject*		m_pTargetPtr = nullptr;
 	_uint				m_iCurrentStageNum = ST_GRAVITYPATH;
 
 	_bool m_IsOnGrind = false;
