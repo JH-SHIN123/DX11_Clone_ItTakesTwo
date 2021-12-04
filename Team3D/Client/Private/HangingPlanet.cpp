@@ -19,7 +19,7 @@ void CHangingPlanet::Hit_Planet(_fvector vForce)
 	vLookForce = XMVector3Normalize(vForce);
 	vLookForce = XMVectorSetY(vLookForce, 0.f);
 
-	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLookForce) * 150000.f, 0.f, XMVectorGetZ(vLookForce) * 150000.f));
+	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLookForce) * 120000.f, 0.f, XMVectorGetZ(vLookForce) * 120000.f));
 }
 
 HRESULT CHangingPlanet::NativeConstruct_Prototype()

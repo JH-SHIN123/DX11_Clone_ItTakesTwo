@@ -1641,9 +1641,9 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		{
 			/* Æ©ºê*/
 			if (2 == ((CHookahTube*)m_pTargetPtr)->Get_Option())
-				m_pActorCom->Jump_Start(5.f);
+				m_pActorCom->Jump_Start(6.f);
 			else
-				m_pActorCom->Jump_Start(3.f);
+				m_pActorCom->Jump_Start(4.f);
 
 			_uint iRandom = rand() % 4;
 			switch (iRandom)
