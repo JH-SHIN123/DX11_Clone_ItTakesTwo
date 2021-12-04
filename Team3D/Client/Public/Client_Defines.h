@@ -19,6 +19,7 @@ extern bool			g_bWndActivate;
 #include "Client_Struct.h"
 #include "Client_MathHelper.h"
 
+#include "GameOption.h"
 #include "DataStorage.h"
 
 namespace Client {}
