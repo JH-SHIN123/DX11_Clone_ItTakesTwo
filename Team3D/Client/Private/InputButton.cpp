@@ -37,7 +37,11 @@ HRESULT CInputButton::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
-	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+
+	if(!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Dot")))
+		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	else
+		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x - 10.f, m_UIDesc.vScale.y - 10.f, 0.f, 0.f));
 
 	SetUp_Option();
 
