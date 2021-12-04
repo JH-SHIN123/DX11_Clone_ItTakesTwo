@@ -110,6 +110,8 @@ struct GS_OUT
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 };
 
+
+
 struct GS_IN_CSM_DEPTH
 {
 	float4 vPosition : SV_POSITION;
@@ -205,6 +207,125 @@ void GS_MAIN_CSM_DEPTH(triangle GS_IN_CSM_DEPTH In[3], inout TriangleStream<GS_O
 
 		TriStream.RestartStrip();
 	}
+}
+
+[maxvertexcount(12)]//// point로 그리고 있음
+void GS_MAIN_POINT(point GS_IN In[1], inout TriangleStream<GS_OUT> TriStream)
+{
+	GS_OUT Out[8];
+
+	float3		vLook = normalize(g_vMainCamPosition - In[0].vPosition).xyz;
+	float3		vAxisY = vector(0.f, 1.f, 0.f, 0.f).xyz;
+	float3		vRight = normalize(cross(vAxisY, vLook));
+	float3		vUp = normalize(cross(vLook, vRight));
+	matrix		matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
+	float2		vHalfSize = float2(0.025f, 0.025f);
+	float4		vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
+	float4		vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
+
+	/* 좌상 */
+	Out[0].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[0].vPosition = mul(Out[0].vPosition, matVP);
+	Out[0].vNormal = In[0].vNormal;
+	Out[0].vTangent = In[0].vTangent;
+	Out[0].vBiNormal = In[0].vBiNormal;
+	Out[0].vTexUV = In[0].vTexUV;
+	Out[0].vProjPosition = Out[0].vPosition;
+	Out[0].iViewportIndex = 1;
+	TriStream.Append(Out[0]);
+
+	/* 우상 */
+	Out[1].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[1].vPosition = mul(Out[1].vPosition, matVP);
+	Out[1].vNormal = In[0].vNormal;
+	Out[1].vTangent = In[0].vTangent;
+	Out[1].vBiNormal = In[0].vBiNormal;
+	Out[1].vTexUV = In[0].vTexUV;
+	Out[1].vProjPosition = Out[1].vPosition;
+	Out[1].iViewportIndex = 1;
+	TriStream.Append(Out[1]);
+
+	/* 우하 */
+	Out[2].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[2].vPosition = mul(Out[2].vPosition, matVP);
+	Out[2].vTexUV = In[0].vTexUV;
+	Out[2].vProjPosition = Out[2].vPosition;
+	Out[2].iViewportIndex = 1;
+	TriStream.Append(Out[2]);
+
+	TriStream.RestartStrip();
+
+	/* 좌하 */
+	Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[3].vPosition = mul(Out[3].vPosition, matVP);
+	Out[3].vTexUV = In[0].vTexUV;
+	Out[3].vNormal = In[0].vNormal;
+	Out[3].vTangent = In[0].vTangent;
+	Out[3].vBiNormal = In[0].vBiNormal;
+	Out[3].vProjPosition = Out[3].vPosition;
+	Out[3].iViewportIndex = 1;
+	TriStream.Append(Out[0]);
+	TriStream.Append(Out[2]);
+	TriStream.Append(Out[3]);
+
+	TriStream.RestartStrip();
+	// Sub View 0,1
+
+	vLook = normalize(g_vSubCamPosition - In[0].vPosition).xyz;
+	vAxisY = vector(0.f, 1.f, 0.f, 0.f).xyz;
+	vRight = normalize(cross(vAxisY, vLook));
+	vUp = normalize(cross(vLook, vRight));
+	matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+
+	vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
+	vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
+
+	Out[4].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[4].vPosition = mul(Out[4].vPosition, matVP);
+	Out[4].vTexUV = In[0].vTexUV;
+	Out[4].vNormal = In[0].vNormal;
+	Out[4].vTangent = In[0].vTangent;
+	Out[4].vBiNormal = In[0].vBiNormal;
+	Out[4].vProjPosition = Out[4].vPosition;
+	Out[4].iViewportIndex = 2;
+	TriStream.Append(Out[4]);
+
+	/* 우상 */
+	Out[5].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[5].vPosition = mul(Out[5].vPosition, matVP);
+	Out[5].vTexUV = In[0].vTexUV;
+	Out[5].vNormal = In[0].vNormal;
+	Out[5].vTangent = In[0].vTangent;
+	Out[5].vBiNormal = In[0].vBiNormal;
+	Out[5].vProjPosition = Out[5].vPosition;
+	Out[5].iViewportIndex = 2;
+	TriStream.Append(Out[5]);
+
+	/* 우하 */
+	Out[6].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[6].vPosition = mul(Out[6].vPosition, matVP);
+	Out[6].vTexUV = In[0].vTexUV;
+	Out[6].vNormal = In[0].vNormal;
+	Out[6].vTangent = In[0].vTangent;
+	Out[6].vBiNormal = In[0].vBiNormal;
+	Out[6].vProjPosition = Out[6].vPosition;
+	Out[6].iViewportIndex = 2;
+	TriStream.Append(Out[6]);
+
+	TriStream.RestartStrip();
+
+	/* 좌하 */
+	Out[7].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[7].vPosition = mul(Out[7].vPosition, matVP);
+	Out[7].vTexUV = In[0].vTexUV;
+	Out[7].vNormal = In[0].vNormal;
+	Out[7].vTangent = In[0].vTangent;
+	Out[7].vBiNormal = In[0].vBiNormal;
+	Out[7].vProjPosition = Out[7].vPosition;
+	Out[7].iViewportIndex = 2;
+	TriStream.Append(Out[4]);
+	TriStream.Append(Out[6]);
+	TriStream.Append(Out[7]);
 }
 ////////////////////////////////////////////////////////////
 
@@ -438,5 +559,15 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_LOW_EMISSIVE();
+	}
+
+	pass Skinned_PointDraw // 9
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN_POINT();
+		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 };

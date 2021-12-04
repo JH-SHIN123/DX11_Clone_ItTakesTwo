@@ -35,12 +35,15 @@ HRESULT CEffect_Player_Dead_Particle::NativeConstruct(void * pArg)
 
 
 	//Ready_Instance();
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody_Effect"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	m_pTargetModel = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
+	Safe_AddRef(m_pTargetModel);
+
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody_Effect"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Dead_Cells"), TEXT("Com_Texture_Particle"), (CComponent**)&m_pTexturesCom_Particle), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Circle_Alpha"), TEXT("Com_Texture_Particle_Mask"), (CComponent**)&m_pTexturesCom_Particle_Mask), E_FAIL);
 
-	m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
-	m_pModelCom->Set_NextAnimIndex(ANI_M_Death_Fall_MH);
+//	m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
+//	m_pModelCom->Set_NextAnimIndex(ANI_M_Death_Fall_MH);
 
 	return S_OK;
 }
@@ -50,7 +53,7 @@ _int CEffect_Player_Dead_Particle::Tick(_double TimeDelta)
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
 
-	m_pModelCom->Update_Animation(TimeDelta);
+	//m_pModelCom->Update_Animation(TimeDelta);
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
 
 // 	m_pInstanceBuffer[0].vTextureUV = Check_UV((_float)TimeDelta, 0, false);
@@ -83,8 +86,8 @@ HRESULT CEffect_Player_Dead_Particle::Render(RENDER_GROUP::Enum eGroup)
 	//
 	//m_pPointInstanceCom->Render(4, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
 
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Render_Model_VERTEX(0);
+	m_pTargetModel->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pTargetModel->Render_Model(9, 0, false, true);
 
 	return S_OK;
 }
@@ -123,8 +126,8 @@ HRESULT CEffect_Player_Dead_Particle::Ready_Instance()
 
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
-// 	m_pTargetModel = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
-// 	Safe_AddRef(m_pTargetModel);
+ 	m_pTargetModel = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
+ 	Safe_AddRef(m_pTargetModel);
 	VTXMESH* pVtx = m_pTargetModel->Get_Vertices();
 	_uint iVtxCount = m_pTargetModel->Get_VertexCount();
 	_uint iRandVtx = rand() % iInstanceCount;

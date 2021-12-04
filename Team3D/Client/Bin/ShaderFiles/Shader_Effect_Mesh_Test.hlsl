@@ -43,9 +43,9 @@ VS_OUT	VS_MAIN(VS_IN In)
 {
 	VS_OUT Out = (VS_OUT)0;
 
-	matrix	BoneMatrix = (g_BoneMatrices.Matrices[In.vBlendIndex.x] * In.vBlendWeight.x) 
-		+ (g_BoneMatrices.Matrices[In.vBlendIndex.y] * In.vBlendWeight.y) 
-		+ (g_BoneMatrices.Matrices[In.vBlendIndex.z] * In.vBlendWeight.z) 
+	matrix	BoneMatrix = (g_BoneMatrices.Matrices[In.vBlendIndex.x] * In.vBlendWeight.x)
+		+ (g_BoneMatrices.Matrices[In.vBlendIndex.y] * In.vBlendWeight.y)
+		+ (g_BoneMatrices.Matrices[In.vBlendIndex.z] * In.vBlendWeight.z)
 		+ (g_BoneMatrices.Matrices[In.vBlendIndex.w] * In.vBlendWeight.w);
 	matrix	matBW = mul(BoneMatrix, g_WorldMatrix);
 
@@ -223,7 +223,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
-{	
+{
 	pass Default_Skinned // 0
 	{
 		SetRasterizerState(Rasterizer_Solid);
