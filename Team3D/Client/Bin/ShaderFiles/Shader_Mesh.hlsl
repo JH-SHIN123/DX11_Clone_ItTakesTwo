@@ -368,6 +368,7 @@ PS_OUT	PS_ALIENSCREEN(PS_IN In, uniform bool isGreen)
 
 	// Calculate Emissive
 	Out.vEmissive = g_EmissiveTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	Out.vEmissive *= 0.5f;
 
 	// Calculate Shadow
 	int iIndex = -1;
