@@ -212,11 +212,12 @@ _int CCody::Tick(_double dTimeDelta)
 	/////////////////////////////////////////////
 	KeyInput_Rail(dTimeDelta);
 
-	if (false == m_bMoveToRail && false == m_bOnRail && false == m_bOnRailEnd)
+	if (false == m_bMoveToRail && false == m_bOnRail)
 	{
 		Wall_Jump(dTimeDelta);
 		if (Trigger_Check(dTimeDelta))
 		{
+			TakeRailEnd(dTimeDelta);
 			Hit_StarBuddy(dTimeDelta);
 			Hit_Rocket(dTimeDelta);
 			Activate_RobotLever(dTimeDelta);
@@ -266,9 +267,8 @@ _int CCody::Tick(_double dTimeDelta)
 
 	/* 레일타기 : 타겟을 찾지 못하면 타지않음. */
 	TakeRail(dTimeDelta);
-	TakeRailEnd(dTimeDelta);
 
-	if (true == m_bOnRail || true == m_bMoveToRail || true == m_bOnRailEnd)
+	if (true == m_bOnRail || true == m_bMoveToRail)
 	{
 		_vector vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		m_pActorCom->Set_Position(vPlayerPos);
@@ -1994,7 +1994,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
+	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
 		|| m_bWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch)
 		return true;
@@ -2816,7 +2816,7 @@ void CCody::TakeRail(_double dTimeDelta)
 	else if (m_pGameInstance->Key_Pressing(DIK_D))
 		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH_Right);
 	else
-		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
+		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH); // 메이 blend 수치값 잡아야함.
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	m_bOnRail = m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);
@@ -2825,7 +2825,9 @@ void CCody::TakeRail(_double dTimeDelta)
 	else
 	{
 		m_pTargetRail = nullptr;
-		m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // 자유낙하 애니메이션으로 변경해야함.
+		m_pTargetRailNode = nullptr;
+		m_pSearchTargetRailNode = nullptr;
+		m_pModelCom->Set_Animation(ANI_C_MH); // 자유낙하 애니메이션으로 변경해야함.
 		m_bOnRailEnd = true;
 	}
 }
@@ -2843,7 +2845,8 @@ void CCody::TakeRailEnd(_double dTimeDelta)
 		}
 		else 
 		{
-			m_pTransformCom->Go_Straight((dRailEndForceTime - m_dRailEnd_ForceDeltaT) * 4.f);
+			m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_UP), m_dRailEnd_ForceDeltaT * 0.2f);
+			m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_LOOK), (dRailEndForceTime - m_dRailEnd_ForceDeltaT) * 2.5f);
 			m_dRailEnd_ForceDeltaT += dTimeDelta;
 		}
 	}
