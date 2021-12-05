@@ -37,10 +37,6 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 
 	CDataStorage::GetInstance()->Set_MainCamPtr(this);
 
-	XMStoreFloat4x4(&m_matStart, m_pTransformCom->Get_WorldMatrix());
-
-	m_matBeginWorld = m_matStart;
-	XMStoreFloat4x4(&m_matBeforeSpringCam, m_pTransformCom->Get_WorldMatrix());
 	m_eCurCamMode = CamMode::Cam_AutoToFree;
 	
 
@@ -48,14 +44,18 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	m_PreWorld.vRotQuat = _float4(0.f, 0.f, 0.f, 1.f);
 	m_PreWorld.vTrans = _float4(0.f, 0.f, 0.f, 1.f);
 	
-	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL] =	{ 0.f,1.7f,-1.7f,1.f};
+	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL] =	{ 0.f,1.5f,-1.5f,1.f};
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM] =	{ 0.f,7.f,-7.f,1.f };
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE] =	{ 0.f,11.f,	-8.f,1.f };
 
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL] =		{ 0.f,0.02f,0.008f,1.f };
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM] =	{ 0.f,1.8f,0.8f,1.f };
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL] =		{ 0.f,0.1f,0.02f,1.f };
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM] =	{ 0.f,1.5f, 0.4f,1.f };
 	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE] =		{ 0.f,3.f,1.1f,1.f };
 
+	_matrix matStart = MakeViewMatrixByUp(m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM], m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM]);
+	XMStoreFloat4x4(&m_matBeforeSpringCam, matStart);
+	
+	m_matBeginWorld = m_matStart = m_matBeforeSpringCam;
 	return S_OK;
 }
 
@@ -135,22 +135,24 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 	m_eCurPlayerSize = pTargetPlayer->Get_Player_Size();
 	if (m_eCurPlayerSize != m_ePrePlayerSize)
 	{
+		
 		m_dLerpToCurSizeTime = 0.0;
 		m_ePrePlayerSize = m_eCurPlayerSize;
+		switch (m_eCurPlayerSize)
+		{
+		case Client::CCody::SIZE_SMALL:
+			m_pActorCom->Set_Scale(0.02f,0.001f);
+			break;
+		case Client::CCody::SIZE_MEDIUM:
+			m_pActorCom->Set_Scale(0.4f,0.001f);
+			break;
+		case Client::CCody::SIZE_LARGE:
+			m_pActorCom->Set_Scale(0.4f ,0.001f);
+			break;
+		}
 	}
 	m_bIsLerpToCurSize = LerpToCurSize(m_eCurPlayerSize, dTimeDelta);
-	switch (m_eCurPlayerSize)
-	{
-	case Client::CCody::SIZE_SMALL:
-		m_pActorCom->Set_Radius(0.02f);
-		break;
-	case Client::CCody::SIZE_MEDIUM:
-		m_pActorCom->Set_Radius(0.8f);
-		break;
-	case Client::CCody::SIZE_LARGE:
-		m_pActorCom->Set_Radius(0.8f);
-		break;
-	}
+	
 
 }
 
@@ -168,9 +170,9 @@ _bool CMainCamera::LerpToCurSize(CCody::PLAYER_SIZE eSize,_double dTimeDelta)
 	if (m_dLerpToCurSizeTime > 1.f)
 		return false;
 	_matrix CurStartMatrix = XMLoadFloat4x4(&m_matStart);
-	_matrix TargetMatrix = MakeViewMatrixByUp(m_vSizeEye[eSize], m_vSizeAt[eSize], XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	_matrix TargetMatrix = MakeViewMatrixByUp(m_vSizeEye[eSize], m_vSizeAt[eSize]);
 
-	m_dLerpToCurSizeTime += dTimeDelta * 3.f;
+	m_dLerpToCurSizeTime += dTimeDelta * 5.f;
 
 	XMStoreFloat4x4(&m_matStart, MakeLerpMatrix(CurStartMatrix, TargetMatrix, (_float)m_dLerpToCurSizeTime));
 	return true;
@@ -317,18 +319,20 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	//SoftMoving
 	_vector vPrePlayerPos = XMLoadFloat4(&m_vPlayerPos);
 	_vector vCurPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-	vCurPlayerPos += XMLoadFloat4(&m_vSizeAt[m_eCurPlayerSize]);
+	vCurPlayerPos += XMVectorSetW(XMLoadFloat4(&m_vSizeAt[m_eCurPlayerSize]),0.f);
 	//카메라와 플레이어의 실제 거리
 	_vector vPlayerPos = vCurPlayerPos;
 	_float fDist = fabs(XMVectorGetX(XMVector4Length(vPrePlayerPos - vCurPlayerPos)));
-	_bool bIsTeleport = true;
-	if (fDist < 10.f&&  fDist > 0.01f) //순간이동안했을때
+	_bool bIsTeleport = false;
+	if (fDist < 10.f && fDist > 0.01f) //순간이동안했을때
 	{
 		vPlayerPos = XMVectorLerp(vPrePlayerPos, vCurPlayerPos, 
-			XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta);
-		bIsTeleport = false;
+			XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 10.f);
 	}
-
+	else if(fDist > 10.f)
+		bIsTeleport = true;
+	
+	
 	XMStoreFloat4(&m_vPlayerPos, vPlayerPos);
 
 	//회전 보간(마우스)
@@ -372,18 +376,9 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 		if (m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos)) //SpringCamera
 		{
 			_float4 vEye, vAt;
-			_float fLength = XMVectorGetX(XMVector4Length(vResultPos - vPlayerPos));
-			if (fLength <= m_pActorCom->Get_ColliderRadius())
-			{
-				_vector vDir = XMVector3Normalize(matAffine.r[2]);
-				XMStoreFloat4(&vEye, vResultPos);
-				XMStoreFloat4(&vAt, vResultPos + vDir);
-			}
-			else
-			{
-				XMStoreFloat4(&vEye, vResultPos);
-				XMStoreFloat4(&vAt, vPlayerPos);
-			}
+		
+			XMStoreFloat4(&vEye, vResultPos);
+			XMStoreFloat4(&vAt, vPlayerPos);
 			_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt);
 			matAffine = matCurWorld;
 		}
@@ -454,9 +449,10 @@ _bool CMainCamera::OffSetPhsX(_fmatrix matWorld, _double dTimeDelta,_vector * pO
 	vDir = vPos - vPlayerPos;
 
 	m_pActorCom->Set_Position(vPlayerPos);
-	if (m_pActorCom->Move(vDir, dTimeDelta)) 
+
+	if (m_pActorCom->Move(vDir, dTimeDelta))
 	{
-		*pOut = m_pActorCom->Get_Position();
+		*pOut = XMVectorSetW(m_pActorCom->Get_Position()/*Get_Position()*/,1.f);
 		return true;
 	}
 

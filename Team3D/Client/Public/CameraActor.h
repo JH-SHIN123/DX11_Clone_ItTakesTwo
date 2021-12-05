@@ -37,7 +37,10 @@ public:
 	void	Set_CorrectPosition();
 	void	Set_HitPos(PxExtendedVec3 vPos) { m_vHitPos = vPos; }
 	void	Set_HitNormal(PxVec3 vNormal) { m_vHitNormal = vNormal; }
-	void	Set_Radius(_float fRadius) { static_cast<PxCapsuleController*>(m_pController)->setRadius(fRadius); }
+	void	Set_Scale(_float fRadius,_float fHeight = 0.1f) { 
+		static_cast<PxCapsuleController*>(m_pController)->setRadius(fRadius);
+		static_cast<PxCapsuleController*>(m_pController)->setHeight(fHeight);
+	}
 private:
 	GameID::Enum					m_eID;
 	PxController*					m_pController = nullptr;
