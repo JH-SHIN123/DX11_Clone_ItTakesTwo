@@ -637,6 +637,9 @@
     <Filter Include="01.Maps\03.Stage_Space">
       <UniqueIdentifier>{5bbd0183-dea1-417a-b173-4e16c2288048}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96.Debug">
+      <UniqueIdentifier>{7904050b-bece-47ac-9d69-2652f5e7bc09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1125,6 +1128,9 @@
     <ClInclude Include="..\Public\Client_MathHelper.h">
       <Filter>98.Defines\01.Client</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\GameDebugger.h">
+      <Filter>96.Debug</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1592,6 +1598,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CameraHitReport.cpp">
       <Filter>03.Component\01.Actor\01.CameraActor\03.HitReport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameDebugger.cpp">
+      <Filter>96.Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
