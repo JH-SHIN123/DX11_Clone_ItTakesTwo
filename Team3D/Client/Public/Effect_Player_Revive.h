@@ -29,11 +29,11 @@ private:
 	void	Set_VtxColor(_int iIndex, _uint iVtxIndex);
 
 private:
-	CModel* m_pTargetModel = nullptr;
 	_float4* m_pInstance_TargetPos = nullptr;
 	_double m_dTime = 2.f;
 	_float m_fFarRatio_Max = 5.f;
 	_float m_fFarRatio = 5.f;
+	_float m_fTeseTime = 0.f;
 
 public:
 	static CEffect_Player_Revive* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

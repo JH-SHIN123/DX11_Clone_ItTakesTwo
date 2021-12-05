@@ -151,7 +151,8 @@ public:
 	*/
 	HRESULT	Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
 
-	HRESULT	Render_Model_VERTEX(_uint iPassIndex, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
+	/*이펙트 전용 */
+	HRESULT	Render_Model_VERTEX(_uint iPassIndex, void * VertexMatrices = nullptr, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
 
 private: /* Typedef */
 	typedef vector<class CMesh*>			MESHES;

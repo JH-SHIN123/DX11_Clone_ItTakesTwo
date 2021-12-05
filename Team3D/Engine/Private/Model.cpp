@@ -542,7 +542,7 @@ HRESULT CModel::Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool 
 	return S_OK;
 }
 
-HRESULT CModel::Render_Model_VERTEX(_uint iPassIndex, RENDER_GROUP::Enum eGroup)
+HRESULT CModel::Render_Model_VERTEX(_uint iPassIndex, void * VertexMatrices, RENDER_GROUP::Enum eGroup)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
 

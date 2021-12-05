@@ -88,6 +88,21 @@ namespace Engine
 		float		fTime;
 	}VTXMATRIX_CUSTOM_STT;
 
+	typedef struct tagVertexMatrix_Custom_SizeTexUVTimeBlendIndexWeight
+	{
+		XMFLOAT4	vRight;
+		XMFLOAT4	vUp;
+		XMFLOAT4	vLook;
+		XMFLOAT4	vPosition;
+
+		XMFLOAT2	vSize;
+		XMFLOAT4	vTextureUV;
+		float		fTime;
+
+		XMUINT4		vBlendIndex;
+		XMFLOAT4	vBlendWeight;
+	}VTXMATRIX_CUSTOM_STT_BIBW;
+
 	typedef struct tagVertexFont
 	{
 		XMFLOAT3	vPosition;

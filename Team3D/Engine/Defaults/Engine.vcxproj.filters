@@ -232,6 +232,9 @@
     <Filter Include="02.Utility\02.Component\07.Path">
       <UniqueIdentifier>{b3160846-520a-4bb2-bead-ebb4718dfba1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\02.Component\04.VIBuffer\03.Instance\06.Point_Custom_STT_BIBW">
+      <UniqueIdentifier>{d0b07947-13c1-4117-bb66-1dcc767b79cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\GameInstance.h">
@@ -426,6 +429,9 @@
     <ClInclude Include="..\public\Engine_MathHelper.h">
       <Filter>99.Defines\01.Engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_PointInstance_Custom_STT_BIBW.h">
+      <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\06.Point_Custom_STT_BIBW</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -589,6 +595,9 @@
     </ClCompile>
     <ClCompile Include="..\private\PhysX.cpp">
       <Filter>02.Utility\02.Component\06.Actor\99.PhysX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_PointInstance_Custom_STT_BIBW.cpp">
+      <Filter>02.Utility\02.Component\04.VIBuffer\03.Instance\06.Point_Custom_STT_BIBW</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

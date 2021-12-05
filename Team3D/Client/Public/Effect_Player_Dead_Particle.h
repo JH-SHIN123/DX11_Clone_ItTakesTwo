@@ -26,7 +26,8 @@ public:
 private:
 	HRESULT Ready_Instance();
 	_float4 Set_particleUV(_int iIndex, _int U, _int V);
-	void	Set_VtxColor(_int iIndex, _uint iVtxIndex);
+	void	Set_VtxColor(_int iIndex, _uint iVtxIndex);	
+	void	SetUp_Rand_Dir();
 
 private:
 	_double m_dAlphaTime = 1.5;
@@ -34,6 +35,10 @@ private:
 	CTextures* m_pTexturesCom_Particle = nullptr;
 	CTextures* m_pTexturesCom_Particle_Mask = nullptr;
 	_float m_fMoveTime = 0.f;
+	_float3 m_vDir_Array[256];
+	_float2 m_vSize = { 0.02f, 0.02f };
+	_float m_fSizePower = 1.f;
+	_float4 m_vTargetPos;
 
 public:
 	static CEffect_Player_Dead_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

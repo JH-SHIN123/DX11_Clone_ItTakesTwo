@@ -238,6 +238,7 @@ call WinCmd_UpdateLib_Release.bat</Command>
     <ClInclude Include="..\public\VIBuffer_PointInstance.h" />
     <ClInclude Include="..\Public\VIBuffer_PointInstance_Custom_ST.h" />
     <ClInclude Include="..\public\VIBuffer_PointInstance_Custom_STT.h" />
+    <ClInclude Include="..\public\VIBuffer_PointInstance_Custom_STT_BIBW.h" />
     <ClInclude Include="..\public\VIBuffer_Rect.h" />
     <ClInclude Include="..\public\VIBuffer_RectInstance.h" />
     <ClInclude Include="..\Public\VIBuffer_RectInstance_Custom.h" />
@@ -293,6 +294,7 @@ call WinCmd_UpdateLib_Release.bat</Command>
     <ClCompile Include="..\private\VIBuffer_PointInstance.cpp" />
     <ClCompile Include="..\Private\VIBuffer_PointInstance_Custom_ST.cpp" />
     <ClCompile Include="..\private\VIBuffer_PointInstance_Custom_STT.cpp" />
+    <ClCompile Include="..\private\VIBuffer_PointInstance_Custom_STT_BIBW.cpp" />
     <ClCompile Include="..\private\VIBuffer_Rect.cpp" />
     <ClCompile Include="..\private\VIBuffer_RectInstance.cpp" />
     <ClCompile Include="..\Private\VIBuffer_RectInstance_Custom.cpp" />

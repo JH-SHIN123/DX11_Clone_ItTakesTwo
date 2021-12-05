@@ -22,7 +22,10 @@ cbuffer Mesh_EffectDesc
 {
 	float			g_fTime;
 	float2			g_vParticleSize;
-	float3			g_vDir[256];
+	float3			g_vDir;
+	float3			g_vDir_Array[256];
+	float4			g_vPos;
+	float4			g_vPos_Array[256];
 	float4			g_vTextureUV_LTRB;
 };
 ////////////////////////////////////////////////////////////
@@ -95,6 +98,61 @@ VS_OUT_CSM_DEPTH VS_MAIN_CSM_DEPTH(VS_IN In, uniform bool isSkinned)
 
 	return Out;
 }
+
+/* _____________________________________Effect_____________________________________*/
+VS_OUT	VS_MAIN_EFFECT(VS_IN In)
+{
+	VS_OUT Out = (VS_OUT)0;
+
+	matrix	BoneMatrix = (g_BoneMatrices.Matrices[In.vBlendIndex.x] * In.vBlendWeight.x) + (g_BoneMatrices.Matrices[In.vBlendIndex.y] * In.vBlendWeight.y) + (g_BoneMatrices.Matrices[In.vBlendIndex.z] * In.vBlendWeight.z) + (g_BoneMatrices.Matrices[In.vBlendIndex.w] * In.vBlendWeight.w);
+	matrix	matBW = mul(BoneMatrix, g_WorldMatrix);
+	//iIndex += 1;
+	//g_vDir_
+	//float rand = noise(50);
+	Out.vPosition = mul(vector(In.vPosition, 1.f), matBW);
+
+	float3	vDir = /*float3(g_vDir_Array[In.vBlendWeight.x].x, g_vDir_Array[In.vBlendWeight.x].x, g_vDir_Array[In.vBlendWeight.x].x);//*/(Out.vPosition - g_vPos).xyz;
+	float	fLength = length(vDir);
+
+
+	Out.vPosition.xyz += (vDir) * g_fTime ;
+
+	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), matBW));
+	Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), matBW));
+	Out.vBiNormal = normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
+	Out.vTexUV = In.vTexUV;
+
+	return Out;
+}
+
+VS_OUT	VS_MAIN_EFFECT_INSTANCE_POS(VS_IN In)
+{
+	VS_OUT Out = (VS_OUT)0;
+
+	matrix	BoneMatrix = (g_BoneMatrices.Matrices[In.vBlendIndex.x] * In.vBlendWeight.x) + (g_BoneMatrices.Matrices[In.vBlendIndex.y] * In.vBlendWeight.y) + (g_BoneMatrices.Matrices[In.vBlendIndex.z] * In.vBlendWeight.z) + (g_BoneMatrices.Matrices[In.vBlendIndex.w] * In.vBlendWeight.w);
+	matrix	matBW = mul(BoneMatrix, g_WorldMatrix);
+	//iIndex += 1;
+	//g_vDir_
+	//float rand = noise(50);
+	Out.vPosition = mul(vector(In.vPosition, 1.f), matBW);
+
+	float4 vPos = float4(g_vPos_Array[In.vBlendIndex.x].x, g_vPos_Array[In.vBlendIndex.y].y, g_vPos_Array[In.vBlendIndex.z].z, 1.f);
+
+	float3	vDir = normalize(Out.vPosition - vPos);
+	float	fLength = length(vDir);
+	Out.vPosition = vPos;
+
+	Out.vPosition.xyz += (vDir)* g_fTime * 3.f;
+
+	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), matBW));
+	Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), matBW));
+	Out.vBiNormal = normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
+	Out.vTexUV = In.vTexUV;
+
+	return Out;
+}
+/* ________________________________________________________________________________*/
+
 ////////////////////////////////////////////////////////////
 
 struct GS_IN
@@ -234,7 +292,7 @@ struct GS_OUT_DOUBLE_UV
 void GS_MAIN_POINT(point GS_IN In[1], inout TriangleStream<GS_OUT_DOUBLE_UV> TriStream)
 {
 	GS_OUT_DOUBLE_UV Out[8];
-	In[0].vPosition = In[0].vPosition + normalize(In[0].vNormal) * g_fTime;
+	//In[0].vPosition = In[0].vPosition + normalize(In[0].vNormal) * g_fTime;
 
 	float3		vLook = normalize(g_vMainCamPosition - In[0].vPosition).xyz;
 	float3		vAxisY = vector(0.f, 1.f, 0.f, 0.f).xyz;
@@ -630,7 +688,17 @@ technique11 DefaultTechnique
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_MAIN();
+		VertexShader = compile vs_5_0 VS_MAIN_EFFECT();
+		GeometryShader = compile gs_5_0 GS_MAIN_POINT();
+		PixelShader = compile ps_5_0 PS_EFFECT_MASKING();
+	}
+
+	pass Skinned_PointDraw_InstancePoint // 9
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_EFFECT_INSTANCE_POS();
 		GeometryShader = compile gs_5_0 GS_MAIN_POINT();
 		PixelShader = compile ps_5_0 PS_EFFECT_MASKING();
 	}

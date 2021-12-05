@@ -7,7 +7,7 @@ CEffect_Player_Dead_Particle::CEffect_Player_Dead_Particle(ID3D11Device * pDevic
 }
 
 CEffect_Player_Dead_Particle::CEffect_Player_Dead_Particle(const CEffect_Player_Dead_Particle & rhs)
-	: CInGameEffect(rhs)
+	: CInGameEffect(rhs), m_vTargetPos(rhs.m_vTargetPos)
 {
 }
 
@@ -15,7 +15,8 @@ HRESULT CEffect_Player_Dead_Particle::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	//TEst
+	m_vTargetPos = { 0.f, 0.f, 0.f, 1.f };
+
 	return S_OK;
 }
 
@@ -44,6 +45,18 @@ HRESULT CEffect_Player_Dead_Particle::NativeConstruct(void * pArg)
 
 //	m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
 //	m_pModelCom->Set_NextAnimIndex(ANI_M_Death_Fall_MH);
+	SetUp_Rand_Dir();
+
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	_vector vPos = WorldMatrix.r[3];
+	vPos += XMVector3Normalize(WorldMatrix.r[1]) * (XMVector3Length(WorldMatrix.r[1]));
+	//vPos += XMVector3Normalize(WorldMatrix.r[2]) * (XMVector3Length(WorldMatrix.r[2]) * 1.5f);
+	XMStoreFloat4(&m_vTargetPos, vPos);
+
+
+	m_fSizePower = XMVector3Length(WorldMatrix.r[0]).m128_f32[0];
+	m_vSize.x *= m_fSizePower;
+	m_vSize.y *= m_fSizePower;
 
 	return S_OK;
 }
@@ -63,6 +76,15 @@ _int CEffect_Player_Dead_Particle::Tick(_double TimeDelta)
 // 		Instance_Pos((_float)TimeDelta, iIndex);
 // 		Instance_Size((_float)TimeDelta, iIndex);
 // 	}
+	// 좀 더 다이나믹한 움직임을 줄 수는 없을까............
+
+	m_vSize.x -= (_float)TimeDelta * 0.01f * m_fSizePower;
+	m_vSize.y -= (_float)TimeDelta * 0.01f * m_fSizePower;
+	if (0.f >= m_vSize.x)
+	{
+		m_vSize.x = 0.f;
+		m_vSize.y = 0.f;
+	}
 
 	return _int();
 }
@@ -85,17 +107,20 @@ HRESULT CEffect_Player_Dead_Particle::Render(RENDER_GROUP::Enum eGroup)
 	//
 	//m_pPointInstanceCom->Render(4, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
 	_float4 vTextureUV_LTRB = { 0.f,0.f,1.f,1.f };
-	m_pModelCom->Set_ShaderResourceView("g_MaskingTexture", m_pTexturesCom_Particle_Mask->Get_ShaderResourceView(0));
+	
+	m_pModelCom->Set_Variable("g_vPos", &m_vTargetPos, sizeof(_float4));
+	m_pModelCom->Set_Variable("g_vDir_Array", &m_vDir_Array, sizeof(_float3) * 256);
+
 	m_pModelCom->Set_Variable("g_fTime", &m_fMoveTime, sizeof(_float));
-	m_pModelCom->Set_Variable("g_vParticleSize", &_float2(0.005f, 0.005f), sizeof(_float2));
+	m_pModelCom->Set_Variable("g_vParticleSize", &m_vSize, sizeof(_float2));
 	m_pModelCom->Set_Variable("g_vTextureUV_LTRB", &_float4(0.f, 0.f, 1.f, 1.f), sizeof(_float4));
 
+	m_pModelCom->Set_ShaderResourceView("g_MaskingTexture", m_pTexturesCom_Particle_Mask->Get_ShaderResourceView(0));
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Render_Model_VERTEX(9);
 
 	return S_OK;
 }
-
 void CEffect_Player_Dead_Particle::Instance_Size(_float TimeDelta, _int iIndex)
 {
 	m_pInstanceBuffer[iIndex].vSize.x -= TimeDelta * 0.05f;
@@ -252,6 +277,16 @@ void CEffect_Player_Dead_Particle::Set_VtxColor(_int iIndex, _uint iVtxIndex)
 	}
 
 	m_pInstanceBuffer[iIndex].vTextureUV = Set_particleUV(iIndex, 4, 4);
+}
+
+void CEffect_Player_Dead_Particle::SetUp_Rand_Dir()
+{
+	for (_int i = 0; i < 256; ++i)
+	{
+		m_vDir_Array[i] = Get_Dir_Rand(_int3(100, 100, 100));
+		_vector vDir = XMLoadFloat3(&m_vDir_Array[i]) /** (_float(rand() % 100) * 0.0025f)*/;
+		XMStoreFloat3(&m_vDir_Array[i], vDir);
+	}
 }
 
 CEffect_Player_Dead_Particle * CEffect_Player_Dead_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
