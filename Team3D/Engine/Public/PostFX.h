@@ -18,7 +18,7 @@ public:
 private:
 	HRESULT DownScale(_double TimeDelta);
 	HRESULT Bloom();
-	HRESULT Blur();
+	HRESULT Blur(ID3D11ShaderResourceView* pInput, ID3D11UnorderedAccessView* pOutput);
 	HRESULT FinalPass();
 
 	HRESULT Tick_Adaptation(_double TimeDelta);
@@ -26,6 +26,7 @@ private:
 private:
 	HRESULT Build_LuminanceBuffer(_float iWidth, _float iHeight); /* 휘도의 중간값을 저장하기 위한 리소스들 & 부동소수점 형태로 평균 휘도 값을 저장 */
 	HRESULT Build_BloomResources(_float iWidth, _float iHeight);
+	HRESULT Build_DOFBlurResources(_float iWidth, _float iHeight);
 	HRESULT Build_ComputeShaders(const _tchar* pShaderFilePath, const char* pTechniqueName);
 
 	HRESULT	Set_Variable(const char* pConstantName, void* pData, _uint iByteSize);
@@ -80,6 +81,11 @@ private: /* For. Bloom */
 	ID3D11Texture2D*			m_pBloomTex = nullptr; // g_Bloom
 	ID3D11UnorderedAccessView*	m_pUnorderedAccessView_Bloom = nullptr;
 	ID3D11ShaderResourceView*	m_pShaderResourceView_Bloom = nullptr;
+
+private: /* For. DOF */
+	ID3D11Texture2D* m_pDORBlur = nullptr;
+	ID3D11UnorderedAccessView* m_pUnorderedAccessView_DORBlur = nullptr;
+	ID3D11ShaderResourceView* m_pShaderResourceView_DORBlur = nullptr;
 
 private: /* For.CS - Shader */
 	ID3DX11Effect* m_pEffect_CS = nullptr;

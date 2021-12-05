@@ -638,7 +638,7 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.fFullScreenAspect = (_float)g_iWinCX / (_float)g_iWinCY;
 	CameraDesc.fAspect = 1.f;
 	CameraDesc.fNear = 0.3f;
-	CameraDesc.fFar = 250.f;
+	CameraDesc.fFar = 350.f;
 	CameraDesc.TransformDesc.dSpeedPerSec = 10.f;
 	CameraDesc.TransformDesc.dRotationPerSec = XMConvertToRadians(90.f);
 
