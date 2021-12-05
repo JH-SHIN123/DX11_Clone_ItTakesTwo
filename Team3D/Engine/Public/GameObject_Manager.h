@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 
-class CGameObject_Manager final : public CBase
+class ENGINE_DLL CGameObject_Manager final : public CBase
 {
 	DECLARE_SINGLETON(CGameObject_Manager)
 private:
@@ -13,6 +13,7 @@ private:
 
 public: /* Getter */
 	void Bring_LayerGameObjects(_uint iLayerLevelIndex, const _tchar* pLayerTag, list<CGameObject*>& GameObjectList);
+	unordered_map<const _tchar*, CLayer*>* Get_Layers() { return m_pLayers; }
 
 public:
 	HRESULT	Reserve_Container(_uint iLevelCount);
