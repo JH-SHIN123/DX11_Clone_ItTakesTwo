@@ -104,7 +104,6 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	else
 		discard;
 
-
 	Out.vShade		= max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient) * fAODesc;
 	Out.vShade.a = 0.f;
 
@@ -158,7 +157,7 @@ PS_OUT PS_POINT(PS_IN In)
 	clip(1 - fDistance);
 	float	fAtt		= 0.5f * COS_ARR(3.14f * pow(fDistance, 1.5f)) + 0.5f;
 
-	Out.vShade		= (max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
+	Out.vShade		= (max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse)) * fAtt;
 	Out.vShade.a = 0.f;
 
 	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Point_Sampler, In.vTexUV);
@@ -206,7 +205,7 @@ PS_OUT PS_POINT(PS_IN In)
 //
 //	// Phong / Specular
 //	// Diffuse
-//	Out.vShade = (max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient));
+//	Out.vShade = (max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse));
 //	Out.vShade.a = 0.f;
 //
 //	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Wrap_Sampler, In.vTexUV);
