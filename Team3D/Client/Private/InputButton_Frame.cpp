@@ -171,7 +171,10 @@ void CInputButton_Frame::Render_Font()
 		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
 		tFontDesc.vScale = { 30.f, 40.f };
 
-		UI_Generator->Render_Font(TEXT("Q 취소"), tFontDesc, m_ePlayerID);
+		UI_Generator->Render_Font(TEXT("Q"), tFontDesc, m_ePlayerID);
+		tFontDesc.vScale = { 20.f, 30.f };
+		tFontDesc.vPosition = { m_UIDesc.vPos.x + 45.f, m_UIDesc.vPos.y };
+		UI_Generator->Render_Font(TEXT("취소"), tFontDesc, m_ePlayerID);
 	}
 }
 
