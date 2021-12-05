@@ -23,7 +23,7 @@ HRESULT CRotationBox::NativeConstruct(void * pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
 
-	m_UserData.eID = GameID::eELECTRICBOX;
+	m_UserData.eID = GameID::eROTATIONBOX;
 	m_UserData.pGameObject = this;
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
@@ -37,7 +37,9 @@ _int CRotationBox::Tick(_double dTimeDelta)
 
 	Movement(dTimeDelta);
 
-	m_dCoolTime += dTimeDelta;
+	_vector vScale, vRotQuat, vPosition;
+	XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, m_pTransformCom->Get_WorldMatrix());
+	(m_pDynamicActorCom->Get_Actor())->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
 
 	return NO_EVENT;
 }
@@ -77,194 +79,88 @@ HRESULT CRotationBox::Render_ShadowDepth()
 
 void CRotationBox::Movement(_double dTimeDelta)
 {
-	//Rotate_Right(2.f, dTimeDelta * 20.f);
-	//Rotate_Left(2.f, dTimeDelta * 20.f);
-	//Random_Rotate(dTimeDelta);
-
-	Rotate_Angle(5.f, dTimeDelta);
-	Rotate_Random(dTimeDelta);
-
-	m_pStaticActorCom->Update_StaticActor();
+	Rotate_Angle(5.0, 5.0, dTimeDelta);
+	Rotate_Random(5.0, dTimeDelta);
 }
 
-void CRotationBox::Rotate_Right(_float fMaxAngle, _double dTimeDelta)
-{
-	if (true == m_bSwitching || true == m_bTrigger)
-		return;
-
-	_float fAngle = (_float)dTimeDelta;
-
-	if (false == m_bDirChange)
-	{
-		m_fAngle += fAngle;
-
-		if (m_fAngle >= fMaxAngle)
-		{
-			m_fAngle = 0.f;
-			fAngle = m_fAngle - fAngle;
-			m_bDirChange = true;
-		}
-		m_pTransformCom->RotateRoll_Angle(fAngle);
-	}
-	else
-	{
-		m_fAngle += fAngle;
-
-		if (m_fAngle >= fMaxAngle)
-		{
-			m_fAngle = 0.f;
-			fAngle = m_fAngle - fAngle;
-			m_bDirChange = false;
-			m_bSwitching = true;
-
-			if (m_dCoolTime >= 5.f)
-			{
-				m_iRandom = rand() % 2;
-				m_bTrigger = true;
-				m_dCoolTime = 0.f;
-				return;
-			}
-		}
-		m_pTransformCom->RotateRoll_Angle(-fAngle);
-	}
-}
-
-void CRotationBox::Rotate_Left(_float fMaxAngle, _double dTimeDelta)
-{
-	if (false == m_bSwitching || true == m_bTrigger)
-		return;
-
-	_float fAngle = (_float)dTimeDelta;
-
-	if (false == m_bDirChange)
-	{
-		m_fAngle -= fAngle;
-
-		if (m_fAngle <= -fMaxAngle)
-		{
-			m_fAngle = 0.f;
-			fAngle = m_fAngle - fAngle;
-			m_bDirChange = true;
-		}
-		m_pTransformCom->RotateRoll_Angle(fAngle);
-	}
-	else
-	{
-		m_fAngle -= fAngle;
-
-		if (m_fAngle <= -fMaxAngle)
-		{
-			m_fAngle = 0.f;
-			fAngle = m_fAngle - fAngle;
-			m_bDirChange = false;
-			m_bSwitching = false;
-
-			if (m_dCoolTime >= 5.f)
-			{
-				m_iRandom = rand() % 2;
-				m_bTrigger = true;
-				m_dCoolTime = 0.f;
-				return;
-			}
-		}
-		m_pTransformCom->RotateRoll_Angle(-fAngle);
-	}
-}
-
-void CRotationBox::Random_Rotate(_double dTimeDelta)
-{
-	if (false == m_bTrigger)
-		return;
-
-	_float fAngle = (_float)dTimeDelta * 100.f;
-
-	m_fAngle += fAngle;
-
-	if (m_fAngle >= 90.f)
-	{
-		m_fAngle = 0.f;
-		fAngle = m_fAngle - fAngle;
-		m_bTrigger = false;
-	}
-
-	if (0 == m_iRandom)
-		m_pTransformCom->RotateRoll_Angle(fAngle);
-	else
-		m_pTransformCom->RotateRoll_Angle(-fAngle);
-}
-
-void CRotationBox::Rotate_Angle(_float fMaxAngle, _double dTimeDelta)
+void CRotationBox::Rotate_Angle(_double fMaxAngle, _double dSpeed, _double dTimeDelta)
 {
 	if (true == m_bRotate_Random)
 		return;
 
 	if (true == m_bRotate_Start)
-		fMaxAngle *= 2.f;
+		fMaxAngle *= 2.0;
 
-	m_dRotate_Random += dTimeDelta;
-	if (20.0 <= m_dRotate_Random)
+	m_dCoolTime += dTimeDelta;
+	if (5.0 <= m_dCoolTime)
 	{
-		if (true == m_bRotate_Left)
-			m_pTransformCom->RotateRoll_Angle(m_fAngle);
+		if (true == m_bDirChange)
+			m_pTransformCom->RotateRoll_Angle(m_dAngle - (fMaxAngle * 0.5));
 		else
-			m_pTransformCom->RotateRoll_Angle(-m_fAngle);
+			m_pTransformCom->RotateRoll_Angle((fMaxAngle * 0.5) - m_dAngle);
 
 		m_bRotate_Random = true;
-		m_dRotate_Random = 0.0;
-		m_fAngle = 0.f;
-		//m_iRandom = rand() % 2;
-		m_iRandom = 0;
+		m_dCoolTime = 0.0;
+		m_dAngle = 0.0;
+		m_iRandom = rand() % 2;
 		return;
 	}
 
-	_float fAngle = (_float)dTimeDelta * (2.f * fMaxAngle);
-	m_fAngle += fAngle;
-	if (fMaxAngle <= m_fAngle)
+	_double dAngle = (dTimeDelta * (dSpeed * fMaxAngle));
+	if (fMaxAngle <= m_dAngle + dAngle)
 	{
-		m_bRotate_Left = !m_bRotate_Left;
-		fAngle = m_fAngle - fMaxAngle;
-		m_fAngle = 0.f;
-		m_bRotate_Start = true;
+		m_bDirChange = !m_bDirChange;
+		dAngle = fMaxAngle - m_dAngle;
+		m_dAngle = 0.0;
+		m_bRotate_Start = true; 
 	}
-	if (true == m_bRotate_Left)
-		m_pTransformCom->RotateRoll_Angle(-fAngle);
 	else
-		m_pTransformCom->RotateRoll_Angle(fAngle);
+		m_dAngle += dAngle;
+		
+	if (true == m_bDirChange)
+		m_pTransformCom->RotateRoll_Angle(-dAngle);
+	else
+		m_pTransformCom->RotateRoll_Angle(dAngle);
 }
 
-void CRotationBox::Rotate_Random(_double dTimeDelta)
+void CRotationBox::Rotate_Random(_double dSpeed, _double dTimeDelta)
 {
-	if (true == m_bRotate_Random)
+	if (false == m_bRotate_Random)
 		return;
 
-	_float fAngle = (_float)dTimeDelta * (2.f * 90.f);
-
-	m_fAngle += fAngle;
-
-	if (m_fAngle >= 90.f)
+	_double dAngle = dTimeDelta * (90.0 * dSpeed);
+	if (m_dAngle + dAngle >= 90.0)
 	{
-		m_bRotate_Left = true;
+		dAngle = 90.0 - m_dAngle;
+		m_bDirChange = true;
 		m_bRotate_Start = false;
 		m_bRotate_Random = false;
-		fAngle = m_fAngle - 90.f;
-		m_fAngle = 0.f;
+		m_dAngle = 0;
 	}
+	else
+		m_dAngle += dAngle;
 
 	if (0 == m_iRandom)
-		m_pTransformCom->RotateRoll_Angle(fAngle);
+		m_pTransformCom->RotateRoll_Angle(dAngle);
 	else
-		m_pTransformCom->RotateRoll_Angle(-fAngle);
+		m_pTransformCom->RotateRoll_Angle(-dAngle);
 }
 
 HRESULT CRotationBox::Ready_Component(void * pArg)
 {
-	/* Static */
-	CStaticActor::ARG_DESC tStaticActorArg;
-	tStaticActorArg.pTransform = m_pTransformCom;
-	tStaticActorArg.pModel = m_pModelCom;
-	tStaticActorArg.pUserData = &m_UserData;
+	/* Dynamic */
+	PxGeometry* Geom = new PxBoxGeometry(0.5f, 0.5f, 0.5f);
+	CDynamicActor::ARG_DESC tDynamicActorArg;
+	tDynamicActorArg.pTransform = m_pTransformCom;
+	tDynamicActorArg.fDensity = 1.f;
+	tDynamicActorArg.pGeometry = Geom;
+	tDynamicActorArg.vVelocity = PxVec3(0.f, 0.f, 0.f);
+	tDynamicActorArg.pUserData = &m_UserData;
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
+	Safe_Delete(Geom);
+
+	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 	return S_OK;
 }
@@ -295,7 +191,7 @@ CGameObject * CRotationBox::Clone_GameObject(void * pArg)
 
 void CRotationBox::Free()
 {
-	Safe_Release(m_pStaticActorCom);
+	Safe_Release(m_pDynamicActorCom);
 
 	CDynamic_Env::Free();
 }

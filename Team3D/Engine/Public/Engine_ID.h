@@ -75,7 +75,8 @@ namespace Engine
 			eEJECTIONBUTTON,
 			ePRESS,
 			eROTATIONFAN,
-			ePEDAL
+			ePEDAL,
+			eROTATIONBOX
 		};
 	};
 

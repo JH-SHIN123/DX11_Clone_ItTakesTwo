@@ -23,7 +23,7 @@ HRESULT CPress::NativeConstruct(void * pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
 
-	m_UserData.eID = GameID::eELECTRICBOX;
+	m_UserData.eID = GameID::ePRESS;
 	m_UserData.pGameObject = this;
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
@@ -35,12 +35,19 @@ _int CPress::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
+
+	if (m_pGameInstance->Key_Down(DIK_K))
+		m_bSmash = true;
+
+	Movement(dTimeDelta);
 	return NO_EVENT;
 }
 
 _int CPress::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
+
+	m_pStaticActorCom->Update_StaticActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -82,9 +89,47 @@ void CPress::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject 
 	}
 }
 
-void CPress::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+void CPress::Movement(_double dTimeDelta)
 {
-	CDynamic_Env::OnContact(eStatus, eID, pGameObject);
+	//Ready(dTimeDelta);
+	Smesh(dTimeDelta);
+}
+
+void CPress::Ready(_double dTimeDelta)
+{
+	if (true == m_bSmash)
+		return;
+
+	m_pTransformCom->Set_Speed(1.f, 0.f);
+
+	_double	dDis = dTimeDelta;
+	m_dDistance += dDis;
+
+	if (m_dDistance >= m_dSmeshDistance)
+	{
+		m_dDistance = 0.f;
+		m_bSmash = true;
+	}
+
+	m_pTransformCom->Go_Straight(dDis);
+}
+
+void CPress::Smesh(_double dTimeDelta)
+{
+	if (false == m_bSmash)
+		return;
+
+	m_pTransformCom->Set_Speed(5.f, 0.f);
+
+	_double	dDis = dTimeDelta;
+	m_dDistance += dDis;
+
+	if (m_dDistance >= m_dSmeshDistance)
+	{
+		m_dDistance = 0.0;
+		m_bSmash = false;
+	}
+	m_pTransformCom->Go_Straight(-dDis);
 }
 
 HRESULT CPress::Ready_Component(void * pArg)

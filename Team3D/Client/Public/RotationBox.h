@@ -20,30 +20,20 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 private:
-	CStaticActor*	m_pStaticActorCom = nullptr;
+	CDynamicActor*	m_pDynamicActorCom = nullptr;
 
-	_bool			m_bTrigger = true;
-	_bool			m_bDirChange = false;
-	_bool			m_bSwitching = false;
+	_bool			m_bDirChange = true;
+	_bool			m_bRotate_Random = false;
+	_bool			m_bRotate_Start = false;
 
-	_double			m_dCoolTime = 0.f;
-	_float			m_fAngle = 0.f;
+	_double			m_dCoolTime = 0.0;
+	_double			m_dAngle = 0.0;
 	_uint			m_iRandom = 0;
 
 private:
 	void Movement(_double dTimeDelta);
-	void Rotate_Right(_float fMaxAngle, _double dTimeDelta);
-	void Rotate_Left(_float fMaxAngle, _double dTimeDelta);
-	void Random_Rotate(_double dTimeDelta);
-
-private:	// ¼öÁ¤ Áß
-	_bool m_bRotate_Left = true;
-	_bool m_bRotate_Random = false;
-	_bool m_bRotate_Start = false;
-	_double m_dRotate_Random = 0.f;
-
-	void Rotate_Angle(_float fMaxAngle, _double dTimeDelta);
-	void Rotate_Random(_double dTimeDelta);
+	void Rotate_Angle(_double dMaxAngle, _double dSpeed, _double dTimeDelta);
+	void Rotate_Random(_double dSpeed, _double dTimeDelta);
 
 private:
 	HRESULT Ready_Component(void* pArg);

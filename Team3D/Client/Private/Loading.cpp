@@ -23,6 +23,7 @@
 #include "Environment_Generator.h"
 #include "HangingPlanet.h"
 #include "RotationCylinder.h"
+#include "Press.h"
 
 /* Taek */
 #include "Terrain.h" /*Test*/
@@ -687,6 +688,10 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Hye()
 	/* 회전 박스 */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_InteriorPlatform_Medium_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_InteriorPlatform_Medium_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_RotationBox"), CRotationBox::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* 프레스 */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_Interior_PedalSmasher_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_Interior_PedalSmasher_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Press"), CPress::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 #endif //__TEST_HYE
 
 	return S_OK;

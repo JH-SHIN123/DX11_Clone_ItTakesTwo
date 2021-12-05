@@ -164,11 +164,25 @@ HRESULT CLevel_Stage::Ready_Test()
 
 	lstrcpy(tArg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_Medium_01"));
 	tArg.iMaterialIndex = 0;
-	World = /*XMMatrixScaling(3.f, 3.f, 3.f) * */XMMatrixTranslation(30.f, 0.f, 30.f);
+	World = XMMatrixTranslation(30.f, 1.f, 30.f);
 	XMStoreFloat4x4(&tArg.WorldMatrix, World);
 	tArg.iOption = 0;
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Test", Level::LEVEL_STAGE, TEXT("GameObject_RotationBox"), &tArg), E_FAIL);
+
+	lstrcpy(tArg.szModelTag, TEXT("Component_Model_Saucer_Interior_PedalSmasher_01"));
+	tArg.iMaterialIndex = 0;
+	World = XMMatrixTranslation(0.f, 1.f, 50.f);
+	XMStoreFloat4x4(&tArg.WorldMatrix, World);
+	tArg.iOption = 0;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Test", Level::LEVEL_STAGE, TEXT("GameObject_Press"), &tArg), E_FAIL);
+
+	World = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f)) *  XMMatrixTranslation(0.f, 1.f, 45.f);
+	XMStoreFloat4x4(&tArg.WorldMatrix, World);
+	tArg.iOption = 1;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Test", Level::LEVEL_STAGE, TEXT("GameObject_Press"), &tArg), E_FAIL);
 
 
 #endif // __TEST_HYE
