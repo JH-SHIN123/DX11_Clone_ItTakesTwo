@@ -38,12 +38,15 @@ HRESULT CInputButton::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 
-	if(!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Dot")))
-		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
-	else
-		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x - 10.f, m_UIDesc.vScale.y - 10.f, 0.f, 0.f));
-
 	SetUp_Option();
+
+	m_vStartScale = m_UIDesc.vScale;
+
+	if (1 == m_iOption)
+		m_UIDesc.vScale = { 0.f, 0.f };
+	else
+		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x - 15.f, m_UIDesc.vScale.y - 15.f, 0.f, 0.f));
+
 
 	return S_OK;
 }
@@ -54,6 +57,8 @@ _int CInputButton::Tick(_double TimeDelta)
 		return EVENT_DEAD;
 
 	CUIObject::Tick(TimeDelta);
+
+	ScaleEffect(TimeDelta);
 
 	return _int();
 }
@@ -100,6 +105,12 @@ void CInputButton::SetUp_Option()
 	{
 		m_iOption = 1;
 		m_iShaderPassNum = 0;
+
+		if (lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Dot")))
+		{
+			m_UIDesc.vScale.x -= 15.f;
+			m_UIDesc.vScale.y -= 15.f;
+		}
 	}
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Right_TriAngle")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Left_TriAngle")))
 	{
@@ -110,6 +121,19 @@ void CInputButton::SetUp_Option()
 	{
 		m_iOption = 0;
 		m_iShaderPassNum = 0;
+	}
+}
+
+void CInputButton::ScaleEffect(_double TimeDelta)
+{
+	if (1 != m_iOption)
+		return;
+
+	if (m_vStartScale.x >= m_UIDesc.vScale.x)
+	{
+		m_UIDesc.vScale.x += (_float)TimeDelta * 150.f;
+		m_UIDesc.vScale.y += (_float)TimeDelta * 150.f;
+		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 	}
 }
 
