@@ -637,6 +637,9 @@
     <Filter Include="01.Maps\03.Stage_Space">
       <UniqueIdentifier>{5bbd0183-dea1-417a-b173-4e16c2288048}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeJumpWall">
+      <UniqueIdentifier>{d5687656-84bb-46bc-8419-3b919ca77782}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1125,6 +1128,9 @@
     <ClInclude Include="..\Public\DummyWall.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PipeJumpWall.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeJumpWall</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1592,6 +1598,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\DummyWall.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PipeJumpWall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeJumpWall</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
