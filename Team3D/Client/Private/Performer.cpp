@@ -91,6 +91,7 @@ void CPerformer::Start_Perform()
 {
 	m_pModelCom->Set_Animation(1);
 	m_pModelCom->Set_Animation(0);
+
 	m_bStartAnim = true;
 }
 

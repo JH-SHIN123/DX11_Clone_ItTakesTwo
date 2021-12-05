@@ -3,6 +3,7 @@
 #include "Cody.h"
 #include "CameraActor.h"
 #include "PlayerActor.h"
+#include"CutScenePlayer.h"
 
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
@@ -307,8 +308,7 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::LScreen))
 	{
 		if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, XMLoadFloat4x4(&m_matBeginWorld))) //카메라의 원점 
-			m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen));
-		XMStoreFloat4x4(&m_matBeginWorld, m_pTransformCom->Get_WorldMatrix());
+			XMStoreFloat4x4(&m_matBeginWorld, m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen));
 	}
 
 	//카메라 움직임이 끝나고 체크할것들
@@ -373,16 +373,18 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vResultPos = XMVectorZero();
 	if (false == bIsTeleport)
 	{
-		if (m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos)) //SpringCamera
-		{
-			_float4 vEye, vAt;
+		 m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
 		
-			XMStoreFloat4(&vEye, vResultPos);
-			XMStoreFloat4(&vAt, vPlayerPos);
-			_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt);
-			matAffine = matCurWorld;
-		}
+		_float4 vEye, vAt;
+		
+		XMStoreFloat4(&vEye, vResultPos);
+		XMStoreFloat4(&vAt, vPlayerPos);
+		_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt);
+		matAffine = matCurWorld;
+		
 	}
+	else
+		m_bIsCollision = false;
 	m_pTransformCom->Set_WorldMatrix(matAffine);
 
 #pragma endregion
@@ -450,13 +452,11 @@ _bool CMainCamera::OffSetPhsX(_fmatrix matWorld, _double dTimeDelta,_vector * pO
 
 	m_pActorCom->Set_Position(vPlayerPos);
 
-	if (m_pActorCom->Move(vDir, dTimeDelta))
-	{
-		*pOut = XMVectorSetW(m_pActorCom->Get_Position()/*Get_Position()*/,1.f);
-		return true;
-	}
+	m_pActorCom->Move(vDir, dTimeDelta);
+	
+	*pOut = XMVectorSetW(m_pActorCom->Get_Position()/*Get_Position()*/,1.f);
+	return true;
 
-	return false;
 }
 
 
@@ -505,25 +505,27 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 {
 
 	//외부에서 상태 설정 구간
-#ifdef _DEBUG
-
+#ifdef _CJH
 	//if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	//{
-	//	CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
-	//	//m_pCamHelper->Start_Film(L"Film_Begin_Game", CFilm::LScreen);
-	//	return NO_EVENT;
+	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Right", CFilm::RScreen);
 	//}
 
-	if (m_pGameInstance->Key_Down(DIK_O))
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
-		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
+		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
+		return NO_EVENT;
 	}
-	if (m_pGameInstance->Key_Down(DIK_P))
-	{
-		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
-	}
+
+	//if (m_pGameInstance->Key_Down(DIK_O))
+	//{
+	//	m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_P))
+	//{
+	//	m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
+	//}
 #endif
-	//ChangeViewPort();
 
 
 	_int iResult = NO_EVENT;

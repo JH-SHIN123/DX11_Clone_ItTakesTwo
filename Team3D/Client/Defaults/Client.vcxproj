@@ -213,6 +213,8 @@
     <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
     <ClInclude Include="..\Public\ControlRoom_Glass.h" />
+    <ClInclude Include="..\Public\CutScene.h" />
+    <ClInclude Include="..\Public\CutScenePlayer.h" />
     <ClInclude Include="..\Public\GameOption.h" />
     <ClInclude Include="..\public\DeadLine.h" />
     <ClInclude Include="..\Public\DummyWall.h" />
@@ -266,6 +268,7 @@
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_Enter.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
+    <ClInclude Include="..\Public\Performer.h" />
     <ClInclude Include="..\Public\PipeCurve.h" />
     <ClInclude Include="..\Public\MoonBaboonCore.h" />
     <ClInclude Include="..\Public\MoonBaboonCore_Button.h" />
@@ -356,6 +359,8 @@
     <ClCompile Include="..\Private\ControlRoom_Battery.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Door.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Glass.cpp" />
+    <ClCompile Include="..\Private\CutScene.cpp" />
+    <ClCompile Include="..\Private\CutScenePlayer.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp" />
     <ClCompile Include="..\Private\HeaderBox.cpp" />
     <ClCompile Include="..\Private\AlienScreen.cpp" />
@@ -418,6 +423,7 @@
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_Enter.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
+    <ClCompile Include="..\Private\Performer.cpp" />
     <ClCompile Include="..\Private\PipeCurve.cpp" />
     <ClCompile Include="..\Private\MoonBaboonCore.cpp" />
     <ClCompile Include="..\Private\MoonBaboonCore_Button.cpp" />

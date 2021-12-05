@@ -5,6 +5,8 @@
 #include"Cam_Helper.h"
 #include"Cody.h"
 
+#define _CJH
+
 BEGIN(Client)
 class CMainCamera final : public CCamera
 {

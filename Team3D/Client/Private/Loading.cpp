@@ -86,7 +86,7 @@
 #include "MainCamera.h"
 #include "SubCamera.h"
 #include "Cam_Helper.h"
-
+#include"CutScenePlayer.h"
 #pragma endregion
 
 CLoading::CLoading(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -792,6 +792,7 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jin()
 
 HRESULT CLoading::Create_GameObjects_SpaceStage_Jun()
 {
+	CCutScenePlayer::GetInstance()->NativeConstruct(m_pDevice, m_pDeviceContext);
 	return S_OK;
 }
 

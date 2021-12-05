@@ -11,7 +11,7 @@ CCutScenePlayer::CCutScenePlayer()
 
 HRESULT CCutScenePlayer::NativeConstruct(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	return S_OK;
+
 	CGameInstance* m_pGameInstance = CGameInstance::GetInstance();
 
 	ID3D11Device* m_pDevice = pDevice;
@@ -138,7 +138,7 @@ HRESULT CCutScenePlayer::Start_CutScene(const _tchar* pCutSceneTag)
 		nullptr != m_pCurCutScene)
 		return E_FAIL;
 	m_pCurCutScene = pCutScene;
-
+	
 	if (FAILED(m_pCurCutScene->Start_CutScene()))
 	{
 		m_pCurCutScene = nullptr;

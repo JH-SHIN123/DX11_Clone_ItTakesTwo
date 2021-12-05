@@ -637,6 +637,18 @@
     <Filter Include="01.Maps\03.Stage_Space">
       <UniqueIdentifier>{5bbd0183-dea1-417a-b173-4e16c2288048}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene">
+      <UniqueIdentifier>{e938d1f0-6704-45a7-ad1b-388fead9e077}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\00.CutScenePlayer">
+      <UniqueIdentifier>{85f2ec10-34b6-4644-adcb-cee787208cb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\01.CutScene">
+      <UniqueIdentifier>{716ebf1b-bb3b-4feb-9801-967cac4fc2ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\02.Performer">
+      <UniqueIdentifier>{0fffa036-d7dd-479b-a4fa-84956b7722a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1125,6 +1137,15 @@
     <ClInclude Include="..\Public\Client_MathHelper.h">
       <Filter>98.Defines\01.Client</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CutScenePlayer.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\00.CutScenePlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CutScene.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\01.CutScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Performer.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\02.Performer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1592,6 +1613,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\CameraHitReport.cpp">
       <Filter>03.Component\01.Actor\01.CameraActor\03.HitReport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CutScenePlayer.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\00.CutScenePlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CutScene.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\01.CutScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Performer.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\02.Performer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

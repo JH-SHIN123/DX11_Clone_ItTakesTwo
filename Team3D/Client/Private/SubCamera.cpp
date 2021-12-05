@@ -319,14 +319,15 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::RScreen))
 	{
 		if (m_pCamHelper->Tick_CamEffect(CFilm::RScreen, dTimeDelta, XMLoadFloat4x4(&m_matBeginWorld)))
-			m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::RScreen));
+			XMStoreFloat4x4(&m_matBeginWorld, m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::RScreen));
+
 	}
 
 	//카메라 움직임이 끝나고 체크할것들
 
 	//카메라 움직임이 끝나고 체크할것들
 	//SoftMoving
-	_vector vTargetPlayerUp = pPlayerTransform->Get_State(CTransform::STATE_UP);
+	_vector vTargetPlayerUp = XMVectorRound(pPlayerTransform->Get_State(CTransform::STATE_UP) * 100.f) / 100.f;
 	//_vector vPlayerUp = XMLoadFloat4(&m_vPlayerUp);
 	//_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
 	//if(XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
@@ -389,16 +390,18 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vResultPos = XMVectorZero();
 	if (false == bIsTeleport)
 	{
-		if (m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos)) //SpringCamera
-		{
-			_float4 vEye, vAt;
-	
-			XMStoreFloat4(&vEye, vResultPos);
-			XMStoreFloat4(&vAt, vPlayerPos);
-			_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt,vPlayerUp);
-			matAffine = matCurWorld;
-		}
+		m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
+
+		_float4 vEye, vAt;
+
+		XMStoreFloat4(&vEye, vResultPos);
+		XMStoreFloat4(&vAt, vPlayerPos);
+		_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt,vPlayerUp);
+		matAffine = matCurWorld;
+
 	}
+	else
+		m_bIsCollision = false;
 	m_pTransformCom->Set_WorldMatrix(matAffine);
 
 #pragma endregion
@@ -479,12 +482,11 @@ _bool CSubCamera::OffSetPhsX(_fmatrix matWorld, _double dTimeDelta, _vector * pO
 	vDir = vPos - vPlayerPos;
 
 	m_pActorCom->Set_Position(vPlayerPos);
-	if (m_pActorCom->Move(vDir, dTimeDelta))
-	{
-		*pOut = XMVectorSetW(m_pActorCom->Get_Position()/*Get_Position()*/, 1.f);
-		return true;
-	}
-	return false;
+	m_pActorCom->Move(vDir, dTimeDelta);
+	
+	*pOut = XMVectorSetW(m_pActorCom->Get_Position(), 1.f);
+	return true;
+	
 }
 
 
