@@ -8,6 +8,7 @@
 #include "Input_Device.h"
 #include "PostFX.h"
 #include "Blur.h"
+#include "SSAO.h"
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)
@@ -84,6 +85,7 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shade"), fWidth, 0.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(CSSAO::GetInstance()->Ready_DebugBuffer(fWidth, fHeight * 2.f, fWidth, fHeight), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_CascadedShadow_Depth"), fWidth * 2.f, 0.f, fWidth, fHeight * MAX_CASCADES), E_FAIL);
 
@@ -119,6 +121,9 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	// 1- pass
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonAlpha(), E_FAIL);
+
+	FAILED_CHECK_RETURN(Compute_SSAO(),  E_FAIL); /* Calculate Occlution Ambient for Directinal Light */
+	
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
@@ -138,6 +143,7 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_LightAcc"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_CascadedShadow"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_PostFX"));
+		CSSAO::GetInstance()->Render_DebugBuffer();
 	}
 #endif
 
@@ -301,9 +307,9 @@ HRESULT CRenderer::PostProcessing(_double TimeDelta)
 	return S_OK;
 }
 
-HRESULT CRenderer::SSAO()
+HRESULT CRenderer::Compute_SSAO()
 {
-	return S_OK;
+	return CSSAO::GetInstance()->Compute_SSAO();
 }
 
 void CRenderer::Sort_GameObjects(RENDER_OBJECTS & GameObjects)

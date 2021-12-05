@@ -215,19 +215,6 @@ HRESULT CPostFX::Tick_Adaptation(_double TimeDelta)
 	return S_OK;
 }
 
-HRESULT CPostFX::Unbind_ShaderResources()
-{
-	ID3D11ShaderResourceView* pNullSRV[8] = { 0 };
-	ID3D11UnorderedAccessView* pNullUAV[8] = { 0 };
-
-	m_pDeviceContext->CSSetShaderResources(0, 8, pNullSRV);
-	m_pDeviceContext->CSSetUnorderedAccessViews(0, 8, pNullUAV, 0);
-
-	//m_pDeviceContext->CSSetShader(0, 0, 0);
-
-	return S_OK;
-}
-
 HRESULT CPostFX::Build_LuminanceBuffer(_float iWidth, _float iHeight)
 {
 	NULL_CHECK_RETURN(m_pDevice, E_FAIL);
@@ -387,6 +374,19 @@ HRESULT CPostFX::Set_UnorderedAccessView(const char* pConstantName, ID3D11Unorde
 	ID3DX11EffectUnorderedAccessViewVariable* pUavVariable = m_pEffect_CS->GetVariableByName(pConstantName)->AsUnorderedAccessView();
 	NULL_CHECK_RETURN(pUavVariable, E_FAIL);
 	return pUavVariable->SetUnorderedAccessView(pResourceView);
+}
+
+HRESULT CPostFX::Unbind_ShaderResources()
+{
+	ID3D11ShaderResourceView* pNullSRV[8] = { 0 };
+	ID3D11UnorderedAccessView* pNullUAV[8] = { 0 };
+
+	m_pDeviceContext->CSSetShaderResources(0, 8, pNullSRV);
+	m_pDeviceContext->CSSetUnorderedAccessViews(0, 8, pNullUAV, 0);
+
+	//m_pDeviceContext->CSSetShader(0, 0, 0);
+
+	return S_OK;
 }
 
 void CPostFX::Clear_Buffer()

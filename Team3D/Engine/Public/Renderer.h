@@ -40,7 +40,7 @@ private:
 
 private:
 	HRESULT PostProcessing(_double TimeDelta);
-	HRESULT SSAO();
+	HRESULT Compute_SSAO();
 
 private:
 	void	Sort_GameObjects(RENDER_OBJECTS& GameObjects);

@@ -619,5 +619,8 @@
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_Blur.hlsl">
       <Filter>97.ShaderFiles\Compute</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_SSAO.hlsl">
+      <Filter>97.ShaderFiles\Compute</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

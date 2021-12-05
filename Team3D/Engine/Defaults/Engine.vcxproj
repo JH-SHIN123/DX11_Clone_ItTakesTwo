@@ -308,6 +308,7 @@ call WinCmd_UpdateLib_Release.bat</Command>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_Blur.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_PostFX.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_SSAO.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Blend.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PostFX.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_LightAcc.hlsl" />

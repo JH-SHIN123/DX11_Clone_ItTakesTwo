@@ -46,7 +46,7 @@ HRESULT CSpaceRail::NativeConstruct_Prototype()
 
 HRESULT CSpaceRail::NativeConstruct(void* pArg)
 {
-#ifdef __MAPLOADING_OFF
+#ifdef __TEST_TAEK
 	ARG_DESC tTest;
 	tTest.iMatrialIndex = 0;
 	tTest.iOption = 0;

@@ -144,9 +144,10 @@ HRESULT CLevel_Stage::Ready_Test()
 	/* Hye */
 
 	/* Teak */
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Terrain", Level::LEVEL_STAGE, TEXT("GameObject_Terrain")), E_FAIL);
+#ifdef __TEST_TAEK
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Terrain", Level::LEVEL_STAGE, TEXT("GameObject_Terrain")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_SpaceRail", Level::LEVEL_STAGE, TEXT("GameObject_SpaceRail")), E_FAIL);
-
+#endif
 	/* Yoon */
 
 	/* Jin */
@@ -286,7 +287,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
 	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
 	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
