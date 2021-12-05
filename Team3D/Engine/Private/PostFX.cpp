@@ -172,19 +172,19 @@ HRESULT CPostFX::FinalPass()
 	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_MAINPROJ_INVERSE);
 	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_MAIN);
 	m_pVIBuffer_ToneMapping->Set_Variable("g_fMainCamFar", &fCamFar, sizeof(fCamFar));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_MainProjMatrixInverse", &ProjMatrixInverse, sizeof(ProjMatrixInverse));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_MainProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(ProjMatrixInverse));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_vMainViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
 
 	fCamFar = pPipeline->Get_SubCamFar();
 	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_SUBPROJ_INVERSE);
 	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_SUB);
 	m_pVIBuffer_ToneMapping->Set_Variable("g_fSubCamFar", &fCamFar, sizeof(fCamFar));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_SubProjMatrixInverse", &ProjMatrixInverse, sizeof(ProjMatrixInverse));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_SubProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(ProjMatrixInverse));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
 
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_PostFX")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_BloomTexture", m_pShaderResourceView_Bloom);
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DOFBlurTex", m_pShaderResourceView_Bloom_Temp);
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DOFBlurTex", m_pShaderResourceView_DownScaledHDR);
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DepthTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Depth")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
