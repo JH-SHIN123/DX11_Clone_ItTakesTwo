@@ -47,6 +47,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
 
+#ifdef __GAME_DEBUGGER
+	DeleteMenu(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE, MF_BYCOMMAND);
+#endif
+
 	g_bWndActivate = true;
 
 	CMainApp* pMainApp = CMainApp::Create();

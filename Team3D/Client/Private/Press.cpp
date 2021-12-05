@@ -36,7 +36,7 @@ _int CPress::Tick(_double dTimeDelta)
 	CDynamic_Env::Tick(dTimeDelta);
 
 
-	if (m_pGameInstance->Key_Down(DIK_K))
+	if (m_pGameInstance->Key_Down(DIK_M))
 		m_bSmash = true;
 
 	Movement(dTimeDelta);

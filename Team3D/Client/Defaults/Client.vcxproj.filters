@@ -667,6 +667,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\EjectionButton">
       <UniqueIdentifier>{fc581ad8-9a0b-4716-878e-395de6d1472a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96.Debug">
+      <UniqueIdentifier>{7904050b-bece-47ac-9d69-2652f5e7bc09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1182,6 +1185,9 @@
     <ClInclude Include="..\Public\RotationBox.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\RotationBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\GameDebugger.h">
+      <Filter>96.Debug</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1676,6 +1682,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\RotationBox.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.Spaceship\RotationBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameDebugger.cpp">
+      <Filter>96.Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
