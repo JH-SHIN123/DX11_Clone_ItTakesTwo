@@ -40,7 +40,8 @@ private:
 	_float		m_fUpAcceleration = 0.f;
 	_bool		m_bLaunch = false;
 	_float		m_fLifeTime = 0.f;
-	_bool		m_IsCollide = false;
+	_bool		m_IsCodyCollide = false;
+	_bool		m_IsMayCollide = false;
 	GameID::Enum		m_PlayerID = GameID::eSTARBUDDY;
 
 private:

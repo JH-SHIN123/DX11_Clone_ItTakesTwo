@@ -1091,6 +1091,7 @@ HRESULT CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI
 	if (true == IsDisable)
 		return S_OK;
 
+	/* 범위 검사하자 */
 	_vector vComparePos;
 
 	if (ePlayer == Player::Cody)

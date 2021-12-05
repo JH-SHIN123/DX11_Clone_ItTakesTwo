@@ -62,7 +62,8 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 	m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
 	m_pTransformCom->RotatePitch(dTimeDelta * 0.2f);
 
-	if (m_pGameInstance->Key_Down(DIK_F) && m_IsCollide)
+	if (m_pGameInstance->Key_Down(DIK_F) && m_IsCodyCollide ||
+		m_pGameInstance->Key_Down(DIK_F) && m_IsMayCollide)
 	{
 		m_bLaunch = true;
 		UI_Delete(May, InputButton_InterActive);
@@ -83,6 +84,11 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 			return EVENT_DEAD; // 
 	}
 
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::StarBuddy, 
+		m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCodyCollide, m_bLaunch);
+
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::StarBuddy,
+		m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsMayCollide, m_bLaunch);
 
 	return NO_EVENT;
 }
@@ -116,73 +122,27 @@ void CStarBuddy::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObj
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eSTARBUDDY , true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
+		m_IsCodyCollide = true;
 		m_PlayerID = GameID::eCODY;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
-		m_IsCollide = false;
+		m_IsCodyCollide = false;
 		m_PlayerID = GameID::eSTARBUDDY;
 	}
 
 	// May
-
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eSTARBUDDY, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
-		m_PlayerID = GameID::eCODY;
+		m_IsMayCollide = true;
+		m_PlayerID = GameID::eMAY;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
-		m_IsCollide = false;
+		m_IsMayCollide = false;
 		m_PlayerID = GameID::eSTARBUDDY;
 	}
-}
-
-HRESULT CStarBuddy::InterActive_UI()
-{
-	//CCody* pCody = (CCody*)DATABASE->GetCody();
-	//NULL_CHECK_RETURN(pCody, E_FAIL);
-	//CMay* pMay = (CMay*)DATABASE->GetMay();
-	//NULL_CHECK_RETURN(pMay, E_FAIL);
-
-	//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-	//_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-
-	//_vector vCodyComparePos = vPos - vCodyPos;
-	//_vector vMayComparePos = vPos - vMayPos;
-
-	//_float fRange = 20.f;
-
-	//_float vCodyComparePosX = abs(XMVectorGetX(vCodyComparePos));
-	//_float vCodyComparePosZ = abs(XMVectorGetZ(vCodyComparePos));
-
-	//if (fRange >= vCodyComparePosX && fRange >= vCodyComparePosZ)
-	//{
-	//	if (UI_Generator->Get_EmptyCheck(Player::Cody, UI::InputButton_Dot))
-	//		UI_Create(Cody, InputButton_Dot);
-
-	//	UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	//}
-	//else
-	//	UI_Delete(Cody, InputButton_Dot);
-
-	//_float vMayComparePosX = abs(XMVectorGetX(vMayComparePos));
-	//_float vMayComparePosZ = abs(XMVectorGetZ(vMayComparePos));
-
-	//if (fRange >= vMayComparePosX && fRange >= vMayComparePosZ)
-	//{
-	//	if (UI_Generator->Get_EmptyCheck(Player::May, UI::InputButton_Dot))
-	//		UI_Create(May, InputButton_Dot);
-
-	//	UI_Generator->Set_TargetPos(Player::May, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	//}
-	//else
-	//	UI_Delete(May, InputButton_Dot);
-
-	return S_OK;
 }
 
 HRESULT CStarBuddy::Render_ShadowDepth()

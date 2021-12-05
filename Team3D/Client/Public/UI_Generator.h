@@ -87,11 +87,12 @@ public:
 
 public:
 	/* 1. INTERACTIVE_ID에 해당 객체 ID 추가 */
-	/* 2. Generator_InterActive_UI 함수 들어가서 스위치문에 Enum추가하고 위에꺼 그대로 복붙해줌 */
-	/* 3. IsCollision은 객체 Trigger 함수 안에서 사용 할 bool 변수 인자로 던져주면 됨 */
-	/* 4. IsDisable은 그 객체와 플레이어의 상호작용이 끝나서 더 이상 사용할 일이 없다라는 bool 변수 던져주면 됨 */
-	/* 5. 상호작용 키를 눌렀을 때 UI를 삭제하고 싶다면 조건문 걸어서 한 번만 타게 해주시면 됨 이건 그 객체 안에서 처리해야할 듯 */
-	HRESULT CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, _vector vTargetPosition, _float fRange, _bool IsCollision = false, _bool IsDisable = false);
+	/* 2. IsCollision은 객체 Trigger 함수 안에서 사용하는 bool 변수 인자로 던져주면 됨 */
+	/* 3. fRange는 범위 설정하는거 범위 설정 안해주면 UI 안뜸 */
+	/* 4. IsDisable은 그 객체와 플레이어가 상호작용 시작할 때 bool 값 하나 던져주면 됨 */
+	/* 5. 상호작용 시작할 때 IsDisable true로 던지고 조건에 맞았다하면 걍 납두고 조건에 안맞아서 다시 상호작용해야 될 때는 IsDisable false로 던져주면 알아서 다시 상호작용 UI 생성해줌 */
+	/* 6. 상호작용 키를 눌렀을 때 UI_Delete 한 번 호출 해줘야함!!!!!!! */
+	HRESULT CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, _vector vTargetPosition, _float fRange = 0.f, _bool IsCollision = false, _bool IsDisable = false);
 	
 public:
 	void UI_RETutorial(Player::ID ePlayer, UI::TRIGGER eTrigger);

@@ -6,6 +6,7 @@
 #include "UmbrellaBeam_Stand.h"
 #include "UmbrellaBeam_Joystick.h"
 #include "Effect_Umbrella_Pipe.h"
+#include "UI_Generator.h"
 
 CUmbrellaBeam::CUmbrellaBeam(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -193,7 +194,7 @@ void CUmbrellaBeam::PutGravitationalField()
 	_vector vOffSetPos = XMLoadFloat4((_float4*)&matWorld.r[3].m128_f32[0]);
 	_vector vTargetPos = XMLoadFloat4((_float4*)&matTarget.r[3].m128_f32[0]);
 
-	if (m_pGameInstance->Key_Down(DIK_SPACE))
+	if (m_pGameInstance->Key_Down(DIK_Q))
 	{
 		m_IsPutGravitationalField = false;
 		m_IsBeamActivate = false;
@@ -209,6 +210,7 @@ void CUmbrellaBeam::PutGravitationalField()
 		if(nullptr != m_pUmbrellaBeam_Effect)
 			m_pUmbrellaBeam_Effect->Set_Dead();
 
+		UI_Delete(Cody, InputButton_Cancle);
 	}
 
 	if (true == m_IsPutGravitationalField)

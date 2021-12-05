@@ -73,7 +73,8 @@ _int CUmbrellaBeam_Joystick::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::Umbrella_Joystick, m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCollision);
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::Umbrella_Joystick, 
+		m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCollision, m_IsControlActivate);
 
 	return NO_EVENT;
 }
@@ -108,7 +109,6 @@ void CUmbrellaBeam_Joystick::Trigger(TriggerStatus::Enum eStatus, GameID::Enum e
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eUMBRELLABEAMJOYSTICK, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollision = true;
-
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{

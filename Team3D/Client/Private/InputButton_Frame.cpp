@@ -38,7 +38,7 @@ HRESULT CInputButton_Frame::NativeConstruct(void * pArg)
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Dot")))
 		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 	else
-		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x - 10.f, m_UIDesc.vScale.y - 10.f, 0.f, 0.f));
+		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x - 15.f, m_UIDesc.vScale.y - 15.f, 0.f, 0.f));
 	
 	m_vStartScale = m_UIDesc.vScale;
 
@@ -155,7 +155,7 @@ void CInputButton_Frame::Render_Font()
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_F")))
 	{
 		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
-		tFontDesc.vScale = { 40.f, 50.f };
+		tFontDesc.vScale = { 30.f, 40.f };
 
 		UI_Generator->Render_Font(TEXT("F"), tFontDesc, m_ePlayerID);
 	}
@@ -165,6 +165,13 @@ void CInputButton_Frame::Render_Font()
 		tFontDesc.vScale = { m_UIDesc.vScale.x / 2.f, m_UIDesc.vScale.y / 1.2f };
 
 		UI_Generator->Render_Font(TEXT("E"), tFontDesc, m_ePlayerID);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Cancle")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
+		tFontDesc.vScale = { 30.f, 40.f };
+
+		UI_Generator->Render_Font(TEXT("Q √Îº“"), tFontDesc, m_ePlayerID);
 	}
 }
 

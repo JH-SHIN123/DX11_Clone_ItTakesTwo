@@ -1428,6 +1428,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_M_BruteCombat_Attack_Var1);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsHitStarBuddy = true;
+
 		}
 		else if (m_eTargetGameID == GameID::eMOONBABOON && m_pGameInstance->Pad_Key_Down(DIP_Y))
 		{

@@ -1929,13 +1929,15 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			/* 세이브포인트->트리거와 충돌시 세이브포인트 갱신 */
 			m_vSavePoint = m_vTriggerTargetPos;
 		}
-		else if (m_eTargetGameID == GameID::eUMBRELLABEAMJOYSTICK && m_pGameInstance->Key_Down(DIK_E))
+		else if (m_eTargetGameID == GameID::eUMBRELLABEAMJOYSTICK && m_pGameInstance->Key_Down(DIK_F))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
 			m_IsControlJoystick = true;
 			CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
 			pJoystick->Set_ControlActivate(true);
+			UI_CreateOnlyOnce(Cody, InputButton_Cancle);
+			UI_Delete(Cody, InputButton_InterActive);
 		}
 		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)
 		{
