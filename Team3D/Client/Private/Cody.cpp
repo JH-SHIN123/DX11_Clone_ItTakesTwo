@@ -1937,6 +1937,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
 			pJoystick->Set_ControlActivate(true);
 			UI_CreateOnlyOnce(Cody, InputButton_Cancle);
+			UI_CreateOnlyOnce(Cody, Arrowkeys_All);
 			UI_Delete(Cody, InputButton_InterActive);
 		}
 		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)

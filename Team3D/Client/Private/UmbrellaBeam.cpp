@@ -211,6 +211,7 @@ void CUmbrellaBeam::PutGravitationalField()
 			m_pUmbrellaBeam_Effect->Set_Dead();
 
 		UI_Delete(Cody, InputButton_Cancle);
+		UI_Delete(Cody, Arrowkeys_All);
 	}
 
 	if (true == m_IsPutGravitationalField)

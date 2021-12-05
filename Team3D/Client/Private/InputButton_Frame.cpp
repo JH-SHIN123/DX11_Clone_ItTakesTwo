@@ -158,8 +158,8 @@ void CInputButton_Frame::ScaleEffect(_double TimeDelta)
 
 	if (m_vStartScale.x >= m_UIDesc.vScale.x)
 	{
-		m_UIDesc.vScale.x += (_float)TimeDelta * 150.f;
-		m_UIDesc.vScale.y += (_float)TimeDelta * 150.f;
+		m_UIDesc.vScale.x += (_float)TimeDelta * 200.f;
+		m_UIDesc.vScale.y += (_float)TimeDelta * 200.f;
 		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 	}
 
