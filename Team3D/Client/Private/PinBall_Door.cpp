@@ -35,31 +35,15 @@ HRESULT CPinBall_Door::NativeConstruct(void * pArg)
 	m_UserData.eID = GameID::ePINBALLDOOR;
 	m_UserData.pGameObject = this;
 
-	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(0.3f);
-	CTriggerActor::ARG_DESC tTriggerArgDesc;
-	tTriggerArgDesc.pGeometry = TriggerGeom;
-	tTriggerArgDesc.pTransform = m_pTransformCom;
-	tTriggerArgDesc.pUserData = &m_UserData;
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
-	Safe_Delete(TriggerGeom);
-
-	/* Static */
-	CStaticActor::ARG_DESC tStaticActorArg;
-	tStaticActorArg.pTransform = m_pTransformCom;
-	tStaticActorArg.pModel = m_pModelCom;
-	tStaticActorArg.pUserData = &m_UserData;
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) - 0.1f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-	m_pTransformCom->Set_Speed(1.f, 45.f);
 	XMStoreFloat3(&m_ResetPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_pTransformCom->Set_Speed(1.f, 45.f);
 
-	CDataStorage::GetInstance()->Set_Pinball_Door(this);
+	DATABASE->Set_Pinball_Door(this);
 
 	return S_OK;
 }
@@ -89,7 +73,7 @@ HRESULT CPinBall_Door::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1, m_tDynamic_Env_Desc.iMatrialIndex);
+	m_pModelCom->Render_Model(1, m_tDynamic_Env_Desc.iMaterialIndex);
 
 	return S_OK;
 }
@@ -108,13 +92,15 @@ HRESULT CPinBall_Door::Render_ShadowDepth()
 
 void CPinBall_Door::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
+
 	// Cody
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && false == m_bTrigger && false == m_bDoorState && false == m_bGoal)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALLDOOR, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 		UI_Create(Cody, InputButton_InterActive);
 		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		((CPinBall*)(CDataStorage::GetInstance()->Get_Pinball()))->Set_Ready();
+		((CPinBall*)(DATABASE->Get_Pinball()))->Set_Ready(false);
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 		UI_Delete(Cody, InputButton_InterActive);
@@ -133,7 +119,7 @@ void CPinBall_Door::Movement(_double dTimeDelta)
 
 		if (m_fDistance >= 1.f)
 		{
-			((CPinBall_BallDoor*)(CDataStorage::GetInstance()->Get_Pinball_BallDoor()))->Set_DoorState(false);
+			((CPinBall_BallDoor*)(DATABASE->Get_Pinball_BallDoor()))->Set_DoorState(false);
 			m_bTrigger = false;
 			m_fDistance = 0.f;
 			m_bDoorState = true;
@@ -152,6 +138,29 @@ void CPinBall_Door::Movement(_double dTimeDelta)
 
 	m_pStaticActorCom->Update_StaticActor();
 	m_pTriggerActorCom->Update_TriggerActor();
+}
+
+HRESULT CPinBall_Door::Ready_Component(void * pArg)
+{
+	/* Trigger */
+	PxGeometry* Geom = new PxSphereGeometry(0.3f);
+	CTriggerActor::ARG_DESC tTriggerArgDesc;
+	tTriggerArgDesc.pGeometry = Geom;
+	tTriggerArgDesc.pTransform = m_pTransformCom;
+	tTriggerArgDesc.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
+	Safe_Delete(Geom);
+
+	/* Static */
+	CStaticActor::ARG_DESC tStaticActorArg;
+	tStaticActorArg.pTransform = m_pTransformCom;
+	tStaticActorArg.pModel = m_pModelCom;
+	tStaticActorArg.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+
+	return S_OK;
 }
 
 CPinBall_Door * CPinBall_Door::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

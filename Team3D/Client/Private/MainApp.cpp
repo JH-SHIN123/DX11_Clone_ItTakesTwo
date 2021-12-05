@@ -5,6 +5,7 @@
 #include "UI_Generator.h"
 #include "Environment_Generator.h"
 #include "PxEventCallback.h"
+#include "GameDebugger.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -28,6 +29,12 @@ HRESULT CMainApp::NativeConstruct()
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->NativeConstruct_Environment_Generator(m_pDevice, m_pDeviceContext), E_FAIL);
 
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
+
+#ifdef __GAME_DEBUGGER
+	m_pGameObject_Manager = CGameObject_Manager::GetInstance();
+	Safe_AddRef(m_pGameObject_Manager);
+	m_pDebugger = CGameDebugger::Create(this);
+#endif
 
 	return S_OK;
 }
@@ -91,6 +98,12 @@ void CMainApp::Lock_Mouse()
 _int CMainApp::Tick(_double dTimeDelta)
 {
 	NULL_CHECK_RETURN(m_pGameInstance, EVENT_ERROR);
+
+	if (m_pGameInstance->Key_Down(DIK_DELETE))
+	{
+		m_bDebuggerBreak = true;
+		m_pDebuggerTarget = nullptr;
+	}
 
 	return m_pGameInstance->Tick(dTimeDelta, g_bWndActivate);
 }
@@ -169,6 +182,13 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
+#ifdef __GAME_DEBUGGER
+	m_bDebuggerBreak = true;
+	m_bDebuggerExit = true;
+	Safe_Release(m_pGameObject_Manager);
+	Safe_Release(m_pDebugger);
+#endif
+
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

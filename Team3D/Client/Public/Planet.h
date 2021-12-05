@@ -19,14 +19,16 @@ public:
 
 public:
 	virtual HRESULT Render_ShadowDepth();
-	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject);
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 
+private:
+	HRESULT Ready_Component(void* pArg);
+
 public:
-	static CPlanet* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static  CPlanet*	 Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
-	virtual void Free() override;
+	virtual void		 Free() override;
 };
 END

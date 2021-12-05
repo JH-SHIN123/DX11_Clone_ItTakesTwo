@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 
-class CLayer final : public CBase
+class ENGINE_DLL CLayer final : public CBase
 {
 public:
 	explicit CLayer() = default;
@@ -12,6 +12,7 @@ public:
 
 public: /* Getter */
 	void Bring_GameObjectList(list<CGameObject*>& GameObjectList);
+	list<CGameObject*>& Get_ObjectList() { return m_Objects; }
 
 public:
 	HRESULT	NativeConstruct();

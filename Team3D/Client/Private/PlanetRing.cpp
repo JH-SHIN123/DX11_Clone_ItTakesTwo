@@ -25,13 +25,9 @@ HRESULT CPlanetRing::NativeConstruct(void * pArg)
 	m_UserData.eID = GameID::eENVIRONMENT;
 	m_UserData.pGameObject = this;
 
-	CStaticActor::ARG_DESC tArg;
-	tArg.pModel = m_pModelCom;
-	tArg.pTransform = m_pTransformCom;
-	tArg.pUserData = &m_UserData;
+	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
-	m_pTransformCom->Set_Speed(5.f, 1.f);
+	m_pTransformCom->Set_Speed(0.f, 1.f);
 
 	return S_OK;
 }
@@ -47,14 +43,14 @@ _int CPlanetRing::Tick(_double dTimeDelta)
 	else
 		m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta);
 
-	m_pStaticActorCom->Update_StaticActor();
-
 	return NO_EVENT;
 }
 
 _int CPlanetRing::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
+
+	m_pStaticActorCom->Update_StaticActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -70,7 +66,7 @@ HRESULT CPlanetRing::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1, m_tDynamic_Env_Desc.iMatrialIndex);
+	m_pModelCom->Render_Model(1, m_tDynamic_Env_Desc.iMaterialIndex);
 
 	return S_OK;
 }
@@ -82,14 +78,22 @@ HRESULT CPlanetRing::Render_ShadowDepth()
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 	// Skinned: 2 / Normal: 3
-	m_pModelCom->Render_Model(3, m_tDynamic_Env_Desc.iMatrialIndex, true);
+	m_pModelCom->Render_Model(3, m_tDynamic_Env_Desc.iMaterialIndex, true);
 
 	return S_OK;
 }
 
-void CPlanetRing::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+HRESULT CPlanetRing::Ready_Component(void * pArg)
 {
-	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
+	/* Static */
+	CStaticActor::ARG_DESC tArg;
+	tArg.pModel = m_pModelCom;
+	tArg.pTransform = m_pTransformCom;
+	tArg.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
+
+	return S_OK;
 }
 
 CPlanetRing * CPlanetRing::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
