@@ -29,20 +29,21 @@ HRESULT CEffect_Player_Revive::NativeConstruct(void * pArg)
 	m_pModelCom = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
 	Safe_AddRef(m_pModelCom);
 
-	//if (EFFECT_DESC_CLONE::PV_CODY >= m_EffectDesc_Clone.iPlayerValue)
-	//	m_EffectDesc_Prototype.iInstanceCount = 1500;
-	//else if (EFFECT_DESC_CLONE::PV_CODY_S == m_EffectDesc_Clone.iPlayerValue)
-	//	m_EffectDesc_Prototype.iInstanceCount = 240;
-	//else if (EFFECT_DESC_CLONE::PV_CODY_L == m_EffectDesc_Clone.iPlayerValue)
-	//	m_EffectDesc_Prototype.iInstanceCount = 4200;
+	if (EFFECT_DESC_CLONE::PV_CODY >= m_EffectDesc_Clone.iPlayerValue)
+		m_EffectDesc_Prototype.iInstanceCount = 1500;
+	else if (EFFECT_DESC_CLONE::PV_CODY_S == m_EffectDesc_Clone.iPlayerValue)
+		m_EffectDesc_Prototype.iInstanceCount = 240;
+	else if (EFFECT_DESC_CLONE::PV_CODY_L == m_EffectDesc_Clone.iPlayerValue)
+		m_EffectDesc_Prototype.iInstanceCount = 4200;
 
 	m_EffectDesc_Clone.UVTime = 0.01;
 	m_EffectDesc_Clone.vRandDirPower = { 10.f,10.f,10.f };
-	m_EffectDesc_Prototype.iInstanceCount = m_pModelCom->Get_VertexCount();
 	m_fFarRatio = m_fFarRatio_Max / _float(m_EffectDesc_Prototype.iInstanceCount * 0.1f);
 
 	Ready_Instance();
 
+	XMStoreFloat4(&m_vModelPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	
 	return S_OK;
 }
 
@@ -54,13 +55,43 @@ _int CEffect_Player_Revive::Tick(_double TimeDelta)
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
 	m_dTime -= TimeDelta * 2.f;
 
-	//for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
-	//{
-	//	Instance_Pos((_float)TimeDelta, iIndex);
-	//	Instance_Size((_float)TimeDelta, iIndex);
-	//}
+	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
+	{
+		Instance_Pos((_float)TimeDelta, iIndex);
+		Instance_Size((_float)TimeDelta, iIndex);
+	}
 
-	m_fTeseTime += (_float)TimeDelta;
+	m_fReviveAfter_Time -= (_float)TimeDelta;
+	if (0.f >= m_fReviveAfter_Time)
+	{
+		m_fReviveAfter_Time = 0.f;
+		m_fModel_Time += (_float)TimeDelta + (m_fModel_Time * 0.03f);
+
+ 		if (0.25f <= m_fModel_Time)
+ 			m_IsSizeUp = false;
+
+		if (true == m_IsSizeUp)
+		{
+			m_vSize.x += (_float)TimeDelta * 0.25f;
+			m_vSize.y += (_float)TimeDelta * 0.25f;
+		}
+		else
+		{
+			m_vSize.x -= (_float)TimeDelta * 0.55f;
+			m_vSize.y -= (_float)TimeDelta * 0.55f;
+		}
+
+		if (0.0325f <= m_vSize.x)
+		{
+			m_vSize.x = 0.0325f;
+			m_vSize.y = 0.0325f;
+		}
+		if (0.f >= m_vSize.x)
+		{
+			m_vSize.x = 0.f;
+			m_vSize.y = 0.f;
+		}
+	}
 
 	return _int();
 }
@@ -77,33 +108,30 @@ HRESULT CEffect_Player_Revive::Render(RENDER_GROUP::Enum eGroup)
 {
 	SetUp_Shader_Data();
 
-	//_float4 vUV = { 0.f,0.f,1.f,1.f };
-	//m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vUV, sizeof(_float4));
-	//m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-	//m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Second->Get_ShaderResourceView(0));
-	//
-	//for (_int i = 0; i < 256; ++i)
-	//{
-	//
-	//}
-	//
-	//m_pPointInstanceCom->Render(4, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
-	_float4 vTextureUV_LTRB = { 0.f,0.f,1.f,1.f };
-	m_pModelCom->Set_Variable("g_fTime", &m_fTeseTime, sizeof(_float));
+	_float4 vUV = { 0.f,0.f,1.f,1.f };
+	m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vUV, sizeof(_float4));
+	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Second->Get_ShaderResourceView(0));
+	m_pPointInstanceCom->Render(4, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
 
-	m_pModelCom->Set_Variable("g_vTextureUV_LTRB", &_float4(0.f, 0.f, 1.f, 1.f), sizeof(_float4));
-	
-	//m_pModelCom->Set_ShaderResourceView("g_MaskingTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Render_Model_VERTEX(10, m_pInstanceBuffer);
+	if (0.f >= m_fReviveAfter_Time)
+	{
+		m_pModelCom->Set_Variable("g_vPos", &m_vModelPos, sizeof(_float));
+		m_pModelCom->Set_Variable("g_fTime", &m_fModel_Time, sizeof(_float));
+		m_pModelCom->Set_Variable("g_vTextureUV_LTRB", &vUV, sizeof(_float4));
+		m_pModelCom->Set_Variable("g_vParticleSize", &m_vSize, sizeof(_float2));
+		m_pModelCom->Set_ShaderResourceView("g_MaskingTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+		m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+		m_pModelCom->Render_Model_VERTEX(11);
+	}
 
 	return S_OK;
 }
 
 void CEffect_Player_Revive::Instance_Size(_float TimeDelta, _int iIndex)
 {
-	m_pInstanceBuffer[iIndex].vSize.x -= TimeDelta * 0.04f;
-	m_pInstanceBuffer[iIndex].vSize.y -= TimeDelta * 0.04f;
+	m_pInstanceBuffer[iIndex].vSize.x -= TimeDelta * 0.05f;
+	m_pInstanceBuffer[iIndex].vSize.y -= TimeDelta * 0.05f;
 
 	if (0.f >= m_pInstanceBuffer[iIndex].vSize.x)
 	{
