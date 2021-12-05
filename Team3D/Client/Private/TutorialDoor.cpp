@@ -137,9 +137,7 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 
 	m_pEffectFireDoor->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-
-
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::TutorialDoor, m_pTransformCom->Get_State(CTransform::STATE_POSITION), 20.f, m_IsCollide);
+	//UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::TutorialDoor, m_pTransformCom->Get_State(CTransform::STATE_POSITION), 20.f, m_IsCollide);
 
 	return NO_EVENT;
 }
@@ -184,34 +182,6 @@ void CTutorialDoor::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 		m_IsCollide = false;
 		/*UI_Delete(May, InputButton_InterActive);*/
 	}
-}
-
-HRESULT CTutorialDoor::InterActive_UI()
-{
-	CMay* pMay = (CMay*)DATABASE->GetMay();
-	NULL_CHECK_RETURN(pMay, E_FAIL);
-
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-
-	_vector vMayComparePos = vPos - vMayPos;
-
-	_float fRange = 20.f;
-
-	_float vMayComparePosX = abs(XMVectorGetX(vMayComparePos));
-	_float vMayComparePosZ = abs(XMVectorGetZ(vMayComparePos));
-
-	if (fRange >= vMayComparePosX && fRange >= vMayComparePosZ)
-	{
-		if (UI_Generator->Get_EmptyCheck(Player::May, UI::InputButton_Dot))
-			UI_Create(May, InputButton_Dot);
-
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_Dot, m_pTransformCom_Trigger->Get_State(CTransform::STATE_POSITION));
-	}
-	else
-		UI_Delete(May, InputButton_Dot);
-
-	return S_OK;
 }
 
 HRESULT CTutorialDoor::Render_ShadowDepth()
