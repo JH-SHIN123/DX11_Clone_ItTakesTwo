@@ -66,10 +66,10 @@ public:
 	HRESULT Render_AlphaFont(_tchar * pText, FONTDESC tFontDesc, Player::ID ePlayer);
 
 public:
-	CUIObject* Get_UIObject(Player::ID ePlayer, UI::TRIGGER eTrigger) { return m_vecUIOBjects[ePlayer][eTrigger].front(); };
 	_bool Get_EmptyCheck(Player::ID ePlayer, UI::TRIGGER eTrigger) { return m_vecUIOBjects[ePlayer][eTrigger].empty(); };
 	_bool Get_InterActive_UI_EmptyCheck(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger) { return m_vecInterActiveUI[ePlayer][eTrigger].empty(); };
 	class CHeaderBox* Get_HeaderBox(_int iIndex) { if (true == m_vecHeaderBox.empty()) return nullptr; return m_vecHeaderBox[iIndex]; }
+	CUIObject* Get_UIObject(Player::ID ePlayer, UI::TRIGGER eTrigger);
 
 public:
 	void Set_TriggerOn();
@@ -86,10 +86,11 @@ public:
 	HRESULT Create_ChapterSelect();
 
 public:
-	/* 타겟 오브젝트와 플레이어의 범위에 따라 InterActive UI생성 삭제 해주는 함수 */
-	/* eTrigger는 상호작용 해야하는 객체 UI::INTERACTIVE_ID enum에 추가해서 그거 던져 주면 됨 */
-	/* Collision은 충돌 했을 때 트리거에서 바꿔주는 bool값 하나 넘겨주면 됨 */
-	/* 해당 오브젝트의 조건을 만족했을 때 그 bool값 IsActive로 던져주면 됨 굳이 인자로 안주고 해당 오브젝트 안에서 조건문으로 이 함수 호출해주면 됨 */
+	/* 1. INTERACTIVE_ID에 해당 객체 ID 추가 */
+	/* 2. Generator_InterActive_UI 함수 들어가서 스위치문에 Enum추가하고 위에꺼 그대로 복붙해줌 */
+	/* 3. IsCollision은 객체 Trigger 함수 안에서 사용 할 bool 변수 인자로 던져주면 됨 */
+	/* 4. IsDisable은 그 객체와 플레이어의 상호작용이 끝나서 더 이상 사용할 일이 없다라는 bool 변수 던져주면 됨 */
+	/* 5. 상호작용 키를 눌렀을 때 UI를 삭제하고 싶다면 조건문 걸어서 한 번만 타게 해주시면 됨 이건 그 객체 안에서 처리해야할 듯 */
 	HRESULT CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, _vector vTargetPosition, _float fRange, _bool IsCollision = false, _bool IsDisable = false);
 	
 public:

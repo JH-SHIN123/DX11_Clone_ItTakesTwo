@@ -115,6 +115,9 @@ public:
 	void Set_SpaceRails(const _tchar* pRailTag, CGameObject* pRail);
 	CGameObject* Get_SpaceRail(const _tchar* pRailTag);
 
+	void Set_ControlRoom_Battery(CGameObject* pControlRoom_Battery) { m_pControlRoom_Battery = pControlRoom_Battery; }
+	CGameObject* Get_ControlRoom_Battery() { return m_pControlRoom_Battery; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -161,6 +164,9 @@ private:
 
 	/* For.HangingPlanet */
 	CGameObject* m_pHangingPlanet = nullptr;
+
+	/* For.ControlRoom_Battery */
+	CGameObject* m_pControlRoom_Battery = nullptr;
 
 private:
 	/* For.Valve */

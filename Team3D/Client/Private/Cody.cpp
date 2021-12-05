@@ -11,6 +11,7 @@
 #include "UmbrellaBeam_Joystick.h"
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
+#include "ControlRoom_Battery.h"
 /* For. PinBall */
 #include "PinBall.h"
 #include "PinBall_Door.h"
@@ -1777,12 +1778,15 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
 			m_IsPushingBattery = true;
 		}
-		else if (m_eTargetGameID == GameID::eCONTROLROOMBATTERY && m_pGameInstance->Key_Down(DIK_E))
+		else if (m_eTargetGameID == GameID::eCONTROLROOMBATTERY && m_pGameInstance->Key_Down(DIK_F))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
 			m_IsPushingBattery = true;
 			m_IsPipeBattery = true;
+
+			//UI_Delete(Cody, InputButton_InterActive);
+			//((CControlRoom_Battery*)DATABASE->Get_ControlRoom_Battery())->Set_UIDisable(true);
 		}
 		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_F) && m_iValvePlayerName == Player::Cody)
 		{

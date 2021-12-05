@@ -73,7 +73,7 @@ _int CUmbrellaBeam_Joystick::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	//UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_IsCollision);
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::Umbrella_Joystick, m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCollision);
 
 	return NO_EVENT;
 }
@@ -83,12 +83,7 @@ _int CUmbrellaBeam_Joystick::Late_Tick(_double dTimeDelta)
 	CGameObject::Late_Tick(dTimeDelta);
 
 	if (true == m_IsControlActivate && true == m_IsCollision)
-	{
 		m_pUmbrellaBeam->Set_BeamActivate(true);
-		CCody* pCody = (CCody*)DATABASE->GetCody();
-		pCody->Get_Transform()->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollision = false;
-	}
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);

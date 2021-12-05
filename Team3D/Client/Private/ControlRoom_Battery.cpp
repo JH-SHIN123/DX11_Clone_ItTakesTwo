@@ -5,6 +5,7 @@
 #include "UI_Generator.h"
 #include "ControlRoom_Door.h"
 #include "PressureBigPlate.h"
+#include "DataStorage.h"
 
 CControlRoom_Battery::CControlRoom_Battery(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -66,6 +67,8 @@ HRESULT CControlRoom_Battery::NativeConstruct(void * pArg)
 
 	m_fRotate = 25.f;
 
+	DATABASE->Set_ControlRoom_Battery(this);
+
 	return S_OK;
 }
 
@@ -77,7 +80,8 @@ _int CControlRoom_Battery::Tick(_double dTimeDelta)
 
 	InterActive_Battery(dTimeDelta);
 
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::ControlRoom_Battery, m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCollision, false);
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::ControlRoom_Battery, 
+		m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCollision, m_IsUIDisable);
 
 	return NO_EVENT;
 }
@@ -114,6 +118,11 @@ void CControlRoom_Battery::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID
 		m_IsCollision = false;
 }
 
+void CControlRoom_Battery::Set_UIDisable(_bool IsCheck)
+{
+	m_IsUIDisable = IsCheck;
+}
+
 
 _int CControlRoom_Battery::InterActive_Battery(_double TimeDelta)
 {
@@ -143,6 +152,9 @@ _int CControlRoom_Battery::InterActive_Battery(_double TimeDelta)
 		}
 
 		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fAngle));
+
+		m_IsUIDisable = true;
+		UI_Delete(Cody, InputButton_InterActive);
 	}
 	else if (true == m_IsBatteryHolding)
 	{
@@ -159,6 +171,7 @@ _int CControlRoom_Battery::InterActive_Battery(_double TimeDelta)
 				m_IsBatteryHolding = false;
 				m_IsPlayerInterActive = false;
 				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.659f, 221.12184f, 224.44f, 1.f));
+				m_IsUIDisable = false;
 			}
 
 			if (1.f <= m_fRotate)
@@ -185,6 +198,8 @@ _int CControlRoom_Battery::InterActive_Battery(_double TimeDelta)
 
 				m_IsBatteryHolding = false;
 			}
+
+			m_IsPlayerInterActive = false;
 		}
 	}
 

@@ -250,38 +250,11 @@ HRESULT CUI_Generator::Generator_InterActive_UI(Player::ID ePlayer, UI::INTERACT
 	if (false == m_IsTrigger || ePlayer >= Player::PLAYER_END || eTrigger >= UI::INTERACTIVE_ID_END)
 		return S_OK;
 
-	switch (eTrigger)
-	{
-	case UI::ControlRoom_Battery:
-		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg);
-		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg);
-		break;
-	case UI::PinBall_Door:
-		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg);
-		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg);
-		break;
-	case UI::StarBuddy:
-		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg);
-		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg);
-		break;
-	case UI::PinBall_Handle:
-		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg);
-		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg);
-		break;
-	case UI::TutorialDoor:
-		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg);
-		SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg);
-		break;
-	default:
-		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_InterActive_UI");
-		break;
-	}
-
-
+	SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg);
+	SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg);
 
 	return S_OK;
 }
-
 
 HRESULT CUI_Generator::Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 {
@@ -313,6 +286,14 @@ HRESULT CUI_Generator::Delete_InterActive_UI(Player::ID ePlayer, UI::INTERACTIVE
 	m_vecInterActiveUI[ePlayer][eTrigger].clear();
 
 	return S_OK;
+}
+
+CUIObject* CUI_Generator::Get_UIObject(Player::ID ePlayer,UI::TRIGGER eTrigger)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return nullptr;
+
+	return m_vecInterActiveUI[ePlayer][eTrigger].front();
 }
 
 HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::ID ePlayer)
@@ -656,7 +637,6 @@ HRESULT CUI_Generator::Add_Prototype_Interactive_UI(CUIObject::UI_DESC* UIDesc)
 	return S_OK;
 }
 
-
 HRESULT CUI_Generator::Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -906,7 +886,6 @@ HRESULT CUI_Generator::Add_Prototype_Chapter(CUIObject::UI_DESC * UIDesc)
 	return S_OK;
 }
 
-
 void CUI_Generator::UI_RETutorial(Player::ID ePlayer, UI::TRIGGER eTrigger)
 {
 	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
@@ -955,8 +934,6 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 
 	return S_OK;
 }
-
-
 
 HRESULT CUI_Generator::Add_Prototype_LogoTexture()
 {
@@ -1009,7 +986,6 @@ HRESULT CUI_Generator::SetUp_Clone_InterActive(Player::ID ePlayer, UI::INTERACTI
 
 	return S_OK;
 }
-
 
 HRESULT CUI_Generator::SetUp_Clone_Ptr(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void* pArg, CGameObject** pGameObject)
 {
