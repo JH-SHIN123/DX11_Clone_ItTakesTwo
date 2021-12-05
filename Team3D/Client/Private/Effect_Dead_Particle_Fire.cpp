@@ -26,6 +26,10 @@ HRESULT CEffect_Player_Dead_Particle_Fire::NativeConstruct(void * pArg)
 
 	__super::Ready_Component(pArg);
 
+	m_pModelCom = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
+	Safe_AddRef(m_pModelCom);
+
+
 	if (EFFECT_DESC_CLONE::PV_CODY >= m_EffectDesc_Clone.iPlayerValue)
 		m_EffectDesc_Prototype.iInstanceCount = 1200; // 500 100
 	else if (EFFECT_DESC_CLONE::PV_CODY_S == m_EffectDesc_Clone.iPlayerValue)
@@ -86,6 +90,15 @@ HRESULT CEffect_Player_Dead_Particle_Fire::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Point_Diff->Get_ShaderResourceView(0));
 	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Point_Sprite->Get_ShaderResourceView(0));
 	m_pPointInstanceCom->Render(6, m_pPointBuffer_Smoke_Small, m_iPointInstanceCount_Small);
+
+
+	m_pModelCom->Set_Variable("g_vPos", &m_vModelPos, sizeof(_float));
+	m_pModelCom->Set_Variable("g_fTime", &m_fModel_Time, sizeof(_float));
+	m_pModelCom->Set_Variable("g_vTextureUV_LTRB", &vUV, sizeof(_float4));
+	m_pModelCom->Set_Variable("g_vParticleSize", &m_vSize, sizeof(_float2));
+	m_pModelCom->Set_ShaderResourceView("g_MaskingTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Render_Model_VERTEX(9);
 
 	return S_OK;
 }

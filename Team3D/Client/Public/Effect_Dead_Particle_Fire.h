@@ -69,6 +69,11 @@ private:
 	_float					m_fPointInstance_Small_Alpha	= 0.f;
 	_bool					m_IsPointInstance_Small_Alpha_Add = true;
 
+public:
+	_float m_fModel_Time = 0.f;
+	_float2 m_vSize = { 0.f, 0.f };
+	_bool m_IsSizeUp = true;
+	_float4 m_vModelPos;
 
 public:
 	static CEffect_Player_Dead_Particle_Fire* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
