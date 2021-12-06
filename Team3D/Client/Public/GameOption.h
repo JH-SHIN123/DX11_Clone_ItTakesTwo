@@ -19,14 +19,14 @@
 /**
 * 사용할 스레드 개수 지정
 */
-#define __THREAD_NUM 14
+#define __THREAD_NUM 8
 
 /************************************************************************/
 
 /**
 * 맵 로딩 하려면 주석 처리.
 */
-#define __MAPLOADING_OFF
+//#define __MAPLOADING_OFF
 
 /************************************************************************/
 
@@ -43,7 +43,7 @@
 //#define __TEST_SE
 //#define __TEST_JUNG
 //#define __TEST_HYE
-#define __TEST_TAEK
+//#define __TEST_TAEK
 //#define __TEST_YOON
 //#define __TEST_JIN
 //#define __TEST_JUN

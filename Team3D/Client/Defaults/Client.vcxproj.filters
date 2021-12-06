@@ -292,9 +292,6 @@
     <Filter Include="02.GameObject\02.Sky">
       <UniqueIdentifier>{0c3c56fc-0b42-45d2-a00b-17903a35f28e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\07.UI">
-      <UniqueIdentifier>{655701b4-ca8c-4776-ab23-332f0781581e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung\00.WarpGate">
       <UniqueIdentifier>{2650a767-00d4-4a91-bc33-20a9b360ce35}</UniqueIdentifier>
     </Filter>
@@ -306,78 +303,6 @@
     </Filter>
     <Filter Include="03.Component\01.Actor">
       <UniqueIdentifier>{2ec58a84-d189-4974-a108-05b4f318d045}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\00.Main">
-      <UniqueIdentifier>{9d5bee89-c474-4dcf-8a8e-0ef5ff96d410}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\01.InputButton">
-      <UniqueIdentifier>{d9199cbc-2ae9-4773-afeb-f18849604ce2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\01.InputButton\00.Frame">
-      <UniqueIdentifier>{4d84e6aa-f786-4cfe-b5af-558be0ab16c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\01.InputButton\01.Button">
-      <UniqueIdentifier>{6125b4bd-a6d4-4be5-b3cb-6ee056b3a81f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\03.ArrowKeys">
-      <UniqueIdentifier>{bfd01cf1-003b-4352-b521-cb1c85869051}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\03.ArrowKeys\00.Fill">
-      <UniqueIdentifier>{6cd715f8-54d9-4c02-a292-f8479a2adc01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\03.ArrowKeys\01.Outline">
-      <UniqueIdentifier>{d5a77603-7991-4752-b0d8-628b31ebc1ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\04.PlayerMarker">
-      <UniqueIdentifier>{12f10e88-ed42-4a3e-b44a-e48946eccdcd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\05.UISprite">
-      <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\06.RespawnCircle">
-      <UniqueIdentifier>{32c02485-1865-4c7a-8089-c3bd39b4b08c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\07.Portrait">
-      <UniqueIdentifier>{f56e4d4e-96be-46f6-91d6-d0ec0b8dd449}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\08.ButtonIndicator">
-      <UniqueIdentifier>{29414170-35a7-4279-8f62-05b5997957f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\09.Screen">
-      <UniqueIdentifier>{7f60ca2f-feec-410e-a00a-ada95f56603a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\09.Screen\00.AlphaScreen">
-      <UniqueIdentifier>{120844a3-2edb-4b1e-b9ea-4d3159964372}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\10.Menu">
-      <UniqueIdentifier>{2c177276-9cd8-4cd1-9b02-729ba9e0d7a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\10.Menu\00.Screen">
-      <UniqueIdentifier>{43442957-b4fa-435a-842c-2889b82d3f5d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\10.Menu\01.HeaderBox">
-      <UniqueIdentifier>{3d06338d-2d98-4faa-8163-518d639a3457}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\02.ButtonIcon">
-      <UniqueIdentifier>{3c2d527a-22db-4fc8-a7c5-05df63b7b482}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\02.ButtonIcon\PC">
-      <UniqueIdentifier>{d168a74d-d928-4c37-842d-4a44a641f92c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\02.ButtonIcon\PC\Mouse">
-      <UniqueIdentifier>{d2f7148a-cea6-49b1-947f-604017fc1f0c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\02.ButtonIcon\PC\Enter">
-      <UniqueIdentifier>{f90769d6-e9cf-4089-aab7-cd3d224cdf4f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\02.ButtonIcon\Controller">
-      <UniqueIdentifier>{6f0a4b12-efac-48a1-9f58-087c7651fd4f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\11.ChapterSelect">
-      <UniqueIdentifier>{f0c03c84-48c4-479e-86d2-76c7f04a52ce}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\07.UI\09.Screen\01.ChapterScreen">
-      <UniqueIdentifier>{f8527fcd-ef02-4951-8a62-1e30b5d9da75}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\04.TutorialDoor">
       <UniqueIdentifier>{9504df9e-0d63-4641-8f31-8099b62bfdd7}</UniqueIdentifier>
@@ -634,14 +559,92 @@
     <Filter Include="96.Debug">
       <UniqueIdentifier>{7904050b-bece-47ac-9d69-2652f5e7bc09}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.Laser">
-      <UniqueIdentifier>{6043b0d0-ce9d-4181-a148-cb68e56987eb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\99.Terrain%28Test%29">
       <UniqueIdentifier>{f999b3e3-a399-493a-893b-bcebcfb781a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\06.Light">
-      <UniqueIdentifier>{9cda63a2-0597-48c9-91a7-ef1a67f1ec2b}</UniqueIdentifier>
+    <Filter Include="04.Generator\03.Light_Generator">
+      <UniqueIdentifier>{a8b9071a-f602-4803-adc7-1a1462e62875}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Generator\03.Light_Generator\PointLight">
+      <UniqueIdentifier>{b43b1637-3313-42b3-ac1f-7fdf9e0967c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Generator\03.Light_Generator\SpotLight">
+      <UniqueIdentifier>{d261fd29-aa44-4f3c-9f27-a24bf0383859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI">
+      <UniqueIdentifier>{655701b4-ca8c-4776-ab23-332f0781581e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\00.Main">
+      <UniqueIdentifier>{9d5bee89-c474-4dcf-8a8e-0ef5ff96d410}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\01.InputButton">
+      <UniqueIdentifier>{d9199cbc-2ae9-4773-afeb-f18849604ce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\01.InputButton\00.Frame">
+      <UniqueIdentifier>{4d84e6aa-f786-4cfe-b5af-558be0ab16c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\01.InputButton\01.Button">
+      <UniqueIdentifier>{6125b4bd-a6d4-4be5-b3cb-6ee056b3a81f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\03.ArrowKeys">
+      <UniqueIdentifier>{bfd01cf1-003b-4352-b521-cb1c85869051}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\03.ArrowKeys\00.Fill">
+      <UniqueIdentifier>{6cd715f8-54d9-4c02-a292-f8479a2adc01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\03.ArrowKeys\01.Outline">
+      <UniqueIdentifier>{d5a77603-7991-4752-b0d8-628b31ebc1ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\04.PlayerMarker">
+      <UniqueIdentifier>{12f10e88-ed42-4a3e-b44a-e48946eccdcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\05.UISprite">
+      <UniqueIdentifier>{fb9b183a-4b0c-435c-825a-f40f4b122c57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\06.RespawnCircle">
+      <UniqueIdentifier>{32c02485-1865-4c7a-8089-c3bd39b4b08c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\07.Portrait">
+      <UniqueIdentifier>{f56e4d4e-96be-46f6-91d6-d0ec0b8dd449}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\08.ButtonIndicator">
+      <UniqueIdentifier>{29414170-35a7-4279-8f62-05b5997957f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\09.Screen">
+      <UniqueIdentifier>{7f60ca2f-feec-410e-a00a-ada95f56603a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\09.Screen\00.AlphaScreen">
+      <UniqueIdentifier>{120844a3-2edb-4b1e-b9ea-4d3159964372}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\09.Screen\01.ChapterScreen">
+      <UniqueIdentifier>{f8527fcd-ef02-4951-8a62-1e30b5d9da75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\10.Menu">
+      <UniqueIdentifier>{2c177276-9cd8-4cd1-9b02-729ba9e0d7a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\10.Menu\00.Screen">
+      <UniqueIdentifier>{43442957-b4fa-435a-842c-2889b82d3f5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\10.Menu\01.HeaderBox">
+      <UniqueIdentifier>{3d06338d-2d98-4faa-8163-518d639a3457}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\02.ButtonIcon">
+      <UniqueIdentifier>{3c2d527a-22db-4fc8-a7c5-05df63b7b482}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\02.ButtonIcon\PC">
+      <UniqueIdentifier>{d168a74d-d928-4c37-842d-4a44a641f92c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\02.ButtonIcon\PC\Mouse">
+      <UniqueIdentifier>{d2f7148a-cea6-49b1-947f-604017fc1f0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\02.ButtonIcon\PC\Enter">
+      <UniqueIdentifier>{f90769d6-e9cf-4089-aab7-cd3d224cdf4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\02.ButtonIcon\Controller">
+      <UniqueIdentifier>{6f0a4b12-efac-48a1-9f58-087c7651fd4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\11.ChapterSelect">
+      <UniqueIdentifier>{f0c03c84-48c4-479e-86d2-76c7f04a52ce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

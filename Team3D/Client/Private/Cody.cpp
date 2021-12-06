@@ -2659,7 +2659,8 @@ void CCody::Set_SpaceRailNode(CSpaceRail_Node* pRail)
 }
 void CCody::KeyInput_Rail(_double dTimeDelta)
 {
-	if (m_pGameInstance->Key_Down(DIK_F) && false == m_bOnRail)
+	if (m_pGameInstance->Key_Down(DIK_F) && false == m_bOnRail &&
+		m_eCurPlayerSize == SIZE_MEDIUM && false == m_IsDeadLine)
 	{
 		Start_SpaceRail();
 	}
@@ -2670,12 +2671,14 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 		{
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 
-			m_iJumpCount = 1;
+			m_iJumpCount = 0;
 			m_bShortJump = true;
 
 			m_pTargetRail = nullptr;
 			m_pSearchTargetRailNode = nullptr;
 			m_pTargetRailNode = nullptr;
+
+			m_vecTargetRailNodes.clear();
 
 			m_bMoveToRail = false;
 			m_bOnRail = false;
@@ -2689,7 +2692,10 @@ void CCody::Clear_TagerRailNodes()
 void CCody::Find_TargetSpaceRail()
 {
 	// 레일타기 키 눌렸을때만, 타겟 찾기, 키가 눌렸지만, 충돌한 레일 트리거가 존재하지 않을때
-	if (m_vecTargetRailNodes.empty()) return;
+	if (m_vecTargetRailNodes.empty()) {
+		m_pSearchTargetRailNode = nullptr;
+		return;
+	}
 
 	CTransform* pCamTransform = m_pCamera->Get_Transform();
 	if (nullptr == pCamTransform) return;
@@ -2762,14 +2768,15 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 {
 	if (nullptr == m_pTransformCom || false == m_bMoveToRail || nullptr == m_pTargetRailNode || true == m_bOnRail) return;
 
-	m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind); // 레일 착지
+	m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_Enter); // 줄던지고 댕겨서 날라가기
 
 	_float fMoveToSpeed = 5.f;
 	_float fDist = m_pTransformCom->Move_ToTargetRange(m_pTargetRailNode->Get_Position(), 0.1f, dTimeDelta * fMoveToSpeed);
 	if (fDist < 0.15f)
 	{
 		/* 타는 애니메이션으로 변경 */
-		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
+		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_ToGrind); // 레일 착지+
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
 
 		/* 타야할 Path 지정 */
 		m_pTargetRail = (CSpaceRail*)DATABASE->Get_SpaceRail(m_pTargetRailNode->Get_RailTag());
@@ -2824,7 +2831,7 @@ void CCody::TakeRail(_double dTimeDelta)
 		m_pTargetRail = nullptr;
 		m_pTargetRailNode = nullptr;
 		m_pSearchTargetRailNode = nullptr;
-		m_pModelCom->Set_Animation(ANI_C_MH); // 자유낙하 애니메이션으로 변경해야함.
+		m_pModelCom->Set_Animation(ANI_C_Jump_Falling); // 자유낙하 애니메이션으로 변경해야함.
 		m_bOnRailEnd = true;
 	}
 }
