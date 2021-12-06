@@ -524,8 +524,8 @@ HRESULT CLevel_Stage::Ready_Layer_Hook_UFO(const _tchar * pLayerTag)
 	RobotDesc.vPosition = { 920.313f, 730.f, 315.746f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HookUFO"), &RobotDesc), E_FAIL);
 
-	RobotDesc.vPosition = { 894.939f, 735.f, 353.171f, 1.f };
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HookUFO"), &RobotDesc), E_FAIL);
+	//RobotDesc.vPosition = { 894.939f, 735.f, 353.171f, 1.f };
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HookUFO"), &RobotDesc), E_FAIL);
 
 
 	return S_OK;

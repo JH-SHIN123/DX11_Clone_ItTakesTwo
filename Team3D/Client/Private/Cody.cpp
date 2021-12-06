@@ -2286,9 +2286,9 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 		m_fRopeAngle += m_faVelocity / 15.f;
 		
 
-		_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x-m_vStartPosition.x )/**2.f*/ * sin(-m_fRopeAngle), 
-			(m_vTriggerTargetPos.y - m_vStartPosition.y) *2.f* cos(m_fRopeAngle)
-			, ((m_vTriggerTargetPos.z - m_vStartPosition.z)/**2.f*/ * sin(-m_fRopeAngle)), 0.f)/* + XMLoadFloat3(&m_vTriggerTargetPos)*/;
+			_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x -m_vStartPosition.x ) * sin(-m_fRopeAngle), 
+			(m_vTriggerTargetPos.y - m_vStartPosition.y) /**2.f*/ * cos(m_fRopeAngle)
+			, ((m_vTriggerTargetPos.z - m_vStartPosition.z) * sin(-m_fRopeAngle)), 0.f)/* + XMLoadFloat3(&m_vTriggerTargetPos)*/;
 		m_pActorCom->Set_Position(XMLoadFloat3(&m_vTriggerTargetPos) + vPosition);
 
 		_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION),0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
