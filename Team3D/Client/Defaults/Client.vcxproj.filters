@@ -640,8 +640,11 @@
     <Filter Include="02.GameObject\99.Terrain%28Test%29">
       <UniqueIdentifier>{f999b3e3-a399-493a-893b-bcebcfb781a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\06.Light">
-      <UniqueIdentifier>{9cda63a2-0597-48c9-91a7-ef1a67f1ec2b}</UniqueIdentifier>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.Laser\00.Main">
+      <UniqueIdentifier>{378dda6a-f1cd-46ea-bd51-b15d27850adb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.Laser\01.TypeA%28Boss%29">
+      <UniqueIdentifier>{0c632f5b-54b5-45dd-a2a1-0bf3c055a374}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1134,6 +1137,12 @@
     <ClInclude Include="..\Public\GameDebugger.h">
       <Filter>96.Debug</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Laser.h">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Laser_TypeA.h">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\01.TypeA%28Boss%29</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1604,6 +1613,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\GameDebugger.cpp">
       <Filter>96.Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Laser.cpp">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Laser_TypeA.cpp">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\01.TypeA%28Boss%29</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
