@@ -22,7 +22,6 @@ HRESULT CEffect_RespawnTunnel_Portal::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
 
-	//D3D11_BLEND_DESC
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Color_Ramp", TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
 
@@ -54,7 +53,7 @@ _int CEffect_RespawnTunnel_Portal::Tick(_double TimeDelta)
 	if (2.f <= m_fColorRamp_U)
 		m_fColorRamp_U = 0.f;
 
-	Check_Smoke(TimeDelta);
+	//Check_Smoke(TimeDelta);
 
 	return _int();
 }
@@ -72,7 +71,6 @@ HRESULT CEffect_RespawnTunnel_Portal::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
 	_float fRadian = XMConvertToRadians((_float)m_dAngle);
-	//g_vColor
 
 	_float2 vColorRampUV = { m_fColorRamp_U, 0.f };
 	m_pModelCom->Set_Variable("g_vColorRamp_UV",&vColorRampUV,	sizeof(_float2));
@@ -111,7 +109,6 @@ HRESULT CEffect_RespawnTunnel_Portal::Ready_Instance()
 	_float4 vPos;
 	XMStoreFloat4(&vPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
 		m_pInstanceBuffer_Smoke[iIndex].vRight		= { 1.f, 0.f, 0.f, 0.f };
@@ -122,8 +119,8 @@ HRESULT CEffect_RespawnTunnel_Portal::Ready_Instance()
 		m_pInstanceBuffer_Smoke[iIndex].vTextureUV	= Get_TexUV(m_vTextureUV_Smoke.x, m_vTextureUV_Smoke.y, true);
 		m_pInstanceBuffer_Smoke[iIndex].fTime		= 0.5f;
 
-		m_pInstanceBuffer_Smoke_Spawn[iIndex] = m_fSmoke_PosResetTime / iInstanceCount * iIndex;
-		m_pInstanceBuffer_Smoke_PosReset[iIndex] = m_fSmoke_PosResetTime;
+		m_pInstanceBuffer_Smoke_Spawn[iIndex]		= m_fSmoke_PosResetTime / iInstanceCount * iIndex;
+		m_pInstanceBuffer_Smoke_PosReset[iIndex]	= m_fSmoke_PosResetTime;
 		XMStoreFloat3(&m_pInstanceBuffer_Smoke_Dir[iIndex], Get_RandDir_Look());
 	}
 

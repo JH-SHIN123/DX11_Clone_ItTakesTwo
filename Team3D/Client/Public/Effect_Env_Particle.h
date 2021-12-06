@@ -11,6 +11,15 @@ BEGIN(Client)
 // 메쉬 안에서 뿌릴 애들
 class CEffect_Env_Particle final : public CInGameEffect
 {
+public:
+	enum  EParticle_Type { Default, Umbrella, Portal, Type_End };
+	struct tagEnvParticle
+	{
+		EParticle_Type eParticle_Type;
+		tagEnvParticle() {}
+		tagEnvParticle(EParticle_Type eType)
+			: eParticle_Type(eType) {}
+	};
 private:
 	explicit CEffect_Env_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CEffect_Env_Particle(const CEffect_Env_Particle& rhs);
@@ -26,11 +35,11 @@ public:
 public:
 	void	Set_InstanceCount(_uint iInstanceCount);
 	void	Set_Particle_Radius(_float3 vRadiusXYZ);
-	void	Set_IsActivateParticles(_bool IsActivate);
 	void	Set_ParentMatrix(_fmatrix ParentMatrix);
 
 public:
-	void	Set_ControlTime(_double dControlTime);
+ 	void	Set_ControlTime(_double dControlTime);
+	//void	Set_IsActivateParticles(_bool IsActivate);
 
 public:
 	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0) override;
@@ -42,8 +51,6 @@ private:
 	void Check_State(_double TimeDelta);
 	void State_Start(_double TimeDelta);
 	void State_Disappear(_double TimeDelta);
-	void State_On(_double TimeDelta);
-	void State_Off(_double TimeDelta);
 
 private:
 	_float4 Get_Rand_Pos();
@@ -52,12 +59,21 @@ private:
 	HRESULT Reset_Instance_All();
 	HRESULT Initialize_Instance();
 
+private:
+	_vector Set_RandPos_Default(); // GravityPipe
+	_vector Set_RandPos_Umbrella();
+
+private:
+	EParticle_Type m_eParticle_Type = Default;
+
 private: // 전체적인 인스턴싱을 제어함
 	enum STATE_VALUE {STATE_START, STATE_DISAPPEAR, STATE_ON, STATE_OFF, STATE_END};
 	STATE_VALUE		m_eStateValue_Cur		= STATE_END;
 	STATE_VALUE		m_eStateValue_Next		= STATE_START;
 	_double			m_dControl_Time			= 0.0;		// 인스턴싱의 알파값을 통괄적으로 제어
 	_float3			m_vParticleRadius		= { 0.f, 0.f, 0.f};
+
+	const _int3		m_ivRandPower			= { 100, 100, 100 };
 	const _float	m_fResetPosTime			= 3.5f;
 	const _float2	m_vDefaultSize			= { 0.1f, 0.1f };
 

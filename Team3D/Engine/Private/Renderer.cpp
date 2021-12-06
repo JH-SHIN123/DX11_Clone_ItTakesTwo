@@ -8,6 +8,7 @@
 #include "Input_Device.h"
 #include "PostFX.h"
 #include "Blur.h"
+#include "SSAO.h"
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)
@@ -59,8 +60,8 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_PostFX"), TEXT("MRT_PostFX")), E_FAIL);
 
 	/* MRT_Effect */
-	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect"), TEXT("MRT_Effect")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect"), TEXT("MRT_Effect")), E_FAIL);
 
 	/* MRT_Effect_Mesh_Masking */
 // 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect_Mask_Diffuse"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
@@ -84,10 +85,12 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shade"), fWidth, 0.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(CSSAO::GetInstance()->Ready_DebugBuffer(fWidth, fHeight * 2.f, fWidth, fHeight), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_CascadedShadow_Depth"), fWidth * 2.f, 0.f, fWidth, fHeight * MAX_CASCADES), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_PostFX"), fWidth * 3.f, 0.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Effect"), fWidth * 3.f, fHeight, fWidth, fHeight), E_FAIL);
 #endif
 
 	return S_OK;
@@ -119,13 +122,15 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	// 1- pass
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonAlpha(), E_FAIL);
+
+	FAILED_CHECK_RETURN(Compute_SSAO(),  E_FAIL); /* Calculate Occlution Ambient for Directinal Light */
+	
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
 	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
-	FAILED_CHECK_RETURN(Render_Effect_Mesh_Masking(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
 #ifdef _DEBUG
@@ -138,6 +143,8 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_LightAcc"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_CascadedShadow"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_PostFX"));
+		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Effect"));
+		CSSAO::GetInstance()->Render_DebugBuffer();
 	}
 #endif
 
@@ -176,7 +183,7 @@ HRESULT CRenderer::Render_NonAlpha()
 
 HRESULT CRenderer::Render_Alpha()
 {
-	Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_ALPHA]);
+	//Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_ALPHA]);
 
 	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX"), false);
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_ALPHA])
@@ -190,30 +197,16 @@ HRESULT CRenderer::Render_Alpha()
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_Effect_Mesh_Masking()
-{
-	Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING]);
-
-	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING])
-	{
-		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING), E_FAIL);
-		Safe_Release(pGameObject);
-	}
-	m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING].clear();
-
-	return S_OK;
-}
-
 HRESULT CRenderer::Render_Effect()
 {
-	Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_EFFECT]);
-
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Effect"));
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_EFFECT])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_EFFECT), E_FAIL);
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_GROUP::RENDER_EFFECT].clear();
+	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Effect"));
 
 	return S_OK;
 }
@@ -299,6 +292,11 @@ HRESULT CRenderer::PostProcessing(_double TimeDelta)
 	FAILED_CHECK_RETURN(pHDR->PostProcessing(TimeDelta),E_FAIL);
 
 	return S_OK;
+}
+
+HRESULT CRenderer::Compute_SSAO()
+{
+	return CSSAO::GetInstance()->Compute_SSAO();
 }
 
 void CRenderer::Sort_GameObjects(RENDER_OBJECTS & GameObjects)
