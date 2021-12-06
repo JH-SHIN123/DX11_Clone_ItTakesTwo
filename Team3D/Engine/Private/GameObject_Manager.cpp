@@ -1,4 +1,7 @@
 #include "..\public\GameObject_Manager.h"
+#include <mutex>
+
+std::mutex g_mutexGameObject;
 
 IMPLEMENT_SINGLETON(CGameObject_Manager)
 
@@ -26,6 +29,8 @@ HRESULT CGameObject_Manager::Reserve_Container(_uint iLevelCount)
 
 HRESULT CGameObject_Manager::Add_GameObject_Prototype(_uint iPrototypeLevelIndex, const _tchar* pPrototypeTag, CGameObject* pPrototype)
 {
+	g_mutexGameObject.lock();
+
 	NULL_CHECK_RETURN(pPrototype, E_FAIL);
 	NULL_CHECK_RETURN(m_pPrototypes, E_FAIL);
 	NULL_CHECK_RETURN(iPrototypeLevelIndex < m_iLevelCount, E_FAIL);
@@ -36,6 +41,8 @@ HRESULT CGameObject_Manager::Add_GameObject_Prototype(_uint iPrototypeLevelIndex
 	NOT_NULL_CHECK_RETURN(Find_Prototype(iPrototypeLevelIndex, pTag), E_FAIL);
 
 	m_pPrototypes[iPrototypeLevelIndex].emplace(pTag, pPrototype);
+
+	g_mutexGameObject.unlock();
 
 	return S_OK;
 }

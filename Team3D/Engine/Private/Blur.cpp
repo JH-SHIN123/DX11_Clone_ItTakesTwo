@@ -35,6 +35,11 @@ HRESULT CBlur::Blur_Emissive()
 
 HRESULT CBlur::Blur_Effect()
 {
+	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
+
+	FAILED_CHECK_RETURN(DownScale(pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Effect")), m_pUnorderedAccessView_DownScaledEffect), E_FAIL);
+	FAILED_CHECK_RETURN(BlurInPlace(m_pShaderResourceView_DownScaledEffect, m_pUnorderedAccessView_DownScaledEffect), E_FAIL);
+
 	return S_OK;
 }
 

@@ -57,7 +57,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	vector	vEmissiveBlurDesc	= g_EmissiveBlurTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
 
 	Out.vColor = (vDiffuseDesc * vShadeDesc + vSpecularDesc) * vShadowDesc;
-	Out.vColor.xyz += vEmissiveDesc.xyz * 5.f/* Emissive Scale */ + vEmissiveBlurDesc.xyz * 2.f /* Blur - Emissive Scale */;
+	Out.vColor.xyz += vEmissiveDesc.xyz * 4.f/* Emissive Scale */ + vEmissiveBlurDesc.xyz * 2.f /* Blur - Emissive Scale */;
 
 	if (Out.vColor.w == 0) discard;
 
