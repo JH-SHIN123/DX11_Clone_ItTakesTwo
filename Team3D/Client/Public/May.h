@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameOption.h"
 #include "Character.h"
 
 BEGIN(Client)
@@ -327,12 +326,14 @@ private:
 public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
 	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
+	void SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject* pTargetPtr);
 
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
 	_float3				m_vTriggerTargetPos = {};
 	_bool			    m_IsCollide = false;
 	_float4x4			m_TriggerTargetWorld = {};
+	CGameObject*		m_pTargetPtr = nullptr;
 	_uint				m_iCurrentStageNum = ST_GRAVITYPATH;
 
 	_bool m_IsOnGrind = false;
@@ -340,12 +341,17 @@ private:
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
 
-	/* Çý¿ø::For.DeadLine, SavePoint */
+	/* Hye::For.DeadLine, SavePoint */
 	_bool	 m_IsDeadLine = false;
 	_bool	 m_IsSavePoint = false;
 	_float3  m_vSavePoint = {};
 	_float	 m_fDeadTime = 0.f;
 	_float3	 m_DeadLinePos = {};
+	/* Hye::For.PinBall*/
+	_bool	 m_IsPinBall = false;
+	_float2	 m_MinMaxX = {};
+	/* Hye::For.Tube*/
+	_bool m_IsTube = false;
 
 	/* For.HookUFO */
 	_bool m_IsHookUFO = false;
@@ -378,10 +384,6 @@ private:
 	_bool   m_IsWallJumping = false;
 	_float	m_fWallJumpingTime = 0.f;
 	_float	m_fWallToWallSpeed = 0.55f;
-
-	/* For.PinBall */
-	_bool	 m_IsPinBall = false;
-	_float2	 m_MinMaxX = {};
 
 	_float3 m_vPoints[4] = {};
 	_double	m_dTestTime = 0.0;
@@ -449,12 +451,16 @@ private:
 	void	Start_SpaceRail();
 	void	MoveToTargetRail(_double dTimeDelta);
 	void	TakeRail(_double dTimeDelta);
+	void	TakeRailEnd(_double dTimeDelta);
 	void	ShowRailTargetTriggerUI();
 
 private:
 	_bool						m_bMoveToRail = false;
 	_bool						m_bOnRail = false;
-	_uint						m_iRailDir = 0;
+	_bool						m_bOnRailEnd = false;
+
+private:
+	_double						m_dRailEnd_ForceDeltaT = 0.0;
 
 private:
 	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;

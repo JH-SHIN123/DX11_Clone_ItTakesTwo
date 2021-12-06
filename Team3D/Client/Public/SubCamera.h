@@ -3,7 +3,6 @@
 #include "Client_Defines.h"
 #include "Camera.h"
 #include "Cam_Helper.h"
-#include "GameOption.h"
 
 BEGIN(Client)
 

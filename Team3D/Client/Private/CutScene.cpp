@@ -95,11 +95,11 @@ HRESULT CCutScene::Start_CutScene_Intro()
 	static_cast<CPerformer*>(pPerformer)->Set_PerformerDesc(tDesc);
 	static_cast<CPerformer*>(pPerformer)->Start_Perform();
 
-	//pPerformer = m_pCutScenePlayer->Find_Performer(L"Component_Model_MoonBaboon");
-	//if (nullptr == pPerformer)
-	//	return E_FAIL;
-	//static_cast<CMoonBaboon*>(pPerformer)->Set_Animation(7);
-	//static_cast<CMoonBaboon*>(pPerformer)->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix(_float3(62.8f,0.5f,-6.2f),_float3(1.f,1.f,1.f),_float3(90.f,-90.f,0.f)));
+	pPerformer = m_pCutScenePlayer->Find_Performer(L"Component_Model_MoonBaboon");
+	if (nullptr == pPerformer)
+		return E_FAIL;
+	static_cast<CMoonBaboon*>(pPerformer)->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix(_float3(62.8f,0.5f,-6.2f),_float3(1.f,1.f,1.f),_float3(90.f,-90.f,0.f)));
+	static_cast<CMoonBaboon*>(pPerformer)->Get_Model()->Set_Animation(7);
 
 	static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Start_Film(L"Film_Begin_Game");
 	
@@ -130,9 +130,9 @@ HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 
 _fmatrix CCutScene::MakeRollPitchYawMatrix(_float3 vPos, _float3 vScale, _float3 vRot)
 {
-	return XMMatrixScaling(vScale.x,vScale.y, vScale.z) *
-		XMMatrixRotationRollPitchYaw(XMConvertToRadians(vRot.z), XMConvertToRadians(vRot.x), XMConvertToRadians(vRot.y))*
-		XMMatrixTranslation(vPos.x, vPos.y, vPos.z);
+	return	XMMatrixScaling(vScale.x,vScale.y, vScale.z) *
+			XMMatrixRotationRollPitchYaw(XMConvertToRadians(vRot.z), XMConvertToRadians(vRot.x), XMConvertToRadians(vRot.y))*
+			XMMatrixTranslation(vPos.x, vPos.y, vPos.z);
 	
 }
 

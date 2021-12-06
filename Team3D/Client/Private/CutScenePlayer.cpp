@@ -126,10 +126,7 @@ _bool CCutScenePlayer::Tick_CutScene()
 	return true;
 }
 
-void CCutScenePlayer::OffSetTimeDelta()
-{
-	m_dTimeDelta = CGameInstance::GetInstance()->Compute_TimeDelta(TEXT("Timer_60"))*3252.0*1.02693;
-}
+
 
 HRESULT CCutScenePlayer::Start_CutScene(const _tchar* pCutSceneTag)
 {
@@ -144,8 +141,14 @@ HRESULT CCutScenePlayer::Start_CutScene(const _tchar* pCutSceneTag)
 		m_pCurCutScene = nullptr;
 		return E_FAIL;
 	}
-
+	m_bIsPlayingCutScene = true;
 	return S_OK;
+}
+
+void CCutScenePlayer::Stop_CutScene()
+{
+	m_pCurCutScene = nullptr;
+	m_bIsPlayingCutScene = false;
 }
 
 

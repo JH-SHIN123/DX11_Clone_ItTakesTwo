@@ -191,7 +191,6 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 	if (nullptr == m_pTargetObj)
 		return EVENT_ERROR;
 
-
 	switch (m_eCurCamFreeOption)
 	{
 	case CMainCamera::CamFreeOption::Cam_Free_FollowPlayer:
@@ -199,6 +198,9 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 		break;
 	case CMainCamera::CamFreeOption::Cam_Free_FreeMove:
 		Tick_Cam_Free_FreeMode(dTimeDelta);
+		break;
+	case CMainCamera::CamFreeOption::Cam_Free_OnRail:
+		Tick_Cam_Free_OnRail(dTimeDelta);
 		break;
 	}
 	return NO_EVENT;
@@ -403,6 +405,11 @@ _int CMainCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 	KeyCheck(dTimeDelta);
 	return NO_EVENT;
 }
+_int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
+{
+	KeyCheck(dTimeDelta);
+	return NO_EVENT;
+}
 void CMainCamera::KeyCheck(_double dTimeDelta)
 {
 
@@ -416,7 +423,14 @@ void CMainCamera::KeyCheck(_double dTimeDelta)
 	{
 		m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), (_float)MouseMove * dTimeDelta* 0.1f);
 	}
-
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD4))
+	{
+		m_pTransformCom->Go_Left(dTimeDelta);
+	}
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD6))
+	{
+		m_pTransformCom->Go_Right(dTimeDelta);
+	}
 }
 #pragma endregion
 _int CMainCamera::ReSet_Cam_FreeToAuto()
@@ -505,7 +519,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 {
 
 	//외부에서 상태 설정 구간
-#ifdef _CJH
+#ifdef __TEST_JUN
 	//if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	//{
 	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Right", CFilm::RScreen);
@@ -516,17 +530,39 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
 		return NO_EVENT;
 	}
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
+	{
+		CCutScenePlayer::GetInstance()->Stop_CutScene();
+		return NO_EVENT;
+	}
 
-	//if (m_pGameInstance->Key_Down(DIK_O))
-	//{
-	//	m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
-	//}
-	//if (m_pGameInstance->Key_Down(DIK_P))
-	//{
-	//	m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
-	//}
+	if (m_pGameInstance->Key_Down(DIK_O))
+	{
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
+	}
+	if (m_pGameInstance->Key_Down(DIK_P))
+	{
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
+	}
+	if (m_pGameInstance->Key_Down(DIK_I))
+	{
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OnRail;
+	}
 #endif
-
+	if (m_eCurCamFreeOption != m_ePreCamFreeOption)
+	{
+		switch (m_eCurCamFreeOption)
+		{
+		case Client::CMainCamera::CamFreeOption::Cam_Free_FollowPlayer:
+			ReSet_Cam_FreeToAuto();
+			break;
+		case Client::CMainCamera::CamFreeOption::Cam_Free_FreeMove:
+			break;
+		case Client::CMainCamera::CamFreeOption::Cam_Free_OnRail:
+			break;
+		}
+		m_ePreCamFreeOption = m_eCurCamFreeOption;
+	}
 
 	_int iResult = NO_EVENT;
 	switch (m_eCurCamMode)
@@ -536,7 +572,6 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		break;
 	case Client::CMainCamera::CamMode::Cam_AutoToFree:
 		iResult = Tick_Cam_AutoToFree(dTimeDelta);
-
 		break;
 	}
 	return iResult;

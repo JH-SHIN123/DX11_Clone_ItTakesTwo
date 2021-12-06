@@ -5,7 +5,6 @@
 #include"Cam_Helper.h"
 #include"Cody.h"
 
-#define _CJH
 
 BEGIN(Client)
 class CMainCamera final : public CCamera
@@ -14,7 +13,7 @@ class CMainCamera final : public CCamera
 
 	enum class CamMode{Cam_Free,Cam_AutoToFree,Cam_End};
 	//O CamFreeMove P FollowPlayer
-	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_End };
+	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnRail, Cam_Free_End };
 
 private:
 	explicit CMainCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -39,8 +38,11 @@ private:
 	//For Free.
 	_int	Tick_Cam_Free(_double dTimeDelta);				//자유이동
 	_int	Tick_Cam_AutoToFree(_double dTimeDelta);		//연출 카메라 -> 자유이동시 보간
+	
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);	//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);		//카메라가 자유롭게 이동함
+	_int	Tick_Cam_Free_OnRail(_double dTimeDelta);
+
 
 	//CamHelper State(현재 )
 	_int	Tick_CamHelperNone(_double dTimeDelta);			//현재 아무것도 재생안함
@@ -51,7 +53,7 @@ private:
 	//For.Debug
 	void KeyCheck(_double dTimeDelta);
 private:
-	_int	ReSet_Cam_FreeToAuto();		//변수 초기화용
+	_int	ReSet_Cam_FreeToAuto();		//카메라가 초기상태로 돌아옴
 	_bool	OffSetPhsX(_fmatrix matWorld,_double dTimeDelta,_vector * pOut);
 
 	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At, _fvector vUp = XMVectorSet(0.f,1.f,0.f,0.f));
@@ -87,6 +89,7 @@ private:
 
 
 	CamFreeOption m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
+	CamFreeOption m_ePreCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 
 	//For.SpringCamera
 	_bool m_bIsCollision = false;

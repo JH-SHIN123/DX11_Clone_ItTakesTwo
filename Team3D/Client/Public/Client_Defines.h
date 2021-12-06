@@ -19,7 +19,16 @@ extern bool			g_bWndActivate;
 #include "Client_Struct.h"
 #include "Client_MathHelper.h"
 
+#include "GameOption.h"
 #include "DataStorage.h"
 
 namespace Client {}
 using namespace Client;
+
+#ifdef __GAME_DEBUGGER
+#ifdef UNICODE
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#else
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#endif
+#endif
