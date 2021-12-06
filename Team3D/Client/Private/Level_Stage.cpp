@@ -86,7 +86,6 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Stage_Space(), E_FAIL);
 #else
 	FAILED_CHECK_RETURN(Ready_Test(), E_FAIL);
-
 #endif
 
 	return S_OK;
@@ -552,8 +551,7 @@ HRESULT CLevel_Stage::Ready_Layer_SpaceValve(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_Hook_UFO(const _tchar * pLayerTag)
 {
 	ROBOTDESC RobotDesc;
-	//RobotDesc.vPosition = { 920.313f, 730.f, 315.746f, 1.f };
-	RobotDesc.vPosition = { 0.f, 10.f, 10.f, 1.f };
+	RobotDesc.vPosition = { 915.313f, 740.f, 315.746f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HookUFO"), &RobotDesc), E_FAIL);
 
 	//RobotDesc.vPosition = { 894.939f, 735.f, 353.171f, 1.f };
@@ -582,8 +580,7 @@ HRESULT CLevel_Stage::Ready_Layer_RobotParts(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_RobotParts"), &RobotDesc), E_FAIL);
 
 	RobotDesc.iStageNum = ST_RAIL;
-	//RobotDesc.vPosition = { 1035.099f, 740.8861f, 215.8869f, 1.f };
-	RobotDesc.vPosition = { 0.f, 0.f, 0.f, 1.f};
+	RobotDesc.vPosition = { 1035.099f, 740.8861f, 215.8869f, 1.f };
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_RobotParts"), &RobotDesc), E_FAIL);
 

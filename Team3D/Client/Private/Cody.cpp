@@ -2273,12 +2273,10 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 {
 	if (m_IsHookUFO == true)
 	{
+		// 이동
 		_float Gravity = -0.3f;
 
-		if (m_faArmLength < 7.f)
-			m_faArmLength += dTimeDelta;
-		else if (m_faArmLength >= 7.f)
-			m_faArmLength -= dTimeDelta;
+
 
 		m_faAcceleration = (-1.f * Gravity / m_faArmLength) * sin(m_fRopeAngle);
 
@@ -2290,21 +2288,47 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 		m_faVelocity *= m_faDamping;
 		m_fRopeAngle += m_faVelocity / 30.f;
 		
+		//if (m_vTriggerTargetPos.x - m_vStartPosition.x < 8.f)
+		//{
+		//	m_vStartPosition.x -= dTimeDelta * 5.f;
+		//}
+		//else if (m_vTriggerTargetPos.x - m_vStartPosition.x > 8.f)
+		//{
+		//	m_vStartPosition.x += dTimeDelta * 5.f;
+		//}
+		//if (m_vTriggerTargetPos.y - m_vStartPosition.y < 8.f)
+		//{
+		//	m_vStartPosition.y -= dTimeDelta * 5.f;
+		//}
+		//else if (m_vTriggerTargetPos.y - m_vStartPosition.y > 8.f)
+		//{
+		//	m_vStartPosition.y += dTimeDelta * 5.f;
+		//}
+		//if (m_vTriggerTargetPos.z - m_vStartPosition.z < 8.f)
+		//{
+		//	m_vStartPosition.z -= dTimeDelta * 5.f;
+		//}
+		//else if (m_vTriggerTargetPos.z - m_vStartPosition.z > 8.f)
+		//{
+		//	m_vStartPosition.z += dTimeDelta * 5.f;
+		//}
 
-			//_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x -m_vStartPosition.x ) * sin(-m_fRopeAngle), 
-			//(m_vTriggerTargetPos.y - m_vStartPosition.y) /**2.f*/ * cos(m_fRopeAngle)
-			//, ((m_vTriggerTargetPos.z - m_vStartPosition.z) * sin(-m_fRopeAngle)), 0.f)/* + XMLoadFloat3(&m_vTriggerTargetPos)*/;
-		_vector vPosition = XMVectorSet(m_faArmLength * sin(-m_fRopeAngle), m_faArmLength * cos(m_fRopeAngle), m_faArmLength * sin(-m_fRopeAngle), 0.f);
+			_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x -m_vStartPosition.x ) * sin(-m_fRopeAngle), 
+			(m_vTriggerTargetPos.y - m_vStartPosition.y) /**2.f*/ * cos(m_fRopeAngle)
+			, ((m_vTriggerTargetPos.z - m_vStartPosition.z) * sin(-m_fRopeAngle)), 0.f)/* + XMLoadFloat3(&m_vTriggerTargetPos)*/;
+
+		//_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x - m_vStartPosition.x) * sin(-m_fRopeAngle), m_faArmLength * cos(m_fRopeAngle), (m_vTriggerTargetPos.x - m_vStartPosition.x)  * sin(-m_fRopeAngle), 0.f);
 
 		m_pActorCom->Set_Position(XMLoadFloat3(&m_vTriggerTargetPos) + vPosition);
 
+
+		// 회전
 		_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION),0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
 		vTriggerToPlayer = XMVectorSetW(vTriggerToPlayer, 1.f);
 		m_pTransformCom->RotateYawDirectionOnLand(-vTriggerToPlayer, (_float)dTimeDelta / 2.f);
 		//m_pTransformCom->Set_RotateAxis(m_vHookUFOAxis, sin(-m_fRopeAngle));
 
-		////////////////////////////////////////
-
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		if (m_pGameInstance->Key_Down(DIK_SPACE)) // 로프 놓기
 		{
