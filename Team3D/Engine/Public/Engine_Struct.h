@@ -11,7 +11,10 @@ namespace Engine
 		XMFLOAT3	vPosition;
 		float		fRange;
 		float		fAtt;
-		float		fSpotCosOuterCone;
+		
+		float		fOuterAngle;
+		float		fInnerAngle;
+
 		XMFLOAT4	vDiffuse;
 		XMFLOAT4	vAmbient;
 		XMFLOAT4	vSpecular;
