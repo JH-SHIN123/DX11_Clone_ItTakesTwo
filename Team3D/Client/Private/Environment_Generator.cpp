@@ -242,6 +242,10 @@ HRESULT CEnvironment_Generator::Load_Prototype_GameObject()
 
 HRESULT CEnvironment_Generator::Load_Prototype_Model_Others_Space(_uint iIndex)
 {
+#ifdef __MAPLOADING_OFF
+	return S_OK;
+#endif
+
 	FAILED_CHECK_RETURN(Load_Prototype_Model_ByIndex_Space(iIndex), E_FAIL);
 
 	return S_OK;
