@@ -216,6 +216,7 @@
     <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
     <ClInclude Include="..\Public\ControlRoom_Glass.h" />
+    <ClInclude Include="..\Public\EffectLight.h" />
     <ClInclude Include="..\Public\GameDebugger.h" />
     <ClInclude Include="..\Public\GameOption.h" />
     <ClInclude Include="..\public\DeadLine.h" />
@@ -256,6 +257,7 @@
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\public\Level_Stage.h" />
+    <ClInclude Include="..\Public\Light_Generator.h" />
     <ClInclude Include="..\public\Loading.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\MainCamera.h" />
@@ -361,6 +363,7 @@
     <ClCompile Include="..\Private\ControlRoom_Door.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Glass.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp" />
+    <ClCompile Include="..\Private\EffectLight.cpp" />
     <ClCompile Include="..\Private\GameDebugger.cpp" />
     <ClCompile Include="..\Private\HeaderBox.cpp" />
     <ClCompile Include="..\Private\AlienScreen.cpp" />
@@ -409,6 +412,7 @@
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Level_Stage.cpp" />
+    <ClCompile Include="..\Private\Light_Generator.cpp" />
     <ClCompile Include="..\private\Loading.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\MainCamera.cpp" />

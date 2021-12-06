@@ -46,7 +46,6 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
-
  	UI_Create(Cody, PC_Mouse_Reduction);
  	UI_Create(Cody, PC_Mouse_Enlargement);
  	//UI_Create(Default, LoadingBook);

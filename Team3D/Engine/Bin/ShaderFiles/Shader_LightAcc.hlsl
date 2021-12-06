@@ -106,7 +106,7 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		discard;
 
 	Out.vShade		= max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient) * fAODesc;
-	Out.vShade.a = 0.f;
+	Out.vShade.a	= 0.f;
 
 	/* Specular */
 	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Point_Sampler, In.vTexUV);
