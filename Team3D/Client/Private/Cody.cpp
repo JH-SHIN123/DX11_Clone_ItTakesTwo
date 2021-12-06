@@ -1246,7 +1246,7 @@ void CCody::Jump(const _double dTimeDelta)
 			else if (m_eCurPlayerSize == SIZE_LARGE)
 				m_pActorCom->Jump_Start(2.8f);
 			else
-				m_pActorCom->Jump_Start(1.5f);
+				m_pActorCom->Jump_Start(1.1f);
 
 			if (m_eCurPlayerSize == SIZE_LARGE)
 				m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Start); // 사이즈 클때 점프 애니메이션이 다름.
@@ -1263,7 +1263,7 @@ void CCody::Jump(const _double dTimeDelta)
 			if (m_eCurPlayerSize == SIZE_MEDIUM)
 				m_pActorCom->Jump_Start(2.6f);
 			else if (m_eCurPlayerSize == SIZE_SMALL)
-				m_pActorCom->Jump_Start(1.5f);
+				m_pActorCom->Jump_Start(1.1f);
 
 			m_pModelCom->Set_Animation(ANI_C_DoubleJump);
 			m_bShortJump = false;
