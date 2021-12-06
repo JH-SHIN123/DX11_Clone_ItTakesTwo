@@ -36,12 +36,17 @@ HRESULT CPipeJumpWall::NativeConstruct(void * pArg)
 		memcpy(&PipeJumpWallDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, PipeJumpWallDesc.vPosition);
-	m_pTransformCom->Set_Scale(XMVectorSet(1.f, 12.f, 1.f, 1.f));
+	m_pTransformCom->Set_Scale(XMVectorSet(0.2f, 1.1f, 0.5f, 1.f));
 
 	_matrix PhysxWorldMatrix = XMMatrixIdentity();
-	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans), XMVectorGetY(vTrans), XMVectorGetZ(vTrans));
 	m_pPhysxTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	if(PipeJumpWallDesc.iStageNum == ST_GRAVITYPATH)
+		PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans) + 0.255f, XMVectorGetY(vTrans) + 1.095f, XMVectorGetZ(vTrans) - 0.2f);
+	else if (PipeJumpWallDesc.iStageNum == ST_PINBALL)
+		PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans) - 0.245f, XMVectorGetY(vTrans) + 1.095f, XMVectorGetZ(vTrans) - 0.2f);
+
+
 	m_pPhysxTransformCom->Set_WorldMatrix(PhysxWorldMatrix);
 
 	// Æ®¸®°Å
@@ -49,7 +54,7 @@ HRESULT CPipeJumpWall::NativeConstruct(void * pArg)
 	CTriggerActor::ARG_DESC ArgDesc;
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pPhysxTransformCom;
-	ArgDesc.pGeometry = new PxBoxGeometry(2.f, 17.4f, 2.f);
+	ArgDesc.pGeometry = new PxBoxGeometry(0.2f, 1.2f, 1.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
@@ -67,6 +72,12 @@ HRESULT CPipeJumpWall::NativeConstruct(void * pArg)
 _int CPipeJumpWall::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+
+
+	
+	//1. m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(44.8309f, 218.25084f, 224.46f, 1.f));
+	//2. m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(46.0709f, 218.25084f, 224.46f, 1.f));
 
 	return NO_EVENT;
 }

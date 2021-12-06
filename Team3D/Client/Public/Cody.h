@@ -399,6 +399,12 @@ private:
 	_float	m_fWallJumpingTime = 0.f;
 	_float	m_fWallToWallSpeed = 0.55f;
 
+	/* For. WallJump */
+	_bool	m_bPipeWallAttach = false;
+	_bool   m_IsPipeWallJumping = false;
+	_float	m_fPipeWallJumpingTime = 0.f;
+	_float	m_fPipeWallToWallSpeed = 45.f;
+
 	// Warp NextStage
 	_bool m_IsWarpNextStage = false;
 	_float m_fWarpTimer = 0.f;
@@ -435,6 +441,7 @@ private:
 	void Hit_Planet(const _double dTimeDelta);
 	void Hook_UFO(const _double dTimeDelta);
 	void Wall_Jump(const _double dTimeDelta);
+	void Pipe_WallJump(const _double dTimeDelta);
 
 	// Á¤È£
 	void Warp_Wormhole(const _double dTimeDelta);

@@ -16,7 +16,7 @@ void CPlayerHitReport::onShapeHit(const PxControllerShapeHit & hit)
 			m_pPlayerActor->Set_HitNormal(hit.worldNormal);
 		}
 	}
-	if (GameID::eDUMMYWALL == pUserData->eID)
+	if (GameID::eDUMMYWALL == pUserData->eID || GameID::ePIPEJUMPWALL == pUserData->eID)
 	{
 		if (hit.triangleIndex != PxU32(-1))
 		{

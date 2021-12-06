@@ -593,7 +593,12 @@ HRESULT CLevel_Stage::Ready_Layer_MayJumpWall(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_PipeJumpWall(const _tchar * pLayerTag)
 {
 	ROBOTDESC PipeJumpWall;
-	PipeJumpWall.vPosition = { 45.469f, 220.95084f, 224.66f, 1.f };
+	PipeJumpWall.vPosition = { 44.8339f, 218.45084f, 224.48f, 1.f };
+	PipeJumpWall.iStageNum = ST_GRAVITYPATH;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PipeJumpWall"), &PipeJumpWall), E_FAIL);
+
+	PipeJumpWall.vPosition = { 46.1009f, 218.45084f, 224.48f, 1.f };
+	PipeJumpWall.iStageNum = ST_PINBALL;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PipeJumpWall"), &PipeJumpWall), E_FAIL);
 	return S_OK;
 }

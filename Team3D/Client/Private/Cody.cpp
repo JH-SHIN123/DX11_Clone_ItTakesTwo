@@ -209,6 +209,7 @@ _int CCody::Tick(_double dTimeDelta)
 
 	if (false == m_bMoveToRail && false == m_bOnRail && false == m_bOnRailEnd)
 	{
+		Pipe_WallJump(dTimeDelta);
 		Wall_Jump(dTimeDelta);
 		if (Trigger_Check(dTimeDelta))
 		{
@@ -1915,6 +1916,19 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bWallAttach = true;
 		}
+		else if (m_eTargetGameID == GameID::ePIPEJUMPWALL && m_pActorCom->Get_IsWallCollide() == true && m_bPipeWallAttach == false
+			&& m_IsJumping == true && m_IsFalling == false)
+		{
+			/*PxVec3 vNormal = m_pActorCom->Get_CollideNormal();
+			_vector vWallUp = { vNormal.x, vNormal.y, vNormal.z, 0.f };
+			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);*/
+
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bPipeWallAttach = true;
+		}
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
 		{
 			/* 세이브포인트->트리거와 충돌시 세이브포인트 갱신 */
@@ -1985,7 +1999,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	// Trigger 여따가 싹다모아~
 	if (m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
-		|| m_bWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch)
+		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch)
 		return true;
 
 	return false;
@@ -2370,6 +2384,75 @@ void CCody::Wall_Jump(const _double dTimeDelta)
 		}
 
 		m_fWallJumpingTime += (_float)dTimeDelta;
+	}
+}
+
+void CCody::Pipe_WallJump(const _double dTimeDelta)
+{
+	if (true == m_bPipeWallAttach && false == m_IsPipeWallJumping)
+	{
+		m_fPipeWallToWallSpeed = 55.f;
+		m_pActorCom->Move((-m_pTransformCom->Get_State(CTransform::STATE_UP) / 50.f), dTimeDelta);
+		if (m_pGameInstance->Key_Down(DIK_SPACE))
+		{
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_IsPipeWallJumping = true;
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_Jump);
+			m_pActorCom->Jump_Start(1.1f);
+			m_pActorCom->Set_WallCollide(false);
+		}
+	}
+
+	if (m_IsPipeWallJumping == true)
+	{
+		if (m_fPipeWallToWallSpeed <= 200.f)
+			m_fPipeWallToWallSpeed += (_float)dTimeDelta * 40.f;
+
+		PxVec3 vNormal = m_pActorCom->Get_CollideNormal();
+		_vector vWallUp = { vNormal.x, vNormal.y, vNormal.z, 0.f };
+		m_pActorCom->Move(XMVector3Normalize(vWallUp) / m_fPipeWallToWallSpeed * 1.1f, dTimeDelta);
+		m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
+
+		if (m_pModelCom->Is_AnimFinished(ANI_C_WallSlide_Jump))
+		{
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_pModelCom->Set_Animation(ANI_C_Jump_Falling);
+			m_bPipeWallAttach = false;
+			m_IsPipeWallJumping = false;
+			m_fPipeWallJumpingTime = 0.f;
+			m_fPipeWallToWallSpeed = 55.f;
+			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(179.f));
+		}
+		if (m_pActorCom->Get_IsWallCollide() == true && m_IsCollide == true)
+		{
+			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);
+			vWallUp.m128_f32[2] = 0.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(vContactPos + (vWallUp));
+			//m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bPipeWallAttach = true;
+			m_IsPipeWallJumping = false;
+			m_fPipeWallToWallSpeed = 55.f;
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
+		}
+		else if (m_pActorCom->Get_IsWallCollide() == true && m_IsCollide == false)
+		{
+			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);
+			vWallUp.m128_f32[2] = 0.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(vContactPos + (vWallUp));
+			//m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_bPipeWallAttach = false;
+			m_IsPipeWallJumping = false;
+			m_fPipeWallToWallSpeed = 55.f;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_pActorCom->Set_WallCollide(false);
+		}
+
 	}
 }
 
