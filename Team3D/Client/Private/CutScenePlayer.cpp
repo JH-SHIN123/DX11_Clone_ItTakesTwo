@@ -11,7 +11,9 @@ CCutScenePlayer::CCutScenePlayer()
 
 HRESULT CCutScenePlayer::NativeConstruct(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-
+#ifndef __TEST_JUN
+	return S_OK;
+#endif 
 	CGameInstance* m_pGameInstance = CGameInstance::GetInstance();
 
 	ID3D11Device* m_pDevice = pDevice;
@@ -36,16 +38,13 @@ HRESULT CCutScenePlayer::NativeConstruct(ID3D11Device* pDevice, ID3D11DeviceCont
 	PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RemoteContollerCutScene1"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/CutSceneModels/"), TEXT("RemoteContollerCutScene1"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	
-	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.f));
-	PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f));
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_GravityBootsCutScene1"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/CutSceneModels/"), TEXT("GravityBootsCutScene1"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	
-	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.f));
-	PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f));
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SizeBeltCutScene1"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/CutSceneModels/"), TEXT("SizeBeltCutScene1"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	
-	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.f));
-	PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f));
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SizeBeltRemoteControllerCutScene1"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/CutSceneModels/"), TEXT("SizeBeltRemoteControllerCutScene1"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 
 
