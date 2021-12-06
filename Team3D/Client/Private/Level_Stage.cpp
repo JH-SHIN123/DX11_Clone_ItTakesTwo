@@ -226,12 +226,12 @@ HRESULT CLevel_Stage::Ready_Layer_GravityPipe(const _tchar * pLayerTag)
 {
 	EFFECT_DESC_CLONE Data;
 	_matrix WorldMatrix = XMMatrixIdentity();
-	WorldMatrix.r[3] = { 62.9901505f, 35.f, 195.674637f,1.f };
+	WorldMatrix.r[3] = { 62.9901505f, 35.f, 195.674637f, 1.f };
 	Data.iPlayerValue = 0;
 	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Gravity_Pipe"), &Data), E_FAIL);
 
-	WorldMatrix.r[3] = { 62.9901505f, 120.f, 195.674637f,1.f };
+	WorldMatrix.r[3] = { 62.9901505f, 157.f, 195.674637f,1.f };
 	Data.iPlayerValue = 1;
 	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Gravity_Pipe"), &Data), E_FAIL);
