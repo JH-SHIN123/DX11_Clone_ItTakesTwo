@@ -21,6 +21,12 @@ sampler ColorSampler = sampler_state
 	AddressV = mirror/*_once*/;
 };
 
+cbuffer Light_Effect
+{
+	// 채도 0.25, 명암 1.0이  가장 괜찮았음
+	float g_fSaturation_Power;	
+	float g_fContrast_Power;	
+}
 
 struct VS_IN
 {
@@ -754,6 +760,32 @@ PS_OUT  PS_MAIN_ALPHATIME(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_MAIN_LIGHT(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+
+	float4 vDiffuse = (float4)0;
+	float2 vCenter = In.vTexUV - 0.5f;
+	vCenter = abs(vCenter);
+
+	float fLenght = length(vCenter);
+	if (0.5f < fLenght)
+		discard;
+
+	vDiffuse.a = 1.f;
+
+	fLenght = fLenght / 0.5f; // normalize
+	float2 vColorUV = (float2)((fLenght * -1.f) + 1.f);
+	float4 vColor = g_SecondTexture.Sample(DiffuseSampler, vColorUV);
+
+	vDiffuse.rgb = vColor.rgb * g_fSaturation_Power;
+	vDiffuse.a *= g_fContrast_Power; 
+	Out.vColor = vDiffuse;
+
+	return Out;
+}
+
 struct  PS_IN_DOUBLE_UV
 {
 	float4 vPosition : SV_POSITION;
@@ -944,6 +976,16 @@ technique11		DefaultTechnique
 		GeometryShader = compile gs_5_0  GS_MAIN_NO_BILL_Y();
 		PixelShader = compile ps_5_0  PS_MAIN_COLOR_NOALPHATEX_TIME();
 	}
+
+	pass PointLight // 10
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_MAIN_LIGHT();
+	}
 };
 
 /*
@@ -1089,3 +1131,45 @@ TriStream.Append(Out[7]);
 }
 
 */
+
+// 중심에서 멀어 질 수록 알파를 낮추자
+
+//float4 vDiffuse = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+//vDiffuse *= g_vColor;
+//vDiffuse.a = 1.f;
+//float2 vCenter = In.vTexUV - 0.5f;
+//vCenter = abs(vCenter);
+////vCenter -= 0.5f;
+////vCenter = abs(vCenter) * 2.f;
+//float fDist = (vCenter.x + vCenter.y) *0.5f;
+////float4 vAlphaTex = g_SecondTexture.Sample(DiffuseSampler, In.vTexUV);
+////
+////vAlphaTex.r -= 1.f;
+////vAlphaTex.r = abs(vAlphaTex.r);
+
+//vDiffuse.a = 0.5f * COS_ARR(3.14f * pow(fDist, 1.5f)) + 0.5f;//vAlphaTex.r * g_fAlpha;
+
+//Out.vColor = vDiffuse;
+
+
+//float4 vDiffuse =  { 0.498039246f, 1.000000000f, 0.831372619f, 1.000000000f };
+//float2 vCenter = In.vTexUV - 0.5f;
+//vCenter = abs(vCenter);
+////vCenter -= 0.5f;
+////vCenter = abs(vCenter) * 2.f;
+
+//float fLenght = length(vCenter);
+//if (0.5f < fLenght)
+//	discard;
+
+//vDiffuse.a = 0.5f;
+
+//fLenght = fLenght / 0.5f; // normalize
+//float2 vColorUV = float2((fLenght * -1.f) + 1.f);
+//float4 vColor = g_SecondTexture.Sample(DiffuseSampler, vColorUV);
+
+//fLenght *= 100.f; // 원하는 만큼 곱하기 (길이)
+//vDiffuse.rgb *= (100.f - fLenght);// *0.25f;// +0.5f;//0.5f * COS_ARR(3.14f * pow(fDist, 1.5f)) + 0.5f;//vAlphaTex.r * g_fAlpha;
+//vDiffuse.rgb /= 1000.f;	// 감쇠 파워?
+//Out.vColor = vDiffuse;

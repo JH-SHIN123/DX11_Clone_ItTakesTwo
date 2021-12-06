@@ -268,6 +268,8 @@ HRESULT CLevel_Stage::Ready_Lights()
 
 	if (FAILED(pGameInstance->Add_Light(L"Point1", LightDesc)))
 		return E_FAIL;
+	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(20.f, 0.25f, 1.f, LightDesc.vPosition, LightDesc.vDiffuse)), E_FAIL);
+
 
 	return S_OK;
 }

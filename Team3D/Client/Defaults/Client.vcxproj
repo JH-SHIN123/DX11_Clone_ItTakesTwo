@@ -217,7 +217,9 @@
     <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
     <ClInclude Include="..\Public\ControlRoom_Glass.h" />
+    <ClInclude Include="..\public\Effect_Boss_Laser_Smoke.h" />
     <ClInclude Include="..\public\Effect_Pinball_Move.h" />
+    <ClInclude Include="..\public\Effect_PointLight.h" />
     <ClInclude Include="..\Public\GameDebugger.h" />
     <ClInclude Include="..\Public\GameOption.h" />
     <ClInclude Include="..\public\DeadLine.h" />
@@ -363,7 +365,9 @@
     <ClCompile Include="..\Private\ControlRoom_Door.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Glass.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp" />
+    <ClCompile Include="..\private\Effect_Boss_Laser_Smoke.cpp" />
     <ClCompile Include="..\private\Effect_Pinball_Move.cpp" />
+    <ClCompile Include="..\private\Effect_PointLight.cpp" />
     <ClCompile Include="..\Private\GameDebugger.cpp" />
     <ClCompile Include="..\Private\HeaderBox.cpp" />
     <ClCompile Include="..\Private\AlienScreen.cpp" />

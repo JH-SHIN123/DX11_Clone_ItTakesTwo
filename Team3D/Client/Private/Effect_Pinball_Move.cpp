@@ -50,12 +50,24 @@ void CEffect_Pinball_Move::Instance_UV(_float TimeDelta, _int iIndex)
 
 CEffect_Pinball_Move * CEffect_Pinball_Move::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	return nullptr;
+	CEffect_Pinball_Move*	pInstance = new CEffect_Pinball_Move(pDevice, pDeviceContext);
+	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
+	{
+		MSG_BOX("Failed to Create Instance - CEffect_Pinball_Move");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
 }
 
 CGameObject * CEffect_Pinball_Move::Clone_GameObject(void * pArg)
 {
-	return nullptr;
+	CEffect_Pinball_Move* pInstance = new CEffect_Pinball_Move(*this);
+	if (FAILED(pInstance->NativeConstruct(pArg)))
+	{
+		MSG_BOX("Failed to Clone Instance - CEffect_Pinball_Move");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
 }
 
 void CEffect_Pinball_Move::Free()

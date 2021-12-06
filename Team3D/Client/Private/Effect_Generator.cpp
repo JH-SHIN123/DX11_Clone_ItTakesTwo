@@ -23,6 +23,8 @@
 #include "Effect_Robot_Battery_Spark.h"
 #include "Effect_Umbrella_Pipe.h"
 #include "Effect_Pinball_Move.h"
+#include "Effect_Boss_Laser_Smoke.h"
+#include "Effect_PointLight.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -104,6 +106,14 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
 	//
 	return S_OK;
+}
+
+HRESULT CEffect_Generator::Add_PointLight(Effect_PointLight_Desc* pLightArg)
+{
+	if (nullptr == pLightArg)
+		return E_FAIL;
+
+	return 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_PointLight"), Level::LEVEL_STAGE, TEXT("GameObject_2D_PointLight"), pLightArg);	
 }
 
 EFFECT_DESC_CLONE::PLAYER_VALUE CEffect_Generator::Check_Cody_Size(_fmatrix WorldMatrix)
@@ -211,8 +221,13 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Robot_Battery_Spark", CEffect_Robot_Battery_Spark::Create(pDevice, pDeviceContext, pData));
 	//
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Pinball_Move"))
-		return S_OK;
-		//m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Pinball_Move",		CEffect_Pinball_Move::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Pinball_Move", CEffect_Pinball_Move::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_PointLight"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_PointLight", CEffect_PointLight::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Laser_Smoke"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Laser_Smoke", CEffect_Boss_Laser_Smoke::Create(pDevice, pDeviceContext, pData));
 
 
 	// 3D Effect
@@ -288,7 +303,9 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Explosion7x7"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Explosion/Explosion7x7_%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Explosion8x8"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Explosion/Explosion8x8_%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Ember_Texture"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/T_Ember_Texture_256.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_radialgradientsample"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/radialgradientsample.png"))), E_FAIL);
 
+	
 #pragma endregion
 
 	return S_OK;

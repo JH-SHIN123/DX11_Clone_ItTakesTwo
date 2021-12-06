@@ -727,6 +727,15 @@
     <Filter Include="96.Debug">
       <UniqueIdentifier>{7904050b-bece-47ac-9d69-2652f5e7bc09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss">
+      <UniqueIdentifier>{81c3b492-c168-4f0b-819e-539efbaad0e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke">
+      <UniqueIdentifier>{6f9eb01e-d3a0-42a3-8c1b-f0328c536649}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Light_Effect">
+      <UniqueIdentifier>{42f75ceb-27c0-491b-95a9-a4316ca7f9f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1236,6 +1245,12 @@
     <ClInclude Include="..\Public\GameDebugger.h">
       <Filter>96.Debug</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Laser_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_PointLight.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Light_Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1720,6 +1735,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\GameDebugger.cpp">
       <Filter>96.Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Laser_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_PointLight.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Light_Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
