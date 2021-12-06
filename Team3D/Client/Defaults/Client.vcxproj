@@ -212,6 +212,7 @@
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\Client_MathHelper.h" />
     <ClInclude Include="..\Public\Client_Struct.h" />
+    <ClInclude Include="..\Public\ContextIcon.h" />
     <ClInclude Include="..\Public\ControllerIcon.h" />
     <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
@@ -236,6 +237,7 @@
     <ClInclude Include="..\public\Effect_Robot_Battery_Spark.h" />
     <ClInclude Include="..\public\Effect_Wormhole.h" />
     <ClInclude Include="..\public\Effect_FireDoor.h" />
+    <ClInclude Include="..\Public\Gauge_Circle.h" />
     <ClInclude Include="..\Public\HangingPlanet.h" />
     <ClInclude Include="..\Public\HookahTube.h" />
     <ClInclude Include="..\Public\HookUFO.h" />
@@ -356,12 +358,14 @@
     <ClCompile Include="..\Private\ChapterSelect.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
+    <ClCompile Include="..\Private\ContextIcon.cpp" />
     <ClCompile Include="..\Private\ControllerIcon.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Battery.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Door.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Glass.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp" />
     <ClCompile Include="..\Private\GameDebugger.cpp" />
+    <ClCompile Include="..\Private\Gauge_Circle.cpp" />
     <ClCompile Include="..\Private\HeaderBox.cpp" />
     <ClCompile Include="..\Private\AlienScreen.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />

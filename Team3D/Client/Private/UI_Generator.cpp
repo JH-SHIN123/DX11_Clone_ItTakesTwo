@@ -19,6 +19,8 @@
 #include "ButtonIndicator.h"
 #include "InputButton_Frame.h"
 #include "Arrowkeys_Outline.h"
+#include "Gauge_Circle.h"
+#include "ContextIcon.h"
 
 #include "Cody.h"
 #include "May.h"
@@ -204,6 +206,7 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Down"), Level::LEVEL_STATIC, pArg);
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Left"), Level::LEVEL_STATIC, pArg);
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Right"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrows"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::InputButton_PS_L2:
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_L2"), Level::LEVEL_STATIC, pArg);
@@ -240,6 +243,10 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 		break;
 	case UI::ControllerIcon_Pad:
 		SetUp_Clone(ePlayer, eTrigger, TEXT("ControllerIcon_Pad"), Level::LEVEL_LOGO, pArg);
+		break;
+	case UI::SwingPoint:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Gauge_Circle"), Level::LEVEL_LOGO, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("ContextIcon_SwingPoint"), Level::LEVEL_LOGO, pArg);
 		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
@@ -639,7 +646,14 @@ HRESULT CUI_Generator::Add_Prototype_Interactive_UI(CUIObject::UI_DESC* UIDesc)
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
-
+	else if (!lstrcmp(UIDesc->szUITag, L"ContextIcon_SwingPoint"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CContextIcon::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"Gauge_Circle"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CGauge_Circle::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
 
 	return S_OK;
 }
@@ -760,6 +774,10 @@ HRESULT CUI_Generator::Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc)
 	else if (!lstrcmp(UIDesc->szUITag, L"ButtonIndicator"))
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CButtonIndicator::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"Arrows"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CArrowkeys_Outline::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
 
 
@@ -938,6 +956,9 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("CoolDown"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/CoolDown.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("AlphaScreen"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/SplashScreen/AlphaScreen.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Noise"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/RespawnCircle_Noise.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Arrows"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/StickIcon_Arrows.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Gauge_Circle"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/Gauge_Circle.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("ContextIcon_SwingPoint"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/ContextIcon_SwingPoint.png"))), E_FAIL);
 
 	return S_OK;
 }

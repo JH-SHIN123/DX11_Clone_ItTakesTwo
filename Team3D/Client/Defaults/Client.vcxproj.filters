@@ -640,6 +640,12 @@
     <Filter Include="96.Debug">
       <UniqueIdentifier>{7904050b-bece-47ac-9d69-2652f5e7bc09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\07.UI\12.Gauge_Circle">
+      <UniqueIdentifier>{ca657823-ac38-4a9b-b7d3-942b8aa8a378}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.UI\13.ContextIcon">
+      <UniqueIdentifier>{61a814be-1761-426f-a9a3-130d0d100633}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1131,6 +1137,12 @@
     <ClInclude Include="..\Public\GameDebugger.h">
       <Filter>96.Debug</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Gauge_Circle.h">
+      <Filter>02.GameObject\07.UI\12.Gauge_Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ContextIcon.h">
+      <Filter>02.GameObject\07.UI\13.ContextIcon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1601,6 +1613,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\GameDebugger.cpp">
       <Filter>96.Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Gauge_Circle.cpp">
+      <Filter>02.GameObject\07.UI\12.Gauge_Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ContextIcon.cpp">
+      <Filter>02.GameObject\07.UI\13.ContextIcon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
