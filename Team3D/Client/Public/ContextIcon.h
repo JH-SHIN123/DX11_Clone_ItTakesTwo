@@ -24,6 +24,13 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+ public:
+	 void Set_Active(_bool IsCheck);
+	 void Set_SwingPointPlayerID(Player::ID ePlayerID);
+
+private:
+	 _bool							m_IsActive = true;
+
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 

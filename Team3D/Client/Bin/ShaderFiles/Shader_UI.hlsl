@@ -25,6 +25,7 @@ float	g_Time;
 float	g_Angle;
 float	g_fHeartTime;
 float	g_fScreenAlpha;
+float	g_fDistance;
 float2  g_UV;
 float2  g_vScreenMaskUV;
  
@@ -473,6 +474,24 @@ PS_OUT PS_ChapterSelect(PS_IN In)
 	return Out;
 }
 
+
+PS_OUT PS_Gauge_Cicle(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.r <= g_fDistance && Out.vColor.r > 0.f)
+	{
+		Out.vColor.rgb = float3(1.f, 1.f, 0.f);
+		Out.vColor.a = 1.f;
+	}
+	else if (Out.vColor.r > g_fDistance)
+		discard; 
+
+	return Out;
+}
+
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
@@ -640,5 +659,16 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_LOGO();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_ChapterSelect();
+	}
+
+	// 15
+	pass GaugeCircle
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_Gauge_Cicle();
 	}
 };

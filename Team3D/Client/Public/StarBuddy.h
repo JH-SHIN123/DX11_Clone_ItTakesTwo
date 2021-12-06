@@ -52,9 +52,6 @@ private:
 	CTriggerActor*		m_pTriggerCom = nullptr;
 	CStaticActor*		m_pStaticActorCom = nullptr;
 
-private:
-	HRESULT InterActive_UI();
-
 public:
 	static CStarBuddy* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

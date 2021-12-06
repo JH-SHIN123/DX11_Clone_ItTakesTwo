@@ -52,6 +52,9 @@ _int CContextIcon::Tick(_double TimeDelta)
 _int CContextIcon::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
+
+	if (false == m_IsActive)
+		return NO_EVENT;
 	
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
@@ -60,12 +63,22 @@ HRESULT CContextIcon::Render(RENDER_GROUP::Enum eGroup)
 {
 	CUIObject::Render(eGroup);
 
-	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
+	if (FAILED(CUIObject::Set_InterActiveVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
 	m_pVIBuffer_RectCom->Render(0);
 
 	return S_OK;
+}
+
+void CContextIcon::Set_Active(_bool IsCheck)
+{
+	m_IsActive = IsCheck;
+}
+
+void CContextIcon::Set_SwingPointPlayerID(Player::ID ePlayerID)
+{
+	m_ePlayerID = ePlayerID;
 }
 
 HRESULT CContextIcon::Ready_Component()

@@ -205,6 +205,9 @@ private:
 private: // Effects
 	class CEffect_May_Boots* m_pEffect_GravityBoots = nullptr;
 
+private: // UI
+	class CGauge_Circle*	m_pGauge_Circle = nullptr;
+
 	// Ä«¸Þ¶ó
 private:
 	class CSubCamera*	m_pCamera = nullptr;
@@ -450,6 +453,7 @@ private:
 	void	TakeRailEnd(_double dTimeDelta);
 	void	ShowRailTargetTriggerUI();
 
+
 private:
 	_bool						m_bMoveToRail = false;
 	_bool						m_bOnRail = false;
@@ -463,6 +467,10 @@ private:
 	CSpaceRail* m_pTargetRail = nullptr;
 	CSpaceRail_Node* m_pSearchTargetRailNode = nullptr;
 	CSpaceRail_Node* m_pTargetRailNode = nullptr;
+
+private:
+	HRESULT Ready_Layer_Gauge_Circle(const _tchar * pLayerTag);
+
 #pragma endregion
 };
 

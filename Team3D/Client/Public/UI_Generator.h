@@ -60,6 +60,7 @@ public:
 	HRESULT Load_Data(const _tchar* pFilePath, Level::ID eLevel, _uint iOption = 0);
 	HRESULT Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger, void* pArg = nullptr);
 	HRESULT Generator_InterActive_UI(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, void* pArg = nullptr);
+	HRESULT Generator_InterActive_SwingPoint(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, void * pArg = nullptr);
 	HRESULT Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	HRESULT Delete_InterActive_UI(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger);
 	HRESULT Render_Font(_tchar* pText, FONTDESC tFontDesc, Player::ID ePlayer);

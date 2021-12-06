@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "..\Public\Gauge_Circle.h"
 
-#include "GameInstance.h"
+#include "ContextIcon.h"
+#include "Cody.h"
+#include "May.h"
 
 CGauge_Circle::CGauge_Circle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -33,6 +35,8 @@ HRESULT CGauge_Circle::NativeConstruct(void * pArg)
 	if (FAILED(Ready_Component()))
 		return E_FAIL;
 
+	FAILED_CHECK_RETURN(Ready_Layer_SwingPoint(TEXT("Layer_ContextIcon_SwingPoint")), E_FAIL);
+
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
@@ -52,6 +56,34 @@ _int CGauge_Circle::Tick(_double TimeDelta)
 _int CGauge_Circle::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
+
+	if (m_ePlayerID == Player::Cody)
+	{
+		_vector vCodyPos = ((CCody*)DATABASE->GetCody())->Get_Position();
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		_vector vDistancePos = XMLoadFloat4(&m_vTargetPos) - vCodyPos;
+		_vector vLength = XMVector3Length(vDistancePos);
+
+		_float fDistance = fabs(XMVectorGetX(vLength));
+
+		m_fDistance = m_fRange / fDistance;
+	}
+	else if (m_ePlayerID == Player::May)
+	{
+		_vector vMayPos = ((CMay*)DATABASE->GetMay())->Get_Position();
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		_vector vDistancePos = XMLoadFloat4(&m_vTargetPos) - vMayPos;
+		_vector vLength = XMVector3Length(vDistancePos);
+
+		_float fDistance = fabs(XMVectorGetX(vLength));
+
+		m_fDistance = m_fRange / fDistance;
+	}
+
+	if (false == m_IsActive)
+		return NO_EVENT;
 	
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
@@ -60,17 +92,57 @@ HRESULT CGauge_Circle::Render(RENDER_GROUP::Enum eGroup)
 {
 	CUIObject::Render(eGroup);
 
-	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
+	if (FAILED(CUIObject::Set_InterActiveVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(0);
+	m_pVIBuffer_RectCom->Set_Variable("g_fDistance", &m_fDistance, sizeof(_float));
+	m_pVIBuffer_RectCom->Render(15);
 
 	return S_OK;
+}
+
+void CGauge_Circle::Set_Active(_bool IsActive)
+{
+	m_IsActive = IsActive;
+	
+	if (nullptr != m_pContextIcon)
+		m_pContextIcon->Set_Active(IsActive);
+}
+
+void CGauge_Circle::Set_TargetPos(_vector vPos)
+{
+	XMStoreFloat4(&m_vTargetPos, vPos);
+
+	if (nullptr != m_pContextIcon)
+		m_pContextIcon->Set_TargetPos(vPos);
+}
+
+void CGauge_Circle::Set_SwingPointPlayerID(Player::ID ePlayerID)
+{
+	m_ePlayerID = ePlayerID;
+
+	if (nullptr != m_pContextIcon)
+		m_pContextIcon->Set_SwingPointPlayerID(ePlayerID);
+}
+
+void CGauge_Circle::Set_Range(_float fRange)
+{
+	m_fRange = fRange;
 }
 
 HRESULT CGauge_Circle::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CGauge_Circle::Ready_Layer_SwingPoint(const _tchar * pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("ContextIcon_SwingPoint"), nullptr, &pGameObject), E_FAIL);
+	m_pContextIcon = static_cast<CContextIcon*>(pGameObject);
 
 	return S_OK;
 }
@@ -103,6 +175,7 @@ CGameObject * CGauge_Circle::Clone_GameObject(void * pArg)
 
 void CGauge_Circle::Free()
 {
+	Safe_Release(m_pContextIcon);
 	Safe_Release(m_pVIBuffer_RectCom);
 
 	CUIObject::Free();

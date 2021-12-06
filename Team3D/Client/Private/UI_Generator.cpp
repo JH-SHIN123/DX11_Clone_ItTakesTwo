@@ -245,8 +245,8 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 		SetUp_Clone(ePlayer, eTrigger, TEXT("ControllerIcon_Pad"), Level::LEVEL_LOGO, pArg);
 		break;
 	case UI::SwingPoint:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Gauge_Circle"), Level::LEVEL_LOGO, pArg);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("ContextIcon_SwingPoint"), Level::LEVEL_LOGO, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Gauge_Circle"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("ContextIcon_SwingPoint"), Level::LEVEL_STATIC, pArg);
 		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
@@ -266,6 +266,17 @@ HRESULT CUI_Generator::Generator_InterActive_UI(Player::ID ePlayer, UI::INTERACT
 
 	SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Dot"), Level::LEVEL_STATIC, pArg);
 	SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("InputButton_Frame_Dot"), Level::LEVEL_STATIC, pArg);
+
+	return S_OK;
+}
+
+HRESULT CUI_Generator::Generator_InterActive_SwingPoint(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, void * pArg)
+{
+	if (false == m_IsTrigger || ePlayer >= Player::PLAYER_END || eTrigger >= UI::INTERACTIVE_ID_END)
+		return S_OK;
+
+	SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("Gauge_Circle"), Level::LEVEL_STATIC, pArg);
+	SetUp_Clone_InterActive(ePlayer, eTrigger, TEXT("ContextIcon_SwingPoint"), Level::LEVEL_STATIC, pArg);
 
 	return S_OK;
 }
@@ -1021,7 +1032,7 @@ HRESULT CUI_Generator::SetUp_Clone_Ptr(Player::ID ePlayer, UI::TRIGGER eTrigger,
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(eLevel, TEXT("Layer_UI"), eLevel, PrototypeTag, pArg, pGameObject), E_FAIL);
-	//d
+
 	return S_OK;
 }
 

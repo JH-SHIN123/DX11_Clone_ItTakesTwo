@@ -12,6 +12,8 @@
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
 #include "ControlRoom_Battery.h"
+#include "HookUFO.h"
+#include "Gauge_Circle.h"
 /* For. PinBall */
 #include "PinBall.h"
 #include "PinBall_Door.h"
@@ -50,7 +52,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
  	UI_Create(Cody, PC_Mouse_Reduction);
  	UI_Create(Cody, PC_Mouse_Enlargement);
  	UI_Create(Cody, PlayerMarker);
-	 
+
 	return S_OK;
 }
 
@@ -95,6 +97,10 @@ HRESULT CCody::Ready_Component()
 	//Effect 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Cody_Size"), nullptr, (CGameObject**)&m_pEffect_Size), E_FAIL);
 	m_pEffect_Size->Set_Model(m_pModelCom);
+
+	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_CodyCircle_Gauge")), E_FAIL);
+
+
 	return S_OK;
 }
 
@@ -347,6 +353,8 @@ void CCody::Free()
 	m_pTargetRailNode = nullptr;
 	m_vecTargetRailNodes.clear();
 
+	Safe_Release(m_pGauge_Circle);
+
 	//Safe_Release(m_pCamera);
 	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
@@ -427,6 +435,8 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 	if(m_pGameInstance->Key_Down(DIK_Z)) /* 파이프 베터리 */
 		m_pActorCom->Set_Position(XMVectorSet(44.8652f, 220.9396f, 223.94134f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_C)) /* 파이프 베터리 */
+		m_pActorCom->Set_Position(XMVectorSet(894.034f, 718.225f, 347.032f, 1.f));
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -875,6 +885,7 @@ void CCody::Move(const _double dTimeDelta)
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_MH_Gesture_Small_Scratch
 					|| m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Fwd
 					|| m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Stop)	// Idle To Jog Start. -> Jog 예약
+
 				{
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Start);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_ChangeSize_Walk_Large_Fwd);
@@ -2302,6 +2313,7 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 			m_pActorCom->Set_Jump(true);
 			m_IsHookUFO = false;
 			m_IsCollide = false;
+			((CHookUFO*)DATABASE->Get_HookUFO())->Set_CodyUIDisable();
 		}
 	}
 }
@@ -2848,18 +2860,32 @@ void CCody::TakeRailEnd(_double dTimeDelta)
 }
 void CCody::ShowRailTargetTriggerUI()
 {
+
 	// Show UI
 	if (m_pSearchTargetRailNode && nullptr == m_pTargetRailNode && false == m_bOnRail)
 	{
-		//UI_Create(Cody, InputButton_InterActive);
-		//UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pSearchTargetRailNode->Get_Position());
+		m_pGauge_Circle->Set_Active(true);
+		m_pGauge_Circle->Set_TargetPos(m_pSearchTargetRailNode->Get_Position());
 	}
-	else 
-	{
-		//UI_Delete(Cody, InputButton_InterActive);
+	else {
+		m_pGauge_Circle->Set_Active(false);
 	}
 }
 #pragma endregion
+
+HRESULT CCody::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Gauge_Circle"), nullptr, &pGameObject), E_FAIL);
+	m_pGauge_Circle = static_cast<CGauge_Circle*>(pGameObject);
+	m_pGauge_Circle->Set_SwingPointPlayerID(Player::Cody);
+	// 범위 설정
+	m_pGauge_Circle->Set_Range(12.f);
+
+	return S_OK;
+}
+
 
 void CCody::PinBall(const _double dTimeDelta)
 {
