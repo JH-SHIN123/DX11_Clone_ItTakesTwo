@@ -143,6 +143,7 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_LightAcc"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_CascadedShadow"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_PostFX"));
+		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Effect"));
 		CSSAO::GetInstance()->Render_DebugBuffer();
 	}
 #endif

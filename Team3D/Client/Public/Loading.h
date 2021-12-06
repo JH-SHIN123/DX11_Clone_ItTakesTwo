@@ -23,14 +23,16 @@ public: /* Struct */
 	}THREAD_ARG;
 
 public: /* Getter */
-	CRITICAL_SECTION*	Get_CriticalSectionPtr(_uint iThreadIndex);
+	CRITICAL_SECTION*	Get_CriticalSectionPtr(_uint iWorkIndex);
 	const Level::ID		Get_PreLevelID() const { return m_ePreLevelID; }
 	const Level::ID		Get_NextLevelID() const { return m_eNextLevelID; }
 	const _bool			Is_FinishedToLoading() const;
+	list<_uint>&		Get_ProcessingThreadList() { return m_ProcessingThreadList; }
 
 public:
 	HRESULT	NativeConstruct(Level::ID ePreLevelID, Level::ID eNextLevelID);
-	HRESULT	Loading(Level::ID ePreLevelID, Level::ID eNextLevelID, _uint iThreadIndex);
+	HRESULT Assign();
+	HRESULT	Loading(Level::ID ePreLevelID, Level::ID eNextLevelID, _uint iWorkIndex);
 
 private:
 	CGameInstance*			m_pGameInstance		= nullptr;
@@ -40,6 +42,9 @@ private:
 	Level::ID				m_eNextLevelID		= Level::LEVEL_END;
 	/* For.Thread */
 	_uint					m_iThreadCount		= 0;
+	_uint					m_iWorkCount		= 0;
+	_uint					m_iCurWorkIndex		= 0;
+	list<_uint>				m_ProcessingThreadList;
 	HANDLE*					m_arrThreads;
 	CRITICAL_SECTION*		m_arrCriticalSections;
 	THREAD_ARG*				m_arrThreadArgs;

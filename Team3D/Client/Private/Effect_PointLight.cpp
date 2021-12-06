@@ -124,4 +124,5 @@ CGameObject * CEffect_PointLight::Clone_GameObject(void * pArg)
 
 void CEffect_PointLight::Free()
 {
+	__super::Free();
 }
