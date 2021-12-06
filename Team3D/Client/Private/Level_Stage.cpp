@@ -96,6 +96,38 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
 
+
+#ifdef _DEBUG
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	TCHAR lightTag[256] = L"";
+
+	TCHAR szBuff[256] = L"";
+	GetPrivateProfileString(L"Section_2", L"Key_1", L"0", szBuff, 256, L"../test.ini");
+	lstrcpy(lightTag, szBuff);
+
+	GetPrivateProfileString(L"Section_2", L"Key_2", L"0", szBuff, 256, L"../test.ini");
+	_float a = _wtof(szBuff);
+	GetPrivateProfileString(L"Section_2", L"Key_3", L"0", szBuff, 256, L"../test.ini");
+	_float b = _wtof(szBuff);
+	GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
+	_float c = _wtof(szBuff);
+	GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
+	_float d = _wtof(szBuff);
+
+	LIGHT_DESC* lightDesc = pGameInstance->Get_LightDescPtr(lightTag);
+
+	if (lightDesc)
+	{
+		lightDesc->vPosition = { a,b,c };
+		lightDesc->fRange = d;
+	}
+
+#endif // _DEBUG
+
+
 	return NO_EVENT;
 }
 
@@ -268,7 +300,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
-	pGameInstance->Reserve_Container_Light(1);
+	pGameInstance->Reserve_Container_Light(6);
 
 	LIGHT_DESC			LightDesc;
 
@@ -283,16 +315,21 @@ HRESULT CLevel_Stage::Ready_Lights()
 	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
 		return E_FAIL;
 
-	/* For. Point */
+#pragma region PointLight
 	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
 	LightDesc.vPosition = XMFLOAT3(60.f, 5.f, 15.f);
 	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
 	LightDesc.fRange = 15.f;
+	if (FAILED(pGameInstance->Add_Light(TEXT("Point1"), LightDesc))) return E_FAIL;
+	if (FAILED(pGameInstance->Add_Light(TEXT("Point2"), LightDesc))) return E_FAIL;
+	if (FAILED(pGameInstance->Add_Light(TEXT("Point3"), LightDesc))) return E_FAIL;
+	if (FAILED(pGameInstance->Add_Light(TEXT("Point4"), LightDesc))) return E_FAIL;
+	if (FAILED(pGameInstance->Add_Light(TEXT("Point5"), LightDesc))) return E_FAIL;
+#pragma endregion
 
-	if (FAILED(pGameInstance->Add_Light(L"Point1", LightDesc)))
-		return E_FAIL;
+
 
 	/* For. Spot  X */
 	//LightDesc.eType = LIGHT_DESC::TYPE_SPOT;
