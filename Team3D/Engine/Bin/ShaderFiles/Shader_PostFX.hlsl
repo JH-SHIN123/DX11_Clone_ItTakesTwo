@@ -5,7 +5,10 @@
 Texture2D<float4>		g_HDRTex;
 Texture2D<float4>		g_BloomTexture;
 Texture2D<float4>		g_DOFBlurTex; // 다운스케일링 -> 업스케일링(Linear)
-Texture2D				g_DepthTex; 
+Texture2D				g_DepthTex;
+Texture2D				g_EffectTex;
+Texture2D				g_EffectBlurTex;
+
 StructuredBuffer<float> g_AverageLum;
 
 static const float4 LUM_FACTOR = float4(0.299, 0.587, 0.114, 0);
@@ -99,11 +102,6 @@ PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	//// TEST
-	//float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-	//Out.vColor = vector(colorBlurred , 1.f);
-	//return Out;
-
 	float3 vColor = g_HDRTex.Sample(Point_Sampler, In.vTexUV).xyz;
 
 	// 먼 평면에 없는 픽셀에 대해서만 거리 DOF 계산
@@ -136,6 +134,9 @@ PS_OUT PS_MAIN(PS_IN In)
 	vColor = ToneMapping(vColor);
 
 	Out.vColor = vector(vColor, 1.f);
+	
+	Out.vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
+
 	return Out;
 }
 

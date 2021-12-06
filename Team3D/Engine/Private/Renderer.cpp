@@ -128,10 +128,10 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
 	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
 	FAILED_CHECK_RETURN(Render_Effect_Mesh_Masking(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
 #ifdef _DEBUG
@@ -183,7 +183,7 @@ HRESULT CRenderer::Render_NonAlpha()
 
 HRESULT CRenderer::Render_Alpha()
 {
-	Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_ALPHA]);
+	//Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_ALPHA]);
 
 	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX"), false);
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_ALPHA])
@@ -199,8 +199,6 @@ HRESULT CRenderer::Render_Alpha()
 
 HRESULT CRenderer::Render_Effect_Mesh_Masking()
 {
-	//Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING]);
-
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING), E_FAIL);
@@ -213,15 +211,14 @@ HRESULT CRenderer::Render_Effect_Mesh_Masking()
 
 HRESULT CRenderer::Render_Effect()
 {
-	//Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_EFFECT]);
-	//m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Effect"));
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Effect"));
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_EFFECT])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_EFFECT), E_FAIL);
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_GROUP::RENDER_EFFECT].clear();
-	//m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Effect"));
+	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Effect"));
 
 	return S_OK;
 }
