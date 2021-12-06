@@ -18,6 +18,7 @@ CGameInstance::CGameInstance()
 	, m_pShadow_Manager		(CShadow_Manager::GetInstance())
 	, m_pPostFX				(CPostFX::GetInstance())
 	, m_pBlur				(CBlur::GetInstance())
+	, m_pSSAO				(CSSAO::GetInstance())
 {
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pInput_Device);
@@ -33,6 +34,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pShadow_Manager);
 	Safe_AddRef(m_pPostFX);
 	Safe_AddRef(m_pBlur);
+	Safe_AddRef(m_pSSAO);
 }
 
 #pragma region GameInstance
@@ -48,6 +50,7 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 	NULL_CHECK_RETURN(m_pShadow_Manager, E_FAIL);
 	NULL_CHECK_RETURN(m_pPostFX, E_FAIL);
 	NULL_CHECK_RETURN(m_pBlur, E_FAIL);
+	NULL_CHECK_RETURN(m_pSSAO, E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGraphic_Device->Ready_GraphicDevice(eWinMode, hWnd, iWinSizeX, iWinSizeY, ppDevice, ppDeviceContext), E_FAIL);
 	FAILED_CHECK_RETURN(m_pInput_Device->Ready_InputDevice(hInst, hWnd), E_FAIL);
@@ -58,6 +61,7 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 	FAILED_CHECK_RETURN(m_pShadow_Manager->Ready_ShadowManager(*ppDevice, *ppDeviceContext), E_FAIL);
 	FAILED_CHECK_RETURN(m_pPostFX->Ready_PostFX(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
 	FAILED_CHECK_RETURN(m_pBlur->Ready_Blur(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
+	FAILED_CHECK_RETURN(m_pSSAO->Ready_SSAO(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
 
 	return S_OK;
 }
@@ -423,6 +427,7 @@ void CGameInstance::Release_Engine()
 	CPostFX::GetInstance()->Clear_Buffer();
 
 #ifdef _DEBUG
+	CSSAO::GetInstance()->Clear_Buffer();
 	CRenderTarget_Manager::GetInstance()->Clear_Buffers();
 #endif
 
@@ -440,6 +445,8 @@ void CGameInstance::Release_Engine()
 		MSG_BOX("Failed to Release CShadow_Manager.");
 	if (CLight_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CLight_Manager.");
+	if (CSSAO::DestroyInstance())
+		MSG_BOX("Failed to Release CSSAO.");
 	if (CPostFX::DestroyInstance())
 		MSG_BOX("Failed to Release CPostFX.");
 	if (CBlur::DestroyInstance())
@@ -464,6 +471,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pSSAO);
 	Safe_Release(m_pBlur);
 	Safe_Release(m_pPostFX);
 	Safe_Release(m_pSound_Manager);

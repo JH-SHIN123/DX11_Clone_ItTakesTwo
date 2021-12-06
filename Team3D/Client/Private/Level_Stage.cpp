@@ -143,9 +143,10 @@ HRESULT CLevel_Stage::Ready_Test()
 	/* Hye */
 
 	/* Teak */
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Terrain", Level::LEVEL_STAGE, TEXT("GameObject_Terrain")), E_FAIL);
+#ifdef __TEST_TAEK
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Terrain", Level::LEVEL_STAGE, TEXT("GameObject_Terrain")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_SpaceRail", Level::LEVEL_STAGE, TEXT("GameObject_SpaceRail")), E_FAIL);
-
+#endif
 	/* Yoon */
 
 	/* Jin */
@@ -220,7 +221,7 @@ HRESULT CLevel_Stage::Ready_Layer_Planet(const _tchar * pLayerTag)
 	_matrix World = XMMatrixIdentity();
 	lstrcpy(tPlanetArg.DynamicDesc.szModelTag, TEXT("Component_Model_Hanging_Planet"));
 	XMStoreFloat4x4(&tPlanetArg.DynamicDesc.WorldMatrix, World);
-	tPlanetArg.DynamicDesc.iMatrialIndex = 0;
+	tPlanetArg.DynamicDesc.iMaterialIndex = 0;
 	tPlanetArg.DynamicDesc.iOption = 0;
 
 	tPlanetArg.vJointPosition = _float3(1000.f, 740.f, 213.f);
@@ -231,16 +232,6 @@ HRESULT CLevel_Stage::Ready_Layer_Planet(const _tchar * pLayerTag)
 	tPlanetArg.vOffset = _float3(0.f, 40.f, 0.f);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), &tPlanetArg), E_FAIL);
-
-	/* Æ©ºê */
-	//CDynamic_Env::ARG_DESC tArg;
-	//lstrcpy(tArg.szModelTag, TEXT("Component_Model_Tube"));
-	//World = XMMatrixTranslation(20.f, 0.f, 60.f);
-	//XMStoreFloat4x4(&tArg.WorldMatrix, World);
-	//tArg.iMatrialIndex = 0;
-	//tArg.iOption = 0;
-
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HooKahTube"), &tArg), E_FAIL);
 
 	return S_OK;
 }
@@ -262,7 +253,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
 	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
 	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
@@ -272,7 +263,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
 	LightDesc.vPosition = XMFLOAT3(5.f, 5.f, 10.f);
 	LightDesc.vDiffuse = XMFLOAT4(1.f, 0.f, 0.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
 
 	if (FAILED(pGameInstance->Add_Light(L"Point1", LightDesc)))
@@ -613,7 +604,7 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.fFullScreenAspect = (_float)g_iWinCX / (_float)g_iWinCY;
 	CameraDesc.fAspect = 1.f;
 	CameraDesc.fNear = 0.3f;
-	CameraDesc.fFar = 250.f;
+	CameraDesc.fFar = 350.f;
 	CameraDesc.TransformDesc.dSpeedPerSec = 10.f;
 	CameraDesc.TransformDesc.dRotationPerSec = XMConvertToRadians(90.f);
 

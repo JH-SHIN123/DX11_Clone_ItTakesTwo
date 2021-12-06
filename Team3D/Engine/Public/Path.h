@@ -29,11 +29,11 @@ public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 
 public:
-	HRESULT Start_Path(STATE eState, _uint iAnimFrame);
+	HRESULT Start_Path(STATE eState, _uint iAnimFrame, _bool bStop);
 	_bool	Update_Animation(_double dTimeDelta, _matrix& WorldMatrix);
 
 private:
-	HRESULT		Update_AnimTransformations();
+	_bool		Update_AnimTransformations();
 	_fmatrix	Update_CombinedTransformations();
 
 private: /* Typedef */
@@ -52,10 +52,12 @@ private: /* Clone Info */
 	PATH_DESC				m_tDesc;
 
 private:
+	_float					m_fLerpRatio = 0.f;
 	_double					m_dCurrentTime = 0.0;		// 현재 애니메이션 진행시간
 	_uint					m_iCurAnimFrame = 0;		// 현재 애니메이션 프레임
 	_float					m_fProgressAnim = 0.f;		// 애니메이션 진행도
-	TRANSFORMATIONS			m_AnimTransformations;		// Channel : Scaling / Rotation / Position
+	TRANSFORMATIONS			m_CurAnimTransformations;		// Channel : Scaling / Rotation / Position
+	TRANSFORMATIONS			m_NextAnimTransformations;		// Channel : Scaling / Rotation / Position
 
 public:
 	static CPath* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar* pFilePath, const _tchar* pPathTag, _fmatrix PivotMatrix);

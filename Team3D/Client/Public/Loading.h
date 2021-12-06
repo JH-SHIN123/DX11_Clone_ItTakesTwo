@@ -1,15 +1,8 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameOption.h"
 
 BEGIN(Client)
-
-#ifdef __THREADCHECK
-#define __threadbreak __debugbreak();
-#else
-#define __threadbreak
-#endif
 
 /**
 * 프로토타입 추가할 때는 자기 이름 함수에 추가해주세요.

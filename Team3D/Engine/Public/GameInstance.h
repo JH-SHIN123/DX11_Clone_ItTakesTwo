@@ -15,6 +15,7 @@
 #include "Shadow_Manager.h"
 #include "PostFX.h"
 #include "Blur.h"
+#include "SSAO.h"
 
 BEGIN(Engine)
 
@@ -135,6 +136,7 @@ private:
 	CFrustum*				m_pFrustum				= nullptr;
 	CPostFX*				m_pPostFX				= nullptr;
 	CBlur*					m_pBlur					= nullptr;
+	CSSAO*					m_pSSAO					= nullptr;
 
 public:
 	static void Release_Engine();

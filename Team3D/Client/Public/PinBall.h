@@ -9,20 +9,19 @@ private:
 	explicit CPinBall(const CPinBall& rhs);
 	virtual ~CPinBall() = default;
 
-public:
+public:/* Getter */
 	_bool Get_Failed()	  { return m_bFailed; };
-	_bool Get_StartGame() { return m_IsStartGame; }
-	_bool Get_Ready()	  { return m_IsReady; }
+	_bool Get_StartGame() { return m_bStartGame; }
+	_bool Get_Ready()	  { return m_bReady; }
+
+public:/* Setter */
+	void Set_Ready(_bool bReady) { m_bReady = bReady; }
+	void Set_Failed()			 { m_bFailed = true; }
 
 public:
-	void Set_Ready() { m_IsReady = false; }
-	void Set_Failed() { m_bFailed = true; }
-
-public:
-	void Goal(_fvector vGatePosition);
-	void ReadyGame();
-	void PlayerMove();
 	void StartGame();
+	void PlayerMove();
+	void Goal(_fvector vGatePosition);
 	void Respawn();
 
 public:
@@ -40,20 +39,23 @@ public:
 private:
 	CTriggerActor*		m_pTriggerActorCom = nullptr;
 	CDynamicActor*		m_pDynamicActorCom = nullptr;
-	/* 문 붙어있는 모델 */
+	/* 공에 문 달려있는 모델 */
 	CModel*				m_pAttachBall = nullptr;
 
 	_bool				m_bFailed = false;
-	_bool				m_IsStartGame = false;
-	_bool				m_IsReady = false;
+	_bool				m_bStartGame = false;
+	_bool				m_bReady = false;
 	_float3				m_RespawnPos;
 
 private:
 	void MoveMent(_double dTimaDelta);
 
+private:
+	HRESULT Ready_Component(void* pArg);
+
 public:
-	static CPinBall* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static	CPinBall*	  Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject * Clone_GameObject(void * pArg) override;
-	virtual void Free() override;
+	virtual void		  Free() override;
 };
 END

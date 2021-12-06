@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////
 #include "Shader_Include.hpp"
 
-texture2D	g_NormalTexture;
-texture2D	g_DepthTexture;
-texture2D	g_SpecularSrcTexture;
-
+texture2D			g_NormalTexture;
+texture2D			g_DepthTexture;
+texture2D			g_SpecularSrcTexture;
+Texture2D<float>	g_SSAOTexture;
 
 cbuffer LightDesc
 {
@@ -73,10 +73,11 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector	vNormalDesc = g_NormalTexture.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vNormalDesc = g_NormalTexture.Sample(Point_Sampler, In.vTexUV);
 	vector	vNormal		= vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-	vector	vDepthDesc	= g_DepthTexture.Sample(Wrap_Sampler, In.vTexUV);
-	
+	vector	vDepthDesc	= g_DepthTexture.Sample(Point_Sampler, In.vTexUV);
+	float	fAODesc		= g_SSAOTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
+
 	vector	vWorldPos	= vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
 	float	fViewZ		= 0.f;
 	vector	vLook		= (vector)0.f;
@@ -103,12 +104,11 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	else
 		discard;
 
-
-	Out.vShade		= max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient);
+	Out.vShade		= max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient) * fAODesc;
 	Out.vShade.a = 0.f;
 
 	/* Specular */
-	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Point_Sampler, In.vTexUV);
 
 	if (vSpecSrcDesc.w < 0.5f) // w is specular on/off flag
 	{
@@ -125,9 +125,10 @@ PS_OUT PS_POINT(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector	vNormalDesc = g_NormalTexture.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vNormalDesc = g_NormalTexture.Sample(Point_Sampler, In.vTexUV);
 	vector	vNormal		= vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-	vector	vDepthDesc	= g_DepthTexture.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vDepthDesc	= g_DepthTexture.Sample(Point_Sampler, In.vTexUV);
+	
 	vector	vWorldPos	= vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
 	float	fViewZ		= 0.f;
 	vector	vLook		= (vector)0.f;
@@ -156,10 +157,10 @@ PS_OUT PS_POINT(PS_IN In)
 	clip(1 - fDistance);
 	float	fAtt		= 0.5f * COS_ARR(3.14f * pow(fDistance, 1.5f)) + 0.5f;
 
-	Out.vShade		= (max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
+	Out.vShade		= (max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse)) * fAtt;
 	Out.vShade.a = 0.f;
 
-	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Point_Sampler, In.vTexUV);
 	vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
 	vector	vReflect = reflect(normalize(vLightDir), vSpecSrcDesc);
 	Out.vSpecular	= (pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular));
@@ -204,7 +205,7 @@ PS_OUT PS_POINT(PS_IN In)
 //
 //	// Phong / Specular
 //	// Diffuse
-//	Out.vShade = (max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient));
+//	Out.vShade = (max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse));
 //	Out.vShade.a = 0.f;
 //
 //	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Wrap_Sampler, In.vTexUV);

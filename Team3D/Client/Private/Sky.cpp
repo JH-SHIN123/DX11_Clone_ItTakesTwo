@@ -13,7 +13,7 @@ CSky::CSky(const CSky & rhs)
 
 HRESULT CSky::NativeConstruct_Prototype()
 {
-	CGameObject::NativeConstruct_Prototype();
+	CGameObject::NativeConstruct_Prototype();;
 
 	return S_OK;
 }

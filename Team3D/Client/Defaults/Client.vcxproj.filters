@@ -724,6 +724,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move">
       <UniqueIdentifier>{e00fe663-5223-4c53-8f9a-23f51aa689a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96.Debug">
+      <UniqueIdentifier>{7904050b-bece-47ac-9d69-2652f5e7bc09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1230,6 +1233,9 @@
     <ClInclude Include="..\public\Effect_Pinball_Move.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\GameDebugger.h">
+      <Filter>96.Debug</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1711,6 +1717,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Pinball_Move.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameDebugger.cpp">
+      <Filter>96.Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

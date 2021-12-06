@@ -318,6 +318,7 @@ PS_OUT	PS_LOW_EMISSIVE(PS_IN In)
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
 	Out.vDiffuse = vMtrlDiffuse;
+	Out.vDiffuse.w = 1.f;
 	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 
 	// Calculate Normal
@@ -330,7 +331,44 @@ PS_OUT	PS_LOW_EMISSIVE(PS_IN In)
 
 	// Calculate Emissive
 	if (g_IsMaterials.Is_Emissive & 1) Out.vEmissive = g_EmissiveTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-	Out.vEmissive = 0.f;
+	Out.vEmissive *= 0.2f;
+
+	// Calculate Shadow
+	int iIndex = -1;
+	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
+
+	// Get_ShadowFactor
+	float fShadowFactor = 0.f;
+	fShadowFactor = Get_ShadowFactor(In.iViewportIndex, iIndex, In.vWorldPosition);
+
+	Out.vShadow = 1.f - fShadowFactor;
+	Out.vShadow.a = 1.f;
+
+	return Out;
+}
+
+PS_OUT	PS_ALIENSCREEN(PS_IN In, uniform bool isGreen)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+	if(isGreen)
+		Out.vDiffuse = vMtrlDiffuse * vector(0.f, 1.f, 0.f, 1.f);
+	else
+		Out.vDiffuse = vMtrlDiffuse * vector(0.f, 0.f, 1.f, 1.f);
+
+	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+
+	// Calculate Normal
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+	// Calculate Specular
+	Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
+
+	// Calculate Emissive
+	Out.vEmissive = g_EmissiveTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	Out.vEmissive *= 0.5f;
 
 	// Calculate Shadow
 	int iIndex = -1;
@@ -408,7 +446,6 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_MAIN_ALPHA_MOONBABOON_GLASSWALL();
 	}
-	
 	// 6
 	pass Default_Alpha_MoonBaboon_Core_Glass
 	{
@@ -434,9 +471,29 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_Default, 0);
-		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_LOW_EMISSIVE();
+	}
+	// 9
+	pass Default_Alien_Blue
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_ALIENSCREEN(false);
+	}
+	// 10
+	pass Default_Alien_Green
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_ALIENSCREEN(true);
 	}
 };

@@ -111,7 +111,8 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>./;../public/;../public/PhysX/;../public/PhysX/PxShared/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -161,6 +162,7 @@ call WinCmd_UpdateLib_Debug.bat</Command>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>./;../public/;../public/PhysX/;../public/PhysX/PxShared/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -226,6 +228,7 @@ call WinCmd_UpdateLib_Release.bat</Command>
     <ClInclude Include="..\public\RenderTarget_Manager.h" />
     <ClInclude Include="..\Public\Shadow_Manager.h" />
     <ClInclude Include="..\public\Sound_Manager.h" />
+    <ClInclude Include="..\Public\SSAO.h" />
     <ClInclude Include="..\public\StaticActor.h" />
     <ClInclude Include="..\public\Textures.h" />
     <ClInclude Include="..\public\Timer.h" />
@@ -281,6 +284,7 @@ call WinCmd_UpdateLib_Release.bat</Command>
     <ClCompile Include="..\private\RenderTarget_Manager.cpp" />
     <ClCompile Include="..\Private\Shadow_Manager.cpp" />
     <ClCompile Include="..\private\Sound_Manager.cpp" />
+    <ClCompile Include="..\Private\SSAO.cpp" />
     <ClCompile Include="..\private\StaticActor.cpp" />
     <ClCompile Include="..\private\Textures.cpp" />
     <ClCompile Include="..\private\Timer.cpp" />
@@ -304,6 +308,7 @@ call WinCmd_UpdateLib_Release.bat</Command>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_Blur.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_PostFX.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_SSAO.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Blend.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PostFX.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_LightAcc.hlsl" />
