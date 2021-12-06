@@ -14,6 +14,7 @@ public:
 
 public:
 	HRESULT	Add_Light(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _bool isActive = true);
+	void	Clear_Lights();
 
 public:
 	virtual void Free() override;
