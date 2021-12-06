@@ -694,9 +694,9 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Effet Test
-	if (m_pGameInstance->Key_Down(DIK_O))
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD7))
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-	if (m_pGameInstance->Key_Down(DIK_I))
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 #pragma  endregion
 }

@@ -830,11 +830,7 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Effet Test
-	if (m_pGameInstance->Key_Down(DIK_P))
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-	if (m_pGameInstance->Key_Pressing(DIK_TAB))
-		m_pEffect_GravityBoots->Set_IsActivate_GravityBoots();
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
 		m_pEffect_GravityBoots->Add_WalkingParticle(true);
 #pragma  endregion
 #endif

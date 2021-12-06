@@ -1,20 +1,9 @@
-
 #include "Shader_Defines.hpp"
+#include "Shader_Defines_Effect.hpp"
 
 texture2D		g_DiffuseTexture;
 texture2D		g_SecondTexture;
 texture2D		g_ColorTexture;
-
-vector			g_vMainCamUp;
-vector			g_vSubCamUp;
-
-float2			g_vSize;
-float4			g_vColor;
-float			g_fTime;
-float4			g_vUV;
-int				g_IsBillBoard;
-int				g_RotateAxis; // x0, y1, z2
-
 
 BlendState BlendState_Add2
 {

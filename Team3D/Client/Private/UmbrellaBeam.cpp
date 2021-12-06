@@ -37,6 +37,10 @@ HRESULT CUmbrellaBeam::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-789.319824f, 769.882971f, 189.852661f, 1.f));
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(45.f));
 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Umbrella_Effect", Level::LEVEL_STAGE, TEXT("GameObject_3D_Umbrella_Pipe"), nullptr, (CGameObject**)&m_pUmbrellaBeam_Effect), E_FAIL);
+	m_pUmbrellaBeam_Effect->Set_ParentWorldMatrix(m_pTransformCom->Get_WorldMatrix());
+
+
 	m_UserData = USERDATA(GameID::eUMBRELLABEAM, this);
 
 
@@ -67,8 +71,8 @@ _int CUmbrellaBeam::Tick(_double dTimeDelta)
 	CGameObject::Tick(dTimeDelta);
 
 	KeyInput_Rotate(dTimeDelta);
-	
-	if(nullptr != m_pUmbrellaBeam_Effect)
+
+	if(true == m_IsBeamActivate)
 		m_pUmbrellaBeam_Effect->Set_ParentWorldMatrix(m_pTransformCom->Get_WorldMatrix());
 
 	return NO_EVENT;
@@ -78,14 +82,10 @@ _int CUmbrellaBeam::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	if (true == m_IsBeamActivate && false == m_IsBeamEffectCreate)
-	{
-		FAILED_CHECK_RETURN(Ready_Layer_UmbrellaBeam_Effect(TEXT("Layer_UmbrellaBeam_Effect")), E_FAIL);
-		m_IsBeamEffectCreate = true;
-	}
-
-	if (false == m_IsBeamActivate)
-		m_IsBeamEffectCreate = false;
+	if (true == m_IsBeamActivate)
+		m_pUmbrellaBeam_Effect->Set_Activate(true);
+	else
+		m_pUmbrellaBeam_Effect->Set_Activate(false);
 
 	PutGravitationalField();
 
@@ -248,17 +248,6 @@ HRESULT CUmbrellaBeam::Ready_Layer_UmbrellaBeam_Stand(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CUmbrellaBeam::Ready_Layer_UmbrellaBeam_Effect(const _tchar * pLayerTag)
-{
-	CGameObject* pGameObject = nullptr;
-
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Umbrella_Pipe"), nullptr, &pGameObject), E_FAIL);
-	m_pUmbrellaBeam_Effect = static_cast<CEffect_Umbrella_Pipe*>(pGameObject);
-	m_pUmbrellaBeam_Effect->Set_ParentWorldMatrix(m_pTransformCom->Get_WorldMatrix());
-
-	return S_OK;
-}
-
 CUmbrellaBeam * CUmbrellaBeam::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CUmbrellaBeam* pInstance = new CUmbrellaBeam(pDevice, pDeviceContext);
@@ -287,8 +276,7 @@ CGameObject * CUmbrellaBeam::Clone_GameObject(void * pArg)
 
 void CUmbrellaBeam::Free()
 {
-	if(nullptr != m_pUmbrellaBeam_Effect)
-		Safe_Release(m_pUmbrellaBeam_Effect);
+	Safe_Release(m_pUmbrellaBeam_Effect);
 
 	Safe_Release(m_pUmbrellaBeam_Stand);
 	Safe_Release(m_pTriggerCom);

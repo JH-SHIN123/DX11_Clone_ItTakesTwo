@@ -48,7 +48,6 @@ HRESULT CLevel_Stage::NativeConstruct()
 	/* Se */
 	FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);
 	/* Jung */
-    //FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_WarpGate(TEXT("Layer_WarpGate")), E_FAIL);	
 	FAILED_CHECK_RETURN(Ready_Layer_Wormhole(TEXT("Layer_Wormhole")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_WallLaserTrap(TEXT("Layer_WallLaserTrap")), E_FAIL);	
@@ -198,29 +197,6 @@ HRESULT CLevel_Stage::Ready_Layer_GravityPath(const _tchar * pLayerTag)
 #pragma endregion
 
 #pragma region Jung
-HRESULT CLevel_Stage::Test_Layer_Object_Effect(const _tchar * pLayerTag)
-{
-	/////////////////////////////////////////////// 테스트용입니다
-	EFFECT_DESC_CLONE Data;
-	
-	_matrix WorldMatrix = XMMatrixIdentity();
-	WorldMatrix.r[3] = { 0.f,2.f,5.f,1.f };
-	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel"), &Data), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
-	//
-	//WorldMatrix.r[3] = { 0.f,0.f,5.f,1.f };
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Umbrella_Pipe"), &Data), E_FAIL);
-
-
-	//
-	//WorldMatrix.r[3] = { 15.f,0.f,5.f,1.f };	
-	//XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Gravity_Pipe"), &Data), E_FAIL);
-	//
-	return S_OK;
-}
-
 HRESULT CLevel_Stage::Ready_Layer_WarpGate(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::MAIN_UMBRELLA)), E_FAIL);
@@ -327,6 +303,8 @@ HRESULT CLevel_Stage::Ready_Lights()
 //	if (FAILED(pGameInstance->Add_Light(TEXT("Point3"), LightDesc))) return E_FAIL;
 //	if (FAILED(pGameInstance->Add_Light(TEXT("Point4"), LightDesc))) return E_FAIL;
 //	if (FAILED(pGameInstance->Add_Light(TEXT("Point5"), LightDesc))) return E_FAIL;
+
+	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(20.f, 0.25f, 1.f, LightDesc.vPosition, LightDesc.vDiffuse)), E_FAIL);
 //#pragma endregion
 
 
