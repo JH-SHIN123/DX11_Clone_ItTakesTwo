@@ -2831,7 +2831,7 @@ void CCody::TakeRail(_double dTimeDelta)
 		m_pTargetRail = nullptr;
 		m_pTargetRailNode = nullptr;
 		m_pSearchTargetRailNode = nullptr;
-		m_pModelCom->Set_Animation(ANI_C_Jump_Falling); // 자유낙하 애니메이션으로 변경해야함.
+		m_pModelCom->Set_Animation(ANI_C_Jump_Falling);
 		m_bOnRailEnd = true;
 	}
 }
@@ -2849,7 +2849,7 @@ void CCody::TakeRailEnd(_double dTimeDelta)
 		}
 		else 
 		{
-			m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_UP), m_dRailEnd_ForceDeltaT * 0.2f);
+			m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta);
 			m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_LOOK), (dRailEndForceTime - m_dRailEnd_ForceDeltaT) * 2.5f);
 			m_dRailEnd_ForceDeltaT += dTimeDelta;
 		}
