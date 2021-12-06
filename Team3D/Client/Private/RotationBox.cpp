@@ -37,16 +37,16 @@ _int CRotationBox::Tick(_double dTimeDelta)
 
 	Movement(dTimeDelta);
 
-	_vector vScale, vRotQuat, vPosition;
-	XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, m_pTransformCom->Get_WorldMatrix());
-	(m_pDynamicActorCom->Get_Actor())->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
-
 	return NO_EVENT;
 }
 
 _int CRotationBox::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
+
+	_vector vScale, vRotQuat, vPosition;
+	XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, m_pTransformCom->Get_WorldMatrix());
+	(m_pDynamicActorCom->Get_Actor())->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -95,9 +95,9 @@ void CRotationBox::Rotate_Angle(_double fMaxAngle, _double dSpeed, _double dTime
 	if (5.0 <= m_dCoolTime)
 	{
 		if (true == m_bDirChange)
-			m_pTransformCom->RotateRoll_Angle(m_dAngle - (fMaxAngle * 0.5));
+			m_pTransformCom->RotatePitch_Angle(m_dAngle - (fMaxAngle * 0.5));
 		else
-			m_pTransformCom->RotateRoll_Angle((fMaxAngle * 0.5) - m_dAngle);
+			m_pTransformCom->RotatePitch_Angle((fMaxAngle * 0.5) - m_dAngle);
 
 		m_bRotate_Random = true;
 		m_dCoolTime = 0.0;
@@ -118,9 +118,9 @@ void CRotationBox::Rotate_Angle(_double fMaxAngle, _double dSpeed, _double dTime
 		m_dAngle += dAngle;
 		
 	if (true == m_bDirChange)
-		m_pTransformCom->RotateRoll_Angle(-dAngle);
+		m_pTransformCom->RotatePitch_Angle(-dAngle);
 	else
-		m_pTransformCom->RotateRoll_Angle(dAngle);
+		m_pTransformCom->RotatePitch_Angle(dAngle);
 }
 
 void CRotationBox::Rotate_Random(_double dSpeed, _double dTimeDelta)
@@ -136,20 +136,55 @@ void CRotationBox::Rotate_Random(_double dSpeed, _double dTimeDelta)
 		m_bRotate_Start = false;
 		m_bRotate_Random = false;
 		m_dAngle = 0;
+		//Rotate_Fix();
+		return;
 	}
 	else
 		m_dAngle += dAngle;
 
 	if (0 == m_iRandom)
-		m_pTransformCom->RotateRoll_Angle(dAngle);
+		m_pTransformCom->RotatePitch_Angle(dAngle);
 	else
-		m_pTransformCom->RotateRoll_Angle(-dAngle);
+		m_pTransformCom->RotatePitch_Angle(-dAngle);
+}
+
+void CRotationBox::Rotate_Fix()
+{
+	_vector vecFix[4] = {};
+
+	vecFix[0] = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	vecFix[1] = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+	vecFix[2] = XMVectorSet(0.f, -1.f, 0.f, 0.f);
+	vecFix[3] = XMVectorSet(0.f, 0.f, -1.f, 0.f);
+	
+	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+
+	if (XMVectorGetY(vUp) > 0.9f)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_UP, vecFix[0]);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vecFix[1]);
+	}
+	else if (XMVectorGetX(vUp) > 0.9f)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_UP, vecFix[1]);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vecFix[2]);
+	}
+	else if (XMVectorGetY(vUp) < -0.9f)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_UP, vecFix[2]);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vecFix[3]);
+	}
+	else if (XMVectorGetX(vUp) <  -0.9f)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_UP, vecFix[3]);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vecFix[0]);
+	}
 }
 
 HRESULT CRotationBox::Ready_Component(void * pArg)
 {
 	/* Dynamic */
-	PxGeometry* Geom = new PxBoxGeometry(0.5f, 0.5f, 0.5f);
+	PxGeometry* Geom = new PxBoxGeometry(0.5f, 0.25f, 0.25f);
 	CDynamicActor::ARG_DESC tDynamicActorArg;
 	tDynamicActorArg.pTransform = m_pTransformCom;
 	tDynamicActorArg.fDensity = 1.f;

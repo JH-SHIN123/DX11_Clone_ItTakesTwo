@@ -23,10 +23,12 @@ HRESULT CRotationFan_Base::NativeConstruct(void * pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
 
-	m_UserData.eID = GameID::eELECTRICBOX;
+	m_UserData.eID = GameID::eENVIRONMENT;
 	m_UserData.pGameObject = this;
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
+
+	m_pTransformCom->Set_Speed(0.f, 50.f);
 
 	return S_OK;
 }
@@ -34,6 +36,19 @@ HRESULT CRotationFan_Base::NativeConstruct(void * pArg)
 _int CRotationFan_Base::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
+
+	m_pTransformCom->RotateYaw_Speed(dTimeDelta);
+
+	_vector vScale, vRotQuat, vPosition;
+	XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, m_pTransformCom->Get_WorldMatrix());
+
+	if (0 == lstrcmp(m_tDynamic_Env_Desc.szModelTag, TEXT("Component_Model_Saucer_RotatingPlatform_02")))
+	{
+		vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.2f);
+		(m_pDynamicActorCom->Get_Actor())->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
+	}
+	else
+		(m_pDynamicActorCom->Get_Actor())->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
 
 	return NO_EVENT;
 }
@@ -89,14 +104,26 @@ void CRotationFan_Base::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID,
 
 HRESULT CRotationFan_Base::Ready_Component(void * pArg)
 {
-	/* Static */
-	CStaticActor::ARG_DESC tStaticActorArg;
-	tStaticActorArg.pTransform = m_pTransformCom;
-	tStaticActorArg.pModel = m_pModelCom;
-	tStaticActorArg.pUserData = &m_UserData;
+	/* Dynamic */
+	PxGeometry* Geom = nullptr;
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+	if (0 == lstrcmp(m_tDynamic_Env_Desc.szModelTag, TEXT("Component_Model_Saucer_RotatingPlatform_02")))
+		Geom = new PxBoxGeometry(1.2f, 0.1f, 1.2f);
+	else
+		Geom = new PxBoxGeometry(1.2f, 0.1f, 1.2f);
 
+	CDynamicActor::ARG_DESC tDynamicActorArg;
+	tDynamicActorArg.pTransform = m_pTransformCom;
+	tDynamicActorArg.fDensity = 1.f;
+	tDynamicActorArg.pGeometry = Geom;
+	tDynamicActorArg.vVelocity = PxVec3(0.f, 0.f, 0.f);
+	tDynamicActorArg.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
+	Safe_Delete(Geom);
+
+	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+		
 	return S_OK;
 }
 
@@ -126,7 +153,7 @@ CGameObject * CRotationFan_Base::Clone_GameObject(void * pArg)
 
 void CRotationFan_Base::Free()
 {
-	Safe_Release(m_pStaticActorCom);
+	Safe_Release(m_pDynamicActorCom);
 
 	CDynamic_Env::Free();
 }

@@ -2,12 +2,12 @@
 #include "Dynamic_Env.h"
 
 BEGIN(Client)
-class CRotaionCylinder final : public CDynamic_Env
+class CRotationCylinder final : public CDynamic_Env
 {
 private:
-	explicit CRotaionCylinder(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CRotaionCylinder(const CRotaionCylinder& rhs);
-	virtual ~CRotaionCylinder() = default;
+	explicit CRotationCylinder(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CRotationCylinder(const CRotationCylinder& rhs);
+	virtual ~CRotationCylinder() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -26,7 +26,7 @@ private:
 	HRESULT Ready_Component(void* pArg);
 
 public:
-	static CRotaionCylinder* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CRotationCylinder* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

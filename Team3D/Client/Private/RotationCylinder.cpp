@@ -2,24 +2,24 @@
 #include "..\Public\RotationCylinder.h"
 #include "Cody.h"
 
-CRotaionCylinder::CRotaionCylinder(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CRotationCylinder::CRotationCylinder(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
 {
 }
 
-CRotaionCylinder::CRotaionCylinder(const CRotaionCylinder & rhs)
+CRotationCylinder::CRotationCylinder(const CRotationCylinder & rhs)
 	: CDynamic_Env(rhs)
 {
 }
 
-HRESULT CRotaionCylinder::NativeConstruct_Prototype()
+HRESULT CRotationCylinder::NativeConstruct_Prototype()
 {
 	CDynamic_Env::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
-HRESULT CRotaionCylinder::NativeConstruct(void * pArg)
+HRESULT CRotationCylinder::NativeConstruct(void * pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
 
@@ -33,19 +33,19 @@ HRESULT CRotaionCylinder::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CRotaionCylinder::Tick(_double dTimeDelta)
+_int CRotationCylinder::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
 	if(0 == m_tDynamic_Env_Desc.iOption)
-		m_pTransformCom->RotateRoll_Speed(dTimeDelta);
+		m_pTransformCom->RotatePitch_Speed(dTimeDelta);
 	else
-		m_pTransformCom->RotateRoll_Speed(-dTimeDelta);
+		m_pTransformCom->RotatePitch_Speed(-dTimeDelta);
 
 	return NO_EVENT;
 }
 
-_int CRotaionCylinder::Late_Tick(_double dTimeDelta)
+_int CRotationCylinder::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
 
@@ -57,7 +57,7 @@ _int CRotaionCylinder::Late_Tick(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-HRESULT CRotaionCylinder::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CRotationCylinder::Render(RENDER_GROUP::Enum eGroup)
 {
 	CDynamic_Env::Render(eGroup);
 
@@ -68,7 +68,7 @@ HRESULT CRotaionCylinder::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-HRESULT CRotaionCylinder::Render_ShadowDepth()
+HRESULT CRotationCylinder::Render_ShadowDepth()
 {
 	CDynamic_Env::Render_ShadowDepth();
 
@@ -80,7 +80,7 @@ HRESULT CRotaionCylinder::Render_ShadowDepth()
 	return S_OK;
 }
 
-HRESULT CRotaionCylinder::Ready_Component(void * pArg)
+HRESULT CRotationCylinder::Ready_Component(void * pArg)
 {
 	/* Static */
 	CStaticActor::ARG_DESC tStaticActorArg;
@@ -93,31 +93,31 @@ HRESULT CRotaionCylinder::Ready_Component(void * pArg)
 	return S_OK;
 }
 
-CRotaionCylinder * CRotaionCylinder::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CRotationCylinder * CRotationCylinder::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
-	CRotaionCylinder* pInstance = new CRotaionCylinder(pDevice, pDeviceContext);
+	CRotationCylinder* pInstance = new CRotationCylinder(pDevice, pDeviceContext);
 
 	if (pInstance->NativeConstruct_Prototype())
 	{
-		MSG_BOX("Failed to Create Instance - CRotaionCylinder");
+		MSG_BOX("Failed to Create Instance - CRotationCylinder");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CRotaionCylinder::Clone_GameObject(void * pArg)
+CGameObject * CRotationCylinder::Clone_GameObject(void * pArg)
 {
-	CRotaionCylinder* pInstance = new CRotaionCylinder(*this);
+	CRotationCylinder* pInstance = new CRotationCylinder(*this);
 
 	if (pInstance->NativeConstruct(pArg))
 	{
-		MSG_BOX("Failed to Clone Instance - CRotaionCylinder");
+		MSG_BOX("Failed to Clone Instance - CRotationCylinder");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CRotaionCylinder::Free()
+void CRotationCylinder::Free()
 {
 	Safe_Release(m_pStaticActorCom);
 

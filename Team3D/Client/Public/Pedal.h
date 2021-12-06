@@ -18,11 +18,17 @@ public:
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
-	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 	virtual void	OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
+
+	_bool			m_bSmash = false;
+
+	_double			m_dAngle = 0.0;
+
+private:
+	void Movement(_double dTimeDelta);
 
 private:
 	HRESULT Ready_Component(void* pArg);

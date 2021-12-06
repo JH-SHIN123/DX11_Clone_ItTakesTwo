@@ -34,6 +34,7 @@ private:
 	void Movement(_double dTimeDelta);
 	void Rotate_Angle(_double dMaxAngle, _double dSpeed, _double dTimeDelta);
 	void Rotate_Random(_double dSpeed, _double dTimeDelta);
+	void Rotate_Fix();
 
 private:
 	HRESULT Ready_Component(void* pArg);

@@ -23,10 +23,12 @@ HRESULT CRotationFan::NativeConstruct(void * pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
 
-	m_UserData.eID = GameID::eELECTRICBOX;
+	m_UserData.eID = GameID::eROTATIONFAN;
 	m_UserData.pGameObject = this;
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
+
+	m_pTransformCom->Set_Speed(0.f, 70.f);
 
 	return S_OK;
 }
@@ -35,12 +37,16 @@ _int CRotationFan::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
+	m_pTransformCom->RotateYaw_Speed(dTimeDelta);
+
 	return NO_EVENT;
 }
 
 _int CRotationFan::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
+
+	m_pStaticActorCom->Update_StaticActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -71,20 +77,15 @@ HRESULT CRotationFan::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CRotationFan::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+void CRotationFan::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
+	CDynamic_Env::OnContact(eStatus, eID, pGameObject);
 
 	/* Cody */
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eELECTRICBOX, true, this);
+		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eROTATIONFAN, true, this);
 	}
-}
-
-void CRotationFan::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
-{
-	CDynamic_Env::OnContact(eStatus, eID, pGameObject);
 }
 
 HRESULT CRotationFan::Ready_Component(void * pArg)

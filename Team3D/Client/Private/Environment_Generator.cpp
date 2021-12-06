@@ -20,6 +20,14 @@
 #include "PinBall_Door.h"
 #include "HookahTube.h"
 #include "HangingPlanet.h"
+#include "RotationCylinder.h"
+#include "RotationFan_Base.h"
+#include "RotationFan.h"
+#include "Press.h"
+#include "Pedal.h"
+#include "RotationBox.h"
+#include "ElectricBox.h"
+#include "ElectricWall.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -55,7 +63,8 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_Instancing_TXT()
 			iLevelIndex = _ttoi(szLevelIndex);
 			iNumMaterial = _ttoi(szNumMaterial);
 
-			_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+			_matrix PivotMatrix = Set_Model_PivotMatrix(szPrototypeTag);
+			//_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
 			FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel_Instance::Create(m_pDevice, m_pDeviceContext, 1000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
 
 			if (fin.eof())
@@ -98,7 +107,8 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_Others_TXT(_tchar * pFilePa
 			iLevelIndex = _ttoi(szLevelIndex);
 			iNumMaterial = _ttoi(szNumMaterial);
 
-			_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+			_matrix PivotMatrix = Set_Model_PivotMatrix(szPrototypeTag);
+			//_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
 			FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
 
 			if (fin.eof())
@@ -246,7 +256,8 @@ HRESULT CEnvironment_Generator::Load_Stage_Space()
 
 	FAILED_CHECK_RETURN(Load_Environment_Space(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Space_Boss(), E_FAIL);
-	FAILED_CHECK_RETURN(Load_Environment_Interactive_Instancing(), E_FAIL);
+	FAILED_CHECK_RETURN(Load_Environment_Space_SpaceShip(), E_FAIL);
+	FAILED_CHECK_RETURN(Load_Environment_Bridge(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Trigger(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_SpaceRail(), E_FAIL);
 
@@ -327,7 +338,9 @@ CGameObject * CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D1
 		if (nullptr == pInstance)
 			MSG_BOX("Failed to Create Instance - PinBall_HandleBase");
 	}
-	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_Blocked01")) || 0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_Blocked02")) || 0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_BlockedHalf")))
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_Blocked01")) || 
+			 0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_Blocked02")) || 
+			 0 == lstrcmp(pPrototypeTag, TEXT("GameObject_PinBall_BlockedHalf")))
 	{
 		pInstance = CPInBall_Blocked::Create(pDevice, pDeviceContext);
 		if (nullptr == pInstance)
@@ -363,7 +376,121 @@ CGameObject * CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D1
 		if (nullptr == pInstance)
 			MSG_BOX("Failed to Create Instance - HookahTube");
 	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_RotationCylinder")))
+	{
+		pInstance = CRotationCylinder::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - RotationCylinder");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_RotationFan_Base")) ||
+			 0 == lstrcmp(pPrototypeTag, TEXT("GameObject_RotationFan_Base2")))
+	{
+		pInstance = CRotationFan_Base::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - RotationFan_Base");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_RotationFan")))
+	{
+		pInstance = CRotationFan::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - CRotationFan");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_Press")) ||
+			 0 == lstrcmp(pPrototypeTag, TEXT("GameObject_Press2")))
+	{
+		pInstance = CPress::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - Press");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_Pedal")))
+	{
+		pInstance = CPedal::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - Pedal");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_RotationBox")))
+	{
+		pInstance = CRotationBox::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - RotationBox");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_ElectricBox")))
+	{
+		pInstance = CElectricBox::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - ElectricBox");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_ElectricWall")))
+	{
+		pInstance = CElectricWall::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - ElectricWall");
+	}
 	return pInstance;
+}
+
+_matrix CEnvironment_Generator::Set_Model_PivotMatrix(_tchar* pPrototypeTag)
+{
+	_matrix PivotMatrix;
+
+	if (0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_ArrowSign_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_BatteryHolder_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Cord_01_Medium") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Cord_Big_01_Medium") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Detail_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_EjectLever_Base_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_EjectSign_01") ||
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_EjectSign_02") ||
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_FakeRoof_01") ||
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_FanBase_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Grate_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Interior_Chair_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Interior_Panel_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Interior_Pedal_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Interior_PedalBase_01") ||
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Interior_PedalSmasher_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Interior_PedalSmasher_02") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_InteriorPlatform_Medium_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_InteriorPlatform_Small_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_InteriorPlatform_SmallOpen_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_InteriorPlatform_Support_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_InteriorPlatform_Thin_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_InteriorWall_Large_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_InteriorWall_Large_02") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_InteriorWall_MediumBars_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_InteriorWall_SmallBars_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Lamp_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Lamp_02") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Lamp_03") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Machinepart_02") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_MainFloor_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_MainFloor_Bottom_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_MainFloor_Grate_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_MainFloor_Top_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_MainRoof_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_MainRoof_Window_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Overheating_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_PlasticLid_01") ||
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_RoofDecoration_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_RoofDecoration_02") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_RotatingFan_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_RotatingPlatform_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_RotatingPlatform_02") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_Screw_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_SpinningTunnel_01") ||
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_StickBase_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_TubeDecoration_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_SpinningTunnel_01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_SplineMesh01") || 
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_SplineMesh02") ||
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_SplineMesh03") ||
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_SplineMesh08") ||
+		0 == lstrcmp(pPrototypeTag, L"Component_Model_Saucer_RotationBox"))
+		PivotMatrix =  XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f));
+	else
+		PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+
+	return PivotMatrix;
 }
 
 void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
@@ -412,6 +539,12 @@ void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
 		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh13"))
 		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Saucer_SplineMesh01"))
+		tInfo.fCullRadius = 2000.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Saucer_SplineMesh02"))
+		tInfo.fCullRadius = 2000.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Saucer_SplineMesh03"))
+		tInfo.fCullRadius = 2000.f;
 }
 
 void CEnvironment_Generator::Adjustment_Model_Position(_tchar* pModelTag, _float4x4& rWorld)
@@ -610,7 +743,93 @@ HRESULT CEnvironment_Generator::Load_Environment_Space_Boss()
 	return S_OK;
 }
 
-HRESULT CEnvironment_Generator::Load_Environment_Interactive_Instancing()
+HRESULT CEnvironment_Generator::Load_Environment_Space_SpaceShip()
+{
+	DWORD		dwByte;
+	_uint		iNumClone = 0;
+	_tchar		szPrototypeTag[MAX_PATH] = L"";
+	_tchar		szActorName[MAX_PATH] = L"";
+	_float4x4	World;
+	_uint		iLevelIndex = 0;
+
+	CInstancing_Env::ARG_DESC tIns_Env_Desc;
+	CStatic_Env::ARG_DESC	  tStatic_Env_Desc;
+	CDynamic_Env::ARG_DESC	  tDynamic_Env_Desc;
+
+	/* Instancing */
+	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/SpaceShip_Instancing.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		ReadFile(hFile, &szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, tIns_Env_Desc.szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &tIns_Env_Desc.iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &tIns_Env_Desc.Instancing_Arg.iInstanceCount, sizeof(_uint), &dwByte, nullptr);
+		tIns_Env_Desc.Instancing_Arg.pWorldMatrices = new _float4x4[tIns_Env_Desc.Instancing_Arg.iInstanceCount];
+		ReadFile(hFile, tIns_Env_Desc.Instancing_Arg.pWorldMatrices, sizeof(_float4x4) * tIns_Env_Desc.Instancing_Arg.iInstanceCount, &dwByte, nullptr);
+
+		tIns_Env_Desc.Instancing_Arg.fCullingRadius = 10.f;
+
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Boss"), Level::LEVEL_STAGE, TEXT("GameObject_Instancing_Env"), &tIns_Env_Desc), E_FAIL);
+	}
+	CloseHandle(hFile);
+
+	/* Static */
+	hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/SpaceShip_Static.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		ReadFile(hFile, &szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, tStatic_Env_Desc.szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &tStatic_Env_Desc.iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &tStatic_Env_Desc.WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+
+		tStatic_Env_Desc.eGameID = GameID::Enum::eENVIRONMENT;
+		Set_Info_Model(tStatic_Env_Desc);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Boss"), Level::LEVEL_STAGE, TEXT("GameObject_Static_Env"), &tStatic_Env_Desc), E_FAIL);
+	}
+	CloseHandle(hFile);
+
+	hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/SpaceShip_Dynamic.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		ReadFile(hFile, &szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &tDynamic_Env_Desc.iOption, sizeof(_uint), &dwByte, nullptr);
+
+		Adjustment_Model_Position(tDynamic_Env_Desc.szModelTag, tDynamic_Env_Desc.WorldMatrix);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Boss"), Level::LEVEL_STAGE, szPrototypeTag, &tDynamic_Env_Desc), E_FAIL);
+	}
+	CloseHandle(hFile);
+
+	return S_OK;
+}
+
+HRESULT CEnvironment_Generator::Load_Environment_Bridge()
 {
 	DWORD		dwByte;
 	_uint		iNumClone = 0;

@@ -18,21 +18,25 @@ public:
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
-	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+	virtual void	OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 
-	_bool			m_bSmash = false;
+	_bool			m_bSmash = true;
+	_float			m_fOpenPos = 0.f;
+	_float			m_fClosePos = 0.f;
 
-	_double			m_dDistance = 0.0;
-	_double			m_dSmeshDistance = 0.5;
+	_float3			m_vOpenPos = {};
+	_float3			m_vClosePos = {};
+
+	_double			m_dDistance = 0.f;
 	_double			m_dCoolTime = 0.0;
 
 private:
 	void Movement(_double dTimeDelta);
-	void Ready(_double dTimeDelta);
-	void Smesh(_double dTimeDelta);
+	void Open_Press(_double dTimeDelta);
+	void Close_Press(_double dTimeDelta);
 
 private:
 	HRESULT Ready_Component(void* pArg);

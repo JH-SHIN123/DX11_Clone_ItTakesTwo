@@ -22,7 +22,7 @@ public:
 	virtual void	OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 private:
-	CStaticActor*	m_pStaticActorCom = nullptr;
+	CDynamicActor*	m_pDynamicActorCom = nullptr;
 
 private:
 	HRESULT Ready_Component(void* pArg);

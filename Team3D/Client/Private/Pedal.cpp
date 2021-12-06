@@ -23,17 +23,21 @@ HRESULT CPedal::NativeConstruct(void * pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
 
-	m_UserData.eID = GameID::eELECTRICBOX;
+	m_UserData.eID = GameID::ePEDAL;
 	m_UserData.pGameObject = this;
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
+	//m_pTransformCom->RotateRoll_Angle(-45.f);
 	return S_OK;
 }
 
 _int CPedal::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
+
+	Movement(dTimeDelta);
+	m_pStaticActorCom->Update_StaticActor();
 
 	return NO_EVENT;
 }
@@ -71,20 +75,45 @@ HRESULT CPedal::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CPedal::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+void CPedal::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
+	CDynamic_Env::OnContact(eStatus, eID, pGameObject);
 
 	/* Cody */
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eELECTRICBOX, true, this);
+		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::ePEDAL, true, this);
 	}
 }
 
-void CPedal::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+void CPedal::Movement(_double dTimeDelta)
 {
-	CDynamic_Env::OnContact(eStatus, eID, pGameObject);
+	if (false == m_bSmash)
+	{
+		_double dAngle = (dTimeDelta * ( 0.5f * 45.f));
+		if (45.f <= m_dAngle + dAngle)
+		{
+			m_bSmash = !m_bSmash;
+			dAngle = 45.f - m_dAngle;
+			m_dAngle = 0.0;
+		}
+		else
+			m_dAngle += dAngle;
+		m_pTransformCom->RotateRoll_Angle(-dAngle);
+	}
+	else
+	{
+		_double dAngle = (dTimeDelta * (10.f * 45.f));
+		if (45.f <= m_dAngle + dAngle)
+		{
+			m_bSmash = !m_bSmash;
+			dAngle = 45.f - m_dAngle;
+			m_dAngle = 0.0;
+		}
+		else
+			m_dAngle += dAngle;
+		m_pTransformCom->RotateRoll_Angle(dAngle);
+	}
 }
 
 HRESULT CPedal::Ready_Component(void * pArg)
