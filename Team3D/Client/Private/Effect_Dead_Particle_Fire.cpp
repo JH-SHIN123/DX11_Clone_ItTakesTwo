@@ -98,7 +98,7 @@ HRESULT CEffect_Player_Dead_Particle_Fire::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom->Set_Variable("g_vParticleSize", &m_vSize, sizeof(_float2));
 	m_pModelCom->Set_ShaderResourceView("g_MaskingTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Render_Model_VERTEX(9);
+	m_pModelCom->Render_Model_VERTEX(9, nullptr);
 
 	return S_OK;
 }

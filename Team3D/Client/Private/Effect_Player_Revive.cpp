@@ -21,7 +21,7 @@ HRESULT CEffect_Player_Revive::NativeConstruct_Prototype(void * pArg)
 
 HRESULT CEffect_Player_Revive::NativeConstruct(void * pArg)
 {
-	m_EffectDesc_Prototype.fLifeTime = 2.f;
+	m_EffectDesc_Prototype.fLifeTime = 5.f;//2.f;
 	m_EffectDesc_Prototype.vSize = { 0.0625f, 0.0625f,0.f };
 
 	__super::Ready_Component(pArg);
@@ -43,7 +43,9 @@ HRESULT CEffect_Player_Revive::NativeConstruct(void * pArg)
 	Ready_Instance();
 
 	XMStoreFloat4(&m_vModelPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	
+	//
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_distortion"), TEXT("Com_Texture_TE"), (CComponent**)&m_pTexturesCom_Masking), E_FAIL);
+
 	return S_OK;
 }
 
@@ -65,7 +67,7 @@ _int CEffect_Player_Revive::Tick(_double TimeDelta)
 	if (0.f >= m_fReviveAfter_Time)
 	{
 		m_fReviveAfter_Time = 0.f;
-		m_fModel_Time += (_float)TimeDelta + (m_fModel_Time * 0.03f);
+		m_fModel_Time += (_float)TimeDelta;
 
  		if (0.25f <= m_fModel_Time)
  			m_IsSizeUp = false;
@@ -101,7 +103,7 @@ _int CEffect_Player_Revive::Late_Tick(_double TimeDelta)
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
 HRESULT CEffect_Player_Revive::Render(RENDER_GROUP::Enum eGroup)
@@ -109,10 +111,10 @@ HRESULT CEffect_Player_Revive::Render(RENDER_GROUP::Enum eGroup)
 	SetUp_Shader_Data();
 
 	_float4 vUV = { 0.f,0.f,1.f,1.f };
-	m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vUV, sizeof(_float4));
-	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Second->Get_ShaderResourceView(0));
-	m_pPointInstanceCom->Render(4, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
+	//m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vUV, sizeof(_float4));
+	//m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+	//m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Second->Get_ShaderResourceView(0));
+	//m_pPointInstanceCom->Render(4, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
 
 	if (0.f >= m_fReviveAfter_Time)
 	{
@@ -120,9 +122,9 @@ HRESULT CEffect_Player_Revive::Render(RENDER_GROUP::Enum eGroup)
 		m_pModelCom->Set_Variable("g_fTime", &m_fModel_Time, sizeof(_float));
 		m_pModelCom->Set_Variable("g_vTextureUV_LTRB", &vUV, sizeof(_float4));
 		m_pModelCom->Set_Variable("g_vParticleSize", &m_vSize, sizeof(_float2));
-		m_pModelCom->Set_ShaderResourceView("g_MaskingTexture", m_pTexturesCom->Get_ShaderResourceView(0));
+		m_pModelCom->Set_ShaderResourceView("g_MaskingTexture", m_pTexturesCom_Masking->Get_ShaderResourceView(0));
 		m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-		m_pModelCom->Render_Model_VERTEX(11);
+		m_pModelCom->Render_Model(11);
 	}
 
 	return S_OK;
@@ -330,6 +332,7 @@ CGameObject * CEffect_Player_Revive::Clone_GameObject(void * pArg)
 void CEffect_Player_Revive::Free()
 {
 	Safe_Delete_Array(m_pInstance_TargetPos);
+	Safe_Release(m_pTexturesCom_Masking);
 
 	__super::Free();
 }

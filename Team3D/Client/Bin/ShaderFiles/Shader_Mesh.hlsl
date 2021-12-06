@@ -23,9 +23,9 @@ cbuffer Mesh_EffectDesc
 	float			g_fTime;
 	float2			g_vParticleSize;
 	float3			g_vDir;
-	float3			g_vDir_Array[256];
+	//float3			g_vDir_Array[256];
 	float4			g_vPos;
-	float4			g_vPos_Array[256];
+	//float4			g_vPos_Array[256];
 	float4			g_vTextureUV_LTRB;
 };
 ////////////////////////////////////////////////////////////
@@ -306,7 +306,7 @@ struct GS_OUT_DOUBLE_UV
 	float4 vWorldPosition	: TEXCOORD3;
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 };
-[maxvertexcount(12)]//// point로 그리고 있음
+[maxvertexcount(12)]//// point
 void GS_MAIN_POINT(point GS_IN In[1], inout TriangleStream<GS_OUT_DOUBLE_UV> TriStream)
 {
 	GS_OUT_DOUBLE_UV Out[8];
@@ -412,6 +412,61 @@ void GS_MAIN_POINT(point GS_IN In[1], inout TriangleStream<GS_OUT_DOUBLE_UV> Tri
 	TriStream.Append(Out[6]);
 	TriStream.Append(Out[7]);
 }
+
+[maxvertexcount(12)]//// triangle
+void GS_MAIN_ASH_DISSOLVE(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
+{
+	GS_OUT Out = (GS_OUT)0;
+	float4 vTexture = g_MaskingTexture.Load(int2(0, 1));
+	float3 vDir = normalize(In[0].vNormal + In[1].vNormal + In[2].vNormal);
+
+	/* Main Viewport */
+	if (g_iViewportDrawInfo & 1)
+	{
+		for (uint i = 0; i < 3; i++)
+		{
+			matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
+
+			//Out.vPosition.xyz += In[i].vNormal * g_fTime * 5.f;
+			In[i].vPosition.xyz += g_fTime * (vTexture.r * 5.f);
+			Out.vPosition = mul(In[i].vPosition, matVP);
+
+			Out.vNormal = In[i].vNormal;
+			Out.vTangent = In[i].vTangent;
+			Out.vBiNormal = In[i].vBiNormal;
+			Out.vTexUV = In[i].vTexUV;
+			Out.vProjPosition = Out.vPosition;
+			Out.vWorldPosition = In[i].vPosition;
+			Out.iViewportIndex = 1;
+
+			TriStream.Append(Out);
+		}
+		TriStream.RestartStrip();
+	}
+
+	if (g_iViewportDrawInfo & 2)
+	{
+		/* Sub Viewport */
+		for (uint j = 0; j < 3; j++)
+		{
+			matrix matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+
+			Out.vPosition.xyz += vDir * g_fTime;
+			Out.vPosition = mul(In[j].vPosition, matVP);
+			Out.vNormal = In[j].vNormal;
+			Out.vTangent = In[j].vTangent;
+			Out.vBiNormal = In[j].vBiNormal;
+			Out.vTexUV = In[j].vTexUV;
+			Out.vProjPosition = Out.vPosition;
+			Out.vWorldPosition = In[j].vPosition;
+			Out.iViewportIndex = 2;
+
+			TriStream.Append(Out);
+		}
+		TriStream.RestartStrip();
+	}
+}
+
 /* ________________________________________________________________________________*/
 
 ////////////////////////////////////////////////////////////
@@ -711,7 +766,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_EFFECT_MASKING();
 	}
 
-	pass Skinned_PointDraw_InstancePoint // 9
+	pass Skinned_PointDraw_InstancePoint // 10
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_Default, 0);
@@ -721,13 +776,13 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_EFFECT_MASKING();
 	}
 
-	pass Skinned_PointDraw_NORMAL // 10
+	pass Skinned_PointDraw_NORMAL // 11
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_MAIN_EFFECT_NORMAL();
-		GeometryShader = compile gs_5_0 GS_MAIN_POINT();
-		PixelShader = compile ps_5_0 PS_EFFECT_MASKING();
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN_ASH_DISSOLVE();
+		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 };

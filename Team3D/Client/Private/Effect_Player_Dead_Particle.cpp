@@ -117,7 +117,7 @@ HRESULT CEffect_Player_Dead_Particle::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pModelCom->Set_ShaderResourceView("g_MaskingTexture", m_pTexturesCom_Particle_Mask->Get_ShaderResourceView(0));
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Render_Model_VERTEX(10);
+	m_pModelCom->Render_Model_VERTEX(10, nullptr);
 
 	return S_OK;
 }
