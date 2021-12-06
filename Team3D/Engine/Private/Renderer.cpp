@@ -60,8 +60,8 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_PostFX"), TEXT("MRT_PostFX")), E_FAIL);
 
 	/* MRT_Effect */
-	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect"), TEXT("MRT_Effect")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect"), TEXT("MRT_Effect")), E_FAIL);
 
 	/* MRT_Effect_Mesh_Masking */
 // 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect_Mask_Diffuse"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
@@ -90,6 +90,7 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_CascadedShadow_Depth"), fWidth * 2.f, 0.f, fWidth, fHeight * MAX_CASCADES), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_PostFX"), fWidth * 3.f, 0.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Effect"), fWidth * 3.f, fHeight, fWidth, fHeight), E_FAIL);
 #endif
 
 	return S_OK;
@@ -198,7 +199,7 @@ HRESULT CRenderer::Render_Alpha()
 
 HRESULT CRenderer::Render_Effect_Mesh_Masking()
 {
-	Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING]);
+	//Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING]);
 
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING])
 	{
@@ -212,14 +213,15 @@ HRESULT CRenderer::Render_Effect_Mesh_Masking()
 
 HRESULT CRenderer::Render_Effect()
 {
-	Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_EFFECT]);
-
+	//Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_EFFECT]);
+	//m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Effect"));
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_EFFECT])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_EFFECT), E_FAIL);
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_GROUP::RENDER_EFFECT].clear();
+	//m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Effect"));
 
 	return S_OK;
 }
