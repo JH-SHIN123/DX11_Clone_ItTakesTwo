@@ -83,9 +83,7 @@ void CRotationFan::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGam
 
 	/* Cody */
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-	{
-		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eROTATIONFAN, true, this);
-	}
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eROTATIONFAN, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 }
 
 HRESULT CRotationFan::Ready_Component(void * pArg)

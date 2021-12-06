@@ -23,10 +23,15 @@ HRESULT CEjectionButton::NativeConstruct(void * pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
 
-	m_UserData.eID = GameID::eELECTRICBOX;
+	m_UserData.eID = GameID::eEJECTIONBUTTON;
 	m_UserData.pGameObject = this;
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
+
+	m_fResetY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_fMaxY = m_fResetY - 0.02f;
+
+	m_pTransformCom->Set_Speed(1.f, 0.f);
 
 	return S_OK;
 }
@@ -35,12 +40,53 @@ _int CEjectionButton::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
+	if (true == m_bCollision)
+	{
+		if (false == m_bLimit)
+		{
+			_float fDist = (_float)dTimeDelta;
+
+			m_fDistance += fDist;
+
+			m_pTransformCom->Go_Down(dTimeDelta);
+
+			if (0.02f <= m_fDistance)
+			{
+				_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_fMaxY));
+				m_bLimit = true;
+				m_fDistance = 0.f;
+			}
+		}
+	}
+	else
+	{
+		if (m_fResetY > XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
+		{
+			_float fDist = (_float)dTimeDelta;
+
+			m_fDistance += fDist;
+
+			m_pTransformCom->Go_Up(dTimeDelta);
+
+			if (m_fResetY <= XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
+			{
+				_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_fResetY));
+				m_bLimit = false;
+				m_fDistance = 0.f;
+			}
+		}
+	}
+
 	return NO_EVENT;
 }
 
 _int CEjectionButton::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
+
+	m_pStaticActorCom->Update_StaticActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -74,17 +120,17 @@ HRESULT CEjectionButton::Render_ShadowDepth()
 void CEjectionButton::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
-
-	/* Cody */
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-	{
-		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eELECTRICBOX, true, this);
-	}
 }
 
 void CEjectionButton::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	CDynamic_Env::OnContact(eStatus, eID, pGameObject);
+
+	/* Cody */
+	if (eStatus == ContactStatus::eFOUND && eID == GameID::Enum::eCODY)
+		m_bCollision = true;
+	else if (eStatus == ContactStatus::eLOST && eID == GameID::Enum::eCODY)
+		m_bCollision = false;
 }
 
 HRESULT CEjectionButton::Ready_Component(void * pArg)

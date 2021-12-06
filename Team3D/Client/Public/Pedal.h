@@ -22,6 +22,7 @@ public:
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
+	CTriggerActor*	m_pTriggerActorCom = nullptr;
 
 	_bool			m_bSmash = false;
 

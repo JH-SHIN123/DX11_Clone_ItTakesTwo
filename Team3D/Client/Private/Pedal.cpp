@@ -37,7 +37,6 @@ _int CPedal::Tick(_double dTimeDelta)
 	CDynamic_Env::Tick(dTimeDelta);
 
 	Movement(dTimeDelta);
-	m_pStaticActorCom->Update_StaticActor();
 
 	return NO_EVENT;
 }
@@ -45,6 +44,9 @@ _int CPedal::Tick(_double dTimeDelta)
 _int CPedal::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
+
+	m_pStaticActorCom->Update_StaticActor();
+	m_pTriggerActorCom->Update_TriggerActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -126,6 +128,16 @@ HRESULT CPedal::Ready_Component(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
 
+	/* Trigger */
+	PxGeometry* TriggerGeom = new PxBoxGeometry(0.05f, 0.01f, 0.05f);
+	CTriggerActor::ARG_DESC tTriggerArgDesc;
+	tTriggerArgDesc.pGeometry = TriggerGeom;
+	tTriggerArgDesc.pTransform = m_pTransformCom;
+	tTriggerArgDesc.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
+	Safe_Delete(TriggerGeom);
+
 	return S_OK;
 }
 
@@ -155,6 +167,7 @@ CGameObject * CPedal::Clone_GameObject(void * pArg)
 
 void CPedal::Free()
 {
+	Safe_Release(m_pTriggerActorCom);
 	Safe_Release(m_pStaticActorCom);
 
 	CDynamic_Env::Free();

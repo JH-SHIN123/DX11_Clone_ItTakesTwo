@@ -17,12 +17,12 @@ public:
 	/* 프로토타입 생성 */
 	/* TXT 파일 로드 */
 	HRESULT Load_Prototype_Model_Instancing_TXT();
-	HRESULT Load_Prototype_Model_Others_TXT(_tchar* pFilePath);
+	//HRESULT Load_Prototype_Model_Others_TXT(_tchar* pFilePath);
 	HRESULT Load_Prototype_GameObject_TXT();
 	/* DAT 파일 로드 */
-	HRESULT Load_Prototype_Model_Instancing();
-	HRESULT Load_Prototype_Model_Others(_tchar* pFilePath);
-	HRESULT Load_Prototype_GameObject();
+	//HRESULT Load_Prototype_Model_Instancing();
+	//HRESULT Load_Prototype_Model_Others(_tchar* pFilePath);
+	//HRESULT Load_Prototype_GameObject();
 	/* 인덱스 로드 */
 	HRESULT Load_Prototype_Model_Others_Space(_uint iIndex);
 

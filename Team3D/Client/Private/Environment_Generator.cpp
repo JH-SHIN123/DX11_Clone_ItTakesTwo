@@ -28,6 +28,7 @@
 #include "RotationBox.h"
 #include "ElectricBox.h"
 #include "ElectricWall.h"
+#include "EjectionButton.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -77,49 +78,49 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_Instancing_TXT()
 	return S_OK;
 }
 
-HRESULT CEnvironment_Generator::Load_Prototype_Model_Others_TXT(_tchar * pFilePath)
-{
-#ifndef __MAPLOADING_OFF
-
-	/* 모델 프로토타입 생성 */
-	_tchar		szLevelIndex[MAX_PATH] = L"";
-	_tchar		szPrototypeTag[MAX_PATH] = L"";
-	_tchar		szFolderName[MAX_PATH] = L"";
-	_tchar		szNumMaterial[MAX_PATH] = L"";
-	_uint		iNumMaterial = 1;
-	_uint		iLevelIndex = 0;;
-
-	char pFileName[MAX_PATH];
-	WideCharToMultiByte(CP_ACP, 0, pFilePath, MAX_PATH, pFileName, MAX_PATH, 0, 0);
-
-	wifstream fin;
-	fin.open(pFileName);
-
-	if (!fin.fail())
-	{
-		while (true)
-		{
-			fin.getline(szLevelIndex, MAX_PATH, L'|');
-			fin.getline(szPrototypeTag, MAX_PATH, L'|');
-			fin.getline(szFolderName, MAX_PATH, L'|'); 
-			fin.getline(szNumMaterial, MAX_PATH);
-
-			iLevelIndex = _ttoi(szLevelIndex);
-			iNumMaterial = _ttoi(szNumMaterial);
-
-			_matrix PivotMatrix = Set_Model_PivotMatrix(szPrototypeTag);
-			//_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
-			FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
-
-			if (fin.eof())
-				break;
-		}
-	}
-	fin.close();
-
-#endif //__MAPLOADING_OFF
-	return S_OK;
-}
+//HRESULT CEnvironment_Generator::Load_Prototype_Model_Others_TXT(_tchar * pFilePath)
+//{
+//#ifndef __MAPLOADING_OFF
+//
+//	/* 모델 프로토타입 생성 */
+//	_tchar		szLevelIndex[MAX_PATH] = L"";
+//	_tchar		szPrototypeTag[MAX_PATH] = L"";
+//	_tchar		szFolderName[MAX_PATH] = L"";
+//	_tchar		szNumMaterial[MAX_PATH] = L"";
+//	_uint		iNumMaterial = 1;
+//	_uint		iLevelIndex = 0;;
+//
+//	char pFileName[MAX_PATH];
+//	WideCharToMultiByte(CP_ACP, 0, pFilePath, MAX_PATH, pFileName, MAX_PATH, 0, 0);
+//
+//	wifstream fin;
+//	fin.open(pFileName);
+//
+//	if (!fin.fail())
+//	{
+//		while (true)
+//		{
+//			fin.getline(szLevelIndex, MAX_PATH, L'|');
+//			fin.getline(szPrototypeTag, MAX_PATH, L'|');
+//			fin.getline(szFolderName, MAX_PATH, L'|'); 
+//			fin.getline(szNumMaterial, MAX_PATH);
+//
+//			iLevelIndex = _ttoi(szLevelIndex);
+//			iNumMaterial = _ttoi(szNumMaterial);
+//
+//			_matrix PivotMatrix = Set_Model_PivotMatrix(szPrototypeTag);
+//			//_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+//			FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
+//
+//			if (fin.eof())
+//				break;
+//		}
+//	}
+//	fin.close();
+//
+//#endif //__MAPLOADING_OFF
+//	return S_OK;
+//}
 
 HRESULT CEnvironment_Generator::Load_Prototype_GameObject_TXT()
 {
@@ -159,96 +160,96 @@ HRESULT CEnvironment_Generator::Load_Prototype_GameObject_TXT()
 	return S_OK;
 }
 
-HRESULT CEnvironment_Generator::Load_Prototype_Model_Instancing()
-{
-	/* 인스턴싱 모델 프로토타입 생성 */
-	DWORD		dwByte;
-	_uint		iLevelIndex = 1;
-	_tchar		szPrototypeTag[MAX_PATH] = L"";
-	_tchar		szFilePath[MAX_PATH] = L"";
-	_tchar		szFolderName[MAX_PATH] = L"";
-	_uint		iNumMaterial = 1;
-
-	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/PrototypeData/Model_Instancing.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-	if (INVALID_HANDLE_VALUE == hFile)
-		return E_FAIL;
-
-	while (true)
-	{
-		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
-		ReadFile(hFile, szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
-		ReadFile(hFile, szFolderName, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
-		ReadFile(hFile, &iNumMaterial, sizeof(_uint), &dwByte, nullptr);
-
-		if (0 == dwByte)
-			break;
-
-		_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel_Instance::Create(m_pDevice, m_pDeviceContext, 1000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
-	}
-	CloseHandle(hFile);
-
-	return S_OK;
-}
-
-HRESULT CEnvironment_Generator::Load_Prototype_Model_Others(_tchar * pFilePath)
-{
-	/* 모델 프로토타입 생성 */
-	DWORD		dwByte;
-	_uint		iLevelIndex = 1;
-	_tchar		szPrototypeTag[MAX_PATH] = L"";
-	_tchar		szFolderName[MAX_PATH] = L"";
-	_uint		iNumMaterial = 1;
-
-	HANDLE hFile = CreateFile(pFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-	if (INVALID_HANDLE_VALUE == hFile)
-		return E_FAIL;
-
-	while (true)
-	{
-		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
-		ReadFile(hFile, szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
-		ReadFile(hFile, szFolderName, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
-		ReadFile(hFile, &iNumMaterial, sizeof(_uint), &dwByte, nullptr);
-
-		if (0 == dwByte)
-			break;
-
-		_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
-	}
-	CloseHandle(hFile);
-	return S_OK;
-}
-
-HRESULT CEnvironment_Generator::Load_Prototype_GameObject()
-{
-	/* 객체 프로토타입 생성 */
-	FAILED_CHECK_RETURN(Load_Default_Prototype_GameObject(), E_FAIL);
-
-	DWORD		dwByte;
-	_uint		iLevelIndex = 1;
-	_tchar		szPrototypeTag[MAX_PATH] = L"";
-	_tchar		szModelTag[MAX_PATH] = L"";
-
-	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/PrototypeData/Object.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-	if (INVALID_HANDLE_VALUE == hFile)
-		return E_FAIL;
-
-	while (true)
-	{
-		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
-		ReadFile(hFile, szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
-		ReadFile(hFile, szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
-
-		if (0 == dwByte)
-			break;
-
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, szPrototypeTag, Create_Class(szPrototypeTag, m_pDevice, m_pDeviceContext)), E_FAIL);
-	}
-	CloseHandle(hFile);
-	return S_OK;
-}
+//HRESULT CEnvironment_Generator::Load_Prototype_Model_Instancing()
+//{
+//	/* 인스턴싱 모델 프로토타입 생성 */
+//	DWORD		dwByte;
+//	_uint		iLevelIndex = 1;
+//	_tchar		szPrototypeTag[MAX_PATH] = L"";
+//	_tchar		szFilePath[MAX_PATH] = L"";
+//	_tchar		szFolderName[MAX_PATH] = L"";
+//	_uint		iNumMaterial = 1;
+//
+//	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/PrototypeData/Model_Instancing.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+//	if (INVALID_HANDLE_VALUE == hFile)
+//		return E_FAIL;
+//
+//	while (true)
+//	{
+//		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+//		ReadFile(hFile, szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+//		ReadFile(hFile, szFolderName, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+//		ReadFile(hFile, &iNumMaterial, sizeof(_uint), &dwByte, nullptr);
+//
+//		if (0 == dwByte)
+//			break;
+//
+//		_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+//		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel_Instance::Create(m_pDevice, m_pDeviceContext, 1000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
+//	}
+//	CloseHandle(hFile);
+//
+//	return S_OK;
+//}
+//
+//HRESULT CEnvironment_Generator::Load_Prototype_Model_Others(_tchar * pFilePath)
+//{
+//	/* 모델 프로토타입 생성 */
+//	DWORD		dwByte;
+//	_uint		iLevelIndex = 1;
+//	_tchar		szPrototypeTag[MAX_PATH] = L"";
+//	_tchar		szFolderName[MAX_PATH] = L"";
+//	_uint		iNumMaterial = 1;
+//
+//	HANDLE hFile = CreateFile(pFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+//	if (INVALID_HANDLE_VALUE == hFile)
+//		return E_FAIL;
+//
+//	while (true)
+//	{
+//		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+//		ReadFile(hFile, szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+//		ReadFile(hFile, szFolderName, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+//		ReadFile(hFile, &iNumMaterial, sizeof(_uint), &dwByte, nullptr);
+//
+//		if (0 == dwByte)
+//			break;
+//
+//		_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+//		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
+//	}
+//	CloseHandle(hFile);
+//	return S_OK;
+//}
+//
+//HRESULT CEnvironment_Generator::Load_Prototype_GameObject()
+//{
+//	/* 객체 프로토타입 생성 */
+//	FAILED_CHECK_RETURN(Load_Default_Prototype_GameObject(), E_FAIL);
+//
+//	DWORD		dwByte;
+//	_uint		iLevelIndex = 1;
+//	_tchar		szPrototypeTag[MAX_PATH] = L"";
+//	_tchar		szModelTag[MAX_PATH] = L"";
+//
+//	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/PrototypeData/Object.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+//	if (INVALID_HANDLE_VALUE == hFile)
+//		return E_FAIL;
+//
+//	while (true)
+//	{
+//		ReadFile(hFile, &iLevelIndex, sizeof(_uint), &dwByte, nullptr);
+//		ReadFile(hFile, szPrototypeTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+//		ReadFile(hFile, szModelTag, sizeof(_tchar) * MAX_PATH, &dwByte, nullptr);
+//
+//		if (0 == dwByte)
+//			break;
+//
+//		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, szPrototypeTag, Create_Class(szPrototypeTag, m_pDevice, m_pDeviceContext)), E_FAIL);
+//	}
+//	CloseHandle(hFile);
+//	return S_OK;
+//}
 
 HRESULT CEnvironment_Generator::Load_Prototype_Model_Others_Space(_uint iIndex)
 {
@@ -439,6 +440,12 @@ CGameObject * CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D1
 		pInstance = CElectricWall::Create(pDevice, pDeviceContext);
 		if (nullptr == pInstance)
 			MSG_BOX("Failed to Create Instance - ElectricWall");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_EjectionButton")))
+	{
+		pInstance = CEjectionButton::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - EjectionButton");
 	}
 	return pInstance;
 }
@@ -1175,7 +1182,7 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_ByIndex_Space(_uint iIndex)
 		if (iIndex == 200) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SplineMesh05"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SplineMesh05"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 201) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SplineMesh06"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SplineMesh06"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 202) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SplineMesh07"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SplineMesh07"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
-		else if (iIndex == 203) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SplineMesh08"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SplineMesh08"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 203) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SplineMesh08"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SplineMesh08"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
 		else if (iIndex == 204) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SplineMesh12"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SplineMesh12"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 205) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SplineMesh13"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SplineMesh13"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 206) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_StarBuddy"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("StarBuddy"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
@@ -1207,6 +1214,8 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_ByIndex_Space(_uint iIndex)
 		else if (iIndex == 232) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_SplineMesh02"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_SplineMesh02"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
 		else if (iIndex == 233) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_SplineMesh03"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_SplineMesh03"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
 		else if (iIndex == 234) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_RotationBox"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_RotationBox"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
+		else if (iIndex == 235) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_BigCody_JumpButton_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("BigCody_JumpButton_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
+		else if (iIndex == 236) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_BigButton_Frame"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("BigButton_Frame"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
 	}
 
 	return S_OK;

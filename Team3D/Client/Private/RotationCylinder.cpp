@@ -28,7 +28,12 @@ HRESULT CRotationCylinder::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	m_pTransformCom->Set_Speed(1.f, 70.f);
+	if (0 == m_tDynamic_Env_Desc.iOption)
+		m_pTransformCom->Set_Speed(1.f, 70.f);
+	else if(1 == m_tDynamic_Env_Desc.iOption)
+		m_pTransformCom->Set_Speed(1.f, 90.f);
+	else
+		m_pTransformCom->Set_Speed(1.f, 50.f);
 
 	return S_OK;
 }

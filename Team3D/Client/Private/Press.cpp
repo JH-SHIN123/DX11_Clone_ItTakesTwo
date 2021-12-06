@@ -28,9 +28,6 @@ HRESULT CPress::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	//m_fOpenPos = XMVectorGetZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	//m_fClosePos = m_fOpenPos - XMVectorGetZ(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector vRight = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
 
@@ -87,15 +84,16 @@ HRESULT CPress::Render_ShadowDepth()
 	return S_OK;
 }
 
+void CPress::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+	/* Cody */
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && true == m_bSmash)
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePRESS, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+}
+
 void CPress::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	CDynamic_Env::OnContact(eStatus, eID, pGameObject);
-
-	/* Cody */
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && true == m_bSmash)
-	{
-		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::ePRESS, true, this);
-	}
 }
 
 void CPress::Movement(_double dTimeDelta)
@@ -130,37 +128,6 @@ void CPress::Open_Press(_double dTimeDelta)
 		_vector vOpenPos = XMVectorSetW(XMLoadFloat3(&m_vOpenPos), 1.f);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vOpenPos);
 	}
-
-	//m_dCoolTime += dTimeDelta;
-	//if (3.0 <= m_dCoolTime)
-	//{
-	//	m_dCoolTime = 0.0;
-	//	m_bSmash = true;
-	//	return;
-	//}
-
-	//m_pTransformCom->Go_Straight_NoneSpeed(dTimeDelta);
-
-	//if (0 > XMVectorGetZ(m_pTransformCom->Get_State(CTransform::STATE_LOOK)))
-	//{
-	//	if (m_fOpenPos >= XMVectorGetZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
-	//	{
-	//		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//		vPos = XMVectorSetZ(vPos, m_fOpenPos);
-
-	//		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-	//	}
-	//}
-	//else
-	//{
-	//	if (m_fOpenPos <= XMVectorGetZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
-	//	{
-	//		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//		vPos = XMVectorSetZ(vPos, m_fOpenPos);
-
-	//		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-	//	}
-	//}
 }
 
 void CPress::Close_Press(_double dTimeDelta)
@@ -189,37 +156,6 @@ void CPress::Close_Press(_double dTimeDelta)
 		_vector vClosePos = XMVectorSetW(XMLoadFloat3(&m_vClosePos), 1.f);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vClosePos);
 	}
-
-	//m_dCoolTime += dTimeDelta;
-	//if (5.0 <= m_dCoolTime)
-	//{
-	//	m_dCoolTime = 0.0;
-	//	m_bSmash = false;
-	//	return;
-	//}
-
-	//m_pTransformCom->Go_Straight_NoneSpeed(-(dTimeDelta * 5.f));
-
-	//if (0 < XMVectorGetZ(m_pTransformCom->Get_State(CTransform::STATE_LOOK)))
-	//{
-	//	if (m_fClosePos >= XMVectorGetZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
-	//	{
-	//		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//		vPos = XMVectorSetZ(vPos, m_fClosePos);
-
-	//		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-	//	}
-	//}
-	//else
-	//{
-	//	if (m_fClosePos <= XMVectorGetZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
-	//	{
-	//		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//		vPos = XMVectorSetZ(vPos, m_fClosePos);
-
-	//		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-	//	}
-	//}
 }
 
 HRESULT CPress::Ready_Component(void * pArg)
