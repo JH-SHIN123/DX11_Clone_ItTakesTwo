@@ -2275,20 +2275,27 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 	{
 		_float Gravity = -0.3f;
 
-		// ZY
+		if (m_faArmLength < 7.f)
+			m_faArmLength += dTimeDelta;
+		else if (m_faArmLength >= 7.f)
+			m_faArmLength -= dTimeDelta;
+
 		m_faAcceleration = (-1.f * Gravity / m_faArmLength) * sin(m_fRopeAngle);
+
 		if (m_pGameInstance->Key_Pressing(DIK_W))
 			m_faAcceleration += (_float)dTimeDelta;
 		if (m_pGameInstance->Key_Pressing(DIK_S))
 			m_faAcceleration -= (_float)dTimeDelta;
 		m_faVelocity += m_faAcceleration;
 		m_faVelocity *= m_faDamping;
-		m_fRopeAngle += m_faVelocity / 15.f;
+		m_fRopeAngle += m_faVelocity / 30.f;
 		
 
-			_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x -m_vStartPosition.x ) * sin(-m_fRopeAngle), 
-			(m_vTriggerTargetPos.y - m_vStartPosition.y) /**2.f*/ * cos(m_fRopeAngle)
-			, ((m_vTriggerTargetPos.z - m_vStartPosition.z) * sin(-m_fRopeAngle)), 0.f)/* + XMLoadFloat3(&m_vTriggerTargetPos)*/;
+			//_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x -m_vStartPosition.x ) * sin(-m_fRopeAngle), 
+			//(m_vTriggerTargetPos.y - m_vStartPosition.y) /**2.f*/ * cos(m_fRopeAngle)
+			//, ((m_vTriggerTargetPos.z - m_vStartPosition.z) * sin(-m_fRopeAngle)), 0.f)/* + XMLoadFloat3(&m_vTriggerTargetPos)*/;
+		_vector vPosition = XMVectorSet(m_faArmLength * sin(-m_fRopeAngle), m_faArmLength * cos(m_fRopeAngle), m_faArmLength * sin(-m_fRopeAngle), 0.f);
+
 		m_pActorCom->Set_Position(XMLoadFloat3(&m_vTriggerTargetPos) + vPosition);
 
 		_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION),0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
