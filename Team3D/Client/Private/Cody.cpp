@@ -380,12 +380,12 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Teleport
-	if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_F5))
-		DATABASE->Set_GravityStageClear(true);
-	if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_F6))
-		DATABASE->Set_RailStageClear(true);
-	if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_F7))
-		DATABASE->Set_PinBallStageClear(true);
+	//if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_F5))
+	//	DATABASE->Set_GravityStageClear(true);
+	//if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_F6))
+	//	DATABASE->Set_RailStageClear(true);
+	//if (m_pGameInstance->Key_Down(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_F7))
+	//	DATABASE->Set_PinBallStageClear(true);
 
 	if (m_pGameInstance->Key_Down(DIK_C)) /* 파이프 베터리 */
 		m_pActorCom->Set_Position(XMVectorSet(44.8652f, 220.9396f, 223.94134f, 1.f));

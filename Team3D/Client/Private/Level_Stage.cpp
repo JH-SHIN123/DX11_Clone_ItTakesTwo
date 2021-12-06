@@ -283,16 +283,16 @@ HRESULT CLevel_Stage::Ready_Lights()
 	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
 		return E_FAIL;
 
-	///* For. Point */
-	//LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	//LightDesc.vPosition = XMFLOAT3(20.f, 5.f, 20.f);
-	//LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	//LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-	//LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
-	//LightDesc.fRange = 15.f;
+	/* For. Point */
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = XMFLOAT3(60.f, 5.f, 15.f);
+	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+	LightDesc.fRange = 15.f;
 
-	//if (FAILED(pGameInstance->Add_Light(L"Point1", LightDesc)))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Light(L"Point1", LightDesc)))
+		return E_FAIL;
 
 	/* For. Spot  X */
 	//LightDesc.eType = LIGHT_DESC::TYPE_SPOT;
