@@ -31,12 +31,7 @@ HRESULT CRotatedRobotParts::NativeConstruct(void* pArg)
 	if (nullptr != pArg)
 		memcpy(&m_tRtRobotDesc, (RTROBOTDESC*)pArg, sizeof(RTROBOTDESC));
 	
-	switch (m_tRtRobotDesc.iStageNum)
-	{
-	case ST_PINBALL:
-		DATABASE->Set_STPinBallRobotPtr(this);
-		break;
-	}
+	DATABASE->Set_STPinBallRobotPtr(this);
 
 	CGameObject* pRobotBody = nullptr;
 	CGameObject* pRobotHead = nullptr;
