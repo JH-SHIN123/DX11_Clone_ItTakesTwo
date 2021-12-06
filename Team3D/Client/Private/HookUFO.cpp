@@ -36,12 +36,21 @@ HRESULT CHookUFO::NativeConstruct(void * pArg)
 		memcpy(&HookUFODesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, HookUFODesc.vPosition);
 
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform2"), (CComponent**)&m_pPhysxTransform, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
+
+	_matrix PhysxWorldMatrix = XMMatrixIdentity();
+	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans), XMVectorGetY(vTrans) - 10.f, XMVectorGetZ(vTrans));
+	m_pPhysxTransform->Set_WorldMatrix(PhysxWorldMatrix);	
+
+
 	CTriggerActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eHOOKUFO, this);
 	ArgDesc.pUserData = &m_UserData;
-	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = new PxSphereGeometry(15.f);
+	ArgDesc.pTransform = m_pPhysxTransform;
+	ArgDesc.pGeometry = new PxSphereGeometry(25.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
@@ -223,6 +232,7 @@ CGameObject * CHookUFO::Clone_GameObject(void * pArg)
 
 void CHookUFO::Free()
 {
+	Safe_Release(m_pPhysxTransform);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
