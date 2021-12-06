@@ -38,11 +38,18 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION,XMLoadFloat4(&vPos));
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(62.9901505f, 35.f, 195.674637f, 1.f));
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform2"), (CComponent**)&m_pPhysxTransformCom), E_FAIL);
-	m_pTransformCom->Set_Scale(XMVectorSet(2.85f, 2.85f, 2.85f, 1.f));
+
+	if (m_EffectDesc_Clone.iPlayerValue == 1)
+		m_pTransformCom->Set_Scale(XMVectorSet(2.5f, 2.85f, 2.5f, 1.f));
+
+
 
 	_matrix PhysxWorldMatrix = XMMatrixIdentity();
 	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	PhysxWorldMatrix = XMMatrixRotationZ(XMConvertToRadians(90.f)) * XMMatrixTranslation(XMVectorGetX(vTrans), XMVectorGetY(vTrans), XMVectorGetZ(vTrans));
+	if (m_EffectDesc_Clone.iPlayerValue == 1)
+		PhysxWorldMatrix = XMMatrixRotationZ(XMConvertToRadians(90.f)) * XMMatrixTranslation(XMVectorGetX(vTrans), XMVectorGetY(vTrans) - 2.f, XMVectorGetZ(vTrans) - 3.f);
+
 	m_pPhysxTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pPhysxTransformCom->Set_WorldMatrix(PhysxWorldMatrix);
 
@@ -62,6 +69,7 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 {
 
 	m_fTime += (_float)TimeDelta * 0.1f;
+
 
 	if (3.f <= m_fTime)
 		m_fTime = 0.f;

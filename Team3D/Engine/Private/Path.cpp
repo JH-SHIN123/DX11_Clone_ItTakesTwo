@@ -12,7 +12,8 @@ CPath::CPath(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 CPath::CPath(const CPath& rhs)
 	: CComponent(rhs),
 	m_pPathAnim(rhs.m_pPathAnim),
-	m_AnimTransformations(rhs.m_AnimTransformations),
+	m_CurAnimTransformations(rhs.m_CurAnimTransformations),
+	m_NextAnimTransformations(rhs.m_NextAnimTransformations),
 	m_dDurationTime(rhs.m_dDurationTime),
 	m_PivotMatrix(rhs.m_PivotMatrix)
 {
@@ -71,8 +72,12 @@ HRESULT CPath::NativeConstruct_Prototype(const _tchar* pFilePath, const _tchar* 
 	m_dDurationTime = m_pPathAnim->Get_Duration();
 
 	/* Init Channel's Transformations Identity */
-	m_AnimTransformations.resize(m_pPathAnim->Get_ChannelCount());
-	for (auto& pAnimTransfomation : m_AnimTransformations)
+	m_CurAnimTransformations.resize(m_pPathAnim->Get_ChannelCount());
+	for (auto& pAnimTransfomation : m_CurAnimTransformations)
+		pAnimTransfomation = MH_XMFloat4x4Identity();
+
+	m_NextAnimTransformations.resize(m_pPathAnim->Get_ChannelCount());
+	for (auto& pAnimTransfomation : m_NextAnimTransformations)
 		pAnimTransfomation = MH_XMFloat4x4Identity();
 
 	return S_OK;
@@ -88,8 +93,10 @@ HRESULT CPath::NativeConstruct(void* pArg)
 	return S_OK;
 }
 
-HRESULT CPath::Start_Path(STATE eState, _uint iAnimFrame)
+HRESULT CPath::Start_Path(STATE eState, _uint iAnimFrame, _bool bStop)
 {
+	if (bStop) m_bPlayAnimation = false;
+
 	if (m_bPlayAnimation) return S_OK;
 	NULL_CHECK_RETURN(m_pPathAnim, E_FAIL);
 
@@ -122,13 +129,17 @@ _bool CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
 	}
 
 	/* Update_AnimTransformations */
-	Update_AnimTransformations();
+	_bool isFrameChange = Update_AnimTransformations();
+
+	/* 보간 비율 조정 */
+	m_fLerpRatio += (_float)(fmod(dTicksPerSecond * dTimeDelta, m_dDurationTime));
+	if (m_fLerpRatio >= 1.f) m_fLerpRatio = 1.f;
 
 	/* Update_CombinedTransformations */
 	WorldMatrix = Update_CombinedTransformations();
+	if (isFrameChange) m_fLerpRatio = 0.f;
 
 	/* Update Progress */
-
 	if (STATE_FORWARD == m_eState)
 		m_fProgressAnim = _float(m_dCurrentTime / m_dDurationTime);
 	else if (STATE_BACKWARD == m_eState)
@@ -137,28 +148,37 @@ _bool CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
 	return true;
 }
 
-HRESULT CPath::Update_AnimTransformations()
+_bool CPath::Update_AnimTransformations()
 {
-	NULL_CHECK_RETURN(m_pPathAnim, E_FAIL);
+	NULL_CHECK_RETURN(m_pPathAnim, false);
+
+	_uint iNextAnimFrame = m_iCurAnimFrame;
+	_bool isFrameChange = false;
 
 	switch (m_eState)
 	{
 	case Engine::CPath::STATE_FORWARD:
-		m_pPathAnim->Update_PathTransformation(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations);;
+		iNextAnimFrame += 1;
+		isFrameChange = m_pPathAnim->Update_PathTransformation(m_dCurrentTime, m_iCurAnimFrame, m_CurAnimTransformations);
+		m_pPathAnim->Update_PathTransformation(m_dCurrentTime, iNextAnimFrame, m_NextAnimTransformations);
 		break;
 	case Engine::CPath::STATE_BACKWARD:
-		m_pPathAnim->Update_RewindPathTransformation(m_dCurrentTime, m_iCurAnimFrame, m_AnimTransformations);
+		iNextAnimFrame -= 1;
+		isFrameChange = m_pPathAnim->Update_RewindPathTransformation(m_dCurrentTime, m_iCurAnimFrame, m_CurAnimTransformations);
+		m_pPathAnim->Update_RewindPathTransformation(m_dCurrentTime, iNextAnimFrame, m_NextAnimTransformations);
 		break;
 	}
 
-	return S_OK;
+	return isFrameChange;
 }
 
 _fmatrix CPath::Update_CombinedTransformations()
 {
+	_matrix CurFinalTransformMatrix, NextFinalTransformMatrix, BlendFinalTransformMatrix;
+
 	/* Rotation */
-	_float3 fRotateAngle = MH_GetRoatationAnglesToMatrix(m_AnimTransformations[CHANNEL_ROTATION]);
-	
+	_float3 fRotateAngle = MH_GetRoatationAnglesToMatrix(m_CurAnimTransformations[CHANNEL_ROTATION]);
+
 	/* Pitch */
 	_matrix RotateMatrix = XMMatrixRotationX((fRotateAngle.x));
 	/* Yaw */
@@ -167,7 +187,22 @@ _fmatrix CPath::Update_CombinedTransformations()
 	/* Roll */
 	RotateMatrix *= XMMatrixRotationZ((fRotateAngle.y));
 
-	return MH_RemoveScale(RotateMatrix * XMLoadFloat4x4(&m_AnimTransformations[CHANNEL_TRANSLATION]) * XMLoadFloat4x4(&m_PivotMatrix) * XMLoadFloat4x4(&m_tDesc.WorldMatrix));
+	CurFinalTransformMatrix = MH_RemoveScale(RotateMatrix * XMLoadFloat4x4(&m_CurAnimTransformations[CHANNEL_TRANSLATION]) * XMLoadFloat4x4(&m_PivotMatrix) * XMLoadFloat4x4(&m_tDesc.WorldMatrix));
+
+	/* Rotation */
+	fRotateAngle = MH_GetRoatationAnglesToMatrix(m_NextAnimTransformations[CHANNEL_ROTATION]);
+
+	/* Pitch */
+	RotateMatrix = XMMatrixRotationX((fRotateAngle.x));
+	/* Yaw */
+	if (STATE_FORWARD == m_eState) RotateMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f) - fRotateAngle.z);
+	else RotateMatrix *= XMMatrixRotationY(-fRotateAngle.z + XMConvertToRadians(90.f) + XMConvertToRadians(180.f));
+	/* Roll */
+	RotateMatrix *= XMMatrixRotationZ((fRotateAngle.y));
+
+	NextFinalTransformMatrix = MH_RemoveScale(RotateMatrix * XMLoadFloat4x4(&m_NextAnimTransformations[CHANNEL_TRANSLATION]) * XMLoadFloat4x4(&m_PivotMatrix) * XMLoadFloat4x4(&m_tDesc.WorldMatrix));
+
+	return CurFinalTransformMatrix * (1.f - m_fLerpRatio) + NextFinalTransformMatrix * m_fLerpRatio;
 }
 
 CPath* CPath::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pFilePath, const _tchar* pPathTag, _fmatrix PivotMatrix)

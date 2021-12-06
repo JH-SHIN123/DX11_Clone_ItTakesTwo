@@ -81,7 +81,7 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Pad_Key_Down(DIK_INSERT)) // 보험
+	if (m_pGameInstance->Key_Down(DIK_INSERT)) // 보험
 		m_pSpaceValve_Star->Set_Clear_Level(true);
 
 	if(DATABASE->Get_PinBallStageClear() && DATABASE->Get_GravityStageClear() && DATABASE->Get_RailStageClear())
@@ -96,9 +96,9 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 			// 키보드 화살표 UI 생성.
 		}
 	}
-	else if (m_iTargetPlayer == GameID::eMAY)
+	if (m_iTargetPlayer == GameID::eMAY)
 	{
-		if (m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
+		if (m_pGameInstance->Pad_Key_Down(DIP_Y) && m_IsCollide)
 		{
 			UI_Delete(May, InputButton_InterActive);
 			m_bEnterValve = true;
@@ -211,7 +211,7 @@ void CSpaceValve::Rotate_SpaceValve(_double dTimeDelta)
 
 	else if (m_iTargetPlayer == GameID::eMAY)
 	{
-		if (m_pGameInstance->Key_Down(DIK_RIGHT) && m_bRotate == false && m_iRotateCount < 3)
+		if (m_pGameInstance->Pad_Key_Down(DIP_RB) && m_bRotate == false && m_iRotateCount < 3)
 		{
 			m_iRotateCount += 1;
 			m_bRotate = true;

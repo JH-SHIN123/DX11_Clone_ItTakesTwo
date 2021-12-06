@@ -640,6 +640,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeJumpWall">
       <UniqueIdentifier>{d5687656-84bb-46bc-8419-3b919ca77782}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96.Debug">
+      <UniqueIdentifier>{7904050b-bece-47ac-9d69-2652f5e7bc09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1131,6 +1134,9 @@
     <ClInclude Include="..\Public\PipeJumpWall.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeJumpWall</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\GameDebugger.h">
+      <Filter>96.Debug</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1601,6 +1607,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\PipeJumpWall.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeJumpWall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameDebugger.cpp">
+      <Filter>96.Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

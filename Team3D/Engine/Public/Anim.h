@@ -33,8 +33,8 @@ public:
 	HRESULT Update_Transformations_Blend(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations, vector<KEY_FRAME>& PreAnimKeyFrames, _float fLerpRatio);
 
 public:
-	HRESULT	Update_PathTransformation(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations, _uint iFrameInteract = 1);
-	HRESULT	Update_RewindPathTransformation(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations, _uint iFrameInteract = 1);
+	_bool	Update_PathTransformation(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations, _uint iFrameInteract = 1);
+	_bool	Update_RewindPathTransformation(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations, _uint iFrameInteract = 1);
 
 private: /* Typedef */
 	typedef vector<class CAnimChannel*>	CHANNELS;

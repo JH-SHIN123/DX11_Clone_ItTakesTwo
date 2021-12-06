@@ -65,6 +65,11 @@ void CDynamic_Env::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameO
 	CGameObject::Trigger(eStatus, eID, pGameObject);
 }
 
+void CDynamic_Env::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+	CGameObject::OnContact(eStatus, eID, pGameObject);
+}
+
 HRESULT CDynamic_Env::Ready_Component(void * pArg)
 {
 	if (nullptr != pArg)

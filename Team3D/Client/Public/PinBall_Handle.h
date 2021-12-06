@@ -9,17 +9,18 @@ private:
 	explicit CPinBall_Handle(const CPinBall_Handle& rhs);
 	virtual ~CPinBall_Handle() = default;
 
-public:
+public:/* Getter */
 	_bool Get_RespawnAngle() { return m_bRespawnAngle; }
-	_bool Get_RespawnPos() { return m_bRespawnPos; }
-	_bool Get_Ready() { return m_bReady; }
+	_bool Get_RespawnPos()	 { return m_bRespawnPos; }
+	_bool Get_Ready()		 { return m_bReady; }
+	_bool Get_Goal()		 { return m_bGoal; }
 
-public:
-	void Set_PlayerMove(_bool _bPlayerMove) { m_bPlayerMove = _bPlayerMove; }
+public:/* Setter */
+	void Set_PlayerMove(_bool _bPlayerMove)		{ m_bPlayerMove = _bPlayerMove; }
 	void Set_RespawnAngle(_bool _bRespawnAngle) { m_bRespawnAngle = _bRespawnAngle; }
-	void Set_RespawnPos(_bool _bRespawnPos) { m_bRespawnPos = _bRespawnPos; }
-	void Set_Ready(_bool _bReady) { m_bReady = _bReady; }
-	void Set_Goal() { m_bGoal = true; }
+	void Set_RespawnPos(_bool _bRespawnPos)		{ m_bRespawnPos = _bRespawnPos; }
+	void Set_Ready(_bool _bReady)				{ m_bReady = _bReady; }
+	void Set_Goal()								{ m_bGoal = true; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -43,11 +44,10 @@ private:
 	_bool			m_bRespawnAngle = false;
 	_bool			m_bRespawnPos = false;
 	_bool			m_bFinish = false;
-
 	_bool			m_bGoal = false;
 	_bool			m_bGoalTimeCheck = false;
-	_float			m_fGoalTime = 0.f;
 
+	_float			m_fGoalTime = 0.f;
 	_float			m_fReady = 0.f;
 	_float			m_fHandleAngle = 0.f;
 	_float			m_fRespawnPosX = 0.f;
@@ -58,9 +58,12 @@ private:
 	void Respawn_Angle(_double dTimeDelta);
 	void Respawn_Pos(_double dTimeDelta);
 
+private:
+	HRESULT Ready_Component(void* pArg);
+
 public:
-	static CPinBall_Handle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	virtual CGameObject* Clone_GameObject(void* pArg) override;
-	virtual void Free() override;
+	static	CPinBall_Handle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CGameObject*	 Clone_GameObject(void* pArg) override;
+	virtual void			 Free() override;
 };
 END
