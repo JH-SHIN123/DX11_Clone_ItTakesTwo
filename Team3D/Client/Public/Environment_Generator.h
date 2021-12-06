@@ -23,6 +23,8 @@ public:
 	HRESULT Load_Prototype_Model_Instancing();
 	HRESULT Load_Prototype_Model_Others(_tchar* pFilePath);
 	HRESULT Load_Prototype_GameObject();
+	/* 인덱스 로드 */
+	HRESULT Load_Prototype_Model_Others_Space(_uint iIndex);
 
 	/* 클론 생성 */
 	HRESULT Load_Stage_Space();
@@ -34,6 +36,7 @@ private:
 	ID3D11Device*				m_pDevice = nullptr;
 	ID3D11DeviceContext*		m_pDeviceContext = nullptr;
 	CGameInstance*				m_pGameInstance = nullptr;
+	_float4x4					m_PivotMatrix;
 
 private:
 	CGameObject* Create_Class(_tchar* pPrototypeTag, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -48,6 +51,8 @@ private:
 	HRESULT Load_Environment_Interactive_Instancing();
 	HRESULT Load_Environment_SpaceRail();
 	HRESULT Load_Environment_Trigger();
+	/* 인덱스 로드 */
+	HRESULT Load_Prototype_Model_ByIndex_Space(_uint iIndex);
 
 public:
 	virtual void Free() override;

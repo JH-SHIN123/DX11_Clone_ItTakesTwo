@@ -71,16 +71,6 @@ HRESULT CEffect_Player_Dead::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	m_pPointInstanceCom->Render(1, m_pInstanceBuffer, 1);
 
-	// 나머지 파티클
-	//g_vColorRamp_UV
-	//_float4 vUV = { 0.f,0.f,1.f,1.f };
-	//m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vUV, sizeof(_float4));
-	//m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Particle_Mask->Get_ShaderResourceView(0));
-	//m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Particle->Get_ShaderResourceView(0));
-	//
-	//m_pPointInstanceCom->Render(4, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount - 1, 1);
-
-
 	return S_OK;
 }
 

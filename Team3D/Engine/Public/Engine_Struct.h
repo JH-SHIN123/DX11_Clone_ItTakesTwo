@@ -11,7 +11,10 @@ namespace Engine
 		XMFLOAT3	vPosition;
 		float		fRange;
 		float		fAtt;
-		float		fSpotCosOuterCone;
+		
+		float		fOuterAngle;
+		float		fInnerAngle;
+
 		XMFLOAT4	vDiffuse;
 		XMFLOAT4	vAmbient;
 		XMFLOAT4	vSpecular;
@@ -187,6 +190,6 @@ namespace Engine
 
 	typedef struct tagRenderGroup
 	{
-		enum Enum { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_ALPHA, RENDER_EFFECT_MESH_MSAKING, RENDER_EFFECT, RENDER_UI, RENDER_END };
+		enum Enum { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_ALPHA, RENDER_EFFECT, RENDER_UI, RENDER_END };
 	}RENDER_GROUP;
 }

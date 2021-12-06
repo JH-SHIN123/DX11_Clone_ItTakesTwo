@@ -29,7 +29,6 @@ private:
 	HRESULT	Render_Priority();
 	HRESULT	Render_NonAlpha();
 	HRESULT	Render_Alpha();
-	HRESULT	Render_Effect_Mesh_Masking();
 	HRESULT	Render_Effect();
 	HRESULT	Render_UI();
 
@@ -40,6 +39,7 @@ private:
 
 private:
 	HRESULT PostProcessing(_double TimeDelta);
+	HRESULT Compute_SSAO();
 
 private:
 	void	Sort_GameObjects(RENDER_OBJECTS& GameObjects);

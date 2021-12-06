@@ -36,7 +36,6 @@ private:
 	_float										m_fVerticalAngle = 0.f;
 	_float										m_fHorizontalAngle = 0.f;
 	_bool										m_IsBeamActivate = false;
-	_bool										m_IsBeamEffectCreate = false;
 	_bool										m_IsPutGravitationalField = false;
 
 
@@ -58,7 +57,6 @@ private:
 
 private:
 	HRESULT Ready_Layer_UmbrellaBeam_Stand(const _tchar * pLayerTag);
-	HRESULT Ready_Layer_UmbrellaBeam_Effect(const _tchar * pLayerTag);
 
 public:
 	static CUmbrellaBeam* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

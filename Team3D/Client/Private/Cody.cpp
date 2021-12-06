@@ -207,12 +207,13 @@ _int CCody::Tick(_double dTimeDelta)
 	/////////////////////////////////////////////
 	KeyInput_Rail(dTimeDelta);
 
-	if (false == m_bMoveToRail && false == m_bOnRail && false == m_bOnRailEnd)
+	if (false == m_bMoveToRail && false == m_bOnRail)
 	{
 		Pipe_WallJump(dTimeDelta);
 		Wall_Jump(dTimeDelta);
 		if (Trigger_Check(dTimeDelta))
 		{
+			TakeRailEnd(dTimeDelta);
 			Hit_StarBuddy(dTimeDelta);
 			Hit_Rocket(dTimeDelta);
 			Activate_RobotLever(dTimeDelta);
@@ -261,9 +262,8 @@ _int CCody::Tick(_double dTimeDelta)
 
 	/* 레일타기 : 타겟을 찾지 못하면 타지않음. */
 	TakeRail(dTimeDelta);
-	TakeRailEnd(dTimeDelta);
 
-	if (true == m_bOnRail || true == m_bMoveToRail || true == m_bOnRailEnd)
+	if (true == m_bOnRail || true == m_bMoveToRail)
 	{
 		_vector vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		m_pActorCom->Set_Position(vPlayerPos);
@@ -673,9 +673,9 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Effet Test
-	if (m_pGameInstance->Key_Down(DIK_O))
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD7))
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-	if (m_pGameInstance->Key_Down(DIK_I))
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 #pragma  endregion
 }
@@ -1997,7 +1997,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
+	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
 		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch)
 		return true;
@@ -2746,7 +2746,8 @@ void CCody::Set_SpaceRailNode(CSpaceRail_Node* pRail)
 }
 void CCody::KeyInput_Rail(_double dTimeDelta)
 {
-	if (m_pGameInstance->Key_Down(DIK_F) && false == m_bOnRail)
+	if (m_pGameInstance->Key_Down(DIK_F) && false == m_bOnRail &&
+		m_eCurPlayerSize == SIZE_MEDIUM && false == m_IsDeadLine)
 	{
 		Start_SpaceRail();
 	}
@@ -2757,12 +2758,14 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 		{
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 
-			m_iJumpCount = 1;
+			m_iJumpCount = 0;
 			m_bShortJump = true;
 
 			m_pTargetRail = nullptr;
 			m_pSearchTargetRailNode = nullptr;
 			m_pTargetRailNode = nullptr;
+
+			m_vecTargetRailNodes.clear();
 
 			m_bMoveToRail = false;
 			m_bOnRail = false;
@@ -2776,7 +2779,10 @@ void CCody::Clear_TagerRailNodes()
 void CCody::Find_TargetSpaceRail()
 {
 	// 레일타기 키 눌렸을때만, 타겟 찾기, 키가 눌렸지만, 충돌한 레일 트리거가 존재하지 않을때
-	if (m_vecTargetRailNodes.empty()) return;
+	if (m_vecTargetRailNodes.empty()) {
+		m_pSearchTargetRailNode = nullptr;
+		return;
+	}
 
 	CTransform* pCamTransform = m_pCamera->Get_Transform();
 	if (nullptr == pCamTransform) return;
@@ -2849,14 +2855,15 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 {
 	if (nullptr == m_pTransformCom || false == m_bMoveToRail || nullptr == m_pTargetRailNode || true == m_bOnRail) return;
 
-	m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind); // 레일 착지
+	m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_Enter); // 줄던지고 댕겨서 날라가기
 
 	_float fMoveToSpeed = 5.f;
 	_float fDist = m_pTransformCom->Move_ToTargetRange(m_pTargetRailNode->Get_Position(), 0.1f, dTimeDelta * fMoveToSpeed);
 	if (fDist < 0.15f)
 	{
 		/* 타는 애니메이션으로 변경 */
-		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH);
+		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_ToGrind); // 레일 착지+
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
 
 		/* 타야할 Path 지정 */
 		m_pTargetRail = (CSpaceRail*)DATABASE->Get_SpaceRail(m_pTargetRailNode->Get_RailTag());
@@ -2900,7 +2907,7 @@ void CCody::TakeRail(_double dTimeDelta)
 	else if (m_pGameInstance->Key_Pressing(DIK_D))
 		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH_Right);
 	else
-		m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Slow_MH);
+		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH); // 메이 blend 수치값 잡아야함.
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	m_bOnRail = m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);
@@ -2909,7 +2916,9 @@ void CCody::TakeRail(_double dTimeDelta)
 	else
 	{
 		m_pTargetRail = nullptr;
-		m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // 자유낙하 애니메이션으로 변경해야함.
+		m_pTargetRailNode = nullptr;
+		m_pSearchTargetRailNode = nullptr;
+		m_pModelCom->Set_Animation(ANI_C_Jump_Falling);
 		m_bOnRailEnd = true;
 	}
 }
@@ -2927,7 +2936,8 @@ void CCody::TakeRailEnd(_double dTimeDelta)
 		}
 		else 
 		{
-			m_pTransformCom->Go_Straight((dRailEndForceTime - m_dRailEnd_ForceDeltaT) * 4.f);
+			m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta);
+			m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_LOOK), (dRailEndForceTime - m_dRailEnd_ForceDeltaT) * 2.5f);
 			m_dRailEnd_ForceDeltaT += dTimeDelta;
 		}
 	}

@@ -31,15 +31,23 @@ HRESULT CLight::Render_Light(CVIBuffer_RectRHW * pVIBuffer)
 		FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_vLightPos", &m_LightDesc.vPosition, sizeof(XMFLOAT3)), E_FAIL);
 		FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_fRange", &m_LightDesc.fRange, sizeof(_float)), E_FAIL);
 	}
-	//else if (LIGHT_DESC::TYPE_SPOT == m_LightDesc.eType)
-	//{
-	//	iPassIndex = 2;
-	//	FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_vLightPos", &m_LightDesc.vPosition, sizeof(XMFLOAT3)), E_FAIL);
-	//	FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_vLightDir", &m_LightDesc.vDirection, sizeof(XMFLOAT3)), E_FAIL);
-	//	FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_fRange", &m_LightDesc.fRange, sizeof(_float)), E_FAIL);
-	//	FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_fAngleOuterCone", &m_LightDesc.fAngleOuterCone, sizeof(_float)), E_FAIL);
-	//	FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_fAngleInnerCone", &m_LightDesc.fAngleInnerCone, sizeof(_float)), E_FAIL);
-	//}
+	else if (LIGHT_DESC::TYPE_SPOT == m_LightDesc.eType)
+	{
+		iPassIndex = 2;
+
+		_float fCosInnerAngle = cosf(m_LightDesc.fInnerAngle);
+		_float fSinOuterAngle = sinf(m_LightDesc.fOuterAngle);
+		_float fCosOuterAngle = cosf(m_LightDesc.fOuterAngle);
+
+		_float fSpotConeAttRange = fCosInnerAngle - fCosOuterAngle;
+		_float fSpotRangeRcp = 1.f / m_LightDesc.fRange;
+
+		FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_vLightPos", &m_LightDesc.vPosition, sizeof(XMFLOAT3)), E_FAIL);
+		FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_vLightDir", &m_LightDesc.vDirection, sizeof(XMFLOAT3)), E_FAIL);
+		FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_fSpotCosOuterCone", &fCosOuterAngle, sizeof(_float)), E_FAIL);
+		FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_fSpotConeAttRange", &fSpotConeAttRange, sizeof(_float)), E_FAIL);
+		FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_fSpotRangeRcp", &fSpotRangeRcp, sizeof(_float)), E_FAIL);
+	}
 
 	pVIBuffer->Render(iPassIndex);
 

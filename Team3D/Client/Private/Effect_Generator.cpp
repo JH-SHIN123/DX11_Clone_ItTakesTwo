@@ -22,6 +22,9 @@
 #include "Effect_Dead_Particle_Fire.h"
 #include "Effect_Robot_Battery_Spark.h"
 #include "Effect_Umbrella_Pipe.h"
+#include "Effect_Pinball_Move.h"
+#include "Effect_Boss_Laser_Smoke.h"
+#include "Effect_PointLight.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -105,6 +108,14 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	return S_OK;
 }
 
+HRESULT CEffect_Generator::Add_PointLight(Effect_PointLight_Desc* pLightArg)
+{
+	if (nullptr == pLightArg)
+		return E_FAIL;
+
+	return 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_PointLight"), Level::LEVEL_STAGE, TEXT("GameObject_2D_PointLight"), pLightArg);	
+}
+
 EFFECT_DESC_CLONE::PLAYER_VALUE CEffect_Generator::Check_Cody_Size(_fmatrix WorldMatrix)
 {
 	_float fScale = (XMVector3Length(WorldMatrix.r[0])).m128_f32[0];
@@ -146,7 +157,6 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 
 		if (1 < lstrlen(Data->ModelName))
 		{
-			// ¼öÁ¤
 			wstring	 wstrName = Data->ModelName;
 			wstrName.erase(0, 16);
 			_tchar szPrototypeName[MAX_PATH] = L"";
@@ -172,43 +182,52 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 {
 	// 2D Effect
 	if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_FireDoor",						CEffect_FireDoor::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_FireDoor", CEffect_FireDoor::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Walking_Smoke"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Walking_Smoke",				CEffect_Walking_Smoke::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Walking_Smoke", CEffect_Walking_Smoke::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Landing_Smoke"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Landing_Smoke",				CEffect_Landing_Smoke::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Landing_Smoke", CEffect_Landing_Smoke::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Dash"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Dash",							CEffect_Dash::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Dash", CEffect_Dash::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Dead"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead",					CEffect_Player_Dead::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead", CEffect_Player_Dead::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Dead_Particle"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead_Particle",			CEffect_Player_Dead_Particle::Create(pDevice, pDeviceContext, pData));
-	
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead_Particle", CEffect_Player_Dead_Particle::Create(pDevice, pDeviceContext, pData));
+
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Dead_Particle_Fire"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead_Particle_Fire",	CEffect_Player_Dead_Particle_Fire::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead_Particle_Fire", CEffect_Player_Dead_Particle_Fire::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Revive"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Revive",				CEffect_Player_Revive::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Revive", CEffect_Player_Revive::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Cody_Size"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Cody_Size",					CEffect_Cody_Size::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Cody_Size", CEffect_Cody_Size::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_May_Boots"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_May_Boots",					CEffect_May_Boots::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_May_Boots", CEffect_May_Boots::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_May_Boots_Walking_Particle"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_May_Boots_Walking_Particle",	CEffect_May_Boots_Walking_Particle::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_May_Boots_Walking_Particle", CEffect_May_Boots_Walking_Particle::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Env_Particle"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Env_Particle",					CEffect_Env_Particle::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Env_Particle", CEffect_Env_Particle::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Robot_Battery_Spark"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Robot_Battery_Spark",			CEffect_Robot_Battery_Spark::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Robot_Battery_Spark", CEffect_Robot_Battery_Spark::Create(pDevice, pDeviceContext, pData));
+	//
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Pinball_Move"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Pinball_Move", CEffect_Pinball_Move::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_PointLight"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_PointLight", CEffect_PointLight::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Laser_Smoke"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Laser_Smoke", CEffect_Boss_Laser_Smoke::Create(pDevice, pDeviceContext, pData));
 
 
 	// 3D Effect
@@ -284,8 +303,9 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Explosion7x7"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Explosion/Explosion7x7_%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Explosion8x8"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Explosion/Explosion8x8_%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Ember_Texture"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/T_Ember_Texture_256.png"))), E_FAIL);
-//
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_radialgradientsample"), CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/radialgradientsample.png"))), E_FAIL);
 
+	
 #pragma endregion
 
 	return S_OK;
@@ -302,7 +322,7 @@ void CEffect_Generator::LoopSpawner(_double TimeDelta)
 
 		_matrix WorldMatrix = XMMatrixIdentity();
 		
-		WorldMatrix.r[3] = { 5.f, 0.f, 5.f, 1.f };
+		WorldMatrix.r[3] = { 30.f, 0.f, 30.f, 1.f };
 		//Add_Effect(Effect_Value::Cody_DeadEffect, WorldMatrix);
 	}
 #endif // _DEBUG

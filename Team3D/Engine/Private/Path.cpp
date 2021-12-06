@@ -121,7 +121,14 @@ _bool CPath::Update_Animation(_double dTimeDelta, _matrix& WorldMatrix)
 		m_dCurrentTime -= fmod(dTicksPerSecond * dTimeDelta, m_dDurationTime);
 
 	/* 애니메이션이 끝나면, 업데이트 종료 (멈추기) */
-	if (m_dCurrentTime >= m_dDurationTime || m_dCurrentTime < 0)
+	_float fOffsetTime = 1.1f;
+	_bool bFinish = false;
+	if (m_eState == STATE_FORWARD && m_dCurrentTime >= m_dDurationTime - fOffsetTime)
+		bFinish = true;
+	else if (m_eState == STATE_BACKWARD && m_dCurrentTime < fOffsetTime)
+		bFinish = true;
+
+	if (bFinish)
 	{
 		m_eState = STATE_END;
 		m_bPlayAnimation = false;

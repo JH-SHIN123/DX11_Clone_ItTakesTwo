@@ -54,7 +54,6 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 	m_pPhysxTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pPhysxTransformCom->Set_WorldMatrix(PhysxWorldMatrix);
 
-
 	CTriggerActor::ARG_DESC ArgDesc;
 	m_UserData = USERDATA(GameID::eGRAVITYPIPE, this);
 	ArgDesc.pUserData = &m_UserData;
@@ -94,10 +93,13 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 	if (m_EffectDesc_Clone.iPlayerValue == 0 && DATABASE->Get_GravityStageClear() == true)
 		m_IsActivate = true;
 
-	if ((m_EffectDesc_Clone.iPlayerValue == 1 && DATABASE->Get_IsValve_Activated() == true) || m_pGameInstance->Key_Down(DIK_INSERT))
+
+	if (m_EffectDesc_Clone.iPlayerValue == 1 && DATABASE->Get_IsValve_Activated() == true)
 		m_IsActivate = true;
 
+
 	m_pParticle->Set_ControlTime(m_dActivateTime);
+
 	return _int();
 }
 
