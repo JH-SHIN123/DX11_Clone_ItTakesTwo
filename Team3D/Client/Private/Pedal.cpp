@@ -28,7 +28,6 @@ HRESULT CPedal::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	//m_pTransformCom->RotateRoll_Angle(-45.f);
 	return S_OK;
 }
 
@@ -46,7 +45,11 @@ _int CPedal::Late_Tick(_double dTimeDelta)
 	CDynamic_Env::Late_Tick(dTimeDelta);
 
 	m_pStaticActorCom->Update_StaticActor();
-	m_pTriggerActorCom->Update_TriggerActor();
+
+	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	vRight = XMVector3Normalize(vRight);
+
+	m_pTriggerActorCom->Update_TriggerActor(vRight * -0.4f);
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -77,15 +80,13 @@ HRESULT CPedal::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CPedal::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+void CPedal::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	CDynamic_Env::OnContact(eStatus, eID, pGameObject);
+	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
 
 	/* Cody */
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-	{
-		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::ePEDAL, true, this);
-	}
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePEDAL, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 }
 
 void CPedal::Movement(_double dTimeDelta)
@@ -129,7 +130,7 @@ HRESULT CPedal::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxBoxGeometry(0.05f, 0.01f, 0.05f);
+	PxGeometry* TriggerGeom = new PxBoxGeometry(0.35f, 0.01f, 0.23f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;

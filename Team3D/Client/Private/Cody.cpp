@@ -17,6 +17,9 @@
 #include "HangingPlanet.h"
 /* For.Tube*/
 #include "HookahTube.h"
+/* For.SpaceShip */
+#include "ElectricBox.h"
+#include "ElectricWall.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -2000,13 +2003,35 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bRespawn = true;
 		}
-		else if (m_eTargetGameID == GameID::eROTATIONFAN && false == m_bRespawn)
+		else if ((m_eTargetGameID == GameID::eROTATIONFAN) && false == m_bRespawn)
 		{
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
 			m_pActorCom->Update(dTimeDelta);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bRespawn = true;
+		}
+		else if (m_eTargetGameID == GameID::eELECTRICBOX && false == m_bRespawn)
+		{
+			if (true == ((CElectricBox*)m_pTargetPtr)->Get_Electric())
+			{
+				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+				m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
+				m_pActorCom->Update(dTimeDelta);
+				m_pActorCom->Set_ZeroGravity(true, false, true);
+				m_bRespawn = true;
+			}
+		}
+		else if (m_eTargetGameID == GameID::eELECTRICWALL && false == m_bRespawn)
+		{
+			if (true == ((CElectricWall*)m_pTargetPtr)->Get_Electric())
+			{
+				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+				m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
+				m_pActorCom->Update(dTimeDelta);
+				m_pActorCom->Set_ZeroGravity(true, false, true);
+				m_bRespawn = true;
+			}
 		}
 	}
 

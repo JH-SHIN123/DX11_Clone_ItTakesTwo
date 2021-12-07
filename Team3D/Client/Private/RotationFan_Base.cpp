@@ -105,13 +105,7 @@ void CRotationFan_Base::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID,
 HRESULT CRotationFan_Base::Ready_Component(void * pArg)
 {
 	/* Dynamic */
-	PxGeometry* Geom = nullptr;
-
-	if (0 == lstrcmp(m_tDynamic_Env_Desc.szModelTag, TEXT("Component_Model_Saucer_RotatingPlatform_02")))
-		Geom = new PxBoxGeometry(1.2f, 0.1f, 1.2f);
-	else
-		Geom = new PxBoxGeometry(1.2f, 0.1f, 1.2f);
-
+	PxGeometry* Geom = new PxBoxGeometry(1.2f, 0.1f, 1.2f);
 	CDynamicActor::ARG_DESC tDynamicActorArg;
 	tDynamicActorArg.pTransform = m_pTransformCom;
 	tDynamicActorArg.fDensity = 1.f;

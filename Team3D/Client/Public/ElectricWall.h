@@ -21,8 +21,18 @@ public:
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 	virtual void	OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
+public:
+	_bool Get_Electric() { return m_bElectric; }
+
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
+	CTriggerActor*	m_pTriggerActorCom = nullptr;
+
+	_bool			m_bElectric = false;
+	_float3			m_vOriginPos = {};
+
+	_double			m_dElectricTime = 0.0;
+	_double			m_dCoolTime = 0.0;
 
 private:
 	HRESULT Ready_Component(void* pArg);

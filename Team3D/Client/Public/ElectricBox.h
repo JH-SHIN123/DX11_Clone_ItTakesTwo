@@ -10,6 +10,9 @@ private:
 	virtual ~CElectricBox() = default;
 
 public:
+	_bool	Get_Electric() { return m_bElectric; }
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double dTimeDelta) override;
@@ -23,6 +26,15 @@ public:
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
+	CTriggerActor*	m_pTriggerActorCom = nullptr;
+
+	_bool			m_bCharge= false;
+	_bool			m_bElectric = false;
+	_float3			m_vOriginPos = {};
+
+	_double			m_dElectricTime = 0.0;
+	_uint			m_iRandomTime = 0;
+	_double			m_dCoolTime = 0.0;
 
 private:
 	HRESULT Ready_Component(void* pArg);

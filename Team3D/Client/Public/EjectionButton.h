@@ -25,12 +25,10 @@ private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 
 	_float			m_fDistance = 0.f;
-	_float			m_fResetY = 0.f;
 	_float			m_fMaxY = 0.f;
 
-	_bool			m_bLimit = false;
+	_bool			m_bPressed = false;
 	_bool			m_bCollision = false;
-	_bool			m_bPushButton = false;
 
 private:
 	HRESULT Ready_Component(void* pArg);

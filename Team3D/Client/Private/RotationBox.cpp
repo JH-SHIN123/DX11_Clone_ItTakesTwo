@@ -136,7 +136,7 @@ void CRotationBox::Rotate_Random(_double dSpeed, _double dTimeDelta)
 		m_bRotate_Start = false;
 		m_bRotate_Random = false;
 		m_dAngle = 0;
-		//Rotate_Fix();
+		Rotate_Fix();
 		return;
 	}
 	else
@@ -158,26 +158,40 @@ void CRotationBox::Rotate_Fix()
 	vecFix[3] = XMVectorSet(0.f, 0.f, -1.f, 0.f);
 	
 	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 
 	if (XMVectorGetY(vUp) > 0.9f)
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_UP, vecFix[0]);
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vecFix[1]);
-	}
-	else if (XMVectorGetX(vUp) > 0.9f)
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_UP, vecFix[1]);
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vecFix[2]);
+		_vector vTempUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+		_vector vTempLook = XMVector3Cross(vRight, vTempUp);
+
+		m_pTransformCom->Set_State(CTransform::STATE_UP, vTempUp);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vTempLook);
 	}
 	else if (XMVectorGetY(vUp) < -0.9f)
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_UP, vecFix[2]);
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vecFix[3]);
+		_vector vTempUp = XMVectorSet(0.f, -1.f, 0.f, 0.f);
+		_vector vTempLook = XMVector3Cross(vRight, vTempUp);
+
+		m_pTransformCom->Set_State(CTransform::STATE_UP, vTempUp);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vTempLook);
 	}
-	else if (XMVectorGetX(vUp) <  -0.9f)
+	else if (XMVectorGetY(vLook) > 0.9f)
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_UP, vecFix[3]);
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vecFix[0]);
+		_vector vTempLook = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+		_vector vTempUp = XMVector3Cross(vTempLook, vRight);
+
+		m_pTransformCom->Set_State(CTransform::STATE_UP, vTempUp);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vTempLook);
+	}
+	else if (XMVectorGetY(vLook) < -0.9f)
+	{
+		_vector vTempLook = XMVectorSet(0.f, -1.f, 0.f, 0.f);
+		_vector vTempUp = XMVector3Cross(vTempLook, vRight);
+
+		m_pTransformCom->Set_State(CTransform::STATE_UP, vTempUp);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vTempLook);
 	}
 }
 
