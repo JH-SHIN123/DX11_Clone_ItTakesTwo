@@ -221,6 +221,7 @@
     <ClInclude Include="..\Public\DeadLine.h" />
     <ClInclude Include="..\Public\DummyWall.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />
+    <ClInclude Include="..\public\Effect_Boss_Laser_Particle.h" />
     <ClInclude Include="..\Public\Effect_Boss_Laser_Smoke.h" />
     <ClInclude Include="..\Public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Dash.h" />
@@ -384,6 +385,7 @@
     <ClCompile Include="..\Private\DeadLine.cpp" />
     <ClCompile Include="..\Private\DummyWall.cpp" />
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
+    <ClCompile Include="..\private\Effect_Boss_Laser_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Boss_Laser_Smoke.cpp" />
     <ClCompile Include="..\Private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
