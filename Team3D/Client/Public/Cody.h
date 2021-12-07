@@ -350,12 +350,16 @@ private:
 	/* Hye::For.DeadLine, SavePoint */
 	_bool	 m_IsDeadLine = false;
 	_float3  m_vSavePoint = {};
-	_float	 m_fDeadTime = 0.f;
+	_double	 m_dDeadTime = 0.f;
 	_float3	 m_DeadLinePos = {};
 	/* Hye::For.PinBall*/
-	_bool m_IsPinBall = false;
+	_bool	 m_IsPinBall = false;
 	/* Hye::For.Tube*/
-	_bool m_IsTube = false;
+	_bool	 m_IsTube = false;
+	/* Hye::For.SpaceShip */
+	_bool	 m_bRespawn = false;
+	_bool    m_bFirstCheck = false;
+	_double	 m_dRespawnTime = 0.0;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
@@ -458,7 +462,8 @@ private:
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
 public:
-	void PinBall_Respawn(_double dTimeDelta);
+	void PinBall_Respawn(const _double dTimeDelta);
+	void SpaceShip_Respawn(const _double dTimeDelta);
 
 private:
 	_bool Trigger_End(const _double dTimeDelta);

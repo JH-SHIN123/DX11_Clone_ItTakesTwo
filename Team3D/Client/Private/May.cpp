@@ -327,8 +327,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(62.f, 250.f, 187.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_8))/* Moon */
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_9))/* 快林急 郴何 */
-		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+	//if (m_pGameInstance->Key_Down(DIK_9))/* 快林急 郴何 */
+	//	m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
 
 #pragma endregion
 

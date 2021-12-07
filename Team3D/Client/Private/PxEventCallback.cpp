@@ -27,8 +27,11 @@ void CPxEventCallback::onContact(const PxContactPairHeader & pairHeader, const P
 			USERDATA* pUserData01 = static_cast<USERDATA*>(pairHeader.actors[0]->userData);
 			USERDATA* pUserData02 = static_cast<USERDATA*>(pairHeader.actors[1]->userData);
 
-			if(nullptr != pUserData01 && nullptr != pUserData02)
+			if (nullptr != pUserData01 && nullptr != pUserData02)
+			{
 				pUserData01->pGameObject->OnContact(ContactStatus::eFOUND, pUserData02->eID, pUserData02->pGameObject);
+				pUserData02->pGameObject->OnContact(ContactStatus::eFOUND, pUserData01->eID, pUserData01->pGameObject);
+			}
 		}
 		else
 		{
@@ -36,7 +39,10 @@ void CPxEventCallback::onContact(const PxContactPairHeader & pairHeader, const P
 			USERDATA* pUserData02 = static_cast<USERDATA*>(pairHeader.actors[1]->userData);
 
 			if (nullptr != pUserData01 && nullptr != pUserData02)
+			{
 				pUserData01->pGameObject->OnContact(ContactStatus::eLOST, pUserData02->eID, pUserData02->pGameObject);
+				pUserData02->pGameObject->OnContact(ContactStatus::eLOST, pUserData01->eID, pUserData01->pGameObject);
+			}
 		}
 	}
 }

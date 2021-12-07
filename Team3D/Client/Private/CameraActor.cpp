@@ -74,7 +74,7 @@ HRESULT CCameraActor::NativeConstruct(void * pArg)
 
 	m_eID = ArgDesc.pUserData->eID;
 
-	m_pController->resize(0.f);
+	//m_pController->resize(0.f);
 	static_cast<PxCapsuleController*>(m_pController)->setRadius(0.1f);
 	return S_OK;
 }

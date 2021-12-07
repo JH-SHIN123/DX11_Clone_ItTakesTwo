@@ -236,10 +236,23 @@ _int CInput_Device::Tick(_bool bWndActivate)
 //		++iBuffer;
 //		if (iBuffer > 100)
 //		{
-//			//R= {m_JoyStickState.lRx}, { m_JoyStickState.lRy }, { m_JoyStickState.lRz }
-//			//L= {m_JoyStickState.lX }, { m_JoyStickState.lY }, { m_JoyStickState.lZ }
-//			//B123 = 
-//			{ m_JoyStickState.rglSlider[0] }, { m_JoyStickState.rglSlider[1] }
+//			//R = {m_JoyStickState.lRx}, { m_JoyStickState.lRy }, { m_JoyStickState.lRz }
+//			//L = {m_JoyStickState.lX }, { m_JoyStickState.lY }, { m_JoyStickState.lZ }
+//			//POV = { m_JoyStickState.rgdwPOV[0] }, { m_JoyStickState.rgdwPOV[1] }, { m_JoyStickState.rgdwPOV[2] }, { m_JoyStickState.rgdwPOV[3] }
+//			//rglSlider = { m_JoyStickState.rglSlider[0] }, { m_JoyStickState.rglSlider[1] }
+//			//B = 
+//			//{ m_JoyStickState.rgbButtons[0] }, { m_JoyStickState.rgbButtons[1] }, { m_JoyStickState.rgbButtons[2] }, { m_JoyStickState.rgbButtons[3] }
+//			//{ m_JoyStickState.rgbButtons[4] }, { m_JoyStickState.rgbButtons[5] }, { m_JoyStickState.rgbButtons[6] }, { m_JoyStickState.rgbButtons[7] }
+//			//{ m_JoyStickState.rgbButtons[8] }, { m_JoyStickState.rgbButtons[9] }, { m_JoyStickState.rgbButtons[10] }, { m_JoyStickState.rgbButtons[11] }
+//			//{ m_JoyStickState.rgbButtons[12] }, { m_JoyStickState.rgbButtons[13] }, { m_JoyStickState.rgbButtons[14] }, { m_JoyStickState.rgbButtons[15] }
+//			//{ m_JoyStickState.rgbButtons[16] }, { m_JoyStickState.rgbButtons[17] }, { m_JoyStickState.rgbButtons[18] }, { m_JoyStickState.rgbButtons[19] }
+//			//{ m_JoyStickState.rgbButtons[20] }, { m_JoyStickState.rgbButtons[21] }, { m_JoyStickState.rgbButtons[22] }, { m_JoyStickState.rgbButtons[23] }
+//			//{ m_JoyStickState.rgbButtons[24] }, { m_JoyStickState.rgbButtons[25] }, { m_JoyStickState.rgbButtons[26] }, { m_JoyStickState.rgbButtons[27] }
+//			//{ m_JoyStickState.rgbButtons[28] }, { m_JoyStickState.rgbButtons[29] }, { m_JoyStickState.rgbButtons[30] }, { m_JoyStickState.rgbButtons[31] }
+//
+//			iBuffer = 0;
+//			iBuffer = 0;
+//			iBuffer = 0;
 //			iBuffer = 0;
 //			iBuffer = 0;
 //			iBuffer = 0;
