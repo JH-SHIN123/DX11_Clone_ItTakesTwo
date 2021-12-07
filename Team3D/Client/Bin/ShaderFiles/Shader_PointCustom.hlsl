@@ -349,7 +349,7 @@ void  GS_MAIN_NO_BILL_Y_DOWN_SIZE(/*입력*/ point  VS_OUT In[1], /*출력*/ inout T
 
 	float3		vUp = In[0].vPointAxis;
 
-	float3		vCamDir = normalize(g_vMainCamPosition - In[0].vPosition);
+	float3		vCamDir = normalize(g_vMainCamPosition - In[0].vPosition).xyz;
 	float3		vRight = normalize(cross(vCamDir, vUp));
 	float3		vLook = normalize(cross(vRight, vUp));
 
@@ -401,7 +401,7 @@ void  GS_MAIN_NO_BILL_Y_DOWN_SIZE(/*입력*/ point  VS_OUT In[1], /*출력*/ inout T
 	// Sub View 0,1
 
 	vUp = In[0].vPointAxis;
-	vCamDir = normalize(g_vSubCamPosition - In[0].vPosition);
+	vCamDir = normalize(g_vSubCamPosition - In[0].vPosition).xyz;
 	vRight = normalize(cross(vCamDir, vUp));
 	vLook = normalize(cross(vRight, vUp));
 
