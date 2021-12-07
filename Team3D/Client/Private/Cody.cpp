@@ -1276,7 +1276,7 @@ void CCody::Jump(const _double dTimeDelta)
 			else if (m_eCurPlayerSize == SIZE_LARGE)
 				m_pActorCom->Jump_Start(2.8f);
 			else if (m_eCurPlayerSize == SIZE_SMALL)
-				m_pActorCom->Jump_Start(1.f);
+				m_pActorCom->Jump_Start(0.8f);
 
 			if (m_eCurPlayerSize == SIZE_LARGE)
 				m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Start); // 사이즈 클때 점프 애니메이션이 다름.
@@ -1293,7 +1293,7 @@ void CCody::Jump(const _double dTimeDelta)
 			if (m_eCurPlayerSize == SIZE_MEDIUM)
 				m_pActorCom->Jump_Start(2.6f);
 			else if (m_eCurPlayerSize == SIZE_SMALL)
-				m_pActorCom->Jump_Start(1.f);
+				m_pActorCom->Jump_Start(0.8f);
 
 			m_pModelCom->Set_Animation(ANI_C_DoubleJump);
 			m_bShortJump = false;
@@ -1740,6 +1740,13 @@ void CCody::SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject * pT
 	Safe_AddRef(m_pTargetPtr);
 }
 
+void CCody::SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerCameraWorld)
+{
+	m_eCameraTriggerID = eID;
+	m_IsCamTriggerCollide = IsCollide;
+	XMStoreFloat4x4(&m_TriggerCameraWorld, vTriggerCameraWorld);
+}
+
 _bool CCody::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)
@@ -1954,6 +1961,10 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bPipeWallAttach = true;
+		}
+		else if (m_eTargetGameID == GameID::eDUMMYWALLCAMERATRIGGER)
+		{
+			m_eCameraWorkState = STATE_DUMMYWALL_JUMP;
 		}
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
 		{

@@ -55,4 +55,4 @@
 * 디버깅창 생성 여부
 */
 
-//#define __GAME_DEBUGGER
+#define __GAME_DEBUGGER

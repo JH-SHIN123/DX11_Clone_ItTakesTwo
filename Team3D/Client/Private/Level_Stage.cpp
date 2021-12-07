@@ -604,6 +604,9 @@ HRESULT CLevel_Stage::Ready_Layer_DummyWall(const _tchar * pLayerTag)
 
 	DummyWallDesc.vPosition = { -805.311f, 767.083f, 197.97f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_DummyWall"), &DummyWallDesc), E_FAIL);
+
+	DummyWallDesc.vPosition = { -805.311f, 775.083f, 193.72f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_CameraTrigger"), Level::LEVEL_STAGE, TEXT("GameObject_DummyWallCameraTrigger"), &DummyWallDesc), E_FAIL);
 	return S_OK;
 }
 
@@ -615,6 +618,10 @@ HRESULT CLevel_Stage::Ready_Layer_MayJumpWall(const _tchar * pLayerTag)
 
 	MayJumpWall.vPosition = { -815.311f - 13.f, 767.083f + 2.f, 198.37f - 2.4f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MayJumpWall"), &MayJumpWall), E_FAIL);
+
+	MayJumpWall.vPosition = { -823.88f, 768.301f, 193.517f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_MayWallCameraTrigger"), Level::LEVEL_STAGE, TEXT("GameObject_MayWallCameraTrigger"), &MayJumpWall), E_FAIL);
+
 	return S_OK;
 
 }
@@ -628,6 +635,10 @@ HRESULT CLevel_Stage::Ready_Layer_PipeJumpWall(const _tchar * pLayerTag)
 	PipeJumpWall.vPosition = { 46.1009f, 218.45084f, 224.48f, 1.f };
 	PipeJumpWall.iStageNum = ST_PINBALL;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PipeJumpWall"), &PipeJumpWall), E_FAIL);
+
+	PipeJumpWall.vPosition = { 45.4779f, 218.0519f, 224.223f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_PipeWallCameraTrigger"), Level::LEVEL_STAGE, TEXT("GameObject_PipeWallCameraTrigger"), &PipeJumpWall), E_FAIL);
+
 	return S_OK;
 }
 #pragma endregion

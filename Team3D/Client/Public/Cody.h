@@ -192,6 +192,7 @@ public:
 
 public:
 	enum PLAYER_SIZE { SIZE_SMALL, SIZE_MEDIUM, SIZE_LARGE, SIZE_END };
+	enum CAMERA_WORK_STATE { STATE_SPACE_PORTAL, STATE_DUMMYWALL_JUMP, STATE_END};
 
 private:
 	explicit CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -315,6 +316,8 @@ private:
 	_float m_fSizeDelayTime = 0.f;
 	_bool m_bChangeSizeEffectOnce = false;
 
+	
+
 	// ÄÆ¾ÀÀÌ¶ó¸é
 	_bool m_IsCutScene = false;
 
@@ -325,18 +328,35 @@ private:
 #pragma endregion
 
 #pragma region Trigger
+	/* Getter */
+public:
+	CAMERA_WORK_STATE Get_CameraWorkState() { return m_eCameraWorkState; }
+	_matrix Get_CameraTrigger_Matrix() { return XMLoadFloat4x4(&m_TriggerCameraWorld); }
+
+	/* Setter */
 public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
 	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
 	void SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject* pTargetPtr);
+	void SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerCameraWorld);
 
 private:
+	// CameraTrigger 
+	CAMERA_WORK_STATE m_eCameraWorkState = STATE_END;
+	GameID::Enum m_eCameraTriggerID = GameID::Enum::eWORMHOLE;
+	_bool m_IsCamTriggerCollide = false;
+	_float4x4 m_TriggerCameraWorld = {};
+
+
+	// NormalTrigger
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
 	_float3				m_vTriggerTargetPos = {};
 	_float4x4			m_TriggerTargetWorld = {};
 	CGameObject*		m_pTargetPtr = nullptr;
 	_uint				m_iCurrentStageNum = ST_GRAVITYPATH;
 
+
+	// Else
 	_bool m_IsCollide = false;
 	_bool m_IsOnGrind = false;
 	_bool m_IsHitStarBuddy = false;
