@@ -1,57 +1,60 @@
 #include "stdafx.h"
-#include "..\public\DummyWall.h"
+#include "..\public\PipeJumpWall.h"
 #include "UI_Generator.h"
 #include "Cody.h"
 #include "May.h"
 #include "RobotParts.h"
 
-CDummyWall::CDummyWall(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CPipeJumpWall::CPipeJumpWall(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
 }
 
-CDummyWall::CDummyWall(const CDummyWall & rhs)
+CPipeJumpWall::CPipeJumpWall(const CPipeJumpWall & rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CDummyWall::NativeConstruct_Prototype()
+HRESULT CPipeJumpWall::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
-HRESULT CDummyWall::NativeConstruct(void * pArg)
+HRESULT CPipeJumpWall::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_DummyWall"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_PipeJumpWall"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform2"), (CComponent**)&m_pPhysxTransformCom), E_FAIL);
 
-	ROBOTDESC DummyWallDesc;
+	ROBOTDESC PipeJumpWallDesc;
 	if (nullptr != pArg)
-		memcpy(&DummyWallDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
+		memcpy(&PipeJumpWallDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, DummyWallDesc.vPosition);
-	m_pTransformCom->Set_Scale(XMVectorSet(1.f, 12.f, 1.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, PipeJumpWallDesc.vPosition);
+	m_pTransformCom->Set_Scale(XMVectorSet(0.2f, 1.1f, 0.5f, 1.f));
 
 	_matrix PhysxWorldMatrix = XMMatrixIdentity();
-	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans), XMVectorGetY(vTrans) + 5.f, XMVectorGetZ(vTrans));
 	m_pPhysxTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	if(PipeJumpWallDesc.iStageNum == ST_GRAVITYPATH)
+		PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans) + 0.255f, XMVectorGetY(vTrans) + 1.095f, XMVectorGetZ(vTrans) - 0.2f);
+	else if (PipeJumpWallDesc.iStageNum == ST_PINBALL)
+		PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans) - 0.245f, XMVectorGetY(vTrans) + 1.095f, XMVectorGetZ(vTrans) - 0.2f);
+
+
 	m_pPhysxTransformCom->Set_WorldMatrix(PhysxWorldMatrix);
 
-
 	// Æ®¸®°Å
-	m_UserData = USERDATA(GameID::eDUMMYWALL, this);
+	m_UserData = USERDATA(GameID::ePIPEJUMPWALL, this);
 	CTriggerActor::ARG_DESC ArgDesc;
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pPhysxTransformCom;
-	ArgDesc.pGeometry = new PxBoxGeometry(2.2f, 17.4f, 2.2f);
+	ArgDesc.pGeometry = new PxBoxGeometry(0.2f, 1.2f, 1.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
@@ -66,14 +69,21 @@ HRESULT CDummyWall::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CDummyWall::Tick(_double dTimeDelta)
+_int CPipeJumpWall::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+
+
+	
+	//1. m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(44.8309f, 218.25084f, 224.46f, 1.f));
+	//2. m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(46.0709f, 218.25084f, 224.46f, 1.f));
+
 	return NO_EVENT;
 }
 
 
-_int CDummyWall::Late_Tick(_double dTimeDelta)
+_int CPipeJumpWall::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
@@ -83,51 +93,35 @@ _int CDummyWall::Late_Tick(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-HRESULT CDummyWall::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CPipeJumpWall::Render(RENDER_GROUP::Enum eGroup)
 {
-	CGameObject::Render(eGroup);
-	/*NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1);*/
+	//CGameObject::Render(eGroup);
+	//NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+	//m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	//m_pModelCom->Set_DefaultVariables_Shadow();
+	//m_pModelCom->Render_Model(1);
 
 	return S_OK;
 }
 
-void CDummyWall::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+void CPipeJumpWall::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	 // Cody
-
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eDUMMYWALL , true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePIPEJUMPWALL , true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
-		m_PlayerID = GameID::eCODY;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eDUMMYWALL, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePIPEJUMPWALL, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = false;
-		m_PlayerID = GameID::eDUMMYWALL;
-	}
-
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
-	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eDUMMYWALL, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
-		m_PlayerID = GameID::eMAY;
-	}
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eDUMMYWALL, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = false;
-		m_PlayerID = GameID::eDUMMYWALL;
 	}
 }
 
-HRESULT CDummyWall::Render_ShadowDepth()
+HRESULT CPipeJumpWall::Render_ShadowDepth()
 {
-	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+	//NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
 	//m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
@@ -137,33 +131,33 @@ HRESULT CDummyWall::Render_ShadowDepth()
 	return S_OK;
 }
 
-CDummyWall * CDummyWall::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CPipeJumpWall * CPipeJumpWall::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
-	CDummyWall* pInstance = new CDummyWall(pDevice, pDeviceContext);
+	CPipeJumpWall* pInstance = new CPipeJumpWall(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSG_BOX("Failed to Create Instance - CDummyWall");
+		MSG_BOX("Failed to Create Instance - CPipeJumpWall");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CDummyWall::Clone_GameObject(void * pArg)
+CGameObject * CPipeJumpWall::Clone_GameObject(void * pArg)
 {
-	CDummyWall* pInstance = new CDummyWall(*this);
+	CPipeJumpWall* pInstance = new CPipeJumpWall(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CDummyWall");
+		MSG_BOX("Failed to Clone Instance - CPipeJumpWall");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CDummyWall::Free()
+void CPipeJumpWall::Free()
 {
 	Safe_Release(m_pPhysxTransformCom);
 	Safe_Release(m_pTriggerCom);

@@ -282,6 +282,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump">
       <UniqueIdentifier>{401d01cd-f72e-4e8c-8316-be81b655a327}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump">
+      <UniqueIdentifier>{850b7400-d978-4452-a707-6786a98291be}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious">
       <UniqueIdentifier>{2f43f579-02a4-4fed-ae3b-0ad23196e3d6}</UniqueIdentifier>
     </Filter>
@@ -872,6 +875,9 @@
     <ClInclude Include="..\Public\MayJumpWall.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PipeJumpWall.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\RotatedRobotParts.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious</Filter>
     </ClInclude>
@@ -1389,6 +1395,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MayJumpWall.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PipeJumpWall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\RotatedRobotParts.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious</Filter>

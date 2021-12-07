@@ -61,22 +61,19 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboonCore(TEXT("Layer_MoonBaboonCore")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon_MainLaser(TEXT("Layer_MoonBaboon_MainLaser")), E_FAIL);
 	/* Yoon */
-	FAILED_CHECK_RETURN(Ready_Layer_NoBatterySign(TEXT("Layer_NoBatterySign")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Rocket(TEXT("Layer_Rocket")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_StarBuddy(TEXT("Layer_StarBuddy")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_BigButton(TEXT("Layer_BigButton")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_BigButtonFrame(TEXT("Layer_BigButtonFrame")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_RobotParts(TEXT("Layer_RobotParts")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_RotatedRobotParts(TEXT("Layer_RotatedRobotParts")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_SecurityCameraHandle(TEXT("Layer_SecurityCameraHandle")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_SecurityCamera(TEXT("Layer_SecurityCamera")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_SpaceValve(TEXT("Layer_SpaceValve")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_BigPlanet(TEXT("Layer_BigPlanet")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Hook_UFO(TEXT("Layer_HookUFO")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_DummyWall(TEXT("Layer_DummyWall")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_MayJumpWall(TEXT("Layer_MayJumpWall")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_RotatedRobotParts(TEXT("Layer_RotatedRobotParts")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_PipeJumpWall(TEXT("Layer_PipeJumpWall")), E_FAIL);
 	/* Jin */
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressureBigPlate"), TEXT("GameObject_PressureBigPlate")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoom_Glass(TEXT("Layer_ControlRoom_Glass")), E_FAIL);
@@ -183,6 +180,7 @@ HRESULT CLevel_Stage::Ready_Test()
 #endif
 	/* Yoon */
 
+
 	/* Jin */
 
 	/* Jun */
@@ -234,12 +232,12 @@ HRESULT CLevel_Stage::Ready_Layer_GravityPipe(const _tchar * pLayerTag)
 {
 	EFFECT_DESC_CLONE Data;
 	_matrix WorldMatrix = XMMatrixIdentity();
-	WorldMatrix.r[3] = { 62.9901505f, 35.f, 195.674637f,1.f };
+	WorldMatrix.r[3] = { 62.9901505f, 35.f, 195.674637f, 1.f };
 	Data.iPlayerValue = 0;
 	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Gravity_Pipe"), &Data), E_FAIL);
 
-	WorldMatrix.r[3] = { 62.9901505f, 100.f, 195.674637f,1.f };
+	WorldMatrix.r[3] = { 62.9901505f, 157.f, 195.674637f,1.f };
 	Data.iPlayerValue = 1;
 	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Gravity_Pipe"), &Data), E_FAIL);
@@ -540,11 +538,11 @@ HRESULT CLevel_Stage::Ready_Layer_NoBatterySign(const _tchar * pLayerTag)
 
 HRESULT CLevel_Stage::Ready_Layer_SpaceValve(const _tchar * pLayerTag)
 {
-	/*EFFECT_DESC_CLONE a;
-	a.iPlayerValue = 1;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SpaceValve"), &a), E_FAIL);
-	a.iPlayerValue = 2;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SpaceValve"), &a), E_FAIL);*/
+	EFFECT_DESC_CLONE ForPlayerID;
+	ForPlayerID.iPlayerValue = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SpaceValve"), &ForPlayerID), E_FAIL);
+	ForPlayerID.iPlayerValue = 2;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SpaceValve"), &ForPlayerID), E_FAIL);
 
 	return S_OK;
 }
@@ -552,11 +550,11 @@ HRESULT CLevel_Stage::Ready_Layer_SpaceValve(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_Hook_UFO(const _tchar * pLayerTag)
 {
 	ROBOTDESC RobotDesc;
-	RobotDesc.vPosition = { 920.313f, 730.f, 315.746f, 1.f };
+	RobotDesc.vPosition = { 915.313f, 740.f, 315.746f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HookUFO"), &RobotDesc), E_FAIL);
 
-	RobotDesc.vPosition = { 894.939f, 735.f, 353.171f, 1.f };
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HookUFO"), &RobotDesc), E_FAIL);
+	//RobotDesc.vPosition = { 894.939f, 735.f, 353.171f, 1.f };
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HookUFO"), &RobotDesc), E_FAIL);
 
 
 	return S_OK;
@@ -582,6 +580,7 @@ HRESULT CLevel_Stage::Ready_Layer_RobotParts(const _tchar * pLayerTag)
 
 	RobotDesc.iStageNum = ST_RAIL;
 	RobotDesc.vPosition = { 1035.099f, 740.8861f, 215.8869f, 1.f };
+
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_RobotParts"), &RobotDesc), E_FAIL);
 
 	return S_OK;
@@ -618,6 +617,18 @@ HRESULT CLevel_Stage::Ready_Layer_MayJumpWall(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MayJumpWall"), &MayJumpWall), E_FAIL);
 	return S_OK;
 
+}
+HRESULT CLevel_Stage::Ready_Layer_PipeJumpWall(const _tchar * pLayerTag)
+{
+	ROBOTDESC PipeJumpWall;
+	PipeJumpWall.vPosition = { 44.8339f, 218.45084f, 224.48f, 1.f };
+	PipeJumpWall.iStageNum = ST_GRAVITYPATH;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PipeJumpWall"), &PipeJumpWall), E_FAIL);
+
+	PipeJumpWall.vPosition = { 46.1009f, 218.45084f, 224.48f, 1.f };
+	PipeJumpWall.iStageNum = ST_PINBALL;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PipeJumpWall"), &PipeJumpWall), E_FAIL);
+	return S_OK;
 }
 #pragma endregion
 

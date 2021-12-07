@@ -45,6 +45,7 @@ public:
 	void Set_STPlanetRobotPtr(CGameObject* pRobot) { m_pSTPlanetRobot = pRobot; }
 	CGameObject* Get_STPlanetRobot() { return m_pSTPlanetRobot; }
 
+
 	void Set_PressureBigPlate(CGameObject* pPressureBigPlate) { m_pPressureBigPlate = pPressureBigPlate; }
 	CGameObject* Get_PressureBigPlate() { return m_pPressureBigPlate; }
 
@@ -143,7 +144,6 @@ private:
 private:
 	// Interactive Objects
 	vector<class CPressurePlate*>	m_vecPipeCurve;
-
 
 	CGameObject* m_pSTGravityRobot = nullptr;
 	CGameObject* m_pSTPinBallRobot = nullptr;

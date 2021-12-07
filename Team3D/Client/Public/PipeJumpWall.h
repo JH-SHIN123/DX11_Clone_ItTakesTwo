@@ -3,21 +3,14 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 
-BEGIN(Engine)
-class CRenderer;
-class CTransform;
-class CModel;
-class CTriggerActor;
-END
-
 BEGIN(Client)
 
-class CHookUFO final : public CGameObject
+class CPipeJumpWall final : public CGameObject
 {
 private:
-	explicit CHookUFO(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CHookUFO(const CHookUFO& rhs);
-	virtual ~CHookUFO() = default;
+	explicit CPipeJumpWall(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CPipeJumpWall(const CPipeJumpWall& rhs);
+	virtual ~CPipeJumpWall() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -31,28 +24,19 @@ public:
 public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
-public: /* Setter */
-	void Set_Launch(_bool bLaunch) { m_bLaunch = bLaunch; }
-
 private:
-	HRESULT InterActive_UI();
-	void Launch_HookUFO(_double dTimeDelta);
-
-private:
-	_float		m_fUpAcceleration = 0.f;
-	_bool		m_bLaunch = false;
-	_float		m_fLifeTime = 0.f;
-	_bool		m_IsCollide = false;
+	_bool				m_IsCollide = false;
 
 private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 	CTriggerActor*		m_pTriggerCom = nullptr;
-	CTransform*			m_pPhysxTransform = nullptr;
+	CStaticActor*		m_pStaticActorCom = nullptr;
+	CTransform*			m_pPhysxTransformCom = nullptr;
 
 public:
-	static CHookUFO* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CPipeJumpWall* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
