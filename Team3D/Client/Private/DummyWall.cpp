@@ -37,7 +37,7 @@ HRESULT CDummyWall::NativeConstruct(void * pArg)
 		memcpy(&DummyWallDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, DummyWallDesc.vPosition);
-	m_pTransformCom->Set_Scale(XMVectorSet(1.f, 12.f, 1.f, 0.f));
+	m_pTransformCom->Set_Scale(XMVectorSet(1.f, 12.f, 1.f, 1.f));
 
 	_matrix PhysxWorldMatrix = XMMatrixIdentity();
 	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);

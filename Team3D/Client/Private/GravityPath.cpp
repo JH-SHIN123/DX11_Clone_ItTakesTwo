@@ -76,6 +76,7 @@ HRESULT CGravityPath::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_SepdStaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 
+	
 	return S_OK;
 }
 

@@ -25,14 +25,21 @@ public:
 
 public:
 	HRESULT Ready_Instance();
-	void Set_Dead();
+	void Set_Activate(_bool IsActivate);
 
 private:
-	_double m_dAngle = 0.0;
-	_bool m_IsDead = false;
+	void Activate_Check(_double TimeDelta);
+
+private:
+	_double		m_dAngle = 0.0;
+	_bool		m_IsActivate = true;
+	_float4x4	m_matParent;
+
+private:
+	_double m_dActivateTime = 0.f;
 	_float m_fTime = 0.f;
 	_float m_fColorRamp_U = 0.f;
-	_float4x4 m_matParent;
+	CTextures* m_pTexturesCom_Diffuse = nullptr;
 	CTextures* m_pTexturesCom_ColorRamp = nullptr;
 	CTextures* m_pTexturesCom_Distortion = nullptr;
 

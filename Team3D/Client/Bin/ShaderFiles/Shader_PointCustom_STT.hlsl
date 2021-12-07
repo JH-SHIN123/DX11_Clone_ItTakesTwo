@@ -1,20 +1,9 @@
-
 #include "Shader_Defines.hpp"
+#include "Shader_Defines_Effect.hpp"
 
 texture2D		g_DiffuseTexture;
 texture2D		g_SecondTexture;
 texture2D		g_ColorTexture;
-
-vector			g_vMainCamUp;
-vector			g_vSubCamUp;
-
-float2			g_vSize;
-float4			g_vColor;
-float			g_fTime;
-float4			g_vUV;
-int				g_IsBillBoard;
-int				g_RotateAxis; // x0, y1, z2
-
 
 BlendState BlendState_Add2
 {
@@ -398,6 +387,25 @@ PS_OUT  PS_MAIN_COLORTEXTURE(PS_IN_DOUBLEUV In)
 	return Out;
 }
 
+PS_OUT  PS_MAIN_LASER(PS_IN_DOUBLEUV In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	if (0.01f >= vDiff.r)
+		discard;
+
+	Out.vColor.rgb = vDiff.rgb;
+
+	//float4 vColor = g_ColorTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	//Out.vColor.rgb *= vColor.rgb;
+	//Out.vColor.rgb *= In.fTime * g_fTime;
+	Out.vColor.a = In.fTime;
+
+	return Out;
+}
+
 technique11		DefaultTechnique
 {
 	pass PointInstance_Default // 0
@@ -428,5 +436,15 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN();
 		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
 		PixelShader = compile ps_5_0  PS_MAIN_COLORTEXTURE();
+	}
+
+	pass PS_BOSSLASER_SMOKE // 3
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
+		PixelShader = compile ps_5_0  PS_MAIN_LASER();
 	}
 }

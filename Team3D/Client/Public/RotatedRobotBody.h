@@ -31,6 +31,10 @@ public:
 public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
+public:
+	HRESULT Set_MeshRenderGroup();
+	HRESULT Add_GameObject_ToRenderGroup();
+
 private:
 	RTROBOTDESC	m_tRtRobotPartsDesc;
 

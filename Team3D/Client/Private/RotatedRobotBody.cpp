@@ -41,7 +41,9 @@ HRESULT CRotatedRobotBody::NativeConstruct(void * pArg)
 	ArgDesc.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
-	
+
+	Set_MeshRenderGroup();
+
 	return S_OK;
 }
 
@@ -59,7 +61,7 @@ _int CRotatedRobotBody::Late_Tick(_double dTimeDelta)
 {
 	CRotatedRobotParts::Tick(dTimeDelta);
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		Add_GameObject_ToRenderGroup();
 
 	return NO_EVENT;
 }
@@ -70,7 +72,57 @@ HRESULT CRotatedRobotBody::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1);
+
+	_uint iMaterialIndex = 0;
+	m_pModelCom->Sepd_Bind_Buffer();
+
+	/* 렌더순서 주의 - 논알파 -> 알파 */
+	iMaterialIndex = 0;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
+
+	iMaterialIndex = 1;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
+
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
+	//
+	iMaterialIndex = 2;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
+
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
+
+	iMaterialIndex = 4;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
+
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
+
+	iMaterialIndex = 5;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
+
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
+
+	iMaterialIndex = 6;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
+
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
+
+
+	// 4: Alpha 
+	iMaterialIndex = 3;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eGroup);
 
 	return S_OK;
 }
@@ -89,6 +141,25 @@ HRESULT CRotatedRobotBody::Render_ShadowDepth()
 
 void CRotatedRobotBody::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+}
+
+HRESULT CRotatedRobotBody::Set_MeshRenderGroup()
+{
+	m_pModelCom->Set_MeshRenderGroup(3, tagRenderGroup::RENDER_ALPHA);
+	m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(2, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(4, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(5, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(6, tagRenderGroup::RENDER_NONALPHA);
+	return S_OK;
+}
+
+HRESULT CRotatedRobotBody::Add_GameObject_ToRenderGroup()
+{
+	m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_ALPHA, this);
+	m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_NONALPHA, this);
+	return S_OK;
 }
 
 CRotatedRobotBody * CRotatedRobotBody::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

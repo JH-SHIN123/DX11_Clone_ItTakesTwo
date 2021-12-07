@@ -1,4 +1,5 @@
 #include "Shader_Include.hpp"
+#include "Shader_Defines_Effect.hpp"
 
 ////////////////////////////////////////////////////////////
 texture2D	g_DiffuseTexture;
@@ -8,18 +9,9 @@ texture2D	g_EmissiveTexture;
 //texture2D	g_AmbientTexture;
 //texture2D	g_OpacityTexture;
 //texture2D	g_LightTexture;
+texture2D	g_DiffuseTexture_Second;
 texture2D	g_DistortionTexture;
 texture2D	g_ColorRampTexture;
-
-float g_fTime;
-float g_fRadianAngle;
-float4 g_vColor;
-float4 g_vColorRamp_UV;
-
-cbuffer Effect
-{
-	float	g_fAlpha;
-};
 
 ////////////////////////////////////////////////////////////
 
@@ -43,7 +35,7 @@ struct VS_OUT
 	float2 vTexUV		: TEXCOORD0;
 };
 
-struct VS_OUT_TRIPLE_UV
+struct VS_OUT_DOUBLE_UV
 {
 	float4 vPosition	: SV_POSITION;
 	float4 vNormal		: NORMAL;
@@ -51,8 +43,6 @@ struct VS_OUT_TRIPLE_UV
 	float3 vBiNormal	: BINORMAL;
 	float2 vTexUV		: TEXCOORD0;
 	float2 vTexUV_2		: TEXCOORD1;
-	float2 vTexUV_3		: TEXCOORD2;
-
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -61,20 +51,20 @@ VS_OUT VS_MAIN(VS_IN In)
 
 	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
-	Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), g_WorldMatrix));
+	Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), g_WorldMatrix)).xyz;
 	Out.vBiNormal = normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
 	Out.vTexUV = In.vTexUV;
 
 	return Out;
 }
 
-VS_OUT_TRIPLE_UV VS_TRIPLE_UV(VS_IN In)
+VS_OUT_DOUBLE_UV VS_DOUBLE_UV(VS_IN In)
 {
-	VS_OUT_TRIPLE_UV Out = (VS_OUT_TRIPLE_UV)0;
+	VS_OUT_DOUBLE_UV Out = (VS_OUT_DOUBLE_UV)0;
 
 	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
-	Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), g_WorldMatrix));
+	Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix)).xyz;
 	Out.vBiNormal = normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
 	Out.vTexUV = In.vTexUV;
 
@@ -85,14 +75,6 @@ VS_OUT_TRIPLE_UV VS_TRIPLE_UV(VS_IN In)
 	RotateUV = mul(RotateUV, RotateMatrix);
 	RotateUV += 0.5f;
 	Out.vTexUV_2 = RotateUV;
-
-	fSin = sin(g_fRadianAngle * -0.5f);
-	fCos = cos(g_fRadianAngle * -0.5f);
-	RotateMatrix = float2x2(fCos, -fSin, fSin, fCos);
-	RotateUV = In.vTexUV - 0.5f;
-	RotateUV = mul(RotateUV, RotateMatrix);
-	RotateUV += 0.5f;
-	Out.vTexUV_3 = RotateUV;
 
 	return Out;
 }
@@ -161,7 +143,7 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 	TriStream.RestartStrip();
 }
 
-struct GS_OUT_TRIPLE_UV
+struct GS_OUT_DOUBLE_UV
 {
 	float4 vPosition			: SV_POSITION;
 	float4 vNormal				: NORMAL;
@@ -169,28 +151,26 @@ struct GS_OUT_TRIPLE_UV
 	float3 vBiNormal			: BINORMAL;
 	float2 vTexUV				: TEXCOORD0;
 	float2 vTexUV_2				: TEXCOORD1;
-	float2 vTexUV_3				: TEXCOORD2;
-	float4 vProjPosition		: TEXCOORD3;
-	float4 vWorldPosition		: TEXCOORD4;
+	float4 vProjPosition		: TEXCOORD2;
+	float4 vWorldPosition		: TEXCOORD3;
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 };
 [maxvertexcount(6)]
-void GS_TRIPLE_UV(triangle VS_OUT_TRIPLE_UV In[3], inout TriangleStream<GS_OUT_TRIPLE_UV> TriStream)
+void GS_DOUBLE_UV(triangle VS_OUT_DOUBLE_UV In[3], inout TriangleStream<GS_OUT_DOUBLE_UV> TriStream)
 {
-	GS_OUT_TRIPLE_UV Out = (GS_OUT_TRIPLE_UV)0;
+	GS_OUT_DOUBLE_UV Out = (GS_OUT_DOUBLE_UV)0;
 
 	/* Main Viewport */
 	for (uint i = 0; i < 3; i++)
 	{
 		matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
 
-		Out.vPosition	= mul(In[i].vPosition, matVP);
-		Out.vNormal		= In[i].vNormal;
-		Out.vTangent	= In[i].vTangent;
-		Out.vBiNormal	= In[i].vBiNormal;
-		Out.vTexUV		= In[i].vTexUV;
-		Out.vTexUV_2	= In[i].vTexUV_2;
-		Out.vTexUV_3	= In[i].vTexUV_3;
+		Out.vPosition = mul(In[i].vPosition, matVP);
+		Out.vNormal = In[i].vNormal;
+		Out.vTangent = In[i].vTangent;
+		Out.vBiNormal = In[i].vBiNormal;
+		Out.vTexUV = In[i].vTexUV;
+		Out.vTexUV_2 = In[i].vTexUV_2;
 
 		Out.vProjPosition = Out.vPosition;
 		Out.vWorldPosition = In[i].vPosition;
@@ -205,13 +185,12 @@ void GS_TRIPLE_UV(triangle VS_OUT_TRIPLE_UV In[3], inout TriangleStream<GS_OUT_T
 	{
 		matrix matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
 
-		Out.vPosition	= mul(In[j].vPosition, matVP);
-		Out.vNormal		= In[j].vNormal;
-		Out.vTangent	= In[j].vTangent;
-		Out.vBiNormal	= In[j].vBiNormal;
-		Out.vTexUV		= In[j].vTexUV;
-		Out.vTexUV_2	= In[j].vTexUV_2;
-		Out.vTexUV_2	= In[j].vTexUV_2;
+		Out.vPosition = mul(In[j].vPosition, matVP);
+		Out.vNormal = In[j].vNormal;
+		Out.vTangent = In[j].vTangent;
+		Out.vBiNormal = In[j].vBiNormal;
+		Out.vTexUV = In[j].vTexUV;
+		Out.vTexUV_2 = In[j].vTexUV_2;
 
 		Out.vProjPosition = Out.vPosition;
 		Out.vWorldPosition = In[j].vPosition;
@@ -236,7 +215,7 @@ struct PS_IN
 	uint   iViewportIndex		: SV_VIEWPORTARRAYINDEX;
 };
 
-struct PS_IN_TRIPLE_UV
+struct PS_IN_DOUBLE_UV
 {
 	float4 vPosition			: SV_POSITION;
 	float4 vNormal				: NORMAL;
@@ -244,9 +223,8 @@ struct PS_IN_TRIPLE_UV
 	float3 vBiNormal			: BINORMAL;
 	float2 vTexUV				: TEXCOORD0;
 	float2 vTexUV_2				: TEXCOORD1;
-	float2 vTexUV_3				: TEXCOORD2;
-	float4 vProjPosition		: TEXCOORD3;
-	float4 vWorldPosition		: TEXCOORD4;
+	float4 vProjPosition		: TEXCOORD2;
+	float4 vWorldPosition		: TEXCOORD3;
 	uint   iViewportIndex		: SV_VIEWPORTARRAYINDEX;
 };
 
@@ -266,6 +244,22 @@ PS_OUT	PS_MAIN(PS_IN In)
 	return Out;
 }
 
+PS_OUT	PS_COLOR_TEST(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+	float fPower = 1.f;
+	float fCheck_V = 0.3f;
+	Out.vDiffuse.rgb = float3( 0.980392218f, 0.921568692f, 0.843137324f);
+	
+
+	Out.vDiffuse.a = 1.f;
+
+	return Out;
+}
+
 PS_OUT	PS_MASK(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -275,22 +269,23 @@ PS_OUT	PS_MASK(PS_IN In)
 	return Out;
 }
 
-PS_OUT	PS_MAIN_RESPAWN_PORTAL(PS_IN_TRIPLE_UV In)
+PS_OUT	PS_MAIN_RESPAWN_PORTAL(PS_IN_DOUBLE_UV In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
 	float4 vFX_tex = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV_2);
 	float fWeight = (vFX_tex.b * 0.8f);
 
-	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV + fWeight);
+	float4 vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV + fWeight);
+	float4 vColor = g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV.xy);
 
-	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV) * 10.f;
+	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * vColor.rgb * 10.f;
 	Out.vDiffuse.a = Out.vDiffuse.b * 0.9f;
 
 	return Out;
 }
 
-PS_OUT	PS_MAIN_GRAVITYPIPE(PS_IN_TRIPLE_UV In)
+PS_OUT	PS_MAIN_GRAVITYPIPE(PS_IN_DOUBLE_UV In)
 {
 	PS_OUT Out = (PS_OUT)0;
 	float2 vDistortionUV = In.vTexUV;
@@ -310,10 +305,10 @@ PS_OUT	PS_MAIN_GRAVITYPIPE(PS_IN_TRIPLE_UV In)
 	return Out;
 }
 
-PS_OUT	PS_MAIN_WORMHOLE(PS_IN_TRIPLE_UV In)
+PS_OUT	PS_MAIN_WORMHOLE(PS_IN_DOUBLE_UV In)
 {
 	PS_OUT Out = (PS_OUT)0;
-	float2 vFlipUV; 
+	float2 vFlipUV;
 	vFlipUV.x = In.vTexUV.y;
 	vFlipUV.y = In.vTexUV.x;
 	In.vTexUV.x += g_fTime * 0.25;
@@ -322,13 +317,13 @@ PS_OUT	PS_MAIN_WORMHOLE(PS_IN_TRIPLE_UV In)
 
 
 	vector vColor = g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, vFlipUV);
-	Out.vDiffuse.rgb = (vMtrlDiffuse.r * 2.f ) * vColor.rgb;
+	Out.vDiffuse.rgb = (vMtrlDiffuse.r * 2.f) * vColor.rgb;
 	Out.vDiffuse.a = Out.vDiffuse.r;
 
 	return Out;
 }
 
-PS_OUT	PS_MAIN_RESPAWNTENNEL(PS_IN_TRIPLE_UV In)
+PS_OUT	PS_MAIN_RESPAWNTENNEL(PS_IN_DOUBLE_UV In)
 {
 	PS_OUT Out = (PS_OUT)0;
 	float2 vDistortionUV = In.vTexUV;
@@ -344,6 +339,35 @@ PS_OUT	PS_MAIN_RESPAWNTENNEL(PS_IN_TRIPLE_UV In)
 	vector vColor = g_ColorRampTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vDiffuse.rgb = fWeight * vColor.rgb * 2.5f;
 	Out.vDiffuse.a = 1;// Out.vDiffuse.r + Out.vDiffuse.g + Out.vDiffuse.b;
+
+	return Out;
+}
+
+PS_OUT	PS_MAIN_UMBRELLAPIPE(PS_IN_DOUBLE_UV In)
+{
+	// Color test ÇÕÄ¡±â
+
+	PS_OUT Out = (PS_OUT)0;
+	float2 vDistortionUV = In.vTexUV;
+	vDistortionUV.x += g_fTime * 0.33333333f;
+	vDistortionUV.y += g_fTime;
+	float4 vFX_tex = g_DistortionTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistortionUV);
+	float fWeight = (vFX_tex.b * 0.5f);
+
+	vector vMtrlDiffuse = g_DiffuseTexture_Second.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV + fWeight);
+
+	float2 vflipUV = { In.vTexUV.y, In.vTexUV.x };
+	vflipUV.x += g_fTime * 0.33333333f;
+	vflipUV.y += g_fTime;
+	vector vColor = g_ColorRampTexture.Sample(Wrap_MinMagMipLinear_Sampler, vflipUV - fWeight);
+	Out.vDiffuse.rgb = vMtrlDiffuse.r * vColor.rgb;
+	Out.vDiffuse.a = Out.vDiffuse.r * g_fAlpha;
+
+	Out.vDiffuse.rgb *= g_fAlpha;
+
+	float fCheck_V = 0.3f;
+	if (In.vTexUV.y < fCheck_V)
+		Out.vDiffuse.rgb *= In.vTexUV.y / fCheck_V;
 
 	return Out;
 }
@@ -396,8 +420,8 @@ technique11 DefaultTechnique
 		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_TRIPLE_UV();
-		GeometryShader = compile gs_5_0 GS_TRIPLE_UV();
+		VertexShader = compile vs_5_0 VS_DOUBLE_UV();
+		GeometryShader = compile gs_5_0 GS_DOUBLE_UV();
 		PixelShader = compile ps_5_0 PS_MAIN_RESPAWN_PORTAL();
 	}
 
@@ -406,8 +430,8 @@ technique11 DefaultTechnique
 		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_TRIPLE_UV();
-		GeometryShader = compile gs_5_0 GS_TRIPLE_UV();
+		VertexShader = compile vs_5_0 VS_DOUBLE_UV();
+		GeometryShader = compile gs_5_0 GS_DOUBLE_UV();
 		PixelShader = compile ps_5_0 PS_MAIN_GRAVITYPIPE();
 	}
 
@@ -416,8 +440,8 @@ technique11 DefaultTechnique
 		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_TRIPLE_UV();
-		GeometryShader = compile gs_5_0 GS_TRIPLE_UV();
+		VertexShader = compile vs_5_0 VS_DOUBLE_UV();
+		GeometryShader = compile gs_5_0 GS_DOUBLE_UV();
 		PixelShader = compile ps_5_0 PS_MAIN_WORMHOLE();
 	}
 
@@ -426,8 +450,8 @@ technique11 DefaultTechnique
 		SetRasterizerState(Rasterizer_CCW);
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_TRIPLE_UV();
-		GeometryShader = compile gs_5_0 GS_TRIPLE_UV();
+		VertexShader = compile vs_5_0 VS_DOUBLE_UV();
+		GeometryShader = compile gs_5_0 GS_DOUBLE_UV();
 		PixelShader = compile ps_5_0 PS_MAIN_RESPAWNTENNEL();
 	}
 
@@ -439,5 +463,15 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_MASK();
+	}
+
+	pass Umbrella_Pipe // 9
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_DOUBLE_UV();
+		GeometryShader = compile gs_5_0 GS_DOUBLE_UV();
+		PixelShader = compile ps_5_0 PS_MAIN_UMBRELLAPIPE();
 	}
 };

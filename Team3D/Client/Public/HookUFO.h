@@ -49,6 +49,7 @@ private:
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 	CTriggerActor*		m_pTriggerCom = nullptr;
+	CTransform*			m_pPhysxTransform = nullptr;
 
 public:
 	static CHookUFO* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
