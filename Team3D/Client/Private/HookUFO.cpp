@@ -61,7 +61,9 @@ _int CHookUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_F) && m_IsCollide || m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
+	if (m_pGameInstance->Key_Down(DIK_F) && m_IsCollide 
+		|| m_IsCollide && m_pGameInstance->Key_Down(DIK_O)
+		|| m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 	{
 		m_bLaunch = true;
 		UI_Delete(May, InputButton_InterActive);

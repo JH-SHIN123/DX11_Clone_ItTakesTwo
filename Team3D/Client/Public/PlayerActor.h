@@ -21,6 +21,8 @@ public: /* Struct */
 		USERDATA*				pUserData;
 	}ARG_DESC;
 
+	enum PLAYER_TYPE { PLAYER_CODY, PLAYER_MAY, PLAYER_END};
+
 public: /* Getter */
 	_bool  Get_IsJump() { return m_bJump; }
 	_bool  Get_IsFalling() { return m_IsFalling; }
@@ -31,6 +33,7 @@ public: /* Getter */
 	_bool	Get_IsWallCollide() { return m_IsWallCollide; }
 	PxVec3 Get_CollideNormal() { return m_vCollideNormal; }
 	_bool	Get_IsOnGravityPath() { return m_IsOnGravityPath; }
+	PLAYER_TYPE Get_Player_Type() { return m_ePlayerType; }
 
 public: /* Setter */
 	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
@@ -41,6 +44,9 @@ public: /* Setter */
 	void	Set_IsFalling(_bool IsFalling) { m_IsFalling = IsFalling; }
 	void	Set_Position(_fvector vPosition);
 	void	Set_IsOnGravityPath(_bool bOnGravityPath) { m_IsOnGravityPath = bOnGravityPath; }
+	void	Set_IsPlayerSizeSmall(_bool _IsPlayerSizeSmall) { m_IsPlayerSizeSmall = _IsPlayerSizeSmall; }
+	void	Set_IsPlayerInUFO(_bool _IsPlayerInUFO) { m_IsPlayerInUFO = _IsPlayerInUFO; }
+	void	Set_PlayerType(CPlayerActor::PLAYER_TYPE _ePlayerType) { m_ePlayerType = _ePlayerType; }
 
 	/* Wall */
 	void	Set_ContactPos(PxExtendedVec3 vPosition) { m_vContactPosition = vPosition; }
@@ -70,6 +76,9 @@ private:
 	class CPlayerFilterCallback*	m_pFilterCallback = nullptr;
 	class CPlayerHitReport*			m_pHitReport = nullptr;
 	USERDATA*						m_pUserData = nullptr;
+	PLAYER_TYPE						m_ePlayerType = PLAYER_END;
+
+
 	/* For.Jump */
 	_float	m_fJumpTime = 0.f;
 	_float	m_fHeightDelta = 0.f;
@@ -82,6 +91,8 @@ private:
 	_bool	m_IsGoUp = false;
 	_bool   m_bStatic = false;
 	_uint	m_iReorderGravityStep = 0;
+	_bool	m_IsPlayerSizeSmall = false;
+	_bool	m_IsPlayerInUFO = false;
 
 	_float  m_fFallingTime = 0.f;
 

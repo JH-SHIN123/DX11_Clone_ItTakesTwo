@@ -199,9 +199,9 @@ void CPinBall::MoveMent(_double dTimeDelta)
 	m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(-40.f, 0.f, 0.f));
 	m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(0.f, 0.f, -30.f));
 
-	if (m_pGameInstance->Key_Pressing(DIK_A)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
+	if (m_pGameInstance->Key_Pressing(DIK_A))
 		m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(5.f, 0.f, -30.f));
-	if (m_pGameInstance->Key_Pressing(DIK_D)/* || m_pGameInstance->Get_Pad_LStickX() > 40000*/)
+	if (m_pGameInstance->Key_Pressing(DIK_D))
 		m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(-5.f, 0.f, -30.f));
 
 	m_pDynamicActorCom->Update_DynamicActor(755.7f);

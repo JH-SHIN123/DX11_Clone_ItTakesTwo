@@ -68,14 +68,15 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 	CGameObject::Tick(dTimeDelta);
 	//
 
-	if (m_pGameInstance->Pad_Key_Down(DIP_RB) && m_IsCollide)
+	if (m_pGameInstance->Pad_Key_Down(DIP_RB) && m_IsCollide
+		|| m_pGameInstance->Key_Down(DIK_O) && m_IsCollide)
 	{
 		m_bPull = true;
 		m_IsNoGrab = false;
 		UI_Delete(May, InputButton_InterActive);
 	}
 
-	if (m_pGameInstance->Pad_Key_Down(DIP_LB))
+	if (m_pGameInstance->Pad_Key_Down(DIP_LB) || m_pGameInstance->Key_Down(DIK_O))
 	{
 		m_bPull = false;
 		m_IsNoGrab = true;

@@ -89,7 +89,7 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 
 	if (m_iTargetPlayer == GameID::eCODY)
 	{
-		if (m_pGameInstance->Key_Down(DIK_F) && m_IsCollide == true)
+		if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide == true)
 		{
 			UI_Delete(Cody, InputButton_InterActive);
 			m_bEnterValve = true;
@@ -98,7 +98,8 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 	}
 	if (m_iTargetPlayer == GameID::eMAY)
 	{
-		if (m_pGameInstance->Pad_Key_Down(DIP_Y) && m_IsCollide)
+		if (m_pGameInstance->Pad_Key_Down(DIP_Y) && m_IsCollide
+			|| m_pGameInstance->Key_Down(DIK_O) && m_IsCollide)
 		{
 			UI_Delete(May, InputButton_InterActive);
 			m_bEnterValve = true;

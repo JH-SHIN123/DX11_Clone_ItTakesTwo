@@ -90,14 +90,12 @@ void CPlayerActor::Update(_double dTimeDelta)
 		{
 			if (true == m_IsGoUp)
 			{
-				//PxVec3 vDist = MH_PxVec3(m_vPlayerUp, (_float)(dTimeDelta * 4.f));
 				PxVec3 vDist = { 0.f, (_float)(dTimeDelta * 12.f), 0.f };
 				m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
 				m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
 			}
 			else
 			{
-				//PxVec3 vDist = MH_PxVec3(m_vPlayerUp, (_float)(-dTimeDelta * 4.f));
 				PxVec3 vDist = { 0.f, (_float)(-dTimeDelta * 12.f), 0.f };
 				m_pController->move(vDist, 0.f, (_float)dTimeDelta, PxControllerFilters());
 				m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
@@ -112,9 +110,13 @@ void CPlayerActor::Update(_double dTimeDelta)
 		if (m_fHeightDelta != 0.f)
 			fY = m_fHeightDelta * 0.5f;
 		else
-			fY = m_fGravity * (_float)dTimeDelta;
+		{
+			if(m_IsPlayerInUFO == false)
+				fY = m_fGravity * (_float)dTimeDelta / 2.f;
+			else if (m_IsPlayerInUFO == true && m_IsPlayerSizeSmall == true)
+				fY = m_fGravity * (_float)dTimeDelta / 4.f;
+		}
 
-		//PxVec3 vDist = PxVec3(0, fY, 0);
 		PxVec3 vDist = MH_PxVec3(m_vPlayerUp, fY);
 		PxU32 iFlags = m_pController->move(vDist, 0.f, (_float)dTimeDelta, *m_pFilters);
 
@@ -127,9 +129,12 @@ void CPlayerActor::Update(_double dTimeDelta)
 		else if (!(PxControllerCollisionFlag::eCOLLISION_DOWN & iFlags) && !m_bJump && !m_bGroundPound && !m_bZeroGravity)
 		{
 			m_IsFalling = true;
-			m_fFallingTime += (_float)dTimeDelta;
+			if(m_IsPlayerInUFO == false)
+				m_fFallingTime += (_float)dTimeDelta / 2.f;
+			else
+				m_fFallingTime += (_float)dTimeDelta / 10.f;
+
 			// ÀÚÀ¯³«ÇÏ
-			//vDist = PxVec3(0, (0.4f * m_fGravity * 0.8f * m_fFallingTime * m_fFallingTime), 0);
 			vDist = MH_PxVec3(m_vPlayerUp, (0.4f * m_fGravity * 0.8f * m_fFallingTime * m_fFallingTime));
 			m_pController->move(vDist, 0.f, (_float)dTimeDelta, *m_pFilters);
 		}
@@ -253,7 +258,10 @@ _float CPlayerActor::Get_Height(_double dTimeDelta)
 {
 	if (!m_bJump) return 0.f;
 
-	m_fJumpTime += (_float)dTimeDelta;
+	if(m_IsPlayerSizeSmall == false)
+		m_fJumpTime += (_float)dTimeDelta;
+	else
+		m_fJumpTime += (_float)dTimeDelta / 2.f; 
 
 	return (m_fGravity / 2.f * m_fJumpTime * m_fJumpTime + m_fJumpForce * m_fJumpTime)/* * (_float)dTimeDelta*/;
 }

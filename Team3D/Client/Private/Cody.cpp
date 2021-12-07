@@ -96,7 +96,10 @@ HRESULT CCody::Ready_Component()
 	//CapsuleControllerDesc.maxJumpHeight = 10.f;
 	//CapsuleControllerDesc.volumeGrowth = 1.5f;
 
+
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_PlayerActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
+	m_pActorCom->Set_PlayerType(CPlayerActor::PLAYER_CODY);
+
 
 	//Effect 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Cody_Size"), nullptr, (CGameObject**)&m_pEffect_Size), E_FAIL);
@@ -384,43 +387,62 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
 		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
 		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
+		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 	if (m_pGameInstance->Key_Down(DIK_2)) /* 2층 */
 	{
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 127.f, 170.f, 1.f));
 		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
 		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
+		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 	if (m_pGameInstance->Key_Down(DIK_3)) /* 2스테이지 입구 */
 	{
 		m_pActorCom->Set_Position(XMVectorSet(620.f, 760.f, 195.f, 1.f));
 		DATABASE->Set_May_Stage(ST_RAIL);
 		DATABASE->Set_Cody_Stage(ST_RAIL);
+		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 	if (m_pGameInstance->Key_Down(DIK_4)) /* 2스테이지 */
 	{
 		m_pActorCom->Set_Position(XMVectorSet(960.f, 720.f, 193.f, 1.f));
 		DATABASE->Set_May_Stage(ST_RAIL);
 		DATABASE->Set_Cody_Stage(ST_RAIL);
+		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 	if (m_pGameInstance->Key_Down(DIK_5))/* 3스테이지 */
 	{
 		m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
 		DATABASE->Set_May_Stage(ST_PINBALL);
 		DATABASE->Set_Cody_Stage(ST_PINBALL);
+		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 	if (m_pGameInstance->Key_Down(DIK_6))/* 3층 */
+	{
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
+		m_pActorCom->Set_IsPlayerInUFO(false);
+	}
 	if (m_pGameInstance->Key_Down(DIK_7))/* Boss */
+	{
 		m_pActorCom->Set_Position(XMVectorSet(62.f, 250.f, 187.f, 1.f));
+		m_pActorCom->Set_IsPlayerInUFO(false);
+	}
 	if (m_pGameInstance->Key_Down(DIK_8))/* Moon */
+	{
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
+		m_pActorCom->Set_IsPlayerInUFO(false);
+	}
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
+	{
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+		m_pActorCom->Set_IsPlayerInUFO(true);
+	}
 	if (m_pGameInstance->Key_Down(DIK_0))/* 우산 */
+	{
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
-	if(m_pGameInstance->Key_Down(DIK_Z)) /* 파이프 베터리 */
-		m_pActorCom->Set_Position(XMVectorSet(44.8652f, 220.9396f, 223.94134f, 1.f));
+		m_pActorCom->Set_IsPlayerInUFO(false);
+	}
+
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -567,7 +589,12 @@ void CCody::KeyInput(_double dTimeDelta)
 
 				m_iAirDashCount += 1;
 				m_fAcceleration = 5.f;
-				m_pActorCom->Jump_Start(1.2f);
+
+				if (m_eCurPlayerSize != SIZE_SMALL)
+					m_pActorCom->Jump_Start(1.2f);
+				else
+					m_pActorCom->Jump_Start(0.6f);
+
 				m_pModelCom->Set_Animation(ANI_C_AirDash_Start);
 				m_IsAirDash = true;
 			}
@@ -610,6 +637,7 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_eNextPlayerSize = SIZE_MEDIUM;
 			m_IsSizeChanging = true;
 			m_pActorCom->Set_Gravity(-9.8f);
+			m_pActorCom->Set_IsPlayerSizeSmall(false);
 			break;
 		case Client::CCody::SIZE_MEDIUM:
 			m_eNextPlayerSize = SIZE_LARGE;
@@ -635,7 +663,7 @@ void CCody::KeyInput(_double dTimeDelta)
 		case Client::CCody::SIZE_MEDIUM:
 			m_eNextPlayerSize = SIZE_SMALL;
 			m_IsSizeChanging = true;
-			m_pActorCom->Set_Gravity(-7.5f);
+			m_pActorCom->Set_IsPlayerSizeSmall(true);
 			break;
 		}
 	}
@@ -927,7 +955,7 @@ void CCody::Move(const _double dTimeDelta)
 			else
 				m_fJogAcceleration = 10.f;
 
-			m_pActorCom->Move(vDirection / m_fJogAcceleration / 4.f, dTimeDelta);
+			m_pActorCom->Move(vDirection / m_fJogAcceleration / 8.f, dTimeDelta);
 
 			if (m_bRoll == false && m_IsJumping == false && m_IsFalling == false)
 			{
@@ -1060,7 +1088,7 @@ void CCody::Roll(const _double dTimeDelta)
 		if (m_eCurPlayerSize == SIZE_MEDIUM)
 			m_pActorCom->Move(vDirection * (m_fAcceleration / 15.f), dTimeDelta);
 		else if (m_eCurPlayerSize == SIZE_SMALL)
-			m_pActorCom->Move(vDirection * (m_fAcceleration / 40.f), dTimeDelta);
+			m_pActorCom->Move(vDirection * (m_fAcceleration / 120.f), dTimeDelta);
 	}
 
 	if (m_IsAirDash && m_bCanMove == true && m_pTransformCom)
@@ -1111,7 +1139,7 @@ void CCody::Roll(const _double dTimeDelta)
 		if(m_eCurPlayerSize == SIZE_MEDIUM)
 			m_pActorCom->Move(vDirection * (m_fAcceleration / 10.f), dTimeDelta);
 		else if (m_eCurPlayerSize == SIZE_SMALL)
-			m_pActorCom->Move(vDirection * (m_fAcceleration / 40.f), dTimeDelta);
+			m_pActorCom->Move(vDirection * (m_fAcceleration / 120.f), dTimeDelta);
 	}
 	
 	
@@ -1166,7 +1194,7 @@ void CCody::Sprint(const _double dTimeDelta)
 		if(m_eCurPlayerSize == SIZE_MEDIUM)
 			m_pActorCom->Move(vDirection / m_fSprintAcceleration, dTimeDelta);
 		else if (m_eCurPlayerSize == SIZE_SMALL)
-			m_pActorCom->Move(vDirection / m_fSprintAcceleration / 4.f, dTimeDelta);
+			m_pActorCom->Move(vDirection / m_fSprintAcceleration / 8.f, dTimeDelta);
 
 		if (m_bRoll == false && m_IsJumping == false && m_IsTurnAround == false)
 		{
@@ -1236,7 +1264,7 @@ void CCody::Sprint(const _double dTimeDelta)
 }
 void CCody::Jump(const _double dTimeDelta)
 {
-	if (m_bShortJump == true)
+	if (m_bShortJump  == true)
 	{
 		if (m_iJumpCount == 1)
 		{
@@ -1245,8 +1273,8 @@ void CCody::Jump(const _double dTimeDelta)
 				m_pActorCom->Jump_Start(2.6f);
 			else if (m_eCurPlayerSize == SIZE_LARGE)
 				m_pActorCom->Jump_Start(2.8f);
-			else
-				m_pActorCom->Jump_Start(1.1f);
+			else if (m_eCurPlayerSize == SIZE_SMALL)
+				m_pActorCom->Jump_Start(1.f);
 
 			if (m_eCurPlayerSize == SIZE_LARGE)
 				m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Start); // 사이즈 클때 점프 애니메이션이 다름.
@@ -1263,7 +1291,7 @@ void CCody::Jump(const _double dTimeDelta)
 			if (m_eCurPlayerSize == SIZE_MEDIUM)
 				m_pActorCom->Jump_Start(2.6f);
 			else if (m_eCurPlayerSize == SIZE_SMALL)
-				m_pActorCom->Jump_Start(1.1f);
+				m_pActorCom->Jump_Start(1.f);
 
 			m_pModelCom->Set_Animation(ANI_C_DoubleJump);
 			m_bShortJump = false;
@@ -1454,7 +1482,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 
 			if (m_bChangeSizeEffectOnce == false)
 			{
-				m_pActorCom->Set_Scale(0.05f, 0.05f);
+				m_pActorCom->Set_Scale(0.025f, 0.025f);
 				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_SMALL);
 				m_bChangeSizeEffectOnce = true;
 			}
@@ -1468,7 +1496,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 			else
 			{
 				m_bChangeSizeEffectOnce = false;
-				m_vScale = { 0.2f, 0.2f, 0.2f };
+				m_vScale = { 0.1f, 0.1f, 0.1f };
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_SMALL;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
@@ -1714,25 +1742,25 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)
 	{
-		if (m_eTargetGameID == GameID::eSTARBUDDY && m_pGameInstance->Key_Down(DIK_F))
+		if (m_eTargetGameID == GameID::eSTARBUDDY && m_pGameInstance->Key_Down(DIK_E))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_PlanetPush_Large);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsHitStarBuddy = true;
 		}
-		else if (m_eTargetGameID == GameID::eMOONBABOON && m_pGameInstance->Key_Down(DIK_F))
+		else if (m_eTargetGameID == GameID::eMOONBABOON && m_pGameInstance->Key_Down(DIK_E))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Grind_Grapple_ToGrind);
 			m_IsOnGrind = true;
 		}
-		else if (m_eTargetGameID == GameID::eROCKET && m_pGameInstance->Key_Down(DIK_F))
+		else if (m_eTargetGameID == GameID::eROCKET && m_pGameInstance->Key_Down(DIK_E))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_RocketFirework);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsHitRocket = true;
 		}
-		else if (m_eTargetGameID == GameID::eROBOTLEVER && m_pGameInstance->Key_Down(DIK_F))
+		else if (m_eTargetGameID == GameID::eROBOTLEVER && m_pGameInstance->Key_Down(DIK_E))
 		{
 			if (DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
 			{
@@ -1752,7 +1780,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsActivateRobotLever = true;
 		}
-		else if (m_eTargetGameID == GameID::eROBOTBATTERY && m_pGameInstance->Key_Down(DIK_F))
+		else if (m_eTargetGameID == GameID::eROBOTBATTERY && m_pGameInstance->Key_Down(DIK_E))
 		{
 			if (DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
 			{
@@ -1773,14 +1801,14 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
 			m_IsPushingBattery = true;
 		}
-		else if (m_eTargetGameID == GameID::eCONTROLROOMBATTERY && m_pGameInstance->Key_Down(DIK_F))
+		else if (m_eTargetGameID == GameID::eCONTROLROOMBATTERY && m_pGameInstance->Key_Down(DIK_E))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
 			m_IsPushingBattery = true;
 			m_IsPipeBattery = true;
 		}
-		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_F) && m_iValvePlayerName == Player::Cody)
+		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_E) && m_iValvePlayerName == Player::Cody)
 		{
 			m_pActorCom->Set_Position(XMVectorSet(46.487f, 124.842f, 195.789f, 1.f));
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Valve_Rotate_MH, 0.2);
@@ -1801,7 +1829,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			}
 			m_IsInGravityPipe = true;
 		}
-		else if (m_eTargetGameID == GameID::ePLANET && m_pGameInstance->Key_Down(DIK_F))
+		else if (m_eTargetGameID == GameID::ePLANET && m_pGameInstance->Key_Down(DIK_E))
 		{
 			if (m_eCurPlayerSize == SIZE_SMALL)
 			{
@@ -1957,7 +1985,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
 			m_IsPinBall = true;
 		}
-		else if (m_eTargetGameID == GameID::ePINBALLDOOR && m_pGameInstance->Key_Down(DIK_F))
+		else if (m_eTargetGameID == GameID::ePINBALLDOOR && m_pGameInstance->Key_Down(DIK_E))
 		{
 			/* 핀볼 문열기 */
 			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(false);
@@ -2276,8 +2304,6 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 		// 이동
 		_float Gravity = -0.3f;
 
-
-
 		m_faAcceleration = (-1.f * Gravity / m_faArmLength) * sin(m_fRopeAngle);
 
 		if (m_pGameInstance->Key_Pressing(DIK_W))
@@ -2288,39 +2314,7 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 		m_faVelocity *= m_faDamping;
 		m_fRopeAngle += m_faVelocity / 50.f;
 		
-		//if (m_vTriggerTargetPos.x - m_vStartPosition.x < 8.f)
-		//{
-		//	m_vStartPosition.x -= dTimeDelta * 5.f;
-		//}
-		//else if (m_vTriggerTargetPos.x - m_vStartPosition.x > 8.f)
-		//{
-		//	m_vStartPosition.x += dTimeDelta * 5.f;
-		//}
-		//if (m_vTriggerTargetPos.y - m_vStartPosition.y < 8.f)
-		//{
-		//	m_vStartPosition.y -= dTimeDelta * 5.f;
-		//}
-		//else if (m_vTriggerTargetPos.y - m_vStartPosition.y > 8.f)
-		//{
-		//	m_vStartPosition.y += dTimeDelta * 5.f;
-		//}
-		//if (m_vTriggerTargetPos.z - m_vStartPosition.z < 8.f)
-		//{
-		//	m_vStartPosition.z -= dTimeDelta * 5.f;
-		//}
-		//else if (m_vTriggerTargetPos.z - m_vStartPosition.z > 8.f)
-		//{
-		//	m_vStartPosition.z += dTimeDelta * 5.f;
-		//}
-
-			_vector vPosition =
-				XMVectorSet(
-								(m_vTriggerTargetPos.x -m_vStartPosition.x ) * sin(-m_fRopeAngle), 
-								(m_vTriggerTargetPos.y - m_vStartPosition.y) * cos(m_fRopeAngle),
-								((m_vTriggerTargetPos.z - m_vStartPosition.z) * sin(-m_fRopeAngle)), 0.f);
-
-		//_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x - m_vStartPosition.x) * sin(-m_fRopeAngle), m_faArmLength * cos(m_fRopeAngle), (m_vTriggerTargetPos.x - m_vStartPosition.x)  * sin(-m_fRopeAngle), 0.f);
-
+		_vector vPosition =	XMVectorSet( (m_vTriggerTargetPos.x -m_vStartPosition.x ) * sin(-m_fRopeAngle), (m_vTriggerTargetPos.y - m_vStartPosition.y) * cos(m_fRopeAngle), ((m_vTriggerTargetPos.z - m_vStartPosition.z) * sin(-m_fRopeAngle)), 0.f);
 		m_pActorCom->Set_Position(XMLoadFloat3(&m_vTriggerTargetPos) + vPosition);
 
 
@@ -2606,7 +2600,7 @@ void CCody::Boss_Missile_Control(const _double dTimeDelta)
 	{
 		if (false == m_IsBossMissile_Rodeo_Ready)
 		{
-			if (m_pGameInstance->Key_Down(DIK_F)) // 탑승 하세요
+			if (m_pGameInstance->Key_Down(DIK_E)) // 탑승 하세요
 			{
 				m_IsBossMissile_Rodeo_Ready = true;
 				m_IsBoss_Missile_Explosion = false;
