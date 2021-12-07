@@ -110,7 +110,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 		lerpColor = lerp(vOuterColor, vInnerColor, fLerp);
 	}
 
-	Out.vColor = lerpColor + g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV * 2.f) * 2.5f;
+	Out.vColor = lerpColor * 1.2f + g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV * 2.f) * 2.5f;
 
 	return Out;
 }
