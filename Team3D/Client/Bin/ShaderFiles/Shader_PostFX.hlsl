@@ -2,6 +2,8 @@
 #include "Shader_Include.hpp"
 
 ////////////////////////////////////////////////////////////
+Texture2D				g_LUTTex;
+
 Texture2D<float4>		g_HDRTex;
 Texture2D<float4>		g_BloomTexture;
 Texture2D<float4>		g_DOFBlurTex; // 다운스케일링 -> 업스케일링(Linear)
@@ -23,6 +25,17 @@ cbuffer FinalPassDesc
 
 ////////////////////////////////////////////////////////////
 /* Function */
+float3 LerpLUTColor(float3 InColor)
+{
+	float2 LutSize = float2(0.00390625, 0.0625); // 1 / float2(256,16) -> 텍스쳐크기 256, 16
+	float4 LutUV;
+	InColor = saturate(InColor) * 15.0; /* 색보정값 */
+	LutUV.w = float(InColor.b);
+	LutUV.xy = (InColor.rg + 0.5) * LutSize;
+	LutUV.x += LutUV.w * LutSize.y;
+	LutUV.z = LutUV.x + LutSize.y;
+	return lerp(g_LUTTex.Sample(Point_Sampler, LutUV.xyzz).rgb, g_LUTTex.Sample(Point_Sampler, LutUV.zyzz).rgb, InColor.b - LutUV.w);
+}
 
 float3 ToneMapping_DXSample(float3 HDRColor)
 {
@@ -132,15 +145,24 @@ PS_OUT PS_MAIN(PS_IN In)
 	}
 	else discard;
 
+	// DOF
 	float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
 
+	// Bloom
 	vColor += g_BloomScale * g_BloomTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV.xy).xyz;
-	vColor = ToneMapping_Flimic(vColor);
-
-	Out.vColor = vector(vColor, 1.f);
 	
-	Out.vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
+	// Tone Mapping
+	vColor = ToneMapping_Flimic(vColor);
+	
+	// Add Effect
+	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
+
+	// Final
+	Out.vColor = vector(vColor, 1.f);
+
+	// LUT
+	vColor.xyz = LerpLUTColor(vColor.xyz);
 
 	return Out;
 }

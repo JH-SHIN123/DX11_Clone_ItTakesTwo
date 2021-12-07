@@ -100,7 +100,7 @@ private: /* For.CS - Shader */
 
 private: /* For. PS - ToneMapping */
 	class CVIBuffer_RectRHW*	m_pVIBuffer_ToneMapping = nullptr;
-	class CTextures* m_pTextures = nullptr;
+	class CTextures* m_pTexture_LUT = nullptr;
 #pragma endregion
 
 #ifdef _DEBUG

@@ -4,6 +4,7 @@
 #include "Pipeline.h"
 #include "VIBuffer_RectRHW.h"
 #include "Blur.h"
+#include "Textures.h"
 
 IMPLEMENT_SINGLETON(CPostFX)
 
@@ -27,6 +28,8 @@ HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDevic
 	FAILED_CHECK_RETURN(Build_BloomResources(fBufferWidth, fBufferHeight), E_FAIL);
 	FAILED_CHECK_RETURN(Build_DOFBlurResources(fBufferWidth, fBufferHeight), E_FAIL);
 	FAILED_CHECK_RETURN(Build_ComputeShaders(TEXT("../Bin/ShaderFiles/ComputeShader_PostFX.hlsl"), "DefaultTechnique"), E_FAIL);
+
+	m_pTexture_LUT = CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TEXTURE_TYPE::TYPE_TGA, TEXT("../Bin/Resources/Texture/LUT/TX_FX_PPC_LUT_0.tga"),1);
 
 	return S_OK;
 }
@@ -193,6 +196,7 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_Variable("g_SubProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(ProjMatrixInverse));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
 
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_LUTTex", m_pTexture_LUT->Get_ShaderResourceView(0));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_PostFX")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_BloomTexture", m_pShaderResourceView_Bloom);
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DOFBlurTex", m_pShaderResourceView_DORBlur);
@@ -525,7 +529,8 @@ void CPostFX::Free()
 	Safe_Release(m_pEffect_CS);
 
 	Safe_Release(m_pVIBuffer_ToneMapping);
-
+	Safe_Release(m_pTexture_LUT);
+	
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 }
