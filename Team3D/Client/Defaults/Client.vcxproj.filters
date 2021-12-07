@@ -627,6 +627,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\00.Laser_Particle">
       <UniqueIdentifier>{b8aed4f4-bdd1-4e5a-a923-dbf34dca7640}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser">
+      <UniqueIdentifier>{7a29e47e-936f-445a-b906-c57d0033b40b}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1151,6 +1154,9 @@
     <ClInclude Include="..\public\Effect_Boss_Laser_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\00.Laser_Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Hit_BossLaser.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -1638,6 +1644,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Boss_Laser_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\00.Laser_Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Hit_BossLaser.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
