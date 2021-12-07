@@ -78,6 +78,9 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressureBigPlate"), TEXT("GameObject_PressureBigPlate")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoom_Glass(TEXT("Layer_ControlRoom_Glass")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Umbrella_Joystick(TEXT("Layer_UmbrellaBeam_Joystick")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_UFO (TEXT("Layer_UFO")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
+
 	/* Jun */
 
 	/* For. Environment */
@@ -521,17 +524,6 @@ HRESULT CLevel_Stage::Ready_Layer_May(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Stage::Ready_Layer_UFO(const _tchar * pLayerTag)
-{
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UFO")), E_FAIL);
-	return S_OK;
-}
-
-HRESULT CLevel_Stage::Ready_Layer_MoonBaboon(const _tchar * pLayerTag)
-{
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon")), E_FAIL);
-	return S_OK;
-}
 
 HRESULT CLevel_Stage::Ready_Layer_Rocket(const _tchar * pLayerTag)
 {
@@ -720,6 +712,24 @@ HRESULT CLevel_Stage::Ready_Layer_Umbrella_Joystick(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UmbrellaBeam_Joystick")), E_FAIL);
 	return S_OK;
 }
+
+HRESULT CLevel_Stage::Ready_Layer_MoonBaboon(const _tchar * pLayerTag)
+{
+	ROBOTDESC MoonBaboonDesc;
+	MoonBaboonDesc.vPosition = { 62.f, 250.f, 190.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon"), &MoonBaboonDesc), E_FAIL);
+	return S_OK;
+}
+
+HRESULT CLevel_Stage::Ready_Layer_UFO(const _tchar * pLayerTag)
+{
+	ROBOTDESC UFODesc;
+	UFODesc.vPosition = { 62.f, 250.f, 190.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UFO"), &UFODesc), E_FAIL);
+	return S_OK;
+}
+
+
 #pragma endregion
 
 #pragma region Jun

@@ -1082,42 +1082,80 @@
 
 #pragma region UFO_Animation
 
+#define CutScene_Eject_FlyingSaucer 1
+#define CutScene_EnterUFO_FlyingSaucer 2
+#define CutScene_PowerCoresDestroyed_UFO 3
+#define CutScene_RocketPhaseFinished_FlyingSaucer 4
+#define CutScene_UFO_Boss_Intro 5
+#define CutScene_UFO_LaserRippedOff_FlyingSaucer 6
+#define CutScene_UFO_Outro 7
+#define UFO_Back 8
+#define UFO_CodyHolding 9
+#define UFO_CodyHolding_Enter 10
+#define UFO_CodyHolding_low 11
+#define UFO_Controllable_Additive 12
+#define UFO_Controllable_Additive_Boost 13
+#define UFO_Controllable_Additive_Flying 14
+#define UFO_Controllable_Pose_Bck 15
+#define UFO_Controllable_Pose_Fwd 16
+#define UFO_Controllable_Pose_Left 17
+#define UFO_Controllable_Pose_Right 18
+#define UFO_FireRocket_Additive_Left 19
+#define UFO_FireRocket_Additive_Right 20
+#define UFO_Fwd 21
+#define UFO_GroundPound 22
+#define UFO_HitReaction_Bck 23
+#define UFO_HitReaction_Fwd 24
+#define UFO_HitReaction_Left 25
+#define UFO_HitReaction_Right 26
+#define UFO_KnockDownMH 27
+#define UFO_LaserRippedOff 28
+#define UFO_Laser_HitPod 29
+#define UFO_Laser_MH 30
+#define UFO_Left 31
+#define UFO_MH 32
+#define UFO_Ref 33
+#define UFO_Right 34
+#define UFO_RocketKnockDown_MH 35
 
-#define ANI_UFO_REF	1
-#define ANI_UFO_BACK	2
-#define ANI_UFO_CODYHOLDING	3
-#define ANI_UFO_CODYHOLDING_ENTER	4
-#define ANI_UFO_CODYHOLDING_LOW	5
-#define ANI_UFO_CONTROLLABLE_ADDITIVE	6
-#define ANI_UFO_CONTROLLABLE_ADDITIVE_BOOST	7
-#define ANI_UFO_CONTROLLABLE_ADDITIVE_FLYING	8
-#define ANI_UFO_CONTROLLABLE_POSE_BCK	9
-#define ANI_UFO_CONTROLLABLE_POSE_FWD	10
-#define ANI_UFO_CONTROLLABLE_POSE_LEFT	11
-#define ANI_UFO_CONTROLLABLE_POSE_RIGHT	12
-#define ANI_UFO_FIREROCKET_ADDITIVE_LEFT	13
-#define ANI_UFO_FIREROCKET_ADDITIVE_RIGHT	14
-#define ANI_UFO_FWD	15
-#define ANI_UFO_GROUNDPOUND	16
-#define ANI_UFO_HITREACTION_BCK	17
-#define ANI_UFO_HITREACTION_FWD	18
-#define ANI_UFO_HITREACTION_LEFT	19
-#define ANI_UFO_HITREACTION_RIGHT	20
-#define ANI_UFO_KNOCKDOWNMH	21
-#define ANI_UFO_LASER_HITPOD	22
-#define ANI_UFO_LASER_MH	23
-#define ANI_UFO_LASERRIPPEDOFF	24
-#define ANI_UFO_LEFT	25
-#define ANI_UFO_MH	26
-#define ANI_UFO_RIGHT	27
-#define ANI_UFO_ROCKETKNOCKDOWN_MH	28
-#define ANI_CUTSCENE_EJECT_FLYINGSAUCER	29
-#define ANI_CUTSCENE_ENTERUFO_FLYINGSAUCER	30
-#define ANI_CUTSCENE_UFO_BOSS_INTRO	31
-#define ANI_CUTSCENE_UFO_LASERRIPPEDOFF_FLYINGSAUCER	32
-#define ANI_CUTSCENE_UFO_OUTRO	33
-#define ANI_CUTSCENE_POWERCORESDESTROYED_UFO	34
-#define ANI_CUTSCENE_ROCKETPHASEFINISHED_FLYINGSAUCER	35
+#pragma endregion
+
+#pragma region MoonBaboon
+
+#define CutScene_BossIntro_MoonBaboon 1
+#define CutScene_Eject_MoonBaboon 2
+#define CutScene_EnterUFO_MoonBaboon 3
+#define CutScene_LaserRippedOff_MoonBaboon 4
+#define CutScene_Outro_MoonBaboon 5
+#define CutScene_PowerCoreDestroyed_MoonBaboon 6
+#define CutScene_RocketPhaseFinished_MoonBaboon 7
+#define Moon_BeamUp_Intro 8
+#define Moon_BossIntro 9
+#define Moon_CutScene_BeamUp_Intro 10
+#define Moon_Eject 11
+#define Moon_EnterUFO 12
+#define Moon_HitReaction 13
+#define Moon_JetPackToLanding 14
+#define Moon_JetPack_Flying 15
+#define Moon_JetPack_Flying_Start 16
+#define Moon_JetPack_Landing_MH 17
+#define Moon_JetPack_LandToRun 18
+#define Moon_JetPack_MH 19
+#define Moon_LaserRippedOff 20
+#define Moon_Outro 21
+#define Moon_PowerCoreDestroyed 22
+#define Moon_RocketPhaseFinished 23
+#define Moon_Run 24
+#define Moon_Ufo_CodyHolding 25
+#define Moon_Ufo_CodyHolding_Enter 26
+#define Moon_Ufo_FireRocket 27
+#define Moon_Ufo_GroundPound 28
+#define Moon_Ufo_Inside_MH 29
+#define Moon_Ufo_KnockDownMH 30
+#define Moon_Ufo_Laser_HitPod 31
+#define Moon_Ufo_MH 32
+#define Moon_Ufo_Programming 33
+
 
 #pragma endregion
 

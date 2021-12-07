@@ -380,19 +380,19 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	XMStoreFloat4x4(&m_matBeforeSpringCam, matAffine);
 #pragma region PhsyX Check
 	_vector vResultPos = XMVectorZero();
-	if (false == bIsTeleport)
-	{
-		 m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
-		
-		_float4 vEye, vAt;
-		
-		XMStoreFloat4(&vEye, vResultPos);
-		XMStoreFloat4(&vAt, vPlayerPos);
-		_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt);
-		matAffine = matCurWorld;
-		
-	}
-	else
+	//if (false == bIsTeleport)
+	//{
+	//	 m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
+	//	
+	//	_float4 vEye, vAt;
+	//	
+	//	XMStoreFloat4(&vEye, vResultPos);
+	//	XMStoreFloat4(&vAt, vPlayerPos);
+	//	_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt);
+	//	matAffine = matCurWorld;
+	//	
+	//}
+	//else
 		m_bIsCollision = false;
 	m_pTransformCom->Set_WorldMatrix(matAffine);
 
