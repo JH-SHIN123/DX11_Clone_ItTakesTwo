@@ -42,18 +42,18 @@ private:
 	
 #pragma region Constant Params
 private:
-	_uint	m_iWinSize[2] = { 0,0 };
-	_uint	m_iDownScaleGroups = 0;
+	_uint    m_iWinSize[2] = { 0,0 };
+	_uint    m_iDownScaleGroups = 0;
 
-	_float	m_fMiddleGrey = 0.03249f; 
-	_float	m_fLumWhiteSqr = 1.5f;
-	
-	_float	m_fAdaptTime = 1.f;
-	_float	m_fAdaptationDeltaT = 0.f;
-	_float	m_fAdaptation = 0.f;
+	_float    m_fMiddleGrey = 0.019135f;
+	_float    m_fLumWhiteSqr = 50.f;
 
-	_float m_fBloomThreshold = 2.f;
-	_float m_fBloomScale = 0.74f;
+	_float    m_fAdaptTime = 1.f;
+	_float    m_fAdaptationDeltaT = 0.f;
+	_float    m_fAdaptation = 0.f;
+
+	_float m_fBloomThreshold = 100.f;
+	_float m_fBloomScale = 0.25f;
 #pragma endregion
 
 #pragma region Resources

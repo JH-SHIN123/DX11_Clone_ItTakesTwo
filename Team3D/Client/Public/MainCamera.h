@@ -13,7 +13,7 @@ class CMainCamera final : public CCamera
 
 	enum class CamMode{Cam_Free,Cam_AutoToFree,Cam_End};
 	//O CamFreeMove P FollowPlayer
-	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnRail, Cam_Free_End };
+	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnRail,Cam_Free_Warp_WormHole, Cam_Free_End };
 
 private:
 	explicit CMainCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -36,13 +36,13 @@ private:
 	_bool	LerpToCurSize(CCody::PLAYER_SIZE eSize,_double dTimeDelta);
 private:
 	//For Free.
-	_int	Tick_Cam_Free(_double dTimeDelta);				//자유이동
-	_int	Tick_Cam_AutoToFree(_double dTimeDelta);		//연출 카메라 -> 자유이동시 보간
+	_int	Tick_Cam_Free(_double dTimeDelta);					//자유이동
+	_int	Tick_Cam_AutoToFree(_double dTimeDelta);			//연출 카메라 -> 자유이동시 보간
 	
-	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);	//카메라가 플레이어를쫓아가며 이동(메인 카메라)
-	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);		//카메라가 자유롭게 이동함
-	_int	Tick_Cam_Free_OnRail(_double dTimeDelta);
-
+	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
+	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
+	_int	Tick_Cam_Free_OnRail(_double dTimeDelta);			//레일
+	_int	Tick_Cam_Free_Warp_WormHole(_double dTimeDelta);	//웜홀
 
 	//CamHelper State(현재 )
 	_int	Tick_CamHelperNone(_double dTimeDelta);			//현재 아무것도 재생안함

@@ -154,6 +154,10 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 	}
 	m_bIsLerpToCurSize = LerpToCurSize(m_eCurPlayerSize, dTimeDelta);
 	
+	if (static_cast<CCody*>(m_pTargetObj)->Get_CurState() == ANI_C_SpacePortal_Travel)
+	{
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_Warp_WormHole;
+	}
 
 }
 
@@ -190,20 +194,23 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 {
 	if (nullptr == m_pTargetObj)
 		return EVENT_ERROR;
-
+	_int iResult = NO_EVENT;
 	switch (m_eCurCamFreeOption)
 	{
 	case CMainCamera::CamFreeOption::Cam_Free_FollowPlayer:
-		Tick_Cam_Free_FollowPlayer(dTimeDelta);
+		iResult = Tick_Cam_Free_FollowPlayer(dTimeDelta);
 		break;
 	case CMainCamera::CamFreeOption::Cam_Free_FreeMove:
-		Tick_Cam_Free_FreeMode(dTimeDelta);
+		iResult = Tick_Cam_Free_FreeMode(dTimeDelta);
 		break;
 	case CMainCamera::CamFreeOption::Cam_Free_OnRail:
-		Tick_Cam_Free_OnRail(dTimeDelta);
+		iResult = Tick_Cam_Free_OnRail(dTimeDelta);
+		break;
+	case CMainCamera::CamFreeOption::Cam_Free_Warp_WormHole:
+		iResult = Tick_Cam_Free_Warp_WormHole(dTimeDelta);
 		break;
 	}
-	return NO_EVENT;
+	return iResult;
 }
 
 _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
@@ -408,6 +415,23 @@ _int CMainCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 _int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
 {
 	KeyCheck(dTimeDelta);
+	return NO_EVENT;
+}
+_int CMainCamera::Tick_Cam_Free_Warp_WormHole(_double dTimeDelta)
+{
+	CTransform* pPlayerTransform = static_cast<CCody*>(m_pTargetObj)->Get_Transform();
+	if (nullptr == pPlayerTransform)
+		return EVENT_ERROR;
+
+	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vPlayerLook = XMVector3Normalize(pPlayerTransform->Get_State(CTransform::STATE_LOOK));
+	_vector vCamPos = vPlayerPos - vPlayerLook;
+	
+	_float4 vEye, vAt;
+	XMStoreFloat4(&vEye, vCamPos);
+	XMStoreFloat4(&vAt, vPlayerPos);
+	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vEye, vAt));
+
 	return NO_EVENT;
 }
 void CMainCamera::KeyCheck(_double dTimeDelta)
