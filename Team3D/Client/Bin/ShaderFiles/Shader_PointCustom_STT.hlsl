@@ -605,6 +605,21 @@ PS_OUT  PS_MAIN(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_ONLY_TEX(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (0.01f >= vColor.a)
+		discard;
+
+	Out.vColor = vColor;
+	Out.vColor.a = vColor.r;
+
+	return Out;
+}
+
 PS_OUT  PS_MAIN_COLOR(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -681,12 +696,13 @@ PS_OUT  PS_MAIN_LASER_PARTICLE(PS_IN_DOUBLEUV In)
 	if (0.01f >= vDiff.r)
 		discard;
 	Out.vColor = vDiff;
+	Out.vColor.a = vDiff.r;
 
-	//float2 vTexUV_2 = { In.fTime , 0.f };
-	//float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vTexUV_2);
+	float2 vTexUV_2 = { In.fTime , 0.f };
+	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vTexUV_2);
 
-	Out.vColor.rgb *= 5.f;//vColor.rgb;
-	Out.vColor.a *= Out.vColor.r * g_fTime;
+	Out.vColor.rgb *= vColor.rgb;
+	Out.vColor.a *= vColor.r;
 
 	return Out;
 }
@@ -743,4 +759,13 @@ technique11		DefaultTechnique
 		PixelShader = compile ps_5_0  PS_MAIN_LASER_PARTICLE();
 	}
 
+	pass PS_BOSSLASER_SMOKE_LOOP // 5
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_ONLY_TEX();
+	}
 }

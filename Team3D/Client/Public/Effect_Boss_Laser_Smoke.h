@@ -21,10 +21,11 @@ public:
 
 public:
 	void Set_IsActivate(_bool IsActivate) { m_IsActivate = IsActivate; }
-	void Set_Position(_fvector vPos) { m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos); }
+	void Set_WorldMatrix(_fmatrix WorldMatrix) { m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
 
 private:
 	void Check_Instance(_double TimeDelta);
+	void Check_Smoke(_double TimeDelta);
 
 private:
 	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0)	override;
@@ -38,7 +39,7 @@ private:
 	HRESULT Ready_InstanceBuffer();
 
 private:
-	_double m_dControlTime = 1.0; //
+	_double m_dControlTime = 0.0; //
 	_bool m_IsActivate = true;
 
 private:
@@ -48,6 +49,13 @@ private:
 	_double*							m_pInstance_Update_TextureUV_Time = nullptr;
 
 	_float m_fNextUV = 0.f;
+
+	CTextures*							m_pTexturesCom_Smoke = nullptr;
+	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT_Smoke = nullptr;
+	_float fNextUVTime_Smoke = 0.f;
+	XMINT2 m_vSmokeTextureUV			= { 0, 0 };
+	const XMINT2 m_vSmokeTextureUV_Max = { 8, 8 };
+
 
 	const _float  m_fAlphaTime_Power			= 0.5f;
 	const _float  m_fSize_Power					= 0.75f;

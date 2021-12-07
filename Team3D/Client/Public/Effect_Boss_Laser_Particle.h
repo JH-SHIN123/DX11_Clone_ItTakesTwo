@@ -21,7 +21,7 @@ public:
 
 public:
 	void Set_IsActivate(_bool IsActivate) { m_IsActivate = IsActivate; }
-	void Set_Position(_fvector vPos) { m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos); }
+	void Set_WorldMatrix(_fmatrix WorldMatrix) { m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
 
 
 private:
@@ -37,6 +37,7 @@ private:
 
 private:
 	HRESULT Ready_InstanceBuffer();
+	_float3 Get_Particle_Rand_Dir(_fvector vDefaultPos);
 
 private:
 	_double m_dControlTime = 0.0; //
@@ -51,7 +52,7 @@ private:
 	const _float  m_fAlphaTime_Power			= 1.f;
 	const _float  m_fInstance_SpeedPerSec		= 2.5f;
 	const _double m_dInstance_Pos_Update_Time	= 1.5;
-	const _float2 m_vDefaultSize				= { 0.2f, 1.f };
+	const _float2 m_vDefaultSize				= { 0.1f, 0.4f };
 
 public:
 	static CEffect_Boss_Laser_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

@@ -42,10 +42,15 @@ HRESULT CEffect_Boss_Laser_Particle::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_Laser_Particle::Tick(_double TimeDelta)
 {
-	if (m_dInstance_Pos_Update_Time <= m_dControlTime)
+	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
 		return EVENT_DEAD;
-	if (false == m_IsActivate)
-		m_dControlTime += TimeDelta;
+
+	m_dControlTime += TimeDelta;
+	if (true == m_IsActivate)
+	{
+		if (1.0 <= m_dControlTime)
+			m_dControlTime = 1.0;
+	}
 
 	Check_Instance(TimeDelta);
 
@@ -54,7 +59,7 @@ _int CEffect_Boss_Laser_Particle::Tick(_double TimeDelta)
 
 _int CEffect_Boss_Laser_Particle::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
 }
 
 HRESULT CEffect_Boss_Laser_Particle::Render(RENDER_GROUP::Enum eGroup)
@@ -79,7 +84,7 @@ void CEffect_Boss_Laser_Particle::Check_Instance(_double TimeDelta)
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
-		m_pInstanceBuffer_STT[iIndex].fTime -= (_float)TimeDelta * 0.8f;
+		m_pInstanceBuffer_STT[iIndex].fTime -= (_float)TimeDelta * 0.65f;
 		if (0.f >= m_pInstanceBuffer_STT[iIndex].fTime)
 			m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
 
@@ -104,7 +109,9 @@ void CEffect_Boss_Laser_Particle::Instance_Pos(_float TimeDelta, _int iIndex)
 	m_pInstance_Parabola_Time[iIndex] = (_double)TimeDelta;
 
 	_vector vDir = XMLoadFloat3(&m_pInstanceBiffer_Dir[iIndex]);
-	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * m_fInstance_SpeedPerSec;
+	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 6.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
+
+	vPos.m128_f32[1] -= TimeDelta * (1.f - m_pInstanceBuffer_STT[iIndex].fTime) * 1.5f;
 
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }
@@ -120,7 +127,22 @@ void CEffect_Boss_Laser_Particle::Reset_Instance(_double TimeDelta, _float4 vPos
 	m_pInstanceBuffer_STT[iIndex].fTime = 1.02f;
 
 	m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time;
-	m_pInstance_Parabola_Time[iIndex] = 0.0;
+	m_pInstance_Parabola_Time[iIndex]  = 0.0;
+
+	_vector vLookDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * -1.5f;
+	_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
+	vRandDir = XMVector3Normalize(vRandDir + vLookDir);
+
+	_float3 v3RandDir;
+	XMStoreFloat3(&v3RandDir, vRandDir);
+	_float4 v4Dir = { v3RandDir.x, v3RandDir.y, v3RandDir.z, 0.f };
+	m_pInstanceBuffer_STT[iIndex].vUp = v4Dir;
+	m_pInstanceBiffer_Dir[iIndex] = v3RandDir;
+	if (0.f >= m_pInstanceBiffer_Dir[iIndex].y)
+	{
+		m_pInstanceBiffer_Dir[iIndex].y *= -1.2f;
+		m_pInstanceBuffer_STT[iIndex].vUp.y *= -1.f;
+	}
 }
 
 HRESULT CEffect_Boss_Laser_Particle::Ready_InstanceBuffer()
@@ -135,13 +157,11 @@ HRESULT CEffect_Boss_Laser_Particle::Ready_InstanceBuffer()
 	_float4 vMyPos;
 	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
+	_vector vLookDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * -1.5f;
+
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
-		_float3 vRandDir = __super::Get_Dir_Rand(_int3(100, 100, 100));
-		_float4 vDir = { vRandDir.x, vRandDir.y, vRandDir.z, 0.f };
-
 		m_pInstanceBuffer_STT[iIndex].vRight		= { 1.f, 0.f, 0.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vUp			= vDir;
 		m_pInstanceBuffer_STT[iIndex].vLook			= { 0.f, 0.f, 1.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vPosition		= vMyPos;
 
@@ -151,9 +171,32 @@ HRESULT CEffect_Boss_Laser_Particle::Ready_InstanceBuffer()
 
 		m_pInstance_Pos_UpdateTime[iIndex]			= m_dInstance_Pos_Update_Time  * (_double(iIndex) / iInstanceCount);
 		m_pInstance_Parabola_Time[iIndex]			= 0.0;
+
+		_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
+		vRandDir = XMVector3Normalize(vRandDir + vLookDir);
+		_float3 v3RandDir;
+		XMStoreFloat3(&v3RandDir, vRandDir);
+		_float4 v4Dir = { v3RandDir.x, v3RandDir.y, v3RandDir.z, 0.f };
+		m_pInstanceBuffer_STT[iIndex].vUp = v4Dir;
+		m_pInstanceBiffer_Dir[iIndex] = v3RandDir;
+		if (0.f >= m_pInstanceBiffer_Dir[iIndex].y)
+		{
+			m_pInstanceBiffer_Dir[iIndex].y *= -1.2f;
+			m_pInstanceBuffer_STT[iIndex].vUp.y *= -1.f;
+		}
 	}
 
 	return S_OK;
+}
+
+_float3 CEffect_Boss_Laser_Particle::Get_Particle_Rand_Dir(_fvector vDefaultPos)
+{
+	_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
+	_vector vPos = vDefaultPos - vRandDir;
+
+
+
+	return _float3();
 }
 
 CEffect_Boss_Laser_Particle * CEffect_Boss_Laser_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
