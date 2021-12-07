@@ -99,7 +99,8 @@ private: /* For.CS - Shader */
 	vector<INPUT_LAYOUT_DESC>	m_InputLayouts_CS;
 
 private: /* For. PS - ToneMapping */
-	class CVIBuffer_RectRHW* m_pVIBuffer_ToneMapping = nullptr;
+	class CVIBuffer_RectRHW*	m_pVIBuffer_ToneMapping = nullptr;
+	class CTextures* m_pTextures = nullptr;
 #pragma endregion
 
 #ifdef _DEBUG
