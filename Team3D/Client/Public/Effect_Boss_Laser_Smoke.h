@@ -40,12 +40,14 @@ private:
 
 private:
 	_double m_dControlTime = 0.0; //
-	_bool m_IsActivate = false;
+	_bool m_IsActivate = true;
 
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT	= nullptr;
 	_double*							m_dInstance_Update_TextureUV_Time = nullptr;
+
+	_float m_fNextUV = 0.f;
 
 	const _float  m_fAlphaTime_Power			= 0.25f;
 	const _float  m_fSize_Power					= 0.5f;

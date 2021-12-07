@@ -31,13 +31,14 @@ class CEffect_Generator final : public CBase
 	typedef struct tagEffectPointLight_Desc
 	{
 		_float3 vPosition;
-		_float4 vDiffuseColor;
+		//_float4 vDiffuseColor;
 		_float  fPointRadius;
 		_float  fPointSaturation_Power;
-		_float fPointContrast_Power;
+		_float  fPointContrast_Power;
+		_int	iTextureIndex; //Bin\Resources\Effect\2D\Color_Ramp
 		tagEffectPointLight_Desc() {}
-		tagEffectPointLight_Desc(_float fRadius, _float Saturation_Power, _float fContrast_Power, _float3 vPos, _float4 vDiffColor)
-			:vPosition(vPos), vDiffuseColor(vDiffColor), fPointRadius(fRadius), fPointSaturation_Power(Saturation_Power), fPointContrast_Power(fContrast_Power){}
+		tagEffectPointLight_Desc(_float fRadius, _float Saturation_Power, _float fContrast_Power, _float3 vPos, _int iTextureIndex_Color)
+			:vPosition(vPos), iTextureIndex(iTextureIndex_Color), fPointRadius(fRadius), fPointSaturation_Power(Saturation_Power), fPointContrast_Power(fContrast_Power){}
 
 	}Effect_PointLight_Desc;
 

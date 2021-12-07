@@ -11,6 +11,7 @@
 
 /* Se */
 #include "GravityPath.h"
+#include "Laser_TypeA.h"
 
 /* Jung */
 #include "Effect_Generator.h"
@@ -318,7 +319,14 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 
 HRESULT CLoading::Create_GameObjects_SpaceStage_Se()
 {
+#ifndef __MAPLOADING_OFF
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_GravityPath"), CGravityPath::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+#endif
+
+#ifdef __TEST_SE
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"), CLaser_TypeA::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+#endif
+
 	return S_OK;
 }
 

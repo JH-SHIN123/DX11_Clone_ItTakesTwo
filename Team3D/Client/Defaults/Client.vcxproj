@@ -290,6 +290,7 @@
     <ClInclude Include="..\Public\PinBall_Handle.h" />
     <ClInclude Include="..\Public\PinBall_HandleBase.h" />
     <ClInclude Include="..\Public\PinBall_Spring.h" />
+    <ClInclude Include="..\Public\PipeJumpWall.h" />
     <ClInclude Include="..\Public\Planet.h" />
     <ClInclude Include="..\Public\PlanetRing.h" />
     <ClInclude Include="..\Public\PlayerActor.h" />
@@ -452,6 +453,7 @@
     <ClCompile Include="..\Private\PinBall_Handle.cpp" />
     <ClCompile Include="..\Private\PinBall_HandleBase.cpp" />
     <ClCompile Include="..\Private\PinBall_Spring.cpp" />
+    <ClCompile Include="..\Private\PipeJumpWall.cpp" />
     <ClCompile Include="..\Private\Planet.cpp" />
     <ClCompile Include="..\Private\PlanetRing.cpp" />
     <ClCompile Include="..\Private\PlayerActor.cpp" />
