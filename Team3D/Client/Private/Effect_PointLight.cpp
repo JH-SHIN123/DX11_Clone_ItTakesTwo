@@ -56,8 +56,8 @@ HRESULT CEffect_PointLight::Render(RENDER_GROUP::Enum eGroup)
 {
 	m_pPointInstanceCom->Set_DefaultVariables();
 	m_pPointInstanceCom->Set_Variable("g_vColor", &m_PointLight_Desc.vDiffuseColor, sizeof(_float4));
-	m_pPointInstanceCom->Set_Variable("g_fPointContrast_Power", &m_PointLight_Desc.fPointContrast_Power, sizeof(_float));
-	m_pPointInstanceCom->Set_Variable("g_fPointSaturation_Power", &m_PointLight_Desc.fPointSaturation_Power, sizeof(_float));
+	m_pPointInstanceCom->Set_Variable("g_fContrast_Power", &m_PointLight_Desc.fPointContrast_Power, sizeof(_float));
+	m_pPointInstanceCom->Set_Variable("g_fSaturation_Power", &m_PointLight_Desc.fPointSaturation_Power, sizeof(_float));
 	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Second->Get_ShaderResourceView(2));
 
 	m_pPointInstanceCom->Render(10, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);

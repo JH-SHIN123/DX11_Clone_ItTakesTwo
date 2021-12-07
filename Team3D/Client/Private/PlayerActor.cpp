@@ -105,7 +105,7 @@ void CPlayerActor::Update(_double dTimeDelta)
 	else
 	{
 		m_fHeightDelta = Get_Height(dTimeDelta);
-		_float fY;
+		_float fY = 0.f;
 
 		if (m_fHeightDelta != 0.f)
 			fY = m_fHeightDelta * 0.5f;

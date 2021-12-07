@@ -387,7 +387,7 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
 		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
 		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
-		m_pActorCom->Set_IsPlayerInUFO(false);
+		m_pActorCom->Set_IsPlayerInUFO(false); // 실제로 보스방에서 이동하게 되면 On/Off 해줘야함!! 테스트용으로 임시로 만든거.
 	}
 	if (m_pGameInstance->Key_Down(DIK_2)) /* 2층 */
 	{
@@ -2003,19 +2003,23 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			{
 			case 0:
 				m_pModelCom->Set_Animation(ANI_C_Bhv_Bounce_01);
-				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Bounce_01);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Falling);
+				m_IsJumping = true;
 				break;
 			case 1:
 				m_pModelCom->Set_Animation(ANI_C_Bhv_Bounce_02);
-				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Bounce_02);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Falling);
+				m_IsJumping = true;
 				break;
 			case 2:
 				m_pModelCom->Set_Animation(ANI_C_Bhv_Bounce_03);
-				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Bounce_03);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Falling);
+				m_IsJumping = true;
 				break;
 			case 3:
 				m_pModelCom->Set_Animation(ANI_C_Bhv_Bounce_04);
-				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Bounce_04);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Falling);
+				m_IsJumping = true;
 				break;
 			default:
 				break;
@@ -2314,7 +2318,7 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 		m_faVelocity *= m_faDamping;
 		m_fRopeAngle += m_faVelocity / 50.f;
 		
-		_vector vPosition =	XMVectorSet( (m_vTriggerTargetPos.x -m_vStartPosition.x ) * sin(-m_fRopeAngle), (m_vTriggerTargetPos.y - m_vStartPosition.y) * cos(m_fRopeAngle), ((m_vTriggerTargetPos.z - m_vStartPosition.z) * sin(-m_fRopeAngle)), 0.f);
+		_vector vPosition =	XMVectorSet( (m_vTriggerTargetPos.x -m_vStartPosition.x ) * sin(-m_fRopeAngle), (m_vTriggerTargetPos.y - m_vStartPosition.y) * cos(m_fRopeAngle), ((m_vTriggerTargetPos.z - m_vStartPosition.z) * sin(-m_fRopeAngle)), 1.f);
 		m_pActorCom->Set_Position(XMLoadFloat3(&m_vTriggerTargetPos) + vPosition);
 
 

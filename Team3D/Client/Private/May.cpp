@@ -1621,19 +1621,23 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			{
 			case 0:
 				m_pModelCom->Set_Animation(ANI_M_Bounce1);
-				m_pModelCom->Set_NextAnimIndex(ANI_M_Bounce1);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Falling);
+				m_IsJumping = true;
 				break;
 			case 1:
 				m_pModelCom->Set_Animation(ANI_M_Bounce2);
-				m_pModelCom->Set_NextAnimIndex(ANI_M_Bounce2);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Falling);
+				m_IsJumping = true;
 				break;
 			case 2:
 				m_pModelCom->Set_Animation(ANI_M_Bounce3);
-				m_pModelCom->Set_NextAnimIndex(ANI_M_Bounce3);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Falling);
+				m_IsJumping = true;
 				break;
 			case 3:
 				m_pModelCom->Set_Animation(ANI_M_Bounce4);
-				m_pModelCom->Set_NextAnimIndex(ANI_M_Bounce4);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Falling);
+				m_IsJumping = true;
 				break;
 			default:
 				break;
