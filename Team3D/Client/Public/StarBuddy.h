@@ -40,7 +40,8 @@ private:
 	_float		m_fUpAcceleration = 0.f;
 	_bool		m_bLaunch = false;
 	_float		m_fLifeTime = 0.f;
-	_bool		m_IsCollide = false;
+	_bool		m_IsCodyCollide = false;
+	_bool		m_IsMayCollide = false;
 	GameID::Enum		m_PlayerID = GameID::eSTARBUDDY;
 
 private:
@@ -50,9 +51,6 @@ private:
 	CModel*				m_pModelCom = nullptr;
 	CTriggerActor*		m_pTriggerCom = nullptr;
 	CStaticActor*		m_pStaticActorCom = nullptr;
-
-private:
-	HRESULT InterActive_UI();
 
 public:
 	static CStarBuddy* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -213,6 +213,7 @@
     <ClInclude Include="..\Public\Client_MathHelper.h" />
     <ClInclude Include="..\Public\Client_Struct.h" />
     <ClInclude Include="..\Public\Cody.h" />
+    <ClInclude Include="..\Public\ContextIcon.h" />
     <ClInclude Include="..\Public\ControllerIcon.h" />
     <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
@@ -253,6 +254,7 @@
     <ClInclude Include="..\Public\Film.h" />
     <ClInclude Include="..\Public\GameDebugger.h" />
     <ClInclude Include="..\Public\GameOption.h" />
+    <ClInclude Include="..\Public\Gauge_Circle.h" />
     <ClInclude Include="..\Public\GravityPath.h" />
     <ClInclude Include="..\Public\GrindLine.h" />
     <ClInclude Include="..\Public\HangingPlanet.h" />
@@ -389,6 +391,7 @@
     <ClCompile Include="..\Private\ChapterSelect.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
+    <ClCompile Include="..\Private\ContextIcon.cpp" />
     <ClCompile Include="..\Private\ControllerIcon.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Battery.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Door.cpp" />
@@ -428,6 +431,7 @@
     <ClCompile Include="..\Private\Environment_Generator.cpp" />
     <ClCompile Include="..\Private\Film.cpp" />
     <ClCompile Include="..\Private\GameDebugger.cpp" />
+    <ClCompile Include="..\Private\Gauge_Circle.cpp" />
     <ClCompile Include="..\Private\GravityPath.cpp" />
     <ClCompile Include="..\Private\GrindLine.cpp" />
     <ClCompile Include="..\Private\HangingPlanet.cpp" />

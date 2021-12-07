@@ -579,6 +579,12 @@
     <Filter Include="02.GameObject\06.UI\11.ChapterSelect">
       <UniqueIdentifier>{f0c03c84-48c4-479e-86d2-76c7f04a52ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06.UI\12.ContextIcon">
+      <UniqueIdentifier>{6d3ccbee-799f-49f9-a89d-e1d2d786d30e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\13.Gauge_Circle">
+      <UniqueIdentifier>{6211bcdd-7628-46cc-ada7-5cd4f2e375da}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\99.Terrain%28Test%29">
       <UniqueIdentifier>{f999b3e3-a399-493a-893b-bcebcfb781a4}</UniqueIdentifier>
     </Filter>
@@ -1145,6 +1151,12 @@
     <ClInclude Include="..\Public\ChapterSelect.h">
       <Filter>02.GameObject\06.UI\11.ChapterSelect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ContextIcon.h">
+      <Filter>02.GameObject\06.UI\12.ContextIcon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Gauge_Circle.h">
+      <Filter>02.GameObject\06.UI\13.Gauge_Circle</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
     </ClInclude>
@@ -1701,6 +1713,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\ChapterSelect.cpp">
       <Filter>02.GameObject\06.UI\11.ChapterSelect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ContextIcon.cpp">
+      <Filter>02.GameObject\06.UI\12.ContextIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Gauge_Circle.cpp">
+      <Filter>02.GameObject\06.UI\13.Gauge_Circle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>

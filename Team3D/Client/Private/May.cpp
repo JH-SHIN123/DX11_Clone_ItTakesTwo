@@ -7,6 +7,8 @@
 #include "PlayerActor.h"
 #include "SpaceRail.h"
 #include "SpaceRail_Node.h"
+#include "HookUFO.h"
+#include "Gauge_Circle.h"
 
 #include "Effect_Generator.h"
 #include "Effect_May_Boots.h"
@@ -63,7 +65,6 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	Add_LerpInfo_To_Model();
 
 	UI_Create(May, PlayerMarker);
-	UI_Create_Active(May, InputButton_InterActive, false);
 
 	return S_OK;
 }
@@ -111,6 +112,8 @@ HRESULT CMay::Ready_Component()
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_May_Boots"), nullptr, (CGameObject**)&m_pEffect_GravityBoots), E_FAIL);
 	m_pEffect_GravityBoots->Set_Model(m_pModelCom);
+
+	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_CodyCircle_Gauge")), E_FAIL);
 
 	return S_OK;
 }
@@ -291,6 +294,8 @@ void CMay::Free()
 	m_pTargetRail = nullptr;
 	m_pTargetRailNode = nullptr;
 	m_vecTargetRailNodes.clear();
+
+	Safe_Release(m_pGauge_Circle);
 
 	//Safe_Release(m_pCamera);
 	Safe_Release(m_pTargetPtr);
@@ -1404,6 +1409,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_M_BruteCombat_Attack_Var1);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsHitStarBuddy = true;
+
 		}
 		else if (m_eTargetGameID == GameID::eMOONBABOON && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)))
 		{
@@ -2249,6 +2255,7 @@ void CMay::Hook_UFO(const _double dTimeDelta)
 			m_pActorCom->Set_Jump(true);
 			m_IsHookUFO = false;
 			m_IsCollide = false;
+			((CHookUFO*)DATABASE->Get_HookUFO())->Set_MayUIDisable();
 		}
 	}
 }
@@ -2530,14 +2537,28 @@ void CMay::ShowRailTargetTriggerUI()
 	// Show UI
 	if (m_pSearchTargetRailNode && nullptr == m_pTargetRailNode && false == m_bOnRail)
 	{
-		UI_Generator->Set_Active(Player::May, UI::InputButton_InterActive, true);
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pSearchTargetRailNode->Get_Position());
+		m_pGauge_Circle->Set_Active(true);
+		m_pGauge_Circle->Set_TargetPos(m_pSearchTargetRailNode->Get_Position());
 	}
 	else {
-		UI_Generator->Set_Active(Player::May, UI::InputButton_InterActive, false);
+		m_pGauge_Circle->Set_Active(false);
+		UI_Delete(May, InputButton_InterActive);
+		m_pGauge_Circle->Set_DefaultSetting();
+
 	}
 }
 #pragma endregion
 
+HRESULT CMay::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+	_uint iOption = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Gauge_Circle"), &iOption, &pGameObject), E_FAIL);
+	m_pGauge_Circle = static_cast<CGauge_Circle*>(pGameObject);
+	m_pGauge_Circle->Set_SwingPointPlayerID(Player::May);
+	// 범위 설정
+	m_pGauge_Circle->Set_Range(20.f);
 
+	return S_OK;
+}
 

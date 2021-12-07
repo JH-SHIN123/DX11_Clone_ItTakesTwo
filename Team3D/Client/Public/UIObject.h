@@ -53,13 +53,14 @@ public:
 	void Set_Dead();
 	void Set_PlayerID(Player::ID ePlayerID);
 	void Set_PosX(_float fPosX);
+	void Set_Disable(_bool IsCheck);
 
 public:
 	virtual void Set_TargetPos(_vector vPos);
 	virtual void Set_ScaleEffect();
 
 protected:
-	_bool m_bActive = false;
+	_bool m_bActive = true;
 
 protected:
 	UI_DESC						m_UIDesc;
@@ -81,7 +82,6 @@ protected:
 	HRESULT Set_UIDefaultVariables_Perspective(CVIBuffer* pVIBuffer);
 	HRESULT Set_UIVariables_Perspective(CVIBuffer* pVIBuffer);
 	HRESULT Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer);
-
 
 public:
 	virtual CGameObject* Clone_GameObject(void* pArg) PURE;

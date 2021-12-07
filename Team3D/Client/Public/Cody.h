@@ -244,6 +244,10 @@ private: // Effects
 private:
 	class CMainCamera*	m_pCamera = nullptr;
 
+	// UI
+private:
+	class CGauge_Circle*	m_pGauge_Circle = nullptr;
+
 	// 积己 棺 家戈 包访
 public:
 	static CCody* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext);
@@ -482,6 +486,8 @@ private:
 	void	TakeRail(_double dTimeDelta);
 	void	TakeRailEnd(_double dTimeDelta);
 	void	ShowRailTargetTriggerUI();
+
+	HRESULT Ready_Layer_Gauge_Circle(const _tchar * pLayerTag);
 
 private:
 	_bool						m_bMoveToRail = false;

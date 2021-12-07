@@ -116,6 +116,12 @@ public:
 	void Set_SpaceRails(const _tchar* pRailTag, CGameObject* pRail);
 	CGameObject* Get_SpaceRail(const _tchar* pRailTag);
 
+	void Set_ControlRoom_Battery(CGameObject* pControlRoom_Battery) { m_pControlRoom_Battery = pControlRoom_Battery; }
+	CGameObject* Get_ControlRoom_Battery() { return m_pControlRoom_Battery; }
+
+	void Set_HookUFO(CGameObject* pHookUFO) { m_pHookUFO = pHookUFO; }
+	CGameObject* Get_HookUFO() { return m_pHookUFO; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -140,6 +146,7 @@ private:
 	CGameObject* m_pPressureBigPlate = nullptr;
 	CGameObject* m_pUmbrella_Joystick = nullptr;
 	CGameObject* m_pMenuScreen = nullptr;
+	CGameObject* m_pHookUFO = nullptr;
 
 private:
 	// Interactive Objects
@@ -161,6 +168,9 @@ private:
 
 	/* For.HangingPlanet */
 	CGameObject* m_pHangingPlanet = nullptr;
+
+	/* For.ControlRoom_Battery */
+	CGameObject* m_pControlRoom_Battery = nullptr;
 
 private:
 	/* For.Valve */

@@ -11,6 +11,9 @@
 #include "UmbrellaBeam_Joystick.h"
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
+#include "ControlRoom_Battery.h"
+#include "HookUFO.h"
+#include "Gauge_Circle.h"
 
 /* For. PinBall */
 #include "PinBall.h"
@@ -52,16 +55,10 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
-
  	UI_Create(Cody, PC_Mouse_Reduction);
  	UI_Create(Cody, PC_Mouse_Enlargement);
- 	//UI_Create(Default, LoadingBook);
- 	//UI_Create(May, Arrowkeys_Side);
- 	//UI_Create(May, StickIcon);
- 
  	UI_Create(Cody, PlayerMarker);
-	UI_Create_Active(Cody, InputButton_InterActive, false);
-	 
+
 	return S_OK;
 }
 
@@ -109,6 +106,10 @@ HRESULT CCody::Ready_Component()
 	//Effect 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Cody_Size"), nullptr, (CGameObject**)&m_pEffect_Size), E_FAIL);
 	m_pEffect_Size->Set_Model(m_pModelCom);
+
+	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_CodyCircle_Gauge")), E_FAIL);
+
+
 	return S_OK;
 }
 
@@ -292,6 +293,12 @@ _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_U))
+		UI_Create(Cody, CutSceneBar);
+
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
+		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
+
 	/* LateTick : 레일의 타겟 찾기*/
 	Find_TargetSpaceRail();
 	ShowRailTargetTriggerUI();
@@ -356,6 +363,8 @@ void CCody::Free()
 	m_pTargetRail = nullptr;
 	m_pTargetRailNode = nullptr;
 	m_vecTargetRailNodes.clear();
+
+	Safe_Release(m_pGauge_Circle);
 
 	//Safe_Release(m_pCamera);
 	Safe_Release(m_pActorCom);
@@ -448,7 +457,6 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
-
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -892,6 +900,7 @@ void CCody::Move(const _double dTimeDelta)
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_MH_Gesture_Small_Scratch
 					|| m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Fwd
 					|| m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Stop)	// Idle To Jog Start. -> Jog 예약
+
 				{
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Start);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_ChangeSize_Walk_Large_Fwd);
@@ -1807,12 +1816,15 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
 			m_IsPushingBattery = true;
 		}
-		else if (m_eTargetGameID == GameID::eCONTROLROOMBATTERY && m_pGameInstance->Key_Down(DIK_E))
+		else if (m_eTargetGameID == GameID::eCONTROLROOMBATTERY && m_pGameInstance->Key_Down(DIK_F))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
 			m_IsPushingBattery = true;
 			m_IsPipeBattery = true;
+
+			//UI_Delete(Cody, InputButton_InterActive);
+			//((CControlRoom_Battery*)DATABASE->Get_ControlRoom_Battery())->Set_UIDisable(true);
 		}
 		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_E) && m_iValvePlayerName == Player::Cody)
 		{
@@ -1964,13 +1976,16 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			/* 세이브포인트->트리거와 충돌시 세이브포인트 갱신 */
 			m_vSavePoint = m_vTriggerTargetPos;
 		}
-		else if (m_eTargetGameID == GameID::eUMBRELLABEAMJOYSTICK && m_pGameInstance->Key_Down(DIK_E))
+		else if (m_eTargetGameID == GameID::eUMBRELLABEAMJOYSTICK && m_pGameInstance->Key_Down(DIK_F))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
 			m_IsControlJoystick = true;
 			CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
 			pJoystick->Set_ControlActivate(true);
+			UI_CreateOnlyOnce(Cody, InputButton_Cancle);
+			UI_CreateOnlyOnce(Cody, Arrowkeys_All);
+			UI_Delete(Cody, InputButton_InterActive);
 		}
 		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)
 		{
@@ -2382,6 +2397,7 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 			m_pActorCom->Set_Jump(true);
 			m_IsHookUFO = false;
 			m_IsCollide = false;
+			((CHookUFO*)DATABASE->Get_HookUFO())->Set_CodyUIDisable();
 		}
 	}
 }
@@ -3015,17 +3031,36 @@ void CCody::TakeRailEnd(_double dTimeDelta)
 }
 void CCody::ShowRailTargetTriggerUI()
 {
+
 	// Show UI
 	if (m_pSearchTargetRailNode && nullptr == m_pTargetRailNode && false == m_bOnRail)
 	{
-		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, true);
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pSearchTargetRailNode->Get_Position());
+		m_pGauge_Circle->Set_Active(true);
+		m_pGauge_Circle->Set_TargetPos(m_pSearchTargetRailNode->Get_Position());
 	}
 	else {
-		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, false);
+		m_pGauge_Circle->Set_Active(false);
+		UI_Delete(Cody, InputButton_InterActive);
+		m_pGauge_Circle->Set_DefaultSetting();
+
 	}
 }
 #pragma endregion
+
+HRESULT CCody::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+
+	_uint iOption = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Gauge_Circle"), &iOption, &pGameObject), E_FAIL);
+	m_pGauge_Circle = static_cast<CGauge_Circle*>(pGameObject);
+	m_pGauge_Circle->Set_SwingPointPlayerID(Player::Cody);
+	// 범위 설정
+	m_pGauge_Circle->Set_Range(10.f);
+
+	return S_OK;
+}
+
 
 void CCody::PinBall(const _double dTimeDelta)
 {

@@ -19,7 +19,12 @@
 /**
 * 사용할 스레드 개수 지정
 */
-#define __THREAD_NUM 16
+#define __1THREAD
+#define __6THREADS
+//#define __8THREADS
+//#define __16THREADS
+
+#define __THREAD_NUM 6
 
 /************************************************************************/
 
