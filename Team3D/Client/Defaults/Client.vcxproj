@@ -217,6 +217,8 @@
     <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
     <ClInclude Include="..\Public\ControlRoom_Glass.h" />
+    <ClInclude Include="..\Public\CutScene.h" />
+    <ClInclude Include="..\Public\CutScenePlayer.h" />
     <ClInclude Include="..\Public\DataStorage.h" />
     <ClInclude Include="..\Public\DeadLine.h" />
     <ClInclude Include="..\Public\DummyWall.h" />
@@ -281,6 +283,7 @@
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_Enter.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
+    <ClInclude Include="..\Public\Performer.h" />
     <ClInclude Include="..\Public\PipeCurve.h" />
     <ClInclude Include="..\Public\PinBall.h" />
     <ClInclude Include="..\Public\PinBall_BallDoor.h" />
@@ -381,6 +384,8 @@
     <ClCompile Include="..\Private\ControlRoom_Battery.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Door.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Glass.cpp" />
+    <ClCompile Include="..\Private\CutScene.cpp" />
+    <ClCompile Include="..\Private\CutScenePlayer.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp" />
     <ClCompile Include="..\Private\DeadLine.cpp" />
     <ClCompile Include="..\Private\DummyWall.cpp" />
@@ -444,6 +449,7 @@
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_Enter.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
+    <ClCompile Include="..\Private\Performer.cpp" />
     <ClCompile Include="..\Private\PipeCurve.cpp" />
     <ClCompile Include="..\Private\PinBall.cpp" />
     <ClCompile Include="..\Private\PinBall_BallDoor.cpp" />

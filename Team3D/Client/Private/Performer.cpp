@@ -69,6 +69,7 @@ _int CPerformer::Late_Tick(_double dTimeDelta)
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	return NO_EVENT;
 }
 
 
@@ -91,6 +92,7 @@ void CPerformer::Start_Perform()
 {
 	m_pModelCom->Set_Animation(1);
 	m_pModelCom->Set_Animation(0);
+
 	m_bStartAnim = true;
 }
 

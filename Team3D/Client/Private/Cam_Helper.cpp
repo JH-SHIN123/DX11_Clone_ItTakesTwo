@@ -308,8 +308,8 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 //
 //#endif
 //	
-//	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Begin_Game.dat"))))
-//		return E_FAIL;
+	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Begin_Game.dat"))))
+		return E_FAIL;
 	return S_OK;
 }
 

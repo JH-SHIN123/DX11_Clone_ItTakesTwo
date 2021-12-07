@@ -6,6 +6,7 @@
 #include "Environment_Generator.h"
 #include "PxEventCallback.h"
 #include "GameDebugger.h"
+#include "CutScenePlayer.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -200,6 +201,7 @@ void CMainApp::Free()
 	CUI_Generator::DestroyInstance();
 	CDataStorage::DestroyInstance();
 	CEnvironment_Generator::DestroyInstance();
+	CCutScenePlayer::DestroyInstance();
 
 	CGameInstance::Release_Engine();
 }

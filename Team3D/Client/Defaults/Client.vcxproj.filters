@@ -66,6 +66,18 @@
     <Filter Include="02.GameObject\00.Public\04.GrindLine">
       <UniqueIdentifier>{5afae0a9-03c7-460f-9b5c-96a5c6791b03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene">
+      <UniqueIdentifier>{17c895e5-8ceb-43f8-a1c4-5019067e9dbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\00.CutScenePlayer">
+      <UniqueIdentifier>{7b3f87d4-4b4a-455e-9791-5d90f9fb507b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\01.CutScene">
+      <UniqueIdentifier>{9019c32b-9091-4e98-b2fd-8c969a8462d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\02.Performer">
+      <UniqueIdentifier>{ef76678d-01ca-4769-a500-3c863cc6aab6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\01.Intro">
       <UniqueIdentifier>{6e3ecc34-09e4-48a8-b8b4-f1dd9d96c681}</UniqueIdentifier>
     </Filter>
@@ -686,6 +698,15 @@
     <ClInclude Include="..\Public\GrindLine.h">
       <Filter>02.GameObject\00.Public\04.GrindLine</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CutScene.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\01.CutScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CutScenePlayer.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\00.CutScenePlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Performer.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\02.Performer</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Sky.h">
       <Filter>02.GameObject\02.Sky</Filter>
     </ClInclude>
@@ -1206,6 +1227,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\GrindLine.cpp">
       <Filter>02.GameObject\00.Public\04.GrindLine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CutScene.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\01.CutScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CutScenePlayer.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\00.CutScenePlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Performer.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\02.Performer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Sky.cpp">
       <Filter>02.GameObject\02.Sky</Filter>

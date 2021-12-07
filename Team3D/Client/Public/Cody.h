@@ -221,6 +221,7 @@ public:
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
 	void			 Set_ControlJoystick(_bool IsCheck);
 
+
 public:
 	void Set_BossMissile_Attack(); // CBoss_Missile
 

@@ -12,11 +12,11 @@ public:
 	HRESULT NativeConstruct(ID3D11Device* pDevice,ID3D11DeviceContext* pDeviceContext);
 public:
 	HRESULT Add_CutScene(const _tchar* pCutSceneTag,CCutScene* pCutScene);
-
+	_bool	Get_IsPlayCutScene() { return m_bIsPlayingCutScene; }
 	//if Finish,Return false;
 	_bool	Tick_CutScene();
-	void	OffSetTimeDelta();
 	HRESULT Start_CutScene(const _tchar* pCutSceneTag);
+	void	Stop_CutScene();
 public:
 	HRESULT		Add_Performer(const _tchar* pPerformerTag, CGameObject* pPerformer);
 	CGameObject* Find_Performer(const _tchar* pPerformerTag);
