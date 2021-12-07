@@ -2838,6 +2838,7 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 		m_eCurPlayerSize == SIZE_MEDIUM && false == m_IsDeadLine)
 	{
 		Start_SpaceRail();
+		UI_Delete(Cody, InputButton_InterActive_Rail);
 	}
 
 	if (m_bOnRail)
@@ -3041,7 +3042,7 @@ void CCody::ShowRailTargetTriggerUI()
 	}
 	else {
 		m_pGauge_Circle->Set_Active(false);
-		UI_Delete(Cody, InputButton_InterActive);
+		UI_Delete(Cody, InputButton_InterActive_Rail);
 		m_pGauge_Circle->Set_DefaultSetting();
 
 	}
@@ -3057,7 +3058,7 @@ HRESULT CCody::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 	m_pGauge_Circle = static_cast<CGauge_Circle*>(pGameObject);
 	m_pGauge_Circle->Set_SwingPointPlayerID(Player::Cody);
 	// 범위 설정
-	m_pGauge_Circle->Set_Range(10.f);
+	m_pGauge_Circle->Set_Range(20.f);
 
 	return S_OK;
 }
