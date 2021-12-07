@@ -36,7 +36,6 @@ private:
 	_int		m_iStageViewer = 0;
 
 private:
-	CModel* m_pModelCom_Mask = nullptr;
 	_float4x4 m_MatrixMask;
 
 private: //비쳐보이는 스테이지

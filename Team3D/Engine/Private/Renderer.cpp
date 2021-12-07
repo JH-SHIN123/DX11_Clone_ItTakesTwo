@@ -131,7 +131,6 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
 	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
-	FAILED_CHECK_RETURN(Render_Effect_Mesh_Masking(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
 #ifdef _DEBUG
@@ -144,6 +143,7 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_LightAcc"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_CascadedShadow"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_PostFX"));
+		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Effect"));
 		CSSAO::GetInstance()->Render_DebugBuffer();
 	}
 #endif
@@ -193,18 +193,6 @@ HRESULT CRenderer::Render_Alpha()
 	}
 	m_RenderObjects[RENDER_GROUP::RENDER_ALPHA].clear();
 	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_PostFX"));
-
-	return S_OK;
-}
-
-HRESULT CRenderer::Render_Effect_Mesh_Masking()
-{
-	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING])
-	{
-		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING), E_FAIL);
-		Safe_Release(pGameObject);
-	}
-	m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_MESH_MSAKING].clear();
 
 	return S_OK;
 }

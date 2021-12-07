@@ -48,7 +48,6 @@ HRESULT CLevel_Stage::NativeConstruct()
 	/* Se */
 	FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);
 	/* Jung */
-    //FAILED_CHECK_RETURN(Test_Layer_Object_Effect(TEXT("Layer_Object_Effect")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_WarpGate(TEXT("Layer_WarpGate")), E_FAIL);	
 	FAILED_CHECK_RETURN(Ready_Layer_Wormhole(TEXT("Layer_Wormhole")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_WallLaserTrap(TEXT("Layer_WallLaserTrap")), E_FAIL);	
@@ -95,6 +94,33 @@ HRESULT CLevel_Stage::NativeConstruct()
 _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
+
+
+#ifdef __TEST_TAEK
+	TCHAR lightTag[256] = L"";
+
+	TCHAR szBuff[256] = L"";
+	GetPrivateProfileString(L"Section_2", L"Key_1", L"0", szBuff, 256, L"../test.ini");
+	lstrcpy(lightTag, szBuff);
+
+	GetPrivateProfileString(L"Section_2", L"Key_2", L"0", szBuff, 256, L"../test.ini");
+	_float a = (_float)_wtof(szBuff);
+	GetPrivateProfileString(L"Section_2", L"Key_3", L"0", szBuff, 256, L"../test.ini");
+	_float b = (_float)_wtof(szBuff);
+	GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
+	_float c = (_float)_wtof(szBuff);
+	GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
+	_float d = (_float)_wtof(szBuff);
+
+	LIGHT_DESC* lightDesc = m_pGameInstance->Get_LightDescPtr(lightTag);
+
+	if (lightDesc)
+	{
+		lightDesc->vPosition = { a,b,c };
+		lightDesc->fRange = d;
+	}
+#endif // __TEST_TAEK
+
 
 	return NO_EVENT;
 }
@@ -168,29 +194,6 @@ HRESULT CLevel_Stage::Ready_Layer_GravityPath(const _tchar * pLayerTag)
 #pragma endregion
 
 #pragma region Jung
-HRESULT CLevel_Stage::Test_Layer_Object_Effect(const _tchar * pLayerTag)
-{
-	/////////////////////////////////////////////// 테스트용입니다
-	EFFECT_DESC_CLONE Data;
-	
-	_matrix WorldMatrix = XMMatrixIdentity();
-	WorldMatrix.r[3] = { 0.f,2.f,5.f,1.f };
-	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel"), &Data), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Data), E_FAIL);
-	//
-	//WorldMatrix.r[3] = { 0.f,0.f,5.f,1.f };
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Umbrella_Pipe"), &Data), E_FAIL);
-
-
-	//
-	//WorldMatrix.r[3] = { 15.f,0.f,5.f,1.f };	
-	//XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Gravity_Pipe"), &Data), E_FAIL);
-	//
-	return S_OK;
-}
-
 HRESULT CLevel_Stage::Ready_Layer_WarpGate(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::MAIN_UMBRELLA)), E_FAIL);
@@ -270,7 +273,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
-	pGameInstance->Reserve_Container_Light(1);
+	pGameInstance->Reserve_Container_Light(6);
 
 	LIGHT_DESC			LightDesc;
 
@@ -284,16 +287,38 @@ HRESULT CLevel_Stage::Ready_Lights()
 
 	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
 		return E_FAIL;
+//
+//#pragma region PointLight
+//	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+//	LightDesc.vPosition = XMFLOAT3(60.f, 5.f, 15.f);
+//	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+//	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+//	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+//	LightDesc.fRange = 15.f;
+//	if (FAILED(pGameInstance->Add_Light(TEXT("Point1"), LightDesc))) return E_FAIL;
+//	if (FAILED(pGameInstance->Add_Light(TEXT("Point2"), LightDesc))) return E_FAIL;
+//	if (FAILED(pGameInstance->Add_Light(TEXT("Point3"), LightDesc))) return E_FAIL;
+//	if (FAILED(pGameInstance->Add_Light(TEXT("Point4"), LightDesc))) return E_FAIL;
+//	if (FAILED(pGameInstance->Add_Light(TEXT("Point5"), LightDesc))) return E_FAIL;
 
-	/* For. Point */
-	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	LightDesc.vPosition = XMFLOAT3(5.f, 5.f, 10.f);
-	LightDesc.vDiffuse = XMFLOAT4(1.f, 0.f, 0.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(20.f, 0.25f, 1.f, LightDesc.vPosition, LightDesc.vDiffuse)), E_FAIL);
+//#pragma endregion
 
-	if (FAILED(pGameInstance->Add_Light(L"Point1", LightDesc)))
-		return E_FAIL;
+
+
+	/* For. Spot  X */
+	//LightDesc.eType = LIGHT_DESC::TYPE_SPOT;
+	//LightDesc.vPosition = XMFLOAT3(20, 3.f, 20.f);
+	//LightDesc.vDirection = XMFLOAT3(1.f, 1.f, 0.f);
+	//LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+	//LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+	//LightDesc.fOuterAngle = XMConvertToRadians(55.f);
+	//LightDesc.fInnerAngle = XMConvertToRadians(45.f);
+	//LightDesc.fRange = 15.f;
+
+	//if (FAILED(pGameInstance->Add_Light(L"Spot1", LightDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

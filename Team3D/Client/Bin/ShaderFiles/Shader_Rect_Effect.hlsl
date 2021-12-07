@@ -1,19 +1,10 @@
 #include "Shader_Defines.hpp"
+#include "Shader_Defines_Effect.hpp"
 
 texture2D		g_DiffuseTexture;
 texture2D		g_MaskTexture;
 texture2D		g_ColorTexture;
 texture2D		g_DistortionTexture;
-
-vector			g_vMainCamUp; // BillBorad 
-vector			g_vSubCamUp;
-
-float3			g_vSize;
-float4			g_vColor;
-float			g_fRadianAngle;
-float			g_fTime;
-int				g_IsBillBoard;
-int				g_RotateAxis; // x0, y1, z2
 
 sampler DiffuseSampler = sampler_state
 {

@@ -35,6 +35,10 @@ HRESULT CPostFX::PostProcessing(_double TimeDelta)
 {
 	FAILED_CHECK_RETURN(Tick_Adaptation(TimeDelta), E_FAIL);
 
+#ifdef _DEBUG
+	FAILED_CHECK_RETURN(KeyInput_Test(TimeDelta), E_FAIL);
+#endif // _DEBUG
+
 	FAILED_CHECK_RETURN(DownScale(TimeDelta), E_FAIL);
 	FAILED_CHECK_RETURN(Bloom(), E_FAIL);
 	FAILED_CHECK_RETURN(Blur(m_pShaderResourceView_Bloom_Temp, m_pUnorderedAccessView_Bloom), E_FAIL);
@@ -95,6 +99,9 @@ HRESULT CPostFX::Bloom()
 {
 	// BrightRight - 다운스케일된 HDR과 SRV의 평균휘도를 계산한후, 임시로 UAV(m_pUnorderedAccessView_Bloom_Temp)로 저장한다.
 	
+	/* Constants */
+	Set_Variable("g_fBloomThreshold", &m_fBloomThreshold, sizeof(_float));
+
 	/* Input */
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_HDRDownScaleTex", m_pShaderResourceView_DownScaledHDR), E_FAIL);
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageLum1D", m_pShaderResourceView_LumAve), E_FAIL);
@@ -159,20 +166,14 @@ HRESULT CPostFX::FinalPass()
 	CPipeline* pPipeline = CPipeline::GetInstance();
 	CBlur* pBlur = CBlur::GetInstance();
 
-	if (GetAsyncKeyState(VK_F1) & 0x8000)
-		m_fMiddleGrey += 0.005f; // 0.0005
-	else if (GetAsyncKeyState(VK_F2) & 0x8000)
-		m_fMiddleGrey -= 0.005f;
+	_float fMiddleGrey = m_fMiddleGrey;
+	_float fLumWhiteSqr = m_fLumWhiteSqr;
+	fLumWhiteSqr *= fMiddleGrey;
+	fLumWhiteSqr *= fLumWhiteSqr;
 
-	if (GetAsyncKeyState(VK_F3) & 0x8000)
-		m_fLumWhiteSqr += 0.05f;
-	else if (GetAsyncKeyState(VK_F4) & 0x8000)
-		m_fLumWhiteSqr -= 0.05f;
-	//_float fMiddleGrey = powf(sqrtf(m_fMiddleGrey), 2);
-	//_float fLumWhiteSqrt = powf(sqrtf(m_fLumWhiteSqr), 2);
-
-	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &m_fMiddleGrey, sizeof(_float));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &m_fLumWhiteSqr, sizeof(_float));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &fMiddleGrey, sizeof(_float));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqr, sizeof(_float));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_BloomScale", &m_fBloomScale, sizeof(_float));
 
 	_float	fCamFar;
 	_matrix	ProjMatrixInverse;
@@ -436,6 +437,45 @@ HRESULT CPostFX::Unbind_ShaderResources()
 
 	return S_OK;
 }
+
+#ifdef _DEBUG
+HRESULT CPostFX::KeyInput_Test(_double TimeDelta)
+{
+	//if (GetAsyncKeyState(VK_F1) & 0x8000)
+	//	m_fMiddleGrey += 0.005f; // 0.0005
+	//else if (GetAsyncKeyState(VK_F2) & 0x8000)
+	//	m_fMiddleGrey -= 0.005f;
+
+	//if (GetAsyncKeyState(VK_F3) & 0x8000)
+	//	m_fLumWhiteSqr += 0.05f;
+	//else if (GetAsyncKeyState(VK_F4) & 0x8000)
+	//	m_fLumWhiteSqr -= 0.05f;
+
+	//if (GetAsyncKeyState(VK_F5) & 0x8000)
+	//	m_fBloomScale += TimeDelta;
+	//else if (GetAsyncKeyState(VK_F6) & 0x8000)
+	//	m_fBloomScale -= TimeDelta;
+
+#ifdef _DEBUG
+	TCHAR szBuff[256] = L"";
+	GetPrivateProfileString(L"Section_1", L"Key_1", L"0", szBuff, 256, L"../test.ini");;
+	_float a = (_float)_wtof(szBuff);
+	GetPrivateProfileString(L"Section_1", L"Key_2", L"0", szBuff, 256, L"../test.ini");
+	_float b = (_float)_wtof(szBuff);
+	GetPrivateProfileString(L"Section_1", L"Key_3", L"0", szBuff, 256, L"../test.ini");
+	_float c = (_float)_wtof(szBuff);
+	GetPrivateProfileString(L"Section_1", L"Key_4", L"0", szBuff, 256, L"../test.ini");
+	_float d = (_float)_wtof(szBuff);
+	
+	m_fMiddleGrey = a;
+	m_fLumWhiteSqr = b;
+	m_fBloomScale = c;
+	m_fBloomThreshold = d;
+#endif // _DEBUG
+
+	return S_OK;
+}
+#endif // _DEBUG
 
 void CPostFX::Clear_Buffer()
 {

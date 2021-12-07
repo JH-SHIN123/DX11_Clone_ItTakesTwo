@@ -16,7 +16,7 @@ CInGameEffect::CInGameEffect(const CInGameEffect & rhs)
 HRESULT CInGameEffect::NativeConstruct_Prototype(void* pArg)
 {
 	memcpy(&m_EffectDesc_Prototype, pArg, sizeof(EFFECT_DESC_PROTO));
-	
+	//Test
 	return S_OK;
 }
 
@@ -511,6 +511,21 @@ _float4 CInGameEffect::Get_TexUV_Rand(_uint iTexture_U, _uint iTexture_V)
 	_float fBottom	= _float(1.f / iTexture_V) * (vRandUV.y + 1.f);
 
 	_float4 vUV = { fLeft, fTop, fRight, fBottom };
+
+	return vUV;
+}
+
+_float4 CInGameEffect::Get_TexUV_Next(_uint iTexture_U, _uint iTexture_V)
+{
+	iTexture_U += 1;
+	iTexture_V += 1;
+
+	_float fLeft	= _float(1.f / iTexture_U) *  iTexture_U;
+	_float fTop		= _float(1.f / iTexture_V) *  iTexture_V;
+	_float fRight	= _float(1.f / iTexture_U) * (iTexture_U + 1.f);
+	_float fBottom	= _float(1.f / iTexture_V) * (iTexture_V + 1.f);
+
+	_float4	vUV = { fLeft, fTop, fRight, fBottom };
 
 	return vUV;
 }

@@ -48,7 +48,7 @@ HRESULT CLaser_TypeA::Render(RENDER_GROUP::Enum eRender)
 	m_pVIBufferCom->Set_DefaultVariables_Perspective(XMMatrixIdentity());
 	m_pVIBufferCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_ShaderResourceView(3));
 
-	m_pVIBufferCom->Render(10, m_pInstanceMatrices, 1);
+	m_pVIBufferCom->Render(11, m_pInstanceMatrices, 1);
 
 	return NO_EVENT;
 }

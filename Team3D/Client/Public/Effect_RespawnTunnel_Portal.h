@@ -4,10 +4,6 @@
 
 #include "InGameEffect_Model.h"
 
-BEGIN(Engine)
-class CVIBuffer_PointInstance_Custom_STT;
-END
-
 BEGIN(Client)
 class CEffect_RespawnTunnel_Portal final : public CInGameEffect_Model
 {
@@ -48,12 +44,12 @@ private:
 
 	_float3*							m_pInstanceBuffer_Smoke_Dir			= nullptr;
 	_double*							m_pInstanceBuffer_Smoke_PosReset	= nullptr;
-	_double*							m_pInstanceBuffer_Smoke_Spawn = nullptr;
+	_double*							m_pInstanceBuffer_Smoke_Spawn		= nullptr;
 
 	_double		m_dTexUV_Time = 0.0;
 
 	const _float2 m_vDefaultSize_Smoke				= { 2.f, 2.f };
-	const _int m_iInstanceCount_Smoke = 30;
+	const _int m_iInstanceCount_Smoke				= 30;
 	const _float m_fSmoke_AlphaPower				= 0.5f;
 	const XMINT2 m_vTextureUV_Smoke					= { 8, 8 };
 	const _double m_fSmoke_PosResetTime				= 3.f;
