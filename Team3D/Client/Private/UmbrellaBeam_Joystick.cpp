@@ -5,6 +5,7 @@
 #include "DataStorage.h"
 #include "UmbrellaBeam.h"
 #include "Cody.h"
+#include "UI_Generator.h"
 
 CUmbrellaBeam_Joystick::CUmbrellaBeam_Joystick(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -72,6 +73,9 @@ _int CUmbrellaBeam_Joystick::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::Umbrella_Joystick, 
+		m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCollision, m_IsControlActivate);
+
 	return NO_EVENT;
 }
 
@@ -80,12 +84,7 @@ _int CUmbrellaBeam_Joystick::Late_Tick(_double dTimeDelta)
 	CGameObject::Late_Tick(dTimeDelta);
 
 	if (true == m_IsControlActivate && true == m_IsCollision)
-	{
 		m_pUmbrellaBeam->Set_BeamActivate(true);
-		CCody* pCody = (CCody*)DATABASE->GetCody();
-		pCody->Get_Transform()->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollision = false;
-	}
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -109,12 +108,11 @@ void CUmbrellaBeam_Joystick::Trigger(TriggerStatus::Enum eStatus, GameID::Enum e
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eUMBRELLABEAMJOYSTICK, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		//UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollision = true;
-
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
+		m_IsCollision = false;
 		m_pUmbrellaBeam->Set_BeamActivate(false);
 	}
 }

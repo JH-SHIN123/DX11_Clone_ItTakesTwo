@@ -39,24 +39,9 @@ HRESULT CAlphaScreen::NativeConstruct(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_iOption, pArg, sizeof(_uint));
 
-	if (2 == m_iOption)
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 50.f, 0.f, 1.f));
-		m_pTransformCom->Set_Scale(XMVectorSet(400.f, 300.f, 0.f, 0.f));
-		m_fSortOrder = -3.f;
-	}
-	else if (1 == m_iOption)
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 720.f, 0.f, 0.f));
-		m_fSortOrder = -2.f;
-	}
-	else
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-		m_pTransformCom->Set_Scale(XMVectorSet(640.f, 720.f, 0.f, 0.f));
-		m_fSortOrder = 0.f;
-	}
+
+	Option_Setting();
+
 
 	return S_OK;
 }
@@ -75,6 +60,46 @@ _int CAlphaScreen::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 
+	if (3 == m_iOption)
+	{
+		if (false == m_IsFadeOut)
+		{
+			m_fAlpha += (_float)TimeDelta * 5.f;
+
+			if (1.f <= m_fAlpha)
+			{
+				m_fAlpha = 1.f;
+
+				m_fWatingTime += (_float)TimeDelta;
+
+				if (2.f <= m_fWatingTime)
+					m_IsFadeOut = true;
+			}
+		}
+		else if (true == m_IsFadeOut)
+		{
+			m_fAlpha -= (_float)TimeDelta * 5.f;
+
+			if (0.f >= m_fAlpha)
+				m_IsDead = true;
+		}
+	}
+	else if (4 == m_iOption)
+	{
+		m_fWatingTime += (_float)TimeDelta;
+
+		if (1.f <= m_fWatingTime)
+			m_IsFadeOut = true;
+
+		if (true == m_IsFadeOut)
+		{
+			m_fAlpha -= (_float)TimeDelta * 5.f;
+
+			if (0.f >= m_fAlpha)
+				m_IsDead = true;
+		}
+	}
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
@@ -82,14 +107,33 @@ HRESULT CAlphaScreen::Render(RENDER_GROUP::Enum eGroup)
 {
 	CUIObject::Render(eGroup);
 
-	if (1 == m_iOption || 2 == m_iOption)
+	if (5 == m_iOption || 6 == m_iOption)
+	{
+		if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
+			return E_FAIL;
+
+		m_fAlpha = 1.f;
+		m_pVIBuffer_RectCom->Set_Variable("g_fAlpha", &m_fAlpha, sizeof(_float));
+
+		m_pVIBuffer_RectCom->Render(m_iShaderPassNum);
+	}
+	else if (3 == m_iOption || 4 == m_iOption)
+	{
+		if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
+			return E_FAIL;
+
+		m_pVIBuffer_RectCom->Set_Variable("g_fAlpha", &m_fAlpha, sizeof(_float));
+
+		m_pVIBuffer_RectCom->Render(m_iShaderPassNum);
+	}
+	else if (1 == m_iOption || 2 == m_iOption)
 	{
 		if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
 			return E_FAIL;
 
 		m_pVIBuffer_RectCom->Set_Variable("g_iAlphaOption", &m_iOption, sizeof(_int));
 
-		m_pVIBuffer_RectCom->Render(12);
+		m_pVIBuffer_RectCom->Render(m_iShaderPassNum);
 	}
 	else
 	{
@@ -98,12 +142,69 @@ HRESULT CAlphaScreen::Render(RENDER_GROUP::Enum eGroup)
 
 		m_pVIBuffer_RectCom->Set_Variable("g_iAlphaOption", &m_iOption, sizeof(_int));
 
-		m_pVIBuffer_RectCom->Render(7);
+		m_pVIBuffer_RectCom->Render(m_iShaderPassNum);
 	}
 
 	return S_OK;
 }
 
+
+void CAlphaScreen::Option_Setting()
+{
+	if (6 == m_iOption)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 320.f, 0.f, 1.f));
+		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 150.f, 0.f, 0.f));
+		m_fSortOrder = 0.f;
+		m_iShaderPassNum = 17;
+		m_fAlpha = 1.f;
+	}
+	else if (5 == m_iOption)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, -320.f, 0.f, 1.f));
+		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 150.f, 0.f, 0.f));
+		m_fSortOrder = 0.f;
+		m_iShaderPassNum = 17;
+		m_fAlpha = 1.f;
+	}
+	else if (4 == m_iOption) /* 검은색 스크린 FadeOut */
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 720.f, 0.f, 0.f));
+		m_fSortOrder = 0.f;
+		m_iShaderPassNum = 17;
+		m_fAlpha = 1.f;
+	}
+	else if (3 == m_iOption) /* 하얀색 FadeInOut 스크린 */
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 720.f, 0.f, 0.f));
+		m_fSortOrder = 0.f;
+		m_iShaderPassNum = 16;
+	}
+	else if (2 == m_iOption)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 50.f, 0.f, 1.f));
+		m_pTransformCom->Set_Scale(XMVectorSet(400.f, 300.f, 0.f, 0.f));
+		m_fSortOrder = -3.f;
+		m_iShaderPassNum = 12;
+	}
+	else if (1 == m_iOption)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 720.f, 0.f, 0.f));
+		m_fSortOrder = -2.f;
+		m_iShaderPassNum = 12;
+	}
+	else
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+		m_pTransformCom->Set_Scale(XMVectorSet(640.f, 720.f, 0.f, 0.f));
+		m_fSortOrder = 0.f;
+		m_iShaderPassNum = 7;
+	}
+
+}
 
 HRESULT CAlphaScreen::Ready_Component()
 {

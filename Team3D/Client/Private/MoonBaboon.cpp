@@ -3,6 +3,7 @@
 #include "May.h"
 #include "Cody.h"
 #include "UFO.h"
+#include"CutScenePlayer.h"
 
 CMoonBaboon::CMoonBaboon(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -31,6 +32,8 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_ControllableActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &CControllableActor::ARG_DESC(m_pTransformCom)), E_FAIL);
+
+	CCutScenePlayer::GetInstance()->Add_Performer(TEXT("Component_Model_MoonBaboon"), this);
 
 	m_pCodyTransform = ((CCody*)CDataStorage::GetInstance()->GetCody())->Get_Transform();
 	if (nullptr == m_pCodyTransform)
@@ -62,12 +65,13 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 _int CMoonBaboon::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
-
-	Check_State(dTimeDelta);
-	Change_State(dTimeDelta);
-	During_Animation_Behavior(dTimeDelta);
-	Fix_MoonBaboon_Chair(dTimeDelta);
-
+	if (false == CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
+	{
+		Check_State(dTimeDelta);
+		Change_State(dTimeDelta);
+		During_Animation_Behavior(dTimeDelta);
+		Fix_MoonBaboon_Chair(dTimeDelta);
+	}
 	//m_pActorCom->Update(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
 
@@ -78,7 +82,11 @@ _int CMoonBaboon::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
+
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+
+	return NO_EVENT;
 }
 
 

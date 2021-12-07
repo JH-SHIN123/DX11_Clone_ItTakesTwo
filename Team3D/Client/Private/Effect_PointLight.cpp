@@ -55,6 +55,7 @@ _int CEffect_PointLight::Late_Tick(_double TimeDelta)
 HRESULT CEffect_PointLight::Render(RENDER_GROUP::Enum eGroup)
 {
 	m_pPointInstanceCom->Set_DefaultVariables();
+
 	_int i = 1;
 	m_pPointInstanceCom->Set_Variable("g_IsBillBoard", &i, sizeof(_int));
 	//m_pPointInstanceCom->Set_Variable("g_vColor", &m_PointLight_Desc.vDiffuseColor, sizeof(_float4));

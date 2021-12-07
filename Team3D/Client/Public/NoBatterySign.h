@@ -42,6 +42,8 @@ private:
 	_float				m_fRotateTime = 0.f;
 	ROBOTDESC			m_tRobotPartsDesc;
 
+	_float				m_fTestAngle = 0.f;
+
 private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
