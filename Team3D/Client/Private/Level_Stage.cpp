@@ -97,11 +97,7 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	CLevel::Tick(dTimedelta);
 
 
-#ifdef _DEBUG
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	if (nullptr == pGameInstance)
-		return E_FAIL;
-
+#ifdef __TEST_TAEK
 	TCHAR lightTag[256] = L"";
 
 	TCHAR szBuff[256] = L"";
@@ -109,23 +105,22 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	lstrcpy(lightTag, szBuff);
 
 	GetPrivateProfileString(L"Section_2", L"Key_2", L"0", szBuff, 256, L"../test.ini");
-	_float a = _wtof(szBuff);
+	_float a = (_float)_wtof(szBuff);
 	GetPrivateProfileString(L"Section_2", L"Key_3", L"0", szBuff, 256, L"../test.ini");
-	_float b = _wtof(szBuff);
+	_float b = (_float)_wtof(szBuff);
 	GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
-	_float c = _wtof(szBuff);
+	_float c = (_float)_wtof(szBuff);
 	GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
-	_float d = _wtof(szBuff);
+	_float d = (_float)_wtof(szBuff);
 
-	LIGHT_DESC* lightDesc = pGameInstance->Get_LightDescPtr(lightTag);
+	LIGHT_DESC* lightDesc = m_pGameInstance->Get_LightDescPtr(lightTag);
 
 	if (lightDesc)
 	{
 		lightDesc->vPosition = { a,b,c };
 		lightDesc->fRange = d;
 	}
-
-#endif // _DEBUG
+#endif // __TEST_TAEK
 
 
 	return NO_EVENT;
@@ -170,7 +165,9 @@ HRESULT CLevel_Stage::Clone_StaticGameObjects_ByFile(const _tchar * pFilePath, c
 HRESULT CLevel_Stage::Ready_Test()
 {
 	/* Se */
-
+#ifdef __TEST_SE
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA")), E_FAIL);
+#endif 
 	/* Jung */
 
 	/* Hye */
