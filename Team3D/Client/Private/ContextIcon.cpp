@@ -36,6 +36,8 @@ HRESULT CContextIcon::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
+	m_fAlpha = 1.f;
+
 	return S_OK;
 }
 
@@ -66,7 +68,9 @@ HRESULT CContextIcon::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(CUIObject::Set_InterActiveVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(0);
+	m_pVIBuffer_RectCom->Set_Variable("g_fAlpha", &m_fAlpha, sizeof(_float));
+
+	m_pVIBuffer_RectCom->Render(18);
 
 	return S_OK;
 }
@@ -79,6 +83,11 @@ void CContextIcon::Set_Active(_bool IsCheck)
 void CContextIcon::Set_SwingPointPlayerID(Player::ID ePlayerID)
 {
 	m_ePlayerID = ePlayerID;
+}
+
+void CContextIcon::Set_Alpha(_float fAlpha)
+{
+	m_fAlpha = fAlpha;
 }
 
 HRESULT CContextIcon::Ready_Component()

@@ -2875,6 +2875,9 @@ void CCody::ShowRailTargetTriggerUI()
 	}
 	else {
 		m_pGauge_Circle->Set_Active(false);
+		UI_Delete(Cody, InputButton_InterActive);
+		m_pGauge_Circle->Set_DefaultSetting();
+
 	}
 }
 #pragma endregion
@@ -2883,11 +2886,12 @@ HRESULT CCody::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 {
 	CGameObject* pGameObject = nullptr;
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Gauge_Circle"), nullptr, &pGameObject), E_FAIL);
+	_uint iOption = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Gauge_Circle"), &iOption, &pGameObject), E_FAIL);
 	m_pGauge_Circle = static_cast<CGauge_Circle*>(pGameObject);
 	m_pGauge_Circle->Set_SwingPointPlayerID(Player::Cody);
 	// 범위 설정
-	m_pGauge_Circle->Set_Range(12.f);
+	m_pGauge_Circle->Set_Range(10.f);
 
 	return S_OK;
 }

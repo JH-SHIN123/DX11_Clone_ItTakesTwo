@@ -203,7 +203,6 @@ PS_OUT PS_PC_Mouse(PS_IN In)
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
 	Out.vColor.b = 0.f;
-
 	
 	return Out;
 }
@@ -489,6 +488,11 @@ PS_OUT PS_Gauge_Cicle(PS_IN In)
 	else if (Out.vColor.r > g_fDistance)
 		discard; 
 
+	if (Out.vColor.a <= 0.1f)
+		discard;
+
+	Out.vColor.a = g_fAlpha;
+
 	return Out;
 }
 
@@ -508,6 +512,20 @@ PS_OUT PS_BlackScreenOut(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	Out.vColor.a = g_fAlpha;
+
+	return Out;
+}
+
+PS_OUT PS_ContextIcon(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (0.1f >= Out.vColor.a)
+		discard;
+
 	Out.vColor.a = g_fAlpha;
 
 	return Out;
@@ -713,5 +731,16 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_BlackScreenOut();
+	}
+
+	// 18
+	pass ContextIcon
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_ContextIcon();
 	}
 };

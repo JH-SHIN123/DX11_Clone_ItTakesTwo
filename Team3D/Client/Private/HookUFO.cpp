@@ -238,7 +238,8 @@ HRESULT CHookUFO::Ready_Layer_CodyGauge_Circle(const _tchar * pLayerTag)
 {
 	CGameObject* pGameObject = nullptr;
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Gauge_Circle"), nullptr, &pGameObject), E_FAIL);
+	_uint m_iOption = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Gauge_Circle"), &m_iOption, &pGameObject), E_FAIL);
 	m_pCodyGauge_Circle = static_cast<CGauge_Circle*>(pGameObject);
 	m_pCodyGauge_Circle->Set_SwingPointPlayerID(Player::Cody);
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -255,12 +256,16 @@ HRESULT CHookUFO::Ready_Layer_MayGauge_Circle(const _tchar * pLayerTag)
 {
 	CGameObject* pGameObject = nullptr;
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Gauge_Circle"), nullptr, &pGameObject), E_FAIL);
+	_uint m_iOption = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Gauge_Circle"), &m_iOption, &pGameObject), E_FAIL);
 	m_pMayGauge_Circle = static_cast<CGauge_Circle*>(pGameObject);
 	m_pMayGauge_Circle->Set_SwingPointPlayerID(Player::May);
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPos.m128_f32[1] -= 5.f;
+	m_pCodyGauge_Circle->Set_Position(vPos);
 
 	// 범위 설정
-	m_pMayGauge_Circle->Set_Range(15.f);
+	m_pCodyGauge_Circle->Set_Range(30.f);
 
 	return S_OK;
 }

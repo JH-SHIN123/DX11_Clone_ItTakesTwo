@@ -27,9 +27,11 @@ public:
  public:
 	 void Set_Active(_bool IsCheck);
 	 void Set_SwingPointPlayerID(Player::ID ePlayerID);
+	 void Set_Alpha(_float fAlpha);
 
 private:
 	 _bool							m_IsActive = true;
+	 _float							m_fAlpha = 0.f;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;

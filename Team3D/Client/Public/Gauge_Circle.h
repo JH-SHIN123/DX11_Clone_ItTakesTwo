@@ -26,11 +26,15 @@ public:
 	 void Set_SwingPointPlayerID(Player::ID ePlayerID);
 	 void Set_Range(_float fRange);
 	 void Set_Position(_vector vPos);
+	 void Set_DefaultSetting();
 
 private:
 	 _float							m_fDistance = 0.f;
 	 _float							m_fRange = 0.f;
+	 _float							m_fAlpha = 0.f;
 	 _bool							m_IsActive = false;
+	 _bool							m_IsUICreateOn = false;
+	 _uint							m_iOption = 0;
 
  private:
 	 class CContextIcon*			m_pContextIcon = nullptr;

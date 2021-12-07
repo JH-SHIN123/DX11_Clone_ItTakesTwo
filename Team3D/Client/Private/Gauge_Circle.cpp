@@ -4,6 +4,7 @@
 #include "ContextIcon.h"
 #include "Cody.h"
 #include "May.h"
+#include "UI_Generator.h"
 
 CGauge_Circle::CGauge_Circle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -35,10 +36,16 @@ HRESULT CGauge_Circle::NativeConstruct(void * pArg)
 	if (FAILED(Ready_Component()))
 		return E_FAIL;
 
+	/* Option 0 : HookUFO / Option 1 : SpaceRail */
+	if (nullptr != pArg)
+		memcpy(&m_iOption, pArg, sizeof(_uint));
+
 	FAILED_CHECK_RETURN(Ready_Layer_SwingPoint(TEXT("Layer_ContextIcon_SwingPoint")), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+
+	m_fAlpha = 0.5f;
 
 	return S_OK;
 }
@@ -59,6 +66,29 @@ _int CGauge_Circle::Late_Tick(_double TimeDelta)
 
 	FindDistanceRatio();
 
+	if (1.f <= m_fDistance)
+	{
+		m_fAlpha -= (_float)TimeDelta;
+		m_pContextIcon->Set_Alpha(m_fAlpha);
+
+		if (0.f >= m_fAlpha)
+			m_IsUICreateOn = true;
+	}
+
+	if (true == m_IsUICreateOn && m_ePlayerID == GameID::eCODY)
+	{
+		m_IsActive = false;
+		UI_CreateOnlyOnce(Cody, InputButton_InterActive);
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, XMLoadFloat4(&m_vTargetPos));
+	}
+
+	if (true == m_IsUICreateOn && m_ePlayerID == GameID::eMAY)
+	{
+		m_IsActive = false;
+		UI_CreateOnlyOnce(May, InputButton_InterActive);
+		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, XMLoadFloat4(&m_vTargetPos));
+	}
+
 	if (false == m_IsActive)
 		return NO_EVENT;
 	
@@ -71,6 +101,9 @@ HRESULT CGauge_Circle::Render(RENDER_GROUP::Enum eGroup)
 
 	if (FAILED(CUIObject::Set_InterActiveVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
+
+	if(1 == m_iOption)
+		m_pVIBuffer_RectCom->Set_Variable("g_fAlpha", &m_fAlpha, sizeof(_float));
 
 	m_pVIBuffer_RectCom->Set_Variable("g_fDistance", &m_fDistance, sizeof(_float));
 	m_pVIBuffer_RectCom->Render(15);
@@ -112,39 +145,70 @@ void CGauge_Circle::Set_Position(_vector vPos)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 }
 
+void CGauge_Circle::Set_DefaultSetting()
+{
+	m_fAlpha = 0.5f;
+	m_IsActive = true;
+	m_IsUICreateOn = false;
+	m_fDistance = 0.f;
+	
+	if (nullptr != m_pContextIcon)
+		m_pContextIcon->Set_Alpha(1.f);
+}
+
 void CGauge_Circle::FindDistanceRatio()
 {
-	if (m_ePlayerID == Player::Cody)
+	if (0 == m_iOption)
 	{
-		_vector vCodyPos = ((CCody*)DATABASE->GetCody())->Get_Position();
-		_vector vDistancePos = XMLoadFloat4(&m_vTargetPos) - vCodyPos;
-		vDistancePos = XMVectorSetW(vDistancePos, 0.f);
+		if (m_ePlayerID == Player::Cody)
+		{
+			_vector vCodyPos = ((CCody*)DATABASE->GetCody())->Get_Position();
+			_vector vDistancePos = XMLoadFloat4(&m_vTargetPos) - vCodyPos;
 
-		// { 920.313f, 730.f, 315.746f, 1.f };
+			_vector vLength = XMVector3Length(vDistancePos);
+			_float fDistance = fabs(XMVectorGetX(vLength));
 
-		//{ 894.939f, 735.f, 353.171f, 1.f };
+			fDistance -= 15.f;
+			m_fRange = 25.f;
 
-		_vector vLength = XMVector3Length(vDistancePos);
-		_float fDistance = fabs(XMVectorGetX(vLength));
+			m_fDistance = 1.f - (fDistance / m_fRange);
+		}
+		else if (m_ePlayerID == Player::May)
+		{
+			_vector vMayPos = ((CMay*)DATABASE->GetMay())->Get_Position();
+			_vector vDistancePos = XMLoadFloat4(&m_vTargetPos) - vMayPos;
 
-		fDistance -= 15.f;
-		m_fRange = 25.f;
+			_vector vLength = XMVector3Length(vDistancePos);
+			_float fDistance = fabs(XMVectorGetX(vLength));
 
-		//m_fDistance = (fDistance / m_fRange - 1.f) * -1.f;
-		m_fDistance = 1.f - (fDistance / m_fRange);
+			fDistance -= 15.f;
+			m_fRange = 25.f;
+
+			m_fDistance = 1.f - (fDistance / m_fRange);
+		}
 	}
-	else if (m_ePlayerID == Player::May)
+	else if (1 == m_iOption)
 	{
-		_vector vMayPos = ((CMay*)DATABASE->GetMay())->Get_Position();
-		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		if (m_ePlayerID == Player::Cody)
+		{
+			_vector vCodyPos = ((CCody*)DATABASE->GetCody())->Get_Position();
+			_vector vDistancePos = XMLoadFloat4(&m_vTargetPos) - vCodyPos;
 
-		_vector vDistancePos = XMLoadFloat4(&m_vTargetPos) - vMayPos;
-		_vector vLength = XMVector3Length(vDistancePos);
+			_vector vLength = XMVector3Length(vDistancePos);
+			_float fDistance = fabs(XMVectorGetX(vLength));
 
-		_float fDistance = fabs(XMVectorGetX(vLength));
+			m_fDistance = 1.f - (fDistance / m_fRange) + 0.3f;
+		}
+		else if (m_ePlayerID == Player::May)
+		{
+			_vector vMayPos = ((CMay*)DATABASE->GetMay())->Get_Position();
+			_vector vDistancePos = XMLoadFloat4(&m_vTargetPos) - vMayPos;
 
-		//m_fDistance = (fDistance / m_fRange - 1.f) * -1.f;
-		m_fDistance = 1.f - (fDistance / m_fRange);
+			_vector vLength = XMVector3Length(vDistancePos);
+			_float fDistance = fabs(XMVectorGetX(vLength));
+
+			m_fDistance = 1.f - (fDistance / m_fRange) + 0.3f;
+		}
 	}
 }
 
