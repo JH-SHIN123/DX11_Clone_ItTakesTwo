@@ -224,6 +224,7 @@
     <ClInclude Include="..\Public\DeadLine.h" />
     <ClInclude Include="..\Public\DummyWall.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />
+    <ClInclude Include="..\Public\EffectLight.h" />
     <ClInclude Include="..\Public\Effect_Boss_Laser_Smoke.h" />
     <ClInclude Include="..\Public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Dash.h" />
@@ -272,6 +273,7 @@
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\Public\Level_Stage.h" />
+    <ClInclude Include="..\Public\Light_Generator.h" />
     <ClInclude Include="..\Public\Loading.h" />
     <ClInclude Include="..\Public\MainApp.h" />
     <ClInclude Include="..\Public\MainCamera.h" />
@@ -402,6 +404,7 @@
     <ClCompile Include="..\Private\DeadLine.cpp" />
     <ClCompile Include="..\Private\DummyWall.cpp" />
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
+    <ClCompile Include="..\Private\EffectLight.cpp" />
     <ClCompile Include="..\Private\Effect_Boss_Laser_Smoke.cpp" />
     <ClCompile Include="..\Private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
@@ -449,6 +452,7 @@
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Level_Stage.cpp" />
+    <ClCompile Include="..\Private\Light_Generator.cpp" />
     <ClCompile Include="..\Private\Loading.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\MainCamera.cpp" />

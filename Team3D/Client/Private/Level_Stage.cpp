@@ -17,6 +17,7 @@
 #include "HangingPlanet.h"
 /* Taek */
 #include "MoonBaboonCore.h"
+#include "Light_Generator.h"
 /* Yoon */
 #include "RotatedRobotParts.h"
 #include "RobotParts.h"
@@ -350,30 +351,22 @@ HRESULT CLevel_Stage::Ready_Lights()
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
 	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
-	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vDiffuse = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
 		return E_FAIL;
-//
-//#pragma region PointLight
-	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	LightDesc.vPosition = XMFLOAT3(60.f, 5.f, 15.f);
-	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
-	LightDesc.fRange = 15.f;
-	if (FAILED(pGameInstance->Add_Light(TEXT("Point1"), LightDesc))) return E_FAIL;
-//	if (FAILED(pGameInstance->Add_Light(TEXT("Point2"), LightDesc))) return E_FAIL;
-//	if (FAILED(pGameInstance->Add_Light(TEXT("Point3"), LightDesc))) return E_FAIL;
-//	if (FAILED(pGameInstance->Add_Light(TEXT("Point4"), LightDesc))) return E_FAIL;
-//	if (FAILED(pGameInstance->Add_Light(TEXT("Point5"), LightDesc))) return E_FAIL;
 
-	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(20.f, 0.25f, 1.f, LightDesc.vPosition, 2)), E_FAIL);
-//#pragma endregion
-
-
+#pragma region PointLight
+	//	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	//	LightDesc.vPosition = XMFLOAT3(20.f, 5.f, 20.f);
+	//	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	//	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+	//	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+	//	LightDesc.fRange = 15.f;
+	//if (FAILED(CLight_Generator::GetInstance()->Add_Light(TEXT("Point1"), LightDesc))) return E_FAIL;
+#pragma endregion
 
 	/* For. Spot  X */
 	//LightDesc.eType = LIGHT_DESC::TYPE_SPOT;
