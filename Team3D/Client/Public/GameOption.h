@@ -24,7 +24,7 @@
 //#define __8THREADS
 //#define __16THREADS
 
-#define __THREAD_NUM 6
+#define __THREAD_NUM 8
 
 /************************************************************************/
 

@@ -24,31 +24,36 @@ cbuffer FinalPassDesc
 ////////////////////////////////////////////////////////////
 /* Function */
 
-float3 ToneMapping(float3 HDRColor)
+float3 ToneMapping_DXSample(float3 HDRColor)
 {
-	// 현재 픽셀에 대한 휘도 스케일 계산
-	// 휘도 스케일을 픽셀 색상에 적용
+	float LScale = dot(HDRColor, LUM_FACTOR);
+	LScale *= g_MiddleGrey / g_AverageLum[0];
+	LScale = (LScale + LScale * LScale / g_LumWhiteSqr) / (1.0 + LScale);
+	return HDRColor * LScale;
+}
 
-	//// DX Sample
-	//float LScale = dot(HDRColor, LUM_FACTOR);
-	//LScale *= g_MiddleGrey / g_AverageLum[0];
-	//LScale = (LScale + LScale * LScale / g_LumWhiteSqr) / (1.0 + LScale);
-	//return HDRColor * LScale;
+float3 ToneMapping_EA(float3 HDRColor)
+{
+	float3 Color =HDRColor;
+	float3 x = max(0.f, Color - 0.004);
+	Color = (x * (6.2f * x + 0.5f)) / (x * (6.2f * x + 1.7f) + 0.06f);
+	return float4(Color, 1.f);
 
-	// EA studio
-	//float3 Color = pow(tex2D(Sampler, TexUV), 2.2f);
-	//float3 x = max(0.f, Color - 0.004);
-	//Color = (x * (6.2f * x + 0.5f)) / (x * (6.2f * x + 1.7f) + 0.06f);
-	//return float4(Color, 1.f);
-	float3 Color = pow(HDRColor, 2.2f);
-	float3 x = max(0.f, Color - g_MiddleGrey);
-	Color = (x * (g_LumWhiteSqr * x + 0.5f)) / (x * (g_LumWhiteSqr * x + 1.7f) + 0.06f);
-
-	//float3 Color = pow(HDRColor, g_MiddleGrey / g_AverageLum[0]);
-	//float3 x = max(0.f, Color - 0.004);
+	//float3 Color = pow(HDRColor, 2.2f);
+	//float3 x = max(0.f, Color - g_MiddleGrey);
 	//Color = (x * (g_LumWhiteSqr * x + 0.5f)) / (x * (g_LumWhiteSqr * x + 1.7f) + 0.06f);
+	//return Color;
+}
 
-	return Color;
+float3 ToneMapping_Flimic(float3 HDRColor)
+{
+	// 곡선 형태를 지정하느 파라미터
+	const float a = 2.51, b = 0.03, c = 2.43, d = 0.59, e = 0.14;
+
+	float3	Color = saturate((HDRColor * (a * HDRColor + b)) / (HDRColor * (c * HDRColor + d) + e));
+	float	Lum = saturate((g_LumWhiteSqr * (a * g_LumWhiteSqr + b)) / (g_LumWhiteSqr * (c * g_LumWhiteSqr + d) + e));
+
+	return Color / Lum;
 }
 
 float3 DistanceDOF(float3 colorFocus, float3 colorBlurred, float depth)
@@ -131,7 +136,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
 
 	vColor += g_BloomScale * g_BloomTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV.xy).xyz;
-	vColor = ToneMapping(vColor);
+	vColor = ToneMapping_Flimic(vColor);
 
 	Out.vColor = vector(vColor, 1.f);
 	
