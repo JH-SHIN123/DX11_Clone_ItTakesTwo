@@ -9,7 +9,7 @@ private:
 	explicit CElectricBox(const CElectricBox& rhs);
 	virtual ~CElectricBox() = default;
 
-public:
+public:/* Getter */
 	_bool	Get_Electric() { return m_bElectric; }
 
 public:

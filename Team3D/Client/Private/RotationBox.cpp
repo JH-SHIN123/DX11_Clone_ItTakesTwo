@@ -92,7 +92,7 @@ void CRotationBox::Rotate_Angle(_double fMaxAngle, _double dSpeed, _double dTime
 		fMaxAngle *= 2.0;
 
 	m_dCoolTime += dTimeDelta;
-	if (5.0 <= m_dCoolTime)
+	if (1.0 <= m_dCoolTime)
 	{
 		if (true == m_bDirChange)
 			m_pTransformCom->RotatePitch_Angle(m_dAngle - (fMaxAngle * 0.5));
