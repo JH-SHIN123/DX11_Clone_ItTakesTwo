@@ -230,7 +230,10 @@ PS_OUT PS_MAIN(PS_IN In)
 	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex,In.vWorldPosition);
 
 	// Calculate Specular
-	if (g_IsMaterials.Is_Specular & 1) Out.vSpecular = TextureSampleToWorldSpace(g_SpecularTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
+	if (g_IsMaterials.Is_Specular & 1) {
+		Out.vSpecular = TextureSampleToWorldSpace(g_SpecularTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
+		Out.vSpecular.w = 0.f;
+	}
 	else Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
 
 	// Calculate Emissive

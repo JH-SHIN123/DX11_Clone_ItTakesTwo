@@ -5,6 +5,7 @@ texture2D			g_NormalTexture;
 texture2D			g_DepthTexture;
 texture2D			g_SpecularSrcTexture;
 Texture2D<float>	g_SSAOTexture;
+Texture2D<float>	g_SSAOTexture_Blur;
 
 cbuffer LightDesc
 {
@@ -75,9 +76,10 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	vector	vNormalDesc = g_NormalTexture.Sample(Point_Sampler, In.vTexUV);
-	vector	vNormal		= vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+	vector	vNormal		= normalize(vector(vNormalDesc.xyz * 2.f - 1.f, 0.f));
 	vector	vDepthDesc	= g_DepthTexture.Sample(Point_Sampler, In.vTexUV);
 	float	fAODesc		= g_SSAOTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
+	float	fAODesc_Blur= g_SSAOTexture_Blur.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
 
 	vector	vWorldPos	= vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
 	float	fViewZ		= 0.f;
@@ -105,19 +107,18 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	else
 		discard;
 
-	Out.vShade		= max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient) * fAODesc;
+	Out.vShade		= max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) * (g_vLightDiffuse * g_vMtrlDiffuse) + (g_vLightAmbient * g_vMtrlAmbient) * (fAODesc/* + fAODesc_Blur*/);
 	Out.vShade.a	= 0.f;
 
 	/* Specular */
 	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Point_Sampler, In.vTexUV);
-
 	if (vSpecSrcDesc.w < 0.5f) // w is specular on/off flag
 	{
 		vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
 		vector vReflect = reflect(normalize(g_vLightDir), vSpecSrc);
 		Out.vSpecular = pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
-		Out.vSpecular.a = 0.f;
 	}
+	Out.vSpecular.a = 0.f;
 
 	return Out;
 }
@@ -127,7 +128,7 @@ PS_OUT PS_POINT(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	vector	vNormalDesc = g_NormalTexture.Sample(Point_Sampler, In.vTexUV);
-	vector	vNormal		= vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+	vector	vNormal		= normalize(vector(vNormalDesc.xyz * 2.f - 1.f, 0.f));
 	vector	vDepthDesc	= g_DepthTexture.Sample(Point_Sampler, In.vTexUV);
 	
 	vector	vWorldPos	= vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
@@ -162,9 +163,12 @@ PS_OUT PS_POINT(PS_IN In)
 	Out.vShade.a = 0.f;
 
 	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Point_Sampler, In.vTexUV);
-	vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
-	vector	vReflect = reflect(normalize(vLightDir), vSpecSrcDesc);
-	Out.vSpecular	= (pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular));
+	if (vSpecSrcDesc.w < 0.5f) // w is specular on/off flag
+	{
+		vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
+		vector vReflect = reflect(normalize(vLightDir), vSpecSrc);
+		Out.vSpecular = pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
+	}
 	Out.vSpecular.a = 0.f;
 
 	// Α¶Έν»φ Power
@@ -178,7 +182,7 @@ PS_OUT PS_SPOT(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	vector	vNormalDesc = g_NormalTexture.Sample(Wrap_Sampler, In.vTexUV);
-	vector	vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+	vector	vNormal = normalize(vector(vNormalDesc.xyz * 2.f - 1.f, 0.f));
 	vector	vDepthDesc = g_DepthTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vWorldPos = vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
 	float	fViewZ = 0.f;
@@ -213,9 +217,12 @@ PS_OUT PS_SPOT(PS_IN In)
 	Out.vShade.a = 0.f;
 
 	vector	vSpecSrcDesc = g_SpecularSrcTexture.Sample(Point_Sampler, In.vTexUV);
-	vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
-	vector	vReflect = reflect(normalize(ToLight), vSpecSrcDesc);
-	Out.vSpecular = (pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular));
+	if (vSpecSrcDesc.w < 0.5f) // w is specular on/off flag
+	{
+		vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
+		vector vReflect = reflect(normalize(ToLight), vSpecSrc);
+		Out.vSpecular = pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
+	}
 	Out.vSpecular.a = 0.f;
 
 	// Cone Att

@@ -6,6 +6,7 @@
 #include "RenderTarget_Manager.h"
 #include "Shadow_Manager.h"
 #include "SSAO.h"
+#include "Blur.h"
 
 IMPLEMENT_SINGLETON(CLight_Manager)
 
