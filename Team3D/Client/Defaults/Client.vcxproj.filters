@@ -66,6 +66,18 @@
     <Filter Include="02.GameObject\00.Public\04.GrindLine">
       <UniqueIdentifier>{5afae0a9-03c7-460f-9b5c-96a5c6791b03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene">
+      <UniqueIdentifier>{17c895e5-8ceb-43f8-a1c4-5019067e9dbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\00.CutScenePlayer">
+      <UniqueIdentifier>{7b3f87d4-4b4a-455e-9791-5d90f9fb507b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\01.CutScene">
+      <UniqueIdentifier>{9019c32b-9091-4e98-b2fd-8c969a8462d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\02.Performer">
+      <UniqueIdentifier>{ef76678d-01ca-4769-a500-3c863cc6aab6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\01.Intro">
       <UniqueIdentifier>{6e3ecc34-09e4-48a8-b8b4-f1dd9d96c681}</UniqueIdentifier>
     </Filter>
@@ -281,6 +293,9 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump">
       <UniqueIdentifier>{401d01cd-f72e-4e8c-8316-be81b655a327}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump">
+      <UniqueIdentifier>{850b7400-d978-4452-a707-6786a98291be}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious">
       <UniqueIdentifier>{2f43f579-02a4-4fed-ae3b-0ad23196e3d6}</UniqueIdentifier>
@@ -513,25 +528,8 @@
     <Filter Include="02.GameObject\06.UI\08.ButtonIndicator">
       <UniqueIdentifier>{29414170-35a7-4279-8f62-05b5997957f5}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
-    <Filter Include="02.GameObject\00.Public\05.CutScene">
-      <UniqueIdentifier>{e938d1f0-6704-45a7-ad1b-388fead9e077}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\00.Public\05.CutScene\00.CutScenePlayer">
-      <UniqueIdentifier>{85f2ec10-34b6-4644-adcb-cee787208cb0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\00.Public\05.CutScene\01.CutScene">
-      <UniqueIdentifier>{716ebf1b-bb3b-4feb-9801-967cac4fc2ed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\00.Public\05.CutScene\02.Performer">
-      <UniqueIdentifier>{0fffa036-d7dd-479b-a4fa-84956b7722a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object">
-      <UniqueIdentifier>{2d113bd5-2e8a-454e-ae74-7e78d42a438b}</UniqueIdentifier>
-=======
     <Filter Include="02.GameObject\06.UI\09.Screen">
       <UniqueIdentifier>{7f60ca2f-feec-410e-a00a-ada95f56603a}</UniqueIdentifier>
->>>>>>> main
     </Filter>
     <Filter Include="02.GameObject\06.UI\09.Screen\00.AlphaScreen">
       <UniqueIdentifier>{120844a3-2edb-4b1e-b9ea-4d3159964372}</UniqueIdentifier>
@@ -699,6 +697,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\GrindLine.h">
       <Filter>02.GameObject\00.Public\04.GrindLine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CutScene.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\01.CutScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CutScenePlayer.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\00.CutScenePlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Performer.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\02.Performer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Sky.h">
       <Filter>02.GameObject\02.Sky</Filter>
@@ -888,6 +895,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\MayJumpWall.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PipeJumpWall.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\RotatedRobotParts.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious</Filter>
@@ -1150,22 +1160,8 @@
     <ClInclude Include="..\Public\Client_Struct.h">
       <Filter>98.Defines\01.Client</Filter>
     </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="..\Public\CutScenePlayer.h">
-      <Filter>02.GameObject\00.Public\05.CutScene\00.CutScenePlayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CutScene.h">
-      <Filter>02.GameObject\00.Public\05.CutScene\01.CutScene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Performer.h">
-      <Filter>02.GameObject\00.Public\05.CutScene\02.Performer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Pinball_Move.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move</Filter>
-=======
     <ClInclude Include="Client.h">
       <Filter>99.Defaults</Filter>
->>>>>>> main
     </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>99.Defaults</Filter>
@@ -1231,6 +1227,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\GrindLine.cpp">
       <Filter>02.GameObject\00.Public\04.GrindLine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CutScene.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\01.CutScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CutScenePlayer.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\00.CutScenePlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Performer.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\02.Performer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Sky.cpp">
       <Filter>02.GameObject\02.Sky</Filter>
@@ -1420,6 +1425,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MayJumpWall.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PipeJumpWall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\RotatedRobotParts.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious</Filter>
@@ -1649,22 +1657,8 @@
     <ClCompile Include="..\Private\UI_Generator.cpp">
       <Filter>04.Generator\02.UI_Generator</Filter>
     </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="..\Private\CutScenePlayer.cpp">
-      <Filter>02.GameObject\00.Public\05.CutScene\00.CutScenePlayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CutScene.cpp">
-      <Filter>02.GameObject\00.Public\05.CutScene\01.CutScene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Performer.cpp">
-      <Filter>02.GameObject\00.Public\05.CutScene\02.Performer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Pinball_Move.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move</Filter>
-=======
     <ClCompile Include="..\Private\DataStorage.cpp">
       <Filter>05.DataStorage</Filter>
->>>>>>> main
     </ClCompile>
     <ClCompile Include="..\Private\GameDebugger.cpp">
       <Filter>96.Debug</Filter>

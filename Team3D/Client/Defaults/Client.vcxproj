@@ -217,19 +217,10 @@
     <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
     <ClInclude Include="..\Public\ControlRoom_Glass.h" />
-<<<<<<< HEAD
     <ClInclude Include="..\Public\CutScene.h" />
     <ClInclude Include="..\Public\CutScenePlayer.h" />
-    <ClInclude Include="..\public\Effect_Boss_Laser_Smoke.h" />
-    <ClInclude Include="..\public\Effect_Pinball_Move.h" />
-    <ClInclude Include="..\public\Effect_PointLight.h" />
-    <ClInclude Include="..\Public\GameDebugger.h" />
-    <ClInclude Include="..\Public\GameOption.h" />
-    <ClInclude Include="..\public\DeadLine.h" />
-=======
     <ClInclude Include="..\Public\DataStorage.h" />
     <ClInclude Include="..\Public\DeadLine.h" />
->>>>>>> main
     <ClInclude Include="..\Public\DummyWall.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />
     <ClInclude Include="..\Public\Effect_Boss_Laser_Smoke.h" />
@@ -283,18 +274,6 @@
     <ClInclude Include="..\Public\MayJumpWall.h" />
     <ClInclude Include="..\Public\MenuScreen.h" />
     <ClInclude Include="..\Public\MoonBaboon.h" />
-<<<<<<< HEAD
-    <ClInclude Include="..\public\Effect_Player_Dead.h" />
-    <ClInclude Include="..\public\Effect_Player_Dead_Particle.h" />
-    <ClInclude Include="..\public\Effect_RespawnTunnel.h" />
-    <ClInclude Include="..\public\Effect_RespawnTunnel_Portal.h" />
-    <ClInclude Include="..\Public\NoBatterySign.h" />
-    <ClInclude Include="..\Public\PC_Enter.h" />
-    <ClInclude Include="..\Public\PC_MouseButton.h" />
-    <ClInclude Include="..\Public\Performer.h" />
-    <ClInclude Include="..\Public\PipeCurve.h" />
-=======
->>>>>>> main
     <ClInclude Include="..\Public\MoonBaboonCore.h" />
     <ClInclude Include="..\Public\MoonBaboonCore_Button.h" />
     <ClInclude Include="..\Public\MoonBaboonCore_Glass.h" />
@@ -304,6 +283,7 @@
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_Enter.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
+    <ClInclude Include="..\Public\Performer.h" />
     <ClInclude Include="..\Public\PipeCurve.h" />
     <ClInclude Include="..\Public\PinBall.h" />
     <ClInclude Include="..\Public\PinBall_BallDoor.h" />
@@ -313,6 +293,7 @@
     <ClInclude Include="..\Public\PinBall_Handle.h" />
     <ClInclude Include="..\Public\PinBall_HandleBase.h" />
     <ClInclude Include="..\Public\PinBall_Spring.h" />
+    <ClInclude Include="..\Public\PipeJumpWall.h" />
     <ClInclude Include="..\Public\Planet.h" />
     <ClInclude Include="..\Public\PlanetRing.h" />
     <ClInclude Include="..\Public\PlayerActor.h" />
@@ -459,18 +440,6 @@
     <ClCompile Include="..\Private\MayJumpWall.cpp" />
     <ClCompile Include="..\Private\MenuScreen.cpp" />
     <ClCompile Include="..\Private\MoonBaboon.cpp" />
-<<<<<<< HEAD
-    <ClCompile Include="..\private\Effect_Player_Dead.cpp" />
-    <ClCompile Include="..\private\Effect_Player_Dead_Particle.cpp" />
-    <ClCompile Include="..\private\Effect_RespawnTunnel.cpp" />
-    <ClCompile Include="..\private\Effect_RespawnTunnel_Portal.cpp" />
-    <ClCompile Include="..\Private\NoBatterySign.cpp" />
-    <ClCompile Include="..\Private\PC_Enter.cpp" />
-    <ClCompile Include="..\Private\PC_MouseButton.cpp" />
-    <ClCompile Include="..\Private\Performer.cpp" />
-    <ClCompile Include="..\Private\PipeCurve.cpp" />
-=======
->>>>>>> main
     <ClCompile Include="..\Private\MoonBaboonCore.cpp" />
     <ClCompile Include="..\Private\MoonBaboonCore_Button.cpp" />
     <ClCompile Include="..\Private\MoonBaboonCore_Glass.cpp" />
@@ -480,6 +449,7 @@
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_Enter.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
+    <ClCompile Include="..\Private\Performer.cpp" />
     <ClCompile Include="..\Private\PipeCurve.cpp" />
     <ClCompile Include="..\Private\PinBall.cpp" />
     <ClCompile Include="..\Private\PinBall_BallDoor.cpp" />
@@ -489,6 +459,7 @@
     <ClCompile Include="..\Private\PinBall_Handle.cpp" />
     <ClCompile Include="..\Private\PinBall_HandleBase.cpp" />
     <ClCompile Include="..\Private\PinBall_Spring.cpp" />
+    <ClCompile Include="..\Private\PipeJumpWall.cpp" />
     <ClCompile Include="..\Private\Planet.cpp" />
     <ClCompile Include="..\Private\PlanetRing.cpp" />
     <ClCompile Include="..\Private\PlayerActor.cpp" />
