@@ -215,7 +215,9 @@ public:
 	_bool			 Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool			 Get_PushingBattery() { return m_IsPushingBattery; }
 	_uint			 Get_CurState() const;
-
+	_float4x4		 Get_TriggerTargetWorld() { return m_TriggerTargetWorld; }
+	_bool			 Get_IsWarpNextStage() { return m_IsWarpNextStage; }
+	_bool			 Get_IsWarpDone() { return m_IsWarpDone; }
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);

@@ -11,9 +11,9 @@ class CMainCamera final : public CCamera
 {
 	enum CamRev {Rev_Holizontal,Rev_Prependicul,Rev_End};
 
-	enum class CamMode{Cam_Free,Cam_AutoToFree,Cam_End};
+	enum class CamMode{Cam_Free,Cam_AutoToFree,Cam_Warp_WormHole,Cam_End};
 	//O CamFreeMove P FollowPlayer
-	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnRail,Cam_Free_Warp_WormHole, Cam_Free_End };
+	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnRail, Cam_Free_Boss_MiniRoom,Cam_Free_End };
 
 private:
 	explicit CMainCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -29,6 +29,8 @@ public:
 
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
+	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal,matWorld); }
+
 	HRESULT Start_Film(const _tchar* pFilmTag);
 private:
 	void	Check_Player(_double dTimeDelta);
@@ -38,11 +40,11 @@ private:
 	//For Free.
 	_int	Tick_Cam_Free(_double dTimeDelta);					//자유이동
 	_int	Tick_Cam_AutoToFree(_double dTimeDelta);			//연출 카메라 -> 자유이동시 보간
+	_int	Tick_Cam_Warp_WormHole(_double dTimeDelta);			//웜홀
 	
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
 	_int	Tick_Cam_Free_OnRail(_double dTimeDelta);			//레일
-	_int	Tick_Cam_Free_Warp_WormHole(_double dTimeDelta);	//웜홀
 
 	//CamHelper State(현재 )
 	_int	Tick_CamHelperNone(_double dTimeDelta);			//현재 아무것도 재생안함
@@ -100,9 +102,10 @@ private:
 
 	//For.Zoom
 	_float		m_fCamZoomVal = 0.f;
-	//For.GravityPath
+	//For.Portal
+	_double m_dWarpTime = 0.0;
+	_float4x4 m_matStartPortal;
 
-	
 	WORLDMATRIX	m_PreWorld;
 
 

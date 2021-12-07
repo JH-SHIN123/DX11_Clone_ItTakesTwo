@@ -154,9 +154,9 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 	}
 	m_bIsLerpToCurSize = LerpToCurSize(m_eCurPlayerSize, dTimeDelta);
 	
-	if (static_cast<CCody*>(m_pTargetObj)->Get_CurState() == ANI_C_SpacePortal_Travel)
+	if (static_cast<CCody*>(m_pTargetObj)->Get_IsWarpNextStage() == true)
 	{
-		m_eCurCamFreeOption = CamFreeOption::Cam_Free_Warp_WormHole;
+		m_eCurCamMode = CamMode::Cam_Warp_WormHole;
 	}
 
 }
@@ -205,9 +205,6 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 		break;
 	case CMainCamera::CamFreeOption::Cam_Free_OnRail:
 		iResult = Tick_Cam_Free_OnRail(dTimeDelta);
-		break;
-	case CMainCamera::CamFreeOption::Cam_Free_Warp_WormHole:
-		iResult = Tick_Cam_Free_Warp_WormHole(dTimeDelta);
 		break;
 	}
 	return iResult;
@@ -417,21 +414,47 @@ _int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
 	KeyCheck(dTimeDelta);
 	return NO_EVENT;
 }
-_int CMainCamera::Tick_Cam_Free_Warp_WormHole(_double dTimeDelta)
+_int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 {
-	CTransform* pPlayerTransform = static_cast<CCody*>(m_pTargetObj)->Get_Transform();
-	if (nullptr == pPlayerTransform)
+	if (nullptr == m_pTargetObj)
 		return EVENT_ERROR;
-
-	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-	_vector vPlayerLook = XMVector3Normalize(pPlayerTransform->Get_State(CTransform::STATE_LOOK));
-	_vector vCamPos = vPlayerPos - vPlayerLook;
 	
-	_float4 vEye, vAt;
-	XMStoreFloat4(&vEye, vCamPos);
-	XMStoreFloat4(&vAt, vPlayerPos);
-	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vEye, vAt));
+	CCody* pCody = static_cast<CCody*>(m_pTargetObj);
+	
+	CTransform* pPlayerTransform = pCody->Get_Transform();
+	if (m_dWarpTime < 2.0) //카메라가 게이트 전방으로,페이드인.
+	{
+		_matrix matPortal =XMLoadFloat4x4(&m_matStartPortal);
+		_float4 vTargetEye, vTargetAt;
+		XMStoreFloat4(&vTargetEye, matPortal.r[3] - 2*XMVector3Normalize(matPortal.r[2]));
+		XMStoreFloat4(&vTargetAt, matPortal.r[3]);
+		vTargetEye.y += 4.f;
+		vTargetAt.y += 4.f;
 
+
+		m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vTargetEye, vTargetAt),m_dWarpTime));
+		m_dWarpTime += dTimeDelta / 2.0;
+	}
+	else if (pCody->Get_IsWarpNextStage() && pCody->Get_IsWarpDone()) //게이트안에서,페이드아웃
+	{
+		_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+		_vector vPlayerLook = pPlayerTransform->Get_State(CTransform::STATE_LOOK);
+		_vector vCamPos = vPlayerPos - vPlayerLook * 2.f;
+		_float4 vEye, vAt;
+		XMStoreFloat4(&vEye, vCamPos);
+		XMStoreFloat4(&vAt, vPlayerPos);
+		m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vEye, vAt));
+	}
+	else if (pCody->Get_IsWarpDone())
+	{
+		//페이드아웃
+	}
+	else
+	{
+		m_dWarpTime = 0.0;
+		ReSet_Cam_FreeToAuto();
+		m_eCurCamMode = CamMode::Cam_AutoToFree;
+	}
 	return NO_EVENT;
 }
 void CMainCamera::KeyCheck(_double dTimeDelta)
@@ -596,6 +619,9 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		break;
 	case Client::CMainCamera::CamMode::Cam_AutoToFree:
 		iResult = Tick_Cam_AutoToFree(dTimeDelta);
+		break;
+	case Client::CMainCamera::CamMode::Cam_Warp_WormHole:
+		iResult = Tick_Cam_Warp_WormHole(dTimeDelta);
 		break;
 	}
 	return iResult;
