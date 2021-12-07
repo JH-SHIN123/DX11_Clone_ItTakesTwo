@@ -173,6 +173,7 @@ void CHookUFO::InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisa
 	_float4 vConvertPos;
 	XMStoreFloat4(&vConvertPos, vPos);
 	vConvertPos.y -= 5.f;
+	vPos = XMLoadFloat4(&vConvertPos);
 
 	vComparePos = vPos - vTargetPos;
 
@@ -190,16 +191,14 @@ void CHookUFO::InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisa
 			if (true == m_IsCodyCollide)
 			{
 				m_pCodyGauge_Circle->Set_Active(false);
-				
 				UI_CreateOnlyOnce(Cody, InputButton_InterActive);
-				UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, XMLoadFloat4(&vConvertPos));
+				UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, vPos);
 				return;
 			}
 			else
 			{
 				UI_Delete(Cody, InputButton_InterActive);
 				m_pCodyGauge_Circle->Set_Active(true);
-				m_pCodyGauge_Circle->Set_TargetPos(XMLoadFloat4(&vConvertPos));
 			}
 		}
 		else if (eID == GameID::Enum::eMAY)
@@ -207,16 +206,14 @@ void CHookUFO::InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisa
 			if (true == m_IsMayCollide)
 			{
 				m_pMayGauge_Circle->Set_Active(false);
-
 				UI_CreateOnlyOnce(May, InputButton_PS_InterActive);
-				UI_Generator->Set_TargetPos(Player::May, UI::InputButton_PS_InterActive, XMLoadFloat4(&vConvertPos));
+				UI_Generator->Set_TargetPos(Player::May, UI::InputButton_PS_InterActive, vPos);
 				return;
 			}
 			else
 			{
 				UI_Delete(May, InputButton_PS_InterActive);
 				m_pMayGauge_Circle->Set_Active(true);
-				m_pMayGauge_Circle->Set_TargetPos(XMLoadFloat4(&vConvertPos));
 			}
 		}
 	}
@@ -228,6 +225,13 @@ void CHookUFO::InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisa
 			m_pMayGauge_Circle->Set_Active(false);
 	}
 
+	if (nullptr != m_pCodyGauge_Circle)
+	{
+		vPos.m128_f32[1] += 5.f;
+		m_pCodyGauge_Circle->Set_TargetPos(vPos);
+	}
+	if (nullptr != m_pMayGauge_Circle)
+		m_pMayGauge_Circle->Set_TargetPos(vPos);
 }
 
 HRESULT CHookUFO::Ready_Layer_CodyGauge_Circle(const _tchar * pLayerTag)
@@ -237,9 +241,12 @@ HRESULT CHookUFO::Ready_Layer_CodyGauge_Circle(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Gauge_Circle"), nullptr, &pGameObject), E_FAIL);
 	m_pCodyGauge_Circle = static_cast<CGauge_Circle*>(pGameObject);
 	m_pCodyGauge_Circle->Set_SwingPointPlayerID(Player::Cody);
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPos.m128_f32[1] -= 5.f;
+	m_pCodyGauge_Circle->Set_Position(vPos);
 
 	// 범위 설정
-	m_pCodyGauge_Circle->Set_Range(15.f);
+	m_pCodyGauge_Circle->Set_Range(30.f);
 
 	return S_OK;
 }

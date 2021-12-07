@@ -484,10 +484,31 @@ PS_OUT PS_Gauge_Cicle(PS_IN In)
 	if (Out.vColor.r <= g_fDistance && Out.vColor.r > 0.f)
 	{
 		Out.vColor.rgb = float3(1.f, 1.f, 0.f);
-		Out.vColor.a = 1.f;
+		Out.vColor.a = 0.5f;
 	}
 	else if (Out.vColor.r > g_fDistance)
 		discard; 
+
+	return Out;
+}
+
+
+PS_OUT PS_WhiteScreenFadeInOut(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	Out.vColor.rgb = 1.f;
+	Out.vColor.a = g_fAlpha;
+	return Out;
+}
+
+PS_OUT PS_BlackScreenOut(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	Out.vColor.a = g_fAlpha;
 
 	return Out;
 }
@@ -670,5 +691,27 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_Gauge_Cicle();
+	}
+
+	// 16
+	pass WhiteScreenFadeinout
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_WhiteScreenFadeInOut();
+	}
+
+	// 17
+	pass BlackScreenFadeout
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_BlackScreenOut();
 	}
 };

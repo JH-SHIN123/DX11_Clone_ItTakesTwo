@@ -288,6 +288,12 @@ _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_U))
+		UI_Create(Cody, CutSceneBar);
+
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
+		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
+
 	/* LateTick : 레일의 타겟 찾기*/
 	Find_TargetSpaceRail();
 	ShowRailTargetTriggerUI();

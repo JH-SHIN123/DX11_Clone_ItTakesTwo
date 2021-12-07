@@ -248,6 +248,20 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Gauge_Circle"), Level::LEVEL_STATIC, pArg);
 		SetUp_Clone(ePlayer, eTrigger, TEXT("ContextIcon_SwingPoint"), Level::LEVEL_STATIC, pArg);
 		break;
+	case UI::WhiteScreenFadeInOut:
+		iOption = 3;
+		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+		break;
+	case UI::BlackScreenFadeOut:
+		iOption = 4;
+		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+		break;
+	case UI::CutSceneBar:
+		iOption = 5;
+		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+		iOption = 6;
+		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
 		break;

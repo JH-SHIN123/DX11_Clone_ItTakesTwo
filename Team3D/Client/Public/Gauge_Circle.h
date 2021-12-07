@@ -25,6 +25,7 @@ public:
 	 void Set_TargetPos(_vector vPos) override;
 	 void Set_SwingPointPlayerID(Player::ID ePlayerID);
 	 void Set_Range(_float fRange);
+	 void Set_Position(_vector vPos);
 
 private:
 	 _float							m_fDistance = 0.f;
@@ -38,8 +39,10 @@ private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 
 private:
-	HRESULT Ready_Component();
+	void FindDistanceRatio();
 
+private:
+	HRESULT Ready_Component();
 	HRESULT Ready_Layer_SwingPoint(const _tchar * pLayerTag);
 
 public:

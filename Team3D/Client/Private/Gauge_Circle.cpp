@@ -57,30 +57,7 @@ _int CGauge_Circle::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 
-	if (m_ePlayerID == Player::Cody)
-	{
-		_vector vCodyPos = ((CCody*)DATABASE->GetCody())->Get_Position();
-		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-		_vector vDistancePos = XMLoadFloat4(&m_vTargetPos) - vCodyPos;
-		_vector vLength = XMVector3Length(vDistancePos);
-
-		_float fDistance = fabs(XMVectorGetX(vLength));
-
-		m_fDistance = m_fRange / fDistance;
-	}
-	else if (m_ePlayerID == Player::May)
-	{
-		_vector vMayPos = ((CMay*)DATABASE->GetMay())->Get_Position();
-		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-		_vector vDistancePos = XMLoadFloat4(&m_vTargetPos) - vMayPos;
-		_vector vLength = XMVector3Length(vDistancePos);
-
-		_float fDistance = fabs(XMVectorGetX(vLength));
-
-		m_fDistance = m_fRange / fDistance;
-	}
+	FindDistanceRatio();
 
 	if (false == m_IsActive)
 		return NO_EVENT;
@@ -128,6 +105,47 @@ void CGauge_Circle::Set_SwingPointPlayerID(Player::ID ePlayerID)
 void CGauge_Circle::Set_Range(_float fRange)
 {
 	m_fRange = fRange;
+}
+
+void CGauge_Circle::Set_Position(_vector vPos)
+{
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+}
+
+void CGauge_Circle::FindDistanceRatio()
+{
+	if (m_ePlayerID == Player::Cody)
+	{
+		_vector vCodyPos = ((CCody*)DATABASE->GetCody())->Get_Position();
+		_vector vDistancePos = XMLoadFloat4(&m_vTargetPos) - vCodyPos;
+		vDistancePos = XMVectorSetW(vDistancePos, 0.f);
+
+		// { 920.313f, 730.f, 315.746f, 1.f };
+
+		//{ 894.939f, 735.f, 353.171f, 1.f };
+
+		_vector vLength = XMVector3Length(vDistancePos);
+		_float fDistance = fabs(XMVectorGetX(vLength));
+
+		fDistance -= 15.f;
+		m_fRange = 25.f;
+
+		//m_fDistance = (fDistance / m_fRange - 1.f) * -1.f;
+		m_fDistance = 1.f - (fDistance / m_fRange);
+	}
+	else if (m_ePlayerID == Player::May)
+	{
+		_vector vMayPos = ((CMay*)DATABASE->GetMay())->Get_Position();
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		_vector vDistancePos = XMLoadFloat4(&m_vTargetPos) - vMayPos;
+		_vector vLength = XMVector3Length(vDistancePos);
+
+		_float fDistance = fabs(XMVectorGetX(vLength));
+
+		//m_fDistance = (fDistance / m_fRange - 1.f) * -1.f;
+		m_fDistance = 1.f - (fDistance / m_fRange);
+	}
 }
 
 HRESULT CGauge_Circle::Ready_Component()
