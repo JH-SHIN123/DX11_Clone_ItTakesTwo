@@ -103,7 +103,7 @@ HRESULT CEffect_May_Boots_Walking_Particle::Ready_Smoke_Effect()
 	m_pInstanceBuffer_Smoke[0].vUp			= { 0.f, 1.f, 0.f, 0.f };
 	m_pInstanceBuffer_Smoke[0].vLook		= { 0.f, 0.f, 1.f, 0.f };
 	XMStoreFloat4(&m_pInstanceBuffer_Smoke[0].vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_pInstanceBuffer_Smoke[0].vTextureUV	= { 0.f, 0.f, 1.f, 1.f };;
+	m_pInstanceBuffer_Smoke[0].vTextureUV	= __super::Get_TexUV(m_EffectDesc_Prototype.iTextureCount_U, m_EffectDesc_Prototype.iTextureCount_V, true);
 	m_pInstanceBuffer_Smoke[0].vSize		= { 1.5f, 1.5f };
 	return S_OK;
 }

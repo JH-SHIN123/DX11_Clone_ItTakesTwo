@@ -14,6 +14,7 @@ CEffect_Boss_Laser_Smoke::CEffect_Boss_Laser_Smoke(const CEffect_Boss_Laser_Smok
 
 HRESULT CEffect_Boss_Laser_Smoke::NativeConstruct_Prototype(void * pArg)
 {
+	m_EffectDesc_Prototype.iInstanceCount = 100;
 	return S_OK;
 }
 
@@ -25,8 +26,8 @@ HRESULT CEffect_Boss_Laser_Smoke::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName, TEXT("Com_Texture"), (CComponent**)&m_pTexturesCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName_Second, TEXT("Com_Texture_Second"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Explosion7x7"), TEXT("Com_Texture"), (CComponent**)&m_pTexturesCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_Second"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
 
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
@@ -41,9 +42,9 @@ HRESULT CEffect_Boss_Laser_Smoke::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_Laser_Smoke::Tick(_double TimeDelta)
 {
-	/*Gara*/ m_pTransformCom->Set_State(CTransform::STATE_POSITION, DATABASE->GetCody()->Get_Position());
+	/*Gara*/ m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 1.f, 30.f, 1.f)/*DATABASE->GetCody()->Get_Position()*/);
 
-	if (m_dInstance_Pos_Update_Time >= m_dControlTime)
+	if (m_dInstance_Pos_Update_Time <= m_dControlTime)
 		return EVENT_DEAD;
 	if (false == m_IsActivate)
 		m_dControlTime += TimeDelta;
@@ -55,16 +56,20 @@ _int CEffect_Boss_Laser_Smoke::Tick(_double TimeDelta)
 
 _int CEffect_Boss_Laser_Smoke::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
 }
 
 HRESULT CEffect_Boss_Laser_Smoke::Render(RENDER_GROUP::Enum eGroup)
 {
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
+	_float fGaraTime = 1.f;
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
+	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fGaraTime, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
-	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-	m_pPointInstanceCom_STT->Render(2, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(1));
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(4));
+
+	m_pPointInstanceCom_STT->Render(3, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
 }
@@ -101,19 +106,36 @@ void CEffect_Boss_Laser_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
 
 void CEffect_Boss_Laser_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
 {
-	_float4 vTexUV, vTexUV_Next;
-	vTexUV		= m_pInstanceBuffer_STT[iIndex].vTextureUV;
-	vTexUV_Next = Get_TexUV_Next(7, 7);
+	m_dInstance_Update_TextureUV_Time[iIndex] -= TimeDelta;
 
-	if (1.f <= vTexUV.x + vTexUV_Next.x)
-		return;
-	else
-	{
-		m_pInstanceBuffer_STT[iIndex].vTextureUV.x += vTexUV_Next.x;
-		m_pInstanceBuffer_STT[iIndex].vTextureUV.y += vTexUV_Next.y;
-		m_pInstanceBuffer_STT[iIndex].vTextureUV.z += vTexUV_Next.z;
-		m_pInstanceBuffer_STT[iIndex].vTextureUV.w += vTexUV_Next.w;
-	}	
+	if (0 >= m_dInstance_Update_TextureUV_Time[iIndex])
+	{      
+		m_dInstance_Update_TextureUV_Time[iIndex] = 0.05;
+
+		m_pInstanceBuffer_STT[iIndex].vTextureUV.x += m_fNextUV;
+		m_pInstanceBuffer_STT[iIndex].vTextureUV.y += m_fNextUV;
+		m_pInstanceBuffer_STT[iIndex].vTextureUV.z += m_fNextUV;
+		m_pInstanceBuffer_STT[iIndex].vTextureUV.w += m_fNextUV;
+
+		if (1.f <= m_pInstanceBuffer_STT[iIndex].vTextureUV.y)
+		{
+			m_pInstanceBuffer_STT[iIndex].vTextureUV.y = 0.f;
+			m_pInstanceBuffer_STT[iIndex].vTextureUV.w = m_fNextUV;
+			if (1.f <= m_pInstanceBuffer_STT[iIndex].vTextureUV.x)
+			{
+				m_pInstanceBuffer_STT[iIndex].vTextureUV.x = 1.f - m_fNextUV;
+				m_pInstanceBuffer_STT[iIndex].vTextureUV.y = 1.f - m_fNextUV;
+				m_pInstanceBuffer_STT[iIndex].vTextureUV.z = 1.f;
+				m_pInstanceBuffer_STT[iIndex].vTextureUV.w = 1.f;
+			}
+		}
+
+		if (1.f <= m_pInstanceBuffer_STT[iIndex].vTextureUV.x)
+		{
+			m_pInstanceBuffer_STT[iIndex].vTextureUV.x = 0.f;
+			m_pInstanceBuffer_STT[iIndex].vTextureUV.z = m_fNextUV;
+		}
+	}
 }
 
 void CEffect_Boss_Laser_Smoke::Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex)
@@ -121,10 +143,12 @@ void CEffect_Boss_Laser_Smoke::Reset_Instance(_double TimeDelta, _float4 vPos, _
 	m_pInstanceBuffer_STT[iIndex].vPosition		= vPos;
 
 	m_pInstanceBuffer_STT[iIndex].vTextureUV	= __super::Get_TexUV(7, 7, true);
-	m_pInstanceBuffer_STT[iIndex].fTime			= 0.f;
+	m_pInstanceBuffer_STT[iIndex].fTime			= 2.f;
 	m_pInstanceBuffer_STT[iIndex].vSize			= m_vDefaultSize;
 
 	m_pInstance_Pos_UpdateTime[iIndex]			= m_dInstance_Pos_Update_Time;
+	m_dInstance_Update_TextureUV_Time[iIndex] = 0.05;
+
 }
 
 HRESULT CEffect_Boss_Laser_Smoke::Ready_InstanceBuffer()
@@ -134,6 +158,8 @@ HRESULT CEffect_Boss_Laser_Smoke::Ready_InstanceBuffer()
 	m_pInstanceBuffer_STT				= new VTXMATRIX_CUSTOM_STT[iInstanceCount];
 	m_pInstance_Pos_UpdateTime			= new _double[iInstanceCount];
 	m_dInstance_Update_TextureUV_Time	= new _double[iInstanceCount];
+
+	m_fNextUV = __super::Get_TexUV(7, 7, true).z;
 
 	_float4 vMyPos;
 	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -145,11 +171,12 @@ HRESULT CEffect_Boss_Laser_Smoke::Ready_InstanceBuffer()
 		m_pInstanceBuffer_STT[iIndex].vLook			= { 0.f, 0.f, 1.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vPosition		= vMyPos;
 
-		m_pInstanceBuffer_STT[iIndex].vTextureUV	= __super::Get_TexUV(7, 7, true);
+		m_pInstanceBuffer_STT[iIndex].vTextureUV	= { 0.f, 0.f, m_fNextUV , m_fNextUV };
 		m_pInstanceBuffer_STT[iIndex].fTime			= 0.f;
 		m_pInstanceBuffer_STT[iIndex].vSize			= m_vDefaultSize;
 
-		m_pInstance_Pos_UpdateTime[iIndex]			= m_dInstance_Pos_Update_Time * 0.5 * _double(iIndex);
+		m_pInstance_Pos_UpdateTime[iIndex]			= m_dInstance_Pos_Update_Time  * (_double(iIndex) / iInstanceCount);
+		m_dInstance_Update_TextureUV_Time[iIndex]	= 0.05;
 	}
 
 	return S_OK;

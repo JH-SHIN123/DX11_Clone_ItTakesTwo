@@ -62,20 +62,15 @@ HRESULT CWarpGate::Render(RENDER_GROUP::Enum eGroup)
 
 void CWarpGate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	_matrix OutputPortal = Get_NextPortal_Matrix(m_eStageValue);
-
-
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
-		((CMay*)pGameObject)->SetTriggerID_Matrix(GameID::Enum::eWARPGATE, true, OutputPortal);
+		((CMay*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, true, this);
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-		((CMay*)pGameObject)->SetTriggerID_Matrix(GameID::Enum::eWARPGATE, false, OutputPortal);
-
+		((CMay*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, false, this);
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-		((CCody*)pGameObject)->SetTriggerID_Matrix(GameID::Enum::eWARPGATE, true, OutputPortal);
+		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, true, this);
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-		((CCody*)pGameObject)->SetTriggerID_Matrix(GameID::Enum::eWARPGATE, false, OutputPortal);
-
+		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, false, this);
 }
 
 HRESULT CWarpGate::Render_ShadowDepth()
@@ -167,7 +162,7 @@ void CWarpGate::Check_Stage_Value()
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 }
 
-_fmatrix CWarpGate::Get_NextPortal_Matrix(STAGE_VALUE eValue)
+_fmatrix CWarpGate::Get_NextPortal_Matrix()
 {
 	_matrix NextPortalMatrix = XMMatrixIdentity();
 
@@ -175,7 +170,7 @@ _fmatrix CWarpGate::Get_NextPortal_Matrix(STAGE_VALUE eValue)
 	_float	fDegree = 0.f;
 
 	// 현재 스테이지 > 다음 스테이지
-	switch (eValue)
+	switch (m_eStageValue)
 	{
 	case Client::CWarpGate::MAIN_UMBRELLA:
 		vPos = XMVectorSet(-617.f, 754.f, 196.f, 1.f);

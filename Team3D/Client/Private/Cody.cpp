@@ -17,6 +17,8 @@
 #include "HangingPlanet.h"
 /* For.Tube*/
 #include "HookahTube.h"
+/*For.WarpGate*/
+#include "WarpGate.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -1518,7 +1520,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 			}
 			else
 			{
-				m_bChangeSizeEffectOnce = false;
+				//m_bChangeSizeEffectOnce = false;
 				m_vScale = { 1.f, 1.f, 1.f };
 				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_MEDIUM;
@@ -1870,15 +1872,11 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
 		{
 			// ÄÚµð Àü¿ë Æ÷Å»·Î ÀÌµ¿(¿úÈ¦)
-			
-			m_pModelCom->Set_Animation(ANI_C_SpacePortal_Travel);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_SpacePortal_Travel);
-
-			m_pActorCom->Set_Position(XMLoadFloat4(&m_vWormholePos));
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_fWarpTimer = 0.f;
 			m_IsWarpNextStage	= true;
 			m_IsWarpDone		= true;
+			XMStoreFloat4x4(&m_TriggerTargetWorld, static_cast<CWarpGate*>(m_pTargetPtr)->Get_NextPortal_Matrix());
 		}
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{
@@ -2381,21 +2379,29 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 	if (false == m_IsWarpNextStage && false == m_IsWarpDone)
 		return;
 
-	_float4 vWormhole = m_vWormholePos;
-	vWormhole.z -= 1.f;
-	m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat4(&vWormhole));
-
 	m_fWarpTimer += (_float)dTimeDelta;
 
 	if (true == m_IsWarpNextStage)
 	{
-		if (m_fWarpTimer_Max <= m_fWarpTimer)
+		if (m_fWarpTimer_InWormhole <= m_fWarpTimer)
+		{
+			_float4 vWormhole = m_vWormholePos;
+			vWormhole.z -= 1.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat4(&vWormhole));
+
+			m_pModelCom->Set_Animation(ANI_C_SpacePortal_Travel);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_SpacePortal_Travel);
+
+			m_pActorCom->Set_Position(XMLoadFloat4(&m_vWormholePos));
+		}
+
+		if (m_fWarpTimer_InWormhole + m_fWarpTimer_Max <= m_fWarpTimer)
 		{
 			m_pModelCom->Set_Animation(ANI_C_SpacePortal_Travel);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsWarpNextStage = false;
 			
-			_vector vNextStage_Pos = XMLoadFloat3(&m_vTriggerTargetPos);
+			_vector vNextStage_Pos = XMLoadFloat4x4(&m_TriggerTargetWorld).r[3];
 			vNextStage_Pos.m128_f32[3] = 1.f;
 
 			m_pActorCom->Set_Position(vNextStage_Pos);
@@ -2419,7 +2425,7 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 		m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 
 		// ½´·ç·è
-		if (m_fWarpTimer_Max + 0.25f >= m_fWarpTimer)
+		if (m_fWarpTimer_InWormhole + m_fWarpTimer_Max + 0.25f >= m_fWarpTimer)
 		{
 			_vector vDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 			vDir = XMVector3Normalize(vDir);

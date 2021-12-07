@@ -53,6 +53,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_WallLaserTrap(TEXT("Layer_WallLaserTrap")), E_FAIL);	
 	FAILED_CHECK_RETURN(Ready_Layer_TutorialDoor(TEXT("Layer_TutorialDoor")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_GravityPipe(TEXT("Layer_GravityPipe")), E_FAIL);
+
 	/* Hye */
 	FAILED_CHECK_RETURN(Ready_Layer_Planet(TEXT("Layer_Planet")), E_FAIL);
 	/* Taek */
@@ -88,6 +89,10 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Test(), E_FAIL);
 #endif
 
+#ifdef __TEST_JUNG
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke")), E_FAIL);
+#endif //__TEST_JUNG
+
 	return S_OK;
 }
 
@@ -96,11 +101,7 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	CLevel::Tick(dTimedelta);
 
 
-#ifdef _DEBUG
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	if (nullptr == pGameInstance)
-		return E_FAIL;
-
+#ifdef __TEST_TAEK
 	TCHAR lightTag[256] = L"";
 
 	TCHAR szBuff[256] = L"";
@@ -108,23 +109,22 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	lstrcpy(lightTag, szBuff);
 
 	GetPrivateProfileString(L"Section_2", L"Key_2", L"0", szBuff, 256, L"../test.ini");
-	_float a = _wtof(szBuff);
+	_float a = (_float)_wtof(szBuff);
 	GetPrivateProfileString(L"Section_2", L"Key_3", L"0", szBuff, 256, L"../test.ini");
-	_float b = _wtof(szBuff);
+	_float b = (_float)_wtof(szBuff);
 	GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
-	_float c = _wtof(szBuff);
+	_float c = (_float)_wtof(szBuff);
 	GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
-	_float d = _wtof(szBuff);
+	_float d = (_float)_wtof(szBuff);
 
-	LIGHT_DESC* lightDesc = pGameInstance->Get_LightDescPtr(lightTag);
+	LIGHT_DESC* lightDesc = m_pGameInstance->Get_LightDescPtr(lightTag);
 
 	if (lightDesc)
 	{
 		lightDesc->vPosition = { a,b,c };
 		lightDesc->fRange = d;
 	}
-
-#endif // _DEBUG
+#endif // __TEST_TAEK
 
 
 	return NO_EVENT;
@@ -169,7 +169,9 @@ HRESULT CLevel_Stage::Clone_StaticGameObjects_ByFile(const _tchar * pFilePath, c
 HRESULT CLevel_Stage::Ready_Test()
 {
 	/* Se */
-
+#ifdef __TEST_SE
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA")), E_FAIL);
+#endif 
 	/* Jung */
 
 	/* Hye */
@@ -292,19 +294,19 @@ HRESULT CLevel_Stage::Ready_Lights()
 		return E_FAIL;
 //
 //#pragma region PointLight
-//	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-//	LightDesc.vPosition = XMFLOAT3(60.f, 5.f, 15.f);
-//	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-//	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-//	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
-//	LightDesc.fRange = 15.f;
-//	if (FAILED(pGameInstance->Add_Light(TEXT("Point1"), LightDesc))) return E_FAIL;
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = XMFLOAT3(60.f, 5.f, 15.f);
+	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+	LightDesc.fRange = 15.f;
+	if (FAILED(pGameInstance->Add_Light(TEXT("Point1"), LightDesc))) return E_FAIL;
 //	if (FAILED(pGameInstance->Add_Light(TEXT("Point2"), LightDesc))) return E_FAIL;
 //	if (FAILED(pGameInstance->Add_Light(TEXT("Point3"), LightDesc))) return E_FAIL;
 //	if (FAILED(pGameInstance->Add_Light(TEXT("Point4"), LightDesc))) return E_FAIL;
 //	if (FAILED(pGameInstance->Add_Light(TEXT("Point5"), LightDesc))) return E_FAIL;
 
-	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(20.f, 0.25f, 1.f, LightDesc.vPosition, LightDesc.vDiffuse)), E_FAIL);
+	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(20.f, 0.25f, 1.f, LightDesc.vPosition, 2)), E_FAIL);
 //#pragma endregion
 
 
