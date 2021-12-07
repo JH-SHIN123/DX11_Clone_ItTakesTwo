@@ -8,7 +8,7 @@ HRESULT CEffectLight::NativeConstruct(const LIGHT_DESC& LightDesc, _bool isActiv
 	m_isActive = isActive;
 
 	// Generate Effect
-	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(20.f, 0.25f, 1.f, LightDesc.vPosition, LightDesc.vDiffuse)), E_FAIL);
+	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(20.f, 0.25f, 1.f, LightDesc.vPosition, 1)), E_FAIL);
 
 	return S_OK;
 }

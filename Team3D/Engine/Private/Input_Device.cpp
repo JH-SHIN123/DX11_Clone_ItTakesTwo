@@ -230,22 +230,6 @@ _int CInput_Device::Tick(_bool bWndActivate)
 				Safe_Release(m_pJoyStick);
 		}
 
-#ifdef _DEBUG
-		//µð¹ö±×
-		////static _uint iBuffer = 100;
-		////++iBuffer;
-		////if (iBuffer > 100)
-		////{
-		////	iBuffer = 0;
-		////	iBuffer = 0;
-		////	iBuffer = 0;
-		////	iBuffer = 0;
-		////	iBuffer = 0;
-		////	iBuffer = 0;
-		////	iBuffer = 0;
-		////}
-#endif
-
 		memcpy(m_byKeyState_Up, m_byKeyState_Up_Buffer, sizeof(_byte) * 256);
 		memcpy(m_byKeyState_Down, m_byKeyState_Down_Buffer, sizeof(_byte) * 256);
 		memcpy(&m_MouseState_Up, &m_MouseState_Up_Buffer, sizeof(DIMOUSESTATE));

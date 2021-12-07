@@ -29,6 +29,7 @@ HRESULT CEffect_Wormhole::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
 
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
+	m_pTransformCom->Set_Scale(XMVectorSet(1.5f, 1.5f, 1.f, 0.f));
 
 	return S_OK;
 }

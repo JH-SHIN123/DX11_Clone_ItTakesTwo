@@ -39,6 +39,8 @@ private:
 	_bool										m_IsPowerSupplyAvailable = false;
 	_bool										m_IsPowerSupplyActive = false;
 	_bool										m_IsBatteryCheck = false;
+	_bool										m_IsButtonDown = false;
+	_bool										m_IsDoorOpen = false;
 	_float										m_fMove = 0.f;
 	_float										m_fActiveMove = 0.f;
 	_float										m_fWaitingTime = 0.f;

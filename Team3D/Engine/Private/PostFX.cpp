@@ -459,13 +459,13 @@ HRESULT CPostFX::KeyInput_Test(_double TimeDelta)
 #ifdef _DEBUG
 	TCHAR szBuff[256] = L"";
 	GetPrivateProfileString(L"Section_1", L"Key_1", L"0", szBuff, 256, L"../test.ini");;
-	_float a = _wtof(szBuff);
+	_float a = (_float)_wtof(szBuff);
 	GetPrivateProfileString(L"Section_1", L"Key_2", L"0", szBuff, 256, L"../test.ini");
-	_float b = _wtof(szBuff);
+	_float b = (_float)_wtof(szBuff);
 	GetPrivateProfileString(L"Section_1", L"Key_3", L"0", szBuff, 256, L"../test.ini");
-	_float c = _wtof(szBuff);
+	_float c = (_float)_wtof(szBuff);
 	GetPrivateProfileString(L"Section_1", L"Key_4", L"0", szBuff, 256, L"../test.ini");
-	_float d = _wtof(szBuff);
+	_float d = (_float)_wtof(szBuff);
 	
 	m_fMiddleGrey = a;
 	m_fLumWhiteSqr = b;

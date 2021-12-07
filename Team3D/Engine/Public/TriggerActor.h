@@ -26,6 +26,8 @@ public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	void			Update_TriggerActor();
+	/* 위치 보정해야하는 경우 */
+	void			Update_TriggerActor(_fvector vOffset);
 
 private:
 	class CTransform*	m_pTransform = nullptr;

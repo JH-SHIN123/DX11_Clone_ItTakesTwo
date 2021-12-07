@@ -67,6 +67,8 @@ _int CPinBall_Handle::Tick(_double dTimeDelta)
 		Respawn_Pos(dTimeDelta);
 	}
 
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::PinBall_Handle, m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f, m_IsCollision);
+
 	return NO_EVENT;
 }
 
@@ -105,15 +107,11 @@ HRESULT CPinBall_Handle::Render_ShadowDepth()
 
 void CPinBall_Handle::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	// May
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY && true == m_bFinish && false == m_bPlayerMove)
-	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALLHANDLE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(May, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	}
+	// May 병합할 때 여기 주의
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY/* && true == m_bFinish*/ && false == m_bPlayerMove)
+		m_IsCollision = true;
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-		UI_Delete(May, InputButton_InterActive);
+		m_IsCollision = false;
 }
 
 void CPinBall_Handle::MoveMent(_double dTimeDelta)

@@ -130,7 +130,7 @@ void CEffect_Robot_Battery_Spark::Check_Particle_UV(_double TimeDelta)
 		m_fResetTime = 0.15f;
 
 		_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
-		m_pInstanceBuffer = new VTXMATRIX_CUSTOM_ST[iInstanceCount];
+		//m_pInstanceBuffer = new VTXMATRIX_CUSTOM_ST[iInstanceCount];
 		_vector vDir = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 		_float2 vSize = { m_EffectDesc_Prototype.vSize.x ,m_EffectDesc_Prototype.vSize.y };
@@ -191,7 +191,5 @@ CGameObject * CEffect_Robot_Battery_Spark::Clone_GameObject(void * pArg)
 
 void CEffect_Robot_Battery_Spark::Free()
 {
-	Safe_Delete_Array(m_pInstanceBuffer);
-
 	__super::Free();
 }

@@ -143,10 +143,7 @@ void CPressureBigPlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 			Check_Collision_PlayerAnim();
 		}
 		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-		{
 			m_IsCollision = false;
-			m_IsButtonActive = false;
-		}
 
 		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 		{
@@ -156,34 +153,27 @@ void CPressureBigPlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 			Check_Collision_PlayerAnim();
 		}
 		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-		{
 			m_IsCollision = false;
-			m_IsButtonActive = false;
-		}
 	}
 	else if (1 == m_iOption)
 	{
-		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-		{
-			m_IsCollision = true;
-			Check_Collision_PlayerAnim();
-		}
-		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-		{
-			m_IsCollision = false;
-			m_IsButtonActive = false;
-		}
+		//if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+		//{
+		//	m_fMove = 0.f;
+		//	m_IsCollision = true;
+		//	Check_Collision_PlayerAnim();
+		//}
+		//else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+		//	m_IsCollision = false;
 
 		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 		{
+			m_fMove = 0.f;
 			m_IsCollision = true;
 			Check_Collision_PlayerAnim();
 		}
 		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-		{
 			m_IsCollision = false;
-			m_IsButtonActive = false;
-		}
 	}
 }
 
@@ -220,7 +210,7 @@ void CPressureBigPlate::Check_Collision_PlayerAnim()
 
 void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 {
-	if (false == m_IsPowerSupplyAvailable && false == m_IsPowerSupplyActive)
+	if (true == m_IsDoorOpen || false == m_IsPowerSupplyAvailable && true == m_IsPowerSupplyActive)
 		return;
 
 	m_pTriggerCom->Update_TriggerActor();
@@ -278,22 +268,22 @@ void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 			m_pPlateLock->Get_Transform()->Go_Left(TimeDelta);
 		}
 		else
+		{
 			m_IsBatteryCheck = true;
+			m_IsButtonActive = false;
+			m_fActiveMove = 0.17f;
+		}
 	}
 
 	if (true == m_IsBatteryCheck && true == m_pBatteryBox->Get_BatteryHolding())
 	{
-		m_fWaitingTime += (_float)TimeDelta;
-
-		if (1.f <= m_fWaitingTime)
-		{
-			m_IsPowerSupplyActive = true;
-			m_IsPowerSupplyAvailable = false;
-		}
+		m_IsPowerSupplyActive = true;
+		m_IsPowerSupplyAvailable = false;
+		m_IsDoorOpen = true;
 	}
 	else if (true == m_IsBatteryCheck &&  false == m_pBatteryBox->Get_BatteryHolding())
 	{
-		if (0.f <= m_fActiveMove)
+		if (0.f < m_fActiveMove)
 		{
 			m_fActiveMove -= (_float)TimeDelta;
 			m_pTransformCom->Go_Up(TimeDelta);
@@ -303,10 +293,10 @@ void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 		{
 			m_IsBatteryCheck = false;
 			m_IsButtonActive = false;
+			m_fActiveMove = 0.f;
 		}
 	}
 }
-
 
 void CPressureBigPlate::SetUp_DefaultPositionSetting()
 {
@@ -344,6 +334,7 @@ void CPressureBigPlate::RotationButton_Active(_double TimeDelta)
 			m_pTransformCom->Go_Down(TimeDelta);
 			/* 피벗 땜시 ㅜㅜ */
 			m_pPlateLock->Get_Transform()->Go_Left(TimeDelta);
+			m_pStaticActorCom->Update_StaticActor();
 		}
 		else
 			m_fMove = 0.05f;
@@ -356,6 +347,7 @@ void CPressureBigPlate::RotationButton_Active(_double TimeDelta)
 			m_fMove -= (_float)TimeDelta;
 			m_pTransformCom->Go_Up(TimeDelta);
 			m_pPlateLock->Get_Transform()->Go_Right(TimeDelta);
+			m_pStaticActorCom->Update_StaticActor();
 		}
 		else
 			m_fMove = 0.f;
@@ -369,6 +361,7 @@ void CPressureBigPlate::RotationButton_Active(_double TimeDelta)
   			m_fActiveMove += (_float)TimeDelta;
 			m_pTransformCom->Go_Down(TimeDelta);
 			m_pPlateLock->Get_Transform()->Go_Left(TimeDelta);
+			m_pStaticActorCom->Update_StaticActor();
 		}
 		/* 버튼이 활성화 됬을 때 눌린 상태로 조금 기다렸다가 리셋 하자 */
 		else if(0.17f <= m_fActiveMove)
@@ -383,44 +376,22 @@ void CPressureBigPlate::RotationButton_Active(_double TimeDelta)
 	/* 버튼이 아직 활성화 되있고 대기 시간이 끝나서 리셋이 활성화 됬을 때 */
 	else if (true == m_IsButtonActive && true == m_IsReset)
 	{
-		/* 충돌하고 있다면 그냥 점프만해서 올라 탔을때의 높이로 가라 */
-		if (true == m_IsCollision)
+		if (0.f < m_fActiveMove)
 		{
-			if (0.f < m_fActiveMove)
-			{
-				m_fActiveMove -= (_float)TimeDelta;
-				m_pTransformCom->Go_Up(TimeDelta);
-				m_pPlateLock->Get_Transform()->Go_Right(TimeDelta);
-			}
-			else
-			{
-				m_fActiveMove = 0.f;
-				m_fWaitingTime = 0.f;
-				m_IsReset = false;
-				m_IsButtonActive = false;
-			}
+			m_fActiveMove -= (_float)TimeDelta;
+			m_pTransformCom->Go_Up(TimeDelta);
+  			m_pPlateLock->Get_Transform()->Go_Right(TimeDelta);
+			m_pStaticActorCom->Update_StaticActor();
 		}
-		/* 충돌하지 않고 있다면 처음 높이로 가라 */
-		else 
+		else
 		{
-			if (0.f < m_fActiveMove)
-			{
-				m_fActiveMove -= (_float)TimeDelta;
-				m_pTransformCom->Go_Up(TimeDelta);
-				m_pPlateLock->Get_Transform()->Go_Right(TimeDelta);
-			}
-			else
-			{
-				m_fActiveMove = 0.f;
-				m_fWaitingTime = 0.f;
-				m_IsReset = false;
-				m_IsButtonActive = false;
-			}
+			m_fActiveMove = 0.f;
+			m_fWaitingTime = 0.f;
+			m_fMove = 0.f;
+			m_IsReset = false;
+			m_IsButtonActive = false;
 		}
 	}
-
-	m_pStaticActorCom->Update_StaticActor();
-	//m_pTriggerCom->Update_TriggerActor();
 }
 
 HRESULT CPressureBigPlate::Ready_Layer_Plate(const _tchar * pLayerTag, _uint iCount)

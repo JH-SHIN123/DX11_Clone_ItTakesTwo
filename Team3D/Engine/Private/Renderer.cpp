@@ -130,6 +130,7 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
 	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
+	FAILED_CHECK_RETURN(Render_Effect_No_Blur(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
 #ifdef _DEBUG
@@ -210,6 +211,18 @@ HRESULT CRenderer::Render_Effect()
 	}
 	m_RenderObjects[RENDER_GROUP::RENDER_EFFECT].clear();
 	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Effect"));
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Effect_No_Blur()
+{
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_NO_BLUR])
+	{
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_EFFECT_NO_BLUR), E_FAIL);
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_NO_BLUR].clear();
 
 	return S_OK;
 }

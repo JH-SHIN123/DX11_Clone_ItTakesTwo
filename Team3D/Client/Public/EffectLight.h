@@ -21,7 +21,7 @@ private:
 	// Effect
 
 public:
-	static CEffectLight* Create(const LIGHT_DESC & LightDesc, _bool isActive);
+	static CEffectLight* Create(const LIGHT_DESC & LightDesc, _bool isActive); // 이펙트 enum값 던지도록 설정
 	virtual void Free() override;
 };
 END
