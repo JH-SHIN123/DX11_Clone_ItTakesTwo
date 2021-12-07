@@ -428,6 +428,7 @@ void CGameInstance::Release_Engine()
 
 #ifdef _DEBUG
 	CSSAO::GetInstance()->Clear_Buffer();
+	CBlur::GetInstance()->Clear_Buffer();
 	CRenderTarget_Manager::GetInstance()->Clear_Buffers();
 #endif
 

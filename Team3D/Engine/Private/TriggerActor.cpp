@@ -54,6 +54,17 @@ void CTriggerActor::Update_TriggerActor()
 	m_pActor->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
 }
 
+void CTriggerActor::Update_TriggerActor(_fvector vOffset)
+{
+	_vector vScale, vRotQuat, vPosition;
+	XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, m_pTransform->Get_WorldMatrix());
+
+	vPosition += vOffset;
+	vPosition = XMVectorSetW(vPosition, 1.f);
+
+	m_pActor->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
+}
+
 CTriggerActor * CTriggerActor::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CTriggerActor* pInstance = new CTriggerActor(pDevice, pDeviceContext);

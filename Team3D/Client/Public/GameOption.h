@@ -26,8 +26,13 @@
 /**
 * 맵 로딩 하려면 주석 처리.
 */
+//#define __MAPLOADING_OFF
 
-// #define __MAPLOADING_OFF
+/**
+* 우주선 내부 맵만 제거
+* 프레임 살리기용
+*/
+#define __SPACESHIP_OFF
 
 /************************************************************************/
 
@@ -53,6 +58,12 @@
 
 /**
 * 디버깅창 생성 여부
+* 디폴트 디버깅창 = 오브젝트 정보창
 */
 
-#define __GAME_DEBUGGER
+//#define __GAME_DEBUGGER
+
+/**
+* 패드 입력 디버깅
+*/
+//#define __DEBUGGING_PAD

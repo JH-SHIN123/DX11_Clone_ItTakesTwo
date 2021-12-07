@@ -277,6 +277,10 @@ void CSSAO::Free()
 
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
+
+#ifdef _DEBUG
+	Safe_Release(m_pVIBuffer);
+#endif
 }
 
 #ifdef _DEBUG

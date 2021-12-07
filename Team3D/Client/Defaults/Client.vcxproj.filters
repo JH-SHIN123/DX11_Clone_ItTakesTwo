@@ -66,6 +66,18 @@
     <Filter Include="02.GameObject\00.Public\04.GrindLine">
       <UniqueIdentifier>{5afae0a9-03c7-460f-9b5c-96a5c6791b03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene">
+      <UniqueIdentifier>{17c895e5-8ceb-43f8-a1c4-5019067e9dbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\00.CutScenePlayer">
+      <UniqueIdentifier>{7b3f87d4-4b4a-455e-9791-5d90f9fb507b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\01.CutScene">
+      <UniqueIdentifier>{9019c32b-9091-4e98-b2fd-8c969a8462d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.Public\05.CutScene\02.Performer">
+      <UniqueIdentifier>{ef76678d-01ca-4769-a500-3c863cc6aab6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\01.Intro">
       <UniqueIdentifier>{6e3ecc34-09e4-48a8-b8b4-f1dd9d96c681}</UniqueIdentifier>
     </Filter>
@@ -158,6 +170,36 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\00.Parent">
       <UniqueIdentifier>{9a7e59c1-0f27-4391-8680-1319812ccda0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip">
+      <UniqueIdentifier>{bdda88d3-264c-47c0-ba0f-3e7d4f7aea01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\EjectionButton">
+      <UniqueIdentifier>{f931e74e-fe19-46a8-ba24-93895996cbb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\ElectricBox">
+      <UniqueIdentifier>{b7db8d97-83a4-4dba-9b84-f8e18e00fbec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\ElectricWall">
+      <UniqueIdentifier>{b26b772a-f844-4b30-b2ac-efc0089a60af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\Pedal">
+      <UniqueIdentifier>{f08eb14c-1d63-4d81-a5cb-c493bf0e48ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\Press">
+      <UniqueIdentifier>{f86198bb-1dd2-4350-a498-b4d340b97500}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationBox">
+      <UniqueIdentifier>{1aa817ac-fb39-4a7e-86ab-b7a5d8d27bc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationCylinder">
+      <UniqueIdentifier>{9787a853-91cb-478e-abbc-d8bb1d886c99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationFan">
+      <UniqueIdentifier>{e6e6b729-5c6a-44d6-81aa-0cae1c7437db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationFan_Base">
+      <UniqueIdentifier>{62e5569d-d430-4309-acd2-099e16b13339}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen">
       <UniqueIdentifier>{cb99fc26-4d07-4ee9-bdf8-b9a43ea37b0e}</UniqueIdentifier>
@@ -537,6 +579,12 @@
     <Filter Include="02.GameObject\06.UI\11.ChapterSelect">
       <UniqueIdentifier>{f0c03c84-48c4-479e-86d2-76c7f04a52ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06.UI\12.ContextIcon">
+      <UniqueIdentifier>{6d3ccbee-799f-49f9-a89d-e1d2d786d30e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\13.Gauge_Circle">
+      <UniqueIdentifier>{6211bcdd-7628-46cc-ada7-5cd4f2e375da}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\99.Terrain%28Test%29">
       <UniqueIdentifier>{f999b3e3-a399-493a-893b-bcebcfb781a4}</UniqueIdentifier>
     </Filter>
@@ -593,6 +641,9 @@
     </Filter>
     <Filter Include="04.Generator\03.Light_Generator">
       <UniqueIdentifier>{a8b9071a-f602-4803-adc7-1a1462e62875}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Generator\03.Light_Generator\EffectLight">
+      <UniqueIdentifier>{4a1e57e5-47a2-4feb-baa9-cd33fabbf6a4}</UniqueIdentifier>
     </Filter>
     <Filter Include="04.Generator\03.Light_Generator\PointLight">
       <UniqueIdentifier>{b43b1637-3313-42b3-ac1f-7fdf9e0967c0}</UniqueIdentifier>
@@ -686,6 +737,15 @@
     <ClInclude Include="..\Public\GrindLine.h">
       <Filter>02.GameObject\00.Public\04.GrindLine</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CutScene.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\01.CutScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CutScenePlayer.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\00.CutScenePlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Performer.h">
+      <Filter>02.GameObject\00.Public\05.CutScene\02.Performer</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Sky.h">
       <Filter>02.GameObject\02.Sky</Filter>
     </ClInclude>
@@ -748,6 +808,33 @@
     </ClInclude>
     <ClInclude Include="..\Public\Dynamic_Env.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\00.Parent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EjectionButton.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\EjectionButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ElectricBox.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\ElectricBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ElectricWall.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\ElectricWall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Pedal.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\Pedal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Press.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\Press</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotationBox.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotationCylinder.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationCylinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotationFan.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationFan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotationFan_Base.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationFan_Base</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AlienScreen.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>
@@ -872,10 +959,19 @@
     <ClInclude Include="..\Public\DummyWall.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DummyWallCameraTrigger.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\MayJumpWall.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MayWallCameraTrigger.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\PipeJumpWall.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PipeWallCameraTrigger.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\RotatedRobotParts.h">
@@ -1067,6 +1163,12 @@
     <ClInclude Include="..\Public\ChapterSelect.h">
       <Filter>02.GameObject\06.UI\11.ChapterSelect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ContextIcon.h">
+      <Filter>02.GameObject\06.UI\12.ContextIcon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Gauge_Circle.h">
+      <Filter>02.GameObject\06.UI\13.Gauge_Circle</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
     </ClInclude>
@@ -1105,6 +1207,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_Generator.h">
       <Filter>04.Generator\02.UI_Generator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Light_Generator.h">
+      <Filter>04.Generator\03.Light_Generator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EffectLight.h">
+      <Filter>04.Generator\03.Light_Generator\EffectLight</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\DataStorage.h">
       <Filter>05.DataStorage</Filter>
@@ -1150,15 +1258,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\DummyWallCameraTrigger.h">
-      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\MayWallCameraTrigger.h">
-      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\PipeWallCameraTrigger.h">
-      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1215,6 +1314,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\GrindLine.cpp">
       <Filter>02.GameObject\00.Public\04.GrindLine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CutScene.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\01.CutScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CutScenePlayer.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\00.CutScenePlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Performer.cpp">
+      <Filter>02.GameObject\00.Public\05.CutScene\02.Performer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Sky.cpp">
       <Filter>02.GameObject\02.Sky</Filter>
@@ -1278,6 +1386,33 @@
     </ClCompile>
     <ClCompile Include="..\Private\Dynamic_Env.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\00.Parent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EjectionButton.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\EjectionButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ElectricBox.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\ElectricBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ElectricWall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\ElectricWall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Pedal.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\Pedal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Press.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\Press</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotationBox.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotationCylinder.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationCylinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotationFan.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationFan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotationFan_Base.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationFan_Base</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AlienScreen.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>
@@ -1402,10 +1537,19 @@
     <ClCompile Include="..\Private\DummyWall.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\DummyWallCameraTrigger.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\MayJumpWall.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\MayWallCameraTrigger.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\PipeJumpWall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PipeWallCameraTrigger.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\RotatedRobotParts.cpp">
@@ -1597,6 +1741,12 @@
     <ClCompile Include="..\Private\ChapterSelect.cpp">
       <Filter>02.GameObject\06.UI\11.ChapterSelect</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\ContextIcon.cpp">
+      <Filter>02.GameObject\06.UI\12.ContextIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Gauge_Circle.cpp">
+      <Filter>02.GameObject\06.UI\13.Gauge_Circle</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
     </ClCompile>
@@ -1636,6 +1786,12 @@
     <ClCompile Include="..\Private\UI_Generator.cpp">
       <Filter>04.Generator\02.UI_Generator</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Light_Generator.cpp">
+      <Filter>04.Generator\03.Light_Generator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectLight.cpp">
+      <Filter>04.Generator\03.Light_Generator\EffectLight</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\DataStorage.cpp">
       <Filter>05.DataStorage</Filter>
     </ClCompile>
@@ -1650,12 +1806,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\DummyWallCameraTrigger.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\MayWallCameraTrigger.cpp">
-      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\PipeWallCameraTrigger.cpp">
-      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

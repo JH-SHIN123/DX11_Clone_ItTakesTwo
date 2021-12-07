@@ -32,6 +32,7 @@ public:
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
+	CModel*		Get_Model() { return m_pModelCom; }
 
 protected:
 	/* For.Component */

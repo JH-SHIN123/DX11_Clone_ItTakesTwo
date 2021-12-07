@@ -11,6 +11,9 @@
 #include "UmbrellaBeam_Joystick.h"
 #include "Effect_Generator.h"
 #include "Effect_Cody_Size.h"
+#include "ControlRoom_Battery.h"
+#include "HookUFO.h"
+#include "Gauge_Circle.h"
 
 /* For. PinBall */
 #include "PinBall.h"
@@ -18,6 +21,9 @@
 #include "HangingPlanet.h"
 /* For.Tube*/
 #include "HookahTube.h"
+/* For.SpaceShip */
+#include "ElectricBox.h"
+#include "ElectricWall.h"
 /*For.WarpGate*/
 #include "WarpGate.h"
 
@@ -49,16 +55,10 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
-
  	UI_Create(Cody, PC_Mouse_Reduction);
  	UI_Create(Cody, PC_Mouse_Enlargement);
- 	//UI_Create(Default, LoadingBook);
- 	//UI_Create(May, Arrowkeys_Side);
- 	//UI_Create(May, StickIcon);
- 
  	UI_Create(Cody, PlayerMarker);
-	UI_Create_Active(Cody, InputButton_InterActive, false);
-	 
+
 	return S_OK;
 }
 
@@ -106,6 +106,10 @@ HRESULT CCody::Ready_Component()
 	//Effect 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Cody_Size"), nullptr, (CGameObject**)&m_pEffect_Size), E_FAIL);
 	m_pEffect_Size->Set_Model(m_pModelCom);
+
+	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_CodyCircle_Gauge")), E_FAIL);
+
+
 	return S_OK;
 }
 
@@ -234,6 +238,7 @@ _int CCody::Tick(_double dTimeDelta)
 			Falling_Dead(dTimeDelta);
 			WallLaserTrap(dTimeDelta);
 			PinBall(dTimeDelta);
+			SpaceShip_Respawn(dTimeDelta);
 		}
 		else
 		{
@@ -288,6 +293,12 @@ _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_U))
+		UI_Create(Cody, CutSceneBar);
+
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
+		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
+
 	/* LateTick : 레일의 타겟 찾기*/
 	Find_TargetSpaceRail();
 	ShowRailTargetTriggerUI();
@@ -304,7 +315,7 @@ _int CCody::Late_Tick(_double dTimeDelta)
 
 HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 {
-	if (true == m_IsDeadLine || m_IsPinBall)
+	if (true == m_IsDeadLine || m_IsPinBall || m_bRespawn)
 		return S_OK;
 
 	CCharacter::Render(eGroup);
@@ -352,6 +363,8 @@ void CCody::Free()
 	m_pTargetRail = nullptr;
 	m_pTargetRailNode = nullptr;
 	m_vecTargetRailNodes.clear();
+
+	Safe_Release(m_pGauge_Circle);
 
 	//Safe_Release(m_pCamera);
 	Safe_Release(m_pActorCom);
@@ -444,7 +457,6 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
-
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -888,6 +900,7 @@ void CCody::Move(const _double dTimeDelta)
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_MH_Gesture_Small_Scratch
 					|| m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Fwd
 					|| m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Stop)	// Idle To Jog Start. -> Jog 예약
+
 				{
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Start);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_ChangeSize_Walk_Large_Fwd);
@@ -1816,6 +1829,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
 			m_IsPushingBattery = true;
 			m_IsPipeBattery = true;
+
+			//UI_Delete(Cody, InputButton_InterActive);
+			//((CControlRoom_Battery*)DATABASE->Get_ControlRoom_Battery())->Set_UIDisable(true);
 		}
 		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_E) && m_iValvePlayerName == Player::Cody)
 		{
@@ -1978,6 +1994,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_IsControlJoystick = true;
 			CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
 			pJoystick->Set_ControlActivate(true);
+			UI_CreateOnlyOnce(Cody, InputButton_Cancle);
+			UI_CreateOnlyOnce(Cody, Arrowkeys_All);
+			UI_Delete(Cody, InputButton_InterActive);
 		}
 		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)
 		{
@@ -2035,12 +2054,50 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			}
 			m_IsCollide = false;
 		}
+		else if ((m_eTargetGameID == GameID::ePRESS || m_eTargetGameID == GameID::ePEDAL) && false == m_bRespawn)
+		{
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
+			m_pActorCom->Update(dTimeDelta);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bRespawn = true;
+		}
+		else if ((m_eTargetGameID == GameID::eROTATIONFAN) && false == m_bRespawn)
+		{
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
+			m_pActorCom->Update(dTimeDelta);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bRespawn = true;
+		}
+		else if (m_eTargetGameID == GameID::eELECTRICBOX && false == m_bRespawn)
+		{
+			if (true == ((CElectricBox*)m_pTargetPtr)->Get_Electric())
+			{
+				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+				m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
+				m_pActorCom->Update(dTimeDelta);
+				m_pActorCom->Set_ZeroGravity(true, false, true);
+				m_bRespawn = true;
+			}
+		}
+		else if (m_eTargetGameID == GameID::eELECTRICWALL && false == m_bRespawn)
+		{
+			if (true == ((CElectricWall*)m_pTargetPtr)->Get_Electric())
+			{
+				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+				m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
+				m_pActorCom->Update(dTimeDelta);
+				m_pActorCom->Set_ZeroGravity(true, false, true);
+				m_bRespawn = true;
+			}
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
-		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch)
+		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn)
 		return true;
 
 	return false;
@@ -2351,6 +2408,7 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 			m_pActorCom->Set_Jump(true);
 			m_IsHookUFO = false;
 			m_IsCollide = false;
+			((CHookUFO*)DATABASE->Get_HookUFO())->Set_CodyUIDisable();
 		}
 	}
 }
@@ -2565,8 +2623,8 @@ void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
 	if (false == m_IsTouchFireDoor)
 		return;
 
-	m_fDeadTime += (_float)dTimeDelta;
-	if (m_fDeadTime >= 2.f && m_fDeadTime <= 2.4f)
+	m_dDeadTime += dTimeDelta;
+	if (m_dDeadTime >= 2.f && m_dDeadTime <= 2.4f)
 	{
 		_float fMyPosZ = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[2];
 		_float fTriggerPosZ = m_vTriggerTargetPos.z;
@@ -2583,18 +2641,18 @@ void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
 		m_pActorCom->Set_Position(vSavePosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
 
-		m_fDeadTime = 2.5f;
+		m_dDeadTime = 2.5f;
 	}
-	else if (m_fDeadTime >= 2.5f && m_fDeadTime <= 2.75f)
+	else if (m_dDeadTime >= 2.5f && m_dDeadTime <= 2.75f)
 	{
 
 	}
-	else if (m_fDeadTime >= 2.75f)
+	else if (m_dDeadTime >= 2.75f)
 	{
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 		m_pModelCom->Set_Animation(ANI_C_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
-		m_fDeadTime = 0.f;
+		m_dDeadTime = 0.f;
 		m_bCanMove = true;
 		m_IsCollide = false;
 		m_IsTouchFireDoor = false;
@@ -2721,8 +2779,8 @@ void CCody::WallLaserTrap(const _double dTimeDelta)
 		return;
 
 	m_IsWallLaserTrap_Effect = true;
-	m_fDeadTime += (_float)dTimeDelta;
-	if (m_fDeadTime >= 2.f)
+	m_dDeadTime += dTimeDelta;
+	if (m_dDeadTime >= 2.f)
 	{
 		_float fMyPosY = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
 		_float fTriggerY = m_vTriggerTargetPos.y;
@@ -2735,7 +2793,7 @@ void CCody::WallLaserTrap(const _double dTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vRespawnPos);
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 		m_pModelCom->Set_Animation(ANI_C_MH);
-		m_fDeadTime = 0.f;
+		m_dDeadTime = 0.f;
 		m_IsCollide = false;
 		m_IsWallLaserTrap_Touch = false;
 		m_IsWallLaserTrap_Effect = false;
@@ -2753,8 +2811,8 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 	/* 데드라인과 충돌시 2초후에 리스폰 */
 	if (m_IsDeadLine == true)
 	{
-		m_fDeadTime += (_float)dTimeDelta;
-		if (m_fDeadTime >= 2.f)
+		m_dDeadTime += dTimeDelta;
+		if (m_dDeadTime >= 2.f)
 		{
 			_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
 			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
@@ -2763,7 +2821,7 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pModelCom->Set_Animation(ANI_C_MH);
-			m_fDeadTime = 0.f;
+			m_dDeadTime = 0.f;
 			m_IsCollide = false;
 			m_IsDeadLine = false;
 			m_pActorCom->Set_ZeroGravity(false, false, false);
@@ -2984,17 +3042,36 @@ void CCody::TakeRailEnd(_double dTimeDelta)
 }
 void CCody::ShowRailTargetTriggerUI()
 {
+
 	// Show UI
 	if (m_pSearchTargetRailNode && nullptr == m_pTargetRailNode && false == m_bOnRail)
 	{
-		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, true);
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pSearchTargetRailNode->Get_Position());
+		m_pGauge_Circle->Set_Active(true);
+		m_pGauge_Circle->Set_TargetPos(m_pSearchTargetRailNode->Get_Position());
 	}
 	else {
-		UI_Generator->Set_Active(Player::Cody, UI::InputButton_InterActive, false);
+		m_pGauge_Circle->Set_Active(false);
+		UI_Delete(Cody, InputButton_InterActive);
+		m_pGauge_Circle->Set_DefaultSetting();
+
 	}
 }
 #pragma endregion
+
+HRESULT CCody::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+
+	_uint iOption = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Gauge_Circle"), &iOption, &pGameObject), E_FAIL);
+	m_pGauge_Circle = static_cast<CGauge_Circle*>(pGameObject);
+	m_pGauge_Circle->Set_SwingPointPlayerID(Player::Cody);
+	// 범위 설정
+	m_pGauge_Circle->Set_Range(10.f);
+
+	return S_OK;
+}
+
 
 void CCody::PinBall(const _double dTimeDelta)
 {
@@ -3002,7 +3079,7 @@ void CCody::PinBall(const _double dTimeDelta)
 		m_pActorCom->Set_Position(((CDynamic_Env*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Position());
 }
 
-void CCody::PinBall_Respawn(_double dTimeDelta)
+void CCody::PinBall_Respawn(const _double dTimeDelta)
 {
 	m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
 	m_pActorCom->Update(dTimeDelta);
@@ -3014,4 +3091,24 @@ void CCody::PinBall_Respawn(_double dTimeDelta)
 
 	m_IsPinBall = false;
 	m_IsCollide = false;
+}
+
+void CCody::SpaceShip_Respawn(const _double dTimeDelta)
+{
+	if (false == m_bRespawn)
+		return;
+
+	m_dRespawnTime += dTimeDelta;
+	if (1.f <= m_dRespawnTime)
+	{
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		m_pActorCom->Set_ZeroGravity(false, false, false);
+
+		m_bFirstCheck = false;
+		m_bRespawn = false;
+		m_IsCollide = false;
+		m_dRespawnTime = 0.0;
+	}
 }

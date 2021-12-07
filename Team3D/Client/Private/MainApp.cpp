@@ -3,9 +3,11 @@
 #include "Level_Loading.h"
 #include "Effect_Generator.h"
 #include "UI_Generator.h"
+#include "Light_Generator.h"
 #include "Environment_Generator.h"
 #include "PxEventCallback.h"
 #include "GameDebugger.h"
+#include "CutScenePlayer.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -196,10 +198,12 @@ void CMainApp::Free()
 
 	Safe_Delete(m_pPxEventCallback);
 
+	CLight_Generator::DestroyInstance();
 	CEffect_Generator::DestroyInstance(); // 이펙트 제어기
 	CUI_Generator::DestroyInstance();
 	CDataStorage::DestroyInstance();
 	CEnvironment_Generator::DestroyInstance();
+	CCutScenePlayer::DestroyInstance();
 
 	CGameInstance::Release_Engine();
 }

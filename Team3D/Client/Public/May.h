@@ -179,13 +179,17 @@ public:
 public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
+
+	CPlayerActor* Get_Actor() { return m_pActorCom; }
+
 	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool		Get_IsGroundPound() { return m_bGroundPound; }
 	_bool		Get_IsGroundPoundVarious() { return m_bPlayGroundPoundOnce; }
 
 public:
+
 	void		Update_Tirgger_Pos(_vector vPos);
-	CPlayerActor* Get_Actor() { return m_pActorCom; }
+
 
 public:
 	void	Set_BossMissile_Attack(); // CBoss_Missile
@@ -207,6 +211,9 @@ private:
 
 private: // Effects
 	class CEffect_May_Boots* m_pEffect_GravityBoots = nullptr;
+
+private: // UI
+	class CGauge_Circle*	m_pGauge_Circle = nullptr;
 
 	// Ä«¸Þ¶ó
 private:
@@ -464,6 +471,7 @@ private:
 	void	TakeRailEnd(_double dTimeDelta);
 	void	ShowRailTargetTriggerUI();
 
+
 private:
 	_bool						m_bMoveToRail = false;
 	_bool						m_bOnRail = false;
@@ -477,6 +485,10 @@ private:
 	CSpaceRail* m_pTargetRail = nullptr;
 	CSpaceRail_Node* m_pSearchTargetRailNode = nullptr;
 	CSpaceRail_Node* m_pTargetRailNode = nullptr;
+
+private:
+	HRESULT Ready_Layer_Gauge_Circle(const _tchar * pLayerTag);
+
 #pragma endregion
 };
 

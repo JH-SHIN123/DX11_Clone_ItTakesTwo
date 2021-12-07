@@ -222,6 +222,7 @@ public:
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
 	void			 Set_ControlJoystick(_bool IsCheck);
 
+
 public:
 	void Set_BossMissile_Attack(); // CBoss_Missile
 
@@ -243,6 +244,10 @@ private: // Effects
 	// Components
 private:
 	class CMainCamera*	m_pCamera = nullptr;
+
+	// UI
+private:
+	class CGauge_Circle*	m_pGauge_Circle = nullptr;
 
 	// 积己 棺 家戈 包访
 public:
@@ -367,12 +372,16 @@ private:
 	/* Hye::For.DeadLine, SavePoint */
 	_bool	 m_IsDeadLine = false;
 	_float3  m_vSavePoint = {};
-	_float	 m_fDeadTime = 0.f;
+	_double	 m_dDeadTime = 0.f;
 	_float3	 m_DeadLinePos = {};
 	/* Hye::For.PinBall*/
-	_bool m_IsPinBall = false;
+	_bool	 m_IsPinBall = false;
 	/* Hye::For.Tube*/
-	_bool m_IsTube = false;
+	_bool	 m_IsTube = false;
+	/* Hye::For.SpaceShip */
+	_bool	 m_bRespawn = false;
+	_bool    m_bFirstCheck = false;
+	_double	 m_dRespawnTime = 0.0;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
@@ -475,7 +484,8 @@ private:
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
 public:
-	void PinBall_Respawn(_double dTimeDelta);
+	void PinBall_Respawn(const _double dTimeDelta);
+	void SpaceShip_Respawn(const _double dTimeDelta);
 
 private:
 	_bool Trigger_End(const _double dTimeDelta);
@@ -496,6 +506,8 @@ private:
 	void	TakeRail(_double dTimeDelta);
 	void	TakeRailEnd(_double dTimeDelta);
 	void	ShowRailTargetTriggerUI();
+
+	HRESULT Ready_Layer_Gauge_Circle(const _tchar * pLayerTag);
 
 private:
 	_bool						m_bMoveToRail = false;

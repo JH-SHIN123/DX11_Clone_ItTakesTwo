@@ -33,16 +33,27 @@ public: /* Getter */
 
 public: /* Setter */
 	void Set_Launch(_bool bLaunch) { m_bLaunch = bLaunch; }
+	void Set_CodyUIDisable() { m_IsCodyUIDisable = false; }
+	void Set_MayUIDisable() { m_IsMayUIDisalbe = false; }
 
 private:
-	HRESULT InterActive_UI();
+	void InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisable = false);
+	HRESULT Ready_Layer_CodyGauge_Circle(const _tchar * pLayerTag);
 	void Launch_HookUFO(_double dTimeDelta);
 
 private:
 	_float		m_fUpAcceleration = 0.f;
 	_bool		m_bLaunch = false;
 	_float		m_fLifeTime = 0.f;
-	_bool		m_IsCollide = false;
+	_bool		m_IsCodyCollide = false;
+	_bool		m_IsMayCollide = false;
+	_bool		m_IsCodyUIDisable = false;
+	_bool		m_IsMayUIDisalbe = false;
+	GameID::Enum		m_PlayerID = GameID::eSTARBUDDY;
+
+private:
+	class CGauge_Circle*		m_pCodyGauge_Circle = nullptr;
+	class CGauge_Circle*		m_pMayGauge_Circle = nullptr;
 
 private:
 	CRenderer*			m_pRendererCom = nullptr;
@@ -52,6 +63,7 @@ private:
 	CTransform*			m_pPhysxTransform = nullptr;
 
 public:
+	HRESULT Ready_Layer_MayGauge_Circle(const _tchar * pLayerTag);
 	static CHookUFO* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;

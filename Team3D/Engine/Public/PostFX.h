@@ -42,15 +42,15 @@ private:
 	
 #pragma region Constant Params
 private:
-	_uint	m_iWinSize[2] = { 0,0 };
-	_uint	m_iDownScaleGroups = 0;
+	_uint    m_iWinSize[2] = { 0,0 };
+	_uint    m_iDownScaleGroups = 0;
 
-	_float	m_fMiddleGrey = 0.019135f;
-	_float	m_fLumWhiteSqr = 50.f;
-	
-	_float	m_fAdaptTime = 1.f;
-	_float	m_fAdaptationDeltaT = 0.f;
-	_float	m_fAdaptation = 0.f;
+	_float    m_fMiddleGrey = 0.019135f;
+	_float    m_fLumWhiteSqr = 50.f;
+
+	_float    m_fAdaptTime = 1.f;
+	_float    m_fAdaptationDeltaT = 0.f;
+	_float    m_fAdaptation = 0.f;
 
 	_float m_fBloomThreshold = 100.f;
 	_float m_fBloomScale = 0.25f;
@@ -99,7 +99,8 @@ private: /* For.CS - Shader */
 	vector<INPUT_LAYOUT_DESC>	m_InputLayouts_CS;
 
 private: /* For. PS - ToneMapping */
-	class CVIBuffer_RectRHW* m_pVIBuffer_ToneMapping = nullptr;
+	class CVIBuffer_RectRHW*	m_pVIBuffer_ToneMapping = nullptr;
+	class CTextures* m_pTextures = nullptr;
 #pragma endregion
 
 #ifdef _DEBUG

@@ -28,6 +28,38 @@ HRESULT CGameDebugger::NativeConstruct(CMainApp * pMainApp)
 
 void CGameDebugger::Debugging()
 {
+#ifdef __DEBUGGING_PAD
+	_bool& bExit = m_pMainApp->Get_DebuggerExit();
+	DIJOYSTATE& m_JoyStickState = CInput_Device::GetInstance()->Get_PadState();
+
+	while (!bExit)
+	{
+		system("cls");
+
+		cout << "IR = " << m_JoyStickState.lRx << "  " << m_JoyStickState.lRy << "  " << m_JoyStickState.lRz << endl;
+		cout << "IL = " << m_JoyStickState.lX << "  " << m_JoyStickState.lY << "  " << m_JoyStickState.lZ << endl;
+		cout << "POV = " << m_JoyStickState.rgdwPOV[0] << "  " << m_JoyStickState.rgdwPOV[1] << "  " << m_JoyStickState.rgdwPOV[2] << "  " << m_JoyStickState.rgdwPOV[3] << endl;
+		cout << "rglSlider = " << m_JoyStickState.rglSlider[0] << "  " << m_JoyStickState.rglSlider[1] << endl;
+		cout << "B 0123 = " << endl;
+		cout << m_JoyStickState.rgbButtons[0] << "  " << m_JoyStickState.rgbButtons[1] << "  " << m_JoyStickState.rgbButtons[2] << "  " << m_JoyStickState.rgbButtons[3] << "  " << endl;
+		cout << "B 4567 = " << endl;
+		cout << m_JoyStickState.rgbButtons[4] << "  " << m_JoyStickState.rgbButtons[5] << "  " << m_JoyStickState.rgbButtons[6] << "  " << m_JoyStickState.rgbButtons[7] << "  " << endl;
+		cout << "B 891011 = " << endl;
+		cout << m_JoyStickState.rgbButtons[8] << "  " << m_JoyStickState.rgbButtons[9] << "  " << m_JoyStickState.rgbButtons[10] << "  " << m_JoyStickState.rgbButtons[11] << "  " << endl;
+		cout << "B 12131415 = " << endl;
+		cout << m_JoyStickState.rgbButtons[12] << "  " << m_JoyStickState.rgbButtons[13] << "  " << m_JoyStickState.rgbButtons[14] << "  " << m_JoyStickState.rgbButtons[15] << "  " << endl;
+		cout << "B 16171819 = " << endl;
+		cout << m_JoyStickState.rgbButtons[16] << "  " << m_JoyStickState.rgbButtons[17] << "  " << m_JoyStickState.rgbButtons[18] << "  " << m_JoyStickState.rgbButtons[19] << "  " << endl;
+		cout << "B 20212223 = " << endl;
+		cout << m_JoyStickState.rgbButtons[20] << "  " << m_JoyStickState.rgbButtons[21] << "  " << m_JoyStickState.rgbButtons[22] << "  " << m_JoyStickState.rgbButtons[23] << "  " << endl;
+		cout << "B 24252627 = " << endl;
+		cout << m_JoyStickState.rgbButtons[24] << "  " << m_JoyStickState.rgbButtons[25] << "  " << m_JoyStickState.rgbButtons[26] << "  " << m_JoyStickState.rgbButtons[27] << "  " << endl;
+		cout << "B 28293031 = " << endl;
+		cout << m_JoyStickState.rgbButtons[28] << "  " << m_JoyStickState.rgbButtons[29] << "  " << m_JoyStickState.rgbButtons[30] << "  " << m_JoyStickState.rgbButtons[31] << "  " << endl;
+
+		Sleep(500);
+	}
+#else
 	_tchar szLayerTag[MAX_PATH] = TEXT("");
 
 	_bool& bExit = m_pMainApp->Get_DebuggerExit();
@@ -120,6 +152,7 @@ void CGameDebugger::Debugging()
 		//system("pause>null");
 		//system("pause");
 	}
+#endif
 }
 
 CGameDebugger * CGameDebugger::Create(CMainApp * pMainApp)

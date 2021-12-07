@@ -52,8 +52,8 @@ HRESULT CPipeWallCameraTrigger::NativeConstruct(void* pArg)
 
 _int CPipeWallCameraTrigger::Tick(_double dTimeDelta)
 {
-	// +X 할수록 뒤쪽
-	// +Z 할수록 오른쪽
+	// +Z 할수록 뒤쪽
+	// +X 할수록 오른쪽
 	//_vector vPosition = { -815.311f, 775.083f, 193.72f, 1.f };
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 	//m_pTriggerActorCom->Update_TriggerActor();

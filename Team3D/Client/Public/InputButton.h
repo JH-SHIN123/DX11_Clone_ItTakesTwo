@@ -26,6 +26,7 @@ public:
 
 private:
 	_uint							m_iShaderPassNum = 0;
+	_float2							m_vStartScale;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
@@ -33,6 +34,7 @@ private:
 private:
 	HRESULT Ready_Component();
 	void SetUp_Option();
+	void ScaleEffect(_double TimeDelta);
 
 public:
 	static CInputButton* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

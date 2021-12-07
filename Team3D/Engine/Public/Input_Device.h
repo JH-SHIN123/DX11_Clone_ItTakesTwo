@@ -37,6 +37,7 @@ public: /* Getter */
 	_long	Get_Pad_LStickY();
 	_long	Get_Pad_RStickX();
 	_long	Get_Pad_RStickY();
+	DIJOYSTATE& Get_PadState() { return m_JoyStickState; }
 
 public:
 	HRESULT	Ready_InputDevice(HINSTANCE hInst, HWND hWnd);
