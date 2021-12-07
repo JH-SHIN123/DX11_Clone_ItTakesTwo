@@ -3,6 +3,7 @@
 #include "RenderTarget_Manager.h"
 #include "Pipeline.h"
 #include "VIBuffer_RectRHW.h"
+#include "Blur.h"
 
 IMPLEMENT_SINGLETON(CPostFX)
 
@@ -24,6 +25,7 @@ HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDevic
 
 	FAILED_CHECK_RETURN(Build_LuminanceBuffer(fBufferWidth, fBufferHeight),E_FAIL);
 	FAILED_CHECK_RETURN(Build_BloomResources(fBufferWidth, fBufferHeight), E_FAIL);
+	FAILED_CHECK_RETURN(Build_DOFBlurResources(fBufferWidth, fBufferHeight), E_FAIL);
 	FAILED_CHECK_RETURN(Build_ComputeShaders(TEXT("../Bin/ShaderFiles/ComputeShader_PostFX.hlsl"), "DefaultTechnique"), E_FAIL);
 
 	return S_OK;
@@ -33,9 +35,15 @@ HRESULT CPostFX::PostProcessing(_double TimeDelta)
 {
 	FAILED_CHECK_RETURN(Tick_Adaptation(TimeDelta), E_FAIL);
 
+#ifdef _DEBUG
+	FAILED_CHECK_RETURN(KeyInput_Test(TimeDelta), E_FAIL);
+#endif // _DEBUG
+
 	FAILED_CHECK_RETURN(DownScale(TimeDelta), E_FAIL);
 	FAILED_CHECK_RETURN(Bloom(), E_FAIL);
-	FAILED_CHECK_RETURN(Blur(), E_FAIL);
+	FAILED_CHECK_RETURN(Blur(m_pShaderResourceView_Bloom_Temp, m_pUnorderedAccessView_Bloom), E_FAIL);
+	FAILED_CHECK_RETURN(Blur(m_pShaderResourceView_DownScaledHDR, m_pUnorderedAccessView_DORBlur), E_FAIL);
+	FAILED_CHECK_RETURN(Blur_Effects(), E_FAIL);
 	FAILED_CHECK_RETURN(FinalPass(),E_FAIL);
 
 	// Swap Cur LumAvg - Prev LumAvg
@@ -91,6 +99,9 @@ HRESULT CPostFX::Bloom()
 {
 	// BrightRight - 다운스케일된 HDR과 SRV의 평균휘도를 계산한후, 임시로 UAV(m_pUnorderedAccessView_Bloom_Temp)로 저장한다.
 	
+	/* Constants */
+	Set_Variable("g_fBloomThreshold", &m_fBloomThreshold, sizeof(_float));
+
 	/* Input */
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_HDRDownScaleTex", m_pShaderResourceView_DownScaledHDR), E_FAIL);
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_AverageLum1D", m_pShaderResourceView_LumAve), E_FAIL);
@@ -105,7 +116,7 @@ HRESULT CPostFX::Bloom()
 	return S_OK;
 }
 
-HRESULT CPostFX::Blur()
+HRESULT CPostFX::Blur(ID3D11ShaderResourceView* pInput, ID3D11UnorderedAccessView* pOutput)
 {
 	//> 2 pass - verticla & horizontal
 	// 수직 / 수평 가우시안 블러 & 첫 패스에서 휘도 다운스케일에 쓰인 그룹숫자만큼의 컴퓨트셰이더를 적용한다.
@@ -114,7 +125,7 @@ HRESULT CPostFX::Blur()
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Horizontal
 	/* Input */
-	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Bloom_Temp), E_FAIL);
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", pInput), E_FAIL);
 	/* Output */
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Bloom_Temp2), E_FAIL);
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[4].pPass->Apply(0, m_pDeviceContext), E_FAIL);
@@ -129,7 +140,7 @@ HRESULT CPostFX::Blur()
 	/* Input */
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Bloom_Temp2), E_FAIL);
 	/* Output */
-	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Bloom), E_FAIL);
+	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", pOutput), E_FAIL);
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[3].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 	x = (_uint)ceil(m_iWinSize[0] / 4.0f);
@@ -140,6 +151,11 @@ HRESULT CPostFX::Blur()
 	return S_OK;
 }
 
+HRESULT CPostFX::Blur_Effects()
+{
+	return CBlur::GetInstance()->Blur_Effect();
+}
+
 HRESULT CPostFX::FinalPass()
 {
 	// PS - Tone Mapping
@@ -148,21 +164,16 @@ HRESULT CPostFX::FinalPass()
 	CGraphic_Device* pGraphicDevice = CGraphic_Device::GetInstance();
 	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
 	CPipeline* pPipeline = CPipeline::GetInstance();
+	CBlur* pBlur = CBlur::GetInstance();
 
-	if (GetAsyncKeyState(VK_F1) & 0x8000)
-		m_fMiddleGrey += 0.005f; // 0.0005
-	else if (GetAsyncKeyState(VK_F2) & 0x8000)
-		m_fMiddleGrey -= 0.005f;
+	_float fMiddleGrey = m_fMiddleGrey;
+	_float fLumWhiteSqr = m_fLumWhiteSqr;
+	fLumWhiteSqr *= fMiddleGrey;
+	fLumWhiteSqr *= fLumWhiteSqr;
 
-	if (GetAsyncKeyState(VK_F3) & 0x8000)
-		m_fLumWhiteSqr += 0.05f;
-	else if (GetAsyncKeyState(VK_F4) & 0x8000)
-		m_fLumWhiteSqr -= 0.05f;
-	//_float fMiddleGrey = powf(sqrtf(m_fMiddleGrey), 2);
-	//_float fLumWhiteSqrt = powf(sqrtf(m_fLumWhiteSqr), 2);
-
-	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &m_fMiddleGrey, sizeof(_float));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &m_fLumWhiteSqr, sizeof(_float));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &fMiddleGrey, sizeof(_float));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqr, sizeof(_float));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_BloomScale", &m_fBloomScale, sizeof(_float));
 
 	_float	fCamFar;
 	_matrix	ProjMatrixInverse;
@@ -172,20 +183,22 @@ HRESULT CPostFX::FinalPass()
 	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_MAINPROJ_INVERSE);
 	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_MAIN);
 	m_pVIBuffer_ToneMapping->Set_Variable("g_fMainCamFar", &fCamFar, sizeof(fCamFar));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_MainProjMatrixInverse", &ProjMatrixInverse, sizeof(ProjMatrixInverse));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_MainProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(ProjMatrixInverse));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_vMainViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
 
 	fCamFar = pPipeline->Get_SubCamFar();
 	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_SUBPROJ_INVERSE);
 	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_SUB);
 	m_pVIBuffer_ToneMapping->Set_Variable("g_fSubCamFar", &fCamFar, sizeof(fCamFar));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_SubProjMatrixInverse", &ProjMatrixInverse, sizeof(ProjMatrixInverse));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_SubProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(ProjMatrixInverse));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
 
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_PostFX")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_BloomTexture", m_pShaderResourceView_Bloom);
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DOFBlurTex", m_pShaderResourceView_Bloom_Temp);
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DOFBlurTex", m_pShaderResourceView_DORBlur);
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DepthTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Depth")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EffectTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Effect")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EffectBlurTex", pBlur->Get_ShaderResourceView_BlurEffect());
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
 	m_pVIBuffer_ToneMapping->Render(0);
@@ -211,19 +224,6 @@ HRESULT CPostFX::Tick_Adaptation(_double TimeDelta)
 	}
 
 	m_fAdaptation = fAdaptNorm;
-
-	return S_OK;
-}
-
-HRESULT CPostFX::Unbind_ShaderResources()
-{
-	ID3D11ShaderResourceView* pNullSRV[8] = { 0 };
-	ID3D11UnorderedAccessView* pNullUAV[8] = { 0 };
-
-	m_pDeviceContext->CSSetShaderResources(0, 8, pNullSRV);
-	m_pDeviceContext->CSSetUnorderedAccessViews(0, 8, pNullUAV, 0);
-
-	//m_pDeviceContext->CSSetShader(0, 0, 0);
 
 	return S_OK;
 }
@@ -321,6 +321,42 @@ HRESULT CPostFX::Build_BloomResources(_float iWidth, _float iHeight)
 	return S_OK;
 }
 
+HRESULT CPostFX::Build_DOFBlurResources(_float iWidth, _float iHeight)
+{
+	D3D11_TEXTURE2D_DESC TextureDesc;
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+	TextureDesc.Width = (_uint)iWidth / 4;
+	TextureDesc.Height = (_uint)iHeight / 4;
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = DXGI_FORMAT_R16G16B16A16_TYPELESS;
+	TextureDesc.SampleDesc.Count = 1;
+	TextureDesc.SampleDesc.Quality = 0;
+	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	TextureDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+	
+	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pDORBlur), E_FAIL);
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC	 ShaderResourceViewDesc;
+	ZeroMemory(&ShaderResourceViewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+	ShaderResourceViewDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	ShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	ShaderResourceViewDesc.Texture2D.MipLevels = 1;
+
+	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pDORBlur, &ShaderResourceViewDesc, &m_pShaderResourceView_DORBlur), E_FAIL);
+
+	D3D11_UNORDERED_ACCESS_VIEW_DESC UnorderedAccessViewDesc;
+	ZeroMemory(&UnorderedAccessViewDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
+	UnorderedAccessViewDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	UnorderedAccessViewDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+	UnorderedAccessViewDesc.Buffer.FirstElement = 0;
+	UnorderedAccessViewDesc.Buffer.NumElements = m_iWinSize[0] * m_iWinSize[1] / 16;
+
+	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pDORBlur, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_DORBlur), E_FAIL);
+
+	return S_OK;
+}
+
 HRESULT CPostFX::Build_ComputeShaders(const _tchar* pShaderFilePath, const char* pTechniqueName)
 {
 	_uint iFlag = 0;
@@ -389,6 +425,58 @@ HRESULT CPostFX::Set_UnorderedAccessView(const char* pConstantName, ID3D11Unorde
 	return pUavVariable->SetUnorderedAccessView(pResourceView);
 }
 
+HRESULT CPostFX::Unbind_ShaderResources()
+{
+	ID3D11ShaderResourceView* pNullSRV[8] = { 0 };
+	ID3D11UnorderedAccessView* pNullUAV[8] = { 0 };
+
+	m_pDeviceContext->CSSetShaderResources(0, 8, pNullSRV);
+	m_pDeviceContext->CSSetUnorderedAccessViews(0, 8, pNullUAV, 0);
+
+	//m_pDeviceContext->CSSetShader(0, 0, 0);
+
+	return S_OK;
+}
+
+#ifdef _DEBUG
+HRESULT CPostFX::KeyInput_Test(_double TimeDelta)
+{
+	//if (GetAsyncKeyState(VK_F1) & 0x8000)
+	//	m_fMiddleGrey += 0.005f; // 0.0005
+	//else if (GetAsyncKeyState(VK_F2) & 0x8000)
+	//	m_fMiddleGrey -= 0.005f;
+
+	//if (GetAsyncKeyState(VK_F3) & 0x8000)
+	//	m_fLumWhiteSqr += 0.05f;
+	//else if (GetAsyncKeyState(VK_F4) & 0x8000)
+	//	m_fLumWhiteSqr -= 0.05f;
+
+	//if (GetAsyncKeyState(VK_F5) & 0x8000)
+	//	m_fBloomScale += TimeDelta;
+	//else if (GetAsyncKeyState(VK_F6) & 0x8000)
+	//	m_fBloomScale -= TimeDelta;
+
+#ifdef _DEBUG
+	TCHAR szBuff[256] = L"";
+	GetPrivateProfileString(L"Section_1", L"Key_1", L"0", szBuff, 256, L"../test.ini");;
+	_float a = (_float)_wtof(szBuff);
+	GetPrivateProfileString(L"Section_1", L"Key_2", L"0", szBuff, 256, L"../test.ini");
+	_float b = (_float)_wtof(szBuff);
+	GetPrivateProfileString(L"Section_1", L"Key_3", L"0", szBuff, 256, L"../test.ini");
+	_float c = (_float)_wtof(szBuff);
+	GetPrivateProfileString(L"Section_1", L"Key_4", L"0", szBuff, 256, L"../test.ini");
+	_float d = (_float)_wtof(szBuff);
+	
+	m_fMiddleGrey = a;
+	m_fLumWhiteSqr = b;
+	m_fBloomScale = c;
+	m_fBloomThreshold = d;
+#endif // _DEBUG
+
+	return S_OK;
+}
+#endif // _DEBUG
+
 void CPostFX::Clear_Buffer()
 {
 	Safe_Release(m_pVIBuffer_ToneMapping);
@@ -399,6 +487,10 @@ void CPostFX::Free()
 	Safe_Release(m_pShaderResourceView_DownScaledHDR);
 	Safe_Release(m_pUnorderedAccessView_DownScaledHDR);
 	Safe_Release(m_pDownScaledHDRTex);
+
+	Safe_Release(m_pShaderResourceView_DORBlur);
+	Safe_Release(m_pUnorderedAccessView_DORBlur);
+	Safe_Release(m_pDORBlur);
 
 	Safe_Release(m_pUnorderedAccessView_Bloom_Temp);
 	Safe_Release(m_pShaderResourceView_Bloom_Temp);

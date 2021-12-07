@@ -29,7 +29,7 @@ HRESULT CEffect_Wormhole::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom_ColorRamp), E_FAIL);
 
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
-	//
+	m_pTransformCom->Set_Scale(XMVectorSet(1.5f, 1.5f, 1.f, 0.f));
 
 	return S_OK;
 }
@@ -37,10 +37,6 @@ HRESULT CEffect_Wormhole::NativeConstruct(void * pArg)
 _int CEffect_Wormhole::Tick(_double TimeDelta)
 {
 	m_fTime += (_float)TimeDelta * 0.2f;
-// 	if (720.f <= m_fTime)
-// 		m_fTime = 0.f;
-// 
-// 	m_fRadianAngle = sin(m_fTime);
 
 	if (4.f <= m_fTime)
 		m_fTime = 0.f;
@@ -62,7 +58,6 @@ HRESULT CEffect_Wormhole::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom->Set_ShaderResourceView("g_ColorRampTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(2));
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Render_Model(6);
-
 
 	return S_OK;
 }

@@ -26,17 +26,16 @@ HRESULT CNoBatterySign::NativeConstruct(void * pArg)
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_NoBatterySign"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_NoBatterySignPivot"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	if (nullptr != pArg)
 		memcpy(&m_tRobotPartsDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
 
 	_vector vPosition = m_tRobotPartsDesc.vPosition;
-	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 2.2f);
-	vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) + 0.3f);
+	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 3.7f);
+	vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - 0.2f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-	m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f ,0.f), XMConvertToRadians(-90.f));
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f ,0.f), XMConvertToRadians(90.f));
 
 	CStaticActor::ARG_DESC ArgDesc;
 
@@ -64,12 +63,17 @@ _int CNoBatterySign::Tick(_double dTimeDelta)
 			m_pTransformCom->Rotate_Axis(XMVectorSet(1.f, 0.f, 0.f, 0.f), -dTimeDelta * 7.f);
 		else if (m_fRotateTime >= 0.6f)
 		{
-			m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-90.f));
+			m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f));
 			m_fRotateTime = 0.f;
 			m_bHitLever = false;
 		}
 	}
 
+	if (m_pGameInstance->Key_Pressing(DIK_L))
+	{
+		m_fTestAngle += (_float)dTimeDelta * 2.f;
+		m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(m_fTestAngle));
+	}
 
 	return NO_EVENT;
 }

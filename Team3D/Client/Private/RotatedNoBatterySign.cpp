@@ -32,9 +32,9 @@ HRESULT CRotatedNoBatterySign::NativeConstruct(void * pArg)
 		memcpy(&m_tRtRotatedRobotPartsDesc, (RTROBOTDESC*)pArg, sizeof(RTROBOTDESC));
 
 	_vector vPosition = m_tRtRotatedRobotPartsDesc.vPosition;
-	vPosition.m128_f32[0] += 3.352f;
-	vPosition.m128_f32[1] -= 1.4f;
-	vPosition.m128_f32[2] += 1.4f;
+	vPosition.m128_f32[0] += 3.312f;
+	vPosition.m128_f32[1] -= 1.3f;
+	vPosition.m128_f32[2] += 1.5f;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 	
@@ -66,7 +66,7 @@ _int CRotatedNoBatterySign::Tick(_double dTimeDelta)
 			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 0.f, 1.f, 0.f), -dTimeDelta * 7.f);
 		else if (m_fRotateTime >= 0.6f)
 		{
-			m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-90.f));
+			m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(0.f));
 			m_fRotateTime = 0.f;
 			m_bHitLever = false;
 		}

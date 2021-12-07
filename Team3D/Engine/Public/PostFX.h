@@ -18,7 +18,8 @@ public:
 private:
 	HRESULT DownScale(_double TimeDelta);
 	HRESULT Bloom();
-	HRESULT Blur();
+	HRESULT Blur(ID3D11ShaderResourceView* pInput, ID3D11UnorderedAccessView* pOutput);
+	HRESULT Blur_Effects();
 	HRESULT FinalPass();
 
 	HRESULT Tick_Adaptation(_double TimeDelta);
@@ -26,6 +27,7 @@ private:
 private:
 	HRESULT Build_LuminanceBuffer(_float iWidth, _float iHeight); /* 휘도의 중간값을 저장하기 위한 리소스들 & 부동소수점 형태로 평균 휘도 값을 저장 */
 	HRESULT Build_BloomResources(_float iWidth, _float iHeight);
+	HRESULT Build_DOFBlurResources(_float iWidth, _float iHeight);
 	HRESULT Build_ComputeShaders(const _tchar* pShaderFilePath, const char* pTechniqueName);
 
 	HRESULT	Set_Variable(const char* pConstantName, void* pData, _uint iByteSize);
@@ -38,17 +40,23 @@ private:
 	ID3D11Device* m_pDevice = nullptr;
 	ID3D11DeviceContext* m_pDeviceContext = nullptr;
 	
+#pragma region Constant Params
 private:
-	_uint	m_iWinSize[2] = { 0,0 };
-	_uint	m_iDownScaleGroups = 0;
+	_uint    m_iWinSize[2] = { 0,0 };
+	_uint    m_iDownScaleGroups = 0;
 
-	_float	m_fMiddleGrey = 0.03249f; 
-	_float	m_fLumWhiteSqr = 1.5f;
-	
-	_float	m_fAdaptTime = 1.f;
-	_float	m_fAdaptationDeltaT = 0.f;
-	_float	m_fAdaptation = 0.f;
+	_float    m_fMiddleGrey = 0.019135f;
+	_float    m_fLumWhiteSqr = 50.f;
 
+	_float    m_fAdaptTime = 1.f;
+	_float    m_fAdaptationDeltaT = 0.f;
+	_float    m_fAdaptation = 0.f;
+
+	_float m_fBloomThreshold = 100.f;
+	_float m_fBloomScale = 0.25f;
+#pragma endregion
+
+#pragma region Resources
 private: /* For. CS - First Pass */
 	ID3D11Buffer*				m_pHDRBuffer_Lum = nullptr;
 	ID3D11UnorderedAccessView*	m_pUnorderedAccessView_Lum = nullptr; // Ouput
@@ -81,12 +89,22 @@ private: /* For. Bloom */
 	ID3D11UnorderedAccessView*	m_pUnorderedAccessView_Bloom = nullptr;
 	ID3D11ShaderResourceView*	m_pShaderResourceView_Bloom = nullptr;
 
+private: /* For. DOF */
+	ID3D11Texture2D* m_pDORBlur = nullptr;
+	ID3D11UnorderedAccessView* m_pUnorderedAccessView_DORBlur = nullptr;
+	ID3D11ShaderResourceView* m_pShaderResourceView_DORBlur = nullptr;
+
 private: /* For.CS - Shader */
 	ID3DX11Effect* m_pEffect_CS = nullptr;
 	vector<INPUT_LAYOUT_DESC>	m_InputLayouts_CS;
 
 private: /* For. PS - ToneMapping */
 	class CVIBuffer_RectRHW* m_pVIBuffer_ToneMapping = nullptr;
+#pragma endregion
+
+#ifdef _DEBUG
+	HRESULT KeyInput_Test(_double TimeDelta);
+#endif
 
 public:
 	void			Clear_Buffer();

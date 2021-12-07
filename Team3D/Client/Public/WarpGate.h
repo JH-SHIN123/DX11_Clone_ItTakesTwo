@@ -55,11 +55,11 @@ public:
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
+	_fmatrix Get_NextPortal_Matrix();
 
 private:
 	HRESULT Ready_Component();
 	void	Check_Stage_Value();
-	_fmatrix Get_NextPortal_Matrix(STAGE_VALUE eValue);
 
 private:
 	STAGE_VALUE m_eStageValue	= STAGE_END;

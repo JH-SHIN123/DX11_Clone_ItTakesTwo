@@ -1,20 +1,9 @@
-
 #include "Shader_Defines.hpp"
+#include "Shader_Defines_Effect.hpp"
 
 texture2D		g_DiffuseTexture;
 texture2D		g_SecondTexture;
 texture2D		g_ColorTexture;
-
-vector			g_vMainCamUp;
-vector			g_vSubCamUp;
-
-float2			g_vSize;
-float4			g_vColor;
-float			g_fTime;
-float4			g_vUV;
-float4			g_vColorRamp_UV;
-int				g_IsBillBoard;
-int				g_RotateAxis; // x0, y1, z2
 
 sampler DiffuseSampler = sampler_state
 {
@@ -32,6 +21,12 @@ sampler ColorSampler = sampler_state
 	AddressV = mirror/*_once*/;
 };
 
+cbuffer Light_Effect
+{
+	// 채도 0.25, 명암 1.0이  가장 괜찮았음
+	float g_fSaturation_Power;	
+	float g_fContrast_Power;	
+}
 
 struct VS_IN
 {
@@ -115,6 +110,20 @@ VS_OUT VS_MAIN_AXIS_Y(VS_IN In)
 
 	return Out;
 }
+
+VS_OUT VS_MAIN_AXIS_Y_NO_GLOBAL_UV(VS_IN In)
+{
+	VS_OUT	Out = (VS_OUT)0;
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), In.WorldMatrix);
+	Out.vTextureUV_LTRB = In.vTextureUV_LTRB;
+	Out.vSize = In.vSize;
+
+	Out.vPointAxis = In.vTextureUV_LTRB.xyz;
+
+	return Out;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 struct  GS_OUT
 {
@@ -236,7 +245,7 @@ void  GS_MAIN_NO_BILL_Y(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStr
 
 	float3		vUp = In[0].vPointAxis;
 
-	float3		vCamDir = normalize(g_vMainCamPosition - In[0].vPosition);
+	float3		vCamDir = normalize(g_vMainCamPosition - In[0].vPosition).xyz;
 	float3		vRight = normalize(cross(vCamDir, vUp));
 	float3		vLook = normalize(cross(vRight, vUp));
 
@@ -288,7 +297,7 @@ void  GS_MAIN_NO_BILL_Y(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStr
 	// Sub View 0,1
 
 	vUp = In[0].vPointAxis;
-	vCamDir = normalize(g_vSubCamPosition - In[0].vPosition);
+	vCamDir = normalize(g_vSubCamPosition - In[0].vPosition).xyz;
 	vRight = normalize(cross(vCamDir, vUp));
 	vLook = normalize(cross(vRight, vUp));
 
@@ -306,6 +315,110 @@ void  GS_MAIN_NO_BILL_Y(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStr
 
 	/* 우상 */
 	Out[5].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[5].vPosition = mul(Out[5].vPosition, matVP);
+	Out[5].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.y);
+	Out[5].vProjPosition = Out[5].vPosition;
+	Out[5].iViewportIndex = 2;
+	TriStream.Append(Out[5]);
+
+	/* 우하 */
+	Out[6].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[6].vPosition = mul(Out[6].vPosition, matVP);
+	Out[6].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.w);
+	Out[6].vProjPosition = Out[6].vPosition;
+	Out[6].iViewportIndex = 2;
+	TriStream.Append(Out[6]);
+
+	TriStream.RestartStrip();
+
+	/* 좌하 */
+	Out[7].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[7].vPosition = mul(Out[7].vPosition, matVP);
+	Out[7].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.w);
+	Out[7].vProjPosition = Out[7].vPosition;
+	Out[7].iViewportIndex = 2;
+	TriStream.Append(Out[4]);
+	TriStream.Append(Out[6]);
+	TriStream.Append(Out[7]);
+}
+
+[maxvertexcount(12)]
+void  GS_MAIN_NO_BILL_Y_DOWN_SIZE(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT> TriStream)
+{
+	GS_OUT		Out[8];
+
+	float3		vUp = In[0].vPointAxis;
+
+	float3		vCamDir = normalize(g_vMainCamPosition - In[0].vPosition).xyz;
+	float3		vRight = normalize(cross(vCamDir, vUp));
+	float3		vLook = normalize(cross(vRight, vUp));
+
+	matrix		matVP = mul(g_MainViewMatrix, g_MainProjMatrix);;
+
+	float2		vHalfSize = float2(In[0].vSize.x * 0.5f, In[0].vSize.y);
+
+	float4		vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
+	float4		vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
+
+	/* 좌상 */
+	Out[0].vPosition = In[0].vPosition + vWolrdPointPos_X;
+	Out[0].vPosition = mul(Out[0].vPosition, matVP);
+	Out[0].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.y);
+	Out[0].vProjPosition = Out[0].vPosition;
+	Out[0].iViewportIndex = 1;
+	TriStream.Append(Out[0]);
+
+	/* 우상 */
+	Out[1].vPosition = In[0].vPosition - vWolrdPointPos_X;
+	Out[1].vPosition = mul(Out[1].vPosition, matVP);
+	Out[1].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.y);
+	Out[1].vProjPosition = Out[1].vPosition;
+	Out[1].iViewportIndex = 1;
+	TriStream.Append(Out[1]);
+
+	/* 우하 */
+	Out[2].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[2].vPosition = mul(Out[2].vPosition, matVP);
+	Out[2].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.w);
+	Out[2].vProjPosition = Out[2].vPosition;
+	Out[2].iViewportIndex = 1;
+	TriStream.Append(Out[2]);
+
+	TriStream.RestartStrip();
+
+	/* 좌하 */
+	Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[3].vPosition = mul(Out[3].vPosition, matVP);
+	Out[3].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.w);
+	Out[3].vProjPosition = Out[3].vPosition;
+	Out[3].iViewportIndex = 1;
+	TriStream.Append(Out[0]);
+	TriStream.Append(Out[2]);
+	TriStream.Append(Out[3]);
+
+	TriStream.RestartStrip();
+
+	// Sub View 0,1
+
+	vUp = In[0].vPointAxis;
+	vCamDir = normalize(g_vSubCamPosition - In[0].vPosition).xyz;
+	vRight = normalize(cross(vCamDir, vUp));
+	vLook = normalize(cross(vRight, vUp));
+
+	matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+
+	vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
+	vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
+
+	Out[4].vPosition = In[0].vPosition + vWolrdPointPos_X;
+	Out[4].vPosition = mul(Out[4].vPosition, matVP);
+	Out[4].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.y);
+	Out[4].vProjPosition = Out[4].vPosition;
+	Out[4].iViewportIndex = 2;
+	TriStream.Append(Out[4]);
+
+	/* 우상 */
+	Out[5].vPosition = In[0].vPosition - vWolrdPointPos_X;
 	Out[5].vPosition = mul(Out[5].vPosition, matVP);
 	Out[5].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.y);
 	Out[5].vProjPosition = Out[5].vPosition;
@@ -765,6 +878,40 @@ PS_OUT  PS_MAIN_ALPHATIME(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_MAIN_LASER(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(ColorSampler, In.vTexUV);
+	Out.vColor.a = Out.vColor.r;
+
+	return Out;
+}
+PS_OUT  PS_MAIN_LIGHT(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiffuse = (float4)0;
+	float2 vCenter = In.vTexUV - 0.5f;
+	vCenter = abs(vCenter);
+
+	float fLenght = length(vCenter);
+	if (0.5f < fLenght)
+		discard;
+
+	vDiffuse.a = 1.f;
+
+	fLenght = fLenght / 0.5f; // normalize
+	float2 vColorUV = (float2)((fLenght * -1.f) + 1.f);
+	float4 vColor = g_SecondTexture.Sample(DiffuseSampler, vColorUV);
+
+	vDiffuse.rgb = vColor.rgb * g_fSaturation_Power;
+	vDiffuse.a *= g_fContrast_Power; 
+	Out.vColor = vDiffuse;
+
+	return Out;
+}
+
 struct  PS_IN_DOUBLE_UV
 {
 	float4 vPosition : SV_POSITION;
@@ -955,6 +1102,26 @@ technique11		DefaultTechnique
 		GeometryShader = compile gs_5_0  GS_MAIN_NO_BILL_Y();
 		PixelShader = compile ps_5_0  PS_MAIN_COLOR_NOALPHATEX_TIME();
 	}
+
+	pass PointLight // 10
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_MAIN_LIGHT();
+	}
+
+	pass Laser // 11
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN_AXIS_Y_NO_GLOBAL_UV();
+		GeometryShader = compile gs_5_0  GS_MAIN_NO_BILL_Y_DOWN_SIZE();
+		PixelShader = compile ps_5_0  PS_MAIN_LASER();
+	}
 };
 
 /*
@@ -1100,3 +1267,45 @@ TriStream.Append(Out[7]);
 }
 
 */
+
+// 중심에서 멀어 질 수록 알파를 낮추자
+
+//float4 vDiffuse = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+//vDiffuse *= g_vColor;
+//vDiffuse.a = 1.f;
+//float2 vCenter = In.vTexUV - 0.5f;
+//vCenter = abs(vCenter);
+////vCenter -= 0.5f;
+////vCenter = abs(vCenter) * 2.f;
+//float fDist = (vCenter.x + vCenter.y) *0.5f;
+////float4 vAlphaTex = g_SecondTexture.Sample(DiffuseSampler, In.vTexUV);
+////
+////vAlphaTex.r -= 1.f;
+////vAlphaTex.r = abs(vAlphaTex.r);
+
+//vDiffuse.a = 0.5f * COS_ARR(3.14f * pow(fDist, 1.5f)) + 0.5f;//vAlphaTex.r * g_fAlpha;
+
+//Out.vColor = vDiffuse;
+
+
+//float4 vDiffuse =  { 0.498039246f, 1.000000000f, 0.831372619f, 1.000000000f };
+//float2 vCenter = In.vTexUV - 0.5f;
+//vCenter = abs(vCenter);
+////vCenter -= 0.5f;
+////vCenter = abs(vCenter) * 2.f;
+
+//float fLenght = length(vCenter);
+//if (0.5f < fLenght)
+//	discard;
+
+//vDiffuse.a = 0.5f;
+
+//fLenght = fLenght / 0.5f; // normalize
+//float2 vColorUV = float2((fLenght * -1.f) + 1.f);
+//float4 vColor = g_SecondTexture.Sample(DiffuseSampler, vColorUV);
+
+//fLenght *= 100.f; // 원하는 만큼 곱하기 (길이)
+//vDiffuse.rgb *= (100.f - fLenght);// *0.25f;// +0.5f;//0.5f * COS_ARR(3.14f * pow(fDist, 1.5f)) + 0.5f;//vAlphaTex.r * g_fAlpha;
+//vDiffuse.rgb /= 1000.f;	// 감쇠 파워?
+//Out.vColor = vDiffuse;

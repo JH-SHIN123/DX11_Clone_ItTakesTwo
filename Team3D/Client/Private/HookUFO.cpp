@@ -41,12 +41,21 @@ HRESULT CHookUFO::NativeConstruct(void * pArg)
 		memcpy(&HookUFODesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, HookUFODesc.vPosition);
 
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform2"), (CComponent**)&m_pPhysxTransform, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
+
+	_matrix PhysxWorldMatrix = XMMatrixIdentity();
+	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans), XMVectorGetY(vTrans) - 10.f, XMVectorGetZ(vTrans));
+	m_pPhysxTransform->Set_WorldMatrix(PhysxWorldMatrix);	
+
+
 	CTriggerActor::ARG_DESC ArgDesc;
 
 	m_UserData = USERDATA(GameID::eHOOKUFO, this);
 	ArgDesc.pUserData = &m_UserData;
-	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = new PxSphereGeometry(15.f);
+	ArgDesc.pTransform = m_pPhysxTransform;
+	ArgDesc.pGeometry = new PxSphereGeometry(25.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
@@ -115,10 +124,9 @@ HRESULT CHookUFO::Render(RENDER_GROUP::Enum eGroup)
 void CHookUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	// Cody
-
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		if (((CCody*)pGameObject)->Get_Position().m128_f32[1] < m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1] - 5.f)
+		if (((CCody*)pGameObject)->Get_Position().m128_f32[1] < m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1])
 		{
 			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			m_IsCodyCollide = true;
@@ -177,7 +185,7 @@ void CHookUFO::InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisa
 
 	vComparePos = vPos - vTargetPos;
 
-	_float fRange = 30.f;
+	_float fRange = 50.f;
 
 	_float vComparePosX = fabs(XMVectorGetX(vComparePos));
 	_float vComparePosY = fabs(XMVectorGetY(vComparePos));
@@ -300,6 +308,7 @@ void CHookUFO::Free()
 {
 	Safe_Release(m_pMayGauge_Circle);
 	Safe_Release(m_pCodyGauge_Circle);
+	Safe_Release(m_pPhysxTransform);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);

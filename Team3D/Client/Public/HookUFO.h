@@ -60,6 +60,7 @@ private:
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 	CTriggerActor*		m_pTriggerCom = nullptr;
+	CTransform*			m_pPhysxTransform = nullptr;
 
 public:
 	HRESULT Ready_Layer_MayGauge_Circle(const _tchar * pLayerTag);

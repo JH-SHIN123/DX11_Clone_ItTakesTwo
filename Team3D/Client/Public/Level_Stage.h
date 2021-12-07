@@ -31,7 +31,6 @@ private:
 	/* Se */
 	HRESULT Ready_Layer_GravityPath(const _tchar* pLayerTag);
 	/* Jung */
-	HRESULT Test_Layer_Object_Effect(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_WarpGate(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Wormhole(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_WallLaserTrap(const _tchar* pLayerTag);
@@ -64,6 +63,7 @@ private:
 	HRESULT Ready_Layer_RotatedRobotParts(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_DummyWall(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MayJumpWall(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_PipeJumpWall(const _tchar* pLayerTag);
 	/* Jin */
 	HRESULT Ready_Layer_ControlRoomPuzzle(const _tchar* pLayerTag, const _tchar* pGameObjectTag);
 	HRESULT Ready_Layer_ControlRoom_Glass(const _tchar * pLayerTag);

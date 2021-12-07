@@ -5,6 +5,7 @@
 #include "Pipeline.h"
 #include "RenderTarget_Manager.h"
 #include "Shadow_Manager.h"
+#include "SSAO.h"
 
 IMPLEMENT_SINGLETON(CLight_Manager)
 
@@ -106,6 +107,7 @@ HRESULT CLight_Manager::Render_Lights()
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_NormalTexture", pNormalShaderResourceView), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_DepthTexture", pDepthShaderResourceView), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_SpecularSrcTexture", pSpecSrcShaderResourceView), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer->Set_ShaderResourceView("g_SSAOTexture", CSSAO::GetInstance()->Get_ShaderResourceView()), E_FAIL);
 
 	_float	fCamFar;
 	_vector vCamPosition;

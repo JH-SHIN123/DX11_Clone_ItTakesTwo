@@ -176,13 +176,17 @@ public:
 public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
+
+	CPlayerActor* Get_Actor() { return m_pActorCom; }
+
 	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool		Get_IsGroundPound() { return m_bGroundPound; }
 	_bool		Get_IsGroundPoundVarious() { return m_bPlayGroundPoundOnce; }
 
 public:
+
 	void		Update_Tirgger_Pos(_vector vPos);
-	CPlayerActor* Get_Actor() { return m_pActorCom; }
+
 
 public:
 	void	Set_BossMissile_Attack(); // CBoss_Missile
@@ -259,6 +263,8 @@ private:
 	_bool m_bRoll = false;
 	_bool m_IsTurnAround = false;
 	_int m_iSavedKeyPress = 0;
+	_bool m_bAfterGroundPound = false;
+	_int m_iAfterGroundPoundCount = 0;
 	
 	_int	m_iFrameCount = 0;
 	_long	m_i10FrameChangedX = 0;
@@ -392,7 +398,8 @@ private:
 	_float m_fWarpTimer = 0.f;
 	_bool m_IsWarpDone = false;
 	const _float4 m_vWormholePos = { 0.f, -100.f, -1500.f, 1.f };
-	const _float m_fWarpTimer_Max = 2.f;
+	const _float m_fWarpTimer_Max = 5.f;
+	const _float m_fWarpTimer_InWormhole = 2.f;
 
 	// 상호작용 테스트용
 	_bool m_IsActivate_End = false;

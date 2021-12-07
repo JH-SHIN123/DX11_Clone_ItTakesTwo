@@ -44,8 +44,10 @@ public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	/* For.Transform */
 	void	Go_Straight(_double dTimeDelta);
+	void	Go_Straight_NoneSpeed(_double dTimeDelta);
 	void	Go_Backward(_double dTimeDelta);
 	void	Go_Right(_double dTimeDelta);
+	void	Go_Right_NoneSpeed(_double dTimeDelta);
 	void	Go_Left(_double dTimeDelta);
 	void	Go_Up(_double dTimeDelta);
 	void	Go_Down(_double dTimeDelta);
@@ -62,11 +64,17 @@ public:
 	void	RotateYaw(const _double TimeDelta);
 	void	RotatePitch(const _double TimeDelta);
 	void	RotatePitch_Angle(const _double TimeDelta, _float fAngle);
+	void	RotatePitch_Angle(_double fAngle);
+	void	RotateRoll_Angle(_double fAngle);
 	void	RotateRoll(const _double TimeDelta);
 
 	void    MoveToDir(const _fvector& vMoveDir, const _double TimeDelta, const _double dAcceleration = 1.f, class CNavigation* pNavigation = nullptr);
 
 	void	RotateByUp(_fvector vUp);
+
+	void	RotateYaw_Speed(const _double TimeDelta);
+	void	RotatePitch_Speed(const _double TimeDelta);
+	void	RotateRoll_Speed(const _double TimeDelta);
 
 private:
 	_float4x4		m_WorldMatrix;

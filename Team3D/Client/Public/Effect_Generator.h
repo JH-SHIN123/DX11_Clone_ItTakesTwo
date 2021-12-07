@@ -23,13 +23,29 @@ enum class Effect_Value
 	Effect_Value_End
 };
 
+
 class CEffect_Generator final : public CBase
 {
 	DECLARE_SINGLETON(CEffect_Generator)
 
+	typedef struct tagEffectPointLight_Desc
+	{
+		_float3 vPosition;
+		//_float4 vDiffuseColor;
+		_float  fPointRadius;
+		_float  fPointSaturation_Power;
+		_float  fPointContrast_Power;
+		_int	iTextureIndex; //Bin\Resources\Effect\2D\Color_Ramp
+		tagEffectPointLight_Desc() {}
+		tagEffectPointLight_Desc(_float fRadius, _float Saturation_Power, _float fContrast_Power, _float3 vPos, _int iTextureIndex_Color)
+			:vPosition(vPos), iTextureIndex(iTextureIndex_Color), fPointRadius(fRadius), fPointSaturation_Power(Saturation_Power), fPointContrast_Power(fContrast_Power){}
+
+	}Effect_PointLight_Desc;
+
 public:
 	HRESULT Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix, void* pArg = nullptr);
 	// 맵과 같이 배치되는 상호작용 없는 환경 이펙트는 다른걸로
+	HRESULT Add_PointLight(Effect_PointLight_Desc* pLightArg = nullptr);
 
 public:
 	HRESULT Load_EffectData(const _tchar* pFilePath, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
