@@ -135,6 +135,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star">
       <UniqueIdentifier>{fd9a8160-d96b-47d1-bbc1-8925a4337c3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\07.Test">
+      <UniqueIdentifier>{f96497a1-1e91-41d3-867f-d4582ffe588c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye">
       <UniqueIdentifier>{ade7861b-fc9f-4044-8e8a-b7432305af13}</UniqueIdentifier>
     </Filter>
@@ -623,9 +626,6 @@
     </Filter>
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\07.Test">
-      <UniqueIdentifier>{f96497a1-1e91-41d3-867f-d4582ffe588c}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
