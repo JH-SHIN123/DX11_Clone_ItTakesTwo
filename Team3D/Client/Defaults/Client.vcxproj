@@ -217,14 +217,11 @@
     <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
     <ClInclude Include="..\Public\ControlRoom_Glass.h" />
-<<<<<<< HEAD
     <ClInclude Include="..\Public\CutScene.h" />
     <ClInclude Include="..\Public\CutScenePlayer.h" />
-=======
     <ClInclude Include="..\public\Effect_Boss_Laser_Smoke.h" />
     <ClInclude Include="..\public\Effect_Pinball_Move.h" />
     <ClInclude Include="..\public\Effect_PointLight.h" />
->>>>>>> main
     <ClInclude Include="..\Public\GameDebugger.h" />
     <ClInclude Include="..\Public\GameOption.h" />
     <ClInclude Include="..\public\DeadLine.h" />

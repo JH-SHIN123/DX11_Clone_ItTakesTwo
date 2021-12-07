@@ -634,7 +634,6 @@
     <Filter Include="01.Maps\03.Stage_Space">
       <UniqueIdentifier>{5bbd0183-dea1-417a-b173-4e16c2288048}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
     <Filter Include="02.GameObject\00.Public\05.CutScene">
       <UniqueIdentifier>{e938d1f0-6704-45a7-ad1b-388fead9e077}</UniqueIdentifier>
     </Filter>
@@ -646,7 +645,7 @@
     </Filter>
     <Filter Include="02.GameObject\00.Public\05.CutScene\02.Performer">
       <UniqueIdentifier>{0fffa036-d7dd-479b-a4fa-84956b7722a8}</UniqueIdentifier>
-=======
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object">
       <UniqueIdentifier>{2d113bd5-2e8a-454e-ae74-7e78d42a438b}</UniqueIdentifier>
     </Filter>
@@ -655,7 +654,6 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move">
       <UniqueIdentifier>{e00fe663-5223-4c53-8f9a-23f51aa689a4}</UniqueIdentifier>
->>>>>>> main
     </Filter>
     <Filter Include="96.Debug">
       <UniqueIdentifier>{7904050b-bece-47ac-9d69-2652f5e7bc09}</UniqueIdentifier>
@@ -1259,7 +1257,6 @@
     <ClInclude Include="..\Public\Client_MathHelper.h">
       <Filter>98.Defines\01.Client</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\Public\CutScenePlayer.h">
       <Filter>02.GameObject\00.Public\05.CutScene\00.CutScenePlayer</Filter>
     </ClInclude>
@@ -1268,10 +1265,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Performer.h">
       <Filter>02.GameObject\00.Public\05.CutScene\02.Performer</Filter>
-=======
+    </ClInclude>
     <ClInclude Include="..\public\Effect_Pinball_Move.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move</Filter>
->>>>>>> main
     </ClInclude>
     <ClInclude Include="..\Public\GameDebugger.h">
       <Filter>96.Debug</Filter>
@@ -1761,7 +1757,6 @@
     <ClCompile Include="..\Private\CameraHitReport.cpp">
       <Filter>03.Component\01.Actor\01.CameraActor\03.HitReport</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\Private\CutScenePlayer.cpp">
       <Filter>02.GameObject\00.Public\05.CutScene\00.CutScenePlayer</Filter>
     </ClCompile>
@@ -1770,10 +1765,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Performer.cpp">
       <Filter>02.GameObject\00.Public\05.CutScene\02.Performer</Filter>
-=======
+    </ClCompile>
     <ClCompile Include="..\private\Effect_Pinball_Move.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move</Filter>
->>>>>>> main
     </ClCompile>
     <ClCompile Include="..\Private\GameDebugger.cpp">
       <Filter>96.Debug</Filter>

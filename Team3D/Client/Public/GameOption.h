@@ -19,22 +19,15 @@
 /**
 * 사용할 스레드 개수 지정
 */
-<<<<<<< HEAD
 
-#define __1THREAD
-#define __6THREADS
-#define __8THREADS
-#define __16THREADS
-=======
-#define __THREAD_NUM 8
->>>>>>> main
+#define __THREAD_NUM 16
 
 /************************************************************************/
 
 /**
 * 맵 로딩 하려면 주석 처리.
 */
-#define __MAPLOADING_OFF
+//#define __MAPLOADING_OFF
 
 /************************************************************************/
 
@@ -54,7 +47,7 @@
 //#define __TEST_TAEK
 //#define __TEST_YOON
 //#define __TEST_JIN
-#define __TEST_JUN
+//#define __TEST_JUN
 
 /************************************************************************/
 
