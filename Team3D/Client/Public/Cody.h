@@ -209,15 +209,17 @@ public:
 
 public:
 	/* Getter */
-	CTransform* Get_Transform() { return m_pTransformCom; }
-	CModel*		Get_Model() { return m_pModelCom; }
-	PLAYER_SIZE Get_Player_Size() { return m_eCurPlayerSize; }
-	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
-	_bool		Get_PushingBattery() { return m_IsPushingBattery; }
+	CTransform*		 Get_Transform() { return m_pTransformCom; }
+	CModel*			 Get_Model() { return m_pModelCom; }
+	PLAYER_SIZE		 Get_Player_Size() { return m_eCurPlayerSize; }
+	_bool			 Get_IsInGravityPipe() { return m_IsInGravityPipe; }
+	_bool			 Get_PushingBattery() { return m_IsPushingBattery; }
+	_uint			 Get_CurState() const;
+
 public:
-	void Set_PushingBattery() { m_IsPushingBattery = false; }
-	void Set_OnParentRotate(_matrix ParentMatrix);
-	void Set_ControlJoystick(_bool IsCheck);
+	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
+	void			 Set_OnParentRotate(_matrix ParentMatrix);
+	void			 Set_ControlJoystick(_bool IsCheck);
 
 
 public:
@@ -232,7 +234,6 @@ private: // 여기에 넣어놓아야 알거 같아서 여기에..
 	void Enforce_IdleState(); /* 강제로 Idle 상태로 바꿈 */
 
 private:
-	// 단발성 함수들.
 	HRESULT Ready_Component();
 	void Add_LerpInfo_To_Model();
 
@@ -252,8 +253,6 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////    상태 변환 관련 변수들   /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-public:
-	_uint Get_CurState() const;
 
 public:
 	// 상태 && 이동
@@ -277,34 +276,37 @@ private:
 	// 구르기 관련
 	_bool m_bAction = false;
 
-	// 점프 중이니
+	// 점프/떨어지는 중이니
 	_bool m_IsJumping = false;
 	_bool m_IsAirDash = false;
 	_bool m_IsFalling = false;
 	_bool m_bFallAniOnce = false;
 
+	// 점프/에어대쉬 관련 변수
+	_uint m_iJumpCount = 0;
+	_uint m_iAirDashCount = 0;
+
+	// 이동방향 및 이전키입력저장
 	_float3 m_vMoveDirection = {};
 	_int m_iSavedKeyPress = 0;
-
 
 	// 움직임 가속
 	_float m_fAcceleration = 5.0;
 	_float m_fJogAcceleration = 25.f;
 	_float m_fSprintAcceleration = 35.f;
-	_float m_fGroundPoundAirDelay = 0.f; // 체공시간.
 
 	// GroundPound 관련
 	_bool m_bPlayGroundPoundOnce = false;
 	_bool m_bCanMove = true;
 	_bool m_bAfterGroundPound = false;
 	_uint m_iAfterGroundPoundCount = 0;
+	_float m_fGroundPoundAirDelay = 0.f; // 체공시간.
 
 	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
 	_float	m_fIdleTime = 0.f;
 
 	// 뭔가 들고있다면
 	_bool m_IsPickUp = false;
-
 
 	// 크기가 달라졌다면
 	PLAYER_SIZE m_eCurPlayerSize = SIZE_MEDIUM;
@@ -314,13 +316,10 @@ private:
 	_float m_fSizeDelayTime = 0.f;
 	_bool m_bChangeSizeEffectOnce = false;
 
-	// 점프관련 변수
-	_uint m_iJumpCount = 0;
-	_uint m_iAirDashCount = 0;
-
 	// 컷씬이라면
 	_bool m_IsCutScene = false;
 
+	// 스테이지 클리어 확인
 	_bool m_IsStGravityCleared = false;
 	_bool m_IsStRailCleared = false;
 	_bool m_IsStPinBallCleared = false;
@@ -401,6 +400,12 @@ private:
 	_float	m_fWallJumpingTime = 0.f;
 	_float	m_fWallToWallSpeed = 0.55f;
 
+	/* For. WallJump */
+	_bool	m_bPipeWallAttach = false;
+	_bool   m_IsPipeWallJumping = false;
+	_float	m_fPipeWallJumpingTime = 0.f;
+	_float	m_fPipeWallToWallSpeed = 45.f;
+
 	// Warp NextStage
 	_bool m_IsWarpNextStage = false;
 	_float m_fWarpTimer = 0.f;
@@ -438,6 +443,7 @@ private:
 	void Hit_Planet(const _double dTimeDelta);
 	void Hook_UFO(const _double dTimeDelta);
 	void Wall_Jump(const _double dTimeDelta);
+	void Pipe_WallJump(const _double dTimeDelta);
 
 	// 정호
 	void Warp_Wormhole(const _double dTimeDelta);

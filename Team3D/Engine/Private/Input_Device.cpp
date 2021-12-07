@@ -230,21 +230,25 @@ _int CInput_Device::Tick(_bool bWndActivate)
 				Safe_Release(m_pJoyStick);
 		}
 
-#ifdef _DEBUG
-		//디버그
-		////static _uint iBuffer = 100;
-		////++iBuffer;
-		////if (iBuffer > 100)
-		////{
-		////	iBuffer = 0;
-		////	iBuffer = 0;
-		////	iBuffer = 0;
-		////	iBuffer = 0;
-		////	iBuffer = 0;
-		////	iBuffer = 0;
-		////	iBuffer = 0;
-		////}
-#endif
+//#ifdef _DEBUG
+//		//////디버그
+//		static _uint iBuffer = 100;
+//		++iBuffer;
+//		if (iBuffer > 100)
+//		{
+//			//R= {m_JoyStickState.lRx}, { m_JoyStickState.lRy }, { m_JoyStickState.lRz }
+//			//L= {m_JoyStickState.lX }, { m_JoyStickState.lY }, { m_JoyStickState.lZ }
+//			//B123 = 
+//			{ m_JoyStickState.rglSlider[0] }, { m_JoyStickState.rglSlider[1] }
+//			iBuffer = 0;
+//			iBuffer = 0;
+//			iBuffer = 0;
+//			iBuffer = 0;
+//			iBuffer = 0;
+//			iBuffer = 0;
+//			iBuffer = 0;
+//		}
+//#endif
 
 		memcpy(m_byKeyState_Up, m_byKeyState_Up_Buffer, sizeof(_byte) * 256);
 		memcpy(m_byKeyState_Down, m_byKeyState_Down_Buffer, sizeof(_byte) * 256);

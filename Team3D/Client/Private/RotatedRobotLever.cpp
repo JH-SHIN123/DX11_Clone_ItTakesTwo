@@ -34,7 +34,7 @@ HRESULT CRotatedRobotLever::NativeConstruct(void * pArg)
 
 	_vector vPosition = m_tRtRobotPartsDesc.vPosition;
 	vPosition.m128_f32[0] += 1.15f;
-	vPosition.m128_f32[1] -= 1.35f;
+	vPosition.m128_f32[1] -= 1.45f;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-30.f));
 
@@ -65,7 +65,8 @@ _int CRotatedRobotLever::Tick(_double dTimeDelta)
 
 	if (m_bUpdate == true)
 	{
-		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_F) || m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
+		if (m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y)
+			|| m_IsCollide && m_pGameInstance->Key_Down(DIK_O))
 		{
 			UI_Delete(Cody, InputButton_InterActive);
 			UI_Delete(May, InputButton_InterActive);
@@ -156,8 +157,9 @@ void CRotatedRobotLever::Activate_Lever(_double dTimeDelta)
 		m_fStopDelay += (_float)dTimeDelta;
 		if (m_fStopDelay > 0.2f && m_fStopDelay <= 0.6f)
 		{
-			_vector vDir = XMVector3Normalize((XMVectorSet(-1.f, 0.f, 0.f, 0.f) + XMVectorSet(0.f, 0.f, -1.f, 0.f) * 2.f));
-			m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
+			_vector vDir = XMVector3Normalize((XMVectorSet(0.f, 0.f, -1.f, 0.f) + XMVectorSet(0.f, -1.f, 0.f, 0.f))/* / 2.f*/);
+			//m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
+			m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta * 1.2f);
 
 			if (m_bNoBatteryHit == false)
 			{
@@ -168,8 +170,9 @@ void CRotatedRobotLever::Activate_Lever(_double dTimeDelta)
 		}
 		else if (m_fStopDelay > 1.f && m_fStopDelay <= 1.4f)
 		{
-			_vector vDir = XMVector3Normalize((XMVectorSet(-1.f, 0.f, 0.1f, 0.f) + XMVectorSet(0.f, 0.f, -1.f, 0.f) / 8.f));
-			m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
+			_vector vDir = XMVector3Normalize((XMVectorSet(0.f, 0.f, 1.f, 0.f) + XMVectorSet(0.f, -1.f, 0.f, 0.f)) /*/ 2.f*/);
+			//m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
+			m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * 1.15f);
 		}
 		else if (m_fStopDelay > 1.4f)
 		{
@@ -185,8 +188,9 @@ void CRotatedRobotLever::Activate_Lever(_double dTimeDelta)
 		m_fStopDelay += (_float)dTimeDelta;
 		if (m_fStopDelay > 0.2f && m_fStopDelay <= 0.6f)
 		{
-			_vector vDir = XMVector3Normalize((XMVectorSet(-1.f, 0.f, 0.f, 0.f) + XMVectorSet(0.f, 0.f, -1.f, 0.f) * 2.f));
-			m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
+			_vector vDir = XMVector3Normalize((XMVectorSet(0.f, 0.f, -1.f, 0.f) + XMVectorSet(0.f, -1.f, 0.f, 0.f)) /*/ 2.f*/);
+			//m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
+			m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta* 1.2f);
 			((CRotatedRobotParts*)DATABASE->Get_STPinBallRobot())->Get_RobotHead()->Set_Lever_Active(true);
 			((CRotatedRobotParts*)DATABASE->Get_STPinBallRobot())->Get_NoBatterySign()->Set_BatteryCharged(true);
 		}

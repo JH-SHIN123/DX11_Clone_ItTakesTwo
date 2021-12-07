@@ -260,6 +260,8 @@ private:
 	_bool m_bRoll = false;
 	_bool m_IsTurnAround = false;
 	_int m_iSavedKeyPress = 0;
+	_bool m_bAfterGroundPound = false;
+	_int m_iAfterGroundPoundCount = 0;
 	
 	_int	m_iFrameCount = 0;
 	_long	m_i10FrameChangedX = 0;
