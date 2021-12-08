@@ -179,12 +179,13 @@ public:
 public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
-
 	CPlayerActor* Get_Actor() { return m_pActorCom; }
 
 	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool		Get_IsGroundPound() { return m_bGroundPound; }
 	_bool		Get_IsGroundPoundVarious() { return m_bPlayGroundPoundOnce; }
+	_bool		Get_IsHooking() { return m_IsHookUFO; }
+	_vector	    Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
 
 public:
 

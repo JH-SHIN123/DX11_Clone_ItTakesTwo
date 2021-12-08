@@ -216,6 +216,8 @@ public:
 	_bool			 Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool			 Get_PushingBattery() { return m_IsPushingBattery; }
 	_uint			 Get_CurState() const;
+	_vector			 Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
+	_bool			 Get_IsHooking() { return m_IsHookUFO; }
 
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }

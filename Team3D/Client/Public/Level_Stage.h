@@ -64,6 +64,7 @@ private:
 	HRESULT Ready_Layer_DummyWall(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MayJumpWall(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_PipeJumpWall(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Rope(const _tchar* pLayerTag);
 	/* Jin */
 	HRESULT Ready_Layer_ControlRoomPuzzle(const _tchar* pLayerTag, const _tchar* pGameObjectTag);
 	HRESULT Ready_Layer_ControlRoom_Glass(const _tchar * pLayerTag);

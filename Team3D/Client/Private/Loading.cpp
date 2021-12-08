@@ -43,6 +43,7 @@
 #include "May.h"
 #include "UFO.h"
 #include "Cody.h"
+#include "Rope.h"
 #include "Robot.h"
 #include "Rocket.h"
 #include "HookUFO.h"
@@ -532,6 +533,12 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_DummyWallCameraTrigger"), CDummyWallCameraTrigger::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MayWallCameraTrigger"), CMayWallCameraTrigger::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PipeWallCameraTrigger"), CPipeWallCameraTrigger::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+
+	/* Pipe Wall*/
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f))) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(180.f)));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Rope"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("Rope"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Rope"), CRope::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	///* For. UFO */
 	//	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);

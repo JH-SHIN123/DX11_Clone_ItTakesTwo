@@ -22,6 +22,7 @@
 #include "RotatedRobotParts.h"
 #include "RobotParts.h"
 #include "ToyBoxButton.h"
+#include "Rope.h"
 /* Jin */
 /* Jun */
 #include "Camera.h"
@@ -75,6 +76,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_DummyWall(TEXT("Layer_DummyWall")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_MayJumpWall(TEXT("Layer_MayJumpWall")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_PipeJumpWall(TEXT("Layer_PipeJumpWall")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Rope(TEXT("Layer_Rope")), E_FAIL);
 	/* Jin */
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressureBigPlate"), TEXT("GameObject_PressureBigPlate")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoom_Glass(TEXT("Layer_ControlRoom_Glass")), E_FAIL);
@@ -695,6 +697,16 @@ HRESULT CLevel_Stage::Ready_Layer_PipeJumpWall(const _tchar * pLayerTag)
 	PipeJumpWall.vPosition = { 45.4779f, 218.0519f, 224.223f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_PipeWallCameraTrigger"), Level::LEVEL_STAGE, TEXT("GameObject_PipeWallCameraTrigger"), &PipeJumpWall), E_FAIL);
 
+	return S_OK;
+}
+HRESULT CLevel_Stage::Ready_Layer_Rope(const _tchar * pLayerTag)
+{
+	ROPEDESC RopeDesc;
+	RopeDesc.iNumPlayer = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Rope"), &RopeDesc), E_FAIL);
+
+	RopeDesc.iNumPlayer = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Rope"), &RopeDesc), E_FAIL);
 	return S_OK;
 }
 #pragma endregion
