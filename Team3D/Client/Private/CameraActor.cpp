@@ -116,7 +116,6 @@ void CCameraActor::Set_CorrectPosition()
 		if (nullptr != DATABASE->GetMay())
 		{
 			PxRaycastBuffer RaycastBuffer;
-
 			_vector vPlayerPos = DATABASE->GetMay()->Get_Position();
 			_vector vCameraPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
 			_vector vDir = vCameraPos - vPlayerPos;

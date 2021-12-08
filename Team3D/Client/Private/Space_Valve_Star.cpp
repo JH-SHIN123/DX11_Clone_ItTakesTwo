@@ -77,12 +77,12 @@ HRESULT CSpace_Valve_Star::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pModelCom_Door_R, E_FAIL);
 	m_pModelCom_Door_R->Set_DefaultVariables_Perspective(m_pTransformCom_Door_R->Get_WorldMatrix());
 	m_pModelCom_Door_R->Set_DefaultVariables_Shadow();
-	m_pModelCom_Door_R->Render_Model(4, 0);
+	m_pModelCom_Door_R->Render_Model(11, 0);
 
 	NULL_CHECK_RETURN(m_pModelCom_Door_L, E_FAIL);
 	m_pModelCom_Door_L->Set_DefaultVariables_Perspective(m_pTransformCom_Door_L->Get_WorldMatrix());
 	m_pModelCom_Door_L->Set_DefaultVariables_Shadow();
-	m_pModelCom_Door_L->Render_Model(4, 0);
+	m_pModelCom_Door_L->Render_Model(11, 0);
 
 	m_pModelInstanceCom_Star->Set_DefaultVariables_Perspective();
 	m_pModelInstanceCom_Star->Set_DefaultVariables_Shadow();

@@ -37,6 +37,15 @@ struct VS_OUT
 	float2 vTexUV		: TEXCOORD0;
 };
 
+struct VS_OUT_FRESNEL
+{
+	float4 vPosition	: SV_POSITION;
+	float4 vNormal		: NORMAL;
+	float2 vTexUV		: TEXCOORD0;
+	float4 vMainCamRefl	: TEXCOORD1;
+	float4 vSubCamRefl  : TEXCOORD2;
+};
+
 struct VS_OUT_CSM_DEPTH
 {
 	float4 vPosition : SV_POSITION;
@@ -71,6 +80,30 @@ VS_OUT VS_MAIN_NO_BONE(VS_IN In)
 	return Out;
 }
 
+VS_OUT_FRESNEL VS_FRESNEL(VS_IN In)
+{
+	VS_OUT_FRESNEL Out = (VS_OUT_FRESNEL)0;
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
+	Out.vTexUV = In.vTexUV;
+
+	// MainCam
+	float3 vPosW = Out.vPosition.xyz;
+	float3 vNormalW = Out.vNormal.xyz;
+	float3 l = normalize(vPosW - g_vMainCamPosition);
+	float Scale = 3.f;
+	float Power = 2.f; // 점점 진해지는 강도세기
+
+	Out.vMainCamRefl = Scale * pow(1.0 + dot(l, vNormalW), Power);
+
+	// SubCam
+	l = normalize(vPosW - g_vSubCamPosition);
+	Out.vSubCamRefl = Scale * pow(1.0 + dot(l, vNormalW), Power);
+
+	return Out;
+}
+
 VS_OUT_CSM_DEPTH VS_MAIN_CSM_DEPTH(VS_IN In, uniform bool isSkinned)
 {
 	VS_OUT_CSM_DEPTH Out = (VS_OUT_CSM_DEPTH)0;
@@ -98,6 +131,15 @@ struct GS_IN
 	float2 vTexUV		: TEXCOORD0;
 };
 
+struct GS_IN_FRESNEL
+{
+	float4 vPosition	: SV_POSITION;
+	float4 vNormal		: NORMAL;
+	float2 vTexUV		: TEXCOORD0;
+	float4 vMainCamRefl	: TEXCOORD1;
+	float4 vSubCamRefl  : TEXCOORD2;
+};
+
 struct GS_OUT
 {
 	float4 vPosition		: SV_POSITION;
@@ -107,6 +149,15 @@ struct GS_OUT
 	float2 vTexUV			: TEXCOORD0;
 	float4 vProjPosition	: TEXCOORD1;
 	float4 vWorldPosition	: TEXCOORD2;
+	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
+};
+
+struct GS_OUT_FRESNEL
+{
+	float4 vPosition		: SV_POSITION;
+	float4 vNormal			: NORMAL;
+	float2 vTexUV			: TEXCOORD0;
+	float4 vRefl			: TEXCOORD1;
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 };
 
@@ -206,6 +257,49 @@ void GS_MAIN_CSM_DEPTH(triangle GS_IN_CSM_DEPTH In[3], inout TriangleStream<GS_O
 		TriStream.RestartStrip();
 	}
 }
+
+[maxvertexcount(6)]
+void GS_FRESNEL(triangle GS_IN_FRESNEL In[3], inout TriangleStream<GS_OUT_FRESNEL> TriStream)
+{
+	GS_OUT_FRESNEL Out = (GS_OUT_FRESNEL)0;
+
+	/* Main Viewport */
+	if (g_iViewportDrawInfo & 1)
+	{
+		for (uint i = 0; i < 3; i++)
+		{
+			matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
+
+			Out.vPosition = mul(In[i].vPosition, matVP);
+			Out.vNormal = In[i].vNormal;
+			Out.vTexUV = In[i].vTexUV;
+			Out.vRefl = In[i].vMainCamRefl;
+			Out.iViewportIndex = 1;
+
+			TriStream.Append(Out);
+		}
+		TriStream.RestartStrip();
+	}
+
+	if (g_iViewportDrawInfo & 2)
+	{
+		/* Sub Viewport */
+		for (uint j = 0; j < 3; j++)
+		{
+			matrix matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+
+			Out.vPosition = mul(In[j].vPosition, matVP);
+			Out.vNormal = In[j].vNormal;
+			Out.vTexUV = In[j].vTexUV;
+			Out.vRefl = In[j].vSubCamRefl;
+			Out.iViewportIndex = 2;
+
+			TriStream.Append(Out);
+		}
+		TriStream.RestartStrip();
+	}
+}
+
 ////////////////////////////////////////////////////////////
 
 struct PS_IN
@@ -218,6 +312,14 @@ struct PS_IN
 	float4 vProjPosition	: TEXCOORD1;
 	float4 vWorldPosition	: TEXCOORD2;
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
+};
+
+struct PS_IN_FRESNEL
+{
+	float4 vPosition	: SV_POSITION;
+	float4 vNormal		: NORMAL;
+	float2 vTexUV		: TEXCOORD0;
+	float4 vRefl		: TEXCOORD1;
 };
 
 struct PS_OUT
@@ -390,6 +492,19 @@ PS_OUT	PS_ALIENSCREEN(PS_IN In, uniform bool isGreen)
 	return Out;
 }
 
+PS_OUT_ALPHA PS_FRESNEL(PS_IN_FRESNEL In)
+{
+	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
+
+	vector vOutColor = vector(0.7f, 0.7f, 0.95f, 1.f);
+	vector vInColor = vector(0.3f, 0.3f, 0.7f, 0.7f);
+
+	Out.vDiffuse = lerp(vInColor, vOutColor, In.vRefl);
+	return Out;
+}
+
+
+
 technique11 DefaultTechnique
 {
 	// 0
@@ -501,5 +616,15 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_ALIENSCREEN(true);
+	}
+	// 11
+	pass Default_Fresnel
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_FRESNEL();
+		GeometryShader = compile gs_5_0 GS_FRESNEL();
+		PixelShader = compile ps_5_0 PS_FRESNEL();
 	}
 };

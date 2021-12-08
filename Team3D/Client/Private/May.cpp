@@ -131,6 +131,7 @@ void CMay::Add_LerpInfo_To_Model()
 
 	m_pModelCom->Add_LerpInfo(ANI_M_GroundPound_Land, ANI_M_GroundPound_Land_Exit, false);
 	m_pModelCom->Add_LerpInfo(ANI_M_Sprint, ANI_M_SprintTurnAround, true, 20.f);
+	m_pModelCom->Add_LerpInfo(ANI_M_Sprint, ANI_M_Sprint, false);
 
 	m_pModelCom->Add_LerpInfo(ANI_M_DoubleJump, ANI_M_GroundPound_Start, false);
 	m_pModelCom->Add_LerpInfo(ANI_M_Jump_Start, ANI_M_AirDash_Start, false);
@@ -816,7 +817,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		}
 		else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint)
 		{
-			if ((m_pModelCom->Get_ProgressAnim() > 0.072f && m_pModelCom->Get_ProgressAnim() < 0.11f) || (m_pModelCom->Get_ProgressAnim() > 0.5f && m_pModelCom->Get_ProgressAnim() < 0.6f))
+			if ((m_pModelCom->Get_ProgressAnim() > 0.07f && m_pModelCom->Get_ProgressAnim() < 0.11f) || (m_pModelCom->Get_ProgressAnim() > 0.5f && m_pModelCom->Get_ProgressAnim() < 0.54f))
 				m_pEffect_GravityBoots->Add_WalkingParticle(true);
 
 		}
