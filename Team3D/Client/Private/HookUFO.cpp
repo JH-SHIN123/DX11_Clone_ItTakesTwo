@@ -55,7 +55,7 @@ HRESULT CHookUFO::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eHOOKUFO, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pPhysxTransform;
-	ArgDesc.pGeometry = new PxSphereGeometry(25.f);
+	ArgDesc.pGeometry = new PxSphereGeometry(20.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);

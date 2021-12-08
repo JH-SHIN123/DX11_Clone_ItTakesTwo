@@ -264,7 +264,6 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	if (true == m_bIsCollision)
 		matWorld = XMLoadFloat4x4(&m_matBeforeSpringCam);
 
-
 	//m_pTransformCom->Set_WorldMatrix(matWorld);
 	_long MouseMove = 0;
 	//이전 회전값

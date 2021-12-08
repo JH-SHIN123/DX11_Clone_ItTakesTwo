@@ -806,9 +806,21 @@ void CMay::KeyInput(_double dTimeDelta)
 
 #pragma endregion 
 
-#pragma region Effet Test
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
-		m_pEffect_GravityBoots->Add_WalkingParticle(true);
+#pragma region Effect GravityBoots
+	if (m_pActorCom->Get_IsOnGravityPath() == true)
+	{
+		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog)
+		{
+			if((m_pModelCom->Get_ProgressAnim() > 0.25f && m_pModelCom->Get_ProgressAnim() < 0.28f) || (m_pModelCom->Get_ProgressAnim() > 0.65f && m_pModelCom->Get_ProgressAnim() < 0.68f))
+				m_pEffect_GravityBoots->Add_WalkingParticle(true);
+		}
+		else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint)
+		{
+			if ((m_pModelCom->Get_ProgressAnim() > 0.072f && m_pModelCom->Get_ProgressAnim() < 0.11f) || (m_pModelCom->Get_ProgressAnim() > 0.5f && m_pModelCom->Get_ProgressAnim() < 0.6f))
+				m_pEffect_GravityBoots->Add_WalkingParticle(true);
+
+		}
+	}
 #pragma  endregion
 #endif
 }
@@ -2234,12 +2246,10 @@ void CMay::Hook_UFO(const _double dTimeDelta)
 			m_faAcceleration -= (_float)dTimeDelta;
 		m_faVelocity += m_faAcceleration;
 		m_faVelocity *= m_faDamping;
-		m_fRopeAngle += m_faVelocity / 15.f;
+		m_fRopeAngle += m_faVelocity / 50.f;
 
 
-		_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x - m_vStartPosition.x)/**2.f*/ * sin(-m_fRopeAngle),
-			/*m_faArmLength **/(m_vTriggerTargetPos.y - m_vStartPosition.y) *2.f* cos(m_fRopeAngle)
-			, (/*m_faArmLength*/(m_vTriggerTargetPos.z - m_vStartPosition.z)/**2.f*/ * sin(-m_fRopeAngle)), 0.f)/* + XMLoadFloat3(&m_vTriggerTargetPos)*/;
+		_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x - m_vStartPosition.x) * sin(-m_fRopeAngle), (m_vTriggerTargetPos.y - m_vStartPosition.y) * cos(m_fRopeAngle), ((m_vTriggerTargetPos.z - m_vStartPosition.z) * sin(-m_fRopeAngle)), 1.f);
 		m_pActorCom->Set_Position(XMLoadFloat3(&m_vTriggerTargetPos) + vPosition);
 
 		_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
