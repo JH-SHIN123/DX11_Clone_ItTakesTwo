@@ -327,15 +327,13 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 	//카메라 움직임이 끝나고 체크할것들
 	//SoftMoving
-	_vector vTargetPlayerUp = XMVectorRound(pPlayerTransform->Get_State(CTransform::STATE_UP) * 100.f) / 100.f;
-	//_vector vPlayerUp = XMLoadFloat4(&m_vPlayerUp);
-	//_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
-	//if(XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
-	//vPlayerUp += vUpDir* dTimeDelta /** 10.f*/;
-	//XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
-
-	_vector vPlayerUp = vTargetPlayerUp;
+	_vector vTargetPlayerUp = pPlayerTransform->Get_State(CTransform::STATE_UP);
+	_vector vPlayerUp = XMLoadFloat4(&m_vPlayerUp);
+	_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
+	if(XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
+	vPlayerUp += vUpDir * dTimeDelta * 5.f;
 	XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
+
 	
 	_vector vPrePlayerPos = XMLoadFloat4(&m_vPlayerPos);
 	_vector vCurPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
@@ -387,20 +385,20 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 	XMStoreFloat4x4(&m_matBeforeSpringCam, matAffine);
 #pragma region PhsyX Check
-	//_vector vResultPos = XMVectorZero();
-	//if (false == bIsTeleport)
-	//{
-	//	m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
+	_vector vResultPos = XMVectorZero();
+	if (false == bIsTeleport)
+	{
+		m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
 
-	//	_float4 vEye, vAt;
+		_float4 vEye, vAt;
 
-	//	XMStoreFloat4(&vEye, vResultPos);
-	//	XMStoreFloat4(&vAt, vPlayerPos);
-	//	_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt,vPlayerUp);
-	//	matAffine = matCurWorld;
+		XMStoreFloat4(&vEye, vResultPos);
+		XMStoreFloat4(&vAt, vPlayerPos);
+		_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt,vPlayerUp);
+		matAffine = matCurWorld;
 
-	//}
-	//else
+	}
+	else
 		m_bIsCollision = false;
 	m_pTransformCom->Set_WorldMatrix(matAffine);
 

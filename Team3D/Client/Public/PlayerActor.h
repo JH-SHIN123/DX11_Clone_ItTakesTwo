@@ -34,6 +34,7 @@ public: /* Getter */
 	PxVec3 Get_CollideNormal() { return m_vCollideNormal; }
 	_bool	Get_IsOnGravityPath() { return m_IsOnGravityPath; }
 	PLAYER_TYPE Get_Player_Type() { return m_ePlayerType; }
+	PxVec3 Get_GravityNormal() { return m_vHitNormal; }
 
 public: /* Setter */
 	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }

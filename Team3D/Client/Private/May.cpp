@@ -563,8 +563,20 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma  endregion
 #else
 #pragma region Local variable
-	_vector vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
-	_vector vCameraRight = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
+	_vector vCameraLook, vCameraRight;
+	if (m_pActorCom->Get_IsOnGravityPath() == false)
+	{
+		vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
+		vCameraRight = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
+	}
+	else
+	{
+		PxVec3 vNormal = m_pActorCom->Get_GravityNormal();
+		_vector vGravityPathNormal = XMVector3Normalize(XMVectorSet(vNormal.x, vNormal.y, vNormal.z, 0.f));
+
+		vCameraRight = XMVector3Normalize(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT));
+		vCameraLook = XMVector3Normalize(XMVector3Cross(vCameraRight, vGravityPathNormal));
+	}
 	_bool bMove[2] = { false, false };
 	_bool bRoll = false;
 
@@ -933,7 +945,6 @@ void CMay::Move(const _double dTimeDelta)
 				vDirection = XMVector3Normalize(XMVectorSetZ(vDirection, 0.f));
 			}
 		}
-
 		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);
 
 		if (m_fJogAcceleration > 10.f)
