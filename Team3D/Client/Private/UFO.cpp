@@ -52,6 +52,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vPos.m128_f32[1] += 5.f;
 	XMStoreFloat4(&m_vStartTargetPos, vPos);
+	m_IsStartingPointMove = true;
 
 	return S_OK;
 }
@@ -63,8 +64,6 @@ _int CUFO::Tick(_double dTimeDelta)
 	/* 테스트 용 */
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
 		m_IsCutScene = false;
-
-	m_pModelCom->Update_Animation(dTimeDelta);
 
 
 	/* 컷 신 재생중이 아니라면 보스 패턴 진행하자 나중에 컷 신 생기면 바꿈 */
@@ -84,7 +83,7 @@ _int CUFO::Tick(_double dTimeDelta)
 		}
 	}
 
-	_uint test = m_pModelCom->Get_CurAnimIndex();
+	m_pModelCom->Update_Animation(dTimeDelta);
 
 	return NO_EVENT;
 }
@@ -126,45 +125,58 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	/* 우주선을 타겟쪽으로 천천히 회전 */
 	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f);
 
-	_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("LaserGun");
+	/* 레이저 건의 뼈랑 UFO 월드 매트릭스 가져오고 곱해서 레이저건의 월드 매트릭스를 구하자 (이거 각도 잘 안구해지는거 같음 애니메이션 떄문에;;)*/
+	//_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("LaserGun");
+	//_matrix matUFOWorld = m_pTransformCom->Get_WorldMatrix();
+	//_matrix matLaserGunWorld = matLaserGun * matUFOWorld;
 
 	/* 레이저건의 포지션을 받아오자*/
-	_vector vLaserGunPos = XMLoadFloat4((_float4*)&matLaserGun.r[3].m128_f32[0]);
+	//_vector vLaserGunPos = XMLoadFloat4((_float4*)&matLaserGunWorld.r[3].m128_f32[0]);
 
-	/* 레이저 건에서 타겟의 방향 벡터를 구하자 */
-	_vector vLaserDir = vTargetPos - vLaserGunPos;
+	/* 레이저건의 Look을 받아오자 */
+	//_vector vLaserGunLook = XMLoadFloat4((_float4*)&matLaserGunWorld.r[2].m128_f32[0]);
 
-	/* 레이저건 뼈의 Look을 받아오자 */
-	_vector vLaserGunLook = XMLoadFloat4((_float4*)&matLaserGun.r[2].m128_f32[0]);
-
+	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector vUFOLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-	/* 레이저건의 Look과 위에서 구한 방향 벡터를 내적해서 각도를 구해주자 */
-	_vector vDot = XMVector3AngleBetweenVectors(vUFOLook, vLaserDir);
-	_float fRadian = XMVectorGetX(vDot);
-	_float fAngle = XMConvertToDegrees(fRadian);
+	/* 레이저 건에서 타겟의 방향 벡터를 구하자 */
+	_vector vLaserDir = vTargetPos - vUFOPos;
 
-	_matrix matRotX;
+	_vector vDot = XMVector3AngleBetweenVectors(XMVector3Normalize(vUFOLook), XMVector3Normalize(vLaserDir));
+	_float fAngle = XMConvertToDegrees(XMVectorGetX(vDot));
 
-	if (1.f <= fAngle)
-	{
-		matRotX = XMMatrixRotationX(fAngle);
+	_matrix matPivot, matRotY, matTrans, matAnim;
+	matTrans = XMMatrixTranslation(0.f, -0.5f, 0.f);
+	matRotY = XMMatrixRotationY(XMConvertToRadians(-fAngle));
+	matPivot = matRotY * matTrans;
 
-		matLaserGun = matRotX * matLaserGun;
-		m_pModelCom->Set_BoneMatrix("LaserGun", matLaserGun);
-	}
+	matAnim = m_pModelCom->Get_AnimTransformation(22);
+	matAnim = XMMatrixInverse(nullptr, matAnim);
+
+	matPivot *= matAnim;
+
+	m_pModelCom->Set_PivotTransformation(22, matPivot);
+}
+
+void CUFO::MoveStartingPoint(_double dTimeDelta)
+{
+	_vector vTargetPos = XMLoadFloat4(&m_vStartTargetPos);
+	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	/* 처음에 저장해둔 타겟 포스의 Y위치까지 천천히 위로 이동해라. */
+	if (vTargetPos.m128_f32[1] >= vUFOPos.m128_f32[1])
+		m_pTransformCom->Go_Up(dTimeDelta / 3.f);
+	else
+		m_IsStartingPointMove = false;
 }
 
 void CUFO::Phase1_Pattern(_double dTimeDelta)
 {
-	_vector vTargetPos = XMLoadFloat4(&m_vStartTargetPos);
-	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);\
-
-	/* 처음에 저장해둔 타겟 포스의 Y위치까지 천천히 위로 이동해라. */
-	if (vTargetPos.m128_f32[1] >= vUFOPos.m128_f32[1])
-		m_pTransformCom->Go_Up(dTimeDelta / 4.f);
-
+	if (true == m_IsStartingPointMove)
+		MoveStartingPoint(dTimeDelta);
+	
 	Laser_Pattern(dTimeDelta);
+
 }
 
 HRESULT CUFO::Render(RENDER_GROUP::Enum eGroup)
@@ -217,10 +229,11 @@ void CUFO::Add_LerpInfo_To_Model()
 	//UFO_Right 34
 	//UFO_RocketKnockDown_MH 35
 
-	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Back, false);
-	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Fwd, false);
-	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Laser_MH, false);
-	m_pModelCom->Add_LerpInfo(UFO_Fwd, UFO_Laser_MH, false);
+	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Back, true);
+	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Fwd, true);
+	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Laser_MH, true);
+	m_pModelCom->Add_LerpInfo(UFO_Fwd, UFO_Laser_MH, true);
+	m_pModelCom->Add_LerpInfo(UFO_Laser_MH, UFO_Laser_MH, true);
 
 }
 

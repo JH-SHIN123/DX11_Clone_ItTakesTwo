@@ -43,6 +43,8 @@ private:
 
 	/* For. PHASE_1 Pattern */
 	_float4				m_vStartTargetPos;
+	_bool				m_IsCoreExplosion = false;
+	_bool				m_IsStartingPointMove = false;
 
 private:
 	/* For.Component */
@@ -56,6 +58,7 @@ private:
 	/* PHASE_1 Pattern */
 	void Phase1_Pattern(_double dTimeDelta);
 	void Laser_Pattern(_double dTimeDelta);
+	void MoveStartingPoint(_double dTimeDelta);
 
 	/* For. NativeConstruct */
 private:
