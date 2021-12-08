@@ -146,7 +146,7 @@ PS_OUT PS_MAIN(PS_IN In)
 		vViewPos = mul(vViewPos, g_MainProjMatrixInverse);
 
 		// Test - Radiar Blur 
-		vColor = RadiarBlur(In.vTexUV);
+		//vColor = RadiarBlur(In.vTexUV);
 
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
