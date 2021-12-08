@@ -122,11 +122,12 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	FAILED_CHECK_RETURN(Render_NonAlpha(), E_FAIL);
 
 	FAILED_CHECK_RETURN(Compute_SSAO(),  E_FAIL); /* Calculate Occlution Ambient for Directinal Light */
-	
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
+
+	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
+	
 	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
 	FAILED_CHECK_RETURN(Render_Effect_No_Blur(), E_FAIL);
