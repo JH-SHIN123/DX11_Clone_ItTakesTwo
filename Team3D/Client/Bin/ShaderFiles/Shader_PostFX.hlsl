@@ -64,7 +64,7 @@ float3 DistanceDOF(float3 colorFocus, float3 colorBlurred, float depth)
 }
 
 float	g_SampleDist		= 0.15f;
-float	g_SampleStrength	= 200.6f;
+float	g_SampleStrength	= 7.f;
 float2	g_SamplePos			= { 0.25f,0.5f };
 float3 RadiarBlur(float2 vTexUV)
 {
@@ -84,7 +84,7 @@ float3 RadiarBlur(float2 vTexUV)
 	sum /= 11.0; 
 
 	float ratio = saturate(dist * g_SampleStrength);
-	return lerp(vColor, sum, 1.f);
+	return lerp(vColor, sum, 1.0);
 }
 ////////////////////////////////////////////////////////////
 
@@ -146,7 +146,7 @@ PS_OUT PS_MAIN(PS_IN In)
 		vViewPos = mul(vViewPos, g_MainProjMatrixInverse);
 
 		// Test - Radiar Blur 
-		//vColor = RadiarBlur(In.vTexUV);
+		vColor = RadiarBlur(In.vTexUV);
 
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
