@@ -231,6 +231,7 @@ struct PS_IN_DOUBLE_UV
 struct PS_OUT
 {
 	vector	vDiffuse			: SV_TARGET0;
+	vector	vEffect				: SV_TARGET1;
 };
 
 PS_OUT	PS_MAIN(PS_IN In)
@@ -240,6 +241,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vDiffuse.rgb = vMtrlDiffuse.b;
 	Out.vDiffuse.a = 1.f;
+	Out.vEffect = Out.vDiffuse;
 
 	return Out;
 }
@@ -253,9 +255,8 @@ PS_OUT	PS_COLOR_TEST(PS_IN In)
 	float fPower = 1.f;
 	float fCheck_V = 0.3f;
 	Out.vDiffuse.rgb = float3( 0.980392218f, 0.921568692f, 0.843137324f);
-	
-
 	Out.vDiffuse.a = 1.f;
+	Out.vEffect = Out.vDiffuse;
 
 	return Out;
 }
@@ -265,6 +266,7 @@ PS_OUT	PS_MASK(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 	Out.vDiffuse.rgb = 0.f;
 	Out.vDiffuse.a = 1.f;
+	Out.vEffect = Out.vDiffuse;
 
 	return Out;
 }
@@ -281,6 +283,7 @@ PS_OUT	PS_MAIN_RESPAWN_PORTAL(PS_IN_DOUBLE_UV In)
 
 	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * vColor.rgb * 10.f;
 	Out.vDiffuse.a = Out.vDiffuse.b * 0.9f;
+	Out.vEffect = Out.vDiffuse;
 
 	return Out;
 }
@@ -301,6 +304,7 @@ PS_OUT	PS_MAIN_GRAVITYPIPE(PS_IN_DOUBLE_UV In)
 	vector vColor = g_ColorRampTexture.Sample(Wrap_MinMagMipLinear_Sampler, vflipUV - fWeight);
 	Out.vDiffuse.rgb = vMtrlDiffuse.r * vColor.rgb;
 	Out.vDiffuse.a = Out.vDiffuse.r * g_fAlpha;
+	Out.vEffect = Out.vDiffuse;
 
 	return Out;
 }
@@ -315,10 +319,10 @@ PS_OUT	PS_MAIN_WORMHOLE(PS_IN_DOUBLE_UV In)
 	In.vTexUV.y += g_fTime;
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
-
 	vector vColor = g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, vFlipUV);
 	Out.vDiffuse.rgb = (vMtrlDiffuse.r * 2.f) * vColor.rgb;
 	Out.vDiffuse.a = Out.vDiffuse.r;
+	Out.vEffect = Out.vDiffuse;
 
 	return Out;
 }
@@ -339,6 +343,7 @@ PS_OUT	PS_MAIN_RESPAWNTENNEL(PS_IN_DOUBLE_UV In)
 	vector vColor = g_ColorRampTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vDiffuse.rgb = fWeight * vColor.rgb * 2.5f;
 	Out.vDiffuse.a = 1;// Out.vDiffuse.r + Out.vDiffuse.g + Out.vDiffuse.b;
+	Out.vEffect = Out.vDiffuse;
 
 	return Out;
 }
@@ -368,6 +373,7 @@ PS_OUT	PS_MAIN_UMBRELLAPIPE(PS_IN_DOUBLE_UV In)
 	float fCheck_V = 0.3f;
 	if (In.vTexUV.y < fCheck_V)
 		Out.vDiffuse.rgb *= In.vTexUV.y / fCheck_V;
+	Out.vEffect = Out.vDiffuse;
 
 	return Out;
 }

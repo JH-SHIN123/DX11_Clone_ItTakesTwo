@@ -58,10 +58,8 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	/* MRT_PostFX */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_PostFX"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_PostFX"), TEXT("MRT_PostFX")), E_FAIL);
-
-	/* MRT_Effect */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect"), TEXT("MRT_Effect")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect"), TEXT("MRT_PostFX")), E_FAIL);
 
 	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width, ViewportDesc.Height, TEXT("../Bin/ShaderFiles/Shader_Blend.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
@@ -127,12 +125,13 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	FAILED_CHECK_RETURN(Render_NonAlpha(), E_FAIL);
 	FAILED_CHECK_RETURN(Compute_SSAO(),  E_FAIL); /* Calculate Occlution Ambient for Directinal Light */
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 
-	/* For. Alpha */
+	/* For. Post Blend */
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
-	
+	//FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
+	//FAILED_CHECK_RETURN(Render_PostBlend(), E_FAIL);
+
 	/* For. PostFX */
 	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
@@ -150,7 +149,6 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_LightAcc"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_CascadedShadow"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_PostFX"));
-		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Effect"));
 
 		CSSAO::GetInstance()->Render_DebugBuffer();
 		CBlur::GetInstance()->Render_DebugBuffer_Emissive(TEXT("Target_EmissiveBlur"));
@@ -210,14 +208,14 @@ HRESULT CRenderer::Render_Alpha()
 
 HRESULT CRenderer::Render_Effect()
 {
-	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Effect"));
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX"), false);
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_EFFECT])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_EFFECT), E_FAIL);
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_GROUP::RENDER_EFFECT].clear();
-	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Effect"));
+	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_PostFX"));
 
 	return S_OK;
 }
@@ -294,7 +292,6 @@ HRESULT CRenderer::Render_Blend()
 	CBlur* pBlur = CBlur::GetInstance();
 	FAILED_CHECK_RETURN(pBlur->Blur_Emissive(), E_FAIL);
 	FAILED_CHECK_RETURN(pBlur->Blur_Specular(), E_FAIL);
-	FAILED_CHECK_RETURN(pBlur->Blur_Effect(), E_FAIL);
 
 	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX"), false);
 
@@ -308,10 +305,24 @@ HRESULT CRenderer::Render_Blend()
 	m_pVIBuffer->Set_ShaderResourceView("g_EmissiveTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Emissive")));
 	m_pVIBuffer->Set_ShaderResourceView("g_EmissiveBlurTexture", pBlur->Get_ShaderResourceView_BlurEmissive());
 
-	m_pVIBuffer->Set_ShaderResourceView("g_EffectTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Effect")));
-	m_pVIBuffer->Set_ShaderResourceView("g_EffectBlurTexture", pBlur->Get_ShaderResourceView_BlurEffect());
-
 	m_pVIBuffer->Render(0);
+	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_PostFX"));
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_PostBlend()
+{
+	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
+
+	CBlur* pBlur = CBlur::GetInstance();
+	FAILED_CHECK_RETURN(pBlur->Blur_Effect(), E_FAIL);
+
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX"), false);
+
+	m_pVIBuffer->Set_ShaderResourceView("g_EffectBlurTexture", pBlur->Get_ShaderResourceView_BlurEffect());
+	m_pVIBuffer->Render(1);
+
 	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_PostFX"));
 
 	return S_OK;
@@ -337,7 +348,7 @@ void CRenderer::Sort_GameObjects(RENDER_OBJECTS & GameObjects)
 	GameObjects.sort([](CGameObject* pFirst, CGameObject* pSecond) { return pFirst->Get_DistanceFromCamera() > pSecond->Get_DistanceFromCamera(); });
 }
 
-CRenderer * CRenderer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CRenderer* CRenderer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CRenderer* pInstance = new CRenderer(pDevice, pDeviceContext);
 
@@ -350,7 +361,7 @@ CRenderer * CRenderer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDev
 	return pInstance;
 }
 
-CComponent * CRenderer::Clone_Component(void * pArg)
+CComponent* CRenderer::Clone_Component(void * pArg)
 {
 	Safe_AddRef(this);
 

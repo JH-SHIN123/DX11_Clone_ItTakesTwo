@@ -37,6 +37,7 @@ private:
 	HRESULT Render_ShadowsForAllCascades();
 	HRESULT Render_LightAcc();
 	HRESULT Render_Blend();
+	HRESULT Render_PostBlend();
 
 private:
 	HRESULT PostProcessing(_double TimeDelta);

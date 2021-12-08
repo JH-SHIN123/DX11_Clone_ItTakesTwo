@@ -334,7 +334,8 @@ struct  PS_IN_DOUBLEUV
 
 struct  PS_OUT
 {
-	vector	vColor : SV_TARGET;
+	vector	vColor	: SV_TARGET;
+	vector	vEffect	: SV_TARGET1;
 };
 
 PS_OUT  PS_MAIN(PS_IN In)
@@ -348,6 +349,7 @@ PS_OUT  PS_MAIN(PS_IN In)
 
 	Out.vColor.rgba = vColor.a * In.fTime;
 	//Out.vColor.a = In.fTime;
+	Out.vEffect = Out.vColor;
 
 	return Out;
 }
@@ -364,6 +366,7 @@ PS_OUT  PS_MAIN_COLOR(PS_IN In)
 	Out.vColor.a = Out.vColor.r;
 
 	Out.vColor.rgba *= In.fTime;
+	Out.vEffect = Out.vColor;
 
 	return Out;
 }
@@ -383,6 +386,7 @@ PS_OUT  PS_MAIN_COLORTEXTURE(PS_IN_DOUBLEUV In)
 	Out.vColor.rgb *= vColor.rgb;
 	Out.vColor.rgb *= In.fTime * g_fTime;
 	Out.vColor.a = In.fTime;
+	Out.vEffect = Out.vColor;
 
 	return Out;
 }
@@ -402,6 +406,7 @@ PS_OUT  PS_MAIN_LASER(PS_IN_DOUBLEUV In)
 	//Out.vColor.rgb *= vColor.rgb;
 	//Out.vColor.rgb *= In.fTime * g_fTime;
 	Out.vColor.a = In.fTime;
+	Out.vEffect = Out.vColor;
 
 	return Out;
 }

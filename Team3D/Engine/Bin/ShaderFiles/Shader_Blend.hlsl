@@ -1,15 +1,17 @@
 ////////////////////////////////////////////////////////////
 #include "Shader_Include.hpp"
 
+/* For. Blend */
 texture2D	g_DiffuseTexture;
 texture2D	g_ShadeTexture;
 texture2D	g_SpecularTexture;
 texture2D	g_SpecularBlurTexture;
 texture2D	g_EmissiveTexture;
 texture2D	g_EmissiveBlurTexture;
-Texture2D	g_EffectTexture;
-Texture2D	g_EffectBlurTexture;
 texture2D	g_ShadowTexture;
+
+/* For. Post Blend */
+Texture2D	g_EffectBlurTexture;
 
 ////////////////////////////////////////////////////////////
 
@@ -48,7 +50,7 @@ struct PS_OUT
 	vector vColor	: SV_TARGET0;
 };
 
-PS_OUT PS_MAIN(PS_IN In)
+PS_OUT PS_BLEND(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
@@ -59,8 +61,6 @@ PS_OUT PS_MAIN(PS_IN In)
 	vector	vSpecularBlurDesc	= g_SpecularBlurTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	vector	vEmissiveDesc		= g_EmissiveTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	vector	vEmissiveBlurDesc	= g_EmissiveBlurTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-	vector	vEffectDesc			= g_EffectTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-	vector	vEffectBlurDesc		= g_EffectBlurTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
 	vSpecularDesc.w = 0.f;
 	vSpecularBlurDesc.w = 0.f;
@@ -68,28 +68,45 @@ PS_OUT PS_MAIN(PS_IN In)
 	float fSpecBlendFactor = 0.3f;
 	Out.vColor = (vDiffuseDesc * vShadeDesc + (vSpecularDesc * fSpecBlendFactor + pow(vSpecularBlurDesc, 2.f) * (1.f - fSpecBlendFactor))) * vShadowDesc;
 	Out.vColor.xyz += vEmissiveDesc.xyz/* Emissive Scale */ + vEmissiveBlurDesc.xyz /* Blur - Emissive Scale */;
-	Out.vColor.xyz += vEffectDesc.xyz + vEffectBlurDesc.xyz;
-
-	if (Out.vColor.w == 0) discard;
-
+	
 	return Out;
 }
 
+PS_OUT PS_POST_BLEND(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vEffectBlurDesc = g_EffectBlurTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	
+	Out.vColor = vEffectBlurDesc;
+
+	return Out;
+}
 ////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
 
 technique11		DefaultTechnique
 {
-	pass Default
+	pass Blend
 	{		
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_No_ZTest, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader	= compile vs_5_0 VS_MAIN();
 		GeometryShader	= NULL;
-		PixelShader		= compile ps_5_0 PS_MAIN();
+		PixelShader		= compile ps_5_0 PS_BLEND();
 	}	
+
+	pass PostBlend
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZTest, 0);
+		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_POST_BLEND();
+	}
 };
 
 
