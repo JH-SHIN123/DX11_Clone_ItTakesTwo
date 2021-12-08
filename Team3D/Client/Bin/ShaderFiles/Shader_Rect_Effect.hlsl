@@ -251,7 +251,8 @@ struct  PS_IN_DIST
 
 struct  PS_OUT
 {
-	vector	vColor : SV_TARGET;
+	vector	vColor	: SV_TARGET;
+	vector	vEffect	: SV_TARGET1;
 };
 
 PS_OUT  PS_DISTORTION_COLOR(PS_IN_DIST In)
@@ -271,6 +272,7 @@ PS_OUT  PS_DISTORTION_COLOR(PS_IN_DIST In)
 	//vColor.a = abs(vColor.a - 1.f);
 	vColor.a = g_fTime;
 	Out.vColor = vColor;
+	Out.vEffect = Out.vColor;
 
 	return Out;
 }
@@ -292,7 +294,8 @@ PS_OUT  PS_MASKING_DISTORTION(PS_IN_DIST In)
 	float4 vColor = g_DiffuseTexture.Sample(DiffuseSampler, vDiffUV);
 	vColor.a = vFX_tex.r;
 	Out.vColor = vColor;
-	 
+	Out.vEffect = Out.vColor;
+
 	if (0.f >= vFX_tex.r)
 		discard;
 

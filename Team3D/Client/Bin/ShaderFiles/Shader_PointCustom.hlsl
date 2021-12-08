@@ -810,6 +810,7 @@ struct  PS_IN
 struct  PS_OUT
 {
 	vector	vColor : SV_TARGET;
+	vector	vEffect	: SV_TARGET1;
 };
 
 /* 픽셀의 최종적인 색을 결정하낟. */
@@ -818,6 +819,7 @@ PS_OUT  PS_MAIN(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	Out.vEffect = Out.vColor;
 
 	//Out.vColor.a *= 2;
 	//if (0.01f >= Out.vColor.a)
@@ -833,6 +835,7 @@ PS_OUT  PS_MAIN_COLOR(PS_IN In)
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
 	Out.vColor *= g_vColor;
+	Out.vEffect = Out.vColor;
 
 	float fColor = Out.vColor.r + Out.vColor.g + Out.vColor.b;
 
@@ -841,6 +844,7 @@ PS_OUT  PS_MAIN_COLOR(PS_IN In)
 
 	if (0.01f >= Out.vColor.a)
 		discard;
+
 
 	return Out;
 }
@@ -852,6 +856,7 @@ PS_OUT  PS_MAIN_COLOR_NOALPHATEX(PS_IN In)
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 	Out.vColor.a = Out.vColor.r;
 	Out.vColor *= g_vColor;
+	Out.vEffect = Out.vColor;
 
 	return Out;
 }
@@ -863,6 +868,7 @@ PS_OUT  PS_MAIN_COLOR_NOALPHATEX_TIME(PS_IN In)
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 	Out.vColor.a = Out.vColor.r * g_fTime;
 	Out.vColor *= g_vColor;
+	Out.vEffect = Out.vColor;
 
 	return Out;
 }
@@ -872,6 +878,8 @@ PS_OUT  PS_MAIN_ALPHATIME(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	Out.vEffect = Out.vColor;
+
 	if (0.01f >= Out.vColor.a)
 		discard;
 
@@ -884,6 +892,7 @@ PS_OUT  PS_MAIN_LASER(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(ColorSampler, In.vTexUV);
 	Out.vColor.a = Out.vColor.r;
+	Out.vEffect = Out.vColor;
 
 	return Out;
 }
@@ -908,6 +917,7 @@ PS_OUT  PS_MAIN_LIGHT(PS_IN In)
 	vDiffuse.rgb = vColor.rgb * g_fSaturation_Power;
 	vDiffuse.a *= g_fContrast_Power; 
 	Out.vColor = vDiffuse;
+	Out.vEffect = Out.vColor;
 
 	return Out;
 }
@@ -930,7 +940,8 @@ PS_OUT  PS_MAIN_DOUBLE_TEX(PS_IN_DOUBLE_UV In)
 	vector vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vColorUV);
 	Out.vColor = vColor;
 	Out.vColor.a = 1.f;
-	//Out.vColor.a = 1.f;
+	Out.vEffect = Out.vColor;
+
 	float fColor = Out.vColor.r + Out.vColor.g + Out.vColor.b;
 
 	if (0.01f >= fColor)
@@ -951,6 +962,7 @@ PS_OUT  PS_MAIN_DIFF_SPRITE(PS_IN_DOUBLE_UV In)
 
 	vSprite *= vDiffuse * g_fTime;
 	Out.vColor = vSprite;
+	Out.vEffect = Out.vColor;
 
 	return Out;
 }
@@ -981,6 +993,8 @@ PS_OUT  PS_DISTORTION(PS_IN_DIST In)
 
 
 	Out.vColor = vColor;// +pattern1;
+	Out.vEffect = Out.vColor;
+
 	return Out;
 }
 
@@ -998,6 +1012,8 @@ PS_OUT  PS_DISTORTION_COLOR(PS_IN_DIST In)
 
 	//vColor.a = abs(vColor.a - 1.f);
 	Out.vColor = vColor;
+	Out.vEffect = Out.vColor;
+
 	return Out;
 }
 
