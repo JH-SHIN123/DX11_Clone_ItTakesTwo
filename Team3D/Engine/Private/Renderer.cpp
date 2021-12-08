@@ -70,25 +70,28 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	_float fWidth	= ViewportDesc.Width / 7.f;
 	_float fHeight	= ViewportDesc.Height / 7.f;
 
+	/* For. Deferred */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Diffuse"), 0.f, 0.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Normal"), 0.f, fHeight, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Depth"), 0.f, fHeight * 2.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shadow"), 0.f, fHeight * 3.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular_Src"), 0.f, fHeight * 4.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Emissive"), 0.f, fHeight * 5.f, fWidth, fHeight), E_FAIL);
-
+	
+	/* For. Blend */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shade"), fWidth, 0.f, fWidth, fHeight), E_FAIL);
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(CSSAO::GetInstance()->Ready_DebugBuffer(fWidth, fHeight, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular"), fWidth, fHeight * 2.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Effect"), fWidth, fHeight * 3.f, fWidth, fHeight), E_FAIL);
 
+	/* For. Shadow */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_CascadedShadow_Depth"), fWidth * 2.f, 0.f, fWidth, fHeight * MAX_CASCADES), E_FAIL);
 
+	/* For. PostFX */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_PostFX"), fWidth * 3.f, 0.f, fWidth, fHeight), E_FAIL);
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Effect"), fWidth * 3.f, fHeight, fWidth, fHeight), E_FAIL);
-	FAILED_CHECK_RETURN(CSSAO::GetInstance()->Ready_DebugBuffer(fWidth * 3.f, fHeight * 2.f, fWidth, fHeight), E_FAIL);
-
-	FAILED_CHECK_RETURN(CBlur::GetInstance()->Ready_DebugBuffer(TEXT("Target_EmissiveBlur"), fWidth * 4.f, 0.f, fWidth, fHeight), E_FAIL);
-	FAILED_CHECK_RETURN(CBlur::GetInstance()->Ready_DebugBuffer(TEXT("Target_EffectBlur"), fWidth * 4.f, fHeight, fWidth, fHeight), E_FAIL);
-	FAILED_CHECK_RETURN(CBlur::GetInstance()->Ready_DebugBuffer(TEXT("Target_SpecularBlur"), fWidth * 4.f, fHeight * 2.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(CBlur::GetInstance()->Ready_DebugBuffer(TEXT("Target_EmissiveBlur"), fWidth * 3.f, fHeight, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(CBlur::GetInstance()->Ready_DebugBuffer(TEXT("Target_SpecularBlur"), fWidth * 3.f, fHeight * 2.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(CBlur::GetInstance()->Ready_DebugBuffer(TEXT("Target_EffectBlur"), fWidth * 3.f, fHeight * 3.f, fWidth, fHeight), E_FAIL);
 #endif
 
 	return S_OK;
@@ -115,21 +118,25 @@ HRESULT CRenderer::Add_GameObject_ToRenderGroup(RENDER_GROUP::Enum eGroup, CGame
 HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 {
 	// 0 - pass
+	/* For. Shadow */
 	FAILED_CHECK_RETURN(Render_ShadowsForAllCascades(), E_FAIL);
 	
 	// 1- pass
+	/* For. Blend */
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonAlpha(), E_FAIL);
-
 	FAILED_CHECK_RETURN(Compute_SSAO(),  E_FAIL); /* Calculate Occlution Ambient for Directinal Light */
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 
+	/* For. Alpha */
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
 	
+	/* For. PostFX */
 	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
+	/* For. Final */
 	FAILED_CHECK_RETURN(Render_Effect_No_Blur(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
