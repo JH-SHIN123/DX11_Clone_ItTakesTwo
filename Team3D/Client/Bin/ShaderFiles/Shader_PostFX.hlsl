@@ -2,8 +2,6 @@
 #include "Shader_Include.hpp"
 
 ////////////////////////////////////////////////////////////
-Texture2D				g_LUTTex;
-
 Texture2D<float4>		g_HDRTex;
 Texture2D<float4>		g_BloomTexture;
 Texture2D<float4>		g_DOFBlurTex; // 다운스케일링 -> 업스케일링(Linear)
@@ -20,23 +18,11 @@ cbuffer FinalPassDesc
 	float	g_MiddleGrey = 0.f;
 	float	g_LumWhiteSqr = 0.f;
 	float	g_BloomScale = 0.15f; // 빛을 흘릴 스케일
-	float2	g_DOFFarValues = { 280.f, 1.0f / max(320.f, 0.001f) }; // 초점이 맞지 않기 시작하는 거리와, 완전히 초점이 나가버리는 범위 값
+	float2	g_DOFFarValues = { 100.f, 1.0f / max(250.f, 0.001f) }; // 초점이 맞지 않기 시작하는 거리와, 완전히 초점이 나가버리는 범위 값
 };
 
 ////////////////////////////////////////////////////////////
 /* Function */
-float3 LerpLUTColor(float3 InColor)
-{
-	float2 LutSize = float2(0.00390625, 0.0625); // 1 / float2(256,16) -> 텍스쳐크기 256, 16
-	float4 LutUV;
-	InColor = saturate(InColor) * 15.0; /* 색보정값 */
-	LutUV.w = float(InColor.b);
-	LutUV.xy = (InColor.rg + 0.5) * LutSize;
-	LutUV.x += LutUV.w * LutSize.y;
-	LutUV.z = LutUV.x + LutSize.y;
-	return lerp(g_LUTTex.Sample(Point_Sampler, LutUV.xyzz).rgb, g_LUTTex.Sample(Point_Sampler, LutUV.zyzz).rgb, InColor.b - LutUV.w);
-}
-
 float3 ToneMapping_DXSample(float3 HDRColor)
 {
 	float LScale = dot(HDRColor, LUM_FACTOR);
@@ -47,15 +33,15 @@ float3 ToneMapping_DXSample(float3 HDRColor)
 
 float3 ToneMapping_EA(float3 HDRColor)
 {
-	float3 Color =HDRColor;
-	float3 x = max(0.f, Color - 0.004);
-	Color = (x * (6.2f * x + 0.5f)) / (x * (6.2f * x + 1.7f) + 0.06f);
-	return float4(Color, 1.f);
+	//float3 Color =HDRColor;
+	//float3 x = max(0.f, Color - 0.004);
+	//Color = (x * (6.2f * x + 0.5f)) / (x * (6.2f * x + 1.7f) + 0.06f);
+	//return float4(Color, 1.f);
 
-	//float3 Color = pow(HDRColor, 2.2f);
-	//float3 x = max(0.f, Color - g_MiddleGrey);
-	//Color = (x * (g_LumWhiteSqr * x + 0.5f)) / (x * (g_LumWhiteSqr * x + 1.7f) + 0.06f);
-	//return Color;
+	float3 Color = pow(HDRColor, 2.2f);
+	float3 x = max(0.f, Color - g_MiddleGrey);
+	Color = (x * (g_LumWhiteSqr * x + 0.5f)) / (x * (g_LumWhiteSqr * x + 1.7f) + 0.06f);
+	return Color;
 }
 
 float3 ToneMapping_Flimic(float3 HDRColor)
@@ -75,6 +61,30 @@ float3 DistanceDOF(float3 colorFocus, float3 colorBlurred, float depth)
 	float blurFactor = saturate((depth - g_DOFFarValues.x) * g_DOFFarValues.y);
 
 	return lerp(colorFocus, colorBlurred, blurFactor);
+}
+
+float	g_SampleDist		= 0.15f;
+float	g_SampleStrength	= 200.6f;
+float2	g_SamplePos			= { 0.25f,0.5f };
+float3 RadiarBlur(float2 vTexUV)
+{
+	float	samples[10] = { -0.08, -0.05, -0.03, -0.02, -0.01, 0.01, 0.02, 0.03, 0.05, 0.08 };
+
+	float2	dir = g_SamplePos - vTexUV;
+	float	dist = length(dir);
+	dir /= dist;
+	
+	float3 vColor = g_HDRTex.Sample(Wrap_MinMagMipLinear_Sampler, vTexUV).xyz;
+	float3 sum = vColor;
+	[unroll]
+	for (int i = 0; i < 10; ++i)
+	{
+		sum += g_HDRTex.Sample(Wrap_MinMagMipLinear_Sampler, vTexUV + dir * samples[i] * g_SampleDist).xyz;
+	}
+	sum /= 11.0; 
+
+	float ratio = saturate(dist * g_SampleStrength);
+	return lerp(vColor, sum, 1.f);
 }
 ////////////////////////////////////////////////////////////
 
@@ -120,7 +130,7 @@ PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	float3 vColor = g_HDRTex.Sample(Point_Sampler, In.vTexUV).xyz;
+	float3 vColor = g_HDRTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz;
 
 	// 먼 평면에 없는 픽셀에 대해서만 거리 DOF 계산
 	vector	vDepthDesc = g_DepthTex.Sample(Point_Sampler, In.vTexUV);
@@ -134,6 +144,10 @@ PS_OUT PS_MAIN(PS_IN In)
 		vViewZ = vDepthDesc.x * g_fMainCamFar;
 		vViewPos *= vViewZ;
 		vViewPos = mul(vViewPos, g_MainProjMatrixInverse);
+
+		// Test - Radiar Blur 
+		vColor = RadiarBlur(In.vTexUV);
+
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
 		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
@@ -151,18 +165,17 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	// Bloom
 	vColor += g_BloomScale * g_BloomTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV.xy).xyz;
-	
-	// Tone Mapping
-	vColor = ToneMapping_Flimic(vColor);
-	
+
 	// Add Effect
 	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
+
+	// Tone Mapping
+	vColor = ToneMapping_EA(vColor);
 
 	// Final
 	Out.vColor = vector(vColor, 1.f);
 
-	// LUT
-	vColor.xyz = LerpLUTColor(vColor.xyz);
+
 
 	return Out;
 }
