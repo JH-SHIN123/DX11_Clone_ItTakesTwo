@@ -6,8 +6,6 @@ Texture2D<float4>		g_HDRTex;
 Texture2D<float4>		g_BloomTexture;
 Texture2D<float4>		g_DOFBlurTex; // 다운스케일링 -> 업스케일링(Linear)
 Texture2D				g_DepthTex;
-Texture2D				g_EffectTex;
-Texture2D				g_EffectBlurTex;
 
 StructuredBuffer<float> g_AverageLum;
 
@@ -64,9 +62,9 @@ float3 DistanceDOF(float3 colorFocus, float3 colorBlurred, float depth)
 }
 
 float	g_SampleDist		= 0.15f;
-float	g_SampleStrength	= 200.6f;
+float	g_SampleStrength	= 100.f;
 float2	g_SamplePos			= { 0.25f,0.5f };
-float3 RadiarBlur(float2 vTexUV)
+float3 RadiarBlur(float3 Color, float2 vTexUV)
 {
 	float	samples[10] = { -0.08, -0.05, -0.03, -0.02, -0.01, 0.01, 0.02, 0.03, 0.05, 0.08 };
 
@@ -74,17 +72,17 @@ float3 RadiarBlur(float2 vTexUV)
 	float	dist = length(dir);
 	dir /= dist;
 	
-	float3 vColor = g_HDRTex.Sample(Wrap_MinMagMipLinear_Sampler, vTexUV).xyz;
+	float3 vColor = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, vTexUV).xyz;
 	float3 sum = vColor;
 	[unroll]
 	for (int i = 0; i < 10; ++i)
 	{
-		sum += g_HDRTex.Sample(Wrap_MinMagMipLinear_Sampler, vTexUV + dir * samples[i] * g_SampleDist).xyz;
+		sum += g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, vTexUV + dir * samples[i] * g_SampleDist).xyz;
 	}
 	sum /= 11.0; 
 
 	float ratio = saturate(dist * g_SampleStrength);
-	return lerp(vColor, sum, 1.f);
+	return lerp(Color, sum, ratio);
 }
 ////////////////////////////////////////////////////////////
 
@@ -146,7 +144,7 @@ PS_OUT PS_MAIN(PS_IN In)
 		vViewPos = mul(vViewPos, g_MainProjMatrixInverse);
 
 		// Test - Radiar Blur 
-		vColor = RadiarBlur(In.vTexUV);
+		//vColor = RadiarBlur(vColor, In.vTexUV);
 
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
@@ -165,9 +163,6 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	// Bloom
 	vColor += g_BloomScale * g_BloomTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV.xy).xyz;
-
-	// Add Effect
-	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
 
 	// Tone Mapping
 	vColor = ToneMapping_EA(vColor);

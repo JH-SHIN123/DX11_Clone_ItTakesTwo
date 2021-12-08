@@ -7,6 +7,8 @@ texture2D	g_SpecularTexture;
 texture2D	g_SpecularBlurTexture;
 texture2D	g_EmissiveTexture;
 texture2D	g_EmissiveBlurTexture;
+Texture2D	g_EffectTexture;
+Texture2D	g_EffectBlurTexture;
 texture2D	g_ShadowTexture;
 
 ////////////////////////////////////////////////////////////
@@ -64,6 +66,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	float fSpecBlendFactor = 0.3f;
 	Out.vColor = (vDiffuseDesc * vShadeDesc + (vSpecularDesc * fSpecBlendFactor + pow(vSpecularBlurDesc, 2.f) * (1.f - fSpecBlendFactor))) * vShadowDesc;
 	Out.vColor.xyz += vEmissiveDesc.xyz/* Emissive Scale */ + vEmissiveBlurDesc.xyz /* Blur - Emissive Scale */;
+	Out.vColor.xyz += g_EffectTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
 
 	if (Out.vColor.w == 0) discard;
 
