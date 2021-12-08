@@ -669,6 +669,24 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\03.Character\03.Boss\02.MoonUFO">
+      <UniqueIdentifier>{45152795-cef6-48ba-bbc2-91ba64900c78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss">
+      <UniqueIdentifier>{55288451-a733-4522-afa6-6845976853cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon">
+      <UniqueIdentifier>{5b697a68-0358-4102-b02d-6330df092a73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossFloor">
+      <UniqueIdentifier>{ab926dd4-8a3b-40a6-8f69-51573483b1a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossDoor">
+      <UniqueIdentifier>{eb57978e-cfaa-465f-a4a8-6076c74ba3c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossSlideDoor">
+      <UniqueIdentifier>{40dc88c0-0398-403b-afb3-ab3675900295}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1229,6 +1247,21 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MoonUFO.h">
+      <Filter>02.GameObject\03.Character\03.Boss\02.MoonUFO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Moon.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossFloor.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossFloor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossDoor.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossDoor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossSlideDoor.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossSlideDoor</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -1752,6 +1785,21 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonUFO.cpp">
+      <Filter>02.GameObject\03.Character\03.Boss\02.MoonUFO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Moon.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossFloor.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossFloor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossDoor.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossSlideDoor.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossSlideDoor</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
