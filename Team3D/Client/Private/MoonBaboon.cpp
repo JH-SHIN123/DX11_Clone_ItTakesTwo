@@ -45,15 +45,15 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 		return E_FAIL;
 	Safe_AddRef(m_pMayTransform);
 
-	m_pUFOModel = ((CUFO*)CDataStorage::GetInstance()->Get_UFO())->Get_Model();
-	if (nullptr == m_pUFOModel)
-		return E_FAIL;
-	Safe_AddRef(m_pUFOModel);
+	//m_pUFOModel = ((CUFO*)CDataStorage::GetInstance()->Get_UFO())->Get_Model();
+	//if (nullptr == m_pUFOModel)
+	//	return E_FAIL;
+	//Safe_AddRef(m_pUFOModel);
 
-	m_pUFOTransform = ((CUFO*)CDataStorage::GetInstance()->Get_UFO())->Get_Transform();
-	if (nullptr == m_pUFOTransform)
-		return E_FAIL;
-	Safe_AddRef(m_pUFOModel);
+	//m_pUFOTransform = ((CUFO*)CDataStorage::GetInstance()->Get_UFO())->Get_Transform();
+	//if (nullptr == m_pUFOTransform)
+	//	return E_FAIL;
+	//Safe_AddRef(m_pUFOModel);
 	
 	
 	m_pModelCom->Set_Animation(15);
@@ -65,15 +65,16 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 _int CMoonBaboon::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
-	if (false == CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
+	if (true == CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		Check_State(dTimeDelta);
+		m_pModelCom->Update_Animation(dTimeDelta);
+		return NO_EVENT;
+	}
+		/*Check_State(dTimeDelta);
 		Change_State(dTimeDelta);
 		During_Animation_Behavior(dTimeDelta);
-		Fix_MoonBaboon_Chair(dTimeDelta);
-	}
+		Fix_MoonBaboon_Chair(dTimeDelta);*/
 	//m_pActorCom->Update(dTimeDelta);
-	m_pModelCom->Update_Animation(dTimeDelta);
 
 	return NO_EVENT;
 }

@@ -24,6 +24,7 @@
 /* Jin */
 /* Jun */
 #include "Camera.h"
+#include"CutScenePlayer.h"
 
 #pragma endregion
 
@@ -79,7 +80,8 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoom_Glass(TEXT("Layer_ControlRoom_Glass")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Umbrella_Joystick(TEXT("Layer_UmbrellaBeam_Joystick")), E_FAIL);
 	/* Jun */
-
+	Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaBoon"));
+	Ready_Layer_UFO(TEXT("Layer_MoonBaBoon"));
 	/* For. Environment */
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Stage_Space(), E_FAIL);
 #else
@@ -98,6 +100,7 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	CLevel::Tick(dTimedelta);
 
 
+	CCutScenePlayer::GetInstance()->Tick_CutScene(dTimedelta);
 #ifdef __TEST_TAEK
 	TCHAR lightTag[256] = L"";
 

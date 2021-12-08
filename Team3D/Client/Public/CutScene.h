@@ -16,6 +16,7 @@ public:
 public:
 	_bool Tick_CutScene(_double dTimeDelta);
 	
+	_bool Tick_CutScene_Intro(_double dTimeDelta);
 
 public:
 	HRESULT Start_CutScene();

@@ -33,13 +33,17 @@ public:
 	
 public:
 	void Set_PerformerDesc(PERFORMERDESC tDesc) { m_tDesc = tDesc; }
+	void Set_Position(_float3 vPos) { m_tDesc.vPosition = vPos; }
+	void Set_Scale(_float3 vScale) { m_tDesc.vScale = vScale; }
+
 	void Start_Perform();
 	void Finish_Perform();
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel* Get_Model() { return m_pModelCom; }
 	PERFORMERDESC& Get_PerformerDesc() { return m_tDesc; }
-
+	_float3&		Get_Scale() { return m_tDesc.vScale; }
+	_float3&		Get_Pos() { return m_tDesc.vPosition; }
 	PERFORMERDESC		m_tDesc;
 	_bool				m_bStartAnim = false;
 

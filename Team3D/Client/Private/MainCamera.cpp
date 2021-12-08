@@ -567,21 +567,22 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 
 	//외부에서 상태 설정 구간
 #ifdef __TEST_JUN
-	//if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
-	//{
-	//	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Loc_Right", CFilm::RScreen);
-	//}
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
+	{
+		m_pCamHelper->Start_Film(L"Line_BossRoom_MiniCody",CFilm::LScreen);
+		return NO_EVENT;
+	}
 
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
 		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
 		return NO_EVENT;
 	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
+	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 	{
 		CCutScenePlayer::GetInstance()->Stop_CutScene();
 		return NO_EVENT;
-	}
+	}*/
 
 	if (m_pGameInstance->Key_Down(DIK_O))
 	{
