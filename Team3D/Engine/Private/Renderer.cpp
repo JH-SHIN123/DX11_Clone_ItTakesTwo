@@ -58,10 +58,8 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	/* MRT_PostFX */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_PostFX"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_PostFX"), TEXT("MRT_PostFX")), E_FAIL);
-
-	/* MRT_Effect */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect"), TEXT("MRT_Effect")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect"), TEXT("MRT_PostFX")), E_FAIL);
 
 	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width, ViewportDesc.Height, TEXT("../Bin/ShaderFiles/Shader_Blend.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
@@ -142,7 +140,6 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_LightAcc"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_CascadedShadow"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_PostFX"));
-		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Effect"));
 
 		CSSAO::GetInstance()->Render_DebugBuffer();
 		CBlur::GetInstance()->Render_DebugBuffer_Emissive(TEXT("Target_EmissiveBlur"));
@@ -202,14 +199,14 @@ HRESULT CRenderer::Render_Alpha()
 
 HRESULT CRenderer::Render_Effect()
 {
-	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Effect"));
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX"), false);
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_EFFECT])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_EFFECT), E_FAIL);
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_GROUP::RENDER_EFFECT].clear();
-	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Effect"));
+	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_PostFX"));
 
 	return S_OK;
 }

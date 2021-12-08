@@ -6,8 +6,8 @@ Texture2D<float4>		g_HDRTex;
 Texture2D<float4>		g_BloomTexture;
 Texture2D<float4>		g_DOFBlurTex; // 다운스케일링 -> 업스케일링(Linear)
 Texture2D				g_DepthTex;
-Texture2D				g_EffectTex;
-Texture2D				g_EffectBlurTex;
+//Texture2D				g_EffectTex;
+//Texture2D				g_EffectBlurTex;
 
 StructuredBuffer<float> g_AverageLum;
 
@@ -146,7 +146,7 @@ PS_OUT PS_MAIN(PS_IN In)
 		vViewPos = mul(vViewPos, g_MainProjMatrixInverse);
 
 		// Test - Radiar Blur 
-		vColor = RadiarBlur(In.vTexUV);
+		//vColor = RadiarBlur(In.vTexUV);
 
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
@@ -166,8 +166,8 @@ PS_OUT PS_MAIN(PS_IN In)
 	// Bloom
 	vColor += g_BloomScale * g_BloomTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV.xy).xyz;
 
-	// Add Effect
-	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
+	//// Add Effect
+	//vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
 
 	// Tone Mapping
 	vColor = ToneMapping_EA(vColor);
