@@ -50,7 +50,7 @@ _int CMoonUFO::Tick(_double dTimeDelta)
 
 	m_pModelCom->Update_Animation(dTimeDelta);
 	//m_pDynamicActorCom->Update_DynamicActor();
-	//Test();
+	Test(dTimeDelta);
 
 	return NO_EVENT;
 }
@@ -59,7 +59,7 @@ _int CMoonUFO::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	m_pDynamicActorCom->Update_DynamicActor();
+	//m_pDynamicActorCom->Update_DynamicActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -97,13 +97,23 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	vRight	= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
 
 	if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
-		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * 10000.f, XMVectorGetY(vRight), XMVectorGetZ(vRight) * 10000.f));
+	{
+		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * 10000.f, XMVectorGetY(vRight) * 10000.f, XMVectorGetZ(vRight) * 10000.f));
+		m_bRotateRight = true;
+	}
+	else
+		m_bRotateRight = false;
 	if (m_pGameInstance->Key_Pressing(DIK_LEFT))
-		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * -10000.f, XMVectorGetY(vRight), XMVectorGetZ(vRight) * -10000.f));
+	{
+		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * -10000.f, XMVectorGetY(vRight)  * -10000.f, XMVectorGetZ(vRight) * -10000.f));
+		m_bRotateLeft = true;
+	}
+	else
+		m_bRotateLeft = false;
 	if (m_pGameInstance->Key_Pressing(DIK_UP))
-		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * 10000.f, XMVectorGetY(vLook), XMVectorGetZ(vLook) * 10000.f));
+		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * 10000.f, XMVectorGetY(vLook) * 10000.f, XMVectorGetZ(vLook) * 10000.f));
 	if (m_pGameInstance->Key_Pressing(DIK_DOWN))
-		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * -10000.f, XMVectorGetY(vLook), XMVectorGetZ(vLook) * -10000.f));
+		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * -10000.f, XMVectorGetY(vLook) * -10000.f, XMVectorGetZ(vLook) * -10000.f));
 }
 
 CMoonUFO::UFO_STATE CMoonUFO::Check_State(_double dTimeDelta)
@@ -302,24 +312,30 @@ void CMoonUFO::Laser_Pattern(_double dTimeDelta)
 	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f); // 플레이어 쪽으로 천천히 회전.
 }
 
-void CMoonUFO::Test()
+void CMoonUFO::Test(_double dTimeDelta)
 {
-	//_vector vPosition, vRight, vUp, vLook;
+	_vector vPosition, vRight, vUp, vLook;
 
-	//PxMat44 pxMat = PxMat44(m_pDynamicActorCom->Get_Actor()->getGlobalPose());
+	PxMat44 pxMat = PxMat44(m_pDynamicActorCom->Get_Actor()->getGlobalPose());
 
-	//vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//vRight	  = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-	//vUp		  = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	//vLook	  = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vRight	  = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	vUp		  = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	vLook	  = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-	//vUp = XMVector3Normalize(vPosition - XMVectorSet(0.f, 50.f, 0.f, 1.f));
-	//vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
+	vUp = XMVector3Normalize(vPosition - XMVectorSet(0.f, 50.f, 0.f, 1.f));
+	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
+	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
 
-	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-	//m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
-	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(pxMat.column3.x, pxMat.column3.y, pxMat.column3.z, pxMat.column3.w));
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(pxMat.column3.x, pxMat.column3.y, pxMat.column3.z, pxMat.column3.w));
+
+	if (true == m_bRotateRight)
+		m_pTransformCom->RotateYaw(dTimeDelta);
+	if (true == m_bRotateLeft)
+		m_pTransformCom->RotateYaw(-dTimeDelta);
 }
 
 HRESULT CMoonUFO::Ready_Component(void * pArg)
@@ -342,8 +358,8 @@ HRESULT CMoonUFO::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 	/* Joint */
-	PxJointLimitCone LimitCone = PxJointLimitCone(PxPi / 4.f, PxPi / 4.f, 0.05f);
-	m_pJoint = CPhysX::GetInstance()->Create_Joint(m_pDynamicActorCom->Get_Actor(), PxTransform(PxVec3(0.f, 10.f, 0.f)), nullptr, PxTransform(PxVec3(0.f, 50.f, 0.f)), LimitCone, false);
+	PxJointLimitCone LimitCone = PxJointLimitCone(PxPi, PxPi, 0.05f);
+	m_pJoint = CPhysX::GetInstance()->Create_Joint(m_pDynamicActorCom->Get_Actor(), PxTransform(PxVec3(0.f, 30.f, 0.f)), nullptr, PxTransform(PxVec3(0.f, 50.f, 0.f)), LimitCone, false);
 
 	/* Player Transform */
 	m_pCodyTransform = ((CCody*)CDataStorage::GetInstance()->GetCody())->Get_Transform();

@@ -57,7 +57,11 @@ private:
 	void				During_Animation_Behavior(_double dTimeDelta);
 	void				Laser_Pattern(_double dTimeDelta);
 
-	void				Test();
+	void				Test(_double dTimeDelta);
+
+private:
+	_bool m_bRotateRight = false;
+	_bool m_bRotateLeft = false;
 
 private:
 	HRESULT Ready_Component(void* pArg);
