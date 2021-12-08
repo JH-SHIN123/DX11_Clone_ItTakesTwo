@@ -684,6 +684,12 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser">
       <UniqueIdentifier>{7a29e47e-936f-445a-b906-c57d0033b40b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core">
+      <UniqueIdentifier>{1b207031-529d-4198-a7c0-1e275955c7d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\00.Core_Hit">
+      <UniqueIdentifier>{74a643e4-3232-4d81-a30c-68c74e97f464}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1262,6 +1268,10 @@
     <ClInclude Include="..\public\Effect_Hit_BossLaser.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Core.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Core_Hit.h" />
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -1804,6 +1814,10 @@
     <ClCompile Include="..\private\Effect_Hit_BossLaser.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Core.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Core_Hit.cpp" />
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--etc-->

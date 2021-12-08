@@ -26,6 +26,7 @@
 #include "Effect_Boss_Laser_Smoke.h"
 #include "Effect_PointLight.h"
 #include "Effect_Boss_Laser_Particle.h"
+#include "Effect_Boss_Core.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -233,6 +234,9 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Laser_Particle"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Laser_Particle", CEffect_Boss_Laser_Particle::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Core"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Core", CEffect_Boss_Core::Create(pDevice, pDeviceContext, pData));
+
 	// 3D Effect
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel", CEffect_RespawnTunnel::Create(pDevice, pDeviceContext, pData));
@@ -255,7 +259,7 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 		lstrcat(szWarning, pPrototypeName);
 		MessageBox(g_hWnd, szWarning, L"Press Enter", MB_OK);
 #ifdef __TEST_JUNG
-		Safe_Delete(pData);
+		Safe_Delete(pData); // 터지게 만듦
 #endif // __TEST_JUNG
 		return S_OK;
 	}

@@ -297,23 +297,23 @@ _float4 CInGameEffect::Check_UV(_int iTextureMax_U, _int iTextureMax_V, _int* pT
 
 	if (false == IsLoop)
 	{
-		if (*pTextureNow_U == iTextureMax_V - 1)
-		{
-			if (*pTextureNow_U == iTextureMax_U - 1)
-				return vUV = { 1.f, 1.f, 1.f, 1.f };
-		}
+		if (*pTextureNow_V == iTextureMax_V - 1 && *pTextureNow_U == iTextureMax_U - 1)
+			return vUV = { 1.f, 1.f, 1.f, 1.f };
 	}
 
-	if (*pTextureNow_U >= iTextureMax_U - 1)
+	if (*pTextureNow_V == iTextureMax_V - 1 && *pTextureNow_U == iTextureMax_U - 1)
+	{
+		*pTextureNow_V = 0;
+		*pTextureNow_U = 0;
+	}
+
+	else if (*pTextureNow_U >= iTextureMax_U - 1)
 	{
 		*pTextureNow_U = 0;
 		++*pTextureNow_V;
 	}
 	else
 		++*pTextureNow_U;
-
-	if (*pTextureNow_V >= iTextureMax_V)
-		*pTextureNow_V = 0;
 
 	_float fLeft	= (1.f / iTextureMax_U) *  *pTextureNow_U;
 	_float fTop		= (1.f / iTextureMax_V) *  *pTextureNow_V;
