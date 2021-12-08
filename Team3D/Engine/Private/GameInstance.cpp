@@ -418,6 +418,19 @@ _bool CGameInstance::IsIn_LocalSpace_Sub(_fvector vPosition, _float fRadius)
 }
 #pragma endregion
 
+#pragma region PostFX
+void CGameInstance::Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos)
+{
+	NULL_CHECK(m_pPostFX);
+	return m_pPostFX->Set_RadiarBlur_Main(bActive, vFocusPos);
+}
+void CGameInstance::Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos)
+{
+	NULL_CHECK(m_pPostFX);
+	return m_pPostFX->Set_RadiarBlur_Sub(bActive, vFocusPos);
+}
+#pragma endregion
+
 void CGameInstance::Release_Engine()
 {
 	CGameObject_Manager::GetInstance()->Clear_All();

@@ -503,5 +503,11 @@ private:
 	CSpaceRail_Node*			m_pSearchTargetRailNode = nullptr;
 	CSpaceRail_Node*			m_pTargetRailNode = nullptr;
 #pragma endregion
+
+#pragma region RadiarBlur
+private:
+	void Start_RadiarBlur();
+	void End_RadiarBlur();
+#pragma endregion
 };
 END

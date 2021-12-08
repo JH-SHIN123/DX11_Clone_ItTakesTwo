@@ -8,6 +8,18 @@
 
 IMPLEMENT_SINGLETON(CPostFX)
 
+void CPostFX::Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos)
+{
+	m_bRadiarBlur_Main = bActive;
+	m_vRadiarFocusPos_Main = vFocusPos;
+}
+
+void CPostFX::Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos)
+{
+	m_bRadiarBlur_Sub = bActive;
+	m_vRadiarFocusPos_Sub = vFocusPos;
+}
+
 HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight)
 {
 	NULL_CHECK_RETURN(pDevice, E_FAIL);
@@ -175,6 +187,17 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &fMiddleGrey, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqr, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_BloomScale", &m_fBloomScale, sizeof(_float));
+
+	/* Radiar Blur */
+	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Main", &m_bRadiarBlur_Main, sizeof(_bool));
+	//m_pVIBuffer_ToneMapping->Set_Variable("g_SamplePos_Main", &m_vRadiarFocusPos_Main, sizeof(_float2));
+
+	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Sub", &m_bRadiarBlur_Sub, sizeof(_bool));
+	//m_pVIBuffer_ToneMapping->Set_Variable("g_SamplePos_Sub", &m_vRadiarFocusPos_Sub, sizeof(_float2));
+
+	/*TEST*/
+	m_pVIBuffer_ToneMapping->Set_Variable("g_SampleDist", &m_fRadiarBlurDist, sizeof(_float));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_SampleStrength", &m_fRadiarBlurStr, sizeof(_float));
 
 	_float	fCamFar;
 	_matrix	ProjMatrixInverse;
@@ -472,6 +495,14 @@ HRESULT CPostFX::KeyInput_Test(_double TimeDelta)
 	m_fLumWhiteSqr = b;
 	m_fBloomScale = c;
 	m_fBloomThreshold = d;
+
+	GetPrivateProfileString(L"Section_1", L"Key_5", L"0", szBuff, 256, L"../test.ini");
+	_float e = (_float)_wtof(szBuff);
+	GetPrivateProfileString(L"Section_1", L"Key_6", L"0", szBuff, 256, L"../test.ini");
+	_float f = (_float)_wtof(szBuff);
+
+	m_fRadiarBlurDist = e;
+	m_fRadiarBlurStr = f;
 #endif // _DEBUG
 
 	return S_OK;

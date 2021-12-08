@@ -148,7 +148,7 @@ void CGauge_Circle::Set_Position(_vector vPos)
 void CGauge_Circle::Set_DefaultSetting()
 {
 	m_fAlpha = 0.5f;
-	m_IsActive = true;
+	m_IsActive = false;
 	m_IsUICreateOn = false;
 	m_fDistance = 0.f;
 	

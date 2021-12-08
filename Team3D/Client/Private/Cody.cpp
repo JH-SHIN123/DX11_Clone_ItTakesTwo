@@ -652,10 +652,12 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_IsSizeChanging = true;
 			m_pActorCom->Set_Gravity(-9.8f);
 			m_pActorCom->Set_IsPlayerSizeSmall(false);
+			Start_RadiarBlur();
 			break;
 		case Client::CCody::SIZE_MEDIUM:
 			m_eNextPlayerSize = SIZE_LARGE;
 			m_IsSizeChanging = true;
+			Start_RadiarBlur();
 			break;
 		}
 	}
@@ -673,11 +675,13 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_eNextPlayerSize = SIZE_MEDIUM;
 			m_IsSizeChanging = true;
 			m_pActorCom->Set_Gravity(-9.8f);
+			Start_RadiarBlur();
 			break;
 		case Client::CCody::SIZE_MEDIUM:
 			m_eNextPlayerSize = SIZE_SMALL;
 			m_IsSizeChanging = true;
 			m_pActorCom->Set_IsPlayerSizeSmall(true);
+			Start_RadiarBlur();
 			break;
 		}
 	}
@@ -1445,6 +1449,8 @@ void CCody::Change_Size(const _double dTimeDelta)
 			}
 			else
 			{
+				End_RadiarBlur();
+
 				m_bChangeSizeEffectOnce = false;
 				m_vScale = { 5.f, 5.f, 5.f };
 				m_IsSizeChanging = false; 
@@ -1482,6 +1488,8 @@ void CCody::Change_Size(const _double dTimeDelta)
 			}
 			else
 			{
+				End_RadiarBlur();
+
 				m_bChangeSizeEffectOnce = false;
 				m_vScale = { 1.f, 1.f, 1.f };
 				m_IsSizeChanging = false;
@@ -1510,6 +1518,8 @@ void CCody::Change_Size(const _double dTimeDelta)
 			}
 			else
 			{
+				End_RadiarBlur();
+
 				m_bChangeSizeEffectOnce = false;
 				m_vScale = { 0.1f, 0.1f, 0.1f };
 				m_IsSizeChanging = false;
@@ -1539,6 +1549,8 @@ void CCody::Change_Size(const _double dTimeDelta)
 			}
 			else
 			{
+				End_RadiarBlur();
+
 				m_bChangeSizeEffectOnce = false;
 				m_vScale = { 1.f, 1.f, 1.f };
 				m_IsSizeChanging = false;
@@ -2843,6 +2855,7 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 	{
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
+			End_RadiarBlur();
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 
 			m_iJumpCount = 0;
@@ -2931,7 +2944,9 @@ void CCody::Start_SpaceRail()
 	if (m_pSearchTargetRailNode) {
 		// 타겟 지정시, 연기이펙트
 		EFFECT->Add_Effect(Effect_Value::Landing_Smoke, m_pSearchTargetRailNode->Get_WorldMatrix());
-		
+		// 레디어블러 효과
+		Start_RadiarBlur();
+
 		// 타겟을 찾았다면, 레일 탈 준비
 		m_pTargetRailNode = m_pSearchTargetRailNode;
 		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter); // 줄던지고 댕겨서 날라가기
@@ -3016,6 +3031,7 @@ void CCody::TakeRailEnd(_double dTimeDelta)
 		_double dRailEndForceTime = 0.2;
 		if (m_dRailEnd_ForceDeltaT >= dRailEndForceTime)
 		{
+			End_RadiarBlur();
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 			
 			m_dRailEnd_ForceDeltaT = 0.0;
@@ -3061,6 +3077,43 @@ HRESULT CCody::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 	return S_OK;
 }
 
+void CCody::Start_RadiarBlur()
+{
+	_matrix CombineViewMatrix, CombineProjMatrix;
+
+	CombineViewMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_MAINVIEW);
+	CombineProjMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_MAINPROJ);
+
+	_matrix matCombineMatrix = CombineViewMatrix * CombineProjMatrix;
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPos = XMVector3TransformCoord(vPos, matCombineMatrix);
+
+	_float3 vConvertPos = { 0.f,0.f,0.f };
+
+	// 보정
+	XMStoreFloat3(&vConvertPos, vPos);
+	vConvertPos.x += 1.f;
+	vConvertPos.y += 1.f;
+
+	if (1.f <= vConvertPos.z)
+	{
+		vConvertPos.x *= -1.f;
+		vConvertPos.y *= -1.f;
+	}
+
+	D3D11_VIEWPORT Viewport = m_pGameInstance->Get_ViewportInfo(1);
+	vConvertPos.x = ((Viewport.Width * (vConvertPos.x)) / 2.f);
+	vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f);
+
+	_float2 vFocusPos = { vConvertPos.x / g_iWinCX, vConvertPos.y / g_iWinCY };
+	m_pGameInstance->Set_RadiarBlur_Main(true, vFocusPos);
+}
+
+void CCody::End_RadiarBlur()
+{
+	_float2 vFocusPos = { 0.f,0.f };
+	m_pGameInstance->Set_RadiarBlur_Main(false, vFocusPos);
+}
 
 void CCody::PinBall(const _double dTimeDelta)
 {

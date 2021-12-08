@@ -121,6 +121,11 @@ public:
 	_bool	IsIn_LocalSpace_Sub(_fvector vPosition, _float fRadius);
 #pragma endregion
 
+#pragma region PostFX
+	void Set_RadiarBlur_Main(_bool bActive, _float2 & vFocusPos);
+	void Set_RadiarBlur_Sub(_bool bActive, _float2 & vFocusPos);
+#pragma endregion
+
 private:
 	CGraphic_Device*		m_pGraphic_Device		= nullptr;
 	CInput_Device*			m_pInput_Device			= nullptr;

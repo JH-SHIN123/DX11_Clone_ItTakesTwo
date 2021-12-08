@@ -12,6 +12,10 @@ public:
 	virtual ~CPostFX() = default;
 
 public:
+	void Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos);
+	void Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos);
+
+public:
 	HRESULT Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight);
 	HRESULT PostProcessing(_double TimeDelta);
 
@@ -42,18 +46,27 @@ private:
 	
 #pragma region Constant Params
 private:
-	_uint    m_iWinSize[2] = { 0,0 };
-	_uint    m_iDownScaleGroups = 0;
+	_uint		m_iWinSize[2] = { 0,0 };
+	_uint		m_iDownScaleGroups = 0;
 
-	_float    m_fMiddleGrey = 0.019135f;
-	_float    m_fLumWhiteSqr = 50.f;
+	_float		m_fMiddleGrey = 0.00222135f;
+	_float		m_fLumWhiteSqr = 1080.f;
 
-	_float    m_fAdaptTime = 1.f;
-	_float    m_fAdaptationDeltaT = 0.f;
-	_float    m_fAdaptation = 0.f;
+	_float		m_fAdaptTime = 1.f;
+	_float		m_fAdaptationDeltaT = 0.f;
+	_float		m_fAdaptation = 0.f;
 
-	_float m_fBloomThreshold = 100.f;
-	_float m_fBloomScale = 0.25f;
+	_float		m_fBloomThreshold = 2.f;
+	_float		m_fBloomScale = 1.15f;
+
+	_bool		m_bRadiarBlur_Main = false;
+	_bool		m_bRadiarBlur_Sub = false;
+	_float2		m_vRadiarFocusPos_Main = { 0.f,0.f };
+	_float2		m_vRadiarFocusPos_Sub = { 0.f,0.f };
+
+	/* TEST */
+	_float m_fRadiarBlurDist = 1.15f;
+	_float m_fRadiarBlurStr = 7.f;
 #pragma endregion
 
 #pragma region Resources
@@ -100,7 +113,6 @@ private: /* For.CS - Shader */
 
 private: /* For. PS - ToneMapping */
 	class CVIBuffer_RectRHW*	m_pVIBuffer_ToneMapping = nullptr;
-
 #pragma endregion
 
 #ifdef _DEBUG
