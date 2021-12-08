@@ -29,6 +29,8 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
 
+	Add_LerpInfo_To_Model();
+
 	ROBOTDESC UFODesc;
 
 	if (nullptr != pArg)
@@ -62,6 +64,9 @@ _int CUFO::Tick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
 		m_IsCutScene = false;
 
+	m_pModelCom->Update_Animation(dTimeDelta);
+
+
 	/* 컷 신 재생중이 아니라면 보스 패턴 진행하자 나중에 컷 신 생기면 바꿈 */
 	if (false == m_IsCutScene)
 	{
@@ -78,7 +83,8 @@ _int CUFO::Tick(_double dTimeDelta)
 			break;
 		}
 	}
-	m_pModelCom->Update_Animation(dTimeDelta);
+
+	_uint test = m_pModelCom->Get_CurAnimIndex();
 
 	return NO_EVENT;
 }
@@ -99,28 +105,65 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	if (nullptr == m_pCodyTransform || nullptr == m_pMayTransform)
 		return;
 
-	_vector vDir, vTargetPos;
+	_vector vDir, vTargetPos, vTargetLook;
 
-	/* 지정된 타겟에 따라 포지션 세팅 */
+	/* 지정된 타겟에 따라 포지션과 룩 세팅 */
 	switch (m_eTarget)
 	{
 	case Client::CUFO::TARGET_CODY:
 		vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+		vTargetLook = m_pCodyTransform->Get_State(CTransform::STATE_LOOK);
 		break;
 	case Client::CUFO::TARGET_MAY:
 		vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+		vTargetLook = m_pMayTransform->Get_State(CTransform::STATE_LOOK);
 		break;
 	}
 
 	vDir = vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
 
-	/* 타겟쪽으로 천천히 회전 */
+	/* 우주선을 타겟쪽으로 천천히 회전 */
 	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f);
+
+	_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("LaserGun");
+
+	/* 레이저건의 포지션을 받아오자*/
+	_vector vLaserGunPos = XMLoadFloat4((_float4*)&matLaserGun.r[3].m128_f32[0]);
+
+	/* 레이저 건에서 타겟의 방향 벡터를 구하자 */
+	_vector vLaserDir = vTargetPos - vLaserGunPos;
+
+	/* 레이저건 뼈의 Look을 받아오자 */
+	_vector vLaserGunLook = XMLoadFloat4((_float4*)&matLaserGun.r[2].m128_f32[0]);
+
+	_vector vUFOLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+	/* 레이저건의 Look과 위에서 구한 방향 벡터를 내적해서 각도를 구해주자 */
+	_vector vDot = XMVector3AngleBetweenVectors(vUFOLook, vLaserDir);
+	_float fRadian = XMVectorGetX(vDot);
+	_float fAngle = XMConvertToDegrees(fRadian);
+
+	_matrix matRotX;
+
+	if (1.f <= fAngle)
+	{
+		matRotX = XMMatrixRotationX(fAngle);
+
+		matLaserGun = matRotX * matLaserGun;
+		m_pModelCom->Set_BoneMatrix("LaserGun", matLaserGun);
+	}
 }
 
 void CUFO::Phase1_Pattern(_double dTimeDelta)
 {
+	_vector vTargetPos = XMLoadFloat4(&m_vStartTargetPos);
+	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);\
+
+	/* 처음에 저장해둔 타겟 포스의 Y위치까지 천천히 위로 이동해라. */
+	if (vTargetPos.m128_f32[1] >= vUFOPos.m128_f32[1])
+		m_pTransformCom->Go_Up(dTimeDelta / 4.f);
+
 	Laser_Pattern(dTimeDelta);
 }
 
@@ -138,122 +181,47 @@ HRESULT CUFO::Render(RENDER_GROUP::Enum eGroup)
 
 void CUFO::Add_LerpInfo_To_Model()
 {
-//#define CutScene_Eject_FlyingSaucer 1
-//#define CutScene_EnterUFO_FlyingSaucer 2
-//#define CutScene_PowerCoresDestroyed_UFO 3
-//#define CutScene_RocketPhaseFinished_FlyingSaucer 4
-//#define CutScene_UFO_Boss_Intro 5
-//#define CutScene_UFO_LaserRippedOff_FlyingSaucer 6
-//#define CutScene_UFO_Outro 7
-//#define UFO_Back 8
-//#define UFO_CodyHolding 9
-//#define UFO_CodyHolding_Enter 10
-//#define UFO_CodyHolding_low 11
-//#define UFO_Controllable_Additive 12
-//#define UFO_Controllable_Additive_Boost 13
-//#define UFO_Controllable_Additive_Flying 14
-//#define UFO_Controllable_Pose_Bck 15
-//#define UFO_Controllable_Pose_Fwd 16
-//#define UFO_Controllable_Pose_Left 17
-//#define UFO_Controllable_Pose_Right 18
-//#define UFO_FireRocket_Additive_Left 19
-//#define UFO_FireRocket_Additive_Right 20
-//#define UFO_Fwd 21
-//#define UFO_GroundPound 22
-//#define UFO_HitReaction_Bck 23
-//#define UFO_HitReaction_Fwd 24
-//#define UFO_HitReaction_Left 25
-//#define UFO_HitReaction_Right 26
-//#define UFO_KnockDownMH 27
-//#define UFO_LaserRippedOff 28
-//#define UFO_Laser_HitPod 29
-//#define UFO_Laser_MH 30
-//#define UFO_Left 31
-//#define UFO_MH 32
-//#define UFO_Ref 33
-//#define UFO_Right 34
-//#define UFO_RocketKnockDown_MH 35
-//
-//
-//	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Back, false);
-//	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Fwd, false);
-//	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_GroundPound, false);
-//	m_pModelCom->Add_LerpInfo(UFO_MH, ANI_C_Bhv_Valve_Rotate_MH, false);
-//	m_pModelCom->Add_LerpInfo(UFO_MH, ANI_C_Bhv_Valve_Rotate_MH, false);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_Jump_Land, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jump_Land, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Start, ANI_C_Bhv_GroundPound_Falling, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Start, ANI_C_Bhv_GroundPound_Land, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land, ANI_C_Bhv_GroundPound_Land_Exit, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land, ANI_C_ChangeSize_Walk_Large_Fwd, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Falling, ANI_C_Bhv_GroundPound_Land_Exit, true, 5.f);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_MH, true, 5.f);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_Jog_Start_Fwd, true, 2.f);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_GroundPound_Land_Exit, ANI_C_Jog, true, 2.f);
-//	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Jump_Start, ANI_C_Bhv_ChangeSize_GroundPound_Start, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Start, ANI_C_Bhv_ChangeSize_GroundPound_Falling, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Falling, ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit, false);
-//
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_Sprint, ANI_C_Sprint, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit, ANI_C_MH, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Walk_Large_Fwd, ANI_C_ChangeSize_Walk_Large_Fwd, false);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Start, ANI_C_Roll_Stop, true, 60.f);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Stop, ANI_C_Roll_To_Jog, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Roll_Start, ANI_C_Roll_To_Jog, false);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_DoubleJump, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_AirDash_Start, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land_Still_Jump, ANI_C_DoubleJump, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land_Still_Jump, ANI_C_AirDash_Start, false);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_DoubleJump, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Bhv_GroundPound_Start, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Bhv_GroundPound_Start, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Sprint, ANI_C_SprintTurnAround, true, 20.f);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd, ANI_C_SprintTurnAround, true, 20.f);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd_Exhausted, ANI_C_SprintTurnAround, true, 20.f);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_MH, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_ChangeSize_Jump_Start, false);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Jump_Large_Land, ANI_C_MH, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Jump_Start, ANI_C_ChangeSize_Jump_Large_Land_Jog, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_ChangeSize_Jump_Start, ANI_C_ChangeSize_Jump_Large_Land, false);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_180L, true, 10.f);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_180R, true, 10.f);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_PlayRoom_ZeroGravity_MH, ANI_C_Jump_Falling, true, 10.f);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Start_Fwd, ANI_C_Jump_Falling, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd, ANI_C_Jump_Falling, false);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jog, ANI_C_Jump_Falling, false);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jump_Land_Jog, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jog_Start_Fwd, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jog_Stop_Fwd, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jog, false);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_Jump_Land_Jog, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jump_Land_Jog, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jog_Start_Fwd, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jog_Stop_Fwd, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Land, ANI_C_Jog, false);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Falling, ANI_C_Jump_Land, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Jump_Land, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_AirDash_Start, ANI_C_Jump_Land_Jog, false);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_MH, ANI_C_WallSlide_Jump, true, 20.f);
-//	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_Jump, ANI_C_WallSlide_Enter, true, 20.f);
-//	m_pModelCom->Add_LerpInfo(ANI_C_WallSlide_Enter, ANI_C_WallSlide_MH, true, 20.f);
-//
-//	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_Enter, ANI_C_Grind_Grapple_ToGrind, false);
-//	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_ToGrind, ANI_C_Grind_Slow_MH, false);
+	//CutScene_Eject_FlyingSaucer 1
+	//CutScene_EnterUFO_FlyingSaucer 2
+	//CutScene_PowerCoresDestroyed_UFO 3
+	//CutScene_RocketPhaseFinished_FlyingSaucer 4
+	//CutScene_UFO_Boss_Intro 5
+	//CutScene_UFO_LaserRippedOff_FlyingSaucer 6
+	//CutScene_UFO_Outro 7
+	//UFO_Back 8
+	//UFO_CodyHolding 9
+	//UFO_CodyHolding_Enter 10
+	//UFO_CodyHolding_low 11
+	//UFO_Controllable_Additive 12
+	//UFO_Controllable_Additive_Boost 13
+	//UFO_Controllable_Additive_Flying 14
+	//UFO_Controllable_Pose_Bck 15
+	//UFO_Controllable_Pose_Fwd 16
+	//UFO_Controllable_Pose_Left 17
+	//UFO_Controllable_Pose_Right 18
+	//UFO_FireRocket_Additive_Left 19
+	//UFO_FireRocket_Additive_Right 20
+	//UFO_Fwd 21
+	//UFO_GroundPound 22
+	//UFO_HitReaction_Bck 23
+	//UFO_HitReaction_Fwd 24
+	//UFO_HitReaction_Left 25
+	//UFO_HitReaction_Right 26
+	//UFO_KnockDownMH 27
+	//UFO_LaserRippedOff 28
+	//UFO_Laser_HitPod 29
+	//UFO_Laser_MH 30
+	//UFO_Left 31
+	//UFO_MH 32
+	//UFO_Ref 33
+	//UFO_Right 34
+	//UFO_RocketKnockDown_MH 35
+
+	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Back, false);
+	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Fwd, false);
+	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Laser_MH, false);
+	m_pModelCom->Add_LerpInfo(UFO_Fwd, UFO_Laser_MH, false);
+
 }
 
 HRESULT CUFO::Ready_Component()

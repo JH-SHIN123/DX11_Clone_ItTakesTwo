@@ -50,6 +50,7 @@ public: /* Getter */
 	_fmatrix	Get_BoneMatrix(const char* pBoneName) const;
 	const _uint	Get_CurAnimIndex() const { return m_iCurAnimIndex; }
 	const _uint	Get_MeshCount() const { return m_iMeshCount; }
+
 	/**
 	* Get_ProgressAnim
 	* 현재 애니메이션 진행률
