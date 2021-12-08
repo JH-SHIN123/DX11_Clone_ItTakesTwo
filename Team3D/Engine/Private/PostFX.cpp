@@ -44,7 +44,6 @@ HRESULT CPostFX::PostProcessing(_double TimeDelta)
 	FAILED_CHECK_RETURN(Bloom(), E_FAIL);
 	FAILED_CHECK_RETURN(Blur(m_pShaderResourceView_Bloom_Temp, m_pUnorderedAccessView_Bloom), E_FAIL);
 	FAILED_CHECK_RETURN(Blur(m_pShaderResourceView_DownScaledHDR, m_pUnorderedAccessView_DORBlur), E_FAIL);
-	FAILED_CHECK_RETURN(Blur_Effects(), E_FAIL);
 	FAILED_CHECK_RETURN(FinalPass(),E_FAIL);
 
 	// Swap Cur LumAvg - Prev LumAvg
@@ -152,11 +151,6 @@ HRESULT CPostFX::Blur(ID3D11ShaderResourceView* pInput, ID3D11UnorderedAccessVie
 	return S_OK;
 }
 
-HRESULT CPostFX::Blur_Effects()
-{
-	return CBlur::GetInstance()->Blur_Effect();
-}
-
 HRESULT CPostFX::FinalPass()
 {
 	// PS - Tone Mapping
@@ -198,8 +192,6 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_BloomTexture", m_pShaderResourceView_Bloom);
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DOFBlurTex", m_pShaderResourceView_DORBlur);
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DepthTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Depth")));
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EffectTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Effect")));
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EffectBlurTex", pBlur->Get_ShaderResourceView_BlurEffect());
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
 	m_pVIBuffer_ToneMapping->Render(0);

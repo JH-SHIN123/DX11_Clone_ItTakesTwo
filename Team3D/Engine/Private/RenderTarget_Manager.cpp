@@ -74,8 +74,8 @@ HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, c
 	if (nullptr == DepthStencil)
 		pDeviceContext->OMSetRenderTargets((_uint)pMRT->size(), RenderTargets, m_pDepthStencilView);
 	else {
-		ID3D11ShaderResourceView* pSRV[8] = { nullptr };
-		pDeviceContext->PSSetShaderResources(0, 8, pSRV);
+		ID3D11ShaderResourceView* pSRV[20] = { nullptr };
+		pDeviceContext->PSSetShaderResources(0, 20, pSRV);
 		pDeviceContext->OMSetRenderTargets((_uint)pMRT->size(), RenderTargets, DepthStencil);
 	}
 	
@@ -87,9 +87,8 @@ HRESULT CRenderTarget_Manager::End_MRT(ID3D11DeviceContext * pDeviceContext, con
 	NULL_CHECK_RETURN(pDeviceContext, E_FAIL);
 
 	// Clear Textures - Max RTV Count 8
-	ID3D11ShaderResourceView* pSRV[8] = { nullptr };
-	pDeviceContext->PSSetShaderResources(0, 8, pSRV);
-
+	ID3D11ShaderResourceView* pSRV[20] = { nullptr };
+	pDeviceContext->PSSetShaderResources(0, 20, pSRV);
 	pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferView, m_pDepthStencilView);
 
 	return S_OK;

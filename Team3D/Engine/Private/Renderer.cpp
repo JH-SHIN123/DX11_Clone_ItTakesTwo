@@ -286,6 +286,7 @@ HRESULT CRenderer::Render_Blend()
 	CBlur* pBlur = CBlur::GetInstance();
 	FAILED_CHECK_RETURN(pBlur->Blur_Emissive(), E_FAIL);
 	FAILED_CHECK_RETURN(pBlur->Blur_Specular(), E_FAIL);
+	FAILED_CHECK_RETURN(pBlur->Blur_Effect(), E_FAIL);
 
 	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX"), false);
 
@@ -298,6 +299,9 @@ HRESULT CRenderer::Render_Blend()
 
 	m_pVIBuffer->Set_ShaderResourceView("g_EmissiveTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Emissive")));
 	m_pVIBuffer->Set_ShaderResourceView("g_EmissiveBlurTexture", pBlur->Get_ShaderResourceView_BlurEmissive());
+
+	m_pVIBuffer->Set_ShaderResourceView("g_EffectTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Effect")));
+	m_pVIBuffer->Set_ShaderResourceView("g_EffectBlurTexture", pBlur->Get_ShaderResourceView_BlurEffect());
 
 	m_pVIBuffer->Render(0);
 	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_PostFX"));

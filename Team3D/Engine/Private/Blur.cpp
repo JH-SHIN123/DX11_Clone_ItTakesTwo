@@ -32,6 +32,8 @@ HRESULT CBlur::Blur_Emissive()
 	FAILED_CHECK_RETURN(DownScale(pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Emissive")),m_pUnorderedAccessView_DownScaledEmissive), E_FAIL);
 	FAILED_CHECK_RETURN(BlurInPlace(m_pShaderResourceView_DownScaledEmissive, m_pUnorderedAccessView_DownScaledEmissive), E_FAIL);
 
+	Unbind_ShaderResources();
+
 	return S_OK;
 }
 
@@ -42,6 +44,8 @@ HRESULT CBlur::Blur_Effect()
 	FAILED_CHECK_RETURN(DownScale(pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Effect")), m_pUnorderedAccessView_DownScaledEffect), E_FAIL);
 	FAILED_CHECK_RETURN(BlurInPlace(m_pShaderResourceView_DownScaledEffect, m_pUnorderedAccessView_DownScaledEffect), E_FAIL);
 
+	Unbind_ShaderResources();
+
 	return S_OK;
 }
 
@@ -51,6 +55,8 @@ HRESULT CBlur::Blur_Specular()
 
 	FAILED_CHECK_RETURN(DownScale(pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Specular")), m_pUnorderedAccessView_DownScaledSpecular), E_FAIL);
 	FAILED_CHECK_RETURN(BlurInPlace(m_pShaderResourceView_DownScaledSpecular, m_pUnorderedAccessView_DownScaledSpecular), E_FAIL);
+
+	Unbind_ShaderResources();
 
 	return S_OK;
 }

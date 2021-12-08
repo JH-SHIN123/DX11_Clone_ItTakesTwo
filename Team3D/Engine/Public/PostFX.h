@@ -19,7 +19,6 @@ private:
 	HRESULT DownScale(_double TimeDelta);
 	HRESULT Bloom();
 	HRESULT Blur(ID3D11ShaderResourceView* pInput, ID3D11UnorderedAccessView* pOutput);
-	HRESULT Blur_Effects();
 	HRESULT FinalPass();
 
 	HRESULT Tick_Adaptation(_double TimeDelta);
