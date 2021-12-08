@@ -61,6 +61,9 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect"), TEXT("MRT_PostFX")), E_FAIL);
 
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_PostFX_Final"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_PostFX_Final"), TEXT("MRT_PostFX_Final")), E_FAIL);
+
 	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width, ViewportDesc.Height, TEXT("../Bin/ShaderFiles/Shader_Blend.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
 
@@ -125,6 +128,8 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_PostBlend(), E_FAIL);
+
 	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
 	FAILED_CHECK_RETURN(Render_Effect_No_Blur(), E_FAIL);
@@ -299,6 +304,21 @@ HRESULT CRenderer::Render_Blend()
 	m_pVIBuffer->Render(0);
 	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_PostFX"));
 
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_PostBlend()
+{
+	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
+
+	CBlur* pBlur = CBlur::GetInstance();
+	FAILED_CHECK_RETURN(pBlur->Blur_Effect(), E_FAIL);
+
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX_Final"));
+	m_pVIBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_PostFX")));
+	m_pVIBuffer->Set_ShaderResourceView("g_ShadeTexture", pBlur->Get_ShaderResourceView_BlurEffect());
+	m_pVIBuffer->Render(1);
+	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_PostFX_Final"));
 	return S_OK;
 }
 
