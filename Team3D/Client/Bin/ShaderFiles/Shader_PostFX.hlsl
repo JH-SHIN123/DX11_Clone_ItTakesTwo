@@ -21,6 +21,20 @@ cbuffer FinalPassDesc
 	float2	g_DOFFarValues = { 100.f, 1.0f / max(250.f, 0.001f) }; // 초점이 맞지 않기 시작하는 거리와, 완전히 초점이 나가버리는 범위 값
 };
 
+cbuffer RadialBlurDesc
+{
+	float	g_Samples[10] = { -0.08, -0.05, -0.03, -0.02, -0.01, 0.01, 0.02, 0.03, 0.05, 0.08 };
+
+	float	g_SampleDist = 0.15f; // 0.15f
+	float	g_SampleStrength = 20.7f;
+
+	bool	g_bRadiarBlur_Main = false;
+	bool	g_bRadiarBlur_Sub = false;
+	 
+	float2	g_RadiarBlur_FocusPos_Main = { 0.25f,0.5f };
+	float2	g_RadiarBlur_FocusPos_Sub = { 0.75f,0.5f };
+};
+
 ////////////////////////////////////////////////////////////
 /* Function */
 float3 ToneMapping_DXSample(float3 HDRColor)
@@ -63,14 +77,10 @@ float3 DistanceDOF(float3 colorFocus, float3 colorBlurred, float depth)
 	return lerp(colorFocus, colorBlurred, blurFactor);
 }
 
-float	g_SampleDist		= 0.15f;
-float	g_SampleStrength	= 7.f;
-float2	g_SamplePos			= { 0.25f,0.5f };
-float3 RadiarBlur(float2 vTexUV)
+float3 RadiarBlur(float2 vTexUV, float2 vFocusPos)
 {
-	float	samples[10] = { -0.08, -0.05, -0.03, -0.02, -0.01, 0.01, 0.02, 0.03, 0.05, 0.08 };
 
-	float2	dir = g_SamplePos - vTexUV;
+	float2	dir = vFocusPos - vTexUV;
 	float	dist = length(dir);
 	dir /= dist;
 	
@@ -79,12 +89,12 @@ float3 RadiarBlur(float2 vTexUV)
 	[unroll]
 	for (int i = 0; i < 10; ++i)
 	{
-		sum += g_HDRTex.Sample(Wrap_MinMagMipLinear_Sampler, vTexUV + dir * samples[i] * g_SampleDist).xyz;
+		sum += g_HDRTex.Sample(Wrap_MinMagMipLinear_Sampler, vTexUV + dir * g_Samples[i] * g_SampleDist).xyz;
 	}
 	sum /= 11.0; 
 
 	float ratio = saturate(dist * g_SampleStrength);
-	return lerp(vColor, sum, 1.0);
+	return lerp(vColor, sum, ratio);
 }
 ////////////////////////////////////////////////////////////
 
@@ -146,7 +156,7 @@ PS_OUT PS_MAIN(PS_IN In)
 		vViewPos = mul(vViewPos, g_MainProjMatrixInverse);
 
 		// Test - Radiar Blur 
-		vColor = RadiarBlur(In.vTexUV);
+		/*if(g_RadiarBlur_FocusPos_Main)*/ vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Main);
 
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
