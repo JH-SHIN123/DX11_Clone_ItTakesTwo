@@ -59,12 +59,12 @@ _int CEffect_Boss_Laser_Particle::Tick(_double TimeDelta)
 
 _int CEffect_Boss_Laser_Particle::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Boss_Laser_Particle::Render(RENDER_GROUP::Enum eGroup)
 {
-	_float fTime = (_float)m_dControlTime;
+	_float fTime = 1.f;// (_float)m_dControlTime;
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fTime, sizeof(_float));

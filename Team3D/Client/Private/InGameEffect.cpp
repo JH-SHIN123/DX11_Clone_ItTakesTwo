@@ -515,6 +515,23 @@ _float4 CInGameEffect::Get_TexUV_Rand(_uint iTexture_U, _uint iTexture_V)
 	return vUV;
 }
 
+_float4 CInGameEffect::Get_TexUV_Rand(_uint iTexture_U, _uint iTexture_V, _int * pTex_U, _int * pTex_V)
+{
+	_float2 vRandUV = { _float(rand() % iTexture_U), _float(rand() % iTexture_V) };
+
+	_float fLeft	= _float(1.f / iTexture_U) *  vRandUV.x;
+	_float fTop		= _float(1.f / iTexture_V) *  vRandUV.y;
+	_float fRight	= _float(1.f / iTexture_U) * (vRandUV.x + 1.f);
+	_float fBottom	= _float(1.f / iTexture_V) * (vRandUV.y + 1.f);
+
+	*pTex_U = (_int)vRandUV.x;
+	*pTex_V = (_int)vRandUV.y;
+
+	_float4 vUV = { fLeft, fTop, fRight, fBottom };
+
+	return vUV;
+}
+
 _float4 CInGameEffect::Get_TexUV_Next(_uint iTexture_U, _uint iTexture_V)
 {
 	iTexture_U += 1;

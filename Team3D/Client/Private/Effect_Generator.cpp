@@ -27,6 +27,8 @@
 #include "Effect_PointLight.h"
 #include "Effect_Boss_Laser_Particle.h"
 #include "Effect_Boss_Core.h"
+#include "Effect_Boss_Core_Hit.h"
+#include "Effect_Boss_Core_Smoke.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -100,6 +102,12 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::RobotBattery_Spark:
 		lstrcpy(szPrototype, L"GameObject_2D_Robot_Battery_Spark");
+		break;
+	case Effect_Value::BossCore_Hit:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Core_Hit");
+		break;
+	case Effect_Value::BossCore_Smoke:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Core_Smoke");
 		break;
 	default:
 		break;
@@ -237,6 +245,13 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Core"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Core", CEffect_Boss_Core::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Core_Hit"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Core_Hit", CEffect_Boss_Core_Hit::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Core_Smoke"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Core_Smoke", CEffect_Boss_Core_Smoke::Create(pDevice, pDeviceContext, pData));
+
+
 	// 3D Effect
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel", CEffect_RespawnTunnel::Create(pDevice, pDeviceContext, pData));
@@ -314,6 +329,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Ember_Texture"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/T_Ember_Texture_256.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_radialgradientsample"),CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/radialgradientsample.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Spark_Mask"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/Spark_Mask_01.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Loop"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Smoke/smokeloop_0%d.png"), 2)), E_FAIL);
 
 	
 #pragma endregion

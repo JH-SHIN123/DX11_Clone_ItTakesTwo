@@ -690,6 +690,15 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\00.Core_Hit">
       <UniqueIdentifier>{74a643e4-3232-4d81-a30c-68c74e97f464}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\01.Core_Smoke">
+      <UniqueIdentifier>{442e7bd3-f40c-4243-b07e-982b13ea6ecc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\02.Core_Explosion">
+      <UniqueIdentifier>{ea5302d0-d9ea-4320-91a9-2368a3da767f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\03.Core_Lightning">
+      <UniqueIdentifier>{31a067a0-2991-4190-950f-9da799848d7e}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1271,7 +1280,18 @@
     <ClInclude Include="..\public\Effect_Boss_Core.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Core_Hit.h" />
+    <ClInclude Include="..\public\Effect_Boss_Core_Hit.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\00.Core_Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Core_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\01.Core_Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Core_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\02.Core_Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Core_Lightning.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\03.Core_Lightning</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -1817,7 +1837,18 @@
     <ClCompile Include="..\private\Effect_Boss_Core.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Core_Hit.cpp" />
+    <ClCompile Include="..\private\Effect_Boss_Core_Hit.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\00.Core_Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Core_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\01.Core_Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Core_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\02.Core_Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Core_Lightning.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\03.Core_Lightning</Filter>
+    </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--etc-->

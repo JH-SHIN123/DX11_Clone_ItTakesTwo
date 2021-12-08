@@ -159,7 +159,7 @@ HRESULT CLevel_Stage::Clone_StaticGameObjects_ByFile(const _tchar * pFilePath, c
 
 	return S_OK;
 }
-
+  
 HRESULT CLevel_Stage::Ready_Test()
 {
 	/* Se */
@@ -168,7 +168,7 @@ HRESULT CLevel_Stage::Ready_Test()
 #endif 
 	/* Jung */
 #ifdef __TEST_JUNG
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke")), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core")), E_FAIL);
 #endif
 

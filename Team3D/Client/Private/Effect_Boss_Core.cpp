@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Boss_Core.h"
-
+#include "Effect_Generator.h"
 CEffect_Boss_Core::CEffect_Boss_Core(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
@@ -23,7 +23,6 @@ HRESULT CEffect_Boss_Core::NativeConstruct(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
 
-
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
@@ -33,10 +32,8 @@ HRESULT CEffect_Boss_Core::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom), E_FAIL);
 
-
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
-
 
 	/*Gara*/m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 2.f, 30.f, 1.f));
 
@@ -70,6 +67,11 @@ _int CEffect_Boss_Core::Tick(_double TimeDelta)
 		m_pInstanceBuffer->vTextureUV = Check_UV();
 	}
 
+	/*GARA*/if (m_pGameInstance->Key_Down(DIK_V))
+	/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Hit, m_pTransformCom->Get_WorldMatrix());
+	/*GARA*/if (m_pGameInstance->Key_Down(DIK_B))
+	/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Smoke, m_pTransformCom->Get_WorldMatrix());
+
 	return _int();
 }
 
@@ -85,6 +87,8 @@ HRESULT CEffect_Boss_Core::Render(RENDER_GROUP::Enum eGroup)
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
 	_float4 vColorRamp_UV = { 0.f, 0.f, 1.f, 1.f };
 	m_pPointInstanceCom->Set_DefaultVariables();
+	_int i = 1;
+	m_pPointInstanceCom->Set_Variable("g_IsBillBoard", &i, sizeof(_int));
 	m_pPointInstanceCom->Set_Variable("g_fRadianAngle", &fRandian, sizeof(_float));
 	m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vColorRamp_UV, sizeof(_float4));
 	m_pPointInstanceCom->Set_Variable("g_fTime", &m_fDistortion_Time, sizeof(_float));

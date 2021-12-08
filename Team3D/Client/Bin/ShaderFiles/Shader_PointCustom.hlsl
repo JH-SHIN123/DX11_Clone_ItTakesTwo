@@ -1308,9 +1308,9 @@ PS_OUT  PS_BOSS_CORE(PS_IN_DIST In)
 	float2 vUV = In.vColorRamp_UV;
 	vUV.y += g_fTime;
 	float4 vDistortion = g_SecondTexture.Sample(DiffuseSampler, vUV);
-	float fWeight = vDistortion.r * 0.5f;
-
 	fLenght = fLenght / 0.5f; // normalize
+	float fWeight = vDistortion.r * fLenght;
+
 	float2 vColorUV = (float2)((fLenght * -1.f) + 1.f);
 	float fAlpha = vColorUV.x;
 	vColorUV += fWeight;

@@ -226,7 +226,10 @@
     <ClInclude Include="..\Public\Dynamic_Env.h" />
     <ClInclude Include="..\Public\EffectLight.h" />
     <ClInclude Include="..\public\Effect_Boss_Core.h" />
+    <ClInclude Include="..\public\Effect_Boss_Core_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Core_Hit.h" />
+    <ClInclude Include="..\public\Effect_Boss_Core_Lightning.h" />
+    <ClInclude Include="..\public\Effect_Boss_Core_Smoke.h" />
     <ClInclude Include="..\public\Effect_Boss_Laser_Particle.h" />
     <ClInclude Include="..\Public\Effect_Boss_Laser_Smoke.h" />
     <ClInclude Include="..\Public\Effect_Cody_Size.h" />
@@ -410,7 +413,10 @@
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
     <ClCompile Include="..\Private\EffectLight.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core.cpp" />
+    <ClCompile Include="..\private\Effect_Boss_Core_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core_Hit.cpp" />
+    <ClCompile Include="..\private\Effect_Boss_Core_Lightning.cpp" />
+    <ClCompile Include="..\private\Effect_Boss_Core_Smoke.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Laser_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Boss_Laser_Smoke.cpp" />
     <ClCompile Include="..\Private\Effect_Cody_Size.cpp" />

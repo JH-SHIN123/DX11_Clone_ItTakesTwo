@@ -20,6 +20,8 @@ enum class Effect_Value
 	May_Revive,
 	May_Boots_Walking,
 	RobotBattery_Spark,
+	BossCore_Hit,
+	BossCore_Smoke,
 	Effect_Value_End
 };
 
