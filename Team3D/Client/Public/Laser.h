@@ -23,9 +23,11 @@ protected:
 	CTransform*							m_pTransformCom = nullptr;
 	CTextures*							m_pTextureCom = nullptr;
 	CRenderer*							m_pRendererCom = nullptr;
-	CVIBuffer_PointInstance_Custom_ST*	m_pVIBufferCom = nullptr;
 	_float4								m_vCollisionPoint = _float4(0.f, 0.f, 0.f, 0.f);
 	VTXMATRIX_CUSTOM_ST*				m_pInstanceMatrices = nullptr;
+	VTXMATRIX_CUSTOM_ST*				m_pCircleMatrice = nullptr;
+	CVIBuffer_PointInstance_Custom_ST*	m_pVIBufferCom = nullptr;
+
 
 public:
 	virtual CGameObject* Clone_GameObject(void* pArg) PURE;

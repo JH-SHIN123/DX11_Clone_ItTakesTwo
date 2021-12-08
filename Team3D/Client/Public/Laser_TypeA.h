@@ -19,6 +19,11 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eRender) override;
 	virtual HRESULT Render_ShadowDepth() override;
 
+private:
+	class CCharacter*	m_pCody = nullptr;
+	class CCharacter*	m_pMay = nullptr;
+	GameID::Enum		m_eTargetID;
+
 public:
 	static CLaser_TypeA* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
