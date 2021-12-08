@@ -15,7 +15,7 @@ public:
 	enum UFO_STATE {
 		UFO_END
 	};
-	enum UFO_TARGET { TAR , TARGET_MAY, TARGET_END };
+	enum UFO_TARGET { TARGET_CODY , TARGET_MAY, TARGET_END };
 	enum UFO_PHASE { PHASE_1, PHASE_2, PHASE_3, PHASE_4, PHASE_END };
 
 public:
@@ -36,11 +36,13 @@ public:
 private:
 	UFO_TARGET m_eTarget = TARGET_END;
 	UFO_PHASE m_ePhase = PHASE_END;
+	
+private:
+	/* For. CutScene */
+	_bool				m_IsCutScene = false;
 
-	/* For.Battle */
-	_bool m_IsCoreExplode = false;
-	_bool m_IsCodyHold = false;
-	_bool m_IsMayLaserRippedOff = false;
+	/* For. PHASE_1 Pattern */
+	_float4				m_vStartTargetPos;
 
 private:
 	/* For.Component */
@@ -51,15 +53,14 @@ private:
 	CTransform*			m_pMayTransform = nullptr;
 
 private:
-	//CUFO::UFO_STATE Check_State(_double dTimeDelta);
-	void Change_State(_double dTimeDelta);
-	void Laser_Pattern(_double dTimeDelta);
+	/* PHASE_1 Pattern */
 	void Phase1_Pattern(_double dTimeDelta);
-
+	void Laser_Pattern(_double dTimeDelta);
 
 	/* For. NativeConstruct */
 private:
 	void Add_LerpInfo_To_Model();
+	HRESULT Ready_Component();
 
 public:
 	static CUFO* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

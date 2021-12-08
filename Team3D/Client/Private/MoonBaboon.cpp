@@ -72,9 +72,6 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 		return S_OK;
 	}
 
-	Check_State(dTimeDelta);
-	Change_State(dTimeDelta);
-	During_Animation_Behavior(dTimeDelta);
 	Fix_MoonBaboon_Chair(dTimeDelta);
 
 	//m_pActorCom->Update(dTimeDelta);
@@ -103,14 +100,6 @@ CMoonBaboon::MOON_STATE CMoonBaboon::Check_State(_double dTimeDelta)
 		m_eCurState = m_eNextState;
 	}
 	return m_eCurState;
-}
-
-void CMoonBaboon::Change_State(_double dTimeDelta)
-{
-}
-
-void CMoonBaboon::During_Animation_Behavior(_double dTimeDelta)
-{
 }
 
 void CMoonBaboon::Fix_MoonBaboon_Chair(_double dTimeDelta)
