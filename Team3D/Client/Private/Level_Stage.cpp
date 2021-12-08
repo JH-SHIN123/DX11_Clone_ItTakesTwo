@@ -53,8 +53,8 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Wormhole(TEXT("Layer_Wormhole")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_WallLaserTrap(TEXT("Layer_WallLaserTrap")), E_FAIL);	
 	FAILED_CHECK_RETURN(Ready_Layer_TutorialDoor(TEXT("Layer_TutorialDoor")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_GravityPipe(TEXT("Layer_GravityPipe")), E_FAIL);
-
+	FAILED_CHECK_RETURN(Ready_Layer_GravityPipe(TEXT("Layer_GravityPipe")), E_FAIL); 
+	FAILED_CHECK_RETURN(Ready_Layer_Env_Particles(TEXT("Layer_Env_Particle")), E_FAIL);
 	/* Hye */
 	FAILED_CHECK_RETURN(Ready_Layer_Planet(TEXT("Layer_Planet")), E_FAIL);
 	/* Taek */
@@ -305,6 +305,11 @@ HRESULT CLevel_Stage::Ready_Layer_GravityPipe(const _tchar * pLayerTag)
 	Data.iPlayerValue = 1;
 	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Gravity_Pipe"), &Data), E_FAIL);
+	return S_OK;
+}
+HRESULT CLevel_Stage::Ready_Layer_Env_Particles(const _tchar * pLayerTag)
+{
+
 	return S_OK;
 }
 #pragma endregion

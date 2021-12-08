@@ -699,6 +699,12 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\03.Core_Lightning">
       <UniqueIdentifier>{31a067a0-2991-4190-950f-9da799848d7e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\07.Space_Valve_Door">
+      <UniqueIdentifier>{0a950e2e-b4ab-4a4f-8677-d89a0dacbc26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29">
+      <UniqueIdentifier>{cadc3ab7-2f34-4b6a-88b0-bae33b018ee8}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1292,6 +1298,12 @@
     <ClInclude Include="..\public\Effect_Boss_Core_Lightning.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\03.Core_Lightning</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Space_Valve_Door.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\07.Space_Valve_Door</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Env_Particle_Field.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -1848,6 +1860,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Boss_Core_Lightning.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\03.Core_Lightning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Space_Valve_Door.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\07.Space_Valve_Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Env_Particle_Field.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
