@@ -41,6 +41,8 @@ HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDevic
 	FAILED_CHECK_RETURN(Build_DOFBlurResources(fBufferWidth, fBufferHeight), E_FAIL);
 	FAILED_CHECK_RETURN(Build_ComputeShaders(TEXT("../Bin/ShaderFiles/ComputeShader_PostFX.hlsl"), "DefaultTechnique"), E_FAIL);
 
+	m_pRadiarBlur_Mask = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/PostFX/Radial_Lightburst_01.png"));
+
 	return S_OK;
 }
 
@@ -188,10 +190,12 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqr, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_BloomScale", &m_fBloomScale, sizeof(_float));
 
-	/* TEST */
-	_float2 test = { m_fRadiarDist, m_fRadiarStr };
-	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Main", &test, sizeof(test)); // OFFSET 0.06
-
+	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Main", &m_bRadialBlur_Main, sizeof(m_bRadialBlur_Main)); 
+	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Sub", &m_bRadialBlur_Sub, sizeof(m_bRadialBlur_Sub));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Main", &m_vRadiarBlur_FocusPos_Main, sizeof(m_vRadiarBlur_FocusPos_Main));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Sub", &m_vRadiarBlur_FocusPos_Sub, sizeof(m_vRadiarBlur_FocusPos_Sub));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_RadiarBlurMaskTex", m_pRadiarBlur_Mask->Get_ShaderResourceView(0));
+	
 
 	_float	fCamFar;
 	_matrix	ProjMatrixInverse;
@@ -490,13 +494,13 @@ HRESULT CPostFX::KeyInput_Test(_double TimeDelta)
 	m_fBloomScale = c;
 	m_fBloomThreshold = d;
 
-	GetPrivateProfileString(L"Section_1", L"Key_5", L"0", szBuff, 256, L"../test.ini");
-	_float e = (_float)_wtof(szBuff);
-	GetPrivateProfileString(L"Section_1", L"Key_6", L"0", szBuff, 256, L"../test.ini");
-	_float f = (_float)_wtof(szBuff);
-	
-	m_fRadiarDist = e;
-	m_fRadiarStr = f;
+	//GetPrivateProfileString(L"Section_1", L"Key_5", L"0", szBuff, 256, L"../test.ini");
+	//_float e = (_float)_wtof(szBuff);
+	//GetPrivateProfileString(L"Section_1", L"Key_6", L"0", szBuff, 256, L"../test.ini");
+	//_float f = (_float)_wtof(szBuff);
+	//
+	//m_fRadiarDist = e;
+	//m_fRadiarStr = f;
 #endif // _DEBUG
 
 	return S_OK;
@@ -551,7 +555,8 @@ void CPostFX::Free()
 	Safe_Release(m_pEffect_CS);
 
 	Safe_Release(m_pVIBuffer_ToneMapping);
-	
+	Safe_Release(m_pRadiarBlur_Mask);
+
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 }

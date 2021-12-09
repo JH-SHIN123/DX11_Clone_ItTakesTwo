@@ -286,6 +286,9 @@ _int CCody::Tick(_double dTimeDelta)
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 
+	// Control RadiarBlur - 제일 마지막에 호출
+	Trigger_RadiarBlur(dTimeDelta);
+
 	return NO_EVENT;
 }
 
@@ -613,6 +616,8 @@ void CCody::KeyInput(_double dTimeDelta)
 				m_IsAirDash = true;
 			}
 		}
+
+		Start_RadiarBlur(0.5f);
 	}
 #pragma endregion
 
@@ -1156,8 +1161,6 @@ void CCody::Roll(const _double dTimeDelta)
 		else if (m_eCurPlayerSize == SIZE_SMALL)
 			m_pActorCom->Move(vDirection * (m_fAcceleration / 120.f), dTimeDelta);
 	}
-	
-	
 }
 void CCody::Sprint(const _double dTimeDelta)
 {
@@ -3061,6 +3064,65 @@ HRESULT CCody::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 	return S_OK;
 }
 
+void CCody::Start_RadiarBlur(_double dBlurTime)
+{
+	//if (m_bRadiarBlur) return;
+
+	m_bRadiarBlur = true;
+	m_dRadiarBlurTime = dBlurTime;
+	m_dRadiarBlurDeltaT = 0.0;
+
+	Set_RadiarBlur();
+}
+
+void CCody::Trigger_RadiarBlur(_double dTimeDelta)
+{
+	if (false == m_bRadiarBlur) return;
+
+	if (m_dRadiarBlurDeltaT >= m_dRadiarBlurTime)
+	{
+		_float2 vFocusPos = { 0.f,0.f };
+		m_pGameInstance->Set_RadiarBlur_Main(false, vFocusPos);
+		m_dRadiarBlurDeltaT = 0.0;
+		m_bRadiarBlur = false;
+	}
+	else
+	{
+		m_dRadiarBlurDeltaT += dTimeDelta;
+		Set_RadiarBlur();
+	}
+}
+
+void CCody::Set_RadiarBlur()
+{
+	_matrix CombineViewMatrix, CombineProjMatrix;
+
+	CombineViewMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_MAINVIEW);
+	CombineProjMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_MAINPROJ);
+
+	_matrix matCombineMatrix = CombineViewMatrix * CombineProjMatrix;
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPos = XMVector3TransformCoord(vPos, matCombineMatrix);
+
+	_float3 vConvertPos;
+	XMStoreFloat3(&vConvertPos, vPos);
+	vConvertPos.x += 1.f;
+	vConvertPos.y += 1.f;
+
+	if (1.f <= vConvertPos.z)
+	{
+		vConvertPos.x *= -1.f;
+		vConvertPos.y *= -1.f;
+	}
+
+	D3D11_VIEWPORT Viewport = m_pGameInstance->Get_ViewportInfo(1);
+	vConvertPos.x = ((Viewport.Width * (vConvertPos.x)) / 2.f);
+	vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f);
+
+	_float2 vFocusPos = { vConvertPos.x / g_iWinCX , vConvertPos.y / g_iWinCY };
+	vFocusPos.y += 0.05f; // Offset
+	m_pGameInstance->Set_RadiarBlur_Main(true, vFocusPos);
+}
 
 void CCody::PinBall(const _double dTimeDelta)
 {

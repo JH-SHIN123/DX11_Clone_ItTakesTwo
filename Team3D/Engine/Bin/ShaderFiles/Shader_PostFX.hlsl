@@ -9,6 +9,9 @@ Texture2D				g_DepthTex;
 Texture2D				g_EffectTex;
 Texture2D				g_EffectBlurTex;
 
+/* Etc Resources */
+Texture2D				g_RadiarBlurMaskTex;
+
 StructuredBuffer<float> g_AverageLum;
 
 static const float4 LUM_FACTOR = float4(0.299, 0.587, 0.114, 0);
@@ -93,8 +96,11 @@ float3 RadiarBlur(float2 vTexUV, float2 vFocusPos)
 	}
 	sum /= 11.0; 
 
-	float ratio = saturate(dist * g_SampleStrength);
-	return lerp(vColor, sum, ratio);
+	float2 fMaskUV = vTexUV;
+	fMaskUV.x *= 2.f;
+	float fBlurMask = 1.f - g_RadiarBlurMaskTex.Sample(Wrap_MinMagMipLinear_Sampler, fMaskUV).x;
+	float ratio = saturate(dist * g_SampleStrength * fBlurMask);
+	return lerp(vColor, sum, fBlurMask);
 }
 ////////////////////////////////////////////////////////////
 
@@ -156,7 +162,7 @@ PS_OUT PS_MAIN(PS_IN In)
 		vViewPos = mul(vViewPos, g_MainProjMatrixInverse);
 
 		// Test - Radiar Blur 
-		/*if(g_RadiarBlur_FocusPos_Main)*/ vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Main);
+		if(true == g_bRadiarBlur_Main) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Main);
 
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
