@@ -48,6 +48,7 @@ public: /* Setter */
 	void	Set_IsPlayerSizeSmall(_bool _IsPlayerSizeSmall) { m_IsPlayerSizeSmall = _IsPlayerSizeSmall; }
 	void	Set_IsPlayerInUFO(_bool _IsPlayerInUFO) { m_IsPlayerInUFO = _IsPlayerInUFO; }
 	void	Set_PlayerType(CPlayerActor::PLAYER_TYPE _ePlayerType) { m_ePlayerType = _ePlayerType; }
+	void	Set_ShapeFlag(_bool bValue);
 
 	/* Wall */
 	void	Set_ContactPos(PxExtendedVec3 vPosition) { m_vContactPosition = vPosition; }

@@ -347,7 +347,7 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	if (fDist < 10.f && fDist > 0.01f) //순간이동안했을때
 	{
 		vPlayerPos = XMVectorLerp(vPrePlayerPos, vCurPlayerPos,
-			XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 2.f);
+			XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 20.f);
 	} else if(fDist > 10.f)
 		bIsTeleport = true;
 
@@ -385,20 +385,19 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 	XMStoreFloat4x4(&m_matBeforeSpringCam, matAffine);
 #pragma region PhsyX Check
-	_vector vResultPos = XMVectorZero();
-	if (false == bIsTeleport)
-	{
-		m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
+	//_vector vResultPos = XMVectorZero();
+	//if (false == bIsTeleport)
+	//{
+	//	m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
+	//	_float4 vEye, vAt;
 
-		_float4 vEye, vAt;
+	//	XMStoreFloat4(&vEye, vResultPos);
+	//	XMStoreFloat4(&vAt, vPlayerPos);
+	//	_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt,vPlayerUp);
+	//	matAffine = matCurWorld;
 
-		XMStoreFloat4(&vEye, vResultPos);
-		XMStoreFloat4(&vAt, vPlayerPos);
-		_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt,vPlayerUp);
-		matAffine = matCurWorld;
-
-	}
-	else
+	//}
+	//else
 		m_bIsCollision = false;
 	m_pTransformCom->Set_WorldMatrix(matAffine);
 

@@ -81,6 +81,7 @@ HRESULT CCameraActor::NativeConstruct(void * pArg)
 
 PxControllerCollisionFlags CCameraActor::Move(_fvector vMove, _double dTimeDelta)
 {
+	
 	return m_pController->move(MH_PxVec3(vMove), 0.f, (_float)dTimeDelta, *m_pFilters);
 }
 

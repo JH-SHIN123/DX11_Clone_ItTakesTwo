@@ -341,8 +341,20 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Local variable
-	_vector vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
-	_vector vCameraRight = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
+	_vector vCameraLook, vCameraRight;
+	if (m_pActorCom->Get_IsOnGravityPath() == false)
+	{
+		vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
+		vCameraRight = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
+	}
+	else
+	{
+		PxVec3 vNormal = m_pActorCom->Get_GravityNormal();
+		_vector vGravityPathNormal = XMVector3Normalize(XMVectorSet(vNormal.x, vNormal.y, vNormal.z, 0.f));
+
+		vCameraRight = XMVector3Normalize(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT));
+		vCameraLook = XMVector3Normalize(XMVector3Cross(vCameraRight, vGravityPathNormal));
+	}
 	_bool bMove[2] = { false, false };
 	_bool bRoll = false;
 
@@ -477,7 +489,7 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma region Pad Square
 	if (m_pGameInstance->Key_Down(DIK_L) && m_bRoll == false && m_bCanMove == true)
 	{
-		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+		//XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 		if (m_IsJumping == false)
 		{
@@ -913,7 +925,7 @@ void CMay::Move(const _double dTimeDelta)
 		m_bAction = false;
 
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
-		if (m_pActorCom->Get_IsOnGravityPath() == false) // 중력 발판 위에 있지 않을때. ( 중력발판 위에 있으면 그냥 카메라 Look으로 움직이게 하면 잘 돌아감 ㅇㅇ )
+		if (m_pActorCom->Get_IsOnGravityPath() == false) // 중력 발판 위에 있지 않을때.
 		{
 			_vector vPlayerUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 
@@ -956,7 +968,6 @@ void CMay::Move(const _double dTimeDelta)
 
 		if (m_bRoll == false && m_IsJumping == false && m_IsFalling == false && ANI_M_Jump_Land_Jog != m_pModelCom->Get_CurAnimIndex())
 		{
-			// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
 			if (m_pModelCom->Is_AnimFinished(ANI_M_Jog_Start) == true) // JogStart -> Jog
 			{
 				m_pModelCom->Set_Animation(ANI_M_Jog);
