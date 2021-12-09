@@ -40,19 +40,11 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 
 	CCutScenePlayer::GetInstance()->Add_Performer(TEXT("Component_Model_MoonBaboon"), this);
 
-	m_pCodyTransform = ((CCody*)CDataStorage::GetInstance()->GetCody())->Get_Transform();
-	NULL_CHECK_RETURN(m_pCodyTransform, E_FAIL);
-	Safe_AddRef(m_pCodyTransform);
-
-	m_pMayTransform = ((CMay*)CDataStorage::GetInstance()->GetMay())->Get_Transform();
-	NULL_CHECK_RETURN(m_pMayTransform, E_FAIL);
-	Safe_AddRef(m_pMayTransform);
-
-	m_pUFOModel = ((CUFO*)CDataStorage::GetInstance()->Get_BossUFO())->Get_Model();
+	m_pUFOModel = ((CUFO*)DATABASE->Get_BossUFO())->Get_Model();
 	NULL_CHECK_RETURN(m_pUFOModel, E_FAIL);
 	Safe_AddRef(m_pUFOModel);
 
-	m_pUFOTransform = ((CUFO*)CDataStorage::GetInstance()->Get_BossUFO())->Get_Transform();
+	m_pUFOTransform = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform();
 	NULL_CHECK_RETURN(m_pUFOTransform, E_FAIL);
 	Safe_AddRef(m_pUFOTransform);
 	
@@ -163,9 +155,6 @@ void CMoonBaboon::Free()
 {
 	Safe_Release(m_pUFOTransform);
 	Safe_Release(m_pUFOModel);
-	Safe_Release(m_pMayTransform);
-	Safe_Release(m_pCodyTransform);
-	//Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
