@@ -52,41 +52,15 @@ void CGameDebugger::Debugging()
 		cout << "rglSlider[0] = " << JoyStickState.rglSlider[0] << endl;
 		cout << "rglSlider[1] = " << JoyStickState.rglSlider[1] << endl << endl;
 
-		cout << "Button[0] = " << (_int)JoyStickState.rgbButtons[0] << endl;
-		cout << "Button[1] = " << (_int)JoyStickState.rgbButtons[1] << endl;
-		cout << "Button[2] = " << (_int)JoyStickState.rgbButtons[2] << endl;
-		cout << "Button[3] = " << (_int)JoyStickState.rgbButtons[3] << endl;
-		cout << "Button[4] = " << (_int)JoyStickState.rgbButtons[4] << endl;
-		cout << "Button[5] = " << (_int)JoyStickState.rgbButtons[5] << endl;
-		cout << "Button[6] = " << (_int)JoyStickState.rgbButtons[6] << endl;
-		cout << "Button[7] = " << (_int)JoyStickState.rgbButtons[7] << endl;
-		cout << "Button[8] = " << (_int)JoyStickState.rgbButtons[8] << endl;
-		cout << "Button[9] = " << (_int)JoyStickState.rgbButtons[9] << endl;
-		cout << "Button[10] = " << (_int)JoyStickState.rgbButtons[10] << endl;
-		cout << "Button[11] = " << (_int)JoyStickState.rgbButtons[11] << endl;
-		cout << "Button[12] = " << (_int)JoyStickState.rgbButtons[12] << endl;
-		cout << "Button[13] = " << (_int)JoyStickState.rgbButtons[13] << endl;
-		cout << "Button[14] = " << (_int)JoyStickState.rgbButtons[14] << endl;
-		cout << "Button[15] = " << (_int)JoyStickState.rgbButtons[15] << endl;
+		for (_uint i = 0; i < 32; ++i)
+		{
+			if (JoyStickState.rgbButtons[i])
+				cout << "Button " << i << "\t\t = 1" << endl;
+			else
+				cout << "Button " << i << "\t\t = 0" << endl;
+		}
 
-		cout << "Button[16] = " << (_int)JoyStickState.rgbButtons[16] << endl;
-		cout << "Button[17] = " << (_int)JoyStickState.rgbButtons[17] << endl;
-		cout << "Button[18] = " << (_int)JoyStickState.rgbButtons[18] << endl;
-		cout << "Button[19] = " << (_int)JoyStickState.rgbButtons[19] << endl;
-		cout << "Button[20] = " << (_int)JoyStickState.rgbButtons[20] << endl;
-		cout << "Button[21] = " << (_int)JoyStickState.rgbButtons[21] << endl;
-		cout << "Button[22] = " << (_int)JoyStickState.rgbButtons[22] << endl;
-		cout << "Button[23] = " << (_int)JoyStickState.rgbButtons[23] << endl;
-		cout << "Button[24] = " << (_int)JoyStickState.rgbButtons[24] << endl;
-		cout << "Button[25] = " << (_int)JoyStickState.rgbButtons[25] << endl;
-		cout << "Button[26] = " << (_int)JoyStickState.rgbButtons[26] << endl;
-		cout << "Button[27] = " << (_int)JoyStickState.rgbButtons[27] << endl;
-		cout << "Button[28] = " << (_int)JoyStickState.rgbButtons[28] << endl;
-		cout << "Button[29] = " << (_int)JoyStickState.rgbButtons[29] << endl;
-		cout << "Button[30] = " << (_int)JoyStickState.rgbButtons[30] << endl;
-		cout << "Button[31] = " << (_int)JoyStickState.rgbButtons[31] << endl;
-
-		Sleep(400);
+		Sleep(300);
 	}
 #else
 	_tchar szLayerTag[MAX_PATH] = TEXT("");

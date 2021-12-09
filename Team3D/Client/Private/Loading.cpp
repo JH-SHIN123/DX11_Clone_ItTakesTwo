@@ -12,6 +12,7 @@
 /* Se */
 #include "GravityPath.h"
 #include "Laser_TypeA.h"
+#include "Laser_TypeB.h"
 
 /* Jung */
 #include "Effect_Generator.h"
@@ -329,6 +330,7 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Se()
 #else
 #ifdef __TEST_SE
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"), CLaser_TypeA::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB"), CLaser_TypeB::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 #endif
 #endif
 

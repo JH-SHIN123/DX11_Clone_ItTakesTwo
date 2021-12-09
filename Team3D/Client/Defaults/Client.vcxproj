@@ -270,6 +270,7 @@
     <ClInclude Include="..\Public\Instancing_Env.h" />
     <ClInclude Include="..\Public\Laser.h" />
     <ClInclude Include="..\Public\Laser_TypeA.h" />
+    <ClInclude Include="..\Public\Laser_TypeB.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\Public\Level_Stage.h" />
@@ -449,6 +450,7 @@
     <ClCompile Include="..\Private\Instancing_Env.cpp" />
     <ClCompile Include="..\Private\Laser.cpp" />
     <ClCompile Include="..\Private\Laser_TypeA.cpp" />
+    <ClCompile Include="..\Private\Laser_TypeB.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Level_Stage.cpp" />

@@ -123,6 +123,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.Laser\01.TypeA%28Boss%29">
       <UniqueIdentifier>{9f8c6192-2a2b-450d-a4c8-e49fa1dbbcd1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.Laser\02.TypeB%28Boss%29">
+      <UniqueIdentifier>{845d1d4d-5721-40b7-b552-f8a8ac53b106}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung">
       <UniqueIdentifier>{fec661ad-31f9-4dec-b790-1b4cb09030ce}</UniqueIdentifier>
     </Filter>
@@ -773,6 +776,9 @@
     <ClInclude Include="..\Public\Laser_TypeA.h">
       <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\01.TypeA%28Boss%29</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Laser_TypeB.h">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\02.TypeB%28Boss%29</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\WarpGate.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
     </ClInclude>
@@ -1341,6 +1347,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Laser_TypeA.cpp">
       <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\01.TypeA%28Boss%29</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Laser_TypeB.cpp">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\02.TypeB%28Boss%29</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\WarpGate.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>

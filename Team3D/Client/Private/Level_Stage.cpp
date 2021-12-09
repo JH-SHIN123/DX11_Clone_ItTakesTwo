@@ -98,7 +98,6 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
 
-
 #ifdef __TEST_TAEK
 	TCHAR lightTag[256] = L"";
 
@@ -124,6 +123,13 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	}
 #endif // __TEST_TAEK
 
+#ifdef __TEST_SE
+	if (m_pGameInstance->Key_Down(DIK_M))
+	{
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA")), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB")), E_FAIL);
+	}
+#endif
 
 	return NO_EVENT;
 }
@@ -169,6 +175,7 @@ HRESULT CLevel_Stage::Ready_Test()
 	/* Se */
 #ifdef __TEST_SE
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB")), E_FAIL);
 #endif 
 	/* Jung */
 
