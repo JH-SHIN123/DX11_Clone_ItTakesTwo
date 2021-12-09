@@ -34,6 +34,7 @@ CModel::CModel(const CModel & rhs)
 	, m_PivotMatrix					(rhs.m_PivotMatrix)
 	, m_CombinedPivotMatrix			(rhs.m_CombinedPivotMatrix)
 	, m_BaseTransformations			(rhs.m_BaseTransformations)
+	, m_PivotTransformations		(rhs.m_PivotTransformations)
 	, m_AnimTransformations			(rhs.m_AnimTransformations)
 	, m_CombinedTransformations		(rhs.m_CombinedTransformations)
 	, m_PreAnimKeyFrames			(rhs.m_PreAnimKeyFrames)
@@ -279,6 +280,23 @@ HRESULT CModel::Set_DefaultVariables_ShadowDepth(_fmatrix WorldMatrix)
 	return S_OK;
 }
 
+HRESULT CModel::Set_PivotTransformation(_uint iIndex, _fmatrix PivotMatrix)
+{
+	if (iIndex >= m_iNodeCount)
+		return E_FAIL;
+
+	XMStoreFloat4x4(&m_PivotTransformations[iIndex], PivotMatrix);
+
+	return S_OK;
+}
+
+HRESULT CModel::Initialize_PivotTransformation()
+{
+	m_PivotTransformations.resize(m_iNodeCount, MH_XMFloat4x4Identity());
+
+	return S_OK;
+}
+
 HRESULT CModel::NativeConstruct_Prototype(const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
 	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
@@ -326,6 +344,7 @@ HRESULT CModel::Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON
 	m_BaseTransformations.swap(Transformations);
 	m_Anims.swap(Anims);
 
+	m_PivotTransformations.resize(m_iNodeCount, MH_XMFloat4x4Identity());
 	m_AnimTransformations.resize(m_iNodeCount);
 	m_CombinedTransformations.resize(m_iNodeCount);
 
@@ -643,9 +662,9 @@ void CModel::Update_CombinedTransformations()
 		_int iParentNodeIndex = pNode->Get_ParentNodeIndex();
 
 		if (0 <= iParentNodeIndex)
-			XMStoreFloat4x4(&m_CombinedTransformations[pNode->Get_NodeIndex()], XMLoadFloat4x4(&m_AnimTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_CombinedTransformations[iParentNodeIndex]));
+			XMStoreFloat4x4(&m_CombinedTransformations[pNode->Get_NodeIndex()], XMLoadFloat4x4(&m_PivotTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_AnimTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_CombinedTransformations[iParentNodeIndex]));
 		else
-			XMStoreFloat4x4(&m_CombinedTransformations[pNode->Get_NodeIndex()], XMLoadFloat4x4(&m_AnimTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_CombinedPivotMatrix));
+			XMStoreFloat4x4(&m_CombinedTransformations[pNode->Get_NodeIndex()], XMLoadFloat4x4(&m_PivotTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_AnimTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_CombinedPivotMatrix));
 	}
 }
 

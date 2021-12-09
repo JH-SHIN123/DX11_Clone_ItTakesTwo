@@ -883,7 +883,13 @@ PS_OUT  PS_MAIN_LASER(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(ColorSampler, In.vTexUV);
-	Out.vColor.a = Out.vColor.r;
+	Out.vColor.a = Out.vColor.g;		
+
+	if (Out.vColor.g > 0.6f)
+	{
+		Out.vColor.b = 1.f;
+		Out.vColor.a = 0.9f;
+	}
 
 	return Out;
 }
@@ -911,6 +917,37 @@ PS_OUT  PS_MAIN_LIGHT(PS_IN In)
 
 	return Out;
 }
+
+PS_OUT  PS_MAIN_LASER_CIRCLE(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 vCenter = In.vTexUV - 0.5f;
+	vCenter = abs(vCenter);
+
+	float fLength = length(vCenter);
+	
+	if (0.5f < fLength)
+		discard;
+
+	fLength = fLength / 0.5f; // normalize
+	float2 vColorUV = (float2)((fLength * -1.f) + 1.f);
+	float4 vColor = g_DiffuseTexture.Sample(DiffuseSampler, vColorUV);
+
+	Out.vColor = vColor;
+	Out.vColor.a = Out.vColor.g;
+
+	if (Out.vColor.g > 0.6f)
+	{
+		Out.vColor.b = 1.f;
+		Out.vColor.a = 0.9f;
+	}
+
+
+
+	return Out;
+}
+
 
 struct  PS_IN_DOUBLE_UV
 {
@@ -1121,6 +1158,16 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN_AXIS_Y_NO_GLOBAL_UV();
 		GeometryShader = compile gs_5_0  GS_MAIN_NO_BILL_Y_DOWN_SIZE();
 		PixelShader = compile ps_5_0  PS_MAIN_LASER();
+	}
+
+	pass Laser_Circle // 12
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_MAIN_LASER_CIRCLE();
 	}
 };
 
