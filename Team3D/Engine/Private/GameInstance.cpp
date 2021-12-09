@@ -322,30 +322,15 @@ HRESULT CGameInstance::Reserve_Container_Light(_uint iCount)
 	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
 	return m_pLight_Manager->Reserve_Container(iCount);
 }
-HRESULT CGameInstance::Add_Light(const _tchar* pLightTag, const LIGHT_DESC & LightDesc, _bool isActive)
+HRESULT CGameInstance::Add_Light(const _tchar* pLightTag, const LIGHT_DESC & LightDesc, _bool isActive, void** ppOut)
 {
 	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
-	return m_pLight_Manager->Add_Light(pLightTag, LightDesc, isActive);
+	return m_pLight_Manager->Add_Light(pLightTag, LightDesc, isActive, ppOut);
 }
-LIGHT_DESC * CGameInstance::Get_LightDescPtr(const _tchar* pLightTag)
-{
-	NULL_CHECK_RETURN(m_pLight_Manager, nullptr);
-	return m_pLight_Manager->Get_LightDescPtr(pLightTag);
-}
-HRESULT CGameInstance::TurnOn_Light(const _tchar* pLightTag)
+HRESULT CGameInstance::Remove_Light(const _tchar* pLightTag)
 {
 	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
-	return m_pLight_Manager->TurnOn_Light(pLightTag);
-}
-HRESULT CGameInstance::TurnOff_Light(const _tchar* pLightTag)
-{
-	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
-	return m_pLight_Manager->TurnOff_Light(pLightTag);
-}
-void CGameInstance::Clear_Lights()
-{
-	NULL_CHECK(m_pLight_Manager);
-	m_pLight_Manager->Clear_Lights();
+	return m_pLight_Manager->Remove_Light(pLightTag);
 }
 #pragma endregion
 

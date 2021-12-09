@@ -93,11 +93,8 @@ public:
 
 #pragma region Light_Manager
 	HRESULT		Reserve_Container_Light(_uint iCount);
-	HRESULT		Add_Light(const _tchar * pLightTag, const LIGHT_DESC& LightDesc, _bool isActive = true);
-	LIGHT_DESC*	Get_LightDescPtr(const _tchar * pLightTag);
-	HRESULT		TurnOn_Light(const _tchar * pLightTag);
-	HRESULT		TurnOff_Light(const _tchar * pLightTag);
-	void		Clear_Lights();
+	HRESULT		Add_Light(const _tchar * pLightTag, const LIGHT_DESC& LightDesc, _bool isActive = true, void** ppOut = nullptr);
+	HRESULT		Remove_Light(const _tchar * pLightTag); /* 무거움 자주 사용 X */
 #pragma endregion
 
 #pragma region PhysX

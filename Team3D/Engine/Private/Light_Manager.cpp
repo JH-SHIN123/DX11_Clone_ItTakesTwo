@@ -62,7 +62,7 @@ HRESULT CLight_Manager::Reserve_Container(_uint iCount)
 	return S_OK;
 }
 
-HRESULT CLight_Manager::Add_Light(const _tchar* pLightTag, const LIGHT_DESC & LightDesc, _bool isActive)
+HRESULT CLight_Manager::Add_Light(const _tchar* pLightTag, const LIGHT_DESC & LightDesc, _bool isActive, void** ppOut)
 {
 	if (nullptr == pLightTag) return E_FAIL;
 
@@ -92,6 +92,28 @@ HRESULT CLight_Manager::Add_Light(const _tchar* pLightTag, const LIGHT_DESC & Li
 	//m_Lights.emplace(pLightTag, pLight);
 
 	m_Lights[pLightTag] = pLight;
+
+	if(nullptr != ppOut)
+	{
+		(*ppOut) = pLight;
+		Safe_AddRef(pLight);
+	}
+
+	return S_OK;
+}
+
+HRESULT CLight_Manager::Remove_Light(const _tchar* pLightTag)
+{
+	if (nullptr == pLightTag) return E_FAIL;
+
+	const auto& iter = find_if(m_Lights.begin(), m_Lights.end(), CTagFinder(pLightTag));
+	if (iter == m_Lights.end()) {
+		MSG_BOX("Failed to Remove Light");
+		return E_FAIL;
+	}
+
+	Safe_Release(iter->second);
+	m_Lights.erase(pLightTag);
 
 	return S_OK;
 }

@@ -22,7 +22,8 @@ public: /* Setter */
 public:
 	HRESULT Ready_LightManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight);
 	HRESULT	Reserve_Container(_uint iCount);
-	HRESULT	Add_Light(const _tchar* pLightTag, const LIGHT_DESC& pLightDesc, _bool isActive);
+	HRESULT	Add_Light(const _tchar* pLightTag, const LIGHT_DESC& pLightDesc, _bool isActive, void** ppOut);
+	HRESULT Remove_Light(const _tchar* pLightTag); /* 무거움 자주 사용 X */
 	HRESULT Render_Lights();
 	void	Clear_Lights();
 	void	Clear_Buffer();

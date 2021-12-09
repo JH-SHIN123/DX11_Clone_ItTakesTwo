@@ -11,17 +11,23 @@ private:
 	virtual ~CEffectLight() = default;
 
 public:
-	HRESULT	NativeConstruct(const LIGHT_DESC & LightDesc, _uint eEffectColor, _bool isActive);
-
-private:
-	_bool		m_isActive = false;
-
-private:
-	LIGHT_DESC	m_LightDesc;
-	// Effect
+	void	Set_Active(_bool bActive) { m_bActive = bActive; }
+	HRESULT Set_Light(const LIGHT_DESC& LightDesc, _uint eEffectColor);
 
 public:
-	static CEffectLight* Create(const LIGHT_DESC & LightDesc, _uint eEffectColor, _bool isActive); // 이펙트 enum값 던지도록 설정
+	HRESULT	NativeConstruct(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _uint eEffectColor, _bool bActive);
+
+private:
+	_bool m_bActive = false;
+
+private:
+	_tchar							m_szLightTag[MAX_PATH] = L"";
+	LIGHT_DESC						m_LightDesc;
+	class CEffect_PointLight*		m_pEffect = nullptr;
+	class CLight*					m_pLight = nullptr;
+
+public:
+	static CEffectLight* Create(const _tchar* pLightTag, const LIGHT_DESC & LightDesc, _uint eEffectColor, _bool bActive);
 	virtual void Free() override;
 };
 END

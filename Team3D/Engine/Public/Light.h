@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 
-class CLight final : public CBase
+class ENGINE_DLL CLight final : public CBase
 {
 private:
 	explicit CLight() = default;

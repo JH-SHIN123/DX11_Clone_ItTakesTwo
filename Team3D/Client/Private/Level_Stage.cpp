@@ -101,16 +101,16 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		TCHAR lightTag[256] = L"";
 
 		TCHAR szBuff[256] = L"";
-		GetPrivateProfileString(L"Section_2", L"Key_1", L"0", szBuff, 256, L"../test.ini");
+		GetPrivateProfileString(L"Section_2", L"Key_1", L"0", szBuff, 256, L"../light.ini");
 		lstrcpy(lightTag, szBuff);
 
-		GetPrivateProfileString(L"Section_2", L"Key_2", L"0", szBuff, 256, L"../test.ini");
+		GetPrivateProfileString(L"Section_2", L"Key_2", L"0", szBuff, 256, L"../light.ini");
 		_float a = (_float)_wtof(szBuff);
-		GetPrivateProfileString(L"Section_2", L"Key_3", L"0", szBuff, 256, L"../test.ini");
+		GetPrivateProfileString(L"Section_2", L"Key_3", L"0", szBuff, 256, L"../light.ini");
 		_float b = (_float)_wtof(szBuff);
-		GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
+		GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../light.ini");
 		_float c = (_float)_wtof(szBuff);
-		GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
+		GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../light.ini");
 		_float d = (_float)_wtof(szBuff);
 
 		LIGHT_DESC LightDesc;
@@ -120,7 +120,7 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
 		LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.fRange = d;
-		if (FAILED(CLight_Generator::GetInstance()->Add_Light(lightTag, LightDesc, (_uint)(EPoint_Color::Blue)))) return E_FAIL;
+		//if (FAILED(CLight_Generator::GetInstance()->Add_Light(lightTag, LightDesc, (_uint)(EPoint_Color::Blue)))) return E_FAIL;
 	}
 #endif // __TEST_TAEK
 
