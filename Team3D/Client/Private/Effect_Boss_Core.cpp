@@ -35,7 +35,7 @@ HRESULT CEffect_Boss_Core::NativeConstruct(void * pArg)
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 
-	/*Gara*/m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 1.525f, 30.f, 1.f));
+	/*Gara*/m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(58.f, 1.525f, 30.f, 1.f));
 
 	Ready_Instance();
 

@@ -227,6 +227,7 @@ void CEffect_Boss_Laser_Particle::Free()
 	Safe_Delete_Array(m_pInstanceBuffer_STT);
 	Safe_Delete_Array(m_pInstanceBiffer_Dir);
 
+
 	Safe_Release(m_pPointInstanceCom_STT);
 
 	__super::Free();
