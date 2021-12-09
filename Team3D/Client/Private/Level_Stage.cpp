@@ -390,7 +390,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 		LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
 		LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
 		LightDesc.fRange = 10.f;
-	if (FAILED(CLight_Generator::GetInstance()->Add_Light(TEXT("Point1"), LightDesc, EPoint_Color::Blue))) return E_FAIL;
+	if (FAILED(CLight_Generator::GetInstance()->Add_Light(TEXT("Point1"), LightDesc, (_uint)(EPoint_Color::Blue)))) return E_FAIL;
 #pragma endregion
 
 	/* For. Spot  X */
