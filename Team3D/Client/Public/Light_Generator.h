@@ -13,7 +13,7 @@ public:
 	virtual ~CLight_Generator() = default;
 
 public:
-	HRESULT	Add_Light(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _bool isActive = true);
+	HRESULT	Add_Light(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _uint eEffectColor, _bool isActive = true);
 	void	Clear_Lights();
 
 public:

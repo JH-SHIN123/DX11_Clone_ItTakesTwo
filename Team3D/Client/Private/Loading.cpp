@@ -436,10 +436,11 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Taek()
 	return S_OK;
 }
 
-HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon()
+HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon() 
 {
 	_matrix PivotMatrix = XMMatrixIdentity();
 
+#ifndef __MAPLOADING_OFF
 #pragma region Complete
 
 	/* Robot_Body */
@@ -542,13 +543,14 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon()
 	//	PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f));
 	//	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("MoonBaboon"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon"), CMoonBaboon::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-
+#endif
 
 	return S_OK;
 }
 
 HRESULT CLoading::Create_GameObjects_SpaceStage_Jin()
 {
+#ifndef __MAPLOADING_OFF
 	_matrix PivotMatrix = XMMatrixIdentity();
 
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixTranslation(-2.f, 0.f, 0.f);
@@ -605,6 +607,7 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jin()
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) *  XMMatrixRotationX(XMConvertToRadians(90.f));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_UmbrellaBeam_Joystick"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("UmbrellaBeam_Joystick"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_UmbrellaBeam_Joystick"), CUmbrellaBeam_Joystick::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+#endif
 
 	return S_OK;
 }

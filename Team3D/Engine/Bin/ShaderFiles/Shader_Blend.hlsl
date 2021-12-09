@@ -63,7 +63,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	float fSpecBlendFactor = 0.3f;
 	Out.vColor = (vDiffuseDesc * vShadeDesc + (vSpecularDesc * fSpecBlendFactor + pow(vSpecularBlurDesc, 2.f) * (1.f - fSpecBlendFactor))) * vShadowDesc;
-	Out.vColor.xyz += vEmissiveDesc.xyz/* Emissive Scale */ + vEmissiveBlurDesc.xyz * 2.f /* Blur - Emissive Scale */;
+	Out.vColor.xyz += vEmissiveDesc.xyz/* Emissive Scale */ + vEmissiveBlurDesc.xyz /* Blur - Emissive Scale */;
 
 	if (Out.vColor.w == 0) discard;
 

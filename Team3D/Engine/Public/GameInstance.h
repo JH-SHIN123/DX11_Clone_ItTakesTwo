@@ -126,6 +126,11 @@ public:
 	ID3DBlob* Get_Get_ShaderCompiledCode(const _tchar* pShaderFilePath);
 #pragma endregion
 
+#pragma region PostFX
+	void Set_RadiarBlur_Main(_bool bActive, _float2 & vFocusPos);
+	void Set_RadiarBlur_Sub(_bool bActive, _float2 & vFocusPos);
+#pragma endregion
+
 private:
 	CGraphic_Device*		m_pGraphic_Device		= nullptr;
 	CInput_Device*			m_pInput_Device			= nullptr;

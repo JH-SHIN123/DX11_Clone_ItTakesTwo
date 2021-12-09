@@ -428,6 +428,19 @@ ID3DBlob * CGameInstance::Get_Get_ShaderCompiledCode(const _tchar * pShaderFileP
 }
 #pragma endregion
 
+#pragma region PostFX
+void CGameInstance::Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos)
+{
+	NULL_CHECK(m_pPostFX);
+	return m_pPostFX->Set_RadiarBlur_Main(bActive, vFocusPos);
+}
+void CGameInstance::Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos)
+{
+	NULL_CHECK(m_pPostFX);
+	return m_pPostFX->Set_RadiarBlur_Sub(bActive, vFocusPos);
+}
+#pragma endregion
+
 void CGameInstance::Release_Engine()
 {
 	CGameObject_Manager::GetInstance()->Clear_All();
@@ -444,7 +457,7 @@ void CGameInstance::Release_Engine()
 
 	CGameInstance::GetInstance()->DestroyInstance();
 	//if (CGameInstance::GetInstance()->DestroyInstance())
-		//MSG_BOX("Failed to Release CGameInstance.");
+	//	MSG_BOX("Failed to Release CGameInstance.");
 	if (CLevel_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CLevel_Manager.");
 	if (CGameObject_Manager::DestroyInstance())
