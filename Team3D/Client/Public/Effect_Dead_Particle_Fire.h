@@ -43,22 +43,15 @@ private:
 	//void Update_Point(_double TimeDelta);
 	void Update_Point_Small(_double TimeDelta);
 
-
+private:
+	CTextures* m_pTexturesCom_Particle_Mask = nullptr;
+	_float m_fMoveTime = 0.f;
+	_float2 m_vSize;
+	_float3 m_vTargetPos;
 private:
 	_double		m_dAlphaTime = 1.5;
 	_bool		m_IsDisapear = false;
-	CModel*		m_pTargetModel = nullptr;
 	_float4*	m_pInstance_LocalPos = nullptr;
-
-private:
-// 	CTextures*				m_pTexturesCom_Point_Smoke		= nullptr;
-// 	VTXMATRIX_CUSTOM_ST*	m_pPointBuffer_Smoke			= nullptr;
-// 	_float					m_fPointInstance_Alpha			= 0.f;
-// 	const _float			m_fUVCheckTime_Max = 0.01f;
-// 	_float					m_fUVCheckTime = 0.f;
-// 	_float					m_fSmokeAlphaTime = 0.5;
-// 	_int					m_iPointInstance_Texture_U = 0;
-// 	_int					m_iPointInstance_Texture_V = 0;
 
 private:
 	CTextures*				m_pTexturesCom_Point_Diff		= nullptr;

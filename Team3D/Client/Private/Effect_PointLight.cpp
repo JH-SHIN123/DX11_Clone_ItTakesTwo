@@ -48,7 +48,6 @@ _int CEffect_PointLight::Tick(_double TimeDelta)
 
 _int CEffect_PointLight::Late_Tick(_double TimeDelta)
 {
-
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
@@ -61,7 +60,7 @@ HRESULT CEffect_PointLight::Render(RENDER_GROUP::Enum eGroup)
 	//m_pPointInstanceCom->Set_Variable("g_vColor", &m_PointLight_Desc.vDiffuseColor, sizeof(_float4));
 	m_pPointInstanceCom->Set_Variable("g_fSaturation_Power", &m_PointLight_Desc.fPointContrast_Power, sizeof(_float));
 	m_pPointInstanceCom->Set_Variable("g_fContrast_Power", &m_PointLight_Desc.fPointSaturation_Power, sizeof(_float));
-	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Second->Get_ShaderResourceView(m_PointLight_Desc.iTextureIndex));
+	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Second->Get_ShaderResourceView((_uint)m_PointLight_Desc.ColorRampNumber));
 
 	m_pPointInstanceCom->Render(10, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
 

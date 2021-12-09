@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "Base.h"
+#include "Effect_Generator.h"
 
 BEGIN(Client)
 class CLight_Generator final : public CBase
@@ -13,7 +14,7 @@ public:
 	virtual ~CLight_Generator() = default;
 
 public:
-	HRESULT	Add_Light(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _bool isActive = true);
+	HRESULT	Add_Light(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, EPoint_Color eEffectColor, _bool isActive = true);
 	void	Clear_Lights();
 
 public:

@@ -112,6 +112,16 @@ public: /* Setter */
 	* 셰이더 디폴트 그림자깊이버퍼 세팅.
 	*/
 	HRESULT	Set_DefaultVariables_ShadowDepth(_fmatrix WorldMatrix);
+	/**
+	* Set_PivotTransformation
+	* 노드 피벗 행렬 세팅
+	*/
+	HRESULT Set_PivotTransformation(_uint iIndex, _fmatrix PivotMatrix);
+	/**
+	* Set_PivotTransformation
+	* 노드 피벗 행렬 초기화
+	*/
+	HRESULT Initialize_PivotTransformation();
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName);
@@ -151,6 +161,9 @@ public:
 	*/
 	HRESULT	Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
 
+	/*이펙트 전용 렌더 Topology가 Point*/
+	HRESULT	Render_Model_VERTEX(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
+
 private: /* Typedef */
 	typedef vector<class CMesh*>			MESHES;
 	typedef vector<MATERIAL*>				MATERIALS;
@@ -180,6 +193,7 @@ private:
 	_uint						m_iNextAnimIndex			= 0;		// 다음 애니메이션 인덱스
 	_uint						m_iCurAnimFrame				= 0;		// 현재 애니메이션 프레임
 	TRANSFORMATIONS				m_BaseTransformations;					// 원래 노드의 TransformationMatrix, 바뀌면 안됨.
+	TRANSFORMATIONS				m_PivotTransformations;					// 
 	TRANSFORMATIONS				m_AnimTransformations;					// 채널의 Transformation이 채워진 TransformationMatrix
 	TRANSFORMATIONS				m_CombinedTransformations;				// 계산된 CombinedTransformationMatrix
 	_bool						m_bReserveNextAnim			= false;	// 다음 애니메이션 예약이 되어있으면 true
