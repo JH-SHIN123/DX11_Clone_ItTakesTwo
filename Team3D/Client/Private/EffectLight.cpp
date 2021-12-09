@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "EffectLight.h"
-#include "Effect_Generator.h"
 
 HRESULT CEffectLight::NativeConstruct(const LIGHT_DESC& LightDesc, _uint eEffectColor, _bool isActive)
 {

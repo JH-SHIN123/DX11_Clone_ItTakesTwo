@@ -96,27 +96,31 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	CLevel::Tick(dTimedelta);
 
 #ifdef __TEST_TAEK
-	TCHAR lightTag[256] = L"";
-
-	TCHAR szBuff[256] = L"";
-	GetPrivateProfileString(L"Section_2", L"Key_1", L"0", szBuff, 256, L"../test.ini");
-	lstrcpy(lightTag, szBuff);
-
-	GetPrivateProfileString(L"Section_2", L"Key_2", L"0", szBuff, 256, L"../test.ini");
-	_float a = (_float)_wtof(szBuff);
-	GetPrivateProfileString(L"Section_2", L"Key_3", L"0", szBuff, 256, L"../test.ini");
-	_float b = (_float)_wtof(szBuff);
-	GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
-	_float c = (_float)_wtof(szBuff);
-	GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
-	_float d = (_float)_wtof(szBuff);
-
-	LIGHT_DESC* lightDesc = m_pGameInstance->Get_LightDescPtr(lightTag);
-
-	if (lightDesc)
+	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
-		lightDesc->vPosition = { a,b,c };
-		lightDesc->fRange = d;
+		TCHAR lightTag[256] = L"";
+
+		TCHAR szBuff[256] = L"";
+		GetPrivateProfileString(L"Section_2", L"Key_1", L"0", szBuff, 256, L"../test.ini");
+		lstrcpy(lightTag, szBuff);
+
+		GetPrivateProfileString(L"Section_2", L"Key_2", L"0", szBuff, 256, L"../test.ini");
+		_float a = (_float)_wtof(szBuff);
+		GetPrivateProfileString(L"Section_2", L"Key_3", L"0", szBuff, 256, L"../test.ini");
+		_float b = (_float)_wtof(szBuff);
+		GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
+		_float c = (_float)_wtof(szBuff);
+		GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
+		_float d = (_float)_wtof(szBuff);
+
+		LIGHT_DESC LightDesc;
+		LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+		LightDesc.vPosition = XMFLOAT3(a, b, c);
+		LightDesc.vDiffuse = XMFLOAT4(0.f, 0.f, 1.f, 1.f);
+		LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+		LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+		LightDesc.fRange = d;
+		if (FAILED(CLight_Generator::GetInstance()->Add_Light(lightTag, LightDesc, (_uint)(EPoint_Color::Blue)))) return E_FAIL;
 	}
 #endif // __TEST_TAEK
 
@@ -384,13 +388,15 @@ HRESULT CLevel_Stage::Ready_Lights()
 		return E_FAIL;
 
 #pragma region PointLight
-		LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-		LightDesc.vPosition = XMFLOAT3(20.f, 5.f, 20.f);
-		LightDesc.vDiffuse = XMFLOAT4(0.f, 0.f, 1.f, 1.f);
-		LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-		LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
-		LightDesc.fRange = 10.f;
-	if (FAILED(CLight_Generator::GetInstance()->Add_Light(TEXT("Point1"), LightDesc, (_uint)(EPoint_Color::Blue)))) return E_FAIL;
+	//	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	//	LightDesc.vPosition = XMFLOAT3(20.f, 5.f, 20.f);
+	//	LightDesc.vDiffuse = XMFLOAT4(0.f, 0.f, 1.f, 1.f);
+	//	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+	//	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+	//	LightDesc.fRange = 10.f;
+	//if (FAILED(CLight_Generator::GetInstance()->Add_Light(TEXT("Point1"), LightDesc, (_uint)(EPoint_Color::Blue)))) return E_FAIL;
+	//if (FAILED(CLight_Generator::GetInstance()->Add_Light(TEXT("Point2"), LightDesc, (_uint)(EPoint_Color::Violet)))) return E_FAIL;
+	//if (FAILED(CLight_Generator::GetInstance()->Add_Light(TEXT("Point3"), LightDesc, (_uint)(EPoint_Color::Sepia)))) return E_FAIL;
 #pragma endregion
 
 	/* For. Spot  X */

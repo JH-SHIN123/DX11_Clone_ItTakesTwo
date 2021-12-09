@@ -4,6 +4,8 @@ namespace Engine
 {
 	typedef struct tagLightDesc
 	{
+		tagLightDesc() { ZeroMemory(this, sizeof(tagLightDesc)); }
+
 		enum LIGHTTYPE { TYPE_DIRECTIONAL, TYPE_POINT, TYPE_SPOT, TYPE_END };
 
 		LIGHTTYPE	eType;

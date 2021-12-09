@@ -1,32 +1,23 @@
 #include "stdafx.h"
 #include "..\Public\Light_Generator.h"
 #include "EffectLight.h"
+#include "Effect_Generator.h"
 
 IMPLEMENT_SINGLETON(CLight_Generator)
 
-HRESULT CLight_Generator::Add_Light(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _uint eEffectColor, _bool isActive)
+HRESULT CLight_Generator::Add_Light(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _uint eEffectColor)
 {
-	auto& iter = find_if(m_EffectLights.begin(), m_EffectLights.end(), CTagFinder(pLightTag));
-	if (iter != m_EffectLights.end()) return E_FAIL;
-	m_EffectLights.emplace(pLightTag, CEffectLight::Create(LightDesc, eEffectColor, isActive));
+	// Create Effect
+	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(20.f, 0.25f, 1.f, LightDesc.vPosition, (EPoint_Color)eEffectColor)), E_FAIL);
 
+	// Create Light
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	return FAILED(pGameInstance->Add_Light(pLightTag, LightDesc, isActive));
-}
+	FAILED_CHECK_RETURN(pGameInstance->Add_Light(pLightTag, LightDesc), E_FAIL);
 
-void CLight_Generator::Clear_Lights()
-{
-	for (auto& Pair : m_EffectLights)
-		Safe_Release(Pair.second);
-	m_EffectLights.clear();
-
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	pGameInstance->Clear_Lights();
+	 return S_OK;
 }
 
 void CLight_Generator::Free()
 {
-	for (auto& Pair : m_EffectLights)
-		Safe_Release(Pair.second);
-	m_EffectLights.clear();
 }
+

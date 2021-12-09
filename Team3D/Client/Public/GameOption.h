@@ -60,7 +60,7 @@
 * 디버깅창 생성 여부
 * 디폴트 디버깅창 = 오브젝트 정보창
 */
-//#define __GAME_DEBUGGER
+#define __GAME_DEBUGGER
 
 /**
 * 패드 입력 디버깅
