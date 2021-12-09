@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "..\Public\Laser_TypeA.h"
 
+#include "UFO.h"
+#include "DataStorage.h"
+
 CLaser_TypeA::CLaser_TypeA(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLaser(pDevice, pDeviceContext)
 {
@@ -21,6 +24,13 @@ HRESULT CLaser_TypeA::NativeConstruct_Prototype()
 HRESULT CLaser_TypeA::NativeConstruct(void * pArg)
 {
 	CLaser::NativeConstruct(pArg);
+
+	m_pBossUFO = (CUFO*)DATABASE->Get_BossUFO();
+	NULL_CHECK_RETURN(m_pBossUFO, E_FAIL);
+	Safe_AddRef(m_pBossUFO);
+
+	m_dChargingTime = 3.0;
+	m_fShootSpeed = 100.f;
 
 #ifdef __TEST_SE
 	m_dChargingTime = 3.0;
@@ -61,7 +71,11 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 		}
 
 		if (m_fLaserSizeY > 0)
+		{
+			m_vStartPoint = m_pBossUFO->Get_LaserStartPos();
+			m_vLaserDir = m_pBossUFO->Get_LaserDir();
 			m_pGameInstance->Raycast(MH_PxVec3(XMLoadFloat4(&m_vStartPoint)), MH_PxVec3(XMLoadFloat4(&m_vLaserDir)), m_fLaserMaxY, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
+		}
 
 		if (m_RaycastBuffer.getNbAnyHits() > 0)
 		{
@@ -243,5 +257,7 @@ CGameObject * CLaser_TypeA::Clone_GameObject(void * pArg)
 
 void CLaser_TypeA::Free()
 {
+	Safe_Release(m_pBossUFO);
+
 	CLaser::Free();
 }

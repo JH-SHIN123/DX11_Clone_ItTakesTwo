@@ -46,6 +46,9 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_May(TEXT("Layer_May")), E_FAIL);
 
 	/* For.Interactive Objects */
+	FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
+
 #ifndef __MAPLOADING_OFF
 	/* Se */
 	FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);
@@ -734,7 +737,8 @@ HRESULT CLevel_Stage::Ready_Layer_Umbrella_Joystick(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_MoonBaboon(const _tchar * pLayerTag)
 {
 	ROBOTDESC MoonBaboonDesc;
-	MoonBaboonDesc.vPosition = { 64.f, 249.5f, 195.f, 1.f };
+	//MoonBaboonDesc.vPosition = { 64.f, 249.5f, 195.f, 1.f };
+	MoonBaboonDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon"), &MoonBaboonDesc), E_FAIL);
 	return S_OK;
 }
@@ -742,7 +746,8 @@ HRESULT CLevel_Stage::Ready_Layer_MoonBaboon(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_UFO(const _tchar * pLayerTag)
 {
 	ROBOTDESC UFODesc;
-	UFODesc.vPosition = { 64.f, 250.f, 195.f, 1.f };
+	//UFODesc.vPosition = { 64.f, 250.f, 195.f, 1.f };
+	UFODesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UFO"), &UFODesc), E_FAIL);
 	return S_OK;
 }

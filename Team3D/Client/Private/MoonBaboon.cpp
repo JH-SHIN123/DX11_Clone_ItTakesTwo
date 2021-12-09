@@ -48,11 +48,11 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 	NULL_CHECK_RETURN(m_pMayTransform, E_FAIL);
 	Safe_AddRef(m_pMayTransform);
 
-	m_pUFOModel = ((CUFO*)CDataStorage::GetInstance()->Get_UFO())->Get_Model();
+	m_pUFOModel = ((CUFO*)CDataStorage::GetInstance()->Get_BossUFO())->Get_Model();
 	NULL_CHECK_RETURN(m_pUFOModel, E_FAIL);
 	Safe_AddRef(m_pUFOModel);
 
-	m_pUFOTransform = ((CUFO*)CDataStorage::GetInstance()->Get_UFO())->Get_Transform();
+	m_pUFOTransform = ((CUFO*)CDataStorage::GetInstance()->Get_BossUFO())->Get_Transform();
 	NULL_CHECK_RETURN(m_pUFOTransform, E_FAIL);
 	Safe_AddRef(m_pUFOModel);
 	

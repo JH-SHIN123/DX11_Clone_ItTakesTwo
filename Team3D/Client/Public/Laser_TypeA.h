@@ -22,6 +22,9 @@ public:
 private:
 	_double m_dChargingTime = 0.0;
 
+private:
+	class CUFO*			m_pBossUFO = nullptr;
+
 public:
 	static CLaser_TypeA* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

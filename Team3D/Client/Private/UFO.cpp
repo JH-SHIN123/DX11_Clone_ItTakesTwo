@@ -42,7 +42,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	m_pModelCom->Set_Animation(UFO_Fwd);
 	m_pModelCom->Set_NextAnimIndex(UFO_Laser_MH);
 
-	DATABASE->Set_UFOPtr(this);
+	DATABASE->Set_BossUFO(this);
 
 	/* 초반 상태들 세팅 */
 	m_ePhase = UFO_PHASE::PHASE_1;
@@ -146,9 +146,12 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	m_pModelCom->Set_PivotTransformation(22, matPivot);
 
 	/* 레이저 건의 뼈랑 UFO 월드 매트릭스 가져오고 곱해서 레이저건의 월드 매트릭스를 구하자 (이거 각도 잘 안구해지는거 같음 애니메이션 떄문에;;)*/
-	//_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("LaserGun");
-	//_matrix matUFOWorld = m_pTransformCom->Get_WorldMatrix();
-	//_matrix matLaserGunWorld = matLaserGun * matUFOWorld;
+	_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("LaserGun");
+	_matrix matUFOWorld = m_pTransformCom->Get_WorldMatrix();
+	_matrix matLaserGunWorld = matLaserGun * matUFOWorld;
+
+	XMStoreFloat4(&m_vLaserGunPos, matLaserGunWorld.r[3]);
+	XMStoreFloat4(&m_vLaserDir, vLaserDir);
 
 	/* 레이저건의 포지션을 받아오자*/
 	//_vector vLaserGunPos = XMLoadFloat4((_float4*)&matLaserGunWorld.r[3].m128_f32[0]);
@@ -156,6 +159,11 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	/* 레이저건의 Look을 받아오자 */
 	//_vector vLaserGunLook = XMLoadFloat4((_float4*)&matLaserGunWorld.r[2].m128_f32[0]);
 
+	if (true == m_IsLaserCreate)
+	{
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeA"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"));
+		m_IsLaserCreate = false;
+	}
 }
  
 void CUFO::MoveStartingPoint(_double dTimeDelta)

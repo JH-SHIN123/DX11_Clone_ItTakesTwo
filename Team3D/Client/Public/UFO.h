@@ -32,8 +32,10 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
-	CTransform* Get_Transform() { return m_pTransformCom; }
-	CModel* Get_Model() { return m_pModelCom; }
+	CTransform* Get_Transform() const { return m_pTransformCom; }
+	CModel* Get_Model() const { return m_pModelCom; }
+	_float4 Get_LaserStartPos() const { return m_vLaserGunPos; }
+	_float4 Get_LaserDir() const { return m_vLaserDir; }
 
 private:
 	UFO_TARGET			m_eTarget = TARGET_END;
@@ -52,6 +54,11 @@ private:
 	_bool				m_IsCoreExplosion = false;
 	_bool				m_IsStartingPointMove = false;
 	_float				m_fBombLanchTime = 0.f;
+	_bool				m_IsLaserCreate = true;
+
+	/* For. Laser_TypeA */
+	_float4				m_vLaserGunPos;
+	_float4				m_vLaserDir;
 
 
 private:

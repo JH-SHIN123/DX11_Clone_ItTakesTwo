@@ -1122,40 +1122,39 @@
 
 #pragma region MoonBaboon
 
-#define CutScene_BossIntro_MoonBaboon 1
-#define CutScene_Eject_MoonBaboon 2
-#define CutScene_EnterUFO_MoonBaboon 3
-#define CutScene_LaserRippedOff_MoonBaboon 4
-#define CutScene_Outro_MoonBaboon 5
-#define CutScene_PowerCoreDestroyed_MoonBaboon 6
-#define CutScene_RocketPhaseFinished_MoonBaboon 7
-#define Moon_BeamUp_Intro 8
-#define Moon_BossIntro 9
-#define Moon_CutScene_BeamUp_Intro 10
-#define Moon_Eject 11
-#define Moon_EnterUFO 12
-#define Moon_HitReaction 13
-#define Moon_JetPackToLanding 14
-#define Moon_JetPack_Flying 15
-#define Moon_JetPack_Flying_Start 16
-#define Moon_JetPack_Landing_MH 17
-#define Moon_JetPack_LandToRun 18
-#define Moon_JetPack_MH 19
-#define Moon_LaserRippedOff 20
-#define Moon_Outro 21
-#define Moon_PowerCoreDestroyed 22
-#define Moon_RocketPhaseFinished 23
-#define Moon_Run 24
-#define Moon_Ufo_CodyHolding 25
-#define Moon_Ufo_CodyHolding_Enter 26
-#define Moon_Ufo_FireRocket 27
-#define Moon_Ufo_GroundPound 28
-#define Moon_Ufo_Inside_MH 29
-#define Moon_Ufo_KnockDownMH 30
-#define Moon_Ufo_Laser_HitPod 31
-#define Moon_Ufo_MH 32
-#define Moon_Ufo_Programming 33
-
+#define CutScene_BossIntro_MoonBaboon 0
+#define CutScene_Eject_MoonBaboon 1
+#define CutScene_EnterUFO_MoonBaboon 2
+#define CutScene_LaserRippedOff_MoonBaboon 3
+#define CutScene_Outro_MoonBaboon 4
+#define CutScene_PowerCoreDestroyed_MoonBaboon 5
+#define CutScene_RocketPhaseFinished_MoonBaboon 6
+#define Moon_BeamUp_Intro 7
+#define Moon_BossIntro 8
+#define Moon_CutScene_BeamUp_Intro 9
+#define Moon_Eject 10
+#define Moon_EnterUFO 11
+#define Moon_HitReaction 12
+#define Moon_JetPackToLanding 13
+#define Moon_JetPack_Flying 14
+#define Moon_JetPack_Flying_Start 15
+#define Moon_JetPack_Landing_MH 16
+#define Moon_JetPack_LandToRun 17
+#define Moon_JetPack_MH 18
+#define Moon_LaserRippedOff 19
+#define Moon_Outro 20
+#define Moon_PowerCoreDestroyed 21
+#define Moon_RocketPhaseFinished 22
+#define Moon_Run 23
+#define Moon_Ufo_CodyHolding 24
+#define Moon_Ufo_CodyHolding_Enter 25
+#define Moon_Ufo_FireRocket 26
+#define Moon_Ufo_GroundPound 27
+#define Moon_Ufo_Inside_MH 28
+#define Moon_Ufo_KnockDownMH 29
+#define Moon_Ufo_Laser_HitPod 30
+#define Moon_Ufo_MH 31
+#define Moon_Ufo_Programming 32
 
 #pragma endregion
 
