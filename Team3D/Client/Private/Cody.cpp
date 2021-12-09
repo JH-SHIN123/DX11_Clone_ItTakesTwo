@@ -662,8 +662,6 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_IsSizeChanging = true;
 			break;
 		}
-
-		Start_RadiarBlur(0.3f);
 	}
 #pragma endregion
 
@@ -686,8 +684,6 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_pActorCom->Set_IsPlayerSizeSmall(true);
 			break;
 		}
-
-		Start_RadiarBlur(0.3f);
 	}
 #pragma endregion
 
@@ -1438,6 +1434,9 @@ void CCody::Change_Size(const _double dTimeDelta)
 		{
 			if (m_bChangeSizeEffectOnce == false)
 			{
+				// Radiar Blur
+				Start_RadiarBlur(0.3f);
+
 				m_pActorCom->Set_Scale(2.f, 2.f);
 				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_LARGE);
 				m_bChangeSizeEffectOnce = true;
@@ -1475,6 +1474,9 @@ void CCody::Change_Size(const _double dTimeDelta)
 		{
 			if (m_bChangeSizeEffectOnce == false)
 			{
+				// Radiar Blur
+				Start_RadiarBlur(0.3f);
+
 				m_pActorCom->Set_Scale(0.5f, 0.5f);
 				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_LARGE_MIDDLE);
 				m_bChangeSizeEffectOnce = true;
@@ -1503,6 +1505,9 @@ void CCody::Change_Size(const _double dTimeDelta)
 
 			if (m_bChangeSizeEffectOnce == false)
 			{
+				// Radiar Blur
+				Start_RadiarBlur(0.3f);
+
 				m_pActorCom->Set_Scale(0.025f, 0.025f);
 				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_SMALL);
 				m_bChangeSizeEffectOnce = true;
@@ -1530,6 +1535,9 @@ void CCody::Change_Size(const _double dTimeDelta)
 		{
 			if (m_bChangeSizeEffectOnce == false)
 			{
+				// Radiar Blur
+				Start_RadiarBlur(0.3f);
+
 				m_pActorCom->Set_Scale(0.5f, 0.5f);
 				m_pActorCom->Get_Controller()->setStepOffset(0.707f);
 				m_pActorCom->Get_Controller()->setSlopeLimit(0.5f);
@@ -2850,6 +2858,7 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+			Loop_RadiarBlur(false);
 
 			m_iJumpCount = 0;
 			m_bShortJump = true;
@@ -2937,6 +2946,8 @@ void CCody::Start_SpaceRail()
 	if (m_pSearchTargetRailNode) {
 		// 타겟 지정시, 연기이펙트
 		EFFECT->Add_Effect(Effect_Value::Landing_Smoke, m_pSearchTargetRailNode->Get_WorldMatrix());
+		// R-Blur
+		Loop_RadiarBlur(true);
 
 		// 타겟을 찾았다면, 레일 탈 준비
 		m_pTargetRailNode = m_pSearchTargetRailNode;
@@ -3023,7 +3034,8 @@ void CCody::TakeRailEnd(_double dTimeDelta)
 		if (m_dRailEnd_ForceDeltaT >= dRailEndForceTime)
 		{
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
-			
+			Loop_RadiarBlur(false);
+
 			m_dRailEnd_ForceDeltaT = 0.0;
 			m_bOnRailEnd = false;
 		}
@@ -3037,7 +3049,6 @@ void CCody::TakeRailEnd(_double dTimeDelta)
 }
 void CCody::ShowRailTargetTriggerUI()
 {
-
 	// Show UI
 	if (m_pSearchTargetRailNode && nullptr == m_pTargetRailNode && false == m_bOnRail)
 	{
@@ -3071,28 +3082,45 @@ void CCody::Start_RadiarBlur(_double dBlurTime)
 {
 	//if (m_bRadiarBlur) return;
 
-	m_bRadiarBlur = true;
+	m_bRadiarBlur_Trigger = true;
 	m_dRadiarBlurTime = dBlurTime;
 	m_dRadiarBlurDeltaT = 0.0;
 
 	Set_RadiarBlur();
 }
 
-void CCody::Trigger_RadiarBlur(_double dTimeDelta)
+void CCody::Loop_RadiarBlur(_bool bLoop)
 {
-	if (false == m_bRadiarBlur) return;
+	m_bRadiarBlur_Loop = bLoop;
 
-	if (m_dRadiarBlurDeltaT >= m_dRadiarBlurTime)
-	{
+	if(m_bRadiarBlur_Loop)
+		Set_RadiarBlur();
+	else {
 		_float2 vFocusPos = { 0.f,0.f };
 		m_pGameInstance->Set_RadiarBlur_Main(false, vFocusPos);
-		m_dRadiarBlurDeltaT = 0.0;
-		m_bRadiarBlur = false;
 	}
-	else
+}
+
+void CCody::Trigger_RadiarBlur(_double dTimeDelta)
+{
+	if (m_bRadiarBlur_Loop)
 	{
-		m_dRadiarBlurDeltaT += dTimeDelta;
 		Set_RadiarBlur();
+	}
+	else if(m_bRadiarBlur_Trigger)
+	{
+		if (m_dRadiarBlurDeltaT >= m_dRadiarBlurTime)
+		{
+			_float2 vFocusPos = { 0.f,0.f };
+			m_pGameInstance->Set_RadiarBlur_Main(false, vFocusPos);
+			m_dRadiarBlurDeltaT = 0.0;
+			m_bRadiarBlur_Trigger = false;
+		}
+		else
+		{
+			m_dRadiarBlurDeltaT += dTimeDelta;
+			Set_RadiarBlur();
+		}
 	}
 }
 
