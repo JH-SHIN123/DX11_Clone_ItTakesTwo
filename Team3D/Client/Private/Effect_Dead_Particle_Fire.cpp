@@ -27,16 +27,25 @@ HRESULT CEffect_Player_Dead_Particle_Fire::NativeConstruct(void * pArg)
 	__super::Ready_Component(pArg);
 
 	if (EFFECT_DESC_CLONE::PV_CODY >= m_EffectDesc_Clone.iPlayerValue)
-		m_EffectDesc_Prototype.iInstanceCount = 1200; // 500 100
+		m_EffectDesc_Prototype.iInstanceCount = 500; // 500 100
 	else if (EFFECT_DESC_CLONE::PV_CODY_S == m_EffectDesc_Clone.iPlayerValue)
-		m_EffectDesc_Prototype.iInstanceCount = 240; // 100 20
+		m_EffectDesc_Prototype.iInstanceCount = 10; // 100 20
 	else if (EFFECT_DESC_CLONE::PV_CODY_L == m_EffectDesc_Clone.iPlayerValue)
-		m_EffectDesc_Prototype.iInstanceCount = 6000; // 2500 500
+		m_EffectDesc_Prototype.iInstanceCount = 2000; // 2500 500
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Circle_Alpha"), TEXT("Com_Texture_Particle_Mask"), (CComponent**)&m_pTexturesCom_Particle_Mask), E_FAIL);
 
 	FAILED_CHECK_RETURN(Ready_Instance(),	 E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Point(),		 E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Point_Small(), E_FAIL);
 
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION)
+		+ (XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * 0.5f)
+		+ (XMVector3Normalize((m_pTransformCom->Get_State(CTransform::STATE_UP))) * 1.2f);
+
+	XMStoreFloat3(&m_vTargetPos, vPos);
+
+	m_vSize = _float2(0.0225f, 0.0225f);
 	return S_OK;
 }
 
@@ -46,6 +55,12 @@ _int CEffect_Player_Dead_Particle_Fire::Tick(_double TimeDelta)
 		return EVENT_DEAD;
 
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
+	m_fMoveTime += (_float)TimeDelta * 0.25f;
+
+	m_vSize.x -= (_float)TimeDelta * 0.05f;
+	if (0.f >= m_vSize.x)
+		m_vSize.x = 0.f;
+	m_vSize.y = m_vSize.x;
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
@@ -86,6 +101,18 @@ HRESULT CEffect_Player_Dead_Particle_Fire::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Point_Diff->Get_ShaderResourceView(0));
 	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Point_Sprite->Get_ShaderResourceView(0));
 	m_pPointInstanceCom->Render(6, m_pPointBuffer_Smoke_Small, m_iPointInstanceCount_Small);
+
+	_float4 vTextureUV_LTRB = { 0.f,0.f,1.f,1.f };
+	_float4 vColorRamp = { 0.7843f, 0.f, 0.f, 1.f };
+	m_pModelCom->Set_Variable("g_vPos", &m_vTargetPos, sizeof(_float4));
+	m_pModelCom->Set_Variable("g_vColor", &vColorRamp, sizeof(_float4));
+	m_pModelCom->Set_Variable("g_fTime", &m_fMoveTime, sizeof(_float));
+	m_pModelCom->Set_Variable("g_vParticleSize", &m_vSize, sizeof(_float2));
+	m_pModelCom->Set_Variable("g_vTextureUV_LTRB", &_float4(0.f, 0.f, 1.f, 1.f), sizeof(_float4));
+
+	m_pModelCom->Set_ShaderResourceView("g_MaskingTexture", m_pTexturesCom_Particle_Mask->Get_ShaderResourceView(0));
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Render_Model_VERTEX(12);
 
 	return S_OK;
 }
@@ -128,10 +155,10 @@ HRESULT CEffect_Player_Dead_Particle_Fire::Ready_Instance()
 
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
-	m_pTargetModel = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
-	Safe_AddRef(m_pTargetModel);
-	VTXMESH* pVtx	= m_pTargetModel->Get_Vertices();
-	_uint iVtxCount = m_pTargetModel->Get_VertexCount();
+	m_pModelCom = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
+	Safe_AddRef(m_pModelCom);
+	VTXMESH* pVtx	= m_pModelCom->Get_Vertices();
+	_uint iVtxCount = m_pModelCom->Get_VertexCount();
 	_uint iRandVtx	= rand() % iInstanceCount;
 	_uint iAddVtx	= _int(iVtxCount / (_float)iInstanceCount);
 
@@ -147,10 +174,10 @@ HRESULT CEffect_Player_Dead_Particle_Fire::Ready_Instance()
 	{
 		m_pInstanceBuffer[i].vSize	= Get_RandSize();
 
-		if (i >= m_EffectDesc_Prototype.iInstanceCount - (m_EffectDesc_Prototype.iInstanceCount / 10))
 			m_pInstance_Dir[i] = Get_Dir(_int3(50, 100, 100), NormalizeScale_Matrix);
-		else
-			m_pInstance_Dir[i] = Get_Dir_Defulat(_int3(30, 100, 30), NormalizeScale_Matrix);
+		//if (i >= m_EffectDesc_Prototype.iInstanceCount - (m_EffectDesc_Prototype.iInstanceCount / 10))
+		//else
+		//	m_pInstance_Dir[i] = Get_Dir_Defulat(_int3(30, 100, 30), NormalizeScale_Matrix);
 
 		
 		_vector vLocalPos = XMLoadFloat3(&pVtx[iRandVtx].vPosition);
@@ -163,8 +190,6 @@ HRESULT CEffect_Player_Dead_Particle_Fire::Ready_Instance()
 
 		m_pInstanceBuffer[i].vTextureUV = { 0.f, 0.25f, 0.25f, 0.50f };
 	}
-
-	Safe_Release(m_pTargetModel);
 
 	return S_OK;
 }
@@ -351,7 +376,11 @@ void CEffect_Player_Dead_Particle_Fire::Update_Point_Small(_double TimeDelta)
 		}
 	}
 	else
+	{
 		m_fPointInstance_Small_Alpha -= (_float)TimeDelta;
+		if (0.0 > m_fPointInstance_Small_Alpha)
+			m_fPointInstance_Small_Alpha = 0.0;
+	}
 
 	for (_int iIndex = 0; iIndex < m_iPointInstanceCount_Small; ++iIndex)
 	{

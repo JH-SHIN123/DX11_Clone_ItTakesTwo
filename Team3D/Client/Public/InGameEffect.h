@@ -118,6 +118,7 @@ public:
 	void	SetUp_Shader_Data();
 	_float4 Get_TexUV(_uint iTexture_U, _uint iTexture_V, _bool IsInitialize = false);
 	_float4 Get_TexUV_Rand(_uint iTexture_U, _uint iTexture_V);
+	_float4 Get_TexUV_Rand(_uint iTexture_U, _uint iTexture_V, _int* pTex_U, _int* pTex_V);
 	_float4 Get_TexUV_Next(_uint iTexture_U, _uint iTexture_V);
 	_float3 Get_Dir_Rand(_int3 vRandDirPower);
 

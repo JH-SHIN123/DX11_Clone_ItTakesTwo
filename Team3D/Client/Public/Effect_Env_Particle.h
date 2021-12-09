@@ -83,7 +83,6 @@ private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
 	VTXMATRIX_CUSTOM_STT* m_pInstanceBuffer_STT = nullptr;
 	_float4* m_pInstanceBuffer_LocalPos = nullptr;
-	
 
 public:
 	static CEffect_Env_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
