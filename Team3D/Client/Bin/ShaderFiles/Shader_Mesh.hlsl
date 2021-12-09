@@ -278,7 +278,7 @@ struct GS_OUT_DOUBLE_UV
 [maxvertexcount(12)]//// point
 void GS_MAIN_POINT(point GS_IN In[1], inout TriangleStream<GS_OUT_DOUBLE_UV> TriStream)
 {
-	GS_OUT_DOUBLE_UV Out[8];
+	GS_OUT_DOUBLE_UV Out[8]; ;
 	//In[0].vPosition = In[0].vPosition + normalize(In[0].vNormal) * g_fTime;
 
 	float3		vLook = normalize(g_vMainCamPosition - In[0].vPosition).xyz;
@@ -293,6 +293,7 @@ void GS_MAIN_POINT(point GS_IN In[1], inout TriangleStream<GS_OUT_DOUBLE_UV> Tri
 	[unroll]
 	for (uint i = 0; i < 8; ++i)
 	{
+		Out[i] = (GS_OUT_DOUBLE_UV)0;
 		Out[i].vTexUV = In[0].vTexUV;
 		Out[i].vNormal = In[0].vNormal;
 		Out[i].vTangent = In[0].vTangent;
