@@ -190,20 +190,6 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqr, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_BloomScale", &m_fBloomScale, sizeof(_float));
 
-#ifdef _DEBUG
-	TCHAR szBuff[256] = L"";
-
-	GetPrivateProfileString(L"Section_1", L"Key_5", L"0", szBuff, 256, L"../test.ini");
-	_float e = (_float)_wtof(szBuff);
-	GetPrivateProfileString(L"Section_1", L"Key_6", L"0", szBuff, 256, L"../test.ini");
-	_float f = (_float)_wtof(szBuff);
-	
-	float m_fRadiarDist = e;
-	float m_fRadiarStr = f;
-#endif // _DEBUG
-	m_pVIBuffer_ToneMapping->Set_Variable("g_SampleDist", &m_fRadiarDist, sizeof(float));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_SampleStrength", &m_fRadiarStr, sizeof(float));
-
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Main", &m_bRadialBlur_Main, sizeof(m_bRadialBlur_Main)); 
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Sub", &m_bRadialBlur_Sub, sizeof(m_bRadialBlur_Sub));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Main", &m_vRadiarBlur_FocusPos_Main, sizeof(m_vRadiarBlur_FocusPos_Main));
