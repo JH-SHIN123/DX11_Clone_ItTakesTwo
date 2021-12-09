@@ -1,7 +1,7 @@
 #pragma once
 
 #include"Client_Defines.h"
-
+#include"Cody.h"
 
 BEGIN(Client)
 class CCutScene : public CBase
@@ -36,6 +36,11 @@ private:
 	_double m_dDuration = 0.0;
 	_double m_dTime = 0.0;
 	CutSceneOption m_eCutSceneOption = CutSceneOption::CutScene_End;
+
+	//For.Intro
+	_float m_fCodySizingTime = 0.f;
+	CCody::PLAYER_SIZE m_eCurCodySize = CCody::PLAYER_SIZE::SIZE_MEDIUM;
+	CCody::PLAYER_SIZE m_ePreCodySize = CCody::PLAYER_SIZE::SIZE_MEDIUM;
 
 public:
 	static CCutScene* Create(CutSceneOption eOption);

@@ -516,6 +516,7 @@ _bool CMainCamera::OffSetPhsX(_fmatrix matWorld, _double dTimeDelta,_vector * pO
 	m_pActorCom->Move(vDir, dTimeDelta);
 	
 	*pOut = XMVectorSetW(m_pActorCom->Get_Position()/*Get_Position()*/,1.f);
+
 	return true;
 
 }
