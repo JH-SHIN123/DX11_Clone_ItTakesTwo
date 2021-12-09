@@ -705,6 +705,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29">
       <UniqueIdentifier>{cadc3ab7-2f34-4b6a-88b0-bae33b018ee8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\04.Core_Lightning_Big">
+      <UniqueIdentifier>{e4423772-30b5-41cf-8c84-daf78dfdfcf6}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1304,6 +1307,9 @@
     <ClInclude Include="..\public\Effect_Env_Particle_Field.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Core_Lightning_Big.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\04.Core_Lightning_Big</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -1866,6 +1872,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Env_Particle_Field.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Core_Lightning_Big.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\04.Core_Lightning_Big</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

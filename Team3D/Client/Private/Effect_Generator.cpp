@@ -32,6 +32,7 @@
 #include "Effect_Boss_Core_Explosion.h"
 #include "Effect_Env_Particle_Field.h"
 #include "Effect_Boss_Core_Lightning.h"
+#include "Effect_Boss_Core_Lightning_Big.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -117,6 +118,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::BossCore_Lightning:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_Core_Lightning");
+		break;
+	case Effect_Value::BossCore_Lightning_Big:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Core_Lightning_Big");
 		break;
 	default:
 		break;
@@ -268,6 +272,9 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Core_Lightning"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Core_Lightning", CEffect_Boss_Core_Lightning::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Core_Lightning_Big"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Core_Lightning_Big", CEffect_Boss_Core_Lightning_Big::Create(pDevice, pDeviceContext, pData));
 
 
 	// 3D Effect

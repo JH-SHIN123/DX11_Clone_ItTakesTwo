@@ -24,6 +24,7 @@ enum class Effect_Value
 	BossCore_Smoke,
 	BossCore_Explosion,
 	BossCore_Lightning,
+	BossCore_Lightning_Big,
 	Effect_Value_End
 };
 

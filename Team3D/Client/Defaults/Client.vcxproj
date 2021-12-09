@@ -229,6 +229,7 @@
     <ClInclude Include="..\public\Effect_Boss_Core_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Core_Hit.h" />
     <ClInclude Include="..\public\Effect_Boss_Core_Lightning.h" />
+    <ClInclude Include="..\public\Effect_Boss_Core_Lightning_Big.h" />
     <ClInclude Include="..\public\Effect_Boss_Core_Smoke.h" />
     <ClInclude Include="..\public\Effect_Boss_Laser_Particle.h" />
     <ClInclude Include="..\Public\Effect_Boss_Laser_Smoke.h" />
@@ -418,6 +419,7 @@
     <ClCompile Include="..\private\Effect_Boss_Core_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core_Hit.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core_Lightning.cpp" />
+    <ClCompile Include="..\private\Effect_Boss_Core_Lightning_Big.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core_Smoke.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Laser_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Boss_Laser_Smoke.cpp" />

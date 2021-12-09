@@ -63,7 +63,7 @@ _int CEffect_Boss_Core_Hit::Tick(_double TimeDelta)
 
 _int CEffect_Boss_Core_Hit::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Boss_Core_Hit::Render(RENDER_GROUP::Enum eGroup)

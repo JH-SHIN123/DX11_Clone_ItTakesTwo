@@ -1,14 +1,13 @@
 #pragma once
-
 #include "InGameEffect.h"
 
 BEGIN(Client)
-class CEffect_Boss_Core_Lightning final : public CInGameEffect
+class CEffect_Boss_Core_Lightning_Big final : public CInGameEffect
 {
 private:
-	explicit CEffect_Boss_Core_Lightning(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CEffect_Boss_Core_Lightning(const CEffect_Boss_Core_Lightning& rhs);
-	virtual ~CEffect_Boss_Core_Lightning() = default; public:
+	explicit CEffect_Boss_Core_Lightning_Big(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_Boss_Core_Lightning_Big(const CEffect_Boss_Core_Lightning_Big& rhs);
+	virtual ~CEffect_Boss_Core_Lightning_Big() = default; public:
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -21,6 +20,7 @@ public:
 	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0) override;
 	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0) override;
 	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0) override;
+	void Instance_UV_Custom(_float TimeDelta, _vector vPos, _int iIndex = 0);
 
 private:
 	HRESULT Ready_InstanceBuffer();
@@ -32,23 +32,23 @@ private:
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT = nullptr;
 	_float3*							m_pInstanceBiffer_Dir = nullptr;
 	XMINT2*								m_pInstanceBuffer_UVCount = nullptr;
-	_double* m_pInstance_UVTime = nullptr;
+	_double*							m_pInstance_UVTime = nullptr;
+	_int*								m_pInstanceChangeUV_Count = nullptr;
 
 	_bool m_IsActivate = true;
 	_double m_dActivateTime = 0.0;
 	_double m_dControlTime = 0.0;
 
-	const _double	m_dTextureUV_Time	= 0.01;
-	const XMINT2	m_vUVCount_Max		= { 8, 4 };
-	const _float	m_fAlphaTime_Power	= 2.f;
+	const _double	m_dTextureUV_Time = 0.01;
+	const XMINT2	m_vUVCount_Max = { 8, 4 };
+	const _float	m_fAlphaTime_Power = 5.f;
 	const _float	m_fInstance_SpeedPerSec = 0.2f;
-	const _double	m_dInstance_Pos_Update_Time = 3.0;
-	const _float2	m_vDefaultSize = { 3.f, 3.f };
+	const _double	m_dInstance_Pos_Update_Time = 2.0;
+	const _float2	m_vDefaultSize = { 7.5f, 7.5f };
 
 public:
-	static CEffect_Boss_Core_Lightning* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_Boss_Core_Lightning_Big* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
-
 END
