@@ -525,5 +525,15 @@ private:
 	CSpaceRail_Node*			m_pSearchTargetRailNode = nullptr;
 	CSpaceRail_Node*			m_pTargetRailNode = nullptr;
 #pragma endregion
+
+#pragma region UFO_JoyStick
+private:
+	void In_JoyStick(_double dTimeDelta);
+
+private:
+	_bool m_bEnterJoyStick = false;
+	_bool m_IsInJoyStick = false;
+
+#pragma endregion
 };
 END

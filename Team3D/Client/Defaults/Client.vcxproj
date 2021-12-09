@@ -358,6 +358,9 @@
     <ClInclude Include="..\Public\ToyBoxButton_Button.h" />
     <ClInclude Include="..\Public\TutorialDoor.h" />
     <ClInclude Include="..\Public\UFO.h" />
+    <ClInclude Include="..\Public\UFORadarLever.h" />
+    <ClInclude Include="..\Public\UFORadarScreen.h" />
+    <ClInclude Include="..\Public\UFORadarSet.h" />
     <ClInclude Include="..\Public\UIObject.h" />
     <ClInclude Include="..\Public\UISprite.h" />
     <ClInclude Include="..\Public\UI_Generator.h" />
@@ -541,6 +544,9 @@
     <ClCompile Include="..\Private\ToyBoxButton_Button.cpp" />
     <ClCompile Include="..\Private\TutorialDoor.cpp" />
     <ClCompile Include="..\Private\UFO.cpp" />
+    <ClCompile Include="..\Private\UFORadarLever.cpp" />
+    <ClCompile Include="..\Private\UFORadarScreen.cpp" />
+    <ClCompile Include="..\Private\UFORadarSet.cpp" />
     <ClCompile Include="..\Private\UIObject.cpp" />
     <ClCompile Include="..\Private\UISprite.cpp" />
     <ClCompile Include="..\Private\UI_Generator.cpp" />

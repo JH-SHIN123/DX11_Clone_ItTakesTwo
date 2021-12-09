@@ -354,6 +354,15 @@
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotHead">
       <UniqueIdentifier>{195a53e8-d60a-4b6a-acc2-e528f877d4bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet">
+      <UniqueIdentifier>{5a8b3c4a-2f54-4c36-864c-b09168f6cbe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarScreen">
+      <UniqueIdentifier>{c11c0f23-cc94-441b-be78-6deee3e7bf8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarLever">
+      <UniqueIdentifier>{d6006e9b-42e7-4e5d-8d15-f5a8446b834a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin">
       <UniqueIdentifier>{36cb6d5b-c440-4edb-bdcf-2cd582b022db}</UniqueIdentifier>
     </Filter>
@@ -998,6 +1007,15 @@
     <ClInclude Include="..\Public\RotatedRobotHead.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotHead</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UFORadarSet.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UFORadarScreen.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UFORadarLever.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarLever</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\PipeCurve.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\00.PipeCurve</Filter>
     </ClInclude>
@@ -1578,6 +1596,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\RotatedRobotHead.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotHead</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UFORadarSet.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UFORadarScreen.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UFORadarLever.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarLever</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PipeCurve.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\00.PipeCurve</Filter>

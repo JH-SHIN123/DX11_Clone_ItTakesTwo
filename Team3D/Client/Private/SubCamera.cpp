@@ -479,6 +479,7 @@ _bool CSubCamera::OffSetPhsX(_fmatrix matWorld, _double dTimeDelta, _vector * pO
 	vDir = vPos - vPlayerPos;
 
 	m_pActorCom->Set_Position(vPlayerPos);
+
 	m_pActorCom->Move(vDir, dTimeDelta);
 	
 	*pOut = XMVectorSetW(m_pActorCom->Get_Position(), 1.f);

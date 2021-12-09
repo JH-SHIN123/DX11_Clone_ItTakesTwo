@@ -122,6 +122,10 @@ public:
 	void Set_HookUFO(CGameObject* pHookUFO) { m_pHookUFO = pHookUFO; }
 	CGameObject* Get_HookUFO() { return m_pHookUFO; }
 
+	void Set_UFORadarSet(CGameObject* pUFORadarSet) { m_pUFORadarSet = pUFORadarSet; }
+	CGameObject* Get_UFORadarSet() { return m_pUFORadarSet; }
+
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -172,6 +176,9 @@ private:
 	/* For.ControlRoom_Battery */
 	CGameObject* m_pControlRoom_Battery = nullptr;
 
+	/* For. UFORadarSet */
+	CGameObject* m_pUFORadarSet = nullptr;
+
 private:
 	/* For.Valve */
 	_uint m_iValveRotateCount = 0;
@@ -187,6 +194,8 @@ private:
 
 	_uint m_iMayStageNum = 0;
 	_uint m_iCodyStageNum = 0;
+
+
 
 
 public:

@@ -27,6 +27,10 @@
 /*For.WarpGate*/
 #include "WarpGate.h"
 
+/* For. UFORadarSet */
+#include "UFORadarSet.h"
+#include "UFORadarLever.h"
+
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
@@ -193,6 +197,7 @@ void CCody::Add_LerpInfo_To_Model()
 
 	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_Enter, ANI_C_Grind_Grapple_ToGrind, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_ToGrind, ANI_C_Grind_Slow_MH, false);
+
 	return;
 }
 
@@ -212,6 +217,7 @@ _int CCody::Tick(_double dTimeDelta)
 
 	//tEST
 	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
 #pragma region BasicActions
 	/////////////////////////////////////////////
 	KeyInput_Rail(dTimeDelta);
@@ -239,6 +245,7 @@ _int CCody::Tick(_double dTimeDelta)
 			WallLaserTrap(dTimeDelta);
 			PinBall(dTimeDelta);
 			SpaceShip_Respawn(dTimeDelta);
+			In_JoyStick(dTimeDelta);
 		}
 		else
 		{
@@ -265,6 +272,7 @@ _int CCody::Tick(_double dTimeDelta)
 	/////////////////////////////////////////////
 
 #pragma endregion
+
 
 	/* 레일 타겟을 향해 날라가기 */
 	// Forward 조정
@@ -2094,10 +2102,25 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_F9) && m_IsInJoyStick == false && m_eCurPlayerSize == SIZE_SMALL)
+	{
+		m_pActorCom->Set_ZeroGravity(true, true, true);
+		m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
+		_vector vTargetPosition = XMVectorSet(60.f, 0.076f, 16.f, 1.f);
+		_vector vOffSetPosition = XMVectorSet(60.f - 0.038f, 0.076f, 16.f + 0.04f, 1.f);
+
+		m_pActorCom->Set_Position(vOffSetPosition);
+		m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);
+		m_IsInJoyStick = true;
+
+	}
+
 	// Trigger 여따가 싹다모아~
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
-		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn)
+		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_IsInJoyStick)
+
 		return true;
 
 	return false;
@@ -3076,6 +3099,43 @@ HRESULT CCody::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 	return S_OK;
 }
 
+void CCody::In_JoyStick(_double dTimeDelta)
+{
+	if (true == m_IsInJoyStick)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Fwd);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Fwd);
+		}
+		else if (m_pGameInstance->Key_Pressing(DIK_A))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Left);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Left);
+		}
+		else if (m_pGameInstance->Key_Pressing(DIK_S))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Bck);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Bck);
+		}
+		else if (m_pGameInstance->Key_Pressing(DIK_D))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Right);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Right);
+		}
+		else
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
+		}
+		if (m_pGameInstance->Key_Down(DIK_F10))
+		{
+			m_IsInJoyStick = false;
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_pModelCom->Set_Animation(ANI_C_MH);
+		}
+	}
+}
 
 void CCody::PinBall(const _double dTimeDelta)
 {
