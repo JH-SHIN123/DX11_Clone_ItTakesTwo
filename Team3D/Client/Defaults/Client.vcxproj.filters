@@ -93,6 +93,9 @@
     <Filter Include="02.GameObject\03.Character\01.May">
       <UniqueIdentifier>{49acfb49-2074-4d96-9c3b-229603d013ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\03.Character\02.Items">
+      <UniqueIdentifier>{185c722e-7bc7-4ace-b51a-b7a8873ac3f6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\03.Character\03.Boss">
       <UniqueIdentifier>{97f33821-55ec-4e25-853a-bb4f0faf6f7c}</UniqueIdentifier>
     </Filter>
@@ -678,9 +681,6 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\03.Character\02.Items">
-      <UniqueIdentifier>{185c722e-7bc7-4ace-b51a-b7a8873ac3f6}</UniqueIdentifier>
-    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -757,6 +757,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\May.h">
       <Filter>02.GameObject\03.Character\01.May</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rope.h">
+      <Filter>02.GameObject\03.Character\02.Items</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MoonBaboon.h">
       <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
@@ -1262,9 +1265,6 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Rope.h">
-      <Filter>02.GameObject\03.Character\02.Items</Filter>
-    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -1338,6 +1338,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\May.cpp">
       <Filter>02.GameObject\03.Character\01.May</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rope.cpp">
+      <Filter>02.GameObject\03.Character\02.Items</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UFO.cpp">
       <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
@@ -1809,12 +1812,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\DummyWallCameraTrigger.cpp">
-      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Rope.cpp">
-      <Filter>02.GameObject\03.Character\02.Items</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
