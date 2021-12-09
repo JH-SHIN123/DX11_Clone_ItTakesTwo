@@ -105,7 +105,7 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	if (nullptr == m_pCodyTransform || nullptr == m_pMayTransform)
 		return;
 
-	_vector vDir, vTargetPos, vTargetLook;
+	_vector vDir, vTargetPos;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
@@ -170,8 +170,32 @@ void CUFO::MoveStartingPoint(_double dTimeDelta)
 		m_IsStartingPointMove = false;
 }
 
-void CUFO::GravitationalMagnetite_Pattern(_double dTimeDelta)
+void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 {
+	if (nullptr == m_pCodyTransform || nullptr == m_pMayTransform)
+		return;
+
+	_vector vDir, vTargetPos;
+
+	/* 지정된 타겟에 따라 포지션 세팅 */
+	switch (m_eTarget)
+	{
+	case Client::CUFO::TARGET_CODY:
+		vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+		break;
+	case Client::CUFO::TARGET_MAY:
+		vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+		break;
+	}
+
+	vDir = vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
+
+	/* 우주선을 타겟쪽으로 천천히 회전 */
+	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f);
+
+
+
 }
 
 void CUFO::Phase1_InterAction(_double dTimeDelta)
@@ -179,14 +203,24 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 	/* 레이저에서 중력자탄 패턴으로 변경 */
 	if (true == m_pModelCom->Is_AnimFinished(UFO_Laser_HitPod))
 	{
-		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(true);
-		
-		if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp())
-			m_ePattern = UFO_PATTERN::GRAVITATIONALMAGNETITE;
+		m_fWaitingTime += (_float)dTimeDelta;
 
-		m_pModelCom->Set_Animation(UFO_MH);
-		m_pModelCom->Set_NextAnimIndex(UFO_MH);
+		/* 1초 대기했다가 회전하는 메인 레이저 올라오고 중력자탄 패턴으로 바꿔라 */
+		if (1.f <= m_fWaitingTime)
+		{
+			((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(true);
+
+			if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp())
+				m_ePattern = UFO_PATTERN::GRAVITATIONALBOMB;
+
+			m_pModelCom->Set_Animation(UFO_MH);
+			m_pModelCom->Set_NextAnimIndex(UFO_MH);
+
+			m_fWaitingTime = 0.f;
+		}
 	}
+
+	/* 중력자탄에서 레이저 패턴으로 변경 */
 
 }
 
@@ -213,8 +247,8 @@ void CUFO::Phase1_Pattern(_double dTimeDelta)
 	case Client::CUFO::LASER:
 		Laser_Pattern(dTimeDelta);
 		break;
-	case Client::CUFO::GRAVITATIONALMAGNETITE:
-		GravitationalMagnetite_Pattern(dTimeDelta);
+	case Client::CUFO::GRAVITATIONALBOMB:
+		GravitationalBomb_Pattern(dTimeDelta);
 		break;
 	}
 }

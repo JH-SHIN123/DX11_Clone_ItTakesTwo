@@ -92,7 +92,6 @@ HRESULT CMoonBaboon_MainLaser::Render_ShadowDepth()
 void CMoonBaboon_MainLaser::Set_LaserOperation(_bool IsActive)
 {
 	m_IsLaserOperation = IsActive; 
-	//m_dPatternDeltaT = 0.0;
 }
 
 void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
