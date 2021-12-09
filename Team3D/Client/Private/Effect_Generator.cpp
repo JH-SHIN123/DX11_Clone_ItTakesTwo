@@ -29,6 +29,7 @@
 #include "Effect_Boss_Core.h"
 #include "Effect_Boss_Core_Hit.h"
 #include "Effect_Boss_Core_Smoke.h"
+#include "Effect_Env_Particle_Field.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -250,6 +251,9 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Core_Smoke"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Core_Smoke", CEffect_Boss_Core_Smoke::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Env_Particle_Field"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Env_Particle_Field", CEffect_Env_Particle_Field::Create(pDevice, pDeviceContext, pData));
 
 
 	// 3D Effect

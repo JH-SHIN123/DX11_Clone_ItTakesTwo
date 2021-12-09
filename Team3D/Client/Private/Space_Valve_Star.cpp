@@ -45,9 +45,6 @@ _int CSpace_Valve_Star::Tick(_double TimeDelta)
 		m_iRotate_Count = DATABASE->Get_ValveCount_Cody(m_IsCodyValve);
 	else
 		m_iRotate_Count = 0;
-	
-	if (m_pGameInstance->Key_Down(DIK_N))
-		Set_Clear_Level(true);
 
 	return _int();
 }
