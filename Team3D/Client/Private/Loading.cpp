@@ -435,7 +435,7 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Taek()
 	return S_OK;
 }
 
-HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon()
+HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon() 
 {
 	_matrix PivotMatrix = XMMatrixIdentity();
 
