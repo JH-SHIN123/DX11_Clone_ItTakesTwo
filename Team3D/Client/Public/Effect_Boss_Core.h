@@ -41,7 +41,7 @@ private:
 	_float	m_fTextureUV_Time	= 0.f;
 	XMINT2 m_vTexUV = { 0, 0 };
 	const XMINT2 m_vTexUV_Max			= { 8, 8 };
-	_float3 m_vOffSet_Pos		= { 0.f, 1.525f, 0.f };
+	_float3 m_vOffSet_Pos		= { 0.f, -4.f, 0.f };
 	_float	m_fDistortion_Time	= 0.f;
 	_float	m_fDegree_Angle		= 0.f;
 
