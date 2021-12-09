@@ -3,6 +3,7 @@
 #include "Cody.h"
 #include "CameraActor.h"
 #include "PlayerActor.h"
+#include"Bridge.h"
 #include"CutScenePlayer.h"
 
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -158,7 +159,14 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 	{
 		m_eCurCamMode = CamMode::Cam_Warp_WormHole;
 	}
-
+	if (DATABASE->Get_BigButtonPressed() && static_cast<CBridge*>(DATABASE->Get_Bridge())->Get_IsUppendede() == false)
+	{
+		m_eCurCamMode = CamMode::Cam_PressButton_Bridge;
+	}
+#ifdef __TEST_JUN
+	if(m_pGameInstance->Key_Down(DIK_U))
+	m_eCurCamMode = CamMode::Cam_PressButton_Bridge;
+#endif
 }
 
 void CMainCamera::Set_Zoom(_float fZoomVal, _double dTimeDelta)
@@ -252,8 +260,6 @@ _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 
 _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 {
-
-
 	CTransform* pPlayerTransform = dynamic_cast<CCody*>(m_pTargetObj)->Get_Transform();
 
 	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
@@ -318,7 +324,7 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	}
 
 	//카메라 움직임이 끝나고 체크할것들
-	//For.GravityUp
+
 
 
 
@@ -346,7 +352,7 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vCurQuartRot = XMQuaternionRotationRollPitchYaw(
 		XMConvertToRadians(m_fCurMouseRev[Rev_Prependicul]) ,
 		XMConvertToRadians(m_fCurMouseRev[Rev_Holizontal] ) ,0.f);
-	//Sehoon
+
 
 	_matrix matQuat = XMMatrixRotationQuaternion(vCurQuartRot);
 
@@ -409,9 +415,31 @@ _int CMainCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 	KeyCheck(dTimeDelta);
 	return NO_EVENT;
 }
+void CMainCamera::KeyCheck(_double dTimeDelta)
+{
+
+	_long MouseMove = 0;
+	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
+	{
+		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), (_float)MouseMove * 0.1f * dTimeDelta);
+
+	}
+	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
+	{
+		m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), (_float)MouseMove * dTimeDelta* 0.1f);
+	}
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD4))
+	{
+		m_pTransformCom->Go_Left(dTimeDelta);
+	}
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD6))
+	{
+		m_pTransformCom->Go_Right(dTimeDelta);
+	}
+}
+#pragma endregion
 _int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
 {
-	KeyCheck(dTimeDelta);
 	return NO_EVENT;
 }
 _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
@@ -457,29 +485,74 @@ _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 	}
 	return NO_EVENT;
 }
-void CMainCamera::KeyCheck(_double dTimeDelta)
+_int CMainCamera::Tick_Cam_PressButton_Bridge(_double dTimeDelta)
 {
+	if (m_fBridgeUppendTime >= 1.f)
+	{
+		m_fBridgeUppendTime = 0.f;
+		m_bStartBridgeUppendCam = false;
+		ReSet_Cam_FreeToAuto();
+		m_eCurCamMode = CamMode::Cam_AutoToFree;
+		return NO_EVENT;
+	}
+	if (m_fBridgeUppendTime == 0.f)
+	{
+		for (_uint i = 0; i < 2; i++)
+			m_fCurMouseRev[i] = fmodf(m_fCurMouseRev[i], 360.f);
+	}
 
-	_long MouseMove = 0;
-	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
+	_matrix matResult = XMMatrixIdentity();
+	_vector vBridgePos = XMVectorSet(64.f, 17.f, 155.f , 1.f);
+	_bool bIsFinishRev[Rev_End] = { false,false };
+	_float fTargetRev[Rev_End];
+	if (false == m_bStartBridgeUppendCam)
 	{
-		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), (_float)MouseMove * 0.1f * dTimeDelta);
+		fTargetRev[Rev_Holizontal] = -45.f;
+		fTargetRev[Rev_Prependicul] = -45.f;
+	}
+	else
+	{
+		fTargetRev[Rev_Holizontal] = 0.f;
+		fTargetRev[Rev_Prependicul] = 0.f;
+		m_fBridgeUppendTime += dTimeDelta;
+	}
+	for (_uint i = 0; i < 2; i++)
+	{
+		if (fabs(fTargetRev[i] - m_fCurMouseRev[i]) < 1.f)
+			bIsFinishRev[i] = true;
+		m_fCurMouseRev[i] += (fTargetRev[i] - m_fCurMouseRev[i])* dTimeDelta;
+	}
+	if (bIsFinishRev[Rev_Holizontal] && bIsFinishRev[Rev_Prependicul])
+		m_bStartBridgeUppendCam = true;
+	_matrix matCurSize = MakeViewMatrixByUp(m_vSizeEye[m_eCurPlayerSize], m_vSizeAt[m_eCurPlayerSize]);
+	matCurSize.r[3] += matCurSize.r[2] * (m_fCurMouseRev[Rev_Prependicul]) * 0.08f;
+	if (m_bStartBridgeUppendCam == false)
+	{
+		_vector vCamPos = (matCurSize*	XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_fCurMouseRev[Rev_Prependicul]),XMConvertToRadians(m_fCurMouseRev[Rev_Holizontal]), 0.f)
+			*XMMatrixTranslation(m_vPlayerPos.x, m_vPlayerPos.y, m_vPlayerPos.z)).r[3];
+		matResult = MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix() , MakeViewMatrixByUp(vCamPos, vBridgePos), 0.1f);
+	}
+	else
+	{
+		matResult = MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix() , matCurSize*
+			XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_fCurMouseRev[Rev_Prependicul]),
+				XMConvertToRadians(m_fCurMouseRev[Rev_Holizontal]), 0.f)
+			*XMMatrixTranslation(m_vPlayerPos.x, m_vPlayerPos.y, m_vPlayerPos.z), m_fBridgeUppendTime);
+		/*_vector vOut = XMVectorZero();
+		if (m_bIsCollision = OffSetPhsX(matResult, dTimeDelta, &vOut))
+		{
+			_float4 vEye, vAt;
 
+			XMStoreFloat4(&vEye, vOut);
+			XMStoreFloat4(&vAt,matResult.r[3] + matResult.r[2]);
+			matResult = MakeViewMatrixByUp(vEye, vAt);
+		}*/
 	}
-	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
-	{
-		m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), (_float)MouseMove * dTimeDelta* 0.1f);
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD4))
-	{
-		m_pTransformCom->Go_Left(dTimeDelta);
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD6))
-	{
-		m_pTransformCom->Go_Right(dTimeDelta);
-	}
+	m_pTransformCom->Set_WorldMatrix(matResult);
+	
+	return NO_EVENT;
 }
-#pragma endregion
+
 _int CMainCamera::ReSet_Cam_FreeToAuto()
 {
 	m_fChangeCamModeLerpSpeed = 6.f;
@@ -529,6 +602,22 @@ _fmatrix CMainCamera::MakeViewMatrixByUp(_float4 Eye, _float4 At, _fvector vUp)
 	_vector vNormalizedUp = XMVectorSetW(XMVector3Normalize(vUp), 0.f);
 	_vector vPos = XMVectorSetW(XMLoadFloat4(&Eye),1.f);
 	_vector vLook = XMVector3Normalize(XMVectorSetW(XMLoadFloat4(&At),1.f) - vPos);
+	_vector vRight = XMVector3Normalize(XMVector3Cross(vNormalizedUp, vLook));
+	vNormalizedUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+	Result.r[0] = vRight;
+	Result.r[1] = vNormalizedUp;
+	Result.r[2] = vLook;
+	Result.r[3] = vPos;
+
+	return Result;
+}
+
+_fmatrix CMainCamera::MakeViewMatrixByUp(_fvector vEye, _fvector vAt, _fvector vUp)
+{
+	_matrix Result = XMMatrixIdentity();
+	_vector vNormalizedUp = XMVectorSetW(XMVector3Normalize(vUp), 0.f);
+	_vector vPos = XMVectorSetW(vEye, 1.f);
+	_vector vLook = XMVector3Normalize(XMVectorSetW(vAt, 1.f) - vPos);
 	_vector vRight = XMVector3Normalize(XMVector3Cross(vNormalizedUp, vLook));
 	vNormalizedUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
 	Result.r[0] = vRight;
@@ -625,6 +714,10 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	case Client::CMainCamera::CamMode::Cam_Warp_WormHole:
 		iResult = Tick_Cam_Warp_WormHole(dTimeDelta);
 		break;
+	case Client::CMainCamera::CamMode::Cam_PressButton_Bridge:
+		iResult = Tick_Cam_PressButton_Bridge(dTimeDelta);
+		break;
+
 	}
 	return iResult;
 }

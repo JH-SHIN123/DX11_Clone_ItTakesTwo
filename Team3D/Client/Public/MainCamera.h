@@ -11,7 +11,7 @@ class CMainCamera final : public CCamera
 {
 	enum CamRev {Rev_Holizontal,Rev_Prependicul,Rev_End};
 
-	enum class CamMode{Cam_Free,Cam_AutoToFree,Cam_Warp_WormHole,Cam_End};
+	enum class CamMode{Cam_Free,Cam_AutoToFree,Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_End};
 	//O CamFreeMove P FollowPlayer
 	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnRail, Cam_Free_Boss_MiniRoom,Cam_Free_End };
 
@@ -41,7 +41,8 @@ private:
 	_int	Tick_Cam_Free(_double dTimeDelta);					//자유이동
 	_int	Tick_Cam_AutoToFree(_double dTimeDelta);			//연출 카메라 -> 자유이동시 보간
 	_int	Tick_Cam_Warp_WormHole(_double dTimeDelta);			//웜홀
-	
+	_int	Tick_Cam_PressButton_Bridge(_double dTimeDelta);	//다리앞의 버튼
+
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
 	_int	Tick_Cam_Free_OnRail(_double dTimeDelta);			//레일
@@ -59,6 +60,7 @@ private:
 	_bool	OffSetPhsX(_fmatrix matWorld,_double dTimeDelta,_vector * pOut);
 
 	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At, _fvector vUp = XMVectorSet(0.f,1.f,0.f,0.f));
+	_fmatrix MakeViewMatrixByUp(_fvector vEye, _fvector vAt, _fvector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f));
 	_fmatrix MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime);
 
 
@@ -105,6 +107,11 @@ private:
 	//For.Portal
 	_double m_dWarpTime = 0.0;
 	_float4x4 m_matStartPortal;
+
+	//For.BridgeUppend
+	_bool	m_bStartBridgeUppendCam = false;
+	_float	m_fBridgeUppendTime = 0.f;
+
 
 	WORLDMATRIX	m_PreWorld;
 

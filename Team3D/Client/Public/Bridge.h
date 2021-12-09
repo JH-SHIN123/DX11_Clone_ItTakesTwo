@@ -12,6 +12,9 @@ private:
 	virtual ~CBridge() = default;
 
 public:
+	/*Getter*/
+	_bool	Get_IsUppendede() { return m_bIsUppended; }
+
 	void Call_Trigger();
 
 public:
@@ -33,7 +36,7 @@ private:
 	_float						m_fAngle = 0;
 
 	_bool						m_bUpdate = true;
-
+	_bool						m_bIsUppended = false;
 public:
 	static CBridge* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject * Clone_GameObject(void * pArg) override;
