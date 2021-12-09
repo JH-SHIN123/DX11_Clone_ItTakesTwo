@@ -207,7 +207,9 @@ HRESULT CLoading::Assign()
 	while (m_iWorkCount > m_iCurWorkIndex)
 	{
 		if (m_ProcessingThreadList.size() >= m_iThreadCount)
+		{
 			continue;
+		}
 		else
 		{
 			_uint iWorkIndex = m_iCurWorkIndex++;
@@ -290,29 +292,28 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 	}
 	else if (2 == iThreadIndex)
 	{
-		CEffect_Generator::GetInstance()->Create_Prototype_Resource_Stage1(m_pDevice, m_pDeviceContext);
-		CEffect_Generator::GetInstance()->Load_EffectData(TEXT("../Bin/Resources/Data/EffectData/Stage1_Effect.dat"), m_pDevice, m_pDeviceContext);
-
-		/* For. Map Resources */
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Prototype_Model_Instancing_TXT(), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Prototype_GameObject_TXT(), E_FAIL);
+		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Se(), E_FAIL);
+		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Hye(), E_FAIL);
+		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Yoon(), E_FAIL);
+		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Jung(), E_FAIL);
 
 		__threadbreak;
 	}
 	else if (3 == iThreadIndex)
 	{
-		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Se(), E_FAIL);
-		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Hye(), E_FAIL);
+		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Jin(), E_FAIL);
 		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Taek(), E_FAIL);
-		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Yoon(), E_FAIL);
-		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Jung(), E_FAIL);
 		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Jun(), E_FAIL);
 
 		__threadbreak;
 	}
 	else if (4 == iThreadIndex)
 	{
-		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Jin(), E_FAIL);
+		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Prototype_Model_Instancing_TXT(), E_FAIL);
+		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Prototype_GameObject_TXT(), E_FAIL);
+
+		CEffect_Generator::GetInstance()->Create_Prototype_Resource_Stage1(m_pDevice, m_pDeviceContext);
+		CEffect_Generator::GetInstance()->Load_EffectData(TEXT("../Bin/Resources/Data/EffectData/Stage1_Effect.dat"), m_pDevice, m_pDeviceContext);
 
 		__threadbreak;
 	}

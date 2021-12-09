@@ -8,6 +8,7 @@
 #include "Pipeline.h"
 #include "Frustum.h"
 #include "PhysX.h"
+#include "ShaderCompiler.h"
 
 CModel_Instance::CModel_Instance(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)
@@ -538,18 +539,7 @@ HRESULT CModel_Instance::Create_VIBuffer(const _tchar * pShaderFilePath, const c
 
 HRESULT CModel_Instance::SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC * pInputElementDesc, _uint iElementCount, const _tchar * pShaderFilePath, const char * pTechniqueName)
 {
-	_uint iFlag = 0;
-
-#ifdef _DEBUG
-	iFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-#else
-	iFlag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
-#endif
-
-	ID3DBlob* pCompiledShaderCode = nullptr;
-	ID3DBlob* pCompileErrorMsg = nullptr;
-
-	FAILED_CHECK_RETURN(D3DCompileFromFile(pShaderFilePath, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, nullptr, "fx_5_0", iFlag, 0, &pCompiledShaderCode, &pCompileErrorMsg), E_FAIL);
+	ID3DBlob* pCompiledShaderCode = CShaderCompiler::GetInstance()->Get_CompiledCode(pShaderFilePath);
 	FAILED_CHECK_RETURN(D3DX11CreateEffectFromMemory(pCompiledShaderCode->GetBufferPointer(), pCompiledShaderCode->GetBufferSize(), 0, m_pDevice, &m_pEffect), E_FAIL);
 
 	ID3DX11EffectTechnique*	pTechnique = m_pEffect->GetTechniqueByName(pTechniqueName);
@@ -573,8 +563,6 @@ HRESULT CModel_Instance::SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC * pInputEle
 	}
 
 	Safe_Release(pTechnique);
-	Safe_Release(pCompiledShaderCode);
-	Safe_Release(pCompileErrorMsg);
 
 	return S_OK;
 }
