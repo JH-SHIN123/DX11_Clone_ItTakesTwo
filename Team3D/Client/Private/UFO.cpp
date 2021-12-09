@@ -134,6 +134,7 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	_float fAngle = XMConvertToDegrees(XMVectorGetX(vDot));
 
 	_matrix matPivot, matRotY, matTrans, matAnim;
+
 	matTrans = XMMatrixTranslation(0.f, -0.5f, 0.f);
 	matRotY = XMMatrixRotationY(XMConvertToRadians(-fAngle));
 	matPivot = matRotY * matTrans;
@@ -145,19 +146,16 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 
 	m_pModelCom->Set_PivotTransformation(22, matPivot);
 
-	/* 레이저 건의 뼈랑 UFO 월드 매트릭스 가져오고 곱해서 레이저건의 월드 매트릭스를 구하자 (이거 각도 잘 안구해지는거 같음 애니메이션 떄문에;;)*/
-	_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("LaserGun");
+	/* 레이저는 레이저건 총구에서 나가야하기 때문에 LaserGunRing3 Bone을 사용해줌. */
 	_matrix matUFOWorld = m_pTransformCom->Get_WorldMatrix();
-	_matrix matLaserGunWorld = matLaserGun * matUFOWorld;
+	_matrix matLaserGunRing = m_pModelCom->Get_BoneMatrix("LaserGunRing3");
+	_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("Align");
+	_matrix matLaserRingWorld = matRotY * matLaserGunRing * matUFOWorld;
+	_matrix matAlign = matRotY * matLaserGun * matUFOWorld;
+	_vector vLaserGunDir = XMLoadFloat4((_float4*)&matAlign.r[0].m128_f32[0]);
 
-	XMStoreFloat4(&m_vLaserGunPos, matLaserGunWorld.r[3]);
-	XMStoreFloat4(&m_vLaserDir, vLaserDir);
-
-	/* 레이저건의 포지션을 받아오자*/
-	//_vector vLaserGunPos = XMLoadFloat4((_float4*)&matLaserGunWorld.r[3].m128_f32[0]);
-
-	/* 레이저건의 Look을 받아오자 */
-	//_vector vLaserGunLook = XMLoadFloat4((_float4*)&matLaserGunWorld.r[2].m128_f32[0]);
+	XMStoreFloat4(&m_vLaserGunPos, matLaserRingWorld.r[3]);
+	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(vLaserGunDir));
 
 	if (true == m_IsLaserCreate)
 	{
