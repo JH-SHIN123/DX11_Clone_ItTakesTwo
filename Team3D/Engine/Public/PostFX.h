@@ -61,13 +61,8 @@ private:
 
 	_bool		m_bRadialBlur_Main = false;
 	_bool		m_bRadialBlur_Sub = false;
-
 	_float2		m_vRadiarBlur_FocusPos_Main = { 0.f,0.f };
 	_float2		m_vRadiarBlur_FocusPos_Sub = { 0.f,0.f };
-
-	/*TEST*/
-	_float m_fRadiarDist = 0.f;
-	_float m_fRadiarStr = 0.f;
 #pragma endregion
 
 #pragma region Resources

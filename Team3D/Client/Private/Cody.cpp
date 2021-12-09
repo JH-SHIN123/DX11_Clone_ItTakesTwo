@@ -581,7 +581,6 @@ void CCody::KeyInput(_double dTimeDelta)
 
 #pragma endregion
 
-
 #pragma region Keyboard_Shift_Button
 	if (m_pGameInstance->Key_Down(DIK_LSHIFT) && m_bRoll == false && m_bCanMove == true && m_eCurPlayerSize != SIZE_LARGE)
 	{
@@ -617,7 +616,7 @@ void CCody::KeyInput(_double dTimeDelta)
 			}
 		}
 
-		Start_RadiarBlur(0.5f);
+		Start_RadiarBlur(0.3f);
 	}
 #pragma endregion
 
@@ -663,6 +662,8 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_IsSizeChanging = true;
 			break;
 		}
+
+		Start_RadiarBlur(0.3f);
 	}
 #pragma endregion
 
@@ -685,6 +686,8 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_pActorCom->Set_IsPlayerSizeSmall(true);
 			break;
 		}
+
+		Start_RadiarBlur(0.3f);
 	}
 #pragma endregion
 
@@ -2934,7 +2937,7 @@ void CCody::Start_SpaceRail()
 	if (m_pSearchTargetRailNode) {
 		// 타겟 지정시, 연기이펙트
 		EFFECT->Add_Effect(Effect_Value::Landing_Smoke, m_pSearchTargetRailNode->Get_WorldMatrix());
-		
+
 		// 타겟을 찾았다면, 레일 탈 준비
 		m_pTargetRailNode = m_pSearchTargetRailNode;
 		m_pModelCom->Set_Animation(ANI_C_Grind_Grapple_Enter); // 줄던지고 댕겨서 날라가기

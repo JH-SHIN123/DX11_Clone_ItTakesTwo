@@ -98,9 +98,10 @@ float3 RadiarBlur(float2 vTexUV, float2 vFocusPos)
 
 	float2 fMaskUV = vTexUV;
 	fMaskUV.x *= 2.f;
-	float fBlurMask = 1.f - g_RadiarBlurMaskTex.Sample(Wrap_MinMagMipLinear_Sampler, fMaskUV).x;
+	float fBlurMask = g_RadiarBlurMaskTex.Sample(Wrap_MinMagMipLinear_Sampler, fMaskUV).x;
+
 	float ratio = saturate(dist * g_SampleStrength * fBlurMask);
-	return lerp(vColor, sum, fBlurMask);
+	return lerp(vColor, sum, ratio);
 }
 ////////////////////////////////////////////////////////////
 
