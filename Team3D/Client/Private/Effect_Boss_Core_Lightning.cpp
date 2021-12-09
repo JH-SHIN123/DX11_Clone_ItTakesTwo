@@ -83,7 +83,7 @@ HRESULT CEffect_Boss_Core_Lightning::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(1));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(2));
 
-	m_pPointInstanceCom_STT->Render(9, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
+	m_pPointInstanceCom_STT->Render(8, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
 }
@@ -137,7 +137,7 @@ HRESULT CEffect_Boss_Core_Lightning::Ready_InstanceBuffer()
 
 		_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
 
-		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos + (vRandDir * 0.8f));
+		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos /*+ (vRandDir * 0.8f)*/);
 
 		_float3 v3RandDir;
 		XMStoreFloat3(&v3RandDir, vRandDir);

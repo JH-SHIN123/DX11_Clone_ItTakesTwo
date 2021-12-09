@@ -591,7 +591,7 @@ void  GS_DOUBLEUV_LEFT_ROTATE_BILL_Y_UP_SIZE(/*입력*/ point  VS_OUT_NOBILL_DIR I
 	/* 좌상 */
 	Out[0].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
 	Out[0].vPosition = mul(Out[0].vPosition, matVP);
-	Out[0].vTexUV = float2(In[0].vTextureUV_LTRB.y, In[0].vTextureUV_LTRB.z);
+	Out[0].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.y);
 	Out[0].vProjPosition = Out[0].vPosition;
 	Out[0].vTexUV2 = float2(g_vUV.x, g_vUV.y);
 	Out[0].iViewportIndex = 1;
@@ -601,7 +601,7 @@ void  GS_DOUBLEUV_LEFT_ROTATE_BILL_Y_UP_SIZE(/*입력*/ point  VS_OUT_NOBILL_DIR I
 	/* 우상 */
 	Out[1].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
 	Out[1].vPosition = mul(Out[1].vPosition, matVP);
-	Out[1].vTexUV = float2(In[0].vTextureUV_LTRB.w, In[0].vTextureUV_LTRB.z);
+	Out[1].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.y);
 	Out[1].vProjPosition = Out[1].vPosition;
 	Out[1].vTexUV2 = float2(g_vUV.z, g_vUV.y);
 	Out[1].iViewportIndex = 1;
@@ -611,7 +611,7 @@ void  GS_DOUBLEUV_LEFT_ROTATE_BILL_Y_UP_SIZE(/*입력*/ point  VS_OUT_NOBILL_DIR I
 	/* 우하 */
 	Out[2].vPosition = In[0].vPosition - vWolrdPointPos_X;
 	Out[2].vPosition = mul(Out[2].vPosition, matVP);
-	Out[2].vTexUV = float2(In[0].vTextureUV_LTRB.w, In[0].vTextureUV_LTRB.x);
+	Out[2].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.w);
 	Out[2].vProjPosition = Out[2].vPosition;
 	Out[2].vTexUV2 = float2(g_vUV.z, g_vUV.w);
 	Out[2].iViewportIndex = 1;
@@ -623,7 +623,7 @@ void  GS_DOUBLEUV_LEFT_ROTATE_BILL_Y_UP_SIZE(/*입력*/ point  VS_OUT_NOBILL_DIR I
 	/* 좌하 */
 	Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X;
 	Out[3].vPosition = mul(Out[3].vPosition, matVP);
-	Out[3].vTexUV = float2(In[0].vTextureUV_LTRB.y, In[0].vTextureUV_LTRB.x);
+	Out[3].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.w);
 	Out[3].vProjPosition = Out[3].vPosition;
 	Out[3].vTexUV2 = float2(g_vUV.x, g_vUV.w);
 	Out[3].iViewportIndex = 1;
@@ -648,9 +648,9 @@ void  GS_DOUBLEUV_LEFT_ROTATE_BILL_Y_UP_SIZE(/*입력*/ point  VS_OUT_NOBILL_DIR I
 
 	Out[4].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
 	Out[4].vPosition = mul(Out[4].vPosition, matVP);
-	Out[4].vTexUV = float2(In[0].vTextureUV_LTRB.y, In[0].vTextureUV_LTRB.z);
+	Out[4].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.y);
 	Out[4].vProjPosition = Out[4].vPosition;
-	Out[4].vTexUV2 = float2(g_vUV.x, g_vUV.y);
+	Out[4].vTexUV2 = float2(g_vUV.y, g_vUV.z);
 	Out[4].iViewportIndex = 2;
 	Out[4].fTime = In[0].fTime;
 	TriStream.Append(Out[4]);
@@ -658,9 +658,9 @@ void  GS_DOUBLEUV_LEFT_ROTATE_BILL_Y_UP_SIZE(/*입력*/ point  VS_OUT_NOBILL_DIR I
 	/* 우상 */
 	Out[5].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
 	Out[5].vPosition = mul(Out[5].vPosition, matVP);
-	Out[5].vTexUV = float2(In[0].vTextureUV_LTRB.w, In[0].vTextureUV_LTRB.z);
+	Out[5].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.y);
 	Out[5].vProjPosition = Out[5].vPosition;
-	Out[5].vTexUV2 = float2(g_vUV.z, g_vUV.y);
+	Out[5].vTexUV2 = float2(g_vUV.w, g_vUV.z);
 	Out[5].iViewportIndex = 2;
 	Out[5].fTime = In[0].fTime;
 	TriStream.Append(Out[5]);
@@ -668,9 +668,9 @@ void  GS_DOUBLEUV_LEFT_ROTATE_BILL_Y_UP_SIZE(/*입력*/ point  VS_OUT_NOBILL_DIR I
 	/* 우하 */
 	Out[6].vPosition = In[0].vPosition - vWolrdPointPos_X;
 	Out[6].vPosition = mul(Out[6].vPosition, matVP);
-	Out[6].vTexUV = float2(In[0].vTextureUV_LTRB.w, In[0].vTextureUV_LTRB.x);
+	Out[6].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.w);
 	Out[6].vProjPosition = Out[6].vPosition;
-	Out[6].vTexUV2 = float2(g_vUV.z, g_vUV.w);
+	Out[6].vTexUV2 = float2(g_vUV.w, g_vUV.z);
 	Out[6].iViewportIndex = 2;
 	Out[6].fTime = In[0].fTime;
 	TriStream.Append(Out[6]);
@@ -680,16 +680,15 @@ void  GS_DOUBLEUV_LEFT_ROTATE_BILL_Y_UP_SIZE(/*입력*/ point  VS_OUT_NOBILL_DIR I
 	/* 좌하 */
 	Out[7].vPosition = In[0].vPosition + vWolrdPointPos_X;
 	Out[7].vPosition = mul(Out[7].vPosition, matVP);
-	Out[7].vTexUV = float2(In[0].vTextureUV_LTRB.y, In[0].vTextureUV_LTRB.x);
+	Out[7].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.w);
 	Out[7].vProjPosition = Out[7].vPosition;
-	Out[7].vTexUV2 = float2(g_vUV.x, g_vUV.w);
+	Out[7].vTexUV2 = float2(g_vUV.y, g_vUV.x);
 	Out[7].iViewportIndex = 2;
 	Out[7].fTime = In[0].fTime;
 	TriStream.Append(Out[4]);
 	TriStream.Append(Out[6]);
 	TriStream.Append(Out[7]);
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 struct  PS_IN
@@ -950,16 +949,6 @@ technique11		DefaultTechnique
 	}
 
 	pass PS_BOSS_CORE_LIGHTNING // 8
-	{
-		SetRasterizerState(Rasterizer_NoCull);
-		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
-		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0  VS_MAIN_NOBILL_Y();
-		GeometryShader = compile gs_5_0  GS_DOUBLEUV_LEFT_ROTATE_BILL_Y_UP_SIZE();
-		PixelShader = compile ps_5_0  PS_MAIN_DEFAULT_SMOKE();
-	}
-
-	pass PS_BOSS_CORE_LIGHTNING_2 // 9
 	{
 		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);

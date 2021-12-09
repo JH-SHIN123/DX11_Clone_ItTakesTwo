@@ -39,7 +39,7 @@ private:
 	_double m_dControlTime = 0.0;
 
 	const _double	m_dTextureUV_Time	= 0.01;
-	const XMINT2	m_vUVCount_Max		= { 4, 8 };
+	const XMINT2	m_vUVCount_Max		= { 8, 4 };
 	const _float	m_fAlphaTime_Power	= 2.f;
 	const _float	m_fInstance_SpeedPerSec = 0.2f;
 	const _double	m_dInstance_Pos_Update_Time = 3.0;
