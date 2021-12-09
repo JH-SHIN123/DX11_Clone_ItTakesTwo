@@ -44,7 +44,6 @@ private:
 	void	Rotate_Check(_double TimeDelta);
 
 private:
-	void Open_ValveDoor();
 	void Rotate_Matrix(_bool IsReverseRotate, _float fAngle, _int iIndex);
 
 private:
@@ -76,16 +75,13 @@ private: // Base
 private:
 	CRenderer*			m_pRendererCom				= nullptr;
 	CTransform*			m_pTransformCom_Base		= nullptr; // 베이스 기준
-	CTransform*			m_pTransformCom_Door_R		= nullptr; // 베이스 기준
-	CTransform*			m_pTransformCom_Door_L		= nullptr; // 베이스 기준
 	CModel*				m_pModelCom_Base			= nullptr;
-	CModel*				m_pModelCom_Door_R			= nullptr;
-	CModel*				m_pModelCom_Door_L			= nullptr;
 	CStaticActor*		m_pStaticActCom_Bass		= nullptr;
-	CStaticActor*		m_pStaticActCom_Door_R		= nullptr;
-	CStaticActor*		m_pStaticActCom_Door_L		= nullptr;
 	CModel_Instance*	m_pModelInstanceCom_Star	= nullptr; // 별 제너레이트 스타
 
+private:
+	class CSpace_Valve_Door* m_pSpace_Valve_Door_Right	= nullptr;
+	class CSpace_Valve_Door* m_pSpace_Valve_Door_Left	= nullptr;
 
 public:
 	static CSpace_Valve_Star* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

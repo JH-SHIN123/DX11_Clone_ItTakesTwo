@@ -11,6 +11,7 @@
 #include "InGameEffect.h"
 #include "WarpGate.h"
 #include "Boss_Missile.h"
+#include "Effect_Env_Particle_Field.h"
 /* Hye */
 #include "Environment_Generator.h"
 #include "Dynamic_Env.h"
@@ -53,8 +54,8 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Wormhole(TEXT("Layer_Wormhole")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_WallLaserTrap(TEXT("Layer_WallLaserTrap")), E_FAIL);	
 	FAILED_CHECK_RETURN(Ready_Layer_TutorialDoor(TEXT("Layer_TutorialDoor")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_GravityPipe(TEXT("Layer_GravityPipe")), E_FAIL);
-
+	FAILED_CHECK_RETURN(Ready_Layer_GravityPipe(TEXT("Layer_GravityPipe")), E_FAIL); 
+	FAILED_CHECK_RETURN(Ready_Layer_Env_Particles(TEXT("Layer_Env_Particle")), E_FAIL);
 	/* Hye */
 	FAILED_CHECK_RETURN(Ready_Layer_Planet(TEXT("Layer_Planet")), E_FAIL);
 	/* Taek */
@@ -90,17 +91,12 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Test(), E_FAIL);
 #endif
 
-#ifdef __TEST_JUNG
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke")), E_FAIL);
-#endif //__TEST_JUNG
-
 	return S_OK;
 }
 
 _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
-
 
 #ifdef __TEST_TAEK
 	TCHAR lightTag[256] = L"";
@@ -127,6 +123,13 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	}
 #endif // __TEST_TAEK
 
+#ifdef __TEST_SE
+	if (m_pGameInstance->Key_Down(DIK_M))
+	{
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA")), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB")), E_FAIL);
+	}
+#endif
 
 	return NO_EVENT;
 }
@@ -166,14 +169,26 @@ HRESULT CLevel_Stage::Clone_StaticGameObjects_ByFile(const _tchar * pFilePath, c
 
 	return S_OK;
 }
-
+  
 HRESULT CLevel_Stage::Ready_Test()
 {
 	/* Se */
 #ifdef __TEST_SE
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB")), E_FAIL);
 #endif 
 	/* Jung */
+#ifdef __TEST_JUNG
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core")), E_FAIL);
+
+	CEffect_Env_Particle_Field::ARG_DESC Arg_Desc;
+	Arg_Desc.iInstanceCount = 8000;
+	Arg_Desc.vPosition = { 60.f, 0.f, 30.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 30.f, 10.f, 100.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
+
+#endif
 
 	/* Hye */
 #ifdef __TEST_HYE
@@ -308,6 +323,16 @@ HRESULT CLevel_Stage::Ready_Layer_GravityPipe(const _tchar * pLayerTag)
 	Data.iPlayerValue = 1;
 	XMStoreFloat4x4(&Data.WorldMatrix, WorldMatrix);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Gravity_Pipe"), &Data), E_FAIL);
+	return S_OK;
+}
+HRESULT CLevel_Stage::Ready_Layer_Env_Particles(const _tchar * pLayerTag)
+{
+	CEffect_Env_Particle_Field::ARG_DESC Arg_Desc;
+	Arg_Desc.iInstanceCount = 8000;
+	Arg_Desc.vPosition = { 60.f, 0.f, 30.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 30.f, 10.f, 100.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
+
 	return S_OK;
 }
 #pragma endregion

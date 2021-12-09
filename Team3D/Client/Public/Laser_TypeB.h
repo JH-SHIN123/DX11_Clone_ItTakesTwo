@@ -4,12 +4,12 @@
 
 BEGIN(Client)
 
-class CLaser_TypeA final : public CLaser
+class CLaser_TypeB final : public CLaser
 {
 private:
-	explicit CLaser_TypeA(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CLaser_TypeA(const CLaser_TypeA& rhs);
-	virtual	~CLaser_TypeA() = default;
+	explicit CLaser_TypeB(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CLaser_TypeB(const CLaser_TypeB& rhs);
+	virtual	~CLaser_TypeB() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -19,11 +19,8 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eRender) override;
 	virtual HRESULT Render_ShadowDepth() override;
 
-private:
-	_double m_dChargingTime = 0.0;
-
 public:
-	static CLaser_TypeA* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CLaser_TypeB* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

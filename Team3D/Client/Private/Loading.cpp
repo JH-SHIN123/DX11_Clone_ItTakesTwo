@@ -12,6 +12,7 @@
 /* Se */
 #include "GravityPath.h"
 #include "Laser_TypeA.h"
+#include "Laser_TypeB.h"
 
 /* Jung */
 #include "Effect_Generator.h"
@@ -20,6 +21,7 @@
 #include "WallLaserTrap.h"
 #include "WallLaserTrap_Button.h"
 #include "Space_Valve_Star.h"
+#include "Space_Valve_Door.h"
 
 /* Hye */
 #include "Environment_Generator.h"
@@ -329,6 +331,7 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Se()
 #else
 #ifdef __TEST_SE
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"), CLaser_TypeA::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB"), CLaser_TypeB::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 #endif
 #endif
 
@@ -342,6 +345,7 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jung()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WallLaserTrap_Button"), CWallLaserTrap_Button::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WallLaserTrap"), CWallLaserTrap::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Star"), CSpace_Valve_Star::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Door"), CSpace_Valve_Door::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	_matrix PivotMatrix = XMMatrixIdentity();	
 	PivotMatrix = XMMatrixScaling(0.0035f, 0.0035f, 0.0035f) * XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(90.f));

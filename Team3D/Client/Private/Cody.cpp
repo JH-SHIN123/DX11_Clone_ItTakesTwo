@@ -714,13 +714,6 @@ void CCody::KeyInput(_double dTimeDelta)
 	}
 
 #pragma endregion
-
-#pragma region Effet Test
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD7))
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-#pragma  endregion
 }
 
 _uint CCody::Get_CurState() const
@@ -2552,7 +2545,7 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 
 	if (true == m_IsWarpNextStage)
 	{
-		if (m_fWarpTimer_InWormhole <= m_fWarpTimer)
+		if (m_fWarpTimer_InWormhole/*2.f*/ <= m_fWarpTimer)
 		{
 			_float4 vWormhole = m_vWormholePos;
 			vWormhole.z -= 1.f;

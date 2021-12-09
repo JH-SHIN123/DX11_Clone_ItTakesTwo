@@ -85,7 +85,7 @@ _int CEffect_Umbrella_Pipe::Late_Tick(_double TimeDelta)
 		return NO_EVENT;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 50.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
 
 	return NO_EVENT;
 }
