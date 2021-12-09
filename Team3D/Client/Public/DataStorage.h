@@ -45,7 +45,6 @@ public:
 	void Set_STPlanetRobotPtr(CGameObject* pRobot) { m_pSTPlanetRobot = pRobot; }
 	CGameObject* Get_STPlanetRobot() { return m_pSTPlanetRobot; }
 
-
 	void Set_PressureBigPlate(CGameObject* pPressureBigPlate) { m_pPressureBigPlate = pPressureBigPlate; }
 	CGameObject* Get_PressureBigPlate() { return m_pPressureBigPlate; }
 
@@ -122,6 +121,13 @@ public:
 	void Set_HookUFO(CGameObject* pHookUFO) { m_pHookUFO = pHookUFO; }
 	CGameObject* Get_HookUFO() { return m_pHookUFO; }
 
+	/* For. Boss */
+	void Set_MoonBaboon_MainLaser(CGameObject* pMoonBaboon_MainLaser) { m_pMoonBaboonMainLaser = pMoonBaboon_MainLaser; }
+	CGameObject* Get_MoonBaboon_MainLaser() { return m_pMoonBaboonMainLaser; }
+
+	void Set_BossUFO(CGameObject* pBossUFO) { m_pBossUFO = pBossUFO; }
+	CGameObject* Get_BossUFO() { return m_pBossUFO; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -171,6 +177,10 @@ private:
 
 	/* For.ControlRoom_Battery */
 	CGameObject* m_pControlRoom_Battery = nullptr;
+
+	/* For.Boss */
+	CGameObject* m_pMoonBaboonMainLaser = nullptr;
+	CGameObject* m_pBossUFO = nullptr;
 
 private:
 	/* For.Valve */

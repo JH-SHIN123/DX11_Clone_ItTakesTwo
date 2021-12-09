@@ -5,6 +5,7 @@
 #include "Cody.h"
 #include "RobotParts.h"
 #include "CutScenePlayer.h"
+#include "MoonBaboon_MainLaser.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -46,6 +47,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	/* 초반 상태들 세팅 */
 	m_ePhase = UFO_PHASE::PHASE_1;
 	m_eTarget = UFO_TARGET::TARGET_MAY;
+	m_ePattern = UFO_PATTERN::LASER;
 	m_IsCutScene = true;
 
 	/* 컷 신 끝나고 기본 위치로 이동해야되는 포지션 세팅 */
@@ -62,9 +64,8 @@ _int CUFO::Tick(_double dTimeDelta)
 	CGameObject::Tick(dTimeDelta);
 
 	/* 테스트 용 */
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 		m_IsCutScene = false;
-
 
 	/* 컷 신 재생중이 아니라면 보스 패턴 진행하자 나중에 컷 신 생기면 바꿈 */
 	if (false == m_IsCutScene)
@@ -75,10 +76,10 @@ _int CUFO::Tick(_double dTimeDelta)
 			Phase1_Pattern(dTimeDelta);
 			break;
 		case Client::CUFO::PHASE_2:
+			Phase2_Pattern(dTimeDelta);
 			break;
 		case Client::CUFO::PHASE_3:
-			break;
-		case Client::CUFO::PHASE_4:
+			Phase3_Pattern(dTimeDelta);
 			break;
 		}
 	}
@@ -106,16 +107,14 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 
 	_vector vDir, vTargetPos, vTargetLook;
 
-	/* 지정된 타겟에 따라 포지션과 룩 세팅 */
+	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
 	{
 	case Client::CUFO::TARGET_CODY:
 		vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
-		vTargetLook = m_pCodyTransform->Get_State(CTransform::STATE_LOOK);
 		break;
 	case Client::CUFO::TARGET_MAY:
 		vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
-		vTargetLook = m_pMayTransform->Get_State(CTransform::STATE_LOOK);
 		break;
 	}
 
@@ -124,17 +123,6 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 
 	/* 우주선을 타겟쪽으로 천천히 회전 */
 	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f);
-
-	/* 레이저 건의 뼈랑 UFO 월드 매트릭스 가져오고 곱해서 레이저건의 월드 매트릭스를 구하자 (이거 각도 잘 안구해지는거 같음 애니메이션 떄문에;;)*/
-	//_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("LaserGun");
-	//_matrix matUFOWorld = m_pTransformCom->Get_WorldMatrix();
-	//_matrix matLaserGunWorld = matLaserGun * matUFOWorld;
-
-	/* 레이저건의 포지션을 받아오자*/
-	//_vector vLaserGunPos = XMLoadFloat4((_float4*)&matLaserGunWorld.r[3].m128_f32[0]);
-
-	/* 레이저건의 Look을 받아오자 */
-	//_vector vLaserGunLook = XMLoadFloat4((_float4*)&matLaserGunWorld.r[2].m128_f32[0]);
 
 	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector vUFOLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
@@ -156,8 +144,20 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	matPivot *= matAnim;
 
 	m_pModelCom->Set_PivotTransformation(22, matPivot);
-}
 
+	/* 레이저 건의 뼈랑 UFO 월드 매트릭스 가져오고 곱해서 레이저건의 월드 매트릭스를 구하자 (이거 각도 잘 안구해지는거 같음 애니메이션 떄문에;;)*/
+	//_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("LaserGun");
+	//_matrix matUFOWorld = m_pTransformCom->Get_WorldMatrix();
+	//_matrix matLaserGunWorld = matLaserGun * matUFOWorld;
+
+	/* 레이저건의 포지션을 받아오자*/
+	//_vector vLaserGunPos = XMLoadFloat4((_float4*)&matLaserGunWorld.r[3].m128_f32[0]);
+
+	/* 레이저건의 Look을 받아오자 */
+	//_vector vLaserGunLook = XMLoadFloat4((_float4*)&matLaserGunWorld.r[2].m128_f32[0]);
+
+}
+ 
 void CUFO::MoveStartingPoint(_double dTimeDelta)
 {
 	_vector vTargetPos = XMLoadFloat4(&m_vStartTargetPos);
@@ -170,13 +170,61 @@ void CUFO::MoveStartingPoint(_double dTimeDelta)
 		m_IsStartingPointMove = false;
 }
 
+void CUFO::GravitationalMagnetite_Pattern(_double dTimeDelta)
+{
+}
+
+void CUFO::Phase1_InterAction(_double dTimeDelta)
+{
+	/* 레이저에서 중력자탄 패턴으로 변경 */
+	if (true == m_pModelCom->Is_AnimFinished(UFO_Laser_HitPod))
+	{
+		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(true);
+		
+		if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp())
+			m_ePattern = UFO_PATTERN::GRAVITATIONALMAGNETITE;
+
+		m_pModelCom->Set_Animation(UFO_MH);
+		m_pModelCom->Set_NextAnimIndex(UFO_MH);
+	}
+
+}
+
 void CUFO::Phase1_Pattern(_double dTimeDelta)
 {
+	// 컷 신 끝나고 보스전이 시작되었을 때 위로 올라감
 	if (true == m_IsStartingPointMove)
 		MoveStartingPoint(dTimeDelta);
-	
-	Laser_Pattern(dTimeDelta);
 
+	/* 테스트 용 나중에 코어 터지는거 구현되면 바꿈 */
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
+	{
+		m_ePattern = UFO_PATTERN::INTERACTION;
+		m_pModelCom->Set_Animation(UFO_Laser_HitPod);
+		m_pModelCom->Set_NextAnimIndex(UFO_MH);
+	}
+
+	/* InterAction은 패턴이 끝나고 다음 패턴이 나오기 전까지 상호작용 해야 할 것들 진행시켜주는 상태 */
+	switch (m_ePattern)
+	{
+	case Client::CUFO::INTERACTION:
+		Phase1_InterAction(dTimeDelta);
+		break;
+	case Client::CUFO::LASER:
+		Laser_Pattern(dTimeDelta);
+		break;
+	case Client::CUFO::GRAVITATIONALMAGNETITE:
+		GravitationalMagnetite_Pattern(dTimeDelta);
+		break;
+	}
+}
+
+void CUFO::Phase2_Pattern(_double dTimeDelta)
+{
+}
+
+void CUFO::Phase3_Pattern(_double dTimeDelta)
+{
 }
 
 HRESULT CUFO::Render(RENDER_GROUP::Enum eGroup)
@@ -193,47 +241,18 @@ HRESULT CUFO::Render(RENDER_GROUP::Enum eGroup)
 
 void CUFO::Add_LerpInfo_To_Model()
 {
-	//CutScene_Eject_FlyingSaucer 1
-	//CutScene_EnterUFO_FlyingSaucer 2
-	//CutScene_PowerCoresDestroyed_UFO 3
-	//CutScene_RocketPhaseFinished_FlyingSaucer 4
-	//CutScene_UFO_Boss_Intro 5
-	//CutScene_UFO_LaserRippedOff_FlyingSaucer 6
-	//CutScene_UFO_Outro 7
-	//UFO_Back 8
-	//UFO_CodyHolding 9
-	//UFO_CodyHolding_Enter 10
-	//UFO_CodyHolding_low 11
-	//UFO_Controllable_Additive 12
-	//UFO_Controllable_Additive_Boost 13
-	//UFO_Controllable_Additive_Flying 14
-	//UFO_Controllable_Pose_Bck 15
-	//UFO_Controllable_Pose_Fwd 16
-	//UFO_Controllable_Pose_Left 17
-	//UFO_Controllable_Pose_Right 18
-	//UFO_FireRocket_Additive_Left 19
-	//UFO_FireRocket_Additive_Right 20
-	//UFO_Fwd 21
-	//UFO_GroundPound 22
-	//UFO_HitReaction_Bck 23
-	//UFO_HitReaction_Fwd 24
-	//UFO_HitReaction_Left 25
-	//UFO_HitReaction_Right 26
-	//UFO_KnockDownMH 27
-	//UFO_LaserRippedOff 28
-	//UFO_Laser_HitPod 29
-	//UFO_Laser_MH 30
-	//UFO_Left 31
-	//UFO_MH 32
-	//UFO_Ref 33
-	//UFO_Right 34
-	//UFO_RocketKnockDown_MH 35
-
 	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Back, true);
 	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Fwd, true);
 	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Laser_MH, true);
+
 	m_pModelCom->Add_LerpInfo(UFO_Fwd, UFO_Laser_MH, true);
+
 	m_pModelCom->Add_LerpInfo(UFO_Laser_MH, UFO_Laser_MH, true);
+	m_pModelCom->Add_LerpInfo(UFO_Laser_MH, UFO_Laser_HitPod, true);
+
+
+	m_pModelCom->Add_LerpInfo(UFO_Laser_HitPod, UFO_MH, true);
+	m_pModelCom->Add_LerpInfo(UFO_Laser_HitPod, UFO_Laser_MH, true);
 
 }
 

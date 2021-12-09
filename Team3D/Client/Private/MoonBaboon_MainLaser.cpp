@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "MoonBaboon_MainLaser.h"
+#include "DataStorage.h"
 
 CMoonBaboon_MainLaser::CMoonBaboon_MainLaser(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -37,6 +38,8 @@ HRESULT CMoonBaboon_MainLaser::NativeConstruct(void* pArg)
 	tArg.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
 
+	DATABASE->Set_MoonBaboon_MainLaser(this);
+
 	return S_OK;
 }
 
@@ -44,7 +47,10 @@ _int CMoonBaboon_MainLaser::Tick(_double TimeDelta)
 {
 	CGameObject::Tick(TimeDelta);
 
-	Laser_AttackPattern(TimeDelta);
+	if (true == m_IsLaserOperation)
+		Laser_AttackPattern(TimeDelta);
+	else if(true == m_IsLaserUp && false == m_IsLaserOperation)
+		Laser_Down(TimeDelta);
 
 	return NO_EVENT;
 }
@@ -83,18 +89,21 @@ HRESULT CMoonBaboon_MainLaser::Render_ShadowDepth()
 	return S_OK;
 }
 
+void CMoonBaboon_MainLaser::Set_LaserOperation(_bool IsActive)
+{
+	m_IsLaserOperation = IsActive; 
+	//m_dPatternDeltaT = 0.0;
+}
+
 void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 {
-	// 위로 올라와서
-	// 올라와서 왼쪽으롣 돌다가
-	// 끝날때쯤 오른쪽으로 살짝돌면서
-	// 밑으로 들어감
 	if (0 == m_iPatternState)
 	{
 		if (m_dPatternDeltaT >= 1.5)
 		{
 			m_dPatternDeltaT = 0.0;
 			m_iPatternState = 1;
+			m_IsLaserUp = true;
 		}
 		else
 		{
@@ -121,7 +130,7 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 		if (m_dPatternDeltaT >= 2.0)
 		{
 			m_dPatternDeltaT = 0.0;
-			m_iPatternState = 3;
+			m_iPatternState = 1;
 		}
 		else
 		{
@@ -129,21 +138,18 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 			m_dPatternDeltaT += TimeDelta;
 		}
 	}
-	else if (3 == m_iPatternState)
+}
+
+void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
+{
+	if (m_dPatternDeltaT <= 1.5)
 	{
-		if (m_dPatternDeltaT >= 1.5)
-		{
-			m_dPatternDeltaT = 0.0;
-			//m_iPatternState = 4;
-			m_iPatternState = 0; // TEST
-		}
-		else
-		{
-			m_pTransformCom->Go_Down(TimeDelta);
-			m_dPatternDeltaT += TimeDelta;
-			m_pStaticActorCom->Update_StaticActor();
-		}
+		m_pTransformCom->Go_Down(TimeDelta);
+		m_dPatternDeltaT += TimeDelta;
+		m_pStaticActorCom->Update_StaticActor();
 	}
+	else
+		m_IsLaserUp = false;
 }
 
 CMoonBaboon_MainLaser* CMoonBaboon_MainLaser::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

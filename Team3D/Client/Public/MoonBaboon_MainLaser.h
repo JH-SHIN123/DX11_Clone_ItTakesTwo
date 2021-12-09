@@ -29,15 +29,20 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
+	_bool Get_LaserUp() const { return m_IsLaserUp; }
+
+public:
 	void Set_LaserOperation(_bool IsActive);
 
 private:
 	void Laser_AttackPattern(_double TimeDelta);
+	void Laser_Down(_double TimeDelta);
 
 private:
 	_uint	m_iPatternState = 0;
 	_double m_dPatternDeltaT = 0.0;
 	_bool	m_IsLaserOperation = false;
+	_bool	m_IsLaserUp = false;
 
 private: /* For.Component */
 	CRenderer*		m_pRendererCom = nullptr;

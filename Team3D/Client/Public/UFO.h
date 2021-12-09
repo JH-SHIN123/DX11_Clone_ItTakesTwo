@@ -15,8 +15,10 @@ public:
 	enum UFO_STATE {
 		UFO_END
 	};
+
 	enum UFO_TARGET { TARGET_CODY , TARGET_MAY, TARGET_END };
-	enum UFO_PHASE { PHASE_1, PHASE_2, PHASE_3, PHASE_4, PHASE_END };
+	enum UFO_PHASE { PHASE_1, PHASE_2, PHASE_3, PHASE_END };
+	enum UFO_PATTERN { INTERACTION, LASER, GRAVITATIONALMAGNETITE, GUIDEDMISSILE, PRESS, PATTERN_END };
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -34,17 +36,22 @@ public:
 	CModel* Get_Model() { return m_pModelCom; }
 
 private:
-	UFO_TARGET m_eTarget = TARGET_END;
-	UFO_PHASE m_ePhase = PHASE_END;
+	UFO_TARGET			m_eTarget = TARGET_END;
+	UFO_PHASE			m_ePhase = PHASE_END;
+	UFO_PATTERN			m_ePattern = PATTERN_END;
 	
 private:
-	/* For. CutScene */
+	/* For.CutScene */
 	_bool				m_IsCutScene = false;
 
-	/* For. PHASE_1 Pattern */
+	/* For.AllPHASE */
+	_float				m_fWaitingTime = 0.f;
+
+	/* For.PHASE_1 Pattern */
 	_float4				m_vStartTargetPos;
 	_bool				m_IsCoreExplosion = false;
 	_bool				m_IsStartingPointMove = false;
+
 
 private:
 	/* For.Component */
@@ -55,13 +62,24 @@ private:
 	CTransform*			m_pMayTransform = nullptr;
 
 private:
-	/* PHASE_1 Pattern */
+	/* For.AllPHASE */
+	
+
+	/* For.PHASE_1 Pattern */
 	void Phase1_Pattern(_double dTimeDelta);
 	void Laser_Pattern(_double dTimeDelta);
 	void MoveStartingPoint(_double dTimeDelta);
+	void GravitationalMagnetite_Pattern(_double dTimeDelta);
+	void Phase1_InterAction(_double dTimeDelta);
 
-	/* For. NativeConstruct */
+	/* For.PHASE_2 Pattern */
+	void Phase2_Pattern(_double dTimeDelta);
+
+	/* For.PHASE_3 Pattern */
+	void Phase3_Pattern(_double dTimeDelta);
+
 private:
+	/* For.NativeConstruct */
 	void Add_LerpInfo_To_Model();
 	HRESULT Ready_Component();
 
