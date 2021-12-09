@@ -22,7 +22,7 @@ HRESULT CSpace_Valve_Door::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
 
-	NULL_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
+	Ready_Component(pArg);
 
 	return S_OK;
 }
@@ -64,10 +64,15 @@ void CSpace_Valve_Door::Set_Clear_Level(_bool IsClear_Level)
 
 HRESULT CSpace_Valve_Door::Ready_Component(void * pArg)
 {
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform_Door"), (CComponent**)&m_pTransformCom), E_FAIL);
+	ARG_DESC Arg_Desc;
+	memcpy(&Arg_Desc, pArg, sizeof(ARG_DESC));
+	m_eDoorType = Arg_Desc.eDoorType;
+	m_IsCodyValve = Arg_Desc.IsCodyDoor;
 
-	_tchar* pDoorType	= TEXT("Component_Model_SpaceValve_Door_Right");
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
+
+	_tchar pDoorType[MAX_PATH]	= TEXT("Component_Model_SpaceValve_Door_Right");
 	_vector vPos		= XMLoadFloat4(&m_vOffsetPos_Door_R);
 	if (Left_Door == m_eDoorType)
 	{
@@ -83,7 +88,7 @@ HRESULT CSpace_Valve_Door::Ready_Component(void * pArg)
 	StaticDesc.pUserData	= &m_UserData;
 	StaticDesc.pModel		= m_pModelCom;
 	StaticDesc.pTransform	= m_pTransformCom;
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static_Base"), (CComponent**)&m_pStaticActCom, &StaticDesc), E_FAIL);
+	CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static_Base"), (CComponent**)&m_pStaticActCom, &StaticDesc);
 
 
 	return S_OK;
@@ -126,12 +131,24 @@ void CSpace_Valve_Door::Open_ValveDoor()
 
 CSpace_Valve_Door * CSpace_Valve_Door::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
-	return nullptr;
+	CSpace_Valve_Door*	pInstance = new CSpace_Valve_Door(pDevice, pDeviceContext);
+	if (FAILED(pInstance->NativeConstruct_Prototype()))
+	{
+		MSG_BOX("Failed to Create Instance - CSpace_Valve_Door");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
 }
 
 CGameObject * CSpace_Valve_Door::Clone_GameObject(void * pArg)
 {
-	return nullptr;
+	CSpace_Valve_Door* pInstance = new CSpace_Valve_Door(*this);
+	if (FAILED(pInstance->NativeConstruct(pArg)))
+	{
+		MSG_BOX("Failed to Clone Instance - CSpace_Valve_Door");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
 }
 
 void CSpace_Valve_Door::Free()

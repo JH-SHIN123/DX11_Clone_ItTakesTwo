@@ -11,6 +11,7 @@
 #include "InGameEffect.h"
 #include "WarpGate.h"
 #include "Boss_Missile.h"
+#include "Space_Valve_Door.h"
 /* Hye */
 #include "Environment_Generator.h"
 #include "Dynamic_Env.h"
@@ -170,6 +171,7 @@ HRESULT CLevel_Stage::Ready_Test()
 #ifdef __TEST_JUNG
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core")), E_FAIL);
+
 #endif
 
 	/* Hye */

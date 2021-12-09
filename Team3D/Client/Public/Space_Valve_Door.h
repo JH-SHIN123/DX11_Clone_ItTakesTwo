@@ -8,6 +8,14 @@ class CSpace_Valve_Door final : public CGameObject
 {
 public:
 	enum EDoor_Type { Right_Door, Left_Door, EDoor_Type_End };
+	typedef struct tag_Arg_Desc
+	{
+		EDoor_Type	eDoorType;
+		_bool		IsCodyDoor;
+		tag_Arg_Desc() {}
+		tag_Arg_Desc(EDoor_Type	eDoorType, _bool IsCodyDoor)
+			: eDoorType(eDoorType), IsCodyDoor(IsCodyDoor) {}
+	}ARG_DESC;
 
 private:
 	explicit CSpace_Valve_Door(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -26,7 +34,6 @@ public:
 
 public:
 	void Set_Clear_Level(_bool IsClear_Level);
-	void Add_Rotate_Count(_int iCount);
 	void SetUp_WorldMatrix(_fmatrix WorldMatrix);
 
 private:
@@ -34,7 +41,6 @@ private:
 
 private:
 	void Open_ValveDoor();
-	void Rotate_Matrix(_bool IsReverseRotate, _float fAngle, _int iIndex);
 
 private:
 	_bool	m_IsCodyValve = true;

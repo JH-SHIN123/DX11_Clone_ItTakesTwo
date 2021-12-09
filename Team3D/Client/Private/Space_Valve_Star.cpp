@@ -45,6 +45,9 @@ _int CSpace_Valve_Star::Tick(_double TimeDelta)
 		m_iRotate_Count = DATABASE->Get_ValveCount_Cody(m_IsCodyValve);
 	else
 		m_iRotate_Count = 0;
+	
+	if (m_pGameInstance->Key_Down(DIK_N))
+		Set_Clear_Level(true);
 
 	return _int();
 }
@@ -259,10 +262,12 @@ HRESULT CSpace_Valve_Star::Ready_Component(void* pArg)
 
 	m_pTransformCom_Base->Set_State(CTransform::STATE_POSITION,	XMLoadFloat4(&m_vOffsetPos_Base));
 
-	CSpace_Valve_Door::EDoor_Type eDoorType = CSpace_Valve_Door::Right_Door;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_Valve_Door"), Level::LEVEL_STATIC, TEXT("GameObject_Space_Valve_Door"), &eDoorType, (CGameObject**)&m_pSpace_Valve_Door_Right), E_FAIL);
-	eDoorType = CSpace_Valve_Door::Left_Door;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_Valve_Door"), Level::LEVEL_STATIC, TEXT("GameObject_Space_Valve_Door"), &eDoorType, (CGameObject**)&m_pSpace_Valve_Door_Left), E_FAIL);
+	CSpace_Valve_Door::ARG_DESC Arg_Desc;
+	Arg_Desc.IsCodyDoor = m_IsCodyValve;
+	Arg_Desc.eDoorType = CSpace_Valve_Door::Right_Door;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Valve_Door"), Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Door"), &Arg_Desc, (CGameObject**)&m_pSpace_Valve_Door_Right), E_FAIL);
+	Arg_Desc.eDoorType = CSpace_Valve_Door::Left_Door;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Valve_Door"), Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Door"), &Arg_Desc, (CGameObject**)&m_pSpace_Valve_Door_Left), E_FAIL);
 
 	SetUp_WorldMatrix(XMLoadFloat4x4(&Data.WorldMatrix));
 
