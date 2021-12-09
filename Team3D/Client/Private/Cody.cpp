@@ -3123,7 +3123,7 @@ void CCody::Set_RadiarBlur()
 	vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f);
 
 	_float2 vFocusPos = { vConvertPos.x / g_iWinCX , vConvertPos.y / g_iWinCY };
-	vFocusPos.y += 0.05f; // Offset
+	vFocusPos.y += 0.04f; // Offset
 	m_pGameInstance->Set_RadiarBlur_Main(true, vFocusPos);
 }
 
