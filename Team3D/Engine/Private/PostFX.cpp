@@ -194,7 +194,7 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Sub", &m_bRadialBlur_Sub, sizeof(m_bRadialBlur_Sub));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Main", &m_vRadiarBlur_FocusPos_Main, sizeof(m_vRadiarBlur_FocusPos_Main));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Sub", &m_vRadiarBlur_FocusPos_Sub, sizeof(m_vRadiarBlur_FocusPos_Sub));
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_RadiarBlurMaskTex", m_pRadiarBlur_Mask->Get_ShaderResourceView(0));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_RadiarBlurMaskTex", m_pRadiarBlur_Mask->Get_ShaderResourceView(0));;
 	
 	_float	fCamFar;
 	_matrix	ProjMatrixInverse;

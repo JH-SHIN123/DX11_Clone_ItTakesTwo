@@ -48,7 +48,7 @@ HRESULT CCody::NativeConstruct_Prototype()
 HRESULT CCody::NativeConstruct(void* pArg)
 {
 	CCharacter::NativeConstruct(pArg);
-	Ready_Component();
+	Ready_Component();;
 
 	//m_pModelCom->Set_Animation(ANI_C_MH);
 	m_pModelCom->Set_Animation(0);
