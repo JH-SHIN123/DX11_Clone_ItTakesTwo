@@ -293,6 +293,7 @@ void GS_MAIN_POINT(point GS_IN In[1], inout TriangleStream<GS_OUT_DOUBLE_UV> Tri
 	[unroll]
 	for (uint i = 0; i < 8; ++i)
 	{
+		Out[i] = (GS_OUT_DOUBLE_UV)0;
 		Out[i].vTexUV = In[0].vTexUV;
 		Out[i].vNormal = In[0].vNormal;
 		Out[i].vTangent = In[0].vTangent;

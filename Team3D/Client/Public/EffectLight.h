@@ -11,7 +11,7 @@ private:
 	virtual ~CEffectLight() = default;
 
 public:
-	HRESULT	NativeConstruct(const LIGHT_DESC & LightDesc, EPoint_Color eEffectColor, _bool isActive);
+	HRESULT	NativeConstruct(const LIGHT_DESC & LightDesc, _uint eEffectColor, _bool isActive);
 
 private:
 	_bool		m_isActive = false;
@@ -21,7 +21,7 @@ private:
 	// Effect
 
 public:
-	static CEffectLight* Create(const LIGHT_DESC & LightDesc, EPoint_Color eEffectColor, _bool isActive); // 이펙트 enum값 던지도록 설정
+	static CEffectLight* Create(const LIGHT_DESC & LightDesc, _uint eEffectColor, _bool isActive); // 이펙트 enum값 던지도록 설정
 	virtual void Free() override;
 };
 END
