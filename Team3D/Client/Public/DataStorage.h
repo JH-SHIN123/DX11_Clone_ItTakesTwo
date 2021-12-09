@@ -128,6 +128,9 @@ public:
 	void Set_BossUFO(CGameObject* pBossUFO) { m_pBossUFO = pBossUFO; }
 	CGameObject* Get_BossUFO() { return m_pBossUFO; }
 
+	void Set_LaserTypeA(CGameObject* pLaserTypeA) { m_pLaserTypeA = pLaserTypeA; }
+	CGameObject* Get_LaserTypeA() { return m_pLaserTypeA; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -181,6 +184,7 @@ private:
 	/* For.Boss */
 	CGameObject* m_pMoonBaboonMainLaser = nullptr;
 	CGameObject* m_pBossUFO = nullptr;
+	CGameObject* m_pLaserTypeA = nullptr;
 
 private:
 	/* For.Valve */

@@ -54,7 +54,7 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 
 	m_pUFOTransform = ((CUFO*)CDataStorage::GetInstance()->Get_BossUFO())->Get_Transform();
 	NULL_CHECK_RETURN(m_pUFOTransform, E_FAIL);
-	Safe_AddRef(m_pUFOModel);
+	Safe_AddRef(m_pUFOTransform);
 	
 	m_pModelCom->Set_Animation(15);
 	m_pModelCom->Set_NextAnimIndex(15);	

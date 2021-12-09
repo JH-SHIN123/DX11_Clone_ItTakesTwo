@@ -22,6 +22,8 @@ HRESULT CLaser_TypeB::NativeConstruct(void * pArg)
 {
 	CLaser::NativeConstruct(pArg);
 
+	m_fShootSpeed = 30.f;
+
 #ifdef __TEST_SE
 	m_fShootSpeed = 30.f;
 	m_vStartPoint = _float4(64.f, 1.f, 30.f, 1.f);
@@ -194,6 +196,16 @@ HRESULT CLaser_TypeB::Render_ShadowDepth()
 	CLaser::Render_ShadowDepth();
 
 	return S_OK;
+}
+
+void CLaser_TypeB::Set_StartPoint(_float4 vStartPoint)
+{
+	m_vStartPoint = vStartPoint;
+}
+
+void CLaser_TypeB::Set_LaserDir(_float4 vLaserDir)
+{
+	m_vLaserDir = vLaserDir;
 }
 
 CLaser_TypeB * CLaser_TypeB::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

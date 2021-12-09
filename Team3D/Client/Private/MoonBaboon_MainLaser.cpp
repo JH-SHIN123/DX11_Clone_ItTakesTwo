@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MoonBaboon_MainLaser.h"
 #include "DataStorage.h"
+#include "Laser_TypeB.h"
 
 CMoonBaboon_MainLaser::CMoonBaboon_MainLaser(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -39,6 +40,8 @@ HRESULT CMoonBaboon_MainLaser::NativeConstruct(void* pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
 
 	DATABASE->Set_MoonBaboon_MainLaser(this);
+
+	m_vecLaser_TypeB.reserve(8);
 
 	return S_OK;
 }
@@ -137,6 +140,25 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 			m_dPatternDeltaT += TimeDelta;
 		}
 	}
+
+	//if (true == m_IsLaserUp && true == m_IsLaserCreate)
+	//{
+	//	CGameObject* pGameObject = nullptr;
+
+	//	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//	_float4 vConvertPos;
+	//	XMStoreFloat4(&vConvertPos, vPos);
+	//	vConvertPos.y += 5.f;
+
+	//	for (_uint i = 0; i < 8; ++i)
+	//	{
+	//		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeA"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB"), nullptr, &pGameObject);
+	//		m_vecLaser_TypeB.emplace_back(static_cast<CLaser_TypeB*>(pGameObject));
+	//		m_vecLaser_TypeB[i]->Set_StartPoint(vConvertPos);
+	//	}
+
+	//	m_IsLaserCreate = false;
+	//}
 }
 
 void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
@@ -179,6 +201,11 @@ CGameObject* CMoonBaboon_MainLaser::Clone_GameObject(void* pArg)
 
 void CMoonBaboon_MainLaser::Free()
 {
+	for (auto pLaserTypeB : m_vecLaser_TypeB)
+		Safe_Release(pLaserTypeB);
+
+	m_vecLaser_TypeB.clear();
+
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);

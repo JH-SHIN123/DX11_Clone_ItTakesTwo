@@ -47,7 +47,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 
 	/* For.Interactive Objects */
 	FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
 
 #ifndef __MAPLOADING_OFF
 	/* Se */

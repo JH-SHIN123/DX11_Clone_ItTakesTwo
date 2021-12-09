@@ -6,6 +6,7 @@
 #include "RobotParts.h"
 #include "CutScenePlayer.h"
 #include "MoonBaboon_MainLaser.h"
+#include "Laser_TypeA.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -52,7 +53,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 
 	/* 컷 신 끝나고 기본 위치로 이동해야되는 포지션 세팅 */
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	vPos.m128_f32[1] += 5.f;
+	vPos.m128_f32[1] += 7.f;
 	XMStoreFloat4(&m_vStartTargetPos, vPos);
 	m_IsStartingPointMove = true;
 
@@ -147,6 +148,7 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	m_pModelCom->Set_PivotTransformation(22, matPivot);
 
 	/* 레이저는 레이저건 총구에서 나가야하기 때문에 LaserGunRing3 Bone을 사용해줌. */
+	/* LaserGun의 벡터를 사용하니까 너무 이상하게 달달거려서 안움직이는 Align 뼈를 가져와서 사용함 그래도 움직이는건 UFO 행렬이 애니메이션 돌리면서 계속 바뀌기 떄문에 그런듯 */
 	_matrix matUFOWorld = m_pTransformCom->Get_WorldMatrix();
 	_matrix matLaserGunRing = m_pModelCom->Get_BoneMatrix("LaserGunRing3");
 	_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("Align");
@@ -154,9 +156,11 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	_matrix matAlign = matRotY * matLaserGun * matUFOWorld;
 	_vector vLaserGunDir = XMLoadFloat4((_float4*)&matAlign.r[0].m128_f32[0]);
 
+	/* 레이저에 시작위치랑 방향 벡터 던져주자 */
 	XMStoreFloat4(&m_vLaserGunPos, matLaserRingWorld.r[3]);
 	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(vLaserGunDir));
 
+	/* 레이저 발사!!!!!!!!!! */
 	if (true == m_IsLaserCreate)
 	{
 		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeA"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"));
@@ -222,6 +226,7 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 			m_pModelCom->Set_Animation(UFO_MH);
 			m_pModelCom->Set_NextAnimIndex(UFO_MH);
 
+			m_IsLaserCreate = true;
 			m_fWaitingTime = 0.f;
 		}
 	}
@@ -242,6 +247,7 @@ void CUFO::Phase1_Pattern(_double dTimeDelta)
 		m_ePattern = UFO_PATTERN::INTERACTION;
 		m_pModelCom->Set_Animation(UFO_Laser_HitPod);
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
+		((CLaser_TypeA*)DATABASE->Get_LaserTypeA())->Set_Dead();
 	}
 
 	/* InterAction은 패턴이 끝나고 다음 패턴이 나오기 전까지 상호작용 해야 할 것들 진행시켜주는 상태 */

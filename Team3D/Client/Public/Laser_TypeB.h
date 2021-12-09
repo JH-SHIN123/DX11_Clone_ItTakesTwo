@@ -20,6 +20,10 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
+	void Set_StartPoint(_float4 vStartPoint);
+	void Set_LaserDir(_float4 vLaserDir);
+
+public:
 	static CLaser_TypeB* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;

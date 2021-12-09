@@ -3,6 +3,7 @@
 
 #include "UFO.h"
 #include "DataStorage.h"
+#include "Effect_Boss_Laser_Smoke.h"
 
 CLaser_TypeA::CLaser_TypeA(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLaser(pDevice, pDeviceContext)
@@ -31,6 +32,10 @@ HRESULT CLaser_TypeA::NativeConstruct(void * pArg)
 
 	m_dChargingTime = 3.0;
 	m_fShootSpeed = 100.f;
+
+	DATABASE->Set_LaserTypeA(this);
+
+	m_dCreateEffectCycle = 0.3;
 
 #ifdef __TEST_SE
 	m_dChargingTime = 3.0;
@@ -146,14 +151,26 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 			m_vEndPoint = MH_XMFloat4(m_RaycastBuffer.getAnyHit(0).position, 1.f);
 			m_isCollided = true;
 
-			/* 충돌 시 이펙트 생성 */
-			if (m_dCreateEffectDelay <= 0.0)
-			{
-				// 충돌 시 생성할 이펙트
+			///* 충돌 시 이펙트 생성 */
+			//if (m_dCreateEffectDelay <= 0.0)
+			//{
+			//	//충돌 시 생성할 이펙트
+			//	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeA"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"));
 
-				// 이펙트 생성 주기
-				m_dCreateEffectDelay = m_dCreateEffectCycle;
-			}
+			//	//이펙트 생성 주기
+			//	m_dCreateEffectCycle = m_dCreateEffectCycle;
+			//}
+			//else
+			//	m_dCreateEffectCycle = 0.0;
+
+			//if (true == m_IsPaticleCreate && true == m_isCollided)
+			//{
+			//	CGameObject* pGameObject = nullptr;
+			//	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Smoke"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke"), nullptr , &pGameObject);
+			//	m_pLaserSmoke = static_cast<CEffect_Boss_Laser_Smoke*>(pGameObject);
+
+			//	m_IsPaticleCreate = false;
+			//}
 		}
 		else
 		{
@@ -176,11 +193,14 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 	/* 레이저 종료 시*/
 	else
 	{
-		m_fLaserSizeX -= 6.f * (_float)dTimeDelta;
+		m_fLaserSizeX -= 15.f * (_float)dTimeDelta;
 
 		if (m_fLaserSizeX < 0.f)
 			return EVENT_DEAD;
 	}
+
+	if (nullptr != m_pLaserSmoke)
+		m_pLaserSmoke->Set_Pos(XMLoadFloat4(&m_vEndPoint));
 
 #ifdef __TEST_SE
 	if (m_pGameInstance->Key_Down(DIK_N))
@@ -257,6 +277,7 @@ CGameObject * CLaser_TypeA::Clone_GameObject(void * pArg)
 
 void CLaser_TypeA::Free()
 {
+	//Safe_Release(m_pLaserSmoke);
 	Safe_Release(m_pBossUFO);
 
 	CLaser::Free();

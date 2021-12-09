@@ -43,6 +43,10 @@ private:
 	_double m_dPatternDeltaT = 0.0;
 	_bool	m_IsLaserOperation = false;
 	_bool	m_IsLaserUp = false;
+	_bool	m_IsLaserCreate = true;
+
+private:
+	vector<class CLaser_TypeB*>				m_vecLaser_TypeB;
 
 private: /* For.Component */
 	CRenderer*		m_pRendererCom = nullptr;
