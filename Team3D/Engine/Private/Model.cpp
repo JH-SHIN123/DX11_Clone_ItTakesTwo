@@ -542,6 +542,75 @@ HRESULT CModel::Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool 
 	return S_OK;
 }
 
+HRESULT CModel::Render_Model_VERTEX(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite, RENDER_GROUP::Enum eGroup)
+{
+	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
+
+	_uint iOffSet = 0;
+
+	m_pDeviceContext->IASetVertexBuffers(0, m_iVertexBufferCount, &m_pVB, &m_iVertexStride, &iOffSet);
+	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
+	m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
+
+	if (0 < m_iAnimCount)
+	{
+		_matrix	BoneMatrices[256];
+
+		for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
+		{
+			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE,	iMaterialSetNum);
+			Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS,	iMaterialSetNum);
+			Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, iMaterialSetNum);
+			Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, iMaterialSetNum);
+
+			FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
+
+			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
+			{
+				if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
+				{
+					ZeroMemory(BoneMatrices, sizeof(_matrix) * 256);
+					pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
+					Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
+
+					FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
+					m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+				}
+			}
+		}
+	}
+	else
+	{
+		for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
+		{
+			if (false == bShadowWrite)
+			{
+				Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE,	iMaterialSetNum);
+				Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS,	iMaterialSetNum);
+				Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, iMaterialSetNum);
+				Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, iMaterialSetNum);
+
+				FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
+			}
+
+			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
+			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
+			{
+				if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
+					m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+			}
+		}
+	}
+
+	return S_OK;
+
+
+	return S_OK;
+}
+
 HRESULT CModel::Sort_MeshesByMaterial()
 {
 	m_SortedMeshes.resize(m_iMaterialCount);

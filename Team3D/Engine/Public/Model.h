@@ -151,6 +151,9 @@ public:
 	*/
 	HRESULT	Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
 
+	/*ÀÌÆåÆ® Àü¿ë ·»´õ Topology°¡ Point*/
+	HRESULT	Render_Model_VERTEX(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
+
 private: /* Typedef */
 	typedef vector<class CMesh*>			MESHES;
 	typedef vector<MATERIAL*>				MATERIALS;
