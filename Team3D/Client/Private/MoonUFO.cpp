@@ -36,7 +36,8 @@ HRESULT CMoonUFO::NativeConstruct(void * pArg)
 	m_pModelCom->Set_NextAnimIndex(ANI_UFO_MH);
 
 	DATABASE->Set_MoonUFO(this);
-	((CMay*)(DATABASE->GetMay()))->Set_UFO();
+
+	m_pTransformCom->Set_Speed(0.f, 45.f);
 
 	return S_OK;
 }
@@ -45,14 +46,16 @@ _int CMoonUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	KeyInPut(dTimeDelta);
+	if (true == m_IsMayInUFO)
+	{
+		KeyInPut(dTimeDelta);
+		Calculate_Matrix(dTimeDelta);
+	}
+
 	Check_State(dTimeDelta);
 	Change_State(dTimeDelta);
 	During_Animation_Behavior(dTimeDelta);
-
 	m_pModelCom->Update_Animation(dTimeDelta);
-	//m_pDynamicActorCom->Update_DynamicActor();
-	Test(dTimeDelta);
 
 	return NO_EVENT;
 }
@@ -60,8 +63,6 @@ _int CMoonUFO::Tick(_double dTimeDelta)
 _int CMoonUFO::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
-
-	//m_pDynamicActorCom->Update_DynamicActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -71,6 +72,9 @@ _int CMoonUFO::Late_Tick(_double dTimeDelta)
 
 HRESULT CMoonUFO::Render(RENDER_GROUP::Enum eGroup)
 {
+	if (false == m_IsMayInUFO)
+		return S_OK;
+
 	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
@@ -93,29 +97,55 @@ HRESULT CMoonUFO::Render_ShadowDepth()
 
 void CMoonUFO::KeyInPut(_double dTimeDelta)
 {
-	_vector vLook, vUp, vRight;
-	vLook	= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-	vUp		= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
-	vRight	= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
+	_vector vLook	= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+	_vector vUp		= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
+	_vector vRight	= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
 
-	if (m_pGameInstance->Key_Pressing(DIK_J))
+	if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
 	{
-		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * 1000.f, XMVectorGetY(vRight) * 1000.f, XMVectorGetZ(vRight) * 1000.f));
+		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * UFOFORCE, XMVectorGetY(vRight) * UFOFORCE, XMVectorGetZ(vRight) * UFOFORCE));
 		m_bRotateRight = true;
 	}
 	else
 		m_bRotateRight = false;
-	if (m_pGameInstance->Key_Pressing(DIK_G))
+
+	if (m_pGameInstance->Key_Pressing(DIK_LEFT))
 	{
-		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * -1000.f, XMVectorGetY(vRight)  * -1000.f, XMVectorGetZ(vRight) * -1000.f));
+		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * -UFOFORCE, XMVectorGetY(vRight)  * -UFOFORCE, XMVectorGetZ(vRight) * -UFOFORCE));
 		m_bRotateLeft = true;
 	}
 	else
 		m_bRotateLeft = false;
-	if (m_pGameInstance->Key_Pressing(DIK_Y))
-		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * 1000.f, XMVectorGetY(vLook) * 1000.f, XMVectorGetZ(vLook) * 1000.f));
-	if (m_pGameInstance->Key_Pressing(DIK_H))
-		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * -1000.f, XMVectorGetY(vLook) * -1000.f, XMVectorGetZ(vLook) * -1000.f));
+
+	if (m_pGameInstance->Key_Pressing(DIK_UP))
+		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * UFOFORCE, XMVectorGetY(vLook) * UFOFORCE, XMVectorGetZ(vLook) * UFOFORCE));
+
+	if (m_pGameInstance->Key_Pressing(DIK_DOWN))
+		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * -UFOFORCE, XMVectorGetY(vLook) * -UFOFORCE, XMVectorGetZ(vLook) * -UFOFORCE));
+}
+
+void CMoonUFO::Calculate_Matrix(_double dTimeDelta)
+{
+	PxMat44 pxMat = PxMat44(m_pDynamicActorCom->Get_Actor()->getGlobalPose());
+
+	_vector vPosition = XMVectorSet(pxMat.column3.x, pxMat.column3.y, pxMat.column3.z, 1.f);
+	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position());
+	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
+	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
+
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
+	if (true == m_bRotateRight)
+		m_pTransformCom->RotateYaw_Speed(dTimeDelta);
+	if (true == m_bRotateLeft)
+		m_pTransformCom->RotateYaw_Speed(-dTimeDelta);
 }
 
 CMoonUFO::UFO_STATE CMoonUFO::Check_State(_double dTimeDelta)
@@ -313,30 +343,6 @@ void CMoonUFO::Laser_Pattern(_double dTimeDelta)
 	//m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f); // 플레이어 쪽으로 천천히 회전.
 }
 
-void CMoonUFO::Test(_double dTimeDelta)
-{
-	PxMat44 pxMat = PxMat44(m_pDynamicActorCom->Get_Actor()->getGlobalPose());
-
-	_vector vPosition = XMVectorSet(pxMat.column3.x, pxMat.column3.y, pxMat.column3.z, 1.f);
-	_vector vRight	  = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-	_vector vUp		  = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	_vector vLook	  = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-
-	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position());
-	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
-	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
-
-	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
-	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-
-	if (true == m_bRotateRight)
-		m_pTransformCom->RotateYaw(dTimeDelta * 0.1f);
-	if (true == m_bRotateLeft)
-		m_pTransformCom->RotateYaw(-dTimeDelta * 0.1f);
-}
-
 HRESULT CMoonUFO::Ready_Component(void * pArg)
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
@@ -344,7 +350,7 @@ HRESULT CMoonUFO::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_UFO"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	/* Dynamic */
-	PxGeometry* Geom = new PxSphereGeometry(2.f);
+	PxGeometry* Geom = new PxSphereGeometry(5.f);
 	CDynamicActor::ARG_DESC tDynamicActorArg;
 	tDynamicActorArg.pTransform = m_pTransformCom;
 	tDynamicActorArg.fDensity = 1.f;
@@ -354,6 +360,7 @@ HRESULT CMoonUFO::Ready_Component(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
 	Safe_Delete(Geom);
+	m_pDynamicActorCom->Get_Actor()->setLinearDamping(0.2f);
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 	/* Joint */

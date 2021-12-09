@@ -272,11 +272,13 @@ HRESULT CEnvironment_Generator::Load_Stage_Space()
 
 	FAILED_CHECK_RETURN(Load_Environment_Space(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Space_Boss(), E_FAIL);
-	//FAILED_CHECK_RETURN(Load_Environment_Space_SpaceShip(), E_FAIL);
+	FAILED_CHECK_RETURN(Load_Environment_Space_SpaceShip(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Bridge(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Trigger(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_SpaceRail(), E_FAIL);
+
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonUFO")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SpaceShip")), E_FAIL);
 #endif //__MAPLOADING_OFF
 	return S_OK;
 }

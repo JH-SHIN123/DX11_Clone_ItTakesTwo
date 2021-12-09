@@ -27,9 +27,6 @@ HRESULT CMoon::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 100.f, 0.f, 1.f));
-	//m_pTransformCom->Set_Scale(XMVectorSet(10.f, 10.f, 10.f, 1.f));
-
 	DATABASE->Set_Moon(this);
 
 	return S_OK;

@@ -687,6 +687,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossSlideDoor">
       <UniqueIdentifier>{40dc88c0-0398-403b-afb3-ab3675900295}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\03.Character\03.Boss\03.MoonBaboon_SpaceShip">
+      <UniqueIdentifier>{c93b2988-1a13-40fd-b9e4-34e15c40918c}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1262,6 +1265,9 @@
     <ClInclude Include="..\Public\BossSlideDoor.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossSlideDoor</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboon_SpaceShip.h">
+      <Filter>02.GameObject\03.Character\03.Boss\03.MoonBaboon_SpaceShip</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -1800,6 +1806,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\BossSlideDoor.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossSlideDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboon_SpaceShip.cpp">
+      <Filter>02.GameObject\03.Character\03.Boss\03.MoonBaboon_SpaceShip</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

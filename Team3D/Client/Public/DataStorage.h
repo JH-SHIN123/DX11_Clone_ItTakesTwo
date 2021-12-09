@@ -106,6 +106,10 @@ public:
 	void Close_BossDoor(); 													/* 보스 등장시 바닥 문 닫을 때 호출 */
 	void Close_BossSlideDoor(); 											/* 보스방에 있는 중력발판 사용끝나면 호출 */
 
+	/* For.SpaceShip */
+	void Set_MoonBaboon_SpaceShip(CGameObject* pMoonBaboonSpaceShip) { m_pMoonBaboonSpaceShip = pMoonBaboonSpaceShip; }
+	CGameObject* Get_MoonBaboon_SpaceShip() { return m_pMoonBaboonSpaceShip; }
+
 	/* For.MoonUFO */
 	void Set_MoonUFO(CGameObject* pMoonUFO) { m_pMoonUFO = pMoonUFO; }
 	CGameObject* Get_MoonUFO() { return m_pMoonUFO; }
@@ -195,6 +199,9 @@ private:
 	/* For.MoonUFO */
 	CGameObject* m_pMoonUFO = nullptr;
 	CGameObject* m_pMoon = nullptr;
+
+	/* For.MoonBaboonSpaceShip*/
+	CGameObject* m_pMoonBaboonSpaceShip = nullptr;
 
 private:
 	/* For.Valve */

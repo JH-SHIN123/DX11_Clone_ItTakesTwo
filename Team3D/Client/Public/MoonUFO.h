@@ -2,6 +2,7 @@
 #include "Client_Defines.h"
 
 BEGIN(Client)
+#define UFOFORCE 15000.f
 class CMoonUFO : public CGameObject
 {
 protected:
@@ -9,21 +10,25 @@ protected:
 	explicit CMoonUFO(const CMoonUFO& rhs);
 	virtual ~CMoonUFO() = default;
 
-public:/* Getter */
-	CTransform* Get_Transform() { return m_pTransformCom; }
-	CModel*		Get_Model()		{ return m_pModelCom; }
-
 public:
 	enum UFO_STATE {
-		UFO_ENTIRE_ANIMATION , UFO_REF, UFO_BACK,
-		UFO_CODYHOLDING, UFO_CODYHOLDING_ENTER, UFO_CODYHOLDING_LOW, 
+		UFO_ENTIRE_ANIMATION, UFO_REF, UFO_BACK,
+		UFO_CODYHOLDING, UFO_CODYHOLDING_ENTER, UFO_CODYHOLDING_LOW,
 		UFO_CONTROLLABLE_ADDITIVE, UFO_CONTROLLABLE_ADDITIVE_BOOST, UFO_CONTROLLABLE_ADDITIVE_FLYING,
-		UFO_CONTROLLABLE_POSE_BCK, UFO_CONTROLLABLE_POSE_FWD, UFO_CONTROLLABLE_POSE_LEFT, UFO_CONTROLLABLE_POSE_RIGHT, 
-		UFO_FIREROCKET_ADDITIVE_LEFT, UFO_FIREROCKET_ADDITIVE_RIGHT, UFO_FWD, UFO_GROUNDPOUND, UFO_HITREACTION_BCK, UFO_HITREACTION_FWD, 
-		UFO_HITREACTION_LEFT, UFO_HITREACTION_RIGHT, UFO_KNOCKDOWNMH, UFO_LASER_HITPOD, UFO_LASER_MH, UFO_LASERRIPPEDOFF, UFO_LEFT, UFO_MH, UFO_RIGHT, UFO_ROCKETKNOCKDOWN_MH, 
-		CUTSCENE_EJECT_FLYINGSAUCER, CUTSCENE_ENTERUFO_FLYINGSAUCER, CUTSCENE_UFO_BOSS_INTRO, CUTSCENE_UFO_LASERRIPPEDOFF_FLYINGSAUCER, 
+		UFO_CONTROLLABLE_POSE_BCK, UFO_CONTROLLABLE_POSE_FWD, UFO_CONTROLLABLE_POSE_LEFT, UFO_CONTROLLABLE_POSE_RIGHT,
+		UFO_FIREROCKET_ADDITIVE_LEFT, UFO_FIREROCKET_ADDITIVE_RIGHT, UFO_FWD, UFO_GROUNDPOUND, UFO_HITREACTION_BCK, UFO_HITREACTION_FWD,
+		UFO_HITREACTION_LEFT, UFO_HITREACTION_RIGHT, UFO_KNOCKDOWNMH, UFO_LASER_HITPOD, UFO_LASER_MH, UFO_LASERRIPPEDOFF, UFO_LEFT, UFO_MH, UFO_RIGHT, UFO_ROCKETKNOCKDOWN_MH,
+		CUTSCENE_EJECT_FLYINGSAUCER, CUTSCENE_ENTERUFO_FLYINGSAUCER, CUTSCENE_UFO_BOSS_INTRO, CUTSCENE_UFO_LASERRIPPEDOFF_FLYINGSAUCER,
 		CUTSCENE_UFO_OUTRO, CUTSCENE_POWERCORESDESTROYED_UFO, CUTSCENE_ROCKETPHASEFINISHED_FLYINGSAUCER
 	};
+
+public:/* Getter */
+	CTransform*		Get_Transform() { return m_pTransformCom; }
+	CModel*			Get_Model()		{ return m_pModelCom; }
+	CDynamicActor*	Get_Actor() { return m_pDynamicActorCom; }
+
+public:/* Setter */
+	void Set_MayInUFO(_bool bCheck) { m_IsMayInUFO = bCheck; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -47,18 +52,18 @@ private:
 	UFO_STATE				m_eCurState = UFO_ENTIRE_ANIMATION;
 	UFO_STATE				m_eNextState = UFO_ENTIRE_ANIMATION;
 
+	_bool					m_IsMayInUFO = false;
+	_bool					m_bRotateRight = false;
+	_bool					m_bRotateLeft = false;
+
 private:
 	void				KeyInPut(_double dTimeDelta);
+	void				Calculate_Matrix(_double dTimeDelta);
+
 	CMoonUFO::UFO_STATE Check_State(_double dTimeDelta);
 	void				Change_State(_double dTimeDelta);
 	void				During_Animation_Behavior(_double dTimeDelta);
 	void				Laser_Pattern(_double dTimeDelta);
-
-	void				Test(_double dTimeDelta);
-
-private:
-	_bool m_bRotateRight = false;
-	_bool m_bRotateLeft = false;
 
 private:
 	HRESULT Ready_Component(void* pArg);

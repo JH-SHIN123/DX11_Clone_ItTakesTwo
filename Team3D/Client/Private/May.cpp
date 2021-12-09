@@ -19,6 +19,7 @@
 /*For.WarpGate*/
 #include "WarpGate.h"
 #include "MoonUFO.h"
+#include "Moon.h"
 
 // m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
 // m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
@@ -213,7 +214,7 @@ _int CMay::Tick(_double dTimeDelta)
 	/* 레일타기 : 타겟을 찾지 못하면 타지않음. */
 	TakeRail(dTimeDelta);
 
-	if (true == m_bOnRail || true == m_bMoveToRail)
+	if (true == m_bOnRail || true == m_bMoveToRail || true == m_IsInUFO)
 	{
 		_vector vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		m_pActorCom->Set_Position(vPlayerPos);
@@ -332,7 +333,6 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
 	//if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 	//	m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
-
 #pragma endregion
 
 #pragma region Local variable
@@ -342,6 +342,10 @@ void CMay::KeyInput(_double dTimeDelta)
 	_bool bRoll = false;
 
 #pragma endregion
+	if (m_pGameInstance->Key_Down(DIK_U))/* 메이 우주선 태우기 */
+		Set_UFO(true);
+	if (m_pGameInstance->Key_Down(DIK_T))/* 메이 우주선 내리기 */
+		Set_UFO(false);
 
 	//if (m_pGameInstance->Key_Down(DIK_Y))/* 3층 */
 	//	m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
@@ -1941,22 +1945,56 @@ void CMay::InUFO(const _double dTimeDelta)
 	if (false == m_IsInUFO)
 		return;
 
-	m_pTransformCom->Set_WorldMatrix(((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform()->Get_WorldMatrix());
+	//PxMat44 pxMat = PxMat44(((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Actor()->Get_Actor()->getGlobalPose());
 
-	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vUp = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
-	_vector vRight = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
-	vPosition -= (vUp * 9.f);
-	vPosition += (vRight * 2.f);
+	//_vector vPosition = XMVectorSet(pxMat.column3.x, pxMat.column3.y, pxMat.column3.z, 1.f);
+	//_vector vRight	  = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	//_vector vUp		  = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	//_vector vLook	  = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-	m_pActorCom->Set_Position(vPosition);
+	//vUp		= XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position());
+	//vLook	= XMVector3Normalize(XMVector3Cross(vRight, vUp));
+	//vRight	= XMVector3Normalize(XMVector3Cross(vUp, vLook));
+
+	//vPosition -= (vUp * 9.3f);
+	//vPosition += (vRight * 2.5f);
+
+	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+	//m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
+	//m_pTransformCom->Set_WorldMatrix(((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform()->Get_WorldMatrix());
+
+
+	//_vector vPosition = ((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	//_vector vUp		  = XMVector3Normalize(((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform()->Get_State(CTransform::STATE_UP));
+	//_vector vRight	  = XMVector3Normalize(((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform()->Get_State(CTransform::STATE_RIGHT));
+	//_vector vLook	  = XMVector3Normalize(((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform()->Get_State(CTransform::STATE_LOOK));
+	//vPosition -= (vUp * 9.3f);
+	//vPosition += (vRight * 2.5f);
+
+	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+	//m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
+	_matrix BoneChair = ((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Model()->Get_BoneMatrix("Chair");
+	_float4x4 matWorld, matScale;
+	XMStoreFloat4x4(&matWorld, XMMatrixRotationZ(90.f) * BoneChair * ((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform()->Get_WorldMatrix());
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
 }
 
-void CMay::Set_UFO()
+void CMay::Set_UFO(_bool bCheck)
 {
-	m_IsInUFO = true;
-	m_pActorCom->Set_ZeroGravity(true, false, true);
-	m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
+	m_IsInUFO = bCheck;
+	m_pActorCom->Set_ZeroGravity(bCheck, false, bCheck);
+	m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, bCheck);
+
+	m_pModelCom->Set_Animation(ANI_M_MH);
+	m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+
+	((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Set_MayInUFO(bCheck);
 }
 
 void CMay::Warp_Wormhole(const _double dTimeDelta)
