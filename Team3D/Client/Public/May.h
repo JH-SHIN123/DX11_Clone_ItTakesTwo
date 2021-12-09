@@ -353,7 +353,9 @@ private:
 	_bool	 m_IsPinBall = false;
 	_float2	 m_MinMaxX = {};
 	/* Hye::For.Tube*/
-	_bool m_IsTube = false;
+	_bool	m_IsTube = false;
+
+	_bool	m_IsInUFO = false;
 
 	/* For.HookUFO */
 	_bool m_IsHookUFO = false;
@@ -438,6 +440,9 @@ private:
 	/* Çý¿ø::For.DeadLine, SavePoint */
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
+	void InUFO(const _double dTimeDelta);
+public:
+	void Set_UFO();
 
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);

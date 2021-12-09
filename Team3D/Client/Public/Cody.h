@@ -211,6 +211,7 @@ public:
 	/* Getter */
 	CTransform*		 Get_Transform() { return m_pTransformCom; }
 	CModel*			 Get_Model() { return m_pModelCom; }
+	CPlayerActor*	 Get_Actor() { return m_pActorCom; }
 	PLAYER_SIZE		 Get_Player_Size() { return m_eCurPlayerSize; }
 	_bool			 Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool			 Get_PushingBattery() { return m_IsPushingBattery; }

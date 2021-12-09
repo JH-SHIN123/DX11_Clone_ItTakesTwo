@@ -47,9 +47,6 @@ private:
 	UFO_STATE				m_eCurState = UFO_ENTIRE_ANIMATION;
 	UFO_STATE				m_eNextState = UFO_ENTIRE_ANIMATION;
 
-	CTransform*				m_pCodyTransform = nullptr;
-	CTransform*				m_pMayTransform = nullptr;
-
 private:
 	void				KeyInPut(_double dTimeDelta);
 	CMoonUFO::UFO_STATE Check_State(_double dTimeDelta);

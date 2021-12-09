@@ -10,6 +10,9 @@ private:
 	virtual ~CMoon() = default;
 
 public:
+	virtual _fvector Get_Position() { return m_pTransformCom->Get_State(CTransform::STATE_POSITION); }
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double dTimeDelta) override;

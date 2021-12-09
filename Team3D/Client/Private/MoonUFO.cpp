@@ -3,6 +3,7 @@
 #include "PlayerActor.h"
 #include "May.h"
 #include "Cody.h"
+#include "Moon.h"
 
 CMoonUFO::CMoonUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -34,7 +35,8 @@ HRESULT CMoonUFO::NativeConstruct(void * pArg)
 	m_pModelCom->Set_Animation(ANI_UFO_MH);
 	m_pModelCom->Set_NextAnimIndex(ANI_UFO_MH);
 
-	CDataStorage::GetInstance()->Set_UFOPtr(this);
+	DATABASE->Set_MoonUFO(this);
+	((CMay*)(DATABASE->GetMay()))->Set_UFO();
 
 	return S_OK;
 }
@@ -96,24 +98,24 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	vUp		= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
 	vRight	= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
 
-	if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
+	if (m_pGameInstance->Key_Pressing(DIK_J))
 	{
-		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * 10000.f, XMVectorGetY(vRight) * 10000.f, XMVectorGetZ(vRight) * 10000.f));
+		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * 1000.f, XMVectorGetY(vRight) * 1000.f, XMVectorGetZ(vRight) * 1000.f));
 		m_bRotateRight = true;
 	}
 	else
 		m_bRotateRight = false;
-	if (m_pGameInstance->Key_Pressing(DIK_LEFT))
+	if (m_pGameInstance->Key_Pressing(DIK_G))
 	{
-		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * -10000.f, XMVectorGetY(vRight)  * -10000.f, XMVectorGetZ(vRight) * -10000.f));
+		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * -1000.f, XMVectorGetY(vRight)  * -1000.f, XMVectorGetZ(vRight) * -1000.f));
 		m_bRotateLeft = true;
 	}
 	else
 		m_bRotateLeft = false;
-	if (m_pGameInstance->Key_Pressing(DIK_UP))
-		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * 10000.f, XMVectorGetY(vLook) * 10000.f, XMVectorGetZ(vLook) * 10000.f));
-	if (m_pGameInstance->Key_Pressing(DIK_DOWN))
-		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * -10000.f, XMVectorGetY(vLook) * -10000.f, XMVectorGetZ(vLook) * -10000.f));
+	if (m_pGameInstance->Key_Pressing(DIK_Y))
+		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * 1000.f, XMVectorGetY(vLook) * 1000.f, XMVectorGetZ(vLook) * 1000.f));
+	if (m_pGameInstance->Key_Pressing(DIK_H))
+		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * -1000.f, XMVectorGetY(vLook) * -1000.f, XMVectorGetZ(vLook) * -1000.f));
 }
 
 CMoonUFO::UFO_STATE CMoonUFO::Check_State(_double dTimeDelta)
@@ -285,7 +287,6 @@ void CMoonUFO::During_Animation_Behavior(_double dTimeDelta)
 	case Client::CMoonUFO::UFO_LASER_HITPOD:
 		break;
 	case Client::CMoonUFO::UFO_LASER_MH:
-		Laser_Pattern(dTimeDelta);
 		break;
 	case Client::CMoonUFO::UFO_LASERRIPPEDOFF:
 		break;
@@ -304,38 +305,36 @@ void CMoonUFO::During_Animation_Behavior(_double dTimeDelta)
 
 void CMoonUFO::Laser_Pattern(_double dTimeDelta)
 {
-	_vector vDir = m_pCodyTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	
-	_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
-	_vector vDirForLaser = XMVector3Normalize(vDir);
+	//_vector vDir = m_pCodyTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//
+	//_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
+	//_vector vDirForLaser = XMVector3Normalize(vDir);
 
-	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f); // 플레이어 쪽으로 천천히 회전.
+	//m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f); // 플레이어 쪽으로 천천히 회전.
 }
 
 void CMoonUFO::Test(_double dTimeDelta)
 {
-	_vector vPosition, vRight, vUp, vLook;
-
 	PxMat44 pxMat = PxMat44(m_pDynamicActorCom->Get_Actor()->getGlobalPose());
 
-	vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	vRight	  = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-	vUp		  = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	vLook	  = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_vector vPosition = XMVectorSet(pxMat.column3.x, pxMat.column3.y, pxMat.column3.z, 1.f);
+	_vector vRight	  = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	_vector vUp		  = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	_vector vLook	  = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-	vUp = XMVector3Normalize(vPosition - XMVectorSet(0.f, 50.f, 0.f, 1.f));
+	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position());
 	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
 	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
 
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(pxMat.column3.x, pxMat.column3.y, pxMat.column3.z, pxMat.column3.w));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
 	if (true == m_bRotateRight)
-		m_pTransformCom->RotateYaw(dTimeDelta);
+		m_pTransformCom->RotateYaw(dTimeDelta * 0.1f);
 	if (true == m_bRotateLeft)
-		m_pTransformCom->RotateYaw(-dTimeDelta);
+		m_pTransformCom->RotateYaw(-dTimeDelta * 0.1f);
 }
 
 HRESULT CMoonUFO::Ready_Component(void * pArg)
@@ -359,18 +358,7 @@ HRESULT CMoonUFO::Ready_Component(void * pArg)
 
 	/* Joint */
 	PxJointLimitCone LimitCone = PxJointLimitCone(PxPi, PxPi, 0.05f);
-	m_pJoint = CPhysX::GetInstance()->Create_Joint(m_pDynamicActorCom->Get_Actor(), PxTransform(PxVec3(0.f, 30.f, 0.f)), nullptr, PxTransform(PxVec3(0.f, 50.f, 0.f)), LimitCone, false);
-
-	/* Player Transform */
-	m_pCodyTransform = ((CCody*)CDataStorage::GetInstance()->GetCody())->Get_Transform();
-	if (nullptr == m_pCodyTransform)
-		return E_FAIL;
-	Safe_AddRef(m_pCodyTransform);
-
-	m_pMayTransform = ((CMay*)CDataStorage::GetInstance()->GetMay())->Get_Transform();
-	if (nullptr == m_pMayTransform)
-		return E_FAIL;
-	Safe_AddRef(m_pMayTransform);
+	m_pJoint = CPhysX::GetInstance()->Create_Joint(m_pDynamicActorCom->Get_Actor(), PxTransform(PxVec3(0.f, 90.f, 0.f)), nullptr, PxTransform(MH_PxVec3(((CMoon*)(DATABASE->Get_Mooon()))->Get_Position())), LimitCone, false);
 
 	return S_OK;
 }
@@ -401,8 +389,6 @@ CGameObject * CMoonUFO::Clone_GameObject(void * pArg)
 
 void CMoonUFO::Free()
 {
-	Safe_Release(m_pMayTransform);
-	Safe_Release(m_pCodyTransform);
 	Safe_Release(m_pDynamicActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);

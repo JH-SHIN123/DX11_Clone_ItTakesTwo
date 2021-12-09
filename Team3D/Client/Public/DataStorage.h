@@ -101,13 +101,17 @@ public:
 	void Set_BossSlideDoor(CGameObject* pBossSlideDoor) { m_pBossSlideDoor = pBossSlideDoor; }
 	CGameObject* Get_BossSlideDoor() { return m_pBossSlideDoor; }
 
-	/* 보스 방 바닥 올릴 때 호출 */
-	/* fMaxDistanc : 올릴 높이, fSpeed : 올라가는 속도 */
-	void GoUp_BossFloor(_float fMaxdistance = 50.f, _float fSpeed = 15.f);
-	/* 보스 등장시 바닥 문 닫을 때 호출 */
-	void Close_BossDoor(); 				
-	/* 보스방에 있는 중력발판 사용끝나면 호출 */
-	void Close_BossSlideDoor(); 								
+	/* 보스 방 문 조작 함수들 */
+	void GoUp_BossFloor(_float fMaxdistance = 50.f, _float fSpeed = 15.f);	/* fMaxDistanc : 올릴 높이, fSpeed : 올라가는 속도 */
+	void Close_BossDoor(); 													/* 보스 등장시 바닥 문 닫을 때 호출 */
+	void Close_BossSlideDoor(); 											/* 보스방에 있는 중력발판 사용끝나면 호출 */
+
+	/* For.MoonUFO */
+	void Set_MoonUFO(CGameObject* pMoonUFO) { m_pMoonUFO = pMoonUFO; }
+	CGameObject* Get_MoonUFO() { return m_pMoonUFO; }
+
+	void Set_Moon(CGameObject* pMoon) { m_pMoon = pMoon; }
+	CGameObject* Get_Mooon() { return m_pMoon; }
 
 	// Stage Flow
 	void Set_Valve_Activate(_bool bValveActivate) { m_IsValveActivated = bValveActivate; }
@@ -187,6 +191,10 @@ private:
 	CGameObject* m_pBossDoor01 = nullptr;
 	CGameObject* m_pBossDoor02 = nullptr;
 	CGameObject* m_pBossSlideDoor = nullptr;
+
+	/* For.MoonUFO */
+	CGameObject* m_pMoonUFO = nullptr;
+	CGameObject* m_pMoon = nullptr;
 
 private:
 	/* For.Valve */
