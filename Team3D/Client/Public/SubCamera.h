@@ -26,6 +26,7 @@ public:
 
 
 	CTransform* Get_Transform() { return m_pTransformCom; }
+	CCam_Helper* Get_CamHelper() { return m_pCamHelper; }
 	HRESULT Start_Film(const _tchar* pFilmTag);
 private:
 	void	Check_Player(_double dTimeDelta);
@@ -38,6 +39,8 @@ private:
 	//For Free.
 	_int	Tick_Cam_Free(_double dTimeDelta);				//자유이동
 	_int	Tick_Cam_AutoToFree(_double dTimeDelta);		//연출 카메라 -> 자유이동시 보간
+
+	
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);	//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);		//카메라가 자유롭게 이동함
 
@@ -89,7 +92,12 @@ private:
 
 	//For.Zoom
 	_float m_fCamZoomVal = 0.f;
-
+	//For.Lerp To CamNode
+	CFilm::CamNode	m_tCurTargerNode;
+	_float			m_fLerpNodeTime = 0.f;
+	_float			m_fCurLerpNodeTime = 0.f;
+	_bool			m_bIsFinishLerpToNode = false;
+	_float4x4		m_matStartLerpNode;
 
 	WORLDMATRIX	m_PreWorld;
 

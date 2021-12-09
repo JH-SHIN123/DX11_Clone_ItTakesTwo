@@ -161,6 +161,8 @@ HRESULT CSubCamera::Start_Film(const _tchar * pFilmTag)
 	return S_OK;
 }
 
+
+
 _int CSubCamera::Tick_Cam_Free(_double dTimeDelta)
 {
 	if (nullptr == m_pTargetObj)
@@ -203,7 +205,7 @@ _int CSubCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 	XMStoreFloat4(&m_vPlayerPos, vPlayerPos);
 	_matrix matNext = XMLoadFloat4x4(&m_matStart); //목표 매트릭스
-
+	
 	_matrix matRev = XMMatrixRotationQuaternion(XMLoadFloat4(&m_PreWorld.vRotQuat)) *
 		MH_RotationMatrixByUp(pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos);
 
@@ -217,6 +219,7 @@ _int CSubCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 
 	return NO_EVENT;
 }
+
 
 _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 {
@@ -424,8 +427,8 @@ _int CSubCamera::Tick_CamHelperNone(_double dTimeDelta)
 		break;
 	case Client::CSubCamera::CamMode::Cam_AutoToFree:
 		iResult = Tick_Cam_AutoToFree(dTimeDelta);
-
 		break;
+
 	}
 	return iResult;
 }

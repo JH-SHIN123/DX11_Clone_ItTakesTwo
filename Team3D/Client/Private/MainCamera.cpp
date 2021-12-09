@@ -163,10 +163,7 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 	{
 		m_eCurCamMode = CamMode::Cam_PressButton_Bridge;
 	}
-#ifdef __TEST_JUN
-	if(m_pGameInstance->Key_Down(DIK_U))
-	m_eCurCamMode = CamMode::Cam_PressButton_Bridge;
-#endif
+
 }
 
 void CMainCamera::Set_Zoom(_float fZoomVal, _double dTimeDelta)
@@ -197,6 +194,8 @@ HRESULT CMainCamera::Start_Film(const _tchar * pFilmTag)
 
 	return S_OK;
 }
+
+
 
 _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 {
@@ -553,6 +552,8 @@ _int CMainCamera::Tick_Cam_PressButton_Bridge(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+
+
 _int CMainCamera::ReSet_Cam_FreeToAuto()
 {
 	m_fChangeCamModeLerpSpeed = 6.f;
@@ -668,6 +669,11 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
 		return NO_EVENT;
 	}
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
+	{
+		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Active_GravityPath_01");
+		return NO_EVENT;
+	}
 	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 	{
 		CCutScenePlayer::GetInstance()->Stop_CutScene();
@@ -717,7 +723,6 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	case Client::CMainCamera::CamMode::Cam_PressButton_Bridge:
 		iResult = Tick_Cam_PressButton_Bridge(dTimeDelta);
 		break;
-
 	}
 	return iResult;
 }

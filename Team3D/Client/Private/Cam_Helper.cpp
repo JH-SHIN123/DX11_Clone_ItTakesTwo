@@ -19,8 +19,9 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 	
 	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Begin_Game.dat"))))
 		return E_FAIL;
-
 	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Line_BossRoom_MiniCody.dat"))))
+		return E_FAIL;
+	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Active_GravityPath_01.dat"))))
 		return E_FAIL;
 	return S_OK;
 }
@@ -135,6 +136,8 @@ void CCam_Helper::Start_Film(const _tchar * pFilmName, CFilm::ScreenType eScreen
 
 void CCam_Helper::SeeCamNode(CFilm::CamNode * pCamNode, CFilm::ScreenType eScreenTypeIdx)
 {
+	if (m_bIsSeeCamNode[eScreenTypeIdx] == true)
+		return;
 	XMStoreFloat4x4(&m_matCamNode[eScreenTypeIdx], MakeViewMatrix(pCamNode->vEye,pCamNode->vAt));
 	m_fCamNodeLerpTime[eScreenTypeIdx] = 0.f;
 	m_bIsSeeCamNode[eScreenTypeIdx] = true;

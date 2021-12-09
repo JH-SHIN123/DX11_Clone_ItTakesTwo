@@ -17,6 +17,7 @@ public:
 	_bool	Tick_CutScene(_double dTimeDelta);
 	HRESULT Start_CutScene(const _tchar* pCutSceneTag);
 	void	Stop_CutScene();
+	void	Set_ViewPort(_fvector vLScreenDesc, _fvector vRScreenDesc, _bool bIsLerp,_float fLerpSpeed = 1.f);
 public:
 	HRESULT		Add_Performer(const _tchar* pPerformerTag, CGameObject* pPerformer);
 	CGameObject* Find_Performer(const _tchar* pPerformerTag);
@@ -30,6 +31,8 @@ private:
 	PERFORMERS m_Performers;
 
 	_bool m_bIsPlayingCutScene = false;
+
+	class CGameInstance* m_pGameInstance = nullptr;
 
 public:
 	virtual void Free() override;

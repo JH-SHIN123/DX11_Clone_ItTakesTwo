@@ -14,16 +14,17 @@ HRESULT CCutScenePlayer::NativeConstruct(ID3D11Device* pDevice, ID3D11DeviceCont
 #ifndef __TEST_JUN
 	return S_OK;
 #endif 
-	CGameInstance* m_pGameInstance = CGameInstance::GetInstance();
+	m_pGameInstance = CGameInstance::GetInstance();
 
 	ID3D11Device* m_pDevice = pDevice;
 
 	ID3D11DeviceContext* m_pDeviceContext = pDeviceContext;
 
-	//¼ÒÇ°µé
 	
 
 	FAILED_CHECK_RETURN(Add_CutScene(TEXT("CutScene_Intro"),CCutScene::Create(CCutScene::CutSceneOption::CutScene_Intro)),E_FAIL);
+	FAILED_CHECK_RETURN(Add_CutScene(TEXT("CutScene_Active_GravityPath_01"), CCutScene::Create(CCutScene::CutSceneOption::CutScene_Active_GravityPath_01)), E_FAIL);
+
 	return S_OK;
 }
 
@@ -82,6 +83,14 @@ void CCutScenePlayer::Stop_CutScene()
 {
 	m_pCurCutScene = nullptr;
 	m_bIsPlayingCutScene = false;
+}
+
+void CCutScenePlayer::Set_ViewPort(_fvector vLScreenDesc, _fvector vRScreenDesc, _bool bIsLerp,_float fLerpSpeed)
+{
+	if (nullptr == m_pGameInstance)
+		return;
+	bIsLerp ? m_pGameInstance->Set_GoalViewportInfo(vLScreenDesc, vRScreenDesc, fLerpSpeed) :
+		m_pGameInstance->Set_ViewportInfo(vLScreenDesc, vRScreenDesc);
 }
 
 

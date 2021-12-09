@@ -23,6 +23,7 @@ public:
 	virtual HRESULT NativeConstruct_Prototype()override;
 public: //None일경우 자유이동 , 재생중이면 다른거 반환.이후 카메라는 Tick_Film으로 매트릭스얻어서 set,
 	CamHelperState		Tick(_double TimeDelta,CFilm:: ScreenType eScreenTypeIdx);
+	CamHelperState		Get_CamHelperState(CFilm::ScreenType eScreen) { return m_eState[eScreen]; }
 public:
 	//For.Film
 	HRESULT		Add_Film(const _tchar* pFilmName, CFilm* pFilm, _double dDuration);

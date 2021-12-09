@@ -4,6 +4,9 @@
 #include"Performer.h"
 #include"MoonBaboon.h"
 #include"MainCamera.h"
+#include"SubCamera.h"
+#include"DataStorage.h"
+#include"Film.h"
 CCutScene::CCutScene()
 {
 }
@@ -12,7 +15,18 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 {
 	//ÄÆ¾ÀÁß¿¡ ¹Ù²ãÁÙ°Íµé 
 	if (m_dTime > m_dDuration)
+	{
+		switch (m_eCutSceneOption)
+		{
+		case Client::CCutScene::CutSceneOption::CutScene_Intro:
+			End_CutScene_Intro();
+			break;
+		case Client::CCutScene::CutSceneOption::CutScene_Active_GravityPath_01:
+			End_CutScene_Active_GravityPath_01();
+			break;
+		}
 		return false;
+	}
 	m_dTime += dTimeDelta;
 
 	
@@ -20,6 +34,8 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 	{
 	case Client::CCutScene::CutSceneOption::CutScene_Intro:
 		return Tick_CutScene_Intro(dTimeDelta);
+	case CutSceneOption::CutScene_Active_GravityPath_01:
+		return Tick_CutScene_Active_GravityPath_01(dTimeDelta);
 	}
 
 
@@ -130,6 +146,19 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 	return true;
 }
 
+_bool CCutScene::Tick_CutScene_Active_GravityPath_01(_double dTimeDelta)
+{
+	CCam_Helper* pCamHelper = static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Get_CamHelper();
+	
+	if (!m_bIsStartFilm &&pCamHelper->Get_CamHelperState(CFilm::RScreen) != CCam_Helper::CamHelperState::Helper_SeeCamNode )
+	{
+		pCamHelper->Start_Film(TEXT("Film_Active_GravityPath_01"), CFilm::RScreen);
+		m_bIsStartFilm = true;
+	}
+	
+	return true;
+}
+
 HRESULT CCutScene::Start_CutScene()
 {
 	m_dTime = 0.0;
@@ -139,12 +168,17 @@ HRESULT CCutScene::Start_CutScene()
 		if (FAILED(Start_CutScene_Intro()))
 			return E_FAIL;
 		break;
+	case CutSceneOption::CutScene_Active_GravityPath_01:
+		if (FAILED(Start_CutScene_Active_GravityPath_01()))
+			return E_FAIL;
+		break;
 	}
 	return S_OK;
 }
 
 HRESULT CCutScene::Start_CutScene_Intro()
 {
+	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
 	CPerformer::PERFORMERDESC tDesc;
 	CGameObject* pPerformer = m_pCutScenePlayer->Find_Performer(L"Component_Model_Cody_CutScene1");
 	if (nullptr == pPerformer)
@@ -214,9 +248,41 @@ HRESULT CCutScene::Start_CutScene_Intro()
 	return S_OK;
 }
 
+HRESULT CCutScene::Start_CutScene_Active_GravityPath_01()
+{
+	
+	m_bIsStartFilm = false;
+	CCam_Helper* pCamHelper = static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Get_CamHelper();
+	if (nullptr == pCamHelper)
+		return E_FAIL;
+	CFilm::CamNode* pFirstNode = pCamHelper->Get_Film(TEXT("Film_Active_GravityPath_01"))->Get_CamNodes()->front();
+	pCamHelper->SeeCamNode(pFirstNode, CFilm::RScreen);
+	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), true, 1.f);
+	
+	return S_OK;
+}
+
+HRESULT CCutScene::End_CutScene_Intro()
+{
+	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
+	return S_OK;
+}
+
+HRESULT CCutScene::End_CutScene_Active_GravityPath_01()
+{
+	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
+	return E_NOTIMPL;
+}
+
 HRESULT CCutScene::Ready_CutScene_Intro()
 {
 	m_dDuration = 138.0;
+	return S_OK;
+}
+
+HRESULT CCutScene::Ready_CutScene_Active_GravityPath_01()
+{
+	m_dDuration = 10.5;
 	return S_OK;
 }
 
@@ -228,7 +294,9 @@ HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 		if (FAILED(Ready_CutScene_Intro()))
 			return E_FAIL;
 		break;
-	case Client::CCutScene::CutSceneOption::CutScene_End:
+	case Client::CCutScene::CutSceneOption::CutScene_Active_GravityPath_01:
+		if (FAILED(Ready_CutScene_Active_GravityPath_01()))
+			return E_FAIL;
 		break;
 	}
 	m_pCutScenePlayer = CCutScenePlayer::GetInstance();

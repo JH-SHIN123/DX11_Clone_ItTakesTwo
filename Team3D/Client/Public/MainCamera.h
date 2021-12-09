@@ -28,7 +28,8 @@ public:
 
 
 	CTransform* Get_Transform() { return m_pTransformCom; }
-
+	_bool		Get_IsFinishLerpToCamNode() { return m_bIsFinishLerpToNode; }
+	CCam_Helper* Get_CamHelper() { return m_pCamHelper; }
 	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal,matWorld); }
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
@@ -42,6 +43,7 @@ private:
 	_int	Tick_Cam_AutoToFree(_double dTimeDelta);			//연출 카메라 -> 자유이동시 보간
 	_int	Tick_Cam_Warp_WormHole(_double dTimeDelta);			//웜홀
 	_int	Tick_Cam_PressButton_Bridge(_double dTimeDelta);	//다리앞의 버튼
+
 
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
@@ -111,7 +113,12 @@ private:
 	//For.BridgeUppend
 	_bool	m_bStartBridgeUppendCam = false;
 	_float	m_fBridgeUppendTime = 0.f;
-
+	//For.Lerp To CamNode
+	CFilm::CamNode	m_tCurTargerNode;
+	_float			m_fLerpNodeTime = 0.f;
+	_float			m_fCurLerpNodeTime = 0.f;
+	_bool			m_bIsFinishLerpToNode = false;
+	_float4x4		m_matStartLerpNode;
 
 	WORLDMATRIX	m_PreWorld;
 
