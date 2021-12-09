@@ -68,9 +68,13 @@ _int CEffect_Boss_Core::Tick(_double TimeDelta)
 	}
 
 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_V))
-	/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Explosion, m_pTransformCom->Get_WorldMatrix());
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Hit, m_pTransformCom->Get_WorldMatrix());
 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_B))
-	/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Smoke, m_pTransformCom->Get_WorldMatrix());
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Explosion, m_pTransformCom->Get_WorldMatrix());
+	/*GARA*/if (m_pGameInstance->Key_Down(DIK_N))
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Lightning, m_pTransformCom->Get_WorldMatrix());
+	/*GARA*/if (m_pGameInstance->Key_Down(DIK_M))
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Smoke, m_pTransformCom->Get_WorldMatrix());
 
 	return _int();
 }

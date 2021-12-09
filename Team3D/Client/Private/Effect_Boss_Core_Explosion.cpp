@@ -47,7 +47,6 @@ _int CEffect_Boss_Core_Explosion::Tick(_double TimeDelta)
 	if (false == m_IsActivate && 0.0 >= m_dControlTime)
 		return EVENT_DEAD;
 
-
 	if (true == m_IsActivate)
 	{
 		m_dControlTime += TimeDelta;
