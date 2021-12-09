@@ -355,10 +355,17 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	
 	_vector vScale, vRotQuat, vTrans;
 	_vector  vCurRotQuat,vCurTrans;
-	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) * matQuat * 
-		MH_RotationMatrixByUp(pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos)); //계산 완료한 이번 프레임의 월드
 
-
+	if (static_cast<CCody*>(m_pTargetObj)->Get_IsInGravityPipe() == false)
+	{
+		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) * matQuat *
+			MH_RotationMatrixByUp(pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos)); //계산 완료한 이번 프레임의 월드
+	}
+	else
+	{
+		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) * matQuat *
+			MH_RotationMatrixByUp(XMVectorSet(0.f, 1.f, 0.f, 0.f), vPlayerPos));
+	}
 
 	/*vCurRotQuat = vRotQuat;
 	vCurTrans = vTrans;*/
