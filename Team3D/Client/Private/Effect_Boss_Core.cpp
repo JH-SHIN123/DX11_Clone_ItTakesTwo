@@ -35,7 +35,7 @@ HRESULT CEffect_Boss_Core::NativeConstruct(void * pArg)
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 
-	/*Gara*/m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 2.f, 30.f, 1.f));
+	/*Gara*/m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 1.525f, 30.f, 1.f));
 
 	Ready_Instance();
 
@@ -132,7 +132,7 @@ HRESULT CEffect_Boss_Core::Ready_Instance()
 	m_pInstanceBuffer->vRight	= { 1.f, 0.f, 0.f, 0.f };
 	m_pInstanceBuffer->vUp		= { 0.f, 1.f, 0.f, 0.f };
 	m_pInstanceBuffer->vLook	= { 0.f, 0.f, 1.f, 0.f };
-	m_pInstanceBuffer->vSize	= { 3.f, 3.f };
+	m_pInstanceBuffer->vSize	= { 2.5f, 2.75f };
 	m_pInstanceBuffer->vTextureUV = { 0.f, 0.f, 1.f, 1.f };
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	XMStoreFloat4(&m_pInstanceBuffer->vPosition, vPos);

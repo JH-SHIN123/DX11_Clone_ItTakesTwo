@@ -739,8 +739,8 @@ PS_OUT  PS_MAIN_DEFAULT_SMOKE(PS_IN_DOUBLEUV In)
 
 	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, In.vTexUV2);
 
-	Out.vColor.rgb *= vColor.rgb;
-	Out.vColor.a *= Out.vColor.r * g_fTime;
+	Out.vColor.rgb *= vColor.rgb * In.fTime * g_fTime;
+	//Out.vColor.a *= In.fTime * g_fTime;
 
 	return Out;
 }
@@ -817,13 +817,13 @@ technique11		DefaultTechnique
 		PixelShader = compile ps_5_0  PS_MAIN_PARTICLE_RGB();
 	}
 
-	pass PS_COLOR_SPRITE
+	pass PS_COLOR_SPRITE // 7
 	{
 		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0  VS_MAIN();
 		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
-		PixelShader = compile ps_5_0  PS_MAIN_COLORTEXTURE();
+		PixelShader = compile ps_5_0  PS_MAIN_DEFAULT_SMOKE();
 	}
 }

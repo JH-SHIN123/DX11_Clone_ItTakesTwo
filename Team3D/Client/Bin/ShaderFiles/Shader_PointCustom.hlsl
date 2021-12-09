@@ -113,7 +113,7 @@ VS_OUT VS_MAIN_AXIS_Y_NO_GLOBAL_UV(VS_IN In)
 	Out.vTextureUV_LTRB = In.vTextureUV_LTRB;
 	Out.vSize = In.vSize;
 
-	Out.vPointAxis = In.vTextureUV_LTRB.xyz;
+	Out.vPointAxis = In.WorldMatrix._21_22_23;
 
 	return Out;
 }

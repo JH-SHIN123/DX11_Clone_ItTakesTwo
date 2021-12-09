@@ -178,6 +178,14 @@ HRESULT CLevel_Stage::Ready_Test()
 	Arg_Desc.vRadiusXYZ = { 30.f, 10.f, 100.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
 
+
+	CMoonBaboonCore::MOONBABOONCORE_DESC tDesc;
+	tDesc.iIndex = 0;
+	tDesc.WorldMatrix._41 = 60.f;
+	tDesc.WorldMatrix._42 = 0.f;
+	tDesc.WorldMatrix._43 = 30.f;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore"), &tDesc), E_FAIL);
+
 #endif
 
 	/* Hye */
