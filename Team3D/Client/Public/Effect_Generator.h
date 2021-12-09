@@ -22,6 +22,7 @@ enum class Effect_Value
 	RobotBattery_Spark,
 	BossCore_Hit,
 	BossCore_Smoke,
+	BossCore_Explosion,
 	Effect_Value_End
 };
 
