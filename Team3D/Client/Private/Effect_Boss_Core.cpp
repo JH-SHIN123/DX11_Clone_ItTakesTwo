@@ -96,7 +96,7 @@ HRESULT CEffect_Boss_Core::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Second->Get_ShaderResourceView(2));
 	m_pPointInstanceCom->Set_ShaderResourceView("g_ColorTexture", m_pTextureCom_Color->Get_ShaderResourceView(2));
 
-	m_pPointInstanceCom->Render(12, m_pInstanceBuffer, 1);
+	m_pPointInstanceCom->Render(13, m_pInstanceBuffer, 1);
 
 	return S_OK;
 }

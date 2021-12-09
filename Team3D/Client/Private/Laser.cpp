@@ -34,8 +34,18 @@ HRESULT CLaser::NativeConstruct(void * pArg)
 	m_pInstanceMatrices[0].vUp = _float4(0.f, 1.f, 0.f, 0.f);
 	m_pInstanceMatrices[0].vLook = _float4(0.f, 0.f, 1.f, 0.f);
 	m_pInstanceMatrices[0].vPosition = _float4(64.f, 0.f, 30.f, 1.f);
-	m_pInstanceMatrices[0].vSize = _float2(1.f, 100.f);
+	m_pInstanceMatrices[0].vSize = _float2(3.f, 10.f);
 	m_pInstanceMatrices[0].vTextureUV = _float4(0.f, 0.f, 2.f, 1.f);
+
+	m_pCircleMatrice = new VTXMATRIX_CUSTOM_ST;
+	ZeroMemory(m_pCircleMatrice, sizeof(VTXMATRIX_CUSTOM_ST));
+
+	m_pCircleMatrice[0].vRight = _float4(1.f, 0.f, 0.f, 0.f);
+	m_pCircleMatrice[0].vUp = _float4(0.f, 1.f, 0.f, 0.f);
+	m_pCircleMatrice[0].vLook = _float4(0.f, 0.f, 1.f, 0.f);
+	m_pCircleMatrice[0].vPosition = _float4(64.f, 0.f, 30.f, 1.f);
+	m_pCircleMatrice[0].vSize = _float2(6.f, 6.f);
+	m_pCircleMatrice[0].vTextureUV = _float4(0.f, 0.f, 1.f, 1.f);
 
 	return S_OK;
 }
@@ -70,6 +80,8 @@ HRESULT CLaser::Render_ShadowDepth()
 
 void CLaser::Free()
 {
+	Safe_Delete_Array(m_pInstanceMatrices);
+
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
