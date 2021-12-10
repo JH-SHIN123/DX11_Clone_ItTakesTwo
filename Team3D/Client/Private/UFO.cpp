@@ -204,8 +204,6 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 	/* 우주선을 타겟쪽으로 천천히 회전 */
 	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f);
 
-
-
 }
 
 void CUFO::Phase1_InterAction(_double dTimeDelta)

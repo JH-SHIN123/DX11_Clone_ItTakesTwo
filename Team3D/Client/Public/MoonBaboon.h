@@ -37,10 +37,6 @@ private:
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 
-	/* For.Player */
-	CTransform*			m_pCodyTransform = nullptr;
-	CTransform*			m_pMayTransform = nullptr;
-
 	/* For.UFO */ 
 	CModel*				m_pUFOModel = nullptr;
 	CTransform*			m_pUFOTransform = nullptr;
