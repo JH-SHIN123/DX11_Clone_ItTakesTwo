@@ -7,7 +7,6 @@
 #include "PlayerActor.h"
 #include "SpaceRail.h"
 #include "SpaceRail_Node.h"
-
 #include "Effect_Generator.h"
 #include "Effect_May_Boots.h"
 /* For.PinBall */
@@ -16,10 +15,11 @@
 #include "PinBall.h"
 /* For.Tube*/
 #include "HookahTube.h"
-/*For.WarpGate*/
-#include "WarpGate.h"
+/* For.MoonUFO */
 #include "MoonUFO.h"
 #include "Moon.h"
+/*For.WarpGate*/
+#include "WarpGate.h"
 
 // m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
 // m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
@@ -204,9 +204,6 @@ _int CMay::Tick(_double dTimeDelta)
 		}
 	}
 
-	/* 메이 UFO탔을 때 */
-	InUFO(dTimeDelta);
-
 	/* 레일 타겟을 향해 날라가기 */
 	// Forward 조정
 	MoveToTargetRail(dTimeDelta);
@@ -237,6 +234,9 @@ _int CMay::Late_Tick(_double dTimeDelta)
 	Find_TargetSpaceRail();
 	ShowRailTargetTriggerUI();
 	Clear_TagerRailNodes();
+
+	/* 메이 UFO탔을 때 */
+	InUFO(dTimeDelta);
 
 	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine)
 		return NO_EVENT;
@@ -344,8 +344,6 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma endregion
 	if (m_pGameInstance->Key_Down(DIK_U))/* 메이 우주선 태우기 */
 		Set_UFO(true);
-	if (m_pGameInstance->Key_Down(DIK_T))/* 메이 우주선 내리기 */
-		Set_UFO(false);
 
 	//if (m_pGameInstance->Key_Down(DIK_Y))/* 3층 */
 	//	m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
@@ -1944,49 +1942,31 @@ void CMay::InUFO(const _double dTimeDelta)
 {
 	if (false == m_IsInUFO)
 		return;
+	 
+	if (m_pGameInstance->Key_Down(DIK_Y))/* 메이 우주선 내리기 */
+		Set_UFO(false);
 
-	//PxMat44 pxMat = PxMat44(((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Actor()->Get_Actor()->getGlobalPose());
+	/* UFO의 월드를 적용 */
+	CTransform* pUFOTransform = ((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform();
 
-	//_vector vPosition = XMVectorSet(pxMat.column3.x, pxMat.column3.y, pxMat.column3.z, 1.f);
-	//_vector vRight	  = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-	//_vector vUp		  = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	//_vector vLook	  = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_vector vPosition = pUFOTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vUp		  = XMVector3Normalize(pUFOTransform->Get_State(CTransform::STATE_UP));
+	_vector vRight	  = XMVector3Normalize(pUFOTransform->Get_State(CTransform::STATE_RIGHT));
+	_vector vLook	  = XMVector3Normalize(pUFOTransform->Get_State(CTransform::STATE_LOOK));
 
-	//vUp		= XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position());
-	//vLook	= XMVector3Normalize(XMVector3Cross(vRight, vUp));
-	//vRight	= XMVector3Normalize(XMVector3Cross(vUp, vLook));
+	/* Offset */
+	vPosition -= (vUp * 9.3f);
+	vPosition += (vRight * 2.5f);
 
-	//vPosition -= (vUp * 9.3f);
-	//vPosition += (vRight * 2.5f);
-
-	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-	//m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
-	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-
-	//m_pTransformCom->Set_WorldMatrix(((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform()->Get_WorldMatrix());
-
-
-	//_vector vPosition = ((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-	//_vector vUp		  = XMVector3Normalize(((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform()->Get_State(CTransform::STATE_UP));
-	//_vector vRight	  = XMVector3Normalize(((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform()->Get_State(CTransform::STATE_RIGHT));
-	//_vector vLook	  = XMVector3Normalize(((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform()->Get_State(CTransform::STATE_LOOK));
-	//vPosition -= (vUp * 9.3f);
-	//vPosition += (vRight * 2.5f);
-
-	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-	//m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
-	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-
-	_matrix BoneChair = ((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Model()->Get_BoneMatrix("Chair");
-	_float4x4 matWorld, matScale;
-	XMStoreFloat4x4(&matWorld, XMMatrixRotationZ(90.f) * BoneChair * ((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform()->Get_WorldMatrix());
-	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
 void CMay::Set_UFO(_bool bCheck)
 {
+	/* 중력끄고, 충돌끄고 */
 	m_IsInUFO = bCheck;
 	m_pActorCom->Set_ZeroGravity(bCheck, false, bCheck);
 	m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, bCheck);

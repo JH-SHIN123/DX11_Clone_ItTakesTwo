@@ -31,7 +31,6 @@ HRESULT CMoonUFO::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	m_eNextState = UFO_MH;
 	m_pModelCom->Set_Animation(ANI_UFO_MH);
 	m_pModelCom->Set_NextAnimIndex(ANI_UFO_MH);
 
@@ -52,9 +51,6 @@ _int CMoonUFO::Tick(_double dTimeDelta)
 		Calculate_Matrix(dTimeDelta);
 	}
 
-	Check_State(dTimeDelta);
-	Change_State(dTimeDelta);
-	During_Animation_Behavior(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
 
 	return NO_EVENT;
@@ -148,201 +144,6 @@ void CMoonUFO::Calculate_Matrix(_double dTimeDelta)
 		m_pTransformCom->RotateYaw_Speed(-dTimeDelta);
 }
 
-CMoonUFO::UFO_STATE CMoonUFO::Check_State(_double dTimeDelta)
-{
-	if (m_eNextState != m_eCurState)
-	{
-		switch (m_eNextState)
-		{
-		case Client::CMoonUFO::UFO_ENTIRE_ANIMATION:
-			m_pModelCom->Set_Animation(0);
-			break;
-		case Client::CMoonUFO::UFO_REF:
-			m_pModelCom->Set_Animation(ANI_UFO_REF);
-			break;
-		case Client::CMoonUFO::UFO_BACK:
-			m_pModelCom->Set_Animation(ANI_UFO_BACK);
-			break;
-		case Client::CMoonUFO::UFO_CODYHOLDING:
-			m_pModelCom->Set_Animation(ANI_UFO_CODYHOLDING);
-			break;
-		case Client::CMoonUFO::UFO_CODYHOLDING_ENTER:
-			m_pModelCom->Set_Animation(ANI_UFO_CODYHOLDING_ENTER);
-			break;
-		case Client::CMoonUFO::UFO_CODYHOLDING_LOW:
-			m_pModelCom->Set_Animation(ANI_UFO_CODYHOLDING_LOW);
-			break;
-		case Client::CMoonUFO::UFO_CONTROLLABLE_ADDITIVE:
-			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_ADDITIVE);
-			break;
-		case Client::CMoonUFO::UFO_CONTROLLABLE_ADDITIVE_BOOST:
-			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_ADDITIVE_BOOST);
-			break;
-		case Client::CMoonUFO::UFO_CONTROLLABLE_ADDITIVE_FLYING:
-			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_ADDITIVE_FLYING);
-			break;
-		case Client::CMoonUFO::UFO_CONTROLLABLE_POSE_BCK:
-			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_BCK);
-			break;
-		case Client::CMoonUFO::UFO_CONTROLLABLE_POSE_FWD:
-			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_FWD);
-			break;
-		case Client::CMoonUFO::UFO_CONTROLLABLE_POSE_LEFT:
-			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_LEFT);
-			break;
-		case Client::CMoonUFO::UFO_CONTROLLABLE_POSE_RIGHT:
-			m_pModelCom->Set_Animation(ANI_UFO_CONTROLLABLE_POSE_RIGHT);
-			break;
-		case Client::CMoonUFO::UFO_FIREROCKET_ADDITIVE_LEFT:
-			m_pModelCom->Set_Animation(ANI_UFO_FIREROCKET_ADDITIVE_LEFT);
-			break;
-		case Client::CMoonUFO::UFO_FIREROCKET_ADDITIVE_RIGHT:
-			m_pModelCom->Set_Animation(ANI_UFO_FIREROCKET_ADDITIVE_RIGHT);
-			break;
-		case Client::CMoonUFO::UFO_FWD:
-			m_pModelCom->Set_Animation(ANI_UFO_FWD);
-			break;
-		case Client::CMoonUFO::UFO_GROUNDPOUND:
-			m_pModelCom->Set_Animation(ANI_UFO_GROUNDPOUND);
-			break;
-		case Client::CMoonUFO::UFO_HITREACTION_BCK:
-			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_BCK);
-			break;
-		case Client::CMoonUFO::UFO_HITREACTION_FWD:
-			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_FWD);
-			break;
-		case Client::CMoonUFO::UFO_HITREACTION_LEFT:
-			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_LEFT);
-			break;
-		case Client::CMoonUFO::UFO_HITREACTION_RIGHT:
-			m_pModelCom->Set_Animation(ANI_UFO_HITREACTION_RIGHT);
-			break;
-		case Client::CMoonUFO::UFO_KNOCKDOWNMH:
-			m_pModelCom->Set_Animation(ANI_UFO_KNOCKDOWNMH);
-			break;
-		case Client::CMoonUFO::UFO_LASER_HITPOD:
-			m_pModelCom->Set_Animation(ANI_UFO_LASER_HITPOD);
-			break;
-		case Client::CMoonUFO::UFO_LASER_MH:
-			m_pModelCom->Set_Animation(ANI_UFO_LASER_MH);
-			break;
-		case Client::CMoonUFO::UFO_LASERRIPPEDOFF:
-			m_pModelCom->Set_Animation(ANI_UFO_LASERRIPPEDOFF);
-			break;
-		case Client::CMoonUFO::UFO_LEFT:
-			m_pModelCom->Set_Animation(ANI_UFO_LEFT);
-			break;
-		case Client::CMoonUFO::UFO_MH:
-			m_pModelCom->Set_Animation(ANI_UFO_MH);
-			break;
-		case Client::CMoonUFO::UFO_RIGHT:
-			m_pModelCom->Set_Animation(ANI_UFO_RIGHT);
-			break;
-		case Client::CMoonUFO::UFO_ROCKETKNOCKDOWN_MH:
-			m_pModelCom->Set_Animation(ANI_UFO_ROCKETKNOCKDOWN_MH);
-			break;
-		case Client::CMoonUFO::CUTSCENE_EJECT_FLYINGSAUCER:
-			m_pModelCom->Set_Animation(ANI_CUTSCENE_EJECT_FLYINGSAUCER);
-			break;
-		case Client::CMoonUFO::CUTSCENE_ENTERUFO_FLYINGSAUCER:
-			m_pModelCom->Set_Animation(ANI_CUTSCENE_ENTERUFO_FLYINGSAUCER);
-			break;
-		case Client::CMoonUFO::CUTSCENE_UFO_BOSS_INTRO:
-			m_pModelCom->Set_Animation(ANI_CUTSCENE_UFO_BOSS_INTRO);
-			break;
-		case Client::CMoonUFO::CUTSCENE_UFO_LASERRIPPEDOFF_FLYINGSAUCER:
-			m_pModelCom->Set_Animation(ANI_CUTSCENE_UFO_LASERRIPPEDOFF_FLYINGSAUCER);
-			break;
-		case Client::CMoonUFO::CUTSCENE_UFO_OUTRO:
-			m_pModelCom->Set_Animation(ANI_CUTSCENE_UFO_OUTRO);
-			break;
-		case Client::CMoonUFO::CUTSCENE_POWERCORESDESTROYED_UFO:
-			m_pModelCom->Set_Animation(ANI_CUTSCENE_POWERCORESDESTROYED_UFO);
-			break;
-		case Client::CMoonUFO::CUTSCENE_ROCKETPHASEFINISHED_FLYINGSAUCER:
-			m_pModelCom->Set_Animation(ANI_CUTSCENE_ROCKETPHASEFINISHED_FLYINGSAUCER);
-			break;
-		default:
-			break;
-		}
-		m_eCurState = m_eNextState;
-	}
-	return m_eCurState;
-}
-
-void CMoonUFO::Change_State(_double dTimeDelta)
-{
-	if (m_eCurState == UFO_LASER_MH)
-	{
-		m_eNextState = UFO_LASER_HITPOD;
-	}
-}
-
-void CMoonUFO::During_Animation_Behavior(_double dTimeDelta)
-{
-	switch (m_eCurState)
-	{
-	case Client::CMoonUFO::UFO_REF:
-		break;
-	case Client::CMoonUFO::UFO_BACK:
-		break;
-	case Client::CMoonUFO::UFO_CODYHOLDING:
-		break;
-	case Client::CMoonUFO::UFO_CODYHOLDING_ENTER:
-		break;
-	case Client::CMoonUFO::UFO_CODYHOLDING_LOW:
-		break;
-	case Client::CMoonUFO::UFO_CONTROLLABLE_POSE_BCK:
-		break;
-	case Client::CMoonUFO::UFO_CONTROLLABLE_POSE_FWD:
-		break;
-	case Client::CMoonUFO::UFO_CONTROLLABLE_POSE_LEFT:
-		break;
-	case Client::CMoonUFO::UFO_CONTROLLABLE_POSE_RIGHT:
-		break;
-	case Client::CMoonUFO::UFO_FWD:
-		break;
-	case Client::CMoonUFO::UFO_GROUNDPOUND:
-		break;
-	case Client::CMoonUFO::UFO_HITREACTION_BCK:
-		break;
-	case Client::CMoonUFO::UFO_HITREACTION_FWD:
-		break;
-	case Client::CMoonUFO::UFO_HITREACTION_LEFT:
-		break;
-	case Client::CMoonUFO::UFO_HITREACTION_RIGHT:
-		break;
-	case Client::CMoonUFO::UFO_KNOCKDOWNMH:
-		break;
-	case Client::CMoonUFO::UFO_LASER_HITPOD:
-		break;
-	case Client::CMoonUFO::UFO_LASER_MH:
-		break;
-	case Client::CMoonUFO::UFO_LASERRIPPEDOFF:
-		break;
-	case Client::CMoonUFO::UFO_LEFT:
-		break;
-	case Client::CMoonUFO::UFO_MH:
-		break;
-	case Client::CMoonUFO::UFO_RIGHT:
-		break;
-	case Client::CMoonUFO::UFO_ROCKETKNOCKDOWN_MH:
-		break;
-	default:
-		break;
-	}
-}
-
-void CMoonUFO::Laser_Pattern(_double dTimeDelta)
-{
-	//_vector vDir = m_pCodyTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//
-	//_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
-	//_vector vDirForLaser = XMVector3Normalize(vDir);
-
-	//m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f); // 플레이어 쪽으로 천천히 회전.
-}
-
 HRESULT CMoonUFO::Ready_Component(void * pArg)
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
@@ -366,7 +167,6 @@ HRESULT CMoonUFO::Ready_Component(void * pArg)
 	/* Joint */
 	PxJointLimitCone LimitCone = PxJointLimitCone(PxPi, PxPi, 0.05f);
 	m_pJoint = CPhysX::GetInstance()->Create_Joint(m_pDynamicActorCom->Get_Actor(), PxTransform(PxVec3(0.f, 90.f, 0.f)), nullptr, PxTransform(MH_PxVec3(((CMoon*)(DATABASE->Get_Mooon()))->Get_Position())), LimitCone, false);
-
 	return S_OK;
 }
 

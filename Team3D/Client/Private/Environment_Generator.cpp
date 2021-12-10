@@ -33,6 +33,8 @@
 #include "BossFloor.h"
 #include "BossDoor.h"
 #include "BossSlideDoor.h"
+#include "MoonBaboon_SpaceShip.h"
+#include "MoonUFO.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -276,9 +278,8 @@ HRESULT CEnvironment_Generator::Load_Stage_Space()
 	FAILED_CHECK_RETURN(Load_Environment_Bridge(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Trigger(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_SpaceRail(), E_FAIL);
+	FAILED_CHECK_RETURN(Load_Others(), E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonUFO")), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SpaceShip")), E_FAIL);
 #endif //__MAPLOADING_OFF
 	return S_OK;
 }
@@ -570,6 +571,10 @@ void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
 		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Planet_Lamp03"))
 		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Planet"))
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Saturn"))
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh01"))
 		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh02"))
@@ -604,6 +609,16 @@ void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
 		tInfo.fCullRadius = 2000.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Saucer_SplineMesh03"))
 		tInfo.fCullRadius = 2000.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ControlRoom_Door_01"))
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ControlRoom_DoorFrame_01"))
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ControlRoom_Strip_01"))
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ControlRoom_StripShort_01"))
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ControlRoom_StripTiny_01"))
+		tInfo.fCullRadius = 500.f;
 }
 
 void CEnvironment_Generator::Adjustment_Model_Position(_tchar* pModelTag, _float4x4& rWorld)
@@ -628,6 +643,8 @@ HRESULT CEnvironment_Generator::Load_Default_Prototype_GameObject()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Bridge"), CBridge::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SpaceRail"), CSpaceRail::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), CHangingPlanet::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SpaceShip"), CMoonBaboon_SpaceShip::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonUFO"), CMoonUFO::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
 }
@@ -1008,6 +1025,16 @@ HRESULT CEnvironment_Generator::Load_Environment_Trigger()
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment_Trigger"), Level::LEVEL_STAGE, TEXT("GameObject_DeadLine"), &tDeadLineDesc), E_FAIL);
 	}
 	CloseHandle(hFile);
+
+	return S_OK;
+}
+
+HRESULT CEnvironment_Generator::Load_Others()
+{
+	/* MoonUFO */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonUFO")), E_FAIL);
+	/* MoonBaboonSpaceShip */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SpaceShip")), E_FAIL);
 
 	return S_OK;
 }
