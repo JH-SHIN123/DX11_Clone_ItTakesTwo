@@ -33,11 +33,11 @@ HRESULT CMoonBaboon_MainLaser::NativeConstruct(void* pArg)
 	m_UserData.eID = GameID::eENVIRONMENT;
 	m_UserData.pGameObject = this;
 
-	CStaticActor::ARG_DESC tArg;
-	tArg.pModel = m_pModelCom;
-	tArg.pTransform = m_pTransformCom;
-	tArg.pUserData = &m_UserData;
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
+	//CStaticActor::ARG_DESC tArg;
+	//tArg.pModel = m_pModelCom;
+	//tArg.pTransform = m_pTransformCom;
+	//tArg.pUserData = &m_UserData;
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
 
 	DATABASE->Set_MoonBaboon_MainLaser(this);
 
@@ -119,7 +119,7 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 		{
 			m_pTransformCom->Go_Up(TimeDelta);
 			m_dPatternDeltaT += TimeDelta;
-			m_pStaticActorCom->Update_StaticActor();
+			//m_pStaticActorCom->Update_StaticActor();
 		}
 	}
 	else if (1 == m_iPatternState)
@@ -236,7 +236,7 @@ void CMoonBaboon_MainLaser::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
-	Safe_Release(m_pStaticActorCom);
+	//Safe_Release(m_pStaticActorCom);
 
 	CGameObject::Free();
 }
