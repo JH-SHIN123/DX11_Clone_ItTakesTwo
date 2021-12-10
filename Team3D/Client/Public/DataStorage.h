@@ -164,7 +164,6 @@ public:
 
 	void Set_LaserTypeB_Recovery(_bool IsCheck) { m_IsLaserTypeB_Recovery = IsCheck; }
 	_bool Get_LaserTypeB_Recovery() const { return m_IsLaserTypeB_Recovery; }
->>>>>>> main
 
 private:
 	CGameObject* m_pCody = nullptr;
