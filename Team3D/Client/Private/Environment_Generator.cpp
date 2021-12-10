@@ -274,11 +274,14 @@ HRESULT CEnvironment_Generator::Load_Stage_Space()
 
 	FAILED_CHECK_RETURN(Load_Environment_Space(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Space_Boss(), E_FAIL);
-	FAILED_CHECK_RETURN(Load_Environment_Space_SpaceShip(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Bridge(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Trigger(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_SpaceRail(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Others(), E_FAIL);
+
+#ifndef __SPACESHIP_OFF
+	FAILED_CHECK_RETURN(Load_Environment_Space_SpaceShip(), E_FAIL);
+#endif // __SPACESHIP_OFF
 
 #endif //__MAPLOADING_OFF
 	return S_OK;

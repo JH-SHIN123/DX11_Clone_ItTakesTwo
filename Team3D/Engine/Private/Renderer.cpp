@@ -40,7 +40,7 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Depth"), TEXT("MRT_Deferred")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Shadow"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Shadow"), TEXT("MRT_Deferred")), E_FAIL);
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Specular_Src"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Specular_Src"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 1.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Specular_Src"), TEXT("MRT_Deferred")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Emissive"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Emissive"), TEXT("MRT_Deferred")), E_FAIL);
@@ -63,12 +63,6 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect"), TEXT("MRT_Effect")), E_FAIL);
 
-	/* MRT_Effect_Mesh_Masking */
-// 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect_Mask_Diffuse"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
-// 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect_Diffuse"), TEXT("MRT_Effect_MEsh_Masking")), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Effect_Mask"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect_Diffuse"), TEXT("MRT_Effect_MEsh_Masking")), E_FAIL);
-
 	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width, ViewportDesc.Height, TEXT("../Bin/ShaderFiles/Shader_Blend.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
 
@@ -85,12 +79,16 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shade"), fWidth, 0.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
-	FAILED_CHECK_RETURN(CSSAO::GetInstance()->Ready_DebugBuffer(fWidth, fHeight * 2.f, fWidth, fHeight), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_CascadedShadow_Depth"), fWidth * 2.f, 0.f, fWidth, fHeight * MAX_CASCADES), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_PostFX"), fWidth * 3.f, 0.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Effect"), fWidth * 3.f, fHeight, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(CSSAO::GetInstance()->Ready_DebugBuffer(fWidth * 3.f, fHeight * 2.f, fWidth, fHeight), E_FAIL);
+
+	FAILED_CHECK_RETURN(CBlur::GetInstance()->Ready_DebugBuffer(TEXT("Target_EmissiveBlur"), fWidth * 4.f, 0.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(CBlur::GetInstance()->Ready_DebugBuffer(TEXT("Target_EffectBlur"), fWidth * 4.f, fHeight, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(CBlur::GetInstance()->Ready_DebugBuffer(TEXT("Target_SpecularBlur"), fWidth * 4.f, fHeight * 2.f, fWidth, fHeight), E_FAIL);
 #endif
 
 	return S_OK;
@@ -145,7 +143,11 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_CascadedShadow"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_PostFX"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Effect"));
+
 		CSSAO::GetInstance()->Render_DebugBuffer();
+		CBlur::GetInstance()->Render_DebugBuffer_Emissive(TEXT("Target_EmissiveBlur"));
+		CBlur::GetInstance()->Render_DebugBuffer_Effect(TEXT("Target_EffectBlur"));
+		CBlur::GetInstance()->Render_DebugBuffer_Specular(TEXT("Target_SpecularBlur"));
 	}
 #endif
 
@@ -283,13 +285,17 @@ HRESULT CRenderer::Render_Blend()
 
 	CBlur* pBlur = CBlur::GetInstance();
 	FAILED_CHECK_RETURN(pBlur->Blur_Emissive(), E_FAIL);
+	FAILED_CHECK_RETURN(pBlur->Blur_Specular(), E_FAIL);
 
 	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX"), false);
+
 	m_pVIBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Diffuse")));
 	m_pVIBuffer->Set_ShaderResourceView("g_ShadeTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Shade")));
-	m_pVIBuffer->Set_ShaderResourceView("g_SpecularTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Specular")));
 	m_pVIBuffer->Set_ShaderResourceView("g_ShadowTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Shadow")));
 	
+	m_pVIBuffer->Set_ShaderResourceView("g_SpecularTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Specular")));
+	m_pVIBuffer->Set_ShaderResourceView("g_SpecularBlurTexture", pBlur->Get_ShaderResourceView_BlurSpecular());
+
 	m_pVIBuffer->Set_ShaderResourceView("g_EmissiveTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Emissive")));
 	m_pVIBuffer->Set_ShaderResourceView("g_EmissiveBlurTexture", pBlur->Get_ShaderResourceView_BlurEmissive());
 
@@ -309,7 +315,9 @@ HRESULT CRenderer::PostProcessing(_double TimeDelta)
 
 HRESULT CRenderer::Compute_SSAO()
 {
-	return CSSAO::GetInstance()->Compute_SSAO();
+	FAILED_CHECK_RETURN(CSSAO::GetInstance()->Compute_SSAO(),E_FAIL);
+
+	return S_OK;
 }
 
 void CRenderer::Sort_GameObjects(RENDER_OBJECTS & GameObjects)

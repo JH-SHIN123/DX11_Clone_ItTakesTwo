@@ -89,29 +89,41 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 
 	if (m_iTargetPlayer == GameID::eCODY)
 	{
-		if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide == true)
+		if (m_pGameInstance->Key_Down(DIK_F) && m_IsCodyCollide == true)
 		{
 			UI_Delete(Cody, InputButton_InterActive);
 			m_bEnterValve = true;
 			// 키보드 화살표 UI 생성.
+			UI_Create(Cody, Arrowkeys_Side);
 		}
 	}
 	if (m_iTargetPlayer == GameID::eMAY)
 	{
-		if (m_pGameInstance->Pad_Key_Down(DIP_Y) && m_IsCollide
-			|| m_pGameInstance->Key_Down(DIK_O) && m_IsCollide)
+		if (m_IsMayCollide && m_pGameInstance->Pad_Key_Down(DIP_Y) || m_IsMayCollide && m_pGameInstance->Key_Down(DIK_O))
 		{
 			UI_Delete(May, InputButton_InterActive);
 			m_bEnterValve = true;
 			// 키보드 화살표 UI 생성.
+			UI_Create(May, StickIcon);
 		}
 	}
-
 
 	if (m_bEnterValve == true)
 	{
 		Rotate_SpaceValve(dTimeDelta);
 	}
+
+	if (m_iTargetPlayer == GameID::eCODY)
+	{
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::SpaceValve,
+			m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCodyCollide, m_bEnterValve);
+	}
+	else if (m_iTargetPlayer == GameID::eMAY)
+	{
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::SpaceValve,
+			m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsMayCollide, m_bEnterValve);
+	}
+
 
 	return NO_EVENT;
 }
@@ -144,14 +156,11 @@ void CSpaceValve::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameOb
 		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 		{
 			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eSPACEVALVE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION), Player::Cody);
-			UI_Create(Cody, InputButton_InterActive);
-			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			m_IsCollide = true;
+			m_IsCodyCollide = true;
 		}
 		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 		{
-			m_IsCollide = false;
-			UI_Delete(Cody, InputButton_InterActive);
+			m_IsCodyCollide = false;
 		}
 	}
 	//May
@@ -160,14 +169,11 @@ void CSpaceValve::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameOb
 		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 		{
 			((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eSPACEVALVE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION), Player::May);
-			UI_Create(May, InputButton_InterActive);
-			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			m_IsCollide = true;
+			m_IsMayCollide = true;
 		}
 		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 		{
-			m_IsCollide = false;
-			UI_Delete(May, InputButton_InterActive);
+			m_IsMayCollide = false;
 		}
 	}
 }

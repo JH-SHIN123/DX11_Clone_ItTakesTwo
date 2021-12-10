@@ -21,11 +21,11 @@ public:
 
 public:
 	void Set_IsActivate(_bool IsActivate) { m_IsActivate = IsActivate; }
-	void Set_Position(_fvector vPos) { m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos); }
-
+	void Set_WorldMatrix(_fmatrix WorldMatrix) { m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
 
 private:
 	void Check_Instance(_double TimeDelta);
+	void Check_Smoke(_double TimeDelta);
 
 private:
 	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0)	override;
@@ -45,15 +45,26 @@ private:
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT	= nullptr;
-	_double*							m_dInstance_Update_TextureUV_Time = nullptr;
+	CTextures*							m_pTexturesCom_Distortion = nullptr;
+	_double*							m_pInstance_Update_TextureUV_Time = nullptr;
 
 	_float m_fNextUV = 0.f;
 
-	const _float  m_fAlphaTime_Power			= 0.25f;
-	const _float  m_fSize_Power					= 0.5f;
-	const _float  m_fInstance_SpeedPerSec		= 1.5f;
-	const _double m_dInstance_Pos_Update_Time	= 3.0;
-	const _float2 m_vDefaultSize				= { 0.f, 0.f };
+	CTextures*							m_pTexturesCom_Smoke = nullptr;
+	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT_Smoke = nullptr;
+	_float fNextUVTime_Smoke = 0.f;
+	XMINT2 m_vSmokeTextureUV			= { 0, 0 };
+	const XMINT2 m_vSmokeTextureUV_Max = { 8, 8 };
+
+
+	const _float  m_fAlphaTime_Power			= 0.5f;
+	const _float  m_fSize_Power					= 0.75f;
+	const _float  m_fInstance_SpeedPerSec		= 0.5f;
+	const _double m_dInstance_Pos_Update_Time	= 1.25;
+	const _float2 m_vDefaultSize				= { 0.25f, 0.25f };
+
+private: //Particle
+	class CEffect_Boss_Laser_Particle* m_pLaserParticle = nullptr;
 
 public:
 	static CEffect_Boss_Laser_Smoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

@@ -37,7 +37,8 @@ private:
 
 private:
 	_uint		m_iTargetPlayer = 0;
-	_bool		m_IsCollide = false;
+	_bool		m_IsCodyCollide = false;
+	_bool		m_IsMayCollide = false;
 	_bool		m_bEnterValve = false;
 	_bool		m_bRotate = false;
 	_float		m_fRotateDelay = 0.f;

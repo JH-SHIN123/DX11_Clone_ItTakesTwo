@@ -11,12 +11,14 @@
 #include "InGameEffect.h"
 #include "WarpGate.h"
 #include "Boss_Missile.h"
+#include "Effect_Env_Particle_Field.h"
 /* Hye */
 #include "Environment_Generator.h"
 #include "Dynamic_Env.h"
 #include "HangingPlanet.h"
 /* Taek */
 #include "MoonBaboonCore.h"
+#include "Light_Generator.h"
 /* Yoon */
 #include "RotatedRobotParts.h"
 #include "RobotParts.h"
@@ -52,8 +54,8 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Wormhole(TEXT("Layer_Wormhole")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_WallLaserTrap(TEXT("Layer_WallLaserTrap")), E_FAIL);	
 	FAILED_CHECK_RETURN(Ready_Layer_TutorialDoor(TEXT("Layer_TutorialDoor")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_GravityPipe(TEXT("Layer_GravityPipe")), E_FAIL);
-
+	FAILED_CHECK_RETURN(Ready_Layer_GravityPipe(TEXT("Layer_GravityPipe")), E_FAIL); 
+	FAILED_CHECK_RETURN(Ready_Layer_Env_Particles(TEXT("Layer_Env_Particle")), E_FAIL);
 	/* Hye */
 	FAILED_CHECK_RETURN(Ready_Layer_Planet(TEXT("Layer_Planet")), E_FAIL);
 
@@ -87,17 +89,12 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Test(), E_FAIL);
 #endif
 
-#ifdef __TEST_JUNG
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke")), E_FAIL);
-#endif //__TEST_JUNG
-
 	return S_OK;
 }
 
 _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
-
 
 #ifdef __TEST_TAEK
 	TCHAR lightTag[256] = L"";
@@ -124,6 +121,13 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	}
 #endif // __TEST_TAEK
 
+#ifdef __TEST_SE
+	if (m_pGameInstance->Key_Down(DIK_M))
+	{
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA")), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB")), E_FAIL);
+	}
+#endif
 
 	return NO_EVENT;
 }
@@ -163,14 +167,26 @@ HRESULT CLevel_Stage::Clone_StaticGameObjects_ByFile(const _tchar * pFilePath, c
 
 	return S_OK;
 }
-
+  
 HRESULT CLevel_Stage::Ready_Test()
 {
 	/* Se */
 #ifdef __TEST_SE
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB")), E_FAIL);
 #endif 
 	/* Jung */
+#ifdef __TEST_JUNG
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core")), E_FAIL);
+
+	CEffect_Env_Particle_Field::ARG_DESC Arg_Desc;
+	Arg_Desc.iInstanceCount = 8000;
+	Arg_Desc.vPosition = { 60.f, 0.f, 30.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 30.f, 10.f, 100.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
+
+#endif
 
 	/* Hye */
 #ifdef __TEST_HYE
@@ -254,6 +270,16 @@ HRESULT CLevel_Stage::Ready_Layer_GravityPipe(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Gravity_Pipe"), &Data), E_FAIL);
 	return S_OK;
 }
+HRESULT CLevel_Stage::Ready_Layer_Env_Particles(const _tchar * pLayerTag)
+{
+	CEffect_Env_Particle_Field::ARG_DESC Arg_Desc;
+	Arg_Desc.iInstanceCount = 8000;
+	Arg_Desc.vPosition = { 60.f, 0.f, 30.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 30.f, 10.f, 100.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
+
+	return S_OK;
+}
 #pragma endregion
 
 #pragma region Hye 
@@ -295,30 +321,25 @@ HRESULT CLevel_Stage::Ready_Lights()
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
 	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
-	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.vAmbient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
+
+	LightDesc.vDiffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vAmbient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
 		return E_FAIL;
-//
-//#pragma region PointLight
-	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	LightDesc.vPosition = XMFLOAT3(60.f, 5.f, 15.f);
-	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
-	LightDesc.fRange = 15.f;
-	if (FAILED(pGameInstance->Add_Light(TEXT("Point1"), LightDesc))) return E_FAIL;
-//	if (FAILED(pGameInstance->Add_Light(TEXT("Point2"), LightDesc))) return E_FAIL;
-//	if (FAILED(pGameInstance->Add_Light(TEXT("Point3"), LightDesc))) return E_FAIL;
-//	if (FAILED(pGameInstance->Add_Light(TEXT("Point4"), LightDesc))) return E_FAIL;
-//	if (FAILED(pGameInstance->Add_Light(TEXT("Point5"), LightDesc))) return E_FAIL;
 
-	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(20.f, 0.25f, 1.f, LightDesc.vPosition, 2)), E_FAIL);
-//#pragma endregion
-
-
+#pragma region PointLight
+		LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+		LightDesc.vPosition = XMFLOAT3(20.f, 5.f, 20.f);
+		LightDesc.vDiffuse = XMFLOAT4(0.f, 0.f, 1.f, 1.f);
+		LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+		LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+		LightDesc.fRange = 10.f;
+	if (FAILED(CLight_Generator::GetInstance()->Add_Light(TEXT("Point1"), LightDesc, (_uint)(EPoint_Color::Blue)))) return E_FAIL;
+#pragma endregion
 
 	/* For. Spot  X */
 	//LightDesc.eType = LIGHT_DESC::TYPE_SPOT;

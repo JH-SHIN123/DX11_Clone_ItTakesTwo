@@ -182,13 +182,11 @@ PS_OUT PS_MAIN(PS_IN In)
 	Out.vDiffuse			= vector(0.3f, 0.3f, 0.4f, 1.f);
 	Out.vNormal				= vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth				= vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+	Out.vSpecular			= vector(0.f, 0.f, 0.f, 1.f);
 
 	// Calculate Shadow
 	int iIndex = -1;
 	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
-
-	// Calculate Specular
-	Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
 
 	// Get_ShadowFactor
 	float fShadowFactor = 0.f;

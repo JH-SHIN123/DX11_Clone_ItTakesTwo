@@ -4,8 +4,22 @@
 #include "Pipeline.h"
 #include "VIBuffer_RectRHW.h"
 #include "Blur.h"
+#include "ShaderCompiler.h"
+#include "Textures.h"
 
 IMPLEMENT_SINGLETON(CPostFX)
+
+void CPostFX::Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos)
+{
+	m_bRadialBlur_Main = bActive;
+	m_vRadiarBlur_FocusPos_Main = vFocusPos;
+}
+
+void CPostFX::Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos)
+{
+	m_bRadialBlur_Sub = bActive;
+	m_vRadiarBlur_FocusPos_Sub = vFocusPos;
+}
 
 HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight)
 {
@@ -27,6 +41,8 @@ HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDevic
 	FAILED_CHECK_RETURN(Build_BloomResources(fBufferWidth, fBufferHeight), E_FAIL);
 	FAILED_CHECK_RETURN(Build_DOFBlurResources(fBufferWidth, fBufferHeight), E_FAIL);
 	FAILED_CHECK_RETURN(Build_ComputeShaders(TEXT("../Bin/ShaderFiles/ComputeShader_PostFX.hlsl"), "DefaultTechnique"), E_FAIL);
+
+	m_pRadiarBlur_Mask = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/PostFX/radiarblur.png"));
 
 	return S_OK;
 }
@@ -175,6 +191,12 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqr, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_BloomScale", &m_fBloomScale, sizeof(_float));
 
+	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Main", &m_bRadialBlur_Main, sizeof(m_bRadialBlur_Main)); 
+	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Sub", &m_bRadialBlur_Sub, sizeof(m_bRadialBlur_Sub));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Main", &m_vRadiarBlur_FocusPos_Main, sizeof(m_vRadiarBlur_FocusPos_Main));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Sub", &m_vRadiarBlur_FocusPos_Sub, sizeof(m_vRadiarBlur_FocusPos_Sub));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_RadiarBlurMaskTex", m_pRadiarBlur_Mask->Get_ShaderResourceView(0));;
+	
 	_float	fCamFar;
 	_matrix	ProjMatrixInverse;
 	_float4	vViewportUVInfo;
@@ -359,18 +381,7 @@ HRESULT CPostFX::Build_DOFBlurResources(_float iWidth, _float iHeight)
 
 HRESULT CPostFX::Build_ComputeShaders(const _tchar* pShaderFilePath, const char* pTechniqueName)
 {
-	_uint iFlag = 0;
-
-#ifdef _DEBUG
-	iFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-#else
-	iFlag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
-#endif
-
-	ID3DBlob* pCompiledShaderCode = nullptr;
-	ID3DBlob* pCompileErrorMsg = nullptr;
-
-	FAILED_CHECK_RETURN(D3DCompileFromFile(pShaderFilePath, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE,  nullptr, "fx_5_0", iFlag, 0, &pCompiledShaderCode, &pCompileErrorMsg), E_FAIL);
+	ID3DBlob* pCompiledShaderCode = CShaderCompiler::GetInstance()->Get_CompiledCode(pShaderFilePath);
 	FAILED_CHECK_RETURN(D3DX11CreateEffectFromMemory(pCompiledShaderCode->GetBufferPointer(), pCompiledShaderCode->GetBufferSize(), 0, m_pDevice, &m_pEffect_CS), E_FAIL);
 
 	ID3DX11EffectTechnique* pTechnique = m_pEffect_CS->GetTechniqueByName(pTechniqueName);
@@ -392,8 +403,6 @@ HRESULT CPostFX::Build_ComputeShaders(const _tchar* pShaderFilePath, const char*
 	}
 
 	Safe_Release(pTechnique);
-	Safe_Release(pCompiledShaderCode);
-	Safe_Release(pCompileErrorMsg);
 
 	return S_OK;
 }
@@ -471,6 +480,14 @@ HRESULT CPostFX::KeyInput_Test(_double TimeDelta)
 	m_fLumWhiteSqr = b;
 	m_fBloomScale = c;
 	m_fBloomThreshold = d;
+
+	//GetPrivateProfileString(L"Section_1", L"Key_5", L"0", szBuff, 256, L"../test.ini");
+	//_float e = (_float)_wtof(szBuff);
+	//GetPrivateProfileString(L"Section_1", L"Key_6", L"0", szBuff, 256, L"../test.ini");
+	//_float f = (_float)_wtof(szBuff);
+	//
+	//m_fRadiarDist = e;
+	//m_fRadiarStr = f;
 #endif // _DEBUG
 
 	return S_OK;
@@ -480,6 +497,7 @@ HRESULT CPostFX::KeyInput_Test(_double TimeDelta)
 void CPostFX::Clear_Buffer()
 {
 	Safe_Release(m_pVIBuffer_ToneMapping);
+	Safe_Release(m_pRadiarBlur_Mask);
 }
 
 void CPostFX::Free()
@@ -523,8 +541,6 @@ void CPostFX::Free()
 	}
 	m_InputLayouts_CS.clear();
 	Safe_Release(m_pEffect_CS);
-
-	Safe_Release(m_pVIBuffer_ToneMapping);
 
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
