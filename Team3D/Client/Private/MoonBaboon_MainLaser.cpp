@@ -24,7 +24,7 @@ HRESULT CMoonBaboon_MainLaser::NativeConstruct(void* pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(3.5f, XMConvertToRadians(35.f))), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(3.5f, XMConvertToRadians(40.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon_MainLaser_01"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
@@ -116,10 +116,13 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 	}
 	else if (1 == m_iPatternState)
 	{
-		if (m_dPatternDeltaT >= 15)
+		if (m_dPatternDeltaT >= 10.0)
 		{
 			m_dPatternDeltaT = 0.0;
 			m_iPatternState = 2;
+
+			for (auto pLaserTypeB : m_vecLaser_TypeB)
+				pLaserTypeB->Set_RotateSpeed(-40.f);
 		}
 		else
 		{
@@ -129,10 +132,13 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 	}
 	else if (2 == m_iPatternState)
 	{
-		if (m_dPatternDeltaT >= 2.0)
+		if (m_dPatternDeltaT >= 10.0)
 		{
 			m_dPatternDeltaT = 0.0;
 			m_iPatternState = 1;
+
+			for (auto pLaserTypeB : m_vecLaser_TypeB)
+				pLaserTypeB->Set_RotateSpeed(40.f);
 		}
 		else
 		{
@@ -141,24 +147,28 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 		}
 	}
 
-	//if (true == m_IsLaserUp && true == m_IsLaserCreate)
-	//{
-	//	CGameObject* pGameObject = nullptr;
+	/* 레이저 소환!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+	if (true == m_IsLaserUp && true == m_IsLaserCreate)
+	{
+		CGameObject* pGameObject = nullptr;
 
-	//	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//	_float4 vConvertPos;
-	//	XMStoreFloat4(&vConvertPos, vPos);
-	//	vConvertPos.y += 5.f;
+		_float4 vDir;
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_float4 vConvertPos;
+		XMStoreFloat4(&vConvertPos, vPos);
+		vConvertPos.y += 0.7f;
 
-	//	for (_uint i = 0; i < 8; ++i)
-	//	{
-	//		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeA"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB"), nullptr, &pGameObject);
-	//		m_vecLaser_TypeB.emplace_back(static_cast<CLaser_TypeB*>(pGameObject));
-	//		m_vecLaser_TypeB[i]->Set_StartPoint(vConvertPos);
-	//	}
+		for (_uint i = 0; i < 8; ++i)
+		{
+			m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeB"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB"), nullptr, &pGameObject);
+			m_vecLaser_TypeB.emplace_back(static_cast<CLaser_TypeB*>(pGameObject));
+			m_vecLaser_TypeB[i]->Set_StartPoint(vConvertPos);
+			m_vecLaser_TypeB[i]->SetUp_Direction(i);
+			m_vecLaser_TypeB[i]->Set_RotateSpeed(40.f);
+		}
 
-	//	m_IsLaserCreate = false;
-	//}
+		m_IsLaserCreate = false;
+	}
 }
 
 void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)

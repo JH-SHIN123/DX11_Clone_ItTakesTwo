@@ -107,6 +107,7 @@ HRESULT CLaser::Render_ShadowDepth()
 	return S_OK;
 }
 
+
 void CLaser::Set_LaserMatices()
 {
 	m_pLaserMatrices[0].vUp = m_vLaserDir;

@@ -19,9 +19,13 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eRender) override;
 	virtual HRESULT Render_ShadowDepth() override;
 
+public:
+	void Set_Dead();
+
 private:
 	_double m_dChargingTime = 0.0;
 	_bool	m_IsPaticleCreate = true;
+
 private:
 	class CUFO*										m_pBossUFO = nullptr;
 	class CEffect_Boss_Laser_Smoke*				m_pLaserSmoke = nullptr;

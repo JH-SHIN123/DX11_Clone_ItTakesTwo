@@ -43,7 +43,6 @@
 
 /* Yoon */
 #include "May.h"
-#include "UFO.h"
 #include "Cody.h"
 #include "Robot.h"
 #include "Rocket.h"
@@ -53,7 +52,6 @@
 #include "BigButton.h"
 #include "DummyWall.h"
 #include "SpaceValve.h"
-#include "MoonBaboon.h"
 #include "RobotLever.h"
 #include "RobotParts.h"
 #include "MayJumpWall.h"
@@ -72,6 +70,8 @@
 #include "RotatedNoBatterySign.h"
 
 /* Jin */
+#include "UFO.h"
+#include "MoonBaboon.h"
 #include "SplashScreen.h"
 #include "UI_Generator.h"
 #include "PipeCurve.h"
@@ -207,7 +207,9 @@ HRESULT CLoading::Assign()
 	while (m_iWorkCount > m_iCurWorkIndex)
 	{
 		if (m_ProcessingThreadList.size() >= m_iThreadCount)
+		{
 			continue;
+		}
 		else
 		{
 			_uint iWorkIndex = m_iCurWorkIndex++;
@@ -290,29 +292,28 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 	}
 	else if (2 == iThreadIndex)
 	{
-		CEffect_Generator::GetInstance()->Create_Prototype_Resource_Stage1(m_pDevice, m_pDeviceContext);
-		CEffect_Generator::GetInstance()->Load_EffectData(TEXT("../Bin/Resources/Data/EffectData/Stage1_Effect.dat"), m_pDevice, m_pDeviceContext);
-
-		/* For. Map Resources */
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Prototype_Model_Instancing_TXT(), E_FAIL);
-		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Prototype_GameObject_TXT(), E_FAIL);
+		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Se(), E_FAIL);
+		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Hye(), E_FAIL);
+		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Yoon(), E_FAIL);
+		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Jung(), E_FAIL);
 
 		__threadbreak;
 	}
 	else if (3 == iThreadIndex)
 	{
-		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Se(), E_FAIL);
-		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Hye(), E_FAIL);
+		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Jin(), E_FAIL);
 		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Taek(), E_FAIL);
-		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Yoon(), E_FAIL);
-		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Jung(), E_FAIL);
 		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Jun(), E_FAIL);
 
 		__threadbreak;
 	}
 	else if (4 == iThreadIndex)
 	{
-		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Jin(), E_FAIL);
+		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Prototype_Model_Instancing_TXT(), E_FAIL);
+		FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Prototype_GameObject_TXT(), E_FAIL);
+
+		CEffect_Generator::GetInstance()->Create_Prototype_Resource_Stage1(m_pDevice, m_pDeviceContext);
+		CEffect_Generator::GetInstance()->Load_EffectData(TEXT("../Bin/Resources/Data/EffectData/Stage1_Effect.dat"), m_pDevice, m_pDeviceContext);
 
 		__threadbreak;
 	}
@@ -437,10 +438,11 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Taek()
 	return S_OK;
 }
 
-HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon()
+HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon() 
 {
 	_matrix PivotMatrix = XMMatrixIdentity();
 
+#ifndef __MAPLOADING_OFF
 #pragma region Complete
 
 	/* Robot_Body */
@@ -531,6 +533,7 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_PipeJumpWall"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Instancing/"), TEXT("ToyBox08_Variation"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PipeJumpWall"), CPipeJumpWall::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
+#endif
 
 
 	return S_OK;
@@ -538,6 +541,7 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon()
 
 HRESULT CLoading::Create_GameObjects_SpaceStage_Jin()
 {
+#ifndef __MAPLOADING_OFF
 	_matrix PivotMatrix = XMMatrixIdentity();
 
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixTranslation(-2.f, 0.f, 0.f);
@@ -602,6 +606,8 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jin()
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.f)) * XMMatrixRotationY(XMConvertToRadians(90.f));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("MoonBaboon"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon"), CMoonBaboon::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+#endif
 
 
 	return S_OK;

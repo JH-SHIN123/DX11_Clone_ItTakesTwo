@@ -45,10 +45,6 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Cody(TEXT("Layer_Cody")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_May(TEXT("Layer_May")), E_FAIL);
 
-	/* For.Interactive Objects */
-	FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_UFO")), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
-
 #ifndef __MAPLOADING_OFF
 	/* Se */
 	FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);
@@ -379,7 +375,10 @@ HRESULT CLevel_Stage::Ready_Lights()
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
 	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
-	LightDesc.vDiffuse = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
+	//LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.vAmbient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
+
+	LightDesc.vDiffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
 	LightDesc.vAmbient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 
@@ -387,13 +386,13 @@ HRESULT CLevel_Stage::Ready_Lights()
 		return E_FAIL;
 
 #pragma region PointLight
-	//	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	//	LightDesc.vPosition = XMFLOAT3(20.f, 5.f, 20.f);
-	//	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	//	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-	//	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
-	//	LightDesc.fRange = 15.f;
-	//if (FAILED(CLight_Generator::GetInstance()->Add_Light(TEXT("Point1"), LightDesc))) return E_FAIL;
+		LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+		LightDesc.vPosition = XMFLOAT3(20.f, 5.f, 20.f);
+		LightDesc.vDiffuse = XMFLOAT4(0.f, 0.f, 1.f, 1.f);
+		LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+		LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+		LightDesc.fRange = 10.f;
+	if (FAILED(CLight_Generator::GetInstance()->Add_Light(TEXT("Point1"), LightDesc, (_uint)(EPoint_Color::Blue)))) return E_FAIL;
 #pragma endregion
 
 	/* For. Spot  X */
@@ -737,8 +736,8 @@ HRESULT CLevel_Stage::Ready_Layer_Umbrella_Joystick(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_MoonBaboon(const _tchar * pLayerTag)
 {
 	ROBOTDESC MoonBaboonDesc;
-	//MoonBaboonDesc.vPosition = { 64.f, 249.5f, 195.f, 1.f };
-	MoonBaboonDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
+	MoonBaboonDesc.vPosition = { 64.f, 249.5f, 195.f, 1.f };
+	//MoonBaboonDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon"), &MoonBaboonDesc), E_FAIL);
 	return S_OK;
 }
@@ -746,8 +745,8 @@ HRESULT CLevel_Stage::Ready_Layer_MoonBaboon(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_UFO(const _tchar * pLayerTag)
 {
 	ROBOTDESC UFODesc;
-	//UFODesc.vPosition = { 64.f, 250.f, 195.f, 1.f };
-	UFODesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
+	UFODesc.vPosition = { 64.f, 250.f, 195.f, 1.f };
+	//UFODesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UFO"), &UFODesc), E_FAIL);
 	return S_OK;
 }

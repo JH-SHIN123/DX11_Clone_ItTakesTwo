@@ -147,8 +147,8 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 
 	m_pModelCom->Set_PivotTransformation(22, matPivot);
 
-	/* 레이저는 레이저건 총구에서 나가야하기 때문에 LaserGunRing3 Bone을 사용해줌. */
-	/* LaserGun의 벡터를 사용하니까 너무 이상하게 달달거려서 안움직이는 Align 뼈를 가져와서 사용함 그래도 움직이는건 UFO 행렬이 애니메이션 돌리면서 계속 바뀌기 떄문에 그런듯 */
+	/* LaserGunRing3 뼈가 레이저 총구 ㅇㅇ */
+	/* LaserGun의 Right 벡터를 사용하니까 너무 이상하게 달달거려서 안움직이는 Align 뼈를 가져와서 사용함 그래도 움직이는건 UFO 행렬이 애니메이션 돌리면서 계속 바뀌기 떄문에 그런듯 */
 	_matrix matUFOWorld = m_pTransformCom->Get_WorldMatrix();
 	_matrix matLaserGunRing = m_pModelCom->Get_BoneMatrix("LaserGunRing3");
 	_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("Align");
@@ -224,7 +224,6 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 			m_pModelCom->Set_Animation(UFO_MH);
 			m_pModelCom->Set_NextAnimIndex(UFO_MH);
 
-			m_IsLaserCreate = true;
 			m_fWaitingTime = 0.f;
 		}
 	}
