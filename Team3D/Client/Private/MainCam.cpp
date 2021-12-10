@@ -323,7 +323,7 @@ HRESULT CMainCam::Update_Cam_ByOption_FollowingPlayer(_double dTimeDelta)
 	//}
 	//m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 20.f;
 	//m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 20.f;
-
+	  
 
 //////////
 //////////	CTransform* pPlayerTransform = m_pCody->Get_Transform();
