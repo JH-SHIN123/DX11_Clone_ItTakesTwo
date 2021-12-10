@@ -49,6 +49,8 @@ private:
 	/* For.AllPHASE */
 	_float				m_fWaitingTime = 0.f;
 	_uint				m_iPatternChangeCount = 0;
+	_uint				m_iPhaseChangeCount = 0;
+	_bool				m_IsInterActive = false;
 
 	/* For.PHASE_1 Pattern */
 	_float4				m_vStartTargetPos;
@@ -87,6 +89,14 @@ private:
 
 	/* For.PHASE_3 Pattern */
 	void Phase3_Pattern(_double dTimeDelta);
+
+private:
+	/* For.PHASE_1 End */
+	void Phase1_End(_double dTimeDelta);
+	/* For.PHASE_2 End */
+	void Phase2_End(_double dTimeDelta);
+	/* For.PHASE_3 End */
+	void Phase3_End(_double dTimeDelta);
 
 private:
 	/* For.NativeConstruct */

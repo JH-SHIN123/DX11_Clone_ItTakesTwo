@@ -83,6 +83,22 @@ _int CUFO::Tick(_double dTimeDelta)
 			Phase3_Pattern(dTimeDelta);
 			break;
 		}
+	} 
+	else
+	{
+		/* 끝 난 페이즈에 따라 컷 신이나 상호작용 진행 해 주자 */
+		switch (m_ePhase)
+		{
+		case Client::CUFO::PHASE_1:
+			Phase1_End(dTimeDelta);
+			break;
+		case Client::CUFO::PHASE_2:
+			Phase2_End(dTimeDelta);
+			break;
+		case Client::CUFO::PHASE_3:
+			Phase3_End(dTimeDelta);
+			break;
+		}
 	}
 
 	m_pModelCom->Update_Animation(dTimeDelta);
@@ -165,6 +181,9 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	{
 		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeA"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"));
 		m_IsLaserCreate = false;
+
+		/* 레이저 패턴 3번 나오면 2페이즈로 바뀐다. */
+		++m_iPhaseChangeCount;
 	}
 }
  
@@ -241,6 +260,15 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 
 void CUFO::Phase1_InterAction(_double dTimeDelta)
 {
+	/* 레이저 패턴이 3번 진행됬고 코어가 터졌다면 2페로 넘어갈 컷 신을 진행하자 */
+	if (3 == m_iPhaseChangeCount)
+	{
+		m_IsCutScene = true;
+		m_pModelCom->Set_Animation(CutScene_PowerCoresDestroyed_UFO);
+		m_pModelCom->Set_NextAnimIndex(UFO_KnockDownMH);
+		return;
+	}
+
 	/* 레이저에서 중력자 폭탄 패턴으로 변경 */
 	if (true == m_pModelCom->Is_AnimFinished(UFO_Laser_HitPod))
 	{
@@ -282,7 +310,6 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 				m_eTarget = CUFO::TARGET_MAY;
 		}
 	}
-
 }
 
 void CUFO::Phase1_Pattern(_double dTimeDelta)
@@ -295,8 +322,14 @@ void CUFO::Phase1_Pattern(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
 	{
 		m_ePattern = UFO_PATTERN::INTERACTION;
-		m_pModelCom->Set_Animation(UFO_Laser_HitPod);
-		m_pModelCom->Set_NextAnimIndex(UFO_MH);
+
+		/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
+		if (3 != m_iPhaseChangeCount)
+		{
+			m_pModelCom->Set_Animation(UFO_Laser_HitPod);
+			m_pModelCom->Set_NextAnimIndex(UFO_MH);
+		}
+
 		m_IsLaserCreate = true;
 		((CLaser_TypeA*)DATABASE->Get_LaserTypeA())->Set_Dead();
 	}
@@ -324,6 +357,36 @@ void CUFO::Phase3_Pattern(_double dTimeDelta)
 {
 }
 
+void CUFO::Phase1_End(_double dTimeDelta)
+{
+	if (m_pModelCom->Is_AnimFinished(CutScene_PowerCoresDestroyed_UFO))
+		m_IsInterActive = true;
+
+	/* 컷 신 애니메이션이 끝났다면 이제 상호작용 하자 ㅇㅇ */
+	if(true == m_IsInterActive)
+	{
+		/* 여기서 그시기 하면 되겠군 */
+		if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
+		{
+			m_pModelCom->Set_Animation(UFO_CodyHolding_Enter);
+			m_pModelCom->Set_NextAnimIndex(UFO_CodyHolding_low);
+		}
+
+		if (m_pModelCom->Is_AnimFinished(UFO_CodyHolding))
+		{
+
+		}
+	}
+}
+
+void CUFO::Phase2_End(_double dTimeDelta)
+{
+}
+
+void CUFO::Phase3_End(_double dTimeDelta)
+{
+}
+
 HRESULT CUFO::Render(RENDER_GROUP::Enum eGroup)
 {
 	CGameObject::Render(eGroup);
@@ -346,11 +409,23 @@ void CUFO::Add_LerpInfo_To_Model()
 
 	m_pModelCom->Add_LerpInfo(UFO_Laser_MH, UFO_Laser_MH, true);
 	m_pModelCom->Add_LerpInfo(UFO_Laser_MH, UFO_Laser_HitPod, true);
-
+	m_pModelCom->Add_LerpInfo(UFO_Laser_MH, CutScene_PowerCoresDestroyed_UFO, true);
 
 	m_pModelCom->Add_LerpInfo(UFO_Laser_HitPod, UFO_MH, true);
 	m_pModelCom->Add_LerpInfo(UFO_Laser_HitPod, UFO_Laser_MH, true);
 
+	m_pModelCom->Add_LerpInfo(CutScene_PowerCoresDestroyed_UFO, UFO_Laser_MH, true);
+	m_pModelCom->Add_LerpInfo(CutScene_PowerCoresDestroyed_UFO, UFO_KnockDownMH, true);
+
+	m_pModelCom->Add_LerpInfo(UFO_KnockDownMH, UFO_CodyHolding_Enter, true);
+
+	m_pModelCom->Add_LerpInfo(UFO_CodyHolding_Enter, UFO_CodyHolding_low, true);
+	m_pModelCom->Add_LerpInfo(UFO_CodyHolding_low, UFO_CodyHolding, true);
+	m_pModelCom->Add_LerpInfo(UFO_CodyHolding, UFO_CodyHolding, true);
+
+
+	m_pModelCom->Add_LerpInfo(UFO_CodyHolding, UFO_LaserRippedOff, true);
+	m_pModelCom->Add_LerpInfo(UFO_LaserRippedOff, UFO_Left, true);
 }
 
 HRESULT CUFO::Ready_Component()
