@@ -52,7 +52,7 @@ HRESULT CCody::NativeConstruct_Prototype()
 HRESULT CCody::NativeConstruct(void* pArg)
 {
 	CCharacter::NativeConstruct(pArg);
-	Ready_Component();;
+	Ready_Component();
 
 	//m_pModelCom->Set_Animation(ANI_C_MH);
 	m_pModelCom->Set_Animation(0);
@@ -174,6 +174,7 @@ void CCody::Add_LerpInfo_To_Model()
 
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Start_Fwd, ANI_C_Jump_Falling, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd, ANI_C_Jump_Falling, false);
+
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog, ANI_C_Jump_Falling, false);
 
 	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jump_Land_Jog, false);
@@ -224,6 +225,7 @@ _int CCody::Tick(_double dTimeDelta)
 
 	if (false == m_bMoveToRail && false == m_bOnRail)
 	{
+		ElectricWallJump(dTimeDelta);
 		Pipe_WallJump(dTimeDelta);
 		Wall_Jump(dTimeDelta);
 		if (Trigger_Check(dTimeDelta))
@@ -303,12 +305,6 @@ _int CCody::Tick(_double dTimeDelta)
 _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
-
-	if (m_pGameInstance->Key_Down(DIK_U))
-		UI_Create(Cody, CutSceneBar);
-
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
 
 	/* LateTick : 레일의 타겟 찾기*/
 	Find_TargetSpaceRail();
@@ -460,12 +456,18 @@ void CCody::KeyInput(_double dTimeDelta)
 	}
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 	{
-		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(true);
 	}
 	if (m_pGameInstance->Key_Down(DIK_0))/* 우산 */
 	{
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+		m_pActorCom->Set_IsPlayerInUFO(false);
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_BACKSPACE))/* 우산 */
+	{
+		m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 #pragma endregion
@@ -2072,7 +2074,6 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if ((m_eTargetGameID == GameID::ePRESS || m_eTargetGameID == GameID::ePEDAL) && false == m_bRespawn)
 		{
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-			m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
 			m_pActorCom->Update(dTimeDelta);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bRespawn = true;
@@ -2080,7 +2081,6 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if ((m_eTargetGameID == GameID::eROTATIONFAN) && false == m_bRespawn)
 		{
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-			m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
 			m_pActorCom->Update(dTimeDelta);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bRespawn = true;
@@ -2090,21 +2090,27 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			if (true == ((CElectricBox*)m_pTargetPtr)->Get_Electric())
 			{
 				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-				m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
 				m_pActorCom->Update(dTimeDelta);
 				m_pActorCom->Set_ZeroGravity(true, false, true);
 				m_bRespawn = true;
 			}
 		}
-		else if (m_eTargetGameID == GameID::eELECTRICWALL && false == m_bRespawn)
+		else if (m_eTargetGameID == GameID::eELECTRICWALL && false == m_bRespawn && m_pActorCom->Get_IsWallCollide() == true && m_bElectricWallAttach == false
+ 			&& m_IsJumping == true && m_IsFalling == false)
 		{
 			if (true == ((CElectricWall*)m_pTargetPtr)->Get_Electric())
 			{
-				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-				m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
+ 				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 				m_pActorCom->Update(dTimeDelta);
 				m_pActorCom->Set_ZeroGravity(true, false, true);
 				m_bRespawn = true;
+			}
+			else
+			{
+				m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
+				m_pActorCom->Set_ZeroGravity(true, false, true);
+				m_bElectricWallAttach = true;
 			}
 		}
 	}
@@ -2125,8 +2131,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	// Trigger 여따가 싹다모아~
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
-		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_IsInJoyStick)
-
+		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach || m_IsInJoyStick)
 		return true;
 
 	return false;
@@ -2586,6 +2591,74 @@ void CCody::Pipe_WallJump(const _double dTimeDelta)
 	}
 }
 
+void CCody::ElectricWallJump(const _double dTimeDelta)
+{
+	if (true == m_bElectricWallAttach && false == m_IsElectricWallJumping)
+	{
+		m_fElectricWallToWallSpeed = 55.f;
+		m_pActorCom->Move((-m_pTransformCom->Get_State(CTransform::STATE_UP) / 50.f), dTimeDelta);
+		if (m_pGameInstance->Key_Down(DIK_SPACE))
+		{
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_IsElectricWallJumping = true;
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_Jump);
+			m_pActorCom->Jump_Start(1.1f);
+			m_pActorCom->Set_WallCollide(false);
+		}
+	}
+
+	if (m_IsElectricWallJumping == true)
+	{
+		if (m_fElectricWallToWallSpeed <= 200.f)
+			m_fElectricWallToWallSpeed += (_float)dTimeDelta * 40.f;
+
+		PxVec3 vNormal = m_pActorCom->Get_CollideNormal();
+		_vector vWallUp = { vNormal.x, vNormal.y, vNormal.z, 0.f };
+		m_pActorCom->Move(XMVector3Normalize(vWallUp) / m_fElectricWallToWallSpeed * 1.1f, dTimeDelta);
+		m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
+
+		if (m_pModelCom->Is_AnimFinished(ANI_C_WallSlide_Jump))
+		{
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_pModelCom->Set_Animation(ANI_C_Jump_Falling);
+			m_bElectricWallAttach = false;
+			m_IsElectricWallJumping = false;
+			m_fElectricWallJumpingTime = 0.f;
+			m_fElectricWallToWallSpeed = 55.f;
+			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(179.f));
+		}
+		if (m_pActorCom->Get_IsWallCollide() == true && m_IsCollide == true)
+		{
+			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);
+			vWallUp.m128_f32[2] = 0.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(vContactPos + (vWallUp));
+			//m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bElectricWallAttach = true;
+			m_IsElectricWallJumping = false;
+			m_fElectricWallToWallSpeed = 55.f;
+			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
+		}
+		else if (m_pActorCom->Get_IsWallCollide() == true && m_IsCollide == false)
+		{
+			PxExtendedVec3 vPhysxContactPos = m_pActorCom->Get_ContactPos();
+			_vector vContactPos = XMVectorSet((_float)vPhysxContactPos.x, (_float)vPhysxContactPos.y, (_float)vPhysxContactPos.z, 1.f);
+			vWallUp.m128_f32[2] = 0.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(vContactPos + (vWallUp));
+			//m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_bElectricWallAttach = false;
+			m_IsElectricWallJumping = false;
+			m_fElectricWallToWallSpeed = 55.f;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_pActorCom->Set_WallCollide(false);
+		}
+	}
+}
+
 void CCody::Warp_Wormhole(const _double dTimeDelta)
 {
 	if (false == m_IsWarpNextStage && false == m_IsWarpDone)
@@ -2881,6 +2954,7 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 		m_eCurPlayerSize == SIZE_MEDIUM && false == m_IsDeadLine)
 	{
 		Start_SpaceRail();
+		UI_Delete(Cody, InputButton_InterActive_Rail);
 	}
 
 	if (m_bOnRail)
@@ -3087,7 +3161,7 @@ void CCody::ShowRailTargetTriggerUI()
 	}
 	else {
 		m_pGauge_Circle->Set_Active(false);
-		UI_Delete(Cody, InputButton_InterActive);
+		UI_Delete(Cody, InputButton_InterActive_Rail);
 		m_pGauge_Circle->Set_DefaultSetting();
 
 	}
@@ -3103,7 +3177,7 @@ HRESULT CCody::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 	m_pGauge_Circle = static_cast<CGauge_Circle*>(pGameObject);
 	m_pGauge_Circle->Set_SwingPointPlayerID(Player::Cody);
 	// 범위 설정
-	m_pGauge_Circle->Set_Range(10.f);
+	m_pGauge_Circle->Set_Range(20.f);
 
 	return S_OK;
 }
@@ -3281,12 +3355,15 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 		return;
 
 	m_dRespawnTime += dTimeDelta;
-	if (1.f <= m_dRespawnTime)
+	if (2.f <= m_dRespawnTime)
 	{
+		m_pActorCom->Set_ZeroGravity(false, false, false);
+		m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
+		m_pActorCom->Update(dTimeDelta);
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+
 		m_pModelCom->Set_Animation(ANI_C_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
-		m_pActorCom->Set_ZeroGravity(false, false, false);
 
 		m_bFirstCheck = false;
 		m_bRespawn = false;

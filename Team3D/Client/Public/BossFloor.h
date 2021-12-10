@@ -2,12 +2,15 @@
 #include "Dynamic_Env.h"
 
 BEGIN(Client)
-class CAlienScreen final : public CDynamic_Env
+class CBossFloor final : public CDynamic_Env
 {
 private:
-	explicit CAlienScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CAlienScreen(const CAlienScreen& rhs);
-	virtual ~CAlienScreen() = default;
+	explicit CBossFloor(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CBossFloor(const CBossFloor& rhs);
+	virtual ~CBossFloor() = default;
+
+public:
+	void Set_DoorUp(_float fMaxDistance, _float fSpeed);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -16,19 +19,27 @@ public:
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
-public:
+private:
 	virtual HRESULT Render_ShadowDepth() override;
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
-	CTextures*		m_pTextureCom = nullptr;
 
-	_float			m_fFrame = 0.f;
+	_bool			m_bGoUp = false;
+
+	_float			m_fSpeed = 0.f;
+	_float			m_fDistance = 0.f;
+	_float			m_fMaxY = 0.f;
+	_float3			m_vMaxPos = {};
+
+private:
+	void GoUp(_double dTimeDelta);
+
 private:
 	HRESULT Ready_Component(void* pArg);
 
 public:
-	static  CAlienScreen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static  CBossFloor*	  Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject*  Clone_GameObject(void* pArg) override;
 	virtual void		  Free() override;
 };

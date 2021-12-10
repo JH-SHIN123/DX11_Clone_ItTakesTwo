@@ -196,6 +196,9 @@
     <ClInclude Include="..\Public\BatteryBox.h" />
     <ClInclude Include="..\Public\BigButton.h" />
     <ClInclude Include="..\Public\BigButtonFrame.h" />
+    <ClInclude Include="..\Public\BossDoor.h" />
+    <ClInclude Include="..\Public\BossFloor.h" />
+    <ClInclude Include="..\Public\BossSlideDoor.h" />
     <ClInclude Include="..\Public\Boss_Missile.h" />
     <ClInclude Include="..\Public\Bridge.h" />
     <ClInclude Include="..\Public\ButtonIndicator.h" />
@@ -286,11 +289,13 @@
     <ClInclude Include="..\Public\Light_Generator.h" />
     <ClInclude Include="..\Public\Loading.h" />
     <ClInclude Include="..\Public\MainApp.h" />
+    <ClInclude Include="..\Public\MainCam.h" />
     <ClInclude Include="..\Public\MainCamera.h" />
     <ClInclude Include="..\Public\May.h" />
     <ClInclude Include="..\Public\MayJumpWall.h" />
     <ClInclude Include="..\Public\MayWallCameraTrigger.h" />
     <ClInclude Include="..\Public\MenuScreen.h" />
+    <ClInclude Include="..\Public\Moon.h" />
     <ClInclude Include="..\Public\MoonBaboon.h" />
     <ClInclude Include="..\Public\MoonBaboonCore.h" />
     <ClInclude Include="..\Public\MoonBaboonCore_Button.h" />
@@ -298,6 +303,8 @@
     <ClInclude Include="..\Public\MoonBaboonCore_Pillar.h" />
     <ClInclude Include="..\Public\MoonBaboonCore_Shield.h" />
     <ClInclude Include="..\Public\MoonBaboon_MainLaser.h" />
+    <ClInclude Include="..\Public\MoonBaboon_SpaceShip.h" />
+    <ClInclude Include="..\Public\MoonUFO.h" />
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_Enter.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
@@ -402,6 +409,9 @@
     <ClCompile Include="..\Private\BatteryBox.cpp" />
     <ClCompile Include="..\Private\BigButton.cpp" />
     <ClCompile Include="..\Private\BigButtonFrame.cpp" />
+    <ClCompile Include="..\Private\BossDoor.cpp" />
+    <ClCompile Include="..\Private\BossFloor.cpp" />
+    <ClCompile Include="..\Private\BossSlideDoor.cpp" />
     <ClCompile Include="..\Private\Boss_Missile.cpp" />
     <ClCompile Include="..\Private\Bridge.cpp" />
     <ClCompile Include="..\Private\ButtonIndicator.cpp" />
@@ -486,11 +496,13 @@
     <ClCompile Include="..\Private\Light_Generator.cpp" />
     <ClCompile Include="..\Private\Loading.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
+    <ClCompile Include="..\Private\MainCam.cpp" />
     <ClCompile Include="..\Private\MainCamera.cpp" />
     <ClCompile Include="..\Private\May.cpp" />
     <ClCompile Include="..\Private\MayJumpWall.cpp" />
     <ClCompile Include="..\Private\MayWallCameraTrigger.cpp" />
     <ClCompile Include="..\Private\MenuScreen.cpp" />
+    <ClCompile Include="..\Private\Moon.cpp" />
     <ClCompile Include="..\Private\MoonBaboon.cpp" />
     <ClCompile Include="..\Private\MoonBaboonCore.cpp" />
     <ClCompile Include="..\Private\MoonBaboonCore_Button.cpp" />
@@ -498,6 +510,8 @@
     <ClCompile Include="..\Private\MoonBaboonCore_Pillar.cpp" />
     <ClCompile Include="..\Private\MoonBaboonCore_Shield.cpp" />
     <ClCompile Include="..\Private\MoonBaboon_MainLaser.cpp" />
+    <ClCompile Include="..\Private\MoonBaboon_SpaceShip.cpp" />
+    <ClCompile Include="..\Private\MoonUFO.cpp" />
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_Enter.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />

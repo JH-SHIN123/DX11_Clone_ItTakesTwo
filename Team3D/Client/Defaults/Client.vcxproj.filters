@@ -105,6 +105,12 @@
     <Filter Include="02.GameObject\03.Character\03.Boss\01.MoonBaboon">
       <UniqueIdentifier>{f25b4c8e-4beb-4ec5-9404-fd56a08a7591}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\03.Character\03.Boss\02.MoonUFO">
+      <UniqueIdentifier>{45152795-cef6-48ba-bbc2-91ba64900c78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\03.Character\03.Boss\03.MoonBaboon_SpaceShip">
+      <UniqueIdentifier>{c93b2988-1a13-40fd-b9e4-34e15c40918c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\03.Character\99.Parent">
       <UniqueIdentifier>{0b5865f1-2eda-4ced-acc0-09423f134b86}</UniqueIdentifier>
     </Filter>
@@ -209,6 +215,21 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationFan_Base">
       <UniqueIdentifier>{62e5569d-d430-4309-acd2-099e16b13339}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss">
+      <UniqueIdentifier>{55288451-a733-4522-afa6-6845976853cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossDoor">
+      <UniqueIdentifier>{eb57978e-cfaa-465f-a4a8-6076c74ba3c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossFloor">
+      <UniqueIdentifier>{ab926dd4-8a3b-40a6-8f69-51573483b1a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossSlideDoor">
+      <UniqueIdentifier>{40dc88c0-0398-403b-afb3-ab3675900295}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon">
+      <UniqueIdentifier>{5b697a68-0358-4102-b02d-6330df092a73}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen">
       <UniqueIdentifier>{cb99fc26-4d07-4ee9-bdf8-b9a43ea37b0e}</UniqueIdentifier>
@@ -785,6 +806,9 @@
     <ClInclude Include="..\Public\Level_Stage.h">
       <Filter>01.Maps\03.Stage_Space</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MainCam.h">
+      <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\MainCamera.h">
       <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
     </ClInclude>
@@ -824,11 +848,17 @@
     <ClInclude Include="..\Public\Rope.h">
       <Filter>02.GameObject\03.Character\02.Items</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UFO.h">
+      <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\MoonBaboon.h">
       <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UFO.h">
-      <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
+    <ClInclude Include="..\Public\MoonUFO.h">
+      <Filter>02.GameObject\03.Character\03.Boss\02.MoonUFO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboon_SpaceShip.h">
+      <Filter>02.GameObject\03.Character\03.Boss\03.MoonBaboon_SpaceShip</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Character.h">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
@@ -910,6 +940,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\RotationFan_Base.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationFan_Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossDoor.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossDoor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossFloor.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossFloor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossSlideDoor.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossSlideDoor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Moon.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AlienScreen.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>
@@ -1417,6 +1459,9 @@
     <ClCompile Include="..\Private\Level_Stage.cpp">
       <Filter>01.Maps\03.Stage_Space</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\MainCam.cpp">
+      <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\MainCamera.cpp">
       <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
     </ClCompile>
@@ -1461,6 +1506,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\MoonBaboon.cpp">
       <Filter>02.GameObject\03.Character\03.Boss\01.MoonBaboon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonUFO.cpp">
+      <Filter>02.GameObject\03.Character\03.Boss\02.MoonUFO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboon_SpaceShip.cpp">
+      <Filter>02.GameObject\03.Character\03.Boss\03.MoonBaboon_SpaceShip</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
@@ -1542,6 +1593,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\RotationFan_Base.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\01.SpaceShip\RotationFan_Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossDoor.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossFloor.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossFloor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossSlideDoor.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\BossSlideDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Moon.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AlienScreen.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>

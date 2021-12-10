@@ -30,7 +30,8 @@ public:
 	/* For.Fuction */
 	_bool			Raycast(const PxVec3& origin, const PxVec3& unitDir, const PxReal distance, PxRaycastCallback& hitCall, PxHitFlags hitFlags = PxHitFlags(PxHitFlag::eDEFAULT), const PxQueryFilterData& filterData = PxQueryFilterData(), PxQueryFilterCallback* filterCall = NULL, const PxQueryCache* cache = NULL);
 
-	PxSphericalJoint*		Create_Joint(PxRigidActor* Actor1, PxTransform Transform1, PxRigidActor* Actor2, PxTransform Transform2);
+	PxSphericalJoint*		Create_Joint(PxRigidActor* Actor1, PxTransform Transform1, PxRigidActor* Actor2, PxTransform Transform2, PxJointLimitCone Limitcone, _bool bLimitEnabled = true);
+	PxDistanceJoint*		Create_Joint(PxRigidActor* Actor1, PxTransform Transform1, PxRigidActor* Actor2, PxTransform Transform2, _float fDistance);
 
 private:
 	PxDefaultAllocator			m_Allocator;

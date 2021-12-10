@@ -82,6 +82,7 @@ namespace Engine
 			ePEDAL,
 			eROTATIONBOX,
 			eUFORADARLEVER,
+			eMOONUFO
 		};
 	};
 

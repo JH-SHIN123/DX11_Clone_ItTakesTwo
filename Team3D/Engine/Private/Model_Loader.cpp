@@ -159,10 +159,10 @@ HRESULT CModel_Loader::Load_ModelFromFile(ID3D11Device * pDevice, ID3D11DeviceCo
 			lstrcpy(szAnimFullPath, szBasePath);
 			lstrcat(szAnimFullPath, anim_file.name);
 
+			++iAnimCount;
+
 			hFile = CreateFile(szAnimFullPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 			if (INVALID_HANDLE_VALUE == hFile) return E_FAIL;
-
-			++iAnimCount;
 
 			CAnim::ANIM_DESC AnimDesc;
 			ReadFile(hFile, &AnimDesc, sizeof(CAnim::ANIM_DESC), &dwByte, nullptr);
@@ -190,13 +190,18 @@ HRESULT CModel_Loader::Load_ModelFromFile(ID3D11Device * pDevice, ID3D11DeviceCo
 				}
 				Channels.emplace_back(pChannel);
 			}
+
 			pAnim->Bring_ChannelContainer(Channels);
 			Anims.emplace_back(pAnim);
+
 
 			CloseHandle(hFile);
 		} while (_wfindnext(hAnimFile, &anim_file) == 0);
 		_findclose(hAnimFile);
 	}
+
+
+
 
 	if (TYPE_NORMAL == eModelType)
 		static_cast<CModel*>(pModel)->Bring_Containers(pVertices, iVertexCount, pFaces, iFaceCount, Meshes, Materials, Nodes, Transformations, Anims);

@@ -92,9 +92,7 @@ void CRotationFan_Base::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 
 	/* Cody */
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-	{
 		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eELECTRICBOX, true, this);
-	}
 }
 
 void CRotationFan_Base::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
@@ -105,7 +103,7 @@ void CRotationFan_Base::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID,
 HRESULT CRotationFan_Base::Ready_Component(void * pArg)
 {
 	/* Dynamic */
-	PxGeometry* Geom = new PxBoxGeometry(1.2f, 0.1f, 1.2f);
+	PxGeometry* Geom = new PxBoxGeometry(1.15f, 0.2f, 1.15f);
 	CDynamicActor::ARG_DESC tDynamicActorArg;
 	tDynamicActorArg.pTransform = m_pTransformCom;
 	tDynamicActorArg.fDensity = 1.f;

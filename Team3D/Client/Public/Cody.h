@@ -212,6 +212,7 @@ public:
 	/* Getter */
 	CTransform*		 Get_Transform() { return m_pTransformCom; }
 	CModel*			 Get_Model() { return m_pModelCom; }
+	CPlayerActor*	 Get_Actor() { return m_pActorCom; }
 	PLAYER_SIZE		 Get_Player_Size() { return m_eCurPlayerSize; }
 	_bool			 Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool			 Get_PushingBattery() { return m_IsPushingBattery; }
@@ -432,6 +433,12 @@ private:
 	_float	m_fWallToWallSpeed = 0.55f;
 
 	/* For. WallJump */
+	_bool	m_bElectricWallAttach = false;
+	_bool   m_IsElectricWallJumping = false;
+	_float	m_fElectricWallJumpingTime = 0.f;
+	_float	m_fElectricWallToWallSpeed = 45.f;
+
+	/* For. WallJump */
 	_bool	m_bPipeWallAttach = false;
 	_bool   m_IsPipeWallJumping = false;
 	_float	m_fPipeWallJumpingTime = 0.f;
@@ -475,6 +482,7 @@ private:
 	void Hook_UFO(const _double dTimeDelta);
 	void Wall_Jump(const _double dTimeDelta);
 	void Pipe_WallJump(const _double dTimeDelta);
+	void ElectricWallJump(const _double dTimeDelta);
 
 	// Á¤È£
 	void Warp_Wormhole(const _double dTimeDelta);

@@ -18,6 +18,9 @@
 #include "PinBall.h"
 /* For.Tube*/
 #include "HookahTube.h"
+/* For.MoonUFO */
+#include "MoonUFO.h"
+#include "Moon.h"
 /*For.WarpGate*/
 #include "WarpGate.h"
 
@@ -149,7 +152,6 @@ void CMay::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_M_Valve_Rotate_MH, ANI_M_Valve_Rotate_R, false);
 	m_pModelCom->Add_LerpInfo(ANI_M_Valve_Rotate_R, ANI_M_Valve_Rotate_MH, false);
 
-
 	return;
 }
 
@@ -167,7 +169,7 @@ _int CMay::Tick(_double dTimeDelta)
 	KeyInput_Rail(dTimeDelta);
 	_bool Test = m_pActorCom->Get_IsOnGravityPath();
 
-	if (false == m_bMoveToRail && false == m_bOnRail)
+	if (false == m_bMoveToRail && false == m_bOnRail && false == m_IsInUFO)
 	{
 		Wall_Jump(dTimeDelta);
 		if (Trigger_Check(dTimeDelta))
@@ -214,7 +216,7 @@ _int CMay::Tick(_double dTimeDelta)
 	/* 레일타기 : 타겟을 찾지 못하면 타지않음. */
 	TakeRail(dTimeDelta);
 
-	if (true == m_bOnRail || true == m_bMoveToRail)
+	if (true == m_bOnRail || true == m_bMoveToRail || true == m_IsInUFO)
 	{
 		_vector vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		m_pActorCom->Set_Position(vPlayerPos);
@@ -237,6 +239,9 @@ _int CMay::Late_Tick(_double dTimeDelta)
 	Find_TargetSpaceRail();
 	ShowRailTargetTriggerUI();
 	Clear_TagerRailNodes();
+
+	/* 메이 UFO탔을 때 */
+	InUFO(dTimeDelta);
 
 	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine)
 		return NO_EVENT;
@@ -359,6 +364,8 @@ void CMay::KeyInput(_double dTimeDelta)
 	_bool bRoll = false;
 
 #pragma endregion
+	if (m_pGameInstance->Key_Down(DIK_U))/* 메이 우주선 태우기 */
+		Set_UFO(true);
 
 	//if (m_pGameInstance->Key_Down(DIK_Y))/* 3층 */
 	//	m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
@@ -1974,6 +1981,45 @@ void CMay::PinBall(const _double dTimeDelta)
 	}
 }
 
+void CMay::InUFO(const _double dTimeDelta)
+{
+	if (false == m_IsInUFO)
+		return;
+	 
+	if (m_pGameInstance->Key_Down(DIK_Y))/* 메이 우주선 내리기 */
+		Set_UFO(false);
+
+	/* UFO의 월드를 적용 */
+	CTransform* pUFOTransform = ((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform();
+
+	_vector vPosition = pUFOTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vUp		  = XMVector3Normalize(pUFOTransform->Get_State(CTransform::STATE_UP));
+	_vector vRight	  = XMVector3Normalize(pUFOTransform->Get_State(CTransform::STATE_RIGHT));
+	_vector vLook	  = XMVector3Normalize(pUFOTransform->Get_State(CTransform::STATE_LOOK));
+
+	/* Offset */
+	vPosition -= (vUp * 9.3f);
+	vPosition += (vRight * 2.5f);
+
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+}
+
+void CMay::Set_UFO(_bool bCheck)
+{
+	/* 중력끄고, 충돌끄고 */
+	m_IsInUFO = bCheck;
+	m_pActorCom->Set_ZeroGravity(bCheck, false, bCheck);
+	m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, bCheck);
+
+	m_pModelCom->Set_Animation(ANI_M_MH);
+	m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+
+	((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Set_MayInUFO(bCheck);
+}
+
 void CMay::Warp_Wormhole(const _double dTimeDelta)
 {
 	if (false == m_IsWarpNextStage && false == m_IsWarpDone)
@@ -2375,6 +2421,7 @@ void CMay::KeyInput_Rail(_double dTimeDelta)
 	if ((m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bOnRail && false == m_IsDeadLine)
 	{
 		Start_SpaceRail();
+		UI_Delete(May, InputButton_InterActive_Rail);
 	}
 
 	if (m_bOnRail)
@@ -2575,9 +2622,8 @@ void CMay::ShowRailTargetTriggerUI()
 	}
 	else {
 		m_pGauge_Circle->Set_Active(false);
-		UI_Delete(May, InputButton_InterActive);
+		UI_Delete(May, InputButton_InterActive_Rail);
 		m_pGauge_Circle->Set_DefaultSetting();
-
 	}
 }
 #pragma endregion
