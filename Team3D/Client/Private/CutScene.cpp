@@ -7,6 +7,8 @@
 #include"SubCamera.h"
 #include"DataStorage.h"
 #include"Film.h"
+#include"Cody.h"
+#include"May.h"
 CCutScene::CCutScene()
 {
 }
@@ -29,120 +31,140 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 	}
 	m_dTime += dTimeDelta;
 
-	
+	_bool bIsNoError = false;
 	switch (m_eCutSceneOption)
 	{
 	case Client::CCutScene::CutSceneOption::CutScene_Intro:
-		return Tick_CutScene_Intro(dTimeDelta);
+		bIsNoError =  Tick_CutScene_Intro(dTimeDelta);
+		break;
 	case CutSceneOption::CutScene_Active_GravityPath_01:
-		return Tick_CutScene_Active_GravityPath_01(dTimeDelta);
+		bIsNoError = Tick_CutScene_Active_GravityPath_01(dTimeDelta);
+		break;
 	}
-
+	if (bIsNoError == false)
+	{
+		MSG_BOX("CutScene Error");
+	}
 
 	return true;
 }
 
 _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 {
-	CPerformer* pMay = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_May_CutScene1"));
-	CPerformer* pCody = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_Cody_CutScene1"));
-	_float3 vMayPos = pMay->Get_Pos();
-	_float3 vCodyPos = pCody->Get_Pos();
-	_float3 vCodyScale = pCody->Get_Scale();
-	
-	if (m_dTime >= 88.55) //아이템 얻으러감
+	if (m_iCutSceneTake == 0)
 	{
-		vMayPos = (_float3(62.8f, 0.15f, 0.3f));
-		vCodyPos = _float3(63.9f, 0.2f, 0.9f);
-	}	
-	//97벨트달기
-	_float fCurCodySize = 1.f;
-	_float fCodyChangeSpeed = 4.f;
-	_float3 vTargetCodyPos = vCodyPos;
-	if (m_dTime >= 100.0)//코디 사이즈키우기 L 5
-	{
-		m_eCurCodySize = CCody::PLAYER_SIZE::SIZE_LARGE;
-
-	}
-	if (m_dTime >= 103.8)//코디 사이즈키우기 S 0.1
-	{
-		m_eCurCodySize = CCody::PLAYER_SIZE::SIZE_SMALL;
-
-	}
-	if (m_dTime >= 108.8f)//코디 사이즈키우기 L
-	{
-		m_eCurCodySize = CCody::PLAYER_SIZE::SIZE_LARGE;
-
-	}
-	if (m_dTime >= 111.f)//코디 사이즈키우기 S
-	{
-		m_eCurCodySize = CCody::PLAYER_SIZE::SIZE_SMALL;
-
-	}
-	//118.8 
-	//벨트 리모컨달기
-
-	if (m_dTime >= 116.8f)//코디 사이즈키우기 M 1
-	{
-		m_eCurCodySize = CCody::PLAYER_SIZE::SIZE_MEDIUM;
-
-	}
-	//124.7 메이 부츠달기
-
-	if (m_eCurCodySize != m_ePreCodySize)
-	{
-		m_fCodySizingTime += dTimeDelta;
-		_vector vPreCodySize,vPreCodyPos;
-		switch (m_ePreCodySize)
+		if (m_dTime >= 88.5f)
 		{
-			case Client::CCody::SIZE_SMALL:
-				vPreCodySize=	XMVectorSet(0.1f, 0.1f, 0.1f, 0.f);
-				vPreCodyPos =	XMVectorSet(65.f, 0.2f, 0.3f, 1.f);
-				break;
-			case Client::CCody::SIZE_MEDIUM:
-				vPreCodySize = XMVectorSet(1.f, 1.f, 1.f, 0.f);
-				vPreCodyPos = XMVectorSet(62.8f, 0.15f, 0.3f, 1.f);
-				break;
-			case Client::CCody::SIZE_LARGE:
-				vPreCodySize = XMVectorSet(5.f, 5.f, 5.f, 0.f);
-				vPreCodyPos = XMVectorSet(57.8f, -8.1f, 3.5f, 1.f);
-				break;
+			CPerformer* pMay = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_May_CutScene1"));
+			CPerformer* pCody = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_Cody_CutScene1"));
+
+			_float3 vMayPos = _float3(62.8f, 0.15f, 0.3f);
+			_float3 vCodyPos = _float3(63.9f, 0.2f, 0.9f);
+			pCody->Set_Position(vCodyPos);
+			pMay->Set_Position(vMayPos);
+			m_iCutSceneTake++;
 		}
-		switch (m_eCurCodySize)
-		{
-			case Client::CCody::SIZE_SMALL:
-			{
-				XMStoreFloat3(&vCodyScale,XMVectorLerp(vPreCodySize,XMVectorSet(0.1f, 0.1f, 0.1f, 0.f),m_fCodySizingTime));
-				XMStoreFloat3(&vCodyPos, XMVectorLerp(vPreCodyPos, XMVectorSet(65.f, 0.2f, 0.3f, 1.f), m_fCodySizingTime));
-			}
-				break;
-			case Client::CCody::SIZE_MEDIUM:
-			{
-				XMStoreFloat3(&vCodyScale, XMVectorLerp(vPreCodySize, XMVectorSet(1.f, 1.f, 1.f, 0.f), m_fCodySizingTime));
-				XMStoreFloat3(&vCodyPos, XMVectorLerp(vPreCodyPos, XMVectorSet(62.8f, 0.15f, 0.3f, 1.f), m_fCodySizingTime));
-			}
-				break;
-			case Client::CCody::SIZE_LARGE:
-			{
-				XMStoreFloat3(&vCodyScale, XMVectorLerp(vPreCodySize, XMVectorSet(5.f, 5.f, 5.f, 0.f), m_fCodySizingTime));
-				XMStoreFloat3(&vCodyPos, XMVectorLerp(vPreCodyPos, XMVectorSet(57.8f, -8.1f, 3.5f, 1.f), m_fCodySizingTime));
-			}
-				break;
-		}
-		if(m_fCodySizingTime >= 1.f)
-			m_ePreCodySize = m_eCurCodySize;
 	}
-	else 
-		m_fCodySizingTime = 0.f;
-	if (m_dTime >= 128.51)
+	else if (m_iCutSceneTake == 1) //토이박스쪽으로 가서
 	{
-		vCodyPos = _float3(65.0f, 0.2f, 1.1f);
-		vMayPos = _float3(63.5f, 0.15f, 0.3f);
+		if (m_dTime >= 97.0)
+		{
+		//97벨트달기
+			//_matrix BoneMatrix = ((CCody*)DATABASE->GetCody())->Get_Model()->Get_BoneMatrix("Hips");
+			//_matrix matWorld =  BoneMatrix * 벨트또는플레이어 월드;
+			// m_pTransformCom->Set_WorldMatrix(matWorld);
+			CPerformer* pBelt = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_SizeBeltCutScene1"));
+			pBelt->Start_Perform(0, 0);
+			if (false == pBelt->Get_IsAlreadyOnParentBone())
+			{
+				if (nullptr == pBelt)
+					return false;
+				CPerformer* pCody = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_Cody_CutScene1"));
+				pBelt->Set_TransformToParentBone(pCody->Get_Transform(),pCody->Get_Model(),"Hips");
+			}
+
+		}
+		if (m_dTime >= 100.0)//코디 사이즈키우기 L 5
+		{
+			CPerformer* pCody = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_Cody_CutScene1"));
+			pCody->Set_Scale(_float3(5.f, 5.f, 5.f));
+
+			m_iCutSceneTake++;
+		}
 	}
+	else if (m_iCutSceneTake == 2)
+	{
+		if (m_dTime >= 103.8)//코디 사이즈키우기 S 0.1
+		{
+			CPerformer* pCody = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_Cody_CutScene1"));
+			pCody->Set_Scale(_float3(0.1f, 0.1f, 0.1f));
+			m_iCutSceneTake++;
+		}
+	}
+	else if (m_iCutSceneTake == 3)
+	{
+		if (m_dTime >= 108.8f)//코디 사이즈키우기 L
+		{
+			CPerformer* pCody = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_Cody_CutScene1"));
+			pCody->Set_Scale(_float3(5.f, 5.f, 5.f));
+			m_iCutSceneTake++;
+		}
+	}
+	else if (m_iCutSceneTake == 4)
+	{
+		if (m_dTime >= 111.f)//코디 사이즈키우기 S
+		{
+			CPerformer* pCody = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_Cody_CutScene1"));
+			pCody->Set_Scale(_float3(0.1f, 0.1f, 0.1f));
+			m_iCutSceneTake++;
+		}
+	}
+	else if (m_iCutSceneTake == 5)
+	{
+		if (m_dTime >= 116.8f)//코디 사이즈키우기 M 1
+		{
+			CPerformer* pCody = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_Cody_CutScene1"));
+			pCody->Set_Scale(_float3(1.f, 1.f, 1.f));
+			m_iCutSceneTake++;
+		}
+	}
+	else if (m_iCutSceneTake == 6)
+	{
+		//118.8 
+		//벨트 리모컨달기 ~코디로 진행
+		if (m_dTime >= 118.8f)
+		{
+			m_iCutSceneTake++;
+		}
 	
-	pCody->Set_Position(vCodyPos);
-	pCody->Set_Scale(vCodyScale);
-	pMay->Set_Position(vMayPos);
+	}
+	else if (m_iCutSceneTake == 7)
+	{
+		//124.7 메이 부츠달기 ~메이로진행
+		if (m_dTime == 124.7)
+		{
+			m_iCutSceneTake++;
+		}
+	}
+	else if (m_dTime >= 128.51)
+		{
+			((CCody*)DATABASE->GetCody())->Set_Position(XMVectorSet(65.0f, 0.2f, 1.1f,1.f));
+			((CMay*)DATABASE->GetCody())->Set_Position(XMVectorSet(63.5f, 0.15f, 0.3f,1.f));
+		}
+
+	//		case Client::CCody::SIZE_SMALL:
+	//			vPreCodySize=	XMVectorSet(0.1f, 0.1f, 0.1f, 0.f);
+	//			vPreCodyPos =	XMVectorSet(65.f, 0.2f, 0.3f, 1.f);
+	//			break;
+	//		case Client::CCody::SIZE_MEDIUM:
+	//			vPreCodySize = XMVectorSet(1.f, 1.f, 1.f, 0.f);
+	//			vPreCodyPos = XMVectorSet(62.8f, 0.15f, 0.3f, 1.f);
+	//			break;
+	//		case Client::CCody::SIZE_LARGE:
+	//			vPreCodySize = XMVectorSet(5.f, 5.f, 5.f, 0.f);
+	//			vPreCodyPos = XMVectorSet(57.8f, -8.1f, 3.5f, 1.f);
+	//			break;
+
 	return true;
 }
 

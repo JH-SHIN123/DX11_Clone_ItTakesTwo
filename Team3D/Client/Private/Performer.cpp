@@ -40,6 +40,9 @@ HRESULT CPerformer::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&m_tDesc.vScale));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_tDesc.vPosition), 1.f));
 
+	
+	
+
 	m_pModelCom->Set_Animation(0);
 	return S_OK;
 }
@@ -48,17 +51,24 @@ _int CPerformer::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	_matrix matWorld = XMMatrixIdentity();
 
-	matWorld = XMMatrixScaling(m_tDesc.vScale.x, m_tDesc.vScale.y, m_tDesc.vScale.z) *
-		XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_tDesc.vRot.z), XMConvertToRadians(m_tDesc.vRot.x), XMConvertToRadians(m_tDesc.vRot.y))*
-		XMMatrixTranslation(m_tDesc.vPosition.x, m_tDesc.vPosition.y, m_tDesc.vPosition.z);
-	m_pTransformCom->Set_WorldMatrix(matWorld);
+	if (m_bIsOnParentBone)
+	{
+		_matrix matPar = m_pParentModel->Get_BoneMatrix(m_szParentBoneTag);
+		matPar.r[3] = m_pParentTransform->Get_State(CTransform::STATE_POSITION);
+		m_pTransformCom->Set_WorldMatrix(XMMatrixScaling(100.f, 100.f, 100.f) * matPar);
+	}
+	else
+	{
+		_matrix matWorld = XMMatrixIdentity();
 
-
+		matWorld = XMMatrixScaling(m_tDesc.vScale.x, m_tDesc.vScale.y, m_tDesc.vScale.z) *
+			XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_tDesc.vRot.z), XMConvertToRadians(m_tDesc.vRot.x), XMConvertToRadians(m_tDesc.vRot.y))*
+			XMMatrixTranslation(m_tDesc.vPosition.x, m_tDesc.vPosition.y, m_tDesc.vPosition.z);
+		m_pTransformCom->Set_WorldMatrix(matWorld);
+	}
 	
-
-	m_pModelCom->Update_Animation(dTimeDelta/*CCutScenePlayer::GetInstance()->Get_TimeDelta()*/);
+	m_pModelCom->Update_Animation(m_bStartAnim ? dTimeDelta : 0.0/*CCutScenePlayer::GetInstance()->Get_TimeDelta()*/);
 
 	return NO_EVENT;
 }
@@ -86,6 +96,15 @@ HRESULT CPerformer::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom->Render_Model(0);
 
 	return S_OK;
+}
+
+void CPerformer::Set_TransformToParentBone(CTransform* pParentTransform, CModel * pParentModel, const char* szBoneTag)
+{
+	m_bStartAnim = false;
+	m_pParentTransform = pParentTransform;
+	m_bIsOnParentBone = true;
+	m_pParentModel = pParentModel;
+	strcpy_s(m_szParentBoneTag, szBoneTag);
 }
 
 void CPerformer::Start_Perform(_uint iAnimIdx, _double dAnimTime)

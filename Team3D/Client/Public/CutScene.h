@@ -46,10 +46,14 @@ private:
 
 	//For.Intro
 	_float m_fCodySizingTime = 0.f;
-	CCody::PLAYER_SIZE m_eCurCodySize = CCody::PLAYER_SIZE::SIZE_MEDIUM;
-	CCody::PLAYER_SIZE m_ePreCodySize = CCody::PLAYER_SIZE::SIZE_MEDIUM;
+	_uint	m_iCutSceneTake = 0;
+	
+	
 	//For.Active_GravityPipe_01
 	_bool m_bIsStartFilm = false;
+
+
+
 public:
 	static CCutScene* Create(CutSceneOption eOption);
 	virtual void Free() override;
