@@ -242,7 +242,7 @@ HRESULT CCutScene::Start_CutScene_Intro()
 
 
 
-	static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Start_Film(L"Film_Begin_Game");
+	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_Begin_Game");
 	
 
 	return S_OK;

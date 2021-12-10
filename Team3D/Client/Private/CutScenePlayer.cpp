@@ -43,7 +43,7 @@ HRESULT CCutScenePlayer::Add_Performer(const _tchar * pPerformerTag, CGameObject
 		pPerformerTag == nullptr ||
 		Find_Performer(pPerformerTag) != nullptr)
 		return E_FAIL;
-
+	Safe_AddRef(pPerformer);
 	m_Performers.emplace(PERFORMERS::value_type(pPerformerTag, pPerformer));
 
 	return S_OK;
@@ -113,8 +113,8 @@ CCutScene * CCutScenePlayer::Find_CutScene(const _tchar * pCutSceneTag)
 }
 void CCutScenePlayer::Free()
 {
-	//for (auto& rPair : m_Performers)
-	//	Safe_Release(rPair.second);
+	for (auto& rPair : m_Performers)
+		Safe_Release(rPair.second);
 	m_Performers.clear();
 	for (auto& rPair : m_CutScenes)
 		Safe_Release(rPair.second);

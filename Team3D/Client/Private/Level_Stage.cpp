@@ -100,7 +100,7 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	CLevel::Tick(dTimedelta);
 
 
-	CCutScenePlayer::GetInstance()->Tick_CutScene(dTimedelta);
+
 #ifdef __TEST_TAEK
 	TCHAR lightTag[256] = L"";
 

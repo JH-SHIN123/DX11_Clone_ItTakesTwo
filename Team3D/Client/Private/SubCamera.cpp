@@ -4,6 +4,7 @@
 #include "PlayerActor.h"
 #include "May.h"
 #include "CameraActor.h"
+#include"CutScenePlayer.h"
 
 CSubCamera::CSubCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
@@ -57,6 +58,8 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 
 _int CSubCamera::Tick(_double dTimeDelta)
 {
+	CCutScenePlayer::GetInstance()->Tick_CutScene(dTimeDelta);
+
 	if (false == m_bStart)
 	{
 		m_pTargetObj = CDataStorage::GetInstance()->GetMay();

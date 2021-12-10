@@ -28,7 +28,9 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 
 CCam_Helper::CamHelperState CCam_Helper::Tick(_double TimeDelta, CFilm::ScreenType eScreenTypeIdx)
 {
-	if (m_bIsPlayingAct[eScreenTypeIdx])
+	if (m_bIsSeeCamNode[eScreenTypeIdx])
+		m_eState[eScreenTypeIdx] = CamHelperState::Helper_SeeCamNode;
+	else if (m_bIsPlayingAct[eScreenTypeIdx])
 	{
 		if (!m_pCurFilm[eScreenTypeIdx]->Get_IsEnd(eScreenTypeIdx))
 			m_eState[eScreenTypeIdx] = CamHelperState::Helper_Act;
@@ -38,8 +40,6 @@ CCam_Helper::CamHelperState CCam_Helper::Tick(_double TimeDelta, CFilm::ScreenTy
 			m_eState[eScreenTypeIdx] = CamHelperState::Helper_None;
 		}
 	}
-	else if (m_bIsSeeCamNode[eScreenTypeIdx])
-		m_eState[eScreenTypeIdx] = CamHelperState::Helper_SeeCamNode;
 	else
 		m_eState[eScreenTypeIdx] = CamHelperState::Helper_None;
 
@@ -145,13 +145,19 @@ void CCam_Helper::SeeCamNode(CFilm::CamNode * pCamNode, CFilm::ScreenType eScree
 
 _fmatrix CCam_Helper::Get_CamNodeMatrix(CTransform* pCamTransform, _double dTimeDelta, CFilm::ScreenType eScreenTypeIdx)
 {
+
+	if (m_fCamNodeLerpTime[eScreenTypeIdx] >= 1.f)
+	{
+		m_bIsSeeCamNode[eScreenTypeIdx] = false;
+		return XMLoadFloat4x4(&m_matCamNode[eScreenTypeIdx]);
+	}
 	m_fCamNodeLerpTime[eScreenTypeIdx] += (_float)dTimeDelta;
 	_matrix matNode = XMLoadFloat4x4(&m_matCamNode[eScreenTypeIdx]);
 	_vector vNodePos = matNode.r[3];
 	_matrix matWorld = pCamTransform->Get_WorldMatrix();
 	_matrix matNext = matNode;
 
-
+	
 	_vector	  vPreRight = matWorld.r[0], vNextRight = matNext.r[0]
 		, vPreUp = matWorld.r[1], vNextUp = matNext.r[1]
 		, vPreLook = matWorld.r[2], vNextLook = matNext.r[2]
@@ -169,10 +175,6 @@ _fmatrix CCam_Helper::Get_CamNodeMatrix(CTransform* pCamTransform, _double dTime
 	matCurWorld.r[3] = vCurPos;
 
 
-	if (m_fCamNodeLerpTime[eScreenTypeIdx] >= 1.f)
-	{
-		m_bIsSeeCamNode[eScreenTypeIdx] = false;
-	}
 	return matCurWorld;
 }
 

@@ -36,7 +36,7 @@ public:
 	void Set_Position(_float3 vPos) { m_tDesc.vPosition = vPos; }
 	void Set_Scale(_float3 vScale) { m_tDesc.vScale = vScale; }
 
-	void Start_Perform();
+	void Start_Perform(_uint iAnimIdx = 0 , _double dAnimTime = 0.f);
 	void Finish_Perform();
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
