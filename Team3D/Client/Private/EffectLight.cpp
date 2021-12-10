@@ -34,6 +34,7 @@ HRESULT CEffectLight::NativeConstruct(const _tchar* pLightTag, const LIGHT_DESC&
 
 	// Set Effect
 	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(fEffectRadius, 0.25f, 1.f, LightDesc.vPosition, (EPoint_Color)eEffectColor), (CGameObject**)&m_pEffect), E_FAIL);
+	m_pEffect->Set_Radius(fEffectRadius);
 
 	return S_OK;
 }
