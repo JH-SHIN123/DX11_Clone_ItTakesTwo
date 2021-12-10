@@ -45,7 +45,7 @@
 #include "Sky.h"
 #include "ToyBoxButton.h"
 #include "MoonBaboonCore.h"
-#include "MoonBaboon_MainLaser.h"
+
 #include "SpaceRail.h"
 
 /* Yoon */
@@ -95,6 +95,7 @@
 #include "UmbrellaBeam_Base.h"
 #include "UmbrellaBeam_Stand.h"
 #include "UmbrellaBeam_Joystick.h"
+#include "MoonBaboon_MainLaser.h"
 
 /* Jun */
 #include "MainCamera.h"
