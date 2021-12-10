@@ -73,7 +73,7 @@ HRESULT CUFORadarScreen::Render(RENDER_GROUP::Enum eGroup)
 
 	iMaterialIndex = 2;
 	m_pModelCom->Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, 0);
-	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 12, false, eGroup);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 15, false, eGroup);
 
 	return S_OK;
 }

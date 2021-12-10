@@ -125,7 +125,7 @@ HRESULT CHookUFO::Render(RENDER_GROUP::Enum eGroup)
 	iMaterialIndex = 0;
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
 	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
-	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 11, false, eGroup);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 14, false, eGroup);
 
 	iMaterialIndex = 1;
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);

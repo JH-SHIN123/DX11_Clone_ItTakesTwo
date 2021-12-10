@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Space_Valve_Star.h"
 #include "DataStorage.h"
+#include "Space_Valve_Door.h"
 
 CSpace_Valve_Star::CSpace_Valve_Star(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -30,9 +31,7 @@ HRESULT CSpace_Valve_Star::NativeConstruct(void * pArg)
 		m_fRotateAngle_Powwer[i] = 0.f;
 
 		if (i % 2 == 1)
-		{
 			m_fRotateAngle[i] = -0.75f;
-		}
 	}
 
 	return S_OK;
@@ -54,14 +53,8 @@ _int CSpace_Valve_Star::Late_Tick(_double TimeDelta)
 {
 	if (0 < m_pModelInstanceCom_Star->Culling())
 	{
-		if (0 < m_pModelCom_Door_R->Culling(m_pTransformCom_Base->Get_State(CTransform::STATE_POSITION), 10.f))
-		{
-			if (0 < m_pModelCom_Door_L->Culling(m_pTransformCom_Base->Get_State(CTransform::STATE_POSITION), 10.f))
-			{
-				if (0 < m_pModelCom_Base->Culling(m_pTransformCom_Base->Get_State(CTransform::STATE_POSITION), 10.f))
-				m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
-			}
-		}
+		if (0 < m_pModelCom_Base->Culling(m_pTransformCom_Base->Get_State(CTransform::STATE_POSITION), 10.f))
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 	}
 
 	return S_OK;
@@ -73,16 +66,6 @@ HRESULT CSpace_Valve_Star::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom_Base->Set_DefaultVariables_Perspective(m_pTransformCom_Base->Get_WorldMatrix());
 	m_pModelCom_Base->Set_DefaultVariables_Shadow();
 	m_pModelCom_Base->Render_Model(1, 0);
-
-	NULL_CHECK_RETURN(m_pModelCom_Door_R, E_FAIL);
-	m_pModelCom_Door_R->Set_DefaultVariables_Perspective(m_pTransformCom_Door_R->Get_WorldMatrix());
-	m_pModelCom_Door_R->Set_DefaultVariables_Shadow();
-	m_pModelCom_Door_R->Render_Model(11, 0);
-
-	NULL_CHECK_RETURN(m_pModelCom_Door_L, E_FAIL);
-	m_pModelCom_Door_L->Set_DefaultVariables_Perspective(m_pTransformCom_Door_L->Get_WorldMatrix());
-	m_pModelCom_Door_L->Set_DefaultVariables_Shadow();
-	m_pModelCom_Door_L->Render_Model(11, 0);
 
 	m_pModelInstanceCom_Star->Set_DefaultVariables_Perspective();
 	m_pModelInstanceCom_Star->Set_DefaultVariables_Shadow();
@@ -103,13 +86,15 @@ void CSpace_Valve_Star::SetUp_WorldMatrix(_fmatrix WorldMatrix)
 	for (_int i = 0; i < 3; ++i)
 		ParentMatrix.r[i] = XMVector3Normalize(ParentMatrix.r[i]);
 
-	m_pTransformCom_Door_R->Set_WorldMatrix(m_pTransformCom_Door_R->Get_WorldMatrix() * ParentMatrix);
-	m_pTransformCom_Door_L->Set_WorldMatrix(m_pTransformCom_Door_L->Get_WorldMatrix() * ParentMatrix);
+	m_pSpace_Valve_Door_Right->SetUp_WorldMatrix(ParentMatrix);
+	m_pSpace_Valve_Door_Left->SetUp_WorldMatrix(ParentMatrix);
+
 
 	_matrix Matrix_ValveBase = m_pTransformCom_Base->Get_WorldMatrix() * ParentMatrix;
 	m_pTransformCom_Base->Set_WorldMatrix(Matrix_ValveBase);
 }
 
+#pragma region Star_Rotate
 void CSpace_Valve_Star::Rotate_Check(_double TimeDelta)
 {
 	if (false == m_IsClear_Level)
@@ -247,12 +232,13 @@ void CSpace_Valve_Star::SetUp_Instance_World_Pos()
 
 	// 0.695
 }
-
+#pragma endregion
 void CSpace_Valve_Star::Set_Clear_Level(_bool IsClear_Level)
 {
 	m_IsClear_Level = IsClear_Level;
 
-	Open_ValveDoor();
+	m_pSpace_Valve_Door_Right->Set_Clear_Level(m_IsClear_Level);
+	m_pSpace_Valve_Door_Left->Set_Clear_Level(m_IsClear_Level);
 }
 
 void CSpace_Valve_Star::Add_Rotate_Count(_int iCount)
@@ -268,16 +254,17 @@ HRESULT CSpace_Valve_Star::Ready_Component(void* pArg)
 	m_IsCodyValve = Data.IsCody;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom_Base), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform_Door_R"), (CComponent**)&m_pTransformCom_Door_R), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform_Door_L"), (CComponent**)&m_pTransformCom_Door_L), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"),	TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE,	TEXT("Component_Model_SpaceValve_Base"), TEXT("Com_Model_Base"), (CComponent**)&m_pModelCom_Base), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE,	TEXT("Component_Model_SpaceValve_Door_Right"), TEXT("Com_Model_Door_R"), (CComponent**)&m_pModelCom_Door_R), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE,	TEXT("Component_Model_SpaceValve_Door_Left"), TEXT("Com_Model_Door_L"), (CComponent**)&m_pModelCom_Door_L), E_FAIL);
 
 	m_pTransformCom_Base->Set_State(CTransform::STATE_POSITION,	XMLoadFloat4(&m_vOffsetPos_Base));
-	m_pTransformCom_Door_R->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vOffsetPos_Door_R));
-	m_pTransformCom_Door_L->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vOffsetPos_Door_L));
+
+	CSpace_Valve_Door::ARG_DESC Arg_Desc;
+	Arg_Desc.IsCodyDoor = m_IsCodyValve;
+	Arg_Desc.eDoorType = CSpace_Valve_Door::Right_Door;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Valve_Door"), Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Door"), &Arg_Desc, (CGameObject**)&m_pSpace_Valve_Door_Right), E_FAIL);
+	Arg_Desc.eDoorType = CSpace_Valve_Door::Left_Door;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Valve_Door"), Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Door"), &Arg_Desc, (CGameObject**)&m_pSpace_Valve_Door_Left), E_FAIL);
 
 	SetUp_WorldMatrix(XMLoadFloat4x4(&Data.WorldMatrix));
 
@@ -287,14 +274,6 @@ HRESULT CSpace_Valve_Star::Ready_Component(void* pArg)
 	StaticDesc.pModel	  = m_pModelCom_Base;
 	StaticDesc.pTransform = m_pTransformCom_Base;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static_Base"), (CComponent**)&m_pStaticActCom_Bass, &StaticDesc), E_FAIL);
-
-	StaticDesc.pModel	  = m_pModelCom_Door_R;
-	StaticDesc.pTransform = m_pTransformCom_Door_R;
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static_Door_R"), (CComponent**)&m_pStaticActCom_Door_R, &StaticDesc), E_FAIL);
-
-	StaticDesc.pModel	  = m_pModelCom_Door_L;
-	StaticDesc.pTransform = m_pTransformCom_Door_L;
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static_Door_L"), (CComponent**)&m_pStaticActCom_Door_L, &StaticDesc), E_FAIL);
 
 	return S_OK;
 }
@@ -312,34 +291,6 @@ HRESULT CSpace_Valve_Star::Ready_InstanceModel_Matrix()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Generator_Star_Valve"), TEXT("Com_Model_Generator_Star_Valve"), (CComponent**)&m_pModelInstanceCom_Star, &Arg), E_FAIL);
 
 	return S_OK;
-}
-
-void CSpace_Valve_Star::Open_ValveDoor()
-{
-	if (false == m_IsOpen)
-	{
-		_float fRotateAngle = 90.f;
-		if (false == m_IsCodyValve)
-			fRotateAngle += -180.f;
-
-		_float4 vPos;
-		XMStoreFloat4(&vPos, m_pTransformCom_Door_R->Get_State(CTransform::STATE_POSITION));
-		_matrix Matrix_Door = m_pTransformCom_Door_R->Get_WorldMatrix();
-		Matrix_Door = XMMatrixRotationY(XMConvertToRadians(fRotateAngle));
-		Matrix_Door.r[3] = XMLoadFloat4(&vPos);
-		m_pTransformCom_Door_R->Set_WorldMatrix(Matrix_Door);
-		
-		XMStoreFloat4(&vPos, m_pTransformCom_Door_L->Get_State(CTransform::STATE_POSITION));
-		Matrix_Door = m_pTransformCom_Door_L->Get_WorldMatrix();
-		Matrix_Door = XMMatrixRotationY(XMConvertToRadians(-fRotateAngle));
-		Matrix_Door.r[3] = XMLoadFloat4(&vPos);
-		m_pTransformCom_Door_L->Set_WorldMatrix(Matrix_Door);
-
-		m_pStaticActCom_Door_R->Update_StaticActor();
-		m_pStaticActCom_Door_L->Update_StaticActor();
-	}
-
-	m_IsOpen = true;
 }
 
 void CSpace_Valve_Star::Rotate_Matrix(_bool IsReverseRotate, _float fAngle, _int iIndex)
@@ -387,13 +338,8 @@ void CSpace_Valve_Star::Free()
 	Safe_Release(m_pModelCom_Base);
 	Safe_Release(m_pTransformCom_Base);
 	Safe_Release(m_pStaticActCom_Bass);
-	Safe_Release(m_pModelCom_Door_R);
-	Safe_Release(m_pTransformCom_Door_R);
-	Safe_Release(m_pStaticActCom_Door_R);
-	Safe_Release(m_pModelCom_Door_L);
-	Safe_Release(m_pTransformCom_Door_L);
-	Safe_Release(m_pStaticActCom_Door_L);
-
+	Safe_Release(m_pSpace_Valve_Door_Right);
+	Safe_Release(m_pSpace_Valve_Door_Left);
 	Safe_Release(m_pModelInstanceCom_Star);
 
 	__super::Free();

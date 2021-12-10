@@ -75,15 +75,6 @@ void CEffect_Env_Particle::Set_Particle_Radius(_float3 vRadiusXYZ)
 	m_vParticleRadius.z = vRadiusXYZ.z;
 }
 
-// void CEffect_Env_Particle::Set_IsActivateParticles(_bool IsActivate)
-// {
-// 	if (true == IsActivate)
-// 		m_eStateValue_Next = CEffect_Env_Particle::STATE_START;
-// 
-// 	else
-// 		m_eStateValue_Next = CEffect_Env_Particle::STATE_DISAPPEAR;
-// }
-
 void CEffect_Env_Particle::Set_ParentMatrix(_fmatrix ParentMatrix)
 {
 	m_pTransformCom->Set_WorldMatrix(ParentMatrix);
@@ -126,7 +117,6 @@ void CEffect_Env_Particle::State_Start(_double TimeDelta)
 	_float fTimeDelta = (_float)TimeDelta;
 	_fmatrix ParentMatrix = m_pTransformCom->Get_WorldMatrix(); // NULL
 
-//  	m_dControl_Time += TimeDelta * 0.1;
  	if (1.0 <= m_dControl_Time)
  		m_dControl_Time = 1.0;
 
@@ -159,7 +149,6 @@ void CEffect_Env_Particle::State_Disappear(_double TimeDelta)
 	_float fTimeDelta = (_float)TimeDelta;
 	_fmatrix ParentMatrix = m_pTransformCom->Get_WorldMatrix();
 
-//  	m_dControl_Time -= TimeDelta * 0.1;
 	if (0.0 >= m_dControl_Time)
 	{
 		m_dControl_Time = 0.0;

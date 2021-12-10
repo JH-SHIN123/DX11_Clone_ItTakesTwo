@@ -7,7 +7,7 @@ CEffect_Player_Dead_Particle::CEffect_Player_Dead_Particle(ID3D11Device * pDevic
 }
 
 CEffect_Player_Dead_Particle::CEffect_Player_Dead_Particle(const CEffect_Player_Dead_Particle & rhs)
-	: CInGameEffect(rhs)
+	: CInGameEffect(rhs), m_vTargetPos(rhs.m_vTargetPos)
 {
 }
 
@@ -15,7 +15,8 @@ HRESULT CEffect_Player_Dead_Particle::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	//TEst
+	m_vTargetPos = { 0.f, 0.f, 0.f, 1.f };
+
 	return S_OK;
 }
 
@@ -26,18 +27,36 @@ HRESULT CEffect_Player_Dead_Particle::NativeConstruct(void * pArg)
 
 	__super::Ready_Component(pArg);
 
-	if(EFFECT_DESC_CLONE::PV_CODY >= m_EffectDesc_Clone.iPlayerValue)
+	if (EFFECT_DESC_CLONE::PV_CODY >= m_EffectDesc_Clone.iPlayerValue)
 		m_EffectDesc_Prototype.iInstanceCount = 1000;
-	else if(EFFECT_DESC_CLONE::PV_CODY_S == m_EffectDesc_Clone.iPlayerValue)
+	else if (EFFECT_DESC_CLONE::PV_CODY_S == m_EffectDesc_Clone.iPlayerValue)
 		m_EffectDesc_Prototype.iInstanceCount = 100;
 	else if (EFFECT_DESC_CLONE::PV_CODY_L == m_EffectDesc_Clone.iPlayerValue)
 		m_EffectDesc_Prototype.iInstanceCount = 5000;
 
 
-	Ready_Instance();
+	//Ready_Instance();
+	m_pModelCom = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
+	Safe_AddRef(m_pModelCom);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Dead_Cells"), TEXT("Com_Texture_Particle"), (CComponent**)&m_pTexturesCom_Particle), E_FAIL);
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody_Effect"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	// 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Dead_Cells"), TEXT("Com_Texture_Particle"), (CComponent**)&m_pTexturesCom_Particle), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Circle_Alpha"), TEXT("Com_Texture_Particle_Mask"), (CComponent**)&m_pTexturesCom_Particle_Mask), E_FAIL);
+
+	//	m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
+	//	m_pModelCom->Set_NextAnimIndex(ANI_M_Death_Fall_MH);
+	SetUp_Rand_Dir();
+
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	_vector vPos = WorldMatrix.r[3];
+	vPos += XMVector3Normalize(WorldMatrix.r[1]) * (XMVector3Length(WorldMatrix.r[1]));
+	//vPos += XMVector3Normalize(WorldMatrix.r[2]) * (XMVector3Length(WorldMatrix.r[2]) * 1.5f);
+	XMStoreFloat4(&m_vTargetPos, vPos);
+
+
+	m_fSizePower = XMVector3Length(WorldMatrix.r[0]).m128_f32[0];
+	m_vSize.x *= m_fSizePower;
+	m_vSize.y *= m_fSizePower;
 
 	return S_OK;
 }
@@ -47,14 +66,24 @@ _int CEffect_Player_Dead_Particle::Tick(_double TimeDelta)
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
 
+	//m_pModelCom->Update_Animation(TimeDelta);
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
+	m_fMoveTime += (_float)TimeDelta * 0.1f;
+	// 	m_pInstanceBuffer[0].vTextureUV = Check_UV((_float)TimeDelta, 0, false);
+	// 
+	// 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
+	// 	{
+	// 		Instance_Pos((_float)TimeDelta, iIndex);
+	// 		Instance_Size((_float)TimeDelta, iIndex);
+	// 	}
+	// 좀 더 다이나믹한 움직임을 줄 수는 없을까............
 
-	m_pInstanceBuffer[0].vTextureUV = Check_UV((_float)TimeDelta, 0, false);
-
-	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
+	m_vSize.x -= (_float)TimeDelta * 0.01f * m_fSizePower;
+	m_vSize.y -= (_float)TimeDelta * 0.01f * m_fSizePower;
+	if (0.f >= m_vSize.x)
 	{
-		Instance_Pos((_float)TimeDelta, iIndex);
-		Instance_Size((_float)TimeDelta, iIndex);
+		m_vSize.x = 0.f;
+		m_vSize.y = 0.f;
 	}
 
 	return _int();
@@ -65,24 +94,32 @@ _int CEffect_Player_Dead_Particle::Late_Tick(_double TimeDelta)
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 }
 
 HRESULT CEffect_Player_Dead_Particle::Render(RENDER_GROUP::Enum eGroup)
 {
-	SetUp_Shader_Data();
+	//SetUp_Shader_Data();
+	//
+	//_float4 vUV = { 0.f,0.f,1.f,1.f };
+	//m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vUV, sizeof(_float4));
+	//m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Particle->Get_ShaderResourceView(0));
+	//
+	//m_pPointInstanceCom->Render(4, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
+	_float4 vTextureUV_LTRB = { 0.f,0.f,1.f,1.f };
 
-	_float4 vUV = { 0.f,0.f,1.f,1.f };
-	m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vUV, sizeof(_float4));
-	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Particle_Mask->Get_ShaderResourceView(0));
-	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Particle->Get_ShaderResourceView(0));
+	m_pModelCom->Set_Variable("g_vPos", &m_vTargetPos, sizeof(_float4));
 
-	m_pPointInstanceCom->Render(4, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
+	m_pModelCom->Set_Variable("g_fTime", &m_fMoveTime, sizeof(_float));
+	m_pModelCom->Set_Variable("g_vParticleSize", &m_vSize, sizeof(_float2));
+	m_pModelCom->Set_Variable("g_vTextureUV_LTRB", &_float4(0.f, 0.f, 1.f, 1.f), sizeof(_float4));
 
+	m_pModelCom->Set_ShaderResourceView("g_MaskingTexture", m_pTexturesCom_Particle_Mask->Get_ShaderResourceView(0));
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Render_Model_VERTEX(11);
 
 	return S_OK;
 }
-
 void CEffect_Player_Dead_Particle::Instance_Size(_float TimeDelta, _int iIndex)
 {
 	m_pInstanceBuffer[iIndex].vSize.x -= TimeDelta * 0.05f;
@@ -117,10 +154,10 @@ HRESULT CEffect_Player_Dead_Particle::Ready_Instance()
 
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
-	m_pTargetModel = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
-	Safe_AddRef(m_pTargetModel);
-	VTXMESH* pVtx = m_pTargetModel->Get_Vertices();
-	_uint iVtxCount = m_pTargetModel->Get_VertexCount();
+	m_pModelCom = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
+	Safe_AddRef(m_pModelCom);
+	VTXMESH* pVtx = m_pModelCom->Get_Vertices();
+	_uint iVtxCount = m_pModelCom->Get_VertexCount();
 	_uint iRandVtx = rand() % iInstanceCount;
 	_uint iAddVtx = _int(iVtxCount / (_float)iInstanceCount);
 
@@ -145,7 +182,7 @@ HRESULT CEffect_Player_Dead_Particle::Ready_Instance()
 	for (_int i = 0; i < iInstanceCount; ++i)
 	{
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		
+
 		_int iRandSize = rand() % 3;
 		if (0 == iRandSize)
 			m_pInstanceBuffer[i].vSize = _float2(0.05f, 0.05f);
@@ -186,17 +223,17 @@ HRESULT CEffect_Player_Dead_Particle::Ready_Instance()
 		Set_VtxColor(i, iRandVtx);
 	}
 
-	Safe_Release(m_pTargetModel);
+	Safe_Release(m_pModelCom);
 
 	return S_OK;
 }
 
 _float4 CEffect_Player_Dead_Particle::Set_particleUV(_int iIndex, _int U, _int V)
 {
-	_float fLeft	= (1.f / U) *  m_pInstance_UVCount[iIndex].x;
-	_float fTop		= (1.f / V) *  m_pInstance_UVCount[iIndex].y;
-	_float fRight	= (1.f / U) * (m_pInstance_UVCount[iIndex].x + 1.f);
-	_float fBottom	= (1.f / V) * (m_pInstance_UVCount[iIndex].y + 1.f);
+	_float fLeft = (1.f / U) *  m_pInstance_UVCount[iIndex].x;
+	_float fTop = (1.f / V) *  m_pInstance_UVCount[iIndex].y;
+	_float fRight = (1.f / U) * (m_pInstance_UVCount[iIndex].x + 1.f);
+	_float fBottom = (1.f / V) * (m_pInstance_UVCount[iIndex].y + 1.f);
 
 	_float4 vUV = { fLeft, fTop, fRight, fBottom };
 
@@ -239,6 +276,16 @@ void CEffect_Player_Dead_Particle::Set_VtxColor(_int iIndex, _uint iVtxIndex)
 	}
 
 	m_pInstanceBuffer[iIndex].vTextureUV = Set_particleUV(iIndex, 4, 4);
+}
+
+void CEffect_Player_Dead_Particle::SetUp_Rand_Dir()
+{
+	for (_int i = 0; i < 256; ++i)
+	{
+		m_vDir_Array[i] = Get_Dir_Rand(_int3(100, 100, 100));
+		_vector vDir = XMLoadFloat3(&m_vDir_Array[i]) /** (_float(rand() % 100) * 0.0025f)*/;
+		XMStoreFloat3(&m_vDir_Array[i], vDir);
+	}
 }
 
 CEffect_Player_Dead_Particle * CEffect_Player_Dead_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

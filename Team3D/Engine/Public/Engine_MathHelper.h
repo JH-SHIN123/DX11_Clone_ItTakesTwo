@@ -38,6 +38,18 @@ namespace Engine
 		return vVector;
 	}
 
+	static _float4 MH_XMFloat4(PxVec3 vPxVector, _float fW)
+	{
+		_float4 vVector;
+
+		vVector.x = vPxVector.x;
+		vVector.y = vPxVector.y;
+		vVector.z = vPxVector.z;
+		vVector.w = fW;
+
+		return vVector;
+	}
+
 	static PxVec3 MH_PxVec3(_fvector vVector)
 	{
 		PxVec3 vPxVector;

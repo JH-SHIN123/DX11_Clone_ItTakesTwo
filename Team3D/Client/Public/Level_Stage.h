@@ -35,6 +35,7 @@ private:
 	HRESULT Ready_Layer_Wormhole(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_WallLaserTrap(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_GravityPipe(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Env_Particles(const _tchar* pLayerTag);
 	/* Hye */
 	HRESULT Ready_Layer_Planet(const _tchar* pLayerTag);
 	/* Taek */

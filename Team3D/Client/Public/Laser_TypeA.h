@@ -14,15 +14,13 @@ private:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-	virtual _int	Tick(_double TimeDelta) override;
-	virtual _int	Late_Tick(_double TimeDelta) override;
+	virtual _int	Tick(_double dTimeDelta) override;
+	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eRender) override;
 	virtual HRESULT Render_ShadowDepth() override;
 
 private:
-	class CCharacter*	m_pCody = nullptr;
-	class CCharacter*	m_pMay = nullptr;
-	GameID::Enum		m_eTargetID;
+	_double m_dChargingTime = 0.0;
 
 public:
 	static CLaser_TypeA* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
