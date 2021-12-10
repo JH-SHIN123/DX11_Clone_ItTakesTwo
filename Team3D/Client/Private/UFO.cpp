@@ -272,6 +272,14 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(UFO_Laser_MH);
 
 			m_fWaitingTime = 0.f;
+
+			++m_iPatternChangeCount;
+
+			/* 레이저 패턴으로 바뀔 때 메이 <-> 코디 순으로 타겟 바꿔주자 */
+			if (m_iPatternChangeCount % 2)
+				m_eTarget = CUFO::TARGET_CODY;
+			else
+				m_eTarget = CUFO::TARGET_MAY;
 		}
 	}
 

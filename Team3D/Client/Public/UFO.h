@@ -48,6 +48,7 @@ private:
 
 	/* For.AllPHASE */
 	_float				m_fWaitingTime = 0.f;
+	_uint				m_iPatternChangeCount = 0;
 
 	/* For.PHASE_1 Pattern */
 	_float4				m_vStartTargetPos;
