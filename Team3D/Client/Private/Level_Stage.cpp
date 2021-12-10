@@ -193,6 +193,9 @@ HRESULT CLevel_Stage::Ready_Test()
 	tDesc.WorldMatrix._43 = 30.f;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore"), &tDesc), E_FAIL);
 
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_BOMB", Level::LEVEL_STAGE, TEXT("GameObject_3D_Boss_Gravitational_Bomb")), E_FAIL);
+
 #endif
 
 	/* Hye */

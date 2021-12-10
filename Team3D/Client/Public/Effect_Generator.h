@@ -25,6 +25,8 @@ enum class Effect_Value
 	BossCore_Explosion,
 	BossCore_Lightning,
 	BossCore_Lightning_Big,
+	BossBomb,
+	BossBomb_Pillar,
 	Effect_Value_End
 };
 

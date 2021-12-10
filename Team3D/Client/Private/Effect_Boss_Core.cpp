@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Boss_Core.h"
 #include "Effect_Generator.h"
+
 CEffect_Boss_Core::CEffect_Boss_Core(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
@@ -67,16 +68,19 @@ _int CEffect_Boss_Core::Tick(_double TimeDelta)
 		m_pInstanceBuffer->vTextureUV = Check_UV();
 	}
 
-	/*GARA*/if (m_pGameInstance->Key_Down(DIK_V))
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Hit, m_pTransformCom->Get_WorldMatrix());
-	/*GARA*/if (m_pGameInstance->Key_Down(DIK_B))
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Explosion, m_pTransformCom->Get_WorldMatrix());
-	/*GARA*/if (m_pGameInstance->Key_Down(DIK_N))
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Lightning, m_pTransformCom->Get_WorldMatrix());
-	/*GARA*/if (m_pGameInstance->Key_Down(DIK_M))
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Smoke, m_pTransformCom->Get_WorldMatrix());
-	/*GARA*/if (m_pGameInstance->Key_Down(DIK_COMMA))
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Lightning_Big, m_pTransformCom->Get_WorldMatrix());
+// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_V))
+// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Hit, m_pTransformCom->Get_WorldMatrix());
+// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_B))
+// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Explosion, m_pTransformCom->Get_WorldMatrix());
+// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_N))
+// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Lightning, m_pTransformCom->Get_WorldMatrix());
+// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_M))
+// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Smoke, m_pTransformCom->Get_WorldMatrix());
+// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_COMMA))
+// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Lightning_Big, m_pTransformCom->Get_WorldMatrix());
+
+ 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_V))
+ 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Pillar, m_pTransformCom->Get_WorldMatrix());
 
 	return _int();
 }

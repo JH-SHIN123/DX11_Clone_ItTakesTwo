@@ -33,6 +33,8 @@
 #include "Effect_Env_Particle_Field.h"
 #include "Effect_Boss_Core_Lightning.h"
 #include "Effect_Boss_Core_Lightning_Big.h"
+#include "Effect_Boss_Gravitational_Bomb.h"
+#include "Effect_Boss_Gravitational_Bomb_Pillar.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -122,12 +124,18 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::BossCore_Lightning_Big:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_Core_Lightning_Big");
 		break;
+	case Effect_Value::BossBomb:
+		lstrcpy(szPrototype, L"GameObject_3D_Boss_Gravitational_Bomb");
+		break;
+	case Effect_Value::BossBomb_Pillar:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Gravitational_Bomb_Pillar");
+		break;
 	default:
 		break;
 	}
 
 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
-	//
+	
 	return S_OK;
 }
 
@@ -195,6 +203,21 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 		Create_Prototype(Data->iLevelIndex, Data->EffectName, pDevice, pDeviceContext, Data);
 		Safe_Delete(Data);
 	}
+
+// 	_float3 vScale = { 0.002f, 0.002f, 0.002f };
+// 	_float3 vRotate = { -90.f, 0.f, 0.f };
+// 
+// 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE,TEXT("Component_Model_Boss_Gravitational_Bomb")
+// 		, CModel::Create(pDevice, pDeviceContext, TEXT("../Bin/Resources/Effect/3D/")
+// 			, TEXT("Boss_Gravitational_Bomb"), TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", 1
+// 			, Compute_Pivot(XMLoadFloat3(&vScale), XMLoadFloat3(&vRotate)))), E_FAIL);
+// 
+// 	EFFECT_DESC_PROTO Data;
+// 	lstrcpy(Data.ModelName ,		 TEXT("Component_Model_Boss_Gravitational_Bomb"));
+// 	lstrcpy(Data.TextureName,		 TEXT("Component_Texture_Tilling_Cloud"));
+// 	lstrcpy(Data.TextureName_Second, TEXT(""));
+// 
+// 	m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_3D_Boss_Gravitational_Bomb", CEffect_Boss_Gravitational_Bomb::Create(pDevice, pDeviceContext, &Data));
 
 	CloseHandle(hFile);
 
@@ -276,6 +299,9 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Core_Lightning_Big"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Core_Lightning_Big", CEffect_Boss_Core_Lightning_Big::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Gravitational_Bomb_Pillar"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Gravitational_Bomb_Pillar", CEffect_Boss_Gravitational_Bomb_Pillar::Create(pDevice, pDeviceContext, pData));
+
 
 	// 3D Effect
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
@@ -292,6 +318,9 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Umbrella_Pipe"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Umbrella_Pipe", CEffect_Umbrella_Pipe::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Boss_Gravitational_Bomb"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Boss_Gravitational_Bomb", CEffect_Boss_Gravitational_Bomb::Create(pDevice, pDeviceContext, pData));
 
 	else
 	{
