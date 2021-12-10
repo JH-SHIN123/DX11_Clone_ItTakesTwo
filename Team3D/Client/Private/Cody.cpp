@@ -2113,7 +2113,6 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		m_pActorCom->Set_Position(vOffSetPosition);
 		m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);
 		m_IsInJoyStick = true;
-
 	}
 
 	// Trigger 여따가 싹다모아~
