@@ -27,8 +27,11 @@ public:
 	 void Movement(_double dTimeDelta);
 
  private:
-	 _float m_fSizeX = 0.f;
-	 _float m_fSizeY = 0.f;
+	 _float m_fInitialX = 0.f;
+	 _float m_fInitialY = 0.f;
+
+	 _float m_fMoveX = 0.f;
+	 _float m_fMoveY = 0.f;
 
 private:
 	CVIBuffer_Rect*					m_pVIBufferCom = nullptr;

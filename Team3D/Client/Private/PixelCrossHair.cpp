@@ -34,6 +34,11 @@ HRESULT CPixelCrossHair::NativeConstruct(void * pArg)
 	if (nullptr != pArg)
 	{
 		_vector* vPosition = (_vector*)pArg;
+		// 최초 X세팅
+		// 최초 Y세팅
+		m_fInitialX = (*vPosition).m128_f32[0];
+		m_fInitialY = (*vPosition).m128_f32[1];
+
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, *vPosition);
 		m_pTransformCom->Set_Scale(XMVectorSet(0.1f, 0.1f, 0.1f, 0.f));
 	}
@@ -76,6 +81,9 @@ HRESULT CPixelCrossHair::Render(RENDER_GROUP::Enum eGroup)
 void CPixelCrossHair::Movement(_double dTimeDelta)
 {
 	_vector vDir = XMVectorZero();
+
+	_vector vInitialPos = XMVectorSet(m_fInitialX, m_fInitialY, 0.f, 1.f);
+
 	if (m_pGameInstance->Key_Pressing(DIK_W) && m_pGameInstance->Key_Pressing(DIK_A))
 		vDir = XMVectorSet(1.f, 1.f, 0.f, 0.f);
 	else if (m_pGameInstance->Key_Pressing(DIK_W) && m_pGameInstance->Key_Pressing(DIK_D))
@@ -93,7 +101,16 @@ void CPixelCrossHair::Movement(_double dTimeDelta)
 	else if (m_pGameInstance->Key_Pressing(DIK_D))
 		vDir = XMVectorSet(-1.f, 0.f, 0.f, 0.f);
 
-	m_pTransformCom->MoveToDir(vDir, dTimeDelta * 0.5f);
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector NextPos = vPos += vDir * dTimeDelta * 0.5f;
+	_vector vChanged = vInitialPos - NextPos;
+	_float r = XMVectorGetX(XMVector2Length(vChanged));
+
+	if (r <= 0.3f) // 자유롭게 이동
+		m_pTransformCom->MoveToDir(vDir, dTimeDelta * 0.5f);
+	else // 슬라이딩 벡터 구하기.
+	{
+	}
 }
 
 CPixelCrossHair * CPixelCrossHair::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "..\public\UFORadarLever.h"
-#include "Effect_Generator.h"
+#include "Cody.h"
 
 CUFORadarLever::CUFORadarLever(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CUFORadarSet(pDevice, pDeviceContext)
@@ -85,7 +85,7 @@ void CUFORadarLever::Rotate_JoyStick(_double dTimeDelta)
 {
 	_matrix	 matPivot, matScale, matTrans, matRotX, matRotZ, matParent, matAnim = XMMatrixIdentity();
 	
-	if (m_pGameInstance->Key_Pressing(DIK_W))
+	if (m_pGameInstance->Key_Pressing(DIK_W) && ((CCody*)DATABASE->GetCody())->Get_Model()->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_Fwd)
 	{
 		if (m_fAngleZ > -20.f)
 			m_fAngleZ -= (_float)dTimeDelta * 100.f;
@@ -101,7 +101,7 @@ void CUFORadarLever::Rotate_JoyStick(_double dTimeDelta)
 		matPivot *= matAnim;
 		m_pModelCom->Set_PivotTransformation(10, matPivot);
 	}
-	else if (m_pGameInstance->Key_Pressing(DIK_A))
+	else if (m_pGameInstance->Key_Pressing(DIK_A) && ((CCody*)DATABASE->GetCody())->Get_Model()->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_Left)
 	{
 
 		if (m_fAngleX < 20.f)
@@ -118,7 +118,7 @@ void CUFORadarLever::Rotate_JoyStick(_double dTimeDelta)
 		m_pModelCom->Set_PivotTransformation(10, matPivot);
 
 	}
-	else if (m_pGameInstance->Key_Pressing(DIK_S))
+	else if (m_pGameInstance->Key_Pressing(DIK_S) && ((CCody*)DATABASE->GetCody())->Get_Model()->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_Bck)
 	{
 		if (m_fAngleZ < 20.f)
 			m_fAngleZ += (_float)dTimeDelta * 100.f;
@@ -133,7 +133,7 @@ void CUFORadarLever::Rotate_JoyStick(_double dTimeDelta)
 		matPivot *= matAnim;
 		m_pModelCom->Set_PivotTransformation(10, matPivot);
 	}
-	else if (m_pGameInstance->Key_Pressing(DIK_D))
+	else if (m_pGameInstance->Key_Pressing(DIK_D) && ((CCody*)DATABASE->GetCody())->Get_Model()->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_Right)
 	{
 		if (m_fAngleX > -20.f)
 			m_fAngleX -= (_float)dTimeDelta * 100.f;

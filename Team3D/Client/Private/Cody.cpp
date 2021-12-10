@@ -3119,23 +3119,55 @@ void CCody::In_JoyStick(_double dTimeDelta)
 		}
 		else if (m_pGameInstance->Key_Pressing(DIK_W))
 		{
-			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Fwd);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
+			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_Bck)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Fwd);
+			}
+			else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_MH && m_pModelCom->Get_ProgressAnim() > 0.2f)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Fwd);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Fwd);
+			}
 		} 
 		else if (m_pGameInstance->Key_Pressing(DIK_A))
 		{
-			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Left);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
+			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_Right)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Left);
+			}
+			else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_MH && m_pModelCom->Get_ProgressAnim() > 0.2f)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Left);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Left);
+			}
 		}
 		else if (m_pGameInstance->Key_Pressing(DIK_S))
 		{
-			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Bck);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
+			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_Fwd)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Bck);
+			}
+			else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_MH && m_pModelCom->Get_ProgressAnim() > 0.2f)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Bck);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Bck);
+			}
 		}
 		else if (m_pGameInstance->Key_Pressing(DIK_D))
 		{
-			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Right);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
+			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_Fwd)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Right);
+			}
+			else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_MH && m_pModelCom->Get_ProgressAnim() > 0.2f)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Right);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Right);
+			}
 		}
 		if (m_pGameInstance->Key_Down(DIK_F10))
 		{
