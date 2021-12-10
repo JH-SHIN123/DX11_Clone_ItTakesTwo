@@ -12,10 +12,10 @@ private:
 
 public:
 	void	Set_Active(_bool bActive) { m_bActive = bActive; }
-	HRESULT Set_Light(const LIGHT_DESC& LightDesc, _uint eEffectColor);
+	HRESULT Set_Light(const LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor);
 
 public:
-	HRESULT	NativeConstruct(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _uint eEffectColor, _bool bActive);
+	HRESULT	NativeConstruct(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor, _bool bActive);
 
 private:
 	_bool m_bActive = false;
@@ -27,7 +27,7 @@ private:
 	class CLight*					m_pLight = nullptr;
 
 public:
-	static CEffectLight* Create(const _tchar* pLightTag, const LIGHT_DESC & LightDesc, _uint eEffectColor, _bool bActive);
+	static CEffectLight* Create(const _tchar* pLightTag, const LIGHT_DESC & LightDesc, _float fEffectRadius, _uint eEffectColor, _bool bActive);
 	virtual void Free() override;
 };
 END

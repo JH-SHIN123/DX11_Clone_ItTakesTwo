@@ -4,7 +4,7 @@
 #include "Effect_PointLight.h"
 #include "Light.h"
 
-HRESULT CEffectLight::Set_Light(const LIGHT_DESC& LightDesc, _uint eEffectColor)
+HRESULT CEffectLight::Set_Light(const LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor)
 {
 	NULL_CHECK_RETURN(m_pLight, E_FAIL);
 	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
@@ -16,13 +16,13 @@ HRESULT CEffectLight::Set_Light(const LIGHT_DESC& LightDesc, _uint eEffectColor)
 
 	// Set Effect
 	m_pEffect->Set_Pos(LightDesc.vPosition);
-	m_pEffect->Set_Radius(LightDesc.fRange * 0.5f);
+	m_pEffect->Set_Radius(fEffectRadius);
 	m_pEffect->Set_Color((EPoint_Color)eEffectColor);
 
 	return S_OK;
 }
 
-HRESULT CEffectLight::NativeConstruct(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _uint eEffectColor, _bool bActive)
+HRESULT CEffectLight::NativeConstruct(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor, _bool bActive)
 {
 	m_bActive = bActive;
 	lstrcpy(m_szLightTag, pLightTag);
@@ -33,16 +33,16 @@ HRESULT CEffectLight::NativeConstruct(const _tchar* pLightTag, const LIGHT_DESC&
 	pGameInstance->Add_Light(m_szLightTag, LightDesc, bActive, (void**)&m_pLight);
 
 	// Set Effect
-	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(LightDesc.fRange * 0.5f, 0.25f, 1.f, LightDesc.vPosition, (EPoint_Color)eEffectColor), (CGameObject**)&m_pEffect), E_FAIL);
+	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(fEffectRadius, 0.25f, 1.f, LightDesc.vPosition, (EPoint_Color)eEffectColor), (CGameObject**)&m_pEffect), E_FAIL);
 
 	return S_OK;
 }
 
-CEffectLight* CEffectLight::Create(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _uint eEffectColor, _bool bActive)
+CEffectLight* CEffectLight::Create(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor, _bool bActive)
 {
 	CEffectLight* pInstance = new CEffectLight();
 
-	if (FAILED(pInstance->NativeConstruct(pLightTag, LightDesc, eEffectColor, bActive)))
+	if (FAILED(pInstance->NativeConstruct(pLightTag, LightDesc, fEffectRadius, eEffectColor, bActive)))
 	{
 		MSG_BOX("Failed to Create Instance - CEffectLight");
 		Safe_Release(pInstance);

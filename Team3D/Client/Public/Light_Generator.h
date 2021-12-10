@@ -20,10 +20,9 @@ public:
 
 #ifdef __INSTALL_LIGHT
 public: /* For. 조명설치 */
-	HRESULT Set_Light(const _tchar* pLightTag, LIGHT_DESC& LightDesc, _uint eEffectColor);
+	HRESULT KeyInput(_double dTimeDelta);
+	HRESULT Set_Light(const _tchar* pLightTag, LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor);
 	HRESULT Delete_Light(const _tchar* pLightTag);
-	HRESULT Save_Light();
-	HRESULT Load_Light();
 #endif
 
 private:
