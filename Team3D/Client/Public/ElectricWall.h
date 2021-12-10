@@ -9,6 +9,9 @@ private:
 	explicit CElectricWall(const CElectricWall& rhs);
 	virtual ~CElectricWall() = default;
 
+public:/* Getter */
+	_bool Get_Electric() { return m_bElectric; }
+
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
@@ -20,9 +23,6 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 	virtual void	OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
-
-public:
-	_bool Get_Electric() { return m_bElectric; }
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;

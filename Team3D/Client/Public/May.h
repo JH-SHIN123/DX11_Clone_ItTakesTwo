@@ -352,11 +352,13 @@ private:
 	_float3  m_vSavePoint = {};
 	_float	 m_fDeadTime = 0.f;
 	_float3	 m_DeadLinePos = {};
-	/* Hye::For.PinBall*/
+	/* Hye::For.PinBall */
 	_bool	 m_IsPinBall = false;
 	_float2	 m_MinMaxX = {};
-	/* Hye::For.Tube*/
-	_bool m_IsTube = false;
+	/* Hye::For.Tube */
+	_bool	m_IsTube = false;
+	/* Hye::For.UFO */
+	_bool	m_IsInUFO = false;
 
 	/* For.HookUFO */
 	_bool m_IsHookUFO = false;
@@ -438,10 +440,15 @@ private:
 	void Boss_Missile_Hit(const _double dTimeDelta);
 	void Boss_Missile_Control(const _double dTimeDelta);
 	void WallLaserTrap(const _double dTimeDelta);
-	/* Çý¿ø::For.DeadLine, SavePoint */
+	/* Hye::For.DeadLine, SavePoint */
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
+	/* Hye::For.UFO */
+	void InUFO(const _double dTimeDelta);
+public:
+	void Set_UFO(_bool bCheck);
 
+private:
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);
 #pragma endregion
