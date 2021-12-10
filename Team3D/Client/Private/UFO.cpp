@@ -372,9 +372,16 @@ void CUFO::Phase1_End(_double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(UFO_CodyHolding_low);
 		}
 
-		if (m_pModelCom->Is_AnimFinished(UFO_CodyHolding))
+		if (m_pModelCom->Is_AnimFinished(UFO_CodyHolding_low))
 		{
+			m_pModelCom->Set_Animation(UFO_CodyHolding);
+			m_pModelCom->Set_NextAnimIndex(UFO_CodyHolding);
+		}
 
+		if (m_pGameInstance->Key_Down(DIK_NUMPAD4))
+		{
+			m_pModelCom->Set_Animation(UFO_LaserRippedOff);
+			m_pModelCom->Set_NextAnimIndex(UFO_Left);
 		}
 	}
 }
