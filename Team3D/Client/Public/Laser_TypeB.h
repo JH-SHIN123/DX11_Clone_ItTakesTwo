@@ -25,11 +25,15 @@ public:
 	void SetUp_Direction(_uint iOption);
 	void Set_RotateSpeed(_float fSpeed);
 
+public:
+	_bool Get_LaserRecovery() const { return m_IsLaserRecovery; }
+
 private:
 	_float						m_fAngle = 0.f;
 	_float						m_fRotateSpeed = 0.f;
 	_uint						m_iOption = 0;
 	_float4x4					m_matRotY;
+	_bool						m_IsLaserRecovery = false;
 
 public:
 	static CLaser_TypeB* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

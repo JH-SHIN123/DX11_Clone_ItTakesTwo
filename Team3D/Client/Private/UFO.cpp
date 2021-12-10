@@ -53,7 +53,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 
 	/* 컷 신 끝나고 기본 위치로 이동해야되는 포지션 세팅 */
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	vPos.m128_f32[1] += 7.f;
+	vPos.m128_f32[1] += 6.f;
 	XMStoreFloat4(&m_vStartTargetPos, vPos);
 	m_IsStartingPointMove = true;
 
@@ -214,12 +214,11 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 		{
 			/* 중력자 폭탄 생성 */
 
-
 			/* 한 발 쏠때마다 타겟 바꿔주자 */
 			if (m_iGravitationalBombCount % 2)
-				m_eTarget = CUFO::TARGET_CODY;
-			else
 				m_eTarget = CUFO::TARGET_MAY;
+			else
+				m_eTarget = CUFO::TARGET_CODY;
 
 			m_fGravitationalBombLanchTime = 0.f;
 			++m_iGravitationalBombCount;
@@ -230,10 +229,13 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 		/* 다시 초기화 해주자 */
 		m_iGravitationalBombCount = 0;
 		m_fGravitationalBombLanchTime = 0.f;
-		m_ePattern = CUFO::INTERACTION;
 
 		/* 메인 레이저 다시 내려가자 */
 		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(false);
+
+		/* 중력자 폭탄 패턴 끝났으니 상호작용 패턴으로 바꾸자 */
+		m_ePattern = CUFO::INTERACTION;
+
 	}
 }
 
@@ -242,15 +244,12 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 	/* 레이저에서 중력자 폭탄 패턴으로 변경 */
 	if (true == m_pModelCom->Is_AnimFinished(UFO_Laser_HitPod))
 	{
-		m_fWaitingTime += (_float)dTimeDelta;
+		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(true);
 
-		/* 1초 대기했다가 회전하는 메인 레이저 올라오고 중력자탄 패턴으로 바꿔라 */
-		if (1.f <= m_fWaitingTime)
+		/* 메인 레이저가 다 올라오면 중력자탄 패턴으로 바꿔라 */
+		if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp())
 		{
-			((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(true);
-
-			if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp())
-				m_ePattern = UFO_PATTERN::GRAVITATIONALBOMB;
+			m_ePattern = UFO_PATTERN::GRAVITATIONALBOMB;
 
 			m_pModelCom->Set_Animation(UFO_MH);
 			m_pModelCom->Set_NextAnimIndex(UFO_MH);
@@ -264,13 +263,10 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 	{
 		m_fWaitingTime += (_float)dTimeDelta;
 
-		/* 1초 대기했다가 메인 레이저 내려가고 레이저 패턴으로 바꿔라 */
+		/* 1초 대기했다가 레이저 패턴으로 바꿔라 */
 		if (1.f <= m_fWaitingTime)
 		{
-			((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(true);
-
-			if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp())
-				m_ePattern = UFO_PATTERN::LASER;
+			m_ePattern = UFO_PATTERN::LASER;
 
 			m_pModelCom->Set_Animation(UFO_Laser_MH);
 			m_pModelCom->Set_NextAnimIndex(UFO_Laser_MH);

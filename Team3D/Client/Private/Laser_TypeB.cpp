@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Laser_TypeB.h"
 
+#include "DataStorage.h"
+
 CLaser_TypeB::CLaser_TypeB(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLaser(pDevice, pDeviceContext)
 {
@@ -156,7 +158,10 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 		XMStoreFloat4(&m_vEndPoint, XMLoadFloat4(&m_vStartPoint) + XMLoadFloat4(&m_vLaserDir) * m_fLaserSizeY);
 
 		if (m_fLaserSizeY < 0.f)
+		{
+			DATABASE->Set_LaserTypeB_Recovery(true);
 			return EVENT_DEAD;
+		}
 	}
 
 #ifdef __TEST_SE

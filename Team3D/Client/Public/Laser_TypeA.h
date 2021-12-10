@@ -19,9 +19,6 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eRender) override;
 	virtual HRESULT Render_ShadowDepth() override;
 
-public:
-	void Set_Dead();
-
 private:
 	_double m_dChargingTime = 0.0;
 	_bool	m_IsPaticleCreate = true;

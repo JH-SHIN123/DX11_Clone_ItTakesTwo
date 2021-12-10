@@ -249,11 +249,6 @@ HRESULT CLaser_TypeA::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CLaser_TypeA::Set_Dead()
-{
-	m_isDead = true;
-}
-
 CLaser_TypeA * CLaser_TypeA::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CLaser_TypeA* pInstance = new CLaser_TypeA(pDevice, pDeviceContext);

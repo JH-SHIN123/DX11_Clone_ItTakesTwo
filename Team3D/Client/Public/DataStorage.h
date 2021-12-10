@@ -131,6 +131,9 @@ public:
 	void Set_LaserTypeA(CGameObject* pLaserTypeA) { m_pLaserTypeA = pLaserTypeA; }
 	CGameObject* Get_LaserTypeA() { return m_pLaserTypeA; }
 
+	void Set_LaserTypeB_Recovery(_bool IsCheck) { m_IsLaserTypeB_Recovery = IsCheck; }
+	_bool Get_LaserTypeB_Recovery() const { return m_IsLaserTypeB_Recovery; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -198,6 +201,7 @@ private:
 	_bool m_bPinBallStageClear = false;
 	_bool m_bRailStageClear = false;
 	_bool m_IsValveActivated = false;
+	_bool m_IsLaserTypeB_Recovery = false;
 
 	_uint m_iMayStageNum = 0;
 	_uint m_iCodyStageNum = 0;
