@@ -28,6 +28,41 @@ HRESULT CGameDebugger::NativeConstruct(CMainApp * pMainApp)
 
 void CGameDebugger::Debugging()
 {
+#ifdef __DEBUGGING_PAD
+	_bool& bExit = m_pMainApp->Get_DebuggerExit();
+	DIJOYSTATE& JoyStickState = CInput_Device::GetInstance()->Get_PadState();
+
+	while (!bExit)
+	{
+		system("cls");
+
+		cout << "IX = " << JoyStickState.lX << endl;
+		cout << "lY = " << JoyStickState.lY << endl;
+		cout << "lZ = " << JoyStickState.lZ << endl << endl;
+
+		cout << "IRx = " << JoyStickState.lRx << endl;
+		cout << "IRy = " << JoyStickState.lRy << endl;
+		cout << "IRz = " << JoyStickState.lRz << endl << endl;
+
+		cout << "rgdwPOV[0] = " << JoyStickState.rgdwPOV[0] << endl;
+		cout << "rgdwPOV[1] = " << JoyStickState.rgdwPOV[1] << endl;
+		cout << "rgdwPOV[2] = " << JoyStickState.rgdwPOV[2] << endl;
+		cout << "rgdwPOV[3] = " << JoyStickState.rgdwPOV[3] << endl << endl;
+
+		cout << "rglSlider[0] = " << JoyStickState.rglSlider[0] << endl;
+		cout << "rglSlider[1] = " << JoyStickState.rglSlider[1] << endl << endl;
+
+		for (_uint i = 0; i < 32; ++i)
+		{
+			if (JoyStickState.rgbButtons[i])
+				cout << "Button " << i << "\t\t = 1" << endl;
+			else
+				cout << "Button " << i << "\t\t = 0" << endl;
+		}
+
+		Sleep(300);
+	}
+#else
 	_tchar szLayerTag[MAX_PATH] = TEXT("");
 
 	_bool& bExit = m_pMainApp->Get_DebuggerExit();
@@ -120,6 +155,7 @@ void CGameDebugger::Debugging()
 		//system("pause>null");
 		//system("pause");
 	}
+#endif
 }
 
 CGameDebugger * CGameDebugger::Create(CMainApp * pMainApp)

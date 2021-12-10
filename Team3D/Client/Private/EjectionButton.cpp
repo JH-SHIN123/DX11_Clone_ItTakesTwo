@@ -28,7 +28,7 @@ HRESULT CEjectionButton::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	m_fMaxY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) - 0.07f;
+	m_fMaxY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) - 0.06f;
 	m_pTransformCom->Set_Speed(1.f, 0.f);
 
 	return S_OK;
@@ -40,17 +40,18 @@ _int CEjectionButton::Tick(_double dTimeDelta)
 
 	if (true == m_bCollision)
 	{
-		_float fDist = (_float)dTimeDelta * 0.7f;
+		_float fDist = (_float)dTimeDelta * 0.4f;
 		m_fDistance += fDist;
 
-		m_pTransformCom->Go_Down(dTimeDelta * 0.7f);
+		m_pTransformCom->Go_Down(dTimeDelta * 0.4f);
 
-		if (0.07f <= m_fDistance)
+		if (0.06f <= m_fDistance)
 		{
 			_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_fMaxY));
 			m_fDistance = 0.f;
 			m_bPressed = true;
+			m_bCollision = false;
 		}
 	}
 
@@ -104,12 +105,8 @@ void CEjectionButton::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, C
 	if (eStatus == ContactStatus::eFOUND && eID == GameID::Enum::eCODY && false == m_bPressed)
 	{
 		if (((((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Falling || (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land_Exit))
-		{
 			m_bCollision = true;
-			return;
-		}
 	}
-	m_bCollision = false;
 }
 
 HRESULT CEjectionButton::Ready_Component(void * pArg)

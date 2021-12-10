@@ -90,7 +90,7 @@ HRESULT CPerformer::Render(RENDER_GROUP::Enum eGroup)
 
 void CPerformer::Start_Perform(_uint iAnimIdx, _double dAnimTime)
 {
-	m_pModelCom->Set_Animation(1);
+
 	m_pModelCom->Set_Animation(iAnimIdx,dAnimTime);
 
 	m_bStartAnim = true;

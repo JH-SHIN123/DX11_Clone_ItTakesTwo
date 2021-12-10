@@ -297,23 +297,23 @@ _float4 CInGameEffect::Check_UV(_int iTextureMax_U, _int iTextureMax_V, _int* pT
 
 	if (false == IsLoop)
 	{
-		if (*pTextureNow_U == iTextureMax_V - 1)
-		{
-			if (*pTextureNow_U == iTextureMax_U - 1)
-				return vUV = { 1.f, 1.f, 1.f, 1.f };
-		}
+		if (*pTextureNow_V == iTextureMax_V - 1 && *pTextureNow_U == iTextureMax_U - 1)
+			return vUV = { 1.f, 1.f, 1.f, 1.f };
 	}
 
-	if (*pTextureNow_U >= iTextureMax_U - 1)
+	if (*pTextureNow_V == iTextureMax_V - 1 && *pTextureNow_U == iTextureMax_U - 1)
+	{
+		*pTextureNow_V = 0;
+		*pTextureNow_U = 0;
+	}
+
+	else if (*pTextureNow_U >= iTextureMax_U - 1)
 	{
 		*pTextureNow_U = 0;
 		++*pTextureNow_V;
 	}
 	else
 		++*pTextureNow_U;
-
-	if (*pTextureNow_V >= iTextureMax_V)
-		*pTextureNow_V = 0;
 
 	_float fLeft	= (1.f / iTextureMax_U) *  *pTextureNow_U;
 	_float fTop		= (1.f / iTextureMax_V) *  *pTextureNow_V;
@@ -509,6 +509,23 @@ _float4 CInGameEffect::Get_TexUV_Rand(_uint iTexture_U, _uint iTexture_V)
 	_float fTop		= _float(1.f / iTexture_V) *  vRandUV.y;
 	_float fRight	= _float(1.f / iTexture_U) * (vRandUV.x + 1.f);
 	_float fBottom	= _float(1.f / iTexture_V) * (vRandUV.y + 1.f);
+
+	_float4 vUV = { fLeft, fTop, fRight, fBottom };
+
+	return vUV;
+}
+
+_float4 CInGameEffect::Get_TexUV_Rand(_uint iTexture_U, _uint iTexture_V, _int * pTex_U, _int * pTex_V)
+{
+	_float2 vRandUV = { _float(rand() % iTexture_U), _float(rand() % iTexture_V) };
+
+	_float fLeft	= _float(1.f / iTexture_U) *  vRandUV.x;
+	_float fTop		= _float(1.f / iTexture_V) *  vRandUV.y;
+	_float fRight	= _float(1.f / iTexture_U) * (vRandUV.x + 1.f);
+	_float fBottom	= _float(1.f / iTexture_V) * (vRandUV.y + 1.f);
+
+	*pTex_U = (_int)vRandUV.x;
+	*pTex_V = (_int)vRandUV.y;
 
 	_float4 vUV = { fLeft, fTop, fRight, fBottom };
 

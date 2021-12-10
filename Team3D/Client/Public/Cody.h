@@ -211,6 +211,7 @@ public:
 	/* Getter */
 	CTransform*		 Get_Transform() { return m_pTransformCom; }
 	CModel*			 Get_Model() { return m_pModelCom; }
+	CPlayerActor*	 Get_Actor() { return m_pActorCom; }
 	PLAYER_SIZE		 Get_Player_Size() { return m_eCurPlayerSize; }
 	_bool			 Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool			 Get_PushingBattery() { return m_IsPushingBattery; }
@@ -245,6 +246,10 @@ private: // Effects
 	// Components
 private:
 	class CMainCamera*	m_pCamera = nullptr;
+
+	// UI
+private:
+	class CGauge_Circle*	m_pGauge_Circle = nullptr;
 
 	// 생성 및 소멸 관련
 public:
@@ -407,6 +412,12 @@ private:
 	_float	m_fWallToWallSpeed = 0.55f;
 
 	/* For. WallJump */
+	_bool	m_bElectricWallAttach = false;
+	_bool   m_IsElectricWallJumping = false;
+	_float	m_fElectricWallJumpingTime = 0.f;
+	_float	m_fElectricWallToWallSpeed = 45.f;
+
+	/* For. WallJump */
 	_bool	m_bPipeWallAttach = false;
 	_bool   m_IsPipeWallJumping = false;
 	_float	m_fPipeWallJumpingTime = 0.f;
@@ -450,6 +461,7 @@ private:
 	void Hook_UFO(const _double dTimeDelta);
 	void Wall_Jump(const _double dTimeDelta);
 	void Pipe_WallJump(const _double dTimeDelta);
+	void ElectricWallJump(const _double dTimeDelta);
 
 	// 정호
 	void Warp_Wormhole(const _double dTimeDelta);
@@ -485,6 +497,8 @@ private:
 	void	TakeRailEnd(_double dTimeDelta);
 	void	ShowRailTargetTriggerUI();
 
+	HRESULT Ready_Layer_Gauge_Circle(const _tchar * pLayerTag);
+
 private:
 	_bool						m_bMoveToRail = false;
 	_bool						m_bOnRail = false;
@@ -498,6 +512,20 @@ private:
 	CSpaceRail*					m_pTargetRail = nullptr;
 	CSpaceRail_Node*			m_pSearchTargetRailNode = nullptr;
 	CSpaceRail_Node*			m_pTargetRailNode = nullptr;
+#pragma endregion
+
+#pragma region RadiarBlur
+private:
+	void Start_RadiarBlur(_double dBlurTime);
+	void Loop_RadiarBlur(_bool bLoop);
+	void Trigger_RadiarBlur(_double dTimeDelta);
+	void Set_RadiarBlur();
+
+private:
+	_bool	m_bRadiarBlur_Trigger = false;
+	_bool	m_bRadiarBlur_Loop = false;
+	_double m_dRadiarBlurTime = 0.0;
+	_double m_dRadiarBlurDeltaT = 0.0;
 #pragma endregion
 };
 END

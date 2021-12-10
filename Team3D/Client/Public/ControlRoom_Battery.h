@@ -22,7 +22,8 @@ public:
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
-
+public:
+	void Set_UIDisable(_bool IsCheck);
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
@@ -40,6 +41,7 @@ private:
 	_bool										m_IsCollision = false;
 	_bool										m_IsPlayerInterActive = false;
 	_bool										m_IsBatteryHolding = false;
+	_bool										m_IsUIDisable = false;
 
 private:
 	vector<class CControlRoom_Door*>			m_vecDoor;
@@ -52,6 +54,9 @@ protected:
 	CStaticActor*								m_pStaticActorCom = nullptr;
 	CTriggerActor*								m_pTriggerCom = nullptr;
 	CTransform*									m_pTriggerTransform = nullptr;
+
+private:
+	_int InterActive_Battery(_double TimeDelta);
 
 private:
 	HRESULT Ready_Layer_Door(const _tchar * pLayerTag, _uint iCount);

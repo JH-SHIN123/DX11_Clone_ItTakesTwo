@@ -40,7 +40,7 @@ _int CElectricWall::Tick(_double dTimeDelta)
 	{
 		m_dElectricTime += dTimeDelta;
 
-		if (1.f <= m_dElectricTime)
+		if (0.5f <= m_dElectricTime)
 		{
 			m_dElectricTime = 0.0;
 			m_bElectric = false;
@@ -48,7 +48,7 @@ _int CElectricWall::Tick(_double dTimeDelta)
 	}
 
 	/* Electric ÀÌÆåÆ® */
-	if (3.0 <= m_dCoolTime)
+	if (5.0 <= m_dCoolTime)
 	{
 		_matrix World = XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixTranslation(m_vOriginPos.x, m_vOriginPos.y, m_vOriginPos.z);
 
@@ -107,6 +107,8 @@ void CElectricWall::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 	/* Cody */
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eELECTRICWALL, true, this);
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eELECTRICWALL, false, this);
 }
 
 void CElectricWall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
@@ -125,7 +127,7 @@ HRESULT CElectricWall::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
 
 	/* Trigger */
-	PxGeometry* Geom = new PxBoxGeometry(0.18f, 0.7f, 0.01f);
+	PxGeometry* Geom = new PxBoxGeometry(0.18f, 0.7f, 0.02f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = Geom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;

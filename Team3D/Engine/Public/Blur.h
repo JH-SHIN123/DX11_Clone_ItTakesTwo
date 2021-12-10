@@ -15,11 +15,13 @@ public:
 public:
 	ID3D11ShaderResourceView* Get_ShaderResourceView_BlurEmissive() const { return m_pShaderResourceView_DownScaledEmissive; };
 	ID3D11ShaderResourceView* Get_ShaderResourceView_BlurEffect() const { return m_pShaderResourceView_DownScaledEffect; };
+	ID3D11ShaderResourceView* Get_ShaderResourceView_BlurSpecular() const { return m_pShaderResourceView_DownScaledSpecular; };
 
 public:
 	HRESULT Ready_Blur(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight);
 	HRESULT Blur_Emissive();
 	HRESULT Blur_Effect();
+	HRESULT Blur_Specular();
 
 private:
 	HRESULT DownScale(ID3D11ShaderResourceView* inputSRV, ID3D11UnorderedAccessView* inputUAV);
@@ -48,9 +50,9 @@ private: /* For.CS - Shader */
 	vector<INPUT_LAYOUT_DESC>	m_InputLayouts_CS;
 
 private: /* For. Blur */
-	ID3D11Texture2D* m_pBloomTex_Temp = nullptr;
-	ID3D11UnorderedAccessView* m_pUnorderedAccessView_Bloom_Temp = nullptr;
-	ID3D11ShaderResourceView* m_pShaderResourceView_Bloom_Temp = nullptr;
+	ID3D11Texture2D* m_pBlurTex_Temp = nullptr;
+	ID3D11UnorderedAccessView* m_pUnorderedAccessView_Blur_Temp = nullptr;
+	ID3D11ShaderResourceView* m_pShaderResourceView_Blur_Temp = nullptr;
 
 private: /* For. Emissive */
 	ID3D11Texture2D*			m_pDownScaledEmissiveTex = nullptr; // g_HDRDownScale
@@ -62,7 +64,24 @@ private: /* For. Effect */
 	ID3D11UnorderedAccessView* m_pUnorderedAccessView_DownScaledEffect = nullptr;
 	ID3D11ShaderResourceView* m_pShaderResourceView_DownScaledEffect = nullptr;
 
+private: /* For. Specular */
+	ID3D11Texture2D* m_pDownScaledSpecularTex = nullptr; // g_HDRDownScale
+	ID3D11UnorderedAccessView* m_pUnorderedAccessView_DownScaledSpecular = nullptr;
+	ID3D11ShaderResourceView* m_pShaderResourceView_DownScaledSpecular = nullptr;
+
 public:
 	virtual void	Free() override;
+
+#ifdef _DEBUG
+public:
+	HRESULT Ready_DebugBuffer(const _tchar* pTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
+	HRESULT Render_DebugBuffer_Emissive(const _tchar* pTag);
+	HRESULT Render_DebugBuffer_Effect(const _tchar* pTag);
+	HRESULT Render_DebugBuffer_Specular(const _tchar* pTag);
+	void	Clear_Buffer();
+private:
+	unordered_map<const _tchar*, class CVIBuffer_RectRHW*> m_VIBuffers;
+#endif
+
 };
 END

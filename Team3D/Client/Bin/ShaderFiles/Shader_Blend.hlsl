@@ -4,6 +4,7 @@
 texture2D	g_DiffuseTexture;
 texture2D	g_ShadeTexture;
 texture2D	g_SpecularTexture;
+texture2D	g_SpecularBlurTexture;
 texture2D	g_EmissiveTexture;
 texture2D	g_EmissiveBlurTexture;
 texture2D	g_ShadowTexture;
@@ -51,13 +52,18 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	vector	vDiffuseDesc		= g_DiffuseTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vShadeDesc			= g_ShadeTexture.Sample(Wrap_Sampler, In.vTexUV);
-	vector	vSpecularDesc		= g_SpecularTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vShadowDesc			= g_ShadowTexture.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vSpecularDesc		= g_SpecularTexture.Sample(Wrap_Sampler, In.vTexUV);
+	vector	vSpecularBlurDesc	= g_SpecularBlurTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vEmissiveDesc		= g_EmissiveTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vEmissiveBlurDesc	= g_EmissiveBlurTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
 
-	Out.vColor = (vDiffuseDesc * vShadeDesc + vSpecularDesc) * vShadowDesc;
-	Out.vColor.xyz += vEmissiveDesc.xyz * 4.f/* Emissive Scale */ + vEmissiveBlurDesc.xyz * 2.f /* Blur - Emissive Scale */;
+	vSpecularDesc.w = 0.f;
+	vSpecularBlurDesc.w = 0.f;
+
+	float fSpecBlendFactor = 0.3f;
+	Out.vColor = (vDiffuseDesc * vShadeDesc + (vSpecularDesc * fSpecBlendFactor + pow(vSpecularBlurDesc, 2.f) * (1.f - fSpecBlendFactor))) * vShadowDesc;
+	Out.vColor.xyz += vEmissiveDesc.xyz/* Emissive Scale */ + vEmissiveBlurDesc.xyz /* Blur - Emissive Scale */;
 
 	if (Out.vColor.w == 0) discard;
 

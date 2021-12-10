@@ -16,7 +16,7 @@ public:
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
-private:
+public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 private:

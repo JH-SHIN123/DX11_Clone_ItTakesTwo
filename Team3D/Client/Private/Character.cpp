@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Character.h"
+#include "PlayerActor.h"
 
 CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -34,6 +35,13 @@ _fmatrix CCharacter::Get_WorldMatrix()
 		return XMMatrixIdentity();
 
 	return m_pTransformCom->Get_WorldMatrix();
+}
+
+_fvector CCharacter::Get_CenterPosition()
+{
+	NULL_CHECK_RETURN(m_pActorCom, _fvector());
+
+	return MH_ConvertToXMVector(m_pActorCom->Get_Controller()->getPosition(), 1.f);
 }
 
 _float CCharacter::Compute_Distance(CTransform * pPlayerTransform, CTransform * pDstTransform)

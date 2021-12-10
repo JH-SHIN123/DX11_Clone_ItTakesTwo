@@ -16,6 +16,7 @@
 #include "PostFX.h"
 #include "Blur.h"
 #include "SSAO.h"
+#include "ShaderCompiler.h"
 
 BEGIN(Engine)
 
@@ -121,6 +122,15 @@ public:
 	_bool	IsIn_LocalSpace_Sub(_fvector vPosition, _float fRadius);
 #pragma endregion
 
+#pragma region ShaderCompiler
+	ID3DBlob* Get_Get_ShaderCompiledCode(const _tchar* pShaderFilePath);
+#pragma endregion
+
+#pragma region PostFX
+	void Set_RadiarBlur_Main(_bool bActive, _float2 & vFocusPos);
+	void Set_RadiarBlur_Sub(_bool bActive, _float2 & vFocusPos);
+#pragma endregion
+
 private:
 	CGraphic_Device*		m_pGraphic_Device		= nullptr;
 	CInput_Device*			m_pInput_Device			= nullptr;
@@ -137,6 +147,7 @@ private:
 	CPostFX*				m_pPostFX				= nullptr;
 	CBlur*					m_pBlur					= nullptr;
 	CSSAO*					m_pSSAO					= nullptr;
+	CShaderCompiler*		m_pShaderCompiler		= nullptr;
 
 public:
 	static void Release_Engine();

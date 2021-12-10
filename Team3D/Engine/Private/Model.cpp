@@ -11,6 +11,7 @@
 #include "Shadow_Manager.h"
 #include "RenderTarget_Manager.h"
 #include "Frustum.h"
+#include "ShaderCompiler.h"
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CComponent		(pDevice, pDeviceContext)
@@ -34,6 +35,7 @@ CModel::CModel(const CModel & rhs)
 	, m_PivotMatrix					(rhs.m_PivotMatrix)
 	, m_CombinedPivotMatrix			(rhs.m_CombinedPivotMatrix)
 	, m_BaseTransformations			(rhs.m_BaseTransformations)
+	, m_PivotTransformations		(rhs.m_PivotTransformations)
 	, m_AnimTransformations			(rhs.m_AnimTransformations)
 	, m_CombinedTransformations		(rhs.m_CombinedTransformations)
 	, m_PreAnimKeyFrames			(rhs.m_PreAnimKeyFrames)
@@ -111,8 +113,6 @@ _fmatrix CModel::Get_BoneMatrix(const char * pBoneName) const
 
 HRESULT CModel::Set_Animation(_uint iAnimIndex, _double dAnimTime)
 {
-	if (iAnimIndex == m_iCurAnimIndex)
-		return S_OK;
 
 	NULL_CHECK_RETURN(iAnimIndex < m_iAnimCount, E_FAIL);
 
@@ -279,6 +279,23 @@ HRESULT CModel::Set_DefaultVariables_ShadowDepth(_fmatrix WorldMatrix)
 	return S_OK;
 }
 
+HRESULT CModel::Set_PivotTransformation(_uint iIndex, _fmatrix PivotMatrix)
+{
+	if (iIndex >= m_iNodeCount)
+		return E_FAIL;
+
+	XMStoreFloat4x4(&m_PivotTransformations[iIndex], PivotMatrix);
+
+	return S_OK;
+}
+
+HRESULT CModel::Initialize_PivotTransformation()
+{
+	m_PivotTransformations.resize(m_iNodeCount, MH_XMFloat4x4Identity());
+
+	return S_OK;
+}
+
 HRESULT CModel::NativeConstruct_Prototype(const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
 	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
@@ -326,6 +343,7 @@ HRESULT CModel::Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON
 	m_BaseTransformations.swap(Transformations);
 	m_Anims.swap(Anims);
 
+	m_PivotTransformations.resize(m_iNodeCount, MH_XMFloat4x4Identity());
 	m_AnimTransformations.resize(m_iNodeCount);
 	m_CombinedTransformations.resize(m_iNodeCount);
 
@@ -542,6 +560,72 @@ HRESULT CModel::Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool 
 	return S_OK;
 }
 
+HRESULT CModel::Render_Model_VERTEX(_uint iPassIndex, _uint iMaterialSetNum, _bool bShadowWrite, RENDER_GROUP::Enum eGroup)
+{
+	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
+
+	_uint iOffSet = 0;
+
+	m_pDeviceContext->IASetVertexBuffers(0, m_iVertexBufferCount, &m_pVB, &m_iVertexStride, &iOffSet);
+	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
+	m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	m_pDeviceContext->IASetInputLayout(m_InputLayouts[iPassIndex].pLayout);
+
+	if (0 < m_iAnimCount)
+	{
+		_matrix	BoneMatrices[256];
+
+		for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
+		{
+			Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE,	iMaterialSetNum);
+			Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS,	iMaterialSetNum);
+			Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, iMaterialSetNum);
+			Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, iMaterialSetNum);
+
+			FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
+
+			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
+			{
+				if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
+				{
+					ZeroMemory(BoneMatrices, sizeof(_matrix) * 256);
+					pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
+					Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
+
+					FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
+					m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+				}
+			}
+		}
+	}
+	else
+	{
+		for (_uint iMaterialIndex = 0; iMaterialIndex < m_iMaterialCount; ++iMaterialIndex)
+		{
+			if (false == bShadowWrite)
+			{
+				Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE,	iMaterialSetNum);
+				Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS,	iMaterialSetNum);
+				Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, iMaterialSetNum);
+				Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, iMaterialSetNum);
+
+				FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
+			}
+
+			FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
+			for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
+			{
+				if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
+					m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
+			}
+		}
+	}
+
+	return S_OK;
+}
+
 HRESULT CModel::Sort_MeshesByMaterial()
 {
 	m_SortedMeshes.resize(m_iMaterialCount);
@@ -643,9 +727,9 @@ void CModel::Update_CombinedTransformations()
 		_int iParentNodeIndex = pNode->Get_ParentNodeIndex();
 
 		if (0 <= iParentNodeIndex)
-			XMStoreFloat4x4(&m_CombinedTransformations[pNode->Get_NodeIndex()], XMLoadFloat4x4(&m_AnimTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_CombinedTransformations[iParentNodeIndex]));
+			XMStoreFloat4x4(&m_CombinedTransformations[pNode->Get_NodeIndex()], XMLoadFloat4x4(&m_PivotTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_AnimTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_CombinedTransformations[iParentNodeIndex]));
 		else
-			XMStoreFloat4x4(&m_CombinedTransformations[pNode->Get_NodeIndex()], XMLoadFloat4x4(&m_AnimTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_CombinedPivotMatrix));
+			XMStoreFloat4x4(&m_CombinedTransformations[pNode->Get_NodeIndex()], XMLoadFloat4x4(&m_PivotTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_AnimTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_CombinedPivotMatrix));
 	}
 }
 
@@ -722,18 +806,8 @@ HRESULT CModel::Create_VIBuffer(const _tchar * pShaderFilePath, const char * pTe
 }
 HRESULT CModel::SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC * pInputElementDesc, _uint iElementCount, const _tchar * pShaderFilePath, const char * pTechniqueName)
 {
-	_uint iFlag = 0;
+	ID3DBlob* pCompiledShaderCode = CShaderCompiler::GetInstance()->Get_CompiledCode(pShaderFilePath);
 
-#ifdef _DEBUG
-	iFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-#else
-	iFlag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
-#endif
-
-	ID3DBlob* pCompiledShaderCode = nullptr;
-	ID3DBlob* pCompileErrorMsg = nullptr;
-
-	FAILED_CHECK_RETURN(D3DCompileFromFile(pShaderFilePath, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, nullptr, "fx_5_0", iFlag, 0, &pCompiledShaderCode, &pCompileErrorMsg), E_FAIL);
 	FAILED_CHECK_RETURN(D3DX11CreateEffectFromMemory(pCompiledShaderCode->GetBufferPointer(), pCompiledShaderCode->GetBufferSize(), 0, m_pDevice, &m_pEffect), E_FAIL);
 
 	ID3DX11EffectTechnique*	pTechnique = m_pEffect->GetTechniqueByName(pTechniqueName);
@@ -757,8 +831,6 @@ HRESULT CModel::SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC * pInputElementDesc,
 	}
 
 	Safe_Release(pTechnique);
-	Safe_Release(pCompiledShaderCode);
-	Safe_Release(pCompileErrorMsg);
 
 	return S_OK;
 }

@@ -4,6 +4,8 @@
 #include "Cody.h"
 #include "RobotParts.h"
 #include "May.h"
+#include "UI_Generator.h"
+#include "Gauge_Circle.h"
 
 CHookUFO::CHookUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -31,6 +33,9 @@ HRESULT CHookUFO::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Hook_UFO"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
+	FAILED_CHECK_RETURN(Ready_Layer_CodyGauge_Circle(TEXT("Layer_CodyGauge_Circle")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_MayGauge_Circle(TEXT("Layer_MayGauge_Circle")), E_FAIL);
+
 	ROBOTDESC HookUFODesc;
 	if (nullptr != pArg)
 		memcpy(&HookUFODesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
@@ -54,6 +59,9 @@ HRESULT CHookUFO::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
+
+	DATABASE->Set_HookUFO(this);
+
 	return S_OK;
 }
 
@@ -61,19 +69,30 @@ _int CHookUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_F) && m_IsCollide 
-		|| m_IsCollide && m_pGameInstance->Key_Down(DIK_O)
-		|| m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
+	if (m_pGameInstance->Key_Down(DIK_F) && m_IsCodyCollide || m_IsMayCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 	{
 		m_bLaunch = true;
-		UI_Delete(May, InputButton_InterActive);
-		UI_Delete(Cody, InputButton_InterActive);
+
+		if (true == m_IsCodyCollide)
+		{
+			m_IsCodyUIDisable = true;
+			UI_Delete(Cody, InputButton_InterActive);
+		}
+
+		if (true == m_IsMayCollide)
+		{
+			m_IsMayUIDisalbe = true;
+			UI_Delete(May, InputButton_InterActive);
+		}
 	}
 
 	else if (m_bLaunch == true)
 	{
 
 	}
+
+	InterActive_UI(((CCody*)DATABASE->GetCody())->Get_Position(), GameID::eCODY, m_IsCodyUIDisable);
+	InterActive_UI(((CCody*)DATABASE->GetMay())->Get_Position(), GameID::eMAY, m_IsMayUIDisalbe);
 
 
 	return NO_EVENT;
@@ -84,7 +103,6 @@ _int CHookUFO::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	InterActive_UI();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -106,86 +124,34 @@ HRESULT CHookUFO::Render(RENDER_GROUP::Enum eGroup)
 void CHookUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	// Cody
-
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		if (((CCody*)pGameObject)->Get_Position().m128_f32[1] < m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1])
 		{
 			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			UI_Create(Cody, InputButton_InterActive);
-			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			m_IsCollide = true;
+			m_IsCodyCollide = true;
+			m_PlayerID = GameID::Enum::eCODY;
 		}
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
-		m_IsCollide = false;
-		UI_Delete(Cody, InputButton_InterActive);
+ 		m_IsCodyCollide = false;
 	}
 
-
 	// May
-
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
 		if (((CMay*)pGameObject)->Get_Position().m128_f32[1] < m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1])
 		{
 			((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			UI_Create(May, InputButton_InterActive);
-			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			m_IsCollide = true;
+			m_IsMayCollide = true;
+			m_PlayerID = GameID::Enum::eMAY;
 		}
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
-		m_IsCollide = false;
-		UI_Delete(May, InputButton_InterActive);
+		m_IsMayCollide = false;
 	}
-}
-
-HRESULT CHookUFO::InterActive_UI()
-{
-	CCody* pCody = (CCody*)DATABASE->GetCody();
-	NULL_CHECK_RETURN(pCody, E_FAIL);
-	CMay* pMay = (CMay*)DATABASE->GetMay();
-	NULL_CHECK_RETURN(pMay, E_FAIL);
-
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-	_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-
-	_vector vCodyComparePos = vPos - vCodyPos;
-	_vector vMayComparePos = vPos - vMayPos;
-
-	_float fRange = 20.f;
-
-	_float vCodyComparePosX = abs(XMVectorGetX(vCodyComparePos));
-	_float vCodyComparePosZ = abs(XMVectorGetZ(vCodyComparePos));
-
-	if (fRange >= vCodyComparePosX && fRange >= vCodyComparePosZ)
-	{
-		if (UI_Generator->Get_EmptyCheck(Player::Cody, UI::InputButton_Dot))
-			UI_Create(Cody, InputButton_Dot);
-
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	}
-	else
-		UI_Delete(Cody, InputButton_Dot);
-
-	_float vMayComparePosX = abs(XMVectorGetX(vMayComparePos));
-	_float vMayComparePosZ = abs(XMVectorGetZ(vMayComparePos));
-
-	if (fRange >= vMayComparePosX && fRange >= vMayComparePosZ)
-	{
-		if (UI_Generator->Get_EmptyCheck(Player::May, UI::InputButton_Dot))
-			UI_Create(May, InputButton_Dot);
-
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_Dot, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	}
-	else
-		UI_Delete(May, InputButton_Dot);
-
-	return S_OK;
 }
 
 HRESULT CHookUFO::Render_ShadowDepth()
@@ -205,6 +171,112 @@ void CHookUFO::Launch_HookUFO(_double dTimeDelta)
 	
 }
 
+void CHookUFO::InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisable)
+{
+	if (true == IsDisable)
+		return;
+
+	_vector vComparePos;
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_float4 vConvertPos;
+	XMStoreFloat4(&vConvertPos, vPos);
+	vConvertPos.y -= 5.f;
+	vPos = XMLoadFloat4(&vConvertPos);
+
+	vComparePos = vPos - vTargetPos;
+
+	_float fRange = 50.f;
+
+	_float vComparePosX = fabs(XMVectorGetX(vComparePos));
+	_float vComparePosY = fabs(XMVectorGetY(vComparePos));
+	_float vComparePosZ = fabs(XMVectorGetZ(vComparePos));
+
+	/* 범위 안에 있다*/
+	if (fRange >= vComparePosX && fRange >= vComparePosY && fRange >= vComparePosZ)
+	{
+		if (eID == GameID::Enum::eCODY)
+		{
+			if (true == m_IsCodyCollide)
+			{
+				m_pCodyGauge_Circle->Set_Active(false);
+				UI_CreateOnlyOnce(Cody, InputButton_InterActive);
+				UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, vPos);
+				return;
+			}
+			else
+			{
+				UI_Delete(Cody, InputButton_InterActive);
+				m_pCodyGauge_Circle->Set_Active(true);
+			}
+		}
+		else if (eID == GameID::Enum::eMAY)
+		{
+			if (true == m_IsMayCollide)
+			{
+				m_pMayGauge_Circle->Set_Active(false);
+				UI_CreateOnlyOnce(May, InputButton_PS_InterActive);
+				UI_Generator->Set_TargetPos(Player::May, UI::InputButton_PS_InterActive, vPos);
+				return;
+			}
+			else
+			{
+				UI_Delete(May, InputButton_PS_InterActive);
+				m_pMayGauge_Circle->Set_Active(true);
+			}
+		}
+	}
+	else
+	{
+		if (eID == GameID::Enum::eCODY)
+			m_pCodyGauge_Circle->Set_Active(false);
+		else
+			m_pMayGauge_Circle->Set_Active(false);
+	}
+
+	if (nullptr != m_pCodyGauge_Circle)
+	{
+		vPos.m128_f32[1] += 5.f;
+		m_pCodyGauge_Circle->Set_TargetPos(vPos);
+	}
+	if (nullptr != m_pMayGauge_Circle)
+		m_pMayGauge_Circle->Set_TargetPos(vPos);
+}
+
+HRESULT CHookUFO::Ready_Layer_CodyGauge_Circle(const _tchar * pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+
+	_uint m_iOption = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Gauge_Circle"), &m_iOption, &pGameObject), E_FAIL);
+	m_pCodyGauge_Circle = static_cast<CGauge_Circle*>(pGameObject);
+	m_pCodyGauge_Circle->Set_SwingPointPlayerID(Player::Cody);
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPos.m128_f32[1] -= 5.f;
+	m_pCodyGauge_Circle->Set_Position(vPos);
+
+	// 범위 설정
+	m_pCodyGauge_Circle->Set_Range(30.f);
+
+	return S_OK;
+}
+
+HRESULT CHookUFO::Ready_Layer_MayGauge_Circle(const _tchar * pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+
+	_uint m_iOption = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Gauge_Circle"), &m_iOption, &pGameObject), E_FAIL);
+	m_pMayGauge_Circle = static_cast<CGauge_Circle*>(pGameObject);
+	m_pMayGauge_Circle->Set_SwingPointPlayerID(Player::May);
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPos.m128_f32[1] -= 5.f;
+	m_pCodyGauge_Circle->Set_Position(vPos);
+
+	// 범위 설정
+	m_pCodyGauge_Circle->Set_Range(30.f);
+
+	return S_OK;
+}
 
 CHookUFO * CHookUFO::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
@@ -234,6 +306,8 @@ CGameObject * CHookUFO::Clone_GameObject(void * pArg)
 
 void CHookUFO::Free()
 {
+	Safe_Release(m_pMayGauge_Circle);
+	Safe_Release(m_pCodyGauge_Circle);
 	Safe_Release(m_pPhysxTransform);
 	Safe_Release(m_pTriggerCom);
 	Safe_Release(m_pTransformCom);

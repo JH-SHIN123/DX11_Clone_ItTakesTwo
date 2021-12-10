@@ -125,8 +125,8 @@ void CBoss_Missile::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 			if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 			{
 				((CCody*)pGameObject)->SetTriggerID_Matrix(GameID::Enum::eBOSSMISSILE_PLAYABLE, true, m_pTransformCom->Get_WorldMatrix());
-				UI_Create(Cody, InputButton_InterActive);
-				UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				//UI_Create(Cody, InputButton_InterActive);
+				//UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 				m_IsPlayable_Ready = true;
 
 				m_eTarget_GameID = eID;

@@ -1,5 +1,8 @@
 #include "Blur.h"
 #include "RenderTarget_Manager.h"
+#include "SSAO.h"
+#include "VIBuffer_RectRHW.h"
+#include "ShaderCompiler.h"
 
 IMPLEMENT_SINGLETON(CBlur)
 
@@ -43,6 +46,16 @@ HRESULT CBlur::Blur_Effect()
 	return S_OK;
 }
 
+HRESULT CBlur::Blur_Specular()
+{
+	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
+
+	FAILED_CHECK_RETURN(DownScale(pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Specular")), m_pUnorderedAccessView_DownScaledSpecular), E_FAIL);
+	FAILED_CHECK_RETURN(BlurInPlace(m_pShaderResourceView_DownScaledSpecular, m_pUnorderedAccessView_DownScaledSpecular), E_FAIL);
+
+	return S_OK;
+}
+
 HRESULT CBlur::DownScale(ID3D11ShaderResourceView* inputSRV, ID3D11UnorderedAccessView* inputUAV)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
@@ -70,7 +83,7 @@ HRESULT CBlur::BlurInPlace(ID3D11ShaderResourceView* inputSRV, ID3D11UnorderedAc
 /* Input */
 	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", inputSRV), E_FAIL);
 	/* Output */
-	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Bloom_Temp), E_FAIL);
+	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", m_pUnorderedAccessView_Blur_Temp), E_FAIL);
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[1].pPass->Apply(0, m_pDeviceContext), E_FAIL);
 
 	_uint x = (_uint)ceil((m_iWinSize[0] / 4.0f) / (128.0f - 12.0f));
@@ -80,7 +93,7 @@ HRESULT CBlur::BlurInPlace(ID3D11ShaderResourceView* inputSRV, ID3D11UnorderedAc
 
 	// Vertical
 	/* Input */
-	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Bloom_Temp), E_FAIL);
+	FAILED_CHECK_RETURN(Set_ShaderResourceView("g_Input", m_pShaderResourceView_Blur_Temp), E_FAIL);
 	/* Output */
 	FAILED_CHECK_RETURN(Set_UnorderedAccessView("g_Output", inputUAV), E_FAIL);
 	FAILED_CHECK_RETURN(m_InputLayouts_CS[2].pPass->Apply(0, m_pDeviceContext), E_FAIL);
@@ -107,9 +120,10 @@ HRESULT CBlur::Build_BlurResources(_float iWidth, _float iHeight)
 	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
 	TextureDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
 
-	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pBloomTex_Temp), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pBlurTex_Temp), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pDownScaledEmissiveTex), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pDownScaledEffectTex), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pDownScaledSpecularTex), E_FAIL);
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC	 ShaderResourceViewDesc;
 	ZeroMemory(&ShaderResourceViewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
@@ -117,9 +131,10 @@ HRESULT CBlur::Build_BlurResources(_float iWidth, _float iHeight)
 	ShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	ShaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pBloomTex_Temp, &ShaderResourceViewDesc, &m_pShaderResourceView_Bloom_Temp), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pBlurTex_Temp, &ShaderResourceViewDesc, &m_pShaderResourceView_Blur_Temp), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pDownScaledEmissiveTex, &ShaderResourceViewDesc, &m_pShaderResourceView_DownScaledEmissive), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pDownScaledEffectTex, &ShaderResourceViewDesc, &m_pShaderResourceView_DownScaledEffect), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pDownScaledSpecularTex, &ShaderResourceViewDesc, &m_pShaderResourceView_DownScaledSpecular), E_FAIL);
 
 	D3D11_UNORDERED_ACCESS_VIEW_DESC UnorderedAccessViewDesc;
 	ZeroMemory(&UnorderedAccessViewDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
@@ -128,27 +143,17 @@ HRESULT CBlur::Build_BlurResources(_float iWidth, _float iHeight)
 	UnorderedAccessViewDesc.Buffer.FirstElement = 0;
 	UnorderedAccessViewDesc.Buffer.NumElements = m_iWinSize[0] * m_iWinSize[1] / 16;
 
-	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pBloomTex_Temp, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_Bloom_Temp), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pBlurTex_Temp, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_Blur_Temp), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pDownScaledEmissiveTex, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_DownScaledEmissive), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pDownScaledEffectTex, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_DownScaledEffect), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pDownScaledSpecularTex, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_DownScaledSpecular), E_FAIL);
 
 	return S_OK;
 }
 
 HRESULT CBlur::Build_ComputeShaders(const _tchar* pShaderFilePath, const char* pTechniqueName)
 {
-	_uint iFlag = 0;
-
-#ifdef _DEBUG
-	iFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-#else
-	iFlag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
-#endif
-
-	ID3DBlob* pCompiledShaderCode = nullptr;
-	ID3DBlob* pCompileErrorMsg = nullptr;
-
-	FAILED_CHECK_RETURN(D3DCompileFromFile(pShaderFilePath, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, nullptr, "fx_5_0", iFlag, 0, &pCompiledShaderCode, &pCompileErrorMsg), E_FAIL);
+	ID3DBlob* pCompiledShaderCode = CShaderCompiler::GetInstance()->Get_CompiledCode(pShaderFilePath);
 	FAILED_CHECK_RETURN(D3DX11CreateEffectFromMemory(pCompiledShaderCode->GetBufferPointer(), pCompiledShaderCode->GetBufferSize(), 0, m_pDevice, &m_pEffect_CS), E_FAIL);
 
 	ID3DX11EffectTechnique* pTechnique = m_pEffect_CS->GetTechniqueByName(pTechniqueName);
@@ -170,8 +175,6 @@ HRESULT CBlur::Build_ComputeShaders(const _tchar* pShaderFilePath, const char* p
 	}
 
 	Safe_Release(pTechnique);
-	Safe_Release(pCompiledShaderCode);
-	Safe_Release(pCompileErrorMsg);
 
 	return S_OK;
 }
@@ -218,9 +221,9 @@ HRESULT CBlur::Unbind_ShaderResources()
 
 void CBlur::Free()
 {
-	Safe_Release(m_pUnorderedAccessView_Bloom_Temp);
-	Safe_Release(m_pShaderResourceView_Bloom_Temp);
-	Safe_Release(m_pBloomTex_Temp);
+	Safe_Release(m_pUnorderedAccessView_Blur_Temp);
+	Safe_Release(m_pShaderResourceView_Blur_Temp);
+	Safe_Release(m_pBlurTex_Temp);
 
 	Safe_Release(m_pShaderResourceView_DownScaledEmissive);
 	Safe_Release(m_pUnorderedAccessView_DownScaledEmissive);
@@ -229,6 +232,10 @@ void CBlur::Free()
 	Safe_Release(m_pShaderResourceView_DownScaledEffect);
 	Safe_Release(m_pUnorderedAccessView_DownScaledEffect);
 	Safe_Release(m_pDownScaledEffectTex);
+
+	Safe_Release(m_pUnorderedAccessView_DownScaledSpecular);
+	Safe_Release(m_pShaderResourceView_DownScaledSpecular);
+	Safe_Release(m_pDownScaledSpecularTex);
 
 	for (auto& InputLayout : m_InputLayouts_CS)
 	{
@@ -240,4 +247,61 @@ void CBlur::Free()
 
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
+
+#ifdef _DEBUG
+	Clear_Buffer();
+#endif
 }
+
+#ifdef _DEBUG
+HRESULT CBlur::Ready_DebugBuffer(const _tchar* pTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
+{
+	auto& iter = find_if(m_VIBuffers.begin(), m_VIBuffers.end(), CTagFinder(pTag));
+	if (iter != m_VIBuffers.end()) return E_FAIL;
+
+	CVIBuffer_RectRHW* pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, fX, fY, fSizeX, fSizeY, TEXT("../Bin/ShaderFiles/Shader_RenderTarget.hlsl"), "DefaultTechnique");
+	NULL_CHECK_RETURN(pVIBuffer, E_FAIL);
+	m_VIBuffers.emplace(pTag, pVIBuffer);
+
+	return S_OK;
+}
+
+HRESULT CBlur::Render_DebugBuffer_Emissive(const _tchar* pTag)
+{
+	auto& iter = find_if(m_VIBuffers.begin(), m_VIBuffers.end(), CTagFinder(pTag));
+	if (iter == m_VIBuffers.end()) return E_FAIL;
+
+	(*iter).second->Set_ShaderResourceView("g_DiffuseTexture", m_pShaderResourceView_DownScaledEmissive);
+	(*iter).second->Render(0);
+	return S_OK;
+}
+
+HRESULT CBlur::Render_DebugBuffer_Effect(const _tchar* pTag)
+{
+	auto& iter = find_if(m_VIBuffers.begin(), m_VIBuffers.end(), CTagFinder(pTag));
+	if (iter == m_VIBuffers.end()) return E_FAIL;
+
+	(*iter).second->Set_ShaderResourceView("g_DiffuseTexture", m_pShaderResourceView_DownScaledEffect);
+	(*iter).second->Render(0);
+	return S_OK;
+}
+
+HRESULT CBlur::Render_DebugBuffer_Specular(const _tchar* pTag)
+{
+	auto& iter = find_if(m_VIBuffers.begin(), m_VIBuffers.end(), CTagFinder(pTag));
+	if (iter == m_VIBuffers.end()) return E_FAIL;
+
+	(*iter).second->Set_ShaderResourceView("g_DiffuseTexture", m_pShaderResourceView_DownScaledSpecular);
+	(*iter).second->Render(0);
+	return S_OK;
+}
+
+void CBlur::Clear_Buffer()
+{
+	for (auto& Pair : m_VIBuffers)
+	{
+		Safe_Release(Pair.second);
+	}
+	m_VIBuffers.clear();
+}
+#endif
