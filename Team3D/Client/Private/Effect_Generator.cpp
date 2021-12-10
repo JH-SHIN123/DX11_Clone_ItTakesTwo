@@ -35,6 +35,8 @@
 #include "Effect_Boss_Core_Lightning_Big.h"
 #include "Effect_Boss_Gravitational_Bomb.h"
 #include "Effect_Boss_Gravitational_Bomb_Pillar.h"
+#include "Effect_Boss_Gravitational_Bomb_Particle.h"
+#include "Effect_Boss_Gravitational_Bomb_Explosion.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -129,6 +131,12 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::BossBomb_Pillar:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_Gravitational_Bomb_Pillar");
+		break;
+	case Effect_Value::BossBomb_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Gravitational_Bomb_Particle");
+		break;
+	case Effect_Value::BossBomb_Explosion:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Gravitational_Bomb_Explosion");
 		break;
 	default:
 		break;
@@ -226,7 +234,8 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 
 HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pPrototypeName, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, EFFECT_DESC_PROTO* pData)
 {
-	// 2D Effect
+
+#pragma region 2D_Effect
 	if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_FireDoor", CEffect_FireDoor::Create(pDevice, pDeviceContext, pData));
 
@@ -302,8 +311,15 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Gravitational_Bomb_Pillar"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Gravitational_Bomb_Pillar", CEffect_Boss_Gravitational_Bomb_Pillar::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Gravitational_Bomb_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Gravitational_Bomb_Particle", CEffect_Boss_Gravitational_Bomb_Particle::Create(pDevice, pDeviceContext, pData));
 
-	// 3D Effect
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Gravitational_Bomb_Explosion"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Gravitational_Bomb_Explosion", CEffect_Boss_Gravitational_Bomb_Explosion::Create(pDevice, pDeviceContext, pData));
+
+#pragma  endregion
+
+#pragma region 3D_Effect
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel", CEffect_RespawnTunnel::Create(pDevice, pDeviceContext, pData));
 
@@ -322,16 +338,18 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Boss_Gravitational_Bomb"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Boss_Gravitational_Bomb", CEffect_Boss_Gravitational_Bomb::Create(pDevice, pDeviceContext, pData));
 
+#pragma  endregion
+
+#ifdef __TEST_JUNG
 	else
 	{
-#ifdef __TEST_JUNG
 		_tchar szWarning[MAX_PATH] = L"";
 		lstrcat(szWarning, pPrototypeName);
 		MessageBox(g_hWnd, szWarning, L"Press Enter", MB_OK);
 		Safe_Delete(pData); // 터지게 만듦
-#endif // __TEST_JUNG
 		return S_OK;
 	}
+#endif // __TEST_JUNG
 
 
 	return S_OK;

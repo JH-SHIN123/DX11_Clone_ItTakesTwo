@@ -81,6 +81,8 @@ _int CEffect_Boss_Core::Tick(_double TimeDelta)
 
  	/*GARA*/if (m_pGameInstance->Key_Down(DIK_V))
  		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Pillar, m_pTransformCom->Get_WorldMatrix());
+	/*GARA*/if (m_pGameInstance->Key_Down(DIK_B))
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Explosion, m_pTransformCom->Get_WorldMatrix());
 
 	return _int();
 }

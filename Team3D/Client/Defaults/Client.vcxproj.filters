@@ -717,8 +717,14 @@
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb">
       <UniqueIdentifier>{ac82eea7-3f9c-4bff-a8cd-2c98a20fec91}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\00.Boss_Gravitational_Bomb_Pillar">
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\00.Pillar">
       <UniqueIdentifier>{15c0b7f4-1868-4a20-ba62-50ad3e0cc08c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\01.Particle">
+      <UniqueIdentifier>{54991868-15b0-46d1-9188-d22da60ba239}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\02.Explosion">
+      <UniqueIdentifier>{986bf8f3-5282-448d-8a28-88224ce7a71f}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1329,7 +1335,13 @@
       <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Pillar.h">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\00.Boss_Gravitational_Bomb_Pillar</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\00.Pillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\01.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\02.Explosion</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1904,7 +1916,13 @@
       <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Pillar.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\00.Boss_Gravitational_Bomb_Pillar</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\00.Pillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\01.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\02.Explosion</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
