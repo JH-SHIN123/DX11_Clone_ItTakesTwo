@@ -73,7 +73,6 @@ public:
 	void Set_Pinball_HandleBase(CGameObject* pPinball_HandleBase) { m_pPinball_HandleBase = pPinball_HandleBase; }
 	CGameObject* Get_Pinball_HandleBase() { return m_pPinball_HandleBase; }
 
-
 	void Set_Pinball_Spring(CGameObject* pPinball_Spring) { m_pPinball_Spring = pPinball_Spring; }
 	CGameObject* Get_Pinball_Spring() { return m_pPinball_Spring; }
 
@@ -88,6 +87,35 @@ public:
 
 	void Set_SlideDoor(CGameObject* pSlideDoor) { m_pSlideDoor = pSlideDoor; }
 	CGameObject* Get_SlideDoor() { return m_pSlideDoor; }
+
+	/* For.BossRoom */
+	void Set_BossFloor(CGameObject* pBossFloor) { m_pBossFloor = pBossFloor; }
+	CGameObject* Get_BossFloor() { return m_pBossFloor; }
+
+	void Set_BossDoor01(CGameObject* pBossdoor01) { m_pBossDoor01 = pBossdoor01; }
+	CGameObject* Get_BossDoor01() { return m_pBossDoor01; }
+
+	void Set_BossDoor02(CGameObject* pBossdoor02) { m_pBossDoor02 = pBossdoor02; }
+	CGameObject* Get_BossDoor02() { return m_pBossDoor02; }
+
+	void Set_BossSlideDoor(CGameObject* pBossSlideDoor) { m_pBossSlideDoor = pBossSlideDoor; }
+	CGameObject* Get_BossSlideDoor() { return m_pBossSlideDoor; }
+
+	/* 보스 방 문 조작 함수들 */
+	void GoUp_BossFloor(_float fMaxdistance = 50.f, _float fSpeed = 15.f);	/* fMaxDistanc : 올릴 높이, fSpeed : 올라가는 속도 */
+	void Close_BossDoor(); 													/* 보스 등장시 바닥 문 닫을 때 호출 */
+	void Close_BossSlideDoor(); 											/* 보스방에 있는 중력발판 사용끝나면 호출 */
+
+	/* For.SpaceShip */
+	void Set_MoonBaboon_SpaceShip(CGameObject* pMoonBaboonSpaceShip) { m_pMoonBaboonSpaceShip = pMoonBaboonSpaceShip; }
+	CGameObject* Get_MoonBaboon_SpaceShip() { return m_pMoonBaboonSpaceShip; }
+
+	/* For.MoonUFO */
+	void Set_MoonUFO(CGameObject* pMoonUFO) { m_pMoonUFO = pMoonUFO; }
+	CGameObject* Get_MoonUFO() { return m_pMoonUFO; }
+
+	void Set_Moon(CGameObject* pMoon) { m_pMoon = pMoon; }
+	CGameObject* Get_Mooon() { return m_pMoon; }
 
 	// Stage Flow
 	void Set_Valve_Activate(_bool bValveActivate) { m_IsValveActivated = bValveActivate; }
@@ -168,6 +196,19 @@ private:
 
 	/* For.HangingPlanet */
 	CGameObject* m_pHangingPlanet = nullptr;
+
+	/* For.BossRoom */
+	CGameObject* m_pBossFloor = nullptr;
+	CGameObject* m_pBossDoor01 = nullptr;
+	CGameObject* m_pBossDoor02 = nullptr;
+	CGameObject* m_pBossSlideDoor = nullptr;
+
+	/* For.MoonUFO */
+	CGameObject* m_pMoonUFO = nullptr;
+	CGameObject* m_pMoon = nullptr;
+
+	/* For.MoonBaboonSpaceShip*/
+	CGameObject* m_pMoonBaboonSpaceShip = nullptr;
 
 	/* For.ControlRoom_Battery */
 	CGameObject* m_pControlRoom_Battery = nullptr;

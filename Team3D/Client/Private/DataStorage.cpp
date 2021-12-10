@@ -4,8 +4,31 @@
 #include "May.h"
 #include "MainCamera.h"
 #include "SubCamera.h"
+#include "BossFloor.h"
+#include "BossDoor.h"
+#include "BossSlideDoor.h"
 
 IMPLEMENT_SINGLETON(CDataStorage)
+
+void CDataStorage::GoUp_BossFloor(_float fMaxdistance, _float fSpeed)
+{
+	if (true == ((CBossDoor*)m_pBossDoor01)->Get_DoorClose())
+	{
+		((CBossFloor*)m_pBossFloor)->Set_DoorUp(fMaxdistance, fSpeed);
+		((CBossDoor*)m_pBossDoor01)->Set_DoorUp(fMaxdistance, fSpeed);
+		((CBossDoor*)m_pBossDoor02)->Set_DoorUp(fMaxdistance, fSpeed);
+	}
+}
+
+void CDataStorage::Close_BossDoor()
+{
+	((CBossDoor*)m_pBossDoor01)->Set_DoorClose();
+}
+
+void CDataStorage::Close_BossSlideDoor()
+{
+	((CBossSlideDoor*)m_pBossSlideDoor)->Set_DoorClose();
+}
 
 void CDataStorage::Set_SpaceRails(const _tchar* pRailTag, CGameObject* pRail)
 {

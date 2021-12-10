@@ -77,7 +77,8 @@ namespace Engine
 			ePRESS,
 			eROTATIONFAN,
 			ePEDAL,
-			eROTATIONBOX
+			eROTATIONBOX,
+			eMOONUFO
 		};
 	};
 

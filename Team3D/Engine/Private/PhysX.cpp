@@ -192,14 +192,27 @@ _bool CPhysX::Raycast(const PxVec3 & origin, const PxVec3 & unitDir, const PxRea
 	return m_pScene->raycast(origin, unitDir, distance, hitCall, hitFlags, filterData, filterCall, cache);
 }
 
-PxSphericalJoint * CPhysX::Create_Joint(PxRigidActor* Actor1, PxTransform Transform1, PxRigidActor* Actor2, PxTransform Transform2)
+PxSphericalJoint * CPhysX::Create_Joint(PxRigidActor* Actor1, PxTransform Transform1, PxRigidActor* Actor2, PxTransform Transform2, PxJointLimitCone Limitcone, _bool bLimitEnabled)
 {
 	PxSphericalJoint* pJoint = PxSphericalJointCreate(*m_pPhysics, Actor1, Transform1, Actor2, Transform2);
 	if (nullptr == pJoint)
 		return nullptr;
-	pJoint->setLimitCone(PxJointLimitCone(PxPi / 4, PxPi / 4, 0.05f));
-	pJoint->setSphericalJointFlag(PxSphericalJointFlag::eLIMIT_ENABLED, true);
 
+	pJoint->setLimitCone(Limitcone);
+	pJoint->setSphericalJointFlag(PxSphericalJointFlag::eLIMIT_ENABLED, bLimitEnabled);
+	return pJoint;
+}
+
+PxDistanceJoint * CPhysX::Create_Joint(PxRigidActor * Actor1, PxTransform Transform1, PxRigidActor * Actor2, PxTransform Transform2, _float fDistance)
+{
+	PxDistanceJoint* pJoint = PxDistanceJointCreate(*m_pPhysics, Actor1, Transform1, Actor2, Transform2);
+	if (nullptr == pJoint)
+		return nullptr;
+
+	pJoint->setMaxDistance(fDistance);
+	pJoint->setMinDistance(fDistance);
+	pJoint->setDistanceJointFlag(PxDistanceJointFlag::eMAX_DISTANCE_ENABLED, true);
+	pJoint->setDistanceJointFlag(PxDistanceJointFlag::eMIN_DISTANCE_ENABLED, true);
 	return pJoint;
 }
 

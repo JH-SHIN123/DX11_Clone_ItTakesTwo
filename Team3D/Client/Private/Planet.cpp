@@ -52,7 +52,7 @@ _int CPlanet::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
 
-	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 500.f))
 	{
 		if (!lstrcmp(TEXT("Component_Model_Saturn"), m_tDynamic_Env_Desc.szModelTag))
 		{

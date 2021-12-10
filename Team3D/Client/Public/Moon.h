@@ -2,12 +2,15 @@
 #include "Dynamic_Env.h"
 
 BEGIN(Client)
-class CAlienScreen final : public CDynamic_Env
+class CMoon final : public CDynamic_Env
 {
 private:
-	explicit CAlienScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CAlienScreen(const CAlienScreen& rhs);
-	virtual ~CAlienScreen() = default;
+	explicit CMoon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CMoon(const CMoon& rhs);
+	virtual ~CMoon() = default;
+
+public:
+	virtual _fvector Get_Position() { return m_pTransformCom->Get_State(CTransform::STATE_POSITION); }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -21,14 +24,12 @@ public:
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
-	CTextures*		m_pTextureCom = nullptr;
 
-	_float			m_fFrame = 0.f;
 private:
 	HRESULT Ready_Component(void* pArg);
 
 public:
-	static  CAlienScreen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static  CMoon*		  Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject*  Clone_GameObject(void* pArg) override;
 	virtual void		  Free() override;
 };
