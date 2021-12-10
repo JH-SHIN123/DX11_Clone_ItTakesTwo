@@ -37,26 +37,29 @@ HRESULT CPixelChargeBarGauge::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CPixelChargeBarGauge::Tick(_double TimeDelta)
+_int CPixelChargeBarGauge::Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(TimeDelta);
+	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_K))
+	if (((CCody*)DATABASE->GetCody())->Get_IsInArcadeJoyStick() == true)
 	{
-		m_fGauge += 0.5f;
+		if (m_pGameInstance->Key_Down(DIK_K))
+		{
+			m_fGauge += 0.5f;
+		}
+
+		if (m_fGauge > 0.f)
+			m_fGauge -= (_float)dTimeDelta;
+		else if (m_fGauge < 0.f)
+			m_fGauge = 0.f;
 	}
 
-	if (m_fGauge > 0.f)
-		m_fGauge -= TimeDelta;
-	else if (m_fGauge < 0.f)
-		m_fGauge = 0.f;
-
-	return _int();
+	return NO_EVENT;
 }
 
-_int CPixelChargeBarGauge::Late_Tick(_double TimeDelta)
+_int CPixelChargeBarGauge::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Late_Tick(TimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
 }

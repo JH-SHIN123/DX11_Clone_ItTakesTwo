@@ -375,6 +375,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBarGauge">
       <UniqueIdentifier>{be9ad09e-e9ac-474c-a1ec-0cb2dad1b979}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelCrossHair">
+      <UniqueIdentifier>{1ac9580d-da06-4b7f-80e6-0aea96698253}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelHeart">
       <UniqueIdentifier>{f14a377f-2f92-48a2-b056-467646a21ba6}</UniqueIdentifier>
     </Filter>
@@ -1073,6 +1076,9 @@
     <ClInclude Include="..\Public\PixelChargeBarGauge.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBarGauge</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PixelCrossHair.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelCrossHair</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\PixelUFO.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelUFO</Filter>
     </ClInclude>
@@ -1701,6 +1707,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\PixelChargeBarGauge.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBarGauge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PixelCrossHair.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelCrossHair</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PixelUFO.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelUFO</Filter>

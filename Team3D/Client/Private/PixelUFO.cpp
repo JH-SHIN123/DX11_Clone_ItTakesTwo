@@ -38,16 +38,16 @@ HRESULT CPixelUFO::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CPixelUFO::Tick(_double TimeDelta)
+_int CPixelUFO::Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(TimeDelta);
+	CGameObject::Tick(dTimeDelta);
 
 	return _int();
 }
 
-_int CPixelUFO::Late_Tick(_double TimeDelta)
+_int CPixelUFO::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Late_Tick(TimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
 }

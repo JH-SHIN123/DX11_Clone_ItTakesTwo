@@ -2115,7 +2115,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
 		_vector vTargetPosition = XMVectorSet(60.f, 0.076f, 16.f, 1.f);
-		_vector vOffSetPosition = XMVectorSet(60.f - 0.038f, 0.076f, 16.f + 0.04f, 1.f);
+		_vector vOffSetPosition = XMVectorSet(60.f - 0.04f, 0.076f, 16.f + 0.04f, 1.f);
 
 		m_pActorCom->Set_Position(vOffSetPosition);
 		m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);
@@ -3112,29 +3112,29 @@ void CCody::In_JoyStick(_double dTimeDelta)
 {
 	if (true == m_IsInJoyStick)
 	{
-		if (m_pGameInstance->Key_Pressing(DIK_W))
+		if (m_pGameInstance->Key_Up(DIK_W) || m_pGameInstance->Key_Up(DIK_S) || m_pGameInstance->Key_Up(DIK_A) || m_pGameInstance->Key_Up(DIK_D))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
+		}
+		else if (m_pGameInstance->Key_Pressing(DIK_W))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Fwd);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Fwd);
-		}
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
+		} 
 		else if (m_pGameInstance->Key_Pressing(DIK_A))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Left);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Left);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
 		}
 		else if (m_pGameInstance->Key_Pressing(DIK_S))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Bck);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Bck);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
 		}
 		else if (m_pGameInstance->Key_Pressing(DIK_D))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Right);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Right);
-		}
-		else
-		{
-			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
 		}
 		if (m_pGameInstance->Key_Down(DIK_F10))

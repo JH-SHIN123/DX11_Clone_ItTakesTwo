@@ -461,6 +461,7 @@ void CMainCamera::KeyCheck(_double dTimeDelta)
 	{
 		m_pTransformCom->Go_Right(dTimeDelta);
 	}
+
 }
 #pragma endregion
 _int CMainCamera::ReSet_Cam_FreeToAuto()
@@ -566,10 +567,6 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		return NO_EVENT;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_O))
-	{
-		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
-	}
 	if (m_pGameInstance->Key_Down(DIK_P))
 	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;

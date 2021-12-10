@@ -88,23 +88,8 @@ void CUFORadarLever::Rotate_JoyStick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Pressing(DIK_W))
 	{
 		if (m_fAngleZ > -20.f)
-			m_fAngleZ -= dTimeDelta * 100.f;
+			m_fAngleZ -= (_float)dTimeDelta * 100.f;
 		
-
-		matTrans = XMMatrixTranslation(0.f, 0.f, -60.f);
-		matRotZ = XMMatrixRotationY(XMConvertToRadians(m_fAngleZ));
-		matPivot = matRotZ * matTrans;
-
-		matAnim = m_pModelCom->Get_AnimTransformation(10);
-		matAnim = XMMatrixInverse(nullptr, matAnim);
-
-		matPivot *= matAnim;
-		m_pModelCom->Set_PivotTransformation(10, matPivot);
-	}
-	else if (m_pGameInstance->Key_Pressing(DIK_S))
-	{
-		if (m_fAngleZ < 20.f)
-			m_fAngleZ += dTimeDelta * 100.f;
 
 		matTrans = XMMatrixTranslation(0.f, 0.f, -60.f);
 		matRotZ = XMMatrixRotationY(XMConvertToRadians(m_fAngleZ));
@@ -120,7 +105,7 @@ void CUFORadarLever::Rotate_JoyStick(_double dTimeDelta)
 	{
 
 		if (m_fAngleX < 20.f)
-			m_fAngleX += dTimeDelta * 100.f;
+			m_fAngleX += (_float)dTimeDelta * 100.f;
 
 		matTrans = XMMatrixTranslation(0.f, 0.f, -60.f);
 		matRotX = XMMatrixRotationX(XMConvertToRadians(m_fAngleX));
@@ -133,10 +118,25 @@ void CUFORadarLever::Rotate_JoyStick(_double dTimeDelta)
 		m_pModelCom->Set_PivotTransformation(10, matPivot);
 
 	}
+	else if (m_pGameInstance->Key_Pressing(DIK_S))
+	{
+		if (m_fAngleZ < 20.f)
+			m_fAngleZ += (_float)dTimeDelta * 100.f;
+
+		matTrans = XMMatrixTranslation(0.f, 0.f, -60.f);
+		matRotZ = XMMatrixRotationY(XMConvertToRadians(m_fAngleZ));
+		matPivot = matRotZ * matTrans;
+
+		matAnim = m_pModelCom->Get_AnimTransformation(10);
+		matAnim = XMMatrixInverse(nullptr, matAnim);
+
+		matPivot *= matAnim;
+		m_pModelCom->Set_PivotTransformation(10, matPivot);
+	}
 	else if (m_pGameInstance->Key_Pressing(DIK_D))
 	{
 		if (m_fAngleX > -20.f)
-			m_fAngleX -= dTimeDelta * 100.f;
+			m_fAngleX -= (_float)dTimeDelta * 100.f;
 
 		matTrans = XMMatrixTranslation(0.f, 0.f, -60.f);
 		matRotX = XMMatrixRotationX(XMConvertToRadians(m_fAngleX));
@@ -154,7 +154,7 @@ void CUFORadarLever::Rotate_JoyStick(_double dTimeDelta)
 		// X
 		if (m_fAngleX > 2.f)
 		{
-			m_fAngleX -= dTimeDelta * 100.f;
+			m_fAngleX -= (_float)dTimeDelta * 100.f;
 			matTrans = XMMatrixTranslation(0.f, 0.f, -60.f);
 			matRotX = XMMatrixRotationX(XMConvertToRadians(m_fAngleX));
 			matPivot = matRotX * matTrans;
@@ -167,7 +167,7 @@ void CUFORadarLever::Rotate_JoyStick(_double dTimeDelta)
 		}
 		else if (m_fAngleX < -2.f)
 		{
-			m_fAngleX += dTimeDelta * 100.f;
+			m_fAngleX += (_float)dTimeDelta * 100.f;
 			matTrans = XMMatrixTranslation(0.f, 0.f, -60.f);
 			matRotX = XMMatrixRotationX(XMConvertToRadians(m_fAngleX));
 			matPivot = matRotX * matTrans;
@@ -195,7 +195,7 @@ void CUFORadarLever::Rotate_JoyStick(_double dTimeDelta)
 		// Z
 		else if (m_fAngleZ > 2.f)
 		{
-			m_fAngleZ -= dTimeDelta * 100.f;
+			m_fAngleZ -= (_float)dTimeDelta * 100.f;
 			matTrans = XMMatrixTranslation(0.f, 0.f, -60.f);
 			matRotZ = XMMatrixRotationY(XMConvertToRadians(m_fAngleZ));
 			matPivot = matRotZ * matTrans;
@@ -208,7 +208,7 @@ void CUFORadarLever::Rotate_JoyStick(_double dTimeDelta)
 		}
 		else if (m_fAngleZ < -2.f)
 		{
-			m_fAngleZ += dTimeDelta * 100.f;
+			m_fAngleZ += (_float)dTimeDelta * 100.f;
 			matTrans = XMMatrixTranslation(0.f, 0.f, -60.f);
 			matRotZ = XMMatrixRotationY(XMConvertToRadians(m_fAngleZ));
 			matPivot = matRotZ * matTrans;

@@ -9,12 +9,12 @@ END
 
 BEGIN(Client)
 
-class CPixelChargeBarGauge final : public CGameObject
+class CPixelCrossHair final : public CGameObject
  {
 private:
-	explicit CPixelChargeBarGauge(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CPixelChargeBarGauge(const CGameObject& rhs);
-	virtual ~CPixelChargeBarGauge() = default;
+	explicit CPixelCrossHair(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CPixelCrossHair(const CGameObject& rhs);
+	virtual ~CPixelCrossHair() = default;
 
 public:
 	virtual HRESULT NativeConstruct_Prototype() override;
@@ -23,18 +23,21 @@ public:
 	virtual _int Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+ private:
+	 void Movement(_double dTimeDelta);
+
+ private:
+	 _float m_fSizeX = 0.f;
+	 _float m_fSizeY = 0.f;
+
 private:
 	CVIBuffer_Rect*					m_pVIBufferCom = nullptr;
 	CRenderer*						m_pRendererCom = nullptr;
 	CTextures*						m_pTextureCom = nullptr;
 	CTransform*						m_pTransformCom = nullptr;
 
- private:
-	 _float m_fGauge = 0.f;
-
-
 public:
-	static CPixelChargeBarGauge* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CPixelCrossHair* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject * Clone_GameObject(void * pArg) override;
 	virtual void Free() override;
 

@@ -37,16 +37,16 @@ HRESULT CPixelChargeBar::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CPixelChargeBar::Tick(_double TimeDelta)
+_int CPixelChargeBar::Tick(_double dTimeDelta)
 {
-	CGameObject::Tick(TimeDelta);
+	CGameObject::Tick(dTimeDelta);
 
 	return _int();
 }
 
-_int CPixelChargeBar::Late_Tick(_double TimeDelta)
+_int CPixelChargeBar::Late_Tick(_double dTimeDelta)
 {
-	CGameObject::Late_Tick(TimeDelta);
+	CGameObject::Late_Tick(dTimeDelta);
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
 }

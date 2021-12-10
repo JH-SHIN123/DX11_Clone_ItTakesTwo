@@ -218,6 +218,7 @@ public:
 	_uint			 Get_CurState() const;
 	_vector			 Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
 	_bool			 Get_IsHooking() { return m_IsHookUFO; }
+	_bool			 Get_IsInArcadeJoyStick() { return m_IsInJoyStick; }
 
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
