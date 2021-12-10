@@ -36,21 +36,19 @@ HRESULT CEffect_Boss_Gravitational_Bomb::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_Gravitational_Bomb::Tick(_double TimeDelta)
 {
-	//m_dLifeTime -= TimeDelta;
 	if (0.0 >= m_dLifeTime)
 		return EVENT_DEAD;
-
-	//m_pTransformCom->RotateYaw(TimeDelta * 0.25);
 
 	m_fTime -= (_float)TimeDelta * 0.1f;
 	if (0.f >= m_fTime)
 		m_fTime = 1.f;
 
-	m_fSpinTime += (_float)TimeDelta * 0.25f;
-	if (1.f <= m_fSpinTime)
-		m_fSpinTime = 0.001f;
+	m_dLifeTime -= TimeDelta;
+	if(4 > m_dLifeTime)
+		m_fAlphaTime -= (_float)TimeDelta * 0.333333f;
 
-
+	if (0.f >= m_fAlphaTime)
+		m_fAlphaTime = 0.f;
 
 	Scale_Check(TimeDelta);
 
@@ -64,12 +62,12 @@ _int CEffect_Boss_Gravitational_Bomb::Late_Tick(_double TimeDelta)
 
 HRESULT CEffect_Boss_Gravitational_Bomb::Render(RENDER_GROUP::Enum eGroup)
 {
-//	_float fAlpha = (_float)m_dActivateTime;
+	_float fAlpha = m_fAlphaTime;
+	if (1.f < fAlpha) fAlpha = 1.f;
 
-// 	m_pModelCom->Set_Variable("g_fAlpha", &fAlpha, sizeof(_float));
 	m_pModelCom->Set_Variable("g_vColor", &m_vColor, sizeof(_float4));
 	m_pModelCom->Set_Variable("g_fTime", &m_fTime, sizeof(_float));
-	m_pModelCom->Set_Variable("g_fAlpha", &m_fSpinTime, sizeof(_float));
+	m_pModelCom->Set_Variable("g_fAlpha", &fAlpha, sizeof(_float));
 
 	m_pModelCom->Set_ShaderResourceView("g_DistortionTexture", m_pTexturesCom->Get_ShaderResourceView(2));
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());

@@ -373,38 +373,19 @@ PS_OUT	PS_MAIN_UMBRELLAPIPE(PS_IN_DOUBLE_UV In)
 PS_OUT	PS_MAIN_BOSS_GRAVITOTIONAL_BOMB(PS_IN_DOUBLE_UV In)
 {
 	PS_OUT Out = (PS_OUT)0;
-	//float2 vDistortionUV = In.vTexUV;
-	//vDistortionUV.x += g_fTime * 0.33333333f;
-	//vDistortionUV.y += g_fTime;
-	//float4 vFX_tex = g_DistortionTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistortionUV);
-	//float fWeight = (vFX_tex.b * 0.5f);
-	//
-	//
-	//float2 vflipUV = { In.vTexUV.y, In.vTexUV.x };
-	//vflipUV.x += g_fTime * 0.33333333f;
-	//vflipUV.y += g_fTime;
-	//vector vColor = g_ColorRampTexture.Sample(Wrap_MinMagMipLinear_Sampler, vflipUV - fWeight);
-
-
 
 	if (0.499f >= In.vTexUV.y)
 		discard;
-	//0.5 ~ 1.0 > 0 ~ 1로 바꾸기
+
 	float fDistRatio_U = (In.vTexUV.x - 0.5f) / 0.5f;
 	float fDistRatio_V = (In.vTexUV.y - 0.5f) / 0.5f;
 
 	float2 vDistUV = In.vTexUV;
-	vDistUV.x = fDistRatio_U;// +(g_fAlpha * 1.75f);// 여기선 빼주고
+	vDistUV.x = fDistRatio_U;
 	vDistUV.y = fDistRatio_V * 1.25f;
 	vDistUV.y += g_fTime;
 	vector vDistortion = g_DistortionTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistUV);
 	float fDistPower = vDistortion.r * 0.1f;
-
-	//float2 vUV = In.vTexUV;
-	//vUV.y += fDistPower;
-	//vUV.x += g_fTime * 0.5f;
-	//vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, vUV);
-	//Out.vDiffuse.rgb *= vMtrlDiffuse.rgb * (1.f - fDistRatio);
 
 	Out.vDiffuse = g_vColor;
 	if (0.505f >= In.vTexUV.y)
@@ -427,9 +408,11 @@ PS_OUT	PS_MAIN_BOSS_GRAVITOTIONAL_BOMB(PS_IN_DOUBLE_UV In)
 	else
 		Out.vDiffuse.rgb *= vDistortion.rgb * (1.f - fDistRatio_V);
 
+	if(fDistRatio_V > g_fAlpha)
+		Out.vDiffuse.rgb *= g_fAlpha;
 
-
-
+	if (0.f >= g_fAlpha)
+		Out.vDiffuse.rgb = 0.f;
 
 	return Out;
 }
@@ -438,7 +421,9 @@ PS_OUT	PS_MAIN_BOSS_GRAVITOTIONAL_BOMB(PS_IN_DOUBLE_UV In)
 technique11 DefaultTechnique
 {
 	pass Default // 0
-	{
+	{                                                
+
+
 		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);

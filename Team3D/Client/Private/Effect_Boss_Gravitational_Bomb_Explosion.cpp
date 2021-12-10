@@ -113,9 +113,9 @@ void CEffect_Boss_Gravitational_Bomb_Explosion::Instance_Pos(_float TimeDelta, _
 	m_pInstance_Parabola_Time[iIndex] = (_double)TimeDelta;
 
 	_vector vDir = XMLoadFloat3(&m_pInstanceBiffer_Dir[iIndex]);
-	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 10.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
+	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 15.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
 
-	vPos.m128_f32[1] -= TimeDelta * (1.f - m_pInstanceBuffer_STT[iIndex].fTime) * 1.5f;
+	//vPos.m128_f32[1] -= TimeDelta * (1.f - m_pInstanceBuffer_STT[iIndex].fTime) * 1.5f;
 
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }
