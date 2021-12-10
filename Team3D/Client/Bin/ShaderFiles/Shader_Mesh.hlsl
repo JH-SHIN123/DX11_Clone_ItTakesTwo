@@ -740,10 +740,9 @@ PS_OUT PS_RADARSCREEN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector vMtrlDiffuse = vector(0.260417, 0.260417, 0.260417, 1.f);
-
-	Out.vDiffuse = vMtrlDiffuse;
+	Out.vDiffuse.rgb = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).rgb;
 	Out.vDiffuse.w = 1.f;
+
 	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 
 	// Calculate Normal
@@ -759,8 +758,9 @@ PS_OUT PS_RADARSCREEN(PS_IN In)
 
 	// Calculate Emissive
 	if (g_IsMaterials.Is_Emissive & 1) Out.vEmissive = g_EmissiveTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-	Out.vEmissive = pow(Out.vEmissive, 4.5f) * 6.f;
-	Out.vEmissive.r = 0.f;
+	Out.vEmissive *= Out.vDiffuse * 1.5f;
+	//Out.vEmissive = pow(Out.vEmissive, 4.5f) * 6.f;
+	//Out.vEmissive.r = 0.f;
 
 	// Calculate Shadow
 	int iIndex = -1;

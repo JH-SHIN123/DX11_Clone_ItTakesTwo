@@ -314,6 +314,9 @@
     <ClInclude Include="..\Public\PinBall_Spring.h" />
     <ClInclude Include="..\Public\PipeJumpWall.h" />
     <ClInclude Include="..\Public\PipeWallCameraTrigger.h" />
+    <ClInclude Include="..\Public\PixelChargeBar.h" />
+    <ClInclude Include="..\Public\PixelChargeBarGauge.h" />
+    <ClInclude Include="..\Public\PixelUFO.h" />
     <ClInclude Include="..\Public\Planet.h" />
     <ClInclude Include="..\Public\PlanetRing.h" />
     <ClInclude Include="..\Public\PlayerActor.h" />
@@ -510,6 +513,9 @@
     <ClCompile Include="..\Private\PinBall_Spring.cpp" />
     <ClCompile Include="..\Private\PipeJumpWall.cpp" />
     <ClCompile Include="..\Private\PipeWallCameraTrigger.cpp" />
+    <ClCompile Include="..\Private\PixelChargeBar.cpp" />
+    <ClCompile Include="..\Private\PixelChargeBarGauge.cpp" />
+    <ClCompile Include="..\Private\PixelUFO.cpp" />
     <ClCompile Include="..\Private\Planet.cpp" />
     <ClCompile Include="..\Private\PlanetRing.cpp" />
     <ClCompile Include="..\Private\PlayerActor.cpp" />
@@ -596,6 +602,7 @@
   </ItemGroup>
   <!--Codes-->
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_ArcadePixel.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Default.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Font.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl" />

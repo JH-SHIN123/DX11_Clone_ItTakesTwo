@@ -363,6 +363,27 @@
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet">
       <UniqueIdentifier>{5a8b3c4a-2f54-4c36-864c-b09168f6cbe1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelArrow">
+      <UniqueIdentifier>{e63c7c10-00f2-4f58-b572-f21cf9f72e24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelBaboon">
+      <UniqueIdentifier>{3005b2dc-f19b-470a-ae25-1c849d2ad5c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBar">
+      <UniqueIdentifier>{c575c5fb-ac5e-43fa-a014-bdc923a6a86a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBarGauge">
+      <UniqueIdentifier>{be9ad09e-e9ac-474c-a1ec-0cb2dad1b979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelHeart">
+      <UniqueIdentifier>{f14a377f-2f92-48a2-b056-467646a21ba6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelShield">
+      <UniqueIdentifier>{b03945a9-ee3a-4390-bac6-288264ccf6f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelUFO">
+      <UniqueIdentifier>{5a5a8040-e900-4364-8388-bd1875391a4c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarScreen">
       <UniqueIdentifier>{c11c0f23-cc94-441b-be78-6deee3e7bf8a}</UniqueIdentifier>
     </Filter>
@@ -1046,6 +1067,15 @@
     <ClInclude Include="..\Public\UFORadarSet.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PixelChargeBar.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PixelChargeBarGauge.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBarGauge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PixelUFO.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelUFO</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\UFORadarScreen.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarScreen</Filter>
     </ClInclude>
@@ -1666,6 +1696,15 @@
     <ClCompile Include="..\Private\UFORadarSet.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\PixelChargeBar.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PixelChargeBarGauge.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBarGauge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PixelUFO.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelUFO</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\UFORadarScreen.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarScreen</Filter>
     </ClCompile>
@@ -2009,6 +2048,9 @@
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect_Effect.hlsl">
       <Filter>97.ShaderFiles\00.Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_ArcadePixel.hlsl">
+      <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

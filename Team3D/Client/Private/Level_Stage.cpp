@@ -744,8 +744,20 @@ HRESULT CLevel_Stage::Ready_Layer_UFORadarSet(const _tchar * pLayerTag)
 {
 	RADARDESC RadarDesc;
 	RadarDesc.vPosition = { 60.f, 0.f, 15.f, 1.f };
-
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UFORadarSet"), &RadarDesc), E_FAIL);
+
+	/* Pixels */
+	_vector vPosition = { 60.f, 0.f + 0.3f, 15.f + 0.29f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelChargeBar"), &vPosition), E_FAIL);
+
+	/* Pixels */
+	vPosition = { 60.f, 0.f + 0.3f, 15.f + 0.29f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelChargeBarGauge"), &vPosition), E_FAIL);
+
+
+	vPosition = { 60.f, 0.f + 0.56f, 15.f + 0.29f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelUFO"), &vPosition), E_FAIL);
+
 	return S_OK;
 }
 #pragma endregion

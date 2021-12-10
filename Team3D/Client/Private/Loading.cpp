@@ -66,6 +66,9 @@
 #include "NoBatterySign.h"
 #include "SecurityCamera.h"
 #include "UFORadarScreen.h"
+#include "PixelChargeBarGauge.h"
+#include "PixelChargeBar.h"
+#include "PixelUFO.h"
 #include "BigButtonFrame.h"
 #include "RotatedRobotBody.h"
 #include "RotatedRobotHead.h"
@@ -564,6 +567,19 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon()
 
 	/* UFO.RadarSet */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_UFORadarSet"), CUFORadarSet::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Component_Texture_PixelChargeBar*/
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_PixelChargeBar"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/HUD/ArcadeScreen/PixelChargeBar.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PixelChargeBar"), CPixelChargeBar::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Component_Texture_PixelChargeBarGauge*/
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_PixelChargeBarGauge"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/HUD/ArcadeScreen/PixelChargeBarGauge.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PixelChargeBarGauge"), CPixelChargeBarGauge::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+
+	/* Component_Texture_PixelUFO*/
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_PixelUFO"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/HUD/ArcadeScreen/PixelUFO.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PixelUFO"), CPixelUFO::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 #endif
 
