@@ -235,6 +235,9 @@
     <Filter Include="02.Utility\07.ScreenSpaceFX">
       <UniqueIdentifier>{f8703f99-bdd8-431a-8150-5af3df778c9a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\99.Others\03.ShaderCompiler">
+      <UniqueIdentifier>{9b3ff6a2-e3f7-4bb1-b24e-4523176a7682}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\GameInstance.h">
@@ -432,6 +435,9 @@
     <ClInclude Include="..\Public\SSAO.h">
       <Filter>02.Utility\07.ScreenSpaceFX</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ShaderCompiler.h">
+      <Filter>02.Utility\99.Others\03.ShaderCompiler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -598,6 +604,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\SSAO.cpp">
       <Filter>02.Utility\07.ScreenSpaceFX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ShaderCompiler.cpp">
+      <Filter>02.Utility\99.Others\03.ShaderCompiler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,65 +1,45 @@
 #include "stdafx.h"
-#include "..\Public\Laser_TypeA.h"
+#include "..\Public\Laser_TypeB.h"
 
-CLaser_TypeA::CLaser_TypeA(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CLaser_TypeB::CLaser_TypeB(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLaser(pDevice, pDeviceContext)
 {
 }
 
-CLaser_TypeA::CLaser_TypeA(const CLaser_TypeA & rhs)
+CLaser_TypeB::CLaser_TypeB(const CLaser_TypeB & rhs)
 	: CLaser(rhs)
 {
 }
 
-HRESULT CLaser_TypeA::NativeConstruct_Prototype()
+HRESULT CLaser_TypeB::NativeConstruct_Prototype()
 {
 	CLaser::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
-HRESULT CLaser_TypeA::NativeConstruct(void * pArg)
+HRESULT CLaser_TypeB::NativeConstruct(void * pArg)
 {
 	CLaser::NativeConstruct(pArg);
 
 #ifdef __TEST_SE
-	m_dChargingTime = 3.0;
-	m_fShootSpeed = 100.f;
-	m_vStartPoint = _float4(64.f, 10.f, 30.f, 1.f);
+	m_fShootSpeed = 30.f;
+	m_vStartPoint = _float4(64.f, 1.f, 30.f, 1.f);
 	m_vEndPoint = m_vStartPoint;
 
-	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(XMVectorSet(1.f, -1.f, 0.f, 0.f)));
+	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(XMVectorSet(1.f, 0.f, 0.f, 0.f)));
 #endif
 
 	return S_OK;
 }
 
-_int CLaser_TypeA::Tick(_double dTimeDelta)
+_int CLaser_TypeB::Tick(_double dTimeDelta)
 {
 	CLaser::Tick(dTimeDelta);
 
 	/* 레이저 생성 시 */
 	if (!m_isDead)
 	{
-		/* 차지 시간 */
-		if (m_dChargingTime > 0.0)
-		{
-			/* 차지 시작 시간, 에너지를 모으는 이펙트 생성 */
-			if (m_dChargingTime == 3.0)
-			{
-			}
-
-			m_dChargingTime -= dTimeDelta;
-
-			/* 차지 시간이 다 채워진 순간 */
-			/* 쏘는 순간 터트리는 이펙트 생성 */
-			if (m_dChargingTime <= 0.0)
-			{
-			}
-
-			return NO_EVENT;
-		}
-
 		if (m_fLaserSizeY > 0)
 			m_pGameInstance->Raycast(MH_PxVec3(XMLoadFloat4(&m_vStartPoint)), MH_PxVec3(XMLoadFloat4(&m_vLaserDir)), m_fLaserMaxY, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
 
@@ -162,9 +142,10 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 	/* 레이저 종료 시*/
 	else
 	{
-		m_fLaserSizeX -= 6.f * (_float)dTimeDelta;
+		m_fLaserSizeY -= 30.f * (_float)dTimeDelta;
+		XMStoreFloat4(&m_vEndPoint, XMLoadFloat4(&m_vStartPoint) + XMLoadFloat4(&m_vLaserDir) * m_fLaserSizeY);
 
-		if (m_fLaserSizeX < 0.f)
+		if (m_fLaserSizeY < 0.f)
 			return EVENT_DEAD;
 	}
 
@@ -179,7 +160,7 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-_int CLaser_TypeA::Late_Tick(_double dTimeDelta)
+_int CLaser_TypeB::Late_Tick(_double dTimeDelta)
 {
 	CLaser::Late_Tick(dTimeDelta);
 
@@ -188,7 +169,7 @@ _int CLaser_TypeA::Late_Tick(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-HRESULT CLaser_TypeA::Render(RENDER_GROUP::Enum eRender)
+HRESULT CLaser_TypeB::Render(RENDER_GROUP::Enum eRender)
 {
 	CLaser::Render(eRender);
 
@@ -208,40 +189,40 @@ HRESULT CLaser_TypeA::Render(RENDER_GROUP::Enum eRender)
 	return NO_EVENT;
 }
 
-HRESULT CLaser_TypeA::Render_ShadowDepth()
+HRESULT CLaser_TypeB::Render_ShadowDepth()
 {
 	CLaser::Render_ShadowDepth();
 
 	return S_OK;
 }
 
-CLaser_TypeA * CLaser_TypeA::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CLaser_TypeB * CLaser_TypeB::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
-	CLaser_TypeA* pInstance = new CLaser_TypeA(pDevice, pDeviceContext);
+	CLaser_TypeB* pInstance = new CLaser_TypeB(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSG_BOX("Failed to Create Instance - CLaser_TypeA");
+		MSG_BOX("Failed to Create Instance - CLaser_TypeB");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CLaser_TypeA::Clone_GameObject(void * pArg)
+CGameObject * CLaser_TypeB::Clone_GameObject(void * pArg)
 {
-	CLaser_TypeA* pInstance = new CLaser_TypeA(*this);
+	CLaser_TypeB* pInstance = new CLaser_TypeB(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CLaser_TypeA");
+		MSG_BOX("Failed to Clone Instance - CLaser_TypeB");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CLaser_TypeA::Free()
+void CLaser_TypeB::Free()
 {
 	CLaser::Free();
 }

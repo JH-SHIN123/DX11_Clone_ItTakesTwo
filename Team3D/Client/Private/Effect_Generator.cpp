@@ -295,10 +295,10 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else
 	{
+#ifdef __TEST_JUNG
 		_tchar szWarning[MAX_PATH] = L"";
 		lstrcat(szWarning, pPrototypeName);
 		MessageBox(g_hWnd, szWarning, L"Press Enter", MB_OK);
-#ifdef __TEST_JUNG
 		Safe_Delete(pData); // 터지게 만듦
 #endif // __TEST_JUNG
 		return S_OK;

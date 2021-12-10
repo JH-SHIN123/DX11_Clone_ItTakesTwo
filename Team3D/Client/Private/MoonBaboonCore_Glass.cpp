@@ -93,9 +93,6 @@ HRESULT CMoonBaboonCore_Glass::Render(RENDER_GROUP::Enum eGroup)
 
 void CMoonBaboonCore_Glass::OnTrigger(_double TimeDelta)
 {
-	if (GetAsyncKeyState('P') & 0x8000)
-		m_bBroken = true;
-
 	// 부서진거랑 / 안부서진거
 	if (m_bBroken)
 	{

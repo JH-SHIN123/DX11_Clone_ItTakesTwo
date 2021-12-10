@@ -123,6 +123,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.Laser\01.TypeA%28Boss%29">
       <UniqueIdentifier>{9f8c6192-2a2b-450d-a4c8-e49fa1dbbcd1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.Laser\02.TypeB%28Boss%29">
+      <UniqueIdentifier>{845d1d4d-5721-40b7-b552-f8a8ac53b106}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung">
       <UniqueIdentifier>{fec661ad-31f9-4dec-b790-1b4cb09030ce}</UniqueIdentifier>
     </Filter>
@@ -146,6 +149,9 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star">
       <UniqueIdentifier>{fd9a8160-d96b-47d1-bbc1-8925a4337c3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\07.Space_Valve_Door">
+      <UniqueIdentifier>{0a950e2e-b4ab-4a4f-8677-d89a0dacbc26}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye">
       <UniqueIdentifier>{ade7861b-fc9f-4044-8e8a-b7432305af13}</UniqueIdentifier>
@@ -417,8 +423,29 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss">
       <UniqueIdentifier>{81c3b492-c168-4f0b-819e-539efbaad0e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core">
+      <UniqueIdentifier>{1b207031-529d-4198-a7c0-1e275955c7d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\00.Core_Hit">
+      <UniqueIdentifier>{74a643e4-3232-4d81-a30c-68c74e97f464}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\01.Core_Smoke">
+      <UniqueIdentifier>{442e7bd3-f40c-4243-b07e-982b13ea6ecc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\02.Core_Explosion">
+      <UniqueIdentifier>{ea5302d0-d9ea-4320-91a9-2368a3da767f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\03.Core_Lightning">
+      <UniqueIdentifier>{31a067a0-2991-4190-950f-9da799848d7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\04.Core_Lightning_Big">
+      <UniqueIdentifier>{e4423772-30b5-41cf-8c84-daf78dfdfcf6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke">
       <UniqueIdentifier>{6f9eb01e-d3a0-42a3-8c1b-f0328c536649}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\00.Laser_Particle">
+      <UniqueIdentifier>{b8aed4f4-bdd1-4e5a-a923-dbf34dca7640}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May">
       <UniqueIdentifier>{611bc1d3-0276-4f21-b082-4231462adca0}</UniqueIdentifier>
@@ -462,8 +489,14 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail">
       <UniqueIdentifier>{4473fc56-392d-424e-a8d6-96ba1259f992}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser">
+      <UniqueIdentifier>{7a29e47e-936f-445a-b906-c57d0033b40b}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29">
       <UniqueIdentifier>{3a519e7a-f348-4809-a94f-055799138e50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29">
+      <UniqueIdentifier>{cadc3ab7-2f34-4b6a-88b0-bae33b018ee8}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Light_Effect">
       <UniqueIdentifier>{42f75ceb-27c0-491b-95a9-a4316ca7f9f1}</UniqueIdentifier>
@@ -678,36 +711,6 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\00.Laser_Particle">
-      <UniqueIdentifier>{b8aed4f4-bdd1-4e5a-a923-dbf34dca7640}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser">
-      <UniqueIdentifier>{7a29e47e-936f-445a-b906-c57d0033b40b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core">
-      <UniqueIdentifier>{1b207031-529d-4198-a7c0-1e275955c7d4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\00.Core_Hit">
-      <UniqueIdentifier>{74a643e4-3232-4d81-a30c-68c74e97f464}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\01.Core_Smoke">
-      <UniqueIdentifier>{442e7bd3-f40c-4243-b07e-982b13ea6ecc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\02.Core_Explosion">
-      <UniqueIdentifier>{ea5302d0-d9ea-4320-91a9-2368a3da767f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\03.Core_Lightning">
-      <UniqueIdentifier>{31a067a0-2991-4190-950f-9da799848d7e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\07.Space_Valve_Door">
-      <UniqueIdentifier>{0a950e2e-b4ab-4a4f-8677-d89a0dacbc26}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29">
-      <UniqueIdentifier>{cadc3ab7-2f34-4b6a-88b0-bae33b018ee8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\04.Core_Lightning_Big">
-      <UniqueIdentifier>{e4423772-30b5-41cf-8c84-daf78dfdfcf6}</UniqueIdentifier>
-    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -803,6 +806,9 @@
     <ClInclude Include="..\Public\Laser_TypeA.h">
       <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\01.TypeA%28Boss%29</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Laser_TypeB.h">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\02.TypeB%28Boss%29</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\WarpGate.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
     </ClInclude>
@@ -823,6 +829,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Space_Valve_Star.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Space_Valve_Door.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\07.Space_Valve_Door</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Environment_Generator.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\00.Environment_Generator</Filter>
@@ -1061,8 +1070,29 @@
     <ClInclude Include="..\Public\TestEffect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Core.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Core_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\02.Core_Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Core_Hit.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\00.Core_Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Core_Lightning.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\03.Core_Lightning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Core_Lightning_Big.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\04.Core_Lightning_Big</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Core_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\01.Core_Smoke</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Effect_Boss_Laser_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Laser_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\00.Laser_Particle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Player_Dead.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default</Filter>
@@ -1094,8 +1124,14 @@
     <ClInclude Include="..\Public\Effect_Player_Lail.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Hit_BossLaser.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Effect_Env_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Env_Particle_Field.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_PointLight.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Light_Effect</Filter>
@@ -1280,36 +1316,6 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Laser_Particle.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\00.Laser_Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Hit_BossLaser.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Core.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Core_Hit.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\00.Core_Hit</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Core_Smoke.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\01.Core_Smoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Core_Explosion.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\02.Core_Explosion</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Core_Lightning.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\03.Core_Lightning</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Space_Valve_Door.h">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\07.Space_Valve_Door</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Env_Particle_Field.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Core_Lightning_Big.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\04.Core_Lightning_Big</Filter>
-    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -1402,6 +1408,9 @@
     <ClCompile Include="..\Private\Laser_TypeA.cpp">
       <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\01.TypeA%28Boss%29</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Laser_TypeB.cpp">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\02.TypeB%28Boss%29</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\WarpGate.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
     </ClCompile>
@@ -1422,6 +1431,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Space_Valve_Star.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\06.Space_Valve_Star</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Space_Valve_Door.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\07.Space_Valve_Door</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Environment_Generator.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\00.Environment_Generator</Filter>
@@ -1660,8 +1672,29 @@
     <ClCompile Include="..\Private\TestEffect.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\99.DummyEffect</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Core.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Core_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\02.Core_Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Core_Hit.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\00.Core_Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Core_Lightning.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\03.Core_Lightning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Core_Lightning_Big.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\04.Core_Lightning_Big</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Core_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\01.Core_Smoke</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Effect_Boss_Laser_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Laser_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\00.Laser_Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Player_Dead.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default</Filter>
@@ -1693,8 +1726,14 @@
     <ClCompile Include="..\Private\Effect_Player_Lail.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\07.Lail</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_Hit_BossLaser.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Effect_Env_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Env_Particle_Field.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect_PointLight.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Light_Effect</Filter>
@@ -1845,36 +1884,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Laser_Particle.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\00.Laser_Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Hit_BossLaser.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Core.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Core_Hit.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\00.Core_Hit</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Core_Smoke.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\01.Core_Smoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Core_Explosion.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\02.Core_Explosion</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Core_Lightning.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\03.Core_Lightning</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Space_Valve_Door.cpp">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\07.Space_Valve_Door</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Env_Particle_Field.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Core_Lightning_Big.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Core\04.Core_Lightning_Big</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

@@ -95,7 +95,6 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
 
-
 #ifdef __TEST_TAEK
 	TCHAR lightTag[256] = L"";
 
@@ -121,6 +120,13 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	}
 #endif // __TEST_TAEK
 
+#ifdef __TEST_SE
+	if (m_pGameInstance->Key_Down(DIK_M))
+	{
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA")), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB")), E_FAIL);
+	}
+#endif
 
 	return NO_EVENT;
 }
@@ -166,6 +172,7 @@ HRESULT CLevel_Stage::Ready_Test()
 	/* Se */
 #ifdef __TEST_SE
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB")), E_FAIL);
 #endif 
 	/* Jung */
 #ifdef __TEST_JUNG
@@ -374,7 +381,10 @@ HRESULT CLevel_Stage::Ready_Lights()
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
 	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
-	LightDesc.vDiffuse = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
+	//LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.vAmbient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
+
+	LightDesc.vDiffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
 	LightDesc.vAmbient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 
@@ -382,13 +392,13 @@ HRESULT CLevel_Stage::Ready_Lights()
 		return E_FAIL;
 
 #pragma region PointLight
-	//	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	//	LightDesc.vPosition = XMFLOAT3(20.f, 5.f, 20.f);
-	//	LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	//	LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-	//	LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
-	//	LightDesc.fRange = 15.f;
-	//if (FAILED(CLight_Generator::GetInstance()->Add_Light(TEXT("Point1"), LightDesc))) return E_FAIL;
+		LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+		LightDesc.vPosition = XMFLOAT3(20.f, 5.f, 20.f);
+		LightDesc.vDiffuse = XMFLOAT4(0.f, 0.f, 1.f, 1.f);
+		LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+		LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
+		LightDesc.fRange = 10.f;
+	if (FAILED(CLight_Generator::GetInstance()->Add_Light(TEXT("Point1"), LightDesc, (_uint)(EPoint_Color::Blue)))) return E_FAIL;
 #pragma endregion
 
 	/* For. Spot  X */

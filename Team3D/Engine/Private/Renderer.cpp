@@ -89,7 +89,6 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(CBlur::GetInstance()->Ready_DebugBuffer(TEXT("Target_EmissiveBlur"), fWidth * 4.f, 0.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(CBlur::GetInstance()->Ready_DebugBuffer(TEXT("Target_EffectBlur"), fWidth * 4.f, fHeight, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(CBlur::GetInstance()->Ready_DebugBuffer(TEXT("Target_SpecularBlur"), fWidth * 4.f, fHeight * 2.f, fWidth, fHeight), E_FAIL);
-	FAILED_CHECK_RETURN(CBlur::GetInstance()->Ready_DebugBuffer(TEXT("Target_SSAOBlur"), fWidth * 4.f, fHeight * 3.f, fWidth, fHeight), E_FAIL);
 #endif
 
 	return S_OK;
@@ -289,6 +288,7 @@ HRESULT CRenderer::Render_Blend()
 	FAILED_CHECK_RETURN(pBlur->Blur_Specular(), E_FAIL);
 
 	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX"), false);
+
 	m_pVIBuffer->Set_ShaderResourceView("g_DiffuseTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Diffuse")));
 	m_pVIBuffer->Set_ShaderResourceView("g_ShadeTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Shade")));
 	m_pVIBuffer->Set_ShaderResourceView("g_ShadowTexture", m_pRenderTarget_Manager->Get_ShaderResourceView(TEXT("Target_Shadow")));
