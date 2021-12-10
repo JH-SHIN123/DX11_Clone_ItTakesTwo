@@ -749,6 +749,9 @@
     <ClInclude Include="..\Public\Level_Stage.h">
       <Filter>01.Maps\03.Stage_Space</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MainCam.h">
+      <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\MainCamera.h">
       <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
     </ClInclude>
@@ -1347,6 +1350,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Stage.cpp">
       <Filter>01.Maps\03.Stage_Space</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MainCam.cpp">
+      <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MainCamera.cpp">
       <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
