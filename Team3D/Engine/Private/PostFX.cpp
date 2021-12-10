@@ -4,6 +4,7 @@
 #include "Pipeline.h"
 #include "VIBuffer_RectRHW.h"
 #include "Blur.h"
+#include "ShaderCompiler.h"
 #include "Textures.h"
 
 IMPLEMENT_SINGLETON(CPostFX)
@@ -380,18 +381,7 @@ HRESULT CPostFX::Build_DOFBlurResources(_float iWidth, _float iHeight)
 
 HRESULT CPostFX::Build_ComputeShaders(const _tchar* pShaderFilePath, const char* pTechniqueName)
 {
-	_uint iFlag = 0;
-
-#ifdef _DEBUG
-	iFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-#else
-	iFlag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
-#endif
-
-	ID3DBlob* pCompiledShaderCode = nullptr;
-	ID3DBlob* pCompileErrorMsg = nullptr;
-
-	FAILED_CHECK_RETURN(D3DCompileFromFile(pShaderFilePath, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE,  nullptr, "fx_5_0", iFlag, 0, &pCompiledShaderCode, &pCompileErrorMsg), E_FAIL);
+	ID3DBlob* pCompiledShaderCode = CShaderCompiler::GetInstance()->Get_CompiledCode(pShaderFilePath);
 	FAILED_CHECK_RETURN(D3DX11CreateEffectFromMemory(pCompiledShaderCode->GetBufferPointer(), pCompiledShaderCode->GetBufferSize(), 0, m_pDevice, &m_pEffect_CS), E_FAIL);
 
 	ID3DX11EffectTechnique* pTechnique = m_pEffect_CS->GetTechniqueByName(pTechniqueName);
@@ -413,8 +403,6 @@ HRESULT CPostFX::Build_ComputeShaders(const _tchar* pShaderFilePath, const char*
 	}
 
 	Safe_Release(pTechnique);
-	Safe_Release(pCompiledShaderCode);
-	Safe_Release(pCompileErrorMsg);
 
 	return S_OK;
 }
@@ -509,6 +497,7 @@ HRESULT CPostFX::KeyInput_Test(_double TimeDelta)
 void CPostFX::Clear_Buffer()
 {
 	Safe_Release(m_pVIBuffer_ToneMapping);
+	Safe_Release(m_pRadiarBlur_Mask);
 }
 
 void CPostFX::Free()
@@ -552,9 +541,6 @@ void CPostFX::Free()
 	}
 	m_InputLayouts_CS.clear();
 	Safe_Release(m_pEffect_CS);
-
-	Safe_Release(m_pVIBuffer_ToneMapping);
-	Safe_Release(m_pRadiarBlur_Mask);
 
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

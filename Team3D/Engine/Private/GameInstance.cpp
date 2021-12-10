@@ -19,6 +19,7 @@ CGameInstance::CGameInstance()
 	, m_pPostFX				(CPostFX::GetInstance())
 	, m_pBlur				(CBlur::GetInstance())
 	, m_pSSAO				(CSSAO::GetInstance())
+	, m_pShaderCompiler		(CShaderCompiler::GetInstance())
 {
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pInput_Device);
@@ -35,6 +36,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pPostFX);
 	Safe_AddRef(m_pBlur);
 	Safe_AddRef(m_pSSAO);
+	Safe_AddRef(m_pShaderCompiler);
 }
 
 #pragma region GameInstance
@@ -403,6 +405,14 @@ _bool CGameInstance::IsIn_LocalSpace_Sub(_fvector vPosition, _float fRadius)
 }
 #pragma endregion
 
+#pragma region ShaderCompiler
+ID3DBlob * CGameInstance::Get_Get_ShaderCompiledCode(const _tchar * pShaderFilePath)
+{
+	NULL_CHECK_RETURN(m_pShaderCompiler, nullptr);
+	return m_pShaderCompiler->Get_CompiledCode(pShaderFilePath);
+}
+#pragma endregion
+
 #pragma region PostFX
 void CGameInstance::Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos)
 {
@@ -430,8 +440,9 @@ void CGameInstance::Release_Engine()
 	CRenderTarget_Manager::GetInstance()->Clear_Buffers();
 #endif
 
-	if (CGameInstance::DestroyInstance())
-		MSG_BOX("Failed to Release CGameInstance.");
+	CGameInstance::GetInstance()->DestroyInstance();
+	//if (CGameInstance::GetInstance()->DestroyInstance())
+	//	MSG_BOX("Failed to Release CGameInstance.");
 	if (CLevel_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CLevel_Manager.");
 	if (CGameObject_Manager::DestroyInstance())
@@ -444,6 +455,8 @@ void CGameInstance::Release_Engine()
 		MSG_BOX("Failed to Release CShadow_Manager.");
 	if (CLight_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CLight_Manager.");
+	if (CShaderCompiler::DestroyInstance())
+		MSG_BOX("Failed to Release CShaderCompiler.");
 	if (CSSAO::DestroyInstance())
 		MSG_BOX("Failed to Release CSSAO.");
 	if (CPostFX::DestroyInstance())
@@ -470,6 +483,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pShaderCompiler);
 	Safe_Release(m_pSSAO);
 	Safe_Release(m_pBlur);
 	Safe_Release(m_pPostFX);
