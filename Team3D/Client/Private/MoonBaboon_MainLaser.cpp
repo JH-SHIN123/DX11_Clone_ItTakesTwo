@@ -95,6 +95,12 @@ HRESULT CMoonBaboon_MainLaser::Render_ShadowDepth()
 void CMoonBaboon_MainLaser::Set_LaserOperation(_bool IsActive)
 {
 	m_IsLaserOperation = IsActive; 
+
+	if (false == m_IsLaserOperation)
+	{
+		for (auto pLaserTypeB : m_vecLaser_TypeB)
+			Safe_Release(pLaserTypeB);
+	}
 }
 
 void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
@@ -173,14 +179,18 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 
 void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
 {
-	if (m_dPatternDeltaT <= 1.5)
+	if (m_dDownTime <= 1.5)
 	{
 		m_pTransformCom->Go_Down(TimeDelta);
-		m_dPatternDeltaT += TimeDelta;
+		m_dDownTime += TimeDelta;
 		m_pStaticActorCom->Update_StaticActor();
 	}
 	else
+	{
 		m_IsLaserUp = false;
+		m_IsLaserCreate = true;
+		m_dDownTime = 0.0;
+	}
 }
 
 CMoonBaboon_MainLaser* CMoonBaboon_MainLaser::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

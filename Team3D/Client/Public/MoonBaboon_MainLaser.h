@@ -41,6 +41,7 @@ private:
 private:
 	_uint	m_iPatternState = 0;
 	_double m_dPatternDeltaT = 0.0;
+	_double m_dDownTime = 0.0;
 	_bool	m_IsLaserOperation = false;
 	_bool	m_IsLaserUp = false;
 	_bool	m_IsLaserCreate = true;

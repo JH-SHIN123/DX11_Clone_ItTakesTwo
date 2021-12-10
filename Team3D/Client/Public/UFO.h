@@ -41,7 +41,7 @@ private:
 	UFO_TARGET			m_eTarget = TARGET_END;
 	UFO_PHASE			m_ePhase = PHASE_END;
 	UFO_PATTERN			m_ePattern = PATTERN_END;
-	
+
 private:
 	/* For.CutScene */
 	_bool				m_IsCutScene = false;
@@ -53,8 +53,9 @@ private:
 	_float4				m_vStartTargetPos;
 	_bool				m_IsCoreExplosion = false;
 	_bool				m_IsStartingPointMove = false;
-	_float				m_fBombLanchTime = 0.f;
 	_bool				m_IsLaserCreate = true;
+	_float				m_fGravitationalBombLanchTime = 0.f;
+	_uint				m_iGravitationalBombCount = 0;
 
 	/* For. Laser_TypeA */
 	_float4				m_vLaserGunPos;

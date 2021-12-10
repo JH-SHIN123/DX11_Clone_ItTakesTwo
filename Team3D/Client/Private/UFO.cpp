@@ -186,6 +186,7 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 		return;
 
 	_vector vDir, vTargetPos;
+	_uint iGravitationalBombMaxCount = 10;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
@@ -204,11 +205,41 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 	/* 우주선을 타겟쪽으로 천천히 회전 */
 	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f);
 
+	/* 10발만 쏘자 */
+	if (iGravitationalBombMaxCount >= m_iGravitationalBombCount)
+	{
+		m_fGravitationalBombLanchTime += (_float)dTimeDelta;
+
+		if (2.f <= m_fGravitationalBombLanchTime)
+		{
+			/* 중력자 폭탄 생성 */
+
+
+			/* 한 발 쏠때마다 타겟 바꿔주자 */
+			if (m_iGravitationalBombCount % 2)
+				m_eTarget = CUFO::TARGET_CODY;
+			else
+				m_eTarget = CUFO::TARGET_MAY;
+
+			m_fGravitationalBombLanchTime = 0.f;
+			++m_iGravitationalBombCount;
+		}
+	}
+	else
+	{
+		/* 다시 초기화 해주자 */
+		m_iGravitationalBombCount = 0;
+		m_fGravitationalBombLanchTime = 0.f;
+		m_ePattern = CUFO::INTERACTION;
+
+		/* 메인 레이저 다시 내려가자 */
+		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(false);
+	}
 }
 
 void CUFO::Phase1_InterAction(_double dTimeDelta)
 {
-	/* 레이저에서 중력자탄 패턴으로 변경 */
+	/* 레이저에서 중력자 폭탄 패턴으로 변경 */
 	if (true == m_pModelCom->Is_AnimFinished(UFO_Laser_HitPod))
 	{
 		m_fWaitingTime += (_float)dTimeDelta;
@@ -228,7 +259,25 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 		}
 	}
 
-	/* 중력자탄에서 레이저 패턴으로 변경 */
+	/* 중력자 폭탄에서 레이저 패턴으로 변경 */
+	if (true == m_pModelCom->Is_AnimFinished(UFO_MH))
+	{
+		m_fWaitingTime += (_float)dTimeDelta;
+
+		/* 1초 대기했다가 메인 레이저 내려가고 레이저 패턴으로 바꿔라 */
+		if (1.f <= m_fWaitingTime)
+		{
+			((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(true);
+
+			if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp())
+				m_ePattern = UFO_PATTERN::LASER;
+
+			m_pModelCom->Set_Animation(UFO_Laser_MH);
+			m_pModelCom->Set_NextAnimIndex(UFO_Laser_MH);
+
+			m_fWaitingTime = 0.f;
+		}
+	}
 
 }
 
@@ -244,6 +293,7 @@ void CUFO::Phase1_Pattern(_double dTimeDelta)
 		m_ePattern = UFO_PATTERN::INTERACTION;
 		m_pModelCom->Set_Animation(UFO_Laser_HitPod);
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
+		m_IsLaserCreate = true;
 		((CLaser_TypeA*)DATABASE->Get_LaserTypeA())->Set_Dead();
 	}
 
