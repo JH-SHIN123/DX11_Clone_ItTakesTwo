@@ -696,9 +696,9 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
 	CCamera::CAMERA_DESC CameraDesc;
 	CameraDesc.iViewportIndex = 1;
-	CameraDesc.vEye = _float3(0.f, 8.f, -7.f);
-	CameraDesc.vAt = _float3(0.f, 2.f, 0.f);
-	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
+	CameraDesc.vEye = _float4(0.f, 8.f, -7.f, 1.f);
+	CameraDesc.vAt = _float4(0.f, 2.f, 0.f, 1.f);
+	CameraDesc.vAxisY = _float4(0.f, 1.f, 0.f, 0.f);
 	CameraDesc.fFovY = XMConvertToRadians(60.f);
 	CameraDesc.fFullScreenAspect = (_float)g_iWinCX / (_float)g_iWinCY;
 	CameraDesc.fAspect = 1.f;
@@ -710,9 +710,9 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MainCamera"), &CameraDesc), E_FAIL);
 
 	CameraDesc.iViewportIndex = 2;
-	CameraDesc.vEye = _float3(0.f, 8.f, -7.f);
-	CameraDesc.vAt = _float3(0.f, 0.f, 0.f);
-	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
+	CameraDesc.vEye = _float4(0.f, 8.f, -7.f, 1.f);
+	CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+	CameraDesc.vAxisY = _float4(0.f, 1.f, 0.f, 0.f);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SubCamera"), &CameraDesc), E_FAIL);
 
