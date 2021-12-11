@@ -1,14 +1,13 @@
 #pragma once
-
 #include "InGameEffect.h"
-BEGIN(Client)
 
-class CEffect_Boss_Gravitational_Bomb_Particle final : public CInGameEffect
+BEGIN(Client)
+class CEffect_Boss_Laser_Charge final : public CInGameEffect
 {
 private:
-	explicit CEffect_Boss_Gravitational_Bomb_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CEffect_Boss_Gravitational_Bomb_Particle(const CEffect_Boss_Gravitational_Bomb_Particle& rhs);
-	virtual ~CEffect_Boss_Gravitational_Bomb_Particle() = default; public:
+	explicit CEffect_Boss_Laser_Charge(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_Boss_Laser_Charge(const CEffect_Boss_Laser_Charge& rhs);
+	virtual ~CEffect_Boss_Laser_Charge() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -19,7 +18,6 @@ public:
 
 public:
 	void Set_IsActivate(_bool IsActivate) { m_IsActivate = IsActivate; }
-	void Set_WorldMatrix(_fmatrix WorldMatrix) { m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
 
 private:
 	void Check_Instance(_double TimeDelta);
@@ -28,33 +26,40 @@ private:
 	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0)	override;
 	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0)	override;
 	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0)		override;
+	void Instance_Pos(_float TimeDelta, _fmatrix ParenMatrix, _int iIndex = 0);
 
 private:
-	void Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex = 0);
+	void Set_WorldMatrix();
+	void Reset_Instance(_double TimeDelta, _vector vPos, _int iIndex = 0);
 
 private:
 	HRESULT Ready_InstanceBuffer();
 	_float3 Get_Particle_Rand_Dir(_fvector vDefaultPos);
 
 private:
-	_double m_dControlTime = 0.5; //
+	_double m_dControlTime = 0.0;
+	_double m_dControlTime_Alpha = 0.0;
 	_bool m_IsActivate = true;
 
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT = nullptr;
 	_double*							m_pInstance_Parabola_Time = nullptr;
-	_float3*							m_pInstanceBiffer_Dir = nullptr;
+	_float3*							m_pInstanceBuffer_Dir = nullptr;
+	_float4*							m_pInstanceBuffer_LocalPos = nullptr;
+	_float*								m_pInstance_StartPos_Length = nullptr;
+	_float4x4							m_ParentMatrix;
 
 	const _float  m_fAlphaTime_Power = 1.f;
 	const _float  m_fInstance_SpeedPerSec = 2.5f;
 	const _double m_dInstance_Pos_Update_Time = 1.5;
-	const _float2 m_vDefaultSize = { 0.1f, 0.3f };
+	const _float2 m_vDefaultSize = { 0.8f, 0.2f };
 
-
+private:
+	class CUFO* m_pUFO = nullptr;
 
 public:
-	static CEffect_Boss_Gravitational_Bomb_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_Boss_Laser_Charge* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

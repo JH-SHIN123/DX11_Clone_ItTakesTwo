@@ -3,6 +3,7 @@
 
 #include "UFO.h"
 #include "DataStorage.h"
+#include "Effect_Generator.h"
 #include "Effect_Boss_Laser_Smoke.h"
 
 CLaser_TypeA::CLaser_TypeA(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -62,6 +63,7 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 			/* 차지 시작 시간, 에너지를 모으는 이펙트 생성 */
 			if (m_dChargingTime == 3.0)
 			{
+				EFFECT->Add_Effect(Effect_Value::BossLaser_Charge, m_pTransformCom->Get_WorldMatrix());
 			}
 
 			m_dChargingTime -= dTimeDelta;
@@ -70,6 +72,7 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 			/* 쏘는 순간 터트리는 이펙트 생성 */
 			if (m_dChargingTime <= 0.0)
 			{
+				EFFECT->Add_Effect(Effect_Value::BossLaser_Explosion, m_pTransformCom->Get_WorldMatrix());
 			}
 
 			return NO_EVENT;

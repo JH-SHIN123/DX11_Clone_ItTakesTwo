@@ -117,9 +117,7 @@ void CEffect_Boss_Gravitational_Bomb_Particle::Instance_Pos(_float TimeDelta, _i
 	m_pInstance_Parabola_Time[iIndex] = (_double)TimeDelta;
 
 	_vector vDir = XMLoadFloat3(&m_pInstanceBiffer_Dir[iIndex]);
-	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 10.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
-
-	vPos.m128_f32[1] -= TimeDelta * (1.f - m_pInstanceBuffer_STT[iIndex].fTime) * 1.5f;
+	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 3.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
 
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }
@@ -137,9 +135,9 @@ void CEffect_Boss_Gravitational_Bomb_Particle::Reset_Instance(_double TimeDelta,
 	m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time;
 	m_pInstance_Parabola_Time[iIndex] = 0.0;
 
-	//_vector vLookDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * -1.5f;
+	_vector vLookDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * -2.5f;
 	_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
-	//vRandDir = XMVector3Normalize(vRandDir + vLookDir);
+	vRandDir = XMVector3Normalize(vRandDir + vLookDir);
 
 	_float3 v3RandDir;
 	XMStoreFloat3(&v3RandDir, vRandDir);

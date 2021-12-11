@@ -83,6 +83,10 @@ _int CEffect_Boss_Core::Tick(_double TimeDelta)
  		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Pillar, m_pTransformCom->Get_WorldMatrix());
 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_B))
 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Explosion, m_pTransformCom->Get_WorldMatrix());
+	/*GARA*/if (m_pGameInstance->Key_Down(DIK_N))
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossLaser_Explosion, m_pTransformCom->Get_WorldMatrix());
+	/*GARA*/if (m_pGameInstance->Key_Down(DIK_M))
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Particle, m_pTransformCom->Get_WorldMatrix());
 
 	return _int();
 }

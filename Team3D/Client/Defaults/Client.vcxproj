@@ -238,6 +238,8 @@
     <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Particle.h" />
     <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Pillar.h" />
+    <ClInclude Include="..\public\Effect_Boss_Laser_Charge.h" />
+    <ClInclude Include="..\public\Effect_Boss_Laser_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Laser_Particle.h" />
     <ClInclude Include="..\Public\Effect_Boss_Laser_Smoke.h" />
     <ClInclude Include="..\Public\Effect_Cody_Size.h" />
@@ -440,6 +442,8 @@
     <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Pillar.cpp" />
+    <ClCompile Include="..\private\Effect_Boss_Laser_Charge.cpp" />
+    <ClCompile Include="..\private\Effect_Boss_Laser_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Laser_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Boss_Laser_Smoke.cpp" />
     <ClCompile Include="..\Private\Effect_Cody_Size.cpp" />

@@ -540,6 +540,21 @@
     <Filter Include="02.GameObject\05.Effect/Particle\3D">
       <UniqueIdentifier>{bbc8ca2e-31e3-4a88-ba86-0624f18e40f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss">
+      <UniqueIdentifier>{e042dc07-c94a-4891-8970-b4f62e72a68f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb">
+      <UniqueIdentifier>{ac82eea7-3f9c-4bff-a8cd-2c98a20fec91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\00.Pillar">
+      <UniqueIdentifier>{15c0b7f4-1868-4a20-ba62-50ad3e0cc08c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\01.Particle">
+      <UniqueIdentifier>{54991868-15b0-46d1-9188-d22da60ba239}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\02.Explosion">
+      <UniqueIdentifier>{986bf8f3-5282-448d-8a28-88224ce7a71f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Object">
       <UniqueIdentifier>{57086f47-9651-4c97-879a-fb50562cd8cf}</UniqueIdentifier>
     </Filter>
@@ -732,20 +747,11 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss">
-      <UniqueIdentifier>{e042dc07-c94a-4891-8970-b4f62e72a68f}</UniqueIdentifier>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\01.Laser_Charge">
+      <UniqueIdentifier>{47c9eba7-5686-4aee-adc3-28cf6c9e0f78}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb">
-      <UniqueIdentifier>{ac82eea7-3f9c-4bff-a8cd-2c98a20fec91}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\00.Pillar">
-      <UniqueIdentifier>{15c0b7f4-1868-4a20-ba62-50ad3e0cc08c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\01.Particle">
-      <UniqueIdentifier>{54991868-15b0-46d1-9188-d22da60ba239}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\02.Explosion">
-      <UniqueIdentifier>{986bf8f3-5282-448d-8a28-88224ce7a71f}</UniqueIdentifier>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\02.Laser_Explosion">
+      <UniqueIdentifier>{1daa48ca-6a84-40e4-91e9-4aa0a5a51bf2}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1208,6 +1214,18 @@
     <ClInclude Include="..\Public\InGameEffect_Model.h">
       <Filter>02.GameObject\05.Effect/Particle\3D</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Pillar.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\00.Pillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\01.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\02.Explosion</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Effect_RespawnTunnel.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\00.RespawnTunnel</Filter>
     </ClInclude>
@@ -1373,17 +1391,11 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb.h">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb</Filter>
+    <ClInclude Include="..\public\Effect_Boss_Laser_Charge.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\01.Laser_Charge</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Pillar.h">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\00.Pillar</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Particle.h">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\01.Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Explosion.h">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\02.Explosion</Filter>
+    <ClInclude Include="..\public\Effect_Boss_Laser_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\02.Laser_Explosion</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1843,6 +1855,18 @@
     <ClCompile Include="..\Private\InGameEffect_Model.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Pillar.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\00.Pillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\01.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\02.Explosion</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Effect_RespawnTunnel.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\00.RespawnTunnel</Filter>
     </ClCompile>
@@ -1975,17 +1999,11 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb</Filter>
+    <ClCompile Include="..\private\Effect_Boss_Laser_Charge.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\01.Laser_Charge</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Pillar.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\00.Pillar</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Particle.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\01.Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Explosion.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\02.Explosion</Filter>
+    <ClCompile Include="..\private\Effect_Boss_Laser_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\02.Laser_Explosion</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

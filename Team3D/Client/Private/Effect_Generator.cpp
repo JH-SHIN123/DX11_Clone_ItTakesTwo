@@ -23,14 +23,16 @@
 #include "Effect_Robot_Battery_Spark.h"
 #include "Effect_Umbrella_Pipe.h"
 #include "Effect_Pinball_Move.h"
-#include "Effect_Boss_Laser_Smoke.h"
 #include "Effect_PointLight.h"
+#include "Effect_Env_Particle_Field.h"
+#include "Effect_Boss_Laser_Smoke.h"
 #include "Effect_Boss_Laser_Particle.h"
+#include "Effect_Boss_Laser_Charge.h"
+#include "Effect_Boss_Laser_Explosion.h"
 #include "Effect_Boss_Core.h"
 #include "Effect_Boss_Core_Hit.h"
 #include "Effect_Boss_Core_Smoke.h"
 #include "Effect_Boss_Core_Explosion.h"
-#include "Effect_Env_Particle_Field.h"
 #include "Effect_Boss_Core_Lightning.h"
 #include "Effect_Boss_Core_Lightning_Big.h"
 #include "Effect_Boss_Gravitational_Bomb.h"
@@ -137,6 +139,12 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::BossBomb_Explosion:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_Gravitational_Bomb_Explosion");
+		break;
+	case Effect_Value::BossLaser_Charge:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Laser_Charge");
+		break;
+	case Effect_Value::BossLaser_Explosion:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Laser_Explosion");
 		break;
 	default:
 		break;
@@ -316,6 +324,13 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Gravitational_Bomb_Explosion"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Gravitational_Bomb_Explosion", CEffect_Boss_Gravitational_Bomb_Explosion::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Laser_Charge"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Laser_Charge", CEffect_Boss_Laser_Charge::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Laser_Explosion"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Laser_Explosion", CEffect_Boss_Laser_Explosion::Create(pDevice, pDeviceContext, pData));
+
 
 #pragma  endregion
 

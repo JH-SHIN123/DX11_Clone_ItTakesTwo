@@ -29,6 +29,8 @@ enum class Effect_Value
 	BossBomb_Pillar,
 	BossBomb_Particle,
 	BossBomb_Explosion,
+	BossLaser_Charge,
+	BossLaser_Explosion,
 	Effect_Value_End
 };
 

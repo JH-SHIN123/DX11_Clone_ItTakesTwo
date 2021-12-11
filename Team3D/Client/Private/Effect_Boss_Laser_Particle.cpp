@@ -138,11 +138,6 @@ void CEffect_Boss_Laser_Particle::Reset_Instance(_double TimeDelta, _float4 vPos
 	_float4 v4Dir = { v3RandDir.x, v3RandDir.y, v3RandDir.z, 0.f };
 	m_pInstanceBuffer_STT[iIndex].vUp = v4Dir;
 	m_pInstanceBiffer_Dir[iIndex] = v3RandDir;
-	if (0.f >= m_pInstanceBiffer_Dir[iIndex].y)
-	{
-		m_pInstanceBiffer_Dir[iIndex].y *= -1.2f;
-		m_pInstanceBuffer_STT[iIndex].vUp.y *= -1.f;
-	}
 }
 
 HRESULT CEffect_Boss_Laser_Particle::Ready_InstanceBuffer()
@@ -157,7 +152,6 @@ HRESULT CEffect_Boss_Laser_Particle::Ready_InstanceBuffer()
 	_float4 vMyPos;
 	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	_vector vLookDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * -1.5f;
 
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
@@ -173,7 +167,6 @@ HRESULT CEffect_Boss_Laser_Particle::Ready_InstanceBuffer()
 		m_pInstance_Parabola_Time[iIndex]			= 0.0;
 
 		_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
-		vRandDir = XMVector3Normalize(vRandDir + vLookDir);
 		_float3 v3RandDir;
 		XMStoreFloat3(&v3RandDir, vRandDir);
 		_float4 v4Dir = { v3RandDir.x, v3RandDir.y, v3RandDir.z, 0.f };

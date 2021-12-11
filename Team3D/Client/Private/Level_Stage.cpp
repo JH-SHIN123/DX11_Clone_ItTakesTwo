@@ -188,6 +188,11 @@ HRESULT CLevel_Stage::Ready_Test()
 	Arg_Desc.vRadiusXYZ = { 30.f, 10.f, 100.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
 
+	ROBOTDESC UFODesc;
+	UFODesc.vPosition = { 64.f, 10.f, 30.f, 1.f };
+	//UFODesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Test", Level::LEVEL_STAGE, TEXT("GameObject_UFO"), &UFODesc), E_FAIL);
+	return S_OK;
 
 	CMoonBaboonCore::MOONBABOONCORE_DESC tDesc;
 	tDesc.iIndex = 0;
