@@ -78,6 +78,16 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_pModelCom->Set_Animation(CutScene_PowerCoresDestroyed_UFO);
 		m_pModelCom->Set_NextAnimIndex(UFO_KnockDownMH);
 	}
+	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
+	{
+		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
+		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
+		m_IsCutScene = true;
+	}
+	else if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
+	{
+		m_IsCodyEnter = true;
+	}
 	////////////////////////////////////////////////////////////////////////////////////
 
 	/* 컷 신 재생중이 아니라면 보스 패턴 진행하자 나중에 컷 신 생기면 바꿈 */
@@ -122,7 +132,7 @@ _int CUFO::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 50.f))
 		return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
 	return NO_EVENT;
@@ -447,6 +457,7 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 		CGameObject* pGameObject = nullptr;
 		CBoss_Missile::BOSSMISSILE_DESC tMissileDesc;
 
+		/* 유도 미사일 발사!!!!!!!!!!!!!!!!! */
 		if (nullptr == m_pCodyMissile)
 		{
 			/* true면 Cody */
@@ -468,32 +479,35 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 		}
 	}
 
-	//m_fGuidedMissileTime += (_float)dTimeDelta;
 
-	//if (2.f <= m_fGuidedMissileTime)
-	//{
-	//	/* 유도 미사일 발사!!!!!!!!!! */
-	//	if (true == m_IsGuidedMissileCreate)
-	//	{
-	//		CBoss_Missile::BOSSMISSILE_DESC tMissileDesc;
-	//		tMissileDesc.IsTarget_Cody = true;
-	//		tMissileDesc.vPosition = vConvertPos;
-	//		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc);
-	//		
-	//		/* false면 May */
-	//		tMissileDesc.IsTarget_Cody = false;
-	//		tMissileDesc.vPosition = vConvertPos;
-	//		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc);
-
-	//		m_IsGuidedMissileCreate = false;
-	//	}
-
-	//	m_fGuidedMissileTime = 0.f;
-	//}
 }
 
 void CUFO::Phase3_Pattern(_double dTimeDelta)
 {
+	if (true == m_IsStartingPointMove)
+	{
+		Phase3_MoveStartingPoint(dTimeDelta);
+		return;
+	}
+}
+
+void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
+{
+	_vector vTargetPos = XMLoadFloat4(&m_vStartUFOPos);
+	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_vector vDir = XMVector3Normalize(vTargetPos - vUFOPos);
+	_vector vComparePos = vTargetPos - vUFOPos;
+
+	_float vDistance = XMVectorGetX(XMVector3Length(vComparePos));
+	/* 처음에 저장해둔 타겟 포스의 Y위치까지 천천히 위로 이동해라. */
+	if (0.f <= vDistance)
+	{
+		m_pTransformCom->Rotate_Axis(vDir, dTimeDelta);
+		m_pTransformCom->Go_Straight(dTimeDelta);
+	}
+	else
+		m_IsStartingPointMove = false;
 }
 
 void CUFO::Phase1_End(_double dTimeDelta)
@@ -533,7 +547,7 @@ void CUFO::Phase1_End(_double dTimeDelta)
 			_matrix BaseBone = m_pModelCom->Get_BoneMatrix("Base");
 			_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
 			_matrix AnimUFOWorld = BaseBone * UFOWorld;
-			m_pTransformCom->Set_WorldMatrix(AnimUFOWorld);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4((_float4*)&AnimUFOWorld.r[3].m128_f32[0]));
 
 			/* 중점에서 부터 마지막 애니메이션의 포지션을 빼서 그 지점에서부터 공전할 수 있도록 구해줌. 2페이지에서 보스 움직일 때 사용 */
 			_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&m_vStartUFOPos);
@@ -549,10 +563,10 @@ void CUFO::Phase1_End(_double dTimeDelta)
 
 			/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 나중에 컷신 나오면 이펙트랑 같이 맞춰주자 ㅇㅇ */
 			_matrix LaserBaseBone = m_pModelCom->Get_BoneMatrix("LaserBase");
-			_matrix matScale;
+			_matrix matDeleteScale;
 
-			matScale = XMMatrixScaling(0.f, 0.f, 0.f);
-			LaserBaseBone *= matScale;
+			matDeleteScale = XMMatrixScaling(0.f, 0.f, 0.f);
+			LaserBaseBone *= matDeleteScale;
 
 			m_pModelCom->Set_PivotTransformation(m_pModelCom->Get_BoneIndex("LaserBase"), LaserBaseBone);
 		}
@@ -584,10 +598,31 @@ HRESULT CUFO::Ready_Actor_Component()
 
 void CUFO::Phase2_End(_double dTimeDelta)
 {
+	if (true == m_IsCodyEnter)
+	{
+		m_pModelCom->Set_Animation(CutScene_EnterUFO_FlyingSaucer);
+		m_pModelCom->Set_NextAnimIndex(UFO_MH);
+
+		m_IsCodyEnter = false;
+	}
+
+	if (m_pModelCom->Is_AnimFinished(CutScene_EnterUFO_FlyingSaucer))
+	{
+		m_IsCutScene = false;
+		m_ePhase = CUFO::PHASE_3;
+		m_IsStartingPointMove = true;
+
+		/* 애니메이션이 딱 끝났을 때 뼈의 위치를 받아서 UFO 월드에 세팅해준다. */
+		_matrix BaseBone = m_pModelCom->Get_BoneMatrix("Base");
+		_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
+		_matrix AnimUFOWorld = BaseBone * UFOWorld;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4((_float4*)&AnimUFOWorld.r[3].m128_f32[0]));
+	}
 }
 
 void CUFO::Phase3_End(_double dTimeDelta)
 {
+
 }
 
 HRESULT CUFO::Render(RENDER_GROUP::Enum eGroup)
@@ -627,7 +662,15 @@ void CUFO::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(UFO_CodyHolding_low, UFO_CodyHolding, true);
 
 	m_pModelCom->Add_LerpInfo(UFO_CodyHolding, UFO_LaserRippedOff, true);
-	m_pModelCom->Add_LerpInfo(UFO_LaserRippedOff, UFO_MH, true);
+
+	m_pModelCom->Add_LerpInfo(UFO_Left, CutScene_RocketPhaseFinished_FlyingSaucer, true);
+
+	m_pModelCom->Add_LerpInfo(CutScene_RocketPhaseFinished_FlyingSaucer, UFO_RocketKnockDown_MH, true);
+
+	m_pModelCom->Add_LerpInfo(UFO_RocketKnockDown_MH, CutScene_EnterUFO_FlyingSaucer, true);
+
+	m_pModelCom->Add_LerpInfo(CutScene_EnterUFO_FlyingSaucer, UFO_MH, true);
+
 }
 
 HRESULT CUFO::Ready_Component()
@@ -700,6 +743,12 @@ void CUFO::Free()
 		Safe_Release(m_pStaticActorCom);
 		Safe_Release(m_pTriggerActorCom);
 	}
+
+	if(nullptr != m_pCodyMissile)
+		Safe_Release(m_pCodyMissile);
+
+	if (nullptr != m_pMayMissile)
+		Safe_Release(m_pMayMissile);
 
 	Safe_Release(m_pMayTransform);
 	Safe_Release(m_pCodyTransform);

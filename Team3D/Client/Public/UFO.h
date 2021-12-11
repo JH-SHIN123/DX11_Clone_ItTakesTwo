@@ -69,6 +69,7 @@ private:
 	_float					m_fGuidedMissileTime = 0.f;
 	_float4					m_vTranslationPos;
 	_bool					m_IsGuidedMissileCreate = true;
+	_bool					m_IsCodyEnter = false;
 	
 	class CBoss_Missile*	m_pCodyMissile = nullptr;
 	class CBoss_Missile*	m_pMayMissile = nullptr;
@@ -110,6 +111,7 @@ private:
 
 	/* For.PHASE_3 Pattern */
 	void Phase3_Pattern(_double dTimeDelta);
+	void Phase3_MoveStartingPoint(_double dTimeDelta);
 
 private:
 	/* For.PHASE_1 End */
