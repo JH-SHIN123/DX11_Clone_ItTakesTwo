@@ -159,7 +159,6 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	/* 레이저 건에서 타겟의 방향 벡터를 구하자 */
 	_vector vLaserDir = vTargetPos - vUFOPos;
 
-	/* 여기 바꿧음 */
 	_vector vDot = XMVector3AngleBetweenNormals(XMVector3Normalize(vUFOLook), XMVector3Normalize(vLaserDir));
 	_float fAngle = XMConvertToDegrees(XMVectorGetX(vDot));
 
@@ -169,12 +168,13 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	matRotY = XMMatrixRotationY(XMConvertToRadians(-fAngle));
 	matPivot = matRotY * matTrans;
 
-	matAnim = m_pModelCom->Get_AnimTransformation(22);
+	_uint LaserGunBoneIndex = m_pModelCom->Get_BoneIndex("LaserGun");
+	matAnim = m_pModelCom->Get_AnimTransformation(LaserGunBoneIndex);
 	matAnim = XMMatrixInverse(nullptr, matAnim);
 
 	matPivot *= matAnim;
 
-	m_pModelCom->Set_PivotTransformation(22, matPivot);
+	m_pModelCom->Set_PivotTransformation(LaserGunBoneIndex, matPivot);
 
 	/* LaserGunRing3 뼈가 레이저 총구 ㅇㅇ */
 	/* LaserGun의 Right 벡터를 사용하니까 너무 이상하게 달달거려서 안움직이는 Align 뼈를 가져와서 사용함 그래도 움직이는건 UFO 행렬이 애니메이션 돌리면서 계속 바뀌기 떄문에 그런듯 */
@@ -428,8 +428,6 @@ void CUFO::OrbitalMovementCenter(_double dTimeDelta)
 
 void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 {
-
-
 	/* 테스트 */
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 	{
@@ -458,8 +456,6 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 		tMissileDesc.vPosition = (_float4)&RightRocketHatch.r[3].m128_f32[0];
 		XMStoreFloat4(&tMissileDesc.vDir, vMayDir);
 		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc);
-
-
 	}
 
 	//m_fGuidedMissileTime += (_float)dTimeDelta;
@@ -525,16 +521,26 @@ void CUFO::Phase1_End(_double dTimeDelta)
 			_matrix AnimUFOWorld = BaseBone * UFOWorld;
 			m_pTransformCom->Set_WorldMatrix(AnimUFOWorld);
 
+			/* 중점에서 부터 마지막 애니메이션의 포지션을 빼서 그 지점에서부터 공전할 수 있도록 구해줌. 2페이지에서 보스 움직일 때 사용 */
 			_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&m_vStartUFOPos);
 			XMStoreFloat4(&m_vTranslationPos, vUFOPos);
 
-			m_pModelCom->Set_Animation(UFO_MH);
+			m_pModelCom->Set_Animation(UFO_Left);
 			m_pModelCom->Set_NextAnimIndex(UFO_Left);
 
 			/* 보스 2페이즈로 바꿔주자 */
 			m_ePhase = CUFO::PHASE_2;
 			m_ePattern = CUFO::GUIDEDMISSILE;
 			m_IsCutScene = false;
+
+			/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 */
+			_matrix LaserBaseBone = m_pModelCom->Get_BoneMatrix("LaserBase");
+			_matrix matScale;
+
+			matScale = XMMatrixScaling(0.f, 0.f, 0.f);
+			LaserBaseBone *= matScale;
+
+			m_pModelCom->Set_PivotTransformation(m_pModelCom->Get_BoneIndex("LaserBase"), LaserBaseBone);
 		}
 	}
 }

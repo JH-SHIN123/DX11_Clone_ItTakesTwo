@@ -48,6 +48,7 @@ public: /* Getter */
 	VTXMESH*	Get_Vertices() { return m_pVertices; }
 	const _uint	Get_VertexCount() { return m_iVertexCount; }
 	_fmatrix	Get_BoneMatrix(const char* pBoneName) const;
+	_uint		Get_BoneIndex(const char* pBoneName) const;
 	const _uint	Get_CurAnimIndex() const { return m_iCurAnimIndex; }
 	const _uint	Get_MeshCount() const { return m_iMeshCount; }
 	_fmatrix	Get_AnimTransformation(_uint iIndex) const { return XMLoadFloat4x4(&m_AnimTransformations[iIndex]); }

@@ -2815,7 +2815,6 @@ void CCody::Boss_Missile_Control(const _double dTimeDelta)
 
 			_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 			m_pActorCom->Move(vDir * 0.2f , dTimeDelta);
-
 		}
 	}
 	else if (true == m_IsBoss_Missile_Explosion)

@@ -111,6 +111,17 @@ _fmatrix CModel::Get_BoneMatrix(const char * pBoneName) const
 	return XMMatrixIdentity();
 }
 
+_uint CModel::Get_BoneIndex(const char * pBoneName) const
+{
+	for (auto& pNode : m_Nodes)
+	{
+		if (!strcmp(pNode->Get_Name(), pBoneName))
+			return pNode->Get_NodeIndex();
+	}
+
+	return EVENT_ERROR;
+}
+
 HRESULT CModel::Set_Animation(_uint iAnimIndex, _double dAnimTime)
 {
 	if (iAnimIndex == m_iCurAnimIndex)
