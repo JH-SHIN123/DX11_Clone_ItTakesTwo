@@ -27,6 +27,7 @@ private:
 	HRESULT FinalPass();
 
 	HRESULT Tick_Adaptation(_double TimeDelta);
+	HRESULT Tick_RadiarBlur(_double TimeDelta);
 
 private:
 	HRESULT Build_LuminanceBuffer(_float iWidth, _float iHeight); /* 휘도의 중간값을 저장하기 위한 리소스들 & 부동소수점 형태로 평균 휘도 값을 저장 */
@@ -61,8 +62,13 @@ private:
 
 	_bool		m_bRadialBlur_Main = false;
 	_bool		m_bRadialBlur_Sub = false;
+	_bool		m_bRadialBlur_Main_Finish = false;
+	_bool		m_bRadialBlur_Sub_Finish = false;
+
 	_float2		m_vRadiarBlur_FocusPos_Main = { 0.f,0.f };
 	_float2		m_vRadiarBlur_FocusPos_Sub = { 0.f,0.f };
+	_float		m_fRadialBlur_MainRatio = 0.f;
+	_float		m_fRadialBlur_SubRatio = 0.f;
 #pragma endregion
 
 #pragma region Resources

@@ -11,14 +11,28 @@ IMPLEMENT_SINGLETON(CPostFX)
 
 void CPostFX::Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos)
 {
-	m_bRadialBlur_Main = bActive;
 	m_vRadiarBlur_FocusPos_Main = vFocusPos;
+
+	if (true == bActive)
+	{
+		m_bRadialBlur_Main = true;
+		m_bRadialBlur_Main_Finish = false;
+		m_fRadialBlur_MainRatio = 1.f;
+	}
+	else
+	{
+		m_bRadialBlur_Main_Finish = true;
+		m_fRadialBlur_MainRatio = 1.f;
+	}
 }
 
 void CPostFX::Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos)
 {
 	m_bRadialBlur_Sub = bActive;
 	m_vRadiarBlur_FocusPos_Sub = vFocusPos;
+
+	if (false == m_bRadialBlur_Sub)
+		m_fRadialBlur_SubRatio = 1.0;
 }
 
 HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight)
@@ -50,6 +64,7 @@ HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDevic
 HRESULT CPostFX::PostProcessing(_double TimeDelta)
 {
 	FAILED_CHECK_RETURN(Tick_Adaptation(TimeDelta), E_FAIL);
+	FAILED_CHECK_RETURN(Tick_RadiarBlur(TimeDelta), E_FAIL);
 
 #ifdef _DEBUG
 	FAILED_CHECK_RETURN(KeyInput_Test(TimeDelta), E_FAIL);
@@ -195,6 +210,10 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Sub", &m_bRadialBlur_Sub, sizeof(m_bRadialBlur_Sub));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Main", &m_vRadiarBlur_FocusPos_Main, sizeof(m_vRadiarBlur_FocusPos_Main));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Sub", &m_vRadiarBlur_FocusPos_Sub, sizeof(m_vRadiarBlur_FocusPos_Sub));
+
+	m_pVIBuffer_ToneMapping->Set_Variable("g_fRadiarBlurRatio_Main", &m_fRadialBlur_MainRatio, sizeof(m_fRadialBlur_MainRatio));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_fRadiarBlurRatio_Sub", &m_fRadialBlur_SubRatio, sizeof(m_fRadialBlur_SubRatio));
+
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_RadiarBlurMaskTex", m_pRadiarBlur_Mask->Get_ShaderResourceView(0));;
 	
 	_float	fCamFar;
@@ -246,6 +265,41 @@ HRESULT CPostFX::Tick_Adaptation(_double TimeDelta)
 	}
 
 	m_fAdaptation = fAdaptNorm;
+
+	return S_OK;
+}
+
+HRESULT CPostFX::Tick_RadiarBlur(_double TimeDelta)
+{
+	_float fSpeed = 5.f;
+
+	if (m_bRadialBlur_Main_Finish)
+	{
+		if (m_fRadialBlur_MainRatio < 0)
+		{
+			m_fRadialBlur_MainRatio = 1.0;
+			m_bRadialBlur_Main_Finish = false;
+			m_bRadialBlur_Main = false;
+		}
+		else
+		{
+			m_fRadialBlur_MainRatio -= (_float)TimeDelta * fSpeed;
+		}
+	}
+
+	if (m_bRadialBlur_Sub_Finish)
+	{
+		if (m_fRadialBlur_SubRatio < 0)
+		{
+			m_fRadialBlur_SubRatio = 1.0;
+			m_bRadialBlur_Sub_Finish = false;
+			m_bRadialBlur_Sub = false;
+		}
+		else
+		{
+			m_fRadialBlur_SubRatio -= (_float)TimeDelta * fSpeed;
+		}
+	}
 
 	return S_OK;
 }

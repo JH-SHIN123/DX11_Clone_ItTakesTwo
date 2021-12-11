@@ -517,7 +517,7 @@ private:
 	void Start_RadiarBlur(_double dBlurTime);
 	void Loop_RadiarBlur(_bool bLoop);
 	void Trigger_RadiarBlur(_double dTimeDelta);
-	void Set_RadiarBlur();
+	void Set_RadiarBlur(_bool bActive);
 
 private:
 	_bool	m_bRadiarBlur_Trigger = false;

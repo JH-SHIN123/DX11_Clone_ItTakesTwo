@@ -3146,6 +3146,7 @@ HRESULT CCody::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 	return S_OK;
 }
 
+#pragma region RadiarBlur
 void CCody::Start_RadiarBlur(_double dBlurTime)
 {
 	//if (m_bRadiarBlur) return;
@@ -3154,7 +3155,7 @@ void CCody::Start_RadiarBlur(_double dBlurTime)
 	m_dRadiarBlurTime = dBlurTime;
 	m_dRadiarBlurDeltaT = 0.0;
 
-	Set_RadiarBlur();
+	Set_RadiarBlur(true);
 }
 
 void CCody::Loop_RadiarBlur(_bool bLoop)
@@ -3162,37 +3163,34 @@ void CCody::Loop_RadiarBlur(_bool bLoop)
 	m_bRadiarBlur_Loop = bLoop;
 
 	if(m_bRadiarBlur_Loop)
-		Set_RadiarBlur();
-	else {
-		_float2 vFocusPos = { 0.f,0.f };
-		m_pGameInstance->Set_RadiarBlur_Main(false, vFocusPos);
-	}
+		Set_RadiarBlur(true);
+	else
+		Set_RadiarBlur(false);
 }
 
 void CCody::Trigger_RadiarBlur(_double dTimeDelta)
 {
 	if (m_bRadiarBlur_Loop)
 	{
-		Set_RadiarBlur();
+		Set_RadiarBlur(true);
 	}
 	else if(m_bRadiarBlur_Trigger)
 	{
 		if (m_dRadiarBlurDeltaT >= m_dRadiarBlurTime)
 		{
-			_float2 vFocusPos = { 0.f,0.f };
-			m_pGameInstance->Set_RadiarBlur_Main(false, vFocusPos);
+			Set_RadiarBlur(false);
 			m_dRadiarBlurDeltaT = 0.0;
 			m_bRadiarBlur_Trigger = false;
 		}
 		else
 		{
 			m_dRadiarBlurDeltaT += dTimeDelta;
-			Set_RadiarBlur();
+			Set_RadiarBlur(true);
 		}
 	}
 }
 
-void CCody::Set_RadiarBlur()
+void CCody::Set_RadiarBlur(_bool bActive)
 {
 	_matrix CombineViewMatrix, CombineProjMatrix;
 
@@ -3220,8 +3218,9 @@ void CCody::Set_RadiarBlur()
 
 	_float2 vFocusPos = { vConvertPos.x / g_iWinCX , vConvertPos.y / g_iWinCY };
 	vFocusPos.y += 0.04f; // Offset
-	m_pGameInstance->Set_RadiarBlur_Main(true, vFocusPos);
+	m_pGameInstance->Set_RadiarBlur_Main(bActive, vFocusPos);
 }
+#pragma endregion
 
 void CCody::PinBall(const _double dTimeDelta)
 {

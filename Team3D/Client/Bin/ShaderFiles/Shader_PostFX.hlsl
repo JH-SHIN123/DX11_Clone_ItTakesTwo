@@ -42,6 +42,9 @@ cbuffer RadialBlurDesc
 	 
 	float2	g_RadiarBlur_FocusPos_Main = { 0.25f,0.5f };
 	float2	g_RadiarBlur_FocusPos_Sub = { 0.75f,0.5f };
+
+	float	g_fRadiarBlurRatio_Main = 1.f;
+	float	g_fRadiarBlurRatio_Sub = 1.f;
 };
 
 ////////////////////////////////////////////////////////////
@@ -61,7 +64,7 @@ float3 ToneMapping_EA(float3 HDRColor)
 	//Color = (x * (6.2f * x + 0.5f)) / (x * (6.2f * x + 1.7f) + 0.06f);
 	//return float4(Color, 1.f);
 
-	float3 Color = pow(HDRColor, 2.2f);
+	float3 Color = pow(abs(HDRColor), 2.2f);
 	float3 x = max(0.f, Color - g_MiddleGrey);
 	Color = (x * (g_LumWhiteSqr * x + 0.5f)) / (x * (g_LumWhiteSqr * x + 1.7f) + 0.06f);
 	return Color;
@@ -86,7 +89,7 @@ float3 DistanceDOF(float3 colorFocus, float3 colorBlurred, float depth)
 	return lerp(colorFocus, colorBlurred, blurFactor);
 }
 
-float3 RadiarBlur(float2 vTexUV, float2 vFocusPos)
+float3 RadiarBlur(float2 vTexUV, float2 vFocusPos, float fRatio)
 {
 
 	float2	dir = vFocusPos - vTexUV;
@@ -106,7 +109,7 @@ float3 RadiarBlur(float2 vTexUV, float2 vFocusPos)
 	fMaskUV.x *= 2.f;
 	float fBlurMask = g_RadiarBlurMaskTex.Sample(Wrap_MinMagMipLinear_Sampler, fMaskUV).x;
 
-	float ratio = saturate(dist * g_SampleStrength * fBlurMask);
+	float ratio = saturate(dist * g_SampleStrength * fBlurMask * fRatio);
 	return lerp(vColor, sum, ratio);
 }
 ////////////////////////////////////////////////////////////
@@ -168,9 +171,8 @@ PS_OUT PS_MAIN(PS_IN In)
 		vViewPos *= vViewZ;
 		vViewPos = mul(vViewPos, g_MainProjMatrixInverse);
 
-		// Test - Radiar Blur 
-		if(true == g_bRadiarBlur_Main) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Main);
-
+		// Radiar Blur 
+		if(true == g_bRadiarBlur_Main) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Main, g_fRadiarBlurRatio_Main);
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
 		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
@@ -179,6 +181,9 @@ PS_OUT PS_MAIN(PS_IN In)
 		vViewZ = vDepthDesc.x * g_fSubCamFar;
 		vViewPos *= vViewZ;
 		vViewPos = mul(vViewPos, g_SubProjMatrixInverse);
+
+		// Radiar Blur 
+		if (true == g_bRadiarBlur_Sub) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Sub, g_fRadiarBlurRatio_Sub);
 	}
 	else discard;
 

@@ -62,7 +62,7 @@ HRESULT CMainApp::Run_App()
 		if (Tick(m_dTimeDelta) & 0x80000000)
 			return E_FAIL;
 
-		if (FAILED(Render(dTimeDelta)))
+		if (FAILED(Render(m_dTimeDelta)))
 			return E_FAIL;
 
 		/* Mouse Lock */
