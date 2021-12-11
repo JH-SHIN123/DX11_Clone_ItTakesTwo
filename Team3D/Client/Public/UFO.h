@@ -63,8 +63,13 @@ private:
 	/* For.PHASE_2 Pattern */
 	_float				m_fRevAngle = 0.f;
 	_float				m_fRotAngle = 0.f;
+	_float				m_fGuidedMissileTime = 0.f;
+	_float4				m_vTranslationPos;
+	_bool				m_IsGuidedMissileCreate = true;
+	
 
 	/* For.PHASE_3 Pattern */
+
 
 	/* For. Laser_TypeA */
 	_float4				m_vLaserGunPos;
@@ -85,13 +90,16 @@ private:
 
 	/* For.PHASE_1 Pattern */
 	void Phase1_Pattern(_double dTimeDelta);
+	void Phase1_InterAction(_double dTimeDelta);
 	void Laser_Pattern(_double dTimeDelta);
 	void MoveStartingPoint(_double dTimeDelta);
 	void GravitationalBomb_Pattern(_double dTimeDelta);
-	void Phase1_InterAction(_double dTimeDelta);
 
 	/* For.PHASE_2 Pattern */
 	void Phase2_Pattern(_double dTimeDelta);
+	void Phase2_InterAction(_double dTimeDelta);
+	void OrbitalMovementCenter(_double dTimeDelta);
+	void GuidedMissile_Pattern(_double dTimeDelta);
 
 	/* For.PHASE_3 Pattern */
 	void Phase3_Pattern(_double dTimeDelta);
@@ -99,8 +107,11 @@ private:
 private:
 	/* For.PHASE_1 End */
 	void Phase1_End(_double dTimeDelta);
+	HRESULT Ready_Actor_Component();
+
 	/* For.PHASE_2 End */
 	void Phase2_End(_double dTimeDelta);
+
 	/* For.PHASE_3 End */
 	void Phase3_End(_double dTimeDelta);
 

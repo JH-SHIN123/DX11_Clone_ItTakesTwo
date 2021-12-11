@@ -12,7 +12,7 @@ BEGIN(Client)
 class CBoss_Missile final : public CGameObject
 {
 public:
-	struct tagBossMissile_Desc
+	typedef struct tagBossMissile_Desc
 	{
 		_bool IsTarget_Cody = true; //false == May
 		_float4 vPosition = { 0.f,0.f,0.f,1.f };
@@ -23,7 +23,8 @@ public:
 
 		tagBossMissile_Desc(_bool IsTarget_Cody, _float4 vPos)
 			: IsTarget_Cody(IsTarget_Cody), vPosition(vPos){}
-	};
+	} BOSSMISSILE_DESC;
+
 private:
 	explicit CBoss_Missile(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CBoss_Missile(const CBoss_Missile& rhs);
