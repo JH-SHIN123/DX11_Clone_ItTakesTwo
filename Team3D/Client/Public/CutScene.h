@@ -36,6 +36,10 @@ private:
 private:
 	HRESULT NativeConstruct(CutSceneOption eOption);
 	_fmatrix MakeRollPitchYawMatrix(_float3 vPos, _float3 vScale, _float3 vRot);
+
+	//For.Intro
+	void StartCodyLerp(_float3 vStartPos, _float3 vStartScale,_float3 vTargetPos , _float3 vTargetScale, _uint iLerpCount);
+	void CodyLerp();
 private:
 	class CCutScenePlayer* m_pCutScenePlayer = nullptr;
 
@@ -47,8 +51,22 @@ private:
 	//For.Intro
 	_float m_fCodySizingTime = 0.f;
 	_uint	m_iCutSceneTake = 0;
+	_bool	m_bIsChangeToCody = false;
+	_bool	m_bIsChangeToMay = false;
+
+	_bool	m_bStartLerpCody = false;
+	_uint	m_iCodyLerpCount = 0;
+	_uint	m_iMaxCodyLerpCount = 0;
 	
-	
+	_float3 m_vTargetCodyPos = { 0.f,0.f,0.f };
+	_float3 m_vTargetCodyScale = { 0.f,0.f,0.f };
+
+	_float3 m_vCodyPos = { 0.f,0.f,0.f };
+	_float3	m_vCodyScale = { 0.f,0.f,0.f };
+
+
+
+	_float	m_fCodyLerpTime = 0.f;
 	//For.Active_GravityPipe_01
 	_bool m_bIsStartFilm = false;
 
