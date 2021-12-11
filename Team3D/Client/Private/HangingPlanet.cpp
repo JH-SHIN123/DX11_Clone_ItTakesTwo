@@ -134,7 +134,8 @@ HRESULT CHangingPlanet::Ready_Component(void * pArg)
 	Safe_Delete(TriggerGeom);
 
 	/* Joint */
-	m_pJoint = CPhysX::GetInstance()->Create_Joint(m_pDynamicActorCom->Get_Actor(), PxTransform(PxVec3(tArg.vOffset.x, tArg.vOffset.y, tArg.vOffset.z)), nullptr, PxTransform(PxVec3(tArg.vJointPosition.x, tArg.vJointPosition.y, tArg.vJointPosition.z)));
+	PxJointLimitCone LimitCone = PxJointLimitCone(PxPi / 4, PxPi / 4, 0.05f);
+	m_pJoint = CPhysX::GetInstance()->Create_Joint(m_pDynamicActorCom->Get_Actor(), PxTransform(PxVec3(tArg.vOffset.x, tArg.vOffset.y, tArg.vOffset.z)), nullptr, PxTransform(PxVec3(tArg.vJointPosition.x, tArg.vJointPosition.y, tArg.vJointPosition.z)), LimitCone);
 
 	return S_OK;
 }

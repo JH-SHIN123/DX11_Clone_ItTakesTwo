@@ -91,6 +91,11 @@ HRESULT CEffect_Boss_Laser_Smoke::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
+void CEffect_Boss_Laser_Smoke::Set_Pos(_fvector vPos)
+{
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+}
+
 void CEffect_Boss_Laser_Smoke::Check_Instance(_double TimeDelta)
 {
 	_float4 vMyPos;

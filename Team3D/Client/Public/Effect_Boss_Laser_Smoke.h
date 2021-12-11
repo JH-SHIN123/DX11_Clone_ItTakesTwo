@@ -20,6 +20,7 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 public:
+	void Set_Pos(_fvector vPos);
 	void Set_IsActivate(_bool IsActivate) { m_IsActivate = IsActivate; }
 	void Set_WorldMatrix(_fmatrix WorldMatrix) { m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
 

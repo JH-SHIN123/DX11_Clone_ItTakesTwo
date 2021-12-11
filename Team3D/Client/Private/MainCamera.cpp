@@ -45,13 +45,22 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	m_PreWorld.vRotQuat = _float4(0.f, 0.f, 0.f, 1.f);
 	m_PreWorld.vTrans = _float4(0.f, 0.f, 0.f, 1.f);
 	
-	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL] =	{ 0.f,1.5f,-1.5f,1.f};
+	/* Hye */
+	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL] =	{ 0.f,0.5f,-0.5f,1.f};
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM] =	{ 0.f,7.f,-7.f,1.f };
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE] =	{ 0.f,11.f,	-8.f,1.f };
 
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL] =		{ 0.f,0.1f,0.02f,1.f };
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM] =	{ 0.f,1.5f, 0.4f,1.f };
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE] =		{ 0.f,3.f,1.1f,1.f };
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL] = { 0.f,0.05f,0.01f,1.f };
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM] = { 0.f,1.5f, 0.4f,1.f };
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE] = { 0.f,3.f,1.1f,1.f };
+
+	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL] = { 0.f,1.5f,-1.5f,1.f };
+	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM] = { 0.f,7.f,-7.f,1.f };
+	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE] = { 0.f,11.f,	-8.f,1.f };
+
+	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL] =		{ 0.f,0.1f,0.02f,1.f };
+	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM] =		{ 0.f,1.5f, 0.4f,1.f };
+	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE] =		{ 0.f,3.f,1.1f,1.f };
 
 	_matrix matStart = MakeViewMatrixByUp(m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM], m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM]);
 	XMStoreFloat4x4(&m_matBeforeSpringCam, matStart);
@@ -299,7 +308,8 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	switch (m_eCurPlayerSize)
 	{
 	case Client::CCody::SIZE_SMALL:
-		vDir = (vLook*(m_fCurMouseRev[Rev_Prependicul]) * 0.02f);
+		vDir = (vLook*(m_fCurMouseRev[Rev_Prependicul]) * 0.01f);
+		//vDir = (vLook*(m_fCurMouseRev[Rev_Prependicul]) * 0.02f);
 		break;
 	case Client::CCody::SIZE_MEDIUM:
 		vDir = (vLook*(m_fCurMouseRev[Rev_Prependicul]) * 0.065f);
@@ -382,18 +392,19 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vResultPos = XMVectorZero();
 	if (false == bIsTeleport)
 	{
-		 m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
-		
-		_float4 vEye, vAt;
-		
-		XMStoreFloat4(&vEye, vResultPos);
-		XMStoreFloat4(&vAt, vPlayerPos);
-		_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt);
-		matAffine = matCurWorld;
+		// m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
+		//
+		//_float4 vEye, vAt;
+		//
+		//XMStoreFloat4(&vEye, vResultPos);
+		//XMStoreFloat4(&vAt, vPlayerPos);
+		//_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt);
+		//matAffine = matCurWorld;
 		
 	}
 	else
 		m_bIsCollision = false;
+
 	m_pTransformCom->Set_WorldMatrix(matAffine);
 
 #pragma endregion

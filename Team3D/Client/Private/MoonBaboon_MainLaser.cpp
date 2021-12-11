@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "MoonBaboon_MainLaser.h"
+#include "DataStorage.h"
+#include "Laser_TypeB.h"
 
 CMoonBaboon_MainLaser::CMoonBaboon_MainLaser(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -22,7 +24,7 @@ HRESULT CMoonBaboon_MainLaser::NativeConstruct(void* pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(3.5f, XMConvertToRadians(35.f))), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(3.5f, XMConvertToRadians(40.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon_MainLaser_01"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
@@ -37,6 +39,10 @@ HRESULT CMoonBaboon_MainLaser::NativeConstruct(void* pArg)
 	tArg.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
 
+	DATABASE->Set_MoonBaboon_MainLaser(this);
+
+	m_vecLaser_TypeB.reserve(8);
+
 	return S_OK;
 }
 
@@ -44,7 +50,10 @@ _int CMoonBaboon_MainLaser::Tick(_double TimeDelta)
 {
 	CGameObject::Tick(TimeDelta);
 
-	Laser_AttackPattern(TimeDelta);
+	if (true == m_IsLaserOperation)
+		Laser_AttackPattern(TimeDelta);
+	else if(false == m_IsLaserOperation && true == DATABASE->Get_LaserTypeB_Recovery())
+		Laser_Down(TimeDelta);
 
 	return NO_EVENT;
 }
@@ -83,18 +92,28 @@ HRESULT CMoonBaboon_MainLaser::Render_ShadowDepth()
 	return S_OK;
 }
 
+void CMoonBaboon_MainLaser::Set_LaserOperation(_bool IsActive)
+{
+	m_IsLaserOperation = IsActive; 
+
+	if (false == m_IsLaserOperation)
+	{
+		for (auto pLaserTypeB : m_vecLaser_TypeB)
+			pLaserTypeB->Set_Dead();
+
+		m_vecLaser_TypeB.clear();
+	}
+}
+
 void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 {
-	// 위로 올라와서
-	// 올라와서 왼쪽으롣 돌다가
-	// 끝날때쯤 오른쪽으로 살짝돌면서
-	// 밑으로 들어감
 	if (0 == m_iPatternState)
 	{
 		if (m_dPatternDeltaT >= 1.5)
 		{
 			m_dPatternDeltaT = 0.0;
 			m_iPatternState = 1;
+			m_IsLaserUp = true;
 		}
 		else
 		{
@@ -105,10 +124,13 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 	}
 	else if (1 == m_iPatternState)
 	{
-		if (m_dPatternDeltaT >= 15)
+		if (m_dPatternDeltaT >= 10.0)
 		{
 			m_dPatternDeltaT = 0.0;
 			m_iPatternState = 2;
+
+			for (auto pLaserTypeB : m_vecLaser_TypeB)
+				pLaserTypeB->Set_RotateSpeed(-40.f);
 		}
 		else
 		{
@@ -118,10 +140,13 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 	}
 	else if (2 == m_iPatternState)
 	{
-		if (m_dPatternDeltaT >= 2.0)
+		if (m_dPatternDeltaT >= 10.0)
 		{
 			m_dPatternDeltaT = 0.0;
-			m_iPatternState = 3;
+			m_iPatternState = 1;
+
+			for (auto pLaserTypeB : m_vecLaser_TypeB)
+				pLaserTypeB->Set_RotateSpeed(40.f);
 		}
 		else
 		{
@@ -129,20 +154,49 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 			m_dPatternDeltaT += TimeDelta;
 		}
 	}
-	else if (3 == m_iPatternState)
+
+	/* 레이저 발사!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+	if (true == m_IsLaserUp && true == m_IsLaserCreate)
 	{
-		if (m_dPatternDeltaT >= 1.5)
+		CGameObject* pGameObject = nullptr;
+
+		_float4 vDir;
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_float4 vConvertPos;
+		XMStoreFloat4(&vConvertPos, vPos);
+		vConvertPos.y += 0.7f;
+
+		for (_uint i = 0; i < 8; ++i)
 		{
-			m_dPatternDeltaT = 0.0;
-			//m_iPatternState = 4;
-			m_iPatternState = 0; // TEST
+			m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeB"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB"), nullptr, &pGameObject);
+			m_vecLaser_TypeB.emplace_back(static_cast<CLaser_TypeB*>(pGameObject));
+			m_vecLaser_TypeB[i]->Set_StartPoint(vConvertPos);
+			m_vecLaser_TypeB[i]->SetUp_Direction(i);
+			m_vecLaser_TypeB[i]->Set_RotateSpeed(40.f);
 		}
-		else
-		{
-			m_pTransformCom->Go_Down(TimeDelta);
-			m_dPatternDeltaT += TimeDelta;
-			m_pStaticActorCom->Update_StaticActor();
-		}
+
+		m_IsLaserCreate = false;
+	}
+}
+
+void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
+{
+	if (m_dDownTime <= 1.5)
+	{
+		m_pTransformCom->Go_Down(TimeDelta);
+		m_dDownTime += TimeDelta;
+		m_pStaticActorCom->Update_StaticActor();
+	}
+	else
+	{
+		m_IsLaserUp = false;
+		m_IsLaserCreate = true;
+		m_dDownTime = 0.0;
+		DATABASE->Set_LaserTypeB_Recovery(false);
+
+		/* 다음에도 또 올라와야하기 때문에 초기화 해주자 ㅇㅇ */
+		m_dPatternDeltaT = 0.0;
+		m_iPatternState = 0;
 	}
 }
 
@@ -174,6 +228,11 @@ CGameObject* CMoonBaboon_MainLaser::Clone_GameObject(void* pArg)
 
 void CMoonBaboon_MainLaser::Free()
 {
+	for (auto pLaserTypeB : m_vecLaser_TypeB)
+		Safe_Release(pLaserTypeB);
+
+	m_vecLaser_TypeB.clear();
+
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);

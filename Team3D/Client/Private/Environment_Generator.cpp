@@ -29,6 +29,12 @@
 #include "ElectricBox.h"
 #include "ElectricWall.h"
 #include "EjectionButton.h"
+#include "Moon.h"
+#include "BossFloor.h"
+#include "BossDoor.h"
+#include "BossSlideDoor.h"
+#include "MoonBaboon_SpaceShip.h"
+#include "MoonUFO.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -271,6 +277,7 @@ HRESULT CEnvironment_Generator::Load_Stage_Space()
 	FAILED_CHECK_RETURN(Load_Environment_Bridge(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Trigger(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_SpaceRail(), E_FAIL);
+	FAILED_CHECK_RETURN(Load_Others(), E_FAIL);
 
 #ifndef __SPACESHIP_OFF
 	FAILED_CHECK_RETURN(Load_Environment_Space_SpaceShip(), E_FAIL);
@@ -450,6 +457,30 @@ CGameObject * CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D1
 		if (nullptr == pInstance)
 			MSG_BOX("Failed to Create Instance - EjectionButton");
 	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_Moon")))
+	{
+		pInstance = CMoon::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - Moon");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_BossFloor")))
+	{
+		pInstance = CBossFloor::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - BossFloor");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_BossDoor")))
+	{
+		pInstance = CBossDoor::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - BossDoor");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_BossSlideDoor")))
+	{
+		pInstance = CBossSlideDoor::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - BossSlideDoor");
+	}
 	return pInstance;
 }
 
@@ -543,6 +574,10 @@ void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
 		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Planet_Lamp03"))
 		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Planet"))
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Saturn"))
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh01"))
 		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh02"))
@@ -563,12 +598,30 @@ void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
 		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SplineMesh13"))
 		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_MoonBaboon_GlassDome_01"))
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_MoonBaboon_GlassWall_01"))
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_MoonBaboon_GlassWall_02"))
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_MoonBaboon_MovingFloor_Gate_01"))
+		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Saucer_SplineMesh01"))
 		tInfo.fCullRadius = 2000.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Saucer_SplineMesh02"))
 		tInfo.fCullRadius = 2000.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_Saucer_SplineMesh03"))
 		tInfo.fCullRadius = 2000.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ControlRoom_Door_01"))
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ControlRoom_DoorFrame_01"))
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ControlRoom_Strip_01"))
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ControlRoom_StripShort_01"))
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ControlRoom_StripTiny_01"))
+		tInfo.fCullRadius = 500.f;
 }
 
 void CEnvironment_Generator::Adjustment_Model_Position(_tchar* pModelTag, _float4x4& rWorld)
@@ -593,6 +646,8 @@ HRESULT CEnvironment_Generator::Load_Default_Prototype_GameObject()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Bridge"), CBridge::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SpaceRail"), CSpaceRail::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), CHangingPlanet::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SpaceShip"), CMoonBaboon_SpaceShip::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonUFO"), CMoonUFO::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
 }
@@ -977,6 +1032,16 @@ HRESULT CEnvironment_Generator::Load_Environment_Trigger()
 	return S_OK;
 }
 
+HRESULT CEnvironment_Generator::Load_Others()
+{
+	/* MoonUFO */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonUFO")), E_FAIL);
+	/* MoonBaboonSpaceShip */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SpaceShip")), E_FAIL);
+
+	return S_OK;
+}
+
 HRESULT CEnvironment_Generator::Load_Prototype_Model_ByIndex_Space(_uint iIndex)
 {
 	if (iIndex < 50)
@@ -1219,6 +1284,7 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_ByIndex_Space(_uint iIndex)
 		else if (iIndex == 234) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_RotationBox"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_RotationBox"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
 		else if (iIndex == 235) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_BigCody_JumpButton_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("BigCody_JumpButton_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
 		else if (iIndex == 236) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_BigButton_Frame"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("BigButton_Frame"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
+		else if (iIndex == 237) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_ToyBox08_Chunk_02"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Instancing/"), TEXT("ToyBox08_Chunk"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 	}
 
 	return S_OK;

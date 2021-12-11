@@ -24,9 +24,11 @@ private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 	CTriggerActor*	m_pTriggerActorCom = nullptr;
 
+	_bool			m_bDelay = false;
 	_bool			m_bSmash = false;
 
 	_double			m_dAngle = 0.0;
+	_double			m_dCoolTime = 0.0;
 
 private:
 	void Movement(_double dTimeDelta);
