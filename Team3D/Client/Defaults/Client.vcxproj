@@ -280,6 +280,12 @@
     <ClInclude Include="..\Public\InputButton_Frame.h" />
     <ClInclude Include="..\Public\Instancing_Env.h" />
     <ClInclude Include="..\Public\Laser.h" />
+    <ClInclude Include="..\Public\LaserActivation.h" />
+    <ClInclude Include="..\Public\LaserButton.h" />
+    <ClInclude Include="..\Public\LaserButtonLarge.h" />
+    <ClInclude Include="..\Public\LaserButtonLarge_Gate.h" />
+    <ClInclude Include="..\Public\LaserPowerCoord.h" />
+    <ClInclude Include="..\Public\LaserTennis_Manager.h" />
     <ClInclude Include="..\Public\Laser_TypeA.h" />
     <ClInclude Include="..\Public\Laser_TypeB.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -366,6 +372,7 @@
     <ClInclude Include="..\Public\SupportFrame.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TestEffect.h" />
+    <ClInclude Include="..\Public\Timer_LaserTennis.h" />
     <ClInclude Include="..\Public\ToyBoxButton.h" />
     <ClInclude Include="..\Public\ToyBoxButton_Button.h" />
     <ClInclude Include="..\Public\TutorialDoor.h" />
@@ -475,6 +482,12 @@
     <ClCompile Include="..\Private\InputButton_Frame.cpp" />
     <ClCompile Include="..\Private\Instancing_Env.cpp" />
     <ClCompile Include="..\Private\Laser.cpp" />
+    <ClCompile Include="..\Private\LaserActivation.cpp" />
+    <ClCompile Include="..\Private\LaserButton.cpp" />
+    <ClCompile Include="..\Private\LaserButtonLarge.cpp" />
+    <ClCompile Include="..\Private\LaserButtonLarge_Gate.cpp" />
+    <ClCompile Include="..\Private\LaserPowerCoord.cpp" />
+    <ClCompile Include="..\Private\LaserTennis_Manager.cpp" />
     <ClCompile Include="..\Private\Laser_TypeA.cpp" />
     <ClCompile Include="..\Private\Laser_TypeB.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -561,6 +574,7 @@
     <ClCompile Include="..\Private\SupportFrame.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TestEffect.cpp" />
+    <ClCompile Include="..\Private\Timer_LaserTennis.cpp" />
     <ClCompile Include="..\Private\ToyBoxButton.cpp" />
     <ClCompile Include="..\Private\ToyBoxButton_Button.cpp" />
     <ClCompile Include="..\Private\TutorialDoor.cpp" />

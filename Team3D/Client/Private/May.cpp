@@ -339,6 +339,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
 	//if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 	//	m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_0))/* 레이저 테니스 */
+		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
 #pragma endregion
 
 #pragma region Local variable

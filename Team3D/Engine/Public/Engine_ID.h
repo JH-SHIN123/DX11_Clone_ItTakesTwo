@@ -78,7 +78,8 @@ namespace Engine
 			eROTATIONFAN,
 			ePEDAL,
 			eROTATIONBOX,
-			eMOONUFO
+			eMOONUFO,
+			eLASERTENNISPOWERCOORD
 		};
 	};
 

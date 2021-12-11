@@ -2,12 +2,15 @@
 #include "Dynamic_Env.h"
 
 BEGIN(Client)
-class CPedal final : public CDynamic_Env
+class CLaserButton final : public CDynamic_Env
 {
 private:
-	explicit CPedal(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CPedal(const CPedal& rhs);
-	virtual ~CPedal() = default;
+	explicit CLaserButton(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CLaserButton(const CLaserButton& rhs);
+	virtual ~CLaserButton() = default;
+
+public:
+	void Active_Button() { m_bActive = true; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -24,12 +27,11 @@ private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 	CTriggerActor*	m_pTriggerActorCom = nullptr;
 
-	_bool			m_bDelay = false;
-	_bool			m_bSmash = false;
+	_bool			m_bActive = false;
+	_bool			m_bCollision = false;
 
-	_float			m_fProgressAnim = 0.f;
-	_float			m_fAddAngle = 0.f;
-	_float4x4		m_matResetWorld;
+	_float			m_fDistance = 0.1f;
+	_float			m_fResetPosY = 0.f;
 
 private:
 	void Movement(_double dTimeDelta);
@@ -38,8 +40,8 @@ private:
 	HRESULT Ready_Component(void* pArg);
 
 public:
-	static CPedal* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	virtual CGameObject* Clone_GameObject(void* pArg) override;
-	virtual void Free() override;
+	static CLaserButton* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CGameObject* Clone_GameObject(void* pArg);
+	virtual void Free();
 };
 END

@@ -29,6 +29,7 @@ public: /* Getter */
 	_float	Get_Scale(STATE eSTate) const;
 	_matrix	Get_WorldMatrix() const;
 	_double  Get_RotationPerSec() const;
+	_double  Get_SpeedPerSec() const;
 
 public: /* Setter */
 	void	Set_State(STATE eState, _fvector vState);
