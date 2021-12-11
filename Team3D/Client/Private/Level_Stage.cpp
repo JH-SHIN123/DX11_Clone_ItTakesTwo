@@ -362,12 +362,12 @@ HRESULT CLevel_Stage::Ready_Lights()
 #pragma endregion
 
 #pragma region Spawn4
-	lightDesc.vPosition = XMFLOAT3(-621.5f, 760.769f, 195.5f);
+	lightDesc.vPosition = XMFLOAT3(-614.44f, 759.985f, 196.064f);
 	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
 	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	lightDesc.fRange = 40.f;
-	pLightGenerator->Add_Light(TEXT("Point_Spawn4_Portal"), CEffectLight::Create(TEXT("Point_Spawn4_Portal"), lightDesc, 30.f, 1, true));
+	lightDesc.fRange = 60.f;
+	pLightGenerator->Add_Light(TEXT("Point_Spawn4_Portal"), CEffectLight::Create(TEXT("Point_Spawn4_Portal"), lightDesc, 30.f, 2, true));
 
 	lightDesc.vPosition = XMFLOAT3(-672.532f, 755.908f, 162.409f);
 	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
@@ -385,13 +385,35 @@ HRESULT CLevel_Stage::Ready_Lights()
 #pragma endregion
 
 #pragma region Spawn5
-	lightDesc.vPosition = XMFLOAT3(52.f, 225.306f, 222.329f);
-	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	lightDesc.vPosition = XMFLOAT3(45.3144f, 220.252f, 226.072f);
+	lightDesc.vDiffuse = XMFLOAT4(0.f, 0.f, 0.5f, 1.f);
 	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	lightDesc.fRange = 50.f;
-	pLightGenerator->Add_Light(TEXT("Point_Spawn5_Center"), CEffectLight::Create(TEXT("Point_Spawn5_Center"), lightDesc, 0.f, 14, false));
+	lightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.5f, 1.f);
+	lightDesc.fRange = 30.f;
+	pLightGenerator->Add_Light(TEXT("Point_Spawn5_Blue_Left"), CEffectLight::Create(TEXT("Point_Spawn5_Blue_Left"), lightDesc, 0.f, 2, false));
 
+	lightDesc.vPosition = XMFLOAT3(63.749f, 235.252f, 205.509f);
+	lightDesc.vDiffuse = XMFLOAT4(0.f, 0.2f, 0.5f, 1.f);
+	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+	lightDesc.vSpecular = XMFLOAT4(0.f, 0.2f, 0.5f, 1.f);
+	lightDesc.fRange = 60.f;
+	pLightGenerator->Add_Light(TEXT("Point_Spawn5_Center"), CEffectLight::Create(TEXT("Point_Spawn5_Center"), lightDesc, 0.f, 2, false));
+
+	lightDesc.vPosition = XMFLOAT3(56.9364f, 228.252f, 224.139f);
+	lightDesc.vDiffuse = XMFLOAT4(0.5f, 0.f, 0.5f, 1.f);
+	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+	lightDesc.vSpecular = XMFLOAT4(0.5f, 0.f, 0.5f, 1.f);
+	lightDesc.fRange = 20.f;
+	pLightGenerator->Add_Light(TEXT("Point_Spawn5_Purple_0"), CEffectLight::Create(TEXT("Point_Spawn5_Purple_0"), lightDesc, 0.f, 2, false));
+	lightDesc.vPosition = XMFLOAT3(66.5393f, 228.252f, 222.242f);
+	pLightGenerator->Add_Light(TEXT("Point_Spawn5_Purple_1"), CEffectLight::Create(TEXT("Point_Spawn5_Purple_1"), lightDesc, 0.f, 2, false));
+
+	lightDesc.vPosition = XMFLOAT3(64.f, 313.f, 195.115f);
+	lightDesc.vDiffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.f);
+	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+	lightDesc.vSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.f);
+	lightDesc.fRange = 120.f;
+	pLightGenerator->Add_Light(TEXT("Point_Bossroom_Center"), CEffectLight::Create(TEXT("Point_Bossroom_Center"), lightDesc, 150.f, 14, false));
 
 #pragma endregion
 
@@ -423,8 +445,9 @@ HRESULT CLevel_Stage::Ready_Lights()
 	lightDesc.vPosition = XMFLOAT3(-789.479f, 775.983f, 215.663f);
 	lightDesc.fRange = 30.f;
 	pLightGenerator->Add_Light(TEXT("Point_Spawn0_7"), CEffectLight::Create(TEXT("Point_Spawn0_7"), lightDesc, 0.f, 14, false));
-
 #pragma endregion
+
+
 #pragma endregion
 
 

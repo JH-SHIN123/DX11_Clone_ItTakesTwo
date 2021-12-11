@@ -6,15 +6,14 @@
 
 HRESULT CEffectLight::Set_Light(const LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor)
 {
-	NULL_CHECK_RETURN(m_pLight, E_FAIL);
-	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
-
 	// Set Light
+	NULL_CHECK_RETURN(m_pLight, E_FAIL);
 	LIGHT_DESC* pLightDesc = m_pLight->Get_LightDescPtr();
 	NULL_CHECK_RETURN(pLightDesc, E_FAIL);
 	memcpy(pLightDesc, &LightDesc, sizeof(LIGHT_DESC));
 
 	// Set Effect
+	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
 	m_pEffect->Set_Pos(LightDesc.vPosition);
 	m_pEffect->Set_Radius(fEffectRadius);
 	m_pEffect->Set_Color((EPoint_Color)eEffectColor);
