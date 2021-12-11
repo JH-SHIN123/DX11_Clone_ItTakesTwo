@@ -428,8 +428,7 @@ void CUFO::OrbitalMovementCenter(_double dTimeDelta)
 
 void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 {
-	/* 테스트 */
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
+	if (nullptr == m_pCodyMissile || nullptr == m_pMayMissile)
 	{
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		_float4 vConvertPos;
@@ -445,17 +444,28 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 		LeftRocketHatch = LeftRocketHatch * vUFOWorld;
 		RightRocketHatch = RightRocketHatch * vUFOWorld;
 
+		CGameObject* pGameObject = nullptr;
 		CBoss_Missile::BOSSMISSILE_DESC tMissileDesc;
-		tMissileDesc.IsTarget_Cody = true;
-		tMissileDesc.vPosition = (_float4)&LeftRocketHatch.r[3].m128_f32[0];
-		XMStoreFloat4(&tMissileDesc.vDir, vCodyDir);
-		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc);
 
-		/* false면 May */
-		tMissileDesc.IsTarget_Cody = false;
-		tMissileDesc.vPosition = (_float4)&RightRocketHatch.r[3].m128_f32[0];
-		XMStoreFloat4(&tMissileDesc.vDir, vMayDir);
-		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc);
+		if (nullptr == m_pCodyMissile)
+		{
+			/* true면 Cody */
+			tMissileDesc.IsTarget_Cody = true;
+			tMissileDesc.vPosition = (_float4)&LeftRocketHatch.r[3].m128_f32[0];
+			XMStoreFloat4(&tMissileDesc.vDir, vCodyDir);
+			m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc, &pGameObject);
+			m_pCodyMissile = static_cast<CBoss_Missile*>(pGameObject);
+		}
+
+		if (nullptr == m_pMayMissile)
+		{
+			/* false면 May */
+			tMissileDesc.IsTarget_Cody = false;
+			tMissileDesc.vPosition = (_float4)&RightRocketHatch.r[3].m128_f32[0];
+			XMStoreFloat4(&tMissileDesc.vDir, vMayDir);
+			m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc, &pGameObject);
+			m_pMayMissile = static_cast<CBoss_Missile*>(pGameObject);
+		}
 	}
 
 	//m_fGuidedMissileTime += (_float)dTimeDelta;
@@ -515,6 +525,10 @@ void CUFO::Phase1_End(_double dTimeDelta)
 
 		if (m_pModelCom->Is_AnimFinished(UFO_LaserRippedOff))
 		{
+			/* 스태틱, 트리거 액터 생성 */
+			/* 얘 왜 터지냐 ㅡㅡ */
+			/*Ready_Actor_Component();*/
+
 			/* 애니메이션이 딱 끝났을 때 뼈의 위치를 받아서 UFO 월드에 세팅해준다. */
 			_matrix BaseBone = m_pModelCom->Get_BoneMatrix("Base");
 			_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
@@ -533,7 +547,7 @@ void CUFO::Phase1_End(_double dTimeDelta)
 			m_ePattern = CUFO::GUIDEDMISSILE;
 			m_IsCutScene = false;
 
-			/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 */
+			/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 나중에 컷신 나오면 이펙트랑 같이 맞춰주자 ㅇㅇ */
 			_matrix LaserBaseBone = m_pModelCom->Get_BoneMatrix("LaserBase");
 			_matrix matScale;
 
@@ -543,6 +557,29 @@ void CUFO::Phase1_End(_double dTimeDelta)
 			m_pModelCom->Set_PivotTransformation(m_pModelCom->Get_BoneIndex("LaserBase"), LaserBaseBone);
 		}
 	}
+}
+
+HRESULT CUFO::Ready_Actor_Component()
+{
+	m_UserData = USERDATA(GameID::eBOSSUFO, this);
+
+	CStaticActor::ARG_DESC ArgDesc;
+	ArgDesc.pModel = m_pModelCom;
+	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
+
+	CTriggerActor::ARG_DESC TriggerArgDesc;
+
+	TriggerArgDesc.pUserData = &m_UserData;
+	TriggerArgDesc.pTransform = m_pTransformCom;
+	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.f);
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerActorCom, &TriggerArgDesc), E_FAIL);
+	Safe_Delete(TriggerArgDesc.pGeometry);
+
+	return S_OK;
 }
 
 void CUFO::Phase2_End(_double dTimeDelta)
@@ -622,6 +659,14 @@ HRESULT CUFO::Render_ShadowDepth()
 	return S_OK;
 }
 
+void CUFO::Set_IsGuidedMissileDeadCheck(_bool IsCheck)
+{
+	if (true == IsCheck)
+		m_pCodyMissile = nullptr;
+	else
+		m_pMayMissile = nullptr;
+}
+
 CUFO * CUFO::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CUFO* pInstance = new CUFO(pDevice, pDeviceContext);
@@ -650,6 +695,12 @@ CGameObject * CUFO::Clone_GameObject(void * pArg)
 
 void CUFO::Free()
 {
+	if (m_ePhase != CUFO::PHASE_1)
+	{
+		Safe_Release(m_pStaticActorCom);
+		Safe_Release(m_pTriggerActorCom);
+	}
+
 	Safe_Release(m_pMayTransform);
 	Safe_Release(m_pCodyTransform);
 	Safe_Release(m_pTransformCom);

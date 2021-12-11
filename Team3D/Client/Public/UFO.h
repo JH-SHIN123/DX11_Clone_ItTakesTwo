@@ -32,57 +32,64 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
+	void Set_IsGuidedMissileDeadCheck(_bool IsCheck);
+
+public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
 	CModel* Get_Model() const { return m_pModelCom; }
 	_float4 Get_LaserStartPos() const { return m_vLaserGunPos; }
 	_float4 Get_LaserDir() const { return m_vLaserDir; }
 
 private:
-	UFO_TARGET			m_eTarget = TARGET_END;
-	UFO_PHASE			m_ePhase = PHASE_END;
-	UFO_PATTERN			m_ePattern = PATTERN_END;
+	UFO_TARGET				m_eTarget = TARGET_END;
+	UFO_PHASE				m_ePhase = PHASE_END;
+	UFO_PATTERN				m_ePattern = PATTERN_END;
 
 private:
 	/* For.CutScene */
-	_bool				m_IsCutScene = false;
+	_bool					m_IsCutScene = false;
 
 	/* For.AllPHASE */
-	_float				m_fWaitingTime = 0.f;
-	_uint				m_iPatternChangeCount = 0;
-	_uint				m_iPhaseChangeCount = 0;
-	_bool				m_IsInterActive = false;
-	_float4				m_vStartUFOPos;
+	_float					m_fWaitingTime = 0.f;
+	_uint					m_iPatternChangeCount = 0;
+	_uint					m_iPhaseChangeCount = 0;
+	_bool					m_IsInterActive = false;
+	_float4					m_vStartUFOPos;
 
 	/* For.PHASE_1 Pattern */
-	_bool				m_IsCoreExplosion = false;
-	_bool				m_IsStartingPointMove = false;
-	_bool				m_IsLaserCreate = true;
-	_float				m_fGravitationalBombLanchTime = 0.f;
-	_uint				m_iGravitationalBombCount = 0;
+	_bool					m_IsCoreExplosion = false;
+	_bool					m_IsStartingPointMove = false;
+	_bool					m_IsLaserCreate = true;
+	_float					m_fGravitationalBombLanchTime = 0.f;
+	_uint					m_iGravitationalBombCount = 0;
 
 	/* For.PHASE_2 Pattern */
-	_float				m_fRevAngle = 0.f;
-	_float				m_fRotAngle = 0.f;
-	_float				m_fGuidedMissileTime = 0.f;
-	_float4				m_vTranslationPos;
-	_bool				m_IsGuidedMissileCreate = true;
+	_float					m_fRevAngle = 0.f;
+	_float					m_fRotAngle = 0.f;
+	_float					m_fGuidedMissileTime = 0.f;
+	_float4					m_vTranslationPos;
+	_bool					m_IsGuidedMissileCreate = true;
 	
+	class CBoss_Missile*	m_pCodyMissile = nullptr;
+	class CBoss_Missile*	m_pMayMissile = nullptr;
 
 	/* For.PHASE_3 Pattern */
 
 
 	/* For. Laser_TypeA */
-	_float4				m_vLaserGunPos;
-	_float4				m_vLaserDir;
+	_float4					m_vLaserGunPos;
+	_float4					m_vLaserDir;
 
 
 private:
 	/* For.Component */
-	CRenderer*			m_pRendererCom = nullptr;
-	CTransform*			m_pTransformCom = nullptr;
-	CModel*				m_pModelCom = nullptr;
-	CTransform*			m_pCodyTransform = nullptr;
-	CTransform*			m_pMayTransform = nullptr;
+	CRenderer*				m_pRendererCom = nullptr;
+	CTransform*				m_pTransformCom = nullptr;
+	CModel*					m_pModelCom = nullptr;
+	CTransform*				m_pCodyTransform = nullptr;
+	CTransform*				m_pMayTransform = nullptr;
+	CStaticActor*			m_pStaticActorCom = nullptr;
+	CTriggerActor*			m_pTriggerActorCom = nullptr;
 
 private:
 	/* For.AllPHASE */

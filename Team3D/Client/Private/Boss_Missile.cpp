@@ -4,6 +4,7 @@
 #include "UI_Generator.h"
 #include "May.h"
 #include "Cody.h"
+#include "UFO.h"
 
 CBoss_Missile::CBoss_Missile(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -82,7 +83,10 @@ _int CBoss_Missile::Tick(_double TimeDelta)
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_H))
+	{
 		m_IsExplosion = true;
+		((CUFO*)DATABASE->Get_BossUFO())->Set_IsGuidedMissileDeadCheck(m_IsTargetCody);
+	}
 
 	return _int();
 }
