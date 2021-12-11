@@ -414,7 +414,7 @@ void CUFO::OrbitalMovementCenter(_double dTimeDelta)
 	else if (m_fRotAngle >= fAngle)
 		m_fRotAngle -= (_float)dTimeDelta;
 
-	m_fRevAngle += (_float)dTimeDelta * 30.f;
+	m_fRevAngle += (_float)dTimeDelta * 20.f;
 
 	matRotY = XMMatrixRotationY(XMConvertToRadians(-m_fRotAngle));
 	matTrans = XMMatrixTranslation(m_vTranslationPos.x, m_vTranslationPos.y, m_vTranslationPos.z);
@@ -428,16 +428,21 @@ void CUFO::OrbitalMovementCenter(_double dTimeDelta)
 
 void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 {
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_float4 vConvertPos;
-	XMStoreFloat4(&vConvertPos, vPos);
+
 
 	/* 테스트 */
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 	{
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_float4 vConvertPos;
+		XMStoreFloat4(&vConvertPos, vPos);
+
 		_matrix vUFOWorld = m_pTransformCom->Get_WorldMatrix();
 		_matrix LeftRocketHatch = m_pModelCom->Get_BoneMatrix("LeftFrontRocketHatch");
 		_matrix RightRocketHatch = m_pModelCom->Get_BoneMatrix("RightFrontRocketHatch");
+
+		_vector vCodyDir = XMVector3Normalize(((CCody*)DATABASE->GetCody())->Get_Position() - vPos);
+		_vector vMayDir = XMVector3Normalize(((CCody*)DATABASE->GetMay())->Get_Position() - vPos);
 
 		LeftRocketHatch = LeftRocketHatch * vUFOWorld;
 		RightRocketHatch = RightRocketHatch * vUFOWorld;
@@ -445,11 +450,13 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 		CBoss_Missile::BOSSMISSILE_DESC tMissileDesc;
 		tMissileDesc.IsTarget_Cody = true;
 		tMissileDesc.vPosition = (_float4)&LeftRocketHatch.r[3].m128_f32[0];
+		XMStoreFloat4(&tMissileDesc.vDir, vCodyDir);
 		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc);
 
 		/* false면 May */
 		tMissileDesc.IsTarget_Cody = false;
 		tMissileDesc.vPosition = (_float4)&RightRocketHatch.r[3].m128_f32[0];
+		XMStoreFloat4(&tMissileDesc.vDir, vMayDir);
 		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc);
 
 

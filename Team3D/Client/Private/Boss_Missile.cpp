@@ -32,11 +32,13 @@ HRESULT CBoss_Missile::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Rocket"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform_ForActor"), (CComponent**)&m_pTransformCom_Actor, &CTransform::TRANSFORM_DESC(3.f, XMConvertToRadians(40.f))), E_FAIL);
 
+	m_pTransformCom->Set_State(CTransform::STATE_UP, XMLoadFloat4(&Data.vDir));
+
 	_vector vPos = XMLoadFloat4(&Data.vPosition);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
 	vPos += XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP)) * 1.5f;
 	m_pTransformCom_Actor->Set_State(CTransform::STATE_POSITION, vPos);
-
 
 	CTriggerActor::ARG_DESC ArgDesc;
 	m_UserData = USERDATA(GameID::eBOSSMISSILE_COMBAT, this);
@@ -66,7 +68,7 @@ _int CBoss_Missile::Tick(_double TimeDelta)
 		Playable_Mode(TimeDelta);
 
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	vPos += XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP)) * 1.5f;
+	//vPos += XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP)) * 1.5f;
 	m_pTransformCom_Actor->Set_State(CTransform::STATE_POSITION, vPos);
 
 	if (true == m_IsUpadate_Trigger)
@@ -191,6 +193,11 @@ void CBoss_Missile::Combat_Move(_double TimeDelta)
 	else
 		vTargetPos = static_cast<CMay*>(CDataStorage::GetInstance()->GetMay())->Get_Position();
 
+	_float4 vConvertPos;
+	XMStoreFloat4(&vConvertPos, vTargetPos);
+	vConvertPos.y += 1.f;
+	vTargetPos = XMLoadFloat4(&vConvertPos);
+
 	_matrix WorldMatrix		= m_pTransformCom->Get_WorldMatrix();
 	_vector vRight			= WorldMatrix.r[0];
 	_vector vUp				= WorldMatrix.r[1];
@@ -202,7 +209,7 @@ void CBoss_Missile::Combat_Move(_double TimeDelta)
 	_vector vNewRightDir	= XMVector3Normalize(XMVector3Cross(vNewUpDir, vLook));
 	_vector vNewLookDir		= XMVector3Normalize(XMVector3Cross(vNewRightDir, vNewUpDir));
 
-	vPosition += XMVector3Normalize(vNewUpDir + (vUp * 25.f)) * (_float)TimeDelta * (4.f * fAccel);
+	vPosition += XMVector3Normalize(vNewUpDir + (vUp * 25.f)) * (_float)TimeDelta * (4.f * fAccel) * 1.3f;
 	WorldMatrix.r[0] = vNewRightDir;
 	WorldMatrix.r[1] = vNewUpDir;
 	WorldMatrix.r[2] = vNewLookDir;

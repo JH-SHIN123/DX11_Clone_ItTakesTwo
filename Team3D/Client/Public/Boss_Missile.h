@@ -16,6 +16,7 @@ public:
 	{
 		_bool IsTarget_Cody = true; //false == May
 		_float4 vPosition = { 0.f,0.f,0.f,1.f };
+		_float4 vDir = { 0.f, 0.f, 0.f, 0.f };
 
 		tagBossMissile_Desc() {}
 		tagBossMissile_Desc(_bool IsTarget_Cody)
