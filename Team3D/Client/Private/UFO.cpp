@@ -364,51 +364,41 @@ void CUFO::Phase1_Pattern(_double dTimeDelta)
 void CUFO::Phase2_Pattern(_double dTimeDelta)
 {
 	/* 공전 드가자 */
-	_vector vDir;
-	_vector vCenterPos = XMLoadFloat4(&m_vStartUFOPos);
-	_vector vUFOLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	OrbitalMovementCenter(dTimeDelta);
+}
+
+void CUFO::OrbitalMovementCenter(_double dTimeDelta)
+{
+	_vector vDir, vCenterPos, vUFORight, vDot;
+	/* 중심점은 1페 때 잡아줬던 시작점 */
+	vCenterPos = XMLoadFloat4(&m_vStartUFOPos);
+	vUFORight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+
 	_float3 vConverCenterPos;
 	XMStoreFloat3(&vConverCenterPos, vCenterPos);
 
 	vDir = vCenterPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vDot = XMVector3AngleBetweenNormals(XMVector3Normalize(vUFOLook), XMVector3Normalize(vDir));
+	vDot = XMVector3AngleBetweenNormals(XMVector3Normalize(vUFORight), XMVector3Normalize(vDir));
+
 	_float fAngle = XMConvertToDegrees(XMVectorGetX(vDot));
 
 	_matrix matWorld, matRotY, matTrans, matRevRotY, matParent;
 
 	if (m_fRotAngle <= fAngle)
 		m_fRotAngle += (_float)dTimeDelta * 30.f;
-	else if(m_fRotAngle > fAngle)
+	else if (m_fRotAngle > fAngle)
 		m_fRotAngle -= (_float)dTimeDelta * 30.f;
 
 	m_fRevAngle += (_float)dTimeDelta * 30.f;
 
 	matRotY = XMMatrixRotationY(XMConvertToRadians(-m_fRotAngle));
 	matTrans = XMMatrixTranslation(25.f, 0.f, 25.f);
-	//matParent = ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_Transform()->Get_WorldMatrix();
 	matParent = XMMatrixTranslation(vConverCenterPos.x, vConverCenterPos.y, vConverCenterPos.z);
 	matRevRotY = XMMatrixRotationY(XMConvertToRadians(m_fRevAngle));
 
 	matWorld = matRotY * matTrans * matRevRotY * matParent;
 
 	m_pTransformCom->Set_WorldMatrix(matWorld);
-
-	//switch (m_eTarget)
-	//{
-	//case Client::CUFO::TARGET_CODY:
-	//	vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
-	//	break;
-	//case Client::CUFO::TARGET_MAY:
-	//	vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
-	//	break;
-	//}
-
-	//vDir = vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
-
-	/* 우주선을 타겟쪽으로 천천히 회전 */
-	//m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f);
-
 }
 
 void CUFO::Phase3_Pattern(_double dTimeDelta)
