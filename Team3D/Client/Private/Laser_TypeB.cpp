@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Laser_TypeB.h"
 
+#include "DataStorage.h"
+
 CLaser_TypeB::CLaser_TypeB(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLaser(pDevice, pDeviceContext)
 {
@@ -22,6 +24,8 @@ HRESULT CLaser_TypeB::NativeConstruct(void * pArg)
 {
 	CLaser::NativeConstruct(pArg);
 
+	m_fShootSpeed = 30.f;
+
 #ifdef __TEST_SE
 	m_fShootSpeed = 30.f;
 	m_vStartPoint = _float4(64.f, 1.f, 30.f, 1.f);
@@ -40,6 +44,14 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 	/* 레이저 생성 시 */
 	if (!m_isDead)
 	{
+		_float fAngle = 0.f;
+		fAngle += (_float)dTimeDelta * m_fRotateSpeed;
+
+		XMStoreFloat4x4(&m_matRotY, XMMatrixRotationY(XMConvertToRadians(fAngle)));
+
+		_vector vDir = XMVector3TransformNormal(XMLoadFloat4(&m_vLaserDir), XMLoadFloat4x4(&m_matRotY));
+		XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(vDir));
+
 		if (m_fLaserSizeY > 0)
 			m_pGameInstance->Raycast(MH_PxVec3(XMLoadFloat4(&m_vStartPoint)), MH_PxVec3(XMLoadFloat4(&m_vLaserDir)), m_fLaserMaxY, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
 
@@ -146,7 +158,10 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 		XMStoreFloat4(&m_vEndPoint, XMLoadFloat4(&m_vStartPoint) + XMLoadFloat4(&m_vLaserDir) * m_fLaserSizeY);
 
 		if (m_fLaserSizeY < 0.f)
+		{
+			DATABASE->Set_LaserTypeB_Recovery(true);
 			return EVENT_DEAD;
+		}
 	}
 
 #ifdef __TEST_SE
@@ -195,6 +210,42 @@ HRESULT CLaser_TypeB::Render_ShadowDepth()
 
 	return S_OK;
 }
+
+void CLaser_TypeB::Set_StartPoint(_float4 vStartPoint)
+{
+	m_vStartPoint = vStartPoint;
+}
+
+void CLaser_TypeB::Set_LaserDir(_float4 vLaserDir)
+{
+	m_vLaserDir = vLaserDir;
+}
+
+void CLaser_TypeB::SetUp_Direction(_uint iOption)
+{
+	if (0 == iOption)
+		m_vLaserDir = { 0.f, 0.f, 1.f, 0.f };
+	else if (1 == iOption)
+		m_vLaserDir = { 0.5f, 0.f, 0.5f, 0.f };
+	else if (2 == iOption)
+		m_vLaserDir = { 1.f, 0.f, 0.f, 0.f };
+	else if (3 == iOption)
+		m_vLaserDir = { 0.5f, 0.f, -0.5f, 0.f };
+	else if (4 == iOption)
+		m_vLaserDir = { 0.f, 0.f, -1.f, 0.f };
+	else if (5 == iOption)
+		m_vLaserDir = { -0.5f, 0.f, -0.5f, 0.f };
+	else if (6 == iOption)
+		m_vLaserDir = { -1.f, 0.f, 0.f, 0.f };
+	else if (7 == iOption)
+		m_vLaserDir = { -0.5f, 0.f, 0.5f, 0.f };
+}
+
+void CLaser_TypeB::Set_RotateSpeed(_float fSpeed)
+{
+	m_fRotateSpeed = fSpeed;
+}
+
 
 CLaser_TypeB * CLaser_TypeB::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

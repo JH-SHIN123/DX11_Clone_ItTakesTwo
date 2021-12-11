@@ -28,6 +28,8 @@ HRESULT CPedal::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
+	m_pTransformCom->RotateRoll_Angle(-20.f);
+	m_bSmash = true;
 	return S_OK;
 }
 
@@ -93,29 +95,58 @@ void CPedal::Movement(_double dTimeDelta)
 {
 	if (false == m_bSmash)
 	{
-		_double dAngle = (dTimeDelta * ( 0.5f * 45.f));
-		if (45.f <= m_dAngle + dAngle)
+		if (false == m_bDelay)
 		{
-			m_bSmash = !m_bSmash;
-			dAngle = 45.f - m_dAngle;
-			m_dAngle = 0.0;
+			_double dAngle = (dTimeDelta * (1.f * 20.f));
+			if (20.f <= m_dAngle + dAngle)
+			{
+				dAngle = 20.f - m_dAngle;
+				m_dAngle = 0.0;
+				m_bDelay = true;
+			}
+			else
+				m_dAngle += dAngle;
+			m_pTransformCom->RotateRoll_Angle(-dAngle);
 		}
 		else
-			m_dAngle += dAngle;
-		m_pTransformCom->RotateRoll_Angle(-dAngle);
+		{
+			m_dCoolTime += dTimeDelta;
+			if (0.6 <= m_dCoolTime)
+			{
+				m_bDelay = false;
+				m_bSmash = !m_bSmash;
+				m_dCoolTime = 0.0;
+				return;
+			}
+		}
 	}
 	else
 	{
-		_double dAngle = (dTimeDelta * (10.f * 45.f));
-		if (45.f <= m_dAngle + dAngle)
+		if (false == m_bDelay)
 		{
-			m_bSmash = !m_bSmash;
-			dAngle = 45.f - m_dAngle;
-			m_dAngle = 0.0;
+			_double dAngle = (dTimeDelta * (10.f * 20.f));
+			if (20.f <= m_dAngle + dAngle)
+			{
+				dAngle = 20.f - m_dAngle;
+				m_dAngle = 0.0;
+				m_bDelay = true;
+			}
+			else
+				m_dAngle += dAngle;
+
+			m_pTransformCom->RotateRoll_Angle(dAngle);
 		}
 		else
-			m_dAngle += dAngle;
-		m_pTransformCom->RotateRoll_Angle(dAngle);
+		{
+			m_dCoolTime += dTimeDelta;
+			if (1.0 <= m_dCoolTime)
+			{
+				m_bDelay = false;
+				m_bSmash = !m_bSmash;
+				m_dCoolTime = 0.0;
+				return;
+			}
+		}
 	}
 }
 

@@ -390,18 +390,18 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vResultPos = XMVectorZero();
 	if (false == bIsTeleport)
 	{
-		m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
+		//m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
 
-		_float4 vEye, vAt;
+		//_float4 vEye, vAt;
 
-		XMStoreFloat4(&vEye, vResultPos);
-		XMStoreFloat4(&vAt, vPlayerPos);
-		_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt,vPlayerUp);
-		matAffine = matCurWorld;
-
+		//XMStoreFloat4(&vEye, vResultPos);
+		//XMStoreFloat4(&vAt, vPlayerPos);
+		//_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt,vPlayerUp);
+		//matAffine = matCurWorld;
 	}
 	else
 		m_bIsCollision = false;
+
 	m_pTransformCom->Set_WorldMatrix(matAffine);
 
 #pragma endregion

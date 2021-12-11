@@ -48,7 +48,7 @@ VS_OUT VS_MAIN(VS_IN In)
 
 	Out.vPosition	= mul(vector(In.vPosition, 1.f), In.WorldMatrix);
 	Out.vNormal		= normalize(mul(vector(In.vNormal, 0.f), In.WorldMatrix));
-	Out.vTangent	= normalize(mul(vector(In.vTangent, 0.f), In.WorldMatrix));
+	Out.vTangent	= normalize(mul(vector(In.vTangent, 0.f), In.WorldMatrix)).xyz;
 	Out.vBiNormal	= normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
 	Out.vTexUV		= In.vTexUV;
 	Out.iViewportDrawInfo = In.iViewportDrawInfo;

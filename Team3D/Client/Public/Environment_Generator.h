@@ -54,6 +54,7 @@ private:
 	HRESULT Load_Environment_Bridge();
 	HRESULT Load_Environment_SpaceRail();
 	HRESULT Load_Environment_Trigger();
+	HRESULT Load_Others();
 	/* ¿Œµ¶Ω∫ ∑ŒµÂ */
 	HRESULT Load_Prototype_Model_ByIndex_Space(_uint iIndex);
 

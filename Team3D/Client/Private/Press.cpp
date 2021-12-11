@@ -34,9 +34,9 @@ HRESULT CPress::NativeConstruct(void * pArg)
 	XMStoreFloat3(&m_vOpenPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	if(0 == m_tDynamic_Env_Desc.iOption)
-		XMStoreFloat3(&m_vClosePos, vPos - vRight * 0.23f);
+		XMStoreFloat3(&m_vClosePos, vPos - vRight * 0.175f);
 	else
-		XMStoreFloat3(&m_vClosePos, vPos + vRight * 0.23f);
+		XMStoreFloat3(&m_vClosePos, vPos + vRight * 0.175f);
 
 	return S_OK;
 }
@@ -114,7 +114,7 @@ void CPress::Open_Press(_double dTimeDelta)
 		return;
 
 	m_dCoolTime += dTimeDelta;
-	if (2.0 <= m_dCoolTime)
+	if (1.0 <= m_dCoolTime)
 	{
 		m_dDistance = 0.0;
 		m_dCoolTime = 0.0;
@@ -129,7 +129,7 @@ void CPress::Open_Press(_double dTimeDelta)
 	else
 		m_pTransformCom->Go_Right_NoneSpeed(-dTimeDelta);
 
-	if (0.23f <= m_dDistance)
+	if (0.175f <= m_dDistance)
 	{
 		_vector vOpenPos = XMVectorSetW(XMLoadFloat3(&m_vOpenPos), 1.f);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vOpenPos);
@@ -150,14 +150,14 @@ void CPress::Close_Press(_double dTimeDelta)
 		return;
 	}
 
-	m_dDistance += dTimeDelta * 5.0;
+	m_dDistance += dTimeDelta * 4.0;
 
 	if(0 == m_tDynamic_Env_Desc.iOption)
-		m_pTransformCom->Go_Right_NoneSpeed(-(dTimeDelta * 5.0));
+		m_pTransformCom->Go_Right_NoneSpeed(-(dTimeDelta * 4.0));
 	else
-		m_pTransformCom->Go_Right_NoneSpeed(dTimeDelta * 5.0);
+		m_pTransformCom->Go_Right_NoneSpeed(dTimeDelta * 4.0);
 
-	if (0.23f <= m_dDistance)
+	if (0.2f <= m_dDistance)
 	{
 		_vector vClosePos = XMVectorSetW(XMLoadFloat3(&m_vClosePos), 1.f);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vClosePos);

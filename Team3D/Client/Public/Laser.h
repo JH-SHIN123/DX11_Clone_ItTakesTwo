@@ -19,6 +19,9 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eRender) override;
 	virtual HRESULT Render_ShadowDepth() override;
 
+public:
+	void Set_Dead();
+
 protected:
 	CTransform*							m_pTransformCom = nullptr;
 	CTextures*							m_pTextureCom = nullptr;
