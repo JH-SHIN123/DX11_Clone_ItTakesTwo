@@ -11,14 +11,14 @@ private:
 	virtual ~CEffectLight() = default;
 
 public:
-	void	Set_Active(_bool bActive) { m_bActive = bActive; }
+	void	Set_EffectActive(_bool bActive) { m_bEffectActive = bActive; }
 	HRESULT Set_Light(const LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor);
 
 public:
-	HRESULT	NativeConstruct(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor, _bool bActive);
+	HRESULT	NativeConstruct(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor, _bool bEffectActive);
 
 private:
-	_bool m_bActive = false;
+	_bool m_bEffectActive = false;
 
 private:
 	_tchar							m_szLightTag[MAX_PATH] = L"";
@@ -27,7 +27,7 @@ private:
 	class CLight*					m_pLight = nullptr;
 
 public:
-	static CEffectLight* Create(const _tchar* pLightTag, const LIGHT_DESC & LightDesc, _float fEffectRadius, _uint eEffectColor, _bool bActive);
+	static CEffectLight* Create(const _tchar* pLightTag, const LIGHT_DESC & LightDesc, _float fEffectRadius, _uint eEffectColor, _bool bEffectActive);
 	virtual void Free() override;
 };
 END

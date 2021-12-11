@@ -22,28 +22,31 @@ HRESULT CEffectLight::Set_Light(const LIGHT_DESC& LightDesc, _float fEffectRadiu
 	return S_OK;
 }
 
-HRESULT CEffectLight::NativeConstruct(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor, _bool bActive)
+HRESULT CEffectLight::NativeConstruct(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor, _bool bEffectActive)
 {
-	m_bActive = bActive;
+	m_bEffectActive = bEffectActive;
 	lstrcpy(m_szLightTag, pLightTag);
 	m_LightDesc = LightDesc;
 
 	// Set Light
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	pGameInstance->Add_Light(m_szLightTag, LightDesc, bActive, (void**)&m_pLight);
+	pGameInstance->Add_Light(m_szLightTag, LightDesc, true, (void**)&m_pLight);
 
 	// Set Effect
-	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(fEffectRadius, 0.25f, 1.f, LightDesc.vPosition, (EPoint_Color)eEffectColor), (CGameObject**)&m_pEffect), E_FAIL);
-	m_pEffect->Set_Radius(fEffectRadius);
+	if (0.f != fEffectRadius || false == m_bEffectActive)
+	{
+		FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(fEffectRadius, 0.25f, 1.f, LightDesc.vPosition, (EPoint_Color)eEffectColor), (CGameObject**)&m_pEffect), E_FAIL);
+		m_pEffect->Set_Radius(fEffectRadius);
+	}
 
 	return S_OK;
 }
 
-CEffectLight* CEffectLight::Create(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor, _bool bActive)
+CEffectLight* CEffectLight::Create(const _tchar* pLightTag, const LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor, _bool bEffectActive)
 {
 	CEffectLight* pInstance = new CEffectLight();
 
-	if (FAILED(pInstance->NativeConstruct(pLightTag, LightDesc, fEffectRadius, eEffectColor, bActive)))
+	if (FAILED(pInstance->NativeConstruct(pLightTag, LightDesc, fEffectRadius, eEffectColor, bEffectActive)))
 	{
 		MSG_BOX("Failed to Create Instance - CEffectLight");
 		Safe_Release(pInstance);
