@@ -352,6 +352,13 @@ HRESULT CLevel_Stage::Ready_Lights()
 	lightDesc.vSpecular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
 	lightDesc.fRange = 150.f;
 	pLightGenerator->Add_Light(TEXT("Point_Spawn3_Sepia1"), CEffectLight::Create(TEXT("Point_Spawn3_Sepia1"), lightDesc, 100.f, 14, true));
+
+	lightDesc.vPosition = XMFLOAT3(614.392f, 760.874f, 196.187f);
+	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	lightDesc.fRange = 40.f;
+	pLightGenerator->Add_Light(TEXT("Point_Spawn3_RailWarp"), CEffectLight::Create(TEXT("Point_Spawn3_RailWarp"), lightDesc, 30.f, 1, true));
 #pragma endregion
 
 #pragma region Spawn4
@@ -368,6 +375,13 @@ HRESULT CLevel_Stage::Ready_Lights()
 	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 	lightDesc.fRange = 15.f;
 	pLightGenerator->Add_Light(TEXT("Point_Spawn4_Pinball"), CEffectLight::Create(TEXT("Point_Spawn4_Pinball"), lightDesc, 7.f, 13, true));
+
+	lightDesc.vPosition = XMFLOAT3(-669.225f, 755.396f, 190.738f);
+	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+	lightDesc.fRange = 1.f;
+	pLightGenerator->Add_Light(TEXT("Point_Spawn4_Pinball_Mini"), CEffectLight::Create(TEXT("Point_Spawn4_Pinball_Mini"), lightDesc, 1.f, 14, true));
 #pragma endregion
 
 #pragma region Spawn5
@@ -377,6 +391,8 @@ HRESULT CLevel_Stage::Ready_Lights()
 	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 	lightDesc.fRange = 50.f;
 	pLightGenerator->Add_Light(TEXT("Point_Spawn5_Center"), CEffectLight::Create(TEXT("Point_Spawn5_Center"), lightDesc, 0.f, 14, false));
+
+
 #pragma endregion
 
 #pragma region Spawn0
