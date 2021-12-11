@@ -45,7 +45,6 @@ public:
 	void Set_STPlanetRobotPtr(CGameObject* pRobot) { m_pSTPlanetRobot = pRobot; }
 	CGameObject* Get_STPlanetRobot() { return m_pSTPlanetRobot; }
 
-
 	void Set_PressureBigPlate(CGameObject* pPressureBigPlate) { m_pPressureBigPlate = pPressureBigPlate; }
 	CGameObject* Get_PressureBigPlate() { return m_pPressureBigPlate; }
 
@@ -150,6 +149,19 @@ public:
 	void Set_HookUFO(CGameObject* pHookUFO) { m_pHookUFO = pHookUFO; }
 	CGameObject* Get_HookUFO() { return m_pHookUFO; }
 
+	/* For. Boss */
+	void Set_MoonBaboon_MainLaser(CGameObject* pMoonBaboon_MainLaser) { m_pMoonBaboonMainLaser = pMoonBaboon_MainLaser; }
+	CGameObject* Get_MoonBaboon_MainLaser() { return m_pMoonBaboonMainLaser; }
+
+	void Set_BossUFO(CGameObject* pBossUFO) { m_pBossUFO = pBossUFO; }
+	CGameObject* Get_BossUFO() { return m_pBossUFO; }
+
+	void Set_LaserTypeA(CGameObject* pLaserTypeA) { m_pLaserTypeA = pLaserTypeA; }
+	CGameObject* Get_LaserTypeA() { return m_pLaserTypeA; }
+
+	void Set_LaserTypeB_Recovery(_bool IsCheck) { m_IsLaserTypeB_Recovery = IsCheck; }
+	_bool Get_LaserTypeB_Recovery() const { return m_IsLaserTypeB_Recovery; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -213,6 +225,11 @@ private:
 	/* For.ControlRoom_Battery */
 	CGameObject* m_pControlRoom_Battery = nullptr;
 
+	/* For.Boss */
+	CGameObject* m_pMoonBaboonMainLaser = nullptr;
+	CGameObject* m_pBossUFO = nullptr;
+	CGameObject* m_pLaserTypeA = nullptr;
+
 private:
 	/* For.Valve */
 	_uint m_iValveRotateCount = 0;
@@ -225,6 +242,7 @@ private:
 	_bool m_bPinBallStageClear = false;
 	_bool m_bRailStageClear = false;
 	_bool m_IsValveActivated = false;
+	_bool m_IsLaserTypeB_Recovery = false;
 
 	_uint m_iMayStageNum = 0;
 	_uint m_iCodyStageNum = 0;

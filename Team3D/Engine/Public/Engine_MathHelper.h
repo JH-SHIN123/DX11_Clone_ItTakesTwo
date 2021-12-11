@@ -72,6 +72,17 @@ namespace Engine
 		return vPxVector;
 	}
 
+	static PxVec3 MH_PxVec3(_float4 vVector)
+	{
+		PxVec3 vPxVector;
+
+		vPxVector.x = vVector.x;
+		vPxVector.y = vVector.y;
+		vPxVector.z = vVector.z;
+
+		return vPxVector;
+	}
+
 	static PxVec3 MH_PxVec3(_float3 vVector, _float fX)
 	{
 		PxVec3 vPxVector;

@@ -156,10 +156,13 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 			m_iCutSceneTake++;
 		}
 	}
-	else if (m_dTime >= 128.51)
+	else if (m_iCutSceneTake == 8)
 		{
-			((CCody*)DATABASE->GetCody())->Set_Position(XMVectorSet(65.4f, 0.2f, 1.1f,1.f));
-			((CMay*)DATABASE->GetCody())->Set_Position(XMVectorSet(63.5f, 0.15f, 0.3f,1.f));
+			if (m_dTime >= 128.51)
+			{
+				((CCody*)DATABASE->GetCody())->Set_Position(XMVectorSet(65.4f, 0.2f, 1.1f,1.f));
+				((CMay*)DATABASE->GetCody())->Set_Position(XMVectorSet(63.5f, 0.15f, 0.3f,1.f));
+			}
 		}
 
 	CodyLerp();

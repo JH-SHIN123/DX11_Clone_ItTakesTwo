@@ -48,7 +48,7 @@ HRESULT CCody::NativeConstruct_Prototype()
 HRESULT CCody::NativeConstruct(void* pArg)
 {
 	CCharacter::NativeConstruct(pArg);
-	Ready_Component();;
+	Ready_Component();
 
 	//m_pModelCom->Set_Animation(ANI_C_MH);
 	m_pModelCom->Set_Animation(0);
@@ -170,6 +170,7 @@ void CCody::Add_LerpInfo_To_Model()
 
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Start_Fwd, ANI_C_Jump_Falling, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog_Stop_Fwd, ANI_C_Jump_Falling, false);
+
 	m_pModelCom->Add_LerpInfo(ANI_C_Jog, ANI_C_Jump_Falling, false);
 
 	m_pModelCom->Add_LerpInfo(ANI_C_DoubleJump, ANI_C_Jump_Land_Jog, false);
@@ -306,11 +307,6 @@ _int CCody::Late_Tick(_double dTimeDelta)
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 		return NO_EVENT;
 	}
-	if (m_pGameInstance->Key_Down(DIK_U))
-		UI_Create(Cody, CutSceneBar);
-
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
 
 	/* LateTick : 레일의 타겟 찾기*/
 	Find_TargetSpaceRail();
@@ -468,6 +464,12 @@ void CCody::KeyInput(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_0))/* 우산 */
 	{
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+		m_pActorCom->Set_IsPlayerInUFO(false);
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_BACKSPACE))/* 우산 */
+	{
+		m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 #pragma endregion
@@ -2927,6 +2929,7 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 		m_eCurPlayerSize == SIZE_MEDIUM && false == m_IsDeadLine)
 	{
 		Start_SpaceRail();
+		UI_Delete(Cody, InputButton_InterActive_Rail);
 	}
 
 	if (m_bOnRail)
@@ -3133,7 +3136,7 @@ void CCody::ShowRailTargetTriggerUI()
 	}
 	else {
 		m_pGauge_Circle->Set_Active(false);
-		UI_Delete(Cody, InputButton_InterActive);
+		UI_Delete(Cody, InputButton_InterActive_Rail);
 		m_pGauge_Circle->Set_DefaultSetting();
 
 	}
@@ -3149,7 +3152,7 @@ HRESULT CCody::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 	m_pGauge_Circle = static_cast<CGauge_Circle*>(pGameObject);
 	m_pGauge_Circle->Set_SwingPointPlayerID(Player::Cody);
 	// 범위 설정
-	m_pGauge_Circle->Set_Range(10.f);
+	m_pGauge_Circle->Set_Range(20.f);
 
 	return S_OK;
 }

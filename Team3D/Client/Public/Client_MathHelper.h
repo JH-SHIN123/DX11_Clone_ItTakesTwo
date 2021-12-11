@@ -68,4 +68,20 @@ namespace Client
 
 		return Result;
 	}
+
+	static _fmatrix MH_LerpMatrix(_fmatrix SrcMatrix, _fmatrix DstMatrix, _float fTime)
+	{
+		_vector vScale, vQuat, vPosition;
+		_vector vSrcScale, vSrcQuat, vSrcPosition;
+		_vector vDstScale, vDstQuat, vDstPosition;
+
+		XMMatrixDecompose(&vSrcScale, &vSrcQuat, &vSrcPosition, SrcMatrix);
+		XMMatrixDecompose(&vDstScale, &vDstQuat, &vDstPosition, SrcMatrix);
+
+		vScale		= XMVectorLerp(vSrcScale, vDstScale, fTime);
+		vQuat		= XMQuaternionSlerp(vSrcQuat, vDstQuat, fTime);
+		vPosition	= XMVectorLerp(vSrcPosition, vDstPosition, fTime);
+
+		return XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vQuat, vPosition);
+	}
 }

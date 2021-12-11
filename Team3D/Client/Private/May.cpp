@@ -2382,6 +2382,7 @@ void CMay::KeyInput_Rail(_double dTimeDelta)
 	if ((m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bOnRail && false == m_IsDeadLine)
 	{
 		Start_SpaceRail();
+		UI_Delete(May, InputButton_InterActive_Rail);
 	}
 
 	if (m_bOnRail)
@@ -2582,9 +2583,8 @@ void CMay::ShowRailTargetTriggerUI()
 	}
 	else {
 		m_pGauge_Circle->Set_Active(false);
-		UI_Delete(May, InputButton_InterActive);
+		UI_Delete(May, InputButton_InterActive_Rail);
 		m_pGauge_Circle->Set_DefaultSetting();
-
 	}
 }
 #pragma endregion

@@ -47,8 +47,6 @@ private:
 	/* Yoon */
 	HRESULT Ready_Layer_Cody(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_May(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_UFO(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_MoonBaboon(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Rocket(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_StarBuddy(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_NoBatterySign(const _tchar* pLayerTag);
@@ -69,6 +67,9 @@ private:
 	HRESULT Ready_Layer_ControlRoomPuzzle(const _tchar* pLayerTag, const _tchar* pGameObjectTag);
 	HRESULT Ready_Layer_ControlRoom_Glass(const _tchar * pLayerTag);
 	HRESULT Ready_Layer_Umbrella_Joystick(const _tchar * pLayerTag);
+	HRESULT Ready_Layer_UFO(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_MoonBaboon(const _tchar* pLayerTag);
+
 	/* Jun */
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 
