@@ -31,6 +31,8 @@ enum class Effect_Value
 	BossBomb_Explosion,
 	BossLaser_Charge,
 	BossLaser_Explosion,
+	BossGroundPound,
+	BossGroundPound_Ring,
 	Effect_Value_End
 };
 

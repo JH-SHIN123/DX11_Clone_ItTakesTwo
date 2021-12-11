@@ -17,7 +17,7 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Particle::NativeConstruct_Prototype(void
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 100;
+	m_EffectDesc_Prototype.iInstanceCount = 150;
 
 	return S_OK;
 }

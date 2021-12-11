@@ -47,7 +47,7 @@ private:
 	_float3*							m_pInstanceBiffer_Dir = nullptr;
 
 	const _float  m_fAlphaTime_Power = 1.f;
-	const _float  m_fInstance_SpeedPerSec = 2.5f;
+	const _float  m_fInstance_SpeedPerSec = 1.5f;
 	const _double m_dInstance_Pos_Update_Time = 1.5;
 	const _float2 m_vDefaultSize = { 0.1f, 0.3f };
 

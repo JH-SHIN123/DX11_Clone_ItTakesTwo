@@ -23,13 +23,8 @@ HRESULT CEffect_Boss_Gravitational_Bomb::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
 
-	m_pTransformCom->Set_Speed(0.0, 0.25);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Textures_Distortion"), (CComponent**)&m_pTexture_Distortion), E_FAIL);
-
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(65.f, 0.f, 30.f, 1.f));
 
 	return S_OK;
 }

@@ -1008,6 +1008,127 @@ void  GS_MAIN_DOUBLE_UV(/*입력*/ point  VS_OUT_ROTATE_POWER In[1], /*출력*/ inou
 	TriStream.Append(Out[6]);
 	TriStream.Append(Out[7]);
 }
+[maxvertexcount(12)]
+void  GS_MAIN_DOUBLE_TEX_ANGLE_NOT_BILL(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT_DOUBLE_TEX> TriStream)
+{
+	GS_OUT_DOUBLE_TEX		Out[8];
+
+	float3		vUp = In[0].vPointAxis;
+	float3		vAxisX = float3(1.f, 0.f, 0.f);
+	float3		vLook = normalize(cross(vAxisX, vUp));
+	float3		vRight = normalize(cross(vUp, vLook));
+
+	matrix		matVP = mul(g_MainViewMatrix, g_MainProjMatrix);;
+
+	float2		vHalfSize = float2(In[0].vSize.x * 0.5f, In[0].vSize.y * 0.5f);
+
+	float4		vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
+	float4		vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
+
+	float fSin = sin(g_fRadianAngle);
+	float fCos = cos(g_fRadianAngle);
+	float2x2 RotateMatrix = float2x2(fCos, -fSin, fSin, fCos);
+	float2 RotateUV = In[0].vTextureUV_LTRB.xy - 0.5f;
+	RotateUV = mul(RotateUV, RotateMatrix);
+	RotateUV += 0.5f;
+	float4 vAngle_LTRB;
+	vAngle_LTRB.xy = RotateUV;
+
+	RotateUV = In[0].vTextureUV_LTRB.zw - 0.5f;
+	RotateUV = mul(RotateUV, RotateMatrix);
+	RotateUV += 0.5f;
+	vAngle_LTRB.zw = RotateUV;
+
+	/* 좌상 */
+	Out[0].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[0].vPosition = mul(Out[0].vPosition, matVP);
+	Out[0].vTexUV = float2(vAngle_LTRB.x, vAngle_LTRB.y);
+	Out[0].vTexUV_2 = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.y);
+	Out[0].vProjPosition = Out[0].vPosition;
+	Out[0].iViewportIndex = 1;
+	TriStream.Append(Out[0]);
+
+	/* 우상 */
+	Out[1].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[1].vPosition = mul(Out[1].vPosition, matVP);
+	Out[1].vTexUV = float2(vAngle_LTRB.z, vAngle_LTRB.y);
+	Out[1].vTexUV_2 = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.y);
+	Out[1].vProjPosition = Out[1].vPosition;
+	Out[1].iViewportIndex = 1;
+	TriStream.Append(Out[1]);
+
+	/* 우하 */
+	Out[2].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[2].vPosition = mul(Out[2].vPosition, matVP);
+	Out[2].vTexUV = float2(vAngle_LTRB.z, vAngle_LTRB.w);
+	Out[2].vTexUV_2 = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.w);
+	Out[2].vProjPosition = Out[2].vPosition;
+	Out[2].iViewportIndex = 1;
+	TriStream.Append(Out[2]);
+
+	TriStream.RestartStrip();
+
+	/* 좌하 */
+	Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[3].vPosition = mul(Out[3].vPosition, matVP);
+	Out[3].vTexUV = float2(vAngle_LTRB.x, vAngle_LTRB.w);
+	Out[3].vTexUV_2 = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.w);
+	Out[3].vProjPosition = Out[3].vPosition;
+	Out[3].iViewportIndex = 1;
+	TriStream.Append(Out[0]);
+	TriStream.Append(Out[2]);
+	TriStream.Append(Out[3]);
+
+	TriStream.RestartStrip();
+	// Sub View 0,1
+
+	matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+
+	vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
+	vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
+
+	Out[4].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[4].vPosition = mul(Out[4].vPosition, matVP);
+	Out[4].vTexUV = float2(vAngle_LTRB.x, vAngle_LTRB.y);
+	Out[4].vTexUV_2 = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.y);
+	Out[4].vProjPosition = Out[4].vPosition;
+	Out[4].iViewportIndex = 2;
+	TriStream.Append(Out[4]);
+
+	/* 우상 */
+	Out[5].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[5].vPosition = mul(Out[5].vPosition, matVP);
+	Out[5].vTexUV = float2(vAngle_LTRB.z, vAngle_LTRB.y);
+	Out[5].vTexUV_2 = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.y);
+	Out[5].vProjPosition = Out[5].vPosition;
+	Out[5].iViewportIndex = 2;
+	TriStream.Append(Out[5]);
+
+	/* 우하 */
+	Out[6].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[6].vPosition = mul(Out[6].vPosition, matVP);
+	Out[6].vTexUV = float2(vAngle_LTRB.z, vAngle_LTRB.w);
+	Out[6].vTexUV_2 = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.w);
+	Out[6].vProjPosition = Out[6].vPosition;
+	Out[6].iViewportIndex = 2;
+	TriStream.Append(Out[6]);
+
+	TriStream.RestartStrip();
+
+	/* 좌하 */
+	Out[7].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[7].vPosition = mul(Out[7].vPosition, matVP);
+	Out[7].vTexUV = float2(vAngle_LTRB.x, vAngle_LTRB.w);
+	Out[7].vTexUV_2 = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.w);
+	Out[7].vProjPosition = Out[7].vPosition;
+	Out[7].iViewportIndex = 2;
+	TriStream.Append(Out[4]);
+	TriStream.Append(Out[6]);
+	TriStream.Append(Out[7]);
+}
+
+/*
+*/
 ////////////
 struct  GS_OUT_DIST
 {
@@ -1352,9 +1473,9 @@ PS_OUT  PS_MAIN_PILLAR(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(ColorSampler, In.vTexUV );
-	Out.vColor.rgb *= g_vColor;
+	Out.vColor.rgb *= g_vColor.rgb;
 	Out.vColor.rgb *= g_fTime;
-	Out.vColor.a = Out.vColor.rgb;
+	Out.vColor.a = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.f;
 
 	return Out;
 }
@@ -1486,31 +1607,15 @@ PS_OUT  PS_MAIN_ROTATE_DISTORTION(PS_IN_DOUBLE_UV In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	float4 vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-	if (0.01f >= vColor.r)
-		discard;
-
-	//float4 vDistortion	= g_SecondTexture.Sample(DiffuseSampler, In.vColorUV);
-	//float fWeight		= vDistortion.r * 0.5f;
-
-	//float2 vTexUV = In.vTexUV - 0.5f;
-	//vTexUV.x += fWeight * sign(vTexUV.x);
-	//vTexUV.y += fWeight * sign(vTexUV.y);
-	//vTexUV += 0.5f;
-
 	float4 vDistortion = g_SecondTexture.Sample(DiffuseSampler, In.vColorUV);
-	float fWeight = (vDistortion.r/* + g_fTime * 0.5f*/) * 0.5f;
+	float fWeight = 0.f;
+	//fWeight = (vDistortion.r) * 0.5f;
 
-	float2 vTexUV = In.vTexUV - 0.5f;
-	vTexUV.x += fWeight * sign(vTexUV.x);
-	vTexUV.y += fWeight * sign(vTexUV.y);
-	vTexUV += 0.5f;
-
-	vColor = g_SecondTexture.Sample(DiffuseSampler, /*In.*/vTexUV);
-	//vColor.rgb *= (10.f, 5.f, 3.f);
-	vColor.a = vColor.r;
+	float4 vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV + fWeight);
 
 	Out.vColor = vColor;
+	Out.vColor *= g_vColor;
+
 	return Out;
 }
 

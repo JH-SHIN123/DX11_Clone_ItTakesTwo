@@ -238,6 +238,8 @@
     <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Particle.h" />
     <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Pillar.h" />
+    <ClInclude Include="..\public\Effect_Boss_GroundPound.h" />
+    <ClInclude Include="..\public\Effect_Boss_GroundPound_Ring.h" />
     <ClInclude Include="..\public\Effect_Boss_Laser_Charge.h" />
     <ClInclude Include="..\public\Effect_Boss_Laser_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Laser_Particle.h" />
@@ -442,6 +444,8 @@
     <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Pillar.cpp" />
+    <ClCompile Include="..\private\Effect_Boss_GroundPound.cpp" />
+    <ClCompile Include="..\private\Effect_Boss_GroundPound_Ring.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Laser_Charge.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Laser_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Laser_Particle.cpp" />

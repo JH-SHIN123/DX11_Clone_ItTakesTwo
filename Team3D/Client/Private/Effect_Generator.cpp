@@ -39,6 +39,8 @@
 #include "Effect_Boss_Gravitational_Bomb_Pillar.h"
 #include "Effect_Boss_Gravitational_Bomb_Particle.h"
 #include "Effect_Boss_Gravitational_Bomb_Explosion.h"
+#include "Effect_Boss_GroundPound.h"
+#include "Effect_Boss_GroundPound_Ring.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -146,6 +148,12 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::BossLaser_Explosion:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_Laser_Explosion");
 		break;
+	case Effect_Value::BossGroundPound:
+		lstrcpy(szPrototype, L"GameObject_3D_Boss_GroundPound");
+		break;
+	case Effect_Value::BossGroundPound_Ring:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_GroundPound_Ring");
+		break;
 	default:
 		break;
 	}
@@ -215,25 +223,9 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 					, Compute_Pivot(XMLoadFloat3(&Data->vPivotScale), XMLoadFloat3(&Data->vPivotRotate_Degree)))), E_FAIL);
 		}
 
-
 		Create_Prototype(Data->iLevelIndex, Data->EffectName, pDevice, pDeviceContext, Data);
 		Safe_Delete(Data);
 	}
-
-// 	_float3 vScale = { 0.002f, 0.002f, 0.002f };
-// 	_float3 vRotate = { -90.f, 0.f, 0.f };
-// 
-// 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE,TEXT("Component_Model_Boss_Gravitational_Bomb")
-// 		, CModel::Create(pDevice, pDeviceContext, TEXT("../Bin/Resources/Effect/3D/")
-// 			, TEXT("Boss_Gravitational_Bomb"), TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), "DefaultTechnique", 1
-// 			, Compute_Pivot(XMLoadFloat3(&vScale), XMLoadFloat3(&vRotate)))), E_FAIL);
-// 
-// 	EFFECT_DESC_PROTO Data;
-// 	lstrcpy(Data.ModelName ,		 TEXT("Component_Model_Boss_Gravitational_Bomb"));
-// 	lstrcpy(Data.TextureName,		 TEXT("Component_Texture_Tilling_Cloud"));
-// 	lstrcpy(Data.TextureName_Second, TEXT(""));
-// 
-// 	m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_3D_Boss_Gravitational_Bomb", CEffect_Boss_Gravitational_Bomb::Create(pDevice, pDeviceContext, &Data));
 
 	CloseHandle(hFile);
 
@@ -331,8 +323,11 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Laser_Explosion"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Laser_Explosion", CEffect_Boss_Laser_Explosion::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_GroundPound_Ring"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_GroundPound_Ring", CEffect_Boss_GroundPound_Ring::Create(pDevice, pDeviceContext, pData));
 
 #pragma  endregion
+
 
 #pragma region 3D_Effect
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
@@ -352,6 +347,9 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Boss_Gravitational_Bomb"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Boss_Gravitational_Bomb", CEffect_Boss_Gravitational_Bomb::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Boss_GroundPound"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Boss_GroundPound", CEffect_Boss_GroundPound::Create(pDevice, pDeviceContext, pData));
 
 #pragma  endregion
 
@@ -407,7 +405,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_flowmaptest"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/flowmaptest_01.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Wormhole_Noise"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Wormhole_Noise/Wormhole_Noise_%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Level_Preview"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Level_Preview/%d.png"), 7)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Slime_Cloud"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Shockwave_02_E1.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Slime_Cloud"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Slime/T_Slime_Cloud_%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Dot"),					CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Custom/Dot.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Fire_Tiled"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/T_Fire_Tiled.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_SoftCLoud"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/SoftCLoud_01.png"))), E_FAIL);
@@ -418,6 +416,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Spark_Mask"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/Spark_Mask_01.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Loop"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Smoke/smokeloop_0%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Dust_Motes"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/T_Dust_Motes_03.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Ring"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Ring/T_Ring_0%d.png"), 2)), E_FAIL);
 
 	
 	

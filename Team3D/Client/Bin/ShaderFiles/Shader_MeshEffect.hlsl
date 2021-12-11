@@ -416,6 +416,76 @@ PS_OUT	PS_MAIN_BOSS_GRAVITOTIONAL_BOMB(PS_IN_DOUBLE_UV In)
 
 	return Out;
 }
+
+PS_OUT	PS_MAIN_BOSS_GRAOUNDPOUND(PS_IN_DOUBLE_UV In)
+{
+	//PS_OUT Out = (PS_OUT)0;
+
+	//if (0.499f >= In.vTexUV.y)
+	//	discard;
+
+	//float fDistRatio_U = (In.vTexUV.x - 0.5f) / 0.5f;
+	//float fDistRatio_V = (In.vTexUV.y - 0.5f) / 0.5f;
+
+	//float2 vDistUV = In.vTexUV;
+	//vDistUV.x = fDistRatio_U;
+	//vDistUV.y = fDistRatio_V * 1.25f;
+	//vDistUV.y += g_fTime;
+	//vector vDistortion = g_DistortionTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistUV);
+	//float fDistPower = vDistortion.r * 0.2f;
+
+	//vDistUV.y += fDistPower;
+	//vector vDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistUV);
+
+
+	//Out.vDiffuse = g_vColor;
+	//if (0.505f >= In.vTexUV.y)
+	//{
+	//	Out.vDiffuse.rg *= 3.f;
+	//}
+	//else
+	//	Out.vDiffuse.rgb *= vDiffuse.rgb * vDistortion.rgb  * ((1.f - fDistRatio_V) * 1.f);
+
+	//if (fDistRatio_V > g_fAlpha)
+	//	Out.vDiffuse.rgb = 0.f;
+
+	//if (0.f >= g_fAlpha)
+	//	Out.vDiffuse.rgb = 0.f;
+
+	//return Out;
+
+	PS_OUT Out = (PS_OUT)0;
+
+	if (0.499f >= In.vTexUV.y)
+		discard;
+
+	float fDistRatio_U = (In.vTexUV.x - 0.5f) / 0.5f;
+	float fDistRatio_V = (In.vTexUV.y - 0.5f) / 0.5f;
+
+	float2 vDistUV = In.vTexUV;
+	vDistUV.x = fDistRatio_U;
+	vDistUV.y = fDistRatio_V * 1.25f;
+	vDistUV.y += g_fTime;
+	vector vDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistUV);
+	float fDistPower = vDiffuse.r * g_fTimeWeight * 0.2f;
+
+	vDistUV.y -= fDistPower;
+	vDistUV.x += fDistPower;
+	vector vDistortion = g_DistortionTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistUV);
+
+	Out.vDiffuse = g_vColor;
+	if (0.505f >= In.vTexUV.y)
+	{
+		Out.vDiffuse.rg *= 3.f;
+	}
+	else
+		Out.vDiffuse.rgb *= vDistortion.rgb  * ((1.f - fDistRatio_V) * 0.1f);
+
+	Out.vDiffuse.rgb *= g_fAlpha;
+
+	return Out;
+
+}
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
@@ -530,5 +600,15 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_DOUBLE_UV();
 		GeometryShader = compile gs_5_0 GS_DOUBLE_UV();
 		PixelShader = compile ps_5_0 PS_MAIN_BOSS_GRAVITOTIONAL_BOMB();
+	}
+
+	pass Boss_GroundPound // 11
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_DOUBLE_UV();
+		GeometryShader = compile gs_5_0 GS_DOUBLE_UV();
+		PixelShader = compile ps_5_0 PS_MAIN_BOSS_GRAOUNDPOUND();
 	}
 };
