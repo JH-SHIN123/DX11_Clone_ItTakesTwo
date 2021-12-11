@@ -185,7 +185,7 @@ void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
 	{
 		m_pTransformCom->Go_Down(TimeDelta);
 		m_dDownTime += TimeDelta;
-		m_pStaticActorCom->Update_StaticActor();
+		/*m_pStaticActorCom->Update_StaticActor();*/
 	}
 	else
 	{

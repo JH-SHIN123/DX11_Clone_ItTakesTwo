@@ -51,14 +51,20 @@ private:
 	_uint				m_iPatternChangeCount = 0;
 	_uint				m_iPhaseChangeCount = 0;
 	_bool				m_IsInterActive = false;
+	_float4				m_vStartUFOPos;
 
 	/* For.PHASE_1 Pattern */
-	_float4				m_vStartTargetPos;
 	_bool				m_IsCoreExplosion = false;
 	_bool				m_IsStartingPointMove = false;
 	_bool				m_IsLaserCreate = true;
 	_float				m_fGravitationalBombLanchTime = 0.f;
 	_uint				m_iGravitationalBombCount = 0;
+
+	/* For.PHASE_2 Pattern */
+	_float				m_fRevAngle = 0.f;
+	_float				m_fRotAngle = 0.f;
+
+	/* For.PHASE_3 Pattern */
 
 	/* For. Laser_TypeA */
 	_float4				m_vLaserGunPos;

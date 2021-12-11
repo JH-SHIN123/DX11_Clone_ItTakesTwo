@@ -54,7 +54,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	/* 컷 신 끝나고 기본 위치로 이동해야되는 포지션 세팅 */
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vPos.m128_f32[1] += 6.f;
-	XMStoreFloat4(&m_vStartTargetPos, vPos);
+	XMStoreFloat4(&m_vStartUFOPos, vPos);
 	m_IsStartingPointMove = true;
 
 	return S_OK;
@@ -67,6 +67,8 @@ _int CUFO::Tick(_double dTimeDelta)
 	/* 테스트 용 */
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 		m_IsCutScene = false;
+	else if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
+		m_ePhase = CUFO::PHASE_2;
 
 	/* 컷 신 재생중이 아니라면 보스 패턴 진행하자 나중에 컷 신 생기면 바꿈 */
 	if (false == m_IsCutScene)
@@ -147,7 +149,8 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	/* 레이저 건에서 타겟의 방향 벡터를 구하자 */
 	_vector vLaserDir = vTargetPos - vUFOPos;
 
-	_vector vDot = XMVector3AngleBetweenVectors(XMVector3Normalize(vUFOLook), XMVector3Normalize(vLaserDir));
+	/* 여기 바꿧음 */
+	_vector vDot = XMVector3AngleBetweenNormals(XMVector3Normalize(vUFOLook), XMVector3Normalize(vLaserDir));
 	_float fAngle = XMConvertToDegrees(XMVectorGetX(vDot));
 
 	_matrix matPivot, matRotY, matTrans, matAnim;
@@ -168,13 +171,22 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	_matrix matUFOWorld = m_pTransformCom->Get_WorldMatrix();
 	_matrix matLaserGunRing = m_pModelCom->Get_BoneMatrix("LaserGunRing3");
 	_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("Align");
+	
+	/* 레이저 나가는 오프셋 */
 	_matrix matLaserRingWorld = matRotY * matLaserGunRing * matUFOWorld;
+	
+	/* 레이저 방향 */
 	_matrix matAlign = matRotY * matLaserGun * matUFOWorld;
 	_vector vLaserGunDir = XMLoadFloat4((_float4*)&matAlign.r[0].m128_f32[0]);
 
+	/* 레이저 높이 보정 */
+	_float4 vConvertDir;
+	XMStoreFloat4(&vConvertDir, vLaserGunDir);
+	vConvertDir.y += 0.0005f;
+
 	/* 레이저에 시작위치랑 방향 벡터 던져주자 */
 	XMStoreFloat4(&m_vLaserGunPos, matLaserRingWorld.r[3]);
-	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(vLaserGunDir));
+	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(XMLoadFloat4(&vConvertDir)));
 
 	/* 레이저 발사!!!!!!!!!! */
 	if (true == m_IsLaserCreate)
@@ -189,7 +201,7 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
  
 void CUFO::MoveStartingPoint(_double dTimeDelta)
 {
-	_vector vTargetPos = XMLoadFloat4(&m_vStartTargetPos);
+	_vector vTargetPos = XMLoadFloat4(&m_vStartUFOPos);
 	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	/* 처음에 저장해둔 타겟 포스의 Y위치까지 천천히 위로 이동해라. */
@@ -351,6 +363,52 @@ void CUFO::Phase1_Pattern(_double dTimeDelta)
 
 void CUFO::Phase2_Pattern(_double dTimeDelta)
 {
+	/* 공전 드가자 */
+	_vector vDir;
+	_vector vCenterPos = XMLoadFloat4(&m_vStartUFOPos);
+	_vector vUFOLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_float3 vConverCenterPos;
+	XMStoreFloat3(&vConverCenterPos, vCenterPos);
+
+	vDir = vCenterPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vDot = XMVector3AngleBetweenNormals(XMVector3Normalize(vUFOLook), XMVector3Normalize(vDir));
+	_float fAngle = XMConvertToDegrees(XMVectorGetX(vDot));
+
+	_matrix matWorld, matRotY, matTrans, matRevRotY, matParent;
+
+	if (m_fRotAngle <= fAngle)
+		m_fRotAngle += (_float)dTimeDelta * 30.f;
+	else if(m_fRotAngle > fAngle)
+		m_fRotAngle -= (_float)dTimeDelta * 30.f;
+
+	m_fRevAngle += (_float)dTimeDelta * 30.f;
+
+	matRotY = XMMatrixRotationY(XMConvertToRadians(-m_fRotAngle));
+	matTrans = XMMatrixTranslation(25.f, 0.f, 25.f);
+	//matParent = ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_Transform()->Get_WorldMatrix();
+	matParent = XMMatrixTranslation(vConverCenterPos.x, vConverCenterPos.y, vConverCenterPos.z);
+	matRevRotY = XMMatrixRotationY(XMConvertToRadians(m_fRevAngle));
+
+	matWorld = matRotY * matTrans * matRevRotY * matParent;
+
+	m_pTransformCom->Set_WorldMatrix(matWorld);
+
+	//switch (m_eTarget)
+	//{
+	//case Client::CUFO::TARGET_CODY:
+	//	vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+	//	break;
+	//case Client::CUFO::TARGET_MAY:
+	//	vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+	//	break;
+	//}
+
+	//vDir = vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
+
+	/* 우주선을 타겟쪽으로 천천히 회전 */
+	//m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f);
+
 }
 
 void CUFO::Phase3_Pattern(_double dTimeDelta)
@@ -372,8 +430,25 @@ void CUFO::Phase1_End(_double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(UFO_CodyHolding_low);
 		}
 
+		if (m_pGameInstance->Key_Down(DIK_NUMPAD4))
+		{
+			m_pModelCom->Set_Animation(UFO_CodyHolding);
+			m_pModelCom->Set_NextAnimIndex(UFO_CodyHolding);
+		}
+
 		if (m_pModelCom->Is_AnimFinished(UFO_CodyHolding))
 		{
+			m_pModelCom->Set_Animation(UFO_LaserRippedOff);
+
+			/* 애니메이션이 딱 끝났을 때 뼈의 위치를 받아서 UFO 월드에 세팅해준다. */
+			_matrix BaseBone = m_pModelCom->Get_BoneMatrix("Base");
+			_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
+			_matrix AnimUFOWorld = BaseBone * UFOWorld;
+			m_pTransformCom->Set_WorldMatrix(AnimUFOWorld);
+			
+			/* 보스 2페이즈로 바꿔주자 */
+			m_ePhase = CUFO::PHASE_2;
+			m_IsCutScene = false;
 
 		}
 	}

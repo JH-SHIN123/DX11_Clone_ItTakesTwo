@@ -30,6 +30,7 @@ public:
 
 public:
 	_bool Get_LaserUp() const { return m_IsLaserUp; }
+	CTransform* Get_Transform() const { return m_pTransformCom; }
 
 public:
 	void Set_LaserOperation(_bool IsActive);
