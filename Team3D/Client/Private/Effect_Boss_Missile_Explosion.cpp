@@ -15,7 +15,7 @@ CEffect_Boss_Missile_Explosion::CEffect_Boss_Missile_Explosion(const CEffect_Bos
 
 HRESULT CEffect_Boss_Missile_Explosion::NativeConstruct_Prototype(void * pArg)
 {
-	m_EffectDesc_Prototype.iInstanceCount = 30;
+	m_EffectDesc_Prototype.iInstanceCount = 3;
 	return S_OK;
 }
 
@@ -45,14 +45,24 @@ _int CEffect_Boss_Missile_Explosion::Tick(_double TimeDelta)
 {
 	// 	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
 
-	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
+	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dActivateTime)
 		return EVENT_DEAD;
 
-	m_dControlTime += TimeDelta;
+	m_dActivateTime += TimeDelta;
+	if (m_dInstance_Pos_Update_Time < m_dActivateTime)
+		m_IsActivate = false;
+
 	if (true == m_IsActivate)
 	{
-		if (1.0 <= m_dControlTime)
-			m_dControlTime = 1.0;
+		m_dAlphaTime += TimeDelta;
+		if (1.0 <= m_dAlphaTime)
+			m_dAlphaTime = 1.0;
+	}
+	else
+	{
+		m_dAlphaTime += TimeDelta * 0.5f;
+		if (0.0 >= m_dAlphaTime)
+			m_dAlphaTime = 0.0;
 	}
 
 	Check_Instance(TimeDelta);
@@ -62,12 +72,12 @@ _int CEffect_Boss_Missile_Explosion::Tick(_double TimeDelta)
 
 _int CEffect_Boss_Missile_Explosion::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Boss_Missile_Explosion::Render(RENDER_GROUP::Enum eGroup)
 {
-	_float fTime = (_float)m_dControlTime;
+	_float fTime = (_float)m_dAlphaTime;
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fTime, sizeof(_float));
@@ -87,21 +97,26 @@ void CEffect_Boss_Missile_Explosion::Set_Pos(_fvector vPos)
 
 void CEffect_Boss_Missile_Explosion::Check_Instance(_double TimeDelta)
 {
+	m_fInstance_SpeedPerSec -= (_float)TimeDelta * m_fInstance_SpeedPerSec * 0.5f;
+	if (0.f > m_fInstance_SpeedPerSec) m_fInstance_SpeedPerSec = 0.f;
+
 	_float4 vMyPos;
 	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
 		m_pInstanceBuffer_STT[iIndex].fTime -= (_float)TimeDelta * 0.8f;
-		if (0.f >= m_pInstanceBuffer_STT[iIndex].fTime)
+		if (0.1f >= m_pInstanceBuffer_STT[iIndex].fTime)
+		{
 			m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
+			m_pInstanceBuffer_STT[iIndex].vSize = { 0.f, 0.f };
+			continue;
+		}
 
 		m_pInstance_Pos_UpdateTime[iIndex] -= TimeDelta;
-
-		if (0.0 >= m_pInstance_Pos_UpdateTime[iIndex] && true == m_IsActivate)
+		if (0.f > m_pInstance_Pos_UpdateTime[iIndex])
 		{
-			Reset_Instance(TimeDelta, vMyPos, iIndex);
-			continue;
+			m_pInstanceBuffer_STT[iIndex].vSize = { 0.f, 0.f };
 		}
 
 		Instance_Size((_float)TimeDelta, iIndex);
@@ -118,7 +133,10 @@ void CEffect_Boss_Missile_Explosion::Instance_Size(_float TimeDelta, _int iIndex
 
 void CEffect_Boss_Missile_Explosion::Instance_Pos(_float TimeDelta, _int iIndex)
 {
-	m_pInstanceBuffer_STT[iIndex].vPosition.y += TimeDelta * m_fSize_Power;
+	_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
+	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * m_fInstance_SpeedPerSec;
+
+	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }
 
 void CEffect_Boss_Missile_Explosion::Instance_UV(_float TimeDelta, _int iIndex)
@@ -174,7 +192,7 @@ HRESULT CEffect_Boss_Missile_Explosion::Ready_InstanceBuffer()
 	m_pInstanceBuffer_STT = new VTXMATRIX_CUSTOM_STT[iInstanceCount];
 	m_pInstance_Pos_UpdateTime = new _double[iInstanceCount];
 	m_pInstance_Update_TextureUV_Time = new _double[iInstanceCount];
-
+	m_pInstance_Dir = new _float3[iInstanceCount];
 	m_fNextUV = __super::Get_TexUV(7, 7, true).z;
 
 	_float4 vMyPos;
@@ -191,8 +209,10 @@ HRESULT CEffect_Boss_Missile_Explosion::Ready_InstanceBuffer()
 		m_pInstanceBuffer_STT[iIndex].fTime = 1.f;
 		m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
 
-		m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time  * (_double(iIndex) / iInstanceCount);
+		m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time;
 		m_pInstance_Update_TextureUV_Time[iIndex] = 0.05;
+
+		m_pInstance_Dir[iIndex] = __super::Get_Dir_Rand(_int3(100, 100, 100));
 	}
 	return S_OK;
 }
@@ -223,6 +243,7 @@ void CEffect_Boss_Missile_Explosion::Free()
 {
 	Safe_Delete_Array(m_pInstance_Update_TextureUV_Time);
 	Safe_Delete_Array(m_pInstanceBuffer_STT);
+	Safe_Delete_Array(m_pInstance_Dir);
 
 	Safe_Release(m_pTexturesCom_Distortion);
 	Safe_Release(m_pPointInstanceCom_STT);

@@ -36,21 +36,23 @@ private:
 	HRESULT Ready_InstanceBuffer();
 
 private:
-	_double m_dControlTime = 0.0; //
+	_double m_dAlphaTime = 1.0; //
 	_bool m_IsActivate = true;
+	_double m_dActivateTime = 0.0;
 
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
-	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT = nullptr;
 	CTextures*							m_pTexturesCom_Distortion = nullptr;
+	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT = nullptr;
 	_double*							m_pInstance_Update_TextureUV_Time = nullptr;
+	_float3*							m_pInstance_Dir = nullptr;
 
 	_float m_fNextUV = 0.f;
+	_float  m_fInstance_SpeedPerSec = 1.2f;
 
 	const _float  m_fAlphaTime_Power = 0.5f;
 	const _float  m_fSize_Power = 0.75f;
-	const _float  m_fInstance_SpeedPerSec = 0.5f;
-	const _double m_dInstance_Pos_Update_Time = 1.25;
+	const _double m_dInstance_Pos_Update_Time = 3.25;
 	const _float2 m_vDefaultSize = { 0.25f, 0.25f };
 
 public:

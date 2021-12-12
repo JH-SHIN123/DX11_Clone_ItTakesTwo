@@ -137,7 +137,7 @@ void CEffect_Boss_Missile_Particle::Check_Parabola(_double TimeDelta)
 
 void CEffect_Boss_Missile_Particle::Instance_Size(_float TimeDelta, _int iIndex)
 {
-	m_pInstanceBuffer_STT[iIndex].vSize.x -= TimeDelta * m_fSize_Power * (m_pInstanceBuffer_STT[iIndex].vSize.x * 3.25f);
+	m_pInstanceBuffer_STT[iIndex].vSize.x -= TimeDelta * m_fSize_Power * (m_pInstanceBuffer_STT[iIndex].vSize.x * 10.f);
 	if (0.f >= m_pInstanceBuffer_STT[iIndex].vSize.x)
 		m_pInstanceBuffer_STT[iIndex].vSize.x = 0.f;
 
