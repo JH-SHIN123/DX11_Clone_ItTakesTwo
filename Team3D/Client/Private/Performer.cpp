@@ -40,8 +40,8 @@ HRESULT CPerformer::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&m_tDesc.vScale));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_tDesc.vPosition), 1.f));
 
-	m_pModelTag = new wstring(m_tDesc.strModelTag);
-	
+	m_pModelTag = new wstring;
+	*m_pModelTag = m_tDesc.strModelTag;
 
 	m_pModelCom->Set_Animation(0);
 	return S_OK;

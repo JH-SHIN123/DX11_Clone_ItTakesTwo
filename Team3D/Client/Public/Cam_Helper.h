@@ -35,14 +35,19 @@ public:
 	//콜하면 필름찾고 연출 들어감.
 	void		Start_Film(const _tchar* pFilmName, CFilm::ScreenType eScreenTypeIdx);
 
-
-
 	//For.CamNode
 	//얘 부르면 카메라에서 매트릭스 다얻기전까지 return Helper_SeeCamNode
 	void		SeeCamNode(CFilm::CamNode* pCamNode, CFilm::ScreenType eScreenTypeIdx);
 	_fmatrix	Get_CamNodeMatrix(CTransform* pCamTransform, _double dTimeDelta, CFilm::ScreenType eScreenTypeIdx);
 
+	//For.GetMatrix
+	_fmatrix	Get_CamNodeMatrix(CFilm::CamNode* pCamNode1, CFilm::CamNode* pCamNode2, CFilm::CamNode* pCamNode3, CFilm::CamNode* pCamNode4, _double dTime,_bool* pIsFinishedNode);
+
+
 	_fmatrix MakeViewMatrix(_float3 Eye, _float3 At);
+	_float3 VectorLerp(_float3 vDst, _float3 vSrc,_float fT);
+	_float3	 MakeBezier3(_float3& v1, _float3& v2, _float3& v3, _double dTime);
+	_float3	 MakeBezier4(_float3& v1, _float3& v2, _float3& v3, _float3& v4, _double dTime);
 private:
 	//For.Film
 	typedef unordered_map<const _tchar*,CFilm*> FILMS;

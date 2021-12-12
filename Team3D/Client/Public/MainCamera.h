@@ -12,7 +12,7 @@ class CMainCamera final : public CCamera
 	enum CamRev {Rev_Holizontal,Rev_Prependicul,Rev_End};
 
 	enum class CamMode{Cam_Free,Cam_AutoToFree,Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_End};
-	//O CamFreeMove P FollowPlayer
+	//O CamFreeMove P FollowPlayer										//BossMiniRoom_Cody
 	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnRail, Cam_Free_Boss_MiniRoom,Cam_Free_End };
 
 private:
@@ -33,7 +33,7 @@ public:
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
 private:
-	void	Check_Player(_double dTimeDelta);
+	_int	Check_Player(_double dTimeDelta);
 	void	Set_Zoom(_float fZoomVal, _double dTimeDelta);
 	_bool	LerpToCurSize(CCody::PLAYER_SIZE eSize,_double dTimeDelta);
 private:
@@ -46,7 +46,7 @@ private:
 
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
-	_int	Tick_Cam_Free_OnRail(_double dTimeDelta);			//레일
+	_int	Tick_Cam_Free_OnRail(_double dTimeDelta);			//미니코디 보스룸
 
 	//CamHelper State(현재 )
 	_int	Tick_CamHelperNone(_double dTimeDelta);			//현재 아무것도 재생안함
@@ -58,7 +58,8 @@ private:
 	void KeyCheck(_double dTimeDelta);
 private:
 	_int	ReSet_Cam_FreeToAuto();		//카메라가 초기상태로 돌아옴
-	_bool	OffSetPhsX(_fmatrix matWorld,_double dTimeDelta,_vector * pOut);
+	_int	ReSet_Cam_Free_OnRail();
+	_bool	OffSetPhsX(_fmatrix matWorld,_fvector vAt,_double dTimeDelta,_vector * pOut);
 
 	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At, _fvector vUp = XMVectorSet(0.f,1.f,0.f,0.f));
 	_fmatrix MakeViewMatrixByUp(_fvector vEye, _fvector vAt, _fvector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f));
@@ -111,11 +112,12 @@ private:
 	//For.RayCast
 	PxRaycastBuffer m_RayCastBuffer;
 	WORLDMATRIX	m_PreWorld;
-
-
+	//For.OnRail
+	vector<CFilm::CamNode*> m_CamNodes;
+	_uint m_iNodeIdx[CFilm::BezierNode::Bezier_End] = { 0,0,0 };
 private:
-	CGameObject* m_pTargetObj = nullptr;
-	CCam_Helper* m_pCamHelper = nullptr;
+	CCody*			m_pCody = nullptr;
+	CCam_Helper*	m_pCamHelper = nullptr;
 public:
 	static CMainCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg = nullptr) override;

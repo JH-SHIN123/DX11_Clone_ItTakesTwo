@@ -27,6 +27,7 @@
 /* Jun */
 #include "Camera.h"
 #include"CutScenePlayer.h"
+#include"Performer.h"
 
 #pragma endregion
 
@@ -727,6 +728,47 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.vAxisY = _float4(0.f, 1.f, 0.f, 0.f);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SubCamera"), &CameraDesc), E_FAIL);
+
+	return S_OK;
+}
+HRESULT CLevel_Stage::Ready_Layer_Performer(const _tchar * pLayerTag)
+{
+	CCutScenePlayer* pCutScenePlayer = CCutScenePlayer::GetInstance();
+	CPerformer::PERFORMERDESC tDesc;
+	CGameObject* pPerformer = nullptr;
+	tDesc.strModelTag = TEXT("Component_Model_Cody_CutScene1");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Performer"), Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc, &pPerformer), E_FAIL);
+	FAILED_CHECK_RETURN(pCutScenePlayer->Add_Performer(TEXT("Component_Model_Cody_CutScene1"), pPerformer), E_FAIL);
+
+	pPerformer = nullptr;
+	tDesc.strModelTag = TEXT("Component_Model_May_CutScene1");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Performer"), Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc, &pPerformer), E_FAIL);
+	FAILED_CHECK_RETURN(pCutScenePlayer->Add_Performer(TEXT("Component_Model_May_CutScene1"), pPerformer), E_FAIL);
+
+	pPerformer = nullptr;
+	tDesc.strModelTag = TEXT("Component_Model_ToyBox1");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Performer"), Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc, &pPerformer), E_FAIL);
+	FAILED_CHECK_RETURN(pCutScenePlayer->Add_Performer(TEXT("Component_Model_ToyBox1"), pPerformer), E_FAIL);
+
+	pPerformer = nullptr;
+	tDesc.strModelTag = TEXT("Component_Model_RemoteContollerCutScene1");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Performer"), Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc, &pPerformer), E_FAIL);
+	FAILED_CHECK_RETURN(pCutScenePlayer->Add_Performer(TEXT("Component_Model_RemoteContollerCutScene1"), pPerformer), E_FAIL);
+
+	pPerformer = nullptr;
+	tDesc.strModelTag = TEXT("Component_Model_GravityBootsCutScene1");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Performer"), Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc, &pPerformer), E_FAIL);
+	FAILED_CHECK_RETURN(pCutScenePlayer->Add_Performer(TEXT("Component_Model_GravityBootsCutScene1"), pPerformer), E_FAIL);
+
+	pPerformer = nullptr;
+	tDesc.strModelTag = TEXT("Component_Model_SizeBeltCutScene1");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Performer"), Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc, &pPerformer), E_FAIL);
+	FAILED_CHECK_RETURN(pCutScenePlayer->Add_Performer(TEXT("Component_Model_SizeBeltCutScene1"), pPerformer), E_FAIL);
+
+	pPerformer = nullptr;
+	tDesc.strModelTag = TEXT("Component_Model_SizeBeltRemoteControllerCutScene1");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Performer"), Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc, &pPerformer), E_FAIL);
+	FAILED_CHECK_RETURN(pCutScenePlayer->Add_Performer(TEXT("Component_Model_SizeBeltRemoteControllerCutScene1"), pPerformer), E_FAIL);
 
 	return S_OK;
 }

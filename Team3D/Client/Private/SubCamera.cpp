@@ -259,8 +259,8 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 		if (m_fMouseRev[Rev_Prependicul] + fVal > 40.f)
 			m_fMouseRev[Rev_Prependicul] = 40.f;
-		else if (m_fMouseRev[Rev_Prependicul] + fVal < -85.f)
-			m_fMouseRev[Rev_Prependicul] = -85.f;
+		else if (m_fMouseRev[Rev_Prependicul] + fVal < -80.f)
+			m_fMouseRev[Rev_Prependicul] = -80.f;
 		else
 			m_fMouseRev[Rev_Prependicul] += fVal;
 	}
@@ -294,8 +294,8 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 		if (m_fMouseRev[Rev_Prependicul] + fVal > 40.f)
 			m_fMouseRev[Rev_Prependicul] = 40.f;
-		else if (m_fMouseRev[Rev_Prependicul] + fVal < -85.f)
-			m_fMouseRev[Rev_Prependicul] = -85.f;
+		else if (m_fMouseRev[Rev_Prependicul] + fVal < -80.f)
+			m_fMouseRev[Rev_Prependicul] = -80.f;
 		else
 			m_fMouseRev[Rev_Prependicul] += fVal;
 	}

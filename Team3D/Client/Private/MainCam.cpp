@@ -241,7 +241,8 @@ HRESULT CMainCam::Update_Cam_ByOption_FollowingPlayer(_double dTimeDelta)
 	_vector vPlayerUp	= m_pCody->Get_Transform()->Get_State(CTransform::STATE_UP);
 	_vector vPlayerPos	= m_pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 
-	XMStoreFloat4(&m_vRotatedDir, XMVector3TransformNormal(XMLoadFloat4(&m_vBaseDir), XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(m_vQuat.y, m_vQuat.x, 0.f))));
+	XMStoreFloat4(&m_vRotatedDir, XMVector3TransformNormal(XMLoadFloat4(&m_vBaseDir), 
+		XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(m_vQuat.y, m_vQuat.x, 0.f))));
 
 	_vector vDir		= XMLoadFloat4(&m_vRotatedDir);
 	_float	fDist		= 0.f;

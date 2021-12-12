@@ -458,7 +458,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	}
 	if (m_pGameInstance->Key_Down(DIK_9))/* 快林急 郴何 */
 	{
-		m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(67.9958f, 599.431f, 1002.82f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(true);
 	}
 	if (m_pGameInstance->Key_Down(DIK_0))/* 快魂 */

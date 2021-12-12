@@ -469,6 +469,54 @@ _fmatrix CCam_Helper::Get_CamNodeMatrix(CTransform* pCamTransform, _double dTime
 	return matCurWorld;
 }
 
+_fmatrix CCam_Helper::Get_CamNodeMatrix(CFilm::CamNode * pCamNode1, CFilm::CamNode * pCamNode2, CFilm::CamNode * pCamNode3, CFilm::CamNode * pCamNode4, _double dTime, _bool* pIsFinishedNode)
+{
+	if (dTime < pCamNode1->dTime)
+		return MakeViewMatrix(pCamNode1->vEye, pCamNode1->vAt);
+	
+
+	CFilm::CamMoveOption eEyeMoveOption = pCamNode1->eEyeMoveOption;
+	CFilm::CamMoveOption eAtMoveOption = pCamNode1->eAtMoveOption;
+	_float fProgress = (_float)(dTime - pCamNode1->dTime) / (pCamNode2->dTime - pCamNode1->dTime);
+	if (fProgress >= 1.f)
+		*pIsFinishedNode = true;
+	_float3 vCurEye;
+	_float3 vCurAt ;
+	switch (eEyeMoveOption)
+	{
+	case Client::CFilm::CamMoveOption::Move_Jump:
+		vCurEye = pCamNode2->vEye;
+		break;
+	case Client::CFilm::CamMoveOption::Move_Straight:
+		vCurEye = VectorLerp(pCamNode1->vEye, pCamNode2->vEye, fProgress);
+		break;
+	case Client::CFilm::CamMoveOption::Move_Bezier_3:
+		vCurEye = MakeBezier3(pCamNode1->vEye, pCamNode2->vEye, pCamNode3->vEye, fProgress);
+		break;
+	case Client::CFilm::CamMoveOption::Move_Bezier_4:
+		vCurEye = MakeBezier4(pCamNode1->vEye, pCamNode2->vEye, pCamNode3->vEye, pCamNode4->vEye, fProgress);
+		break;
+	}
+	switch (eAtMoveOption)
+	{
+	case Client::CFilm::CamMoveOption::Move_Jump:
+		vCurAt = pCamNode2->vAt;
+		break;
+	case Client::CFilm::CamMoveOption::Move_Straight:
+		vCurAt = VectorLerp(pCamNode1->vAt, pCamNode2->vAt, fProgress);
+		break;
+	case Client::CFilm::CamMoveOption::Move_Bezier_3:
+		vCurAt = MakeBezier3(pCamNode1->vAt, pCamNode2->vAt, pCamNode3->vAt, fProgress);
+		break;
+	case Client::CFilm::CamMoveOption::Move_Bezier_4:
+		vCurAt = MakeBezier4(pCamNode1->vAt, pCamNode2->vAt, pCamNode3->vAt, pCamNode4->vAt, fProgress);
+		break;
+	}
+	
+
+	return MakeViewMatrix(vCurEye,vCurAt);
+}
+
 _fmatrix CCam_Helper::MakeViewMatrix(_float3 Eye, _float3 At)
 {
 
@@ -487,6 +535,43 @@ _fmatrix CCam_Helper::MakeViewMatrix(_float3 Eye, _float3 At)
 	matWorld.r[3] = vEye;
 
 	return matWorld;
+}
+
+_float3 CCam_Helper::VectorLerp(_float3 vDst, _float3 vSrc, _float fT)
+{
+	if (fT >= 1.f)
+		return vSrc;
+		_float3 vResult;
+	XMStoreFloat3(&vResult,XMVectorLerp(XMLoadFloat3(&vDst), XMLoadFloat3(&vSrc), fT));
+	return vResult;
+}
+
+_float3 CCam_Helper::MakeBezier3(_float3 & v1, _float3 & v2, _float3 & v3, _double dTime)
+{
+	if (dTime >= 1.0)
+		return v3;
+	_float3 vResult = {
+		(_float)(pow((1.0 - dTime),2)*v1.x + 2 * dTime*(1.0 - dTime)*v2.x + pow(dTime,2)*v3.x),
+		(_float)(pow((1.0 - dTime),2)*v1.y + 2 * dTime*(1.0 - dTime)*v2.y + pow(dTime,2)*v3.y),
+		(_float)(pow((1.0 - dTime),2)*v1.z + 2 * dTime*(1.0 - dTime)*v2.z + pow(dTime,2)*v3.z)
+	};
+	/*v3.x *pow(fTime, 2) + v2.x *(2 * fTime *(1 - fTime)) + v1.x * pow((1 - fTime),2),
+	v3.y *pow(fTime, 2) + v2.y *(2 * fTime *(1 - fTime)) + v1.y * pow((1 - fTime),2),
+	v3.z *pow(fTime, 2) + v2.z *(2 * fTime *(1 - fTime)) + v1.z * pow((1 - fTime),2)*/
+	return vResult;
+}
+
+_float3 CCam_Helper::MakeBezier4(_float3 & v1, _float3 & v2, _float3 & v3, _float3 & v4, _double dTime)
+{
+	if (dTime >= 1.f)
+		return v4;
+
+	_float3 vResult = {
+		(_float)(v1.x*pow((1.0 - dTime), 3) + 3 * v2.x*dTime*pow(1.0 - dTime, 2) + 3 * v3.x *pow(dTime, 2)*(1.f - dTime) + v4.x *pow(dTime, 3)),
+		(_float)(v1.y*pow((1.0 - dTime), 3) + 3 * v2.y*dTime*pow(1.0 - dTime, 2) + 3 * v3.y *pow(dTime, 2)*(1.f - dTime) + v4.y *pow(dTime, 3)),
+		(_float)(v1.z*pow((1.0 - dTime), 3) + 3 * v2.z*dTime*pow(1.0 - dTime, 2) + 3 * v3.z *pow(dTime, 2)*(1.f - dTime) + v4.z *pow(dTime, 3))
+	};
+	return vResult;
 }
 
 

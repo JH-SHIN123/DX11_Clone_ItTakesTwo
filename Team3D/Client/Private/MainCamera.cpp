@@ -48,7 +48,7 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	/* Hye */
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL] =	{ 0.f,2.f,-2.f,1.f};
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM] =	{ 0.f,7.f,-7.f,1.f };
-	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE] =	{ 0.f,9.f,	-9.f,1.f };
+	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE] =	{ 0.f,8.f,-8.f,1.f };
 
 	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL] = { 0.f,0.2f,0.0f,1.f };
 	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM] = { 0.f,3.f, 0.0f,1.f };
@@ -64,13 +64,13 @@ _int CMainCamera::Tick(_double dTimeDelta)
 {
 	if (false == m_bStart)
 	{
-		m_pTargetObj = CDataStorage::GetInstance()->GetCody();
-		if (m_pTargetObj)
+		m_pCody = static_cast<CCody*>(CDataStorage::GetInstance()->GetCody());
+		if (m_pCody)
 		{
-			CTransform* pPlayerTransform = static_cast<CCody*>(m_pTargetObj)->Get_Transform();
+			CTransform* pPlayerTransform = m_pCody->Get_Transform();
 			XMStoreFloat4(&m_vPlayerPos, pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 			XMStoreFloat4(&m_vPlayerUp, pPlayerTransform->Get_State(CTransform::STATE_UP));
-			Safe_AddRef(m_pTargetObj);
+			Safe_AddRef(m_pCody);
 		}
 		else
 			return EVENT_ERROR;
@@ -81,10 +81,11 @@ _int CMainCamera::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamHelper)
 		return EVENT_ERROR;
 
-
-	Check_Player(dTimeDelta);
-
 	_int iResult = NO_EVENT;
+	
+	if (iResult = Check_Player(dTimeDelta))
+		return iResult;
+
 	
 
 	switch (m_pCamHelper->Tick(dTimeDelta,CFilm::LScreen))
@@ -124,14 +125,14 @@ _int CMainCamera::Late_Tick(_double TimeDelta)
 }
 
 
-void CMainCamera::Check_Player(_double dTimeDelta)
+_int CMainCamera::Check_Player(_double dTimeDelta)
 {
-	if (nullptr == m_pTargetObj)
-		return;
-	CCody* pTargetPlayer = static_cast<CCody*>(m_pTargetObj);
+	if (nullptr == m_pCody)
+		return EVENT_ERROR;
+
 
 	
-	m_eCurPlayerSize = pTargetPlayer->Get_Player_Size();
+	m_eCurPlayerSize = m_pCody->Get_Player_Size();
 	if (m_eCurPlayerSize != m_ePrePlayerSize)
 	{
 		m_dLerpToCurSizeTime = 0.0;
@@ -139,7 +140,7 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 	}
 	LerpToCurSize(m_eCurPlayerSize, dTimeDelta);
 	
-	if (static_cast<CCody*>(m_pTargetObj)->Get_IsWarpNextStage() == true)
+	if (m_pCody->Get_IsWarpNextStage() == true)
 	{
 		m_eCurCamMode = CamMode::Cam_Warp_WormHole;
 	}
@@ -147,7 +148,13 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 	{
 		m_eCurCamMode = CamMode::Cam_PressButton_Bridge;
 	}
-
+	//우주선내부
+	if (m_pGameInstance->Key_Down(DIK_9))
+	{
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OnRail;
+		return	ReSet_Cam_Free_OnRail();
+	}
+	return NO_EVENT;
 }
 
 void CMainCamera::Set_Zoom(_float fZoomVal, _double dTimeDelta)
@@ -186,7 +193,7 @@ HRESULT CMainCamera::Start_Film(const _tchar * pFilmTag)
 
 _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 {
-	if (nullptr == m_pTargetObj)
+	if (nullptr == m_pCody)
 		return EVENT_ERROR;
 	_int iResult = NO_EVENT;
 	switch (m_eCurCamFreeOption)
@@ -207,7 +214,7 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 {
 
-	if (nullptr == m_pTargetObj)
+	if (nullptr == m_pCody)
 		return EVENT_ERROR;
 	if (m_fChangeCamModeTime >= 1.f)
 	{
@@ -219,7 +226,7 @@ _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 		m_eCurCamMode = CamMode::Cam_Free;
 		return NO_EVENT;
 	}
-	CTransform* pPlayerTransform = dynamic_cast<CCody*>(m_pTargetObj)->Get_Transform();
+	CTransform* pPlayerTransform = dynamic_cast<CCody*>(m_pCody)->Get_Transform();
 	if (m_fChangeCamModeTime == 0.f) 
 	{
 		_matrix matWorld = m_pTransformCom->Get_WorldMatrix(); 
@@ -246,7 +253,7 @@ _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 
 _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 {
-	CTransform* pPlayerTransform = dynamic_cast<CCody*>(m_pTargetObj)->Get_Transform();
+	CTransform* pPlayerTransform = dynamic_cast<CCody*>(m_pCody)->Get_Transform();
 
 	_long MouseMove = 0;
 	
@@ -268,14 +275,19 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	
 
 	_vector vPrePlayerPos = XMLoadFloat4(&m_vPlayerPos);
+	if (XMVectorGetX(XMVectorIsNaN(vPrePlayerPos)))
+		vPrePlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 	_vector vCurPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-	vCurPlayerPos = XMVectorSetY(vCurPlayerPos, m_vSizeAt[m_eCurPlayerSize].y);
+	vCurPlayerPos = XMVectorSetY(vCurPlayerPos,XMVectorGetY(vCurPlayerPos)+ m_vSizeAt[m_eCurPlayerSize].y);
 
 	_vector vPlayerPos = vCurPlayerPos;
 	_float fDist = fabs(XMVectorGetX(XMVector4Length(vPrePlayerPos - vCurPlayerPos)));
-
-	vPlayerPos = XMVectorLerp(vPrePlayerPos, vCurPlayerPos, XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 10.f);
+	if (fDist > 10.f)
+		vPlayerPos = vCurPlayerPos;
+	else
+		vPlayerPos = XMVectorLerp(vPrePlayerPos, vCurPlayerPos, XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 10.f);
 	
+	_vector vPlayerUp = pPlayerTransform->Get_State(CTransform::STATE_UP);
 
 	XMStoreFloat4(&m_vPlayerPos, vPlayerPos);
 
@@ -286,13 +298,10 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 		XMConvertToRadians(m_fCurMouseRev[Rev_Holizontal] ) ,0.f);
 
 
-	//_matrix matQuat = ;
-
-	
 	_vector vScale, vRotQuat, vTrans;
 	_vector  vCurRotQuat,vCurTrans;
-	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) * XMMatrixRotationQuaternion(vCurQuartRot)
-		*MH_RotationMatrixByUp(pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos));
+	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) *
+		XMMatrixRotationQuaternion(vCurQuartRot)*MH_RotationMatrixByUp(vPlayerUp, vPlayerPos));
 
 
 	_vector vPreQuat = XMLoadFloat4(&m_PreWorld.vRotQuat);
@@ -311,12 +320,13 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	{
 		if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, matAffine))
 			matAffine =  m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen);
+		vPlayerUp = XMVector3TransformNormal(vPlayerUp, matAffine);
 	}
 	
 	_vector vResultPos = XMVectorZero();
-	 OffSetPhsX(matAffine, dTimeDelta, &vResultPos); 
+	 OffSetPhsX(matAffine,vPlayerPos, dTimeDelta, &vResultPos); 
 	
-	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vResultPos, vPlayerPos,pPlayerTransform->Get_State(CTransform::STATE_UP)/*matAffine.r[2]*/));
+	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vResultPos, vPlayerPos,vPlayerUp/*matAffine.r[2]*/));
 
 	return NO_EVENT;
 }
@@ -357,16 +367,70 @@ void CMainCamera::KeyCheck(_double dTimeDelta)
 #pragma endregion
 _int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
 {
+	CFilm::CamMoveOption eCurOption = m_CamNodes[m_iNodeIdx[0]]->eEyeMoveOption;
+	_float fProgress = 0.f;
+	_matrix matResult = XMMatrixIdentity();
+	switch (eCurOption)
+	{
+	case Client::CFilm::CamMoveOption::Move_Straight:
+		{
+			_vector vPlayerPos = m_pCody->Get_Position();
+			_vector vCurNodePos = XMVectorSetW(XMLoadFloat3(&m_CamNodes[m_iNodeIdx[0]]->vEye),1.f);
+			_vector vNextNodePos = XMVectorSetW(XMLoadFloat3(&m_CamNodes[m_iNodeIdx[1]]->vEye), 1.f);
+		
+			_vector vDirNextNodeWithCurNode = vNextNodePos - vCurNodePos;
+			_vector vDirNextNodeWithPlayer = vNextNodePos - (vPlayerPos - vDirNextNodeWithCurNode*0.5f); //
+			
+			
+
+			_float fDot = XMVectorGetX(XMVector3Dot(vDirNextNodeWithPlayer,vDirNextNodeWithCurNode))
+				/pow(XMVectorGetX(XMVector3Length(vDirNextNodeWithCurNode)),2); //정사영 길이
+	
+			_bool bIsFinish = false;
+			matResult = m_pCamHelper->Get_CamNodeMatrix(m_CamNodes[m_iNodeIdx[0]], m_CamNodes[m_iNodeIdx[1]], m_CamNodes[m_iNodeIdx[2]], m_CamNodes[m_iNodeIdx[3]], 1.f - fDot,&bIsFinish);
+			if (bIsFinish)//넘어감
+			{
+				for (_uint i = 0; i < 4; i++)
+				{
+
+					m_iNodeIdx[i] += 1;
+				}
+			}
+			//if (fDot >= 1.f)	//둔각.
+			//{
+			//	for (_uint i = 0; i < 4; i++)
+			//	{
+			//		if(m_iNodeIdx[i] -1 >  0)
+			//			m_iNodeIdx[i] -= 1;
+			//	}
+			//}
+			//_float fDistanceWithPreNode = XMVectorGetX(XMVector4Length(vNextNodePos - vCurNodePos));
+			//if (fDistanceFromNode < fDistanceWithPreNode) //이전노드와의 거리보다 현재 거리가 짧다(진행중)
+			//{
+
+			//}
+			//else if (fDistanceFromNode >= fDistanceWithPreNode) //
+			//{
+
+			//}
+		}
+		break;
+	case Client::CFilm::CamMoveOption::Move_Bezier_3:
+		break;
+	case Client::CFilm::CamMoveOption::Move_Bezier_4:
+		break;
+	}
+	m_pTransformCom->Set_WorldMatrix(matResult);
+
 	return NO_EVENT;
 }
 _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 {
-	if (nullptr == m_pTargetObj)
+	if (nullptr == m_pCody)
 		return EVENT_ERROR;
 	
-	CCody* pCody = static_cast<CCody*>(m_pTargetObj);
 	
-	CTransform* pPlayerTransform = pCody->Get_Transform();
+	CTransform* pPlayerTransform = m_pCody->Get_Transform();
 	if (m_dWarpTime < 2.0) //카메라가 게이트 전방으로,페이드인.
 	{
 		_matrix matPortal =XMLoadFloat4x4(&m_matStartPortal);
@@ -380,7 +444,7 @@ _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 		m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vTargetEye, vTargetAt),m_dWarpTime));
 		m_dWarpTime += dTimeDelta / 2.0;
 	}
-	else if (pCody->Get_IsWarpNextStage() && pCody->Get_IsWarpDone()) //게이트안에서,페이드아웃
+	else if (m_pCody->Get_IsWarpNextStage() && m_pCody->Get_IsWarpDone()) //게이트안에서,페이드아웃
 	{
 		_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 		_vector vPlayerLook = pPlayerTransform->Get_State(CTransform::STATE_LOOK);
@@ -390,7 +454,7 @@ _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 		XMStoreFloat4(&vAt, vPlayerPos);
 		m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vEye, vAt));
 	}
-	else if (pCody->Get_IsWarpDone())
+	else if (m_pCody->Get_IsWarpDone())
 	{
 		//페이드아웃
 	}
@@ -486,12 +550,25 @@ _int CMainCamera::ReSet_Cam_FreeToAuto()
 	return NO_EVENT;
 }
 
-_bool CMainCamera::OffSetPhsX(_fmatrix matWorld, _double dTimeDelta,_vector * pOut)
+_int CMainCamera::ReSet_Cam_Free_OnRail()
 {
-	
+	CFilm* pLine = m_pCamHelper->Get_Film(TEXT("Line_BossRoom_MiniCody"));
+	if (nullptr == pLine)
+	{
+		return EVENT_ERROR;
+	}
+	for (_uint i = 0; i < 4; i++)
+		m_iNodeIdx[i] = i;
+	m_CamNodes = *(pLine->Get_CamNodes());
+	return NO_EVENT;
+}
+
+_bool CMainCamera::OffSetPhsX(_fmatrix matWorld, _fvector vAt, _double dTimeDelta,_vector * pOut)
+{
+
 	_bool isHit = false;
 
-	_vector vAt = XMVectorSetW(XMLoadFloat4(&m_vPlayerPos),1.f);
+
 	_vector vDistanceFromCam = matWorld.r[3] - vAt;
 	_vector vDir = XMVector3Normalize(vDistanceFromCam);
 	_float	fDist = XMVectorGetX(XMVector3Length(vDistanceFromCam));
@@ -705,7 +782,8 @@ CGameObject * CMainCamera::Clone_GameObject(void * pArg)
 
 void CMainCamera::Free()
 {
-	Safe_Release(m_pTargetObj);
+	m_CamNodes.clear();
+	Safe_Release(m_pCody);
 	Safe_Release(m_pCamHelper);
 
 	CCamera::Free();
