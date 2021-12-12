@@ -69,6 +69,7 @@ private:
 	_float4					m_vTranslationPos;
 	_bool					m_IsGuidedMissileCreate = true;
 	_bool					m_IsCodyEnter = false;
+	_bool					m_IsAnimationTransform = true;
 	
 	class CBoss_Missile*	m_pCodyMissile = nullptr;
 	class CBoss_Missile*	m_pMayMissile = nullptr;
@@ -114,6 +115,7 @@ private:
 	void Phase2_InterAction(_double dTimeDelta);
 	void OrbitalMovementCenter(_double dTimeDelta);
 	void GuidedMissile_Pattern(_double dTimeDelta);
+	void SetUp_AnimationTransform();
 
 	/* For.PHASE_3 Pattern */
 	void Phase3_Pattern(_double dTimeDelta);

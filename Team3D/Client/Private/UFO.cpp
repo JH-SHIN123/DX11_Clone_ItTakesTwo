@@ -405,29 +405,35 @@ void CUFO::Phase2_InterAction(_double dTimeDelta)
 
 void CUFO::OrbitalMovementCenter(_double dTimeDelta)
 {
-	_vector vDir, vCenterPos, vUFORight, vDot;
+
+	_vector vDir, vCenterPos, vUFOLook, vDot;
+	_vector vTest;
 	/* 중심점은 1페 때 잡아줬던 시작점 */
 	vCenterPos = XMLoadFloat4(&m_vStartUFOPos);
-	vUFORight = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	vUFOLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
+	/* 애니메이션 UFO_LaserRippedOff 끝나고 그 자리에서 바로 공전시켜야 하는데 UFO_LEFT로 바뀔때 위치가 안맞아서 세팅해줌 */
+	SetUp_AnimationTransform();
+	
 	_float3 vConverCenterPos;
 	XMStoreFloat3(&vConverCenterPos, vCenterPos);
 
+	vTest = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vDir = vCenterPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	vDot = XMVector3AngleBetweenNormals(XMVector3Normalize(vUFORight), XMVector3Normalize(vDir));
+	vDot = XMVector3AngleBetweenNormals(XMVector3Normalize(vUFOLook), XMVector3Normalize(vDir));
 
 	_float fAngle = XMConvertToDegrees(XMVectorGetX(vDot));
 
 	_matrix matWorld, matRotY, matTrans, matRevRotY, matParent;
 
 	if (m_fRotAngle < fAngle)
-		m_fRotAngle += (_float)dTimeDelta;
+		m_fRotAngle += (_float)dTimeDelta * 5.f;
 	else if (m_fRotAngle >= fAngle)
-		m_fRotAngle -= (_float)dTimeDelta;
+		m_fRotAngle -= (_float)dTimeDelta * 5.f;
 
 	m_fRevAngle += (_float)dTimeDelta * 20.f;
 
-	matRotY = XMMatrixRotationY(XMConvertToRadians(-m_fRotAngle));
+	matRotY = XMMatrixRotationY(XMConvertToRadians(m_fRotAngle - 180.f));
 	matTrans = XMMatrixTranslation(m_vTranslationPos.x, m_vTranslationPos.y, m_vTranslationPos.z);
 	matParent = XMMatrixTranslation(vConverCenterPos.x, vConverCenterPos.y, vConverCenterPos.z);
 	matRevRotY = XMMatrixRotationY(XMConvertToRadians(m_fRevAngle));
@@ -478,6 +484,23 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 			m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc, &pGameObject);
 			m_pMayMissile = static_cast<CBoss_Missile*>(pGameObject);
 		}
+	}
+}
+
+void CUFO::SetUp_AnimationTransform()
+{
+	if (UFO_Left == m_pModelCom->Get_CurAnimIndex() && m_IsAnimationTransform)
+	{
+		_matrix BaseBone = m_pModelCom->Get_BoneMatrix("Root");
+		_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
+		_matrix AnimUFOWorld = BaseBone * UFOWorld;
+
+		_vector vOffSet = XMLoadFloat4((_float4*)&AnimUFOWorld.r[3].m128_f32[0]) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_matrix matTrans = XMMatrixTranslation(vOffSet.m128_f32[0], vOffSet.m128_f32[1], vOffSet.m128_f32[2]);
+
+		m_pModelCom->Set_PivotTransformation(m_pModelCom->Get_BoneIndex("Root"), matTrans);
+
+		m_IsAnimationTransform = false;
 	}
 }
 
@@ -639,7 +662,7 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 		if (m_pModelCom->Is_AnimFinished(UFO_CodyHolding))
 		{
 			m_pModelCom->Set_Animation(UFO_LaserRippedOff);
-
+			m_pModelCom->Set_NextAnimIndex(UFO_Left);
 		}
 
 		if (m_pModelCom->Is_AnimFinished(UFO_LaserRippedOff))
@@ -657,9 +680,6 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 			/* 중점에서 부터 마지막 애니메이션의 포지션을 빼서 그 지점에서부터 공전할 수 있도록 구해줌. 2페이지에서 보스 움직일 때 사용 */
 			_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&m_vStartUFOPos);
 			XMStoreFloat4(&m_vTranslationPos, vUFOPos);
-
-			m_pModelCom->Set_Animation(UFO_Left);
-			m_pModelCom->Set_NextAnimIndex(UFO_Left);
 
 			/* 보스 2페이즈로 바꿔주자 */
 			m_ePhase = CUFO::PHASE_2;
@@ -779,7 +799,8 @@ void CUFO::Add_LerpInfo_To_Model()
 
 	m_pModelCom->Add_LerpInfo(UFO_CodyHolding, UFO_LaserRippedOff, true);
 
-	m_pModelCom->Add_LerpInfo(UFO_LaserRippedOff, UFO_Left, true);
+	m_pModelCom->Add_LerpInfo(UFO_LaserRippedOff, UFO_Left, true, 100.f);
+	m_pModelCom->Add_LerpInfo(UFO_LaserRippedOff, UFO_MH, true);
 
 	m_pModelCom->Add_LerpInfo(UFO_Left, CutScene_RocketPhaseFinished_FlyingSaucer, true);
 
@@ -790,8 +811,6 @@ void CUFO::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(CutScene_EnterUFO_FlyingSaucer, UFO_MH, true);
 	
 	m_pModelCom->Add_LerpInfo(UFO_GroundPound, UFO_MH, true, 1.f);
-
-
 }
 
 HRESULT CUFO::Ready_Component()
