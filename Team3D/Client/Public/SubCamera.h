@@ -57,6 +57,7 @@ private:
 	_bool	OffSetPhsX(_fmatrix matWorld,_double dTimeDelta, _vector * pOut);
 
 	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At,_fvector vUp);
+	_fmatrix MakeViewMatrixByUp(_fvector vEye, _fvector vAt, _fvector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f));
 	_fmatrix MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime);
 
 private:

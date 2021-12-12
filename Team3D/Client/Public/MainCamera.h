@@ -74,8 +74,6 @@ private:
 
 	CamMode m_eCurCamMode = CamMode::Cam_End;
 
-
-	_float4x4	m_matStart;		//외부의 상태에 따라 셋팅
 	_float4x4 m_matBeginWorld;	//카메라 이펙트등등 tick돌아갈때쓸것 
 	_float4x4 m_matCurWorld;	//연출후 돌아오기
 
@@ -97,9 +95,6 @@ private:
 	CamFreeOption m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 	CamFreeOption m_ePreCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 
-	//For.SpringCamera
-	_bool m_bIsCollision = false;
-	_float4x4 m_matBeforeSpringCam;
 	//For.SoftMove
 	_float4 m_vPlayerPos = { 0.f,0.f,0.f,1.f };
 	_float4		m_vPlayerUp = { 0.f,1.f,0.f,0.f };
@@ -124,7 +119,6 @@ private:
 
 
 private:
-	class CCameraActor* m_pActorCom = nullptr;
 	CGameObject* m_pTargetObj = nullptr;
 	CCam_Helper* m_pCamHelper = nullptr;
 public:
