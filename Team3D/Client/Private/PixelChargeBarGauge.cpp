@@ -43,7 +43,7 @@ _int CPixelChargeBarGauge::Tick(_double dTimeDelta)
 
 	if (((CCody*)DATABASE->GetCody())->Get_IsInArcadeJoyStick() == true)
 	{
-		if (m_pGameInstance->Key_Down(DIK_K))
+		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
 		{
 			m_fGauge += 0.5f;
 		}

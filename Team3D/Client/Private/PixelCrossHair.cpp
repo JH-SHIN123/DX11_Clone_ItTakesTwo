@@ -106,7 +106,7 @@ void CPixelCrossHair::Movement(_double dTimeDelta)
 	_vector vChanged = vInitialPos - NextPos;
 	_float r = XMVectorGetX(XMVector2Length(vChanged));
 
-	if (r <= 0.3f) // 자유롭게 이동
+	if (r <= 0.38f) // 자유롭게 이동
 		m_pTransformCom->MoveToDir(vDir, dTimeDelta * 0.5f);
 	else // 슬라이딩 벡터 구하기.
 	{
