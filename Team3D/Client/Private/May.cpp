@@ -23,6 +23,7 @@
 #include "Moon.h"
 /*For.WarpGate*/
 #include "WarpGate.h"
+#include "LaserTennis_Manager.h"
 
 // m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
 // m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
@@ -170,6 +171,7 @@ _int CMay::Tick(_double dTimeDelta)
 
 	if (false == m_bMoveToRail && false == m_bOnRail && false == m_IsInUFO)
 	{
+		LaserTennis(dTimeDelta);
 		Wall_Jump(dTimeDelta);
 		if (Trigger_Check(dTimeDelta))
 		{
@@ -1644,11 +1646,23 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			}
 			m_IsCollide = false;
 		}
+		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_O) && false == m_bLaserTennis)
+		{
+			LASERTENNIS->Increase_PowerCoord();
+
+			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
+			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
+
+			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+
+			m_bLaserTennis = true;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsPinBall || m_IsDeadLine
-		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsWallLaserTrap_Touch || m_bWallAttach)
+		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsWallLaserTrap_Touch || m_bWallAttach || m_bLaserTennis)
 		return true;
 
 	return false;
@@ -1958,6 +1972,30 @@ void CMay::InUFO(const _double dTimeDelta)
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+}
+
+void CMay::LaserTennis(const _double dTimeDelta)
+{
+	if (false == m_bLaserTennis)
+		return;
+
+	if (true == LASERTENNIS->Get_StartGame())
+	{
+		m_pModelCom->Set_Animation(ANI_M_RocketFirework);
+		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+
+		m_bLaserTennis = false;
+		return;
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_I))
+	{
+		LASERTENNIS->Decrease_PowerCoord();
+		m_bLaserTennis = false;
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_O))
+		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_MAY);
 }
 
 void CMay::Set_UFO(_bool bCheck)

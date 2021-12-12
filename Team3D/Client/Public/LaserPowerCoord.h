@@ -25,12 +25,14 @@ public:
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
+	CTriggerActor*	m_pTriggerActorCom = nullptr;
 
 	_bool			m_bReady;
 	_bool			m_bMovement = false;
 	_bool			m_bActive = false;
+	_bool			m_bCollision = false;
 
-	_float			m_fDistance = 2.f;
+	_float			m_fDistance = 2.5f;
 	_float			m_fResetPosZ = 0.f;
 
 private:

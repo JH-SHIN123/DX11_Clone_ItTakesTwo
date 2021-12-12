@@ -363,6 +363,8 @@ private:
 	_bool	 m_bRespawn = false;
 	_bool    m_bFirstCheck = false;
 	_double	 m_dRespawnTime = 0.0;
+	/* Hye::For.LaserTennis */
+	_bool	m_bLaserTennis = false;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
@@ -468,9 +470,10 @@ private:
 	void Boss_Missile_Control(const _double dTimeDelta);
 	void WallLaserTrap(const _double dTimeDelta);
 
-	/* Hye*/
+	/* Hye */
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
+	void LaserTennis(const _double dTimeDelta);
 public:
 	void PinBall_Respawn(const _double dTimeDelta);
 	void SpaceShip_Respawn(const _double dTimeDelta);

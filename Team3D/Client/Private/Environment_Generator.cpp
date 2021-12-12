@@ -41,6 +41,10 @@
 #include "LaserButtonLarge.h"
 #include "LaserButtonLarge_Gate.h"
 #include "LaserPowerCoord.h"
+#include "Wall_LaserTennis.h"
+#include "LaserTennis_Manager.h"
+#include "LaserTrigger.h"
+#include "Laser_LaserTennis.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -304,6 +308,9 @@ HRESULT CEnvironment_Generator::NativeConstruct_Environment_Generator(ID3D11Devi
 	XMStoreFloat4x4(&m_PivotMatrix, XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f))));
 	XMStoreFloat4x4(&m_PivotMatrix_SpaceShip, XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f))));
 
+	/* 레이저테니스 싱글톤 초기화 */
+	FAILED_CHECK_RETURN(LASERTENNIS->NativeConstruct_LaserTennis(), E_FAIL);
+
 	return S_OK;
 }
 
@@ -517,6 +524,12 @@ CGameObject * CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D1
 		if (nullptr == pInstance)
 			MSG_BOX("Failed to Create Instance - LaserPowerCoord");
 	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_Wall_LaserTennis")))
+	{
+		pInstance = CWall_LaserTennis::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - Wall_LaserTennis");
+	}
 	return pInstance;
 }
 
@@ -692,6 +705,10 @@ HRESULT CEnvironment_Generator::Load_Default_Prototype_GameObject()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonUFO"), CMoonUFO::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	/* For.Timer_LaserTennis */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Timer_LaserTennis"), CTimer_LaserTennis::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	/* For.LaserTrigger */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_LaserTrigger"), CLaserTrigger::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	/* For.Laser_LaserTennis */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Laser_LaserTennis"), CLaser_LaserTennis::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
 }
@@ -1091,7 +1108,6 @@ HRESULT CEnvironment_Generator::Load_Others()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SpaceShip")), E_FAIL);
 	/* Timer_LaserTennis */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Environment", Level::LEVEL_STAGE, TEXT("GameObject_Timer_LaserTennis")), E_FAIL);
-
 	return S_OK;
 }
 
@@ -1298,7 +1314,7 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_ByIndex_Space(_uint iIndex)
 		else if (iIndex == 198) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SplineMesh03"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SplineMesh03"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 199) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SplineMesh04"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SplineMesh04"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 	}
-	else
+	else if (iIndex < 250)
 	{
 		if (iIndex == 200) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SplineMesh05"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SplineMesh05"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 201) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SplineMesh06"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SplineMesh06"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
@@ -1350,7 +1366,12 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_ByIndex_Space(_uint iIndex)
 		else if (iIndex == 247) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_Electrical_Component"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_Electrical_Component"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
 		else if (iIndex == 248) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_PCB_Board"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_PCB_Board"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
 		else if (iIndex == 249) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_ArrowSign_02"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_ArrowSign_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
-		else if (iIndex == 250) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_ControlRoom_StripShort_02"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("ControlRoom_StripShort_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
+	}
+	else
+	{
+		if (iIndex == 250) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_ControlRoom_StripShort_02"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("ControlRoom_StripShort_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
+		else if (iIndex == 251) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_LaserBall"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("LaserBall"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 252) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Laser_LaserTennis"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Laser_LaserTennis"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 	}
 
 	return S_OK;
@@ -1361,4 +1382,6 @@ void CEnvironment_Generator::Free()
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);
+
+	CLaserTennis_Manager::DestroyInstance();
 }

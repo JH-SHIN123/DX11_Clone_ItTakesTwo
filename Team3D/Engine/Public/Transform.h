@@ -52,6 +52,7 @@ public:
 	void	Go_Left(_double dTimeDelta);
 	void	Go_Up(_double dTimeDelta);
 	void	Go_Down(_double dTimeDelta);
+	void	Go_Direction(_fvector vDirection, _double dTimeDelta);
 	void	Rotate_Axis(_fvector vAxis, _double dTimeDelta);
 	void	Rotate_ToTarget(_fvector vTargetPos);
 	void	Rotate_ToTargetOnLand(_fvector vTargetPos);

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\Public\LaserButtonLarge.h"
-#include "LaserTennis_Manager.h"
 #include "Cody.h"
 #include "May.h"
 
@@ -52,7 +51,7 @@ _int CLaserButtonLarge::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
 
-	m_pTriggerActorCom->Update_TriggerActor(XMVectorSet(0.f, 0.5f, 0.f, 1.f));
+	m_pTriggerActorCom->Update_TriggerActor(XMVectorSet(0.f, 1.f, 0.f, 1.f));
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -91,9 +90,11 @@ void CLaserButtonLarge::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 	{
 		if (((((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Falling || (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land_Exit))
 		{
-			LASERTENNIS->Create_LaserTrigger_LargeButton(m_pTransformCom->Get_State(CTransform::STATE_POSITION), CLaserTennis_Manager::TARGET_MAY);
 			m_bActiveMove = true;
+			m_bMovement = false;
 			m_bActive = false;
+			m_eTarget = CLaserTennis_Manager::TARGET_MAY;
+			LASERTENNIS->Active_LaserButtonLarge_Gate(true, CLaserTennis_Manager::TARGET_CODY);
 		}
 		m_bCollision = true;
 	}
@@ -104,9 +105,11 @@ void CLaserButtonLarge::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 	{
 		if (((((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Falling || (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land_Exit))
 		{
-			LASERTENNIS->Create_LaserTrigger_LargeButton(m_pTransformCom->Get_State(CTransform::STATE_POSITION), CLaserTennis_Manager::TARGET_CODY);
 			m_bActiveMove = true;
+			m_bMovement = false;
 			m_bActive = false;
+			m_eTarget = CLaserTennis_Manager::TARGET_CODY;
+			LASERTENNIS->Active_LaserButtonLarge_Gate(true, CLaserTennis_Manager::TARGET_MAY);
 		}
 		m_bCollision = true;
 	}
@@ -116,7 +119,7 @@ void CLaserButtonLarge::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 
 void CLaserButtonLarge::Movement(_double dTimeDelta)
 {
-	if (false == m_bCheckMovement)
+	if (false == m_bMovement)
 		return;
 
 	m_fDistance = 0.08f;
@@ -134,6 +137,8 @@ void CLaserButtonLarge::Movement(_double dTimeDelta)
 		if (m_fMaxPosY <= XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fMaxPosY));
 	}
+
+	m_pStaticActorCom->Update_StaticActor();
 }
 
 void CLaserButtonLarge::Activaion_Movement(_double dTimeDelta)
@@ -152,21 +157,37 @@ void CLaserButtonLarge::Activaion_Movement(_double dTimeDelta)
 		{
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fMaxPosY));
 			m_bActiveMove = false;
-			m_bCheckMovement = true;
+			m_bMovement = true;
 		}
 	}
 	/* 버튼 눌렀을때 */
 	else
 	{
+		m_dLaserCreateTime += dTimeDelta;
+
 		m_pTransformCom->Set_Speed(4.f, 0.f);
 		m_pTransformCom->Go_Down(dTimeDelta);
-		if ((m_fMaxPosY - m_fDistance) <= XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
+		if ((m_fMaxPosY - m_fDistance) >= XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
 		{
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fMaxPosY - m_fDistance));
-			m_bActiveMove = false;
-			m_bCheckMovement = false;
+			if (0.1<= m_dLaserCreateTime)
+			{
+				LASERTENNIS->Create_LaserTrigger_LargeButton(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f), m_eTarget);
+				++m_iLaserCount;
+				m_dLaserCreateTime = 0.0;
+			}
+			
+			if (10 <= m_iLaserCount)
+			{
+				m_bActiveMove = false;
+				m_bMovement = false;
+				m_iLaserCount = 0;
+				m_dLaserCreateTime = 0.0;
+			}
 		}
 	}
+
+	m_pStaticActorCom->Update_StaticActor();
 }
 
 HRESULT CLaserButtonLarge::Ready_Component(void * pArg)

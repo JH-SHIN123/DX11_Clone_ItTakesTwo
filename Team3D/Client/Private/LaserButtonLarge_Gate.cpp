@@ -83,7 +83,7 @@ void CLaserButtonLarge_Gate::Movement(_double dTimeDelta)
 	if (true == m_bMovement)
 	{
 		/* Open */
-		if (false == m_bActivate)
+		if (false == m_bActive)
 		{
 			m_fScale -= (_float)dTimeDelta * 3.f;
 			m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, 1.f, m_fScale, 1.f));
@@ -93,8 +93,9 @@ void CLaserButtonLarge_Gate::Movement(_double dTimeDelta)
 			{
 				m_fScale = 0.f;
 				m_pTransformCom->Set_Scale(XMVectorSet(0.001f, 0.001f, 0.001f, 1.f));
-				m_bActivate = true;
+				m_bActive = true;
 				m_bMovement = false;
+				LASERTENNIS->Active_LaserButtonLarge();
 			}
 		}
 		/* Close */
@@ -107,7 +108,7 @@ void CLaserButtonLarge_Gate::Movement(_double dTimeDelta)
 			if (1.f <= m_fScale)
 			{
 				m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matResetWorld));
-				m_bActivate = false;
+				m_bActive = false;
 				m_bMovement = false;
 			}
 		}

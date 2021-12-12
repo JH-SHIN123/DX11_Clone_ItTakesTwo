@@ -24,6 +24,8 @@
 /* For.SpaceShip */
 #include "ElectricBox.h"
 #include "ElectricWall.h"
+/* For.LaserTennis */
+#include "LaserTennis_Manager.h"
 /*For.WarpGate*/
 #include "WarpGate.h"
 
@@ -218,6 +220,7 @@ _int CCody::Tick(_double dTimeDelta)
 
 	if (false == m_bMoveToRail && false == m_bOnRail)
 	{
+		LaserTennis(dTimeDelta);
 		ElectricWallJump(dTimeDelta);
 		Pipe_WallJump(dTimeDelta);
 		Wall_Jump(dTimeDelta);
@@ -461,6 +464,8 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
+	if (m_pGameInstance->Key_Down(DIK_0))/* 레이저 테니스 */
+		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -2093,12 +2098,24 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 				m_bElectricWallAttach = true;
 			}
 		}
+		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_E) && false == m_bLaserTennis)
+		{
+			LASERTENNIS->Increase_PowerCoord();
+
+			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
+			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
+
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
+			m_bLaserTennis = true;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
-		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach)
+		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach || m_bLaserTennis)
 		return true;
 
 	return false;
@@ -3225,6 +3242,34 @@ void CCody::PinBall(const _double dTimeDelta)
 {
 	if (true == m_IsPinBall)
 		m_pActorCom->Set_Position(((CDynamic_Env*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Position());
+}
+
+void CCody::LaserTennis(const _double dTimeDelta)
+{
+	if (false == m_bLaserTennis)
+		return;
+
+	if (true == LASERTENNIS->Get_StartGame())
+	{
+		m_pModelCom->Set_Animation(ANI_C_Bhv_RocketFirework);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
+		if (0.8f <= m_pModelCom->Get_ProgressAnim())
+		{
+			LASERTENNIS->Start_Game();
+			m_bLaserTennis = false;
+			return;
+		}
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_Q))
+	{
+		LASERTENNIS->Decrease_PowerCoord();
+		m_bLaserTennis = false;
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_E))
+		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_CODY);
 }
 
 void CCody::PinBall_Respawn(const _double dTimeDelta)

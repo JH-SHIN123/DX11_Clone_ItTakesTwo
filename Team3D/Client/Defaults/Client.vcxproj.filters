@@ -759,6 +759,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger">
       <UniqueIdentifier>{a4ca8dbf-1f40-45ce-a28b-3fc9beaf268b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Wall_LaserTennis">
+      <UniqueIdentifier>{cd00407a-7a81-4e3c-955f-526dbdf17776}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1400,6 +1403,15 @@
     <ClInclude Include="..\Public\LaserButtonLarge_Gate.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge_Gate</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Wall_LaserTennis.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Wall_LaserTennis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LaserTrigger.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Laser_LaserTennis.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2004,6 +2016,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\LaserButtonLarge_Gate.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge_Gate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Wall_LaserTennis.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Wall_LaserTennis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LaserTrigger.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Laser_LaserTennis.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

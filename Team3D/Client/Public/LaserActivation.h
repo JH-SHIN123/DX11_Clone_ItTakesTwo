@@ -9,6 +9,10 @@ private:
 	explicit CLaserActivation(const CLaserActivation& rhs);
 	virtual ~CLaserActivation() = default;
 
+public:
+	_bool Get_Active() { return m_bActive; }
+	_fvector Get_Direction() { return XMLoadFloat3(&m_vDirection); }
+
 public:/* Setter */
 	void Change_State() { m_bMovement = true; }
 
@@ -21,23 +25,21 @@ public:
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
-	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+	virtual void OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 
-	_bool			m_bActivate		  = false;
+	_bool			m_bActive		  = false;
 	_bool			m_bMovement		  = false;
 	_bool			m_bCreateLaser	  = false;
 
+	_float3			m_vDirection	  = {};
+	_float			m_fResetPosY	  = 0.f;
 	_float			m_fDistance		  = 1.3f;
-	_float			m_fDistanceCheck  = 0.f;
-	_float			m_fMaxPosY		  = 0.f;
-	_float			m_fMinPosY		  = 0.f;
 
 private:
 	void Movement(_double dTimeDelta);
-	void CreateLaser(_double dTimeDelta);
 
 private:
 	HRESULT Ready_Component(void* pArg);

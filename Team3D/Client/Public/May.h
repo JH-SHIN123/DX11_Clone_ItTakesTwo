@@ -359,6 +359,8 @@ private:
 	_bool	m_IsTube = false;
 	/* Hye::For.UFO */
 	_bool	m_IsInUFO = false;
+	/* Hye::For.LaserTennis */
+	_bool	m_bLaserTennis = false;
 
 	/* For.HookUFO */
 	_bool m_IsHookUFO = false;
@@ -440,11 +442,12 @@ private:
 	void Boss_Missile_Hit(const _double dTimeDelta);
 	void Boss_Missile_Control(const _double dTimeDelta);
 	void WallLaserTrap(const _double dTimeDelta);
-	/* Hye::For.DeadLine, SavePoint */
+
+	/* Hye */
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
-	/* Hye::For.UFO */
 	void InUFO(const _double dTimeDelta);
+	void LaserTennis(const _double dTimeDelta);
 public:
 	void Set_UFO(_bool bCheck);
 

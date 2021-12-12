@@ -49,8 +49,6 @@ _int CLaserButton::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
 
-	m_pTriggerActorCom->Update_TriggerActor(XMVectorSet(0.f, 0.5f, 0.f, 1.f));
-
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
@@ -64,7 +62,16 @@ HRESULT CLaserButton::Render(RENDER_GROUP::Enum eGroup)
 	/* Active, Option에 따라 렌더 다르게 해야함 */
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1, m_tDynamic_Env_Desc.iMaterialIndex);
+
+	if (true == m_bActive)
+	{
+		if (m_tDynamic_Env_Desc.iOption == 0)
+			m_pModelCom->Render_Model(15, m_tDynamic_Env_Desc.iMaterialIndex);
+		else
+			m_pModelCom->Render_Model(14, m_tDynamic_Env_Desc.iMaterialIndex);
+	}
+	else
+		m_pModelCom->Render_Model(1, m_tDynamic_Env_Desc.iMaterialIndex);
 
 	return S_OK;
 }
@@ -124,6 +131,9 @@ void CLaserButton::Movement(_double dTimeDelta)
 		if (m_fResetPosY <= XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fResetPosY));
 	}
+
+	m_pStaticActorCom->Update_StaticActor();
+	m_pTriggerActorCom->Update_TriggerActor(XMVectorSet(0.f, 0.5f, 0.f, 1.f));
 }
 
 HRESULT CLaserButton::Ready_Component(void * pArg)

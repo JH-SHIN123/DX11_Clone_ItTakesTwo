@@ -10,6 +10,9 @@ private:
 	virtual ~CLaserButton() = default;
 
 public:
+	_bool Get_Active() { return m_bActive; }
+
+public:
 	void Active_Button() { m_bActive = true; }
 
 public:

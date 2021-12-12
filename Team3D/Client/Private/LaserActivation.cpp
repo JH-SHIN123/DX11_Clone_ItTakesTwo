@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\LaserActivation.h"
 #include "LaserTennis_Manager.h"
+#include "LaserTrigger.h"
 
 CLaserActivation::CLaserActivation(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -29,10 +30,27 @@ HRESULT CLaserActivation::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
 	m_pTransformCom->Set_Speed(5.f, 0.f);
-	m_fMinPosY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_fMaxPosY = m_fMinPosY + m_fDistance;
+	m_fResetPosY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	LASERTENNIS->Add_LaserActivation(this);
+
+	switch (m_tDynamic_Env_Desc.iOption)
+	{
+	case 0: m_vDirection = _float3(0.f, 0.f, -1.f);
+		break;
+	case 1: m_vDirection = _float3(1.f, 0.f, 0.f);
+		break;
+	case 2: m_vDirection = _float3(0.f, 0.f, 1.f);
+		break;
+	case 3: m_vDirection = _float3(1.f, 0.f, 0.f);
+		break;
+	case 4: m_vDirection = _float3(0.f, 0.f, -1.f);
+		break;
+	case 5: m_vDirection = _float3(-1.f, 0.f, 0.f);
+		break;
+	case 6: m_vDirection = _float3(0.f, 0.f, 1.f);
+		break;
+	}
 
 	return S_OK;
 }
@@ -79,9 +97,9 @@ HRESULT CLaserActivation::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CLaserActivation::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+void CLaserActivation::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
+	CDynamic_Env::OnContact(eStatus, eID, pGameObject);
 }
 
 void CLaserActivation::Movement(_double dTimeDelta)
@@ -89,36 +107,32 @@ void CLaserActivation::Movement(_double dTimeDelta)
 	if (false == m_bMovement)
 		return;
 
-	if (false == m_bActivate)/* 활성화 */
+	/* 활성화 */
+	if (false == m_bActive)
 	{
-		m_fDistanceCheck += (_float)(dTimeDelta * m_pTransformCom->Get_SpeedPerSec());
-		if (m_fDistance <= m_fDistanceCheck)
+		if (m_fResetPosY + m_fDistance <= XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
 		{
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fMaxPosY));
-			m_fDistanceCheck = 0.f;
-			m_bActivate = true;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fResetPosY + m_fDistance));
+			m_bActive = true;
 			m_bMovement = false;
 			return;
 		}
 		m_pTransformCom->Go_Up(dTimeDelta);
 	}
-	else/* 비활성화 */
+	/* 비활성화 */
+	else
 	{
-		m_fDistanceCheck += (_float)(dTimeDelta * m_pTransformCom->Get_SpeedPerSec());
-		if (m_fDistance <= m_fDistanceCheck)
+		if (m_fResetPosY >= XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
 		{
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fMinPosY));
-			m_fDistanceCheck = 0.f;
-			m_bActivate = false;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fResetPosY));
+			m_bActive = false;
 			m_bMovement = false;
 			return;
 		}
 		m_pTransformCom->Go_Down(dTimeDelta);
 	}
-}
 
-void CLaserActivation::CreateLaser(_double dTimeDelta)
-{
+	m_pStaticActorCom->Update_StaticActor();
 }
 
 HRESULT CLaserActivation::Ready_Component(void * pArg)

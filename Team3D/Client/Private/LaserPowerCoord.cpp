@@ -3,6 +3,7 @@
 #include "LaserTennis_Manager.h"
 #include "Cody.h"
 #include "May.h"
+#include "UI_Generator.h"
 
 CLaserPowerCoord::CLaserPowerCoord(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -42,10 +43,14 @@ _int CLaserPowerCoord::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_M))
-		Change_State();
-
 	Movement(dTimeDelta);
+
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	//if(0 == m_tDynamic_Env_Desc.iOption)
+	//	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::StarBuddy, XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - 3.f), 3.f, m_bCollision);
+	//else
+	//	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::StarBuddy, XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - 3.f), 3.f, m_bCollision);
 
 	return NO_EVENT;
 }
@@ -53,6 +58,8 @@ _int CLaserPowerCoord::Tick(_double dTimeDelta)
 _int CLaserPowerCoord::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
+
+	m_pTriggerActorCom->Update_TriggerActor(XMVectorSet(0.f, 0.f, -3.f, 1.f));
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -87,18 +94,26 @@ void CLaserPowerCoord::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CG
 {
 	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
 
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && m_pGameInstance->Key_Down(DIK_E))
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eLASERTENNISPOWERCOORD, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-		LASERTENNIS->Check_PowerCoord();
-		m_bReady = true;
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eLASERTENNISPOWERCOORD, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_bCollision = true;
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eLASERTENNISPOWERCOORD, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_bCollision = false;
 	}
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eLASERTENNISPOWERCOORD, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-		LASERTENNIS->Check_PowerCoord();
-		m_bReady = true;
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eLASERTENNISPOWERCOORD, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_bCollision = true;
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+	{
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eLASERTENNISPOWERCOORD, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_bCollision = false;
 	}
 }
 
@@ -129,6 +144,8 @@ void CLaserPowerCoord::Movement(_double dTimeDelta)
 			m_bMovement = false;
 		}
 	}
+
+	m_pStaticActorCom->Update_StaticActor();
 }
 
 HRESULT CLaserPowerCoord::Ready_Component(void * pArg)
@@ -140,6 +157,16 @@ HRESULT CLaserPowerCoord::Ready_Component(void * pArg)
 	tStaticActorArg.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+
+	/* Trigger */
+	PxGeometry* TriggerGeom = new PxSphereGeometry(1.f);
+	CTriggerActor::ARG_DESC tTriggerArgDesc;
+	tTriggerArgDesc.pGeometry = TriggerGeom;
+	tTriggerArgDesc.pTransform = m_pTransformCom;
+	tTriggerArgDesc.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
+	Safe_Delete(TriggerGeom);
 
 	return S_OK;
 }
@@ -171,6 +198,7 @@ CGameObject * CLaserPowerCoord::Clone_GameObject(void * pArg)
 void CLaserPowerCoord::Free()
 {
 	Safe_Release(m_pStaticActorCom);
+	Safe_Release(m_pTriggerActorCom);
 
 	CDynamic_Env::Free();
 }

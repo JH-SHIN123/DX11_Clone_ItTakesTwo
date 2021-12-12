@@ -1,5 +1,6 @@
 #pragma once
 #include "Dynamic_Env.h"
+#include "LaserTennis_Manager.h"
 
 BEGIN(Client)
 class CLaserButtonLarge final : public CDynamic_Env
@@ -30,10 +31,15 @@ private:
 	_bool			m_bActive = false;
 	_bool			m_bActiveMove = false;
 	_bool			m_bCollision = false;
-	_bool			m_bCheckMovement = false;
+	_bool			m_bMovement = false;
 
 	_float			m_fDistance = 0.6f;
 	_float			m_fMaxPosY = 0.f;
+
+	_uint			m_iLaserCount = 0;
+	_double			m_dLaserCreateTime = 0.0;
+
+	CLaserTennis_Manager::TARGET	m_eTarget = CLaserTennis_Manager::TARGET::TARGET_END;
 
 private:
 	void Movement(_double dTimeDelta);

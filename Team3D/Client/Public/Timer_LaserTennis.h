@@ -25,6 +25,8 @@ private:
 	_double			m_dLargeButton_Time = 0.0;
 	_double			m_dLaserActivation_Time = 0.0;
 
+	_uint			m_iLaserActivation_Count = 0;
+
 public:
 	static CTimer_LaserTennis* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone_GameObject(void* pArg);

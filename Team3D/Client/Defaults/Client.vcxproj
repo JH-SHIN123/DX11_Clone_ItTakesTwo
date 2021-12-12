@@ -286,6 +286,8 @@
     <ClInclude Include="..\Public\LaserButtonLarge_Gate.h" />
     <ClInclude Include="..\Public\LaserPowerCoord.h" />
     <ClInclude Include="..\Public\LaserTennis_Manager.h" />
+    <ClInclude Include="..\Public\LaserTrigger.h" />
+    <ClInclude Include="..\Public\Laser_LaserTennis.h" />
     <ClInclude Include="..\Public\Laser_TypeA.h" />
     <ClInclude Include="..\Public\Laser_TypeB.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -386,6 +388,7 @@
     <ClInclude Include="..\Public\UmbrellaBeam_Stand.h" />
     <ClInclude Include="..\Public\WallLaserTrap.h" />
     <ClInclude Include="..\Public\WallLaserTrap_Button.h" />
+    <ClInclude Include="..\Public\Wall_LaserTennis.h" />
     <ClInclude Include="..\Public\WarpGate.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -488,6 +491,8 @@
     <ClCompile Include="..\Private\LaserButtonLarge_Gate.cpp" />
     <ClCompile Include="..\Private\LaserPowerCoord.cpp" />
     <ClCompile Include="..\Private\LaserTennis_Manager.cpp" />
+    <ClCompile Include="..\Private\LaserTrigger.cpp" />
+    <ClCompile Include="..\Private\Laser_LaserTennis.cpp" />
     <ClCompile Include="..\Private\Laser_TypeA.cpp" />
     <ClCompile Include="..\Private\Laser_TypeB.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -588,6 +593,7 @@
     <ClCompile Include="..\Private\UmbrellaBeam_Stand.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap_Button.cpp" />
+    <ClCompile Include="..\Private\Wall_LaserTennis.cpp" />
     <ClCompile Include="..\Private\WarpGate.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">

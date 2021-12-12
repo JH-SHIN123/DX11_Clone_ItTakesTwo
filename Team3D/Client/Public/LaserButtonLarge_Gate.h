@@ -10,6 +10,9 @@ private:
 	virtual ~CLaserButtonLarge_Gate() = default;
 
 public:
+	_bool Get_Active() { return m_bActive; }
+
+public:
 	void Change_State() { m_bMovement = true; }
 
 public:
@@ -26,7 +29,7 @@ private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 
 	_bool			m_bMovement = false;
-	_bool			m_bActivate = false;
+	_bool			m_bActive = false;
 
 	_float4x4		m_matResetWorld;
 	_float			m_fScale = 1.f;
