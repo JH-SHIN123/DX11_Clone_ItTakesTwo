@@ -123,33 +123,33 @@ void CMoonBaboon_SubLaser::Laser_AttackPattern(_double TimeDelta)
 		if (m_dPatternDeltaT >= 10.0)
 		{
 			m_dPatternDeltaT = 0.0;
-			m_iPatternState = 2;
+			/*m_iPatternState = 2;*/
 
-			for (auto pLaserTypeB : m_vecLaser_TypeB)
-				pLaserTypeB->Set_RotateSpeed(-40.f);
+			//for (auto pLaserTypeB : m_vecLaser_TypeB)
+			//	pLaserTypeB->Set_RotateSpeed(-40.f);
 		}
 		else
 		{
-			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f,1.f,0.f,0.f) ,TimeDelta);
+			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f,1.f,0.f,0.f), -TimeDelta);
 			m_dPatternDeltaT += TimeDelta;
 		}
 	}
-	else if (2 == m_iPatternState)
-	{
-		if (m_dPatternDeltaT >= 10.0)
-		{
-			m_dPatternDeltaT = 0.0;
-			m_iPatternState = 1;
+	//else if (2 == m_iPatternState)
+	//{
+	//	if (m_dPatternDeltaT >= 10.0)
+	//	{
+	//		m_dPatternDeltaT = 0.0;
+	//		m_iPatternState = 1;
 
-			for (auto pLaserTypeB : m_vecLaser_TypeB)
-				pLaserTypeB->Set_RotateSpeed(40.f);
-		}
-		else
-		{
-			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -TimeDelta);
-			m_dPatternDeltaT += TimeDelta;
-		}
-	}
+	//		//for (auto pLaserTypeB : m_vecLaser_TypeB)
+	//		//	pLaserTypeB->Set_RotateSpeed(40.f);
+	//	}
+	//	else
+	//	{
+	//		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -TimeDelta);
+	//		m_dPatternDeltaT += TimeDelta;
+	//	}
+	//}
 
 	/* 레이저 발사!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 	if (true == m_IsLaserUp && true == m_IsLaserCreate)
@@ -168,7 +168,7 @@ void CMoonBaboon_SubLaser::Laser_AttackPattern(_double TimeDelta)
 			m_vecLaser_TypeB.emplace_back(static_cast<CLaser_TypeB*>(pGameObject));
 			m_vecLaser_TypeB[i]->Set_StartPoint(vConvertPos);
 			m_vecLaser_TypeB[i]->SetUp_SubLaserDirection(i);
-			m_vecLaser_TypeB[i]->Set_RotateSpeed(10.f);
+			m_vecLaser_TypeB[i]->Set_RotateSpeed(15.f);
 		}
 
 		m_IsLaserCreate = false;

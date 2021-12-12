@@ -174,7 +174,6 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	_float fAngle = XMConvertToDegrees(XMVectorGetX(vDot));
 
 	_matrix matPivot, matRotY, matTrans, matAnim;
-
 	matTrans = XMMatrixTranslation(0.f, -0.5f, 0.f);
 	matRotY = XMMatrixRotationY(XMConvertToRadians(-fAngle));
 	matPivot = matRotY * matTrans;
@@ -287,7 +286,6 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 
 		/* 중력자 폭탄 패턴 끝났으니 상호작용 패턴으로 바꾸자 */
 		m_ePattern = CUFO::INTERACTION;
-
 	}
 }
 
@@ -384,6 +382,9 @@ void CUFO::Phase1_Pattern(_double dTimeDelta)
 
 void CUFO::Phase2_Pattern(_double dTimeDelta)
 {
+	if (nullptr == m_pCodyTransform || nullptr == m_pMayTransform)
+		return;
+
 	/* 공전 드가자 */
 	OrbitalMovementCenter(dTimeDelta);
 
@@ -491,31 +492,19 @@ void CUFO::Phase3_Pattern(_double dTimeDelta)
 		return;
 	}
 
-	_vector vDir, vTargetPos;
 	/* 3페는 메이만 타겟 */
+	_vector vDir, vTargetPos;
 	vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
 
 	vDir = vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
 
 	/* 우주선을 타겟쪽으로 천천히 회전 */
-	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f);
+	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta);
 
+	/* SubLaser 시간마다 올라오자 ㅇㅇ */
 	if (true == m_IsSubLaserOperation)
-	{
-		m_fSubLaserTime += (_float)dTimeDelta;
-
-		if (10.f <= m_fSubLaserTime)
-		{
-			m_vecSubLaser[m_iSubLaserIndex]->Set_LaserOperation(true);
-
-			m_fSubLaserTime = 0.f;
-			++m_iSubLaserIndex;
-
-			if (3 <= m_iSubLaserIndex)
-				m_IsSubLaserOperation = false;
-		}
-	}
+		DependingTimeSubLaserOperation(dTimeDelta);
 
 	switch (m_ePattern)
 	{
@@ -542,14 +531,18 @@ void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
 	if (1.f <= vDistance)
 	{
 		m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
-		m_pTransformCom->Go_Straight(dTimeDelta);
+		m_pTransformCom->Go_Straight(dTimeDelta * 10.f);
 	}
 	else
 	{
 		m_IsStartingPointMove = false;
+		m_pModelCom->Set_Animation(UFO_MH);
 
 		/* 도착했으면 메인레이저 올라와라 ㅇㅇ */
 		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(true);
+
+		/* 나중에 맵 올라가는거 하면 다른데로 옮겨주자 */
+		m_ePattern = CUFO::GROUNDPOUND;
 	}
 }
 
@@ -559,6 +552,67 @@ void CUFO::Phase3_InterAction(_double dTimeDelta)
 
 void CUFO::GroundPound_Pattern(_double dTimeDelta)
 {
+	_vector vTargetPos, vUFOPos;
+
+	if(false == m_IsGroundPound)
+		m_fGroundPoundTime += (_float)dTimeDelta;
+
+	/* GroundPound가 시작됬을 때 메이의 포스 저장 */
+	if (5.f <= m_fGroundPoundTime && false == m_IsGroundPound)
+	{
+		XMStoreFloat4(&m_vGroundPoundTargetPos, m_pMayTransform->Get_State(CTransform::STATE_POSITION));
+		m_IsGroundPound = true;
+	}
+
+	/* UFO가 찍기 애니메이션을 진행중이다 밑에서 쓸데없이 연산하지말고 걍 나가자 ㅇㅇ */
+	if (UFO_GroundPound == m_pModelCom->Get_CurAnimIndex())
+	{
+		if (m_pModelCom->Is_AnimFinished(UFO_GroundPound))
+		{
+			m_pModelCom->Set_Animation(UFO_MH);
+			m_IsGroundPound = false;
+		}
+		else
+			return;
+	}
+
+	if (true == m_IsGroundPound)
+	{
+		_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		_vector vComparePos = XMLoadFloat4(&m_vGroundPoundTargetPos) - vUFOPos;
+		_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vComparePos, 0.f));
+
+		/* Y는 거리 계산하면 안됨 메이의 Y는 땅에 있기 때문 */
+		vComparePos.m128_f32[1] = 0.f;
+		_float fDistance = XMVectorGetX(XMVector3Length(vComparePos));
+
+		if (1.f <= fDistance)
+			m_pTransformCom->MoveToDir(XMVector3Normalize(vComparePos), dTimeDelta * 5.f);
+		else
+		{
+			m_pModelCom->Set_Animation(UFO_GroundPound);
+			m_pModelCom->Set_NextAnimIndex(UFO_MH);
+			m_fGroundPoundTime = 0.f;
+			m_IsGroundPound = false;
+		}
+	}
+}
+
+void CUFO::DependingTimeSubLaserOperation(_double dTimeDelta)
+{
+	m_fSubLaserTime += (_float)dTimeDelta;
+
+	if (10.f <= m_fSubLaserTime)
+	{
+		m_vecSubLaser[m_iSubLaserIndex]->Set_LaserOperation(true);
+
+		m_fSubLaserTime = 0.f;
+		++m_iSubLaserIndex;
+
+		if (3 <= m_iSubLaserIndex)
+			m_IsSubLaserOperation = false;
+	}
 }
 
 HRESULT CUFO::Phase1_End(_double dTimeDelta)
@@ -665,6 +719,8 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 		m_ePhase = CUFO::PHASE_3;
 		m_IsStartingPointMove = true;
 
+		m_pModelCom->Set_Animation(UFO_Fwd);
+
 		/* 애니메이션이 딱 끝났을 때 뼈의 위치를 받아서 UFO 월드에 세팅해준다. */
 		_matrix BaseBone = m_pModelCom->Get_BoneMatrix("Base");
 		_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
@@ -703,8 +759,9 @@ void CUFO::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Laser_MH, true);
 	m_pModelCom->Add_LerpInfo(UFO_MH, UFO_Left, true);
 
-
 	m_pModelCom->Add_LerpInfo(UFO_Fwd, UFO_Laser_MH, true);
+	m_pModelCom->Add_LerpInfo(UFO_Fwd, UFO_MH, true);
+	m_pModelCom->Add_LerpInfo(UFO_Fwd, UFO_GroundPound, true);
 
 	m_pModelCom->Add_LerpInfo(UFO_Laser_MH, UFO_Laser_HitPod, true);
 	m_pModelCom->Add_LerpInfo(UFO_Laser_MH, CutScene_PowerCoresDestroyed_UFO, true);
@@ -722,6 +779,8 @@ void CUFO::Add_LerpInfo_To_Model()
 
 	m_pModelCom->Add_LerpInfo(UFO_CodyHolding, UFO_LaserRippedOff, true);
 
+	m_pModelCom->Add_LerpInfo(UFO_LaserRippedOff, UFO_Left, true);
+
 	m_pModelCom->Add_LerpInfo(UFO_Left, CutScene_RocketPhaseFinished_FlyingSaucer, true);
 
 	m_pModelCom->Add_LerpInfo(CutScene_RocketPhaseFinished_FlyingSaucer, UFO_RocketKnockDown_MH, true);
@@ -729,6 +788,9 @@ void CUFO::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(UFO_RocketKnockDown_MH, CutScene_EnterUFO_FlyingSaucer, true);
 
 	m_pModelCom->Add_LerpInfo(CutScene_EnterUFO_FlyingSaucer, UFO_MH, true);
+	
+	m_pModelCom->Add_LerpInfo(UFO_GroundPound, UFO_MH, true, 1.f);
+
 
 }
 

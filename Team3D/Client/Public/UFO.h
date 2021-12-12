@@ -75,8 +75,11 @@ private:
 
 	/* For.PHASE_3 Pattern */
 	_float					m_fSubLaserTime = 0.f;
+	_float					m_fGroundPoundTime = 0.f;
 	_uint					m_iSubLaserIndex = 0;
 	_bool					m_IsSubLaserOperation = true;
+	_bool					m_IsGroundPound = false;
+	_float4					m_vGroundPoundTargetPos;
 
 	vector<class CMoonBaboon_SubLaser*>	m_vecSubLaser;
 
@@ -117,6 +120,7 @@ private:
 	void Phase3_MoveStartingPoint(_double dTimeDelta);
 	void Phase3_InterAction(_double dTimeDelta);
 	void GroundPound_Pattern(_double dTimeDelta);
+	void DependingTimeSubLaserOperation(_double dTimeDelta);
 
 
 private:
