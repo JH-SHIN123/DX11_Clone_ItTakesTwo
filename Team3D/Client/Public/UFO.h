@@ -27,7 +27,6 @@ public:
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
-
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
@@ -75,7 +74,11 @@ private:
 	class CBoss_Missile*	m_pMayMissile = nullptr;
 
 	/* For.PHASE_3 Pattern */
+	_float					m_fSubLaserTime = 0.f;
+	_uint					m_iSubLaserIndex = 0;
+	_bool					m_IsSubLaserOperation = true;
 
+	vector<class CMoonBaboon_SubLaser*>	m_vecSubLaser;
 
 	/* For. Laser_TypeA */
 	_float4					m_vLaserGunPos;
@@ -118,19 +121,24 @@ private:
 
 private:
 	/* For.PHASE_1 End */
-	void Phase1_End(_double dTimeDelta);
+	HRESULT Phase1_End(_double dTimeDelta);
 	HRESULT Ready_Actor_Component();
 
 	/* For.PHASE_2 End */
-	void Phase2_End(_double dTimeDelta);
+	HRESULT Phase2_End(_double dTimeDelta);
 
 	/* For.PHASE_3 End */
-	void Phase3_End(_double dTimeDelta);
+	HRESULT Phase3_End(_double dTimeDelta);
 
 private:
 	/* For.NativeConstruct */
 	void Add_LerpInfo_To_Model();
 	HRESULT Ready_Component();
+
+private:
+	/* For.SubLaser */
+	HRESULT Ready_Layer_MoonBaboon_SubLaser(const _tchar * pLayerTag);
+
 
 public:
 	static CUFO* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

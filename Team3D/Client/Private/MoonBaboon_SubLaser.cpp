@@ -1,26 +1,26 @@
 #include "stdafx.h"
-#include "MoonBaboon_MainLaser.h"
+#include "MoonBaboon_SubLaser.h"
 #include "DataStorage.h"
 #include "Laser_TypeB.h"
 
-CMoonBaboon_MainLaser::CMoonBaboon_MainLaser(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CMoonBaboon_SubLaser::CMoonBaboon_SubLaser(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
 }
 
-CMoonBaboon_MainLaser::CMoonBaboon_MainLaser(const CMoonBaboon_MainLaser& rhs)
+CMoonBaboon_SubLaser::CMoonBaboon_SubLaser(const CMoonBaboon_SubLaser& rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CMoonBaboon_MainLaser::NativeConstruct_Prototype()
+HRESULT CMoonBaboon_SubLaser::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
-HRESULT CMoonBaboon_MainLaser::NativeConstruct(void* pArg)
+HRESULT CMoonBaboon_SubLaser::NativeConstruct(void* pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
@@ -28,10 +28,8 @@ HRESULT CMoonBaboon_MainLaser::NativeConstruct(void* pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon_MainLaser_01"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 239.f, 195.f, 1.f));
-
-	m_UserData.eID = GameID::eENVIRONMENT;
-	m_UserData.pGameObject = this;
+	//m_UserData.eID = GameID::eENVIRONMENT;
+	//m_UserData.pGameObject = this;
 
 	//CStaticActor::ARG_DESC tArg;
 	//tArg.pModel = m_pModelCom;
@@ -39,14 +37,12 @@ HRESULT CMoonBaboon_MainLaser::NativeConstruct(void* pArg)
 	//tArg.pUserData = &m_UserData;
 	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
 
-	DATABASE->Set_MoonBaboon_MainLaser(this);
-
-	m_vecLaser_TypeB.reserve(8);
+	m_vecLaser_TypeB.reserve(4);
 
 	return S_OK;
 }
 
-_int CMoonBaboon_MainLaser::Tick(_double TimeDelta)
+_int CMoonBaboon_SubLaser::Tick(_double TimeDelta)
 {
 	CGameObject::Tick(TimeDelta);
 
@@ -58,7 +54,7 @@ _int CMoonBaboon_MainLaser::Tick(_double TimeDelta)
 	return NO_EVENT;
 }
 
-_int CMoonBaboon_MainLaser::Late_Tick(_double TimeDelta)
+_int CMoonBaboon_SubLaser::Late_Tick(_double TimeDelta)
 {
 	CGameObject::Late_Tick(TimeDelta);
 
@@ -69,7 +65,7 @@ _int CMoonBaboon_MainLaser::Late_Tick(_double TimeDelta)
 	return NO_EVENT;
 }
 
-HRESULT CMoonBaboon_MainLaser::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CMoonBaboon_SubLaser::Render(RENDER_GROUP::Enum eGroup)
 {
 	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -80,7 +76,7 @@ HRESULT CMoonBaboon_MainLaser::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-HRESULT CMoonBaboon_MainLaser::Render_ShadowDepth()
+HRESULT CMoonBaboon_SubLaser::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
@@ -92,7 +88,7 @@ HRESULT CMoonBaboon_MainLaser::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CMoonBaboon_MainLaser::Set_LaserOperation(_bool IsActive)
+void CMoonBaboon_SubLaser::Set_LaserOperation(_bool IsActive)
 {
 	m_IsLaserOperation = IsActive; 
 
@@ -105,7 +101,7 @@ void CMoonBaboon_MainLaser::Set_LaserOperation(_bool IsActive)
 	}
 }
 
-void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
+void CMoonBaboon_SubLaser::Laser_AttackPattern(_double TimeDelta)
 {
 	if (0 == m_iPatternState)
 	{
@@ -166,20 +162,20 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 		XMStoreFloat4(&vConvertPos, vPos);
 		vConvertPos.y += 0.7f;
 
-		for (_uint i = 0; i < 8; ++i)
+		for (_uint i = 0; i < 4; ++i)
 		{
 			m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeB"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB"), nullptr, &pGameObject);
 			m_vecLaser_TypeB.emplace_back(static_cast<CLaser_TypeB*>(pGameObject));
 			m_vecLaser_TypeB[i]->Set_StartPoint(vConvertPos);
-			m_vecLaser_TypeB[i]->SetUp_MainLaserDirection(i);
-			m_vecLaser_TypeB[i]->Set_RotateSpeed(40.f);
+			m_vecLaser_TypeB[i]->SetUp_SubLaserDirection(i);
+			m_vecLaser_TypeB[i]->Set_RotateSpeed(10.f);
 		}
 
 		m_IsLaserCreate = false;
 	}
 }
 
-void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
+void CMoonBaboon_SubLaser::Laser_Down(_double TimeDelta)
 {
 	if (m_dDownTime <= 1.5)
 	{
@@ -200,33 +196,44 @@ void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
 	}
 }
 
-CMoonBaboon_MainLaser* CMoonBaboon_MainLaser::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+
+void CMoonBaboon_SubLaser::SetUp_SubLaserPosition(_uint iOption)
 {
-	CMoonBaboon_MainLaser* pInstance = new CMoonBaboon_MainLaser(pDevice, pDeviceContext);
+	if (0 == iOption)
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(78.945f, 239.f, 158.95f, 1.f));
+	else if (1 == iOption)
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(22.008f, 239.f, 212.40f, 1.f));
+	else if (2 == iOption)
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(100.05f, 239.f, 209.95f, 1.f));
+}
+
+CMoonBaboon_SubLaser* CMoonBaboon_SubLaser::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+{
+	CMoonBaboon_SubLaser* pInstance = new CMoonBaboon_SubLaser(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSG_BOX("Failed to Create Instance - CMoonBaboon_MainLaser");
+		MSG_BOX("Failed to Create Instance - CMoonBaboon_SubLaser");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CMoonBaboon_MainLaser::Clone_GameObject(void* pArg)
+CGameObject* CMoonBaboon_SubLaser::Clone_GameObject(void* pArg)
 {
-	CMoonBaboon_MainLaser* pInstance = new CMoonBaboon_MainLaser(*this);
+	CMoonBaboon_SubLaser* pInstance = new CMoonBaboon_SubLaser(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CMoonBaboon_MainLaser");
+		MSG_BOX("Failed to Clone Instance - CMoonBaboon_SubLaser");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CMoonBaboon_MainLaser::Free()
+void CMoonBaboon_SubLaser::Free()
 {
 	for (auto pLaserTypeB : m_vecLaser_TypeB)
 		Safe_Release(pLaserTypeB);

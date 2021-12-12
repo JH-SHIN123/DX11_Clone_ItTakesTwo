@@ -6,6 +6,7 @@
 #include "RobotParts.h"
 #include "CutScenePlayer.h"
 #include "MoonBaboon_MainLaser.h"
+#include "MoonBaboon_SubLaser.h"
 #include "Laser_TypeA.h"
 #include "Boss_Missile.h"
 
@@ -395,7 +396,6 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 		GuidedMissile_Pattern(dTimeDelta);
 		break;
 	}
-
 }
 
 void CUFO::Phase2_InterAction(_double dTimeDelta)
@@ -478,8 +478,6 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 			m_pMayMissile = static_cast<CBoss_Missile*>(pGameObject);
 		}
 	}
-
-
 }
 
 void CUFO::Phase3_Pattern(_double dTimeDelta)
@@ -502,6 +500,22 @@ void CUFO::Phase3_Pattern(_double dTimeDelta)
 
 	/* 우주선을 타겟쪽으로 천천히 회전 */
 	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f);
+
+	if (true == m_IsSubLaserOperation)
+	{
+		m_fSubLaserTime += (_float)dTimeDelta;
+
+		if (10.f <= m_fSubLaserTime)
+		{
+			m_vecSubLaser[m_iSubLaserIndex]->Set_LaserOperation(true);
+
+			m_fSubLaserTime = 0.f;
+			++m_iSubLaserIndex;
+
+			if (3 <= m_iSubLaserIndex)
+				m_IsSubLaserOperation = false;
+		}
+	}
 
 	switch (m_ePattern)
 	{
@@ -547,7 +561,7 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 {
 }
 
-void CUFO::Phase1_End(_double dTimeDelta)
+HRESULT CUFO::Phase1_End(_double dTimeDelta)
 {
 	if (m_pModelCom->Is_AnimFinished(CutScene_PowerCoresDestroyed_UFO))
 		m_IsInterActive = true;
@@ -608,6 +622,8 @@ void CUFO::Phase1_End(_double dTimeDelta)
 			m_pModelCom->Set_PivotTransformation(m_pModelCom->Get_BoneIndex("LaserBase"), LaserBaseBone);
 		}
 	}
+
+	return S_OK;
 }
 
 HRESULT CUFO::Ready_Actor_Component()
@@ -633,7 +649,7 @@ HRESULT CUFO::Ready_Actor_Component()
 	return S_OK;
 }
 
-void CUFO::Phase2_End(_double dTimeDelta)
+HRESULT CUFO::Phase2_End(_double dTimeDelta)
 {
 	if (true == m_IsCodyEnter)
 	{
@@ -654,12 +670,18 @@ void CUFO::Phase2_End(_double dTimeDelta)
 		_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
 		_matrix AnimUFOWorld = BaseBone * UFOWorld;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4((_float4*)&AnimUFOWorld.r[3].m128_f32[0]));
+
+		/* 서브 레이저 3개 생성 */
+		FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon_SubLaser(TEXT("Layer_SubLaser")), E_FAIL);
 	}
+
+	return S_OK;
 }
 
-void CUFO::Phase3_End(_double dTimeDelta)
+HRESULT CUFO::Phase3_End(_double dTimeDelta)
 {
 
+	return S_OK;
 }
 
 HRESULT CUFO::Render(RENDER_GROUP::Enum eGroup)
@@ -747,6 +769,22 @@ void CUFO::Set_IsGuidedMissileDeadCheck(_bool IsCheck)
 		m_pMayMissile = nullptr;
 }
 
+HRESULT CUFO::Ready_Layer_MoonBaboon_SubLaser(const _tchar* pLayerTag)
+{
+	CGameObject* pGameObject = nullptr;
+	_uint iSubLaserCount = 4;
+	m_vecSubLaser.reserve(iSubLaserCount);
+
+	for (_uint i = 0; i < iSubLaserCount; ++i)
+	{
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SubLaser"), nullptr, &pGameObject), E_FAIL);
+		m_vecSubLaser.emplace_back(static_cast<CMoonBaboon_SubLaser*>(pGameObject));
+		m_vecSubLaser[i]->SetUp_SubLaserPosition(i);
+	}
+
+	return S_OK;
+}
+
 CUFO * CUFO::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CUFO* pInstance = new CUFO(pDevice, pDeviceContext);
@@ -780,6 +818,11 @@ void CUFO::Free()
 		Safe_Release(m_pStaticActorCom);
 		Safe_Release(m_pTriggerActorCom);
 	}
+
+	for (auto pSubLaser : m_vecSubLaser)
+		Safe_Release(pSubLaser);
+
+	m_vecSubLaser.clear();
 
 	if(nullptr != m_pCodyMissile)
 		Safe_Release(m_pCodyMissile);

@@ -302,6 +302,7 @@
     <ClInclude Include="..\Public\MoonBaboonCore_Shield.h" />
     <ClInclude Include="..\Public\MoonBaboon_MainLaser.h" />
     <ClInclude Include="..\Public\MoonBaboon_SpaceShip.h" />
+    <ClInclude Include="..\Public\MoonBaboon_SubLaser.h" />
     <ClInclude Include="..\Public\MoonUFO.h" />
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\PC_Enter.h" />
@@ -498,6 +499,7 @@
     <ClCompile Include="..\Private\MoonBaboonCore_Shield.cpp" />
     <ClCompile Include="..\Private\MoonBaboon_MainLaser.cpp" />
     <ClCompile Include="..\Private\MoonBaboon_SpaceShip.cpp" />
+    <ClCompile Include="..\Private\MoonBaboon_SubLaser.cpp" />
     <ClCompile Include="..\Private\MoonUFO.cpp" />
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\PC_Enter.cpp" />

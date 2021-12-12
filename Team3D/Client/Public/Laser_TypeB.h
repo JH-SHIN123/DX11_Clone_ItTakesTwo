@@ -22,7 +22,8 @@ public:
 public:
 	void Set_StartPoint(_float4 vStartPoint);
 	void Set_LaserDir(_float4 vLaserDir);
-	void SetUp_Direction(_uint iOption);
+	void SetUp_MainLaserDirection(_uint iOption);
+	void SetUp_SubLaserDirection(_uint iOption);
 	void Set_RotateSpeed(_float fSpeed);
 
 public:
