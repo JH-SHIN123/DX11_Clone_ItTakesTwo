@@ -484,11 +484,35 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 
 void CUFO::Phase3_Pattern(_double dTimeDelta)
 {
+	if (nullptr == m_pCodyTransform || nullptr == m_pMayTransform)
+		return;
+
 	if (true == m_IsStartingPointMove)
 	{
 		Phase3_MoveStartingPoint(dTimeDelta);
 		return;
 	}
+
+	_vector vDir, vTargetPos;
+	/* 3페는 메이만 타겟 */
+	vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+
+	vDir = vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
+
+	/* 우주선을 타겟쪽으로 천천히 회전 */
+	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f);
+
+	switch (m_ePattern)
+	{
+	case Client::CUFO::INTERACTION:
+		Phase3_InterAction(dTimeDelta);
+		break;
+	case Client::CUFO::GROUNDPOUND:
+		GroundPound_Pattern(dTimeDelta);
+		break;
+	}
+
 }
 
 void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
@@ -500,14 +524,27 @@ void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
 	_vector vComparePos = vTargetPos - vUFOPos;
 
 	_float vDistance = XMVectorGetX(XMVector3Length(vComparePos));
-	/* 처음에 저장해둔 타겟 포스의 Y위치까지 천천히 위로 이동해라. */
-	if (0.f <= vDistance)
+
+	if (1.f <= vDistance)
 	{
-		m_pTransformCom->Rotate_Axis(vDir, dTimeDelta);
+		m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
 		m_pTransformCom->Go_Straight(dTimeDelta);
 	}
 	else
+	{
 		m_IsStartingPointMove = false;
+
+		/* 도착했으면 메인레이저 올라와라 ㅇㅇ */
+		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(true);
+	}
+}
+
+void CUFO::Phase3_InterAction(_double dTimeDelta)
+{
+}
+
+void CUFO::GroundPound_Pattern(_double dTimeDelta)
+{
 }
 
 void CUFO::Phase1_End(_double dTimeDelta)

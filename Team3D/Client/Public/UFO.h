@@ -18,7 +18,7 @@ public:
 
 	enum UFO_TARGET { TARGET_CODY , TARGET_MAY, TARGET_END };
 	enum UFO_PHASE { PHASE_1, PHASE_2, PHASE_3, PHASE_END };
-	enum UFO_PATTERN { INTERACTION, LASER, GRAVITATIONALBOMB, GUIDEDMISSILE, PRESS, PATTERN_END };
+	enum UFO_PATTERN { INTERACTION, LASER, GRAVITATIONALBOMB, GUIDEDMISSILE, GROUNDPOUND, PATTERN_END };
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -112,6 +112,9 @@ private:
 	/* For.PHASE_3 Pattern */
 	void Phase3_Pattern(_double dTimeDelta);
 	void Phase3_MoveStartingPoint(_double dTimeDelta);
+	void Phase3_InterAction(_double dTimeDelta);
+	void GroundPound_Pattern(_double dTimeDelta);
+
 
 private:
 	/* For.PHASE_1 End */
