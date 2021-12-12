@@ -33,6 +33,10 @@ enum class Effect_Value
 	BossLaser_Explosion,
 	BossGroundPound,
 	BossGroundPound_Ring,
+	BossGroundPound_Smoke,
+	BossMissile_Smoke,
+	BossMissile_Explosion,
+	BossMissile_Particle,
 	Effect_Value_End
 };
 

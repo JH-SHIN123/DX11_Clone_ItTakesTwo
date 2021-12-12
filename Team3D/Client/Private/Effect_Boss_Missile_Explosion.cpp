@@ -1,26 +1,25 @@
 #include "stdafx.h"
-#include "..\Public\Effect_Boss_Laser_Smoke.h"
+#include "..\Public\Effect_Boss_Missile_Explosion.h"
 #include "DataStorage.h"
-#include "Effect_Boss_Laser_Particle.h"
 #include "Cody.h"
 
-CEffect_Boss_Laser_Smoke::CEffect_Boss_Laser_Smoke(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_Boss_Missile_Explosion::CEffect_Boss_Missile_Explosion(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
-CEffect_Boss_Laser_Smoke::CEffect_Boss_Laser_Smoke(const CEffect_Boss_Laser_Smoke & rhs)
+CEffect_Boss_Missile_Explosion::CEffect_Boss_Missile_Explosion(const CEffect_Boss_Missile_Explosion & rhs)
 	: CInGameEffect(rhs)
 {
 }
 
-HRESULT CEffect_Boss_Laser_Smoke::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_Boss_Missile_Explosion::NativeConstruct_Prototype(void * pArg)
 {
 	m_EffectDesc_Prototype.iInstanceCount = 30;
 	return S_OK;
 }
 
-HRESULT CEffect_Boss_Laser_Smoke::NativeConstruct(void * pArg)
+HRESULT CEffect_Boss_Missile_Explosion::NativeConstruct(void * pArg)
 {
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
@@ -34,21 +33,17 @@ HRESULT CEffect_Boss_Laser_Smoke::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
 
-	//
-
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 
 	Ready_InstanceBuffer();
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_BossEffect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Particle"), pArg, (CGameObject**)&m_pLaserParticle), E_FAIL);
-	
 	return S_OK;
 }
 
-_int CEffect_Boss_Laser_Smoke::Tick(_double TimeDelta)
+_int CEffect_Boss_Missile_Explosion::Tick(_double TimeDelta)
 {
-// 	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
+	// 	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
 
 	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
 		return EVENT_DEAD;
@@ -61,20 +56,19 @@ _int CEffect_Boss_Laser_Smoke::Tick(_double TimeDelta)
 	}
 
 	Check_Instance(TimeDelta);
-	m_pLaserParticle->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 
 	return NO_EVENT;
 }
 
-_int CEffect_Boss_Laser_Smoke::Late_Tick(_double TimeDelta)
+_int CEffect_Boss_Missile_Explosion::Late_Tick(_double TimeDelta)
 {
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
 }
 
-HRESULT CEffect_Boss_Laser_Smoke::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CEffect_Boss_Missile_Explosion::Render(RENDER_GROUP::Enum eGroup)
 {
 	_float fTime = (_float)m_dControlTime;
-	_float4 vUV  = { 0.f, 0.f, 1.f, 1.f };
+	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fTime, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
@@ -86,12 +80,12 @@ HRESULT CEffect_Boss_Laser_Smoke::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-void CEffect_Boss_Laser_Smoke::Set_Pos(_fvector vPos)
+void CEffect_Boss_Missile_Explosion::Set_Pos(_fvector vPos)
 {
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 }
 
-void CEffect_Boss_Laser_Smoke::Check_Instance(_double TimeDelta)
+void CEffect_Boss_Missile_Explosion::Check_Instance(_double TimeDelta)
 {
 	_float4 vMyPos;
 	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -102,7 +96,7 @@ void CEffect_Boss_Laser_Smoke::Check_Instance(_double TimeDelta)
 		if (0.f >= m_pInstanceBuffer_STT[iIndex].fTime)
 			m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
 
-		m_pInstance_Pos_UpdateTime[iIndex]	-= TimeDelta;
+		m_pInstance_Pos_UpdateTime[iIndex] -= TimeDelta;
 
 		if (0.0 >= m_pInstance_Pos_UpdateTime[iIndex] && true == m_IsActivate)
 		{
@@ -116,23 +110,23 @@ void CEffect_Boss_Laser_Smoke::Check_Instance(_double TimeDelta)
 	}
 }
 
-void CEffect_Boss_Laser_Smoke::Instance_Size(_float TimeDelta, _int iIndex)
+void CEffect_Boss_Missile_Explosion::Instance_Size(_float TimeDelta, _int iIndex)
 {
 	m_pInstanceBuffer_STT[iIndex].vSize.x += TimeDelta * m_fSize_Power * (m_pInstanceBuffer_STT[iIndex].vSize.x * 3.25f);
 	m_pInstanceBuffer_STT[iIndex].vSize.y += TimeDelta * m_fSize_Power * (m_pInstanceBuffer_STT[iIndex].vSize.y * 3.25f);
 }
 
-void CEffect_Boss_Laser_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
+void CEffect_Boss_Missile_Explosion::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 	m_pInstanceBuffer_STT[iIndex].vPosition.y += TimeDelta * m_fSize_Power;
 }
 
-void CEffect_Boss_Laser_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
+void CEffect_Boss_Missile_Explosion::Instance_UV(_float TimeDelta, _int iIndex)
 {
 	m_pInstance_Update_TextureUV_Time[iIndex] -= TimeDelta;
 
 	if (0 >= m_pInstance_Update_TextureUV_Time[iIndex])
-	{      
+	{
 		m_pInstance_Update_TextureUV_Time[iIndex] = 0.05;
 
 		m_pInstanceBuffer_STT[iIndex].vTextureUV.x += m_fNextUV;
@@ -161,25 +155,25 @@ void CEffect_Boss_Laser_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
 	}
 }
 
-void CEffect_Boss_Laser_Smoke::Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex)
+void CEffect_Boss_Missile_Explosion::Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex)
 {
-	m_pInstanceBuffer_STT[iIndex].vPosition		= vPos;
+	m_pInstanceBuffer_STT[iIndex].vPosition = vPos;
 
-	m_pInstanceBuffer_STT[iIndex].vTextureUV	= __super::Get_TexUV(7, 7, true);
-	m_pInstanceBuffer_STT[iIndex].fTime			= 1.02f;
-	m_pInstanceBuffer_STT[iIndex].vSize			= m_vDefaultSize;
+	m_pInstanceBuffer_STT[iIndex].vTextureUV = __super::Get_TexUV(7, 7, true);
+	m_pInstanceBuffer_STT[iIndex].fTime = 1.02f;
+	m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
 
-	m_pInstance_Pos_UpdateTime[iIndex]			= m_dInstance_Pos_Update_Time;
+	m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time;
 	m_pInstance_Update_TextureUV_Time[iIndex] = 0.05;
 }
 
-HRESULT CEffect_Boss_Laser_Smoke::Ready_InstanceBuffer()
+HRESULT CEffect_Boss_Missile_Explosion::Ready_InstanceBuffer()
 {
-	_int iInstanceCount	= m_EffectDesc_Prototype.iInstanceCount;
+	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
-	m_pInstanceBuffer_STT				= new VTXMATRIX_CUSTOM_STT[iInstanceCount];
-	m_pInstance_Pos_UpdateTime			= new _double[iInstanceCount];
-	m_pInstance_Update_TextureUV_Time	= new _double[iInstanceCount];
+	m_pInstanceBuffer_STT = new VTXMATRIX_CUSTOM_STT[iInstanceCount];
+	m_pInstance_Pos_UpdateTime = new _double[iInstanceCount];
+	m_pInstance_Update_TextureUV_Time = new _double[iInstanceCount];
 
 	m_fNextUV = __super::Get_TexUV(7, 7, true).z;
 
@@ -188,52 +182,50 @@ HRESULT CEffect_Boss_Laser_Smoke::Ready_InstanceBuffer()
 
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
-		m_pInstanceBuffer_STT[iIndex].vRight		= { 1.f, 0.f, 0.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vUp			= { 0.f, 1.f, 0.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vLook			= { 0.f, 0.f, 1.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vPosition		= vMyPos;
+		m_pInstanceBuffer_STT[iIndex].vRight = { 1.f, 0.f, 0.f, 0.f };
+		m_pInstanceBuffer_STT[iIndex].vUp = { 0.f, 1.f, 0.f, 0.f };
+		m_pInstanceBuffer_STT[iIndex].vLook = { 0.f, 0.f, 1.f, 0.f };
+		m_pInstanceBuffer_STT[iIndex].vPosition = vMyPos;
 
-		m_pInstanceBuffer_STT[iIndex].vTextureUV	= { 0.f, 0.f, m_fNextUV , m_fNextUV };
-		m_pInstanceBuffer_STT[iIndex].fTime			= 1.f;
-		m_pInstanceBuffer_STT[iIndex].vSize			= m_vDefaultSize;
+		m_pInstanceBuffer_STT[iIndex].vTextureUV = { 0.f, 0.f, m_fNextUV , m_fNextUV };
+		m_pInstanceBuffer_STT[iIndex].fTime = 1.f;
+		m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
 
-		m_pInstance_Pos_UpdateTime[iIndex]			= m_dInstance_Pos_Update_Time  * (_double(iIndex) / iInstanceCount);
-		m_pInstance_Update_TextureUV_Time[iIndex]	= 0.05;
+		m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time  * (_double(iIndex) / iInstanceCount);
+		m_pInstance_Update_TextureUV_Time[iIndex] = 0.05;
 	}
 	return S_OK;
 }
 
-CEffect_Boss_Laser_Smoke * CEffect_Boss_Laser_Smoke::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CEffect_Boss_Missile_Explosion * CEffect_Boss_Missile_Explosion::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CEffect_Boss_Laser_Smoke*	pInstance = new CEffect_Boss_Laser_Smoke(pDevice, pDeviceContext);
+	CEffect_Boss_Missile_Explosion*	pInstance = new CEffect_Boss_Missile_Explosion(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CEffect_Boss_Laser_Smoke");
+		MSG_BOX("Failed to Create Instance - CEffect_Boss_Missile_Explosion");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CEffect_Boss_Laser_Smoke::Clone_GameObject(void * pArg)
+CGameObject * CEffect_Boss_Missile_Explosion::Clone_GameObject(void * pArg)
 {
-	CEffect_Boss_Laser_Smoke* pInstance = new CEffect_Boss_Laser_Smoke(*this);
+	CEffect_Boss_Missile_Explosion* pInstance = new CEffect_Boss_Missile_Explosion(*this);
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CEffect_Boss_Laser_Smoke");
+		MSG_BOX("Failed to Clone Instance - CEffect_Boss_Missile_Explosion");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CEffect_Boss_Laser_Smoke::Free()
+void CEffect_Boss_Missile_Explosion::Free()
 {
 	Safe_Delete_Array(m_pInstance_Update_TextureUV_Time);
 	Safe_Delete_Array(m_pInstanceBuffer_STT);
 
 	Safe_Release(m_pTexturesCom_Distortion);
 	Safe_Release(m_pPointInstanceCom_STT);
-
-	Safe_Release(m_pLaserParticle);
 
 	__super::Free();
 }

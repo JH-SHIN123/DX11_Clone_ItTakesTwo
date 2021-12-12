@@ -106,8 +106,6 @@ void CEffect_Boss_Laser_Particle::Instance_Size(_float TimeDelta, _int iIndex)
 
 void CEffect_Boss_Laser_Particle::Instance_Pos(_float TimeDelta, _int iIndex)
 {
-	m_pInstance_Parabola_Time[iIndex] = (_double)TimeDelta;
-
 	_vector vDir = XMLoadFloat3(&m_pInstanceBiffer_Dir[iIndex]);
 	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 6.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
 
@@ -127,7 +125,6 @@ void CEffect_Boss_Laser_Particle::Reset_Instance(_double TimeDelta, _float4 vPos
 	m_pInstanceBuffer_STT[iIndex].fTime = 1.02f;
 
 	m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time;
-	m_pInstance_Parabola_Time[iIndex]  = 0.0;
 
 	_vector vLookDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * -1.5f;
 	_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
@@ -146,7 +143,6 @@ HRESULT CEffect_Boss_Laser_Particle::Ready_InstanceBuffer()
 
 	m_pInstanceBuffer_STT				= new VTXMATRIX_CUSTOM_STT[iInstanceCount];
 	m_pInstanceBiffer_Dir				= new _float3[iInstanceCount];
-	m_pInstance_Parabola_Time			= new _double[iInstanceCount];
 	m_pInstance_Pos_UpdateTime			= new _double[iInstanceCount];
 
 	_float4 vMyPos;
@@ -164,7 +160,6 @@ HRESULT CEffect_Boss_Laser_Particle::Ready_InstanceBuffer()
 		m_pInstanceBuffer_STT[iIndex].vSize			= m_vDefaultSize;
 
 		m_pInstance_Pos_UpdateTime[iIndex]			= m_dInstance_Pos_Update_Time  * (_double(iIndex) / iInstanceCount);
-		m_pInstance_Parabola_Time[iIndex]			= 0.0;
 
 		_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
 		_float3 v3RandDir;
@@ -216,7 +211,6 @@ CGameObject * CEffect_Boss_Laser_Particle::Clone_GameObject(void * pArg)
 
 void CEffect_Boss_Laser_Particle::Free()
 {
-	Safe_Delete_Array(m_pInstance_Parabola_Time);
 	Safe_Delete_Array(m_pInstanceBuffer_STT);
 	Safe_Delete_Array(m_pInstanceBiffer_Dir);
 

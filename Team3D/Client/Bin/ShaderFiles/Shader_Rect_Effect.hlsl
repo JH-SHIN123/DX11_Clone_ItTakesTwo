@@ -303,20 +303,16 @@ PS_OUT  PS_DISTORTION_BOSSRING(PS_IN_DIST In)
 
 
 	float4 vDistortion = g_DistortionTexture.Sample(DiffuseSampler, In.vTexUV);
-	float fWeight = vDistortion.r * 0.05f;
-	float2 vDiffUV = In.vWeightUV - 0.5f;
-	vDiffUV.x += sign(vDiffUV.x) * fWeight;
-	vDiffUV.y += sign(vDiffUV.y) * fWeight;
-	vDiffUV += 0.5f;
-
-	float4 vColor = g_DiffuseTexture.Sample(DiffuseSampler, vDiffUV);
-	Out.vColor = vColor * g_vColor;
+	float4 vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vWeightUV);
+	Out.vColor = vColor * g_vColor * g_fAlpha;
 
 	float2 vCenter = In.vTexUV - 0.5f;
 	vCenter = abs(vCenter);
 	float fLength = length(vCenter);
 	if (0.5f < fLength)
 		discard;
+	fLength = fLength / 0.5f; // normalize
+	Out.vColor *= fLength;
 
 	return Out;
 }
@@ -347,8 +343,8 @@ technique11 DefaultTechnique
 
 	pass BossGroundPound_Ring // 2
 	{
-		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_Default, 0);
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_ANGLE_UV();
 		GeometryShader = compile gs_5_0 GS_MAIN();

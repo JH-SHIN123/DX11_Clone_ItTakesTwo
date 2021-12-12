@@ -46,7 +46,7 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Particle::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_Gravitational_Bomb_Particle::Tick(_double TimeDelta)
 {
-	/* GARA */Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
+	///* GARA */Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
 
 	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
 		m_IsActivate = false;

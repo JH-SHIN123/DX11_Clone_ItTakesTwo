@@ -762,6 +762,18 @@
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\01.Smoke">
       <UniqueIdentifier>{7f8530e1-48c0-416e-a984-9c33877ee898}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile">
+      <UniqueIdentifier>{7577d5c3-dc53-419f-abb5-aeb3fb47ff6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke">
+      <UniqueIdentifier>{fe5deece-04a5-4318-afb5-acdc2d731f8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion">
+      <UniqueIdentifier>{acd6cfb6-5704-4c57-89c5-0b6a29379e73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle">
+      <UniqueIdentifier>{f9eacdc2-4e96-4dbc-bb27-2475ddb8a8bc}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1412,6 +1424,18 @@
     <ClInclude Include="..\public\Effect_Boss_GroundPound_Ring.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\00.Ring</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_GroundPound_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\01.Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Missile_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Missile_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Missile_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2025,6 +2049,18 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Boss_GroundPound_Ring.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\00.Ring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_GroundPound_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\01.Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Missile_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Missile_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Missile_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

@@ -46,7 +46,6 @@ private:
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT		= nullptr;
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT		= nullptr;
-	_double*							m_pInstance_Parabola_Time	= nullptr;
 	_float3*							m_pInstanceBiffer_Dir		= nullptr;
 
 	const _float  m_fAlphaTime_Power			= 1.f;

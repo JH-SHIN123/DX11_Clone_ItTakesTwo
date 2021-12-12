@@ -32,12 +32,11 @@ HRESULT CEffect_Boss_GroundPound_Ring::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV"), TEXT("Com_VIBuffer_Rect"), (CComponent**)&m_pBufferRectCom), E_FAIL);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Slime_Cloud"), TEXT("Com_Tex1"), (CComponent**)&m_pTexturesCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise"), TEXT("Com_Tex2"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Ring"), TEXT("Com_Tex2"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
 
 	
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(65.f, 0.3f, 30.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(13.8f, 1.f, 13.8f, 0.f));
-	Ready_Instance();
 
 	m_EffectDesc_Prototype.fLifeTime = 3.f;
 
@@ -46,14 +45,22 @@ HRESULT CEffect_Boss_GroundPound_Ring::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_GroundPound_Ring::Tick(_double TimeDelta)
 {
-	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
+	if (false == m_IsActivate && 0.f >= m_fTime)
 		return EVENT_DEAD;
 
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
-
-	m_fTime -= (_float)TimeDelta * 0.125f;
-
-	m_pInstanceBuffer[0].vSize = { 13.f, 13.f };
+	if (true == m_IsActivate)
+	{
+		m_fTime += (_float)TimeDelta * 0.25f;
+		if (0.5f < m_fTime)
+			m_fTime = 0.5f;
+	}
+	else
+	{
+		m_fTime -= (_float)TimeDelta * 0.25f;
+		if (0.0f > m_fTime)
+			m_fTime = 0.0f;
+	}
 
 	m_dRotateTime += TimeDelta * 20;
 	if (360.0 < m_dRotateTime)
@@ -75,6 +82,8 @@ HRESULT CEffect_Boss_GroundPound_Ring::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pBufferRectCom->Set_Variable("g_fRadianAngle", &fRadian, sizeof(_float));
 	m_pBufferRectCom->Set_Variable("g_vColor", &m_vColor, sizeof(_float4));
+	m_pBufferRectCom->Set_Variable("g_fAlpha", &m_fTime, sizeof(_float));
+
 	m_pBufferRectCom->Set_ShaderResourceView("g_DistortionTexture", m_pTexturesCom_Second->Get_ShaderResourceView(0));
 	m_pBufferRectCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	m_pBufferRectCom->Render(2);
@@ -105,7 +114,6 @@ HRESULT CEffect_Boss_GroundPound_Ring::Ready_Instance()
 	m_pInstanceBuffer->vTextureUV = { 0.f, -1.f, 1.f, 3.f };
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	XMStoreFloat4(&m_pInstanceBuffer->vPosition, vPos);
-
 
 	return S_OK;
 }
@@ -146,7 +154,5 @@ CGameObject * CEffect_Boss_GroundPound_Ring::Clone_GameObject(void * pArg)
 
 void CEffect_Boss_GroundPound_Ring::Free()
 {
-	Safe_Release(m_pTexturesCom_Distorion);
-
 	__super::Free();
 }

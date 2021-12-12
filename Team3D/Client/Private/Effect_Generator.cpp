@@ -41,6 +41,10 @@
 #include "Effect_Boss_Gravitational_Bomb_Explosion.h"
 #include "Effect_Boss_GroundPound.h"
 #include "Effect_Boss_GroundPound_Ring.h"
+#include "Effect_Boss_GroundPound_Smoke.h"
+#include "Effect_Boss_Missile_Smoke.h"
+#include "Effect_Boss_Missile_Explosion.h"
+#include "Effect_Boss_Missile_Particle.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -153,6 +157,18 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::BossGroundPound_Ring:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_GroundPound_Ring");
+		break;
+	case Effect_Value::BossGroundPound_Smoke:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_GroundPound_Smoke");
+		break;
+	case Effect_Value::BossMissile_Smoke:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Smoke");
+		break;
+	case Effect_Value::BossMissile_Explosion:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Explosion");
+		break;
+	case Effect_Value::BossMissile_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Particle");
 		break;
 	default:
 		break;
@@ -326,6 +342,18 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_GroundPound_Ring"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_GroundPound_Ring", CEffect_Boss_GroundPound_Ring::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_GroundPound_Smoke"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_GroundPound_Smoke", CEffect_Boss_GroundPound_Smoke::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Missile_Smoke"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Smoke", CEffect_Boss_Missile_Smoke::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Missile_Explosion"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Explosion", CEffect_Boss_Missile_Explosion::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Missile_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Particle", CEffect_Boss_Missile_Particle::Create(pDevice, pDeviceContext, pData));
+
 #pragma  endregion
 
 
@@ -359,7 +387,7 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 		_tchar szWarning[MAX_PATH] = L"";
 		lstrcat(szWarning, pPrototypeName);
 		MessageBox(g_hWnd, szWarning, L"Press Enter", MB_OK);
-		Safe_Delete(pData); // 터지게 만듦
+		//Safe_Delete(pData); // 터지게 만듦
 		return S_OK;
 	}
 #endif // __TEST_JUNG

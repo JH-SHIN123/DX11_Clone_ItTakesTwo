@@ -1,16 +1,13 @@
 #pragma once
-
-#ifndef __EFFECT_BOSS_LASER_SMOKE_H__
-
 #include "InGameEffect.h"
 
 BEGIN(Client)
-class CEffect_Boss_Laser_Smoke final : public CInGameEffect
+class CEffect_Boss_Missile_Explosion final : public CInGameEffect
 {
 private:
-	explicit CEffect_Boss_Laser_Smoke(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CEffect_Boss_Laser_Smoke(const CEffect_Boss_Laser_Smoke& rhs);
-	virtual ~CEffect_Boss_Laser_Smoke() = default; public:
+	explicit CEffect_Boss_Missile_Explosion(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_Boss_Missile_Explosion(const CEffect_Boss_Missile_Explosion& rhs);
+	virtual ~CEffect_Boss_Missile_Explosion() = default; public:
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -44,27 +41,22 @@ private:
 
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
-	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT	= nullptr;
+	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT = nullptr;
 	CTextures*							m_pTexturesCom_Distortion = nullptr;
 	_double*							m_pInstance_Update_TextureUV_Time = nullptr;
 
 	_float m_fNextUV = 0.f;
 
-	const _float  m_fAlphaTime_Power			= 0.5f;
-	const _float  m_fSize_Power					= 0.75f;
-	const _float  m_fInstance_SpeedPerSec		= 0.5f;
-	const _double m_dInstance_Pos_Update_Time	= 1.25;
-	const _float2 m_vDefaultSize				= { 0.25f, 0.25f };
-
-private: //Particle
-	class CEffect_Boss_Laser_Particle* m_pLaserParticle = nullptr;
+	const _float  m_fAlphaTime_Power = 0.5f;
+	const _float  m_fSize_Power = 0.75f;
+	const _float  m_fInstance_SpeedPerSec = 0.5f;
+	const _double m_dInstance_Pos_Update_Time = 1.25;
+	const _float2 m_vDefaultSize = { 0.25f, 0.25f };
 
 public:
-	static CEffect_Boss_Laser_Smoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_Boss_Missile_Explosion* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
 
 END
-#define __EFFECT_BOSS_LASER_SMOKE_H__
-#endif
