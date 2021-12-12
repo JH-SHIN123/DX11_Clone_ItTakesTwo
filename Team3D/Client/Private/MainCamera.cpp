@@ -300,30 +300,6 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	
 
 
-	//카메라 회전에 따른 거리체크
-
-	_vector vLook = XMLoadFloat4x4(&m_matBeginWorld).r[2];
-	_vector vStartPos = XMLoadFloat4x4(&m_matStart).r[3];
-	_vector vDir = XMVectorZero();
-
-	//카메라 수직이동에따른 거리조절
-	switch (m_eCurPlayerSize)
-	{
-	case Client::CCody::SIZE_SMALL:
-		vDir = (vLook*(m_fCurMouseRev[Rev_Prependicul]) * 0.01f);
-		//vDir = (vLook*(m_fCurMouseRev[Rev_Prependicul]) * 0.02f);
-		break;
-	case Client::CCody::SIZE_MEDIUM:
-		vDir = (vLook*(m_fCurMouseRev[Rev_Prependicul]) * 0.065f);
-		break;
-	case Client::CCody::SIZE_LARGE:
-		vDir = (vLook*(m_fCurMouseRev[Rev_Prependicul]) * 0.08f);
-		break;
-	}
-
-	memcpy(&m_matBeginWorld._41, &(vStartPos - vDir), sizeof(_float4));
-
-
 	//CamEffect
 
 	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::LScreen))
@@ -394,14 +370,14 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vResultPos = XMVectorZero();
 	if (false == bIsTeleport)
 	{
-		// m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
-		//
-		//_float4 vEye, vAt;
-		//
-		//XMStoreFloat4(&vEye, vResultPos);
-		//XMStoreFloat4(&vAt, vPlayerPos);
-		//_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt);
-		//matAffine = matCurWorld;
+		 m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
+		
+		_float4 vEye, vAt;
+		
+		XMStoreFloat4(&vEye, vResultPos);
+		XMStoreFloat4(&vAt, vPlayerPos);
+		_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt);
+		matAffine = matCurWorld;
 		
 	}
 	else
@@ -582,26 +558,44 @@ _int CMainCamera::ReSet_Cam_FreeToAuto()
 _bool CMainCamera::OffSetPhsX(_fmatrix matWorld, _double dTimeDelta,_vector * pOut)
 {
 	
-	if (nullptr == m_pActorCom)
-		return false;
+	_bool isHit = false;
+	_float	fDist = 0.f;
+	PxRaycastBuffer m_RaycastBuffer;
+	_vector vDir = -matWorld.r[2];
+	_vector vAt = XMLoadFloat4(&m_vPlayerPos);
 
-	_vector vPos = matWorld.r[3];
-	_vector vDir = XMVectorZero();
-	/*_vector vActorPos = m_pActorCom->Get_Position();
-	vDir = vPos - vActorPos;
-	if (!m_pActorCom->Move(vDir, dTimeDelta))
-		return false;*/
+	if (m_pGameInstance->Raycast(MH_PxVec3(vAt), MH_PxVec3(vDir), 10.f, m_RaycastBuffer, PxHitFlag::eDISTANCE))
+	{
+		for (PxU32 i = 0; i < m_RaycastBuffer.getNbAnyHits(); ++i)
+		{
+			USERDATA* pUserData = (USERDATA*)m_RaycastBuffer.getAnyHit(i).actor->userData;
 
-	_vector vPlayerPos = XMLoadFloat4(&m_vPlayerPos);
+			if (nullptr != pUserData)
+			{
+				if (pUserData->eID == GameID::eCODY || pUserData->eID == GameID::eMAY)
+					continue;
+				else
+				{
+					isHit = true;
+					fDist = m_RaycastBuffer.getAnyHit(i).distance;
+					*pOut =  vAt + vDir * fDist;
+					break;
+				}
+			}
+			else
+			{
+				isHit = true;
+				fDist = m_RaycastBuffer.getAnyHit(i).distance;
+				*pOut = vAt + vDir * fDist;
+				break;
+			}
+		}
+	}
 
-	vDir = vPos - vPlayerPos;
-
-	m_pActorCom->Set_Position(vPlayerPos);
-
-	m_pActorCom->Move(vDir, dTimeDelta);
-	
-	*pOut = XMVectorSetW(m_pActorCom->Get_Position()/*Get_Position()*/,1.f);
-
+	if (!isHit)
+	{
+		*pOut = vAt + vDir * 10.f;
+	}
 	return true;
 
 }
