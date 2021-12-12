@@ -34,7 +34,7 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CameraActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
+	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_CamHelper"), TEXT("Com_CamHelper"), (CComponent**)&m_pCamHelper), E_FAIL);
 
 	CDataStorage::GetInstance()->Set_SubCamPtr(this);
@@ -47,12 +47,10 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 	m_PreWorld.vTrans = _float4(0.f, 0.f, 0.f, 1.f);
 
 	m_vStartEye =	{0.f,7.f, -7.f, 1.f};
-	m_vStartAt =	{0.f,1.5f, 0.f, 1.f };
+	m_vStartAt =	{0.f,3.0f, 0.f, 1.f };
 
 	_matrix matStart = MakeViewMatrixByUp(m_vStartEye, m_vStartAt,XMVectorSet(0.f,1.f,0.f,0.f));
-	XMStoreFloat4x4(&m_matBeforeSpringCam, matStart);
-
-	m_matBeginWorld = m_matStart = m_matBeforeSpringCam;
+	XMStoreFloat4x4(&m_matBeginWorld, matStart);
 	return S_OK;
 }
 
@@ -68,7 +66,6 @@ _int CSubCamera::Tick(_double dTimeDelta)
 			CTransform* pPlayerTransform = static_cast<CMay*>(m_pTargetObj)->Get_Transform();
 			XMStoreFloat4(&m_vPlayerPos, pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 			XMStoreFloat4(&m_vPlayerUp, pPlayerTransform->Get_State(CTransform::STATE_UP));
-			m_pActorCom->Set_Scale(0.4f, 0.001f);
 			Safe_AddRef(m_pTargetObj);
 		}
 		else
@@ -153,7 +150,7 @@ void CSubCamera::Set_Zoom(_float fZoomVal, _double dTimeDelta)
 	_matrix matStart = MakeViewMatrixByUp(m_vStartEye, m_vStartAt,XMVectorSet(0.f,1.f,0.f,0.f));
 
 	matStart.r[3] += matStart.r[2] * m_fCamZoomVal;
-	XMStoreFloat4x4(&m_matStart,matStart);
+	XMStoreFloat4x4(&m_matBeginWorld,matStart);
 }
 
 
@@ -207,7 +204,7 @@ _int CSubCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 
 	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 	XMStoreFloat4(&m_vPlayerPos, vPlayerPos);
-	_matrix matNext = XMLoadFloat4x4(&m_matStart); //목표 매트릭스
+	_matrix matNext = XMLoadFloat4x4(&m_matBeginWorld); //목표 매트릭스
 	
 	_matrix matRev = XMMatrixRotationQuaternion(XMLoadFloat4(&m_PreWorld.vRotQuat)) *
 		MH_RotationMatrixByUp(pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos);
@@ -370,17 +367,20 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_matrix matAffine = XMMatrixAffineTransformation(XMVectorSet(1.f, 1.f, 1.f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 1.f),
 		vCurRotQuat, vCurTrans);
 
-	XMStoreFloat4x4(&m_matBeforeSpringCam, matAffine);
+
 	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::RScreen))
 	{
 		if (m_pCamHelper->Tick_CamEffect(CFilm::RScreen, dTimeDelta, matAffine)) //카메라의 원점 
+		{
 			matAffine = m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::RScreen);
+			vPlayerUp = XMVector3TransformNormal(vPlayerUp, matAffine);
+		}
 	}
 
 	_vector vResultPos = XMVectorZero();
 	OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
 
-	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vResultPos, vPlayerPos, matAffine.r[2]));
+	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vResultPos, vPlayerPos, vPlayerUp/*matAffine.r[2]*/));
 
 
 	return NO_EVENT;
@@ -574,8 +574,6 @@ void CSubCamera::Free()
 {
 	Safe_Release(m_pTargetObj);
 	Safe_Release(m_pCamHelper);
-	Safe_Release(m_pActorCom);
-
 
 	CCamera::Free();
 }

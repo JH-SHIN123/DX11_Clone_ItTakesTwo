@@ -32,7 +32,6 @@ private:
 	void	Check_Player(_double dTimeDelta);
 	void	Set_Zoom(_float fZoomVal,_double dTimeDelta);
 private:
-	CCameraActor* m_pActorCom = nullptr;
 	CGameObject* m_pTargetObj = nullptr;
 	CCam_Helper* m_pCamHelper = nullptr;
 private:
@@ -68,7 +67,6 @@ private:
 
 	CamMode m_eCurCamMode = CamMode::Cam_End;
 
-	_float4x4 m_matStart;
 	_float4x4 m_matBeginWorld;
 	_float4x4 m_matCurWorld;
 
@@ -82,23 +80,12 @@ private:
 
 	CamFreeOption m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 
-	//For.SpringCamera
-	_bool m_bIsCollision = false;
-	_float4x4 m_matBeforeSpringCam;
-	_float m_fSpringCamLerpTime = 0.f;
-
 	//For.SoftMove
 	_float4		m_vPlayerPos = { 0.f,0.f,0.f,1.f };
 	_float4		m_vPlayerUp = { 0.f,1.f,0.f,0.f };
 
 	//For.Zoom
 	_float m_fCamZoomVal = 0.f;
-	//For.Lerp To CamNode
-	CFilm::CamNode	m_tCurTargerNode;
-	_float			m_fLerpNodeTime = 0.f;
-	_float			m_fCurLerpNodeTime = 0.f;
-	_bool			m_bIsFinishLerpToNode = false;
-	_float4x4		m_matStartLerpNode;
 
 	WORLDMATRIX	m_PreWorld;
 

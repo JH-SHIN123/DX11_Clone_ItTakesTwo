@@ -28,7 +28,6 @@ public:
 
 
 	CTransform* Get_Transform() { return m_pTransformCom; }
-	_bool		Get_IsFinishLerpToCamNode() { return m_bIsFinishLerpToNode; }
 	CCam_Helper* Get_CamHelper() { return m_pCamHelper; }
 	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal,matWorld); }
 
@@ -108,13 +107,9 @@ private:
 	//For.BridgeUppend
 	_bool	m_bStartBridgeUppendCam = false;
 	_float	m_fBridgeUppendTime = 0.f;
-	//For.Lerp To CamNode
-	CFilm::CamNode	m_tCurTargerNode;
-	_float			m_fLerpNodeTime = 0.f;
-	_float			m_fCurLerpNodeTime = 0.f;
-	_bool			m_bIsFinishLerpToNode = false;
-	_float4x4		m_matStartLerpNode;
 
+	//For.RayCast
+	PxRaycastBuffer m_RayCastBuffer;
 	WORLDMATRIX	m_PreWorld;
 
 

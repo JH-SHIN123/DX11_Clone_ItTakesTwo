@@ -48,11 +48,11 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	/* Hye */
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL] =	{ 0.f,2.f,-2.f,1.f};
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM] =	{ 0.f,7.f,-7.f,1.f };
-	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE] =	{ 0.f,11.f,	-8.f,1.f };
+	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE] =	{ 0.f,9.f,	-9.f,1.f };
 
 	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL] = { 0.f,0.2f,0.0f,1.f };
 	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM] = { 0.f,3.f, 0.0f,1.f };
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE] = { 0.f,3.f,0.0f,1.f };
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE] = { 0.f,4.f,0.0f,1.f };
 
 
 	_matrix matStart = MakeViewMatrixByUp(m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM], m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM]);
@@ -161,7 +161,7 @@ void CMainCamera::Set_Zoom(_float fZoomVal, _double dTimeDelta)
 
 _bool CMainCamera::LerpToCurSize(CCody::PLAYER_SIZE eSize,_double dTimeDelta)
 {
-	if (m_dLerpToCurSizeTime > 1.f)
+	if (m_dLerpToCurSizeTime >= 1.f)
 	{
 		XMStoreFloat4x4(&m_matBeginWorld, MakeViewMatrixByUp(m_vSizeEye[eSize], m_vSizeAt[eSize]));
 		return false;
@@ -169,7 +169,7 @@ _bool CMainCamera::LerpToCurSize(CCody::PLAYER_SIZE eSize,_double dTimeDelta)
 	_matrix CurStartMatrix = XMLoadFloat4x4(&m_matBeginWorld);
 	_matrix TargetMatrix = MakeViewMatrixByUp(m_vSizeEye[eSize], m_vSizeAt[eSize]);
 
-	m_dLerpToCurSizeTime += dTimeDelta * 5.f;
+	m_dLerpToCurSizeTime += 1.f / 5.f;
 
 	XMStoreFloat4x4(&m_matBeginWorld, MakeLerpMatrix(CurStartMatrix, TargetMatrix, (_float)m_dLerpToCurSizeTime));
 	return true;
@@ -248,7 +248,6 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 {
 	CTransform* pPlayerTransform = dynamic_cast<CCody*>(m_pTargetObj)->Get_Transform();
 
-
 	_long MouseMove = 0;
 	
 	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
@@ -259,8 +258,8 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 		
 		if (m_fMouseRev[Rev_Prependicul] + fVal > 40.f)
 			 m_fMouseRev[Rev_Prependicul] = 40.f;
-		else if (m_fMouseRev[Rev_Prependicul] + fVal < -85.f)
-			m_fMouseRev[Rev_Prependicul] = -85.f;
+		else if (m_fMouseRev[Rev_Prependicul] + fVal < -80.f)
+			m_fMouseRev[Rev_Prependicul] = -80.f;
 		else
 			m_fMouseRev[Rev_Prependicul] += fVal;
 	}
@@ -270,15 +269,14 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 	_vector vPrePlayerPos = XMLoadFloat4(&m_vPlayerPos);
 	_vector vCurPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-	/*vCurPlayerPos += XMVectorSetW(XMLoadFloat4(&m_vSizeAt[m_eCurPlayerSize]),0.f);
-*/
+	vCurPlayerPos = XMVectorSetY(vCurPlayerPos, m_vSizeAt[m_eCurPlayerSize].y);
+
 	_vector vPlayerPos = vCurPlayerPos;
 	_float fDist = fabs(XMVectorGetX(XMVector4Length(vPrePlayerPos - vCurPlayerPos)));
 
 	vPlayerPos = XMVectorLerp(vPrePlayerPos, vCurPlayerPos, XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 10.f);
 	
-	
-	
+
 	XMStoreFloat4(&m_vPlayerPos, vPlayerPos);
 
 	//회전 보간(마우스)
@@ -288,20 +286,20 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 		XMConvertToRadians(m_fCurMouseRev[Rev_Holizontal] ) ,0.f);
 
 
-	_matrix matQuat = XMMatrixRotationQuaternion(vCurQuartRot);
+	//_matrix matQuat = ;
 
 	
 	_vector vScale, vRotQuat, vTrans;
 	_vector  vCurRotQuat,vCurTrans;
-	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) * matQuat * 
-		MH_RotationMatrixByUp(pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos));
+	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) * XMMatrixRotationQuaternion(vCurQuartRot)
+		*MH_RotationMatrixByUp(pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos));
 
 
 	_vector vPreQuat = XMLoadFloat4(&m_PreWorld.vRotQuat);
 	_vector vPreTrans = XMLoadFloat4(&m_PreWorld.vTrans);
 
-	vCurRotQuat = XMQuaternionSlerp(vPreQuat, vRotQuat, 0.5f);
-	vCurTrans = XMVectorLerp(vPreTrans, vTrans,0.5f );
+	vCurRotQuat =	XMQuaternionSlerp(vPreQuat, vRotQuat, 0.5f);
+	vCurTrans =		XMVectorLerp(vPreTrans, vTrans,0.5f );
 
 	XMStoreFloat4(&m_PreWorld.vRotQuat, vCurRotQuat);
 	XMStoreFloat4(&m_PreWorld.vTrans, vCurTrans);
@@ -318,7 +316,7 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vResultPos = XMVectorZero();
 	 OffSetPhsX(matAffine, dTimeDelta, &vResultPos); 
 	
-	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vResultPos, vPlayerPos, matAffine.r[2]));
+	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vResultPos, vPlayerPos,pPlayerTransform->Get_State(CTransform::STATE_UP)/*matAffine.r[2]*/));
 
 	return NO_EVENT;
 }
@@ -492,44 +490,30 @@ _bool CMainCamera::OffSetPhsX(_fmatrix matWorld, _double dTimeDelta,_vector * pO
 {
 	
 	_bool isHit = false;
-	PxRaycastBuffer m_RaycastBuffer;
-	_vector vAt = XMLoadFloat4(&m_vPlayerPos);
+
+	_vector vAt = XMVectorSetW(XMLoadFloat4(&m_vPlayerPos),1.f);
 	_vector vDistanceFromCam = matWorld.r[3] - vAt;
 	_vector vDir = XMVector3Normalize(vDistanceFromCam);
 	_float	fDist = XMVectorGetX(XMVector3Length(vDistanceFromCam));
 
-	if (m_pGameInstance->Raycast(MH_PxVec3(vAt), MH_PxVec3(vDir),fDist, m_RaycastBuffer, PxHitFlag::eDISTANCE))
+	if (m_pGameInstance->Raycast(MH_PxVec3(vAt), MH_PxVec3(vDir),fDist, m_RayCastBuffer, PxHitFlag::eDISTANCE))
 	{
-		for (PxU32 i = 0; i < m_RaycastBuffer.getNbAnyHits(); ++i)
+		for (PxU32 i = 0; i < m_RayCastBuffer.getNbAnyHits(); ++i)
 		{
-			USERDATA* pUserData = (USERDATA*)m_RaycastBuffer.getAnyHit(i).actor->userData;
+			USERDATA* pUserData = (USERDATA*)m_RayCastBuffer.getAnyHit(i).actor->userData;
 
 			if (nullptr != pUserData)
 			{
 				if (pUserData->eID == GameID::eCODY || pUserData->eID == GameID::eMAY)
 					continue;
-				else
-				{
-					isHit = true;
-					fDist = m_RaycastBuffer.getAnyHit(i).distance;
-					*pOut =  vAt + vDir * fDist;
-					break;
-				}
+					fDist = m_RayCastBuffer.getAnyHit(i).distance;
 			}
 			else
-			{
-				isHit = true;
-				fDist = m_RaycastBuffer.getAnyHit(i).distance;
-				*pOut = vAt + vDir * fDist;
-				break;
-			}
+					fDist = m_RayCastBuffer.getAnyHit(i).distance;
+
 		}
 	}
-
-	if (!isHit)
-	{
-		*pOut = vAt + vDir * fDist;
-	}
+	*pOut = vAt + vDir * fDist;
 	return true;
 
 }
