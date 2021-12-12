@@ -833,6 +833,30 @@ PS_OUT  PS_MAIN_MISSILE_SMOKE(PS_IN_DOUBLEUV In)
 	return Out;
 }
 
+PS_OUT  PS_MAIN_MISSILE_EXPLOSION(PS_IN_DOUBLEUV In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	if (0.01f >= vDiff.r)
+		discard;
+	float2 vUV = In.vTexUV2;
+	vUV.y += In.fTime * 2.f + vUV.x;
+	float4 vDistortion = g_SecondTexture.Sample(DiffuseSampler, vUV);
+
+	Out.vColor = vDiff;
+	if (In.fTime > vDistortion.r)
+		Out.vColor.rgb *= vDistortion.rgb * In.fTime * 10.f;
+
+	float2 vTexUV_3 = { vDiff.r , 0.f };
+	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vTexUV_3);
+
+	Out.vColor.rgb *= vColor.rgb;
+	Out.vColor.a *= In.fTime * g_fAlpha * Out.vColor.r;
+
+	return Out;
+}
+
 PS_OUT  PS_MAIN_LASER_PARTICLE(PS_IN_DOUBLEUV In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -990,5 +1014,15 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN();
 		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
 		PixelShader = compile ps_5_0  PS_MAIN_MISSILE_SMOKE();
+	}
+
+	pass PS_BOSSMISSILE_EXPLOSION // 9
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
+		PixelShader = compile ps_5_0  PS_MAIN_MISSILE_EXPLOSION();
 	}
 }

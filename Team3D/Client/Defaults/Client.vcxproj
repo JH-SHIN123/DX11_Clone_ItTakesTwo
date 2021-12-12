@@ -248,6 +248,8 @@
     <ClInclude Include="..\public\Effect_Boss_Missile_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Missile_Particle.h" />
     <ClInclude Include="..\public\Effect_Boss_Missile_Smoke.h" />
+    <ClInclude Include="..\public\Effect_Boss_UFO_Flying.h" />
+    <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle.h" />
     <ClInclude Include="..\Public\Effect_Cody_Size.h" />
     <ClInclude Include="..\Public\Effect_Dash.h" />
     <ClInclude Include="..\Public\Effect_Dead_Particle_Fire.h" />
@@ -262,6 +264,8 @@
     <ClInclude Include="..\Public\Effect_May_Boots_Walking_Particle.h" />
     <ClInclude Include="..\Public\Effect_Pinball_Move.h" />
     <ClInclude Include="..\Public\Effect_Player_Dead.h" />
+    <ClInclude Include="..\public\Effect_Player_Dead_Explosion.h" />
+    <ClInclude Include="..\public\Effect_Player_Dead_Explosion_Particle.h" />
     <ClInclude Include="..\Public\Effect_Player_Dead_Particle.h" />
     <ClInclude Include="..\Public\Effect_Player_Lail.h" />
     <ClInclude Include="..\Public\Effect_Player_Revive.h" />
@@ -458,6 +462,8 @@
     <ClCompile Include="..\private\Effect_Boss_Missile_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Missile_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Missile_Smoke.cpp" />
+    <ClCompile Include="..\private\Effect_Boss_UFO_Flying.cpp" />
+    <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
     <ClCompile Include="..\Private\Effect_Dead_Particle_Fire.cpp" />
@@ -472,6 +478,8 @@
     <ClCompile Include="..\Private\Effect_May_Boots_Walking_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Pinball_Move.cpp" />
     <ClCompile Include="..\Private\Effect_Player_Dead.cpp" />
+    <ClCompile Include="..\private\Effect_Player_Dead_Explosion.cpp" />
+    <ClCompile Include="..\private\Effect_Player_Dead_Explosion_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Player_Dead_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Player_Lail.cpp" />
     <ClCompile Include="..\Private\Effect_Player_Revive.cpp" />

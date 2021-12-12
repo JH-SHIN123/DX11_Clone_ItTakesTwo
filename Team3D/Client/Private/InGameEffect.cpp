@@ -476,11 +476,6 @@ void CInGameEffect::SetUp_Shader_Data()
 		m_pPointInstanceCom->Set_Variable("g_IsBillBoard", &IsBillBoard, sizeof(_int));	
 	}
 
-	if (true == m_IsResourceName[RESOURCE_MESH])
-	{
-
-	}
-
 	return;
 }
 

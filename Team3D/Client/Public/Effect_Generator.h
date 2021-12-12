@@ -19,6 +19,7 @@ enum class Effect_Value
 	May_Dead, May_Dead_Fire,
 	May_Revive,
 	May_Boots_Walking,
+	Player_Dead_Explosion,
 	RobotBattery_Spark,
 	BossCore_Hit,
 	BossCore_Smoke,

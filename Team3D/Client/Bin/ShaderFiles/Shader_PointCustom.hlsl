@@ -470,7 +470,6 @@ void  GS_MAIN_NO_BILL_Y_ROTATE_UV(/*입력*/ point  VS_OUT In[1], /*출력*/ inout T
 	TriStream.Append(Out[6]);
 	TriStream.Append(Out[7]);
 }
-
 [maxvertexcount(12)]
 void  GS_MAIN_NO_BILL_Y_DOWN_SIZE(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT> TriStream)
 {
@@ -574,7 +573,6 @@ void  GS_MAIN_NO_BILL_Y_DOWN_SIZE(/*입력*/ point  VS_OUT In[1], /*출력*/ inout T
 	TriStream.Append(Out[6]);
 	TriStream.Append(Out[7]);
 }
-
 [maxvertexcount(12)]
 void  GS_MAIN__LASER(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT> TriStream)
 {
@@ -678,7 +676,6 @@ void  GS_MAIN__LASER(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream
 	TriStream.Append(Out[6]);
 	TriStream.Append(Out[7]);
 }
-
 [maxvertexcount(12)]
 void  GS_MAIN_NO_BILL_UPSIZE(/*입력*/ point  VS_OUT_NOBILLBOARD In[1], /*출력*/ inout TriangleStream<GS_OUT> TriStream)
 {
@@ -1490,6 +1487,27 @@ PS_OUT  PS_SMOKE(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_EXPLOSION(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiffuse = g_DiffuseTexture.Sample(ColorSampler, In.vTexUV);
+
+	float2 vTex_UV = In.vTexUV;
+	vTex_UV.y += vDiffuse.r * 0.5f;
+
+	float4 vDist = g_SecondTexture.Sample(ColorSampler, In.vTexUV);
+	vDiffuse *= vDist;
+	Out.vColor = vDiffuse;
+
+	float4 vColorRamp = g_ColorTexture.Sample(ColorSampler, vTex_UV);
+	Out.vColor.rgb *= vColorRamp.rgb;
+
+	Out.vColor.a *= g_fAlpha;
+
+	return Out;
+}
+
 PS_OUT  PS_MAIN_LASER(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -1882,6 +1900,16 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN();
 		GeometryShader = compile gs_5_0  GS_MAIN();
 		PixelShader = compile ps_5_0  PS_SMOKE();
+	}
+
+	pass Dead_Explosion// 17
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_EXPLOSION();
 	}
 };
 

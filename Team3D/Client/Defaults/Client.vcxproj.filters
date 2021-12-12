@@ -774,6 +774,18 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle">
       <UniqueIdentifier>{f9eacdc2-4e96-4dbc-bb27-2475ddb8a8bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion">
+      <UniqueIdentifier>{6d9b9a92-4031-4485-a5e3-90daacc33de6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion\00.Particle">
+      <UniqueIdentifier>{d1723ec9-3aaf-4b0b-9585-3a346d5e7971}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying">
+      <UniqueIdentifier>{3f32b0e4-3d4a-4215-ade9-bccd3e8a77b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\00.Particle">
+      <UniqueIdentifier>{3d639529-e757-4527-9229-3199ba9c99a8}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1436,6 +1448,18 @@
     <ClInclude Include="..\public\Effect_Boss_Missile_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Player_Dead_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Player_Dead_Explosion_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion\00.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_UFO_Flying.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\00.Particle</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2061,6 +2085,18 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Boss_Missile_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Player_Dead_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Player_Dead_Explosion_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion\00.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_UFO_Flying.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\00.Particle</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

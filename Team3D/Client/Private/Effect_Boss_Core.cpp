@@ -101,14 +101,6 @@ _int CEffect_Boss_Core::Tick(_double TimeDelta)
 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_N))
 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
-	/*GARA*/if (m_pGameInstance->Key_Down(DIK_M))
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Particle, m_pTransformCom->Get_WorldMatrix());
-	/*GARA*/if (m_pGameInstance->Key_Down(DIK_COMMA))
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound, m_pTransformCom->Get_WorldMatrix());
-	/*GARA*/if (m_pGameInstance->Key_Down(DIK_PERIOD))
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound_Smoke, m_pTransformCom->Get_WorldMatrix());
-	/*GARA*/if (m_pGameInstance->Key_Down(DIK_SLASH))
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound_Ring, m_pTransformCom->Get_WorldMatrix());
 
 	return _int();
 }

@@ -391,6 +391,8 @@ void CCody::KeyInput(_double dTimeDelta)
 	_bool bMove[2] = { false, false };
 	_bool bRoll = false;
 #pragma endregion
+	/*GARA*/if (m_pGameInstance->Key_Down(DIK_M))
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::Player_Dead_Explosion, m_pTransformCom->Get_WorldMatrix());
 
 #pragma region Teleport
 	if (m_pGameInstance->Key_Down(DIK_C)) /* 파이프 베터리 */

@@ -11,6 +11,7 @@
 #include "Effect_Dash.h"
 #include "Effect_Player_Dead.h"
 #include "Effect_Player_Dead_Particle.h"
+#include "Effect_Player_Dead_Explosion.h"
 #include "Effect_Player_Revive.h"
 #include "Effect_Cody_Size.h"
 #include "Effect_RespawnTunnel_Portal.h"
@@ -69,6 +70,7 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	XMStoreFloat4x4(&Clone_Data.WorldMatrix, WorldMatrix);
 	Clone_Data.pArg = pArg;
 
+#pragma region Effect_Value
 	switch (eEffect)
 	{
 	case Effect_Value::Walking_Smoke:
@@ -115,6 +117,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::May_Boots_Walking:
 		lstrcpy(szPrototype, L"GameObject_2D_May_Boots_Walking_Particle");
+		break;
+	case Effect_Value::Player_Dead_Explosion:
+		lstrcpy(szPrototype, L"GameObject_2D_Player_Dead_Explosion");
 		break;
 	case Effect_Value::RobotBattery_Spark:
 		lstrcpy(szPrototype, L"GameObject_2D_Robot_Battery_Spark");
@@ -173,6 +178,8 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	default:
 		break;
 	}
+
+#pragma endregion
 
 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
 	
@@ -354,6 +361,10 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Missile_Particle"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Particle", CEffect_Boss_Missile_Particle::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Dead_Explosion"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead_Explosion", CEffect_Player_Dead_Explosion::Create(pDevice, pDeviceContext, pData));
+
+
 #pragma  endregion
 
 
@@ -407,8 +418,6 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT")
 		, CVIBuffer_PointInstance_Custom_STT::Create(pDevice, pDeviceContext, 10000, TEXT("../Bin/ShaderFiles/Shader_PointCustom_STT.hlsl"), "DefaultTechnique")), E_FAIL);
 
-// 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_RectInstance_Custom")
-// 		, CVIBuffer_RectInstance_Custom::Create(pDevice, pDeviceContext, 100, TEXT("../Bin/ShaderFiles/Shader_RectCustom.hlsl"), "DefaultTechnique")), E_FAIL);
 
 #pragma region Texture
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp/Color_Ramp_%d.png"), 15)), E_FAIL);

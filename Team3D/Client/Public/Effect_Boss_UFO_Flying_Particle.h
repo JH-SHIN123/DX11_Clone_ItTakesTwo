@@ -1,14 +1,13 @@
 #pragma once
-
-#ifndef __EFFECT_BOSS_CORE_HIT_H__
-
 #include "InGameEffect.h"
-class CEffect_Boss_Core_Hit final : public CInGameEffect
+
+BEGIN(Client)
+class CEffect_Boss_UFO_Flying_Particle final : public CInGameEffect
 {
 private:
-	explicit CEffect_Boss_Core_Hit(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CEffect_Boss_Core_Hit(const CEffect_Boss_Core_Hit& rhs);
-	virtual ~CEffect_Boss_Core_Hit() = default; public:
+	explicit CEffect_Boss_UFO_Flying_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_Boss_UFO_Flying_Particle(const CEffect_Boss_UFO_Flying_Particle& rhs);
+	virtual ~CEffect_Boss_UFO_Flying_Particle() = default; public:
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -53,10 +52,9 @@ private:
 	const _float2 m_vDefaultSize = { 0.1f, 0.3f };
 
 public:
-	static CEffect_Boss_Core_Hit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_Boss_UFO_Flying_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
 
-#define __EFFECT_BOSS_CORE_HIT_H__
-#endif // !__EFFECT_BOSS_CORE_HIT_H__
+END
