@@ -46,6 +46,8 @@
 #include "Effect_Boss_Missile_Smoke.h"
 #include "Effect_Boss_Missile_Explosion.h"
 #include "Effect_Boss_Missile_Particle.h"
+#include "Effect_Boss_UFO_Flying.h"
+#include "Effect_Boss_UFO_Flying_Particle.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -364,6 +366,11 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Dead_Explosion"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead_Explosion", CEffect_Player_Dead_Explosion::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_UFO_Flying"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_UFO_Flying", CEffect_Boss_UFO_Flying::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_UFO_Flying_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_UFO_Flying_Particle", CEffect_Boss_UFO_Flying_Particle::Create(pDevice, pDeviceContext, pData));
 
 #pragma  endregion
 
