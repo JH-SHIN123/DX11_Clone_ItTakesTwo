@@ -228,10 +228,7 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 {
 	CTransform* pPlayerTransform = dynamic_cast<CMay*>(m_pTargetObj)->Get_Transform();
 
-	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
 
-	if (true == m_bIsCollision)
-		matWorld = XMLoadFloat4x4(&m_matBeforeSpringCam);
 
 
 	_long MouseMove = 0;
@@ -311,37 +308,19 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 
 																	
-	//카메라 원점상태(공전없을때)
-	_vector vLook = XMLoadFloat4x4(&m_matBeginWorld).r[2];
-	_vector vStartPos = XMLoadFloat4x4(&m_matStart).r[3];
-	_vector vDir = XMVectorZero();
 
-	//카메라 수직이동에따른 거리조절
-	vDir = (vLook*(m_fCurMouseRev[Rev_Prependicul]) * 0.065f);
-	memcpy(&m_matBeginWorld._41, &(vStartPos - vDir), sizeof(_float4));
-
-	//CamEffect
-
-	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::RScreen))
-	{
-		if (m_pCamHelper->Tick_CamEffect(CFilm::RScreen, dTimeDelta, XMLoadFloat4x4(&m_matBeginWorld)))
-			XMStoreFloat4x4(&m_matBeginWorld, m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::RScreen));
-
-	}
-
-	//카메라 움직임이 끝나고 체크할것들
 
 	//카메라 움직임이 끝나고 체크할것들
 	//SoftMoving
 	_vector vTargetPlayerUp = XMVectorRound(pPlayerTransform->Get_State(CTransform::STATE_UP) * 100.f) / 100.f;
-	//_vector vPlayerUp = XMLoadFloat4(&m_vPlayerUp);
-	//_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
-	//if(XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
-	//vPlayerUp += vUpDir* dTimeDelta /** 10.f*/;
-	//XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
-
-	_vector vPlayerUp = vTargetPlayerUp;
+	_vector vPlayerUp = XMLoadFloat4(&m_vPlayerUp);
+	_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
+	if(XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
+	vPlayerUp += vUpDir* dTimeDelta * 10.f;
 	XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
+
+	//_vector vPlayerUp = vTargetPlayerUp;
+	//XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
 	
 	_vector vPrePlayerPos = XMLoadFloat4(&m_vPlayerPos);
 	_vector vCurPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
@@ -392,25 +371,18 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 		vCurRotQuat, vCurTrans);
 
 	XMStoreFloat4x4(&m_matBeforeSpringCam, matAffine);
-#pragma region PhsyX Check
-	_vector vResultPos = XMVectorZero();
-	if (false == bIsTeleport)
+	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::RScreen))
 	{
-		m_bIsCollision = OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
-
-		_float4 vEye, vAt;
-
-		XMStoreFloat4(&vEye, vResultPos);
-		XMStoreFloat4(&vAt, vPlayerPos);
-		_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt,vPlayerUp);
-		matAffine = matCurWorld;
+		if (m_pCamHelper->Tick_CamEffect(CFilm::RScreen, dTimeDelta, matAffine)) //카메라의 원점 
+			matAffine = m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::RScreen);
 	}
-	else
-		m_bIsCollision = false;
 
-	m_pTransformCom->Set_WorldMatrix(matAffine);
+	_vector vResultPos = XMVectorZero();
+	OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
 
-#pragma endregion
+	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vResultPos, vPlayerPos, matAffine.r[2]));
+
+
 	return NO_EVENT;
 }
 
@@ -476,8 +448,8 @@ _bool CSubCamera::OffSetPhsX(_fmatrix matWorld, _double dTimeDelta, _vector * pO
 	_bool isHit = false;
 	_float	fDist = 0.f;
 	PxRaycastBuffer m_RaycastBuffer;
-	_vector vDir = -matWorld.r[2];
 	_vector vAt = XMLoadFloat4(&m_vPlayerPos);
+	_vector vDir = XMVector3Normalize(matWorld.r[3] - vAt);
 
 	if (m_pGameInstance->Raycast(MH_PxVec3(vAt), MH_PxVec3(vDir), 10.f, m_RaycastBuffer, PxHitFlag::eDISTANCE))
 	{
@@ -512,7 +484,6 @@ _bool CSubCamera::OffSetPhsX(_fmatrix matWorld, _double dTimeDelta, _vector * pO
 		*pOut = vAt + vDir * 10.f;
 	}
 	return true;
-	
 }
 
 
@@ -533,6 +504,22 @@ _fmatrix CSubCamera::MakeViewMatrixByUp(_float4 Eye, _float4 At, _fvector vUp)
 
 	return Result;
 
+}
+
+_fmatrix CSubCamera::MakeViewMatrixByUp(_fvector vEye, _fvector vAt, _fvector vUp)
+{
+	_matrix Result = XMMatrixIdentity();
+	_vector vNormalizedUp = XMVectorSetW(XMVector3Normalize(vUp), 0.f);
+	_vector vPos = XMVectorSetW(vEye, 1.f);
+	_vector vLook = XMVector3Normalize(XMVectorSetW(vAt, 1.f) - vPos);
+	_vector vRight = XMVector3Normalize(XMVector3Cross(vNormalizedUp, vLook));
+	vNormalizedUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+	Result.r[0] = vRight;
+	Result.r[1] = vNormalizedUp;
+	Result.r[2] = vLook;
+	Result.r[3] = vPos;
+
+	return Result;
 }
 
 _fmatrix CSubCamera::MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime)
