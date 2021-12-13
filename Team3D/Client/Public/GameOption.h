@@ -56,7 +56,7 @@
 //#define __TEST_HYE
 //#define __TEST_TAEK
 //#define __TEST_YOON
-#define __TEST_JIN
+//#define __TEST_JIN
 //#define __TEST_JUN
 
 /************************************************************************/

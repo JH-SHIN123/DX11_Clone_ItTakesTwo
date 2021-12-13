@@ -96,7 +96,7 @@ _int CEffect_Boss_Core::Tick(_double TimeDelta)
 
 
  	/*GARA*/if (m_pGameInstance->Key_Down(DIK_V))
- 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Smoke, m_pTransformCom->Get_WorldMatrix());
+ 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Particle, m_pTransformCom->Get_WorldMatrix());
 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_B))
 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_N))

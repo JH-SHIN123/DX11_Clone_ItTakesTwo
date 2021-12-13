@@ -50,10 +50,11 @@ _int CElectricBox::Tick(_double dTimeDelta)
 	/* Charge ¿Ã∆Â∆Æ */
 	if ((m_iRandomTime - 1) <= m_dCoolTime && false == m_bCharge)
 	{
-		_matrix World = XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixTranslation(m_vOriginPos.x, m_vOriginPos.y - 1.f, m_vOriginPos.z);
+		_matrix World = m_pTransformCom->Get_WorldMatrix();//XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixTranslation(m_vOriginPos.x, m_vOriginPos.y - 1.f, m_vOriginPos.z);
+		World.r[3] += World.r[1] *= 0.98f;
 
 		for (_uint i = 0; i < 5; ++i)
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::RobotBattery_Spark, World);
+			EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Particle, World);
 
 		m_bCharge = true;
 	}
@@ -61,8 +62,14 @@ _int CElectricBox::Tick(_double dTimeDelta)
 	/* Electric ¿Ã∆Â∆Æ */
 	if (m_iRandomTime <= m_dCoolTime)
 	{
-		_matrix World = XMMatrixTranslation(m_vOriginPos.x, m_vOriginPos.y, m_vOriginPos.z);
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Boots_Walking, World);
+		_matrix World = m_pTransformCom->Get_WorldMatrix();//XMMatrixTranslation(m_vOriginPos.x, m_vOriginPos.y, m_vOriginPos.z);
+		World.r[3] += World.r[1] *= 0.98f;
+		EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Spark, World);
+		EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Spark, World);
+		EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Spark, World);
+		World.r[3] -= World.r[1] *= 0.98f;
+		EFFECT->Add_Effect(Effect_Value::May_Boots_Walking, World);
+
 		m_bElectric = true;
 		m_iRandomTime = rand() % 3 + 3;
 		m_dCoolTime = 0.0;

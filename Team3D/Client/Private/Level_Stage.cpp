@@ -10,7 +10,6 @@
 #include "Effect_Generator.h"
 #include "InGameEffect.h"
 #include "WarpGate.h"
-#include "Boss_Missile.h"
 #include "Effect_Env_Particle_Field.h"
 /* Hye */
 #include "Environment_Generator.h"
@@ -182,17 +181,10 @@ HRESULT CLevel_Stage::Ready_Test()
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core")), E_FAIL);
 
-	//CEffect_Env_Particle_Field::ARG_DESC Arg_Desc;
-	//Arg_Desc.iInstanceCount = 8000;
-	//Arg_Desc.vPosition = { 60.f, 0.f, 30.f, 1.f };
-	//Arg_Desc.vRadiusXYZ = { 30.f, 10.f, 100.f };
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
-
 	ROBOTDESC UFODesc;
 	UFODesc.vPosition = { 64.f, 10.f, 30.f, 1.f };
 	//UFODesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Test", Level::LEVEL_STAGE, TEXT("GameObject_UFO"), &UFODesc), E_FAIL);
-	return S_OK;
 
 	CMoonBaboonCore::MOONBABOONCORE_DESC tDesc;
 	tDesc.iIndex = 0;
@@ -201,8 +193,18 @@ HRESULT CLevel_Stage::Ready_Test()
 	tDesc.WorldMatrix._43 = 30.f;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore"), &tDesc), E_FAIL);
 
-
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_BOMB", Level::LEVEL_STAGE, TEXT("GameObject_3D_Boss_Gravitational_Bomb")), E_FAIL);
+
+	_float4 vPos = { 60.f, 0.f, 20.f, 1.f };
+	CDynamic_Env::ARG_DESC Arg;
+	Arg.iMaterialIndex = 0;
+	Arg.iOption = 0;
+	Arg.WorldMatrix = MH_XMFloat4x4Identity();
+	memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
+	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_SmallOpen_01"));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricBox", Level::LEVEL_STAGE, TEXT("GameObject_ElectricBox"), &Arg), E_FAIL);
+
+
 
 #endif
 

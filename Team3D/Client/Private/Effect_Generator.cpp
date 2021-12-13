@@ -49,6 +49,8 @@
 #include "Effect_Boss_UFO_Flying.h"
 #include "Effect_Boss_UFO_Flying_Particle.h"
 #include "Effect_Boss_UFO_Flying_Particle_Flow.h"
+#include "Effect_UFO_Inside_Battery_Spark.h"
+#include "Effect_UFO_Inside_Battery_Particle.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -191,6 +193,12 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::Boss_UFO_Flying_Particle_Flow:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_UFO_Flying_Particle_Flow");
+		break;
+	case Effect_Value::UFO_Inside_Battery_Spark:
+		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_Battery_Spark");
+		break;
+	case Effect_Value::UFO_Inside_Battery_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_Battery_Particle");
 		break;
 	default:
 		break;
@@ -390,7 +398,13 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_UFO_Flying_Particle_Flow"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_UFO_Flying_Particle_Flow", CEffect_Boss_UFO_Flying_Particle_Flow::Create(pDevice, pDeviceContext, pData));
 
-		
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_Battery_Spark"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_Battery_Spark", CEffect_UFO_Inside_Battery_Spark::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_Battery_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_Battery_Particle", CEffect_UFO_Inside_Battery_Particle::Create(pDevice, pDeviceContext, pData));
+
+
 #pragma  endregion
 
 
@@ -481,6 +495,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Dust_Motes"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/T_Dust_Motes_03.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Ring"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Ring/T_Ring_0%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ShockWave"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/ShockWave/ShockWave_%d.png"), 2)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Mask_Drop"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/drop_01.png"))), E_FAIL);
 
 	
 	

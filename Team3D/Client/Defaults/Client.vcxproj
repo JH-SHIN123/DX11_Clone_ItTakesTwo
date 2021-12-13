@@ -274,6 +274,8 @@
     <ClInclude Include="..\Public\Effect_RespawnTunnel.h" />
     <ClInclude Include="..\Public\Effect_RespawnTunnel_Portal.h" />
     <ClInclude Include="..\Public\Effect_Robot_Battery_Spark.h" />
+    <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Particle.h" />
+    <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Spark.h" />
     <ClInclude Include="..\Public\Effect_Umbrella_Pipe.h" />
     <ClInclude Include="..\Public\Effect_Walking_Smoke.h" />
     <ClInclude Include="..\Public\Effect_Wormhole.h" />
@@ -499,6 +501,8 @@
     <ClCompile Include="..\Private\Effect_RespawnTunnel.cpp" />
     <ClCompile Include="..\Private\Effect_RespawnTunnel_Portal.cpp" />
     <ClCompile Include="..\Private\Effect_Robot_Battery_Spark.cpp" />
+    <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Particle.cpp" />
+    <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Spark.cpp" />
     <ClCompile Include="..\Private\Effect_Umbrella_Pipe.cpp" />
     <ClCompile Include="..\Private\Effect_Walking_Smoke.cpp" />
     <ClCompile Include="..\Private\Effect_Wormhole.cpp" />

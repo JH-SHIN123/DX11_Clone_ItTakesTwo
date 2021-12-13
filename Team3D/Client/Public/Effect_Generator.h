@@ -41,6 +41,8 @@ enum class Effect_Value
 	Boss_UFO_Flying,
 	Boss_UFO_Flying_Particle,
 	Boss_UFO_Flying_Particle_Flow,
+	UFO_Inside_Battery_Spark,
+	UFO_Inside_Battery_Particle,
 	Effect_Value_End
 };
 

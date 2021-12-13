@@ -228,10 +228,10 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon">
       <UniqueIdentifier>{5b697a68-0358-4102-b02d-6330df092a73}</UniqueIdentifier>
     </Filter>
-      <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis">
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis">
       <UniqueIdentifier>{2f8d2754-6701-41e2-9489-11780094fcd4}</UniqueIdentifier>
     </Filter>
-      <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager">
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager">
       <UniqueIdentifier>{692624aa-05b2-43a0-9e2a-62f2c591e27f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis">
@@ -501,6 +501,12 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\00.Laser_Particle">
       <UniqueIdentifier>{b8aed4f4-bdd1-4e5a-a923-dbf34dca7640}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\01.Laser_Charge">
+      <UniqueIdentifier>{47c9eba7-5686-4aee-adc3-28cf6c9e0f78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\02.Laser_Explosion">
+      <UniqueIdentifier>{1daa48ca-6a84-40e4-91e9-4aa0a5a51bf2}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile">
       <UniqueIdentifier>{7577d5c3-dc53-419f-abb5-aeb3fb47ff6d}</UniqueIdentifier>
     </Filter>
@@ -518,6 +524,9 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\00.Particle">
       <UniqueIdentifier>{3d639529-e757-4527-9229-3199ba9c99a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\01.Particle_Flow">
+      <UniqueIdentifier>{54ecfe3b-18b5-4bbc-9626-6d86b0ac6ef1}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May">
       <UniqueIdentifier>{611bc1d3-0276-4f21-b082-4231462adca0}</UniqueIdentifier>
@@ -813,14 +822,23 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\01.Laser_Charge">
-      <UniqueIdentifier>{47c9eba7-5686-4aee-adc3-28cf6c9e0f78}</UniqueIdentifier>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside">
+      <UniqueIdentifier>{1e244afa-1f22-4105-8bc1-f281d82c5211}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\02.Laser_Explosion">
-      <UniqueIdentifier>{1daa48ca-6a84-40e4-91e9-4aa0a5a51bf2}</UniqueIdentifier>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery">
+      <UniqueIdentifier>{65fb403f-a572-4fc7-b81d-b807ca022659}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\01.Particle_Flow">
-      <UniqueIdentifier>{54ecfe3b-18b5-4bbc-9626-6d86b0ac6ef1}</UniqueIdentifier>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\00.Particle">
+      <UniqueIdentifier>{800096cb-fbec-4f55-a3e0-88b287049ece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\01.Explosion">
+      <UniqueIdentifier>{9fae3937-4418-469d-b9ae-c4bc24c22cca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark">
+      <UniqueIdentifier>{4f003359-9da9-4258-bcb3-037baca46e90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\03.Ready">
+      <UniqueIdentifier>{411b7a40-e497-48de-a729-2f10d5e96198}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1010,10 +1028,10 @@
     <ClInclude Include="..\Public\LaserTennis_Manager.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
     </ClInclude>
-        <ClInclude Include="..\Public\Laser_LaserTennis.h">
+    <ClInclude Include="..\Public\Laser_LaserTennis.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis</Filter>
     </ClInclude>
-      <ClInclude Include="..\Public\LaserActivation.h">
+    <ClInclude Include="..\Public\LaserActivation.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserActivation</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LaserButton.h">
@@ -1022,13 +1040,13 @@
     <ClInclude Include="..\Public\LaserButtonLarge.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge</Filter>
     </ClInclude>
-      <ClInclude Include="..\Public\LaserButtonLarge_Gate.h">
+    <ClInclude Include="..\Public\LaserButtonLarge_Gate.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge_Gate</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LaserPowerCoord.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserPowerCoord</Filter>
     </ClInclude>
-      <ClInclude Include="..\Public\LaserTrigger.h">
+    <ClInclude Include="..\Public\LaserTrigger.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Timer_LaserTennis.h">
@@ -1256,6 +1274,12 @@
     <ClInclude Include="..\public\Effect_Boss_Laser_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\00.Laser_Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Laser_Charge.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\01.Laser_Charge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Laser_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\02.Laser_Explosion</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Effect_Boss_Missile_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke</Filter>
     </ClInclude>
@@ -1270,6 +1294,9 @@
     </ClInclude>
     <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\00.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle_Flow.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\01.Particle_Flow</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Player_Dead.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default</Filter>
@@ -1520,14 +1547,11 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Laser_Charge.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\01.Laser_Charge</Filter>
+    <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Spark.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Laser_Explosion.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\02.Laser_Explosion</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle_Flow.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\01.Particle_Flow</Filter>
+    <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\00.Particle</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1711,13 +1735,13 @@
     <ClCompile Include="..\Private\Moon.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\LaserTennis_Manager.cpp">
+    <ClCompile Include="..\Private\LaserTennis_Manager.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\Laser_LaserTennis.cpp">
+    <ClCompile Include="..\Private\Laser_LaserTennis.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\LaserActivation.cpp">
+    <ClCompile Include="..\Private\LaserActivation.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserActivation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LaserButton.cpp">
@@ -1726,13 +1750,13 @@
     <ClCompile Include="..\Private\LaserButtonLarge.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\LaserButtonLarge_Gate.cpp">
+    <ClCompile Include="..\Private\LaserButtonLarge_Gate.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge_Gate</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LaserPowerCoord.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserPowerCoord</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\LaserTrigger.cpp">
+    <ClCompile Include="..\Private\LaserTrigger.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Timer_LaserTennis.cpp">
@@ -1981,6 +2005,9 @@
     <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\00.Particle</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle_Flow.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\01.Particle_Flow</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Effect_Player_Dead.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default</Filter>
     </ClCompile>
@@ -2197,8 +2224,11 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle_Flow.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\01.Particle_Flow</Filter>
+    <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Spark.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\00.Particle</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

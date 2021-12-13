@@ -1443,6 +1443,17 @@ PS_OUT  PS_MAIN_COLOR_NOALPHATEX(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_UFO_ELECTRICBOX(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	Out.vColor.a = Out.vColor.r * 2.f;
+	Out.vColor *= g_vColor * 3.f;
+
+	return Out;
+}
+
 PS_OUT  PS_MAIN_COLOR_NOALPHATEX_TIME(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -1910,6 +1921,16 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN();
 		GeometryShader = compile gs_5_0  GS_MAIN();
 		PixelShader = compile ps_5_0  PS_EXPLOSION();
+	}
+
+	pass UFO_ElectricBox_Spark // 18
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN_NO_BILL();
+		GeometryShader = compile gs_5_0  GS_MAIN_NO_BILL_UPSIZE();
+		PixelShader = compile ps_5_0  PS_UFO_ELECTRICBOX();
 	}
 };
 
