@@ -23,18 +23,21 @@ public:
 	virtual _int Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
-private:
-	CVIBuffer_Rect*					m_pVIBufferCom = nullptr;
-	CRenderer*						m_pRendererCom = nullptr;
-	CTextures*						m_pTextureCom = nullptr;
-	CTransform*						m_pTransformCom = nullptr;
+ public: /* Setter */
+	 void Set_RenderState(_bool bRenderState) { m_bRender = bRenderState; }
+
 
  private:
 	 _float m_fSizeX = 0.f;
 	 _float m_fSizeY = 0.f;
+	 _bool m_bRender = false;
 
-
-
+ 
+ private:
+	CVIBuffer_Rect*					m_pVIBufferCom = nullptr;
+	CRenderer*						m_pRendererCom = nullptr;
+	CTextures*						m_pTextureCom = nullptr;
+	CTransform*						m_pTransformCom = nullptr;
 
 public:
 	static CPixelArrow* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////
 
 float		g_fGauge;
+float		g_fDistFromUFO;
 
 texture2D	g_DiffuseTexture;
 texture2D	g_AlphaTexture;
@@ -146,6 +147,19 @@ PS_OUT	PS_CHARGEBARGAUGE(PS_IN In)
 
 	return Out;
 }
+
+PS_OUT	PS_PIXELMOONBABOON(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+	if (Out.vColor.a < 0.2f)
+		discard;
+
+	Out.vColor.rgba = vector(0.f, 0.7f, 0.f, 1.f);
+	return Out;
+}
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
@@ -168,7 +182,7 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_CHARGEBAR();
 	}
-	pass ChargeBarGauge // 1
+	pass ChargeBarGauge // 2
 	{
 		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_Default, 0);
@@ -176,5 +190,15 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_CHARGEBARGAUGE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_CHARGEBARGAUGE();
+	}
+
+	pass PixelMoonBaboon // 3
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_CHARGEBARGAUGE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PIXELMOONBABOON();
 	}
 };

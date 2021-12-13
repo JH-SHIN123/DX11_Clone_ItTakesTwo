@@ -11,6 +11,7 @@ BEGIN(Client)
 
 class CPixelHeart;
 class CPixelShield;
+class CPixelArrow;
 
 class CPixelBaboon final : public CGameObject
  {
@@ -37,7 +38,7 @@ private:
 	 void Set_Hearts_Pos();
 
  private:
-	 void Check_3DMoonBaboon_Position(_double dTimeDelta);
+	 void Check_Distance_From_UFO(_double dTimeDelta);
 
  private:
 	 _float m_fSizeX = 0.f;
@@ -51,9 +52,11 @@ private:
 	 _int	m_iBlinkingCount = 0;
 
 	 _int	m_iLifeCount = 3;
+	 _bool  m_bRender = true;
 
 	 CPixelHeart* m_pPixelHeart[3];
 	 CPixelShield* m_pPixelShield = nullptr;
+	 CPixelArrow* m_pPixelArrow = nullptr;
 
 
 public:

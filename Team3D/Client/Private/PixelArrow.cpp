@@ -48,7 +48,10 @@ _int CPixelArrow::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	if (m_bRender == true)
+		return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	else
+		return _int();
 }
 
 HRESULT CPixelArrow::Render(RENDER_GROUP::Enum eGroup)

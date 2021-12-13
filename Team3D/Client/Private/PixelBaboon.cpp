@@ -5,6 +5,8 @@
 #include "May.h"
 #include "PixelHeart.h"
 #include "PixelShield.h"
+#include "PixelUFO.h"
+#include "PixelArrow.h"
 
 CPixelBaboon::CPixelBaboon(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CGameObject(pDevice, pDeviceContext)
@@ -60,8 +62,13 @@ HRESULT CPixelBaboon::NativeConstruct(void * pArg)
 
 	_vector vShieldPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_PixelShield"), Level::LEVEL_STAGE, TEXT("GameObject_PixelShield"), &vShieldPos, &pShield), E_FAIL);
-
 	m_pPixelShield = static_cast<CPixelShield*>(pShield);
+
+	CGameObject* pArrow = nullptr;
+
+	_vector vArrowPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_PixelArrow"), Level::LEVEL_STAGE, TEXT("GameObject_PixelArrow"), &vArrowPos, &pArrow), E_FAIL);
+	m_pPixelArrow = static_cast<CPixelArrow*>(pArrow);
 
 	return S_OK;
 }
@@ -69,6 +76,23 @@ HRESULT CPixelBaboon::NativeConstruct(void * pArg)
 _int CPixelBaboon::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD8))
+	{
+		m_pTransformCom->Go_Up(dTimeDelta);
+	}
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD4))
+	{
+		m_pTransformCom->Go_Right(dTimeDelta);
+	}
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD6))
+	{
+		m_pTransformCom->Go_Left(dTimeDelta);
+	}
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD2))
+	{
+		m_pTransformCom->Go_Down(dTimeDelta);
+	}
 
 	if (m_pGameInstance->Key_Down(DIK_R))
 	{
@@ -83,7 +107,7 @@ _int CPixelBaboon::Tick(_double dTimeDelta)
 			m_pPixelHeart[0]->Set_LifeCountRenderOff(true);    
 	}
 
-	Check_3DMoonBaboon_Position(dTimeDelta);
+	Check_Distance_From_UFO(dTimeDelta);
 	Set_Hearts_Pos();
 
 
@@ -94,8 +118,11 @@ _int CPixelBaboon::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	if(m_bBlinking == false)
-		return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	if (m_bBlinking == false)
+	{
+		if (m_bRender == true)
+			return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	}
 	else
 	{
 		m_fBlinkingTime += (_float)dTimeDelta;
@@ -107,7 +134,8 @@ _int CPixelBaboon::Late_Tick(_double dTimeDelta)
 		}
 		else if (m_fBlinkingTime <= 0.1f && m_bBlink == false)
 		{
-			return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+			if (m_bRender == true)
+				return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
 		}
 
 		if (m_iBlinkingCount == 8)
@@ -116,7 +144,6 @@ _int CPixelBaboon::Late_Tick(_double dTimeDelta)
 			m_bBlink = false;
 			m_iBlinkingCount = 0;
 			m_pPixelShield->Set_Render_State(true);
-
 			m_pPixelHeart[2]->Set_Render_Off(true);
 			m_pPixelHeart[1]->Set_Render_Off(true);
 			m_pPixelHeart[0]->Set_Render_Off(true);
@@ -157,8 +184,33 @@ void CPixelBaboon::Set_Hearts_Pos()
 	}
 }
 
-void CPixelBaboon::Check_3DMoonBaboon_Position(_double dTimeDelta)
+void CPixelBaboon::Check_Distance_From_UFO(_double dTimeDelta)
 {
+	if (nullptr == DATABASE->Get_PixelUFO())
+		return;
+
+	_vector vUFOPosition = ((CPixelUFO*)DATABASE->Get_PixelUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	_vector vMoonBaboonPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_float vDist = XMVectorGetX(XMVector3Length(vMoonBaboonPosition - vUFOPosition));
+	
+	if (vDist > 0.35f)
+	{
+		m_pPixelHeart[0]->Set_Render_Off(true);
+		m_pPixelHeart[1]->Set_Render_Off(true);
+		m_pPixelHeart[2]->Set_Render_Off(true);
+		m_pPixelShield->Set_Render_State(false);
+		m_pPixelArrow->Set_RenderState(true);
+		m_bRender = false;
+	}
+	else
+	{
+		m_pPixelHeart[0]->Set_Render_Off(false);
+		m_pPixelHeart[1]->Set_Render_Off(false);
+		m_pPixelHeart[2]->Set_Render_Off(false);
+		m_pPixelArrow->Set_RenderState(false);
+		m_bRender = true;
+	}
 }
 
 
@@ -195,6 +247,7 @@ void CPixelBaboon::Free()
 		Safe_Release(m_pPixelHeart[i]);
 	}
 	Safe_Release(m_pPixelShield);
+	Safe_Release(m_pPixelArrow);
 
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
