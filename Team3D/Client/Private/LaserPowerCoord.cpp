@@ -47,10 +47,10 @@ _int CLaserPowerCoord::Tick(_double dTimeDelta)
 
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	//if(0 == m_tDynamic_Env_Desc.iOption)
-	//	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::StarBuddy, XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - 3.f), 3.f, m_bCollision);
-	//else
-	//	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::StarBuddy, XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - 3.f), 3.f, m_bCollision);
+	if (0 == m_tDynamic_Env_Desc.iOption)
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::PowerCoord, XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - 3.f), 5.f, m_bCollision, false);
+	else
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::PowerCoord, XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - 3.f), 5.f, m_bCollision, false);
 
 	return NO_EVENT;
 }
@@ -73,7 +73,7 @@ HRESULT CLaserPowerCoord::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1, m_tDynamic_Env_Desc.iMaterialIndex);
+	m_pModelCom->Render_Model(19, m_tDynamic_Env_Desc.iMaterialIndex);
 		
 	return S_OK;
 }
@@ -94,7 +94,7 @@ void CLaserPowerCoord::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CG
 {
 	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
 
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && m_tDynamic_Env_Desc.iOption == 0)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eLASERTENNISPOWERCOORD, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_bCollision = true;
@@ -105,7 +105,7 @@ void CLaserPowerCoord::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CG
 		m_bCollision = false;
 	}
 
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY && m_tDynamic_Env_Desc.iOption == 1)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eLASERTENNISPOWERCOORD, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_bCollision = true;

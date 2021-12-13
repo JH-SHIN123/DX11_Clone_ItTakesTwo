@@ -176,9 +176,58 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eGroup)
 		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
 	}
+	else if (!lstrcmp(TEXT("Component_Model_Saucer_MainFloor_Grate_01"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Sepd_Bind_Buffer();
+
+		iMaterialIndex = 1;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
+
+		iMaterialIndex = 2;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
+
+		iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eGroup);
+
+	}
+	else if (!lstrcmp(TEXT("Component_Model_Saucer_MainFloor_Top_01"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Sepd_Bind_Buffer();
+
+		iMaterialIndex = 1;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
+
+		iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eGroup);
+
+	}
+	else if (!lstrcmp(TEXT("Component_Model_LaserStation_01"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Sepd_Bind_Buffer();
+
+		iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 19, false, eGroup);
+
+		iMaterialIndex = 1;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eGroup);
+	}
 	else if(!lstrcmp(TEXT("Component_Model_Planet"), m_Static_Env_Desc.szModelTag) ||
 			!lstrcmp(TEXT("Component_Model_LavaLamp"), m_Static_Env_Desc.szModelTag))
 		m_pModelCom->Render_Model(8, m_Static_Env_Desc.iMaterialIndex);
+	else if (!lstrcmp(TEXT("Component_Model_LaserButtonLargeFrame"), m_Static_Env_Desc.szModelTag))
+		m_pModelCom->Render_Model(18, m_Static_Env_Desc.iMaterialIndex);
 	else
 		m_pModelCom->Render_Model(1, m_Static_Env_Desc.iMaterialIndex);
 
@@ -268,7 +317,22 @@ HRESULT CStatic_Env::Set_MeshRenderGroup()
 		m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_NONALPHA);
 		m_pModelCom->Set_MeshRenderGroup(2, tagRenderGroup::RENDER_NONALPHA);
 	}
-
+	else if (!lstrcmp(TEXT("Component_Model_Saucer_MainFloor_Grate_01"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_ALPHA);
+		m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_NONALPHA);
+		m_pModelCom->Set_MeshRenderGroup(2, tagRenderGroup::RENDER_NONALPHA);
+	}
+	else if (!lstrcmp(TEXT("Component_Model_Saucer_MainFloor_Top_01"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_ALPHA);
+		m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_NONALPHA);
+	}
+	else if (!lstrcmp(TEXT("Component_Model_LaserStation_01"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_ALPHA);
+		m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_NONALPHA);
+	}
 	return S_OK;
 }
 
@@ -282,7 +346,10 @@ HRESULT CStatic_Env::Add_GameObject_ToRenderGroup()
 			!lstrcmp(TEXT("Component_Model_Space_Pinball_Frame"), m_Static_Env_Desc.szModelTag) ||
 			!lstrcmp(TEXT("Component_Model_Space_Pinball_BaseStar"), m_Static_Env_Desc.szModelTag) ||
 			!lstrcmp(TEXT("Component_Model_Saturn"), m_Static_Env_Desc.szModelTag) ||
-			!lstrcmp(TEXT("Component_Model_PlanetFloor"), m_Static_Env_Desc.szModelTag))
+			!lstrcmp(TEXT("Component_Model_PlanetFloor"), m_Static_Env_Desc.szModelTag) ||
+			!lstrcmp(TEXT("Component_Model_Saucer_MainFloor_Grate_01"), m_Static_Env_Desc.szModelTag) ||
+			!lstrcmp(TEXT("Component_Model_Saucer_MainFloor_Top_01"), m_Static_Env_Desc.szModelTag) ||
+			!lstrcmp(TEXT("Component_Model_LaserStation_01"), m_Static_Env_Desc.szModelTag))
 		{
 			m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_ALPHA, this);
 			m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_NONALPHA, this);

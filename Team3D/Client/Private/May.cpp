@@ -1650,6 +1650,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		{
 			LASERTENNIS->Increase_PowerCoord();
 
+			UI_Generator->Delete_InterActive_UI(Player::May, UI::PowerCoord);
+
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
 

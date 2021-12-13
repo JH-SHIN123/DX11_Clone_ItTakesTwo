@@ -305,7 +305,7 @@ HRESULT CModel::NativeConstruct_Prototype(const _tchar * pModelFilePath, const _
 	CComponent::NativeConstruct_Prototype();
 
 	m_bNeedCenterBone = bNeedCenterBone;
-	m_vAnimDistFromCenter = _float4(0.f, 0.f, 0.f, 1.f);
+	m_vAnimDistFromCenter = _float4(0.f, 0.f, 0.f, 1.f); 
 	m_iMaterialSetCount = iMaterialSetCount;
 
 	FAILED_CHECK_RETURN(m_pModel_Loader->Load_ModelFromFile(m_pDevice, m_pDeviceContext, CModel_Loader::TYPE_NORMAL, this, pModelFilePath, pModelFileName, iMaterialSetCount), E_FAIL);
