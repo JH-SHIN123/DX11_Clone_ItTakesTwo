@@ -21,7 +21,7 @@
 */
 
 #ifdef _DEBUG
-#define __THREAD_NUM 8
+#define __THREAD_NUM 6
 #else
 #define __THREAD_NUM 4
 #endif
@@ -37,7 +37,7 @@
 * 우주선 내부 맵만 제거
 * 프레임 살리기용
 */
-//#define __SPACESHIP_OFF
+#define __SPACESHIP_OFF
 
 /************************************************************************/
 
@@ -71,3 +71,12 @@
 * 패드 입력 디버깅
 */
 //#define __DEBUGGING_PAD
+
+/************************************************************************/
+
+/**
+* 뷰 행렬 생성방법
+* 주석 해제 > 카메라 DESC 기준
+* 주석 설정 > 카메라 Transform 기준
+*/
+//#define MAKE_VIEWMATRIX_BY_CAMERADESC

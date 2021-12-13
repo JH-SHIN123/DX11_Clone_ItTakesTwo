@@ -296,6 +296,7 @@
     <ClInclude Include="..\Public\Light_Generator.h" />
     <ClInclude Include="..\Public\Loading.h" />
     <ClInclude Include="..\Public\MainApp.h" />
+    <ClInclude Include="..\Public\MainCam.h" />
     <ClInclude Include="..\Public\MainCamera.h" />
     <ClInclude Include="..\Public\May.h" />
     <ClInclude Include="..\Public\MayJumpWall.h" />
@@ -501,6 +502,7 @@
     <ClCompile Include="..\Private\Light_Generator.cpp" />
     <ClCompile Include="..\Private\Loading.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
+    <ClCompile Include="..\Private\MainCam.cpp" />
     <ClCompile Include="..\Private\MainCamera.cpp" />
     <ClCompile Include="..\Private\May.cpp" />
     <ClCompile Include="..\Private\MayJumpWall.cpp" />

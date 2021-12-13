@@ -227,6 +227,7 @@ void CPhysX::Set_TriggerOption(PxRigidActor * pActor)
 		PxShape* pShape = Shapes[iIndex];
 		pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
 		pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+		pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 	}
 
 	Safe_Delete_Array(Shapes);

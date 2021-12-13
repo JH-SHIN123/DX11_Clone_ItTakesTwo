@@ -31,8 +31,8 @@ HRESULT CMoonUFO::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	m_pModelCom->Set_Animation(ANI_UFO_MH);
-	m_pModelCom->Set_NextAnimIndex(ANI_UFO_MH);
+	m_pModelCom->Set_Animation(UFO_MH);
+	m_pModelCom->Set_NextAnimIndex(UFO_MH);
 
 	DATABASE->Set_MoonUFO(this);
 

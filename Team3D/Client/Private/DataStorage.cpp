@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ #include "stdafx.h"
 #include "..\public\DataStorage.h"
 #include "Cody.h"
 #include "May.h"

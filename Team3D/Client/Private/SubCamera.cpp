@@ -398,10 +398,10 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 		//XMStoreFloat4(&vAt, vPlayerPos);
 		//_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt,vPlayerUp);
 		//matAffine = matCurWorld;
-
 	}
 	else
 		m_bIsCollision = false;
+
 	m_pTransformCom->Set_WorldMatrix(matAffine);
 
 #pragma endregion

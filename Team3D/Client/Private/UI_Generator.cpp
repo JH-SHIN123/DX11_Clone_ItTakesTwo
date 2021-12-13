@@ -148,7 +148,7 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 	case UI::InputButton_InterActive:
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_F"), Level::LEVEL_STATIC, pArg);
 		break;
-	case UI::InputButton_InterActive_Render:
+	case UI::InputButton_InterActive_Rail:
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_F"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::InputButton_PS_InterActive:

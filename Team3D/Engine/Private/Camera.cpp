@@ -42,9 +42,9 @@ HRESULT CCamera::NativeConstruct(void * pArg)
 	NULL_CHECK_RETURN(m_pTransformCom, E_FAIL);
 	FAILED_CHECK_RETURN(m_pTransformCom->NativeConstruct(&m_CameraDesc.TransformDesc), E_FAIL);
 
-	_vector	vEye	= XMVectorSetW(XMLoadFloat3(&m_CameraDesc.vEye), 1.f);
-	_vector	vAt		= XMVectorSetW(XMLoadFloat3(&m_CameraDesc.vAt), 1.f);
-	_vector	vAxisY	= XMVectorSetW(XMLoadFloat3(&m_CameraDesc.vAxisY), 0.f);
+	_vector	vEye	= XMLoadFloat4(&m_CameraDesc.vEye);
+	_vector	vAt		= XMLoadFloat4(&m_CameraDesc.vAt);
+	_vector	vAxisY	= XMLoadFloat4(&m_CameraDesc.vAxisY);
 	_vector	vLook	= XMVector3Normalize(vAt - vEye);
 	_vector	vRight	= XMVector3Normalize(XMVector3Cross(vAxisY, vLook));
 	_vector	vUp		= XMVector3Normalize(XMVector3Cross(vLook, vRight));
@@ -60,6 +60,9 @@ HRESULT CCamera::NativeConstruct(void * pArg)
 _int CCamera::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+#ifndef MAKE_VIEWMATRIX_BY_CAMERADESC
+	/* Control By WorldMatrix */
 
 	if (1 == m_CameraDesc.iViewportIndex)
 	{
@@ -92,6 +95,41 @@ _int CCamera::Tick(_double dTimeDelta)
 	_matrix FullScreenProjMatrix = XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fFullScreenAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
 	m_pPipeline->Set_Transform(CPipeline::TS_FULLSCREEN_PROJ, FullScreenProjMatrix);
 	m_pPipeline->Set_Transform(CPipeline::TS_FULLSCREEN_PROJ_INVERSE, XMMatrixInverse(nullptr, FullScreenProjMatrix));
+#else
+	/* Control By Eye/At */
+
+	if (1 == m_CameraDesc.iViewportIndex)
+	{
+		m_CameraDesc.fAspect = CGraphic_Device::GetInstance()->Get_ViewportAspect(1);
+
+		_matrix ViewMatrix = XMMatrixLookAtLH(XMLoadFloat4(&m_CameraDesc.vEye), XMLoadFloat4(&m_CameraDesc.vAt), XMLoadFloat4(&m_CameraDesc.vAxisY));
+		_matrix ProjMatrix = XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+
+		m_pPipeline->Set_Transform(CPipeline::TS_MAINVIEW, ViewMatrix);
+		m_pPipeline->Set_Transform(CPipeline::TS_MAINVIEW_INVERSE, XMMatrixInverse(nullptr, ViewMatrix));
+		m_pPipeline->Set_Transform(CPipeline::TS_MAINPROJ, ProjMatrix);
+		m_pPipeline->Set_Transform(CPipeline::TS_MAINPROJ_INVERSE, XMMatrixInverse(nullptr, ProjMatrix));
+		m_pPipeline->Set_MainCamFar(m_CameraDesc.fFar);
+	}
+	else if (2 == m_CameraDesc.iViewportIndex)
+	{
+		m_CameraDesc.fAspect = CGraphic_Device::GetInstance()->Get_ViewportAspect(2);
+
+		_matrix ViewMatrix = XMMatrixLookAtLH(XMLoadFloat4(&m_CameraDesc.vEye), XMLoadFloat4(&m_CameraDesc.vAt), XMLoadFloat4(&m_CameraDesc.vAxisY));
+		_matrix ProjMatrix = XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+
+		m_pPipeline->Set_Transform(CPipeline::TS_SUBVIEW, ViewMatrix);
+		m_pPipeline->Set_Transform(CPipeline::TS_SUBVIEW_INVERSE, XMMatrixInverse(nullptr, ViewMatrix));
+		m_pPipeline->Set_Transform(CPipeline::TS_SUBPROJ, ProjMatrix);
+		m_pPipeline->Set_Transform(CPipeline::TS_SUBPROJ_INVERSE, XMMatrixInverse(nullptr, ProjMatrix));
+		m_pPipeline->Set_SubCamFar(m_CameraDesc.fFar);
+	}
+
+	// For. Full Screen
+	_matrix FullScreenProjMatrix = XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fFullScreenAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+	m_pPipeline->Set_Transform(CPipeline::TS_FULLSCREEN_PROJ, FullScreenProjMatrix);
+	m_pPipeline->Set_Transform(CPipeline::TS_FULLSCREEN_PROJ_INVERSE, XMMatrixInverse(nullptr, FullScreenProjMatrix));
+#endif
 
 	return NO_EVENT;
 }

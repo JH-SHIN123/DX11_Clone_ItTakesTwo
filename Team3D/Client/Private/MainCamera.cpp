@@ -404,6 +404,7 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	}
 	else
 		m_bIsCollision = false;
+
 	m_pTransformCom->Set_WorldMatrix(matAffine);
 
 #pragma endregion

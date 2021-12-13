@@ -21,6 +21,11 @@ public:
 
 private:
 	_double m_dChargingTime = 0.0;
+	_bool	m_IsPaticleCreate = true;
+
+private:
+	class CUFO*										m_pBossUFO = nullptr;
+	class CEffect_Boss_Laser_Smoke*				m_pLaserSmoke = nullptr;
 
 public:
 	static CLaser_TypeA* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

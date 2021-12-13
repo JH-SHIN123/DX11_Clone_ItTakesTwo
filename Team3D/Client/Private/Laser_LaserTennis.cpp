@@ -40,7 +40,7 @@ HRESULT CLaser_LaserTennis::NativeConstruct(void * pArg)
 	/* 생성 위치 보정 */
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vPosition += XMLoadFloat3(&m_vDirection);
-	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition));
+	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) - 0.3f);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 	m_pTransformCom->Set_Speed(5.f, 0.f);

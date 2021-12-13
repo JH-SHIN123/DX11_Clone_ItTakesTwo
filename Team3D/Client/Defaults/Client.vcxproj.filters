@@ -228,6 +228,39 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon">
       <UniqueIdentifier>{5b697a68-0358-4102-b02d-6330df092a73}</UniqueIdentifier>
     </Filter>
+      <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis">
+      <UniqueIdentifier>{2f8d2754-6701-41e2-9489-11780094fcd4}</UniqueIdentifier>
+    </Filter>
+      <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager">
+      <UniqueIdentifier>{692624aa-05b2-43a0-9e2a-62f2c591e27f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis">
+      <UniqueIdentifier>{3ac55c18-dd55-4f90-acca-a31bb03750b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserActivation">
+      <UniqueIdentifier>{a618c313-1703-4932-9786-323a172c4a2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButton">
+      <UniqueIdentifier>{76ae7c8a-c926-4a74-8b0b-294d2067a891}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge">
+      <UniqueIdentifier>{85db1adf-5c35-4a9a-85f9-9e807813daf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge_Gate">
+      <UniqueIdentifier>{0efb0f10-6b83-4945-bc0b-a1f9d3c3acea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserPowerCoord">
+      <UniqueIdentifier>{58ed14b0-5db2-4cfe-b507-59a68ddc6113}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger">
+      <UniqueIdentifier>{a4ca8dbf-1f40-45ce-a28b-3fc9beaf268b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Timer_LaserTennis">
+      <UniqueIdentifier>{7d73273b-b79d-4372-a1be-6900252f8bbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Wall_LaserTennis">
+      <UniqueIdentifier>{cd00407a-7a81-4e3c-955f-526dbdf17776}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen">
       <UniqueIdentifier>{cb99fc26-4d07-4ee9-bdf8-b9a43ea37b0e}</UniqueIdentifier>
     </Filter>
@@ -729,39 +762,6 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis">
-      <UniqueIdentifier>{2f8d2754-6701-41e2-9489-11780094fcd4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserActivation">
-      <UniqueIdentifier>{a618c313-1703-4932-9786-323a172c4a2a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButton">
-      <UniqueIdentifier>{76ae7c8a-c926-4a74-8b0b-294d2067a891}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge">
-      <UniqueIdentifier>{85db1adf-5c35-4a9a-85f9-9e807813daf4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserPowerCoord">
-      <UniqueIdentifier>{58ed14b0-5db2-4cfe-b507-59a68ddc6113}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis">
-      <UniqueIdentifier>{3ac55c18-dd55-4f90-acca-a31bb03750b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager">
-      <UniqueIdentifier>{692624aa-05b2-43a0-9e2a-62f2c591e27f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Timer_LaserTennis">
-      <UniqueIdentifier>{7d73273b-b79d-4372-a1be-6900252f8bbe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge_Gate">
-      <UniqueIdentifier>{0efb0f10-6b83-4945-bc0b-a1f9d3c3acea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger">
-      <UniqueIdentifier>{a4ca8dbf-1f40-45ce-a28b-3fc9beaf268b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Wall_LaserTennis">
-      <UniqueIdentifier>{cd00407a-7a81-4e3c-955f-526dbdf17776}</UniqueIdentifier>
-    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -802,6 +802,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Level_Stage.h">
       <Filter>01.Maps\03.Stage_Space</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MainCam.h">
+      <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MainCamera.h">
       <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
@@ -943,6 +946,36 @@
     </ClInclude>
     <ClInclude Include="..\Public\Moon.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LaserTennis_Manager.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
+    </ClInclude>
+        <ClInclude Include="..\Public\Laser_LaserTennis.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis</Filter>
+    </ClInclude>
+      <ClInclude Include="..\Public\LaserActivation.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserActivation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LaserButton.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LaserButtonLarge.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge</Filter>
+    </ClInclude>
+      <ClInclude Include="..\Public\LaserButtonLarge_Gate.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge_Gate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LaserPowerCoord.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserPowerCoord</Filter>
+    </ClInclude>
+      <ClInclude Include="..\Public\LaserTrigger.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Timer_LaserTennis.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Timer_LaserTennis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Wall_LaserTennis.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Wall_LaserTennis</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AlienScreen.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>
@@ -1382,36 +1415,6 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\LaserActivation.h">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserActivation</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\LaserButton.h">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButton</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\LaserButtonLarge.h">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\LaserPowerCoord.h">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserPowerCoord</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\LaserTennis_Manager.h">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Timer_LaserTennis.h">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Timer_LaserTennis</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\LaserButtonLarge_Gate.h">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge_Gate</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Wall_LaserTennis.h">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Wall_LaserTennis</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\LaserTrigger.h">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Laser_LaserTennis.h">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis</Filter>
-    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -1449,6 +1452,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Stage.cpp">
       <Filter>01.Maps\03.Stage_Space</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MainCam.cpp">
+      <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MainCamera.cpp">
       <Filter>02.GameObject\00.Public\01.MainCamera</Filter>
@@ -1590,6 +1596,36 @@
     </ClCompile>
     <ClCompile Include="..\Private\Moon.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
+    </ClCompile>
+      <ClCompile Include="..\Private\LaserTennis_Manager.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
+    </ClCompile>
+      <ClCompile Include="..\Private\Laser_LaserTennis.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis</Filter>
+    </ClCompile>
+      <ClCompile Include="..\Private\LaserActivation.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserActivation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LaserButton.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LaserButtonLarge.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge</Filter>
+    </ClCompile>
+      <ClCompile Include="..\Private\LaserButtonLarge_Gate.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge_Gate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LaserPowerCoord.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserPowerCoord</Filter>
+    </ClCompile>
+      <ClCompile Include="..\Private\LaserTrigger.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Timer_LaserTennis.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Timer_LaserTennis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Wall_LaserTennis.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Wall_LaserTennis</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AlienScreen.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>
@@ -1995,36 +2031,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\LaserActivation.cpp">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserActivation</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\LaserButton.cpp">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButton</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\LaserButtonLarge.cpp">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\LaserPowerCoord.cpp">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserPowerCoord</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\LaserTennis_Manager.cpp">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Timer_LaserTennis.cpp">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Timer_LaserTennis</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\LaserButtonLarge_Gate.cpp">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge_Gate</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Wall_LaserTennis.cpp">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Wall_LaserTennis</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\LaserTrigger.cpp">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Laser_LaserTennis.cpp">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
