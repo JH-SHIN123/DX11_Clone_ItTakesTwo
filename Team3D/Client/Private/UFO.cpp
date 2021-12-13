@@ -539,8 +539,11 @@ void CUFO::Phase3_Pattern(_double dTimeDelta)
 		return;
 	}
 
-	if(true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp())
+	if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp() && false == m_IsGoingLastFloor)
+	{
 		DATABASE->GoUp_BossFloor(100.f);
+		m_IsGoingLastFloor = true;
+	}
 
 	/* 마지막 층에 도달했을 때 */
 	if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_ArrivalLastFloor() && false == m_IsLastFloor)

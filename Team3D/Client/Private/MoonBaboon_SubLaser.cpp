@@ -200,11 +200,11 @@ void CMoonBaboon_SubLaser::Laser_Down(_double TimeDelta)
 void CMoonBaboon_SubLaser::SetUp_SubLaserPosition(_uint iOption)
 {
 	if (0 == iOption)
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(78.945f, 239.f, 158.95f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(78.945f, 438.2567f, 158.95f, 1.f));
 	else if (1 == iOption)
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(22.008f, 239.f, 212.40f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(22.008f, 438.2567f, 212.40f, 1.f));
 	else if (2 == iOption)
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(100.05f, 239.f, 209.95f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(100.05f, 438.2567f, 209.95f, 1.f));
 }
 
 CMoonBaboon_SubLaser* CMoonBaboon_SubLaser::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

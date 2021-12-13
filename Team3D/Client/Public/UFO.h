@@ -90,6 +90,7 @@ private:
 	_bool					m_IsSubLaserOperation = true;
 	_bool					m_IsGroundPound = false;
 	_bool					m_IsLastFloor = false;
+	_bool					m_IsGoingLastFloor = false;
 	_float4					m_vGroundPoundTargetPos;
 
 	vector<class CMoonBaboon_SubLaser*>	m_vecSubLaser;
