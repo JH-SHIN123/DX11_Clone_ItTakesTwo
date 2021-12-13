@@ -2024,7 +2024,7 @@ void CMay::InUFO(const _double dTimeDelta)
 	_vector vLook	  = XMVector3Normalize(pUFOTransform->Get_State(CTransform::STATE_LOOK));
 
 	/* Offset */
-	vPosition += vUp;
+	vPosition -= vUp;
 	//vPosition += (vRight * 2.5f);
 
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);

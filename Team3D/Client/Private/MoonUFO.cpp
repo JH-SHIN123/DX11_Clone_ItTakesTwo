@@ -203,28 +203,46 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	_vector vUFOPos = ((CPixelUFO*)DATABASE->Get_PixelUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 	_vector vTargetPos = ((CPixelCrossHair*)DATABASE->Get_PixelCrossHair())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 	
-	_vector vUFOToTarget = XMVector3Normalize(vTargetPos - vUFOPos);
-	_vector vWorldRight = XMVector3Normalize(XMVectorSet(1.f, 0.f, 0.f, 0.f));
-	_float fAngle = XMConvertToDegrees(XMVectorGetX(XMVector3AngleBetweenNormals(vUFOToTarget, vWorldRight)));
+	_vector vUFOToTarget = XMVector3Normalize(vTargetPos - vUFOPos); // 크로스헤어 - UFO(중점) 방향벡터
+	_vector vWorldUp = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	_float fAngle = XMConvertToDegrees(XMVectorGetX(XMVector3AngleBetweenNormals(vUFOToTarget, vWorldUp)));
 
-	if (vUFOPos.m128_f32[1] > vTargetPos.m128_f32[1])
+	if (vUFOPos.m128_f32[0] > vTargetPos.m128_f32[0])
 		fAngle = 360.f - fAngle;
 
-	_matrix matPivot, matRotUp, matAnim = XMMatrixIdentity();
+	_float fSecondAngle = XMConvertToDegrees(XMVectorGetX(XMVector3Length(vUFOToTarget) * 240.f)); // 중점에서 크로스헤어 까지의 거리.
 
-	matRotUp = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(fAngle + 90.f));
-	matPivot = matRotUp;
+	if (vUFOPos.m128_f32[1] < vTargetPos.m128_f32[1])
+		fSecondAngle = -1.f * fSecondAngle;
+
+	_matrix matPivot, matRotUp, matRotRight, matTrans, matAnim = XMMatrixIdentity();
+
+	matRotUp = XMMatrixRotationZ(XMConvertToRadians(-fAngle));
+	matRotRight = XMMatrixRotationY(XMConvertToRadians(fSecondAngle)); // 레이더에서 보이는 중점에서 크로스헤어 까지의 거리에 비례해서 회전 시켜 줘야 합니다.
+	matTrans = XMMatrixTranslation(0.f, -2.5f, 0.f);
+
+	matPivot = matRotUp * matRotRight * matTrans;
 	matAnim = m_pModelCom->Get_AnimTransformation(22);
 	matAnim = XMMatrixInverse(nullptr, matAnim);
 
 	matPivot *= matAnim;
-	m_pModelCom->Set_PivotTransformation(22, matPivot);
+	m_pModelCom->Set_PivotTransformation(22, matPivot); // 여기까지가 레이저건을 레이더에 보이는 크로스헤어 만큼 회전 시킨 것임.
 
-	_matrix matLaserGunWorld = XMMatrixIdentity();
-	matLaserGunWorld = matPivot * m_pTransformCom->Get_WorldMatrix();
+	_matrix matUFOWorld = m_pTransformCom->Get_WorldMatrix();
+	_matrix matLaserGunRing = m_pModelCom->Get_BoneMatrix("LaserGunRing3");
+	_matrix matLaserRingWorld = matRotUp * matRotRight * matTrans * matLaserGunRing * matUFOWorld;
+	_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("Align");
 
-	XMStoreFloat4(&m_vLaserGunPos, matLaserGunWorld.r[3]);
-	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(matLaserGunWorld.r[2]));
+	_matrix matAlign = matRotUp * matRotRight * matTrans * matLaserGun * matUFOWorld;
+	_vector vLaserGunDir = XMLoadFloat4((_float4*)&matAlign.r[0].m128_f32[0]);
+
+	/* 레이저에 시작위치랑 방향 벡터 던져주자 */
+	XMStoreFloat4(&m_vLaserGunPos, matLaserRingWorld.r[3]);
+	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(vLaserGunDir));
+
+	//XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)));
+	//XMStoreFloat4(&m_vLaserGunPos, matLaserGunWorld.r[3]);
+	//XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(matLaserGunWorld.r[2]));
 
 
 	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
