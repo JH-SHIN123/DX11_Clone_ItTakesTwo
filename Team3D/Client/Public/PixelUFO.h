@@ -23,6 +23,9 @@ public:
 	virtual _int Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+ public: /* Getter */
+	 CTransform* Get_Transform() { return m_pTransformCom; }
+
 private:
 	CVIBuffer_Rect*					m_pVIBufferCom = nullptr;
 	CRenderer*						m_pRendererCom = nullptr;

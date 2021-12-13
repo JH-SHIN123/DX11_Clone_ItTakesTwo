@@ -41,6 +41,16 @@ _int CPixelShield::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	if (m_bRenderState == true)
+	{
+		m_fRenderTime += dTimeDelta;
+		if (m_fRenderTime > 2.f)
+		{
+			m_bRenderState = false;
+			m_fRenderTime = 0.f;
+		}
+	}
+
 	return _int();
 }
 
@@ -48,7 +58,10 @@ _int CPixelShield::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	if (m_bRenderState == true)
+		return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	else
+		return _int();
 }
 
 HRESULT CPixelShield::Render(RENDER_GROUP::Enum eGroup)

@@ -23,6 +23,11 @@ public:
 	virtual _int Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+ public:
+	 void Set_Render_Off(_bool bRenderOff) { m_bRenderOff = bRenderOff; }
+	 void Set_Position(_vector vPosition) { m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition); }
+	 void Set_LifeCountRenderOff(_bool bLifeCountRenderOff) { m_bLifeCountRenderOff = bLifeCountRenderOff;}
+
 private:
 	CVIBuffer_Rect*					m_pVIBufferCom = nullptr;
 	CRenderer*						m_pRendererCom = nullptr;
@@ -32,6 +37,9 @@ private:
  private:
 	 _float m_fSizeX = 0.f;
 	 _float m_fSizeY = 0.f;
+	 _float m_fRenderOffTime = 0.f;
+	 _bool	m_bRenderOff = false;
+	 _bool  m_bLifeCountRenderOff = false;
 
 
 

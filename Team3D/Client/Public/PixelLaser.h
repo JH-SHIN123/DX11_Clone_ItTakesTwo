@@ -23,6 +23,13 @@ public:
 	virtual _int Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+ public:
+	 void Set_Render_State(_bool bRender) { m_bRender = bRender; };
+
+ private:
+	 void Activate_Laser(_double dTimeDelta);
+
+
 private:
 	CVIBuffer_Rect*					m_pVIBufferCom = nullptr;
 	CRenderer*						m_pRendererCom = nullptr;
@@ -32,7 +39,9 @@ private:
  private:
 	 _float m_fSizeX = 0.f;
 	 _float m_fSizeY = 0.f;
-
+	 _float	m_fAngle = 0.f;
+	 _bool m_bRender = false;
+	 _float m_fRenderTime = 0.f;
 
 
 

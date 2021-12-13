@@ -34,6 +34,7 @@ HRESULT CPixelUFO::NativeConstruct(void * pArg)
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, *vPosition);
 		m_pTransformCom->Set_Scale(XMVectorSet(0.1f, 0.1f, 0.1f, 0.f));
 	}
+	DATABASE->Set_PixelUFO(this);
 
 	return S_OK;
 }

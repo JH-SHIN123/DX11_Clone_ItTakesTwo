@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Cody.h"
 #include "May.h"
+#include "PixelLaser.h"
 
 CPixelChargeBarGauge::CPixelChargeBarGauge(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CGameObject(pDevice, pDeviceContext)
@@ -43,9 +44,10 @@ _int CPixelChargeBarGauge::Tick(_double dTimeDelta)
 
 	if (((CCody*)DATABASE->GetCody())->Get_IsInArcadeJoyStick() == true)
 	{
-		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
+		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) && m_fGauge < 0.1f)
 		{
-			m_fGauge += 0.5f;
+			((CPixelLaser*)DATABASE->Get_PixelLaser())->Set_Render_State(true);
+			m_fGauge += 0.7f;
 		}
 
 		if (m_fGauge > 0.f)
@@ -54,6 +56,7 @@ _int CPixelChargeBarGauge::Tick(_double dTimeDelta)
 			m_fGauge = 0.f;
 	}
 
+	DATABASE->Set_LaserGauge(m_fGauge);
 	return NO_EVENT;
 }
 

@@ -23,17 +23,21 @@ public:
 	virtual _int Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+public:
+	void Set_Render_State(_bool bRenderState) { m_bRenderState = bRenderState; }
+	void Set_Position(_vector vPosition) { m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition); }
+
+private:
+	 _float m_fSizeX = 0.f;
+	 _float m_fSizeY = 0.f;
+	 _bool m_bRenderState = false;
+	 _float m_fRenderTime = 0.f;
+
 private:
 	CVIBuffer_Rect*					m_pVIBufferCom = nullptr;
 	CRenderer*						m_pRendererCom = nullptr;
 	CTextures*						m_pTextureCom = nullptr;
 	CTransform*						m_pTransformCom = nullptr;
-
- private:
-	 _float m_fSizeX = 0.f;
-	 _float m_fSizeY = 0.f;
-
-
 
 
 public:

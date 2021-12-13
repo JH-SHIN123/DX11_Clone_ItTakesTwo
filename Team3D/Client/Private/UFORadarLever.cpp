@@ -39,7 +39,8 @@ _int CUFORadarLever::Tick(_double dTimeDelta)
 {
 	CUFORadarSet::Tick(dTimeDelta);
 
-	Rotate_JoyStick(dTimeDelta);
+	if(((CCody*)DATABASE->GetCody())->Get_IsInArcadeJoyStick() == true)
+		Rotate_JoyStick(dTimeDelta);
 
 	m_pModelCom->Update_Animation(dTimeDelta);
 	return NO_EVENT;

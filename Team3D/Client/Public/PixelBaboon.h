@@ -9,6 +9,9 @@ END
 
 BEGIN(Client)
 
+class CPixelHeart;
+class CPixelShield;
+
 class CPixelBaboon final : public CGameObject
  {
 private:
@@ -29,11 +32,28 @@ private:
 	CTextures*						m_pTextureCom = nullptr;
 	CTransform*						m_pTransformCom = nullptr;
 
+ public: /* Setter */
+	 void Set_IsHit(_bool _IsHit) { m_IsHit = _IsHit; }
+	 void Set_Hearts_Pos();
+
+ private:
+	 void Check_3DMoonBaboon_Position(_double dTimeDelta);
+
  private:
 	 _float m_fSizeX = 0.f;
 	 _float m_fSizeY = 0.f;
 
+	 _bool	m_IsHit = false;
+	 _bool  m_bBlinking = false;
+	 _bool	m_bBlink = false;
 
+	 _float m_fBlinkingTime = 0.f;
+	 _int	m_iBlinkingCount = 0;
+
+	 _int	m_iLifeCount = 3;
+
+	 CPixelHeart* m_pPixelHeart[3];
+	 CPixelShield* m_pPixelShield = nullptr;
 
 
 public:

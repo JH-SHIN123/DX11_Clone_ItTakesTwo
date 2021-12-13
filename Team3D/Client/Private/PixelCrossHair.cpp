@@ -43,6 +43,8 @@ HRESULT CPixelCrossHair::NativeConstruct(void * pArg)
 		m_pTransformCom->Set_Scale(XMVectorSet(0.1f, 0.1f, 0.1f, 0.f));
 	}
 
+	DATABASE->Set_PixelCrossHair(this);
+
 	return S_OK;
 }
 

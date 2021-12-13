@@ -41,6 +41,16 @@ _int CPixelHeart::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	if (m_bRenderOff == true)
+	{
+		m_fRenderOffTime += (_float)dTimeDelta;
+		if (m_fRenderOffTime > 2.f)
+		{
+			m_fRenderOffTime = 0.f;
+			m_bRenderOff = false;
+		}
+	}
+
 	return _int();
 }
 
@@ -48,7 +58,10 @@ _int CPixelHeart::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	if (m_bRenderOff == false && m_bLifeCountRenderOff == false)
+		return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	else
+		return _int();
 }
 
 HRESULT CPixelHeart::Render(RENDER_GROUP::Enum eGroup)

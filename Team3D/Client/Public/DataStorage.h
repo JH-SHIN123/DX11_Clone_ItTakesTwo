@@ -165,6 +165,19 @@ public:
 	void Set_LaserTypeB_Recovery(_bool IsCheck) { m_IsLaserTypeB_Recovery = IsCheck; }
 	_bool Get_LaserTypeB_Recovery() const { return m_IsLaserTypeB_Recovery; }
 
+	/* For.Pixel Radar */
+	void Set_PixelUFO(CGameObject* pPixelUFO) { m_pPixelUFO = pPixelUFO; }
+	CGameObject* Get_PixelUFO() { return m_pPixelUFO; }
+
+	void Set_PixelCrossHair(CGameObject* pPixelCrossHair) { m_pPixelCrossHair = pPixelCrossHair; }
+	CGameObject* Get_PixelCrossHair() { return m_pPixelCrossHair; }
+
+	void Set_PixelLaser(CGameObject* pPixelLaser) { m_pPixelLaser = pPixelLaser; }
+	CGameObject* Get_PixelLaser() { return m_pPixelLaser; }
+
+	void Set_LaserGauge(_float fGauge) { m_fLaserGauge = fGauge; }
+	_float Get_LaserGauge() { return m_fLaserGauge; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -230,6 +243,11 @@ private:
 
 	/* For. UFORadarSet */
 	CGameObject* m_pUFORadarSet = nullptr;
+	CGameObject* m_pPixelUFO = nullptr;
+	CGameObject* m_pPixelCrossHair = nullptr;
+	CGameObject* m_pPixelLaser = nullptr;
+
+	_float		 m_fLaserGauge = 0.f;
 
 	/* For.Boss */
 	CGameObject* m_pMoonBaboonMainLaser = nullptr;
