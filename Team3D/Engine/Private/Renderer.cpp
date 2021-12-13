@@ -115,7 +115,7 @@ HRESULT CRenderer::Add_GameObject_ToRenderGroup(RENDER_GROUP::Enum eGroup, CGame
 HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 {
 	// 0 - pass
-	FAILED_CHECK_RETURN(Render_ShadowsForAllCascades(), E_FAIL);
+	//FAILED_CHECK_RETURN(Render_ShadowsForAllCascades(), E_FAIL);
 	
 	// 1- pass
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);

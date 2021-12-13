@@ -124,30 +124,31 @@ float3 RadiarBlur(float2 vTexUV, float2 vFocusPos, float fRatio)
 
 float3 ApplyFog(float3 finalColor, float eyePosY, float3 eyeToPixel)
 {
-	float pixelDist = length(eyeToPixel);
-	float3 eyeToPixelNorm = eyeToPixel / pixelDist;
+	//////////////////////////////////////////////////////////////////////////////////
+	//float pixelDist = length(eyeToPixel); // Cam과 픽셀간의 거리
+	//float3 eyeToPixelNorm = normalize(eyeToPixel);
 
-	// 픽셀 거리에 대해 안개 시작 지점 계산
-	float fogDist = max(pixelDist - g_fFogStartDist, 0.0);
+	//// 픽셀 거리에 대해 안개 시작 지점 계산
+	//float fogDist = max(pixelDist - g_fFogStartDist, 0.0);
 
-	// 안개 세기에 대해 거리 계산
-	float fogHeightDensityAtViewer = exp(-g_fFogHeightFalloff * eyePosY); // exp : 지수 반환(왼쪽 음에 가까운 지수그래프사용)
-	float fogDistInt = fogDist * fogHeightDensityAtViewer;
+	//// 안개 세기에 대해 거리 계산
+	//float fogHeightDensityAtViewer = exp(-g_fFogHeightFalloff * eyePosY); // exp : 지수 반환(왼쪽 음에 가까운 지수그래프사용)
+	//float fogDistInt = fogDist * fogHeightDensityAtViewer;
 
-	// 안개 세기에 대해 높이 계산
-	float eyeToPixelY = eyeToPixel.y * (fogDist / pixelDist);
-	float t = g_fFogHeightFalloff * eyeToPixelY;
-	const float thresholdT = 0.01;
-	float fogHeightInt = abs(t) > thresholdT ?
-		(1.0 - exp(-t)) / t : 1.0;
+	//// 안개 세기에 대해 높이 계산
+	//float eyeToPixelY = eyeToPixel.y * (fogDist / pixelDist);
+	//float t = g_fFogHeightFalloff * eyeToPixelY;
+	//const float thresholdT = 0.01;
+	//float fogHeightInt = abs(t) > thresholdT ?
+	//	(1.0 - exp(-t)) / t : 1.0;
 
-	// 위 계산 값을 합해 최종 인수 계산
-	float fogFinalFactor = exp(-g_fFogGlobalDensity * fogDistInt * fogHeightInt);
+	//// 위 계산 값을 합해 최종 인수 계산
+	//float fogFinalFactor = exp(-g_fFogGlobalDensity * fogDistInt);
 
-	// 태양 하이라이트 계산 및 안개 색상 혼합
-	//float sunHighlightFactor = saturate(dot(eyeToPixelNorm, -g_vLightDir));
-	//sunHighlightFactor = pow(sunHighlightFactor, 8.0);
-	//float3 fogFinalColor = lerp(g_vFogColor, g_vFogHighlightColor, sunHighlightFactor);
+	//// 태양 하이라이트 계산 및 안개 색상 혼합
+	////float sunHighlightFactor = saturate(dot(eyeToPixelNorm, -g_vLightDir));
+	////sunHighlightFactor = pow(sunHighlightFactor, 8.0);
+	////float3 fogFinalColor = lerp(g_vFogColor, g_vFogHighlightColor, sunHighlightFactor);
 
 	return lerp(g_vFogColor, finalColor, fogFinalFactor);
 }
@@ -248,9 +249,9 @@ PS_OUT PS_MAIN(PS_IN In)
 	// Final
 	Out.vColor = vector(vColor, 1.f);
 
-	/* Fog*/
-	float3 eyeToPixel = vWorldPos - vCamPos;
-	Out.vColor.xyz = ApplyFog(Out.vColor.xyz, vCamPos.y, eyeToPixel);
+	///* Fog*/
+	//float3 eyeToPixel = vWorldPos - vCamPos;
+	//Out.vColor.xyz = ApplyFog(Out.vColor.xyz, vCamPos.y, eyeToPixel);
 
 	return Out;
 }
