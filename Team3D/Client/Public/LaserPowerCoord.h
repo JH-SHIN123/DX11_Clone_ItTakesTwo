@@ -2,12 +2,15 @@
 #include "Dynamic_Env.h"
 
 BEGIN(Client)
-class CPedal final : public CDynamic_Env
+class CLaserPowerCoord final : public CDynamic_Env
 {
 private:
-	explicit CPedal(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CPedal(const CPedal& rhs);
-	virtual ~CPedal() = default;
+	explicit CLaserPowerCoord(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CLaserPowerCoord(const CLaserPowerCoord& rhs);
+	virtual ~CLaserPowerCoord() = default;
+
+public:/* Setter */
+	void Change_State() { m_bMovement = true; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -24,12 +27,13 @@ private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 	CTriggerActor*	m_pTriggerActorCom = nullptr;
 
-	_bool			m_bDelay = false;
-	_bool			m_bSmash = false;
+	_bool			m_bReady;
+	_bool			m_bMovement = false;
+	_bool			m_bActive = false;
+	_bool			m_bCollision = false;
 
-	_float			m_fProgressAnim = 0.f;
-	_float			m_fAddAngle = 0.f;
-	_float4x4		m_matResetWorld;
+	_float			m_fDistance = 2.5f;
+	_float			m_fResetPosZ = 0.f;
 
 private:
 	void Movement(_double dTimeDelta);
@@ -38,8 +42,8 @@ private:
 	HRESULT Ready_Component(void* pArg);
 
 public:
-	static CPedal* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	virtual CGameObject* Clone_GameObject(void* pArg) override;
-	virtual void Free() override;
+	static CLaserPowerCoord* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CGameObject* Clone_GameObject(void* pArg);
+	virtual void Free();
 };
 END

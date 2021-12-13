@@ -37,7 +37,7 @@ HRESULT CMoonBaboon_SpaceShip::NativeConstruct(void * pArg)
 
 	m_pTransformCom->RotateRoll_Angle(90.f);
 	m_pTransformCom->RotateYaw_Angle(170.f);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(63.9f, 599.15f, 999.9f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 599.16f, 999.8f, 1.f));
 
 	DATABASE->Set_MoonBaboon_SpaceShip(this);
 

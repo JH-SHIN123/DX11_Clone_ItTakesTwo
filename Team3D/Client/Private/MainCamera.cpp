@@ -46,21 +46,21 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	m_PreWorld.vTrans = _float4(0.f, 0.f, 0.f, 1.f);
 	
 	/* Hye */
-	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL] =	{ 0.f,0.5f,-0.5f,1.f};
-	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM] =	{ 0.f,7.f,-7.f,1.f };
-	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE] =	{ 0.f,11.f,	-8.f,1.f };
+	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL]		= { 0.f,0.5f,-0.5f,1.f};
+	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM]		= { 0.f,7.f,-7.f,1.f };
+	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE]		= { 0.f,11.f,	-8.f,1.f };
 
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL] = { 0.f,0.05f,0.01f,1.f };
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM] = { 0.f,1.5f, 0.4f,1.f };
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE] = { 0.f,3.f,1.1f,1.f };
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL]		= { 0.f,0.05f,0.01f,1.f };
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM]		= { 0.f,1.5f, 0.4f,1.f };
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE]		= { 0.f,3.f,1.1f,1.f };
 
-	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL] = { 0.f,1.5f,-1.5f,1.f };
-	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM] = { 0.f,7.f,-7.f,1.f };
-	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE] = { 0.f,11.f,	-8.f,1.f };
+	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL]	= { 0.f,1.5f,-1.5f,1.f };
+	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM]	= { 0.f,7.f,-7.f,1.f };
+	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE]	= { 0.f,11.f,	-8.f,1.f };
 
-	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL] =		{ 0.f,0.1f,0.02f,1.f };
-	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM] =		{ 0.f,1.5f, 0.4f,1.f };
-	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE] =		{ 0.f,3.f,1.1f,1.f };
+	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL]		= { 0.f,0.1f,0.02f,1.f };
+	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM]	= { 0.f,1.5f, 0.4f,1.f };
+	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE]		= { 0.f,3.f,1.1f,1.f };
 
 	_matrix matStart = MakeViewMatrixByUp(m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM], m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM]);
 	XMStoreFloat4x4(&m_matBeforeSpringCam, matStart);
@@ -278,27 +278,24 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	//이전 회전값
 
 
-	if (((CCody*)DATABASE->GetCody())->Get_IsInArcadeJoyStick() == false)
+	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
 	{
-		if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
-		{
-			m_fMouseRev[Rev_Holizontal] += (_float)(MouseMove * dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal]);
+		m_fMouseRev[Rev_Holizontal] += (_float)(MouseMove * dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal]);
 
-		}
-		if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
-		{
-			_float fVal = (_float)(MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta);
-
-			if (m_fMouseRev[Rev_Prependicul] + fVal > 40.f)
-				m_fMouseRev[Rev_Prependicul] = 40.f;
-			else if (m_fMouseRev[Rev_Prependicul] + fVal < -85.f)
-				m_fMouseRev[Rev_Prependicul] = -85.f;
-			else
-				m_fMouseRev[Rev_Prependicul] += fVal;
-		}
-		m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 20.f;
-		m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 20.f;
 	}
+	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
+	{
+		_float fVal = (_float)(MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta);
+
+		if (m_fMouseRev[Rev_Prependicul] + fVal > 40.f)
+			m_fMouseRev[Rev_Prependicul] = 40.f;
+		else if (m_fMouseRev[Rev_Prependicul] + fVal < -85.f)
+			m_fMouseRev[Rev_Prependicul] = -85.f;
+		else
+			m_fMouseRev[Rev_Prependicul] += fVal;
+	}
+	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 20.f;
+	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 20.f;
 
 
 	//카메라 회전에 따른 거리체크

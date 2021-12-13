@@ -140,7 +140,7 @@ PS_OUT	PS_CHARGEBARGAUGE(PS_IN In)
 	if (Out.vColor.a < 0.2f)
 		discard;
 
-	if (In.vTexUV.x < g_fGauge)
+	if (In.vTexUV.x > g_fGauge)
 		discard;
 
 	Out.vColor.rgba = vector(0.f, 0.7f, 0.f, 1.f);

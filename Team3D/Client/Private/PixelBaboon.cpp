@@ -84,11 +84,11 @@ _int CPixelBaboon::Tick(_double dTimeDelta)
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD4))
 	{
-		m_pTransformCom->Go_Right(dTimeDelta);
+		m_pTransformCom->Go_Left(dTimeDelta);
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD6))
 	{
-		m_pTransformCom->Go_Left(dTimeDelta);
+		m_pTransformCom->Go_Right(dTimeDelta);
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD2))
 	{

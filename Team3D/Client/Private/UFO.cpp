@@ -442,7 +442,7 @@ HRESULT CUFO::Render(RENDER_GROUP::Enum eGroup)
 	iMaterialIndex = 0;
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
 	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
-	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 16, false, eGroup);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 20, false, eGroup);
 
 
 	return S_OK;

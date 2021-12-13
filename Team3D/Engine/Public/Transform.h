@@ -29,6 +29,7 @@ public: /* Getter */
 	_float	Get_Scale(STATE eSTate) const;
 	_matrix	Get_WorldMatrix() const;
 	_double  Get_RotationPerSec() const;
+	_double  Get_SpeedPerSec() const;
 
 public: /* Setter */
 	void	Set_State(STATE eState, _fvector vState);
@@ -51,6 +52,7 @@ public:
 	void	Go_Left(_double dTimeDelta);
 	void	Go_Up(_double dTimeDelta);
 	void	Go_Down(_double dTimeDelta);
+	void	Go_Direction(_fvector vDirection, _double dTimeDelta);
 	void	Rotate_Axis(_fvector vAxis, _double dTimeDelta);
 	void	Rotate_ToTarget(_fvector vTargetPos);
 	void	Rotate_ToTargetOnLand(_fvector vTargetPos);

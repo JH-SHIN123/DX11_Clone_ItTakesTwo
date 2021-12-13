@@ -87,21 +87,21 @@ void CPixelCrossHair::Movement(_double dTimeDelta)
 	_vector vInitialPos = XMVectorSet(m_fInitialX, m_fInitialY, 0.f, 1.f);
 
 	if (m_pGameInstance->Key_Pressing(DIK_W) && m_pGameInstance->Key_Pressing(DIK_A))
-		vDir = XMVectorSet(1.f, 1.f, 0.f, 0.f);
-	else if (m_pGameInstance->Key_Pressing(DIK_W) && m_pGameInstance->Key_Pressing(DIK_D))
 		vDir = XMVectorSet(-1.f, 1.f, 0.f, 0.f);
+	else if (m_pGameInstance->Key_Pressing(DIK_W) && m_pGameInstance->Key_Pressing(DIK_D))
+		vDir = XMVectorSet(1.f, 1.f, 0.f, 0.f);
 	else if (m_pGameInstance->Key_Pressing(DIK_S) && m_pGameInstance->Key_Pressing(DIK_A))
-		vDir = XMVectorSet(1.f, -1.f, 0.f, 0.f);
-	else if (m_pGameInstance->Key_Pressing(DIK_S) && m_pGameInstance->Key_Pressing(DIK_D))
 		vDir = XMVectorSet(-1.f, -1.f, 0.f, 0.f);
+	else if (m_pGameInstance->Key_Pressing(DIK_S) && m_pGameInstance->Key_Pressing(DIK_D))
+		vDir = XMVectorSet(1.f, -1.f, 0.f, 0.f);
 	else if (m_pGameInstance->Key_Pressing(DIK_W))
 		vDir = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	else if (m_pGameInstance->Key_Pressing(DIK_A))
-		vDir = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+		vDir = XMVectorSet(-1.f, 0.f, 0.f, 0.f);
 	else if (m_pGameInstance->Key_Pressing(DIK_S))
 		vDir = XMVectorSet(0.f, -1.f, 0.f, 0.f);
 	else if (m_pGameInstance->Key_Pressing(DIK_D))
-		vDir = XMVectorSet(-1.f, 0.f, 0.f, 0.f);
+		vDir = XMVectorSet(1.f, 0.f, 0.f, 0.f);
 
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector NextPos = vPos += vDir * (_float)dTimeDelta * 0.5f;

@@ -197,12 +197,14 @@ HRESULT CLevel_Stage::Ready_Test()
 #ifdef __TEST_HYE
 	CDynamic_Env::ARG_DESC tArg;
 	_matrix World = XMMatrixIdentity();
-	lstrcpy(tArg.szModelTag, TEXT("Component_Model_Moon_01_Plushie"));
+	lstrcpy(tArg.szModelTag, TEXT("Component_Model_Saucer_Interior_Pedal_01"));
 	XMStoreFloat4x4(&tArg.WorldMatrix, World);
 	tArg.iMaterialIndex = 0;
 	tArg.iOption = 0;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_Moon"), &tArg), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonUFO")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_Pedal"), &tArg), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_Moon"), &tArg), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonUFO")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SpaceShip")), E_FAIL);
 #endif // __TEST_HYE
 
 	/* Teak */
@@ -681,26 +683,27 @@ HRESULT CLevel_Stage::Ready_Layer_Rope(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_UFORadarSet(const _tchar * pLayerTag)
 {
 	RADARDESC RadarDesc;
-	RadarDesc.vPosition = { 60.f, 0.f, 15.f, 1.f };
+	//64.0174942f, 601.063843f, 1012.77844f, 1.f
+	RadarDesc.vPosition = { 64.0174942f, 601.063843f, 1012.77844f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UFORadarSet"), &RadarDesc), E_FAIL);
 
 	/* Pixels */
-	_vector vPosition = { 60.f, 0.f + 0.3f, 15.f + 0.29f, 1.f };
+	_vector vPosition = { 64.0174942f, 601.063843f + 0.3f, 1012.77844f - 0.29f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelChargeBar"), &vPosition), E_FAIL);
 
-	vPosition = { 60.f, 0.f + 0.3f, 15.f + 0.29f, 1.f };
+	vPosition = { 64.0174942f, 601.063843f + 0.3f, 1012.77844f - 0.29f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelChargeBarGauge"), &vPosition), E_FAIL);
 
-	vPosition = { 60.f, 0.f + 0.56f, 15.f + 0.29f, 1.f };
+	vPosition = { 64.0174942f, 601.063843f + 0.56f, 1012.77844f - 0.29f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelUFO"), &vPosition), E_FAIL);
 
-	vPosition = { 60.f, 0.f + 0.56f, 15.f + 0.29f, 1.f };
+	vPosition = { 64.0174942f, 601.063843f + 0.56f, 1012.77844f - 0.29f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelCrossHair"), &vPosition), E_FAIL);
 
-	vPosition = { 60.f, 0.f + 0.56f, 15.f + 0.29f, 1.f };
+	vPosition = { 64.0174942f, 601.063843f + 0.56f, 1012.77844f - 0.29f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelBaboon"), &vPosition), E_FAIL);
 
-	vPosition = { 60.f, 0.f + 0.56f, 15.f + 0.29f, 1.f };
+	vPosition = { 64.0174942f, 601.063843f + 0.56f, 1012.77844f - 0.29f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelLaser"), &vPosition), E_FAIL);
 
 	return S_OK;

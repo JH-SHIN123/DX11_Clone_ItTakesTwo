@@ -725,6 +725,76 @@ PS_OUT	PS_ALIENSCREEN(PS_IN In, uniform bool isGreen)
 	return Out;
 }
 
+PS_OUT	PS_LASERBUTTON(PS_IN In, uniform bool isGreen)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+	if (isGreen)
+		Out.vDiffuse = vMtrlDiffuse * vector(0.f, 1.f, 0.3f, 1.f);
+	else
+		Out.vDiffuse = vMtrlDiffuse * vector(0.f, 0.3f, 1.f, 1.f);
+
+	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+
+	// Calculate Normal
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+	// Calculate Specular
+	Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
+
+	// Calculate Emissive
+	Out.vEmissive = 0.2f;
+
+	// Calculate Shadow
+	int iIndex = -1;
+	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
+
+	// Get_ShadowFactor
+	float fShadowFactor = 0.f;
+	fShadowFactor = Get_ShadowFactor(In.iViewportIndex, iIndex, In.vWorldPosition);
+
+	Out.vShadow = 1.f - fShadowFactor;
+	Out.vShadow.a = 1.f;
+
+	return Out;
+}
+
+PS_OUT	PS_LASER(PS_IN In, uniform bool isGreen)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	if (isGreen)
+		Out.vDiffuse = vector(0.f, 1.f, 0.3f, 1.f);
+	else
+		Out.vDiffuse = vector(0.f, 0.3f, 1.f, 1.f);
+
+	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+
+	// Calculate Normal
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+	// Calculate Specular
+	Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
+
+	// Calculate Emissive
+	Out.vEmissive = 0.5f;
+
+	// Calculate Shadow
+	int iIndex = -1;
+	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
+
+	// Get_ShadowFactor
+	float fShadowFactor = 0.f;
+	fShadowFactor = Get_ShadowFactor(In.iViewportIndex, iIndex, In.vWorldPosition);
+
+	Out.vShadow = 1.f - fShadowFactor;
+	Out.vShadow.a = 1.f;
+
+	return Out;
+}
+
 PS_OUT_ALPHA PS_FRESNEL(PS_IN_FRESNEL In)
 {
 	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
@@ -989,6 +1059,47 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 	// 14
+	pass Default_Laserbutton_Blue
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_LASERBUTTON(false);
+	}
+	// 15
+	pass Default_Laserbutton_Green
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_LASERBUTTON(true);
+	}
+	// 16
+	pass Default_Laser_Blue
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_LASER(false);
+	}
+	// 17
+	pass Default_Laser_Green
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_LASER(true);
+	}
+	
+	// 18
 	pass Default_Fresnel
 	{
 		SetRasterizerState(Rasterizer_Solid);
@@ -998,7 +1109,7 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_FRESNEL();
 		PixelShader = compile ps_5_0 PS_FRESNEL();
 	}
-	// 15
+	// 19
 	pass Default_Radar_Screen
 	{
 		SetRasterizerState(Rasterizer_Solid);
@@ -1008,7 +1119,7 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_RADARSCREEN();
 	}
-	// 16
+	// 20
 	pass Default_BoneAlpha
 	{
 		SetRasterizerState(Rasterizer_Solid);

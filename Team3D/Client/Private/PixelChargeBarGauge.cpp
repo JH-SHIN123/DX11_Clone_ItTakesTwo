@@ -44,16 +44,16 @@ _int CPixelChargeBarGauge::Tick(_double dTimeDelta)
 
 	if (((CCody*)DATABASE->GetCody())->Get_IsInArcadeJoyStick() == true)
 	{
-		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) && m_fGauge < 0.1f)
+		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) && m_fGauge > 0.9f)
 		{
 			((CPixelLaser*)DATABASE->Get_PixelLaser())->Set_Render_State(true);
-			m_fGauge += 0.7f;
+			m_fGauge -= 0.7f;
 		}
 
-		if (m_fGauge > 0.f)
-			m_fGauge -= (_float)dTimeDelta;
-		else if (m_fGauge < 0.f)
-			m_fGauge = 0.f;
+		if (m_fGauge < 1.f)
+			m_fGauge += (_float)dTimeDelta;
+		else if (m_fGauge > 1.f)
+			m_fGauge = 1.f;
 	}
 
 	DATABASE->Set_LaserGauge(m_fGauge);
