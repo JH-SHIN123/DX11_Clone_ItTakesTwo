@@ -52,7 +52,7 @@ _int CTimer_LaserTennis::Tick(_double dTimeDelta)
 		m_dLaserActivation_Time += dTimeDelta;
 
 		/* 작은버튼 */
-		if (3.0 <= m_dButton_Time)
+		if (2.0 <= m_dButton_Time)
 		{
 			LASERTENNIS->Active_LaserButton();
 			m_dButton_Time = 0.0;
@@ -64,7 +64,7 @@ _int CTimer_LaserTennis::Tick(_double dTimeDelta)
 			m_dLargeButton_Time = 0.0;
 		}
 		/* 레이저 생성기 */
-		if (15.0 <= m_dLaserActivation_Time)
+		if (10.0 <= m_dLaserActivation_Time)
 		{
 			if (0 == m_iLaserActivation_Count)
 			{

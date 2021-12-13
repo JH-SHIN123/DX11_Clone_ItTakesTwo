@@ -197,6 +197,8 @@ void CLaserButtonLarge::Activaion_Movement(_double dTimeDelta)
 
 		if ((m_fMaxPosY - m_fDistance) >= XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
 		{
+			LASERTENNIS->Active_LaserButtonLarge_Gate(true);
+
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fMaxPosY - m_fDistance));
 			m_bActiveMove = false;
 			m_bMovement = false;
