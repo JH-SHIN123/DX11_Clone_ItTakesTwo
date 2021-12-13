@@ -697,6 +697,18 @@ HRESULT CLevel_Stage::Ready_Layer_UFORadarSet(const _tchar * pLayerTag)
 	vPosition = { 60.f, 0.f + 0.56f, 15.f + 0.29f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelCrossHair"), &vPosition), E_FAIL);
 
+	vPosition = { 60.f, 0.f + 0.56f, 15.f + 0.29f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelBaboon"), &vPosition), E_FAIL);
+
+	vPosition = { 60.f, 0.f + 0.56f, 15.f + 0.29f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelHeart"), &vPosition), E_FAIL);
+
+	vPosition = { 60.f, 0.f + 0.56f, 15.f + 0.29f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelLaser"), &vPosition), E_FAIL);
+
+	vPosition = { 60.f, 0.f + 0.56f, 15.f + 0.29f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelShield"), &vPosition), E_FAIL);
+
 
 	return S_OK;
 }
