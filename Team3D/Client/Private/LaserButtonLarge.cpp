@@ -173,14 +173,14 @@ void CLaserButtonLarge::Activaion_Movement(_double dTimeDelta)
 		if ((m_fMaxPosY - m_fDistance) >= XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
 		{
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fMaxPosY - m_fDistance));
-			if (0.1<= m_dLaserCreateTime)
+			if (0.2<= m_dLaserCreateTime)
 			{
 				LASERTENNIS->Create_LaserTrigger_LargeButton(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f), m_eTarget);
 				++m_iLaserCount;
 				m_dLaserCreateTime = 0.0;
 			}
 			
-			if (10 <= m_iLaserCount)
+			if (8 <= m_iLaserCount)
 			{
 				m_bCreateTrigger = false;
 				m_bActiveMove = false;

@@ -57,6 +57,8 @@ _int CBossFloor::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
 
+	m_pDynamicActorCom->Update_DynamicActor();
+
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 500.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
@@ -105,18 +107,21 @@ void CBossFloor::GoUp(_double dTimeDelta)
 	}
 
 	m_pTransformCom->Go_Up(dTimeDelta);
-	m_pStaticActorCom->Update_StaticActor();
 }
 
 HRESULT CBossFloor::Ready_Component(void * pArg)
 {
-	/* Static */
-	CStaticActor::ARG_DESC tStaticActorArg;
-	tStaticActorArg.pTransform = m_pTransformCom;
-	tStaticActorArg.pModel = m_pModelCom;
-	tStaticActorArg.pUserData = &m_UserData;
+	/* Dynamic */
+	PxGeometry* DynamicGeom = new PxBoxGeometry(10.f, 1.f, 10.f);
+	CDynamicActor::ARG_DESC tDynamicActorArg;
+	tDynamicActorArg.pTransform = m_pTransformCom;
+	tDynamicActorArg.fDensity = 1.f;
+	tDynamicActorArg.pGeometry = DynamicGeom;
+	tDynamicActorArg.vVelocity = PxVec3(0.f, 0.f, 0.f);
+	tDynamicActorArg.pUserData = &m_UserData;
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
+	Safe_Delete(DynamicGeom);
 
 	return S_OK;
 }
@@ -147,7 +152,7 @@ CGameObject * CBossFloor::Clone_GameObject(void * pArg)
 
 void CBossFloor::Free()
 {
-	Safe_Release(m_pStaticActorCom);
+	Safe_Release(m_pDynamicActorCom);
 
 	CDynamic_Env::Free();
 }

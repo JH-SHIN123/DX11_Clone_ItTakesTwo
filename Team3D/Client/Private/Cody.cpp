@@ -2913,11 +2913,11 @@ void CCody::Set_BossMissile_Attack()
 
 void CCody::Falling_Dead(const _double dTimeDelta)
 {
-	/* 데드라인과 충돌시 2초후에 리스폰 */
+	/* 데드라인과 충돌시 1초후에 리스폰 */
 	if (m_IsDeadLine == true)
 	{
 		m_dDeadTime += dTimeDelta;
-		if (m_dDeadTime >= 2.f)
+		if (m_dDeadTime >= 1.f)
 		{
 			_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
 			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
@@ -3321,7 +3321,7 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 	if (2.f <= m_dRespawnTime)
 	{
 		m_pActorCom->Set_ZeroGravity(false, false, false);
-		m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
+		m_pActorCom->Set_Position(XMLoadFloat3(&m_vSavePoint));
 		m_pActorCom->Update(dTimeDelta);
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 

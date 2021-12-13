@@ -69,6 +69,7 @@ void  GS_MAIN(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT
 	// 어쩌피 뷰 매트릭스는 항등
 	matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
 
+	/* 폰트 하나 사각형 사이즈 */
 	float2	vSize = float2(In[0].vScale.x / g_MainViewPort.x, In[0].vScale.y / g_MainViewPort.y);
 
 	if (0 == g_iGSOption)

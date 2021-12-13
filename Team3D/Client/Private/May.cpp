@@ -255,9 +255,6 @@ _int CMay::Late_Tick(_double dTimeDelta)
 
 HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 {
-	if (true == m_IsDeadLine)
-		return S_OK;
-
 	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
@@ -2270,11 +2267,11 @@ void CMay::Set_ActorGravity(_bool IsZeroGravity, _bool IsUp, _bool _bStatic)
 
 void CMay::Falling_Dead(const _double dTimeDelta)
 {
-	/* 데드라인과 충돌시 2초후에 리스폰 */
+	/* 데드라인과 충돌시 1초후에 리스폰 */
 	if (m_IsDeadLine == true)
 	{
 		m_fDeadTime += (_float)dTimeDelta;
-		if (m_fDeadTime >= 2.f)
+		if (m_fDeadTime >= 1.f)
 		{
 			_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
 			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
