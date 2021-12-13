@@ -115,7 +115,11 @@ HRESULT CMainApp::Render(_double dTimeDelta)
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 	NULL_CHECK_RETURN(m_pRenderer, E_FAIL);
 
+#ifdef _DEBUG
 	m_pGameInstance->Clear_BackBuffer(_float4(0.f, 0.f, 1.f, 1.f));
+#else
+	m_pGameInstance->Clear_BackBuffer(_float4(0.f, 0.f, 0.f, 1.f));
+#endif
 	m_pGameInstance->Clear_DepthStencilBuffer();
 
 	FAILED_CHECK_RETURN(m_pRenderer->Draw_Renderer(dTimeDelta), E_FAIL);

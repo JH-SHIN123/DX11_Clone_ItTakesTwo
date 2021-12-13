@@ -24,15 +24,6 @@ cbuffer LightColor
 	vector	g_vLightSpecular;
 }
 
-cbuffer FogDesc
-{
-	float3	g_vFogColor = {0.5f,0.5f,0.5f};			// 안개의 기본색상 ( 앰비언트 색상과 동일해야함)
-	float	g_fFogStartDist = 37.0f;		// 안개 지점에서 카메라까지의 거리
-	float3	g_vFogHighlightColor = { 0.8f, 0.7f, 0.4f};	// 카메라와 태양을 잇는 벡터와 평행에 가까운 카메라 벡터의 하이라이팅 픽셀 색상
-	float	g_fFogGlobalDensity = 1.5f;	// 안개 밀도 계수(값이 클수록 안개가 짙어진다)
-	float	g_fFogHeightFalloff = 0.2f;	// 높이 소멸값
-};
-
 cbuffer MtrlDesc
 {
 	float	g_fPower		= 64.f; // 16.f
@@ -41,36 +32,6 @@ cbuffer MtrlDesc
 	vector	g_vMtrlSpecular = (vector)1.f;
 }
 ////////////////////////////////////////////////////////////
-/* Fuction */
-float3 ApplyFog(float3 originalColor, float eyePosY, float3 eyeToPixel)
-{
-	float pixelDist = length(eyeToPixel);
-	float3 eyeToPixelNorm = eyeToPixel / pixelDist;
-
-	// 픽셀 거리에 대해 안개 시작 지점 계싼
-	float fogDist = max(pixelDist - g_fFogStartDist, 0.0);
-
-	// 안개 세기에 대해 거리 계산
-	float fogHeightDensityAtViewer = exp(-g_fFogHeightFalloff * eyePosY); // exp : 지수 반환(왼쪽 음에 가까운 지수그래프사용)
-	float fogDistInt = fogDist * fogHeightDensityAtViewer;
-
-	// 안개 세기에 대해 높이 계산
-	float eyeToPixelY = eyeToPixel.y * (fogDist / pixelDist);
-	float t = g_fFogHeightFalloff * eyeToPixelY;
-	const float thresholdT = 0.01;
-	float fogHeightInt = abs(t) > thresholdT ?
-		(1.0 - exp(-t)) / t : 1.0;
-
-	// 위 계산 값을 합해 최종 인수 계산
-	float fogFinalFactor = exp(-g_fFogGlobalDensity * fogDistInt * fogHeightInt);
-
-	// 태양 하이라이트 계산 및 안개 색상 혼합
-	float sunHighlightFactor = saturate(dot(eyeToPixelNorm, -g_vLightDir));
-	sunHighlightFactor = pow(sunHighlightFactor, 8.0);
-	float3 fogFinalColor = lerp(g_vFogColor, g_vFogHighlightColor, sunHighlightFactor);
-
-	return lerp(fogFinalColor, originalColor, 0.f);
-}
 
 ////////////////////////////////////////////////////////////
 struct VS_IN
@@ -125,8 +86,6 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	vector	vWorldPos	= vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
 	float	fViewZ		= 0.f;
 	vector	vLook		= (vector)0.f;
-	vector	vLookNorm	= (vector)0.f;
-	float	fEyePosY	= 0.f;
 
 	/* ViewportUVInfo : x = TopLeftX, y = TopLeftY, z = Width, w = Height, 0.f ~ 1.f */
 	if (In.vTexUV.x >= g_vMainViewportUVInfo.x && In.vTexUV.x <= g_vMainViewportUVInfo.z &&
@@ -136,9 +95,7 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		vWorldPos	= vWorldPos * fViewZ;
 		vWorldPos	= mul(vWorldPos, g_MainProjMatrixInverse);
 		vWorldPos	= mul(vWorldPos, g_MainViewMatrixInverse);
-		vLook		= vWorldPos - g_vMainCamPosition;
-		vLookNorm	= normalize(vLook);
-		fEyePosY	= g_vMainCamPosition.y;
+		vLook		= normalize(vWorldPos - g_vMainCamPosition);
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
 		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
@@ -147,9 +104,7 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 		vWorldPos	= vWorldPos * fViewZ;
 		vWorldPos	= mul(vWorldPos, g_SubProjMatrixInverse);
 		vWorldPos	= mul(vWorldPos, g_SubViewMatrixInverse);
-		vLook		= vWorldPos - g_vSubCamPosition;
-		vLookNorm	= normalize(vLook);
-		fEyePosY	= g_vSubCamPosition.y;
+		vLook		= normalize(vWorldPos - g_vSubCamPosition);
 	}
 	else
 		discard;
@@ -163,13 +118,9 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	{
 		vector	vSpecSrc = vector(vSpecSrcDesc.xyz * 2.f - 1.f, 0.f);
 		vector vReflect = reflect(normalize(g_vLightDir), vSpecSrc);
-		Out.vSpecular = pow(max(dot(vLookNorm * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
+		Out.vSpecular = pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
 	}
 	Out.vSpecular.a = 0.f;
-
-	/* Fog */
-	Out.vShade.xyz = ApplyFog(Out.vShade.xyz, fEyePosY, vLook);
-	//Out.vSpecular.xyz = ApplyFog(Out.vSpecular.xyz, fEyePosY, vLook);
 
 	return Out;
 }
@@ -221,9 +172,6 @@ PS_OUT PS_POINT(PS_IN In)
 		Out.vSpecular = pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
 	}
 	Out.vSpecular.a = 0.f;
-
-	// 조명색 Power
-	//Out.vShade *= 5.f;
 
 	return Out;
 }

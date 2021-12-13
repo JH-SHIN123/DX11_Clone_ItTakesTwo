@@ -217,22 +217,34 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_RadiarBlurMaskTex", m_pRadiarBlur_Mask->Get_ShaderResourceView(0));;
 	
 	_float	fCamFar;
+	_vector vCamPosition;
 	_matrix	ProjMatrixInverse;
+	_matrix	ViewMatrixInverse;
 	_float4	vViewportUVInfo;
 
+	/* For.MainView */
+	vCamPosition = pPipeline->Get_MainCamPosition();
 	fCamFar = pPipeline->Get_MainCamFar();
 	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_MAINPROJ_INVERSE);
+	ViewMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_MAINVIEW_INVERSE);
 	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_MAIN);
-	m_pVIBuffer_ToneMapping->Set_Variable("g_fMainCamFar", &fCamFar, sizeof(fCamFar));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_MainProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(ProjMatrixInverse));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_vMainViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fMainCamFar", &fCamFar, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_vMainCamPosition", &vCamPosition, sizeof(_float4)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_MainProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(_matrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_MainViewMatrixInverse", &XMMatrixTranspose(ViewMatrixInverse), sizeof(_matrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_vMainViewportUVInfo", &vViewportUVInfo, sizeof(_float4)), E_FAIL);
 
+	/* For.SubView */
+	vCamPosition = pPipeline->Get_SubCamPosition();
 	fCamFar = pPipeline->Get_SubCamFar();
 	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_SUBPROJ_INVERSE);
+	ViewMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_SUBVIEW_INVERSE);
 	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_SUB);
-	m_pVIBuffer_ToneMapping->Set_Variable("g_fSubCamFar", &fCamFar, sizeof(fCamFar));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_SubProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(ProjMatrixInverse));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fSubCamFar", &fCamFar, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_vSubCamPosition", &vCamPosition, sizeof(_float4)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_SubProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(_matrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_SubViewMatrixInverse", &XMMatrixTranspose(ViewMatrixInverse), sizeof(_matrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4)), E_FAIL);
 
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_PostFX")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_BloomTexture", m_pShaderResourceView_Bloom);
@@ -241,6 +253,21 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EffectTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Effect")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EffectBlurTex", pBlur->Get_ShaderResourceView_BlurEffect());
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
+
+	/* TEST */
+#ifdef _DEBUG
+	TCHAR szBuff[256] = L"";
+	GetPrivateProfileString(L"Section_3", L"Key_1", L"0", szBuff, 256, L"../test.ini");;
+	_float a = (_float)_wtof(szBuff);
+	GetPrivateProfileString(L"Section_3", L"Key_2", L"0", szBuff, 256, L"../test.ini");
+	_float b = (_float)_wtof(szBuff);
+	GetPrivateProfileString(L"Section_3", L"Key_3", L"0", szBuff, 256, L"../test.ini");
+	_float c = (_float)_wtof(szBuff);
+
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fFogStartDist", &a, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fFogGlobalDensity", &b, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fFogHeightFalloff", &c, sizeof(_float)), E_FAIL);
+#endif // _DEBUG
 
 	m_pVIBuffer_ToneMapping->Render(0);
 
