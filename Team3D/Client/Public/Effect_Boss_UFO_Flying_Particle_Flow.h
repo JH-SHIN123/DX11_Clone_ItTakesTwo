@@ -2,12 +2,12 @@
 #include "InGameEffect.h"
 
 BEGIN(Client)
-class CEffect_Boss_UFO_Flying_Particle final : public CInGameEffect
+class CEffect_Boss_UFO_Flying_Particle_Flow final : public CInGameEffect
 {
 private:
-	explicit CEffect_Boss_UFO_Flying_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CEffect_Boss_UFO_Flying_Particle(const CEffect_Boss_UFO_Flying_Particle& rhs);
-	virtual ~CEffect_Boss_UFO_Flying_Particle() = default; public:
+	explicit CEffect_Boss_UFO_Flying_Particle_Flow(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_Boss_UFO_Flying_Particle_Flow(const CEffect_Boss_UFO_Flying_Particle_Flow& rhs);
+	virtual ~CEffect_Boss_UFO_Flying_Particle_Flow() = default; public:
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -28,7 +28,6 @@ private:
 	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0)	override;
 	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0)	override;
 	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0)		override;
-	void Instance_Pos(_int iIndex, _fmatrix ParentMatrix);
 
 private:
 	void Reset_Instance(_double TimeDelta, _fmatrix vParentMatrix, _int iIndex = 0);
@@ -36,7 +35,6 @@ private:
 
 private:
 	HRESULT Ready_InstanceBuffer();
-	_float3 Get_Particle_Rand_Dir(_fvector vDefaultPos);
 
 private:
 	_double m_dAlphaTime = 0.5; //
@@ -45,7 +43,6 @@ private:
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT = nullptr;
-	_float4*							m_pInstanceBuffer_LocalPos = nullptr;
 
 	const _float  m_fAlphaTime_Power = 1.f;
 	const _float  m_fInstance_SpeedPerSec = 2.5f;
@@ -57,7 +54,7 @@ private:
 	_float3 m_vOffSet_Pos = { 0.f, -0.75f, -0.2f };
 
 public:
-	static CEffect_Boss_UFO_Flying_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_Boss_UFO_Flying_Particle_Flow* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

@@ -317,6 +317,29 @@ PS_OUT  PS_DISTORTION_BOSSRING(PS_IN_DIST In)
 	return Out;
 }
 
+PS_OUT  PS_DISTORTION_UFO_RING(PS_IN_DIST In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+
+	float2 vCenter = In.vTexUV - 0.5f;
+	vCenter = abs(vCenter);
+	float fLength = length(vCenter);
+	if (0.5f < fLength)
+		discard;
+	fLength = fLength / 0.5f; // normalize
+
+	float4 vDiffuse = g_DiffuseTexture.Sample(DiffuseSampler, In.vWeightUV);
+	float2 vUV = In.vWeightUV;
+	vUV.x = vDiffuse.r * 2.f;
+	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vUV);
+	Out.vColor = vDiffuse * vColor;
+	Out.vColor.a = vDiffuse.r * 2.f;
+	Out.vColor.a *= g_fAlpha;
+
+	return Out;
+}
+
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
@@ -349,5 +372,15 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_ANGLE_UV();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_DISTORTION_BOSSRING();
+	}
+
+	pass Boss_UFO_Flying_Ring // 3
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_ANGLE_UV();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_DISTORTION_UFO_RING();
 	}
 };

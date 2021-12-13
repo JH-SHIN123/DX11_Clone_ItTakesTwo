@@ -48,6 +48,7 @@
 #include "Effect_Boss_Missile_Particle.h"
 #include "Effect_Boss_UFO_Flying.h"
 #include "Effect_Boss_UFO_Flying_Particle.h"
+#include "Effect_Boss_UFO_Flying_Particle_Flow.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -176,6 +177,20 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::BossMissile_Particle:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Particle");
+		break;
+	case Effect_Value::Boss_UFO_Flying:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_UFO_Flying");
+		Clone_Data.fSizePower = -0.75f;
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
+		Clone_Data.fSizePower = -1.10f;
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
+		Clone_Data.fSizePower = -1.45f;
+		break;
+	case Effect_Value::Boss_UFO_Flying_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_UFO_Flying_Particle");
+		break;
+	case Effect_Value::Boss_UFO_Flying_Particle_Flow:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_UFO_Flying_Particle_Flow");
 		break;
 	default:
 		break;
@@ -372,6 +387,10 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_UFO_Flying_Particle"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_UFO_Flying_Particle", CEffect_Boss_UFO_Flying_Particle::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_UFO_Flying_Particle_Flow"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_UFO_Flying_Particle_Flow", CEffect_Boss_UFO_Flying_Particle_Flow::Create(pDevice, pDeviceContext, pData));
+
+		
 #pragma  endregion
 
 
@@ -461,6 +480,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Loop"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Smoke/smokeloop_0%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Dust_Motes"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/T_Dust_Motes_03.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Ring"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Ring/T_Ring_0%d.png"), 2)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ShockWave"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/ShockWave/ShockWave_%d.png"), 2)), E_FAIL);
 
 	
 	

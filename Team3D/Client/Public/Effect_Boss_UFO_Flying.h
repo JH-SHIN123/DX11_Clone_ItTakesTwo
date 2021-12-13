@@ -3,7 +3,6 @@
 
 BEGIN(Client)
 class CEffect_Boss_UFO_Flying final : public CInGameEffect 
-	// ¸µ
 {
 private:
 	explicit CEffect_Boss_UFO_Flying(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -24,18 +23,24 @@ public:
 
 private:
 	HRESULT Ready_Instance();
+	void Check_ParentMatrix();
 	void Check_RotateUV(_double TimeDelta);
 
 private:
 	CVIBuffer_Rect*		m_pBufferRectCom = nullptr;
 	_double				m_dActivate_Time = 0.0;
-	_bool m_IsActivate = true;
+	_bool				m_IsActivate	 = true;
 
-	_float4 m_vColor = { 0.980392218f, 0.401960814f, 0.347058856f, 1.000000000f };
+	_float4 m_vColor = { 0.141176534f, 0.172549081f, 1.000000000f, 1.000000000f };
 	_double m_dRotateTime = 0.0;
 	_float  m_fTime = 0.0f;
 	_float2 m_vSize = { 5.f, 5.f };
 	_float4 m_vColorRamp_UV = { 0.f, 0.f, 1.f, 1.f };
+	_float3 m_vOffSet_Pos = { 0.f, -1.f, -0.2f };
+
+
+private:
+	class CUFO* m_pUFO = nullptr;
 
 public:
 	static CEffect_Boss_UFO_Flying* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

@@ -34,8 +34,9 @@ HRESULT CEffect_Boss_GroundPound_Ring::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Slime_Cloud"), TEXT("Com_Tex1"), (CComponent**)&m_pTexturesCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Ring"), TEXT("Com_Tex2"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
 
-	
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(65.f, 0.3f, 30.f, 1.f));
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPos.m128_f32[1] += 0.3f;
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 	m_pTransformCom->Set_Scale(XMVectorSet(13.8f, 1.f, 13.8f, 0.f));
 
 	m_EffectDesc_Prototype.fLifeTime = 3.f;

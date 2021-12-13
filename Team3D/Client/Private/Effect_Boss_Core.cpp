@@ -101,6 +101,12 @@ _int CEffect_Boss_Core::Tick(_double TimeDelta)
 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_N))
 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
+	/*GARA*/if (m_pGameInstance->Key_Down(DIK_COMMA))
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying, m_pTransformCom->Get_WorldMatrix());
+	/*GARA*/if (m_pGameInstance->Key_Down(DIK_PERIOD))
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying_Particle, m_pTransformCom->Get_WorldMatrix());
+	/*GARA*/if (m_pGameInstance->Key_Down(DIK_SLASH))
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying_Particle_Flow, m_pTransformCom->Get_WorldMatrix());
 
 	return _int();
 }

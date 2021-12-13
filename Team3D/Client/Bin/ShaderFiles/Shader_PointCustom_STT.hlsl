@@ -895,6 +895,25 @@ PS_OUT  PS_MAIN_PARTICLE_RGB(PS_IN_DOUBLEUV In)
 	return Out;
 }
 
+PS_OUT  PS_MAIN_PARTICLE_UFO(PS_IN_DOUBLEUV In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	if (0.01f >= vDiff.r)
+		discard;
+	Out.vColor = vDiff;
+	Out.vColor.a = vDiff.r * 2.f;
+
+	float2 vTexUV_2 = { In.fTime , 0.f };
+	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vTexUV_2);
+
+	Out.vColor.rgb *= vColor.rgb * 1.5f;
+	Out.vColor.a *= (vColor.r + vColor.g + vColor.b) * 1.f * In.fTime * g_fTime;
+
+	return Out;
+}
+
 PS_OUT  PS_MAIN_DEFAULT_SMOKE(PS_IN_DOUBLEUV In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -1016,7 +1035,7 @@ technique11		DefaultTechnique
 		PixelShader = compile ps_5_0  PS_MAIN_MISSILE_SMOKE();
 	}
 
-	pass PS_BOSSMISSILE_EXPLOSION // 9
+	pass PS_BOSSMISSILE_EXPLOSION // 10
 	{
 		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
@@ -1024,5 +1043,15 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN();
 		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
 		PixelShader = compile ps_5_0  PS_MAIN_MISSILE_EXPLOSION();
+	}
+
+	pass PS_BOSSMISSILE_UFO_FLYING_PARTICLE // 11
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
+		PixelShader = compile ps_5_0  PS_MAIN_PARTICLE_UFO();
 	}
 }

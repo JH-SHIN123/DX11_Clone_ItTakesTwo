@@ -29,7 +29,7 @@ HRESULT CEffect_RespawnTunnel::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_Rect_TripleUV"), TEXT("Com_VIBuffer"), (CComponent**)&m_pBufferRectCom_Preview), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Level_Preview"), TEXT("Com_Texture_Preview"), (CComponent**)&m_pTexturesCom_Preview), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Circle_Alpha"), TEXT("Com_Texture_Mask"), (CComponent**)&m_pTexturesCom_Masking), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Slime_Cloud"), TEXT("Com_Texture_Dist"), (CComponent**)&m_pTexturesCom_Distortion_2), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_ShockWave"), TEXT("Com_Texture_Dist"), (CComponent**)&m_pTexturesCom_Distortion_2), E_FAIL);
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	WorldMatrix.r[0] *= -1.f;

@@ -182,11 +182,11 @@ HRESULT CLevel_Stage::Ready_Test()
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core")), E_FAIL);
 
-	CEffect_Env_Particle_Field::ARG_DESC Arg_Desc;
-	Arg_Desc.iInstanceCount = 8000;
-	Arg_Desc.vPosition = { 60.f, 0.f, 30.f, 1.f };
-	Arg_Desc.vRadiusXYZ = { 30.f, 10.f, 100.f };
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
+	//CEffect_Env_Particle_Field::ARG_DESC Arg_Desc;
+	//Arg_Desc.iInstanceCount = 8000;
+	//Arg_Desc.vPosition = { 60.f, 0.f, 30.f, 1.f };
+	//Arg_Desc.vRadiusXYZ = { 30.f, 10.f, 100.f };
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
 
 	ROBOTDESC UFODesc;
 	UFODesc.vPosition = { 64.f, 10.f, 30.f, 1.f };

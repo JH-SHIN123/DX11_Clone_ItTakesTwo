@@ -38,6 +38,9 @@ enum class Effect_Value
 	BossMissile_Smoke,
 	BossMissile_Explosion,
 	BossMissile_Particle,
+	Boss_UFO_Flying,
+	Boss_UFO_Flying_Particle,
+	Boss_UFO_Flying_Particle_Flow,
 	Effect_Value_End
 };
 

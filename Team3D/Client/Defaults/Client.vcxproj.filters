@@ -468,6 +468,24 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\00.Laser_Particle">
       <UniqueIdentifier>{b8aed4f4-bdd1-4e5a-a923-dbf34dca7640}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile">
+      <UniqueIdentifier>{7577d5c3-dc53-419f-abb5-aeb3fb47ff6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke">
+      <UniqueIdentifier>{fe5deece-04a5-4318-afb5-acdc2d731f8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion">
+      <UniqueIdentifier>{acd6cfb6-5704-4c57-89c5-0b6a29379e73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle">
+      <UniqueIdentifier>{f9eacdc2-4e96-4dbc-bb27-2475ddb8a8bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying">
+      <UniqueIdentifier>{3f32b0e4-3d4a-4215-ade9-bccd3e8a77b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\00.Particle">
+      <UniqueIdentifier>{3d639529-e757-4527-9229-3199ba9c99a8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May">
       <UniqueIdentifier>{611bc1d3-0276-4f21-b082-4231462adca0}</UniqueIdentifier>
     </Filter>
@@ -488,6 +506,12 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\Dead_Particle_Fire">
       <UniqueIdentifier>{813909d8-adec-49bd-8b16-338837defcda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion">
+      <UniqueIdentifier>{6d9b9a92-4031-4485-a5e3-90daacc33de6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion\00.Particle">
+      <UniqueIdentifier>{d1723ec9-3aaf-4b0b-9585-3a346d5e7971}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.Revive_Effect">
       <UniqueIdentifier>{9657cfa3-22bc-48ee-b205-3d702b0af337}</UniqueIdentifier>
@@ -554,6 +578,15 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\02.Explosion">
       <UniqueIdentifier>{986bf8f3-5282-448d-8a28-88224ce7a71f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound">
+      <UniqueIdentifier>{a909e6a1-a1ea-492c-a1d7-86f183945103}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\00.Ring">
+      <UniqueIdentifier>{cdc9c8c8-a229-42e1-a047-88d6d352cb8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\01.Smoke">
+      <UniqueIdentifier>{7f8530e1-48c0-416e-a984-9c33877ee898}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Object">
       <UniqueIdentifier>{57086f47-9651-4c97-879a-fb50562cd8cf}</UniqueIdentifier>
@@ -753,38 +786,8 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\02.Laser_Explosion">
       <UniqueIdentifier>{1daa48ca-6a84-40e4-91e9-4aa0a5a51bf2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound">
-      <UniqueIdentifier>{a909e6a1-a1ea-492c-a1d7-86f183945103}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\00.Ring">
-      <UniqueIdentifier>{cdc9c8c8-a229-42e1-a047-88d6d352cb8c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\01.Smoke">
-      <UniqueIdentifier>{7f8530e1-48c0-416e-a984-9c33877ee898}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile">
-      <UniqueIdentifier>{7577d5c3-dc53-419f-abb5-aeb3fb47ff6d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke">
-      <UniqueIdentifier>{fe5deece-04a5-4318-afb5-acdc2d731f8c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion">
-      <UniqueIdentifier>{acd6cfb6-5704-4c57-89c5-0b6a29379e73}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle">
-      <UniqueIdentifier>{f9eacdc2-4e96-4dbc-bb27-2475ddb8a8bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion">
-      <UniqueIdentifier>{6d9b9a92-4031-4485-a5e3-90daacc33de6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion\00.Particle">
-      <UniqueIdentifier>{d1723ec9-3aaf-4b0b-9585-3a346d5e7971}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying">
-      <UniqueIdentifier>{3f32b0e4-3d4a-4215-ade9-bccd3e8a77b2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\00.Particle">
-      <UniqueIdentifier>{3d639529-e757-4527-9229-3199ba9c99a8}</UniqueIdentifier>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\01.Particle_Flow">
+      <UniqueIdentifier>{54ecfe3b-18b5-4bbc-9626-6d86b0ac6ef1}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1190,6 +1193,21 @@
     <ClInclude Include="..\public\Effect_Boss_Laser_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\00.Laser_Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Missile_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Missile_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Missile_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_UFO_Flying.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\00.Particle</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Effect_Player_Dead.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default</Filter>
     </ClInclude>
@@ -1198,6 +1216,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Dead_Particle_Fire.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\01.Fire\Dead_Particle_Fire</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Player_Dead_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Player_Dead_Explosion_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion\00.Particle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Player_Revive.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.Revive_Effect</Filter>
@@ -1258,6 +1282,15 @@
     </ClInclude>
     <ClInclude Include="..\public\Effect_Boss_Gravitational_Bomb_Explosion.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\02.Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_GroundPound.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_GroundPound_Ring.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\00.Ring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_GroundPound_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\01.Smoke</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_RespawnTunnel.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\00.RespawnTunnel</Filter>
@@ -1430,35 +1463,8 @@
     <ClInclude Include="..\public\Effect_Boss_Laser_Explosion.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\02.Laser_Explosion</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_GroundPound.h">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_GroundPound_Ring.h">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\00.Ring</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_GroundPound_Smoke.h">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\01.Smoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Missile_Smoke.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Missile_Explosion.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Missile_Particle.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Player_Dead_Explosion.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Player_Dead_Explosion_Particle.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion\00.Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_UFO_Flying.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\00.Particle</Filter>
+    <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle_Flow.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\01.Particle_Flow</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1861,6 +1867,27 @@
     <ClCompile Include="..\private\Effect_Boss_Laser_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\00.Laser_Particle</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Laser_Charge.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\01.Laser_Charge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Laser_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\02.Laser_Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Missile_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Missile_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Missile_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_UFO_Flying.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\00.Particle</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Effect_Player_Dead.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\00.Default</Filter>
     </ClCompile>
@@ -1869,6 +1896,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Dead_Particle_Fire.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\01.Fire\Dead_Particle_Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Player_Dead_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Player_Dead_Explosion_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion\00.Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Player_Revive.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\01.Revive_Effect</Filter>
@@ -1929,6 +1962,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Boss_Gravitational_Bomb_Explosion.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Boss\00.Boss_Gravitational_Bomb\02.Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_GroundPound.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_GroundPound_Ring.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\00.Ring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_GroundPound_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\01.Smoke</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect_RespawnTunnel.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\00.RespawnTunnel</Filter>
@@ -2062,41 +2104,8 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Laser_Charge.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\01.Laser_Charge</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Laser_Explosion.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Laser_Smoke\02.Laser_Explosion</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_GroundPound.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_GroundPound_Ring.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\00.Ring</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_GroundPound_Smoke.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\3D\Boss\01.Boss_GorundPound\01.Smoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Missile_Smoke.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Missile_Explosion.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Missile_Particle.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Player_Dead_Explosion.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Player_Dead_Explosion_Particle.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\00.Dead_Effect\02.Explsion\00.Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_UFO_Flying.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\00.Particle</Filter>
+    <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle_Flow.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\UFO_Flying\01.Particle_Flow</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
