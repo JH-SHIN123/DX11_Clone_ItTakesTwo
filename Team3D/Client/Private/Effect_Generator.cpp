@@ -51,6 +51,7 @@
 #include "Effect_Boss_UFO_Flying_Particle_Flow.h"
 #include "Effect_UFO_Inside_Battery_Spark.h"
 #include "Effect_UFO_Inside_Battery_Particle.h"
+#include "Effect_UFO_Inside_Battery_Explosion.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -199,6 +200,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::UFO_Inside_Battery_Particle:
 		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_Battery_Particle");
+		break;
+	case Effect_Value::UFO_Inside_Battery_Explosion:
+		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_Battery_Explosion");
 		break;
 	default:
 		break;
@@ -404,7 +408,10 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_Battery_Particle"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_Battery_Particle", CEffect_UFO_Inside_Battery_Particle::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_Battery_Explosion"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_Battery_Explosion", CEffect_UFO_Inside_Battery_Explosion::Create(pDevice, pDeviceContext, pData));
 
+		
 #pragma  endregion
 
 

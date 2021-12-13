@@ -1,17 +1,17 @@
 #include "stdafx.h"
-#include "..\Public\Effect_UFO_Inside_Battery_Particle.h"
+#include "..\Public\Effect_UFO_Inside_Battery_Explosion.h"
 
-CEffect_UFO_Inside_Battery_Particle::CEffect_UFO_Inside_Battery_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_UFO_Inside_Battery_Explosion::CEffect_UFO_Inside_Battery_Explosion(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
-CEffect_UFO_Inside_Battery_Particle::CEffect_UFO_Inside_Battery_Particle(const CEffect_UFO_Inside_Battery_Particle & rhs)
+CEffect_UFO_Inside_Battery_Explosion::CEffect_UFO_Inside_Battery_Explosion(const CEffect_UFO_Inside_Battery_Explosion & rhs)
 	: CInGameEffect(rhs)
 {
 }
 
-HRESULT CEffect_UFO_Inside_Battery_Particle::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_UFO_Inside_Battery_Explosion::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
@@ -20,7 +20,7 @@ HRESULT CEffect_UFO_Inside_Battery_Particle::NativeConstruct_Prototype(void * pA
 	return S_OK;
 }
 
-HRESULT CEffect_UFO_Inside_Battery_Particle::NativeConstruct(void * pArg)
+HRESULT CEffect_UFO_Inside_Battery_Explosion::NativeConstruct(void * pArg)
 {
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
@@ -42,7 +42,7 @@ HRESULT CEffect_UFO_Inside_Battery_Particle::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CEffect_UFO_Inside_Battery_Particle::Tick(_double TimeDelta)
+_int CEffect_UFO_Inside_Battery_Explosion::Tick(_double TimeDelta)
 {
 	if (false == m_IsActivate && 5.0 < m_dActivateTime)
 		return EVENT_DEAD;
@@ -67,12 +67,12 @@ _int CEffect_UFO_Inside_Battery_Particle::Tick(_double TimeDelta)
 	return NO_EVENT;
 }
 
-_int CEffect_UFO_Inside_Battery_Particle::Late_Tick(_double TimeDelta)
+_int CEffect_UFO_Inside_Battery_Explosion::Late_Tick(_double TimeDelta)
 {
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
-HRESULT CEffect_UFO_Inside_Battery_Particle::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CEffect_UFO_Inside_Battery_Explosion::Render(RENDER_GROUP::Enum eGroup)
 {
 	_float fTime = (_float)m_dAlphaTime;
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
@@ -87,7 +87,7 @@ HRESULT CEffect_UFO_Inside_Battery_Particle::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-void CEffect_UFO_Inside_Battery_Particle::Check_Instance(_double TimeDelta)
+void CEffect_UFO_Inside_Battery_Explosion::Check_Instance(_double TimeDelta)
 {
 	_fmatrix ParentMatrix = m_pTransformCom->Get_WorldMatrix();
 	_float fAlphaTime = (_float)m_dInstance_Pos_Update_Time / 3.f;
@@ -99,21 +99,18 @@ void CEffect_UFO_Inside_Battery_Particle::Check_Instance(_double TimeDelta)
 
 		m_pInstance_Pos_UpdateTime[iIndex] -= TimeDelta;
 		if (0.0 >= m_pInstance_Pos_UpdateTime[iIndex] && true == m_IsActivate)
-		{
-			Reset_Instance(TimeDelta, m_pTransformCom->Get_WorldMatrix(), iIndex);
 			continue;
-		}
 
 		Instance_Pos((_float)TimeDelta, iIndex);
 
 	}
 }
 
-void CEffect_UFO_Inside_Battery_Particle::Instance_Size(_float TimeDelta, _int iIndex)
+void CEffect_UFO_Inside_Battery_Explosion::Instance_Size(_float TimeDelta, _int iIndex)
 {
 }
 
-void CEffect_UFO_Inside_Battery_Particle::Instance_Pos(_float TimeDelta, _int iIndex)
+void CEffect_UFO_Inside_Battery_Explosion::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition);
 	_vector vDir = XMLoadFloat3(&m_pInstanceBuffer_Dir[iIndex]);
@@ -127,14 +124,14 @@ void CEffect_UFO_Inside_Battery_Particle::Instance_Pos(_float TimeDelta, _int iI
 	_vector vUp = XMVector3Normalize(vPos - XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition));
 
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vUp, vUp);
-	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);	
+	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }
 
-void CEffect_UFO_Inside_Battery_Particle::Instance_UV(_float TimeDelta, _int iIndex)
+void CEffect_UFO_Inside_Battery_Explosion::Instance_UV(_float TimeDelta, _int iIndex)
 {
 }
 
-void CEffect_UFO_Inside_Battery_Particle::Reset_Instance(_double TimeDelta, _fmatrix ParentMatrix, _int iIndex)
+void CEffect_UFO_Inside_Battery_Explosion::Reset_Instance(_double TimeDelta, _fmatrix ParentMatrix, _int iIndex)
 {
 	m_pInstanceBuffer_STT[iIndex].fTime = 0.5f;
 	m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time;
@@ -155,16 +152,16 @@ void CEffect_UFO_Inside_Battery_Particle::Reset_Instance(_double TimeDelta, _fma
 	m_pInstanceBuffer_Dir[iIndex].y = 0.f;
 }
 
-HRESULT CEffect_UFO_Inside_Battery_Particle::Ready_InstanceBuffer()
+HRESULT CEffect_UFO_Inside_Battery_Explosion::Ready_InstanceBuffer()
 {
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
-	m_pInstanceBuffer_STT			 = new VTXMATRIX_CUSTOM_STT[iInstanceCount];
-	m_pInstance_Pos_UpdateTime		 = new _double[iInstanceCount];
-	m_pInstanceBuffer_Parabola_PosY  = new _float[iInstanceCount];
-	m_pInstanceBuffer_Parabola_Time  = new _float[iInstanceCount];
+	m_pInstanceBuffer_STT = new VTXMATRIX_CUSTOM_STT[iInstanceCount];
+	m_pInstance_Pos_UpdateTime = new _double[iInstanceCount];
+	m_pInstanceBuffer_Parabola_PosY = new _float[iInstanceCount];
+	m_pInstanceBuffer_Parabola_Time = new _float[iInstanceCount];
 	m_pInstanceBuffer_Parabola_Power = new _float[iInstanceCount];
-	m_pInstanceBuffer_Dir			 = new _float3[iInstanceCount];
+	m_pInstanceBuffer_Dir = new _float3[iInstanceCount];
 
 	_float4 vMyPos;
 	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -173,14 +170,14 @@ HRESULT CEffect_UFO_Inside_Battery_Particle::Ready_InstanceBuffer()
 
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
-		m_pInstanceBuffer_STT[iIndex].vRight	 = { 1.f, 0.f, 0.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vUp		 = { 0.f, 1.f, 0.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vLook		 = { 0.f, 0.f, 1.f, 0.f };
+		m_pInstanceBuffer_STT[iIndex].vRight = { 1.f, 0.f, 0.f, 0.f };
+		m_pInstanceBuffer_STT[iIndex].vUp = { 0.f, 1.f, 0.f, 0.f };
+		m_pInstanceBuffer_STT[iIndex].vLook = { 0.f, 0.f, 1.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vTextureUV = { 0.f, 0.f, 1.f, 1.f };
-		m_pInstanceBuffer_STT[iIndex].fTime		 = 0.f;
+		m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
 		m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
 
-		m_pInstance_Pos_UpdateTime[iIndex] = 2.f * (_double(iIndex) / iInstanceCount);
+		m_pInstance_Pos_UpdateTime[iIndex] = 0.f;
 
 		_vector vRandPos = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 2, 100)));
 		vRandPos.m128_f32[1] = 0.f;
@@ -190,40 +187,40 @@ HRESULT CEffect_UFO_Inside_Battery_Particle::Ready_InstanceBuffer()
 
 		vRandPos = XMVector3Transform(vRandPos, ParentMatrix);
 		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vRandPos);
-		m_pInstanceBuffer_Parabola_PosY[iIndex]  = m_pInstanceBuffer_STT[iIndex].vPosition.y;
-		m_pInstanceBuffer_Parabola_Time[iIndex]  = 0.f;
+		m_pInstanceBuffer_Parabola_PosY[iIndex] = m_pInstanceBuffer_STT[iIndex].vPosition.y;
+		m_pInstanceBuffer_Parabola_Time[iIndex] = 0.f;
 		m_pInstanceBuffer_Parabola_Power[iIndex] = (_float)((rand() % 10 + 1) / 3.f);
 
-		m_pInstanceBuffer_Dir[iIndex]	= __super::Get_Dir_Rand(_int3(100, 2, 100));
+		m_pInstanceBuffer_Dir[iIndex] = __super::Get_Dir_Rand(_int3(100, 2, 100));
 		m_pInstanceBuffer_Dir[iIndex].y = 0.f;
 	}
 
 	return S_OK;
 }
 
-CEffect_UFO_Inside_Battery_Particle * CEffect_UFO_Inside_Battery_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CEffect_UFO_Inside_Battery_Explosion * CEffect_UFO_Inside_Battery_Explosion::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CEffect_UFO_Inside_Battery_Particle*	pInstance = new CEffect_UFO_Inside_Battery_Particle(pDevice, pDeviceContext);
+	CEffect_UFO_Inside_Battery_Explosion*	pInstance = new CEffect_UFO_Inside_Battery_Explosion(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CEffect_UFO_Inside_Battery_Particle");
+		MSG_BOX("Failed to Create Instance - CEffect_UFO_Inside_Battery_Explosion");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CEffect_UFO_Inside_Battery_Particle::Clone_GameObject(void * pArg)
+CGameObject * CEffect_UFO_Inside_Battery_Explosion::Clone_GameObject(void * pArg)
 {
-	CEffect_UFO_Inside_Battery_Particle* pInstance = new CEffect_UFO_Inside_Battery_Particle(*this);
+	CEffect_UFO_Inside_Battery_Explosion* pInstance = new CEffect_UFO_Inside_Battery_Explosion(*this);
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CEffect_UFO_Inside_Battery_Particle");
+		MSG_BOX("Failed to Clone Instance - CEffect_UFO_Inside_Battery_Explosion");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CEffect_UFO_Inside_Battery_Particle::Free()
+void CEffect_UFO_Inside_Battery_Explosion::Free()
 {
 	Safe_Delete_Array(m_pInstanceBuffer_STT);
 	Safe_Delete_Array(m_pInstanceBuffer_Parabola_PosY);

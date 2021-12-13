@@ -67,8 +67,9 @@ _int CElectricBox::Tick(_double dTimeDelta)
 		EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Spark, World);
 		EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Spark, World);
 		EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Spark, World);
-		World.r[3] -= World.r[1] *= 0.98f;
 		EFFECT->Add_Effect(Effect_Value::May_Boots_Walking, World);
+		EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Explosion, World);
+		World.r[3] -= World.r[1] *= 0.98f;
 
 		m_bElectric = true;
 		m_iRandomTime = rand() % 3 + 3;

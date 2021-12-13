@@ -837,9 +837,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark">
       <UniqueIdentifier>{4f003359-9da9-4258-bcb3-037baca46e90}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\03.Ready">
-      <UniqueIdentifier>{411b7a40-e497-48de-a729-2f10d5e96198}</UniqueIdentifier>
-    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1553,6 +1550,9 @@
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\00.Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\01.Explosion</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2229,6 +2229,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\00.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\01.Explosion</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
