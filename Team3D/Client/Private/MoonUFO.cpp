@@ -162,18 +162,18 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
 	{
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * UFOFORCE, XMVectorGetY(vRight) * UFOFORCE, XMVectorGetZ(vRight) * UFOFORCE));
-		m_bRotateRight = true;
+		//m_bRotateRight = true;
 	}
-	else
-		m_bRotateRight = false;
+	/*else
+		m_bRotateRight = false;*/
 
 	if (m_pGameInstance->Key_Pressing(DIK_LEFT))
 	{
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * -UFOFORCE, XMVectorGetY(vRight)  * -UFOFORCE, XMVectorGetZ(vRight) * -UFOFORCE));
-		m_bRotateLeft = true;
+		////m_bRotateLeft = true;
 	}
-	else
-		m_bRotateLeft = false;
+	/*else
+		m_bRotateLeft = false;*/
 
 	if (m_pGameInstance->Key_Pressing(DIK_UP))
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * UFOFORCE, XMVectorGetY(vLook) * UFOFORCE, XMVectorGetZ(vLook) * UFOFORCE));
@@ -199,49 +199,32 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	{
 
 	}
+
 	_vector vUFOPos = ((CPixelUFO*)DATABASE->Get_PixelUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 	_vector vTargetPos = ((CPixelCrossHair*)DATABASE->Get_PixelCrossHair())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	
+	_vector vUFOToTarget = XMVector3Normalize(vTargetPos - vUFOPos);
+	_vector vWorldRight = XMVector3Normalize(XMVectorSet(1.f, 0.f, 0.f, 0.f));
+	_float fAngle = XMConvertToDegrees(XMVectorGetX(XMVector3AngleBetweenNormals(vUFOToTarget, vWorldRight)));
 
-	// 위에서 본게 PixelUFOPos, TargetPos 니까..
-	// xyz를 변경할 필요가 있다.
-	// 일단 y는 고려하지 않는다면?
+	if (vUFOPos.m128_f32[1] > vTargetPos.m128_f32[1])
+		fAngle = 360.f - fAngle;
 
-	// Pixel -> x,y 평면
-	// 3D -> x,z 평면으로 변경
-	_vector vUFO3DPos = XMVectorSet(vUFOPos.m128_f32[0], 0.f, vUFOPos.m128_f32[1], 1.f);
-	_vector vTarget3DPos = XMVectorSet(vTargetPos.m128_f32[0], 0.f, vTargetPos.m128_f32[1], 1.f);
-	_vector vUFOLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_matrix matPivot, matRotUp, matAnim = XMMatrixIdentity();
 
-	_vector vLaserDir = vTarget3DPos - vUFO3DPos;
-
-	_vector vDot = XMVector3AngleBetweenVectors(XMVector3Normalize(vUFOLook), XMVector3Normalize(vLaserDir));
-	_float fAngle = XMConvertToDegrees(XMVectorGetX(vDot));
-
-	_matrix matPivot, matRotY, matTrans, matAnim;
-
-	matTrans = XMMatrixTranslation(0.f, -0.5f, 0.f);
-	matRotY = XMMatrixRotationY(XMConvertToRadians(-fAngle));
-	matPivot = matRotY * matTrans;
-
+	matRotUp = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(fAngle + 90.f));
+	matPivot = matRotUp;
 	matAnim = m_pModelCom->Get_AnimTransformation(22);
 	matAnim = XMMatrixInverse(nullptr, matAnim);
 
 	matPivot *= matAnim;
-
 	m_pModelCom->Set_PivotTransformation(22, matPivot);
 
-	/* LaserGunRing3 뼈가 레이저 총구 ㅇㅇ */
-	/* LaserGun의 Right 벡터를 사용하니까 너무 이상하게 달달거려서 안움직이는 Align 뼈를 가져와서 사용함 그래도 움직이는건 UFO 행렬이 애니메이션 돌리면서 계속 바뀌기 떄문에 그런듯 */
-	_matrix matUFOWorld = m_pTransformCom->Get_WorldMatrix();
-	_matrix matLaserGunRing = m_pModelCom->Get_BoneMatrix("LaserGunRing3");
-	_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("Align");
-	_matrix matLaserRingWorld = matRotY * matLaserGunRing * matUFOWorld;
-	_matrix matAlign = matRotY * matLaserGun * matUFOWorld;
-	_vector vLaserGunDir = XMLoadFloat4((_float4*)&matAlign.r[0].m128_f32[0]);
+	_matrix matLaserGunWorld = XMMatrixIdentity();
+	matLaserGunWorld = matPivot * m_pTransformCom->Get_WorldMatrix();
 
-	/* 레이저에 시작위치랑 방향 벡터 던져주자 */
-	XMStoreFloat4(&m_vLaserGunPos, matLaserRingWorld.r[3]);
-	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(vLaserGunDir));
+	XMStoreFloat4(&m_vLaserGunPos, matLaserGunWorld.r[3]);
+	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(matLaserGunWorld.r[2]));
 
 
 	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
@@ -294,6 +277,10 @@ HRESULT CMoonUFO::Ready_Component(void * pArg)
 	Safe_Delete(Geom);
 	m_pDynamicActorCom->Get_Actor()->setLinearDamping(0.2f);
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+
+	PxShape* pShape = nullptr;
+	m_pDynamicActorCom->Get_Actor()->getShapes(&pShape, 1);
+	pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 
 	/* Joint */
 	PxJointLimitCone LimitCone = PxJointLimitCone(PxPi, PxPi, 0.05f);

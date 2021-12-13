@@ -2154,7 +2154,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
 		_vector vTargetPosition = XMVectorSet(64.0174942f, 601.063843f + 0.076f, 1011.77844f, 1.f);
-		_vector vOffSetPosition = XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.076f, 1011.77844f - 0.04f, 1.f);
+		_vector vOffSetPosition = XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.076f, 1011.77844f - 0.04f - 0.5f, 1.f);
 
 		m_pActorCom->Set_Position(vOffSetPosition);
 		m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);

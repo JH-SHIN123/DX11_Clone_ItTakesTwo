@@ -35,7 +35,7 @@ HRESULT CUFORadarSet::NativeConstruct(void* pArg)
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_UFORadarScreen"), Level::LEVEL_STAGE, TEXT("GameObject_UFORadarScreen"), &m_tRadarDesc, &pUFORadarScreen), E_FAIL);
 
-	m_tRadarDesc.vPosition.m128_f32[2] -= 1.f;
+	m_tRadarDesc.vPosition.m128_f32[2] -= 1.5f;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_UFORadarLever"), Level::LEVEL_STAGE, TEXT("GameObject_UFORadarLever"), &m_tRadarDesc, &pUFORadarLever), E_FAIL);
 
 	m_pUFORadarScreen = static_cast<CUFORadarScreen*>(pUFORadarScreen);

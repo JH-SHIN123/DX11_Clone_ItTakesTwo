@@ -277,26 +277,27 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_long MouseMove = 0;
 	//이전 회전값
 
-
-	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
+	if (((CCody*)DATABASE->GetCody())->Get_IsInArcadeJoyStick() == false)
 	{
-		m_fMouseRev[Rev_Holizontal] += (_float)(MouseMove * dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal]);
+		if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
+		{
+			m_fMouseRev[Rev_Holizontal] += (_float)(MouseMove * dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal]);
 
+		}
+		if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
+		{
+			_float fVal = (_float)(MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta);
+
+			if (m_fMouseRev[Rev_Prependicul] + fVal > 40.f)
+				m_fMouseRev[Rev_Prependicul] = 40.f;
+			else if (m_fMouseRev[Rev_Prependicul] + fVal < -85.f)
+				m_fMouseRev[Rev_Prependicul] = -85.f;
+			else
+				m_fMouseRev[Rev_Prependicul] += fVal;
+		}
+		m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 20.f;
+		m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 20.f;
 	}
-	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
-	{
-		_float fVal = (_float)(MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta);
-
-		if (m_fMouseRev[Rev_Prependicul] + fVal > 40.f)
-			m_fMouseRev[Rev_Prependicul] = 40.f;
-		else if (m_fMouseRev[Rev_Prependicul] + fVal < -85.f)
-			m_fMouseRev[Rev_Prependicul] = -85.f;
-		else
-			m_fMouseRev[Rev_Prependicul] += fVal;
-	}
-	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 20.f;
-	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 20.f;
-
 
 	//카메라 회전에 따른 거리체크
 
