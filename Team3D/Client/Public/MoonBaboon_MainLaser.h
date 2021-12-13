@@ -36,7 +36,9 @@ public:
 	void Set_LaserOperation(_bool IsActive);
 	void Set_MainLaserUp(_float fMaxDistance, _float fSpeed);
 
-	void GoUp(_double dTimeDelta);
+public:
+	_bool Get_ArrivalLastFloor() const { return m_IsArrivalLastFloor; }
+
 
 private:
 	void Laser_AttackPattern(_double TimeDelta);
@@ -55,9 +57,13 @@ private:
 	_bool m_IsGoUp = false;
 	_float m_fUpSpeed = 0.f;
 	_float m_fDistance = 0.f;
+	_bool m_IsArrivalLastFloor = false;
 
 private:
 	vector<class CLaser_TypeB*>				m_vecLaser_TypeB;
+
+private:
+	void GoUp(_double dTimeDelta);
 
 private: /* For.Component */
 	CRenderer*		m_pRendererCom = nullptr;

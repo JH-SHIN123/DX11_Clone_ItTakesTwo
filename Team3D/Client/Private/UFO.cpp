@@ -67,9 +67,10 @@ _int CUFO::Tick(_double dTimeDelta)
 	CGameObject::Tick(dTimeDelta);
 
 	if (m_pGameInstance->Key_Pressing(DIK_X))
-	{
 		DATABASE->GoUp_BossFloor(99.f);
-	}
+	else if(m_pGameInstance->Key_Down(DIK_Z))
+		DATABASE->GoUp_BossFloor(100.f);
+
 
 	/* 테스트 용 */
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
@@ -204,7 +205,7 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	
 	/* 레이저 나가는 오프셋 */
 	_matrix matLaserRingWorld = matRotY * matLaserGunRing * matUFOWorld;
-	
+
 	/* 레이저 방향 */
 	_matrix matAlign = matRotY * matLaserGun * matUFOWorld;
 	_vector vLaserGunDir = XMLoadFloat4((_float4*)&matAlign.r[0].m128_f32[0]);
@@ -443,9 +444,9 @@ void CUFO::OrbitalMovementCenter(_double dTimeDelta)
 	_matrix matWorld, matRotY, matTrans, matRevRotY, matParent;
 
 	if (m_fRotAngle < fAngle)
-		m_fRotAngle += (_float)dTimeDelta * 5.f;
+		m_fRotAngle += (_float)dTimeDelta * 50.f;
 	else if (m_fRotAngle >= fAngle)
-		m_fRotAngle -= (_float)dTimeDelta * 5.f;
+		m_fRotAngle -= (_float)dTimeDelta * 50.f;
 
 	m_fRevAngle += (_float)dTimeDelta * 20.f;
 
@@ -463,42 +464,49 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 {
 	if (nullptr == m_pCodyMissile || nullptr == m_pMayMissile)
 	{
-		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		_float4 vConvertPos;
-		XMStoreFloat4(&vConvertPos, vPos);
+		m_fGuidedMissileTime += (_float)dTimeDelta;
 
-		_matrix vUFOWorld = m_pTransformCom->Get_WorldMatrix();
-		_matrix LeftRocketHatch = m_pModelCom->Get_BoneMatrix("LeftFrontRocketHatch");
-		_matrix RightRocketHatch = m_pModelCom->Get_BoneMatrix("RightFrontRocketHatch");
-
-		_vector vCodyDir = XMVector3Normalize(((CCody*)DATABASE->GetCody())->Get_Position() - vPos);
-		_vector vMayDir = XMVector3Normalize(((CCody*)DATABASE->GetMay())->Get_Position() - vPos);
-
-		LeftRocketHatch = LeftRocketHatch * vUFOWorld;
-		RightRocketHatch = RightRocketHatch * vUFOWorld;
-
-		CGameObject* pGameObject = nullptr;
-		CBoss_Missile::BOSSMISSILE_DESC tMissileDesc;
-
-		/* 유도 미사일 발사!!!!!!!!!!!!!!!!! */
-		if (nullptr == m_pCodyMissile)
+		if (2.f <= m_fGuidedMissileTime)
 		{
-			/* true면 Cody */
-			tMissileDesc.IsTarget_Cody = true;
-			tMissileDesc.vPosition = (_float4)&LeftRocketHatch.r[3].m128_f32[0];
-			XMStoreFloat4(&tMissileDesc.vDir, vCodyDir);
-			m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc, &pGameObject);
-			m_pCodyMissile = static_cast<CBoss_Missile*>(pGameObject);
-		}
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			_float4 vConvertPos;
+			XMStoreFloat4(&vConvertPos, vPos);
 
-		if (nullptr == m_pMayMissile)
-		{
-			/* false면 May */
-			tMissileDesc.IsTarget_Cody = false;
-			tMissileDesc.vPosition = (_float4)&RightRocketHatch.r[3].m128_f32[0];
-			XMStoreFloat4(&tMissileDesc.vDir, vMayDir);
-			m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc, &pGameObject);
-			m_pMayMissile = static_cast<CBoss_Missile*>(pGameObject);
+			_matrix vUFOWorld = m_pTransformCom->Get_WorldMatrix();
+			_matrix LeftRocketHatch = m_pModelCom->Get_BoneMatrix("LeftFrontRocketHatch");
+			_matrix RightRocketHatch = m_pModelCom->Get_BoneMatrix("RightFrontRocketHatch");
+
+			_vector vCodyDir = XMVector3Normalize(((CCody*)DATABASE->GetCody())->Get_Position() - vPos);
+			_vector vMayDir = XMVector3Normalize(((CCody*)DATABASE->GetMay())->Get_Position() - vPos);
+
+			LeftRocketHatch = LeftRocketHatch * vUFOWorld;
+			RightRocketHatch = RightRocketHatch * vUFOWorld;
+
+			CGameObject* pGameObject = nullptr;
+			CBoss_Missile::BOSSMISSILE_DESC tMissileDesc;
+
+			/* 유도 미사일 발사!!!!!!!!!!!!!!!!! */
+			if (nullptr == m_pCodyMissile)
+			{
+				/* true면 Cody */
+				tMissileDesc.IsTarget_Cody = true;
+				tMissileDesc.vPosition = (_float4)&LeftRocketHatch.r[3].m128_f32[0];
+				XMStoreFloat4(&tMissileDesc.vDir, vCodyDir);
+				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc, &pGameObject);
+				m_pCodyMissile = static_cast<CBoss_Missile*>(pGameObject);
+				m_fGuidedMissileTime = 0.f;
+			}
+
+			if (nullptr == m_pMayMissile)
+			{
+				/* false면 May */
+				tMissileDesc.IsTarget_Cody = false;
+				tMissileDesc.vPosition = (_float4)&RightRocketHatch.r[3].m128_f32[0];
+				XMStoreFloat4(&tMissileDesc.vDir, vMayDir);
+				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc, &pGameObject);
+				m_pMayMissile = static_cast<CBoss_Missile*>(pGameObject);
+				m_fGuidedMissileTime = 0.f;
+			}
 		}
 	}
 }
@@ -529,6 +537,19 @@ void CUFO::Phase3_Pattern(_double dTimeDelta)
 	{
 		Phase3_MoveStartingPoint(dTimeDelta);
 		return;
+	}
+
+	if(true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp())
+		DATABASE->GoUp_BossFloor(100.f);
+
+	/* 마지막 층에 도달했을 때 */
+	if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_ArrivalLastFloor() && false == m_IsLastFloor)
+	{
+		m_ePattern = CUFO::GROUNDPOUND;
+		m_IsLastFloor = true;
+
+		/* 서브 레이저 3개 생성 */
+		Ready_Layer_MoonBaboon_SubLaser(TEXT("Layer_SubLaser"));
 	}
 
 	/* 3페는 메이만 타겟 */
@@ -564,13 +585,13 @@ void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
 
 	_vector vDir = XMVector3Normalize(vTargetPos - vUFOPos);
 	_vector vComparePos = vTargetPos - vUFOPos;
-
+	vComparePos.m128_f32[1] = 0.f;
 	_float vDistance = XMVectorGetX(XMVector3Length(vComparePos));
 
 	if (1.f <= vDistance)
 	{
 		m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
-		m_pTransformCom->Go_Straight(dTimeDelta * 10.f);
+		m_pTransformCom->Go_Straight(dTimeDelta * 5.f);
 	}
 	else
 	{
@@ -581,8 +602,6 @@ void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
 		/* 도착했으면 메인레이저 올라와라 ㅇㅇ */
 		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(true);
 
-		/* 나중에 맵 올라가는거 하면 다른데로 옮겨주자 */
-		m_ePattern = CUFO::GROUNDPOUND;
 	}
 }
 
@@ -740,14 +759,14 @@ HRESULT CUFO::Ready_Actor_Component()
 
 HRESULT CUFO::Phase2_End(_double dTimeDelta)
 {
-	if (true == m_IsCodyEnter)
-	{
-		m_pModelCom->Set_Animation(CutScene_EnterUFO_FlyingSaucer);
-		m_pModelCom->Set_NextAnimIndex(UFO_Fwd);
 
+	if (m_pModelCom->Get_CurAnimIndex() == UFO_RocketKnockDown_MH && m_IsCodyEnter == true)
+	{
+		m_pModelCom->Set_Animation(CutScene_EnterUFO_FlyingSaucer, 30.f);
+		m_pModelCom->Set_NextAnimIndex(UFO_MH);
 		m_IsCodyEnter = false;
 	}
-
+	
 	if (m_pModelCom->Is_AnimFinished(CutScene_EnterUFO_FlyingSaucer))
 	{
 		m_IsCutScene = false;
@@ -759,9 +778,6 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 		_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
 		_matrix AnimUFOWorld = BaseBone * UFOWorld;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4((_float4*)&AnimUFOWorld.r[3].m128_f32[0]));
-
-		/* 서브 레이저 3개 생성 */
-		FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon_SubLaser(TEXT("Layer_SubLaser")), E_FAIL);
 	}
 
 	return S_OK;
@@ -819,10 +835,11 @@ void CUFO::Add_LerpInfo_To_Model()
 
 	m_pModelCom->Add_LerpInfo(CutScene_RocketPhaseFinished_FlyingSaucer, UFO_RocketKnockDown_MH, true);
 
-	m_pModelCom->Add_LerpInfo(UFO_RocketKnockDown_MH, CutScene_EnterUFO_FlyingSaucer, true);
+	m_pModelCom->Add_LerpInfo(UFO_RocketKnockDown_MH, CutScene_EnterUFO_FlyingSaucer, true, 150.f);
+	m_pModelCom->Add_LerpInfo(CutScene_EnterUFO_FlyingSaucer, UFO_RocketKnockDown_MH, false);
 
-	m_pModelCom->Add_LerpInfo(CutScene_EnterUFO_FlyingSaucer, UFO_MH, true);
-	m_pModelCom->Add_LerpInfo(CutScene_EnterUFO_FlyingSaucer, UFO_Fwd, true);
+	m_pModelCom->Add_LerpInfo(CutScene_EnterUFO_FlyingSaucer, UFO_MH, false);
+	m_pModelCom->Add_LerpInfo(CutScene_EnterUFO_FlyingSaucer, UFO_Fwd, false);
 
 	m_pModelCom->Add_LerpInfo(UFO_GroundPound, UFO_MH, true, 1.f);
 }
@@ -900,7 +917,7 @@ void CUFO::GoUp(_double dTimeDelta)
 }
 
 
-HRESULT CUFO::Ready_Layer_MoonBaboon_SubLaser(const _tchar* pLayerTag)
+void CUFO::Ready_Layer_MoonBaboon_SubLaser(const _tchar* pLayerTag)
 {
 	CGameObject* pGameObject = nullptr;
 	_uint iSubLaserCount = 4;
@@ -908,12 +925,12 @@ HRESULT CUFO::Ready_Layer_MoonBaboon_SubLaser(const _tchar* pLayerTag)
 
 	for (_uint i = 0; i < iSubLaserCount; ++i)
 	{
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SubLaser"), nullptr, &pGameObject), E_FAIL);
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SubLaser"), nullptr, &pGameObject);
 		m_vecSubLaser.emplace_back(static_cast<CMoonBaboon_SubLaser*>(pGameObject));
 		m_vecSubLaser[i]->SetUp_SubLaserPosition(i);
 	}
 
-	return S_OK;
+	return;
 }
 
 CUFO * CUFO::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

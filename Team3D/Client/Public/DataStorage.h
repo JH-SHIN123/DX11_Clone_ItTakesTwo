@@ -164,6 +164,9 @@ public:
 
 	void Set_MoonBaboonCore(CGameObject* pGameObject) { m_vecMoonBaboonCore.emplace_back(pGameObject); }
 	class CGameObject* Get_MoonBaboonCore(_uint iIndex) { return m_vecMoonBaboonCore[iIndex]; }
+	
+	/* For. MainLaser */
+	_uint Get_FloorIndex() const { return m_iFloorIndex; }
 
 
 private:
@@ -241,6 +244,7 @@ private:
 	_uint m_iValveTarget = 0;
 	_uint m_iCody_Valve_Count = 0;
 	_uint m_iMay_Valve_Count = 0;
+	_uint m_iFloorIndex = 0;
 
 	_bool m_IsBigButtonPressed = false;
 	_bool m_bGravityStageClear = false;

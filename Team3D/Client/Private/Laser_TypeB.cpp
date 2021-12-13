@@ -268,8 +268,6 @@ void CLaser_TypeB::Set_LaserTypeBUp(_float fMaxDistance, _float fSpeed)
 	m_fMaxY = fMaxDistance;
 	m_IsGoUp = true;
 	m_fUpSpeed = fSpeed;
-
-	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
 }
 
 void CLaser_TypeB::GoUp(_double dTimeDelta)
@@ -282,14 +280,13 @@ void CLaser_TypeB::GoUp(_double dTimeDelta)
 
 	if (m_fMaxY <= m_fDistance)
 	{
-		m_vStartPoint = _float4(m_vMaxPos.x, m_vMaxPos.y, m_vMaxPos.z , 1.f);
 		m_fMaxY = 0.f;
 		m_IsGoUp = false;
 		m_fDistance = 0.f;
 		return;
 	}
 
-	m_vStartPoint.y += 15.f * dTimeDelta;
+	m_vStartPoint.y += m_fUpSpeed * dTimeDelta;
 }
 
 CLaser_TypeB * CLaser_TypeB::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

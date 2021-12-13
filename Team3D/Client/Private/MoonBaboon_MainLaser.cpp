@@ -236,6 +236,12 @@ void CMoonBaboon_MainLaser::GoUp(_double dTimeDelta)
 		m_fMaxY = 0.f;
 		m_IsGoUp = false;
 		m_fDistance = 0.f;
+
+		if (2 == DATABASE->Get_FloorIndex())
+			m_IsArrivalLastFloor = true;
+		else
+			m_IsArrivalLastFloor = false;
+
 		return;
 	}
 
