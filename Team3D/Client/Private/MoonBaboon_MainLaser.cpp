@@ -55,6 +55,8 @@ _int CMoonBaboon_MainLaser::Tick(_double TimeDelta)
 	else if(false == m_IsLaserOperation && true == DATABASE->Get_LaserTypeB_Recovery())
 		Laser_Down(TimeDelta);
 
+	GoUp(TimeDelta);
+
 	return NO_EVENT;
 }
 
@@ -198,6 +200,46 @@ void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
 		m_dPatternDeltaT = 0.0;
 		m_iPatternState = 0;
 	}
+}
+
+void CMoonBaboon_MainLaser::Set_MainLaserUp(_float fMaxDistance, _float fSpeed)
+{
+	XMStoreFloat3(&m_vMaxPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_vMaxPos.y += fMaxDistance;
+
+	m_fMaxY = fMaxDistance;
+	m_IsGoUp = true;
+	m_fUpSpeed = fSpeed;
+
+	for (_uint i = 0; i < 8; ++i)
+		m_vecLaser_TypeB[i]->Set_LaserTypeBUp(fMaxDistance, fSpeed);
+
+	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
+}
+
+void CMoonBaboon_MainLaser::GoUp(_double dTimeDelta)
+{
+	if (false == m_IsGoUp)
+	{
+		m_pTransformCom->Set_Speed(3.5f, 0.f);
+		return;
+	}
+
+	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
+
+	_float fDist = (_float)dTimeDelta * m_fUpSpeed;
+	m_fDistance += fDist;
+
+	if (m_fMaxY <= m_fDistance)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vMaxPos), 1.f));
+		m_fMaxY = 0.f;
+		m_IsGoUp = false;
+		m_fDistance = 0.f;
+		return;
+	}
+
+	m_pTransformCom->Go_Up(dTimeDelta);
 }
 
 CMoonBaboon_MainLaser* CMoonBaboon_MainLaser::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

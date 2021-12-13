@@ -66,9 +66,17 @@ _int CUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Pressing(DIK_X))
+	{
+		DATABASE->GoUp_BossFloor(99.f);
+	}
+
 	/* 테스트 용 */
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
+	{
 		m_IsCutScene = false;
+		DATABASE->Close_BossDoor();
+	}
 	else if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
 		m_ePhase = CUFO::PHASE_2;
 	else if (m_pGameInstance->Key_Down(DIK_NUMPAD7))
@@ -123,6 +131,8 @@ _int CUFO::Tick(_double dTimeDelta)
 			break;
 		}
 	}
+
+	GoUp(dTimeDelta);
 
 	m_pModelCom->Update_Animation(dTimeDelta);
 
@@ -314,6 +324,13 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(UFO_MH);
 
 			m_fWaitingTime = 0.f;
+
+			/* 페이즈가 2번 진행됬다면 보스 Floor를 올려라 */
+			if (2 == m_iPhaseChangeCount)
+			{
+				_float fMaxDistance = 99.f;
+				DATABASE->GoUp_BossFloor(fMaxDistance);
+			}
 		}
 	}
 
@@ -405,7 +422,6 @@ void CUFO::Phase2_InterAction(_double dTimeDelta)
 
 void CUFO::OrbitalMovementCenter(_double dTimeDelta)
 {
-
 	_vector vDir, vCenterPos, vUFOLook, vDot;
 	_vector vTest;
 	/* 중심점은 1페 때 잡아줬던 시작점 */
@@ -433,7 +449,7 @@ void CUFO::OrbitalMovementCenter(_double dTimeDelta)
 
 	m_fRevAngle += (_float)dTimeDelta * 20.f;
 
-	matRotY = XMMatrixRotationY(XMConvertToRadians(m_fRotAngle - 180.f));
+	matRotY = XMMatrixRotationY(XMConvertToRadians(-m_fRotAngle));
 	matTrans = XMMatrixTranslation(m_vTranslationPos.x, m_vTranslationPos.y, m_vTranslationPos.z);
 	matParent = XMMatrixTranslation(vConverCenterPos.x, vConverCenterPos.y, vConverCenterPos.z);
 	matRevRotY = XMMatrixRotationY(XMConvertToRadians(m_fRevAngle));
@@ -560,6 +576,7 @@ void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
 	{
 		m_IsStartingPointMove = false;
 		m_pModelCom->Set_Animation(UFO_MH);
+		m_pModelCom->Set_NextAnimIndex(UFO_MH);
 
 		/* 도착했으면 메인레이저 올라와라 ㅇㅇ */
 		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(true);
@@ -575,8 +592,6 @@ void CUFO::Phase3_InterAction(_double dTimeDelta)
 
 void CUFO::GroundPound_Pattern(_double dTimeDelta)
 {
-	_vector vTargetPos, vUFOPos;
-
 	if(false == m_IsGroundPound)
 		m_fGroundPoundTime += (_float)dTimeDelta;
 
@@ -728,7 +743,7 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 	if (true == m_IsCodyEnter)
 	{
 		m_pModelCom->Set_Animation(CutScene_EnterUFO_FlyingSaucer);
-		m_pModelCom->Set_NextAnimIndex(UFO_MH);
+		m_pModelCom->Set_NextAnimIndex(UFO_Fwd);
 
 		m_IsCodyEnter = false;
 	}
@@ -738,8 +753,6 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 		m_IsCutScene = false;
 		m_ePhase = CUFO::PHASE_3;
 		m_IsStartingPointMove = true;
-
-		m_pModelCom->Set_Animation(UFO_Fwd);
 
 		/* 애니메이션이 딱 끝났을 때 뼈의 위치를 받아서 UFO 월드에 세팅해준다. */
 		_matrix BaseBone = m_pModelCom->Get_BoneMatrix("Base");
@@ -809,7 +822,8 @@ void CUFO::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(UFO_RocketKnockDown_MH, CutScene_EnterUFO_FlyingSaucer, true);
 
 	m_pModelCom->Add_LerpInfo(CutScene_EnterUFO_FlyingSaucer, UFO_MH, true);
-	
+	m_pModelCom->Add_LerpInfo(CutScene_EnterUFO_FlyingSaucer, UFO_Fwd, true);
+
 	m_pModelCom->Add_LerpInfo(UFO_GroundPound, UFO_MH, true, 1.f);
 }
 
@@ -849,6 +863,42 @@ void CUFO::Set_IsGuidedMissileDeadCheck(_bool IsCheck)
 	else
 		m_pMayMissile = nullptr;
 }
+
+void CUFO::Set_BossUFOUp(_float fMaxDistance, _float fSpeed)
+{
+	XMStoreFloat3(&m_vMaxPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_vMaxPos.y += fMaxDistance;
+
+	m_fMaxY = fMaxDistance;
+	m_IsGoUp = true;
+	m_fUpSpeed = fSpeed;
+
+	/* 끝났다면 스피드 원래대로 초기화 해주자 */
+	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
+}
+
+void CUFO::GoUp(_double dTimeDelta)
+{
+	if (false == m_IsGoUp)
+		return;
+
+	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
+
+	_float fDist = (_float)dTimeDelta * m_fUpSpeed;
+	m_fDistance += fDist;
+
+	if (m_fMaxY <= m_fDistance)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vMaxPos), 1.f));
+		m_fMaxY = 0.f;
+		m_IsGoUp = false;
+		m_fDistance = 0.f;
+		return;
+	}
+
+	m_pTransformCom->Go_Up(dTimeDelta);
+}
+
 
 HRESULT CUFO::Ready_Layer_MoonBaboon_SubLaser(const _tchar* pLayerTag)
 {

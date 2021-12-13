@@ -162,6 +162,10 @@ public:
 	void Set_LaserTypeB_Recovery(_bool IsCheck) { m_IsLaserTypeB_Recovery = IsCheck; }
 	_bool Get_LaserTypeB_Recovery() const { return m_IsLaserTypeB_Recovery; }
 
+	void Set_MoonBaboonCore(CGameObject* pGameObject) { m_vecMoonBaboonCore.emplace_back(pGameObject); }
+	class CGameObject* Get_MoonBaboonCore(_uint iIndex) { return m_vecMoonBaboonCore[iIndex]; }
+
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -191,6 +195,7 @@ private:
 private:
 	// Interactive Objects
 	vector<class CPressurePlate*>	m_vecPipeCurve;
+	vector<CGameObject*>			m_vecMoonBaboonCore;
 
 	CGameObject* m_pSTGravityRobot = nullptr;
 	CGameObject* m_pSTPinBallRobot = nullptr;

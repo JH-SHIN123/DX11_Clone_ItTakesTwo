@@ -38,6 +38,8 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 	m_pCoreShield = CMoonBaboonCore_Shield::Create(m_pDevice, m_pDeviceContext, this);
 	m_pCoreGlass = CMoonBaboonCore_Glass::Create(m_pDevice, m_pDeviceContext, this);
 
+	DATABASE->Set_MoonBaboonCore(this);
+
     return S_OK;
 }
 
@@ -99,6 +101,8 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 	m_pCoreShield->Tick(TimeDelta);
 	m_pCoreGlass->Tick(TimeDelta);
 
+	GoUp(TimeDelta);
+
     return _int();
 }
 
@@ -114,6 +118,9 @@ _int CMoonBaboonCore::Late_Tick(_double TimeDelta)
 
 void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 {
+	if (true == m_IsGoUp)
+		return;
+
 	if (m_iActiveCore == 1)
 	{
 		if (m_fMoveDelta < 1.4f)
@@ -135,6 +142,45 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 		}
 	}
 	else m_iActiveCore = 0;
+}
+
+void CMoonBaboonCore::Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed)
+{
+	XMStoreFloat3(&m_vMaxPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_vMaxPos.y += fMaxDistance;
+
+	m_fMaxY = fMaxDistance;
+	m_IsGoUp = true;
+	m_fUpSpeed = fSpeed;
+
+	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
+	m_iActiveCore = 1;
+}
+
+void CMoonBaboonCore::GoUp(_double dTimeDelta)
+{
+	if (false == m_IsGoUp)
+	{
+		m_pTransformCom->Set_Speed(4.f, 0.f);
+		return;
+	}
+
+	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
+
+	_float fDist = (_float)dTimeDelta * m_fUpSpeed;
+	m_fDistance += fDist;
+
+	if (m_fMaxY <= m_fDistance)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vMaxPos), 1.f));
+		m_fMaxY = 0.f;
+		m_IsGoUp = false;
+		m_fDistance = 0.f;
+		m_iActiveCore = 0;
+		return;
+	}
+
+	m_pTransformCom->Go_Up(dTimeDelta);
 }
 
 CMoonBaboonCore* CMoonBaboonCore::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

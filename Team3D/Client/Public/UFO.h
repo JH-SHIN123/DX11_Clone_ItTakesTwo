@@ -33,6 +33,10 @@ public:
 public:
 	void Set_IsGuidedMissileDeadCheck(_bool IsCheck);
 
+	/* For. BossFloorUp */
+	void Set_BossUFOUp(_float fMaxDistance, _float fSpeed);
+	void GoUp(_double dTimeDelta);
+
 public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
 	CModel* Get_Model() const { return m_pModelCom; }
@@ -54,6 +58,11 @@ private:
 	_uint					m_iPhaseChangeCount = 0;
 	_bool					m_IsInterActive = false;
 	_float4					m_vStartUFOPos;
+	_bool					m_IsGoUp = false;
+	_float					m_fUpSpeed = 0.f;
+	_float3					m_vMaxPos;
+	_float					m_fMaxY = 0.f;
+	_float					m_fDistance = 0.f;
 
 	/* For.PHASE_1 Pattern */
 	_bool					m_IsCoreExplosion = false;

@@ -34,10 +34,14 @@ public:
 
 public:
 	void Set_LaserOperation(_bool IsActive);
+	void Set_MainLaserUp(_float fMaxDistance, _float fSpeed);
+
+	void GoUp(_double dTimeDelta);
 
 private:
 	void Laser_AttackPattern(_double TimeDelta);
 	void Laser_Down(_double TimeDelta);
+
 
 private:
 	_uint	m_iPatternState = 0;
@@ -46,6 +50,11 @@ private:
 	_bool	m_IsLaserOperation = false;
 	_bool	m_IsLaserUp = false;
 	_bool	m_IsLaserCreate = true;
+	_float3	m_vMaxPos;
+	_float m_fMaxY = 0.f;
+	_bool m_IsGoUp = false;
+	_float m_fUpSpeed = 0.f;
+	_float m_fDistance = 0.f;
 
 private:
 	vector<class CLaser_TypeB*>				m_vecLaser_TypeB;

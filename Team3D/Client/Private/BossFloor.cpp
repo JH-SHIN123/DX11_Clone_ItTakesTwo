@@ -50,12 +50,15 @@ _int CBossFloor::Tick(_double dTimeDelta)
 
 	GoUp(dTimeDelta);
 
+	
 	return NO_EVENT;
 }
 
 _int CBossFloor::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
+
+	m_pStaticActorCom->Update_StaticActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 500.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -105,7 +108,6 @@ void CBossFloor::GoUp(_double dTimeDelta)
 	}
 
 	m_pTransformCom->Go_Up(dTimeDelta);
-	m_pStaticActorCom->Update_StaticActor();
 }
 
 HRESULT CBossFloor::Ready_Component(void * pArg)

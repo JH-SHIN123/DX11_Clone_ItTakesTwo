@@ -25,6 +25,8 @@ public:
 	void SetUp_MainLaserDirection(_uint iOption);
 	void SetUp_SubLaserDirection(_uint iOption);
 	void Set_RotateSpeed(_float fSpeed);
+	void Set_LaserTypeBUp(_float fMaxDistance, _float fSpeed);
+
 
 public:
 	_bool Get_LaserRecovery() const { return m_IsLaserRecovery; }
@@ -35,6 +37,17 @@ private:
 	_uint						m_iOption = 0;
 	_float4x4					m_matRotY;
 	_bool						m_IsLaserRecovery = false;
+
+private:
+	/* For. BossFloor Up */
+	_float3						m_vMaxPos;
+	_float						m_fMaxY = 0.f;
+	_bool						m_IsGoUp = false;
+	_float						m_fUpSpeed = 0.f;
+	_float						m_fDistance = 0.f;
+
+private:
+	void GoUp(_double dTimeDelta);
 
 public:
 	static CLaser_TypeB* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
