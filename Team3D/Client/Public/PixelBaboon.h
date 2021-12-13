@@ -27,11 +27,8 @@ public:
 	virtual _int Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
-private:
-	CVIBuffer_Rect*					m_pVIBufferCom = nullptr;
-	CRenderer*						m_pRendererCom = nullptr;
-	CTextures*						m_pTextureCom = nullptr;
-	CTransform*						m_pTransformCom = nullptr;
+ public: /* Getter */
+	 CTransform* Get_Transform() { return m_pTransformCom; }
 
  public: /* Setter */
 	 void Set_IsHit(_bool _IsHit) { m_IsHit = _IsHit; }
@@ -54,10 +51,16 @@ private:
 	 _int	m_iLifeCount = 3;
 	 _bool  m_bRender = true;
 
-	 CPixelHeart* m_pPixelHeart[3];
+	 CPixelHeart* m_pPixelHeart[3] = {nullptr};
 	 CPixelShield* m_pPixelShield = nullptr;
 	 CPixelArrow* m_pPixelArrow = nullptr;
 
+
+ private:
+	 CVIBuffer_Rect*					m_pVIBufferCom = nullptr;
+	 CRenderer*						m_pRendererCom = nullptr;
+	 CTextures*						m_pTextureCom = nullptr;
+	 CTransform*						m_pTransformCom = nullptr;
 
 public:
 	static CPixelBaboon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

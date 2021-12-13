@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "Cody.h"
 #include "May.h"
+#include "PixelUFO.h"
+#include "PixelBaboon.h"
 
 CPixelArrow::CPixelArrow(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CGameObject(pDevice, pDeviceContext)
@@ -31,6 +33,7 @@ HRESULT CPixelArrow::NativeConstruct(void * pArg)
 	if (nullptr != pArg)
 	{
 		_vector* vPosition = (_vector*)pArg;
+		m_vFirstPosition = *vPosition;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, *vPosition);
 		m_pTransformCom->Set_Scale(XMVectorSet(0.1f, 0.1f, 0.1f, 0.f));
 	}
@@ -40,6 +43,8 @@ HRESULT CPixelArrow::NativeConstruct(void * pArg)
 _int CPixelArrow::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	Rotate_Arrow(dTimeDelta);
 
 	return _int();
 }
@@ -64,6 +69,29 @@ HRESULT CPixelArrow::Render(RENDER_GROUP::Enum eGroup)
 	m_pVIBufferCom->Render(1);
 
 	return S_OK;
+}
+
+void CPixelArrow::Rotate_Arrow(_double dTimeDelta)
+{
+	if (nullptr == ((CPixelBaboon*)DATABASE->Get_PixelBaboon()))
+		return;
+
+	//Angle = PixelUFO의 Right와 CrossHair <-> PixelUFO 향하는 방향벡터와의 각도가 되겠다.
+	_vector vPixelUFOPos = ((CPixelUFO*)DATABASE->Get_PixelUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	_vector vPixelBaboonPos = ((CPixelBaboon*)DATABASE->Get_PixelBaboon())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+
+	_vector vDir = vPixelBaboonPos - vPixelUFOPos;
+
+	_vector vUFOToBaboon = XMVector3Normalize(vDir);
+	_vector vUFORight = XMVector3Normalize(((CPixelUFO*)DATABASE->Get_PixelUFO())->Get_Transform()->Get_State(CTransform::STATE_RIGHT));
+
+	_float fAngle = XMVectorGetX(XMVector3AngleBetweenNormals(vUFOToBaboon, vUFORight));
+
+	if (vPixelUFOPos.m128_f32[1] > vPixelBaboonPos.m128_f32[1])
+		fAngle *= -1.f;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vFirstPosition + (XMVector3Normalize(vDir) * 0.35f));
+	m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), fAngle);
 }
 
 CPixelArrow * CPixelArrow::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

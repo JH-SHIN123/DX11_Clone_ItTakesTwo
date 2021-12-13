@@ -2,6 +2,7 @@
 #include "..\Public\Laser_TypeA.h"
 
 #include "UFO.h"
+#include "MoonUFO.h"
 #include "DataStorage.h"
 #include "Effect_Boss_Laser_Smoke.h"
 
@@ -26,9 +27,19 @@ HRESULT CLaser_TypeA::NativeConstruct(void * pArg)
 {
 	CLaser::NativeConstruct(pArg);
 
+	_uint* iOption = 0;
+	if (nullptr != pArg)
+		iOption = (_uint*)pArg;
+
+	m_iOption = *iOption;
+
 	m_pBossUFO = (CUFO*)DATABASE->Get_BossUFO();
 	NULL_CHECK_RETURN(m_pBossUFO, E_FAIL);
 	Safe_AddRef(m_pBossUFO);
+
+	m_pMoonUFO = (CMoonUFO*)DATABASE->Get_MoonUFO();
+	NULL_CHECK_RETURN(m_pMoonUFO, E_FAIL);
+	Safe_AddRef(m_pMoonUFO);
 
 	m_dChargingTime = 3.0;
 	m_fShootSpeed = 100.f;
@@ -77,8 +88,16 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 
 		if (m_fLaserSizeY > 0)
 		{
-			m_vStartPoint = m_pBossUFO->Get_LaserStartPos();
-			m_vLaserDir = m_pBossUFO->Get_LaserDir();
+			if(m_iOption == 0)
+			{
+				m_vStartPoint = m_pBossUFO->Get_LaserStartPos();
+				m_vLaserDir = m_pBossUFO->Get_LaserDir();
+			}
+			else if (m_iOption == 1)
+			{
+				m_vStartPoint = m_pMoonUFO->Get_LaserStartPos();
+				m_vLaserDir = m_pMoonUFO->Get_LaserDir();
+			}
 			m_pGameInstance->Raycast(MH_PxVec3(XMLoadFloat4(&m_vStartPoint)), MH_PxVec3(XMLoadFloat4(&m_vLaserDir)), m_fLaserMaxY, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
 		}
 
@@ -278,6 +297,7 @@ CGameObject * CLaser_TypeA::Clone_GameObject(void * pArg)
 void CLaser_TypeA::Free()
 {
 	//Safe_Release(m_pLaserSmoke);
+	Safe_Release(m_pMoonUFO);
 	Safe_Release(m_pBossUFO);
 
 	CLaser::Free();

@@ -57,7 +57,7 @@ _int CPixelLaser::Tick(_double dTimeDelta)
 
 	if (m_bRender == true)
 	{
-		m_fRenderTime += dTimeDelta;
+		m_fRenderTime += (_float)dTimeDelta;
 		if (m_fRenderTime > 0.5f)
 		{
 			m_bRender = false;

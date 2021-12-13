@@ -104,7 +104,7 @@ void CPixelCrossHair::Movement(_double dTimeDelta)
 		vDir = XMVectorSet(-1.f, 0.f, 0.f, 0.f);
 
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector NextPos = vPos += vDir * dTimeDelta * 0.5f;
+	_vector NextPos = vPos += vDir * (_float)dTimeDelta * 0.5f;
 	_vector vChanged = vInitialPos - NextPos;
 	_float r = XMVectorGetX(XMVector2Length(vChanged));
 

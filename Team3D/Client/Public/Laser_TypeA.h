@@ -22,9 +22,11 @@ public:
 private:
 	_double m_dChargingTime = 0.0;
 	_bool	m_IsPaticleCreate = true;
+	_uint   m_iOption = 0;
 
 private:
 	class CUFO*										m_pBossUFO = nullptr;
+	class CMoonUFO*									m_pMoonUFO = nullptr;
 	class CEffect_Boss_Laser_Smoke*				m_pLaserSmoke = nullptr;
 
 public:

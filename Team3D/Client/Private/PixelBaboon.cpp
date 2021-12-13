@@ -44,7 +44,6 @@ HRESULT CPixelBaboon::NativeConstruct(void * pArg)
 
 	CGameObject* pHeart[3] = { nullptr };
 
-
 	_vector vHeartPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 0.04f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_PixelHeart"), Level::LEVEL_STAGE, TEXT("GameObject_PixelHeart"), &vHeartPos, &pHeart[0]), E_FAIL);
 
@@ -69,6 +68,8 @@ HRESULT CPixelBaboon::NativeConstruct(void * pArg)
 	_vector vArrowPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_PixelArrow"), Level::LEVEL_STAGE, TEXT("GameObject_PixelArrow"), &vArrowPos, &pArrow), E_FAIL);
 	m_pPixelArrow = static_cast<CPixelArrow*>(pArrow);
+
+	DATABASE->Set_PixelBaboon(this);
 
 	return S_OK;
 }
@@ -242,17 +243,19 @@ CGameObject * CPixelBaboon::Clone_GameObject(void * pArg)
 
 void CPixelBaboon::Free()
 {
+	CGameObject::Free();
+
+	Safe_Release(m_pPixelShield);
+	Safe_Release(m_pPixelArrow);
+
 	for (_int i = 0; i < 3; ++i)
 	{
 		Safe_Release(m_pPixelHeart[i]);
 	}
-	Safe_Release(m_pPixelShield);
-	Safe_Release(m_pPixelArrow);
 
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 
-	CGameObject::Free();
 }

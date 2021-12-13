@@ -57,6 +57,8 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	XMStoreFloat4(&m_vStartTargetPos, vPos);
 	m_IsStartingPointMove = true;
 
+	Set_MeshRenderGroup();
+
 	return S_OK;
 }
 
@@ -111,7 +113,7 @@ _int CUFO::Late_Tick(_double dTimeDelta)
 	CGameObject::Late_Tick(dTimeDelta);
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
-		return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		return Add_GameObject_ToRenderGroup();
 
 	return NO_EVENT;
 }
@@ -179,7 +181,8 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	/* 레이저 발사!!!!!!!!!! */
 	if (true == m_IsLaserCreate)
 	{
-		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeA"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"));
+		_uint iOption = 0;
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeA"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"), &iOption);
 		m_IsLaserCreate = false;
 
 		/* 레이저 패턴 3번 나오면 2페이즈로 바뀐다. */
@@ -400,7 +403,49 @@ HRESULT CUFO::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(0);
+	_uint iMaterialIndex = 0;
+
+	m_pModelCom->Sepd_Bind_Buffer();
+
+	iMaterialIndex = 1;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
+
+	iMaterialIndex = 2;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
+
+	iMaterialIndex = 3;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
+
+	iMaterialIndex = 4;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
+
+	iMaterialIndex = 5;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
+
+	iMaterialIndex = 6;
+	m_pModelCom->Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
+
+	// 0: Alpha 
+	iMaterialIndex = 0;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 16, false, eGroup);
+
+
+	return S_OK;
 
 	return S_OK;
 }
@@ -461,6 +506,25 @@ HRESULT CUFO::Render_ShadowDepth()
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(2, 0, true);
 
+	return S_OK;
+}
+
+HRESULT CUFO::Set_MeshRenderGroup()
+{
+	m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_ALPHA);
+	m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(2, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(3, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(4, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(5, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(6, tagRenderGroup::RENDER_NONALPHA);
+	return S_OK;
+}
+
+HRESULT CUFO::Add_GameObject_ToRenderGroup()
+{
+	m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_ALPHA, this);
+	m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_NONALPHA, this);
 	return S_OK;
 }
 

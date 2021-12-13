@@ -14,6 +14,8 @@ public:/* Getter */
 	CTransform*		Get_Transform() { return m_pTransformCom; }
 	CModel*			Get_Model()		{ return m_pModelCom; }
 	CDynamicActor*	Get_Actor() { return m_pDynamicActorCom; }
+	_float4 Get_LaserStartPos() const { return m_vLaserGunPos; }
+	_float4 Get_LaserDir() const { return m_vLaserDir; }
 
 public:/* Setter */
 	void Set_MayInUFO(_bool bCheck) { m_IsMayInUFO = bCheck; }
@@ -28,6 +30,10 @@ public:
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
+public:
+	HRESULT Set_MeshRenderGroup();
+	HRESULT Add_GameObject_ToRenderGroup();
+
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
@@ -39,6 +45,11 @@ private:
 	_bool					m_IsMayInUFO = false;
 	_bool					m_bRotateRight = false;
 	_bool					m_bRotateLeft = false;
+
+	// YYY
+	/* For. Laser_TypeA */
+	_float4				m_vLaserGunPos = {};
+	_float4				m_vLaserDir = {};
 
 private:
 	void	KeyInPut(_double dTimeDelta);

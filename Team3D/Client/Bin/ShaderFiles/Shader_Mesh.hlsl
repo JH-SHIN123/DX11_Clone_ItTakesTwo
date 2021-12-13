@@ -124,7 +124,7 @@ VS_OUT_FRESNEL VS_FRESNEL(VS_IN In)
 	float3 vPosW = Out.vPosition.xyz;
 	float3 vNormalW = Out.vNormal.xyz;
 	float3 l = normalize(vPosW - g_vMainCamPosition);
-	float Scale = 3.f;
+	float Scale = 2.5f;
 	float Power = 2.f; // 점점 진해지는 강도세기
 
 	Out.vMainCamRefl = Scale * pow(1.0 + dot(l, vNormalW), Power);
@@ -729,8 +729,8 @@ PS_OUT_ALPHA PS_FRESNEL(PS_IN_FRESNEL In)
 {
 	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
 
-	vector vOutColor = vector(0.7f, 0.7f, 0.95f, 1.f);
-	vector vInColor = vector(0.3f, 0.3f, 0.7f, 0.7f);
+	vector vOutColor = vector(0.7f, 0.7f, 0.95f, 0.9f);
+	vector vInColor = vector(0.3f, 0.3f, 0.7f, 0.4f);
 
 	Out.vDiffuse = lerp(vInColor, vOutColor, In.vRefl);
 	return Out;
@@ -1007,5 +1007,15 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_RADARSCREEN();
+	}
+	// 16
+	pass Default_BoneAlpha
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_ALPHA();
 	}
 };

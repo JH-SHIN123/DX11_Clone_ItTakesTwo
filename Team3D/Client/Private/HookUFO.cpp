@@ -121,12 +121,6 @@ HRESULT CHookUFO::Render(RENDER_GROUP::Enum eGroup)
 	_uint iMaterialIndex = 0;
 	m_pModelCom->Sepd_Bind_Buffer();
 
-	// 0: Alpha 
-	iMaterialIndex = 0;
-	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
-	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
-	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 14, false, eGroup);
-
 	iMaterialIndex = 1;
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
 	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
@@ -135,6 +129,11 @@ HRESULT CHookUFO::Render(RENDER_GROUP::Enum eGroup)
 	iMaterialIndex = 2;
 	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
 
+	// 0: Alpha 
+	iMaterialIndex = 0;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 14, false, eGroup);
 
 	return S_OK;
 }

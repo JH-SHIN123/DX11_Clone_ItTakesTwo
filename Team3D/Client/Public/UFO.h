@@ -32,6 +32,10 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
+	HRESULT Set_MeshRenderGroup();
+	HRESULT Add_GameObject_ToRenderGroup();
+
+public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
 	CModel* Get_Model() const { return m_pModelCom; }
 	_float4 Get_LaserStartPos() const { return m_vLaserGunPos; }

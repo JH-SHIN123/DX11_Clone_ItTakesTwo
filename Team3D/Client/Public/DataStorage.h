@@ -175,6 +175,9 @@ public:
 	void Set_PixelLaser(CGameObject* pPixelLaser) { m_pPixelLaser = pPixelLaser; }
 	CGameObject* Get_PixelLaser() { return m_pPixelLaser; }
 
+	void Set_PixelBaboon(CGameObject* pPixelBaboon) { m_pPixelBaboon = pPixelBaboon; }
+	CGameObject* Get_PixelBaboon() { return m_pPixelBaboon; }
+
 	void Set_LaserGauge(_float fGauge) { m_fLaserGauge = fGauge; }
 	_float Get_LaserGauge() { return m_fLaserGauge; }
 
@@ -246,6 +249,7 @@ private:
 	CGameObject* m_pPixelUFO = nullptr;
 	CGameObject* m_pPixelCrossHair = nullptr;
 	CGameObject* m_pPixelLaser = nullptr;
+	CGameObject* m_pPixelBaboon = nullptr;
 
 	_float		 m_fLaserGauge = 0.f;
 

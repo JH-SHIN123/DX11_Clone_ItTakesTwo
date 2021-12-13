@@ -43,7 +43,7 @@ _int CPixelShield::Tick(_double dTimeDelta)
 
 	if (m_bRenderState == true)
 	{
-		m_fRenderTime += dTimeDelta;
+		m_fRenderTime += (_float)dTimeDelta;
 		if (m_fRenderTime > 2.f)
 		{
 			m_bRenderState = false;

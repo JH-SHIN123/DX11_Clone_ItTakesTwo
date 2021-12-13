@@ -26,11 +26,15 @@ public:
  public: /* Setter */
 	 void Set_RenderState(_bool bRenderState) { m_bRender = bRenderState; }
 
+ private:
+	 void Rotate_Arrow(_double dTimeDelta);
+
 
  private:
 	 _float m_fSizeX = 0.f;
 	 _float m_fSizeY = 0.f;
 	 _bool m_bRender = false;
+	 _vector m_vFirstPosition = {};
 
  
  private:
