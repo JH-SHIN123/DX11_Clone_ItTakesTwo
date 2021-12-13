@@ -55,7 +55,6 @@ private: /* For.Component */
 	CRenderer*		m_pRendererCom = nullptr;
 	CTransform*		m_pTransformCom = nullptr;
 	CModel*			m_pModelCom = nullptr;
-	/*CStaticActor*	m_pStaticActorCom = nullptr;*/
 
 public:
 	static CMoonBaboon_SubLaser* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
