@@ -95,7 +95,7 @@ void CLaserButtonLarge_Gate::Movement(_double dTimeDelta)
 				m_pTransformCom->Set_Scale(XMVectorSet(0.001f, 0.001f, 0.001f, 1.f));
 				m_bActive = true;
 				m_bMovement = false;
-				LASERTENNIS->Active_LaserButtonLarge();
+				LASERTENNIS->Active_LaserButtonLarge(true);
 			}
 		}
 		/* Close */

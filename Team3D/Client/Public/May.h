@@ -361,6 +361,7 @@ private:
 	_bool	m_IsInUFO = false;
 	/* Hye::For.LaserTennis */
 	_bool	m_bLaserTennis = false;
+	_uint	m_iHP = 12;
 
 	/* For.HookUFO */
 	_bool m_IsHookUFO = false;

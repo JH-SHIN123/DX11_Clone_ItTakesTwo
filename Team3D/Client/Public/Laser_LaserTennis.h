@@ -28,6 +28,7 @@ public:
 
 public:
 	virtual HRESULT Render_ShadowDepth();
+	virtual void Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 private:
 	CTransform*		m_pTransformCom = nullptr;
@@ -35,8 +36,11 @@ private:
 	CModel*			m_pModelCom = nullptr;
 	CTriggerActor*	m_pTriggerActorCom = nullptr;
 
-	_float			m_fDistance = 18.f;
+	_float			m_fDistance = 20.f;
 	_float			m_fCheckDistance = 0.f;
+	_float			m_fScale = 1.f;
+	_float			m_fMaxScale = 23.f;
+
 	_float3						 m_vDirection = {};
 	CLaserTennis_Manager::TARGET m_eTarget;
 

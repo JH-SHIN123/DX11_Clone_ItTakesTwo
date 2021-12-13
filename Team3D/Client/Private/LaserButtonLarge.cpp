@@ -90,6 +90,7 @@ void CLaserButtonLarge::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 	{
 		if (((((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Falling || (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land_Exit))
 		{
+			m_bCreateTrigger = true;
 			m_bActiveMove = true;
 			m_bMovement = false;
 			m_bActive = false;
@@ -105,6 +106,7 @@ void CLaserButtonLarge::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 	{
 		if (((((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Falling || (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land_Exit))
 		{
+			m_bCreateTrigger = true;
 			m_bActiveMove = true;
 			m_bMovement = false;
 			m_bActive = false;
@@ -122,7 +124,7 @@ void CLaserButtonLarge::Movement(_double dTimeDelta)
 	if (false == m_bMovement)
 		return;
 
-	m_fDistance = 0.08f;
+	m_fDistance = 0.2f;
 	m_pTransformCom->Set_Speed(2.f, 0.f);
 
 	if (true == m_bCollision)
@@ -161,12 +163,13 @@ void CLaserButtonLarge::Activaion_Movement(_double dTimeDelta)
 		}
 	}
 	/* 버튼 눌렀을때 */
-	else
+	else if(true == m_bCreateTrigger && false == m_bActive)
 	{
 		m_dLaserCreateTime += dTimeDelta;
 
 		m_pTransformCom->Set_Speed(4.f, 0.f);
 		m_pTransformCom->Go_Down(dTimeDelta);
+
 		if ((m_fMaxPosY - m_fDistance) >= XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
 		{
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fMaxPosY - m_fDistance));
@@ -179,6 +182,7 @@ void CLaserButtonLarge::Activaion_Movement(_double dTimeDelta)
 			
 			if (10 <= m_iLaserCount)
 			{
+				m_bCreateTrigger = false;
 				m_bActiveMove = false;
 				m_bMovement = false;
 				m_iLaserCount = 0;
@@ -186,7 +190,18 @@ void CLaserButtonLarge::Activaion_Movement(_double dTimeDelta)
 			}
 		}
 	}
+	else
+	{
+		m_pTransformCom->Set_Speed(4.f, 0.f);
+		m_pTransformCom->Go_Down(dTimeDelta);
 
+		if ((m_fMaxPosY - m_fDistance) >= XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
+		{
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fMaxPosY - m_fDistance));
+			m_bActiveMove = false;
+			m_bMovement = false;
+		}
+	}
 	m_pStaticActorCom->Update_StaticActor();
 }
 

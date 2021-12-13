@@ -12,7 +12,20 @@ CTimer_LaserTennis::CTimer_LaserTennis(const CTimer_LaserTennis & rhs)
 {
 }
 
-HRESULT CTimer_LaserTennis::NativeConstruct_Prototype()
+void CTimer_LaserTennis::OnOff_Timer(_bool bOnOff)
+{
+	m_bOnOff = bOnOff;
+
+	if (false == bOnOff)
+	{
+		m_dButton_Time = 0.0;
+		m_dLargeButton_Time = 0.0;
+		m_dLaserActivation_Time = 0.0;
+		m_iLaserActivation_Count = 0;
+	}
+}
+
+ HRESULT CTimer_LaserTennis::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
 
@@ -73,13 +86,6 @@ _int CTimer_LaserTennis::Tick(_double dTimeDelta)
 			m_dLaserActivation_Time = 0.0;
 		}
 	}
-	return NO_EVENT;
-}
-
-_int CTimer_LaserTennis::Late_Tick(_double dTimeDelta)
-{
-	CGameObject::Late_Tick(dTimeDelta);
-
 	return NO_EVENT;
 }
 

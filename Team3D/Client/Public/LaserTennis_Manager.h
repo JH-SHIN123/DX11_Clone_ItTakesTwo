@@ -34,6 +34,8 @@ public:/* Setter */
 	void Increase_PowerCoord();
 	void Decrease_PowerCoord();
 	void KeyCheck(TARGET eTarget);
+	void Set_MayCount();
+	void Set_CodyCount();
 
 public:
 	/* InGame */
@@ -43,7 +45,7 @@ public:
 	void Active_LaserButton();
 	void Active_LaserButtonLarge_Gate(_bool bActive);
 	void Active_LaserButtonLarge_Gate(_bool bActive, TARGET eTarget);
-	void Active_LaserButtonLarge();
+	void Active_LaserButtonLarge(_bool bActive);
 	HRESULT Create_LaserTrigger(_fvector vPosition, TARGET eTarget);
 	HRESULT Create_LaserTrigger_LargeButton(_fvector vPosition, TARGET eTarget);
 	HRESULT Create_Laser(_uint iIndex, TARGET eTarget);
@@ -80,14 +82,19 @@ private:
 	CLaserPowerCoord*		m_pLaserPowerCoord[2];
 	CTimer_LaserTennis*		m_pTimer_LaserTennis = nullptr;
 
-	_bool					m_bKeyCheck[TARGET_END];
+	_bool					m_bKeyCheck[TARGET_END] = { false };
 	_bool					m_bStartGame = false;
 	_bool					m_bReady = false;
 	_uint					m_iPowerCoordCount = 0;
 
+	_uint					m_iCodyCount = 0;
+	_uint					m_iMayCount = 0;
+	TARGET					m_eWinner = TARGET_END;
+
 private:
 	/* UI »ý¼º */
 	HRESULT Create_StartUI();
+	HRESULT Create_ResultUI();
 	void Active_CollisionWall();
 
 public:

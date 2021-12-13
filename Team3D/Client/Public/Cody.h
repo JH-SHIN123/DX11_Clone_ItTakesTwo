@@ -364,7 +364,11 @@ private:
 	_bool    m_bFirstCheck = false;
 	_double	 m_dRespawnTime = 0.0;
 	/* Hye::For.LaserTennis */
-	_bool	m_bLaserTennis = false;
+	_bool	 m_bLaserTennis = false;
+	/* Hye::For.Laser_LaserTennis */
+	_bool	 m_bLaser = false;
+	_bool	 m_bCheckAnim = false;
+	_uint	 m_iHP = 12;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
@@ -477,7 +481,7 @@ private:
 public:
 	void PinBall_Respawn(const _double dTimeDelta);
 	void SpaceShip_Respawn(const _double dTimeDelta);
-
+	_uint Get_HP() { return m_iHP; }
 private:
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);

@@ -152,6 +152,28 @@ void CLaserTennis_Manager::KeyCheck(TARGET eTarget)
 		m_bStartGame = true;
 }
 
+void CLaserTennis_Manager::Set_MayCount()
+{
+	++m_iMayCount;
+
+	if (4 <= m_iMayCount)
+	{
+		Reset_Game();
+		m_eWinner = CLaserTennis_Manager::TARGET_MAY;
+	}
+}
+
+void CLaserTennis_Manager::Set_CodyCount()
+{
+	++m_iCodyCount;
+
+	if (4 <= m_iCodyCount)
+	{
+		Reset_Game();
+		m_eWinner = CLaserTennis_Manager::TARGET_CODY;
+	}
+}
+
 void CLaserTennis_Manager::Active_LaserButton()
 {
 	/* 랜덤 인덱스 Swap */
@@ -176,7 +198,7 @@ void CLaserTennis_Manager::Active_LaserButton()
 			continue;
 		else
 		{
-			m_LaserButton_Cody[iRandomIndex[i]]->Active_Button();
+			m_LaserButton_Cody[iRandomIndex[i]]->Active_Button(true);
 			break;
 		}
 	}
@@ -187,7 +209,7 @@ void CLaserTennis_Manager::Active_LaserButton()
 			continue;
 		else
 		{
-			m_LaserButton_May[iRandomIndex[i]]->Active_Button();
+			m_LaserButton_May[iRandomIndex[i]]->Active_Button(true);
 			break;
 		}
 	}
@@ -223,10 +245,10 @@ void CLaserTennis_Manager::Active_LaserButtonLarge_Gate(_bool bActive, TARGET eT
 	}
 }
 
-void CLaserTennis_Manager::Active_LaserButtonLarge()
+void CLaserTennis_Manager::Active_LaserButtonLarge(_bool bActive)
 {
-	m_pLaserButtonLarge[0]->Activation();
-	m_pLaserButtonLarge[1]->Activation();
+	m_pLaserButtonLarge[0]->Activation(bActive);
+	m_pLaserButtonLarge[1]->Activation(bActive);
 }
 
 void CLaserTennis_Manager::Start_Game()
@@ -250,6 +272,49 @@ void CLaserTennis_Manager::Start_Game()
 
 void CLaserTennis_Manager::Reset_Game()
 {
+	/* 결과창 UI 생성 */
+	Create_ResultUI();
+
+	/* 뷰포트 쪼개기 */
+
+	/* 충돌 벽 비활성화 */
+	Active_CollisionWall();
+
+	/* 레이저버튼 비활성화 */
+	for (auto& pLaserButton : m_LaserButton_Cody)
+		pLaserButton->Active_Button(false);
+	for (auto& pLaserButton : m_LaserButton_May)
+		pLaserButton->Active_Button(false);
+
+	/* 레이저 생성기 비활성화 */
+	for (auto& pLasaerActivaion : m_LaserActivation)
+	{
+		if(true == pLasaerActivaion->Get_Active())
+			pLasaerActivaion->Change_State();
+	}
+
+	/* 큰 레이저버튼 비활성화 */
+	for (_uint i = 0; i < 2; ++i)
+	{
+		if (true == m_pLaserButtonLarge[i]->Get_Active())
+			m_pLaserButtonLarge[i]->Activation(false);
+	}
+
+	/* 파워코드 초기화 */
+	for (_uint i = 0; i < 2; ++i)
+		m_pLaserPowerCoord[i]->Change_State();
+
+	/* 타이머 종료 */
+	m_pTimer_LaserTennis->OnOff_Timer(false);
+
+	/* 변수 초기화 */
+	m_bKeyCheck[TARGET_END] = { false };
+	m_bStartGame = false;
+	m_bReady = false;
+	m_iPowerCoordCount = 0;
+
+	m_iCodyCount = 0;
+	m_iMayCount = 0;
 }
 
 HRESULT CLaserTennis_Manager::Add_LaserActivation(CLaserActivation * pLaserActivation)
@@ -338,6 +403,11 @@ HRESULT CLaserTennis_Manager::Create_StartUI()
 	/* UI 다 띄우면 Ready = true */
 
 	m_bReady = true;
+	return S_OK;
+}
+
+HRESULT CLaserTennis_Manager::Create_ResultUI()
+{
 	return S_OK;
 }
 

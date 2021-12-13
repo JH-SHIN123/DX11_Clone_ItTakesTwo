@@ -42,6 +42,9 @@ _int CLaserTrigger::Tick(_double dTimeDelta)
 
 	CGameObject::Tick(dTimeDelta);
 
+	if (false == LASERTENNIS->Get_StartGame())
+		Set_Dead();
+
 	Movement(dTimeDelta);
 
 	_vector vMyPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -122,7 +125,7 @@ void CLaserTrigger::Movement(_double dTimeDelta)
 		_float fY = m_fJumpY + ((m_fJumpPower * m_fJumpTime) - 0.5f * 9.8f * m_fJumpTime * m_fJumpTime);
 		if (m_fMaxY > fY && false == m_bJumpEnd)
 		{
-			m_fEndY += 1.5f;
+			m_fEndY += 0.7f;
 			m_bJumpEnd = true;
 		}
 		else

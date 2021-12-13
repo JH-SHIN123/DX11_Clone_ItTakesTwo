@@ -13,7 +13,7 @@ public:
 	_bool Get_Active() { return m_bActive; }
 
 public:
-	void Active_Button() { m_bActive = true; }
+	void Active_Button(_bool bActive) { m_bActive = bActive; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;

@@ -671,6 +671,10 @@ void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
 		tInfo.fCullRadius = 500.f;
 	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_ControlRoom_StripTiny_01"))
 		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SpaceLaserRoom_01"))
+		tInfo.fCullRadius = 500.f;
+	else if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_SpaceLaserRoomWalls_01"))
+		tInfo.fCullRadius = 500.f;
 }
 
 void CEnvironment_Generator::Adjustment_Model_Position(_tchar* pModelTag, _float4x4& rWorld)

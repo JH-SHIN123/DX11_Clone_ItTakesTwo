@@ -10,14 +10,13 @@ private:
 	explicit CTimer_LaserTennis(const CTimer_LaserTennis& rhs);
 	virtual ~CTimer_LaserTennis() = default;
 
-public:
-	void OnOff_Timer(_bool bOnOff) { m_bOnOff = bOnOff; }
+public:/* Setter */
+	void OnOff_Timer(_bool bOnOff);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double dTimeDelta) override;
-	virtual _int	Late_Tick(_double dTimeDelta) override;
 
 private:
 	_bool			m_bOnOff = false;

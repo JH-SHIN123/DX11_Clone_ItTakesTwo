@@ -10,8 +10,11 @@ private:
 	explicit CLaserButtonLarge(const CLaserButtonLarge& rhs);
 	virtual ~CLaserButtonLarge() = default;
 
-public:
-	void Activation() { m_bActiveMove = true; m_bActive = true; }
+public:/* Getter */
+	_bool Get_Active() { return m_bActive; }
+
+public:/* Setter */
+	void Activation(_bool bActive) { m_bActiveMove = true; m_bActive = bActive; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -32,6 +35,7 @@ private:
 	_bool			m_bActiveMove = false;
 	_bool			m_bCollision = false;
 	_bool			m_bMovement = false;
+	_bool			m_bCreateTrigger = false;
 
 	_float			m_fDistance = 0.6f;
 	_float			m_fMaxPosY = 0.f;

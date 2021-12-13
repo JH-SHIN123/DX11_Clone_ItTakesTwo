@@ -629,9 +629,9 @@ PS_OUT	PS_LASERBUTTON(PS_IN In, uniform bool isGreen)
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
 	if (isGreen)
-		Out.vDiffuse = vMtrlDiffuse * vector(0.f, 1.f, 0.f, 1.f);
+		Out.vDiffuse = vMtrlDiffuse * vector(0.f, 1.f, 0.3f, 1.f);
 	else
-		Out.vDiffuse = vMtrlDiffuse * vector(0.f, 0.f, 1.f, 1.f);
+		Out.vDiffuse = vMtrlDiffuse * vector(0.f, 0.3f, 1.f, 1.f);
 
 	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 
@@ -642,7 +642,7 @@ PS_OUT	PS_LASERBUTTON(PS_IN In, uniform bool isGreen)
 	Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
 
 	// Calculate Emissive
-	Out.vEmissive = 0.25f;
+	Out.vEmissive = 0.2f;
 
 	// Calculate Shadow
 	int iIndex = -1;
@@ -663,9 +663,9 @@ PS_OUT	PS_LASER(PS_IN In, uniform bool isGreen)
 	PS_OUT Out = (PS_OUT)0;
 
 	if (isGreen)
-		Out.vDiffuse = vector(0.f, 1.f, 0.f, 1.f);
+		Out.vDiffuse = vector(0.f, 1.f, 0.3f, 1.f);
 	else
-		Out.vDiffuse = vector(0.f, 0.f, 1.f, 1.f);
+		Out.vDiffuse = vector(0.f, 0.3f, 1.f, 1.f);
 
 	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
 
@@ -676,7 +676,7 @@ PS_OUT	PS_LASER(PS_IN In, uniform bool isGreen)
 	Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
 
 	// Calculate Emissive
-	Out.vEmissive = 0.25f;
+	Out.vEmissive = 0.5f;
 
 	// Calculate Shadow
 	int iIndex = -1;

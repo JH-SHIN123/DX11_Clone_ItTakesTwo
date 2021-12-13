@@ -459,13 +459,16 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(true);
 	}
-	if (m_pGameInstance->Key_Down(DIK_0))/* 우산 */
+	//if (m_pGameInstance->Key_Down(DIK_0))/* 우산 */
+	//{
+	//	m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+	//	m_pActorCom->Set_IsPlayerInUFO(false);
+	//}
+	if (m_pGameInstance->Key_Down(DIK_0))/* 레이저 테니스 */
 	{
-		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
-	if (m_pGameInstance->Key_Down(DIK_0))/* 레이저 테니스 */
-		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -2110,6 +2113,19 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 			m_bLaserTennis = true;
 		}
+		else if (m_eTargetGameID == GameID::eLASER_LASERTENNIS)
+		{
+			/* Hit Effect 생성 */
+
+			/* HP 감소 */
+			m_iHP -= 3;
+			LASERTENNIS->Set_MayCount();
+
+			if (0 >= m_iHP)
+				m_iHP = 12;
+
+			m_IsCollide = false;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
@@ -3251,13 +3267,19 @@ void CCody::LaserTennis(const _double dTimeDelta)
 
 	if (true == LASERTENNIS->Get_StartGame())
 	{
-		m_pModelCom->Set_Animation(ANI_C_Bhv_RocketFirework);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		if (false == m_bCheckAnim)
+		{
+			m_pActorCom->Jump_Start(2.f);
 
-		if (0.8f <= m_pModelCom->Get_ProgressAnim())
+			m_pModelCom->Set_Animation(ANI_C_Bhv_RocketFirework);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_bCheckAnim = true;
+		}
+		else if (0.7f <= m_pModelCom->Get_ProgressAnim())
 		{
 			LASERTENNIS->Start_Game();
 			m_bLaserTennis = false;
+			m_bCheckAnim = false;
 			return;
 		}
 	}
@@ -3308,3 +3330,4 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 		m_dRespawnTime = 0.0;
 	}
 }
+

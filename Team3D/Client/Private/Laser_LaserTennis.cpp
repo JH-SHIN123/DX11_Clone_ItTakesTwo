@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Laser_LaserTennis.h"
+#include "May.h"
+#include "Cody.h"
 
 CLaser_LaserTennis::CLaser_LaserTennis(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -27,8 +29,21 @@ HRESULT CLaser_LaserTennis::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	m_pTransformCom->Set_Speed(8.f, 0.f);
-	m_pTransformCom->Set_Scale(XMVectorSet(15.f, 15.f, 15.f, 1.f));
+	/* 맵이 가로세로 길이가 다름 */
+	if (0 != m_vDirection.x)
+	{
+		m_pTransformCom->RotateYaw_Angle(90.f);
+		m_fDistance = 24.f;
+		m_fMaxScale = 20.f;
+	}
+
+	/* 생성 위치 보정 */
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPosition += XMLoadFloat3(&m_vDirection);
+	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition));
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+	m_pTransformCom->Set_Speed(5.f, 0.f);
 
 	return S_OK;
 }
@@ -39,6 +54,9 @@ _int CLaser_LaserTennis::Tick(_double dTimeDelta)
 		return EVENT_DEAD;
 
 	CGameObject::Tick(dTimeDelta);
+
+	if (false == LASERTENNIS->Get_StartGame())
+		Set_Dead();
 
 	Movement(dTimeDelta);
 
@@ -52,7 +70,7 @@ _int CLaser_LaserTennis::Late_Tick(_double dTimeDelta)
 	m_pTriggerActorCom->Update_TriggerActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 
 	return NO_EVENT;
 }
@@ -84,13 +102,37 @@ HRESULT CLaser_LaserTennis::Render_ShadowDepth()
 	return S_OK;
 }
 
+void CLaser_LaserTennis::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+	CGameObject::Trigger(eStatus, eID, pGameObject);
+
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eLASER_LASERTENNIS, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eLASER_LASERTENNIS, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eLASER_LASERTENNIS, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eLASER_LASERTENNIS, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+}
+
 void CLaser_LaserTennis::Movement(_double dTimeDelta)
 {
-	m_fCheckDistance += (_float)(dTimeDelta * m_pTransformCom->Get_SpeedPerSec());
-	if (m_fDistance <= m_fCheckDistance)
-		Set_Dead();
+	m_fScale += (_float)dTimeDelta * m_fMaxScale;
+	if (m_fMaxScale <= m_fScale)
+		m_pTransformCom->Set_Scale(XMVectorSet(m_fMaxScale, 10.f, 10.f, 1.f));
+	else
+		m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, 10.f, 10.f, 1.f));
 
-	m_pTransformCom->Go_Direction(XMLoadFloat3(&m_vDirection), dTimeDelta);
+	if (m_fMaxScale <= m_fScale)
+	{
+		m_fCheckDistance += (_float)(dTimeDelta * m_pTransformCom->Get_SpeedPerSec());
+		if (m_fDistance <= m_fCheckDistance)
+			Set_Dead();
+
+		m_pTransformCom->Go_Direction(XMLoadFloat3(&m_vDirection), dTimeDelta);
+	}
 }
 
 HRESULT CLaser_LaserTennis::Ready_Component(void * pArg)
@@ -107,16 +149,8 @@ HRESULT CLaser_LaserTennis::Ready_Component(void * pArg)
 	m_vDirection = tArg.vDirection;
 	m_eTarget = tArg.eTarget;
 
-	if (0 != m_vDirection.x)
-		m_pTransformCom->RotateYaw_Angle(90.f);
-
-	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	vPosition += XMLoadFloat3(&m_vDirection) * 2.5f;
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxBoxGeometry(5.f, 0.2f, 0.2f);
+	PxGeometry* TriggerGeom = new PxBoxGeometry(12.f, 0.5f, 0.5f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;

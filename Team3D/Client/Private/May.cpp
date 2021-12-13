@@ -339,8 +339,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(62.f, 250.f, 187.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_8))/* Moon */
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
-	//if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
-	//	m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_9))/* 우산 */
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_0))/* 레이저 테니스 */
 		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
 #pragma endregion
@@ -1658,6 +1658,19 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			m_bLaserTennis = true;
 		}
+		else if (m_eTargetGameID == GameID::eLASER_LASERTENNIS)
+		{
+			/* Hit Effect 생성 */
+
+			/* HP 감소 */
+			m_iHP -= 3;
+			LASERTENNIS->Set_CodyCount();
+
+			if (0 >= m_iHP)
+				m_iHP = 12;
+
+			m_IsCollide = false;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
@@ -1981,11 +1994,11 @@ void CMay::LaserTennis(const _double dTimeDelta)
 
 	if (true == LASERTENNIS->Get_StartGame())
 	{
+		m_pActorCom->Jump_Start(2.f);
 		m_pModelCom->Set_Animation(ANI_M_RocketFirework);
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 
 		m_bLaserTennis = false;
-		return;
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_I))

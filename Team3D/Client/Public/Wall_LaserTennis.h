@@ -25,7 +25,7 @@ private:
 	_bool			m_bMovement = false;
 
 	_float			m_fResetPosY = 0.f;
-	_float			m_fDistance = 5.f;
+	_float			m_fDistance = 10.f;
 
 private:
 	HRESULT Ready_Component(void* pArg);
