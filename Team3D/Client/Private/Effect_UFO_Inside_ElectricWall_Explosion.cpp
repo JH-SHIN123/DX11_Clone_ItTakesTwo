@@ -15,7 +15,7 @@ HRESULT CEffect_UFO_Inside_ElectricWall_Explosion::NativeConstruct_Prototype(voi
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 100;
+	m_EffectDesc_Prototype.iInstanceCount = 90;
 
 	return S_OK;
 }

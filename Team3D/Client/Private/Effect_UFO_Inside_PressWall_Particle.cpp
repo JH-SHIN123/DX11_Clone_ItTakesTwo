@@ -1,25 +1,25 @@
 #include "stdafx.h"
-#include "Effect_UFO_Inside_ElectricWall_Particle.h"
+#include "..\Public\Effect_UFO_Inside_PressWall_Particle.h"
 
-CEffect_UFO_Inside_ElectricWall_Particle::CEffect_UFO_Inside_ElectricWall_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_UFO_Inside_PressWall_Particle::CEffect_UFO_Inside_PressWall_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
-CEffect_UFO_Inside_ElectricWall_Particle::CEffect_UFO_Inside_ElectricWall_Particle(const CEffect_UFO_Inside_ElectricWall_Particle & rhs)
+CEffect_UFO_Inside_PressWall_Particle::CEffect_UFO_Inside_PressWall_Particle(const CEffect_UFO_Inside_PressWall_Particle & rhs)
 	: CInGameEffect(rhs)
 {
 }
 
-HRESULT CEffect_UFO_Inside_ElectricWall_Particle::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_UFO_Inside_PressWall_Particle::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 100;
+	m_EffectDesc_Prototype.iInstanceCount = 10;
 	return S_OK;
 }
 
-HRESULT CEffect_UFO_Inside_ElectricWall_Particle::NativeConstruct(void * pArg)
+HRESULT CEffect_UFO_Inside_PressWall_Particle::NativeConstruct(void * pArg)
 {
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
@@ -34,14 +34,13 @@ HRESULT CEffect_UFO_Inside_ElectricWall_Particle::NativeConstruct(void * pArg)
 
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
-	m_pTransformCom->RotatePitch_Angle(90.0);
 
 	Ready_InstanceBuffer();
 
 	return S_OK;
 }
 
-_int CEffect_UFO_Inside_ElectricWall_Particle::Tick(_double TimeDelta)
+_int CEffect_UFO_Inside_PressWall_Particle::Tick(_double TimeDelta)
 {
 	if (false == m_IsActivate && 5.0 < m_dActivateTime)
 		return EVENT_DEAD;
@@ -66,12 +65,12 @@ _int CEffect_UFO_Inside_ElectricWall_Particle::Tick(_double TimeDelta)
 	return NO_EVENT;
 }
 
-_int CEffect_UFO_Inside_ElectricWall_Particle::Late_Tick(_double TimeDelta)
+_int CEffect_UFO_Inside_PressWall_Particle::Late_Tick(_double TimeDelta)
 {
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
-HRESULT CEffect_UFO_Inside_ElectricWall_Particle::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CEffect_UFO_Inside_PressWall_Particle::Render(RENDER_GROUP::Enum eGroup)
 {
 	_float fTime = (_float)m_dAlphaTime;
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
@@ -79,14 +78,14 @@ HRESULT CEffect_UFO_Inside_ElectricWall_Particle::Render(RENDER_GROUP::Enum eGro
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fTime, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(2));
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(9));
 
 	m_pPointInstanceCom_STT->Render(11, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
 }
 
-void CEffect_UFO_Inside_ElectricWall_Particle::Check_Instance(_double TimeDelta)
+void CEffect_UFO_Inside_PressWall_Particle::Check_Instance(_double TimeDelta)
 {
 	_fmatrix ParentMatrix = m_pTransformCom->Get_WorldMatrix();
 	_float fAlphaTime = (_float)m_dInstance_Pos_Update_Time / 3.f;
@@ -94,30 +93,22 @@ void CEffect_UFO_Inside_ElectricWall_Particle::Check_Instance(_double TimeDelta)
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
 		m_pInstanceBuffer_STT[iIndex].fTime -= (_float)TimeDelta * 0.25f;
-		if (0.f >= m_pInstanceBuffer_STT[iIndex].fTime)	m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
-
-		m_pInstance_Pos_UpdateTime[iIndex] -= TimeDelta;
-		if (0.0 >= m_pInstance_Pos_UpdateTime[iIndex] && true == m_IsActivate)
+		if (0.f >= m_pInstanceBuffer_STT[iIndex].fTime)
 		{
-			Reset_Instance(TimeDelta, m_pTransformCom->Get_WorldMatrix(), iIndex);
+			m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
 			continue;
 		}
-
-		m_pInstanceBuffer_STT[iIndex].vSize.x -= (_float)TimeDelta * 0.06f;
-		m_pInstanceBuffer_STT[iIndex].vSize.y -= (_float)TimeDelta * 0.1f;
-		if (0.f > m_pInstanceBuffer_STT[iIndex].vSize.x) m_pInstanceBuffer_STT[iIndex].vSize.x = 0.f;
-		if (0.f > m_pInstanceBuffer_STT[iIndex].vSize.y) m_pInstanceBuffer_STT[iIndex].vSize.y = 0.f;
 
 		Instance_Pos((_float)TimeDelta, iIndex);
 
 	}
 }
 
-void CEffect_UFO_Inside_ElectricWall_Particle::Instance_Size(_float TimeDelta, _int iIndex)
+void CEffect_UFO_Inside_PressWall_Particle::Instance_Size(_float TimeDelta, _int iIndex)
 {
 }
 
-void CEffect_UFO_Inside_ElectricWall_Particle::Instance_Pos(_float TimeDelta, _int iIndex)
+void CEffect_UFO_Inside_PressWall_Particle::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition);
 	_vector vDir = XMLoadFloat3(&m_pInstanceBuffer_Dir[iIndex]);
@@ -125,7 +116,7 @@ void CEffect_UFO_Inside_ElectricWall_Particle::Instance_Pos(_float TimeDelta, _i
 
 	m_pInstanceBuffer_Parabola_Time[iIndex] += 0.0071f;
 
-	vPos += vDir * TimeDelta * 0.5f;
+	vPos += vDir * TimeDelta * 0.3f;
 	vPos.m128_f32[1] = fParabola_Weight + m_pInstanceBuffer_Parabola_PosY[iIndex];
 
 	_vector vUp = XMVector3Normalize(vPos - XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition));
@@ -134,32 +125,15 @@ void CEffect_UFO_Inside_ElectricWall_Particle::Instance_Pos(_float TimeDelta, _i
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }
 
-void CEffect_UFO_Inside_ElectricWall_Particle::Instance_UV(_float TimeDelta, _int iIndex)
+void CEffect_UFO_Inside_PressWall_Particle::Instance_UV(_float TimeDelta, _int iIndex)
 {
 }
 
-void CEffect_UFO_Inside_ElectricWall_Particle::Reset_Instance(_double TimeDelta, _fmatrix ParentMatrix, _int iIndex)
+void CEffect_UFO_Inside_PressWall_Particle::Reset_Instance(_double TimeDelta, _fmatrix ParentMatrix, _int iIndex)
 {
-	m_pInstanceBuffer_STT[iIndex].fTime = 0.5f;
-	m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
-
-	m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time;
-	_vector vRandPos = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 2, 100)));
-	vRandPos.m128_f32[1] = 0.f;
-	_float fRandPower = ((_float)(rand() % 10) + 0.5f) * 0.03f;
-	vRandPos *= fRandPower;
-	vRandPos.m128_f32[3] = 1.f;
-
-	vRandPos = XMVector3Transform(vRandPos, ParentMatrix);
-	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vRandPos);
-	m_pInstanceBuffer_Parabola_PosY[iIndex] = m_pInstanceBuffer_STT[iIndex].vPosition.y;
-	m_pInstanceBuffer_Parabola_Time[iIndex] = 0.f;
-	m_pInstanceBuffer_Parabola_Power[iIndex] = (_float)((rand() % 10 + 1) / 5.f);
-
-	XMStoreFloat3(&m_pInstanceBuffer_Dir[iIndex], ParentMatrix.r[1]);
 }
 
-HRESULT CEffect_UFO_Inside_ElectricWall_Particle::Ready_InstanceBuffer()
+HRESULT CEffect_UFO_Inside_PressWall_Particle::Ready_InstanceBuffer()
 {
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
@@ -180,12 +154,11 @@ HRESULT CEffect_UFO_Inside_ElectricWall_Particle::Ready_InstanceBuffer()
 		m_pInstanceBuffer_STT[iIndex].vUp = { 0.f, 1.f, 0.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vLook = { 0.f, 0.f, 1.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vTextureUV = { 0.f, 0.f, 1.f, 1.f };
-		m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
-		m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
+		m_pInstanceBuffer_STT[iIndex].fTime = 1.f;
+		m_pInstanceBuffer_STT[iIndex].vSize = {0.05f, 0.075f};
 
-		m_pInstance_Pos_UpdateTime[iIndex] = 2.f * (_double(iIndex) / iInstanceCount);
-
-		_vector vRandPos = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 2, 100)));
+		_vector vRandPos = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(2, 2, 100)));
+		vRandPos.m128_f32[0] = 0.f;
 		vRandPos.m128_f32[1] = 0.f;
 		_float fRandPower = ((_float)(rand() % 10) + 0.5f) * 0.03f;
 		vRandPos *= fRandPower;
@@ -195,37 +168,38 @@ HRESULT CEffect_UFO_Inside_ElectricWall_Particle::Ready_InstanceBuffer()
 		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vRandPos);
 		m_pInstanceBuffer_Parabola_PosY[iIndex] = m_pInstanceBuffer_STT[iIndex].vPosition.y;
 		m_pInstanceBuffer_Parabola_Time[iIndex] = 0.f;
-		m_pInstanceBuffer_Parabola_Power[iIndex] = (_float)((rand() % 10 + 1) / 5.f);
+		m_pInstanceBuffer_Parabola_Power[iIndex] = (_float)((rand() % 20 + 1) / 20.f) + 1.5f;
 
-		XMStoreFloat3(&m_pInstanceBuffer_Dir[iIndex], ParentMatrix.r[1]);
+		vRandPos = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 50, 10)));
+		XMStoreFloat3(&m_pInstanceBuffer_Dir[iIndex], vRandPos);
 	}
 
 	return S_OK;
 }
 
-CEffect_UFO_Inside_ElectricWall_Particle * CEffect_UFO_Inside_ElectricWall_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CEffect_UFO_Inside_PressWall_Particle * CEffect_UFO_Inside_PressWall_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CEffect_UFO_Inside_ElectricWall_Particle*	pInstance = new CEffect_UFO_Inside_ElectricWall_Particle(pDevice, pDeviceContext);
+	CEffect_UFO_Inside_PressWall_Particle*	pInstance = new CEffect_UFO_Inside_PressWall_Particle(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CEffect_UFO_Inside_ElectricWall_Particle");
+		MSG_BOX("Failed to Create Instance - CEffect_UFO_Inside_PressWall_Particle");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CEffect_UFO_Inside_ElectricWall_Particle::Clone_GameObject(void * pArg)
+CGameObject * CEffect_UFO_Inside_PressWall_Particle::Clone_GameObject(void * pArg)
 {
-	CEffect_UFO_Inside_ElectricWall_Particle* pInstance = new CEffect_UFO_Inside_ElectricWall_Particle(*this);
+	CEffect_UFO_Inside_PressWall_Particle* pInstance = new CEffect_UFO_Inside_PressWall_Particle(*this);
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CEffect_UFO_Inside_ElectricWall_Particle");
+		MSG_BOX("Failed to Clone Instance - CEffect_UFO_Inside_PressWall_Particle");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CEffect_UFO_Inside_ElectricWall_Particle::Free()
+void CEffect_UFO_Inside_PressWall_Particle::Free()
 {
 	Safe_Delete_Array(m_pInstanceBuffer_STT);
 	Safe_Delete_Array(m_pInstanceBuffer_Parabola_PosY);

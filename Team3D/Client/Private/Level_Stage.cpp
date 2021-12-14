@@ -212,19 +212,15 @@ HRESULT CLevel_Stage::Ready_Test()
 	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_Support_01"));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricWall", Level::LEVEL_STAGE, TEXT("GameObject_ElectricWall"), &Arg), E_FAIL);
 
-	vPos = { 55.f, 1.f, 25.f, 1.f };
+	vPos = { 58.f, 0.21f, 25.f, 1.f };
 	Arg.iMaterialIndex = 0;
 	Arg.iOption = 0;
 	Arg.WorldMatrix = MH_XMFloat4x4Identity();
 	memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
 	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_Interior_PedalSmasher_01"));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Press", Level::LEVEL_STAGE, TEXT("GameObject_Press"), &Arg), E_FAIL);
-
-	vPos = { 55.f, 1.f, 20.f, 1.f };
-	Arg.iMaterialIndex = 0;
-	Arg.iOption = 0;
-	Arg.WorldMatrix = MH_XMFloat4x4Identity();
-	memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
+	vPos = { 57.5f, 0.21f, 25.f, 1.f };
+	Arg.iOption = 1;
 	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_Interior_PedalSmasher_02"));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Press", Level::LEVEL_STAGE, TEXT("GameObject_Press"), &Arg), E_FAIL);
 

@@ -15,6 +15,8 @@ HRESULT CEffect_UFO_Inside_ElectricWall_Spark::NativeConstruct_Prototype(void * 
 {
 	__super::NativeConstruct_Prototype(pArg);
 
+	m_EffectDesc_Prototype.iInstanceCount = 27;
+
 	return S_OK;
 }
 
@@ -35,8 +37,6 @@ HRESULT CEffect_UFO_Inside_ElectricWall_Spark::NativeConstruct(void * pArg)
 	for (_int i = 0; i < 3; ++i)
 		WolrdMatrix.r[i] = XMVector3Normalize(WolrdMatrix.r[i]);
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
-
-	m_EffectDesc_Prototype.iInstanceCount = 27;
 
 	Ready_Instance();
 	Shuffle_ZeroSize_Arr();

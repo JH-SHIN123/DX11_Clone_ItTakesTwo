@@ -852,6 +852,12 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\02.Spark">
       <UniqueIdentifier>{174ec5be-2a9e-40a9-999b-848c0d0aef3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\00.Smoke">
+      <UniqueIdentifier>{6a854570-f6ce-4d87-aad9-e57c86953fb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\01.Particle">
+      <UniqueIdentifier>{c2d71a5e-45fc-4152-9bb4-3bc3b70ca026}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1577,6 +1583,12 @@
     <ClInclude Include="Effect_UFO_Inside_ElectricWall_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_UFO_Inside_PressWall_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\00.Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_UFO_Inside_PressWall_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\01.Particle</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2265,6 +2277,12 @@
     </ClCompile>
     <ClCompile Include="Effect_UFO_Inside_ElectricWall_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_UFO_Inside_PressWall_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\00.Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_UFO_Inside_PressWall_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\01.Particle</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

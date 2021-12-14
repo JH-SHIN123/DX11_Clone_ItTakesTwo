@@ -78,6 +78,7 @@ _int CElectricWall::Tick(_double dTimeDelta)
 
 				EFFECT->Add_Effect(Effect_Value::UFO_Inside_ElectricWall_Particle, World);
 				EFFECT->Add_Effect(Effect_Value::UFO_Inside_ElectricWall_Explosion, World);
+				EFFECT->Add_Effect(Effect_Value::UFO_Inside_ElectricWall_Explosion, World);
 			}
 		}
 

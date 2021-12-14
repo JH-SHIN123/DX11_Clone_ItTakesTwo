@@ -3,12 +3,12 @@
 #include "InGameEffect.h"
 
 BEGIN(Client)
-class CEffect_UFO_Inside_ElectricWall_Explosion final : public CInGameEffect
+class CEffect_UFO_Inside_PressWall_Particle final : public CInGameEffect
 {
 private:
-	explicit CEffect_UFO_Inside_ElectricWall_Explosion(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CEffect_UFO_Inside_ElectricWall_Explosion(const CEffect_UFO_Inside_ElectricWall_Explosion& rhs);
-	virtual ~CEffect_UFO_Inside_ElectricWall_Explosion() = default; public:
+	explicit CEffect_UFO_Inside_PressWall_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_UFO_Inside_PressWall_Particle(const CEffect_UFO_Inside_PressWall_Particle& rhs);
+	virtual ~CEffect_UFO_Inside_PressWall_Particle() = default; public:
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -52,13 +52,13 @@ private:
 	const _float  m_fAlphaTime_Power = 1.f;
 	const _float  m_fInstance_SpeedPerSec = 2.5f;
 	const _double m_dInstance_Pos_Update_Time = 2.0;
-	const _float2 m_vDefaultSize = { 0.0625f, 0.0775f };
+	const _float2 m_vDefaultSize = { 0.015f, 0.025f };
 
 private:
 	_float3 m_vOffSet_Pos = { 0.f, -0.75f, -0.2f };
 
 public:
-	static CEffect_UFO_Inside_ElectricWall_Explosion* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_UFO_Inside_PressWall_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
