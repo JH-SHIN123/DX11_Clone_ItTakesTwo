@@ -122,7 +122,6 @@ void CRunningMoonBaboon::Movement(_double dTimeDelta)
 void CRunningMoonBaboon::Calculate_Matrix(_double dTimeDelta)
 {
 	PxMat44 pxMat = PxMat44(m_pDynamicActorCom->Get_Actor()->getGlobalPose());
-
 	_vector vPosition = XMVectorSet(pxMat.column3.x, pxMat.column3.y, pxMat.column3.z, 1.f);
 	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
@@ -131,12 +130,11 @@ void CRunningMoonBaboon::Calculate_Matrix(_double dTimeDelta)
 	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position());
 	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
 	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
-
+	
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);	
 }
 
 void CRunningMoonBaboon::Add_LerpInfo()
