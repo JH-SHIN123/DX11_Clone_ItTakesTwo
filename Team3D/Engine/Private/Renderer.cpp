@@ -56,11 +56,11 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_CascadedShadow_Depth"), TEXT("MRT_CascadedShadow")), E_FAIL);
 
 	/* MRT_Volume */
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Volume_Front_Depth"), iWidth, iHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Volume_Front_Depth"), iWidth, iHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Volume_Front_Depth"), TEXT("MRT_Volume_Front")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Volume_Front_Color"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Volume_Front_Color"), TEXT("MRT_Volume_Front")), E_FAIL);
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Volume_Back_Depth"), iWidth, iHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Volume_Back_Depth"), iWidth, iHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Volume_Back_Depth"), TEXT("MRT_Volume_Back")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Volume_Back_Color"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Volume_Back_Color"), TEXT("MRT_Volume_Back")), E_FAIL);
@@ -90,8 +90,8 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shade"), fWidth, 0.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Volume_Front_Depth"), fWidth, fHeight * 2.f, fWidth, fHeight), E_FAIL);
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Volume_Back_Depth"), fWidth, fHeight * 3.f, fWidth, fHeight), E_FAIL);
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Volume_Front_Color"), fWidth, fHeight * 4.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Volume_Front_Color"), fWidth, fHeight * 3.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Volume_Back_Depth"), fWidth, fHeight * 4.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Volume_Back_Color"), fWidth, fHeight * 5.f, fWidth, fHeight), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_CascadedShadow_Depth"), fWidth * 2.f, 0.f, fWidth, fHeight * MAX_CASCADES), E_FAIL);
@@ -129,7 +129,7 @@ HRESULT CRenderer::Add_GameObject_ToRenderGroup(RENDER_GROUP::Enum eGroup, CGame
 HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 {
 	// 0 - pass
-	//FAILED_CHECK_RETURN(Render_ShadowsForAllCascades(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_ShadowsForAllCascades(), E_FAIL);
 	
 	// 1- pass
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
@@ -141,7 +141,7 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_Volume(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Volume(), E_FAIL); // 무조건 포스트 프로세싱 바로 이전에 불려야함.
 	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
 	FAILED_CHECK_RETURN(Render_Effect_No_Blur(), E_FAIL);
@@ -291,7 +291,7 @@ HRESULT CRenderer::Render_ShadowsForAllCascades()
 	// Set Each Cascade Shadow viewports
 	FAILED_CHECK_RETURN(pShadowManager->RSSet_CascadedViewports(), E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_CascadedShadow")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_CascadedShadow"),true,true), E_FAIL);
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_NONALPHA])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render_ShadowDepth(), E_FAIL);

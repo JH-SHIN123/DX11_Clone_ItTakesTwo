@@ -125,62 +125,86 @@ float3 RadiarBlur(float2 vTexUV, float2 vFocusPos, float fRatio)
 	return lerp(vColor, sum, ratio);
 }
 
-float3 VolumeBlend(float3 vColor, float2 vTexUV, float2 vProjPos, float3 vWorldPos, float3 vCamPos, bool bMain)
+float3 VolumeBlend(float3 vColor, float2 vTexUV, float fViewDepth)
 {
-	float2	vVolumeFront = g_VolumeTex_Front_Depth.Sample(Point_Sampler, vTexUV).xy;
-	float2	vVolumeBack = g_VolumeTex_Back_Depth.Sample(Point_Sampler, vTexUV).xy;
-	
-	// 0. 볼륨정보들의 월드위치를 구한다.
-	float3	vVolumeFrontWorldPos = float3(vProjPos.x, vProjPos.y, vVolumeFront.y);
-	float3	vVolumeBackWorldPos = float3(vProjPos.x, vProjPos.y, vVolumeBack.y);
-	float	vViewZ = 0.f;
+	// 월드 공간에서 처리가 아닌 투영공간에서의 처리하자.
+	float vVolumeFront = g_VolumeTex_Front_Depth.Sample(Point_Sampler, vTexUV).x;
+	float vVolumeBack = g_VolumeTex_Back_Depth.Sample(Point_Sampler, vTexUV).x;
+	float fVolumeSize = abs(vVolumeBack.x - vVolumeFront.x);
 
-	if (bMain)
-	{
-		// View space Z
-		vViewZ = vVolumeFront.x * g_fMainCamFar;
-		vVolumeFrontWorldPos *= vViewZ;
-		vVolumeFrontWorldPos = mul(vVolumeFrontWorldPos, g_MainProjMatrixInverse);
-		vVolumeFrontWorldPos = mul(vVolumeFrontWorldPos, g_MainViewMatrixInverse);
-		
-		vVolumeBackWorldPos *= vViewZ;
-		vVolumeBackWorldPos = mul(vVolumeBackWorldPos, g_MainProjMatrixInverse);
-		vVolumeBackWorldPos = mul(vVolumeBackWorldPos, g_MainViewMatrixInverse);
-	}
-	else
-	{		// View space Z
-		vViewZ = vVolumeFront.x * g_fSubCamFar;
-		vVolumeFrontWorldPos *= vViewZ;
-		vVolumeFrontWorldPos = mul(vVolumeFrontWorldPos, g_SubProjMatrixInverse);
-		vVolumeFrontWorldPos = mul(vVolumeFrontWorldPos, g_SubViewMatrixInverse);
-
-		vVolumeBackWorldPos *= vViewZ;
-		vVolumeBackWorldPos = mul(vVolumeBackWorldPos, g_SubProjMatrixInverse);
-		vVolumeBackWorldPos = mul(vVolumeBackWorldPos, g_SubViewMatrixInverse);
-	}
-
-	float fVolumeFrontDepth = vVolumeFrontWorldPos.z;
-	float fVolumeBackDepth	= vVolumeBackWorldPos.z;
 	// 1. 포그안에 오브젝트가 포함되어있을때를 고려하자.
 	//> 차폐물의 깊이 값을 포그의 뒷면 깊이값으로 사용해야함
-	if (vVolumeFrontWorldPos.z < vWorldPos.z)
-		fVolumeBackDepth = vWorldPos.z;
+	//if (vVolumeFront < fViewDepth)
+	//	fVolumeSize = abs(vVolumeBack.x - fViewDepth);
 
-	// 2. 카메라가 포그안에 들어갔을때를 고려하자.
-	//> 카메라가 포그 안에 들어왔을때도 포그가 적용되는 맨 앞면을 카메라 좌표로 해야함
-	if (vVolumeFrontWorldPos.z < vCamPos.z)
-		fVolumeFrontDepth = vCamPos.z;
+	//// 2. 카메라가 포그안에 들어갔을때를 고려하자.
+	////> 카메라가 포그 안에 들어왔을때도 포그가 적용되는 맨 앞면을 카메라 좌표로 해야함
+	//if (vVolumeFrontWorldPos.z > vCamPos.z)
+	//	fVolumeFrontDepth = vCamPos.z;
 
-	// 볼륨구하고
-	float fVolumeStart = fVolumeFrontDepth;
-	float fVolume = fVolumeBackDepth - fVolumeFrontDepth;
+	float test = fViewDepth - vVolumeFront;
+	if (vVolumeFront < fViewDepth) { // 안개속에 들어갔을때
+		test = fViewDepth;
+		fVolumeSize = abs(vVolumeBack.x - fViewDepth);
+	}
 
-	// 거리포그 공식 적용
-	float3	vLook = vWorldPos - vCamPos;
-	float	distToEye = length(vLook);
+	float fLerpFactor = saturate(test / fVolumeSize);
+	return lerp(vColor, g_vFogColor, fLerpFactor);
 
-	float fogLerp = saturate((distToEye - fVolumeStart) / fVolume);
-	return lerp(vColor, g_vFogColor, fogLerp);
+	//float2	vVolumeFront = g_VolumeTex_Front_Depth.Sample(Point_Sampler, vTexUV).xy;
+	//float2	vVolumeBack = g_VolumeTex_Back_Depth.Sample(Point_Sampler, vTexUV).xy;
+	//
+	//// 0. 볼륨정보들의 월드위치를 구한다.
+	//float3	vVolumeFrontWorldPos = float3(vProjPos.x, vProjPos.y, vVolumeFront.y);
+	//float3	vVolumeBackWorldPos = float3(vProjPos.x, vProjPos.y, vVolumeBack.y);
+	//float	vViewZ = 0.f;
+
+	//if (bMain)
+	//{
+	//	// View space Z
+	//	vViewZ = vVolumeFront.x * g_fMainCamFar;
+	//	vVolumeFrontWorldPos *= vViewZ;
+	//	vVolumeFrontWorldPos = mul(vVolumeFrontWorldPos, g_MainProjMatrixInverse);
+	//	vVolumeFrontWorldPos = mul(vVolumeFrontWorldPos, g_MainViewMatrixInverse);
+	//	
+	//	vVolumeBackWorldPos *= vViewZ;
+	//	vVolumeBackWorldPos = mul(vVolumeBackWorldPos, g_MainProjMatrixInverse);
+	//	vVolumeBackWorldPos = mul(vVolumeBackWorldPos, g_MainViewMatrixInverse);
+	//}
+	//else
+	//{		// View space Z
+	//	vViewZ = vVolumeFront.x * g_fSubCamFar;
+	//	vVolumeFrontWorldPos *= vViewZ;
+	//	vVolumeFrontWorldPos = mul(vVolumeFrontWorldPos, g_SubProjMatrixInverse);
+	//	vVolumeFrontWorldPos = mul(vVolumeFrontWorldPos, g_SubViewMatrixInverse);
+
+	//	vVolumeBackWorldPos *= vViewZ;
+	//	vVolumeBackWorldPos = mul(vVolumeBackWorldPos, g_SubProjMatrixInverse);
+	//	vVolumeBackWorldPos = mul(vVolumeBackWorldPos, g_SubViewMatrixInverse);
+	//}
+
+	//float fVolumeFrontDepth = vVolumeFrontWorldPos.z;
+	//float fVolumeBackDepth	= vVolumeBackWorldPos.z;
+	////// 1. 포그안에 오브젝트가 포함되어있을때를 고려하자.
+	//////> 차폐물의 깊이 값을 포그의 뒷면 깊이값으로 사용해야함
+	////if (vVolumeFrontWorldPos.z < vWorldPos.z)
+	////	fVolumeBackDepth = vWorldPos.z;
+
+	////// 2. 카메라가 포그안에 들어갔을때를 고려하자.
+	//////> 카메라가 포그 안에 들어왔을때도 포그가 적용되는 맨 앞면을 카메라 좌표로 해야함
+	////if (vVolumeFrontWorldPos.z > vCamPos.z)
+	////	fVolumeFrontDepth = vCamPos.z;
+
+	//// 볼륨구하고
+	//float fVolumeStart = abs(fVolumeFrontDepth);
+	//float fVolume = abs(fVolumeBackDepth - fVolumeFrontDepth);
+
+	//// 거리포그 공식 적용
+	//float3	vLook = vWorldPos - vCamPos;
+	//float	distToEye = length(vLook);
+
+	//float fogLerp = saturate((distToEye - fVolumeStart) / fVolume);
+	//return lerp(vColor, g_vFogColor, 0);
 }
 
 //float3 ApplyFog(float3 finalColor, float eyePosY, float3 eyeToPixel)
@@ -260,6 +284,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	float3 vColor = g_HDRTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz;
 
 	// 먼 평면에 없는 픽셀에 대해서만 거리 DOF 계산
+	bool	isMain = false;
 	vector	vDepthDesc = g_DepthTex.Sample(Point_Sampler, In.vTexUV);
 	vector	vViewPos = vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
 	float	vViewZ = 0.f;
@@ -270,6 +295,7 @@ PS_OUT PS_MAIN(PS_IN In)
 		In.vTexUV.y >= g_vMainViewportUVInfo.y && In.vTexUV.y <= g_vMainViewportUVInfo.w)
 	{
 		// View space Z
+		isMain = true;
 		vViewZ = vDepthDesc.x * g_fMainCamFar;
 		vViewPos *= vViewZ;
 		vViewPos = mul(vViewPos, g_MainProjMatrixInverse);
@@ -309,6 +335,8 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	// Final
 	Out.vColor = vector(vColor, 1.f);
+
+	Out.vColor.xyz = VolumeBlend(Out.vColor.xyz, In.vTexUV, vDepthDesc.x);
 
 	///* Fog*/
 	//float3 eyeToPixel = vWorldPos - vCamPos;

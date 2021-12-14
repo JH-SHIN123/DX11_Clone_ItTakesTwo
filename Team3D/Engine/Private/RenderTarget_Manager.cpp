@@ -43,11 +43,10 @@ HRESULT CRenderTarget_Manager::Add_MRT(const _tchar * pRenderTargetTag, const _t
 	return S_OK;
 }
 
-HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, const _tchar * pMRTTag, _bool isClear)
+HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, const _tchar * pMRTTag, _bool isRtvClear, _bool isDsvClear)
 {
 	MULTIPLE_RENDER_TARGET* pMRT = Find_MRT(pMRTTag);
 	NULL_CHECK_RETURN(pMRT, E_FAIL);
-
 
 	pDeviceContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
 	m_pBackBufferView->Release();
@@ -60,19 +59,26 @@ HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, c
 
 	for (auto& pRenderTarget : *pMRT)
 	{
-		if (true == isClear)
-		{
+		if (true == isRtvClear)
 			pRenderTarget->Clear_View();
+
+		if(true == isDsvClear)
 			pRenderTarget->Clear_Depth_Stencil_Buffer();
-		}
 
 		RenderTargets[iRenderTargetIndex] = pRenderTarget->Get_RenderTargetView();
 		DepthStencil = pRenderTarget->Get_DepthStencilView();
 		++iRenderTargetIndex;
 	}
 
-	if (nullptr == DepthStencil)
+	if (nullptr == DepthStencil) 
+	{
+		if (true == isDsvClear)
+		{
+			if (m_pDepthStencilView) pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		}
+
 		pDeviceContext->OMSetRenderTargets((_uint)pMRT->size(), RenderTargets, m_pDepthStencilView);
+	}
 	else {
 		ID3D11ShaderResourceView* pSRV[8] = { nullptr };
 		pDeviceContext->PSSetShaderResources(0, 8, pSRV);

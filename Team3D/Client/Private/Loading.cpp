@@ -47,6 +47,7 @@
 #include "MoonBaboonCore.h"
 #include "MoonBaboon_MainLaser.h"
 #include "SpaceRail.h"
+#include "VolumeObject.h"
 
 /* Yoon */
 #include "May.h"
@@ -431,6 +432,13 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Taek()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail04"), CPath::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Data/PathData/Space/rail4.Anim"), TEXT("GrindRail04"), PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail05"), CPath::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Data/PathData/Space/rail5.Anim"), TEXT("GrindRail05"), PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail06"), CPath::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Data/PathData/Space/rail6.Anim"), TEXT("GrindRail06"), PivotMatrix)), E_FAIL);
+
+	/* Volume */
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_GeoSphere"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Geo/"), TEXT("geoSphere"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_GeoCube"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Geo/"), TEXT("geoCube"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Volume"), CVolumeObject::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
 #endif // !__TEST_TAEK
 
 	return S_OK;

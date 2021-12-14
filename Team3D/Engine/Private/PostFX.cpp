@@ -267,6 +267,11 @@ HRESULT CPostFX::FinalPass()
 	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fFogStartDist", &a, sizeof(_float)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fFogGlobalDensity", &b, sizeof(_float)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fFogHeightFalloff", &c, sizeof(_float)), E_FAIL);
+
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Front_Depth", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Front_Depth")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Front_Color", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Front_Color")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Back_Depth", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Back_Depth")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Back_Color", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Back_Color")));
 #endif // _DEBUG
 
 	m_pVIBuffer_ToneMapping->Render(0);
