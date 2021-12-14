@@ -67,9 +67,9 @@ _int CUFO::Tick(_double dTimeDelta)
 	CGameObject::Tick(dTimeDelta);
 
 	if (m_pGameInstance->Key_Pressing(DIK_X))
-		DATABASE->GoUp_BossFloor(99.f);
+		DATABASE->GoUp_BossFloor(99.f, 5.f);
 	else if(m_pGameInstance->Key_Down(DIK_Z))
-		DATABASE->GoUp_BossFloor(100.f);
+		DATABASE->GoUp_BossFloor(100.f, 5.f);
 
 
 	/* 테스트 용 */
@@ -336,7 +336,8 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 			if (2 == m_iPhaseChangeCount)
 			{
 				_float fMaxDistance = 99.f;
-				DATABASE->GoUp_BossFloor(fMaxDistance);
+				DATABASE->GoUp_BossFloor(fMaxDistance, 10.f);
+				((CCody*)DATABASE->GetCody())->Get_Actor()->Set_Gravity(-6.8f);
 			}
 		}
 	}
@@ -547,7 +548,7 @@ void CUFO::Phase3_Pattern(_double dTimeDelta)
 
 	if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp() && false == m_IsGoingLastFloor)
 	{
-		DATABASE->GoUp_BossFloor(100.f);
+		DATABASE->GoUp_BossFloor(100.f, 5.f);
 		m_IsGoingLastFloor = true;
 	}
 
