@@ -47,22 +47,52 @@ _int CElectricWall::Tick(_double dTimeDelta)
 		}
 	}
 
+		/*¡ÿ∫Ò ¿Ã∆Â∆Æ*/
+	if (3.75 <= m_dCoolTime && true == m_bElectric_Ready)
+	{
+		m_bElectric_Ready = false;
+		for (_uint i = 0; i < 8; ++i)
+		{
+			_matrix World = m_pTransformCom->Get_WorldMatrix();
+			World.r[3] += XMVector3Normalize(World.r[1]) * (-0.25f * i) + XMVector3Normalize(World.r[2]) * 0.28f;
+			EFFECT->Add_Effect(Effect_Value::UFO_Inside_ElectricWall_Particle, World);
+		}
+	}
+
 	/* Electric ¿Ã∆Â∆Æ */
 	if (5.0 <= m_dCoolTime)
 	{
-		_matrix World = XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixTranslation(m_vOriginPos.x, m_vOriginPos.y, m_vOriginPos.z);
-
-		for (_uint i = 0; i < 10; ++i)
+		if (2 > m_iEffectCount)
 		{
-			_matrix World = XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixTranslation(m_vOriginPos.x, m_vOriginPos.y + (i * 0.12f), m_vOriginPos.z);
-			EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Spark, World);
-			EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Explosion, World);
+			++m_iEffectCount;
+			for (_uint i = 0; i < 2; ++i)
+			{
+				_matrix World = XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f)) 
+					* XMMatrixTranslation(m_vOriginPos.x, m_vOriginPos.y + (i * 1.f) + 0.65f, m_vOriginPos.z + 0.0125f);
+				EFFECT->Add_Effect(Effect_Value::UFO_Inside_ElectricWall_Spark, World);
+			}
+			for (_uint i = 0; i < 8; ++i)
+			{
+				_matrix World = m_pTransformCom->Get_WorldMatrix();
+				World.r[3] += XMVector3Normalize(World.r[1]) * (-0.25f * i) + XMVector3Normalize(World.r[2]) * 0.28f;
+
+				EFFECT->Add_Effect(Effect_Value::UFO_Inside_ElectricWall_Particle, World);
+				EFFECT->Add_Effect(Effect_Value::UFO_Inside_ElectricWall_Explosion, World);
+			}
 		}
 
-		m_bElectric = true;
-		m_dCoolTime = 0.0;
+		if (5.75 <= m_dCoolTime)
+		{
+			m_bElectric = true;
+			m_bElectric_Ready = true;
+			m_dCoolTime = 0.0;
+
+			m_dElectricReady_Time = 0.0;
+			m_iEffectCount = 0;
+		}
 	}
 
+	m_dElectricReady_Time += dTimeDelta;
 	m_dCoolTime += dTimeDelta;
 
 	return NO_EVENT;

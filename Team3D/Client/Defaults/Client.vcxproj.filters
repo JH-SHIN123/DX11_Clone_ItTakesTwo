@@ -837,11 +837,20 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark">
       <UniqueIdentifier>{4f003359-9da9-4258-bcb3-037baca46e90}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Pressure_Wall">
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall">
+      <UniqueIdentifier>{d3275da9-8016-4fa2-a913-6083947b16d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall">
       <UniqueIdentifier>{c9690f4e-c087-4a2d-a8bf-ee803220e5f0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Electric_Wall">
-      <UniqueIdentifier>{d3275da9-8016-4fa2-a913-6083947b16d7}</UniqueIdentifier>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle">
+      <UniqueIdentifier>{c1c2cc7a-6881-4556-8960-766326a8357b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\01.Explosion">
+      <UniqueIdentifier>{73f9e4b3-498e-490d-833a-49da829bada3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\02.Spark">
+      <UniqueIdentifier>{174ec5be-2a9e-40a9-999b-848c0d0aef3d}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1559,6 +1568,15 @@
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Explosion.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\01.Explosion</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_UFO_Inside_ElectricWall_Spark.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\02.Spark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_UFO_Inside_ElectricWall_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\01.Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect_UFO_Inside_ElectricWall_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2238,6 +2256,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Explosion.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\01.Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_UFO_Inside_ElectricWall_Spark.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\02.Spark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_UFO_Inside_ElectricWall_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\01.Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect_UFO_Inside_ElectricWall_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

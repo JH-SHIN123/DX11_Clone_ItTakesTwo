@@ -52,6 +52,9 @@
 #include "Effect_UFO_Inside_Battery_Spark.h"
 #include "Effect_UFO_Inside_Battery_Particle.h"
 #include "Effect_UFO_Inside_Battery_Explosion.h"
+#include "Effect_UFO_Inside_ElectricWall_Spark.h"
+#include "Effect_UFO_Inside_ElectricWall_Particle.h"
+#include "Effect_UFO_Inside_ElectricWall_Explosion.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -203,6 +206,15 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::UFO_Inside_Battery_Explosion:
 		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_Battery_Explosion");
+		break;
+	case Effect_Value::UFO_Inside_ElectricWall_Spark:
+		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_ElectricWall_Spark");
+		break;
+	case Effect_Value::UFO_Inside_ElectricWall_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_ElectricWall_Particle");
+		break;
+	case Effect_Value::UFO_Inside_ElectricWall_Explosion:
+		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_ElectricWall_Explosion");
 		break;
 	default:
 		break;
@@ -411,7 +423,16 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_Battery_Explosion"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_Battery_Explosion", CEffect_UFO_Inside_Battery_Explosion::Create(pDevice, pDeviceContext, pData));
 
-		
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_ElectricWall_Spark"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_ElectricWall_Spark", CEffect_UFO_Inside_ElectricWall_Spark::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_ElectricWall_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_ElectricWall_Particle", CEffect_UFO_Inside_ElectricWall_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_ElectricWall_Explosion"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_ElectricWall_Explosion", CEffect_UFO_Inside_ElectricWall_Explosion::Create(pDevice, pDeviceContext, pData));
+
+
 #pragma  endregion
 
 

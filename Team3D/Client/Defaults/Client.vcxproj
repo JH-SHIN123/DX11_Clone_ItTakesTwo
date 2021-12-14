@@ -277,6 +277,8 @@
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Explosion.h" />
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Particle.h" />
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Spark.h" />
+    <ClInclude Include="..\public\Effect_UFO_Inside_ElectricWall_Explosion.h" />
+    <ClInclude Include="..\public\Effect_UFO_Inside_ElectricWall_Spark.h" />
     <ClInclude Include="..\Public\Effect_Umbrella_Pipe.h" />
     <ClInclude Include="..\Public\Effect_Walking_Smoke.h" />
     <ClInclude Include="..\Public\Effect_Wormhole.h" />
@@ -413,6 +415,7 @@
     <ClInclude Include="..\Public\Wall_LaserTennis.h" />
     <ClInclude Include="..\Public\WarpGate.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Effect_UFO_Inside_ElectricWall_Particle.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -505,6 +508,8 @@
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Particle.cpp" />
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Spark.cpp" />
+    <ClCompile Include="..\private\Effect_UFO_Inside_ElectricWall_Explosion.cpp" />
+    <ClCompile Include="..\private\Effect_UFO_Inside_ElectricWall_Spark.cpp" />
     <ClCompile Include="..\Private\Effect_Umbrella_Pipe.cpp" />
     <ClCompile Include="..\Private\Effect_Walking_Smoke.cpp" />
     <ClCompile Include="..\Private\Effect_Wormhole.cpp" />
@@ -640,6 +645,7 @@
     <ClCompile Include="..\Private\Wall_LaserTennis.cpp" />
     <ClCompile Include="..\Private\WarpGate.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Effect_UFO_Inside_ElectricWall_Particle.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

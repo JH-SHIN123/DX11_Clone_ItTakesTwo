@@ -44,6 +44,9 @@ enum class Effect_Value
 	UFO_Inside_Battery_Spark,
 	UFO_Inside_Battery_Particle,
 	UFO_Inside_Battery_Explosion,
+	UFO_Inside_ElectricWall_Spark,
+	UFO_Inside_ElectricWall_Particle,
+	UFO_Inside_ElectricWall_Explosion,
 	Effect_Value_End
 };
 

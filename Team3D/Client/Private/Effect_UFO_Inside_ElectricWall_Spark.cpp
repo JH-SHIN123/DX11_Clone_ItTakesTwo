@@ -1,24 +1,24 @@
 #include "stdafx.h"
-#include "..\Public\Effect_UFO_Inside_Battery_Spark.h"
+#include "..\Public\Effect_UFO_Inside_ElectricWall_Spark.h"
 
-CEffect_UFO_Inside_Battery_Spark::CEffect_UFO_Inside_Battery_Spark(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_UFO_Inside_ElectricWall_Spark::CEffect_UFO_Inside_ElectricWall_Spark(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
-CEffect_UFO_Inside_Battery_Spark::CEffect_UFO_Inside_Battery_Spark(const CEffect_UFO_Inside_Battery_Spark & rhs)
+CEffect_UFO_Inside_ElectricWall_Spark::CEffect_UFO_Inside_ElectricWall_Spark(const CEffect_UFO_Inside_ElectricWall_Spark & rhs)
 	: CInGameEffect(rhs)
 {
 }
 
-HRESULT CEffect_UFO_Inside_Battery_Spark::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_UFO_Inside_ElectricWall_Spark::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
 	return S_OK;
 }
 
-HRESULT CEffect_UFO_Inside_Battery_Spark::NativeConstruct(void * pArg)
+HRESULT CEffect_UFO_Inside_ElectricWall_Spark::NativeConstruct(void * pArg)
 {
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
@@ -44,7 +44,7 @@ HRESULT CEffect_UFO_Inside_Battery_Spark::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CEffect_UFO_Inside_Battery_Spark::Tick(_double TimeDelta)
+_int CEffect_UFO_Inside_ElectricWall_Spark::Tick(_double TimeDelta)
 {
 	if (-1 == m_iEffectCount)
 		return EVENT_DEAD;
@@ -55,7 +55,7 @@ _int CEffect_UFO_Inside_Battery_Spark::Tick(_double TimeDelta)
 	return _int();
 }
 
-_int CEffect_UFO_Inside_Battery_Spark::Late_Tick(_double TimeDelta)
+_int CEffect_UFO_Inside_ElectricWall_Spark::Late_Tick(_double TimeDelta)
 {
 	if (true == m_IsNoRender)
 		return NO_EVENT;
@@ -69,7 +69,7 @@ _int CEffect_UFO_Inside_Battery_Spark::Late_Tick(_double TimeDelta)
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
-HRESULT CEffect_UFO_Inside_Battery_Spark::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CEffect_UFO_Inside_ElectricWall_Spark::Render(RENDER_GROUP::Enum eGroup)
 {
 	SetUp_Shader_Data();
 
@@ -81,38 +81,38 @@ HRESULT CEffect_UFO_Inside_Battery_Spark::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-HRESULT CEffect_UFO_Inside_Battery_Spark::Ready_Instance()
+HRESULT CEffect_UFO_Inside_ElectricWall_Spark::Ready_Instance()
 {
 	if (nullptr == m_pPointInstanceCom)
 		return S_OK;
 
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount / 3;
-	m_pInstanceBuffer	= new VTXMATRIX_CUSTOM_ST[m_EffectDesc_Prototype.iInstanceCount];
+	m_pInstanceBuffer = new VTXMATRIX_CUSTOM_ST[m_EffectDesc_Prototype.iInstanceCount];
 
-	_matrix Matrix		= m_pTransformCom->Get_WorldMatrix();
-	_vector vOffsetPos	= Matrix.r[3];
-	_vector vRight		= Matrix.r[0];
+	_matrix Matrix = m_pTransformCom->Get_WorldMatrix();
+	_vector vOffsetPos = Matrix.r[3];
+	_vector vRight = Matrix.r[0];
 
 	_float fOffSet = 0.3f;
-
+	_float2 vSize = { 1.05f, 0.2f };
 	vOffsetPos -= Matrix.r[2] * fOffSet;
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
-		m_pInstanceBuffer[iIndex].vSize = m_vSize;
+		m_pInstanceBuffer[iIndex].vSize = vSize;
 		m_pInstanceBuffer[iIndex].vTextureUV = Get_TexUV_Rand(8, 8);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vLook, Matrix.r[2]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vRight, Matrix.r[0]);
-		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vUp,	 Matrix.r[2]);
+		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vUp, Matrix.r[2]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vOffsetPos);
 
-		m_pInstanceBuffer[iIndex + 9].vSize = m_vSize;
+		m_pInstanceBuffer[iIndex + 9].vSize = vSize;
 		m_pInstanceBuffer[iIndex + 9].vTextureUV = Get_TexUV_Rand(8, 8);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 9].vLook, Matrix.r[2]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 9].vRight, Matrix.r[0]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 9].vUp, Matrix.r[2]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 9].vPosition, vOffsetPos);
 
-		m_pInstanceBuffer[iIndex + 18].vSize = m_vSize;
+		m_pInstanceBuffer[iIndex + 18].vSize = vSize;
 		m_pInstanceBuffer[iIndex + 18].vTextureUV = Get_TexUV_Rand(8, 8);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 18].vLook, Matrix.r[2]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 18].vRight, Matrix.r[0]);
@@ -125,36 +125,38 @@ HRESULT CEffect_UFO_Inside_Battery_Spark::Ready_Instance()
 	return S_OK;
 }
 
-void CEffect_UFO_Inside_Battery_Spark::Shuffle_ZeroSize_Arr()
+void CEffect_UFO_Inside_ElectricWall_Spark::Shuffle_ZeroSize_Arr()
 {
 	for (_int iIndex = 0; iIndex < 50; ++iIndex)
 	{
 		_int iDst_Num = rand() % 9;
 		_int iSrc_Num = rand() % 9;
 
-		while (iDst_Num == iSrc_Num) iSrc_Num = rand() % 9;
+ 		while (iDst_Num == iSrc_Num) iSrc_Num = rand() % 9;
 
 		_int iDst = m_iZeroSize_Arr[iDst_Num];
 		_int iSrc = m_iZeroSize_Arr[iSrc_Num];
 
 		m_iZeroSize_Arr[iDst_Num] = iSrc;
 		m_iZeroSize_Arr[iSrc_Num] = iDst;
+
+		_int i = 0;
 	}
 }
 
-void CEffect_UFO_Inside_Battery_Spark::Instance_Size(_float TimeDelta, _int iIndex)
+void CEffect_UFO_Inside_ElectricWall_Spark::Instance_Size(_float TimeDelta, _int iIndex)
 {
 }
 
-void CEffect_UFO_Inside_Battery_Spark::Instance_Pos(_float TimeDelta, _int iIndex)
+void CEffect_UFO_Inside_ElectricWall_Spark::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 }
 
-void CEffect_UFO_Inside_Battery_Spark::Instance_UV(_float TimeDelta, _int iIndex)
+void CEffect_UFO_Inside_ElectricWall_Spark::Instance_UV(_float TimeDelta, _int iIndex)
 {
 }
 
-void CEffect_UFO_Inside_Battery_Spark::Check_Particle_UV(_double TimeDelta)
+void CEffect_UFO_Inside_ElectricWall_Spark::Check_Particle_UV(_double TimeDelta)
 {
 	m_fResetTime -= (_float)TimeDelta;
 
@@ -165,15 +167,15 @@ void CEffect_UFO_Inside_Battery_Spark::Check_Particle_UV(_double TimeDelta)
 		_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
 		for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
-			m_pInstanceBuffer[iIndex].vTextureUV	= Get_TexUV_Rand(8, 8);
+			m_pInstanceBuffer[iIndex].vTextureUV = Get_TexUV_Rand(8, 8);
 
 		if (10 < m_iEffectCount)
 		{
 			if (9 > m_iArrCount)
 			{
 				_int iZeroSize_Index = m_iZeroSize_Arr[m_iArrCount++];
-				m_pInstanceBuffer[iZeroSize_Index].vSize	  = {0.f, 0.f};
-				m_pInstanceBuffer[iZeroSize_Index + 9].vSize  = { 0.f, 0.f };
+				m_pInstanceBuffer[iZeroSize_Index].vSize = { 0.f, 0.f };
+				m_pInstanceBuffer[iZeroSize_Index + 9].vSize = { 0.f, 0.f };
 				m_pInstanceBuffer[iZeroSize_Index + 18].vSize = { 0.f, 0.f };
 			}
 		}
@@ -182,7 +184,7 @@ void CEffect_UFO_Inside_Battery_Spark::Check_Particle_UV(_double TimeDelta)
 	}
 }
 
-_vector CEffect_UFO_Inside_Battery_Spark::Get_RandDir(_int3 iRandPower, _vector vDir)
+_vector CEffect_UFO_Inside_ElectricWall_Spark::Get_RandDir(_int3 iRandPower, _vector vDir)
 {
 	_vector vRandDir = XMLoadFloat3(&Get_Dir_Rand(iRandPower));
 	vRandDir += vDir;
@@ -193,29 +195,29 @@ _vector CEffect_UFO_Inside_Battery_Spark::Get_RandDir(_int3 iRandPower, _vector 
 	return vRandDir;
 }
 
-CEffect_UFO_Inside_Battery_Spark * CEffect_UFO_Inside_Battery_Spark::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void* pArg)
+CEffect_UFO_Inside_ElectricWall_Spark * CEffect_UFO_Inside_ElectricWall_Spark::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void* pArg)
 {
-	CEffect_UFO_Inside_Battery_Spark*	pInstance = new CEffect_UFO_Inside_Battery_Spark(pDevice, pDeviceContext);
+	CEffect_UFO_Inside_ElectricWall_Spark*	pInstance = new CEffect_UFO_Inside_ElectricWall_Spark(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CEffect_UFO_Inside_Battery_Spark");
+		MSG_BOX("Failed to Create Instance - CEffect_UFO_Inside_ElectricWall_Spark");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CEffect_UFO_Inside_Battery_Spark::Clone_GameObject(void * pArg)
+CGameObject * CEffect_UFO_Inside_ElectricWall_Spark::Clone_GameObject(void * pArg)
 {
-	CEffect_UFO_Inside_Battery_Spark* pInstance = new CEffect_UFO_Inside_Battery_Spark(*this);
+	CEffect_UFO_Inside_ElectricWall_Spark* pInstance = new CEffect_UFO_Inside_ElectricWall_Spark(*this);
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CEffect_UFO_Inside_Battery_Spark");
+		MSG_BOX("Failed to Clone Instance - CEffect_UFO_Inside_ElectricWall_Spark");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CEffect_UFO_Inside_Battery_Spark::Free()
+void CEffect_UFO_Inside_ElectricWall_Spark::Free()
 {
 	__super::Free();
 }
