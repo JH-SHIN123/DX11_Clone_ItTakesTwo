@@ -221,11 +221,11 @@ void CMoonBaboon_MainLaser::GoUp(_double dTimeDelta)
 {
 	if (false == m_IsGoUp)
 	{
-		m_pTransformCom->Set_Speed(3.5f, 0.f);
+		m_pTransformCom->Set_Speed(3.5f, XMConvertToRadians(40.f));
 		return;
 	}
 
-	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
+	m_pTransformCom->Set_Speed(m_fUpSpeed, XMConvertToRadians(40.f));
 
 	_float fDist = (_float)dTimeDelta * m_fUpSpeed;
 	m_fDistance += fDist;

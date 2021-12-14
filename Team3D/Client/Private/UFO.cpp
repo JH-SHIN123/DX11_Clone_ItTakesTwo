@@ -539,8 +539,11 @@ void CUFO::Phase3_Pattern(_double dTimeDelta)
 		return;
 	}
 
-	if(true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp())
+	if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp() && false == m_IsGoingLastFloor)
+	{
 		DATABASE->GoUp_BossFloor(100.f);
+		m_IsGoingLastFloor = true;
+	}
 
 	/* 마지막 층에 도달했을 때 */
 	if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_ArrivalLastFloor() && false == m_IsLastFloor)
@@ -587,12 +590,10 @@ void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
 	_vector vComparePos = vTargetPos - vUFOPos;
 	vComparePos.m128_f32[1] = 0.f;
 	_float vDistance = XMVectorGetX(XMVector3Length(vComparePos));
+	m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
 
 	if (1.f <= vDistance)
-	{
-		m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
-		m_pTransformCom->Go_Straight(dTimeDelta * 5.f);
-	}
+		m_pTransformCom->Go_Straight(dTimeDelta * 3.f);
 	else
 	{
 		m_IsStartingPointMove = false;
@@ -699,6 +700,10 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(UFO_Left);
 		}
 
+		/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 나중에 컷신 나오면 이펙트랑 같이 맞춰주자 ㅇㅇ */
+		if (0.97 <= m_pModelCom->Get_ProgressAnim() && false == m_IsLaserGunRid)
+			GetRidLaserGun();
+
 		if (m_pModelCom->Is_AnimFinished(UFO_LaserRippedOff))
 		{
 			/* 스태틱, 트리거 액터 생성 */
@@ -719,15 +724,6 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 			m_ePhase = CUFO::PHASE_2;
 			m_ePattern = CUFO::GUIDEDMISSILE;
 			m_IsCutScene = false;
-
-			/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 나중에 컷신 나오면 이펙트랑 같이 맞춰주자 ㅇㅇ */
-			_matrix LaserBaseBone = m_pModelCom->Get_BoneMatrix("LaserBase");
-			_matrix matDeleteScale;
-
-			matDeleteScale = XMMatrixScaling(0.f, 0.f, 0.f);
-			LaserBaseBone *= matDeleteScale;
-
-			m_pModelCom->Set_PivotTransformation(m_pModelCom->Get_BoneIndex("LaserBase"), LaserBaseBone);
 		}
 	}
 
@@ -783,6 +779,19 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 	return S_OK;
 }
 
+void CUFO::GetRidLaserGun()
+{
+	_matrix LaserBaseBone = m_pModelCom->Get_BoneMatrix("LaserBase");
+	_matrix matDeleteScale;
+
+	matDeleteScale = XMMatrixScaling(0.f, 0.f, 0.f);
+	LaserBaseBone *= matDeleteScale;
+
+	m_pModelCom->Set_PivotTransformation(m_pModelCom->Get_BoneIndex("LaserBase"), LaserBaseBone);
+
+	m_IsLaserGunRid = true;
+}
+
 HRESULT CUFO::Phase3_End(_double dTimeDelta)
 {
 
@@ -828,7 +837,7 @@ void CUFO::Add_LerpInfo_To_Model()
 
 	m_pModelCom->Add_LerpInfo(UFO_CodyHolding, UFO_LaserRippedOff, true);
 
-	m_pModelCom->Add_LerpInfo(UFO_LaserRippedOff, UFO_Left, true, 100.f);
+	m_pModelCom->Add_LerpInfo(UFO_LaserRippedOff, UFO_Left, true, 150.f);
 	m_pModelCom->Add_LerpInfo(UFO_LaserRippedOff, UFO_MH, true);
 
 	m_pModelCom->Add_LerpInfo(UFO_Left, CutScene_RocketPhaseFinished_FlyingSaucer, true);

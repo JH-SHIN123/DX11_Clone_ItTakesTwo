@@ -79,6 +79,7 @@ private:
 	_bool					m_IsGuidedMissileCreate = true;
 	_bool					m_IsCodyEnter = false;
 	_bool					m_IsAnimationTransform = true;
+	_bool					m_IsLaserGunRid = false;
 	
 	class CBoss_Missile*	m_pCodyMissile = nullptr;
 	class CBoss_Missile*	m_pMayMissile = nullptr;
@@ -90,6 +91,7 @@ private:
 	_bool					m_IsSubLaserOperation = true;
 	_bool					m_IsGroundPound = false;
 	_bool					m_IsLastFloor = false;
+	_bool					m_IsGoingLastFloor = false;
 	_float4					m_vGroundPoundTargetPos;
 
 	vector<class CMoonBaboon_SubLaser*>	m_vecSubLaser;
@@ -142,6 +144,7 @@ private:
 
 	/* For.PHASE_2 End */
 	HRESULT Phase2_End(_double dTimeDelta);
+	void GetRidLaserGun();
 
 	/* For.PHASE_3 End */
 	HRESULT Phase3_End(_double dTimeDelta);

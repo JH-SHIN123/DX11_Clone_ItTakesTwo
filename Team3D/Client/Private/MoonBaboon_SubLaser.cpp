@@ -28,15 +28,6 @@ HRESULT CMoonBaboon_SubLaser::NativeConstruct(void* pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon_MainLaser_01"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	//m_UserData.eID = GameID::eENVIRONMENT;
-	//m_UserData.pGameObject = this;
-
-	//CStaticActor::ARG_DESC tArg;
-	//tArg.pModel = m_pModelCom;
-	//tArg.pTransform = m_pTransformCom;
-	//tArg.pUserData = &m_UserData;
-	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
-
 	m_vecLaser_TypeB.reserve(4);
 
 	return S_OK;
@@ -121,35 +112,13 @@ void CMoonBaboon_SubLaser::Laser_AttackPattern(_double TimeDelta)
 	else if (1 == m_iPatternState)
 	{
 		if (m_dPatternDeltaT >= 10.0)
-		{
 			m_dPatternDeltaT = 0.0;
-			/*m_iPatternState = 2;*/
-
-			//for (auto pLaserTypeB : m_vecLaser_TypeB)
-			//	pLaserTypeB->Set_RotateSpeed(-40.f);
-		}
 		else
 		{
 			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f,1.f,0.f,0.f), -TimeDelta);
 			m_dPatternDeltaT += TimeDelta;
 		}
 	}
-	//else if (2 == m_iPatternState)
-	//{
-	//	if (m_dPatternDeltaT >= 10.0)
-	//	{
-	//		m_dPatternDeltaT = 0.0;
-	//		m_iPatternState = 1;
-
-	//		//for (auto pLaserTypeB : m_vecLaser_TypeB)
-	//		//	pLaserTypeB->Set_RotateSpeed(40.f);
-	//	}
-	//	else
-	//	{
-	//		m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -TimeDelta);
-	//		m_dPatternDeltaT += TimeDelta;
-	//	}
-	//}
 
 	/* 레이저 발사!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 	if (true == m_IsLaserUp && true == m_IsLaserCreate)
@@ -200,11 +169,11 @@ void CMoonBaboon_SubLaser::Laser_Down(_double TimeDelta)
 void CMoonBaboon_SubLaser::SetUp_SubLaserPosition(_uint iOption)
 {
 	if (0 == iOption)
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(78.945f, 239.f, 158.95f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(78.945f, 438.f, 158.95f, 1.f));
 	else if (1 == iOption)
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(22.008f, 239.f, 212.40f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(22.008f, 438.f, 212.40f, 1.f));
 	else if (2 == iOption)
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(100.05f, 239.f, 209.95f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(100.05f, 438.f, 209.95f, 1.f));
 }
 
 CMoonBaboon_SubLaser* CMoonBaboon_SubLaser::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -243,7 +212,6 @@ void CMoonBaboon_SubLaser::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
-	//Safe_Release(m_pStaticActorCom);
 
 	CGameObject::Free();
 }
