@@ -57,7 +57,7 @@ cbuffer VolumeDesc
 
 cbuffer FogDesc
 {
-	float3	g_vFogColor = { 0.8f,0.7f,0.4f };			// 안개의 기본색상 ( 앰비언트 색상과 동일해야함)
+	float3	g_vFogColor = { 1.f,0.9f,0.6f };			// 안개의 기본색상 ( 앰비언트 색상과 동일해야함)
 	float	g_fFogStartDist = 20.f;		// 안개 지점에서 카메라까지의 거리
 	float3	g_vFogHighlightColor = { 0.8f, 0.7f, 0.4f };	// 카메라와 태양을 잇는 벡터와 평행에 가까운 카메라 벡터의 하이라이팅 픽셀 색상
 	float	g_fFogGlobalDensity = 1.5f;	// 안개 밀도 계수(값이 클수록 안개가 짙어진다)
@@ -146,7 +146,10 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth)
 
 	fVolumeSize = fVolumeBack - fVolumeFront;
 
-	float fLerpFactor = saturate(fVolumeSize * 100.f);
+	//float fLerpFactor = saturate(fVolumeSize * 100.f);
+	float fLerpFactor = saturate(sqrt(fVolumeSize * 10.f));
+	if (fLerpFactor > 0.3f)
+		fLerpFactor = 0.3f;
 	return lerp(vColor, g_vFogColor, fLerpFactor);
 }
 
@@ -266,13 +269,15 @@ PS_OUT PS_MAIN(PS_IN In)
 	// Add Effect
 	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
 
+	// Volume
+	vColor = VolumeBlend(vColor, In.vTexUV, vDepthDesc.y);
+
 	// Tone Mapping
 	vColor = ToneMapping_EA(vColor);
 
 	// Final
 	Out.vColor = vector(vColor, 1.f);
 
-	Out.vColor.xyz = VolumeBlend(Out.vColor.xyz, In.vTexUV, vDepthDesc.y);
 
 	///* Fog*/
 	//float3 eyeToPixel = vWorldPos - vCamPos;
