@@ -55,6 +55,16 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_CascadedShadow_Depth"), SHADOWMAP_SIZE, SHADOWMAP_SIZE * MAX_CASCADES, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f), true), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_CascadedShadow_Depth"), TEXT("MRT_CascadedShadow")), E_FAIL);
 
+	/* MRT_Volume */
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Volume_Front_Depth"), iWidth, iHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Volume_Front_Depth"), TEXT("MRT_Volume_Front")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Volume_Front_Color"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Volume_Front_Color"), TEXT("MRT_Volume_Front")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Volume_Back_Depth"), iWidth, iHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Volume_Back_Depth"), TEXT("MRT_Volume_Back")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Volume_Back_Color"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Volume_Back_Color"), TEXT("MRT_Volume_Back")), E_FAIL);
+
 	/* MRT_PostFX */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_PostFX"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_PostFX"), TEXT("MRT_PostFX")), E_FAIL);
@@ -79,6 +89,10 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shade"), fWidth, 0.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Volume_Front_Depth"), fWidth, fHeight * 2.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Volume_Back_Depth"), fWidth, fHeight * 3.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Volume_Front_Color"), fWidth, fHeight * 4.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Volume_Back_Color"), fWidth, fHeight * 5.f, fWidth, fHeight), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_CascadedShadow_Depth"), fWidth * 2.f, 0.f, fWidth, fHeight * MAX_CASCADES), E_FAIL);
 
@@ -127,6 +141,7 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Volume(), E_FAIL);
 	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
 	FAILED_CHECK_RETURN(Render_Effect_No_Blur(), E_FAIL);
@@ -143,6 +158,8 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_CascadedShadow"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_PostFX"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Effect"));
+		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Volume_Front"));
+		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Volume_Back"));
 
 		CSSAO::GetInstance()->Render_DebugBuffer();
 		CBlur::GetInstance()->Render_DebugBuffer_Emissive(TEXT("Target_EmissiveBlur"));
@@ -171,14 +188,12 @@ HRESULT CRenderer::Render_Priority()
 HRESULT CRenderer::Render_NonAlpha()
 {
 	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Deferred"));
-
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_NONALPHA])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_NONALPHA), E_FAIL);
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_GROUP::RENDER_NONALPHA].clear();
-
 	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Deferred"));
 
 	return S_OK;
@@ -222,6 +237,29 @@ HRESULT CRenderer::Render_Effect_No_Blur()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_GROUP::RENDER_EFFECT_NO_BLUR].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Volume()
+{
+	/* 1 pass - Render to Front */
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Volume_Front"));
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_VOLUME])
+	{
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::VOLUME_FRONT), E_FAIL);
+	}
+	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Volume_Front"));
+
+	/* 2 pass - Render to Back */
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Volume_Back"));
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_VOLUME])
+	{
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::VOLUME_BACK), E_FAIL);
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[RENDER_GROUP::RENDER_VOLUME].clear();
+	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Volume_Back"));
 
 	return S_OK;
 }

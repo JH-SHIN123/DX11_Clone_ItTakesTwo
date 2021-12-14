@@ -11,6 +11,10 @@ Texture2D				g_EffectBlurTex;
 
 /* Etc Resources */
 Texture2D				g_RadiarBlurMaskTex;
+Texture2D				g_VolumeTex_Front_Depth;
+Texture2D				g_VolumeTex_Front_Color;
+Texture2D				g_VolumeTex_Back_Depth;
+Texture2D				g_VolumeTex_Back_Color;
 
 StructuredBuffer<float> g_AverageLum;
 
@@ -100,7 +104,6 @@ float3 DistanceDOF(float3 colorFocus, float3 colorBlurred, float depth)
 
 float3 RadiarBlur(float2 vTexUV, float2 vFocusPos, float fRatio)
 {
-
 	float2	dir = vFocusPos - vTexUV;
 	float	dist = length(dir);
 	dir /= dist;
@@ -120,6 +123,64 @@ float3 RadiarBlur(float2 vTexUV, float2 vFocusPos, float fRatio)
 
 	float ratio = saturate(dist * g_SampleStrength * fBlurMask * fRatio);
 	return lerp(vColor, sum, ratio);
+}
+
+float3 VolumeBlend(float3 vColor, float2 vTexUV, float2 vProjPos, float3 vWorldPos, float3 vCamPos, bool bMain)
+{
+	float2	vVolumeFront = g_VolumeTex_Front_Depth.Sample(Point_Sampler, vTexUV).xy;
+	float2	vVolumeBack = g_VolumeTex_Back_Depth.Sample(Point_Sampler, vTexUV).xy;
+	
+	// 0. 볼륨정보들의 월드위치를 구한다.
+	float3	vVolumeFrontWorldPos = float3(vProjPos.x, vProjPos.y, vVolumeFront.y);
+	float3	vVolumeBackWorldPos = float3(vProjPos.x, vProjPos.y, vVolumeBack.y);
+	float	vViewZ = 0.f;
+
+	if (bMain)
+	{
+		// View space Z
+		vViewZ = vVolumeFront.x * g_fMainCamFar;
+		vVolumeFrontWorldPos *= vViewZ;
+		vVolumeFrontWorldPos = mul(vVolumeFrontWorldPos, g_MainProjMatrixInverse);
+		vVolumeFrontWorldPos = mul(vVolumeFrontWorldPos, g_MainViewMatrixInverse);
+		
+		vVolumeBackWorldPos *= vViewZ;
+		vVolumeBackWorldPos = mul(vVolumeBackWorldPos, g_MainProjMatrixInverse);
+		vVolumeBackWorldPos = mul(vVolumeBackWorldPos, g_MainViewMatrixInverse);
+	}
+	else
+	{		// View space Z
+		vViewZ = vVolumeFront.x * g_fSubCamFar;
+		vVolumeFrontWorldPos *= vViewZ;
+		vVolumeFrontWorldPos = mul(vVolumeFrontWorldPos, g_SubProjMatrixInverse);
+		vVolumeFrontWorldPos = mul(vVolumeFrontWorldPos, g_SubViewMatrixInverse);
+
+		vVolumeBackWorldPos *= vViewZ;
+		vVolumeBackWorldPos = mul(vVolumeBackWorldPos, g_SubProjMatrixInverse);
+		vVolumeBackWorldPos = mul(vVolumeBackWorldPos, g_SubViewMatrixInverse);
+	}
+
+	float fVolumeFrontDepth = vVolumeFrontWorldPos.z;
+	float fVolumeBackDepth	= vVolumeBackWorldPos.z;
+	// 1. 포그안에 오브젝트가 포함되어있을때를 고려하자.
+	//> 차폐물의 깊이 값을 포그의 뒷면 깊이값으로 사용해야함
+	if (vVolumeFrontWorldPos.z < vWorldPos.z)
+		fVolumeBackDepth = vWorldPos.z;
+
+	// 2. 카메라가 포그안에 들어갔을때를 고려하자.
+	//> 카메라가 포그 안에 들어왔을때도 포그가 적용되는 맨 앞면을 카메라 좌표로 해야함
+	if (vVolumeFrontWorldPos.z < vCamPos.z)
+		fVolumeFrontDepth = vCamPos.z;
+
+	// 볼륨구하고
+	float fVolumeStart = fVolumeFrontDepth;
+	float fVolume = fVolumeBackDepth - fVolumeFrontDepth;
+
+	// 거리포그 공식 적용
+	float3	vLook = vWorldPos - vCamPos;
+	float	distToEye = length(vLook);
+
+	float fogLerp = saturate((distToEye - fVolumeStart) / fVolume);
+	return lerp(vColor, g_vFogColor, fogLerp);
 }
 
 //float3 ApplyFog(float3 finalColor, float eyePosY, float3 eyeToPixel)

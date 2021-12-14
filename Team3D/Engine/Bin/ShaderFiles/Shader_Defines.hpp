@@ -175,7 +175,7 @@ RasterizerState Rasterizer_NoCull
 	FillMode = Solid;
 	CullMode = None;
 };
-RasterizerState Rasterizer_CCW
+RasterizerState Rasterizer_CW
 {
 	FillMode = Solid;
 	CullMode = Front;
@@ -208,6 +208,12 @@ DepthStencilState DepthStecil_No_ZWrite
 DepthStencilState DepthStecil_No_ZTest
 {
 	DepthEnable		= false;
+};
+DepthStencilState DepthStecil_No_ZWrite_GreaterEqual
+{
+	DepthEnable = true;
+	DepthWriteMask = Zero;
+	DepthFunc = Greater_Equal;
 };
 
 /* BlendState */

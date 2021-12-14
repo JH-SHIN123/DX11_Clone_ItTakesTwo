@@ -261,6 +261,31 @@ PS_OUT_ALPHA PS_MAIN_ALPHA(PS_IN In, uniform bool isOpaque)
 
 	return Out;
 }
+
+
+////////////////////////////////////////////////////////////
+struct PS_OUT_VOLUME
+{
+	vector vVolume_Depth	: SV_TARGET0;
+	vector vVolume_Color	: SV_TARGET1;
+};
+
+PS_OUT_VOLUME PS_MAIN_VOLUME(PS_IN In)
+{
+	PS_OUT_VOLUME Out = (PS_OUT_VOLUME)0;
+
+	float	fCamFar = 0.f;
+	if (1 == In.iViewportIndex)
+		fCamFar = g_fMainCamFar;
+	else
+		fCamFar = g_fSubCamFar;
+
+	Out.vVolume_Depth = vector(In.vProjPosition.w / fCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+	Out.vVolume_Color = vector(0.f, 0.f, 1.f, 0.f); // Texture∑Œ ¿¸¥ﬁ
+
+	return Out;
+}
+
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
@@ -304,5 +329,25 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_MAIN_ALPHA(true);
+	}
+	// 4
+	pass Volume_Front /* Volume¿« æ’∏È ±Ì¿Ã∞™ */
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_VOLUME();
+	}
+	// 5 
+	pass Volume_Back /* Volume¿« µﬁ∏È ±Ì¿Ã∞™ */
+	{
+		SetRasterizerState(Rasterizer_CW);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN(); 
+		PixelShader = compile ps_5_0 PS_MAIN_VOLUME();
 	}
 };
