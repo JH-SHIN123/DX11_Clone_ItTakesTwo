@@ -700,12 +700,6 @@ PS_OUT_VOLUME PS_MAIN_VOLUME(PS_IN In)
 {
 	PS_OUT_VOLUME Out = (PS_OUT_VOLUME)0;
 
-	float	fCamFar = 0.f;
-	if (1 == In.iViewportIndex)
-		fCamFar = g_fMainCamFar;
-	else
-		fCamFar = g_fSubCamFar;
-
 	Out.vVolume = vector(In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f, 0.f);
 
 	return Out;

@@ -36,9 +36,6 @@ _int CVolumeObject::Tick(_double TimeDelta)
 {
 	CGameObject::Tick(TimeDelta);
 
-	
-
-
 	return NO_EVENT;
 }
 

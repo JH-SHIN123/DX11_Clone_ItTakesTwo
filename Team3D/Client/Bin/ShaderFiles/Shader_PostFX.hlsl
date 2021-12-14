@@ -138,14 +138,14 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth)
 
 	// 1. 포그안에 오브젝트가 포함되어있을때를 고려하자.
 	//> 차폐물의 깊이 값을 포그의 뒷면 깊이값으로 사용해야함
-	if (fVolumeFront < fProjDepth && fVolumeBack > fProjDepth)
+	if (fVolumeFront < fProjDepth)
 		fVolumeBack = fProjDepth;
 
 	//// 2. 카메라가 포그안에 들어갔을때를 고려하자.
 	////> 카메라가 포그 안에 들어왔을때도 포그가 적용되는 맨 앞면을 카메라 좌표로 해야함
 
-
 	fVolumeSize = fVolumeBack - fVolumeFront;
+
 	float fLerpFactor = saturate(fVolumeSize * 100.f);
 	return lerp(vColor, g_vFogColor, fLerpFactor);
 }
