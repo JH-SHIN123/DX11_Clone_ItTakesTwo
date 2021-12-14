@@ -29,6 +29,7 @@ HRESULT CLaser_TypeA::NativeConstruct(void * pArg)
 
 	m_pBossUFO = (CUFO*)DATABASE->Get_BossUFO();
 	NULL_CHECK_RETURN(m_pBossUFO, E_FAIL);
+	Safe_AddRef(m_pBossUFO);
 
 	m_dChargingTime = 3.0;
 	m_fShootSpeed = 100.f;

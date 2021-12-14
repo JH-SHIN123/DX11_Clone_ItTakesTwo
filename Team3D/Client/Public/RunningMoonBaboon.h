@@ -35,7 +35,6 @@ private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
-
 	CDynamicActor*			m_pDynamicActorCom = nullptr;
 	PxSphericalJoint*		m_pJoint = nullptr;
 

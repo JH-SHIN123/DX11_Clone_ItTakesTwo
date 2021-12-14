@@ -331,7 +331,7 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vPlayerUp = XMLoadFloat4(&m_vPlayerUp);
 	_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
 	if(XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
-	vPlayerUp += vUpDir * dTimeDelta * 5.f;
+	vPlayerUp += vUpDir * (_float)dTimeDelta * 5.f;
 	XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
 
 	
