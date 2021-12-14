@@ -37,7 +37,7 @@ private:
 	_float	m_fChange_UV = 0.05f;
 	_bool	m_IsNoRender = false;
 
-	_int m_iZeroSize_Arr[10] = { 0, 5, 3, 4, 6, 2, 9, 7, 1, 8 };
+	_int m_iZeroSize_Arr[9] = { 0, 5, 3, 4, 6, 2, 7, 1, 8 };
 	_int m_iArrCount = 0;
 
 	const _float4 m_vColor	= { 0.490196078f, 0.874509803f, 1.000000000f, 1.000000000f };

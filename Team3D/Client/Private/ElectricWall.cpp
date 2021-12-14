@@ -55,7 +55,8 @@ _int CElectricWall::Tick(_double dTimeDelta)
 		for (_uint i = 0; i < 10; ++i)
 		{
 			_matrix World = XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixTranslation(m_vOriginPos.x, m_vOriginPos.y + (i * 0.12f), m_vOriginPos.z);
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::RobotBattery_Spark, World);
+			EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Spark, World);
+			EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Explosion, World);
 		}
 
 		m_bElectric = true;

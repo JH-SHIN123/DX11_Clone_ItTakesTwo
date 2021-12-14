@@ -65,9 +65,7 @@ _int CElectricBox::Tick(_double dTimeDelta)
 		_matrix World = m_pTransformCom->Get_WorldMatrix();//XMMatrixTranslation(m_vOriginPos.x, m_vOriginPos.y, m_vOriginPos.z);
 		World.r[3] += World.r[1] *= 0.98f;
 		EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Spark, World);
-// 		EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Spark, World);
-// 		EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Spark, World);
-		EFFECT->Add_Effect(Effect_Value::May_Boots_Walking, World);
+		//EFFECT->Add_Effect(Effect_Value::May_Boots_Walking, World);
 		EFFECT->Add_Effect(Effect_Value::UFO_Inside_Battery_Explosion, World);
 		World.r[3] -= World.r[1] *= 0.98f;
 

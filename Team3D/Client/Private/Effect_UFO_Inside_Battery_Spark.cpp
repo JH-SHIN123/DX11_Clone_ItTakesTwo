@@ -97,32 +97,31 @@ HRESULT CEffect_UFO_Inside_Battery_Spark::Ready_Instance()
 
 	_float fOffSet = 0.3f;
 
-	_int III = 2;
-	vOffsetPos -= Matrix.r[III] * fOffSet;
+	vOffsetPos -= Matrix.r[2] * fOffSet;
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
 		m_pInstanceBuffer[iIndex].vSize = m_vSize;
 		m_pInstanceBuffer[iIndex].vTextureUV = Get_TexUV_Rand(8, 8);
-		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vLook, Matrix.r[III]);
+		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vLook, Matrix.r[2]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vRight, Matrix.r[0]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vUp,	 Matrix.r[2]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vOffsetPos);
 
 		m_pInstanceBuffer[iIndex + 9].vSize = m_vSize;
 		m_pInstanceBuffer[iIndex + 9].vTextureUV = Get_TexUV_Rand(8, 8);
-		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 9].vLook, Matrix.r[III]);
+		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 9].vLook, Matrix.r[2]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 9].vRight, Matrix.r[0]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 9].vUp, Matrix.r[2]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 9].vPosition, vOffsetPos);
 
 		m_pInstanceBuffer[iIndex + 18].vSize = m_vSize;
 		m_pInstanceBuffer[iIndex + 18].vTextureUV = Get_TexUV_Rand(8, 8);
-		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 18].vLook, Matrix.r[III]);
+		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 18].vLook, Matrix.r[2]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 18].vRight, Matrix.r[0]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 18].vUp, Matrix.r[2]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 18].vPosition, vOffsetPos);
 
-		vOffsetPos += Matrix.r[III] * 0.05f;
+		vOffsetPos += Matrix.r[2] * 0.05f;
 	}
 
 	return S_OK;
@@ -168,12 +167,15 @@ void CEffect_UFO_Inside_Battery_Spark::Check_Particle_UV(_double TimeDelta)
 		for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 			m_pInstanceBuffer[iIndex].vTextureUV	= Get_TexUV_Rand(8, 8);
 
-		if (9 < m_iEffectCount)
+		if (10 < m_iEffectCount)
 		{
-			_int iZeroSize_Index = m_iZeroSize_Arr[m_iArrCount++];
-			m_pInstanceBuffer[iZeroSize_Index].vSize	  = {0.f, 0.f};
-			m_pInstanceBuffer[iZeroSize_Index + 9].vSize  = { 0.f, 0.f };
-			m_pInstanceBuffer[iZeroSize_Index + 18].vSize = { 0.f, 0.f };
+			if (9 > m_iArrCount)
+			{
+				_int iZeroSize_Index = m_iZeroSize_Arr[m_iArrCount++];
+				m_pInstanceBuffer[iZeroSize_Index].vSize	  = {0.f, 0.f};
+				m_pInstanceBuffer[iZeroSize_Index + 9].vSize  = { 0.f, 0.f };
+				m_pInstanceBuffer[iZeroSize_Index + 18].vSize = { 0.f, 0.f };
+			}
 		}
 
 		++m_iEffectCount;
