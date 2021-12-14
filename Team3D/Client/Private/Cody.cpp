@@ -3255,6 +3255,9 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 	if (false == m_IsHolding_UFO)
 		return;
 
+	if (true == m_pModelCom->Is_AnimFinished(ANI_C_CutScene_BossFight_LaserRippedOff))
+		m_IsHolding_UFO = false;
+
 	if (CUFO::PHASE_1 == ((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() && m_pGameInstance->Key_Down(DIK_E) &&
 		m_eCurPlayerSize == CCody::SIZE_LARGE && false == m_IsHolding_Low_UFO)
 	{

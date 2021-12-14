@@ -98,6 +98,11 @@ _int CUFO::Tick(_double dTimeDelta)
 	{
 		m_IsCodyEnter = true;
 	}
+	else if (m_pGameInstance->Key_Down(DIK_F1))
+	{
+		m_IsCutScene = true;
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////
 
 	/* 컷 신 재생중이 아니라면 보스 패턴 진행하자 나중에 컷 신 생기면 바꿈 */
@@ -248,7 +253,7 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 		return;
 
 	_vector vDir, vTargetPos;
-	_uint iGravitationalBombMaxCount = 2;
+	_uint iGravitationalBombMaxCount = 5;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
@@ -593,8 +598,10 @@ void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
 	_float vDistance = XMVectorGetX(XMVector3Length(vComparePos));
 	m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
 
+	vDir.m128_f32[1] = 0.f;
+
 	if (1.f <= vDistance)
-		m_pTransformCom->Go_Straight(dTimeDelta * 3.f);
+		m_pTransformCom->MoveToDir(XMVector3Normalize(vDir), dTimeDelta * 5.f);
 	else
 	{
 		m_IsStartingPointMove = false;
@@ -617,7 +624,7 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 		m_fGroundPoundTime += (_float)dTimeDelta;
 
 	/* GroundPound가 시작됬을 때 메이의 포스 저장 */
-	if (5.f <= m_fGroundPoundTime && false == m_IsGroundPound)
+	if (4.f <= m_fGroundPoundTime && false == m_IsGroundPound)
 	{
 		XMStoreFloat4(&m_vGroundPoundTargetPos, m_pMayTransform->Get_State(CTransform::STATE_POSITION));
 		m_IsGroundPound = true;
@@ -689,6 +696,9 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 		/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 */
 		//if (0.97 <= m_pModelCom->Get_ProgressAnim() && false == m_IsLaserGunRid)
 		//	GetRidLaserGun();
+
+		if(100.f <= m_pModelCom->Get_CurrentTime(UFO_LaserRippedOff) && false == m_IsLaserGunRid)
+				GetRidLaserGun();
 
 		if (m_pModelCom->Is_AnimFinished(UFO_LaserRippedOff))
 		{
@@ -774,6 +784,8 @@ void CUFO::GetRidLaserGun()
 
 HRESULT CUFO::Phase3_End(_double dTimeDelta)
 {
+	m_pModelCom->Set_Animation(CutScene_Eject_FlyingSaucer);
+
 
 	return S_OK;
 }

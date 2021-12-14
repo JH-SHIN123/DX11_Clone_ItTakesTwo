@@ -122,6 +122,14 @@ _uint CModel::Get_BoneIndex(const char * pBoneName) const
 	return EVENT_ERROR;
 }
 
+_double CModel::Get_CurrentTime(_uint iAnimIndex) const
+{
+	if (iAnimIndex == m_iCurAnimIndex)
+		return m_dCurrentTime;
+
+	return 0.0;
+}
+
 HRESULT CModel::Set_Animation(_uint iAnimIndex, _double dAnimTime)
 {
 	if (iAnimIndex == m_iCurAnimIndex)

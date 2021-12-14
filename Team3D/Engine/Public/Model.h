@@ -52,6 +52,7 @@ public: /* Getter */
 	const _uint	Get_CurAnimIndex() const { return m_iCurAnimIndex; }
 	const _uint	Get_MeshCount() const { return m_iMeshCount; }
 	_fmatrix	Get_AnimTransformation(_uint iIndex) const { return XMLoadFloat4x4(&m_AnimTransformations[iIndex]); }
+	_double		Get_CurrentTime(_uint iAnimIndex) const;
 
 	/**
 	* Get_ProgressAnim
