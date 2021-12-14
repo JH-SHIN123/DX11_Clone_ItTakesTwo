@@ -26,6 +26,8 @@
 #include "ElectricWall.h"
 /*For.WarpGate*/
 #include "WarpGate.h"
+/* For.BossUFO */
+#include "UFO.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -194,6 +196,16 @@ void CCody::Add_LerpInfo_To_Model()
 
 	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_Enter, ANI_C_Grind_Grapple_ToGrind, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_ToGrind, ANI_C_Grind_Slow_MH, false);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_Holding_Low_UFO, true, 300.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_Holding_Enter_UFO, true, 1000.f);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Holding_Enter_UFO, ANI_C_Holding_Low_UFO, true);
+	m_pModelCom->Add_LerpInfo(ANI_C_Holding_Low_UFO, ANI_C_Holding_UFO, true);
+
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Holding_UFO, ANI_C_CutScene_BossFight_LaserRippedOff, true);
+
 	return;
 }
 
@@ -203,9 +215,6 @@ void CCody::Add_LerpInfo_To_Model()
 _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
-
-	if (m_pGameInstance->Key_Down(DIK_F3))
-		m_pActorCom->Set_Position(XMVectorSet(64.f, 605.f, 195.f, 1.f));
 
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -244,6 +253,7 @@ _int CCody::Tick(_double dTimeDelta)
 			WallLaserTrap(dTimeDelta);
 			PinBall(dTimeDelta);
 			SpaceShip_Respawn(dTimeDelta);
+			Holding_BossUFO(dTimeDelta);
 		}
 		else
 		{
@@ -2097,12 +2107,16 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 				m_bElectricWallAttach = true;
 			}
 		}
+		else if (m_eTargetGameID == GameID::eBOSSUFO && m_pGameInstance->Key_Down(DIK_E))
+		{
+			m_IsHolding_UFO = true;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
-		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach)
+		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach || m_IsHolding_UFO)
 		return true;
 
 	return false;
@@ -3229,6 +3243,42 @@ void CCody::PinBall(const _double dTimeDelta)
 {
 	if (true == m_IsPinBall)
 		m_pActorCom->Set_Position(((CDynamic_Env*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Position());
+}
+
+void CCody::Holding_BossUFO(const _double dTimeDelta)
+{
+	if (false == m_IsHolding_UFO)
+		return;
+
+	if (CUFO::PHASE_1 == ((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() && m_pGameInstance->Key_Down(DIK_E) &&
+		m_eCurPlayerSize == CCody::SIZE_LARGE && false == m_IsHolding_Low_UFO)
+	{
+		m_pActorCom->Set_Position(XMVectorSet(57.8480f, 342.83f, 199.5068f, 1.f));
+		m_pModelCom->Set_Animation(ANI_C_Holding_Enter_UFO);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Holding_Low_UFO);
+		m_pTransformCom->RotateYaw_Angle(190.f);
+		((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding_Enter, UFO_CodyHolding_low);
+		m_IsHolding_Low_UFO = true;
+	}
+	else if (CUFO::PHASE_1 == ((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() && m_pGameInstance->Key_Down(DIK_E) &&
+		m_eCurPlayerSize == CCody::SIZE_MEDIUM && false == m_IsHolding_Low_UFO)
+	{
+		/* 점프해서 손 흔드는 애니메이션 재생시켜주자 ㅇㅇ;; */
+	}
+
+	if (true == m_IsHolding_Low_UFO && false == m_IsHolding_High_UFO)
+	{
+		if (m_pGameInstance->Key_Down(DIK_E))
+			++m_iKeyDownCount;
+
+		if (10 <= m_iKeyDownCount)
+		{
+			m_pModelCom->Set_Animation(ANI_C_Holding_UFO);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Holding_UFO);
+			((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding, UFO_CodyHolding);
+			m_IsHolding_High_UFO = true;
+		}
+	}
 }
 
 void CCody::PinBall_Respawn(const _double dTimeDelta)

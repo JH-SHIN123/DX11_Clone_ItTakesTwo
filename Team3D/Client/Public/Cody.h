@@ -447,6 +447,12 @@ private:
 	// touch WallLaserTrap
 	_bool m_IsWallLaserTrap_Touch = false;
 	_bool m_IsWallLaserTrap_Effect = false;
+ 
+	/* For. BossUFO */
+	_bool m_IsHolding_UFO = false;
+	_bool m_IsHolding_Low_UFO = false;
+	_bool m_IsHolding_High_UFO = false;
+	_uint m_iKeyDownCount = 0;
 
 	// YYY
 	void Hit_StarBuddy(const _double dTimeDelta);
@@ -471,6 +477,10 @@ private:
 	/* Hye*/
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
+
+	/* ÁøÇõ */
+	void Holding_BossUFO(const _double dTimeDelta);
+
 public:
 	void PinBall_Respawn(const _double dTimeDelta);
 	void SpaceShip_Respawn(const _double dTimeDelta);

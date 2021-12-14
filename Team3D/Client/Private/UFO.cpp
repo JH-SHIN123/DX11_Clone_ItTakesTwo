@@ -248,7 +248,7 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 		return;
 
 	_vector vDir, vTargetPos;
-	_uint iGravitationalBombMaxCount = 10;
+	_uint iGravitationalBombMaxCount = 2;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
@@ -308,6 +308,7 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 		m_IsCutScene = true;
 		m_pModelCom->Set_Animation(CutScene_PowerCoresDestroyed_UFO);
 		m_pModelCom->Set_NextAnimIndex(UFO_KnockDownMH);
+		Ready_Actor_Component();
 		return;
 	}
 
@@ -676,40 +677,22 @@ void CUFO::DependingTimeSubLaserOperation(_double dTimeDelta)
 HRESULT CUFO::Phase1_End(_double dTimeDelta)
 {
 	if (m_pModelCom->Is_AnimFinished(CutScene_PowerCoresDestroyed_UFO))
+	{
+
+		m_pTriggerActorCom->Update_TriggerActor();
 		m_IsInterActive = true;
+	}
 
 	/* 컷 신 애니메이션이 끝났다면 이제 상호작용 하자 ㅇㅇ */
 	if(true == m_IsInterActive)
 	{
 		/* 여기서 그시기 하면 되겠군 */
-		if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
-		{
-			m_pModelCom->Set_Animation(UFO_CodyHolding_Enter);
-			m_pModelCom->Set_NextAnimIndex(UFO_CodyHolding_low);
-		}
-
-		if (m_pGameInstance->Key_Down(DIK_NUMPAD4))
-		{
-			m_pModelCom->Set_Animation(UFO_CodyHolding);
-			m_pModelCom->Set_NextAnimIndex(UFO_CodyHolding);
-		}
-
-		if (m_pModelCom->Is_AnimFinished(UFO_CodyHolding))
-		{
-			m_pModelCom->Set_Animation(UFO_LaserRippedOff);
-			m_pModelCom->Set_NextAnimIndex(UFO_Left);
-		}
-
 		/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 나중에 컷신 나오면 이펙트랑 같이 맞춰주자 ㅇㅇ */
 		if (0.97 <= m_pModelCom->Get_ProgressAnim() && false == m_IsLaserGunRid)
 			GetRidLaserGun();
 
 		if (m_pModelCom->Is_AnimFinished(UFO_LaserRippedOff))
 		{
-			/* 스태틱, 트리거 액터 생성 */
-			/* 얘 왜 터지냐 ㅡㅡ */
-			/*Ready_Actor_Component();*/
-
 			/* 애니메이션이 딱 끝났을 때 뼈의 위치를 받아서 UFO 월드에 세팅해준다. */
 			_matrix BaseBone = m_pModelCom->Get_BoneMatrix("Base");
 			_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
@@ -734,18 +717,16 @@ HRESULT CUFO::Ready_Actor_Component()
 {
 	m_UserData = USERDATA(GameID::eBOSSUFO, this);
 
-	CStaticActor::ARG_DESC ArgDesc;
-	ArgDesc.pModel = m_pModelCom;
-	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pUserData = &m_UserData;
+	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vUFOPos.m128_f32[1] -= 8.f;
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
+	m_pTriggerTransformCom->Set_State(CTransform::STATE_POSITION, vUFOPos);
 
 	CTriggerActor::ARG_DESC TriggerArgDesc;
 
 	TriggerArgDesc.pUserData = &m_UserData;
-	TriggerArgDesc.pTransform = m_pTransformCom;
-	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.f);
+	TriggerArgDesc.pTransform = m_pTriggerTransformCom;
+	TriggerArgDesc.pGeometry = new PxSphereGeometry(5.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerActorCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
@@ -809,6 +790,28 @@ HRESULT CUFO::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
+void CUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	{
+
+	}
+
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+	{
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+	{
+
+	}
+}
 
 void CUFO::Add_LerpInfo_To_Model()
 {
@@ -856,6 +859,7 @@ void CUFO::Add_LerpInfo_To_Model()
 HRESULT CUFO::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_TriggerTransform"), (CComponent**)&m_pTriggerTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_UFO"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
@@ -888,6 +892,12 @@ void CUFO::Set_IsGuidedMissileDeadCheck(_bool IsCheck)
 		m_pCodyMissile = nullptr;
 	else
 		m_pMayMissile = nullptr;
+}
+
+void CUFO::Set_UFOAnimation(_uint iAnimIndex, _uint iNextAnimIndex)
+{
+	m_pModelCom->Set_Animation(iAnimIndex);
+	m_pModelCom->Set_NextAnimIndex(iNextAnimIndex);
 }
 
 void CUFO::Set_BossUFOUp(_float fMaxDistance, _float fSpeed)
@@ -970,11 +980,11 @@ CGameObject * CUFO::Clone_GameObject(void * pArg)
 
 void CUFO::Free()
 {
-	if (m_ePhase != CUFO::PHASE_1)
-	{
+	if (nullptr != m_pStaticActorCom)
 		Safe_Release(m_pStaticActorCom);
+
+	if (nullptr != m_pTriggerActorCom)
 		Safe_Release(m_pTriggerActorCom);
-	}
 
 	for (auto pSubLaser : m_vecSubLaser)
 		Safe_Release(pSubLaser);

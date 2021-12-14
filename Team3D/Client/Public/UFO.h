@@ -27,21 +27,26 @@ public:
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
+	/* For.Trigger */
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+
+
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
 	void Set_IsGuidedMissileDeadCheck(_bool IsCheck);
+	void Set_UFOAnimation(_uint iAnimIndex, _uint iNextAnimIndex);
 
 	/* For. BossFloorUp */
 	void Set_BossUFOUp(_float fMaxDistance, _float fSpeed);
-	void GoUp(_double dTimeDelta);
 
 public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
 	CModel* Get_Model() const { return m_pModelCom; }
 	_float4 Get_LaserStartPos() const { return m_vLaserGunPos; }
 	_float4 Get_LaserDir() const { return m_vLaserDir; }
+	UFO_PHASE Get_BossPhase() const { return m_ePhase; }
 
 private:
 	UFO_TARGET				m_eTarget = TARGET_END;
@@ -105,6 +110,7 @@ private:
 	/* For.Component */
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
+	CTransform*				m_pTriggerTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 	CTransform*				m_pCodyTransform = nullptr;
 	CTransform*				m_pMayTransform = nullptr;
@@ -113,7 +119,7 @@ private:
 
 private:
 	/* For.AllPHASE */
-	
+	void GoUp(_double dTimeDelta);
 
 	/* For.PHASE_1 Pattern */
 	void Phase1_Pattern(_double dTimeDelta);

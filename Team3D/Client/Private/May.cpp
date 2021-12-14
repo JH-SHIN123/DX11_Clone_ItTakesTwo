@@ -2203,6 +2203,11 @@ void CMay::Set_BossMissile_Attack()
 	m_IsBoss_Missile_Explosion = true;
 }
 
+void CMay::Set_LaserRippedOff()
+{
+	m_IsLaserRippedOff = true;
+}
+
 void CMay::Set_ActorPosition(_vector vPosition)
 {
 	m_pActorCom->Set_Position(vPosition);
