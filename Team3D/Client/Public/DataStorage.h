@@ -116,6 +116,9 @@ public:
 	void Set_Moon(CGameObject* pMoon) { m_pMoon = pMoon; }
 	CGameObject* Get_Mooon() { return m_pMoon; }
 
+	void Set_RunningMoonBaboon(CGameObject* pRunningMoonBaboon) { m_pRunningMoonBaboon = pRunningMoonBaboon; }
+	CGameObject* Get_RunningMoonBaboon() { return m_pRunningMoonBaboon; }
+
 	// Stage Flow
 	void Set_Valve_Activate(_bool bValveActivate) { m_IsValveActivated = bValveActivate; }
 	_bool Get_IsValve_Activated() { return m_IsValveActivated; }
@@ -240,6 +243,7 @@ private:
 	/* For.MoonUFO */
 	CGameObject* m_pMoonUFO = nullptr;
 	CGameObject* m_pMoon = nullptr;
+	CGameObject* m_pRunningMoonBaboon = nullptr;
 
 	/* For.MoonBaboonSpaceShip*/
 	CGameObject* m_pMoonBaboonSpaceShip = nullptr;

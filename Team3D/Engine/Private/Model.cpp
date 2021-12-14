@@ -630,6 +630,30 @@ HRESULT CModel::Render_Model_VERTEX(_uint iPassIndex, _uint iMaterialSetNum, _bo
 	return S_OK;
 }
 
+HRESULT CModel::Change_PivotMatrix(_fmatrix PivotMatrix)
+{
+	XMStoreFloat4x4(&m_PivotMatrix, XMMatrixIdentity());
+
+	if (0 < m_iAnimCount)
+	{
+		XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
+		memcpy(&m_CombinedPivotMatrix, &m_PivotMatrix, sizeof(_float4x4));
+		return S_OK;
+	}
+	else
+	{
+		for (_uint iIndex = 0; iIndex < m_iVertexCount; ++iIndex)
+		{
+			_vector	vAdjustedPosition = XMVector3TransformCoord(XMLoadFloat3(&m_pVertices[iIndex].vPosition), PivotMatrix);
+			XMStoreFloat3(&m_pVertices[iIndex].vPosition, vAdjustedPosition);
+			_vector	vAdjustedNormal = XMVector3TransformNormal(XMLoadFloat3(&m_pVertices[iIndex].vNormal), PivotMatrix);
+			XMStoreFloat3(&m_pVertices[iIndex].vNormal, vAdjustedNormal);
+		}
+	}
+
+	return S_OK;
+}
+
 HRESULT CModel::Sort_MeshesByMaterial()
 {
 	m_SortedMeshes.resize(m_iMaterialCount);

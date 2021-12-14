@@ -371,6 +371,7 @@
     <ClInclude Include="..\Public\RotationCylinder.h" />
     <ClInclude Include="..\Public\RotationFan.h" />
     <ClInclude Include="..\Public\RotationFan_Base.h" />
+    <ClInclude Include="..\Public\RunningMoonBaboon.h" />
     <ClInclude Include="..\Public\SavePoint.h" />
     <ClInclude Include="..\Public\SecurityCamera.h" />
     <ClInclude Include="..\Public\SecurityCameraHandle.h" />
@@ -594,6 +595,7 @@
     <ClCompile Include="..\Private\RotationCylinder.cpp" />
     <ClCompile Include="..\Private\RotationFan.cpp" />
     <ClCompile Include="..\Private\RotationFan_Base.cpp" />
+    <ClCompile Include="..\Private\RunningMoonBaboon.cpp" />
     <ClCompile Include="..\Private\SavePoint.cpp" />
     <ClCompile Include="..\Private\SecurityCamera.cpp" />
     <ClCompile Include="..\Private\SecurityCameraHandle.cpp" />

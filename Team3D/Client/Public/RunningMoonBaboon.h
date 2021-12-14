@@ -1,14 +1,15 @@
 #pragma once
 #include "Client_Defines.h"
 
+#define MOONBABOONFORCE 10
+
 BEGIN(Client)
-#define UFOFORCE 24000.f
-class CMoonUFO : public CGameObject
+class CRunningMoonBaboon : public CGameObject
 {
 protected:
-	explicit CMoonUFO(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CMoonUFO(const CMoonUFO& rhs);
-	virtual ~CMoonUFO() = default;
+	explicit CRunningMoonBaboon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CRunningMoonBaboon(const CRunningMoonBaboon& rhs);
+	virtual ~CRunningMoonBaboon() = default;
 
 public:/* Getter */
 	CTransform*		Get_Transform() { return m_pTransformCom; }
@@ -18,7 +19,6 @@ public:/* Getter */
 	_float4 Get_LaserDir() const { return m_vLaserDir; }
 
 public:/* Setter */
-	void Set_MayInUFO(_bool bCheck) { m_IsMayInUFO = bCheck; }
 	void Set_ShootLaser(_bool _bShootLaser) { m_IsShootLaser = _bShootLaser; }
 
 public:
@@ -31,10 +31,6 @@ public:
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
-public:
-	HRESULT Set_MeshRenderGroup();
-	HRESULT Add_GameObject_ToRenderGroup();
-
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
@@ -43,26 +39,26 @@ private:
 	CDynamicActor*			m_pDynamicActorCom = nullptr;
 	PxSphericalJoint*		m_pJoint = nullptr;
 
-	_bool					m_IsMayInUFO = false;
 	_bool					m_bRotateRight = false;
 	_bool					m_bRotateLeft = false;
-
 
 	// YYY
 	/* For. Laser_TypeA */
 	_float4				m_vLaserGunPos = {};
 	_float4				m_vLaserDir = {};
 	_bool				m_IsShootLaser = false;
+	PxRaycastBuffer		m_RaycastBuffer;
 
 private:
-	void	KeyInPut(_double dTimeDelta);
+	void	Movement(_double dTimeDelta);
 	void	Calculate_Matrix(_double dTimeDelta);
+	void	Add_LerpInfo();
 
 private:
 	HRESULT Ready_Component(void* pArg);
 
 public:
-	static CMoonUFO*     Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CRunningMoonBaboon*     Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void         Free() override;
 };

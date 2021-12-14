@@ -111,6 +111,9 @@
     <Filter Include="02.GameObject\03.Character\03.Boss\03.MoonBaboon_SpaceShip">
       <UniqueIdentifier>{c93b2988-1a13-40fd-b9e4-34e15c40918c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\03.Character\03.Boss\04.RunningMoonBaboon">
+      <UniqueIdentifier>{ffa23b80-da2e-41ea-8f37-e62dd1bb9480}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\03.Character\99.Parent">
       <UniqueIdentifier>{0b5865f1-2eda-4ced-acc0-09423f134b86}</UniqueIdentifier>
     </Filter>
@@ -899,6 +902,9 @@
     <ClInclude Include="..\Public\MoonBaboon_SpaceShip.h">
       <Filter>02.GameObject\03.Character\03.Boss\03.MoonBaboon_SpaceShip</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RunningMoonBaboon.h">
+      <Filter>02.GameObject\03.Character\03.Boss\04.RunningMoonBaboon</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Character.h">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
     </ClInclude>
@@ -1599,6 +1605,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MoonBaboon_SpaceShip.cpp">
       <Filter>02.GameObject\03.Character\03.Boss\03.MoonBaboon_SpaceShip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RunningMoonBaboon.cpp">
+      <Filter>02.GameObject\03.Character\03.Boss\04.RunningMoonBaboon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>

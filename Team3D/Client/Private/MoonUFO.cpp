@@ -162,18 +162,18 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
 	{
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * UFOFORCE, XMVectorGetY(vRight) * UFOFORCE, XMVectorGetZ(vRight) * UFOFORCE));
-		//m_bRotateRight = true;
+		m_bRotateRight = true;
 	}
-	/*else
-		m_bRotateRight = false;*/
+	else
+		m_bRotateRight = false;
 
 	if (m_pGameInstance->Key_Pressing(DIK_LEFT))
 	{
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * -UFOFORCE, XMVectorGetY(vRight)  * -UFOFORCE, XMVectorGetZ(vRight) * -UFOFORCE));
-		////m_bRotateLeft = true;
+		m_bRotateLeft = true;
 	}
-	/*else
-		m_bRotateLeft = false;*/
+	else
+		m_bRotateLeft = false;
 
 	if (m_pGameInstance->Key_Pressing(DIK_UP))
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * UFOFORCE, XMVectorGetY(vLook) * UFOFORCE, XMVectorGetZ(vLook) * UFOFORCE));
@@ -182,24 +182,6 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * -UFOFORCE, XMVectorGetY(vLook) * -UFOFORCE, XMVectorGetZ(vLook) * -UFOFORCE));
 
 	/* For.LaserGun */
-
-	if (m_pGameInstance->Key_Pressing(DIK_W))
-	{
-
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_A))
-	{
-
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_S))
-	{
-
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_D))
-	{
-
-	}
-
 
 	_vector vUFOPos = ((CPixelUFO*)DATABASE->Get_PixelUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 	_vector vTargetPos = ((CPixelCrossHair*)DATABASE->Get_PixelCrossHair())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
@@ -299,7 +281,8 @@ HRESULT CMoonUFO::Ready_Component(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
 	Safe_Delete(Geom);
-	m_pDynamicActorCom->Get_Actor()->setLinearDamping(0.2f);
+	//m_pDynamicActorCom->Get_Actor()->setLinearDamping(0.2f);
+
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 	PxShape* pShape = nullptr;
