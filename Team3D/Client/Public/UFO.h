@@ -85,6 +85,7 @@ private:
 	_bool					m_IsCodyEnter = false;
 	_bool					m_IsAnimationTransform = true;
 	_bool					m_IsLaserGunRid = false;
+	_bool					m_IsActorCreate = true;
 	
 	class CBoss_Missile*	m_pCodyMissile = nullptr;
 	class CBoss_Missile*	m_pMayMissile = nullptr;
@@ -112,6 +113,7 @@ private:
 	CTransform*				m_pTransformCom = nullptr;
 	CTransform*				m_pTriggerTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
+	CModel*					m_pStaticModelCom = nullptr;
 	CTransform*				m_pCodyTransform = nullptr;
 	CTransform*				m_pMayTransform = nullptr;
 	CStaticActor*			m_pStaticActorCom = nullptr;
@@ -146,7 +148,8 @@ private:
 private:
 	/* For.PHASE_1 End */
 	HRESULT Phase1_End(_double dTimeDelta);
-	HRESULT Ready_Actor_Component();
+	HRESULT Ready_TriggerActor_Component();
+	HRESULT Ready_StaticActor_Component();
 
 	/* For.PHASE_2 End */
 	HRESULT Phase2_End(_double dTimeDelta);

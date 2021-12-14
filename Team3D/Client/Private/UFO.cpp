@@ -102,6 +102,10 @@ _int CUFO::Tick(_double dTimeDelta)
 	{
 		m_IsCutScene = true;
 	}
+	else if (m_pGameInstance->Key_Down(DIK_F2))
+	{
+		Ready_StaticActor_Component();
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////
 
@@ -148,6 +152,7 @@ _int CUFO::Tick(_double dTimeDelta)
 _int CUFO::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
+
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 50.f))
 		return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -253,7 +258,7 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 		return;
 
 	_vector vDir, vTargetPos;
-	_uint iGravitationalBombMaxCount = 5;
+	_uint iGravitationalBombMaxCount = 2;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
@@ -313,7 +318,7 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 		m_IsCutScene = true;
 		m_pModelCom->Set_Animation(CutScene_PowerCoresDestroyed_UFO);
 		m_pModelCom->Set_NextAnimIndex(UFO_KnockDownMH);
-		Ready_Actor_Component();
+		Ready_TriggerActor_Component();
 		return;
 	}
 
@@ -723,7 +728,7 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 	return S_OK;
 }
 
-HRESULT CUFO::Ready_Actor_Component()
+HRESULT CUFO::Ready_TriggerActor_Component()
 {
 	m_UserData = USERDATA(GameID::eBOSSUFO, this);
 
@@ -744,16 +749,38 @@ HRESULT CUFO::Ready_Actor_Component()
 	return S_OK;
 }
 
+HRESULT CUFO::Ready_StaticActor_Component()
+{
+	m_UserData = USERDATA(GameID::eBOSSUFO, this);
+
+	_matrix PivotMatrix = XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(90.f)) * m_pModelCom->Get_AnimTransformation(m_pModelCom->Get_BoneIndex("Base")) * m_pModelCom->Get_PivotMatrix();
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_StaticUFO"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("UFO_RocketKnockDown_Mh"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_StaticUFO"), TEXT("Com_StaticModel"), (CComponent**)&m_pStaticModelCom), E_FAIL);
+
+	CStaticActor::ARG_DESC ArgDesc;
+	ArgDesc.pModel = m_pStaticModelCom;
+	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.pUserData = &m_UserData;
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
+
+	m_IsActorCreate = false;
+
+	return S_OK;
+}
+
 HRESULT CUFO::Phase2_End(_double dTimeDelta)
 {
 
-	if (m_pModelCom->Get_CurAnimIndex() == UFO_RocketKnockDown_MH && m_IsCodyEnter == true)
+	if (UFO_RocketKnockDown_MH == m_pModelCom->Get_CurAnimIndex() && m_IsCodyEnter == true)
 	{
 		m_pModelCom->Set_Animation(CutScene_EnterUFO_FlyingSaucer, 30.f);
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
 		m_IsCodyEnter = false;
 	}
-	
+
+	if (UFO_RocketKnockDown_MH == m_pModelCom->Get_CurAnimIndex() && true == m_IsActorCreate)
+		Ready_StaticActor_Component();
+
 	if (m_pModelCom->Is_AnimFinished(CutScene_EnterUFO_FlyingSaucer))
 	{
 		m_IsCutScene = false;
@@ -874,7 +901,8 @@ HRESULT CUFO::Ready_Component()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_TriggerTransform"), (CComponent**)&m_pTriggerTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_UFO"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_StaticUFO"), TEXT("Com_StaticModel"), (CComponent**)&m_pStaticModelCom), E_FAIL);
+	
 	m_pCodyTransform = ((CCody*)DATABASE->GetCody())->Get_Transform();
 	NULL_CHECK_RETURN(m_pCodyTransform, E_FAIL);
 	Safe_AddRef(m_pCodyTransform);
@@ -1009,6 +1037,8 @@ void CUFO::Free()
 	if (nullptr != m_pMayMissile)
 		Safe_Release(m_pMayMissile);
 
+	Safe_Release(m_pStaticActorCom);
+	Safe_Release(m_pStaticModelCom);
 	Safe_Release(m_pMayTransform);
 	Safe_Release(m_pCodyTransform);
 	Safe_Release(m_pTransformCom);

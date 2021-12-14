@@ -310,6 +310,16 @@ HRESULT CModel::Set_PivotTransformation(_uint iIndex, _fmatrix PivotMatrix)
 	return S_OK;
 }
 
+HRESULT CModel::Set_AnimTransformation(_uint iIndex, _fmatrix AnimMatrix)
+{
+	if (iIndex >= m_iNodeCount)
+		return E_FAIL;
+
+	XMStoreFloat4x4(&m_AnimTransformations[iIndex], AnimMatrix);
+
+	return S_OK;
+}
+
 HRESULT CModel::Initialize_PivotTransformation()
 {
 	m_PivotTransformations.resize(m_iNodeCount, MH_XMFloat4x4Identity());
