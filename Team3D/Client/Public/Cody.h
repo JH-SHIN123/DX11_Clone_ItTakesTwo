@@ -219,6 +219,9 @@ public:
 	_float4x4		 Get_TriggerTargetWorld() { return m_TriggerTargetWorld; }
 	_bool			 Get_IsWarpNextStage() { return m_IsWarpNextStage; }
 	_bool			 Get_IsWarpDone() { return m_IsWarpDone; }
+	_float			 Get_Acceleration() { return m_fAcceleration; }
+	_bool			 Get_IsRoll() { return m_bRoll; }
+	_bool			 Get_IsAirDash() { return m_IsAirDash; }
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);

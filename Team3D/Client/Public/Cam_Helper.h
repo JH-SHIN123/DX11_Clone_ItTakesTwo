@@ -87,7 +87,8 @@ private:
 
 private: //For.System
 	CamHelperState m_eState[CFilm::Screen_End] = { CamHelperState::Helper_End,CamHelperState::Helper_End };
-	HRESULT Load_Film(const _tchar* pDataPath);
+	HRESULT Load_Film(const _tchar* pDataPath,_bool bMakeUpNodesTimeByfar = false);
+	void	MakeUpNodesTimeByFar(CFilm* pFilm); //거리에 따른 시간정리
 public:
 	static CCam_Helper* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
 	virtual CComponent* Clone_Component(void* pArg = nullptr)override;

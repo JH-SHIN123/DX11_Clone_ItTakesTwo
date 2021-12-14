@@ -61,7 +61,7 @@ protected:
 	CTransform*			m_pParentTransform = nullptr;
 	char				m_szParentBoneTag[MAX_PATH] = "";
 	_bool				m_bIsOnParentBone = false;
-	wstring*			m_pModelTag = nullptr;
+
 #ifdef __TEST_JUN
 	_float3 m_vPos = {0.f,1.5f,0.f};
 	_float3 m_vRot = { 0.f,-32.f,0.f };

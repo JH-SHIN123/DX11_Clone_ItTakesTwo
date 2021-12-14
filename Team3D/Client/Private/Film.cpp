@@ -440,4 +440,51 @@ void CFilm::Set_ViewPort(CamNode * pCurNode)
 
 }
 
+void CFilm::MakeUpNodesTimeByFar()
+{
+	_uint iCamNodeCount = m_CamNodes.size();
+	for (_uint i = 0; i < iCamNodeCount - 1; i++)
+	{
+		CamMoveOption eMoveOption = m_CamNodes[i]->eEyeMoveOption;
+		switch (eMoveOption)
+		{
+		case Client::CFilm::CamMoveOption::Move_Jump:
+			break;
+		case Client::CFilm::CamMoveOption::Move_Straight:
+			{
+				CamNode* pCurNode = m_CamNodes[i];
+				CamNode* pNextNode = m_CamNodes[i + 1];
+				_vector vCurNodePos = XMVectorSetW(XMLoadFloat3(&pCurNode->vEye),1.f);
+				_vector vNextNodePos = XMVectorSetW(XMLoadFloat3(&pNextNode->vEye), 1.f);
+				
+				_float fLength = XMVectorGetX(XMVector3Length(vCurNodePos - vNextNodePos));
+				pNextNode->dTime = fLength + m_CamNodes[i]->dTime;
+			}
+			break;
+		case Client::CFilm::CamMoveOption::Move_Bezier_3:
+			{
+				_float fLength = 0;
+				CamNode* pCurNode = m_CamNodes[i];
+				CamNode* pSecondNode = m_CamNodes[i + 1];
+				CamNode* pThirdNode = m_CamNodes[i + 2];
+				_vector vPreNodePos = XMVectorSetW(XMLoadFloat3(&pCurNode->vEye), 1.f);
+				_vector vCurNodePos = XMVectorZero();
+				for (_double j = 0.0; j < 1.0; j += 0.016666666)
+				{
+					vCurNodePos = XMVectorSetW(XMLoadFloat3(&MakeBezier3(pCurNode->vEye, pSecondNode->vEye, pThirdNode->vEye,j)),1.f);
+					fLength += XMVectorGetX(XMVector3Length(vPreNodePos - vCurNodePos));
+					vPreNodePos = vCurNodePos;
+				}
+				pSecondNode->dTime = fLength + pCurNode->dTime;
+				pThirdNode->dTime = fLength + pCurNode->dTime;
+				i += 1;
+			}
+			break;
+		case Client::CFilm::CamMoveOption::Move_Bezier_4:
+			break;
+		}
+	}
+
+}
+
 

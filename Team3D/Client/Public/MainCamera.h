@@ -56,6 +56,8 @@ private:
 
 	//For.Debug
 	void KeyCheck(_double dTimeDelta);
+	//For.OnRail
+	_float Get_ZoomVal_OnRail(_uint iNodeIdx, _bool bCanDash = false);
 private:
 	_int	ReSet_Cam_FreeToAuto();		//카메라가 초기상태로 돌아옴
 	_int	ReSet_Cam_Free_OnRail();
@@ -113,8 +115,14 @@ private:
 	PxRaycastBuffer m_RayCastBuffer;
 	WORLDMATRIX	m_PreWorld;
 	//For.OnRail
+	_bool	m_bStartOnRail = false;
 	vector<CFilm::CamNode*> m_CamNodes;
 	_uint m_iNodeIdx[CFilm::BezierNode::Bezier_End] = { 0,0,0 };
+	_float3 m_vCurRailAt = { 0.f,0.f,0.f };
+	_float	m_fRailProgressTime = 0.f;
+	_float	m_fMaxRailLength = 0.f;
+	_bool	m_bCodyDash = false;
+	
 private:
 	CCody*			m_pCody = nullptr;
 	CCam_Helper*	m_pCamHelper = nullptr;

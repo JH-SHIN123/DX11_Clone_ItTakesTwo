@@ -86,8 +86,10 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
 
 	/* Jun */
-	Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaBoon"));
-	Ready_Layer_UFO(TEXT("Layer_MoonBaBoon"));
+	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaBoon")),E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_UFO(TEXT("Layer_MoonBaBoon")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Performer(TEXT("Layer_Performer")), E_FAIL);
+	
 	/* For. Environment */
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Stage_Space(), E_FAIL);
 #else

@@ -57,6 +57,15 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 
 	_matrix matStart = MakeViewMatrixByUp(m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM], m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM]);
 	XMStoreFloat4x4(&m_matBeginWorld, matStart);
+
+	//For.BossRoom_MiniCody
+	CFilm* pLine = m_pCamHelper->Get_Film(TEXT("Line_BossRoom_MiniCody"));
+	if (nullptr == pLine)
+	{
+		return EVENT_ERROR;
+	}
+	m_CamNodes = *(pLine->Get_CamNodes());
+	
 	return S_OK;
 }
 
@@ -152,6 +161,7 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_9))
 	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OnRail;
+		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f,0.f,0.6f,1.f), XMVectorSet(0.6f,0.f,1.f,1.f));
 		return	ReSet_Cam_Free_OnRail();
 	}
 	return NO_EVENT;
@@ -364,65 +374,377 @@ void CMainCamera::KeyCheck(_double dTimeDelta)
 		m_pTransformCom->Go_Right(dTimeDelta);
 	}
 }
+_float CMainCamera::Get_ZoomVal_OnRail(_uint iNodeIdx, _bool bCanDash)
+{
+	
+	_float fZoomVal = 0.66f;
+	if (iNodeIdx < 3)
+		fZoomVal = 0.66f;
+	else if (iNodeIdx < 4)
+		fZoomVal = 0.69f;
+	else if (iNodeIdx < 6)
+		fZoomVal = 0.72f;
+	else if  (iNodeIdx < 8)
+		fZoomVal = 0.66f;
+	else if (iNodeIdx < 11)
+		fZoomVal = 0.8f;
+	else if (iNodeIdx < 14)
+		fZoomVal = 0.76f;
+	else if (iNodeIdx < 16)
+		fZoomVal = 0.6f;
+	else if (iNodeIdx < 17)
+		fZoomVal = 0.74f;
+	else if (iNodeIdx < 19)
+		fZoomVal = 0.73f;
+	else if (iNodeIdx < 21)
+		fZoomVal = 0.85f;
+	else if (iNodeIdx < 23)
+		fZoomVal = 0.9f;
+	else if (iNodeIdx < 24)
+		fZoomVal = 0.66f;
+	else if (iNodeIdx < 26)
+		fZoomVal = 0.64f;
+	else if (iNodeIdx < 28)
+		fZoomVal = 0.66f;
+	else if (iNodeIdx < 29)
+		fZoomVal = 0.7f;
+	else if (iNodeIdx < 31)
+		fZoomVal = 0.8f;
+	else if (iNodeIdx < 32)
+		fZoomVal = 0.67f;
+	else if (iNodeIdx < 35)
+		fZoomVal = 0.9f;
+	else if (iNodeIdx < 36)
+		fZoomVal = 0.76f;
+	else if (iNodeIdx < 38)	//올라가는구간
+		fZoomVal = 0.72f;
+
+	if (bCanDash)
+	{
+		_vector vCurCodyPos = m_pCody->Get_Position();
+		_vector vPreCodyPos = XMVectorSetW(XMLoadFloat3(&m_vCurRailAt), 1.f);
+		_float fLength = XMVectorGetX(XMVector3Length(vCurCodyPos - vPreCodyPos));
+		XMStoreFloat3(&m_vCurRailAt, vCurCodyPos);
+		return fZoomVal * fLength * 50.f;
+	}
+	else
+		return fZoomVal;
+}
 #pragma endregion
 _int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
 {
-	CFilm::CamMoveOption eCurOption = m_CamNodes[m_iNodeIdx[0]]->eEyeMoveOption;
-	_float fProgress = 0.f;
-	_matrix matResult = XMMatrixIdentity();
-	switch (eCurOption)
-	{
-	case Client::CFilm::CamMoveOption::Move_Straight:
-		{
-			_vector vPlayerPos = m_pCody->Get_Position();
-			_vector vCurNodePos = XMVectorSetW(XMLoadFloat3(&m_CamNodes[m_iNodeIdx[0]]->vEye),1.f);
-			_vector vNextNodePos = XMVectorSetW(XMLoadFloat3(&m_CamNodes[m_iNodeIdx[1]]->vEye), 1.f);
-		
-			_vector vDirNextNodeWithCurNode = vNextNodePos - vCurNodePos;
-			_vector vDirNextNodeWithPlayer = vNextNodePos - (vPlayerPos - vDirNextNodeWithCurNode*0.5f); //
-			
-			
 
-			_float fDot = XMVectorGetX(XMVector3Dot(vDirNextNodeWithPlayer,vDirNextNodeWithCurNode))
-				/pow(XMVectorGetX(XMVector3Length(vDirNextNodeWithCurNode)),2); //정사영 길이
+	if (false == m_bStartOnRail)
+	{
+		XMStoreFloat3(&m_vCurRailAt, m_pCody->Get_Position());
+		m_bStartOnRail = true;
+	}
+	//CFilm::CamMoveOption eOption = m_CamNodes[m_iNodeIdx[0]]->eEyeMoveOption;
+	//_float fCamSpeed = 0.8f /*/ XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_CamNodes[eOption ==CFilm::CamMoveOption::Move_Bezier_3? 2 : 1]->vEye) - XMLoadFloat3(&m_CamNodes[0]->vEye)))*/;
+	if (m_iNodeIdx[0] < 17)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+		else if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+	}
+	else if (m_iNodeIdx[0] < 19)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_A))
+			m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+		else if (m_pGameInstance->Key_Pressing(DIK_D))
+			m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+	}
+	else if (m_iNodeIdx[0] < 21)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+		else if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+	}
+	else if(m_iNodeIdx[0] <31)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+		else if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+	/*	if (m_pGameInstance->Key_Pressing(DIK_D))
+			m_fRailProgressTime += 0.016666666 * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+		else if (m_pGameInstance->Key_Pressing(DIK_A))
+			m_fRailProgressTime -= 0.016666666 * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+	*/}
+	else if (m_iNodeIdx[0] < 32)
+	{
+		if (m_pCody->Get_IsAirDash() || m_pCody->Get_IsRoll())
+		{
+			if (false == m_bCodyDash)
+				XMStoreFloat3(&m_vCurRailAt, m_pCody->Get_Position());
+			m_bCodyDash = true;
+		}
+		else
+			m_bCodyDash = false;
+		if (m_bCodyDash)
+		{
+			if (m_pGameInstance->Key_Pressing(DIK_W))
+				m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0], true);
+			else if (m_pGameInstance->Key_Pressing(DIK_S))
+				m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0], true);
+		}
+		else
+		{
+			if (m_pGameInstance->Key_Pressing(DIK_W))
+				m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0],false);
+			else if (m_pGameInstance->Key_Pressing(DIK_S))
+				m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0],false);
+		}
+	}
+	else if(m_iNodeIdx[0] < 38)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+		else if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+	}
+	else if (m_iNodeIdx[0] < 39)	//올라가는 구간
+	{
+		_float fCurNodeY = m_CamNodes[m_iNodeIdx[0]]->vEye.y;
+		_float fNextNodeY = m_CamNodes[m_iNodeIdx[1]]->vEye.y;
+		_float fPlayerY = XMVectorGetY(m_pCody->Get_Position());
+		/*if (fCurNodeY < fPlayerY)
+		{
+		}*/
+		_bool bIsStart = fCurNodeY > fPlayerY ? true : false;
+		_float fPlusProgressPercentage = bIsStart ?  0.01 : (fPlayerY - fCurNodeY) / (fNextNodeY - fCurNodeY);
+		_float fLength = m_CamNodes[m_iNodeIdx[1]]->dTime - m_CamNodes[m_iNodeIdx[0]]->dTime;
+		m_fRailProgressTime = m_CamNodes[m_iNodeIdx[0]]->dTime +  fPlusProgressPercentage * fLength /** dTimeDelta*/;
+	}
+	else
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+		else if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+	}
 	
-			_bool bIsFinish = false;
-			matResult = m_pCamHelper->Get_CamNodeMatrix(m_CamNodes[m_iNodeIdx[0]], m_CamNodes[m_iNodeIdx[1]], m_CamNodes[m_iNodeIdx[2]], m_CamNodes[m_iNodeIdx[3]], 1.f - fDot,&bIsFinish);
-			if (bIsFinish)//넘어감
+	_bool bIsFinishNode = false;
+	_matrix matResult = m_pCamHelper->Get_CamNodeMatrix(m_CamNodes[m_iNodeIdx[0]], m_CamNodes[m_iNodeIdx[1]], m_CamNodes[m_iNodeIdx[2]], m_CamNodes[m_iNodeIdx[3]], m_fRailProgressTime,&bIsFinishNode);
+	if (m_fRailProgressTime < m_CamNodes[m_iNodeIdx[0]]->dTime)
+	{
+		if (m_iNodeIdx[0] > 0)
+		{
+			CFilm::CamMoveOption eOption = m_CamNodes[m_iNodeIdx[0] - 1]->eEyeMoveOption;
+			switch (eOption)
 			{
+			
+			case Client::CFilm::CamMoveOption::Move_Straight:
 				for (_uint i = 0; i < 4; i++)
 				{
-
-					m_iNodeIdx[i] += 1;
+					m_iNodeIdx[i] -= 1;
 				}
+				break;
+			case Client::CFilm::CamMoveOption::Move_Bezier_3:
+				for (_uint i = 0; i < 4; i++)
+				{
+					m_iNodeIdx[i] -= 2;
+				}
+				break;
 			}
-			//if (fDot >= 1.f)	//둔각.
-			//{
-			//	for (_uint i = 0; i < 4; i++)
-			//	{
-			//		if(m_iNodeIdx[i] -1 >  0)
-			//			m_iNodeIdx[i] -= 1;
-			//	}
-			//}
-			//_float fDistanceWithPreNode = XMVectorGetX(XMVector4Length(vNextNodePos - vCurNodePos));
-			//if (fDistanceFromNode < fDistanceWithPreNode) //이전노드와의 거리보다 현재 거리가 짧다(진행중)
-			//{
-
-			//}
-			//else if (fDistanceFromNode >= fDistanceWithPreNode) //
-			//{
-
-			//}
 		}
-		break;
-	case Client::CFilm::CamMoveOption::Move_Bezier_3:
-		break;
-	case Client::CFilm::CamMoveOption::Move_Bezier_4:
-		break;
+		else
+			m_fRailProgressTime = 0.f;
+	}
+	if (bIsFinishNode)
+	{
+		CFilm::CamMoveOption eOption = m_CamNodes[m_iNodeIdx[0]]->eEyeMoveOption;
+		switch (eOption)
+		{
+		case CFilm::CamMoveOption::Move_Straight:
+			for (_uint i = 0; i < 4; i++) 
+			{
+				if(m_iNodeIdx[i]+1 <= m_CamNodes.size()-2)
+					m_iNodeIdx[i]++;
+			}
+			break;
+		case CFilm::CamMoveOption::Move_Bezier_3:
+		{
+			for (_uint i = 0; i < 4; i++)
+			{
+				if (m_iNodeIdx[i] + 2 <= m_CamNodes.size()-3)
+				m_iNodeIdx[i] += 2;
+			}
+		}
+			break;
+		default:
+			break;
+		}
 	}
 	m_pTransformCom->Set_WorldMatrix(matResult);
 
 	return NO_EVENT;
+#pragma region DotProgress
+	//CFilm::CamMoveOption eCurOption = m_CamNodes[m_iNodeIdx[0]]->eEyeMoveOption;
+
+	//_matrix matResult = XMMatrixIdentity();
+	//
+	//_vector vPlayerPos = XMVectorSetW(XMLoadFloat3(&m_vCurRailAt) , 1.f);
+	//_float fZoomVal = Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+	//if (XMVectorGetX(XMVector3Length(vPlayerPos - m_pCody->Get_Position())) > fZoomVal)
+	//{
+	//	vPlayerPos += XMVectorRound(dTimeDelta * (m_pCody->Get_Position() - vPlayerPos) * 100.f) / 100.f;
+	//	XMStoreFloat3(&m_vCurRailAt, vPlayerPos);
+	//}
+
+	//switch (eCurOption)
+	//{
+	//case Client::CFilm::CamMoveOption::Move_Straight:
+	//	{
+	//		_vector vCurNodePos = XMVectorSetW(XMLoadFloat3(&m_CamNodes[m_iNodeIdx[0]]->vEye),1.f);
+	//		_vector vNextNodePos = XMVectorSetW(XMLoadFloat3(&m_CamNodes[m_iNodeIdx[1]]->vEye), 1.f);
+	//	
+	//		_double dCurNodeTime = m_CamNodes[m_iNodeIdx[0]]->dTime;
+	//		_double dNextNodeTime = m_CamNodes[m_iNodeIdx[1]]->dTime;
+
+	//		_vector vDirNextNodeWithCurNode = vNextNodePos - vCurNodePos;
+	//		_vector vDirNextNodeWithPlayer = vNextNodePos - (vPlayerPos); //
+	//		
+	//		_float fDot = XMVectorGetX(XMVector3Dot(vDirNextNodeWithPlayer,vDirNextNodeWithCurNode))
+	//			/ pow(XMVectorGetX(XMVector3Length(vDirNextNodeWithCurNode)),2); 
+	//		_float fTheta = XMVectorGetX(XMVector3Dot(XMVector3Normalize(vDirNextNodeWithPlayer),
+	//			XMVector3Normalize(vDirNextNodeWithCurNode)));
+
+
+	//		_bool bIsFinish = false;
+	//		matResult = m_pCamHelper->Get_CamNodeMatrix(m_CamNodes[m_iNodeIdx[0]], m_CamNodes[m_iNodeIdx[1]], m_CamNodes[m_iNodeIdx[2]], m_CamNodes[m_iNodeIdx[3]], 
+	//			dCurNodeTime + (dNextNodeTime - dCurNodeTime)*(1.f - fDot),&bIsFinish);
+	//		if (bIsFinish)//넘어감
+	//		{
+	//			for (_uint i = 0; i < 4; i++)
+	//			{
+	//				m_iNodeIdx[i] += 1;
+	//			}
+	//		}
+	//		else if (XMVectorGetX(XMVector3Length(vDirNextNodeWithCurNode)) < XMVectorGetX(XMVector3Length(vDirNextNodeWithPlayer))
+	//			&& fTheta > 0.f)
+	//		{
+	//			if ((_int)m_iNodeIdx[0] - 1 < 0)
+	//				break;
+	//			CFilm::CamMoveOption ePreOption = m_CamNodes[m_iNodeIdx[0] - 1]->eEyeMoveOption;
+	//			for (_uint i = 0; i < 4; i++)
+	//			{
+	//				switch (ePreOption)
+	//				{
+	//				case Client::CFilm::CamMoveOption::Move_Jump:
+	//					break;
+	//				case Client::CFilm::CamMoveOption::Move_Straight:
+	//					m_iNodeIdx[i] -= 1;
+	//					break;
+	//				case Client::CFilm::CamMoveOption::Move_Bezier_3:
+	//					m_iNodeIdx[i] -= 2;
+	//					break;
+	//				case Client::CFilm::CamMoveOption::Move_Bezier_4:
+	//					break;
+	//				}
+	//				
+	//				
+	//			}
+	//		}
+	//	}
+	//	break;
+	//case Client::CFilm::CamMoveOption::Move_Bezier_3:
+	//{
+	//	
+	//	_vector vCurNodePos = XMVectorSetW(XMLoadFloat3(&m_CamNodes[m_iNodeIdx[0]]->vEye), 1.f);
+	//	_vector vSecondNodePos = XMVectorSetW(XMLoadFloat3(&m_CamNodes[m_iNodeIdx[1]]->vEye), 1.f);	//중앙의 노드
+	//	_vector vThirdNodePos = XMVectorSetW(XMLoadFloat3(&m_CamNodes[m_iNodeIdx[2]]->vEye), 1.f);
+
+	//	//_vector vDirTotal = vThirdNodePos - vCurNodePos;
+	//	//_vector vDirTotalWithPlayerPos = (vThirdNodePos - vPlayerPos);
+	//	////vDirTotalWithPlayerPos += XMVector3Normalize(vDirTotal);
+	//	//fProgress = XMVectorGetX(XMVector3Dot(vDirTotalWithPlayerPos, vDirTotal))
+	//	//	/ pow(XMVectorGetX(XMVector3Length(vDirTotal)), 2);
+
+	//	_vector vDirSecondNodeWithCurNode = vSecondNodePos - vCurNodePos;
+	//	_vector vDirThirdNodeWithSecondNode = vThirdNodePos - vSecondNodePos;
+
+
+	//	_vector vDirSecondNodeWithPlayerPos = vSecondNodePos - (vPlayerPos);
+	//	_vector vDirThirdNodeWithPlayerPos = vThirdNodePos - (vPlayerPos);
+	//	
+	//	_float fFirstNodeProgress = XMVectorGetX(XMVector3Dot(vDirSecondNodeWithPlayerPos, vDirSecondNodeWithCurNode))
+	//		/ pow(XMVectorGetX(XMVector3Length(vDirSecondNodeWithCurNode)), 2);
+	//	_float fSecondNodeProgress = XMVectorGetX(XMVector3Dot(vDirThirdNodeWithPlayerPos, vDirThirdNodeWithSecondNode))
+	//		/ pow(XMVectorGetX(XMVector3Length(vDirThirdNodeWithSecondNode)), 2);
+	//	m_fRailProgressTime = (fFirstNodeProgress + fSecondNodeProgress) / 2.f;
+	//
+	//		//fProgress = fmin(fFirstNodeProgress, fSecondNodeProgress);
+	//	//if (XMVectorGetX(XMVector3Length(vDirSecondNodeWithPlayerPos)) < XMVectorGetX(XMVector3Length(vDirThirdNodeWithPlayerPos)))//첫번째와 두번째 사이
+	//	//{
+	//	//	
+	//	//	fProgress = XMVectorGetX(XMVector3Dot(vDirSecondNodeWithPlayerPos, vDirSecondNodeWithCurNode))
+	//	//		/ pow(XMVectorGetX(XMVector3Length(vDirSecondNodeWithCurNode)), 2); 
+	//	//}
+	//	//else
+	//	//{
+	//	//	_float fBeforeProgress = XMVectorGetX(XMVector3Dot(vDirSecondNodeWithPlayerPos, vDirSecondNodeWithCurNode))
+	//	//		/ pow(XMVectorGetX(XMVector3Length(vDirSecondNodeWithCurNode)), 2);
+	//	//	fProgress = XMVectorGetX(XMVector3Dot(vDirThirdNodeWithPlayerPos, vDirThirdNodeWithSecondNode))
+	//	//		/ pow(XMVectorGetX(XMVector3Length(vDirThirdNodeWithSecondNode)), 2) + fBeforeProgress ;
+	//	//
+	//	//}
+
+
+	//	_double dCurNodeTime = m_CamNodes[m_iNodeIdx[0]]->dTime;
+	//	_double dNextNodeTime = m_CamNodes[m_iNodeIdx[1]]->dTime;
+
+
+	//	_bool bIsFinish = false;
+	//	matResult = m_pCamHelper->Get_CamNodeMatrix(m_CamNodes[m_iNodeIdx[0]], m_CamNodes[m_iNodeIdx[1]], m_CamNodes[m_iNodeIdx[2]], m_CamNodes[m_iNodeIdx[3]],
+	//		dCurNodeTime + (dNextNodeTime - dCurNodeTime)*(1.f - m_fRailProgressTime), &bIsFinish);
+	//	_vector vDirCurNodeWithPlayer = vPlayerPos - vCurNodePos;
+	//	_vector vDirThirdNodeWithCurNode = vThirdNodePos - vCurNodePos;
+	//	_float fDot = XMVectorGetX(XMVector3Dot(XMVector3Normalize(vDirThirdNodeWithPlayerPos),
+	//		XMVector3Normalize(vDirThirdNodeWithSecondNode)));
+	//	if (bIsFinish || fDot < 0.f)//넘어감
+	//	{
+	//		for (_uint i = 0; i < 4; i++)
+	//		{
+	//			m_iNodeIdx[i] +=2;
+	//		}
+	//	}
+	//	else if (XMVectorGetX(XMVector3Length(vDirSecondNodeWithCurNode)) < XMVectorGetX(XMVector3Length(vDirSecondNodeWithPlayerPos))
+	//		&& m_fRailProgressTime <= 0.f)
+	//	//if (XMVectorGetX(XMVector3Length(vDirTotal)) < XMVectorGetX(XMVector3Length(vDirTotalWithPlayerPos))
+	//	//	&& fProgress >= 1.f)	//둔각.
+	//		{
+	//			if ((_int)m_iNodeIdx[0] - 1 < 0)
+	//				break;
+	//			CFilm::CamMoveOption ePreNodeOption = m_CamNodes[(_int)m_iNodeIdx[0] -1]->eEyeMoveOption;
+	//			for (_uint i = 0; i < 4; i++)
+	//			{
+	//				
+	//				switch (ePreNodeOption)
+	//				{
+	//				case Client::CFilm::CamMoveOption::Move_Jump:
+	//					break;
+	//				case Client::CFilm::CamMoveOption::Move_Straight:
+	//					m_iNodeIdx[i] = -1;
+	//					break;
+	//				case Client::CFilm::CamMoveOption::Move_Bezier_3:
+	//					m_iNodeIdx[i] -= 2;
+	//					break;
+	//				case Client::CFilm::CamMoveOption::Move_Bezier_4:
+	//					break;
+	//				}
+	//				
+	//			
+	//			}
+	//		}
+	//}
+	//	break;
+	//case Client::CFilm::CamMoveOption::Move_Bezier_4:
+	//	break;
+	//}
+#pragma endregion
 }
 _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 {
@@ -552,14 +874,11 @@ _int CMainCamera::ReSet_Cam_FreeToAuto()
 
 _int CMainCamera::ReSet_Cam_Free_OnRail()
 {
-	CFilm* pLine = m_pCamHelper->Get_Film(TEXT("Line_BossRoom_MiniCody"));
-	if (nullptr == pLine)
-	{
-		return EVENT_ERROR;
-	}
 	for (_uint i = 0; i < 4; i++)
 		m_iNodeIdx[i] = i;
-	m_CamNodes = *(pLine->Get_CamNodes());
+	m_vCurRailAt = m_CamNodes.front()->vEye;
+	m_fRailProgressTime = 0.f;
+	m_bStartOnRail = false;
 	return NO_EVENT;
 }
 
@@ -782,6 +1101,7 @@ CGameObject * CMainCamera::Clone_GameObject(void * pArg)
 
 void CMainCamera::Free()
 {
+
 	m_CamNodes.clear();
 	Safe_Release(m_pCody);
 	Safe_Release(m_pCamHelper);

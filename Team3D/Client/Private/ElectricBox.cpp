@@ -112,6 +112,7 @@ HRESULT CElectricBox::Render_ShadowDepth()
 
 void CElectricBox::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+	return;
 	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
 
 	/* Cody */

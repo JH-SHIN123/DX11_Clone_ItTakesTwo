@@ -310,7 +310,7 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 	
 	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Begin_Game.dat"))))
 		return E_FAIL;
-	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Line_BossRoom_MiniCody.dat"))))
+	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Line_BossRoom_MiniCody.dat"),true)))
 		return E_FAIL;
 	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Active_GravityPath_01.dat"))))
 		return E_FAIL;
@@ -644,7 +644,7 @@ CFilm * CCam_Helper::Find_Film(const _tchar * pFilm)
 	return iter->second;
 }
 
-HRESULT CCam_Helper::Load_Film(const _tchar * pDataPath)
+HRESULT CCam_Helper::Load_Film(const _tchar * pDataPath, _bool bMakeUpNodesTimeByfar)
 {
 
 		HANDLE hFile = CreateFile(pDataPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
@@ -694,10 +694,18 @@ HRESULT CCam_Helper::Load_Film(const _tchar * pDataPath)
 			CloseHandle(hFile);
 			return E_FAIL;
 		}
-
+		if (true == bMakeUpNodesTimeByfar)
+		{
+			MakeUpNodesTimeByFar(pLoadFilm);
+		}
 		CloseHandle(hFile);
 	
 	return S_OK;
+}
+
+void CCam_Helper::MakeUpNodesTimeByFar(CFilm * pFilm)
+{
+	pFilm->MakeUpNodesTimeByFar();
 }
 
 CCam_Helper * CCam_Helper::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context)
