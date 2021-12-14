@@ -206,6 +206,7 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqr, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_BloomScale", &m_fBloomScale, sizeof(_float));
 
+	/* Radiar Blur */
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Main", &m_bRadialBlur_Main, sizeof(m_bRadialBlur_Main)); 
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Sub", &m_bRadialBlur_Sub, sizeof(m_bRadialBlur_Sub));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Main", &m_vRadiarBlur_FocusPos_Main, sizeof(m_vRadiarBlur_FocusPos_Main));
@@ -254,6 +255,8 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EffectBlurTex", pBlur->Get_ShaderResourceView_BlurEffect());
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
+	/* CamPos -> 투영까지 내려보자.*/
+
 	/* TEST */
 #ifdef _DEBUG
 	TCHAR szBuff[256] = L"";
@@ -268,10 +271,8 @@ HRESULT CPostFX::FinalPass()
 	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fFogGlobalDensity", &b, sizeof(_float)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fFogHeightFalloff", &c, sizeof(_float)), E_FAIL);
 
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Front_Depth", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Front_Depth")));
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Front_Color", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Front_Color")));
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Back_Depth", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Back_Depth")));
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Back_Color", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Back_Color")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Front", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Front")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Back", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Back")));
 #endif // _DEBUG
 
 	m_pVIBuffer_ToneMapping->Render(0);

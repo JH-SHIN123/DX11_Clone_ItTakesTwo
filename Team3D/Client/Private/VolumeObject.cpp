@@ -26,7 +26,8 @@ HRESULT CVolumeObject::NativeConstruct(void* pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_GeoSphere"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_Scale(XMVectorSet(50.f, 50.f, 50.f,0.f));
+	m_pTransformCom->Set_Scale(XMVectorSet(20.f, 20.f, 20.f,0.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f,-20.f,0.f,1.f));
 
 	return S_OK;
 }
@@ -34,6 +35,9 @@ HRESULT CVolumeObject::NativeConstruct(void* pArg)
 _int CVolumeObject::Tick(_double TimeDelta)
 {
 	CGameObject::Tick(TimeDelta);
+
+	
+
 
 	return NO_EVENT;
 }
@@ -57,7 +61,7 @@ HRESULT CVolumeObject::Render(RENDER_GROUP::Enum eGroup)
 	
 	if(RENDER_GROUP::VOLUME_FRONT == eGroup)
 		m_pModelCom->Render_Model(14);
-	else
+	else if (RENDER_GROUP::VOLUME_BACK == eGroup)
 		m_pModelCom->Render_Model(15);
 
 	return S_OK;

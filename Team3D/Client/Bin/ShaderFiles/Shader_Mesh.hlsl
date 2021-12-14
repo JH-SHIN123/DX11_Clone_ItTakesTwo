@@ -693,8 +693,7 @@ PS_OUT_ALPHA	PS_EFFECT_MASKING_ALPHAGROUP(PS_IN_DOUBLE_UV In)
 /* Volume */
 struct PS_OUT_VOLUME
 {
-	vector vVolume_Depth	: SV_TARGET0;
-	vector vVolume_Color	: SV_TARGET1;
+	vector vVolume	: SV_TARGET0;
 };
 
 PS_OUT_VOLUME PS_MAIN_VOLUME(PS_IN In)
@@ -707,8 +706,7 @@ PS_OUT_VOLUME PS_MAIN_VOLUME(PS_IN In)
 	else
 		fCamFar = g_fSubCamFar;
 
-	Out.vVolume_Depth = vector(In.vProjPosition.w / fCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
-	Out.vVolume_Color = vector(0.f, 0.f, 1.f, 0.f); // Texture로 전달
+	Out.vVolume = vector(In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -861,7 +859,7 @@ technique11 DefaultTechnique
 	pass Volume_Front /* Volume의 앞면 깊이값 */
 	{
 		SetRasterizerState(Rasterizer_Volume_Front_Debug);
-		SetDepthStencilState(DepthStecil_No_ZTest, 0);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
@@ -871,7 +869,7 @@ technique11 DefaultTechnique
 	pass Volume_Back /* Volume의 뒷면 깊이값 */
 	{
 		SetRasterizerState(Rasterizer_Volume_Back_Debug);
-		SetDepthStencilState(DepthStecil_No_ZTest, 0);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();

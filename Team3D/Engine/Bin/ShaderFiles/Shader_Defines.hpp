@@ -179,7 +179,7 @@ RasterizerState Rasterizer_CW
 {
 	FillMode = Solid;
 	CullMode = Front;
-	FrontCounterClockwise = true;
+	//FrontCounterClockwise = true; // 둘중에 하나만 켜야함.
 };
 RasterizerState Rasterizer_Shadow
 {
@@ -204,7 +204,6 @@ RasterizerState Rasterizer_Volume_Back_Debug
 	//FillMode = Wireframe;
 	FillMode = Solid;
 	CullMode = Front;
-	//FrontCounterClockwise = true;
 };
 
 /* DepthStencilState */
@@ -223,12 +222,6 @@ DepthStencilState DepthStecil_No_ZWrite
 DepthStencilState DepthStecil_No_ZTest
 {
 	DepthEnable		= false;
-};
-DepthStencilState DepthStecil_No_ZWrite_GreaterEqual
-{
-	DepthEnable = true;
-	DepthWriteMask = Zero;
-	DepthFunc = Greater_Equal;
 };
 
 /* BlendState */
