@@ -145,11 +145,17 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth)
 	////> 카메라가 포그 안에 들어왔을때도 포그가 적용되는 맨 앞면을 카메라 좌표로 해야함
 
 	fVolumeSize = fVolumeBack - fVolumeFront;
+	
+	if (fVolumeSize < 0.f) // 볼륨안에 들어왔을때
+		fVolumeSize = fVolumeBack - 0.f;
 
 	//float fLerpFactor = saturate(fVolumeSize * 100.f);
 	float fLerpFactor = saturate(sqrt(fVolumeSize * 10.f));
-	if (fLerpFactor > 0.3f)
-		fLerpFactor = 0.3f;
+	if (fLerpFactor > 0.5f)
+		fLerpFactor = 0.5f;
+
+
+
 	return lerp(vColor, g_vFogColor, fLerpFactor);
 }
 
@@ -277,7 +283,6 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	// Final
 	Out.vColor = vector(vColor, 1.f);
-
 
 	///* Fog*/
 	//float3 eyeToPixel = vWorldPos - vCamPos;

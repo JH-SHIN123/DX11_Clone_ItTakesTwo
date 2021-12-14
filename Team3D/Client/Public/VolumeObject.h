@@ -26,7 +26,7 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 private:
-	_bool m_bInVolume = false;
+	_bool m_bVolumeIn = false;
 
 private:
 	/* For.Component */
