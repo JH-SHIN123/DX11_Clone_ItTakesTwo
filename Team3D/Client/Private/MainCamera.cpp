@@ -46,6 +46,7 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	m_PreWorld.vTrans = _float4(0.f, 0.f, 0.f, 1.f);
 	
 	/* Hye */
+<<<<<<< HEAD
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL] =	{ 0.f,2.f,-2.f,1.f};
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM] =	{ 0.f,7.f,-7.f,1.f };
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE] =	{ 0.f,8.f,-8.f,1.f };
@@ -54,6 +55,23 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM] = { 0.f,3.f, 0.0f,1.f };
 	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE] = { 0.f,4.f,0.0f,1.f };
 
+=======
+	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL]		= { 0.f,0.5f,-0.5f,1.f};
+	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM]		= { 0.f,7.f,-7.f,1.f };
+	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE]		= { 0.f,11.f,	-8.f,1.f };
+
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL]		= { 0.f,0.05f,0.01f,1.f };
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM]		= { 0.f,1.5f, 0.4f,1.f };
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE]		= { 0.f,3.f,1.1f,1.f };
+
+	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL]	= { 0.f,1.5f,-1.5f,1.f };
+	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM]	= { 0.f,7.f,-7.f,1.f };
+	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE]	= { 0.f,11.f,	-8.f,1.f };
+
+	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL]		= { 0.f,0.1f,0.02f,1.f };
+	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM]	= { 0.f,1.5f, 0.4f,1.f };
+	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE]		= { 0.f,3.f,1.1f,1.f };
+>>>>>>> main
 
 	_matrix matStart = MakeViewMatrixByUp(m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM], m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM]);
 	XMStoreFloat4x4(&m_matBeginWorld, matStart);

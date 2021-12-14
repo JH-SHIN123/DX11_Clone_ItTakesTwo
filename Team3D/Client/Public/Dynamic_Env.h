@@ -20,7 +20,8 @@ protected:
 	virtual ~CDynamic_Env() = default;
 
 public:/* Getter */
-	_fvector Get_Position();
+	virtual _fvector Get_Position() override;
+	virtual _uint	 Get_Option() { return m_tDynamic_Env_Desc.iOption; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;

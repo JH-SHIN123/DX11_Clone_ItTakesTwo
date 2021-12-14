@@ -199,12 +199,14 @@ HRESULT CLevel_Stage::Ready_Test()
 #ifdef __TEST_HYE
 	CDynamic_Env::ARG_DESC tArg;
 	_matrix World = XMMatrixIdentity();
-	lstrcpy(tArg.szModelTag, TEXT("Component_Model_Moon_01_Plushie"));
+	lstrcpy(tArg.szModelTag, TEXT("Component_Model_Saucer_Interior_Pedal_01"));
 	XMStoreFloat4x4(&tArg.WorldMatrix, World);
 	tArg.iMaterialIndex = 0;
 	tArg.iOption = 0;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_Moon"), &tArg), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonUFO")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_Pedal"), &tArg), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_Moon"), &tArg), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonUFO")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SpaceShip")), E_FAIL);
 #endif // __TEST_HYE
 
 	/* Teak */
