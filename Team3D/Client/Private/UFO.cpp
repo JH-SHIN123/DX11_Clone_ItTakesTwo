@@ -686,10 +686,9 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 	/* 컷 신 애니메이션이 끝났다면 이제 상호작용 하자 ㅇㅇ */
 	if(true == m_IsInterActive)
 	{
-		/* 여기서 그시기 하면 되겠군 */
-		/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 나중에 컷신 나오면 이펙트랑 같이 맞춰주자 ㅇㅇ */
-		if (0.97 <= m_pModelCom->Get_ProgressAnim() && false == m_IsLaserGunRid)
-			GetRidLaserGun();
+		/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 */
+		//if (0.97 <= m_pModelCom->Get_ProgressAnim() && false == m_IsLaserGunRid)
+		//	GetRidLaserGun();
 
 		if (m_pModelCom->Is_AnimFinished(UFO_LaserRippedOff))
 		{

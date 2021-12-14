@@ -221,6 +221,7 @@ public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
 	void			 Set_ControlJoystick(_bool IsCheck);
+	void			 Set_AnimationRotate(_float fAngle);
 
 
 public:

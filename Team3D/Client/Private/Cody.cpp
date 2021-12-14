@@ -2859,6 +2859,11 @@ void CCody::Set_ControlJoystick(_bool IsCheck)
 	m_IsControlJoystick = IsCheck;
 }
 
+void CCody::Set_AnimationRotate(_float fAngle)
+{
+	m_pTransformCom->RotateYaw_Angle(fAngle);
+}
+
 void CCody::WallLaserTrap(const _double dTimeDelta)
 {
 	if (false == m_IsWallLaserTrap_Touch)
@@ -3276,6 +3281,7 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_C_Holding_UFO);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Holding_UFO);
 			((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding, UFO_CodyHolding);
+			((CMay*)DATABASE->GetMay())->Set_LaserRippedOff();
 			m_IsHolding_High_UFO = true;
 		}
 	}

@@ -190,6 +190,7 @@ public:
 
 public:
 	void	Set_BossMissile_Attack(); // CBoss_Missile
+	void	Set_LaserRippedOff(); /* BossUFO */
 	void	Set_ActorPosition(_vector vPosition);
 	void	Set_ActorGravity(_bool IsZeroGravity ,_bool IsUp ,_bool _bStatic);
 
@@ -359,6 +360,10 @@ private:
 	_bool	m_IsTube = false;
 	/* Hye::For.UFO */
 	_bool	m_IsInUFO = false;
+
+	/* ÁøÇõ */
+	_bool m_IsLaserRippedOff = false;
+	_bool m_IsRippedOffAnimPlaying = false;
 
 	/* For.HookUFO */
 	_bool m_IsHookUFO = false;

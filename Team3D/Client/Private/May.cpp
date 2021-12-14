@@ -21,6 +21,9 @@
 /* For.MoonUFO */
 #include "MoonUFO.h"
 #include "Moon.h"
+/* For.BossUFO */
+#include "UFO.h"
+
 /*For.WarpGate*/
 #include "WarpGate.h"
 
@@ -1642,11 +1645,32 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			}
 			m_IsCollide = false;
 		}
+		else if (m_eTargetGameID == GameID::eBOSSUFO && true == m_IsLaserRippedOff)
+		{
+			if (true == m_pModelCom->Is_AnimFinished(ANI_M_SpaceStation_BossFight_LaserRippedOff))
+			{
+				m_IsRippedOffAnimPlaying = false;
+				m_IsLaserRippedOff = false;
+			}
+
+			if (m_pGameInstance->Key_Down(DIK_E))
+			{
+				m_IsRippedOffAnimPlaying = true;
+				m_pModelCom->Set_Animation(ANI_M_SpaceStation_BossFight_LaserRippedOff);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+				m_pActorCom->Set_Position(XMVectorSet(60.9975f, 342.838f, 199.3799f, 1.f));
+				((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_LaserRippedOff, UFO_Left);
+				((CCody*)DATABASE->GetCody())->Set_AnimationRotate(190.f);
+				((CCody*)DATABASE->GetCody())->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_LaserRippedOff);
+				((CCody*)DATABASE->GetCody())->Get_Model()->Set_NextAnimIndex(ANI_C_MH);
+			}
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsPinBall || m_IsDeadLine
-		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsWallLaserTrap_Touch || m_bWallAttach)
+		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsWallLaserTrap_Touch || m_bWallAttach || 
+		m_IsRippedOffAnimPlaying)
 		return true;
 
 	return false;
