@@ -1352,6 +1352,9 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VolumeObject.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -1938,6 +1941,9 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VolumeObject.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

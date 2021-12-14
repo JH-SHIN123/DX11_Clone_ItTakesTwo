@@ -380,6 +380,7 @@
     <ClInclude Include="..\Public\UmbrellaBeam_Base.h" />
     <ClInclude Include="..\Public\UmbrellaBeam_Joystick.h" />
     <ClInclude Include="..\Public\UmbrellaBeam_Stand.h" />
+    <ClInclude Include="..\Public\VolumeObject.h" />
     <ClInclude Include="..\Public\WallLaserTrap.h" />
     <ClInclude Include="..\Public\WallLaserTrap_Button.h" />
     <ClInclude Include="..\Public\WarpGate.h" />
@@ -578,6 +579,7 @@
     <ClCompile Include="..\Private\UmbrellaBeam_Base.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam_Joystick.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam_Stand.cpp" />
+    <ClCompile Include="..\Private\VolumeObject.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap_Button.cpp" />
     <ClCompile Include="..\Private\WarpGate.cpp" />
