@@ -597,6 +597,42 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move">
       <UniqueIdentifier>{e00fe663-5223-4c53-8f9a-23f51aa689a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside">
+      <UniqueIdentifier>{1e244afa-1f22-4105-8bc1-f281d82c5211}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery">
+      <UniqueIdentifier>{65fb403f-a572-4fc7-b81d-b807ca022659}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\00.Particle">
+      <UniqueIdentifier>{800096cb-fbec-4f55-a3e0-88b287049ece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\01.Explosion">
+      <UniqueIdentifier>{9fae3937-4418-469d-b9ae-c4bc24c22cca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark">
+      <UniqueIdentifier>{4f003359-9da9-4258-bcb3-037baca46e90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall">
+      <UniqueIdentifier>{d3275da9-8016-4fa2-a913-6083947b16d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall">
+      <UniqueIdentifier>{c9690f4e-c087-4a2d-a8bf-ee803220e5f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle">
+      <UniqueIdentifier>{c1c2cc7a-6881-4556-8960-766326a8357b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\01.Explosion">
+      <UniqueIdentifier>{73f9e4b3-498e-490d-833a-49da829bada3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\02.Spark">
+      <UniqueIdentifier>{174ec5be-2a9e-40a9-999b-848c0d0aef3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\00.Smoke">
+      <UniqueIdentifier>{6a854570-f6ce-4d87-aad9-e57c86953fb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\01.Particle">
+      <UniqueIdentifier>{c2d71a5e-45fc-4152-9bb4-3bc3b70ca026}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Rect">
       <UniqueIdentifier>{f180cbf3-2d57-4520-b579-6f6eda0e713e}</UniqueIdentifier>
     </Filter>
@@ -821,42 +857,6 @@
     </Filter>
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside">
-      <UniqueIdentifier>{1e244afa-1f22-4105-8bc1-f281d82c5211}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery">
-      <UniqueIdentifier>{65fb403f-a572-4fc7-b81d-b807ca022659}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\00.Particle">
-      <UniqueIdentifier>{800096cb-fbec-4f55-a3e0-88b287049ece}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\01.Explosion">
-      <UniqueIdentifier>{9fae3937-4418-469d-b9ae-c4bc24c22cca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark">
-      <UniqueIdentifier>{4f003359-9da9-4258-bcb3-037baca46e90}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall">
-      <UniqueIdentifier>{d3275da9-8016-4fa2-a913-6083947b16d7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall">
-      <UniqueIdentifier>{c9690f4e-c087-4a2d-a8bf-ee803220e5f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle">
-      <UniqueIdentifier>{c1c2cc7a-6881-4556-8960-766326a8357b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\01.Explosion">
-      <UniqueIdentifier>{73f9e4b3-498e-490d-833a-49da829bada3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\02.Spark">
-      <UniqueIdentifier>{174ec5be-2a9e-40a9-999b-848c0d0aef3d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\00.Smoke">
-      <UniqueIdentifier>{6a854570-f6ce-4d87-aad9-e57c86953fb2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\01.Particle">
-      <UniqueIdentifier>{c2d71a5e-45fc-4152-9bb4-3bc3b70ca026}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1370,6 +1370,30 @@
     <ClInclude Include="..\Public\Effect_Pinball_Move.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Spark.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\00.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\01.Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_UFO_Inside_ElectricWall_Spark.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\02.Spark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_UFO_Inside_ElectricWall_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\01.Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_UFO_Inside_PressWall_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\00.Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_UFO_Inside_PressWall_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\01.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_UFO_Inside_ElectricWall_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\InGameEffect_Rect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Rect</Filter>
     </ClInclude>
@@ -1564,30 +1588,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Spark.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Particle.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\00.Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Explosion.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\01.Explosion</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_UFO_Inside_ElectricWall_Spark.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\02.Spark</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_UFO_Inside_ElectricWall_Explosion.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\01.Explosion</Filter>
-    </ClInclude>
-    <ClInclude Include="Effect_UFO_Inside_ElectricWall_Particle.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_UFO_Inside_PressWall_Smoke.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\00.Smoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_UFO_Inside_PressWall_Particle.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\01.Particle</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -2098,6 +2098,30 @@
     <ClCompile Include="..\Private\Effect_Pinball_Move.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Spark.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\00.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\01.Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_UFO_Inside_ElectricWall_Spark.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\02.Spark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_UFO_Inside_ElectricWall_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\01.Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_UFO_Inside_PressWall_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\00.Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_UFO_Inside_PressWall_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\01.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_UFO_Inside_ElectricWall_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\InGameEffect_Rect.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Rect</Filter>
     </ClCompile>
@@ -2259,30 +2283,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Spark.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Particle.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\00.Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Explosion.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\01.Explosion</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_UFO_Inside_ElectricWall_Spark.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\02.Spark</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_UFO_Inside_ElectricWall_Explosion.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\01.Explosion</Filter>
-    </ClCompile>
-    <ClCompile Include="Effect_UFO_Inside_ElectricWall_Particle.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_UFO_Inside_PressWall_Smoke.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\00.Smoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_UFO_Inside_PressWall_Particle.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\PressWall\01.Particle</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
