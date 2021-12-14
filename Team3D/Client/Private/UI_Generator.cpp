@@ -45,8 +45,7 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
 
-	if (FAILED(Add_Prototype_Texture()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(Add_Prototype_Texture(), E_FAIL);
 
 	m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Font"));
 	m_pEngTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("EngFont"));
@@ -54,10 +53,10 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	m_pVIBuffer_Rect = (CVIBuffer_Rect*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect"));
 	
 	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("AlphaScreen"), CAlphaScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-	
-	//CUIObject::UI_DESC UIDesc;
+	//FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_LOGO, TEXT("SplashScreen"), CSplashScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	//CUIObject::UI_DESC UIDesc;`
 	//UIDesc.iLevelIndex = 0;
-	//UIDesc.iRenderGroup = 1;
+	//UIDesc.iRenderGroup = 1; 
 	//UIDesc.iSubTextureNum = 0;
 	//UIDesc.iTextureLevelIndex = 0;
 	//UIDesc.iTextureRenderIndex = 0;

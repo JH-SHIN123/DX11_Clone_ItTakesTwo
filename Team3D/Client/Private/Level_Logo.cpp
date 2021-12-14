@@ -51,7 +51,7 @@ HRESULT CLevel_Logo::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_Logo::Ready_Layer_SplashScreen()\
+HRESULT CLevel_Logo::Ready_Layer_SplashScreen()
 {
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;

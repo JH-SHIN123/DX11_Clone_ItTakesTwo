@@ -286,7 +286,7 @@ void CLaser_TypeB::GoUp(_double dTimeDelta)
 		return;
 	}
 
-	m_vStartPoint.y += m_fUpSpeed * dTimeDelta;
+	m_vStartPoint.y += m_fUpSpeed * (_float)dTimeDelta;
 }
 
 CLaser_TypeB * CLaser_TypeB::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

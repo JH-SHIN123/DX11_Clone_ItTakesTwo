@@ -191,7 +191,7 @@ HRESULT CLoading::NativeConstruct(Level::ID ePreLevelID, Level::ID eNextLevelID)
 	if (eNextLevelID == Level::LEVEL_STAGE)
 		m_iWorkCount = 238;
 	else if (eNextLevelID == Level::LEVEL_LOGO)
-		m_iWorkCount = 1;
+		m_iWorkCount = 2;
 
 	m_arrThreads = new HANDLE[m_iWorkCount];
 	m_arrCriticalSections = new CRITICAL_SECTION[m_iWorkCount];
@@ -259,12 +259,9 @@ HRESULT CLoading::Loading(Level::ID ePreLevelID, Level::ID eNextLevelID, _uint i
 
 HRESULT CLoading::LoadingForLogo(_uint iThreadIndex)
 {
-	if (1 == iThreadIndex)
-	{
-		UI_Generator->Add_Prototype_LogoTexture();
-		FAILED_CHECK_RETURN(UI_Generator->Load_Data(TEXT("../Bin/Resources/Data/UIData/Menu.dat"), Level::LEVEL_LOGO), E_FAIL);
-		FAILED_CHECK_RETURN(UI_Generator->Load_Data(TEXT("../Bin/Resources/Data/UIData/ChapterSelect.dat"), Level::LEVEL_LOGO, 1), E_FAIL);
-	}
+ 	UI_Generator->Add_Prototype_LogoTexture();
+	FAILED_CHECK_RETURN(UI_Generator->Load_Data(TEXT("../Bin/Resources/Data/UIData/Menu.dat"), Level::LEVEL_LOGO), E_FAIL);
+	FAILED_CHECK_RETURN(UI_Generator->Load_Data(TEXT("../Bin/Resources/Data/UIData/ChapterSelect.dat"), Level::LEVEL_LOGO, 1), E_FAIL);
 
 	return S_OK;
 }
