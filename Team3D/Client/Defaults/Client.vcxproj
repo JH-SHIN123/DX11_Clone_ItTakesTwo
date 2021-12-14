@@ -269,6 +269,8 @@
     <ClInclude Include="..\public\Effect_Player_Dead_Explosion_Particle.h" />
     <ClInclude Include="..\Public\Effect_Player_Dead_Particle.h" />
     <ClInclude Include="..\Public\Effect_Player_Lail.h" />
+    <ClInclude Include="..\public\Effect_Player_Rail_Particle.h" />
+    <ClInclude Include="..\public\Effect_Player_Rail_Smoke.h" />
     <ClInclude Include="..\Public\Effect_Player_Revive.h" />
     <ClInclude Include="..\Public\Effect_PointLight.h" />
     <ClInclude Include="..\Public\Effect_RespawnTunnel.h" />
@@ -502,6 +504,8 @@
     <ClCompile Include="..\private\Effect_Player_Dead_Explosion_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Player_Dead_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Player_Lail.cpp" />
+    <ClCompile Include="..\private\Effect_Player_Rail_Particle.cpp" />
+    <ClCompile Include="..\private\Effect_Player_Rail_Smoke.cpp" />
     <ClCompile Include="..\Private\Effect_Player_Revive.cpp" />
     <ClCompile Include="..\Private\Effect_PointLight.cpp" />
     <ClCompile Include="..\Private\Effect_RespawnTunnel.cpp" />

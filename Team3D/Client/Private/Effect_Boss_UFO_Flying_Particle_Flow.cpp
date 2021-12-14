@@ -17,7 +17,7 @@ HRESULT CEffect_Boss_UFO_Flying_Particle_Flow::NativeConstruct_Prototype(void * 
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 50;
+	m_EffectDesc_Prototype.iInstanceCount = 75;
 
 	return S_OK;
 }
@@ -117,6 +117,10 @@ void CEffect_Boss_UFO_Flying_Particle_Flow::Check_Instance(_double TimeDelta)
 			continue;
 		}
 
+		m_pInstanceBuffer_STT[iIndex].vSize.x -= (_float)TimeDelta * 0.05f;
+		if (0.f > m_pInstanceBuffer_STT[iIndex].vSize.x)
+			m_pInstanceBuffer_STT[iIndex].vSize.y = m_pInstanceBuffer_STT[iIndex].vSize.x;
+
 		Instance_Pos((_float)TimeDelta, iIndex);
 
 	}
@@ -128,7 +132,7 @@ void CEffect_Boss_UFO_Flying_Particle_Flow::Instance_Size(_float TimeDelta, _int
 
 void CEffect_Boss_UFO_Flying_Particle_Flow::Instance_Pos(_float TimeDelta, _int iIndex)
 {
-	m_pInstanceBuffer_STT[iIndex].vPosition.y -= (_float)TimeDelta * 0.75f;
+	m_pInstanceBuffer_STT[iIndex].vPosition.y -= (_float)TimeDelta * 1.25f;
 }
 
 void CEffect_Boss_UFO_Flying_Particle_Flow::Instance_UV(_float TimeDelta, _int iIndex)
@@ -143,6 +147,7 @@ void CEffect_Boss_UFO_Flying_Particle_Flow::Reset_Instance(_double TimeDelta, _f
 	_vector vRandPos = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 2, 100)));
 	vRandPos.m128_f32[1] = 0.f;
 	_float fRandPower = ((_float)(rand() % 10) + 0.5f) * 0.15f;
+	m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
 
 	vRandPos *= fRandPower;
 	vRandPos.m128_f32[3] = 1.f;

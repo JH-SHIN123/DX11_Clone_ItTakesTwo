@@ -858,6 +858,15 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail">
+      <UniqueIdentifier>{dec59da4-b035-442a-87c8-6e5f06e91e84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail\00.Particle">
+      <UniqueIdentifier>{958f818b-997b-4a83-873e-49988054c41b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail\01.Smoke">
+      <UniqueIdentifier>{9c779d84-eb72-4eef-8564-76073392f649}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1589,6 +1598,12 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Player_Rail_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail\00.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Player_Rail_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail\01.Smoke</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2283,6 +2298,12 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Player_Rail_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail\00.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Player_Rail_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail\01.Smoke</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

@@ -116,6 +116,9 @@ void CEffect_Boss_UFO_Flying_Particle::Check_Instance(_double TimeDelta)
 			Reset_Instance(TimeDelta, m_pTransformCom->Get_WorldMatrix(), iIndex);
 			continue;
 		}
+		m_pInstanceBuffer_STT[iIndex].vSize.x -= (_float)TimeDelta * 0.05f;
+		if (0.f > m_pInstanceBuffer_STT[iIndex].vSize.x)
+			m_pInstanceBuffer_STT[iIndex].vSize.y = m_pInstanceBuffer_STT[iIndex].vSize.x;
 
 		Instance_Pos(iIndex, ParentMatrix);
 
@@ -144,8 +147,8 @@ void CEffect_Boss_UFO_Flying_Particle::Instance_Pos(_int iIndex, _fmatrix Parent
 void CEffect_Boss_UFO_Flying_Particle::Reset_Instance(_double TimeDelta, _fmatrix vParentMatrix, _int iIndex)
 {
 	m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
+	m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
 	m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time;
-
 	_vector vRandPos = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 2, 100)));
 	vRandPos.m128_f32[1] = 0.f;
 	_float fRandPower = ((_float)(rand() % 10) + 0.5f) * 0.2f;

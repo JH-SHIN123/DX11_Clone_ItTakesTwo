@@ -1,36 +1,37 @@
 #include "stdafx.h"
-#include "..\Public\Effect_Boss_Core_Hit.h"
+#include "..\Public\Effect_Player_Rail_Particle.h"
+#include "DataStorage.h"
+#include "Cody.h"
+#include "May.h"
 
-CEffect_Boss_Core_Hit::CEffect_Boss_Core_Hit(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_Player_Rail_Particle::CEffect_Player_Rail_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
-CEffect_Boss_Core_Hit::CEffect_Boss_Core_Hit(const CEffect_Boss_Core_Hit & rhs)
+CEffect_Player_Rail_Particle::CEffect_Player_Rail_Particle(const CEffect_Player_Rail_Particle & rhs)
 	: CInGameEffect(rhs)
 {
 }
 
-HRESULT CEffect_Boss_Core_Hit::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_Player_Rail_Particle::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
-
-	m_EffectDesc_Prototype.iInstanceCount = 200;
 
 	return S_OK;
 }
 
-HRESULT CEffect_Boss_Core_Hit::NativeConstruct(void * pArg)
+HRESULT CEffect_Player_Rail_Particle::NativeConstruct(void * pArg)
 {
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
-
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Spark_Mask"), TEXT("Com_Texture"), (CComponent**)&m_pTexturesCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_Second"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
+
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
 
@@ -42,46 +43,44 @@ HRESULT CEffect_Boss_Core_Hit::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CEffect_Boss_Core_Hit::Tick(_double TimeDelta)
+_int CEffect_Player_Rail_Particle::Tick(_double TimeDelta)
 {
 	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
-		m_IsActivate = false;
-
-	if (false == m_IsActivate && 0.0 >= m_dControlTime)
 		return EVENT_DEAD;
 
-	if(true == m_IsActivate)
-		m_dControlTime += TimeDelta;
-	else
-		m_dControlTime -= TimeDelta;
-
+	m_dControlTime += TimeDelta;
+	if (true == m_IsActivate)
+	{
+		if (1.0 <= m_dControlTime)
+			m_dControlTime = 1.0;
+	}
 
 	Check_Instance(TimeDelta);
 
 	return NO_EVENT;
 }
 
-_int CEffect_Boss_Core_Hit::Late_Tick(_double TimeDelta)
+_int CEffect_Player_Rail_Particle::Late_Tick(_double TimeDelta)
 {
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
-HRESULT CEffect_Boss_Core_Hit::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CEffect_Player_Rail_Particle::Render(RENDER_GROUP::Enum eGroup)
 {
-	_float fTime = (_float)m_dControlTime;
+	_float fTime = 1.f;// (_float)m_dControlTime;
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fTime, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(2));
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(3));
 
-	m_pPointInstanceCom_STT->Render(6, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
+	m_pPointInstanceCom_STT->Render(4, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
 }
 
-void CEffect_Boss_Core_Hit::Check_Instance(_double TimeDelta)
+void CEffect_Player_Rail_Particle::Check_Instance(_double TimeDelta)
 {
 	_float4 vMyPos;
 	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -104,64 +103,54 @@ void CEffect_Boss_Core_Hit::Check_Instance(_double TimeDelta)
 	}
 }
 
-void CEffect_Boss_Core_Hit::Instance_Size(_float TimeDelta, _int iIndex)
+void CEffect_Player_Rail_Particle::Instance_Size(_float TimeDelta, _int iIndex)
 {
 }
 
-void CEffect_Boss_Core_Hit::Instance_Pos(_float TimeDelta, _int iIndex)
+void CEffect_Player_Rail_Particle::Instance_Pos(_float TimeDelta, _int iIndex)
 {
-	m_pInstance_Parabola_Time[iIndex] = (_double)TimeDelta;
-
 	_vector vDir = XMLoadFloat3(&m_pInstanceBiffer_Dir[iIndex]);
-	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 10.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
+	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 6.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
 
 	vPos.m128_f32[1] -= TimeDelta * (1.f - m_pInstanceBuffer_STT[iIndex].fTime) * 1.5f;
 
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }
 
-void CEffect_Boss_Core_Hit::Instance_UV(_float TimeDelta, _int iIndex)
+void CEffect_Player_Rail_Particle::Instance_UV(_float TimeDelta, _int iIndex)
 {
 }
 
-void CEffect_Boss_Core_Hit::Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex)
+void CEffect_Player_Rail_Particle::Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex)
 {
 	m_pInstanceBuffer_STT[iIndex].vPosition = vPos;
 
 	m_pInstanceBuffer_STT[iIndex].fTime = 1.02f;
 
 	m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time;
-	m_pInstance_Parabola_Time[iIndex] = 0.0;
 
-	//_vector vLookDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * -1.5f;
+	_vector vLookDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * -1.5f;
 	_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
-	//vRandDir = XMVector3Normalize(vRandDir + vLookDir);
+	vRandDir = XMVector3Normalize(vRandDir + vLookDir);
 
 	_float3 v3RandDir;
 	XMStoreFloat3(&v3RandDir, vRandDir);
 	_float4 v4Dir = { v3RandDir.x, v3RandDir.y, v3RandDir.z, 0.f };
 	m_pInstanceBuffer_STT[iIndex].vUp = v4Dir;
 	m_pInstanceBiffer_Dir[iIndex] = v3RandDir;
-	if (0.f >= m_pInstanceBiffer_Dir[iIndex].y)
-	{
-		m_pInstanceBiffer_Dir[iIndex].y *= -1.2f;
-		m_pInstanceBuffer_STT[iIndex].vUp.y *= -1.f;
-	}
 }
 
-HRESULT CEffect_Boss_Core_Hit::Ready_InstanceBuffer()
+HRESULT CEffect_Player_Rail_Particle::Ready_InstanceBuffer()
 {
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
 	m_pInstanceBuffer_STT = new VTXMATRIX_CUSTOM_STT[iInstanceCount];
 	m_pInstanceBiffer_Dir = new _float3[iInstanceCount];
-	m_pInstance_Parabola_Time = new _double[iInstanceCount];
 	m_pInstance_Pos_UpdateTime = new _double[iInstanceCount];
 
 	_float4 vMyPos;
 	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	_vector vLookDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * -1.5f;
 
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
@@ -174,10 +163,8 @@ HRESULT CEffect_Boss_Core_Hit::Ready_InstanceBuffer()
 		m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
 
 		m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time  * (_double(iIndex) / iInstanceCount);
-		m_pInstance_Parabola_Time[iIndex] = 0.0;
 
 		_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
-		vRandDir = XMVector3Normalize(vRandDir + vLookDir);
 		_float3 v3RandDir;
 		XMStoreFloat3(&v3RandDir, vRandDir);
 		_float4 v4Dir = { v3RandDir.x, v3RandDir.y, v3RandDir.z, 0.f };
@@ -193,7 +180,7 @@ HRESULT CEffect_Boss_Core_Hit::Ready_InstanceBuffer()
 	return S_OK;
 }
 
-_float3 CEffect_Boss_Core_Hit::Get_Particle_Rand_Dir(_fvector vDefaultPos)
+_float3 CEffect_Player_Rail_Particle::Get_Particle_Rand_Dir(_fvector vDefaultPos)
 {
 	_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
 	_vector vPos = vDefaultPos - vRandDir;
@@ -203,33 +190,33 @@ _float3 CEffect_Boss_Core_Hit::Get_Particle_Rand_Dir(_fvector vDefaultPos)
 	return _float3();
 }
 
-CEffect_Boss_Core_Hit * CEffect_Boss_Core_Hit::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CEffect_Player_Rail_Particle * CEffect_Player_Rail_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CEffect_Boss_Core_Hit*	pInstance = new CEffect_Boss_Core_Hit(pDevice, pDeviceContext);
+	CEffect_Player_Rail_Particle*	pInstance = new CEffect_Player_Rail_Particle(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CEffect_Boss_Core_Hit");
+		MSG_BOX("Failed to Create Instance - CEffect_Player_Rail_Particle");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CEffect_Boss_Core_Hit::Clone_GameObject(void * pArg)
+CGameObject * CEffect_Player_Rail_Particle::Clone_GameObject(void * pArg)
 {
-	CEffect_Boss_Core_Hit* pInstance = new CEffect_Boss_Core_Hit(*this);
+	CEffect_Player_Rail_Particle* pInstance = new CEffect_Player_Rail_Particle(*this);
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CEffect_Boss_Core_Hit");
+		MSG_BOX("Failed to Clone Instance - CEffect_Player_Rail_Particle");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CEffect_Boss_Core_Hit::Free()
+void CEffect_Player_Rail_Particle::Free()
 {
-	Safe_Delete_Array(m_pInstance_Parabola_Time);
 	Safe_Delete_Array(m_pInstanceBuffer_STT);
 	Safe_Delete_Array(m_pInstanceBiffer_Dir);
+
 
 	Safe_Release(m_pPointInstanceCom_STT);
 

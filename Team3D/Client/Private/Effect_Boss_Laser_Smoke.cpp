@@ -16,7 +16,7 @@ CEffect_Boss_Laser_Smoke::CEffect_Boss_Laser_Smoke(const CEffect_Boss_Laser_Smok
 
 HRESULT CEffect_Boss_Laser_Smoke::NativeConstruct_Prototype(void * pArg)
 {
-	m_EffectDesc_Prototype.iInstanceCount = 30;
+	m_EffectDesc_Prototype.iInstanceCount = 50;
 	return S_OK;
 }
 

@@ -15,7 +15,7 @@ CEffect_Boss_Missile_Smoke::CEffect_Boss_Missile_Smoke(const CEffect_Boss_Missil
 
 HRESULT CEffect_Boss_Missile_Smoke::NativeConstruct_Prototype(void * pArg)
 {
-	m_EffectDesc_Prototype.iInstanceCount = 50;
+	m_EffectDesc_Prototype.iInstanceCount = 75;
 	return S_OK;
 }
 

@@ -34,6 +34,11 @@ HRESULT CEffect_Boss_GroundPound_Ring::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Slime_Cloud"), TEXT("Com_Tex1"), (CComponent**)&m_pTexturesCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Ring"), TEXT("Com_Tex2"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
 
+	_matrix WorldMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
+	for (_int i = 0; i < 3; ++i)
+		WorldMatrix.r[i] = XMVector3Normalize(WorldMatrix.r[i]);
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vPos.m128_f32[1] += 0.3f;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
@@ -155,5 +160,7 @@ CGameObject * CEffect_Boss_GroundPound_Ring::Clone_GameObject(void * pArg)
 
 void CEffect_Boss_GroundPound_Ring::Free()
 {
+	Safe_Release(m_pBufferRectCom);
+
 	__super::Free();
 }

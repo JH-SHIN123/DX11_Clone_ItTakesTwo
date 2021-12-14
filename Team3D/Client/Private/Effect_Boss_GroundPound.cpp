@@ -27,7 +27,6 @@ HRESULT CEffect_Boss_GroundPound::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise"), TEXT("Com_Textures_Distortion"), (CComponent**)&m_pTexture_Distortion), E_FAIL);
 
 	m_pTransformCom->Set_Scale(XMVectorSet(3.75f, 1.25f, 3.75f, 0.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(65.f, 0.f, 30.f, 1.f));
 
 	return S_OK;
 }

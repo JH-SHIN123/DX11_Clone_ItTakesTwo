@@ -446,6 +446,12 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
  	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_PressWall_Particle"))
  		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_PressWall_Particle", CEffect_UFO_Inside_PressWall_Particle::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_PressWall_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_PressWall_Particle", CEffect_UFO_Inside_PressWall_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_PressWall_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_PressWall_Particle", CEffect_UFO_Inside_PressWall_Particle::Create(pDevice, pDeviceContext, pData));
+
 #pragma  endregion
 
 

@@ -21,26 +21,33 @@ enum class Effect_Value
 	May_Boots_Walking,
 	Player_Dead_Explosion,
 	RobotBattery_Spark,
+
 	BossCore_Hit,
 	BossCore_Smoke,
 	BossCore_Explosion,
 	BossCore_Lightning,
 	BossCore_Lightning_Big,
+
 	BossBomb,
 	BossBomb_Pillar,
 	BossBomb_Particle,
 	BossBomb_Explosion,
-	BossLaser_Charge,
-	BossLaser_Explosion,
-	BossGroundPound,
-	BossGroundPound_Ring,
-	BossGroundPound_Smoke,
-	BossMissile_Smoke,
-	BossMissile_Explosion,
-	BossMissile_Particle,
-	Boss_UFO_Flying,
-	Boss_UFO_Flying_Particle,
-	Boss_UFO_Flying_Particle_Flow,
+
+	BossLaser_Charge,					
+	BossLaser_Explosion,	
+
+	BossGroundPound,					
+	BossGroundPound_Ring,				
+	BossGroundPound_Smoke,	
+
+	BossMissile_Smoke,					
+	BossMissile_Explosion,				
+	BossMissile_Particle,	
+
+	Boss_UFO_Flying,					
+	Boss_UFO_Flying_Particle,			
+	Boss_UFO_Flying_Particle_Flow,	
+
 	UFO_Inside_Battery_Spark,
 	UFO_Inside_Battery_Particle,
 	UFO_Inside_Battery_Explosion,
@@ -49,6 +56,7 @@ enum class Effect_Value
 	UFO_Inside_ElectricWall_Explosion,
 	UFO_Inside_PressWall_Smoke,
 	UFO_Inside_PressWall_Particle,
+
 	Effect_Value_End
 };
 

@@ -15,7 +15,7 @@ HRESULT CEffect_Boss_Core_Lightning_Big::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 10;
+	m_EffectDesc_Prototype.iInstanceCount = 20;
 
 	return S_OK;
 }

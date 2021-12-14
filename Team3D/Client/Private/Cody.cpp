@@ -394,8 +394,32 @@ void CCody::KeyInput(_double dTimeDelta)
 	_bool bMove[2] = { false, false };
 	_bool bRoll = false;
 #pragma endregion
-	/*GARA*/if (m_pGameInstance->Key_Down(DIK_M))
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::Player_Dead_Explosion, m_pTransformCom->Get_WorldMatrix());
+
+
+	/*GARA*/if (m_pGameInstance->Key_Pressing(DIK_SLASH) && m_pGameInstance->Key_Down(DIK_P))
+	{
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound, m_pTransformCom->Get_WorldMatrix());
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound_Ring, m_pTransformCom->Get_WorldMatrix());
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound_Smoke, m_pTransformCom->Get_WorldMatrix());
+	}
+	/*GARA*/if (m_pGameInstance->Key_Pressing(DIK_SLASH) && m_pGameInstance->Key_Down(DIK_LBRACKET))
+	{
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
+
+	}
+	/*GARA*/if (m_pGameInstance->Key_Pressing(DIK_SLASH) && m_pGameInstance->Key_Down(DIK_RBRACKET))
+	{
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb, m_pTransformCom->Get_WorldMatrix());
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Explosion, m_pTransformCom->Get_WorldMatrix());
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Explosion, m_pTransformCom->Get_WorldMatrix());
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Particle, m_pTransformCom->Get_WorldMatrix());
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Pillar, m_pTransformCom->Get_WorldMatrix());
+	}
 
 #pragma region Teleport
 	if (m_pGameInstance->Key_Down(DIK_C)) /* 파이프 베터리 */
