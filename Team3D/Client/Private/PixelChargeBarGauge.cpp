@@ -4,6 +4,7 @@
 #include "Cody.h"
 #include "May.h"
 #include "PixelLaser.h"
+#include "MoonUFO.h"
 
 CPixelChargeBarGauge::CPixelChargeBarGauge(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CGameObject(pDevice, pDeviceContext)
@@ -46,12 +47,13 @@ _int CPixelChargeBarGauge::Tick(_double dTimeDelta)
 	{
 		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) && m_fGauge > 0.9f)
 		{
+			((CMoonUFO*)DATABASE->Get_MoonUFO())->Set_ShootLaser(true);
 			((CPixelLaser*)DATABASE->Get_PixelLaser())->Set_Render_State(true);
 			m_fGauge -= 0.7f;
 		}
 
 		if (m_fGauge < 1.f)
-			m_fGauge += (_float)dTimeDelta;
+			m_fGauge += (_float)dTimeDelta * 0.5f;
 		else if (m_fGauge > 1.f)
 			m_fGauge = 1.f;
 	}

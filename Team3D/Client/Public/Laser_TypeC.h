@@ -4,12 +4,12 @@
 
 BEGIN(Client)
 
-class CLaser_TypeA final : public CLaser
+class CLaser_TypeC final : public CLaser
 {
 private:
-	explicit CLaser_TypeA(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CLaser_TypeA(const CLaser_TypeA& rhs);
-	virtual	~CLaser_TypeA() = default;
+	explicit CLaser_TypeC(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CLaser_TypeC(const CLaser_TypeC& rhs);
+	virtual	~CLaser_TypeC() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -22,14 +22,14 @@ public:
 private:
 	_double m_dChargingTime = 0.0;
 	_bool	m_IsPaticleCreate = true;
+	_uint   m_iOption = 0;
 
 private:
-	class CUFO*										m_pBossUFO = nullptr;
 	class CMoonUFO*									m_pMoonUFO = nullptr;
 	class CEffect_Boss_Laser_Smoke*				m_pLaserSmoke = nullptr;
 
 public:
-	static CLaser_TypeA* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CLaser_TypeC* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

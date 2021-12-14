@@ -91,6 +91,7 @@
 #include "PixelBaboon.h"
 #include "PixelHeart.h"
 #include "PixelShield.h"
+#include "Laser_TypeC.h"
 
 /* Jin */
 #include "UFO.h"
@@ -617,6 +618,9 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon()
 	/* Component_Texture_PixelShield */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_PixelShield"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/HUD/ArcadeScreen/PixelShield.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PixelShield"), CPixelShield::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Laser_TypeC */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeC"), CLaser_TypeC::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 
 #endif //__MAPLOADING_OFF

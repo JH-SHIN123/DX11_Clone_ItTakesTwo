@@ -162,6 +162,9 @@ public:
 	void Set_LaserTypeA(CGameObject* pLaserTypeA) { m_pLaserTypeA = pLaserTypeA; }
 	CGameObject* Get_LaserTypeA() { return m_pLaserTypeA; }
 
+	void Set_LaserTypeC(CGameObject* pLaserTypeC) { m_pLaserTypeC = pLaserTypeC; }
+	CGameObject* Get_LaserTypeC() { return m_pLaserTypeC; }
+
 	void Set_LaserTypeB_Recovery(_bool IsCheck) { m_IsLaserTypeB_Recovery = IsCheck; }
 	_bool Get_LaserTypeB_Recovery() const { return m_IsLaserTypeB_Recovery; }
 
@@ -257,6 +260,7 @@ private:
 	CGameObject* m_pMoonBaboonMainLaser = nullptr;
 	CGameObject* m_pBossUFO = nullptr;
 	CGameObject* m_pLaserTypeA = nullptr;
+	CGameObject* m_pLaserTypeC = nullptr;
 
 private:
 	/* For.Valve */

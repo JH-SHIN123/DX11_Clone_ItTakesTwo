@@ -19,6 +19,7 @@ public:/* Getter */
 
 public:/* Setter */
 	void Set_MayInUFO(_bool bCheck) { m_IsMayInUFO = bCheck; }
+	void Set_ShootLaser(_bool _bShootLaser) { m_IsShootLaser = _bShootLaser; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -46,10 +47,12 @@ private:
 	_bool					m_bRotateRight = false;
 	_bool					m_bRotateLeft = false;
 
+
 	// YYY
 	/* For. Laser_TypeA */
 	_float4				m_vLaserGunPos = {};
 	_float4				m_vLaserDir = {};
+	_bool				m_IsShootLaser = false;
 
 private:
 	void	KeyInPut(_double dTimeDelta);

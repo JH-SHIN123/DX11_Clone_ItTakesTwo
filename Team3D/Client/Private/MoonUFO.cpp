@@ -251,10 +251,10 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	//XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(matLaserGunWorld.r[2]));
 
 
-	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
+	if (m_IsShootLaser == true)
 	{
-		_uint iOption = 1;
-		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeA"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"), &iOption);
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeC"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeC"));
+		m_IsShootLaser = false;
 	}
 }
 

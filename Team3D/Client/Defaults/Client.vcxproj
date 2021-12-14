@@ -291,6 +291,7 @@
     <ClInclude Include="..\Public\Laser_LaserTennis.h" />
     <ClInclude Include="..\Public\Laser_TypeA.h" />
     <ClInclude Include="..\Public\Laser_TypeB.h" />
+    <ClInclude Include="..\Public\Laser_TypeC.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\Public\Level_Stage.h" />
@@ -513,6 +514,7 @@
     <ClCompile Include="..\Private\Laser_LaserTennis.cpp" />
     <ClCompile Include="..\Private\Laser_TypeA.cpp" />
     <ClCompile Include="..\Private\Laser_TypeB.cpp" />
+    <ClCompile Include="..\Private\Laser_TypeC.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Level_Stage.cpp" />

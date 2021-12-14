@@ -1,39 +1,38 @@
 #include "stdafx.h"
-#include "..\Public\Laser_TypeA.h"
-
-#include "UFO.h"
+#include "..\Public\Laser_TypeC.h"
 #include "MoonUFO.h"
 #include "DataStorage.h"
 #include "Effect_Boss_Laser_Smoke.h"
 
-CLaser_TypeA::CLaser_TypeA(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CLaser_TypeC::CLaser_TypeC(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLaser(pDevice, pDeviceContext)
 {
 }
 
-CLaser_TypeA::CLaser_TypeA(const CLaser_TypeA & rhs)
+CLaser_TypeC::CLaser_TypeC(const CLaser_TypeC & rhs)
 	: CLaser(rhs)
 {
 }
 
-HRESULT CLaser_TypeA::NativeConstruct_Prototype()
+HRESULT CLaser_TypeC::NativeConstruct_Prototype()
 {
 	CLaser::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
-HRESULT CLaser_TypeA::NativeConstruct(void * pArg)
+HRESULT CLaser_TypeC::NativeConstruct(void * pArg)
 {
 	CLaser::NativeConstruct(pArg);
 
-	m_pBossUFO = (CUFO*)DATABASE->Get_BossUFO();
-	NULL_CHECK_RETURN(m_pBossUFO, E_FAIL);
+	m_pMoonUFO = (CMoonUFO*)DATABASE->Get_MoonUFO();
+	NULL_CHECK_RETURN(m_pMoonUFO, E_FAIL);
+	Safe_AddRef(m_pMoonUFO);
 
-	m_dChargingTime = 3.0;
-	m_fShootSpeed = 100.f;
+	m_dChargingTime = 0.02;
+	m_fShootSpeed = 800.f;
 
-	DATABASE->Set_LaserTypeA(this);
+	DATABASE->Set_LaserTypeC(this);
 
 	m_dCreateEffectCycle = 0.3;
 
@@ -49,7 +48,7 @@ HRESULT CLaser_TypeA::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CLaser_TypeA::Tick(_double dTimeDelta)
+_int CLaser_TypeC::Tick(_double dTimeDelta)
 {
 	CLaser::Tick(dTimeDelta);
 
@@ -77,8 +76,8 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 
 		if (m_fLaserSizeY > 0)
 		{
-			m_vStartPoint = m_pBossUFO->Get_LaserStartPos();
-			m_vLaserDir = m_pBossUFO->Get_LaserDir();
+			m_vStartPoint = m_pMoonUFO->Get_LaserStartPos();
+			m_vLaserDir = m_pMoonUFO->Get_LaserDir();
 			m_pGameInstance->Raycast(MH_PxVec3(XMLoadFloat4(&m_vStartPoint)), MH_PxVec3(XMLoadFloat4(&m_vLaserDir)), m_fLaserMaxY, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
 		}
 
@@ -182,18 +181,23 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 			m_isCollided = false;
 			XMStoreFloat4(&m_vEndPoint, XMLoadFloat4(&m_vStartPoint) + XMLoadFloat4(&m_vLaserDir) * m_fLaserSizeY);
 			m_fLaserSizeY = m_fLaserMaxY;
-		}
+	}
 
 		/* 레이저 크기 */
 		if (m_fLaserMaxY < 200.f)
 			m_fLaserMaxY += m_fShootSpeed * (_float)dTimeDelta;
 		if (m_fLaserSizeX < 3.f)
 			m_fLaserSizeX += m_fShootSpeed * 0.2f * (_float)dTimeDelta;
-	}
+
+		if (m_fLaserMaxY >= 200.f)
+		{
+			m_isDead = true;
+		}
+}
 	/* 레이저 종료 시*/
 	else
 	{
-		m_fLaserSizeX -= 15.f * (_float)dTimeDelta;
+		m_fLaserSizeX -= 300.f * (_float)dTimeDelta;
 
 		if (m_fLaserSizeX < 0.f)
 			return EVENT_DEAD;
@@ -206,14 +210,14 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_N))
 		m_isDead = true;
 #endif
-	
+
 	Adjust_OutsideAlpha(dTimeDelta);
 	Set_LaserMatices();
 
 	return NO_EVENT;
 }
 
-_int CLaser_TypeA::Late_Tick(_double dTimeDelta)
+_int CLaser_TypeC::Late_Tick(_double dTimeDelta)
 {
 	CLaser::Late_Tick(dTimeDelta);
 
@@ -222,7 +226,7 @@ _int CLaser_TypeA::Late_Tick(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-HRESULT CLaser_TypeA::Render(RENDER_GROUP::Enum eRender)
+HRESULT CLaser_TypeC::Render(RENDER_GROUP::Enum eRender)
 {
 	CLaser::Render(eRender);
 
@@ -242,43 +246,43 @@ HRESULT CLaser_TypeA::Render(RENDER_GROUP::Enum eRender)
 	return NO_EVENT;
 }
 
-HRESULT CLaser_TypeA::Render_ShadowDepth()
+HRESULT CLaser_TypeC::Render_ShadowDepth()
 {
 	CLaser::Render_ShadowDepth();
 
 	return S_OK;
 }
 
-CLaser_TypeA * CLaser_TypeA::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CLaser_TypeC * CLaser_TypeC::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
-	CLaser_TypeA* pInstance = new CLaser_TypeA(pDevice, pDeviceContext);
+	CLaser_TypeC* pInstance = new CLaser_TypeC(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSG_BOX("Failed to Create Instance - CLaser_TypeA");
+		MSG_BOX("Failed to Create Instance - CLaser_TypeC");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CLaser_TypeA::Clone_GameObject(void * pArg)
+CGameObject * CLaser_TypeC::Clone_GameObject(void * pArg)
 {
-	CLaser_TypeA* pInstance = new CLaser_TypeA(*this);
+	CLaser_TypeC* pInstance = new CLaser_TypeC(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CLaser_TypeA");
+		MSG_BOX("Failed to Clone Instance - CLaser_TypeC");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CLaser_TypeA::Free()
+void CLaser_TypeC::Free()
 {
 	//Safe_Release(m_pLaserSmoke);
-	Safe_Release(m_pBossUFO);
+	Safe_Release(m_pMoonUFO);
 
 	CLaser::Free();
 }
