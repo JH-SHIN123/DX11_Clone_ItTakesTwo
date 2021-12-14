@@ -36,11 +36,12 @@ HRESULT CEffect_UFO_Inside_Battery_Spark::NativeConstruct(void * pArg)
 		WolrdMatrix.r[i] = XMVector3Normalize(WolrdMatrix.r[i]);
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 
-	m_EffectDesc_Prototype.iInstanceCount = 9;
+	m_EffectDesc_Prototype.iInstanceCount = 27;
 	m_EffectDesc_Prototype.fLifeTime = 0.25f;
 	m_fResetTime = m_EffectDesc_Prototype.fLifeTime;
 
 	Ready_Instance();
+	Shuffle_ZeroSize_Arr();
 
 	return S_OK;
 }
@@ -87,9 +88,8 @@ HRESULT CEffect_UFO_Inside_Battery_Spark::Ready_Instance()
 	if (nullptr == m_pPointInstanceCom)
 		return S_OK;
 
-	m_EffectDesc_Prototype.iInstanceCount = 9;
-	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
-	m_pInstanceBuffer	= new VTXMATRIX_CUSTOM_ST[iInstanceCount];
+	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount / 3;
+	m_pInstanceBuffer	= new VTXMATRIX_CUSTOM_ST[m_EffectDesc_Prototype.iInstanceCount];
 
 	_matrix Matrix		= m_pTransformCom->Get_WorldMatrix();
 	_vector vOffsetPos	= Matrix.r[3];
@@ -101,29 +101,46 @@ HRESULT CEffect_UFO_Inside_Battery_Spark::Ready_Instance()
 	vOffsetPos -= Matrix.r[III] * fOffSet;
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
-		m_pInstanceBuffer[iIndex].vSize		= _float2(0.47f, 0.2f);
+		m_pInstanceBuffer[iIndex].vSize = m_vSize;
 		m_pInstanceBuffer[iIndex].vTextureUV = Get_TexUV_Rand(8, 8);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vLook, Matrix.r[III]);
-
-//		if (iInstanceCount >> 1 > iIndex)
-//		{
-			XMStoreFloat4(&m_pInstanceBuffer[iIndex].vRight, Matrix.r[0]);
-			XMStoreFloat4(&m_pInstanceBuffer[iIndex].vUp,	 Matrix.r[2]);
-//		}
-//		else
-//		{
-//			XMStoreFloat4(&m_pInstanceBuffer[iIndex].vRight, Matrix.r[0] * -1.f);
-//			XMStoreFloat4(&m_pInstanceBuffer[iIndex].vUp,	 Matrix.r[2] * -1.f);
-//		}
-
-		//if ((iInstanceCount >> 1) + 1 == iIndex)
-		//	vOffsetPos = Matrix.r[3] - Matrix.r[III] * fOffSet;
-
+		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vRight, Matrix.r[0]);
+		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vUp,	 Matrix.r[2]);
 		XMStoreFloat4(&m_pInstanceBuffer[iIndex].vPosition, vOffsetPos);
+
+		m_pInstanceBuffer[iIndex + 9].vSize = m_vSize;
+		m_pInstanceBuffer[iIndex + 9].vTextureUV = Get_TexUV_Rand(8, 8);
+		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 9].vLook, Matrix.r[III]);
+		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 9].vRight, Matrix.r[0]);
+		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 9].vUp, Matrix.r[2]);
+		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 9].vPosition, vOffsetPos);
+
+		m_pInstanceBuffer[iIndex + 18].vSize = m_vSize;
+		m_pInstanceBuffer[iIndex + 18].vTextureUV = Get_TexUV_Rand(8, 8);
+		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 18].vLook, Matrix.r[III]);
+		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 18].vRight, Matrix.r[0]);
+		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 18].vUp, Matrix.r[2]);
+		XMStoreFloat4(&m_pInstanceBuffer[iIndex + 18].vPosition, vOffsetPos);
+
 		vOffsetPos += Matrix.r[III] * 0.05f;
 	}
 
 	return S_OK;
+}
+
+void CEffect_UFO_Inside_Battery_Spark::Shuffle_ZeroSize_Arr()
+{
+	for (_int iIndex = 0; iIndex < 50; ++iIndex)
+	{
+		_int iDst_Num = rand() % 10;
+		_int iSrc_Num = rand() % 10;
+
+		_int iDst = m_iZeroSize_Arr[iDst_Num];
+		_int iSrc = m_iZeroSize_Arr[iSrc_Num];
+
+		m_iZeroSize_Arr[iDst_Num] = iSrc;
+		m_iZeroSize_Arr[iSrc_Num] = iDst;
+	}
 }
 
 void CEffect_UFO_Inside_Battery_Spark::Instance_Size(_float TimeDelta, _int iIndex)
@@ -150,6 +167,14 @@ void CEffect_UFO_Inside_Battery_Spark::Check_Particle_UV(_double TimeDelta)
 
 		for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 			m_pInstanceBuffer[iIndex].vTextureUV	= Get_TexUV_Rand(8, 8);
+
+		if (9 < m_iEffectCount)
+		{
+			_int iZeroSize_Index = m_iZeroSize_Arr[m_iArrCount++];
+			m_pInstanceBuffer[iZeroSize_Index].vSize	  = {0.f, 0.f};
+			m_pInstanceBuffer[iZeroSize_Index + 9].vSize  = { 0.f, 0.f };
+			m_pInstanceBuffer[iZeroSize_Index + 18].vSize = { 0.f, 0.f };
+		}
 
 		++m_iEffectCount;
 	}
