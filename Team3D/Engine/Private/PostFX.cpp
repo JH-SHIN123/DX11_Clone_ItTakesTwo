@@ -57,7 +57,6 @@ HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDevic
 	FAILED_CHECK_RETURN(Build_ComputeShaders(TEXT("../Bin/ShaderFiles/ComputeShader_PostFX.hlsl"), "DefaultTechnique"), E_FAIL);
 
 	m_pRadiarBlur_Mask = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/PostFX/radiarblur.png"));
-	m_pColorRamp = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/PostFX/Color_Ramp/Color_Ramp_%d.png"),15);
 
 	return S_OK;
 }
@@ -274,7 +273,6 @@ HRESULT CPostFX::FinalPass()
 
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Front", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Front")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Back", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Back")));
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_ColorRampTex", m_pColorRamp->Get_ShaderResourceView(2));
 #endif // _DEBUG
 
 	m_pVIBuffer_ToneMapping->Render(0);
@@ -587,7 +585,6 @@ void CPostFX::Clear_Buffer()
 {
 	Safe_Release(m_pVIBuffer_ToneMapping);
 	Safe_Release(m_pRadiarBlur_Mask);
-	Safe_Release(m_pColorRamp);
 }
 
 void CPostFX::Free()

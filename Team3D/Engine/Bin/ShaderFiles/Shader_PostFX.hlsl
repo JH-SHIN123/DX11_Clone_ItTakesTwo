@@ -11,7 +11,6 @@ Texture2D				g_EffectBlurTex;
 
 /* Etc Resources */
 Texture2D				g_RadiarBlurMaskTex;
-Texture2D				g_ColorRampTex;
 Texture2D				g_VolumeTex_Front;
 Texture2D				g_VolumeTex_Back;
 
@@ -136,21 +135,30 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToE
 	float fVolumeBack = g_VolumeTex_Back.Sample(Point_Sampler, vTexUV).x;
 	float fVolumeFactor = 0.f;
 
+	float3 fInnerColor = 0.f;
+	float3 fOuterColor = 0.f;
+
 	if (fVolumeBack - fVolumeFront < 0) /* 카메라가 안에 들어왔을때 */
 	{
 		fVolumeFactor = saturate(sqrt((distToEye - g_fFogGlobalDensity/*FogStart*/) / g_fFogHeightFalloff /*range*/));
 	}
 	else
 		fVolumeFactor = (fProjDepth - fVolumeFront) / (fVolumeBack - fVolumeFront);
+	
+	if(fVolumeFactor > 0)
+		fVolumeFactor = exp(-fVolumeFactor * 0.66);
+	
+	float fLerpFactor = saturate(fVolumeFactor);
 
-	float fLerpFactor = saturate(sqrt(fVolumeFactor));
+	float3 vFogColor = 0.f;
+	fInnerColor = float3(0.f, 1.f, 0.f);
+	fOuterColor = 1.f;
+	vFogColor = lerp(fInnerColor, fOuterColor, fLerpFactor);
 
-	if (fLerpFactor > 0.5f)
-		fLerpFactor = 0.5f;
+	if (fLerpFactor > 0.3)
+		fLerpFactor = 0.3;
 
-	//float3 vFogColor = g_ColorRampTex.Sample(Wrap_MinMagMipLinear_Sampler, fLerpFactor * 2.f);
-
-	return lerp(vColor, g_vFogColor, fLerpFactor);
+	return lerp(vColor, vFogColor, fLerpFactor);
 }
 
 //float3 ApplyFog(float3 finalColor, float eyePosY, float3 eyeToPixel)
