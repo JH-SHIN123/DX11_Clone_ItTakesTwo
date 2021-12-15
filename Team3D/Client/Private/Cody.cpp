@@ -420,6 +420,10 @@ void CCody::KeyInput(_double dTimeDelta)
 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Particle, m_pTransformCom->Get_WorldMatrix());
 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Pillar, m_pTransformCom->Get_WorldMatrix());
 	}
+	/*GARA*/if (m_pGameInstance->Key_Pressing(DIK_SLASH) && m_pGameInstance->Key_Down(DIK_SEMICOLON))
+	{
+		/*GARA*/	EFFECT->Add_Effect(Effect_Value::Cody_Rail, m_pTransformCom->Get_WorldMatrix());
+	}
 
 #pragma region Teleport
 	if (m_pGameInstance->Key_Down(DIK_C)) /* 파이프 베터리 */
@@ -3126,6 +3130,7 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 		m_pTargetRailNode = nullptr;
 		m_bOnRail = true;
 		m_bMoveToRail = false;
+		EFFECT->Add_Effect(Effect_Value::Cody_Rail, m_pTransformCom->Get_WorldMatrix());
 	}
 }
 void CCody::TakeRail(_double dTimeDelta)

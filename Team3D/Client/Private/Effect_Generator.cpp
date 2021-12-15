@@ -57,6 +57,8 @@
 #include "Effect_UFO_Inside_ElectricWall_Explosion.h"
 #include "Effect_UFO_Inside_PressWall_Smoke.h"
 #include "Effect_UFO_Inside_PressWall_Particle.h"
+#include "Effect_Player_Rail_Particle.h"
+#include "Effect_Player_Rail_Smoke.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -113,10 +115,15 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Revive");
 		break;
+	case Effect_Value::Cody_Rail:
+		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_CODY;
+		lstrcpy(szPrototype, L"GameObject_2D_Player_Rail_Particle");
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Player_Rail_Smoke"), &Clone_Data);
+		break;
 	case Effect_Value::May_Dead:
 		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Dead_Particle");
-		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, L"GameObject_2D_Player_Dead", &Clone_Data);
+		//m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Player_Dead"), &Clone_Data);
 		break;
 	case Effect_Value::May_Dead_Fire:
 		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
@@ -125,6 +132,11 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::May_Revive:
 		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Revive");
+		break;
+	case Effect_Value::May_Rail:
+		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
+		lstrcpy(szPrototype, L"GameObject_2D_Player_Rail_Particle");
+		//m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Player_Rail_Smoke"), &Clone_Data);
 		break;
 	case Effect_Value::May_Boots_Walking:
 		lstrcpy(szPrototype, L"GameObject_2D_May_Boots_Walking_Particle");
@@ -446,11 +458,11 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
  	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_PressWall_Particle"))
  		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_PressWall_Particle", CEffect_UFO_Inside_PressWall_Particle::Create(pDevice, pDeviceContext, pData));
 
-	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_PressWall_Particle"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_PressWall_Particle", CEffect_UFO_Inside_PressWall_Particle::Create(pDevice, pDeviceContext, pData));
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Rail_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Rail_Particle", CEffect_Player_Rail_Particle::Create(pDevice, pDeviceContext, pData));
 
-	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_PressWall_Particle"))
-		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_PressWall_Particle", CEffect_UFO_Inside_PressWall_Particle::Create(pDevice, pDeviceContext, pData));
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Rail_Smoke"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Rail_Smoke", CEffect_Player_Rail_Smoke::Create(pDevice, pDeviceContext, pData));
 
 #pragma  endregion
 

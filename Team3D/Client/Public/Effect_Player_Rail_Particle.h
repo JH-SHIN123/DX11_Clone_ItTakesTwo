@@ -20,7 +20,6 @@ public:
 	void Set_IsActivate(_bool IsActivate) { m_IsActivate = IsActivate; }
 	void Set_WorldMatrix(_fmatrix WorldMatrix) { m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
 
-
 private:
 	void Check_Instance(_double TimeDelta);
 
@@ -35,9 +34,11 @@ private:
 private:
 	HRESULT Ready_InstanceBuffer();
 	_float3 Get_Particle_Rand_Dir(_fvector vDefaultPos);
+	void Check_Target_Matrix();
+	void Check_On_Rail();
 
 private:
-	_double m_dControlTime = 0.0; //
+	_double m_dControlTime = 0.5; //
 	_bool m_IsActivate = true;
 
 private:
@@ -46,9 +47,12 @@ private:
 	_float3*							m_pInstanceBiffer_Dir = nullptr;
 
 	const _float  m_fAlphaTime_Power = 1.f;
-	const _float  m_fInstance_SpeedPerSec = 2.5f;
-	const _double m_dInstance_Pos_Update_Time = 1.5;
-	const _float2 m_vDefaultSize = { 0.1f, 0.4f };
+	const _float  m_fInstance_SpeedPerSec = 1.5f;
+	const _double m_dInstance_Pos_Update_Time = 1.0;
+	const _float2 m_vDefaultSize = { 0.15f, 0.5f };
+
+private: //Target
+	class CGameObject* m_pTargetObject = nullptr;
 
 public:
 	static CEffect_Player_Rail_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

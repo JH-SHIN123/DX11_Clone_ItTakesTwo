@@ -216,6 +216,7 @@ public:
 	_bool			 Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool			 Get_PushingBattery() { return m_IsPushingBattery; }
 	_uint			 Get_CurState() const;
+	_bool			 Get_OnRail() { return m_bOnRail; }
 
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }

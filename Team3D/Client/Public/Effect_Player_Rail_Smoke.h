@@ -34,6 +34,8 @@ private:
 
 private:
 	HRESULT Ready_InstanceBuffer();
+	void Check_Target_Matrix();
+	void Check_On_Rail();
 
 private:
 	_double m_dControlTime = 0.0; //
