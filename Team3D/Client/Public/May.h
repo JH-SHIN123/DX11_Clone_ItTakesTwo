@@ -182,7 +182,7 @@ public: /* Getter */
 	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool		Get_IsGroundPound() { return m_bGroundPound; }
 	_bool		Get_IsGroundPoundVarious() { return m_bPlayGroundPoundOnce; }
-
+	_bool		Get_IsInUFO() { return m_IsInUFO; }
 public:
 
 	void		Update_Tirgger_Pos(_vector vPos);

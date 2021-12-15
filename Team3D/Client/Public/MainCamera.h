@@ -13,7 +13,7 @@ class CMainCamera final : public CCamera
 
 	enum class CamMode{Cam_Free,Cam_AutoToFree,Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_End};
 	//O CamFreeMove P FollowPlayer										//BossMiniRoom_Cody
-	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnRail, Cam_Free_Boss_MiniRoom,Cam_Free_End };
+	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnRail, Cam_Free_RidingSpaceShip_Cody,Cam_Free_End };
 
 private:
 	explicit CMainCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -47,6 +47,7 @@ private:
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
 	_int	Tick_Cam_Free_OnRail(_double dTimeDelta);			//미니코디 보스룸
+	_int	Tick_Cam_Free_RidingSpaceShip_Cody(_double dTimeDelta);
 
 	//CamHelper State(현재 )
 	_int	Tick_CamHelperNone(_double dTimeDelta);			//현재 아무것도 재생안함

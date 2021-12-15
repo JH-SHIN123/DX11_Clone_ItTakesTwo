@@ -12,7 +12,7 @@ class CSubCamera final : public CCamera
 	enum CamRev { Rev_Holizontal, Rev_Prependicul, Rev_End };
 	enum CamMode { Cam_Free, Cam_Auto, Cam_FreeToAuto, Cam_AutoToFree, Cam_End };
 	//O CamFreeMove P FollowPlayer
-	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove/*, Cam_Free_On*/,Cam_Free_End };
+	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_RidingSpaceShip_May,Cam_Free_End };
 private:
 	explicit CSubCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CSubCamera(const CSubCamera& rhs);
@@ -30,9 +30,9 @@ public:
 	HRESULT Start_Film(const _tchar* pFilmTag);
 private:
 	void	Check_Player(_double dTimeDelta);
-	void	Set_Zoom(_float fZoomVal,_double dTimeDelta);
+	void	Set_Zoom(_float4 vEye,_float4 vAt,_float fZoomVal,_double dTimeDelta);
 private:
-	CGameObject* m_pTargetObj = nullptr;
+	class CMay* m_pMay = nullptr;
 	CCam_Helper* m_pCamHelper = nullptr;
 private:
 	//For Free.
@@ -40,8 +40,9 @@ private:
 	_int	Tick_Cam_AutoToFree(_double dTimeDelta);		//연출 카메라 -> 자유이동시 보간
 
 	
-	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);	//카메라가 플레이어를쫓아가며 이동(메인 카메라)
-	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);		//카메라가 자유롭게 이동함
+	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
+	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
+	_int	Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta);	//우주선 탓을때
 
 															//CamHelper State(현재 )
 	_int	Tick_CamHelperNone(_double dTimeDelta);			//현재 아무것도 재생안함
@@ -88,7 +89,9 @@ private:
 	_float m_fCamZoomVal = 0.f;
 
 	WORLDMATRIX	m_PreWorld;
-
+	//For.RidingUFO
+	_float4 m_vStartRidingUFOEye = {0.f,0.f,0.f,1.f};
+	_float4 m_vStartRidingUFOAt = { 0.f,0.f,0.f,1.f };
 public:
 	static CSubCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg = nullptr) override;
