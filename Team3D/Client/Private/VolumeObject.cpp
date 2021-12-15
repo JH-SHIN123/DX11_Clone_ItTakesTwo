@@ -30,7 +30,6 @@ HRESULT CVolumeObject::NativeConstruct(void* pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(59.f, -20.f, 5.f, 1.f));
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, -20.f, 0.f, 1.f));
 
-
 	return S_OK;
 }
 

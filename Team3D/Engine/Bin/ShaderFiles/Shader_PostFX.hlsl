@@ -11,6 +11,7 @@ Texture2D				g_EffectBlurTex;
 
 /* Etc Resources */
 Texture2D				g_RadiarBlurMaskTex;
+Texture2D				g_ColorRampTex;
 Texture2D				g_VolumeTex_Front;
 Texture2D				g_VolumeTex_Back;
 
@@ -129,29 +130,40 @@ float3 RadiarBlur(float2 vTexUV, float2 vFocusPos, float fRatio)
 	return lerp(vColor, sum, ratio);
 }
 
-float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth)
+float3 VolumeBlend(
+	float3 vColor, float2 vTexUV, float fProjDepth, float distToEye)
 {
 	// 월드 공간에서 처리가 아닌 투영공간에서의 처리하자.
+	bool bVolumeIn = false;
 	float fVolumeFront = g_VolumeTex_Front.Sample(Point_Sampler, vTexUV).x;
 	float fVolumeBack = g_VolumeTex_Back.Sample(Point_Sampler, vTexUV).x;
 	float fVolumeSize = 0.f;
 
-	// 1. 포그안에 오브젝트가 포함되어있을때를 고려하자.
-	//> 차폐물의 깊이 값을 포그의 뒷면 깊이값으로 사용해야함
-	if (fVolumeFront < fProjDepth)
-		fVolumeBack = fProjDepth;
+	// 1. 포그안에 오브젝트가 포함되어있을때를 고려하자. -> 차폐물의 깊이 값을 포그의 뒷면 깊이값으로 사용해야함
+	//if (fVolumeFront < 0)
+	//	fVolumeBack = fProjDepth;
 
 	fVolumeSize = fVolumeBack - fVolumeFront;
 	
-	//// 2. 카메라가 포그안에 들어갔을때를 고려하자.
-	////> 카메라가 포그 안에 들어왔을때도 포그가 적용되는 맨 앞면을 카메라 좌표로 해야함
+	// 2. 카메라가 포그안에 들어갔을때를 고려하자. -> 카메라가 포그 안에 들어왔을때도 포그가 적용되는 맨 앞면을 카메라 좌표로 해야함
 	if (fVolumeSize < 0.f) // 볼륨안에 들어왔을때
+	{
 		fVolumeSize = fVolumeBack - 0.f;
+		bVolumeIn = true;
+	}
 
-	//float fLerpFactor = saturate(fVolumeSize * 100.f);
-	float fLerpFactor = saturate(sqrt(fVolumeSize * 10.f));
+	float fLerpFactor = saturate(sqrt(fVolumeSize));
+
+	if (bVolumeIn)
+	{
+		// 거리포그
+		fLerpFactor = saturate(sqrt((distToEye - g_fFogGlobalDensity/*FogStart*/) / g_fFogHeightFalloff /*range*/));
+	}
+
 	if (fLerpFactor > 0.5f)
 		fLerpFactor = 0.5f;
+
+	float3 vFogColor = g_ColorRampTex.Sample(Wrap_MinMagMipLinear_Sampler, fLerpFactor * 2.f);
 
 	return lerp(vColor, g_vFogColor, fLerpFactor);
 }
@@ -236,7 +248,9 @@ PS_OUT PS_MAIN(PS_IN In)
 	vector	vDepthDesc = g_DepthTex.Sample(Point_Sampler, In.vTexUV);
 	vector	vViewPos = vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
 	float	vViewZ = 0.f;
-
+	
+	vector	vWorldPos = 0.f;
+	vector	vCamPos = 0.f;
 
 	if (In.vTexUV.x >= g_vMainViewportUVInfo.x && In.vTexUV.x <= g_vMainViewportUVInfo.z &&
 		In.vTexUV.y >= g_vMainViewportUVInfo.y && In.vTexUV.y <= g_vMainViewportUVInfo.w)
@@ -245,6 +259,9 @@ PS_OUT PS_MAIN(PS_IN In)
 		vViewZ = vDepthDesc.x * g_fMainCamFar;
 		vViewPos *= vViewZ;
 		vViewPos = mul(vViewPos, g_MainProjMatrixInverse);
+
+		vWorldPos = mul(vViewPos, g_MainViewMatrixInverse);
+		vCamPos = g_vMainCamPosition;
 
 		// Radiar Blur 
 		if(true == g_bRadiarBlur_Main) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Main, g_fRadiarBlurRatio_Main);
@@ -256,6 +273,9 @@ PS_OUT PS_MAIN(PS_IN In)
 		vViewZ = vDepthDesc.x * g_fSubCamFar;
 		vViewPos *= vViewZ;
 		vViewPos = mul(vViewPos, g_SubProjMatrixInverse);
+
+		vWorldPos = mul(vViewPos, g_SubViewMatrixInverse);
+		vCamPos = g_vSubCamPosition;
 
 		// Radiar Blur 
 		if (true == g_bRadiarBlur_Sub) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Sub, g_fRadiarBlurRatio_Sub);
@@ -273,7 +293,9 @@ PS_OUT PS_MAIN(PS_IN In)
 	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
 
 	// Volume
-	vColor = VolumeBlend(vColor, In.vTexUV, vDepthDesc.y);
+	float3 eyeToPixel = vWorldPos - vCamPos;
+	float distToEye = length(eyeToPixel);
+	vColor = VolumeBlend(vColor, In.vTexUV, vDepthDesc.y, distToEye);
 
 	// Tone Mapping
 	vColor = ToneMapping_EA(vColor);

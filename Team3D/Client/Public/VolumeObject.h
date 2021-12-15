@@ -7,7 +7,6 @@ BEGIN(Engine)
 class CRenderer;
 class CTransform;
 class CModel;
-class CStaticActor;
 END
 
 BEGIN(Client)
@@ -24,9 +23,6 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-
-private:
-	_bool m_bVolumeIn = false;
 
 private:
 	/* For.Component */
