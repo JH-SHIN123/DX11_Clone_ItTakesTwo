@@ -700,7 +700,7 @@ PS_OUT_VOLUME PS_MAIN_VOLUME(PS_IN In)
 {
 	PS_OUT_VOLUME Out = (PS_OUT_VOLUME)0;
 
-	Out.vVolume = vector(In.vProjPosition.z / In.vProjPosition.w, 1.f, 1.f, 1.f);
+	Out.vVolume = vector(In.vProjPosition.z / In.vProjPosition.w, 1.f, 0.f, 0.f);
 
 	return Out;
 }
