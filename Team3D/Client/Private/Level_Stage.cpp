@@ -190,7 +190,7 @@ HRESULT CLevel_Stage::Ready_Test()
 	tDesc.iIndex = 0;
 	tDesc.WorldMatrix._41 = 60.f;
 	tDesc.WorldMatrix._42 = 0.f;
-	tDesc.WorldMatrix._43 = 30.f;
+	tDesc.WorldMatrix._43 = 10.f;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore"), &tDesc), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_BOMB", Level::LEVEL_STAGE, TEXT("GameObject_3D_Boss_Gravitational_Bomb")), E_FAIL);
@@ -223,6 +223,17 @@ HRESULT CLevel_Stage::Ready_Test()
 	Arg.iOption = 1;
 	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_Interior_PedalSmasher_02"));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Press", Level::LEVEL_STAGE, TEXT("GameObject_Press"), &Arg), E_FAIL);
+
+	CHangingPlanet::ARG_DESC tPlanetArg;
+	_matrix World = XMMatrixIdentity();
+	lstrcpy(tPlanetArg.DynamicDesc.szModelTag, TEXT("Component_Model_Hanging_Planet"));
+	XMStoreFloat4x4(&tPlanetArg.DynamicDesc.WorldMatrix, World);
+	tPlanetArg.DynamicDesc.iMaterialIndex = 0;
+	tPlanetArg.DynamicDesc.iOption = 0;
+
+	tPlanetArg.vJointPosition = _float3(68.f, 38.f, 35.f);
+	tPlanetArg.vOffset = _float3(0.f, 33.f, 0.f);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Çà¼º¤»¤»", Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), &tPlanetArg), E_FAIL);
 
 
 #endif

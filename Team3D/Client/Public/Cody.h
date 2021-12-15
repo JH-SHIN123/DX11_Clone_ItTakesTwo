@@ -387,6 +387,7 @@ private:
 
 	/* For.Planet */
 	_bool m_IsHitPlanet = false;
+	_bool m_IsHitPlanet_Effect = false;
 
 	/* For.HookUFO */
 	_bool m_IsHookUFO = false;

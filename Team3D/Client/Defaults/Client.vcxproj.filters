@@ -867,6 +867,15 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail\01.Smoke">
       <UniqueIdentifier>{9c779d84-eb72-4eef-8564-76073392f649}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\02.Hit_Planet">
+      <UniqueIdentifier>{a16de0d8-7634-484a-bcfc-3264774d0bb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\02.Hit_Planet\00.Particle">
+      <UniqueIdentifier>{343eb90a-75cb-41d2-80f5-a25aa84f1ab2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\02.Hit_Planet\01.Smoke">
+      <UniqueIdentifier>{f4584b19-6d81-491d-b98c-7602ac80d77a}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1604,6 +1613,12 @@
     <ClInclude Include="..\public\Effect_Player_Rail_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail\01.Smoke</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Hit_Planet_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\02.Hit_Planet\00.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Hit_Planet_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\02.Hit_Planet\01.Smoke</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2304,6 +2319,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Player_Rail_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail\01.Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Hit_Planet_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\02.Hit_Planet\00.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Hit_Planet_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\02.Hit_Planet\01.Smoke</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

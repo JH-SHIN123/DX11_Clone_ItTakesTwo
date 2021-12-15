@@ -91,6 +91,7 @@ VS_OUT_NOBILL_DIR VS_MAIN_NOBILL_Y(VS_IN In)
 	Out.fTime = In.fTime;
 	Out.vNoBill_Dir = In.WorldMatrix._21_22_23;
 
+
 	return Out;
 }
 //////////////////////////////////////////////////////////////////////////////////////////

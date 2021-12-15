@@ -1,24 +1,26 @@
 #include "stdafx.h"
-#include "..\Public\Effect_UFO_Inside_PressWall_Smoke.h"
+#include "..\Public\Effect_Hit_Planet_Smoke.h"
+#include "DataStorage.h"
+#include "Cody.h"
 
-CEffect_UFO_Inside_PressWall_Smoke::CEffect_UFO_Inside_PressWall_Smoke(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_Hit_Planet_Smoke::CEffect_Hit_Planet_Smoke(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
-CEffect_UFO_Inside_PressWall_Smoke::CEffect_UFO_Inside_PressWall_Smoke(const CEffect_UFO_Inside_PressWall_Smoke & rhs)
+CEffect_Hit_Planet_Smoke::CEffect_Hit_Planet_Smoke(const CEffect_Hit_Planet_Smoke & rhs)
 	: CInGameEffect(rhs)
 {
 }
 
-HRESULT CEffect_UFO_Inside_PressWall_Smoke::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_Hit_Planet_Smoke::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
 	return S_OK;
 }
 
-HRESULT CEffect_UFO_Inside_PressWall_Smoke::NativeConstruct(void * pArg)
+HRESULT CEffect_Hit_Planet_Smoke::NativeConstruct(void * pArg)
 {
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
@@ -26,7 +28,7 @@ HRESULT CEffect_UFO_Inside_PressWall_Smoke::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Loop"), TEXT("Com_Texture"), (CComponent**)&m_pTexturesCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Puff_02"), TEXT("Com_Texture"), (CComponent**)&m_pTexturesCom), E_FAIL);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom), E_FAIL);
 
@@ -39,12 +41,13 @@ HRESULT CEffect_UFO_Inside_PressWall_Smoke::NativeConstruct(void * pArg)
 
 	m_EffectDesc_Clone.UVTime = 0.01f;
 
+	Check_Target_Matrix();
 	Ready_Smoke_Effect();
 
 	return S_OK;
 }
 
-_int CEffect_UFO_Inside_PressWall_Smoke::Tick(_double TimeDelta)
+_int CEffect_Hit_Planet_Smoke::Tick(_double TimeDelta)
 {
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
@@ -59,17 +62,17 @@ _int CEffect_UFO_Inside_PressWall_Smoke::Tick(_double TimeDelta)
 	return NO_EVENT;
 }
 
-_int CEffect_UFO_Inside_PressWall_Smoke::Late_Tick(_double TimeDelta)
+_int CEffect_Hit_Planet_Smoke::Late_Tick(_double TimeDelta)
 {
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
 }
 
-HRESULT CEffect_UFO_Inside_PressWall_Smoke::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CEffect_Hit_Planet_Smoke::Render(RENDER_GROUP::Enum eGroup)
 {
 	SetUp_Shader_Data();
 
-	_float4 vColor = { 0.301960814f, 0.301960814f, 0.301960814f, 1.000000000f };
-	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(1));
+	_float4 vColor = { 0.801960814f, 0.801960814f, 0.801960814f, 1.000000000f };
+	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	m_pPointInstanceCom->Set_Variable("g_fTime", &m_fAlphaTime, sizeof(_float));
 	m_pPointInstanceCom->Set_Variable("g_vColor", &vColor, sizeof(_float4));
 	m_pPointInstanceCom->Render(19, m_pInstanceBuffer, 1);
@@ -77,19 +80,19 @@ HRESULT CEffect_UFO_Inside_PressWall_Smoke::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-void CEffect_UFO_Inside_PressWall_Smoke::Instance_Size(_float TimeDelta, _int iIndex)
+void CEffect_Hit_Planet_Smoke::Instance_Size(_float TimeDelta, _int iIndex)
 {
 }
 
-void CEffect_UFO_Inside_PressWall_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
+void CEffect_Hit_Planet_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 }
 
-void CEffect_UFO_Inside_PressWall_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
+void CEffect_Hit_Planet_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
 {
 }
 
-HRESULT CEffect_UFO_Inside_PressWall_Smoke::Ready_Smoke_Effect()
+HRESULT CEffect_Hit_Planet_Smoke::Ready_Smoke_Effect()
 {
 	m_pInstanceBuffer = new VTXMATRIX_CUSTOM_ST[1];
 
@@ -98,11 +101,11 @@ HRESULT CEffect_UFO_Inside_PressWall_Smoke::Ready_Smoke_Effect()
 	m_pInstanceBuffer[0].vLook = { 0.f, 0.f, 1.f, 0.f };
 	XMStoreFloat4(&m_pInstanceBuffer[0].vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pInstanceBuffer[0].vTextureUV = __super::Get_TexUV(m_EffectDesc_Prototype.iTextureCount_U, m_EffectDesc_Prototype.iTextureCount_V, true);
-	m_pInstanceBuffer[0].vSize = { 1.5f, 1.5f };
+	m_pInstanceBuffer[0].vSize = { 9.f, 9.f };
 	return S_OK;
 }
 
-_float4 CEffect_UFO_Inside_PressWall_Smoke::Check_UV_Smoke(_double TimeDelta)
+_float4 CEffect_Hit_Planet_Smoke::Check_UV_Smoke(_double TimeDelta)
 {
 	_float4 vUV = m_pInstanceBuffer[0].vTextureUV;
 
@@ -145,29 +148,39 @@ _float4 CEffect_UFO_Inside_PressWall_Smoke::Check_UV_Smoke(_double TimeDelta)
 	return vUV;
 }
 
-CEffect_UFO_Inside_PressWall_Smoke * CEffect_UFO_Inside_PressWall_Smoke::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+void CEffect_Hit_Planet_Smoke::Check_Target_Matrix()
 {
-	CEffect_UFO_Inside_PressWall_Smoke*	pInstance = new CEffect_UFO_Inside_PressWall_Smoke(pDevice, pDeviceContext);
+	_matrix WorldMatrix = static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix();
+	_matrix BoneMatrix = static_cast<CCody*>(DATABASE->GetCody())->Get_Model()->Get_BoneMatrix("LeftHandMiddle4");
+
+	WorldMatrix = BoneMatrix * WorldMatrix;
+
+	m_pTransformCom->Set_WorldMatrix(Normalize_Matrix(WorldMatrix));
+}
+
+CEffect_Hit_Planet_Smoke * CEffect_Hit_Planet_Smoke::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+{
+	CEffect_Hit_Planet_Smoke*	pInstance = new CEffect_Hit_Planet_Smoke(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CEffect_UFO_Inside_PressWall_Smoke");
+		MSG_BOX("Failed to Create Instance - CEffect_Hit_Planet_Smoke");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CEffect_UFO_Inside_PressWall_Smoke::Clone_GameObject(void * pArg)
+CGameObject * CEffect_Hit_Planet_Smoke::Clone_GameObject(void * pArg)
 {
-	CEffect_UFO_Inside_PressWall_Smoke* pInstance = new CEffect_UFO_Inside_PressWall_Smoke(*this);
+	CEffect_Hit_Planet_Smoke* pInstance = new CEffect_Hit_Planet_Smoke(*this);
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CEffect_UFO_Inside_PressWall_Smoke");
+		MSG_BOX("Failed to Clone Instance - CEffect_Hit_Planet_Smoke");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CEffect_UFO_Inside_PressWall_Smoke::Free()
+void CEffect_Hit_Planet_Smoke::Free()
 {
 	__super::Free();
 }
