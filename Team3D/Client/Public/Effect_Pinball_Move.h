@@ -20,9 +20,43 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 public:
-	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0) override;
-	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0) override;
-	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0) override;
+	void Set_IsActivate(_bool IsActivate) { m_IsActivate = IsActivate; }
+	void Set_WorldMatrix(_fmatrix WorldMatrix) { m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
+
+private:
+	void Check_Instance(_double TimeDelta);
+
+private:
+	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0)	override;
+	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0)	override;
+	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0)		override;
+
+private:
+	void Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex = 0);
+
+private:
+	HRESULT Ready_InstanceBuffer();
+	_float3 Get_Particle_Rand_Dir(_fvector vDefaultPos);
+	void Check_Target_Matrix();
+	void Check_Activate();
+
+private:
+	_double m_dControlTime = 0.5; //
+	_bool m_IsActivate = true;
+	_bool m_IsDuplication = false;
+
+private:
+	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
+	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT = nullptr;
+	_float3*							m_pInstanceBiffer_Dir = nullptr;
+
+	const _float  m_fAlphaTime_Power = 1.f;
+	const _float  m_fInstance_SpeedPerSec = 1.5f;
+	const _double m_dInstance_Pos_Update_Time = 1.0;
+	const _float2 m_vDefaultSize = { 0.15f, 0.5f };
+
+private: //Target
+	class CGameObject* m_pTargetObject = nullptr;
 
 public:
 	static CEffect_Pinball_Move* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

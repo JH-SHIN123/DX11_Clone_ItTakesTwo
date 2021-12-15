@@ -17,6 +17,7 @@ enum class Effect_Value
 	Cody_Dead, Cody_Dead_Fire,
 	Cody_Revive,
 	Cody_Rail,
+	Cody_PinBall_Move,
 	May_Dead, May_Dead_Fire,
 	May_Revive,
 	May_Rail,
@@ -95,7 +96,7 @@ class CEffect_Generator final : public CBase
 	}Effect_PointLight_Desc;
 
 public:
-	HRESULT Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix, void* pArg = nullptr);
+	HRESULT Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix = XMMatrixIdentity(), void* pArg = nullptr);
 	// 맵과 같이 배치되는 상호작용 없는 환경 이펙트는 다른걸로
 	HRESULT Add_PointLight(Effect_PointLight_Desc* pLightArg = nullptr);
 

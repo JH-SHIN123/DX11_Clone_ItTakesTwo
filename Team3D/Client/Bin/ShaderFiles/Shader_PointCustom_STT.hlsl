@@ -757,6 +757,30 @@ PS_OUT  PS_MAIN_COLOR(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_CIRCLE(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiffuse = (float4)0;
+	float2 vCenter = In.vTexUV - 0.5f;
+	vCenter = abs(vCenter);
+	float fLenght = length(vCenter);
+	vDiffuse.a = 1.f;
+
+	fLenght = fLenght / 0.5f; // normalize
+	float2 vColorUV = (float2)((fLenght * -1.f) + 1.f);
+	float4 vColor = g_SecondTexture.Sample(DiffuseSampler, vColorUV);
+
+	vDiffuse.rgb = vColor.rgb * 1.2f;
+	vDiffuse.a *= In.fTime;
+	Out.vColor = vDiffuse;
+
+	if (0.5f < length(vCenter))
+		discard;
+
+	return Out;
+}
+
 PS_OUT  PS_MAIN_COLORTEXTURE(PS_IN_DOUBLEUV In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -1071,5 +1095,15 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN_NOBILL_Y();
 		GeometryShader = compile gs_5_0  GS_MAIN_NOBILL_Y();
 		PixelShader = compile ps_5_0  PS_COLOR_UV();
+	}
+
+	pass PS_PINBALL_MOVE // 12
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_CIRCLE();
 	}
 }

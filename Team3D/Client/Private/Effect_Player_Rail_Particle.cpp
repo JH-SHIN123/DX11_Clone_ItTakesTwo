@@ -29,11 +29,8 @@ HRESULT CEffect_Player_Rail_Particle::NativeConstruct(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
 
-	if (true == EFFECT->Get_PlayerRail_Effect((CEffect_Generator::EPlayer_Type)m_EffectDesc_Clone.iPlayerValue))
-	{
-		m_IsDuplication = true;
+	if (true == (m_IsDuplication = EFFECT->Get_PlayerRail_Effect((CEffect_Generator::EPlayer_Type)m_EffectDesc_Clone.iPlayerValue)))
 		return S_OK;
-	}
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
