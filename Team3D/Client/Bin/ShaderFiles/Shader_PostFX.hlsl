@@ -151,12 +151,12 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToE
 	float fLerpFactor = saturate(fVolumeFactor);
 
 	float3 vFogColor = 0.f;
-	fInnerColor = float3(0.f, 1.f, 0.f);
+	fInnerColor = float3(1.f, 0.9f, 0.6f);
 	fOuterColor = 1.f;
 	vFogColor = lerp(fInnerColor, fOuterColor, fLerpFactor);
 
-	if (fLerpFactor > 0.3)
-		fLerpFactor = 0.3;
+	if (fLerpFactor > 0.4f)
+		fLerpFactor = 0.4f;
 
 	return lerp(vColor, vFogColor, fLerpFactor);
 }

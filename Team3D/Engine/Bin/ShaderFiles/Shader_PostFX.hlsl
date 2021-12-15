@@ -55,15 +55,6 @@ cbuffer VolumeDesc
 	float4	g_fSubCamProjDepth;
 };
 
-cbuffer FogDesc
-{
-	float3	g_vFogColor = { 1.f,0.9f,0.6f };			// 안개의 기본색상 ( 앰비언트 색상과 동일해야함)
-	float	g_fFogStartDist = 20.f;		// 안개 지점에서 카메라까지의 거리
-	float3	g_vFogHighlightColor = { 0.8f, 0.7f, 0.4f };	// 카메라와 태양을 잇는 벡터와 평행에 가까운 카메라 벡터의 하이라이팅 픽셀 색상
-	float	g_fFogGlobalDensity = 1.5f;	// 안개 밀도 계수(값이 클수록 안개가 짙어진다)
-	float	g_fFogHeightFalloff = 0.2f;	// 높이 소멸값
-};
-
 ////////////////////////////////////////////////////////////
 /* Function */
 float3 ToneMapping_DXSample(float3 HDRColor)
@@ -140,7 +131,7 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToE
 
 	if (fVolumeBack - fVolumeFront < 0) /* 카메라가 안에 들어왔을때 */
 	{
-		fVolumeFactor = saturate(sqrt((distToEye - g_fFogGlobalDensity/*FogStart*/) / g_fFogHeightFalloff /*range*/));
+		fVolumeFactor = saturate(sqrt((distToEye - 1.f/*FogStart*/) / 10.f /*range*/));
 	}
 	else
 		fVolumeFactor = (fProjDepth - fVolumeFront) / (fVolumeBack - fVolumeFront);
@@ -151,46 +142,16 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToE
 	float fLerpFactor = saturate(fVolumeFactor);
 
 	float3 vFogColor = 0.f;
-	fInnerColor = float3(0.f, 1.f, 0.f);
+	fInnerColor = float3(1.f, 0.9f, 0.6f);
 	fOuterColor = 1.f;
 	vFogColor = lerp(fInnerColor, fOuterColor, fLerpFactor);
 
-	if (fLerpFactor > 0.3)
-		fLerpFactor = 0.3;
+	if (fLerpFactor > 0.4f)
+		fLerpFactor = 0.4f;
 
 	return lerp(vColor, vFogColor, fLerpFactor);
 }
 
-//float3 ApplyFog(float3 finalColor, float eyePosY, float3 eyeToPixel)
-//{
-//	//////////////////////////////////////////////////////////////////////////////////
-//	//float pixelDist = length(eyeToPixel); // Cam과 픽셀간의 거리
-//	//float3 eyeToPixelNorm = normalize(eyeToPixel);
-//
-//	//// 픽셀 거리에 대해 안개 시작 지점 계산
-//	//float fogDist = max(pixelDist - g_fFogStartDist, 0.0);
-//
-//	//// 안개 세기에 대해 거리 계산
-//	//float fogHeightDensityAtViewer = exp(-g_fFogHeightFalloff * eyePosY); // exp : 지수 반환(왼쪽 음에 가까운 지수그래프사용)
-//	//float fogDistInt = fogDist * fogHeightDensityAtViewer;
-//
-//	//// 안개 세기에 대해 높이 계산
-//	//float eyeToPixelY = eyeToPixel.y * (fogDist / pixelDist);
-//	//float t = g_fFogHeightFalloff * eyeToPixelY;
-//	//const float thresholdT = 0.01;
-//	//float fogHeightInt = abs(t) > thresholdT ?
-//	//	(1.0 - exp(-t)) / t : 1.0;
-//
-//	//// 위 계산 값을 합해 최종 인수 계산
-//	//float fogFinalFactor = exp(-g_fFogGlobalDensity * fogDistInt);
-//
-//	//// 태양 하이라이트 계산 및 안개 색상 혼합
-//	////float sunHighlightFactor = saturate(dot(eyeToPixelNorm, -g_vLightDir));
-//	////sunHighlightFactor = pow(sunHighlightFactor, 8.0);
-//	////float3 fogFinalColor = lerp(g_vFogColor, g_vFogHighlightColor, sunHighlightFactor);
-//
-//	return lerp(g_vFogColor, finalColor, fogFinalFactor);
-//}
 ////////////////////////////////////////////////////////////
 
 struct VS_IN
@@ -296,10 +257,6 @@ PS_OUT PS_MAIN(PS_IN In)
 	// Final
 	Out.vColor = vector(vColor, 1.f);
 
-	///* Fog*/
-	//float3 eyeToPixel = vWorldPos - vCamPos;
-	//Out.vColor.xyz = ApplyFog(Out.vColor.xyz, vCamPos.y, eyeToPixel);
-
 	return Out;
 }
 
@@ -320,6 +277,44 @@ technique11		DefaultTechnique
 	}
 }
 
-
-
+/* Fog */
+//cbuffer FogDesc
+//{
+//	float3	g_vFogColor = { 1.f,0.9f,0.6f };			// 안개의 기본색상 ( 앰비언트 색상과 동일해야함)
+//	float	g_fFogStartDist = 20.f;		// 안개 지점에서 카메라까지의 거리
+//	float3	g_vFogHighlightColor = { 0.8f, 0.7f, 0.4f };	// 카메라와 태양을 잇는 벡터와 평행에 가까운 카메라 벡터의 하이라이팅 픽셀 색상
+//	float	g_fFogGlobalDensity = 1.5f;	// 안개 밀도 계수(값이 클수록 안개가 짙어진다)
+//	float	g_fFogHeightFalloff = 0.2f;	// 높이 소멸값
+//};
+//float3 ApplyFog(float3 finalColor, float eyePosY, float3 eyeToPixel)
+//{
+//	//////////////////////////////////////////////////////////////////////////////////
+//	//float pixelDist = length(eyeToPixel); // Cam과 픽셀간의 거리
+//	//float3 eyeToPixelNorm = normalize(eyeToPixel);
+//
+//	//// 픽셀 거리에 대해 안개 시작 지점 계산
+//	//float fogDist = max(pixelDist - g_fFogStartDist, 0.0);
+//
+//	//// 안개 세기에 대해 거리 계산
+//	//float fogHeightDensityAtViewer = exp(-g_fFogHeightFalloff * eyePosY); // exp : 지수 반환(왼쪽 음에 가까운 지수그래프사용)
+//	//float fogDistInt = fogDist * fogHeightDensityAtViewer;
+//
+//	//// 안개 세기에 대해 높이 계산
+//	//float eyeToPixelY = eyeToPixel.y * (fogDist / pixelDist);
+//	//float t = g_fFogHeightFalloff * eyeToPixelY;
+//	//const float thresholdT = 0.01;
+//	//float fogHeightInt = abs(t) > thresholdT ?
+//	//	(1.0 - exp(-t)) / t : 1.0;
+//
+//	//// 위 계산 값을 합해 최종 인수 계산
+//	//float fogFinalFactor = exp(-g_fFogGlobalDensity * fogDistInt);
+//
+//	//// 태양 하이라이트 계산 및 안개 색상 혼합
+//	////float sunHighlightFactor = saturate(dot(eyeToPixelNorm, -g_vLightDir));
+//	////sunHighlightFactor = pow(sunHighlightFactor, 8.0);
+//	////float3 fogFinalColor = lerp(g_vFogColor, g_vFogHighlightColor, sunHighlightFactor);
+//
+//	return lerp(g_vFogColor, finalColor, fogFinalFactor);
+//}
+// 
 
