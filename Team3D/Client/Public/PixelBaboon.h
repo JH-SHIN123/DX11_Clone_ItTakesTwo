@@ -56,6 +56,9 @@ public:
 
 	 _bool  m_bTriggerOnce = false;
 
+	 _bool	m_bStartHeartDelay = 0.f;
+	 _float	m_fHeartDelay = 0.f;
+
 	 CPixelHeart* m_pPixelHeart[3] = {nullptr};
 	 CPixelShield* m_pPixelShield = nullptr;
 	 CPixelArrow* m_pPixelArrow = nullptr;

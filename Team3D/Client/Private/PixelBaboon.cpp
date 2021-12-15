@@ -83,8 +83,9 @@ _int CPixelBaboon::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (((CRunningMoonBaboon*)DATABASE->Get_RunningMoonBaboon())->Get_IsHitLaser() == true && m_bTriggerOnce == false)
+	if (((CRunningMoonBaboon*)DATABASE->Get_RunningMoonBaboon())->Get_IsHitLaser() == true && m_bTriggerOnce == false && m_bStartHeartDelay == false)
 	{
+		m_bStartHeartDelay = true;
 		m_bTriggerOnce = true;
 		m_bBlinking = true;
 		m_iLifeCount -= 1;
@@ -95,6 +96,16 @@ _int CPixelBaboon::Tick(_double dTimeDelta)
 			m_pPixelHeart[1]->Set_LifeCountRenderOff(true);
 		else if (m_iLifeCount == 0)
 			m_pPixelHeart[0]->Set_LifeCountRenderOff(true);    
+	}
+
+	if (m_bStartHeartDelay == true)
+	{
+		m_fHeartDelay += dTimeDelta;
+		if (m_fHeartDelay > 7.f)
+		{
+			m_bStartHeartDelay = false;
+			m_fHeartDelay = 0.f;
+		}
 	}
 
 	Check_Degree_And_Distance_From_MoonUFO(dTimeDelta);

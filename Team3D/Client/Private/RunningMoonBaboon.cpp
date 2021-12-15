@@ -175,7 +175,7 @@ void CRunningMoonBaboon::LaserHit_Movement(_double dTimeDelta)
 			m_pJoint->setLocalPose(PxJointActorIndex::eACTOR0, NextTransform);
 		}
 
-		if (m_fJetPackTime > 1.f && m_fJetPackTime < 5.f)
+		if (m_fJetPackTime > 1.f && m_fJetPackTime < 7.f)
 		{	
 			if(m_fJetAcceleration < 5.5f)
 				m_fJetAcceleration += (_float)dTimeDelta * 4.f;
@@ -189,7 +189,7 @@ void CRunningMoonBaboon::LaserHit_Movement(_double dTimeDelta)
 			m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * MOONBABOONFORCE * m_fJetAcceleration, XMVectorGetY(vLook) * MOONBABOONFORCE * m_fJetAcceleration, XMVectorGetZ(vLook) * MOONBABOONFORCE * m_fJetAcceleration));
 		}
 
-		if (m_fJetPackTime >= 5.f)
+		if (m_fJetPackTime >= 7.f)
 		{
 			if (m_fShieldTime > 0.f)
 			{
