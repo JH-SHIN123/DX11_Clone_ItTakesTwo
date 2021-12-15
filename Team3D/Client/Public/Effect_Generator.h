@@ -76,7 +76,6 @@ enum class EPoint_Color	// Color_Ramp_%d
 	Color_End = 0
 };
 
-
 class CEffect_Generator final : public CBase
 {
 	DECLARE_SINGLETON(CEffect_Generator)
@@ -99,6 +98,12 @@ public:
 	HRESULT Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix, void* pArg = nullptr);
 	// 맵과 같이 배치되는 상호작용 없는 환경 이펙트는 다른걸로
 	HRESULT Add_PointLight(Effect_PointLight_Desc* pLightArg = nullptr);
+
+public:
+	enum EPlayer_Type { Type_May, Type_Cody, Type_End };
+	_bool	Get_PlayerRail_Effect(EPlayer_Type eType) { return m_IsPlayerRail_Effect[eType]; }
+	void	Set_PlayerRail_Effect(EPlayer_Type eType, _bool IsEffect) { m_IsPlayerRail_Effect[eType] = IsEffect; }
+	_bool	m_IsPlayerRail_Effect[EPlayer_Type::Type_End] = { false, false };
 
 public:
 	HRESULT Load_EffectData(const _tchar* pFilePath, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

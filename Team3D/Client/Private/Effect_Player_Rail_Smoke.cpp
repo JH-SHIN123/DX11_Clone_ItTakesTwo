@@ -23,6 +23,8 @@ HRESULT CEffect_Player_Rail_Smoke::NativeConstruct_Prototype(void * pArg)
 
 HRESULT CEffect_Player_Rail_Smoke::NativeConstruct(void * pArg)
 {
+
+
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
 
@@ -53,6 +55,9 @@ HRESULT CEffect_Player_Rail_Smoke::NativeConstruct(void * pArg)
 
 _int CEffect_Player_Rail_Smoke::Tick(_double TimeDelta)
 {
+	if (true == m_IsDuplication)
+		return EVENT_DEAD;
+
 	if (false == m_IsActivate && 0.0 > m_dControlTime)
 		return EVENT_DEAD;
 	Check_On_Rail();

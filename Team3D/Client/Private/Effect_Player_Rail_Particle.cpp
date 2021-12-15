@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Player_Rail_Particle.h"
 #include "DataStorage.h"
+#include "Effect_Generator.h"
 #include "Cody.h"
 #include "May.h"
 
@@ -28,6 +29,11 @@ HRESULT CEffect_Player_Rail_Particle::NativeConstruct(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
 
+	if (true == EFFECT->Get_PlayerRail_Effect((CEffect_Generator::EPlayer_Type)m_EffectDesc_Clone.iPlayerValue))
+	{
+		m_IsDuplication = true;
+		return S_OK;
+	}
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
@@ -44,6 +50,8 @@ HRESULT CEffect_Player_Rail_Particle::NativeConstruct(void * pArg)
 	NULL_CHECK_RETURN(m_pTargetObject, E_FAIL);
 	Safe_AddRef(m_pTargetObject);
 
+	EFFECT->Set_PlayerRail_Effect((CEffect_Generator::EPlayer_Type)m_EffectDesc_Clone.iPlayerValue, true);
+
 	Check_Target_Matrix();
 	Ready_InstanceBuffer();
 
@@ -52,8 +60,14 @@ HRESULT CEffect_Player_Rail_Particle::NativeConstruct(void * pArg)
 
 _int CEffect_Player_Rail_Particle::Tick(_double TimeDelta)
 {
-	if (false == m_IsActivate && 0.0 > m_dControlTime)
+	if (true == m_IsDuplication)
 		return EVENT_DEAD;
+
+	if (false == m_IsActivate && 0.0 > m_dControlTime)
+	{
+		EFFECT->Set_PlayerRail_Effect((CEffect_Generator::EPlayer_Type)m_EffectDesc_Clone.iPlayerValue, false);
+		return EVENT_DEAD;
+	}
 
 	if (true == m_IsActivate)
 	{

@@ -40,6 +40,7 @@ private:
 private:
 	_double m_dControlTime = 0.5; //
 	_bool m_IsActivate = true;
+	_bool m_IsDuplication = false;
 
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
