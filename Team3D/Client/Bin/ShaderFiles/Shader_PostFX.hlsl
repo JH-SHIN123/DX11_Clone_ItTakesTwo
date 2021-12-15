@@ -130,39 +130,25 @@ float3 RadiarBlur(float2 vTexUV, float2 vFocusPos, float fRatio)
 	return lerp(vColor, sum, ratio);
 }
 
-float3 VolumeBlend(
-	float3 vColor, float2 vTexUV, float fProjDepth, float distToEye)
+float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToEye)
 {
-	// 월드 공간에서 처리가 아닌 투영공간에서의 처리하자.
-	bool bVolumeIn = false;
 	float fVolumeFront = g_VolumeTex_Front.Sample(Point_Sampler, vTexUV).x;
 	float fVolumeBack = g_VolumeTex_Back.Sample(Point_Sampler, vTexUV).x;
 	float fVolumeSize = 0.f;
 
-	// 1. 포그안에 오브젝트가 포함되어있을때를 고려하자. -> 차폐물의 깊이 값을 포그의 뒷면 깊이값으로 사용해야함
-	//if (fVolumeFront < 0)
-	//	fVolumeBack = fProjDepth;
-
-	fVolumeSize = fVolumeBack - fVolumeFront;
-	
-	// 2. 카메라가 포그안에 들어갔을때를 고려하자. -> 카메라가 포그 안에 들어왔을때도 포그가 적용되는 맨 앞면을 카메라 좌표로 해야함
-	if (fVolumeSize < 0.f) // 볼륨안에 들어왔을때
+	if (fVolumeBack - fVolumeFront < 0) /* 카메라가 안에 들어왔을때 */
 	{
-		fVolumeSize = fVolumeBack - 0.f;
-		bVolumeIn = true;
+		fVolumeSize = saturate(sqrt((distToEye - g_fFogGlobalDensity/*FogStart*/) / g_fFogHeightFalloff /*range*/));
 	}
+	else
+		fVolumeSize = (fProjDepth - fVolumeFront) / (fVolumeBack - fVolumeFront);
 
 	float fLerpFactor = saturate(sqrt(fVolumeSize));
-
-	if (bVolumeIn)
-	{
-		fLerpFactor = saturate(sqrt((distToEye - g_fFogGlobalDensity/*FogStart*/) / g_fFogHeightFalloff /*range*/));
-	}
 
 	if (fLerpFactor > 0.5f)
 		fLerpFactor = 0.5f;
 
-	float3 vFogColor = g_ColorRampTex.Sample(Wrap_MinMagMipLinear_Sampler, fLerpFactor * 2.f);
+	//float3 vFogColor = g_ColorRampTex.Sample(Wrap_MinMagMipLinear_Sampler, fLerpFactor * 2.f);
 
 	return lerp(vColor, g_vFogColor, fLerpFactor);
 }

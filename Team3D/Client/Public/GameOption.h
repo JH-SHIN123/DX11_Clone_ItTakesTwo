@@ -31,7 +31,7 @@
 /**
 * 맵 로딩 하려면 주석 처리.
 */
-#define __MAPLOADING_OFF
+//#define __MAPLOADING_OFF
 
 /**
 * 우주선 내부 맵만 제거

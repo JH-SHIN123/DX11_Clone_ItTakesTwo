@@ -853,7 +853,7 @@ technique11 DefaultTechnique
 	pass Volume_Front /* Volume¿« æ’∏È ±Ì¿Ã∞™ */
 	{
 		SetRasterizerState(Rasterizer_Volume_Front_Debug);
-		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetDepthStencilState(DepthStecil_No_ZTest, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
@@ -863,7 +863,7 @@ technique11 DefaultTechnique
 	pass Volume_Back /* Volume¿« µﬁ∏È ±Ì¿Ã∞™ */
 	{
 		SetRasterizerState(Rasterizer_Volume_Back_Debug);
-		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetDepthStencilState(DepthStecil_No_ZTest, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
