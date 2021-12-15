@@ -64,7 +64,7 @@ HRESULT CDynamicVolume::Render(RENDER_GROUP::Enum eGroup)
 		_matrix WorldMatrixTranspose = XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix());
 		memcpy(&WorldMatrixTranspose.r[3], &m_tVolumeDesc.vInnerColor, sizeof(_float3));
 		m_pModelCom->Set_Variable("g_WorldMatrix", &WorldMatrixTranspose, sizeof(_matrix));
-		m_pModelCom->Render_Model(14);
+		m_pModelCom->Render_Model(21);
 	}
 	else if (RENDER_GROUP::RENDER_VOLUME_BACK == eGroup) 
 	{
@@ -72,7 +72,7 @@ HRESULT CDynamicVolume::Render(RENDER_GROUP::Enum eGroup)
 		_matrix WorldMatrixTranspose = XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix());
 		memcpy(&WorldMatrixTranspose.r[3], &m_tVolumeDesc.vOuterColor, sizeof(_float3));
 		m_pModelCom->Set_Variable("g_WorldMatrix", &WorldMatrixTranspose, sizeof(_matrix));
-		m_pModelCom->Render_Model(15);
+		m_pModelCom->Render_Model(22);
 	}
 
 	return S_OK;

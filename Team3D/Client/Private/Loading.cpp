@@ -52,9 +52,11 @@
 /* Yoon */
 #include "May.h"
 #include "Cody.h"
+#include "Rope.h"
 #include "Robot.h"
 #include "Rocket.h"
 #include "HookUFO.h"
+#include "UFORadarSet.h"
 #include "StarBuddy.h"
 #include "RobotHead.h"
 #include "BigButton.h"
@@ -66,8 +68,10 @@
 #include "PipeJumpWall.h"
 #include "RobotBattery.h"
 #include "TutorialDoor.h"
+#include "UFORadarLever.h"
 #include "NoBatterySign.h"
 #include "SecurityCamera.h"
+#include "UFORadarScreen.h"
 #include "BigButtonFrame.h"
 #include "RotatedRobotBody.h"
 #include "RotatedRobotHead.h"
@@ -76,6 +80,20 @@
 #include "RotatedRobotBattery.h"
 #include "SecurityCameraHandle.h"
 #include "RotatedNoBatterySign.h"
+#include "MayWallCameraTrigger.h"
+#include "DummyWallCameraTrigger.h"
+#include "PipeWallCameraTrigger.h"
+#include "PixelChargeBarGauge.h"
+#include "PixelChargeBar.h"
+#include "PixelUFO.h"
+#include "PixelCrossHair.h"
+#include "PixelLaser.h"
+#include "PixelArrow.h"
+#include "PixelBaboon.h"
+#include "PixelHeart.h"
+#include "PixelShield.h"
+#include "Laser_TypeC.h"
+#include "RunningMoonBaboon.h"
 
 /* Jin */
 #include "UFO.h"
@@ -188,7 +206,7 @@ HRESULT CLoading::NativeConstruct(Level::ID ePreLevelID, Level::ID eNextLevelID)
 	m_iCurWorkIndex = 0;
 
 	if (eNextLevelID == Level::LEVEL_STAGE)
-		m_iWorkCount = 238;
+		m_iWorkCount = 253;
 	else if (eNextLevelID == Level::LEVEL_LOGO)
 		m_iWorkCount = 1;
 
@@ -383,7 +401,15 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Hye()
 	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.f));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_UFO"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("UFO"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonUFO"), CMoonUFO::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.f));
+	/* For.MoonBaboonSpaceship*/
+	PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("MoonBaboon"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SpaceShip"), CMoonBaboon_SpaceShip::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	/* For.Pedal*/
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_Interior_Pedal_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_Interior_Pedal_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Pedal"), CPedal::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	/* For.Moon */
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Moon_01_Plushie"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Moon_01_Plushie"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
@@ -525,7 +551,6 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon()
 
 	/* Bind RotatedRobot */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_RotatedRobotParts"), CRotatedRobotParts::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-#pragma endregion
 
 	/* Dummy Wall*/
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)));
@@ -541,8 +566,80 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon()
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_PipeJumpWall"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Instancing/"), TEXT("ToyBox08_Variation"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PipeJumpWall"), CPipeJumpWall::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	
+	/* Camera Trigger */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_DummyWallCameraTrigger"), CDummyWallCameraTrigger::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MayWallCameraTrigger"), CMayWallCameraTrigger::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PipeWallCameraTrigger"), CPipeWallCameraTrigger::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Pipe Wall*/
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f))) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(180.f)));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Rope"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("Rope"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	
+	/* Rope */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Rope"), CRope::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+#pragma endregion
+
+	/* UFO.RadarScreen */
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f))) * (XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f)));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_UFORadarScreen"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("MoonBaboon_Arcade_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_UFORadarScreen"), CUFORadarScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+
+	/* UFO.RadarLever */
+	PivotMatrix = XMMatrixScaling(0.001f, 0.001f, 0.001f) * (XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_UFORadarLever"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("JoyStick_Arcade"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_UFORadarLever"), CUFORadarLever::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* UFO.RadarSet */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_UFORadarSet"), CUFORadarSet::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Component_Texture_PixelChargeBar*/
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_PixelChargeBar"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/HUD/ArcadeScreen/PixelChargeBar.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PixelChargeBar"), CPixelChargeBar::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Component_Texture_PixelChargeBarGauge*/
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_PixelChargeBarGauge"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/HUD/ArcadeScreen/PixelChargeBarGauge.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PixelChargeBarGauge"), CPixelChargeBarGauge::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Component_Texture_PixelUFO*/
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_PixelUFO"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/HUD/ArcadeScreen/PixelUFO.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PixelUFO"), CPixelUFO::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Component_Texture_PixelUFO*/
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_PixelCrossHair"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/HUD/ArcadeScreen/PixelCrossHair.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PixelCrossHair"), CPixelCrossHair::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Component_Texture_PixelLaser */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_PixelLaser"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/HUD/ArcadeScreen/PixelLaser.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PixelLaser"), CPixelLaser::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Component_Texture_PixelArrow */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_PixelArrow"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/HUD/ArcadeScreen/PixelArrow.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PixelArrow"), CPixelArrow::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Component_Texture_PixelBaboon */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_PixelBaboon"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/HUD/ArcadeScreen/PixelBaboon.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PixelBaboon"), CPixelBaboon::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Component_Texture_PixelHeart */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_PixelHeart"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/HUD/ArcadeScreen/PixelHeart.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PixelHeart"), CPixelHeart::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Component_Texture_PixelShield */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_PixelShield"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/HUD/ArcadeScreen/PixelShield.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_PixelShield"), CPixelShield::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Laser_TypeC */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeC"), CLaser_TypeC::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* RunningMoonBaboon */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_RunningMoonBaboon"), CRunningMoonBaboon::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
 
 #endif //__MAPLOADING_OFF
+
 
 	return S_OK;
 }
@@ -607,7 +704,7 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jin()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_UmbrellaBeam_Joystick"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("UmbrellaBeam_Joystick"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_UmbrellaBeam_Joystick"), CUmbrellaBeam_Joystick::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
-	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.f));
+	PivotMatrix = XMMatrixScaling(0.0051f, 0.0051f, 0.0051f) * XMMatrixRotationY(XMConvertToRadians(90.f));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_UFO"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("UFO"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_UFO"), CUFO::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 

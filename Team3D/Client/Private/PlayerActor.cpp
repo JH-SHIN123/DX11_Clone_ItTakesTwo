@@ -25,6 +25,14 @@ void CPlayerActor::Set_Position(_fvector vPosition)
 	m_pController->setFootPosition(MH_PxExtendedVec3(vPosition));
 }
 
+void CPlayerActor::Set_ShapeFlag(_bool bValue)
+{
+	PxShape* pShape = nullptr;
+	m_pActor->getShapes(&pShape, 1);
+	pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bValue);
+
+}
+
 HRESULT CPlayerActor::NativeConstruct_Prototype()
 {
 	CActor::NativeConstruct_Prototype();
@@ -68,6 +76,7 @@ HRESULT CPlayerActor::NativeConstruct(void * pArg)
 	m_IsOnGravityPath = false;
 
 	XMStoreFloat3(&m_vPlayerUp, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+
 
 	return S_OK;
 }

@@ -23,6 +23,7 @@ public:
 	//HRESULT Load_Prototype_Model_Instancing();
 	//HRESULT Load_Prototype_Model_Others(_tchar* pFilePath);
 	//HRESULT Load_Prototype_GameObject();
+
 	/* ¿Œµ¶Ω∫ ∑ŒµÂ */
 	HRESULT Load_Prototype_Model_Others_Space(_uint iIndex);
 

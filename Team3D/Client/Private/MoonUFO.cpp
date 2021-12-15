@@ -4,6 +4,8 @@
 #include "May.h"
 #include "Cody.h"
 #include "Moon.h"
+#include "PixelCrossHair.h"
+#include "PixelUFO.h"
 
 CMoonUFO::CMoonUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -33,10 +35,11 @@ HRESULT CMoonUFO::NativeConstruct(void * pArg)
 
 	m_pModelCom->Set_Animation(UFO_MH);
 	m_pModelCom->Set_NextAnimIndex(UFO_MH);
-
+	
 	DATABASE->Set_MoonUFO(this);
 
 	m_pTransformCom->Set_Speed(0.f, 45.f);
+	Set_MeshRenderGroup();
 
 	return S_OK;
 }
@@ -61,7 +64,7 @@ _int CMoonUFO::Late_Tick(_double dTimeDelta)
 	CGameObject::Late_Tick(dTimeDelta);
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		Add_GameObject_ToRenderGroup();
 
 	return NO_EVENT;
 }
@@ -75,7 +78,47 @@ HRESULT CMoonUFO::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(0);
+	
+	_uint iMaterialIndex = 0;
+	m_pModelCom->Sepd_Bind_Buffer();
+
+	iMaterialIndex = 1;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
+
+	iMaterialIndex = 2;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
+
+	iMaterialIndex = 3;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
+
+	iMaterialIndex = 4;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
+
+	iMaterialIndex = 5;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
+
+	iMaterialIndex = 6;
+	m_pModelCom->Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0, false, eGroup);
+
+	// 0: Alpha 
+	iMaterialIndex = 0;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 20, false, eGroup);
+
 
 	return S_OK;
 }
@@ -88,6 +131,25 @@ HRESULT CMoonUFO::Render_ShadowDepth()
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(2, 0, true);
+	return S_OK;
+}
+
+HRESULT CMoonUFO::Set_MeshRenderGroup()
+{
+	m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_ALPHA);
+	m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(2, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(3, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(4, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(5, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(6, tagRenderGroup::RENDER_NONALPHA);
+	return S_OK;
+}
+
+HRESULT CMoonUFO::Add_GameObject_ToRenderGroup()
+{
+	m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_ALPHA, this);
+	m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_NONALPHA, this);
 	return S_OK;
 }
 
@@ -118,6 +180,64 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Pressing(DIK_DOWN))
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * -UFOFORCE, XMVectorGetY(vLook) * -UFOFORCE, XMVectorGetZ(vLook) * -UFOFORCE));
+
+	/* For.LaserGun */
+
+	_vector vUFOPos = ((CPixelUFO*)DATABASE->Get_PixelUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	_vector vTargetPos = ((CPixelCrossHair*)DATABASE->Get_PixelCrossHair())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	
+	_vector vUFOToTarget = XMVector3Normalize(vTargetPos - vUFOPos); // 크로스헤어 - UFO(중점) 방향벡터
+	_vector vUFOToTargetNoNormalize = vTargetPos - vUFOPos;
+	_vector vWorldUp = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	_float fAngle = XMConvertToDegrees(XMVectorGetX(XMVector3AngleBetweenNormals(vUFOToTarget, vWorldUp)));
+
+	if (vUFOPos.m128_f32[0] > vTargetPos.m128_f32[0])
+		fAngle = -1.f * fAngle;
+
+
+	_float fLength = XMVectorGetX(XMVector3Length(vUFOToTargetNoNormalize)); // 중점에서 크로스헤어 까지의 거리.
+
+	//if (vUFOPos.m128_f32[1] < vTargetPos.m128_f32[1])
+	//	fSecondAngle = -1.f * fSecondAngle;
+
+	_matrix matPivot, matRotUp, matTrans, matAnim = XMMatrixIdentity();
+
+	matRotUp = XMMatrixRotationZ(XMConvertToRadians(-fAngle));
+	// 레이더에서 보이는 중점에서 크로스헤어 까지의 거리에 비례해서 회전 시켜 줘야 합니다.
+
+	matPivot = matRotUp/* * matRotRight*/;
+	matAnim = m_pModelCom->Get_AnimTransformation(22);
+	matAnim = XMMatrixInverse(nullptr, matAnim);
+
+	matPivot *= matAnim;
+	m_pModelCom->Set_PivotTransformation(22, matPivot); // 여기까지가 레이저건을 레이더에 보이는 크로스헤어 만큼 회전 시킨 것임.
+
+	_matrix matUFOWorld = m_pTransformCom->Get_WorldMatrix();
+	_matrix matLaserGunRing = m_pModelCom->Get_BoneMatrix("LaserGunRing3");
+	_matrix matLaserRingWorld = matRotUp/* * matRotRight*/ * matLaserGunRing * matUFOWorld;
+	_matrix matLaserGun = m_pModelCom->Get_BoneMatrix("Align");
+
+	
+
+	_matrix matAlign = matRotUp/* * matRotRight*/ * matLaserGun * matUFOWorld;
+	_vector vLaserGunDir = XMLoadFloat4((_float4*)&matAlign.r[0].m128_f32[0]);
+
+	/* 레이저에 시작위치랑 방향 벡터 던져주자 */
+	XMStoreFloat4(&m_vLaserGunPos, matLaserRingWorld.r[3]);
+
+	vLaserGunDir = (XMVector3Normalize(-m_pTransformCom->Get_State(CTransform::STATE_UP)) / (2.f * fLength) + XMVector3Normalize(vLaserGunDir));
+	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(vLaserGunDir));
+
+	//XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)));
+	//XMStoreFloat4(&m_vLaserGunPos, matLaserGunWorld.r[3]);
+	//XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(matLaserGunWorld.r[2]));
+
+
+	if (m_IsShootLaser == true)
+	{
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeC"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeC"));
+		m_IsShootLaser = false;
+	}
 }
 
 void CMoonUFO::Calculate_Matrix(_double dTimeDelta)
@@ -161,8 +281,13 @@ HRESULT CMoonUFO::Ready_Component(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
 	Safe_Delete(Geom);
-	m_pDynamicActorCom->Get_Actor()->setLinearDamping(0.2f);
+	//m_pDynamicActorCom->Get_Actor()->setLinearDamping(0.2f);
+
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+
+	PxShape* pShape = nullptr;
+	m_pDynamicActorCom->Get_Actor()->getShapes(&pShape, 1);
+	pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 
 	/* Joint */
 	PxJointLimitCone LimitCone = PxJointLimitCone(PxPi, PxPi, 0.05f);

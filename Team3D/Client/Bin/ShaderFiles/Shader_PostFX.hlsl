@@ -49,12 +49,6 @@ cbuffer RadialBlurDesc
 	float	g_fRadiarBlurRatio_Sub = 1.f;
 };
 
-cbuffer VolumeDesc
-{
-	float4	g_fMainCamViewDivDepth;
-	float4	g_fSubCamProjDepth;
-};
-
 ////////////////////////////////////////////////////////////
 /* Function */
 float3 ToneMapping_DXSample(float3 HDRColor)

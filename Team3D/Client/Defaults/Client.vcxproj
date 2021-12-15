@@ -226,6 +226,7 @@
     <ClInclude Include="..\Public\DataStorage.h" />
     <ClInclude Include="..\Public\DeadLine.h" />
     <ClInclude Include="..\Public\DummyWall.h" />
+    <ClInclude Include="..\Public\DummyWallCameraTrigger.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />
     <ClInclude Include="..\Public\EffectLight.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -282,8 +283,17 @@
     <ClInclude Include="..\Public\InputButton_Frame.h" />
     <ClInclude Include="..\Public\Instancing_Env.h" />
     <ClInclude Include="..\Public\Laser.h" />
+    <ClInclude Include="..\Public\LaserActivation.h" />
+    <ClInclude Include="..\Public\LaserButton.h" />
+    <ClInclude Include="..\Public\LaserButtonLarge.h" />
+    <ClInclude Include="..\Public\LaserButtonLarge_Gate.h" />
+    <ClInclude Include="..\Public\LaserPowerCoord.h" />
+    <ClInclude Include="..\Public\LaserTennis_Manager.h" />
+    <ClInclude Include="..\Public\LaserTrigger.h" />
+    <ClInclude Include="..\Public\Laser_LaserTennis.h" />
     <ClInclude Include="..\Public\Laser_TypeA.h" />
     <ClInclude Include="..\Public\Laser_TypeB.h" />
+    <ClInclude Include="..\Public\Laser_TypeC.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\Public\Level_Stage.h" />
@@ -294,6 +304,7 @@
     <ClInclude Include="..\Public\MainCamera.h" />
     <ClInclude Include="..\Public\May.h" />
     <ClInclude Include="..\Public\MayJumpWall.h" />
+    <ClInclude Include="..\Public\MayWallCameraTrigger.h" />
     <ClInclude Include="..\Public\MenuScreen.h" />
     <ClInclude Include="..\Public\Moon.h" />
     <ClInclude Include="..\Public\MoonBaboon.h" />
@@ -320,6 +331,16 @@
     <ClInclude Include="..\Public\PinBall_HandleBase.h" />
     <ClInclude Include="..\Public\PinBall_Spring.h" />
     <ClInclude Include="..\Public\PipeJumpWall.h" />
+    <ClInclude Include="..\Public\PipeWallCameraTrigger.h" />
+    <ClInclude Include="..\Public\PixelArrow.h" />
+    <ClInclude Include="..\Public\PixelBaboon.h" />
+    <ClInclude Include="..\Public\PixelChargeBar.h" />
+    <ClInclude Include="..\Public\PixelChargeBarGauge.h" />
+    <ClInclude Include="..\Public\PixelCrossHair.h" />
+    <ClInclude Include="..\Public\PixelHeart.h" />
+    <ClInclude Include="..\Public\PixelLaser.h" />
+    <ClInclude Include="..\Public\PixelShield.h" />
+    <ClInclude Include="..\Public\PixelUFO.h" />
     <ClInclude Include="..\Public\Planet.h" />
     <ClInclude Include="..\Public\PlanetRing.h" />
     <ClInclude Include="..\Public\PlayerActor.h" />
@@ -341,6 +362,7 @@
     <ClInclude Include="..\Public\RobotLever.h" />
     <ClInclude Include="..\Public\RobotParts.h" />
     <ClInclude Include="..\Public\Rocket.h" />
+    <ClInclude Include="..\Public\Rope.h" />
     <ClInclude Include="..\Public\RotatedNoBatterySign.h" />
     <ClInclude Include="..\Public\RotatedRobotBattery.h" />
     <ClInclude Include="..\Public\RotatedRobotBody.h" />
@@ -351,6 +373,7 @@
     <ClInclude Include="..\Public\RotationCylinder.h" />
     <ClInclude Include="..\Public\RotationFan.h" />
     <ClInclude Include="..\Public\RotationFan_Base.h" />
+    <ClInclude Include="..\Public\RunningMoonBaboon.h" />
     <ClInclude Include="..\Public\SavePoint.h" />
     <ClInclude Include="..\Public\SecurityCamera.h" />
     <ClInclude Include="..\Public\SecurityCameraHandle.h" />
@@ -372,10 +395,14 @@
     <ClInclude Include="..\Public\SupportFrame.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TestEffect.h" />
+    <ClInclude Include="..\Public\Timer_LaserTennis.h" />
     <ClInclude Include="..\Public\ToyBoxButton.h" />
     <ClInclude Include="..\Public\ToyBoxButton_Button.h" />
     <ClInclude Include="..\Public\TutorialDoor.h" />
     <ClInclude Include="..\Public\UFO.h" />
+    <ClInclude Include="..\Public\UFORadarLever.h" />
+    <ClInclude Include="..\Public\UFORadarScreen.h" />
+    <ClInclude Include="..\Public\UFORadarSet.h" />
     <ClInclude Include="..\Public\UIObject.h" />
     <ClInclude Include="..\Public\UISprite.h" />
     <ClInclude Include="..\Public\UI_Generator.h" />
@@ -386,6 +413,7 @@
     <ClInclude Include="..\Public\DynamicVolume.h" />
     <ClInclude Include="..\Public\WallLaserTrap.h" />
     <ClInclude Include="..\Public\WallLaserTrap_Button.h" />
+    <ClInclude Include="..\Public\Wall_LaserTennis.h" />
     <ClInclude Include="..\Public\WarpGate.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -426,6 +454,7 @@
     <ClCompile Include="..\Private\DataStorage.cpp" />
     <ClCompile Include="..\Private\DeadLine.cpp" />
     <ClCompile Include="..\Private\DummyWall.cpp" />
+    <ClCompile Include="..\Private\DummyWallCameraTrigger.cpp" />
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
     <ClCompile Include="..\Private\EffectLight.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -481,8 +510,17 @@
     <ClCompile Include="..\Private\InputButton_Frame.cpp" />
     <ClCompile Include="..\Private\Instancing_Env.cpp" />
     <ClCompile Include="..\Private\Laser.cpp" />
+    <ClCompile Include="..\Private\LaserActivation.cpp" />
+    <ClCompile Include="..\Private\LaserButton.cpp" />
+    <ClCompile Include="..\Private\LaserButtonLarge.cpp" />
+    <ClCompile Include="..\Private\LaserButtonLarge_Gate.cpp" />
+    <ClCompile Include="..\Private\LaserPowerCoord.cpp" />
+    <ClCompile Include="..\Private\LaserTennis_Manager.cpp" />
+    <ClCompile Include="..\Private\LaserTrigger.cpp" />
+    <ClCompile Include="..\Private\Laser_LaserTennis.cpp" />
     <ClCompile Include="..\Private\Laser_TypeA.cpp" />
     <ClCompile Include="..\Private\Laser_TypeB.cpp" />
+    <ClCompile Include="..\Private\Laser_TypeC.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Level_Stage.cpp" />
@@ -493,6 +531,7 @@
     <ClCompile Include="..\Private\MainCamera.cpp" />
     <ClCompile Include="..\Private\May.cpp" />
     <ClCompile Include="..\Private\MayJumpWall.cpp" />
+    <ClCompile Include="..\Private\MayWallCameraTrigger.cpp" />
     <ClCompile Include="..\Private\MenuScreen.cpp" />
     <ClCompile Include="..\Private\Moon.cpp" />
     <ClCompile Include="..\Private\MoonBaboon.cpp" />
@@ -519,6 +558,16 @@
     <ClCompile Include="..\Private\PinBall_HandleBase.cpp" />
     <ClCompile Include="..\Private\PinBall_Spring.cpp" />
     <ClCompile Include="..\Private\PipeJumpWall.cpp" />
+    <ClCompile Include="..\Private\PipeWallCameraTrigger.cpp" />
+    <ClCompile Include="..\Private\PixelArrow.cpp" />
+    <ClCompile Include="..\Private\PixelBaboon.cpp" />
+    <ClCompile Include="..\Private\PixelChargeBar.cpp" />
+    <ClCompile Include="..\Private\PixelChargeBarGauge.cpp" />
+    <ClCompile Include="..\Private\PixelCrossHair.cpp" />
+    <ClCompile Include="..\Private\PixelHeart.cpp" />
+    <ClCompile Include="..\Private\PixelLaser.cpp" />
+    <ClCompile Include="..\Private\PixelShield.cpp" />
+    <ClCompile Include="..\Private\PixelUFO.cpp" />
     <ClCompile Include="..\Private\Planet.cpp" />
     <ClCompile Include="..\Private\PlanetRing.cpp" />
     <ClCompile Include="..\Private\PlayerActor.cpp" />
@@ -540,6 +589,7 @@
     <ClCompile Include="..\Private\RobotLever.cpp" />
     <ClCompile Include="..\Private\RobotParts.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
+    <ClCompile Include="..\Private\Rope.cpp" />
     <ClCompile Include="..\Private\RotatedNoBatterySign.cpp" />
     <ClCompile Include="..\Private\RotatedRobotBattery.cpp" />
     <ClCompile Include="..\Private\RotatedRobotBody.cpp" />
@@ -550,6 +600,7 @@
     <ClCompile Include="..\Private\RotationCylinder.cpp" />
     <ClCompile Include="..\Private\RotationFan.cpp" />
     <ClCompile Include="..\Private\RotationFan_Base.cpp" />
+    <ClCompile Include="..\Private\RunningMoonBaboon.cpp" />
     <ClCompile Include="..\Private\SavePoint.cpp" />
     <ClCompile Include="..\Private\SecurityCamera.cpp" />
     <ClCompile Include="..\Private\SecurityCameraHandle.cpp" />
@@ -571,10 +622,14 @@
     <ClCompile Include="..\Private\SupportFrame.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TestEffect.cpp" />
+    <ClCompile Include="..\Private\Timer_LaserTennis.cpp" />
     <ClCompile Include="..\Private\ToyBoxButton.cpp" />
     <ClCompile Include="..\Private\ToyBoxButton_Button.cpp" />
     <ClCompile Include="..\Private\TutorialDoor.cpp" />
     <ClCompile Include="..\Private\UFO.cpp" />
+    <ClCompile Include="..\Private\UFORadarLever.cpp" />
+    <ClCompile Include="..\Private\UFORadarScreen.cpp" />
+    <ClCompile Include="..\Private\UFORadarSet.cpp" />
     <ClCompile Include="..\Private\UIObject.cpp" />
     <ClCompile Include="..\Private\UISprite.cpp" />
     <ClCompile Include="..\Private\UI_Generator.cpp" />
@@ -585,6 +640,7 @@
     <ClCompile Include="..\Private\DynamicVolume.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap_Button.cpp" />
+    <ClCompile Include="..\Private\Wall_LaserTennis.cpp" />
     <ClCompile Include="..\Private\WarpGate.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -605,6 +661,7 @@
   </ItemGroup>
   <!--Codes-->
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_ArcadePixel.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Default.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Font.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl" />

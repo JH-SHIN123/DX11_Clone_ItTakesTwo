@@ -192,20 +192,6 @@ RasterizerState Rasterizer_Shadow
 	SlopeScaledDepthBias = 1.0f;
 };
 
-RasterizerState Rasterizer_Volume_Front_Debug
-{
-	//FillMode = Wireframe;
-	FillMode = Solid;
-	CullMode = Back;
-	FrontCounterClockwise = false;
-};
-RasterizerState Rasterizer_Volume_Back_Debug
-{
-	//FillMode = Wireframe;
-	FillMode = Solid;
-	CullMode = Front;
-};
-
 /* DepthStencilState */
 DepthStencilState DepthStecil_Default
 {

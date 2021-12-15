@@ -327,15 +327,13 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 	//카메라 움직임이 끝나고 체크할것들
 	//SoftMoving
-	_vector vTargetPlayerUp = XMVectorRound(pPlayerTransform->Get_State(CTransform::STATE_UP) * 100.f) / 100.f;
-	//_vector vPlayerUp = XMLoadFloat4(&m_vPlayerUp);
-	//_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
-	//if(XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
-	//vPlayerUp += vUpDir* dTimeDelta /** 10.f*/;
-	//XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
-
-	_vector vPlayerUp = vTargetPlayerUp;
+	_vector vTargetPlayerUp = pPlayerTransform->Get_State(CTransform::STATE_UP);
+	_vector vPlayerUp = XMLoadFloat4(&m_vPlayerUp);
+	_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
+	if(XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
+	vPlayerUp += vUpDir * (_float)dTimeDelta * 5.f;
 	XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
+
 	
 	_vector vPrePlayerPos = XMLoadFloat4(&m_vPlayerPos);
 	_vector vCurPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
@@ -349,7 +347,7 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	if (fDist < 10.f && fDist > 0.01f) //순간이동안했을때
 	{
 		vPlayerPos = XMVectorLerp(vPrePlayerPos, vCurPlayerPos,
-			XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 2.f);
+			XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 20.f);
 	} else if(fDist > 10.f)
 		bIsTeleport = true;
 
@@ -482,6 +480,7 @@ _bool CSubCamera::OffSetPhsX(_fmatrix matWorld, _double dTimeDelta, _vector * pO
 	vDir = vPos - vPlayerPos;
 
 	m_pActorCom->Set_Position(vPlayerPos);
+
 	m_pActorCom->Move(vDir, dTimeDelta);
 	
 	*pOut = XMVectorSetW(m_pActorCom->Get_Position(), 1.f);

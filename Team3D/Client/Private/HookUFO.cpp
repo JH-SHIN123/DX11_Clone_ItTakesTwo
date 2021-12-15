@@ -55,12 +55,13 @@ HRESULT CHookUFO::NativeConstruct(void * pArg)
 	m_UserData = USERDATA(GameID::eHOOKUFO, this);
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pPhysxTransform;
-	ArgDesc.pGeometry = new PxSphereGeometry(25.f);
+	ArgDesc.pGeometry = new PxSphereGeometry(20.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
 
 	DATABASE->Set_HookUFO(this);
+	Set_MeshRenderGroup();
 
 	return S_OK;
 }
@@ -105,7 +106,7 @@ _int CHookUFO::Late_Tick(_double dTimeDelta)
 
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		Add_GameObject_ToRenderGroup();
 
 	return NO_EVENT;
 }
@@ -116,42 +117,41 @@ HRESULT CHookUFO::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1);
+
+	_uint iMaterialIndex = 0;
+	m_pModelCom->Sepd_Bind_Buffer();
+
+	iMaterialIndex = 1;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
+
+	iMaterialIndex = 2;
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
+
+	// 0: Alpha 
+	iMaterialIndex = 0;
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
+	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 18, false, eGroup);
 
 	return S_OK;
 }
 
-void CHookUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
-{
-	// Cody
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-	{
-		if (((CCody*)pGameObject)->Get_Position().m128_f32[1] < m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1])
-		{
-			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			m_IsCodyCollide = true;
-			m_PlayerID = GameID::Enum::eCODY;
-		}
-	}
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-	{
- 		m_IsCodyCollide = false;
-	}
 
-	// May
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
-	{
-		if (((CMay*)pGameObject)->Get_Position().m128_f32[1] < m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1])
-		{
-			((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			m_IsMayCollide = true;
-			m_PlayerID = GameID::Enum::eMAY;
-		}
-	}
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-	{
-		m_IsMayCollide = false;
-	}
+HRESULT CHookUFO::Set_MeshRenderGroup()
+{
+	m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_ALPHA);
+	m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_NONALPHA);
+	m_pModelCom->Set_MeshRenderGroup(2, tagRenderGroup::RENDER_NONALPHA);
+	return S_OK;
+}
+
+HRESULT CHookUFO::Add_GameObject_ToRenderGroup()
+{
+	m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_ALPHA, this);
+	m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_NONALPHA, this);
+	return S_OK;
 }
 
 HRESULT CHookUFO::Render_ShadowDepth()
@@ -258,6 +258,39 @@ HRESULT CHookUFO::Ready_Layer_CodyGauge_Circle(const _tchar * pLayerTag)
 	m_pCodyGauge_Circle->Set_Range(30.f);
 
 	return S_OK;
+}
+
+void CHookUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+	// Cody
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	{
+		if (((CCody*)pGameObject)->Get_Position().m128_f32[1] < m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1])
+		{
+			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCodyCollide = true;
+			m_PlayerID = GameID::Enum::eCODY;
+		}
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	{
+ 		m_IsCodyCollide = false;
+	}
+
+	// May
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
+	{
+		if (((CMay*)pGameObject)->Get_Position().m128_f32[1] < m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1])
+		{
+			((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eHOOKUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsMayCollide = true;
+			m_PlayerID = GameID::Enum::eMAY;
+		}
+	}
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+	{
+		m_IsMayCollide = false;
+	}
 }
 
 HRESULT CHookUFO::Ready_Layer_MayGauge_Circle(const _tchar * pLayerTag)
