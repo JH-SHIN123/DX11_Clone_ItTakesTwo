@@ -629,6 +629,10 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon()
 
 #endif //__MAPLOADING_OFF
 
+#ifdef __TEST_YOON
+
+#endif
+
 
 	return S_OK;
 }

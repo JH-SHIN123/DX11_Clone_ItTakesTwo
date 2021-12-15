@@ -214,7 +214,12 @@ HRESULT CLevel_Stage::Ready_Test()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_SpaceRail", Level::LEVEL_STAGE, TEXT("GameObject_SpaceRail")), E_FAIL);
 #endif
 	/* Yoon */
-
+#ifdef __TEST_YOON
+	CBoss_Missile::tagBossMissile_Desc MissileDesc;
+	MissileDesc.IsTarget_Cody = true;
+	MissileDesc.vPosition = { 60.f, 0.f, 15.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
+#endif
 
 	/* Jin */
 

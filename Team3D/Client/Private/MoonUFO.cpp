@@ -163,18 +163,18 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
 	{
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * UFOFORCE, XMVectorGetY(vRight) * UFOFORCE, XMVectorGetZ(vRight) * UFOFORCE));
-		m_bRotateRight = true;
+		//m_bRotateRight = true;
 	}
-	else
-		m_bRotateRight = false;
+	//else
+		//m_bRotateRight = false;
 
 	if (m_pGameInstance->Key_Pressing(DIK_LEFT))
 	{
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * -UFOFORCE, XMVectorGetY(vRight)  * -UFOFORCE, XMVectorGetZ(vRight) * -UFOFORCE));
-		m_bRotateLeft = true;
-	}
-	else
-		m_bRotateLeft = false;
+		//m_bRotateLeft = true;
+	} 
+	//else
+		//m_bRotateLeft = false;
 
 	if (m_pGameInstance->Key_Pressing(DIK_UP))
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * UFOFORCE, XMVectorGetY(vLook) * UFOFORCE, XMVectorGetZ(vLook) * UFOFORCE));
@@ -289,7 +289,7 @@ HRESULT CMoonUFO::Ready_Component(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
 	Safe_Delete(Geom);
-	//m_pDynamicActorCom->Get_Actor()->setLinearDamping(0.2f);
+	m_pDynamicActorCom->Get_Actor()->setLinearDamping(1.2f);
 
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
@@ -333,6 +333,5 @@ void CMoonUFO::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
-
 	CGameObject::Free();
 }
