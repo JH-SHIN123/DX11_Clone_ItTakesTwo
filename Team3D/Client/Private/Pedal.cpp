@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Pedal.h"
 #include "Cody.h"
+#include "MoonBaboon_SpaceShip.h"
 
 CPedal::CPedal(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -27,9 +28,8 @@ HRESULT CPedal::NativeConstruct(void * pArg)
 	m_UserData.pGameObject = this;
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
+	XMStoreFloat4x4(&m_matResetWorld, m_pTransformCom->Get_WorldMatrix());
 
-	m_pTransformCom->RotateRoll_Angle(-20.f);
-	m_bSmash = true;
 	return S_OK;
 }
 
@@ -93,60 +93,24 @@ void CPedal::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject 
 
 void CPedal::Movement(_double dTimeDelta)
 {
-	if (false == m_bSmash)
+	m_fProgressAnim = ((CMoonBaboon_SpaceShip*)(DATABASE->Get_MoonBaboon_SpaceShip()))->Get_Model()->Get_ProgressAnim();
+
+	float fAngle = 0.f;
+	float fRotateAngle = 0.f;
+
+	if (0.1f >= m_fProgressAnim)
 	{
-		if (false == m_bDelay)
-		{
-			_double dAngle = (dTimeDelta * (1.f * 20.f));
-			if (20.f <= m_dAngle + dAngle)
-			{
-				dAngle = 20.f - m_dAngle;
-				m_dAngle = 0.0;
-				m_bDelay = true;
-			}
-			else
-				m_dAngle += dAngle;
-			m_pTransformCom->RotateRoll_Angle(-dAngle);
-		}
-		else
-		{
-			m_dCoolTime += dTimeDelta;
-			if (0.6 <= m_dCoolTime)
-			{
-				m_bDelay = false;
-				m_bSmash = !m_bSmash;
-				m_dCoolTime = 0.0;
-				return;
-			}
-		}
+		m_fAddAngle = 0.f;
+		m_pTransformCom->RotateRoll_Angle((dTimeDelta * 30.f));
 	}
+	else if (0.5f >= m_fProgressAnim)
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matResetWorld));
 	else
 	{
-		if (false == m_bDelay)
-		{
-			_double dAngle = (dTimeDelta * (10.f * 20.f));
-			if (20.f <= m_dAngle + dAngle)
-			{
-				dAngle = 20.f - m_dAngle;
-				m_dAngle = 0.0;
-				m_bDelay = true;
-			}
-			else
-				m_dAngle += dAngle;
-
-			m_pTransformCom->RotateRoll_Angle(dAngle);
-		}
-		else
-		{
-			m_dCoolTime += dTimeDelta;
-			if (1.0 <= m_dCoolTime)
-			{
-				m_bDelay = false;
-				m_bSmash = !m_bSmash;
-				m_dCoolTime = 0.0;
-				return;
-			}
-		}
+		fAngle = ((m_fProgressAnim - 0.5f) * 2.f * 30.f);
+		fRotateAngle = fAngle - m_fAddAngle;
+		m_fAddAngle = fAngle;
+		m_pTransformCom->RotateRoll_Angle(-fRotateAngle);
 	}
 }
 

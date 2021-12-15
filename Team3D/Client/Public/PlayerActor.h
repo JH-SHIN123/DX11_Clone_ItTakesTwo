@@ -34,6 +34,7 @@ public: /* Getter */
 	PxVec3 Get_CollideNormal() { return m_vCollideNormal; }
 	_bool	Get_IsOnGravityPath() { return m_IsOnGravityPath; }
 	PLAYER_TYPE Get_Player_Type() { return m_ePlayerType; }
+	PxVec3 Get_GravityNormal() { return m_vHitNormal; }
 
 public: /* Setter */
 	void	Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
@@ -47,6 +48,7 @@ public: /* Setter */
 	void	Set_IsPlayerSizeSmall(_bool _IsPlayerSizeSmall) { m_IsPlayerSizeSmall = _IsPlayerSizeSmall; }
 	void	Set_IsPlayerInUFO(_bool _IsPlayerInUFO) { m_IsPlayerInUFO = _IsPlayerInUFO; }
 	void	Set_PlayerType(CPlayerActor::PLAYER_TYPE _ePlayerType) { m_ePlayerType = _ePlayerType; }
+	void	Set_ShapeFlag(_bool bValue);
 
 	/* Wall */
 	void	Set_ContactPos(PxExtendedVec3 vPosition) { m_vContactPosition = vPosition; }

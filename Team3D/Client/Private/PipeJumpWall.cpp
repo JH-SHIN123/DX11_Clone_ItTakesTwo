@@ -72,9 +72,6 @@ HRESULT CPipeJumpWall::NativeConstruct(void * pArg)
 _int CPipeJumpWall::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
-
-
-
 	
 	//1. m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(44.8309f, 218.25084f, 224.46f, 1.f));
 	//2. m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(46.0709f, 218.25084f, 224.46f, 1.f));

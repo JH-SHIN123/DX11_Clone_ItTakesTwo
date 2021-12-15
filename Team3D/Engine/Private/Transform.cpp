@@ -31,6 +31,11 @@ _double CTransform::Get_RotationPerSec() const
 	return m_TransformDesc.dRotationPerSec;
 }
 
+_double CTransform::Get_SpeedPerSec() const
+{
+	return m_TransformDesc.dSpeedPerSec;
+}
+
 void CTransform::Set_State(STATE eState, _fvector vState)
 {
 	memcpy(&m_WorldMatrix.m[eState][0], &vState, sizeof(_vector));
@@ -196,6 +201,15 @@ void CTransform::Go_Down(_double dTimeDelta)
 	_vector vPosition	= Get_State(CTransform::STATE_POSITION);;
 
 	vPosition -= XMVector3Normalize(vUp) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
+
+	Set_State(CTransform::STATE_POSITION, vPosition);
+}
+
+void CTransform::Go_Direction(_fvector vDirection, _double dTimeDelta)
+{
+	_vector vPosition = Get_State(CTransform::STATE_POSITION);;
+
+	vPosition += XMVector3Normalize(vDirection) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
 	Set_State(CTransform::STATE_POSITION, vPosition);
 }

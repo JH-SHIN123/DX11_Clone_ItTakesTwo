@@ -89,7 +89,7 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 
 	if (m_iTargetPlayer == GameID::eCODY)
 	{
-		if (m_pGameInstance->Key_Down(DIK_F) && m_IsCodyCollide == true)
+		if (m_pGameInstance->Key_Down(DIK_E) && m_IsCodyCollide == true)
 		{
 			UI_Delete(Cody, InputButton_InterActive);
 			m_bEnterValve = true;

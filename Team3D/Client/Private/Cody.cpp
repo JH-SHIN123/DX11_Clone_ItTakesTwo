@@ -24,10 +24,16 @@
 /* For.SpaceShip */
 #include "ElectricBox.h"
 #include "ElectricWall.h"
+/* For.LaserTennis */
+#include "LaserTennis_Manager.h"
 /*For.WarpGate*/
 #include "WarpGate.h"
 /* For.BossUFO */
 #include "UFO.h"
+
+/* For. UFORadarSet */
+#include "UFORadarSet.h"
+#include "UFORadarLever.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -203,7 +209,6 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Holding_Enter_UFO, ANI_C_Holding_Low_UFO, true);
 	m_pModelCom->Add_LerpInfo(ANI_C_Holding_Low_UFO, ANI_C_Holding_UFO, true);
 
-
 	m_pModelCom->Add_LerpInfo(ANI_C_Holding_UFO, ANI_C_CutScene_BossFight_LaserRippedOff, true);
 
 	return;
@@ -228,12 +233,14 @@ _int CCody::Tick(_double dTimeDelta)
 
 	//tEST
 	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
 #pragma region BasicActions
 	/////////////////////////////////////////////
 	KeyInput_Rail(dTimeDelta);
 
 	if (false == m_bMoveToRail && false == m_bOnRail)
 	{
+		LaserTennis(dTimeDelta);
 		ElectricWallJump(dTimeDelta);
 		Pipe_WallJump(dTimeDelta);
 		Wall_Jump(dTimeDelta);
@@ -257,7 +264,7 @@ _int CCody::Tick(_double dTimeDelta)
 			PinBall(dTimeDelta);
 			SpaceShip_Respawn(dTimeDelta);
 			Holding_BossUFO(dTimeDelta);
-			Enter_BossUFO(dTimeDelta);
+			In_JoyStick(dTimeDelta);
 		}
 		else
 		{
@@ -284,6 +291,7 @@ _int CCody::Tick(_double dTimeDelta)
 	/////////////////////////////////////////////
 
 #pragma endregion
+
 
 	/* 레일 타겟을 향해 날라가기 */
 	// Forward 조정
@@ -468,9 +476,14 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(true);
 	}
-	if (m_pGameInstance->Key_Down(DIK_0))/* 우산 */
+	//if (m_pGameInstance->Key_Down(DIK_0))/* 우산 */
+	//{
+	//	m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+	//	m_pActorCom->Set_IsPlayerInUFO(false);
+	//}
+	if (m_pGameInstance->Key_Down(DIK_0))/* 레이저 테니스 */
 	{
-		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 
@@ -1303,7 +1316,7 @@ void CCody::Jump(const _double dTimeDelta)
 			else if (m_eCurPlayerSize == SIZE_LARGE)
 				m_pActorCom->Jump_Start(2.8f);
 			else if (m_eCurPlayerSize == SIZE_SMALL)
-				m_pActorCom->Jump_Start(1.f);
+				m_pActorCom->Jump_Start(0.8f);
 
 			if (m_eCurPlayerSize == SIZE_LARGE)
 				m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Start); // 사이즈 클때 점프 애니메이션이 다름.
@@ -1320,7 +1333,7 @@ void CCody::Jump(const _double dTimeDelta)
 			if (m_eCurPlayerSize == SIZE_MEDIUM)
 				m_pActorCom->Jump_Start(2.6f);
 			else if (m_eCurPlayerSize == SIZE_SMALL)
-				m_pActorCom->Jump_Start(1.f);
+				m_pActorCom->Jump_Start(0.8f);
 
 			m_pModelCom->Set_Animation(ANI_C_DoubleJump);
 			m_bShortJump = false;
@@ -1779,6 +1792,13 @@ void CCody::SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject * pT
 	Safe_AddRef(m_pTargetPtr);
 }
 
+void CCody::SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerCameraWorld)
+{
+	m_eCameraTriggerID = eID;
+	m_IsCamTriggerCollide = IsCollide;
+	XMStoreFloat4x4(&m_TriggerCameraWorld, vTriggerCameraWorld);
+}
+
 _bool CCody::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)
@@ -1842,7 +1862,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
 			m_IsPushingBattery = true;
 		}
-		else if (m_eTargetGameID == GameID::eCONTROLROOMBATTERY && m_pGameInstance->Key_Down(DIK_F))
+		else if (m_eTargetGameID == GameID::eCONTROLROOMBATTERY && m_pGameInstance->Key_Down(DIK_E))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
@@ -1997,12 +2017,16 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bPipeWallAttach = true;
 		}
+		else if (m_eTargetGameID == GameID::eDUMMYWALLCAMERATRIGGER)
+		{
+			m_eCameraWorkState = STATE_DUMMYWALL_JUMP;
+		}
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
 		{
 			/* 세이브포인트->트리거와 충돌시 세이브포인트 갱신 */
 			m_vSavePoint = m_vTriggerTargetPos;
 		}
-		else if (m_eTargetGameID == GameID::eUMBRELLABEAMJOYSTICK && m_pGameInstance->Key_Down(DIK_F))
+		else if (m_eTargetGameID == GameID::eUMBRELLABEAMJOYSTICK && m_pGameInstance->Key_Down(DIK_E))
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
@@ -2119,13 +2143,51 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			//m_IsCodyEnter = true;
 		}
+		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_E) && false == m_bLaserTennis)
+		{
+			LASERTENNIS->Increase_PowerCoord();
+
+			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
+			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
+
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
+			m_bLaserTennis = true;
+		}
+		else if (m_eTargetGameID == GameID::eLASER_LASERTENNIS)
+		{
+			/* Hit Effect 생성 */
+
+			/* HP 감소 */
+			m_iHP -= 3;
+			LASERTENNIS->Set_MayCount();
+
+			if (0 >= m_iHP)
+				m_iHP = 12;
+
+			m_IsCollide = false;
+		}
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_F9) && m_IsInJoyStick == false && m_eCurPlayerSize == SIZE_SMALL)
+	{
+		m_pActorCom->Set_ZeroGravity(true, true, true);
+		m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
+		_vector vTargetPosition = XMVectorSet(64.0174942f, 601.063843f + 0.076f, 1011.77844f, 1.f);
+		_vector vOffSetPosition = XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.076f, 1011.77844f - 0.04f - 0.5f, 1.f);
+
+		m_pActorCom->Set_Position(vOffSetPosition);
+		m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);
+		m_IsInJoyStick = true;
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
 		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach || m_IsHolding_UFO
-		|| m_IsCodyEnter)
+		|| m_bLaserTennis || m_IsInJoyStick)
 		return true;
 
 	return false;
@@ -2422,6 +2484,10 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 		m_pTransformCom->RotateYawDirectionOnLand(-vTriggerToPlayer, (_float)dTimeDelta / 2.f);
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		if (m_pGameInstance->Key_Pressing(DIK_J))
+		{
+			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(m_fRopeAngle));
+		}
 
 		if (m_pGameInstance->Key_Down(DIK_SPACE)) // 로프 놓기
 		{
@@ -3176,6 +3242,76 @@ HRESULT CCody::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 	return S_OK;
 }
 
+void CCody::In_JoyStick(_double dTimeDelta)
+{
+	if (true == m_IsInJoyStick)
+	{
+		if (m_pGameInstance->Key_Up(DIK_W) || m_pGameInstance->Key_Up(DIK_S) || m_pGameInstance->Key_Up(DIK_A) || m_pGameInstance->Key_Up(DIK_D))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
+		}
+		else if (m_pGameInstance->Key_Pressing(DIK_W))
+		{
+			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_Bck)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Fwd);
+			}
+			else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_MH && m_pModelCom->Get_ProgressAnim() > 0.2f)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Fwd);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Fwd);
+			}
+		} 
+		else if (m_pGameInstance->Key_Pressing(DIK_A))
+		{
+			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_Right)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Left);
+			}
+			else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_MH && m_pModelCom->Get_ProgressAnim() > 0.2f)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Left);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Left);
+			}
+		}
+		else if (m_pGameInstance->Key_Pressing(DIK_S))
+		{
+			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_Fwd)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Bck);
+			}
+			else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_MH && m_pModelCom->Get_ProgressAnim() > 0.2f)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Bck);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Bck);
+			}
+		}
+		else if (m_pGameInstance->Key_Pressing(DIK_D))
+		{
+			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_Fwd)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Right);
+			}
+			else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_ArcadeScreenLever_MH && m_pModelCom->Get_ProgressAnim() > 0.2f)
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_Right);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_Right);
+			}
+		}
+		if (m_pGameInstance->Key_Down(DIK_F10))
+		{
+			m_IsInJoyStick = false;
+			m_pActorCom->Set_ZeroGravity(false, false, false);
+			m_pModelCom->Set_Animation(ANI_C_MH);
+		}
+	}
+}
+
 void CCody::Start_RadiarBlur(_double dBlurTime)
 {
 	//if (m_bRadiarBlur) return;
@@ -3299,16 +3435,38 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 	}
 }
 
-void CCody::Enter_BossUFO(const _double dTimeDelta)
+void CCody::LaserTennis(const _double dTimeDelta)
 {
-	if (false == m_IsCodyEnter)
+	if (false == m_bLaserTennis)
 		return;
 
-	_vector vTargetPos = { 59.83587f, 344.33596f, 154.84754, 1.f };
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vDir = XMVector3Normalize(vTargetPos - vPos);
+	if (true == LASERTENNIS->Get_StartGame())
+	{
+		if (false == m_bCheckAnim)
+		{
+			m_pActorCom->Jump_Start(2.f);
 
-	m_pTransformCom->MoveToDir(vDir, dTimeDelta * 5.f);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_RocketFirework);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_bCheckAnim = true;
+		}
+		else if (0.7f <= m_pModelCom->Get_ProgressAnim())
+		{
+			LASERTENNIS->Start_Game();
+			m_bLaserTennis = false;
+			m_bCheckAnim = false;
+			return;
+		}
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_Q))
+	{
+		LASERTENNIS->Decrease_PowerCoord();
+		m_bLaserTennis = false;
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_E))
+		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_CODY);
 }
 
 void CCody::PinBall_Respawn(const _double dTimeDelta)
@@ -3347,3 +3505,4 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 		m_dRespawnTime = 0.0;
 	}
 }
+

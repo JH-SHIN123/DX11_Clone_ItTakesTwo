@@ -42,6 +42,8 @@ public:
 
 	/* For. BossFloorUp */
 	void Set_BossUFOUp(_float fMaxDistance, _float fSpeed);
+	HRESULT Set_MeshRenderGroup();
+	HRESULT Add_GameObject_ToRenderGroup();
 
 public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
