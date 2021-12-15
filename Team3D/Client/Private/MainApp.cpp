@@ -155,6 +155,9 @@ HRESULT CMainApp::Ready_Prototype_ForStatic()
 	/* VI_Buffer_FontInstance */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"), CVIBuffer_FontInstance::Create(m_pDevice, m_pDeviceContext, 50, TEXT("../Bin/ShaderFiles/Shader_Font.hlsl"), "DefaultTechnique")), E_FAIL);
 
+	/* VI_Buffer_Rect_ArcadePixel */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_ArcadePixel"), CVIBuffer_Rect::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_ArcadePixel.hlsl"), "DefaultTechnique")), E_FAIL);
+
 	/* For.GameObject */
 
 	return S_OK;

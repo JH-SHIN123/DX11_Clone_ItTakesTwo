@@ -93,6 +93,9 @@
     <Filter Include="02.GameObject\03.Character\01.May">
       <UniqueIdentifier>{49acfb49-2074-4d96-9c3b-229603d013ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\03.Character\02.Items">
+      <UniqueIdentifier>{185c722e-7bc7-4ace-b51a-b7a8873ac3f6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\03.Character\03.Boss">
       <UniqueIdentifier>{97f33821-55ec-4e25-853a-bb4f0faf6f7c}</UniqueIdentifier>
     </Filter>
@@ -107,6 +110,9 @@
     </Filter>
     <Filter Include="02.GameObject\03.Character\03.Boss\03.MoonBaboon_SpaceShip">
       <UniqueIdentifier>{c93b2988-1a13-40fd-b9e4-34e15c40918c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\03.Character\03.Boss\04.RunningMoonBaboon">
+      <UniqueIdentifier>{ffa23b80-da2e-41ea-8f37-e62dd1bb9480}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\03.Character\99.Parent">
       <UniqueIdentifier>{0b5865f1-2eda-4ced-acc0-09423f134b86}</UniqueIdentifier>
@@ -131,6 +137,9 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.Laser\02.TypeB%28Boss%29">
       <UniqueIdentifier>{845d1d4d-5721-40b7-b552-f8a8ac53b106}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.Laser\03.TypeC%28MoonUFO%29">
+      <UniqueIdentifier>{a16f20b8-0c97-4db0-ad72-c070b9ebf0ca}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung">
       <UniqueIdentifier>{fec661ad-31f9-4dec-b790-1b4cb09030ce}</UniqueIdentifier>
@@ -228,10 +237,10 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon">
       <UniqueIdentifier>{5b697a68-0358-4102-b02d-6330df092a73}</UniqueIdentifier>
     </Filter>
-      <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis">
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis">
       <UniqueIdentifier>{2f8d2754-6701-41e2-9489-11780094fcd4}</UniqueIdentifier>
     </Filter>
-      <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager">
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager">
       <UniqueIdentifier>{692624aa-05b2-43a0-9e2a-62f2c591e27f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis">
@@ -410,6 +419,42 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotHead">
       <UniqueIdentifier>{195a53e8-d60a-4b6a-acc2-e528f877d4bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet">
+      <UniqueIdentifier>{5a8b3c4a-2f54-4c36-864c-b09168f6cbe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelArrow">
+      <UniqueIdentifier>{e63c7c10-00f2-4f58-b572-f21cf9f72e24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelBaboon">
+      <UniqueIdentifier>{3005b2dc-f19b-470a-ae25-1c849d2ad5c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBar">
+      <UniqueIdentifier>{c575c5fb-ac5e-43fa-a014-bdc923a6a86a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBarGauge">
+      <UniqueIdentifier>{be9ad09e-e9ac-474c-a1ec-0cb2dad1b979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelCrossHair">
+      <UniqueIdentifier>{1ac9580d-da06-4b7f-80e6-0aea96698253}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelHeart">
+      <UniqueIdentifier>{f14a377f-2f92-48a2-b056-467646a21ba6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelLaser">
+      <UniqueIdentifier>{52c684bd-7fef-4a6a-9191-eb65a0a93d0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelShield">
+      <UniqueIdentifier>{b03945a9-ee3a-4390-bac6-288264ccf6f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelUFO">
+      <UniqueIdentifier>{5a5a8040-e900-4364-8388-bd1875391a4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarScreen">
+      <UniqueIdentifier>{c11c0f23-cc94-441b-be78-6deee3e7bf8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarLever">
+      <UniqueIdentifier>{d6006e9b-42e7-4e5d-8d15-f5a8446b834a}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin">
       <UniqueIdentifier>{36cb6d5b-c440-4edb-bdcf-2cd582b022db}</UniqueIdentifier>
@@ -842,6 +887,9 @@
     <ClInclude Include="..\Public\May.h">
       <Filter>02.GameObject\03.Character\01.May</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Rope.h">
+      <Filter>02.GameObject\03.Character\02.Items</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\UFO.h">
       <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
     </ClInclude>
@@ -853,6 +901,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\MoonBaboon_SpaceShip.h">
       <Filter>02.GameObject\03.Character\03.Boss\03.MoonBaboon_SpaceShip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RunningMoonBaboon.h">
+      <Filter>02.GameObject\03.Character\03.Boss\04.RunningMoonBaboon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Character.h">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
@@ -868,6 +919,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Laser_TypeB.h">
       <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\02.TypeB%28Boss%29</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Laser_TypeC.h">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\03.TypeC%28MoonUFO%29</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\WarpGate.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
@@ -950,10 +1004,10 @@
     <ClInclude Include="..\Public\LaserTennis_Manager.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
     </ClInclude>
-        <ClInclude Include="..\Public\Laser_LaserTennis.h">
+    <ClInclude Include="..\Public\Laser_LaserTennis.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis</Filter>
     </ClInclude>
-      <ClInclude Include="..\Public\LaserActivation.h">
+    <ClInclude Include="..\Public\LaserActivation.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserActivation</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LaserButton.h">
@@ -962,13 +1016,13 @@
     <ClInclude Include="..\Public\LaserButtonLarge.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge</Filter>
     </ClInclude>
-      <ClInclude Include="..\Public\LaserButtonLarge_Gate.h">
+    <ClInclude Include="..\Public\LaserButtonLarge_Gate.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge_Gate</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LaserPowerCoord.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserPowerCoord</Filter>
     </ClInclude>
-      <ClInclude Include="..\Public\LaserTrigger.h">
+    <ClInclude Include="..\Public\LaserTrigger.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Timer_LaserTennis.h">
@@ -1100,10 +1154,19 @@
     <ClInclude Include="..\Public\DummyWall.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DummyWallCameraTrigger.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\MayJumpWall.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MayWallCameraTrigger.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\PipeJumpWall.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PipeWallCameraTrigger.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\RotatedRobotParts.h">
@@ -1123,6 +1186,42 @@
     </ClInclude>
     <ClInclude Include="..\Public\RotatedRobotHead.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotHead</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UFORadarSet.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PixelChargeBar.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PixelChargeBarGauge.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBarGauge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PixelCrossHair.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelCrossHair</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PixelUFO.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelUFO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PixelArrow.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelArrow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PixelBaboon.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelBaboon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PixelHeart.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelHeart</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PixelShield.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelShield</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PixelLaser.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelLaser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UFORadarScreen.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UFORadarLever.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarLever</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PipeCurve.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\00.PipeCurve</Filter>
@@ -1492,6 +1591,9 @@
     <ClCompile Include="..\Private\May.cpp">
       <Filter>02.GameObject\03.Character\01.May</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Rope.cpp">
+      <Filter>02.GameObject\03.Character\02.Items</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\UFO.cpp">
       <Filter>02.GameObject\03.Character\03.Boss\00.UFO</Filter>
     </ClCompile>
@@ -1503,6 +1605,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MoonBaboon_SpaceShip.cpp">
       <Filter>02.GameObject\03.Character\03.Boss\03.MoonBaboon_SpaceShip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RunningMoonBaboon.cpp">
+      <Filter>02.GameObject\03.Character\03.Boss\04.RunningMoonBaboon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObject\03.Character\99.Parent</Filter>
@@ -1518,6 +1623,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Laser_TypeB.cpp">
       <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\02.TypeB%28Boss%29</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Laser_TypeC.cpp">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\03.TypeC%28MoonUFO%29</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\WarpGate.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
@@ -1597,13 +1705,13 @@
     <ClCompile Include="..\Private\Moon.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\LaserTennis_Manager.cpp">
+    <ClCompile Include="..\Private\LaserTennis_Manager.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\Laser_LaserTennis.cpp">
+    <ClCompile Include="..\Private\Laser_LaserTennis.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\LaserActivation.cpp">
+    <ClCompile Include="..\Private\LaserActivation.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserActivation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LaserButton.cpp">
@@ -1612,13 +1720,13 @@
     <ClCompile Include="..\Private\LaserButtonLarge.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\LaserButtonLarge_Gate.cpp">
+    <ClCompile Include="..\Private\LaserButtonLarge_Gate.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge_Gate</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LaserPowerCoord.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserPowerCoord</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\LaserTrigger.cpp">
+    <ClCompile Include="..\Private\LaserTrigger.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Timer_LaserTennis.cpp">
@@ -1750,10 +1858,19 @@
     <ClCompile Include="..\Private\DummyWall.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\DummyWallCameraTrigger.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\CodyWallJump</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\MayJumpWall.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\MayWallCameraTrigger.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\MayWallJump</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\PipeJumpWall.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PipeWallCameraTrigger.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\09.DummyWall\PipeWallJump</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\RotatedRobotParts.cpp">
@@ -1773,6 +1890,42 @@
     </ClCompile>
     <ClCompile Include="..\Private\RotatedRobotHead.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\10.RobotVarious\NoneInteraction\RtRobotHead</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UFORadarSet.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PixelChargeBar.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PixelChargeBarGauge.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelChargeBarGauge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PixelCrossHair.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelCrossHair</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PixelUFO.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelUFO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PixelLaser.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelLaser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PixelArrow.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelArrow</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PixelBaboon.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelBaboon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PixelHeart.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelHeart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PixelShield.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\PixelShield</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UFORadarScreen.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UFORadarLever.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarLever</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PipeCurve.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\00.PipeCurve</Filter>
@@ -2111,6 +2264,9 @@
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect_Effect.hlsl">
       <Filter>97.ShaderFiles\00.Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_ArcadePixel.hlsl">
+      <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

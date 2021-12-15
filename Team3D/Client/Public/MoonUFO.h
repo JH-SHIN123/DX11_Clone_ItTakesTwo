@@ -2,7 +2,7 @@
 #include "Client_Defines.h"
 
 BEGIN(Client)
-#define UFOFORCE 12000.f
+#define UFOFORCE 24000.f
 class CMoonUFO : public CGameObject
 {
 protected:
@@ -14,9 +14,12 @@ public:/* Getter */
 	CTransform*		Get_Transform() { return m_pTransformCom; }
 	CModel*			Get_Model()		{ return m_pModelCom; }
 	CDynamicActor*	Get_Actor() { return m_pDynamicActorCom; }
+	_float4 Get_LaserStartPos() const { return m_vLaserGunPos; }
+	_float4 Get_LaserDir() const { return m_vLaserDir; }
 
 public:/* Setter */
 	void Set_MayInUFO(_bool bCheck) { m_IsMayInUFO = bCheck; }
+	void Set_ShootLaser(_bool _bShootLaser) { m_IsShootLaser = _bShootLaser; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -27,6 +30,10 @@ public:
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
+
+public:
+	HRESULT Set_MeshRenderGroup();
+	HRESULT Add_GameObject_ToRenderGroup();
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;
@@ -39,6 +46,13 @@ private:
 	_bool					m_IsMayInUFO = false;
 	_bool					m_bRotateRight = false;
 	_bool					m_bRotateLeft = false;
+
+
+	// YYY
+	/* For. Laser_TypeA */
+	_float4				m_vLaserGunPos = {};
+	_float4				m_vLaserDir = {};
+	_bool				m_IsShootLaser = false;
 
 private:
 	void	KeyInPut(_double dTimeDelta);

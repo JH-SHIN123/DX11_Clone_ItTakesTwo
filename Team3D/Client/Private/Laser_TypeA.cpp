@@ -2,6 +2,7 @@
 #include "..\Public\Laser_TypeA.h"
 
 #include "UFO.h"
+#include "MoonUFO.h"
 #include "DataStorage.h"
 #include "Effect_Boss_Laser_Smoke.h"
 

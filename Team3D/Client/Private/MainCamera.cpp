@@ -263,7 +263,8 @@ _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 
 _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 {
-	CTransform* pPlayerTransform = dynamic_cast<CCody*>(m_pCody)->Get_Transform();
+	CTransform* pPlayerTransform = m_pCody->Get_Transform();
+
 
 	_long MouseMove = 0;
 	
@@ -283,6 +284,12 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 20.f;
 	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 20.f;
 	
+	_vector vTargetPlayerUp = pPlayerTransform->Get_State(CTransform::STATE_UP);
+	_vector vPlayerUp = XMLoadFloat4(&m_vPlayerUp);
+	_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
+	if (XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
+		vPlayerUp += vUpDir * (_float)dTimeDelta * 5.f;
+	XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
 
 	_vector vPrePlayerPos = XMLoadFloat4(&m_vPlayerPos);
 	if (XMVectorGetX(XMVectorIsNaN(vPrePlayerPos)))
@@ -292,12 +299,10 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 	_vector vPlayerPos = vCurPlayerPos;
 	_float fDist = fabs(XMVectorGetX(XMVector4Length(vPrePlayerPos - vCurPlayerPos)));
-	if (fDist > 10.f)
-		vPlayerPos = vCurPlayerPos;
-	else
-		vPlayerPos = XMVectorLerp(vPrePlayerPos, vCurPlayerPos, XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 10.f);
+
+	vPlayerPos = fDist > 10.f ? vCurPlayerPos : XMVectorLerp(vPrePlayerPos, vCurPlayerPos, XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 10.f);
 	
-	_vector vPlayerUp = pPlayerTransform->Get_State(CTransform::STATE_UP);
+
 
 	XMStoreFloat4(&m_vPlayerPos, vPlayerPos);
 
@@ -310,9 +315,19 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 	_vector vScale, vRotQuat, vTrans;
 	_vector  vCurRotQuat,vCurTrans;
-	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) *
-		XMMatrixRotationQuaternion(vCurQuartRot)*MH_RotationMatrixByUp(vPlayerUp, vPlayerPos));
 
+
+
+	if (m_pCody->Get_IsInGravityPipe() == false)
+	{
+		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) *
+			XMMatrixRotationQuaternion(vCurQuartRot)*MH_RotationMatrixByUp(vPlayerUp, vPlayerPos));
+	}
+	else
+	{
+		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) *
+			XMMatrixRotationQuaternion(vCurQuartRot)*MH_RotationMatrixByUp(XMVectorSet(0.f,1.f,0.f,0.f), vPlayerPos));
+	}
 
 	_vector vPreQuat = XMLoadFloat4(&m_PreWorld.vRotQuat);
 	_vector vPreTrans = XMLoadFloat4(&m_PreWorld.vTrans);
@@ -326,14 +341,16 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_matrix matAffine = XMMatrixAffineTransformation(XMVectorSet(1.f, 1.f, 1.f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 1.f),
 		vCurRotQuat, vCurTrans);
 	
+
 	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::LScreen))
 	{
 		if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, matAffine))
 			matAffine =  m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen);
 		vPlayerUp = XMVector3TransformNormal(vPlayerUp, matAffine);
+
 	}
 	
-	_vector vResultPos = XMVectorZero();
+	_vector vResultPos = matAffine.r[3];
 	 OffSetPhsX(matAffine,vPlayerPos, dTimeDelta, &vResultPos); 
 	
 	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vResultPos, vPlayerPos,vPlayerUp/*matAffine.r[2]*/));
@@ -373,6 +390,7 @@ void CMainCamera::KeyCheck(_double dTimeDelta)
 	{
 		m_pTransformCom->Go_Right(dTimeDelta);
 	}
+
 }
 _float CMainCamera::Get_ZoomVal_OnRail(_uint iNodeIdx, _bool bCanDash)
 {
@@ -1084,10 +1102,6 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		return NO_EVENT;
 	}*/
 
-	if (m_pGameInstance->Key_Down(DIK_O))
-	{
-		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
-	}
 	if (m_pGameInstance->Key_Down(DIK_P))
 	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;

@@ -31,6 +31,10 @@ public:
 public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
+public:
+	HRESULT Set_MeshRenderGroup();
+	HRESULT Add_GameObject_ToRenderGroup();
+
 public: /* Setter */
 	void Set_Launch(_bool bLaunch) { m_bLaunch = bLaunch; }
 	void Set_CodyUIDisable() { m_IsCodyUIDisable = false; }

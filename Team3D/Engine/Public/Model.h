@@ -166,6 +166,9 @@ public:
 	/*이펙트 전용 렌더 Topology가 Point*/
 	HRESULT	Render_Model_VERTEX(_uint iPassIndex, _uint iMaterialSetNum = 0, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
 
+	/* Model 컴포넌트 클론했을 때 피벗 바꿔야 할 경우 호출 */
+	HRESULT	Change_PivotMatrix(_fmatrix PivotMatrix);
+
 private: /* Typedef */
 	typedef vector<class CMesh*>			MESHES;
 	typedef vector<MATERIAL*>				MATERIALS;
@@ -223,8 +226,8 @@ private:
 	_uint						m_iViewportDrawInfo			= 0;
 private:
 	HRESULT	Sort_MeshesByMaterial();
-	HRESULT	Set_CenterBone(const char* pCenterBoneName = "");
 	HRESULT	Apply_PivotMatrix(_fmatrix PivotMatrix);
+	HRESULT	Set_CenterBone(const char* pCenterBoneName = "");
 	HRESULT	Store_TriMeshes();
 	void	Update_AnimTransformations(_double dTimeDelta);
 	void	Update_CombinedTransformations();

@@ -1,6 +1,6 @@
 #pragma once
-#include"Client_Defines.h"
-#include"CutScene.h"
+#include "Client_Defines.h"
+#include "CutScene.h"
 BEGIN(Client)
 class CCutScenePlayer :public CBase
 {
