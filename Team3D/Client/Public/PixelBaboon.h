@@ -35,6 +35,7 @@ public:
 	 void Set_Hearts_Pos();
 
  private:
+	 void Check_Degree_And_Distance_From_MoonUFO(_double dTimeDelta);
 	 void Check_Distance_From_UFO(_double dTimeDelta);
 
  private:
@@ -51,16 +52,20 @@ public:
 	 _int	m_iLifeCount = 3;
 	 _bool  m_bRender = true;
 
+	 _vector vCenterPos = {};
+
+	 _bool  m_bTriggerOnce = false;
+
 	 CPixelHeart* m_pPixelHeart[3] = {nullptr};
 	 CPixelShield* m_pPixelShield = nullptr;
 	 CPixelArrow* m_pPixelArrow = nullptr;
 
 
  private:
-	 CVIBuffer_Rect*					m_pVIBufferCom = nullptr;
+	 CVIBuffer_Rect*				m_pVIBufferCom = nullptr;
 	 CRenderer*						m_pRendererCom = nullptr;
 	 CTextures*						m_pTextureCom = nullptr;
-	 CTransform*						m_pTransformCom = nullptr;
+	 CTransform*					m_pTransformCom = nullptr;
 
 public:
 	static CPixelBaboon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

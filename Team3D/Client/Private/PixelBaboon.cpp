@@ -7,6 +7,9 @@
 #include "PixelShield.h"
 #include "PixelUFO.h"
 #include "PixelArrow.h"
+#include "RunningMoonBaboon.h"
+#include "MoonUFO.h"
+#include "PixelCrossHair.h"
 
 CPixelBaboon::CPixelBaboon(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CGameObject(pDevice, pDeviceContext)
@@ -35,9 +38,11 @@ HRESULT CPixelBaboon::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_PixelBaboon"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom), E_FAIL);
 
+	//vPosition = { 64.0174942f, 601.063843f + 0.56f, 1012.77844f - 0.29f, 1.f };
 	if (nullptr != pArg)
 	{
 		_vector* vPosition = (_vector*)pArg;
+		vCenterPos = (*(_vector*)pArg);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, *vPosition);
 		m_pTransformCom->Set_Scale(XMVectorSet(0.1f, 0.1f, 0.1f, 0.f));
 	}
@@ -78,25 +83,9 @@ _int CPixelBaboon::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD8))
+	if (((CRunningMoonBaboon*)DATABASE->Get_RunningMoonBaboon())->Get_IsHitLaser() == true && m_bTriggerOnce == false)
 	{
-		m_pTransformCom->Go_Up(dTimeDelta);
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD4))
-	{
-		m_pTransformCom->Go_Left(dTimeDelta);
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD6))
-	{
-		m_pTransformCom->Go_Right(dTimeDelta);
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD2))
-	{
-		m_pTransformCom->Go_Down(dTimeDelta);
-	}
-
-	if (m_pGameInstance->Key_Down(DIK_R))
-	{
+		m_bTriggerOnce = true;
 		m_bBlinking = true;
 		m_iLifeCount -= 1;
 
@@ -108,6 +97,7 @@ _int CPixelBaboon::Tick(_double dTimeDelta)
 			m_pPixelHeart[0]->Set_LifeCountRenderOff(true);    
 	}
 
+	Check_Degree_And_Distance_From_MoonUFO(dTimeDelta);
 	Check_Distance_From_UFO(dTimeDelta);
 	Set_Hearts_Pos();
 
@@ -139,8 +129,9 @@ _int CPixelBaboon::Late_Tick(_double dTimeDelta)
 				return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
 		}
 
-		if (m_iBlinkingCount == 8)
+		if (m_iBlinkingCount == 10)
 		{
+			m_bTriggerOnce = false;
 			m_bBlinking = false;
 			m_bBlink = false;
 			m_iBlinkingCount = 0;
@@ -185,6 +176,37 @@ void CPixelBaboon::Set_Hearts_Pos()
 	}
 }
 
+void CPixelBaboon::Check_Degree_And_Distance_From_MoonUFO(_double dTimeDelta)
+{
+	_vector vMoonBaboonPos = ((CRunningMoonBaboon*)DATABASE->Get_RunningMoonBaboon())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	_vector vUFOPos = ((CMoonUFO*)DATABASE->Get_MoonUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	_vector vUFOUp = ((CMoonUFO*)DATABASE->Get_MoonUFO())->Get_Transform()->Get_State(CTransform::STATE_UP);
+
+	_vector vMoonUFORight = XMVector3Normalize(-((CMoonUFO*)DATABASE->Get_MoonUFO())->Get_Transform()->Get_State(CTransform::STATE_RIGHT));
+
+	_vector vProjPos = vUFOPos - XMVector3Normalize(vUFOUp) * 31.f;
+	_vector vProjPosToBaboon = vMoonBaboonPos - vProjPos;
+	_vector vUFOToBaboon = vMoonBaboonPos - vUFOPos;
+
+
+	_float fRadian = XMVectorGetX(XMVector3AngleBetweenNormals(XMVector3Normalize(vProjPosToBaboon), vMoonUFORight));
+	_float fLength = XMVectorGetX((XMVector3Length(vProjPosToBaboon)));
+
+	_float fCCW = XMVectorGetX(XMVector3Dot(vUFOUp, XMVector3Cross(XMVector3Normalize(vProjPosToBaboon), vMoonUFORight)));
+
+	_float fX = 0.f;
+	_float fY = 0.f;
+
+	fX = vCenterPos.m128_f32[0] - (fLength / 125.f) * cos(fRadian);
+
+	if (fCCW > 0.f)
+		fRadian *= -1.f;
+	fY = vCenterPos.m128_f32[1] + (fLength / 125.f) * sin(fRadian);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(fX, fY, vCenterPos.m128_f32[2], 1.f));
+
+}
+
 void CPixelBaboon::Check_Distance_From_UFO(_double dTimeDelta)
 {
 	if (nullptr == DATABASE->Get_PixelUFO())
@@ -212,6 +234,17 @@ void CPixelBaboon::Check_Distance_From_UFO(_double dTimeDelta)
 		m_pPixelArrow->Set_RenderState(false);
 		m_bRender = true;
 	}
+
+	_vector vCrossHairPos = ((CPixelCrossHair*)DATABASE->Get_PixelCrossHair())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+
+	_float vCompensateDist = XMVectorGetX(XMVector3Length(vMoonBaboonPosition - vCrossHairPos));
+
+	if (vCompensateDist < 0.03f && DATABASE->Get_LaserGauge() > 0.9f)
+	{
+		((CMoonUFO*)DATABASE->Get_MoonUFO())->Compensate_LaserDir(true);
+	}
+		
+
 }
 
 

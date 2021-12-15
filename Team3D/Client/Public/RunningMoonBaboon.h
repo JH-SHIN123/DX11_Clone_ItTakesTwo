@@ -15,11 +15,7 @@ public:/* Getter */
 	CTransform*		Get_Transform() { return m_pTransformCom; }
 	CModel*			Get_Model()		{ return m_pModelCom; }
 	CDynamicActor*	Get_Actor() { return m_pDynamicActorCom; }
-	_float4 Get_LaserStartPos() const { return m_vLaserGunPos; }
-	_float4 Get_LaserDir() const { return m_vLaserDir; }
-
-public:/* Setter */
-	void Set_ShootLaser(_bool _bShootLaser) { m_IsShootLaser = _bShootLaser; }
+	_bool			Get_IsHitLaser() { return m_IsLaserHit; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -31,6 +27,9 @@ public:
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 
+public: /* Setter */
+	void Set_LaserHit(_bool IsLaserHit) { m_IsLaserHit = IsLaserHit; }
+
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
@@ -40,18 +39,21 @@ private:
 
 	_bool					m_bRotateRight = false;
 	_bool					m_bRotateLeft = false;
+	_bool					m_bJetPackAnimOnce = false;
+	_bool					m_bHitOnceAnim = false;
+	_float					m_fJetAcceleration = 0.f;
 
 	// YYY
-	/* For. Laser_TypeA */
-	_float4				m_vLaserGunPos = {};
-	_float4				m_vLaserDir = {};
-	_bool				m_IsShootLaser = false;
 	PxRaycastBuffer		m_RaycastBuffer;
+	_bool				m_IsLaserHit = false;
+	_float				m_fShieldTime = 0.f;
+	_float				m_fJetPackTime = 0.f;
 
 private:
 	void	Movement(_double dTimeDelta);
 	void	Calculate_Matrix(_double dTimeDelta);
 	void	Add_LerpInfo();
+	void	LaserHit_Movement(_double dTimeDelta);
 
 private:
 	HRESULT Ready_Component(void* pArg);

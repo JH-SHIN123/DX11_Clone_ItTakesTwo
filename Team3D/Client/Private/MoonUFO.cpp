@@ -6,6 +6,7 @@
 #include "Moon.h"
 #include "PixelCrossHair.h"
 #include "PixelUFO.h"
+#include "RunningMoonBaboon.h"
 
 CMoonUFO::CMoonUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -225,9 +226,16 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	/* 레이저에 시작위치랑 방향 벡터 던져주자 */
 	XMStoreFloat4(&m_vLaserGunPos, matLaserRingWorld.r[3]);
 
-	vLaserGunDir = (XMVector3Normalize(-m_pTransformCom->Get_State(CTransform::STATE_UP)) / (2.f * fLength) + XMVector3Normalize(vLaserGunDir));
-	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(vLaserGunDir));
-
+	if (m_bCompensate == false)
+	{
+		vLaserGunDir = (XMVector3Normalize(-m_pTransformCom->Get_State(CTransform::STATE_UP)) / (2.95f * fLength) + XMVector3Normalize(vLaserGunDir));
+		XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(vLaserGunDir));
+	}
+	else
+	{
+		vLaserGunDir = XMVector3Normalize(((CRunningMoonBaboon*)DATABASE->Get_RunningMoonBaboon())->Get_Transform()->Get_State(CTransform::STATE_POSITION) - XMVectorSetW(XMLoadFloat4(&m_vLaserGunPos), 1.f));
+		XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(vLaserGunDir));
+	}
 	//XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)));
 	//XMStoreFloat4(&m_vLaserGunPos, matLaserGunWorld.r[3]);
 	//XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(matLaserGunWorld.r[2]));
