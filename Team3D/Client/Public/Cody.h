@@ -454,6 +454,7 @@ private:
 	_bool m_IsHolding_Low_UFO = false;
 	_bool m_IsHolding_High_UFO = false;
 	_uint m_iKeyDownCount = 0;
+	_bool m_IsCodyEnter = false;
 
 	// YYY
 	void Hit_StarBuddy(const _double dTimeDelta);
@@ -481,6 +482,7 @@ private:
 
 	/* ÁøÇõ */
 	void Holding_BossUFO(const _double dTimeDelta);
+	void Enter_BossUFO(const _double dTimeDelta);
 
 public:
 	void PinBall_Respawn(const _double dTimeDelta);

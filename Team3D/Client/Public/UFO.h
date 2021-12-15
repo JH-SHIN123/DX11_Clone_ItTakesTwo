@@ -37,6 +37,8 @@ public:
 public:
 	void Set_IsGuidedMissileDeadCheck(_bool IsCheck);
 	void Set_UFOAnimation(_uint iAnimIndex, _uint iNextAnimIndex);
+	void Set_CodyEnterUFO();
+	void Set_CutScene();
 
 	/* For. BossFloorUp */
 	void Set_BossUFOUp(_float fMaxDistance, _float fSpeed);
@@ -86,6 +88,7 @@ private:
 	_bool					m_IsAnimationTransform = true;
 	_bool					m_IsLaserGunRid = false;
 	_bool					m_IsActorCreate = true;
+	_bool					m_IsTriggerActive = false;
 	
 	class CBoss_Missile*	m_pCodyMissile = nullptr;
 	class CBoss_Missile*	m_pMayMissile = nullptr;
@@ -98,6 +101,8 @@ private:
 	_bool					m_IsGroundPound = false;
 	_bool					m_IsLastFloor = false;
 	_bool					m_IsGoingLastFloor = false;
+	_bool					m_IsEjection = false;
+	_bool					m_IsLaserDown = false;
 	_float4					m_vGroundPoundTargetPos;
 
 	vector<class CMoonBaboon_SubLaser*>	m_vecSubLaser;
@@ -112,12 +117,14 @@ private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CTransform*				m_pTriggerTransformCom = nullptr;
+	CTransform*				m_pStaticTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 	CModel*					m_pStaticModelCom = nullptr;
 	CTransform*				m_pCodyTransform = nullptr;
 	CTransform*				m_pMayTransform = nullptr;
 	CStaticActor*			m_pStaticActorCom = nullptr;
 	CTriggerActor*			m_pTriggerActorCom = nullptr;
+	CTriggerActor*			m_pEnterTriggerActorCom = nullptr;
 
 private:
 	/* For.AllPHASE */
@@ -150,6 +157,7 @@ private:
 	HRESULT Phase1_End(_double dTimeDelta);
 	HRESULT Ready_TriggerActor_Component();
 	HRESULT Ready_StaticActor_Component();
+	HRESULT TriggerActorReplacement();
 
 	/* For.PHASE_2 End */
 	HRESULT Phase2_End(_double dTimeDelta);

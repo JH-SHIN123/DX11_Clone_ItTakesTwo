@@ -67,7 +67,7 @@ _int CUFO::Tick(_double dTimeDelta)
 	CGameObject::Tick(dTimeDelta);
 
 	if (m_pGameInstance->Key_Pressing(DIK_X))
-		DATABASE->GoUp_BossFloor(99.f, 5.f);
+		DATABASE->GoUp_BossFloor(100.f, 5.f);
 	else if(m_pGameInstance->Key_Down(DIK_Z))
 		DATABASE->GoUp_BossFloor(100.f, 5.f);
 
@@ -106,7 +106,11 @@ _int CUFO::Tick(_double dTimeDelta)
 	{
 		Ready_StaticActor_Component();
 	}
-
+	else if (m_pGameInstance->Key_Down(DIK_F4))
+	{
+		m_pStaticTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(dTimeDelta * 10.f));
+		m_pStaticActorCom->Update_StaticActor();
+	}
 	////////////////////////////////////////////////////////////////////////////////////
 
 	/* 컷 신 재생중이 아니라면 보스 패턴 진행하자 나중에 컷 신 생기면 바꿈 */
@@ -578,7 +582,7 @@ void CUFO::Phase3_Pattern(_double dTimeDelta)
 	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta);
 
 	/* SubLaser 시간마다 올라오자 ㅇㅇ */
-	if (true == m_IsSubLaserOperation)
+	if (true == m_IsSubLaserOperation && 0 != m_vecSubLaser.size())
 		DependingTimeSubLaserOperation(dTimeDelta);
 
 	switch (m_ePattern)
@@ -753,13 +757,20 @@ HRESULT CUFO::Ready_StaticActor_Component()
 {
 	m_UserData = USERDATA(GameID::eBOSSUFO, this);
 
-	_matrix PivotMatrix = XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(90.f)) * m_pModelCom->Get_AnimTransformation(m_pModelCom->Get_BoneIndex("Base")) * m_pModelCom->Get_PivotMatrix();
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_StaticUFO"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("UFO_RocketKnockDown_Mh"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_StaticUFO"), TEXT("Com_StaticModel"), (CComponent**)&m_pStaticModelCom), E_FAIL);
+	m_pStaticTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
+
+	_matrix BaseBone = m_pModelCom->Get_BoneMatrix("Root");
+	_matrix matTrans = XMMatrixScaling(100.f, 100.f, 100.f);
+	BaseBone = matTrans * BaseBone * m_pTransformCom->Get_WorldMatrix();
+
+	_matrix matRotY = XMMatrixRotationZ(XMConvertToRadians(180.f));
+	BaseBone = matRotY * BaseBone;
+
+	m_pStaticTransformCom->Set_WorldMatrix(BaseBone);
 
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pStaticModelCom;
-	ArgDesc.pTransform = m_pTransformCom;
+	ArgDesc.pTransform = m_pStaticTransformCom;
 	ArgDesc.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 
@@ -768,18 +779,56 @@ HRESULT CUFO::Ready_StaticActor_Component()
 	return S_OK;
 }
 
+HRESULT CUFO::TriggerActorReplacement()
+{
+	Safe_Release(m_pTriggerActorCom);
+
+	m_pTriggerActorCom = nullptr;
+
+	m_UserData = USERDATA(GameID::eBOSSUFO, this);
+
+	_matrix EntranceHatch = m_pModelCom->Get_BoneMatrix("EntranceHatch");
+	EntranceHatch *= m_pTransformCom->Get_WorldMatrix();
+
+	_vector TriggerPos = XMLoadFloat4((_float4*)&EntranceHatch.r[3].m128_f32[0]);
+	TriggerPos.m128_f32[1] -= 0.5f;
+	
+	m_pTriggerTransformCom->Set_State(CTransform::STATE_POSITION, TriggerPos);
+
+	CTriggerActor::ARG_DESC TriggerArgDesc;
+
+	TriggerArgDesc.pUserData = &m_UserData;
+	TriggerArgDesc.pTransform = m_pTriggerTransformCom;
+	TriggerArgDesc.pGeometry = new PxSphereGeometry(0.3f);
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_EnterTrigger"), (CComponent**)&m_pTriggerActorCom, &TriggerArgDesc), E_FAIL);
+	Safe_Delete(TriggerArgDesc.pGeometry);
+
+	return S_OK;
+}
+
 HRESULT CUFO::Phase2_End(_double dTimeDelta)
 {
+	/* UFO 다운 상태일 때 스태틱 액터 생성 트리거 액터 교체 */
+	if (UFO_RocketKnockDown_MH == m_pModelCom->Get_CurAnimIndex() && true == m_IsActorCreate)
+	{
+		Ready_StaticActor_Component();
+		TriggerActorReplacement();
+		m_IsTriggerActive = true;
+	}
 
-	if (UFO_RocketKnockDown_MH == m_pModelCom->Get_CurAnimIndex() && m_IsCodyEnter == true)
+	if (true == m_IsCodyEnter)
 	{
 		m_pModelCom->Set_Animation(CutScene_EnterUFO_FlyingSaucer, 30.f);
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
 		m_IsCodyEnter = false;
 	}
 
-	if (UFO_RocketKnockDown_MH == m_pModelCom->Get_CurAnimIndex() && true == m_IsActorCreate)
-		Ready_StaticActor_Component();
+	if (CutScene_EnterUFO_FlyingSaucer == m_pModelCom->Get_CurAnimIndex())
+	{
+		m_pStaticTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_pStaticActorCom->Update_StaticActor();
+	}
 
 	if (m_pModelCom->Is_AnimFinished(CutScene_EnterUFO_FlyingSaucer))
 	{
@@ -793,6 +842,7 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 		_matrix AnimUFOWorld = BaseBone * UFOWorld;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4((_float4*)&AnimUFOWorld.r[3].m128_f32[0]));
 	}
+
 
 	return S_OK;
 }
@@ -812,8 +862,24 @@ void CUFO::GetRidLaserGun()
 
 HRESULT CUFO::Phase3_End(_double dTimeDelta)
 {
-	m_pModelCom->Set_Animation(CutScene_Eject_FlyingSaucer);
+	if (false == m_IsEjection)
+	{
+		m_vStartUFOPos.y += 201.f;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vStartUFOPos));
+		m_pModelCom->Set_Animation(CutScene_Eject_FlyingSaucer);
+		m_pModelCom->Set_NextAnimIndex(UFO_MH);
+		m_IsEjection = true;
+	}
 
+	if(true == m_IsEjection && false == m_IsLaserDown)
+	{
+		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(false);
+
+		for (auto pSubLaser : m_vecSubLaser)
+			pSubLaser->Set_LaserOperation(false);
+
+		m_IsLaserDown = true;
+	}
 
 	return S_OK;
 }
@@ -833,7 +899,13 @@ void CUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * 
 {
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		if(m_ePhase == CUFO::PHASE_1)
+			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		else if (m_ePhase == CUFO::PHASE_2 && true == m_IsTriggerActive)
+		{
+			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSENTERUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCodyEnter = true;
+		}
 
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
@@ -899,9 +971,10 @@ HRESULT CUFO::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_TriggerTransform"), (CComponent**)&m_pTriggerTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_StaticTransform"), (CComponent**)&m_pStaticTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_UFO"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_StaticUFO"), TEXT("Com_StaticModel"), (CComponent**)&m_pStaticModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_StaticUFO"), TEXT("Com_StaticModel"), (CComponent**)&m_pStaticModelCom), E_FAIL);
 	
 	m_pCodyTransform = ((CCody*)DATABASE->GetCody())->Get_Transform();
 	NULL_CHECK_RETURN(m_pCodyTransform, E_FAIL);
@@ -938,6 +1011,16 @@ void CUFO::Set_UFOAnimation(_uint iAnimIndex, _uint iNextAnimIndex)
 {
 	m_pModelCom->Set_Animation(iAnimIndex);
 	m_pModelCom->Set_NextAnimIndex(iNextAnimIndex);
+}
+
+void CUFO::Set_CodyEnterUFO()
+{
+	m_IsCodyEnter = true;
+}
+
+void CUFO::Set_CutScene()
+{
+	m_IsCutScene = true;
 }
 
 void CUFO::Set_BossUFOUp(_float fMaxDistance, _float fSpeed)
@@ -1037,6 +1120,7 @@ void CUFO::Free()
 	if (nullptr != m_pMayMissile)
 		Safe_Release(m_pMayMissile);
 
+	Safe_Release(m_pStaticTransformCom);
 	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pStaticModelCom);
 	Safe_Release(m_pMayTransform);

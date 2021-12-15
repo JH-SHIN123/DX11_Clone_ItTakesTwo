@@ -53,8 +53,6 @@ public: /* Getter */
 	const _uint	Get_MeshCount() const { return m_iMeshCount; }
 	_fmatrix	Get_AnimTransformation(_uint iIndex) const { return XMLoadFloat4x4(&m_AnimTransformations[iIndex]); }
 	_double		Get_CurrentTime(_uint iAnimIndex) const;
-	_fmatrix	Get_PivotMatrix() const { return XMLoadFloat4x4(&m_PivotMatrix); }
-	void		Set_PivotMatrix(_matrix PivotMat) { XMStoreFloat4x4(&m_PivotMatrix, PivotMat); }
 
 	/**
 	* Get_ProgressAnim
@@ -127,9 +125,6 @@ public: /* Setter */
 	* Set_PivotTransformation
 	* 노드 피벗 행렬 초기화
 	*/
-
-	HRESULT Set_AnimTransformation(_uint iIndex, _fmatrix AnimMatrix);
-
 	HRESULT Initialize_PivotTransformation();
 
 public:

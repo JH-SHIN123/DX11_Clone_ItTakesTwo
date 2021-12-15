@@ -216,6 +216,9 @@ _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_F6))
+		m_pActorCom->Set_Position(XMVectorSet(68.4137f, 602.073f, 998.4388f, 1.f));
+
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
@@ -254,6 +257,7 @@ _int CCody::Tick(_double dTimeDelta)
 			PinBall(dTimeDelta);
 			SpaceShip_Respawn(dTimeDelta);
 			Holding_BossUFO(dTimeDelta);
+			Enter_BossUFO(dTimeDelta);
 		}
 		else
 		{
@@ -2111,12 +2115,17 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			m_IsHolding_UFO = true;
 		}
+		else if (m_eTargetGameID == GameID::eBOSSENTERUFO)
+		{
+			//m_IsCodyEnter = true;
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
-		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach || m_IsHolding_UFO)
+		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach || m_IsHolding_UFO
+		|| m_IsCodyEnter)
 		return true;
 
 	return false;
@@ -3288,6 +3297,18 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 			m_IsHolding_High_UFO = true;
 		}
 	}
+}
+
+void CCody::Enter_BossUFO(const _double dTimeDelta)
+{
+	if (false == m_IsCodyEnter)
+		return;
+
+	_vector vTargetPos = { 59.83587f, 344.33596f, 154.84754, 1.f };
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vDir = XMVector3Normalize(vTargetPos - vPos);
+
+	m_pTransformCom->MoveToDir(vDir, dTimeDelta * 5.f);
 }
 
 void CCody::PinBall_Respawn(const _double dTimeDelta)
