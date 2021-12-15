@@ -442,7 +442,7 @@ void CFilm::Set_ViewPort(CamNode * pCurNode)
 
 void CFilm::MakeUpNodesTimeByFar()
 {
-	_uint iCamNodeCount = m_CamNodes.size();
+	_uint iCamNodeCount = (_uint)m_CamNodes.size();
 	for (_uint i = 0; i < iCamNodeCount - 1; i++)
 	{
 		CamMoveOption eMoveOption = m_CamNodes[i]->eEyeMoveOption;

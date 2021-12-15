@@ -46,7 +46,7 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	m_PreWorld.vTrans = _float4(0.f, 0.f, 0.f, 1.f);
 	
 	/* Hye */
-<<<<<<< HEAD
+
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL] =	{ 0.f,2.f,-2.f,1.f};
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM] =	{ 0.f,7.f,-7.f,1.f };
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE] =	{ 0.f,8.f,-8.f,1.f };
@@ -54,24 +54,6 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL] = { 0.f,0.2f,0.0f,1.f };
 	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM] = { 0.f,3.f, 0.0f,1.f };
 	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE] = { 0.f,4.f,0.0f,1.f };
-
-=======
-	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL]		= { 0.f,0.5f,-0.5f,1.f};
-	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM]		= { 0.f,7.f,-7.f,1.f };
-	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE]		= { 0.f,11.f,	-8.f,1.f };
-
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL]		= { 0.f,0.05f,0.01f,1.f };
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM]		= { 0.f,1.5f, 0.4f,1.f };
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE]		= { 0.f,3.f,1.1f,1.f };
-
-	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL]	= { 0.f,1.5f,-1.5f,1.f };
-	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM]	= { 0.f,7.f,-7.f,1.f };
-	//m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE]	= { 0.f,11.f,	-8.f,1.f };
-
-	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL]		= { 0.f,0.1f,0.02f,1.f };
-	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM]	= { 0.f,1.5f, 0.4f,1.f };
-	//m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE]		= { 0.f,3.f,1.1f,1.f };
->>>>>>> main
 
 	_matrix matStart = MakeViewMatrixByUp(m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM], m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM]);
 	XMStoreFloat4x4(&m_matBeginWorld, matStart);
@@ -423,7 +405,7 @@ _float CMainCamera::Get_ZoomVal_OnRail(_uint iNodeIdx, _bool bCanDash)
 	else if (iNodeIdx < 26)
 		fZoomVal = 0.64f;
 	else if (iNodeIdx < 28)
-		fZoomVal = 0.66f;
+		fZoomVal = 0.9f;
 	else if (iNodeIdx < 29)
 		fZoomVal = 0.7f;
 	else if (iNodeIdx < 31)
@@ -436,7 +418,8 @@ _float CMainCamera::Get_ZoomVal_OnRail(_uint iNodeIdx, _bool bCanDash)
 		fZoomVal = 0.76f;
 	else if (iNodeIdx < 38)	//올라가는구간
 		fZoomVal = 0.72f;
-
+	else if (iNodeIdx < 53)
+		fZoomVal = 0.62f;
 	if (bCanDash)
 	{
 		_vector vCurCodyPos = m_pCody->Get_Position();
@@ -447,6 +430,29 @@ _float CMainCamera::Get_ZoomVal_OnRail(_uint iNodeIdx, _bool bCanDash)
 	}
 	else
 		return fZoomVal;
+}
+_float CMainCamera::DotProgress(_float fOffSetDist)
+{
+	CFilm::CamMoveOption eCurOption = m_CamNodes[m_iNodeIdx[0]]->eEyeMoveOption;
+
+	_matrix matResult = XMMatrixIdentity();
+	
+	_vector vPlayerPos = m_pCody->Get_Position();
+	
+	_vector vCurNodePos = XMVectorSetW(XMLoadFloat3(&m_CamNodes[m_iNodeIdx[0]]->vEye), 1.f);
+	_vector vNextNodePos = XMVectorSetW(XMLoadFloat3(&m_CamNodes[m_iNodeIdx[1]]->vEye), 1.f);
+
+	_double dCurNodeTime = m_CamNodes[m_iNodeIdx[0]]->dTime;
+	_double dNextNodeTime = m_CamNodes[m_iNodeIdx[1]]->dTime;
+	_float fLength = dNextNodeTime - dCurNodeTime;
+
+	_vector vDirNextNodeWithCurNode = vNextNodePos - vCurNodePos;
+	_vector vDirNextNodeWithPlayer = vNextNodePos - (vPlayerPos - XMVector3Normalize(vDirNextNodeWithCurNode) * fOffSetDist); //
+
+	_float fDot = XMVectorGetX(XMVector3Dot(vDirNextNodeWithPlayer, vDirNextNodeWithCurNode))
+		/ pow(XMVectorGetX(XMVector3Length(vDirNextNodeWithCurNode)), 2);
+
+	return dCurNodeTime + (1.f-fDot)* fLength;
 }
 #pragma endregion
 _int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
@@ -459,33 +465,67 @@ _int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
 	}
 	//CFilm::CamMoveOption eOption = m_CamNodes[m_iNodeIdx[0]]->eEyeMoveOption;
 	//_float fCamSpeed = 0.8f /*/ XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_CamNodes[eOption ==CFilm::CamMoveOption::Move_Bezier_3? 2 : 1]->vEye) - XMLoadFloat3(&m_CamNodes[0]->vEye)))*/;
-	if (m_iNodeIdx[0] < 17)
+	if (m_iNodeIdx[0] < 3)
+	{
+		m_fRailProgressTime = DotProgress(0.6f);
+	}
+	else if (m_iNodeIdx[0] < 17)
 	{
 		if (m_pGameInstance->Key_Pressing(DIK_W))
-			m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+			m_fRailProgressTime += (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
 		else if (m_pGameInstance->Key_Pressing(DIK_S))
-			m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
 	}
 	else if (m_iNodeIdx[0] < 19)
 	{
 		if (m_pGameInstance->Key_Pressing(DIK_A))
-			m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+			m_fRailProgressTime += (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
 		else if (m_pGameInstance->Key_Pressing(DIK_D))
-			m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
 	}
 	else if (m_iNodeIdx[0] < 21)
 	{
 		if (m_pGameInstance->Key_Pressing(DIK_W))
-			m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+			m_fRailProgressTime += (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
 		else if (m_pGameInstance->Key_Pressing(DIK_S))
-			m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+	}
+	else if (m_iNodeIdx[0] < 23)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_fRailProgressTime += (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+		else if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+
+	}
+	else if (m_iNodeIdx[0] < 24)
+	{
+
+		_float fProgress = DotProgress(0.5f);
+		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * dTimeDelta * 3.f;
+		//m_fRailProgressTime = DotProgress(0.5f);
+	}
+	else if (m_iNodeIdx[0] < 28)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_fRailProgressTime += (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+		else if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+
+	}
+	else if (m_iNodeIdx[0] < 29)
+	{
+
+		_float fProgress = DotProgress(1.1f);
+		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * dTimeDelta * 3.f;
+		//m_fRailProgressTime = DotProgress(1.1f);
 	}
 	else if(m_iNodeIdx[0] <31)
 	{
 		if (m_pGameInstance->Key_Pressing(DIK_W))
-			m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+			m_fRailProgressTime += (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
 		else if (m_pGameInstance->Key_Pressing(DIK_S))
-			m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
 	/*	if (m_pGameInstance->Key_Pressing(DIK_D))
 			m_fRailProgressTime += 0.016666666 * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
 		else if (m_pGameInstance->Key_Pressing(DIK_A))
@@ -493,35 +533,31 @@ _int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
 	*/}
 	else if (m_iNodeIdx[0] < 32)
 	{
-		if (m_pCody->Get_IsAirDash() || m_pCody->Get_IsRoll())
-		{
-			if (false == m_bCodyDash)
-				XMStoreFloat3(&m_vCurRailAt, m_pCody->Get_Position());
-			m_bCodyDash = true;
-		}
-		else
-			m_bCodyDash = false;
-		if (m_bCodyDash)
-		{
-			if (m_pGameInstance->Key_Pressing(DIK_W))
-				m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0], true);
-			else if (m_pGameInstance->Key_Pressing(DIK_S))
-				m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0], true);
-		}
-		else
-		{
-			if (m_pGameInstance->Key_Pressing(DIK_W))
-				m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0],false);
-			else if (m_pGameInstance->Key_Pressing(DIK_S))
-				m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0],false);
-		}
+
+		_float fProgress = DotProgress(0.8f);
+		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * dTimeDelta * 3.f;
+		//m_fRailProgressTime = DotProgress(0.8f);
+	}
+	else if (m_iNodeIdx[0] < 35)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_fRailProgressTime += (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+		else if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+
+	}
+	else if (m_iNodeIdx[0] < 36)
+	{
+		_float fProgress = DotProgress(0.5f);
+		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * dTimeDelta * 3.f;
 	}
 	else if(m_iNodeIdx[0] < 38)
 	{
+		//m_fRailProgressTime = DotProgress(0.8f);
 		if (m_pGameInstance->Key_Pressing(DIK_W))
-			m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+			m_fRailProgressTime += (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
 		else if (m_pGameInstance->Key_Pressing(DIK_S))
-			m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
 	}
 	else if (m_iNodeIdx[0] < 39)	//올라가는 구간
 	{
@@ -532,16 +568,36 @@ _int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
 		{
 		}*/
 		_bool bIsStart = fCurNodeY > fPlayerY ? true : false;
-		_float fPlusProgressPercentage = bIsStart ?  0.01 : (fPlayerY - fCurNodeY) / (fNextNodeY - fCurNodeY);
-		_float fLength = m_CamNodes[m_iNodeIdx[1]]->dTime - m_CamNodes[m_iNodeIdx[0]]->dTime;
-		m_fRailProgressTime = m_CamNodes[m_iNodeIdx[0]]->dTime +  fPlusProgressPercentage * fLength /** dTimeDelta*/;
+		_float fPlusProgressPercentage = bIsStart ?  0.01f : (fPlayerY - fCurNodeY) / (fNextNodeY - fCurNodeY);
+		_float fLength = (_float)m_CamNodes[m_iNodeIdx[1]]->dTime - (_float)m_CamNodes[m_iNodeIdx[0]]->dTime;
+		m_fRailProgressTime = (_float)m_CamNodes[m_iNodeIdx[0]]->dTime +  fPlusProgressPercentage * fLength /** dTimeDelta*/;
+	}
+	else if (m_iNodeIdx[0] < 40)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_fRailProgressTime += (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+		else if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+	}
+	else if (m_iNodeIdx[0] < 41)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_fRailProgressTime += (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+		else if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+	}
+	else if(m_iNodeIdx[0] < 42)
+	{
+		_float fProgress = DotProgress(0.8f);
+		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * dTimeDelta * 3.f;
 	}
 	else
 	{
 		if (m_pGameInstance->Key_Pressing(DIK_W))
-			m_fRailProgressTime += dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+			m_fRailProgressTime += (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
 		else if (m_pGameInstance->Key_Pressing(DIK_S))
-			m_fRailProgressTime -= dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+
 	}
 	
 	_bool bIsFinishNode = false;
@@ -596,6 +652,11 @@ _int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
 			break;
 		}
 	}
+	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Look", CFilm::LScreen);
+
+	if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, matResult))
+		matResult = m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen);
+
 	m_pTransformCom->Set_WorldMatrix(matResult);
 
 	return NO_EVENT;
@@ -781,7 +842,7 @@ _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 		vTargetAt.y += 4.f;
 
 
-		m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vTargetEye, vTargetAt),m_dWarpTime));
+		m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vTargetEye, vTargetAt),(_float)m_dWarpTime));
 		m_dWarpTime += dTimeDelta / 2.0;
 	}
 	else if (m_pCody->Get_IsWarpNextStage() && m_pCody->Get_IsWarpDone()) //게이트안에서,페이드아웃
@@ -835,13 +896,13 @@ _int CMainCamera::Tick_Cam_PressButton_Bridge(_double dTimeDelta)
 	{
 		fTargetRev[Rev_Holizontal] = 0.f;
 		fTargetRev[Rev_Prependicul] = 0.f;
-		m_fBridgeUppendTime += dTimeDelta;
+		m_fBridgeUppendTime += (_float)dTimeDelta;
 	}
 	for (_uint i = 0; i < 2; i++)
 	{
 		if (fabs(fTargetRev[i] - m_fCurMouseRev[i]) < 1.f)
 			bIsFinishRev[i] = true;
-		m_fCurMouseRev[i] += (fTargetRev[i] - m_fCurMouseRev[i])* dTimeDelta;
+		m_fCurMouseRev[i] += (fTargetRev[i] - m_fCurMouseRev[i])* (_float)dTimeDelta;
 	}
 	if (bIsFinishRev[Rev_Holizontal] && bIsFinishRev[Rev_Prependicul])
 		m_bStartBridgeUppendCam = true;

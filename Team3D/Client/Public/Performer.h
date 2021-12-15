@@ -35,8 +35,6 @@ public:
 	void Set_PerformerDesc(PERFORMERDESC tDesc) { m_tDesc = tDesc; }
 	void Set_Position(_float3 vPos) { m_tDesc.vPosition = vPos; }
 	void Set_Scale(_float3 vScale) { m_tDesc.vScale = vScale; }
-	void Set_TransformToParentBone(CTransform* pParentTransform,CModel* pParentModel, const char* szBoneTag);
-	
 
 	void Start_Perform(_uint iAnimIdx = 0 , _double dAnimTime = 0.f);
 	void Finish_Perform();
@@ -46,26 +44,17 @@ public:
 	PERFORMERDESC& Get_PerformerDesc() { return m_tDesc; }
 	_float3&		Get_Scale() { return m_tDesc.vScale; }
 	_float3&		Get_Pos() { return m_tDesc.vPosition; }
-	_bool			Get_IsAlreadyOnParentBone(){return m_bIsOnParentBone;}
+
 private:
 	PERFORMERDESC		m_tDesc;
 	_bool				m_bStartAnim = false;
-
 protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
-	//For.Par
-	CModel*				m_pParentModel = nullptr;
-	CTransform*			m_pParentTransform = nullptr;
-	char				m_szParentBoneTag[MAX_PATH] = "";
-	_bool				m_bIsOnParentBone = false;
+	wstring*			m_pModelTag = nullptr;
 
-#ifdef __TEST_JUN
-	_float3 m_vPos = {0.f,1.5f,0.f};
-	_float3 m_vRot = { 0.f,-32.f,0.f };
-#endif
 public:
 	static CPerformer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

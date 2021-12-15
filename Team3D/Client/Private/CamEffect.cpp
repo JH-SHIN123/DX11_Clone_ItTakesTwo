@@ -104,9 +104,17 @@ _fmatrix CCamEffect::MakeShakeMatrix_QuarternionRot(_fmatrix matIn, _double dCur
 			(_float)tDesc.tCamShakeDesc[(_uint)CamShakeOption::CamShake_Rot_Up].dMaxForce)) : 0.f;
 	_vector vPos = matResult.r[3];
 	matResult.r[3] = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-	matResult = matResult*
-		XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(fRoll,fPitch,fYaw));
+	matResult = XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(fPitch,fYaw, fRoll)) * matResult;
 	matResult.r[3] = vPos;
+
+	//_vector vScale, vRotQuat, vTrans;
+	//
+	//XMMatrixDecompose(&vScale, &vRotQuat, &vTrans,matResult);
+	//_vector vCurRotQuat = XMQuaternionRotationRollPitchYaw(fPitch, fYaw, fRoll);
+	//_vector vResultRotQuat = XMQuaternionSlerp(vRotQuat, vCurRotQuat, 0.5f);
+
+	//matResult = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vResultRotQuat, vTrans);
+
 	return matResult;
 }
 

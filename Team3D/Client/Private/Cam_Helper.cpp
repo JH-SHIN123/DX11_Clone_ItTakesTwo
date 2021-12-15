@@ -159,8 +159,8 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 				pCycleDesc->dMiddleTime = i + 0.5;
 				pCycleDesc->dFinishTime = i + 1.0;
 				pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look] = true;
-				pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look].dMaxForce = 1.0 / (i + 1);
-				pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look].dMinForce = -1.0 / (i + 1);
+				pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look].dMaxForce = 0.3 / (i + 1);
+				pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look].dMinForce = -0.3 / (i + 1);
 	
 				pShake_Loc_Look->Add_CamShakeCycleDesc(pCycleDesc);
 			}
@@ -216,7 +216,7 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 	
 		CCamEffect* pShake_Rot_Look = CCamEffect::Create(TEXT("Cam_Shake_Rot_Look"));
 		{
-			_double dDuration = 5.0;
+			_double dDuration = 7.0;
 			pShake_Rot_Look->Set_Duration(dDuration);
 			for (_double i = 0.0; i <= dDuration; i += 1.0)
 			{
@@ -225,8 +225,8 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 				pCycleDesc->dMiddleTime = i + 0.5;
 				pCycleDesc->dFinishTime = i + 1.0;
 				pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look] = true;
-				pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMaxForce = 0.1 / (i + 1);
-				pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMinForce = -0.1 / (i + 1);
+				pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMaxForce = 0.12 / (i + 1);
+				pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMinForce = -0.12 / (i + 1);
 	
 				pShake_Rot_Look->Add_CamShakeCycleDesc(pCycleDesc);
 			}
@@ -477,7 +477,7 @@ _fmatrix CCam_Helper::Get_CamNodeMatrix(CFilm::CamNode * pCamNode1, CFilm::CamNo
 
 	CFilm::CamMoveOption eEyeMoveOption = pCamNode1->eEyeMoveOption;
 	CFilm::CamMoveOption eAtMoveOption = pCamNode1->eAtMoveOption;
-	_float fProgress = (_float)(dTime - pCamNode1->dTime) / (pCamNode2->dTime - pCamNode1->dTime);
+	_float fProgress = (_float)((dTime - pCamNode1->dTime) / (pCamNode2->dTime - pCamNode1->dTime));
 	if (fProgress >= 1.f)
 		*pIsFinishedNode = true;
 	_float3 vCurEye;

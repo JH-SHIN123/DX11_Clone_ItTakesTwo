@@ -38,7 +38,7 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 		memcpy(&MoonBaboonDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, MoonBaboonDesc.vPosition);
 
-	CCutScenePlayer::GetInstance()->Add_Performer(TEXT("Component_Model_MoonBaboon"), this);
+	DATABASE->Set_MoonBaboon(this);
 
 	m_pUFOModel = ((CUFO*)DATABASE->Get_BossUFO())->Get_Model();
 	NULL_CHECK_RETURN(m_pUFOModel, E_FAIL);

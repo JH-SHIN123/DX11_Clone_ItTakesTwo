@@ -313,7 +313,7 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	_vector vPlayerUp = XMLoadFloat4(&m_vPlayerUp);
 	_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
 	if(XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
-	vPlayerUp += vUpDir* dTimeDelta * 10.f;
+	vPlayerUp += vUpDir* (_float)dTimeDelta * 10.f;
 	XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
 
 	//_vector vPlayerUp = vTargetPlayerUp;
@@ -377,8 +377,8 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 		}
 	}
 
-	_vector vResultPos = XMVectorZero();
-	OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
+	_vector vResultPos = matAffine.r[3];
+	//OffSetPhsX(matAffine, dTimeDelta, &vResultPos); //SpringCamera
 
 	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vResultPos, vPlayerPos, vPlayerUp/*matAffine.r[2]*/));
 

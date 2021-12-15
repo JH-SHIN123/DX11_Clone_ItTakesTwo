@@ -12,7 +12,7 @@ class CSubCamera final : public CCamera
 	enum CamRev { Rev_Holizontal, Rev_Prependicul, Rev_End };
 	enum CamMode { Cam_Free, Cam_Auto, Cam_FreeToAuto, Cam_AutoToFree, Cam_End };
 	//O CamFreeMove P FollowPlayer
-	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_End };
+	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove/*, Cam_Free_On*/,Cam_Free_End };
 private:
 	explicit CSubCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CSubCamera(const CSubCamera& rhs);

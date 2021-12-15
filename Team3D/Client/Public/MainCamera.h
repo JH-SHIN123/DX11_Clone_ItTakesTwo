@@ -58,6 +58,7 @@ private:
 	void KeyCheck(_double dTimeDelta);
 	//For.OnRail
 	_float Get_ZoomVal_OnRail(_uint iNodeIdx, _bool bCanDash = false);
+	_float	DotProgress(_float fOffSetDist);	//직선구간
 private:
 	_int	ReSet_Cam_FreeToAuto();		//카메라가 초기상태로 돌아옴
 	_int	ReSet_Cam_Free_OnRail();

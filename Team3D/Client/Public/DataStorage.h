@@ -109,6 +109,10 @@ public:
 	void Set_MoonBaboon_SpaceShip(CGameObject* pMoonBaboonSpaceShip) { m_pMoonBaboonSpaceShip = pMoonBaboonSpaceShip; }
 	CGameObject* Get_MoonBaboon_SpaceShip() { return m_pMoonBaboonSpaceShip; }
 
+	void Set_MoonBaboon(CGameObject* pMoonBaboon) { m_pMoonBaboon = pMoonBaboon; }
+	CGameObject* Get_MoonBaboon() { return m_pMoonBaboon; }
+
+
 	/* For.MoonUFO */
 	void Set_MoonUFO(CGameObject* pMoonUFO) { m_pMoonUFO = pMoonUFO; }
 	CGameObject* Get_MoonUFO() { return m_pMoonUFO; }
@@ -219,6 +223,7 @@ private:
 	CGameObject* m_pMoonUFO = nullptr;
 	CGameObject* m_pMoon = nullptr;
 
+	CGameObject* m_pMoonBaboon = nullptr;
 	/* For.MoonBaboonSpaceShip*/
 	CGameObject* m_pMoonBaboonSpaceShip = nullptr;
 

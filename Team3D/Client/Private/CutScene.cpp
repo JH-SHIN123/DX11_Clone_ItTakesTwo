@@ -248,7 +248,7 @@ HRESULT CCutScene::Start_CutScene_Intro()
 	static_cast<CPerformer*>(pPerformer)->Set_PerformerDesc(tDesc);
 	static_cast<CPerformer*>(pPerformer)->Start_Perform(0, dTime);
 
-	pPerformer = m_pCutScenePlayer->Find_Performer(L"Component_Model_MoonBaboon");
+	pPerformer = DATABASE->Get_MoonBaboon();
 	if (nullptr == pPerformer)
 		return E_FAIL;
 	static_cast<CMoonBaboon*>(pPerformer)->Get_Transform()->Set_WorldMatrix(
