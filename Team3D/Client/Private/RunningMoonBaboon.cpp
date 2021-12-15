@@ -239,7 +239,6 @@ HRESULT CRunningMoonBaboon::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->setLinearDamping(1.5f);
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 	//m_pDynamicActorCom->Get_Actor()->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD_FRICTION, true);
-
 	/*PxShape* pShape = nullptr; 
 	m_pDynamicActorCom->Get_Actor()->getShapes(&pShape, 1);
 	pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);*/

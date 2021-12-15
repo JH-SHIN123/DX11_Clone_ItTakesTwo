@@ -100,7 +100,7 @@ _int CPixelBaboon::Tick(_double dTimeDelta)
 
 	if (m_bStartHeartDelay == true)
 	{
-		m_fHeartDelay += dTimeDelta;
+		m_fHeartDelay += (_float)dTimeDelta;
 		if (m_fHeartDelay > 7.f)
 		{
 			m_bStartHeartDelay = false;

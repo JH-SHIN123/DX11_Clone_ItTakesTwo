@@ -31,29 +31,27 @@ public: /* Setter */
 	void Set_LaserHit(_bool IsLaserHit) { m_IsLaserHit = IsLaserHit; }
 
 private:
+	void	Movement(_double dTimeDelta);
+	void	Calculate_Matrix(_double dTimeDelta);
+	void	Add_LerpInfo();
+	void	LaserHit_Movement(_double dTimeDelta);
+
+private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 	CDynamicActor*			m_pDynamicActorCom = nullptr;
 	PxSphericalJoint*		m_pJoint = nullptr;
+	PxRaycastBuffer			m_RaycastBuffer;
 
 	_bool					m_bRotateRight = false;
 	_bool					m_bRotateLeft = false;
 	_bool					m_bJetPackAnimOnce = false;
 	_bool					m_bHitOnceAnim = false;
+	_bool					m_IsLaserHit = false;
 	_float					m_fJetAcceleration = 0.f;
-
-	// YYY
-	PxRaycastBuffer		m_RaycastBuffer;
-	_bool				m_IsLaserHit = false;
-	_float				m_fShieldTime = 0.f;
-	_float				m_fJetPackTime = 0.f;
-
-private:
-	void	Movement(_double dTimeDelta);
-	void	Calculate_Matrix(_double dTimeDelta);
-	void	Add_LerpInfo();
-	void	LaserHit_Movement(_double dTimeDelta);
+	_float					m_fShieldTime = 0.f;
+	_float					m_fJetPackTime = 0.f;
 
 private:
 	HRESULT Ready_Component(void* pArg);

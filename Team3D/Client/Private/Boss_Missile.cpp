@@ -273,7 +273,7 @@ void CBoss_Missile::Playable_Mode(_double TimeDelta)
 				_vector vLook	= TargetMatrix.r[1];
 				TargetMatrix.r[1] = vUp;
 				TargetMatrix.r[2] = vLook * -1.f;
-
+				
 				for (_int i = 0; i < 3; ++i)
 					TargetMatrix.r[i] = XMVector3Normalize(TargetMatrix.r[i]);
 
