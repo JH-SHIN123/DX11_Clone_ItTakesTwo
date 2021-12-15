@@ -134,16 +134,16 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToE
 {
 	float fVolumeFront = g_VolumeTex_Front.Sample(Point_Sampler, vTexUV).x;
 	float fVolumeBack = g_VolumeTex_Back.Sample(Point_Sampler, vTexUV).x;
-	float fVolumeSize = 0.f;
+	float fVolumeFactor = 0.f;
 
 	if (fVolumeBack - fVolumeFront < 0) /* 카메라가 안에 들어왔을때 */
 	{
-		fVolumeSize = saturate(sqrt((distToEye - g_fFogGlobalDensity/*FogStart*/) / g_fFogHeightFalloff /*range*/));
+		fVolumeFactor = saturate(sqrt((distToEye - g_fFogGlobalDensity/*FogStart*/) / g_fFogHeightFalloff /*range*/));
 	}
 	else
-		fVolumeSize = (fProjDepth - fVolumeFront) / (fVolumeBack - fVolumeFront);
+		fVolumeFactor = (fProjDepth - fVolumeFront) / (fVolumeBack - fVolumeFront);
 
-	float fLerpFactor = saturate(sqrt(fVolumeSize));
+	float fLerpFactor = saturate(sqrt(fVolumeFactor));
 
 	if (fLerpFactor > 0.5f)
 		fLerpFactor = 0.5f;
