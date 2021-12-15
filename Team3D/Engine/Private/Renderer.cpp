@@ -124,6 +124,7 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 {
 	// 0 - pass
 	FAILED_CHECK_RETURN(Render_ShadowsForAllCascades(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Volume(), E_FAIL);
 	
 	// 1- pass
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
@@ -135,7 +136,6 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_Volume(), E_FAIL); // 무조건 포스트 프로세싱 바로 이전에 불려야함.
 	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
 	FAILED_CHECK_RETURN(Render_Effect_No_Blur(), E_FAIL);
@@ -235,29 +235,6 @@ HRESULT CRenderer::Render_Effect_No_Blur()
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_Volume()
-{
-	/* 1 pass - Render to Front */
-	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Volume_Front"));
-	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_VOLUME])
-	{
-		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::VOLUME_FRONT), E_FAIL);
-	}
-	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Volume_Front"));
-
-	/* 2 pass - Render to Back */
-	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Volume_Back"));
-	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_VOLUME])
-	{
-		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::VOLUME_BACK), E_FAIL);
-		Safe_Release(pGameObject);
-	}
-	m_RenderObjects[RENDER_GROUP::RENDER_VOLUME].clear();
-	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Volume_Back"));
-
-	return S_OK;
-}
-
 HRESULT CRenderer::Render_UI()
 {
 	Sort_GameObjects(m_RenderObjects[RENDER_GROUP::RENDER_UI]);
@@ -294,6 +271,29 @@ HRESULT CRenderer::Render_ShadowsForAllCascades()
 
 	// Setup origin Viewports
 	CGraphic_Device::GetInstance()->Set_Viewport();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Volume()
+{
+	/* 1 pass - Render to Front */
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Volume_Front"), true, true);
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_VOLUME])
+	{
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_VOLUME_FRONT), E_FAIL);;
+	}
+	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Volume_Front"));
+
+	/* 2 pass - Render to Back */
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Volume_Back"), true, true);
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_VOLUME])
+	{
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_VOLUME_BACK), E_FAIL);
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[RENDER_GROUP::RENDER_VOLUME].clear();
+	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Volume_Back"));
 
 	return S_OK;
 }

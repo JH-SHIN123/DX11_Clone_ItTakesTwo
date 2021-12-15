@@ -215,8 +215,12 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_Variable("g_fRadiarBlurRatio_Main", &m_fRadialBlur_MainRatio, sizeof(m_fRadialBlur_MainRatio));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_fRadiarBlurRatio_Sub", &m_fRadialBlur_SubRatio, sizeof(m_fRadialBlur_SubRatio));
 
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_RadiarBlurMaskTex", m_pRadiarBlur_Mask->Get_ShaderResourceView(0));;
-	
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_RadiarBlurMaskTex", m_pRadiarBlur_Mask->Get_ShaderResourceView(0));
+
+	/* Volume */
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Front", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Front")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Back", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Back")));
+
 	_float	fCamFar;
 	_vector vCamPosition;
 	_matrix	ProjMatrixInverse;
@@ -255,27 +259,11 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EffectBlurTex", pBlur->Get_ShaderResourceView_BlurEffect());
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
-	/* CamPos -> 투영까지 내려보자.*/
-
-	/* TEST */
-#ifdef _DEBUG
-	TCHAR szBuff[256] = L"";
-	GetPrivateProfileString(L"Section_3", L"Key_1", L"0", szBuff, 256, L"../test.ini");;
-	_float a = (_float)_wtof(szBuff);
-	GetPrivateProfileString(L"Section_3", L"Key_2", L"0", szBuff, 256, L"../test.ini");
-	_float b = (_float)_wtof(szBuff);
-	GetPrivateProfileString(L"Section_3", L"Key_3", L"0", szBuff, 256, L"../test.ini");
-	_float c = (_float)_wtof(szBuff);
-
-	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fFogStartDist", &a, sizeof(_float)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fFogGlobalDensity", &b, sizeof(_float)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fFogHeightFalloff", &c, sizeof(_float)), E_FAIL);
-
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Front", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Front")));
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Back", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Back")));
-#endif // _DEBUG
-
 	m_pVIBuffer_ToneMapping->Render(0);
+
+	/* Unbind PS */
+	ID3D11ShaderResourceView* pSRV[16] = { nullptr };
+	m_pDeviceContext->PSSetShaderResources(0, 16, pSRV);
 
 	return S_OK;
 }

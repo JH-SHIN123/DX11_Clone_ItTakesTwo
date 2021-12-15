@@ -77,11 +77,15 @@ HRESULT CRenderTarget_Manager::Begin_MRT(ID3D11DeviceContext * pDeviceContext, c
 			if (m_pDepthStencilView) pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		}
 
+		ID3D11ShaderResourceView* pSRV[8] = { nullptr };
+		pDeviceContext->PSSetShaderResources(0, 8, pSRV);
+
 		pDeviceContext->OMSetRenderTargets((_uint)pMRT->size(), RenderTargets, m_pDepthStencilView);
 	}
 	else {
 		ID3D11ShaderResourceView* pSRV[8] = { nullptr };
 		pDeviceContext->PSSetShaderResources(0, 8, pSRV);
+
 		pDeviceContext->OMSetRenderTargets((_uint)pMRT->size(), RenderTargets, DepthStencil);
 	}
 	

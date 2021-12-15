@@ -31,11 +31,11 @@ private:
 	HRESULT	Render_Alpha();
 	HRESULT	Render_Effect();
 	HRESULT	Render_Effect_No_Blur();
-	HRESULT Render_Volume();
 	HRESULT	Render_UI();
 
 private:
 	HRESULT Render_ShadowsForAllCascades();
+	HRESULT Render_Volume();
 	HRESULT Render_LightAcc();
 	HRESULT Render_Blend();
 

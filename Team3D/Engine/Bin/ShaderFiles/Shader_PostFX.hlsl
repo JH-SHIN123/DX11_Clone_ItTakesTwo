@@ -126,8 +126,9 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToE
 	float fVolumeBack = g_VolumeTex_Back.Sample(Point_Sampler, vTexUV).x;
 	float fVolumeFactor = 0.f;
 
-	float3 fInnerColor = 0.f;
-	float3 fOuterColor = 0.f;
+	float3 vFogColor = 0.f;
+	float3 fInnerColor = g_VolumeTex_Front.Sample(Point_Sampler, vTexUV).yzw;
+	float3 fOuterColor = g_VolumeTex_Back.Sample(Point_Sampler, vTexUV).yzw;
 
 	if (fVolumeBack - fVolumeFront < 0) /* 카메라가 안에 들어왔을때 */
 	{
@@ -141,9 +142,7 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToE
 	
 	float fLerpFactor = saturate(fVolumeFactor);
 
-	float3 vFogColor = 0.f;
-	fInnerColor = float3(1.f, 0.9f, 0.6f);
-	fOuterColor = 1.f;
+	// 볼륨컬러
 	vFogColor = lerp(fInnerColor, fOuterColor, fLerpFactor);
 
 	if (fLerpFactor > 0.4f)

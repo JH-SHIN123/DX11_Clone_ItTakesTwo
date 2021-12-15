@@ -57,9 +57,9 @@ HRESULT CVolumeObject::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	
-	if(RENDER_GROUP::VOLUME_FRONT == eGroup)
+	if(RENDER_GROUP::RENDER_VOLUME_FRONT == eGroup)
 		m_pModelCom->Render_Model(14);
-	else if (RENDER_GROUP::VOLUME_BACK == eGroup)
+	else if (RENDER_GROUP::RENDER_VOLUME_BACK == eGroup)
 		m_pModelCom->Render_Model(15);
 
 	return S_OK;
