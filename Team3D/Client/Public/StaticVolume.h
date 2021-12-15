@@ -16,10 +16,9 @@ public:
 	typedef struct tagVolumeDesc
 	{
 		CModel_Instance::ARG_DESC	Instancing_Arg;
-		_float4x4	WorldMatrix = MH_XMFloat4x4Identity();
-		_tchar		szModelTag[MAX_PATH] = L"";
-		_float3		vInnerColor = { 1.f,1.f,1.f }; // 인스턴스 개수만큼?
-		_float3		vOuterColor = { 1.f,1.f,1.f };
+		_tchar						szModelTag[MAX_PATH] = L"";
+		_float3*					vInnerColor = nullptr; // 인스턴스 개수만큼
+		_float3*					vOuterColor = nullptr;
 	}VOLUME_DESC;
 
 private:

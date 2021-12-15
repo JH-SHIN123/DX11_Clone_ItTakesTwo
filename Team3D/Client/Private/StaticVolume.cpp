@@ -20,16 +20,13 @@ HRESULT CStaticVolume::NativeConstruct_Prototype()
 
 HRESULT CStaticVolume::NativeConstruct(void* pArg)
 {
-    //if (nullptr != pArg)
-    //    memcpy(&m_tVolumeDesc, pArg, sizeof(m_tVolumeDesc));
+    CGameObject::NativeConstruct(pArg);
 
-    //CGameObject::NativeConstruct(nullptr);
+    if (nullptr != pArg)
+        memcpy(&m_tVolumeDesc, pArg, sizeof(m_tVolumeDesc));
 
-    //FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
-    //FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-    //FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_tVolumeDesc.szModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-
-    //m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_tVolumeDesc.WorldMatrix));
+    FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
+    FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_tVolumeDesc.szModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom, &m_tVolumeDesc.Instancing_Arg), E_FAIL);
 
     return S_OK;
 }
@@ -43,24 +40,77 @@ _int CStaticVolume::Tick(_double TimeDelta)
 
 _int CStaticVolume::Late_Tick(_double TimeDelta)
 {
-    return _int();
+    CGameObject::Late_Tick(TimeDelta);
+
+    if (0 < m_pModelCom->Culling())
+        m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_VOLUME, this);
+
+    return NO_EVENT;
 }
 
 HRESULT CStaticVolume::Render(RENDER_GROUP::Enum eGroup)
 {
-    return E_NOTIMPL;
+	CGameObject::Render(eGroup);
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+	m_pModelCom->Set_DefaultVariables_Perspective();
+
+    if (RENDER_GROUP::RENDER_VOLUME_FRONT == eGroup)
+    {
+        /* Inner : Front */
+        // -> Inner랑 Outter넣은 매트릭스 행렬을 미리 만들어서 렌더시에 교체만해주자.
+        _matrix WorldMatrixTranspose = XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix());
+        memcpy(&WorldMatrixTranspose.r[3], &m_tVolumeDesc.vInnerColor, sizeof(_float3));
+        m_pModelCom->Set_Variable("g_WorldMatrix", &WorldMatrixTranspose, sizeof(_matrix));
+
+        m_pModelCom->Render_Model(4);
+    }
+    else if (RENDER_GROUP::RENDER_VOLUME_BACK == eGroup)
+    {
+        /* Outer : Front */
+        _matrix WorldMatrixTranspose = XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix());
+        memcpy(&WorldMatrixTranspose.r[3], &m_tVolumeDesc.vOuterColor, sizeof(_float3));
+        m_pModelCom->Set_Variable("g_WorldMatrix", &WorldMatrixTranspose, sizeof(_matrix));
+
+        m_pModelCom->Render_Model(5);
+    }
+
+
+	return S_OK;
 }
 
 CStaticVolume* CStaticVolume::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-    return nullptr;
+    CStaticVolume* pInstance = new CStaticVolume(pDevice, pDeviceContext);
+
+    if (FAILED(pInstance->NativeConstruct_Prototype()))
+    {
+        MSG_BOX("Failed to Create Instance - CStaticVolume");
+        Safe_Release(pInstance);
+    }
+
+    return pInstance;
 }
 
 CGameObject* CStaticVolume::Clone_GameObject(void* pArg)
 {
-    return nullptr;
+    CStaticVolume* pInstance = new CStaticVolume(*this);
+
+    if (FAILED(pInstance->NativeConstruct(pArg)))
+    {
+        MSG_BOX("Failed to Clone Instance - CStaticVolume");
+        Safe_Release(pInstance);
+    }
+
+    return pInstance;
 }
 
 void CStaticVolume::Free()
 {
+    Safe_Release(m_pRendererCom);
+    Safe_Release(m_pTransformCom);
+    Safe_Release(m_pModelCom);
+
+    // InnerColor, Outer Color Release
+
+    CGameObject::Free();
 }

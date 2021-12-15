@@ -13,11 +13,6 @@ texture2D	g_EmissiveTexture;
 //texture2D	g_OpacityTexture;
 //texture2D	g_LightTexture;
 
-cbuffer VolumeDesc
-{
-	float3		g_vVolumeColor = 1.f;
-};
-
 ////////////////////////////////////////////////////////////
 
 struct VS_IN
@@ -361,7 +356,7 @@ PS_OUT_VOLUME PS_MAIN_VOLUME(PS_IN_VOLUME In)
 {
 	PS_OUT_VOLUME Out = (PS_OUT_VOLUME)0;
 
-	Out.vVolume = vector(In.vProjPosition.z / In.vProjPosition.w, g_vVolumeColor);
+	Out.vVolume = vector(In.vProjPosition.z / In.vProjPosition.w, In.vVolumeColor);
 
 	return Out;
 }
