@@ -31,6 +31,7 @@ cbuffer Mesh_EffectDesc
 	//float4			g_vPos_Array[256];
 };
 /* ________________________________________________________________________________*/
+
 ////////////////////////////////////////////////////////////
 
 struct VS_IN
@@ -55,6 +56,12 @@ struct VS_OUT
 struct VS_OUT_CSM_DEPTH
 {
 	float4 vPosition : SV_POSITION;
+};
+
+struct VS_OUT_VOLUME
+{
+	float4 vPosition	: SV_POSITION;
+	float3 vVolumeColor : TEXCOORD0;
 };
 
 VS_OUT	VS_MAIN(VS_IN In)
@@ -142,6 +149,22 @@ VS_OUT	VS_MAIN_EFFECT_POSDIR(VS_IN In)
 }
 /* ________________________________________________________________________________*/
 
+/* _____________________________________Volume_____________________________________*/
+VS_OUT_VOLUME VS_MAIN_VOLUME(VS_IN In)
+{
+	VS_OUT_VOLUME Out = (VS_OUT_VOLUME)0;
+
+	matrix WorldMatrix = g_WorldMatrix;
+	float3 vVolumeColor = WorldMatrix._14_24_34;
+	WorldMatrix._14_24_34 = 0.f;
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), WorldMatrix);
+	Out.vVolumeColor = vVolumeColor;
+
+	return Out;
+}
+/* ________________________________________________________________________________*/
+
 ////////////////////////////////////////////////////////////
 
 struct GS_IN
@@ -173,6 +196,20 @@ struct GS_IN_CSM_DEPTH
 struct GS_OUT_CSM_DEPTH
 {
 	float4 vPosition		: SV_POSITION;
+	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
+};
+
+struct GS_IN_VOLUME
+{
+	float4 vPosition	: SV_POSITION;
+	float3 vVolumeColor : TEXCOORD0;
+};
+
+struct GS_OUT_VOLUME
+{
+	float4 vPosition		: SV_POSITION;
+	float3 vVolumeColor		: TEXCOORD0;
+	float4 vProjPosition	: TEXCOORD1;
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 };
 
@@ -437,6 +474,47 @@ void GS_MAIN_ASH_DISSOLVE(triangle GS_IN In[3], inout TriangleStream<GS_OUT> Tri
 	}
 }
 /* ________________________________________________________________________________*/
+/* _____________________________________Volume_____________________________________*/
+[maxvertexcount(6)]
+void GS_MAIN_VOLUME(triangle GS_IN_VOLUME In[3], inout TriangleStream<GS_OUT_VOLUME> TriStream)
+{
+	GS_OUT_VOLUME Out = (GS_OUT_VOLUME)0;
+
+	/* Main Viewport */
+	if (g_iViewportDrawInfo & 1)
+	{
+		for (uint i = 0; i < 3; i++)
+		{
+			matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
+
+			Out.vPosition = mul(In[i].vPosition, matVP);
+			Out.vVolumeColor = In[i].vVolumeColor;
+			Out.vProjPosition = Out.vPosition;
+			Out.iViewportIndex = 1;
+
+			TriStream.Append(Out);
+		}
+		TriStream.RestartStrip();
+	}
+
+	if (g_iViewportDrawInfo & 2)
+	{
+		/* Sub Viewport */
+		for (uint j = 0; j < 3; j++)
+		{
+			matrix matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+
+			Out.vPosition = mul(In[j].vPosition, matVP);
+			Out.vVolumeColor = In[j].vVolumeColor;
+			Out.vProjPosition = Out.vPosition;
+			Out.iViewportIndex = 2;
+
+			TriStream.Append(Out);
+		}
+		TriStream.RestartStrip();
+	}
+}
+/* ________________________________________________________________________________*/
 
 ////////////////////////////////////////////////////////////
 
@@ -691,16 +769,22 @@ PS_OUT_ALPHA	PS_EFFECT_MASKING_ALPHAGROUP(PS_IN_DOUBLE_UV In)
 
 /* ________________________________________________________________________________*/
 /* Volume */
+struct PS_IN_VOLUME
+{
+	float4 vPosition		: SV_POSITION;
+	float3 vVolumeColor		: TEXCOORD0;
+	float4 vProjPosition	: TEXCOORD1;
+};
 struct PS_OUT_VOLUME
 {
 	vector vVolume	: SV_TARGET0;
 };
 
-PS_OUT_VOLUME PS_MAIN_VOLUME(PS_IN In)
+PS_OUT_VOLUME PS_MAIN_VOLUME(PS_IN_VOLUME In)
 {
 	PS_OUT_VOLUME Out = (PS_OUT_VOLUME)0;
 
-	Out.vVolume = vector(In.vProjPosition.z / In.vProjPosition.w, 1.f, 0.f, 0.f);
+	Out.vVolume = vector(In.vProjPosition.z / In.vProjPosition.w, In.vVolumeColor);
 
 	return Out;
 }
@@ -852,21 +936,21 @@ technique11 DefaultTechnique
 	// 14
 	pass Volume_Front /* VolumeÀÇ ¾Õ¸é ±íÀÌ°ª */
 	{
-		SetRasterizerState(Rasterizer_Volume_Front_Debug);
+		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_No_ZTest, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
-		GeometryShader = compile gs_5_0 GS_MAIN();
+		VertexShader = compile vs_5_0 VS_MAIN_VOLUME();
+		GeometryShader = compile gs_5_0 GS_MAIN_VOLUME();
 		PixelShader = compile ps_5_0 PS_MAIN_VOLUME();
 	}
 	// 15 
 	pass Volume_Back /* VolumeÀÇ µÞ¸é ±íÀÌ°ª */
 	{
-		SetRasterizerState(Rasterizer_Volume_Back_Debug);
+		SetRasterizerState(Rasterizer_CW);
 		SetDepthStencilState(DepthStecil_No_ZTest, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
-		GeometryShader = compile gs_5_0 GS_MAIN();
+		VertexShader = compile vs_5_0 VS_MAIN_VOLUME();
+		GeometryShader = compile gs_5_0 GS_MAIN_VOLUME();
 		PixelShader = compile ps_5_0 PS_MAIN_VOLUME();
 	}
 };

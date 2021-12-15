@@ -20,6 +20,7 @@
 #include "MoonBaboonCore.h"
 #include "Light_Generator.h"
 #include "EffectLight.h"
+#include "DynamicVolume.h"
 /* Yoon */
 #include "RotatedRobotParts.h"
 #include "RobotParts.h"
@@ -451,7 +452,17 @@ HRESULT CLevel_Stage::Ready_Lights()
 //#pragma endregion
 
 	// TEST
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Volume"), Level::LEVEL_STAGE, TEXT("GameObject_Volume")), E_FAIL);
+	CDynamicVolume::VOLUME_DESC vVolumeDesc;
+	lstrcpy(vVolumeDesc.szModelTag, TEXT("Component_Model_GeoCube"));
+	vVolumeDesc.vInnerColor = { 1.f,0.9f,0.6f };
+	vVolumeDesc.vOuterColor = { 1.f,1.f,1.f };
+	vVolumeDesc.fCullRadius = 50.f;
+
+	_matrix WorldMatrix = XMMatrixScaling(10.f, 10.f, 10.f);
+	WorldMatrix *= XMMatrixTranslation(64, 0.f, 30);
+	XMStoreFloat4x4(&vVolumeDesc.WorldMatrix, WorldMatrix);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_DynamicVolume"), Level::LEVEL_STAGE, TEXT("GameObject_DynamicVolume"), &vVolumeDesc), E_FAIL);
 
 	return S_OK;
 }

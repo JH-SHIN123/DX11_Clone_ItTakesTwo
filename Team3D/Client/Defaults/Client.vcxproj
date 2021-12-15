@@ -364,6 +364,9 @@
     <ClInclude Include="..\Public\Space_Valve_Star.h" />
     <ClInclude Include="..\Public\SplashScreen.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
+    <ClInclude Include="..\Public\StaticVolume.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\Static_Env.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\SupportFrame.h" />
@@ -380,7 +383,7 @@
     <ClInclude Include="..\Public\UmbrellaBeam_Base.h" />
     <ClInclude Include="..\Public\UmbrellaBeam_Joystick.h" />
     <ClInclude Include="..\Public\UmbrellaBeam_Stand.h" />
-    <ClInclude Include="..\Public\VolumeObject.h" />
+    <ClInclude Include="..\Public\DynamicVolume.h" />
     <ClInclude Include="..\Public\WallLaserTrap.h" />
     <ClInclude Include="..\Public\WallLaserTrap_Button.h" />
     <ClInclude Include="..\Public\WarpGate.h" />
@@ -560,6 +563,9 @@
     <ClCompile Include="..\Private\Space_Valve_Star.cpp" />
     <ClCompile Include="..\Private\SplashScreen.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
+    <ClCompile Include="..\Private\StaticVolume.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\Static_Env.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\SupportFrame.cpp" />
@@ -576,7 +582,7 @@
     <ClCompile Include="..\Private\UmbrellaBeam_Base.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam_Joystick.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam_Stand.cpp" />
-    <ClCompile Include="..\Private\VolumeObject.cpp" />
+    <ClCompile Include="..\Private\DynamicVolume.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap_Button.cpp" />
     <ClCompile Include="..\Private\WarpGate.cpp" />

@@ -696,12 +696,6 @@
     <Filter Include="04.Generator\03.Light_Generator\EffectLight">
       <UniqueIdentifier>{4a1e57e5-47a2-4feb-baa9-cd33fabbf6a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04.Generator\03.Light_Generator\PointLight">
-      <UniqueIdentifier>{b43b1637-3313-42b3-ac1f-7fdf9e0967c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Generator\03.Light_Generator\SpotLight">
-      <UniqueIdentifier>{d261fd29-aa44-4f3c-9f27-a24bf0383859}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05.DataStorage">
       <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
     </Filter>
@@ -728,6 +722,18 @@
     </Filter>
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Taek\04.Volume">
+      <UniqueIdentifier>{f8a80d19-8824-4208-8087-2944db2d8d4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Taek\04.Volume\StaticVolume">
+      <UniqueIdentifier>{b41b4937-acb2-43d3-8ba8-9fefe50f5223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Taek\04.Volume\DynamicVolume">
+      <UniqueIdentifier>{18f4fd03-8034-446d-a026-ee234a955aeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Generator\03.Light_Generator\VolumeLight">
+      <UniqueIdentifier>{7cec4308-28cd-4496-ab9f-c6768898d7f3}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1343,8 +1349,11 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\VolumeObject.h">
-      <Filter>02.GameObject\04.Stage_Space\05.Taek</Filter>
+    <ClInclude Include="..\Public\DynamicVolume.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\DynamicVolume</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StaticVolume.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\StaticVolume</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1933,8 +1942,11 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\VolumeObject.cpp">
-      <Filter>02.GameObject\04.Stage_Space\05.Taek</Filter>
+    <ClCompile Include="..\Private\DynamicVolume.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\DynamicVolume</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticVolume.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\StaticVolume</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

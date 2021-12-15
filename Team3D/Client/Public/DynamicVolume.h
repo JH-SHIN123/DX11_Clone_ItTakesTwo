@@ -10,12 +10,22 @@ class CModel;
 END
 
 BEGIN(Client)
-class CVolumeObject final : public CGameObject
+class CDynamicVolume final : public CGameObject
 {
+public:
+	typedef struct tagVolumeDesc
+	{
+		_float4x4	WorldMatrix				= MH_XMFloat4x4Identity();
+		_tchar		szModelTag[MAX_PATH]	= L"";
+		_float		fCullRadius				= 50.f;
+		_float3		vInnerColor				= { 1.f,1.f,1.f };
+		_float3		vOuterColor				= { 1.f,1.f,1.f };
+	}VOLUME_DESC;
+
 private:
-	explicit CVolumeObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CVolumeObject(const CVolumeObject& rhs);
-	virtual ~CVolumeObject() = default;
+	explicit CDynamicVolume(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CDynamicVolume(const CDynamicVolume& rhs);
+	virtual ~CDynamicVolume() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -25,13 +35,16 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 private:
+	VOLUME_DESC m_tVolumeDesc;
+
+private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 
 public:
-	static CVolumeObject* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext);
+	static CDynamicVolume* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 

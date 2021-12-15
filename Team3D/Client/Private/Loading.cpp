@@ -47,7 +47,7 @@
 #include "MoonBaboonCore.h"
 #include "MoonBaboon_MainLaser.h"
 #include "SpaceRail.h"
-#include "VolumeObject.h"
+#include "DynamicVolume.h"
 
 /* Yoon */
 #include "May.h"
@@ -440,7 +440,7 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Taek()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_GeoCylinder"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/BasicShapes/"), TEXT("GeoCylinder"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_GeoCone"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/BasicShapes/"), TEXT("GeoCone"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Volume"), CVolumeObject::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_DynamicVolume"), CDynamicVolume::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 #endif // !__TEST_TAEK
 
