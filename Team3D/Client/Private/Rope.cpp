@@ -62,7 +62,7 @@ HRESULT CRope::NativeConstruct(void * pArg)
 
 
 	Safe_AddRef(m_pTargetTransformCom);
-		(m_pTargetModel);
+	Safe_AddRef(m_pTargetModel);
 
 	// 초기 위치 세팅.
 
