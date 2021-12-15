@@ -429,6 +429,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\13.UmbrellaBeam_Joystick">
       <UniqueIdentifier>{1222b103-dbd3-4206-a322-d20e64de8bb8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\02.MoonBaboon_SubLaser">
+      <UniqueIdentifier>{074882ae-b709-4b99-8225-4c0e7a5d59f7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\08.Jun">
       <UniqueIdentifier>{0a4d8ed2-ea40-4cd4-bfdf-16db4b954909}</UniqueIdentifier>
     </Filter>
@@ -728,9 +731,6 @@
     </Filter>
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\02.MoonBaboon_SubLaser">
-      <UniqueIdentifier>{074882ae-b709-4b99-8225-4c0e7a5d59f7}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1106,6 +1106,9 @@
     <ClInclude Include="..\Public\UmbrellaBeam_Joystick.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\13.UmbrellaBeam_Joystick</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboon_SubLaser.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\02.MoonBaboon_SubLaser</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\InGameEffect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point</Filter>
     </ClInclude>
@@ -1354,9 +1357,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\MoonBaboon_SubLaser.h">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\02.MoonBaboon_SubLaser</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1729,6 +1729,9 @@
     <ClCompile Include="..\Private\UmbrellaBeam_Joystick.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\13.UmbrellaBeam_Joystick</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboon_SubLaser.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\02.MoonBaboon_SubLaser</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\InGameEffect.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point</Filter>
     </ClCompile>
@@ -1944,9 +1947,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\MoonBaboon_SubLaser.cpp">
-      <Filter>02.GameObject\04.Stage_Space\07.Jin\02.MoonBaboon_SubLaser</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
