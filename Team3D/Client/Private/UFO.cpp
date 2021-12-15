@@ -68,27 +68,11 @@ _int CUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Pressing(DIK_X))
-		DATABASE->GoUp_BossFloor(100.f, 5.f);
-	else if(m_pGameInstance->Key_Down(DIK_Z))
-		DATABASE->GoUp_BossFloor(100.f, 5.f);
-
-
 	/* 테스트 용 */
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 	{
 		m_IsCutScene = false;
 		DATABASE->Close_BossDoor();
-	}
-	else if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
-		m_ePhase = CUFO::PHASE_2;
-	else if (m_pGameInstance->Key_Down(DIK_NUMPAD7))
-	{
-		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		vPos.m128_f32[1] += 6.f;
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-		m_pModelCom->Set_Animation(CutScene_PowerCoresDestroyed_UFO);
-		m_pModelCom->Set_NextAnimIndex(UFO_KnockDownMH);
 	}
 	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 	{
@@ -96,24 +80,6 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
 		m_IsCutScene = true;
 	}
-	else if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
-	{
-		m_IsCodyEnter = true;
-	}
-	else if (m_pGameInstance->Key_Down(DIK_F1))
-	{
-		m_IsCutScene = true;
-	}
-	else if (m_pGameInstance->Key_Down(DIK_F2))
-	{
-		Ready_StaticActor_Component();
-	}
-	else if (m_pGameInstance->Key_Down(DIK_F4))
-	{
-		m_pStaticTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(dTimeDelta * 10.f));
-		m_pStaticActorCom->Update_StaticActor();
-	}
-	////////////////////////////////////////////////////////////////////////////////////
 
 	/* 컷 신 재생중이 아니라면 보스 패턴 진행하자 나중에 컷 신 생기면 바꿈 */
 	if (false == m_IsCutScene)
@@ -264,7 +230,7 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 		return;
 
 	_vector vDir, vTargetPos;
-	_uint iGravitationalBombMaxCount = 2;
+	_uint iGravitationalBombMaxCount = 10;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
@@ -348,7 +314,7 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 			{
 				_float fMaxDistance = 99.f;
 				DATABASE->GoUp_BossFloor(fMaxDistance, 10.f);
-				((CCody*)DATABASE->GetCody())->Get_Actor()->Set_Gravity(-6.8f);
+
 			}
 		}
 	}
@@ -559,7 +525,7 @@ void CUFO::Phase3_Pattern(_double dTimeDelta)
 
 	if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp() && false == m_IsGoingLastFloor)
 	{
-		DATABASE->GoUp_BossFloor(100.f, 5.f);
+		DATABASE->GoUp_BossFloor(100.f, 15.f);
 		m_IsGoingLastFloor = true;
 	}
 
