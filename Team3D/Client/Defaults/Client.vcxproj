@@ -388,10 +388,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines_Effect.hpp" />
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp" />
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\AlienScreen.cpp" />
