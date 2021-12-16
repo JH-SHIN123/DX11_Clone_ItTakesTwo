@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Boss_Gravitational_Bomb.h"
 
+#include "Effect_Boss_Gravitational_Bomb_Particle.h"
+
 CEffect_Boss_Gravitational_Bomb::CEffect_Boss_Gravitational_Bomb(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
 {
@@ -28,8 +30,17 @@ HRESULT CEffect_Boss_Gravitational_Bomb::NativeConstruct(void * pArg)
 
 	m_vDefulat_Scale = { 0.75f, 0.75f, 0.75f, 0.f };
 	m_pTransformCom->Set_Scale(XMLoadFloat4(&m_vDefulat_Scale));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(63.f, 1.5f, 38.f, 1.f));
+
+	_vector vPos = XMLoadFloat4(&m_EffectDesc_Clone.vStartPos);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
+	CGameObject* pGameObject = nullptr;
+	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Boss_Gravitational_Bomb_Particle"), Level::LEVEL_STAGE,
+		TEXT("GameObject_2D_Boss_Gravitational_Bomb_Particle"), nullptr, &pGameObject);
+	m_pParticle = static_cast<CEffect_Boss_Gravitational_Bomb_Particle*>(pGameObject);
+
 	m_fScale_Pow = 6;
+
 	return S_OK;
 }
 
@@ -48,6 +59,21 @@ _int CEffect_Boss_Gravitational_Bomb::Tick(_double TimeDelta)
 
 	if (0.f >= m_fAlphaTime)
 		m_fAlphaTime = 0.f;
+
+	/* 포물선 돌리자 ㅇㅇ */
+	_float fJumpPower = 3.5f;
+	_vector vTargetDir = XMLoadFloat3(&m_EffectDesc_Clone.vDir);
+	_float fSpeed = XMVectorGetX(XMVector3Length(vTargetDir));
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+
+	vPos += XMVector3Normalize(vTargetDir) * fSpeed * (_float)TimeDelta;
+	vPos.m128_f32[1] += fJumpPower * m_fJumpTime * 1.f - 0.5f * (GRAVITY * m_fJumpTime * m_fJumpTime);
+	m_fJumpTime += 0.02f;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
+	m_pParticle->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 
 	Explosion_Check();
 	Scale_Check(TimeDelta);
@@ -135,6 +161,7 @@ CGameObject * CEffect_Boss_Gravitational_Bomb::Clone_GameObject(void * pArg)
 void CEffect_Boss_Gravitational_Bomb::Free()
 {
 	Safe_Release(m_pTexture_Distortion);
+	Safe_Release(m_pParticle);
 
 	__super::Free();
 }

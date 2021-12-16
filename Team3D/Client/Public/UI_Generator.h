@@ -47,6 +47,7 @@ public:
 		_float3 vColor = { 1.f, 1.f, 1.f };
 
 
+
 	}FONTDESC;
 
 private:
@@ -78,6 +79,9 @@ public:
 	void Set_InterActive_TargetPos(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, _vector vTargetPos);
 	void Set_Active(Player::ID ePlayer, UI::TRIGGER eTrigger, _bool bActive);
 	void Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger);
+	void Set_FadeInSpeed(Player::ID ePlayer, UI::TRIGGER eTrigger, _float fSpeed);
+	void Set_FadeOutSpeed(Player::ID ePlayer, UI::TRIGGER eTrigger, _float fSpeed);
+	void Set_FadeOut(Player::ID ePlayer, UI::TRIGGER eTrigger);
 
 public:
 	HRESULT Add_Prototype_LogoTexture();

@@ -75,6 +75,21 @@ void CUIObject::Set_PosX(_float fPosX)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 }
 
+void CUIObject::Set_FadeInSpeed(_float fSpeed)
+{
+	m_fFadeInSpeed = fSpeed;
+}
+
+void CUIObject::Set_FadeOutSpeed(_float fSpeed)
+{
+	m_fFadeOutSpeed = fSpeed;
+}
+
+void CUIObject::Set_FadeOut()
+{
+	m_IsFadeOut = true;
+}
+
 void CUIObject::Set_TargetPos(_vector vPos)
 {
 	XMStoreFloat4(&m_vTargetPos, vPos);

@@ -251,7 +251,7 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 		iOption = 3;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
 		break;
-	case UI::BlackScreenFadeOut:
+	case UI::BlackScreenFadeInOut:
 		iOption = 4;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
 		break;
@@ -1087,6 +1087,33 @@ void CUI_Generator::Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger)
 
 	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
 		UIObject->Set_ScaleEffect();
+}
+
+void CUI_Generator::Set_FadeInSpeed(Player::ID ePlayer, UI::TRIGGER eTrigger, _float fSpeed)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return;
+
+	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
+		UIObject->Set_FadeInSpeed(fSpeed);
+}
+
+void CUI_Generator::Set_FadeOutSpeed(Player::ID ePlayer, UI::TRIGGER eTrigger, _float fSpeed)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return;
+
+	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
+		UIObject->Set_FadeOutSpeed(fSpeed);
+}
+
+void CUI_Generator::Set_FadeOut(Player::ID ePlayer, UI::TRIGGER eTrigger)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return;
+
+	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
+		UIObject->Set_FadeOut();
 }
 
 HRESULT CUI_Generator::Create_Logo()

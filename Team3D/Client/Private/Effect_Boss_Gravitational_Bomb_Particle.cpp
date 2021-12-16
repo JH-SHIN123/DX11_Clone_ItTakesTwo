@@ -17,7 +17,7 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Particle::NativeConstruct_Prototype(void
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 150;
+	m_EffectDesc_Prototype.iInstanceCount = 300;
 
 	return S_OK;
 }
@@ -27,7 +27,6 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Particle::NativeConstruct(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
 
-
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
@@ -36,8 +35,6 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Particle::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
 
-	_vector vPos = XMLoadFloat4(&m_EffectDesc_Clone.vStartPos);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
 	Ready_InstanceBuffer();
 
@@ -55,19 +52,6 @@ _int CEffect_Boss_Gravitational_Bomb_Particle::Tick(_double TimeDelta)
 		m_dControlTime += TimeDelta;
 	else
 		m_dControlTime -= TimeDelta;
-
-	/* 포물선 돌리자 ㅇㅇ */
-	_float fJumpPower = 10.f;
-	_vector vTargetDir = XMLoadFloat3(&m_EffectDesc_Clone.vDir);
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_float  fSpeed = XMVectorGetX(XMVector3Length(vTargetDir));
-
-	m_fJumpTime += 0.05f;
-
-	vPos += vTargetDir * fSpeed * (_float)TimeDelta;
-	vPos.m128_f32[1] = m_fJumpY + (fJumpPower * m_fJumpTime - m_fJumpTime * m_fJumpTime * 0.5f * GRAVITY);
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
 	Check_Instance(TimeDelta);
 
