@@ -64,7 +64,7 @@ public: /* Setter */
 	HRESULT	Set_DefaultVariables_ShadowDepth();
 
 public:
-	virtual HRESULT	NativeConstruct_Prototype(_uint iMaxInstanceCount, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName);
+	virtual HRESULT	NativeConstruct_Prototype(_uint iMaxInstanceCount, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName, _bool bCreateActor);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	HRESULT			Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials);
 	/* Client */
@@ -126,10 +126,12 @@ private:
 	vector<PX_TRIMESH>		m_PxTriMeshes;
 	/* For.MaterialSet */
 	_uint					m_iMaterialSetCount = 0;
-	/* For. Check Bind Materials */
+	/* For.Check Bind Materials */
 	_uint					m_IsBindMaterials[AI_TEXTURE_TYPE_MAX];
 	/* For.MultiRenderGroup */
 	_bool					m_bMultiRenderGroup = false;
+	/* For.Check_CreateActor */
+	_bool					m_bCreateActor = false;
 private:
 	HRESULT	Sort_MeshesByMaterial();
 	HRESULT	Apply_PivotMatrix(_fmatrix PivotMatrix);
@@ -163,7 +165,7 @@ private:
 #pragma endregion
 
 public:
-	static CModel_Instance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iMaxInstanceCount, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount = 1, _fmatrix PivotMatrix = XMMatrixIdentity(), _bool bNeedCenterBone = false, const char* pCenterBoneName = "");
+	static CModel_Instance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iMaxInstanceCount, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount = 1, _fmatrix PivotMatrix = XMMatrixIdentity(), _bool bNeedCenterBone = false, const char* pCenterBoneName = "", _bool bCreateActor = true);
 	virtual CComponent* Clone_Component(void* pArg) override;
 	virtual void Free() override;
 };
