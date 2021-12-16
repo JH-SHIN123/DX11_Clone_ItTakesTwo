@@ -43,7 +43,7 @@ HRESULT CStaticVolume::NativeConstruct(void* pArg)
         pModelTag = TEXT("Component_Model_Instance_GeoCylinder");
         break;
     }
-    FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, pModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom, &m_tVolumeDesc.Instancing_Arg), E_FAIL);
+    FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, pModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom, &m_tVolumeDesc.Instancing_Arg), E_FAIL);
 
     NULL_CHECK_RETURN(m_tVolumeDesc.Instancing_Arg.pWorldMatrices, E_FAIL);
     NULL_CHECK_RETURN(m_tVolumeDesc.arrInnerColor, E_FAIL);

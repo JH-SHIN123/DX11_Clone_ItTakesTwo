@@ -44,7 +44,7 @@ HRESULT CDynamicVolume::NativeConstruct(void* pArg)
 		pModelTag = TEXT("Component_Model_GeoCylinder");
 		break;
 	}
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, pModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, pModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_tVolumeDesc.WorldMatrix));
 		
