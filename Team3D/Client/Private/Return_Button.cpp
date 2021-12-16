@@ -40,10 +40,14 @@ _int CReturn_Button::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if(true == ((CParticipation_Button*)(DATABASE->Get_Participation_Cody()))->Get_ReadyCody() && 
-		true == ((CParticipation_Button*)(DATABASE->Get_Participation_May()))->Get_ReadyMay() && 
-		m_pGameInstance->Key_Down(DIK_RETURN))
-		m_bChangeScene = true;
+	if (true == ((CParticipation_Button*)(DATABASE->Get_Participation_Cody()))->Get_ReadyCody() &&
+		true == ((CParticipation_Button*)(DATABASE->Get_Participation_May()))->Get_ReadyMay())
+	{
+		m_bReady = true;
+
+		if(m_pGameInstance->Key_Down(DIK_RETURN))
+			m_bChangeScene = true;
+	}
 
 	return NO_EVENT;
 }

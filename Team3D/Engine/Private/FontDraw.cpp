@@ -90,15 +90,8 @@ HRESULT CFontDraw::Render_Font(_tchar * pText, _float2 vPosition, _fvector vColo
 	m_pDeviceContext->GSSetShader(nullptr, nullptr, 0);
 	m_pEffect->Apply(m_pDeviceContext);
 
-	_int iTextLenth = lstrlen(pText);
-	_float fButterSizeX = (iTextLenth * (50.f * fScale)) * 0.5f;
-	_float fButterSizeY = (50.f * fScale) * 0.5f;
-	_float2 vCenterPos;
-	vCenterPos.x = vPosition.x - fButterSizeX;
-	vCenterPos.y = vPosition.y - fButterSizeY;
-
 	m_pFontBT->Begin();
-	m_pFont->DrawString(m_pFontBT, pText, Carculate_TextPosition(pText, vPosition, fScale), vColor, 0.f, _float2(0.f, 0.f), fScale);
+	m_pFont->DrawString(m_pFontBT, pText, Carculate_TextPosition(pText, vPosition, fScale * 2.f), vColor, 0.f, _float2(0.f, 0.f), fScale);
 	m_pFontBT->End();
 
 	return S_OK;
