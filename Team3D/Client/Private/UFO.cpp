@@ -1164,9 +1164,17 @@ void CUFO::Free()
 {
 	if (nullptr != m_pStaticActorCom)
 		Safe_Release(m_pStaticActorCom);
+	if (nullptr != m_pStaticTransformCom)
+		Safe_Release(m_pStaticTransformCom);
+	if (nullptr != m_pStaticModelCom)
+		Safe_Release(m_pStaticModelCom);
 
 	if (nullptr != m_pTriggerActorCom)
 		Safe_Release(m_pTriggerActorCom);
+	if (nullptr != m_pTriggerTransformCom)
+		Safe_Release(m_pTriggerTransformCom);
+	if (nullptr != m_pEnterTriggerActorCom)
+		Safe_Release(m_pEnterTriggerActorCom);
 
 	for (auto pSubLaser : m_vecSubLaser)
 		Safe_Release(pSubLaser);
@@ -1180,11 +1188,11 @@ void CUFO::Free()
 		Safe_Release(m_pMayMissile);
 
 	Safe_Release(m_pMoonBaboon);
-	Safe_Release(m_pStaticTransformCom);
-	Safe_Release(m_pStaticActorCom);
-	Safe_Release(m_pStaticModelCom);
+
+
 	Safe_Release(m_pMayTransform);
 	Safe_Release(m_pCodyTransform);
+
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
