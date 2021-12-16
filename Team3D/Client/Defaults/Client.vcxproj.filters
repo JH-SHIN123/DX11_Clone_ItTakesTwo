@@ -141,6 +141,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.Laser\03.TypeC%28MoonUFO%29">
       <UniqueIdentifier>{a16f20b8-0c97-4db0-ad72-c070b9ebf0ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\03.Earth">
+      <UniqueIdentifier>{7c74bdfa-6c6b-4dcc-998c-534b3fc130ea}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung">
       <UniqueIdentifier>{fec661ad-31f9-4dec-b790-1b4cb09030ce}</UniqueIdentifier>
     </Filter>
@@ -1037,6 +1040,9 @@
     <ClInclude Include="..\Public\Laser_TypeC.h">
       <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\03.TypeC%28MoonUFO%29</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Earth.h">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\03.Earth</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\WarpGate.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
     </ClInclude>
@@ -1831,6 +1837,9 @@
     <ClCompile Include="..\Private\Laser_TypeC.cpp">
       <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\03.TypeC%28MoonUFO%29</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Earth.cpp">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\03.Earth</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\WarpGate.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
     </ClCompile>
@@ -2560,6 +2569,9 @@
       <Filter>97.ShaderFiles\00.Effect</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_ArcadePixel.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Earth.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

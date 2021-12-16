@@ -228,6 +228,7 @@
     <ClInclude Include="..\Public\DummyWall.h" />
     <ClInclude Include="..\Public\DummyWallCameraTrigger.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />
+    <ClInclude Include="..\Public\Earth.h" />
     <ClInclude Include="..\Public\EffectLight.h" />
     <ClInclude Include="..\public\Effect_Boss_Core.h" />
     <ClInclude Include="..\public\Effect_Boss_Core_Explosion.h" />
@@ -483,6 +484,7 @@
     <ClCompile Include="..\Private\DummyWall.cpp" />
     <ClCompile Include="..\Private\DummyWallCameraTrigger.cpp" />
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
+    <ClCompile Include="..\Private\Earth.cpp" />
     <ClCompile Include="..\Private\EffectLight.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core_Explosion.cpp" />
@@ -714,6 +716,7 @@
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_ArcadePixel.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Default.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Earth.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Font.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl" />
