@@ -156,7 +156,7 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
 
 	/* 우주선을 타겟쪽으로 천천히 회전 */
-	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 4.f);
+	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 3.f);
 
 	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector vUFOLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
@@ -295,6 +295,7 @@ void CUFO::Core_Destroyed()
 		{
 			m_pModelCom->Set_Animation(UFO_Laser_HitPod);
 			m_pModelCom->Set_NextAnimIndex(UFO_MH);
+			m_pMoonBaboon->Set_Animation(Moon_Ufo_Laser_HitPod, UFO_MH);
 		}
 
 		m_IsLaserCreate = true;
@@ -351,6 +352,7 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 
 			m_pModelCom->Set_Animation(UFO_Laser_MH);
 			m_pModelCom->Set_NextAnimIndex(UFO_Laser_MH);
+			m_pMoonBaboon->Set_Animation(Moon_Ufo_Programming, Moon_Ufo_MH);
 
 			m_fWaitingTime = 0.f;
 
