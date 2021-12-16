@@ -154,6 +154,7 @@ void CMay::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_M_Valve_Rotate_R, ANI_M_Valve_Rotate_MH, false);
 
 	m_pModelCom->Add_LerpInfo(ANI_M_Rocket_Enter, ANI_M_Rocket_MH, false);
+	m_pModelCom->Add_LerpInfo(ANI_M_Rocket_Exit, ANI_M_Jump_Land_High, false);
 
 
 	return;
@@ -196,13 +197,13 @@ _int CMay::Tick(_double dTimeDelta)
 		else
 		{
 			// 트리거 끝나고 애니메이션 초기화
-			//Trigger_End(dTimeDelta);
+			Trigger_End(dTimeDelta);
 			m_IsFalling = m_pActorCom->Get_IsFalling();
 			m_pActorCom->Set_GroundPound(m_bGroundPound);
 
 			if (m_bRoll == false || m_bSprint == true)
 				KeyInput(dTimeDelta);
-			if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
+			if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false && m_bLandHigh == false)
 			{
 				Sprint(dTimeDelta);
 				Move(dTimeDelta);
@@ -1699,17 +1700,29 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 }
 _bool CMay::Trigger_End(const _double dTimeDelta)
 {
-	if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jump_Land ||
-		m_pModelCom->Get_CurAnimIndex() == ANI_M_RocketFirework ||
-		m_pModelCom->Get_CurAnimIndex() == ANI_M_BruteCombat_Attack_Var1 ||
-		m_pModelCom->Get_CurAnimIndex() == ANI_M_Lever_Left ||
-		m_pModelCom->Get_CurAnimIndex() == ANI_M_Valve_Rotate_MH ||
-		m_pModelCom->Get_CurAnimIndex() == ANI_M_PinBall_MH ||
-		m_pModelCom->Get_CurAnimIndex() == ANI_M_Pull)
+	//if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jump_Land ||
+	//	m_pModelCom->Get_CurAnimIndex() == ANI_M_RocketFirework ||
+	//	m_pModelCom->Get_CurAnimIndex() == ANI_M_BruteCombat_Attack_Var1 ||
+	//	m_pModelCom->Get_CurAnimIndex() == ANI_M_Lever_Left ||
+	//	m_pModelCom->Get_CurAnimIndex() == ANI_M_Valve_Rotate_MH ||
+	//	m_pModelCom->Get_CurAnimIndex() == ANI_M_PinBall_MH ||
+	//	m_pModelCom->Get_CurAnimIndex() == ANI_M_Pull)
+	//{
+	//	m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+	//}
+
+	if (m_pModelCom->Is_AnimFinished(ANI_M_Jump_Land_High))
 	{
+		m_pModelCom->Set_Animation(ANI_M_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
-		m_IsCollide = false;
+		m_bLandHigh = false;
 	}
+
+	if (ANI_M_Jump_Land_High == m_pModelCom->Get_CurAnimIndex())
+	{
+		m_bLandHigh = true;
+	}
+
 	return false;
 }
 #pragma endregion
@@ -2150,7 +2163,7 @@ void CMay::Touch_FireDoor(const _double dTimeDelta)
 
 void CMay::BossMissile_Control(const _double dTimeDelta)
 {
-	if (m_IsBossMissile_Control == true)
+	if (m_IsBossMissile_Control == true && m_bEscapeFromRocket == false)
 	{
 
 		if (m_IsMoveToRocket = true)
@@ -2189,6 +2202,18 @@ void CMay::BossMissile_Control(const _double dTimeDelta)
 			m_pActorCom->Set_Position(m_vRocketOffSetPos);
 			m_pTransformCom->Set_WorldMatrix(m_matRocketMatrix);
 		}
+	}
+	if (m_bEscapeFromRocket == true)
+	{
+		// 로켓으로 부터 탈출!
+		m_pActorCom->Set_ZeroGravity(false, false, false);
+		m_IsMoveToRocket = false;
+		m_bEscapeFromRocket = false;
+		m_IsBossMissile_Control = false;
+
+		m_pActorCom->Jump_Start(3.5f);
+		m_pModelCom->Set_Animation(ANI_M_Rocket_Exit);
+		m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Land_High);
 	}
 }
 

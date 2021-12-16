@@ -197,6 +197,7 @@ public:
 	void	Set_ActorGravity(_bool IsZeroGravity ,_bool IsUp ,_bool _bStatic);
 	void 	Set_RocketOffSetPos(_fvector vRocketOffSetPos) { m_vRocketOffSetPos = vRocketOffSetPos; }
 	void	Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
+	void	Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
 
 
 	// Tick 에서 호출될 함수들
@@ -431,6 +432,8 @@ private:
 	_vector m_vRocketOffSetPos = {};
 	_matrix m_matRocketMatrix = {};
 	_bool	m_IsMoveToRocket = false;
+	_bool   m_bEscapeFromRocket = false;
+	_bool	m_bLandHigh = false;
 
 	// touch WallLaserTrap
 	_bool m_IsWallLaserTrap_Touch = false;

@@ -4,6 +4,7 @@
 #include "UI_Generator.h"
 #include "May.h"
 #include "Cody.h"
+#include "UFO.h"
 
 CBoss_Missile::CBoss_Missile(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -41,17 +42,30 @@ HRESULT CBoss_Missile::NativeConstruct(void * pArg)
 _int CBoss_Missile::Tick(_double dTimeDelta)
 {
 
-	if (m_bPlayerExplosion || m_bBossExplosion)
+	if (m_bPlayerExplosion == true)
 	{
-		// 폭발 Effect 생성시점!
+		
+		return EVENT_DEAD;
+	}
+	else if (m_bBossExplosion == true)
+	{
+		if (m_bCodyControl == true && m_bMayControl == false)
+		{
+			((CCody*)DATABASE->GetCody())->Set_Escape_From_Rocket(true);
+		}
+		else if(m_bMayControl == true && m_bCodyControl == false)
+		{
+			((CMay*)DATABASE->GetMay())->Set_Escape_From_Rocket(true);
+		}
 
 		return EVENT_DEAD;
 	}
 
+
 	if(m_IsCrashed == false)
 		m_fAttackTime += (_float)dTimeDelta;
 
-	if (m_fAttackTime > 15.f)
+	if (m_fAttackTime > 10.f)
 	{
 		m_IsFalling = true;
 		m_fAttackTime = 0.f;
@@ -152,8 +166,6 @@ HRESULT CBoss_Missile::Render_ShadowDepth()
 
 void CBoss_Missile::Combat_Move(_double dTimeDelta)
 {
-
-
 	if (m_IsTargetCody == true)
 	{
 		_vector vTargetPos = ((CCody*)DATABASE->GetCody())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
@@ -204,6 +216,17 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 	// 각도 제한 걸어야 함
 
 #ifdef __CONTROL_MAY_KEYBOARD
+	_vector vUFOPos = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	_vector vMissilePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_vector vDir = vUFOPos - vMissilePos;
+	_float  fDist = XMVectorGetX(XMVector3Length(vDir));
+	if (fDist < 4.f)
+	{
+		m_bBossExplosion = true;
+		return;
+	}
+
 	m_vPlayerOffSetPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP)) * 0.13f);
 	((CMay*)DATABASE->GetMay())->Set_RocketOffSetPos(m_vPlayerOffSetPosition);
 
@@ -267,10 +290,21 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 		if ((m_pGameInstance->Key_Up(DIK_W) || m_pGameInstance->Key_Up(DIK_S) || m_pGameInstance->Key_Up(DIK_A) || m_pGameInstance->Key_Up(DIK_D)))
 			m_fRotateAcceleration = 0.f;
 
-
 		m_pTransformCom->Go_Straight(dTimeDelta * m_fMoveAcceleration);
 	}
 #else
+
+	_vector vUFOPos = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	_vector vMissilePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_vector vDir = vUFOPos - vMissilePos;
+	_float  fDist = XMVectorGetX(XMVector3Length(vDir));
+	if (fDist < 4.f)
+	{
+		m_bBossExplosion = true;
+		return;
+	}
+
 	m_vPlayerOffSetPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP)) * 0.13f);
 	((CMay*)DATABASE->GetMay())->Set_RocketOffSetPos(m_vPlayerOffSetPosition);
 
@@ -343,6 +377,16 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 {
 	// 각도 제한 걸어야 함
+	_vector vUFOPos = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	_vector vMissilePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_vector vDir = vUFOPos - vMissilePos;
+	_float  fDist = XMVectorGetX(XMVector3Length(vDir));
+	if (fDist < 4.f)
+	{
+		m_bBossExplosion = true;
+		return;
+	}
 
 	m_vPlayerOffSetPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP)) * 0.13f);
 	((CCody*)DATABASE->GetCody())->Set_RocketOffSetPos(m_vPlayerOffSetPosition);
@@ -459,17 +503,9 @@ void CBoss_Missile::Adjust_Angle(_double dTimeDelta)
 		Safe_Delete(tTriggerDesc.pGeometry);
 		m_pTriggerActorCom->Update_TriggerActor();
 
-		if (m_IsTargetCody == true)
-		{
 			m_vPlayerOffSetPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP)) * 0.13f);
 			((CCody*)DATABASE->GetCody())->Set_RocketOffSetPos(m_vPlayerOffSetPosition);
-		}
-		else
-		{
-			m_vPlayerOffSetPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP)) * 0.13f);
 			((CMay*)DATABASE->GetMay())->Set_RocketOffSetPos(m_vPlayerOffSetPosition);
-
-		}
 	}
 }
 

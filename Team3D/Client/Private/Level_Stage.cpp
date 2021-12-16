@@ -717,7 +717,7 @@ HRESULT CLevel_Stage::Ready_Layer_TestRocket(const _tchar * pLayerTag)
 {
 	CBoss_Missile::tagBossMissile_Desc MissileDesc;
 	MissileDesc.IsTarget_Cody = true;
-	MissileDesc.vPosition = { 65.f, 10.f, 35.f, 1.f };
+	MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
 	return S_OK;
 }

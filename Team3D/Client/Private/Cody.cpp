@@ -204,6 +204,8 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_Rocket_MH, true, 10.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_Enter, ANI_C_Rocket_MH, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_MH, ANI_C_Rocket_MH, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_Exit, ANI_C_Jump_Land_High, false);
+
 	return;
 }
 
@@ -263,7 +265,7 @@ _int CCody::Tick(_double dTimeDelta)
 
 			if (m_bRoll == false || m_bSprint == true)
 				KeyInput(dTimeDelta);
-			if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
+			if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false && m_bLandHigh == false)
 			{
 				Sprint(dTimeDelta);
 				if(m_IsSizeChanging == false)
@@ -478,6 +480,7 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
+
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -2146,6 +2149,19 @@ _bool CCody::Trigger_End(const _double dTimeDelta)
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 	}
+
+	if (m_pModelCom->Is_AnimFinished(ANI_C_Jump_Land_High))
+	{
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		m_bLandHigh = false;
+	}
+
+	if (ANI_C_Jump_Land_High == m_pModelCom->Get_CurAnimIndex())
+	{
+		m_bLandHigh = true;
+	}
+
 	return false;
 }
 #pragma endregion
@@ -2657,7 +2673,7 @@ void CCody::ElectricWallJump(const _double dTimeDelta)
 
 void CCody::BossMissile_Control(const _double dTimeDelta)
 {
-	if (m_IsBossMissile_Control == true)
+	if (m_IsBossMissile_Control == true && m_bEscapeFromRocket == false)
 	{
 
 		if (m_IsMoveToRocket = true)
@@ -2699,6 +2715,19 @@ void CCody::BossMissile_Control(const _double dTimeDelta)
 			m_pTransformCom->Set_WorldMatrix(m_matRocketMatrix);
 		}
 	}
+
+	if (m_bEscapeFromRocket == true)
+	{
+		// 로켓으로 부터 탈출!
+		m_pActorCom->Set_ZeroGravity(false, false, false);
+		m_IsMoveToRocket = false;
+		m_bEscapeFromRocket = false;
+		m_IsBossMissile_Control = false;
+		m_pActorCom->Jump_Start(2.2f);
+		m_pModelCom->Set_Animation(ANI_C_Jump_Falling);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Land_High);
+	}
+
 }
 
 void CCody::Warp_Wormhole(const _double dTimeDelta)
