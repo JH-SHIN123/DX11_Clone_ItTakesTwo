@@ -141,7 +141,7 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToE
 
 	if (fLerpFactor > 0.4f)
 		fLerpFactor = 0.4f;
-
+	
 	return lerp(vColor, vFogColor, fLerpFactor);
 }
 

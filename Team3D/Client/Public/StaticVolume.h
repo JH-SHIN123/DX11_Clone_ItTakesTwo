@@ -17,8 +17,8 @@ public:
 	{
 		CModel_Instance::ARG_DESC	Instancing_Arg;
 		_tchar						szModelTag[MAX_PATH] = L"";
-		_float3*					vInnerColor = nullptr; // 인스턴스 개수만큼
-		_float3*					vOuterColor = nullptr;
+		_float3*					arrInnerColor = nullptr; // 인스턴스 개수만큼
+		_float3*					arrOuterColor = nullptr;
 	}VOLUME_DESC;
 
 private:
@@ -35,6 +35,8 @@ public:
 
 private:
 	VOLUME_DESC m_tVolumeDesc;
+	_float4x4*	m_arrWorldMatrices_InnerColor = nullptr;
+	_float4x4*	m_arrWorldMatrices_OuterColor = nullptr;
 
 private:
 	/* For.Component */

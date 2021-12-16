@@ -28,6 +28,29 @@ HRESULT CStaticVolume::NativeConstruct(void* pArg)
     FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
     FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_tVolumeDesc.szModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom, &m_tVolumeDesc.Instancing_Arg), E_FAIL);
 
+    NULL_CHECK_RETURN(m_tVolumeDesc.Instancing_Arg.pWorldMatrices, E_FAIL);
+    NULL_CHECK_RETURN(m_tVolumeDesc.arrInnerColor, E_FAIL);
+    NULL_CHECK_RETURN(m_tVolumeDesc.arrOuterColor, E_FAIL);
+
+    _uint iInstanceCnt = m_tVolumeDesc.Instancing_Arg.iInstanceCount;
+    m_arrWorldMatrices_InnerColor = new _float4x4[iInstanceCnt];
+    m_arrWorldMatrices_OuterColor = new _float4x4[iInstanceCnt];
+
+    _float4x4 WorldMatrix = MH_XMFloat4x4Identity();
+    for (_uint i = 0; i < iInstanceCnt; ++i)
+    {
+        WorldMatrix = m_tVolumeDesc.Instancing_Arg.pWorldMatrices[i];
+        WorldMatrix._14 = m_tVolumeDesc.arrInnerColor[i].x;
+        WorldMatrix._24 = m_tVolumeDesc.arrInnerColor[i].y;
+        WorldMatrix._34 = m_tVolumeDesc.arrInnerColor[i].z;
+        m_arrWorldMatrices_InnerColor[i] = WorldMatrix;
+        
+        WorldMatrix._14 = m_tVolumeDesc.arrOuterColor[i].x;
+        WorldMatrix._24 = m_tVolumeDesc.arrOuterColor[i].y;
+        WorldMatrix._34 = m_tVolumeDesc.arrOuterColor[i].z;
+        m_arrWorldMatrices_OuterColor[i] = WorldMatrix;
+    }
+
     return S_OK;
 }
 
@@ -57,23 +80,15 @@ HRESULT CStaticVolume::Render(RENDER_GROUP::Enum eGroup)
     if (RENDER_GROUP::RENDER_VOLUME_FRONT == eGroup)
     {
         /* Inner : Front */
-        // -> Inner랑 Outter넣은 매트릭스 행렬을 미리 만들어서 렌더시에 교체만해주자.
-        _matrix WorldMatrixTranspose = XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix());
-        memcpy(&WorldMatrixTranspose.r[3], &m_tVolumeDesc.vInnerColor, sizeof(_float3));
-        m_pModelCom->Set_Variable("g_WorldMatrix", &WorldMatrixTranspose, sizeof(_matrix));
-
+        m_pModelCom->Set_RealTimeMatrices(m_arrWorldMatrices_InnerColor);
         m_pModelCom->Render_Model(4);
     }
     else if (RENDER_GROUP::RENDER_VOLUME_BACK == eGroup)
     {
         /* Outer : Front */
-        _matrix WorldMatrixTranspose = XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix());
-        memcpy(&WorldMatrixTranspose.r[3], &m_tVolumeDesc.vOuterColor, sizeof(_float3));
-        m_pModelCom->Set_Variable("g_WorldMatrix", &WorldMatrixTranspose, sizeof(_matrix));
-
+        m_pModelCom->Set_RealTimeMatrices(m_arrWorldMatrices_OuterColor);
         m_pModelCom->Render_Model(5);
     }
-
 
 	return S_OK;
 }
@@ -111,6 +126,11 @@ void CStaticVolume::Free()
     Safe_Release(m_pModelCom);
 
     // InnerColor, Outer Color Release
+    SAFE_DELETE_ARRAY(m_tVolumeDesc.arrInnerColor);
+    SAFE_DELETE_ARRAY(m_tVolumeDesc.arrOuterColor);
+
+    SAFE_DELETE_ARRAY(m_arrWorldMatrices_InnerColor);
+    SAFE_DELETE_ARRAY(m_arrWorldMatrices_OuterColor);
 
     CGameObject::Free();
 }

@@ -21,6 +21,7 @@
 #include "Light_Generator.h"
 #include "EffectLight.h"
 #include "DynamicVolume.h"
+#include "StaticVolume.h"
 /* Yoon */
 #include "RotatedRobotParts.h"
 #include "RobotParts.h"
@@ -457,18 +458,48 @@ HRESULT CLevel_Stage::Ready_Lights()
 //
 //#pragma endregion
 
-	// TEST
+	// TEST - Dynamic
 	CDynamicVolume::VOLUME_DESC vVolumeDesc;
 	lstrcpy(vVolumeDesc.szModelTag, TEXT("Component_Model_GeoCube"));
 	vVolumeDesc.vInnerColor = { 1.f,0.9f,0.6f };
 	vVolumeDesc.vOuterColor = { 1.f,1.f,1.f };
 	vVolumeDesc.fCullRadius = 50.f;
 
-	_matrix WorldMatrix = XMMatrixScaling(10.f, 10.f, 10.f);
+	_matrix WorldMatrix = XMMatrixScaling(5.f, 5.f, 5.f);
 	WorldMatrix *= XMMatrixTranslation(64, 0.f, 30);
 	XMStoreFloat4x4(&vVolumeDesc.WorldMatrix, WorldMatrix);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_DynamicVolume"), Level::LEVEL_STAGE, TEXT("GameObject_DynamicVolume"), &vVolumeDesc), E_FAIL);
+
+	WorldMatrix = XMMatrixScaling(5.f, 5.f, 5.f);
+	WorldMatrix *= XMMatrixTranslation(78.f, 0.f, 31);
+	XMStoreFloat4x4(&vVolumeDesc.WorldMatrix, WorldMatrix);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_DynamicVolume"), Level::LEVEL_STAGE, TEXT("GameObject_DynamicVolume"), &vVolumeDesc), E_FAIL);
+
+
+	//// TEST - Static
+	//CStaticVolume::VOLUME_DESC vStaticVolumeDesc;
+	//lstrcpy(vStaticVolumeDesc.szModelTag, TEXT("Component_Model_Instance_GeoSphere"));
+	//vStaticVolumeDesc.Instancing_Arg.iInstanceCount = 3;
+	//vStaticVolumeDesc.Instancing_Arg.fCullingRadius = 50.f;
+	//vStaticVolumeDesc.Instancing_Arg.pWorldMatrices = new _float4x4[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
+	//vStaticVolumeDesc.arrInnerColor = new _float3[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
+	//vStaticVolumeDesc.arrOuterColor = new _float3[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
+
+	//_matrix WorldMatrix = XMMatrixIdentity();
+	//for (_uint i = 0; i < vStaticVolumeDesc.Instancing_Arg.iInstanceCount; ++i)
+	//{
+	//	WorldMatrix = XMMatrixScaling(20.f, 20.f, 20.f);
+	//	WorldMatrix *= XMMatrixTranslation(64 + (i * 6.f), 0.f, 30);
+	//	XMStoreFloat4x4(&vStaticVolumeDesc.Instancing_Arg.pWorldMatrices[i], WorldMatrix);
+
+	//	vStaticVolumeDesc.arrInnerColor[i] = { 1.f + (i * -0.2f), 0.9f,0.6f };
+	//	vStaticVolumeDesc.arrOuterColor[i] = { 1.f,1.f,1.f };
+	//}
+
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_StaticVolume"), Level::LEVEL_STAGE, TEXT("GameObject_StaticVolume"), &vStaticVolumeDesc), E_FAIL);
+
 
 	return S_OK;
 }

@@ -44,8 +44,9 @@ struct VS_OUT_CSM_DEPTH
 
 struct VS_OUT_VOLUME
 {
-	float4 vPosition	: SV_POSITION;
-	float3 vVolumeColor : TEXCOORD0;
+	float4	vPosition			: SV_POSITION;
+	float3	vVolumeColor		: TEXCOORD0;
+	uint	iViewportDrawInfo	: TEXCOORD1;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -82,6 +83,7 @@ VS_OUT_VOLUME VS_MAIN_VOLUME(VS_IN In)
 
 	Out.vPosition = mul(vector(In.vPosition, 1.f), WorldMatrix);
 	Out.vVolumeColor = vVolumeColor;
+	Out.iViewportDrawInfo = In.iViewportDrawInfo;
 
 	return Out;
 }
@@ -123,8 +125,9 @@ struct GS_OUT_CSM_DEPTH
 
 struct GS_IN_VOLUME
 {
-	float4 vPosition	: SV_POSITION;
-	float3 vVolumeColor : TEXCOORD0;
+	float4	vPosition			: SV_POSITION;
+	float3	vVolumeColor		: TEXCOORD0;
+	uint	iViewportDrawInfo	: TEXCOORD1;
 };
 
 struct GS_OUT_VOLUME
@@ -228,7 +231,7 @@ void GS_MAIN_VOLUME(triangle GS_IN_VOLUME In[3], inout TriangleStream<GS_OUT_VOL
 	GS_OUT_VOLUME Out = (GS_OUT_VOLUME)0;
 
 	/* Main Viewport */
-	if (g_iViewportDrawInfo & 1)
+	if (In[0].iViewportDrawInfo & 1)
 	{
 		for (uint i = 0; i < 3; i++)
 		{
@@ -244,7 +247,7 @@ void GS_MAIN_VOLUME(triangle GS_IN_VOLUME In[3], inout TriangleStream<GS_OUT_VOL
 		TriStream.RestartStrip();
 	}
 
-	if (g_iViewportDrawInfo & 2)
+	if (In[0].iViewportDrawInfo & 2)
 	{
 		/* Sub Viewport */
 		for (uint j = 0; j < 3; j++)
