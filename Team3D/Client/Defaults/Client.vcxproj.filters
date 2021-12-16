@@ -924,6 +924,12 @@
     <Filter Include="06.Light\VolumeLight">
       <UniqueIdentifier>{a66b14e2-76f6-4ca2-93fc-9562da331645}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06.Light\EffectLight">
+      <UniqueIdentifier>{05a2af3d-cf24-4468-8cc5-bbde57ed991d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Light\BasicLight">
+      <UniqueIdentifier>{1ca7ebc4-bd45-40e2-824f-1c48964ff126}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
