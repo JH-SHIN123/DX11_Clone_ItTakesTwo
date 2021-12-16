@@ -62,7 +62,7 @@ private:
 private:
 	_int	ReSet_Cam_FreeToAuto();		//카메라가 초기상태로 돌아옴
 	_int	ReSet_Cam_Free_OnRail();
-	_bool	OffSetPhsX(_fmatrix matWorld,_fvector vAt,_double dTimeDelta,_vector * pOut);
+	_bool	OffSetPhsX(_fvector vEye,_fvector vAt,_double dTimeDelta,_vector * pOut);
 
 	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At, _fvector vUp = XMVectorSet(0.f,1.f,0.f,0.f));
 	_fmatrix MakeViewMatrixByUp(_fvector vEye, _fvector vAt, _fvector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f));
@@ -107,7 +107,7 @@ private:
 	//For.Portal
 	_double m_dWarpTime = 0.0;
 	_float4x4 m_matStartPortal;
-
+	_bool		m_bIsFading = false;
 	//For.BridgeUppend
 	_bool	m_bStartBridgeUppendCam = false;
 	_float	m_fBridgeUppendTime = 0.f;
@@ -123,6 +123,7 @@ private:
 	_float	m_fRailProgressTime = 0.f;
 	_float	m_fMaxRailLength = 0.f;
 	_bool	m_bCodyDash = false;
+
 	
 private:
 	CCody*			m_pCody = nullptr;

@@ -250,11 +250,11 @@ HRESULT CLevel_Stage::Ready_Layer_Wormhole(const _tchar * pLayerTag)
 {
 	EFFECT_DESC_CLONE Data;
 
-	_float4 vPos = { 0.f, -100.f, -1000.f, 1.f };
+	_float4 vPos = { 0.f, -99.f, -1000.f, 1.f };
 	memcpy(&Data.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Wormhole"), &Data), E_FAIL);
 
-	vPos = { 0.f, -100.f, -1500.f, 1.f };
+	vPos = { 0.f, -99.f, -1500.f, 1.f };
 	memcpy(&Data.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Wormhole"), &Data), E_FAIL);
 

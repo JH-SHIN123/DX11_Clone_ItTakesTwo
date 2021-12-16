@@ -4,7 +4,7 @@
 #include "Base.h"
 #include "UIObject.h"
 
- BEGIN(Client)
+BEGIN(Client)
 
 /* 같은 UI 여러 개 생성할 수 있음 아니면 걍 트리거에서 호출 해주세용*/
 #define UI_Create(ePlayer, eTrigger)														\
@@ -47,6 +47,7 @@ public:
 		_float3 vColor = { 1.f, 1.f, 1.f };
 
 
+
 	}FONTDESC;
 
 private:
@@ -78,6 +79,9 @@ public:
 	void Set_InterActive_TargetPos(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, _vector vTargetPos);
 	void Set_Active(Player::ID ePlayer, UI::TRIGGER eTrigger, _bool bActive);
 	void Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger);
+	void Set_FadeInSpeed(Player::ID ePlayer, UI::TRIGGER eTrigger, _float fSpeed);
+	void Set_FadeOutSpeed(Player::ID ePlayer, UI::TRIGGER eTrigger, _float fSpeed);
+	void Set_FadeOut(Player::ID ePlayer, UI::TRIGGER eTrigger);
 
 public:
 	HRESULT Add_Prototype_LogoTexture();
@@ -94,7 +98,7 @@ public:
 	/* 5. 상호작용 시작할 때 IsDisable true로 던지고 조건에 맞았다하면 걍 납두고 조건에 안맞아서 다시 상호작용해야 될 때는 IsDisable false로 던져주면 알아서 다시 상호작용 UI 생성해줌 */
 	/* 6. 상호작용 키를 눌렀을 때 UI_Delete 한 번 호출 해줘야함!!!!!!! */
 	HRESULT CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, _vector vTargetPosition, _float fRange = 0.f, _bool IsCollision = false, _bool IsDisable = false);
-	
+
 public:
 	void UI_RETutorial(Player::ID ePlayer, UI::TRIGGER eTrigger);
 
@@ -131,7 +135,7 @@ private:
 
 private:
 	HRESULT Add_Prototype_Texture();
-	
+
 private:
 	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag, Level::ID eLevel, void* pArg = nullptr);
 	HRESULT SetUp_Clone_Ptr(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void * pArg, CGameObject** pGameObject);

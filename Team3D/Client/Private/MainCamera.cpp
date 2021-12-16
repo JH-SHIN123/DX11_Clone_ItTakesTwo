@@ -8,6 +8,7 @@
 #include"UFORadarSet.h"
 #include"UFORadarLever.h"
 #include"UFORadarScreen.h"
+#include"UI_Generator.h"
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -357,7 +358,7 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	}
 	
 	_vector vResultPos = matAffine.r[3];
-	 OffSetPhsX(matAffine,vPlayerPos, dTimeDelta, &vResultPos); 
+	 OffSetPhsX(matAffine.r[3],vPlayerPos, dTimeDelta, &vResultPos); 
 	
 	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vResultPos, vPlayerPos,vPlayerUp/*matAffine.r[2]*/));
 
@@ -860,35 +861,84 @@ _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 	{
 		_matrix matPortal =XMLoadFloat4x4(&m_matStartPortal);
 		_float4 vTargetEye, vTargetAt;
-		XMStoreFloat4(&vTargetEye, matPortal.r[3] - 2*XMVector3Normalize(matPortal.r[2]));
+		XMStoreFloat4(&vTargetEye, matPortal.r[3] + 8 * XMVector3Normalize(matPortal.r[2]));
 		XMStoreFloat4(&vTargetAt, matPortal.r[3]);
-		vTargetEye.y += 4.f;
-		vTargetAt.y += 4.f;
-
+		vTargetEye.y += 7.0f;
+		vTargetAt.y += 6.5f;
+		if (false == m_bIsFading && m_dWarpTime > 0.1)
+		{
+			UI_CreateOnlyOnce(Cody, WhiteScreenFadeInOut);
+			UI_Generator->Set_FadeInSpeed(Player::Cody, UI::WhiteScreenFadeInOut, 8.f);
+			m_bIsFading = true;
+		}
 
 		m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vTargetEye, vTargetAt),(_float)m_dWarpTime));
-		m_dWarpTime += dTimeDelta / 2.0;
+		m_dWarpTime += dTimeDelta;
 	}
 	else if (m_pCody->Get_IsWarpNextStage() && m_pCody->Get_IsWarpDone()) //게이트안에서,페이드아웃
 	{
+		if (m_bIsFading)
+		{
+			UI_Generator->Set_FadeOut(Player::Cody, UI::WhiteScreenFadeInOut);
+			UI_Generator->Set_FadeOutSpeed(Player::Cody, UI::WhiteScreenFadeInOut, 8.f);
+			m_bIsFading = false;
+		}
 		_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 		_vector vPlayerLook = pPlayerTransform->Get_State(CTransform::STATE_LOOK);
-		_vector vCamPos = vPlayerPos - vPlayerLook * 2.f;
+		_vector vPlayerUp = pPlayerTransform->Get_State(CTransform::STATE_UP);
+		_vector vCamPos = vPlayerPos - vPlayerLook * 3.f  + vPlayerUp * 1.5f;
 		_float4 vEye, vAt;
 		XMStoreFloat4(&vEye, vCamPos);
-		XMStoreFloat4(&vAt, vPlayerPos);
-		m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vEye, vAt));
+		XMStoreFloat4(&vAt, vPlayerPos + vPlayerUp* 1.5f);
+		_matrix matResult = MakeViewMatrixByUp(vEye, vAt);
+		m_pCamHelper->Start_CamEffect(TEXT("Cam_Shake_Loc_Right_Warp_Potal"), CFilm::LScreen);
+		m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, matResult);
+		m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen));
 	}
 	else if (m_pCody->Get_IsWarpDone())
 	{
-		//페이드아웃
+		//페이드인
+		if (!m_bIsFading)
+		{
+			UI_CreateOnlyOnce(Cody, WhiteScreenFadeInOut);
+			UI_Generator->Set_FadeInSpeed(Player::Cody, UI::WhiteScreenFadeInOut,10.f);
+			m_bIsFading = true;
+		}
 	}
 	else
 	{
+		//페이드아웃
+		if (m_bIsFading)
+		{
+			UI_Generator->Set_FadeOut(Player::Cody, UI::WhiteScreenFadeInOut);
+			UI_Generator->Set_FadeOutSpeed(Player::Cody, UI::WhiteScreenFadeInOut,8.f);
+			m_bIsFading = false;
+		}
+		_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+		_vector vPlayerLook = pPlayerTransform->Get_State(CTransform::STATE_LOOK);
+		_vector vPlayerUp = pPlayerTransform->Get_State(CTransform::STATE_UP);
+		
+		m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vPlayerPos - vPlayerLook * 2.f,vPlayerPos));
 		m_dWarpTime = 0.0;
 		ReSet_Cam_FreeToAuto();
 		m_eCurCamMode = CamMode::Cam_AutoToFree;
+		_vector vScale, vRotQuat, vTrans;
+		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
+		XMStoreFloat4(&m_PreWorld.vRotQuat, vRotQuat);
+		XMStoreFloat4(&m_PreWorld.vTrans, vTrans);
+
+		_vector vOriginAxis = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+		_vector vRotAxis = XMVector3Normalize(vPlayerLook);
+		_float fAxisX = XMVectorGetX(vRotAxis);
+		_float fDot = acosf(XMVectorGetX(XMVector3Dot(vRotAxis, vOriginAxis)));
+		if (fAxisX < 0.f)
+			fDot = -fDot;
+		_float fCalculateRotation = XMConvertToDegrees(fDot);
+		m_fCurMouseRev[Rev_Holizontal] = fCalculateRotation;
+		m_fMouseRev[Rev_Holizontal] = fCalculateRotation;
+		m_fChangeCamModeLerpSpeed = 4.f;
 	}
+
 	return NO_EVENT;
 }
 _int CMainCamera::Tick_Cam_PressButton_Bridge(_double dTimeDelta)
@@ -978,7 +1028,8 @@ _int CMainCamera::Tick_Cam_InJoystick(_double dTimeDelta)
 	_float fDot = XMVectorGetX(XMVector3Dot(vDir, vRaderScreenLook));*/
 	_vector vEye = vRaderScreenPos - vRaderScreenLook * 2.2f + XMVectorSet(0.f,0.2f,-0.8f,0.f);
 
-	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vEye,vRaderScreenPos));
+	_matrix matResult = MakeViewMatrixByUp(vEye, vRaderScreenPos);
+	m_pTransformCom->Set_WorldMatrix(matResult);
 
 	m_CameraDesc.fFovY = XMConvertToRadians(30.f);
 	return NO_EVENT;
@@ -1010,13 +1061,13 @@ _int CMainCamera::ReSet_Cam_Free_OnRail()
 	return NO_EVENT;
 }
 
-_bool CMainCamera::OffSetPhsX(_fmatrix matWorld, _fvector vAt, _double dTimeDelta,_vector * pOut)
+_bool CMainCamera::OffSetPhsX(_fvector vEye, _fvector vAt, _double dTimeDelta,_vector * pOut)
 {
 
 	_bool isHit = false;
 
 
-	_vector vDistanceFromCam = matWorld.r[3] - vAt;
+	_vector vDistanceFromCam = vEye - vAt;
 	_vector vDir = XMVector3Normalize(vDistanceFromCam);
 	_float	fDist = XMVectorGetX(XMVector3Length(vDistanceFromCam));
 

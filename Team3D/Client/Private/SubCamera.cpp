@@ -353,7 +353,7 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 		}
 	}
 	_vector vResultPos = matAffine.r[3];
-	//OffSetPhsX(matAffine, vPlayerPos, dTimeDelta, &vResultPos);
+	OffSetPhsX(matAffine.r[3], vPlayerPos, dTimeDelta, &vResultPos);
 
 	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vResultPos, vPlayerPos, vPlayerUp/*matAffine.r[2]*/));
 
@@ -369,7 +369,7 @@ _int CSubCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 {
 	CTransform* pPlayerTransform = m_pMay->Get_Transform();
-	//행성 중심에서 카메라까지가 up?
+
 	CMoon* pMoon = static_cast<CMoon*>(DATABASE->Get_Mooon());
 	if (nullptr == pMoon)
 		return EVENT_ERROR;
@@ -377,23 +377,14 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 	_vector vMoonPos = pMoon->Get_Position();
 	_vector vAt = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 	
-	//_float fRadius = XMVectorGetX(XMVector3Length(vEye - vMoonPos));
-	//_vector vLook = vAt - vEye;
+
 	_vector vDirMoonWithAt = XMVector3Normalize(vAt - vMoonPos);
-	/*
-	_vector vQuatPlayer = XMVectorSetW(vDirMoonWithAt,0.f);
-	_vector vAxis = XMVectorZero();
-	_float fAngle = 0.f;
-	XMQuaternionToAxisAngle(&vAxis, &fAngle, vQuatPlayer);
-	_vector vCamRot = XMQuaternionRotationAxis(vAxis, fAngle - XMConvertToRadians(-40.f));
-	_vector vRot = XMQuaternionSlerp(vQuatPlayer, vCamRot, 0.5f);
-	_matrix matRot = XMMatrixRotationQuaternion(vRot);
-	matRot.r[3] = vAt;
-	m_pTransformCom->Set_WorldMatrix(matRot);*/
+
 
 	_matrix matBegin = XMLoadFloat4x4(&m_matBeginWorld);
 	_matrix matPlayer = pPlayerTransform->Get_WorldMatrix();
 	_vector vEye = vAt - matPlayer.r[2] * 10.f + matPlayer.r[1] * 9.f;
+	OffSetPhsX(vEye, vAt, dTimeDelta, &vEye);
 	_vector vDirMoonWithEye = XMVector3Normalize(vEye - vMoonPos);
 	_vector vLook = XMVector3Normalize(vAt - vEye);
 	
@@ -401,16 +392,14 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 	
 	_float fAngle = acosf(XMVectorGetX(XMVector3Dot(vDirMoonWithEye,vDirMoonWithAt)));
 	
-	
-
 	_vector vAxis = XMQuaternionNormalize(XMQuaternionRotationAxis(XMVector3Normalize(vRight/*matPlayer.r[0]*/),-fAngle/* +  XMConvertToRadians(45.f)*/));
-	//_vector vAxis = XMQuaternionNormalize(XMQuaternionRotationMatrix(matCamRot));
+
 	_vector vAxisConj = XMQuaternionNormalize(XMQuaternionConjugate(vAxis));
 	_vector vOrigin = XMQuaternionNormalize(XMQuaternionRotationMatrix(matBegin *matPlayer));
 	vOrigin = XMQuaternionNormalize(XMQuaternionMultiply(XMQuaternionMultiply(vAxis, vOrigin),vAxisConj));
 	
 	_matrix matRot = XMMatrixRotationQuaternion(vOrigin);
-	matRot.r[3] = vEye;//pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	matRot.r[3] = vEye;
 	m_pTransformCom->Set_WorldMatrix(matRot);
 	
 
@@ -470,11 +459,11 @@ _int CSubCamera::ReSet_Cam_FreeToAuto()
 	return NO_EVENT;
 }
 
-_bool CSubCamera::OffSetPhsX(_fmatrix matWorld, _fvector vAt, _double dTimeDelta, _vector * pOut)
+_bool CSubCamera::OffSetPhsX(_fvector vEye, _fvector vAt, _double dTimeDelta, _vector * pOut)
 {
 	_bool isHit = false;
 
-	_vector vDistanceFromCam = matWorld.r[3] - vAt;
+	_vector vDistanceFromCam = vEye - vAt;
 	_vector vDir = XMVector3Normalize(vDistanceFromCam);
 	_float	fDist = XMVectorGetX(XMVector3Length(vDistanceFromCam));
 
