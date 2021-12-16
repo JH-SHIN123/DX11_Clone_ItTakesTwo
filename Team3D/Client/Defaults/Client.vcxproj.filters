@@ -354,6 +354,15 @@
     <Filter Include="02.GameObject\04.Stage_Space\05.Taek\03.SpaceRail\Node">
       <UniqueIdentifier>{db1e11fc-2bd9-4a41-9c3c-2ae1d4e0a7ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Taek\04.Volume">
+      <UniqueIdentifier>{f8a80d19-8824-4208-8087-2944db2d8d4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Taek\04.Volume\StaticVolume">
+      <UniqueIdentifier>{b41b4937-acb2-43d3-8ba8-9fefe50f5223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Taek\04.Volume\DynamicVolume">
+      <UniqueIdentifier>{18f4fd03-8034-446d-a026-ee234a955aeb}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon">
       <UniqueIdentifier>{307d7217-2819-471f-be94-d8cf74b19ac9}</UniqueIdentifier>
     </Filter>
@@ -885,20 +894,20 @@
     <Filter Include="04.Generator\02.UI_Generator">
       <UniqueIdentifier>{bd3f9c54-ec94-480a-ac35-1cd4435104d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04.Generator\03.Light_Generator">
-      <UniqueIdentifier>{a8b9071a-f602-4803-adc7-1a1462e62875}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Generator\03.Light_Generator\EffectLight">
-      <UniqueIdentifier>{4a1e57e5-47a2-4feb-baa9-cd33fabbf6a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Generator\03.Light_Generator\PointLight">
-      <UniqueIdentifier>{b43b1637-3313-42b3-ac1f-7fdf9e0967c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Generator\03.Light_Generator\SpotLight">
-      <UniqueIdentifier>{d261fd29-aa44-4f3c-9f27-a24bf0383859}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05.DataStorage">
       <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Light">
+      <UniqueIdentifier>{598b7446-2298-4221-b482-64f69bb2bc24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Light\VolumeLight">
+      <UniqueIdentifier>{a66b14e2-76f6-4ca2-93fc-9562da331645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Light\EffectLight">
+      <UniqueIdentifier>{05a2af3d-cf24-4468-8cc5-bbde57ed991d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Light\BasicLight">
+      <UniqueIdentifier>{1ca7ebc4-bd45-40e2-824f-1c48964ff126}</UniqueIdentifier>
     </Filter>
     <Filter Include="96.Debug">
       <UniqueIdentifier>{7904050b-bece-47ac-9d69-2652f5e7bc09}</UniqueIdentifier>
@@ -1228,6 +1237,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\SpaceRail_Node.h">
       <Filter>02.GameObject\04.Stage_Space\05.Taek\03.SpaceRail\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DynamicVolume.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\DynamicVolume</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StaticVolume.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\StaticVolume</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Rocket.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\00.Rocket</Filter>
@@ -1673,28 +1688,16 @@
     <ClInclude Include="..\Public\UI_Generator.h">
       <Filter>04.Generator\02.UI_Generator</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Light_Generator.h">
-      <Filter>04.Generator\03.Light_Generator</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\EffectLight.h">
-      <Filter>04.Generator\03.Light_Generator\EffectLight</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\DataStorage.h">
       <Filter>05.DataStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VolumeLight.h">
+      <Filter>06.Light\VolumeLight</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\GameDebugger.h">
       <Filter>96.Debug</Filter>
     </ClInclude>
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
-      <Filter>97.ShaderFiles\Include</Filter>
-    </ClInclude>
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines_Effect.hpp">
-      <Filter>97.ShaderFiles\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp">
-      <Filter>97.ShaderFiles\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -2025,6 +2028,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\SpaceRail_Node.cpp">
       <Filter>02.GameObject\04.Stage_Space\05.Taek\03.SpaceRail\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DynamicVolume.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\DynamicVolume</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticVolume.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\StaticVolume</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Rocket.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\00.Rocket</Filter>
@@ -2470,14 +2479,11 @@
     <ClCompile Include="..\Private\UI_Generator.cpp">
       <Filter>04.Generator\02.UI_Generator</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Light_Generator.cpp">
-      <Filter>04.Generator\03.Light_Generator</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\EffectLight.cpp">
-      <Filter>04.Generator\03.Light_Generator\EffectLight</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\DataStorage.cpp">
       <Filter>05.DataStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VolumeLight.cpp">
+      <Filter>06.Light\VolumeLight</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\GameDebugger.cpp">
       <Filter>96.Debug</Filter>

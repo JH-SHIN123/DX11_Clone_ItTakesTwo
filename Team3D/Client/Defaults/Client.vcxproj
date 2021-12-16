@@ -229,7 +229,6 @@
     <ClInclude Include="..\Public\DummyWallCameraTrigger.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />
     <ClInclude Include="..\Public\Earth.h" />
-    <ClInclude Include="..\Public\EffectLight.h" />
     <ClInclude Include="..\public\Effect_Boss_Core.h" />
     <ClInclude Include="..\public\Effect_Boss_Core_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Core_Hit.h" />
@@ -326,7 +325,6 @@
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\Public\Level_Stage.h" />
-    <ClInclude Include="..\Public\Light_Generator.h" />
     <ClInclude Include="..\Public\Loading.h" />
     <ClInclude Include="..\Public\MainApp.h" />
     <ClInclude Include="..\Public\MainCam.h" />
@@ -416,6 +414,7 @@
     <ClInclude Include="..\Public\Space_Valve_Star.h" />
     <ClInclude Include="..\Public\SplashScreen.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
+    <ClInclude Include="..\Public\StaticVolume.h" />
     <ClInclude Include="..\Public\Static_Env.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\SupportFrame.h" />
@@ -436,6 +435,8 @@
     <ClInclude Include="..\Public\UmbrellaBeam_Base.h" />
     <ClInclude Include="..\Public\UmbrellaBeam_Joystick.h" />
     <ClInclude Include="..\Public\UmbrellaBeam_Stand.h" />
+    <ClInclude Include="..\Public\DynamicVolume.h" />
+    <ClInclude Include="..\Public\VolumeLight.h" />
     <ClInclude Include="..\Public\WallLaserTrap.h" />
     <ClInclude Include="..\Public\WallLaserTrap_Button.h" />
     <ClInclude Include="..\Public\Wall_LaserTennis.h" />
@@ -444,10 +445,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines_Effect.hpp" />
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp" />
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\AlienScreen.cpp" />
@@ -485,7 +483,6 @@
     <ClCompile Include="..\Private\DummyWallCameraTrigger.cpp" />
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
     <ClCompile Include="..\Private\Earth.cpp" />
-    <ClCompile Include="..\Private\EffectLight.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core_Hit.cpp" />
@@ -581,7 +578,6 @@
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Level_Stage.cpp" />
-    <ClCompile Include="..\Private\Light_Generator.cpp" />
     <ClCompile Include="..\Private\Loading.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\MainCam.cpp" />
@@ -671,6 +667,7 @@
     <ClCompile Include="..\Private\Space_Valve_Star.cpp" />
     <ClCompile Include="..\Private\SplashScreen.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
+    <ClCompile Include="..\Private\StaticVolume.cpp" />
     <ClCompile Include="..\Private\Static_Env.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\SupportFrame.cpp" />
@@ -691,6 +688,8 @@
     <ClCompile Include="..\Private\UmbrellaBeam_Base.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam_Joystick.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam_Stand.cpp" />
+    <ClCompile Include="..\Private\DynamicVolume.cpp" />
+    <ClCompile Include="..\Private\VolumeLight.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap_Button.cpp" />
     <ClCompile Include="..\Private\Wall_LaserTennis.cpp" />

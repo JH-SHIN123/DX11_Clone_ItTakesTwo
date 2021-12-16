@@ -10,38 +10,55 @@
 
 IMPLEMENT_SINGLETON(CLight_Manager)
 
-LIGHT_DESC * CLight_Manager::Get_LightDescPtr(const _tchar* pLightTag)
+CLight* CLight_Manager::Get_Light(LightStatus::Enum eState, const _tchar* pLightTag, _bool bAddRef)
 {
-	if (nullptr == pLightTag) return nullptr;
+	CLight* pLight = nullptr;
 
-	const auto& iter = find_if(m_Lights.begin(), m_Lights.end(), CTagFinder(pLightTag));
-	if (iter == m_Lights.end()) return nullptr;
+	if (LightStatus::eDIRECTIONAL == eState)
+	{
+		pLight = m_pDirectionalLight;
+	}
+	else
+	{
+		NULL_CHECK_RETURN(pLightTag, nullptr);
 
-	return iter->second->Get_LightDescPtr();
-}
+		if (LightStatus::eSTATIC == eState)
+		{
+			for (auto iter = m_StaticLights.begin(); iter != m_StaticLights.end(); ++iter)
+			{
+				if (nullptr == (*iter)) continue;
 
-HRESULT CLight_Manager::TurnOn_Light(const _tchar* pLightTag)
-{
-	if (nullptr == pLightTag) return E_FAIL;
+				else if (false == lstrcmp((*iter)->Get_LightTag(), pLightTag))
+				{
+					pLight = (*iter);
+					break;
+				}
+			}
+		}
+		else if (LightStatus::eDYNAMIC == eState)
+		{
+			for (auto iter = m_DynamicLights.begin(); iter != m_DynamicLights.end(); ++iter)
+			{
+				if (nullptr == (*iter)) continue;
 
-	const auto& iter = find_if(m_Lights.begin(), m_Lights.end(), CTagFinder(pLightTag));
-	if (iter == m_Lights.end()) return E_FAIL;
+				else if (false == lstrcmp((*iter)->Get_LightTag(), pLightTag))
+				{
+					pLight = (*iter);
+					break;
+				}
+			}
+		}
+	}
 
-	iter->second->TurnOn_Light();
+	if (bAddRef) 
+	{
+#ifdef _DEBUG
+		if (nullptr == pLight) MSG_BOX("Failed to Get_Light");
+#endif
+		Safe_AddRef(pLight);
+	}
 
-	return S_OK;
-}
-
-HRESULT CLight_Manager::TurnOff_Light(const _tchar* pLightTag)
-{
-	if (nullptr == pLightTag) return E_FAIL;
-
-	const auto& iter = find_if(m_Lights.begin(), m_Lights.end(), CTagFinder(pLightTag));
-	if (iter == m_Lights.end()) return E_FAIL;
-
-	iter->second->TurnOff_Light();
-
-	return S_OK;
+	return pLight;
 }
 
 HRESULT CLight_Manager::Ready_LightManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight)
@@ -55,48 +72,28 @@ HRESULT CLight_Manager::Ready_LightManager(ID3D11Device* pDevice, ID3D11DeviceCo
 	return S_OK;
 }
 
-HRESULT CLight_Manager::Reserve_Container(_uint iCount)
+_int CLight_Manager::Tick_LightManager(_double dTimeDelta)
 {
-	m_Lights.reserve(iCount);
-
-	return S_OK;
-}
-
-HRESULT CLight_Manager::Add_Light(const _tchar* pLightTag, const LIGHT_DESC & LightDesc, _bool isActive)
-{
-	if (nullptr == pLightTag) return E_FAIL;
-
-	const auto& iter = find_if(m_Lights.begin(), m_Lights.end(), CTagFinder(pLightTag));
-	if (iter != m_Lights.end()) {
-		MSG_BOX("Already Exist Light");
-		return E_FAIL;
-	}
-
-	CLight* pLight = nullptr;
-	if (LIGHT_DESC::TYPE_DIRECTIONAL == LightDesc.eType)
+	/* Tick Dynamic Light */
+	_int iProgress = 0;
+	for (auto iter = m_DynamicLights.begin(); iter != m_DynamicLights.end();)
 	{
-		if (nullptr == m_pDirectionalLight) 
+		if (nullptr == (*iter)) continue;
+
+		iProgress = (*iter)->Tick_Light(dTimeDelta);
+
+		if (EVENT_DEAD == iProgress)
 		{
-			pLight = CLight::Create(LightDesc, isActive);
-			m_pDirectionalLight = pLight;
-			Safe_AddRef(m_pDirectionalLight);
+			Safe_Release(*iter);
+			m_DynamicLights.erase(iter);
 		}
-	}
-	else
-	{
-		pLight = CLight::Create(LightDesc, isActive);
+		else ++iter;
 	}
 
-	NULL_CHECK_RETURN(pLight, E_FAIL);
-
-	//m_Lights.emplace(pLightTag, pLight);
-
-	m_Lights[pLightTag] = pLight;
-
-	return S_OK;
+	return iProgress;
 }
 
-HRESULT CLight_Manager::Render_Lights()
+HRESULT CLight_Manager::Render_LightManager()
 {
 	ID3D11ShaderResourceView* pNormalShaderResourceView = CRenderTarget_Manager::GetInstance()->Get_ShaderResourceView(TEXT("Target_Normal"));
 	NULL_CHECK_RETURN(pNormalShaderResourceView, E_FAIL);
@@ -120,52 +117,124 @@ HRESULT CLight_Manager::Render_Lights()
 	CPipeline* pPipeline = CPipeline::GetInstance();
 
 	/* For.MainView */
-	vCamPosition		= pPipeline->Get_MainCamPosition();
-	fCamFar				= pPipeline->Get_MainCamFar();
-	ProjMatrixInverse	= pPipeline->Get_Transform(CPipeline::TS_MAINPROJ_INVERSE);
-	ViewMatrixInverse	= pPipeline->Get_Transform(CPipeline::TS_MAINVIEW_INVERSE);
-	vViewportUVInfo		= pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_MAIN);
+	vCamPosition = pPipeline->Get_MainCamPosition();
+	fCamFar = pPipeline->Get_MainCamFar();
+	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_MAINPROJ_INVERSE);
+	ViewMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_MAINVIEW_INVERSE);
+	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_MAIN);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_fMainCamFar", &fCamFar, sizeof(_float)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_vMainCamPosition", &vCamPosition, sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_MainProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(_matrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_MainViewMatrixInverse", &XMMatrixTranspose(ViewMatrixInverse), sizeof(_matrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_vMainViewportUVInfo", &vViewportUVInfo, sizeof(_float4)), E_FAIL);
-	
+
 	/* For.SubView */
-	vCamPosition		= pPipeline->Get_SubCamPosition();
-	fCamFar				= pPipeline->Get_SubCamFar();
-	ProjMatrixInverse	= pPipeline->Get_Transform(CPipeline::TS_SUBPROJ_INVERSE);
-	ViewMatrixInverse	= pPipeline->Get_Transform(CPipeline::TS_SUBVIEW_INVERSE);
-	vViewportUVInfo		= pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_SUB);
+	vCamPosition = pPipeline->Get_SubCamPosition();
+	fCamFar = pPipeline->Get_SubCamFar();
+	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_SUBPROJ_INVERSE);
+	ViewMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_SUBVIEW_INVERSE);
+	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_SUB);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_fSubCamFar", &fCamFar, sizeof(_float)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_vSubCamPosition", &vCamPosition, sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_SubProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(_matrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_SubViewMatrixInverse", &XMMatrixTranspose(ViewMatrixInverse), sizeof(_matrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pVIBuffer->Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4)), E_FAIL);
 
-	for (auto& pLight : m_Lights)
-		FAILED_CHECK_RETURN(pLight.second->Render_Light(m_pVIBuffer), E_FAIL);
+	/* Render Directional Light */
+	if(m_pDirectionalLight)  FAILED_CHECK_RETURN(m_pDirectionalLight->Render_Light(m_pVIBuffer), E_FAIL);
+
+	/* Render Static Light */
+	for (auto& pLight : m_StaticLights)
+		FAILED_CHECK_RETURN(pLight->Render_Light(m_pVIBuffer), E_FAIL);
+
+	/* Render Dynamic Light */
+	for (auto& pLight : m_DynamicLights)
+		FAILED_CHECK_RETURN(pLight->Render_Light(m_pVIBuffer), E_FAIL);
 
 	return S_OK;
 }
 
-void CLight_Manager::Clear_Lights()
+HRESULT CLight_Manager::Add_Light(LightStatus::Enum eState, CLight* pLight)
 {
-	Safe_Release(m_pDirectionalLight);
+	NULL_CHECK_RETURN(pLight, E_FAIL);
 
-	for (auto& pLight : m_Lights)
-		Safe_Release(pLight.second);
-	m_Lights.clear();
+	switch (eState)
+	{
+	case LightStatus::eDIRECTIONAL:
+		if (nullptr == m_pDirectionalLight)
+		{
+			m_pDirectionalLight = pLight;
+		}
+		else
+		{
+			Safe_Release(m_pDirectionalLight);
+			m_pDirectionalLight = pLight;
+		}
+		break;
+	case LightStatus::eSTATIC:
+		m_StaticLights.push_back(pLight);
+		break;
+	case LightStatus::eDYNAMIC:
+		m_DynamicLights.push_back(pLight);
+		break;
+	}
+
+	return S_OK;
 }
 
-void CLight_Manager::Clear_Buffer()
+HRESULT CLight_Manager::Remove_Light(const _tchar* pLightTag)
 {
-	Safe_Release(m_pVIBuffer);
+	if (nullptr == pLightTag) return E_FAIL;
+
+	for (auto iter = m_DynamicLights.begin(); iter != m_DynamicLights.end(); ++iter)
+	{
+		if (nullptr == (*iter)) continue;
+
+		else if (false == lstrcmp((*iter)->Get_LightTag(), pLightTag))
+		{
+			Safe_Release(*iter);
+			m_DynamicLights.erase(iter);
+			return S_OK;
+		}
+	}
+
+#ifdef _DEBUG
+	MSG_BOX("Failed to Remove Light - Wrong Tag");
+#endif
+
+	return S_OK;
+}
+
+void CLight_Manager::Clear_Lights(LightStatus::Enum eState)
+{
+	switch (eState)
+	{
+	case LightStatus::eDIRECTIONAL:
+		Safe_Release(m_pDirectionalLight);
+		break;
+	case LightStatus::eSTATIC:
+		for (auto& pLight : m_StaticLights)
+			Safe_Release(pLight);
+		m_StaticLights.clear();
+		break;
+	case LightStatus::eDYNAMIC:
+		for (auto& pLight : m_DynamicLights)
+			Safe_Release(pLight);
+		m_DynamicLights.clear();
+		break;
+	}
 }
 
 void CLight_Manager::Free()
 {
-	Safe_Release(m_pVIBuffer);
+}
 
-	Clear_Lights();
+void CLight_Manager::Clear_All()
+{
+	for (_uint i = 0; i < LightStatus::eEND; ++i)
+	{
+		Clear_Lights(LightStatus::Enum(i));
+	}
+
+	Safe_Release(m_pVIBuffer);
 }

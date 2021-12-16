@@ -234,7 +234,7 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 			_uint iActorIndex = iIndex + iMeshIndex * m_iInstanceCount;
 
 			PxTriangleMeshGeometry geom(m_PxTriMeshes[iMeshIndex].pTriMesh, PxMeshScale(MH_PxVec3(vScale)));
-
+			 
 			m_ppActors[iActorIndex] = pPhysX->Create_StaticActor(MH_PxTransform(vRotQuat, vPosition), geom);
 			NULL_CHECK_RETURN(m_ppActors[iActorIndex], E_FAIL);
 		}
@@ -392,12 +392,24 @@ HRESULT CModel_Instance::Sepd_Render_Model(_uint iMaterialIndex, _uint iPassInde
 	return S_OK;
 }
 
-void CModel_Instance::Coppy_WorldMatrix(_float4x4 * pWorldMatrix_Buffer, _uint iCopyInstanceIndex)
+void CModel_Instance::Copy_WorldMatrix(_float4x4 * pWorldMatrix_Buffer, _uint iCopyInstanceIndex)
 {
 	if (m_iInstanceCount < iCopyInstanceIndex)
 		return;
 
 	m_arrWorldMatrices[iCopyInstanceIndex] = pWorldMatrix_Buffer[iCopyInstanceIndex];
+}
+
+HRESULT CModel_Instance::Set_RealTimeMatrices(_float4x4* pWorldMatrices)
+{
+	NULL_CHECK_RETURN(pWorldMatrices, E_FAIL);
+
+	for (_uint iIndex = 0; iIndex < m_iRealDrawCount; ++iIndex)
+	{
+		memcpy(&m_arrRealTimeMatrices[iIndex], &pWorldMatrices[iIndex], sizeof(_float4x4));
+	}
+
+	return S_OK;
 }
 
 HRESULT CModel_Instance::Sort_MeshesByMaterial()

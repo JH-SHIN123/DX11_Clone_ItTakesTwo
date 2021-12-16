@@ -97,10 +97,16 @@ public:
 	*/
 	HRESULT	Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
 	/**
-	* Coppy_WorldMatrix
+	* Copy_WorldMatrix
 	* 갱신할 월드 행렬 동적 배열과 인스턴싱 개수.
 	*/
-	void Coppy_WorldMatrix(_float4x4* pWorldMatrix_Buffer, _uint iCopyInstanceIndex);
+	void Copy_WorldMatrix(_float4x4* pWorldMatrix_Buffer, _uint iCopyInstanceIndex);
+	/**
+	* Set_RealTimeMatrices
+	* GPU에 바인딩할 월드행렬 세팅
+	* 컬링된 수만큼만 복사함 - 컬링 이후에 호출되어야함
+	*/
+	HRESULT Set_RealTimeMatrices(_float4x4* pWorldMatrices);
 
 private: /* Typedef */
 	typedef vector<class CMesh*>	MESHES;
