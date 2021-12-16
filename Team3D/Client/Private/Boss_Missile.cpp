@@ -503,9 +503,9 @@ void CBoss_Missile::Adjust_Angle(_double dTimeDelta)
 		Safe_Delete(tTriggerDesc.pGeometry);
 		m_pTriggerActorCom->Update_TriggerActor();
 
-			m_vPlayerOffSetPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP)) * 0.13f);
-			((CCody*)DATABASE->GetCody())->Set_RocketOffSetPos(m_vPlayerOffSetPosition);
-			((CMay*)DATABASE->GetMay())->Set_RocketOffSetPos(m_vPlayerOffSetPosition);
+		m_vPlayerOffSetPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP)) * 0.13f);
+		((CCody*)DATABASE->GetCody())->Set_RocketOffSetPos(m_vPlayerOffSetPosition);
+		((CMay*)DATABASE->GetMay())->Set_RocketOffSetPos(m_vPlayerOffSetPosition);
 	}
 }
 
