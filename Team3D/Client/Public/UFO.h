@@ -33,17 +33,18 @@ public:
 
 public:
 	virtual HRESULT Render_ShadowDepth() override;
+	HRESULT Add_GameObject_ToRenderGroup();
 
 public:
 	void Set_IsGuidedMissileDeadCheck(_bool IsCheck);
 	void Set_UFOAnimation(_uint iAnimIndex, _uint iNextAnimIndex);
 	void Set_CodyEnterUFO();
 	void Set_CutScene();
+	void Set_MoonBaboonPtr(class CMoonBaboon* pMoonBaboon);
 
 	/* For. BossFloorUp */
 	void Set_BossUFOUp(_float fMaxDistance, _float fSpeed);
 	HRESULT Set_MeshRenderGroup();
-	HRESULT Add_GameObject_ToRenderGroup();
 
 public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
@@ -118,15 +119,24 @@ private:
 	/* For.Component */
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
-	CTransform*				m_pTriggerTransformCom = nullptr;
-	CTransform*				m_pStaticTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
+
+	/* For. StaticActor */
+	CStaticActor*			m_pStaticActorCom = nullptr;
 	CModel*					m_pStaticModelCom = nullptr;
+	CTransform*				m_pStaticTransformCom = nullptr;
+
+	/* For. PlayerTransform */
 	CTransform*				m_pCodyTransform = nullptr;
 	CTransform*				m_pMayTransform = nullptr;
-	CStaticActor*			m_pStaticActorCom = nullptr;
+
+	/* For. TriggerActorCom */
 	CTriggerActor*			m_pTriggerActorCom = nullptr;
+	CTransform*				m_pTriggerTransformCom = nullptr;
 	CTriggerActor*			m_pEnterTriggerActorCom = nullptr;
+
+	/* For. MoonBaboon */
+	class CMoonBaboon*		m_pMoonBaboon = nullptr;
 
 private:
 	/* For.AllPHASE */
@@ -138,6 +148,7 @@ private:
 	void Laser_Pattern(_double dTimeDelta);
 	void MoveStartingPoint(_double dTimeDelta);
 	void GravitationalBomb_Pattern(_double dTimeDelta);
+	void Core_Destroyed();
 
 	/* For.PHASE_2 Pattern */
 	void Phase2_Pattern(_double dTimeDelta);

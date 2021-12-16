@@ -172,7 +172,10 @@ public:
 	_bool Get_LaserTypeB_Recovery() const { return m_IsLaserTypeB_Recovery; }
 
 	void Set_MoonBaboonCore(CGameObject* pGameObject) { m_vecMoonBaboonCore.emplace_back(pGameObject); }
-	class CGameObject* Get_MoonBaboonCore(_uint iIndex) { return m_vecMoonBaboonCore[iIndex]; }
+	CGameObject* Get_MoonBaboonCore(_uint iIndex) { return m_vecMoonBaboonCore[iIndex]; }
+
+	void Set_MoonBaboon(CGameObject* pMoonBaboon) { m_pMoonBaboon = pMoonBaboon; }
+	CGameObject* Get_MoonBaboon() { return m_pMoonBaboon; }
 	
 	/* For. MainLaser */
 	_uint Get_FloorIndex() const { return m_iFloorIndex; }
@@ -272,6 +275,7 @@ private:
 	CGameObject* m_pBossUFO = nullptr;
 	CGameObject* m_pLaserTypeA = nullptr;
 	CGameObject* m_pLaserTypeC = nullptr;
+	CGameObject* m_pMoonBaboon = nullptr;
 
 private:
 	/* For.Valve */

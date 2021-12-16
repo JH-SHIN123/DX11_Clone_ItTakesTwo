@@ -9,6 +9,7 @@
 #include "MoonBaboon_SubLaser.h"
 #include "Laser_TypeA.h"
 #include "Boss_Missile.h"
+#include "MoonBaboon.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -45,8 +46,6 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	m_pModelCom->Set_Animation(UFO_Fwd);
 	m_pModelCom->Set_NextAnimIndex(UFO_Laser_MH);
 
-	DATABASE->Set_BossUFO(this);
-
 	/* 초반 상태들 세팅 */
 	m_ePhase = UFO_PHASE::PHASE_1;
 	m_eTarget = UFO_TARGET::TARGET_MAY;
@@ -61,6 +60,8 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 
 	Set_MeshRenderGroup();
 
+	DATABASE->Set_BossUFO(this);
+
 	return S_OK;
 }
 
@@ -73,6 +74,7 @@ _int CUFO::Tick(_double dTimeDelta)
 	{
 		m_IsCutScene = false;
 		DATABASE->Close_BossDoor();
+		m_pMoonBaboon->Set_Animation(Moon_Ufo_Programming, Moon_Ufo_MH);
 	}
 	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 	{
@@ -154,7 +156,7 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
 
 	/* 우주선을 타겟쪽으로 천천히 회전 */
-	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f);
+	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 4.f);
 
 	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector vUFOLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
@@ -282,6 +284,24 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 	}
 }
 
+void CUFO::Core_Destroyed()
+{
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
+	{
+		m_ePattern = UFO_PATTERN::INTERACTION;
+
+		/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
+		if (3 != m_iPhaseChangeCount)
+		{
+			m_pModelCom->Set_Animation(UFO_Laser_HitPod);
+			m_pModelCom->Set_NextAnimIndex(UFO_MH);
+		}
+
+		m_IsLaserCreate = true;
+		((CLaser_TypeA*)DATABASE->Get_LaserTypeA())->Set_Dead();
+	}
+}
+
 void CUFO::Phase1_InterAction(_double dTimeDelta)
 {
 	/* 레이저 패턴이 3번 진행됬고 코어가 터졌다면 2페로 넘어갈 컷 신을 진행하자 */
@@ -352,20 +372,7 @@ void CUFO::Phase1_Pattern(_double dTimeDelta)
 		MoveStartingPoint(dTimeDelta);
 
 	/* 테스트 용 나중에 코어 터지는거 구현되면 바꿈 */
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
-	{
-		m_ePattern = UFO_PATTERN::INTERACTION;
-
-		/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
-		if (3 != m_iPhaseChangeCount)
-		{
-			m_pModelCom->Set_Animation(UFO_Laser_HitPod);
-			m_pModelCom->Set_NextAnimIndex(UFO_MH);
-		}
-
-		m_IsLaserCreate = true;
-		((CLaser_TypeA*)DATABASE->Get_LaserTypeA())->Set_Dead();
-	}
+	Core_Destroyed();
 
 	/* InterAction은 패턴이 끝나고 다음 패턴이 나오기 전까지 상호작용 해야 할 것들 진행시켜주는 상태 */
 	switch (m_ePattern)
@@ -442,6 +449,7 @@ void CUFO::OrbitalMovementCenter(_double dTimeDelta)
 	matWorld = matRotY * matTrans * matRevRotY * matParent;
 
 	m_pTransformCom->Set_WorldMatrix(matWorld);
+	m_pTriggerActorCom->Update_TriggerActor();
 }
 
 void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
@@ -1046,6 +1054,15 @@ void CUFO::Set_CutScene()
 	m_IsCutScene = true;
 }
 
+void CUFO::Set_MoonBaboonPtr(CMoonBaboon * pMoonBaboon)
+{
+	if (nullptr == pMoonBaboon)
+		return;
+
+	m_pMoonBaboon = pMoonBaboon;
+	Safe_AddRef(m_pMoonBaboon);
+}
+
 void CUFO::Set_BossUFOUp(_float fMaxDistance, _float fSpeed)
 {
 	XMStoreFloat3(&m_vMaxPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -1160,6 +1177,7 @@ void CUFO::Free()
 	if (nullptr != m_pMayMissile)
 		Safe_Release(m_pMayMissile);
 
+	Safe_Release(m_pMoonBaboon);
 	Safe_Release(m_pStaticTransformCom);
 	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pStaticModelCom);

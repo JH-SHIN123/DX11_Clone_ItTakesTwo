@@ -28,6 +28,9 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
+	void Set_Animation(_uint iCurAnimIndex, _uint iNextAnimIndex);
+
+public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
 
@@ -45,14 +48,17 @@ public:
 	CMoonBaboon::MOON_STATE Check_State(_double dTimeDelta);
 	void Change_State(_double dTimeDelta);
 	void During_Animation_Behavior(_double dTimeDelta);
-
 	void Fix_MoonBaboon_Chair(_double dTimeDelta);
-
 
 private:
 	MOON_STATE m_eCurState = MOON_STATE_END;
 	MOON_STATE m_eNextState = MOON_STATE_END;
 	MOON_TARGET m_eTarget = TARGET_END;
+
+private:
+	/* For.NativeConstruct */
+	void Add_LerpInfo_To_Model();
+	HRESULT Ready_Component();
 
 public:
 	static CMoonBaboon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
