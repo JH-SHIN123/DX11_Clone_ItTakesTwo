@@ -21,18 +21,23 @@ public:
 
 private:
 	void Scale_Check(_double TimeDelta);
+	void Explosion_Check();
 
 private:
 	CTextures* m_pTexture_Distortion = nullptr;
 
 private:
-	_bool  m_IsScaling_End = false;
-	_double m_dLifeTime = 15.0;
-	_float m_fTime = 0.f;
-	_float m_fAlphaTime = 1.f;
+	_bool m_IsExplosion = false;
+
+private:
+	_bool	m_IsScaling_End = false;
+	_float	m_fTime = 0.f;
+	_float	m_fAlphaTime = 1.f;
+	_double m_dLifeTime = 20.0;
+	_float4 m_vDefulat_Scale = { 0.25f, 0.25f, 0.25f, 0.f };
 	_float4 m_vColor = { 0.980392218f, 0.201960814f, 0.147058856f, 1.000000000f };
 
-	const _float m_fScale_Pow = 5.f;
+	_float m_fScale_Pow = 7.f;
 	const _float m_fScale_Max = 13.f;
 
 public:
