@@ -22,7 +22,7 @@ HRESULT CEffect_Robot_Battery_Spark::NativeConstruct(void * pArg)
 {
 	__super::Ready_Component(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 20;
+	m_EffectDesc_Prototype.iInstanceCount = 50;
 	m_EffectDesc_Prototype.fLifeTime = 0.25f;
 	m_fResetTime = m_EffectDesc_Prototype.fLifeTime;
 

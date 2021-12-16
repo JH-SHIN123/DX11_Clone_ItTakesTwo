@@ -64,7 +64,7 @@ public: /* Setter */
 	HRESULT	Set_DefaultVariables_ShadowDepth();
 
 public:
-	virtual HRESULT	NativeConstruct_Prototype(_uint iMaxInstanceCount, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName);
+	virtual HRESULT	NativeConstruct_Prototype(_uint iMaxInstanceCount, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName, _bool bCreateActor);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	HRESULT			Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials);
 	/* Client */
@@ -97,10 +97,16 @@ public:
 	*/
 	HRESULT	Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool bShadowWrite = false, RENDER_GROUP::Enum eGroup = RENDER_GROUP::RENDER_END);
 	/**
-	* Coppy_WorldMatrix
+	* Copy_WorldMatrix
 	* 갱신할 월드 행렬 동적 배열과 인스턴싱 개수.
 	*/
-	void Coppy_WorldMatrix(_float4x4* pWorldMatrix_Buffer, _uint iCopyInstanceIndex);
+	void Copy_WorldMatrix(_float4x4* pWorldMatrix_Buffer, _uint iCopyInstanceIndex);
+	/**
+	* Set_RealTimeMatrices
+	* GPU에 바인딩할 월드행렬 세팅
+	* 컬링된 수만큼만 복사함 - 컬링 이후에 호출되어야함
+	*/
+	HRESULT Set_RealTimeMatrices(_float4x4* pWorldMatrices);
 
 private: /* Typedef */
 	typedef vector<class CMesh*>	MESHES;
@@ -126,10 +132,12 @@ private:
 	vector<PX_TRIMESH>		m_PxTriMeshes;
 	/* For.MaterialSet */
 	_uint					m_iMaterialSetCount = 0;
-	/* For. Check Bind Materials */
+	/* For.Check Bind Materials */
 	_uint					m_IsBindMaterials[AI_TEXTURE_TYPE_MAX];
 	/* For.MultiRenderGroup */
 	_bool					m_bMultiRenderGroup = false;
+	/* For.Check_CreateActor */
+	_bool					m_bCreateActor = false;
 private:
 	HRESULT	Sort_MeshesByMaterial();
 	HRESULT	Apply_PivotMatrix(_fmatrix PivotMatrix);
@@ -163,7 +171,7 @@ private:
 #pragma endregion
 
 public:
-	static CModel_Instance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iMaxInstanceCount, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount = 1, _fmatrix PivotMatrix = XMMatrixIdentity(), _bool bNeedCenterBone = false, const char* pCenterBoneName = "");
+	static CModel_Instance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iMaxInstanceCount, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount = 1, _fmatrix PivotMatrix = XMMatrixIdentity(), _bool bNeedCenterBone = false, const char* pCenterBoneName = "", _bool bCreateActor = true);
 	virtual CComponent* Clone_Component(void* pArg) override;
 	virtual void Free() override;
 };

@@ -55,6 +55,12 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_CascadedShadow_Depth"), SHADOWMAP_SIZE, SHADOWMAP_SIZE * MAX_CASCADES, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f), true), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_CascadedShadow_Depth"), TEXT("MRT_CascadedShadow")), E_FAIL);
 
+	/* MRT_Volume */
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Volume_Front"), iWidth, iHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Volume_Front"), TEXT("MRT_Volume_Front")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Volume_Back"), iWidth, iHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Volume_Back"), TEXT("MRT_Volume_Back")), E_FAIL);
+
 	/* MRT_PostFX */
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_PostFX"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_PostFX"), TEXT("MRT_PostFX")), E_FAIL);
@@ -79,6 +85,8 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Shade"), fWidth, 0.f, fWidth, fHeight), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Specular"), fWidth, fHeight, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Volume_Front"), fWidth, fHeight * 2.f, fWidth, fHeight), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_Volume_Back"), fWidth, fHeight * 3.f, fWidth, fHeight), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Ready_DebugBuffer(TEXT("Target_CascadedShadow_Depth"), fWidth * 2.f, 0.f, fWidth, fHeight * MAX_CASCADES), E_FAIL);
 
@@ -116,6 +124,7 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 {
 	// 0 - pass
 	FAILED_CHECK_RETURN(Render_ShadowsForAllCascades(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Volume(), E_FAIL);
 	
 	// 1- pass
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
@@ -143,6 +152,8 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_CascadedShadow"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_PostFX"));
 		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Effect"));
+		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Volume_Front"));
+		m_pRenderTarget_Manager->Render_DebugBuffer(TEXT("MRT_Volume_Back"));
 
 		CSSAO::GetInstance()->Render_DebugBuffer();
 		CBlur::GetInstance()->Render_DebugBuffer_Emissive(TEXT("Target_EmissiveBlur"));
@@ -156,7 +167,7 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 
 HRESULT CRenderer::Render_Priority()
 {
-	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX"));
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX"), true, true);
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_PRIORITY])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_PRIORITY), E_FAIL);
@@ -171,14 +182,12 @@ HRESULT CRenderer::Render_Priority()
 HRESULT CRenderer::Render_NonAlpha()
 {
 	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Deferred"));
-
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_NONALPHA])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_NONALPHA), E_FAIL);
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_GROUP::RENDER_NONALPHA].clear();
-
 	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Deferred"));
 
 	return S_OK;
@@ -253,7 +262,7 @@ HRESULT CRenderer::Render_ShadowsForAllCascades()
 	// Set Each Cascade Shadow viewports
 	FAILED_CHECK_RETURN(pShadowManager->RSSet_CascadedViewports(), E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_CascadedShadow")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_CascadedShadow"),true,true), E_FAIL);
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_NONALPHA])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render_ShadowDepth(), E_FAIL);
@@ -266,6 +275,29 @@ HRESULT CRenderer::Render_ShadowsForAllCascades()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_Volume()
+{
+	/* 1 pass - Render to Front */
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Volume_Front"), true, true);
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_VOLUME])
+	{
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_VOLUME_FRONT), E_FAIL);;
+	}
+	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Volume_Front"));
+
+	/* 2 pass - Render to Back */
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Volume_Back"), true, true);
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_VOLUME])
+	{
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_VOLUME_BACK), E_FAIL);
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[RENDER_GROUP::RENDER_VOLUME].clear();
+	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Volume_Back"));
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Render_LightAcc()
 {
 	NULL_CHECK_RETURN(m_pRenderTarget_Manager, E_FAIL);
@@ -273,7 +305,7 @@ HRESULT CRenderer::Render_LightAcc()
 	CLight_Manager*	pLight_Manager = CLight_Manager::GetInstance();
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_LightAcc")), E_FAIL);
-	FAILED_CHECK_RETURN(pLight_Manager->Render_Lights(), E_FAIL);
+	FAILED_CHECK_RETURN(pLight_Manager->Render_LightManager(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_LightAcc")), E_FAIL);
 
 	return S_OK;

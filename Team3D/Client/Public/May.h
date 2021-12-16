@@ -8,6 +8,9 @@ class CSpaceRail;
 class CSpaceRail_Node;
 class CMay final : public CCharacter
 {
+public:
+	enum CAMERA_WORK_STATE { STATE_SPACE_PORTAL, STATE_MAYWALL_JUMP, STATE_END };
+
 #pragma region Enum_STATE
 public:
 	enum MAY_STATE {
@@ -156,7 +159,7 @@ public:
 
 		 /* ÄÆ¾À */
 		 CUTSCENE_BEAMUP_INTRO_MAY, CUTSCENE_SPACESTATION_BOSSFIGHT_BEAMOUT, CUTSCENE_SPACESTATION_BOSSFIGHT_EJECT, SPACESTATION_BOSSFIGHT_INTRO, SPACESTATION_BOSSFIGHT_OUTRO, 
-		 SPACESTATION_BOSSFIGHT_LASERRIPPEDOFF, SPACESTATION_HUB_SECONDGENERATOR, STATE_END
+		 SPACESTATION_BOSSFIGHT_LASERRIPPEDOFF, SPACESTATION_HUB_SECONDGENERATOR
 	};
 #pragma endregion
 
@@ -176,12 +179,15 @@ public:
 public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel*		Get_Model() { return m_pModelCom; }
-
 	CPlayerActor* Get_Actor() { return m_pActorCom; }
 
 	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool		Get_IsGroundPound() { return m_bGroundPound; }
 	_bool		Get_IsGroundPoundVarious() { return m_bPlayGroundPoundOnce; }
+	_bool		Get_IsHooking() { return m_IsHookUFO; }
+	_vector	    Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
+
+	_bool		Get_OnRail() { return m_bOnRail; }
 
 public:
 
@@ -332,6 +338,14 @@ public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
 	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
 	void SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject* pTargetPtr);
+	void SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerCameraWorld);
+
+private:
+	// CameraTrigger 
+	CAMERA_WORK_STATE m_eCameraWorkState = STATE_END;
+	GameID::Enum m_eCameraTriggerID = GameID::Enum::eWORMHOLE;
+	_bool m_IsCamTriggerCollide = false;
+	_float4x4 m_TriggerCameraWorld = {};
 
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;

@@ -17,7 +17,7 @@ public: /* Getter */
 public:
 	HRESULT Add_RenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _tchar* pRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vClearColor, _bool isDepthBuffer = false);
 	HRESULT Add_MRT(const _tchar* pRenderTargetTag, const _tchar* pMRTTag);
-	HRESULT Begin_MRT(ID3D11DeviceContext* pDevice_Context, const _tchar* pMRTTag, _bool isClear = true);
+	HRESULT Begin_MRT(ID3D11DeviceContext* pDevice_Context, const _tchar* pMRTTag, _bool isRtvClear = true, _bool isDsvClear = false);
 	HRESULT End_MRT(ID3D11DeviceContext* pDevice_Context, const _tchar* pMRTTag);
 
 private: /* Typedef */

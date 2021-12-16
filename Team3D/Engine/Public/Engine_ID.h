@@ -68,6 +68,9 @@ namespace Engine
 			eWALLLASERTRAP,
 			eWALLLASERTRAP_BUTTON,
 			eDUMMYWALL,
+			eDUMMYWALLCAMERATRIGGER,
+			eMAYWALLCAMERATRIGGER,
+			ePIPEWALLCAMERATRIGGER,
 			eENVIRONMENT,
 			eHANGINGPLANET,
 			eHOOKAHTUBE,
@@ -78,10 +81,12 @@ namespace Engine
 			eROTATIONFAN,
 			ePEDAL,
 			eROTATIONBOX,
+			eUFORADARLEVER,
 			eMOONUFO,
 			eLASERTENNISPOWERCOORD,
 			eLASERTRIGGER,
-			eLASER_LASERTENNIS
+			eLASER_LASERTENNIS,
+			eRUNNINGMOONBABOON
 		};
 	};
 
@@ -102,5 +107,10 @@ namespace Engine
 	struct ContactStatus
 	{
 		enum Enum { eFOUND, eLOST };
+	};
+
+	struct LightStatus
+	{
+		enum Enum { eDIRECTIONAL, eSTATIC, eDYNAMIC, eEND };
 	};
 }

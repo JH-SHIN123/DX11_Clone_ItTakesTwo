@@ -154,6 +154,8 @@ HRESULT CModel::Set_Animation(_uint iAnimIndex, _double dAnimTime)
 	m_iCurAnimFrame = 0;
 	m_AnimTransformations.assign(m_BaseTransformations.begin(), m_BaseTransformations.end());
 
+	m_fProgressAnim = 0.f;
+
 	return S_OK;
 }
 
@@ -532,8 +534,6 @@ HRESULT CModel::Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool 
 	if(false == bShadowWrite)
 		FAILED_CHECK_RETURN(Is_BindMaterials(iMaterialIndex), E_FAIL);
 
-	FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
-
 	if (0 < m_iAnimCount)
 	{
 		_matrix	BoneMatrices[256];
@@ -546,12 +546,16 @@ HRESULT CModel::Sepd_Render_Model(_uint iMaterialIndex, _uint iPassIndex, _bool 
 				pMesh->Calc_BoneMatrices(BoneMatrices, m_CombinedTransformations);
 				Set_Variable("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 256);
 
+				FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
 				m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
 			}
 		}
 	}
 	else
 	{
+		FAILED_CHECK_RETURN(m_InputLayouts[iPassIndex].pPass->Apply(0, m_pDeviceContext), E_FAIL);
+
 		for (auto& pMesh : m_SortedMeshes[iMaterialIndex])
 		{
 			if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
@@ -622,6 +626,30 @@ HRESULT CModel::Render_Model_VERTEX(_uint iPassIndex, _uint iMaterialSetNum, _bo
 				if ((eGroup == RENDER_GROUP::RENDER_END && !m_bMultiRenderGroup) || eGroup == pMesh->Get_RenderGroup())
 					m_pDeviceContext->DrawIndexed(3 * pMesh->Get_FaceCount(), 3 * pMesh->Get_StratFaceIndex(), pMesh->Get_StartVertexIndex());
 			}
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel::Change_PivotMatrix(_fmatrix PivotMatrix)
+{
+	XMStoreFloat4x4(&m_PivotMatrix, XMMatrixIdentity());
+
+	if (0 < m_iAnimCount)
+	{
+		XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
+		memcpy(&m_CombinedPivotMatrix, &m_PivotMatrix, sizeof(_float4x4));
+		return S_OK;
+	}
+	else
+	{
+		for (_uint iIndex = 0; iIndex < m_iVertexCount; ++iIndex)
+		{
+			_vector	vAdjustedPosition = XMVector3TransformCoord(XMLoadFloat3(&m_pVertices[iIndex].vPosition), PivotMatrix);
+			XMStoreFloat3(&m_pVertices[iIndex].vPosition, vAdjustedPosition);
+			_vector	vAdjustedNormal = XMVector3TransformNormal(XMLoadFloat3(&m_pVertices[iIndex].vNormal), PivotMatrix);
+			XMStoreFloat3(&m_pVertices[iIndex].vNormal, vAdjustedNormal);
 		}
 	}
 

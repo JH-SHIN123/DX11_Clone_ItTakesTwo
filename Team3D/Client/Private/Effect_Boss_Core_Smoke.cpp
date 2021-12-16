@@ -15,7 +15,7 @@ HRESULT CEffect_Boss_Core_Smoke::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 20;
+	m_EffectDesc_Prototype.iInstanceCount = 30;
 
 	return S_OK;
 }
@@ -47,6 +47,7 @@ _int CEffect_Boss_Core_Smoke::Tick(_double TimeDelta)
 	if (false == m_IsActivate && 0.0 >= m_dControlTime)
 		return EVENT_DEAD;
 
+
 	if (true == m_IsActivate)
 	{
 		m_dControlTime += TimeDelta;
@@ -56,6 +57,11 @@ _int CEffect_Boss_Core_Smoke::Tick(_double TimeDelta)
 	}
 	else
 		m_dControlTime -= TimeDelta;
+
+	m_dActivateTime += TimeDelta;
+	if (6.f <= m_dActivateTime)
+		m_IsActivate = false;
+
 
 	Check_InstanceBuffer(TimeDelta);
 
@@ -77,7 +83,7 @@ HRESULT CEffect_Boss_Core_Smoke::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(2));
 
-	m_pPointInstanceCom_STT->Render(2, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
+	m_pPointInstanceCom_STT->Render(7, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
 }
@@ -91,7 +97,7 @@ void CEffect_Boss_Core_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
 	_vector vDir = XMLoadFloat3(&m_pInstanceBiffer_Dir[iIndex]);
 	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition);
 
-	vPos += vDir * TimeDelta * m_fInstance_SpeedPerSec;
+	vPos += vDir * TimeDelta * m_fInstance_SpeedPerSec * 5.f;
 
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }
@@ -152,12 +158,12 @@ _float2 CEffect_Boss_Core_Smoke::Get_Rand_Size()
 	switch (iRandNum)
 	{
 	case 0:
-		vSize.x -= 0.2f;
-		vSize.y -= 0.2f;
+		vSize.x -= 0.5f;
+		vSize.y -= 0.5f;
 		break;
 	case 1:
-		vSize.x += 0.2f;
-		vSize.y += 0.2f;
+		vSize.x += 0.5f;
+		vSize.y += 0.5f;
 		break;
 	}
 
@@ -169,7 +175,8 @@ void CEffect_Boss_Core_Smoke::Check_InstanceBuffer(_double TimeDelta)
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
-		if (0.8 <= m_pInstance_Pos_UpdateTime[iIndex])
+		m_pInstance_Pos_UpdateTime[iIndex] -= TimeDelta;
+		if (1.2 <= m_pInstance_Pos_UpdateTime[iIndex])
 		{
 			m_pInstanceBuffer_STT[iIndex].fTime += (_float)TimeDelta * m_fAlphaTime_Power;
 			if (1.f <= m_pInstanceBuffer_STT[iIndex].fTime)
@@ -181,7 +188,6 @@ void CEffect_Boss_Core_Smoke::Check_InstanceBuffer(_double TimeDelta)
 			if (0.f >= m_pInstanceBuffer_STT[iIndex].fTime)
 				m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
 		}
-		m_pInstance_Pos_UpdateTime[iIndex] -= TimeDelta;
 
 		if (0.0 <= m_pInstance_Pos_UpdateTime[iIndex])
 		{

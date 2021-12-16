@@ -50,13 +50,13 @@ PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector	vDiffuseDesc		= g_DiffuseTexture.Sample(Wrap_Sampler, In.vTexUV);
-	vector	vShadeDesc			= g_ShadeTexture.Sample(Wrap_Sampler, In.vTexUV);
-	vector	vShadowDesc			= g_ShadowTexture.Sample(Wrap_Sampler, In.vTexUV);
-	vector	vSpecularDesc		= g_SpecularTexture.Sample(Wrap_Sampler, In.vTexUV);
-	vector	vSpecularBlurDesc	= g_SpecularBlurTexture.Sample(Wrap_Sampler, In.vTexUV);
-	vector	vEmissiveDesc		= g_EmissiveTexture.Sample(Wrap_Sampler, In.vTexUV);
-	vector	vEmissiveBlurDesc	= g_EmissiveBlurTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
+	vector	vDiffuseDesc		= g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	vector	vShadeDesc			= g_ShadeTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	vector	vShadowDesc			= g_ShadowTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	vector	vSpecularDesc		= g_SpecularTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	vector	vSpecularBlurDesc	= g_SpecularBlurTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	vector	vEmissiveDesc		= g_EmissiveTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	vector	vEmissiveBlurDesc	= g_EmissiveBlurTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
 	vSpecularDesc.w = 0.f;
 	vSpecularBlurDesc.w = 0.f;
@@ -65,7 +65,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	Out.vColor = (vDiffuseDesc * vShadeDesc + (vSpecularDesc * fSpecBlendFactor + pow(vSpecularBlurDesc, 2.f) * (1.f - fSpecBlendFactor))) * vShadowDesc;
 	Out.vColor.xyz += vEmissiveDesc.xyz/* Emissive Scale */ + vEmissiveBlurDesc.xyz /* Blur - Emissive Scale */;
 
-	if (Out.vColor.w == 0) discard;
+	if (Out.vColor.w == 0) discard; // 이거 없으면 스카이박스가 사라짐.
 
 	return Out;
 }

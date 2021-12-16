@@ -93,12 +93,10 @@ public:
 #pragma endregion
 
 #pragma region Light_Manager
-	HRESULT		Reserve_Container_Light(_uint iCount);
-	HRESULT		Add_Light(const _tchar * pLightTag, const LIGHT_DESC& LightDesc, _bool isActive = true);
-	LIGHT_DESC*	Get_LightDescPtr(const _tchar * pLightTag);
-	HRESULT		TurnOn_Light(const _tchar * pLightTag);
-	HRESULT		TurnOff_Light(const _tchar * pLightTag);
-	void		Clear_Lights();
+	CLight* Get_Light(LightStatus::Enum eState, const _tchar * pLightTag, _bool bAddRef = true); /* Careful to use func, too heavy */
+	HRESULT	Add_Light(LightStatus::Enum  eState, CLight * pLight);
+	HRESULT Remove_Light(const _tchar * pLightTag); /* Can remove only dyamic lights and, careful to use func, too heavy */
+	void	Clear_Lights(LightStatus::Enum  eState);
 #pragma endregion
 
 #pragma region PhysX

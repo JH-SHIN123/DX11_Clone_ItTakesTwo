@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Press.h"
 #include "Cody.h"
+#include "Effect_Generator.h"
 
 CPress::CPress(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -147,6 +148,7 @@ void CPress::Close_Press(_double dTimeDelta)
 		m_dCoolTime = 0.0;
 		m_dDistance = 0.0;
 		m_bSmash = false;
+		m_bEffect = false;
 		return;
 	}
 
@@ -161,7 +163,38 @@ void CPress::Close_Press(_double dTimeDelta)
 	{
 		_vector vClosePos = XMVectorSetW(XMLoadFloat3(&m_vClosePos), 1.f);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vClosePos);
+
+		Press_Effect();
 	}
+}
+
+void CPress::Press_Effect()
+{
+	if (true == m_bEffect)
+		return;
+
+	/*
+			EFFECT->Add_Effect(Effect_Value::UFO_Inside_PressWall_Smoke, WorldMatrix);
+
+		WorldMatrix.r[3] += XMVector3Normalize(WorldMatrix.r[2]) * 0.75f;
+		EFFECT->Add_Effect(Effect_Value::UFO_Inside_PressWall_Smoke, WorldMatrix);
+
+		WorldMatrix.r[3] -= XMVector3Normalize(WorldMatrix.r[2]) * 1.5f;
+		EFFECT->Add_Effect(Effect_Value::UFO_Inside_PressWall_Smoke, WorldMatrix);
+
+	*/
+
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	WorldMatrix.r[3] += XMVector3Normalize(WorldMatrix.r[1]) * 0.1f;
+	WorldMatrix.r[3] += XMVector3Normalize(WorldMatrix.r[2]) * 0.75f;
+	for (_int i = 0; i < 3; ++i)
+	{
+		EFFECT->Add_Effect(Effect_Value::UFO_Inside_PressWall_Particle, WorldMatrix);
+		EFFECT->Add_Effect(Effect_Value::UFO_Inside_PressWall_Smoke, WorldMatrix);
+		WorldMatrix.r[3] -= XMVector3Normalize(WorldMatrix.r[2]) * 0.75f;
+	}	
+
+	m_bEffect = true;
 }
 
 HRESULT CPress::Ready_Component(void * pArg)

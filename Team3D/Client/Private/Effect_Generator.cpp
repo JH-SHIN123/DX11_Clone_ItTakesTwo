@@ -11,6 +11,7 @@
 #include "Effect_Dash.h"
 #include "Effect_Player_Dead.h"
 #include "Effect_Player_Dead_Particle.h"
+#include "Effect_Player_Dead_Explosion.h"
 #include "Effect_Player_Revive.h"
 #include "Effect_Cody_Size.h"
 #include "Effect_RespawnTunnel_Portal.h"
@@ -23,13 +24,43 @@
 #include "Effect_Robot_Battery_Spark.h"
 #include "Effect_Umbrella_Pipe.h"
 #include "Effect_Pinball_Move.h"
-#include "Effect_Boss_Laser_Smoke.h"
 #include "Effect_PointLight.h"
+#include "Effect_Env_Particle_Field.h"
+#include "Effect_Boss_Laser_Smoke.h"
 #include "Effect_Boss_Laser_Particle.h"
+#include "Effect_Boss_Laser_Charge.h"
+#include "Effect_Boss_Laser_Explosion.h"
 #include "Effect_Boss_Core.h"
 #include "Effect_Boss_Core_Hit.h"
 #include "Effect_Boss_Core_Smoke.h"
-#include "Effect_Env_Particle_Field.h"
+#include "Effect_Boss_Core_Explosion.h"
+#include "Effect_Boss_Core_Lightning.h"
+#include "Effect_Boss_Core_Lightning_Big.h"
+#include "Effect_Boss_Gravitational_Bomb.h"
+#include "Effect_Boss_Gravitational_Bomb_Pillar.h"
+#include "Effect_Boss_Gravitational_Bomb_Particle.h"
+#include "Effect_Boss_Gravitational_Bomb_Explosion.h"
+#include "Effect_Boss_GroundPound.h"
+#include "Effect_Boss_GroundPound_Ring.h"
+#include "Effect_Boss_GroundPound_Smoke.h"
+#include "Effect_Boss_Missile_Smoke.h"
+#include "Effect_Boss_Missile_Explosion.h"
+#include "Effect_Boss_Missile_Particle.h"
+#include "Effect_Boss_UFO_Flying.h"
+#include "Effect_Boss_UFO_Flying_Particle.h"
+#include "Effect_Boss_UFO_Flying_Particle_Flow.h"
+#include "Effect_UFO_Inside_Battery_Spark.h"
+#include "Effect_UFO_Inside_Battery_Particle.h"
+#include "Effect_UFO_Inside_Battery_Explosion.h"
+#include "Effect_UFO_Inside_ElectricWall_Spark.h"
+#include "Effect_UFO_Inside_ElectricWall_Particle.h"
+#include "Effect_UFO_Inside_ElectricWall_Explosion.h"
+#include "Effect_UFO_Inside_PressWall_Smoke.h"
+#include "Effect_UFO_Inside_PressWall_Particle.h"
+#include "Effect_Player_Rail_Particle.h"
+#include "Effect_Player_Rail_Smoke.h"
+#include "Effect_Hit_Planet_Smoke.h"
+#include "Effect_Hit_Planet_Particle.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -54,6 +85,7 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	XMStoreFloat4x4(&Clone_Data.WorldMatrix, WorldMatrix);
 	Clone_Data.pArg = pArg;
 
+#pragma region Effect_Value
 	switch (eEffect)
 	{
 	case Effect_Value::Walking_Smoke:
@@ -85,10 +117,18 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Revive");
 		break;
+	case Effect_Value::Cody_Rail:
+		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_CODY;
+		lstrcpy(szPrototype, L"GameObject_2D_Player_Rail_Particle");
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Player_Rail_Smoke"), &Clone_Data);
+		break;
+	case Effect_Value::Cody_PinBall_Move:
+		lstrcpy(szPrototype, L"GameObject_2D_Pinball_Move");
+		break;
 	case Effect_Value::May_Dead:
 		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Dead_Particle");
-		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, L"GameObject_2D_Player_Dead", &Clone_Data);
+		//m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Player_Dead"), &Clone_Data);
 		break;
 	case Effect_Value::May_Dead_Fire:
 		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
@@ -98,8 +138,16 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Revive");
 		break;
+	case Effect_Value::May_Rail:
+		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
+		lstrcpy(szPrototype, L"GameObject_2D_Player_Rail_Particle");
+		//m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Player_Rail_Smoke"), &Clone_Data);
+		break;
 	case Effect_Value::May_Boots_Walking:
 		lstrcpy(szPrototype, L"GameObject_2D_May_Boots_Walking_Particle");
+		break;
+	case Effect_Value::Player_Dead_Explosion:
+		lstrcpy(szPrototype, L"GameObject_2D_Player_Dead_Explosion");
 		break;
 	case Effect_Value::RobotBattery_Spark:
 		lstrcpy(szPrototype, L"GameObject_2D_Robot_Battery_Spark");
@@ -110,21 +158,112 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::BossCore_Smoke:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_Core_Smoke");
 		break;
+	case Effect_Value::BossCore_Explosion:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Core_Explosion");
+		break;
+	case Effect_Value::BossCore_Lightning:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Core_Lightning");
+		break;
+	case Effect_Value::BossCore_Lightning_Big:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Core_Lightning_Big");
+		break;
+	case Effect_Value::BossBomb:
+		lstrcpy(szPrototype, L"GameObject_3D_Boss_Gravitational_Bomb");
+		break;
+	case Effect_Value::BossBomb_Pillar:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Gravitational_Bomb_Pillar");
+		break;
+	case Effect_Value::BossBomb_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Gravitational_Bomb_Particle");
+		break;
+	case Effect_Value::BossBomb_Explosion:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Gravitational_Bomb_Explosion");
+		break;
+	case Effect_Value::BossLaser_Charge:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Laser_Charge");
+		break;
+	case Effect_Value::BossLaser_Explosion:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Laser_Explosion");
+		break;
+	case Effect_Value::BossGroundPound:
+		lstrcpy(szPrototype, L"GameObject_3D_Boss_GroundPound");
+		break;
+	case Effect_Value::BossGroundPound_Ring:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_GroundPound_Ring");
+		break;
+	case Effect_Value::BossGroundPound_Smoke:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_GroundPound_Smoke");
+		break;
+	case Effect_Value::BossMissile_Smoke:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Smoke");
+		break;
+	case Effect_Value::BossMissile_Explosion:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Explosion");
+		break;
+	case Effect_Value::BossMissile_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Particle");
+		break;
+	case Effect_Value::Boss_UFO_Flying:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_UFO_Flying");
+		Clone_Data.fSizePower = -0.75f;
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
+		Clone_Data.fSizePower = -1.10f;
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
+		Clone_Data.fSizePower = -1.45f;
+		break;
+	case Effect_Value::Boss_UFO_Flying_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_UFO_Flying_Particle");
+		break;
+	case Effect_Value::Boss_UFO_Flying_Particle_Flow:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_UFO_Flying_Particle_Flow");
+		break;
+	case Effect_Value::UFO_Inside_Battery_Spark:
+		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_Battery_Spark");
+		break;
+	case Effect_Value::UFO_Inside_Battery_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_Battery_Particle");
+		break;
+	case Effect_Value::UFO_Inside_Battery_Explosion:
+		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_Battery_Explosion");
+		break;
+	case Effect_Value::UFO_Inside_ElectricWall_Spark:
+		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_ElectricWall_Spark");
+		break;
+	case Effect_Value::UFO_Inside_ElectricWall_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_ElectricWall_Particle");
+		break;
+	case Effect_Value::UFO_Inside_ElectricWall_Explosion:
+		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_ElectricWall_Explosion");
+		break;
+	case Effect_Value::UFO_Inside_PressWall_Smoke:
+		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_PressWall_Smoke");
+		break;
+	case Effect_Value::UFO_Inside_PressWall_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_UFO_Inside_PressWall_Particle");
+		break;
+	case Effect_Value::Hit_Planet_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_Hit_Planet_Particle");
+		break;
+	case Effect_Value::Hit_Planet_Smoke:
+		lstrcpy(szPrototype, L"GameObject_2D_Hit_Planet_Smoke");
+		break;
 	default:
 		break;
 	}
 
+#pragma endregion
+
 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
-	//
+	
 	return S_OK;
 }
 
-HRESULT CEffect_Generator::Add_PointLight(Effect_PointLight_Desc* pLightArg)
+HRESULT CEffect_Generator::Add_PointLight(Effect_PointLight_Desc* pLightArg, CGameObject** ppOut)
 {
 	if (nullptr == pLightArg)
 		return E_FAIL;
 
-	return 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_PointLight"), Level::LEVEL_STAGE, TEXT("GameObject_2D_PointLight"), pLightArg);	
+	return 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_PointLight"), Level::LEVEL_STAGE, TEXT("GameObject_2D_PointLight"), pLightArg, ppOut);
 }
 
 EFFECT_DESC_CLONE::PLAYER_VALUE CEffect_Generator::Check_Cody_Size(_fmatrix WorldMatrix)
@@ -179,7 +318,6 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 					, Compute_Pivot(XMLoadFloat3(&Data->vPivotScale), XMLoadFloat3(&Data->vPivotRotate_Degree)))), E_FAIL);
 		}
 
-
 		Create_Prototype(Data->iLevelIndex, Data->EffectName, pDevice, pDeviceContext, Data);
 		Safe_Delete(Data);
 	}
@@ -191,7 +329,8 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 
 HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pPrototypeName, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, EFFECT_DESC_PROTO* pData)
 {
-	// 2D Effect
+
+#pragma region 2D_Effect
 	if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_FireDoor", CEffect_FireDoor::Create(pDevice, pDeviceContext, pData));
 
@@ -255,8 +394,97 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Env_Particle_Field"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Env_Particle_Field", CEffect_Env_Particle_Field::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Core_Explosion"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Core_Explosion", CEffect_Boss_Core_Explosion::Create(pDevice, pDeviceContext, pData));
 
-	// 3D Effect
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Core_Lightning"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Core_Lightning", CEffect_Boss_Core_Lightning::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Core_Lightning_Big"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Core_Lightning_Big", CEffect_Boss_Core_Lightning_Big::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Gravitational_Bomb_Pillar"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Gravitational_Bomb_Pillar", CEffect_Boss_Gravitational_Bomb_Pillar::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Gravitational_Bomb_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Gravitational_Bomb_Particle", CEffect_Boss_Gravitational_Bomb_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Gravitational_Bomb_Explosion"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Gravitational_Bomb_Explosion", CEffect_Boss_Gravitational_Bomb_Explosion::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Laser_Charge"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Laser_Charge", CEffect_Boss_Laser_Charge::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Laser_Explosion"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Laser_Explosion", CEffect_Boss_Laser_Explosion::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_GroundPound_Ring"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_GroundPound_Ring", CEffect_Boss_GroundPound_Ring::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_GroundPound_Smoke"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_GroundPound_Smoke", CEffect_Boss_GroundPound_Smoke::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Missile_Smoke"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Smoke", CEffect_Boss_Missile_Smoke::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Missile_Explosion"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Explosion", CEffect_Boss_Missile_Explosion::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Missile_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Particle", CEffect_Boss_Missile_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Dead_Explosion"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead_Explosion", CEffect_Player_Dead_Explosion::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_UFO_Flying"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_UFO_Flying", CEffect_Boss_UFO_Flying::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_UFO_Flying_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_UFO_Flying_Particle", CEffect_Boss_UFO_Flying_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_UFO_Flying_Particle_Flow"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_UFO_Flying_Particle_Flow", CEffect_Boss_UFO_Flying_Particle_Flow::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_Battery_Spark"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_Battery_Spark", CEffect_UFO_Inside_Battery_Spark::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_Battery_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_Battery_Particle", CEffect_UFO_Inside_Battery_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_Battery_Explosion"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_Battery_Explosion", CEffect_UFO_Inside_Battery_Explosion::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_ElectricWall_Spark"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_ElectricWall_Spark", CEffect_UFO_Inside_ElectricWall_Spark::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_ElectricWall_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_ElectricWall_Particle", CEffect_UFO_Inside_ElectricWall_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_ElectricWall_Explosion"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_ElectricWall_Explosion", CEffect_UFO_Inside_ElectricWall_Explosion::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_PressWall_Smoke"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_PressWall_Smoke", CEffect_UFO_Inside_PressWall_Smoke::Create(pDevice, pDeviceContext, pData));
+
+ 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_UFO_Inside_PressWall_Particle"))
+ 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_UFO_Inside_PressWall_Particle", CEffect_UFO_Inside_PressWall_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Rail_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Rail_Particle", CEffect_Player_Rail_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Rail_Smoke"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Rail_Smoke", CEffect_Player_Rail_Smoke::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Hit_Planet_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Hit_Planet_Particle", CEffect_Hit_Planet_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Hit_Planet_Smoke"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Hit_Planet_Smoke", CEffect_Hit_Planet_Smoke::Create(pDevice, pDeviceContext, pData));
+
+#pragma  endregion
+
+
+#pragma region 3D_Effect
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_RespawnTunnel"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_RespawnTunnel", CEffect_RespawnTunnel::Create(pDevice, pDeviceContext, pData));
 
@@ -272,16 +500,24 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Umbrella_Pipe"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Umbrella_Pipe", CEffect_Umbrella_Pipe::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Boss_Gravitational_Bomb"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Boss_Gravitational_Bomb", CEffect_Boss_Gravitational_Bomb::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Boss_GroundPound"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Boss_GroundPound", CEffect_Boss_GroundPound::Create(pDevice, pDeviceContext, pData));
+
+#pragma  endregion
+
+#ifdef __TEST_JUNG
 	else
 	{
-#ifdef __TEST_JUNG
 		_tchar szWarning[MAX_PATH] = L"";
 		lstrcat(szWarning, pPrototypeName);
 		MessageBox(g_hWnd, szWarning, L"Press Enter", MB_OK);
-		Safe_Delete(pData); // ÅÍÁö°Ô ¸¸µê
-#endif // __TEST_JUNG
+		//Safe_Delete(pData); // ÅÍÁö°Ô ¸¸µê
 		return S_OK;
 	}
+#endif // __TEST_JUNG
 
 
 	return S_OK;
@@ -298,15 +534,13 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT")
 		, CVIBuffer_PointInstance_Custom_STT::Create(pDevice, pDeviceContext, 10000, TEXT("../Bin/ShaderFiles/Shader_PointCustom_STT.hlsl"), "DefaultTechnique")), E_FAIL);
 
-// 	FAILED_CHECK_RETURN(pInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_RectInstance_Custom")
-// 		, CVIBuffer_RectInstance_Custom::Create(pDevice, pDeviceContext, 100, TEXT("../Bin/ShaderFiles/Shader_RectCustom.hlsl"), "DefaultTechnique")), E_FAIL);
 
 #pragma region Texture
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Color_Ramp/Color_Ramp_%d.png"), 15)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Clouds_01"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Clouds_01.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Clouds_01_xbox"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Clouds_01_xbox.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Cloud_Texture_1k"),	CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Cloud_Texture_1k.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ligntning_01"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/ligntning_01.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ligntning_01"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Lightning/ligntning_%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Fire_Loop"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Fire_Loop/Fire_Loop_0%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Flow_01"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Smoke/Smoke_Flow_01_E%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Flow_02"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Smoke/Smoke_Flow_02_E%d.png"), 2)), E_FAIL);
@@ -324,7 +558,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_flowmaptest"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/flowmaptest_01.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Wormhole_Noise"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Wormhole_Noise/Wormhole_Noise_%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Level_Preview"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Level_Preview/%d.png"), 7)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Slime_Cloud"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Shockwave_02_E1.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Slime_Cloud"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Slime/T_Slime_Cloud_%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Dot"),					CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Custom/Dot.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Fire_Tiled"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/T_Fire_Tiled.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_SoftCLoud"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/SoftCLoud_01.png"))), E_FAIL);
@@ -334,7 +568,13 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_radialgradientsample"),CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/radialgradientsample.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Spark_Mask"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/Spark_Mask_01.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Smoke_Loop"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Smoke/smokeloop_0%d.png"), 2)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Dust_Motes"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/T_Dust_Motes_03.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Ring"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Ring/T_Ring_0%d.png"), 2)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ShockWave"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/ShockWave/ShockWave_%d.png"), 2)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Mask_Drop"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/drop_01.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Star"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Star.png"))), E_FAIL);
 
+	
 	
 #pragma endregion
 

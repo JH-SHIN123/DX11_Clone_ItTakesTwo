@@ -121,6 +121,8 @@ public:
 	_float4 Get_TexUV_Rand(_uint iTexture_U, _uint iTexture_V, _int* pTex_U, _int* pTex_V);
 	_float4 Get_TexUV_Next(_uint iTexture_U, _uint iTexture_V);
 	_float3 Get_Dir_Rand(_int3 vRandDirPower);
+	_float3 Get_Dir_Rand_Matrix(_int3 vRandDirPower, _fmatrix WorldMatrix, CTransform::STATE eState = CTransform::STATE_POSITION);
+	_fmatrix Normalize_Matrix(_fmatrix WorldMatrix);
 
 protected:
 	// 프로토타입에 기본 세팅을 하고 클론에서 상황에 맞는 추가적인 데이터를 넘기자

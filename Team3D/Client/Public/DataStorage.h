@@ -129,6 +129,9 @@ public:
 	void Set_Moon(CGameObject* pMoon) { m_pMoon = pMoon; }
 	CGameObject* Get_Mooon() { return m_pMoon; }
 
+	void Set_RunningMoonBaboon(CGameObject* pRunningMoonBaboon) { m_pRunningMoonBaboon = pRunningMoonBaboon; }
+	CGameObject* Get_RunningMoonBaboon() { return m_pRunningMoonBaboon; }
+
 	// Stage Flow
 	void Set_Valve_Activate(_bool bValveActivate) { m_IsValveActivated = bValveActivate; }
 	_bool Get_IsValve_Activated() { return m_IsValveActivated; }
@@ -162,6 +165,9 @@ public:
 	void Set_HookUFO(CGameObject* pHookUFO) { m_pHookUFO = pHookUFO; }
 	CGameObject* Get_HookUFO() { return m_pHookUFO; }
 
+	void Set_UFORadarSet(CGameObject* pUFORadarSet) { m_pUFORadarSet = pUFORadarSet; }
+	CGameObject* Get_UFORadarSet() { return m_pUFORadarSet; }
+
 	/* For. Boss */
 	void Set_MoonBaboon_MainLaser(CGameObject* pMoonBaboon_MainLaser) { m_pMoonBaboonMainLaser = pMoonBaboon_MainLaser; }
 	CGameObject* Get_MoonBaboon_MainLaser() { return m_pMoonBaboonMainLaser; }
@@ -172,8 +178,27 @@ public:
 	void Set_LaserTypeA(CGameObject* pLaserTypeA) { m_pLaserTypeA = pLaserTypeA; }
 	CGameObject* Get_LaserTypeA() { return m_pLaserTypeA; }
 
+	void Set_LaserTypeC(CGameObject* pLaserTypeC) { m_pLaserTypeC = pLaserTypeC; }
+	CGameObject* Get_LaserTypeC() { return m_pLaserTypeC; }
+
 	void Set_LaserTypeB_Recovery(_bool IsCheck) { m_IsLaserTypeB_Recovery = IsCheck; }
 	_bool Get_LaserTypeB_Recovery() const { return m_IsLaserTypeB_Recovery; }
+
+	/* For.Pixel Radar */
+	void Set_PixelUFO(CGameObject* pPixelUFO) { m_pPixelUFO = pPixelUFO; }
+	CGameObject* Get_PixelUFO() { return m_pPixelUFO; }
+
+	void Set_PixelCrossHair(CGameObject* pPixelCrossHair) { m_pPixelCrossHair = pPixelCrossHair; }
+	CGameObject* Get_PixelCrossHair() { return m_pPixelCrossHair; }
+
+	void Set_PixelLaser(CGameObject* pPixelLaser) { m_pPixelLaser = pPixelLaser; }
+	CGameObject* Get_PixelLaser() { return m_pPixelLaser; }
+
+	void Set_PixelBaboon(CGameObject* pPixelBaboon) { m_pPixelBaboon = pPixelBaboon; }
+	CGameObject* Get_PixelBaboon() { return m_pPixelBaboon; }
+
+	void Set_LaserGauge(_float fGauge) { m_fLaserGauge = fGauge; }
+	_float Get_LaserGauge() { return m_fLaserGauge; }
 
 private:
 	CGameObject* m_pCody = nullptr;
@@ -239,6 +264,7 @@ private:
 	/* For.MoonUFO */
 	CGameObject* m_pMoonUFO = nullptr;
 	CGameObject* m_pMoon = nullptr;
+	CGameObject* m_pRunningMoonBaboon = nullptr;
 
 	/* For.MoonBaboonSpaceShip*/
 	CGameObject* m_pMoonBaboonSpaceShip = nullptr;
@@ -246,10 +272,20 @@ private:
 	/* For.ControlRoom_Battery */
 	CGameObject* m_pControlRoom_Battery = nullptr;
 
+	/* For. UFORadarSet */
+	CGameObject* m_pUFORadarSet = nullptr;
+	CGameObject* m_pPixelUFO = nullptr;
+	CGameObject* m_pPixelCrossHair = nullptr;
+	CGameObject* m_pPixelLaser = nullptr;
+	CGameObject* m_pPixelBaboon = nullptr;
+
+	_float		 m_fLaserGauge = 0.f;
+
 	/* For.Boss */
 	CGameObject* m_pMoonBaboonMainLaser = nullptr;
 	CGameObject* m_pBossUFO = nullptr;
 	CGameObject* m_pLaserTypeA = nullptr;
+	CGameObject* m_pLaserTypeC = nullptr;
 
 private:
 	/* For.Valve */

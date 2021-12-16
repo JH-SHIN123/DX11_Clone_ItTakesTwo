@@ -192,7 +192,7 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eGroup)
 
 		iMaterialIndex = 0;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eGroup);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 18, false, eGroup);
 
 	}
 	else if (!lstrcmp(TEXT("Component_Model_Saucer_MainFloor_Top_01"), m_Static_Env_Desc.szModelTag))
@@ -206,7 +206,7 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eGroup)
 
 		iMaterialIndex = 0;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eGroup);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 18, false, eGroup);
 
 	}
 	else if (!lstrcmp(TEXT("Component_Model_LaserStation_01"), m_Static_Env_Desc.szModelTag))
@@ -217,17 +217,17 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eGroup)
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 19, false, eGroup);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 24, false, eGroup);
 
 		iMaterialIndex = 1;
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
-		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 4, false, eGroup);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 18, false, eGroup);
 	}
 	else if(!lstrcmp(TEXT("Component_Model_Planet"), m_Static_Env_Desc.szModelTag) ||
 			!lstrcmp(TEXT("Component_Model_LavaLamp"), m_Static_Env_Desc.szModelTag))
 		m_pModelCom->Render_Model(8, m_Static_Env_Desc.iMaterialIndex);
 	else if (!lstrcmp(TEXT("Component_Model_LaserButtonLargeFrame"), m_Static_Env_Desc.szModelTag))
-		m_pModelCom->Render_Model(18, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Render_Model(23, m_Static_Env_Desc.iMaterialIndex);
 	else
 		m_pModelCom->Render_Model(1, m_Static_Env_Desc.iMaterialIndex);
 
