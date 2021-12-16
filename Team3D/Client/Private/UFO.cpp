@@ -10,6 +10,7 @@
 #include "Laser_TypeA.h"
 #include "Boss_Missile.h"
 #include "MoonBaboon.h"
+#include "Effect_Generator.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -62,6 +63,10 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 
 	DATABASE->Set_BossUFO(this);
 
+	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying, m_pTransformCom->Get_WorldMatrix());
+	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying_Particle, m_pTransformCom->Get_WorldMatrix());
+	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying_Particle_Flow, m_pTransformCom->Get_WorldMatrix());
+
 	return S_OK;
 }
 
@@ -81,6 +86,10 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
 		m_IsCutScene = true;
+	}
+	else if (m_pGameInstance->Key_Down(DIK_NUMPAD7))
+	{
+
 	}
 
 	/* 컷 신 재생중이 아니라면 보스 패턴 진행하자 나중에 컷 신 생기면 바꿈 */
@@ -259,6 +268,22 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 		if (2.f <= m_fGravitationalBombLanchTime)
 		{
 			/* 중력자 폭탄 생성 */
+			_matrix vUFOWorld = m_pTransformCom->Get_WorldMatrix();
+			_matrix LeftLaserHatch = m_pModelCom->Get_BoneMatrix("LeftLaserHatch");
+			_matrix RightLaserHatch = m_pModelCom->Get_BoneMatrix("RightLaserHatch");
+
+			LeftLaserHatch *= vUFOWorld;
+			RightLaserHatch *= vUFOWorld;
+
+			EFFECT_DESC_CLONE tEffectDesc;
+			if (m_eTarget == CUFO::TARGET_MAY)
+				tEffectDesc.vStartPos = (_float4)&LeftLaserHatch.r[3].m128_f32[0];
+			else
+				tEffectDesc.vStartPos = (_float4)&RightLaserHatch.r[3].m128_f32[0];
+			XMStoreFloat3(&tEffectDesc.vDir, vDir);
+
+			m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_BossBomb_Particle"), Level::LEVEL_STAGE, 
+				TEXT("GameObject_2D_Boss_Gravitational_Bomb_Particle"), &tEffectDesc);
 
 			/* 한 발 쏠때마다 타겟 바꿔주자 */
 			if (m_iGravitationalBombCount % 2)

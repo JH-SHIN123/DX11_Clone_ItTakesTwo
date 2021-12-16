@@ -4,10 +4,10 @@ cbuffer Effect
 	// Mesh_Effect
 	float	g_fTime;
 	float	g_fAlpha;
-	float4	g_vColor;
+	float	g_fTimeWeight;
 	float	g_fRadianAngle;
+	float4	g_vColor;
 	float4	g_vColorRamp_UV;
-
 // PointCustom
 	float2			g_vSize;
 	float4			g_vUV;

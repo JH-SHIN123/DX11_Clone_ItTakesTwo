@@ -16,12 +16,53 @@ enum class Effect_Value
 	Dash,
 	Cody_Dead, Cody_Dead_Fire,
 	Cody_Revive,
+	Cody_Rail,
+	Cody_PinBall_Move,
 	May_Dead, May_Dead_Fire,
 	May_Revive,
+	May_Rail,
 	May_Boots_Walking,
+	Player_Dead_Explosion,
 	RobotBattery_Spark,
+
 	BossCore_Hit,
 	BossCore_Smoke,
+	BossCore_Explosion,
+	BossCore_Lightning,
+	BossCore_Lightning_Big,
+
+	BossBomb,
+	BossBomb_Pillar,
+	BossBomb_Particle,
+	BossBomb_Explosion,
+
+	BossLaser_Charge,					
+	BossLaser_Explosion,	
+
+	BossGroundPound,					
+	BossGroundPound_Ring,				
+	BossGroundPound_Smoke,	
+
+	BossMissile_Smoke,					
+	BossMissile_Explosion,				
+	BossMissile_Particle,	
+
+	Boss_UFO_Flying,					
+	Boss_UFO_Flying_Particle,			
+	Boss_UFO_Flying_Particle_Flow,	
+
+	UFO_Inside_Battery_Spark,
+	UFO_Inside_Battery_Particle,
+	UFO_Inside_Battery_Explosion,
+	UFO_Inside_ElectricWall_Spark,
+	UFO_Inside_ElectricWall_Particle,
+	UFO_Inside_ElectricWall_Explosion,
+	UFO_Inside_PressWall_Smoke,
+	UFO_Inside_PressWall_Particle,
+
+	Hit_Planet_Particle,
+	Hit_Planet_Smoke,
+
 	Effect_Value_End
 };
 
@@ -38,7 +79,6 @@ enum class EPoint_Color	// Color_Ramp_%d
 	Sepia	= 14,				
 	Color_End = 0
 };
-
 
 class CEffect_Generator final : public CBase
 {
@@ -59,9 +99,15 @@ class CEffect_Generator final : public CBase
 	}Effect_PointLight_Desc;
 
 public:
-	HRESULT Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix, void* pArg = nullptr);
+	HRESULT Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix = XMMatrixIdentity(), void* pArg = nullptr);
 	// 맵과 같이 배치되는 상호작용 없는 환경 이펙트는 다른걸로
 	HRESULT Add_PointLight(Effect_PointLight_Desc* pLightArg = nullptr);
+
+public:
+	enum EPlayer_Type { Type_May, Type_Cody, Type_End };
+	_bool	Get_PlayerRail_Effect(EPlayer_Type eType) { return m_IsPlayerRail_Effect[eType]; }
+	void	Set_PlayerRail_Effect(EPlayer_Type eType, _bool IsEffect) { m_IsPlayerRail_Effect[eType] = IsEffect; }
+	_bool	m_IsPlayerRail_Effect[EPlayer_Type::Type_End] = { false, false };
 
 public:
 	HRESULT Load_EffectData(const _tchar* pFilePath, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

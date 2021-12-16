@@ -66,6 +66,7 @@ typedef struct tagEffect_Desc_Clone // 상황에 따라 얘는 좀 이랬으면 좋겠다 싶은 
 	_float3		vSize_Max = { 1.f,1.f,1.f };
 	_int		iPlayerValue = PV_MAY;
 	_float		fCullingRadius = 10.f;
+	_float4		vStartPos = { 0.f, 0.f, 0.f, 1.f };
 
 	void* pArg = nullptr;
 }EFFECT_DESC_CLONE; 
@@ -121,6 +122,8 @@ public:
 	_float4 Get_TexUV_Rand(_uint iTexture_U, _uint iTexture_V, _int* pTex_U, _int* pTex_V);
 	_float4 Get_TexUV_Next(_uint iTexture_U, _uint iTexture_V);
 	_float3 Get_Dir_Rand(_int3 vRandDirPower);
+	_float3 Get_Dir_Rand_Matrix(_int3 vRandDirPower, _fmatrix WorldMatrix, CTransform::STATE eState = CTransform::STATE_POSITION);
+	_fmatrix Normalize_Matrix(_fmatrix WorldMatrix);
 
 protected:
 	// 프로토타입에 기본 세팅을 하고 클론에서 상황에 맞는 추가적인 데이터를 넘기자

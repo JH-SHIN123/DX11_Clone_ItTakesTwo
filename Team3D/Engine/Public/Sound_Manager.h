@@ -7,9 +7,17 @@ BEGIN(Engine)
 
 enum ENGINE_DLL CHANNEL_TYPE
 {
+	/* Se */
 	CHANNEL_BGM
+	/* Yoon */
 	, CHANNEL_PLAYER
+	/* Jin */
 	, CHANNEL_BOSS
+	/* Hye */
+	/* Jung */
+	/* Taek */
+	/* Jun */
+	, CHANNEL_CUTSCENE
 	, CHANNEL_END
 };
 

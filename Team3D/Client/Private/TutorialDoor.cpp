@@ -76,7 +76,7 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 		UI_Delete(May, InputButton_InterActive);
 	}
 
-	if (m_pGameInstance->Pad_Key_Down(DIP_LB) || m_pGameInstance->Key_Down(DIK_O))
+	if (m_pGameInstance->Pad_Key_Down(DIP_LB) || m_pGameInstance->Key_Down(DIK_I))
 	{
 		m_bPull = false;
 		m_IsNoGrab = true;

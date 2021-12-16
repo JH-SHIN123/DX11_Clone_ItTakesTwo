@@ -13,6 +13,7 @@ public:/* Getter */
 	_bool Get_Failed()	  { return m_bFailed; };
 	_bool Get_StartGame() { return m_bStartGame; }
 	_bool Get_Ready()	  { return m_bReady; }
+	_fmatrix Get_WorldMatrix() { return m_pTransformCom->Get_WorldMatrix(); }
 
 public:/* Setter */
 	void Set_Ready(_bool bReady) { m_bReady = bReady; }
@@ -42,6 +43,7 @@ private:
 	/* 공에 문 달려있는 모델 */
 	CModel*				m_pAttachBall = nullptr;
 
+	_bool				m_bEffect = false;
 	_bool				m_bFailed = false;
 	_bool				m_bStartGame = false;
 	_bool				m_bReady = false;

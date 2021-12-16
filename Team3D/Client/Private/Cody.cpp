@@ -1911,6 +1911,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
 				m_IsHitPlanet = true;
+				m_IsHitPlanet_Effect = true;
 			}
 		}
 		else if (m_eTargetGameID == GameID::eHOOKUFO && m_pGameInstance->Key_Down(DIK_F) && m_IsHookUFO == false)
@@ -2446,13 +2447,30 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 	if (m_IsHitPlanet == true)
 	{
 		if (0.2f <= m_pModelCom->Get_ProgressAnim())
+		{
+
 			((CHangingPlanet*)(m_pTargetPtr))->Hit_Planet(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+		}
+		if (0.38175f <= m_pModelCom->Get_ProgressAnim())
+		{
+			if (true == m_IsHitPlanet_Effect)
+			{
+				EFFECT->Add_Effect(Effect_Value::Hit_Planet_Smoke);
+				EFFECT->Add_Effect(Effect_Value::Hit_Planet_Smoke);
+				EFFECT->Add_Effect(Effect_Value::Hit_Planet_Particle);
+				EFFECT->Add_Effect(Effect_Value::Hit_Planet_Particle);
+				EFFECT->Add_Effect(Effect_Value::Hit_Planet_Particle);
+				m_IsHitPlanet_Effect = false;
+			}
+		}
+
 
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_PlanetPush_Large))
 		{
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_IsHitPlanet = false;
 			m_IsCollide = false;
+			m_IsHitPlanet_Effect = false;
 		}
 	}
 }
@@ -3163,6 +3181,7 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 		m_pTargetRailNode = nullptr;
 		m_bOnRail = true;
 		m_bMoveToRail = false;
+		EFFECT->Add_Effect(Effect_Value::Cody_Rail, m_pTransformCom->Get_WorldMatrix());
 	}
 }
 void CCody::TakeRail(_double dTimeDelta)
