@@ -86,7 +86,6 @@ HRESULT CRotatedRobotBody::Render(RENDER_GROUP::Enum eGroup)
 	iMaterialIndex = 1;
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
 	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
-	m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
 
 	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
 	//
@@ -99,22 +98,20 @@ HRESULT CRotatedRobotBody::Render(RENDER_GROUP::Enum eGroup)
 
 	iMaterialIndex = 4;
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+	m_pModelCom->Set_ShaderResourceView("g_EmissiveTexture", iMaterialIndex, aiTextureType_EMISSIVE, 0);
 	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
-	m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
 
 	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
 
 	iMaterialIndex = 5;
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
 	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
-	m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
 
 	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
 
 	iMaterialIndex = 6;
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
 	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
-	m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
 
 	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false, eGroup);
 

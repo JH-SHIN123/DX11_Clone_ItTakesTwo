@@ -273,30 +273,31 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	if (true == m_bIsCollision)
 		matWorld = XMLoadFloat4x4(&m_matBeforeSpringCam);
 
-
 	//m_pTransformCom->Set_WorldMatrix(matWorld);
 	_long MouseMove = 0;
 	//이전 회전값
-	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
-	{
-		m_fMouseRev[Rev_Holizontal] += (_float)(MouseMove * dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal]);
-		
-	}
-	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
-	{
-		_float fVal = (_float)(MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta);
-		
-		if (m_fMouseRev[Rev_Prependicul] + fVal > 40.f)
-			 m_fMouseRev[Rev_Prependicul] = 40.f;
-		else if (m_fMouseRev[Rev_Prependicul] + fVal < -85.f)
-			m_fMouseRev[Rev_Prependicul] = -85.f;
-		else
-			m_fMouseRev[Rev_Prependicul] += fVal;
-	}
-	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 20.f;
-	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 20.f;
-	
 
+	if (((CCody*)DATABASE->GetCody())->Get_IsInArcadeJoyStick() == false)
+	{
+		if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X))
+		{
+			m_fMouseRev[Rev_Holizontal] += (_float)(MouseMove * dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal]);
+
+		}
+		if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y))
+		{
+			_float fVal = (_float)(MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta);
+
+			if (m_fMouseRev[Rev_Prependicul] + fVal > 40.f)
+				m_fMouseRev[Rev_Prependicul] = 40.f;
+			else if (m_fMouseRev[Rev_Prependicul] + fVal < -85.f)
+				m_fMouseRev[Rev_Prependicul] = -85.f;
+			else
+				m_fMouseRev[Rev_Prependicul] += fVal;
+		}
+		m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 20.f;
+		m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 20.f;
+	}
 
 	//카메라 회전에 따른 거리체크
 
@@ -366,10 +367,17 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 	
 	_vector vScale, vRotQuat, vTrans;
 	_vector  vCurRotQuat,vCurTrans;
-	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) * matQuat * 
-		MH_RotationMatrixByUp(pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos)); //계산 완료한 이번 프레임의 월드
 
-
+	if (static_cast<CCody*>(m_pTargetObj)->Get_IsInGravityPipe() == false)
+	{
+		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) * matQuat *
+			MH_RotationMatrixByUp(pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos)); //계산 완료한 이번 프레임의 월드
+	}
+	else
+	{
+		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) * matQuat *
+			MH_RotationMatrixByUp(XMVectorSet(0.f, 1.f, 0.f, 0.f), vPlayerPos));
+	}
 
 	/*vCurRotQuat = vRotQuat;
 	vCurTrans = vTrans;*/
@@ -400,7 +408,6 @@ _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 		//XMStoreFloat4(&vAt, vPlayerPos);
 		//_matrix matCurWorld = MakeViewMatrixByUp(vEye, vAt);
 		//matAffine = matCurWorld;
-		
 	}
 	else
 		m_bIsCollision = false;
@@ -466,6 +473,7 @@ void CMainCamera::KeyCheck(_double dTimeDelta)
 	{
 		m_pTransformCom->Go_Right(dTimeDelta);
 	}
+
 }
 #pragma endregion
 _int CMainCamera::ReSet_Cam_FreeToAuto()
@@ -571,10 +579,6 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		return NO_EVENT;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_O))
-	{
-		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
-	}
 	if (m_pGameInstance->Key_Down(DIK_P))
 	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;

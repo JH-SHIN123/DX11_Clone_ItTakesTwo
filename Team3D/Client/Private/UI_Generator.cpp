@@ -985,6 +985,9 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Gauge_Circle"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/Gauge_Circle.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("ContextIcon_SwingPoint"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/ContextIcon_SwingPoint.png"))), E_FAIL);
 
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 	return S_OK;
 }
 

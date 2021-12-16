@@ -135,6 +135,7 @@ void CMay::Add_LerpInfo_To_Model()
 
 	m_pModelCom->Add_LerpInfo(ANI_M_GroundPound_Land, ANI_M_GroundPound_Land_Exit, false);
 	m_pModelCom->Add_LerpInfo(ANI_M_Sprint, ANI_M_SprintTurnAround, true, 20.f);
+	m_pModelCom->Add_LerpInfo(ANI_M_Sprint, ANI_M_Sprint, false);
 
 	m_pModelCom->Add_LerpInfo(ANI_M_DoubleJump, ANI_M_GroundPound_Start, false);
 	m_pModelCom->Add_LerpInfo(ANI_M_Jump_Start, ANI_M_AirDash_Start, false);
@@ -346,8 +347,20 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Local variable
-	_vector vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
-	_vector vCameraRight = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
+	_vector vCameraLook, vCameraRight;
+	if (m_pActorCom->Get_IsOnGravityPath() == false)
+	{
+		vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
+		vCameraRight = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
+	}
+	else
+	{
+		PxVec3 vNormal = m_pActorCom->Get_GravityNormal();
+		_vector vGravityPathNormal = XMVector3Normalize(XMVectorSet(vNormal.x, vNormal.y, vNormal.z, 0.f));
+
+		vCameraRight = XMVector3Normalize(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT));
+		vCameraLook = XMVector3Normalize(XMVector3Cross(vCameraRight, vGravityPathNormal));
+	}
 	_bool bMove[2] = { false, false };
 	_bool bRoll = false;
 
@@ -484,7 +497,7 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma region Pad Square
 	if (m_pGameInstance->Key_Down(DIK_L) && m_bRoll == false && m_bCanMove == true)
 	{
-		XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+		//XMStoreFloat3(&m_vMoveDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 		if (m_IsJumping == false)
 		{
@@ -561,8 +574,20 @@ void CMay::KeyInput(_double dTimeDelta)
 
 #else
 #pragma region Local variable
-	_vector vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
-	_vector vCameraRight = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
+	_vector vCameraLook, vCameraRight;
+	if (m_pActorCom->Get_IsOnGravityPath() == false)
+	{
+		vCameraLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
+		vCameraRight = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
+	}
+	else
+	{
+		PxVec3 vNormal = m_pActorCom->Get_GravityNormal();
+		_vector vGravityPathNormal = XMVector3Normalize(XMVectorSet(vNormal.x, vNormal.y, vNormal.z, 0.f));
+
+		vCameraRight = XMVector3Normalize(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT));
+		vCameraLook = XMVector3Normalize(XMVector3Cross(vCameraRight, vGravityPathNormal));
+	}
 	_bool bMove[2] = { false, false };
 	_bool bRoll = false;
 
@@ -805,6 +830,22 @@ void CMay::KeyInput(_double dTimeDelta)
 
 #pragma endregion 
 
+#pragma region Effect GravityBoots
+	if (m_pActorCom->Get_IsOnGravityPath() == true)
+	{
+		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog)
+		{
+			if((m_pModelCom->Get_ProgressAnim() > 0.25f && m_pModelCom->Get_ProgressAnim() < 0.28f) || (m_pModelCom->Get_ProgressAnim() > 0.65f && m_pModelCom->Get_ProgressAnim() < 0.68f))
+				m_pEffect_GravityBoots->Add_WalkingParticle(true);
+		}
+		else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint)
+		{
+			if ((m_pModelCom->Get_ProgressAnim() > 0.07f && m_pModelCom->Get_ProgressAnim() < 0.11f) || (m_pModelCom->Get_ProgressAnim() > 0.5f && m_pModelCom->Get_ProgressAnim() < 0.54f))
+				m_pEffect_GravityBoots->Add_WalkingParticle(true);
+
+		}
+	}
+#pragma  endregion
 #endif
 }
 
@@ -883,7 +924,7 @@ void CMay::Move(const _double dTimeDelta)
 		m_bAction = false;
 
 		_vector vDirection = XMLoadFloat3(&m_vMoveDirection);
-		if (m_pActorCom->Get_IsOnGravityPath() == false) // 중력 발판 위에 있지 않을때. ( 중력발판 위에 있으면 그냥 카메라 Look으로 움직이게 하면 잘 돌아감 ㅇㅇ )
+		if (m_pActorCom->Get_IsOnGravityPath() == false) // 중력 발판 위에 있지 않을때.
 		{
 			_vector vPlayerUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 
@@ -915,7 +956,6 @@ void CMay::Move(const _double dTimeDelta)
 				vDirection = XMVector3Normalize(XMVectorSetZ(vDirection, 0.f));
 			}
 		}
-
 		m_pTransformCom->MoveDirectionOnLand(vDirection, dTimeDelta);
 
 		if (m_fJogAcceleration > 10.f)
@@ -927,7 +967,6 @@ void CMay::Move(const _double dTimeDelta)
 
 		if (m_bRoll == false && m_IsJumping == false && m_IsFalling == false && ANI_M_Jump_Land_Jog != m_pModelCom->Get_CurAnimIndex())
 		{
-			// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
 			if (m_pModelCom->Is_AnimFinished(ANI_M_Jog_Start) == true) // JogStart -> Jog
 			{
 				m_pModelCom->Set_Animation(ANI_M_Jog);
@@ -1395,6 +1434,13 @@ void CMay::SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject * pTa
 	m_IsCollide = IsCollide;
 	m_pTargetPtr = pTargetPtr;
 	Safe_AddRef(m_pTargetPtr);
+}
+
+void CMay::SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerCameraWorld)
+{
+	m_eCameraTriggerID = eID;
+	m_IsCamTriggerCollide = IsCollide;
+	XMStoreFloat4x4(&m_TriggerCameraWorld, vTriggerCameraWorld);
 }
 
 _bool CMay::Trigger_Check(const _double dTimeDelta)
@@ -1978,7 +2024,7 @@ void CMay::InUFO(const _double dTimeDelta)
 	_vector vLook	  = XMVector3Normalize(pUFOTransform->Get_State(CTransform::STATE_LOOK));
 
 	/* Offset */
-	vPosition += vUp;
+	vPosition -= vUp;
 	//vPosition += (vRight * 2.5f);
 
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
@@ -2310,12 +2356,10 @@ void CMay::Hook_UFO(const _double dTimeDelta)
 			m_faAcceleration -= (_float)dTimeDelta;
 		m_faVelocity += m_faAcceleration;
 		m_faVelocity *= m_faDamping;
-		m_fRopeAngle += m_faVelocity / 15.f;
+		m_fRopeAngle += m_faVelocity / 50.f;
 
 
-		_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x - m_vStartPosition.x)/**2.f*/ * sin(-m_fRopeAngle),
-			/*m_faArmLength **/(m_vTriggerTargetPos.y - m_vStartPosition.y) *2.f* cos(m_fRopeAngle)
-			, (/*m_faArmLength*/(m_vTriggerTargetPos.z - m_vStartPosition.z)/**2.f*/ * sin(-m_fRopeAngle)), 0.f)/* + XMLoadFloat3(&m_vTriggerTargetPos)*/;
+		_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x - m_vStartPosition.x) * sin(-m_fRopeAngle), (m_vTriggerTargetPos.y - m_vStartPosition.y) * cos(m_fRopeAngle), ((m_vTriggerTargetPos.z - m_vStartPosition.z) * sin(-m_fRopeAngle)), 1.f);
 		m_pActorCom->Set_Position(XMLoadFloat3(&m_vTriggerTargetPos) + vPosition);
 
 		_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));

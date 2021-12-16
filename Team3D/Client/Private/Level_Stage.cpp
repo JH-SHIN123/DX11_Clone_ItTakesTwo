@@ -22,6 +22,8 @@
 #include "RotatedRobotParts.h"
 #include "RobotParts.h"
 #include "ToyBoxButton.h"
+#include "Rope.h"
+#include "UFORadarSet.h"
 /* Jin */
 /* Jun */
 #include "Camera.h"
@@ -45,7 +47,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_May(TEXT("Layer_May")), E_FAIL);
 
 #ifndef __MAPLOADING_OFF
-	/* Se */
+	///* Se */
 	FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);
 	/* Jung */
 	FAILED_CHECK_RETURN(Ready_Layer_WarpGate(TEXT("Layer_WarpGate")), E_FAIL);	
@@ -75,6 +77,9 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_DummyWall(TEXT("Layer_DummyWall")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_MayJumpWall(TEXT("Layer_MayJumpWall")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_PipeJumpWall(TEXT("Layer_PipeJumpWall")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Rope(TEXT("Layer_Rope")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_UFORadarSet(TEXT("Layer_UFORadarSet")), E_FAIL);
+
 	/* Jin */
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressureBigPlate"), TEXT("GameObject_PressureBigPlate")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoom_Glass(TEXT("Layer_ControlRoom_Glass")), E_FAIL);
@@ -83,8 +88,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
 
 	/* Jun */
-
-	/* For. Environment */
+	///* For. Environment */
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Stage_Space(), E_FAIL);
 #else
 	FAILED_CHECK_RETURN(Ready_Test(), E_FAIL);
@@ -624,6 +628,7 @@ HRESULT CLevel_Stage::Ready_Layer_Hook_UFO(const _tchar * pLayerTag)
 {
 	ROBOTDESC RobotDesc;
 	RobotDesc.vPosition = { 915.313f, 740.f, 315.746f, 1.f };
+	//RobotDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HookUFO"), &RobotDesc), E_FAIL);
 
 	//RobotDesc.vPosition = { 894.939f, 735.f, 353.171f, 1.f };
@@ -677,6 +682,9 @@ HRESULT CLevel_Stage::Ready_Layer_DummyWall(const _tchar * pLayerTag)
 
 	DummyWallDesc.vPosition = { -805.311f, 767.083f, 197.97f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_DummyWall"), &DummyWallDesc), E_FAIL);
+
+	DummyWallDesc.vPosition = { -805.311f, 775.083f, 193.72f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_CameraTrigger"), Level::LEVEL_STAGE, TEXT("GameObject_DummyWallCameraTrigger"), &DummyWallDesc), E_FAIL);
 	return S_OK;
 }
 
@@ -688,6 +696,10 @@ HRESULT CLevel_Stage::Ready_Layer_MayJumpWall(const _tchar * pLayerTag)
 
 	MayJumpWall.vPosition = { -815.311f - 13.f, 767.083f + 2.f, 198.37f - 2.4f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MayJumpWall"), &MayJumpWall), E_FAIL);
+
+	MayJumpWall.vPosition = { -823.88f, 768.301f, 193.517f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_MayWallCameraTrigger"), Level::LEVEL_STAGE, TEXT("GameObject_MayWallCameraTrigger"), &MayJumpWall), E_FAIL);
+
 	return S_OK;
 
 }
@@ -701,6 +713,48 @@ HRESULT CLevel_Stage::Ready_Layer_PipeJumpWall(const _tchar * pLayerTag)
 	PipeJumpWall.vPosition = { 46.1009f, 218.45084f, 224.48f, 1.f };
 	PipeJumpWall.iStageNum = ST_PINBALL;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PipeJumpWall"), &PipeJumpWall), E_FAIL);
+
+	PipeJumpWall.vPosition = { 45.4779f, 218.0519f, 224.223f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_PipeWallCameraTrigger"), Level::LEVEL_STAGE, TEXT("GameObject_PipeWallCameraTrigger"), &PipeJumpWall), E_FAIL);
+
+	return S_OK;
+}
+HRESULT CLevel_Stage::Ready_Layer_Rope(const _tchar * pLayerTag)
+{
+	ROPEDESC RopeDesc;
+	RopeDesc.iNumPlayer = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Rope"), &RopeDesc), E_FAIL);
+
+	RopeDesc.iNumPlayer = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Rope"), &RopeDesc), E_FAIL);
+	return S_OK;
+}
+HRESULT CLevel_Stage::Ready_Layer_UFORadarSet(const _tchar * pLayerTag)
+{
+	RADARDESC RadarDesc;
+	//64.0174942f, 601.063843f, 1012.77844f, 1.f
+	RadarDesc.vPosition = { 64.0174942f, 601.063843f, 1012.77844f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UFORadarSet"), &RadarDesc), E_FAIL);
+
+	/* Pixels */
+	_vector vPosition = { 64.0174942f, 601.063843f + 0.3f, 1012.77844f - 0.29f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelChargeBar"), &vPosition), E_FAIL);
+
+	vPosition = { 64.0174942f, 601.063843f + 0.3f, 1012.77844f - 0.29f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelChargeBarGauge"), &vPosition), E_FAIL);
+
+	vPosition = { 64.0174942f, 601.063843f + 0.56f, 1012.77844f - 0.29f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelUFO"), &vPosition), E_FAIL);
+
+	vPosition = { 64.0174942f, 601.063843f + 0.56f, 1012.77844f - 0.29f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelCrossHair"), &vPosition), E_FAIL);
+
+	vPosition = { 64.0174942f, 601.063843f + 0.56f, 1012.77844f - 0.29f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelBaboon"), &vPosition), E_FAIL);
+
+	vPosition = { 64.0174942f, 601.063843f + 0.56f, 1012.77844f - 0.29f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_PixelLaser"), &vPosition), E_FAIL);
+
 	return S_OK;
 }
 #pragma endregion

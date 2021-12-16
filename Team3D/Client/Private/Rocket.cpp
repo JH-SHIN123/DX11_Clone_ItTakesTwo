@@ -58,7 +58,7 @@ HRESULT CRocket::NativeConstruct(void * pArg)
 
 _int CRocket::Tick(_double dTimeDelta)
 {
-	CGameObject::Late_Tick(dTimeDelta);
+	CGameObject::Tick(dTimeDelta);
 
 	if (m_pGameInstance->Key_Down(DIK_E) && m_IsCollide == true 
 		|| m_IsCollide && m_pGameInstance->Key_Down(DIK_O)

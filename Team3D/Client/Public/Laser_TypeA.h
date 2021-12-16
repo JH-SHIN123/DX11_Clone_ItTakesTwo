@@ -25,6 +25,7 @@ private:
 
 private:
 	class CUFO*										m_pBossUFO = nullptr;
+	class CMoonUFO*									m_pMoonUFO = nullptr;
 	class CEffect_Boss_Laser_Smoke*				m_pLaserSmoke = nullptr;
 
 public:
