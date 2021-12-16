@@ -263,6 +263,8 @@
     <ClInclude Include="..\Public\Effect_Generator.h" />
     <ClInclude Include="..\Public\Effect_GravityPipe.h" />
     <ClInclude Include="..\public\Effect_Hit_BossLaser.h" />
+    <ClInclude Include="..\public\Effect_Hit_BossLaser_Particle.h" />
+    <ClInclude Include="..\public\Effect_Hit_BossLaser_Particle_Star.h" />
     <ClInclude Include="..\public\Effect_Hit_Planet_Particle.h" />
     <ClInclude Include="..\public\Effect_Hit_Planet_Smoke.h" />
     <ClInclude Include="..\Public\Effect_Landing_Smoke.h" />
@@ -520,6 +522,8 @@
     <ClCompile Include="..\Private\Effect_Generator.cpp" />
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp" />
     <ClCompile Include="..\private\Effect_Hit_BossLaser.cpp" />
+    <ClCompile Include="..\private\Effect_Hit_BossLaser_Particle.cpp" />
+    <ClCompile Include="..\private\Effect_Hit_BossLaser_Particle_Star.cpp" />
     <ClCompile Include="..\private\Effect_Hit_Planet_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Hit_Planet_Smoke.cpp" />
     <ClCompile Include="..\Private\Effect_Landing_Smoke.cpp" />

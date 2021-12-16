@@ -1167,4 +1167,14 @@ technique11		DefaultTechnique
 		GeometryShader = compile gs_5_0  GS_MAIN();
 		PixelShader = compile ps_5_0  PS_ENV_DUST();
 	}
+
+	//pass PS_ENV_DUST // 15
+	//{
+	//	SetRasterizerState(Rasterizer_NoCull);
+	//	SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+	//	SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+	//	VertexShader = compile vs_5_0  VS_MAIN();
+	//	GeometryShader = compile gs_5_0  GS_MAIN();
+	//	PixelShader = compile ps_5_0  PS_ENV_DUST();
+	//}
 }

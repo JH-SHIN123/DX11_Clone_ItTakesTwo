@@ -3,7 +3,7 @@
 #ifndef __EFFECT_HIT_BOSSLASER_H__
 
 #include "InGameEffect.h"
-class CEffect_Hit_BossLaser final : public CInGameEffect
+class CEffect_Hit_BossLaser final : public CInGameEffect // Çì·ÕÇì·Õ
 {
 private:
 	explicit CEffect_Hit_BossLaser(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

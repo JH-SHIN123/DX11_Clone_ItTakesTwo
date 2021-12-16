@@ -403,6 +403,12 @@ void CCody::KeyInput(_double dTimeDelta)
 	_bool bRoll = false;
 #pragma endregion
 
+	if (m_pGameInstance->Key_Down(DIK_SLASH)) 
+		EFFECT->Add_Effect(Effect_Value::Hit_BossLaser_Particle, m_pTransformCom->Get_WorldMatrix());
+	if (m_pGameInstance->Key_Down(DIK_APOSTROPHE))
+		EFFECT->Add_Effect(Effect_Value::Hit_BossLaser_Particle_Star, m_pTransformCom->Get_WorldMatrix());
+
+
 #pragma region Teleport
 	if (m_pGameInstance->Key_Down(DIK_C)) /* 파이프 베터리 */
 		m_pActorCom->Set_Position(XMVectorSet(44.8652f, 220.9396f, 223.94134f, 1.f));

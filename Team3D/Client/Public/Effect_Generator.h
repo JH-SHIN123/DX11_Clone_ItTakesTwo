@@ -60,8 +60,12 @@ enum class Effect_Value
 	UFO_Inside_PressWall_Smoke,
 	UFO_Inside_PressWall_Particle,
 
-	Hit_Planet_Particle,
 	Hit_Planet_Smoke,
+	Hit_Planet_Particle,
+
+	Hit_BossLaser,
+	Hit_BossLaser_Particle,
+	Hit_BossLaser_Particle_Star,
 
 	Effect_Value_End
 };

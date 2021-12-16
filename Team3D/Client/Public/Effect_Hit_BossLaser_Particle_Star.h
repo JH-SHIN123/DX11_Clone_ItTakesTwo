@@ -2,12 +2,12 @@
 #include "InGameEffect.h"
 
 BEGIN(Client)
-class CEffect_Hit_Planet_Particle final : public CInGameEffect
+class CEffect_Hit_BossLaser_Particle_Star final : public CInGameEffect
 {
 private:
-	explicit CEffect_Hit_Planet_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CEffect_Hit_Planet_Particle(const CEffect_Hit_Planet_Particle& rhs);
-	virtual ~CEffect_Hit_Planet_Particle() = default; public:
+	explicit CEffect_Hit_BossLaser_Particle_Star(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_Hit_BossLaser_Particle_Star(const CEffect_Hit_BossLaser_Particle_Star& rhs);
+	virtual ~CEffect_Hit_BossLaser_Particle_Star() = default; public:
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -37,7 +37,6 @@ private:
 private:
 	HRESULT Ready_InstanceBuffer();
 	_float3 Get_Particle_Rand_Dir(_fvector vDefaultPos);
-	void Check_Target_Matrix();
 
 private:
 	_double m_dControlTime = 0.5;
@@ -48,13 +47,14 @@ private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT = nullptr;
 
+	_float  m_fInstance_SpeedPerSec = 1.5f;
+
 	const _float  m_fAlphaTime_Power = 1.f;
-	const _float  m_fInstance_SpeedPerSec = 1.5f;
 	const _double m_dInstance_Pos_Update_Time = 1.0;
-	const _float2 m_vDefaultSize = { 0.15f, 0.5f };
+	const _float2 m_vDefaultSize = { 0.2f, 0.2f };
 
 public:
-	static CEffect_Hit_Planet_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_Hit_BossLaser_Particle_Star* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

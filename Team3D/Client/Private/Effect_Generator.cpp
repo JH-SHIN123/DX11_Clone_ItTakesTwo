@@ -3,20 +3,19 @@
 #include "Effect_Generator.h"
 
 #pragma  region Effect Include
-#include "TestEffect.h"
 #include "Effect_RespawnTunnel.h"
 #include "Effect_FireDoor.h"
 #include "Effect_Walking_Smoke.h"
 #include "Effect_Landing_Smoke.h"
-#include "Effect_Dash.h"
+#include "Effect_Dash.h"								/*수정*/
 #include "Effect_Player_Dead.h"
 #include "Effect_Player_Dead_Particle.h"
-#include "Effect_Player_Dead_Explosion.h"
+#include "Effect_Player_Dead_Explosion.h"				/*미구현*/
 #include "Effect_Player_Revive.h"
 #include "Effect_Cody_Size.h"
 #include "Effect_RespawnTunnel_Portal.h"
 #include "Effect_May_Boots.h"
-#include "Effect_May_Boots_Walking_Particle.h"
+#include "Effect_May_Boots_Walking_Particle.h" /*발걸음에 달기*/
 #include "Effect_GravityPipe.h"
 #include "Effect_Wormhole.h"
 #include "Effect_Env_Particle.h"
@@ -26,7 +25,7 @@
 #include "Effect_Dead_Particle_Fire.h"
 #include "Effect_Robot_Battery_Spark.h"
 #include "Effect_Umbrella_Pipe.h"
-#include "Effect_Pinball_Move.h"
+#include "Effect_Pinball_Move.h"						/*미구현*/
 #include "Effect_PointLight.h"
 #include "Effect_Boss_Laser_Smoke.h"
 #include "Effect_Boss_Laser_Particle.h"
@@ -63,6 +62,9 @@
 #include "Effect_Player_Rail_Smoke.h"
 #include "Effect_Hit_Planet_Smoke.h"
 #include "Effect_Hit_Planet_Particle.h"
+#include "Effect_Hit_BossLaser.h"							/*미구현*/
+#include "Effect_Hit_BossLaser_Particle.h"					/*미구현*/
+#include "Effect_Hit_BossLaser_Particle_Star.h"				/*미구현*/
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -248,6 +250,15 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::Hit_Planet_Smoke:
 		lstrcpy(szPrototype, L"GameObject_2D_Hit_Planet_Smoke");
+		break;
+	case Effect_Value::Hit_BossLaser:
+		lstrcpy(szPrototype, L"GameObejct_2D_Hit_Boss_Laser");
+		break;
+	case Effect_Value::Hit_BossLaser_Particle:
+		lstrcpy(szPrototype, L"GameObejct_2D_Hit_Boss_Laser_Particle");
+		break;
+	case Effect_Value::Hit_BossLaser_Particle_Star:
+		lstrcpy(szPrototype, L"GameObejct_2D_Hit_Boss_Laser_Particle_Star");
 		break;
 	default:
 		break;
@@ -488,6 +499,15 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Hit_Planet_Smoke"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Hit_Planet_Smoke", CEffect_Hit_Planet_Smoke::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObejct_2D_Hit_Boss_Laser"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObejct_2D_Hit_Boss_Laser", CEffect_Hit_BossLaser::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObejct_2D_Hit_Boss_Laser_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObejct_2D_Hit_Boss_Laser_Particle", CEffect_Hit_BossLaser_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObejct_2D_Hit_Boss_Laser_Particle_Star"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObejct_2D_Hit_Boss_Laser_Particle_Star", CEffect_Hit_BossLaser_Particle_Star::Create(pDevice, pDeviceContext, pData));
 
 #pragma  endregion
 
