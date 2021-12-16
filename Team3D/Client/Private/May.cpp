@@ -2617,6 +2617,7 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 		m_pTargetRailNode = nullptr;
 		m_bOnRail = true;
 		m_bMoveToRail = false;
+		EFFECT->Add_Effect(Effect_Value::May_Rail, m_pTransformCom->Get_WorldMatrix());
 	}
 }
 void CMay::TakeRail(_double dTimeDelta)
