@@ -5,7 +5,9 @@
 #include "PlayerActor.h"
 #include"Bridge.h"
 #include"CutScenePlayer.h"
-
+#include"UFORadarSet.h"
+#include"UFORadarLever.h"
+#include"UFORadarScreen.h"
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -157,6 +159,10 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 	{
 		m_eCurCamMode = CamMode::Cam_PressButton_Bridge;
 	}
+	if (m_pCody->Get_IsInArcadeJoyStick())	//레이져쏘기
+	{
+		m_eCurCamMode = CamMode::Cam_InJoyStick;
+	}
 	//우주선내부
 	if (m_pGameInstance->Key_Down(DIK_9))
 	{
@@ -241,6 +247,7 @@ _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 	{
 		_matrix matWorld = m_pTransformCom->Get_WorldMatrix(); 
 		XMStoreFloat4x4(&m_matCurWorld, matWorld);
+		m_CameraDesc.fFovY = XMConvertToRadians(60.f);
 	}
 
 	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
@@ -264,7 +271,6 @@ _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 {
 	CTransform* pPlayerTransform = m_pCody->Get_Transform();
-
 
 	_long MouseMove = 0;
 	
@@ -953,6 +959,31 @@ _int CMainCamera::Tick_Cam_PressButton_Bridge(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+_int CMainCamera::Tick_Cam_InJoystick(_double dTimeDelta)
+{
+	CUFORadarSet* pRaderSet =  static_cast<CUFORadarSet*>(DATABASE->Get_UFORadarSet());
+	CTransform* pRaderScreenTransform = pRaderSet->Get_RaderScreen()->Get_Transform();
+	CTransform* pRaderLeverTransform =	pRaderSet->Get_RadarLever()->Get_Transform();
+	CTransform* pPlayerTransform = m_pCody->Get_Transform();
+
+
+	_vector vRaderLeverPos = pRaderLeverTransform->Get_State(CTransform::STATE_POSITION);
+	
+	_vector vRaderScreenPos = pRaderScreenTransform->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 0.5f, 0.f, 0.f);
+	_vector vRaderScreenLook = XMVector3Normalize(pRaderScreenTransform->Get_State(CTransform::STATE_LOOK));
+
+	
+	/*_vector vDir = vRaderScreenPos - vRaderLeverPos;
+	
+	_float fDot = XMVectorGetX(XMVector3Dot(vDir, vRaderScreenLook));*/
+	_vector vEye = vRaderScreenPos - vRaderScreenLook * 2.2f + XMVectorSet(0.f,0.2f,-0.8f,0.f);
+
+	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vEye,vRaderScreenPos));
+
+	m_CameraDesc.fFovY = XMConvertToRadians(30.f);
+	return NO_EVENT;
+}
+
 
 
 _int CMainCamera::ReSet_Cam_FreeToAuto()
@@ -1140,6 +1171,9 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		break;
 	case Client::CMainCamera::CamMode::Cam_PressButton_Bridge:
 		iResult = Tick_Cam_PressButton_Bridge(dTimeDelta);
+		break;
+	case Client::CMainCamera::CamMode::Cam_InJoyStick:
+		iResult = Tick_Cam_InJoystick(dTimeDelta);
 		break;
 	}
 	return iResult;

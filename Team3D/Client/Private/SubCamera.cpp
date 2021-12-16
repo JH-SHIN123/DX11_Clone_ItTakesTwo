@@ -6,6 +6,7 @@
 #include "CameraActor.h"
 #include"CutScenePlayer.h"
 #include"Moon.h"
+#include<complex>
 CSubCamera::CSubCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -352,7 +353,7 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 		}
 	}
 	_vector vResultPos = matAffine.r[3];
-	OffSetPhsX(matAffine, vPlayerPos, dTimeDelta, &vResultPos);
+	//OffSetPhsX(matAffine, vPlayerPos, dTimeDelta, &vResultPos);
 
 	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vResultPos, vPlayerPos, vPlayerUp/*matAffine.r[2]*/));
 
@@ -372,37 +373,48 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 	CMoon* pMoon = static_cast<CMoon*>(DATABASE->Get_Mooon());
 	if (nullptr == pMoon)
 		return EVENT_ERROR;
+	
 	_vector vMoonPos = pMoon->Get_Position();
 	_vector vAt = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	
+	//_float fRadius = XMVectorGetX(XMVector3Length(vEye - vMoonPos));
+	//_vector vLook = vAt - vEye;
+	_vector vDirMoonWithAt = XMVector3Normalize(vAt - vMoonPos);
+	/*
+	_vector vQuatPlayer = XMVectorSetW(vDirMoonWithAt,0.f);
+	_vector vAxis = XMVectorZero();
+	_float fAngle = 0.f;
+	XMQuaternionToAxisAngle(&vAxis, &fAngle, vQuatPlayer);
+	_vector vCamRot = XMQuaternionRotationAxis(vAxis, fAngle - XMConvertToRadians(-40.f));
+	_vector vRot = XMQuaternionSlerp(vQuatPlayer, vCamRot, 0.5f);
+	_matrix matRot = XMMatrixRotationQuaternion(vRot);
+	matRot.r[3] = vAt;
+	m_pTransformCom->Set_WorldMatrix(matRot);*/
 
-	_vector vDirPlayerWithMoon = XMVector3Normalize(vAt - vMoonPos);
-	_float fAngleX = acosf(XMVectorGetX(XMVector3Dot(vDirPlayerWithMoon, XMVectorSet(1.f, 0.f, 0.f, 0.f))));
-	_float fAngleY = acosf(XMVectorGetX(XMVector3Dot(vDirPlayerWithMoon, XMVectorSet(0.f, 1.f, 0.f, 0.f))));
-	_float fAngleZ = acosf(XMVectorGetX(XMVector3Dot(vDirPlayerWithMoon, XMVectorSet(0.f, 0.f, 1.f, 0.f))));
+	_matrix matBegin = XMLoadFloat4x4(&m_matBeginWorld);
+	_matrix matPlayer = pPlayerTransform->Get_WorldMatrix();
+	_vector vEye = vAt - matPlayer.r[2] * 10.f + matPlayer.r[1] * 9.f;
+	_vector vDirMoonWithEye = XMVector3Normalize(vEye - vMoonPos);
+	_vector vLook = XMVector3Normalize(vAt - vEye);
+	
+	_vector vRight = XMVector3Normalize(XMVector3Cross(vDirMoonWithEye, vLook));
+	
+	_float fAngle = acosf(XMVectorGetX(XMVector3Dot(vDirMoonWithEye,vDirMoonWithAt)));
+	
+	
 
-	_matrix matRot = XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(fAngleZ,fAngleX,fAngleY));
-
-	matRot.r[3] = vAt - matRot.r[2] * m_fDistFromUFO + matRot.r[1] * m_fDistFromUFO;
+	_vector vAxis = XMQuaternionNormalize(XMQuaternionRotationAxis(XMVector3Normalize(vRight/*matPlayer.r[0]*/),-fAngle/* +  XMConvertToRadians(45.f)*/));
+	//_vector vAxis = XMQuaternionNormalize(XMQuaternionRotationMatrix(matCamRot));
+	_vector vAxisConj = XMQuaternionNormalize(XMQuaternionConjugate(vAxis));
+	_vector vOrigin = XMQuaternionNormalize(XMQuaternionRotationMatrix(matBegin *matPlayer));
+	vOrigin = XMQuaternionNormalize(XMQuaternionMultiply(XMQuaternionMultiply(vAxis, vOrigin),vAxisConj));
+	
+	_matrix matRot = XMMatrixRotationQuaternion(vOrigin);
+	matRot.r[3] = vEye;//pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 	m_pTransformCom->Set_WorldMatrix(matRot);
+	
 
-	//_matrix matByUp = MH_RotationMatrixByUp(vDirPlayerWithMoon);
-	//
-	//_vector vRotation = XMQuaternionRotationMatrix(matByUp);
-	//_vector vLook = matByUp.r[2];
-	//_vector vUp = matByUp.r[1];
-	//_matrix matResult = XMMatrixAffineTransformation(XMVectorSet(1.f, 1.f, 1.f, 1.f), XMVectorSet(0.f, 0.f, 0.f, 1.f),
-	//	vRotation, vAt - vLook * m_fDistFromUFO*2.f + vUp* m_fDistFromUFO);
-	//
-	//matResult = MakeViewMatrixByUp(matResult.r[3], vAt, matResult.r[2]);
-	//
-	//m_pTransformCom->Set_WorldMatrix(matResult);
-	////_vector vDir = XMVector3Normalize(pPlayerTransform->Get_State(CTransform::STATE_LOOK));
-	////_vector vEye = vAt + vDir * m_fDistFromUFO;
 
-	////_vector vAxisY = XMVector3Normalize(vEye-vMoonPos);
-
-	////m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vEye, vAt, vAxisY));
-	//
 	return NO_EVENT;
 }
 
@@ -545,6 +557,17 @@ _fmatrix CSubCamera::MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fT
 
 	return matCurWorld;
 }
+
+_fvector CSubCamera::MakeQuatMul(_fvector vQ, _fvector vP)
+{
+	_vector QVector = XMVectorSetW(vQ, 0.f),PVector = XMVectorSetW(vP,0.f);
+	_float	QReal = XMVectorGetW(vQ), PReal = XMVectorGetW(vP);
+	_float rW = QReal* PReal - XMVectorGetX(XMVector3Dot(QVector,PVector));
+	_vector rV = PVector * QReal + QVector * PReal  + XMVector3Cross(QVector, PVector);
+	
+	return XMVectorSet(XMVectorGetX(rV), XMVectorGetY(rV), XMVectorGetZ(rV), rW);
+}
+
 CSubCamera * CSubCamera::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CSubCamera* pInstance = new CSubCamera(pDevice, pDeviceContext);

@@ -62,12 +62,14 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 	if (true == CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
 		m_pModelCom->Update_Animation(dTimeDelta);
+
 		return S_OK;
 	}
 
 	Fix_MoonBaboon_Chair(dTimeDelta);
 
 	//m_pActorCom->Update(dTimeDelta);
+	m_pModelCom->Update_Animation(dTimeDelta);
 
 	return NO_EVENT;
 }

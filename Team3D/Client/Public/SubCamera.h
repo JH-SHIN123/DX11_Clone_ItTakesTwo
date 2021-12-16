@@ -29,7 +29,7 @@ public:
 	CCam_Helper* Get_CamHelper() { return m_pCamHelper; }
 	HRESULT Start_Film(const _tchar* pFilmTag);
 private:
-	void	Check_Player(_double dTimeDelta);
+	_int	Check_Player(_double dTimeDelta);
 	void	Set_Zoom(_float4 vEye,_float4 vAt,_float fZoomVal,_double dTimeDelta);
 private:
 	class CMay* m_pMay = nullptr;
@@ -54,12 +54,13 @@ private:
 	
 private:
 	_int	ReSet_Cam_FreeToAuto();		//변수 초기화용
-	_bool	OffSetPhsX(_fmatrix matWorld,_double dTimeDelta, _vector * pOut);
+	_bool	OffSetPhsX(_fmatrix matWorld, _fvector vAt, _double dTimeDelta, _vector * pOut);
 
 	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At,_fvector vUp);
 	_fmatrix MakeViewMatrixByUp(_fvector vEye, _fvector vAt, _fvector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f));
 	_fmatrix MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime);
 
+	_fvector MakeQuatMul(_fvector vQ, _fvector vP);
 private:
 	_bool m_bStart = false;
 	_float m_fMouseRevSpeed[Rev_End] = { 2.5f,2.5f };
@@ -87,11 +88,11 @@ private:
 
 	//For.Zoom
 	_float m_fCamZoomVal = 0.f;
-
+	//For.Raycast
+	PxRaycastBuffer m_RayCastBuffer;
 	WORLDMATRIX	m_PreWorld;
 	//For.RidingUFO
-	_float4 m_vStartRidingUFOEye = {0.f,0.f,0.f,1.f};
-	_float4 m_vStartRidingUFOAt = { 0.f,0.f,0.f,1.f };
+	_float	m_fDistFromUFO = 10.f;
 public:
 	static CSubCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg = nullptr) override;
