@@ -258,7 +258,7 @@ HRESULT CEffect_Env_Particle_Field::Initialize_Instance()
 		m_pInstanceBuffer_STT[iIndex].vSize = { 0.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vTextureUV = Get_TexUV_Rand(4, 2);
 		m_pInstanceBuffer_STT[iIndex].fTime = 0.0f;
-		m_pInstance_Pos_UpdateTime[iIndex] = m_fResetPosTime * _float(iIndex / iInstanceCount);
+		m_pInstance_Pos_UpdateTime[iIndex] = m_fResetPosTime * 0.05f * _float(iIndex);//m_fResetPosTime * _float(iIndex / iInstanceCount);
 		m_pInstanceBuffer_LocalPos[iIndex] = { 0.f, 0.f, 0.f, 1.f };
 		m_pInstance_Dir[iIndex] = Get_Dir_Rand(m_ivRandPower);
 	}
