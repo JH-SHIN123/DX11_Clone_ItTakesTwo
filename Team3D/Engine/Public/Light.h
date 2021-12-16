@@ -5,7 +5,7 @@
 BEGIN(Engine)
 class ENGINE_DLL CLight : public CBase
 {
-private:
+protected:
 	explicit CLight() = default;
 	virtual ~CLight() = default;
 
@@ -19,12 +19,14 @@ public: /* Getter */
 public:
 	virtual HRESULT	NativeConstruct(const _tchar* pLightTag, void* pArgs);
 	virtual _int	Tick_Light(_double dTimeDelta);
-	virtual HRESULT Render_Light(class CVIBuffer_RectRHW* pVIBuffer);
+	
+public:
+	HRESULT Render_Light(class CVIBuffer_RectRHW* pVIBuffer);
 
-private:
+protected:
 	_bool		m_bDead = false;
 
-private:
+protected:
 	_tchar		m_szLightTag[MAX_PATH] = L"";
 	LIGHT_DESC	m_LightDesc;
 

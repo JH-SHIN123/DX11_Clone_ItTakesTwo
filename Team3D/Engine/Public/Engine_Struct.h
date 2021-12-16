@@ -4,9 +4,30 @@ namespace Engine
 {
 	typedef struct tagLightDesc
 	{
-		tagLightDesc() { ZeroMemory(this, sizeof(tagLightDesc)); }
-
 		enum LIGHTTYPE { TYPE_DIRECTIONAL, TYPE_POINT, TYPE_SPOT, TYPE_END };
+
+		tagLightDesc() { ZeroMemory(this, sizeof(tagLightDesc)); }
+		/* For. Directional Light */
+		tagLightDesc(LIGHTTYPE _eType, XMFLOAT3	_vDirection, XMFLOAT4 _vDiffuse, XMFLOAT4 _vAmbient, XMFLOAT4 _vSpecular) :
+			eType(_eType), vDirection(_vDirection), vDiffuse(_vDiffuse), vAmbient(_vAmbient), vSpecular(_vSpecular)
+		{
+			vPosition = { 0.f,0.f,0.f };
+			fRange = 0.f;
+			fAtt = 0.f;
+			fOuterAngle = 0.f;
+			fInnerAngle = 0.f;
+		}
+		/* For. Point Light */
+		tagLightDesc(LIGHTTYPE _eType, XMFLOAT3 _vPosition, float _fRange, XMFLOAT4	_vDiffuse, XMFLOAT4	_vSpecular) :
+			eType(_eType), vPosition(_vPosition), fRange(_fRange), vDiffuse(_vDiffuse), vSpecular(_vSpecular)
+		{
+			vDirection = { 0.f,0.f,0.f };
+			fAtt = 0.f;
+			fOuterAngle = 0.f;
+			fInnerAngle = 0.f;
+			vAmbient = { 0.f,0.f,0.f, 0.f };
+		}
+		
 
 		LIGHTTYPE	eType;
 		XMFLOAT3	vDirection;

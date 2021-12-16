@@ -930,6 +930,12 @@
     <Filter Include="04.Generator\03.Light_Generator\BasicLight">
       <UniqueIdentifier>{22f91519-352f-4804-992a-0becb377fb85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06.Light">
+      <UniqueIdentifier>{598b7446-2298-4221-b482-64f69bb2bc24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Light\VolumeLight">
+      <UniqueIdentifier>{a66b14e2-76f6-4ca2-93fc-9562da331645}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1727,6 +1733,9 @@
     <ClInclude Include="..\Public\BasicLight.h">
       <Filter>04.Generator\03.Light_Generator\BasicLight</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VolumeLight.h">
+      <Filter>06.Light\VolumeLight</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2496,6 +2505,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\BasicLight.cpp">
       <Filter>04.Generator\03.Light_Generator\BasicLight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VolumeLight.cpp">
+      <Filter>06.Light\VolumeLight</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

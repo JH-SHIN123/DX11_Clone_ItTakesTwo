@@ -161,7 +161,15 @@ HRESULT CLight_Manager::Add_Light(LightStatus::Enum eState, CLight* pLight)
 	switch (eState)
 	{
 	case LightStatus::eDIRECTIONAL:
-		m_pDirectionalLight = pLight;
+		if (nullptr == m_pDirectionalLight)
+		{
+			m_pDirectionalLight = pLight;
+		}
+		else
+		{
+			Safe_Release(m_pDirectionalLight);
+			m_pDirectionalLight = pLight;
+		}
 		break;
 	case LightStatus::eSTATIC:
 		m_StaticLights.push_back(pLight);
@@ -219,13 +227,14 @@ void CLight_Manager::Clear_Lights(LightStatus::Enum eState)
 
 void CLight_Manager::Free()
 {
+}
+
+void CLight_Manager::Clear_All()
+{
 	for (_uint i = 0; i < LightStatus::eEND; ++i)
 	{
 		Clear_Lights(LightStatus::Enum(i));
 	}
-}
 
-void CLight_Manager::Clear_Buffer()
-{
 	Safe_Release(m_pVIBuffer);
 }

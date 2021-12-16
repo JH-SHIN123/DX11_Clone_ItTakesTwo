@@ -39,7 +39,7 @@ private:
 
 public:
 	virtual void	Free() override;
-	void			Clear_Buffer();
+	void			Clear_All();
 
 };
 END

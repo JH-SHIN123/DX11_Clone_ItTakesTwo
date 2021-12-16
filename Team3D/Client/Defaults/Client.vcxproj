@@ -446,6 +446,7 @@
     <ClInclude Include="..\Public\UmbrellaBeam_Joystick.h" />
     <ClInclude Include="..\Public\UmbrellaBeam_Stand.h" />
     <ClInclude Include="..\Public\DynamicVolume.h" />
+    <ClInclude Include="..\Public\VolumeLight.h" />
     <ClInclude Include="..\Public\WallLaserTrap.h" />
     <ClInclude Include="..\Public\WallLaserTrap_Button.h" />
     <ClInclude Include="..\Public\Wall_LaserTennis.h" />
@@ -708,6 +709,7 @@
     <ClCompile Include="..\Private\UmbrellaBeam_Joystick.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam_Stand.cpp" />
     <ClCompile Include="..\Private\DynamicVolume.cpp" />
+    <ClCompile Include="..\Private\VolumeLight.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap_Button.cpp" />
     <ClCompile Include="..\Private\Wall_LaserTennis.cpp" />

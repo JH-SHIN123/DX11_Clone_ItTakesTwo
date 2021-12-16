@@ -16,25 +16,14 @@ public:
 public:
 	CLight_Generator() = default;
 	virtual ~CLight_Generator() = default;
-	
-public:
-	HRESULT	Add_Light(const _tchar* pLightTag, class CEffectLight* pEffectLight);
-	HRESULT Clear_Light();
-
-#ifdef __INSTALL_LIGHT
-public: /* For. 조명설치 */
-	HRESULT KeyInput(_double dTimeDelta);
-	HRESULT Set_Light(const _tchar* pLightTag, LIGHT_DESC& LightDesc, _float fEffectRadius, _uint eEffectColor);
-	HRESULT Delete_Light(const _tchar* pLightTag);
-#endif
 
 private:
-	typedef vector<class CBasicLight*>	STATIC_LIGHTS;
-	typedef list<class CBasicLight*>	DYNAMIC_LIGHTS;
+	typedef unordered_map<const _tchar*, class CLight*> STATIC_CLONE_LIGHTS;
+	typedef list<class CLight*>							DYNAMIC_CLONE_LIGHTS;
 
 private:
-	STATIC_LIGHTS	m_StaticLights;
-	DYNAMIC_LIGHTS	m_DynamicLights;
+	STATIC_CLONE_LIGHTS		m_StaticLights;
+	DYNAMIC_CLONE_LIGHTS	m_DynamicLights;
 
 public:
 	virtual void Free() override;

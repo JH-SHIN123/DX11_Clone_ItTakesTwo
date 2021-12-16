@@ -437,9 +437,9 @@ void CGameInstance::Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos)
 
 void CGameInstance::Release_Engine()
 {
+	CLight_Manager::GetInstance()->Clear_All();
 	CGameObject_Manager::GetInstance()->Clear_All();
 	CComponent_Manager::GetInstance()->Clear_All();
-	CLight_Manager::GetInstance()->Clear_Buffer();
 	CLevel_Manager::GetInstance()->Clear_Level();
 	CPostFX::GetInstance()->Clear_Buffer();
 

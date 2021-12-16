@@ -18,8 +18,7 @@
 /* Taek */
 #include "MoonBaboonCore.h"
 #include "EffectLight.h"
-#include "DynamicVolume.h"
-#include "StaticVolume.h"
+#include "VolumeLight.h"
 /* Yoon */
 #include "RotatedRobotParts.h"
 #include "RobotParts.h"
@@ -347,20 +346,9 @@ HRESULT CLevel_Stage::Ready_Layer_Planet(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Lights()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	if (nullptr == pGameInstance)
-		return E_FAIL;
-
-	LIGHT_DESC			LightDesc;
 
 	/* For.Directional : Ambient / Specular Zero */
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
-	LightDesc.vDiffuse = XMFLOAT4(0.35f, 0.35f, 0.35f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.35f, 0.35f, 0.35f, 1.f);
-	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-
-	if (FAILED(pGameInstance->Add_Light(LightStatus::eDIRECTIONAL, CLight::Create(TEXT("Sun"), &LightDesc))))
-		return E_FAIL;
+	Ready_DirectionalLight(TEXT("Sun"), _float3(1.f, -1.f, 1.f), _float4(0.35f,0.35f,0.35f, 1.f), _float4(0.35f,0.35f,0.35f,1.f), _float4(1.f,1.f,1.f,1.f));
 
 //#pragma region PointLight
 //	CLight_Generator* pLightGenerator = CLight_Generator::GetInstance();
@@ -499,26 +487,6 @@ HRESULT CLevel_Stage::Ready_Lights()
 //
 //#pragma endregion
 
-	// TEST - Dynamic
-	//CDynamicVolume::VOLUME_DESC vVolumeDesc;
-	//lstrcpy(vVolumeDesc.szModelTag, TEXT("Component_Model_GeoCube"));
-	//vVolumeDesc.vInnerColor = { 1.f,0.9f,0.6f };
-	//vVolumeDesc.vOuterColor = { 1.f,1.f,1.f };
-	//vVolumeDesc.fCullRadius = 50.f;
-
-	//_matrix WorldMatrix = XMMatrixScaling(5.f, 5.f, 5.f);
-	//WorldMatrix *= XMMatrixTranslation(64, 0.f, 30);
-	//XMStoreFloat4x4(&vVolumeDesc.WorldMatrix, WorldMatrix);
-
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_DynamicVolume"), Level::LEVEL_STAGE, TEXT("GameObject_DynamicVolume"), &vVolumeDesc), E_FAIL);
-
-	//WorldMatrix = XMMatrixScaling(5.f, 5.f, 5.f);
-	//WorldMatrix *= XMMatrixTranslation(78.f, 0.f, 31);
-	//XMStoreFloat4x4(&vVolumeDesc.WorldMatrix, WorldMatrix);
-
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_DynamicVolume"), Level::LEVEL_STAGE, TEXT("GameObject_DynamicVolume"), &vVolumeDesc), E_FAIL);
-
-
 	//// TEST - Static
 	//CStaticVolume::VOLUME_DESC vStaticVolumeDesc;
 	//lstrcpy(vStaticVolumeDesc.szModelTag, TEXT("Component_Model_Instance_GeoSphere"));
@@ -528,21 +496,13 @@ HRESULT CLevel_Stage::Ready_Lights()
 	//vStaticVolumeDesc.arrInnerColor = new _float3[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
 	//vStaticVolumeDesc.arrOuterColor = new _float3[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
 
-	//_matrix WorldMatrix = XMMatrixIdentity();
-	//for (_uint i = 0; i < vStaticVolumeDesc.Instancing_Arg.iInstanceCount; ++i)
-	//{
-	//	WorldMatrix = XMMatrixScaling(20.f, 20.f, 20.f);
-	//	WorldMatrix *= XMMatrixTranslation(64 + (i * 20.f), 0.f, 30);
-	//	XMStoreFloat4x4(&vStaticVolumeDesc.Instancing_Arg.pWorldMatrices[i], WorldMatrix);
-
-	//	vStaticVolumeDesc.arrInnerColor[i] = { i* 0.3f, 0.5f,1.f };
-	//	vStaticVolumeDesc.arrOuterColor[i] = { 1.f,1.f,1.f };
-	//}
-
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_StaticVolume"), Level::LEVEL_STAGE, TEXT("GameObject_StaticVolume"), &vStaticVolumeDesc), E_FAIL);
-
-
 	return S_OK;
+}
+
+HRESULT CLevel_Stage::Ready_DirectionalLight(const _tchar* pLightTag, _float3 vDirection, _float4 vDiffuse, _float4 vAmbient, _float4 vSpecular)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	return pGameInstance->Add_Light(LightStatus::eDIRECTIONAL, CLight::Create(pLightTag, &LIGHT_DESC(LIGHT_DESC::TYPE_DIRECTIONAL, vDirection, vDiffuse, vAmbient, vSpecular)));
 }
 
 HRESULT CLevel_Stage::Ready_Layer_Sky(const _tchar * pLayerTag)
