@@ -41,6 +41,7 @@ private:
 
 	_float m_fScale_Pow = 7.f;
 	const _float m_fScale_Max = 13.f;
+	PxRaycastBuffer	m_RaycastBuffer;
 	
 private:
 	class CEffect_Boss_Gravitational_Bomb_Particle* m_pParticle = nullptr;

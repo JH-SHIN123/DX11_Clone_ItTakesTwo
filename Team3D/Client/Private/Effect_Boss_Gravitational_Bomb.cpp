@@ -75,6 +75,15 @@ _int CEffect_Boss_Gravitational_Bomb::Tick(_double TimeDelta)
 
 	m_pParticle->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 
+	m_pGameInstance->Raycast(MH_PxVec3(vPos), MH_PxVec3(XMVector3Normalize(vTargetDir)), 50.f, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
+
+	if (m_RaycastBuffer.getNbAnyHits() > 0)
+	{
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Boss_Gravitational_Bomb_Particle"), Level::LEVEL_STAGE,
+			TEXT("GameObject_2D_Boss_Gravitational_Bomb_Particle"));
+
+	}
+
 	Explosion_Check();
 	Scale_Check(TimeDelta);
 
