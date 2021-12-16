@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\WarpGate.h"
+#include "WarpGate_Star.h"
 #include "GameInstance.h"
 #include "Cody.h"
 #include "May.h"
@@ -26,9 +27,11 @@ HRESULT CWarpGate::NativeConstruct(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_eStageValue, pArg, sizeof(STAGE_VALUE));
 
-	Ready_Component();
-
+	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
+	FAILED_CHECK_RETURN(Check_WarpGate_Star(), E_FAIL);
 	m_pRespawnTunnel->Set_Stage_Viewer(m_eStageValue);
+
+
 
 	return S_OK;
 }
@@ -36,7 +39,20 @@ HRESULT CWarpGate::NativeConstruct(void * pArg)
 _int CWarpGate::Tick(_double TimeDelta)
 {
 	if (m_eStageValue == CWarpGate::STAGE_UMBRELLA)
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-617.f, 755.f, 196.f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-617.f, 755.f, 196.f, 1.f));//???
+
+#ifdef __TEST_JUNG
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 0.f, 31.f, 1.f));
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	m_pWarpGate_Star[0]->Set_WorldMatrix(WorldMatrix, XMVectorSet(5.f, 10.f, 1.f, 1.f));
+	m_pWarpGate_Star[1]->Set_WorldMatrix(WorldMatrix, XMVectorSet(0.f, 2.f, 0.1f, 1.f));
+	m_pWarpGate_Star[2]->Set_WorldMatrix(WorldMatrix, XMVectorSet(0.f, 2.f, 0.1f, 1.f));
+	m_pWarpGate_Star[3]->Set_WorldMatrix(WorldMatrix, XMVectorSet(0.f, 2.f, 0.1f, 1.f));
+	m_pWarpGate_Star[4]->Set_WorldMatrix(WorldMatrix, XMVectorSet(0.f, 2.f, 0.1f, 1.f));
+
+#endif // __TEST_JUNG
+
 
 	return _int();
 }
@@ -79,7 +95,6 @@ HRESULT CWarpGate::Render_ShadowDepth()
 
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
-	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
@@ -87,19 +102,11 @@ HRESULT CWarpGate::Render_ShadowDepth()
 
 HRESULT CWarpGate::Ready_Component()
 {
-
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_WarpGate_01"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-	//m_pTransformCom_Trigger = m_pTransformCom;
-	//Safe_AddRef(m_pTransformCom_Trigger);
 
 	Check_Stage_Value();
-
-// 	_vector vPos = XMVectorSet(0.f, 3.f, 0.f, 1.f);
-// 	_matrix vPhysWorld = m_pTransformCom->Get_WorldMatrix();
-// 	vPhysWorld.r[3] += vPos;
-// 	m_pTransformCom_Trigger->Set_WorldMatrix(vPhysWorld);
 
 	m_UserData = USERDATA(GameID::eWARPGATE, this);
 	CTriggerActor::ARG_DESC ArgDesc;
@@ -116,7 +123,6 @@ HRESULT CWarpGate::Ready_Component()
 	Static_ArgDesc.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &Static_ArgDesc), E_FAIL);
 
-	//m_pRespawnTunnel_Portal
 	EFFECT_DESC_CLONE Effect_Desc;
 	XMStoreFloat4x4(&Effect_Desc.WorldMatrix, m_pTransformCom->Get_WorldMatrix());
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_RespawnPortal"), Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel"), &Effect_Desc, (CGameObject**)&m_pRespawnTunnel), E_FAIL);
@@ -160,6 +166,18 @@ void CWarpGate::Check_Stage_Value()
 	DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fDegree));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+}
+
+HRESULT CWarpGate::Check_WarpGate_Star()
+{
+	m_pWarpGate_Star = new class CWarpGate_Star*[m_iWarpGate_Star_Count];
+
+	for (_int iIndex = 0; iIndex < m_iWarpGate_Star_Count; ++iIndex)
+	{
+		CGameObject* pObject = nullptr;
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_WarpGate_Star"), Level::LEVEL_STAGE, TEXT("GameObject_WarpGate_Star"), nullptr, (CGameObject**)&pObject), E_FAIL);
+		m_pWarpGate_Star[iIndex] = (CWarpGate_Star*)pObject;
+	}
 }
 
 _fmatrix CWarpGate::Get_NextPortal_Matrix()
@@ -246,6 +264,12 @@ void CWarpGate::Free()
 	Safe_Release(m_pTransformCom_Trigger);
 	Safe_Release(m_pRespawnTunnel);
 	Safe_Release(m_pRespawnTunnel_Portal);
+
+	Safe_Release(m_pWarpGate_Star[0]);
+	Safe_Release(m_pWarpGate_Star[1]);
+	Safe_Release(m_pWarpGate_Star[2]);
+	Safe_Release(m_pWarpGate_Star[3]);
+	Safe_Release(m_pWarpGate_Star[4]);
 
 	__super::Free();
 }

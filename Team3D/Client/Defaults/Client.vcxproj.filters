@@ -933,6 +933,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\01.Particle_Star">
       <UniqueIdentifier>{3be16690-bcb4-47d6-8aed-88279fa24cde}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\00.WarpGate\00.Star">
+      <UniqueIdentifier>{19c739c7-fbda-4d4d-991f-b06e72084394}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1742,6 +1745,9 @@
     <ClInclude Include="..\public\Effect_Hit_BossLaser_Particle_Star.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\01.Particle_Star</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\WarpGate_Star.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate\00.Star</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2514,6 +2520,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Hit_BossLaser_Particle_Star.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\01.Particle_Star</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WarpGate_Star.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate\00.Star</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

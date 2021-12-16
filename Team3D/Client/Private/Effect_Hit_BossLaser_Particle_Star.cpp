@@ -18,7 +18,7 @@ HRESULT CEffect_Hit_BossLaser_Particle_Star::NativeConstruct_Prototype(void * pA
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 10;
+	m_EffectDesc_Prototype.iInstanceCount = 20;
 
 	return S_OK;
 }
@@ -132,7 +132,7 @@ void CEffect_Hit_BossLaser_Particle_Star::Instance_Size(_float TimeDelta, _int i
 void CEffect_Hit_BossLaser_Particle_Star::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 	_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
-	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 2.f * (m_fInstance_SpeedPerSec * m_fInstance_SpeedPerSec);
+	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 4.f * (m_fInstance_SpeedPerSec * m_fInstance_SpeedPerSec);
 
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }
@@ -165,7 +165,7 @@ HRESULT CEffect_Hit_BossLaser_Particle_Star::Ready_InstanceBuffer()
 
 		m_pInstanceBuffer_STT[iIndex].vTextureUV = { 0.f, 0.f, 1.f , 1.f };
 		m_pInstanceBuffer_STT[iIndex].fTime = 1.f;
-		m_pInstanceBuffer_STT[iIndex].vSize = {0.5f, 0.5f};
+		m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
 
 		m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time;
 

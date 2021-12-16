@@ -5,22 +5,14 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 
-BEGIN(Engine)
-class CRenderer;
-class CTransform;
-class CModel;
-class CTriggerActor;
-class CStaticActor;
-END
-
 BEGIN(Client)
 class CWarpGate final : public CGameObject
 {
 public:
 	enum STAGE_VALUE
 	{
-		MAIN_UMBRELLA,	STAGE_UMBRELLA,
-		MAIN_PLANET,	STAGE_PLANET, 
+		MAIN_UMBRELLA = 0,	STAGE_UMBRELLA,
+		MAIN_PLANET,		STAGE_PLANET, 
 		STAGE_END
 	};
 
@@ -60,10 +52,13 @@ public:
 private:
 	HRESULT Ready_Component();
 	void	Check_Stage_Value();
+	HRESULT	Check_WarpGate_Star();
 
 private:
-	STAGE_VALUE m_eStageValue	= STAGE_END;
-	_float4		m_vWarpPos		= { 0.f, 0.f, 0.f, 1.f };
+	STAGE_VALUE m_eStageValue					= STAGE_END;
+	_float4		m_vWarpPos						= { 0.f, 0.f, 0.f, 1.f };
+	_double		m_dActivate_WarpGate_Star_Time	= 0.f;
+	_int		m_iWarpGate_Star_Count = 5;
 
 private:
 	/* For.Component */
@@ -77,9 +72,10 @@ private:
 private:
 	class CEffect_RespawnTunnel*		m_pRespawnTunnel		= nullptr;
 	class CEffect_RespawnTunnel_Portal* m_pRespawnTunnel_Portal = nullptr;
+	class CWarpGate_Star**				m_pWarpGate_Star		= nullptr;
 
-	const _float4	m_vWormhole_Cody		= {};
-	const _float4	m_vWormhole_May			= {};
+	const _float4	m_vWormhole_Cody	= {};
+	const _float4	m_vWormhole_May		= {};
 
 public:
 	static CWarpGate* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
