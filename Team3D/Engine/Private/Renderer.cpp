@@ -167,7 +167,7 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 
 HRESULT CRenderer::Render_Priority()
 {
-	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX"));
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_PostFX"), true, true);
 	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_PRIORITY])
 	{
 		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_PRIORITY), E_FAIL);

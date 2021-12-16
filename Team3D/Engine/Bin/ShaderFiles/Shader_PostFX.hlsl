@@ -116,13 +116,13 @@ float3 RadiarBlur(float2 vTexUV, float2 vFocusPos, float fRatio)
 
 float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToEye)
 {
-	float fVolumeFront = g_VolumeTex_Front.Sample(Point_Sampler, vTexUV).x;
-	float fVolumeBack = g_VolumeTex_Back.Sample(Point_Sampler, vTexUV).x;
+	float fVolumeFront = g_VolumeTex_Front.Sample(Point_Sampler, vTexUV).w;
+	float fVolumeBack = g_VolumeTex_Back.Sample(Point_Sampler, vTexUV).w;
 	float fVolumeFactor = 0.f;
 
 	float3 vFogColor = 0.f;
-	float3 fInnerColor = g_VolumeTex_Front.Sample(Point_Sampler, vTexUV).yzw;
-	float3 fOuterColor = g_VolumeTex_Back.Sample(Point_Sampler, vTexUV).yzw;
+	float3 fInnerColor = g_VolumeTex_Front.Sample(Point_Sampler, vTexUV).xyz;
+	float3 fOuterColor = g_VolumeTex_Back.Sample(Point_Sampler, vTexUV).xyz;
 
 	if (fVolumeBack - fVolumeFront < 0) /* 카메라가 안에 들어왔을때 */
 	{

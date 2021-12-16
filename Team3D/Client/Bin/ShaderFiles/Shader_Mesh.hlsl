@@ -1008,7 +1008,7 @@ PS_OUT_VOLUME PS_MAIN_VOLUME(PS_IN_VOLUME In)
 {
 	PS_OUT_VOLUME Out = (PS_OUT_VOLUME)0;
 
-	Out.vVolume = vector(In.vProjPosition.z / In.vProjPosition.w, In.vVolumeColor);
+	Out.vVolume = vector(In.vVolumeColor, In.vProjPosition.z / In.vProjPosition.w);
 
 	return Out;
 }
