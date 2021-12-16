@@ -924,6 +924,15 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06.UI\14.InfoBar">
+      <UniqueIdentifier>{ac656f16-0a8f-4801-b966-95e3dc892e9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\14.InfoBar\00.Player">
+      <UniqueIdentifier>{39e7963c-18f0-49cb-9976-80da837fce26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\14.InfoBar\01.Boss">
+      <UniqueIdentifier>{8001ece9-747e-4946-887b-101332178afc}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1724,6 +1733,18 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\HpBarFrame.h">
+      <Filter>02.GameObject\06.UI\14.InfoBar\00.Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HpBar.h">
+      <Filter>02.GameObject\06.UI\14.InfoBar\00.Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossHpBar.h">
+      <Filter>02.GameObject\06.UI\14.InfoBar\01.Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossHpBarFrame.h">
+      <Filter>02.GameObject\06.UI\14.InfoBar\01.Boss</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2487,6 +2508,18 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HpBarFrame.cpp">
+      <Filter>02.GameObject\06.UI\14.InfoBar\00.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HpBar.cpp">
+      <Filter>02.GameObject\06.UI\14.InfoBar\00.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossHpBar.cpp">
+      <Filter>02.GameObject\06.UI\14.InfoBar\01.Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossHpBarFrame.cpp">
+      <Filter>02.GameObject\06.UI\14.InfoBar\01.Boss</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

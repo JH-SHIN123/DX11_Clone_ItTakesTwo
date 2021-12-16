@@ -198,6 +198,8 @@
     <ClInclude Include="..\Public\BigButtonFrame.h" />
     <ClInclude Include="..\Public\BossDoor.h" />
     <ClInclude Include="..\Public\BossFloor.h" />
+    <ClInclude Include="..\Public\BossHpBar.h" />
+    <ClInclude Include="..\Public\BossHpBarFrame.h" />
     <ClInclude Include="..\Public\BossSlideDoor.h" />
     <ClInclude Include="..\Public\Boss_Missile.h" />
     <ClInclude Include="..\Public\Bridge.h" />
@@ -304,6 +306,8 @@
     <ClInclude Include="..\Public\HeaderBox.h" />
     <ClInclude Include="..\Public\HookahTube.h" />
     <ClInclude Include="..\Public\HookUFO.h" />
+    <ClInclude Include="..\Public\HpBar.h" />
+    <ClInclude Include="..\Public\HpBarFrame.h" />
     <ClInclude Include="..\Public\InGameEffect.h" />
     <ClInclude Include="..\Public\InGameEffect_Model.h" />
     <ClInclude Include="..\Public\InGameEffect_Rect.h" />
@@ -459,6 +463,8 @@
     <ClCompile Include="..\Private\BigButtonFrame.cpp" />
     <ClCompile Include="..\Private\BossDoor.cpp" />
     <ClCompile Include="..\Private\BossFloor.cpp" />
+    <ClCompile Include="..\Private\BossHpBar.cpp" />
+    <ClCompile Include="..\Private\BossHpBarFrame.cpp" />
     <ClCompile Include="..\Private\BossSlideDoor.cpp" />
     <ClCompile Include="..\Private\Boss_Missile.cpp" />
     <ClCompile Include="..\Private\Bridge.cpp" />
@@ -559,6 +565,8 @@
     <ClCompile Include="..\Private\HeaderBox.cpp" />
     <ClCompile Include="..\Private\HookahTube.cpp" />
     <ClCompile Include="..\Private\HookUFO.cpp" />
+    <ClCompile Include="..\Private\HpBar.cpp" />
+    <ClCompile Include="..\Private\HpBarFrame.cpp" />
     <ClCompile Include="..\Private\InGameEffect.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Model.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Rect.cpp" />
