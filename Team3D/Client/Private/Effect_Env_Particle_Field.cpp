@@ -119,7 +119,7 @@ void CEffect_Env_Particle_Field::Check_State(_double TimeDelta)
 void CEffect_Env_Particle_Field::State_Start(_double TimeDelta)
 {
 	_float fTimeDelta = (_float)TimeDelta;
-	_fmatrix ParentMatrix = m_pTransformCom->Get_WorldMatrix();
+	_fvector vWorldPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	if (1.0 <= m_dControl_Time)
 		m_dControl_Time = 1.0;
@@ -128,18 +128,16 @@ void CEffect_Env_Particle_Field::State_Start(_double TimeDelta)
 	{
 		m_pInstance_Pos_UpdateTime[iIndex] -= TimeDelta;
 		if (0.f >= m_pInstance_Pos_UpdateTime[iIndex])
-			Reset_Instance(iIndex);
+			Reset_Instance(iIndex, vWorldPos);
 
 		m_pInstanceBuffer_STT[iIndex].fTime += fTimeDelta  * (_float)m_dControl_Time;
 		if (1.f <= m_pInstanceBuffer_STT[iIndex].fTime)
 			m_pInstanceBuffer_STT[iIndex].fTime = 1.f;
 
 		_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
-		_vector vLocalPos = XMLoadFloat4(&m_pInstanceBuffer_LocalPos[iIndex]);
-		vLocalPos += vDir * fTimeDelta * m_Particle_Desc.fSpeedPerSec;
-		XMStoreFloat4(&m_pInstanceBuffer_LocalPos[iIndex], vLocalPos);
-		vLocalPos = XMVector3Transform(vLocalPos, ParentMatrix);
-		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vLocalPos);
+		_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition);
+		vPos += vDir * fTimeDelta * m_Particle_Desc.fSpeedPerSec;
+		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 
 		m_pInstanceBuffer_STT[iIndex].vSize.x -= fTimeDelta * m_Particle_Desc.fReSizing_Power;
 		m_pInstanceBuffer_STT[iIndex].vSize.y -= fTimeDelta * m_Particle_Desc.fReSizing_Power;
@@ -151,7 +149,7 @@ void CEffect_Env_Particle_Field::State_Start(_double TimeDelta)
 void CEffect_Env_Particle_Field::State_Disappear(_double TimeDelta)
 {
 	_float fTimeDelta = (_float)TimeDelta;
-	_fmatrix ParentMatrix = m_pTransformCom->Get_WorldMatrix();
+	_fvector vWorldPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	if (0.0 >= m_dControl_Time)
 	{
@@ -163,18 +161,16 @@ void CEffect_Env_Particle_Field::State_Disappear(_double TimeDelta)
 	{
 		m_pInstance_Pos_UpdateTime[iIndex] -= TimeDelta;
 		if (0.f >= m_pInstance_Pos_UpdateTime[iIndex])
-			Reset_Instance(iIndex);
+			Reset_Instance(iIndex, vWorldPos);
 
 		m_pInstanceBuffer_STT[iIndex].fTime += fTimeDelta  * (_float)m_dControl_Time;
 		if (1.f <= m_pInstanceBuffer_STT[iIndex].fTime)
 			m_pInstanceBuffer_STT[iIndex].fTime = 1.f;
 
 		_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
-		_vector vLocalPos = XMLoadFloat4(&m_pInstanceBuffer_LocalPos[iIndex]);
-		vLocalPos += vDir * fTimeDelta * m_Particle_Desc.fSpeedPerSec;
-		XMStoreFloat4(&m_pInstanceBuffer_LocalPos[iIndex], vLocalPos);
-		vLocalPos = XMVector3Transform(vLocalPos, ParentMatrix);
-		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vLocalPos);
+		_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition);
+		vPos += vDir * fTimeDelta * m_Particle_Desc.fSpeedPerSec;
+		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 
 		m_pInstanceBuffer_STT[iIndex].vSize.x -= fTimeDelta * m_Particle_Desc.fReSizing_Power;
 		m_pInstanceBuffer_STT[iIndex].vSize.y -= fTimeDelta * m_Particle_Desc.fReSizing_Power;
@@ -213,10 +209,14 @@ _float2 CEffect_Env_Particle_Field::Get_Rand_Size(_float2 vDefaultSize, _float v
 	return vRandSize;
 }
 
-HRESULT CEffect_Env_Particle_Field::Reset_Instance(_int iIndex)
+HRESULT CEffect_Env_Particle_Field::Reset_Instance(_int iIndex, _fvector vWorldPos)
 {
-	m_pInstanceBuffer_LocalPos[iIndex] = Get_Rand_Pos();
-	m_pInstanceBuffer_STT[iIndex].vPosition = { 0.f, 0.f, 0.f, 1.f };
+	//m_pInstanceBuffer_LocalPos[iIndex] = Get_Rand_Pos();
+	//m_pInstanceBuffer_STT[iIndex].vPosition = { 0.f, 0.f, 0.f, 1.f };
+
+	_vector vPos = vWorldPos + XMLoadFloat4(&Get_Rand_Pos());
+	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
+
 	m_pInstanceBuffer_STT[iIndex].vSize = Get_Rand_Size(m_Particle_Desc.vDefaultSize, m_Particle_Desc.fReSize);
 	m_pInstanceBuffer_STT[iIndex].vTextureUV = Get_TexUV_Rand(m_Particle_Desc.vTextureUV.x, m_Particle_Desc.vTextureUV.y);
 	m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
@@ -229,10 +229,12 @@ HRESULT CEffect_Env_Particle_Field::Reset_Instance(_int iIndex)
 HRESULT CEffect_Env_Particle_Field::Reset_Instance_All()
 {
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
+	_vector vWorldPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
-		m_pInstanceBuffer_LocalPos[iIndex] = Get_Rand_Pos();
+		_vector vPos = vWorldPos + XMLoadFloat4(&Get_Rand_Pos());
+		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 		m_pInstance_Dir[iIndex] = Get_Dir_Rand(_int3(100, 100, 100));
 	}
 
@@ -248,33 +250,35 @@ HRESULT CEffect_Env_Particle_Field::Initialize_Instance()
 	m_pInstanceBuffer_STT = new VTXMATRIX_CUSTOM_STT[iInstanceCount];
 	m_pInstance_Dir = new _float3[iInstanceCount];
 	m_pInstance_Pos_UpdateTime = new _double[iInstanceCount];
-	m_pInstanceBuffer_LocalPos = new _float4[iInstanceCount];
+
+	_vector vWorldPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
 		if (true == m_Particle_Desc.IsGrouping)
 		{
-			Initialize_Instance_Goruping(&iIndex, iInstanceCount);
+			Initialize_Instance_Goruping(&iIndex, iInstanceCount, vWorldPos);
 			continue;
 		}
 
 		m_pInstanceBuffer_STT[iIndex].vRight	= { 1.f, 0.f, 0.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vUp		= { 0.f, 1.f, 0.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vLook		= { 0.f, 0.f, 1.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vPosition = { 0.f, 0.f, 0.f, 1.f };
 		m_pInstanceBuffer_STT[iIndex].vSize		= { 0.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vTextureUV = Get_TexUV_Rand(m_Particle_Desc.vTextureUV.x, m_Particle_Desc.vTextureUV.y);
 		m_pInstanceBuffer_STT[iIndex].fTime		= 0.0f;
 
+		_vector vPos = vWorldPos + XMLoadFloat4(&Get_Rand_Pos());
+		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
+
 		m_pInstance_Pos_UpdateTime[iIndex] = m_Particle_Desc.fResetPosTime * m_Particle_Desc.fInitialize_UpdatePos_Term * _float(iIndex) / iInstanceCount;
-		m_pInstanceBuffer_LocalPos[iIndex] = { 0.f, 0.f, 0.f, 1.f };
 		m_pInstance_Dir[iIndex] = Get_Dir_Rand(m_Particle_Desc.vRandPower);
 	}
 
 	return S_OK;
 }
 
-void CEffect_Env_Particle_Field::Initialize_Instance_Goruping(_int* iIndex, _int iInstance_Count)
+void CEffect_Env_Particle_Field::Initialize_Instance_Goruping(_int* iIndex, _int iInstance_Count, _fvector vWorldPos)
 {
 	_int iIndexGroup = *iIndex;
 	for (; iIndexGroup < *iIndex + m_Particle_Desc.iGrouping_Count;)
@@ -285,13 +289,14 @@ void CEffect_Env_Particle_Field::Initialize_Instance_Goruping(_int* iIndex, _int
 		m_pInstanceBuffer_STT[iIndexGroup].vRight = { 1.f, 0.f, 0.f, 0.f };
 		m_pInstanceBuffer_STT[iIndexGroup].vUp = { 0.f, 1.f, 0.f, 0.f };
 		m_pInstanceBuffer_STT[iIndexGroup].vLook = { 0.f, 0.f, 1.f, 0.f };
-		m_pInstanceBuffer_STT[iIndexGroup].vPosition = { 0.f, 0.f, 0.f, 1.f };
 		m_pInstanceBuffer_STT[iIndexGroup].vSize = { 0.f, 0.f };
 		m_pInstanceBuffer_STT[iIndexGroup].vTextureUV = Get_TexUV_Rand(m_Particle_Desc.vTextureUV.x, m_Particle_Desc.vTextureUV.y);
 		m_pInstanceBuffer_STT[iIndexGroup].fTime = 0.0f;
 
+		_vector vPos = vWorldPos + XMLoadFloat4(&Get_Rand_Pos());
+		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndexGroup].vPosition, vPos);
+
 		m_pInstance_Pos_UpdateTime[iIndexGroup] = m_Particle_Desc.fResetPosTime * m_Particle_Desc.fInitialize_UpdatePos_Term * _float(*iIndex) / iInstance_Count;
-		m_pInstanceBuffer_LocalPos[iIndexGroup] = { 0.f, 0.f, 0.f, 1.f };
 		m_pInstance_Dir[iIndexGroup] = Get_Dir_Rand(m_Particle_Desc.vRandPower);
 
 		++iIndexGroup;
@@ -349,7 +354,6 @@ void CEffect_Env_Particle_Field::Free()
 {
 	Safe_Release(m_pPointInstanceCom_STT);
 	Safe_Delete_Array(m_pInstanceBuffer_STT);
-	Safe_Delete_Array(m_pInstanceBuffer_LocalPos);
 
 	__super::Free();
 }

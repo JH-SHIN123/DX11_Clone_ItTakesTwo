@@ -16,6 +16,11 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
+private:
+	void Check_State(_double TimeDelta);
+	void State_Start(_double TimeDelta);
+	void State_Disappear(_double TimeDelta);
+
 public:
 	static CEffect_Env_Particle_Field_Dust* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

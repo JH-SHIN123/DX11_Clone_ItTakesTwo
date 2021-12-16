@@ -36,11 +36,9 @@ _int CEffect_Env_Particle_Field_Star::Late_Tick(_double TimeDelta)
 HRESULT CEffect_Env_Particle_Field_Star::Render(RENDER_GROUP::Enum eGroup)
 {
 	_float fAlpha = (_float)m_dControl_Time;
-	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
 
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fAlpha, sizeof(_float));
-	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(9));
 	m_pPointInstanceCom_STT->Render(13, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
@@ -70,7 +68,7 @@ void CEffect_Env_Particle_Field_Star::Check_State(_double TimeDelta)
 void CEffect_Env_Particle_Field_Star::State_Start(_double TimeDelta)
 {
 	_float fTimeDelta = (_float)TimeDelta;
-	_fmatrix ParentMatrix = m_pTransformCom->Get_WorldMatrix();
+	_fvector vWorldPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_float fResetPosTime_Half = m_Particle_Desc.fResetPosTime / 2.f;
 
 	if (1.0 <= m_dControl_Time)
@@ -80,7 +78,7 @@ void CEffect_Env_Particle_Field_Star::State_Start(_double TimeDelta)
 	{
 		m_pInstance_Pos_UpdateTime[iIndex] -= TimeDelta;
 		if (0.f >= m_pInstance_Pos_UpdateTime[iIndex])
-			Reset_Instance(iIndex);
+			Reset_Instance(iIndex, vWorldPos);
 
 		if (fResetPosTime_Half < m_pInstance_Pos_UpdateTime[iIndex])
 		{
@@ -97,10 +95,8 @@ void CEffect_Env_Particle_Field_Star::State_Start(_double TimeDelta)
 		}
 
 		_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
-		_vector vLocalPos = XMLoadFloat4(&m_pInstanceBuffer_LocalPos[iIndex]);
+		_vector vLocalPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition);
 		vLocalPos += vDir * fTimeDelta * m_Particle_Desc.fSpeedPerSec;
-		XMStoreFloat4(&m_pInstanceBuffer_LocalPos[iIndex], vLocalPos);
-		vLocalPos = XMVector3Transform(vLocalPos, ParentMatrix);
 		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vLocalPos);
 
 		m_pInstanceBuffer_STT[iIndex].vSize.x -= fTimeDelta * m_Particle_Desc.fReSizing_Power;
@@ -113,7 +109,7 @@ void CEffect_Env_Particle_Field_Star::State_Start(_double TimeDelta)
 void CEffect_Env_Particle_Field_Star::State_Disappear(_double TimeDelta)
 {
 	_float fTimeDelta = (_float)TimeDelta;
-	_fmatrix ParentMatrix = m_pTransformCom->Get_WorldMatrix();
+	_fvector vWorldPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	if (0.0 >= m_dControl_Time)
 	{
@@ -125,18 +121,16 @@ void CEffect_Env_Particle_Field_Star::State_Disappear(_double TimeDelta)
 	{
 		m_pInstance_Pos_UpdateTime[iIndex] -= TimeDelta;
 		if (0.f >= m_pInstance_Pos_UpdateTime[iIndex])
-			Reset_Instance(iIndex);
+			Reset_Instance(iIndex, vWorldPos);
 
 		m_pInstanceBuffer_STT[iIndex].fTime += fTimeDelta  * (_float)m_dControl_Time;
 		if (1.f <= m_pInstanceBuffer_STT[iIndex].fTime)
 			m_pInstanceBuffer_STT[iIndex].fTime = 1.f;
 
 		_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
-		_vector vLocalPos = XMLoadFloat4(&m_pInstanceBuffer_LocalPos[iIndex]);
-		vLocalPos += vDir * fTimeDelta * m_Particle_Desc.fSpeedPerSec;
-		XMStoreFloat4(&m_pInstanceBuffer_LocalPos[iIndex], vLocalPos);
-		vLocalPos = XMVector3Transform(vLocalPos, ParentMatrix);
-		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vLocalPos);
+		_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition);
+		vPos += vDir * fTimeDelta * m_Particle_Desc.fSpeedPerSec;
+		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 
 		m_pInstanceBuffer_STT[iIndex].vSize.x -= fTimeDelta * m_Particle_Desc.fReSizing_Power;
 		m_pInstanceBuffer_STT[iIndex].vSize.y -= fTimeDelta * m_Particle_Desc.fReSizing_Power;

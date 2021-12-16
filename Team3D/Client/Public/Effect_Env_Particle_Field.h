@@ -63,10 +63,10 @@ protected:
 protected:
 	_float4 Get_Rand_Pos();
 	_float2 Get_Rand_Size(_float2 vDefaultSize, _float vReSize);
-	HRESULT Reset_Instance(_int iIndex);
+	HRESULT Reset_Instance(_int iIndex, _fvector vWorldPos);
 	HRESULT Reset_Instance_All();
 	HRESULT Initialize_Instance();
-	void	Initialize_Instance_Goruping(_int* iIndex, _int iInstance_Count);
+	void	Initialize_Instance_Goruping(_int* iIndex, _int iInstance_Count, _fvector vWolrdPos);
 
 protected:
 	_vector Set_RandPos_Default();
@@ -91,7 +91,6 @@ protected: // 전체적인 인스턴싱을 제어함
 protected:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
 	VTXMATRIX_CUSTOM_STT* m_pInstanceBuffer_STT = nullptr;
-	_float4* m_pInstanceBuffer_LocalPos = nullptr;
 
 public:
 	static CEffect_Env_Particle_Field* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
