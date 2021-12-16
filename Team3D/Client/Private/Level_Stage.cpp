@@ -239,6 +239,21 @@ HRESULT CLevel_Stage::Ready_Test()
 	tPlanetArg.vOffset = _float3(0.f, 33.f, 0.f);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Çà¼º¤»¤»", Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), &tPlanetArg), E_FAIL);
 
+	CEffect_Env_Particle_Field::ARG_DESC Arg_Desc;
+	Arg_Desc.vPosition = { 60.f, 0.f, 30.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 5.f, 5.f, 5.f };
+	Arg_Desc.fSpeedPerSec = 0.5f;
+	Arg_Desc.fReSizing_Power = 0.01f;
+	Arg_Desc.fReSize = 0.05f;
+	Arg_Desc.iInstanceCount = 100;
+	Arg_Desc.fResetPosTime = 6.f;
+	Arg_Desc.vTextureUV = { 1, 1 };
+	Arg_Desc.vDefaultSize = { 0.35f, 0.35f };
+	Arg_Desc.IsGrouping = true;
+	Arg_Desc.iGrouping_Count = 10;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field_Star"), &Arg_Desc), E_FAIL);
+
+
 
 #endif
 

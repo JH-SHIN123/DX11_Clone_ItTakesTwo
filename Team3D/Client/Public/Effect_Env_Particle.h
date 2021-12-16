@@ -2,13 +2,8 @@
 
 #ifndef __EFFECT_ENV_PARTICLE_H__
 #include "InGameEffect.h"
-BEGIN(Engine)
-class CVIBuffer_PointInstance_Custom_STT;
-END
 
 BEGIN(Client) 
-// 동그란 파티클(포탈, 중력 파이프, 우산 등)
-// 메쉬 안에서 뿌릴 애들
 class CEffect_Env_Particle final : public CInGameEffect
 {
 public:

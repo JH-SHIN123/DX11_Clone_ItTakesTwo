@@ -20,12 +20,14 @@
 #include "Effect_GravityPipe.h"
 #include "Effect_Wormhole.h"
 #include "Effect_Env_Particle.h"
+#include "Effect_Env_Particle_Field.h"
+#include "Effect_Env_Particle_Field_Star.h"
+#include "Effect_Env_Particle_Field_Dust.h"
 #include "Effect_Dead_Particle_Fire.h"
 #include "Effect_Robot_Battery_Spark.h"
 #include "Effect_Umbrella_Pipe.h"
 #include "Effect_Pinball_Move.h"
 #include "Effect_PointLight.h"
-#include "Effect_Env_Particle_Field.h"
 #include "Effect_Boss_Laser_Smoke.h"
 #include "Effect_Boss_Laser_Particle.h"
 #include "Effect_Boss_Laser_Charge.h"
@@ -393,6 +395,12 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Env_Particle_Field"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Env_Particle_Field", CEffect_Env_Particle_Field::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Env_Particle_Field_Star"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Env_Particle_Field_Star", CEffect_Env_Particle_Field_Star::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Env_Particle_Field_Dust"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Env_Particle_Field_Dust", CEffect_Env_Particle_Field_Dust::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Core_Explosion"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Core_Explosion", CEffect_Boss_Core_Explosion::Create(pDevice, pDeviceContext, pData));

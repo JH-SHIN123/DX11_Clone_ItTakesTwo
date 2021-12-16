@@ -20,20 +20,20 @@ HRESULT CEffect_Env_Particle_Field::NativeConstruct_Prototype(void * pArg)
 
 HRESULT CEffect_Env_Particle_Field::NativeConstruct(void * pArg)
 {
-	//m_pRendererCom
-	ARG_DESC Arg_Desc;
-	memcpy(&Arg_Desc, pArg, sizeof(ARG_DESC));
+	memcpy(&m_Particle_Desc, pArg, sizeof(ARG_DESC));
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_PointBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Circle_Alpha"), TEXT("Com_Textures"), (CComponent**)&m_pTexturesCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Dot"), TEXT("Com_Textures_Smoke2"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE,	m_EffectDesc_Prototype.TextureName, TEXT("Com_Textures"), (CComponent**)&m_pTexturesCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName_Second, TEXT("Com_Textures_Second"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&Arg_Desc.vPosition));
-	Set_InstanceCount(Arg_Desc.iInstanceCount);
-	Set_Particle_Radius(Arg_Desc.vRadiusXYZ);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_Particle_Desc.vPosition));
+
+	Set_InstanceCount(m_Particle_Desc.iInstanceCount);
+	Set_Particle_Radius(m_Particle_Desc.vRadiusXYZ);
+
 	return S_OK;
 }
 
@@ -57,6 +57,7 @@ HRESULT CEffect_Env_Particle_Field::Render(RENDER_GROUP::Enum eGroup)
 	_float fAlpha = (_float)m_dControl_Time;
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
+
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fAlpha, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
@@ -118,7 +119,7 @@ void CEffect_Env_Particle_Field::Check_State(_double TimeDelta)
 void CEffect_Env_Particle_Field::State_Start(_double TimeDelta)
 {
 	_float fTimeDelta = (_float)TimeDelta;
-	_fmatrix ParentMatrix = m_pTransformCom->Get_WorldMatrix(); // NULL
+	_fmatrix ParentMatrix = m_pTransformCom->Get_WorldMatrix();
 
 	if (1.0 <= m_dControl_Time)
 		m_dControl_Time = 1.0;
@@ -135,13 +136,13 @@ void CEffect_Env_Particle_Field::State_Start(_double TimeDelta)
 
 		_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
 		_vector vLocalPos = XMLoadFloat4(&m_pInstanceBuffer_LocalPos[iIndex]);
-		vLocalPos += vDir * fTimeDelta * 0.125f;
+		vLocalPos += vDir * fTimeDelta * m_Particle_Desc.fSpeedPerSec;
 		XMStoreFloat4(&m_pInstanceBuffer_LocalPos[iIndex], vLocalPos);
 		vLocalPos = XMVector3Transform(vLocalPos, ParentMatrix);
 		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vLocalPos);
 
-		m_pInstanceBuffer_STT[iIndex].vSize.x -= fTimeDelta * 0.033f;
-		m_pInstanceBuffer_STT[iIndex].vSize.y -= fTimeDelta * 0.033f;
+		m_pInstanceBuffer_STT[iIndex].vSize.x -= fTimeDelta * m_Particle_Desc.fReSizing_Power;
+		m_pInstanceBuffer_STT[iIndex].vSize.y -= fTimeDelta * m_Particle_Desc.fReSizing_Power;
 		if (0.f >= m_pInstanceBuffer_STT[iIndex].vSize.x)
 			m_pInstanceBuffer_STT[iIndex].vSize = { 0.f, 0.f };
 	}
@@ -170,13 +171,13 @@ void CEffect_Env_Particle_Field::State_Disappear(_double TimeDelta)
 
 		_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
 		_vector vLocalPos = XMLoadFloat4(&m_pInstanceBuffer_LocalPos[iIndex]);
-		vLocalPos += vDir * fTimeDelta * 0.125f;
+		vLocalPos += vDir * fTimeDelta * m_Particle_Desc.fSpeedPerSec;
 		XMStoreFloat4(&m_pInstanceBuffer_LocalPos[iIndex], vLocalPos);
 		vLocalPos = XMVector3Transform(vLocalPos, ParentMatrix);
 		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vLocalPos);
 
-		m_pInstanceBuffer_STT[iIndex].vSize.x -= fTimeDelta * 0.033f;
-		m_pInstanceBuffer_STT[iIndex].vSize.y -= fTimeDelta * 0.033f;
+		m_pInstanceBuffer_STT[iIndex].vSize.x -= fTimeDelta * m_Particle_Desc.fReSizing_Power;
+		m_pInstanceBuffer_STT[iIndex].vSize.y -= fTimeDelta * m_Particle_Desc.fReSizing_Power;
 		if (0.f >= m_pInstanceBuffer_STT[iIndex].vSize.x)
 			m_pInstanceBuffer_STT[iIndex].vSize = { 0.f, 0.f };
 	}
@@ -193,20 +194,20 @@ _float4 CEffect_Env_Particle_Field::Get_Rand_Pos()
 	return vPos;
 }
 
-_float2 CEffect_Env_Particle_Field::Get_Rand_Size()
+_float2 CEffect_Env_Particle_Field::Get_Rand_Size(_float2 vDefaultSize, _float vReSize)
 {
-	_float2 vRandSize = m_vDefaultSize;
+	_float2 vRandSize = vDefaultSize;
 
 	_int iRand = rand() % 3;
 	if (0 == iRand)
 	{
-		vRandSize.x -= 0.02f;
-		vRandSize.y -= 0.02f;
+		vRandSize.x -= vReSize;
+		vRandSize.y -= vReSize;
 	}
 	else if (1 == iRand)
 	{
-		vRandSize.x += 0.02f;
-		vRandSize.y += 0.02f;
+		vRandSize.x += vReSize;
+		vRandSize.y += vReSize;
 	}
 
 	return vRandSize;
@@ -216,11 +217,11 @@ HRESULT CEffect_Env_Particle_Field::Reset_Instance(_int iIndex)
 {
 	m_pInstanceBuffer_LocalPos[iIndex] = Get_Rand_Pos();
 	m_pInstanceBuffer_STT[iIndex].vPosition = { 0.f, 0.f, 0.f, 1.f };
-	m_pInstanceBuffer_STT[iIndex].vSize = Get_Rand_Size();
-	m_pInstanceBuffer_STT[iIndex].vTextureUV = Get_TexUV_Rand(4, 2);
+	m_pInstanceBuffer_STT[iIndex].vSize = Get_Rand_Size(m_Particle_Desc.vDefaultSize, m_Particle_Desc.fReSize);
+	m_pInstanceBuffer_STT[iIndex].vTextureUV = Get_TexUV_Rand(m_Particle_Desc.vTextureUV.x, m_Particle_Desc.vTextureUV.y);
 	m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
 	m_pInstance_Dir[iIndex] = Get_Dir_Rand(_int3(100, 100, 100));
-	m_pInstance_Pos_UpdateTime[iIndex] = m_fResetPosTime;
+	m_pInstance_Pos_UpdateTime[iIndex] = m_Particle_Desc.fResetPosTime;
 
 	return S_OK;
 }
@@ -251,24 +252,57 @@ HRESULT CEffect_Env_Particle_Field::Initialize_Instance()
 
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
-		m_pInstanceBuffer_STT[iIndex].vRight = { 1.f, 0.f, 0.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vUp = { 0.f, 1.f, 0.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vLook = { 0.f, 0.f, 1.f, 0.f };
+		if (true == m_Particle_Desc.IsGrouping)
+		{
+			Initialize_Instance_Goruping(&iIndex, iInstanceCount);
+			continue;
+		}
+
+		m_pInstanceBuffer_STT[iIndex].vRight	= { 1.f, 0.f, 0.f, 0.f };
+		m_pInstanceBuffer_STT[iIndex].vUp		= { 0.f, 1.f, 0.f, 0.f };
+		m_pInstanceBuffer_STT[iIndex].vLook		= { 0.f, 0.f, 1.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vPosition = { 0.f, 0.f, 0.f, 1.f };
-		m_pInstanceBuffer_STT[iIndex].vSize = { 0.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vTextureUV = Get_TexUV_Rand(4, 2);
-		m_pInstanceBuffer_STT[iIndex].fTime = 0.0f;
-		m_pInstance_Pos_UpdateTime[iIndex] = m_fResetPosTime * _float(iIndex / iInstanceCount);
+		m_pInstanceBuffer_STT[iIndex].vSize		= { 0.f, 0.f };
+		m_pInstanceBuffer_STT[iIndex].vTextureUV = Get_TexUV_Rand(m_Particle_Desc.vTextureUV.x, m_Particle_Desc.vTextureUV.y);
+		m_pInstanceBuffer_STT[iIndex].fTime		= 0.0f;
+
+		m_pInstance_Pos_UpdateTime[iIndex] = m_Particle_Desc.fResetPosTime * m_Particle_Desc.fInitialize_UpdatePos_Term * _float(iIndex) / iInstanceCount;
 		m_pInstanceBuffer_LocalPos[iIndex] = { 0.f, 0.f, 0.f, 1.f };
-		m_pInstance_Dir[iIndex] = Get_Dir_Rand(m_ivRandPower);
+		m_pInstance_Dir[iIndex] = Get_Dir_Rand(m_Particle_Desc.vRandPower);
 	}
 
 	return S_OK;
 }
 
+void CEffect_Env_Particle_Field::Initialize_Instance_Goruping(_int* iIndex, _int iInstance_Count)
+{
+	_int iIndexGroup = *iIndex;
+	for (; iIndexGroup < *iIndex + m_Particle_Desc.iGrouping_Count;)
+	{
+		if (iIndexGroup >= iInstance_Count)
+			break;
+
+		m_pInstanceBuffer_STT[iIndexGroup].vRight = { 1.f, 0.f, 0.f, 0.f };
+		m_pInstanceBuffer_STT[iIndexGroup].vUp = { 0.f, 1.f, 0.f, 0.f };
+		m_pInstanceBuffer_STT[iIndexGroup].vLook = { 0.f, 0.f, 1.f, 0.f };
+		m_pInstanceBuffer_STT[iIndexGroup].vPosition = { 0.f, 0.f, 0.f, 1.f };
+		m_pInstanceBuffer_STT[iIndexGroup].vSize = { 0.f, 0.f };
+		m_pInstanceBuffer_STT[iIndexGroup].vTextureUV = Get_TexUV_Rand(m_Particle_Desc.vTextureUV.x, m_Particle_Desc.vTextureUV.y);
+		m_pInstanceBuffer_STT[iIndexGroup].fTime = 0.0f;
+
+		m_pInstance_Pos_UpdateTime[iIndexGroup] = m_Particle_Desc.fResetPosTime * m_Particle_Desc.fInitialize_UpdatePos_Term * _float(*iIndex) / iInstance_Count;
+		m_pInstanceBuffer_LocalPos[iIndexGroup] = { 0.f, 0.f, 0.f, 1.f };
+		m_pInstance_Dir[iIndexGroup] = Get_Dir_Rand(m_Particle_Desc.vRandPower);
+
+		++iIndexGroup;
+	}
+
+	*iIndex = iIndexGroup - 1;
+}
+
 _vector CEffect_Env_Particle_Field::Set_RandPos_Default()
 {
-	_vector vDir = XMLoadFloat3(&Get_Dir_Rand(m_ivRandPower));
+	_vector vDir = XMLoadFloat3(&Get_Dir_Rand(m_Particle_Desc.vRandPower));
 
 	vDir.m128_f32[0] *= m_vParticleRadius.x / _float(rand() % 5 + 1);
 	vDir.m128_f32[1] *= m_vParticleRadius.y;
