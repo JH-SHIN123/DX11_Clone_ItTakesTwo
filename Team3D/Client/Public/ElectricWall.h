@@ -28,9 +28,13 @@ private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 	CTriggerActor*	m_pTriggerActorCom = nullptr;
 
+	_bool			m_bElectric_Ready = false; // Effect
+	_int			m_iEffectCount = 0;
+
 	_bool			m_bElectric = false;
 	_float3			m_vOriginPos = {};
 
+	_double			m_dElectricReady_Time = 0.0; // Effect
 	_double			m_dElectricTime = 0.0;
 	_double			m_dCoolTime = 0.0;
 

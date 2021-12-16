@@ -154,6 +154,8 @@ HRESULT CModel::Set_Animation(_uint iAnimIndex, _double dAnimTime)
 	m_iCurAnimFrame = 0;
 	m_AnimTransformations.assign(m_BaseTransformations.begin(), m_BaseTransformations.end());
 
+	m_fProgressAnim = 0.f;
+
 	return S_OK;
 }
 

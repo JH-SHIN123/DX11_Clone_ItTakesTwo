@@ -476,11 +476,6 @@ void CInGameEffect::SetUp_Shader_Data()
 		m_pPointInstanceCom->Set_Variable("g_IsBillBoard", &IsBillBoard, sizeof(_int));	
 	}
 
-	if (true == m_IsResourceName[RESOURCE_MESH])
-	{
-
-	}
-
 	return;
 }
 
@@ -567,6 +562,47 @@ _float3 CInGameEffect::Get_Dir_Rand(_int3 vRandDirPower)
 	XMStoreFloat3(&vDir, vRandDir);
 
 	return vDir;
+}
+
+_float3 CInGameEffect::Get_Dir_Rand_Matrix(_int3 vRandDirPower, _fmatrix WorldMatrix, CTransform::STATE eState)
+{
+	_matrix WorldMatrix_Normal = Normalize_Matrix(WorldMatrix);
+	_vector vRandDir = XMVectorZero();
+
+	_int iRandPower[3];
+	iRandPower[0] = vRandDirPower.x;
+	iRandPower[1] = vRandDirPower.y;
+	iRandPower[2] = vRandDirPower.z;
+
+	for (_int i = 0; i < 3; ++i)
+	{
+		_float fRand = 1.f;
+		
+		if(0 != iRandPower[i])
+			fRand = _float(rand() % iRandPower[i] + 1);
+
+		if(i != eState)
+			if (rand() % 2 == 0) fRand *= -1.f;
+
+		vRandDir += WorldMatrix_Normal.r[i] * fRand;
+	}
+
+	vRandDir = XMVector3Normalize(vRandDir);
+
+	_float3 vDir;
+	XMStoreFloat3(&vDir, vRandDir);
+
+	return vDir;
+}
+
+_fmatrix CInGameEffect::Normalize_Matrix(_fmatrix WorldMatrix)
+{
+	_matrix NormalMatrix = WorldMatrix;
+
+	for (_int i = 0; i < 3; ++i)
+		NormalMatrix.r[i] = XMVector3Normalize(NormalMatrix.r[i]);
+
+	return NormalMatrix;
 }
 
 CGameObject * CInGameEffect::Clone_GameObject(void * pArg)

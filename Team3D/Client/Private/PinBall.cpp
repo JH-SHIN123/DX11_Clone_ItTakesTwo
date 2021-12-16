@@ -188,6 +188,7 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 
 		m_bFailed = true;
 		m_bStartGame = false;
+		m_bEffect = false;
 	}
 }
 
@@ -195,6 +196,10 @@ void CPinBall::MoveMent(_double dTimeDelta)
 {
 	if (false == m_bStartGame)
 		return;
+
+	if (false == m_bEffect)
+		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Move);
+	m_bEffect = true;
 
 	m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(-40.f, 0.f, 0.f));
 	m_pDynamicActorCom->Get_Actor()->setLinearVelocity(PxVec3(0.f, 0.f, -30.f));

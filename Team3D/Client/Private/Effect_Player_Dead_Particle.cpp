@@ -36,6 +36,7 @@ HRESULT CEffect_Player_Dead_Particle::NativeConstruct(void * pArg)
 
 
 	//Ready_Instance();
+// 	memcpy(m_pModelCom, static_cast<CModel*>(m_EffectDesc_Clone.pArg), sizeof(CModel*));
 	m_pModelCom = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
 	Safe_AddRef(m_pModelCom);
 

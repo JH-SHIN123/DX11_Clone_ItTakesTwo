@@ -25,6 +25,7 @@ private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
 	CTriggerActor*	m_pTriggerActorCom = nullptr;
 
+	_bool			m_bEffect = false;
 	_bool			m_bSmash = true;
 	_float			m_fOpenPos = 0.f;
 	_float			m_fClosePos = 0.f;
@@ -39,6 +40,7 @@ private:
 	void Movement(_double dTimeDelta);
 	void Open_Press(_double dTimeDelta);
 	void Close_Press(_double dTimeDelta);
+	void Press_Effect();
 
 private:
 	HRESULT Ready_Component(void* pArg);

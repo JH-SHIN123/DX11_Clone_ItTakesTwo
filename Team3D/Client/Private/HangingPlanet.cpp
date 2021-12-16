@@ -2,6 +2,7 @@
 #include "..\Public\HangingPlanet.h"
 #include "Cody.h"
 #include "UI_Generator.h"
+#include "Effect_Generator.h"
 
 CHangingPlanet::CHangingPlanet(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -18,7 +19,6 @@ void CHangingPlanet::Hit_Planet(_fvector vForce)
 	_vector vLookForce;
 	vLookForce = XMVector3Normalize(vForce);
 	vLookForce = XMVectorSetY(vLookForce, 0.f);
-
 	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLookForce) * 120000.f, 0.f, XMVectorGetZ(vLookForce) * 120000.f));
 }
 

@@ -7,6 +7,7 @@
 #include "CutScenePlayer.h"
 #include "MoonBaboon_MainLaser.h"
 #include "Laser_TypeA.h"
+#include "Effect_Generator.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -56,6 +57,10 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	vPos.m128_f32[1] += 6.f;
 	XMStoreFloat4(&m_vStartTargetPos, vPos);
 	m_IsStartingPointMove = true;
+
+ 	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying, m_pTransformCom->Get_WorldMatrix());
+	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying_Particle, m_pTransformCom->Get_WorldMatrix());
+	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying_Particle_Flow, m_pTransformCom->Get_WorldMatrix());
 
 	Set_MeshRenderGroup();
 
