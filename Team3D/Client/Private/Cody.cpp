@@ -403,36 +403,6 @@ void CCody::KeyInput(_double dTimeDelta)
 	_bool bRoll = false;
 #pragma endregion
 
-
-	/*GARA*/if (m_pGameInstance->Key_Pressing(DIK_SLASH) && m_pGameInstance->Key_Down(DIK_P))
-	{
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound, m_pTransformCom->Get_WorldMatrix());
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound_Ring, m_pTransformCom->Get_WorldMatrix());
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound_Smoke, m_pTransformCom->Get_WorldMatrix());
-	}
-	/*GARA*/if (m_pGameInstance->Key_Pressing(DIK_SLASH) && m_pGameInstance->Key_Down(DIK_LBRACKET))
-	{
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
-
-	}
-	/*GARA*/if (m_pGameInstance->Key_Pressing(DIK_SLASH) && m_pGameInstance->Key_Down(DIK_RBRACKET))
-	{
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb, m_pTransformCom->Get_WorldMatrix());
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Explosion, m_pTransformCom->Get_WorldMatrix());
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Explosion, m_pTransformCom->Get_WorldMatrix());
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Particle, m_pTransformCom->Get_WorldMatrix());
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Pillar, m_pTransformCom->Get_WorldMatrix());
-	}
-	/*GARA*/if (m_pGameInstance->Key_Pressing(DIK_SLASH) && m_pGameInstance->Key_Down(DIK_SEMICOLON))
-	{
-		/*GARA*/	EFFECT->Add_Effect(Effect_Value::Cody_Rail, m_pTransformCom->Get_WorldMatrix());
-	}
-
 #pragma region Teleport
 	if (m_pGameInstance->Key_Down(DIK_C)) /* 파이프 베터리 */
 		m_pActorCom->Set_Position(XMVectorSet(44.8652f, 220.9396f, 223.94134f, 1.f));

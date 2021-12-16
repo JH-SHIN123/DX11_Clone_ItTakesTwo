@@ -22,7 +22,7 @@
 
 
 #ifdef _DEBUG
-#define __THREAD_NUM 6
+#define __THREAD_NUM 4
 #else
 #define __THREAD_NUM 4
 #endif
@@ -32,7 +32,7 @@
 /**
 * 맵 로딩 하려면 주석 처리.
 */
-#define __MAPLOADING_OFF
+//#define __MAPLOADING_OFF
 
 /**
 * 우주선 내부 맵만 제거
@@ -45,7 +45,7 @@
 /**
 * 메이 키보드로 컨트롤하려면 주석 해제.
 */
-//#define __CONTROL_MAY_KEYBOARD
+#define __CONTROL_MAY_KEYBOARD
  
 /************************************************************************/
 
@@ -53,7 +53,7 @@
 * 각자 테스트용 디파인
 */
 //#define __TEST_SE
-#define __TEST_JUNG
+//#define __TEST_JUNG
 //#define __TEST_HYE
 //#define __TEST_TAEK
 //#define __TEST_YOON
