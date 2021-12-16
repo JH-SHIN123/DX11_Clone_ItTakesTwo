@@ -413,9 +413,7 @@
     <ClInclude Include="..\Public\Space_Valve_Star.h" />
     <ClInclude Include="..\Public\SplashScreen.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
-    <ClInclude Include="..\Public\StaticVolume.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="..\Public\StaticVolume.h" />
     <ClInclude Include="..\Public\Static_Env.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\SupportFrame.h" />
@@ -667,9 +665,7 @@
     <ClCompile Include="..\Private\Space_Valve_Star.cpp" />
     <ClCompile Include="..\Private\SplashScreen.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
-    <ClCompile Include="..\Private\StaticVolume.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="..\Private\StaticVolume.cpp" />
     <ClCompile Include="..\Private\Static_Env.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\SupportFrame.cpp" />
