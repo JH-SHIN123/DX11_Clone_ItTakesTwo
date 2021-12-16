@@ -85,6 +85,7 @@ _int CGameInstance::Tick(_double dTimeDelta, _bool bWndActivate)
 	NULL_CHECK_RETURN(m_pLevel_Manager, EVENT_ERROR);
 	NULL_CHECK_RETURN(m_pGameObject_Manager, EVENT_ERROR);
 	NULL_CHECK_RETURN(m_pFrustum, EVENT_ERROR);
+	NULL_CHECK_RETURN(m_pLight_Manager, EVENT_ERROR);
 
 	m_pGraphic_Device->Tick(dTimeDelta);
 	m_pInput_Device->Tick(bWndActivate);
@@ -97,6 +98,9 @@ _int CGameInstance::Tick(_double dTimeDelta, _bool bWndActivate)
 	
 	if (m_pGameObject_Manager->Late_Tick(dTimeDelta) < 0)
 		return EVENT_ERROR;
+
+	/* Tick Light Manager*/
+	m_pLight_Manager->Tick_LightManager(dTimeDelta);
 
 	/* Shadow View / Proj 생성 - FullScreen 기준 */
 	m_pShadow_Manager->Update_CascadeShadowTransform(CShadow_Manager::SHADOW_MAIN);
@@ -319,20 +323,25 @@ CComponent * CGameInstance::Add_Component_Clone(_uint iPrototypeLevelIndex, cons
 #pragma endregion 
 
 #pragma region Light_Manager
-HRESULT CGameInstance::Reserve_Container_Light(_uint iCount)
+CLight* CGameInstance::Get_Light(LightStatus::Enum eState, const _tchar* pLightTag, _bool bAddRef)
 {
-	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
-	return m_pLight_Manager->Reserve_Container(iCount);
+	NULL_CHECK_RETURN(m_pLight_Manager, nullptr);
+	return m_pLight_Manager->Get_Light(eState, pLightTag, bAddRef);
 }
-HRESULT CGameInstance::Add_Light(const _tchar* pLightTag, const LIGHT_DESC & LightDesc, _bool isActive, void** ppOut)
+HRESULT CGameInstance::Add_Light(LightStatus::Enum eState, CLight* pLight)
 {
 	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
-	return m_pLight_Manager->Add_Light(pLightTag, LightDesc, isActive, ppOut);
+	return m_pLight_Manager->Add_Light(eState, pLight);
 }
 HRESULT CGameInstance::Remove_Light(const _tchar* pLightTag)
 {
 	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
 	return m_pLight_Manager->Remove_Light(pLightTag);
+}
+void CGameInstance::Clear_Lights(LightStatus::Enum eState)
+{
+	NULL_CHECK(m_pLight_Manager);
+	m_pLight_Manager->Clear_Lights(eState);
 }
 #pragma endregion
 

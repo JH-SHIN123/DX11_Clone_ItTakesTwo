@@ -2,12 +2,21 @@
 #include "VIBuffer_RectRHW.h"
 #include "RenderTarget_Manager.h"
 
-HRESULT CLight::NativeConstruct(const LIGHT_DESC & LightDesc, _bool isActive)
+HRESULT CLight::NativeConstruct(const _tchar* pLightTag, void* pArgs)
 {
-	m_LightDesc = LightDesc;
-	m_isActive	= isActive;
+	lstrcpy(m_szLightTag, pLightTag);
+
+	if (nullptr != pArgs)
+		memcpy(&m_LightDesc, pArgs, sizeof(m_LightDesc));
 
 	return S_OK;
+}
+
+_int CLight::Tick_Light(_double dTimeDelta)
+{
+	if (m_bDead) return EVENT_DEAD;
+
+	return _int();
 }
 
 HRESULT CLight::Render_Light(CVIBuffer_RectRHW * pVIBuffer)
@@ -54,11 +63,11 @@ HRESULT CLight::Render_Light(CVIBuffer_RectRHW * pVIBuffer)
 	return S_OK;
 }
 
-CLight * CLight::Create(const LIGHT_DESC & LightDesc, _bool isActive)
+CLight * CLight::Create(const _tchar* pLightTag, void* pArgs)
 {
 	CLight* pInstance = new CLight;
 
-	if (FAILED(pInstance->NativeConstruct(LightDesc, isActive)))
+	if (FAILED(pInstance->NativeConstruct(pLightTag, pArgs)))
 	{
 		MSG_BOX("Failed to Create Instance - CLight");
 		Safe_Release(pInstance);

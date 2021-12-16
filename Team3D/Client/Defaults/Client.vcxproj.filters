@@ -927,6 +927,9 @@
     <Filter Include="04.Generator\03.Light_Generator\VolumeLight">
       <UniqueIdentifier>{7cec4308-28cd-4496-ab9f-c6768898d7f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04.Generator\03.Light_Generator\BasicLight">
+      <UniqueIdentifier>{22f91519-352f-4804-992a-0becb377fb85}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1721,6 +1724,9 @@
     <ClInclude Include="..\Public\StaticVolume.h">
       <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\StaticVolume</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BasicLight.h">
+      <Filter>04.Generator\03.Light_Generator\BasicLight</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2487,6 +2493,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\StaticVolume.cpp">
       <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\StaticVolume</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BasicLight.cpp">
+      <Filter>04.Generator\03.Light_Generator\BasicLight</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

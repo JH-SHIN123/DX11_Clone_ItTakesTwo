@@ -305,7 +305,7 @@ HRESULT CRenderer::Render_LightAcc()
 	CLight_Manager*	pLight_Manager = CLight_Manager::GetInstance();
 
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_LightAcc")), E_FAIL);
-	FAILED_CHECK_RETURN(pLight_Manager->Render_Lights(), E_FAIL);
+	FAILED_CHECK_RETURN(pLight_Manager->Render_LightManager(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_LightAcc")), E_FAIL);
 
 	return S_OK;

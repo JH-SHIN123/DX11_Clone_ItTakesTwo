@@ -11,6 +11,9 @@ class CLight_Generator final : public CBase
 	DECLARE_SINGLETON(CLight_Generator)
 
 public:
+	enum LIGHT_TYPE { TYPE_BASIC, TYPE_EFFECT, TYPE_VOLUME, TYPE_END };
+
+public:
 	CLight_Generator() = default;
 	virtual ~CLight_Generator() = default;
 	
@@ -26,10 +29,12 @@ public: /* For. 조명설치 */
 #endif
 
 private:
-	typedef unordered_map<const _tchar*, class CEffectLight*> EFFECTLIGHTS;
+	typedef vector<class CBasicLight*>	STATIC_LIGHTS;
+	typedef list<class CBasicLight*>	DYNAMIC_LIGHTS;
 
 private:
-	EFFECTLIGHTS m_EffectLights;
+	STATIC_LIGHTS	m_StaticLights;
+	DYNAMIC_LIGHTS	m_DynamicLights;
 
 public:
 	virtual void Free() override;

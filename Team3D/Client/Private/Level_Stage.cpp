@@ -17,7 +17,6 @@
 #include "HangingPlanet.h"
 /* Taek */
 #include "MoonBaboonCore.h"
-#include "Light_Generator.h"
 #include "EffectLight.h"
 #include "DynamicVolume.h"
 #include "StaticVolume.h"
@@ -351,22 +350,16 @@ HRESULT CLevel_Stage::Ready_Lights()
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
-	pGameInstance->Reserve_Container_Light(6);
-
 	LIGHT_DESC			LightDesc;
 
 	/* For.Directional : Ambient / Specular Zero */
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
 	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
-	//LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	//LightDesc.vAmbient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
-
 	LightDesc.vDiffuse = XMFLOAT4(0.35f, 0.35f, 0.35f, 1.f);
 	LightDesc.vAmbient = XMFLOAT4(0.35f, 0.35f, 0.35f, 1.f);
 	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
 
-	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
+	if (FAILED(pGameInstance->Add_Light(LightStatus::eDIRECTIONAL, CLight::Create(TEXT("Sun"), &LightDesc))))
 		return E_FAIL;
 
 //#pragma region PointLight
@@ -526,27 +519,27 @@ HRESULT CLevel_Stage::Ready_Lights()
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_DynamicVolume"), Level::LEVEL_STAGE, TEXT("GameObject_DynamicVolume"), &vVolumeDesc), E_FAIL);
 
 
-	// TEST - Static
-	CStaticVolume::VOLUME_DESC vStaticVolumeDesc;
-	lstrcpy(vStaticVolumeDesc.szModelTag, TEXT("Component_Model_Instance_GeoSphere"));
-	vStaticVolumeDesc.Instancing_Arg.iInstanceCount = 3;
-	vStaticVolumeDesc.Instancing_Arg.fCullingRadius = 50.f;
-	vStaticVolumeDesc.Instancing_Arg.pWorldMatrices = new _float4x4[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
-	vStaticVolumeDesc.arrInnerColor = new _float3[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
-	vStaticVolumeDesc.arrOuterColor = new _float3[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
+	//// TEST - Static
+	//CStaticVolume::VOLUME_DESC vStaticVolumeDesc;
+	//lstrcpy(vStaticVolumeDesc.szModelTag, TEXT("Component_Model_Instance_GeoSphere"));
+	//vStaticVolumeDesc.Instancing_Arg.iInstanceCount = 3;
+	//vStaticVolumeDesc.Instancing_Arg.fCullingRadius = 50.f;
+	//vStaticVolumeDesc.Instancing_Arg.pWorldMatrices = new _float4x4[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
+	//vStaticVolumeDesc.arrInnerColor = new _float3[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
+	//vStaticVolumeDesc.arrOuterColor = new _float3[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
 
-	_matrix WorldMatrix = XMMatrixIdentity();
-	for (_uint i = 0; i < vStaticVolumeDesc.Instancing_Arg.iInstanceCount; ++i)
-	{
-		WorldMatrix = XMMatrixScaling(20.f, 20.f, 20.f);
-		WorldMatrix *= XMMatrixTranslation(64 + (i * 20.f), 0.f, 30);
-		XMStoreFloat4x4(&vStaticVolumeDesc.Instancing_Arg.pWorldMatrices[i], WorldMatrix);
+	//_matrix WorldMatrix = XMMatrixIdentity();
+	//for (_uint i = 0; i < vStaticVolumeDesc.Instancing_Arg.iInstanceCount; ++i)
+	//{
+	//	WorldMatrix = XMMatrixScaling(20.f, 20.f, 20.f);
+	//	WorldMatrix *= XMMatrixTranslation(64 + (i * 20.f), 0.f, 30);
+	//	XMStoreFloat4x4(&vStaticVolumeDesc.Instancing_Arg.pWorldMatrices[i], WorldMatrix);
 
-		vStaticVolumeDesc.arrInnerColor[i] = { i* 0.3f, 0.5f,1.f };
-		vStaticVolumeDesc.arrOuterColor[i] = { 1.f,1.f,1.f };
-	}
+	//	vStaticVolumeDesc.arrInnerColor[i] = { i* 0.3f, 0.5f,1.f };
+	//	vStaticVolumeDesc.arrOuterColor[i] = { 1.f,1.f,1.f };
+	//}
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_StaticVolume"), Level::LEVEL_STAGE, TEXT("GameObject_StaticVolume"), &vStaticVolumeDesc), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_StaticVolume"), Level::LEVEL_STAGE, TEXT("GameObject_StaticVolume"), &vStaticVolumeDesc), E_FAIL);
 
 
 	return S_OK;
