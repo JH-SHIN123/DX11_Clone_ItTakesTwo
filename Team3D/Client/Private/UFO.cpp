@@ -11,6 +11,7 @@
 #include "Boss_Missile.h"
 #include "MoonBaboon.h"
 #include "Effect_Generator.h"
+#include "BossHpBar.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -34,6 +35,8 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	CGameObject::NativeConstruct(pArg);
 
 	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
+
 
 	Add_LerpInfo_To_Model();
 
@@ -1058,6 +1061,16 @@ HRESULT CUFO::Ready_Component()
 	return S_OK;
 }
 
+HRESULT CUFO::Ready_UI()
+{
+	CGameObject* pGameObject = nullptr;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("BossHpBar"), nullptr, &pGameObject), E_FAIL);
+	m_pBossHpBar = static_cast<CBossHpBar*>(pGameObject);
+
+	return S_OK;
+}
+
 HRESULT CUFO::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -1225,10 +1238,10 @@ void CUFO::Free()
 	if (nullptr != m_pMayMissile)
 		Safe_Release(m_pMayMissile);
 
+	Safe_Release(m_pBossHpBar);
 	Safe_Release(m_pMoonBaboon);
 	Safe_Release(m_pMayTransform);
 	Safe_Release(m_pCodyTransform);
-
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);

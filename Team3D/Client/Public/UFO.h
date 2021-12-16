@@ -116,6 +116,9 @@ private:
 	_float4					m_vLaserGunPos;
 	_float4					m_vLaserDir;
 
+	/* For. UI */
+	class CBossHpBar*		m_pBossHpBar = nullptr;
+
 
 private:
 	/* For.Component */
@@ -185,6 +188,7 @@ private:
 	/* For.NativeConstruct */
 	void Add_LerpInfo_To_Model();
 	HRESULT Ready_Component();
+	HRESULT Ready_UI();
 
 private:
 	/* For.SubLaser */
