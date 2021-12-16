@@ -10,7 +10,7 @@ class CCameraActor;
 class CSubCamera final : public CCamera
 {
 	enum CamRev { Rev_Holizontal, Rev_Prependicul, Rev_End };
-	enum CamMode { Cam_Free, Cam_Auto, Cam_FreeToAuto, Cam_AutoToFree, Cam_End };
+	enum class CamMode { Cam_Free, Cam_AutoToFree, Cam_Warp_WormHole, Cam_End };
 	//O CamFreeMove P FollowPlayer
 	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_RidingSpaceShip_May,Cam_Free_End };
 private:
@@ -24,9 +24,12 @@ public:
 	virtual _int	Tick(_double dTimeDelta) override;
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 
-
+	/*Getter*/
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CCam_Helper* Get_CamHelper() { return m_pCamHelper; }
+	/*Setter*/
+	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal, matWorld); }
+
 	HRESULT Start_Film(const _tchar* pFilmTag);
 private:
 	_int	Check_Player(_double dTimeDelta);
@@ -38,6 +41,7 @@ private:
 	//For Free.
 	_int	Tick_Cam_Free(_double dTimeDelta);				//자유이동
 	_int	Tick_Cam_AutoToFree(_double dTimeDelta);		//연출 카메라 -> 자유이동시 보간
+	_int	Tick_Cam_Warp_WormHole(_double dTimeDelta);		//웜홀
 
 	
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
@@ -56,7 +60,7 @@ private:
 	_int	ReSet_Cam_FreeToAuto();		//변수 초기화용
 	_bool	OffSetPhsX(_fvector vEye, _fvector vAt, _double dTimeDelta, _vector * pOut);
 
-	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At,_fvector vUp);
+	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At,_fvector vUp = XMVectorSet(0.f,1.f,0.f,0.f));
 	_fmatrix MakeViewMatrixByUp(_fvector vEye, _fvector vAt, _fvector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f));
 	_fmatrix MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime);
 
@@ -88,6 +92,10 @@ private:
 
 	//For.Zoom
 	_float m_fCamZoomVal = 0.f;
+	//For.Potal
+	_double m_dWarpTime = 0.0;
+	_float4x4 m_matStartPortal;
+	_bool		m_bIsFading = false;
 	//For.Raycast
 	PxRaycastBuffer m_RayCastBuffer;
 	WORLDMATRIX	m_PreWorld;

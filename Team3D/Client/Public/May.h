@@ -187,6 +187,9 @@ public: /* Getter */
 	_bool		Get_IsInUFO() { return m_IsInUFO; }
 	_bool		Get_IsHooking() { return m_IsHookUFO; }
 	_vector	    Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
+	_float4x4	Get_TriggerTargetWorld() { return m_TriggerTargetWorld; }
+	_bool		Get_IsWarpNextStage() { return m_IsWarpNextStage; }
+	_bool		Get_IsWarpDone() { return m_IsWarpDone; }
 public:
 
 	void		Update_Tirgger_Pos(_vector vPos);

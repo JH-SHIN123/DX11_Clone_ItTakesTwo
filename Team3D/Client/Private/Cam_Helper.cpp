@@ -249,8 +249,8 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMinForce = -0.01;
 
 			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMaxForce = 0.01 /*/ (i + 0.25)*/;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMinForce = -0.01 /*/ (i + 0.25)*/;
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMaxForce = 0.01 / (i + 0.25);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMinForce = -0.01 / (i + 0.25);
 
 
 			pShake_Loc_Right_Warp_Potal->Add_CamShakeCycleDesc(pCycleDesc);

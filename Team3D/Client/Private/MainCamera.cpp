@@ -243,7 +243,7 @@ _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 		m_eCurCamMode = CamMode::Cam_Free;
 		return NO_EVENT;
 	}
-	CTransform* pPlayerTransform = dynamic_cast<CCody*>(m_pCody)->Get_Transform();
+	CTransform* pPlayerTransform = m_pCody->Get_Transform();
 	if (m_fChangeCamModeTime == 0.f) 
 	{
 		_matrix matWorld = m_pTransformCom->Get_WorldMatrix(); 

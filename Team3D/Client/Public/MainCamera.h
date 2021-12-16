@@ -26,9 +26,10 @@ public:
 	virtual _int	Tick(_double dTimeDelta) override;
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 
-
+	/*Getter*/
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CCam_Helper* Get_CamHelper() { return m_pCamHelper; }
+	/*Setter*/
 	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal,matWorld); }
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
