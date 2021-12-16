@@ -28,6 +28,7 @@ private:
 
 private:
 	_bool m_IsExplosion = false;
+	_bool m_IsParticleCreate = true;
 
 private:
 	_bool	m_IsScaling_End = false;

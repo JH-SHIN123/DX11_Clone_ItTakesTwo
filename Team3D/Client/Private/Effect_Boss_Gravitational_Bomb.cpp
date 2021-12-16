@@ -2,6 +2,7 @@
 #include "..\Public\Effect_Boss_Gravitational_Bomb.h"
 
 #include "Effect_Boss_Gravitational_Bomb_Particle.h"
+#include "Effect_Generator.h"
 
 CEffect_Boss_Gravitational_Bomb::CEffect_Boss_Gravitational_Bomb(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
@@ -60,28 +61,44 @@ _int CEffect_Boss_Gravitational_Bomb::Tick(_double TimeDelta)
 	if (0.f >= m_fAlphaTime)
 		m_fAlphaTime = 0.f;
 
-	/* 포물선 돌리자 ㅇㅇ */
-	_float fJumpPower = 3.5f;
-	_vector vTargetDir = XMLoadFloat3(&m_EffectDesc_Clone.vDir);
-	_float fSpeed = XMVectorGetX(XMVector3Length(vTargetDir));
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vDown = { 0.f, -1.0f, 0.f, 0.f };
 
+	/* 레이 발사!!!!!!!!!!! */
+	m_pGameInstance->Raycast(MH_PxVec3(vPos), MH_PxVec3(XMVector3Normalize(vDown)), 50.f, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
 
-	vPos += XMVector3Normalize(vTargetDir) * fSpeed * (_float)TimeDelta;
-	vPos.m128_f32[1] += fJumpPower * m_fJumpTime * 1.f - 0.5f * (GRAVITY * m_fJumpTime * m_fJumpTime);
-	m_fJumpTime += 0.02f;
+	_float fTest = m_RaycastBuffer.getAnyHit(0).distance;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-
-	m_pParticle->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
-
-	m_pGameInstance->Raycast(MH_PxVec3(vPos), MH_PxVec3(XMVector3Normalize(vTargetDir)), 50.f, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
-
-	if (m_RaycastBuffer.getNbAnyHits() > 0)
+	if (m_RaycastBuffer.getAnyHit(0).distance < 5.f)
 	{
-		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Boss_Gravitational_Bomb_Particle"), Level::LEVEL_STAGE,
-			TEXT("GameObject_2D_Boss_Gravitational_Bomb_Particle"));
+		PxVec3 fTestPos = m_RaycastBuffer.getAnyHit(0).position;
+		m_IsExplosion = true;
 
+		if (true == m_IsParticleCreate)
+		{
+			vPos.m128_f32[1] -= 4.5f;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+			m_pParticle->Set_IsActivate(false);
+			EFFECT->Add_Effect(Effect_Value::BossBomb_Pillar, m_pTransformCom->Get_WorldMatrix());
+			EFFECT->Add_Effect(Effect_Value::BossBomb_Explosion, m_pTransformCom->Get_WorldMatrix());
+			m_IsParticleCreate = false;
+		}
+	}
+	else
+	{
+		/* 포물선 돌리자 ㅇㅇ */
+		_float fJumpPower = 3.5f;
+		_vector vTargetDir = XMLoadFloat3(&m_EffectDesc_Clone.vDir);
+		_float fSpeed = XMVectorGetX(XMVector3Length(vTargetDir));
+		vTargetDir.m128_f32[1] = 0.f;
+
+		vPos += XMVector3Normalize(vTargetDir) * fSpeed * (_float)TimeDelta;
+		vPos.m128_f32[1] += fJumpPower * m_fJumpTime * 1.f - 0.5f * (GRAVITY * m_fJumpTime * m_fJumpTime);
+		m_fJumpTime += 0.02f;
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
+		m_pParticle->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 	}
 
 	Explosion_Check();

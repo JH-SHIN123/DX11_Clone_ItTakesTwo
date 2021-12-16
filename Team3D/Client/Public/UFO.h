@@ -92,6 +92,7 @@ private:
 	_bool					m_IsLaserGunRid = false;
 	_bool					m_IsActorCreate = true;
 	_bool					m_IsTriggerActive = false;
+	_bool					m_IsCodySetPos = false;
 	
 	class CBoss_Missile*	m_pCodyMissile = nullptr;
 	class CBoss_Missile*	m_pMayMissile = nullptr;
@@ -106,6 +107,7 @@ private:
 	_bool					m_IsGoingLastFloor = false;
 	_bool					m_IsEjection = false;
 	_bool					m_IsLaserDown = false;
+	_bool					m_IsGroundPoundEffectCreate = false;
 	_float4					m_vGroundPoundTargetPos;
 
 	vector<class CMoonBaboon_SubLaser*>	m_vecSubLaser;

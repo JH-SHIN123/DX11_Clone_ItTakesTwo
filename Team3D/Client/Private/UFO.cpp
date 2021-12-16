@@ -241,7 +241,7 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 		return;
 
 	_vector vDir, vTargetPos;
-	_uint iGravitationalBombMaxCount = 10;
+	_uint iGravitationalBombMaxCount = 2;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
@@ -646,10 +646,22 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 	/* UFO가 찍기 애니메이션을 진행중이다 밑에서 쓸데없이 연산하지말고 걍 나가자 ㅇㅇ */
 	if (UFO_GroundPound == m_pModelCom->Get_CurAnimIndex())
 	{
-		if (m_pModelCom->Is_AnimFinished(UFO_GroundPound))
+		if (false == m_IsGroundPoundEffectCreate && 30.f <= m_pModelCom->Get_CurrentTime(UFO_GroundPound))
+		{
+			_vector MayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+			_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
+			UFOWorld.r[3].m128_f32[1] = MayPos.m128_f32[1] + 0.5f;
+			EFFECT->Add_Effect(Effect_Value::BossGroundPound, UFOWorld);
+			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Ring, UFOWorld);
+			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Smoke, UFOWorld);
+			m_IsGroundPoundEffectCreate = true;
+		}
+
+		if (88.f <= m_pModelCom->Get_CurrentTime(UFO_GroundPound))
 		{
 			m_pModelCom->Set_Animation(UFO_MH);
 			m_IsGroundPound = false;
+			m_IsGroundPoundEffectCreate = false;
 		}
 		else
 			return;
@@ -840,10 +852,11 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 
 	}
 
-	if (CutScene_EnterUFO_FlyingSaucer == m_pModelCom->Get_CurAnimIndex())
+	if (89.f <= m_pModelCom->Get_CurrentTime(CutScene_EnterUFO_FlyingSaucer) && false == m_IsCodySetPos)
 	{
-		m_pStaticTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_pStaticActorCom->Update_StaticActor();
+		((CCody*)DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
+		((CCody*)DATABASE->GetCody())->Get_Actor()->Set_IsPlayerInUFO(true);
+		m_IsCodySetPos = true;
 	}
 
 	if (m_pModelCom->Is_AnimFinished(CutScene_EnterUFO_FlyingSaucer))
