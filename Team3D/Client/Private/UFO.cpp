@@ -1188,8 +1188,6 @@ void CUFO::Free()
 		Safe_Release(m_pMayMissile);
 
 	Safe_Release(m_pMoonBaboon);
-
-
 	Safe_Release(m_pMayTransform);
 	Safe_Release(m_pCodyTransform);
 
