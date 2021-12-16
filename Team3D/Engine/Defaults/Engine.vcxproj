@@ -195,6 +195,7 @@ call WinCmd_UpdateLib_Release.bat</Command>
     <ClInclude Include="..\public\Camera.h" />
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\public\Component_Manager.h" />
+    <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\public\DynamicActor.h" />
     <ClInclude Include="..\public\Engine_Defines.h" />
     <ClInclude Include="..\public\Engine_Function.h" />
@@ -202,6 +203,7 @@ call WinCmd_UpdateLib_Release.bat</Command>
     <ClInclude Include="..\public\Engine_Macro.h" />
     <ClInclude Include="..\public\Engine_Struct.h" />
     <ClInclude Include="..\public\Engine_Typedef.h" />
+    <ClInclude Include="..\Public\FontDraw.h" />
     <ClInclude Include="..\public\Frustum.h" />
     <ClInclude Include="..\public\GameInstance.h" />
     <ClInclude Include="..\public\GameObject.h" />
@@ -259,7 +261,9 @@ call WinCmd_UpdateLib_Release.bat</Command>
     <ClCompile Include="..\private\Camera.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\private\Component_Manager.cpp" />
+    <ClCompile Include="..\Private\DebugDraw.cpp" />
     <ClCompile Include="..\private\DynamicActor.cpp" />
+    <ClCompile Include="..\Private\FontDraw.cpp" />
     <ClCompile Include="..\private\Frustum.cpp" />
     <ClCompile Include="..\private\GameInstance.cpp" />
     <ClCompile Include="..\private\GameObject.cpp" />

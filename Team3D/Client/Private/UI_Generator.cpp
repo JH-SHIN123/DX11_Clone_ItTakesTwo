@@ -50,6 +50,12 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 
 	m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Font"));
 	m_pEngTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("EngFont"));
+
+	//m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("NanumGothic"));	  /* 나눔고딕 */
+	//m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("GMarket"));		  /* G마켓 */
+	//m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Pretendard"));		  /* Pretendard */
+	//m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("NotoSans"));			  /* NotoSans */
+
 	m_pVIBuffer_FontCom = (CVIBuffer_FontInstance*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"));
 	m_pVIBuffer_Rect = (CVIBuffer_Rect*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect"));
 	
@@ -352,7 +358,7 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 		/* 한글 */
 		if (44032 <= iNumChar) 		
 		{
-			//iNumChar -= 44032;
+ 			//iNumChar -= 44032;
 			//iX = iNumChar % 132;
 			//iY = iNumChar / 132;
 			//iTextureWidth = 4096;
@@ -360,14 +366,56 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			//iFontWidth = 31;
 			//iFontHeigth = 46;
 			//iOption = 0;
-			iNumChar -= 44032;		/* 바꾸면 안됨 */
-			iX = iNumChar % 132;	/* 가로 글자갯수 */
-			iY = iNumChar / 132;	/* 세로 글자갯수 */
-			iTextureWidth = 8192;	/* 텍스쳐 사이즈 가로 */
-			iTextureHeigth = 8192;  /* 텍스쳐 사이즈 세로 */
-			iFontWidth = 62;		/* 폰트 하나당 크기 가로 */
-			iFontHeigth = 96;		/* 폰트 하나당 크기 세로 */
+
+			/* 원본 */
+			iNumChar -= 44032;			/* 바꾸면 안됨 */
+			iX = iNumChar % 132;		/* 가로 글자갯수 */
+			iY = iNumChar / 132;		/* 세로 글자갯수 */
+			iTextureWidth = 8184;		/* 텍스쳐 사이즈 가로 */
+			iTextureHeigth = 8184;		/* 텍스쳐 사이즈 세로 */
+			iFontWidth = 62;			/* 폰트 하나당 크기 가로 */
+			iFontHeigth = 96;			/* 폰트 하나당 크기 세로 */
 			iOption = 0;
+
+			/* 나눔 고딕 */
+			//iNumChar -= 44032;	
+			//iX = iNumChar % 192;	
+			//iY = iNumChar / 192;	
+			//iTextureWidth = 9984;	
+			//iTextureHeigth = 9984;
+			//iFontWidth = 52;		
+			//iFontHeigth = 64;		
+			//iOption = 0;
+
+			/* G마켓 */
+			//iNumChar -= 44032;
+			//iX = iNumChar % 188;
+			//iY = iNumChar / 188;
+			//iTextureWidth = 9964;
+			//iTextureHeigth = 9984;
+			//iFontWidth = 53;
+			//iFontHeigth = 64;
+			//iOption = 0;
+
+			/* Pretendard */
+			//iNumChar -= 44032;	
+			//iX = iNumChar % 217;	
+			//iY = iNumChar / 217;	
+			//iTextureWidth = 9982;	
+			//iTextureHeigth = 9984;  
+			//iFontWidth = 46;		
+			//iFontHeigth = 64;		
+			//iOption = 0;
+
+			/* NotoSans */
+			//iNumChar -= 44032;
+			//iX = iNumChar % 250;
+			//iY = iNumChar / 250;
+			//iTextureWidth = 10000;
+			//iTextureHeigth = 9984;
+			//iFontWidth = 40;
+			//iFontHeigth = 64;
+			//iOption = 0;
 		}
 		/* 영어 */
 		else if (65 <= iNumChar) 		
@@ -391,11 +439,13 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 
 		_float fInterval;
 		
-
 		if(ePlayer == Player::Default)
 			fInterval = ((_float)TextLen * iFontWidth) / (tFontDesc.vScale.x * 2.f * (_float)TextLen);
-		else
+		else 
 			fInterval = ((_float)TextLen * iFontWidth) / (tFontDesc.vScale.x * (_float)TextLen);
+
+		if (32 == iNumChar)
+			fInterval = ((_float)TextLen * iFontWidth) / (tFontDesc.vScale.x * 0.5f * (_float)TextLen);
 
 		_float2 vLeftTop = { (_float)iX * iFontWidth / (_float)iTextureWidth, (_float)iY * iFontHeigth / (_float)iTextureHeigth };
 		_float2 vRightBottom = { (_float)(iX + 1) * iFontWidth / (_float)iTextureWidth, (_float)(iY + 1) * iFontHeigth / (_float)iTextureHeigth };
@@ -975,6 +1025,13 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 
 	/* 로드파일 바꿀 때 */
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Font"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_DDS, TEXT("../Bin/Resources/Texture/UI/Font/Font4_0.dds"))), E_FAIL);
+	//FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("NanumGothic"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Font/NanumGothic.png"))), E_FAIL);		/* 나눔고딕 */
+	//FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("GMarket"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Font/GMarket.png"))), E_FAIL);				/* G마켓 */
+	//FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Pretendard"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Font/Pretendard.png"))), E_FAIL);		/* Pretendard */
+	//FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("NotoSans"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Font/NotoSans.png"))), E_FAIL);				/* NotoSans */
+
+
+
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("EngFont"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_DDS, TEXT("../Bin/Resources/Texture/UI/Font/EngFont.dds"))), E_FAIL);
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("RespawnCircle"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/RespawnCircle.png"))), E_FAIL);
@@ -1093,20 +1150,20 @@ void CUI_Generator::Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger)
 HRESULT CUI_Generator::Create_Logo()
 {
 	CGameObject* pGameObject = nullptr;
-	m_vecHeaderBox.reserve(6);
+	m_vecHeaderBox.reserve(3);
 
 	SetUp_Clone(Player::Default, UI::MenuScreen, TEXT("MenuBackScreen"), Level::LEVEL_LOGO);
 
 	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_LocalPlay"), Level::LEVEL_LOGO, nullptr, &pGameObject);
 	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
-	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_OnlinePlay"), Level::LEVEL_LOGO, nullptr, &pGameObject);
-	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
-	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Option"), Level::LEVEL_LOGO, nullptr, &pGameObject);
-	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
-	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Option2"), Level::LEVEL_LOGO, nullptr, &pGameObject);
-	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
 	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Creator"), Level::LEVEL_LOGO, nullptr, &pGameObject);
 	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
+	//SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Option"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	//m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
+	//SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Option2"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	//m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
+	//SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Creator"), Level::LEVEL_LOGO, nullptr, &pGameObject);
+	//m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
 	SetUp_Clone_Ptr(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Exit"), Level::LEVEL_LOGO, nullptr, &pGameObject);
 	m_vecHeaderBox.emplace_back(static_cast<CHeaderBox*>(pGameObject));
 
@@ -1115,29 +1172,40 @@ HRESULT CUI_Generator::Create_Logo()
 
 HRESULT CUI_Generator::Create_ChapterSelect()
 {
-	_uint iOption = 1;
-	SetUp_Clone(Player::Default, UI::AlphaScreen, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
 
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ChapterLocalPlay"), Level::LEVEL_LOGO, &iOption);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Banner"), Level::LEVEL_LOGO, &iOption);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_NewGame"), Level::LEVEL_LOGO, &iOption);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Continue"), Level::LEVEL_LOGO, &iOption);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_ChapterSelect"), Level::LEVEL_LOGO, &iOption);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Minigame"), Level::LEVEL_LOGO, &iOption);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ChapterSelect_1"), Level::LEVEL_LOGO);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Banner_Back"), Level::LEVEL_LOGO, &iOption);
-	SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Cancle"), Level::LEVEL_LOGO, &iOption);
-	SetUp_Clone(Player::Default, UI::HeaderBox_1p_Ready, TEXT("HeaderBox_1p_Ready"), Level::LEVEL_LOGO, &iOption);
-	SetUp_Clone(Player::Default, UI::HeaderBox_2p_Ready, TEXT("HeaderBox_2p_Ready"), Level::LEVEL_LOGO, &iOption);
-	SetUp_Clone(Player::Default, UI::HeaderBox1P, TEXT("PC_Enter_Right"), Level::LEVEL_LOGO);
-	SetUp_Clone(Player::Default, UI::HeaderBox1P, TEXT("InputButton_Frame_Left"), Level::LEVEL_STATIC);
-	SetUp_Clone(Player::Default, UI::HeaderBox1P, TEXT("InputButton_Left_TriAngle"), Level::LEVEL_STATIC);
-	SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("InputButton_Right_TriAngle"), Level::LEVEL_STATIC);
-	SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("InputButton_Frame_Right"), Level::LEVEL_STATIC);
-	SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("PC_Enter"), Level::LEVEL_LOGO);
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_LOGO, TEXT("Layer_UI"), Level::LEVEL_LOGO, TEXT("GameObject_ChapterImage")), E_FAIL);
+	_uint iOption = 0;
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_LOGO, TEXT("Layer_UI"), Level::LEVEL_LOGO, TEXT("GameObject_Participation_Button"), &iOption), E_FAIL);
+	iOption = 1;
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_LOGO, TEXT("Layer_UI"), Level::LEVEL_LOGO, TEXT("GameObject_Participation_Button"), &iOption), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Clone(Level::LEVEL_LOGO, TEXT("Layer_UI"), Level::LEVEL_LOGO, TEXT("GameObject_Return_Button")), E_FAIL);
 
-	iOption = 2;
-	SetUp_Clone(Player::Default, UI::AlphaScreen, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+
+	//_uint iOption = 1;
+	//SetUp_Clone(Player::Default, UI::AlphaScreen, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+
+	//SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ChapterLocalPlay"), Level::LEVEL_LOGO, &iOption);
+	//SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Banner"), Level::LEVEL_LOGO, &iOption);
+	//SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_NewGame"), Level::LEVEL_LOGO, &iOption);
+	//SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Continue"), Level::LEVEL_LOGO, &iOption);
+	//SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_ChapterSelect"), Level::LEVEL_LOGO, &iOption);
+	//SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Minigame"), Level::LEVEL_LOGO, &iOption);
+	//SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("ChapterSelect_1"), Level::LEVEL_LOGO);
+	//SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Banner_Back"), Level::LEVEL_LOGO, &iOption);
+	//SetUp_Clone(Player::Default, UI::HeaderBox, TEXT("HeaderBox_Cancle"), Level::LEVEL_LOGO, &iOption);
+	//SetUp_Clone(Player::Default, UI::HeaderBox_1p_Ready, TEXT("HeaderBox_1p_Ready"), Level::LEVEL_LOGO, &iOption);
+	//SetUp_Clone(Player::Default, UI::HeaderBox_2p_Ready, TEXT("HeaderBox_2p_Ready"), Level::LEVEL_LOGO, &iOption);
+	//SetUp_Clone(Player::Default, UI::HeaderBox1P, TEXT("PC_Enter_Right"), Level::LEVEL_LOGO);
+	//SetUp_Clone(Player::Default, UI::HeaderBox1P, TEXT("InputButton_Frame_Left"), Level::LEVEL_STATIC);
+	//SetUp_Clone(Player::Default, UI::HeaderBox1P, TEXT("InputButton_Left_TriAngle"), Level::LEVEL_STATIC);
+	//SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("InputButton_Right_TriAngle"), Level::LEVEL_STATIC);
+	//SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("InputButton_Frame_Right"), Level::LEVEL_STATIC);
+	//SetUp_Clone(Player::Default, UI::HeaderBox2P, TEXT("PC_Enter"), Level::LEVEL_LOGO);
+
+	//iOption = 2;
+	//SetUp_Clone(Player::Default, UI::AlphaScreen, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
 
 	return S_OK;
 }

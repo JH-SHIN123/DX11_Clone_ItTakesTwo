@@ -23,7 +23,7 @@ private:
 	virtual HRESULT Render_ShadowDepth() override;
 
 private:
-	CDynamicActor*	m_pDynamicActorCom = nullptr;
+	CStaticActor*	m_pStaticActorCom = nullptr;
 
 	_bool			m_bGoUp = false;
 

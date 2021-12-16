@@ -40,18 +40,22 @@ HRESULT CHeaderBox::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
-	if (1 == m_iOption)
-		m_IsRender = true;
-	else
-	{
-		m_vFontPos.x = m_UIDesc.vPos.x - 150.f;
-		m_vFontPos.y = m_UIDesc.vPos.y;
-	}
-
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_LocalPlay")))
 	{
-		m_vFontPos.x = m_UIDesc.vPos.x - 100.f;
+		m_fFontPos = _float2(155.f, 380.f);
 		m_IsRender = true;
+	}
+
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Creator")))
+	{
+		m_fFontPos = _float2(132.f, 428.f);
+		m_IsRender = false;
+	}
+
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Exit")))
+	{
+		m_fFontPos = _float2(125.f, 605.f);
+		m_IsRender = false;
 	}
 
 	return S_OK;
@@ -123,17 +127,14 @@ void CHeaderBox::Set_ScaleEffect()
 
 void CHeaderBox::Set_NextSelect()
 {
-	m_vFontPos.x = m_UIDesc.vPos.x - 100.f;
 	m_IsRender = true;
 	m_iPassNum = 4;
 }
 
 void CHeaderBox::Set_PreviousSelect()
 {
-	m_vFontPos.x = m_UIDesc.vPos.x - 150.f;
-	m_iPassNum = 1;
-
 	m_IsRender = false;
+	m_iPassNum = 1;
 }
 
 void CHeaderBox::Set_LogoDisappear()
@@ -155,175 +156,72 @@ void CHeaderBox::Set_ColorChange()
 void CHeaderBox::Render_Font()
 {
 	CUI_Generator::FONTDESC		tFontDesc;
+	_float fSizeX = 13.f;
+	_float fSizeY = 13.f;
 
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_LocalPlay")))
 	{
- 		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
-		tFontDesc.vScale = { 10.f, 20.f };
-		tFontDesc.iShaderPassNum = 1;
-
-		UI_Generator->Render_Font(TEXT("로컬 플레이"), tFontDesc, Player::Default);
-	}
-	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_OnlinePlay")))
-	{
-		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
-		tFontDesc.vScale = { 10.f, 20.f };
-		tFontDesc.iShaderPassNum = 1;
-
-		UI_Generator->Render_Font(TEXT("온라인 플레이"), tFontDesc, Player::Default);
-	}
-	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Option")))
-	{
-		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
-		tFontDesc.vScale = { 10.f, 20.f };
-		tFontDesc.iShaderPassNum = 1;
-
-		UI_Generator->Render_Font(TEXT("옵션"), tFontDesc, Player::Default);
-	}
-	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Option2")))
-	{
-		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
-		tFontDesc.vScale = { 10.f, 20.f };
-		tFontDesc.iShaderPassNum = 1;
-
-		UI_Generator->Render_Font(TEXT("접근성 옵션"), tFontDesc, Player::Default);
+		if(false == m_IsRender)
+			m_pFont->Render_Font(TEXT("플레이"), _float2(632, 505.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.34f);
+		else
+			m_pFont->Render_Font(TEXT("플레이"), _float2(632, 505.f), XMVectorSet(0.25f, 0.f, 0.f, 1.f), 0.37f);
 	}
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Creator")))
 	{
-		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
-		tFontDesc.vScale = { 10.f, 20.f };
-		tFontDesc.iShaderPassNum = 1;
-
-		UI_Generator->Render_Font(TEXT("제작진"), tFontDesc, Player::Default);
+		if (false == m_IsRender)
+			m_pFont->Render_Font(TEXT("제작진"), _float2(632, 558.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.34f);
+		else
+			m_pFont->Render_Font(TEXT("제작진"), _float2(632, 558.f), XMVectorSet(0.25f, 0.f, 0.f, 1.f), 0.37f);
 	}
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Exit")))
 	{
-		tFontDesc.vPosition = { m_vFontPos.x , m_vFontPos.y };
-		tFontDesc.vScale = { 10.f, 20.f };
-		tFontDesc.iShaderPassNum = 1;
-
-		UI_Generator->Render_Font(TEXT("종료"), tFontDesc, Player::Default);
-	}
-	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("ChapterLocalPlay")))
-	{
-		tFontDesc.vPosition = { m_UIDesc.vPos.x - 50.f, m_UIDesc.vPos.y + 10.f };
-		tFontDesc.vScale = { 10.f, 20.f };
-		tFontDesc.iShaderPassNum = 1;
-
-		UI_Generator->Render_Font(TEXT("로컬 플레이"), tFontDesc, Player::Default);
-	}
-	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_NewGame")))
-	{
-		_float3 vColor = { 1.f, 0.83f, 0.27f };
-
-		tFontDesc.vPosition = { m_UIDesc.vPos.x - 30.f, m_UIDesc.vPos.y };
-		tFontDesc.vScale = { 10.f, 20.f };
-		tFontDesc.iShaderPassNum = 5;
-		tFontDesc.vColor = vColor;
-
-		UI_Generator->Render_Font(TEXT("새 게임"), tFontDesc, Player::Default);
-	}
-	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Continue")))
-	{
-		tFontDesc.vPosition = { m_UIDesc.vPos.x - 20.f, m_UIDesc.vPos.y };
-		tFontDesc.vScale = { 10.f, 20.f };
-		tFontDesc.iShaderPassNum = 1;
-
-		UI_Generator->Render_Font(TEXT("계 속"), tFontDesc, Player::Default);
-	}
-	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_ChapterSelect")))
-	{
-		tFontDesc.vPosition = { m_UIDesc.vPos.x - 40.f, m_UIDesc.vPos.y };
-		tFontDesc.vScale = { 10.f, 20.f };
-		tFontDesc.iShaderPassNum = 1;
-
-		UI_Generator->Render_Font(TEXT("챕터 선택"), tFontDesc, Player::Default);
-	}
-	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Minigame")))
-	{
-		tFontDesc.vPosition = { m_UIDesc.vPos.x - 40.f, m_UIDesc.vPos.y };
-		tFontDesc.vScale = { 10.f, 20.f };
-		tFontDesc.iShaderPassNum = 1;
-
-		UI_Generator->Render_Font(TEXT("미니 게임"), tFontDesc, Player::Default);
-	}
-	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_Cancle")))
-	{
-		tFontDesc.vPosition = { m_UIDesc.vPos.x - 15.f, m_UIDesc.vPos.y };
-		tFontDesc.vScale = { 10.f, 20.f };
-		tFontDesc.iShaderPassNum = 1;
-
-		UI_Generator->Render_Font(TEXT("취소"), tFontDesc, Player::Default);
-	}
-	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_1p_Ready")))
-	{
-		tFontDesc.vPosition = { m_UIDesc.vPos.x - 10.f, m_UIDesc.vPos.y + 40.f };
-		tFontDesc.vScale = { 10.f, 20.f };
-		tFontDesc.iShaderPassNum = 1;
-
-		if(false == m_IsReady)
-			UI_Generator->Render_Font(TEXT("참여"), tFontDesc, Player::Default);
+		if (false == m_IsRender)
+			m_pFont->Render_Font(TEXT("종료"), _float2(633, 609.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.34f);
 		else
-		{
-			tFontDesc.vPosition = { m_UIDesc.vPos.x - 30.f, m_UIDesc.vPos.y + 40.f };
-			UI_Generator->Render_Font(TEXT("불꽃남자"), tFontDesc, Player::Default);
-		}
-	}
-	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("HeaderBox_2p_Ready")))
-	{
-		tFontDesc.vPosition = { m_UIDesc.vPos.x - 10.f, m_UIDesc.vPos.y + 40.f };
-		tFontDesc.vScale = { 10.f, 20.f };
-		tFontDesc.iShaderPassNum = 1;
-
-		if (false == m_IsReady)
-			UI_Generator->Render_Font(TEXT("참여"), tFontDesc, Player::Default);
-		else
-		{
-			tFontDesc.vPosition = { m_UIDesc.vPos.x - 40.f, m_UIDesc.vPos.y + 40.f };
-			UI_Generator->Render_Font(TEXT("든든한국밥"), tFontDesc, Player::Default);
-		}
+			m_pFont->Render_Font(TEXT("종료"), _float2(633, 609.f), XMVectorSet(0.25f, 0.f, 0.f, 1.f), 0.37f);
 	}
 }
 
 HRESULT CHeaderBox::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_FontDraw"), TEXT("Com_Font"), (CComponent**)&m_pFont), E_FAIL);
 
 	return S_OK;
 }
 
 void CHeaderBox::Mouse_Picking()
 {
-	POINT	pt = {};
-	GetCursorPos(&pt);
-	ScreenToClient(g_hWnd, &pt);
+	//POINT	pt = {};
+	//GetCursorPos(&pt);
+	//ScreenToClient(g_hWnd, &pt);
 
-	D3D11_VIEWPORT Viewport;
-	Viewport = m_pGameInstance->Get_ViewportInfo(0);
+	//D3D11_VIEWPORT Viewport;
+	//Viewport = m_pGameInstance->Get_ViewportInfo(0);
 
-	pt.x = (_long)(pt.x - ((_float)Viewport.Width / 2.f));
-	pt.y = (_long)((_float)Viewport.Height / 2.f - pt.y);
+	//pt.x = (_long)(pt.x - ((_float)Viewport.Width / 2.f));
+	//pt.y = (_long)((_float)Viewport.Height / 2.f - pt.y);
 
-	// 렉트 버그 있음;;
-	RECT rc = { (_long)(m_UIDesc.vPos.x - (m_UIDesc.vScale.x / 2.f)), (_long)(m_UIDesc.vPos.y - (m_UIDesc.vScale.y / 2.f) + (m_UIDesc.vScale.y / 2.f)),
-		(_long)(m_UIDesc.vPos.x + (m_UIDesc.vScale.x / 2.f)), (_long)(m_UIDesc.vPos.y + (m_UIDesc.vScale.y / 2.f) + (m_UIDesc.vScale.y / 2.f)) };
+	//// 렉트 버그 있음;;
+	//RECT rc = { (_long)(m_UIDesc.vPos.x - (m_UIDesc.vScale.x / 2.f)), (_long)(m_UIDesc.vPos.y - (m_UIDesc.vScale.y / 2.f) + (m_UIDesc.vScale.y / 2.f)),
+	//	(_long)(m_UIDesc.vPos.x + (m_UIDesc.vScale.x / 2.f)), (_long)(m_UIDesc.vPos.y + (m_UIDesc.vScale.y / 2.f) + (m_UIDesc.vScale.y / 2.f)) };
 
-	if (PtInRect(&rc, pt))
-	{
-		m_vFontPos.x = m_UIDesc.vPos.x - 100.f;
-		m_vFontPos.y = m_UIDesc.vPos.y;
-		m_IsRender = true;
+	//if (PtInRect(&rc, pt))
+	//{
+	//	m_vFontPos.x = m_UIDesc.vPos.x - 100.f;
+	//	m_vFontPos.y = m_UIDesc.vPos.y;
+	//	m_IsRender = true;
 
-		m_IsMousePicking = true;
-	}
-	else
-	{
-		m_vFontPos.x = m_UIDesc.vPos.x - 150.f;
-		m_vFontPos.y = m_UIDesc.vPos.y;
-		m_IsRender = false;
+	//	m_IsMousePicking = true;
+	//}
+	//else
+	//{
+	//	m_vFontPos.x = m_UIDesc.vPos.x - 150.f;
+	//	m_vFontPos.y = m_UIDesc.vPos.y;
+	//	m_IsRender = false;
 
-		m_IsMousePicking = false;
-	}
+	//	m_IsMousePicking = false;
+	//}
 }
 
 void CHeaderBox::Set_Option()
@@ -384,6 +282,7 @@ CGameObject * CHeaderBox::Clone_GameObject(void * pArg)
 
 void CHeaderBox::Free()
 {
+	Safe_Release(m_pFont);
 	Safe_Release(m_pVIBuffer_RectCom);
 
 	CUIObject::Free();

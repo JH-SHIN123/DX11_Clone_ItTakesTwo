@@ -28,6 +28,7 @@
 #include "LaserTennis_Manager.h"
 /*For.WarpGate*/
 #include "WarpGate.h"
+#include "Script.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -470,6 +471,7 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
+
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -727,6 +729,20 @@ void CCody::KeyInput(_double dTimeDelta)
 	}
 
 #pragma endregion
+
+	if (m_pGameInstance->Key_Down(DIK_M))
+	{
+		((CScript*)(DATABASE->Get_Script()))->Render_Script(m_iIndex, CScript::HALF, 1.f);
+		++m_iIndex;
+	}
+	if (m_pGameInstance->Key_Down(DIK_N))
+	{
+		((CScript*)(DATABASE->Get_Script()))->Render_Script(m_iIndex, CScript::FULL, 1.f);
+	}
+	if (m_pGameInstance->Key_Down(DIK_B))
+	{
+		((CScript*)(DATABASE->Get_Script()))->Render_Script_DoubleLine(m_iIndex, m_iIndex + 1, 1.f);
+	}
 }
 
 _uint CCody::Get_CurState() const

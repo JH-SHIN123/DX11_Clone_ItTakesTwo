@@ -57,7 +57,6 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Env_Particles(TEXT("Layer_Env_Particle")), E_FAIL);
 	/* Hye */
 	FAILED_CHECK_RETURN(Ready_Layer_Planet(TEXT("Layer_Planet")), E_FAIL);
-
 	/* Taek */
 	FAILED_CHECK_RETURN(Ready_Layer_ToyBoxButton(TEXT("Layer_ToyBoxButton")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboonCore(TEXT("Layer_MoonBaboonCore")), E_FAIL);
@@ -90,6 +89,8 @@ HRESULT CLevel_Stage::NativeConstruct()
 #else
 	FAILED_CHECK_RETURN(Ready_Test(), E_FAIL);
 #endif
+	/* Script */
+	FAILED_CHECK_RETURN(Ready_Layer_Script(TEXT("Layer_Script")), E_FAIL);
 
 	return S_OK;
 }
@@ -192,16 +193,7 @@ HRESULT CLevel_Stage::Ready_Test()
 
 	/* Hye */
 #ifdef __TEST_HYE
-	CDynamic_Env::ARG_DESC tArg;
-	_matrix World = XMMatrixIdentity();
-	lstrcpy(tArg.szModelTag, TEXT("Component_Model_Saucer_Interior_Pedal_01"));
-	XMStoreFloat4x4(&tArg.WorldMatrix, World);
-	tArg.iMaterialIndex = 0;
-	tArg.iOption = 0;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_Pedal"), &tArg), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_Moon"), &tArg), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonUFO")), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SpaceShip")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Font", Level::LEVEL_STAGE, TEXT("GameObject_FontTest")), E_FAIL);
 #endif // __TEST_HYE
 
 	/* Teak */
@@ -305,6 +297,12 @@ HRESULT CLevel_Stage::Ready_Layer_Planet(const _tchar * pLayerTag)
 	tPlanetArg.vOffset = _float3(0.f, 40.f, 0.f);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), &tPlanetArg), E_FAIL);
+
+	return S_OK;
+}
+HRESULT CLevel_Stage::Ready_Layer_Script(const _tchar * pLayerTag)
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Script")), E_FAIL);
 
 	return S_OK;
 }

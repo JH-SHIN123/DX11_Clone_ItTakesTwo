@@ -74,10 +74,9 @@ HRESULT CPC_MouseButton::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(Set_UIVariables_Perspective()))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(2);
+	//m_pVIBuffer_RectCom->Render(2);
 
-	Render_Font();
-
+	//Render_Font();
 
 	return S_OK;
 }
@@ -140,14 +139,17 @@ void CPC_MouseButton::Render_Font()
 	tFontDesc.vScale = { 15.f, 20.f };
 
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("PC_Mouse_Reduction")))
-		UI_Generator->Render_Font(TEXT("축소"), tFontDesc, m_ePlayerID);
+		m_pFont->Render_Font(TEXT("축소"), _float2(270.f, 690.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.26f);
+		//UI_Generator->Render_Font(TEXT("축소"), tFontDesc, m_ePlayerID);
 	else
-		UI_Generator->Render_Font(TEXT("확대"), tFontDesc, m_ePlayerID);
+		m_pFont->Render_Font(TEXT("확대"), _float2(370.f, 690.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.24f);
+		//UI_Generator->Render_Font(TEXT("확대"), tFontDesc, m_ePlayerID);
 }
 
 HRESULT CPC_MouseButton::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_FontDraw"), TEXT("Com_Font"), (CComponent**)&m_pFont), E_FAIL);
 
 	return S_OK;
 }
@@ -180,6 +182,7 @@ CGameObject * CPC_MouseButton::Clone_GameObject(void * pArg)
 
 void CPC_MouseButton::Free()
 {
+	Safe_Release(m_pFont);
 	Safe_Release(m_pVIBuffer_RectCom);
 
 	CUIObject::Free();

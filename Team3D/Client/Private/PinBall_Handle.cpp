@@ -107,7 +107,6 @@ HRESULT CPinBall_Handle::Render_ShadowDepth()
 
 void CPinBall_Handle::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	// May 병합할 때 여기 주의
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY && false == m_bPlayerMove)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALLHANDLE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));

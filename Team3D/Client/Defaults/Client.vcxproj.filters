@@ -228,10 +228,10 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon">
       <UniqueIdentifier>{5b697a68-0358-4102-b02d-6330df092a73}</UniqueIdentifier>
     </Filter>
-      <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis">
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis">
       <UniqueIdentifier>{2f8d2754-6701-41e2-9489-11780094fcd4}</UniqueIdentifier>
     </Filter>
-      <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager">
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager">
       <UniqueIdentifier>{692624aa-05b2-43a0-9e2a-62f2c591e27f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis">
@@ -762,6 +762,21 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06.UI\09.Screen\02.ChapterImage">
+      <UniqueIdentifier>{9a37d4f1-552e-46de-b368-65951fd87a52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\09.Screen\02.ChapterImage\Participation_Button">
+      <UniqueIdentifier>{c1f5d52f-4dba-4558-9a3d-857dc6a8f91a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\09.Screen\02.ChapterImage\Return_Button">
+      <UniqueIdentifier>{8fafca8f-fe66-42d7-9acf-c0e3f0106b0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\14.Script">
+      <UniqueIdentifier>{f4fc0254-9a19-499f-9795-b9c5d6e67827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\14.Script\ScriptBackGround">
+      <UniqueIdentifier>{854ef9b9-c8f6-45f8-bda9-1c67f74bf580}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -950,10 +965,10 @@
     <ClInclude Include="..\Public\LaserTennis_Manager.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
     </ClInclude>
-        <ClInclude Include="..\Public\Laser_LaserTennis.h">
+    <ClInclude Include="..\Public\Laser_LaserTennis.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis</Filter>
     </ClInclude>
-      <ClInclude Include="..\Public\LaserActivation.h">
+    <ClInclude Include="..\Public\LaserActivation.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserActivation</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LaserButton.h">
@@ -962,13 +977,13 @@
     <ClInclude Include="..\Public\LaserButtonLarge.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge</Filter>
     </ClInclude>
-      <ClInclude Include="..\Public\LaserButtonLarge_Gate.h">
+    <ClInclude Include="..\Public\LaserButtonLarge_Gate.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge_Gate</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LaserPowerCoord.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserPowerCoord</Filter>
     </ClInclude>
-      <ClInclude Include="..\Public\LaserTrigger.h">
+    <ClInclude Include="..\Public\LaserTrigger.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Timer_LaserTennis.h">
@@ -1316,9 +1331,6 @@
     <ClInclude Include="..\Public\HeaderBox.h">
       <Filter>02.GameObject\06.UI\10.Menu\01.HeaderBox</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ChapterSelect.h">
-      <Filter>02.GameObject\06.UI\11.ChapterSelect</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\ContextIcon.h">
       <Filter>02.GameObject\06.UI\12.ContextIcon</Filter>
     </ClInclude>
@@ -1414,6 +1426,24 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ChapterSelect.h">
+      <Filter>02.GameObject\06.UI\11.ChapterSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ChapterImage.h">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Participation_Button.h">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage\Participation_Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Return_Button.h">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage\Return_Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Script.h">
+      <Filter>02.GameObject\06.UI\14.Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ScriptBackGround.h">
+      <Filter>02.GameObject\06.UI\14.Script\ScriptBackGround</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1597,13 +1627,13 @@
     <ClCompile Include="..\Private\Moon.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\LaserTennis_Manager.cpp">
+    <ClCompile Include="..\Private\LaserTennis_Manager.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\Laser_LaserTennis.cpp">
+    <ClCompile Include="..\Private\Laser_LaserTennis.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Laser_LaserTennis</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\LaserActivation.cpp">
+    <ClCompile Include="..\Private\LaserActivation.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserActivation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LaserButton.cpp">
@@ -1612,13 +1642,13 @@
     <ClCompile Include="..\Private\LaserButtonLarge.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\LaserButtonLarge_Gate.cpp">
+    <ClCompile Include="..\Private\LaserButtonLarge_Gate.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserButtonLarge_Gate</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LaserPowerCoord.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserPowerCoord</Filter>
     </ClCompile>
-      <ClCompile Include="..\Private\LaserTrigger.cpp">
+    <ClCompile Include="..\Private\LaserTrigger.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\LaserTrigger</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Timer_LaserTennis.cpp">
@@ -1966,9 +1996,6 @@
     <ClCompile Include="..\Private\HeaderBox.cpp">
       <Filter>02.GameObject\06.UI\10.Menu\01.HeaderBox</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ChapterSelect.cpp">
-      <Filter>02.GameObject\06.UI\11.ChapterSelect</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\ContextIcon.cpp">
       <Filter>02.GameObject\06.UI\12.ContextIcon</Filter>
     </ClCompile>
@@ -2031,6 +2058,24 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ChapterSelect.cpp">
+      <Filter>02.GameObject\06.UI\11.ChapterSelect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ChapterImage.cpp">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Participation_Button.cpp">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage\Participation_Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Return_Button.cpp">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage\Return_Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Script.cpp">
+      <Filter>02.GameObject\06.UI\14.Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ScriptBackGround.cpp">
+      <Filter>02.GameObject\06.UI\14.Script\ScriptBackGround</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
