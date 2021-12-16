@@ -13,10 +13,12 @@ BEGIN(Client)
 class CDynamicVolume final : public CGameObject
 {
 public:
+	enum TYPE { TYPE_SPHERE, TYPE_CUBE, TYPE_CYLINDER, TYPE_CONE, TYPE_END};
+
 	typedef struct tagVolumeDesc
 	{
 		_float4x4	WorldMatrix				= MH_XMFloat4x4Identity();
-		_tchar		szModelTag[MAX_PATH]	= L"";
+		TYPE		eVolumeType				= TYPE_END;
 		_float		fCullRadius				= 50.f;
 		_float3		vInnerColor				= { 1.f,1.f,1.f };
 		_float3		vOuterColor				= { 1.f,1.f,1.f };

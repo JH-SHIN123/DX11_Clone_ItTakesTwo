@@ -27,7 +27,24 @@ HRESULT CDynamicVolume::NativeConstruct(void* pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_tVolumeDesc.szModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	
+	const _tchar* pModelTag = nullptr;
+	switch (m_tVolumeDesc.eVolumeType)
+	{
+	case TYPE_CUBE:
+		pModelTag = TEXT("Component_Model_GeoCube");
+		break;
+	case TYPE_SPHERE:
+		pModelTag = TEXT("Component_Model_GeoSphere");
+		break;
+	case TYPE_CONE:
+		pModelTag = TEXT("Component_Model_GeoCone");
+		break;
+	case TYPE_CYLINDER:
+		pModelTag = TEXT("Component_Model_GeoCylinder");
+		break;
+	}
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, pModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_tVolumeDesc.WorldMatrix));
 		

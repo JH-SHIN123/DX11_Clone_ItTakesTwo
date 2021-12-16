@@ -882,12 +882,6 @@
     <Filter Include="04.Generator\02.UI_Generator">
       <UniqueIdentifier>{bd3f9c54-ec94-480a-ac35-1cd4435104d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04.Generator\03.Light_Generator">
-      <UniqueIdentifier>{a8b9071a-f602-4803-adc7-1a1462e62875}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Generator\03.Light_Generator\EffectLight">
-      <UniqueIdentifier>{4a1e57e5-47a2-4feb-baa9-cd33fabbf6a4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05.DataStorage">
       <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
     </Filter>
@@ -923,12 +917,6 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\05.Taek\04.Volume\DynamicVolume">
       <UniqueIdentifier>{18f4fd03-8034-446d-a026-ee234a955aeb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Generator\03.Light_Generator\VolumeLight">
-      <UniqueIdentifier>{7cec4308-28cd-4496-ab9f-c6768898d7f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Generator\03.Light_Generator\BasicLight">
-      <UniqueIdentifier>{22f91519-352f-4804-992a-0becb377fb85}</UniqueIdentifier>
     </Filter>
     <Filter Include="06.Light">
       <UniqueIdentifier>{598b7446-2298-4221-b482-64f69bb2bc24}</UniqueIdentifier>
@@ -1682,12 +1670,6 @@
     <ClInclude Include="..\Public\UI_Generator.h">
       <Filter>04.Generator\02.UI_Generator</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Light_Generator.h">
-      <Filter>04.Generator\03.Light_Generator</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\EffectLight.h">
-      <Filter>04.Generator\03.Light_Generator\EffectLight</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\DataStorage.h">
       <Filter>05.DataStorage</Filter>
     </ClInclude>
@@ -1729,9 +1711,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\StaticVolume.h">
       <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\StaticVolume</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\BasicLight.h">
-      <Filter>04.Generator\03.Light_Generator\BasicLight</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VolumeLight.h">
       <Filter>06.Light\VolumeLight</Filter>
@@ -2479,12 +2458,6 @@
     <ClCompile Include="..\Private\UI_Generator.cpp">
       <Filter>04.Generator\02.UI_Generator</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Light_Generator.cpp">
-      <Filter>04.Generator\03.Light_Generator</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\EffectLight.cpp">
-      <Filter>04.Generator\03.Light_Generator\EffectLight</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\DataStorage.cpp">
       <Filter>05.DataStorage</Filter>
     </ClCompile>
@@ -2502,9 +2475,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\StaticVolume.cpp">
       <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\StaticVolume</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\BasicLight.cpp">
-      <Filter>04.Generator\03.Light_Generator\BasicLight</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VolumeLight.cpp">
       <Filter>06.Light\VolumeLight</Filter>

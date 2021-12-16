@@ -13,10 +13,12 @@ BEGIN(Client)
 class CStaticVolume final : public CGameObject
 {
 public:
+	enum TYPE { TYPE_SPHERE, TYPE_CUBE, TYPE_CYLINDER, TYPE_CONE, TYPE_END };
+
 	typedef struct tagVolumeDesc
 	{
 		CModel_Instance::ARG_DESC	Instancing_Arg;
-		_tchar						szModelTag[MAX_PATH] = L"";
+		TYPE						eVolumeType = TYPE_END;
 		_float3*					arrInnerColor = nullptr; // 인스턴스 개수만큼
 		_float3*					arrOuterColor = nullptr;
 	}VOLUME_DESC;

@@ -193,9 +193,6 @@
     <ClInclude Include="..\Public\AlphaScreen.h" />
     <ClInclude Include="..\Public\Arrowkeys_Fill.h" />
     <ClInclude Include="..\Public\Arrowkeys_Outline.h" />
-    <ClInclude Include="..\Public\BasicLight.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\Public\BatteryBox.h" />
     <ClInclude Include="..\Public\BigButton.h" />
     <ClInclude Include="..\Public\BigButtonFrame.h" />
@@ -231,9 +228,6 @@
     <ClInclude Include="..\Public\DummyWall.h" />
     <ClInclude Include="..\Public\DummyWallCameraTrigger.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />
-    <ClInclude Include="..\Public\EffectLight.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\public\Effect_Boss_Core.h" />
     <ClInclude Include="..\public\Effect_Boss_Core_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Core_Hit.h" />
@@ -330,9 +324,6 @@
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\Public\Level_Stage.h" />
-    <ClInclude Include="..\Public\Light_Generator.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\Public\Loading.h" />
     <ClInclude Include="..\Public\MainApp.h" />
     <ClInclude Include="..\Public\MainCam.h" />
@@ -462,9 +453,6 @@
     <ClCompile Include="..\Private\AlphaScreen.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Fill.cpp" />
     <ClCompile Include="..\Private\Arrowkeys_Outline.cpp" />
-    <ClCompile Include="..\Private\BasicLight.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\Private\BatteryBox.cpp" />
     <ClCompile Include="..\Private\BigButton.cpp" />
     <ClCompile Include="..\Private\BigButtonFrame.cpp" />
@@ -495,9 +483,6 @@
     <ClCompile Include="..\Private\DummyWall.cpp" />
     <ClCompile Include="..\Private\DummyWallCameraTrigger.cpp" />
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
-    <ClCompile Include="..\Private\EffectLight.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\private\Effect_Boss_Core.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core_Hit.cpp" />
@@ -593,9 +578,6 @@
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Level_Stage.cpp" />
-    <ClCompile Include="..\Private\Light_Generator.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\Private\Loading.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\MainCam.cpp" />

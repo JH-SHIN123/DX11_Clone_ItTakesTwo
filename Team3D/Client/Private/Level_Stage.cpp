@@ -17,7 +17,6 @@
 #include "HangingPlanet.h"
 /* Taek */
 #include "MoonBaboonCore.h"
-#include "EffectLight.h"
 #include "VolumeLight.h"
 /* Yoon */
 #include "RotatedRobotParts.h"
