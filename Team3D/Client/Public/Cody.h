@@ -215,6 +215,7 @@ public:
 	CPlayerActor*	 Get_Actor() { return m_pActorCom; }
 	PLAYER_SIZE		 Get_Player_Size() { return m_eCurPlayerSize; }
 	_bool			 Get_IsInGravityPipe() { return m_IsInGravityPipe; }
+	_bool			 Get_IsInRocket() { return m_IsBossMissile_Control; }
 	_bool			 Get_PushingBattery() { return m_IsPushingBattery; }
 	_uint			 Get_CurState() const;
 	_vector			 Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
@@ -225,15 +226,13 @@ public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
 	void			 Set_ControlJoystick(_bool IsCheck);
+	void 			 Set_RocketOffSetPos(_fvector vRocketOffSetPos) { m_vRocketOffSetPos = vRocketOffSetPos; }
+	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 
-
-public:
-	void Set_BossMissile_Attack(); // CBoss_Missile
 
 	// Tick 에서 호출될 함수들
 private:
 	virtual void KeyInput(_double dTimeDelta);
-	void Attack_BossMissile_After(_double dTimeDelta);
 
 private: // 여기에 넣어놓아야 알거 같아서 여기에..		
 	void Enforce_IdleState(); /* 강제로 Idle 상태로 바꿈 */
@@ -461,21 +460,16 @@ private:
 	// fire Door Dead
 	_bool m_IsTouchFireDoor = false;
 
-	// Boss Missile Hit
-	_bool m_IsBossMissile_Hit = false;
-
-	// Boss Missile Control
-	_bool	m_IsBossMissile_Control = false;
-	_bool	m_IsBossMissile_Rodeo_Ready = false;
-	_bool	m_IsBossMissile_Rodeo = false;
-	_bool	m_IsBoss_Missile_Explosion = false;
-	_float	m_fLandTime = 0.f;
-	_float	m_fBossMissile_HeroLanding_Time = 0.f;
-	_bool	m_IsBossMissile_RotateYawRoll_After = false;
-
 	// touch WallLaserTrap
 	_bool m_IsWallLaserTrap_Touch = false;
 	_bool m_IsWallLaserTrap_Effect = false;
+
+	/* For.Boss Missile */
+	_bool	m_IsBossMissile_Control = false;
+	_bool	m_IsMoveToRocket = false;
+	_vector m_vRocketOffSetPos = {};
+	_matrix m_matRocketMatrix = {};
+
 
 	// YYY
 	void Hit_StarBuddy(const _double dTimeDelta);
@@ -489,12 +483,11 @@ private:
 	void Wall_Jump(const _double dTimeDelta);
 	void Pipe_WallJump(const _double dTimeDelta);
 	void ElectricWallJump(const _double dTimeDelta);
+	void BossMissile_Control(const _double dTimeDelta);
 
 	// 정호
 	void Warp_Wormhole(const _double dTimeDelta);
 	void Touch_FireDoor(const _double dTimeDelta);
-	void Boss_Missile_Hit(const _double dTimeDelta);
-	void Boss_Missile_Control(const _double dTimeDelta);
 	void WallLaserTrap(const _double dTimeDelta);
 
 	/* Hye */

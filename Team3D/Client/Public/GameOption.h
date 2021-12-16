@@ -38,7 +38,7 @@
 * 우주선 내부 맵만 제거
 * 프레임 살리기용
 */
-//#define __SPACESHIP_OFF
+#define __SPACESHIP_OFF
 
 /************************************************************************/
 
@@ -56,7 +56,7 @@
 //#define __TEST_JUNG
 //#define __TEST_HYE
 //#define __TEST_TAEK
-//#define __TEST_YOON
+#define __TEST_YOON
 //#define __TEST_JIN
 //#define __TEST_JUN
 
