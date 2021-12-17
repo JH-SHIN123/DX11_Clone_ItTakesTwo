@@ -35,6 +35,9 @@
 #include "UFORadarSet.h"
 #include "UFORadarLever.h"
 
+/* For. UI */
+#include "HpBar.h"
+
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CCharacter(pDevice, pDeviceContext)
@@ -63,9 +66,8 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
- 	UI_Create(Cody, PC_Mouse_Reduction);
- 	UI_Create(Cody, PC_Mouse_Enlargement);
- 	UI_Create(Cody, PlayerMarker);
+	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
+
 
 	return S_OK;
 }
@@ -117,6 +119,20 @@ HRESULT CCody::Ready_Component()
 
 	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_CodyCircle_Gauge")), E_FAIL);
 
+
+	return S_OK;
+}
+
+HRESULT CCody::Ready_UI()
+{
+	UI_Create(Cody, PC_Mouse_Reduction);
+	UI_Create(Cody, PC_Mouse_Enlargement);
+	UI_Create(Cody, PlayerMarker);
+
+	CGameObject* pGameObject = nullptr;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodyHpBar"), nullptr, &pGameObject), E_FAIL);
+	m_pHpBar = static_cast<CHpBar*>(pGameObject);
+	m_pHpBar->Set_PlayerID(Player::Cody);
 
 	return S_OK;
 }
@@ -389,8 +405,9 @@ void CCody::Free()
 	m_vecTargetRailNodes.clear();
 
 	Safe_Release(m_pGauge_Circle);
-
+	Safe_Release(m_pHpBar);
 	//Safe_Release(m_pCamera);
+
 	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
@@ -2955,6 +2972,14 @@ void CCody::Set_ControlJoystick(_bool IsCheck)
 void CCody::Set_AnimationRotate(_float fAngle)
 {
 	m_pTransformCom->RotateYaw_Angle(fAngle);
+}
+
+void CCody::Set_ActiveHpBar(_bool IsCheck)
+{
+	if (nullptr == m_pHpBar)
+		return;
+
+	m_pHpBar->Set_Active(IsCheck);
 }
 
 void CCody::WallLaserTrap(const _double dTimeDelta)

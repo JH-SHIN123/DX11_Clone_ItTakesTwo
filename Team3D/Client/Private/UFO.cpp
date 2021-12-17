@@ -82,6 +82,7 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_IsCutScene = false;
 		DATABASE->Close_BossDoor();
 		m_pMoonBaboon->Set_Animation(Moon_Ufo_Programming, Moon_Ufo_MH);
+		((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
 	}
 	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 	{

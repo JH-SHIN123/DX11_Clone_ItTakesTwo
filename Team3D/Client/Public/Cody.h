@@ -227,6 +227,7 @@ public:
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
 	void			 Set_ControlJoystick(_bool IsCheck);
 	void			 Set_AnimationRotate(_float fAngle);
+	void			 Set_ActiveHpBar(_bool IsCheck);
 
 
 public:
@@ -242,10 +243,14 @@ private: // 여기에 넣어놓아야 알거 같아서 여기에..
 
 private:
 	HRESULT Ready_Component();
+	HRESULT Ready_UI();
 	void Add_LerpInfo_To_Model();
 
 private: // Effects
 	class CEffect_Cody_Size* m_pEffect_Size = nullptr;
+
+private: /* UI */
+	class CHpBar*	m_pHpBar = nullptr;
 
 	// Components
 private:
@@ -326,9 +331,7 @@ private:
 	_bool m_IsSizeChanging = false;
 	_float m_fSizeDelayTime = 0.f;
 	_bool m_bChangeSizeEffectOnce = false;
-
 	
-
 	// 컷씬이라면
 	_bool m_IsCutScene = false;
 

@@ -61,7 +61,7 @@ HRESULT CHpBarFrame::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(0);
+	m_pVIBuffer_RectCom->Render(21);
 
 	return S_OK;
 }

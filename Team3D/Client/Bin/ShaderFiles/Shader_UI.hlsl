@@ -30,6 +30,7 @@ float	g_fRatio;
 float	g_fDecreaseRateRatio;
 float2  g_UV;
 float2  g_vScreenMaskUV;
+float   g_fHpBarHp;
  
 sampler	DiffuseSampler = sampler_state
 {
@@ -547,14 +548,13 @@ PS_OUT PS_BossHPBar(PS_IN In)
 	if (0.f == Out.vColor.r && 0.f == Out.vColor.g && 0.f == Out.vColor.b)
 		discard;
 
-
 	if (Out.vColor.g >= 0.2f)
 	{
 		Out.vColor.r = 0.96f;
 		Out.vColor.gb = 0.f;
 	}
-	else
-		discard;
+	else /* 나중에 수정 */
+		discard; 
 
 	if (g_fRatio <= In.vTexUV.x)
 		Out.vColor.rgb = 1.f;
@@ -568,9 +568,39 @@ PS_OUT PS_BossHPBar(PS_IN In)
 	if (g_fDecreaseRateRatio <= In.vTexUV.x && Out.vColor.a != 0.f)
 		Out.vColor.a = 0.f;
 
+	return Out;
+}
+
+PS_OUT PS_PlayerHpBarFrame(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.r >= 0.5f)
+		Out.vColor.a = 0.5f;
 
 	return Out;
 }
+
+
+PS_OUT PS_PlayerHpBar(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	vector SubTexture = g_DiffuseSubTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	float gBlueRatio = g_fHpBarHp / 120.f / 2.f;
+
+	if (gBlueRatio >= Out.vColor.b)
+	{
+		Out.vColor.g = 1.f;
+	}
+
+	return Out;
+}
+
 
 ////////////////////////////////////////////////////////////
 
@@ -806,4 +836,28 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_BossHPBar();
 	}
+
+	// 21
+	pass PlayerHpBarFrame
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PlayerHpBarFrame();
+	}
+
+	// 22
+	pass PlayerHpBar
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PlayerHpBar();
+	}
+
+
 };
