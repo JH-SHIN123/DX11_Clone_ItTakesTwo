@@ -5,6 +5,8 @@
 
 BEGIN(Engine)
 
+#define SOUND CSound_Manager::GetInstance()
+
 enum ENGINE_DLL CHANNEL_TYPE
 {
 	/* Se */
