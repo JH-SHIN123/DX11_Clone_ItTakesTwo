@@ -740,19 +740,6 @@ void CCody::KeyInput(_double dTimeDelta)
 
 #pragma endregion
 
-	if (m_pGameInstance->Key_Down(DIK_M))
-	{
-		((CScript*)(DATABASE->Get_Script()))->Render_Script(m_iIndex, CScript::HALF, 1.f);
-		++m_iIndex;
-	}
-	if (m_pGameInstance->Key_Down(DIK_N))
-	{
-		((CScript*)(DATABASE->Get_Script()))->Render_Script(m_iIndex, CScript::FULL, 1.f);
-	}
-	if (m_pGameInstance->Key_Down(DIK_B))
-	{
-		((CScript*)(DATABASE->Get_Script()))->Render_Script_DoubleLine(m_iIndex, m_iIndex + 1, 1.f);
-	}
 }
 
 _uint CCody::Get_CurState() const
