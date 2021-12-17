@@ -20,9 +20,11 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 	virtual void SetUp_WorldMatrix(_fmatrix WorldMatrix) override;
 
-
 public:
 	HRESULT Ready_Instance();
+	
+public: // Setter
+	void Set_AlphaTime(_double dResetTime = 0.0) { m_dAlphaTime = dResetTime; }
 
 private:
 	_float4 Get_TexUV(_int iTexture_U, _int iTexture_V, _bool IsRand);
@@ -32,6 +34,7 @@ private:
 	void Set_Shader_SmokeData();
 
 private:
+	_double m_dAlphaTime = 0.0;
 	_double m_dAngle = 0.0;
 	_float	m_fColorRamp_U = 0.f;
 	CTextures* m_pTexturesCom_ColorRamp = nullptr;
@@ -55,7 +58,8 @@ private:
 	const _double m_fSmoke_PosResetTime				= 3.f;
 	const _double m_dTexUV_TimeMax					= 0.02;
 
-
+	class CEffect_Env_Particle*			m_pParticle			= nullptr;
+	class CEffect_Env_Particle_Follow*	m_pParticleFollow	= nullptr;
 
 public:
 	static CEffect_RespawnTunnel_Portal* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

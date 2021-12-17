@@ -66,6 +66,8 @@ private:
 	_double		m_dClearEffect_Time = 0.0;
 	_int		m_iClearEffect_Count = 0;
 
+	_double		m_dActivateTime	 = 0.0;
+
 private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom			= nullptr;
@@ -78,14 +80,15 @@ private:
 private:
 	class CEffect_RespawnTunnel*		m_pRespawnTunnel		= nullptr;
 	class CEffect_RespawnTunnel_Portal* m_pRespawnTunnel_Portal = nullptr;
-	class CWarpGate_Star*				m_pWarpGate_Star_1 = nullptr;
-	class CWarpGate_Star*				m_pWarpGate_Star_2 = nullptr;
-	class CWarpGate_Star*				m_pWarpGate_Star_3 = nullptr;
-	class CWarpGate_Star*				m_pWarpGate_Star_4 = nullptr;
-	class CWarpGate_Star*				m_pWarpGate_Star_5 = nullptr;
+	class CWarpGate_Star*				m_pWarpGate_Star_1		= nullptr;
+	class CWarpGate_Star*				m_pWarpGate_Star_2		= nullptr;
+	class CWarpGate_Star*				m_pWarpGate_Star_3		= nullptr;
+	class CWarpGate_Star*				m_pWarpGate_Star_4		= nullptr;
+	class CWarpGate_Star*				m_pWarpGate_Star_5		= nullptr;
 
 	const _float4	m_vWormhole_Cody	= {};
 	const _float4	m_vWormhole_May		= {};
+
 
 public:
 	static CWarpGate* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -229,15 +229,14 @@ HRESULT CLevel_Stage::Ready_Test()
 	Arg_Desc.vTextureUV = { 1, 1 };
 	Arg_Desc.IsGrouping = true;
 	Arg_Desc.iGrouping_Count = 25;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field_Star"), &Arg_Desc), E_FAIL);
-
-	Arg_Desc.vDefaultSize = { 0.5f, 0.5f };
-	Arg_Desc.IsGrouping = false;
-	Arg_Desc.vTextureUV = { 2, 2 };
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field_Dust"), &Arg_Desc), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field_Star"), &Arg_Desc), E_FAIL);
+	//
+	//Arg_Desc.vDefaultSize = { 0.5f, 0.5f };
+	//Arg_Desc.IsGrouping = false;
+	//Arg_Desc.vTextureUV = { 2, 2 };
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field_Dust"), &Arg_Desc), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layersadasda", Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::MAIN_UMBRELLA, 1.0)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_WaprGate_Star", Level::LEVEL_STAGE, TEXT("GameObject_WarpGate_Star")), E_FAIL);
 
 
 #endif

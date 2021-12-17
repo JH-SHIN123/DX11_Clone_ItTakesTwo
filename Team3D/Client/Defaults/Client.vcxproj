@@ -260,6 +260,7 @@
     <ClInclude Include="..\public\Effect_Env_Particle_Field_Dust.h" />
     <ClInclude Include="..\public\Effect_Env_Particle_Field.h" />
     <ClInclude Include="..\public\Effect_Env_Particle_Field_Star.h" />
+    <ClInclude Include="..\public\Effect_Env_Particle_Follow.h" />
     <ClInclude Include="..\Public\Effect_FireDoor.h" />
     <ClInclude Include="..\Public\Effect_Generator.h" />
     <ClInclude Include="..\Public\Effect_GravityPipe.h" />
@@ -525,6 +526,7 @@
     <ClCompile Include="..\private\Effect_Env_Particle_Field_Dust.cpp" />
     <ClCompile Include="..\private\Effect_Env_Particle_Field.cpp" />
     <ClCompile Include="..\private\Effect_Env_Particle_Field_Star.cpp" />
+    <ClCompile Include="..\private\Effect_Env_Particle_Follow.cpp" />
     <ClCompile Include="..\Private\Effect_FireDoor.cpp" />
     <ClCompile Include="..\Private\Effect_Generator.cpp" />
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp" />

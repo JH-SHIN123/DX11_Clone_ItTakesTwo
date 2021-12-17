@@ -28,8 +28,12 @@ HRESULT CEffect_Env_Particle::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_PointBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
+	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName, TEXT("Com_Textures"), (CComponent**)&m_pTexturesCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.TextureName_Second, TEXT("Com_Textures_Smoke2"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
+
+	if (Portal == m_eParticle_Type)
+		m_iTextureColor_Index = 1;
 
 	return S_OK;
 }
@@ -57,8 +61,9 @@ HRESULT CEffect_Env_Particle::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fAlpha, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(0));
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(m_iTextureColor_Index));
 	m_pPointInstanceCom_STT->Render(2, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
+
 	return S_OK;
 }
 
@@ -75,9 +80,12 @@ void CEffect_Env_Particle::Set_Particle_Radius(_float3 vRadiusXYZ)
 	m_vParticleRadius.z = vRadiusXYZ.z;
 }
 
-void CEffect_Env_Particle::Set_ParentMatrix(_fmatrix ParentMatrix)
+void CEffect_Env_Particle::Set_ParentMatrix(_fmatrix ParentMatrix, _fvector vOffSetPos)
 {
-	m_pTransformCom->Set_WorldMatrix(ParentMatrix);
+	_matrix WorldMatrix = ParentMatrix;
+	WorldMatrix.r[3] = XMVector3Transform(vOffSetPos, ParentMatrix);
+
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 }
 
 void CEffect_Env_Particle::Set_ControlTime(_double dControlTime)
@@ -115,7 +123,7 @@ void CEffect_Env_Particle::Check_State(_double TimeDelta)
 void CEffect_Env_Particle::State_Start(_double TimeDelta)
 {
 	_float fTimeDelta = (_float)TimeDelta;
-	_fmatrix ParentMatrix = m_pTransformCom->Get_WorldMatrix(); // NULL
+	_fmatrix ParentMatrix = m_pTransformCom->Get_WorldMatrix();
 
  	if (1.0 <= m_dControl_Time)
  		m_dControl_Time = 1.0;
@@ -192,6 +200,7 @@ _float4 CEffect_Env_Particle::Get_Rand_Pos()
 		vRandPos = Set_RandPos_Umbrella();
 		break;
 	case CEffect_Env_Particle::Portal:
+		vRandPos = Set_RandPos_Portal();
 		break;
 	default:
 		break;
@@ -220,8 +229,14 @@ _float2 CEffect_Env_Particle::Get_Rand_Size()
 
 	if (Umbrella == m_eParticle_Type)
 	{
-		vRandSize.x += 0.02f;
-		vRandSize.y += 0.02f;
+		vRandSize.x += 0.03f;
+		vRandSize.y += 0.03f;
+	}
+
+	if (Portal == m_eParticle_Type)
+	{
+		vRandSize.x += 0.04f;
+		vRandSize.y += 0.04f;
 	}
 
 	return vRandSize;
@@ -306,6 +321,18 @@ _vector CEffect_Env_Particle::Set_RandPos_Umbrella()
 	vRandPos += vDir;
 
 	return vRandPos;
+}
+
+_vector CEffect_Env_Particle::Set_RandPos_Portal()
+{
+	_vector vDir = XMLoadFloat3(&Get_Dir_Rand(_int3(100, 100, 1)));
+
+	_float fRatio = _float(rand() % (_int)m_vParticleRadius.x + 1) / m_vParticleRadius.x;
+	vDir *= fRatio * m_vParticleRadius.x;
+
+	vDir.m128_f32[3] = 1.f;
+
+	return vDir;
 }
 
 void CEffect_Env_Particle::Instance_Size(_float TimeDelta, _int iIndex)

@@ -32,6 +32,8 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 
 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObject_2D_Env_Particle", nullptr, (CGameObject**)&m_pParticle);
 	m_pParticle->Set_InstanceCount(5000);
+	m_pParticle->Set_ParentMatrix(m_pTransformCom->Get_WorldMatrix());
+	m_pParticle->Set_Particle_Radius(_float3(5.f, 40.f, 5.f));
 
 	_float4 vPos;
 	memcpy(&vPos, &m_EffectDesc_Clone.WorldMatrix.m[3][0], sizeof(_float4));
@@ -42,8 +44,6 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_Scale(XMVectorSet(2.85f, 2.85f, 2.85f, 1.f));
 	if (m_EffectDesc_Clone.iPlayerValue == 1)
 		m_pTransformCom->Set_Scale(XMVectorSet(2.85f, 1.8f, 2.85f, 1.f));
-
-
 
 	_matrix PhysxWorldMatrix = XMMatrixIdentity();
 	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -73,9 +73,6 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 	if (3.f <= m_fTime)
 		m_fTime = 0.f;
 
-	m_pParticle->Set_ParentMatrix(m_pTransformCom->Get_WorldMatrix());
-
-	m_pParticle->Set_Particle_Radius(_float3(5.f, 40.f, 5.f));
 
 	if (true == m_IsActivate)
 	{

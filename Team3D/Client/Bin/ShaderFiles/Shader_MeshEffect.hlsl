@@ -280,7 +280,7 @@ PS_OUT	PS_MAIN_RESPAWN_PORTAL(PS_IN_DOUBLE_UV In)
 	float4 vColor = g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV.xy);
 
 	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * vColor.rgb * 10.f;
-	Out.vDiffuse.a = Out.vDiffuse.b * 0.9f;
+	Out.vDiffuse.a = Out.vDiffuse.b * 0.75f * g_fAlpha;
 
 	return Out;
 }
