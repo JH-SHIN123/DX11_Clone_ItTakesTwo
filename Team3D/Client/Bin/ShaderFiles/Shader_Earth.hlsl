@@ -6,6 +6,8 @@
 
 texture2D	g_DiffuseTexture;
 texture2D	g_DarkTexture;
+texture2D	g_RoughnessTexture;
+
 float		g_fTimeUV;
 
 struct VS_IN
@@ -25,8 +27,7 @@ struct VS_OUT
 	float3 vTangent		: TANGENT;
 	float3 vBiNormal	: BINORMAL;
 	float2 vTexUV		: TEXCOORD0;
-	float4 vShade		: COLOR0;
-	float4 vSpecular	: COLOR1;
+	float4 vSpecular	: COLOR0;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -41,19 +42,12 @@ VS_OUT VS_MAIN(VS_IN In)
 	In.vTexUV.x		-= g_fTimeUV;
 	Out.vTexUV		= In.vTexUV;
 
+	vector	vWorldPosition	= mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	vector	vWorldNormal	= normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
+	vector	vLightDirection	= normalize(vector(-1.f, 0.f, 1.f, 0.f));
+	vector	vReflect		= reflect(vLightDirection, normalize(vWorldNormal));
 
-
-	//vector	vWorldPosition = mul(vector(In.vPosition, 1.f), WorldMatrix);
-	//vector	vWorldNormal = normalize(mul(vector(In.vNormal, 0.f), WorldMatrix));
-	//vector	vLightDirection = vector(0.f, 1.f, 0.f, 0.f);
-
-	//Out.vShade = max(dot(normalize(vLightDirection * -1.f, vWorldNormal), 0.f);
-	//Out.vShade.a = 1.f;
-
-	//vector	vReflect	= reflect(vLightDirection, normalize(vWorldNormal));
-	//vector	vLook		= vWorldPosition - vCameraPosition;
-
-	//Out.vSpecular = pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 30.f);
+	Out.vSpecular = pow(max(dot(normalize(vWorldPosition) * -1.f, normalize(vReflect)), 0.f), 0.8f);
 
 	return Out;
 }
@@ -67,8 +61,7 @@ struct GS_IN
 	float3 vTangent		: TANGENT;
 	float3 vBiNormal	: BINORMAL;
 	float2 vTexUV		: TEXCOORD0;
-	float4 vShade		: COLOR0;
-	float4 vSpecular	: COLOR1;
+	float4 vSpecular	: COLOR0;
 };
 
 struct GS_OUT
@@ -78,8 +71,7 @@ struct GS_OUT
 	float3 vTangent			: TANGENT;
 	float3 vBiNormal		: BINORMAL;
 	float2 vTexUV			: TEXCOORD0;
-	float4 vShade			: COLOR0;
-	float4 vSpecular		: COLOR1;
+	float4 vSpecular		: COLOR0;
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 };
 
@@ -100,6 +92,7 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 			Out.vTangent = In[i].vTangent;
 			Out.vBiNormal = In[i].vBiNormal;
 			Out.vTexUV = In[i].vTexUV;
+			Out.vSpecular = In[i].vSpecular;
 			Out.iViewportIndex = 1;
 
 			TriStream.Append(Out);
@@ -119,6 +112,7 @@ void GS_MAIN(triangle GS_IN In[3], inout TriangleStream<GS_OUT> TriStream)
 			Out.vTangent = In[j].vTangent;
 			Out.vBiNormal = In[j].vBiNormal;
 			Out.vTexUV = In[j].vTexUV;
+			Out.vSpecular = In[j].vSpecular;
 			Out.iViewportIndex = 2;
 
 			TriStream.Append(Out);
@@ -136,8 +130,7 @@ struct PS_IN
 	float3 vTangent			: TANGENT;
 	float3 vBiNormal		: BINORMAL;
 	float2 vTexUV			: TEXCOORD0;
-	float4 vShade			: COLOR0;
-	float4 vSpecular		: COLOR1;
+	float4 vSpecular		: COLOR0;
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 };
 
@@ -150,8 +143,9 @@ PS_OUT	PS_GROUND(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector vDayDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-	vector vNightDiffuse = g_DarkTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	vector vDayDiffuse		= g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	vector vNightDiffuse	= g_DarkTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	vector vRoughness		= g_RoughnessTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
 	float fBoundary = In.vTexUV.x + g_fTimeUV;
 
@@ -161,11 +155,13 @@ PS_OUT	PS_GROUND(PS_IN In)
 	{
 		fBoundary = (fBoundary - 0.4875f) * 40.f;
 		Out.vColor = lerp(vDayDiffuse, vNightDiffuse, fBoundary);
+		Out.vColor = Out.vColor + (vector(1.f, 1.f, 1.f, 1.f) - vRoughness) * In.vSpecular;
 	}
 	else
+	{
 		Out.vColor = vDayDiffuse;
-
-	//Out.vColor = (vLightDiffuse * vMtrlDiffuse) * (In.vShade + (vLightAmbient * vMtrlAmbient)) + (vLightSpecular * vMtrlSpecular) * In.vSpecular;
+		Out.vColor = Out.vColor + (vector(1.f, 1.f, 1.f, 1.f) - vRoughness) * In.vSpecular;
+	}
 
 	return Out;
 }
@@ -185,7 +181,10 @@ PS_OUT	PS_ATMOSPHERE(PS_IN In)
 	{
 		fBoundary = (fBoundary - 0.4875f) * 40.f;
 		Out.vColor.a *= 1.f - fBoundary;
+		Out.vColor = Out.vColor + vector(1.f, 1.f, 1.f, 1.f) * In.vSpecular;
 	}
+	else
+		Out.vColor = Out.vColor + vector(1.f, 1.f, 1.f, 1.f) * In.vSpecular;
 
 	return Out;
 }
