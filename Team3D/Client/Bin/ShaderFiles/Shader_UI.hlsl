@@ -26,6 +26,8 @@ float	g_Angle;
 float	g_fHeartTime;
 float	g_fScreenAlpha;
 float	g_fDistance;
+float	g_fRatio;
+float	g_fDecreaseRateRatio;
 float2  g_UV;
 float2  g_vScreenMaskUV;
  
@@ -288,23 +290,6 @@ PS_OUT PS_RespawnCircle(PS_IN In)
 	else
 		Out.vColor.a = 0.8f;
 
-	//if (Out.vColor.r <= 0.05f && Out.vColor.g <= 0.05f && Out.vColor.b <= 0.05f)
-	//	discard;
-
-	//if (Out.vColor.r == 0.f && Out.vColor.g == 0.f && Out.vColor.b == 0.f && Out.vColor.a == 0.f)
-	//	discard;
-
-	//Out.vColor.g = 0.f;
-
-	//if (Out.vColor.r >= 0.7f)
-	//	Out.vColor.a = 0.f;
-
-	//Out.vColor.rgb = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.f;
-	//Out.vColor *= vector(10.0f, 1.9f, 5.0f, 1.f);
-
-	//if (Out.vColor.b != 0.f)
-	//	Out.vColor.a = 0.f;
-
 	return Out;
 }
 
@@ -540,7 +525,7 @@ PS_OUT PS_BossHPBarFrame(PS_IN In)
 	if (0.f == Out.vColor.r && 0.f == Out.vColor.g && 0.f == Out.vColor.b)
 		discard;
 
-	if (Out.vColor.g == 1.f)
+	if (Out.vColor.g >= 0.2f)
 	{
 		Out.vColor.rgb = 0.f;
 		Out.vColor.a = 0.5f;
@@ -559,22 +544,32 @@ PS_OUT PS_BossHPBar(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	//if (Out.vColor.r == 1.f && Out.vColor.g == 1.f && Out.vColor.b == 1.f)
-	//{
-	//	Out.vColor.r = 1.f;
-	//	Out.vColor.gb = 0.f;
-	//}
-	//else
-	//	discard;
+	if (0.f == Out.vColor.r && 0.f == Out.vColor.g && 0.f == Out.vColor.b)
+		discard;
 
-	if (Out.vColor.g == 1.f)
+
+	if (Out.vColor.g >= 0.2f)
 	{
-		Out.vColor.r = 1.f;
-		Out.vColor.gb = 0.f;
+		Out.vColor.r = 0.9f;
+		Out.vColor.g = 0.14f;
+		Out.vColor.b = 0.015f;
 	}
 	else
 		discard;
-	
+
+	if (g_fRatio <= In.vTexUV.x)
+		Out.vColor.rgb = 1.f;
+
+	if (0.664f <= In.vTexUV.x && 0.668f >= In.vTexUV.x)
+		Out.vColor.rgb = 0.f;
+
+	if (0.331f <= In.vTexUV.x && 0.335f >= In.vTexUV.x)
+		Out.vColor.rgb = 0.f;
+
+	if (g_fDecreaseRateRatio <= In.vTexUV.x && Out.vColor.a != 0.f)
+		Out.vColor.a = 0.f;
+
+
 	return Out;
 }
 

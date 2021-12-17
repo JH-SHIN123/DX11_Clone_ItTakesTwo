@@ -317,6 +317,8 @@ void CUFO::Core_Destroyed()
 	{
 		m_ePattern = UFO_PATTERN::INTERACTION;
 
+		m_pBossHpBar->Set_Ratio(0.11f);
+
 		/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
 		if (3 != m_iPhaseChangeCount)
 		{

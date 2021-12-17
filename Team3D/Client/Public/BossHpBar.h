@@ -20,6 +20,14 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+public:
+	void Set_Ratio(_float fRatio);
+
+ private:
+	_float							m_fRatio = 1.f;
+	_float							m_fDecreaseRateRatio = 1.f;
+	_float							m_fWaitingTime = 0.f;
+
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 

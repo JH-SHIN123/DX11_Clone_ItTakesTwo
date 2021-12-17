@@ -52,7 +52,20 @@ _int CBossHpBar::Tick(_double TimeDelta)
 _int CBossHpBar::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
-	
+
+	if (m_fRatio < m_fDecreaseRateRatio)
+	{
+		m_fWaitingTime += (_float)TimeDelta;
+
+		if(1.f <= m_fWaitingTime)
+			m_fDecreaseRateRatio -= (_float)TimeDelta / 2.f;
+
+		if(m_fRatio >= m_fDecreaseRateRatio)
+			m_fDecreaseRateRatio = m_fRatio;
+	}
+	else
+		m_fWaitingTime = 0.f;
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
@@ -63,9 +76,18 @@ HRESULT CBossHpBar::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
+	m_pVIBuffer_RectCom->Set_Variable("g_fRatio", &m_fRatio, sizeof(_float));
+	m_pVIBuffer_RectCom->Set_Variable("g_fDecreaseRateRatio", &m_fDecreaseRateRatio, sizeof(_float));
+
 	m_pVIBuffer_RectCom->Render(20);
 
 	return S_OK;
+}
+
+void CBossHpBar::Set_Ratio(_float fRatio)
+{
+	m_fDecreaseRateRatio = m_fRatio;
+	m_fRatio -= fRatio;
 }
 
 HRESULT CBossHpBar::Ready_Component()
