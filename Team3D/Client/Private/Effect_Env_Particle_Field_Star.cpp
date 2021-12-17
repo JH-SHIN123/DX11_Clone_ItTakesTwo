@@ -41,7 +41,7 @@ HRESULT CEffect_Env_Particle_Field_Star::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fAlpha, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(9));
-	m_pPointInstanceCom_STT->Render(13, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
+	m_pPointInstanceCom_STT->Render(15, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
 }
@@ -103,6 +103,10 @@ void CEffect_Env_Particle_Field_Star::State_Start(_double TimeDelta)
 		m_pInstanceBuffer_STT[iIndex].vSize.y -= fTimeDelta * m_Particle_Desc.fReSizing_Power;
 		if (0.f >= m_pInstanceBuffer_STT[iIndex].vSize.x)
 			m_pInstanceBuffer_STT[iIndex].vSize = { 0.f, 0.f };
+
+		m_pInstanceBuffer_STT[iIndex].vRight.x += (_float)TimeDelta * m_pInstanceBuffer_STT[iIndex].vRight.y;
+		if (360.f < m_pInstanceBuffer_STT[iIndex].vRight.x)
+			m_pInstanceBuffer_STT[iIndex].vRight.x -= 360.f;
 	}
 }
 

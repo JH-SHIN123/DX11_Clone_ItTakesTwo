@@ -62,9 +62,10 @@
 #include "Effect_Player_Rail_Smoke.h"
 #include "Effect_Hit_Planet_Smoke.h"
 #include "Effect_Hit_Planet_Particle.h"
-#include "Effect_Hit_BossLaser.h"							/*미구현*/
-#include "Effect_Hit_BossLaser_Particle.h"					/*미구현*/
-#include "Effect_Hit_BossLaser_Particle_Star.h"				/*미구현*/
+#include "Effect_Hit_BossLaser.h"
+#include "Effect_Hit_BossLaser_Particle.h"
+#include "Effect_Hit_BossLaser_Particle_Star.h"
+#include "Effect_WarpGate_Clear.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -259,6 +260,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::Hit_BossLaser_Particle_Star:
 		lstrcpy(szPrototype, L"GameObejct_2D_Hit_Boss_Laser_Particle_Star");
+		break;
+	case Effect_Value::WarpGate_Clear:
+		lstrcpy(szPrototype, L"GameObejct_2D_WarpGate_Clear");
 		break;
 	default:
 		break;
@@ -508,6 +512,9 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObejct_2D_Hit_Boss_Laser_Particle_Star"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObejct_2D_Hit_Boss_Laser_Particle_Star", CEffect_Hit_BossLaser_Particle_Star::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObejct_2D_WarpGate_Clear"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObejct_2D_WarpGate_Clear", CEffect_WarpGate_Clear::Create(pDevice, pDeviceContext, pData));
 
 #pragma  endregion
 

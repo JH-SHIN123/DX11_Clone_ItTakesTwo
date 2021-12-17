@@ -20,11 +20,11 @@ public:
 	typedef struct tagWarpGate_Desc
 	{
 		STAGE_VALUE eStageValue;
+		_double		dClearEffect_Term;
 
-		tagWarpGate_Desc(STAGE_VALUE eValue)
-			: eStageValue(eValue){}
-		
-
+		tagWarpGate_Desc() {}
+		tagWarpGate_Desc(STAGE_VALUE eValue, _double dClearEffect_Term)
+			: eStageValue(eValue), dClearEffect_Term(dClearEffect_Term){}
 	}WARPGATE_DESC;
 
 private:
@@ -53,12 +53,18 @@ private:
 	HRESULT Ready_Component();
 	void	Check_Stage_Value();
 	HRESULT	Check_WarpGate_Star();
+	void	Check_ClearEffect(_double TimeDelta);
+	void	Check_StageClear();
 
 private:
-	STAGE_VALUE m_eStageValue					= STAGE_END;
+	WARPGATE_DESC m_WarpGate_Desc;
 	_float4		m_vWarpPos						= { 0.f, 0.f, 0.f, 1.f };
 	_double		m_dActivate_WarpGate_Star_Time	= 0.f;
-	_int		m_iWarpGate_Star_Count = 5;
+	_int		m_iWarpGate_Star_Count			= 5;
+
+	_bool		m_bClearEffect		= false;
+	_double		m_dClearEffect_Time = 0.0;
+	_int		m_iClearEffect_Count = 0;
 
 private:
 	/* For.Component */
@@ -72,7 +78,11 @@ private:
 private:
 	class CEffect_RespawnTunnel*		m_pRespawnTunnel		= nullptr;
 	class CEffect_RespawnTunnel_Portal* m_pRespawnTunnel_Portal = nullptr;
-	class CWarpGate_Star**				m_pWarpGate_Star		= nullptr;
+	class CWarpGate_Star*				m_pWarpGate_Star_1 = nullptr;
+	class CWarpGate_Star*				m_pWarpGate_Star_2 = nullptr;
+	class CWarpGate_Star*				m_pWarpGate_Star_3 = nullptr;
+	class CWarpGate_Star*				m_pWarpGate_Star_4 = nullptr;
+	class CWarpGate_Star*				m_pWarpGate_Star_5 = nullptr;
 
 	const _float4	m_vWormhole_Cody	= {};
 	const _float4	m_vWormhole_May		= {};

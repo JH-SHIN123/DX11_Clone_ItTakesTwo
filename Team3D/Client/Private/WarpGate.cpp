@@ -6,6 +6,7 @@
 #include "May.h"
 #include "Effect_RespawnTunnel.h"
 #include "Effect_RespawnTunnel_Portal.h"
+#include "DataStorage.h"
 
 CWarpGate::CWarpGate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -25,34 +26,36 @@ HRESULT CWarpGate::NativeConstruct_Prototype()
 HRESULT CWarpGate::NativeConstruct(void * pArg)
 {
 	if (nullptr != pArg)
-		memcpy(&m_eStageValue, pArg, sizeof(STAGE_VALUE));
+		memcpy(&m_WarpGate_Desc, pArg, sizeof(WARPGATE_DESC));
 
 	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
 	FAILED_CHECK_RETURN(Check_WarpGate_Star(), E_FAIL);
-	m_pRespawnTunnel->Set_Stage_Viewer(m_eStageValue);
+	m_pRespawnTunnel->Set_Stage_Viewer(m_WarpGate_Desc.eStageValue);
+	
+	/*GARA*/m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 0.f, 31.f, 1.f));
 
-
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	m_pWarpGate_Star_1->Set_WorldMatrix(WorldMatrix, XMVectorSet(5.9f, 7.8f, 1.f, 1.f));
+	m_pWarpGate_Star_2->Set_WorldMatrix(WorldMatrix, XMVectorSet(5.f, 10.f, 1.f, 1.f));
+	m_pWarpGate_Star_3->Set_WorldMatrix(WorldMatrix, XMVectorSet(3.3f, 11.5f, 1.f, 1.f));
+	m_pWarpGate_Star_4->Set_WorldMatrix(WorldMatrix, XMVectorSet(-0.8f, 12.8f, 1.f, 1.f));
+	m_pWarpGate_Star_5->Set_WorldMatrix(WorldMatrix, XMVectorSet(-3.2f, 13.2f, 1.f, 1.f));
+	m_pWarpGate_Star_1->Set_Scale(XMVectorSet(0.8f,  0.8f,  0.8f,  0.f));
+	m_pWarpGate_Star_2->Set_Scale(XMVectorSet(1.1f,  1.1f,  1.1f,  0.f));
+	m_pWarpGate_Star_3->Set_Scale(XMVectorSet(0.8f,  0.8f,  0.8f,  0.f));
+	m_pWarpGate_Star_4->Set_Scale(XMVectorSet(0.8f,  0.8f,  0.8f,  0.f));
+	m_pWarpGate_Star_5->Set_Scale(XMVectorSet(1.17f, 1.17f, 1.17f, 0.f));
 
 	return S_OK;
 }
 
 _int CWarpGate::Tick(_double TimeDelta)
 {
-	if (m_eStageValue == CWarpGate::STAGE_UMBRELLA)
+	if (m_WarpGate_Desc.eStageValue == CWarpGate::STAGE_UMBRELLA)
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-617.f, 755.f, 196.f, 1.f));//???
 
-#ifdef __TEST_JUNG
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 0.f, 31.f, 1.f));
-	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-
-	m_pWarpGate_Star[0]->Set_WorldMatrix(WorldMatrix, XMVectorSet(5.f, 10.f, 1.f, 1.f));
-	m_pWarpGate_Star[1]->Set_WorldMatrix(WorldMatrix, XMVectorSet(0.f, 2.f, 0.1f, 1.f));
-	m_pWarpGate_Star[2]->Set_WorldMatrix(WorldMatrix, XMVectorSet(0.f, 2.f, 0.1f, 1.f));
-	m_pWarpGate_Star[3]->Set_WorldMatrix(WorldMatrix, XMVectorSet(0.f, 2.f, 0.1f, 1.f));
-	m_pWarpGate_Star[4]->Set_WorldMatrix(WorldMatrix, XMVectorSet(0.f, 2.f, 0.1f, 1.f));
-
-#endif // __TEST_JUNG
-
+	Check_StageClear();
+	Check_ClearEffect(TimeDelta);
 
 	return _int();
 }
@@ -136,7 +139,7 @@ void CWarpGate::Check_Stage_Value()
 	_vector vPos = XMVectorZero();
 	_float	fDegree = 0.f;
 
-	switch (m_eStageValue)
+	switch (m_WarpGate_Desc.eStageValue)
 	{
 	case Client::CWarpGate::MAIN_UMBRELLA:
 		m_vWarpPos = {};
@@ -170,14 +173,76 @@ void CWarpGate::Check_Stage_Value()
 
 HRESULT CWarpGate::Check_WarpGate_Star()
 {
-	m_pWarpGate_Star = new class CWarpGate_Star*[m_iWarpGate_Star_Count];
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_WarpGate_Star"), Level::LEVEL_STAGE, TEXT("GameObject_WarpGate_Star"), nullptr, (CGameObject**)&m_pWarpGate_Star_1), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_WarpGate_Star"), Level::LEVEL_STAGE, TEXT("GameObject_WarpGate_Star"), nullptr, (CGameObject**)&m_pWarpGate_Star_2), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_WarpGate_Star"), Level::LEVEL_STAGE, TEXT("GameObject_WarpGate_Star"), nullptr, (CGameObject**)&m_pWarpGate_Star_3), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_WarpGate_Star"), Level::LEVEL_STAGE, TEXT("GameObject_WarpGate_Star"), nullptr, (CGameObject**)&m_pWarpGate_Star_4), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_WarpGate_Star"), Level::LEVEL_STAGE, TEXT("GameObject_WarpGate_Star"), nullptr, (CGameObject**)&m_pWarpGate_Star_5), E_FAIL);
 
-	for (_int iIndex = 0; iIndex < m_iWarpGate_Star_Count; ++iIndex)
+	return S_OK;
+}
+
+void CWarpGate::Check_ClearEffect(_double TimeDelta)
+{
+	if (false == m_bClearEffect)
+		return;
+
+	_double dTerm = 0.5 * (_double)m_iClearEffect_Count;
+	m_dClearEffect_Time += TimeDelta;
+
+	switch (m_iClearEffect_Count)
 	{
-		CGameObject* pObject = nullptr;
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_WarpGate_Star"), Level::LEVEL_STAGE, TEXT("GameObject_WarpGate_Star"), nullptr, (CGameObject**)&pObject), E_FAIL);
-		m_pWarpGate_Star[iIndex] = (CWarpGate_Star*)pObject;
+	case 0:
+		if (m_WarpGate_Desc.dClearEffect_Term < m_dClearEffect_Time)
+		{
+			m_pWarpGate_Star_1->Set_Activate(true);
+			++m_iClearEffect_Count;
+		}
+		break;
+	case 1:
+		if (m_WarpGate_Desc.dClearEffect_Term + dTerm < m_dClearEffect_Time)
+		{
+			m_pWarpGate_Star_2->Set_Activate(true);
+			++m_iClearEffect_Count;
+		}
+		break;
+	case 2:
+		if (m_WarpGate_Desc.dClearEffect_Term + dTerm < m_dClearEffect_Time)
+		{
+			m_pWarpGate_Star_3->Set_Activate(true);
+			++m_iClearEffect_Count;
+		}
+		break;
+	case 3:
+		if (m_WarpGate_Desc.dClearEffect_Term + dTerm < m_dClearEffect_Time)
+		{
+			m_pWarpGate_Star_4->Set_Activate(true);
+			++m_iClearEffect_Count;
+		}
+		break;
+	case 4:
+		if (m_WarpGate_Desc.dClearEffect_Term + dTerm < m_dClearEffect_Time)
+		{
+			m_pWarpGate_Star_5->Set_Activate(true);
+			++m_iClearEffect_Count;
+		}
+		break;
+	default:
+		m_dClearEffect_Time = 0.0;
+		break;
 	}
+}
+
+void CWarpGate::Check_StageClear()
+{
+	if (true == m_bClearEffect)
+		return;
+
+	if (MAIN_UMBRELLA == m_WarpGate_Desc.eStageValue || STAGE_UMBRELLA == m_WarpGate_Desc.eStageValue)
+		m_bClearEffect = DATABASE->Get_PinBallStageClear();
+
+	else if (MAIN_PLANET == m_WarpGate_Desc.eStageValue || STAGE_PLANET == m_WarpGate_Desc.eStageValue)
+		m_bClearEffect = DATABASE->Get_RailStageClear();
 }
 
 _fmatrix CWarpGate::Get_NextPortal_Matrix()
@@ -188,7 +253,7 @@ _fmatrix CWarpGate::Get_NextPortal_Matrix()
 	_float	fDegree = 0.f;
 
 	// 현재 스테이지 > 다음 스테이지
-	switch (m_eStageValue)
+	switch (m_WarpGate_Desc.eStageValue)
 	{
 	case Client::CWarpGate::MAIN_UMBRELLA:
 		vPos = XMVectorSet(-617.f, 754.f, 196.f, 1.f);
@@ -265,11 +330,11 @@ void CWarpGate::Free()
 	Safe_Release(m_pRespawnTunnel);
 	Safe_Release(m_pRespawnTunnel_Portal);
 
-	Safe_Release(m_pWarpGate_Star[0]);
-	Safe_Release(m_pWarpGate_Star[1]);
-	Safe_Release(m_pWarpGate_Star[2]);
-	Safe_Release(m_pWarpGate_Star[3]);
-	Safe_Release(m_pWarpGate_Star[4]);
+	Safe_Release(m_pWarpGate_Star_1);
+	Safe_Release(m_pWarpGate_Star_2);
+	Safe_Release(m_pWarpGate_Star_3);
+	Safe_Release(m_pWarpGate_Star_4);
+	Safe_Release(m_pWarpGate_Star_5);
 
 	__super::Free();
 }

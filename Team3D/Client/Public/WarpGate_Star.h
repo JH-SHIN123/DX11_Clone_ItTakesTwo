@@ -18,8 +18,9 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 public:
+	void Set_Scale(_vector vScale) { m_pTransformCom-> Set_Scale(vScale); }
 	void Set_WorldMatrix(_fmatrix WorldMatrix, _fvector vOffSetPos);
-	void Set_Activate(_bool IsActivate) { m_IsActivate = IsActivate; }
+	void Set_Activate(_bool IsActivate);
 
 private:
 	void Activate_Check(_double TimeDelta);

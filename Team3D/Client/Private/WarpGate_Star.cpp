@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\WarpGate_Star.h"
+#include "Effect_Generator.h"
 
 CWarpGate_Star::CWarpGate_Star(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -26,8 +27,6 @@ HRESULT CWarpGate_Star::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_WarpGate_Star_01"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 2.f, 32.f, 1.f));
-
 	return S_OK;
 }
 
@@ -39,18 +38,27 @@ _int CWarpGate_Star::Tick(_double TimeDelta)
 _int CWarpGate_Star::Late_Tick(_double TimeDelta)
 {
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	{
+		if(false == m_IsActivate)
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		else
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+	}
 
 	return NO_EVENT;
 }
 
 HRESULT CWarpGate_Star::Render(RENDER_GROUP::Enum eGroup)
 {
+	_int iShaderPass = 21;
+	if(false == m_IsActivate)
+		iShaderPass = 1;
+
 	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1);
+	m_pModelCom->Render_Model(iShaderPass);
 
 	return S_OK;
 }
@@ -64,6 +72,15 @@ void CWarpGate_Star::Set_WorldMatrix(_fmatrix WorldMatrix, _fvector vOffSetPos)
 	ParentMatrix.r[3] = XMVector3Transform(vOffSetPos, ParentMatrix);
 
 	m_pTransformCom->Set_WorldMatrix(ParentMatrix);
+}
+
+void CWarpGate_Star::Set_Activate(_bool IsActivate)
+{
+	if (false == m_IsActivate && true == IsActivate)
+	{
+		EFFECT->Add_Effect(Effect_Value::WarpGate_Clear, m_pTransformCom->Get_WorldMatrix());
+		m_IsActivate = true;
+	}
 }
 
 void CWarpGate_Star::Activate_Check(_double TimeDelta)
@@ -96,6 +113,7 @@ void CWarpGate_Star::Free()
 {
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pModelCom);
 	Safe_Release(m_pStaticActorCom);
 
 	__super::Free();

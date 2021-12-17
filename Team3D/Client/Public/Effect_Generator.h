@@ -67,6 +67,8 @@ enum class Effect_Value
 	Hit_BossLaser_Particle,
 	Hit_BossLaser_Particle_Star,
 
+	WarpGate_Clear,
+
 	Effect_Value_End
 };
 

@@ -404,7 +404,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 	if (m_pGameInstance->Key_Down(DIK_SLASH)) 
-		EFFECT->Add_Effect(Effect_Value::Hit_BossLaser_Particle, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::WarpGate_Clear, m_pTransformCom->Get_WorldMatrix());
 	if (m_pGameInstance->Key_Down(DIK_APOSTROPHE))
 		EFFECT->Add_Effect(Effect_Value::Hit_BossLaser_Particle_Star, m_pTransformCom->Get_WorldMatrix());
 

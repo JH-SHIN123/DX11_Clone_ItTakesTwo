@@ -936,6 +936,15 @@
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung\00.WarpGate\00.Star">
       <UniqueIdentifier>{19c739c7-fbda-4d4d-991f-b06e72084394}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate">
+      <UniqueIdentifier>{611a2934-2f5b-4190-abae-e51f08661874}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate\00.Clear">
+      <UniqueIdentifier>{4761eeeb-c8a3-4027-aa26-835991b2b4c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate\01.Particle">
+      <UniqueIdentifier>{6036ec99-7162-4264-9157-c8e76fa33ef2}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1748,6 +1757,9 @@
     <ClInclude Include="..\Public\WarpGate_Star.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate\00.Star</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_WarpGate_Clear.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate\00.Clear</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2523,6 +2535,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\WarpGate_Star.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate\00.Star</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_WarpGate_Clear.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate\00.Clear</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

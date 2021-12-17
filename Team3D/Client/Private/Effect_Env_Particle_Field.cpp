@@ -211,9 +211,6 @@ _float2 CEffect_Env_Particle_Field::Get_Rand_Size(_float2 vDefaultSize, _float v
 
 HRESULT CEffect_Env_Particle_Field::Reset_Instance(_int iIndex, _fvector vWorldPos)
 {
-	//m_pInstanceBuffer_LocalPos[iIndex] = Get_Rand_Pos();
-	//m_pInstanceBuffer_STT[iIndex].vPosition = { 0.f, 0.f, 0.f, 1.f };
-
 	_vector vPos = vWorldPos + XMLoadFloat4(&Get_Rand_Pos());
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 
@@ -222,6 +219,11 @@ HRESULT CEffect_Env_Particle_Field::Reset_Instance(_int iIndex, _fvector vWorldP
 	m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
 	m_pInstance_Dir[iIndex] = Get_Dir_Rand(_int3(100, 100, 100));
 	m_pInstance_Pos_UpdateTime[iIndex] = m_Particle_Desc.fResetPosTime;
+
+	_float fRotateAngle = 1.f;
+	if (rand() % 2 == 0)
+		fRotateAngle *= -1.f;
+	m_pInstanceBuffer_STT[iIndex].vRight.y = (_float)(rand() % 5 + 5) * 5.f * fRotateAngle;
 
 	return S_OK;
 }
@@ -236,6 +238,11 @@ HRESULT CEffect_Env_Particle_Field::Reset_Instance_All()
 		_vector vPos = vWorldPos + XMLoadFloat4(&Get_Rand_Pos());
 		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 		m_pInstance_Dir[iIndex] = Get_Dir_Rand(_int3(100, 100, 100));
+
+		_float fRotateAngle = 1.f;
+		if (rand() % 2 == 0)
+			fRotateAngle *= 1;
+		m_pInstanceBuffer_STT[iIndex].vRight.y = (_float)(rand() % 5 + 5) * 10.f * fRotateAngle;
 	}
 
 	return S_OK;
@@ -262,7 +269,6 @@ HRESULT CEffect_Env_Particle_Field::Initialize_Instance()
 		}
 
 		m_pInstanceBuffer_STT[iIndex].vRight	= { 1.f, 0.f, 0.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vUp		= { 0.f, 1.f, 0.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vLook		= { 0.f, 0.f, 1.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vSize		= { 0.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vTextureUV = Get_TexUV_Rand(m_Particle_Desc.vTextureUV.x, m_Particle_Desc.vTextureUV.y);
@@ -273,6 +279,11 @@ HRESULT CEffect_Env_Particle_Field::Initialize_Instance()
 
 		m_pInstance_Pos_UpdateTime[iIndex] = m_Particle_Desc.fResetPosTime * m_Particle_Desc.fInitialize_UpdatePos_Term * _float(iIndex) / iInstanceCount;
 		m_pInstance_Dir[iIndex] = Get_Dir_Rand(m_Particle_Desc.vRandPower);
+
+		_float fRotateAngle = 1.f;
+		if (rand() % 2 == 0)
+			fRotateAngle *= 1;
+		m_pInstanceBuffer_STT[iIndex].vRight.y = (_float)(rand() % 5 + 5) * 10.f * fRotateAngle;
 	}
 
 	return S_OK;
@@ -298,6 +309,11 @@ void CEffect_Env_Particle_Field::Initialize_Instance_Goruping(_int* iIndex, _int
 
 		m_pInstance_Pos_UpdateTime[iIndexGroup] = m_Particle_Desc.fResetPosTime * m_Particle_Desc.fInitialize_UpdatePos_Term * _float(*iIndex) / iInstance_Count;
 		m_pInstance_Dir[iIndexGroup] = Get_Dir_Rand(m_Particle_Desc.vRandPower);
+
+		_float fRotateAngle = 1.f;
+		if (rand() % 2 == 0)
+			fRotateAngle *= 1;
+		m_pInstanceBuffer_STT[iIndexGroup].vRight.y = (_float)(rand() % 5 + 5) * 10.f * fRotateAngle;
 
 		++iIndexGroup;
 	}
