@@ -774,7 +774,6 @@ void CCody::KeyInput(_double dTimeDelta)
 	}
 
 #pragma endregion
-
 }
 
 _uint CCody::Get_CurState() const

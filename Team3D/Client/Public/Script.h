@@ -3,10 +3,11 @@
 #include "ScriptBackGround.h"
 
 BEGIN(Client)
+#define SCRIPT ((CScript*)(DATABASE->Get_Script()))
 class CScript final : public CGameObject
 {
 public:
-	enum SCREEN	   { FULL, HALF, SCREEN_END };
+	enum SCREEN	 { FULL, HALF, SCREEN_END };
 
 private:
 	explicit CScript(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

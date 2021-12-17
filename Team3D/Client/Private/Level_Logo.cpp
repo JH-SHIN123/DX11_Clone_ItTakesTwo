@@ -26,11 +26,9 @@ _int CLevel_Logo::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
 
-	CMenuScreen* pMenu = (CMenuScreen*)DATABASE->Get_MenuScreen();
-	NULL_CHECK_RETURN(pMenu, EVENT_ERROR);
-
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
+	/* ¾À ÀüÈ¯ */
 	if (nullptr != DATABASE->Get_ReturnButton())
 	{
 		if (true == ((CReturn_Button*)(DATABASE->Get_ReturnButton()))->Get_ChangeScene() && pGameInstance->Key_Down(DIK_RETURN))
@@ -54,7 +52,7 @@ HRESULT CLevel_Logo::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_Logo::Ready_Layer_SplashScreen()\
+HRESULT CLevel_Logo::Ready_Layer_SplashScreen()
 {
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;

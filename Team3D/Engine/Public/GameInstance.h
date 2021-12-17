@@ -69,7 +69,7 @@ public:
 #pragma endregion
 
 #pragma region Sound_Manager
-	void Play_Sound(TCHAR* pSoundKey, CHANNEL_TYPE eChannel, _float fVolume = 0.5f, _bool bLoop = false);
+	void Play_Sound(TCHAR* pSoundKey, CHANNEL_TYPE eChannel, _float fVolume = 1.f, _bool bLoop = false);
 	void Stop_Sound(CHANNEL_TYPE eChannel);
 	void Stop_SoundAll();
 	void Set_SoundVolume(CHANNEL_TYPE eChannel, _float fVolume);
