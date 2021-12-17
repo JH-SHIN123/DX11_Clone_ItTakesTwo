@@ -3,6 +3,7 @@
 #include "ScriptBackGround.h"
 
 BEGIN(Client)
+#define SCRIPT ((CScript*)(DATABASE->Get_Script()))
 class CScript final : public CGameObject
 {
 public:
