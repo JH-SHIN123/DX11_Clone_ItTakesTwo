@@ -79,6 +79,38 @@ VS_OUT_DOUBLE_UV VS_DOUBLE_UV(VS_IN In)
 	return Out;
 }
 
+struct VS_OUT_FRESNEL
+{
+	float4 vPosition	: SV_POSITION;
+	float4 vNormal		: NORMAL;
+	float2 vTexUV		: TEXCOORD0;
+	float4 vMainCamRefl	: TEXCOORD1;
+	float4 vSubCamRefl  : TEXCOORD2;
+};
+VS_OUT_FRESNEL VS_FRESNEL(VS_IN In)
+{
+	VS_OUT_FRESNEL Out = (VS_OUT_FRESNEL)0;
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
+	Out.vTexUV = In.vTexUV;
+
+	// MainCam
+	float3 vPosW = Out.vPosition.xyz;
+	float3 vNormalW = Out.vNormal.xyz;
+	float3 l = normalize(vPosW - g_vMainCamPosition);
+	float Scale = 2.5f;
+	float Power = 2.f; // 점점 진해지는 강도세기
+
+	Out.vMainCamRefl = Scale * pow(1.0 + dot(l, vNormalW), Power);
+
+	// SubCam
+	l = normalize(vPosW - g_vSubCamPosition);
+	Out.vSubCamRefl = Scale * pow(1.0 + dot(l, vNormalW), Power);
+
+	return Out;
+}
+
 ////////////////////////////////////////////////////////////
 
 struct GS_IN
@@ -201,6 +233,57 @@ void GS_DOUBLE_UV(triangle VS_OUT_DOUBLE_UV In[3], inout TriangleStream<GS_OUT_D
 	TriStream.RestartStrip();
 }
 
+struct GS_OUT_FRESNEL
+{
+	float4 vPosition		: SV_POSITION;
+	float4 vNormal			: NORMAL;
+	float2 vTexUV			: TEXCOORD0;
+	float4 vRefl			: TEXCOORD1;
+	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
+};
+
+[maxvertexcount(6)]
+void GS_FRESNEL(triangle VS_OUT_FRESNEL In[3], inout TriangleStream<GS_OUT_FRESNEL> TriStream)
+{
+	GS_OUT_FRESNEL Out = (GS_OUT_FRESNEL)0;
+
+	/* Main Viewport */
+	if (g_iViewportDrawInfo & 1)
+	{
+		for (uint i = 0; i < 3; i++)
+		{
+			matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
+
+			Out.vPosition = mul(In[i].vPosition, matVP);
+			Out.vNormal = In[i].vNormal;
+			Out.vTexUV = In[i].vTexUV;
+			Out.vRefl = In[i].vMainCamRefl;
+			Out.iViewportIndex = 1;
+
+			TriStream.Append(Out);
+		}
+		TriStream.RestartStrip();
+	}
+
+	if (g_iViewportDrawInfo & 2)
+	{
+		/* Sub Viewport */
+		for (uint j = 0; j < 3; j++)
+		{
+			matrix matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+
+			Out.vPosition = mul(In[j].vPosition, matVP);
+			Out.vNormal = In[j].vNormal;
+			Out.vTexUV = In[j].vTexUV;
+			Out.vRefl = In[j].vSubCamRefl;
+			Out.iViewportIndex = 2;
+
+			TriStream.Append(Out);
+		}
+		TriStream.RestartStrip();
+	}
+}
+
 ////////////////////////////////////////////////////////////
 
 struct PS_IN
@@ -226,6 +309,14 @@ struct PS_IN_DOUBLE_UV
 	float4 vProjPosition		: TEXCOORD2;
 	float4 vWorldPosition		: TEXCOORD3;
 	uint   iViewportIndex		: SV_VIEWPORTARRAYINDEX;
+};
+
+struct PS_IN_FRESNEL
+{
+	float4 vPosition	: SV_POSITION;
+	float4 vNormal		: NORMAL;
+	float2 vTexUV		: TEXCOORD0;
+	float4 vRefl		: TEXCOORD1;
 };
 
 struct PS_OUT
@@ -425,6 +516,34 @@ PS_OUT	PS_MAIN_BOSS_GRAVITOTIONAL_BOMB(PS_IN_DOUBLE_UV In)
 	if (0.f >= g_fAlpha)
 		Out.vDiffuse.rgb = 0.f;
 
+	return Out;
+}
+
+PS_OUT	PS_MAIN_MOONBABOON_SHILED(PS_IN_DOUBLE_UV In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+	float2 vDistUV = (float2)0.f;
+	vDistUV.y = vDiffuse.r;
+
+	vector vColor = g_ColorRampTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistUV);
+
+	Out.vDiffuse.rgb = vColor.rgb;
+	Out.vDiffuse.a = Out.vDiffuse.b;
+
+	return Out;
+}
+
+PS_OUT PS_FRESNEL(PS_IN_FRESNEL In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vOutColor = vector(0.5f, 0.5f, 0.8f, 0.5f);
+	vector vInColor = vector(0.3f, 0.3f, 0.7f, 0.2f);
+
+	Out.vDiffuse = lerp(vInColor, vOutColor, In.vRefl);
 	return Out;
 }
 
@@ -631,5 +750,15 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_DOUBLE_UV();
 		GeometryShader = compile gs_5_0 GS_DOUBLE_UV();
 		PixelShader = compile ps_5_0 PS_MAIN_BOSS_GRAVITOTIONAL_BOMB();
+	}
+
+	pass Boss_MoonBaboon_Shield // 13
+	{
+		SetRasterizerState(Rasterizer_Wireframe);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_FRESNEL();
+		GeometryShader = compile gs_5_0 GS_FRESNEL();
+		PixelShader = compile ps_5_0 PS_FRESNEL();
 	}
 };

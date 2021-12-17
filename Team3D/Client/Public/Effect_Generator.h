@@ -69,6 +69,8 @@ enum class Effect_Value
 
 	WarpGate_Clear,
 
+	MoonBaboon_Shield,
+
 	Effect_Value_End
 };
 

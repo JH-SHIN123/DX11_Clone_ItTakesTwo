@@ -972,6 +972,15 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Follow%29">
       <UniqueIdentifier>{abf42b8c-53c1-42f9-bffe-9dd0a37bf651}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\MoonBaboon">
+      <UniqueIdentifier>{04b8cf76-c60a-407b-a996-8889f01df05c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\MoonBaboon\00.Shield">
+      <UniqueIdentifier>{cac1afdd-148f-40a7-a066-47a9712c4d14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\MoonBaboon\01.Booster">
+      <UniqueIdentifier>{54187fbc-269c-4a9d-a697-1d3dd8f05100}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1802,6 +1811,9 @@
     <ClInclude Include="..\public\Effect_Env_Particle_Follow.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Follow%29</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_MoonBaboon_Shield.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\MoonBaboon\00.Shield</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2604,6 +2616,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Env_Particle_Follow.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Follow%29</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_MoonBaboon_Shield.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\MoonBaboon\00.Shield</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
