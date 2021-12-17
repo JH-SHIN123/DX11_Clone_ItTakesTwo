@@ -34,6 +34,7 @@ public:
 
 public: /* Getter */
 	CUFORadarLever* Get_RadarLever() { return m_pUFORadarLever; }
+
 public: /* Setter */
 
 private: /* Child */

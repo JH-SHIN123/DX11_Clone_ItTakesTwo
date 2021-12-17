@@ -266,6 +266,16 @@ void CTransform::Move_ToTarget(_fvector vTargetPos, _double dTimeDelta)
 	Rotate_ToTargetOnLand(vTargetPos);
 }
 
+void CTransform::Move_ToTargetNoRotation(_fvector vTargetPos, _double dTimeDelta)
+{
+	_vector vPosition = Get_State(CTransform::STATE_POSITION);
+	_vector vDirection = vTargetPos - vPosition;
+
+	vPosition += XMVector3Normalize(vDirection) * (_float)dTimeDelta * (_float)m_TransformDesc.dSpeedPerSec;
+
+	Set_State(CTransform::STATE_POSITION, vPosition);
+}
+
 _float CTransform::Move_ToTargetRange(_fvector vTargetPos, _float fRange, _double dTimeDelta)
 {
 	if (0.0 == m_TransformDesc.dSpeedPerSec || 0.0 == m_TransformDesc.dRotationPerSec) return 0.f;

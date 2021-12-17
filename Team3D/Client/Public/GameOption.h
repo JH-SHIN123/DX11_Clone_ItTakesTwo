@@ -22,7 +22,7 @@
 
 
 #ifdef _DEBUG
-#define __THREAD_NUM 8
+#define __THREAD_NUM 6
 #else
 #define __THREAD_NUM 4
 #endif
@@ -56,7 +56,7 @@
 //#define __TEST_JUNG
 //#define __TEST_HYE
 //#define __TEST_TAEK
-//#define __TEST_YOON
+#define __TEST_YOON
 //#define __TEST_JIN
 //#define __TEST_JUN
 
