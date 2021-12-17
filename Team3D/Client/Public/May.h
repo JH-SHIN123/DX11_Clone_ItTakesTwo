@@ -190,6 +190,7 @@ public: /* Getter */
 	_float4x4	Get_TriggerTargetWorld() { return m_TriggerTargetWorld; }
 	_bool		Get_IsWarpNextStage() { return m_IsWarpNextStage; }
 	_bool		Get_IsWarpDone() { return m_IsWarpDone; }
+	_bool		Get_IsPinBall() { return m_IsPinBall; }
 public:
 
 	void		Update_Tirgger_Pos(_vector vPos);

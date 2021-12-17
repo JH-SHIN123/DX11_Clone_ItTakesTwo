@@ -10,7 +10,7 @@ class CCameraActor;
 class CSubCamera final : public CCamera
 {
 	enum CamRev { Rev_Holizontal, Rev_Prependicul, Rev_End };
-	enum class CamMode { Cam_Free, Cam_AutoToFree, Cam_Warp_WormHole, Cam_End };
+	enum class CamMode { Cam_Free, Cam_AutoToFree, Cam_Warp_WormHole,Cam_PinBall_May, Cam_End };
 	//O CamFreeMove P FollowPlayer
 	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_RidingSpaceShip_May,Cam_Free_End };
 private:
@@ -42,7 +42,7 @@ private:
 	_int	Tick_Cam_Free(_double dTimeDelta);				//자유이동
 	_int	Tick_Cam_AutoToFree(_double dTimeDelta);		//연출 카메라 -> 자유이동시 보간
 	_int	Tick_Cam_Warp_WormHole(_double dTimeDelta);		//웜홀
-
+	_int	Tick_Cam_PinBall_May(_double dTimeDelta);		//핀볼 메이
 	
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
@@ -57,7 +57,7 @@ private:
 															//For.Debug
 	
 private:
-	_int	ReSet_Cam_FreeToAuto();		//변수 초기화용
+	_int	ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook = false);		//변수 초기화용
 	_bool	OffSetPhsX(_fvector vEye, _fvector vAt, _double dTimeDelta, _vector * pOut);
 
 	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At,_fvector vUp = XMVectorSet(0.f,1.f,0.f,0.f));
@@ -65,6 +65,7 @@ private:
 	_fmatrix MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime);
 
 	_fvector MakeQuatMul(_fvector vQ, _fvector vP);
+	_fmatrix MakeViewMatrix_FollowPlayer(_double dTimeDelta);
 private:
 	_bool m_bStart = false;
 	_float m_fMouseRevSpeed[Rev_End] = { 2.5f,2.5f };

@@ -229,6 +229,7 @@ public:
 	_bool			 Get_IsHooking() { return m_IsHookUFO; }
 	_bool			 Get_IsInArcadeJoyStick() { return m_IsInJoyStick; }
 
+	_bool			Get_IsPinBall() { return m_IsPinBall; }
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);

@@ -7,6 +7,8 @@
 #include"CutScenePlayer.h"
 #include"Moon.h"
 #include"UI_Generator.h"
+#include"PinBall.h"
+#include"PinBall_Handle.h"
 CSubCamera::CSubCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -131,6 +133,8 @@ _int CSubCamera::Check_Player(_double dTimeDelta)
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_RidingSpaceShip_May;
 	if (m_pMay->Get_IsWarpNextStage() == true)
 		m_eCurCamMode = CamMode::Cam_Warp_WormHole;
+	if (m_pMay->Get_IsPinBall())
+		m_eCurCamMode = CamMode::Cam_PinBall_May;
 	if (m_eCurCamMode == CamMode::Cam_Free)
 	{
 		switch (m_eCurCamFreeOption)
@@ -200,35 +204,20 @@ _int CSubCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 		return EVENT_ERROR;
 	if (m_fChangeCamModeTime >= 1.f)
 	{
-		_vector vScale, vRotQuat, vTrans;
-		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix()); //계산 완료한 이번 프레임의 월드
-		XMStoreFloat4(&m_PreWorld.vTrans, vTrans);
-		XMStoreFloat4(&m_PreWorld.vRotQuat, vRotQuat);
-
 		m_eCurCamMode = CamMode::Cam_Free;
 		return NO_EVENT;
 	}
 	CTransform* pPlayerTransform = m_pMay->Get_Transform();
 	if (m_fChangeCamModeTime == 0.f) //처음 들어왓으면 한번만 공전매트릭스 구하고
 	{
+		m_CameraDesc.fFovY = XMConvertToRadians(60.f);
 		_matrix matWorld = m_pTransformCom->Get_WorldMatrix(); //시작 매트릭스
 		XMStoreFloat4x4(&m_matCurWorld, matWorld);
 	}
 
-	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-	XMStoreFloat4(&m_vPlayerPos, vPlayerPos);
-	_matrix matNext = XMLoadFloat4x4(&m_matBeginWorld); //목표 매트릭스
-	
-	_matrix matRev = XMMatrixRotationQuaternion(XMLoadFloat4(&m_PreWorld.vRotQuat)) *
-		MH_RotationMatrixByUp(pPlayerTransform->Get_State(CTransform::STATE_UP), vPlayerPos);
-
-
-	_matrix matWorld = XMLoadFloat4x4(&m_matCurWorld);
 	m_fChangeCamModeTime += (_float)(dTimeDelta * m_fChangeCamModeLerpSpeed);
 
-	matNext *= matRev;
-
-	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(matWorld, matNext, m_fChangeCamModeTime));
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(XMLoadFloat4x4(&m_matCurWorld), MakeViewMatrix_FollowPlayer(dTimeDelta), m_fChangeCamModeTime));
 
 	return NO_EVENT;
 }
@@ -303,24 +292,24 @@ _int CSubCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 
 		m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vPlayerPos - vPlayerLook * 2.f, vPlayerPos));
 		m_dWarpTime = 0.0;
-		ReSet_Cam_FreeToAuto();
-		m_eCurCamMode = CamMode::Cam_AutoToFree;
-		_vector vScale, vRotQuat, vTrans;
-		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
-		XMStoreFloat4(&m_PreWorld.vRotQuat, vRotQuat);
-		XMStoreFloat4(&m_PreWorld.vTrans, vTrans);
-
-		_vector vOriginAxis = XMVectorSet(0.f, 0.f, 1.f, 0.f);
-		_vector vRotAxis = XMVector3Normalize(vPlayerLook);
-		_float fAxisX = XMVectorGetX(vRotAxis);
-		_float fDot = acosf(XMVectorGetX(XMVector3Dot(vRotAxis, vOriginAxis)));
-		if (fAxisX < 0.f)
-			fDot = -fDot;
-		_float fCalculateRotation = XMConvertToDegrees(fDot);
-		m_fCurMouseRev[Rev_Holizontal] = fCalculateRotation;
-		m_fMouseRev[Rev_Holizontal] = fCalculateRotation;
+		ReSet_Cam_FreeToAuto(true);
+		
 		m_fChangeCamModeLerpSpeed = 4.f;
 	}
+
+	return NO_EVENT;
+}
+
+_int CSubCamera::Tick_Cam_PinBall_May(_double dTimeDelta)
+{
+	if (false == m_pMay->Get_IsPinBall())
+		ReSet_Cam_FreeToAuto();
+	CPinBall_Handle* pPinBallHandle = static_cast<CPinBall_Handle*>(DATABASE->Get_Pinball_Handle());
+	CTransform* pHandleTransform = pPinBallHandle->Get_Transform();
+
+	_vector vHandlePos = pHandleTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vEye = vHandlePos + XMVectorSet(0.f, 3.f, 4.f, 0.f);
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vHandlePos + XMVectorSet(0.f,2.f,-1.f,0.f)), dTimeDelta * 4.f));
 
 	return NO_EVENT;
 }
@@ -328,130 +317,7 @@ _int CSubCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 
 _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 {
-	CTransform* pPlayerTransform = m_pMay->Get_Transform();
-	_long MouseMove = 0;
-
-#ifdef __CONTROL_MAY_KEYBOARD
-	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X)/*m_pGameInstance->Get_Pad_RStickX() - 32767*/)
-		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
-	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y)/*(65535 - m_pGameInstance->Get_Pad_RStickY()) - 32767*/)
-	{
-		//if (abs(MouseMove) < 2000)
-		//	MouseMove = 0;
-		//else
-		//	MouseMove = MouseMove / 2000;
-
-
-		_float fVal = (_float)(MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta);
-
-		if (m_fMouseRev[Rev_Prependicul] + fVal > 40.f)
-			m_fMouseRev[Rev_Prependicul] = 40.f;
-		else if (m_fMouseRev[Rev_Prependicul] + fVal < -80.f)
-			m_fMouseRev[Rev_Prependicul] = -80.f;
-		else
-			m_fMouseRev[Rev_Prependicul] += fVal;
-	}
-	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 20.f;
-	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 20.f;
-#else
-	if (MouseMove = m_pGameInstance->Get_Pad_RStickX() - 32767)
-	{
-		
-		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
-		
-	}
-	if (MouseMove = (/*65535 - */m_pGameInstance->Get_Pad_RStickY()) - 32767)
-	{
-		if (abs(MouseMove) < 2000)
-			MouseMove = 0;
-		else
-			MouseMove = MouseMove / 2000;
-
-
-		_float fVal = (_float)(MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta);
-
-		if (m_fMouseRev[Rev_Prependicul] + fVal > 40.f)
-			m_fMouseRev[Rev_Prependicul] = 40.f;
-		else if (m_fMouseRev[Rev_Prependicul] + fVal < -80.f)
-			m_fMouseRev[Rev_Prependicul] = -80.f;
-		else
-			m_fMouseRev[Rev_Prependicul] += fVal;
-	}
-	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 20.f;
-	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 20.f;
-#endif
-	//카메라 움직임이 끝나고 체크할것들
-	//SoftMoving
-	_vector vTargetPlayerUp =pPlayerTransform->Get_State(CTransform::STATE_UP);
-	_vector vPlayerUp = XMLoadFloat4(&m_vPlayerUp);
-	_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
-	if(XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
-	vPlayerUp += vUpDir * (_float)dTimeDelta * 5.f;
-	XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
-
-	//_vector vPlayerUp = vTargetPlayerUp;
-	//XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
-
-
-	_vector vPrePlayerPos = XMLoadFloat4(&m_vPlayerPos);
-	_vector vCurPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-	_vector vCurUp = XMVector3TransformNormal(XMVectorSetW(XMLoadFloat4(&m_vStartAt), 0.f), MH_RotationMatrixByUp(vPlayerUp));
-	vCurPlayerPos += vCurUp;
-	/*_vector vCalculateUp = XMVector3TransformNormal(XMVectorSetW(XMLoadFloat4(&m_vStartAt), 0.f), MH_RotationMatrixByUp(vPlayerUp));
-	vCurPlayerPos += vCalculateUp;*/
-	//카메라와 플레이어의 실제 거리
-	_vector vPlayerPos = vCurPlayerPos;
-	_float fDist = fabs(XMVectorGetX(XMVector4Length(vPrePlayerPos - vCurPlayerPos)));
-	
-	vPlayerPos = fDist > 10.f ? vCurPlayerPos : XMVectorLerp(vPrePlayerPos, vCurPlayerPos, XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 10.f);
-
-
-	XMStoreFloat4(&m_vPlayerPos, vPlayerPos);
-
-	//회전 보간(마우스)
-	_vector vCurQuartRot = XMQuaternionRotationRollPitchYaw(
-		XMConvertToRadians(m_fCurMouseRev[Rev_Prependicul]),
-		XMConvertToRadians(m_fCurMouseRev[Rev_Holizontal]), 0.f);
-
-	_matrix matQuat = XMMatrixRotationQuaternion(vCurQuartRot);
-
-	_vector vScale, vRotQuat, vTrans;
-	_vector  vCurRotQuat, vCurTrans;
-
-
-	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, 
-		XMLoadFloat4x4(&m_matBeginWorld) * matQuat *MH_RotationMatrixByUp(m_pMay->Get_IsInGravityPipe() ? 
-			XMVectorSet(0.f, 1.f, 0.f, 0.f) : vPlayerUp, vPlayerPos));
-
-	_vector vPreQuat = XMLoadFloat4(&m_PreWorld.vRotQuat);
-	_vector vPreTrans = XMLoadFloat4(&m_PreWorld.vTrans);
-
-
-	vCurRotQuat = XMQuaternionSlerp(vPreQuat, vRotQuat, 0.5f);
-	vCurTrans = XMVectorLerp(vPreTrans, vTrans, 0.5f);
-
-	XMStoreFloat4(&m_PreWorld.vRotQuat, vCurRotQuat);
-	XMStoreFloat4(&m_PreWorld.vTrans, vCurTrans);
-
-
-	_matrix matAffine = XMMatrixAffineTransformation(XMVectorSet(1.f, 1.f, 1.f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 1.f),
-		vCurRotQuat, vCurTrans);
-
-
-	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::RScreen))
-	{
-		if (m_pCamHelper->Tick_CamEffect(CFilm::RScreen, dTimeDelta, matAffine)) //카메라의 원점 
-		{
-			matAffine = m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::RScreen);
-			vPlayerUp = XMVector3TransformNormal(vPlayerUp, matAffine);
-		}
-	}
-	_vector vResultPos = matAffine.r[3];
-	OffSetPhsX(matAffine.r[3], vPlayerPos, dTimeDelta, &vResultPos);
-
-	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vResultPos, vPlayerPos, vPlayerUp/*matAffine.r[2]*/));
-
-
+	m_pTransformCom->Set_WorldMatrix(MakeViewMatrix_FollowPlayer(dTimeDelta));
 	return NO_EVENT;
 }
 
@@ -462,6 +328,11 @@ _int CSubCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 
 _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 {
+	if (m_pMay->Get_IsInUFO() == false)
+	{
+		ReSet_Cam_FreeToAuto();
+		return NO_EVENT;
+	}
 	CTransform* pPlayerTransform = m_pMay->Get_Transform();
 
 	CMoon* pMoon = static_cast<CMoon*>(DATABASE->Get_Mooon());
@@ -516,7 +387,9 @@ _int CSubCamera::Tick_CamHelperNone(_double dTimeDelta)
 	case Client::CSubCamera::CamMode::Cam_Warp_WormHole:
 		iResult = Tick_Cam_Warp_WormHole(dTimeDelta);
 		break;
-
+	case Client::CSubCamera::CamMode::Cam_PinBall_May:
+		iResult = Tick_Cam_PinBall_May(dTimeDelta);
+		break;
 	}
 	return iResult;
 }
@@ -541,7 +414,7 @@ _int CSubCamera::Tick_CamHelper_SeeCamNode(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-_int CSubCamera::ReSet_Cam_FreeToAuto()
+_int CSubCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook)
 {
 
 	m_fChangeCamModeLerpSpeed = 6.f;
@@ -551,6 +424,19 @@ _int CSubCamera::ReSet_Cam_FreeToAuto()
 	{
 		m_fMouseRev[i] = 0.f;
 		m_fCurMouseRev[i] = 0.f;
+	}
+	if (bCalculatePlayerLook)
+	{
+		_vector vOriginAxis = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+		_vector vRotAxis = XMVector3Normalize(m_pMay->Get_Transform()->Get_State(CTransform::STATE_LOOK));
+		_float fAxisX = XMVectorGetX(vRotAxis);
+		_float fDot = acosf(XMVectorGetX(XMVector3Dot(vRotAxis, vOriginAxis)));
+		if (fAxisX < 0.f)
+			fDot = -fDot;
+		_float fCalculateRotation = XMConvertToDegrees(fDot);
+		m_fCurMouseRev[Rev_Holizontal] = fCalculateRotation;
+		m_fMouseRev[Rev_Holizontal] = fCalculateRotation;
+
 	}
 
 	return NO_EVENT;
@@ -652,6 +538,133 @@ _fvector CSubCamera::MakeQuatMul(_fvector vQ, _fvector vP)
 	_vector rV = PVector * QReal + QVector * PReal  + XMVector3Cross(QVector, PVector);
 	
 	return XMVectorSet(XMVectorGetX(rV), XMVectorGetY(rV), XMVectorGetZ(rV), rW);
+}
+
+_fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
+{
+	CTransform* pPlayerTransform = m_pMay->Get_Transform();
+	_long MouseMove = 0;
+
+#ifdef __CONTROL_MAY_KEYBOARD
+	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_X)/*m_pGameInstance->Get_Pad_RStickX() - 32767*/)
+		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
+	if (MouseMove = m_pGameInstance->Mouse_Move(CInput_Device::DIMS_Y)/*(65535 - m_pGameInstance->Get_Pad_RStickY()) - 32767*/)
+	{
+		//if (abs(MouseMove) < 2000)
+		//	MouseMove = 0;
+		//else
+		//	MouseMove = MouseMove / 2000;
+
+
+		_float fVal = (_float)(MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta);
+
+		if (m_fMouseRev[Rev_Prependicul] + fVal > 40.f)
+			m_fMouseRev[Rev_Prependicul] = 40.f;
+		else if (m_fMouseRev[Rev_Prependicul] + fVal < -80.f)
+			m_fMouseRev[Rev_Prependicul] = -80.f;
+		else
+			m_fMouseRev[Rev_Prependicul] += fVal;
+	}
+	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 20.f;
+	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 20.f;
+#else
+	if (MouseMove = m_pGameInstance->Get_Pad_RStickX() - 32767)
+	{
+
+		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
+
+	}
+	if (MouseMove = (/*65535 - */m_pGameInstance->Get_Pad_RStickY()) - 32767)
+	{
+		if (abs(MouseMove) < 2000)
+			MouseMove = 0;
+		else
+			MouseMove = MouseMove / 2000;
+
+
+		_float fVal = (_float)(MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta);
+
+		if (m_fMouseRev[Rev_Prependicul] + fVal > 40.f)
+			m_fMouseRev[Rev_Prependicul] = 40.f;
+		else if (m_fMouseRev[Rev_Prependicul] + fVal < -80.f)
+			m_fMouseRev[Rev_Prependicul] = -80.f;
+		else
+			m_fMouseRev[Rev_Prependicul] += fVal;
+	}
+	m_fCurMouseRev[Rev_Holizontal] += (m_fMouseRev[Rev_Holizontal] - m_fCurMouseRev[Rev_Holizontal]) * (_float)dTimeDelta * 20.f;
+	m_fCurMouseRev[Rev_Prependicul] += (m_fMouseRev[Rev_Prependicul] - m_fCurMouseRev[Rev_Prependicul]) * (_float)dTimeDelta * 20.f;
+#endif
+	//카메라 움직임이 끝나고 체크할것들
+	//SoftMoving
+	_vector vTargetPlayerUp = pPlayerTransform->Get_State(CTransform::STATE_UP);
+	_vector vPlayerUp = XMLoadFloat4(&m_vPlayerUp);
+	_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
+	if (XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
+		vPlayerUp += vUpDir * (_float)dTimeDelta * 5.f;
+	XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
+
+	//_vector vPlayerUp = vTargetPlayerUp;
+	//XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
+
+
+	_vector vPrePlayerPos = XMLoadFloat4(&m_vPlayerPos);
+	_vector vCurPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vCurUp = XMVector3TransformNormal(XMVectorSetW(XMLoadFloat4(&m_vStartAt), 0.f), MH_RotationMatrixByUp(vPlayerUp));
+	vCurPlayerPos += vCurUp;
+	/*_vector vCalculateUp = XMVector3TransformNormal(XMVectorSetW(XMLoadFloat4(&m_vStartAt), 0.f), MH_RotationMatrixByUp(vPlayerUp));
+	vCurPlayerPos += vCalculateUp;*/
+	//카메라와 플레이어의 실제 거리
+	_vector vPlayerPos = vCurPlayerPos;
+	_float fDist = fabs(XMVectorGetX(XMVector4Length(vPrePlayerPos - vCurPlayerPos)));
+
+	vPlayerPos = fDist > 10.f ? vCurPlayerPos : XMVectorLerp(vPrePlayerPos, vCurPlayerPos, XMVectorGetX(XMVector4Length(vCurPlayerPos - vPrePlayerPos))*(_float)dTimeDelta * 10.f);
+
+
+	XMStoreFloat4(&m_vPlayerPos, vPlayerPos);
+
+	//회전 보간(마우스)
+	_vector vCurQuartRot = XMQuaternionRotationRollPitchYaw(
+		XMConvertToRadians(m_fCurMouseRev[Rev_Prependicul]),
+		XMConvertToRadians(m_fCurMouseRev[Rev_Holizontal]), 0.f);
+
+	_matrix matQuat = XMMatrixRotationQuaternion(vCurQuartRot);
+
+	_vector vScale, vRotQuat, vTrans;
+	_vector  vCurRotQuat, vCurTrans;
+
+
+	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans,
+		XMLoadFloat4x4(&m_matBeginWorld) * matQuat *MH_RotationMatrixByUp(m_pMay->Get_IsInGravityPipe() ?
+			XMVectorSet(0.f, 1.f, 0.f, 0.f) : vPlayerUp, vPlayerPos));
+
+	_vector vPreQuat = XMLoadFloat4(&m_PreWorld.vRotQuat);
+	_vector vPreTrans = XMLoadFloat4(&m_PreWorld.vTrans);
+
+
+	vCurRotQuat = XMQuaternionSlerp(vPreQuat, vRotQuat, 0.5f);
+	vCurTrans = XMVectorLerp(vPreTrans, vTrans, 0.5f);
+
+	XMStoreFloat4(&m_PreWorld.vRotQuat, vCurRotQuat);
+	XMStoreFloat4(&m_PreWorld.vTrans, vCurTrans);
+
+
+	_matrix matAffine = XMMatrixAffineTransformation(XMVectorSet(1.f, 1.f, 1.f, 0.f), XMVectorSet(0.f, 0.f, 0.f, 1.f),
+		vCurRotQuat, vCurTrans);
+
+
+	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::RScreen))
+	{
+		if (m_pCamHelper->Tick_CamEffect(CFilm::RScreen, dTimeDelta, matAffine)) //카메라의 원점 
+		{
+			matAffine = m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::RScreen);
+			vPlayerUp = XMVector3TransformNormal(vPlayerUp, matAffine);
+		}
+	}
+	_vector vResultPos = matAffine.r[3];
+	OffSetPhsX(matAffine.r[3], vPlayerPos, dTimeDelta, &vResultPos);
+
+	return MakeViewMatrixByUp(vResultPos, vPlayerPos, vPlayerUp/*matAffine.r[2]*/);
+
 }
 
 CSubCamera * CSubCamera::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

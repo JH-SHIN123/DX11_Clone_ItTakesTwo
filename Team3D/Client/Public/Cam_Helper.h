@@ -83,8 +83,6 @@ public:
 private:
 	class CCamEffect* Find_CamEffect(const _tchar* pCamEffectName);
 
-
-
 private: //For.System
 	CamHelperState m_eState[CFilm::Screen_End] = { CamHelperState::Helper_End,CamHelperState::Helper_End };
 	HRESULT Load_Film(const _tchar* pDataPath,_bool bMakeUpNodesTimeByfar = false);

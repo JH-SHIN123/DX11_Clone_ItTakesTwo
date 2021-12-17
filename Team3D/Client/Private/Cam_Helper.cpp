@@ -368,7 +368,7 @@ CCam_Helper::CamHelperState CCam_Helper::Tick(_double TimeDelta, CFilm::ScreenTy
 		}
 	}
 	else 	m_bIsPlayingCamEffect[eScreenTypeIdx] = false;
-
+	
 	return m_eState[eScreenTypeIdx];
 }
 

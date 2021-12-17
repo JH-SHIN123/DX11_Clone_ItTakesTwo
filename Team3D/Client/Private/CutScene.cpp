@@ -322,6 +322,7 @@ HRESULT CCutScene::End_CutScene_Intro()
 HRESULT CCutScene::End_CutScene_Active_GravityPath_01()
 {
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
+	
 	return E_NOTIMPL;
 }
 

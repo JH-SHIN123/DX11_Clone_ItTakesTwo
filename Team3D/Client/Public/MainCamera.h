@@ -11,7 +11,7 @@ class CMainCamera final : public CCamera
 {
 	enum CamRev {Rev_Holizontal,Rev_Prependicul,Rev_End};
 
-	enum class CamMode{Cam_Free,Cam_AutoToFree,Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_InJoyStick,Cam_End};
+	enum class CamMode{Cam_Free,Cam_AutoToFree,Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_InJoyStick,Cam_PinBall_Cody,Cam_End};
 	//O CamFreeMove P FollowPlayer										//BossMiniRoom_Cody
 	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnRail,	Cam_Free_End };
 
@@ -44,6 +44,7 @@ private:
 	_int	Tick_Cam_Warp_WormHole(_double dTimeDelta);			//웜홀
 	_int	Tick_Cam_PressButton_Bridge(_double dTimeDelta);	//다리앞의 버튼
 	_int	Tick_Cam_InJoystick(_double dTimeDelta);			//달나라 우주선 레이져
+	_int	Tick_Cam_PinBall_Cody(_double dTimeDelta);
 
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
@@ -60,15 +61,16 @@ private:
 	//For.OnRail
 	_float Get_ZoomVal_OnRail(_uint iNodeIdx, _bool bCanDash = false);
 	_float	DotProgress(_float fOffSetDist);	//직선구간
+	_float  DotProgress_Bezier(_float fOffSetDist);
 private:
-	_int	ReSet_Cam_FreeToAuto();		//카메라가 초기상태로 돌아옴
+	_int	ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook = false);		//카메라가 초기상태로 돌아옴
 	_int	ReSet_Cam_Free_OnRail();
 	_bool	OffSetPhsX(_fvector vEye,_fvector vAt,_double dTimeDelta,_vector * pOut);
 
 	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At, _fvector vUp = XMVectorSet(0.f,1.f,0.f,0.f));
 	_fmatrix MakeViewMatrixByUp(_fvector vEye, _fvector vAt, _fvector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	_fmatrix MakeViewMatrix_FollowPlayer(_double dTimeDelta);
 	_fmatrix MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime);
-
 
 private:
 	_bool m_bStart = false;
@@ -112,7 +114,9 @@ private:
 	//For.BridgeUppend
 	_bool	m_bStartBridgeUppendCam = false;
 	_float	m_fBridgeUppendTime = 0.f;
-
+	//For.PinBall
+	_float4		m_vStartPinBallBezierPos = {0.f,0.f,0.f,1.f};
+	_float		m_fStartPinBallBezierTime = 0.f;
 	//For.RayCast
 	PxRaycastBuffer m_RayCastBuffer;
 	WORLDMATRIX	m_PreWorld;

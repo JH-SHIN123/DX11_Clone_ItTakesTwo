@@ -5,7 +5,7 @@
 #include "UI_Generator.h"
 #include "RobotHead.h"
 #include "NoBatterySign.h"
-
+#include"CutScenePlayer.h"
 CRobotLever::CRobotLever(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CRobotParts(pDevice, pDeviceContext)
 {
@@ -196,7 +196,13 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 	else if (m_bBatteryCharged == true)
 	{
 		if (m_tRobotPartsDesc.iStageNum == ST_GRAVITYPATH)
+		{
+			if (false == DATABASE->Get_GravityStageClear())
+			{
+				CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Active_GravityPath_01");
+			}
 			DATABASE->Set_GravityStageClear(true);
+		}
 		else if (m_tRobotPartsDesc.iStageNum == ST_RAIL)
 			DATABASE->Set_RailStageClear(true);
 
