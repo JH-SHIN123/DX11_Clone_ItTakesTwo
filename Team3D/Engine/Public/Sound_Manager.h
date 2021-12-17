@@ -14,6 +14,8 @@ enum ENGINE_DLL CHANNEL_TYPE
 	/* Jin */
 	, CHANNEL_BOSS
 	/* Hye */
+	, CHANNEL_LOGO
+	, CHANNEL_BUTTON
 	/* Jung */
 	/* Taek */
 	/* Jun */
