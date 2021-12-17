@@ -93,7 +93,6 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 	if (m_EffectDesc_Clone.iPlayerValue == 0 && DATABASE->Get_GravityStageClear() == true)
 		m_IsActivate = true;
 
-
 	if (m_EffectDesc_Clone.iPlayerValue == 1 && DATABASE->Get_IsValve_Activated() == true)
 		m_IsActivate = true;
 

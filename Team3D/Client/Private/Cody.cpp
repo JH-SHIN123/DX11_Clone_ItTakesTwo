@@ -1310,8 +1310,10 @@ void CCody::Jump(const _double dTimeDelta)
 			if (m_eCurPlayerSize == SIZE_LARGE)
 				m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Start); // 사이즈 클때 점프 애니메이션이 다름.
 			else
+			{
 				m_pModelCom->Set_Animation(ANI_C_Jump_Start);
-
+				m_pGameInstance->Play_Sound(TEXT("CodyM_Jump.wav"), CHANNEL_CODYM_JUMP, m_fCodyJumpSound);
+			}
 			m_bShortJump = false;
 		}
 		if (m_iJumpCount == 2)

@@ -111,7 +111,6 @@ HRESULT CRunningMoonBaboon::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(0);
-
 	return S_OK;
 }
 
