@@ -11,9 +11,10 @@ class CMainCamera final : public CCamera
 {
 	enum CamRev {Rev_Holizontal,Rev_Prependicul,Rev_End};
 
-	enum class CamMode{Cam_Free,Cam_AutoToFree,Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_InJoyStick,Cam_PinBall_Cody,Cam_End};
+	enum class CamMode{Cam_Free,Cam_AutoToFree, Cam_WallJump, Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_InJoyStick,Cam_PinBall_Cody,Cam_End};
 	//O CamFreeMove P FollowPlayer										//BossMiniRoom_Cody
-	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnRail,	Cam_Free_End };
+	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnRail,
+		Cam_Free_Umbrella_Laser,Cam_Free_End };
 
 private:
 	explicit CMainCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -45,11 +46,12 @@ private:
 	_int	Tick_Cam_PressButton_Bridge(_double dTimeDelta);	//다리앞의 버튼
 	_int	Tick_Cam_InJoystick(_double dTimeDelta);			//달나라 우주선 레이져
 	_int	Tick_Cam_PinBall_Cody(_double dTimeDelta);
+	_int	Tick_Cam_WallJump(_double dTimeDelta);
 
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
 	_int	Tick_Cam_Free_OnRail(_double dTimeDelta);			//미니코디 보스룸
-	
+	_int	Tick_Cam_Free_Umbrella_Laser(_double dTimeDelta);
 	//CamHelper State(현재 )
 	_int	Tick_CamHelperNone(_double dTimeDelta);			//현재 아무것도 재생안함
 	_int	Tick_CamHelper_Act(_double dTimeDelta);			//재생중
@@ -79,6 +81,8 @@ private:
 	_float m_fCurMouseRev[Rev_End] = { 0.f,0.f };
 
 	CamMode m_eCurCamMode = CamMode::Cam_End;
+	CamMode m_ePreCamMode = CamMode::Cam_End;
+
 
 	_float4x4 m_matBeginWorld;	//카메라 이펙트등등 tick돌아갈때쓸것 
 	_float4x4 m_matCurWorld;	//연출후 돌아오기

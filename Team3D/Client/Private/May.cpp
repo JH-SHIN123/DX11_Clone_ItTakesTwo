@@ -1451,6 +1451,11 @@ void CMay::SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix
 	XMStoreFloat4x4(&m_TriggerCameraWorld, vTriggerCameraWorld);
 }
 
+void CMay::SetCameraTriggerID_Pos(_fvector vCamTriggerPos)
+{
+	XMStoreFloat4(&m_vCamTriggerPos, vCamTriggerPos);
+}
+
 _bool CMay::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)

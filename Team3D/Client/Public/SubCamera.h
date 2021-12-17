@@ -10,7 +10,7 @@ class CCameraActor;
 class CSubCamera final : public CCamera
 {
 	enum CamRev { Rev_Holizontal, Rev_Prependicul, Rev_End };
-	enum class CamMode { Cam_Free, Cam_AutoToFree, Cam_Warp_WormHole,Cam_PinBall_May, Cam_End };
+	enum class CamMode { Cam_Free, Cam_AutoToFree, Cam_Warp_WormHole, Cam_WallJump, Cam_PinBall_May, Cam_End };
 	//O CamFreeMove P FollowPlayer
 	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_RidingSpaceShip_May,Cam_Free_End };
 private:
@@ -43,7 +43,8 @@ private:
 	_int	Tick_Cam_AutoToFree(_double dTimeDelta);		//연출 카메라 -> 자유이동시 보간
 	_int	Tick_Cam_Warp_WormHole(_double dTimeDelta);		//웜홀
 	_int	Tick_Cam_PinBall_May(_double dTimeDelta);		//핀볼 메이
-	
+	_int	Tick_Cam_WallJump(_double dTimeDelta);
+
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
 	_int	Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta);	//우주선 탓을때

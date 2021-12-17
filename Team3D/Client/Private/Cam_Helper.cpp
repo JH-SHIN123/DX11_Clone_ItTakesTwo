@@ -15,100 +15,7 @@ CCam_Helper::CCam_Helper(const CCam_Helper & rhs)
 HRESULT CCam_Helper::NativeConstruct_Prototype()
 {
 	__super::NativeConstruct_Prototype();
-#pragma region CAM_MOVE_BASIC
-	CFilm* pFilm_Eye_Straight = CFilm::Create(TEXT("Eye_Straight"));
-	
-	_float3 vAt = { 0.f,4.f,0.f };
-	CFilm::CamNode* pNode = new CFilm::CamNode;
-	pNode->vEye = { 10.f,4.f, 0.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 0.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Straight->Add_Node(pNode);
-	
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 10.f,4.f, 10.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 1.5;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Straight->Add_Node(pNode);
-	
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 0.f,4.f, 10.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 3.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Straight->Add_Node(pNode);
-	
-	Add_Film(TEXT("Eye_Straight"), pFilm_Eye_Straight, 3.0);
-	
-	CFilm* pFilm_Eye_Bezier3 = CFilm::Create(TEXT("Eye_Bezier3"));
-	
-	
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 10.f,4.f, 0.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 0.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Bezier3->Add_Node(pNode);
-	
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 10.f,4.f, 10.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 1.5;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Bezier3->Add_Node(pNode);
-	
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 0.f,4.f, 10.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 3.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_3;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Straight;
-	pFilm_Eye_Bezier3->Add_Node(pNode);
-	
-	Add_Film(TEXT("Eye_Bezier3"), pFilm_Eye_Bezier3, 3.0);
-	
-	CFilm* pFilm_Eye_Bezier4 = CFilm::Create(TEXT("Eye_Bezier4"));
-	
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 10.f,4.f, -10.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 0.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_4;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Jump;
-	pFilm_Eye_Bezier4->Add_Node(pNode);
-	
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { -30.f,4.f, 30.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 1.5;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_4;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Jump;
-	pFilm_Eye_Bezier4->Add_Node(pNode);
-	
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { 30.f,4.f, 30.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 3.0;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_4;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Jump;
-	pFilm_Eye_Bezier4->Add_Node(pNode);
-	
-	pNode = new CFilm::CamNode;
-	pNode->vEye = { -10.f,4.f, -10.f };
-	pNode->vAt = vAt;
-	pNode->dTime = 4.5;
-	pNode->eEyeMoveOption = CFilm::CamMoveOption::Move_Bezier_4;
-	pNode->eAtMoveOption = CFilm::CamMoveOption::Move_Jump;
-	pFilm_Eye_Bezier4->Add_Node(pNode);
-	
-	Add_Film(TEXT("Eye_Bezier4"), pFilm_Eye_Bezier4, 4.5);
+#pragma region CAM_SHAKE_BASIC
 	
 	CCamEffect* pShake_Loc_Right = CCamEffect::Create(TEXT("Cam_Shake_Loc_Right"));
 	{
@@ -339,6 +246,10 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 		return E_FAIL;
 	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Active_GravityPath_01.dat"))))
 		return E_FAIL;
+	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Clear_Umbrella.dat"))))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 

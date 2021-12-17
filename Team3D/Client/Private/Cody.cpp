@@ -485,7 +485,8 @@ void CCody::KeyInput(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_BACKSPACE))/* ¿ì»ê */
 	{
-		m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+		//m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 #pragma endregion
@@ -752,6 +753,11 @@ _uint CCody::Get_CurState() const
 	if (nullptr == m_pModelCom) return 0;
 
 	return m_pModelCom->Get_CurAnimIndex();
+}
+
+_bool CCody::Get_IsPlayerInUFO()
+{
+	return m_pActorCom->Get_IsPlayerInUFO();
 }
 
 void CCody::Move(const _double dTimeDelta)
@@ -1793,6 +1799,11 @@ void CCody::SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatri
 	m_eCameraTriggerID = eID;
 	m_IsCamTriggerCollide = IsCollide;
 	XMStoreFloat4x4(&m_TriggerCameraWorld, vTriggerCameraWorld);
+}
+
+void CCody::SetCameraTriggerID_Pos(_fvector vCamTriggerPos)
+{
+	XMStoreFloat4(&m_vCamTriggerPos, vCamTriggerPos);
 }
 
 _bool CCody::Trigger_Check(const _double dTimeDelta)

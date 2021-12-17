@@ -135,6 +135,9 @@ _int CSubCamera::Check_Player(_double dTimeDelta)
 		m_eCurCamMode = CamMode::Cam_Warp_WormHole;
 	if (m_pMay->Get_IsPinBall())
 		m_eCurCamMode = CamMode::Cam_PinBall_May;
+	if (m_pMay->Get_IsWallJump())
+		m_eCurCamMode = CamMode::Cam_WallJump;
+
 	if (m_eCurCamMode == CamMode::Cam_Free)
 	{
 		switch (m_eCurCamFreeOption)
@@ -152,6 +155,8 @@ _int CSubCamera::Check_Player(_double dTimeDelta)
 	}
 #ifdef __TEST_JUN
 	if (m_pGameInstance->Key_Down(DIK_U))
+		ReSet_Cam_FreeToAuto();
+	if (m_pGameInstance->Key_Down(DIK_9))
 		ReSet_Cam_FreeToAuto();
 #endif
 	return NO_EVENT;
@@ -314,6 +319,44 @@ _int CSubCamera::Tick_Cam_PinBall_May(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+_int CSubCamera::Tick_Cam_WallJump(_double dTimeDelta)
+{
+	if (m_pMay->Get_IsWallJump() == false)
+		m_eCurCamMode = CamMode::Cam_AutoToFree;
+	CTransform* pPlayerTransform = m_pMay->Get_Transform();
+
+	_matrix matFacetoWall = m_pMay->Get_CameraTrigger_Matrix();
+	_vector vProgressDir = matFacetoWall.r[1];
+	_vector vTriggerPos = m_pMay->Get_CamTriggerPos();
+	_float fAxisX = fabs(XMVectorGetX(vProgressDir));
+	_float fAxisY = fabs(XMVectorGetY(vProgressDir));
+	_float fAxisZ = fabs(XMVectorGetZ(vProgressDir));
+
+	_float fMax = fmax(fmax(fAxisX, fAxisY), fAxisZ);
+	_vector vPlayerPos = m_pMay->Get_Position();
+	_vector vEye = matFacetoWall.r[3];
+	if (fMax == fAxisY)
+	{
+		vPlayerPos = XMVectorSetY(vTriggerPos, XMVectorGetY(vPlayerPos));
+		vEye = XMVectorSetY(vEye, XMVectorGetY(vPlayerPos));
+	}
+	else if (fMax == fAxisZ)
+	{
+		vEye = XMVectorSetZ(vEye, XMVectorGetZ(vPlayerPos));
+		vPlayerPos = XMVectorSetZ(vTriggerPos, XMVectorGetZ(vPlayerPos));
+	}
+	else if (fMax == fAxisX)
+	{
+		vEye = XMVectorSetX(vEye, XMVectorGetX(vPlayerPos));
+		vPlayerPos = XMVectorSetX(vTriggerPos, XMVectorGetX(vPlayerPos));
+	}
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vPlayerPos, matFacetoWall.r[1]), dTimeDelta * 3.f));
+
+
+	return NO_EVENT;
+	return NO_EVENT;
+}
+
 
 _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 {
@@ -331,6 +374,7 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 	if (m_pMay->Get_IsInUFO() == false)
 	{
 		ReSet_Cam_FreeToAuto();
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 		return NO_EVENT;
 	}
 	CTransform* pPlayerTransform = m_pMay->Get_Transform();
@@ -389,6 +433,9 @@ _int CSubCamera::Tick_CamHelperNone(_double dTimeDelta)
 		break;
 	case Client::CSubCamera::CamMode::Cam_PinBall_May:
 		iResult = Tick_Cam_PinBall_May(dTimeDelta);
+		break;
+	case Client::CSubCamera::CamMode::Cam_WallJump:
+		iResult = Tick_Cam_WallJump(dTimeDelta);
 		break;
 	}
 	return iResult;

@@ -11,6 +11,7 @@
 #include"UI_Generator.h"
 #include"PinBall.h"
 #include"PinBall_Handle.h"
+#include"UmbrellaBeam.h"
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -171,12 +172,19 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 	{
 		m_eCurCamMode = CamMode::Cam_InJoyStick;
 	}
-	//快林急郴何
-	if (m_pGameInstance->Key_Down(DIK_9))
+	if (m_pCody->Get_IsPlayerInUFO())
 	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OnRail;
-		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f,0.f,0.6f,1.f), XMVectorSet(0.6f,0.f,1.f,1.f));
+		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f,0.f,0.6f,1.f), XMVectorSet(0.6f,0.f,0.4f,1.f));
 		return	ReSet_Cam_Free_OnRail();
+	}
+	if (m_pCody->Get_IsControllJoyStick())
+	{
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_Umbrella_Laser;
+	}
+	if (m_pCody->Get_IsWallJump())
+	{
+		m_eCurCamMode = CamMode::Cam_WallJump;
 	}
 	return NO_EVENT;
 }
@@ -231,6 +239,9 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 	case CMainCamera::CamFreeOption::Cam_Free_OnRail:
 		iResult = Tick_Cam_Free_OnRail(dTimeDelta);
 		break;
+	case CMainCamera::CamFreeOption::Cam_Free_Umbrella_Laser:
+		iResult = Tick_Cam_Free_Umbrella_Laser(dTimeDelta);
+		break;
 	}
 	return iResult;
 }
@@ -248,6 +259,7 @@ _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 	CTransform* pPlayerTransform = m_pCody->Get_Transform();
 	if (m_fChangeCamModeTime == 0.f) 
 	{
+
 		_matrix matWorld = m_pTransformCom->Get_WorldMatrix(); 
 		XMStoreFloat4x4(&m_matCurWorld, matWorld);
 		m_CameraDesc.fFovY = XMConvertToRadians(60.f);
@@ -409,7 +421,11 @@ _float CMainCamera::DotProgress_Bezier(_float fOffSetDist)
 #pragma endregion
 _int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
 {
-
+	if (m_pCody->Get_IsPlayerInUFO() == false)
+	{
+		ReSet_Cam_FreeToAuto();
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
+	}
 	if (false == m_bStartOnRail)
 	{
 		XMStoreFloat3(&m_vCurRailAt, m_pCody->Get_Position());
@@ -737,6 +753,27 @@ _int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
 	//}
 #pragma endregion
 }
+_int CMainCamera::Tick_Cam_Free_Umbrella_Laser(_double dTimeDelta)
+{
+	if (m_pCody->Get_IsControllJoyStick() == false)
+	{
+		ReSet_Cam_FreeToAuto(true);
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
+	}
+	CUmbrellaBeam* pUmbrellaBeam = static_cast<CUmbrellaBeam*>(DATABASE->Get_UmbrellaBeam());
+	CTransform* pBeamTransform = pUmbrellaBeam->Get_Transform();
+
+	_vector vBeamLook = pBeamTransform->Get_State(CTransform::STATE_LOOK);
+	_vector vBeamPos = pBeamTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vBeamUp = pBeamTransform->Get_State(CTransform::STATE_UP);
+	_vector vEye = vBeamPos - vBeamLook * 7.f + vBeamUp * 7.f;
+	vBeamPos += vBeamLook * 18.f;
+	//OffSetPhsX(vEye, vBeamPos, dTimeDelta, &vEye);
+
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vBeamPos),dTimeDelta * 2.f));
+
+	return NO_EVENT;
+}
 _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 {
 	if (nullptr == m_pCody)
@@ -884,7 +921,9 @@ _int CMainCamera::Tick_Cam_PressButton_Bridge(_double dTimeDelta)
 _int CMainCamera::Tick_Cam_InJoystick(_double dTimeDelta)
 {
 	if (m_pCody->Get_IsInArcadeJoyStick() == false)
+	{
 		ReSet_Cam_FreeToAuto();
+	}
 	CUFORadarSet* pRaderSet =  static_cast<CUFORadarSet*>(DATABASE->Get_UFORadarSet());
 	CTransform* pRaderScreenTransform = pRaderSet->Get_RaderScreen()->Get_Transform();
 	CTransform* pRaderLeverTransform =	pRaderSet->Get_RadarLever()->Get_Transform();
@@ -977,32 +1016,65 @@ _int CMainCamera::Tick_Cam_PinBall_Cody(_double dTimeDelta)
 	}
 	else if(pPinBallHandle->Get_Goal() && m_pCody->Get_IsPinBall())//己傍
 	{
-		_vector vFinishEye = XMVectorSet(-669.537f,760.996f,-152.691f,1.f);
-		_vector vFinishAt = XMVectorSet(-669.547f, 760.868f,-153.682f, 1.f);
+		_vector vFinishEye = XMVectorSet(-672.537f,760.996f, -147.991,1.f);
+		_vector vFinishAt = XMVectorSet(-672.547f, 760.868f,-148.982f, 1.f);
 		m_fStartPinBallBezierTime += dTimeDelta;
 		_float fWatingTime = 0.5f;
 		if(m_fStartPinBallBezierTime > fWatingTime)
 			m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vFinishEye, vFinishAt),
 				m_fStartPinBallBezierTime - fWatingTime));
+		if (m_fStartPinBallBezierTime > 2.5f && UI_Generator->Get_EmptyCheck(Player::Cody, UI::BlackScreenFadeInOut))
+		{
+			UI_CreateOnlyOnce(Cody, BlackScreenFadeInOut);
+			UI_Generator->Set_FadeInSpeed(Player::Cody, UI::BlackScreenFadeInOut, 5.f);
+		}
 	}
 	else
 	{
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
 		
-		if (UI_Generator->Get_EmptyCheck(Player::Cody, UI::BlackScreenFadeInOut))
-		{
-			UI_CreateOnlyOnce(Cody, BlackScreenFadeInOut);
-			UI_Generator->Set_FadeInSpeed(Player::Cody, UI::BlackScreenFadeInOut, 8.f);
-		}
-		UI_Generator->Set_FadeOut(Player::Cody, UI::BlackScreenFadeInOut);
-		UI_Generator->Set_FadeOutSpeed(Player::Cody, UI::BlackScreenFadeInOut, 5.f);
-	
 		ReSet_Cam_FreeToAuto(true);
 		m_fStartPinBallBezierTime = 0.f;
-		m_pTransformCom->Set_WorldMatrix(MakeViewMatrix_FollowPlayer(dTimeDelta));
 		//场巢
 	}
 	
+	
+	return NO_EVENT;
+}
+
+_int CMainCamera::Tick_Cam_WallJump(_double dTimeDelta)
+{
+	if (m_pCody->Get_IsWallJump() == false)
+		m_eCurCamMode = CamMode::Cam_AutoToFree;
+	CTransform* pPlayerTransform = m_pCody->Get_Transform();
+
+	_matrix matFacetoWall = m_pCody->Get_CameraTrigger_Matrix();
+	_vector vProgressDir = matFacetoWall.r[1];
+	_vector vTriggerPos = m_pCody->Get_CamTriggerPos();
+	_float fAxisX = XMVectorGetX(vProgressDir);
+	_float fAxisY = XMVectorGetY(vProgressDir);
+	_float fAxisZ = XMVectorGetZ(vProgressDir);
+
+	_float fMax = fmax(fmax(fAxisX, fAxisY), fAxisZ);
+	_vector vPlayerPos = m_pCody->Get_Position();
+	_vector vEye = matFacetoWall.r[3];
+	if (fMax == fAxisY)
+	{
+		vPlayerPos = XMVectorSetY(vTriggerPos, XMVectorGetY(vPlayerPos));
+		vEye = XMVectorSetY(vEye, XMVectorGetY(vPlayerPos));
+	}
+	else if (fMax = fAxisZ)
+	{
+		vEye = XMVectorSetZ(vEye, XMVectorGetZ(vPlayerPos));
+		vPlayerPos = XMVectorSetZ(vTriggerPos, XMVectorGetZ(vPlayerPos));
+	}
+	else if (fMax == fAxisX)
+	{
+		vEye = XMVectorSetX(vEye, XMVectorGetX(vPlayerPos));
+		vPlayerPos = XMVectorSetX(vTriggerPos, XMVectorGetX(vPlayerPos));
+	}
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vPlayerPos, matFacetoWall.r[1]), dTimeDelta * 3.f));
+
 	
 	return NO_EVENT;
 }
@@ -1244,26 +1316,51 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	}
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 	{
-		m_pCamHelper->Start_Film(L"Line_BossRoom_MiniCody",CFilm::LScreen);
+		m_pCamHelper->Start_Film(L"Film_Clear_Umbrella",CFilm::LScreen);
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
 		return NO_EVENT;
 	}
-
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
 		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
 		return NO_EVENT;
 	}
-	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
-	{
-		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Active_GravityPath_01");
-		return NO_EVENT;
-	}*/
 	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 	{
 		CCutScenePlayer::GetInstance()->Stop_CutScene();
 		return NO_EVENT;
 	}*/
 #endif
+	if (m_eCurCamMode != m_ePreCamMode)
+	{
+		switch (m_eCurCamMode)
+		{
+		case Client::CMainCamera::CamMode::Cam_Free:
+			break;
+		case Client::CMainCamera::CamMode::Cam_AutoToFree:
+			switch (m_ePreCamMode)
+			{
+			case Client::CMainCamera::CamMode::Cam_PinBall_Cody:
+				if (false == UI_Generator->Get_EmptyCheck(Player::Cody, UI::BlackScreenFadeInOut))
+				{
+					UI_Generator->Set_FadeOut(Player::Cody, UI::BlackScreenFadeInOut);
+					UI_Generator->Set_FadeOutSpeed(Player::Cody, UI::BlackScreenFadeInOut, 6.f);
+				}
+				m_pTransformCom->Set_WorldMatrix(MakeViewMatrix_FollowPlayer(dTimeDelta));
+				break;
+			}
+			break;
+		case Client::CMainCamera::CamMode::Cam_Warp_WormHole:
+			break;
+		case Client::CMainCamera::CamMode::Cam_PressButton_Bridge:
+			break;
+		case Client::CMainCamera::CamMode::Cam_InJoyStick:
+			break;
+		case Client::CMainCamera::CamMode::Cam_PinBall_Cody:
+			break;
+		}
+		m_ePreCamMode = m_eCurCamMode;
+	}
 	if (m_eCurCamFreeOption != m_ePreCamFreeOption)
 	{
 		switch (m_eCurCamFreeOption)
@@ -1299,6 +1396,9 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		break;
 	case Client::CMainCamera::CamMode::Cam_PinBall_Cody:
 		iResult = Tick_Cam_PinBall_Cody(dTimeDelta);
+		break;
+	case Client::CMainCamera::CamMode::Cam_WallJump:
+		iResult = Tick_Cam_WallJump(dTimeDelta);
 		break;
 	}
 	return iResult;

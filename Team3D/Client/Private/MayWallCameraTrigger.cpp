@@ -72,6 +72,7 @@ void CMayWallCameraTrigger::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eI
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetCameraTriggerID_Matrix(GameID::Enum::eMAYWALLCAMERATRIGGER, true, CameraMatrix);
+		((CMay*)pGameObject)->SetCameraTriggerID_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
