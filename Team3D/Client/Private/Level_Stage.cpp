@@ -37,6 +37,9 @@ CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice
  
 HRESULT CLevel_Stage::NativeConstruct()
 {
+	/* Sound */
+	m_pGameInstance->Stop_SoundAll();
+
 	CLevel::NativeConstruct();
 
 	/* Priority */
@@ -94,7 +97,6 @@ HRESULT CLevel_Stage::NativeConstruct()
 #endif
 	/* Script */
 	FAILED_CHECK_RETURN(Ready_Layer_Script(TEXT("Layer_Script")), E_FAIL);
-
 	return S_OK;
 }
 
@@ -222,7 +224,7 @@ HRESULT CLevel_Stage::Ready_Test()
 
 	/* Hye */
 #ifdef __TEST_HYE
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Font", Level::LEVEL_STAGE, TEXT("GameObject_FontTest")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Environment", Level::LEVEL_STAGE, TEXT("GameObject_Laser_LaserTennis")), E_FAIL);
 #endif // __TEST_HYE
 
 	/* Teak */

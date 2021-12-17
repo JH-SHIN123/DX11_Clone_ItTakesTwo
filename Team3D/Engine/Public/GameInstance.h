@@ -69,10 +69,13 @@ public:
 #pragma endregion
 
 #pragma region Sound_Manager
-	void Play_Sound(TCHAR* pSoundKey, CHANNEL_TYPE eChannel, _float fVolume = 0.5f, _bool bLoop = false);
+	_bool IsPlaying(CHANNEL_TYPE eChannel);
+	void Play_Sound(TCHAR* pSoundKey, CHANNEL_TYPE eChannel, _float fVolume = 1.f, _bool bLoop = false);
 	void Stop_Sound(CHANNEL_TYPE eChannel);
 	void Stop_SoundAll();
 	void Set_SoundVolume(CHANNEL_TYPE eChannel, _float fVolume);
+	void Lerp_Sound(CHANNEL_TYPE eFirstChannel, CHANNEL_TYPE eSecondChannel, _float fLerpSpped = 1.f, _float fFirstVolume = 1.f, _float fSecondVolume = 1.f);
+	void FadeInOut_Sound(CHANNEL_TYPE eChannel, _bool bType, _float fLerpSpped = 1.f, _float fVolume = 1.f);
 #pragma endregion
 
 #pragma region Level_Manager
