@@ -1775,7 +1775,7 @@ void CMay::Pull_VerticalDoor(const _double dTimeDelta)
 		return;
 
 	_bool IsTriggerEnd = false;
-	if (m_pGameInstance->Pad_Key_Down(DIP_LB) || m_pGameInstance->Key_Down(DIK_O))
+	if (m_pGameInstance->Pad_Key_Down(DIP_LB) || m_pGameInstance->Key_Down(DIK_I))
 		IsTriggerEnd = true;
 
 	if (m_IsPullVerticalDoor == true)

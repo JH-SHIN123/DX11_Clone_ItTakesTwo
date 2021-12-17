@@ -175,11 +175,11 @@ RasterizerState Rasterizer_NoCull
 	FillMode = Solid;
 	CullMode = None;
 };
-RasterizerState Rasterizer_CCW
+RasterizerState Rasterizer_CW
 {
 	FillMode = Solid;
 	CullMode = Front;
-	FrontCounterClockwise = true;
+	//FrontCounterClockwise = true; // 둘중에 하나만 켜야함.
 };
 RasterizerState Rasterizer_Shadow
 {

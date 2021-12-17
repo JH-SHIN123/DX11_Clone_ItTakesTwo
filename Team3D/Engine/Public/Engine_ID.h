@@ -108,4 +108,9 @@ namespace Engine
 	{
 		enum Enum { eFOUND, eLOST };
 	};
+
+	struct LightStatus
+	{
+		enum Enum { eDIRECTIONAL, eSTATIC, eDYNAMIC, eEND };
+	};
 }

@@ -68,26 +68,32 @@ _int CCamera::Tick(_double dTimeDelta)
 	{
 		m_CameraDesc.fAspect = CGraphic_Device::GetInstance()->Get_ViewportAspect(1);
 
-		_matrix CameraMatrix	= m_pTransformCom->Get_WorldMatrix();
-		_matrix ProjMatrix		= XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+		_matrix CameraMatrix		= m_pTransformCom->Get_WorldMatrix();
+		_matrix ProjMatrix			= XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+		_matrix ProjMatrix_ForEarth	= XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fAspect, m_CameraDesc.fNear, 50000.f);
 
 		m_pPipeline->Set_Transform(CPipeline::TS_MAINVIEW, XMMatrixInverse(nullptr, CameraMatrix));
 		m_pPipeline->Set_Transform(CPipeline::TS_MAINVIEW_INVERSE, CameraMatrix);
 		m_pPipeline->Set_Transform(CPipeline::TS_MAINPROJ, ProjMatrix);
 		m_pPipeline->Set_Transform(CPipeline::TS_MAINPROJ_INVERSE, XMMatrixInverse(nullptr, ProjMatrix));
+		m_pPipeline->Set_Transform(CPipeline::TS_MAINPROJ_FOR_EARTH, ProjMatrix_ForEarth);
+
 		m_pPipeline->Set_MainCamFar(m_CameraDesc.fFar);
 	}
 	else if (2 == m_CameraDesc.iViewportIndex)
 	{
 		m_CameraDesc.fAspect = CGraphic_Device::GetInstance()->Get_ViewportAspect(2);
 
-		_matrix CameraMatrix	= m_pTransformCom->Get_WorldMatrix();
-		_matrix ProjMatrix		= XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+		_matrix CameraMatrix		= m_pTransformCom->Get_WorldMatrix();
+		_matrix ProjMatrix			= XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar);
+		_matrix ProjMatrix_ForEarth = XMMatrixPerspectiveFovLH(m_CameraDesc.fFovY, m_CameraDesc.fAspect, m_CameraDesc.fNear, 50000.f);
 
 		m_pPipeline->Set_Transform(CPipeline::TS_SUBVIEW, XMMatrixInverse(nullptr, CameraMatrix));
 		m_pPipeline->Set_Transform(CPipeline::TS_SUBVIEW_INVERSE, CameraMatrix);
 		m_pPipeline->Set_Transform(CPipeline::TS_SUBPROJ, ProjMatrix);
 		m_pPipeline->Set_Transform(CPipeline::TS_SUBPROJ_INVERSE, XMMatrixInverse(nullptr, ProjMatrix));
+		m_pPipeline->Set_Transform(CPipeline::TS_SUBPROJ_FOR_EARTH, ProjMatrix_ForEarth);
+
 		m_pPipeline->Set_SubCamFar(m_CameraDesc.fFar);
 	}
 

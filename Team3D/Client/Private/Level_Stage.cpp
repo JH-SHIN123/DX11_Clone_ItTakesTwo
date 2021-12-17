@@ -10,7 +10,6 @@
 #include "Effect_Generator.h"
 #include "InGameEffect.h"
 #include "WarpGate.h"
-#include "Boss_Missile.h"
 #include "Effect_Env_Particle_Field.h"
 /* Hye */
 #include "Environment_Generator.h"
@@ -18,13 +17,14 @@
 #include "HangingPlanet.h"
 /* Taek */
 #include "MoonBaboonCore.h"
-#include "Light_Generator.h"
+#include "VolumeLight.h"
 /* Yoon */
 #include "RotatedRobotParts.h"
 #include "RobotParts.h"
 #include "ToyBoxButton.h"
 #include "Rope.h"
 #include "UFORadarSet.h"
+#include "Boss_Missile.h"
 /* Jin */
 /* Jun */
 #include "Camera.h"
@@ -80,7 +80,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_PipeJumpWall(TEXT("Layer_PipeJumpWall")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Rope(TEXT("Layer_Rope")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_UFORadarSet(TEXT("Layer_UFORadarSet")), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_TestRocket(TEXT("Layer_BossMissile")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_TestRocket(TEXT("Layer_BossMissile")), E_FAIL);
 
 
 
@@ -105,29 +105,8 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
 
-#ifdef __TEST_TAEK
-	TCHAR lightTag[256] = L"";
-
-	TCHAR szBuff[256] = L"";
-	GetPrivateProfileString(L"Section_2", L"Key_1", L"0", szBuff, 256, L"../test.ini");
-	lstrcpy(lightTag, szBuff);
-
-	GetPrivateProfileString(L"Section_2", L"Key_2", L"0", szBuff, 256, L"../test.ini");
-	_float a = (_float)_wtof(szBuff);
-	GetPrivateProfileString(L"Section_2", L"Key_3", L"0", szBuff, 256, L"../test.ini");
-	_float b = (_float)_wtof(szBuff);
-	GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
-	_float c = (_float)_wtof(szBuff);
-	GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
-	_float d = (_float)_wtof(szBuff);
-
-	LIGHT_DESC* lightDesc = m_pGameInstance->Get_LightDescPtr(lightTag);
-
-	if (lightDesc)
-	{
-		lightDesc->vPosition = { a,b,c };
-		lightDesc->fRange = d;
-	}
+#ifdef __INSTALL_LIGHT
+	CLight_Generator::GetInstance()->KeyInput(dTimedelta);
 #endif // __TEST_TAEK
 
 #ifdef __TEST_SE
@@ -181,19 +160,66 @@ HRESULT CLevel_Stage::Ready_Test()
 {
 	/* Se */
 #ifdef __TEST_SE
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA")), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB")), E_FAIL);
 #endif 
 	/* Jung */
 #ifdef __TEST_JUNG
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core")), E_FAIL);
 
-	CEffect_Env_Particle_Field::ARG_DESC Arg_Desc;
-	Arg_Desc.iInstanceCount = 8000;
-	Arg_Desc.vPosition = { 60.f, 0.f, 30.f, 1.f };
-	Arg_Desc.vRadiusXYZ = { 30.f, 10.f, 100.f };
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
+	ROBOTDESC UFODesc;
+	UFODesc.vPosition = { 64.f, 10.f, 30.f, 1.f };
+	//UFODesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Test", Level::LEVEL_STAGE, TEXT("GameObject_UFO"), &UFODesc), E_FAIL);
+
+	CMoonBaboonCore::MOONBABOONCORE_DESC tDesc;
+	tDesc.iIndex = 0;
+	tDesc.WorldMatrix._41 = 60.f;
+	tDesc.WorldMatrix._42 = 0.f;
+	tDesc.WorldMatrix._43 = 10.f;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore"), &tDesc), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_BOMB", Level::LEVEL_STAGE, TEXT("GameObject_3D_Boss_Gravitational_Bomb")), E_FAIL);
+
+	_float4 vPos = { 60.f, 0.f, 20.f, 1.f };
+	CDynamic_Env::ARG_DESC Arg;
+	Arg.iMaterialIndex = 0;
+	Arg.iOption = 0;
+	Arg.WorldMatrix = MH_XMFloat4x4Identity();
+	memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
+	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_SmallOpen_01"));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricBox", Level::LEVEL_STAGE, TEXT("GameObject_ElectricBox"), &Arg), E_FAIL);
+
+	vPos = { 60.f, 1.f, 25.f, 1.f };
+	Arg.iMaterialIndex = 0;
+	Arg.iOption = 0;
+	Arg.WorldMatrix = MH_XMFloat4x4Identity();
+	memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
+	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_Support_01"));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricWall", Level::LEVEL_STAGE, TEXT("GameObject_ElectricWall"), &Arg), E_FAIL);
+
+	vPos = { 58.f, 0.21f, 25.f, 1.f };
+	Arg.iMaterialIndex = 0;
+	Arg.iOption = 0;
+	Arg.WorldMatrix = MH_XMFloat4x4Identity();
+	memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
+	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_Interior_PedalSmasher_01"));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Press", Level::LEVEL_STAGE, TEXT("GameObject_Press"), &Arg), E_FAIL);
+	vPos = { 57.5f, 0.21f, 25.f, 1.f };
+	Arg.iOption = 1;
+	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_Interior_PedalSmasher_02"));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Press", Level::LEVEL_STAGE, TEXT("GameObject_Press"), &Arg), E_FAIL);
+
+	CHangingPlanet::ARG_DESC tPlanetArg;
+	_matrix World = XMMatrixIdentity();
+	lstrcpy(tPlanetArg.DynamicDesc.szModelTag, TEXT("Component_Model_Hanging_Planet"));
+	XMStoreFloat4x4(&tPlanetArg.DynamicDesc.WorldMatrix, World);
+	tPlanetArg.DynamicDesc.iMaterialIndex = 0;
+	tPlanetArg.DynamicDesc.iOption = 0;
+
+	tPlanetArg.vJointPosition = _float3(68.f, 38.f, 35.f);
+	tPlanetArg.vOffset = _float3(0.f, 33.f, 0.f);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Çà¼º¤»¤»", Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), &tPlanetArg), E_FAIL);
+
 
 #endif
 
@@ -231,6 +257,8 @@ HRESULT CLevel_Stage::Ready_Test()
 HRESULT CLevel_Stage::Ready_Layer_GravityPath(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(Clone_StaticGameObjects_ByFile(TEXT("../Bin/Resources/Data/MapData/GravityPath_SelectStatic.dat"), pLayerTag, TEXT("GameObject_GravityPath"), GameID::eGRAVITYPATH_SIDE, 30.f), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Earth", Level::LEVEL_STAGE, TEXT("GameObject_Earth")), E_FAIL);
+
 	return S_OK;
 } 
 #pragma endregion
@@ -322,52 +350,163 @@ HRESULT CLevel_Stage::Ready_Layer_Planet(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Lights()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	if (nullptr == pGameInstance)
-		return E_FAIL;
-
-	pGameInstance->Reserve_Container_Light(6);
-
-	LIGHT_DESC			LightDesc;
 
 	/* For.Directional : Ambient / Specular Zero */
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
-	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
-	//LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	//LightDesc.vAmbient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
+	Ready_DirectionalLight(TEXT("Sun"), _float3(1.f, -1.f, 1.f), _float4(0.35f,0.35f,0.35f, 1.f), _float4(0.35f,0.35f,0.35f,1.f), _float4(1.f,1.f,1.f,1.f));
 
-	LightDesc.vDiffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
-	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+//#pragma region PointLight
+//	CLight_Generator* pLightGenerator = CLight_Generator::GetInstance();
+//
+//#pragma region Spawn1
+//	LIGHT_DESC lightDesc;
+//	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
+//	lightDesc.vPosition = XMFLOAT3(64.f, 0.185f, 3.01159f);
+//	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+//	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+//	lightDesc.fRange = 40.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn1_Blue"), CEffectLight::Create(TEXT("Point_Spawn1_Blue"), lightDesc, 60.f, 2, true));
+//
+//	lightDesc.vPosition = XMFLOAT3(74.7694f, 15.f, 51.4455f);
+//	lightDesc.fRange = 30.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn1_Purple1_Left"), CEffectLight::Create(TEXT("Point_Spawn1_Purple1_Left"), lightDesc, 30.f, 1, true));
+//
+//	lightDesc.vPosition = XMFLOAT3(48.2039f, 15.f, 51.4455f);
+//	lightDesc.fRange = 30.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn1_Purple1_Right"), CEffectLight::Create(TEXT("Point_Spawn1_Purple1_Right"), lightDesc, 30.f, 1, true));
+//#pragma endregion
+//
+//#pragma region Spawn2
+//	lightDesc.vPosition = XMFLOAT3(64.f, 27.f, 195.f);
+//	lightDesc.fRange = 90.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn2_Blue1_Bot"), CEffectLight::Create(TEXT("Point_Spawn2_Blue1_Bot"), lightDesc, 60.f, 2, true));
+//
+//	lightDesc.vPosition = XMFLOAT3(64.f, 118.f, 195.f);
+//	lightDesc.fRange = 120.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn2_Blue1_Top"), CEffectLight::Create(TEXT("Point_Spawn2_Blue1_Top"), lightDesc, 80.f, 2, true));
+//#pragma endregion
+//
+//#pragma region Spawn3
+//	lightDesc.vPosition = XMFLOAT3(992.851f, 740.688f, 189.775f);
+//	lightDesc.vDiffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
+//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+//	lightDesc.vSpecular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
+//	lightDesc.fRange = 150.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn3_Sepia1"), CEffectLight::Create(TEXT("Point_Spawn3_Sepia1"), lightDesc, 100.f, 14, true));
+//
+//	lightDesc.vPosition = XMFLOAT3(614.392f, 760.874f, 196.187f);
+//	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+//	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+//	lightDesc.fRange = 40.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn3_RailWarp"), CEffectLight::Create(TEXT("Point_Spawn3_RailWarp"), lightDesc, 30.f, 1, true));
+//#pragma endregion
+//
+//#pragma region Spawn4
+//	lightDesc.vPosition = XMFLOAT3(-614.44f, 759.985f, 196.064f);
+//	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+//	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+//	lightDesc.fRange = 60.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn4_Portal"), CEffectLight::Create(TEXT("Point_Spawn4_Portal"), lightDesc, 30.f, 2, true));
+//
+//	lightDesc.vPosition = XMFLOAT3(-672.532f, 755.908f, 162.409f);
+//	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+//	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+//	lightDesc.fRange = 15.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn4_Pinball"), CEffectLight::Create(TEXT("Point_Spawn4_Pinball"), lightDesc, 7.f, 13, true));
+//
+//	lightDesc.vPosition = XMFLOAT3(-669.225f, 755.396f, 190.738f);
+//	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+//	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+//	lightDesc.fRange = 1.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn4_Pinball_Mini"), CEffectLight::Create(TEXT("Point_Spawn4_Pinball_Mini"), lightDesc, 1.f, 14, true));
+//#pragma endregion
+//
+//#pragma region Spawn5
+//	lightDesc.vPosition = XMFLOAT3(45.3144f, 220.252f, 226.072f);
+//	lightDesc.vDiffuse = XMFLOAT4(0.f, 0.f, 0.5f, 1.f);
+//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+//	lightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.5f, 1.f);
+//	lightDesc.fRange = 30.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn5_Blue_Left"), CEffectLight::Create(TEXT("Point_Spawn5_Blue_Left"), lightDesc, 0.f, 2, false));
+//
+//	lightDesc.vPosition = XMFLOAT3(63.749f, 235.252f, 205.509f);
+//	lightDesc.vDiffuse = XMFLOAT4(0.f, 0.2f, 0.5f, 1.f);
+//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+//	lightDesc.vSpecular = XMFLOAT4(0.f, 0.2f, 0.5f, 1.f);
+//	lightDesc.fRange = 60.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn5_Center"), CEffectLight::Create(TEXT("Point_Spawn5_Center"), lightDesc, 0.f, 2, false));
+//
+//	lightDesc.vPosition = XMFLOAT3(56.9364f, 228.252f, 224.139f);
+//	lightDesc.vDiffuse = XMFLOAT4(0.5f, 0.f, 0.5f, 1.f);
+//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+//	lightDesc.vSpecular = XMFLOAT4(0.5f, 0.f, 0.5f, 1.f);
+//	lightDesc.fRange = 20.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn5_Purple_0"), CEffectLight::Create(TEXT("Point_Spawn5_Purple_0"), lightDesc, 0.f, 2, false));
+//	lightDesc.vPosition = XMFLOAT3(66.5393f, 228.252f, 222.242f);
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn5_Purple_1"), CEffectLight::Create(TEXT("Point_Spawn5_Purple_1"), lightDesc, 0.f, 2, false));
+//
+//	lightDesc.vPosition = XMFLOAT3(64.f, 313.f, 195.115f);
+//	lightDesc.vDiffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.f);
+//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+//	lightDesc.vSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.f);
+//	lightDesc.fRange = 120.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Bossroom_Center"), CEffectLight::Create(TEXT("Point_Bossroom_Center"), lightDesc, 150.f, 14, false));
+//
+//#pragma endregion
+//
+//#pragma region Spawn0
+//	lightDesc.vPosition = XMFLOAT3(-738.756f, 762.931f, 178.095f);
+//	lightDesc.fRange = 10.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn0_1"), CEffectLight::Create(TEXT("Point_Spawn0_1"), lightDesc, 0.f, 14, false));
+//
+//	lightDesc.vPosition = XMFLOAT3(-702.793f, 761.1f, 188.557f);
+//	lightDesc.fRange = 15.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn0_2"), CEffectLight::Create(TEXT("Point_Spawn0_2"), lightDesc, 0.f, 14, false));
+//
+//	lightDesc.vPosition = XMFLOAT3(-690.077f, 754.9985f, 194.645f);
+//	lightDesc.fRange = 15.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn0_3"), CEffectLight::Create(TEXT("Point_Spawn0_3"), lightDesc, 0.f, 14, false));
+//
+//	lightDesc.vPosition = XMFLOAT3(-711.846f, 756.735f, 204.658f);
+//	lightDesc.fRange = 15.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn0_4"), CEffectLight::Create(TEXT("Point_Spawn0_4"), lightDesc, 0.f, 14, false));
+//
+//	lightDesc.vPosition = XMFLOAT3(-789.239f, 768.983f, 192.819f);
+//	lightDesc.fRange = 30.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn0_5"), CEffectLight::Create(TEXT("Point_Spawn0_5"), lightDesc, 0.f, 14, false));
+//
+//	lightDesc.vPosition = XMFLOAT3(-748.395f, 775.983f, 215.663f);
+//	lightDesc.fRange = 30.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn0_6"), CEffectLight::Create(TEXT("Point_Spawn0_6"), lightDesc, 0.f, 14, false));
+//
+//	lightDesc.vPosition = XMFLOAT3(-789.479f, 775.983f, 215.663f);
+//	lightDesc.fRange = 30.f;
+//	pLightGenerator->Add_Light(TEXT("Point_Spawn0_7"), CEffectLight::Create(TEXT("Point_Spawn0_7"), lightDesc, 0.f, 14, false));
+//#pragma endregion
+//
+//
+//#pragma endregion
 
-	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
-		return E_FAIL;
-
-#pragma region PointLight
-		LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-		LightDesc.vPosition = XMFLOAT3(20.f, 5.f, 20.f);
-		LightDesc.vDiffuse = XMFLOAT4(0.f, 0.f, 1.f, 1.f);
-		LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-		LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
-		LightDesc.fRange = 10.f;
-	if (FAILED(CLight_Generator::GetInstance()->Add_Light(TEXT("Point1"), LightDesc, (_uint)(EPoint_Color::Blue)))) return E_FAIL;
-#pragma endregion
-
-	/* For. Spot  X */
-	//LightDesc.eType = LIGHT_DESC::TYPE_SPOT;
-	//LightDesc.vPosition = XMFLOAT3(20, 3.f, 20.f);
-	//LightDesc.vDirection = XMFLOAT3(1.f, 1.f, 0.f);
-	//LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	//LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-	//LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
-	//LightDesc.fOuterAngle = XMConvertToRadians(55.f);
-	//LightDesc.fInnerAngle = XMConvertToRadians(45.f);
-	//LightDesc.fRange = 15.f;
-
-	//if (FAILED(pGameInstance->Add_Light(L"Spot1", LightDesc)))
-	//	return E_FAIL;
+	//// TEST - Static
+	//CStaticVolume::VOLUME_DESC vStaticVolumeDesc;
+	//lstrcpy(vStaticVolumeDesc.szModelTag, TEXT("Component_Model_Instance_GeoSphere"));
+	//vStaticVolumeDesc.Instancing_Arg.iInstanceCount = 3;
+	//vStaticVolumeDesc.Instancing_Arg.fCullingRadius = 50.f;
+	//vStaticVolumeDesc.Instancing_Arg.pWorldMatrices = new _float4x4[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
+	//vStaticVolumeDesc.arrInnerColor = new _float3[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
+	//vStaticVolumeDesc.arrOuterColor = new _float3[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
 
 	return S_OK;
+}
+
+HRESULT CLevel_Stage::Ready_DirectionalLight(const _tchar* pLightTag, _float3 vDirection, _float4 vDiffuse, _float4 vAmbient, _float4 vSpecular)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	return pGameInstance->Add_Light(LightStatus::eDIRECTIONAL, CLight::Create(pLightTag, &LIGHT_DESC(LIGHT_DESC::TYPE_DIRECTIONAL, vDirection, vDiffuse, vAmbient, vSpecular)));
 }
 
 HRESULT CLevel_Stage::Ready_Layer_Sky(const _tchar * pLayerTag)

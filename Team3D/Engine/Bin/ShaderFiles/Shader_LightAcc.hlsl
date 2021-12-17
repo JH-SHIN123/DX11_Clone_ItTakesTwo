@@ -31,7 +31,10 @@ cbuffer MtrlDesc
 	vector	g_vMtrlAmbient	= (vector)1.f;
 	vector	g_vMtrlSpecular = (vector)1.f;
 }
+////////////////////////////////////////////////////////////
 
+/* VS - Hull - Tess - Domain - Geo - RS */
+////////////////////////////////////////////////////////////
 struct VS_IN
 {
 	float4 vPosition	: POSITION;	
@@ -55,9 +58,9 @@ VS_OUT VS_MAIN(VS_IN In)
 
 	return Out;
 }
-
 ////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////
 struct PS_IN
 {
 	float4 vPosition		: SV_POSITION;
@@ -170,9 +173,6 @@ PS_OUT PS_POINT(PS_IN In)
 		Out.vSpecular = pow(max(dot(vLook * -1.f, vReflect), 0.f), g_fPower) * (g_vLightSpecular * g_vMtrlSpecular);
 	}
 	Out.vSpecular.a = 0.f;
-
-	// Α¶Έν»φ Power
-	//Out.vShade *= 5.f;
 
 	return Out;
 }

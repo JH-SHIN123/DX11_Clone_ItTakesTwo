@@ -221,6 +221,7 @@ public:
 	_vector			 Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
 	_bool			 Get_IsHooking() { return m_IsHookUFO; }
 	_bool			 Get_IsInArcadeJoyStick() { return m_IsInJoyStick; }
+	_bool			 Get_OnRail() { return m_bOnRail; }
 
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
@@ -409,6 +410,7 @@ private:
 
 	/* For.Planet */
 	_bool m_IsHitPlanet = false;
+	_bool m_IsHitPlanet_Effect = false;
 
 	/* For.HookUFO */
 	_bool m_IsHookUFO = false;
@@ -553,7 +555,7 @@ private:
 	void Start_RadiarBlur(_double dBlurTime);
 	void Loop_RadiarBlur(_bool bLoop);
 	void Trigger_RadiarBlur(_double dTimeDelta);
-	void Set_RadiarBlur();
+	void Set_RadiarBlur(_bool bActive);
 
 private:
 	_bool	m_bRadiarBlur_Trigger = false;

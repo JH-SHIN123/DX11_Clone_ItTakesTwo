@@ -35,6 +35,7 @@ private:
 	_double* m_pInstance_UVTime = nullptr;
 
 	_bool m_IsActivate		= true;
+	_double m_dActivateTime = 0.0;
 	_double m_dControlTime = 0.0;
 
 	const _double	m_dTextureUV_Time = 0.01;
@@ -42,7 +43,7 @@ private:
 	const _float	m_fAlphaTime_Power			= 2.f;
 	const _float	m_fInstance_SpeedPerSec		= 0.2f;
 	const _double	m_dInstance_Pos_Update_Time = 3.0;
-	const _float2	m_vDefaultSize				= { 1.0f, 1.0f };
+	const _float2	m_vDefaultSize				= { 2.5f, 2.5f };
 
 public:
 	static CEffect_Boss_Core_Smoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

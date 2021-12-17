@@ -1866,6 +1866,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
 				m_IsHitPlanet = true;
+				m_IsHitPlanet_Effect = true;
 			}
 		}
 		else if (m_eTargetGameID == GameID::eHOOKUFO && m_pGameInstance->Key_Down(DIK_F) && m_IsHookUFO == false)
@@ -2404,13 +2405,30 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 	if (m_IsHitPlanet == true)
 	{
 		if (0.2f <= m_pModelCom->Get_ProgressAnim())
+		{
+
 			((CHangingPlanet*)(m_pTargetPtr))->Hit_Planet(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+		}
+		if (0.38175f <= m_pModelCom->Get_ProgressAnim())
+		{
+			if (true == m_IsHitPlanet_Effect)
+			{
+				EFFECT->Add_Effect(Effect_Value::Hit_Planet_Smoke);
+				EFFECT->Add_Effect(Effect_Value::Hit_Planet_Smoke);
+				EFFECT->Add_Effect(Effect_Value::Hit_Planet_Particle);
+				EFFECT->Add_Effect(Effect_Value::Hit_Planet_Particle);
+				EFFECT->Add_Effect(Effect_Value::Hit_Planet_Particle);
+				m_IsHitPlanet_Effect = false;
+			}
+		}
+
 
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_PlanetPush_Large))
 		{
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_IsHitPlanet = false;
 			m_IsCollide = false;
+			m_IsHitPlanet_Effect = false;
 		}
 	}
 }
@@ -3073,6 +3091,7 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 		m_pTargetRailNode = nullptr;
 		m_bOnRail = true;
 		m_bMoveToRail = false;
+		EFFECT->Add_Effect(Effect_Value::Cody_Rail, m_pTransformCom->Get_WorldMatrix());
 	}
 }
 void CCody::TakeRail(_double dTimeDelta)
@@ -3222,6 +3241,7 @@ void CCody::In_JoyStick(_double dTimeDelta)
 	}
 }
 
+#pragma region RadiarBlur
 void CCody::Start_RadiarBlur(_double dBlurTime)
 {
 	//if (m_bRadiarBlur) return;
@@ -3230,7 +3250,7 @@ void CCody::Start_RadiarBlur(_double dBlurTime)
 	m_dRadiarBlurTime = dBlurTime;
 	m_dRadiarBlurDeltaT = 0.0;
 
-	Set_RadiarBlur();
+	Set_RadiarBlur(true);
 }
 
 void CCody::Loop_RadiarBlur(_bool bLoop)
@@ -3238,37 +3258,34 @@ void CCody::Loop_RadiarBlur(_bool bLoop)
 	m_bRadiarBlur_Loop = bLoop;
 
 	if(m_bRadiarBlur_Loop)
-		Set_RadiarBlur();
-	else {
-		_float2 vFocusPos = { 0.f,0.f };
-		m_pGameInstance->Set_RadiarBlur_Main(false, vFocusPos);
-	}
+		Set_RadiarBlur(true);
+	else
+		Set_RadiarBlur(false);
 }
 
 void CCody::Trigger_RadiarBlur(_double dTimeDelta)
 {
 	if (m_bRadiarBlur_Loop)
 	{
-		Set_RadiarBlur();
+		Set_RadiarBlur(true);
 	}
 	else if(m_bRadiarBlur_Trigger)
 	{
 		if (m_dRadiarBlurDeltaT >= m_dRadiarBlurTime)
 		{
-			_float2 vFocusPos = { 0.f,0.f };
-			m_pGameInstance->Set_RadiarBlur_Main(false, vFocusPos);
+			Set_RadiarBlur(false);
 			m_dRadiarBlurDeltaT = 0.0;
 			m_bRadiarBlur_Trigger = false;
 		}
 		else
 		{
 			m_dRadiarBlurDeltaT += dTimeDelta;
-			Set_RadiarBlur();
+			Set_RadiarBlur(true);
 		}
 	}
 }
 
-void CCody::Set_RadiarBlur()
+void CCody::Set_RadiarBlur(_bool bActive)
 {
 	_matrix CombineViewMatrix, CombineProjMatrix;
 
@@ -3295,9 +3312,10 @@ void CCody::Set_RadiarBlur()
 	vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f);
 
 	_float2 vFocusPos = { vConvertPos.x / g_iWinCX , vConvertPos.y / g_iWinCY };
-	vFocusPos.y += 0.04f; // Offset
-	m_pGameInstance->Set_RadiarBlur_Main(true, vFocusPos);
+	vFocusPos.y -= 0.08f; // Offset 0.04f
+	m_pGameInstance->Set_RadiarBlur_Main(bActive, vFocusPos);
 }
+#pragma endregion
 
 void CCody::PinBall(const _double dTimeDelta)
 {

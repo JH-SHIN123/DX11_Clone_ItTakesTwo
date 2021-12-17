@@ -188,6 +188,8 @@ public: /* Getter */
 	_vector	    Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
 	_bool		Get_IsInRocket() { return m_IsBossMissile_Control; }
 
+	_bool		Get_OnRail() { return m_bOnRail; }
+
 public:
 
 	void		Update_Tirgger_Pos(_vector vPos);
