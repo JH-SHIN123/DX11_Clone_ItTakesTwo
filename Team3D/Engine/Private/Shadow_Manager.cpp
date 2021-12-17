@@ -94,7 +94,7 @@ HRESULT CShadow_Manager::Update_CascadeShadowTransform(TYPE eType)
 	// Get Directional Light - if light is not exit, return 0
 	CLight_Manager* pLightManager = CLight_Manager::GetInstance();
 	if (nullptr == pLightManager) return E_FAIL;
-	CLight* pLight = pLightManager->Get_DirectionalLight();
+	CLight* pLight = pLightManager->Get_Light(LightStatus::eDIRECTIONAL, nullptr, false);
 	if (nullptr == pLight) return 0;
 
 	LIGHT_DESC* lightDesc = pLight->Get_LightDescPtr();

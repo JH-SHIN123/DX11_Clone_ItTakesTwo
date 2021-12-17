@@ -107,7 +107,7 @@ class CEffect_Generator final : public CBase
 public:
 	HRESULT Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix = XMMatrixIdentity(), void* pArg = nullptr);
 	// 맵과 같이 배치되는 상호작용 없는 환경 이펙트는 다른걸로
-	HRESULT Add_PointLight(Effect_PointLight_Desc* pLightArg = nullptr);
+	HRESULT Add_PointLight(Effect_PointLight_Desc* pLightArg = nullptr, CGameObject** ppOut = nullptr);
 
 public:
 	enum EPlayer_Type { Type_May, Type_Cody, Type_End };

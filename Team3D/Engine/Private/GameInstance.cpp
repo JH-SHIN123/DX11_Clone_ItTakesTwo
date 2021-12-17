@@ -56,7 +56,7 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 
 	FAILED_CHECK_RETURN(m_pGraphic_Device->Ready_GraphicDevice(eWinMode, hWnd, iWinSizeX, iWinSizeY, ppDevice, ppDeviceContext), E_FAIL);
 	FAILED_CHECK_RETURN(m_pInput_Device->Ready_InputDevice(hInst, hWnd), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pSound_Manager->Ready_SoundManager(), E_FAIL);
+	FAILED_CHECK_RETURN(m_pSound_Manager->Ready_SoundManager(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pLight_Manager->Ready_LightManager(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
 	FAILED_CHECK_RETURN(m_pPhysX->Ready_PhysX(pEventCallback), E_FAIL);
 	FAILED_CHECK_RETURN(m_pFrustum->Ready_Frustum(), E_FAIL);
@@ -85,6 +85,7 @@ _int CGameInstance::Tick(_double dTimeDelta, _bool bWndActivate)
 	NULL_CHECK_RETURN(m_pLevel_Manager, EVENT_ERROR);
 	NULL_CHECK_RETURN(m_pGameObject_Manager, EVENT_ERROR);
 	NULL_CHECK_RETURN(m_pFrustum, EVENT_ERROR);
+	NULL_CHECK_RETURN(m_pLight_Manager, EVENT_ERROR);
 
 	m_pGraphic_Device->Tick(dTimeDelta);
 	m_pInput_Device->Tick(bWndActivate);
@@ -97,6 +98,9 @@ _int CGameInstance::Tick(_double dTimeDelta, _bool bWndActivate)
 	
 	if (m_pGameObject_Manager->Late_Tick(dTimeDelta) < 0)
 		return EVENT_ERROR;
+
+	/* Tick Light Manager*/
+	m_pLight_Manager->Tick_LightManager(dTimeDelta);
 
 	/* Shadow View / Proj 생성 - FullScreen 기준 */
 	m_pShadow_Manager->Update_CascadeShadowTransform(CShadow_Manager::SHADOW_MAIN);
@@ -247,15 +251,10 @@ _double CGameInstance::Compute_TimeDelta(const _tchar * pTimerTag)
 #pragma endregion 
 
 #pragma region Sound_Manager
-void CGameInstance::Play_Sound(TCHAR * pSoundKey, CHANNEL_TYPE eChannel, _float fVolume)
+void CGameInstance::Play_Sound(TCHAR * pSoundKey, CHANNEL_TYPE eChannel, _float fVolume, _bool bLoop)
 {
 	NULL_CHECK(m_pSound_Manager);
-	m_pSound_Manager->Play_Sound(pSoundKey, eChannel, fVolume);
-}
-void CGameInstance::Play_BGM(TCHAR * pSoundKey, CHANNEL_TYPE eChannel)
-{
-	NULL_CHECK(m_pSound_Manager);
-	m_pSound_Manager->Play_BGM(pSoundKey, eChannel);
+	m_pSound_Manager->Play_Sound(pSoundKey, eChannel, fVolume, bLoop);
 }
 void CGameInstance::Stop_Sound(CHANNEL_TYPE eChannel)
 {
@@ -319,35 +318,25 @@ CComponent * CGameInstance::Add_Component_Clone(_uint iPrototypeLevelIndex, cons
 #pragma endregion 
 
 #pragma region Light_Manager
-HRESULT CGameInstance::Reserve_Container_Light(_uint iCount)
-{
-	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
-	return m_pLight_Manager->Reserve_Container(iCount);
-}
-HRESULT CGameInstance::Add_Light(const _tchar* pLightTag, const LIGHT_DESC & LightDesc, _bool isActive)
-{
-	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
-	return m_pLight_Manager->Add_Light(pLightTag, LightDesc, isActive);
-}
-LIGHT_DESC * CGameInstance::Get_LightDescPtr(const _tchar* pLightTag)
+CLight* CGameInstance::Get_Light(LightStatus::Enum eState, const _tchar* pLightTag, _bool bAddRef)
 {
 	NULL_CHECK_RETURN(m_pLight_Manager, nullptr);
-	return m_pLight_Manager->Get_LightDescPtr(pLightTag);
+	return m_pLight_Manager->Get_Light(eState, pLightTag, bAddRef);
 }
-HRESULT CGameInstance::TurnOn_Light(const _tchar* pLightTag)
+HRESULT CGameInstance::Add_Light(LightStatus::Enum eState, CLight* pLight)
 {
 	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
-	return m_pLight_Manager->TurnOn_Light(pLightTag);
+	return m_pLight_Manager->Add_Light(eState, pLight);
 }
-HRESULT CGameInstance::TurnOff_Light(const _tchar* pLightTag)
+HRESULT CGameInstance::Remove_Light(const _tchar* pLightTag)
 {
 	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
-	return m_pLight_Manager->TurnOff_Light(pLightTag);
+	return m_pLight_Manager->Remove_Light(pLightTag);
 }
-void CGameInstance::Clear_Lights()
+void CGameInstance::Clear_Lights(LightStatus::Enum eState)
 {
 	NULL_CHECK(m_pLight_Manager);
-	m_pLight_Manager->Clear_Lights();
+	m_pLight_Manager->Clear_Lights(eState);
 }
 #pragma endregion
 
@@ -443,9 +432,9 @@ void CGameInstance::Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos)
 
 void CGameInstance::Release_Engine()
 {
+	CLight_Manager::GetInstance()->Clear_All();
 	CGameObject_Manager::GetInstance()->Clear_All();
 	CComponent_Manager::GetInstance()->Clear_All();
-	CLight_Manager::GetInstance()->Clear_Buffer();
 	CLevel_Manager::GetInstance()->Clear_Level();
 	CPostFX::GetInstance()->Clear_Buffer();
 

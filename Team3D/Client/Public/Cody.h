@@ -283,6 +283,8 @@ private:
 	_bool m_bGroundPound	= false;
 	_bool m_IsTurnAround	= false;
 
+	_uint	m_iIndex = 0;
+
 	// 구르기 관련
 	_bool m_bAction = false;
 
@@ -559,7 +561,7 @@ private:
 	void Start_RadiarBlur(_double dBlurTime);
 	void Loop_RadiarBlur(_bool bLoop);
 	void Trigger_RadiarBlur(_double dTimeDelta);
-	void Set_RadiarBlur();
+	void Set_RadiarBlur(_bool bActive);
 
 private:
 	_bool	m_bRadiarBlur_Trigger = false;

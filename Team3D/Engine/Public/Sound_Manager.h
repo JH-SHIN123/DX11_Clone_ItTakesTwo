@@ -14,6 +14,8 @@ enum ENGINE_DLL CHANNEL_TYPE
 	/* Jin */
 	, CHANNEL_BOSS
 	/* Hye */
+	, CHANNEL_LOGO
+	, CHANNEL_BUTTON
 	/* Jung */
 	/* Taek */
 	/* Jun */
@@ -32,8 +34,7 @@ public: /* Getter */
 	_bool Is_Playing(CHANNEL_TYPE eChannel);
 
 public: /* Setter */
-	void Play_Sound(TCHAR* pSoundKey, CHANNEL_TYPE eChannel, _float fVolume);
-	void Play_BGM(TCHAR* pSoundKey, CHANNEL_TYPE eChannel);
+	void Play_Sound(TCHAR* pSoundKey, CHANNEL_TYPE eChannel, _float fVolume, _bool bLoop);
 	void Stop_Sound(CHANNEL_TYPE eChannel);
 	void Stop_SoundAll();
 	void Set_SoundVolume(CHANNEL_TYPE eChannel, _float fVolume);
@@ -47,6 +48,8 @@ private:
 	FMOD_SYSTEM*	m_pSystem = nullptr;
 	FMOD_CHANNEL*	m_pChannel[CHANNEL_END];
 	SOUNDS			m_Sounds;
+private:
+	HRESULT Add_Sound(char* pFilePath);
 
 public:
 	virtual void Free() override;

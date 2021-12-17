@@ -28,6 +28,7 @@
 #include "LaserTennis_Manager.h"
 /*For.WarpGate*/
 #include "WarpGate.h"
+#include "Script.h"
 
 /* For. UFORadarSet */
 #include "UFORadarSet.h"
@@ -484,6 +485,7 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
+
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -2132,6 +2134,8 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			LASERTENNIS->Increase_PowerCoord();
 
+			UI_Generator->Delete_InterActive_UI(Player::Cody, UI::PowerCoord);
+
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
 
@@ -2972,11 +2976,11 @@ void CCody::Set_BossMissile_Attack()
 
 void CCody::Falling_Dead(const _double dTimeDelta)
 {
-	/* 데드라인과 충돌시 2초후에 리스폰 */
+	/* 데드라인과 충돌시 1초후에 리스폰 */
 	if (m_IsDeadLine == true)
 	{
 		m_dDeadTime += dTimeDelta;
-		if (m_dDeadTime >= 2.f)
+		if (m_dDeadTime >= 1.f)
 		{
 			_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
 			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
@@ -3311,6 +3315,7 @@ void CCody::In_JoyStick(_double dTimeDelta)
 	}
 }
 
+#pragma region RadiarBlur
 void CCody::Start_RadiarBlur(_double dBlurTime)
 {
 	//if (m_bRadiarBlur) return;
@@ -3319,7 +3324,7 @@ void CCody::Start_RadiarBlur(_double dBlurTime)
 	m_dRadiarBlurTime = dBlurTime;
 	m_dRadiarBlurDeltaT = 0.0;
 
-	Set_RadiarBlur();
+	Set_RadiarBlur(true);
 }
 
 void CCody::Loop_RadiarBlur(_bool bLoop)
@@ -3327,37 +3332,34 @@ void CCody::Loop_RadiarBlur(_bool bLoop)
 	m_bRadiarBlur_Loop = bLoop;
 
 	if(m_bRadiarBlur_Loop)
-		Set_RadiarBlur();
-	else {
-		_float2 vFocusPos = { 0.f,0.f };
-		m_pGameInstance->Set_RadiarBlur_Main(false, vFocusPos);
-	}
+		Set_RadiarBlur(true);
+	else
+		Set_RadiarBlur(false);
 }
 
 void CCody::Trigger_RadiarBlur(_double dTimeDelta)
 {
 	if (m_bRadiarBlur_Loop)
 	{
-		Set_RadiarBlur();
+		Set_RadiarBlur(true);
 	}
 	else if(m_bRadiarBlur_Trigger)
 	{
 		if (m_dRadiarBlurDeltaT >= m_dRadiarBlurTime)
 		{
-			_float2 vFocusPos = { 0.f,0.f };
-			m_pGameInstance->Set_RadiarBlur_Main(false, vFocusPos);
+			Set_RadiarBlur(false);
 			m_dRadiarBlurDeltaT = 0.0;
 			m_bRadiarBlur_Trigger = false;
 		}
 		else
 		{
 			m_dRadiarBlurDeltaT += dTimeDelta;
-			Set_RadiarBlur();
+			Set_RadiarBlur(true);
 		}
 	}
 }
 
-void CCody::Set_RadiarBlur()
+void CCody::Set_RadiarBlur(_bool bActive)
 {
 	_matrix CombineViewMatrix, CombineProjMatrix;
 
@@ -3384,9 +3386,10 @@ void CCody::Set_RadiarBlur()
 	vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f);
 
 	_float2 vFocusPos = { vConvertPos.x / g_iWinCX , vConvertPos.y / g_iWinCY };
-	vFocusPos.y += 0.04f; // Offset
-	m_pGameInstance->Set_RadiarBlur_Main(true, vFocusPos);
+	vFocusPos.y -= 0.08f; // Offset 0.04f
+	m_pGameInstance->Set_RadiarBlur_Main(bActive, vFocusPos);
 }
+#pragma endregion
 
 void CCody::PinBall(const _double dTimeDelta)
 {
@@ -3451,7 +3454,7 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 	if (2.f <= m_dRespawnTime)
 	{
 		m_pActorCom->Set_ZeroGravity(false, false, false);
-		m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
+		m_pActorCom->Set_Position(XMLoadFloat3(&m_vSavePoint));
 		m_pActorCom->Update(dTimeDelta);
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 

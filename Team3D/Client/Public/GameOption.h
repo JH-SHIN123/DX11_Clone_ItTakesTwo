@@ -22,7 +22,7 @@
 
 
 #ifdef _DEBUG
-#define __THREAD_NUM 4
+#define __THREAD_NUM 8
 #else
 #define __THREAD_NUM 4
 #endif

@@ -50,7 +50,7 @@ _int CWarpGate_Star::Late_Tick(_double TimeDelta)
 
 HRESULT CWarpGate_Star::Render(RENDER_GROUP::Enum eGroup)
 {
-	_int iShaderPass = 21;
+	_int iShaderPass = 27;
 	if(false == m_IsActivate)
 		iShaderPass = 1;
 

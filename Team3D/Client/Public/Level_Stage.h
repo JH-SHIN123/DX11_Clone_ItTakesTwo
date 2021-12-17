@@ -38,8 +38,10 @@ private:
 	HRESULT Ready_Layer_Env_Particles(const _tchar* pLayerTag);
 	/* Hye */
 	HRESULT Ready_Layer_Planet(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Script(const _tchar* pLayerTag);
 	/* Taek */
 	HRESULT Ready_Lights();
+	HRESULT Ready_DirectionalLight(const _tchar* pLightTag, _float3 vDirection, _float4 vDiffuse, _float4 vAmbient, _float4 vSpecular);
 	HRESULT Ready_Layer_Sky(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_ToyBoxButton(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MoonBaboonCore(const _tchar* pLayerTag);

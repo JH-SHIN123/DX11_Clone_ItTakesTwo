@@ -15,18 +15,11 @@ private:
 
 public:
 	/* 프로토타입 생성 */
-	/* TXT 파일 로드 */
 	HRESULT Load_Prototype_Model_Instancing_TXT();
-	//HRESULT Load_Prototype_Model_Others_TXT(_tchar* pFilePath);
 	HRESULT Load_Prototype_GameObject_TXT();
-	/* DAT 파일 로드 */
-	//HRESULT Load_Prototype_Model_Instancing();
-	//HRESULT Load_Prototype_Model_Others(_tchar* pFilePath);
-	//HRESULT Load_Prototype_GameObject();
 
 	/* 인덱스 로드 */
 	HRESULT Load_Prototype_Model_Others_Space(_uint iIndex);
-
 	/* 클론 생성 */
 	HRESULT Load_Stage_Space();
 
@@ -55,6 +48,7 @@ private:
 	HRESULT Load_Environment_Bridge();
 	HRESULT Load_Environment_SpaceRail();
 	HRESULT Load_Environment_Trigger();
+	HRESULT Load_Environment_Trigger_SpaceShip();
 	HRESULT Load_Others();
 	/* 인덱스 로드 */
 	HRESULT Load_Prototype_Model_ByIndex_Space(_uint iIndex);

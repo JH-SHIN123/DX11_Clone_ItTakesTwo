@@ -281,13 +281,13 @@ HRESULT CMoonUFO::Ready_Component(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
 	Safe_Delete(Geom);
-	//m_pDynamicActorCom->Get_Actor()->setLinearDamping(0.2f);
-
-	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 	PxShape* pShape = nullptr;
 	m_pDynamicActorCom->Get_Actor()->getShapes(&pShape, 1);
 	pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
+	m_pDynamicActorCom->Get_Actor()->setLinearDamping(0.2f);
+	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 	/* Joint */
 	PxJointLimitCone LimitCone = PxJointLimitCone(PxPi, PxPi, 0.05f);

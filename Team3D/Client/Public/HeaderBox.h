@@ -41,16 +41,17 @@ public:
 
 private:
 	_bool							m_IsRender = false;
-	_float2							m_vFontPos;
+	//_float2							m_vFontPos;
 	_bool							m_IsMousePicking = false;
 	_bool							m_IsLogoDisappear = false;
 	_int							m_iShaderOption = 0;
 	_bool							m_IsReady = false;
 	_uint							m_iPassNum = 1;
 
+	_float2							m_fFontPos = {};
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
-
+	CFontDraw*						m_pFont = nullptr;
 private:
 	void Render_Font();
 	HRESULT Ready_Component();

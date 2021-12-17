@@ -256,9 +256,6 @@ _int CMay::Late_Tick(_double dTimeDelta)
 
 HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 {
-	if (true == m_IsDeadLine)
-		return S_OK;
-
 	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
@@ -1696,6 +1693,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		{
 			LASERTENNIS->Increase_PowerCoord();
 
+			UI_Generator->Delete_InterActive_UI(Player::May, UI::PowerCoord);
+
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
 
@@ -1979,7 +1978,7 @@ void CMay::PinBall(const _double dTimeDelta)
 				((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
 			}
 			/* 오른쪽 */
-			if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 40000)
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT)/* || m_pGameInstance->Get_Pad_LStickX() > 40000*/)
 			{
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Right);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
@@ -1989,7 +1988,7 @@ void CMay::PinBall(const _double dTimeDelta)
 					m_pActorCom->Move(vLeft * 0.05f, dTimeDelta);
 			}
 			/* 왼쪽 */
-			else if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
+			else if (m_pGameInstance->Key_Pressing(DIK_LEFT)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
 			{
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Left);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
@@ -2314,11 +2313,11 @@ void CMay::Set_ActorGravity(_bool IsZeroGravity, _bool IsUp, _bool _bStatic)
 
 void CMay::Falling_Dead(const _double dTimeDelta)
 {
-	/* 데드라인과 충돌시 2초후에 리스폰 */
+	/* 데드라인과 충돌시 1초후에 리스폰 */
 	if (m_IsDeadLine == true)
 	{
 		m_fDeadTime += (_float)dTimeDelta;
-		if (m_fDeadTime >= 2.f)
+		if (m_fDeadTime >= 1.f)
 		{
 			_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
 			vSavePosition = XMVectorSetW(vSavePosition, 1.f);

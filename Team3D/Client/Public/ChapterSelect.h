@@ -11,7 +11,7 @@ END
 BEGIN(Client)
 
 class CChapterSelect final : public CUIObject
- {
+{
 private:
 	explicit CChapterSelect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CChapterSelect(const CUIObject& rhs);

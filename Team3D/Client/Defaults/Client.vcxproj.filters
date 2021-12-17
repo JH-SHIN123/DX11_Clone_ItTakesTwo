@@ -141,11 +141,17 @@
     <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.Laser\03.TypeC%28MoonUFO%29">
       <UniqueIdentifier>{a16f20b8-0c97-4db0-ad72-c070b9ebf0ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\03.Earth">
+      <UniqueIdentifier>{7c74bdfa-6c6b-4dcc-998c-534b3fc130ea}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung">
       <UniqueIdentifier>{fec661ad-31f9-4dec-b790-1b4cb09030ce}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung\00.WarpGate">
       <UniqueIdentifier>{2650a767-00d4-4a91-bc33-20a9b360ce35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\00.WarpGate\00.Star">
+      <UniqueIdentifier>{19c739c7-fbda-4d4d-991f-b06e72084394}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung\01.Boss_Missile">
       <UniqueIdentifier>{b6a72df0-6523-4590-a934-cd52c7bacae5}</UniqueIdentifier>
@@ -350,6 +356,15 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\05.Taek\03.SpaceRail\Node">
       <UniqueIdentifier>{db1e11fc-2bd9-4a41-9c3c-2ae1d4e0a7ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Taek\04.Volume">
+      <UniqueIdentifier>{f8a80d19-8824-4208-8087-2944db2d8d4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Taek\04.Volume\StaticVolume">
+      <UniqueIdentifier>{b41b4937-acb2-43d3-8ba8-9fefe50f5223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\05.Taek\04.Volume\DynamicVolume">
+      <UniqueIdentifier>{18f4fd03-8034-446d-a026-ee234a955aeb}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon">
       <UniqueIdentifier>{307d7217-2819-471f-be94-d8cf74b19ac9}</UniqueIdentifier>
@@ -624,6 +639,12 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser">
       <UniqueIdentifier>{7a29e47e-936f-445a-b906-c57d0033b40b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\00.Particle">
+      <UniqueIdentifier>{f8116065-4e7c-444a-971f-3be3e1a0af79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\01.Particle_Star">
+      <UniqueIdentifier>{3be16690-bcb4-47d6-8aed-88279fa24cde}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail">
       <UniqueIdentifier>{dec59da4-b035-442a-87c8-6e5f06e91e84}</UniqueIdentifier>
     </Filter>
@@ -638,6 +659,12 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29">
       <UniqueIdentifier>{cadc3ab7-2f34-4b6a-88b0-bae33b018ee8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29\00.Star">
+      <UniqueIdentifier>{07cca5e1-20a4-4482-944c-b91430d38245}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29\01.Dust">
+      <UniqueIdentifier>{4f1b82ad-2a8b-494c-b8a8-f66e943848da}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Light_Effect">
       <UniqueIdentifier>{42f75ceb-27c0-491b-95a9-a4316ca7f9f1}</UniqueIdentifier>
@@ -659,6 +686,15 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\02.Hit_Planet\01.Smoke">
       <UniqueIdentifier>{f4584b19-6d81-491d-b98c-7602ac80d77a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate">
+      <UniqueIdentifier>{611a2934-2f5b-4190-abae-e51f08661874}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate\00.Clear">
+      <UniqueIdentifier>{4761eeeb-c8a3-4027-aa26-835991b2b4c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate\01.Particle">
+      <UniqueIdentifier>{6036ec99-7162-4264-9157-c8e76fa33ef2}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside">
       <UniqueIdentifier>{1e244afa-1f22-4105-8bc1-f281d82c5211}</UniqueIdentifier>
@@ -810,6 +846,15 @@
     <Filter Include="02.GameObject\06.UI\09.Screen\01.ChapterScreen">
       <UniqueIdentifier>{f8527fcd-ef02-4951-8a62-1e30b5d9da75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06.UI\09.Screen\02.ChapterImage">
+      <UniqueIdentifier>{9a37d4f1-552e-46de-b368-65951fd87a52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\09.Screen\02.ChapterImage\Participation_Button">
+      <UniqueIdentifier>{c1f5d52f-4dba-4558-9a3d-857dc6a8f91a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\09.Screen\02.ChapterImage\Return_Button">
+      <UniqueIdentifier>{8fafca8f-fe66-42d7-9acf-c0e3f0106b0c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\06.UI\10.Menu">
       <UniqueIdentifier>{2c177276-9cd8-4cd1-9b02-729ba9e0d7a7}</UniqueIdentifier>
     </Filter>
@@ -827,6 +872,12 @@
     </Filter>
     <Filter Include="02.GameObject\06.UI\13.Gauge_Circle">
       <UniqueIdentifier>{6211bcdd-7628-46cc-ada7-5cd4f2e375da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\14.Script">
+      <UniqueIdentifier>{f4fc0254-9a19-499f-9795-b9c5d6e67827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\14.Script\ScriptBackGround">
+      <UniqueIdentifier>{854ef9b9-c8f6-45f8-bda9-1c67f74bf580}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\99.Terrain%28Test%29">
       <UniqueIdentifier>{f999b3e3-a399-493a-893b-bcebcfb781a4}</UniqueIdentifier>
@@ -882,20 +933,20 @@
     <Filter Include="04.Generator\02.UI_Generator">
       <UniqueIdentifier>{bd3f9c54-ec94-480a-ac35-1cd4435104d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04.Generator\03.Light_Generator">
-      <UniqueIdentifier>{a8b9071a-f602-4803-adc7-1a1462e62875}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Generator\03.Light_Generator\EffectLight">
-      <UniqueIdentifier>{4a1e57e5-47a2-4feb-baa9-cd33fabbf6a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Generator\03.Light_Generator\PointLight">
-      <UniqueIdentifier>{b43b1637-3313-42b3-ac1f-7fdf9e0967c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Generator\03.Light_Generator\SpotLight">
-      <UniqueIdentifier>{d261fd29-aa44-4f3c-9f27-a24bf0383859}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05.DataStorage">
       <UniqueIdentifier>{379b017d-b2c8-43b5-a4d7-c8af77937423}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Light">
+      <UniqueIdentifier>{598b7446-2298-4221-b482-64f69bb2bc24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Light\VolumeLight">
+      <UniqueIdentifier>{a66b14e2-76f6-4ca2-93fc-9562da331645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Light\EffectLight">
+      <UniqueIdentifier>{05a2af3d-cf24-4468-8cc5-bbde57ed991d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Light\BasicLight">
+      <UniqueIdentifier>{1ca7ebc4-bd45-40e2-824f-1c48964ff126}</UniqueIdentifier>
     </Filter>
     <Filter Include="96.Debug">
       <UniqueIdentifier>{7904050b-bece-47ac-9d69-2652f5e7bc09}</UniqueIdentifier>
@@ -920,30 +971,6 @@
     </Filter>
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29\00.Star">
-      <UniqueIdentifier>{07cca5e1-20a4-4482-944c-b91430d38245}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29\01.Dust">
-      <UniqueIdentifier>{4f1b82ad-2a8b-494c-b8a8-f66e943848da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\00.Particle">
-      <UniqueIdentifier>{f8116065-4e7c-444a-971f-3be3e1a0af79}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\01.Particle_Star">
-      <UniqueIdentifier>{3be16690-bcb4-47d6-8aed-88279fa24cde}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\03.Jung\00.WarpGate\00.Star">
-      <UniqueIdentifier>{19c739c7-fbda-4d4d-991f-b06e72084394}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate">
-      <UniqueIdentifier>{611a2934-2f5b-4190-abae-e51f08661874}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate\00.Clear">
-      <UniqueIdentifier>{4761eeeb-c8a3-4027-aa26-835991b2b4c1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate\01.Particle">
-      <UniqueIdentifier>{6036ec99-7162-4264-9157-c8e76fa33ef2}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1061,8 +1088,14 @@
     <ClInclude Include="..\Public\Laser_TypeC.h">
       <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\03.TypeC%28MoonUFO%29</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Earth.h">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\03.Earth</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\WarpGate.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\WarpGate_Star.h">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate\00.Star</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Boss_Missile.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\01.Boss_Missile</Filter>
@@ -1246,6 +1279,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\SpaceRail_Node.h">
       <Filter>02.GameObject\04.Stage_Space\05.Taek\03.SpaceRail\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DynamicVolume.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\DynamicVolume</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StaticVolume.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\StaticVolume</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Rocket.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\00.Rocket</Filter>
@@ -1496,6 +1535,12 @@
     <ClInclude Include="..\public\Effect_Hit_BossLaser.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Hit_BossLaser_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\00.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Hit_BossLaser_Particle_Star.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\01.Particle_Star</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Effect_Player_Rail_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail\00.Particle</Filter>
     </ClInclude>
@@ -1507,6 +1552,12 @@
     </ClInclude>
     <ClInclude Include="..\public\Effect_Env_Particle_Field.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Env_Particle_Field_Star.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29\00.Star</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Env_Particle_Field_Dust.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29\01.Dust</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_PointLight.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Light_Effect</Filter>
@@ -1522,6 +1573,9 @@
     </ClInclude>
     <ClInclude Include="..\public\Effect_Hit_Planet_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\02.Hit_Planet\01.Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_WarpGate_Clear.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate\00.Clear</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Spark.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark</Filter>
@@ -1637,6 +1691,15 @@
     <ClInclude Include="..\Public\SplashScreen.h">
       <Filter>02.GameObject\06.UI\09.Screen\01.ChapterScreen</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ChapterImage.h">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Participation_Button.h">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage\Participation_Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Return_Button.h">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage\Return_Button</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\MenuScreen.h">
       <Filter>02.GameObject\06.UI\10.Menu\00.Screen</Filter>
     </ClInclude>
@@ -1651,6 +1714,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Gauge_Circle.h">
       <Filter>02.GameObject\06.UI\13.Gauge_Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Script.h">
+      <Filter>02.GameObject\06.UI\14.Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ScriptBackGround.h">
+      <Filter>02.GameObject\06.UI\14.Script\ScriptBackGround</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
@@ -1691,28 +1760,16 @@
     <ClInclude Include="..\Public\UI_Generator.h">
       <Filter>04.Generator\02.UI_Generator</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Light_Generator.h">
-      <Filter>04.Generator\03.Light_Generator</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\EffectLight.h">
-      <Filter>04.Generator\03.Light_Generator\EffectLight</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\DataStorage.h">
       <Filter>05.DataStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VolumeLight.h">
+      <Filter>06.Light\VolumeLight</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\GameDebugger.h">
       <Filter>96.Debug</Filter>
     </ClInclude>
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
-      <Filter>97.ShaderFiles\Include</Filter>
-    </ClInclude>
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines_Effect.hpp">
-      <Filter>97.ShaderFiles\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp">
-      <Filter>97.ShaderFiles\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp">
       <Filter>97.ShaderFiles\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -1741,24 +1798,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Env_Particle_Field_Star.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29\00.Star</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Env_Particle_Field_Dust.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29\01.Dust</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Hit_BossLaser_Particle.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\00.Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Hit_BossLaser_Particle_Star.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\01.Particle_Star</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\WarpGate_Star.h">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate\00.Star</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_WarpGate_Clear.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate\00.Clear</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1873,8 +1912,14 @@
     <ClCompile Include="..\Private\Laser_TypeC.cpp">
       <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\03.TypeC%28MoonUFO%29</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Earth.cpp">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\03.Earth</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\WarpGate.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WarpGate_Star.cpp">
+      <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate\00.Star</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Boss_Missile.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\01.Boss_Missile</Filter>
@@ -2058,6 +2103,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\SpaceRail_Node.cpp">
       <Filter>02.GameObject\04.Stage_Space\05.Taek\03.SpaceRail\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DynamicVolume.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\DynamicVolume</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticVolume.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume\StaticVolume</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Rocket.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\00.Rocket</Filter>
@@ -2308,6 +2359,12 @@
     <ClCompile Include="..\private\Effect_Hit_BossLaser.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_Hit_BossLaser_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\00.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Hit_BossLaser_Particle_Star.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\01.Particle_Star</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\Effect_Player_Rail_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail\00.Particle</Filter>
     </ClCompile>
@@ -2319,6 +2376,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Env_Particle_Field.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Env_Particle_Field_Star.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29\00.Star</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Env_Particle_Field_Dust.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29\01.Dust</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect_PointLight.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Light_Effect</Filter>
@@ -2334,6 +2397,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Hit_Planet_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\02.Hit_Planet\01.Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_WarpGate_Clear.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate\00.Clear</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Spark.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark</Filter>
@@ -2449,6 +2515,15 @@
     <ClCompile Include="..\Private\SplashScreen.cpp">
       <Filter>02.GameObject\06.UI\09.Screen\01.ChapterScreen</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\ChapterImage.cpp">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Participation_Button.cpp">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage\Participation_Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Return_Button.cpp">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage\Return_Button</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\MenuScreen.cpp">
       <Filter>02.GameObject\06.UI\10.Menu\00.Screen</Filter>
     </ClCompile>
@@ -2463,6 +2538,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Gauge_Circle.cpp">
       <Filter>02.GameObject\06.UI\13.Gauge_Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Script.cpp">
+      <Filter>02.GameObject\06.UI\14.Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ScriptBackGround.cpp">
+      <Filter>02.GameObject\06.UI\14.Script\ScriptBackGround</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
@@ -2503,14 +2584,11 @@
     <ClCompile Include="..\Private\UI_Generator.cpp">
       <Filter>04.Generator\02.UI_Generator</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Light_Generator.cpp">
-      <Filter>04.Generator\03.Light_Generator</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\EffectLight.cpp">
-      <Filter>04.Generator\03.Light_Generator\EffectLight</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\DataStorage.cpp">
       <Filter>05.DataStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VolumeLight.cpp">
+      <Filter>06.Light\VolumeLight</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\GameDebugger.cpp">
       <Filter>96.Debug</Filter>
@@ -2520,24 +2598,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Env_Particle_Field_Star.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29\00.Star</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Env_Particle_Field_Dust.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29\Env_Particle%28Field%29\01.Dust</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Hit_BossLaser_Particle.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\00.Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Hit_BossLaser_Particle_Star.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\08.Hit_BossLaser\01.Particle_Star</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\WarpGate_Star.cpp">
-      <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate\00.Star</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_WarpGate_Clear.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\03.WarpGate\00.Clear</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -2620,6 +2680,9 @@
       <Filter>97.ShaderFiles\00.Effect</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_ArcadePixel.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Earth.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
