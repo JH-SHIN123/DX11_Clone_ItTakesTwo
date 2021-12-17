@@ -192,7 +192,7 @@ public:
 
 public:
 	enum PLAYER_SIZE { SIZE_SMALL, SIZE_MEDIUM, SIZE_LARGE, SIZE_END };
-	enum CAMERA_WORK_STATE { STATE_SPACE_PORTAL, STATE_DUMMYWALL_JUMP, STATE_END};
+	enum CAMERA_WORK_STATE { STATE_SPACE_PORTAL, STATE_DUMMYWALL_JUMP, STATE_PIPEWALL_JUMP, STATE_END};
 
 private:
 	explicit CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -606,6 +606,7 @@ private:
 	_float m_fCodyMDash_Volume = 1.f;
 	_float m_fCodyMDash_Landing_Volume = 1.f;
 	_float m_fCodyMDash_Roll_Volume = 1.f;
+	_float m_fCodySDash_Voice_Volume = 0.5f;
 
 	// GroundPound
 	_float m_fCodyB_GroundPound_Landing_Voice_Volume = 1.f;
@@ -614,10 +615,16 @@ private:
 	_float m_fCodyM_GroundPound_Roll_Volume = 1.f;
 	_float m_fCodyS_GroundPound_Landing_Voice_Volume = 1.f;
 
+	// Walk
+	_float m_fCodyB_Walk_Volume = 1.f;
 
+	// Jog
+	_float m_fCodyM_Jog_Volume = 1.f;
 
-	_float m_fCodySDash_Voice_Volume = 0.5f;
+	// Sprint
+	_float m_fCodyM_Sprint_Volume = 1.f;
 
+	_bool m_bTestest = false;
 
 
 

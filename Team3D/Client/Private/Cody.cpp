@@ -66,6 +66,9 @@ HRESULT CCody::NativeConstruct(void* pArg)
  	UI_Create(Cody, PC_Mouse_Enlargement);
  	UI_Create(Cody, PlayerMarker);
 
+	m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+	m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+
 	return S_OK;
 }
 
@@ -615,9 +618,9 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_fAcceleration = 5.f;
 			m_pModelCom->Set_Animation(ANI_C_Roll_Start);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Roll_Stop);
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyM_Dash.wav"), CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
-
 			m_bAction = false;
 			m_bRoll = true;
 		}
@@ -633,12 +636,15 @@ void CCody::KeyInput(_double dTimeDelta)
 				if (m_eCurPlayerSize != SIZE_SMALL)
 				{
 					m_pActorCom->Jump_Start(1.2f);
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
 					m_pGameInstance->Play_Sound(TEXT("CodyM_Dash.wav"), CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
 				}
 				else
 				{
 					m_pActorCom->Jump_Start(0.6f);
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+
 					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
 					m_pGameInstance->Play_Sound(TEXT("CodyM_Dash.wav"), CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
 
@@ -662,6 +668,7 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_bShortJump = true;
 			m_iJumpCount += 1;
 			m_IsJumping = true;
+				m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 		}
 	}
 	else
@@ -671,6 +678,8 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_bShortJump = true;
 			m_iJumpCount += 1;
 			m_IsJumping = true;
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+
 		}
 	}
 
@@ -680,7 +689,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma region Mouse_LButton
 
 	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) &&
-		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false)
+		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false) 
 	{
 		// 커져라
 		switch (m_eCurPlayerSize)
@@ -778,9 +787,11 @@ _uint CCody::Get_CurState() const
 void CCody::Move(const _double dTimeDelta)
 {
 #pragma region Medium_Size
+
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+
 
 	if (m_eCurPlayerSize == SIZE_MEDIUM)
 	{
@@ -836,26 +847,51 @@ void CCody::Move(const _double dTimeDelta)
 				// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
 				if (m_pModelCom->Is_AnimFinished(ANI_C_Jog_Start_Fwd) == true) // JogStart -> Jog
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_pModelCom->Set_Animation(ANI_C_Jog);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Jog) == true) // Jog -> Jog // 보간속도 Up
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_pModelCom->Set_Animation(ANI_C_Jog);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd || m_pModelCom->Get_CurAnimIndex() == ANI_C_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_MH_Gesture_Small_Drumming || m_pModelCom->Get_CurAnimIndex() == ANI_C_ActionMH)	// Idle To Jog Start. -> Jog 예약
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_pModelCom->Set_Animation(ANI_C_Jog_Start_Fwd);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Exhausted_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Exhausted_MH_To_Idle || m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted)
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_pModelCom->Set_Animation(ANI_C_Jog_Exhausted_MH_Start_Fwd);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Roll_Start)) // 구르고 나서 바로 움직이면 Roll to Jog
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_bRoll = false;
 					m_pModelCom->Set_Animation(ANI_C_Roll_To_Jog);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
@@ -871,17 +907,19 @@ void CCody::Move(const _double dTimeDelta)
 				m_fJogAcceleration = 25.f;
 				if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog) // jog 였다면
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd); // jog to stop 으로 바꿔
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // jog to stop 끝나면 idle 예약.
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Start_Fwd) // JogStart 였다면
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd); // jog to stop 으로 바꿔
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH) // IDLE 상태라면
 				{
-
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_fIdleTime += (_float)dTimeDelta;
 					if (m_bAction == false)
 					{
@@ -893,17 +931,20 @@ void CCody::Move(const _double dTimeDelta)
 					}
 					else if (m_bAction == true)
 					{
+						m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 						m_pModelCom->Set_Animation(ANI_C_Idle_To_Action);
 						m_pModelCom->Set_NextAnimIndex(ANI_C_ActionMH);
 					}
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Idle_To_Action) == true && m_bAction == true)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_ActionMH);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_ActionMH_To_Idle);
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_ActionMH) == true && m_bAction == true)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_ActionMH_To_Idle);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 					m_bAction = false;
@@ -1022,21 +1063,50 @@ void CCody::Move(const _double dTimeDelta)
 			{
 				// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
 				if (m_pModelCom->Is_AnimFinished(ANI_C_Jog_Start_Fwd) == true) // JogStart -> Jog
+				{
 					m_pModelCom->Set_Animation(ANI_C_Jog);
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
+				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Jog) == true) // Jog -> Jog // 보간속도 Up
+				{
 					m_pModelCom->Set_Animation(ANI_C_Jog);
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
+				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_MH_Gesture_Small_Drumming || m_pModelCom->Get_CurAnimIndex() == ANI_C_ActionMH)	// Idle To Jog Start. -> Jog 예약
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_pModelCom->Set_Animation(ANI_C_Jog_Start_Fwd);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Exhausted_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Exhausted_MH_To_Idle)
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_pModelCom->Set_Animation(ANI_C_Jog_Exhausted_MH_Start_Fwd);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Roll_Start)) // 구르고 나서 바로 움직이면 Roll to Jog
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_bRoll = false;
 					m_pModelCom->Set_Animation(ANI_C_Roll_To_Jog);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
@@ -1052,39 +1122,45 @@ void CCody::Move(const _double dTimeDelta)
 				m_fJogAcceleration = 25.f;
 				if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog) // jog 였다면
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd); // jog to stop 으로 바꿔
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // jog to stop 끝나면 idle 예약.
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Start_Fwd) // JogStart 였다면
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd); // jog to stop 으로 바꿔
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH) // IDLE 상태라면
 				{
-
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_fIdleTime += (_float)dTimeDelta;
 					if (m_bAction == false)
 					{
 						if (m_fIdleTime > 5.f && m_pModelCom->Is_AnimFinished(ANI_C_MH)) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
 						{
+							m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 							m_pModelCom->Set_Animation(ANI_C_Bhv_MH_Gesture_Small_Drumming); // 배 두들기는 애니메이션 재생
 							m_fIdleTime = 0.f;
 						}
 					}
 					else if (m_bAction == true)
 					{
+						m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 						m_pModelCom->Set_Animation(ANI_C_Idle_To_Action);
 						m_pModelCom->Set_NextAnimIndex(ANI_C_ActionMH);
 					}
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Idle_To_Action) == true && m_bAction == true)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_ActionMH);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_ActionMH_To_Idle);
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_ActionMH) == true && m_bAction == true)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_ActionMH_To_Idle);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 					m_bAction = false;
@@ -1407,8 +1483,15 @@ void CCody::Jump(const _double dTimeDelta)
 		// 착지할때 키를 누르고 있는 상태라면 Jog 로 연결
 		if (m_pGameInstance->Key_Pressing(DIK_W) || m_pGameInstance->Key_Pressing(DIK_A) || m_pGameInstance->Key_Pressing(DIK_S) || m_pGameInstance->Key_Pressing(DIK_D))
 		{
+
 			if (m_eCurPlayerSize != SIZE_LARGE)
 			{
+				if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+				}
+
 				m_pModelCom->Set_Animation(ANI_C_Jump_Land_Jog);
 				m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 			}
@@ -1422,6 +1505,9 @@ void CCody::Jump(const _double dTimeDelta)
 		{
 			if (m_eCurPlayerSize != SIZE_LARGE && m_bAfterGroundPound == false)
 			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_JUMP_LANDING_VOICE, m_fCodyMJumpLandingVoice_Volume);
+				m_pGameInstance->Play_Sound(TEXT("CodyM_Jump_Landing_Voice.wav"), CHANNEL_CODYM_JUMP_LANDING_VOICE, m_fCodyMJumpLandingVoice_Volume);
+
 				m_pModelCom->Set_Animation(ANI_C_Jump_Land);
 				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			}
@@ -1429,6 +1515,9 @@ void CCody::Jump(const _double dTimeDelta)
 			{
 				if (m_pModelCom->Get_CurAnimIndex() != ANI_C_ChangeSize_Jump_Falling)
 				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_JUMP_LANDING, m_fCodyBJump_Landing_Volume);
+					m_pGameInstance->Play_Sound(TEXT("CodyB_Jump_Landing.wav"), CHANNEL_CODYB_JUMP_LANDING, m_fCodyBJump_Landing_Volume);
+
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Large_Land);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 				}
@@ -2068,6 +2157,10 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::eDUMMYWALLCAMERATRIGGER)
 		{
 			m_eCameraWorkState = STATE_DUMMYWALL_JUMP;
+		}
+		else if (m_eTargetGameID == GameID::ePIPEWALLCAMERATRIGGER)
+		{
+			m_eCameraWorkState = STATE_PIPEWALL_JUMP;
 		}
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
 		{

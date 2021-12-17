@@ -79,7 +79,7 @@ void CDummyWallCameraTrigger::Trigger(TriggerStatus::Enum eStatus, GameID::Enum 
 		((CCody*)pGameObject)->SetCameraTriggerID_Matrix(GameID::Enum::eDUMMYWALLCAMERATRIGGER, true, CameraMatrix);
 		m_IsCollide = true;
 	}
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY) 
 	{
 		((CCody*)pGameObject)->SetCameraTriggerID_Matrix(GameID::Enum::eDUMMYWALLCAMERATRIGGER, false, CameraMatrix);
 		m_IsCollide = false;
