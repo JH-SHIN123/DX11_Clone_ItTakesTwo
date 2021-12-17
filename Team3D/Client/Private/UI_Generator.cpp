@@ -57,19 +57,10 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	m_pVIBuffer_Rect = (CVIBuffer_Rect*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect"));
 	
 	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("AlphaScreen"), CAlphaScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-	//FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_LOGO, TEXT("SplashScreen"), CSplashScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-	//CUIObject::UI_DESC UIDesc;`
-	//UIDesc.iLevelIndex = 0;
-	//UIDesc.iRenderGroup = 1; 
-	//UIDesc.iSubTextureNum = 0;
-	//UIDesc.iTextureLevelIndex = 0;
-	//UIDesc.iTextureRenderIndex = 0;
-	//lstrcpy(UIDesc.szSubTextureTag, TEXT(""));
-	//lstrcpy(UIDesc.szTextureTag, TEXT("LoadingBook"));
-	//lstrcpy(UIDesc.szSubTextureTag, TEXT("Loading_Book"));
-	//UIDesc.vPos = _float2(583.f, -307.f);
-	//UIDesc.vScale = _float2(100.f, 100.f);
-	//FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("Loading_Book"), CUISprite::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	CUIObject::UI_DESC tUIDesc;
+	lstrcpy(tUIDesc.szUITag, TEXT("Loading_Book"));
+	lstrcpy(tUIDesc.szTextureTag, TEXT("LoadingBook"));
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("Loading_Book"), CUISprite::Create(m_pDevice, m_pDeviceContext, &tUIDesc)), E_FAIL);
 
 	m_VTXFONT = new VTXFONT[50];
 
@@ -223,7 +214,7 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 		SetUp_Clone(ePlayer, eTrigger, TEXT("StickIcon"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::LoadingBook:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("LoadingBook"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Loading_Book"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::Portrait_Cody:
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Portrait_Cody"), Level::LEVEL_STATIC, pArg);
@@ -263,6 +254,10 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 		iOption = 5;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
 		iOption = 6;
+		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+		break;
+	case UI::LoadingScreen:
+		iOption = 7;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
 		break;
 	default:

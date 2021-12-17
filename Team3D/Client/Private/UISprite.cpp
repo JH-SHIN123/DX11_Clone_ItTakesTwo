@@ -24,6 +24,21 @@ HRESULT CUISprite::NativeConstruct_Prototype(void* pArg)
 	if (nullptr != pArg)
 		memcpy(&m_UIDesc, pArg, sizeof(UI_DESC));
 
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("Loading_Book")))
+	{
+		m_iTextureWidth = 1024;
+		m_iTextureHeight = 1024;
+		m_iWidthMaxCount = 8;
+		m_iHeightMaxCount = 8;
+		m_iShaderPassNum = 1;
+		m_FrameControl = 0.01;
+		m_UIDesc.vPos.x = 583.f;
+		m_UIDesc.vPos.y = -307.f;
+		m_UIDesc.vScale.x = 100.f;
+		m_UIDesc.vScale.y = 100.f;
+		m_fSortOrder = 1.f;
+	}
+
 	return S_OK;
 }
 

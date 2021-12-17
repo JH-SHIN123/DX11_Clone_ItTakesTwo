@@ -23,7 +23,7 @@ namespace UI
 		InputButton_PS_Down, PlayerMarker, InputButton_PS_R1, Arrowkeys_Side, Arrowkeys_UpDown, Arrowkeys_All, InputButton_PS_L2, InputButton_PS_R2,
 		StickIcon, Portrait_Cody, Portrait_May, RespawnCircle, MenuScreen, AlphaScreen, SwingPoint, WhiteScreenFadeInOut, BlackScreenFadeInOut, CutSceneBar, LoadingBook /*Default */, ControllerIcon_KeyBoard /*Default */,
 		ControllerIcon_Pad /*Default */, HeaderBox, HeaderBox1P /*Default */, HeaderBox2P /*Default */, HeaderBox_1p_Ready /*Default */, 
-		HeaderBox_2p_Ready /*Default */,  TRIGGER_END
+		HeaderBox_2p_Ready /*Default */, LoadingScreen /* Default */, TRIGGER_END
 	};
 
 	enum INTERACTIVE_ID {

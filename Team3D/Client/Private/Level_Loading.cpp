@@ -20,6 +20,12 @@ HRESULT CLevel_Loading::NativeConstruct(Level::ID ePreLevelID, Level::ID eNextLe
 	m_pLoading = CLoading::Create(m_pDevice, m_pDeviceContext, ePreLevelID, eNextLevelID);
 	NULL_CHECK_RETURN(m_pLoading, E_FAIL);
 
+	if (m_eNextLevelID == Level::LEVEL_STAGE)
+	{
+		UI_Create(Default, LoadingScreen);
+		UI_Create(Default, LoadingBook);
+	}
+
 	return S_OK;
 }
 
@@ -46,6 +52,8 @@ _int CLevel_Loading::Tick(_double dTimedelta)
 		NULL_CHECK_RETURN(pLevel, EVENT_ERROR);
 
 		m_pGameInstance->Change_CurrentLevel(pLevel);
+		UI_Delete(Default, LoadingScreen);
+		UI_Delete(Default, LoadingBook);
 		//m_pGameInstance->Clear_LevelResources(m_ePreLevelID);
 		//m_pGameInstance->Clear_Level(Level::LEVEL_LOADING);
 
