@@ -64,10 +64,6 @@ HRESULT CLevel_Logo::Ready_Layer_SplashScreen()
 
 	UI_Generator->Create_Logo();
 
-	/* Sound*/
-	m_pGameInstance->Play_BGM(TEXT("MainMenu_Bgm.ogg"), CHANNEL_BGM);
-	m_pGameInstance->Play_Sound(TEXT("MainMenu_Waiting.ogg"), CHANNEL_LOGO);
-
 	return S_OK;
 }
 

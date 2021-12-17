@@ -251,15 +251,10 @@ _double CGameInstance::Compute_TimeDelta(const _tchar * pTimerTag)
 #pragma endregion 
 
 #pragma region Sound_Manager
-void CGameInstance::Play_Sound(TCHAR * pSoundKey, CHANNEL_TYPE eChannel, _float fVolume)
+void CGameInstance::Play_Sound(TCHAR * pSoundKey, CHANNEL_TYPE eChannel, _float fVolume, _bool bLoop)
 {
 	NULL_CHECK(m_pSound_Manager);
-	m_pSound_Manager->Play_Sound(pSoundKey, eChannel, fVolume);
-}
-void CGameInstance::Play_BGM(TCHAR * pSoundKey, CHANNEL_TYPE eChannel)
-{
-	NULL_CHECK(m_pSound_Manager);
-	m_pSound_Manager->Play_BGM(pSoundKey, eChannel);
+	m_pSound_Manager->Play_Sound(pSoundKey, eChannel, fVolume, bLoop);
 }
 void CGameInstance::Stop_Sound(CHANNEL_TYPE eChannel)
 {

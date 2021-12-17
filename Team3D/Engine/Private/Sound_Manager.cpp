@@ -15,28 +15,20 @@ _bool CSound_Manager::Is_Playing(CHANNEL_TYPE eChannel)
 		return true;
 }
 
-void CSound_Manager::Play_Sound(TCHAR * pSoundKey, CHANNEL_TYPE eChannel, _float fVolume)
+void CSound_Manager::Play_Sound(TCHAR * pSoundKey, CHANNEL_TYPE eChannel, _float fVolume, _bool bLoop)
 {
 	unordered_map<TCHAR*, FMOD_SOUND*>::iterator iter = find_if(m_Sounds.begin(), m_Sounds.end(), CTagFinder(pSoundKey));
 
 	if (iter == m_Sounds.end())
 		return;
+
+	if (bLoop) 
+		FMOD_Sound_SetMode(iter->second, FMOD_LOOP_NORMAL);
 
 	FMOD_System_PlaySound(m_pSystem, iter->second, nullptr, 0, &(m_pChannel[eChannel]));
 	FMOD_System_Update(m_pSystem);
 
 	Set_SoundVolume(eChannel, fVolume);
-}
-
-void CSound_Manager::Play_BGM(TCHAR * pSoundKey, CHANNEL_TYPE eChannel)
-{
-	unordered_map<TCHAR*, FMOD_SOUND*>::iterator iter = find_if(m_Sounds.begin(), m_Sounds.end(), CTagFinder(pSoundKey));
-
-	if (iter == m_Sounds.end())
-		return;
-
-	FMOD_Sound_SetMode(iter->second, FMOD_LOOP_NORMAL);
-	FMOD_System_PlaySound(m_pSystem, iter->second, nullptr, 0, &(m_pChannel[eChannel]));
 }
 
 void CSound_Manager::Stop_Sound(CHANNEL_TYPE eChannel)
@@ -60,43 +52,61 @@ HRESULT CSound_Manager::Ready_SoundManager()
 	FMOD_System_Create(&m_pSystem);
 	FMOD_System_Init(m_pSystem, CHANNEL_END, FMOD_INIT_NORMAL, NULL);
 
+	FAILED_CHECK_RETURN(Add_Sound("../Bin/Resources/Sound/"), E_FAIL);
+
+	FMOD_System_Update(m_pSystem);
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Add_Sound(char * pFilePath)
+{
 	_finddata_t	fd = {};
 	long long handle = 0;
-	int iResult = 0;
+	_int iResult = 0;
 
-	handle = _findfirst("../Bin/Resources/Sound/*.*", &fd);
+	char szFilePath[256];
+	strcpy_s(szFilePath, pFilePath);
+	strcat_s(szFilePath, "*.*");
+
+	handle = _findfirst(szFilePath, &fd);
 
 	if (-1 == handle)
-	{
-		MSG_BOX("Can't Read SoundFile");
 		return E_FAIL;
-	}
 
 	while (-1 != iResult)
 	{
 		char szFullPath[256] = "";
-		strcpy_s(szFullPath, 256, "../Bin/Resources/Sound/");
+		strcpy_s(szFullPath, 256, pFilePath);
 		strcat_s(szFullPath, 256, fd.name);
-
-		FMOD_SOUND*	pSound = nullptr;
-
-		FMOD_RESULT FResult = FMOD_System_CreateSound(m_pSystem, szFullPath, FMOD_DEFAULT, NULL, &pSound);
-
-		if (FMOD_OK == FResult)
+		
+		if ((0 != strcmp(fd.name, ".")) && (0 != strcmp(fd.name, "..")))
 		{
-			TCHAR*	pSoundKey = new TCHAR[256];
-			ZeroMemory(pSoundKey, sizeof(TCHAR) * 256);
-			MultiByteToWideChar(CP_ACP, 0, fd.name, (_int)strlen(fd.name) + 1, pSoundKey, 256);
+			if (fd.attrib & _A_SUBDIR)
+			{
+				strcat_s(szFullPath, "/");
+				Add_Sound(szFullPath);
+			}
+			else
+			{
+				FMOD_SOUND*	pSound = nullptr;
+				FMOD_RESULT FResult = FMOD_System_CreateSound(m_pSystem, szFullPath, FMOD_DEFAULT, NULL, &pSound);
 
-			m_Sounds.emplace(pSoundKey, pSound);
+				if (FMOD_OK == FResult)
+				{
+					TCHAR*	pSoundKey = new TCHAR[256];
+					ZeroMemory(pSoundKey, sizeof(TCHAR) * 256);
+					MultiByteToWideChar(CP_ACP, 0, fd.name, (_int)strlen(fd.name) + 1, pSoundKey, 256);
+
+					m_Sounds.emplace(pSoundKey, pSound);
+				}
+			}
 		}
 
 		iResult = _findnext(handle, &fd);
 	}
 
 	_findclose(handle);
-
-	FMOD_System_Update(m_pSystem);
 
 	return S_OK;
 }
