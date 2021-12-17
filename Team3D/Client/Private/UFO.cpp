@@ -89,10 +89,12 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
 		m_IsCutScene = true;
 	}
-	else if (m_pGameInstance->Key_Down(DIK_NUMPAD7))
+	else if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
 	{
-
+		m_pBossHpBar->Set_Active(true);
 	}
+	else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
+		m_pBossHpBar->Set_Active(false);
 
 	/* 컷 신 재생중이 아니라면 보스 패턴 진행하자 나중에 컷 신 생기면 바꿈 */
 	if (false == m_IsCutScene)

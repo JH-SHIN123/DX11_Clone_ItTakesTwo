@@ -32,7 +32,7 @@ HRESULT CBossHpBarFrame::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
-	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	m_pTransformCom->Set_Scale(XMVectorSet(1.f, m_UIDesc.vScale.y, 0.f, 0.f));
 
 	return S_OK;
 }
@@ -44,12 +44,28 @@ _int CBossHpBarFrame::Tick(_double TimeDelta)
 
 	CUIObject::Tick(TimeDelta);
 
+	if (true == m_IsActive)
+	{
+		if (m_fScaleX <= m_UIDesc.vScale.x)
+		{
+			m_fScaleX += (_float)TimeDelta * 1200.f;
+
+			if (m_fScaleX >= m_UIDesc.vScale.x)
+				m_fScaleX = m_UIDesc.vScale.x;
+
+			m_pTransformCom->Set_Scale(XMVectorSet(m_fScaleX, m_UIDesc.vScale.y, 0.f, 0.f));
+		}
+	}
+
 	return _int();
 }
 
 _int CBossHpBarFrame::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
+
+	if (false == m_IsActive)
+		return NO_EVENT;
 	
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
@@ -65,6 +81,18 @@ HRESULT CBossHpBarFrame::Render(RENDER_GROUP::Enum eGroup)
 
 	return S_OK;
 }
+
+void CBossHpBarFrame::Set_Active(_bool IsCheck)
+{
+	m_IsActive = IsCheck;
+
+	if (m_IsActive == false)
+	{
+		m_fScaleX = 1.f;
+		m_pTransformCom->Set_Scale(XMVectorSet(m_fScaleX, m_UIDesc.vScale.y, 0.f, 0.f));
+	}
+}
+
 
 HRESULT CBossHpBarFrame::Ready_Component()
 {

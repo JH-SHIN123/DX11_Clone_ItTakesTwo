@@ -22,11 +22,14 @@ public:
 
 public:
 	void Set_Ratio(_float fRatio);
+	void Set_Active(_bool IsCheck);
 
  private:
 	_float							m_fRatio = 1.f;
 	_float							m_fDecreaseRateRatio = 1.f;
 	_float							m_fWaitingTime = 0.f;
+	_bool							m_IsActive = false;
+	_float							m_fScaleX = 0.f;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;

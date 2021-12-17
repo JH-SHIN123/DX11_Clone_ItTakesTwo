@@ -550,9 +550,8 @@ PS_OUT PS_BossHPBar(PS_IN In)
 
 	if (Out.vColor.g >= 0.2f)
 	{
-		Out.vColor.r = 0.9f;
-		Out.vColor.g = 0.14f;
-		Out.vColor.b = 0.015f;
+		Out.vColor.r = 0.96f;
+		Out.vColor.gb = 0.f;
 	}
 	else
 		discard;

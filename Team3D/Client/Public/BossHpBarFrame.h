@@ -20,6 +20,13 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+public:
+	 void Set_Active(_bool IsCheck);
+
+private:
+	_bool							m_IsActive = false;
+	_float							m_fScaleX = 0.f;
+
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 
