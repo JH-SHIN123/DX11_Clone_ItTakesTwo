@@ -26,9 +26,9 @@ HRESULT CScript::Render_Script(_uint iScriptIndex, SCREEN eScreenMode, _float fD
 	m_bBackGround = bBackGround;
 
 	if (HALF == m_eScreenMode)
-		m_pBackGround_Main->Set_Position(XMVectorSet(-320.f, -313.f, 0.f, 1.f));
+		m_pBackGround_Main->Set_Position(XMVectorSet(-320.f, -312.f, 0.f, 1.f));
 	else
-		m_pBackGround_Main->Set_Position(XMVectorSet(0.f, -313.f, 0.f, 1.f));
+		m_pBackGround_Main->Set_Position(XMVectorSet(0.f, -312.f, 0.f, 1.f));
 
 	return S_OK;
 }
@@ -46,7 +46,7 @@ HRESULT CScript::Render_Script_DoubleLine(_uint iIndexFirst, _uint iIndexSecond,
 	m_bRender = true;
 	m_bBackGround = bBackGround;
 
-	m_pBackGround_Main->Set_Position(XMVectorSet(0.f, -313.f, 0.f, 1.f));
+	m_pBackGround_Main->Set_Position(XMVectorSet(0.f, -312.f, 0.f, 1.f));
 
 	return S_OK;
 }
@@ -64,8 +64,8 @@ HRESULT CScript::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
-	m_pBackGround_Main->Set_Position(XMVectorSet(-320.f, -313.f, 0.f, 1.f));
-	m_pBackGround_Sub->Set_Position(XMVectorSet(320.f, -313.f, 0.f, 1.f));
+	m_pBackGround_Main->Set_Position(XMVectorSet(-320.f, -312.f, 0.f, 1.f));
+	m_pBackGround_Sub->Set_Position(XMVectorSet(320.f, -312.f, 0.f, 1.f));
 
 	DATABASE->Set_Script(this);
 

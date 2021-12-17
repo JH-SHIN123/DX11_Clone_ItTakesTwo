@@ -19,26 +19,11 @@ CFontDraw::CFontDraw(const CFontDraw & rhs)
 
 _float CFontDraw::Get_TextSizeX(_tchar * pText, _float fScale)
 {
-	wstring strTemp = pText;
-
-	_uint iSize = (_uint)strTemp.size();
-	_uint iCountSpecialChar = 0;
-	_uint iCountOtherChar = 0;
-	_tchar Space = ' ';
-	_tchar Point = '.';
-	_tchar Exclamation = '!';
-	_tchar Question = '?';
-
-	for (_uint i = 0; i < iSize; ++i)
-	{
-		if (strTemp[i] == Space || strTemp[i] == Point || strTemp[i] == Exclamation || strTemp[i] == Question)
-			++iCountSpecialChar;
-		else
-			++iCountOtherChar;
-	}
-
-	_float fButterSizeX = (iCountOtherChar * (50.f * fScale)) + (iCountSpecialChar * (25.f * fScale));
-	return fButterSizeX;
+	RECT rt = m_pFont->MeasureDrawBounds(pText, _float2(0.f, 0.f));
+	_float fX = (_float)(rt.right - rt.left) * fScale;
+	_float fY = (_float)(rt.bottom - rt.top) * fScale;
+	
+	return fX;
 }
 
 HRESULT CFontDraw::NativeConstruct_Prototype(_tchar* pFilePath, _uint iWinCX, _uint iWinCY)
@@ -90,8 +75,14 @@ HRESULT CFontDraw::Render_Font(_tchar * pText, _float2 vPosition, _fvector vColo
 	m_pDeviceContext->GSSetShader(nullptr, nullptr, 0);
 	m_pEffect->Apply(m_pDeviceContext);
 
+	RECT rt = m_pFont->MeasureDrawBounds(pText, _float2(0.f, 0.f));
+	_float fX = (_float)(rt.right - rt.left) * fScale;
+	_float fY = (_float)(rt.bottom - rt.top) * fScale;
+
+	_float2 vPos = { vPosition.x - (fX * 0.5f), vPosition.y - (fY * 0.5f) };
+
 	m_pFontBT->Begin();
-	m_pFont->DrawString(m_pFontBT, pText, Carculate_TextPosition(pText, vPosition, fScale * 2.f), vColor, 0.f, _float2(0.f, 0.f), fScale);
+	m_pFont->DrawString(m_pFontBT, pText, vPos, vColor, 0.f, _float2(0.f, 0.f), fScale);
 	m_pFontBT->End();
 
 	return S_OK;
@@ -109,47 +100,17 @@ HRESULT CFontDraw::Render_Font(_tchar * pText, _float2 vPosition, _float fAlpha,
 	m_pDeviceContext->GSSetShader(nullptr, nullptr, 0);
 	m_pEffect->Apply(m_pDeviceContext);
 
+	RECT rt = m_pFont->MeasureDrawBounds(pText, _float2(0.f, 0.f));
+	_float fX = (_float)(rt.right - rt.left) * fScale;
+	_float fY = (_float)(rt.bottom - rt.top) * fScale;
+
+	_float2 vPos = { vPosition.x - (fX * 0.5f), vPosition.y - ( fY * 0.5f) };
+
 	m_pFontBT->Begin();
-	m_pFont->DrawString(m_pFontBT, pText, Carculate_TextPosition(pText, vPosition, fScale), XMVectorSet(0.25f, 0.f, 0.f, fAlpha), 0.f, _float2(0.f, 0.f), fScale);
+	m_pFont->DrawString(m_pFontBT, pText, vPos, XMVectorSet(0.25f, 0.f, 0.f, fAlpha), 0.f, _float2(0.f, 0.f), fScale);
 	m_pFontBT->End();
 
 	return S_OK;
-}
-
-_float2 CFontDraw::Carculate_TextPosition(_tchar* pText, _float2 fPosition, _float fScale)
-{
-	wstring strTemp = pText;
-
-	_uint iSize = (_uint)strTemp.size();
-	_uint iCountSpecialChar = 0;
-	_uint iCountOtherChar = 0;
-
-	_tchar Space = ' ';
-	_tchar Point = '.';
-	_tchar Exclamation = '!';
-	_tchar Question = '?';
-
-	for (_uint i = 0; i < iSize; ++i)
-	{
-		if (strTemp[i] == Point)
-			++iCountSpecialChar;
-		else
-			++iCountOtherChar;
-	}
-
-	_float fButterSizeX;
-	if(1 < iCountSpecialChar)
-		fButterSizeX = (iCountOtherChar * (50.f * fScale)) + (iCountSpecialChar * (25.f * fScale));
-	else
-		fButterSizeX = (iCountOtherChar * (50.f * fScale)) + (iCountSpecialChar * (50.f * fScale));
-
-	_float fButterSizeY = 50.f * fScale;
-
-	_float2 fTextPos;
-	fTextPos.x = fPosition.x - (fButterSizeX * 0.5f);
-	fTextPos.y = fPosition.y - (fButterSizeY * 0.5f);
-
-	return fTextPos;
 }
 
 CFontDraw * CFontDraw::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, _tchar* pFilePath, _uint iWinCX, _uint iWinCY)

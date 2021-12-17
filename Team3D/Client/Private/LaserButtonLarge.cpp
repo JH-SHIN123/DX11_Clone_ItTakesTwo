@@ -65,7 +65,11 @@ HRESULT CLaserButtonLarge::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1, m_tDynamic_Env_Desc.iMaterialIndex);
+
+	if(0 == m_tDynamic_Env_Desc.iOption)
+		m_pModelCom->Render_Model(25, m_tDynamic_Env_Desc.iMaterialIndex);
+	else
+		m_pModelCom->Render_Model(26, m_tDynamic_Env_Desc.iMaterialIndex);
 
 	return S_OK;
 }

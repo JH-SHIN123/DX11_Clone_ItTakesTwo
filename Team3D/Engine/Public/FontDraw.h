@@ -32,9 +32,6 @@ private:
 	_uint					m_iFontSize = 50;
 	_uint					m_iCount = 0;
 
-private:
-	_float2 Carculate_TextPosition(_tchar* pText, _float2 fPosition, _float fScale);
-
 public:
 	static CFontDraw* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _tchar* pFilePath, _uint iWinCX, _uint iWinCY);
 	virtual CComponent* Clone_Component(void* _pArg);
