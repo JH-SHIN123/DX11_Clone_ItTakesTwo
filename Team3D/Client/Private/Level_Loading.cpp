@@ -54,8 +54,6 @@ _int CLevel_Loading::Tick(_double dTimedelta)
 		m_pGameInstance->Change_CurrentLevel(pLevel);
 		UI_Delete(Default, LoadingScreen);
 		UI_Delete(Default, LoadingBook);
-		//m_pGameInstance->Clear_LevelResources(m_ePreLevelID);
-		//m_pGameInstance->Clear_Level(Level::LEVEL_LOADING);
 
 	}
 

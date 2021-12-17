@@ -24,7 +24,11 @@ private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 
 private:
+	class CBossHpBarFrame*			m_pBossHpBarFrame = nullptr;
+
+private:
 	HRESULT Ready_Component();
+	HRESULT Ready_Layer_UI();
 
 public:
 	static CBossHpBar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

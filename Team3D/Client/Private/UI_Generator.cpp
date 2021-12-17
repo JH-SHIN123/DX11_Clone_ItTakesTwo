@@ -40,9 +40,6 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	NULL_CHECK_RETURN(pDevice, E_FAIL);
 	NULL_CHECK_RETURN(pDevice_Context, E_FAIL);
 
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
-
 	m_pDevice = pDevice;
 	m_pDeviceContext = pDevice_Context;
 
@@ -50,20 +47,10 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	Safe_AddRef(m_pDeviceContext);
 
 	FAILED_CHECK_RETURN(Add_Prototype_Texture(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Default_UI(), E_FAIL);
 
-	m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Font"));
-	m_pEngTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("EngFont"));
-	m_pVIBuffer_FontCom = (CVIBuffer_FontInstance*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"));
-	m_pVIBuffer_Rect = (CVIBuffer_Rect*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect"));
-	
-	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("AlphaScreen"), CAlphaScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-	CUIObject::UI_DESC tUIDesc;
-	lstrcpy(tUIDesc.szUITag, TEXT("Loading_Book"));
-	lstrcpy(tUIDesc.szTextureTag, TEXT("LoadingBook"));
-	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("Loading_Book"), CUISprite::Create(m_pDevice, m_pDeviceContext, &tUIDesc)), E_FAIL);
-
-	m_VTXFONT = new VTXFONT[50];
-
+	m_VTXFONT = new VTXFONT[MAX_PATH];
 
 	return S_OK;
 }
@@ -1267,6 +1254,34 @@ HRESULT CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI
 
 	return S_OK;
 }
+
+HRESULT CUI_Generator::Ready_Component()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Font"));
+	m_pEngTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("EngFont"));
+	m_pVIBuffer_FontCom = (CVIBuffer_FontInstance*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"));
+	m_pVIBuffer_Rect = (CVIBuffer_Rect*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect"));
+
+	return S_OK;
+}
+
+HRESULT CUI_Generator::Ready_Default_UI()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("AlphaScreen"), CAlphaScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	CUIObject::UI_DESC tUIDesc;
+	lstrcpy(tUIDesc.szUITag, TEXT("Loading_Book"));
+	lstrcpy(tUIDesc.szTextureTag, TEXT("LoadingBook"));
+	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("Loading_Book"), CUISprite::Create(m_pDevice, m_pDeviceContext, &tUIDesc)), E_FAIL);
+
+	return S_OK;
+}
+
 
 void CUI_Generator::Free()
 {

@@ -46,8 +46,6 @@ public:
 		_float	fAlpha = 1.f;
 		_float3 vColor = { 1.f, 1.f, 1.f };
 
-
-
 	}FONTDESC;
 
 private:
@@ -132,9 +130,11 @@ private:
 	HRESULT Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc);
 	HRESULT Add_Prototype_Menu(CUIObject::UI_DESC* UIDesc);
 	HRESULT Add_Prototype_Chapter(CUIObject::UI_DESC* UIDesc);
+	HRESULT Add_Prototype_Texture();
 
 private:
-	HRESULT Add_Prototype_Texture();
+	HRESULT Ready_Component();
+	HRESULT Ready_Default_UI();
 	
 private:
 	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag, Level::ID eLevel, void* pArg = nullptr);

@@ -531,6 +531,53 @@ PS_OUT PS_ContextIcon(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_BossHPBarFrame(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (0.f == Out.vColor.r && 0.f == Out.vColor.g && 0.f == Out.vColor.b)
+		discard;
+
+	if (Out.vColor.g == 1.f)
+	{
+		Out.vColor.rgb = 0.f;
+		Out.vColor.a = 0.5f;
+	}
+	else
+	{
+		Out.vColor.rgb = 0.f;
+	}
+
+	return Out;
+}
+
+PS_OUT PS_BossHPBar(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	//if (Out.vColor.r == 1.f && Out.vColor.g == 1.f && Out.vColor.b == 1.f)
+	//{
+	//	Out.vColor.r = 1.f;
+	//	Out.vColor.gb = 0.f;
+	//}
+	//else
+	//	discard;
+
+	if (Out.vColor.g == 1.f)
+	{
+		Out.vColor.r = 1.f;
+		Out.vColor.gb = 0.f;
+	}
+	else
+		discard;
+	
+	return Out;
+}
+
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
@@ -742,5 +789,27 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_ContextIcon();
+	}
+
+	// 19
+	pass BossHpBarFrame
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_BossHPBarFrame();
+	}
+
+	// 20
+	pass BossHpBar
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_BossHPBar();
 	}
 };

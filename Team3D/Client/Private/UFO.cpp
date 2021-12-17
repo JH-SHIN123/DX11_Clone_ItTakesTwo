@@ -37,7 +37,6 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
-
 	Add_LerpInfo_To_Model();
 
 	ROBOTDESC UFODesc;

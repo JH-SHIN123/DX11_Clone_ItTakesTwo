@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\BossHpBar.h"
 
+#include "BossHpBarFrame.h"
+
 CBossHpBar::CBossHpBar(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
 {
@@ -28,8 +30,8 @@ HRESULT CBossHpBar::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
 
-	if (FAILED(Ready_Component()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_UI(), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
@@ -61,7 +63,7 @@ HRESULT CBossHpBar::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(0);
+	m_pVIBuffer_RectCom->Render(20);
 
 	return S_OK;
 }
@@ -69,6 +71,15 @@ HRESULT CBossHpBar::Render(RENDER_GROUP::Enum eGroup)
 HRESULT CBossHpBar::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CBossHpBar::Ready_Layer_UI()
+{
+	CGameObject* pGameObject = nullptr;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("BossHpBarFrame"), nullptr, &pGameObject), E_FAIL);
+	m_pBossHpBarFrame = static_cast<CBossHpBarFrame*>(pGameObject);
 
 	return S_OK;
 }
@@ -101,6 +112,7 @@ CGameObject * CBossHpBar::Clone_GameObject(void * pArg)
 
 void CBossHpBar::Free()
 {
+	Safe_Release(m_pBossHpBarFrame);
 	Safe_Release(m_pVIBuffer_RectCom);
 
 	CUIObject::Free();
