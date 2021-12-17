@@ -615,6 +615,8 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_fAcceleration = 5.f;
 			m_pModelCom->Set_Animation(ANI_C_Roll_Start);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Roll_Stop);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Dash.wav"), CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
 
 			m_bAction = false;
 			m_bRoll = true;
@@ -629,10 +631,20 @@ void CCody::KeyInput(_double dTimeDelta)
 				m_fAcceleration = 5.f;
 
 				if (m_eCurPlayerSize != SIZE_SMALL)
+				{
 					m_pActorCom->Jump_Start(1.2f);
+					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
+					m_pGameInstance->Play_Sound(TEXT("CodyM_Dash.wav"), CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
+				}
 				else
+				{
 					m_pActorCom->Jump_Start(0.6f);
+					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
+					m_pGameInstance->Play_Sound(TEXT("CodyM_Dash.wav"), CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
 
+					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYS_DASH_VOICE, m_fCodySDash_Voice_Volume);
+					m_pGameInstance->Play_Sound(TEXT("CodyS_Dash_Voice.wav"), CHANNEL_CODYS_DASH_VOICE, m_fCodySDash_Voice_Volume);
+				}
 				m_pModelCom->Set_Animation(ANI_C_AirDash_Start);
 				m_IsAirDash = true;
 			}
@@ -678,10 +690,14 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_IsSizeChanging = true;
 			m_pActorCom->Set_Gravity(-9.8f);
 			m_pActorCom->Set_IsPlayerSizeSmall(false);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_SIZE_STOM, m_fSizing_SToM_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Sizing_StoM.wav"), CHANNEL_SIZE_STOM, m_fSizing_SToM_Volume);
 			break;
 		case Client::CCody::SIZE_MEDIUM:
 			m_eNextPlayerSize = SIZE_LARGE;
 			m_IsSizeChanging = true;
+			m_pGameInstance->Set_SoundVolume(CHANNEL_SIZE_MTOB, m_fSizing_MToB_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Sizing_MtoB.wav"), CHANNEL_SIZE_MTOB, m_fSizing_MToB_Volume);
 			break;
 		}
 	}
@@ -699,11 +715,15 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_eNextPlayerSize = SIZE_MEDIUM;
 			m_IsSizeChanging = true;
 			m_pActorCom->Set_Gravity(-9.8f);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_SIZE_BTOM, m_fSizing_BToM_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Sizing_BtoM.wav"), CHANNEL_SIZE_BTOM, m_fSizing_BToM_Volume);
 			break;
 		case Client::CCody::SIZE_MEDIUM:
 			m_eNextPlayerSize = SIZE_SMALL;
 			m_IsSizeChanging = true;
 			m_pActorCom->Set_IsPlayerSizeSmall(true);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_SIZE_MTOS, m_fSizing_MToS_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Sizing_MtoS.wav"), CHANNEL_SIZE_MTOS, m_fSizing_MToS_Volume);
 			break;
 		}
 	}
@@ -736,6 +756,12 @@ void CCody::KeyInput(_double dTimeDelta)
 	{
 		m_bGroundPound = true;
 		m_IsJumping = false;
+
+		if (m_eCurPlayerSize != SIZE_LARGE)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_GROUNDPOUND_ROLL, m_fCodyM_GroundPound_Roll_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_GroundPound_Roll.wav"), CHANNEL_CODYM_GROUNDPOUND_ROLL, m_fCodyM_GroundPound_Roll_Volume);
+		}
 	}
 
 #pragma endregion
@@ -1076,6 +1102,11 @@ void CCody::Roll(const _double dTimeDelta)
 		{
 			m_fAcceleration = 5.0;
 			m_pModelCom->Set_Animation(ANI_C_Roll_Stop);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH_ROLL, m_fCodyMDash_Roll_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Dash_Roll.wav"), CHANNEL_CODYM_DASH_ROLL, m_fCodyMDash_Roll_Volume);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH_LANDING, m_fCodyMDash_Landing_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Dash_Landing.wav"), CHANNEL_CODYM_DASH_LANDING, m_fCodyMDash_Landing_Volume);
+
 			if (m_bMove == false)
 				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		
@@ -1303,17 +1334,32 @@ void CCody::Jump(const _double dTimeDelta)
 		{
 			m_IsJumping = true;
 			if (m_eCurPlayerSize == SIZE_MEDIUM)
+			{
 				m_pActorCom->Jump_Start(2.6f);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_JUMP, m_fCodyMJumpVolume);
+				m_pGameInstance->Play_Sound(TEXT("CodyM_Jump2.wav"), CHANNEL_CODYM_JUMP, m_fCodyMJumpVolume);
+			}
 			else if (m_eCurPlayerSize == SIZE_LARGE)
+			{
 				m_pActorCom->Jump_Start(2.8f);
-			else if (m_eCurPlayerSize == SIZE_SMALL)
-				m_pActorCom->Jump_Start(0.8f);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_JUMP, m_fCodyBJumpVolume);
+				m_pGameInstance->Play_Sound(TEXT("CodyB_Jump.wav"), CHANNEL_CODYB_JUMP, m_fCodyBJumpVolume);
 
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_JUMP_VOICE, m_fCodyBJumpVoiceVolume);
+				m_pGameInstance->Play_Sound(TEXT("CodyB_Jump_Voice.wav"), CHANNEL_CODYB_JUMP_VOICE, m_fCodyBJumpVoiceVolume);
+			}
+			else if (m_eCurPlayerSize == SIZE_SMALL)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYS_JUMP_VOICE, m_fCodySJumpVolume);
+				m_pGameInstance->Play_Sound(TEXT("CodyS_Jump_Voice.wav"), CHANNEL_CODYS_JUMP_VOICE, m_fCodySJumpVolume);
+				m_pActorCom->Jump_Start(0.8f);
+			}
 			if (m_eCurPlayerSize == SIZE_LARGE)
 				m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Start); // 사이즈 클때 점프 애니메이션이 다름.
 			else
 			{
 				m_pModelCom->Set_Animation(ANI_C_Jump_Start);
+
 			}
 			m_bShortJump = false;
 		}
@@ -1323,16 +1369,39 @@ void CCody::Jump(const _double dTimeDelta)
 			//m_pActorCom->Jump_Higher(1.4f);
 			//m_pActorCom->Set_Gravity(0.f);
 			if (m_eCurPlayerSize == SIZE_MEDIUM)
+			{
 				m_pActorCom->Jump_Start(2.6f);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_JUMP_DOUBLE_VOICE, m_fCodyMJumpDoubleVolume);
+				m_pGameInstance->Play_Sound(TEXT("CodyM_Jump_Double_Voice.wav"), CHANNEL_CODYM_JUMP_DOUBLE_VOICE, m_fCodyMJumpDoubleVolume);
+			}
 			else if (m_eCurPlayerSize == SIZE_SMALL)
+			{
 				m_pActorCom->Jump_Start(0.8f);
-
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYS_JUMP_DOUBLE_VOICE, m_fCodySJumpDoubleVolume);
+				m_pGameInstance->Play_Sound(TEXT("CodyS_Jump_Double_Voice.wav"), CHANNEL_CODYS_JUMP_DOUBLE_VOICE, m_fCodySJumpDoubleVolume);
+			}
 			m_pModelCom->Set_Animation(ANI_C_DoubleJump);
 			m_bShortJump = false;
 		}
 	}
 	if (m_IsJumping == true && m_pActorCom->Get_IsJump() == false && m_bGroundPound == false)
 	{
+		if (m_eCurPlayerSize == SIZE_MEDIUM)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_JUMP_LANDING_VOICE, m_fCodyMJumpLandingVoice_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Jump_Landing_Voice.wav"), CHANNEL_CODYM_JUMP_LANDING_VOICE, m_fCodyMJumpLandingVoice_Volume);
+		}
+		else if (m_eCurPlayerSize == SIZE_SMALL)
+		{
+			// 뭔가 이상함
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH_LANDING, m_fCodyMDash_Landing_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Dash_Landing.wav"), CHANNEL_CODYM_DASH_LANDING, m_fCodyMDash_Landing_Volume);
+		}
+		else
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_JUMP_LANDING, m_fCodyBJump_Landing_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyB_Jump_Landing.wav"), CHANNEL_CODYB_JUMP_LANDING, m_fCodyBJump_Landing_Volume);
+		}
 		m_iAirDashCount = 0;
 		m_bSprint = false;
 		// 착지할때 키를 누르고 있는 상태라면 Jog 로 연결
@@ -1587,9 +1656,13 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 		if (m_fGroundPoundAirDelay > 0.4f)
 		{
 			if (m_eCurPlayerSize != SIZE_LARGE)
-				m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Falling);
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Falling);	
+			}
 			else
+			{
 				m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Falling);
+			}
 			if (m_eCurPlayerSize == SIZE_MEDIUM || m_eCurPlayerSize == SIZE_LARGE)
 				m_pActorCom->Set_Gravity(-9.8f);
 			else if (m_eCurPlayerSize == SIZE_SMALL)
@@ -1605,7 +1678,9 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 			if (m_eCurPlayerSize == SIZE_LARGE)
 				m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Start);
 			else
+			{
 				m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Start);
+			}
 			m_pActorCom->Set_Jump(false);
 			m_pActorCom->Set_Gravity(0.f);
 			m_fGroundPoundAirDelay += (_float)dTimeDelta;
@@ -1616,6 +1691,21 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 	{
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_GroundPound_Falling) && m_bPlayGroundPoundOnce == false)
 		{
+			if (m_eCurPlayerSize == SIZE_MEDIUM)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_GROUNDPOUND, m_fCodyM_GroundPound_Volume);
+				m_pGameInstance->Play_Sound(TEXT("CodyM_GroundPound.wav"), CHANNEL_CODYM_GROUNDPOUND, m_fCodyM_GroundPound_Volume);
+
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_GROUNDPOUND_LANDING_VOICE, m_fCodyM_GroundPound_Landing_Voice_Volume);
+				m_pGameInstance->Play_Sound(TEXT("CodyM_GroundPound_Landing_Voice.wav"), CHANNEL_CODYM_GROUNDPOUND_LANDING_VOICE, m_fCodyM_GroundPound_Landing_Voice_Volume);
+
+			}
+			else if (m_eCurPlayerSize == SIZE_SMALL)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYS_GROUNDPOUND_LANDING_VOICE, m_fCodyS_GroundPound_Landing_Voice_Volume);
+				m_pGameInstance->Play_Sound(TEXT("CodyS_GroundPound_Landing_Voice.wav"), CHANNEL_CODYS_GROUNDPOUND_LANDING_VOICE, m_fCodyS_GroundPound_Landing_Voice_Volume);
+
+			}
 			m_bPlayGroundPoundOnce = true;
 			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Land_Exit);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
@@ -1634,6 +1724,9 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 	{
 		if (m_pActorCom->Get_IsJump() == true && (m_pModelCom->Get_CurAnimIndex() == (ANI_C_Bhv_ChangeSize_GroundPound_Falling) && m_bPlayGroundPoundOnce == false))
 		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_GROUNDPOUND_LANDING_VOICE, m_fCodyB_GroundPound_Landing_Voice_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyB_GroundPound_Landing_Voice.wav"), CHANNEL_CODYB_GROUNDPOUND_LANDING_VOICE, m_fCodyB_GroundPound_Landing_Voice_Volume);
+
 			m_bPlayGroundPoundOnce = true;
 			m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);

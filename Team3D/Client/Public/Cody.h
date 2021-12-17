@@ -581,8 +581,42 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #pragma region Sound_Variable
-	_float m_fCodyJumpVolume = 0.5f;
+	// Jump
+	_float m_fCodyBJumpVolume = 1.f;
+	_float m_fCodyMJumpVolume = 0.08f;
+	_float m_fCodySJumpVolume = 0.5f;
+	_float m_fCodyBJumpVoiceVolume = 1.f;
 
+	// Double Jump
+	_float m_fCodyMJumpDoubleVolume = 2.f;
+	_float m_fCodySJumpDoubleVolume = 0.5f;
+
+	// JumpLanding
+	_float m_fCodyBJump_Landing_Volume = 1.f;
+	_float m_fCodyMJumpLandingVoice_Volume = 1.f;
+	_float m_fCodySJumpLandingVoice_Volume = 0.5f;
+
+	// SizeChanging
+	_float m_fSizing_BToM_Volume = 1.f;
+	_float m_fSizing_SToM_Volume = 1.f;
+	_float m_fSizing_MToS_Volume = 1.f;
+	_float m_fSizing_MToB_Volume = 1.f;
+
+	// Dash
+	_float m_fCodyMDash_Volume = 1.f;
+	_float m_fCodyMDash_Landing_Volume = 1.f;
+	_float m_fCodyMDash_Roll_Volume = 1.f;
+
+	// GroundPound
+	_float m_fCodyB_GroundPound_Landing_Voice_Volume = 1.f;
+	_float m_fCodyM_GroundPound_Landing_Voice_Volume = 1.f;
+	_float m_fCodyM_GroundPound_Volume = 1.f;
+	_float m_fCodyM_GroundPound_Roll_Volume = 1.f;
+	_float m_fCodyS_GroundPound_Landing_Voice_Volume = 1.f;
+
+
+
+	_float m_fCodySDash_Voice_Volume = 0.5f;
 
 
 
