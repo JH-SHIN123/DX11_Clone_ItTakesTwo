@@ -831,13 +831,13 @@
     <Filter Include="02.GameObject\06.UI\13.Gauge_Circle">
       <UniqueIdentifier>{6211bcdd-7628-46cc-ada7-5cd4f2e375da}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\06.UI\14.InfoBar">
+    <Filter Include="02.GameObject\06.UI\15.InfoBar">
       <UniqueIdentifier>{ac656f16-0a8f-4801-b966-95e3dc892e9f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\06.UI\14.InfoBar\00.Player">
+    <Filter Include="02.GameObject\06.UI\15.InfoBar\00.Player">
       <UniqueIdentifier>{39e7963c-18f0-49cb-9976-80da837fce26}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\06.UI\14.InfoBar\01.Boss">
+    <Filter Include="02.GameObject\06.UI\15.InfoBar\01.Boss">
       <UniqueIdentifier>{8001ece9-747e-4946-887b-101332178afc}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\99.Terrain%28Test%29">
@@ -1644,16 +1644,16 @@
       <Filter>02.GameObject\06.UI\13.Gauge_Circle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\HpBarFrame.h">
-      <Filter>02.GameObject\06.UI\14.InfoBar\00.Player</Filter>
+      <Filter>02.GameObject\06.UI\15.InfoBar\00.Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\HpBar.h">
-      <Filter>02.GameObject\06.UI\14.InfoBar\00.Player</Filter>
+      <Filter>02.GameObject\06.UI\15.InfoBar\00.Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BossHpBar.h">
-      <Filter>02.GameObject\06.UI\14.InfoBar\01.Boss</Filter>
+      <Filter>02.GameObject\06.UI\15.InfoBar\01.Boss</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BossHpBarFrame.h">
-      <Filter>02.GameObject\06.UI\14.InfoBar\01.Boss</Filter>
+      <Filter>02.GameObject\06.UI\15.InfoBar\01.Boss</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
@@ -2453,16 +2453,16 @@
       <Filter>02.GameObject\06.UI\13.Gauge_Circle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\HpBarFrame.cpp">
-      <Filter>02.GameObject\06.UI\14.InfoBar\00.Player</Filter>
+      <Filter>02.GameObject\06.UI\15.InfoBar\00.Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\HpBar.cpp">
-      <Filter>02.GameObject\06.UI\14.InfoBar\00.Player</Filter>
+      <Filter>02.GameObject\06.UI\15.InfoBar\00.Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BossHpBar.cpp">
-      <Filter>02.GameObject\06.UI\14.InfoBar\01.Boss</Filter>
+      <Filter>02.GameObject\06.UI\15.InfoBar\01.Boss</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BossHpBarFrame.cpp">
-      <Filter>02.GameObject\06.UI\14.InfoBar\01.Boss</Filter>
+      <Filter>02.GameObject\06.UI\15.InfoBar\01.Boss</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
