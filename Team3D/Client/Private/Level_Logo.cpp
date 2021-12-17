@@ -6,6 +6,7 @@
 #include "DataStorage.h"
 #include "MenuScreen.h"
 #include "Level_Loading.h"
+#include "Return_Button.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -30,17 +31,19 @@ _int CLevel_Logo::Tick(_double dTimedelta)
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (true == pMenu->Get_1p_Ready() && true == pMenu->Get_2p_Ready() && pGameInstance->Key_Down(DIK_RETURN))
+	if (nullptr != DATABASE->Get_ReturnButton())
 	{
-		if (FAILED(pGameInstance->Change_CurrentLevel(CLevel_Loading::Create(m_pDevice, m_pDeviceContext, Level::LEVEL_LOGO, Level::LEVEL_STAGE))))
+		if (true == ((CReturn_Button*)(DATABASE->Get_ReturnButton()))->Get_ChangeScene() && pGameInstance->Key_Down(DIK_RETURN))
 		{
-			MSG_BOX("Failed to Change_CurrentLevel, Error to CMenuScreen::Late_Tick");
-			return EVENT_ERROR;
+			if (FAILED(pGameInstance->Change_CurrentLevel(CLevel_Loading::Create(m_pDevice, m_pDeviceContext, Level::LEVEL_LOGO, Level::LEVEL_STAGE))))
+			{
+				MSG_BOX("Failed to Change_CurrentLevel, Error to CMenuScreen::Late_Tick");
+				return EVENT_ERROR;
+			}
+
+			pGameInstance->Clear_LevelResources(Level::LEVEL_LOGO);
+			UI_Delete(Default, AlphaScreen);
 		}
-
-		pGameInstance->Clear_LevelResources(Level::LEVEL_LOGO);
-		UI_Delete(Default, AlphaScreen);
-
 	}
 
 	return NO_EVENT;

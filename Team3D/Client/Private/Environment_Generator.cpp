@@ -286,6 +286,7 @@ HRESULT CEnvironment_Generator::Load_Stage_Space()
 	FAILED_CHECK_RETURN(Load_Environment_Space_Boss(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Bridge(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Trigger(), E_FAIL);
+	FAILED_CHECK_RETURN(Load_Environment_Trigger_SpaceShip(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_SpaceRail(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Others(), E_FAIL);
 
@@ -1104,6 +1105,57 @@ HRESULT CEnvironment_Generator::Load_Environment_Trigger()
 	return S_OK;
 }
 
+HRESULT CEnvironment_Generator::Load_Environment_Trigger_SpaceShip()
+{
+	DWORD		dwByte;
+
+	CSavePoint::ARG_DESC tSavePointDesc;
+	CDeadLine::ARG_DESC tDeadLineDesc;
+
+	/* SavePoint */
+	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/TriggerData/SavePoint_SpaceShip.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	while (true)
+	{
+		ReadFile(hFile, &tSavePointDesc.eShape, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &tSavePointDesc.vPosition, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &tSavePointDesc.vRotation, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &tSavePointDesc.vScale, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &tSavePointDesc.vSavePosition, sizeof(_float3), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment_Trigger"), Level::LEVEL_STAGE, TEXT("GameObject_SavePoint"), &tSavePointDesc), E_FAIL);
+	}
+	CloseHandle(hFile);
+
+	/* DeadLine */
+	hFile = CreateFile(TEXT("../Bin/Resources/Data/MapData/TriggerData/DeadLine_SpaceShip.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	_uint iShape = 0;
+
+	while (true)
+	{
+		ReadFile(hFile, &iShape, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &tDeadLineDesc.vPosition, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &tDeadLineDesc.vRotation, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &tDeadLineDesc.vScale, sizeof(_float3), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Environment_Trigger"), Level::LEVEL_STAGE, TEXT("GameObject_DeadLine"), &tDeadLineDesc), E_FAIL);
+	}
+	CloseHandle(hFile);
+
+	return S_OK;
+}
+
 HRESULT CEnvironment_Generator::Load_Others()
 {
 	/* MoonUFO */
@@ -1312,7 +1364,7 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_ByIndex_Space(_uint iIndex)
 		else if (iIndex == 190) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Space_SideScroller_Door_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Space_SideScroller_Door_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 191) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Space_SideScroller_Platform_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Space_SideScroller_Platform_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 192) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SpaceBowl_Door_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SpaceBowl_Door_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
-		else if (iIndex == 193) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_ToyBox08_WallJump"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("ToyBox08_WallJump"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 193) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_ToyBox08_WallJump_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("ToyBox08_WallJump"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 194) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SpaceBowl_Door_Wide_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SpaceBowl_Door_Wide_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 195) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SpaceValve_Door_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SpaceValve_Door_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 196) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SplineMesh01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SplineMesh01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }

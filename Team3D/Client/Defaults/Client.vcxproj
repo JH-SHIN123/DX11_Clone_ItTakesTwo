@@ -208,6 +208,7 @@
     <ClInclude Include="..\Public\CameraFilterCallback.h" />
     <ClInclude Include="..\Public\CameraHitReport.h" />
     <ClInclude Include="..\Public\Cam_Helper.h" />
+    <ClInclude Include="..\Public\ChapterImage.h" />
     <ClInclude Include="..\Public\ChapterSelect.h" />
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h" />
@@ -344,6 +345,7 @@
     <ClInclude Include="..\Public\MoonBaboon_SpaceShip.h" />
     <ClInclude Include="..\Public\MoonUFO.h" />
     <ClInclude Include="..\Public\NoBatterySign.h" />
+    <ClInclude Include="..\Public\Participation_Button.h" />
     <ClInclude Include="..\Public\PC_Enter.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
     <ClInclude Include="..\Public\Pedal.h" />
@@ -383,6 +385,7 @@
     <ClInclude Include="..\Public\PressurePlateLock.h" />
     <ClInclude Include="..\Public\PxEventCallback.h" />
     <ClInclude Include="..\Public\RespawnCircle.h" />
+    <ClInclude Include="..\Public\Return_Button.h" />
     <ClInclude Include="..\Public\Robot.h" />
     <ClInclude Include="..\Public\RobotBattery.h" />
     <ClInclude Include="..\Public\RobotHead.h" />
@@ -402,6 +405,8 @@
     <ClInclude Include="..\Public\RotationFan_Base.h" />
     <ClInclude Include="..\Public\RunningMoonBaboon.h" />
     <ClInclude Include="..\Public\SavePoint.h" />
+    <ClInclude Include="..\Public\Script.h" />
+    <ClInclude Include="..\Public\ScriptBackGround.h" />
     <ClInclude Include="..\Public\SecurityCamera.h" />
     <ClInclude Include="..\Public\SecurityCameraHandle.h" />
     <ClInclude Include="..\Public\SepdStaticActor.h" />
@@ -467,6 +472,7 @@
     <ClCompile Include="..\Private\CameraFilterCallback.cpp" />
     <ClCompile Include="..\Private\CameraHitReport.cpp" />
     <ClCompile Include="..\Private\Cam_Helper.cpp" />
+    <ClCompile Include="..\Private\ChapterImage.cpp" />
     <ClCompile Include="..\Private\ChapterSelect.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
@@ -597,6 +603,7 @@
     <ClCompile Include="..\Private\MoonBaboon_SpaceShip.cpp" />
     <ClCompile Include="..\Private\MoonUFO.cpp" />
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
+    <ClCompile Include="..\Private\Participation_Button.cpp" />
     <ClCompile Include="..\Private\PC_Enter.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
     <ClCompile Include="..\Private\Pedal.cpp" />
@@ -636,6 +643,7 @@
     <ClCompile Include="..\Private\PressurePlateLock.cpp" />
     <ClCompile Include="..\Private\PxEventCallback.cpp" />
     <ClCompile Include="..\Private\RespawnCircle.cpp" />
+    <ClCompile Include="..\Private\Return_Button.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />
     <ClCompile Include="..\Private\RobotBattery.cpp" />
     <ClCompile Include="..\Private\RobotHead.cpp" />
@@ -655,6 +663,8 @@
     <ClCompile Include="..\Private\RotationFan_Base.cpp" />
     <ClCompile Include="..\Private\RunningMoonBaboon.cpp" />
     <ClCompile Include="..\Private\SavePoint.cpp" />
+    <ClCompile Include="..\Private\Script.cpp" />
+    <ClCompile Include="..\Private\ScriptBackGround.cpp" />
     <ClCompile Include="..\Private\SecurityCamera.cpp" />
     <ClCompile Include="..\Private\SecurityCameraHandle.cpp" />
     <ClCompile Include="..\Private\SepdStaticActor.cpp" />

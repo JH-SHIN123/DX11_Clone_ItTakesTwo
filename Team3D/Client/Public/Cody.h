@@ -283,6 +283,8 @@ private:
 	_bool m_bGroundPound	= false;
 	_bool m_IsTurnAround	= false;
 
+	_uint	m_iIndex = 0;
+
 	// 구르기 관련
 	_bool m_bAction = false;
 

@@ -65,7 +65,11 @@ HRESULT CLaserButtonLarge::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1, m_tDynamic_Env_Desc.iMaterialIndex);
+
+	if(0 == m_tDynamic_Env_Desc.iOption)
+		m_pModelCom->Render_Model(25, m_tDynamic_Env_Desc.iMaterialIndex);
+	else
+		m_pModelCom->Render_Model(26, m_tDynamic_Env_Desc.iMaterialIndex);
 
 	return S_OK;
 }
@@ -173,14 +177,14 @@ void CLaserButtonLarge::Activaion_Movement(_double dTimeDelta)
 		if ((m_fMaxPosY - m_fDistance) >= XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
 		{
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fMaxPosY - m_fDistance));
-			if (0.1<= m_dLaserCreateTime)
+			if (0.2<= m_dLaserCreateTime)
 			{
 				LASERTENNIS->Create_LaserTrigger_LargeButton(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f), m_eTarget);
 				++m_iLaserCount;
 				m_dLaserCreateTime = 0.0;
 			}
 			
-			if (10 <= m_iLaserCount)
+			if (8 <= m_iLaserCount)
 			{
 				m_bCreateTrigger = false;
 				m_bActiveMove = false;

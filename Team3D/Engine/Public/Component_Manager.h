@@ -24,6 +24,7 @@
 #include "TriggerActor.h"
 
 #include "Path.h"
+#include "FontDraw.h"
 
 BEGIN(Engine)
 

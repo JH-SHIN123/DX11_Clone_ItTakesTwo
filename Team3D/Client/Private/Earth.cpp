@@ -65,6 +65,7 @@ HRESULT CEarth::Render(RENDER_GROUP::Enum eRender)
 
 	_float fFar = 50000.f;
 	_float fTimeUV = (_float)m_dTimeUV;
+	_int iGara = 0;
 
 	m_pModelCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINPROJ_FOR_EARTH)), sizeof(_matrix));
 	m_pModelCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBPROJ_FOR_EARTH)), sizeof(_matrix));
@@ -74,10 +75,14 @@ HRESULT CEarth::Render(RENDER_GROUP::Enum eRender)
 
 	m_pModelCom->Sepd_Bind_Buffer();
 
+	m_pModelCom->Set_Variable("iChjeck", &iGara, sizeof(_int));
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	m_pModelCom->Set_ShaderResourceView("g_DarkTexture", m_pTexturesCom->Get_ShaderResourceView(2));
+	m_pModelCom->Set_ShaderResourceView("g_RoughnessTexture", m_pTexturesCom->Get_ShaderResourceView(3));
 	m_pModelCom->Sepd_Render_Model(0, 0);
 
+	iGara = 1;
+	m_pModelCom->Set_Variable("iChjeck", &iGara, sizeof(_int));
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(1));
 	m_pModelCom->Sepd_Render_Model(1, 1);
 
@@ -87,11 +92,6 @@ HRESULT CEarth::Render(RENDER_GROUP::Enum eRender)
 HRESULT CEarth::Render_ShadowDepth()
 {
 	CGameObject::Render_ShadowDepth();
-
-	////NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-	////m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	////// Skinned: 2 / Normal: 3
-	////m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
 }

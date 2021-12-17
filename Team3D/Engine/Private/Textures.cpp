@@ -56,7 +56,7 @@ HRESULT CTextures::NativeConstruct_Prototype(TEXTURE_TYPE eType, const _tchar * 
 		if (INVALID_HANDLE_VALUE == hFile) /* No_ProcessedImage, Make_NewImage */
 		{
 			ScratchImage SrcImage;
-
+			 
 			switch (eType)
 			{
 			case Engine::CTextures::TYPE_DDS:

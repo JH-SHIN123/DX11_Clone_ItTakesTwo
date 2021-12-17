@@ -1,4 +1,3 @@
-\
 #pragma once
 
 #include "Client_Defines.h"
@@ -38,16 +37,21 @@ private:
 	CTextures*			m_pSubTextureCom = nullptr;
 	CVIBuffer_Rect*		m_pVIBuffer_RectCom = nullptr;
 
+	CFontDraw*			m_pFont = nullptr;
+
 private:
 	_uint				m_iOption = 0;
 	_uint				m_iPassNum = 0;
 	_float				m_fSortOrder = 0.f;
 	_float				m_fScreenAlpha = 0.f;
-	_float				m_fFontAlpha = 1.f;
 	_float2				m_vMaskUV;
 	_bool				m_IsDisappear = false;
 	_bool				m_IsDead = false;
 	_bool				m_IsBackScreenAlpha = false;
+
+	_float				m_fFontAlpha = 0.f;
+	_bool				m_bAlphaCheck = false;
+	_double				m_dCoolTime = 0.0;
 
 private:
 	HRESULT Ready_Component();
