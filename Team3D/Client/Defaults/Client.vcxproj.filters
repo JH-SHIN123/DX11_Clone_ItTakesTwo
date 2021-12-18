@@ -918,10 +918,7 @@
     <Filter Include="06.Light\EffectLight">
       <UniqueIdentifier>{05a2af3d-cf24-4468-8cc5-bbde57ed991d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06.Light\BasicLight">
-      <UniqueIdentifier>{1ca7ebc4-bd45-40e2-824f-1c48964ff126}</UniqueIdentifier>
-    </Filter>
-	<Filter Include="06.Light\Utility">
+    <Filter Include="06.Light\Utility">
       <UniqueIdentifier>{3eef1dbe-2a4b-4791-87fd-e64b5638b4f5}</UniqueIdentifier>
     </Filter>
     <Filter Include="96.Debug">
@@ -1256,7 +1253,7 @@
     <ClInclude Include="..\Public\SpaceRail_Node.h">
       <Filter>02.GameObject\04.Stage_Space\05.Taek\03.SpaceRail\Node</Filter>
     </ClInclude>
-	<ClInclude Include="..\Public\VolumeObject.h">
+    <ClInclude Include="..\Public\VolumeObject.h">
       <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Rocket.h">
@@ -1721,13 +1718,13 @@
     <ClInclude Include="..\Public\DataStorage.h">
       <Filter>05.DataStorage</Filter>
     </ClInclude>
-	<ClInclude Include="..\Public\EffectLight.h">
+    <ClInclude Include="..\Public\EffectLight.h">
       <Filter>06.Light\EffectLight</Filter>
     </ClInclude>
-	<ClInclude Include="..\Public\LightUtility.h">
+    <ClInclude Include="..\Public\LightUtility.h">
       <Filter>06.Light\Utility</Filter>
     </ClInclude>
-	<ClInclude Include="..\Public\VolumeLight.h">
+    <ClInclude Include="..\Public\VolumeLight.h">
       <Filter>06.Light\VolumeLight</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\GameDebugger.h">
@@ -2068,7 +2065,7 @@
     <ClCompile Include="..\Private\SpaceRail_Node.cpp">
       <Filter>02.GameObject\04.Stage_Space\05.Taek\03.SpaceRail\Node</Filter>
     </ClCompile>
-	<ClCompile Include="..\Private\VolumeObject.cpp">
+    <ClCompile Include="..\Private\VolumeObject.cpp">
       <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Rocket.cpp">
@@ -2533,7 +2530,7 @@
     <ClCompile Include="..\Private\DataStorage.cpp">
       <Filter>05.DataStorage</Filter>
     </ClCompile>
-	<ClCompile Include="..\Private\EffectLight.cpp">
+    <ClCompile Include="..\Private\EffectLight.cpp">
       <Filter>06.Light\EffectLight</Filter>
     </ClCompile>
     <ClCompile Include="..\Public\LightUtility.cpp">
