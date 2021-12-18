@@ -233,7 +233,6 @@ void CPinBall::MoveMent(_double dTimeDelta)
 
 	if (false == m_bSoundCheck)
 	{
-		m_pGameInstance->Stop_Sound(CHANNEL_PINBALL);
 		m_pGameInstance->Play_Sound(TEXT("Pinball_Ball_Move.wav"), CHANNEL_PINBALL, 1.f, true);
 		m_bSoundCheck = true;
 	}
@@ -269,7 +268,7 @@ HRESULT CPinBall::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->putToSleep();
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(0.78f);
+	PxGeometry* TriggerGeom = new PxSphereGeometry(0.77f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;

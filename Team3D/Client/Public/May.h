@@ -370,7 +370,7 @@ private:
 	_float3	 m_DeadLinePos = {};
 	/* Hye::For.PinBall */
 	_bool	 m_IsPinBall = false;
-	_bool	 m_bPInBall_SoundCheck = false;
+	_bool	 m_IsPinBallSoundCheck = false;
 	_float2	 m_MinMaxX = {};
 	/* Hye::For.Tube */
 	_bool	m_IsTube = false;

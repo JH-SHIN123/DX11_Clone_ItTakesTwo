@@ -1977,11 +1977,10 @@ void CMay::PinBall(const _double dTimeDelta)
 			/* 오른쪽 */
 			if (m_pGameInstance->Key_Pressing(DIK_RIGHT)/* || m_pGameInstance->Get_Pad_LStickX() > 40000*/)
 			{
-				/* Sound */
-				if (false == m_bPInBall_SoundCheck)
+				if (false == m_IsPinBallSoundCheck)
 				{
-					m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Move.wav"), CHANNEL_PINBALL_HANDLEMOVE);
-					m_bPInBall_SoundCheck = true;
+					m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Move.wav"), CHANNEL_PINBALL_HANDLEMOVE, 1.f, true);
+					m_IsPinBallSoundCheck = true;
 				}
 
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Right);
@@ -1995,10 +1994,10 @@ void CMay::PinBall(const _double dTimeDelta)
 			else if (m_pGameInstance->Key_Pressing(DIK_LEFT)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
 			{
 				/* Sound */
-				if (false == m_bPInBall_SoundCheck)
+				if (false == m_IsPinBallSoundCheck)
 				{
-					m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Move.wav"), CHANNEL_PINBALL_HANDLEMOVE);
-					m_bPInBall_SoundCheck = true;
+					m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Move.wav"), CHANNEL_PINBALL_HANDLEMOVE, 1.f, true);
+					m_IsPinBallSoundCheck = true;
 				}
 
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Left);
@@ -2010,8 +2009,8 @@ void CMay::PinBall(const _double dTimeDelta)
 			}
 			else
 			{
-				m_bPInBall_SoundCheck = false;
 				m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLEMOVE);
+				m_IsPinBallSoundCheck = false;
 
 				m_pModelCom->Set_Animation(ANI_M_PinBall_MH);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
@@ -2026,58 +2025,41 @@ void CMay::InUFO(const _double dTimeDelta)
 		return;
 	 
 	if (m_pGameInstance->Key_Down(DIK_Y))/* 메이 우주선 내리기 */
+	{
+		_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+		_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight));
+		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
 		Set_UFO(false);
-
-	//m_pTransformCom->Set_Scale(XMVectorSet(0.5f, 0.5f, 0.5f, 1.f));
-
-	///* UFO의 액터의 월드를 적용 */
-	//CTransform* pUFOTransform = ((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform();
-	//CDynamicActor* pActor = ((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Actor();
-
-	//PxMat44 pxMat = PxMat44(pActor->Get_Actor()->getGlobalPose());
-
-	//_vector vPosition = XMVectorSet(pxMat.column3.x, pxMat.column3.y, pxMat.column3.z, 1.f);
-	//_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-	//_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	//_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-
-	//vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position());
-	//vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
-	//vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
-
-	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-	//m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
-	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-
-	//_vector vPosition = pUFOTransform->Get_State(CTransform::STATE_POSITION);
-	//_vector vUp		  = XMVector3Normalize(pUFOTransform->Get_State(CTransform::STATE_UP));
-	//_vector vRight	  = XMVector3Normalize(pUFOTransform->Get_State(CTransform::STATE_RIGHT));
-	//_vector vLook	  = XMVector3Normalize(pUFOTransform->Get_State(CTransform::STATE_LOOK));
-
-	///* Offset */
-	//vPosition -= vUp;
-	////vPosition += (vRight * 2.5f);
-
-	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-	//m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
-	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+		return;
+	}
 
 	CModel* pUFOModel = ((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Model();
 	CTransform* pUFOTransform = ((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform();
 
 	_matrix BoneChair = pUFOModel->Get_BoneMatrix("Chair");
 	_float4x4 matWorld, matScale;
-	XMStoreFloat4x4(&matWorld, /*(XMMatrixRotationX(-90.f) * XMMatrixRotationZ(-90.f)) * XMMatrixScaling(90.f, 90.f, 90.f)  **/ BoneChair * pUFOTransform->Get_WorldMatrix());
-	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
+	XMStoreFloat4x4(&matWorld, BoneChair * pUFOTransform->Get_WorldMatrix());
 
-	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION); 
+	_float4 vChairPos = {};
+	memcpy(&vChairPos, &(matWorld._41), sizeof(_float4));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vChairPos));
+
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-	vPosition += vUp * 1.2f;
-	vPosition += vLook * 1.5f;
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
+	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position()) * 0.8f;
+	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp)) * 0.8f;
+	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook)) * 0.8f;
+
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
 }
 
 void CMay::LaserTennis(const _double dTimeDelta)

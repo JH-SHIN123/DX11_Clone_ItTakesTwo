@@ -49,6 +49,8 @@ void CSound_Manager::Set_SoundVolume(CHANNEL_TYPE eChannel, _float fVolume)
 
 HRESULT CSound_Manager::Ready_SoundManager()
 {
+	ZeroMemory(m_pChannel, sizeof(m_pChannel));
+
 	FMOD_System_Create(&m_pSystem);
 	FMOD_System_Init(m_pSystem, CHANNEL_END, FMOD_INIT_NORMAL, NULL);
 
@@ -168,6 +170,7 @@ void CSound_Manager::Lerp_Sound_Update(_double dTimeDelta)
 	{
 		Stop_Sound(m_eFirstChannel);
 		m_fSecondVolume = m_fMaxVolume;
+		Set_SoundVolume(m_eSecondChannel, m_fSecondVolume);
 		m_bLerp = false;
 		return;
 	}
@@ -190,7 +193,6 @@ void CSound_Manager::FadeInOut_Sound_Update(_double dTimeDelta)
 		{
 			m_fFirstVolume = 0.f;
 			m_bFadeInOut = false;
-			return;
 		}
 	}
 	/* FadeIn */
@@ -202,7 +204,6 @@ void CSound_Manager::FadeInOut_Sound_Update(_double dTimeDelta)
 		{
 			m_fFirstVolume = m_fMaxVolume;
 			m_bFadeInOut = false;
-			return;
 		}
 	}
 
