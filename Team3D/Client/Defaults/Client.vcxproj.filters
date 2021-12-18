@@ -300,6 +300,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Door">
       <UniqueIdentifier>{f878d9ea-6a01-43bd-ba3e-9b686c612390}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Handle">
+      <UniqueIdentifier>{c965c395-0174-436b-86f6-2adb21e7f5cc}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_HandleBase">
       <UniqueIdentifier>{80b2cd92-bcfd-4f15-9803-cdec78f76d31}</UniqueIdentifier>
     </Filter>
@@ -947,9 +950,6 @@
     </Filter>
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Handle">
-      <UniqueIdentifier>{c965c395-0174-436b-86f6-2adb21e7f5cc}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
