@@ -35,12 +35,12 @@ public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
+	RADARDESC	m_tRadarScreenDesc;
+
+private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
-
-private:
-	RADARDESC	m_tRadarScreenDesc;
 
 public:
 	static CUFORadarScreen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

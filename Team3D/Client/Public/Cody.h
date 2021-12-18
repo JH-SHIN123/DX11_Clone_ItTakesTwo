@@ -192,7 +192,7 @@ public:
 
 public:
 	enum PLAYER_SIZE { SIZE_SMALL, SIZE_MEDIUM, SIZE_LARGE, SIZE_END };
-	enum CAMERA_WORK_STATE { STATE_SPACE_PORTAL, STATE_DUMMYWALL_JUMP, STATE_END};
+	enum CAMERA_WORK_STATE { STATE_SPACE_PORTAL, STATE_DUMMYWALL_JUMP, STATE_PIPEWALL_JUMP, STATE_END};
 
 private:
 	explicit CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -215,6 +215,7 @@ public:
 	CPlayerActor*	 Get_Actor() { return m_pActorCom; }
 	PLAYER_SIZE		 Get_Player_Size() { return m_eCurPlayerSize; }
 	_bool			 Get_IsInGravityPipe() { return m_IsInGravityPipe; }
+	_bool			 Get_IsInRocket() { return m_IsBossMissile_Control; }
 	_bool			 Get_PushingBattery() { return m_IsPushingBattery; }
 	_uint			 Get_CurState() const;
 	_vector			 Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
@@ -226,15 +227,14 @@ public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
 	void			 Set_ControlJoystick(_bool IsCheck);
+	void 			 Set_RocketOffSetPos(_fvector vRocketOffSetPos) { m_vRocketOffSetPos = vRocketOffSetPos; }
+	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
+	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
 
-
-public:
-	void Set_BossMissile_Attack(); // CBoss_Missile
 
 	// Tick 에서 호출될 함수들
 private:
 	virtual void KeyInput(_double dTimeDelta);
-	void Attack_BossMissile_After(_double dTimeDelta);
 
 private: // 여기에 넣어놓아야 알거 같아서 여기에..		
 	void Enforce_IdleState(); /* 강제로 Idle 상태로 바꿈 */
@@ -466,21 +466,18 @@ private:
 	// fire Door Dead
 	_bool m_IsTouchFireDoor = false;
 
-	// Boss Missile Hit
-	_bool m_IsBossMissile_Hit = false;
-
-	// Boss Missile Control
-	_bool	m_IsBossMissile_Control = false;
-	_bool	m_IsBossMissile_Rodeo_Ready = false;
-	_bool	m_IsBossMissile_Rodeo = false;
-	_bool	m_IsBoss_Missile_Explosion = false;
-	_float	m_fLandTime = 0.f;
-	_float	m_fBossMissile_HeroLanding_Time = 0.f;
-	_bool	m_IsBossMissile_RotateYawRoll_After = false;
-
 	// touch WallLaserTrap
 	_bool m_IsWallLaserTrap_Touch = false;
 	_bool m_IsWallLaserTrap_Effect = false;
+
+	/* For.Boss Missile */
+	_bool	m_IsBossMissile_Control = false;
+	_bool	m_IsMoveToRocket = false;
+	_bool   m_bEscapeFromRocket = false;
+	_vector m_vRocketOffSetPos = {};
+	_matrix m_matRocketMatrix = {};
+	_bool	m_bLandHigh = false;
+
 
 	// YYY
 	void Hit_StarBuddy(const _double dTimeDelta);
@@ -494,12 +491,11 @@ private:
 	void Wall_Jump(const _double dTimeDelta);
 	void Pipe_WallJump(const _double dTimeDelta);
 	void ElectricWallJump(const _double dTimeDelta);
+	void BossMissile_Control(const _double dTimeDelta);
 
 	// 정호
 	void Warp_Wormhole(const _double dTimeDelta);
 	void Touch_FireDoor(const _double dTimeDelta);
-	void Boss_Missile_Hit(const _double dTimeDelta);
-	void Boss_Missile_Control(const _double dTimeDelta);
 	void WallLaserTrap(const _double dTimeDelta);
 
 	/* Hye */
@@ -570,5 +566,73 @@ private:
 	_double m_dRadiarBlurTime = 0.0;
 	_double m_dRadiarBlurDeltaT = 0.0;
 #pragma endregion
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////																////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////						/* For. Sound */						////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////																////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#pragma region Sound_Variable
+	// Jump
+	_float m_fCodyBJumpVolume = 1.f;
+	_float m_fCodyMJumpVolume = 0.08f;
+	_float m_fCodySJumpVolume = 0.5f;
+	_float m_fCodyBJumpVoiceVolume = 1.f;
+
+	// Double Jump
+	_float m_fCodyMJumpDoubleVolume = 2.f;
+	_float m_fCodySJumpDoubleVolume = 0.5f;
+
+	// JumpLanding
+	_float m_fCodyBJump_Landing_Volume = 1.f;
+	_float m_fCodyMJumpLandingVoice_Volume = 1.f;
+	_float m_fCodySJumpLandingVoice_Volume = 0.5f;
+
+	// SizeChanging
+	_float m_fSizing_BToM_Volume = 1.f;
+	_float m_fSizing_SToM_Volume = 1.f;
+	_float m_fSizing_MToS_Volume = 1.f;
+	_float m_fSizing_MToB_Volume = 1.f;
+
+	// Dash
+	_float m_fCodyMDash_Volume = 1.f;
+	_float m_fCodyMDash_Landing_Volume = 1.f;
+	_float m_fCodyMDash_Roll_Volume = 1.f;
+	_float m_fCodySDash_Voice_Volume = 0.5f;
+
+	// GroundPound
+	_float m_fCodyB_GroundPound_Landing_Voice_Volume = 1.f;
+	_float m_fCodyM_GroundPound_Landing_Voice_Volume = 1.f;
+	_float m_fCodyM_GroundPound_Volume = 1.f;
+	_float m_fCodyM_GroundPound_Roll_Volume = 1.f;
+	_float m_fCodyS_GroundPound_Landing_Voice_Volume = 1.f;
+
+	// Walk
+	_float m_fCodyB_Walk_Volume = 1.f;
+
+	// Jog
+	_float m_fCodyM_Jog_Volume = 1.f;
+
+	// Sprint
+	_float m_fCodyM_Sprint_Volume = 1.f;
+
+	_bool m_bTestest = false;
+
+
+
+
+
+
+#pragma endregion
+
 };
 END

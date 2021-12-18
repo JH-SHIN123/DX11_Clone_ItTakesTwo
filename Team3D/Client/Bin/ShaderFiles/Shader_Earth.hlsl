@@ -47,7 +47,8 @@ VS_OUT VS_MAIN(VS_IN In)
 	vector	vLightDirection	= normalize(vector(-1.f, 0.f, 1.f, 0.f));
 	vector	vReflect		= reflect(vLightDirection, normalize(vWorldNormal));
 
-	Out.vSpecular = pow(max(dot(normalize(vWorldPosition) * -1.f, normalize(vReflect)), 0.f), 0.8f);
+	Out.vSpecular = pow(max(dot(normalize(vWorldPosition) * -1.f, normalize(vReflect)), 0.f), 20.f);
+	//Out.vSpecular = pow(max(dot(normalize(vWorldPosition) * -1.f, normalize(vReflect)), 0.f), 0.8f);
 
 	return Out;
 }
