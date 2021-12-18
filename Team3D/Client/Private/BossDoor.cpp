@@ -58,6 +58,7 @@ _int CBossDoor::Tick(_double dTimeDelta)
 	CDynamic_Env::Tick(dTimeDelta);
 
 	Movement(dTimeDelta);
+	m_pStaticActorCom->Update_StaticActor();
 
 	return NO_EVENT;
 }
@@ -119,7 +120,6 @@ void CBossDoor::Close_Door(_double dTimeDelta)
 	}
 
 	m_pTransformCom->Go_Right(dTimeDelta);
-	m_pStaticActorCom->Update_StaticActor();
 }
 
 void CBossDoor::GoUp(_double dTimeDelta)
@@ -142,7 +142,6 @@ void CBossDoor::GoUp(_double dTimeDelta)
 	}
 
 	m_pTransformCom->Go_Up(dTimeDelta);
-	m_pStaticActorCom->Update_StaticActor();
 }
 
 HRESULT CBossDoor::Ready_Component(void * pArg)
@@ -154,6 +153,8 @@ HRESULT CBossDoor::Ready_Component(void * pArg)
 	tStaticActorArg.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
+
+	return S_OK;
 
 	return S_OK;
 }

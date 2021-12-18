@@ -1,5 +1,4 @@
 #include "..\public\GameInstance.h"
-#include "Model_Loader.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -11,7 +10,7 @@ CGameInstance::CGameInstance()
 	, m_pLevel_Manager		(CLevel_Manager::GetInstance())
 	, m_pGameObject_Manager	(CGameObject_Manager::GetInstance())
 	, m_pComponent_Manager	(CComponent_Manager::GetInstance())
-	, m_pLight_Manager		(CLight_Manager::GetInstance())
+	, m_pLight_Manager		(CLight_Manager::GetInstance()) 
 	, m_pPhysX				(CPhysX::GetInstance())
 	, m_pPipeline			(CPipeline::GetInstance())
 	, m_pFrustum			(CFrustum::GetInstance())
@@ -56,7 +55,7 @@ HRESULT CGameInstance::Initialize(CGraphic_Device::WINMODE eWinMode, HWND hWnd, 
 
 	FAILED_CHECK_RETURN(m_pGraphic_Device->Ready_GraphicDevice(eWinMode, hWnd, iWinSizeX, iWinSizeY, ppDevice, ppDeviceContext), E_FAIL);
 	FAILED_CHECK_RETURN(m_pInput_Device->Ready_InputDevice(hInst, hWnd), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pSound_Manager->Ready_SoundManager(), E_FAIL);
+	FAILED_CHECK_RETURN(m_pSound_Manager->Ready_SoundManager(), E_FAIL);
 	FAILED_CHECK_RETURN(m_pLight_Manager->Ready_LightManager(*ppDevice, *ppDeviceContext, (_float)iWinSizeX, (_float)iWinSizeY), E_FAIL);
 	FAILED_CHECK_RETURN(m_pPhysX->Ready_PhysX(pEventCallback), E_FAIL);
 	FAILED_CHECK_RETURN(m_pFrustum->Ready_Frustum(), E_FAIL);
@@ -251,15 +250,10 @@ _double CGameInstance::Compute_TimeDelta(const _tchar * pTimerTag)
 #pragma endregion 
 
 #pragma region Sound_Manager
-void CGameInstance::Play_Sound(TCHAR * pSoundKey, CHANNEL_TYPE eChannel, _float fVolume)
+void CGameInstance::Play_Sound(TCHAR * pSoundKey, CHANNEL_TYPE eChannel, _float fVolume, _bool bLoop)
 {
 	NULL_CHECK(m_pSound_Manager);
-	m_pSound_Manager->Play_Sound(pSoundKey, eChannel, fVolume);
-}
-void CGameInstance::Play_BGM(TCHAR * pSoundKey, CHANNEL_TYPE eChannel)
-{
-	NULL_CHECK(m_pSound_Manager);
-	m_pSound_Manager->Play_BGM(pSoundKey, eChannel);
+	m_pSound_Manager->Play_Sound(pSoundKey, eChannel, fVolume, bLoop);
 }
 void CGameInstance::Stop_Sound(CHANNEL_TYPE eChannel)
 {
@@ -458,8 +452,6 @@ void CGameInstance::Release_Engine()
 		MSG_BOX("Failed to Release CGameObject_Manager.");
 	if (CComponent_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CComponent_Manager.");
-	if (CModel_Loader::DestroyInstance())
-		MSG_BOX("Failed to Release CModel_Loader.");
 	if (CShadow_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CShadow_Manager.");
 	if (CLight_Manager::DestroyInstance())

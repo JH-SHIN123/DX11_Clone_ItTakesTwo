@@ -366,7 +366,7 @@ _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 
 
 	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, 
-		XMLoadFloat4x4(&m_matBeginWorld) * matQuat *MH_RotationMatrixByUp(static_cast<CMay*>(m_pTargetObj)->Get_IsInGravityPipe() ? 
+		XMLoadFloat4x4(&m_matBeginWorld) * matQuat *MH_RotationMatrixByUp((static_cast<CMay*>(m_pTargetObj)->Get_IsInGravityPipe() || static_cast<CMay*>(m_pTargetObj)->Get_IsInRocket()) ?
 			XMVectorSet(0.f, 1.f, 0.f, 0.f) : vPlayerUp, vPlayerPos));
 
 	_vector vPreQuat = XMLoadFloat4(&m_PreWorld.vRotQuat);

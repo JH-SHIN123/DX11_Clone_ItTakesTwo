@@ -238,6 +238,12 @@
     <Filter Include="02.Utility\99.Others\03.ShaderCompiler">
       <UniqueIdentifier>{9b3ff6a2-e3f7-4bb1-b24e-4523176a7682}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\02.Component\08.Font">
+      <UniqueIdentifier>{147ee293-331c-4508-9366-b80dbf4391a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Component\08.Font\DebugDraw">
+      <UniqueIdentifier>{279e7ee4-a762-4168-8147-a88c4daf7530}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\GameInstance.h">
@@ -438,6 +444,12 @@
     <ClInclude Include="..\Public\ShaderCompiler.h">
       <Filter>02.Utility\99.Others\03.ShaderCompiler</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\FontDraw.h">
+      <Filter>02.Utility\02.Component\08.Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DebugDraw.h">
+      <Filter>02.Utility\02.Component\08.Font\DebugDraw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -607,6 +619,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\ShaderCompiler.cpp">
       <Filter>02.Utility\99.Others\03.ShaderCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FontDraw.cpp">
+      <Filter>02.Utility\02.Component\08.Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DebugDraw.cpp">
+      <Filter>02.Utility\02.Component\08.Font\DebugDraw</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

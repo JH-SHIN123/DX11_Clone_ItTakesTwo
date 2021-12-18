@@ -141,6 +141,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\02.Se\02.Laser\03.TypeC%28MoonUFO%29">
       <UniqueIdentifier>{a16f20b8-0c97-4db0-ad72-c070b9ebf0ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\03.Earth">
+      <UniqueIdentifier>{7c74bdfa-6c6b-4dcc-998c-534b3fc130ea}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung">
       <UniqueIdentifier>{fec661ad-31f9-4dec-b790-1b4cb09030ce}</UniqueIdentifier>
     </Filter>
@@ -813,6 +816,15 @@
     <Filter Include="02.GameObject\06.UI\09.Screen\01.ChapterScreen">
       <UniqueIdentifier>{f8527fcd-ef02-4951-8a62-1e30b5d9da75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06.UI\09.Screen\02.ChapterImage">
+      <UniqueIdentifier>{9a37d4f1-552e-46de-b368-65951fd87a52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\09.Screen\02.ChapterImage\Participation_Button">
+      <UniqueIdentifier>{c1f5d52f-4dba-4558-9a3d-857dc6a8f91a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\09.Screen\02.ChapterImage\Return_Button">
+      <UniqueIdentifier>{8fafca8f-fe66-42d7-9acf-c0e3f0106b0c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\06.UI\10.Menu">
       <UniqueIdentifier>{2c177276-9cd8-4cd1-9b02-729ba9e0d7a7}</UniqueIdentifier>
     </Filter>
@@ -830,6 +842,12 @@
     </Filter>
     <Filter Include="02.GameObject\06.UI\13.Gauge_Circle">
       <UniqueIdentifier>{6211bcdd-7628-46cc-ada7-5cd4f2e375da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\14.Script">
+      <UniqueIdentifier>{f4fc0254-9a19-499f-9795-b9c5d6e67827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\14.Script\ScriptBackGround">
+      <UniqueIdentifier>{854ef9b9-c8f6-45f8-bda9-1c67f74bf580}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\99.Terrain%28Test%29">
       <UniqueIdentifier>{f999b3e3-a399-493a-893b-bcebcfb781a4}</UniqueIdentifier>
@@ -1043,6 +1061,9 @@
     <ClInclude Include="..\Public\Laser_TypeC.h">
       <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\03.TypeC%28MoonUFO%29</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Earth.h">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\03.Earth</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\WarpGate.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
     </ClInclude>
@@ -1228,6 +1249,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\SpaceRail_Node.h">
       <Filter>02.GameObject\04.Stage_Space\05.Taek\03.SpaceRail\Node</Filter>
+    </ClInclude>
+	<ClInclude Include="..\Public\VolumeObject.h">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Rocket.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\00.Rocket</Filter>
@@ -1619,6 +1643,15 @@
     <ClInclude Include="..\Public\SplashScreen.h">
       <Filter>02.GameObject\06.UI\09.Screen\01.ChapterScreen</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ChapterImage.h">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Participation_Button.h">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage\Participation_Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Return_Button.h">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage\Return_Button</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\MenuScreen.h">
       <Filter>02.GameObject\06.UI\10.Menu\00.Screen</Filter>
     </ClInclude>
@@ -1633,6 +1666,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Gauge_Circle.h">
       <Filter>02.GameObject\06.UI\13.Gauge_Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Script.h">
+      <Filter>02.GameObject\06.UI\14.Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ScriptBackGround.h">
+      <Filter>02.GameObject\06.UI\14.Script\ScriptBackGround</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
@@ -1676,7 +1715,13 @@
     <ClInclude Include="..\Public\DataStorage.h">
       <Filter>05.DataStorage</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\VolumeLight.h">
+	<ClInclude Include="..\Public\EffectLight.h">
+      <Filter>06.Light\EffectLight</Filter>
+    </ClInclude>
+	<ClInclude Include="..\Public\LightUtility.h">
+      <Filter>06.Light\Utility</Filter>
+    </ClInclude>
+	<ClInclude Include="..\Public\VolumeLight.h">
       <Filter>06.Light\VolumeLight</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\GameDebugger.h">
@@ -1711,15 +1756,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\LightUtility.h">
-      <Filter>06.Light\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\VolumeObject.h">
-      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\EffectLight.h">
-      <Filter>06.Light\EffectLight</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1833,6 +1869,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Laser_TypeC.cpp">
       <Filter>02.GameObject\04.Stage_Space\02.Se\02.Laser\03.TypeC%28MoonUFO%29</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Earth.cpp">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\03.Earth</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\WarpGate.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
@@ -2019,6 +2058,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\SpaceRail_Node.cpp">
       <Filter>02.GameObject\04.Stage_Space\05.Taek\03.SpaceRail\Node</Filter>
+    </ClCompile>
+	<ClCompile Include="..\Private\VolumeObject.cpp">
+      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Rocket.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\00.Rocket</Filter>
@@ -2410,6 +2452,15 @@
     <ClCompile Include="..\Private\SplashScreen.cpp">
       <Filter>02.GameObject\06.UI\09.Screen\01.ChapterScreen</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\ChapterImage.cpp">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Participation_Button.cpp">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage\Participation_Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Return_Button.cpp">
+      <Filter>02.GameObject\06.UI\09.Screen\02.ChapterImage\Return_Button</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\MenuScreen.cpp">
       <Filter>02.GameObject\06.UI\10.Menu\00.Screen</Filter>
     </ClCompile>
@@ -2424,6 +2475,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Gauge_Circle.cpp">
       <Filter>02.GameObject\06.UI\13.Gauge_Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Script.cpp">
+      <Filter>02.GameObject\06.UI\14.Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ScriptBackGround.cpp">
+      <Filter>02.GameObject\06.UI\14.Script\ScriptBackGround</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
@@ -2467,6 +2524,12 @@
     <ClCompile Include="..\Private\DataStorage.cpp">
       <Filter>05.DataStorage</Filter>
     </ClCompile>
+	<ClCompile Include="..\Private\EffectLight.cpp">
+      <Filter>06.Light\EffectLight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Public\LightUtility.cpp">
+      <Filter>06.Light\Utility</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\VolumeLight.cpp">
       <Filter>06.Light\VolumeLight</Filter>
     </ClCompile>
@@ -2478,15 +2541,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Public\LightUtility.cpp">
-      <Filter>06.Light\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\VolumeObject.cpp">
-      <Filter>02.GameObject\04.Stage_Space\05.Taek\04.Volume</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\EffectLight.cpp">
-      <Filter>06.Light\EffectLight</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -2569,6 +2623,9 @@
       <Filter>97.ShaderFiles\00.Effect</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_ArcadePixel.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Earth.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

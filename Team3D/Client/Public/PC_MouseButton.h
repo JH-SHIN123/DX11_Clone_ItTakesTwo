@@ -29,6 +29,7 @@ private:
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
+	CFontDraw*						m_pFont = nullptr;
 
 private:
 	HRESULT Ready_Component();

@@ -112,7 +112,6 @@ private: /* Typedef */
 	typedef vector<class CMesh*>	MESHES;
 	typedef vector<MATERIAL*>		MATERIALS;
 private:
-	class CModel_Loader*	m_pModel_Loader = nullptr;
 	VTXMESH*				m_pVertices = nullptr;
 	POLYGON_INDICES32*		m_pFaces = nullptr;
 	MESHES					m_Meshes;
