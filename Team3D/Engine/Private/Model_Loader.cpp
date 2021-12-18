@@ -9,8 +9,6 @@
 #include "AnimChannel.h"
 #include <io.h>
 
-IMPLEMENT_SINGLETON(CModel_Loader)
-
 HRESULT CModel_Loader::Load_ModelFromFile(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, MODEL_TYPE eModelType, void * pModel, const _tchar * pModelFilePath, const _tchar * pModelFileName, _uint iMaterialSetCount)
 {
 	_tchar szBasePath[MAX_PATH] = TEXT("");
@@ -256,8 +254,4 @@ HRESULT CModel_Loader::Load_PathFromFile(void** ppOutput, const _tchar* pPathFil
 	(*ppOutput) = pAnim;
 
 	return S_OK;
-}
-
-void CModel_Loader::Free()
-{
 }
