@@ -297,9 +297,6 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Door">
       <UniqueIdentifier>{f878d9ea-6a01-43bd-ba3e-9b686c612390}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Handle">
-      <UniqueIdentifier>{c965c395-0174-436b-86f6-2adb21e7f5cc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_HandleBase">
       <UniqueIdentifier>{80b2cd92-bcfd-4f15-9803-cdec78f76d31}</UniqueIdentifier>
     </Filter>
@@ -918,6 +915,9 @@
     <Filter Include="06.Light\BasicLight">
       <UniqueIdentifier>{1ca7ebc4-bd45-40e2-824f-1c48964ff126}</UniqueIdentifier>
     </Filter>
+	<Filter Include="06.Light\Utility">
+      <UniqueIdentifier>{3eef1dbe-2a4b-4791-87fd-e64b5638b4f5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="96.Debug">
       <UniqueIdentifier>{7904050b-bece-47ac-9d69-2652f5e7bc09}</UniqueIdentifier>
     </Filter>
@@ -942,8 +942,8 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06.Light\Utility">
-      <UniqueIdentifier>{3eef1dbe-2a4b-4791-87fd-e64b5638b4f5}</UniqueIdentifier>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\PinBall_Handle">
+      <UniqueIdentifier>{c965c395-0174-436b-86f6-2adb21e7f5cc}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

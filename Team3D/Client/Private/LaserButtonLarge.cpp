@@ -94,6 +94,10 @@ void CLaserButtonLarge::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 	{
 		if (((((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Falling || (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land_Exit))
 		{
+			/* Sound */
+			m_pGameInstance->Stop_Sound(CHANNEL_LASERBUTTONLARGE);
+			m_pGameInstance->Play_Sound(TEXT("MiniGame_Press_Button_Center.wav"), CHANNEL_LASERBUTTONLARGE);
+
 			m_bCreateTrigger = true;
 			m_bActiveMove = true;
 			m_bMovement = false;
@@ -110,6 +114,10 @@ void CLaserButtonLarge::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 	{
 		if (((((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Falling || (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land_Exit))
 		{
+			/* Sound */
+			m_pGameInstance->Stop_Sound(CHANNEL_LASERBUTTONLARGE);
+			m_pGameInstance->Play_Sound(TEXT("MiniGame_Press_Button_Center.wav"), CHANNEL_LASERBUTTONLARGE);
+
 			m_bCreateTrigger = true;
 			m_bActiveMove = true;
 			m_bMovement = false;

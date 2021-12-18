@@ -105,6 +105,9 @@ _int CGameInstance::Tick(_double dTimeDelta, _bool bWndActivate)
 	m_pShadow_Manager->Update_CascadeShadowTransform(CShadow_Manager::SHADOW_MAIN);
 	m_pShadow_Manager->Update_CascadeShadowTransform(CShadow_Manager::SHADOW_SUB);
 
+	/* 사운드 보간용 */
+	m_pSound_Manager->Update_Sound(dTimeDelta);
+
 	return m_pLevel_Manager->Tick(dTimeDelta);
 }
 void CGameInstance::Clear_LevelResources(_uint iLevelIndex)
@@ -250,6 +253,11 @@ _double CGameInstance::Compute_TimeDelta(const _tchar * pTimerTag)
 #pragma endregion 
 
 #pragma region Sound_Manager
+_bool CGameInstance::IsPlaying(CHANNEL_TYPE eChannel)
+{
+	NULL_CHECK_RETURN(m_pSound_Manager, false);
+	return m_pSound_Manager->Is_Playing(eChannel);
+}
 void CGameInstance::Play_Sound(TCHAR * pSoundKey, CHANNEL_TYPE eChannel, _float fVolume, _bool bLoop)
 {
 	NULL_CHECK(m_pSound_Manager);
@@ -269,6 +277,16 @@ void CGameInstance::Set_SoundVolume(CHANNEL_TYPE eChannel, _float fVolume)
 {
 	NULL_CHECK(m_pSound_Manager);
 	m_pSound_Manager->Set_SoundVolume(eChannel, fVolume);
+}
+void CGameInstance::Lerp_Sound(CHANNEL_TYPE eFirstChannel, CHANNEL_TYPE eSecondChannel, _float fLerpSpped, _float fFirstVolume, _float fSecondVolume)
+{
+	NULL_CHECK(m_pSound_Manager);
+	m_pSound_Manager->Lerp_Sound(eFirstChannel, eSecondChannel, fLerpSpped, fFirstVolume, fSecondVolume);
+}
+void CGameInstance::FadeInOut_Sound(CHANNEL_TYPE eChannel, _bool bType, _float fLerpSpped, _float fVolume)
+{
+	NULL_CHECK(m_pSound_Manager);
+	m_pSound_Manager->FadeInOut(eChannel, bType, fLerpSpped, fVolume);
 }
 #pragma endregion 
 

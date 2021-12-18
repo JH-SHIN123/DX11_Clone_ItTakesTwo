@@ -19,7 +19,7 @@ void CHangingPlanet::Hit_Planet(_fvector vForce)
 	_vector vLookForce;
 	vLookForce = XMVector3Normalize(vForce);
 	vLookForce = XMVectorSetY(vLookForce, 0.f);
-	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLookForce) * 120000.f, 0.f, XMVectorGetZ(vLookForce) * 120000.f));
+	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLookForce) * 550000.f, 0.f, XMVectorGetZ(vLookForce) * 550000.f));
 }
 
 HRESULT CHangingPlanet::NativeConstruct_Prototype()
@@ -115,7 +115,7 @@ HRESULT CHangingPlanet::Ready_Component(void * pArg)
 	PxGeometry* DynamicGeom = new PxSphereGeometry(5.f);
 	CDynamicActor::ARG_DESC tDynamicActorArg;
 	tDynamicActorArg.pTransform = m_pTransformCom;
-	tDynamicActorArg.fDensity = 10.f;
+	tDynamicActorArg.fDensity = 1.f;
 	tDynamicActorArg.pGeometry = DynamicGeom;
 	tDynamicActorArg.vVelocity = PxVec3(0.f, 0.f, 0.f);
 	tDynamicActorArg.pUserData = &m_UserData;
@@ -124,7 +124,7 @@ HRESULT CHangingPlanet::Ready_Component(void * pArg)
 	Safe_Delete(DynamicGeom);
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(7.f);
+	PxGeometry* TriggerGeom = new PxSphereGeometry(6.f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;

@@ -110,6 +110,11 @@ void CPinBall_BallDoor::MoveMent(_double dTimeDelta)
 		if (m_fAngle <= 0.f)
 		{
 			m_bReady = false;
+
+			/* Sound */
+			m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
+			m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_SetStartPosition.wav"), CHANNEL_PINBALL_HANDLE);
+
 			((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Set_Ready(true);
 			((CPinBall*)(DATABASE->Get_Pinball()))->Set_Ready(true);
 		}

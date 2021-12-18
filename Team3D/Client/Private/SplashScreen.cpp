@@ -228,6 +228,10 @@ void CSplashScreen::Logo_DisAppearing(_double TimeDelta)
 		{
 			m_IsDead = true;
 
+			/* 인간적으로 너무 큼 */
+			m_pGameInstance->Play_Sound(TEXT("MainMenu_Bgm.ogg"), CHANNEL_LOGO, 0.05f);
+			m_pGameInstance->Lerp_Sound(CHANNEL_BGM, CHANNEL_LOGO, 1.f, 1.f, 0.05f);
+
 			for (_uint i = 0; i < 3; ++i)
 				UI_Generator->Get_HeaderBox(i)->Set_LogoDisappear();
 		}

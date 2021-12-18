@@ -774,6 +774,12 @@ void CCody::KeyInput(_double dTimeDelta)
 	}
 
 #pragma endregion
+
+	if (m_pGameInstance->Key_Down(DIK_M))
+	{
+		SCRIPT->Render_Script(m_iIndex, CScript::HALF, 1.f);
+		++m_iIndex;
+	}
 }
 
 _uint CCody::Get_CurState() const
@@ -2049,6 +2055,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 				m_IsHitPlanet = true;
 				m_IsHitPlanet_Effect = true;
+				m_IsHitPlanet_Once = true;
 			}
 		}
 		else if (m_eTargetGameID == GameID::eHOOKUFO && m_pGameInstance->Key_Down(DIK_F) && m_IsHookUFO == false)
@@ -2189,12 +2196,18 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::ePINBALL && false == m_IsPinBall)
 		{
 			/* ÇÉº¼¸ðµå ON */
+			m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_DOOR);
+			m_pGameInstance->Play_Sound(TEXT("Pinball_Enter_Ball.wav"), CHANNEL_PINBALL_DOOR);
+
 			m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
 			m_IsPinBall = true;
 		}
 		else if (m_eTargetGameID == GameID::ePINBALLDOOR && m_pGameInstance->Key_Down(DIK_E))
 		{
 			/* ÇÉº¼ ¹®¿­±â */
+			m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_DOOR);
+			m_pGameInstance->Play_Sound(TEXT("Pinball_Door_Open.wav"), CHANNEL_PINBALL_DOOR);
+
 			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(false);
 		}
 		else if (m_eTargetGameID == GameID::eHOOKAHTUBE)
@@ -2277,6 +2290,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_E) && false == m_bLaserTennis)
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
+			m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
+
 			LASERTENNIS->Increase_PowerCoord();
 
 			UI_Generator->Delete_InterActive_UI(Player::Cody, UI::PowerCoord);
@@ -2594,9 +2610,16 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 	{
 		if (0.2f <= m_pModelCom->Get_ProgressAnim())
 		{
-
-			((CHangingPlanet*)(m_pTargetPtr))->Hit_Planet(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+			if (true == m_IsHitPlanet_Once)
+			{
+				((CHangingPlanet*)(m_pTargetPtr))->Hit_Planet(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+				/* Sound */
+				m_pGameInstance->Stop_Sound(CHANNEL_HANGINGPLANET);
+				m_pGameInstance->Play_Sound(TEXT("HangingPlanet_Push.wav"), CHANNEL_HANGINGPLANET);
+				m_IsHitPlanet_Once = false;
+			}
 		}
+
 		if (0.38175f <= m_pModelCom->Get_ProgressAnim())
 		{
 			if (true == m_IsHitPlanet_Effect)
@@ -3537,12 +3560,18 @@ void CCody::LaserTennis(const _double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_Q))
 	{
+		m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
+		m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
+
 		LASERTENNIS->Decrease_PowerCoord();
 		m_bLaserTennis = false;
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_E))
+	{
+		UI_Generator->Delete_InterActive_UI(Player::Cody, UI::PowerCoord);
 		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_CODY);
+	}
 }
 
 void CCody::PinBall_Respawn(const _double dTimeDelta)
