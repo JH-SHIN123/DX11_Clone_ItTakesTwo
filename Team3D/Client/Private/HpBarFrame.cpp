@@ -50,6 +50,8 @@ _int CHpBarFrame::Tick(_double TimeDelta)
 _int CHpBarFrame::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
+
+	
 	
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }

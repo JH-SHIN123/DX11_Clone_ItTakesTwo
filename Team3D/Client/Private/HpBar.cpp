@@ -54,6 +54,7 @@ _int CHpBar::Tick(_double TimeDelta)
 		m_fRatio = (m_fHp / 120.f) / 2.f;
 		m_IsHit = true;
 		m_fWatingTime = 0.f;
+		m_fRecoveryTime = 0.f;
 	}
 
 	if (true == m_IsHit)
@@ -72,18 +73,23 @@ _int CHpBar::Tick(_double TimeDelta)
 	}
 	else
 	{
-		m_fRecoveryTime += (_float)TimeDelta;
+		m_fWatingTime += (_float)TimeDelta;
 
-		if (0.5f <= m_fRecoveryTime)
+		if (1.f <= m_fWatingTime)
 		{
-			m_fHp -= 10.f;
+			m_fRecoveryTime += (_float)TimeDelta;
 
-			if (0 >= m_fHp)
-				m_fHp = 0.f;
+			if (0.02f <= m_fRecoveryTime)
+			{
+				m_fHp -= 10.f;
 
-			m_fRatio = (m_fHp / 120.f) / 2.f;
-			m_fDecreaseRateRatio = m_fRatio;
-			m_fRecoveryTime = 0.f;
+				if (0 >= m_fHp)
+					m_fHp = 0.f;
+
+				m_fRatio = (m_fHp / 120.f) / 2.f;
+				m_fDecreaseRateRatio = m_fRatio;
+				m_fRecoveryTime = 0.f;
+			}
 		}
 	}
 
@@ -94,7 +100,7 @@ _int CHpBar::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 
-	if (false == m_IsActive)
+	//if (false == m_IsActive)
 		return NO_EVENT;
 	
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
@@ -135,6 +141,7 @@ HRESULT CHpBar::Ready_Layer_UI()
 	CGameObject* pGameObject = nullptr;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodyHpBarFrame"), nullptr, &pGameObject), E_FAIL);
 	m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
+	m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
 
 	return S_OK;
 }
