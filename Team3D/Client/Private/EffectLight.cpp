@@ -13,7 +13,8 @@ HRESULT CEffectLight::NativeConstruct(const _tchar* pLightTag, void* pArgs)
 	CLight::NativeConstruct(pLightTag, &m_tEffectDesc.tLightDesc);
 
 	/* Set Effect */
-	//EFFECT->Add_PointLight(CEff)
+	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(m_tEffectDesc.fSize, 0.25f, 1.f, m_LightDesc.vPosition, (EPoint_Color)m_tEffectDesc.iEffectColor), (CGameObject**)&m_pEffect), E_FAIL);
+	m_pEffect->Set_Radius(m_tEffectDesc.fSize);
 
 	return S_OK;
 }
@@ -38,11 +39,11 @@ CEffectLight* CEffectLight::Create(const _tchar* pLightTag, void* pArgs)
 
 void CEffectLight::Free()
 {
-	//if (m_pVolumeObject)
-	//{
-	//	m_pVolumeObject->Set_Dead();
-	//	Safe_Release(m_pVolumeObject);
-	//}
+	if (m_pEffect)
+	{
+		m_pEffect->Set_Dead();
+		Safe_Release(m_pEffect);
+	}
 
 	CLight::Free();
 }

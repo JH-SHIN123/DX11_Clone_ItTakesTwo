@@ -2,7 +2,6 @@
 
 #include "Client_Defines.h"
 #include "Light.h"
-#include "VolumeObject.h"
 
 BEGIN(Client)
 class CEffectLight final : public CLight
@@ -24,8 +23,8 @@ public:
 	virtual _int	Tick_Light(_double dTimeDelta) override;
 
 private:
-	EFFECTLIGHT_DESC m_tEffectDesc;
-
+	EFFECTLIGHT_DESC			m_tEffectDesc;
+	class CEffect_PointLight*	m_pEffect = nullptr;
 public:
 	static CEffectLight* Create(const _tchar * pLightTag, void* pArgs);
 	virtual void Free() override;

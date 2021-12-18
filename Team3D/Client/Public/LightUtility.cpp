@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LightUtility.h"
 #include "VolumeLight.h"
+#include "EffectLight.h"
 
 HRESULT CLightUtility::Load_StaticLightData(LOAD_LIGHTTYPE eLoadType, const _tchar* pFilePath)
 {
@@ -17,6 +18,7 @@ HRESULT CLightUtility::Load_StaticLightData(LOAD_LIGHTTYPE eLoadType, const _tch
 
 	LIGHT_DESC lightDesc;
 	CVolumeLight::VOLUMELIGHT_DESC volumeLightDesc;
+	CEffectLight::EFFECTLIGHT_DESC effectlightDesc;
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
@@ -31,6 +33,7 @@ HRESULT CLightUtility::Load_StaticLightData(LOAD_LIGHTTYPE eLoadType, const _tch
 			ReadFile(hFile, &volumeLightDesc, sizeof(volumeLightDesc), &dwByte, nullptr);
 			break;
 		case LOAD_EFFECTLIGHT:
+			ReadFile(hFile, &effectlightDesc, sizeof(effectlightDesc), &dwByte, nullptr);
 			break;
 		}
 
@@ -46,6 +49,7 @@ HRESULT CLightUtility::Load_StaticLightData(LOAD_LIGHTTYPE eLoadType, const _tch
 			pLight = (CLight*)CVolumeLight::Create(TEXT("Static_Volume"), &volumeLightDesc);
 			break;
 		case LOAD_EFFECTLIGHT:
+			pLight = (CLight*)CEffectLight::Create(TEXT("Static_Effect"), &effectlightDesc);
 			break;
 		}
 
