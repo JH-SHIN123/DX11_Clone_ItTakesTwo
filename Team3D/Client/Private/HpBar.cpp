@@ -46,12 +46,46 @@ _int CHpBar::Tick(_double TimeDelta)
 	if (true == m_IsDead)
 		return EVENT_DEAD;
 
+	CUIObject::Tick(TimeDelta);
+
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{
 		m_fHp += 10.f;
+		m_fRatio = (m_fHp / 120.f) / 2.f;
+		m_IsHit = true;
+		m_fWatingTime = 0.f;
 	}
 
-	CUIObject::Tick(TimeDelta);
+	if (true == m_IsHit)
+	{
+		if (m_fDecreaseRateRatio <= m_fRatio)
+		{
+			m_fWatingTime += (_float)TimeDelta;
+
+			if (1.f <= m_fWatingTime)
+			{
+				m_fDecreaseRateRatio = m_fRatio;
+				m_fWatingTime = 0.f;
+				m_IsHit = false;
+			}
+		}
+	}
+	else
+	{
+		m_fRecoveryTime += (_float)TimeDelta;
+
+		if (0.5f <= m_fRecoveryTime)
+		{
+			m_fHp -= 10.f;
+
+			if (0 >= m_fHp)
+				m_fHp = 0.f;
+
+			m_fRatio = (m_fHp / 120.f) / 2.f;
+			m_fDecreaseRateRatio = m_fRatio;
+			m_fRecoveryTime = 0.f;
+		}
+	}
 
 	return _int();
 }
@@ -73,7 +107,8 @@ HRESULT CHpBar::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Set_Variable("g_fHpBarHp", &m_fHp, sizeof(_float));
+	m_pVIBuffer_RectCom->Set_Variable("g_fCircleRatio", &m_fRatio, sizeof(_float));
+	m_pVIBuffer_RectCom->Set_Variable("g_fDecreaseRateRatio", &m_fDecreaseRateRatio, sizeof(_float));
 	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseSubTexture", m_pSubTexturesCom->Get_ShaderResourceView(0));
 	
 	m_pVIBuffer_RectCom->Render(22);

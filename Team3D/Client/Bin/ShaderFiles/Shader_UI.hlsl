@@ -30,8 +30,10 @@ float	g_fRatio;
 float	g_fDecreaseRateRatio;
 float2  g_UV;
 float2  g_vScreenMaskUV;
-float   g_fHpBarHp;
- 
+float   g_fCircleRatio;
+
+bool	g_IsHealthBarDecrease;
+
 sampler	DiffuseSampler = sampler_state
 {
 	Filter = MIN_MAG_MIP_LINEAR;
@@ -80,10 +82,10 @@ VS_OUT	VS_RespawnCirle(VS_IN In)
 	fCos = cos(g_Angle);
 	fSin = sin(g_Angle);
 
-	float2x2 dd;
+	float2x2 Rotate;
 
-	dd = float2x2(fCos, -fSin, fSin, fCos);
-	SubUV = mul(SubUV, dd);
+	Rotate = float2x2(fCos, -fSin, fSin, fCos);
+	SubUV = mul(SubUV, Rotate);
 	SubUV.x += 0.5f;
 	SubUV.y += 0.5f;
 
@@ -578,7 +580,7 @@ PS_OUT PS_PlayerHpBarFrame(PS_IN In)
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
 	if (Out.vColor.r >= 0.5f)
-		Out.vColor.a = 0.5f;
+		Out.vColor.a = 0.7f;
 
 	return Out;
 }
@@ -591,12 +593,11 @@ PS_OUT PS_PlayerHpBar(PS_IN In)
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 	vector SubTexture = g_DiffuseSubTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	float gBlueRatio = g_fHpBarHp / 120.f / 2.f;
+	if (g_fDecreaseRateRatio <= Out.vColor.b && g_fCircleRatio >= Out.vColor.b)
+		Out.vColor.rgb = 1.f;
+	else if (g_fDecreaseRateRatio > Out.vColor.b)
+		Out.vColor.a = 0.f;
 
-	if (gBlueRatio >= Out.vColor.b)
-	{
-		Out.vColor.g = 1.f;
-	}
 
 	return Out;
 }
