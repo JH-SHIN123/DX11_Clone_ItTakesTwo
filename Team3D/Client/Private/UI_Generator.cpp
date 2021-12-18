@@ -1,30 +1,32 @@
 #include "stdafx.h"
 #include "..\Public\UI_Generator.h"
 
+#include "HpBar.h"
 #include "PC_Enter.h"
 #include "Pipeline.h"
 #include "UISprite.h"
 #include "Portrait.h"
+#include "BossHpBar.h"
 #include "HeaderBox.h"
+#include "HpBarFrame.h"
 #include "MenuScreen.h"
 #include "AlphaScreen.h"
+#include "ContextIcon.h"
 #include "InputButton.h"
+#include "Gauge_Circle.h"
 #include "SplashScreen.h"
 #include "PlayerMarker.h"
 #include "RespawnCircle.h"
 #include "ChapterSelect.h"
 #include "ControllerIcon.h"
+#include "Minigame_Ready.h"
+#include "BossHpBarFrame.h"
 #include "PC_MouseButton.h"
 #include "Arrowkeys_Fill.h"
 #include "ButtonIndicator.h"
 #include "InputButton_Frame.h"
 #include "Arrowkeys_Outline.h"
-#include "Gauge_Circle.h"
-#include "ContextIcon.h"
-#include "BossHpBar.h"
-#include "BossHpBarFrame.h"
-#include "HpBar.h"
-#include "HpBarFrame.h"
+#include "Minigame_Countdown.h"
 
 #include "Cody.h"
 #include "May.h"
@@ -89,22 +91,24 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath, Level::ID eLevel, _ui
 		{
 			if (0 == iOption)
 			{
-				if (FAILED(Add_Prototype_Menu(PSData)))
-					return E_FAIL;
+				FAILED_CHECK_RETURN(Add_Prototype_Menu(PSData), E_FAIL);
 			}
 			else
 			{
-				if (FAILED(Add_Prototype_Chapter(PSData)))
-					return E_FAIL;
+				FAILED_CHECK_RETURN(Add_Prototype_Chapter(PSData), E_FAIL);
 			}
 		}
 		else if (eLevel == Level::LEVEL_STAGE)
 		{
-			if (FAILED(Add_Prototype_Interactive_UI(PSData)))
-				return E_FAIL;
-
-			if (FAILED(Add_Prototype_Fixed_UI(PSData)))
-				return E_FAIL;
+			if (0 == iOption)
+			{
+				FAILED_CHECK_RETURN(Add_Prototype_Interactive_UI(PSData), E_FAIL);
+				FAILED_CHECK_RETURN(Add_Prototype_Fixed_UI(PSData), E_FAIL);
+			}
+			else
+			{
+				FAILED_CHECK_RETURN(Add_Prototype_Minigame(PSData), E_FAIL);
+			}
 		}
 	}
 
@@ -246,6 +250,13 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 	case UI::LoadingScreen:
 		iOption = 7;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+		break;
+	case UI::Minigame_Ready:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("MinigameReady"), Level::LEVEL_STATIC);
+		break;
+	case UI::Minigame_Countdown:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Minigame_Countdown"), Level::LEVEL_STATIC);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Minigame_GaugeCircle"), Level::LEVEL_STATIC);
 		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
@@ -945,6 +956,27 @@ HRESULT CUI_Generator::Add_Prototype_Chapter(CUIObject::UI_DESC * UIDesc)
 	return S_OK;
 }
 
+HRESULT CUI_Generator::Add_Prototype_Minigame(CUIObject::UI_DESC * UIDesc)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
+
+	if (!lstrcmp(UIDesc->szUITag, L"MinigameReady"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigame_Ready::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"MinigameGauge_Circle"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"Minigames_Countdown"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigame_Ready::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+
+	return S_OK;
+}
+
 void CUI_Generator::UI_RETutorial(Player::ID ePlayer, UI::TRIGGER eTrigger)
 {
 	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
@@ -996,6 +1028,9 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("BossHealth_Texture"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/BossHealth/BossHealth_Texture.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("HpBar"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/HpBar.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Clockwise"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/Clockwise.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("MinigameReady"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Minigame/MinigameReady%d.png"), 4)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Minigames_Countdown"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Minigame/Minigames_Countdown%d.png"), 5)), E_FAIL);
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

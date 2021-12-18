@@ -1,22 +1,24 @@
 #include "stdafx.h"
-#include "..\Public\HpBarFrame.h"
+#include "..\Public\Minigame_GaugeCircle.h"
 
-CHpBarFrame::CHpBarFrame(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
+#include "GameInstance.h"
+
+CMinigame_GaugeCircle::CMinigame_GaugeCircle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
 {
 }
 
-CHpBarFrame::CHpBarFrame(const CUIObject & rhs)
+CMinigame_GaugeCircle::CMinigame_GaugeCircle(const CUIObject & rhs)
 	: CUIObject(rhs)
 {
 }
 
-HRESULT CHpBarFrame::NativeConstruct_Prototype()
+HRESULT CMinigame_GaugeCircle::NativeConstruct_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CHpBarFrame::NativeConstruct_Prototype(void* pArg)
+HRESULT CMinigame_GaugeCircle::NativeConstruct_Prototype(void* pArg)
 {
 	if (nullptr != pArg)
 		memcpy(&m_UIDesc, pArg, sizeof(UI_DESC));
@@ -24,7 +26,7 @@ HRESULT CHpBarFrame::NativeConstruct_Prototype(void* pArg)
 	return S_OK;
 }
 
-HRESULT CHpBarFrame::NativeConstruct(void * pArg)
+HRESULT CMinigame_GaugeCircle::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
 
@@ -37,7 +39,7 @@ HRESULT CHpBarFrame::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CHpBarFrame::Tick(_double TimeDelta)
+_int CMinigame_GaugeCircle::Tick(_double TimeDelta)
 {
 	if (true == m_IsDead)
 		return EVENT_DEAD;
@@ -47,67 +49,59 @@ _int CHpBarFrame::Tick(_double TimeDelta)
 	return _int();
 }
 
-_int CHpBarFrame::Late_Tick(_double TimeDelta)
+_int CMinigame_GaugeCircle::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
-
-	if (false == m_IsActive)
-		return NO_EVENT;
 	
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
-HRESULT CHpBarFrame::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CMinigame_GaugeCircle::Render(RENDER_GROUP::Enum eGroup)
 {
 	CUIObject::Render(eGroup);
 
 	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(21);
+	m_pVIBuffer_RectCom->Render(0);
 
 	return S_OK;
 }
 
-void CHpBarFrame::Set_Active(_bool IsCheck)
-{
-	m_IsActive = IsCheck;
-}
-
-HRESULT CHpBarFrame::Ready_Component()
+HRESULT CMinigame_GaugeCircle::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
 
 	return S_OK;
 }
 
-CHpBarFrame * CHpBarFrame::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CMinigame_GaugeCircle * CMinigame_GaugeCircle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CHpBarFrame* pInstance = new CHpBarFrame(pDevice, pDeviceContext);
+	CMinigame_GaugeCircle* pInstance = new CMinigame_GaugeCircle(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create HpBarFrame Prototype, Error to CHpBarFrame::Create");
+		MSG_BOX("Failed to Create Minigame_GaugeCircle Prototype, Error to CMinigame_GaugeCircle::Create");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CHpBarFrame::Clone_GameObject(void * pArg)
+CGameObject * CMinigame_GaugeCircle::Clone_GameObject(void * pArg)
 {
-	CHpBarFrame* pClone = new CHpBarFrame(*this);
+	CMinigame_GaugeCircle* pClone = new CMinigame_GaugeCircle(*this);
 
 	if (FAILED(pClone->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone CHpBarFrame, Error to CHpBarFrame::Clone_GameObject");
+		MSG_BOX("Failed to Clone CMinigame_GaugeCircle, Error to CMinigame_GaugeCircle::Clone_GameObject");
 		Safe_Release(pClone);
 	}
 
 	return pClone;
 }
 
-void CHpBarFrame::Free()
+void CMinigame_GaugeCircle::Free()
 {
 	Safe_Release(m_pVIBuffer_RectCom);
 

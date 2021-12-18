@@ -933,6 +933,18 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame">
+      <UniqueIdentifier>{68e45867-3e1e-4948-a95a-c534167b378a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\00.Minigame_Ready">
+      <UniqueIdentifier>{c61cc7b9-02e0-4efb-b9c8-7fd12af05dd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown">
+      <UniqueIdentifier>{5e838b2e-ac0d-4966-b7a1-7a520c120139}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle">
+      <UniqueIdentifier>{b61c06ff-3eea-4cc8-9eaa-a08aac20aaee}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1745,6 +1757,15 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Ready.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\00.Minigame_Ready</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Countdown.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_GaugeCircle.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2520,6 +2541,15 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Ready.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\00.Minigame_Ready</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Countdown.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_GaugeCircle.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

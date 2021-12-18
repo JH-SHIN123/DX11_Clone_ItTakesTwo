@@ -3,10 +3,6 @@
 #include "Client_Defines.h"
 #include "UIObject.h"
 
-BEGIN(Engine)
-class CVIBuffer_Rect;
-END
-
 BEGIN(Client)
 
 class CPC_MouseButton final : public CUIObject

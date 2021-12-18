@@ -48,6 +48,9 @@ _int CHpBar::Tick(_double TimeDelta)
 
 	CUIObject::Tick(TimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_INSERT))
+		UI_Create(Cody, Minigame_Ready);
+
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{
 		m_fHp += 10.f;
@@ -126,6 +129,25 @@ void CHpBar::Set_Active(_bool IsCheck)
 {
 	m_IsActive = IsCheck;
 	UI_CreateOnlyOnce(Cody, Portrait_Cody);
+	UI_CreateOnlyOnce(May, Portrait_May);
+
+	if (nullptr != m_pHpBarFrame)
+		m_pHpBarFrame->Set_Active(IsCheck);
+
+	if (false == m_IsActive)
+	{
+		UI_Delete(Cody, Portrait_Cody);
+		UI_Delete(May, Portrait_May);
+	}
+}
+
+void CHpBar::Set_Hp(_float fHp)
+{
+	m_fHp += fHp;
+	m_fRatio = (m_fHp / 120.f) / 2.f;
+	m_IsHit = true;
+	m_fWatingTime = 0.f;
+	m_fRecoveryTime = 0.f;
 }
 
 HRESULT CHpBar::Ready_Component()

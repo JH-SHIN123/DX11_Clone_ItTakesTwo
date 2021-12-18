@@ -22,6 +22,7 @@ public:
 
 public:
 	void Set_Active(_bool IsCheck);
+	void Set_Hp(_float fHp);
 
 private:
 	_bool							m_IsActive = false;

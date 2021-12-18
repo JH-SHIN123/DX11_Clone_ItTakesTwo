@@ -1,34 +1,30 @@
 #include "stdafx.h"
-#include "..\Public\ControllerIcon.h"
+#include "..\Public\Minigame_Ready.h"
 
-#include "Pipeline.h"
-
-CControllerIcon::CControllerIcon(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
+CMinigame_Ready::CMinigame_Ready(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
 {
 }
 
-CControllerIcon::CControllerIcon(const CUIObject & rhs)
+CMinigame_Ready::CMinigame_Ready(const CUIObject & rhs)
 	: CUIObject(rhs)
 {
 }
 
-HRESULT CControllerIcon::NativeConstruct_Prototype()
+HRESULT CMinigame_Ready::NativeConstruct_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CControllerIcon::NativeConstruct_Prototype(void* pArg)
+HRESULT CMinigame_Ready::NativeConstruct_Prototype(void* pArg)
 {
 	if (nullptr != pArg)
 		memcpy(&m_UIDesc, pArg, sizeof(UI_DESC));
 
-	m_UIDesc.iRenderGroup *= -1;
-
 	return S_OK;
 }
 
-HRESULT CControllerIcon::NativeConstruct(void * pArg)
+HRESULT CMinigame_Ready::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
 
@@ -41,7 +37,7 @@ HRESULT CControllerIcon::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CControllerIcon::Tick(_double TimeDelta)
+_int CMinigame_Ready::Tick(_double TimeDelta)
 {
 	if (true == m_IsDead)
 		return EVENT_DEAD;
@@ -51,59 +47,59 @@ _int CControllerIcon::Tick(_double TimeDelta)
 	return _int();
 }
 
-_int CControllerIcon::Late_Tick(_double TimeDelta)
+_int CMinigame_Ready::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 	
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
-HRESULT CControllerIcon::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CMinigame_Ready::Render(RENDER_GROUP::Enum eGroup)
 {
 	CUIObject::Render(eGroup);
 
-	if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
+	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(11);
+	m_pVIBuffer_RectCom->Render(23);
 
 	return S_OK;
 }
 
-HRESULT CControllerIcon::Ready_Component()
+HRESULT CMinigame_Ready::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
 
 	return S_OK;
 }
 
-CControllerIcon * CControllerIcon::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CMinigame_Ready * CMinigame_Ready::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CControllerIcon* pInstance = new CControllerIcon(pDevice, pDeviceContext);
+	CMinigame_Ready* pInstance = new CMinigame_Ready(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create ControllerIcon Prototype, Error to CControllerIcon::Create");
+		MSG_BOX("Failed to Create Minigame_Ready Prototype, Error to CMinigame_Ready::Create");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CControllerIcon::Clone_GameObject(void * pArg)
+CGameObject * CMinigame_Ready::Clone_GameObject(void * pArg)
 {
-	CControllerIcon* pClone = new CControllerIcon(*this);
+	CMinigame_Ready* pClone = new CMinigame_Ready(*this);
 
 	if (FAILED(pClone->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone CControllerIcon, Error to CControllerIcon::Clone_GameObject");
+		MSG_BOX("Failed to Clone CMinigame_Ready, Error to CMinigame_Ready::Clone_GameObject");
 		Safe_Release(pClone);
 	}
 
 	return pClone;
 }
 
-void CControllerIcon::Free()
+void CMinigame_Ready::Free()
 {
 	Safe_Release(m_pVIBuffer_RectCom);
 

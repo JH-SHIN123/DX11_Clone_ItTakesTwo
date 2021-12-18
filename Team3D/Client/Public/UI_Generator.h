@@ -46,6 +46,7 @@ public:
 		_float	fAlpha = 1.f;
 		_float3 vColor = { 1.f, 1.f, 1.f };
 
+
 	}FONTDESC;
 
 private:
@@ -130,6 +131,7 @@ private:
 	HRESULT Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc);
 	HRESULT Add_Prototype_Menu(CUIObject::UI_DESC* UIDesc);
 	HRESULT Add_Prototype_Chapter(CUIObject::UI_DESC* UIDesc);
+	HRESULT Add_Prototype_Minigame(CUIObject::UI_DESC * UIDesc);
 	HRESULT Add_Prototype_Texture();
 
 private:
