@@ -144,6 +144,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\02.Se\03.Earth">
       <UniqueIdentifier>{7c74bdfa-6c6b-4dcc-998c-534b3fc130ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\04.Effect_PipeLocker">
+      <UniqueIdentifier>{cbb52761-0b5b-433c-800e-73f10284fc57}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung">
       <UniqueIdentifier>{fec661ad-31f9-4dec-b790-1b4cb09030ce}</UniqueIdentifier>
     </Filter>
@@ -1067,6 +1070,9 @@
     <ClInclude Include="..\Public\Earth.h">
       <Filter>02.GameObject\04.Stage_Space\02.Se\03.Earth</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_PipeLocker_Connected.h">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\04.Effect_PipeLocker</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\WarpGate.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
     </ClInclude>
@@ -1872,6 +1878,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Earth.cpp">
       <Filter>02.GameObject\04.Stage_Space\02.Se\03.Earth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_PipeLocker_Connected.cpp">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\04.Effect_PipeLocker</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\WarpGate.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
