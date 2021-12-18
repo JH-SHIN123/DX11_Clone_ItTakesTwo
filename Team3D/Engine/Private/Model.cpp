@@ -15,9 +15,7 @@
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CComponent		(pDevice, pDeviceContext)
-	, m_pModel_Loader	(CModel_Loader::GetInstance())
 {
-	Safe_AddRef(m_pModel_Loader);
 }
 
 CModel::CModel(const CModel & rhs)
@@ -302,15 +300,13 @@ HRESULT CModel::Initialize_PivotTransformation()
 
 HRESULT CModel::NativeConstruct_Prototype(const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
-	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
-
 	CComponent::NativeConstruct_Prototype();
 
 	m_bNeedCenterBone = bNeedCenterBone;
 	m_vAnimDistFromCenter = _float4(0.f, 0.f, 0.f, 1.f); 
 	m_iMaterialSetCount = iMaterialSetCount;
 
-	FAILED_CHECK_RETURN(m_pModel_Loader->Load_ModelFromFile(m_pDevice, m_pDeviceContext, CModel_Loader::TYPE_NORMAL, this, pModelFilePath, pModelFileName, iMaterialSetCount), E_FAIL);
+	FAILED_CHECK_RETURN(CModel_Loader::Load_ModelFromFile(m_pDevice, m_pDeviceContext, CModel_Loader::TYPE_NORMAL, this, pModelFilePath, pModelFileName, iMaterialSetCount), E_FAIL);
 	FAILED_CHECK_RETURN(Apply_PivotMatrix(PivotMatrix), E_FAIL);
 	FAILED_CHECK_RETURN(Store_TriMeshes(), E_FAIL);
 	FAILED_CHECK_RETURN(Create_VIBuffer(pShaderFilePath, pTechniqueName), E_FAIL);
@@ -941,8 +937,6 @@ void CModel::Free()
 
 	if (false == m_isClone)
 	{
-		Safe_Release(m_pModel_Loader);
-
 		if (m_iAnimCount > 0)
 			Safe_Delete_Array(m_pVertices);
 

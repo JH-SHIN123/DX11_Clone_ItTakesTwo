@@ -1,5 +1,4 @@
 #include "..\public\GameInstance.h"
-#include "Model_Loader.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -471,8 +470,6 @@ void CGameInstance::Release_Engine()
 		MSG_BOX("Failed to Release CGameObject_Manager.");
 	if (CComponent_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CComponent_Manager.");
-	if (CModel_Loader::DestroyInstance())
-		MSG_BOX("Failed to Release CModel_Loader.");
 	if (CShadow_Manager::DestroyInstance())
 		MSG_BOX("Failed to Release CShadow_Manager.");
 	if (CLight_Manager::DestroyInstance())
