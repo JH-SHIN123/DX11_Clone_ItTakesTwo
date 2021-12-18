@@ -965,11 +965,11 @@ HRESULT CUI_Generator::Add_Prototype_Minigame(CUIObject::UI_DESC * UIDesc)
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigame_Ready::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
-	else if (!lstrcmp(UIDesc->szUITag, L"MinigameGauge_Circle"))
+	else if (!lstrcmp(UIDesc->szUITag, L"Minigame_GaugeCircle"))
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
-	else if (!lstrcmp(UIDesc->szUITag, L"Minigames_Countdown"))
+	else if (!lstrcmp(UIDesc->szUITag, L"Minigame_Countdown"))
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigame_Ready::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
