@@ -55,12 +55,20 @@ _int CParticipation_Button::Tick(_double dTimeDelta)
 
 	if (0 == m_iOption && m_pGameInstance->Key_Down(DIK_RETURN))
 	{
+		/* Sound */
+		m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
+		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON);
+
 		m_bReadyCody = true;
 		m_iFrame = 1;
 	}
 
 	if (1 == m_iOption && m_pGameInstance->Key_Down(DIK_SPACE))
 	{
+		/* Sound */
+		m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
+		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON);
+
 		m_bReadyMay = true;
 		m_iFrame = 3;
 	}

@@ -30,6 +30,7 @@ HRESULT CLaserTennis_Manager::NativeConstruct_LaserTennis()
 
 	ZeroMemory(m_pLaserPowerCoord, sizeof(m_pLaserPowerCoord));
 	ZeroMemory(m_pLaserButtonLarge, sizeof(m_pLaserButtonLarge));
+	ZeroMemory(m_bKeyCheck, sizeof(m_bKeyCheck));
 
 	return S_OK;
 }
@@ -198,6 +199,9 @@ void CLaserTennis_Manager::Active_LaserButton()
 			continue;
 		else
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_LASERBUTTON);
+			m_pGameInstance->Play_Sound(TEXT("MiniGame_ButtonActivate_Green.wav"), CHANNEL_LASERTENNIS);
+
 			m_LaserButton_Cody[iRandomIndex[i]]->Active_Button(true);
 			break;
 		}
@@ -209,6 +213,9 @@ void CLaserTennis_Manager::Active_LaserButton()
 			continue;
 		else
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_LASERBUTTON);
+			m_pGameInstance->Play_Sound(TEXT("MiniGame_ButtonActivate_Blue.wav"), CHANNEL_LASERTENNIS);
+
 			m_LaserButton_May[iRandomIndex[i]]->Active_Button(true);
 			break;
 		}
@@ -220,7 +227,9 @@ void CLaserTennis_Manager::Active_LaserButtonLarge_Gate(_bool bActive)
 	for (auto& pGate : m_LaserButtonLarge_Gate)
 	{
 		if (bActive == pGate->Get_Active())
+		{
 			pGate->Change_State();
+		}
 	}
 }
 
@@ -247,12 +256,18 @@ void CLaserTennis_Manager::Active_LaserButtonLarge_Gate(_bool bActive, TARGET eT
 
 void CLaserTennis_Manager::Active_LaserButtonLarge(_bool bActive)
 {
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERBUTTONLARGE);
+	m_pGameInstance->Play_Sound(TEXT("MiniGame_ButtonActivate_Center.wav"), CHANNEL_LASERBUTTONLARGE);
+
 	m_pLaserButtonLarge[0]->Activation(bActive);
 	m_pLaserButtonLarge[1]->Activation(bActive);
 }
 
 void CLaserTennis_Manager::Start_Game()
 {
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
+	m_pGameInstance->Play_Sound(TEXT("StartButton_Push.wav"), CHANNEL_LASERPOWERCOORD);
+
 	/* 파워코드 상태변경 */
 	for (_uint i = 0; i < 2; ++i)
 		m_pLaserPowerCoord[i]->Change_State();
@@ -273,6 +288,12 @@ void CLaserTennis_Manager::Start_Game()
 
 void CLaserTennis_Manager::Reset_Game()
 {
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERACTIVATION);
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERBUTTON);
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERBUTTONLARGE);
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNIS);
+
 	/* 결과창 UI 생성 */
 	Create_ResultUI();
 
@@ -310,7 +331,7 @@ void CLaserTennis_Manager::Reset_Game()
 	m_pTimer_LaserTennis->OnOff_Timer(false);
 
 	/* 변수 초기화 */
-	m_bKeyCheck[TARGET_END] = { false };
+	ZeroMemory(m_bKeyCheck, sizeof(m_bKeyCheck));
 	m_bStartGame = false;
 	m_bReady = false;
 	m_iPowerCoordCount = 0;
@@ -418,7 +439,13 @@ void CLaserTennis_Manager::Active_LaserActivation(_uint iOption)
 	for (auto& pLaserActivation : m_LaserActivation)
 	{
 		if (iOption == pLaserActivation->Get_Option())
+		{
+			/* Sound */
+			m_pGameInstance->Stop_Sound(CHANNEL_LASERACTIVATION);
+			m_pGameInstance->Play_Sound(TEXT("MiniGame_RisingBlock.wav"), CHANNEL_LASERACTIVATION);
+
 			pLaserActivation->Change_State();
+		}
 	}
 }
 
