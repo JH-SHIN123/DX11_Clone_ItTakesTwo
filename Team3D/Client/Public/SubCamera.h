@@ -12,7 +12,7 @@ class CSubCamera final : public CCamera
 	enum CamRev { Rev_Holizontal, Rev_Prependicul, Rev_End };
 	enum class CamMode { Cam_Free, Cam_AutoToFree, Cam_Warp_WormHole, Cam_WallJump, Cam_PinBall_May, Cam_End };
 	//O CamFreeMove P FollowPlayer
-	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_RidingSpaceShip_May,Cam_Free_End };
+	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_OpenThirdFloor, Cam_Free_RidingSpaceShip_May,Cam_Free_End };
 private:
 	explicit CSubCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CSubCamera(const CSubCamera& rhs);
@@ -64,6 +64,9 @@ private:
 	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At,_fvector vUp = XMVectorSet(0.f,1.f,0.f,0.f));
 	_fmatrix MakeViewMatrixByUp(_fvector vEye, _fvector vAt, _fvector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f));
 	_fmatrix MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime);
+	
+	_fmatrix MakeViewMatrixByQuaternion(_fvector vEye, _fvector vAt, _fvector vUp);
+	_fmatrix MakeRotationByQuaternion(_fvector vPos, _fvector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f));
 
 	_fvector MakeQuatMul(_fvector vQ, _fvector vP);
 	_fmatrix MakeViewMatrix_FollowPlayer(_double dTimeDelta);

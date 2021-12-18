@@ -53,11 +53,11 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	
 	/* Hye */
 
-	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL] =	{ 0.f,2.f,-2.f,1.f};
+	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL] =	{ 0.f,1.f,-1.f,1.f};
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM] =	{ 0.f,7.f,-7.f,1.f };
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE] =	{ 0.f,8.f,-8.f,1.f };
 
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL] = { 0.f,0.2f,0.0f,1.f };
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL] = { 0.f,0.15f,0.0f,1.f };
 	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM] = { 0.f,3.f, 0.0f,1.f };
 	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE] = { 0.f,4.f,0.0f,1.f };
 
@@ -155,7 +155,14 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 	}
 	
 	LerpToCurSize(m_eCurPlayerSize, dTimeDelta);
-	
+
+#ifdef __TEST_JUN
+	if (m_pGameInstance->Key_Down(DIK_B))
+		m_bOpenThirdFloor = !m_bOpenThirdFloor;
+#endif
+	if (m_bOpenThirdFloor)
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OpenThirdFloor;
+
 	if (m_pCody->Get_IsWarpNextStage() == true)
 	{
 		m_eCurCamMode = CamMode::Cam_Warp_WormHole;
@@ -186,6 +193,8 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 	{
 		m_eCurCamMode = CamMode::Cam_WallJump;
 	}
+
+	
 	return NO_EVENT;
 }
 
@@ -236,12 +245,16 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 	case CMainCamera::CamFreeOption::Cam_Free_FreeMove:
 		iResult = Tick_Cam_Free_FreeMode(dTimeDelta);
 		break;
+	case CMainCamera::CamFreeOption::Cam_Free_OpenThirdFloor:
+		iResult = Tick_Cam_Free_OpenThirdFloor(dTimeDelta);
+		break;
 	case CMainCamera::CamFreeOption::Cam_Free_OnBossMiniRoom_Cody:
 		iResult = Tick_Cam_Free_OnBossMiniRoom_Cody(dTimeDelta);
 		break;
 	case CMainCamera::CamFreeOption::Cam_Free_Umbrella_Laser:
 		iResult = Tick_Cam_Free_Umbrella_Laser(dTimeDelta);
 		break;
+
 	}
 	return iResult;
 }
@@ -287,6 +300,10 @@ _int CMainCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 
 	}
 	KeyCheck(dTimeDelta);
+	return NO_EVENT;
+}
+_int CMainCamera::Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta)
+{
 	return NO_EVENT;
 }
 void CMainCamera::KeyCheck(_double dTimeDelta)

@@ -12,8 +12,8 @@ class CMainCamera final : public CCamera
 	enum CamRev {Rev_Holizontal,Rev_Prependicul,Rev_End};
 
 	enum class CamMode{Cam_Free,Cam_AutoToFree, Cam_WallJump, Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_InJoyStick,Cam_PinBall_Cody,Cam_End};
-	//O CamFreeMove P FollowPlayer										//BossMiniRoom_Cody
-	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnBossMiniRoom_Cody,
+	//O CamFreeMove P FollowPlayer																 
+	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_OpenThirdFloor, Cam_Free_OnBossMiniRoom_Cody,
 		Cam_Free_Umbrella_Laser,Cam_Free_End };
 
 private:
@@ -50,6 +50,7 @@ private:
 
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
+	_int	Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta);
 	_int	Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta);			//미니코디 보스룸
 	_int	Tick_Cam_Free_Umbrella_Laser(_double dTimeDelta);
 	//CamHelper State(현재 )
@@ -132,8 +133,9 @@ private:
 	_float	m_fRailProgressTime = 0.f;
 	_float	m_fMaxRailLength = 0.f;
 	_bool	m_bCodyDash = false;
+	//For.OpenThirdFloor
+	_bool m_bOpenThirdFloor = false;
 
-	
 private:
 	CCody*			m_pCody = nullptr;
 	CCam_Helper*	m_pCamHelper = nullptr;
