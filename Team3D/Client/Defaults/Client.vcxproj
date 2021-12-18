@@ -269,6 +269,7 @@
     <ClInclude Include="..\Public\Effect_May_Boots.h" />
     <ClInclude Include="..\Public\Effect_May_Boots_Walking_Particle.h" />
     <ClInclude Include="..\Public\Effect_Pinball_Move.h" />
+    <ClInclude Include="..\Public\Effect_PipeLocker_Connected.h" />
     <ClInclude Include="..\Public\Effect_Player_Dead.h" />
     <ClInclude Include="..\public\Effect_Player_Dead_Explosion.h" />
     <ClInclude Include="..\public\Effect_Player_Dead_Explosion_Particle.h" />
@@ -529,6 +530,7 @@
     <ClCompile Include="..\Private\Effect_May_Boots.cpp" />
     <ClCompile Include="..\Private\Effect_May_Boots_Walking_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Pinball_Move.cpp" />
+    <ClCompile Include="..\Private\Effect_PipeLocker_Connected.cpp" />
     <ClCompile Include="..\Private\Effect_Player_Dead.cpp" />
     <ClCompile Include="..\private\Effect_Player_Dead_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Player_Dead_Explosion_Particle.cpp" />
