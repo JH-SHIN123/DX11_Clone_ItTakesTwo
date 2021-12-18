@@ -13,7 +13,7 @@ class CMainCamera final : public CCamera
 
 	enum class CamMode{Cam_Free,Cam_AutoToFree, Cam_WallJump, Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_InJoyStick,Cam_PinBall_Cody,Cam_End};
 	//O CamFreeMove P FollowPlayer										//BossMiniRoom_Cody
-	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnRail,
+	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnBossMiniRoom_Cody,
 		Cam_Free_Umbrella_Laser,Cam_Free_End };
 
 private:
@@ -50,7 +50,7 @@ private:
 
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
-	_int	Tick_Cam_Free_OnRail(_double dTimeDelta);			//미니코디 보스룸
+	_int	Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta);			//미니코디 보스룸
 	_int	Tick_Cam_Free_Umbrella_Laser(_double dTimeDelta);
 	//CamHelper State(현재 )
 	_int	Tick_CamHelperNone(_double dTimeDelta);			//현재 아무것도 재생안함
@@ -124,7 +124,7 @@ private:
 	//For.RayCast
 	PxRaycastBuffer m_RayCastBuffer;
 	WORLDMATRIX	m_PreWorld;
-	//For.OnRail
+	//For.BossMiniRoom_Cody
 	_bool	m_bStartOnRail = false;
 	vector<CFilm::CamNode*> m_CamNodes;
 	_uint m_iNodeIdx[CFilm::BezierNode::Bezier_End] = { 0,0,0 };

@@ -156,8 +156,8 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMinForce = -0.01;
 
 			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMaxForce = 0.01 / (i + 0.25);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMinForce = -0.01 / (i + 0.25);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMaxForce = 0.01 / (i + 1.0);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Up].dMinForce = -0.01 / (i + 1.0);
 
 
 			pShake_Loc_Right_Warp_Potal->Add_CamShakeCycleDesc(pCycleDesc);
@@ -247,6 +247,8 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Active_GravityPath_01.dat"))))
 		return E_FAIL;
 	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Clear_Umbrella.dat"))))
+		return E_FAIL;
+	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Clear_Rail.dat"))))
 		return E_FAIL;
 
 

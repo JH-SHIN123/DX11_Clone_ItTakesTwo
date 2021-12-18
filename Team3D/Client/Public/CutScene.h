@@ -8,7 +8,7 @@ class CCutScene : public CBase
 {
 public:
 	enum class CutSceneOption {
-		CutScene_Intro,CutScene_Active_GravityPath_01,CutScene_End
+		CutScene_Intro,CutScene_Active_GravityPath_01,CutScene_Clear_Umbrella,CutScene_Clear_Rail,CutScene_End
 	};
 public:
 	CCutScene();
@@ -18,6 +18,9 @@ public:
 	
 	_bool Tick_CutScene_Intro(_double dTimeDelta);
 	_bool Tick_CutScene_Active_GravityPath_01(_double dTimeDelta);
+	_bool Tick_CutScene_Clear_Umbrella(_double dTimeDelta);
+	_bool Tick_CutScene_Clear_Rail(_double dTimeDelta);
+
 public:
 	HRESULT Start_CutScene();
 
@@ -25,14 +28,19 @@ public:
 	//For.Ready_CutScene.Set Performers;
 	HRESULT Start_CutScene_Intro();
 	HRESULT Start_CutScene_Active_GravityPath_01();
+	HRESULT Start_CutScene_Clear_Umbrella();
+	HRESULT Start_CutScene_Clear_Rail();
 
 	//For.End
 	HRESULT End_CutScene_Intro();
 	HRESULT End_CutScene_Active_GravityPath_01();
-
+	HRESULT End_CutScene_Clear_Umbrella();
+	HRESULT End_CutScene_Clear_Rail();
 private:
 	HRESULT Ready_CutScene_Intro();
 	HRESULT Ready_CutScene_Active_GravityPath_01();
+	HRESULT Ready_CutScene_Clear_Umbrella();
+	HRESULT Ready_CutScene_Clear_Rail();
 private:
 	HRESULT NativeConstruct(CutSceneOption eOption);
 	_fmatrix MakeRollPitchYawMatrix(_float3 vPos, _float3 vScale, _float3 vRot);
@@ -69,8 +77,6 @@ private:
 	_float	m_fCodyLerpTime = 0.f;
 	//For.Active_GravityPipe_01
 	_bool m_bIsStartFilm = false;
-
-
 
 public:
 	static CCutScene* Create(CutSceneOption eOption);

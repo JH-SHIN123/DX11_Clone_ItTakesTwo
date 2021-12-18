@@ -26,6 +26,13 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		case Client::CCutScene::CutSceneOption::CutScene_Active_GravityPath_01:
 			End_CutScene_Active_GravityPath_01();
 			break;
+		case Client::CCutScene::CutSceneOption::CutScene_Clear_Umbrella:
+			End_CutScene_Clear_Umbrella();
+			break;
+		case Client::CCutScene::CutSceneOption::CutScene_Clear_Rail:
+			End_CutScene_Clear_Rail();
+			break;
+
 		}
 		return false;
 	}
@@ -39,6 +46,12 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		break;
 	case CutSceneOption::CutScene_Active_GravityPath_01:
 		bIsNoError = Tick_CutScene_Active_GravityPath_01(dTimeDelta);
+		break;
+	case CutSceneOption::CutScene_Clear_Umbrella:
+		bIsNoError = Tick_CutScene_Clear_Umbrella(dTimeDelta);
+		break;
+	case CutSceneOption::CutScene_Clear_Rail:
+		bIsNoError = Tick_CutScene_Clear_Rail(dTimeDelta);
 		break;
 	}
 	if (bIsNoError == false)
@@ -195,6 +208,32 @@ _bool CCutScene::Tick_CutScene_Active_GravityPath_01(_double dTimeDelta)
 	return true;
 }
 
+_bool CCutScene::Tick_CutScene_Clear_Umbrella(_double dTimeDelta)
+{
+	CCam_Helper* pCamHelper = static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Get_CamHelper();
+
+	if (!m_bIsStartFilm &&pCamHelper->Get_CamHelperState(CFilm::LScreen) != CCam_Helper::CamHelperState::Helper_SeeCamNode)
+	{
+		pCamHelper->Start_Film(TEXT("Film_Clear_Umbrella"), CFilm::LScreen);
+		m_bIsStartFilm = true;
+	}
+
+	return true;
+}
+
+_bool CCutScene::Tick_CutScene_Clear_Rail(_double dTimeDelta)
+{
+	CCam_Helper* pCamHelper = static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Get_CamHelper();
+
+	if (!m_bIsStartFilm &&pCamHelper->Get_CamHelperState(CFilm::RScreen) != CCam_Helper::CamHelperState::Helper_SeeCamNode)
+	{
+		pCamHelper->Start_Film(TEXT("Film_Clear_Rail"), CFilm::RScreen);
+		m_bIsStartFilm = true;
+	}
+
+	return true;
+}
+
 HRESULT CCutScene::Start_CutScene()
 {
 	m_dTime = 0.0;
@@ -209,17 +248,23 @@ HRESULT CCutScene::Start_CutScene()
 		if (FAILED(Start_CutScene_Active_GravityPath_01()))
 			return E_FAIL;
 		break;
+	case CutSceneOption::CutScene_Clear_Umbrella:
+		if (FAILED(Start_CutScene_Clear_Umbrella()))
+			return E_FAIL;
+		break;
+	case CutSceneOption::CutScene_Clear_Rail:
+		if (FAILED(Start_CutScene_Clear_Rail()))
+			return E_FAIL;
+		break;
 	}
 	return S_OK;
 }
 
 HRESULT CCutScene::Start_CutScene_Intro()
 {
-#ifdef __TEST_JUN
+
 	_double dTime = 0.0;
-#else
-	_double dTime = 0.0;
-#endif
+
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
 	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_Begin_Game");
 
@@ -278,15 +323,7 @@ HRESULT CCutScene::Start_CutScene_Intro()
 	tDesc.vRot = { 180.f,0.f,0.f };
 	static_cast<CPerformer*>(pPerformer)->Set_PerformerDesc(tDesc);
 	static_cast<CPerformer*>(pPerformer)->Start_Perform(0, dTime);
-//#ifdef __TEST_JUN
-//	if (false == static_cast<CPerformer*>(pPerformer)->Get_IsAlreadyOnParentBone())
-//	{
-//		if (nullptr == pPerformer)
-//			return false;
-//		CPerformer* pCody = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_Cody_CutScene1"));
-//		static_cast<CPerformer*>(pPerformer)->Set_TransformToParentBone(pCody->Get_Transform(), pCody->Get_Model(), "FrontRobe3");
-//	}
-//#endif
+
 	pPerformer = m_pCutScenePlayer->Find_Performer(L"Component_Model_SizeBeltRemoteControllerCutScene1");
 	if (nullptr == pPerformer)
 		return E_FAIL;
@@ -313,6 +350,30 @@ HRESULT CCutScene::Start_CutScene_Active_GravityPath_01()
 	return S_OK;
 }
 
+HRESULT CCutScene::Start_CutScene_Clear_Umbrella()
+{
+	m_bIsStartFilm = false;
+	CCam_Helper* pCamHelper = static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Get_CamHelper();
+	if (nullptr == pCamHelper)
+		return E_FAIL;
+	CFilm::CamNode* pFirstNode = pCamHelper->Get_Film(TEXT("Film_Clear_Umbrella"))->Get_CamNodes()->front();
+	pCamHelper->SeeCamNode(pFirstNode, CFilm::LScreen);
+	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f), true, 1.f);
+	return S_OK;
+}
+
+HRESULT CCutScene::Start_CutScene_Clear_Rail()
+{
+	m_bIsStartFilm = false;
+	CCam_Helper* pCamHelper = static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Get_CamHelper();
+	if (nullptr == pCamHelper)
+		return E_FAIL;
+	CFilm::CamNode* pFirstNode = pCamHelper->Get_Film(TEXT("Film_Clear_Rail"))->Get_CamNodes()->front();
+	pCamHelper->SeeCamNode(pFirstNode, CFilm::RScreen);
+	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), true, 1.f);
+	return S_OK;
+}
+
 HRESULT CCutScene::End_CutScene_Intro()
 {
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
@@ -323,7 +384,19 @@ HRESULT CCutScene::End_CutScene_Active_GravityPath_01()
 {
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	
-	return E_NOTIMPL;
+	return S_OK;
+}
+
+HRESULT CCutScene::End_CutScene_Clear_Umbrella()
+{
+	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
+	return S_OK;
+}
+
+HRESULT CCutScene::End_CutScene_Clear_Rail()
+{
+	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
+	return S_OK;
 }
 
 HRESULT CCutScene::Ready_CutScene_Intro()
@@ -340,6 +413,18 @@ HRESULT CCutScene::Ready_CutScene_Active_GravityPath_01()
 	return S_OK;
 }
 
+HRESULT CCutScene::Ready_CutScene_Clear_Umbrella()
+{
+	m_dDuration = 7.3;
+	return S_OK;
+}
+
+HRESULT CCutScene::Ready_CutScene_Clear_Rail()
+{
+	m_dDuration = 7.0;
+	return S_OK;
+}
+
 HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 {
 	switch (m_eCutSceneOption = eOption)
@@ -350,6 +435,14 @@ HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 		break;
 	case Client::CCutScene::CutSceneOption::CutScene_Active_GravityPath_01:
 		if (FAILED(Ready_CutScene_Active_GravityPath_01()))
+			return E_FAIL;
+		break;
+	case Client::CCutScene::CutSceneOption::CutScene_Clear_Umbrella:
+		if (FAILED(Ready_CutScene_Clear_Umbrella()))
+			return E_FAIL;
+		break;
+	case Client::CCutScene::CutSceneOption::CutScene_Clear_Rail:
+		if (FAILED(Ready_CutScene_Clear_Rail()))
 			return E_FAIL;
 		break;
 	}

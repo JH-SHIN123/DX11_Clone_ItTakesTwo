@@ -22,6 +22,8 @@ HRESULT CCutScenePlayer::NativeConstruct(ID3D11Device* pDevice, ID3D11DeviceCont
 
 	FAILED_CHECK_RETURN(Add_CutScene(TEXT("CutScene_Intro"),CCutScene::Create(CCutScene::CutSceneOption::CutScene_Intro)),E_FAIL);
 	FAILED_CHECK_RETURN(Add_CutScene(TEXT("CutScene_Active_GravityPath_01"), CCutScene::Create(CCutScene::CutSceneOption::CutScene_Active_GravityPath_01)), E_FAIL);
+	FAILED_CHECK_RETURN(Add_CutScene(TEXT("CutScene_Clear_Umbrella"), CCutScene::Create(CCutScene::CutSceneOption::CutScene_Clear_Umbrella)), E_FAIL);
+	FAILED_CHECK_RETURN(Add_CutScene(TEXT("CutScene_Clear_Rail"), CCutScene::Create(CCutScene::CutSceneOption::CutScene_Clear_Rail)), E_FAIL);
 
 	return S_OK;
 }

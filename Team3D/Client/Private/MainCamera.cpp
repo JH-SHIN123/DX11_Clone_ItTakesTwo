@@ -174,7 +174,7 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 	}
 	if (m_pCody->Get_IsPlayerInUFO())
 	{
-		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OnRail;
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OnBossMiniRoom_Cody;
 		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f,0.f,0.6f,1.f), XMVectorSet(0.6f,0.f,0.4f,1.f));
 		return	ReSet_Cam_Free_OnRail();
 	}
@@ -236,8 +236,8 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 	case CMainCamera::CamFreeOption::Cam_Free_FreeMove:
 		iResult = Tick_Cam_Free_FreeMode(dTimeDelta);
 		break;
-	case CMainCamera::CamFreeOption::Cam_Free_OnRail:
-		iResult = Tick_Cam_Free_OnRail(dTimeDelta);
+	case CMainCamera::CamFreeOption::Cam_Free_OnBossMiniRoom_Cody:
+		iResult = Tick_Cam_Free_OnBossMiniRoom_Cody(dTimeDelta);
 		break;
 	case CMainCamera::CamFreeOption::Cam_Free_Umbrella_Laser:
 		iResult = Tick_Cam_Free_Umbrella_Laser(dTimeDelta);
@@ -380,7 +380,7 @@ _float CMainCamera::DotProgress(_float fOffSetDist)
 
 	_double dCurNodeTime = m_CamNodes[m_iNodeIdx[0]]->dTime;
 	_double dNextNodeTime = m_CamNodes[m_iNodeIdx[1]]->dTime;
-	_float fLength = dNextNodeTime - dCurNodeTime;
+	_float fLength = (_float)(dNextNodeTime - dCurNodeTime);
 
 	_vector vDirNextNodeWithCurNode = vNextNodePos - vCurNodePos;
 	_vector vDirNextNodeWithPlayer = vNextNodePos - (vPlayerPos - XMVector3Normalize(vDirNextNodeWithCurNode) * fOffSetDist); //
@@ -388,7 +388,7 @@ _float CMainCamera::DotProgress(_float fOffSetDist)
 	_float fDot = XMVectorGetX(XMVector3Dot(vDirNextNodeWithPlayer, vDirNextNodeWithCurNode))
 		/ pow(XMVectorGetX(XMVector3Length(vDirNextNodeWithCurNode)), 2);
 
-	return dCurNodeTime + (1.f-fDot)* fLength;
+	return (_float)dCurNodeTime + (1.f-fDot)* fLength;
 }
 _float CMainCamera::DotProgress_Bezier(_float fOffSetDist)
 {
@@ -415,11 +415,11 @@ _float CMainCamera::DotProgress_Bezier(_float fOffSetDist)
 	_float fSecondNodeProgress = XMVectorGetX(XMVector3Dot(vDirThirdNodeWithPlayerPos, vDirThirdNodeWithSecondNode))
 		/ pow(XMVectorGetX(XMVector3Length(vDirThirdNodeWithSecondNode)), 2);
 	
-	_float fLength = m_CamNodes[m_iNodeIdx[2]]->dTime - m_CamNodes[m_iNodeIdx[0]]->dTime;
-	return m_CamNodes[m_iNodeIdx[0]]->dTime +  fLength* (fFirstNodeProgress + fSecondNodeProgress) / 2.f;
+	_float fLength = (_float)(m_CamNodes[m_iNodeIdx[2]]->dTime - m_CamNodes[m_iNodeIdx[0]]->dTime);
+	return (_float)m_CamNodes[m_iNodeIdx[0]]->dTime +  fLength* (fFirstNodeProgress + fSecondNodeProgress) / 2.f;
 }
 #pragma endregion
-_int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
+_int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
 {
 	if (m_pCody->Get_IsPlayerInUFO() == false)
 	{
@@ -469,7 +469,7 @@ _int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
 	{
 
 		_float fProgress = DotProgress(0.5f);
-		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * dTimeDelta * 3.f;
+		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * (_float)dTimeDelta * 3.f;
 		//m_fRailProgressTime = DotProgress(0.5f);
 	}
 	else if (m_iNodeIdx[0] < 28)
@@ -484,7 +484,7 @@ _int CMainCamera::Tick_Cam_Free_OnRail(_double dTimeDelta)
 	{
 
 		_float fProgress = DotProgress(1.1f);
-		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * dTimeDelta * 3.f;
+		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * (_float)dTimeDelta * 3.f;
 		//m_fRailProgressTime = DotProgress(1.1f);
 	}
 	else if(m_iNodeIdx[0] <31)
@@ -935,10 +935,6 @@ _int CMainCamera::Tick_Cam_InJoystick(_double dTimeDelta)
 	_vector vRaderScreenPos = pRaderScreenTransform->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 0.5f, 0.f, 0.f);
 	_vector vRaderScreenLook = XMVector3Normalize(pRaderScreenTransform->Get_State(CTransform::STATE_LOOK));
 
-	
-	/*_vector vDir = vRaderScreenPos - vRaderLeverPos;
-	
-	_float fDot = XMVectorGetX(XMVector3Dot(vDir, vRaderScreenLook));*/
 	_vector vEye = vRaderScreenPos - vRaderScreenLook * 2.2f + XMVectorSet(0.f,0.2f,-0.8f,0.f);
 
 	_matrix matResult = MakeViewMatrixByUp(vEye, vRaderScreenPos);
@@ -1211,6 +1207,8 @@ _fmatrix CMainCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 	_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
 	if (XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
 		vPlayerUp += vUpDir * (_float)dTimeDelta * 5.f;
+	vPlayerUp = m_pCody->Get_IsInGravityPipe() ? XMVectorSet(0.f, 1.f, 0.f, 0.f) : vPlayerUp;
+	
 	XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
 
 	_vector vPrePlayerPos = XMLoadFloat4(&m_vPlayerPos);
@@ -1240,16 +1238,11 @@ _fmatrix CMainCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 
 
 
-	if (m_pCody->Get_IsInGravityPipe() == false)
-	{
+	
 		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) *
 			XMMatrixRotationQuaternion(vCurQuartRot)*MH_RotationMatrixByUp(vPlayerUp, vPlayerPos));
-	}
-	else
-	{
-		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, XMLoadFloat4x4(&m_matBeginWorld) *
-			XMMatrixRotationQuaternion(vCurQuartRot)*MH_RotationMatrixByUp(XMVectorSet(0.f, 1.f, 0.f, 0.f), vPlayerPos));
-	}
+	
+	
 
 	_vector vPreQuat = XMLoadFloat4(&m_PreWorld.vRotQuat);
 	_vector vPreTrans = XMLoadFloat4(&m_PreWorld.vTrans);
@@ -1314,17 +1307,28 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Right", CFilm::RScreen);
 		return NO_EVENT;
 	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
+	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 	{
 		m_pCamHelper->Start_Film(L"Film_Clear_Umbrella",CFilm::LScreen);
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
 		return NO_EVENT;
+	}*/
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
+	{
+	m_pCamHelper->Start_Film(L"Film_Clear_Rail",CFilm::RScreen);
+	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f));
+	return NO_EVENT;
 	}
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
+	CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Clear_Rail");
+	return NO_EVENT;
+	}
+	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
+	{
 		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
 		return NO_EVENT;
-	}
+	}*/
 	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 	{
 		CCutScenePlayer::GetInstance()->Stop_CutScene();
@@ -1370,7 +1374,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 			break;
 		case Client::CMainCamera::CamFreeOption::Cam_Free_FreeMove:
 			break;
-		case Client::CMainCamera::CamFreeOption::Cam_Free_OnRail:
+		case Client::CMainCamera::CamFreeOption::Cam_Free_OnBossMiniRoom_Cody:
 			break;
 		}
 		m_ePreCamFreeOption = m_eCurCamFreeOption;

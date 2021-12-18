@@ -314,7 +314,7 @@ _int CSubCamera::Tick_Cam_PinBall_May(_double dTimeDelta)
 
 	_vector vHandlePos = pHandleTransform->Get_State(CTransform::STATE_POSITION);
 	_vector vEye = vHandlePos + XMVectorSet(0.f, 3.f, 4.f, 0.f);
-	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vHandlePos + XMVectorSet(0.f,2.f,-1.f,0.f)), dTimeDelta * 4.f));
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vHandlePos + XMVectorSet(0.f,2.f,-1.f,0.f)), (_float)dTimeDelta * 4.f));
 
 	return NO_EVENT;
 }
@@ -350,10 +350,9 @@ _int CSubCamera::Tick_Cam_WallJump(_double dTimeDelta)
 		vEye = XMVectorSetX(vEye, XMVectorGetX(vPlayerPos));
 		vPlayerPos = XMVectorSetX(vTriggerPos, XMVectorGetX(vPlayerPos));
 	}
-	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vPlayerPos, matFacetoWall.r[1]), dTimeDelta * 3.f));
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vPlayerPos, matFacetoWall.r[1]), (_float)dTimeDelta * 3.f));
 
 
-	return NO_EVENT;
 	return NO_EVENT;
 }
 
@@ -415,6 +414,8 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 
 	return NO_EVENT;
 }
+
+
 
 _int CSubCamera::Tick_CamHelperNone(_double dTimeDelta)
 {
@@ -648,6 +649,7 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 	_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
 	if (XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
 		vPlayerUp += vUpDir * (_float)dTimeDelta * 5.f;
+	vPlayerUp = m_pMay->Get_IsInGravityPipe() ? XMVectorSet(0.f, 1.f, 0.f, 0.f) : vPlayerUp;
 	XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
 
 	//_vector vPlayerUp = vTargetPlayerUp;
@@ -681,8 +683,7 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 
 
 	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans,
-		XMLoadFloat4x4(&m_matBeginWorld) * matQuat *MH_RotationMatrixByUp(m_pMay->Get_IsInGravityPipe() ?
-			XMVectorSet(0.f, 1.f, 0.f, 0.f) : vPlayerUp, vPlayerPos));
+		XMLoadFloat4x4(&m_matBeginWorld) * matQuat *MH_RotationMatrixByUp(vPlayerUp, vPlayerPos));
 
 	_vector vPreQuat = XMLoadFloat4(&m_PreWorld.vRotQuat);
 	_vector vPreTrans = XMLoadFloat4(&m_PreWorld.vTrans);
