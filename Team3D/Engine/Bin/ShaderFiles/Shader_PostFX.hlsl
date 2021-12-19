@@ -233,16 +233,16 @@ PS_OUT PS_MAIN(PS_IN In)
 	float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
 
+	// Volume
+	float3 eyeToPixel = vWorldPos - vCamPos;
+	float distToEye = length(eyeToPixel);
+	vColor = VolumeBlend(vColor, In.vTexUV, vDepthDesc.y, distToEye);
+
 	// Bloom
 	vColor += g_BloomScale * g_BloomTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV.xy).xyz;
 
 	// Add Effect
 	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
-
-	// Volume
-	float3 eyeToPixel = vWorldPos - vCamPos;
-	float distToEye = length(eyeToPixel);
-	vColor = VolumeBlend(vColor, In.vTexUV, vDepthDesc.y, distToEye);
 
 	// Tone Mapping
 	vColor = ToneMapping_EA(vColor);
