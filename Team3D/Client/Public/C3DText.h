@@ -7,9 +7,12 @@ class C3DText final : public CGameObject
 public:
 	typedef struct tagArgument
 	{
-		_float3		   vPosition = {};
 		const _tchar*  szModelTag = nullptr;
 		_bool		   IsBoost = false;
+		_float	       fTime = 0.f;
+		_float3		   vTriggerSize = {};
+		_uint		   iIndex = 0;
+		_float		   fMaxScale = 0.f;
 	}ARG_DESC;
 
 private:
@@ -33,8 +36,12 @@ private:
 	CModel*				m_pModelCom = nullptr;
 	CTriggerActor*		m_pTriggerActorCom = nullptr;
 
+	CTransform*			m_pCodyTransformCom = nullptr;
+
 	_bool				m_IsBoost = false;
-	_float				m_fScale = 1.f;
+	_float				m_fScale = 0.f;
+	_float				m_fMaxScale = 0.f;
+	_float				m_fTime = 0.f;
 
 private:
 	HRESULT Ready_Component(void* pArg);

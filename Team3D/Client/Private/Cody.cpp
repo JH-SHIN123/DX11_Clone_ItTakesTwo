@@ -235,7 +235,7 @@ _int CCody::Tick(_double dTimeDelta)
 	/////////////////////////////////////////////
 	KeyInput_Rail(dTimeDelta);
 
-	if (false == m_bMoveToRail && false == m_bOnRail)
+	if (false == m_bMoveToRail && false == m_bOnRail && false == m_bEndingCredit)
 	{
 		LaserTennis(dTimeDelta);
 		ElectricWallJump(dTimeDelta);
@@ -287,6 +287,8 @@ _int CCody::Tick(_double dTimeDelta)
 
 #pragma endregion
 
+	/* 엔딩크레딧용 테스트 함수 */
+	EndingCredit(dTimeDelta);
 
 	/* 레일 타겟을 향해 날라가기 */
 	// Forward 조정
@@ -777,11 +779,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 	if (m_pGameInstance->Key_Down(DIK_M))
-	{
-		ENDINGCREDIT->Create_3DText(m_pTransformCom->Get_State(CTransform::STATE_POSITION), false);
-		//SCRIPT->Render_Script(m_iIndex, CScript::HALF, 1.f);
-		//++m_iIndex;
-	}
+		Set_EndingCredit();
 }
 
 _uint CCody::Get_CurState() const
@@ -3576,6 +3574,27 @@ void CCody::LaserTennis(const _double dTimeDelta)
 	}
 }
 
+void CCody::EndingCredit(const _double dTimeDelta)
+{
+	/* 엔딩크레딧 테스트용 함수 */
+	if (false == m_bEndingCredit)
+		return;
+
+	m_pActorCom->Move(XMVectorSet(0.f, -10.f, 0.f, 0.f) * (_float)dTimeDelta, (_float)dTimeDelta);
+
+	if (m_pGameInstance->Key_Pressing(DIK_A))
+		m_pActorCom->Move(XMVectorSet(-3.f, 0.f, 0.f, 0.f) * (_float)dTimeDelta, (_float)dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_D))
+		m_pActorCom->Move(XMVectorSet(3.f, 0.f, 0.f, 0.f) * (_float)dTimeDelta, (_float)dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_W))
+		m_pActorCom->Move(XMVectorSet(0.f, 0.f, 3.f, 0.f) * (_float)dTimeDelta, (_float)dTimeDelta);
+	if (m_pGameInstance->Key_Pressing(DIK_S))
+		m_pActorCom->Move(XMVectorSet(0.f, 0.f, -3.f, 0.f) * (_float)dTimeDelta, (_float)dTimeDelta);
+
+	if (m_pGameInstance->Key_Down(DIK_N))
+		ENDINGCREDIT->Start_EndingCredit();
+}
+
 void CCody::PinBall_Respawn(const _double dTimeDelta)
 {
 	m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
@@ -3611,5 +3630,12 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 		m_IsCollide = false;
 		m_dRespawnTime = 0.0;
 	}
+}
+
+void CCody::Set_EndingCredit()
+{
+	m_bEndingCredit = true;
+	m_pActorCom->Set_ZeroGravity(true, false, true);
+	m_pActorCom->Set_Position(XMVectorSet(0.f, -500.f, 0.f, 1.f));
 }
 

@@ -395,6 +395,8 @@ private:
 	_bool	 m_bLaser = false;
 	_bool	 m_bCheckAnim = false;
 	_uint	 m_iHP = 12;
+	/* Hye::For.EndingCredit */
+	_bool	m_bEndingCredit = false;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
@@ -502,10 +504,12 @@ private:
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
 	void LaserTennis(const _double dTimeDelta);
+	void EndingCredit(const _double dTimeDelta);
 public:
 	void PinBall_Respawn(const _double dTimeDelta);
 	void SpaceShip_Respawn(const _double dTimeDelta);
 	_uint Get_HP() { return m_iHP; }
+	void Set_EndingCredit();
 private:
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);
