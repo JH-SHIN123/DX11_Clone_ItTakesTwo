@@ -50,14 +50,14 @@ private:
 	_uint		m_iWinSize[2] = { 0,0 };
 	_uint		m_iDownScaleGroups = 0;
 
-	_float		m_fMiddleGrey = 0.00222135f;
-	_float		m_fLumWhiteSqr = 1080.f;
+	_float		m_fMiddleGrey = 0.00122135f;
+	_float		m_fLumWhiteSqr = 1980.f;
 
 	_float		m_fAdaptTime = 1.f;
 	_float		m_fAdaptationDeltaT = 0.f;
 	_float		m_fAdaptation = 0.f;
 
-	_float		m_fBloomThreshold = 2.f;
+	_float		m_fBloomThreshold = 20.f;
 	_float		m_fBloomScale = 1.05f;
 
 	_bool		m_bRadialBlur_Main = false;
