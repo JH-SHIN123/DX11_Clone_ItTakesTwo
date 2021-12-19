@@ -50,7 +50,7 @@ _int CHpBar::Tick(_double TimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_INSERT))
 	{
-		UI_Create(Cody, Minigame_Ready);
+		/*UI_Create(Cody, Minigame_Ready);*/
 		UI_Create(Default, Minigame_Countdown);
 	}
 
@@ -106,7 +106,7 @@ _int CHpBar::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 
-	//if (false == m_IsActive)
+	if (false == m_IsActive)
 		return NO_EVENT;
 	
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
@@ -135,7 +135,10 @@ void CHpBar::Set_Active(_bool IsCheck)
 	UI_CreateOnlyOnce(May, Portrait_May);
 
 	if (nullptr != m_pHpBarFrame)
+	{
 		m_pHpBarFrame->Set_Active(IsCheck);
+		m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+	}
 
 	if (false == m_IsActive)
 	{

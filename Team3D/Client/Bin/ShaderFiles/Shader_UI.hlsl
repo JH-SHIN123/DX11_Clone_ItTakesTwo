@@ -579,8 +579,11 @@ PS_OUT PS_PlayerHpBarFrame(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
+	if (Out.vColor.a == 0.f)
+		discard;
+
 	if (Out.vColor.r >= 0.5f)
-		Out.vColor.a = 0.7f;
+		Out.vColor.a = 0.3f;
 
 	return Out;
 }
@@ -617,6 +620,11 @@ PS_OUT PS_MinigameCountdown(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.a == 0.f)
+		discard;
+
+	Out.vColor.a = g_fAlpha;
 	
 	return Out;
 }

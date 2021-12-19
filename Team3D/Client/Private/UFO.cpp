@@ -285,6 +285,7 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 				tEffectDesc.vStartPos = (_float4)&LeftLaserHatch.r[3].m128_f32[0];
 			else
 				tEffectDesc.vStartPos = (_float4)&RightLaserHatch.r[3].m128_f32[0];
+
 			XMStoreFloat3(&tEffectDesc.vDir, vDir);
 
 			m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Boss_Gravitational_Bomb"), Level::LEVEL_STAGE, 

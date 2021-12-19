@@ -27,6 +27,7 @@
 #include "InputButton_Frame.h"
 #include "Arrowkeys_Outline.h"
 #include "Minigame_Countdown.h"
+#include "Minigame_GaugeCircle.h"
 
 #include "Cody.h"
 #include "May.h"
@@ -967,11 +968,11 @@ HRESULT CUI_Generator::Add_Prototype_Minigame(CUIObject::UI_DESC * UIDesc)
 	}
 	else if (!lstrcmp(UIDesc->szUITag, L"Minigame_GaugeCircle"))
 	{
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHeaderBox::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigame_GaugeCircle::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
 	else if (!lstrcmp(UIDesc->szUITag, L"Minigame_Countdown"))
 	{
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigame_Ready::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigame_Countdown::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
 
 	return S_OK;

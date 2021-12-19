@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Minigame_Countdown.h"
 
-#include "GameInstance.h"
+#include "UI_Generator.h"
 
 CMinigame_Countdown::CMinigame_Countdown(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -36,6 +36,9 @@ HRESULT CMinigame_Countdown::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
+	m_vSaveScale = m_UIDesc.vScale;
+	m_vMinScale = { 50.f, 50.f };
+
 	return S_OK;
 }
 
@@ -52,7 +55,39 @@ _int CMinigame_Countdown::Tick(_double TimeDelta)
 _int CMinigame_Countdown::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
-	
+
+	if (m_UIDesc.vScale.x >= m_vMinScale.x + 40.f)
+	{
+		m_fAlpha += (_float)TimeDelta * 3.0f;
+		m_UIDesc.vScale.x -= (_float)TimeDelta * 250.f;
+		m_UIDesc.vScale.y -= (_float)TimeDelta * 250.f;
+		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+
+		if (1.f <= m_fAlpha)
+			m_fAlpha = 1.f;
+	}
+	else if (m_UIDesc.vScale.x >= m_vMinScale.x)
+	{
+		m_fAlpha -= (_float)TimeDelta * 3.f;
+		m_UIDesc.vScale.x -= (_float)TimeDelta * 50.f;
+		m_UIDesc.vScale.y -= (_float)TimeDelta * 50.f;
+		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+
+		if (0.f >= m_fAlpha)
+			m_fAlpha = 0.f;
+	}
+	else
+	{
+		++m_UIDesc.iTextureRenderIndex;
+		m_UIDesc.vScale = m_vSaveScale;
+
+		if (4 < m_UIDesc.iTextureRenderIndex)
+		{
+			UI_Delete(Default, Minigame_Countdown);
+			m_UIDesc.iTextureRenderIndex = 4;
+		}
+	}
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
@@ -60,8 +95,10 @@ HRESULT CMinigame_Countdown::Render(RENDER_GROUP::Enum eGroup)
 {
 	CUIObject::Render(eGroup);
 
-	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
+	if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
+
+	m_pVIBuffer_RectCom->Set_Variable("g_fAlpha", &m_fAlpha, sizeof(_float));
 
 	m_pVIBuffer_RectCom->Render(24);
 
