@@ -2548,7 +2548,7 @@
     <ClCompile Include="..\Private\EffectLight.cpp">
       <Filter>06.Light\EffectLight</Filter>
     </ClCompile>
-    <ClCompile Include="..\Public\LightUtility.cpp">
+    <ClCompile Include="..\Private\LightUtility.cpp">
       <Filter>06.Light\Utility</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VolumeLight.cpp">

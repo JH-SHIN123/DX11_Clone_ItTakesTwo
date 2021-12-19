@@ -589,6 +589,7 @@
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Level_Stage.cpp" />
+    <ClCompile Include="..\Private\LightUtility.cpp" />
     <ClCompile Include="..\Private\Loading.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\MainCam.cpp" />
@@ -709,7 +710,6 @@
     <ClCompile Include="..\Private\WallLaserTrap_Button.cpp" />
     <ClCompile Include="..\Private\Wall_LaserTennis.cpp" />
     <ClCompile Include="..\Private\WarpGate.cpp" />
-    <ClCompile Include="..\Public\LightUtility.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
