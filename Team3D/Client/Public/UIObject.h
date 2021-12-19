@@ -49,6 +49,7 @@ public:
 	void Set_FadeInSpeed(_float fSpeed);
 	void Set_FadeOutSpeed(_float fSpeed);
 	void Set_FadeOut();
+	void Set_Ready();
 
 public:
 	virtual void Set_TargetPos(_vector vPos);

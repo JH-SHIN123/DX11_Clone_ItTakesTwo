@@ -81,6 +81,7 @@ public:
 	void Set_FadeInSpeed(Player::ID ePlayer, UI::TRIGGER eTrigger, _float fSpeed);
 	void Set_FadeOutSpeed(Player::ID ePlayer, UI::TRIGGER eTrigger, _float fSpeed);
 	void Set_FadeOut(Player::ID ePlayer, UI::TRIGGER eTrigger);
+	void Set_MinigameReady(Player::ID ePlayer, UI::TRIGGER eTrigger);
 
 public:
 	HRESULT Add_Prototype_LogoTexture();

@@ -252,8 +252,13 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 		iOption = 7;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
 		break;
-	case UI::Minigame_Ready:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("MinigameReady"), Level::LEVEL_STATIC);
+	case UI::Minigame_Ready_Cody:
+		iOption = 0;
+		SetUp_Clone(ePlayer, eTrigger, TEXT("MinigameReady"), Level::LEVEL_STATIC, &iOption);
+		break;
+	case UI::Minigame_Ready_May:
+		iOption = 1;
+		SetUp_Clone(ePlayer, eTrigger, TEXT("MinigameReady"), Level::LEVEL_STATIC, &iOption);
 		break;
 	case UI::Minigame_Countdown:
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Minigame_Countdown"), Level::LEVEL_STATIC);
@@ -1290,6 +1295,15 @@ HRESULT CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI
 		Delete_InterActive_UI(ePlayer, eTrigger);
 
 	return S_OK;
+}
+
+void CUI_Generator::Set_MinigameReady(Player::ID ePlayer, UI::TRIGGER eTrigger)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return;
+
+	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
+		UIObject->Set_Ready();
 }
 
 HRESULT CUI_Generator::Ready_Component()

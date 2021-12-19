@@ -94,6 +94,14 @@ void CUIObject::Set_TargetPos(_vector vPos)
 	XMStoreFloat4(&m_vTargetPos, vPos);
 }
 
+void CUIObject::Set_Ready()
+{
+	if (m_ePlayerID == Player::Cody)
+		m_UIDesc.iTextureRenderIndex = 2;
+	else
+		m_UIDesc.iTextureRenderIndex = 3;
+}
+
 void CUIObject::Set_ScaleEffect()
 {
 }

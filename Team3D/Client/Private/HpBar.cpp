@@ -50,9 +50,14 @@ _int CHpBar::Tick(_double TimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_INSERT))
 	{
-		/*UI_Create(Cody, Minigame_Ready);*/
-		UI_Create(Default, Minigame_Countdown);
+		UI_Create(Cody, Minigame_Ready_Cody);
+		UI_Create(May, Minigame_Ready_May);
+		//UI_Create(Default, Minigame_Countdown);
 	}
+	else if (m_pGameInstance->Key_Down(DIK_J))
+		UI_Generator->Set_MinigameReady(Player::Cody, UI::Minigame_Ready_Cody);
+	else if (m_pGameInstance->Key_Down(DIK_M))
+		UI_Generator->Set_MinigameReady(Player::May, UI::Minigame_Ready_May);
 
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{

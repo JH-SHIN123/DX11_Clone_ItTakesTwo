@@ -28,8 +28,16 @@ HRESULT CMinigame_Ready::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
 
+	if (nullptr != pArg)
+		memcpy(&m_UIDesc.iTextureRenderIndex, pArg, sizeof(_uint));
+
 	if (FAILED(Ready_Component()))
 		return E_FAIL;
+
+	m_vSaveScale = m_UIDesc.vScale;
+
+	m_UIDesc.vScale.x = 700.f;
+	m_UIDesc.vScale.y = 600.f;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
@@ -43,6 +51,13 @@ _int CMinigame_Ready::Tick(_double TimeDelta)
 		return EVENT_DEAD;
 
 	CUIObject::Tick(TimeDelta);
+
+	if (m_vSaveScale.x <= m_UIDesc.vScale.x)
+	{
+		m_UIDesc.vScale.x -= (_float)TimeDelta * 1000.f;
+		m_UIDesc.vScale.y -= (_float)TimeDelta * 1000.f;
+		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	}
 
 	return _int();
 }
@@ -65,6 +80,7 @@ HRESULT CMinigame_Ready::Render(RENDER_GROUP::Enum eGroup)
 
 	return S_OK;
 }
+
 
 HRESULT CMinigame_Ready::Ready_Component()
 {
