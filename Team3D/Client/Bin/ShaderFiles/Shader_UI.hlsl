@@ -929,5 +929,15 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MinigameGaugeCircle();
 	}
 
+	// 26
+	pass MinigameWin
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MinigameCountdown();
+	}
 
 };

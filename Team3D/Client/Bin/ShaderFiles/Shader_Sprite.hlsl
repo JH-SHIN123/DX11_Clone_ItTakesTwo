@@ -8,6 +8,8 @@ matrix		g_UIWorldMatrix;
 matrix		g_UIViewMatrix;
 matrix		g_UIProjMatrix;
 
+float		g_fAlpha;
+
 float2		vLeftTopUV;
 float2		vRightTopUV;
 float2		vRightBottomUV;
@@ -159,20 +161,18 @@ struct PS_OUT
 	float4	vColor		: SV_TARGET0;
 };
 
-PS_OUT	PS_MAIN(PS_IN In)
+PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
-
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
 	return Out;
 }
 
-PS_OUT	PS_STICK(PS_IN In)
+PS_OUT PS_STICK(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
-
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
@@ -180,6 +180,21 @@ PS_OUT	PS_STICK(PS_IN In)
 	Out.vColor *= vector(0.0f, 1.9f, 200.f, 1.f);
 
 	//Out.vColor.b = 0.f;
+
+	return Out;
+}
+
+PS_OUT PS_MinigameSpiner(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.a == 0.f)
+		discard;
+
+	if (Out.vColor.a == 1.f)
+		Out.vColor.a = g_fAlpha;
 
 	return Out;
 }
@@ -206,5 +221,15 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_LOADINGBOOK();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	pass MinigameSpiner
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOADINGBOOK();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MinigameSpiner();
 	}
 };

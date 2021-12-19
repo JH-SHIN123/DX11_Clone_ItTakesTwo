@@ -945,6 +945,9 @@
     <Filter Include="02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle">
       <UniqueIdentifier>{b61c06ff-3eea-4cc8-9eaa-a08aac20aaee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\03.Minigame_Win">
+      <UniqueIdentifier>{988e384c-a3bb-4412-896a-d391f8dd4326}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1766,6 +1769,9 @@
     <ClInclude Include="..\Public\Minigame_GaugeCircle.h">
       <Filter>02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Win.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\03.Minigame_Win</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2550,6 +2556,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Minigame_GaugeCircle.cpp">
       <Filter>02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Win.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\03.Minigame_Win</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

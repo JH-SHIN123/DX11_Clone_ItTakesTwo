@@ -341,6 +341,7 @@
     <ClInclude Include="..\Public\Minigame_Countdown.h" />
     <ClInclude Include="..\Public\Minigame_GaugeCircle.h" />
     <ClInclude Include="..\Public\Minigame_Ready.h" />
+    <ClInclude Include="..\Public\Minigame_Win.h" />
     <ClInclude Include="..\Public\Moon.h" />
     <ClInclude Include="..\Public\MoonBaboon.h" />
     <ClInclude Include="..\Public\MoonBaboonCore.h" />
@@ -603,6 +604,7 @@
     <ClCompile Include="..\Private\Minigame_Countdown.cpp" />
     <ClCompile Include="..\Private\Minigame_GaugeCircle.cpp" />
     <ClCompile Include="..\Private\Minigame_Ready.cpp" />
+    <ClCompile Include="..\Private\Minigame_Win.cpp" />
     <ClCompile Include="..\Private\Moon.cpp" />
     <ClCompile Include="..\Private\MoonBaboon.cpp" />
     <ClCompile Include="..\Private\MoonBaboonCore.cpp" />
