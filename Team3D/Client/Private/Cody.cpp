@@ -69,6 +69,12 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
 	m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
 
+	m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_WALK, m_fCodyB_Walk_Volume);
+	m_pGameInstance->Play_Sound(TEXT("CodyB_Walk.wav"), CHANNEL_CODYB_WALK, m_fCodyB_Walk_Volume);
+
+	m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+	m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
+
 	return S_OK;
 }
 
@@ -668,7 +674,8 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_bShortJump = true;
 			m_iJumpCount += 1;
 			m_IsJumping = true;
-				m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
 		}
 	}
 	else
@@ -679,7 +686,7 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_iJumpCount += 1;
 			m_IsJumping = true;
 			m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
-
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
 		}
 	}
 
@@ -701,12 +708,16 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_pActorCom->Set_IsPlayerSizeSmall(false);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_SIZE_STOM, m_fSizing_SToM_Volume);
 			m_pGameInstance->Play_Sound(TEXT("Sizing_StoM.wav"), CHANNEL_SIZE_STOM, m_fSizing_SToM_Volume);
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
 			break;
 		case Client::CCody::SIZE_MEDIUM:
 			m_eNextPlayerSize = SIZE_LARGE;
 			m_IsSizeChanging = true;
 			m_pGameInstance->Set_SoundVolume(CHANNEL_SIZE_MTOB, m_fSizing_MToB_Volume);
 			m_pGameInstance->Play_Sound(TEXT("Sizing_MtoB.wav"), CHANNEL_SIZE_MTOB, m_fSizing_MToB_Volume);
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
 			break;
 		}
 	}
@@ -726,6 +737,8 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_pActorCom->Set_Gravity(-9.8f);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_SIZE_BTOM, m_fSizing_BToM_Volume);
 			m_pGameInstance->Play_Sound(TEXT("Sizing_BtoM.wav"), CHANNEL_SIZE_BTOM, m_fSizing_BToM_Volume);
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
 			break;
 		case Client::CCody::SIZE_MEDIUM:
 			m_eNextPlayerSize = SIZE_SMALL;
@@ -733,6 +746,8 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_pActorCom->Set_IsPlayerSizeSmall(true);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_SIZE_MTOS, m_fSizing_MToS_Volume);
 			m_pGameInstance->Play_Sound(TEXT("Sizing_MtoS.wav"), CHANNEL_SIZE_MTOS, m_fSizing_MToS_Volume);
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
 			break;
 		}
 	}
@@ -974,20 +989,41 @@ void CCody::Move(const _double dTimeDelta)
 
 			if (m_bRoll == false && m_IsJumping == false && m_IsFalling == false)
 			{
+				if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYB_WALK) == false)
+				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_WALK, m_fCodyB_Walk_Volume);
+					m_pGameInstance->Play_Sound(TEXT("CodyB_Walk.wav"), CHANNEL_CODYB_WALK, m_fCodyB_Walk_Volume);
+				}
 				// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
 				if (m_pModelCom->Is_AnimFinished(ANI_C_ChangeSize_Walk_Large_Start) == true) // JogStart -> Jog
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYB_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_WALK, m_fCodyB_Walk_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyB_Walk.wav"), CHANNEL_CODYB_WALK, m_fCodyB_Walk_Volume);
+					}
+
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Fwd);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_ChangeSize_Walk_Large_Fwd);
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_ChangeSize_Walk_Large_Fwd) == true) // Jog -> Jog // 보간속도 Up
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYB_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_WALK, m_fCodyB_Walk_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyB_Walk.wav"), CHANNEL_CODYB_WALK, m_fCodyB_Walk_Volume);
+					}
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_MH_Gesture_Small_Scratch
 					|| m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Fwd
 					|| m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Stop)	// Idle To Jog Start. -> Jog 예약
 
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYB_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_WALK, m_fCodyB_Walk_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyB_Walk.wav"), CHANNEL_CODYB_WALK, m_fCodyB_Walk_Volume);
+					}
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Start);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_ChangeSize_Walk_Large_Fwd);
 				}
@@ -1001,11 +1037,13 @@ void CCody::Move(const _double dTimeDelta)
 				m_fJogAcceleration = 25.f;
 				if (m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Fwd) // jog 였다면
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Stop); // jog to stop 으로 바꿔
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // jog to stop 끝나면 idle 예약.
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Start) // JogStart 였다면
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Walk_Large_Stop); // jog to stop 으로 바꿔
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 				}
@@ -1024,11 +1062,13 @@ void CCody::Move(const _double dTimeDelta)
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Idle_To_Action) == true && m_bAction == true)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
 					m_pModelCom->Set_Animation(ANI_C_ActionMH);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_ActionMH_To_Idle);
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_ActionMH) == true && m_bAction == true)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
 					m_pModelCom->Set_Animation(ANI_C_ActionMH_To_Idle);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 					m_bAction = false;
@@ -1334,6 +1374,7 @@ void CCody::Sprint(const _double dTimeDelta)
 			m_pActorCom->Move(vDirection / m_fSprintAcceleration, dTimeDelta);
 		else if (m_eCurPlayerSize == SIZE_SMALL)
 			m_pActorCom->Move(vDirection / m_fSprintAcceleration / 8.f, dTimeDelta);
+
 
 		if (m_bRoll == false && m_IsJumping == false && m_IsTurnAround == false)
 		{
