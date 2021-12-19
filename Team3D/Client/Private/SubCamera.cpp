@@ -555,81 +555,42 @@ _fmatrix CSubCamera::MakeViewMatrixByUp(_fvector vEye, _fvector vAt, _fvector vU
 
 _fmatrix CSubCamera::MakeViewMatrixByQuaternion(_fvector vEye, _fvector vAt, _fvector vUp)
 {
-	//_vector vMoonPos = pMoon->Get_Position();
-	//_vector vAt = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+#define m00 vRight.x
+#define m01 vNormalUp.x
+#define m02 vLook.x
+#define m10 vRight.y
+#define m11 vNormalUp.y
+#define m12 vLook.y
+#define m20 vRight.z
+#define m21 vNormalUp.z
+#define m22 vLook.z
 
+	_vector vAxisY = XMVector3Normalize(vUp);
+	_vector vAxisZ = XMVector3Normalize(vAt - vEye);
+	_vector vAxisX = XMVector3Normalize(XMVector3Cross(vAxisY, vAxisZ));
 
-	//_vector vDirMoonWithAt = XMVector3Normalize(vAt - vMoonPos);
+	vAxisY = XMVector3Normalize(XMVector3Orthogonal(vAxisZ));
 
+	_float3 vNormalUp, vLook, vRight;
+	XMStoreFloat3(&vLook, vAxisZ);
+	XMStoreFloat3(&vRight,vAxisY);
+	XMStoreFloat3(&vNormalUp, XMVector3Normalize(XMVector3Cross(vAxisZ, vAxisX)));
+	_float4 ret;
+	ret.w = sqrtf(1.0f + m00 + m11 + m22) * 0.5f;
+	_float w4_recip = 1.0f / (4.0f * ret.w);
+	ret.x = (m21 - m12) * w4_recip;
+	ret.y = (m02 - m20) * w4_recip;
+	ret.z = (m10 - m01) * w4_recip;
 
-	//_matrix matBegin = XMLoadFloat4x4(&m_matBeginWorld);
-	//_matrix matPlayer = pPlayerTransform->Get_WorldMatrix();
-	//_vector vEye = vAt - matPlayer.r[2] * 10.f + matPlayer.r[1] * 9.f;
-	//_vector vDirMoonWithEye = XMVector3Normalize(vEye - vMoonPos);
-	//_vector vLook = XMVector3Normalize(vAt - vEye);
+	_vector vQuat = XMLoadFloat4(&ret);
 
-	//_vector vRight = XMVector3Normalize(XMVector3Cross(vDirMoonWithEye, vLook));
-
-	//_float fAngle = acosf(XMVectorGetX(XMVector3Dot(vDirMoonWithEye, vDirMoonWithAt)));
-
-	//_vector vAxis = XMQuaternionNormalize(XMQuaternionRotationAxis(XMVector3Normalize(vRight/*matPlayer.r[0]*/), -fAngle/* +  XMConvertToRadians(45.f)*/));
-
-	//_vector vAxisConj = XMQuaternionNormalize(XMQuaternionConjugate(vAxis));
-	//_vector vOrigin = XMQuaternionNormalize(XMQuaternionRotationMatrix(matBegin *matPlayer));
-	//vOrigin = XMQuaternionNormalize(XMQuaternionMultiply(XMQuaternionMultiply(vAxis, vOrigin), vAxisConj));
-
-	//_matrix matRot = XMMatrixRotationQuaternion(vOrigin);
-	//matRot.r[3] = vEye;
-	//m_pTransformCom->Set_WorldMatrix(matRot);
-
-	
-	_vector vLook = XMVector3Normalize(vAt - vEye);
-
-
-	_float fAngle = acosf(XMVectorGetX(XMVector3Dot(vEyeDir, vAtDir)));
-	
-	_vector vOrigin = XMVector3Normalize(vUp);
-	_vector vRight = XMVector3Normalize(XMVector3Cross(vEyeDir, vLook));
-	_vector vAxis = XMQuaternionNormalize(XMQuaternionRotationAxis(XMVector3Normalize(vRight/*matPlayer.r[0]*/), -fAngle/* +  XMConvertToRadians(45.f)*/));
-	_vector vAxisConj = XMQuaternionNormalize(XMQuaternionConjugate(vAxis));
-	vOrigin = XMQuaternionNormalize(XMQuaternionMultiply(XMQuaternionMultiply(vAxis, vOrigin), vAxisConj));
-
-	_matrix matRot = XMMatrixRotationQuaternion(vOrigin);
-	matRot.r[3] = vEye;
-
-	return matRot;
-}
-
-_fmatrix CSubCamera::MakeRotationByQuaternion(_fvector vPos, _fvector vUp)
-{
-	_vector vNormalUp = XMVector3Normalize(vUp);
-
-
-	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	
-	_vector vAxis = XMVector3Normalize(XMVector3Cross(vAxisY, vNormalUp));
-
-	_float fDot = acosf(XMVectorGetX(XMVector3Dot(vNormalUp,vAxisY)));
-	
-	_matrix matResult = XMMatrixIdentity();
-
-	
-	if(fDot != 0.f)
-	{
-		_vector vQuat = vAxisY;
-		
-		_vector vRot = XMQuaternionNormalize(XMQuaternionRotationAxis(vAxis,-fDot));
-		_vector vRotConj = XMQuaternionNormalize(XMQuaternionConjugate(vRot));
-
-		vRot = XMQuaternionNormalize(XMQuaternionMultiply(
-			XMQuaternionNormalize(XMQuaternionMultiply(vRot, vQuat)),vRotConj));
-		matResult = XMMatrixRotationQuaternion(vRot);
-	}
-	
-	matResult.r[3] = vPos;
-	
+	_matrix matResult = XMMatrixRotationQuaternion(vQuat);
+	matResult.r[3] = vEye;
 	return matResult;
+
 }
+
+
 
 _fmatrix CSubCamera::MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime)
 {
@@ -734,11 +695,11 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 
 	_vector vPrePlayerPos = XMLoadFloat4(&m_vPlayerPos);
 	_vector vCurPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-	_vector vCurUp = XMVector3TransformNormal(XMVectorSetW(XMLoadFloat4(&m_vStartAt), 0.f), 
-		/*MakeRotationByQuaternion(XMVectorSet(0.f,0.f,0.f,1.f),vPlayerUp)*/MH_RotationMatrixByUp(vPlayerUp));
-	vCurPlayerPos += vCurUp;
-	/*_vector vCalculateUp = XMVector3TransformNormal(XMVectorSetW(XMLoadFloat4(&m_vStartAt), 0.f), MH_RotationMatrixByUp(vPlayerUp));
-	vCurPlayerPos += vCalculateUp;*/
+	//_vector vCurUp = XMVector3TransformNormal(XMVectorSetW(XMLoadFloat4(&m_vStartAt), 0.f), 
+	//	/*MakeRotationByQuaternion(XMVectorSet(0.f,0.f,0.f,1.f),vPlayerUp)*/MH_RotationMatrixByUp(vPlayerUp));
+	//vCurPlayerPos += vCurUp;
+	_vector vCalculateUp = XMVector3TransformNormal(XMVectorSetW(XMLoadFloat4(&m_vStartAt), 0.f), MH_RotationMatrixByUp(vPlayerUp));
+	vCurPlayerPos += vCalculateUp;
 	//카메라와 플레이어의 실제 거리
 	_vector vPlayerPos = vCurPlayerPos;
 	_float fDist = fabs(XMVectorGetX(XMVector4Length(vPrePlayerPos - vCurPlayerPos)));
@@ -761,7 +722,7 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 
 	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans,
 		XMLoadFloat4x4(&m_matBeginWorld) * matQuat *
-		MakeRotationByQuaternion(vPlayerPos, vPlayerUp)/*MH_RotationMatrixByUp(vPlayerUp, vPlayerPos)*/);
+		MH_RotationMatrixByUp(vPlayerUp, vPlayerPos));
 
 	_vector vPreQuat = XMLoadFloat4(&m_PreWorld.vRotQuat);
 	_vector vPreTrans = XMLoadFloat4(&m_PreWorld.vTrans);

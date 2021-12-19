@@ -66,7 +66,7 @@ private:
 	_fmatrix MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime);
 	
 	_fmatrix MakeViewMatrixByQuaternion(_fvector vEye, _fvector vAt, _fvector vUp);
-	_fmatrix MakeRotationByQuaternion(_fvector vPos, _fvector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f));
+
 
 	_fvector MakeQuatMul(_fvector vQ, _fvector vP);
 	_fmatrix MakeViewMatrix_FollowPlayer(_double dTimeDelta);
