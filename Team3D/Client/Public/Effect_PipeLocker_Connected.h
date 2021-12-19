@@ -20,11 +20,13 @@ public:
 
 private:
 	/* For.Component */
-	CTransform*					m_pTransformCom = nullptr;
-	CRenderer*					m_pRendererCom = nullptr;
-	CTextures*					m_pTexturesCom = nullptr;
-	CVIBuffer_PointInstance*	m_pVIBufferCom = nullptr;
-	_float4x4*					m_pVertexLocals = nullptr;
+	CTransform*								m_pTransformCom = nullptr;
+	CRenderer*								m_pRendererCom = nullptr;
+	CTextures*								m_pDiffuseTextureCom = nullptr;
+	CTextures*								m_pMaskTextureCom = nullptr;
+	class CVIBuffer_SimplePointInstance*	m_pVIBufferCom = nullptr;
+	_float4x4*								m_pVertexLocals = nullptr;
+	_uint									m_iInstanceCount = 0;
 
 public:
 	static CEffect_PipeLocker_Connected* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

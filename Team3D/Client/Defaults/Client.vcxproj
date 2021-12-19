@@ -442,6 +442,7 @@
     <ClInclude Include="..\Public\UmbrellaBeam_Base.h" />
     <ClInclude Include="..\Public\UmbrellaBeam_Joystick.h" />
     <ClInclude Include="..\Public\UmbrellaBeam_Stand.h" />
+    <ClInclude Include="..\Public\VIBuffer_SimplePointInstance.h" />
     <ClInclude Include="..\Public\VolumeObject.h" />
     <ClInclude Include="..\Public\VolumeLight.h" />
     <ClInclude Include="..\Public\WallLaserTrap.h" />
@@ -701,6 +702,7 @@
     <ClCompile Include="..\Private\UmbrellaBeam_Base.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam_Joystick.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam_Stand.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_SimplePointInstance.cpp" />
     <ClCompile Include="..\Private\VolumeObject.cpp" />
     <ClCompile Include="..\Private\VolumeLight.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap.cpp" />
@@ -736,6 +738,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom_STT.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_PointInstance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect_Effect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sprite.hlsl" />

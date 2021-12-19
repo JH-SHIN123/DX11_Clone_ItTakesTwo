@@ -897,6 +897,12 @@
     <Filter Include="03.Component\01.Actor\99.EventCallback">
       <UniqueIdentifier>{e43d39f3-5732-46ee-85d4-9b5d0244f918}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.Component\02.VIBuffer">
+      <UniqueIdentifier>{22f45697-2c48-42d7-8880-aa39757f24bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Component\02.VIBuffer\01.VIBuffer_SimplePointInstance">
+      <UniqueIdentifier>{c8d38392-b955-4816-8aee-edf6b8a4a16c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="04.Generator">
       <UniqueIdentifier>{fa624244-9579-4ddb-a779-eca5b4d72d3b}</UniqueIdentifier>
     </Filter>
@@ -932,6 +938,9 @@
     </Filter>
     <Filter Include="97.ShaderFiles\00.Effect">
       <UniqueIdentifier>{3c9102f7-871d-4ebb-8efa-a1b2b8ffdb02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles\01.Se">
+      <UniqueIdentifier>{29f913f7-766b-4321-b7e6-e634211140e2}</UniqueIdentifier>
     </Filter>
     <Filter Include="98.Defines">
       <UniqueIdentifier>{02a0b492-7ccd-483f-8441-fe7b7135e931}</UniqueIdentifier>
@@ -1708,6 +1717,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\PxEventCallback.h">
       <Filter>03.Component\01.Actor\99.EventCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_SimplePointInstance.h">
+      <Filter>03.Component\02.VIBuffer\01.VIBuffer_SimplePointInstance</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Generator.h">
       <Filter>04.Generator\01.Effect_Generator</Filter>
@@ -2521,6 +2533,9 @@
     <ClCompile Include="..\Private\PxEventCallback.cpp">
       <Filter>03.Component\01.Actor\99.EventCallback</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_SimplePointInstance.cpp">
+      <Filter>03.Component\02.VIBuffer\01.VIBuffer_SimplePointInstance</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Effect_Generator.cpp">
       <Filter>04.Generator\01.Effect_Generator</Filter>
     </ClCompile>
@@ -2633,6 +2648,9 @@
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Earth.hlsl">
       <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_PointInstance.hlsl">
+      <Filter>97.ShaderFiles\01.Se</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
