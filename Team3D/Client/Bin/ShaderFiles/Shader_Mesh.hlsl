@@ -1050,6 +1050,45 @@ PS_OUT	PS_LASERBUTTONLARGE(PS_IN In, uniform bool isGreen)
 	return Out;
 }
 
+PS_OUT	PS_3DTEXT(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector	vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+	if(1 == vMtrlDiffuse.r)
+		Out.vDiffuse *= vector(0.f, 0.8f, 0.3f, 1.f);
+	else if(1 == vMtrlDiffuse.g)
+		Out.vDiffuse *= vector(0.f, 0.8f, 0.3f, 1.f);
+	else if(1 == vMtrlDiffuse.b)
+		Out.vDiffuse *= vector(0.f, 0.8f, 0.3f, 1.f);
+	Out.vDiffuse.w = 1.f;
+
+	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+
+	// Calculate Normal
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+	// Calculate Specular
+	Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
+
+	// Calculate Emissive
+	Out.vEmissive = 0.5f;
+
+	// Calculate Shadow
+	int iIndex = -1;
+	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
+
+	// Get_ShadowFactor
+	float fShadowFactor = 0.f;
+	fShadowFactor = Get_ShadowFactor(In.iViewportIndex, iIndex, In.vWorldPosition);
+
+	Out.vShadow = 1.f - fShadowFactor;
+	Out.vShadow.a = 1.f;
+
+	return Out;
+}
+
 /* _____________________________________Effect_____________________________________*/
 struct PS_IN_DOUBLE_UV
 {

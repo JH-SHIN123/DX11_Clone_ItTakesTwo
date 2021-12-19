@@ -33,6 +33,7 @@
 /* For. UFORadarSet */
 #include "UFORadarSet.h"
 #include "UFORadarLever.h"
+#include "EndingCredit_Manager.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -777,8 +778,9 @@ void CCody::KeyInput(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_M))
 	{
-		SCRIPT->Render_Script(m_iIndex, CScript::HALF, 1.f);
-		++m_iIndex;
+		ENDINGCREDIT->Create_3DText(m_pTransformCom->Get_State(CTransform::STATE_POSITION), false);
+		//SCRIPT->Render_Script(m_iIndex, CScript::HALF, 1.f);
+		//++m_iIndex;
 	}
 }
 
