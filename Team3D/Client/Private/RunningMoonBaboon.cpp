@@ -66,12 +66,12 @@ _int CRunningMoonBaboon::Tick(_double dTimeDelta)
 			m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta / 10.f);
 
 		m_pDynamicActorCom->Get_Actor()->clearForce();
-		Movement(dTimeDelta);
+		//Movement(dTimeDelta);
 	}
-	else
-		Movement(dTimeDelta);
+	//else
+	//	Movement(dTimeDelta);
 
-	Calculate_Matrix(dTimeDelta);
+	//Calculate_Matrix(dTimeDelta);
 
 	m_pModelCom->Update_Animation(dTimeDelta);
 
@@ -150,7 +150,8 @@ HRESULT CRunningMoonBaboon::Ready_Component(void * pArg)
 	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 	m_pModelCom->Change_PivotMatrix(PivotMatrix);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(800.f, 1000.f, 2000.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 0.f, 30.f, 1.f));
+	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(800.f, 1000.f, 2000.f, 1.f));
 
 	/* Dynamic */
 	PxGeometry* Geom = new PxSphereGeometry(0.5f);
@@ -172,8 +173,8 @@ HRESULT CRunningMoonBaboon::Ready_Component(void * pArg)
 	pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 
 	/* Joint */
-	PxJointLimitCone LimitCone = PxJointLimitCone(PxPi, PxPi, 0.01f);
-	m_pJoint = CPhysX::GetInstance()->Create_Joint(m_pDynamicActorCom->Get_Actor(), PxTransform(PxVec3(0.f, 59.f, 0.f)), nullptr, PxTransform(MH_PxVec3(((CMoon*)(DATABASE->Get_Mooon()))->Get_Position())), LimitCone, false);
+	//PxJointLimitCone LimitCone = PxJointLimitCone(PxPi, PxPi, 0.01f);
+	//m_pJoint = CPhysX::GetInstance()->Create_Joint(m_pDynamicActorCom->Get_Actor(), PxTransform(PxVec3(0.f, 59.f, 0.f)), nullptr, PxTransform(MH_PxVec3(((CMoon*)(DATABASE->Get_Mooon()))->Get_Position())), LimitCone, false);
 	return S_OK;
 }
 

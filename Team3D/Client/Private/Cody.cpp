@@ -219,6 +219,18 @@ _int CCody::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
+	if (m_pGameInstance->Key_Down(DIK_B))
+		EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Smoke);
+	if (m_pGameInstance->Key_Down(DIK_N))
+		EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
+	if (m_pGameInstance->Key_Down(DIK_M))
+		EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
+	if (m_pGameInstance->Key_Down(DIK_SLASH))
+		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Shield, m_pTransformCom->Get_WorldMatrix());
+	if (m_pGameInstance->Key_Down(DIK_RSHIFT))
+		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Booster, m_pTransformCom->Get_WorldMatrix());
+
+
 	//tEST
 	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
@@ -403,10 +415,6 @@ void CCody::KeyInput(_double dTimeDelta)
 	_bool bMove[2] = { false, false };
 	_bool bRoll = false;
 #pragma endregion
-
-	if (m_pGameInstance->Key_Down(DIK_SLASH)) 
-		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Shield, m_pTransformCom->Get_WorldMatrix());
-
 
 #pragma region Teleport
 	if (m_pGameInstance->Key_Down(DIK_C)) /* 파이프 베터리 */
@@ -1457,6 +1465,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 				m_pActorCom->Set_Scale(2.f, 2.f);
 				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_LARGE);
 				m_bChangeSizeEffectOnce = true;
+				EFFECT->Add_Effect(Effect_Value::Cody_Size_ShokeWave, m_pTransformCom->Get_WorldMatrix());
 			}
 			if (m_vScale.x < 5.f)
 			{
@@ -1493,10 +1502,11 @@ void CCody::Change_Size(const _double dTimeDelta)
 			{
 				// Radiar Blur
 				Start_RadiarBlur(0.3f);
-
+				
 				m_pActorCom->Set_Scale(0.5f, 0.5f);
 				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_LARGE_MIDDLE);
 				m_bChangeSizeEffectOnce = true;
+				EFFECT->Add_Effect(Effect_Value::Cody_Size_ShokeWave, m_pTransformCom->Get_WorldMatrix());
 			}
 			if (m_vScale.x > 1.f)
 			{

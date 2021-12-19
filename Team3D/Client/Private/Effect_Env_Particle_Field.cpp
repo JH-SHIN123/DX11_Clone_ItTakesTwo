@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Env_Particle_Field.h"
+#include "DataStorage.h"
 
 CEffect_Env_Particle_Field::CEffect_Env_Particle_Field(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -46,7 +47,7 @@ _int CEffect_Env_Particle_Field::Tick(_double TimeDelta)
 
 _int CEffect_Env_Particle_Field::Late_Tick(_double TimeDelta)
 {
-	if (0.0 >= m_dControl_Time)
+	if (0.0 >= m_dControl_Time || true == m_IsCulling)
 		return NO_EVENT;
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
@@ -64,6 +65,18 @@ HRESULT CEffect_Env_Particle_Field::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(0));
 	m_pPointInstanceCom_STT->Render(2, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 	return S_OK;
+}
+
+_float CEffect_Env_Particle_Field::Get_BigRadius()
+{
+	_float fBigRadius = m_Particle_Desc.vRadiusXYZ.x;
+
+	if (fBigRadius < m_Particle_Desc.vRadiusXYZ.y)
+		fBigRadius = m_Particle_Desc.vRadiusXYZ.y;
+	if (fBigRadius < m_Particle_Desc.vRadiusXYZ.z)
+		fBigRadius = m_Particle_Desc.vRadiusXYZ.z;
+
+	return fBigRadius;
 }
 
 void CEffect_Env_Particle_Field::Set_InstanceCount(_uint iInstanceCount)
@@ -99,7 +112,7 @@ void CEffect_Env_Particle_Field::Set_ControlTime(_double dControlTime)
 
 void CEffect_Env_Particle_Field::Check_State(_double TimeDelta)
 {
-	if (nullptr == m_pInstanceBuffer_STT)
+	if (nullptr == m_pInstanceBuffer_STT || true == m_IsCulling)
 		return;
 
 	switch (m_eStateValue_Next)
@@ -177,6 +190,33 @@ void CEffect_Env_Particle_Field::State_Disappear(_double TimeDelta)
 		if (0.f >= m_pInstanceBuffer_STT[iIndex].vSize.x)
 			m_pInstanceBuffer_STT[iIndex].vSize = { 0.f, 0.f };
 	}
+}
+
+void CEffect_Env_Particle_Field::Check_Culling()
+{
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vPos_MainCam = DATABASE->Get_MainCam()->Get_Position();
+	_vector vPos_SubCam	= DATABASE->Get_MainCam()->Get_Position();
+
+	_float fRadius = Get_BigRadius();
+	_float fCam_Far = 450.f;
+
+	_vector vDir = XMVector3Normalize(vPos_MainCam - vPos);
+	_vector vPos_NearParticle = vPos + vDir * fRadius; // 가장 카메라에 가까이 보일 파티클 위치
+	_vector vPos_Far = vPos_MainCam - vDir * fCam_Far; // 가장 카메라에 멀리 보이는 위치
+	_float fDist_Particle = XMVector3Length(vPos_MainCam - vPos_NearParticle).m128_f32[0];
+	_float fDist_Far = XMVector3Length(vPos_MainCam - vPos_Far).m128_f32[0];
+
+
+	_vector vDir_Sub = XMVector3Normalize(vPos_SubCam - vPos);
+	_vector vPos_NearParticle_Sub = vPos + vDir_Sub * fRadius; // 가장 카메라에 가까이 보일 파티클 위치
+	_vector vPos_Far_Sub = vPos_SubCam - vDir_Sub * fCam_Far; // 가장 카메라에 멀리 보이는 위치
+	_float fDist_Particle_Sub = XMVector3Length(vPos_SubCam - vPos_NearParticle_Sub).m128_f32[0];
+	_float fDist_Far_Sub = XMVector3Length(vPos_SubCam - vPos_Far_Sub).m128_f32[0];
+
+	m_IsCulling = false;
+	if (fDist_Far < fDist_Particle && fDist_Far_Sub < fDist_Particle_Sub)
+		m_IsCulling = true;
 }
 
 _float4 CEffect_Env_Particle_Field::Get_Rand_Pos()

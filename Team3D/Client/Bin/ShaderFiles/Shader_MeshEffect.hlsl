@@ -335,19 +335,24 @@ PS_OUT	PS_MAIN(PS_IN In)
 	return Out;
 }
 
-PS_OUT	PS_COLOR_TEST(PS_IN In)
+PS_OUT	PS_COLOR(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	Out.vDiffuse.rgb = g_vColor.rgb;
+	Out.vDiffuse.a = g_fAlpha;
 
-	float fPower = 1.f;
-	float fCheck_V = 0.3f;
-	Out.vDiffuse.rgb = float3( 0.980392218f, 0.921568692f, 0.843137324f);
+	return Out;
+}
+
+PS_OUT	PS_DASH(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture_Second.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	Out.vDiffuse = vMtrlDiffuse;
+	Out.vDiffuse.a *= g_fTime;
 	
-
-	Out.vDiffuse.a = 1.f;
-
 	return Out;
 }
 
@@ -523,15 +528,16 @@ PS_OUT	PS_MAIN_MOONBABOON_SHILED(PS_IN_DOUBLE_UV In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
+	In.vTexUV.x += g_fTime;
 	vector vDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
 	float2 vDistUV = (float2)0.f;
-	vDistUV.y = vDiffuse.r;
+	vDistUV.y = vDiffuse.b;
 
 	vector vColor = g_ColorRampTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistUV);
 
-	Out.vDiffuse.rgb = vColor.rgb;
-	Out.vDiffuse.a = Out.vDiffuse.b;
+	Out.vDiffuse.rgb = vColor.rgb * vDiffuse.b * 2.5f;
+	Out.vDiffuse.a = vDistUV.y * 0.25f * g_fAlpha;
 
 	return Out;
 }
@@ -754,11 +760,31 @@ technique11 DefaultTechnique
 
 	pass Boss_MoonBaboon_Shield // 13
 	{
-		SetRasterizerState(Rasterizer_Wireframe);
+		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_FRESNEL();
-		GeometryShader = compile gs_5_0 GS_FRESNEL();
-		PixelShader = compile ps_5_0 PS_FRESNEL();
+		VertexShader = compile vs_5_0 VS_DOUBLE_UV();
+		GeometryShader = compile gs_5_0 GS_DOUBLE_UV();
+		PixelShader = compile ps_5_0 PS_MAIN_MOONBABOON_SHILED();
+	}
+
+	pass BCody_Size_ShockWave// 14
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_COLOR();
+	}
+
+	pass Dash// 15
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_DASH();
 	}
 };

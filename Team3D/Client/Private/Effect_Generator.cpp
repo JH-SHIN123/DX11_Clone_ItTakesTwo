@@ -25,7 +25,10 @@
 #include "Effect_Dead_Particle_Fire.h"
 #include "Effect_Robot_Battery_Spark.h"
 #include "Effect_Umbrella_Pipe.h"
-#include "Effect_Pinball_Move.h"						/*¹Ì±¸Çö*/
+#include "Effect_Pinball_Move.h"
+#include "Effect_Pinball_Explosion.h"
+#include "Effect_Pinball_Explosion_Particle.h"
+#include "Effect_Pinball_Explosion_Dust.h"
 #include "Effect_PointLight.h"
 #include "Effect_Boss_Laser_Smoke.h"
 #include "Effect_Boss_Laser_Particle.h"
@@ -68,6 +71,13 @@
 #include "Effect_WarpGate_Clear.h"
 #include "Effect_Env_Particle_Follow.h"
 #include "Effect_MoonBaboon_Shield.h"
+#include "Effect_MoonBaboon_Booster.h"
+#include "Effect_Cody_Size_ShockWave.h"
+#include "Effect_Boss_BrokenLaser_Flow.h"
+#include "Effect_Boss_BrokenLaser_Smoke.h"
+#include "Effect_Boss_BrokenLaser_Particle.h"
+#include "Effect_Boss_BrokenLaser_Lightning.h"
+#include "Effect_DashMesh.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -109,7 +119,8 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		lstrcpy(szPrototype, L"GameObject_2D_Landing_Smoke");
 		break;
 	case Effect_Value::Dash:
-		lstrcpy(szPrototype, L"GameObject_2D_Dash");
+		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);
+		lstrcpy(szPrototype, L"GameObject_3D_Dash");
 		break;
 	case Effect_Value::Cody_Dead:
 		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);
@@ -131,6 +142,17 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::Cody_PinBall_Move:
 		lstrcpy(szPrototype, L"GameObject_2D_Pinball_Move");
+		break;
+	case Effect_Value::Cody_PinBall_Explosion:
+		lstrcpy(szPrototype, L"GameObject_2D_Pinball_Explosion");
+		break;
+	case Effect_Value::Cody_PinBall_Explosion_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_Pinball_Explosion_Particle");
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Pinball_Explosion_Dust"), &Clone_Data);
+		break;
+	case Effect_Value::Cody_Size_ShokeWave:
+		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);
+		lstrcpy(szPrototype, L"GameObject_3D_Cody_Size_ShockWave");
 		break;
 	case Effect_Value::May_Dead:
 		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
@@ -269,6 +291,21 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::MoonBaboon_Shield:
 		lstrcpy(szPrototype, L"GameObject_3D_MoonBaboon_Shield");
 		break;
+	case Effect_Value::MoonBaboon_Booster:
+		lstrcpy(szPrototype, L"GameObject_3D_MoonBaboon_Booster");
+		break;
+	case Effect_Value::Boss_BrokenLaser_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_BrokenLaser_Particle");
+		break;
+	case Effect_Value::Boss_BrokenLaser_Lightning:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_BrokenLaser_Lightning");
+		break;
+	case Effect_Value::Boss_BrokenLaser_Smoke:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_BrokenLaser_Smoke");
+		break;
+	case Effect_Value::Boss_BrokenLaser_Flow:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_BrokenLaser_Flow");
+		break;
 	default:
 		break;
 	}
@@ -292,7 +329,7 @@ EFFECT_DESC_CLONE::PLAYER_VALUE CEffect_Generator::Check_Cody_Size(_fmatrix Worl
 {
 	_float fScale = (XMVector3Length(WorldMatrix.r[0])).m128_f32[0];
 
-	if (0.f <= fScale && fScale < 0.8f)
+	if (0.f <= fScale && fScale < 0.5f)
 		return EFFECT_DESC_CLONE::PV_CODY_S;
 	else if (0.8f <= fScale && fScale < 2.5f)
 		return EFFECT_DESC_CLONE::PV_CODY;
@@ -394,6 +431,15 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Pinball_Move"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Pinball_Move", CEffect_Pinball_Move::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Pinball_Explosion"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Pinball_Explosion", CEffect_Pinball_Explosion::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Pinball_Explosion_Particle"))
+	{
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Pinball_Explosion_Particle", CEffect_Pinball_Explosion_Particle::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Pinball_Explosion_Dust", CEffect_Pinball_Explosion_Dust::Create(pDevice, pDeviceContext, pData));
+	}
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_PointLight"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_PointLight", CEffect_PointLight::Create(pDevice, pDeviceContext, pData));
@@ -521,6 +567,20 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Env_Particle_Follow"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Env_Particle_Follow", CEffect_Env_Particle_Follow::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_MoonBaboon_Booster"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_MoonBaboon_Booster", CEffect_MoonBaboon_Booster::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_BrokenLaser_Smoke"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_BrokenLaser_Smoke", CEffect_Boss_BrokenLaser_Smoke::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_BrokenLaser_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_BrokenLaser_Particle", CEffect_Boss_BrokenLaser_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_BrokenLaser_Lightning"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_BrokenLaser_Lightning", CEffect_Boss_BrokenLaser_Lightning::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_BrokenLaser_Flow"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_BrokenLaser_Flow", CEffect_Boss_BrokenLaser_Flow::Create(pDevice, pDeviceContext, pData));
 
 #pragma  endregion
 
@@ -549,6 +609,12 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_MoonBaboon_Shield"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_MoonBaboon_Shield", CEffect_MoonBaboon_Shield::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Cody_Size_ShockWave"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Cody_Size_ShockWave", CEffect_Cody_Size_ShockWave::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Dash"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Dash", CEffect_DashMesh::Create(pDevice, pDeviceContext, pData));
 
 #pragma  endregion
 
@@ -617,6 +683,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ShockWave"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/ShockWave/ShockWave_%d.png"), 2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Mask_Drop"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/drop_01.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Star"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Star.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Zoom"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/Zoom_01.png"))), E_FAIL);
 
 	
 	

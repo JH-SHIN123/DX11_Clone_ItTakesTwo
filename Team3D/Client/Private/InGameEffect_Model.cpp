@@ -73,18 +73,18 @@ HRESULT CInGameEffect_Model::Ready_Component(void * pArg)
 
 HRESULT CInGameEffect_Model::Ready_InstanceBuffer(_bool IsRenderTerm)
 {
-	m_pInstanceBuffer = new _float4x4[m_EffectDesc_Prototype.iInstanceCount];
-
-	const _int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
-	_matrix WorldMatrix = XMMatrixIdentity();
-
-	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
-	{
-		XMStoreFloat4x4(&m_pInstanceBuffer[iIndex], WorldMatrix);
-
-		WorldMatrix.r[3].m128_f32[1] += 5.f;
-		WorldMatrix.r[3].m128_f32[3] += 5.f;
-	}
+	//m_pInstanceBuffer = new _float4x4[m_EffectDesc_Prototype.iInstanceCount];
+	//
+	//const _int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
+	//_matrix WorldMatrix = XMMatrixIdentity();
+	//
+	//for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
+	//{
+	//	XMStoreFloat4x4(&m_pInstanceBuffer[iIndex], WorldMatrix);
+	//
+	//	WorldMatrix.r[3].m128_f32[1] += 5.f;
+	//	WorldMatrix.r[3].m128_f32[3] += 5.f;
+	//}
 
 	return S_OK;
 }
@@ -109,10 +109,10 @@ void CInGameEffect_Model::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pTexturesCom);
-	Safe_Release(m_pModelInstanceCom);
+	//Safe_Release(m_pModelInstanceCom);
 	Safe_Release(m_pModelCom);
 
-	Safe_Delete_Array(m_pInstanceBuffer);
+	//Safe_Delete_Array(m_pInstanceBuffer);
 
 	__super::Free();
 }

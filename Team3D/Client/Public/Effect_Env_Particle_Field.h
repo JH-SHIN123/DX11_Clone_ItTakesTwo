@@ -42,11 +42,6 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
-private:
-	void	Set_InstanceCount(_uint iInstanceCount);
-	void	Set_Particle_Radius(_float3 vRadiusXYZ);
-	void	Set_ParentMatrix(_fmatrix ParentMatrix);
-
 public:
 	void	Set_ControlTime(_double dControlTime);
 
@@ -59,6 +54,7 @@ protected:
 	void Check_State(_double TimeDelta);
 	void State_Start(_double TimeDelta);
 	void State_Disappear(_double TimeDelta);
+	void Check_Culling();
 
 protected:
 	_float4 Get_Rand_Pos();
@@ -77,6 +73,7 @@ protected: // 전체적인 인스턴싱을 제어함
 	STATE_VALUE		m_eStateValue_Next = STATE_START;
 	_double			m_dControl_Time = 1.0;		// 인스턴싱의 알파값을 통괄적으로 제어
 	_float3			m_vParticleRadius = { 0.f, 0.f, 0.f };
+	_bool			m_IsCulling = false;
 	
 	ARG_DESC m_Particle_Desc;
 	//_float			m_fSpeedPerSec		= 0.125f;
@@ -91,6 +88,13 @@ protected: // 전체적인 인스턴싱을 제어함
 protected:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
 	VTXMATRIX_CUSTOM_STT* m_pInstanceBuffer_STT = nullptr;
+
+private:
+	_float	Get_BigRadius();
+	void	Set_InstanceCount(_uint iInstanceCount);
+	void	Set_Particle_Radius(_float3 vRadiusXYZ);
+	void	Set_ParentMatrix(_fmatrix ParentMatrix);
+
 
 public:
 	static CEffect_Env_Particle_Field* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

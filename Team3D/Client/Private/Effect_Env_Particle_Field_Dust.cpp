@@ -24,6 +24,8 @@ HRESULT CEffect_Env_Particle_Field_Dust::NativeConstruct(void * pArg)
 
 _int CEffect_Env_Particle_Field_Dust::Tick(_double TimeDelta)
 {
+	Check_Culling();
+
 	Check_State(TimeDelta);
 
 	return NO_EVENT;
@@ -49,7 +51,7 @@ HRESULT CEffect_Env_Particle_Field_Dust::Render(RENDER_GROUP::Enum eGroup)
 
 void CEffect_Env_Particle_Field_Dust::Check_State(_double TimeDelta)
 {
-	if (nullptr == m_pInstanceBuffer_STT)
+	if (nullptr == m_pInstanceBuffer_STT || m_IsCulling)
 		return;
 
 	switch (m_eStateValue_Next)

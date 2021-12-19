@@ -42,14 +42,14 @@ protected:
 	EFFECT_DESC_PROTO m_EffectDesc_Prototype;			// 프로토 타입이 가져야 할 데이터
 	EFFECT_DESC_CLONE m_EffectDesc_Clone;				// 클론 생성시 추가적인 세팅이 필요 할 때
 
-protected:
-	_float4x4* m_pInstanceBuffer = nullptr;
+// protected:
+// 	_float4x4* m_pInstanceBuffer = nullptr;
 
 protected:
 	CRenderer*			m_pRendererCom		= nullptr;
 	CTransform*			m_pTransformCom		= nullptr;
 	CTextures*			m_pTexturesCom		= nullptr;
-	CModel_Instance*	m_pModelInstanceCom = nullptr;
+//	CModel_Instance*	m_pModelInstanceCom = nullptr;
 	CModel*				m_pModelCom			= nullptr;
 
 

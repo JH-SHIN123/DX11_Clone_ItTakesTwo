@@ -234,6 +234,92 @@ void  GS_MAIN(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT
 }
 
 [maxvertexcount(12)]
+void  GS_MAIN_FLIP_U(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT> TriStream)
+{
+	GS_OUT		Out[8];
+
+	float3		vLook = normalize(g_vMainCamPosition - In[0].vPosition).xyz;
+	float3		vAxisY = vector(0.f, 1.f, 0.f, 0.f).xyz;
+	float3		vRight = normalize(cross(vAxisY, vLook));
+	float3		vUp = normalize(cross(vLook, vRight));
+	matrix		matVP = mul(g_MainViewMatrix, g_MainProjMatrix);;
+
+	float2		vHalfSize = float2(In[0].vSize.x * 0.5f, In[0].vSize.y * 0.5f);
+
+	float4		vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
+	float4		vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
+
+	float4 RotateUV = In[0].vTextureUV_LTRB;
+	RotateUV.x = In[0].vTextureUV_LTRB.z;
+	RotateUV.z = In[0].vTextureUV_LTRB.x;
+
+	Out[0].vTexUV = float2(RotateUV.x, RotateUV.y);
+	Out[4].vTexUV = float2(RotateUV.x, RotateUV.y);
+	Out[1].vTexUV = float2(RotateUV.z, RotateUV.y);
+	Out[5].vTexUV = float2(RotateUV.z, RotateUV.y);
+	Out[2].vTexUV = float2(RotateUV.z, RotateUV.w);
+	Out[6].vTexUV = float2(RotateUV.z, RotateUV.w);
+	Out[3].vTexUV = float2(RotateUV.x, RotateUV.w);
+	Out[7].vTexUV = float2(RotateUV.x, RotateUV.w);
+
+	Out[0].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[1].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[2].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
+
+	for (uint i = 0; i < 4; ++i)
+	{
+		Out[i].vPosition = mul(Out[i].vPosition, matVP);
+		Out[i].vProjPosition = Out[i].vPosition;
+		Out[i].iViewportIndex = 1;
+		Out[i].fTime = In[0].fTime;
+	}
+
+	TriStream.Append(Out[0]);
+	TriStream.Append(Out[1]);
+	TriStream.Append(Out[2]);
+	TriStream.RestartStrip();
+
+	TriStream.Append(Out[0]);
+	TriStream.Append(Out[2]);
+	TriStream.Append(Out[3]);
+	TriStream.RestartStrip();
+
+
+	vLook	= normalize(g_vSubCamPosition - In[0].vPosition).xyz;
+	vAxisY	= vector(0.f, 1.f, 0.f, 0.f).xyz;
+	vRight	= normalize(cross(vAxisY, vLook));
+	vUp		= normalize(cross(vLook, vRight));
+	matVP	= mul(g_SubViewMatrix, g_SubProjMatrix);
+
+	vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
+	vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
+
+	Out[4].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[5].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[6].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[7].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
+
+	for (uint i = 4; i < 8; ++i)
+	{
+		Out[i].vPosition = mul(Out[i].vPosition, matVP);
+		Out[i].vProjPosition = Out[i].vPosition;
+		Out[i].iViewportIndex = 2;
+		Out[i].fTime = In[0].fTime;
+	}
+
+	TriStream.Append(Out[4]);
+	TriStream.Append(Out[5]);
+	TriStream.Append(Out[6]);
+	TriStream.RestartStrip();
+
+	TriStream.Append(Out[4]);
+	TriStream.Append(Out[6]);
+	TriStream.Append(Out[7]);
+}
+
+
+[maxvertexcount(12)]
 void  GS_MAIN_ROTATE_ANGLE_X(/*입력*/ point  VS_OUT_ROTATE In[1], /*출력*/ inout TriangleStream<GS_OUT> TriStream)
 {
 	GS_OUT		Out[8];
@@ -283,6 +369,7 @@ void  GS_MAIN_ROTATE_ANGLE_X(/*입력*/ point  VS_OUT_ROTATE In[1], /*출력*/ inout
 	Out[2].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
 	Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
 
+	[unroll]
 	for (uint i = 0; i < 4; ++i)
 	{
 		Out[i].vPosition		= mul(Out[i].vPosition, matVP);
@@ -316,6 +403,7 @@ void  GS_MAIN_ROTATE_ANGLE_X(/*입력*/ point  VS_OUT_ROTATE In[1], /*출력*/ inout
 	Out[6].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
 	Out[7].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
 
+	[unroll]
 	for (uint i = 4; i < 8; ++i)
 	{
 		Out[i].vPosition		= mul(Out[i].vPosition, matVP);
@@ -904,6 +992,29 @@ PS_OUT  PS_CIRCLE(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_PINBALL_DUST(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiffuse = (float4)0;
+	float2 vCenter = In.vTexUV - 0.5f;
+	vCenter = abs(vCenter);
+	float fLenght = length(vCenter);
+	vDiffuse.a = 1.f;
+
+	fLenght = fLenght / 0.5f; // normalize
+	float2 vColorUV = (float2)((fLenght * -1.f) + 1.f);
+
+	vDiffuse.rgb = g_vColor.rgb;
+	vDiffuse.a *= In.fTime;
+	Out.vColor = vDiffuse;
+
+	if (0.5f < length(vCenter))
+		discard;
+
+	return Out;
+}
+
 PS_OUT  PS_DIFFUSE_ALPHA_COLOR(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -940,6 +1051,20 @@ PS_OUT  PS_ENV_DUST(PS_IN In)
 	Out.vColor.rgb *= vColor.rgb;
 	Out.vColor.rgb *= In.fTime * g_fTime;
 	Out.vColor.a = In.fTime;
+
+	return Out;
+}
+
+
+PS_OUT  PS_MOONBABOON_BOOSTER(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	Out.vColor = vDiff;
+
+	Out.vColor.a = Out.vColor.r * In.fTime * g_fTime;
 
 	return Out;
 }
@@ -1133,7 +1258,7 @@ PS_OUT  PS_MAIN_DEFAULT_SMOKE(PS_IN_DOUBLEUV In)
 	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, In.vTexUV2);
 
 	Out.vColor.rgb *= vColor.rgb * In.fTime * g_fTime;
-	Out.vColor.a = In.fTime * g_fTime;
+	Out.vColor.a = Out.vColor.r * In.fTime * g_fTime;
 
 	return Out;
 }
@@ -1291,7 +1416,6 @@ technique11		DefaultTechnique
 	}
 
 	pass PS_ENV_STAR // 15
-
 	{
 		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
@@ -1299,6 +1423,26 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_ROTATE_X();
 		GeometryShader = compile gs_5_0  GS_MAIN_ROTATE_ANGLE_X();
 		PixelShader = compile ps_5_0  PS_DIFFUSE_ALPHA_COLOR();
+	}
+
+	pass MOONBABBON_BOOSTER // 16
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN_NOBILL_Y();
+		GeometryShader = compile gs_5_0  GS_MAIN_NOBILL_Y();
+		PixelShader = compile ps_5_0  PS_MOONBABOON_BOOSTER();
+	}
+
+	pass PS_PINBALL_DUST // 17
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_PINBALL_DUST();
 	}
 
 	//pass PS_ENV_DUST // 15

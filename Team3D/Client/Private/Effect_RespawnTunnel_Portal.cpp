@@ -32,7 +32,7 @@ HRESULT CEffect_RespawnTunnel_Portal::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Smoke_Flow_01", TEXT("Com_Textures_Smoke2"), (CComponent**)&m_pTexturesCom_Smoke2), E_FAIL);
 
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObject_2D_Env_Particle", &CEffect_Env_Particle::tagEnvParticle(CEffect_Env_Particle::Portal), (CGameObject**)&m_pParticle), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObejct_2D_Env_Particle_Follow", &CEffect_Env_Particle::tagEnvParticle(CEffect_Env_Particle::Portal), (CGameObject**)&m_pParticleFollow), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObject_2D_Env_Particle_Follow", &CEffect_Env_Particle::tagEnvParticle(CEffect_Env_Particle::Portal), (CGameObject**)&m_pParticleFollow), E_FAIL);
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	WorldMatrix.r[0] *= -1.f;

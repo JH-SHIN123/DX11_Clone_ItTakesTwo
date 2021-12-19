@@ -981,6 +981,45 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\MoonBaboon\01.Booster">
       <UniqueIdentifier>{54187fbc-269c-4a9d-a697-1d3dd8f05100}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.Cody_Size\ShockWave">
+      <UniqueIdentifier>{d32362bb-9b7c-4a4c-a6be-bcd767f7ffd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move\00.Explosion">
+      <UniqueIdentifier>{81186811-6123-45b5-8850-1d8817186c12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move\00.Explosion\00.Particle">
+      <UniqueIdentifier>{078aa82c-8846-4a41-a605-07587a94ceb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move\00.Explosion\01.Dust">
+      <UniqueIdentifier>{146128ce-75a6-452a-9c6c-be44ccaddcd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser">
+      <UniqueIdentifier>{86837226-07b1-4d32-9b29-35f579bafb50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\01.Particle">
+      <UniqueIdentifier>{0a22aa66-a057-4be6-890c-197426524a38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\02.Lightning">
+      <UniqueIdentifier>{c2c29889-ee39-4630-96ff-5b45873d309a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\00.Smoke">
+      <UniqueIdentifier>{c8154a86-b569-4325-b85b-b3d77861e1d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\03.Flow">
+      <UniqueIdentifier>{54cedad0-1e38-4d8a-9213-01d942255049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.Star">
+      <UniqueIdentifier>{083634ee-faac-4437-9742-916c864b39d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Rect\Dash\00.Ring">
+      <UniqueIdentifier>{419726f0-c195-4392-adaf-48ed0c6016a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Player">
+      <UniqueIdentifier>{8a1de5e2-3ffe-4128-a7ef-8232f5123633}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Player\00.Dash">
+      <UniqueIdentifier>{fc41b5af-9653-4a75-9538-c438084e2b68}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1814,6 +1853,39 @@
     <ClInclude Include="..\public\Effect_MoonBaboon_Shield.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\MoonBaboon\00.Shield</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_MoonBaboon_Booster.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\MoonBaboon\01.Booster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Cody_Size_ShockWave.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.Cody_Size\ShockWave</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Pinball_Explosion.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move\00.Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Pinball_Explosion_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move\00.Explosion\00.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect_Pinball_Explosion_Dust.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move\00.Explosion\01.Dust</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect_Boss_BrokenLaser_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\00.Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_BrokenLaser_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\01.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_BrokenLaser_Flow.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\03.Flow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_BrokenLaser_Lightning.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\02.Lightning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Dash_Ring.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash\00.Ring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_DashMesh.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Player\00.Dash</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2619,6 +2691,39 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_MoonBaboon_Shield.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\MoonBaboon\00.Shield</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_MoonBaboon_Booster.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\MoonBaboon\01.Booster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Cody_Size_ShockWave.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\02.Cody_Size\ShockWave</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Pinball_Explosion.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move\00.Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Pinball_Explosion_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move\00.Explosion\00.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect_Pinball_Explosion_Dust.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\01.Pinball_Move\00.Explosion\01.Dust</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect_Boss_BrokenLaser_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\00.Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_BrokenLaser_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\01.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_BrokenLaser_Flow.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\03.Flow</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_BrokenLaser_Lightning.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\02.Lightning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Dash_Ring.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash\00.Ring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_DashMesh.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Player\00.Dash</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

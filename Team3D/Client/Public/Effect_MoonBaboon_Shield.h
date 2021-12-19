@@ -24,6 +24,7 @@ private:
 private:
 	CTextures* m_pTexture_ColorRamp	 = nullptr;
 	CTextures* m_pTexture_Distortion = nullptr;
+	CTextures* m_pTexture_Distortion_Point = nullptr;
 
 private:
 	_float	m_fTime = 0.f;
@@ -33,6 +34,8 @@ private:
 
 	_float m_fScale_Pow = 7.f;
 	const _float m_fScale_Max = 13.f;
+	CVIBuffer_PointInstance_Custom_ST* m_pPointInstance = nullptr;
+	VTXMATRIX_CUSTOM_ST* m_pInstanceBuffer = nullptr;
 
 public:
 	static CEffect_MoonBaboon_Shield* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
