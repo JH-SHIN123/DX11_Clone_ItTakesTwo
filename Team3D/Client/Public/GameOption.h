@@ -26,19 +26,19 @@
 #else
 #define __THREAD_NUM 4
 #endif
- 
+  
 /************************************************************************/
 
 /**
 * 맵 로딩 하려면 주석 처리.
 */
-#define __MAPLOADING_OFF
+//#define __MAPLOADING_OFF
 
 /**
 * 우주선 내부 맵만 제거
 * 프레임 살리기용
 */
-#define __SPACESHIP_OFF
+//#define __SPACESHIP_OFF
 
 /************************************************************************/
 
@@ -54,7 +54,7 @@
 */
 //#define __TEST_SE
 //#define __TEST_JUNG
-#define __TEST_HYE
+//#define __TEST_HYE
 //#define __TEST_TAEK
 #define __TEST_YOON
 //#define __TEST_JIN

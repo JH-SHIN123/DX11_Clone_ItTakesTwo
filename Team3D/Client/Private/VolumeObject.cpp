@@ -1,24 +1,24 @@
 #include "stdafx.h"
-#include "..\Public\DynamicVolume.h"
+#include "VolumeObject.h"
 
-CDynamicVolume::CDynamicVolume(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CVolumeObject::CVolumeObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
 }
 
-CDynamicVolume::CDynamicVolume(const CDynamicVolume& rhs)
+CVolumeObject::CVolumeObject(const CVolumeObject& rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CDynamicVolume::NativeConstruct_Prototype()
+HRESULT CVolumeObject::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
-HRESULT CDynamicVolume::NativeConstruct(void* pArg)
+HRESULT CVolumeObject::NativeConstruct(void* pArg)
 {
 	if (nullptr != pArg)
 		memcpy(&m_tVolumeDesc, pArg, sizeof(m_tVolumeDesc));
@@ -51,14 +51,14 @@ HRESULT CDynamicVolume::NativeConstruct(void* pArg)
 	return S_OK;
 }
 
-_int CDynamicVolume::Tick(_double TimeDelta)
+_int CVolumeObject::Tick(_double TimeDelta)
 {
 	CGameObject::Tick(TimeDelta);
 
 	return NO_EVENT;
 }
 
-_int CDynamicVolume::Late_Tick(_double TimeDelta)
+_int CVolumeObject::Late_Tick(_double TimeDelta)
 {
 	CGameObject::Late_Tick(TimeDelta);
 
@@ -69,7 +69,7 @@ _int CDynamicVolume::Late_Tick(_double TimeDelta)
 	return NO_EVENT;
 }
 
-HRESULT CDynamicVolume::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CVolumeObject::Render(RENDER_GROUP::Enum eGroup)
 {
 	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -95,33 +95,33 @@ HRESULT CDynamicVolume::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-CDynamicVolume* CDynamicVolume::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CVolumeObject* CVolumeObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CDynamicVolume* pInstance = new CDynamicVolume(pDevice, pDeviceContext);
+	CVolumeObject* pInstance = new CVolumeObject(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSG_BOX("Failed to Create Instance - CDynamicVolume");
+		MSG_BOX("Failed to Create Instance - CVolumeObject");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CDynamicVolume::Clone_GameObject(void* pArg)
+CGameObject* CVolumeObject::Clone_GameObject(void* pArg)
 {
-	CDynamicVolume* pInstance = new CDynamicVolume(*this);
+	CVolumeObject* pInstance = new CVolumeObject(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CDynamicVolume");
+		MSG_BOX("Failed to Clone Instance - CVolumeObject");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CDynamicVolume::Free()
+void CVolumeObject::Free()
 {
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);

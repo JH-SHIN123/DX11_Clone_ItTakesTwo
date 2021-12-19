@@ -54,8 +54,7 @@
 #include "MoonBaboonCore.h"
 #include "MoonBaboon_MainLaser.h"
 #include "SpaceRail.h"
-#include "DynamicVolume.h"
-#include "StaticVolume.h"
+#include "VolumeObject.h"
 
 /* Yoon */
 #include "May.h"
@@ -517,8 +516,7 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Taek()
 
 	/* For.GameObject */
 	/* For. Volume */
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_DynamicVolume"), CDynamicVolume::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_StaticVolume"), CStaticVolume::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Volume"), CVolumeObject::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 #endif // !__TEST_TAEK
 

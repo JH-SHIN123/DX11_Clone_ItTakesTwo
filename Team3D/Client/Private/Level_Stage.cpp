@@ -18,6 +18,7 @@
 /* Taek */
 #include "MoonBaboonCore.h"
 #include "VolumeLight.h"
+#include "LightUtility.h"
 /* Yoon */
 #include "RotatedRobotParts.h"
 #include "RobotParts.h"
@@ -354,151 +355,15 @@ HRESULT CLevel_Stage::Ready_Lights()
 	/* For.Directional : Ambient / Specular Zero */
 	Ready_DirectionalLight(TEXT("Sun"), _float3(1.f, -1.f, 1.f), _float4(0.35f,0.35f,0.35f, 1.f), _float4(0.35f,0.35f,0.35f,1.f), _float4(1.f,1.f,1.f,1.f));
 
-//#pragma region PointLight
-//	CLight_Generator* pLightGenerator = CLight_Generator::GetInstance();
-//
-//#pragma region Spawn1
-//	LIGHT_DESC lightDesc;
-//	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
-//	lightDesc.vPosition = XMFLOAT3(64.f, 0.185f, 3.01159f);
-//	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-//	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-//	lightDesc.fRange = 40.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn1_Blue"), CEffectLight::Create(TEXT("Point_Spawn1_Blue"), lightDesc, 60.f, 2, true));
-//
-//	lightDesc.vPosition = XMFLOAT3(74.7694f, 15.f, 51.4455f);
-//	lightDesc.fRange = 30.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn1_Purple1_Left"), CEffectLight::Create(TEXT("Point_Spawn1_Purple1_Left"), lightDesc, 30.f, 1, true));
-//
-//	lightDesc.vPosition = XMFLOAT3(48.2039f, 15.f, 51.4455f);
-//	lightDesc.fRange = 30.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn1_Purple1_Right"), CEffectLight::Create(TEXT("Point_Spawn1_Purple1_Right"), lightDesc, 30.f, 1, true));
-//#pragma endregion
-//
-//#pragma region Spawn2
-//	lightDesc.vPosition = XMFLOAT3(64.f, 27.f, 195.f);
-//	lightDesc.fRange = 90.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn2_Blue1_Bot"), CEffectLight::Create(TEXT("Point_Spawn2_Blue1_Bot"), lightDesc, 60.f, 2, true));
-//
-//	lightDesc.vPosition = XMFLOAT3(64.f, 118.f, 195.f);
-//	lightDesc.fRange = 120.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn2_Blue1_Top"), CEffectLight::Create(TEXT("Point_Spawn2_Blue1_Top"), lightDesc, 80.f, 2, true));
-//#pragma endregion
-//
-//#pragma region Spawn3
-//	lightDesc.vPosition = XMFLOAT3(992.851f, 740.688f, 189.775f);
-//	lightDesc.vDiffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
-//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-//	lightDesc.vSpecular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
-//	lightDesc.fRange = 150.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn3_Sepia1"), CEffectLight::Create(TEXT("Point_Spawn3_Sepia1"), lightDesc, 100.f, 14, true));
-//
-//	lightDesc.vPosition = XMFLOAT3(614.392f, 760.874f, 196.187f);
-//	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-//	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-//	lightDesc.fRange = 40.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn3_RailWarp"), CEffectLight::Create(TEXT("Point_Spawn3_RailWarp"), lightDesc, 30.f, 1, true));
-//#pragma endregion
-//
-//#pragma region Spawn4
-//	lightDesc.vPosition = XMFLOAT3(-614.44f, 759.985f, 196.064f);
-//	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-//	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-//	lightDesc.fRange = 60.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn4_Portal"), CEffectLight::Create(TEXT("Point_Spawn4_Portal"), lightDesc, 30.f, 2, true));
-//
-//	lightDesc.vPosition = XMFLOAT3(-672.532f, 755.908f, 162.409f);
-//	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-//	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-//	lightDesc.fRange = 15.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn4_Pinball"), CEffectLight::Create(TEXT("Point_Spawn4_Pinball"), lightDesc, 7.f, 13, true));
-//
-//	lightDesc.vPosition = XMFLOAT3(-669.225f, 755.396f, 190.738f);
-//	lightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-//	lightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-//	lightDesc.fRange = 1.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn4_Pinball_Mini"), CEffectLight::Create(TEXT("Point_Spawn4_Pinball_Mini"), lightDesc, 1.f, 14, true));
-//#pragma endregion
-//
-//#pragma region Spawn5
-//	lightDesc.vPosition = XMFLOAT3(45.3144f, 220.252f, 226.072f);
-//	lightDesc.vDiffuse = XMFLOAT4(0.f, 0.f, 0.5f, 1.f);
-//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-//	lightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.5f, 1.f);
-//	lightDesc.fRange = 30.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn5_Blue_Left"), CEffectLight::Create(TEXT("Point_Spawn5_Blue_Left"), lightDesc, 0.f, 2, false));
-//
-//	lightDesc.vPosition = XMFLOAT3(63.749f, 235.252f, 205.509f);
-//	lightDesc.vDiffuse = XMFLOAT4(0.f, 0.2f, 0.5f, 1.f);
-//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-//	lightDesc.vSpecular = XMFLOAT4(0.f, 0.2f, 0.5f, 1.f);
-//	lightDesc.fRange = 60.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn5_Center"), CEffectLight::Create(TEXT("Point_Spawn5_Center"), lightDesc, 0.f, 2, false));
-//
-//	lightDesc.vPosition = XMFLOAT3(56.9364f, 228.252f, 224.139f);
-//	lightDesc.vDiffuse = XMFLOAT4(0.5f, 0.f, 0.5f, 1.f);
-//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-//	lightDesc.vSpecular = XMFLOAT4(0.5f, 0.f, 0.5f, 1.f);
-//	lightDesc.fRange = 20.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn5_Purple_0"), CEffectLight::Create(TEXT("Point_Spawn5_Purple_0"), lightDesc, 0.f, 2, false));
-//	lightDesc.vPosition = XMFLOAT3(66.5393f, 228.252f, 222.242f);
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn5_Purple_1"), CEffectLight::Create(TEXT("Point_Spawn5_Purple_1"), lightDesc, 0.f, 2, false));
-//
-//	lightDesc.vPosition = XMFLOAT3(64.f, 313.f, 195.115f);
-//	lightDesc.vDiffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.f);
-//	lightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-//	lightDesc.vSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.f);
-//	lightDesc.fRange = 120.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Bossroom_Center"), CEffectLight::Create(TEXT("Point_Bossroom_Center"), lightDesc, 150.f, 14, false));
-//
-//#pragma endregion
-//
-//#pragma region Spawn0
-//	lightDesc.vPosition = XMFLOAT3(-738.756f, 762.931f, 178.095f);
-//	lightDesc.fRange = 10.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn0_1"), CEffectLight::Create(TEXT("Point_Spawn0_1"), lightDesc, 0.f, 14, false));
-//
-//	lightDesc.vPosition = XMFLOAT3(-702.793f, 761.1f, 188.557f);
-//	lightDesc.fRange = 15.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn0_2"), CEffectLight::Create(TEXT("Point_Spawn0_2"), lightDesc, 0.f, 14, false));
-//
-//	lightDesc.vPosition = XMFLOAT3(-690.077f, 754.9985f, 194.645f);
-//	lightDesc.fRange = 15.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn0_3"), CEffectLight::Create(TEXT("Point_Spawn0_3"), lightDesc, 0.f, 14, false));
-//
-//	lightDesc.vPosition = XMFLOAT3(-711.846f, 756.735f, 204.658f);
-//	lightDesc.fRange = 15.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn0_4"), CEffectLight::Create(TEXT("Point_Spawn0_4"), lightDesc, 0.f, 14, false));
-//
-//	lightDesc.vPosition = XMFLOAT3(-789.239f, 768.983f, 192.819f);
-//	lightDesc.fRange = 30.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn0_5"), CEffectLight::Create(TEXT("Point_Spawn0_5"), lightDesc, 0.f, 14, false));
-//
-//	lightDesc.vPosition = XMFLOAT3(-748.395f, 775.983f, 215.663f);
-//	lightDesc.fRange = 30.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn0_6"), CEffectLight::Create(TEXT("Point_Spawn0_6"), lightDesc, 0.f, 14, false));
-//
-//	lightDesc.vPosition = XMFLOAT3(-789.479f, 775.983f, 215.663f);
-//	lightDesc.fRange = 30.f;
-//	pLightGenerator->Add_Light(TEXT("Point_Spawn0_7"), CEffectLight::Create(TEXT("Point_Spawn0_7"), lightDesc, 0.f, 14, false));
-//#pragma endregion
-//
-//
-//#pragma endregion
-
-	//// TEST - Static
-	//CStaticVolume::VOLUME_DESC vStaticVolumeDesc;
-	//lstrcpy(vStaticVolumeDesc.szModelTag, TEXT("Component_Model_Instance_GeoSphere"));
-	//vStaticVolumeDesc.Instancing_Arg.iInstanceCount = 3;
-	//vStaticVolumeDesc.Instancing_Arg.fCullingRadius = 50.f;
-	//vStaticVolumeDesc.Instancing_Arg.pWorldMatrices = new _float4x4[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
-	//vStaticVolumeDesc.arrInnerColor = new _float3[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
-	//vStaticVolumeDesc.arrOuterColor = new _float3[vStaticVolumeDesc.Instancing_Arg.iInstanceCount];
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Planet_Robot.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ComputeRoom.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Start.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Floor2.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Rail.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Pinball.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_ComputeRoom.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_BossRoom.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_EFFECTLIGHT, TEXT("../Bin/Resources/Data/LightData/EffectLight_Bg.dat"));
 
 	return S_OK;
 }
