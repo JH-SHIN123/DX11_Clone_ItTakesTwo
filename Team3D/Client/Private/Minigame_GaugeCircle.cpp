@@ -33,11 +33,15 @@ HRESULT CMinigame_GaugeCircle::NativeConstruct(void * pArg)
 	if (FAILED(Ready_Component()))
 		return E_FAIL;
 
-	m_UIDesc.vScale.x = 300.f;
-	m_UIDesc.vScale.y = 300.f;
+	m_UIDesc.vScale.x = 350.f;
+	m_UIDesc.vScale.y = 350.f;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+
+	m_vMinScale = { 50.f, 50.f };
+	m_vSaveScale = m_UIDesc.vScale;
+
 
 	return S_OK;
 }
@@ -49,9 +53,48 @@ _int CMinigame_GaugeCircle::Tick(_double TimeDelta)
 
 	CUIObject::Tick(TimeDelta);
 
-	m_fAngle -= (_float)TimeDelta * 190.f;
+	if (true == m_IsActive)
+	{
+		m_fAngle -= (_float)TimeDelta * 360.f;
+		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(m_fAngle));
 
-	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(m_fAngle));
+		if (-360.f >= m_fAngle)
+		{
+			m_IsNextCount = true;
+			m_IsScaleUp = true;
+			m_fAngle = 0.f;
+			++m_iCount;
+		}
+		else
+			m_IsNextCount = false;
+
+		if (false == m_IsScaleUp)
+		{
+			if (m_UIDesc.vScale.x >= m_vMinScale.x + 40.f)
+			{
+				m_UIDesc.vScale.x -= (_float)TimeDelta * 360.f;
+				m_UIDesc.vScale.y -= (_float)TimeDelta * 360.f;
+				m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+			}
+
+			m_IsScaleDown = false;
+		}
+
+		if (true == m_IsScaleUp)
+		{
+			if (m_UIDesc.vScale.x <= m_vSaveScale.x)
+			{
+				m_UIDesc.vScale.x += (_float)TimeDelta * 1000.f;
+				m_UIDesc.vScale.y += (_float)TimeDelta * 1000.f;
+				m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+			}
+			else
+			{
+				m_IsScaleUp = false;
+				m_IsScaleDown = true;
+			}
+		}
+	}
 
 	return _int();
 }
@@ -59,6 +102,9 @@ _int CMinigame_GaugeCircle::Tick(_double TimeDelta)
 _int CMinigame_GaugeCircle::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
+
+	if (false == m_IsActive)
+		return NO_EVENT;
 	
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
@@ -70,9 +116,16 @@ HRESULT CMinigame_GaugeCircle::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
+	m_pVIBuffer_RectCom->Set_Variable("g_fAlpha", &m_fAlpha, sizeof(_float));
+
 	m_pVIBuffer_RectCom->Render(25);
 
 	return S_OK;
+}
+
+void CMinigame_GaugeCircle::Set_Active(_bool IsCheck)
+{
+	m_IsActive = IsCheck;
 }
 
 HRESULT CMinigame_GaugeCircle::Ready_Component()

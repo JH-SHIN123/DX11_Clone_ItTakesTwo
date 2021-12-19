@@ -634,7 +634,7 @@ PS_OUT PS_MinigameGaugeCircle(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-	
+
 	return Out;
 }
 

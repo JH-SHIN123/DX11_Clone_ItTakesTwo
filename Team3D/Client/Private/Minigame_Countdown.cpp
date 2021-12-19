@@ -2,6 +2,7 @@
 #include "..\Public\Minigame_Countdown.h"
 
 #include "UI_Generator.h"
+#include "Minigame_GaugeCircle.h"
 
 CMinigame_Countdown::CMinigame_Countdown(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -30,8 +31,11 @@ HRESULT CMinigame_Countdown::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
 
-	if (FAILED(Ready_Component()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_UI(), E_FAIL);
+
+	m_UIDesc.vScale.x = 400.f;
+	m_UIDesc.vScale.y = 400.f;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
@@ -58,9 +62,9 @@ _int CMinigame_Countdown::Late_Tick(_double TimeDelta)
 
 	if (m_UIDesc.vScale.x >= m_vMinScale.x + 40.f)
 	{
-		m_fAlpha += (_float)TimeDelta * 3.0f;
-		m_UIDesc.vScale.x -= (_float)TimeDelta * 250.f;
-		m_UIDesc.vScale.y -= (_float)TimeDelta * 250.f;
+		m_fAlpha += (_float)TimeDelta * 3.f;
+		m_UIDesc.vScale.x -= (_float)TimeDelta * 420.f;
+		m_UIDesc.vScale.y -= (_float)TimeDelta * 420.f;
 		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
 		if (1.f <= m_fAlpha)
@@ -68,7 +72,7 @@ _int CMinigame_Countdown::Late_Tick(_double TimeDelta)
 	}
 	else if (m_UIDesc.vScale.x >= m_vMinScale.x)
 	{
-		m_fAlpha -= (_float)TimeDelta * 3.f;
+		m_fAlpha -= (_float)TimeDelta * 5.f;
 		m_UIDesc.vScale.x -= (_float)TimeDelta * 50.f;
 		m_UIDesc.vScale.y -= (_float)TimeDelta * 50.f;
 		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
@@ -76,17 +80,31 @@ _int CMinigame_Countdown::Late_Tick(_double TimeDelta)
 		if (0.f >= m_fAlpha)
 			m_fAlpha = 0.f;
 	}
-	else
+	else if(true == m_IsStart)
 	{
 		++m_UIDesc.iTextureRenderIndex;
 		m_UIDesc.vScale = m_vSaveScale;
 
-		if (4 < m_UIDesc.iTextureRenderIndex)
-		{
-			UI_Delete(Default, Minigame_Countdown);
-			m_UIDesc.iTextureRenderIndex = 4;
-		}
+		m_IsStart = false;
 	}
+
+	if (true == m_pMinigame_GaugeCircle->Get_NextCount() && 3 >= m_UIDesc.iTextureRenderIndex)
+	{
+		++m_UIDesc.iTextureRenderIndex;
+		m_UIDesc.vScale = m_vSaveScale;
+	}
+
+	if (4 < m_UIDesc.iTextureRenderIndex)
+	{
+		m_pMinigame_GaugeCircle->Set_Dead();
+		UI_Delete(Default, Minigame_Countdown);
+		m_UIDesc.iTextureRenderIndex = 4;
+	}
+
+	if (1 <= m_UIDesc.iTextureRenderIndex && 3 >= m_UIDesc.iTextureRenderIndex)
+		m_pMinigame_GaugeCircle->Set_Active(true);
+	else
+		m_pMinigame_GaugeCircle->Set_Active(false);
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
@@ -108,6 +126,16 @@ HRESULT CMinigame_Countdown::Render(RENDER_GROUP::Enum eGroup)
 HRESULT CMinigame_Countdown::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CMinigame_Countdown::Ready_Layer_UI()
+{
+	CGameObject* pGameObject = nullptr;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Minigame_GaugeCircle"), nullptr, &pGameObject), E_FAIL);
+	m_pMinigame_GaugeCircle = static_cast<CMinigame_GaugeCircle*>(pGameObject);
+	m_pMinigame_GaugeCircle->Set_PlayerID(Player::Default);
 
 	return S_OK;
 }

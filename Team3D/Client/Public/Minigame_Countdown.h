@@ -28,12 +28,17 @@ private:
 	_float							m_fAlpha = 0.f;
 	_float2							m_vMinScale;
 	_float2							m_vSaveScale;
+	_bool							m_IsStart = true;
+
+private:
+	 class CMinigame_GaugeCircle*	m_pMinigame_GaugeCircle = nullptr;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 
 private:
 	HRESULT Ready_Component();
+	HRESULT Ready_Layer_UI();
 
 public:
 	static CMinigame_Countdown* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

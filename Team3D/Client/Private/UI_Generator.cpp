@@ -257,7 +257,6 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 		break;
 	case UI::Minigame_Countdown:
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Minigame_Countdown"), Level::LEVEL_STATIC);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Minigame_GaugeCircle"), Level::LEVEL_STATIC);
 		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
