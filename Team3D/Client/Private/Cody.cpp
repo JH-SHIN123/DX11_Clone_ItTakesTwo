@@ -349,7 +349,7 @@ HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 	else if (eGroup == RENDER_GROUP::RENDER_ALPHA)
 	{
 		m_pModelCom->Render_Model(27);
-		m_pModelCom->Render_Model(28);
+		m_pModelCom->Render_Model(29);
 	}
 
 	return S_OK;

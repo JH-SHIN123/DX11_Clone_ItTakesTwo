@@ -1139,10 +1139,14 @@ PS_OUT_VOLUME PS_MAIN_VOLUME(PS_IN_VOLUME In)
 	return Out;
 }
 /* ________________________________________________________________________________*/
-PS_OUT_ALPHA PS_PHANTOM(PS_IN In)
+PS_OUT_ALPHA PS_PHANTOM(PS_IN In, uniform bool bBlue)
 {
 	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
-	Out.vDiffuse = vector(0.f,0.5f,1.f,0.5f);
+
+	if(bBlue)
+		Out.vDiffuse = vector(0.f,0.5f,1.f,0.7f);
+	else
+		Out.vDiffuse = vector(0.f, 1.f, 0.5f, 0.7f);
 
 	return Out;
 }
@@ -1431,13 +1435,23 @@ technique11 DefaultTechnique
 		PixelShader = NULL;
 	}
 	// 28
-	pass Character_PhantomSecond
+	pass Character_PhantomSecond_Blue
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_PhantomSecond, 0xff);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
-		PixelShader = compile ps_5_0 PS_PHANTOM();
+		PixelShader = compile ps_5_0 PS_PHANTOM(true);
+	}
+	// 29
+	pass Character_PhantomSecond_Green
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_PhantomSecond, 0xff);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PHANTOM(false);
 	}
 };
