@@ -71,7 +71,6 @@ HRESULT CCody::NativeConstruct(void* pArg)
 
 	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
-
 	m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
 	m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
 
@@ -414,7 +413,6 @@ void CCody::Free()
 
 	Safe_Release(m_pGauge_Circle);
 	Safe_Release(m_pHpBar);
-	//Safe_Release(m_pCamera);
 
 	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
@@ -424,6 +422,7 @@ void CCody::Free()
 
 	if (nullptr != m_pTargetPtr)
 		Safe_Release(m_pTargetPtr);
+
 	CCharacter::Free();
 }
 

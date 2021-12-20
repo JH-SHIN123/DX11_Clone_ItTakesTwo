@@ -209,6 +209,12 @@ public:
 	void Set_LaserGauge(_float fGauge) { m_fLaserGauge = fGauge; }
 	_float Get_LaserGauge() { return m_fLaserGauge; }
 
+	/* For.Minigame */
+	void Set_CodyMinigameWinCount(_uint iScore) { m_iCodyMinigameWinCount = iScore; }
+	_uint Get_CodyMinigameWinCount() { return m_iCodyMinigameWinCount; }
+	void Set_MayMinigameWinCount(_uint iScore) { m_iMayMinigameWinCount = iScore; }
+	_uint Get_MayMinigameWinCount() { return m_iMayMinigameWinCount; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -315,6 +321,8 @@ private:
 
 	_uint m_iMayStageNum = 0;
 	_uint m_iCodyStageNum = 0;
+	_uint m_iCodyMinigameWinCount = 0;
+	_uint m_iMayMinigameWinCount = 0;
 
 
 public:

@@ -95,6 +95,7 @@ CHpBarFrame * CHpBarFrame::Create(ID3D11Device * pDevice, ID3D11DeviceContext * 
 }
 
 CGameObject * CHpBarFrame::Clone_GameObject(void * pArg)
+
 {
 	CHpBarFrame* pClone = new CHpBarFrame(*this);
 

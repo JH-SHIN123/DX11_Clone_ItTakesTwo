@@ -24,6 +24,7 @@
 #include "Minigame_Ready.h"
 #include "PC_MouseButton.h"
 #include "Arrowkeys_Fill.h"
+#include "Minigame_Score.h"
 #include "ButtonIndicator.h"
 #include "InputButton_Frame.h"
 #include "Arrowkeys_Outline.h"
@@ -54,17 +55,10 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Default_UI(), E_FAIL);
 
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Font"));
-	m_pEngTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("EngFont"));
 	//m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("NanumGothic"));	  /* 나눔고딕 */
 	//m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("GMarket"));		  /* G마켓 */
 	//m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Pretendard"));		  /* Pretendard */
 	//m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("NotoSans"));			  /* NotoSans */
-
-	m_pVIBuffer_FontCom = (CVIBuffer_FontInstance*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"));
-	m_pVIBuffer_Rect = (CVIBuffer_Rect*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect"));
-	
 	
 	m_VTXFONT = new VTXFONT[MAX_PATH];
 
@@ -1053,6 +1047,14 @@ HRESULT CUI_Generator::Add_Prototype_Minigame(CUIObject::UI_DESC * UIDesc)
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CUISprite::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
+	else if (!lstrcmp(UIDesc->szUITag, L"Minigame_Score"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigame_Score::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"Minigame_Title"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigame_Score::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
 
 	return S_OK;
 }
@@ -1318,73 +1320,73 @@ HRESULT CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI
 	if (true == IsDisable)
 		return S_OK;
 
-	/* 범위 검사하자 */
-	_vector vComparePos;
+	///* 범위 검사하자 */
+	//_vector vComparePos;
 
-	if (ePlayer == Player::Cody)
-	{
-		CCody* pCody = (CCody*)DATABASE->GetCody();
-		NULL_CHECK_RETURN(pCody, false);
+	//if (ePlayer == Player::Cody)
+	//{
+	//	CCody* pCody = (CCody*)DATABASE->GetCody();
+	//	NULL_CHECK_RETURN(pCody, false);
 
-		_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-		vComparePos = vTargetPosition - vCodyPos;
-	}
-	else if (ePlayer == Player::May)
-	{
-		CMay* pMay = (CMay*)DATABASE->GetMay();
-		NULL_CHECK_RETURN(pMay, false);
+	//	_vector vCodyPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	//	vComparePos = vTargetPosition - vCodyPos;
+	//}
+	//else if (ePlayer == Player::May)
+	//{
+	//	CMay* pMay = (CMay*)DATABASE->GetMay();
+	//	NULL_CHECK_RETURN(pMay, false);
 
-		_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-		vComparePos = vTargetPosition - vMayPos;
-	}
+	//	_vector vMayPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	//	vComparePos = vTargetPosition - vMayPos;
+	//}
 
-	_float vComparePosX = fabs(XMVectorGetX(vComparePos));
-	_float vComparePosY = fabs(XMVectorGetY(vComparePos));
-	_float vComparePosZ = fabs(XMVectorGetZ(vComparePos));
+	//_float vComparePosX = fabs(XMVectorGetX(vComparePos));
+	//_float vComparePosY = fabs(XMVectorGetY(vComparePos));
+	//_float vComparePosZ = fabs(XMVectorGetZ(vComparePos));
 
-	/* 범위 안에 있다*/
-	if (fRange >= vComparePosX && fRange >= vComparePosY && fRange >= vComparePosZ)
-	{
-		/* 충돌해서 트리거가 켜졌다면 InterActive UI 만들어주자 */
-		if (ePlayer == Player::Cody)
-		{
-			if (true == IsCollision)
-			{
-				/* 충돌을 했다라면 InputButton Dot 삭제해주자 안에서 예외처리 하기때문에 걍 호출해도 상관없음 */
-				Delete_InterActive_UI(ePlayer, eTrigger);
-				UI_CreateOnlyOnce(Cody, InputButton_InterActive);
-				UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, vTargetPosition);
+	///* 범위 안에 있다*/
+	//if (fRange >= vComparePosX && fRange >= vComparePosY && fRange >= vComparePosZ)
+	//{
+	//	/* 충돌해서 트리거가 켜졌다면 InterActive UI 만들어주자 */
+	//	if (ePlayer == Player::Cody)
+	//	{
+	//		if (true == IsCollision)
+	//		{
+	//			/* 충돌을 했다라면 InputButton Dot 삭제해주자 안에서 예외처리 하기때문에 걍 호출해도 상관없음 */
+	//			Delete_InterActive_UI(ePlayer, eTrigger);
+	//			UI_CreateOnlyOnce(Cody, InputButton_InterActive);
+	//			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, vTargetPosition);
 
-				return S_OK;
-			}
-			else /* 만약에 충돌을 하고 트리거가 꺼졌을 때 InterActive UI 삭제해주자 */
-				UI_Delete(Cody, InputButton_InterActive);
-		}
-		else if (ePlayer == Player::May)
-		{
-			if (true == IsCollision)
-			{
-				Delete_InterActive_UI(ePlayer, eTrigger);
-				UI_CreateOnlyOnce(May, InputButton_PS_InterActive);
-				UI_Generator->Set_TargetPos(Player::May, UI::InputButton_PS_InterActive, vTargetPosition);
+	//			return S_OK;
+	//		}
+	//		else /* 만약에 충돌을 하고 트리거가 꺼졌을 때 InterActive UI 삭제해주자 */
+	//			UI_Delete(Cody, InputButton_InterActive);
+	//	}
+	//	else if (ePlayer == Player::May)
+	//	{
+	//		if (true == IsCollision)
+	//		{
+	//			Delete_InterActive_UI(ePlayer, eTrigger);
+	//			UI_CreateOnlyOnce(May, InputButton_PS_InterActive);
+	//			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_PS_InterActive, vTargetPosition);
 
-				return S_OK;
-			}
-			else
-				UI_Delete(May, InputButton_PS_InterActive);
-		}
+	//			return S_OK;
+	//		}
+	//		else
+	//			UI_Delete(May, InputButton_PS_InterActive);
+	//	}
 
-		/* 충돌을 아직 안했다면 그냥 InputButton Dot 만들어주자 */
-		if (true == UI_Generator->Get_InterActive_UI_EmptyCheck(ePlayer, eTrigger))
-		{
-			m_IsTrigger = true;
-			Generator_InterActive_UI(ePlayer, eTrigger);
-		}
+	//	/* 충돌을 아직 안했다면 그냥 InputButton Dot 만들어주자 */
+	//	if (true == UI_Generator->Get_InterActive_UI_EmptyCheck(ePlayer, eTrigger))
+	//	{
+	//		m_IsTrigger = true;
+	//		Generator_InterActive_UI(ePlayer, eTrigger);
+	//	}
 
-		UI_Generator->Set_InterActive_TargetPos(ePlayer, eTrigger, vTargetPosition);
-	}
-	else
-		Delete_InterActive_UI(ePlayer, eTrigger);
+	//	UI_Generator->Set_InterActive_TargetPos(ePlayer, eTrigger, vTargetPosition);
+	//}
+	//else
+	//	Delete_InterActive_UI(ePlayer, eTrigger);
 
 	return S_OK;
 }

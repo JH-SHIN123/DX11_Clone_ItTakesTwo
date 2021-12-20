@@ -315,7 +315,7 @@ void CUIObject::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTextureCom);
 
-	if (1 <= m_UIDesc.iSubTextureNum)
+	if (1 <= m_UIDesc.iSubTextureNum && nullptr != m_pSubTexturCom)
 		Safe_Release(m_pSubTexturCom);
 
 	CGameObject::Free();

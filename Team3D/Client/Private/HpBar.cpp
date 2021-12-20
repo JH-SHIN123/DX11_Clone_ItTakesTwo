@@ -130,7 +130,6 @@ HRESULT CHpBar::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pVIBuffer_RectCom->Set_Variable("g_fCircleRatio", &m_fRatio, sizeof(_float));
 	m_pVIBuffer_RectCom->Set_Variable("g_fDecreaseRateRatio", &m_fDecreaseRateRatio, sizeof(_float));
-	m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseSubTexture", m_pSubTexturesCom->Get_ShaderResourceView(0));
 	
 	m_pVIBuffer_RectCom->Render(22);
 
@@ -168,7 +167,6 @@ void CHpBar::Set_Hp(_float fHp)
 HRESULT CHpBar::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
-	m_pSubTexturesCom = (CTextures*)m_pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Clockwise"));
 
 	return S_OK;
 }
@@ -211,7 +209,7 @@ CGameObject * CHpBar::Clone_GameObject(void * pArg)
 
 void CHpBar::Free()
 {
-	Safe_Release(m_pSubTexturesCom);
+	Safe_Release(m_pHpBarFrame);
 	Safe_Release(m_pVIBuffer_RectCom);
 
 	CUIObject::Free();

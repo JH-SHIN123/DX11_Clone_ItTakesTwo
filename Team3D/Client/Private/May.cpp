@@ -67,7 +67,6 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	CCharacter::NativeConstruct(pArg);
 	Ready_Component();
 
-
 	m_pModelCom->Set_Animation(ANI_M_Bounce4);
 	CDataStorage::GetInstance()->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
@@ -76,7 +75,6 @@ HRESULT CMay::NativeConstruct(void* pArg)
 
 	return S_OK;
 }
-
 
 HRESULT CMay::Ready_Component()
 {
@@ -121,7 +119,7 @@ HRESULT CMay::Ready_Component()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_May_Boots"), nullptr, (CGameObject**)&m_pEffect_GravityBoots), E_FAIL);
 	m_pEffect_GravityBoots->Set_Model(m_pModelCom);
 
-	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_CodyCircle_Gauge")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_MayCircle_Gauge")), E_FAIL);
 
 	return S_OK;
 }
@@ -310,12 +308,14 @@ void CMay::Free()
 	Safe_Release(m_pGauge_Circle);
 
 	//Safe_Release(m_pCamera);
+
 	Safe_Release(m_pTargetPtr);
 	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pEffect_GravityBoots);
+
 	CCharacter::Free();
 }
 

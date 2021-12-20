@@ -162,7 +162,9 @@ CGameObject * CBossHpBar::Clone_GameObject(void * pArg)
 
 void CBossHpBar::Free()
 {
-	Safe_Release(m_pBossHpBarFrame);
+	if(nullptr != m_pBossHpBarFrame)
+		Safe_Release(m_pBossHpBarFrame);
+
 	Safe_Release(m_pVIBuffer_RectCom);
 
 	CUIObject::Free();

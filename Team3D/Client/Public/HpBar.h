@@ -38,7 +38,6 @@ private:
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
-	CTextures*						m_pSubTexturesCom = nullptr;
 
 private:
 	HRESULT Ready_Component();

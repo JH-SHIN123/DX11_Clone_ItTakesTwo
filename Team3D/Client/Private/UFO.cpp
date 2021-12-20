@@ -35,7 +35,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	CGameObject::NativeConstruct(pArg);
 
 	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
 	Add_LerpInfo_To_Model();
 
@@ -811,7 +811,6 @@ HRESULT CUFO::Ready_StaticActor_Component()
 HRESULT CUFO::TriggerActorReplacement()
 {
 	Safe_Release(m_pTriggerActorCom);
-
 	m_pTriggerActorCom = nullptr;
 
 	m_UserData = USERDATA(GameID::eBOSSUFO, this);
@@ -1124,7 +1123,6 @@ void CUFO::Set_MoonBaboonPtr(CMoonBaboon * pMoonBaboon)
 		return;
 
 	m_pMoonBaboon = pMoonBaboon;
-	Safe_AddRef(m_pMoonBaboon);
 }
 
 void CUFO::Set_BossUFOUp(_float fMaxDistance, _float fSpeed)
@@ -1228,8 +1226,7 @@ void CUFO::Free()
 		Safe_Release(m_pStaticActorCom);
 	if (nullptr != m_pStaticTransformCom)
 		Safe_Release(m_pStaticTransformCom);
-	if (nullptr != m_pStaticModelCom)
-		Safe_Release(m_pStaticModelCom);
+
 
 	if (nullptr != m_pTriggerActorCom)
 		Safe_Release(m_pTriggerActorCom);
@@ -1238,19 +1235,20 @@ void CUFO::Free()
 	if (nullptr != m_pEnterTriggerActorCom)
 		Safe_Release(m_pEnterTriggerActorCom);
 
-	for (auto pSubLaser : m_vecSubLaser)
-		Safe_Release(pSubLaser);
+	//for (auto pSubLaser : m_vecSubLaser)
+	//	Safe_Release(pSubLaser);
 
-	m_vecSubLaser.clear();
+	//m_vecSubLaser.clear();
 
 	if(nullptr != m_pCodyMissile)
 		Safe_Release(m_pCodyMissile);
-
 	if (nullptr != m_pMayMissile)
 		Safe_Release(m_pMayMissile);
+	if (nullptr != m_pBossHpBar)
+		Safe_Release(m_pBossHpBar);
 
-	Safe_Release(m_pBossHpBar);
-	Safe_Release(m_pMoonBaboon);
+	/*Safe_Release(m_pMoonBaboon);*/
+	Safe_Release(m_pStaticModelCom);
 	Safe_Release(m_pMayTransform);
 	Safe_Release(m_pCodyTransform);
 	Safe_Release(m_pTransformCom);

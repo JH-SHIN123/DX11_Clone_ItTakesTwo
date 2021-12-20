@@ -594,7 +594,6 @@ PS_OUT PS_PlayerHpBar(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-	vector SubTexture = g_DiffuseSubTexture.Sample(DiffuseSampler, In.vTexUV);
 
 	if (g_fDecreaseRateRatio <= Out.vColor.b && g_fCircleRatio >= Out.vColor.b)
 		Out.vColor.rgb = 1.f;
