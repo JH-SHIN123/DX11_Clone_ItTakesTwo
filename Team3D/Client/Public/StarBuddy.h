@@ -44,6 +44,10 @@ private:
 	_bool		m_IsMayCollide = false;
 	GameID::Enum		m_PlayerID = GameID::eSTARBUDDY;
 
+	/* Sound */
+	_float m_fStarBuddy_Volume = 1.f;
+	_bool  m_bSoundOnce = false;
+
 private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;

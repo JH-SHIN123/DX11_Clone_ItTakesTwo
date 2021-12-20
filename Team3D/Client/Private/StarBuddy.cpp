@@ -80,6 +80,13 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 			Launch_StarBuddy(dTimeDelta);
 			m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
 			m_pTransformCom->RotatePitch(dTimeDelta * 1.2f);
+
+			if (m_bSoundOnce == false)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_INTERACTIVE_STAR_EXPLODE, m_fStarBuddy_Volume);
+				m_pGameInstance->Play_Sound(TEXT("Interactive_Start_Explode.wav"), CHANNEL_INTERACTIVE_STAR_EXPLODE, m_fStarBuddy_Volume);
+				m_bSoundOnce = true;
+			}	
 		}
 		if (m_fLifeTime > 3.5f)
 			return EVENT_DEAD; // 

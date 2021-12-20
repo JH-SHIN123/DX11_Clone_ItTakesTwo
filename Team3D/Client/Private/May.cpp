@@ -2129,37 +2129,37 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 		if (m_IsInGravityPipe && m_IsCollide == true)
 		{
 			m_pActorCom->Set_ZeroGravity(true, true, true);
-			if (m_pGameInstance->Pad_Key_Pressing(DIP_B))
+			if (m_pGameInstance->Pad_Key_Pressing(DIP_B) || m_pGameInstance->Key_Pressing(DIK_K))
 			{
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 			}
 
-			if (m_pGameInstance->Pad_Key_Pressing(DIP_A))
+			if (m_pGameInstance->Pad_Key_Pressing(DIP_A) || m_pGameInstance->Key_Pressing(DIK_SEMICOLON))
 			{
 				m_pActorCom->Set_ZeroGravity(true, false, false);
 			}
-			if (m_pGameInstance->Get_Pad_LStickY() < 20000)
+			if (m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Key_Pressing(DIK_UP))
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
 				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
-			if (m_pGameInstance->Get_Pad_LStickX() < 20000)
+			if (m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Key_Pressing(DIK_LEFT))
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT) * -1.f, 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
 				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
-			if (m_pGameInstance->Get_Pad_LStickY() > 44000)
+			if (m_pGameInstance->Get_Pad_LStickY() > 44000 || m_pGameInstance->Key_Pressing(DIK_DOWN))
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK) * -1.f, 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
 				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
-			if (m_pGameInstance->Get_Pad_LStickX() > 44000)
+			if (m_pGameInstance->Get_Pad_LStickX() > 44000 || m_pGameInstance->Key_Pressing(DIK_RIGHT))
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);

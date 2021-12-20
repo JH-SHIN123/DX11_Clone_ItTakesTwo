@@ -240,9 +240,6 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 			{
 				m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_LEVER, m_fLeverVolume);
 				m_pGameInstance->Play_Sound(TEXT("Robot_Lever.wav"), CHANNEL_ROBOT_LEVER, m_fLeverVolume);
-
-				m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_ACTIVE, m_fRobotActiveVolume);
-				m_pGameInstance->Play_Sound(TEXT("Robot_Active.wav"), CHANNEL_ROBOT_ACTIVE, m_fRobotActiveVolume);
 				m_bSoundOnce = true;
 			}
 			_vector vDir = XMVector3Normalize((XMVectorSet(-1.f, 0.f, 0.f, 0.f) + XMVectorSet(0.f, 0.f, -1.f, 0.f) * 2.f));
@@ -261,6 +258,9 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 		}
 		else if (m_fStopDelay > 0.6f)
 		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_ACTIVE, m_fRobotActiveVolume);
+			m_pGameInstance->Play_Sound(TEXT("Robot_Active.wav"), CHANNEL_ROBOT_ACTIVE, m_fRobotActiveVolume);
+
 			m_bNoBatteryHit = false;
 			m_fStopDelay = 0.f;
 			m_bRotate = false;

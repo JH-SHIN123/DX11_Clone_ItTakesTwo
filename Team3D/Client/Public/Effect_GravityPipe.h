@@ -43,6 +43,13 @@ private:
 	_bool	m_IsActivate	= false; // 배터리와 연관이 있는
 	_double m_dActivateTime	= 0.f;
 
+	/* Sound */
+	_float m_fGravity_Create_Volume = 1.f;
+	_float m_fGravity_On_Volume = 1.f;
+
+	_bool m_bCreateSoundOnce = false;
+	_bool m_bCreateSecondSoundOnce = false;
+
 private:
 	_double m_dAngle = 0.0;
 	_float m_fTime = 0.f;

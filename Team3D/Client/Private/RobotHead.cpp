@@ -86,14 +86,17 @@ _int CRobotHead::Tick(_double dTimeDelta)
 
 
 		// Sound Volume 기준을 0.f ~ 1.f로 잡았다면.. 나누기 10..
-		_float fFinalDist = max(fCodyDistance, fMayDistance);
+		_float fFinalDist = min(fCodyDistance, fMayDistance);
 
-		if (fFinalDist > 10.f)
+		if (fFinalDist > 30.f)
+		{
 			m_fHeadBanging_Volume = 0.f;
+			m_pGameInstance->Stop_Sound(CHANNEL_ROBOT_MOVE);
+		}
 		else
-			m_fHeadBanging_Volume = 2.f - fFinalDist / 10.f;
+			m_fHeadBanging_Volume = 2.f - fFinalDist / 30.f;
 
-		if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_ROBOT_MOVE) == false)
+		if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_ROBOT_MOVE) == false && fFinalDist < 30.f)
 		{
 			m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_MOVE, m_fHeadBanging_Volume);
 			m_pGameInstance->Play_Sound(TEXT("Robot_Move.wav"), CHANNEL_ROBOT_MOVE, m_fHeadBanging_Volume);

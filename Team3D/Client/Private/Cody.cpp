@@ -2824,7 +2824,7 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 			m_pGameInstance->Play_Sound(TEXT("Character_Rope_UFO_Release.wav"), CHANNEL_CHARACTER_UFO_RELEASE, m_fCody_Rope_UFO_Release_Volume);
 
 			m_bUFOCatchSoundOnce = false;
-			m_bGoToHooker = false;
+			m_bGoToHooker = false; 
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Swinging_ExitFwd);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_180R);

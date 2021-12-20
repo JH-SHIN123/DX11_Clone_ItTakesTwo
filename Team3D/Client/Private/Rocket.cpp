@@ -72,9 +72,17 @@ _int CRocket::Tick(_double dTimeDelta)
 	{
 		m_fLifeTime += (_float)dTimeDelta;
 
-		if(m_fLifeTime > 0.65f)
+		if (m_fLifeTime > 0.65f)
+		{
 			Launch_Rocket(dTimeDelta);
 
+			if (m_bSoundOnce == false)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_INTERACTIVE_ROCKET, m_fRocket_Volume);
+				m_pGameInstance->Play_Sound(TEXT("Interactive_Rocket.wav"), CHANNEL_INTERACTIVE_ROCKET, m_fRocket_Volume);
+				m_bSoundOnce = true;
+			}
+		}
 		if (m_fLifeTime > 3.5f)
 			return EVENT_DEAD;
 	}

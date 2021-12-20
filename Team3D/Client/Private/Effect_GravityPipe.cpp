@@ -62,6 +62,11 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
 
+	m_pGameInstance->Set_SoundVolume(CHANNEL_GRAVITFIELD_ON, m_fGravity_On_Volume);
+	m_pGameInstance->Play_Sound(TEXT("GravityField_On.wav"), CHANNEL_GRAVITFIELD_ON, m_fGravity_On_Volume);
+	m_pGameInstance->Stop_Sound(CHANNEL_GRAVITFIELD_ON);
+
+
 	return S_OK;
 }
 
@@ -76,6 +81,27 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 
 	if (true == m_IsActivate)
 	{
+		_vector vRobotPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_vector vCodyPos = ((CCody*)DATABASE->GetCody())->Get_Position();
+		_vector vMayPos = ((CMay*)DATABASE->GetMay())->Get_Position();
+
+		_float fCodyDistance = XMVectorGetX(XMVector3Length(vCodyPos - vRobotPos));
+		_float fMayDistance = XMVectorGetX(XMVector3Length(vMayPos - vRobotPos));
+
+
+		// Sound Volume 기준을 0.f ~ 1.f로 잡았다면.. 
+		_float fFinalDist = min(fCodyDistance, fMayDistance);
+
+		if (fFinalDist > 80.f)
+			m_fGravity_On_Volume = 0.f;
+		else
+			m_fGravity_On_Volume = 2.f - fFinalDist / 80.f;
+
+		if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_GRAVITFIELD_ON) == false && fFinalDist < 80.f)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_GRAVITFIELD_ON, m_fGravity_On_Volume);
+			m_pGameInstance->Play_Sound(TEXT("GravityField_On.wav"), CHANNEL_GRAVITFIELD_ON, m_fGravity_On_Volume);
+		}
 		m_dActivateTime += TimeDelta * 0.3;
 		if (1.0 <= m_dActivateTime)
 			m_dActivateTime = 1.0;
@@ -88,11 +114,25 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 	}
 
 	if (m_EffectDesc_Clone.iPlayerValue == 0 && DATABASE->Get_GravityStageClear() == true)
+	{
 		m_IsActivate = true;
-
+		if (m_bCreateSoundOnce == false)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_GRAVITFIELD_CREATE, m_fGravity_Create_Volume);
+			m_pGameInstance->Play_Sound(TEXT("GravityField_Create.wav"), CHANNEL_GRAVITFIELD_CREATE, m_fGravity_Create_Volume);
+			m_bCreateSoundOnce = true;
+		}
+	}
 	if (m_EffectDesc_Clone.iPlayerValue == 1 && DATABASE->Get_IsValve_Activated() == true)
+	{
 		m_IsActivate = true;
-
+		if (m_bCreateSecondSoundOnce == false)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_GRAVITFIELD_CREATE, m_fGravity_Create_Volume);
+			m_pGameInstance->Play_Sound(TEXT("GravityField_Create.wav"), CHANNEL_GRAVITFIELD_CREATE, m_fGravity_Create_Volume);
+			m_bCreateSecondSoundOnce = true;
+		}
+	}
 
 	m_pParticle->Set_ControlTime(m_dActivateTime);
 
