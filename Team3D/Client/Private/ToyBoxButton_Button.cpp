@@ -159,7 +159,11 @@ void CToyBoxButton_Button::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID
 				pMay->Get_IsGroundPound() == true ||
 				pMay->Get_IsGroundPoundVarious() == true
 				)
+			{
 				m_pParent->Set_Trigger();
+				m_pGameInstance->Set_SoundVolume(CHANNEL_TOYBOXBUTTON, m_fPushButtonSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("ToyBoxButton_Push.wav"), CHANNEL_TOYBOXBUTTON, m_fPushButtonSoundVolume);
+			}
 
 			m_iCheckTrigger = 1;
 		}
