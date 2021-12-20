@@ -33,6 +33,8 @@ private:
 	_float m_fUp = 0.f;
 	_float m_fDown = 0.f;
 
+	_float m_fAcceleration = 0.f;
+
 private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom			= nullptr;

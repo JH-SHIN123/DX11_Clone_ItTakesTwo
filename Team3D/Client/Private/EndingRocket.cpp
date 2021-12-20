@@ -37,8 +37,8 @@ HRESULT CEndingRocket::NativeConstruct(void * pArg)
 
 _int CEndingRocket::Tick(_double dTimeDelta)
 {
-	Ready_Players(dTimeDelta);
 	Movement(dTimeDelta);
+	Ready_Players(dTimeDelta);
 	return _int();
 }
 
@@ -47,6 +47,7 @@ _int CEndingRocket::Late_Tick(_double dTimeDelta)
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
+	Ready_Players(dTimeDelta);
 	return NO_EVENT;
 }
 
@@ -80,38 +81,38 @@ void CEndingRocket::Movement(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Pressing(DIK_W))
 	{
-		if (m_fUp < 2.f)
+		if (m_fUp < 0.7f)
 		{
 			m_fDown -= (_float)dTimeDelta;
 			m_fUp += (_float)dTimeDelta;
-			m_pTransformCom->Go_Up(dTimeDelta);
+			m_pTransformCom->Go_Up(dTimeDelta * 5.f);
 		}
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_A))
 	{
-		if (m_fLeft < 2.f)
+		if (m_fLeft < 1.3f)
 		{
 			m_fRight -= (_float)dTimeDelta;
 			m_fLeft += (_float)dTimeDelta;
-			m_pTransformCom->Go_Left(dTimeDelta);
+			m_pTransformCom->Go_Left(dTimeDelta * 5.f);
 		}
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_S))
 	{
-		if (m_fDown < 2.f)
+		if (m_fDown < 0.7f)
 		{
 			m_fUp -= (_float)dTimeDelta;
 			m_fDown += (_float)dTimeDelta;
-			m_pTransformCom->Go_Down(dTimeDelta);
+			m_pTransformCom->Go_Down(dTimeDelta * 5.f);
 		}
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_D))
 	{
-		if (m_fRight < 2.f)
+		if (m_fRight < 1.3f)
 		{
 			m_fLeft -= (_float)dTimeDelta;
 			m_fRight += (_float)dTimeDelta;
-			m_pTransformCom->Go_Right(dTimeDelta);
+			m_pTransformCom->Go_Right(dTimeDelta * 5.f);
 		}
 	}
 }
