@@ -63,17 +63,46 @@ HRESULT CMinigame_Score::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(26);
+	m_pVIBuffer_RectCom->Render(27);
+
+	Render_Font();
 
 	return S_OK;
 }
-
 
 HRESULT CMinigame_Score::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
 
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_FontDraw"), TEXT("Com_FontCodyWinCount"), (CComponent**)&m_pFontCodyWinCount), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_FontDraw"), TEXT("Com_FontMayWinCount"), (CComponent**)&m_pFontMayWinCount), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_FontDraw"), TEXT("Com_FontCenter"), (CComponent**)&m_pFontCenter), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_FontDraw"), TEXT("Com_FontCody"), (CComponent**)&m_pFontCody), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_FontDraw"), TEXT("Com_FontMay"), (CComponent**)&m_pFontMay), E_FAIL);
+
+
 	return S_OK;
+}
+
+void CMinigame_Score::Render_Font()
+{
+	_uint iCount;
+
+	m_pFontCenter->Render_Font(TEXT("승리한 라운드"), _float2(m_UIDesc.vPos.x + 640.f, m_UIDesc.vPos.y - 175.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.28f);
+	m_pFontMay->Render_Font(TEXT("메이"), _float2(m_UIDesc.vPos.x + 780.f, m_UIDesc.vPos.y - 175.f), XMVectorSet(0.258f, 0.721f, 0.941f, 1.f), 0.28f);
+	m_pFontCody->Render_Font(TEXT("코디"), _float2(m_UIDesc.vPos.x + 500.f, m_UIDesc.vPos.y - 175.f), XMVectorSet(0.58f, 0.894f, 0.239f, 1.f), 0.28f);
+
+	_tchar pText[_MAX_ITOSTR_BASE10_COUNT];
+	iCount = DATABASE->Get_CodyMinigameWinCount();
+	_itow_s(iCount, pText, 10);
+	m_pFontCodyWinCount->Render_Font(pText, _float2(m_UIDesc.vPos.x + 430.f, m_UIDesc.vPos.y - 175.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.35f);
+
+	DATABASE->Set_MayMinigameWinCount(1);
+	iCount = DATABASE->Get_MayMinigameWinCount();
+	_itow_s(iCount, pText, 10);
+	m_pFontMayWinCount->Render_Font(pText, _float2(m_UIDesc.vPos.x + 850.f, m_UIDesc.vPos.y - 175.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.35f);
+
+		
 }
 
 CMinigame_Score * CMinigame_Score::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
@@ -105,6 +134,11 @@ CGameObject * CMinigame_Score::Clone_GameObject(void * pArg)
 void CMinigame_Score::Free()
 {
 	Safe_Release(m_pVIBuffer_RectCom);
+	Safe_Release(m_pFontMayWinCount);
+	Safe_Release(m_pFontCodyWinCount);
+	Safe_Release(m_pFontMay);
+	Safe_Release(m_pFontCody);
+	Safe_Release(m_pFontCenter);
 
 	CUIObject::Free();
 }

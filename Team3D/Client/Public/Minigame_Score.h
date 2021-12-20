@@ -27,8 +27,15 @@ private:
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 
+	CFontDraw*						m_pFontCodyWinCount = nullptr;
+	CFontDraw*						m_pFontMayWinCount = nullptr;
+	CFontDraw*						m_pFontCenter = nullptr;
+	CFontDraw*						m_pFontCody = nullptr;
+	CFontDraw*						m_pFontMay = nullptr;
+
 private:
 	HRESULT Ready_Component();
+	void Render_Font();
 
 public:
 	static CMinigame_Score* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
