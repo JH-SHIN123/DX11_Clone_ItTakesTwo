@@ -1430,6 +1430,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		break;
 	case Client::CMainCamera::CamMode::Cam_Ending:
 		iResult = Tick_Cam_Ending(dTimeDelta);
+		break;
 	case Client::CMainCamera::CamMode::Cam_Warp_WormHole:
 		iResult = Tick_Cam_Warp_WormHole(dTimeDelta);
 		break;

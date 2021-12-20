@@ -85,7 +85,7 @@ void CEndingRocket::Movement(_double dTimeDelta)
 		{
 			m_fDown -= (_float)dTimeDelta;
 			m_fUp += (_float)dTimeDelta;
-			m_pTransformCom->Go_Up(dTimeDelta * 5.f);
+			m_pTransformCom->Go_Up(dTimeDelta * 4.f);
 		}
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_A))
@@ -94,7 +94,7 @@ void CEndingRocket::Movement(_double dTimeDelta)
 		{
 			m_fRight -= (_float)dTimeDelta;
 			m_fLeft += (_float)dTimeDelta;
-			m_pTransformCom->Go_Left(dTimeDelta * 5.f);
+			m_pTransformCom->Go_Left(dTimeDelta * 4.f);
 		}
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_S))
@@ -103,7 +103,7 @@ void CEndingRocket::Movement(_double dTimeDelta)
 		{
 			m_fUp -= (_float)dTimeDelta;
 			m_fDown += (_float)dTimeDelta;
-			m_pTransformCom->Go_Down(dTimeDelta * 5.f);
+			m_pTransformCom->Go_Down(dTimeDelta * 4.f);
 		}
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_D))
@@ -112,7 +112,7 @@ void CEndingRocket::Movement(_double dTimeDelta)
 		{
 			m_fLeft -= (_float)dTimeDelta;
 			m_fRight += (_float)dTimeDelta;
-			m_pTransformCom->Go_Right(dTimeDelta * 5.f);
+			m_pTransformCom->Go_Right(dTimeDelta * 4.f);
 		}
 	}
 }
