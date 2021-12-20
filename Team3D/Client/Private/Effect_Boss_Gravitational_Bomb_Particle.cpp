@@ -17,7 +17,7 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Particle::NativeConstruct_Prototype(void
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 150;
+	m_EffectDesc_Prototype.iInstanceCount = 300;
 
 	return S_OK;
 }
@@ -173,9 +173,9 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Particle::Ready_InstanceBuffer()
 
 		m_pInstanceBuffer_STT[iIndex].vTextureUV = { 0.f, 0.f, 1.f , 1.f };
 		m_pInstanceBuffer_STT[iIndex].fTime = 1.f;
-		m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
+		m_pInstanceBuffer_STT[iIndex].vSize = {0.f, 0.f};
 
-		m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time  * (_double(iIndex) / iInstanceCount);
+		m_pInstance_Pos_UpdateTime[iIndex] = 0.01  * _double(iIndex);
 		m_pInstance_Parabola_Time[iIndex] = 0.0;
 
 		_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));

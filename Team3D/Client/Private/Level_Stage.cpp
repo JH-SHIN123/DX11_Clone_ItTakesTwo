@@ -174,62 +174,87 @@ HRESULT CLevel_Stage::Ready_Test()
 	/* Jung */
 #ifdef __TEST_JUNG
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke")), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core")), E_FAIL);
-
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core")), E_FAIL);
+	//
 	ROBOTDESC UFODesc;
-	UFODesc.vPosition = { 64.f, 10.f, 30.f, 1.f };
+	UFODesc.vPosition = { 70.f, 10.f, 30.f, 1.f };
 	//UFODesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Test", Level::LEVEL_STAGE, TEXT("GameObject_UFO"), &UFODesc), E_FAIL);
+	//
+	//CMoonBaboonCore::MOONBABOONCORE_DESC tDesc;
+	//tDesc.iIndex = 0;
+	//tDesc.WorldMatrix._41 = 60.f;
+	//tDesc.WorldMatrix._42 = 0.f;
+	//tDesc.WorldMatrix._43 = 10.f;
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore"), &tDesc), E_FAIL);
+	//
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_BOMB", Level::LEVEL_STAGE, TEXT("GameObject_3D_Boss_Gravitational_Bomb")), E_FAIL);
+	//
+	//_float4 vPos = { 60.f, 0.f, 20.f, 1.f };
+	//CDynamic_Env::ARG_DESC Arg;
+	//Arg.iMaterialIndex = 0;
+	//Arg.iOption = 0;
+	//Arg.WorldMatrix = MH_XMFloat4x4Identity();
+	//memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
+	//lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_SmallOpen_01"));
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricBox", Level::LEVEL_STAGE, TEXT("GameObject_ElectricBox"), &Arg), E_FAIL);
+	//
+	//vPos = { 60.f, 1.f, 25.f, 1.f };
+	//Arg.iMaterialIndex = 0;
+	//Arg.iOption = 0;
+	//Arg.WorldMatrix = MH_XMFloat4x4Identity();
+	//memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
+	//lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_Support_01"));
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricWall", Level::LEVEL_STAGE, TEXT("GameObject_ElectricWall"), &Arg), E_FAIL);
+	//
+	//vPos = { 58.f, 0.21f, 25.f, 1.f };
+	//Arg.iMaterialIndex = 0;
+	//Arg.iOption = 0;
+	//Arg.WorldMatrix = MH_XMFloat4x4Identity();
+	//memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
+	//lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_Interior_PedalSmasher_01"));
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Press", Level::LEVEL_STAGE, TEXT("GameObject_Press"), &Arg), E_FAIL);
+	//vPos = { 57.5f, 0.21f, 25.f, 1.f };
+	//Arg.iOption = 1;
+	//lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_Interior_PedalSmasher_02"));
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Press", Level::LEVEL_STAGE, TEXT("GameObject_Press"), &Arg), E_FAIL);
+	//
+	//CHangingPlanet::ARG_DESC tPlanetArg;
+	//_matrix World = XMMatrixIdentity();
+	//lstrcpy(tPlanetArg.DynamicDesc.szModelTag, TEXT("Component_Model_Hanging_Planet"));
+	//XMStoreFloat4x4(&tPlanetArg.DynamicDesc.WorldMatrix, World);
+	//tPlanetArg.DynamicDesc.iMaterialIndex = 0;
+	//tPlanetArg.DynamicDesc.iOption = 0;
+	//
+	//tPlanetArg.vJointPosition = _float3(68.f, 38.f, 35.f);
+	//tPlanetArg.vOffset = _float3(0.f, 33.f, 0.f);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_楳失せせ", Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), &tPlanetArg), E_FAIL);
 
-	CMoonBaboonCore::MOONBABOONCORE_DESC tDesc;
-	tDesc.iIndex = 0;
-	tDesc.WorldMatrix._41 = 60.f;
-	tDesc.WorldMatrix._42 = 0.f;
-	tDesc.WorldMatrix._43 = 10.f;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore"), &tDesc), E_FAIL);
+	CEffect_Env_Particle_Field::ARG_DESC Arg_Desc;
+	Arg_Desc.vPosition = { 60.f, 0.f, 30.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 50.f, 50.f, 50.f };
+	Arg_Desc.vDefaultSize = { 1.5f, 1.5f };
+	Arg_Desc.fSpeedPerSec = 0.5f;
+	Arg_Desc.fReSizing_Power = 0.01f;
+	Arg_Desc.fReSize = 0.05f;
+	Arg_Desc.iInstanceCount = 100;
+	Arg_Desc.fResetPosTime = 10.f;
+	Arg_Desc.vTextureUV = { 1, 1 };
+	Arg_Desc.IsGrouping = true;
+	Arg_Desc.iGrouping_Count = 25;
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field_Star"), &Arg_Desc), E_FAIL);
+	//
+	//Arg_Desc.vDefaultSize = { 0.5f, 0.5f };
+	//Arg_Desc.IsGrouping = false;
+	//Arg_Desc.vTextureUV = { 2, 2 };
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field_Dust"), &Arg_Desc), E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_BOMB", Level::LEVEL_STAGE, TEXT("GameObject_3D_Boss_Gravitational_Bomb")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layersadasda", Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::MAIN_UMBRELLA, 1.0)), E_FAIL);
 
-	_float4 vPos = { 60.f, 0.f, 20.f, 1.f };
-	CDynamic_Env::ARG_DESC Arg;
-	Arg.iMaterialIndex = 0;
-	Arg.iOption = 0;
-	Arg.WorldMatrix = MH_XMFloat4x4Identity();
-	memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
-	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_SmallOpen_01"));
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricBox", Level::LEVEL_STAGE, TEXT("GameObject_ElectricBox"), &Arg), E_FAIL);
-
-	vPos = { 60.f, 1.f, 25.f, 1.f };
-	Arg.iMaterialIndex = 0;
-	Arg.iOption = 0;
-	Arg.WorldMatrix = MH_XMFloat4x4Identity();
-	memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
-	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_Support_01"));
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricWall", Level::LEVEL_STAGE, TEXT("GameObject_ElectricWall"), &Arg), E_FAIL);
-
-	vPos = { 58.f, 0.21f, 25.f, 1.f };
-	Arg.iMaterialIndex = 0;
-	Arg.iOption = 0;
-	Arg.WorldMatrix = MH_XMFloat4x4Identity();
-	memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
-	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_Interior_PedalSmasher_01"));
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Press", Level::LEVEL_STAGE, TEXT("GameObject_Press"), &Arg), E_FAIL);
-	vPos = { 57.5f, 0.21f, 25.f, 1.f };
-	Arg.iOption = 1;
-	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_Interior_PedalSmasher_02"));
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Press", Level::LEVEL_STAGE, TEXT("GameObject_Press"), &Arg), E_FAIL);
-
-	CHangingPlanet::ARG_DESC tPlanetArg;
-	_matrix World = XMMatrixIdentity();
-	lstrcpy(tPlanetArg.DynamicDesc.szModelTag, TEXT("Component_Model_Hanging_Planet"));
-	XMStoreFloat4x4(&tPlanetArg.DynamicDesc.WorldMatrix, World);
-	tPlanetArg.DynamicDesc.iMaterialIndex = 0;
-	tPlanetArg.DynamicDesc.iOption = 0;
-
-	tPlanetArg.vJointPosition = _float3(68.f, 38.f, 35.f);
-	tPlanetArg.vOffset = _float3(0.f, 33.f, 0.f);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_楳失せせ", Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), &tPlanetArg), E_FAIL);
-
+	ROBOTDESC MoonBaboonDesc;
+	MoonBaboonDesc.vPosition = { 64.f, 0.f, 30.f, 1.f };
+	//MoonBaboonDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"asdl", Level::LEVEL_STAGE, TEXT("GameObject_RunningMoonBaboon"), &MoonBaboonDesc), E_FAIL);
 
 #endif
 
@@ -271,10 +296,10 @@ HRESULT CLevel_Stage::Ready_Layer_Earth(const _tchar * pLayerTag)
 #pragma region Jung
 HRESULT CLevel_Stage::Ready_Layer_WarpGate(const _tchar * pLayerTag)
 {
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::MAIN_UMBRELLA)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::STAGE_UMBRELLA)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::MAIN_PLANET)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::STAGE_PLANET)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::MAIN_UMBRELLA,	1.0)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::STAGE_UMBRELLA,	1.0)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::MAIN_PLANET,		1.0)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::STAGE_PLANET,	1.0)), E_FAIL);
 	return S_OK;
 }
 HRESULT CLevel_Stage::Ready_Layer_Wormhole(const _tchar * pLayerTag)

@@ -512,6 +512,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 		if (m_IsJumping == false)
 		{
+			EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 			m_fAcceleration = 5.f;
 			m_pModelCom->Set_Animation(ANI_M_Roll_Start);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Roll_Stop);
@@ -580,8 +582,50 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_fSprintAcceleration = 35.f;
 		m_bGroundPound = true;
 	}
-
 #pragma endregion 
+
+#pragma region Effect GravityBoots
+	if (m_pActorCom->Get_IsOnGravityPath() == true)
+	{
+		m_pEffect_GravityBoots->Set_IsActivate_GravityBoots();
+
+		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog)
+		{
+			if (false == m_IsLeftFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.25f && m_pModelCom->Get_ProgressAnim() < 0.29f) // ¿Þ¹ß
+			{
+				m_pEffect_GravityBoots->Add_WalkingParticle(false);
+				m_IsLeftFoot_Effect = true;
+				m_IsRightFoot_Effect = false;
+			}
+			if (false == m_IsRightFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.65f && m_pModelCom->Get_ProgressAnim() < 0.68f)// ¿À¸¥¹ß
+			{
+				m_pEffect_GravityBoots->Add_WalkingParticle(true);
+				m_IsLeftFoot_Effect = false;
+				m_IsRightFoot_Effect = true;
+			}
+		}
+		else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint)
+		{
+			if (false == m_IsLeftFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.49f  && m_pModelCom->Get_ProgressAnim() < 0.53f) // ¿Þ¹ß
+			{
+				m_pEffect_GravityBoots->Add_WalkingParticle(true);
+				m_IsLeftFoot_Effect = true;
+				m_IsRightFoot_Effect = false;
+			}
+			if (false == m_IsRightFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.1f && m_pModelCom->Get_ProgressAnim() < 0.13f) // ¿À¸¥¹ß
+			{
+				m_pEffect_GravityBoots->Add_WalkingParticle(false);
+				m_IsLeftFoot_Effect = false;
+				m_IsRightFoot_Effect = true;
+			}
+		}
+		else
+		{
+			m_IsLeftFoot_Effect = false;
+			m_IsRightFoot_Effect = false;
+		}
+	}
+#pragma  endregion
 
 #else
 #pragma region Local variable
@@ -844,16 +888,42 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma region Effect GravityBoots
 	if (m_pActorCom->Get_IsOnGravityPath() == true)
 	{
+		m_pEffect_GravityBoots->Set_IsActivate_GravityBoots();
+
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog)
 		{
-			if((m_pModelCom->Get_ProgressAnim() > 0.25f && m_pModelCom->Get_ProgressAnim() < 0.28f) || (m_pModelCom->Get_ProgressAnim() > 0.65f && m_pModelCom->Get_ProgressAnim() < 0.68f))
+			if (false == m_IsLeftFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.25f && m_pModelCom->Get_ProgressAnim() < 0.29f) // ¿Þ¹ß
+			{
+				m_pEffect_GravityBoots->Add_WalkingParticle(false);
+				m_IsLeftFoot_Effect = true;
+				m_IsRightFoot_Effect = false;
+			}
+			if (false == m_IsRightFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.65f && m_pModelCom->Get_ProgressAnim() < 0.68f)// ¿À¸¥¹ß
+			{
 				m_pEffect_GravityBoots->Add_WalkingParticle(true);
+				m_IsLeftFoot_Effect = false;
+				m_IsRightFoot_Effect = true;
+			}
 		}
 		else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint)
 		{
-			if ((m_pModelCom->Get_ProgressAnim() > 0.07f && m_pModelCom->Get_ProgressAnim() < 0.11f) || (m_pModelCom->Get_ProgressAnim() > 0.5f && m_pModelCom->Get_ProgressAnim() < 0.54f))
+			if (false == m_IsLeftFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.49f  && m_pModelCom->Get_ProgressAnim() < 0.53f) // ¿Þ¹ß
+			{
 				m_pEffect_GravityBoots->Add_WalkingParticle(true);
-
+				m_IsLeftFoot_Effect = true;
+				m_IsRightFoot_Effect = false;
+			}
+			if (false == m_IsRightFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.1f && m_pModelCom->Get_ProgressAnim() < 0.13f) // ¿À¸¥¹ß
+			{
+				m_pEffect_GravityBoots->Add_WalkingParticle(false);
+				m_IsLeftFoot_Effect = false;
+				m_IsRightFoot_Effect = true;
+			}
+		}
+		else
+		{
+			m_IsLeftFoot_Effect = false;
+			m_IsRightFoot_Effect = false;
 		}
 	}
 #pragma  endregion
@@ -2623,6 +2693,7 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 		m_pTargetRailNode = nullptr;
 		m_bOnRail = true;
 		m_bMoveToRail = false;
+		EFFECT->Add_Effect(Effect_Value::May_Rail, m_pTransformCom->Get_WorldMatrix());
 	}
 }
 void CMay::TakeRail(_double dTimeDelta)

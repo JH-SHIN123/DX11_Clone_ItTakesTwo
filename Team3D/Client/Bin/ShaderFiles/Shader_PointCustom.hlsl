@@ -1470,8 +1470,30 @@ PS_OUT  PS_MAIN_PRESS_SMOKE(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-	Out.vColor.a *= g_fTime;
 	Out.vColor.rgb *= g_vColor.rgb;
+	Out.vColor.a *= g_fTime;
+	return Out;
+}
+
+PS_OUT  PS_PINBALL_SMOKE(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	float2 vColorUV = float2(1.f, 0.f);
+
+	Out.vColor.a *= g_fTime;
+	return Out;
+}
+
+PS_OUT  PS_LASERPISTON_SMOKE(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	Out.vColor *=
+	Out.vColor.a *= g_fTime;
 	return Out;
 }
 
@@ -1494,6 +1516,16 @@ PS_OUT  PS_MAIN_PILLAR(PS_IN In)
 	Out.vColor.rgb *= g_vColor.rgb;
 	Out.vColor.rgb *= g_fTime;
 	Out.vColor.a = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.f;
+
+	return Out;
+}
+
+PS_OUT  PS_MAIN_PILLAR_ONLY_COLOR(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor.rgb = g_vColor.rgb;
+	Out.vColor.a = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.f * g_fTime;
 
 	return Out;
 }
@@ -1608,6 +1640,24 @@ PS_OUT  PS_MAIN_LASER_CIRCLE(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_MOONBABOON_SHIELD(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vFX_tex = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	float4 vColor = (float4)0.f;
+	float fWeight = /*vFX_tex.r * */(vFX_tex.r * 1.1f);
+
+	if (1.f < fWeight)
+		fWeight = 1.f;
+
+	float2 vUV = float2(fWeight, 0.f);
+
+	float4 vColorRamp = g_ColorTexture.Sample(ColorSampler, vUV);
+	Out.vColor.rgb = vColorRamp.rgb * 0.75f;
+	Out.vColor.a = Out.vColor.b * g_fAlpha;
+	return Out;
+}
 
 struct  PS_IN_DOUBLE_UV
 {
@@ -1749,7 +1799,6 @@ PS_OUT  PS_BOSS_CORE(PS_IN_DIST In)
 	vColor.a = (vColor.r + vColor.g + vColor.b);// / 3.f;
 	vColor.a *= fAlpha;
 	Out.vColor = vColor;
-
 
 	return Out;
 }
@@ -1951,6 +2000,46 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN();
 		GeometryShader = compile gs_5_0  GS_MAIN();
 		PixelShader = compile ps_5_0  PS_MAIN_PRESS_SMOKE();
+	}
+
+	pass MoonBabbon_Shield // 20
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_MOONBABOON_SHIELD();
+	}
+
+	pass PinBall_Explosion // 21
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_PINBALL_SMOKE();
+	}
+
+	pass LaserPiton_Explosion // 22
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_PINBALL_SMOKE();
+	}
+
+	pass StarBuddy_Pillar // 23
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN_AXIS_Y_NO_GLOBAL_UV();
+		GeometryShader = compile gs_5_0  GS_MAIN_NO_BILL_Y_ROTATE_UV();
+		PixelShader = compile ps_5_0  PS_MAIN_PILLAR_ONLY_COLOR();
 	}
 };
 

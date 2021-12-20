@@ -452,29 +452,26 @@ void CInGameEffect::SetUp_Shader_Data()
 	if (nullptr == pPipeline)
 		return;
 
-	if (true == m_IsResourceName[RESOURCE_TEXTURE])
-	{
-		m_pPointInstanceCom->Set_Variable("g_WorldMatrix",		&XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()),					sizeof(_matrix));
-		m_pPointInstanceCom->Set_Variable("g_MainViewMatrix",	&XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINVIEW)),	sizeof(_matrix));
-		m_pPointInstanceCom->Set_Variable("g_MainProjMatrix",	&XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINPROJ)),	sizeof(_matrix));
-		m_pPointInstanceCom->Set_Variable("g_SubViewMatrix",	&XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBVIEW)),	sizeof(_matrix));
-		m_pPointInstanceCom->Set_Variable("g_SubProjMatrix",	&XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBPROJ)),	sizeof(_matrix));
-	
-		_float	fMainCamFar		= pPipeline->Get_MainCamFar();
-		_float	fSubCamFar		= pPipeline->Get_SubCamFar();
-		m_pPointInstanceCom->Set_Variable("g_fMainCamFar",	&fMainCamFar,	sizeof(_float));
-		m_pPointInstanceCom->Set_Variable("g_fSubCamFar",	&fSubCamFar,	sizeof(_float));
+	m_pPointInstanceCom->Set_Variable("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
+	m_pPointInstanceCom->Set_Variable("g_MainViewMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINVIEW)), sizeof(_matrix));
+	m_pPointInstanceCom->Set_Variable("g_MainProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_MAINPROJ)), sizeof(_matrix));
+	m_pPointInstanceCom->Set_Variable("g_SubViewMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBVIEW)), sizeof(_matrix));
+	m_pPointInstanceCom->Set_Variable("g_SubProjMatrix", &XMMatrixTranspose(pPipeline->Get_Transform(CPipeline::TS_SUBPROJ)), sizeof(_matrix));
 
-		_vector vMainCamPosition	= pPipeline->Get_MainCamPosition();
-		_vector vSubCamPosition		= pPipeline->Get_SubCamPosition();
-		m_pPointInstanceCom->Set_Variable("g_vMainCamPosition", &vMainCamPosition,	sizeof(_vector));
-		m_pPointInstanceCom->Set_Variable("g_vSubCamPosition",	&vSubCamPosition,	sizeof(_vector));
+	_float	fMainCamFar = pPipeline->Get_MainCamFar();
+	_float	fSubCamFar = pPipeline->Get_SubCamFar();
+	m_pPointInstanceCom->Set_Variable("g_fMainCamFar", &fMainCamFar, sizeof(_float));
+	m_pPointInstanceCom->Set_Variable("g_fSubCamFar", &fSubCamFar, sizeof(_float));
 
-		_int IsBillBoard = TRUE;
-		if (false == m_IsBillBoard)
-			IsBillBoard = FALSE;
-		m_pPointInstanceCom->Set_Variable("g_IsBillBoard", &IsBillBoard, sizeof(_int));	
-	}
+	_vector vMainCamPosition = pPipeline->Get_MainCamPosition();
+	_vector vSubCamPosition = pPipeline->Get_SubCamPosition();
+	m_pPointInstanceCom->Set_Variable("g_vMainCamPosition", &vMainCamPosition, sizeof(_vector));
+	m_pPointInstanceCom->Set_Variable("g_vSubCamPosition", &vSubCamPosition, sizeof(_vector));
+
+	_int IsBillBoard = TRUE;
+	if (false == m_IsBillBoard)
+		IsBillBoard = FALSE;
+	m_pPointInstanceCom->Set_Variable("g_IsBillBoard", &IsBillBoard, sizeof(_int));	
 
 	return;
 }

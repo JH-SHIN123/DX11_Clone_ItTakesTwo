@@ -109,11 +109,9 @@ _int CMainCamera::Tick(_double dTimeDelta)
 		iResult = Tick_CamHelperNone(dTimeDelta);
 		break;
 	case CCam_Helper::CamHelperState::Helper_Act:
-		ReSet_Cam_FreeToAuto();
 		iResult = Tick_CamHelper_Act(dTimeDelta);
 		break;
 	case CCam_Helper::CamHelperState::Helper_SeeCamNode:
-		ReSet_Cam_FreeToAuto();
 		iResult = Tick_CamHelper_SeeCamNode(dTimeDelta);
 		break;
 	case CCam_Helper::CamHelperState::Helper_End:
@@ -1098,12 +1096,13 @@ _int CMainCamera::Tick_Cam_WallJump(_double dTimeDelta)
 }
 
 
-
-_int CMainCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook)
+_int CMainCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook, _bool bIsCalculateCamLook)
 {
+
 	m_fChangeCamModeLerpSpeed = 6.f;
 	m_fChangeCamModeTime = 0.f;
 	m_eCurCamMode = CamMode::Cam_AutoToFree;
+	m_eCurPlayerSize = m_pCody->Get_Player_Size();
 	for (_uint i = 0; i < Rev_End; i++)
 	{
 		m_fMouseRev[i] = 0.f;
@@ -1111,7 +1110,8 @@ _int CMainCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook)
 	}
 	if (bCalculatePlayerLook)
 	{
-		_vector vOriginAxis = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+		_vector vOriginAxis =
+			bIsCalculateCamLook ? m_pTransformCom->Get_State(CTransform::STATE_LOOK) : XMVectorSet(0.f, 0.f, 1.f, 0.f);
 		_vector vRotAxis = XMVector3Normalize(m_pCody->Get_Transform()->Get_State(CTransform::STATE_LOOK));
 		_float fAxisX = XMVectorGetX(vRotAxis);
 		_float fDot = acosf(XMVectorGetX(XMVector3Dot(vRotAxis, vOriginAxis)));
@@ -1122,6 +1122,7 @@ _int CMainCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook)
 		m_fMouseRev[Rev_Holizontal] = fCalculateRotation;
 
 	}
+
 	return NO_EVENT;
 }
 
@@ -1343,7 +1344,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	}
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
-	CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Clear_Rail");
+	CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Clear_Umbrella");
 	return NO_EVENT;
 	}
 

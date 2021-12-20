@@ -127,7 +127,7 @@ void CEffect_Hit_Planet_Particle::Instance_Size(_float TimeDelta, _int iIndex)
 
 void CEffect_Hit_Planet_Particle::Instance_Pos(_float TimeDelta, _int iIndex)
 {
-	_vector vDir = XMLoadFloat3(&m_pInstanceBiffer_Dir[iIndex]);
+	_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
 	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 10.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
 
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
@@ -145,9 +145,9 @@ HRESULT CEffect_Hit_Planet_Particle::Ready_InstanceBuffer()
 {
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
-	m_pInstanceBuffer_STT = new VTXMATRIX_CUSTOM_STT[iInstanceCount];
-	m_pInstanceBiffer_Dir = new _float3[iInstanceCount];
-	m_pInstance_Pos_UpdateTime = new _double[iInstanceCount];
+	m_pInstanceBuffer_STT		= new VTXMATRIX_CUSTOM_STT[iInstanceCount];
+	m_pInstance_Dir				= new _float3[iInstanceCount];
+	m_pInstance_Pos_UpdateTime	= new _double[iInstanceCount];
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	_float4 vMyPos;
@@ -166,7 +166,7 @@ HRESULT CEffect_Hit_Planet_Particle::Ready_InstanceBuffer()
 		m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time;
 
 		_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand_Matrix(_int3(100, 100, 0), WorldMatrix));
-		XMStoreFloat3(&m_pInstanceBiffer_Dir[iIndex], vRandDir);
+		XMStoreFloat3(&m_pInstance_Dir[iIndex], vRandDir);
 		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vUp, vRandDir);
 	}
 
@@ -216,7 +216,6 @@ CGameObject * CEffect_Hit_Planet_Particle::Clone_GameObject(void * pArg)
 void CEffect_Hit_Planet_Particle::Free()
 {
 	Safe_Delete_Array(m_pInstanceBuffer_STT);
-	Safe_Delete_Array(m_pInstanceBiffer_Dir);
 
 	Safe_Release(m_pPointInstanceCom_STT);
 

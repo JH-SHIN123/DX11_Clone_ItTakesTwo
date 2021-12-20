@@ -93,11 +93,9 @@ _int CSubCamera::Tick(_double dTimeDelta)
 		iResult = Tick_CamHelperNone(dTimeDelta);
 		break;
 	case CCam_Helper::CamHelperState::Helper_Act:
-		ReSet_Cam_FreeToAuto();
 		iResult = Tick_CamHelper_Act(dTimeDelta);
 		break;
 	case CCam_Helper::CamHelperState::Helper_SeeCamNode:
-		ReSet_Cam_FreeToAuto();
 		iResult = Tick_CamHelper_SeeCamNode(dTimeDelta);
 		break;
 	case CCam_Helper::CamHelperState::Helper_End:

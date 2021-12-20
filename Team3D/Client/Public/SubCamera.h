@@ -31,6 +31,7 @@ public:
 	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal, matWorld); }
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
+	_int	ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook = false, _bool bIsCalculateCamLook = false);		//변수 초기화용
 private:
 	_int	Check_Player(_double dTimeDelta);
 	void	Set_Zoom(_float4 vEye,_float4 vAt,_float fZoomVal,_double dTimeDelta);
@@ -58,7 +59,7 @@ private:
 
 	
 private:
-	_int	ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook = false,_bool bIsCalculateCamLook = false);		//변수 초기화용
+	
 	_bool	OffSetPhsX(_fvector vEye, _fvector vAt, _double dTimeDelta, _vector * pOut);
 
 	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At,_fvector vUp = XMVectorSet(0.f,1.f,0.f,0.f));

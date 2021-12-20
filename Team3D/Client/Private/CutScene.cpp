@@ -17,6 +17,8 @@ CCutScene::CCutScene()
 _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 {
 	//ÄÆ¾ÀÁß¿¡ ¹Ù²ãÁÙ°Íµé 
+	m_dTime += dTimeDelta;
+
 	if (m_dTime > m_dDuration)
 	{
 		switch (m_eCutSceneOption)
@@ -37,7 +39,6 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		}
 		return false;
 	}
-	m_dTime += dTimeDelta;
 
 	_bool bIsNoError = false;
 	switch (m_eCutSceneOption)
@@ -175,7 +176,7 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 			if (m_dTime >= 128.51)
 			{
 				((CCody*)DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(65.4f, 0.2f, 1.1f,1.f));
-				((CMay*)DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(63.5f, 0.15f, 0.3f,1.f));
+				((CMay*)DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(63.5f, 0.15f, 0.3f,1.f));
 			}
 		}
 
@@ -218,7 +219,19 @@ _bool CCutScene::Tick_CutScene_Clear_Umbrella(_double dTimeDelta)
 		pCamHelper->Start_Film(TEXT("Film_Clear_Umbrella"), CFilm::LScreen);
 		m_bIsStartFilm = true;
 	}
+	if (m_iCutSceneTake == 0)
+	{
+		if (m_dTime >= 6.0)
+		{
+			_matrix matRot = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+			static_cast<CCody*>(DATABASE->GetCody())->Get_Transform()->Set_WorldMatrix(matRot);
+			static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(-635.f, 756.f, 195.f, 1.f));
+			static_cast<CMay*>(DATABASE->GetMay())->Get_Transform()->Set_WorldMatrix(matRot);
+			static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(-635.f, 756.f, 197.f, 1.f));
 
+			m_iCutSceneTake++;
+		}
+	}
 	return true;
 }
 
@@ -231,7 +244,19 @@ _bool CCutScene::Tick_CutScene_Clear_Rail(_double dTimeDelta)
 		pCamHelper->Start_Film(TEXT("Film_Clear_Rail"), CFilm::RScreen);
 		m_bIsStartFilm = true;
 	}
+	if (m_iCutSceneTake == 0)
+	{
+		if (m_dTime >= 6.0)
+		{
+			_matrix matRot = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(270.f));
+			static_cast<CCody*>(DATABASE->GetCody())->Get_Transform()->Set_WorldMatrix(matRot);
+			static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(633.f,756.f,196.f,1.f));
+			static_cast<CMay*>(DATABASE->GetMay())->Get_Transform()->Set_WorldMatrix(matRot);
+			static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(633.f,756.f,193.f,1.f));
 
+			m_iCutSceneTake++;
+		}
+	}
 	return true;
 }
 
@@ -263,7 +288,10 @@ HRESULT CCutScene::Start_CutScene()
 
 HRESULT CCutScene::Start_CutScene_Intro()
 {
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
+	
 	_double dTime = 0.0;
 
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
@@ -380,6 +408,10 @@ HRESULT CCutScene::End_CutScene_Intro()
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
+	pMainCam->ReSet_Cam_FreeToAuto();
+	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
+	pSubCam->ReSet_Cam_FreeToAuto();
 
 	return S_OK;
 }
@@ -387,19 +419,40 @@ HRESULT CCutScene::End_CutScene_Intro()
 HRESULT CCutScene::End_CutScene_Active_GravityPath_01()
 {
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
-	
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
+	pMainCam->ReSet_Cam_FreeToAuto();
+	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
+	pSubCam->ReSet_Cam_FreeToAuto();
+
 	return S_OK;
 }
 
 HRESULT CCutScene::End_CutScene_Clear_Umbrella()
 {
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
+	pMainCam->ReSet_Cam_FreeToAuto(true);
+	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
+	pSubCam->ReSet_Cam_FreeToAuto(true);
+
+
 	return S_OK;
 }
 
 HRESULT CCutScene::End_CutScene_Clear_Rail()
 {
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
+	pMainCam->ReSet_Cam_FreeToAuto(true);
+	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
+	pSubCam->ReSet_Cam_FreeToAuto(true);
+
 	return S_OK;
 }
 
@@ -419,13 +472,13 @@ HRESULT CCutScene::Ready_CutScene_Active_GravityPath_01()
 
 HRESULT CCutScene::Ready_CutScene_Clear_Umbrella()
 {
-	m_dDuration = 7.3;
+	m_dDuration = 8.3;
 	return S_OK;
 }
 
 HRESULT CCutScene::Ready_CutScene_Clear_Rail()
 {
-	m_dDuration = 7.0;
+	m_dDuration = 8.0;
 	return S_OK;
 }
 

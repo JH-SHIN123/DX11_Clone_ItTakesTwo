@@ -340,7 +340,11 @@ private:
 
 	// Sprint
 	_float m_fSprintAcceleration = 35.f;
-	
+
+	//중력발판
+	_bool m_IsLeftFoot_Effect = false;
+	_bool m_IsRightFoot_Effect = false;
+
 #pragma region Trigger
 public:
 	_matrix Get_CameraTrigger_Matrix() { return XMLoadFloat4x4(&m_TriggerCameraWorld); }

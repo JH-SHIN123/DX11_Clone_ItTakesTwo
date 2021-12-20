@@ -36,7 +36,7 @@ HRESULT CRunningMoonBaboon::NativeConstruct(void * pArg)
 	Add_LerpInfo();
 	m_pModelCom->Set_Animation(Moon_Run);
 	m_pModelCom->Set_NextAnimIndex(Moon_Run);
-	
+
 	DATABASE->Set_RunningMoonBaboon(this);
 
 	m_pTransformCom->Set_Speed(0.f, 45.f);
@@ -89,7 +89,7 @@ _int CRunningMoonBaboon::Tick(_double dTimeDelta)
 
 	Calculate_Matrix(dTimeDelta);
 
-	
+
 	m_pModelCom->Update_Animation(dTimeDelta);
 	return NO_EVENT;
 }
@@ -127,11 +127,11 @@ HRESULT CRunningMoonBaboon::Render_ShadowDepth()
 
 void CRunningMoonBaboon::Movement(_double dTimeDelta)
 {
-	_vector vLook	= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-	_vector vUp		= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
-	_vector vRight	= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
+	_vector vLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+	_vector vUp = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
+	_vector vRight = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
 
-	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * MOONBABOONFORCE , XMVectorGetY(vLook) * MOONBABOONFORCE, XMVectorGetZ(vLook) * MOONBABOONFORCE));
+	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * MOONBABOONFORCE, XMVectorGetY(vLook) * MOONBABOONFORCE, XMVectorGetZ(vLook) * MOONBABOONFORCE));
 }
 
 void CRunningMoonBaboon::Calculate_Matrix(_double dTimeDelta)
@@ -145,11 +145,11 @@ void CRunningMoonBaboon::Calculate_Matrix(_double dTimeDelta)
 	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position());
 	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
 	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
-	
+
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);	
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
 void CRunningMoonBaboon::Add_LerpInfo()
@@ -175,8 +175,8 @@ void CRunningMoonBaboon::LaserHit_Movement(_double dTimeDelta)
 		}
 
 		if (m_fJetPackTime > 1.f && m_fJetPackTime < 7.f)
-		{	
-			if(m_fJetAcceleration < 5.5f)
+		{
+			if (m_fJetAcceleration < 5.5f)
 				m_fJetAcceleration += (_float)dTimeDelta * 4.f;
 
 			if (m_bJetPackAnimOnce == false)
@@ -209,7 +209,7 @@ void CRunningMoonBaboon::LaserHit_Movement(_double dTimeDelta)
 				m_fJetPackTime = 0.f;
 			}
 
-		
+
 		}
 	}
 }
@@ -238,7 +238,7 @@ HRESULT CRunningMoonBaboon::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->setLinearDamping(1.5f);
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 	//m_pDynamicActorCom->Get_Actor()->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD_FRICTION, true);
-	/*PxShape* pShape = nullptr; 
+	/*PxShape* pShape = nullptr;
 	m_pDynamicActorCom->Get_Actor()->getShapes(&pShape, 1);
 	pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);*/
 

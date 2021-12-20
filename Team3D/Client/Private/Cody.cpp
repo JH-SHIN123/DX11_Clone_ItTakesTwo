@@ -627,7 +627,7 @@ void CCody::KeyInput(_double dTimeDelta)
 
 		if (m_IsJumping == false)
 		{
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+			EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
 
 			m_fAcceleration = 5.f;
 			m_pModelCom->Set_Animation(ANI_C_Roll_Start);
@@ -1639,6 +1639,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 				m_pActorCom->Set_Scale(2.f, 2.f);
 				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_LARGE);
 				m_bChangeSizeEffectOnce = true;
+				EFFECT->Add_Effect(Effect_Value::Cody_Size_ShokeWave, m_pTransformCom->Get_WorldMatrix());
 			}
 			if (m_vScale.x < 5.f)
 			{
@@ -1675,10 +1676,11 @@ void CCody::Change_Size(const _double dTimeDelta)
 			{
 				// Radiar Blur
 				Start_RadiarBlur(0.3f);
-
+				
 				m_pActorCom->Set_Scale(0.5f, 0.5f);
 				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_LARGE_MIDDLE);
 				m_bChangeSizeEffectOnce = true;
+				EFFECT->Add_Effect(Effect_Value::Cody_Size_ShokeWave, m_pTransformCom->Get_WorldMatrix());
 			}
 			if (m_vScale.x > 1.f)
 			{

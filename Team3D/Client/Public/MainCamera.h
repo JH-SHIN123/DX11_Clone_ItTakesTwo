@@ -34,6 +34,7 @@ public:
 	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal,matWorld); }
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
+	_int	ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook = false, _bool bIsCalculateCamLook = false);		//카메라가 초기상태로 돌아옴
 private:
 	_int	Check_Player(_double dTimeDelta);
 	void	Set_Zoom(_float fZoomVal, _double dTimeDelta);
@@ -66,7 +67,6 @@ private:
 	_float	DotProgress(_float fOffSetDist);	//직선구간
 	_float  DotProgress_Bezier(_float fOffSetDist);
 private:
-	_int	ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook = false);		//카메라가 초기상태로 돌아옴
 	_int	ReSet_Cam_Free_OnRail();
 	_bool	OffSetPhsX(_fvector vEye,_fvector vAt,_double dTimeDelta,_vector * pOut);
 

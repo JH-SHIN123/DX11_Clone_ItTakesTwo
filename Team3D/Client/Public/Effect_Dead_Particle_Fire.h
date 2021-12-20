@@ -29,7 +29,7 @@ public:
 
 private:
 	HRESULT Ready_Instance();		// 파티클
-	//HRESULT Ready_Point();			// 스모크
+	//HRESULT Ready_Point();		// 스모크
 	HRESULT Ready_Point_Small();	// 스모크 2
 	_float4 Set_particleUV(_int iIndex, _int U, _int V);
 
