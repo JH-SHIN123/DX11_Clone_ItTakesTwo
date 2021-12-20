@@ -33,7 +33,7 @@ HRESULT CEffect_Boss_GroundPound::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_GroundPound::Tick(_double TimeDelta)
 {
-	//if (0.0 >= m_dLifeTime)
+	//if(nullptr != DATABASE->Get_MoonUFO())
 	//	return EVENT_DEAD;
 
 	m_fTime -= (_float)TimeDelta * 0.25f;

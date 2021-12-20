@@ -127,7 +127,7 @@ void CControlRoom_Battery::Set_UIDisable(_bool IsCheck)
 _int CControlRoom_Battery::InterActive_Battery(_double TimeDelta)
 {
 
-	if (true == m_IsCollision && m_pGameInstance->Key_Down(DIK_F) && false == m_IsPlayerInterActive)
+	if (true == m_IsCollision && m_pGameInstance->Key_Down(DIK_E) && false == m_IsPlayerInterActive)
 		m_IsPlayerInterActive = true;
 
 	if (true == m_IsPlayerInterActive)

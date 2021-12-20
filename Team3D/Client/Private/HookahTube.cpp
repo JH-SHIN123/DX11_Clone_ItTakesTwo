@@ -91,6 +91,8 @@ void CHookahTube::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameOb
 	/* Cody */
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
+		m_pGameInstance->Stop_Sound(CHANNEL_TUBE);
+		m_pGameInstance->Play_Sound(TEXT("Tube.wav"), CHANNEL_TUBE);
 		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eHOOKAHTUBE, true, this);
 		m_bTrigger = true;
 	}
@@ -98,6 +100,8 @@ void CHookahTube::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameOb
 	/* May */
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
+		m_pGameInstance->Stop_Sound(CHANNEL_TUBE);
+		m_pGameInstance->Play_Sound(TEXT("Tube.wav"), CHANNEL_TUBE);
 		((CMay*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eHOOKAHTUBE, true, this);
 		m_bTrigger = true;
 	}
@@ -158,7 +162,7 @@ HRESULT CHookahTube::Ready_Component(void * pArg)
 	Safe_Delete(geom);
 
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) - 0.7f);
+	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition));
 	m_pTriggerActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(vPosition)));
 
 	return S_OK;

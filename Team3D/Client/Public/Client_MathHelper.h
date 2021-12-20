@@ -37,9 +37,9 @@ namespace Client
 		//Result.r[2] = vLook;
 		//Result.r[3] = vPos;
 
-		_float fX = abs(XMVectorGetX(vNormalizedUp));
-		_float fY = abs(XMVectorGetY(vNormalizedUp));
-		_float fZ = abs(XMVectorGetZ(vNormalizedUp));
+		_float fX = fabs(XMVectorGetX(vNormalizedUp));
+		_float fY = fabs(XMVectorGetY(vNormalizedUp));
+		_float fZ = fabs(XMVectorGetZ(vNormalizedUp));
 
 		_float fMax = fmax(fmax(fX, fY), fZ);
 

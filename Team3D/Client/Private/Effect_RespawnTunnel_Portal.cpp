@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Effect_RespawnTunnel_Portal.h"
+#include "Effect_Env_Particle.h"
+#include "Effect_Env_Particle_Follow.h"
 
 CEffect_RespawnTunnel_Portal::CEffect_RespawnTunnel_Portal(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
@@ -29,13 +31,25 @@ HRESULT CEffect_RespawnTunnel_Portal::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Smoke_Flow_02", TEXT("Com_Textures_Smoke"), (CComponent**)&m_pTexturesCom_Smoke), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, L"Component_Texture_Smoke_Flow_01", TEXT("Com_Textures_Smoke2"), (CComponent**)&m_pTexturesCom_Smoke2), E_FAIL);
 
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObject_2D_Env_Particle", &CEffect_Env_Particle::tagEnvParticle(CEffect_Env_Particle::Portal), (CGameObject**)&m_pParticle), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Effect", Level::LEVEL_STAGE, L"GameObject_2D_Env_Particle_Follow", &CEffect_Env_Particle::tagEnvParticle(CEffect_Env_Particle::Portal), (CGameObject**)&m_pParticleFollow), E_FAIL);
+
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	WorldMatrix.r[0] *= -1.f;
 	WorldMatrix.r[2] *= -1.f;
 	WorldMatrix.r[3].m128_f32[1] += 7.f;
 	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
-
 	m_pTransformCom->Set_Scale(XMVectorSet(0.5f, 0.5f, 0.5f, 0.f));
+
+	//m_pParticle->Set_InstanceCount(100);
+	//m_pParticle->Set_ParentMatrix(WorldMatrix);
+	//m_pParticle->Set_Particle_Radius(_float3(5.5f, 5.5f, 1.f));
+
+	m_pParticleFollow->Set_InstanceCount(80);
+	m_pParticleFollow->Set_Follow_Distance(8.f);
+	m_pParticleFollow->Set_ParentMatrix(WorldMatrix);
+	m_pParticleFollow->Set_Particle_Radius(_float3(5.5f, 5.5f, 1.f));
+
 
 	Ready_Instance();
 
@@ -55,6 +69,12 @@ _int CEffect_RespawnTunnel_Portal::Tick(_double TimeDelta)
 
 	//Check_Smoke(TimeDelta);
 
+	m_dAlphaTime += TimeDelta * 0.5;
+	if (1.0 < m_dAlphaTime)
+		m_dAlphaTime = 1.0;
+
+	//m_pParticle->Set_ControlTime(m_dAlphaTime);
+
 	return _int();
 }
 
@@ -70,19 +90,19 @@ HRESULT CEffect_RespawnTunnel_Portal::Render(RENDER_GROUP::Enum eGroup)
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 
-	_float fRadian = XMConvertToRadians((_float)m_dAngle);
-
+	_float fAlphaTime	 = (_float)m_dAlphaTime;
+	_float fRadian		 = XMConvertToRadians((_float)m_dAngle);
 	_float2 vColorRampUV = { m_fColorRamp_U, 0.f };
-	m_pModelCom->Set_Variable("g_vColorRamp_UV",&vColorRampUV,	sizeof(_float2));
-	m_pModelCom->Set_Variable("g_fRadianAngle",&fRadian,	sizeof(_float));
+
+	m_pModelCom->Set_Variable("g_fAlpha", &fAlphaTime, sizeof(_float));
+	m_pModelCom->Set_Variable("g_vColorRamp_UV",&vColorRampUV, sizeof(_float2));
+	m_pModelCom->Set_Variable("g_fRadianAngle",&fRadian, sizeof(_float));
 	m_pModelCom->Set_ShaderResourceView("g_ColorRampTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(11));
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Render_Model(4);
 
-
 	//// Smoke
 	//Set_Shader_SmokeData();
-	//
 	//m_pPointInstanceCom_Smoke->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Smoke2->Get_ShaderResourceView(0));
 	//m_pPointInstanceCom_Smoke->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Smoke->Get_ShaderResourceView(0));
 	//m_pPointInstanceCom_Smoke->Render(0, m_pInstanceBuffer_Smoke, m_iInstanceCount_Smoke, 0);
@@ -293,6 +313,8 @@ void CEffect_RespawnTunnel_Portal::Free()
 	Safe_Release(m_pPointInstanceCom_Smoke);
 	Safe_Release(m_pTexturesCom_Smoke);
 	Safe_Release(m_pTexturesCom_Smoke2);
+	Safe_Release(m_pParticleFollow);
+	Safe_Release(m_pParticle);
 
 	Safe_Delete_Array(m_pInstanceBuffer_Smoke);
 	Safe_Delete_Array(m_pInstanceBuffer_Smoke_Dir);

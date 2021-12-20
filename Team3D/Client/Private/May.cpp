@@ -9,7 +9,7 @@
 #include "SpaceRail_Node.h"
 #include "HookUFO.h"
 #include "Gauge_Circle.h"
-
+#include"CutScenePlayer.h"
 #include "Effect_Generator.h"
 #include "Effect_May_Boots.h"
 /* For.PinBall */
@@ -178,7 +178,13 @@ void CMay::Add_LerpInfo_To_Model()
 _int CMay::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
-
+	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
+	{
+		m_pActorCom->Set_ZeroGravity(true, true, true);
+		m_pActorCom->Update(dTimeDelta); 
+		m_pModelCom->Update_Animation(dTimeDelta);
+		return NO_EVENT;
+	}
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
@@ -255,7 +261,12 @@ _int CMay::Tick(_double dTimeDelta)
 _int CMay::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
-
+	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
+	{
+		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		return NO_EVENT;
+	}
 	/* LateTick : 레일의 타겟 찾기*/
 	Find_TargetSpaceRail();
 	ShowRailTargetTriggerUI();
@@ -528,7 +539,7 @@ void CMay::KeyInput(_double dTimeDelta)
 			m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
 			m_pGameInstance->Play_Sound(TEXT("May_Dash.wav"), CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
-
+			EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
 
 			m_fAcceleration = 5.f;
 			m_pModelCom->Set_Animation(ANI_M_Roll_Start);
@@ -608,8 +619,50 @@ void CMay::KeyInput(_double dTimeDelta)
 
 
 	}
-
 #pragma endregion 
+
+#pragma region Effect GravityBoots
+	if (m_pActorCom->Get_IsOnGravityPath() == true)
+	{
+		m_pEffect_GravityBoots->Set_IsActivate_GravityBoots();
+
+		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog)
+		{
+			if (false == m_IsLeftFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.25f && m_pModelCom->Get_ProgressAnim() < 0.29f) // 왼발
+			{
+				m_pEffect_GravityBoots->Add_WalkingParticle(false);
+				m_IsLeftFoot_Effect = true;
+				m_IsRightFoot_Effect = false;
+			}
+			if (false == m_IsRightFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.65f && m_pModelCom->Get_ProgressAnim() < 0.68f)// 오른발
+			{
+				m_pEffect_GravityBoots->Add_WalkingParticle(true);
+				m_IsLeftFoot_Effect = false;
+				m_IsRightFoot_Effect = true;
+			}
+		}
+		else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint)
+		{
+			if (false == m_IsLeftFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.49f  && m_pModelCom->Get_ProgressAnim() < 0.53f) // 왼발
+			{
+				m_pEffect_GravityBoots->Add_WalkingParticle(true);
+				m_IsLeftFoot_Effect = true;
+				m_IsRightFoot_Effect = false;
+			}
+			if (false == m_IsRightFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.1f && m_pModelCom->Get_ProgressAnim() < 0.13f) // 오른발
+			{
+				m_pEffect_GravityBoots->Add_WalkingParticle(false);
+				m_IsLeftFoot_Effect = false;
+				m_IsRightFoot_Effect = true;
+			}
+		}
+		else
+		{
+			m_IsLeftFoot_Effect = false;
+			m_IsRightFoot_Effect = false;
+		}
+	}
+#pragma  endregion
 
 #else
 #pragma region Local variable
@@ -891,16 +944,42 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma region Effect GravityBoots
 	if (m_pActorCom->Get_IsOnGravityPath() == true)
 	{
+		m_pEffect_GravityBoots->Set_IsActivate_GravityBoots();
+
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog)
 		{
-			if((m_pModelCom->Get_ProgressAnim() > 0.25f && m_pModelCom->Get_ProgressAnim() < 0.28f) || (m_pModelCom->Get_ProgressAnim() > 0.65f && m_pModelCom->Get_ProgressAnim() < 0.68f))
+			if (false == m_IsLeftFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.25f && m_pModelCom->Get_ProgressAnim() < 0.29f) // 왼발
+			{
+				m_pEffect_GravityBoots->Add_WalkingParticle(false);
+				m_IsLeftFoot_Effect = true;
+				m_IsRightFoot_Effect = false;
+			}
+			if (false == m_IsRightFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.65f && m_pModelCom->Get_ProgressAnim() < 0.68f)// 오른발
+			{
 				m_pEffect_GravityBoots->Add_WalkingParticle(true);
+				m_IsLeftFoot_Effect = false;
+				m_IsRightFoot_Effect = true;
+			}
 		}
 		else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint)
 		{
-			if ((m_pModelCom->Get_ProgressAnim() > 0.07f && m_pModelCom->Get_ProgressAnim() < 0.11f) || (m_pModelCom->Get_ProgressAnim() > 0.5f && m_pModelCom->Get_ProgressAnim() < 0.54f))
+			if (false == m_IsLeftFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.49f  && m_pModelCom->Get_ProgressAnim() < 0.53f) // 왼발
+			{
 				m_pEffect_GravityBoots->Add_WalkingParticle(true);
-
+				m_IsLeftFoot_Effect = true;
+				m_IsRightFoot_Effect = false;
+			}
+			if (false == m_IsRightFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.1f && m_pModelCom->Get_ProgressAnim() < 0.13f) // 오른발
+			{
+				m_pEffect_GravityBoots->Add_WalkingParticle(false);
+				m_IsLeftFoot_Effect = false;
+				m_IsRightFoot_Effect = true;
+			}
+		}
+		else
+		{
+			m_IsLeftFoot_Effect = false;
+			m_IsRightFoot_Effect = false;
 		}
 	}
 #pragma  endregion
@@ -1572,6 +1651,11 @@ void CMay::SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix
 	XMStoreFloat4x4(&m_TriggerCameraWorld, vTriggerCameraWorld);
 }
 
+void CMay::SetCameraTriggerID_Pos(_fvector vCamTriggerPos)
+{
+	XMStoreFloat4(&m_vCamTriggerPos, vCamTriggerPos);
+}
+
 _bool CMay::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)
@@ -1649,6 +1733,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Enter);
 			m_pModelCom->Set_Animation(ANI_M_PinBall_MH);
 
+			UI_Generator->Delete_InterActive_UI(Player::May, UI::PinBall_Handle);
+
 			/* 플레이어->핸들방향으로 플레이어 회전 */
 			_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 			_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
@@ -1692,6 +1778,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_IsWarpNextStage = true;
 			m_IsWarpDone = true;
 			XMStoreFloat4x4(&m_TriggerTargetWorld, static_cast<CWarpGate*>(m_pTargetPtr)->Get_NextPortal_Matrix());
+			m_pCamera->Set_StartPortalMatrix(static_cast<CWarpGate*>(m_pTargetPtr)->Get_Transform()->Get_WorldMatrix());
 		}
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{
@@ -1829,6 +1916,9 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_O) && false == m_bLaserTennis)
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
+			m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
+
 			LASERTENNIS->Increase_PowerCoord();
 
 			UI_Generator->Delete_InterActive_UI(Player::May, UI::PowerCoord);
@@ -2117,6 +2207,10 @@ void CMay::PinBall(const _double dTimeDelta)
 		/* 벽 올리고 내리고 */
 		if (m_pGameInstance->Key_Down(DIK_RBRACKET) || m_pGameInstance->Pad_Key_Down(DIP_RB))
 		{
+			/* Sound */
+			m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
+			m_pGameInstance->Play_Sound(TEXT("Pinball_Wall_Change.wav"), CHANNEL_PINBALL_HANDLE);
+
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Right_Hit);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH_Hit);
 			((CPInBall_Blocked*)(CDataStorage::GetInstance()->Get_Pinball_Blocked()))->Switching();
@@ -2127,6 +2221,10 @@ void CMay::PinBall(const _double dTimeDelta)
 			/* 공 발사 */
 			if (m_pGameInstance->Key_Down(DIK_LBRACKET) || m_pGameInstance->Pad_Key_Down(DIP_LB))
 			{
+				/* Sound */
+				m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
+				m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Shot.wav"), CHANNEL_PINBALL_HANDLE);
+
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Left_Hit);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH_Hit);
 
@@ -2136,6 +2234,12 @@ void CMay::PinBall(const _double dTimeDelta)
 			/* 오른쪽 */
 			if (m_pGameInstance->Key_Pressing(DIK_RIGHT)/* || m_pGameInstance->Get_Pad_LStickX() > 40000*/)
 			{
+				if (false == m_IsPinBallSoundCheck)
+				{
+					m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Move.wav"), CHANNEL_PINBALL_HANDLEMOVE, 1.f, true);
+					m_IsPinBallSoundCheck = true;
+				}
+
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Right);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
 
@@ -2146,6 +2250,13 @@ void CMay::PinBall(const _double dTimeDelta)
 			/* 왼쪽 */
 			else if (m_pGameInstance->Key_Pressing(DIK_LEFT)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
 			{
+				/* Sound */
+				if (false == m_IsPinBallSoundCheck)
+				{
+					m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Move.wav"), CHANNEL_PINBALL_HANDLEMOVE, 1.f, true);
+					m_IsPinBallSoundCheck = true;
+				}
+
 				m_pModelCom->Set_Animation(ANI_M_PinBall_Left);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
 
@@ -2155,6 +2266,9 @@ void CMay::PinBall(const _double dTimeDelta)
 			}
 			else
 			{
+				m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLEMOVE);
+				m_IsPinBallSoundCheck = false;
+
 				m_pModelCom->Set_Animation(ANI_M_PinBall_MH);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_PinBall_MH);
 			}
@@ -2168,24 +2282,41 @@ void CMay::InUFO(const _double dTimeDelta)
 		return;
 	 
 	if (m_pGameInstance->Key_Down(DIK_Y))/* 메이 우주선 내리기 */
-		Set_UFO(false);
+	{
+		_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+		_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-	/* UFO의 월드를 적용 */
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight));
+		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
+		Set_UFO(false);
+		return;
+	}
+
+	CModel* pUFOModel = ((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Model();
 	CTransform* pUFOTransform = ((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Get_Transform();
 
-	_vector vPosition = pUFOTransform->Get_State(CTransform::STATE_POSITION);
-	_vector vUp		  = XMVector3Normalize(pUFOTransform->Get_State(CTransform::STATE_UP));
-	_vector vRight	  = XMVector3Normalize(pUFOTransform->Get_State(CTransform::STATE_RIGHT));
-	_vector vLook	  = XMVector3Normalize(pUFOTransform->Get_State(CTransform::STATE_LOOK));
+	_matrix BoneChair = pUFOModel->Get_BoneMatrix("Chair");
+	_float4x4 matWorld, matScale;
+	XMStoreFloat4x4(&matWorld, BoneChair * pUFOTransform->Get_WorldMatrix());
 
-	/* Offset */
-	vPosition -= vUp;
-	//vPosition += (vRight * 2.5f);
+	_float4 vChairPos = {};
+	memcpy(&vChairPos, &(matWorld._41), sizeof(_float4));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vChairPos));
+
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position()) * 0.8f;
+	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp)) * 0.8f;
+	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook)) * 0.8f;
 
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
 void CMay::LaserTennis(const _double dTimeDelta)
@@ -2204,12 +2335,18 @@ void CMay::LaserTennis(const _double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_I))
 	{
+		m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
+		m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
+
 		LASERTENNIS->Decrease_PowerCoord();
 		m_bLaserTennis = false;
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_O))
+	{
+		UI_Generator->Delete_InterActive_UI(Player::May, UI::PowerCoord);
 		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_MAY);
+	}
 }
 
 void CMay::Set_UFO(_bool bCheck)
@@ -2762,6 +2899,7 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 		m_pTargetRailNode = nullptr;
 		m_bOnRail = true;
 		m_bMoveToRail = false;
+		EFFECT->Add_Effect(Effect_Value::May_Rail, m_pTransformCom->Get_WorldMatrix());
 	}
 }
 void CMay::TakeRail(_double dTimeDelta)

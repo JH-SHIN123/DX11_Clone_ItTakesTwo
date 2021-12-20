@@ -137,6 +137,7 @@ _int CCamera::Tick(_double dTimeDelta)
 	m_pPipeline->Set_Transform(CPipeline::TS_FULLSCREEN_PROJ_INVERSE, XMMatrixInverse(nullptr, FullScreenProjMatrix));
 #endif
 
+
 	return NO_EVENT;
 }
 

@@ -45,6 +45,13 @@ HRESULT CLaser_LaserTennis::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 	m_pTransformCom->Set_Speed(5.f, 0.f);
 
+	/* Sound */
+	if (m_eTarget == CLaserTennis_Manager::TARGET::TARGET_CODY)
+		m_pGameInstance->Play_Sound(TEXT("MiniGame_Laser_Blue.wav"), CHANNEL_LASERTENNIS);
+
+	else
+		m_pGameInstance->Play_Sound(TEXT("MiniGame_Laser_Green.wav"), CHANNEL_LASERTENNIS);
+
 	return S_OK;
 }
 
@@ -143,6 +150,8 @@ HRESULT CLaser_LaserTennis::Ready_Component(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
+
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Test"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Laser_LaserTennis"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&tArg.vPosition), 1.f));

@@ -23,23 +23,15 @@ HRESULT CGravityPath::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	//클라
 	NULL_CHECK_RETURN(pArg, E_FAIL);
 	memcpy(&m_Static_Env_Desc, pArg, sizeof(STATIC_ENV_DESC));
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
-	//클라
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_Static_Env_Desc.szModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-	//테스트
-	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_GravityPath_01_Bend_01"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_GravityPath"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	//클라
 	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_Static_Env_Desc.WorldMatrix));
-	//테스트
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 5.f, 15.f, 1.f));
 
 	_uint iMeshCount = m_pModelCom->Get_MeshCount();
 
@@ -50,7 +42,6 @@ HRESULT CGravityPath::NativeConstruct(void * pArg)
 		m_arrUserData[iMeshIndex].eID = GameID::eGRAVITYPATH_SIDE;
 		m_arrUserData[iMeshIndex].pGameObject = this;
 
-		//클라
 		if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath01")) && (iMeshIndex == 3 || iMeshIndex == 4))
 			m_arrUserData[iMeshIndex].eID = GameID::eGRAVITYPATH_CENTER;
 		else if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath02")) && iMeshIndex == 2)
@@ -63,10 +54,6 @@ HRESULT CGravityPath::NativeConstruct(void * pArg)
 			m_arrUserData[iMeshIndex].eID = GameID::eGRAVITYPATH_CENTER;
 		else if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath06")) && (iMeshIndex == 2 || iMeshIndex == 5))
 			m_arrUserData[iMeshIndex].eID = GameID::eGRAVITYPATH_CENTER;
-
-		//테스트
-		//if (iMeshIndex == 2)
-		//	m_arrUserData[iMeshIndex].eID = GameID::eGRAVITYPATH_CENTER;
 	}
 
 	CSepdStaticActor::ARG_DESC ArgDesc;
@@ -84,6 +71,17 @@ _int CGravityPath::Tick(_double TimeDelta)
 {
 	CGameObject::Tick(TimeDelta);
 
+	if (m_dOptionChangeTerm <= 0.0)
+	{
+		m_dOptionChangeTerm = 0.5;
+
+		if (m_fDrawOption < 3.f)
+			m_fDrawOption += 1.f;
+		else
+			m_fDrawOption = 0.f;
+	}
+	
+	m_dOptionChangeTerm -= TimeDelta;
 
 	return NO_EVENT;
 }
@@ -104,6 +102,8 @@ HRESULT CGravityPath::Render(RENDER_GROUP::Enum eRender)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
+
+	m_pModelCom->Set_Variable("g_fOption", &m_fDrawOption, sizeof(_float));
 	m_pModelCom->Render_Model(1);
 
 	return S_OK;
@@ -116,7 +116,7 @@ HRESULT CGravityPath::Render_ShadowDepth()
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 	// Skinned: 2 / Normal: 3
-	m_pModelCom->Render_Model(3, 0, true);
+	m_pModelCom->Render_Model(0, 0, true);
 
 	return S_OK;
 }

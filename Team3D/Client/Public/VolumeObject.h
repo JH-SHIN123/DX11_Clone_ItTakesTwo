@@ -6,27 +6,28 @@
 BEGIN(Engine)
 class CRenderer;
 class CTransform;
-class CModel_Instance;
+class CModel;
 END
 
 BEGIN(Client)
-class CStaticVolume final : public CGameObject
+class CVolumeObject final : public CGameObject
 {
 public:
-	enum TYPE { TYPE_SPHERE, TYPE_CUBE, TYPE_CYLINDER, TYPE_CONE, TYPE_END };
+	enum TYPE { TYPE_SPHERE, TYPE_CUBE, TYPE_CYLINDER, TYPE_CONE, TYPE_END};
 
 	typedef struct tagVolumeDesc
 	{
-		CModel_Instance::ARG_DESC	Instancing_Arg;
-		TYPE						eVolumeType = TYPE_END;
-		_float3*					arrInnerColor = nullptr; // 인스턴스 개수만큼
-		_float3*					arrOuterColor = nullptr;
+		_float4x4	WorldMatrix				= MH_XMFloat4x4Identity();
+		TYPE		eVolumeType				= TYPE_END;
+		_float		fCullRadius				= 50.f;
+		_float3		vInnerColor				= { 1.f,1.f,1.f };
+		_float3		vOuterColor				= { 1.f,1.f,1.f };
 	}VOLUME_DESC;
 
 private:
-	explicit CStaticVolume(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CStaticVolume(const CStaticVolume& rhs);
-	virtual ~CStaticVolume() = default;
+	explicit CVolumeObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CVolumeObject(const CVolumeObject& rhs);
+	virtual ~CVolumeObject() = default;
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -37,18 +38,17 @@ public:
 
 private:
 	VOLUME_DESC m_tVolumeDesc;
-	_float4x4*	m_arrWorldMatrices_InnerColor = nullptr;
-	_float4x4*	m_arrWorldMatrices_OuterColor = nullptr;
 
 private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
-	CModel_Instance*	m_pModelCom = nullptr;
+	CModel*				m_pModelCom = nullptr;
 
 public:
-	static CStaticVolume* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CVolumeObject* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
+
 };
 END

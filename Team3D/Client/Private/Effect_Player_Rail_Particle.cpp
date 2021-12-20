@@ -41,9 +41,15 @@ HRESULT CEffect_Player_Rail_Particle::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
 
 	if (EFFECT_DESC_CLONE::PV_MAY == m_EffectDesc_Clone.iPlayerValue)
+	{
+		m_iColorIndex = 2;
 		m_pTargetObject = DATABASE->GetMay();
+	}
 	else
+	{
+		m_iColorIndex = 6;
 		m_pTargetObject = DATABASE->GetCody();
+	}
 	NULL_CHECK_RETURN(m_pTargetObject, E_FAIL);
 	Safe_AddRef(m_pTargetObject);
 
@@ -97,7 +103,7 @@ HRESULT CEffect_Player_Rail_Particle::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fTime, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(6));
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(m_iColorIndex));
 
 	m_pPointInstanceCom_STT->Render(6, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 

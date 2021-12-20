@@ -49,7 +49,7 @@ protected:
 	class CPipeline*	m_pPipeline = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CAMERA_DESC			m_CameraDesc;
-
+	_bool				m_bMakeViewMatrixByCamDesc = true;
 public:
 	virtual CGameObject* Clone_GameObject(void* pArg) PURE;
 	virtual void Free() PURE;

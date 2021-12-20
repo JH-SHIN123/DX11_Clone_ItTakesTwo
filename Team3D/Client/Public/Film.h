@@ -67,7 +67,8 @@ public:
 	_fmatrix Get_CurNodeMatrix(ScreenType eScreenType, _float* fOutFovY);
 
 	_fmatrix MakeCurCamMatrix(_double dTimeDelta, CamNode* pCurNode, ScreenType eScreenType);
-	void ReSetFilm(ScreenType eScreenType);
+	void	ReSetFilm(ScreenType eScreenType);
+	void	MakeUpNodesTimeByFar();	//속도는 1이라 가정하고 구함
 public:
 	static CFilm* Create(const _tchar* pFilmName);
 	virtual void Free()override;
@@ -79,8 +80,7 @@ private:	//For.Camera
 	void	 ReSet_CamNodeTime_Progress_End(ScreenType eScreenType, CamMoveOption eOption, CamNodeVectorType eType, _uint iCurrentNode);
 	_float3	 MakeBezier3(_float3& v1, _float3& v2, _float3& v3, _double dTime);
 	_float3	 MakeBezier4(_float3& v1, _float3& v2, _float3& v3, _float3& v4, _double dTime);
-
-
+	void	Set_ViewPort(CamNode* pNode);
 private:
 	
 	TCHAR m_szFilmName[MAX_PATH] = L"";

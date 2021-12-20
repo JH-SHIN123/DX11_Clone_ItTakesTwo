@@ -67,7 +67,11 @@ _int CPinBall_Handle::Tick(_double dTimeDelta)
 		Respawn_Pos(dTimeDelta);
 	}
 
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::PinBall_Handle, m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f, m_IsCollision);
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vRight = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
+
+	vPosition -= vRight;
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::PinBall_Handle, vPosition, 5.f, m_IsCollision);
 
 	return NO_EVENT;
 }
@@ -107,7 +111,8 @@ HRESULT CPinBall_Handle::Render_ShadowDepth()
 
 void CPinBall_Handle::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY && false == m_bPlayerMove)
+
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY && true == m_bFinish)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALLHANDLE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollision = true;

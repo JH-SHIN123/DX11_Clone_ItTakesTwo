@@ -218,9 +218,22 @@ public:
 	_bool			 Get_IsInRocket() { return m_IsBossMissile_Control; }
 	_bool			 Get_PushingBattery() { return m_IsPushingBattery; }
 	_uint			 Get_CurState() const;
+	_bool			 Get_IsPlayerInUFO();
+	_float4x4		 Get_TriggerTargetWorld() { return m_TriggerTargetWorld; }
+	_bool			 Get_IsWarpNextStage() { return m_IsWarpNextStage; }
+	_bool			 Get_IsWarpDone() { return m_IsWarpDone; }
+	_float			 Get_Acceleration() { return m_fAcceleration; }
+	_bool			 Get_IsRoll() { return m_bRoll; }
+	_bool			 Get_IsAirDash() { return m_IsAirDash; }
+
 	_vector			 Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
+	_vector			 Get_CamTriggerPos() { return XMLoadFloat4(&m_vCamTriggerPos); }
 	_bool			 Get_IsHooking() { return m_IsHookUFO; }
 	_bool			 Get_IsInArcadeJoyStick() { return m_IsInJoyStick; }
+
+	_bool			 Get_IsControllJoyStick() { return m_IsControlJoystick; }
+	_bool			 Get_IsPinBall() { return m_IsPinBall; }
+	_bool			 Get_IsWallJump() { return m_IsCamTriggerCollide; }
 	_bool			 Get_OnRail() { return m_bOnRail; }
 	_bool			 Get_IsEnding() { return m_IsEnding; }
 public:
@@ -355,13 +368,14 @@ public:
 	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
 	void SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject* pTargetPtr);
 	void SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerCameraWorld);
-
+	void SetCameraTriggerID_Pos(_fvector vCamTriggerPos);
 private:
 	// CameraTrigger 
 	CAMERA_WORK_STATE m_eCameraWorkState = STATE_END;
 	GameID::Enum m_eCameraTriggerID = GameID::Enum::eWORMHOLE;
 	_bool m_IsCamTriggerCollide = false;
 	_float4x4 m_TriggerCameraWorld = {};
+	_float4 m_vCamTriggerPos = {};
 
 
 	// NormalTrigger
@@ -417,6 +431,7 @@ private:
 	/* For.Planet */
 	_bool m_IsHitPlanet = false;
 	_bool m_IsHitPlanet_Effect = false;
+	_bool m_IsHitPlanet_Once = false;
 
 	/* For.HookUFO */
 	_bool m_IsHookUFO = false;

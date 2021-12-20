@@ -4,9 +4,7 @@
 
 CPath::CPath(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)
-	, m_pModel_Loader(CModel_Loader::GetInstance())
 {
-	Safe_AddRef(m_pModel_Loader);
 }
 
 CPath::CPath(const CPath& rhs)
@@ -53,7 +51,6 @@ void CPath::Get_FramesWorldMatrices(vector<_uint>& OutFrameIndices, vector<_floa
 
 HRESULT CPath::NativeConstruct_Prototype(const _tchar* pFilePath, const _tchar* pPathTag, _fmatrix PivotMatrix)
 {
-	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
 	NULL_CHECK_RETURN(pFilePath, E_FAIL);
 	NULL_CHECK_RETURN(pPathTag, E_FAIL);
 
@@ -66,7 +63,7 @@ HRESULT CPath::NativeConstruct_Prototype(const _tchar* pFilePath, const _tchar* 
 	lstrcpy(m_szPathTag, pPathTag);
 
 	/* Load Path Anim */
-	FAILED_CHECK_RETURN(m_pModel_Loader->Load_PathFromFile((void**)(&m_pPathAnim), pFilePath), E_FAIL);
+	FAILED_CHECK_RETURN(CModel_Loader::Load_PathFromFile((void**)(&m_pPathAnim), pFilePath), E_FAIL);
 	
 	/* Set Duration */
 	m_dDurationTime = m_pPathAnim->Get_Duration();
@@ -241,8 +238,6 @@ CComponent* CPath::Clone_Component(void* pArg)
 void CPath::Free()
 {
 	Safe_Release(m_pPathAnim);
-
-	if(false == m_isClone) Safe_Release(m_pModel_Loader);
 
 	CComponent::Free();
 }

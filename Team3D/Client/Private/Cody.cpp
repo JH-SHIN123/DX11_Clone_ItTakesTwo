@@ -14,7 +14,7 @@
 #include "ControlRoom_Battery.h"
 #include "HookUFO.h"
 #include "Gauge_Circle.h"
-
+#include"CutScenePlayer.h"
 /* For. PinBall */
 #include "PinBall.h"
 #include "PinBall_Door.h"
@@ -239,7 +239,13 @@ void CCody::Add_LerpInfo_To_Model()
 _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
-
+	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
+	{
+		m_pActorCom->Set_ZeroGravity(true, true, true);
+		m_pActorCom->Update(dTimeDelta); 
+		m_pModelCom->Update_Animation(dTimeDelta);
+		return NO_EVENT;
+	}
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
@@ -335,6 +341,13 @@ _int CCody::Tick(_double dTimeDelta)
 _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
+
+	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
+	{
+		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		return NO_EVENT;
+	}
 
 	/* LateTick : 레일의 타겟 찾기*/
 	Find_TargetSpaceRail();
@@ -486,7 +499,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	}
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 	{
-		m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(67.9958f, 599.431f, 1002.82f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(true);
 	}
 	//if (m_pGameInstance->Key_Down(DIK_0))/* 우산 */
@@ -502,7 +515,8 @@ void CCody::KeyInput(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_BACKSPACE))/* 우산 */
 	{
-		m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+		//m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 
@@ -643,7 +657,7 @@ void CCody::KeyInput(_double dTimeDelta)
 
 		if (m_IsJumping == false)
 		{
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+			EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
 
 			m_fAcceleration = 5.f;
 			m_pModelCom->Set_Animation(ANI_C_Roll_Start);
@@ -813,6 +827,12 @@ void CCody::KeyInput(_double dTimeDelta)
 	}
 
 #pragma endregion
+
+	if (m_pGameInstance->Key_Down(DIK_M))
+	{
+		SCRIPT->Render_Script(m_iIndex, CScript::HALF, 1.f);
+		++m_iIndex;
+	}
 }
 
 _uint CCody::Get_CurState() const
@@ -820,6 +840,11 @@ _uint CCody::Get_CurState() const
 	if (nullptr == m_pModelCom) return 0;
 
 	return m_pModelCom->Get_CurAnimIndex();
+}
+
+_bool CCody::Get_IsPlayerInUFO()
+{
+	return m_pActorCom->Get_IsPlayerInUFO();
 }
 
 void CCody::Move(const _double dTimeDelta)
@@ -1695,6 +1720,7 @@ void CCody::Change_Size(const _double dTimeDelta)
 				m_pActorCom->Set_Scale(2.f, 2.f);
 				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_MIDDLE_LARGE);
 				m_bChangeSizeEffectOnce = true;
+				EFFECT->Add_Effect(Effect_Value::Cody_Size_ShokeWave, m_pTransformCom->Get_WorldMatrix());
 			}
 			if (m_vScale.x < 5.f)
 			{
@@ -1731,10 +1757,11 @@ void CCody::Change_Size(const _double dTimeDelta)
 			{
 				// Radiar Blur
 				Start_RadiarBlur(0.3f);
-
+				
 				m_pActorCom->Set_Scale(0.5f, 0.5f);
 				m_pEffect_Size->Change_Size(CEffect_Cody_Size::TYPE_LARGE_MIDDLE);
 				m_bChangeSizeEffectOnce = true;
+				EFFECT->Add_Effect(Effect_Value::Cody_Size_ShokeWave, m_pTransformCom->Get_WorldMatrix());
 			}
 			if (m_vScale.x > 1.f)
 			{
@@ -2017,6 +2044,11 @@ void CCody::SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatri
 	XMStoreFloat4x4(&m_TriggerCameraWorld, vTriggerCameraWorld);
 }
 
+void CCody::SetCameraTriggerID_Pos(_fvector vCamTriggerPos)
+{
+	XMStoreFloat4(&m_vCamTriggerPos, vCamTriggerPos);
+}
+
 _bool CCody::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)
@@ -2130,6 +2162,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 				m_IsHitPlanet = true;
 				m_IsHitPlanet_Effect = true;
+				m_IsHitPlanet_Once = true;
 			}
 		}
 		else if (m_eTargetGameID == GameID::eHOOKUFO && m_pGameInstance->Key_Down(DIK_F) && m_IsHookUFO == false)
@@ -2179,6 +2212,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_IsWarpNextStage	= true;
 			m_IsWarpDone		= true;
 			XMStoreFloat4x4(&m_TriggerTargetWorld, static_cast<CWarpGate*>(m_pTargetPtr)->Get_NextPortal_Matrix());
+			m_pCamera->Set_StartPortalMatrix(static_cast<CWarpGate*>(m_pTargetPtr)->Get_Transform()->Get_WorldMatrix());
 		}
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{
@@ -2281,12 +2315,18 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::ePINBALL && false == m_IsPinBall)
 		{
 			/* 핀볼모드 ON */
+			m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_DOOR);
+			m_pGameInstance->Play_Sound(TEXT("Pinball_Enter_Ball.wav"), CHANNEL_PINBALL_DOOR);
+
 			m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
 			m_IsPinBall = true;
 		}
 		else if (m_eTargetGameID == GameID::ePINBALLDOOR && m_pGameInstance->Key_Down(DIK_E))
 		{
 			/* 핀볼 문열기 */
+			m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_DOOR);
+			m_pGameInstance->Play_Sound(TEXT("Pinball_Door_Open.wav"), CHANNEL_PINBALL_DOOR);
+
 			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(false);
 		}
 		else if (m_eTargetGameID == GameID::eHOOKAHTUBE)
@@ -2378,6 +2418,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_E) && false == m_bLaserTennis)
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
+			m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
+
 			LASERTENNIS->Increase_PowerCoord();
 
 			UI_Generator->Delete_InterActive_UI(Player::Cody, UI::PowerCoord);
@@ -2701,9 +2744,16 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 	{
 		if (0.2f <= m_pModelCom->Get_ProgressAnim())
 		{
-
-			((CHangingPlanet*)(m_pTargetPtr))->Hit_Planet(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+			if (true == m_IsHitPlanet_Once)
+			{
+				((CHangingPlanet*)(m_pTargetPtr))->Hit_Planet(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+				/* Sound */
+				m_pGameInstance->Stop_Sound(CHANNEL_HANGINGPLANET);
+				m_pGameInstance->Play_Sound(TEXT("HangingPlanet_Push.wav"), CHANNEL_HANGINGPLANET);
+				m_IsHitPlanet_Once = false;
+			}
 		}
+
 		if (0.38175f <= m_pModelCom->Get_ProgressAnim())
 		{
 			if (true == m_IsHitPlanet_Effect)
@@ -3710,12 +3760,18 @@ void CCody::LaserTennis(const _double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_Q))
 	{
+		m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
+		m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
+
 		LASERTENNIS->Decrease_PowerCoord();
 		m_bLaserTennis = false;
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_E))
+	{
+		UI_Generator->Delete_InterActive_UI(Player::Cody, UI::PowerCoord);
 		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_CODY);
+	}
 }
 
 void CCody::PinBall_Respawn(const _double dTimeDelta)
