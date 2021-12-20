@@ -48,6 +48,8 @@
 #include "Effect_Boss_GroundPound_Ring.h"
 #include "Effect_Boss_GroundPound_Smoke.h"
 #include "Effect_Boss_Missile_Smoke.h"
+#include "Effect_Boss_Missile_Smoke_Black.h"	/*테스트 중*/
+#include "Effect_Boss_Missile_Smoke_Color.h"	/*테스트 중*/
 #include "Effect_Boss_Missile_Explosion.h"
 #include "Effect_Boss_Missile_Particle.h"
 #include "Effect_Boss_UFO_Flying.h"
@@ -82,6 +84,7 @@
 #include "Effect_StarBuddy_Explosion_BigBang.h"
 #include "Effect_StarBuddy_Explosion_Particle.h"
 #include "Effect_StarBuddy_Move_Particle.h"
+
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -229,7 +232,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_GroundPound_Smoke");
 		break;
 	case Effect_Value::BossMissile_Smoke:
-		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Smoke");
+		//lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Smoke");
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Missile_Smoke_Black"), &Clone_Data);
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Smoke_Color");
 		break;
 	case Effect_Value::BossMissile_Explosion:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Explosion");
@@ -520,7 +525,11 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_GroundPound_Smoke", CEffect_Boss_GroundPound_Smoke::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Missile_Smoke"))
+	{
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Smoke", CEffect_Boss_Missile_Smoke::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Smoke_Black", CEffect_Boss_Missile_Smoke_Black::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Smoke_Color", CEffect_Boss_Missile_Smoke_Color::Create(pDevice, pDeviceContext, pData));
+	}
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Missile_Explosion"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Explosion", CEffect_Boss_Missile_Explosion::Create(pDevice, pDeviceContext, pData));

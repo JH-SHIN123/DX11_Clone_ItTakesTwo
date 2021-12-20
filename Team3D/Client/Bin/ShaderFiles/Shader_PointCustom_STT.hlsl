@@ -1145,6 +1145,38 @@ PS_OUT  PS_MAIN_MISSILE_SMOKE(PS_IN_DOUBLEUV In)
 	return Out;
 }
 
+PS_OUT  PS_MAIN_MISSILE_SMOKE_BLACK(PS_IN_DOUBLEUV In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	vDiff.rgb *= In.fTime;
+
+	//vDiff.rgb *= In.fTime;
+	vDiff.a = (vDiff.r + vDiff.g)* In.fTime;
+
+	Out.vColor = vDiff;
+
+	return Out;
+}
+
+PS_OUT  PS_MAIN_MISSILE_SMOKE_COLOR(PS_IN_DOUBLEUV In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	vDiff.a = vDiff.r * In.fTime;
+	vDiff.gb = vDiff.r;
+
+	float2 vUV = (float2)0;
+	vUV.x = (vDiff.r + vDiff.g) * 0.5f;
+	vDiff.rgb *= g_ColorTexture.Sample(DiffuseSampler, vUV).rgb;
+
+	Out.vColor = vDiff;
+
+	return Out;
+}
+
 PS_OUT  PS_MAIN_MISSILE_EXPLOSION(PS_IN_DOUBLEUV In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -1445,13 +1477,24 @@ technique11		DefaultTechnique
 		PixelShader = compile ps_5_0  PS_PINBALL_DUST();
 	}
 
-	//pass PS_ENV_DUST // 15
-	//{
-	//	SetRasterizerState(Rasterizer_NoCull);
-	//	SetDepthStencilState(DepthStecil_No_ZWrite, 0);
-	//	SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-	//	VertexShader = compile vs_5_0  VS_MAIN();
-	//	GeometryShader = compile gs_5_0  GS_MAIN();
-	//	PixelShader = compile ps_5_0  PS_ENV_DUST();
-	//}
+	pass Missile_Smoke_Black // 18
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
+		PixelShader = compile ps_5_0  PS_MAIN_MISSILE_SMOKE_BLACK();
+	}
+
+	pass Missile_Smoke_Color // 19
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
+		PixelShader = compile ps_5_0  PS_MAIN_MISSILE_SMOKE_COLOR();
+	}
+
 }

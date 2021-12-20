@@ -1937,6 +1937,12 @@
     <ClInclude Include="..\public\Effect_StarBuddy_Move_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_Boss_Missile_Smoke_Color.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\00.Color</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Boss_Missile_Smoke_Black.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\01.Black</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2796,6 +2802,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_StarBuddy_Move_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Boss_Missile_Smoke_Color.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\00.Color</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Boss_Missile_Smoke_Black.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\01.Black</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

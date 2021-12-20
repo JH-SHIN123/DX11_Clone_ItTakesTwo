@@ -255,6 +255,8 @@
     <ClInclude Include="..\public\Effect_Boss_Missile_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Missile_Particle.h" />
     <ClInclude Include="..\public\Effect_Boss_Missile_Smoke.h" />
+    <ClInclude Include="..\Public\Effect_Boss_Missile_Smoke_Black.h" />
+    <ClInclude Include="..\Public\Effect_Boss_Missile_Smoke_Color.h" />
     <ClInclude Include="..\public\Effect_Boss_UFO_Flying.h" />
     <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle.h" />
     <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle_Flow.h" />
@@ -540,6 +542,8 @@
     <ClCompile Include="..\private\Effect_Boss_Missile_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Missile_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Missile_Smoke.cpp" />
+    <ClCompile Include="..\Private\Effect_Boss_Missile_Smoke_Black.cpp" />
+    <ClCompile Include="..\Private\Effect_Boss_Missile_Smoke_Color.cpp" />
     <ClCompile Include="..\private\Effect_Boss_UFO_Flying.cpp" />
     <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle_Flow.cpp" />

@@ -130,9 +130,7 @@ void CEffect_Boss_Missile_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
 		m_pInstance_Update_TextureUV_Time[iIndex] = 0.05;
 
 		m_pInstanceBuffer_STT[iIndex].vTextureUV.x += m_fNextUV;
-		m_pInstanceBuffer_STT[iIndex].vTextureUV.y += m_fNextUV;
 		m_pInstanceBuffer_STT[iIndex].vTextureUV.z += m_fNextUV;
-		m_pInstanceBuffer_STT[iIndex].vTextureUV.w += m_fNextUV;
 
 		if (1.f <= m_pInstanceBuffer_STT[iIndex].vTextureUV.y)
 		{
@@ -151,6 +149,8 @@ void CEffect_Boss_Missile_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
 		{
 			m_pInstanceBuffer_STT[iIndex].vTextureUV.x = 0.f;
 			m_pInstanceBuffer_STT[iIndex].vTextureUV.z = m_fNextUV;
+			m_pInstanceBuffer_STT[iIndex].vTextureUV.y += m_fNextUV;
+			m_pInstanceBuffer_STT[iIndex].vTextureUV.w += m_fNextUV;
 		}
 	}
 }
