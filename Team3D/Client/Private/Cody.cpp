@@ -780,6 +780,8 @@ void CCody::KeyInput(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_M))
 		Set_EndingCredit();
+	if (m_pGameInstance->Key_Down(DIK_N))
+		ENDINGCREDIT->Create_Rocks();
 }
 
 _uint CCody::Get_CurState() const
@@ -3580,7 +3582,18 @@ void CCody::EndingCredit(const _double dTimeDelta)
 	if (false == m_bEndingCredit)
 		return;
 
-	m_pActorCom->Move(XMVectorSet(0.f, -10.f, 0.f, 0.f) * (_float)dTimeDelta, (_float)dTimeDelta);
+	if (true == m_bBoost)
+	{
+		m_dBoostTime += dTimeDelta;
+		if (1.f <= m_dBoostTime)
+		{
+			m_dBoostTime = 0.0;
+			m_bBoost = false;
+		}
+		m_pActorCom->Move(XMVectorSet(0.f, -20.f, 0.f, 0.f) * (_float)dTimeDelta, (_float)dTimeDelta);
+	}
+	else
+		m_pActorCom->Move(XMVectorSet(0.f, -10.f, 0.f, 0.f) * (_float)dTimeDelta, (_float)dTimeDelta);
 
 	if (m_pGameInstance->Key_Pressing(DIK_A))
 		m_pActorCom->Move(XMVectorSet(-3.f, 0.f, 0.f, 0.f) * (_float)dTimeDelta, (_float)dTimeDelta);
@@ -3638,4 +3651,5 @@ void CCody::Set_EndingCredit()
 	m_pActorCom->Set_ZeroGravity(true, false, true);
 	m_pActorCom->Set_Position(XMVectorSet(0.f, -500.f, 0.f, 1.f));
 }
+
 

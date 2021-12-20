@@ -957,6 +957,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\Rock">
       <UniqueIdentifier>{a0b69245-8c4c-41f4-aec1-511acd4c0358}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\MeshParticle">
+      <UniqueIdentifier>{8aaaa757-28eb-4382-8875-13b404f24e22}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1781,6 +1784,9 @@
     <ClInclude Include="..\Public\Rock.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\Rock</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MeshParticle.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\MeshParticle</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2577,6 +2583,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Rock.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\Rock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MeshParticle.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\MeshParticle</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

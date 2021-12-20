@@ -397,6 +397,8 @@ private:
 	_uint	 m_iHP = 12;
 	/* Hye::For.EndingCredit */
 	_bool	m_bEndingCredit = false;
+	_bool	m_bBoost = false;
+	_double m_dBoostTime = 0.0;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
@@ -510,6 +512,7 @@ public:
 	void SpaceShip_Respawn(const _double dTimeDelta);
 	_uint Get_HP() { return m_iHP; }
 	void Set_EndingCredit();
+	void Set_Boost() { m_bBoost = true; }
 private:
 	_bool Trigger_End(const _double dTimeDelta);
 	_bool Trigger_Check(const _double dTimeDelta);

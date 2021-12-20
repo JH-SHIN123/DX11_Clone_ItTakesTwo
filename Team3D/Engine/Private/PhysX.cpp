@@ -72,10 +72,10 @@ HRESULT CPhysX::Ready_PhysX(PxSimulationEventCallback* pEventCallback)
 	m_pControllerManager = PxCreateControllerManager(*m_pScene);
 
 	// юс╫ц ╧ы╢з
-	PxMaterial* pMaerial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
-	PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *pMaerial);
-	groundPlane->setName("Ground");
-	m_pScene->addActor(*groundPlane);
+	//PxMaterial* pMaerial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+	//PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *pMaerial);
+	//groundPlane->setName("Ground");
+	//m_pScene->addActor(*groundPlane);
 
 	return S_OK;
 }

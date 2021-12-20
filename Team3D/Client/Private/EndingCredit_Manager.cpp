@@ -82,7 +82,7 @@ void CEndingCredit_Manager::Add_Argument_Info(_uint iIndex, C3DText::ARG_DESC & 
 	{
 	case 0:
 		tArg.vTriggerSize = _float3(4.72f, 1.f, 0.65f);
-		tArg.fMaxScale = 3.f;
+		tArg.fMaxScale = 5.f;
 		break;
 	case 1:
 		tArg.vTriggerSize = _float3(6.02f, 1.f, 2.74f);
@@ -113,7 +113,7 @@ void CEndingCredit_Manager::Add_Argument_Info(_uint iIndex, C3DText::ARG_DESC & 
 		break;
 	case 10:
 		tArg.vTriggerSize = _float3(7.11f, 1.f, 1.58f);
-		tArg.fMaxScale = 3.f;
+		tArg.fMaxScale = 5.f;
 		break;
 	case 11:
 		tArg.vTriggerSize = _float3(10.07f, 1.f, 1.77f);
@@ -132,7 +132,7 @@ void CEndingCredit_Manager::Add_Argument_Info(_uint iIndex, C3DText::ARG_DESC & 
 		break;
 	case 16:
 		tArg.vTriggerSize = _float3(7.1f, 1.f, 0.66f);
-		tArg.fMaxScale = 3.f;
+		tArg.fMaxScale = 5.f;
 		break;
 	case 17:
 		tArg.vTriggerSize = _float3(7.88f, 1.f, 1.84f);
@@ -154,10 +154,10 @@ void CEndingCredit_Manager::Add_Argument_Info(_uint iIndex, C3DText::ARG_DESC & 
 		break;
 	case 23:
 		tArg.vTriggerSize = _float3(4.25f, 1.f, 0.83f);
-		tArg.fMaxScale = 3.f;
+		tArg.fMaxScale = 5.f;
 		break;
 	}
-	tArg.fMaxScale = 2.f;
+	tArg.fMaxScale = 3.f;
 }
 
 void CEndingCredit_Manager::Free()

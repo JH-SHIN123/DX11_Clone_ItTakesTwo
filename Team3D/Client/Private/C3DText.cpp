@@ -2,6 +2,8 @@
 #include "..\Public\C3DText.h"
 #include "EndingCredit_Manager.h"
 #include "Cody.h"
+#include "PlayerActor.h"
+#include "MeshParticle.h"
 
 
 C3DText::C3DText(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -44,9 +46,10 @@ _int C3DText::Tick(_double dTimeDelta)
 	_float fCodyY = XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	/* 플레이어가 충돌을 하지않고 지나갔을 때*/
-	if (fMyPosY > fCodyY)
+	if (fMyPosY > fCodyY + 10.f)
 	{
 		ENDINGCREDIT->Create_3DText(false);
+		Create_Particle();
 		Set_Dead();
 		return NO_EVENT;
 	}
@@ -111,7 +114,9 @@ void C3DText::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
+		((CCody*)pGameObject)->Set_Boost();
 		ENDINGCREDIT->Create_3DText(true);
+		Create_Particle();
 		Set_Dead();
 	}
 }
@@ -136,8 +141,8 @@ HRESULT C3DText::Ready_Component(void * pArg)
 
 	if (0 != tArg.iIndex && 10 != tArg.iIndex && 16 != tArg.iIndex && 23 != tArg.iIndex)
 	{
-		int iX = rand() % 21 - 10;
-		int iZ = rand() % 21 - 10;
+		_int iX = rand() % 11 - 5;
+		_int iZ = rand() % 7 - 3;
 		vPos.x += iX;
 		vPos.z += iZ;
 	}
@@ -159,6 +164,7 @@ HRESULT C3DText::Ready_Component(void * pArg)
 	m_IsBoost = tArg.IsBoost;
 	m_fTime = tArg.fTime;
 	m_fMaxScale = tArg.fMaxScale;
+	m_iIndex = tArg.iIndex;
 
 	/* Trigger */
 	PxGeometry* TriggerGeom = new PxBoxGeometry(tArg.vTriggerSize.x, tArg.vTriggerSize.y, tArg.vTriggerSize.z);
@@ -170,6 +176,26 @@ HRESULT C3DText::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerGeom);
 
+	return S_OK;
+}
+
+HRESULT C3DText::Create_Particle()
+{
+	CMeshParticle::ARG_DESC tArg;
+
+	if (0 == m_iIndex || 10 == m_iIndex || 16 == m_iIndex || 23 == m_iIndex)
+		tArg.iColorType = 0;
+	else
+		tArg.iColorType = 1;
+
+	for (_uint i = 0; i < 70; ++i)
+	{
+		_vector vPositoin = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_vector vRandomPos = XMVectorSet((rand() % 7 - 3.f), 1.5f, (rand() % 3 - 1.f), 0.f);
+		XMStoreFloat3(&tArg.vPosition, vPositoin + vRandomPos);
+
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_MeshParticle"), &tArg), E_FAIL);
+	}
 	return S_OK;
 }
 

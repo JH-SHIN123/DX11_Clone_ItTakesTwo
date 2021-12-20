@@ -48,6 +48,7 @@
 #include "Laser_LaserTennis.h"
 #include "C3DText.h"
 #include "Rock.h"
+#include "MeshParticle.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -549,6 +550,8 @@ HRESULT CEnvironment_Generator::Load_Default_Prototype_GameObject()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_3DText"), C3DText::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	/* For.Rock */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Rock"), CRock::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	/* For.MeshParticle */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MeshParticle"), CMeshParticle::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
 }

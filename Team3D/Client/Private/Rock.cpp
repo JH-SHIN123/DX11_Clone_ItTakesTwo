@@ -54,7 +54,7 @@ _int CRock::Tick(_double dTimeDelta)
 	_float fCodyY = XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
 	_float fMyY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	if (fCodyY < fMyY)
+	if (fCodyY + 10.f < fMyY)
 	{
 		_vector vCodyPos = m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION);
 		_float3 vMyPos = {};
@@ -69,10 +69,7 @@ _int CRock::Tick(_double dTimeDelta)
 		m_fScale = 0.1f;
 		m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
 
-		_vector vScale, vRotQuat, vPosition;
-		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, m_pTransformCom->Get_WorldMatrix());
-		m_pDynamicActorCom->Get_Actor()->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
-		m_pDynamicActorCom->Get_Actor()->putToSleep();
+		m_pDynamicActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION))));
 	}
 
 	return NO_EVENT;
@@ -82,7 +79,10 @@ _int CRock::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	//m_pDynamicActorCom->Update_DynamicActor();
+	PxTransform pxTrans = m_pDynamicActorCom->Get_Actor()->getGlobalPose();
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(pxTrans.p.x, pxTrans.p.y, pxTrans.p.z, 1.f));
+
+	m_pTriggerActorCom->Update_TriggerActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -111,6 +111,19 @@ HRESULT CRock::Render_ShadowDepth()
 	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
+}
+
+void CRock::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+	CGameObject::Trigger(eStatus, eID, pGameObject);
+
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	{
+		_int iRandomX = rand() % 4 - 3;
+		_int iRandomZ = rand() % 4 - 3;
+
+		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3((_float)iRandomX, -3.f, (_float)iRandomZ));
+	}
 }
 
 HRESULT CRock::Ready_Component(void * pArg)
@@ -143,11 +156,16 @@ HRESULT CRock::Ready_Component(void * pArg)
 	Safe_Delete(DynamicGeom);
 
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-	m_pDynamicActorCom->Get_Actor()->putToSleep();
 
-	//_vector vScale, vRotQuat, vPosition;
-	//XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, m_pTransformCom->Get_WorldMatrix());
-	//(m_pDynamicActorCom->Get_Actor())->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
+	/* Trigger */
+	PxGeometry* TriggerGeom = new PxSphereGeometry(1.f);
+	CTriggerActor::ARG_DESC tTriggerArgDesc;
+	tTriggerArgDesc.pGeometry = TriggerGeom;
+	tTriggerArgDesc.pTransform = m_pTransformCom;
+	tTriggerArgDesc.pUserData = &m_UserData;
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
+	Safe_Delete(TriggerGeom);
 
 	return S_OK;
 }
@@ -178,6 +196,7 @@ CGameObject * CRock::Clone_GameObject(void * pArg)
 
 void CRock::Free()
 {
+	Safe_Release(m_pTriggerActorCom);
 	Safe_Release(m_pCodyTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);

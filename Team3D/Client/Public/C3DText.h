@@ -39,12 +39,14 @@ private:
 	CTransform*			m_pCodyTransformCom = nullptr;
 
 	_bool				m_IsBoost = false;
+	_uint				m_iIndex = 0;
 	_float				m_fScale = 0.f;
 	_float				m_fMaxScale = 0.f;
 	_float				m_fTime = 0.f;
 
 private:
 	HRESULT Ready_Component(void* pArg);
+	HRESULT Create_Particle();
 
 public:
 	static C3DText* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

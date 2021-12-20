@@ -339,6 +339,7 @@
     <ClInclude Include="..\Public\MayJumpWall.h" />
     <ClInclude Include="..\Public\MayWallCameraTrigger.h" />
     <ClInclude Include="..\Public\MenuScreen.h" />
+    <ClInclude Include="..\Public\MeshParticle.h" />
     <ClInclude Include="..\Public\Moon.h" />
     <ClInclude Include="..\Public\MoonBaboon.h" />
     <ClInclude Include="..\Public\MoonBaboonCore.h" />
@@ -601,6 +602,7 @@
     <ClCompile Include="..\Private\MayJumpWall.cpp" />
     <ClCompile Include="..\Private\MayWallCameraTrigger.cpp" />
     <ClCompile Include="..\Private\MenuScreen.cpp" />
+    <ClCompile Include="..\Private\MeshParticle.cpp" />
     <ClCompile Include="..\Private\Moon.cpp" />
     <ClCompile Include="..\Private\MoonBaboon.cpp" />
     <ClCompile Include="..\Private\MoonBaboonCore.cpp" />
