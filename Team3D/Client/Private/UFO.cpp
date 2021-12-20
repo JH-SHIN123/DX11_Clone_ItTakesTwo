@@ -7,6 +7,8 @@
 #include "CutScenePlayer.h"
 #include "MoonBaboon_MainLaser.h"
 #include "Laser_TypeA.h"
+#include "Boss_Missile.h"
+#include "Effect_Generator.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -57,6 +59,10 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	XMStoreFloat4(&m_vStartTargetPos, vPos);
 	m_IsStartingPointMove = true;
 
+ 	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying, m_pTransformCom->Get_WorldMatrix());
+	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying_Particle, m_pTransformCom->Get_WorldMatrix());
+	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying_Particle_Flow, m_pTransformCom->Get_WorldMatrix());
+
 	Set_MeshRenderGroup();
 
 	return S_OK;
@@ -69,6 +75,14 @@ _int CUFO::Tick(_double dTimeDelta)
 	/* 테스트 용 */
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 		m_IsCutScene = false;
+
+	if (m_pGameInstance->Key_Down(DIK_F11))
+	{
+		CBoss_Missile::tagBossMissile_Desc MissileDesc;
+		MissileDesc.IsTarget_Cody = true;
+		MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
+	}
 
 	/* 컷 신 재생중이 아니라면 보스 패턴 진행하자 나중에 컷 신 생기면 바꿈 */
 	if (false == m_IsCutScene)

@@ -1,45 +1,47 @@
 #pragma once
 
 #include "Base.h"
+#include "Light.h"
 
 BEGIN(Engine)
-
 class CLight_Manager final : public CBase
 {
 	DECLARE_SINGLETON(CLight_Manager)
+
 private:
 	explicit CLight_Manager() = default;
 	virtual ~CLight_Manager() = default;
 
 public: /* Getter */
-	LIGHT_DESC*		Get_LightDescPtr(const _tchar* pLightTag);
-	class CLight*	Get_DirectionalLight() const { return m_pDirectionalLight; }
-
-public: /* Setter */
-	HRESULT TurnOn_Light(const _tchar* pLightTag);
-	HRESULT TurnOff_Light(const _tchar* pLightTag);
+	CLight* Get_Light(LightStatus::Enum eState, const _tchar* pLightTag, _bool bAddRef = true); /* Careful to use func, too heavy */
 
 public:
 	HRESULT Ready_LightManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight);
-	HRESULT	Reserve_Container(_uint iCount);
-	HRESULT	Add_Light(const _tchar* pLightTag, const LIGHT_DESC& pLightDesc, _bool isActive);
-	HRESULT Render_Lights();
-	void	Clear_Lights();
-	void	Clear_Buffer();
+	_int	Tick_LightManager(_double dTimeDelta); /* Static & Directional is not operate Tick */
+	HRESULT Render_LightManager();
 
-private: /* Typedef */
-	typedef unordered_map<const _tchar* ,class CLight*> LIGHTS;
-	// typedef vector<class CLight*> LIGHTS; // dynamic light (effect light)
+public:
+	HRESULT	Add_Light(LightStatus::Enum eState, CLight* pLight);
+	HRESULT Remove_Light(const _tchar* pLightTag); /* Can remove only dyamic lights and, careful to use func, too heavy */
+	void	Clear_Lights(LightStatus::Enum eState);
+
+private:
+	typedef vector<class CLight*>	STATIC_LIGHTS;
+	typedef list<class CLight*>		DYNAMIC_LIGHTS;
 
 private:
 	class CVIBuffer_RectRHW*	m_pVIBuffer = nullptr;
-	LIGHTS						m_Lights;
-	class CLight*				m_pDirectionalLight = nullptr; /* must be only one in game */
+
+private:
+	CLight*						m_pDirectionalLight = nullptr; /* must be only one in game */
+	STATIC_LIGHTS				m_StaticLights;
+	DYNAMIC_LIGHTS				m_DynamicLights;
 
 public:
-	virtual void Free() override;
-};
+	virtual void	Free() override;
+	void			Clear_All();
 
+};
 END
 
 /*

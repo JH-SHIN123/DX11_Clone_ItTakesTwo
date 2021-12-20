@@ -687,7 +687,9 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 	_vector vUpDir = (vTargetPlayerUp - vPlayerUp);
 	if (XMVectorGetX(XMVector4Length(vUpDir)) > 0.01f)
 		vPlayerUp += vUpDir * (_float)dTimeDelta * 5.f;
-	vPlayerUp = m_pMay->Get_IsInGravityPipe() ? XMVectorSet(0.f, 1.f, 0.f, 0.f) : vPlayerUp;
+
+
+	vPlayerUp = m_pMay->Get_IsInGravityPipe() || m_pMay->Get_IsInRocket()? XMVectorSet(0.f, 1.f, 0.f, 0.f) : vPlayerUp;
 	XMStoreFloat4(&m_vPlayerUp, vPlayerUp);
 
 	//_vector vPlayerUp = vTargetPlayerUp;

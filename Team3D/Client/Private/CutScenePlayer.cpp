@@ -18,7 +18,7 @@ HRESULT CCutScenePlayer::NativeConstruct(ID3D11Device* pDevice, ID3D11DeviceCont
 
 	ID3D11DeviceContext* m_pDeviceContext = pDeviceContext;
 
-	
+	ZeroMemory(m_bIsPlayedCutScene, sizeof(_bool) * (_uint)CCutScene::CutSceneOption::CutScene_End);
 
 	FAILED_CHECK_RETURN(Add_CutScene(TEXT("CutScene_Intro"),CCutScene::Create(CCutScene::CutSceneOption::CutScene_Intro)),E_FAIL);
 	FAILED_CHECK_RETURN(Add_CutScene(TEXT("CutScene_Active_GravityPath_01"), CCutScene::Create(CCutScene::CutSceneOption::CutScene_Active_GravityPath_01)), E_FAIL);

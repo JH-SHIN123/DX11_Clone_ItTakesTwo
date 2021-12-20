@@ -46,8 +46,7 @@ namespace Engine
 			eWARPGATE,
 			eWORMHOLE,
 			eFIREDOOR,
-			eBOSSMISSILE_COMBAT,
-			eBOSSMISSILE_PLAYABLE,
+			eBOSSMISSILE,
 			eGRAVITYPATH_CENTER,
 			eGRAVITYPATH_SIDE,
 			eSPACERAIL,
@@ -86,7 +85,10 @@ namespace Engine
 			eLASERTENNISPOWERCOORD,
 			eLASERTRIGGER,
 			eLASER_LASERTENNIS,
-			eRUNNINGMOONBABOON
+			eRUNNINGMOONBABOON,
+			eALIENSCREEN,
+			eRUNNINGMOONBABOONCOLLIDER,
+			eEND
 		};
 	};
 
@@ -107,5 +109,10 @@ namespace Engine
 	struct ContactStatus
 	{
 		enum Enum { eFOUND, eLOST };
+	};
+
+	struct LightStatus
+	{
+		enum Enum { eDIRECTIONAL, eSTATIC, eDYNAMIC, eEND };
 	};
 }

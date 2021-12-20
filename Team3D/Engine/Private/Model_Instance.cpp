@@ -12,9 +12,7 @@
 
 CModel_Instance::CModel_Instance(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)
-	, m_pModel_Loader(CModel_Loader::GetInstance())
 {
-	Safe_AddRef(m_pModel_Loader);
 }
 
 CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
@@ -27,6 +25,7 @@ CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
 	, m_iMaterialSetCount			(rhs.m_iMaterialSetCount)
 	, m_PxTriMeshes					(rhs.m_PxTriMeshes)
 	, m_bMultiRenderGroup			(false)
+	, m_bCreateActor				(rhs.m_bCreateActor)
 	, m_pVB							(rhs.m_pVB)
 	, m_iVertexCount				(rhs.m_iVertexCount)
 	, m_iVertexStride				(rhs.m_iVertexStride)
@@ -180,18 +179,19 @@ HRESULT CModel_Instance::Set_DefaultVariables_ShadowDepth()
 }
 
 
-HRESULT CModel_Instance::NativeConstruct_Prototype(_uint iMaxInstanceCount, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
+HRESULT CModel_Instance::NativeConstruct_Prototype(_uint iMaxInstanceCount, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName, _bool bCreateActor)
 {
-	NULL_CHECK_RETURN(m_pModel_Loader, E_FAIL);
-
 	CComponent::NativeConstruct_Prototype();
 
 	m_iMaxInstanceCount = iMaxInstanceCount;
 	m_iMaterialSetCount = iMaterialSetCount;
+	m_bCreateActor = bCreateActor;
 
-	FAILED_CHECK_RETURN(m_pModel_Loader->Load_ModelFromFile(m_pDevice, m_pDeviceContext, CModel_Loader::TYPE_INSTANCE, this, pModelFilePath, pModelFileName, iMaterialSetCount), E_FAIL);
+	FAILED_CHECK_RETURN(CModel_Loader::Load_ModelFromFile(m_pDevice, m_pDeviceContext, CModel_Loader::TYPE_INSTANCE, this, pModelFilePath, pModelFileName, iMaterialSetCount), E_FAIL);
 	FAILED_CHECK_RETURN(Apply_PivotMatrix(PivotMatrix), E_FAIL);
-	FAILED_CHECK_RETURN(Store_TriMeshes(), E_FAIL);
+
+	if (bCreateActor) { FAILED_CHECK_RETURN(Store_TriMeshes(), E_FAIL); }
+	
 	FAILED_CHECK_RETURN(Create_VIBuffer(pShaderFilePath, pTechniqueName), E_FAIL);
 	FAILED_CHECK_RETURN(Sort_MeshesByMaterial(), E_FAIL);
 
@@ -215,6 +215,9 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 
 	m_fCullingRadius = ArgDesc.fCullingRadius;
 
+	/* If m_bCreateActor is false, do not create actors. */
+	if (m_bCreateActor == false) return S_OK;
+
 	m_ppActors = new PxRigidStatic*[m_iInstanceCount * m_iMeshCount];
 
 	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
@@ -227,7 +230,7 @@ HRESULT CModel_Instance::NativeConstruct(void * pArg)
 			_uint iActorIndex = iIndex + iMeshIndex * m_iInstanceCount;
 
 			PxTriangleMeshGeometry geom(m_PxTriMeshes[iMeshIndex].pTriMesh, PxMeshScale(MH_PxVec3(vScale)));
-
+			 
 			m_ppActors[iActorIndex] = pPhysX->Create_StaticActor(MH_PxTransform(vRotQuat, vPosition), geom);
 			NULL_CHECK_RETURN(m_ppActors[iActorIndex], E_FAIL);
 		}
@@ -284,6 +287,9 @@ HRESULT CModel_Instance::Update_Model(_fmatrix TransformMatrix)
 	for (_uint iIndex = 0; iIndex < m_iInstanceCount; ++iIndex)
 	{
 		XMStoreFloat4x4(&m_arrWorldMatrices[iIndex], XMLoadFloat4x4(&m_arrWorldMatrices[iIndex]) * TransformMatrix);
+
+		/* If m_bCreateActor is false, do not update actors. */
+		if (m_bCreateActor == false) continue;
 
 		_vector vScale, vRotQuat, vPosition;
 		XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_arrWorldMatrices[iIndex]));
@@ -382,12 +388,24 @@ HRESULT CModel_Instance::Sepd_Render_Model(_uint iMaterialIndex, _uint iPassInde
 	return S_OK;
 }
 
-void CModel_Instance::Coppy_WorldMatrix(_float4x4 * pWorldMatrix_Buffer, _uint iCopyInstanceIndex)
+void CModel_Instance::Copy_WorldMatrix(_float4x4 * pWorldMatrix_Buffer, _uint iCopyInstanceIndex)
 {
 	if (m_iInstanceCount < iCopyInstanceIndex)
 		return;
 
 	m_arrWorldMatrices[iCopyInstanceIndex] = pWorldMatrix_Buffer[iCopyInstanceIndex];
+}
+
+HRESULT CModel_Instance::Set_RealTimeMatrices(_float4x4* pWorldMatrices)
+{
+	NULL_CHECK_RETURN(pWorldMatrices, E_FAIL);
+
+	for (_uint iIndex = 0; iIndex < m_iRealDrawCount; ++iIndex)
+	{
+		memcpy(&m_arrRealTimeMatrices[iIndex], &pWorldMatrices[iIndex], sizeof(_float4x4));
+	}
+
+	return S_OK;
 }
 
 HRESULT CModel_Instance::Sort_MeshesByMaterial()
@@ -567,11 +585,11 @@ HRESULT CModel_Instance::SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC * pInputEle
 	return S_OK;
 }
 
-CModel_Instance * CModel_Instance::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, _uint iMaxInstanceCount, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
+CModel_Instance * CModel_Instance::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, _uint iMaxInstanceCount, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName, _bool bCreateActor)
 {
 	CModel_Instance* pInstance = new CModel_Instance(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype(iMaxInstanceCount, pModelFilePath, pModelFileName, pShaderFilePath, pTechniqueName, iMaterialSetCount ,PivotMatrix, bNeedCenterBone, pCenterBoneName)))
+	if (FAILED(pInstance->NativeConstruct_Prototype(iMaxInstanceCount, pModelFilePath, pModelFileName, pShaderFilePath, pTechniqueName, iMaterialSetCount ,PivotMatrix, bNeedCenterBone, pCenterBoneName, bCreateActor)))
 	{
 		MSG_BOX("Failed to Create Instance - CModel_Instance");
 		Safe_Release(pInstance);
@@ -628,7 +646,6 @@ void CModel_Instance::Free()
 
 	if (false == m_isClone)
 	{
-		Safe_Release(m_pModel_Loader);
 		Safe_Delete_Array(m_pInstanceVertices);
 
 		for (auto& TriMesh : m_PxTriMeshes)

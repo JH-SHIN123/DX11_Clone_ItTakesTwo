@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Boss_Core.h"
 #include "Effect_Generator.h"
+
 CEffect_Boss_Core::CEffect_Boss_Core(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
@@ -35,7 +36,7 @@ HRESULT CEffect_Boss_Core::NativeConstruct(void * pArg)
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 
-	/*Gara*/m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 2.f, 30.f, 1.f));
+	/*Gara*/m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(58.f, 1.525f, 30.f, 1.f));
 
 	Ready_Instance();
 
@@ -67,10 +68,31 @@ _int CEffect_Boss_Core::Tick(_double TimeDelta)
 		m_pInstanceBuffer->vTextureUV = Check_UV();
 	}
 
-	/*GARA*/if (m_pGameInstance->Key_Down(DIK_V))
-	/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Hit, m_pTransformCom->Get_WorldMatrix());
-	/*GARA*/if (m_pGameInstance->Key_Down(DIK_B))
-	/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Smoke, m_pTransformCom->Get_WorldMatrix());
+	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_V))
+	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Hit, m_pTransformCom->Get_WorldMatrix());
+	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_B))
+	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Explosion, m_pTransformCom->Get_WorldMatrix());
+	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_N))
+	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Lightning, m_pTransformCom->Get_WorldMatrix());
+	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_M))
+	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Smoke, m_pTransformCom->Get_WorldMatrix());
+	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_COMMA))
+	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Lightning_Big, m_pTransformCom->Get_WorldMatrix());
+
+	//  /*GARA*/if (m_pGameInstance->Key_Down(DIK_V))
+	// 	/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb, m_pTransformCom->Get_WorldMatrix());
+	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_B))
+	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Explosion, m_pTransformCom->Get_WorldMatrix());
+	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_N))
+	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossLaser_Explosion, m_pTransformCom->Get_WorldMatrix());
+	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_M))
+	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Particle, m_pTransformCom->Get_WorldMatrix());
+	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_COMMA))
+	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound, m_pTransformCom->Get_WorldMatrix());
+	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_PERIOD))
+	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound_Smoke, m_pTransformCom->Get_WorldMatrix());
+	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_SLASH))
+	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound_Ring, m_pTransformCom->Get_WorldMatrix());
 
 	return _int();
 }
@@ -132,7 +154,7 @@ HRESULT CEffect_Boss_Core::Ready_Instance()
 	m_pInstanceBuffer->vRight	= { 1.f, 0.f, 0.f, 0.f };
 	m_pInstanceBuffer->vUp		= { 0.f, 1.f, 0.f, 0.f };
 	m_pInstanceBuffer->vLook	= { 0.f, 0.f, 1.f, 0.f };
-	m_pInstanceBuffer->vSize	= { 3.f, 3.f };
+	m_pInstanceBuffer->vSize	= { 2.5f, 2.75f };
 	m_pInstanceBuffer->vTextureUV = { 0.f, 0.f, 1.f, 1.f };
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	XMStoreFloat4(&m_pInstanceBuffer->vPosition, vPos);

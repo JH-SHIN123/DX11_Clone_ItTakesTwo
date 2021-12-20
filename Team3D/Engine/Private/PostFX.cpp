@@ -11,14 +11,28 @@ IMPLEMENT_SINGLETON(CPostFX)
 
 void CPostFX::Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos)
 {
-	m_bRadialBlur_Main = bActive;
 	m_vRadiarBlur_FocusPos_Main = vFocusPos;
+
+	if (true == bActive)
+	{
+		m_bRadialBlur_Main = true;
+		m_bRadialBlur_Main_Finish = false;
+		m_fRadialBlur_MainRatio = 1.f;
+	}
+	else
+	{
+		m_bRadialBlur_Main_Finish = true;
+		m_fRadialBlur_MainRatio = 1.f;
+	}
 }
 
 void CPostFX::Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos)
 {
 	m_bRadialBlur_Sub = bActive;
 	m_vRadiarBlur_FocusPos_Sub = vFocusPos;
+
+	if (false == m_bRadialBlur_Sub)
+		m_fRadialBlur_SubRatio = 1.0;
 }
 
 HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight)
@@ -50,6 +64,7 @@ HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDevic
 HRESULT CPostFX::PostProcessing(_double TimeDelta)
 {
 	FAILED_CHECK_RETURN(Tick_Adaptation(TimeDelta), E_FAIL);
+	FAILED_CHECK_RETURN(Tick_RadiarBlur(TimeDelta), E_FAIL);
 
 #ifdef _DEBUG
 	FAILED_CHECK_RETURN(KeyInput_Test(TimeDelta), E_FAIL);
@@ -191,29 +206,50 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqr, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_BloomScale", &m_fBloomScale, sizeof(_float));
 
+	/* Radiar Blur */
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Main", &m_bRadialBlur_Main, sizeof(m_bRadialBlur_Main)); 
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Sub", &m_bRadialBlur_Sub, sizeof(m_bRadialBlur_Sub));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Main", &m_vRadiarBlur_FocusPos_Main, sizeof(m_vRadiarBlur_FocusPos_Main));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Sub", &m_vRadiarBlur_FocusPos_Sub, sizeof(m_vRadiarBlur_FocusPos_Sub));
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_RadiarBlurMaskTex", m_pRadiarBlur_Mask->Get_ShaderResourceView(0));;
-	
+
+	m_pVIBuffer_ToneMapping->Set_Variable("g_fRadiarBlurRatio_Main", &m_fRadialBlur_MainRatio, sizeof(m_fRadialBlur_MainRatio));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_fRadiarBlurRatio_Sub", &m_fRadialBlur_SubRatio, sizeof(m_fRadialBlur_SubRatio));
+
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_RadiarBlurMaskTex", m_pRadiarBlur_Mask->Get_ShaderResourceView(0));
+
+	/* Volume */
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Front", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Front")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Back", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Back")));
+
 	_float	fCamFar;
+	_vector vCamPosition;
 	_matrix	ProjMatrixInverse;
+	_matrix	ViewMatrixInverse;
 	_float4	vViewportUVInfo;
 
+	/* For.MainView */
+	vCamPosition = pPipeline->Get_MainCamPosition();
 	fCamFar = pPipeline->Get_MainCamFar();
 	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_MAINPROJ_INVERSE);
+	ViewMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_MAINVIEW_INVERSE);
 	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_MAIN);
-	m_pVIBuffer_ToneMapping->Set_Variable("g_fMainCamFar", &fCamFar, sizeof(fCamFar));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_MainProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(ProjMatrixInverse));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_vMainViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fMainCamFar", &fCamFar, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_vMainCamPosition", &vCamPosition, sizeof(_float4)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_MainProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(_matrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_MainViewMatrixInverse", &XMMatrixTranspose(ViewMatrixInverse), sizeof(_matrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_vMainViewportUVInfo", &vViewportUVInfo, sizeof(_float4)), E_FAIL);
 
+	/* For.SubView */
+	vCamPosition = pPipeline->Get_SubCamPosition();
 	fCamFar = pPipeline->Get_SubCamFar();
 	ProjMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_SUBPROJ_INVERSE);
+	ViewMatrixInverse = pPipeline->Get_Transform(CPipeline::TS_SUBVIEW_INVERSE);
 	vViewportUVInfo = pGraphicDevice->Get_ViewportUVInfo(CGraphic_Device::VP_SUB);
-	m_pVIBuffer_ToneMapping->Set_Variable("g_fSubCamFar", &fCamFar, sizeof(fCamFar));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_SubProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(ProjMatrixInverse));
-	m_pVIBuffer_ToneMapping->Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4));
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_fSubCamFar", &fCamFar, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_vSubCamPosition", &vCamPosition, sizeof(_float4)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_SubProjMatrixInverse", &XMMatrixTranspose(ProjMatrixInverse), sizeof(_matrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_SubViewMatrixInverse", &XMMatrixTranspose(ViewMatrixInverse), sizeof(_matrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pVIBuffer_ToneMapping->Set_Variable("g_vSubViewportUVInfo", &vViewportUVInfo, sizeof(_float4)), E_FAIL);
 
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_HDRTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_PostFX")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_BloomTexture", m_pShaderResourceView_Bloom);
@@ -224,6 +260,10 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
 	m_pVIBuffer_ToneMapping->Render(0);
+
+	/* Unbind PS */
+	ID3D11ShaderResourceView* pSRV[16] = { nullptr };
+	m_pDeviceContext->PSSetShaderResources(0, 16, pSRV);
 
 	return S_OK;
 }
@@ -246,6 +286,41 @@ HRESULT CPostFX::Tick_Adaptation(_double TimeDelta)
 	}
 
 	m_fAdaptation = fAdaptNorm;
+
+	return S_OK;
+}
+
+HRESULT CPostFX::Tick_RadiarBlur(_double TimeDelta)
+{
+	_float fSpeed = 5.f;
+
+	if (m_bRadialBlur_Main_Finish)
+	{
+		if (m_fRadialBlur_MainRatio < 0)
+		{
+			m_fRadialBlur_MainRatio = 1.0;
+			m_bRadialBlur_Main_Finish = false;
+			m_bRadialBlur_Main = false;
+		}
+		else
+		{
+			m_fRadialBlur_MainRatio -= (_float)TimeDelta * fSpeed;
+		}
+	}
+
+	if (m_bRadialBlur_Sub_Finish)
+	{
+		if (m_fRadialBlur_SubRatio < 0)
+		{
+			m_fRadialBlur_SubRatio = 1.0;
+			m_bRadialBlur_Sub_Finish = false;
+			m_bRadialBlur_Sub = false;
+		}
+		else
+		{
+			m_fRadialBlur_SubRatio -= (_float)TimeDelta * fSpeed;
+		}
+	}
 
 	return S_OK;
 }

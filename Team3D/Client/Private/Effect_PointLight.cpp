@@ -43,11 +43,15 @@ HRESULT CEffect_PointLight::NativeConstruct(void * pArg)
 
 _int CEffect_PointLight::Tick(_double TimeDelta)
 {
+	if (m_isDead) return EVENT_DEAD;
+
 	return _int();
 }
 
 _int CEffect_PointLight::Late_Tick(_double TimeDelta)
 {
+	if (m_isDead) return EVENT_DEAD;
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
@@ -77,6 +81,24 @@ void CEffect_PointLight::Instance_Pos(_float TimeDelta, _int iIndex)
 
 void CEffect_PointLight::Instance_UV(_float TimeDelta, _int iIndex)
 {
+}
+
+void CEffect_PointLight::Set_Pos(_float3 vPos)
+{
+	m_pInstanceBuffer[0].vPosition.x = vPos.x;
+	m_pInstanceBuffer[0].vPosition.y = vPos.y;
+	m_pInstanceBuffer[0].vPosition.z = vPos.z;
+}
+
+void CEffect_PointLight::Set_Radius(_float vRadius)
+{
+	m_pInstanceBuffer[0].vSize.x = vRadius;
+	m_pInstanceBuffer[0].vSize.y = vRadius;
+}
+
+void CEffect_PointLight::Set_Color(EPoint_Color eColorRamp)
+{
+	m_PointLight_Desc.ColorRampNumber = eColorRamp;
 }
 
 HRESULT CEffect_PointLight::Ready_InstanceBuffer()

@@ -6,6 +6,7 @@
 #include "Moon.h"
 #include "PixelCrossHair.h"
 #include "PixelUFO.h"
+#include "RunningMoonBaboon.h"
 
 CMoonUFO::CMoonUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -162,18 +163,18 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
 	{
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * UFOFORCE, XMVectorGetY(vRight) * UFOFORCE, XMVectorGetZ(vRight) * UFOFORCE));
-		m_bRotateRight = true;
+		//m_bRotateRight = true;
 	}
-	else
-		m_bRotateRight = false;
+	//else
+		//m_bRotateRight = false;
 
 	if (m_pGameInstance->Key_Pressing(DIK_LEFT))
 	{
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * -UFOFORCE, XMVectorGetY(vRight)  * -UFOFORCE, XMVectorGetZ(vRight) * -UFOFORCE));
-		m_bRotateLeft = true;
-	}
-	else
-		m_bRotateLeft = false;
+		//m_bRotateLeft = true;
+	} 
+	//else
+		//m_bRotateLeft = false;
 
 	if (m_pGameInstance->Key_Pressing(DIK_UP))
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * UFOFORCE, XMVectorGetY(vLook) * UFOFORCE, XMVectorGetZ(vLook) * UFOFORCE));
@@ -225,9 +226,16 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	/* 레이저에 시작위치랑 방향 벡터 던져주자 */
 	XMStoreFloat4(&m_vLaserGunPos, matLaserRingWorld.r[3]);
 
-	vLaserGunDir = (XMVector3Normalize(-m_pTransformCom->Get_State(CTransform::STATE_UP)) / (2.f * fLength) + XMVector3Normalize(vLaserGunDir));
-	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(vLaserGunDir));
-
+	if (m_bCompensate == false)
+	{
+		vLaserGunDir = (XMVector3Normalize(-m_pTransformCom->Get_State(CTransform::STATE_UP)) / (2.95f * fLength) + XMVector3Normalize(vLaserGunDir));
+		XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(vLaserGunDir));
+	}
+	else
+	{
+		vLaserGunDir = XMVector3Normalize(((CRunningMoonBaboon*)DATABASE->Get_RunningMoonBaboon())->Get_Transform()->Get_State(CTransform::STATE_POSITION) - XMVectorSetW(XMLoadFloat4(&m_vLaserGunPos), 1.f));
+		XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(vLaserGunDir));
+	}
 	//XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)));
 	//XMStoreFloat4(&m_vLaserGunPos, matLaserGunWorld.r[3]);
 	//XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(matLaserGunWorld.r[2]));
@@ -282,16 +290,15 @@ HRESULT CMoonUFO::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
 	Safe_Delete(Geom);
 
-	m_pDynamicActorCom->Get_Actor()->setLinearDamping(5.f);
-//=======
-//	//m_pDynamicActorCom->Get_Actor()->setLinearDamping(0.2f);
-//
-//>>>>>>> main
+
+	m_pDynamicActorCom->Get_Actor()->setLinearDamping(1.2f);
+
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 	PxShape* pShape = nullptr;
 	m_pDynamicActorCom->Get_Actor()->getShapes(&pShape, 1);
 	pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
 
 	/* Joint */
 	PxJointLimitCone LimitCone = PxJointLimitCone(PxPi, PxPi, 0.05f);
@@ -329,6 +336,5 @@ void CMoonUFO::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
-
 	CGameObject::Free();
 }

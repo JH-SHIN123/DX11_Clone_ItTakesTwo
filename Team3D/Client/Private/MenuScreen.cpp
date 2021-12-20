@@ -64,26 +64,26 @@ _int CMenuScreen::Late_Tick(_double TimeDelta)
 	if (false == m_IsChapterScreenRender)
 		Input_ChapterScreenCreate();
 
-	if (m_pGameInstance->Key_Down(DIK_SPACE) && true == m_IsChapterScreenRender && false == m_IsReady_1P)
-	{
-		m_IsReady_1P = true;
+	//if (m_pGameInstance->Key_Down(DIK_SPACE) && true == m_IsChapterScreenRender && false == m_IsReady_1P)
+	//{
+	//	m_IsReady_1P = true;
 
-		UI_Delete(Default, HeaderBox1P);
-		UI_Create(Default, ControllerIcon_KeyBoard);
+	//	UI_Delete(Default, HeaderBox1P);
+	//	UI_Create(Default, ControllerIcon_KeyBoard);
 
-		CHeaderBox* pHeaderBox = (CHeaderBox*)UI_Generator->Get_UIObject(Player::Default, UI::HeaderBox_1p_Ready);
-		pHeaderBox->Set_ColorChange();
-	}
-	else if (/*m_pGameInstance->Pad_Key_Down(DIP_Y)*/ m_pGameInstance->Key_Down(DIK_M) && true == m_IsChapterScreenRender && false == m_IsReady_2P)
-	{
-		m_IsReady_2P = true;
+	//	CHeaderBox* pHeaderBox = (CHeaderBox*)UI_Generator->Get_UIObject(Player::Default, UI::HeaderBox_1p_Ready);
+	//	pHeaderBox->Set_ColorChange();
+	//}
+	//else if (/*m_pGameInstance->Pad_Key_Down(DIP_Y)*/ m_pGameInstance->Key_Down(DIK_M) && true == m_IsChapterScreenRender && false == m_IsReady_2P)
+	//{
+	//	m_IsReady_2P = true;
 
-		UI_Delete(Default, HeaderBox2P);
-		UI_Create(Default, ControllerIcon_Pad);
+	//	UI_Delete(Default, HeaderBox2P);
+	//	UI_Create(Default, ControllerIcon_Pad);
 
-		CHeaderBox* pHeaderBox = (CHeaderBox*)UI_Generator->Get_UIObject(Player::Default, UI::HeaderBox_2p_Ready);
-		pHeaderBox->Set_ColorChange();
-	}
+	//	CHeaderBox* pHeaderBox = (CHeaderBox*)UI_Generator->Get_UIObject(Player::Default, UI::HeaderBox_2p_Ready);
+	//	pHeaderBox->Set_ColorChange();
+	//}
 
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
@@ -144,22 +144,29 @@ HRESULT CMenuScreen::Ready_Component()
 
 void CMenuScreen::Input_SelectButton()
 {
-
 	if (m_pGameInstance->Key_Down(DIK_UP))
 	{
+		/* Sound */
+		m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
+		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_Touch.wav"), CHANNEL_BUTTON);
+
 		--m_iHeaderIndex;
 		m_IsHeaderBoxChange = true;
 
-		if (0 > m_iHeaderIndex)
+		if (0 >= m_iHeaderIndex)
 			m_iHeaderIndex = 0;
 	}
 	else if (m_pGameInstance->Key_Down(DIK_DOWN))
 	{
+		/* Sound */
+		m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
+		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_Touch.wav"), CHANNEL_BUTTON);
+
 		++m_iHeaderIndex;
 		m_IsHeaderBoxChange = true;
 
-		if (5 < m_iHeaderIndex)
-			m_iHeaderIndex = 5;
+		if (2 <= m_iHeaderIndex)
+			m_iHeaderIndex = 2;
 	}
 
 	if (true == m_IsHeaderBoxChange)
@@ -167,7 +174,7 @@ void CMenuScreen::Input_SelectButton()
 		if (true == m_IsFirst)
 		{
 			m_pHeaderBox = UI_Generator->Get_HeaderBox(0);
-			m_pHeaderBox->Set_PreviousSelect();
+			//m_pHeaderBox->Set_PreviousSelect();
 
 			m_IsFirst = false;
 		}
@@ -186,10 +193,14 @@ void CMenuScreen::Input_ChapterScreenCreate()
 {
 	if (m_pGameInstance->Key_Down(DIK_RETURN))
 	{
-		for (_uint i = 0; i < 6; ++i)
+		for (_uint i = 0; i < 3; ++i)
 		{
 			if (true == UI_Generator->Get_HeaderBox(i)->Get_LocalPlayRender() && true == UI_Generator->Get_HeaderBox(i)->Get_LogoDisappear())
 			{
+				/* Sound */
+				m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
+				m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON);
+
 				m_IsChapterScreenCreate = true;
 				break;
 			}
@@ -197,7 +208,7 @@ void CMenuScreen::Input_ChapterScreenCreate()
 
 		if (true == m_IsChapterScreenCreate)
 		{
-			for (_uint i = 0; i < 6; ++i)
+			for (_uint i = 0; i < 3; ++i)
 				UI_Generator->Get_HeaderBox(i)->Set_Dead();
 
 			UI_Generator->Create_ChapterSelect();

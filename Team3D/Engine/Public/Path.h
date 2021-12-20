@@ -40,7 +40,6 @@ private: /* Typedef */
 	typedef vector<_float4x4>				TRANSFORMATIONS;
 
 private: /* Prototype Info */
-	class CModel_Loader*	m_pModel_Loader = nullptr;
 	class CAnim*			m_pPathAnim = nullptr;
 	_tchar					m_szPathTag[MAX_PATH] = L"";
 	_double					m_dDurationTime = 0.0;

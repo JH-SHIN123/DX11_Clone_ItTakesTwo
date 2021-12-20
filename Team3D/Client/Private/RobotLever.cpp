@@ -197,14 +197,26 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 	{
 		if (m_tRobotPartsDesc.iStageNum == ST_GRAVITYPATH)
 		{
-			if (false == DATABASE->Get_GravityStageClear())
+#ifdef __PLAY_CUTSCENE
+			if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Active_GravityPath_01) )
 			{
-				CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Active_GravityPath_01");
+				CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Active_GravityPath_01"));
+				CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Active_GravityPath_01, true);
 			}
+#endif
 			DATABASE->Set_GravityStageClear(true);
 		}
 		else if (m_tRobotPartsDesc.iStageNum == ST_RAIL)
+		{
+#ifdef __PLAY_CUTSCENE
+			if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Clear_Rail))
+			{
+				CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Clear_Rail"));
+				CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Clear_Rail, true);
+			}
+#endif
 			DATABASE->Set_RailStageClear(true);
+		}
 
 		m_fStopDelay += (_float)dTimeDelta;
 		if (m_fStopDelay > 0.2f && m_fStopDelay <= 0.6f)

@@ -1,23 +1,34 @@
 #include "stdafx.h"
 #include "EffectLight.h"
-#include "Effect_Generator.h"
+#include "Effect_PointLight.h"
 
-HRESULT CEffectLight::NativeConstruct(const LIGHT_DESC& LightDesc, _uint eEffectColor, _bool isActive)
+HRESULT CEffectLight::NativeConstruct(const _tchar* pLightTag, void* pArgs)
 {
-	m_LightDesc = LightDesc;
-	m_isActive = isActive;
+	NULL_CHECK_RETURN(pLightTag, E_FAIL);
 
-	// Generate Effect
-	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(20.f, 0.25f, 1.f, LightDesc.vPosition, (EPoint_Color)eEffectColor)), E_FAIL);
+	if (nullptr != pArgs)
+		memcpy(&m_tEffectDesc, pArgs, sizeof(m_tEffectDesc));
+
+	/* Set Light */
+	CLight::NativeConstruct(pLightTag, &m_tEffectDesc.tLightDesc);
+
+	/* Set Effect */
+	FAILED_CHECK_RETURN(EFFECT->Add_PointLight(&CEffect_Generator::Effect_PointLight_Desc(m_tEffectDesc.fSize, 0.25f, 1.f, m_LightDesc.vPosition, (EPoint_Color)m_tEffectDesc.iEffectColor), (CGameObject**)&m_pEffect), E_FAIL);
+	m_pEffect->Set_Radius(m_tEffectDesc.fSize);
 
 	return S_OK;
 }
 
-CEffectLight* CEffectLight::Create(const LIGHT_DESC& LightDesc, _uint eEffectColor, _bool isActive)
+_int CEffectLight::Tick_Light(_double dTimeDelta)
 {
-	CEffectLight* pInstance = new CEffectLight();
+	return CLight::Tick_Light(dTimeDelta);
+}
 
-	if (FAILED(pInstance->NativeConstruct(LightDesc, eEffectColor, isActive)))
+CEffectLight* CEffectLight::Create(const _tchar* pLightTag, void* pArgs)
+{
+	CEffectLight* pInstance = new CEffectLight;
+
+	if (FAILED(pInstance->NativeConstruct(pLightTag, pArgs)))
 	{
 		MSG_BOX("Failed to Create Instance - CEffectLight");
 		Safe_Release(pInstance);
@@ -28,4 +39,11 @@ CEffectLight* CEffectLight::Create(const LIGHT_DESC& LightDesc, _uint eEffectCol
 
 void CEffectLight::Free()
 {
+	if (m_pEffect)
+	{
+		m_pEffect->Set_Dead();
+		Safe_Release(m_pEffect);
+	}
+
+	CLight::Free();
 }

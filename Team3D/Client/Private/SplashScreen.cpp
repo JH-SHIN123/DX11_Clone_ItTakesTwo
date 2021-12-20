@@ -62,6 +62,30 @@ _int CSplashScreen::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	if (1.f <= m_dCoolTime)
+	{
+		if (false == m_bAlphaCheck)
+		{
+			m_fFontAlpha += (_float)dTimeDelta;
+			if (1.f <= m_fFontAlpha)
+			{
+				m_fFontAlpha = 1.f;
+				m_bAlphaCheck = true;
+			}
+		}
+		else
+		{
+			m_fFontAlpha -= (_float)dTimeDelta;
+			if (0.f >= m_fFontAlpha)
+			{
+				m_fFontAlpha = 0.f;
+				m_bAlphaCheck = false;
+			}
+		}
+	}
+
+	m_dCoolTime += dTimeDelta;
+
 	return NO_EVENT;
 }
 
@@ -77,8 +101,6 @@ _int CSplashScreen::Late_Tick(_double dTimeDelta)
 	m_vMaskUV.x -= (_float)dTimeDelta * 0.02f;
 	m_vMaskUV.y -= (_float)dTimeDelta * 0.02f;
 
-	m_fFontAlpha -= (_float)dTimeDelta;
-
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
@@ -90,7 +112,7 @@ HRESULT CSplashScreen::Render(RENDER_GROUP::Enum eGroup)
 		return E_FAIL;
 
 	m_pVIBuffer_RectCom->Render(m_iPassNum);
-	
+
 	if (1 == m_iOption)
 	{
 		m_pVIBuffer_RectCom->Set_Variable("g_vScreenMaskUV", &m_vMaskUV, sizeof(_float2));
@@ -101,18 +123,17 @@ HRESULT CSplashScreen::Render(RENDER_GROUP::Enum eGroup)
 		m_pVIBuffer_RectCom->Set_Variable("g_iColorOption", &iCioror, sizeof(_int));
 		m_pVIBuffer_RectCom->Render(10);
 		++iCioror;
-		
+
 		m_pVIBuffer_RectCom->Set_Variable("g_iColorOption", &iCioror, sizeof(_int));
 		m_pVIBuffer_RectCom->Render(10);
 		++iCioror;
-		
+
 		m_pVIBuffer_RectCom->Set_Variable("g_iColorOption", &iCioror, sizeof(_int));
 		m_pVIBuffer_RectCom->Render(10);
 	}
 
 	if(1 == m_iOption && false == m_IsDisappear)
-		Render_Font();
-
+		m_pFont->Render_Font(TEXT("버튼을 눌러 계속하십시오"), _float2(640.f, 610.f), m_fFontAlpha, 0.35f);
 	return S_OK;
 }
 
@@ -128,7 +149,6 @@ void CSplashScreen::Render_Font()
 	tFontDesc.vScale = { 10.f, 20.f };
 	tFontDesc.iShaderPassNum = 3;
 
-	//d
 	UI_Generator->Render_AlphaFont(TEXT("버튼을 눌러 계속하십시오"), tFontDesc, Player::Default);
 }
 
@@ -137,6 +157,7 @@ HRESULT CSplashScreen::Ready_Component()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_FontDraw"), TEXT("Com_Font"), (CComponent**)&m_pFont), E_FAIL);
 
 	if (0 == m_iOption)
 	{
@@ -207,7 +228,11 @@ void CSplashScreen::Logo_DisAppearing(_double TimeDelta)
 		{
 			m_IsDead = true;
 
-			for (_uint i = 0; i < 6; ++i)
+			/* 인간적으로 너무 큼 */
+			m_pGameInstance->Play_Sound(TEXT("MainMenu_Bgm.ogg"), CHANNEL_LOGO, 0.05f);
+			m_pGameInstance->Lerp_Sound(CHANNEL_BGM, CHANNEL_LOGO, 1.f, 1.f, 0.05f);
+
+			for (_uint i = 0; i < 3; ++i)
 				UI_Generator->Get_HeaderBox(i)->Set_LogoDisappear();
 		}
 	}
@@ -248,6 +273,7 @@ CGameObject * CSplashScreen::Clone_GameObject(void * pArg)
 
 void CSplashScreen::Free()
 {
+	Safe_Release(m_pFont);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pTextureCom);

@@ -10,7 +10,6 @@
 #include "Effect_Generator.h"
 #include "InGameEffect.h"
 #include "WarpGate.h"
-#include "Boss_Missile.h"
 #include "Effect_Env_Particle_Field.h"
 /* Hye */
 #include "Environment_Generator.h"
@@ -18,13 +17,15 @@
 #include "HangingPlanet.h"
 /* Taek */
 #include "MoonBaboonCore.h"
-#include "Light_Generator.h"
+#include "VolumeLight.h"
+#include "LightUtility.h"
 /* Yoon */
 #include "RotatedRobotParts.h"
 #include "RobotParts.h"
 #include "ToyBoxButton.h"
 #include "Rope.h"
 #include "UFORadarSet.h"
+#include "Boss_Missile.h"
 /* Jin */
 /* Jun */
 #include "Camera.h"
@@ -40,6 +41,9 @@ CLevel_Stage::CLevel_Stage(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice
  
 HRESULT CLevel_Stage::NativeConstruct()
 {
+	/* Sound */
+	m_pGameInstance->Stop_SoundAll();
+
 	CLevel::NativeConstruct();
 
 	/* Priority */
@@ -52,6 +56,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 #ifndef __MAPLOADING_OFF
 	///* Se */
 	FAILED_CHECK_RETURN(Ready_Layer_GravityPath(TEXT("Layer_GravityPath")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Earth(TEXT("Layer_Earth")), E_FAIL);
 	/* Jung */
 	FAILED_CHECK_RETURN(Ready_Layer_WarpGate(TEXT("Layer_WarpGate")), E_FAIL);	
 	FAILED_CHECK_RETURN(Ready_Layer_Wormhole(TEXT("Layer_Wormhole")), E_FAIL);
@@ -61,7 +66,6 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Env_Particles(TEXT("Layer_Env_Particle")), E_FAIL);
 	/* Hye */
 	FAILED_CHECK_RETURN(Ready_Layer_Planet(TEXT("Layer_Planet")), E_FAIL);
-
 	/* Taek */
 	FAILED_CHECK_RETURN(Ready_Layer_ToyBoxButton(TEXT("Layer_ToyBoxButton")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboonCore(TEXT("Layer_MoonBaboonCore")), E_FAIL);
@@ -82,6 +86,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_PipeJumpWall(TEXT("Layer_PipeJumpWall")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Rope(TEXT("Layer_Rope")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_UFORadarSet(TEXT("Layer_UFORadarSet")), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Layer_TestRocket(TEXT("Layer_BossMissile")), E_FAIL);
 
 	/* Jin */
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressureBigPlate"), TEXT("GameObject_PressureBigPlate")), E_FAIL);
@@ -100,6 +105,9 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Test(), E_FAIL);
 #endif
 
+	/* Script */
+	FAILED_CHECK_RETURN(Ready_Layer_Script(TEXT("Layer_Script")), E_FAIL);
+
 	return S_OK;
 }
 
@@ -107,39 +115,17 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
 
-#ifdef __TEST_TAEK
-	TCHAR lightTag[256] = L"";
-
-	TCHAR szBuff[256] = L"";
-	GetPrivateProfileString(L"Section_2", L"Key_1", L"0", szBuff, 256, L"../test.ini");
-	lstrcpy(lightTag, szBuff);
-
-	GetPrivateProfileString(L"Section_2", L"Key_2", L"0", szBuff, 256, L"../test.ini");
-	_float a = (_float)_wtof(szBuff);
-	GetPrivateProfileString(L"Section_2", L"Key_3", L"0", szBuff, 256, L"../test.ini");
-	_float b = (_float)_wtof(szBuff);
-	GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
-	_float c = (_float)_wtof(szBuff);
-	GetPrivateProfileString(L"Section_2", L"Key_4", L"0", szBuff, 256, L"../test.ini");
-	_float d = (_float)_wtof(szBuff);
-
-	LIGHT_DESC* lightDesc = m_pGameInstance->Get_LightDescPtr(lightTag);
-
-	if (lightDesc)
-	{
-		lightDesc->vPosition = { a,b,c };
-		lightDesc->fRange = d;
-	}
+#ifdef __INSTALL_LIGHT
+	CLight_Generator::GetInstance()->KeyInput(dTimedelta);
 #endif // __TEST_TAEK
-
-#ifdef __TEST_SE
-	if (m_pGameInstance->Key_Down(DIK_M))
+	
+#ifdef __PLAY_CUTSCENE
+	if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Intro))
 	{
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA")), E_FAIL);
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB")), E_FAIL);
+		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
+		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Intro, true);
 	}
 #endif
-
 	return NO_EVENT;
 }
 
@@ -183,34 +169,73 @@ HRESULT CLevel_Stage::Ready_Test()
 {
 	/* Se */
 #ifdef __TEST_SE
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA")), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Laser", Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB")), E_FAIL);
 #endif 
+
 	/* Jung */
 #ifdef __TEST_JUNG
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core")), E_FAIL);
 
-	CEffect_Env_Particle_Field::ARG_DESC Arg_Desc;
-	Arg_Desc.iInstanceCount = 8000;
-	Arg_Desc.vPosition = { 60.f, 0.f, 30.f, 1.f };
-	Arg_Desc.vRadiusXYZ = { 30.f, 10.f, 100.f };
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
+	ROBOTDESC UFODesc;
+	UFODesc.vPosition = { 64.f, 10.f, 30.f, 1.f };
+	//UFODesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Test", Level::LEVEL_STAGE, TEXT("GameObject_UFO"), &UFODesc), E_FAIL);
+
+	CMoonBaboonCore::MOONBABOONCORE_DESC tDesc;
+	tDesc.iIndex = 0;
+	tDesc.WorldMatrix._41 = 60.f;
+	tDesc.WorldMatrix._42 = 0.f;
+	tDesc.WorldMatrix._43 = 10.f;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboonCore"), &tDesc), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_BOMB", Level::LEVEL_STAGE, TEXT("GameObject_3D_Boss_Gravitational_Bomb")), E_FAIL);
+
+	_float4 vPos = { 60.f, 0.f, 20.f, 1.f };
+	CDynamic_Env::ARG_DESC Arg;
+	Arg.iMaterialIndex = 0;
+	Arg.iOption = 0;
+	Arg.WorldMatrix = MH_XMFloat4x4Identity();
+	memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
+	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_SmallOpen_01"));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricBox", Level::LEVEL_STAGE, TEXT("GameObject_ElectricBox"), &Arg), E_FAIL);
+
+	vPos = { 60.f, 1.f, 25.f, 1.f };
+	Arg.iMaterialIndex = 0;
+	Arg.iOption = 0;
+	Arg.WorldMatrix = MH_XMFloat4x4Identity();
+	memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
+	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_Support_01"));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricWall", Level::LEVEL_STAGE, TEXT("GameObject_ElectricWall"), &Arg), E_FAIL);
+
+	vPos = { 58.f, 0.21f, 25.f, 1.f };
+	Arg.iMaterialIndex = 0;
+	Arg.iOption = 0;
+	Arg.WorldMatrix = MH_XMFloat4x4Identity();
+	memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
+	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_Interior_PedalSmasher_01"));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Press", Level::LEVEL_STAGE, TEXT("GameObject_Press"), &Arg), E_FAIL);
+	vPos = { 57.5f, 0.21f, 25.f, 1.f };
+	Arg.iOption = 1;
+	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_Interior_PedalSmasher_02"));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Press", Level::LEVEL_STAGE, TEXT("GameObject_Press"), &Arg), E_FAIL);
+
+	CHangingPlanet::ARG_DESC tPlanetArg;
+	_matrix World = XMMatrixIdentity();
+	lstrcpy(tPlanetArg.DynamicDesc.szModelTag, TEXT("Component_Model_Hanging_Planet"));
+	XMStoreFloat4x4(&tPlanetArg.DynamicDesc.WorldMatrix, World);
+	tPlanetArg.DynamicDesc.iMaterialIndex = 0;
+	tPlanetArg.DynamicDesc.iOption = 0;
+
+	tPlanetArg.vJointPosition = _float3(68.f, 38.f, 35.f);
+	tPlanetArg.vOffset = _float3(0.f, 33.f, 0.f);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Çà¼º¤»¤»", Level::LEVEL_STAGE, TEXT("GameObject_Hanging_Planet"), &tPlanetArg), E_FAIL);
+
 
 #endif
 
 	/* Hye */
 #ifdef __TEST_HYE
-	CDynamic_Env::ARG_DESC tArg;
-	_matrix World = XMMatrixIdentity();
-	lstrcpy(tArg.szModelTag, TEXT("Component_Model_Saucer_Interior_Pedal_01"));
-	XMStoreFloat4x4(&tArg.WorldMatrix, World);
-	tArg.iMaterialIndex = 0;
-	tArg.iOption = 0;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_Pedal"), &tArg), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_Moon"), &tArg), E_FAIL);
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonUFO")), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_SpaceShip")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Environment", Level::LEVEL_STAGE, TEXT("GameObject_Laser_LaserTennis")), E_FAIL);
 #endif // __TEST_HYE
 
 	/* Teak */
@@ -218,8 +243,10 @@ HRESULT CLevel_Stage::Ready_Test()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Terrain", Level::LEVEL_STAGE, TEXT("GameObject_Terrain")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_SpaceRail", Level::LEVEL_STAGE, TEXT("GameObject_SpaceRail")), E_FAIL);
 #endif
-	/* Yoon */
 
+	/* Yoon */
+#ifdef __TEST_YOON
+#endif
 
 	/* Jin */
 
@@ -233,7 +260,12 @@ HRESULT CLevel_Stage::Ready_Layer_GravityPath(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(Clone_StaticGameObjects_ByFile(TEXT("../Bin/Resources/Data/MapData/GravityPath_SelectStatic.dat"), pLayerTag, TEXT("GameObject_GravityPath"), GameID::eGRAVITYPATH_SIDE, 30.f), E_FAIL);
 	return S_OK;
-} 
+}
+HRESULT CLevel_Stage::Ready_Layer_Earth(const _tchar * pLayerTag)
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Earth", Level::LEVEL_STAGE, TEXT("GameObject_Earth")), E_FAIL);
+	return S_OK;
+}
 #pragma endregion
 
 #pragma region Jung
@@ -245,7 +277,6 @@ HRESULT CLevel_Stage::Ready_Layer_WarpGate(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::STAGE_PLANET)), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_Wormhole(const _tchar * pLayerTag)
 {
 	EFFECT_DESC_CLONE Data;
@@ -260,14 +291,12 @@ HRESULT CLevel_Stage::Ready_Layer_Wormhole(const _tchar * pLayerTag)
 
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_WallLaserTrap(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_WallLaserTrap_Button")), E_FAIL);
 
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_GravityPipe(const _tchar * pLayerTag)
 {
 	EFFECT_DESC_CLONE Data;
@@ -317,60 +346,42 @@ HRESULT CLevel_Stage::Ready_Layer_Planet(const _tchar * pLayerTag)
 
 	return S_OK;
 }
+HRESULT CLevel_Stage::Ready_Layer_Script(const _tchar * pLayerTag)
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Script")), E_FAIL);
+
+	return S_OK;
+}
 #pragma endregion
 
 #pragma region Won
 HRESULT CLevel_Stage::Ready_Lights()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	if (nullptr == pGameInstance)
-		return E_FAIL;
-
-	pGameInstance->Reserve_Container_Light(6);
-
-	LIGHT_DESC			LightDesc;
 
 	/* For.Directional : Ambient / Specular Zero */
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	//LightDesc.vDirection = XMFLOAT3(0.f, -1.f, 1.f);
-	LightDesc.vDirection = XMFLOAT3(1.f, -1.f, 1.f);
-	//LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	//LightDesc.vAmbient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
+	Ready_DirectionalLight(TEXT("Sun"), _float3(1.f, -1.f, 1.f), _float4(0.65f,0.65f,0.65f, 1.f), _float4(0.35f,0.35f,0.35f,1.f), _float4(1.f,1.f,1.f,1.f));
 
-	LightDesc.vDiffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vAmbient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.f);
-	LightDesc.vSpecular = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-
-	if (FAILED(pGameInstance->Add_Light(L"Sun", LightDesc)))
-		return E_FAIL;
-
-#pragma region PointLight
-		LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-		LightDesc.vPosition = XMFLOAT3(20.f, 5.f, 20.f);
-		LightDesc.vDiffuse = XMFLOAT4(0.f, 0.f, 1.f, 1.f);
-		LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-		LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
-		LightDesc.fRange = 10.f;
-	if (FAILED(CLight_Generator::GetInstance()->Add_Light(TEXT("Point1"), LightDesc, (_uint)(EPoint_Color::Blue)))) return E_FAIL;
-#pragma endregion
-
-	/* For. Spot  X */
-	//LightDesc.eType = LIGHT_DESC::TYPE_SPOT;
-	//LightDesc.vPosition = XMFLOAT3(20, 3.f, 20.f);
-	//LightDesc.vDirection = XMFLOAT3(1.f, 1.f, 0.f);
-	//LightDesc.vDiffuse = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
-	//LightDesc.vAmbient = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-	//LightDesc.vSpecular = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
-	//LightDesc.fOuterAngle = XMConvertToRadians(55.f);
-	//LightDesc.fInnerAngle = XMConvertToRadians(45.f);
-	//LightDesc.fRange = 15.f;
-
-	//if (FAILED(pGameInstance->Add_Light(L"Spot1", LightDesc)))
-	//	return E_FAIL;
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Planet_Robot.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ComputeRoom.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_InShip.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Umbrella.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Start.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Floor2.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Rail.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Pinball.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_ComputeRoom.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_BossRoom.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Minigame.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_EFFECTLIGHT, TEXT("../Bin/Resources/Data/LightData/EffectLight_Bg.dat"));
 
 	return S_OK;
 }
-
+HRESULT CLevel_Stage::Ready_DirectionalLight(const _tchar* pLightTag, _float3 vDirection, _float4 vDiffuse, _float4 vAmbient, _float4 vSpecular)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	return pGameInstance->Add_Light(LightStatus::eDIRECTIONAL, CLight::Create(pLightTag, &LIGHT_DESC(LIGHT_DESC::TYPE_DIRECTIONAL, vDirection, vDiffuse, vAmbient, vSpecular)));
+}
 HRESULT CLevel_Stage::Ready_Layer_Sky(const _tchar * pLayerTag)
 {
 	_uint iViewportIndex = 1;
@@ -380,7 +391,6 @@ HRESULT CLevel_Stage::Ready_Layer_Sky(const _tchar * pLayerTag)
 
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_ToyBoxButton(const _tchar* pLayerTag)
 {
 	CToyBoxButton::TOYBOXBUTTON_DESC tToyBoxDesc;
@@ -457,7 +467,6 @@ HRESULT CLevel_Stage::Ready_Layer_ToyBoxButton(const _tchar* pLayerTag)
 
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_MoonBaboonCore(const _tchar* pLayerTag)
 {
 	CMoonBaboonCore::MOONBABOONCORE_DESC tDesc;
@@ -482,7 +491,6 @@ HRESULT CLevel_Stage::Ready_Layer_MoonBaboonCore(const _tchar* pLayerTag)
 
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_MoonBaboon_MainLaser(const _tchar* pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_MainLaser")), E_FAIL);
@@ -496,14 +504,11 @@ HRESULT CLevel_Stage::Ready_Layer_Cody(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Cody")), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_May(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_May")), E_FAIL);
 	return S_OK;
 }
-
-
 HRESULT CLevel_Stage::Ready_Layer_Rocket(const _tchar * pLayerTag)
 {
 	ROBOTDESC RocketDesc;
@@ -512,7 +517,6 @@ HRESULT CLevel_Stage::Ready_Layer_Rocket(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Rocket"), &RocketDesc), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_StarBuddy(const _tchar * pLayerTag)
 {
 	ROBOTDESC StarDesc;
@@ -523,7 +527,6 @@ HRESULT CLevel_Stage::Ready_Layer_StarBuddy(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), &StarDesc), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_SecurityCameraHandle(const _tchar * pLayerTag)
 {
 	ROBOTDESC SecurityCamHandle;
@@ -532,7 +535,6 @@ HRESULT CLevel_Stage::Ready_Layer_SecurityCameraHandle(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SecurityCameraHandle"), &SecurityCamHandle), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_SecurityCamera(const _tchar * pLayerTag)
 {
 	ROBOTDESC SecurityCam;
@@ -541,13 +543,11 @@ HRESULT CLevel_Stage::Ready_Layer_SecurityCamera(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SecurityCamera"), &SecurityCam), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_TutorialDoor(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_TutorialDoor")), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_BigButton(const _tchar * pLayerTag)
 {
 	ROBOTDESC BigButton;
@@ -555,7 +555,6 @@ HRESULT CLevel_Stage::Ready_Layer_BigButton(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_BigButton"), &BigButton), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_BigButtonFrame(const _tchar * pLayerTag)
 {
 	ROBOTDESC BigButtonFrame;
@@ -563,13 +562,11 @@ HRESULT CLevel_Stage::Ready_Layer_BigButtonFrame(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_BigButtonFrame"), &BigButtonFrame), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_NoBatterySign(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_NoBatterySign")), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_SpaceValve(const _tchar * pLayerTag)
 {
 	EFFECT_DESC_CLONE ForPlayerID;
@@ -580,7 +577,6 @@ HRESULT CLevel_Stage::Ready_Layer_SpaceValve(const _tchar * pLayerTag)
 
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_Hook_UFO(const _tchar * pLayerTag)
 {
 	ROBOTDESC RobotDesc;
@@ -594,7 +590,6 @@ HRESULT CLevel_Stage::Ready_Layer_Hook_UFO(const _tchar * pLayerTag)
 
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_BigPlanet(const _tchar * pLayerTag)
 {
 	ROBOTDESC PlanetDesc;
@@ -605,7 +600,6 @@ HRESULT CLevel_Stage::Ready_Layer_BigPlanet(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_HangingPlanet"), &PlanetDesc), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_RobotParts(const _tchar * pLayerTag)
 {
 	ROBOTDESC RobotDesc;
@@ -620,7 +614,6 @@ HRESULT CLevel_Stage::Ready_Layer_RobotParts(const _tchar * pLayerTag)
 
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_RotatedRobotParts(const _tchar * pLayerTag)
 {
 	RTROBOTDESC RotatedRobotDesc;
@@ -630,7 +623,6 @@ HRESULT CLevel_Stage::Ready_Layer_RotatedRobotParts(const _tchar * pLayerTag)
 
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_DummyWall(const _tchar * pLayerTag)
 {
 	ROBOTDESC DummyWallDesc;
@@ -644,7 +636,6 @@ HRESULT CLevel_Stage::Ready_Layer_DummyWall(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_CameraTrigger"), Level::LEVEL_STAGE, TEXT("GameObject_DummyWallCameraTrigger"), &DummyWallDesc), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_MayJumpWall(const _tchar * pLayerTag)
 {
 	ROBOTDESC MayJumpWall;
@@ -714,6 +705,14 @@ HRESULT CLevel_Stage::Ready_Layer_UFORadarSet(const _tchar * pLayerTag)
 
 	return S_OK;
 }
+HRESULT CLevel_Stage::Ready_Layer_TestRocket(const _tchar * pLayerTag)
+{
+	CBoss_Missile::tagBossMissile_Desc MissileDesc;
+	MissileDesc.IsTarget_Cody = true;
+	MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
+	return S_OK;
+}
 #pragma endregion
 
 #pragma region Jin
@@ -729,19 +728,16 @@ HRESULT CLevel_Stage::Ready_Layer_ControlRoomPuzzle(const _tchar * pLayerTag, co
 
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_ControlRoom_Glass(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_ControlRoom_Glass")), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_Umbrella_Joystick(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UmbrellaBeam_Joystick")), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_MoonBaboon(const _tchar * pLayerTag)
 {
 	ROBOTDESC MoonBaboonDesc;
@@ -750,7 +746,6 @@ HRESULT CLevel_Stage::Ready_Layer_MoonBaboon(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon"), &MoonBaboonDesc), E_FAIL);
 	return S_OK;
 }
-
 HRESULT CLevel_Stage::Ready_Layer_UFO(const _tchar * pLayerTag)
 {
 	ROBOTDESC UFODesc;
@@ -759,7 +754,6 @@ HRESULT CLevel_Stage::Ready_Layer_UFO(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_UFO"), &UFODesc), E_FAIL);
 	return S_OK;
 }
-
 #pragma endregion
 
 #pragma region Jun

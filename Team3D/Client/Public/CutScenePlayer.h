@@ -13,6 +13,9 @@ public:
 public:
 	HRESULT Add_CutScene(const _tchar* pCutSceneTag,CCutScene* pCutScene);
 	_bool	Get_IsPlayCutScene() { return m_bIsPlayingCutScene; }
+	_bool	Get_IsCutScenePlayed(CCutScene::CutSceneOption eCutSceneOption) { return m_bIsPlayedCutScene[(_uint)eCutSceneOption]; }
+
+	void	Set_IsCutScenePlayer(CCutScene::CutSceneOption eCutSceneOption, _bool bSet) { m_bIsPlayedCutScene[(_uint)eCutSceneOption] = bSet; }
 	//if Finish,Return false;
 	_bool	Tick_CutScene(_double dTimeDelta);
 	HRESULT Start_CutScene(const _tchar* pCutSceneTag);
@@ -33,7 +36,7 @@ private:
 	_bool m_bIsPlayingCutScene = false;
 
 	class CGameInstance* m_pGameInstance = nullptr;
-
+	_bool	m_bIsPlayedCutScene[(_uint)CCutScene::CutSceneOption::CutScene_End];
 public:
 	virtual void Free() override;
 

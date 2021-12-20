@@ -52,8 +52,6 @@ private:
 	const _double m_dInstance_Pos_Update_Time = 1.5;
 	const _float2 m_vDefaultSize = { 0.1f, 0.3f };
 
-
-
 public:
 	static CEffect_Boss_Core_Hit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

@@ -24,6 +24,11 @@ public:
 	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0) override;
 	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0) override;
 
+public:
+	void Set_Pos(_float3 vPos);
+	void Set_Radius(_float vRadius);
+	void Set_Color(EPoint_Color eColorRamp);
+
 private:
 	HRESULT Ready_InstanceBuffer();
 

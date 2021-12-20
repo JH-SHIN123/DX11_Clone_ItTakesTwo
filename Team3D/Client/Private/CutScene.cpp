@@ -9,6 +9,7 @@
 #include"Film.h"
 #include"Cody.h"
 #include"May.h"
+#include"PlayerActor.h"
 CCutScene::CCutScene()
 {
 }
@@ -88,9 +89,9 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 				CPerformer* pCodyCutScene = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_Cody_CutScene1"));
 				pCodyCutScene->Set_Position(_float3(0, 0, 0));
 				CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
-				pCody->Set_Position(XMVectorSet(63.9f, 0.2f, 0.9f, 1.f));
+				pCody->Get_Actor()->Set_Position(XMVectorSet(63.9f, 0.2f, 0.9f, 1.f));
 				pCody->Get_Transform()->Set_Rotaion(XMVectorSet( 0.f, -32.f, 0.f,0.f));
-				pCody->Get_Model()->Set_Animation(548, 2913.0);
+				pCody->Get_Model()->Set_Animation(551, 2913.0);
 				CPerformer* pBelt = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_SizeBeltCutScene1"));
 				pBelt->Set_Position(_float3(0, 0, 0));
 				m_bIsChangeToCody = true;
@@ -163,9 +164,9 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 			pMayCutScene->Set_Position(_float3(0.f, 0.f, 0.f));
 			pBootsCutScene->Set_Position(_float3(0, 0, 0));
 			CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
-			pMay->Set_Position(XMVectorSet(62.8f, 0.15f, 0.3f,1.f));
+			pMay->Get_Actor()->Set_Position(XMVectorSet(62.8f, 0.15f, 0.3f,1.f));
 			pMay->Get_Transform()->Set_Rotaion(XMVectorSet(0.f, -32.f, 0.f, 0.f));
-			pMay->Get_Model()->Set_Animation(522,3741.0);
+			pMay->Get_Model()->Set_Animation(48,3741.0);
 			m_iCutSceneTake++;
 		}
 	}
@@ -173,8 +174,8 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 		{
 			if (m_dTime >= 128.51)
 			{
-				((CCody*)DATABASE->GetCody())->Set_Position(XMVectorSet(65.4f, 0.2f, 1.1f,1.f));
-				((CMay*)DATABASE->GetCody())->Set_Position(XMVectorSet(63.5f, 0.15f, 0.3f,1.f));
+				((CCody*)DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(65.4f, 0.2f, 1.1f,1.f));
+				((CMay*)DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(63.5f, 0.15f, 0.3f,1.f));
 			}
 		}
 
@@ -377,6 +378,9 @@ HRESULT CCutScene::Start_CutScene_Clear_Rail()
 HRESULT CCutScene::End_CutScene_Intro()
 {
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+
 	return S_OK;
 }
 
@@ -485,7 +489,7 @@ void CCutScene::CodyLerp()
 	_vector vCurScale = XMVectorLerp(XMLoadFloat3(&m_vCodyScale), XMLoadFloat3(&m_vTargetCodyScale), m_iCodyLerpCount *1.f / m_iMaxCodyLerpCount);
 
 	pCody->Get_Transform()->Set_Scale(vCurScale);
-	pCody->Set_Position(XMVectorSetW(vCurPos,1.f));
+	pCody->Get_Actor()->Set_Position(XMVectorSetW(vCurPos,1.f));
 
 	if (m_iCodyLerpCount == m_iMaxCodyLerpCount)
 	{

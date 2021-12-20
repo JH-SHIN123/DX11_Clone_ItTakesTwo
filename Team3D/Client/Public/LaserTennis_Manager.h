@@ -82,7 +82,7 @@ private:
 	CLaserPowerCoord*		m_pLaserPowerCoord[2];
 	CTimer_LaserTennis*		m_pTimer_LaserTennis = nullptr;
 
-	_bool					m_bKeyCheck[TARGET_END] = { false };
+	_bool					m_bKeyCheck[TARGET_END];
 	_bool					m_bStartGame = false;
 	_bool					m_bReady = false;
 	_uint					m_iPowerCoordCount = 0;

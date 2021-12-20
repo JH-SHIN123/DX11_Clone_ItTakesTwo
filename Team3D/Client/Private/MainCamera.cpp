@@ -521,7 +521,7 @@ _int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
 	{
 
 		_float fProgress = DotProgress(0.8f);
-		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * dTimeDelta * 3.f;
+		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * (_float)dTimeDelta * 3.f;
 		//m_fRailProgressTime = DotProgress(0.8f);
 	}
 	else if (m_iNodeIdx[0] < 35)
@@ -535,7 +535,7 @@ _int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
 	else if (m_iNodeIdx[0] < 36)
 	{
 		_float fProgress = DotProgress(0.5f);
-		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * dTimeDelta * 3.f;
+		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * (_float)dTimeDelta * 3.f;
 	}
 	else if(m_iNodeIdx[0] < 38)
 	{
@@ -575,7 +575,7 @@ _int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
 	else if(m_iNodeIdx[0] < 42)
 	{
 		_float fProgress = DotProgress(0.8f);
-		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * dTimeDelta * 3.f;
+		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * (_float)dTimeDelta * 3.f;
 	}
 	else
 	{
@@ -585,7 +585,7 @@ _int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
 			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
 
 	}
-	
+
 	_bool bIsFinishNode = false;
 	_matrix matResult = m_pCamHelper->Get_CamNodeMatrix(m_CamNodes[m_iNodeIdx[0]], m_CamNodes[m_iNodeIdx[1]], m_CamNodes[m_iNodeIdx[2]], m_CamNodes[m_iNodeIdx[3]], m_fRailProgressTime,&bIsFinishNode);
 	if (m_fRailProgressTime < m_CamNodes[m_iNodeIdx[0]]->dTime)
@@ -789,7 +789,7 @@ _int CMainCamera::Tick_Cam_Free_Umbrella_Laser(_double dTimeDelta)
 	vBeamPos += vBeamLook * 18.f;
 	//OffSetPhsX(vEye, vBeamPos, dTimeDelta, &vEye);
 
-	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vBeamPos),dTimeDelta * 2.f));
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vBeamPos),(_float)dTimeDelta * 2.f));
 
 	return NO_EVENT;
 }
@@ -987,7 +987,7 @@ _int CMainCamera::Tick_Cam_PinBall_Cody(_double dTimeDelta)
 		XMStoreFloat3(&vBezier2, vSecondPos);
 		XMStoreFloat3(&vBezier3, vTargetPos);
 
-		m_fStartPinBallBezierTime += dTimeDelta;
+		m_fStartPinBallBezierTime += (_float)dTimeDelta;
 		_vector vCurEye = XMVectorSetW(XMLoadFloat3(&m_pCamHelper->MakeBezier3(vBezier1, vBezier2, vBezier3, m_fStartPinBallBezierTime)),1.f);
 		_matrix matResult = MakeViewMatrixByUp(vCurEye, vAt);
 		m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(),matResult,m_fStartPinBallBezierTime*2.f));
@@ -1003,7 +1003,7 @@ _int CMainCamera::Tick_Cam_PinBall_Cody(_double dTimeDelta)
 		_vector vTargetPos = vPinBallPos + XMVectorSet(0.f, 1.5f, 2.8f, 0.f);
 		_vector vAt = vPinBallPos + XMVectorSet(0.f, 0.75f, 0.f, 0.f);
 		if(XMVectorGetX(XMVector3Length(vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION))) > 0.01f)
-			m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vTargetPos, vAt), dTimeDelta * 2.f));
+			m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vTargetPos, vAt), (_float)dTimeDelta * 2.f));
 	}
 	else if (false == pPinBall->Get_Failed() && false ==  pPinBallHandle->Get_Goal() && m_pCody->Get_IsPinBall())	//가는중
 	{
@@ -1019,7 +1019,7 @@ _int CMainCamera::Tick_Cam_PinBall_Cody(_double dTimeDelta)
 		{
 			m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
 		}
-		m_fStartPinBallBezierTime += dTimeDelta;
+		m_fStartPinBallBezierTime += (_float)dTimeDelta;
 		if (m_fStartPinBallBezierTime >= 0.2f)
 		{
 			if (UI_Generator->Get_EmptyCheck(Player::Cody, UI::BlackScreenFadeInOut))
@@ -1031,9 +1031,9 @@ _int CMainCamera::Tick_Cam_PinBall_Cody(_double dTimeDelta)
 	}
 	else if(pPinBallHandle->Get_Goal() && m_pCody->Get_IsPinBall())//성공
 	{
-		_vector vFinishEye = XMVectorSet(-672.537f,760.996f, -147.991,1.f);
+		_vector vFinishEye = XMVectorSet(-672.537f,760.996f, -147.991f,1.f);
 		_vector vFinishAt = XMVectorSet(-672.547f, 760.868f,-148.982f, 1.f);
-		m_fStartPinBallBezierTime += dTimeDelta;
+		m_fStartPinBallBezierTime += (_float)dTimeDelta;
 		_float fWatingTime = 0.5f;
 		if(m_fStartPinBallBezierTime > fWatingTime)
 			m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vFinishEye, vFinishAt),
@@ -1091,7 +1091,7 @@ _int CMainCamera::Tick_Cam_WallJump(_double dTimeDelta)
 		vEye = XMVectorSetX(vEye, XMVectorGetX(vPlayerPos));
 		vPlayerPos = XMVectorSetX(vTriggerPos, XMVectorGetX(vPlayerPos));
 	}
-	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vPlayerPos, matFacetoWall.r[1]), dTimeDelta * 3.f));
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vPlayerPos, matFacetoWall.r[1]), (_float)dTimeDelta * 3.f));
 
 	
 	return NO_EVENT;
@@ -1346,11 +1346,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Clear_Rail");
 	return NO_EVENT;
 	}
-	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
-	{
-		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
-		return NO_EVENT;
-	}*/
+
 	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 	{
 		CCutScenePlayer::GetInstance()->Stop_CutScene();
