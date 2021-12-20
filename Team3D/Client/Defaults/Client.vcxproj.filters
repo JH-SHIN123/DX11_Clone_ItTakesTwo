@@ -2652,5 +2652,8 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointInstance.hlsl">
       <Filter>97.ShaderFiles\01.Se</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh_Se.hlsl">
+      <Filter>97.ShaderFiles\01.Se</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
