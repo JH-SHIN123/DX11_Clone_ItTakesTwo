@@ -1011,9 +1011,6 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.Star">
       <UniqueIdentifier>{083634ee-faac-4437-9742-916c864b39d2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Rect\Dash\00.Ring">
-      <UniqueIdentifier>{419726f0-c195-4392-adaf-48ed0c6016a6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Player">
       <UniqueIdentifier>{8a1de5e2-3ffe-4128-a7ef-8232f5123633}</UniqueIdentifier>
     </Filter>
@@ -1880,9 +1877,6 @@
     <ClInclude Include="..\public\Effect_Boss_BrokenLaser_Lightning.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\02.Lightning</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_Dash_Ring.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash\00.Ring</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Effect_DashMesh.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Player\00.Dash</Filter>
     </ClInclude>
@@ -2718,9 +2712,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Boss_BrokenLaser_Lightning.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\02.Lightning</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Dash_Ring.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Rect\Dash\00.Ring</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_DashMesh.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Player\00.Dash</Filter>

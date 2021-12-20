@@ -20,23 +20,30 @@ HRESULT CEffect_DashMesh::NativeConstruct_Prototype(void * pArg)
 
 HRESULT CEffect_DashMesh::NativeConstruct(void * pArg)
 {
-	__super::NativeConstruct(pArg);
+	if (nullptr != pArg)
+		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Zoom"), TEXT("Com_Texture_Color"), (CComponent**)&m_pTexturesCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
-	//m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-90.f));
 
+	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
 
+	for (_int i = 0; i < 3; ++i)
+		XMVector3Normalize(WolrdMatrix.r[i]);
+
+	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vPos += m_pTransformCom->Get_State(CTransform::STATE_UP) * 0.75f;
-	vPos -= m_pTransformCom->Get_State(CTransform::STATE_LOOK) * 1.f;
+	vPos -= m_pTransformCom->Get_State(CTransform::STATE_LOOK) * 3.7f;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
 	if (EFFECT_DESC_CLONE::PV_CODY_S != m_EffectDesc_Clone.iPlayerValue)
-		m_pTransformCom->Set_Scale(XMVectorSet(1.5f, 1.f, 1.5f, 0.f));
+		m_pTransformCom->Set_Scale(XMVectorSet(2.75f, 2.f, 2.75f, 0.f));
 	else
-		m_pTransformCom->Set_Scale(XMVectorSet(0.15f, 0.1f, 0.15f, 0.f));
+		m_pTransformCom->Set_Scale(XMVectorSet(0.275f, 0.2f, 0.275f, 0.f));
 
 	return S_OK;
 }

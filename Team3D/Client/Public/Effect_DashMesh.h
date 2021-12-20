@@ -22,7 +22,7 @@ public:
 	HRESULT Ready_Instance();
 
 private:
-	_float m_fAlphaTime = 0.5f;
+	_float m_fAlphaTime = 0.3f;
 	_double m_dActivateTime = 0.0;
 
 public:

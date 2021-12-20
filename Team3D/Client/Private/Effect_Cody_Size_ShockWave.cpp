@@ -31,7 +31,10 @@ HRESULT CEffect_Cody_Size_ShockWave::NativeConstruct(void * pArg)
 		m_IsScaling_Bigger = true;
 	}
 	else if (EFFECT_DESC_CLONE::PV_CODY_L == m_EffectDesc_Clone.iPlayerValue) // wkrdkwlwk	
-		m_vScale = { 10.75f, 10.75f, 10.75f };
+	{
+		m_vScale = { 8.75f, 8.75f, 8.75f };
+		m_IsScaling_Bigger = false;
+	}
 
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 

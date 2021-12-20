@@ -40,6 +40,7 @@ HRESULT CEffect_Env_Particle_Field::NativeConstruct(void * pArg)
 
 _int CEffect_Env_Particle_Field::Tick(_double TimeDelta)
 {
+	Check_Culling();
 	Check_State(TimeDelta);
 
 	return _int();
@@ -198,21 +199,21 @@ void CEffect_Env_Particle_Field::Check_Culling()
 	_vector vPos_MainCam = DATABASE->Get_MainCam()->Get_Position();
 	_vector vPos_SubCam	= DATABASE->Get_MainCam()->Get_Position();
 
-	_float fRadius = Get_BigRadius();
-	_float fCam_Far = 450.f;
+	_float	fRadius = Get_BigRadius();
+	_float	fCam_Far = 450.f;
 
 	_vector vDir = XMVector3Normalize(vPos_MainCam - vPos);
 	_vector vPos_NearParticle = vPos + vDir * fRadius; // 가장 카메라에 가까이 보일 파티클 위치
 	_vector vPos_Far = vPos_MainCam - vDir * fCam_Far; // 가장 카메라에 멀리 보이는 위치
-	_float fDist_Particle = XMVector3Length(vPos_MainCam - vPos_NearParticle).m128_f32[0];
-	_float fDist_Far = XMVector3Length(vPos_MainCam - vPos_Far).m128_f32[0];
+	_float	fDist_Particle = XMVector3Length(vPos_MainCam - vPos_NearParticle).m128_f32[0];
+	_float	fDist_Far = XMVector3Length(vPos_MainCam - vPos_Far).m128_f32[0];
 
 
 	_vector vDir_Sub = XMVector3Normalize(vPos_SubCam - vPos);
 	_vector vPos_NearParticle_Sub = vPos + vDir_Sub * fRadius; // 가장 카메라에 가까이 보일 파티클 위치
 	_vector vPos_Far_Sub = vPos_SubCam - vDir_Sub * fCam_Far; // 가장 카메라에 멀리 보이는 위치
-	_float fDist_Particle_Sub = XMVector3Length(vPos_SubCam - vPos_NearParticle_Sub).m128_f32[0];
-	_float fDist_Far_Sub = XMVector3Length(vPos_SubCam - vPos_Far_Sub).m128_f32[0];
+	_float	fDist_Particle_Sub = XMVector3Length(vPos_SubCam - vPos_NearParticle_Sub).m128_f32[0];
+	_float	fDist_Far_Sub = XMVector3Length(vPos_SubCam - vPos_Far_Sub).m128_f32[0];
 
 	m_IsCulling = false;
 	if (fDist_Far < fDist_Particle && fDist_Far_Sub < fDist_Particle_Sub)

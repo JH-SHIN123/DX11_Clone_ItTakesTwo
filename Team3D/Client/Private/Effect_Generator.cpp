@@ -121,6 +121,7 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::Dash:
 		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);
 		lstrcpy(szPrototype, L"GameObject_3D_Dash");
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, L"GameObject_2D_Dash", &Clone_Data);
 		break;
 	case Effect_Value::Cody_Dead:
 		Clone_Data.iPlayerValue = Check_Cody_Size(WorldMatrix);

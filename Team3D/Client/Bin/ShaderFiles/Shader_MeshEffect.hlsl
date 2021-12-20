@@ -15,6 +15,13 @@ texture2D	g_ColorRampTexture;
 
 ////////////////////////////////////////////////////////////
 
+RasterizerState Rasterizer_CWW
+{
+	FillMode = Solid;
+	CullMode = Front;
+	FrontCounterClockwise = true; // 둘중에 하나만 켜야함.
+};
+
 struct VS_IN
 {
 	float3				vPosition		: POSITION;
@@ -351,7 +358,8 @@ PS_OUT	PS_DASH(PS_IN In)
 
 	vector vMtrlDiffuse = g_DiffuseTexture_Second.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vDiffuse = vMtrlDiffuse;
-	Out.vDiffuse.a *= g_fTime;
+
+	Out.vDiffuse.a = Out.vDiffuse.r * g_fTime;
 	
 	return Out;
 }
@@ -700,7 +708,7 @@ technique11 DefaultTechnique
 
 	pass RespawnTennel // 7
 	{
-		SetRasterizerState(Rasterizer_CW);
+		SetRasterizerState(Rasterizer_CWW);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_DOUBLE_UV();
