@@ -1,27 +1,32 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "Base.h"
+#include "Light.h"
 
 BEGIN(Client)
-class CEffectLight final : public CBase
+class CEffectLight final : public CLight
 {
+public:
+	typedef struct tagEffectLightDesc
+	{
+		LIGHT_DESC		tLightDesc;
+		_float			fSize;
+		_uint			iEffectColor;
+	}EFFECTLIGHT_DESC;
+
 private:
 	explicit CEffectLight() = default;
 	virtual ~CEffectLight() = default;
 
 public:
-	HRESULT	NativeConstruct(const LIGHT_DESC & LightDesc, _uint eEffectColor, _bool isActive);
+	virtual HRESULT	NativeConstruct(const _tchar * pLightTag, void* pArgs) override;
+	virtual _int	Tick_Light(_double dTimeDelta) override;
 
 private:
-	_bool		m_isActive = false;
-
-private:
-	LIGHT_DESC	m_LightDesc;
-	// Effect
-
+	EFFECTLIGHT_DESC			m_tEffectDesc;
+	class CEffect_PointLight*	m_pEffect = nullptr;
 public:
-	static CEffectLight* Create(const LIGHT_DESC & LightDesc, _uint eEffectColor, _bool isActive); // 이펙트 enum값 던지도록 설정
+	static CEffectLight* Create(const _tchar * pLightTag, void* pArgs);
 	virtual void Free() override;
 };
 END

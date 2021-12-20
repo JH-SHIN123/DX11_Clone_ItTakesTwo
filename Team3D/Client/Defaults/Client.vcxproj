@@ -210,6 +210,7 @@
     <ClInclude Include="..\Public\CameraFilterCallback.h" />
     <ClInclude Include="..\Public\CameraHitReport.h" />
     <ClInclude Include="..\Public\Cam_Helper.h" />
+    <ClInclude Include="..\Public\ChapterImage.h" />
     <ClInclude Include="..\Public\ChapterSelect.h" />
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\Public\Client_Animation_Index_Define.h" />
@@ -231,6 +232,7 @@
     <ClInclude Include="..\Public\DummyWallCameraTrigger.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />
     <ClInclude Include="..\Public\EffectLight.h" />
+    <ClInclude Include="..\Public\Earth.h" />
     <ClInclude Include="..\public\Effect_Boss_Core.h" />
     <ClInclude Include="..\public\Effect_Boss_Core_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Core_Hit.h" />
@@ -269,6 +271,7 @@
     <ClInclude Include="..\Public\Effect_May_Boots.h" />
     <ClInclude Include="..\Public\Effect_May_Boots_Walking_Particle.h" />
     <ClInclude Include="..\Public\Effect_Pinball_Move.h" />
+    <ClInclude Include="..\Public\Effect_PipeLocker_Connected.h" />
     <ClInclude Include="..\Public\Effect_Player_Dead.h" />
     <ClInclude Include="..\public\Effect_Player_Dead_Explosion.h" />
     <ClInclude Include="..\public\Effect_Player_Dead_Explosion_Particle.h" />
@@ -329,7 +332,7 @@
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\Public\Level_Stage.h" />
-    <ClInclude Include="..\Public\Light_Generator.h" />
+    <ClInclude Include="..\Public\LightUtility.h" />
     <ClInclude Include="..\Public\Loading.h" />
     <ClInclude Include="..\Public\MainApp.h" />
     <ClInclude Include="..\Public\MainCam.h" />
@@ -354,6 +357,7 @@
     <ClInclude Include="..\Public\MoonBaboon_SubLaser.h" />
     <ClInclude Include="..\Public\MoonUFO.h" />
     <ClInclude Include="..\Public\NoBatterySign.h" />
+    <ClInclude Include="..\Public\Participation_Button.h" />
     <ClInclude Include="..\Public\PC_Enter.h" />
     <ClInclude Include="..\Public\PC_MouseButton.h" />
     <ClInclude Include="..\Public\Pedal.h" />
@@ -393,6 +397,7 @@
     <ClInclude Include="..\Public\PressurePlateLock.h" />
     <ClInclude Include="..\Public\PxEventCallback.h" />
     <ClInclude Include="..\Public\RespawnCircle.h" />
+    <ClInclude Include="..\Public\Return_Button.h" />
     <ClInclude Include="..\Public\Robot.h" />
     <ClInclude Include="..\Public\RobotBattery.h" />
     <ClInclude Include="..\Public\RobotHead.h" />
@@ -412,6 +417,8 @@
     <ClInclude Include="..\Public\RotationFan_Base.h" />
     <ClInclude Include="..\Public\RunningMoonBaboon.h" />
     <ClInclude Include="..\Public\SavePoint.h" />
+    <ClInclude Include="..\Public\Script.h" />
+    <ClInclude Include="..\Public\ScriptBackGround.h" />
     <ClInclude Include="..\Public\SecurityCamera.h" />
     <ClInclude Include="..\Public\SecurityCameraHandle.h" />
     <ClInclude Include="..\Public\SepdStaticActor.h" />
@@ -444,6 +451,9 @@
     <ClInclude Include="..\Public\UmbrellaBeam_Base.h" />
     <ClInclude Include="..\Public\UmbrellaBeam_Joystick.h" />
     <ClInclude Include="..\Public\UmbrellaBeam_Stand.h" />
+    <ClInclude Include="..\Public\VIBuffer_SimplePointInstance.h" />
+    <ClInclude Include="..\Public\VolumeObject.h" />
+    <ClInclude Include="..\Public\VolumeLight.h" />
     <ClInclude Include="..\Public\WallLaserTrap.h" />
     <ClInclude Include="..\Public\WallLaserTrap_Button.h" />
     <ClInclude Include="..\Public\Wall_LaserTennis.h" />
@@ -452,10 +462,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines_Effect.hpp" />
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Function.hpp" />
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Include.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\AlienScreen.cpp" />
@@ -479,6 +486,7 @@
     <ClCompile Include="..\Private\CameraFilterCallback.cpp" />
     <ClCompile Include="..\Private\CameraHitReport.cpp" />
     <ClCompile Include="..\Private\Cam_Helper.cpp" />
+    <ClCompile Include="..\Private\ChapterImage.cpp" />
     <ClCompile Include="..\Private\ChapterSelect.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Cody.cpp" />
@@ -495,6 +503,7 @@
     <ClCompile Include="..\Private\DummyWallCameraTrigger.cpp" />
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
     <ClCompile Include="..\Private\EffectLight.cpp" />
+    <ClCompile Include="..\Private\Earth.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core_Hit.cpp" />
@@ -533,6 +542,7 @@
     <ClCompile Include="..\Private\Effect_May_Boots.cpp" />
     <ClCompile Include="..\Private\Effect_May_Boots_Walking_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Pinball_Move.cpp" />
+    <ClCompile Include="..\Private\Effect_PipeLocker_Connected.cpp" />
     <ClCompile Include="..\Private\Effect_Player_Dead.cpp" />
     <ClCompile Include="..\private\Effect_Player_Dead_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Player_Dead_Explosion_Particle.cpp" />
@@ -592,7 +602,7 @@
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Level_Stage.cpp" />
-    <ClCompile Include="..\Private\Light_Generator.cpp" />
+    <ClCompile Include="..\Private\LightUtility.cpp" />
     <ClCompile Include="..\Private\Loading.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\MainCam.cpp" />
@@ -617,6 +627,7 @@
     <ClCompile Include="..\Private\MoonBaboon_SubLaser.cpp" />
     <ClCompile Include="..\Private\MoonUFO.cpp" />
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
+    <ClCompile Include="..\Private\Participation_Button.cpp" />
     <ClCompile Include="..\Private\PC_Enter.cpp" />
     <ClCompile Include="..\Private\PC_MouseButton.cpp" />
     <ClCompile Include="..\Private\Pedal.cpp" />
@@ -656,6 +667,7 @@
     <ClCompile Include="..\Private\PressurePlateLock.cpp" />
     <ClCompile Include="..\Private\PxEventCallback.cpp" />
     <ClCompile Include="..\Private\RespawnCircle.cpp" />
+    <ClCompile Include="..\Private\Return_Button.cpp" />
     <ClCompile Include="..\Private\Robot.cpp" />
     <ClCompile Include="..\Private\RobotBattery.cpp" />
     <ClCompile Include="..\Private\RobotHead.cpp" />
@@ -675,6 +687,8 @@
     <ClCompile Include="..\Private\RotationFan_Base.cpp" />
     <ClCompile Include="..\Private\RunningMoonBaboon.cpp" />
     <ClCompile Include="..\Private\SavePoint.cpp" />
+    <ClCompile Include="..\Private\Script.cpp" />
+    <ClCompile Include="..\Private\ScriptBackGround.cpp" />
     <ClCompile Include="..\Private\SecurityCamera.cpp" />
     <ClCompile Include="..\Private\SecurityCameraHandle.cpp" />
     <ClCompile Include="..\Private\SepdStaticActor.cpp" />
@@ -707,6 +721,9 @@
     <ClCompile Include="..\Private\UmbrellaBeam_Base.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam_Joystick.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam_Stand.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_SimplePointInstance.cpp" />
+    <ClCompile Include="..\Private\VolumeObject.cpp" />
+    <ClCompile Include="..\Private\VolumeLight.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap_Button.cpp" />
     <ClCompile Include="..\Private\Wall_LaserTennis.cpp" />
@@ -732,12 +749,14 @@
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_ArcadePixel.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Default.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Earth.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Font.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom_STT.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_PointInstance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect_Effect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sprite.hlsl" />

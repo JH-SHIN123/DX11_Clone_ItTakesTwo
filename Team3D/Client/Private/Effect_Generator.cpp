@@ -247,6 +247,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::Hit_Planet_Smoke:
 		lstrcpy(szPrototype, L"GameObject_2D_Hit_Planet_Smoke");
 		break;
+	case Effect_Value::PipeLocker_Connected:
+		lstrcpy(szPrototype, L"GameObject_Effect_PipeLocker_Connected");
+		break;
 	default:
 		break;
 	}
@@ -258,12 +261,12 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	return S_OK;
 }
 
-HRESULT CEffect_Generator::Add_PointLight(Effect_PointLight_Desc* pLightArg)
+HRESULT CEffect_Generator::Add_PointLight(Effect_PointLight_Desc* pLightArg, CGameObject** ppOut)
 {
 	if (nullptr == pLightArg)
 		return E_FAIL;
 
-	return 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_PointLight"), Level::LEVEL_STAGE, TEXT("GameObject_2D_PointLight"), pLightArg);	
+	return 	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_PointLight"), Level::LEVEL_STAGE, TEXT("GameObject_2D_PointLight"), pLightArg, ppOut);
 }
 
 EFFECT_DESC_CLONE::PLAYER_VALUE CEffect_Generator::Check_Cody_Size(_fmatrix WorldMatrix)

@@ -30,6 +30,7 @@ private:
 private:
 	/* Se */
 	HRESULT Ready_Layer_GravityPath(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Earth(const _tchar* pLayerTag);
 	/* Jung */
 	HRESULT Ready_Layer_WarpGate(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Wormhole(const _tchar* pLayerTag);
@@ -38,8 +39,10 @@ private:
 	HRESULT Ready_Layer_Env_Particles(const _tchar* pLayerTag);
 	/* Hye */
 	HRESULT Ready_Layer_Planet(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Script(const _tchar* pLayerTag);
 	/* Taek */
 	HRESULT Ready_Lights();
+	HRESULT Ready_DirectionalLight(const _tchar* pLightTag, _float3 vDirection, _float4 vDiffuse, _float4 vAmbient, _float4 vSpecular);
 	HRESULT Ready_Layer_Sky(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_ToyBoxButton(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MoonBaboonCore(const _tchar* pLayerTag);
@@ -65,13 +68,13 @@ private:
 	HRESULT Ready_Layer_PipeJumpWall(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Rope(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UFORadarSet(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_TestRocket(const _tchar* pLayerTag);
 	/* Jin */
 	HRESULT Ready_Layer_ControlRoomPuzzle(const _tchar* pLayerTag, const _tchar* pGameObjectTag);
 	HRESULT Ready_Layer_ControlRoom_Glass(const _tchar * pLayerTag);
 	HRESULT Ready_Layer_Umbrella_Joystick(const _tchar * pLayerTag);
 	HRESULT Ready_Layer_UFO(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MoonBaboon(const _tchar* pLayerTag);
-
 	/* Jun */
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 

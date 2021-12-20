@@ -97,6 +97,14 @@ _int CUFO::Tick(_double dTimeDelta)
 	else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
 		m_pBossHpBar->Set_Active(false);
 
+	if (m_pGameInstance->Key_Down(DIK_F11))
+	{
+		CBoss_Missile::tagBossMissile_Desc MissileDesc;
+		MissileDesc.IsTarget_Cody = true;
+		MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
+	}
+
 	/* 컷 신 재생중이 아니라면 보스 패턴 진행하자 나중에 컷 신 생기면 바꿈 */
 	if (false == m_IsCutScene)
 	{
@@ -510,7 +518,7 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 			RightRocketHatch = RightRocketHatch * vUFOWorld;
 
 			CGameObject* pGameObject = nullptr;
-			CBoss_Missile::BOSSMISSILE_DESC tMissileDesc;
+			CBoss_Missile::tagBossMissile_Desc tMissileDesc;
 
 			/* 유도 미사일 발사!!!!!!!!!!!!!!!!! */
 			if (nullptr == m_pCodyMissile)
@@ -518,7 +526,6 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 				/* true면 Cody */
 				tMissileDesc.IsTarget_Cody = true;
 				tMissileDesc.vPosition = (_float4)&LeftRocketHatch.r[3].m128_f32[0];
-				XMStoreFloat4(&tMissileDesc.vDir, vCodyDir);
 				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc, &pGameObject);
 				m_pCodyMissile = static_cast<CBoss_Missile*>(pGameObject);
 				m_fGuidedMissileTime = 0.f;
@@ -529,7 +536,6 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 				/* false면 May */
 				tMissileDesc.IsTarget_Cody = false;
 				tMissileDesc.vPosition = (_float4)&RightRocketHatch.r[3].m128_f32[0];
-				XMStoreFloat4(&tMissileDesc.vDir, vMayDir);
 				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc, &pGameObject);
 				m_pMayMissile = static_cast<CBoss_Missile*>(pGameObject);
 				m_fGuidedMissileTime = 0.f;

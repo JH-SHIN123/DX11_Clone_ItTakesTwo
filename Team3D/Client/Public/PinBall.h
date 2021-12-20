@@ -47,6 +47,7 @@ private:
 	_bool				m_bFailed = false;
 	_bool				m_bStartGame = false;
 	_bool				m_bReady = false;
+	_bool				m_bSoundCheck = false;
 	_float3				m_RespawnPos;
 
 private:

@@ -32,8 +32,21 @@ public:
 	void Set_BridgePtr(CGameObject* pBridge) { m_pBridge = pBridge; }
 	CGameObject* Get_Bridge() { return m_pBridge; }
 
+	/* For.Logo */
 	void Set_MenuScreen(CGameObject* pMenuScreen) { m_pMenuScreen = pMenuScreen; }
 	CGameObject* Get_MenuScreen() { return m_pMenuScreen; }
+
+	void Set_ReturnButton(CGameObject* pReturnButton) { m_pReturnButton = pReturnButton; }
+	CGameObject* Get_ReturnButton() const { return m_pReturnButton; }
+
+	void Set_Participation_Cody(CGameObject* pParticipation_Cody) { m_pParticipation_Cody = pParticipation_Cody; }
+	CGameObject* Get_Participation_Cody() const { return m_pParticipation_Cody; }
+
+	void Set_Participation_May(CGameObject* pParticipation_May) { m_pParticipation_May = pParticipation_May; }
+	CGameObject* Get_Participation_May() const { return m_pParticipation_May; }
+
+	void Set_Script(CGameObject* pScript) { m_pScript = pScript; }
+	CGameObject* Get_Script() { return m_pScript; }
 
 	/* Robots */
 	void Set_STGravityRobotPtr(CGameObject* pRobot) { m_pSTGravityRobot = pRobot; }
@@ -201,6 +214,14 @@ private:
 	CGameObject* m_pMay = nullptr;
 	CGameObject* m_pMainCam = nullptr;
 	CGameObject* m_pSubCam = nullptr;
+
+	/* For.Logo */
+	CGameObject* m_pReturnButton = nullptr;
+	CGameObject* m_pParticipation_Cody = nullptr;
+	CGameObject* m_pParticipation_May = nullptr;
+
+	/* For.Script */
+	CGameObject* m_pScript = nullptr;
 
 	// UFO
 	CGameObject* m_pUFO = nullptr;

@@ -575,7 +575,7 @@ technique11 DefaultTechnique
 
 	pass RespawnTennel // 7
 	{
-		SetRasterizerState(Rasterizer_CCW);
+		SetRasterizerState(Rasterizer_CW);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_DOUBLE_UV();

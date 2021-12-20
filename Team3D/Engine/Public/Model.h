@@ -180,7 +180,6 @@ private: /* Typedef */
 	typedef vector<KEY_FRAME>				KEYFRAMES;
 	typedef map<LERP_PAIR, LERP_INFO>		LERP_MAP;
 private:
-	class CModel_Loader*		m_pModel_Loader				= nullptr;
 	VTXMESH*					m_pVertices					= nullptr;
 	POLYGON_INDICES32*			m_pFaces					= nullptr;
 	MESHES						m_Meshes;

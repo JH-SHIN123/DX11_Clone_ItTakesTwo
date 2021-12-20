@@ -3,7 +3,6 @@
 #include "Level_Loading.h"
 #include "Effect_Generator.h"
 #include "UI_Generator.h"
-#include "Light_Generator.h"
 #include "Environment_Generator.h"
 #include "PxEventCallback.h"
 #include "GameDebugger.h"
@@ -62,7 +61,7 @@ HRESULT CMainApp::Run_App()
 		if (Tick(m_dTimeDelta) & 0x80000000)
 			return E_FAIL;
 
-		if (FAILED(Render(dTimeDelta)))
+		if (FAILED(Render(m_dTimeDelta)))
 			return E_FAIL;
 
 		/* Mouse Lock */
@@ -115,7 +114,11 @@ HRESULT CMainApp::Render(_double dTimeDelta)
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 	NULL_CHECK_RETURN(m_pRenderer, E_FAIL);
 
+#ifdef _DEBUG
 	m_pGameInstance->Clear_BackBuffer(_float4(0.f, 0.f, 1.f, 1.f));
+#else
+	m_pGameInstance->Clear_BackBuffer(_float4(0.f, 0.f, 0.f, 1.f));
+#endif
 	m_pGameInstance->Clear_DepthStencilBuffer();
 
 	FAILED_CHECK_RETURN(m_pRenderer->Draw_Renderer(dTimeDelta), E_FAIL);
@@ -154,11 +157,11 @@ HRESULT CMainApp::Ready_Prototype_ForStatic()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Sprite"), CVIBuffer_Sprite::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Sprite.hlsl"), "DefaultTechnique")), E_FAIL);
 	/* VI_Buffer_FontInstance */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"), CVIBuffer_FontInstance::Create(m_pDevice, m_pDeviceContext, 50, TEXT("../Bin/ShaderFiles/Shader_Font.hlsl"), "DefaultTechnique")), E_FAIL);
-
+	/* FontDraw */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Component_FontDraw"), CFontDraw::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/UI/Font/NanumSquare.splitefont"), g_iWinCX, g_iWinCY)), E_FAIL);
+	/* For.GameObject */
 	/* VI_Buffer_Rect_ArcadePixel */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_ArcadePixel"), CVIBuffer_Rect::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_ArcadePixel.hlsl"), "DefaultTechnique")), E_FAIL);
-
-	/* For.GameObject */
 
 	return S_OK;
 }
@@ -201,7 +204,6 @@ void CMainApp::Free()
 
 	Safe_Delete(m_pPxEventCallback);
 
-	CLight_Generator::DestroyInstance();
 	CEffect_Generator::DestroyInstance(); // 이펙트 제어기
 	CUI_Generator::DestroyInstance();
 	CDataStorage::DestroyInstance();

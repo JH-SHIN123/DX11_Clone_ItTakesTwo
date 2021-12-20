@@ -3,31 +3,35 @@
 #include "Base.h"
 
 BEGIN(Engine)
-
-class CLight final : public CBase
+class ENGINE_DLL CLight : public CBase
 {
-private:
+protected:
 	explicit CLight() = default;
 	virtual ~CLight() = default;
 
-public: /* Getter */
-	LIGHT_DESC* Get_LightDescPtr() { return &m_LightDesc; }
+public:
+	void Set_Dead(_bool bDead) { m_bDead = bDead; }
 
-public: /* Setter */
-	void TurnOn_Light() { m_isActive = true; }
-	void TurnOff_Light() { m_isActive = false; }
+public: /* Getter */
+	const _tchar*	Get_LightTag() { return m_szLightTag; };
+	LIGHT_DESC*		Get_LightDescPtr() { return &m_LightDesc; }
 
 public:
-	HRESULT	NativeConstruct(const LIGHT_DESC& LightDesc, _bool isActive);
+	virtual HRESULT	NativeConstruct(const _tchar* pLightTag, void* pArgs);
+	virtual _int	Tick_Light(_double dTimeDelta);
+	
+public:
 	HRESULT Render_Light(class CVIBuffer_RectRHW* pVIBuffer);
 
-private:
+protected:
+	_bool		m_bDead = false;
+
+protected:
+	_tchar		m_szLightTag[MAX_PATH] = L"";
 	LIGHT_DESC	m_LightDesc;
-	_bool		m_isActive = false;
 
 public:
-	static CLight* Create(const LIGHT_DESC& LightDesc, _bool isActive);
+	static CLight* Create(const _tchar* pLightTag, void* pArgs);
 	virtual void Free() override;
 };
-
 END
