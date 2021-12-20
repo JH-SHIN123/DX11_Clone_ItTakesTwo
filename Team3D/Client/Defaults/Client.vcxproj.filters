@@ -879,6 +879,9 @@
     <Filter Include="02.GameObject\06.UI\16.Minigame\03.Minigame_Win">
       <UniqueIdentifier>{988e384c-a3bb-4412-896a-d391f8dd4326}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe">
+      <UniqueIdentifier>{ab6ae50c-6e4a-4821-9f28-cb5dd08d4825}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\99.Terrain%28Test%29">
       <UniqueIdentifier>{f999b3e3-a399-493a-893b-bcebcfb781a4}</UniqueIdentifier>
     </Filter>
@@ -980,9 +983,6 @@
     </Filter>
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe">
-      <UniqueIdentifier>{ab6ae50c-6e4a-4821-9f28-cb5dd08d4825}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1742,6 +1742,9 @@
     <ClInclude Include="..\Public\Minigame_Win.h">
       <Filter>02.GameObject\06.UI\16.Minigame\03.Minigame_Win</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Score.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
     </ClInclude>
@@ -1828,9 +1831,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Minigame_Score.h">
-      <Filter>02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -2587,6 +2587,9 @@
     <ClCompile Include="..\Private\Minigame_Win.cpp">
       <Filter>02.GameObject\06.UI\16.Minigame\03.Minigame_Win</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Score.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
     </ClCompile>
@@ -2649,9 +2652,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Minigame_Score.cpp">
-      <Filter>02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
