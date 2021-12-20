@@ -49,6 +49,15 @@ cbuffer RadialBlurDesc
 	float	g_fRadiarBlurRatio_Sub = 1.f;
 };
 
+cbuffer FogDesc
+{
+	bool	g_bFog = false;
+	float3	g_vFogColor = { 0.84f,0.83f,0.96f };			// 안개의 기본색상 ( 앰비언트 색상과 동일해야함)
+	float	g_fFogStartDist = 0.1f;							// 안개 지점에서 카메라까지의 거리
+	float	g_fFogGlobalDensity = 9.f;						// 안개 밀도 계수(값이 클수록 안개가 짙어진다)
+	float	g_fFogHeightFalloff = 0.007f;					// 높이 소멸값
+};
+
 ////////////////////////////////////////////////////////////
 /* Function */
 float3 ToneMapping_DXSample(float3 HDRColor)
@@ -145,6 +154,32 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToE
 	return lerp(vColor, vFogColor, fLerpFactor);
 }
 
+float3 HeightFog(float3 finalColor, float eyePosY, float3 eyeToPixel)
+{
+	//////////////////////////////////////////////////////////////////////////////////
+	float pixelDist = length(eyeToPixel); // Cam과 픽셀간의 거리
+	float3 eyeToPixelNorm = normalize(eyeToPixel);
+
+	// 픽셀 거리에 대해 안개 시작 지점 계산
+	float fogDist = max(pixelDist - g_fFogStartDist, 0.0);
+
+	// 안개 세기에 대해 거리 계산
+	float fogHeightDensityAtViewer = exp(-g_fFogHeightFalloff * eyePosY); // exp : 지수 반환(왼쪽 음에 가까운 지수그래프사용)
+	float fogDistInt = fogDist * fogHeightDensityAtViewer;
+
+	// 안개 세기에 대해 높이 계산
+	float eyeToPixelY = eyeToPixel.y * (fogDist * 100 / pixelDist);
+	float t = g_fFogHeightFalloff * eyeToPixelY;
+	const float thresholdT = 0.0001;
+	float fogHeightInt = abs(t) > thresholdT ?
+		(1.0 - exp(-t)) / t : 1.0;
+
+	// 위 계산 값을 합해 최종 인수 계산
+	float fogFinalFactor = exp(-g_fFogGlobalDensity * fogDistInt * fogHeightInt);
+
+	return lerp(g_vFogColor, finalColor, fogFinalFactor);
+}
+ 
 ////////////////////////////////////////////////////////////
 
 struct VS_IN
@@ -198,6 +233,8 @@ PS_OUT PS_MAIN(PS_IN In)
 	
 	vector	vWorldPos = 0.f;
 	vector	vCamPos = 0.f;
+	float3 eyeToPixel = 0.f;
+	float distToEye = 0.f;
 
 	if (In.vTexUV.x >= g_vMainViewportUVInfo.x && In.vTexUV.x <= g_vMainViewportUVInfo.z &&
 		In.vTexUV.y >= g_vMainViewportUVInfo.y && In.vTexUV.y <= g_vMainViewportUVInfo.w)
@@ -209,6 +246,13 @@ PS_OUT PS_MAIN(PS_IN In)
 
 		vWorldPos = mul(vViewPos, g_MainViewMatrixInverse);
 		vCamPos = g_vMainCamPosition;
+
+		if (g_bFog) // Test - Fog
+		{
+			eyeToPixel = vWorldPos - vCamPos;
+			distToEye = length(eyeToPixel);
+			vColor = HeightFog(vColor, vCamPos.y, eyeToPixel);
+		}
 
 		// Radiar Blur 
 		if(true == g_bRadiarBlur_Main) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Main, g_fRadiarBlurRatio_Main);
@@ -234,8 +278,6 @@ PS_OUT PS_MAIN(PS_IN In)
 	vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
 
 	// Volume
-	float3 eyeToPixel = vWorldPos - vCamPos;
-	float distToEye = length(eyeToPixel);
 	vColor = VolumeBlend(vColor, In.vTexUV, vDepthDesc.y, distToEye);
 
 	// Bloom
@@ -243,9 +285,6 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	// Add Effect
 	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
-
-	// Tone Mapping
-	vColor = ToneMapping_EA(vColor);
 
 	// Final
 	Out.vColor = vector(vColor, 1.f);

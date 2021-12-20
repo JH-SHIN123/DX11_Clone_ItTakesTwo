@@ -14,6 +14,7 @@ public:
 public:
 	void Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos);
 	void Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos);
+	void Set_MainViewFog(_bool bActive) { m_bMainFog = bActive; }
 
 public:
 	HRESULT Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight);
@@ -69,6 +70,8 @@ private:
 	_float2		m_vRadiarBlur_FocusPos_Sub = { 0.f,0.f };
 	_float		m_fRadialBlur_MainRatio = 0.f;
 	_float		m_fRadialBlur_SubRatio = 0.f;
+
+	_bool		m_bMainFog = false;
 #pragma endregion
 
 #pragma region Resources

@@ -197,24 +197,25 @@ HRESULT CPostFX::FinalPass()
 	CPipeline* pPipeline = CPipeline::GetInstance();
 	CBlur* pBlur = CBlur::GetInstance();
 
+	/* HDR */
 	_float fMiddleGrey = m_fMiddleGrey;
 	_float fLumWhiteSqr = m_fLumWhiteSqr;
 	fLumWhiteSqr *= fMiddleGrey;
 	fLumWhiteSqr *= fLumWhiteSqr;
-
 	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &fMiddleGrey, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqr, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_BloomScale", &m_fBloomScale, sizeof(_float));
+
+	/* Fog */
+	m_pVIBuffer_ToneMapping->Set_Variable("g_bFog", &m_bMainFog, sizeof(m_bMainFog));
 
 	/* Radiar Blur */
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Main", &m_bRadialBlur_Main, sizeof(m_bRadialBlur_Main)); 
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Sub", &m_bRadialBlur_Sub, sizeof(m_bRadialBlur_Sub));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Main", &m_vRadiarBlur_FocusPos_Main, sizeof(m_vRadiarBlur_FocusPos_Main));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Sub", &m_vRadiarBlur_FocusPos_Sub, sizeof(m_vRadiarBlur_FocusPos_Sub));
-
 	m_pVIBuffer_ToneMapping->Set_Variable("g_fRadiarBlurRatio_Main", &m_fRadialBlur_MainRatio, sizeof(m_fRadialBlur_MainRatio));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_fRadiarBlurRatio_Sub", &m_fRadialBlur_SubRatio, sizeof(m_fRadialBlur_SubRatio));
-
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_RadiarBlurMaskTex", m_pRadiarBlur_Mask->Get_ShaderResourceView(0));
 
 	/* Volume */

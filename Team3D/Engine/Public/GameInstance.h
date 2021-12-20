@@ -129,6 +129,7 @@ public:
 #pragma region PostFX
 	void Set_RadiarBlur_Main(_bool bActive, _float2 & vFocusPos);
 	void Set_RadiarBlur_Sub(_bool bActive, _float2 & vFocusPos);
+	void Set_MainViewFog(_bool bActive);
 #pragma endregion
 
 private:

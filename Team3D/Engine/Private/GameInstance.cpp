@@ -438,12 +438,17 @@ ID3DBlob * CGameInstance::Get_Get_ShaderCompiledCode(const _tchar * pShaderFileP
 void CGameInstance::Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos)
 {
 	NULL_CHECK(m_pPostFX);
-	return m_pPostFX->Set_RadiarBlur_Main(bActive, vFocusPos);
+	m_pPostFX->Set_RadiarBlur_Main(bActive, vFocusPos);
 }
 void CGameInstance::Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos)
 {
 	NULL_CHECK(m_pPostFX);
-	return m_pPostFX->Set_RadiarBlur_Sub(bActive, vFocusPos);
+	m_pPostFX->Set_RadiarBlur_Sub(bActive, vFocusPos);
+}
+void CGameInstance::Set_MainViewFog(_bool bActive)
+{
+	NULL_CHECK(m_pPostFX);
+	m_pPostFX->Set_MainViewFog(bActive);
 }
 #pragma endregion
 
