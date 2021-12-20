@@ -78,6 +78,9 @@
 #include "Effect_Boss_BrokenLaser_Particle.h"
 #include "Effect_Boss_BrokenLaser_Lightning.h"
 #include "Effect_DashMesh.h"
+#include "Effect_StarBuddy_Explosion_Pillar.h"
+#include "Effect_StarBuddy_Explosion_BigBang.h"
+#include "Effect_StarBuddy_Explosion_Particle.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -306,6 +309,19 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::Boss_BrokenLaser_Flow:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_BrokenLaser_Flow");
+		break;
+	case Effect_Value::StarBuddy_Explosion_Pillar:
+		lstrcpy(szPrototype, L"GameObject_2D_StarBuddy_Explosion_Pillar");
+		break;
+	case Effect_Value::StarBuddy_Explosion_BigBang:
+		lstrcpy(szPrototype, L"GameObject_3D_StarBuddy_Explosion_BigBang");
+		break;
+	case Effect_Value::StarBuddy_Explosion_Particle:
+		lstrcpy(szPrototype, L"GameObject_2D_StarBuddy_Explosion_Particle");
+		Clone_Data.fSizePower = 9.f;
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
+		Clone_Data.fSizePower = 3.f;
 		break;
 	default:
 		break;
@@ -583,6 +599,13 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_BrokenLaser_Flow"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_BrokenLaser_Flow", CEffect_Boss_BrokenLaser_Flow::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_StarBuddy_Explosion_Pillar"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_StarBuddy_Explosion_Pillar", CEffect_StarBuddy_Explosion_Pillar::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_StarBuddy_Explosion_Paticle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_StarBuddy_Explosion_Particle", CEffect_StarBuddy_Explosion_Particle::Create(pDevice, pDeviceContext, pData));
+
+
 #pragma  endregion
 
 
@@ -616,6 +639,9 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_Dash"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_Dash", CEffect_DashMesh::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_3D_StarBuddy_Explosion_BigBang"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_3D_StarBuddy_Explosion_BigBang", CEffect_StarBuddy_Explosion_BigBang::Create(pDevice, pDeviceContext, pData));
 
 #pragma  endregion
 

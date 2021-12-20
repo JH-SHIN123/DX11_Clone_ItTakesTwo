@@ -1017,8 +1017,20 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy">
       <UniqueIdentifier>{083634ee-faac-4437-9742-916c864b39d2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\00.Pillar">
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Explosion">
+      <UniqueIdentifier>{1740bcb8-45e6-49e7-bad2-ab8bf8b5c3d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Explosion\00.Pillar">
       <UniqueIdentifier>{bd27bfc8-3ddf-4e97-ab1d-ecd51e086f99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Explosion\01.BigBang">
+      <UniqueIdentifier>{1f3a5ee3-808d-40ac-9dee-375847ab8b06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Explosion\02.Particle">
+      <UniqueIdentifier>{b9b78fa0-c73c-40fd-a098-ef8ae846987a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Idle">
+      <UniqueIdentifier>{d05c42ba-48cd-44e4-867e-5a950dc6855d}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1883,6 +1895,15 @@
     <ClInclude Include="..\public\Effect_DashMesh.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Player\00.Dash</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_StarBuddy_Explosion_Pillar.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Explosion\00.Pillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_StarBuddy_Explosion_BigBang.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Explosion\01.BigBang</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_StarBuddy_Explosion_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Explosion\02.Particle</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2718,6 +2739,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_DashMesh.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Player\00.Dash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_StarBuddy_Explosion_Pillar.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Explosion\00.Pillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_StarBuddy_Explosion_BigBang.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Explosion\01.BigBang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_StarBuddy_Explosion_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Explosion\02.Particle</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

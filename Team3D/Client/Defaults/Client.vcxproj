@@ -294,6 +294,9 @@
     <ClInclude Include="..\Public\Effect_RespawnTunnel.h" />
     <ClInclude Include="..\Public\Effect_RespawnTunnel_Portal.h" />
     <ClInclude Include="..\Public\Effect_Robot_Battery_Spark.h" />
+    <ClInclude Include="..\public\Effect_StarBuddy_Explosion_BigBang.h" />
+    <ClInclude Include="..\public\Effect_StarBuddy_Explosion_Particle.h" />
+    <ClInclude Include="..\public\Effect_StarBuddy_Explosion_Pillar.h" />
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Explosion.h" />
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Particle.h" />
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Spark.h" />
@@ -571,6 +574,9 @@
     <ClCompile Include="..\Private\Effect_RespawnTunnel.cpp" />
     <ClCompile Include="..\Private\Effect_RespawnTunnel_Portal.cpp" />
     <ClCompile Include="..\Private\Effect_Robot_Battery_Spark.cpp" />
+    <ClCompile Include="..\private\Effect_StarBuddy_Explosion_BigBang.cpp" />
+    <ClCompile Include="..\private\Effect_StarBuddy_Explosion_Particle.cpp" />
+    <ClCompile Include="..\private\Effect_StarBuddy_Explosion_Pillar.cpp" />
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Particle.cpp" />
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Spark.cpp" />

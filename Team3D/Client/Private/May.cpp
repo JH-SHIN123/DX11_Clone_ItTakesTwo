@@ -573,6 +573,8 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma region Effect GravityBoots
 	if (m_pActorCom->Get_IsOnGravityPath() == true)
 	{
+		m_pEffect_GravityBoots->Set_IsActivate_GravityBoots();
+
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog)
 		{
 			if (false == m_IsLeftFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.25f && m_pModelCom->Get_ProgressAnim() < 0.29f) // ¿Þ¹ß
@@ -872,6 +874,8 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma region Effect GravityBoots
 	if (m_pActorCom->Get_IsOnGravityPath() == true)
 	{
+		m_pEffect_GravityBoots->Set_IsActivate_GravityBoots();
+
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog)
 		{
 			if (false == m_IsLeftFoot_Effect && m_pModelCom->Get_ProgressAnim() > 0.25f && m_pModelCom->Get_ProgressAnim() < 0.29f) // ¿Þ¹ß

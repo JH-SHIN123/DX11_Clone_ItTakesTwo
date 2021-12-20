@@ -78,6 +78,10 @@ enum class Effect_Value
 	MoonBaboon_Shield,
 	MoonBaboon_Booster,
 
+	StarBuddy_Explosion_Pillar,
+	StarBuddy_Explosion_BigBang,
+	StarBuddy_Explosion_Particle,
+
 	Effect_Value_End
 };
 

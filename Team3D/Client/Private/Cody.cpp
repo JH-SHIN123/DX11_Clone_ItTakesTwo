@@ -219,12 +219,12 @@ _int CCody::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
-// 	if (m_pGameInstance->Key_Down(DIK_B))
-// 		EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Smoke);
-// 	if (m_pGameInstance->Key_Down(DIK_N))
-// 		EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
-// 	if (m_pGameInstance->Key_Down(DIK_M))
-// 		EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
+ 	if (m_pGameInstance->Key_Down(DIK_B))
+ 		EFFECT->Add_Effect(Effect_Value::StarBuddy_Explosion_Pillar);
+ 	if (m_pGameInstance->Key_Down(DIK_N))
+ 		EFFECT->Add_Effect(Effect_Value::StarBuddy_Explosion_BigBang);
+ 	if (m_pGameInstance->Key_Down(DIK_M))
+ 		EFFECT->Add_Effect(Effect_Value::StarBuddy_Explosion_Particle);
 // 	if (m_pGameInstance->Key_Down(DIK_SLASH))
 // 		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Shield, m_pTransformCom->Get_WorldMatrix());
 // 	if (m_pGameInstance->Key_Down(DIK_RSHIFT))
