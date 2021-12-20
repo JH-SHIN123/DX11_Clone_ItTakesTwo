@@ -49,7 +49,7 @@ HRESULT CEffect_Boss_Laser_Charge::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_Laser_Charge::Tick(_double TimeDelta)
 {
-	if (5.0 < m_dControlTime)
+	if (5.0 < m_dControlTime && 0.0 >= m_dControlTime_Alpha)
 		return EVENT_DEAD;
 
 	_matrix ParentMatrix = static_cast<CUFO*>(m_pUFO)->Get_Model()->Get_BoneMatrix("LaserGunRing3") * m_pUFO->Get_Transform()->Get_WorldMatrix();
@@ -69,7 +69,11 @@ _int CEffect_Boss_Laser_Charge::Tick(_double TimeDelta)
 			m_dControlTime_Alpha = 1.0;
 	}
 	else
+	{
 		m_dControlTime_Alpha -= TimeDelta * 0.8;
+		if (0.0 >= m_dControlTime_Alpha)
+			m_dControlTime_Alpha = 0.0;
+	}
 
 	Check_Instance(TimeDelta);
 
@@ -78,6 +82,9 @@ _int CEffect_Boss_Laser_Charge::Tick(_double TimeDelta)
 
 _int CEffect_Boss_Laser_Charge::Late_Tick(_double TimeDelta)
 {
+	if (0.0 >= m_dControlTime_Alpha)
+		return NO_EVENT;
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 

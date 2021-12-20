@@ -298,7 +298,7 @@ HRESULT CModel::Initialize_PivotTransformation()
 	return S_OK;
 }
 
-HRESULT CModel::NativeConstruct_Prototype(const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
+HRESULT CModel::NativeConstruct_Prototype(const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bSaveVertices, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
 	CComponent::NativeConstruct_Prototype();
 
@@ -309,7 +309,7 @@ HRESULT CModel::NativeConstruct_Prototype(const _tchar * pModelFilePath, const _
 	FAILED_CHECK_RETURN(CModel_Loader::Load_ModelFromFile(m_pDevice, m_pDeviceContext, CModel_Loader::TYPE_NORMAL, this, pModelFilePath, pModelFileName, iMaterialSetCount), E_FAIL);
 	FAILED_CHECK_RETURN(Apply_PivotMatrix(PivotMatrix), E_FAIL);
 	FAILED_CHECK_RETURN(Store_TriMeshes(), E_FAIL);
-	FAILED_CHECK_RETURN(Create_VIBuffer(pShaderFilePath, pTechniqueName), E_FAIL);
+	FAILED_CHECK_RETURN(Create_VIBuffer(pShaderFilePath, pTechniqueName, bSaveVertices), E_FAIL);
 	FAILED_CHECK_RETURN(Sort_MeshesByMaterial(), E_FAIL);
 
 	if (true == m_bNeedCenterBone)
@@ -799,14 +799,14 @@ HRESULT CModel::Create_Buffer(ID3D11Buffer ** ppBuffer, _uint iByteWidth, D3D11_
 
 	return S_OK;
 }
-HRESULT CModel::Create_VIBuffer(const _tchar * pShaderFilePath, const char * pTechniqueName)
+HRESULT CModel::Create_VIBuffer(const _tchar * pShaderFilePath, const char * pTechniqueName, _bool bSaveVertices)
 {
 	/* For.VertexBuffer */
 	m_iVertexBufferCount = 1;
 	m_iVertexStride = sizeof(VTXMESH);
 	Create_Buffer(&m_pVB, m_iVertexStride * m_iVertexCount, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, m_iVertexStride, m_pVertices);
 
-	if (m_iAnimCount == 0)
+	if (bSaveVertices == false)
 		Safe_Delete_Array(m_pVertices);
 
 	/* For.IndexBuffer */
@@ -862,11 +862,11 @@ HRESULT CModel::SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC * pInputElementDesc,
 }
 #pragma endregion
 
-CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char * pCenterBoneName)
+CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar * pModelFilePath, const _tchar * pModelFileName, const _tchar * pShaderFilePath, const char * pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bSaveVertices, _bool bNeedCenterBone, const char * pCenterBoneName)
 {
 	CModel* pInstance = new CModel(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype(pModelFilePath, pModelFileName, pShaderFilePath, pTechniqueName, iMaterialSetCount, PivotMatrix, bNeedCenterBone, pCenterBoneName)))
+	if (FAILED(pInstance->NativeConstruct_Prototype(pModelFilePath, pModelFileName, pShaderFilePath, pTechniqueName, iMaterialSetCount, PivotMatrix, bSaveVertices, bNeedCenterBone, pCenterBoneName)))
 	{
 		MSG_BOX("Failed to Create Instance - CModel");
 		Safe_Release(pInstance);
@@ -937,7 +937,7 @@ void CModel::Free()
 
 	if (false == m_isClone)
 	{
-		if (m_iAnimCount > 0)
+		if (m_pVertices != nullptr)
 			Safe_Delete_Array(m_pVertices);
 
 		for (auto& TriMesh : m_PxTriMeshes)

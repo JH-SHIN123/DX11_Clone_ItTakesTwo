@@ -254,24 +254,14 @@ struct  PS_OUT
 	vector	vColor : SV_TARGET;
 };
 
-PS_OUT  PS_DISTORTION_COLOR(PS_IN_DIST In)
+PS_OUT  PS_DASH(PS_IN_DIST In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	float4 vFX_tex = g_MaskTexture.Sample(DiffuseSampler, In.vWeightUV);
-	float4 vColor = (float4)0.f;
-	float fWeight = vFX_tex.r * 0.5f;
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	float4 vColorRamp = g_ColorTexture.Sample(ColorSampler, In.vColorRamp_UV);
-	vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV + fWeight);
-	vColor *= g_vColor;
-
-	if (0.1f >= vColor.r)
-		discard;
-	//vColor.a = abs(vColor.a - 1.f);
-	vColor.a = g_fTime;
-	Out.vColor = vColor;
-
+	Out.vColor.rgb *= 5.f;
+	Out.vColor.a = Out.vColor.r * g_fTime;
 	return Out;
 }
 
@@ -344,14 +334,14 @@ PS_OUT  PS_DISTORTION_UFO_RING(PS_IN_DIST In)
 
 technique11 DefaultTechnique
 {
-	pass Distortion // 1
+	pass Dash // 0
 	{
 		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_MAIN_DIST();
-		GeometryShader = compile gs_5_0 GS_MAIN_DIST();
-		PixelShader = compile ps_5_0 PS_DISTORTION_COLOR();
+		VertexShader = compile vs_5_0 VS_ANGLE_UV();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_DASH();
 	}
 
 	pass MaskDistortion // 1

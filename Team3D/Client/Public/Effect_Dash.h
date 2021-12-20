@@ -24,13 +24,13 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 public:
-	void Check_Scale(_double TimeDelta, _uint iIndex);
+	void Check_Scale(_double TimeDelta);
+	void Check_Move(_double TimeDelta);
 
 public:
-	_double m_dAlphaTime = 1.0;
-	_float4 m_vWeight = { 0.f, 0.f, 0.125f, 0.125f };
-	_float3 m_vScale = { 1.f, 0.f, 5.f };
-//	CTextures* m_pTexturesCom_Color = nullptr;
+	_float m_fAlphaTime = 0.1f;
+	_double m_dActivateTime = 0.0;
+	_double m_dAngle = 0.0;
 
 
 public:

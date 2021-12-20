@@ -29,7 +29,7 @@ HRESULT CEffect_Player_Dead_Particle_Fire::NativeConstruct(void * pArg)
 	if (EFFECT_DESC_CLONE::PV_CODY >= m_EffectDesc_Clone.iPlayerValue)
 		m_EffectDesc_Prototype.iInstanceCount = 500; // 500 100
 	else if (EFFECT_DESC_CLONE::PV_CODY_S == m_EffectDesc_Clone.iPlayerValue)
-		m_EffectDesc_Prototype.iInstanceCount = 10; // 100 20
+		m_EffectDesc_Prototype.iInstanceCount = 30; // 100 20
 	else if (EFFECT_DESC_CLONE::PV_CODY_L == m_EffectDesc_Clone.iPlayerValue)
 		m_EffectDesc_Prototype.iInstanceCount = 2000; // 2500 500
 

@@ -17,7 +17,8 @@ enum class Effect_Value
 	Cody_Dead, Cody_Dead_Fire,
 	Cody_Revive,
 	Cody_Rail,
-	Cody_PinBall_Move,
+	Cody_PinBall_Move, Cody_PinBall_Explosion, Cody_PinBall_Explosion_Particle, 
+	Cody_Size_ShokeWave,
 	May_Dead, May_Dead_Fire,
 	May_Revive,
 	May_Rail,
@@ -60,8 +61,28 @@ enum class Effect_Value
 	UFO_Inside_PressWall_Smoke,
 	UFO_Inside_PressWall_Particle,
 
-	Hit_Planet_Particle,
+	Boss_BrokenLaser_Smoke,
+	Boss_BrokenLaser_Particle,
+	Boss_BrokenLaser_Lightning,
+	Boss_BrokenLaser_Flow,
+
 	Hit_Planet_Smoke,
+	Hit_Planet_Particle,
+
+	Hit_BossLaser,
+	Hit_BossLaser_Particle,
+	Hit_BossLaser_Particle_Star,
+
+	WarpGate_Clear,
+
+	MoonBaboon_Shield,
+	MoonBaboon_Booster,
+
+	StarBuddy_Explosion_Pillar,
+	StarBuddy_Explosion_BigBang,
+	StarBuddy_Explosion_Particle,
+
+	PipeLocker_Connected,
 
 	Effect_Value_End
 };
@@ -100,7 +121,6 @@ class CEffect_Generator final : public CBase
 
 public:
 	HRESULT Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix = XMMatrixIdentity(), void* pArg = nullptr);
-	// 맵과 같이 배치되는 상호작용 없는 환경 이펙트는 다른걸로
 	HRESULT Add_PointLight(Effect_PointLight_Desc* pLightArg = nullptr, CGameObject** ppOut = nullptr);
 
 public:
