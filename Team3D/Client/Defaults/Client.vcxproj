@@ -202,6 +202,7 @@
     <ClInclude Include="..\Public\Boss_Missile.h" />
     <ClInclude Include="..\Public\Bridge.h" />
     <ClInclude Include="..\Public\ButtonIndicator.h" />
+    <ClInclude Include="..\Public\C2DMesh.h" />
     <ClInclude Include="..\Public\C3DText.h" />
     <ClInclude Include="..\Public\CamEffect.h" />
     <ClInclude Include="..\Public\CameraActor.h" />
@@ -472,6 +473,7 @@
     <ClCompile Include="..\Private\Boss_Missile.cpp" />
     <ClCompile Include="..\Private\Bridge.cpp" />
     <ClCompile Include="..\Private\ButtonIndicator.cpp" />
+    <ClCompile Include="..\Private\C2DMesh.cpp" />
     <ClCompile Include="..\Private\C3DText.cpp" />
     <ClCompile Include="..\Private\CamEffect.cpp" />
     <ClCompile Include="..\Private\CameraActor.cpp" />

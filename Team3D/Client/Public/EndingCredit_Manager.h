@@ -19,6 +19,7 @@ public:
 	HRESULT Create_3DText(_bool bBoost);
 	HRESULT Start_EndingCredit();
 	HRESULT Create_Rocks();
+	HRESULT Create_2DMesh();
 
 public:
 	HRESULT NativeConstruct_EndingCredit();

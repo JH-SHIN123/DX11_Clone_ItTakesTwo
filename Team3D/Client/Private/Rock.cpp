@@ -79,8 +79,8 @@ _int CRock::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	PxTransform pxTrans = m_pDynamicActorCom->Get_Actor()->getGlobalPose();
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(pxTrans.p.x, pxTrans.p.y, pxTrans.p.z, 1.f));
+	m_pDynamicActorCom->Update_DynamicActor();
+	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
 
 	m_pTriggerActorCom->Update_TriggerActor();
 
