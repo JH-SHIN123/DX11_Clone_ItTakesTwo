@@ -68,6 +68,7 @@ private:
 	HRESULT Ready_Layer_Rope(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UFORadarSet(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_TestRocket(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_EndingRocket(const _tchar* pLayerTag);
 
 	/* Jin */
 	HRESULT Ready_Layer_ControlRoomPuzzle(const _tchar* pLayerTag, const _tchar* pGameObjectTag);

@@ -204,6 +204,7 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 	if (nullptr == m_pTargetObj)
 		return EVENT_ERROR;
 	_int iResult = NO_EVENT;
+
 	switch (m_eCurCamFreeOption)
 	{
 	case CMainCamera::CamFreeOption::Cam_Free_FollowPlayer:

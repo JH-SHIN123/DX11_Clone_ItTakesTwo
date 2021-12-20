@@ -73,7 +73,7 @@ private:
 
 	_vector m_vPlayerOffSetPosition = XMVectorZero();
 
-protected:
+private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom			= nullptr;
 	CTransform*			m_pTransformCom			= nullptr;

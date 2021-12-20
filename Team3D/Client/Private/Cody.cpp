@@ -72,8 +72,22 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_WALK, m_fCodyB_Walk_Volume);
 	m_pGameInstance->Play_Sound(TEXT("CodyB_Walk.wav"), CHANNEL_CODYB_WALK, m_fCodyB_Walk_Volume);
 
+	m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RUN, m_fCodyM_Sprint_Volume);
+	m_pGameInstance->Play_Sound(TEXT("CodyM_Run.wav"), CHANNEL_CODYM_RUN, m_fCodyM_Sprint_Volume);
+
+	m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_ROPE_UFO_CATCH, m_fCody_Rope_UFO_Throw_Volume);
+	m_pGameInstance->Play_Sound(TEXT("Character_Rope_UFO_Catch.wav"), CHANNEL_CHARACTER_ROPE_UFO_CATCH, m_fCody_Rope_UFO_Throw_Volume);
+
+	m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fCody_WallJump_Slide_Volume);
+	m_pGameInstance->Play_Sound(TEXT("Character_WallJump_Slide.wav"), CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fCody_WallJump_Slide_Volume);
+
+
+
 	m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 	m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
+	m_pGameInstance->Stop_Sound(CHANNEL_CODYM_RUN);
+	m_pGameInstance->Stop_Sound(CHANNEL_CHARACTER_ROPE_UFO_CATCH);
+	m_pGameInstance->Stop_Sound(CHANNEL_CHARACTER_WALLJUMP_SLIDE);
 
 	return S_OK;
 }
@@ -265,6 +279,7 @@ _int CCody::Tick(_double dTimeDelta)
 			SpaceShip_Respawn(dTimeDelta);
 			In_JoyStick(dTimeDelta);
 			BossMissile_Control(dTimeDelta);
+			Ride_Ending_Rocket(dTimeDelta);
 		}
 		else
 		{
@@ -491,6 +506,11 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_NUMPADENTER))
+	{
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f), 3.f);
+		m_IsEnding = true;
+	}
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -525,6 +545,7 @@ void CCody::KeyInput(_double dTimeDelta)
 				{
 					if ((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) && m_IsTurnAround == false)
 					{
+						m_pGameInstance->Stop_Sound(CHANNEL_CODYM_RUN);
 						m_fSprintAcceleration = 15.f;
 						bMove[1] = !bMove[1];
 						m_pModelCom->Set_Animation(ANI_C_SprintTurnAround);
@@ -537,6 +558,7 @@ void CCody::KeyInput(_double dTimeDelta)
 				{
 					if ((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) && m_IsTurnAround == false)
 					{
+						m_pGameInstance->Stop_Sound(CHANNEL_CODYM_RUN);
 						m_fSprintAcceleration = 15.f;
 						bMove[1] = !bMove[1];
 						m_pModelCom->Set_Animation(ANI_C_SprintTurnAround);
@@ -549,6 +571,7 @@ void CCody::KeyInput(_double dTimeDelta)
 				{
 					if ((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) && m_IsTurnAround == false)
 					{
+						m_pGameInstance->Stop_Sound(CHANNEL_CODYM_RUN);
 						m_fSprintAcceleration = 15.f;
 						bMove[0] = !bMove[0];
 						m_pModelCom->Set_Animation(ANI_C_SprintTurnAround);
@@ -561,6 +584,7 @@ void CCody::KeyInput(_double dTimeDelta)
 				{
 					if ((m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint) && m_IsTurnAround == false)
 					{
+						m_pGameInstance->Stop_Sound(CHANNEL_CODYM_RUN);
 						m_fSprintAcceleration = 15.f;
 						bMove[0] = !bMove[0];
 						m_pModelCom->Set_Animation(ANI_C_SprintTurnAround);
@@ -1379,9 +1403,21 @@ void CCody::Sprint(const _double dTimeDelta)
 		if (m_bRoll == false && m_IsJumping == false && m_IsTurnAround == false)
 		{
 			if (m_pModelCom->Is_AnimFinished(ANI_C_Sprint_Start_FromDash) == true) // JogStart -> Jog
+			{
 				m_pModelCom->Set_Animation(ANI_C_Sprint);
+				if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_RUN) == false)
+				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RUN, m_fCodyM_Sprint_Volume);
+					m_pGameInstance->Play_Sound(TEXT("CodyM_Run.wav"), CHANNEL_CODYM_RUN, m_fCodyM_Sprint_Volume);
+				}
+			}
 			else if (m_pModelCom->Is_AnimFinished(ANI_C_Sprint) == true) // Jog -> Jog // 보간속도 Up
 			{
+				if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_RUN) == false)
+				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RUN, m_fCodyM_Sprint_Volume);
+					m_pGameInstance->Play_Sound(TEXT("CodyM_Run.wav"), CHANNEL_CODYM_RUN, m_fCodyM_Sprint_Volume);
+				}
 				m_pModelCom->Set_Animation(ANI_C_Sprint);
 			}
 			else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH || 
@@ -1416,6 +1452,8 @@ void CCody::Sprint(const _double dTimeDelta)
 			m_fSprintAcceleration = 35.f;
 			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint || m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash) // jog 였다면
 			{
+				m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+				m_pGameInstance->Stop_Sound(CHANNEL_CODYM_RUN);
 				m_bSprint = false;
 				m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd_Exhausted); // jog to stop 으로 바꿔
 				m_pModelCom->Set_NextAnimIndex(ANI_C_Exhausted_MH); // jog to stop 끝나면 idle 예약.
@@ -1424,6 +1462,8 @@ void CCody::Sprint(const _double dTimeDelta)
 	}
 	else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Sprint_Start_FromDash) // JogStart 였다면
 	{
+		m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+		m_pGameInstance->Stop_Sound(CHANNEL_CODYM_RUN);
 		m_bSprint = false;
 		m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd_Exhausted); // jog to stop 으로 바꿔
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Exhausted_MH);
@@ -2122,6 +2162,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 				XMStoreFloat3(&m_vStartPosition, XMVectorSet(XMVectorGetX(vTestPos), XMVectorGetY(vTestPos), XMVectorGetZ(vTestPos), 1.f)/* + (XMLoadFloat3(&m_vTriggerTargetPos)*/);
 
 			}
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_UFO_THROW, m_fCody_Rope_UFO_Throw_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Character_Rope_UFO_Throw.wav"), CHANNEL_CHARACTER_UFO_THROW, m_fCody_Rope_UFO_Throw_Volume);
+
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Swinging_Enter);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Swinging_Fwd);
 			m_IsHookUFO = true;
@@ -2143,6 +2186,8 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			Enforce_IdleState();
 			m_IsTouchFireDoor = true;
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Dead_Burn.wav"), CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
 		}
 		else if (GameID::eBOSSMISSILE == m_eTargetGameID && m_pGameInstance->Key_Down(DIK_E) && m_IsBossMissile_Control == false)
 		{
@@ -2167,6 +2212,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_IsDeadLine = true;
+
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DEAD_FALL, m_fCodyM_Dead_Fall_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Dead_Fall.wav"), CHANNEL_CODYM_DEAD_FALL, m_fCodyM_Dead_Fall_Volume);
 		}
 		else if (m_eTargetGameID == GameID::eDUMMYWALL && m_pActorCom->Get_IsWallCollide() == true && m_bWallAttach == false
 			&& m_IsJumping == true && m_IsFalling == false)
@@ -2220,6 +2268,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)
 		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
+			m_pGameInstance->Play_Sound(TEXT("Character_Dead_ElectricShock.wav"), CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
+
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
@@ -2276,6 +2327,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if ((m_eTargetGameID == GameID::ePRESS || m_eTargetGameID == GameID::ePEDAL) && false == m_bRespawn)
 		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DEAD_FALL, m_fCodyM_Dead_Fall_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Dead_Fall.wav"), CHANNEL_CODYM_DEAD_FALL, m_fCodyM_Dead_Fall_Volume);
+
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pActorCom->Update(dTimeDelta);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
@@ -2292,6 +2346,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			if (true == ((CElectricBox*)m_pTargetPtr)->Get_Electric())
 			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
+				m_pGameInstance->Play_Sound(TEXT("Character_Dead_ElectricShock.wav"), CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
+
 				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 				m_pActorCom->Update(dTimeDelta);
 				m_pActorCom->Set_ZeroGravity(true, false, true);
@@ -2303,6 +2360,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			if (true == ((CElectricWall*)m_pTargetPtr)->Get_Electric())
 			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
+				m_pGameInstance->Play_Sound(TEXT("Character_Dead_ElectricShock.wav"), CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
+
  				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 				m_pActorCom->Update(dTimeDelta);
 				m_pActorCom->Set_ZeroGravity(true, false, true);
@@ -2343,6 +2403,12 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 			m_IsCollide = false;
 		}
+		else if (m_IsEnding == true && m_bSetEndingOffSetOnce == false)
+		{
+			m_bSetEndingOffSetOnce = true;
+			m_pModelCom->Set_Animation(ANI_C_Rocket_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Rocket_MH);
+		}
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_F9) && m_IsInJoyStick == false && m_eCurPlayerSize == SIZE_SMALL)
@@ -2362,7 +2428,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Control || m_IsDeadLine
 		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach || m_bLaserTennis ||
-		m_IsInJoyStick)
+		m_IsInJoyStick || m_IsEnding)
 		return true;
 
 	return false;
@@ -2666,6 +2732,18 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 {
 	if (m_IsHookUFO == true)
 	{
+		//if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CHARACTER_UFO_MOVE) == false)
+		//{
+		//	m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_UFO_MOVE, m_fCody_Rope_UFO_Move_Volume);
+		//	m_pGameInstance->Play_Sound(TEXT("Character_Rope_UFO_Move"), CHANNEL_CHARACTER_UFO_MOVE, m_fCody_Rope_UFO_Move_Volume);
+		//}
+
+		if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CHARACTER_UFO_THROW) == false && m_bUFOCatchSoundOnce == false)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_ROPE_UFO_CATCH, m_fCody_Rope_UFO_Throw_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Character_Rope_UFO_Catch.wav"), CHANNEL_CHARACTER_ROPE_UFO_CATCH, m_fCody_Rope_UFO_Throw_Volume);
+			m_bUFOCatchSoundOnce = true;
+		}
 		// 이동
 		_float Gravity = -0.3f;
 
@@ -2689,13 +2767,13 @@ void CCody::Hook_UFO(const _double dTimeDelta)
 		m_pTransformCom->RotateYawDirectionOnLand(-vTriggerToPlayer, (_float)dTimeDelta / 2.f);
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		if (m_pGameInstance->Key_Pressing(DIK_J))
-		{
-			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(m_fRopeAngle));
-		}
 
 		if (m_pGameInstance->Key_Down(DIK_SPACE)) // 로프 놓기
 		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_UFO_RELEASE, m_fCody_Rope_UFO_Release_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Character_Rope_UFO_Release.wav"), CHANNEL_CHARACTER_UFO_RELEASE, m_fCody_Rope_UFO_Release_Volume);
+
+			m_bUFOCatchSoundOnce = false;
 			m_bGoToHooker = false;
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Swinging_ExitFwd);
@@ -2716,9 +2794,19 @@ void CCody::Wall_Jump(const _double dTimeDelta)
 {
 	if (true == m_bWallAttach && false == m_IsWallJumping)
 	{
+		if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CHARACTER_WALLJUMP_SLIDE) == false)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fCody_WallJump_Slide_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Character_WallJump_Slide.wav"), CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fCody_WallJump_Slide_Volume);
+		}
+
 		m_pActorCom->Move((-m_pTransformCom->Get_State(CTransform::STATE_UP) / 50.f), dTimeDelta);
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_CHARACTER_WALLJUMP_SLIDE);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALLJUMP, m_fCodyM_WallJump_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_WallJump.wav"), CHANNEL_CODYM_WALLJUMP, m_fCodyM_WallJump_Volume);
+
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsWallJumping = true;
 			m_pModelCom->Set_Animation(ANI_C_WallSlide_Jump);
@@ -2787,10 +2875,20 @@ void CCody::Pipe_WallJump(const _double dTimeDelta)
 {
 	if (true == m_bPipeWallAttach && false == m_IsPipeWallJumping)
 	{
+		if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CHARACTER_WALLJUMP_SLIDE) == false)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fCody_WallJump_Slide_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Character_WallJump_Slide.wav"), CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fCody_WallJump_Slide_Volume);
+		}
+
 		m_fPipeWallToWallSpeed = 55.f;
 		m_pActorCom->Move((-m_pTransformCom->Get_State(CTransform::STATE_UP) / 50.f), dTimeDelta);
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_CHARACTER_WALLJUMP_SLIDE);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALLJUMP, m_fCodyM_WallJump_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_WallJump.wav"), CHANNEL_CODYM_WALLJUMP, m_fCodyM_WallJump_Volume);
+
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsPipeWallJumping = true;
 			m_pModelCom->Set_Animation(ANI_C_WallSlide_Jump);
@@ -2856,10 +2954,19 @@ void CCody::ElectricWallJump(const _double dTimeDelta)
 {
 	if (true == m_bElectricWallAttach && false == m_IsElectricWallJumping)
 	{
+		if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CHARACTER_WALLJUMP_SLIDE) == false)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fCody_WallJump_Slide_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Character_WallJump_Slide.wav"), CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fCody_WallJump_Slide_Volume);
+		}
 		m_fElectricWallToWallSpeed = 55.f;
 		m_pActorCom->Move((-m_pTransformCom->Get_State(CTransform::STATE_UP) / 50.f), dTimeDelta);
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_CHARACTER_WALLJUMP_SLIDE);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALLJUMP, m_fCodyM_WallJump_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_WallJump.wav"), CHANNEL_CODYM_WALLJUMP, m_fCodyM_WallJump_Volume);
+
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsElectricWallJumping = true;
 			m_pModelCom->Set_Animation(ANI_C_WallSlide_Jump);
@@ -2979,6 +3086,22 @@ void CCody::BossMissile_Control(const _double dTimeDelta)
 
 }
 
+void CCody::Ride_Ending_Rocket(const _double dTimeDelta)
+{
+	if (m_IsEnding == true)
+	{
+		m_pModelCom->Set_Animation(ANI_C_Rocket_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Rocket_MH);
+
+		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Rocket_MH)
+		{
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_pActorCom->Set_Position(m_vEndingRocketOffSetPos);
+			m_pTransformCom->Set_WorldMatrix(m_matEndingRocketMatrix);
+		}
+	}
+}
+
 void CCody::Warp_Wormhole(const _double dTimeDelta)
 {
 	if (false == m_IsWarpNextStage && false == m_IsWarpDone)
@@ -3083,6 +3206,9 @@ void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
 		m_IsCollide = false;
 		m_IsTouchFireDoor = false;
 		m_pActorCom->Set_ZeroGravity(false, false, false);
+
+		m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
+		m_pGameInstance->Play_Sound(TEXT("CodyM_Resurrection.wav"), CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
 	}
 }
 
@@ -3110,6 +3236,9 @@ void CCody::WallLaserTrap(const _double dTimeDelta)
 	m_dDeadTime += dTimeDelta;
 	if (m_dDeadTime >= 2.f)
 	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
+		m_pGameInstance->Play_Sound(TEXT("CodyM_Resurrection.wav"), CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
+
 		_float fMyPosY = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
 		_float fTriggerY = m_vTriggerTargetPos.y;
 
@@ -3137,6 +3266,9 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 		m_dDeadTime += dTimeDelta;
 		if (m_dDeadTime >= 1.f)
 		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Resurrection.wav"), CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
+
 			_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
 			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
 
@@ -3591,6 +3723,9 @@ void CCody::PinBall_Respawn(const _double dTimeDelta)
 	m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
 	m_pActorCom->Update(dTimeDelta);
 
+	m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
+	m_pGameInstance->Play_Sound(TEXT("CodyM_Resurrection.wav"), CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
+
 	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 	m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
 	m_pModelCom->Set_Animation(ANI_C_MH);
@@ -3608,6 +3743,9 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 	m_dRespawnTime += dTimeDelta;
 	if (2.f <= m_dRespawnTime)
 	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
+		m_pGameInstance->Play_Sound(TEXT("CodyM_Resurrection.wav"), CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
+
 		m_pActorCom->Set_ZeroGravity(false, false, false);
 		m_pActorCom->Set_Position(XMLoadFloat3(&m_vSavePoint));
 		m_pActorCom->Update(dTimeDelta);

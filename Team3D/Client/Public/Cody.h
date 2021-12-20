@@ -231,6 +231,10 @@ public:
 	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
 
+	/* For. Ending */
+	void			Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }
+	void			Set_EndingRocketMatrix(_matrix matRocket) { m_matEndingRocketMatrix = matRocket; }
+
 
 	// Tick 에서 호출될 함수들
 private:
@@ -491,6 +495,7 @@ private:
 	void Pipe_WallJump(const _double dTimeDelta);
 	void ElectricWallJump(const _double dTimeDelta);
 	void BossMissile_Control(const _double dTimeDelta);
+	void Ride_Ending_Rocket(const _double dTimeDelta);
 
 	// 정호
 	void Warp_Wormhole(const _double dTimeDelta);
@@ -566,6 +571,12 @@ private:
 	_double m_dRadiarBlurDeltaT = 0.0;
 #pragma endregion
 
+private: /* For. Ending */
+	_bool	m_IsEnding = false;
+	_bool   m_bSetEndingOffSetOnce = false;
+	_vector m_vEndingRocketOffSetPos = {};
+	_matrix m_matEndingRocketMatrix = {};
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -624,10 +635,28 @@ private:
 	// Sprint
 	_float m_fCodyM_Sprint_Volume = 1.f;
 
-	_bool m_bTestest = false;
+	// Dead
+	_float m_fCodyM_Dead_Burn_Volume = 1.f;
+	_float m_fCodyM_Dead_Fall_Volume = 1.f;
+	_float m_fCodyM_Dead_Electric_Shock = 1.f;
 
+	//Revive
+	_float m_fCodyM_Revive_Volume = 1.f;
 
+	// WallJump
+	_float m_fCodyM_WallJump_Volume = 1.f;
+	_float m_fCody_WallJump_Slide_Volume = 1.f;
 
+	// Rope
+	_float m_fCody_Rope_Rail_Volume = 1.f;
+	_float m_fCody_Rope_UFO_Catch_Volume = 1.f;
+	_bool  m_bUFOCatchSoundOnce = false;
+	_float m_fCody_Rope_UFO_Move_Volume = 1.f;
+	_float m_fCody_Rope_UFO_Release_Volume = 1.f;
+	_float m_fCody_Rope_UFO_Throw_Volume = 1.f;
+
+	// MiniGame
+	_float m_fCody_MiniGame_Damaged_Volume = 1.f;
 
 
 

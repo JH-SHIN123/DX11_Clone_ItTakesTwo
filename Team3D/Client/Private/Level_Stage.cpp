@@ -80,6 +80,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Rope(TEXT("Layer_Rope")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_UFORadarSet(TEXT("Layer_UFORadarSet")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_TestRocket(TEXT("Layer_BossMissile")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_EndingRocket(TEXT("Layer_EndingRocket")), E_FAIL);
 
 
 
@@ -857,6 +858,12 @@ HRESULT CLevel_Stage::Ready_Layer_TestRocket(const _tchar * pLayerTag)
 	MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
 	return S_OK;
+}
+HRESULT CLevel_Stage::Ready_Layer_EndingRocket(const _tchar * pLayerTag)
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_EndingRocket", Level::LEVEL_STAGE, TEXT("GameObject_EndingRocket")), E_FAIL);
+	return S_OK;
+
 }
 #pragma endregion
 

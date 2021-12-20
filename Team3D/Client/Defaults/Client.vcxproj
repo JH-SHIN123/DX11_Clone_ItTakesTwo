@@ -294,6 +294,7 @@
     <ClInclude Include="..\Public\EjectionButton.h" />
     <ClInclude Include="..\Public\ElectricBox.h" />
     <ClInclude Include="..\Public\ElectricWall.h" />
+    <ClInclude Include="..\Public\EndingRocket.h" />
     <ClInclude Include="..\Public\Environment_Generator.h" />
     <ClInclude Include="..\Public\Film.h" />
     <ClInclude Include="..\Public\GameDebugger.h" />
@@ -553,6 +554,7 @@
     <ClCompile Include="..\Private\EjectionButton.cpp" />
     <ClCompile Include="..\Private\ElectricBox.cpp" />
     <ClCompile Include="..\Private\ElectricWall.cpp" />
+    <ClCompile Include="..\Private\EndingRocket.cpp" />
     <ClCompile Include="..\Private\Environment_Generator.cpp" />
     <ClCompile Include="..\Private\Film.cpp" />
     <ClCompile Include="..\Private\GameDebugger.cpp" />
