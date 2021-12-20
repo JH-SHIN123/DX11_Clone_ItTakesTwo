@@ -54,14 +54,6 @@ _int CHpBar::Tick(_double TimeDelta)
 		UI_Create(May, Minigame_Ready_May);
 		//UI_Create(Default, Minigame_Countdown);
 	}
-	else if (m_pGameInstance->Key_Down(DIK_J))
-	{
-		UI_Create(Default, Minigame_Title);
-	}
-	else if (m_pGameInstance->Key_Down(DIK_M))
-	{
-		UI_Create(Default, Minigame_Win_May);
-	}
 
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{
