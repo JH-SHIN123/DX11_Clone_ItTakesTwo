@@ -51,7 +51,7 @@ private:
 	_uint		m_iWinSize[2] = { 0,0 };
 	_uint		m_iDownScaleGroups = 0;
 
-	_float		m_fMiddleGrey = 0.00222135f;
+	_float		m_fMiddleGrey = 0.00192135f;
 	_float		m_fLumWhiteSqr = 1080.f;
 
 	_float		m_fAdaptTime = 1.f;
