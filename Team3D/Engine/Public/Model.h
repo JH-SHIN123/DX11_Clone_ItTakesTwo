@@ -77,6 +77,11 @@ public: /* Setter */
 	*/
 	HRESULT	Set_Animation(_uint iAnimIndex, _double dAnimTime = 0.0);
 	/**
+	* Set_CutSceneAnimation
+	* 컷씬용
+	*/
+	HRESULT	Set_CutSceneAnimation(_uint iAnimIndex, _double dAnimTime = 0.0);
+	/**
 	* Set_NextAnimIndex
 	* 다음 애니메이션 예약
 	*/

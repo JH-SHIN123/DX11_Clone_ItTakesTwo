@@ -111,7 +111,54 @@ _fmatrix CModel::Get_BoneMatrix(const char * pBoneName) const
 
 HRESULT CModel::Set_Animation(_uint iAnimIndex, _double dAnimTime)
 {
+	if (iAnimIndex == m_iCurAnimIndex)
+		return S_OK;
 
+	NULL_CHECK_RETURN(iAnimIndex < m_iAnimCount, E_FAIL);
+
+	/* For.Lerp */
+	auto iter = m_LerpMap.find(LERP_PAIR(m_iCurAnimIndex, iAnimIndex));
+
+	if (iter == m_LerpMap.end())
+	{
+		KEY_FRAME KeyFrame;
+		ZeroMemory(&KeyFrame, sizeof(KEY_FRAME));
+		m_fLerpRatio = 1.f;
+		m_fLerpSpeed = 5.f;
+		m_PreAnimKeyFrames.assign(m_iNodeCount, KeyFrame);
+		m_Anims[m_iCurAnimIndex]->Get_PreAnimKeyFrames(m_iCurAnimFrame, m_PreAnimKeyFrames);
+	}
+	else
+	{
+		if (iter->second.bGoingToLerp)
+		{
+			KEY_FRAME KeyFrame;
+			ZeroMemory(&KeyFrame, sizeof(KEY_FRAME));
+			m_fLerpRatio = 1.f;
+			m_fLerpSpeed = iter->second.fLerpSpeed;
+			m_PreAnimKeyFrames.assign(m_iNodeCount, KeyFrame);
+			m_Anims[m_iCurAnimIndex]->Get_PreAnimKeyFrames(m_iCurAnimFrame, m_PreAnimKeyFrames);
+		}
+	}
+
+	/* For.FinishCheck */
+	m_IsAnimFinished.assign(m_iAnimCount, false);
+	m_IsAnimFinished[m_iCurAnimIndex] = true;
+
+	/* For.Update */
+	m_dCurrentTime = dAnimTime;
+
+	m_iCurAnimIndex = iAnimIndex;
+	m_iCurAnimFrame = 0;
+	m_AnimTransformations.assign(m_BaseTransformations.begin(), m_BaseTransformations.end());
+
+	m_fProgressAnim = 0.f;
+
+	return S_OK;
+}
+
+HRESULT CModel::Set_CutSceneAnimation(_uint iAnimIndex, _double dAnimTime)
+{
 	NULL_CHECK_RETURN(iAnimIndex < m_iAnimCount, E_FAIL);
 
 	/* For.Lerp */
