@@ -28,7 +28,7 @@ public:
 	void Check_Move(_double TimeDelta);
 
 public:
-	_float m_fAlphaTime = 0.3f;
+	_float m_fAlphaTime = 0.1f;
 	_double m_dActivateTime = 0.0;
 	_double m_dAngle = 0.0;
 

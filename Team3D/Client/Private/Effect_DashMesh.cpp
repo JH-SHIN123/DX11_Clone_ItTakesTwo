@@ -53,7 +53,7 @@ _int CEffect_DashMesh::Tick(_double TimeDelta)
 	if (0.f > m_fAlphaTime)
 		return EVENT_DEAD;
 
-	m_fAlphaTime -= (_float)TimeDelta * 0.75f;
+	m_fAlphaTime -= (_float)TimeDelta * 0.2f;
 
 	if (0.f > m_fAlphaTime)
 		m_fAlphaTime = 0.f;

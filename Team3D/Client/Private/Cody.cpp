@@ -219,16 +219,16 @@ _int CCody::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
-	if (m_pGameInstance->Key_Down(DIK_B))
-		EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Smoke);
-	if (m_pGameInstance->Key_Down(DIK_N))
-		EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
-	if (m_pGameInstance->Key_Down(DIK_M))
-		EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
-	if (m_pGameInstance->Key_Down(DIK_SLASH))
-		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Shield, m_pTransformCom->Get_WorldMatrix());
-	if (m_pGameInstance->Key_Down(DIK_RSHIFT))
-		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Booster, m_pTransformCom->Get_WorldMatrix());
+// 	if (m_pGameInstance->Key_Down(DIK_B))
+// 		EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Smoke);
+// 	if (m_pGameInstance->Key_Down(DIK_N))
+// 		EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
+// 	if (m_pGameInstance->Key_Down(DIK_M))
+// 		EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
+// 	if (m_pGameInstance->Key_Down(DIK_SLASH))
+// 		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Shield, m_pTransformCom->Get_WorldMatrix());
+// 	if (m_pGameInstance->Key_Down(DIK_RSHIFT))
+// 		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Booster, m_pTransformCom->Get_WorldMatrix());
 
 
 	//tEST
@@ -620,7 +620,7 @@ void CCody::KeyInput(_double dTimeDelta)
 
 		if (m_IsJumping == false)
 		{
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+			EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
 
 			m_fAcceleration = 5.f;
 			m_pModelCom->Set_Animation(ANI_C_Roll_Start);

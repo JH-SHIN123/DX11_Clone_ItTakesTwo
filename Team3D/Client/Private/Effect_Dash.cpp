@@ -63,7 +63,7 @@ _int CEffect_Dash::Tick(_double TimeDelta)
 	if (0.f >= m_fAlphaTime)
 		return EVENT_DEAD;
 
-	m_fAlphaTime -= (_float)TimeDelta * 0.65f;
+	m_fAlphaTime -= (_float)TimeDelta * 0.2f;
 	if (0.f > m_fAlphaTime)	m_fAlphaTime = 0.f;
 
 	m_dAngle += TimeDelta * 100.0;

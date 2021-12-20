@@ -1008,14 +1008,17 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Broken_Laser\03.Flow">
       <UniqueIdentifier>{54cedad0-1e38-4d8a-9213-01d942255049}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.Star">
-      <UniqueIdentifier>{083634ee-faac-4437-9742-916c864b39d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Player">
       <UniqueIdentifier>{8a1de5e2-3ffe-4128-a7ef-8232f5123633}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Player\00.Dash">
       <UniqueIdentifier>{fc41b5af-9653-4a75-9538-c438084e2b68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy">
+      <UniqueIdentifier>{083634ee-faac-4437-9742-916c864b39d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\00.Pillar">
+      <UniqueIdentifier>{bd27bfc8-3ddf-4e97-ab1d-ecd51e086f99}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
