@@ -7,7 +7,7 @@
 #include "Effect_FireDoor.h"
 #include "Effect_Walking_Smoke.h"
 #include "Effect_Landing_Smoke.h"
-#include "Effect_Dash.h"								/*수정*/
+#include "Effect_Dash.h"
 #include "Effect_Player_Dead.h"
 #include "Effect_Player_Dead_Particle.h"
 #include "Effect_Player_Dead_Explosion.h"				/*미구현*/
