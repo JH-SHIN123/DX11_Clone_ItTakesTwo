@@ -58,7 +58,7 @@ private:
 	_float		m_fAdaptationDeltaT = 0.f;
 	_float		m_fAdaptation = 0.f;
 
-	_float		m_fBloomThreshold = 2.f;
+	_float		m_fBloomThreshold = 20.f;
 	_float		m_fBloomScale = 1.05f;
 
 	_bool		m_bRadialBlur_Main = false;
