@@ -235,14 +235,20 @@ public:
 	_bool			 Get_IsPinBall() { return m_IsPinBall; }
 	_bool			 Get_IsWallJump() { return m_IsCamTriggerCollide; }
 	_bool			 Get_OnRail() { return m_bOnRail; }
-
+	_bool			 Get_IsEnding() { return m_IsEnding; }
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
 	void			 Set_ControlJoystick(_bool IsCheck);
+	void			 Set_AnimationRotate(_float fAngle);
+	void			 Set_ActiveHpBar(_bool IsCheck);
 	void 			 Set_RocketOffSetPos(_fvector vRocketOffSetPos) { m_vRocketOffSetPos = vRocketOffSetPos; }
 	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
+
+	/* For. Ending */
+	void			Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }
+	void			Set_EndingRocketMatrix(_matrix matRocket) { m_matEndingRocketMatrix = matRocket; }
 
 
 	// Tick 에서 호출될 함수들
@@ -254,10 +260,14 @@ private: // 여기에 넣어놓아야 알거 같아서 여기에..
 
 private:
 	HRESULT Ready_Component();
+	HRESULT Ready_UI();
 	void Add_LerpInfo_To_Model();
 
 private: // Effects
 	class CEffect_Cody_Size* m_pEffect_Size = nullptr;
+
+private: /* UI */
+	class CHpBar*	m_pHpBar = nullptr;
 
 	// Components
 private:
@@ -340,9 +350,7 @@ private:
 	_bool m_IsSizeChanging = false;
 	_float m_fSizeDelayTime = 0.f;
 	_bool m_bChangeSizeEffectOnce = false;
-
 	
-
 	// 컷씬이라면
 	_bool m_IsCutScene = false;
 
@@ -483,6 +491,13 @@ private:
 	// touch WallLaserTrap
 	_bool m_IsWallLaserTrap_Touch = false;
 	_bool m_IsWallLaserTrap_Effect = false;
+ 
+	/* For. BossUFO */
+	_bool m_IsHolding_UFO = false;
+	_bool m_IsHolding_Low_UFO = false;
+	_bool m_IsHolding_High_UFO = false;
+	_uint m_iKeyDownCount = 0;
+	_bool m_IsCodyEnter = false;
 
 	/* For.Boss Missile */
 	_bool	m_IsBossMissile_Control = false;
@@ -506,6 +521,7 @@ private:
 	void Pipe_WallJump(const _double dTimeDelta);
 	void ElectricWallJump(const _double dTimeDelta);
 	void BossMissile_Control(const _double dTimeDelta);
+	void Ride_Ending_Rocket(const _double dTimeDelta);
 
 	// 정호
 	void Warp_Wormhole(const _double dTimeDelta);
@@ -516,6 +532,10 @@ private:
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
 	void LaserTennis(const _double dTimeDelta);
+
+	/* 진혁 */
+	void Holding_BossUFO(const _double dTimeDelta);
+
 public:
 	void PinBall_Respawn(const _double dTimeDelta);
 	void SpaceShip_Respawn(const _double dTimeDelta);
@@ -582,6 +602,12 @@ private:
 	_double m_dRadiarBlurDeltaT = 0.0;
 #pragma endregion
 
+private: /* For. Ending */
+	_bool	m_IsEnding = false;
+	_bool   m_bSetEndingOffSetOnce = false;
+	_vector m_vEndingRocketOffSetPos = {};
+	_matrix m_matEndingRocketMatrix = {};
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -640,10 +666,28 @@ private:
 	// Sprint
 	_float m_fCodyM_Sprint_Volume = 1.f;
 
-	_bool m_bTestest = false;
+	// Dead
+	_float m_fCodyM_Dead_Burn_Volume = 1.f;
+	_float m_fCodyM_Dead_Fall_Volume = 1.f;
+	_float m_fCodyM_Dead_Electric_Shock = 1.f;
 
+	//Revive
+	_float m_fCodyM_Revive_Volume = 1.f;
 
+	// WallJump
+	_float m_fCodyM_WallJump_Volume = 1.f;
+	_float m_fCody_WallJump_Slide_Volume = 1.f;
 
+	// Rope
+	_float m_fCody_Rope_Rail_Volume = 1.f;
+	_float m_fCody_Rope_UFO_Catch_Volume = 1.f;
+	_bool  m_bUFOCatchSoundOnce = false;
+	_float m_fCody_Rope_UFO_Move_Volume = 1.f;
+	_float m_fCody_Rope_UFO_Release_Volume = 1.f;
+	_float m_fCody_Rope_UFO_Throw_Volume = 1.f;
+
+	// MiniGame
+	_float m_fCody_MiniGame_Damaged_Volume = 1.f;
 
 
 

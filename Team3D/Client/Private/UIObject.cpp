@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\public\UIObject.h"
-#include "GameInstance.h"
 
 CUIObject::CUIObject(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -93,6 +92,14 @@ void CUIObject::Set_FadeOut()
 void CUIObject::Set_TargetPos(_vector vPos)
 {
 	XMStoreFloat4(&m_vTargetPos, vPos);
+}
+
+void CUIObject::Set_Ready()
+{
+	if (m_ePlayerID == Player::Cody)
+		m_UIDesc.iTextureRenderIndex = 2;
+	else
+		m_UIDesc.iTextureRenderIndex = 3;
 }
 
 void CUIObject::Set_ScaleEffect()
@@ -308,7 +315,7 @@ void CUIObject::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTextureCom);
 
-	if (1 <= m_UIDesc.iSubTextureNum)
+	if (1 <= m_UIDesc.iSubTextureNum && nullptr != m_pSubTexturCom)
 		Safe_Release(m_pSubTexturCom);
 
 	CGameObject::Free();

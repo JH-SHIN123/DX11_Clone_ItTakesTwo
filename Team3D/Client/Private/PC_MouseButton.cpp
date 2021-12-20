@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\PC_MouseButton.h"
 
-#include "GameInstance.h"
 #include "UI_Generator.h"
 
 CPC_MouseButton::CPC_MouseButton(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	

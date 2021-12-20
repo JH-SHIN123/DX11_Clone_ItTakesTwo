@@ -300,12 +300,12 @@ void  GS_MAIN_FLIP_U(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream
 	Out[6].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
 	Out[7].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
 
-	for (uint i = 4; i < 8; ++i)
+	for (uint j = 4; j < 8; ++j)
 	{
-		Out[i].vPosition = mul(Out[i].vPosition, matVP);
-		Out[i].vProjPosition = Out[i].vPosition;
-		Out[i].iViewportIndex = 2;
-		Out[i].fTime = In[0].fTime;
+		Out[j].vPosition = mul(Out[j].vPosition, matVP);
+		Out[j].vProjPosition = Out[j].vPosition;
+		Out[j].iViewportIndex = 2;
+		Out[j].fTime = In[0].fTime;
 	}
 
 	TriStream.Append(Out[4]);
@@ -404,12 +404,12 @@ void  GS_MAIN_ROTATE_ANGLE_X(/*입력*/ point  VS_OUT_ROTATE In[1], /*출력*/ inout
 	Out[7].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
 
 	[unroll]
-	for (uint i = 4; i < 8; ++i)
+	for (uint j = 4; j < 8; ++j)
 	{
-		Out[i].vPosition		= mul(Out[i].vPosition, matVP);
-		Out[i].vProjPosition	= Out[i].vPosition;
-		Out[i].iViewportIndex	= 2;
-		Out[i].fTime			= In[0].fTime;
+		Out[j].vPosition		= mul(Out[j].vPosition, matVP);
+		Out[j].vProjPosition	= Out[j].vPosition;
+		Out[j].iViewportIndex	= 2;
+		Out[j].fTime			= In[0].fTime;
 	}
 
 	TriStream.Append(Out[4]);

@@ -11,7 +11,7 @@ class CMainCamera final : public CCamera
 {
 	enum CamRev {Rev_Holizontal,Rev_Prependicul,Rev_End};
 
-	enum class CamMode{Cam_Free,Cam_AutoToFree, Cam_WallJump, Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_InJoyStick,Cam_PinBall_Cody,Cam_End};
+	enum class CamMode{Cam_Free,Cam_AutoToFree, Cam_WallJump, Cam_Ending, Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_InJoyStick,Cam_PinBall_Cody,Cam_End};
 	//O CamFreeMove P FollowPlayer																 
 	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_OpenThirdFloor, Cam_Free_OnBossMiniRoom_Cody,
 		Cam_Free_Umbrella_Laser,Cam_Free_End };
@@ -43,6 +43,7 @@ private:
 	//For Free.
 	_int	Tick_Cam_Free(_double dTimeDelta);					//자유이동
 	_int	Tick_Cam_AutoToFree(_double dTimeDelta);			//연출 카메라 -> 자유이동시 보간
+	_int	Tick_Cam_Ending(_double dTimeDelta);
 	_int	Tick_Cam_Warp_WormHole(_double dTimeDelta);			//웜홀
 	_int	Tick_Cam_PressButton_Bridge(_double dTimeDelta);	//다리앞의 버튼
 	_int	Tick_Cam_InJoystick(_double dTimeDelta);			//달나라 우주선 레이져

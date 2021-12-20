@@ -7,6 +7,9 @@
 #include "BossFloor.h"
 #include "BossDoor.h"
 #include "BossSlideDoor.h"
+#include "UFO.h"
+#include "MoonBaboon_MainLaser.h"
+#include "MoonBaboonCore.h"
 
 IMPLEMENT_SINGLETON(CDataStorage)
 
@@ -17,6 +20,17 @@ void CDataStorage::GoUp_BossFloor(_float fMaxdistance, _float fSpeed)
 		((CBossFloor*)m_pBossFloor)->Set_DoorUp(fMaxdistance, fSpeed);
 		((CBossDoor*)m_pBossDoor01)->Set_DoorUp(fMaxdistance, fSpeed);
 		((CBossDoor*)m_pBossDoor02)->Set_DoorUp(fMaxdistance, fSpeed);
+		((CUFO*)m_pBossUFO)->Set_BossUFOUp(fMaxdistance, fSpeed);
+		((CMoonBaboon_MainLaser*)m_pMoonBaboonMainLaser)->Set_MainLaserUp(fMaxdistance, fSpeed);
+
+		for (auto pMoonBaboonCore : m_vecMoonBaboonCore)
+			((CMoonBaboonCore*)pMoonBaboonCore)->Set_MoonBaboonCoreUp(fMaxdistance, fSpeed);
+
+		++m_iFloorIndex;
+
+		/* 2가 마지막 층 혹시 모를 예외처리*/
+		if (2 < m_iFloorIndex)
+			m_iFloorIndex = 2;
 	}
 }
 

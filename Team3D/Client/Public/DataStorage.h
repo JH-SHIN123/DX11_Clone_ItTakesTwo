@@ -122,9 +122,6 @@ public:
 	void Set_MoonBaboon_SpaceShip(CGameObject* pMoonBaboonSpaceShip) { m_pMoonBaboonSpaceShip = pMoonBaboonSpaceShip; }
 	CGameObject* Get_MoonBaboon_SpaceShip() { return m_pMoonBaboonSpaceShip; }
 
-	void Set_MoonBaboon(CGameObject* pMoonBaboon) { m_pMoonBaboon = pMoonBaboon; }
-	CGameObject* Get_MoonBaboon() { return m_pMoonBaboon; }
-
 	/*Umbrella*/
 	void Set_UmbrellaBeam(CGameObject* pUmbrellaBeam) { m_pUmbrellaBeam = pUmbrellaBeam; }
 	CGameObject* Get_UmbrellaBeam() { return m_pUmbrellaBeam; }
@@ -190,6 +187,15 @@ public:
 	void Set_LaserTypeB_Recovery(_bool IsCheck) { m_IsLaserTypeB_Recovery = IsCheck; }
 	_bool Get_LaserTypeB_Recovery() const { return m_IsLaserTypeB_Recovery; }
 
+	void Set_MoonBaboonCore(CGameObject* pGameObject) { m_vecMoonBaboonCore.emplace_back(pGameObject); }
+	CGameObject* Get_MoonBaboonCore(_uint iIndex) { return m_vecMoonBaboonCore[iIndex]; }
+
+	void Set_MoonBaboon(CGameObject* pMoonBaboon) { m_pMoonBaboon = pMoonBaboon; }
+	CGameObject* Get_MoonBaboon() { return m_pMoonBaboon; }
+	
+	/* For. MainLaser */
+	_uint Get_FloorIndex() const { return m_iFloorIndex; }
+
 	/* For.Pixel Radar */
 	void Set_PixelUFO(CGameObject* pPixelUFO) { m_pPixelUFO = pPixelUFO; }
 	CGameObject* Get_PixelUFO() { return m_pPixelUFO; }
@@ -206,6 +212,11 @@ public:
 	void Set_LaserGauge(_float fGauge) { m_fLaserGauge = fGauge; }
 	_float Get_LaserGauge() { return m_fLaserGauge; }
 
+	/* For.Minigame */
+	void Set_CodyMinigameWinCount(_uint iScore) { m_iCodyMinigameWinCount += iScore; }
+	_uint Get_CodyMinigameWinCount() { return m_iCodyMinigameWinCount; }
+	void Set_MayMinigameWinCount(_uint iScore) { m_iMayMinigameWinCount += iScore; }
+	_uint Get_MayMinigameWinCount() { return m_iMayMinigameWinCount; }
 
 private:
 	CGameObject* m_pCody = nullptr;
@@ -245,6 +256,7 @@ private:
 private:
 	// Interactive Objects
 	vector<class CPressurePlate*>	m_vecPipeCurve;
+	vector<CGameObject*>			m_vecMoonBaboonCore;
 
 	CGameObject* m_pSTGravityRobot = nullptr;
 	CGameObject* m_pSTPinBallRobot = nullptr;
@@ -274,7 +286,6 @@ private:
 	CGameObject* m_pMoon = nullptr;
 	CGameObject* m_pRunningMoonBaboon = nullptr;
 
-	CGameObject* m_pMoonBaboon = nullptr;
 	/* For.MoonBaboonSpaceShip*/
 	CGameObject* m_pMoonBaboonSpaceShip = nullptr;
 
@@ -295,6 +306,7 @@ private:
 	CGameObject* m_pBossUFO = nullptr;
 	CGameObject* m_pLaserTypeA = nullptr;
 	CGameObject* m_pLaserTypeC = nullptr;
+	CGameObject* m_pMoonBaboon = nullptr;
 
 private:
 	/* For.Valve */
@@ -302,6 +314,7 @@ private:
 	_uint m_iValveTarget = 0;
 	_uint m_iCody_Valve_Count = 0;
 	_uint m_iMay_Valve_Count = 0;
+	_uint m_iFloorIndex = 0;
 
 	_bool m_IsBigButtonPressed = false;
 	_bool m_bGravityStageClear = false;
@@ -312,6 +325,8 @@ private:
 
 	_uint m_iMayStageNum = 0;
 	_uint m_iCodyStageNum = 0;
+	_uint m_iCodyMinigameWinCount = 0;
+	_uint m_iMayMinigameWinCount = 0;
 
 
 public:

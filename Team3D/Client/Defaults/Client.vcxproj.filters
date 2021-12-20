@@ -468,6 +468,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarLever">
       <UniqueIdentifier>{d6006e9b-42e7-4e5d-8d15-f5a8446b834a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\06.Yoon\12.EndingRocket">
+      <UniqueIdentifier>{f275870c-7c36-498f-8ba3-d20aef64b4ed}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin">
       <UniqueIdentifier>{36cb6d5b-c440-4edb-bdcf-2cd582b022db}</UniqueIdentifier>
     </Filter>
@@ -518,6 +521,9 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\13.UmbrellaBeam_Joystick">
       <UniqueIdentifier>{1222b103-dbd3-4206-a322-d20e64de8bb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\02.MoonBaboon_SubLaser">
+      <UniqueIdentifier>{074882ae-b709-4b99-8225-4c0e7a5d59f7}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\08.Jun">
       <UniqueIdentifier>{0a4d8ed2-ea40-4cd4-bfdf-16db4b954909}</UniqueIdentifier>
@@ -935,6 +941,33 @@
     </Filter>
     <Filter Include="02.GameObject\06.UI\14.Script\ScriptBackGround">
       <UniqueIdentifier>{854ef9b9-c8f6-45f8-bda9-1c67f74bf580}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\15.InfoBar">
+      <UniqueIdentifier>{ac656f16-0a8f-4801-b966-95e3dc892e9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\15.InfoBar\00.Player">
+      <UniqueIdentifier>{39e7963c-18f0-49cb-9976-80da837fce26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\15.InfoBar\01.Boss">
+      <UniqueIdentifier>{8001ece9-747e-4946-887b-101332178afc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame">
+      <UniqueIdentifier>{68e45867-3e1e-4948-a95a-c534167b378a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\00.Minigame_Ready">
+      <UniqueIdentifier>{c61cc7b9-02e0-4efb-b9c8-7fd12af05dd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown">
+      <UniqueIdentifier>{5e838b2e-ac0d-4966-b7a1-7a520c120139}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle">
+      <UniqueIdentifier>{b61c06ff-3eea-4cc8-9eaa-a08aac20aaee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\03.Minigame_Win">
+      <UniqueIdentifier>{988e384c-a3bb-4412-896a-d391f8dd4326}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe">
+      <UniqueIdentifier>{ab6ae50c-6e4a-4821-9f28-cb5dd08d4825}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\99.Terrain%28Test%29">
       <UniqueIdentifier>{f999b3e3-a399-493a-893b-bcebcfb781a4}</UniqueIdentifier>
@@ -1466,6 +1499,9 @@
     <ClInclude Include="..\Public\UFORadarLever.h">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarLever</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\EndingRocket.h">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\12.EndingRocket</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\PipeCurve.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\00.PipeCurve</Filter>
     </ClInclude>
@@ -1507,6 +1543,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UmbrellaBeam_Joystick.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\13.UmbrellaBeam_Joystick</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboon_SubLaser.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\02.MoonBaboon_SubLaser</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\InGameEffect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point</Filter>
@@ -1831,6 +1870,33 @@
     </ClInclude>
     <ClInclude Include="..\Public\ScriptBackGround.h">
       <Filter>02.GameObject\06.UI\14.Script\ScriptBackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HpBarFrame.h">
+      <Filter>02.GameObject\06.UI\15.InfoBar\00.Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HpBar.h">
+      <Filter>02.GameObject\06.UI\15.InfoBar\00.Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossHpBar.h">
+      <Filter>02.GameObject\06.UI\15.InfoBar\01.Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossHpBarFrame.h">
+      <Filter>02.GameObject\06.UI\15.InfoBar\01.Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Ready.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\00.Minigame_Ready</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Countdown.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_GaugeCircle.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Win.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\03.Minigame_Win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Score.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
@@ -2344,6 +2410,9 @@
     <ClCompile Include="..\Private\UFORadarLever.cpp">
       <Filter>02.GameObject\04.Stage_Space\06.Yoon\11.UFORadarSet\UFORadarLever</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\EndingRocket.cpp">
+      <Filter>02.GameObject\04.Stage_Space\06.Yoon\12.EndingRocket</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\PipeCurve.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\00.Pipe\00.PipeCurve</Filter>
     </ClCompile>
@@ -2385,6 +2454,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UmbrellaBeam_Joystick.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\13.UmbrellaBeam_Joystick</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboon_SubLaser.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\02.MoonBaboon_SubLaser</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\InGameEffect.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point</Filter>
@@ -2709,6 +2781,33 @@
     </ClCompile>
     <ClCompile Include="..\Private\ScriptBackGround.cpp">
       <Filter>02.GameObject\06.UI\14.Script\ScriptBackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HpBarFrame.cpp">
+      <Filter>02.GameObject\06.UI\15.InfoBar\00.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HpBar.cpp">
+      <Filter>02.GameObject\06.UI\15.InfoBar\00.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossHpBar.cpp">
+      <Filter>02.GameObject\06.UI\15.InfoBar\01.Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossHpBarFrame.cpp">
+      <Filter>02.GameObject\06.UI\15.InfoBar\01.Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Ready.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\00.Minigame_Ready</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Countdown.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_GaugeCircle.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Win.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\03.Minigame_Win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Score.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
