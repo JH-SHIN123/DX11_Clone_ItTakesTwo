@@ -58,7 +58,7 @@ private:
 
 	
 private:
-	_int	ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook = false);		//변수 초기화용
+	_int	ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook = false,_bool bIsCalculateCamLook = false);		//변수 초기화용
 	_bool	OffSetPhsX(_fvector vEye, _fvector vAt, _double dTimeDelta, _vector * pOut);
 
 	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At,_fvector vUp = XMVectorSet(0.f,1.f,0.f,0.f));

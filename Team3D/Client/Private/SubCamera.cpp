@@ -322,7 +322,9 @@ _int CSubCamera::Tick_Cam_PinBall_May(_double dTimeDelta)
 _int CSubCamera::Tick_Cam_WallJump(_double dTimeDelta)
 {
 	if (m_pMay->Get_IsWallJump() == false)
-		m_eCurCamMode = CamMode::Cam_AutoToFree;
+	{
+		ReSet_Cam_FreeToAuto(true,true);
+	}
 	CTransform* pPlayerTransform = m_pMay->Get_Transform();
 
 	_matrix matFacetoWall = m_pMay->Get_CameraTrigger_Matrix();
@@ -462,7 +464,7 @@ _int CSubCamera::Tick_CamHelper_SeeCamNode(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-_int CSubCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook)
+_int CSubCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook,_bool bIsCalculateCamLook)
 {
 
 	m_fChangeCamModeLerpSpeed = 6.f;
@@ -475,7 +477,8 @@ _int CSubCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook)
 	}
 	if (bCalculatePlayerLook)
 	{
-		_vector vOriginAxis = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+		_vector vOriginAxis = 
+			bIsCalculateCamLook ? m_pTransformCom->Get_State(CTransform::STATE_LOOK): XMVectorSet(0.f, 0.f, 1.f, 0.f);
 		_vector vRotAxis = XMVector3Normalize(m_pMay->Get_Transform()->Get_State(CTransform::STATE_LOOK));
 		_float fAxisX = XMVectorGetX(vRotAxis);
 		_float fDot = acosf(XMVectorGetX(XMVector3Dot(vRotAxis, vOriginAxis)));
@@ -569,9 +572,9 @@ _fmatrix CSubCamera::MakeViewMatrixByQuaternion(_fvector vEye, _fvector vAt, _fv
 	_vector vAxisZ = XMVector3Normalize(vAt - vEye);
 	_vector vAxisX = XMVector3Normalize(XMVector3Cross(vAxisY, vAxisZ));
 
-	vAxisY = XMVector3Normalize(XMVector3Orthogonal(vAxisZ));
-
+	
 	_float3 vNormalUp, vLook, vRight;
+
 	XMStoreFloat3(&vLook, vAxisZ);
 	XMStoreFloat3(&vRight,vAxisY);
 	XMStoreFloat3(&vNormalUp, XMVector3Normalize(XMVector3Cross(vAxisZ, vAxisX)));
@@ -589,8 +592,6 @@ _fmatrix CSubCamera::MakeViewMatrixByQuaternion(_fvector vEye, _fvector vAt, _fv
 	return matResult;
 
 }
-
-
 
 _fmatrix CSubCamera::MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime)
 {
@@ -750,8 +751,8 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 	_vector vResultPos = matAffine.r[3];
 	OffSetPhsX(matAffine.r[3], vPlayerPos, dTimeDelta, &vResultPos);
 
-	return MakeViewMatrixByQuaternion(vResultPos, vPlayerPos, vPlayerUp);
-	//return MakeViewMatrixByUp(vResultPos, vPlayerPos, vPlayerUp/*matAffine.r[2]*/);
+	//return MakeViewMatrixByQuaternion(vResultPos, vPlayerPos, vPlayerUp);
+	return MakeViewMatrixByUp(vResultPos, vPlayerPos, vPlayerUp/*matAffine.r[2]*/);
 
 }
 

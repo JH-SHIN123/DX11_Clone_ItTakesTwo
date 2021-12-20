@@ -441,6 +441,8 @@ _int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
 	if (m_pCody->Get_IsPlayerInUFO() == false)
 	{
 		ReSet_Cam_FreeToAuto();
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f),
+			XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 	}
 	if (false == m_bStartOnRail)
@@ -1058,12 +1060,15 @@ _int CMainCamera::Tick_Cam_PinBall_Cody(_double dTimeDelta)
 _int CMainCamera::Tick_Cam_WallJump(_double dTimeDelta)
 {
 	if (m_pCody->Get_IsWallJump() == false)
-		m_eCurCamMode = CamMode::Cam_AutoToFree;
+	{
+		ReSet_Cam_FreeToAuto(true);
+	}
 	CTransform* pPlayerTransform = m_pCody->Get_Transform();
 
 	_matrix matFacetoWall = m_pCody->Get_CameraTrigger_Matrix();
 	_vector vProgressDir = matFacetoWall.r[1];
 	_vector vTriggerPos = m_pCody->Get_CamTriggerPos();
+
 	_float fAxisX = XMVectorGetX(vProgressDir);
 	_float fAxisY = XMVectorGetY(vProgressDir);
 	_float fAxisZ = XMVectorGetZ(vProgressDir);
@@ -1076,7 +1081,7 @@ _int CMainCamera::Tick_Cam_WallJump(_double dTimeDelta)
 		vPlayerPos = XMVectorSetY(vTriggerPos, XMVectorGetY(vPlayerPos));
 		vEye = XMVectorSetY(vEye, XMVectorGetY(vPlayerPos));
 	}
-	else if (fMax = fAxisZ)
+	else if (fMax == fAxisZ)
 	{
 		vEye = XMVectorSetZ(vEye, XMVectorGetZ(vPlayerPos));
 		vPlayerPos = XMVectorSetZ(vTriggerPos, XMVectorGetZ(vPlayerPos));
