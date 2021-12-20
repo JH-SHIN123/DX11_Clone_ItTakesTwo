@@ -27,6 +27,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+// 	_crtBreakAlloc(915204);
+// 	_crtBreakAlloc(884254); // 883268
+// 	_crtBreakAlloc(883268); // 883268
+
 #endif
 
 	srand(unsigned int(time(NULL)));

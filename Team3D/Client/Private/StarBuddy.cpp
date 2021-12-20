@@ -4,6 +4,7 @@
 #include "Cody.h"
 #include "May.h"
 #include "RobotParts.h"
+#include "Effect_Generator.h"
 
 CStarBuddy::CStarBuddy(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -82,7 +83,10 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 			m_pTransformCom->RotatePitch(dTimeDelta * 1.2f);
 		}
 		if (m_fLifeTime > 3.5f)
+		{
+			EFFECT->Add_Effect(Effect_Value::StarBuddy_Explosion_Pillar, m_pTransformCom->Get_WorldMatrix());
 			return EVENT_DEAD; // 
+		}
 	}
 
 	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::StarBuddy, 

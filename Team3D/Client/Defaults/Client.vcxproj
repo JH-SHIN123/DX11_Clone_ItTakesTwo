@@ -301,6 +301,8 @@
     <ClInclude Include="..\public\Effect_StarBuddy_Explosion_BigBang.h" />
     <ClInclude Include="..\public\Effect_StarBuddy_Explosion_Particle.h" />
     <ClInclude Include="..\public\Effect_StarBuddy_Explosion_Pillar.h" />
+    <ClInclude Include="..\public\Effect_StarBuddy_Move.h" />
+    <ClInclude Include="..\public\Effect_StarBuddy_Move_Particle.h" />
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Explosion.h" />
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Particle.h" />
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Spark.h" />
@@ -584,6 +586,8 @@
     <ClCompile Include="..\private\Effect_StarBuddy_Explosion_BigBang.cpp" />
     <ClCompile Include="..\private\Effect_StarBuddy_Explosion_Particle.cpp" />
     <ClCompile Include="..\private\Effect_StarBuddy_Explosion_Pillar.cpp" />
+    <ClCompile Include="..\private\Effect_StarBuddy_Move.cpp" />
+    <ClCompile Include="..\private\Effect_StarBuddy_Move_Particle.cpp" />
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Particle.cpp" />
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Spark.cpp" />
