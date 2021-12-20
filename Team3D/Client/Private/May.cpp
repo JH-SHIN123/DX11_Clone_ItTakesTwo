@@ -1841,6 +1841,9 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				XMStoreFloat3(&m_vStartPosition, XMVectorSet(XMVectorGetX(vTestPos), XMVectorGetY(vTestPos), XMVectorGetZ(vTestPos), 1.f)/* + (XMLoadFloat3(&m_vTriggerTargetPos)*/);
 
 			}
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_UFO_THROW, m_fMay_Rope_UFO_Throw_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Character_Rope_UFO_Throw.wav"), CHANNEL_CHARACTER_UFO_THROW, m_fMay_Rope_UFO_Throw_Volume);
+
 			m_pModelCom->Set_Animation(ANI_M_Swinging_Enter);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Swinging_Fwd);
 			m_IsHookUFO = true;
@@ -2618,6 +2621,14 @@ void CMay::Hook_UFO(const _double dTimeDelta)
 {
 	if (m_IsHookUFO == true)
 	{
+
+		if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CHARACTER_UFO_THROW) == false && m_bUFOCatchSoundOnce == false)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_ROPE_UFO_CATCH, m_fMay_Rope_UFO_Throw_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Character_Rope_UFO_Catch.wav"), CHANNEL_CHARACTER_ROPE_UFO_CATCH, m_fMay_Rope_UFO_Throw_Volume);
+			m_bUFOCatchSoundOnce = true;
+		}
+
 		_float Gravity = -0.3f;
 
 		// ZY
@@ -2645,6 +2656,9 @@ void CMay::Hook_UFO(const _double dTimeDelta)
 
 		if (m_pGameInstance->Pad_Key_Down(DIP_B) || m_pGameInstance->Key_Down(DIK_K)) // 로프 놓기
 		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_UFO_RELEASE, m_fMay_Rope_UFO_Release_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Character_Rope_UFO_Release.wav"), CHANNEL_CHARACTER_UFO_RELEASE, m_fMay_Rope_UFO_Release_Volume);
+
 			m_bGoToHooker = false;
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 			m_pModelCom->Set_Animation(ANI_M_Swinging_Exit_Fwd);

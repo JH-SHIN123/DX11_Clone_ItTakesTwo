@@ -654,7 +654,10 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 #else
 	if (MouseMove = m_pGameInstance->Get_Pad_RStickX() - 32767)
 	{
-
+		if (abs(MouseMove) < 2000)
+			MouseMove = 0;
+		else
+			MouseMove = MouseMove / 2000;
 		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
 
 	}

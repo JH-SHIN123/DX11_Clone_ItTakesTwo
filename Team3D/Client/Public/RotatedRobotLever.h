@@ -47,6 +47,16 @@ private:
 	_bool		m_bNoBatteryHit = false;
 	RTROBOTDESC	m_tRtRobotPartsDesc;
 
+	/* Sound */
+	_float		m_fLeverVolume = 1.f;
+	_bool		m_bSoundOnce = false;
+
+	_float		m_fLeverBackVolume = 1.f;
+	_bool		m_bSoundBackOnce = false;
+
+	_float		m_fRobotActiveVolume = 1.f;
+	_bool		m_bSoundRobotOnce = false;
+
 private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;

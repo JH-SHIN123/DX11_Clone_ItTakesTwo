@@ -574,9 +574,16 @@ private: /* For. Ending */
 	_float m_fMay_WallJump_Volume = 1.f;
 	_float m_fMay_Wall_Slide_Volume = 1.f;
 
+	// Rope
+	_float m_fMay_Rope_Rail_Volume = 1.f;
+	_float m_fMay_Rope_UFO_Catch_Volume = 1.f;
+	_bool  m_bUFOCatchSoundOnce = false;
+	_float m_fMay_Rope_UFO_Move_Volume = 1.f;
+	_float m_fMay_Rope_UFO_Release_Volume = 1.f;
+	_float m_fMay_Rope_UFO_Throw_Volume = 1.f;
 
-
-
+	// MiniGame
+	_float m_fCody_MiniGame_Damaged_Volume = 1.f;
 
 
 
