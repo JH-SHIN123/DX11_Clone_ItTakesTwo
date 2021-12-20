@@ -43,7 +43,7 @@ public: /* Getter */
 	/**
 	* Get_Vertices
 	* 현재 모델의 Vertex 정보들을 가져온다.
-	* 애니메이션이 없는 모델만 해당.
+	* 프로토타입 생성 시, bSaveVertices 옵션을 true로 준 경우만 해당.
 	*/
 	VTXMESH*	Get_Vertices() { return m_pVertices; }
 	const _uint	Get_VertexCount() { return m_iVertexCount; }
@@ -76,6 +76,11 @@ public: /* Setter */
 	* dAnimTime, dAnimTime이 지난 시점부터 재생
 	*/
 	HRESULT	Set_Animation(_uint iAnimIndex, _double dAnimTime = 0.0);
+	/**
+	* Set_CutSceneAnimation
+	* 컷씬용
+	*/
+	HRESULT	Set_CutSceneAnimation(_uint iAnimIndex, _double dAnimTime = 0.0);
 	/**
 	* Set_NextAnimIndex
 	* 다음 애니메이션 예약
@@ -126,7 +131,7 @@ public: /* Setter */
 	HRESULT Initialize_PivotTransformation();
 
 public:
-	virtual HRESULT	NativeConstruct_Prototype(const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bNeedCenterBone, const char* pCenterBoneName);
+	virtual HRESULT	NativeConstruct_Prototype(const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount, _fmatrix PivotMatrix, _bool bSaveVertices, _bool bNeedCenterBone, const char* pCenterBoneName);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	HRESULT			Bring_Containers(VTXMESH* pVertices, _uint iVertexCount, POLYGON_INDICES32* pFaces, _uint iFaceCount, vector<class CMesh*>& Meshes, vector<MATERIAL*>& Materials, vector<class CHierarchyNode*>& Nodes, vector<_float4x4>& Transformations, vector<class CAnim*>& Anims);
 	/* For.Client */
@@ -250,12 +255,12 @@ private: /* For.Buffer */
 private:
 	/* For.Buffer */
 	HRESULT		Create_Buffer(ID3D11Buffer** ppBuffer, _uint iByteWidth, D3D11_USAGE Usage, _uint iBindFlags, _uint iCPUAccessFlags, _uint iMiscFlags, _uint iStructureByteStride, void* pSysMem, _uint iSysMemPitch = 0, _uint iSysMemSlicePitch = 0);
-	HRESULT		Create_VIBuffer(const _tchar* pShaderFilePath, const char* pTechniqueName);
+	HRESULT		Create_VIBuffer(const _tchar* pShaderFilePath, const char* pTechniqueName, _bool bSaveVertices);
 	HRESULT		SetUp_InputLayouts(D3D11_INPUT_ELEMENT_DESC* pInputElementDesc, _uint iElementCount, const _tchar* pShaderFilePath, const char* pTechniqueName);
 #pragma endregion
 
 public:
-	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount = 1, _fmatrix PivotMatrix = XMMatrixIdentity(), _bool bNeedCenterBone = false, const char* pCenterBoneName = "");
+	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pModelFilePath, const _tchar* pModelFileName, const _tchar* pShaderFilePath, const char* pTechniqueName, _uint iMaterialSetCount = 1, _fmatrix PivotMatrix = XMMatrixIdentity(), _bool bSaveVertices = false, _bool bNeedCenterBone = false, const char* pCenterBoneName = "");
 	virtual CComponent* Clone_Component(void* pArg) override;
 	virtual void Free() override;
 };

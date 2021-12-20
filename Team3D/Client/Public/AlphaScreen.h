@@ -27,7 +27,6 @@ public:
 private:
 	_float							m_fAlpha = 0.f;
 	_float							m_fWatingTime = 0.f;
-	_bool							m_IsFadeOut = false;
 	_uint							m_iShaderPassNum = 0;
 
 private:

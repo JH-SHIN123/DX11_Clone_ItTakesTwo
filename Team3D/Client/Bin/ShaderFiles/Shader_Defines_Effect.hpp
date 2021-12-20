@@ -23,3 +23,11 @@ cbuffer Effect
 // 	float4			g_vUV;
 
 }
+
+// 해당 축에 대한 Angle만큼의 회전 값을 return;
+float4 Rotate_Radian_Axis(float angle, float3 axis)
+{
+	float sn = sin(angle * 0.5);
+	float cs = cos(angle * 0.5);
+	return float4(axis * sn, cs);
+}

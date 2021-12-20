@@ -122,6 +122,12 @@ public:
 	void Set_MoonBaboon_SpaceShip(CGameObject* pMoonBaboonSpaceShip) { m_pMoonBaboonSpaceShip = pMoonBaboonSpaceShip; }
 	CGameObject* Get_MoonBaboon_SpaceShip() { return m_pMoonBaboonSpaceShip; }
 
+	void Set_MoonBaboon(CGameObject* pMoonBaboon) { m_pMoonBaboon = pMoonBaboon; }
+	CGameObject* Get_MoonBaboon() { return m_pMoonBaboon; }
+
+	/*Umbrella*/
+	void Set_UmbrellaBeam(CGameObject* pUmbrellaBeam) { m_pUmbrellaBeam = pUmbrellaBeam; }
+	CGameObject* Get_UmbrellaBeam() { return m_pUmbrellaBeam; }
 	/* For.MoonUFO */
 	void Set_MoonUFO(CGameObject* pMoonUFO) { m_pMoonUFO = pMoonUFO; }
 	CGameObject* Get_MoonUFO() { return m_pMoonUFO; }
@@ -200,6 +206,10 @@ public:
 	void Set_LaserGauge(_float fGauge) { m_fLaserGauge = fGauge; }
 	_float Get_LaserGauge() { return m_fLaserGauge; }
 
+	/* For. Ending */
+	void Set_EndingRocket(CGameObject* pEndingRocket) { m_pEndingRocket = pEndingRocket; }
+	CGameObject* Get_EndingRocket() { return m_pEndingRocket; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -231,6 +241,7 @@ private:
 	CGameObject* m_pNoBatterySign = nullptr;
 	CGameObject* m_pPressureBigPlate = nullptr;
 	CGameObject* m_pUmbrella_Joystick = nullptr;
+	CGameObject* m_pUmbrellaBeam = nullptr;
 	CGameObject* m_pMenuScreen = nullptr;
 	CGameObject* m_pHookUFO = nullptr;
 
@@ -266,6 +277,7 @@ private:
 	CGameObject* m_pMoon = nullptr;
 	CGameObject* m_pRunningMoonBaboon = nullptr;
 
+	CGameObject* m_pMoonBaboon = nullptr;
 	/* For.MoonBaboonSpaceShip*/
 	CGameObject* m_pMoonBaboonSpaceShip = nullptr;
 
@@ -286,6 +298,9 @@ private:
 	CGameObject* m_pBossUFO = nullptr;
 	CGameObject* m_pLaserTypeA = nullptr;
 	CGameObject* m_pLaserTypeC = nullptr;
+
+	/* For.Ending */
+	CGameObject* m_pEndingRocket = nullptr;
 
 private:
 	/* For.Valve */

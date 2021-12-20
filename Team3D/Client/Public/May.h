@@ -184,10 +184,16 @@ public: /* Getter */
 	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool		Get_IsGroundPound() { return m_bGroundPound; }
 	_bool		Get_IsGroundPoundVarious() { return m_bPlayGroundPoundOnce; }
+	_bool		Get_IsInUFO() { return m_IsInUFO; }
 	_bool		Get_IsHooking() { return m_IsHookUFO; }
 	_vector	    Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
+	_vector		Get_CamTriggerPos() { return XMLoadFloat4(&m_vCamTriggerPos); }
+	_float4x4	Get_TriggerTargetWorld() { return m_TriggerTargetWorld; }
+	_bool		Get_IsWarpNextStage() { return m_IsWarpNextStage; }
+	_bool		Get_IsWarpDone() { return m_IsWarpDone; }
+	_bool		Get_IsPinBall() { return m_IsPinBall; }
+	_bool		Get_IsWallJump() { return m_IsCamTriggerCollide; }
 	_bool		Get_IsInRocket() { return m_IsBossMissile_Control; }
-
 	_bool		Get_OnRail() { return m_bOnRail; }
 
 public:
@@ -200,6 +206,10 @@ public:
 	void 	Set_RocketOffSetPos(_fvector vRocketOffSetPos) { m_vRocketOffSetPos = vRocketOffSetPos; }
 	void	Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void	Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
+
+	/* For. Ending */
+	void	Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }
+	void	Set_EndingRocketMatrix(_matrix matRocket) { m_matEndingRocketMatrix = matRocket; }
 
 
 	// Tick 에서 호출될 함수들
@@ -335,19 +345,26 @@ private:
 	// Sprint
 	_float m_fSprintAcceleration = 35.f;
 
+	//중력발판
+	_bool m_IsLeftFoot_Effect = false;
+	_bool m_IsRightFoot_Effect = false;
+
 #pragma region Trigger
+public:
+	_matrix Get_CameraTrigger_Matrix() { return XMLoadFloat4x4(&m_TriggerCameraWorld); }
 public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
 	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
 	void SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject* pTargetPtr);
 	void SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerCameraWorld);
-
+	void SetCameraTriggerID_Pos(_fvector vCamTriggerPos);
 private:
 	// CameraTrigger 
 	CAMERA_WORK_STATE m_eCameraWorkState = STATE_END;
 	GameID::Enum m_eCameraTriggerID = GameID::Enum::eWORMHOLE;
 	_bool m_IsCamTriggerCollide = false;
 	_float4x4 m_TriggerCameraWorld = {};
+	_float4 m_vCamTriggerPos = {};
 
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
@@ -451,6 +468,7 @@ private:
 	void Hook_UFO(const _double dTimeDelta);
 	void Wall_Jump(const _double dTimeDelta);
 	void BossMissile_Control(const _double dTimeDelta);
+	void Ride_Ending_Rocket(const _double dTimeDelta);
 
 	//정호
 	void Warp_Wormhole(const _double dTimeDelta);
@@ -503,6 +521,65 @@ private:
 	HRESULT Ready_Layer_Gauge_Circle(const _tchar * pLayerTag);
 
 #pragma endregion
+
+private: /* For. Ending */
+	_bool	m_IsEnding = false;
+	_bool   m_bSetEndingOffSetOnce = false;
+	_vector m_vEndingRocketOffSetPos = {};
+	_matrix m_matEndingRocketMatrix = {};
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////																////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////						/* For. Sound */						////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////																////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#pragma region Sound_Variable
+	// Dash
+	_float m_fMay_Dash_Volume = 1.f;
+	_float m_fMay_Dash_Landing_Volume = 1.f;
+	
+	// Dead
+	_float m_fMay_Dead_Burn_Volume = 1.f;
+	_float m_fMay_Dead_Fall_Volume = 1.f;
+
+	// GroundPound
+	_float m_fMay_GroundPound_Landing_Volume = 1.f;
+	_float m_fMay_GroundPound_Roll_Volume = 1.f;
+	_float m_fMay_GroundPound_Roll_Voice_Volume = 1.f;
+
+	// Jump
+	_float m_fMay_Jump_Volume = 1.f;
+	_float m_fMay_Jump_Double_Volume = 1.f;
+	_float m_fMay_Jump_Landing_Volume = 1.f;
+
+	// Revive
+	_float m_fMay_Resurrection_Volume = 1.f;
+
+	// Sprint
+	_float m_fMay_Run_Volume = 1.f;
+
+	// Jog
+	_float m_fMay_Walk_Volume = 1.f;
+
+	// WallJump
+	_float m_fMay_WallJump_Volume = 1.f;
+	_float m_fMay_Wall_Slide_Volume = 1.f;
+
+
+
+
+
+
+
 };
 
 END

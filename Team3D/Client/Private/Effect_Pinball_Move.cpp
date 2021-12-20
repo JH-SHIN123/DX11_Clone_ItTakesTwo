@@ -19,7 +19,7 @@ HRESULT CEffect_Pinball_Move::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 50;
+	m_EffectDesc_Prototype.iInstanceCount = 20;
 
 	return S_OK;
 }
@@ -36,7 +36,7 @@ HRESULT CEffect_Pinball_Move::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
 
-	m_pTargetObject = DATABASE->Get_Pinball();
+	m_pTargetObject = static_cast<CPinBall*>(DATABASE->Get_Pinball());
 	NULL_CHECK_RETURN(m_pTargetObject, E_FAIL);
 	Safe_AddRef(m_pTargetObject);
 
@@ -50,6 +50,9 @@ _int CEffect_Pinball_Move::Tick(_double TimeDelta)
 {
 	if (true == m_IsDuplication)
 		return EVENT_DEAD;
+
+	if (true == m_pTargetObject->Get_Failed())
+		m_IsActivate = false;
 
 	if (false == m_IsActivate && 0.0 > m_dControlTime)
 	{
@@ -67,6 +70,7 @@ _int CEffect_Pinball_Move::Tick(_double TimeDelta)
 		m_dControlTime -= TimeDelta;
 		if (0.0 > m_dControlTime) m_dControlTime = 0.0;
 	}
+
 
 	Check_Activate();
 	Check_Target_Matrix();
@@ -114,17 +118,21 @@ void CEffect_Pinball_Move::Check_Instance(_double TimeDelta)
 		}
 
 		Instance_Pos((_float)TimeDelta, iIndex);
+		Instance_Size((_float)TimeDelta, iIndex);
 	}
 }
 
 void CEffect_Pinball_Move::Instance_Size(_float TimeDelta, _int iIndex)
 {
+	m_pInstanceBuffer_STT[iIndex].vSize.x -= TimeDelta * 0.2f;
+	if (0.f > m_pInstanceBuffer_STT[iIndex].vSize.x) m_pInstanceBuffer_STT[iIndex].vSize.x = 0.f;
+	m_pInstanceBuffer_STT[iIndex].vSize.y = m_pInstanceBuffer_STT[iIndex].vSize.x;
 }
 
 void CEffect_Pinball_Move::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 	_vector vDir = XMLoadFloat3(&m_pInstanceBiffer_Dir[iIndex]);
-	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 5.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
+	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
 
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }
@@ -136,23 +144,13 @@ void CEffect_Pinball_Move::Instance_UV(_float TimeDelta, _int iIndex)
 void CEffect_Pinball_Move::Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex)
 {
 	m_pInstanceBuffer_STT[iIndex].vPosition = vPos;
-	m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
+	m_pInstanceBuffer_STT[iIndex].vSize = Get_RandSize();
 	m_pInstanceBuffer_STT[iIndex].fTime = 1.02f;
 
 	m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time;
 
-	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
 
-	_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand_Matrix(_int3(100, 20, 0), WorldMatrix, CTransform::STATE_UP));
-	vRandDir += XMLoadFloat3(&__super::Get_Dir_Rand_Matrix(_int3(1000, 200, 500), WorldMatrix));
-	vRandDir = XMVector3Normalize(vRandDir);
-	_float3 v3RandDir;
-	XMStoreFloat3(&v3RandDir, vRandDir);
-	_float4 v4Dir = { v3RandDir.x, v3RandDir.y, v3RandDir.z, 0.f };
-	m_pInstanceBuffer_STT[iIndex].vUp = v4Dir;
-
-	vRandDir += WorldMatrix.r[2] * 2.f;
-	vRandDir += WorldMatrix.r[1] * 1.f;
 	XMStoreFloat3(&m_pInstanceBiffer_Dir[iIndex], vRandDir);
 }
 
@@ -179,14 +177,10 @@ HRESULT CEffect_Pinball_Move::Ready_InstanceBuffer()
 		m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
 		m_pInstanceBuffer_STT[iIndex].vSize = { 0.f, 0.f };
 
-		m_pInstance_Pos_UpdateTime[iIndex] = (m_dInstance_Pos_Update_Time * 2.f)  * (_double(iIndex) / iInstanceCount);
+		m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time * (_double(iIndex) / (_double)iInstanceCount);
 
-		_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand_Matrix(_int3(100, 20, 0), WorldMatrix, CTransform::STATE_UP));
-		vRandDir += XMLoadFloat3(&__super::Get_Dir_Rand_Matrix(_int3(1000, 200, 500), WorldMatrix));
-		vRandDir = XMVector3Normalize(vRandDir);
+		_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
 
-		vRandDir += WorldMatrix.r[2] * 1.5f;
-		vRandDir += WorldMatrix.r[1] * 0.5f;
 		XMStoreFloat3(&m_pInstanceBiffer_Dir[iIndex], vRandDir);
 	}
 
@@ -205,12 +199,36 @@ _float3 CEffect_Pinball_Move::Get_Particle_Rand_Dir(_fvector vDefaultPos)
 
 void CEffect_Pinball_Move::Check_Target_Matrix()
 {
-	m_pTransformCom->Set_WorldMatrix(Normalize_Matrix(static_cast<CPinBall*>(m_pTargetObject)->Get_WorldMatrix()));
+	_matrix WorldMatrix = Normalize_Matrix(static_cast<CPinBall*>(m_pTargetObject)->Get_WorldMatrix());
+	WorldMatrix.r[3] += WorldMatrix.r[2] * 0.5f;
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 }
 
 void CEffect_Pinball_Move::Check_Activate()
 {
 	m_IsActivate = !static_cast<CPinBall*>(DATABASE->Get_Pinball())->Get_Failed();
+}
+
+_float2 CEffect_Pinball_Move::Get_RandSize()
+{
+	_int iRand = rand() % 3;
+	_float2 vSize = m_vDefaultSize;
+
+	switch (iRand)
+	{
+	case 0:
+		vSize.x -= 0.05f;
+		vSize.y -= 0.05f;
+		break;
+	case 1:
+		vSize.x += 0.05f;
+		vSize.y += 0.05f;
+		break;
+	default:
+		break;
+	}
+
+	return vSize;
 }
 
 CEffect_Pinball_Move * CEffect_Pinball_Move::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

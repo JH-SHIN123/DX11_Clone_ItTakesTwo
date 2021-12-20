@@ -30,6 +30,7 @@ private:
 private:
 	/* Se */
 	HRESULT Ready_Layer_GravityPath(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Earth(const _tchar* pLayerTag);
 	/* Jung */
 	HRESULT Ready_Layer_WarpGate(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Wormhole(const _tchar* pLayerTag);
@@ -68,6 +69,7 @@ private:
 	HRESULT Ready_Layer_Rope(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UFORadarSet(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_TestRocket(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_EndingRocket(const _tchar* pLayerTag);
 
 	/* Jin */
 	HRESULT Ready_Layer_ControlRoomPuzzle(const _tchar* pLayerTag, const _tchar* pGameObjectTag);
@@ -75,9 +77,9 @@ private:
 	HRESULT Ready_Layer_Umbrella_Joystick(const _tchar * pLayerTag);
 	HRESULT Ready_Layer_UFO(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MoonBaboon(const _tchar* pLayerTag);
-
 	/* Jun */
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Performer(const _tchar* pLayerTag);
 
 public:
 	static CLevel_Stage* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

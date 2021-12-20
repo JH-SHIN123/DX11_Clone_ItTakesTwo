@@ -62,7 +62,7 @@ void CMayWallCameraTrigger::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eI
 	_vector vRight = XMVectorSet(0.f, 0.f, -1.f, 0.f);
 	_vector vUp = XMVectorSet(1.f, 0.f, 0.f, 0.f);
 	_vector vLook = XMVectorSet(0.f, -1.f, 0.f, 0.f);
-	_vector vPosition = XMVectorSet(-829.936523f, 791.056213f, 193.710083f, 1.f);
+	_vector vPosition = XMVectorSet(-829.936523f, 780.056213f, 193.710083f, 1.f);
 
 	CameraMatrix.r[0] = vRight;
 	CameraMatrix.r[1] = vUp;
@@ -72,6 +72,7 @@ void CMayWallCameraTrigger::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eI
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetCameraTriggerID_Matrix(GameID::Enum::eMAYWALLCAMERATRIGGER, true, CameraMatrix);
+		((CMay*)pGameObject)->SetCameraTriggerID_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)

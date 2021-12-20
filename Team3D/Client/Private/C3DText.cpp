@@ -4,6 +4,7 @@
 #include "Cody.h"
 #include "PlayerActor.h"
 #include "MeshParticle.h"
+#include "EndingRocket.h"
 
 
 C3DText::C3DText(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -91,7 +92,7 @@ HRESULT C3DText::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(27, 0);
+	m_pModelCom->Render_Model(28, 0);
 
 	return S_OK;
 }
@@ -114,7 +115,7 @@ void C3DText::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		((CCody*)pGameObject)->Set_Boost();
+		((CEndingRocket*)(DATABASE->Get_EndingRocket()))->Set_Boost();
 		ENDINGCREDIT->Create_3DText(true);
 		Create_Particle();
 		Set_Dead();
@@ -162,7 +163,7 @@ HRESULT C3DText::Ready_Component(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&vPos), 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
 	m_IsBoost = tArg.IsBoost;
-	m_fTime = tArg.fTime;
+	m_fTime	= tArg.fTime;
 	m_fMaxScale = tArg.fMaxScale;
 	m_iIndex = tArg.iIndex;
 

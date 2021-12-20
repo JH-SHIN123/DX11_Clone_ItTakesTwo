@@ -11,9 +11,10 @@ class CMainCamera final : public CCamera
 {
 	enum CamRev {Rev_Holizontal,Rev_Prependicul,Rev_End};
 
-	enum class CamMode{Cam_Free,Cam_AutoToFree,Cam_End};
-	//O CamFreeMove P FollowPlayer
-	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove,Cam_Free_OnRail,Cam_Free_Warp_WormHole, Cam_Free_End };
+	enum class CamMode{Cam_Free,Cam_AutoToFree, Cam_WallJump, Cam_Ending, Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_InJoyStick,Cam_PinBall_Cody,Cam_End};
+	//O CamFreeMove P FollowPlayer																 
+	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_OpenThirdFloor, Cam_Free_OnBossMiniRoom_Cody,
+		Cam_Free_Umbrella_Laser,Cam_Free_End };
 
 private:
 	explicit CMainCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -26,24 +27,34 @@ public:
 	virtual _int	Tick(_double dTimeDelta) override;
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 
-
+	/*Getter*/
 	CTransform* Get_Transform() { return m_pTransformCom; }
+	CCam_Helper* Get_CamHelper() { return m_pCamHelper; }
+	/*Setter*/
+	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal,matWorld); }
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
+	_int	ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook = false, _bool bIsCalculateCamLook = false);		//카메라가 초기상태로 돌아옴
 private:
-	void	Check_Player(_double dTimeDelta);
+	_int	Check_Player(_double dTimeDelta);
 	void	Set_Zoom(_float fZoomVal, _double dTimeDelta);
 	_bool	LerpToCurSize(CCody::PLAYER_SIZE eSize,_double dTimeDelta);
 private:
 	//For Free.
 	_int	Tick_Cam_Free(_double dTimeDelta);					//자유이동
 	_int	Tick_Cam_AutoToFree(_double dTimeDelta);			//연출 카메라 -> 자유이동시 보간
-	
+	_int	Tick_Cam_Ending(_double dTimeDelta);
+	_int	Tick_Cam_Warp_WormHole(_double dTimeDelta);			//웜홀
+	_int	Tick_Cam_PressButton_Bridge(_double dTimeDelta);	//다리앞의 버튼
+	_int	Tick_Cam_InJoystick(_double dTimeDelta);			//달나라 우주선 레이져
+	_int	Tick_Cam_PinBall_Cody(_double dTimeDelta);
+	_int	Tick_Cam_WallJump(_double dTimeDelta);
+
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
-	_int	Tick_Cam_Free_OnRail(_double dTimeDelta);			//레일
-	_int	Tick_Cam_Free_Warp_WormHole(_double dTimeDelta);	//웜홀
-
+	_int	Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta);
+	_int	Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta);			//미니코디 보스룸
+	_int	Tick_Cam_Free_Umbrella_Laser(_double dTimeDelta);
 	//CamHelper State(현재 )
 	_int	Tick_CamHelperNone(_double dTimeDelta);			//현재 아무것도 재생안함
 	_int	Tick_CamHelper_Act(_double dTimeDelta);			//재생중
@@ -52,13 +63,18 @@ private:
 
 	//For.Debug
 	void KeyCheck(_double dTimeDelta);
+	//For.OnRail
+	_float Get_ZoomVal_OnRail(_uint iNodeIdx, _bool bCanDash = false);
+	_float	DotProgress(_float fOffSetDist);	//직선구간
+	_float  DotProgress_Bezier(_float fOffSetDist);
 private:
-	_int	ReSet_Cam_FreeToAuto();		//카메라가 초기상태로 돌아옴
-	_bool	OffSetPhsX(_fmatrix matWorld,_double dTimeDelta,_vector * pOut);
+	_int	ReSet_Cam_Free_OnRail();
+	_bool	OffSetPhsX(_fvector vEye,_fvector vAt,_double dTimeDelta,_vector * pOut);
 
 	_fmatrix MakeViewMatrixByUp(_float4 Eye, _float4 At, _fvector vUp = XMVectorSet(0.f,1.f,0.f,0.f));
+	_fmatrix MakeViewMatrixByUp(_fvector vEye, _fvector vAt, _fvector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	_fmatrix MakeViewMatrix_FollowPlayer(_double dTimeDelta);
 	_fmatrix MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime);
-
 
 private:
 	_bool m_bStart = false;
@@ -67,9 +83,9 @@ private:
 	_float m_fCurMouseRev[Rev_End] = { 0.f,0.f };
 
 	CamMode m_eCurCamMode = CamMode::Cam_End;
+	CamMode m_ePreCamMode = CamMode::Cam_End;
 
 
-	_float4x4	m_matStart;		//외부의 상태에 따라 셋팅
 	_float4x4 m_matBeginWorld;	//카메라 이펙트등등 tick돌아갈때쓸것 
 	_float4x4 m_matCurWorld;	//연출후 돌아오기
 
@@ -91,25 +107,39 @@ private:
 	CamFreeOption m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 	CamFreeOption m_ePreCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 
-	//For.SpringCamera
-	_bool m_bIsCollision = false;
-	_float4x4 m_matBeforeSpringCam;
 	//For.SoftMove
 	_float4 m_vPlayerPos = { 0.f,0.f,0.f,1.f };
 	_float4		m_vPlayerUp = { 0.f,1.f,0.f,0.f };
 
 	//For.Zoom
 	_float		m_fCamZoomVal = 0.f;
-	//For.GravityPath
-
-	
+	//For.Portal
+	_double m_dWarpTime = 0.0;
+	_float4x4 m_matStartPortal;
+	_bool		m_bIsFading = false;
+	//For.BridgeUppend
+	_bool	m_bStartBridgeUppendCam = false;
+	_float	m_fBridgeUppendTime = 0.f;
+	//For.PinBall
+	_float4		m_vStartPinBallBezierPos = {0.f,0.f,0.f,1.f};
+	_float		m_fStartPinBallBezierTime = 0.f;
+	//For.RayCast
+	PxRaycastBuffer m_RayCastBuffer;
 	WORLDMATRIX	m_PreWorld;
-
+	//For.BossMiniRoom_Cody
+	_bool	m_bStartOnRail = false;
+	vector<CFilm::CamNode*> m_CamNodes;
+	_uint m_iNodeIdx[CFilm::BezierNode::Bezier_End] = { 0,0,0 };
+	_float3 m_vCurRailAt = { 0.f,0.f,0.f };
+	_float	m_fRailProgressTime = 0.f;
+	_float	m_fMaxRailLength = 0.f;
+	_bool	m_bCodyDash = false;
+	//For.OpenThirdFloor
+	_bool m_bOpenThirdFloor = false;
 
 private:
-	class CCameraActor* m_pActorCom = nullptr;
-	CGameObject* m_pTargetObj = nullptr;
-	CCam_Helper* m_pCamHelper = nullptr;
+	CCody*			m_pCody = nullptr;
+	CCam_Helper*	m_pCamHelper = nullptr;
 public:
 	static CMainCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg = nullptr) override;

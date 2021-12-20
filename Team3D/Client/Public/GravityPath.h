@@ -37,6 +37,8 @@ private:
 	class CSepdStaticActor*	m_pStaticActorCom = nullptr;
 	STATIC_ENV_DESC			m_Static_Env_Desc;
 	USERDATA*				m_arrUserData = nullptr;
+	_float					m_fDrawOption = 0.f;
+	_double					m_dOptionChangeTerm = 0.0;
 
 public:
 	static CGravityPath* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

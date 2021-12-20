@@ -82,7 +82,7 @@ HRESULT C2DMesh::Render(RENDER_GROUP::Enum eGroup)
 	}
 
 	m_pModelCom->Set_Variable("g_vColor", &vColor, sizeof(_float4));
-	m_pModelCom->Sepd_Render_Model(0, 28, false);
+	m_pModelCom->Sepd_Render_Model(0, 29, false);
 
 	return S_OK;
 }

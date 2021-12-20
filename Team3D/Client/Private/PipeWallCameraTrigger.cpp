@@ -64,10 +64,10 @@ void CPipeWallCameraTrigger::Trigger(TriggerStatus::Enum eStatus, GameID::Enum e
 {
 	// Cody
 	_matrix CameraMatrix = XMMatrixIdentity();
-	_vector vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
-	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f); 
-	_vector vLook = XMVectorSet(1.f, 0.f, 0.f, 0.f);
-	_vector vPosition = XMVectorSet(45.4295120f, 221.562866f, 216.605621f, 1.f);
+	_vector vRight =	XMVectorSet(1.f, 0.f, 0.f, 0.f);
+	_vector vUp =		XMVectorSet(0.f, 1.f, 0.f, 0.f); 
+	_vector vLook =		XMVectorSet(0.f, 0.f,-1.f, 0.f);
+	_vector vPosition = XMVectorSet(45.4295120f, 221.562866f, 222.605621f, 1.f);
 
 	CameraMatrix.r[0] = vRight;
 	CameraMatrix.r[1] = vUp;
@@ -77,6 +77,7 @@ void CPipeWallCameraTrigger::Trigger(TriggerStatus::Enum eStatus, GameID::Enum e
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetCameraTriggerID_Matrix(GameID::Enum::ePIPEWALLCAMERATRIGGER, true, CameraMatrix);
+		((CCody*)pGameObject)->SetCameraTriggerID_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)

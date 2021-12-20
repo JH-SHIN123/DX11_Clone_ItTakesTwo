@@ -73,7 +73,7 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 			/* 쏘는 순간 터트리는 이펙트 생성 */
 			if (m_dChargingTime <= 0.0)
 			{
-				EFFECT->Add_Effect(Effect_Value::BossLaser_Explosion, m_pTransformCom->Get_WorldMatrix());
+				//EFFECT->Add_Effect(Effect_Value::BossLaser_Explosion, m_pTransformCom->Get_WorldMatrix());
 			}
 
 			return NO_EVENT;

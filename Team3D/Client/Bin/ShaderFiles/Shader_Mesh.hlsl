@@ -142,6 +142,30 @@ VS_OUT_FRESNEL VS_FRESNEL(VS_IN In)
 	return Out;
 }
 
+VS_OUT_FRESNEL VS_FRESNEL_STAR(VS_IN In)
+{
+	VS_OUT_FRESNEL Out = (VS_OUT_FRESNEL)0;
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
+	Out.vTexUV = In.vTexUV;
+
+	// MainCam
+	float3 vPosW = Out.vPosition.xyz;
+	float3 vNormalW = Out.vNormal.xyz;
+	float3 l = normalize(vPosW - g_vMainCamPosition);
+	float Scale = 1.f;
+	float Power = 1.f; // 점점 진해지는 강도세기
+
+	Out.vMainCamRefl = Scale * pow(1.0 + dot(l, vNormalW), Power);
+
+	// SubCam
+	l = normalize(vPosW - g_vSubCamPosition);
+	Out.vSubCamRefl = Scale * pow(1.0 + dot(l, vNormalW), Power);
+
+	return Out;
+}
+
 /* _____________________________________Effect_____________________________________*/
 VS_OUT	VS_MAIN_EFFECT(VS_IN In)
 {
@@ -883,6 +907,17 @@ PS_OUT_ALPHA PS_FRESNEL(PS_IN_FRESNEL In)
 	return Out;
 }
 
+PS_OUT_ALPHA PS_FRESNEL_STAR(PS_IN_FRESNEL In)
+{
+	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
+
+	vector vOutColor = vector(0.4f, 0.4f, 0.4f, 0.4f);
+	vector vInColor = vector(0.3f, 0.3f, 0.3f, 0.3f);
+
+	Out.vDiffuse = lerp(vInColor, vOutColor, In.vRefl);
+	return Out;
+}
+
 PS_OUT PS_RADARSCREEN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -1187,6 +1222,14 @@ PS_OUT_ALPHA	PS_EFFECT_MASKING_ALPHAGROUP(PS_IN_DOUBLE_UV In)
 	return Out;
 }
 
+PS_OUT_ALPHA PS_MAIN_WARPGATE_STAR(PS_IN In)
+{
+	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	Out.vDiffuse = float4(1.000000000f, 0.980392218f, 0.203921640f, 0.500000000f);
+
+	return Out;
+}
 
 /* ________________________________________________________________________________*/
 /* Volume */
@@ -1425,6 +1468,7 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_MAIN_ALPHA();
 	}
+
 	// 21
 	pass Volume_Front /* Volume의 앞면 깊이값 */
 	{
@@ -1485,7 +1529,17 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_LASERBUTTONLARGE(false);
 	}
-	// 27 
+	// 27
+	pass Default_WarpGate_Star_Activate
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0	VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0	PS_MAIN_WARPGATE_STAR();
+	}
+	// 28 
 	pass Default_3DText
 	{
 		SetRasterizerState(Rasterizer_Solid);
@@ -1495,7 +1549,7 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_3DTEXT();
 	}
-	// 28
+	// 29
 	pass Default_MeshParticle
 	{
 		SetRasterizerState(Rasterizer_Solid);

@@ -219,6 +219,9 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		m_bFailed = true;
 		m_bStartGame = false;
 		m_bEffect = false;
+
+		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion_Particle, m_pTransformCom->Get_WorldMatrix());
 	}
 }
 
@@ -268,7 +271,9 @@ HRESULT CPinBall::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->putToSleep();
 
 	/* Trigger */
+
 	PxGeometry* TriggerGeom = new PxSphereGeometry(0.77f);
+
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;

@@ -37,9 +37,6 @@ HRESULT CEndingCredit_Manager::Start_EndingCredit()
 {
 	m_bStart = true;
 
-	/* 뷰포트 합치기 */
-	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f), 3.f);
-
 	/* 3D폰트 생성 스타트 */
 	FAILED_CHECK_RETURN(Create_3DText(false), E_FAIL);
 
