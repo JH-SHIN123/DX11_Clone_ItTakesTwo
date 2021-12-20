@@ -267,6 +267,9 @@ _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_HOME))
+		UI_CreateOnlyOnce(Default, TESTUI);
+
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
 		m_pActorCom->Set_ZeroGravity(true, true, true);

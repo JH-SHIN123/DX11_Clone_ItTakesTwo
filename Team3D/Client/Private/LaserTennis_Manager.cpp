@@ -9,6 +9,7 @@
 #include "Wall_LaserTennis.h"
 #include "LaserButtonLarge.h"
 #include "Laser_LaserTennis.h"
+#include "UI_Generator.h"
 
 IMPLEMENT_SINGLETON(CLaserTennis_Manager)
 
@@ -144,13 +145,26 @@ void CLaserTennis_Manager::Decrease_PowerCoord()
 
 void CLaserTennis_Manager::KeyCheck(TARGET eTarget)
 {
+	/* 두번 째 준비 */
 	if (false == m_bReady)
 		return;
 
 	m_bKeyCheck[eTarget] = true;
 
+	if (eTarget == CLaserTennis_Manager::TARGET_CODY)
+		UI_Generator->Set_MinigameReady(Player::Cody, UI::Minigame_Ready_Cody);
+	else
+		UI_Generator->Set_MinigameReady(Player::May, UI::Minigame_Ready_May);
+
 	if (true == m_bKeyCheck[TARGET_CODY] && true == m_bKeyCheck[TARGET_MAY])
+	{
+		UI_Delete(Cody, Minigame_Ready_Cody);
+		UI_Delete(May, Minigame_Ready_May);
+
+		UI_CreateOnlyOnce(Default, Minigame_Countdown);
+
 		m_bStartGame = true;
+	}
 }
 
 void CLaserTennis_Manager::Set_MayCount()
@@ -265,6 +279,12 @@ void CLaserTennis_Manager::Active_LaserButtonLarge(_bool bActive)
 
 void CLaserTennis_Manager::Start_Game()
 {
+	//m_bStartGame = true;
+
+	/* 타이머 세팅 */
+	m_pTimer_LaserTennis->OnOff_Timer(true);
+
+	/* 카운트 UI */
 	m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
 	m_pGameInstance->Play_Sound(TEXT("StartButton_Push.wav"), CHANNEL_LASERPOWERCOORD);
 
@@ -424,6 +444,8 @@ HRESULT CLaserTennis_Manager::Add_Wall(CWall_LaserTennis * pWall)
 HRESULT CLaserTennis_Manager::Create_StartUI()
 {
 	/* UI 다 띄우면 Ready = true */
+	UI_CreateOnlyOnce(Cody, Minigame_Ready_Cody);
+	UI_CreateOnlyOnce(May, Minigame_Ready_May);
 
 	m_bReady = true;
 	return S_OK;
@@ -431,6 +453,15 @@ HRESULT CLaserTennis_Manager::Create_StartUI()
 
 HRESULT CLaserTennis_Manager::Create_ResultUI()
 {
+	if (m_eWinner == CLaserTennis_Manager::TARGET_CODY)
+	{
+		UI_CreateOnlyOnce(Default, Minigame_Win_Cody);
+	}
+	else
+	{
+		UI_CreateOnlyOnce(Default, Minigame_Win_May);
+	}
+
 	return S_OK;
 }
 
