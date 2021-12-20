@@ -51,9 +51,7 @@ private:
 	const _float  m_fAlphaTime_Power = 1.f;
 	const _float  m_fInstance_SpeedPerSec = 1.5f;
 	const _double m_dInstance_Pos_Update_Time = 1.0;
-	const _float2 m_vDefaultSize = { 0.25f, 0.25f };
-
-private: //Target
+	const _float2 m_vDefaultSize = { 0.15f, 0.15f };
 
 public:
 	static CEffect_StarBuddy_Move_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

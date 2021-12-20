@@ -32,7 +32,6 @@ HRESULT CEffect_StarBuddy_Move_Particle::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
 
-	Check_Target_Matrix();
 	Ready_InstanceBuffer();
 
 	return S_OK;
@@ -40,9 +39,8 @@ HRESULT CEffect_StarBuddy_Move_Particle::NativeConstruct(void * pArg)
 
 _int CEffect_StarBuddy_Move_Particle::Tick(_double TimeDelta)
 {
-	if (true == m_IsDuplication)
+	if (true == m_IsDuplication || true == m_isDead)
 		return EVENT_DEAD;
-
 
 	if (true == m_IsActivate)
 	{
@@ -57,7 +55,6 @@ _int CEffect_StarBuddy_Move_Particle::Tick(_double TimeDelta)
 
 
 	Check_Activate();
-	Check_Target_Matrix();
 	Check_Instance(TimeDelta);
 
 	return NO_EVENT;
@@ -75,7 +72,7 @@ HRESULT CEffect_StarBuddy_Move_Particle::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fTime, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
-	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Second->Get_ShaderResourceView(6));
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Second->Get_ShaderResourceView(9));
 
 	m_pPointInstanceCom_STT->Render(12, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 
@@ -101,7 +98,7 @@ void CEffect_StarBuddy_Move_Particle::Check_Instance(_double TimeDelta)
 			continue;
 		}
 
-		Instance_Pos((_float)TimeDelta, iIndex);
+		//Instance_Pos((_float)TimeDelta, iIndex);
 		Instance_Size((_float)TimeDelta, iIndex);
 	}
 }

@@ -81,6 +81,7 @@
 #include "Effect_StarBuddy_Explosion_Pillar.h"
 #include "Effect_StarBuddy_Explosion_BigBang.h"
 #include "Effect_StarBuddy_Explosion_Particle.h"
+#include "Effect_StarBuddy_Move_Particle.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -608,6 +609,11 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_StarBuddy_Explosion_Paticle"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_StarBuddy_Explosion_Particle", CEffect_StarBuddy_Explosion_Particle::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_StarBuddy_Move_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_StarBuddy_Move_Particle", CEffect_StarBuddy_Move_Particle::Create(pDevice, pDeviceContext, pData));
+	
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_WarpGate_Clear"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_WarpGate_Clear", CEffect_WarpGate_Clear::Create(pDevice, pDeviceContext, pData));
 
 #pragma  endregion
 

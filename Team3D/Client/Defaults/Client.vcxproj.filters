@@ -1041,20 +1041,14 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move">
       <UniqueIdentifier>{92f1e13a-d195-448f-b4ee-245413d362ad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Head">
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle">
       <UniqueIdentifier>{5bfb0833-cc63-4158-a256-924e223c5331}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\01.R_Hand">
-      <UniqueIdentifier>{83d85e67-5041-4aa5-8727-acfbf0031728}</UniqueIdentifier>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\00.Color">
+      <UniqueIdentifier>{c40802cb-3077-4ddf-955e-fbde27e5268f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\02.L_Hand">
-      <UniqueIdentifier>{904b8b92-93db-4ce5-ae41-a378292b734b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\03.R_Foot">
-      <UniqueIdentifier>{590b1171-bddf-4f48-ba80-bb4320ba3cef}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\04.L_Foot">
-      <UniqueIdentifier>{37f989cc-b1ab-482e-ab90-520e5c22d551}</UniqueIdentifier>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\01.Black">
+      <UniqueIdentifier>{dc9f6c9a-1c8c-44eb-8222-c63be1b02776}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1941,7 +1935,7 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_StarBuddy_Move_Particle.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Head</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -2801,7 +2795,7 @@
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_StarBuddy_Move_Particle.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Head</Filter>
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

@@ -43,7 +43,7 @@ HRESULT CEffect_Boss_Missile_Smoke::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_Missile_Smoke::Tick(_double TimeDelta)
 {
- 	///*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
+ 	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
 
 	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
 		return EVENT_DEAD;
@@ -62,7 +62,7 @@ _int CEffect_Boss_Missile_Smoke::Tick(_double TimeDelta)
 
 _int CEffect_Boss_Missile_Smoke::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Boss_Missile_Smoke::Render(RENDER_GROUP::Enum eGroup)
