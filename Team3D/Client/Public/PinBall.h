@@ -13,6 +13,7 @@ public:/* Getter */
 	_bool Get_Failed()	  { return m_bFailed; };
 	_bool Get_StartGame() { return m_bStartGame; }
 	_bool Get_Ready()	  { return m_bReady; }
+	CTransform*	Get_Transform() { return m_pTransformCom; }
 	_fmatrix Get_WorldMatrix() { return m_pTransformCom->Get_WorldMatrix(); }
 
 public:/* Setter */

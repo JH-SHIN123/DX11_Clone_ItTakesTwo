@@ -29,6 +29,8 @@
 /* Jin */
 /* Jun */
 #include "Camera.h"
+#include"CutScenePlayer.h"
+#include"Performer.h"
 
 #pragma endregion
 
@@ -94,7 +96,10 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_MoonBaboon(TEXT("Layer_MoonBaboon")), E_FAIL);
 
 	/* Jun */
-	///* For. Environment */
+	FAILED_CHECK_RETURN(Ready_Layer_Performer(TEXT("Layer_Performer")), E_FAIL);
+	
+	/* For. Environment */
+
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Stage_Space(), E_FAIL);
 #else
 	FAILED_CHECK_RETURN(Ready_Test(), E_FAIL);
@@ -113,7 +118,14 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 #ifdef __INSTALL_LIGHT
 	CLight_Generator::GetInstance()->KeyInput(dTimedelta);
 #endif // __TEST_TAEK
-
+	
+#ifdef __PLAY_CUTSCENE
+	if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Intro))
+	{
+		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
+		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Intro, true);
+	}
+#endif
 	return NO_EVENT;
 }
 
@@ -293,11 +305,11 @@ HRESULT CLevel_Stage::Ready_Layer_Wormhole(const _tchar * pLayerTag)
 {
 	EFFECT_DESC_CLONE Data;
 
-	_float4 vPos = { 0.f, -100.f, -1000.f, 1.f };
+	_float4 vPos = { 0.f, -99.f, -1000.f, 1.f };
 	memcpy(&Data.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Wormhole"), &Data), E_FAIL);
 
-	vPos = { 0.f, -100.f, -1500.f, 1.f };
+	vPos = { 0.f, -99.f, -1500.f, 1.f };
 	memcpy(&Data.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_3D_Wormhole"), &Data), E_FAIL);
 
@@ -795,6 +807,33 @@ HRESULT CLevel_Stage::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.vAxisY = _float4(0.f, 1.f, 0.f, 0.f);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_SubCamera"), &CameraDesc), E_FAIL);
+
+	return S_OK;
+}
+HRESULT CLevel_Stage::Ready_Layer_Performer(const _tchar * pLayerTag)
+{
+	CCutScenePlayer* pCutScenePlayer = CCutScenePlayer::GetInstance();
+	CPerformer::PERFORMERDESC tDesc;
+	tDesc.strModelTag = TEXT("Component_Model_Cody_CutScene1");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc), E_FAIL);
+
+	tDesc.strModelTag = TEXT("Component_Model_May_CutScene1");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc), E_FAIL);
+
+	tDesc.strModelTag = TEXT("Component_Model_ToyBox1");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc), E_FAIL);
+
+	tDesc.strModelTag = TEXT("Component_Model_RemoteContollerCutScene1");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc), E_FAIL);
+
+	tDesc.strModelTag = TEXT("Component_Model_GravityBootsCutScene1");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc), E_FAIL);
+
+	tDesc.strModelTag = TEXT("Component_Model_SizeBeltCutScene1");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc), E_FAIL);
+	
+	tDesc.strModelTag = TEXT("Component_Model_SizeBeltRemoteControllerCutScene1");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc), E_FAIL);
 
 	return S_OK;
 }

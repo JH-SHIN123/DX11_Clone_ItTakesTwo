@@ -45,8 +45,7 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
 
-	if (FAILED(Add_Prototype_Texture()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(Add_Prototype_Texture(), E_FAIL);
 
 	m_pTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Font"));
 	m_pEngTexturesCom = (CTextures*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("EngFont"));
@@ -58,12 +57,12 @@ HRESULT CUI_Generator::NativeConstruct(ID3D11Device * pDevice, ID3D11DeviceConte
 
 	m_pVIBuffer_FontCom = (CVIBuffer_FontInstance*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_FontInstance"));
 	m_pVIBuffer_Rect = (CVIBuffer_Rect*)pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect"));
-	
+
 	FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STATIC, TEXT("AlphaScreen"), CAlphaScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-	
-	//CUIObject::UI_DESC UIDesc;
+	//FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype(Level::LEVEL_LOGO, TEXT("SplashScreen"), CSplashScreen::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	//CUIObject::UI_DESC UIDesc;`
 	//UIDesc.iLevelIndex = 0;
-	//UIDesc.iRenderGroup = 1;
+	//UIDesc.iRenderGroup = 1; 
 	//UIDesc.iSubTextureNum = 0;
 	//UIDesc.iTextureLevelIndex = 0;
 	//UIDesc.iTextureRenderIndex = 0;
@@ -92,7 +91,7 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath, Level::ID eLevel, _ui
 	}
 
 	DWORD dwByte = 0;
-	
+
 	while (true)
 	{
 		CUIObject::UI_DESC* psDataElement = new CUIObject::UI_DESC;
@@ -138,7 +137,7 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath, Level::ID eLevel, _ui
 	return S_OK;
 }
 
-HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,void* pArg)
+HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger, void* pArg)
 {
 	if (false == m_IsTrigger || ePlayer >= Player::PLAYER_END || eTrigger >= UI::TRIGGER_END)
 		return S_OK;
@@ -258,7 +257,7 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 		iOption = 3;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
 		break;
-	case UI::BlackScreenFadeOut:
+	case UI::BlackScreenFadeInOut:
 		iOption = 4;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
 		break;
@@ -304,7 +303,7 @@ HRESULT CUI_Generator::Generator_InterActive_SwingPoint(Player::ID ePlayer, UI::
 HRESULT CUI_Generator::Delete_UI(Player::ID ePlayer, UI::TRIGGER eTrigger)
 {
 	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
- 		return S_OK;
+		return S_OK;
 
 	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
 	{
@@ -333,7 +332,7 @@ HRESULT CUI_Generator::Delete_InterActive_UI(Player::ID ePlayer, UI::INTERACTIVE
 	return S_OK;
 }
 
-CUIObject* CUI_Generator::Get_UIObject(Player::ID ePlayer,UI::TRIGGER eTrigger)
+CUIObject* CUI_Generator::Get_UIObject(Player::ID ePlayer, UI::TRIGGER eTrigger)
 {
 	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
 		return nullptr;
@@ -347,7 +346,7 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
 
 	_ulong iX, iY, iTextureWidth, iTextureHeigth, iFontWidth, iFontHeigth;
-  	_int TextLen = lstrlen(pText);
+	_int TextLen = lstrlen(pText);
 	_int iGsOption;
 	_int iOption;
 
@@ -356,7 +355,7 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 		_ulong iNumChar = pText[i];
 
 		/* 한글 */
-		if (44032 <= iNumChar) 		
+		if (44032 <= iNumChar)
 		{
  			//iNumChar -= 44032;
 			//iX = iNumChar % 132;
@@ -418,7 +417,7 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			//iOption = 0;
 		}
 		/* 영어 */
-		else if (65 <= iNumChar) 		
+		else if (65 <= iNumChar)
 		{
 			iNumChar -= 65 - 1;
 
@@ -438,8 +437,8 @@ HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::I
 			continue;
 
 		_float fInterval;
-		
-		if(ePlayer == Player::Default)
+
+		if (ePlayer == Player::Default)
 			fInterval = ((_float)TextLen * iFontWidth) / (tFontDesc.vScale.x * 2.f * (_float)TextLen);
 		else 
 			fInterval = ((_float)TextLen * iFontWidth) / (tFontDesc.vScale.x * (_float)TextLen);
@@ -1053,7 +1052,7 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 
 HRESULT CUI_Generator::Add_Prototype_LogoTexture()
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance(); 
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	NULL_CHECK_RETURN(pGameInstance, E_FAIL);
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_LOGO, TEXT("SplashScreen"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/Logo/SplashScreen.png"))), E_FAIL);
@@ -1144,10 +1143,37 @@ void CUI_Generator::Set_Active(Player::ID ePlayer, UI::TRIGGER eTrigger, _bool b
 void CUI_Generator::Set_ScaleEffect(Player::ID ePlayer, UI::TRIGGER eTrigger)
 {
 	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
-		return; 
+		return;
 
 	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
 		UIObject->Set_ScaleEffect();
+}
+
+void CUI_Generator::Set_FadeInSpeed(Player::ID ePlayer, UI::TRIGGER eTrigger, _float fSpeed)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return;
+
+	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
+		UIObject->Set_FadeInSpeed(fSpeed);
+}
+
+void CUI_Generator::Set_FadeOutSpeed(Player::ID ePlayer, UI::TRIGGER eTrigger, _float fSpeed)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return;
+
+	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
+		UIObject->Set_FadeOutSpeed(fSpeed);
+}
+
+void CUI_Generator::Set_FadeOut(Player::ID ePlayer, UI::TRIGGER eTrigger)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return;
+
+	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
+		UIObject->Set_FadeOut();
 }
 
 HRESULT CUI_Generator::Create_Logo()

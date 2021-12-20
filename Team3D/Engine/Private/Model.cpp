@@ -111,8 +111,6 @@ _fmatrix CModel::Get_BoneMatrix(const char * pBoneName) const
 
 HRESULT CModel::Set_Animation(_uint iAnimIndex, _double dAnimTime)
 {
-	if (iAnimIndex == m_iCurAnimIndex)
-		return S_OK;
 
 	NULL_CHECK_RETURN(iAnimIndex < m_iAnimCount, E_FAIL);
 

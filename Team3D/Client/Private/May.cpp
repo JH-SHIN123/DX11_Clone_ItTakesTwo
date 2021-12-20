@@ -9,7 +9,7 @@
 #include "SpaceRail_Node.h"
 #include "HookUFO.h"
 #include "Gauge_Circle.h"
-
+#include"CutScenePlayer.h"
 #include "Effect_Generator.h"
 #include "Effect_May_Boots.h"
 /* For.PinBall */
@@ -163,7 +163,13 @@ void CMay::Add_LerpInfo_To_Model()
 _int CMay::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
-
+	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
+	{
+		m_pActorCom->Set_ZeroGravity(true, true, true);
+		m_pActorCom->Update(dTimeDelta); 
+		m_pModelCom->Update_Animation(dTimeDelta);
+		return NO_EVENT;
+	}
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
@@ -239,7 +245,12 @@ _int CMay::Tick(_double dTimeDelta)
 _int CMay::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
-
+	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
+	{
+		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		return NO_EVENT;
+	}
 	/* LateTick : 레일의 타겟 찾기*/
 	Find_TargetSpaceRail();
 	ShowRailTargetTriggerUI();
@@ -1496,6 +1507,11 @@ void CMay::SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix
 	XMStoreFloat4x4(&m_TriggerCameraWorld, vTriggerCameraWorld);
 }
 
+void CMay::SetCameraTriggerID_Pos(_fvector vCamTriggerPos)
+{
+	XMStoreFloat4(&m_vCamTriggerPos, vCamTriggerPos);
+}
+
 _bool CMay::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)
@@ -1619,6 +1635,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_IsWarpNextStage = true;
 			m_IsWarpDone = true;
 			XMStoreFloat4x4(&m_TriggerTargetWorld, static_cast<CWarpGate*>(m_pTargetPtr)->Get_NextPortal_Matrix());
+			m_pCamera->Set_StartPortalMatrix(static_cast<CWarpGate*>(m_pTargetPtr)->Get_Transform()->Get_WorldMatrix());
 		}
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{

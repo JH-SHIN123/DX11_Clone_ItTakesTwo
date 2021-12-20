@@ -14,7 +14,7 @@
 #include "ControlRoom_Battery.h"
 #include "HookUFO.h"
 #include "Gauge_Circle.h"
-
+#include"CutScenePlayer.h"
 /* For. PinBall */
 #include "PinBall.h"
 #include "PinBall_Door.h"
@@ -219,7 +219,13 @@ void CCody::Add_LerpInfo_To_Model()
 _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
-
+	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
+	{
+		m_pActorCom->Set_ZeroGravity(true, true, true);
+		m_pActorCom->Update(dTimeDelta); 
+		m_pModelCom->Update_Animation(dTimeDelta);
+		return NO_EVENT;
+	}
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
@@ -314,6 +320,13 @@ _int CCody::Tick(_double dTimeDelta)
 _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
+
+	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
+	{
+		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		return NO_EVENT;
+	}
 
 	/* LateTick : 레일의 타겟 찾기*/
 	Find_TargetSpaceRail();
@@ -477,7 +490,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	}
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 	{
-		m_pActorCom->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(67.9958f, 599.431f, 1002.82f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(true);
 	}
 	//if (m_pGameInstance->Key_Down(DIK_0))/* 우산 */
@@ -493,7 +506,8 @@ void CCody::KeyInput(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_BACKSPACE))/* 우산 */
 	{
-		m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+		//m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 
@@ -799,6 +813,11 @@ _uint CCody::Get_CurState() const
 	if (nullptr == m_pModelCom) return 0;
 
 	return m_pModelCom->Get_CurAnimIndex();
+}
+
+_bool CCody::Get_IsPlayerInUFO()
+{
+	return m_pActorCom->Get_IsPlayerInUFO();
 }
 
 void CCody::Move(const _double dTimeDelta)
@@ -1956,6 +1975,11 @@ void CCody::SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatri
 	XMStoreFloat4x4(&m_TriggerCameraWorld, vTriggerCameraWorld);
 }
 
+void CCody::SetCameraTriggerID_Pos(_fvector vCamTriggerPos)
+{
+	XMStoreFloat4(&m_vCamTriggerPos, vCamTriggerPos);
+}
+
 _bool CCody::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)
@@ -2116,6 +2140,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_IsWarpNextStage	= true;
 			m_IsWarpDone		= true;
 			XMStoreFloat4x4(&m_TriggerTargetWorld, static_cast<CWarpGate*>(m_pTargetPtr)->Get_NextPortal_Matrix());
+			m_pCamera->Set_StartPortalMatrix(static_cast<CWarpGate*>(m_pTargetPtr)->Get_Transform()->Get_WorldMatrix());
 		}
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{

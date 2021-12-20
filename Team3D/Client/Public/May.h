@@ -184,10 +184,16 @@ public: /* Getter */
 	_bool		Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool		Get_IsGroundPound() { return m_bGroundPound; }
 	_bool		Get_IsGroundPoundVarious() { return m_bPlayGroundPoundOnce; }
+	_bool		Get_IsInUFO() { return m_IsInUFO; }
 	_bool		Get_IsHooking() { return m_IsHookUFO; }
 	_vector	    Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
+	_vector		Get_CamTriggerPos() { return XMLoadFloat4(&m_vCamTriggerPos); }
+	_float4x4	Get_TriggerTargetWorld() { return m_TriggerTargetWorld; }
+	_bool		Get_IsWarpNextStage() { return m_IsWarpNextStage; }
+	_bool		Get_IsWarpDone() { return m_IsWarpDone; }
+	_bool		Get_IsPinBall() { return m_IsPinBall; }
+	_bool		Get_IsWallJump() { return m_IsCamTriggerCollide; }
 	_bool		Get_IsInRocket() { return m_IsBossMissile_Control; }
-
 	_bool		Get_OnRail() { return m_bOnRail; }
 
 public:
@@ -341,17 +347,20 @@ private:
 
 #pragma region Trigger
 public:
+	_matrix Get_CameraTrigger_Matrix() { return XMLoadFloat4x4(&m_TriggerCameraWorld); }
+public:
 	void SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName = 0);
 	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
 	void SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject* pTargetPtr);
 	void SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerCameraWorld);
-
+	void SetCameraTriggerID_Pos(_fvector vCamTriggerPos);
 private:
 	// CameraTrigger 
 	CAMERA_WORK_STATE m_eCameraWorkState = STATE_END;
 	GameID::Enum m_eCameraTriggerID = GameID::Enum::eWORMHOLE;
 	_bool m_IsCamTriggerCollide = false;
 	_float4x4 m_TriggerCameraWorld = {};
+	_float4 m_vCamTriggerPos = {};
 
 private:
 	GameID::Enum		m_eTargetGameID = GameID::Enum::eMAY;
