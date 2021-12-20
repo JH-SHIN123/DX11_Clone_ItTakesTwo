@@ -286,7 +286,6 @@ private:
 	CGameObject* m_pMoon = nullptr;
 	CGameObject* m_pRunningMoonBaboon = nullptr;
 
-	CGameObject* m_pMoonBaboon = nullptr;
 	/* For.MoonBaboonSpaceShip*/
 	CGameObject* m_pMoonBaboonSpaceShip = nullptr;
 
