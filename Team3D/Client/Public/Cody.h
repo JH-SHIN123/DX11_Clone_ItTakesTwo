@@ -235,7 +235,8 @@ public:
 	_bool			 Get_IsPinBall() { return m_IsPinBall; }
 	_bool			 Get_IsWallJump() { return m_IsCamTriggerCollide; }
 	_bool			 Get_OnRail() { return m_bOnRail; }
-
+	_bool			 Get_IsRespawn() { return m_bRespawn; }
+	_bool			 Get_IsDeadLine() { return m_IsDeadLine; }
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
