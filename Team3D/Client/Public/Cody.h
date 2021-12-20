@@ -218,11 +218,24 @@ public:
 	_bool			 Get_IsInRocket() { return m_IsBossMissile_Control; }
 	_bool			 Get_PushingBattery() { return m_IsPushingBattery; }
 	_uint			 Get_CurState() const;
+	_bool			 Get_IsPlayerInUFO();
+	_float4x4		 Get_TriggerTargetWorld() { return m_TriggerTargetWorld; }
+	_bool			 Get_IsWarpNextStage() { return m_IsWarpNextStage; }
+	_bool			 Get_IsWarpDone() { return m_IsWarpDone; }
+	_float			 Get_Acceleration() { return m_fAcceleration; }
+	_bool			 Get_IsRoll() { return m_bRoll; }
+	_bool			 Get_IsAirDash() { return m_IsAirDash; }
+
 	_vector			 Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
+	_vector			 Get_CamTriggerPos() { return XMLoadFloat4(&m_vCamTriggerPos); }
 	_bool			 Get_IsHooking() { return m_IsHookUFO; }
 	_bool			 Get_IsInArcadeJoyStick() { return m_IsInJoyStick; }
-	_bool			 Get_OnRail() { return m_bOnRail; }
 
+	_bool			 Get_IsControllJoyStick() { return m_IsControlJoystick; }
+	_bool			 Get_IsPinBall() { return m_IsPinBall; }
+	_bool			 Get_IsWallJump() { return m_IsCamTriggerCollide; }
+	_bool			 Get_OnRail() { return m_bOnRail; }
+	_bool			 Get_IsEnding() { return m_IsEnding; }
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
@@ -232,6 +245,10 @@ public:
 	void 			 Set_RocketOffSetPos(_fvector vRocketOffSetPos) { m_vRocketOffSetPos = vRocketOffSetPos; }
 	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
+
+	/* For. Ending */
+	void			Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }
+	void			Set_EndingRocketMatrix(_matrix matRocket) { m_matEndingRocketMatrix = matRocket; }
 
 
 	// Tick 에서 호출될 함수들
@@ -355,13 +372,14 @@ public:
 	void SetTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerTargetWorld, _uint _iPlayerName = 0);
 	void SetTriggerID_Ptr(GameID::Enum eID, _bool IsCollide, CGameObject* pTargetPtr);
 	void SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix vTriggerCameraWorld);
-
+	void SetCameraTriggerID_Pos(_fvector vCamTriggerPos);
 private:
 	// CameraTrigger 
 	CAMERA_WORK_STATE m_eCameraWorkState = STATE_END;
 	GameID::Enum m_eCameraTriggerID = GameID::Enum::eWORMHOLE;
 	_bool m_IsCamTriggerCollide = false;
 	_float4x4 m_TriggerCameraWorld = {};
+	_float4 m_vCamTriggerPos = {};
 
 
 	// NormalTrigger
@@ -503,6 +521,7 @@ private:
 	void Pipe_WallJump(const _double dTimeDelta);
 	void ElectricWallJump(const _double dTimeDelta);
 	void BossMissile_Control(const _double dTimeDelta);
+	void Ride_Ending_Rocket(const _double dTimeDelta);
 
 	// 정호
 	void Warp_Wormhole(const _double dTimeDelta);
@@ -582,6 +601,12 @@ private:
 	_double m_dRadiarBlurDeltaT = 0.0;
 #pragma endregion
 
+private: /* For. Ending */
+	_bool	m_IsEnding = false;
+	_bool   m_bSetEndingOffSetOnce = false;
+	_vector m_vEndingRocketOffSetPos = {};
+	_matrix m_matEndingRocketMatrix = {};
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -640,10 +665,28 @@ private:
 	// Sprint
 	_float m_fCodyM_Sprint_Volume = 1.f;
 
-	_bool m_bTestest = false;
+	// Dead
+	_float m_fCodyM_Dead_Burn_Volume = 1.f;
+	_float m_fCodyM_Dead_Fall_Volume = 1.f;
+	_float m_fCodyM_Dead_Electric_Shock = 1.f;
 
+	//Revive
+	_float m_fCodyM_Revive_Volume = 1.f;
 
+	// WallJump
+	_float m_fCodyM_WallJump_Volume = 1.f;
+	_float m_fCody_WallJump_Slide_Volume = 1.f;
 
+	// Rope
+	_float m_fCody_Rope_Rail_Volume = 1.f;
+	_float m_fCody_Rope_UFO_Catch_Volume = 1.f;
+	_bool  m_bUFOCatchSoundOnce = false;
+	_float m_fCody_Rope_UFO_Move_Volume = 1.f;
+	_float m_fCody_Rope_UFO_Release_Volume = 1.f;
+	_float m_fCody_Rope_UFO_Throw_Volume = 1.f;
+
+	// MiniGame
+	_float m_fCody_MiniGame_Damaged_Volume = 1.f;
 
 
 

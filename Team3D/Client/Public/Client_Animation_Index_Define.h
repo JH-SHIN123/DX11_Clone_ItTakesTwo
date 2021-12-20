@@ -552,6 +552,7 @@
 #define ANI_C_Holding_Low_UFO 548
 #define ANI_C_Holding_Enter_UFO 549
 #define ANI_C_Holding_UFO 550
+#define ANI_C_CodyCutSceneIntro 551
 
 #pragma endregion
 

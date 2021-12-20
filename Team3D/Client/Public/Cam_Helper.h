@@ -23,6 +23,7 @@ public:
 	virtual HRESULT NativeConstruct_Prototype()override;
 public: //None일경우 자유이동 , 재생중이면 다른거 반환.이후 카메라는 Tick_Film으로 매트릭스얻어서 set,
 	CamHelperState		Tick(_double TimeDelta,CFilm:: ScreenType eScreenTypeIdx);
+	CamHelperState		Get_CamHelperState(CFilm::ScreenType eScreen) { return m_eState[eScreen]; }
 public:
 	//For.Film
 	HRESULT		Add_Film(const _tchar* pFilmName, CFilm* pFilm, _double dDuration);
@@ -34,14 +35,19 @@ public:
 	//콜하면 필름찾고 연출 들어감.
 	void		Start_Film(const _tchar* pFilmName, CFilm::ScreenType eScreenTypeIdx);
 
-
-
 	//For.CamNode
 	//얘 부르면 카메라에서 매트릭스 다얻기전까지 return Helper_SeeCamNode
 	void		SeeCamNode(CFilm::CamNode* pCamNode, CFilm::ScreenType eScreenTypeIdx);
 	_fmatrix	Get_CamNodeMatrix(CTransform* pCamTransform, _double dTimeDelta, CFilm::ScreenType eScreenTypeIdx);
 
+	//For.GetMatrix
+	_fmatrix	Get_CamNodeMatrix(CFilm::CamNode* pCamNode1, CFilm::CamNode* pCamNode2, CFilm::CamNode* pCamNode3, CFilm::CamNode* pCamNode4, _double dTime,_bool* pIsFinishedNode);
+
+
 	_fmatrix MakeViewMatrix(_float3 Eye, _float3 At);
+	_float3 VectorLerp(_float3 vDst, _float3 vSrc,_float fT);
+	_float3	 MakeBezier3(_float3& v1, _float3& v2, _float3& v3, _double dTime);
+	_float3	 MakeBezier4(_float3& v1, _float3& v2, _float3& v3, _float3& v4, _double dTime);
 private:
 	//For.Film
 	typedef unordered_map<const _tchar*,CFilm*> FILMS;
@@ -77,11 +83,10 @@ public:
 private:
 	class CCamEffect* Find_CamEffect(const _tchar* pCamEffectName);
 
-
-
 private: //For.System
 	CamHelperState m_eState[CFilm::Screen_End] = { CamHelperState::Helper_End,CamHelperState::Helper_End };
-	HRESULT Load_Film(const _tchar* pDataPath);
+	HRESULT Load_Film(const _tchar* pDataPath,_bool bMakeUpNodesTimeByfar = false);
+	void	MakeUpNodesTimeByFar(CFilm* pFilm); //거리에 따른 시간정리
 public:
 	static CCam_Helper* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
 	virtual CComponent* Clone_Component(void* pArg = nullptr)override;
@@ -89,13 +94,6 @@ public:
 
 public:
 	FILMS* Get_Films() { return &m_Films; }
-
-
-
-
-	//For.Grind Line
-
-
 };
 END
 

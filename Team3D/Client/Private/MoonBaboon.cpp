@@ -39,7 +39,7 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, MoonBaboonDesc.vPosition);
 
-	CCutScenePlayer::GetInstance()->Add_Performer(TEXT("Component_Model_MoonBaboon"), this);
+	DATABASE->Set_MoonBaboon(this);
 
 	m_pUFOModel = ((CUFO*)DATABASE->Get_BossUFO())->Get_Model();
 	NULL_CHECK_RETURN(m_pUFOModel, E_FAIL);
@@ -48,6 +48,7 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 	m_pUFOTransform = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform();
 	NULL_CHECK_RETURN(m_pUFOTransform, E_FAIL);
 	Safe_AddRef(m_pUFOTransform);
+
 	
 	m_pModelCom->Set_Animation(Moon_Ufo_MH);
 	m_pModelCom->Set_NextAnimIndex(Moon_Ufo_MH);
@@ -64,6 +65,7 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 	if (true == CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
 		m_pModelCom->Update_Animation(dTimeDelta);
+
 		return S_OK;
 	}
 

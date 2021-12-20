@@ -60,6 +60,7 @@ _int CBridge::Tick(_double dTimeDelta)
 
 				m_bTrigger = false;
 				m_bUpdate = false;
+				m_bIsUppended = true;
 				m_fAngle = 0.f;
 			}
 

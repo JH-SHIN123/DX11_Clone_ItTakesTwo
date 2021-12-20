@@ -21,6 +21,7 @@
 /* Jung */
 #include "Effect_Generator.h"
 #include "WarpGate.h"
+#include "WarpGate_Star.h"
 #include "Boss_Missile.h"
 #include "WallLaserTrap.h"
 #include "WallLaserTrap_Button.h"
@@ -47,7 +48,11 @@
 #include "BossDoor.h"
 #include "Moon.h"
 #include "MoonBaboon_SpaceShip.h"
-
+#include "ChapterImage.h"
+#include "Participation_Button.h"
+#include "Return_Button.h"
+#include "Script.h"
+#include "ScriptBackGround.h"
 
 /* Taek */
 #include "Terrain.h" /*Test*/
@@ -103,6 +108,7 @@
 #include "PixelShield.h"
 #include "Laser_TypeC.h"
 #include "RunningMoonBaboon.h"
+#include "EndingRocket.h"
 
 /* Jin */
 #include "UFO.h"
@@ -126,16 +132,15 @@
 #include "MoonBaboon_MainLaser.h"
 #include "MoonBaboon_SubLaser.h"
 
+
 /* Jun */
 #include "MainCamera.h"
 #include "SubCamera.h"
 #include "Cam_Helper.h"
 #include "CutScenePlayer.h"
-#include "ChapterImage.h"
-#include "Participation_Button.h"
-#include "Return_Button.h"
-#include "Script.h"
-#include "ScriptBackGround.h"
+#include"Performer.h"
+
+
 
 #pragma endregion
 
@@ -327,10 +332,10 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_SubCamera"), CSubCamera::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 		PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_May"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("May"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_May"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("May"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix, true)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_May"), CMay::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("Cody"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("Cody"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix, true)), E_FAIL);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Cody"), CCody::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 		FAILED_CHECK_RETURN(UI_Generator->Load_Data(TEXT("../Bin/Resources/Data/UIData/UI.dat"), Level::LEVEL_STAGE), E_FAIL);
@@ -352,7 +357,7 @@ HRESULT CLoading::LoadingForStage(_uint iThreadIndex)
 		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Jin(), E_FAIL);
 		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Taek(), E_FAIL);
 		FAILED_CHECK_RETURN(Create_GameObjects_SpaceStage_Jun(), E_FAIL);
-
+		
 		__threadbreak;
 	}
 	else if (4 == iThreadIndex)
@@ -401,8 +406,10 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jung()
 {
 	_matrix PivotMatrix = XMMatrixIdentity();	
 
+
 #ifndef __MAPLOADING_OFF
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), CWarpGate::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WarpGate_Star"), CWarpGate_Star::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WallLaserTrap_Button"), CWallLaserTrap_Button::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WallLaserTrap"), CWallLaserTrap::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Star"), CSpace_Valve_Star::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
@@ -454,6 +461,16 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jung()
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.f)) * XMMatrixRotationY(XMConvertToRadians(90.f));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("MoonBaboon"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon"), CMoonBaboon::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_WarpGate_Star_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("WarpGate_Star_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_WarpGate_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("WarpGate_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), CWarpGate::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WarpGate_Star"), CWarpGate_Star::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* RunningMoonBaboon */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_RunningMoonBaboon"), CRunningMoonBaboon::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 #endif // __TEST_JUNG
 	return S_OK;
@@ -696,6 +713,31 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Yoon()
 	/* RunningMoonBaboon */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_RunningMoonBaboon"), CRunningMoonBaboon::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
+	/* Boss Missile */
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-180.f));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Boss_Missile"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Rocket"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), CBoss_Missile::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	/* Ending Rocket */
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-180.f));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_EndingRocket"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Rocket"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_EndingRocket"), CEndingRocket::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+
+
+	///* For. UFO */
+	//PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	//PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f));
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_UFO"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("UFO"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_UFO"), CUFO::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+
+
+	///* For. MoonBaboon */
+	//PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.f));
+	//PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f));
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/AnimationModels/"), TEXT("MoonBaboon"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon"), CMoonBaboon::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	//PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-180.f));
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Boss_Missile"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Rocket"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
@@ -790,8 +832,28 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jin()
 
 HRESULT CLoading::Create_GameObjects_SpaceStage_Jun()
 {
+	_matrix	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Cody_CutScene1"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/CutSceneModels/"), TEXT("CodyCutScene1"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_ToyBox1"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/CutSceneModels/"), TEXT("ToyBoxCutScene1"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_May_CutScene1"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/CutSceneModels/"), TEXT("MayCutScene1"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.f));
+	PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(90.f));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_RemoteContollerCutScene1"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/CutSceneModels/"), TEXT("RemoteContollerCutScene1"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_GravityBootsCutScene1"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/CutSceneModels/"), TEXT("GravityBootsCutScene1"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SizeBeltCutScene1"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/CutSceneModels/"), TEXT("SizeBeltCutScene1"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SizeBeltRemoteControllerCutScene1"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/CutSceneModels/"), TEXT("SizeBeltRemoteControllerCutScene1"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+
+
 	CCutScenePlayer::GetInstance()->NativeConstruct(m_pDevice, m_pDeviceContext);
 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Performer"), CPerformer::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	
 	return S_OK;
 }
 

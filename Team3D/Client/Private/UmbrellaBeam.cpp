@@ -64,6 +64,8 @@ HRESULT CUmbrellaBeam::NativeConstruct(void * pArg)
 	m_fHorizontalAngle = 45.f;
 	m_fVerticalAngle = 0.f;
 
+
+	DATABASE->Set_UmbrellaBeam(this);
 	return S_OK;
 }
 

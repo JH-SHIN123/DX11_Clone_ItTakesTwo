@@ -58,19 +58,21 @@ HRESULT CFilm::Tick_Film(_double dTimeDelta, ScreenType eScreenType, _float* fOu
 		if (m_dTime[eScreenType] < pFirst->dTime)
 		{
 			XMStoreFloat4x4(&m_matCam[eScreenType], MakeCurCamMatrix(dTimeDelta, pFirst, eScreenType));
+			Set_ViewPort(pFirst);
 		}
 		else if (m_dTime[eScreenType] >= pLast->dTime)
 		{
 			XMStoreFloat4x4(&m_matCam[eScreenType], MakeCurCamMatrix(dTimeDelta, pLast, eScreenType));
+			Set_ViewPort(pLast);
 		}
 		else
 		{
-			if (m_dTime[eScreenType] > m_CamNodes[m_iCurrentNode[eScreenType] + 1]->dTime)
-			{
-				m_iCurrentNode[eScreenType]++;
-				for (_uint i = 0; i < 2; i++)
-					m_bCurNodeEnd[eScreenType][i] = true; //새로운 노드.
-			}
+				while (m_dTime[eScreenType] > m_CamNodes[m_iCurrentNode[eScreenType] + 1]->dTime)
+				{
+					m_iCurrentNode[eScreenType]++;
+					for (_uint i = 0; i < 2; i++)
+						m_bCurNodeEnd[eScreenType][i] = true; //새로운 노드.
+				}
 		
 			//여기서 뷰포트 설정,매트릭스 만들기.
 			CamNode* pCurNode = m_CamNodes[m_iCurrentNode[eScreenType]];
@@ -84,50 +86,10 @@ HRESULT CFilm::Tick_Film(_double dTimeDelta, ScreenType eScreenType, _float* fOu
 			XMStoreFloat4x4(&m_matCam[eScreenType], MakeCurCamMatrix(dTimeDelta, pCurNode, eScreenType));
 
 			//뷰포트 설정
-			if (m_eCurViewPortOption != m_ePreViewPortOption)
-			{
-				CGameInstance* pGameInstance = CGameInstance::GetInstance();
-				switch (m_eCurViewPortOption)
-				{
-				case Client::CFilm::ViewPortOption::LScreenType_Split_Immediate:
-					pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f),
-						XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
-					break;
-				case Client::CFilm::ViewPortOption::LScreenType_Split_Lerp:
-					pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
-						XMVectorSet(0.f, 0.f, 1.f, 1.f));
-					pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f),
-						XMVectorSet(0.5f, 0.f, 0.5f, 1.f), pCurNode->fViewPortLerpSpeed);
-					break;
-				case Client::CFilm::ViewPortOption::LScreenType_Merge_Immediate:
-					pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
-						XMVectorSet(0.f, 0.f, 1.f, 1.f));
-					break;
-				case Client::CFilm::ViewPortOption::LScreenType_Merge_Lerp:
-					pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
-						XMVectorSet(0.f, 0.f, 1.f, 1.f), pCurNode->fViewPortLerpSpeed);
-					break;
-				case Client::CFilm::ViewPortOption::RScreenType_Split_Immediate:
-					pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, pCurNode->fTargetViewPortCenterX, pCurNode->fTargetViewPortCenterY),
-						XMVectorSet(pCurNode->fTargetViewPortCenterX, 0.f, pCurNode->fTargetViewPortCenterX, 1.f));
-					break;
-				case Client::CFilm::ViewPortOption::RScreenType_Split_Lerp:
-					pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
-						XMVectorSet(1.f, 0.f, 1.f, 1.f));
-					pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f),
-						XMVectorSet(0.5, 0.f, 0.5f, 1.f), pCurNode->fViewPortLerpSpeed);
-					break;
-				case Client::CFilm::ViewPortOption::RScreenType_Merge_Immediate:
-					pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
-						XMVectorSet(1.f, 0.f, 1.f, 1.f));
-					break;
-				case Client::CFilm::ViewPortOption::RScreenType_Merge_Lerp:
-					pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
-						XMVectorSet(1.f, 0.f, 1.f, 1.f), pCurNode->fViewPortLerpSpeed);
-					break;
-				}
-				m_ePreViewPortOption = m_eCurViewPortOption;
-			}
+			if(m_ePreViewPortOption != m_eCurViewPortOption ||
+				m_iCurrentNode == 0)
+			Set_ViewPort(pCurNode);
+			
 
 		}
 
@@ -249,10 +211,17 @@ void CFilm::ReSetFilm(ScreenType eScreenType)
 	XMStoreFloat4x4(&m_matCam[eScreenType], XMMatrixIdentity());
 	m_iCurrentNode[eScreenType] = 0;
 	m_bIsEnd[eScreenType] = false;
+	m_bCurEye_StartBezier[eScreenType] = false;
+	m_bCurAt_StartBezier[eScreenType] = false;
 	for (_uint i = 0; i < (_uint)CamNodeVectorType::End; i++)
+	{
 		m_bCurNodeEnd[eScreenType][i] = true;
+	}
 	for (_uint i = 0; i < 4; i++)
 	{
+		
+		m_iCurEye_BezierNode[eScreenType][i] = -1;
+		m_iCurAt_BezierNode[eScreenType][i] = -1;
 		m_dCamAtMoveTime[eScreenType][i] = 0.0;
 		m_dCamMoveTime[eScreenType][i] = 0.0;
 	}
@@ -331,81 +300,23 @@ void CFilm::ReSet_CamNodeTime_Progress_End(ScreenType eScreenType, CamMoveOption
 	switch (eType)
 	{
 	case CFilm::CamNodeVectorType::Eye:
-	{
-		if (m_bCurEye_StartBezier[eScreenType]) //이전에 베지어 진행중? 
+		for (_uint i = 0; i < Bezier_End; i++)
 		{
-			if (iCurrentNode != 0 && iCurrentNode != m_iCurEye_BezierNode[eScreenType][Bezier_1])
-			{
-				CamNode* pPreNode = m_CamNodes[iCurrentNode - 1];
-				switch (pPreNode->eEyeMoveOption) //이전 노드가 베지어로진행했나?
-				{
-				case CamMoveOption::Move_Bezier_3:
-					if (m_iCurEye_BezierNode[eScreenType][Bezier_3] == iCurrentNode)  //세번째 베지어노드가 새로들어온 노드면 초기화 (이후 다시 베지어 노드 채움)
-					{
-						for (_uint i = 0; i < Bezier_End; i++)
-							m_iCurEye_BezierNode[eScreenType][i] = -1;
-						m_bCurEye_StartBezier[eScreenType] = false;
-					}
-					break;
-				case CamMoveOption::Move_Bezier_4:
-					if (m_iCurEye_BezierNode[eScreenType][Bezier_4] == iCurrentNode)//네번째 베지어노드가 새로들어온 노드면 초기화(이후 다시 베지어 노드 채움)
-					{
-						for (_uint i = 0; i < Bezier_End; i++)
-							m_iCurEye_BezierNode[eScreenType][i] = -1;
-						m_bCurEye_StartBezier[eScreenType] = false;
-					}
-					break;
-				}
-				m_dCamMoveTime[eScreenType][(_uint)eOption] = 0.0;
-			}
+			m_dCamMoveTime[eScreenType][i] = 0.0;
+			m_iCurEye_BezierNode[eScreenType][i] = -1;
 		}
-		else {
-			for (_uint i = 0; i < Bezier_End; i++)
-				m_iCurEye_BezierNode[eScreenType][i] = -1;
-			m_bCurEye_StartBezier[eScreenType] = false;
-			m_dCamMoveTime[eScreenType][(_uint)eOption] = 0.0;
-		}
+		m_bCurEye_StartBezier[eScreenType] = false;
 		break;
-
-	}
-	break;
 	case CFilm::CamNodeVectorType::At:
-		if (m_bCurAt_StartBezier[eScreenType]) //이전에 베지어 진행중? 
+		for (_uint i = 0; i < Bezier_End; i++)
 		{
-			if (iCurrentNode != 0 && iCurrentNode != m_iCurAt_BezierNode[eScreenType][Bezier_1]) //첫번째가 아니면?
-			{
-				CamNode* pPreNode = m_CamNodes[iCurrentNode - 1];
-				switch (pPreNode->eAtMoveOption) //이전 노드가 베지어로진행했나?
-				{
-				case CamMoveOption::Move_Bezier_3:
-					if (m_iCurAt_BezierNode[eScreenType][Bezier_3] == iCurrentNode)  //세번째 베지어노드가 새로들어온 노드면 초기화 (이후 다시 베지어 노드 채움)
-					{
-						for (_uint i = 0; i < Bezier_End; i++)
-							m_iCurAt_BezierNode[eScreenType][i] = -1;
-						m_bCurAt_StartBezier[eScreenType] = false;
-					}
-					break;
-				case CamMoveOption::Move_Bezier_4:
-					if (m_iCurAt_BezierNode[eScreenType][Bezier_4] == iCurrentNode)//네번째 베지어노드가 새로들어온 노드면 초기화(이후 다시 베지어 노드 채움)
-					{
-						for (_uint i = 0; i < Bezier_End; i++)
-							m_iCurEye_BezierNode[eScreenType][i] = -1;
-						m_bCurAt_StartBezier[eScreenType] = false;
-					}
-					break;
-				}
-				m_dCamMoveTime[eScreenType][(_uint)eOption] = 0.0;
-			}
+			m_dCamAtMoveTime[eScreenType][i] = 0.0;
+			m_iCurAt_BezierNode[eScreenType][i] = -1;
 		}
-		else
-		{
-			for (_uint i = 0; i < Bezier_End; i++)
-				m_iCurAt_BezierNode[eScreenType][i] = -1;
-			m_bCurAt_StartBezier[eScreenType] = false;
-			m_dCamAtMoveTime[eScreenType][(_uint)eOption] = 0.0;
-		}
+		m_bCurAt_StartBezier[eScreenType] = false;
 		break;
 	}
+
 }
 
 HRESULT CFilm::Check_CamNodeProgress(ScreenType eScreenType, CamMoveOption eOption, CamNodeVectorType eType, _uint iCurrentNode, _uint iLastNode)
@@ -426,34 +337,14 @@ HRESULT CFilm::Check_CamNodeProgress(ScreenType eScreenType, CamMoveOption eOpti
 		{
 		case CFilm::CamNodeVectorType::Eye:
 			ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType, iCurrentNode); //현재 드가있는 마지막 베지어 노드가 아니면 초기화안해줌
-			if (!m_bCurEye_StartBezier[eScreenType]) //베지어 시작
-			{
-				m_bCurEye_StartBezier[eScreenType] = true;
-				if (iCurrentNode + 2 >= iLastNode)
-				{
-					MSG_BOX("Not Enough Bezier Node(3)");
-					return E_FAIL;
-				}
-				if (m_CamNodes[iCurrentNode + 1]->eEyeMoveOption != CamMoveOption::Move_Bezier_3)
-					m_CamNodes[iCurrentNode + 1]->eEyeMoveOption = (CamMoveOption::Move_Bezier_3);
-				for (_uint i = 0; i < Bezier_4; i++)
-					m_iCurEye_BezierNode[eScreenType][i] = iCurrentNode + i;
-			}
+			for (_uint i = 0; i < Bezier_4; i++)
+				m_iCurEye_BezierNode[eScreenType][i] = iCurrentNode + i;
+			
 			break;
 		case CFilm::CamNodeVectorType::At:
 			ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType, iCurrentNode);
-			if (!m_bCurAt_StartBezier[eScreenType]) //베지어 시작
-			{
-				m_bCurAt_StartBezier[eScreenType] = true;
-				if (iCurrentNode + 2 >= iLastNode)
-				{
-					MSG_BOX("Not Enough Bezier Node(3)");
-					return E_FAIL;
-				}
-
 				for (_uint i = 0; i < Bezier_4; i++)
 					m_iCurAt_BezierNode[eScreenType][i] = iCurrentNode + i;
-			}
 			break;
 		}
 		m_bCurNodeEnd[eScreenType][(_uint)eType] = false;
@@ -463,33 +354,13 @@ HRESULT CFilm::Check_CamNodeProgress(ScreenType eScreenType, CamMoveOption eOpti
 		{
 		case CFilm::CamNodeVectorType::Eye:
 			ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType, iCurrentNode); //베지어 진행중이면 초기화안해줌
-			if (!m_bCurEye_StartBezier[eScreenType]) //베지어 시작
-			{
-				m_bCurEye_StartBezier[eScreenType] = true;
-				if (iCurrentNode + 3 >= iLastNode)
-				{
-					MSG_BOX("Not Enough Bezier Node(4)");
-					return E_FAIL;
-				}
-
-				for (_uint i = 0; i < Bezier_End; i++)
-					m_iCurEye_BezierNode[eScreenType][i] = iCurrentNode + i;
-			}
+			for (_uint i = 0; i < Bezier_End; i++)
+				m_iCurEye_BezierNode[eScreenType][i] = iCurrentNode + i;
 			break;
 		case CFilm::CamNodeVectorType::At:
 			ReSet_CamNodeTime_Progress_End(eScreenType, eOption, eType, iCurrentNode);
-			if (!m_bCurAt_StartBezier[eScreenType]) //베지어 시작
-			{
-				m_bCurAt_StartBezier[eScreenType] = true;
-				if (iCurrentNode + 3 >= iLastNode)
-				{
-					MSG_BOX("Not Enough Bezier Node(4)");
-					return E_FAIL;
-				}
-	
-				for (_uint i = 0; i < Bezier_End; i++)
-					m_iCurAt_BezierNode[eScreenType][i] = iCurrentNode + i;
-			}
+			for (_uint i = 0; i < Bezier_End; i++)
+				m_iCurAt_BezierNode[eScreenType][i] = iCurrentNode + i;
 			break;
 		}
 		m_bCurNodeEnd[eScreenType][(_uint)eType] = false;
@@ -524,6 +395,95 @@ _float3 CFilm::MakeBezier4(_float3 & v1, _float3 & v2, _float3 & v3, _float3 & v
 		(_float)(v1.z*pow((1.0 - dTime), 3) + 3 * v2.z*dTime*pow(1.0 - dTime, 2) + 3 * v3.z *pow(dTime, 2)*(1.f - dTime) + v4.z *pow(dTime, 3))
 	};
 	return vResult;
+
+}
+
+void CFilm::Set_ViewPort(CamNode * pCurNode)
+{
+	return;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	switch (pCurNode->eViewPortOption)
+	{
+	case Client::CFilm::ViewPortOption::LScreenType_Split_Immediate:
+		pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f),
+			XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+		break;
+	case Client::CFilm::ViewPortOption::LScreenType_Split_Lerp:
+		pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, pCurNode->fTargetViewPortCenterX, 1.f),
+			XMVectorSet(1.f - pCurNode->fTargetViewPortCenterX, 0.f, 1.f - pCurNode->fTargetViewPortCenterX, 1.f), pCurNode->fViewPortLerpSpeed);
+		break;
+	case Client::CFilm::ViewPortOption::LScreenType_Merge_Immediate:
+		pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
+			XMVectorSet(0.f, 0.f, 1.f, 1.f));
+		break;
+	case Client::CFilm::ViewPortOption::LScreenType_Merge_Lerp:
+		pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f),
+			XMVectorSet(0.f, 0.f, 1.f, 1.f), pCurNode->fViewPortLerpSpeed);
+		break;
+	case Client::CFilm::ViewPortOption::RScreenType_Split_Immediate:
+		pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, pCurNode->fTargetViewPortCenterX, pCurNode->fTargetViewPortCenterY),
+			XMVectorSet(1.f - pCurNode->fTargetViewPortCenterX, 0.f, 1.f - pCurNode->fTargetViewPortCenterX, 1.f));
+		break;
+	case Client::CFilm::ViewPortOption::RScreenType_Split_Lerp:
+		pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, pCurNode->fTargetViewPortCenterX, 1.f),
+			XMVectorSet(1.f - pCurNode->fTargetViewPortCenterX, 0.f, 1.f - pCurNode->fTargetViewPortCenterX, 1.f), pCurNode->fViewPortLerpSpeed);
+		break;
+	case Client::CFilm::ViewPortOption::RScreenType_Merge_Immediate:
+		pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
+			XMVectorSet(1.f, 0.f, 1.f, 1.f));
+		break;
+	case Client::CFilm::ViewPortOption::RScreenType_Merge_Lerp:
+		pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f),
+			XMVectorSet(1.f, 0.f, 1.f, 1.f), pCurNode->fViewPortLerpSpeed);
+		break;
+	}
+
+}
+
+void CFilm::MakeUpNodesTimeByFar()
+{
+	_uint iCamNodeCount = (_uint)m_CamNodes.size();
+	for (_uint i = 0; i < iCamNodeCount - 1; i++)
+	{
+		CamMoveOption eMoveOption = m_CamNodes[i]->eEyeMoveOption;
+		switch (eMoveOption)
+		{
+		case Client::CFilm::CamMoveOption::Move_Jump:
+			break;
+		case Client::CFilm::CamMoveOption::Move_Straight:
+			{
+				CamNode* pCurNode = m_CamNodes[i];
+				CamNode* pNextNode = m_CamNodes[i + 1];
+				_vector vCurNodePos = XMVectorSetW(XMLoadFloat3(&pCurNode->vEye),1.f);
+				_vector vNextNodePos = XMVectorSetW(XMLoadFloat3(&pNextNode->vEye), 1.f);
+				
+				_float fLength = XMVectorGetX(XMVector3Length(vCurNodePos - vNextNodePos));
+				pNextNode->dTime = fLength + m_CamNodes[i]->dTime;
+			}
+			break;
+		case Client::CFilm::CamMoveOption::Move_Bezier_3:
+			{
+				_float fLength = 0;
+				CamNode* pCurNode = m_CamNodes[i];
+				CamNode* pSecondNode = m_CamNodes[i + 1];
+				CamNode* pThirdNode = m_CamNodes[i + 2];
+				_vector vPreNodePos = XMVectorSetW(XMLoadFloat3(&pCurNode->vEye), 1.f);
+				_vector vCurNodePos = XMVectorZero();
+				for (_double j = 0.0; j < 1.0; j += 0.016666666)
+				{
+					vCurNodePos = XMVectorSetW(XMLoadFloat3(&MakeBezier3(pCurNode->vEye, pSecondNode->vEye, pThirdNode->vEye,j)),1.f);
+					fLength += XMVectorGetX(XMVector3Length(vPreNodePos - vCurNodePos));
+					vPreNodePos = vCurNodePos;
+				}
+				pSecondNode->dTime = fLength + pCurNode->dTime;
+				pThirdNode->dTime = fLength + pCurNode->dTime;
+				i += 1;
+			}
+			break;
+		case Client::CFilm::CamMoveOption::Move_Bezier_4:
+			break;
+		}
+	}
 
 }
 

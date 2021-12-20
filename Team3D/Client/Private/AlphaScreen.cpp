@@ -4,7 +4,7 @@
 #include "GameInstance.h"
 #include "UI_Generator.h"
 
-CAlphaScreen::CAlphaScreen(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
+CAlphaScreen::CAlphaScreen(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CUIObject(pDevice, pDeviceContext)
 {
 }

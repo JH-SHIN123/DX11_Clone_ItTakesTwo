@@ -52,8 +52,6 @@ HRESULT CEffect_PipeLocker_Connected::NativeConstruct(void * pArg)
 		XMStoreFloat4x4(&m_pVertexLocals[iIndex], WorldMatrix);
 	}
 
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Effect", Level::LEVEL_STAGE, TEXT("Effect_PipeLocker_Connected")), E_FAIL);
-
 	return S_OK;
 }
 

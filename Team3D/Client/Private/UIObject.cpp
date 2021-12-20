@@ -33,7 +33,7 @@ HRESULT CUIObject::NativeConstruct(void * pArg)
 
 _int CUIObject::Tick(_double TimeDelta)
 {
-	
+
 	CGameObject::Tick(TimeDelta);
 
 	return NO_EVENT;
@@ -203,7 +203,7 @@ HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
 
 		_vector vTargetPos = XMLoadFloat4(&m_vTargetPos);
 		vTargetPos = XMVector3TransformCoord(vTargetPos, matMainCombine);
-		
+
 		XMStoreFloat3(&vConvertPos, vTargetPos);
 		vConvertPos.x += 1.f;
 		vConvertPos.y += 1.f;

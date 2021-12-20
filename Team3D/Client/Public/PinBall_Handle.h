@@ -12,9 +12,10 @@ private:
 public:/* Getter */
 	_bool Get_RespawnAngle() { return m_bRespawnAngle; }
 	_bool Get_RespawnPos()	 { return m_bRespawnPos; }
-	_bool Get_Ready()		 { return m_bReady; }
-	_bool Get_Goal()		 { return m_bGoal; }
-
+	_bool Get_Ready()		 { return m_bReady; }	
+	_bool Get_Goal()		 { return m_bGoal; }	
+	_bool Get_PlayerMove()	 { return m_bPlayerMove; }
+	CTransform* Get_Transform() { return m_pTransformCom; }
 public:/* Setter */
 	void Set_PlayerMove(_bool _bPlayerMove)		{ m_bPlayerMove = _bPlayerMove; }
 	void Set_RespawnAngle(_bool _bRespawnAngle) { m_bRespawnAngle = _bRespawnAngle; }
