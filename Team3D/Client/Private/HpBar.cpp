@@ -56,7 +56,7 @@ _int CHpBar::Tick(_double TimeDelta)
 	}
 	else if (m_pGameInstance->Key_Down(DIK_J))
 	{
-		UI_Create(Default, Minigame_Score);
+		UI_Create(Default, Minigame_Title);
 	}
 	else if (m_pGameInstance->Key_Down(DIK_M))
 	{

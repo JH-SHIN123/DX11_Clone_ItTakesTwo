@@ -283,6 +283,10 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger,voi
 	case UI::Minigame_Score:
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Minigame_Score"), Level::LEVEL_STATIC);
 		break;
+	case UI::Minigame_Title:
+		iOption = 1;
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Minigame_Title"), Level::LEVEL_STATIC, &iOption);
+		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
 		break;

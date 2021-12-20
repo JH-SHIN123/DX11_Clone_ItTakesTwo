@@ -23,6 +23,8 @@ public:
 private:
 	 _float2						m_vSaveScale;
 	 _float							m_fAlpha = 0.f;
+	 _uint							m_iOption = 0;
+	 _uint							m_iShaderPassNum = 0;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;

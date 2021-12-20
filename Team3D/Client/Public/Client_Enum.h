@@ -23,7 +23,7 @@ namespace UI
 		Minigame_Ready_Cody, Minigame_Ready_May, InputButton_PS_Down, PlayerMarker, InputButton_PS_R1, Arrowkeys_Side, Arrowkeys_UpDown, 
 		Arrowkeys_All, InputButton_PS_L2, InputButton_PS_R2, StickIcon, Portrait_Cody, Portrait_May,Minigame_Win_Cody /*Default */, Minigame_Score /* Default */,
 		RespawnCircle, MenuScreen, AlphaScreen, SwingPoint, WhiteScreenFadeInOut, BlackScreenFadeInOut, CutSceneBar, Minigame_Win_May /*Default */,
-		LoadingBook /*Default */, ControllerIcon_KeyBoard /*Default */, ControllerIcon_Pad /*Default */, HeaderBox, HeaderBox1P /*Default */,
+		LoadingBook /*Default */, ControllerIcon_KeyBoard /*Default */, ControllerIcon_Pad /*Default */, HeaderBox, HeaderBox1P /*Default */, Minigame_Title /* Default */,
 		HeaderBox2P /*Default */, HeaderBox_1p_Ready /*Default */, HeaderBox_2p_Ready /*Default */, LoadingScreen /* Default */, Minigame_Countdown /* Default */, 
 		TRIGGER_END
 	};

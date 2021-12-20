@@ -648,6 +648,19 @@ PS_OUT PS_MinigameScore(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MinigameTitle(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	Out.vColor.r = 0.454f;
+	Out.vColor.g = 0.035f;
+	Out.vColor.b = 0.015f;
+
+	return Out;
+}
+
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
@@ -959,5 +972,17 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MinigameScore();
 	}
+
+	// 27
+	pass MinigameTitle
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MinigameTitle();
+	}
+
 
 };

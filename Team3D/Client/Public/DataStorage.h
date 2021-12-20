@@ -210,9 +210,9 @@ public:
 	_float Get_LaserGauge() { return m_fLaserGauge; }
 
 	/* For.Minigame */
-	void Set_CodyMinigameWinCount(_uint iScore) { m_iCodyMinigameWinCount = iScore; }
+	void Set_CodyMinigameWinCount(_uint iScore) { m_iCodyMinigameWinCount += iScore; }
 	_uint Get_CodyMinigameWinCount() { return m_iCodyMinigameWinCount; }
-	void Set_MayMinigameWinCount(_uint iScore) { m_iMayMinigameWinCount = iScore; }
+	void Set_MayMinigameWinCount(_uint iScore) { m_iMayMinigameWinCount += iScore; }
 	_uint Get_MayMinigameWinCount() { return m_iMayMinigameWinCount; }
 
 private:
