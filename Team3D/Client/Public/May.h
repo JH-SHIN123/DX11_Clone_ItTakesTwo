@@ -558,6 +558,7 @@ private: /* For. Ending */
 
 	// WallJump
 	_float m_fMay_WallJump_Volume = 1.f;
+	_float m_fMay_Wall_Slide_Volume = 1.f;
 
 
 

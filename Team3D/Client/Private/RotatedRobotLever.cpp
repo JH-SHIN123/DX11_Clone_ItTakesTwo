@@ -190,7 +190,7 @@ void CRotatedRobotLever::Activate_Lever(_double dTimeDelta)
 		{
 			_vector vDir = XMVector3Normalize((XMVectorSet(0.f, 0.f, -1.f, 0.f) + XMVectorSet(0.f, -1.f, 0.f, 0.f)) /*/ 2.f*/);
 			//m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
-			m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta* 1.2f);
+			m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta* 1.2f); 
 			((CRotatedRobotParts*)DATABASE->Get_STPinBallRobot())->Get_RobotHead()->Set_Lever_Active(true);
 			((CRotatedRobotParts*)DATABASE->Get_STPinBallRobot())->Get_NoBatterySign()->Set_BatteryCharged(true);
 		}

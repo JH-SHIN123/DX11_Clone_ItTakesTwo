@@ -167,6 +167,8 @@ void CMainCamera::Check_Player(_double dTimeDelta)
 	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_Warp_WormHole;
 	}
+	if (static_cast<CCody*>(m_pTargetObj)->Get_IsEnding())
+		m_eCurCamMode = CamMode::Cam_Ending;
 
 }
 
@@ -263,10 +265,26 @@ _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+_int CMainCamera::Tick_Cam_Ending(_double dTimeDelta)
+{
+	CTransform* pPlayerTransform = static_cast<CCody*>(m_pTargetObj)->Get_Transform();
+
+	_vector vLook = pPlayerTransform->Get_State(CTransform::STATE_LOOK);
+	_vector vUp = pPlayerTransform->Get_State(CTransform::STATE_UP);
+	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+
+	//0.f ,-500.f ,0.f
+	_vector vCamPos = XMVectorSet(0.f, XMVectorGetY(vPlayerPos) + 7.f, 0.f, 1.f); 
+	_vector vAt = XMVectorSet(0.f, XMVectorGetY(vPlayerPos), 0.f,1.f);
+
+	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vCamPos, vAt,XMVectorSet(0.f,0.f,1.f,0.f)));
+	return NO_EVENT;
+}
+
 _int CMainCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 {
 
-
+	 
 	CTransform* pPlayerTransform = dynamic_cast<CCody*>(m_pTargetObj)->Get_Transform();
 
 	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
@@ -535,6 +553,24 @@ _fmatrix CMainCamera::MakeViewMatrixByUp(_float4 Eye, _float4 At, _fvector vUp)
 	return Result;
 }
 
+_fmatrix CMainCamera::MakeViewMatrixByUp(_fvector Eye, _fvector At, _fvector vUp)
+{
+
+	_matrix Result = XMMatrixIdentity();
+	_vector vNormalizedUp = XMVectorSetW(XMVector3Normalize(vUp), 0.f);
+	_vector vPos = XMVectorSetW(Eye, 1.f);
+	_vector vLook = XMVector3Normalize(XMVectorSetW(At, 1.f) - vPos);
+	_vector vRight = XMVector3Normalize(XMVector3Cross(vNormalizedUp, vLook));
+	vNormalizedUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+	Result.r[0] = vRight;
+	Result.r[1] = vNormalizedUp;
+	Result.r[2] = vLook;
+	Result.r[3] = vPos;
+
+	return Result;
+
+}
+
 _fmatrix CMainCamera::MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime)
 {
 	if (fTime >= 1.f)
@@ -612,6 +648,9 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		break;
 	case Client::CMainCamera::CamMode::Cam_AutoToFree:
 		iResult = Tick_Cam_AutoToFree(dTimeDelta);
+		break;
+	case Client::CMainCamera::CamMode::Cam_Ending:
+		iResult = Tick_Cam_Ending(dTimeDelta);
 		break;
 	}
 	return iResult;

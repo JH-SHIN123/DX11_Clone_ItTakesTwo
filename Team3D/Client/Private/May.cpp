@@ -77,8 +77,13 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RUN, m_fMay_Run_Volume);
 	m_pGameInstance->Play_Sound(TEXT("May_Run.wav"), CHANNEL_MAY_RUN, m_fMay_Run_Volume);
 
+	m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fMay_Wall_Slide_Volume);
+	m_pGameInstance->Play_Sound(TEXT("Character_WallJump_Slide.wav"), CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fMay_Wall_Slide_Volume);
+
+
 	m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
 	m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
+	m_pGameInstance->Stop_Sound(CHANNEL_CHARACTER_WALLJUMP_SLIDE);
 
 	return S_OK;
 }
@@ -2523,9 +2528,19 @@ void CMay::Wall_Jump(const _double dTimeDelta)
 {
 	if (true == m_bWallAttach && false == m_IsWallJumping)
 	{
+
+		if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CHARACTER_WALLJUMP_SLIDE) == false)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fMay_Wall_Slide_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Character_WallJump_Slide.wav"), CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fMay_Wall_Slide_Volume);
+		}
 		m_pActorCom->Move((-m_pTransformCom->Get_State(CTransform::STATE_UP) / 50.f), dTimeDelta);
 		if (m_pGameInstance->Pad_Key_Down(DIP_B) || m_pGameInstance->Key_Down(DIK_K))
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_CHARACTER_WALLJUMP_SLIDE);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALLJUMP, m_fMay_WallJump_Volume);
+			m_pGameInstance->Play_Sound(TEXT("May_WallJump.wav"), CHANNEL_MAY_WALLJUMP, m_fMay_WallJump_Volume );
+
 			m_pTransformCom->RotateYaw(XMConvertToRadians(-180.f));
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsWallJumping = true;
