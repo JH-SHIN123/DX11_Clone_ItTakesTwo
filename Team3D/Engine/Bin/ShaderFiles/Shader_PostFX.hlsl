@@ -236,6 +236,8 @@ PS_OUT PS_MAIN(PS_IN In)
 	float3 eyeToPixel = 0.f;
 	float distToEye = 0.f;
 
+	bool bFogActive = false;
+
 	if (In.vTexUV.x >= g_vMainViewportUVInfo.x && In.vTexUV.x <= g_vMainViewportUVInfo.z &&
 		In.vTexUV.y >= g_vMainViewportUVInfo.y && In.vTexUV.y <= g_vMainViewportUVInfo.w)
 	{
@@ -247,15 +249,11 @@ PS_OUT PS_MAIN(PS_IN In)
 		vWorldPos = mul(vViewPos, g_MainViewMatrixInverse);
 		vCamPos = g_vMainCamPosition;
 
-		if (g_bFog) // Test - Fog
-		{
-			eyeToPixel = vWorldPos - vCamPos;
-			distToEye = length(eyeToPixel);
-			vColor = HeightFog(vColor, vCamPos.y, eyeToPixel);
-		}
-
 		// Radiar Blur 
 		if(true == g_bRadiarBlur_Main) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Main, g_fRadiarBlurRatio_Main);
+
+		// Fog Active
+		bFogActive = g_bFog;
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
 		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
@@ -272,6 +270,13 @@ PS_OUT PS_MAIN(PS_IN In)
 		if (true == g_bRadiarBlur_Sub) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Sub, g_fRadiarBlurRatio_Sub);
 	}
 	else discard;
+
+	// 카메라와의 거리구하기
+	eyeToPixel = vWorldPos - vCamPos;
+	distToEye = length(eyeToPixel);
+
+	// Fog - MainView만 적용
+	if (bFogActive) vColor = HeightFog(vColor, vCamPos.y, eyeToPixel);
 
 	// DOF
 	float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
