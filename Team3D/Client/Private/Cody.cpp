@@ -324,7 +324,10 @@ _int CCody::Late_Tick(_double dTimeDelta)
 		return NO_EVENT;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+	{
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	}
 
 	return NO_EVENT;
 }
@@ -337,8 +340,17 @@ HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(0);
+
+	if (eGroup == RENDER_GROUP::RENDER_NONALPHA)
+	{
+		m_pModelCom->Set_DefaultVariables_Shadow();
+		m_pModelCom->Render_Model(0);
+	}
+	else if (eGroup == RENDER_GROUP::RENDER_ALPHA)
+	{
+		m_pModelCom->Render_Model(27);
+		m_pModelCom->Render_Model(28);
+	}
 
 	return S_OK;
 }

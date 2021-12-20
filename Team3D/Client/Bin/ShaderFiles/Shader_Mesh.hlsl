@@ -609,7 +609,6 @@ void GS_MAIN_VOLUME(triangle GS_IN_VOLUME In[3], inout TriangleStream<GS_OUT_VOL
 	}
 }
 /* ________________________________________________________________________________*/
-
 ////////////////////////////////////////////////////////////
 
 struct PS_IN
@@ -1140,7 +1139,13 @@ PS_OUT_VOLUME PS_MAIN_VOLUME(PS_IN_VOLUME In)
 	return Out;
 }
 /* ________________________________________________________________________________*/
+PS_OUT_ALPHA PS_PHANTOM(PS_IN In)
+{
+	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
+	Out.vDiffuse = vector(0.f,0.5f,1.f,0.5f);
 
+	return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -1414,5 +1419,25 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_LASERBUTTONLARGE(false);
+	}
+	// 27
+	pass Character_PhantomFirst
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_PhantomFirst, 0xff);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = NULL;
+	}
+	// 28
+	pass Character_PhantomSecond
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_PhantomSecond, 0xff);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PHANTOM();
 	}
 };
