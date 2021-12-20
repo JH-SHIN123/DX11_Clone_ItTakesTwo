@@ -34,6 +34,7 @@ private:
 
 private:
 	HRESULT Ready_InstanceBuffer();
+	_float4 Get_RandTexUV();
 
 private:
 	_double m_dControlTime = 0.0; //
@@ -43,6 +44,8 @@ private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT = nullptr;
 	CTextures*							m_pTexturesCom_Distortion = nullptr;
+	CTextures*							m_pTexturesCom_Dissolve = nullptr;
+
 	_double*							m_pInstance_Update_TextureUV_Time = nullptr;
 
 	_float m_fNextUV = 0.f;

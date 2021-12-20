@@ -31,7 +31,7 @@ HRESULT CEffect_Boss_Missile_Smoke_Color::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Fire_Loop"), TEXT("Com_Texture"), (CComponent**)&m_pTexturesCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Texture_Second"), (CComponent**)&m_pTexturesCom_Second), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise"), TEXT("Com_Texture_Distortion"), (CComponent**)&m_pTexturesCom_Distortion), E_FAIL);
-
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Cloud"), TEXT("Com_Texture_Dissolve"), (CComponent**)&m_pTexturesCom_Dissolve), E_FAIL);
 
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
@@ -44,6 +44,9 @@ HRESULT CEffect_Boss_Missile_Smoke_Color::NativeConstruct(void * pArg)
 _int CEffect_Boss_Missile_Smoke_Color::Tick(_double TimeDelta)
 {
 	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
+	// 왜곡을 먹은 디졸브를 디퓨즈(스모크)틀 에다가 곱하고 그 색상의 r값을 UV로 해서 색상을 입히자 
+	// 왜곡 0011
+	// 디졸브 랜덤
 
 	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
 		return EVENT_DEAD;
@@ -72,9 +75,11 @@ HRESULT CEffect_Boss_Missile_Smoke_Color::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
 	m_pPointInstanceCom_STT->Set_Variable("g_fAlpha", &fTime, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
-	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(1));
-	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(2));
-	//m_pPointInstanceCom_STT->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Distortion->Get_ShaderResourceView(1));
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(1));	//스모크
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(2)); // 색상
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Distortion->Get_ShaderResourceView(1)); // 왜곡
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DissolveTexture", m_pTexturesCom_Distortion->Get_ShaderResourceView(0)); // 디졸브
+
 	m_pPointInstanceCom_STT->Render(19, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
@@ -176,14 +181,18 @@ HRESULT CEffect_Boss_Missile_Smoke_Color::Ready_InstanceBuffer()
 
 	m_fNextUV = __super::Get_TexUV(m_vTexUV.x, m_vTexUV.y, true).z;
 
+
+	// 디졸브는 Right
+	// 왜곡은 Up
+
 	_float4 vMyPos;
 	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
-		m_pInstanceBuffer_STT[iIndex].vRight = { 1.f, 0.f, 0.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vUp = { 0.f, 1.f, 0.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vLook = { 0.f, 0.f, 1.f, 0.f };
+		m_pInstanceBuffer_STT[iIndex].vRight	= Get_RandTexUV();
+		m_pInstanceBuffer_STT[iIndex].vUp		= Get_RandTexUV();
+		m_pInstanceBuffer_STT[iIndex].vLook		= { 0.f, 0.f, 1.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vPosition = vMyPos;
 
 		m_pInstanceBuffer_STT[iIndex].vTextureUV = __super::Get_TexUV_Rand(m_vTexUV.x, m_vTexUV.y);
@@ -194,6 +203,14 @@ HRESULT CEffect_Boss_Missile_Smoke_Color::Ready_InstanceBuffer()
 		m_pInstance_Update_TextureUV_Time[iIndex] = 0.05;
 	}
 	return S_OK;
+}
+
+_float4 CEffect_Boss_Missile_Smoke_Color::Get_RandTexUV()
+{
+	_float fRandUV = (_float)(rand() % 10) / 10.f;
+
+	_float4 vTexLTRB = { fRandUV , fRandUV , fRandUV + 1.f , fRandUV + 1.f };
+	return vTexLTRB;
 }
 
 CEffect_Boss_Missile_Smoke_Color * CEffect_Boss_Missile_Smoke_Color::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
@@ -224,6 +241,7 @@ void CEffect_Boss_Missile_Smoke_Color::Free()
 	Safe_Delete_Array(m_pInstanceBuffer_STT);
 
 	Safe_Release(m_pTexturesCom_Distortion);
+	Safe_Release(m_pTexturesCom_Dissolve);
 	Safe_Release(m_pPointInstanceCom_STT);
 
 	__super::Free();

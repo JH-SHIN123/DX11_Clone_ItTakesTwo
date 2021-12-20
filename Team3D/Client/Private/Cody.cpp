@@ -231,7 +231,7 @@ _int CCody::Tick(_double dTimeDelta)
  		EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
  	if (m_pGameInstance->Key_Down(DIK_N))
  		EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
- 	if (m_pGameInstance->Key_Down(DIK_M))
+ 	if (m_pGameInstance->Key_Down(DIK_V))
  		EFFECT->Add_Effect(Effect_Value::BossMissile_Smoke, m_pTransformCom->Get_WorldMatrix());
 // 	if (m_pGameInstance->Key_Down(DIK_SLASH))
 // 		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Shield, m_pTransformCom->Get_WorldMatrix());

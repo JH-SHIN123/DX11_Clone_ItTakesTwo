@@ -15,7 +15,7 @@
 #include "Effect_Cody_Size.h"
 #include "Effect_RespawnTunnel_Portal.h"
 #include "Effect_May_Boots.h"
-#include "Effect_May_Boots_Walking_Particle.h" /*발걸음에 달기*/
+#include "Effect_May_Boots_Walking_Particle.h"
 #include "Effect_GravityPipe.h"
 #include "Effect_Wormhole.h"
 #include "Effect_Env_Particle.h"
