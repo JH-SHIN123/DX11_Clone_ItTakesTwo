@@ -19,6 +19,8 @@ HRESULT CLevel_Logo::NativeConstruct()
 
 	Ready_Layer_SplashScreen();
 
+	m_pGameInstance->Play_Sound(TEXT("MainMenu_Waiting.ogg"), CHANNEL_BGM);
+
 	return S_OK;
 }
 

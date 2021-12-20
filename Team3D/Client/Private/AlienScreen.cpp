@@ -23,7 +23,7 @@ HRESULT CAlienScreen::NativeConstruct(void * pArg)
 {
 	CDynamic_Env::NativeConstruct(pArg);
 
-	m_UserData.eID = GameID::eBLOCKED;
+	m_UserData.eID = GameID::eALIENSCREEN;
 	m_UserData.pGameObject = this;
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);

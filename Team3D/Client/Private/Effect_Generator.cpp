@@ -323,6 +323,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
 		Clone_Data.fSizePower = 3.f;
 		break;
+	case Effect_Value::PipeLocker_Connected:
+		lstrcpy(szPrototype, L"GameObject_Effect_PipeLocker_Connected");
+		break;
 	default:
 		break;
 	}

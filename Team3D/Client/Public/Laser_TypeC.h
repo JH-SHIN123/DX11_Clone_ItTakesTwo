@@ -23,6 +23,7 @@ private:
 	_double m_dChargingTime = 0.0;
 	_bool	m_IsPaticleCreate = true;
 	_uint   m_iOption = 0;
+	_bool	m_IsHitMoonBaboon = false;
 
 private:
 	class CMoonUFO*									m_pMoonUFO = nullptr;

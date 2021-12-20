@@ -66,6 +66,9 @@ HRESULT CCody::NativeConstruct(void* pArg)
  	UI_Create(Cody, PC_Mouse_Enlargement);
  	UI_Create(Cody, PlayerMarker);
 
+	m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+	m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+
 	return S_OK;
 }
 
@@ -202,6 +205,11 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_Enter, ANI_C_Grind_Grapple_ToGrind, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_ToGrind, ANI_C_Grind_Slow_MH, false);
 
+	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_Rocket_MH, true, 10.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_Enter, ANI_C_Rocket_MH, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_MH, ANI_C_Rocket_MH, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_Exit, ANI_C_Jump_Land_High, false);
+
 	return;
 }
 
@@ -257,13 +265,12 @@ _int CCody::Tick(_double dTimeDelta)
 			Hook_UFO(dTimeDelta);
 			Warp_Wormhole(dTimeDelta);
 			Touch_FireDoor(dTimeDelta);
-			Boss_Missile_Hit(dTimeDelta);
-			Boss_Missile_Control(dTimeDelta);
 			Falling_Dead(dTimeDelta);
 			WallLaserTrap(dTimeDelta);
 			PinBall(dTimeDelta);
 			SpaceShip_Respawn(dTimeDelta);
 			In_JoyStick(dTimeDelta);
+			BossMissile_Control(dTimeDelta);
 		}
 		else
 		{
@@ -274,7 +281,7 @@ _int CCody::Tick(_double dTimeDelta)
 
 			if (m_bRoll == false || m_bSprint == true)
 				KeyInput(dTimeDelta);
-			if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false)
+			if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false && m_bLandHigh == false)
 			{
 				Sprint(dTimeDelta);
 				if(m_IsSizeChanging == false)
@@ -306,8 +313,6 @@ _int CCody::Tick(_double dTimeDelta)
 	}
 	else
 		m_pActorCom->Update(dTimeDelta); // Set Position하면 이거 할필요없다.
-
-	Attack_BossMissile_After(dTimeDelta); // 미사일 공격이 끝나고 정상적인 회전갑승로 만들어주자
 
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_Size->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
@@ -625,7 +630,9 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_fAcceleration = 5.f;
 			m_pModelCom->Set_Animation(ANI_C_Roll_Start);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Roll_Stop);
-
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Dash.wav"), CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
 			m_bAction = false;
 			m_bRoll = true;
 		}
@@ -639,10 +646,23 @@ void CCody::KeyInput(_double dTimeDelta)
 				m_fAcceleration = 5.f;
 
 				if (m_eCurPlayerSize != SIZE_SMALL)
+				{
 					m_pActorCom->Jump_Start(1.2f);
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
+					m_pGameInstance->Play_Sound(TEXT("CodyM_Dash.wav"), CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
+				}
 				else
+				{
 					m_pActorCom->Jump_Start(0.6f);
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 
+					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
+					m_pGameInstance->Play_Sound(TEXT("CodyM_Dash.wav"), CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
+
+					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYS_DASH_VOICE, m_fCodySDash_Voice_Volume);
+					m_pGameInstance->Play_Sound(TEXT("CodyS_Dash_Voice.wav"), CHANNEL_CODYS_DASH_VOICE, m_fCodySDash_Voice_Volume);
+				}
 				m_pModelCom->Set_Animation(ANI_C_AirDash_Start);
 				m_IsAirDash = true;
 			}
@@ -660,6 +680,7 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_bShortJump = true;
 			m_iJumpCount += 1;
 			m_IsJumping = true;
+				m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 		}
 	}
 	else
@@ -669,6 +690,8 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_bShortJump = true;
 			m_iJumpCount += 1;
 			m_IsJumping = true;
+			m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+
 		}
 	}
 
@@ -678,7 +701,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma region Mouse_LButton
 
 	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) &&
-		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false)
+		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false) 
 	{
 		// 커져라
 		switch (m_eCurPlayerSize)
@@ -688,10 +711,14 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_IsSizeChanging = true;
 			m_pActorCom->Set_Gravity(-9.8f);
 			m_pActorCom->Set_IsPlayerSizeSmall(false);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_SIZE_STOM, m_fSizing_SToM_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Sizing_StoM.wav"), CHANNEL_SIZE_STOM, m_fSizing_SToM_Volume);
 			break;
 		case Client::CCody::SIZE_MEDIUM:
 			m_eNextPlayerSize = SIZE_LARGE;
 			m_IsSizeChanging = true;
+			m_pGameInstance->Set_SoundVolume(CHANNEL_SIZE_MTOB, m_fSizing_MToB_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Sizing_MtoB.wav"), CHANNEL_SIZE_MTOB, m_fSizing_MToB_Volume);
 			break;
 		}
 	}
@@ -709,11 +736,15 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_eNextPlayerSize = SIZE_MEDIUM;
 			m_IsSizeChanging = true;
 			m_pActorCom->Set_Gravity(-9.8f);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_SIZE_BTOM, m_fSizing_BToM_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Sizing_BtoM.wav"), CHANNEL_SIZE_BTOM, m_fSizing_BToM_Volume);
 			break;
 		case Client::CCody::SIZE_MEDIUM:
 			m_eNextPlayerSize = SIZE_SMALL;
 			m_IsSizeChanging = true;
 			m_pActorCom->Set_IsPlayerSizeSmall(true);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_SIZE_MTOS, m_fSizing_MToS_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Sizing_MtoS.wav"), CHANNEL_SIZE_MTOS, m_fSizing_MToS_Volume);
 			break;
 		}
 	}
@@ -746,9 +777,21 @@ void CCody::KeyInput(_double dTimeDelta)
 	{
 		m_bGroundPound = true;
 		m_IsJumping = false;
+
+		if (m_eCurPlayerSize != SIZE_LARGE)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_GROUNDPOUND_ROLL, m_fCodyM_GroundPound_Roll_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_GroundPound_Roll.wav"), CHANNEL_CODYM_GROUNDPOUND_ROLL, m_fCodyM_GroundPound_Roll_Volume);
+		}
 	}
 
 #pragma endregion
+
+	if (m_pGameInstance->Key_Down(DIK_M))
+	{
+		SCRIPT->Render_Script(m_iIndex, CScript::HALF, 1.f);
+		++m_iIndex;
+	}
 }
 
 _uint CCody::Get_CurState() const
@@ -761,9 +804,11 @@ _uint CCody::Get_CurState() const
 void CCody::Move(const _double dTimeDelta)
 {
 #pragma region Medium_Size
+
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+
 
 	if (m_eCurPlayerSize == SIZE_MEDIUM)
 	{
@@ -819,26 +864,51 @@ void CCody::Move(const _double dTimeDelta)
 				// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
 				if (m_pModelCom->Is_AnimFinished(ANI_C_Jog_Start_Fwd) == true) // JogStart -> Jog
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_pModelCom->Set_Animation(ANI_C_Jog);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Jog) == true) // Jog -> Jog // 보간속도 Up
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_pModelCom->Set_Animation(ANI_C_Jog);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd || m_pModelCom->Get_CurAnimIndex() == ANI_C_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_MH_Gesture_Small_Drumming || m_pModelCom->Get_CurAnimIndex() == ANI_C_ActionMH)	// Idle To Jog Start. -> Jog 예약
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_pModelCom->Set_Animation(ANI_C_Jog_Start_Fwd);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Exhausted_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Exhausted_MH_To_Idle || m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Stop_Fwd_Exhausted)
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_pModelCom->Set_Animation(ANI_C_Jog_Exhausted_MH_Start_Fwd);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Roll_Start)) // 구르고 나서 바로 움직이면 Roll to Jog
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_bRoll = false;
 					m_pModelCom->Set_Animation(ANI_C_Roll_To_Jog);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
@@ -854,17 +924,19 @@ void CCody::Move(const _double dTimeDelta)
 				m_fJogAcceleration = 25.f;
 				if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog) // jog 였다면
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd); // jog to stop 으로 바꿔
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // jog to stop 끝나면 idle 예약.
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Start_Fwd) // JogStart 였다면
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd); // jog to stop 으로 바꿔
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH) // IDLE 상태라면
 				{
-
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_fIdleTime += (_float)dTimeDelta;
 					if (m_bAction == false)
 					{
@@ -876,17 +948,20 @@ void CCody::Move(const _double dTimeDelta)
 					}
 					else if (m_bAction == true)
 					{
+						m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 						m_pModelCom->Set_Animation(ANI_C_Idle_To_Action);
 						m_pModelCom->Set_NextAnimIndex(ANI_C_ActionMH);
 					}
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Idle_To_Action) == true && m_bAction == true)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_ActionMH);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_ActionMH_To_Idle);
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_ActionMH) == true && m_bAction == true)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_ActionMH_To_Idle);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 					m_bAction = false;
@@ -1005,21 +1080,50 @@ void CCody::Move(const _double dTimeDelta)
 			{
 				// TEST!! 8번 jog start , 4번 jog , 7번 jog to stop. TEST!!
 				if (m_pModelCom->Is_AnimFinished(ANI_C_Jog_Start_Fwd) == true) // JogStart -> Jog
+				{
 					m_pModelCom->Set_Animation(ANI_C_Jog);
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
+				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Jog) == true) // Jog -> Jog // 보간속도 Up
+				{
 					m_pModelCom->Set_Animation(ANI_C_Jog);
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
+				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_MH_Gesture_Small_Drumming || m_pModelCom->Get_CurAnimIndex() == ANI_C_ActionMH)	// Idle To Jog Start. -> Jog 예약
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_pModelCom->Set_Animation(ANI_C_Jog_Start_Fwd);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Exhausted_MH || m_pModelCom->Get_CurAnimIndex() == ANI_C_Exhausted_MH_To_Idle)
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_pModelCom->Set_Animation(ANI_C_Jog_Exhausted_MH_Start_Fwd);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Roll_Start)) // 구르고 나서 바로 움직이면 Roll to Jog
 				{
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+						m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					}
 					m_bRoll = false;
 					m_pModelCom->Set_Animation(ANI_C_Roll_To_Jog);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
@@ -1035,39 +1139,45 @@ void CCody::Move(const _double dTimeDelta)
 				m_fJogAcceleration = 25.f;
 				if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog) // jog 였다면
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd); // jog to stop 으로 바꿔
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH); // jog to stop 끝나면 idle 예약.
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Jog_Start_Fwd) // JogStart 였다면
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_Jog_Stop_Fwd); // jog to stop 으로 바꿔
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 				}
 				else if (m_pModelCom->Get_CurAnimIndex() == ANI_C_MH) // IDLE 상태라면
 				{
-
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_fIdleTime += (_float)dTimeDelta;
 					if (m_bAction == false)
 					{
 						if (m_fIdleTime > 5.f && m_pModelCom->Is_AnimFinished(ANI_C_MH)) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
 						{
+							m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 							m_pModelCom->Set_Animation(ANI_C_Bhv_MH_Gesture_Small_Drumming); // 배 두들기는 애니메이션 재생
 							m_fIdleTime = 0.f;
 						}
 					}
 					else if (m_bAction == true)
 					{
+						m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 						m_pModelCom->Set_Animation(ANI_C_Idle_To_Action);
 						m_pModelCom->Set_NextAnimIndex(ANI_C_ActionMH);
 					}
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_Idle_To_Action) == true && m_bAction == true)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_ActionMH);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_ActionMH_To_Idle);
 				}
 				else if (m_pModelCom->Is_AnimFinished(ANI_C_ActionMH) == true && m_bAction == true)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 					m_pModelCom->Set_Animation(ANI_C_ActionMH_To_Idle);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 					m_bAction = false;
@@ -1085,6 +1195,11 @@ void CCody::Roll(const _double dTimeDelta)
 		{
 			m_fAcceleration = 5.0;
 			m_pModelCom->Set_Animation(ANI_C_Roll_Stop);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH_ROLL, m_fCodyMDash_Roll_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Dash_Roll.wav"), CHANNEL_CODYM_DASH_ROLL, m_fCodyMDash_Roll_Volume);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH_LANDING, m_fCodyMDash_Landing_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Dash_Landing.wav"), CHANNEL_CODYM_DASH_LANDING, m_fCodyMDash_Landing_Volume);
+
 			if (m_bMove == false)
 				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		
@@ -1312,17 +1427,33 @@ void CCody::Jump(const _double dTimeDelta)
 		{
 			m_IsJumping = true;
 			if (m_eCurPlayerSize == SIZE_MEDIUM)
+			{
 				m_pActorCom->Jump_Start(2.6f);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_JUMP, m_fCodyMJumpVolume);
+				m_pGameInstance->Play_Sound(TEXT("CodyM_Jump2.wav"), CHANNEL_CODYM_JUMP, m_fCodyMJumpVolume);
+			}
 			else if (m_eCurPlayerSize == SIZE_LARGE)
+			{
 				m_pActorCom->Jump_Start(2.8f);
-			else if (m_eCurPlayerSize == SIZE_SMALL)
-				m_pActorCom->Jump_Start(0.8f);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_JUMP, m_fCodyBJumpVolume);
+				m_pGameInstance->Play_Sound(TEXT("CodyB_Jump.wav"), CHANNEL_CODYB_JUMP, m_fCodyBJumpVolume);
 
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_JUMP_VOICE, m_fCodyBJumpVoiceVolume);
+				m_pGameInstance->Play_Sound(TEXT("CodyB_Jump_Voice.wav"), CHANNEL_CODYB_JUMP_VOICE, m_fCodyBJumpVoiceVolume);
+			}
+			else if (m_eCurPlayerSize == SIZE_SMALL)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYS_JUMP_VOICE, m_fCodySJumpVolume);
+				m_pGameInstance->Play_Sound(TEXT("CodyS_Jump_Voice.wav"), CHANNEL_CODYS_JUMP_VOICE, m_fCodySJumpVolume);
+				m_pActorCom->Jump_Start(0.8f);
+			}
 			if (m_eCurPlayerSize == SIZE_LARGE)
 				m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Start); // 사이즈 클때 점프 애니메이션이 다름.
 			else
+			{
 				m_pModelCom->Set_Animation(ANI_C_Jump_Start);
 
+			}
 			m_bShortJump = false;
 		}
 		if (m_iJumpCount == 2)
@@ -1331,23 +1462,53 @@ void CCody::Jump(const _double dTimeDelta)
 			//m_pActorCom->Jump_Higher(1.4f);
 			//m_pActorCom->Set_Gravity(0.f);
 			if (m_eCurPlayerSize == SIZE_MEDIUM)
+			{
 				m_pActorCom->Jump_Start(2.6f);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_JUMP_DOUBLE_VOICE, m_fCodyMJumpDoubleVolume);
+				m_pGameInstance->Play_Sound(TEXT("CodyM_Jump_Double_Voice.wav"), CHANNEL_CODYM_JUMP_DOUBLE_VOICE, m_fCodyMJumpDoubleVolume);
+			}
 			else if (m_eCurPlayerSize == SIZE_SMALL)
+			{
 				m_pActorCom->Jump_Start(0.8f);
-
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYS_JUMP_DOUBLE_VOICE, m_fCodySJumpDoubleVolume);
+				m_pGameInstance->Play_Sound(TEXT("CodyS_Jump_Double_Voice.wav"), CHANNEL_CODYS_JUMP_DOUBLE_VOICE, m_fCodySJumpDoubleVolume);
+			}
 			m_pModelCom->Set_Animation(ANI_C_DoubleJump);
 			m_bShortJump = false;
 		}
 	}
 	if (m_IsJumping == true && m_pActorCom->Get_IsJump() == false && m_bGroundPound == false)
 	{
+		if (m_eCurPlayerSize == SIZE_MEDIUM)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_JUMP_LANDING_VOICE, m_fCodyMJumpLandingVoice_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Jump_Landing_Voice.wav"), CHANNEL_CODYM_JUMP_LANDING_VOICE, m_fCodyMJumpLandingVoice_Volume);
+		}
+		else if (m_eCurPlayerSize == SIZE_SMALL)
+		{
+			// 뭔가 이상함
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DASH_LANDING, m_fCodyMDash_Landing_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Dash_Landing.wav"), CHANNEL_CODYM_DASH_LANDING, m_fCodyMDash_Landing_Volume);
+		}
+		else
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_JUMP_LANDING, m_fCodyBJump_Landing_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyB_Jump_Landing.wav"), CHANNEL_CODYB_JUMP_LANDING, m_fCodyBJump_Landing_Volume);
+		}
 		m_iAirDashCount = 0;
 		m_bSprint = false;
 		// 착지할때 키를 누르고 있는 상태라면 Jog 로 연결
 		if (m_pGameInstance->Key_Pressing(DIK_W) || m_pGameInstance->Key_Pressing(DIK_A) || m_pGameInstance->Key_Pressing(DIK_S) || m_pGameInstance->Key_Pressing(DIK_D))
 		{
+
 			if (m_eCurPlayerSize != SIZE_LARGE)
 			{
+				if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYM_WALK) == false)
+				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+					m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
+				}
+
 				m_pModelCom->Set_Animation(ANI_C_Jump_Land_Jog);
 				m_pModelCom->Set_NextAnimIndex(ANI_C_Jog);
 			}
@@ -1361,6 +1522,9 @@ void CCody::Jump(const _double dTimeDelta)
 		{
 			if (m_eCurPlayerSize != SIZE_LARGE && m_bAfterGroundPound == false)
 			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_JUMP_LANDING_VOICE, m_fCodyMJumpLandingVoice_Volume);
+				m_pGameInstance->Play_Sound(TEXT("CodyM_Jump_Landing_Voice.wav"), CHANNEL_CODYM_JUMP_LANDING_VOICE, m_fCodyMJumpLandingVoice_Volume);
+
 				m_pModelCom->Set_Animation(ANI_C_Jump_Land);
 				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			}
@@ -1368,6 +1532,9 @@ void CCody::Jump(const _double dTimeDelta)
 			{
 				if (m_pModelCom->Get_CurAnimIndex() != ANI_C_ChangeSize_Jump_Falling)
 				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_JUMP_LANDING, m_fCodyBJump_Landing_Volume);
+					m_pGameInstance->Play_Sound(TEXT("CodyB_Jump_Landing.wav"), CHANNEL_CODYB_JUMP_LANDING, m_fCodyBJump_Landing_Volume);
+
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Large_Land);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 				}
@@ -1597,9 +1764,13 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 		if (m_fGroundPoundAirDelay > 0.4f)
 		{
 			if (m_eCurPlayerSize != SIZE_LARGE)
-				m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Falling);
+			{
+				m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Falling);	
+			}
 			else
+			{
 				m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Falling);
+			}
 			if (m_eCurPlayerSize == SIZE_MEDIUM || m_eCurPlayerSize == SIZE_LARGE)
 				m_pActorCom->Set_Gravity(-9.8f);
 			else if (m_eCurPlayerSize == SIZE_SMALL)
@@ -1615,7 +1786,9 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 			if (m_eCurPlayerSize == SIZE_LARGE)
 				m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Start);
 			else
+			{
 				m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Start);
+			}
 			m_pActorCom->Set_Jump(false);
 			m_pActorCom->Set_Gravity(0.f);
 			m_fGroundPoundAirDelay += (_float)dTimeDelta;
@@ -1626,6 +1799,21 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 	{
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_GroundPound_Falling) && m_bPlayGroundPoundOnce == false)
 		{
+			if (m_eCurPlayerSize == SIZE_MEDIUM)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_GROUNDPOUND, m_fCodyM_GroundPound_Volume);
+				m_pGameInstance->Play_Sound(TEXT("CodyM_GroundPound.wav"), CHANNEL_CODYM_GROUNDPOUND, m_fCodyM_GroundPound_Volume);
+
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_GROUNDPOUND_LANDING_VOICE, m_fCodyM_GroundPound_Landing_Voice_Volume);
+				m_pGameInstance->Play_Sound(TEXT("CodyM_GroundPound_Landing_Voice.wav"), CHANNEL_CODYM_GROUNDPOUND_LANDING_VOICE, m_fCodyM_GroundPound_Landing_Voice_Volume);
+
+			}
+			else if (m_eCurPlayerSize == SIZE_SMALL)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_CODYS_GROUNDPOUND_LANDING_VOICE, m_fCodyS_GroundPound_Landing_Voice_Volume);
+				m_pGameInstance->Play_Sound(TEXT("CodyS_GroundPound_Landing_Voice.wav"), CHANNEL_CODYS_GROUNDPOUND_LANDING_VOICE, m_fCodyS_GroundPound_Landing_Voice_Volume);
+
+			}
 			m_bPlayGroundPoundOnce = true;
 			m_pModelCom->Set_Animation(ANI_C_Bhv_GroundPound_Land_Exit);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
@@ -1644,6 +1832,9 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 	{
 		if (m_pActorCom->Get_IsJump() == true && (m_pModelCom->Get_CurAnimIndex() == (ANI_C_Bhv_ChangeSize_GroundPound_Falling) && m_bPlayGroundPoundOnce == false))
 		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_GROUNDPOUND_LANDING_VOICE, m_fCodyB_GroundPound_Landing_Voice_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyB_GroundPound_Landing_Voice.wav"), CHANNEL_CODYB_GROUNDPOUND_LANDING_VOICE, m_fCodyB_GroundPound_Landing_Voice_Volume);
+
 			m_bPlayGroundPoundOnce = true;
 			m_pModelCom->Set_Animation(ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
@@ -1685,42 +1876,6 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 	}
 
 }
-
-void CCody::Attack_BossMissile_After(_double dTimeDelta)
-{
-	if (true == m_IsBossMissile_RotateYawRoll_After)
-	{
-		m_fBossMissile_HeroLanding_Time += (_float)dTimeDelta;
-
-		if (2.f >= m_fBossMissile_HeroLanding_Time)
-		{
-		// 개꿀잼 회전값 보정을 원한다면
-		//	_float fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_RIGHT).m128_f32[1];
-		//	m_pTransformCom->RotateRoll(dTimeDelta * fRotateRoll_Check * -1.f);
-		//	fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_LOOK).m128_f32[1];
-		//	m_pTransformCom->RotatePitch(dTimeDelta * fRotateRoll_Check * -1.f);
-
-		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-		_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-
-		vLook.m128_f32[1] = 0.f;
-		vRight.m128_f32[1] = 0.f;
-
-		vLook = XMVector3Normalize(vLook) * m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
-		vRight = XMVector3Normalize(vRight) * m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
-
-		_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * m_pTransformCom->Get_Scale(CTransform::STATE_UP);
-		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-		m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
-		}
-		else
-		{
-			m_IsBossMissile_RotateYawRoll_After = false;
-		}
-	}
-}
-
 void CCody::Enforce_IdleState()
 {
 	m_bSprint = false;
@@ -1914,6 +2069,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 				m_IsHitPlanet = true;
 				m_IsHitPlanet_Effect = true;
+				m_IsHitPlanet_Once = true;
 			}
 		}
 		else if (m_eTargetGameID == GameID::eHOOKUFO && m_pGameInstance->Key_Down(DIK_F) && m_IsHookUFO == false)
@@ -1968,15 +2124,13 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			Enforce_IdleState();
 			m_IsTouchFireDoor = true;
 		}
-		else if (GameID::eBOSSMISSILE_COMBAT == m_eTargetGameID && false == m_IsBossMissile_Hit)
+		else if (GameID::eBOSSMISSILE == m_eTargetGameID && m_pGameInstance->Key_Down(DIK_E) && m_IsBossMissile_Control == false)
 		{
-			m_IsBossMissile_Hit = true;
-		}
-		else if (GameID::eBOSSMISSILE_PLAYABLE == m_eTargetGameID && false == m_IsBossMissile_Control)
-		{
+			m_pModelCom->Set_Animation(ANI_C_Jump_Start, 28.f);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Rocket_Enter);
 			m_IsBossMissile_Control = true;
-			m_IsBossMissile_Rodeo = false;
-			m_IsBossMissile_Rodeo_Ready = false;
+			m_IsMoveToRocket = true;
+			m_pActorCom->Jump_Start(3.f);
 		}
 		else if (m_eTargetGameID == GameID::eDUMMYWALL && m_bWallAttach == false && m_fWallJumpingTime <= 0.f)
 		{
@@ -2024,6 +2178,10 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			m_eCameraWorkState = STATE_DUMMYWALL_JUMP;
 		}
+		else if (m_eTargetGameID == GameID::ePIPEWALLCAMERATRIGGER)
+		{
+			m_eCameraWorkState = STATE_PIPEWALL_JUMP;
+		}
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
 		{
 			/* 세이브포인트->트리거와 충돌시 세이브포인트 갱신 */
@@ -2052,12 +2210,18 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::ePINBALL && false == m_IsPinBall)
 		{
 			/* 핀볼모드 ON */
+			m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_DOOR);
+			m_pGameInstance->Play_Sound(TEXT("Pinball_Enter_Ball.wav"), CHANNEL_PINBALL_DOOR);
+
 			m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
 			m_IsPinBall = true;
 		}
 		else if (m_eTargetGameID == GameID::ePINBALLDOOR && m_pGameInstance->Key_Down(DIK_E))
 		{
 			/* 핀볼 문열기 */
+			m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_DOOR);
+			m_pGameInstance->Play_Sound(TEXT("Pinball_Door_Open.wav"), CHANNEL_PINBALL_DOOR);
+
 			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(false);
 		}
 		else if (m_eTargetGameID == GameID::eHOOKAHTUBE)
@@ -2140,6 +2304,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_E) && false == m_bLaserTennis)
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
+			m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
+
 			LASERTENNIS->Increase_PowerCoord();
 
 			UI_Generator->Delete_InterActive_UI(Player::Cody, UI::PowerCoord);
@@ -2182,7 +2349,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 	// Trigger 여따가 싹다모아~
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
-		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Hit || m_IsBossMissile_Control || m_IsDeadLine 
+		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Control || m_IsDeadLine
 		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach || m_bLaserTennis ||
 		m_IsInJoyStick)
 		return true;
@@ -2203,6 +2370,19 @@ _bool CCody::Trigger_End(const _double dTimeDelta)
 	{
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 	}
+
+	if (m_pModelCom->Is_AnimFinished(ANI_C_Jump_Land_High))
+	{
+		m_pModelCom->Set_Animation(ANI_C_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		m_bLandHigh = false;
+	}
+
+	if (ANI_C_Jump_Land_High == m_pModelCom->Get_CurAnimIndex())
+	{
+		m_bLandHigh = true;
+	}
+
 	return false;
 }
 #pragma endregion
@@ -2444,9 +2624,16 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 	{
 		if (0.2f <= m_pModelCom->Get_ProgressAnim())
 		{
-
-			((CHangingPlanet*)(m_pTargetPtr))->Hit_Planet(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+			if (true == m_IsHitPlanet_Once)
+			{
+				((CHangingPlanet*)(m_pTargetPtr))->Hit_Planet(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+				/* Sound */
+				m_pGameInstance->Stop_Sound(CHANNEL_HANGINGPLANET);
+				m_pGameInstance->Play_Sound(TEXT("HangingPlanet_Push.wav"), CHANNEL_HANGINGPLANET);
+				m_IsHitPlanet_Once = false;
+			}
 		}
+
 		if (0.38175f <= m_pModelCom->Get_ProgressAnim())
 		{
 			if (true == m_IsHitPlanet_Effect)
@@ -2729,6 +2916,65 @@ void CCody::ElectricWallJump(const _double dTimeDelta)
 	}
 }
 
+void CCody::BossMissile_Control(const _double dTimeDelta)
+{
+	if (m_IsBossMissile_Control == true && m_bEscapeFromRocket == false)
+	{
+
+		if (m_IsMoveToRocket = true)
+		{
+			_vector vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			_vector vRocketPos = m_vRocketOffSetPos;
+			_vector vRocketLook = m_matRocketMatrix.r[2];
+			vRocketPos += XMVector3Normalize(vRocketLook) * 0.1f;
+
+			_vector vDir = vRocketPos - vPlayerPos;
+
+			_vector vNormDir = XMVector3Normalize(vDir);
+			_float fLength = XMVectorGetX(XMVector3Length(vDir));
+
+			if (fLength <= 0.12f)
+			{
+				m_pActorCom->Set_ZeroGravity(true, false, true);
+				m_IsMoveToRocket = false;
+				m_pActorCom->Set_Position(m_vRocketOffSetPos);
+			}
+			else
+			{
+				m_pTransformCom->RotateYawDirectionOnLand(XMVectorSetY(vRocketLook, 0.f), dTimeDelta);
+				m_pActorCom->Move((vNormDir) / 10.f * fLength, dTimeDelta);
+			}
+
+		}
+
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Rocket_Enter))
+		{
+			m_pModelCom->Set_Animation(ANI_C_Rocket_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Rocket_MH);
+		}
+
+		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Rocket_MH)
+		{
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_pActorCom->Set_Position(m_vRocketOffSetPos);
+			m_pTransformCom->Set_WorldMatrix(m_matRocketMatrix);
+		}
+	}
+
+	if (m_bEscapeFromRocket == true)
+	{
+		// 로켓으로 부터 탈출!
+		m_pActorCom->Set_ZeroGravity(false, false, false);
+		m_IsMoveToRocket = false;
+		m_bEscapeFromRocket = false;
+		m_IsBossMissile_Control = false;
+		m_pActorCom->Jump_Start(2.2f);
+		m_pModelCom->Set_Animation(ANI_C_Jump_Falling);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Land_High);
+	}
+
+}
+
 void CCody::Warp_Wormhole(const _double dTimeDelta)
 {
 	if (false == m_IsWarpNextStage && false == m_IsWarpDone)
@@ -2836,104 +3082,6 @@ void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
 	}
 }
 
-void CCody::Boss_Missile_Hit(const _double dTimeDelta)
-{
-	if (false == m_IsBossMissile_Hit)
-		return;
-
-	m_IsBossMissile_Hit = false;
-	m_IsCollide = false;
-	// 아악 아프다
-}
-
-void CCody::Boss_Missile_Control(const _double dTimeDelta)
-{
-	if (false == m_IsBossMissile_Control)
-		return;
-
-	if (false == m_IsBossMissile_Rodeo)
-	{
-		if (false == m_IsBossMissile_Rodeo_Ready)
-		{
-			if (m_pGameInstance->Key_Down(DIK_E)) // 탑승 하세요
-			{
-				m_IsBossMissile_Rodeo_Ready = true;
-				m_IsBoss_Missile_Explosion = false;
-			}
-		}
-
-		if (true == m_IsBossMissile_Rodeo_Ready) // 탑승
-		{
-			m_fBossMissile_HeroLanding_Time = 0.f;
-			m_pActorCom->Set_ZeroGravity(true, false, false);
-
-			_matrix TriggerMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
-			for (_int i = 0; i < 3; ++i)
-				TriggerMatrix.r[i] = XMVector3Normalize(TriggerMatrix.r[i]);
-
-			// 회전
-			_vector vRotatePos = TriggerMatrix.r[3] + (TriggerMatrix.r[1] * 10.f);
-			m_pTransformCom->Rotate_ToTarget(vRotatePos);
-
-			// 이동
-			TriggerMatrix.r[3] += TriggerMatrix.r[1] * 1.f;
-			_vector vNewLook = XMVector3Cross(TriggerMatrix.r[1], XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), TriggerMatrix.r[1]));
-			TriggerMatrix.r[3] += vNewLook * 0.8f;
-			//_vector vDir = XMVector3Normalize(TriggerMatrix.r[3] - m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			m_pActorCom->Set_Position(TriggerMatrix.r[3]);
-
-			//m_IsCollide = false;
-			m_IsBossMissile_Rodeo = true;
-			m_fLandTime = 0.f;
-			//m_IsBossMissile_Control = false;
-
-		}
-	}
-	else if (true == m_IsBossMissile_Rodeo && false == m_IsBoss_Missile_Explosion)
-	{
-		m_fLandTime += (_float)dTimeDelta;
-		if(0.25f >= m_fLandTime)
-			m_pTransformCom->RotatePitch(dTimeDelta * -0.25);
-
-		else
-		{
-			m_fLandTime = 0.25f;
-
-			if (m_pGameInstance->Key_Down(DIK_1)) /* 스타트 지점 */
-				m_pActorCom->Set_Position(XMVectorSet(60.f, 0.f, 15.f, 1.f));
-
-			if (m_pGameInstance->Key_Pressing(DIK_W)) // 아래로 밀어
-				m_pTransformCom->RotatePitch(dTimeDelta * 0.7);
-			else if (m_pGameInstance->Key_Pressing(DIK_S)) // 위로 들어
-				m_pTransformCom->RotatePitch(dTimeDelta * -0.7);
-
-			if (m_pGameInstance->Key_Pressing(DIK_A)) // 좌
-				m_pTransformCom->RotateYaw(dTimeDelta * -1);
-			else if (m_pGameInstance->Key_Pressing(DIK_D)) // 우
-				m_pTransformCom->RotateYaw(dTimeDelta * 1);
-
-			_vector vUp		= m_pTransformCom->Get_State(CTransform::STATE_UP);
-			_vector vAxisY	= XMVectorSet(0.f, 1.f, 0.f, 0.f);
-			_float vRadian = XMVector3Dot(vUp, vAxisY).m128_f32[0];
-			
-			_float fRotateRoll_Check = m_pTransformCom->Get_State(CTransform::STATE_RIGHT).m128_f32[1];
-			m_pTransformCom->RotateRoll(dTimeDelta * fRotateRoll_Check * -1.f);
-
-			_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-			m_pActorCom->Move(vDir * 0.2f , dTimeDelta);
-
-		}
-	}
-	else if (true == m_IsBoss_Missile_Explosion)
-	{
-		m_pActorCom->Set_ZeroGravity(false, false, false);
-		
-		m_IsBossMissile_Control = false;
-		m_IsCollide = false;
-		m_IsBossMissile_RotateYawRoll_After = true;
-	}
-}
-
 void CCody::Set_OnParentRotate(_matrix ParentMatrix)
 {
 	_matrix matWorld, matRotY, matTrans;
@@ -2975,11 +3123,6 @@ void CCody::WallLaserTrap(const _double dTimeDelta)
 		m_IsWallLaserTrap_Effect = false;
 		m_pActorCom->Set_ZeroGravity(false, false, false);
 	}
-}
-
-void CCody::Set_BossMissile_Attack()
-{
-	m_IsBoss_Missile_Explosion = true;
 }
 
 void CCody::Falling_Dead(const _double dTimeDelta)
@@ -3431,12 +3574,18 @@ void CCody::LaserTennis(const _double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_Q))
 	{
+		m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
+		m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
+
 		LASERTENNIS->Decrease_PowerCoord();
 		m_bLaserTennis = false;
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_E))
+	{
+		UI_Generator->Delete_InterActive_UI(Player::Cody, UI::PowerCoord);
 		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_CODY);
+	}
 }
 
 void CCody::PinBall_Respawn(const _double dTimeDelta)

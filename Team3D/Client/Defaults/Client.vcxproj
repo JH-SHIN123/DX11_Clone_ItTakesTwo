@@ -229,10 +229,12 @@
     <ClInclude Include="..\Public\DummyWall.h" />
     <ClInclude Include="..\Public\DummyWallCameraTrigger.h" />
     <ClInclude Include="..\Public\Dynamic_Env.h" />
+    <ClInclude Include="..\Public\EffectLight.h" />
     <ClInclude Include="..\Public\Earth.h" />
     <ClInclude Include="..\public\Effect_Boss_BrokenLaser_Flow.h" />
     <ClInclude Include="..\public\Effect_Boss_BrokenLaser_Lightning.h" />
     <ClInclude Include="..\public\Effect_Boss_BrokenLaser_Particle.h" />
+    <ClInclude Include="..\Public\Effect_Boss_BrokenLaser_Smoke.h" />
     <ClInclude Include="..\public\Effect_Boss_Core.h" />
     <ClInclude Include="..\public\Effect_Boss_Core_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Core_Hit.h" />
@@ -280,8 +282,10 @@
     <ClInclude Include="..\Public\Effect_MoonBaboon_Booster.h" />
     <ClInclude Include="..\public\Effect_MoonBaboon_Shield.h" />
     <ClInclude Include="..\public\Effect_Pinball_Explosion.h" />
+    <ClInclude Include="..\Public\Effect_Pinball_Explosion_Dust.h" />
     <ClInclude Include="..\public\Effect_Pinball_Explosion_Particle.h" />
     <ClInclude Include="..\Public\Effect_Pinball_Move.h" />
+    <ClInclude Include="..\Public\Effect_PipeLocker_Connected.h" />
     <ClInclude Include="..\Public\Effect_Player_Dead.h" />
     <ClInclude Include="..\public\Effect_Player_Dead_Explosion.h" />
     <ClInclude Include="..\public\Effect_Player_Dead_Explosion_Particle.h" />
@@ -344,6 +348,7 @@
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\Public\Level_Stage.h" />
+    <ClInclude Include="..\Public\LightUtility.h" />
     <ClInclude Include="..\Public\Loading.h" />
     <ClInclude Include="..\Public\MainApp.h" />
     <ClInclude Include="..\Public\MainCam.h" />
@@ -437,7 +442,6 @@
     <ClInclude Include="..\Public\Space_Valve_Star.h" />
     <ClInclude Include="..\Public\SplashScreen.h" />
     <ClInclude Include="..\Public\StarBuddy.h" />
-    <ClInclude Include="..\Public\StaticVolume.h" />
     <ClInclude Include="..\Public\Static_Env.h" />
     <ClInclude Include="..\Public\SubCamera.h" />
     <ClInclude Include="..\Public\SupportFrame.h" />
@@ -458,7 +462,8 @@
     <ClInclude Include="..\Public\UmbrellaBeam_Base.h" />
     <ClInclude Include="..\Public\UmbrellaBeam_Joystick.h" />
     <ClInclude Include="..\Public\UmbrellaBeam_Stand.h" />
-    <ClInclude Include="..\Public\DynamicVolume.h" />
+    <ClInclude Include="..\Public\VIBuffer_SimplePointInstance.h" />
+    <ClInclude Include="..\Public\VolumeObject.h" />
     <ClInclude Include="..\Public\VolumeLight.h" />
     <ClInclude Include="..\Public\WallLaserTrap.h" />
     <ClInclude Include="..\Public\WallLaserTrap_Button.h" />
@@ -466,8 +471,6 @@
     <ClInclude Include="..\Public\WarpGate.h" />
     <ClInclude Include="..\Public\WarpGate_Star.h" />
     <ClInclude Include="Client.h" />
-    <ClInclude Include="Effect_Boss_BrokenLaser_Smoke.h" />
-    <ClInclude Include="Effect_Pinball_Explosion_Dust.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -509,10 +512,12 @@
     <ClCompile Include="..\Private\DummyWall.cpp" />
     <ClCompile Include="..\Private\DummyWallCameraTrigger.cpp" />
     <ClCompile Include="..\Private\Dynamic_Env.cpp" />
+    <ClCompile Include="..\Private\EffectLight.cpp" />
     <ClCompile Include="..\Private\Earth.cpp" />
     <ClCompile Include="..\private\Effect_Boss_BrokenLaser_Flow.cpp" />
     <ClCompile Include="..\private\Effect_Boss_BrokenLaser_Lightning.cpp" />
     <ClCompile Include="..\private\Effect_Boss_BrokenLaser_Particle.cpp" />
+    <ClCompile Include="..\Private\Effect_Boss_BrokenLaser_Smoke.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Core_Hit.cpp" />
@@ -560,8 +565,10 @@
     <ClCompile Include="..\Private\Effect_MoonBaboon_Booster.cpp" />
     <ClCompile Include="..\private\Effect_MoonBaboon_Shield.cpp" />
     <ClCompile Include="..\private\Effect_Pinball_Explosion.cpp" />
+    <ClCompile Include="..\Private\Effect_Pinball_Explosion_Dust.cpp" />
     <ClCompile Include="..\private\Effect_Pinball_Explosion_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Pinball_Move.cpp" />
+    <ClCompile Include="..\Private\Effect_PipeLocker_Connected.cpp" />
     <ClCompile Include="..\Private\Effect_Player_Dead.cpp" />
     <ClCompile Include="..\private\Effect_Player_Dead_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Player_Dead_Explosion_Particle.cpp" />
@@ -623,6 +630,7 @@
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Level_Stage.cpp" />
+    <ClCompile Include="..\Private\LightUtility.cpp" />
     <ClCompile Include="..\Private\Loading.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\MainCam.cpp" />
@@ -716,7 +724,6 @@
     <ClCompile Include="..\Private\Space_Valve_Star.cpp" />
     <ClCompile Include="..\Private\SplashScreen.cpp" />
     <ClCompile Include="..\Private\StarBuddy.cpp" />
-    <ClCompile Include="..\Private\StaticVolume.cpp" />
     <ClCompile Include="..\Private\Static_Env.cpp" />
     <ClCompile Include="..\Private\SubCamera.cpp" />
     <ClCompile Include="..\Private\SupportFrame.cpp" />
@@ -737,7 +744,8 @@
     <ClCompile Include="..\Private\UmbrellaBeam_Base.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam_Joystick.cpp" />
     <ClCompile Include="..\Private\UmbrellaBeam_Stand.cpp" />
-    <ClCompile Include="..\Private\DynamicVolume.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_SimplePointInstance.cpp" />
+    <ClCompile Include="..\Private\VolumeObject.cpp" />
     <ClCompile Include="..\Private\VolumeLight.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap.cpp" />
     <ClCompile Include="..\Private\WallLaserTrap_Button.cpp" />
@@ -745,8 +753,6 @@
     <ClCompile Include="..\Private\WarpGate.cpp" />
     <ClCompile Include="..\Private\WarpGate_Star.cpp" />
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="Effect_Boss_BrokenLaser_Smoke.cpp" />
-    <ClCompile Include="Effect_Pinball_Explosion_Dust.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -772,8 +778,10 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshInstance.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Mesh_Se.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PointCustom_STT.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_PointInstance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect_Effect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sprite.hlsl" />

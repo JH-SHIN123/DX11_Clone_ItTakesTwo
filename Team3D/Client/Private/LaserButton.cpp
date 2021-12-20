@@ -96,6 +96,10 @@ void CLaserButton::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameO
 	{
 		if (true == m_bActive)
 		{
+			/* Sound */
+			m_pGameInstance->Stop_Sound(CHANNEL_LASERBUTTON);
+			m_pGameInstance->Play_Sound(TEXT("MiniGame_Press_Button_Normal.wav"), CHANNEL_LASERBUTTON);
+
 			LASERTENNIS->Create_LaserTrigger(m_pTransformCom->Get_State(CTransform::STATE_POSITION), CLaserTennis_Manager::TARGET_MAY);
 			m_bActive = false;
 		}
@@ -108,6 +112,10 @@ void CLaserButton::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameO
 	{
 		if (true == m_bActive)
 		{
+			/* Sound */
+			m_pGameInstance->Stop_Sound(CHANNEL_LASERBUTTON);
+			m_pGameInstance->Play_Sound(TEXT("MiniGame_Press_Button_Normal.wav"), CHANNEL_LASERBUTTON);
+
 			LASERTENNIS->Create_LaserTrigger(m_pTransformCom->Get_State(CTransform::STATE_POSITION), CLaserTennis_Manager::TARGET_CODY);
 			m_bActive = false;
 		}

@@ -3,6 +3,7 @@
 #include "MoonUFO.h"
 #include "DataStorage.h"
 #include "Effect_Boss_Laser_Smoke.h"
+#include "RunningMoonBaboon.h"
 
 CLaser_TypeC::CLaser_TypeC(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLaser(pDevice, pDeviceContext)
@@ -29,8 +30,8 @@ HRESULT CLaser_TypeC::NativeConstruct(void * pArg)
 	NULL_CHECK_RETURN(m_pMoonUFO, E_FAIL);
 	Safe_AddRef(m_pMoonUFO);
 
-	m_dChargingTime = 0.02;
-	m_fShootSpeed = 800.f;
+	m_dChargingTime = 0.01;
+	m_fShootSpeed = 900.f;
 
 	DATABASE->Set_LaserTypeC(this);
 
@@ -80,69 +81,16 @@ _int CLaser_TypeC::Tick(_double dTimeDelta)
 			m_vLaserDir = m_pMoonUFO->Get_LaserDir();
 			m_pGameInstance->Raycast(MH_PxVec3(XMLoadFloat4(&m_vStartPoint)), MH_PxVec3(XMLoadFloat4(&m_vLaserDir)), m_fLaserMaxY, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
 		}
-
+		
 		if (m_RaycastBuffer.getNbAnyHits() > 0)
 		{
 			USERDATA* pUserData = (USERDATA*)m_RaycastBuffer.getAnyHit(0).actor->userData;
 
 			if (nullptr != pUserData)
 			{
-				/* 코디 타격 */
-				if (pUserData->eID == GameID::eCODY)
+				if (pUserData->eID == GameID::eRUNNINGMOONBABOON)
 				{
-					/* 지속 타격 데미지*/
-					if (m_isHitCody)
-					{
-						if (m_dDamagingDelay_Cody <= 0.0)
-						{
-							// 데미지를 주는 함수
-
-							// 데미지 주기 초기화
-							m_dDamagingDelay_Cody = 0.3;
-						}
-					}
-					/* 첫 타격 데미지 */
-					else
-					{
-						// 데미지를 주는 함수
-
-						// 데미지 주기 초기화
-						m_dDamagingDelay_Cody = 0.3;
-					}
-				}
-				else
-				{
-					m_isHitCody = false;
-					m_dDamagingDelay_Cody = 0.0;
-				}
-
-				/* 메이 타격 */
-				if (pUserData->eID == GameID::eMAY)
-				{
-					/* 지속 타격 데미지*/
-					if (m_isHitMay)
-					{
-						if (m_dDamagingDelay_May <= 0.0)
-						{
-							// 데미지를 주는 함수
-
-							// 데미지 주기 초기화
-							m_dDamagingDelay_May = 0.3;
-						}
-					}
-					/* 첫 타격 데미지 */
-					else
-					{
-						// 데미지를 주는 함수
-
-						// 데미지 주기 초기화
-						m_dDamagingDelay_May = 0.3;
-					}
-				}
-				else
-				{
-					m_isHitMay = false;
-					m_dDamagingDelay_May = 0.0;
+					((CRunningMoonBaboon*)DATABASE->Get_RunningMoonBaboon())->Set_LaserHit(true);
 				}
 			}
 
@@ -181,19 +129,21 @@ _int CLaser_TypeC::Tick(_double dTimeDelta)
 			m_isCollided = false;
 			XMStoreFloat4(&m_vEndPoint, XMLoadFloat4(&m_vStartPoint) + XMLoadFloat4(&m_vLaserDir) * m_fLaserSizeY);
 			m_fLaserSizeY = m_fLaserMaxY;
-	}
+
+		}
 
 		/* 레이저 크기 */
 		if (m_fLaserMaxY < 200.f)
 			m_fLaserMaxY += m_fShootSpeed * (_float)dTimeDelta;
-		if (m_fLaserSizeX < 3.f)
-			m_fLaserSizeX += m_fShootSpeed * 0.2f * (_float)dTimeDelta;
+		if (m_fLaserSizeX < 5.f)
+			m_fLaserSizeX += m_fShootSpeed * 0.5f * (_float)dTimeDelta;
 
 		if (m_fLaserMaxY >= 200.f)
 		{
 			m_isDead = true;
+			((CMoonUFO*)DATABASE->Get_MoonUFO())->Compensate_LaserDir(false);
 		}
-}
+	}
 	/* 레이저 종료 시*/
 	else
 	{

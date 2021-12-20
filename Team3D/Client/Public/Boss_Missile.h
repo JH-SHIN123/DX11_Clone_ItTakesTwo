@@ -19,10 +19,10 @@ public:
 
 		tagBossMissile_Desc() {}
 		tagBossMissile_Desc(_bool IsTarget_Cody)
-			: IsTarget_Cody(IsTarget_Cody){}
+			: IsTarget_Cody(IsTarget_Cody) {}
 
 		tagBossMissile_Desc(_bool IsTarget_Cody, _float4 vPos)
-			: IsTarget_Cody(IsTarget_Cody), vPosition(vPos){}
+			: IsTarget_Cody(IsTarget_Cody), vPosition(vPos) {}
 	};
 private:
 	explicit CBoss_Missile(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -32,55 +32,54 @@ private:
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
-	virtual _int	Tick(_double TimeDelta) override;
-	virtual _int	Late_Tick(_double TimeDelta) override;
+	virtual _int	Tick(_double dTimeDelta) override;
+	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
-	/* For.Trigger */
-	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
-
-public:
 	virtual HRESULT Render_ShadowDepth() override;
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
-public:
-	void Combat_Move(_double TimeDelta);
-	void Playable_Mode(_double TimeDelta);
+private:
+	void Combat_Move(_double dTimeDelta);
+	void MayControl_Move(_double dTimeDelta);
+	void CodyControl_Move(_double dTimeDelta);
+	void Falling(_double dTimeDelta);
+	void Adjust_Angle(_double dTimeDelta);
 
 private:
-	_int Dead_Explosion();
-
-private:
-	_bool m_IsNull_Trigger = false;
-	_bool m_IsExplosion = false;
-
-private:
-	_float m_fCurvePower = 10.f;
-	_float m_fCombatTime = 10.f; // 추적시간
-	_bool m_IsCombatMode = true; //
-	_bool m_IsTargetCody = false;
-
-	_float m_fUpdateTrigger_Term = 0.f;
-	const _float m_fUpdateTrigger_Term_Max = 1.f;
-	_bool m_IsUpadate_Trigger = false;
-
-
-private: //
-	_bool m_IsPlayable_Ready = false;
-	_bool m_IsPlayable = false;
-
 	GameID::Enum m_eTarget_GameID;
+
+	_bool m_IsTargetCody = false;
+	_bool m_IsCollide = false;
+	_bool m_IsCrashed = false;
+	_bool m_IsFalling = false;
+	_bool m_bStartAdjustAngle = false;
+
+	_bool m_bCodyCollide = false;
+	_bool m_bMayCollide = false;
+
+	_bool m_bMayControl = false;
+	_bool m_bCodyControl = false;
+
+	_bool m_bPlayerExplosion = false;
+	_bool m_bBossExplosion = false;
+
+	_float m_fAttackTime = 0.f;
+	_float m_fSpeed = 0.f;
+	_float m_fRotateAcceleration = 0.f;
+	_float m_fMoveAcceleration = 0.f;
+
+	_vector m_vPlayerOffSetPosition = XMVectorZero();
 
 protected:
 	/* For.Component */
 	CRenderer*			m_pRendererCom			= nullptr;
 	CTransform*			m_pTransformCom			= nullptr;
 	CModel*				m_pModelCom				= nullptr;
-
-	CTransform*			m_pTransformCom_Actor	= nullptr;
-	CTriggerActor*		m_pTriggerCom_Combat	= nullptr;
-	CTriggerActor*		m_pTriggerCom_Playable	= nullptr;
+	CTriggerActor*		m_pTriggerActorCom		= nullptr;
+	PxRaycastBuffer		m_RaycastBuffer;
 
 public:
 	static CBoss_Missile* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -2,21 +2,16 @@
 
 #include "Client_Defines.h"
 #include "Light.h"
-#include "StaticVolume.h"
-#include "DynamicVolume.h"
+#include "VolumeObject.h"
 
 BEGIN(Client)
 class CVolumeLight final : public CLight
 {
 public:
-	enum TYPE { TYPE_STATIC, TYPE_DYNAMIC, TYPE_END };
-
 	typedef struct tagVolumeLightDesc
 	{
-		TYPE						eType = TYPE_END;
 		LIGHT_DESC					tLightDesc;
-		CStaticVolume::VOLUME_DESC	tVolumeDesc_Static;
-		CDynamicVolume::VOLUME_DESC tVolumeDesc_Dynamic;
+		CVolumeObject::VOLUME_DESC	tVolumeDesc;
 	}VOLUMELIGHT_DESC;
 
 public: /* Setter */
@@ -32,9 +27,7 @@ public:
 
 private:
 	VOLUMELIGHT_DESC		m_tVolumeDesc;
-
-	CStaticVolume*			m_pStaticVolume = nullptr;
-	CDynamicVolume*			m_pDynamicVolume = nullptr;
+	CVolumeObject*			m_pVolumeObject = nullptr;
 
 public:
 	static CVolumeLight* Create(const _tchar* pLightTag, void* pArgs);

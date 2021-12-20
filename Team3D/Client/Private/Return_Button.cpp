@@ -45,8 +45,15 @@ _int CReturn_Button::Tick(_double dTimeDelta)
 	{
 		m_bReady = true;
 
-		if(m_pGameInstance->Key_Down(DIK_RETURN))
+		if (m_pGameInstance->Key_Down(DIK_RETURN))
+		{
+			/* Sound */
+			m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
+			m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON);
+			m_pGameInstance->FadeInOut_Sound(CHANNEL_LOGO, false, 0.05f, 0.05f);
+
 			m_bChangeScene = true;
+		}
 	}
 
 	return NO_EVENT;

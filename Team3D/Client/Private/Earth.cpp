@@ -49,7 +49,7 @@ _int CEarth::Late_Tick(_double TimeDelta)
 	CGameObject::Late_Tick(TimeDelta);
 
 	if (m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 50000.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 
 	return NO_EVENT;
 }
@@ -75,14 +75,11 @@ HRESULT CEarth::Render(RENDER_GROUP::Enum eRender)
 
 	m_pModelCom->Sepd_Bind_Buffer();
 
-	m_pModelCom->Set_Variable("iChjeck", &iGara, sizeof(_int));
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	m_pModelCom->Set_ShaderResourceView("g_DarkTexture", m_pTexturesCom->Get_ShaderResourceView(2));
 	m_pModelCom->Set_ShaderResourceView("g_RoughnessTexture", m_pTexturesCom->Get_ShaderResourceView(3));
 	m_pModelCom->Sepd_Render_Model(0, 0);
 
-	iGara = 1;
-	m_pModelCom->Set_Variable("iChjeck", &iGara, sizeof(_int));
 	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(1));
 	m_pModelCom->Sepd_Render_Model(1, 1);
 

@@ -82,6 +82,8 @@ enum class Effect_Value
 	StarBuddy_Explosion_BigBang,
 	StarBuddy_Explosion_Particle,
 
+	PipeLocker_Connected,
+
 	Effect_Value_End
 };
 
