@@ -127,6 +127,7 @@ PS_OUT  PS_MAIN(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	Out.vColor.rgb *= 2.5f;
 	Out.vColor.a *= g_MaskTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vMaskUV).r;
 
 	return Out;

@@ -63,6 +63,8 @@ enum class Effect_Value
 	Hit_Planet_Particle,
 	Hit_Planet_Smoke,
 
+	PipeLocker_Connected,
+
 	Effect_Value_End
 };
 

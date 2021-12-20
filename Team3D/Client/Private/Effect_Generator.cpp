@@ -247,6 +247,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::Hit_Planet_Smoke:
 		lstrcpy(szPrototype, L"GameObject_2D_Hit_Planet_Smoke");
 		break;
+	case Effect_Value::PipeLocker_Connected:
+		lstrcpy(szPrototype, L"GameObject_Effect_PipeLocker_Connected");
+		break;
 	default:
 		break;
 	}

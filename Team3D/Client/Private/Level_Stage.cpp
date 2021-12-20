@@ -86,8 +86,6 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_UFORadarSet(TEXT("Layer_UFORadarSet")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_TestRocket(TEXT("Layer_BossMissile")), E_FAIL);
 
-
-
 	/* Jin */
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoomPuzzle(TEXT("Layer_PressureBigPlate"), TEXT("GameObject_PressureBigPlate")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_ControlRoom_Glass(TEXT("Layer_ControlRoom_Glass")), E_FAIL);
@@ -115,14 +113,6 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 #ifdef __INSTALL_LIGHT
 	CLight_Generator::GetInstance()->KeyInput(dTimedelta);
 #endif // __TEST_TAEK
-
-#ifdef __TEST_SE
-	if (m_pGameInstance->Key_Down(DIK_V))
-	{
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Effect", Level::LEVEL_STAGE, TEXT("Effect_PipeLocker_Connected")), E_FAIL);
-		//m_pGameInstance->Clear_LayerResources(Level::LEVEL_STAGE, TEXT("Layer_Earth"));
-	}
-#endif
 
 	return NO_EVENT;
 }

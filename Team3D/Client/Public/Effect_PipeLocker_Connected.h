@@ -26,7 +26,10 @@ private:
 	CTextures*								m_pMaskTextureCom = nullptr;
 	class CVIBuffer_SimplePointInstance*	m_pVIBufferCom = nullptr;
 	_float4x4*								m_pVertexLocals = nullptr;
+	_float3*								m_pSize = nullptr;
 	_uint									m_iInstanceCount = 0;
+	_float									m_fGrvityWeight = 0.f;
+	_float									m_fShootingPower = 0.f;
 
 public:
 	static CEffect_PipeLocker_Connected* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
