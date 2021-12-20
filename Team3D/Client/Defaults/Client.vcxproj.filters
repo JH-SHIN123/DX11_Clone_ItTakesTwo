@@ -840,6 +840,21 @@
     <Filter Include="02.GameObject\06.UI\15.InfoBar\01.Boss">
       <UniqueIdentifier>{8001ece9-747e-4946-887b-101332178afc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame">
+      <UniqueIdentifier>{68e45867-3e1e-4948-a95a-c534167b378a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\00.Minigame_Ready">
+      <UniqueIdentifier>{c61cc7b9-02e0-4efb-b9c8-7fd12af05dd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown">
+      <UniqueIdentifier>{5e838b2e-ac0d-4966-b7a1-7a520c120139}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle">
+      <UniqueIdentifier>{b61c06ff-3eea-4cc8-9eaa-a08aac20aaee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\03.Minigame_Win">
+      <UniqueIdentifier>{988e384c-a3bb-4412-896a-d391f8dd4326}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\99.Terrain%28Test%29">
       <UniqueIdentifier>{f999b3e3-a399-493a-893b-bcebcfb781a4}</UniqueIdentifier>
     </Filter>
@@ -932,21 +947,6 @@
     </Filter>
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\06.UI\16.Minigame">
-      <UniqueIdentifier>{68e45867-3e1e-4948-a95a-c534167b378a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\06.UI\16.Minigame\00.Minigame_Ready">
-      <UniqueIdentifier>{c61cc7b9-02e0-4efb-b9c8-7fd12af05dd3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown">
-      <UniqueIdentifier>{5e838b2e-ac0d-4966-b7a1-7a520c120139}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle">
-      <UniqueIdentifier>{b61c06ff-3eea-4cc8-9eaa-a08aac20aaee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\06.UI\16.Minigame\03.Minigame_Win">
-      <UniqueIdentifier>{988e384c-a3bb-4412-896a-d391f8dd4326}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1670,6 +1670,18 @@
     <ClInclude Include="..\Public\BossHpBarFrame.h">
       <Filter>02.GameObject\06.UI\15.InfoBar\01.Boss</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Ready.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\00.Minigame_Ready</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Countdown.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_GaugeCircle.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Win.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\03.Minigame_Win</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
     </ClInclude>
@@ -1759,18 +1771,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Minigame_Ready.h">
-      <Filter>02.GameObject\06.UI\16.Minigame\00.Minigame_Ready</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Minigame_Countdown.h">
-      <Filter>02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Minigame_GaugeCircle.h">
-      <Filter>02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Minigame_Win.h">
-      <Filter>02.GameObject\06.UI\16.Minigame\03.Minigame_Win</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -2491,6 +2491,18 @@
     <ClCompile Include="..\Private\BossHpBarFrame.cpp">
       <Filter>02.GameObject\06.UI\15.InfoBar\01.Boss</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Ready.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\00.Minigame_Ready</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Countdown.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_GaugeCircle.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Win.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\03.Minigame_Win</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
     </ClCompile>
@@ -2547,18 +2559,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Minigame_Ready.cpp">
-      <Filter>02.GameObject\06.UI\16.Minigame\00.Minigame_Ready</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Minigame_Countdown.cpp">
-      <Filter>02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Minigame_GaugeCircle.cpp">
-      <Filter>02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Minigame_Win.cpp">
-      <Filter>02.GameObject\06.UI\16.Minigame\03.Minigame_Win</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
