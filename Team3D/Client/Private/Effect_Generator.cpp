@@ -146,7 +146,7 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::Cody_Rail:
 		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_CODY;
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Rail_Particle");
-		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Player_Rail_Smoke"), &Clone_Data);
+		//m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Player_Rail_Smoke"), &Clone_Data);
 		break;
 	case Effect_Value::Cody_PinBall_Move:
 		lstrcpy(szPrototype, L"GameObject_2D_Pinball_Move");

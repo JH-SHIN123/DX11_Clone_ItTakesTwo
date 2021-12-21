@@ -196,6 +196,7 @@ public: /* Getter */
 	_bool		Get_IsInRocket() { return m_IsBossMissile_Control; }
 	_bool		Get_OnRail() { return m_bOnRail; }
 
+
 public:
 
 	void		Update_Tirgger_Pos(_vector vPos);
@@ -511,6 +512,7 @@ private:
 	_bool						m_bMoveToRail = false;
 	_bool						m_bOnRail = false;
 	_bool						m_bOnRailEnd = false;
+	_bool						m_bOnRail_Effect = false;
 
 private:
 	_double						m_dRailEnd_ForceDeltaT = 0.0;

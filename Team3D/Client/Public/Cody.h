@@ -236,6 +236,7 @@ public:
 	_bool			 Get_IsWallJump() { return m_IsCamTriggerCollide; }
 	_bool			 Get_OnRail() { return m_bOnRail; }
 	_bool			 Get_IsEnding() { return m_IsEnding; }
+
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
@@ -566,6 +567,7 @@ private:
 	_bool						m_bMoveToRail = false;
 	_bool						m_bOnRail = false;
 	_bool						m_bOnRailEnd = false;
+	_bool						m_bOnRail_Effect = false;
 
 private:
 	_double						m_dRailEnd_ForceDeltaT = 0.0;

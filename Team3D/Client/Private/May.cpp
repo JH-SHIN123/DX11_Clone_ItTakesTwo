@@ -2803,6 +2803,8 @@ void CMay::KeyInput_Rail(_double dTimeDelta)
 
 			m_bMoveToRail = false;
 			m_bOnRail = false;
+			m_bOnRail_Effect = false;
+
 		}
 	}
 }
@@ -2865,6 +2867,7 @@ void CMay::Find_TargetSpaceRail()
 			m_pSearchTargetRailNode = pNode;
 			fMinDist = fDist;
 			isSearch = true;
+			EFFECT->Add_Effect(Effect_Value::May_Rail, m_pTransformCom->Get_WorldMatrix());
 		}
 	}
 
@@ -2909,6 +2912,8 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 			m_pTargetRailNode = nullptr;
 			m_bOnRail = false;
 			m_bMoveToRail = false;
+			m_bOnRail_Effect = false;
+
 			return;
 		}
 
@@ -2930,7 +2935,9 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 		m_pTargetRailNode = nullptr;
 		m_bOnRail = true;
 		m_bMoveToRail = false;
-		EFFECT->Add_Effect(Effect_Value::May_Rail, m_pTransformCom->Get_WorldMatrix());
+		if (false == m_bOnRail_Effect)
+			EFFECT->Add_Effect(Effect_Value::May_Rail, m_pTransformCom->Get_WorldMatrix());
+		m_bOnRail_Effect = true;
 	}
 }
 
