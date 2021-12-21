@@ -115,8 +115,6 @@ void C3DText::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		if (0 == m_iIndex || 10 == m_iIndex || 16 == m_iIndex || 23 == m_iIndex)
-			ENDINGCREDIT->Set_Dead_Environment();
 		/* 충돌시 로켓에 부스트 세팅해줌 */
 		((CEndingRocket*)(DATABASE->Get_EndingRocket()))->Set_Boost();
 		ENDINGCREDIT->Create_3DText(true);

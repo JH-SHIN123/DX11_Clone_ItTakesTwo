@@ -99,7 +99,7 @@ void CHugeRock::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObje
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		ENDINGCREDIT->Create_Environment();
+		ENDINGCREDIT->Set_Dead_Environment();
 		Create_Rocks();
 		Set_Dead();
 	}
