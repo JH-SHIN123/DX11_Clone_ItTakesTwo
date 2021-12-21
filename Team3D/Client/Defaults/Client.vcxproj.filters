@@ -147,6 +147,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\02.Se\04.Effect_PipeLocker">
       <UniqueIdentifier>{cbb52761-0b5b-433c-800e-73f10284fc57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\05.Effect_GateSmoke">
+      <UniqueIdentifier>{c76a672b-f512-47fc-95de-2c7c1c5e5bcd}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung">
       <UniqueIdentifier>{fec661ad-31f9-4dec-b790-1b4cb09030ce}</UniqueIdentifier>
     </Filter>
@@ -1193,6 +1196,9 @@
     <ClInclude Include="..\Public\Effect_PipeLocker_Connected.h">
       <Filter>02.GameObject\04.Stage_Space\02.Se\04.Effect_PipeLocker</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_GateSmoke.h">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\05.Effect_GateSmoke</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\WarpGate.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
     </ClInclude>
@@ -2103,6 +2109,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_PipeLocker_Connected.cpp">
       <Filter>02.GameObject\04.Stage_Space\02.Se\04.Effect_PipeLocker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_GateSmoke.cpp">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\05.Effect_GateSmoke</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\WarpGate.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>

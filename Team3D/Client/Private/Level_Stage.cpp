@@ -127,6 +127,14 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Intro, true);
 	}
 #endif
+
+#ifdef __TEST_SE
+	if (m_pGameInstance->Key_Down(DIK_V))
+	{
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Effect", Level::LEVEL_STAGE, TEXT("GameObject_Effect_GateSmoke")), E_FAIL);
+	}
+#endif
+
 	return NO_EVENT;
 }
 

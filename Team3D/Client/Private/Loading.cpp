@@ -17,6 +17,7 @@
 #include "Laser_TypeB.h"
 #include "Earth.h"
 #include "Effect_PipeLocker_Connected.h"
+#include "Effect_GateSmoke.h"
 
 /* Jung */
 #include "Effect_Generator.h"
@@ -397,6 +398,8 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Se()
 #endif
 
 #ifdef __TEST_SE
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_SimplePointInstance"), CVIBuffer_SimplePointInstance::Create(m_pDevice, m_pDeviceContext, 50, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), "DefaultTechnique")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Effect_GateSmoke"), CEffect_GateSmoke::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 #endif
 
 	return S_OK;
