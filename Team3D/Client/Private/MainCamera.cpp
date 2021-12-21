@@ -12,6 +12,9 @@
 #include"PinBall.h"
 #include"PinBall_Handle.h"
 #include"UmbrellaBeam.h"
+#include"May.h"
+#include"LaserTennis_Manager.h"
+#include"AlphaScreen.h"
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -190,6 +193,11 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 	if (m_pCody->Get_IsWallJump())
 	{
 		m_eCurCamMode = CamMode::Cam_WallJump;
+	}
+	if (CLaserTennis_Manager::GetInstance()->Get_StartGame() && m_eCurCamMode != CamMode::Cam_LaserTennis)
+	{
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f),1.5f);
+		m_eCurCamMode = CamMode::Cam_LaserTennis;
 	}
 
 	
@@ -1131,6 +1139,39 @@ _int CMainCamera::Tick_Cam_WallJump(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+_int CMainCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
+{
+
+	if (CLaserTennis_Manager::GetInstance()->Get_StartGame() == false)
+	{
+		if (CLaserTennis_Manager::GetInstance()->Get_Winner() == CLaserTennis_Manager::TARGET_MAY)
+		{
+			if (UI_Generator->Get_EmptyCheck(Player::Cody, UI::BlackScreenFadeInOut))
+			{
+				UI_CreateOnlyOnce(Cody, BlackScreenFadeInOut);
+				UI_Generator->Set_FadeInSpeed(Player::Cody, UI::BlackScreenFadeInOut, 5.f);
+			}
+			if(static_cast<CAlphaScreen*>(UI_Generator->Get_UIObject(Player::Cody, UI::BlackScreenFadeInOut))->Get_Alpha() >= 1.f)
+				ReSet_Cam_FreeToAuto(true);
+		}
+		return NO_EVENT;
+	}
+	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
+	_vector vCodyPos = XMVectorSetY(m_pCody->Get_Position(), 730.f);
+	_vector vMayPos = XMVectorSetY(pMay->Get_Position(), 730.f);
+	_vector vTargetPos = XMVectorSet(60.479f,753.281f,984.f,1.f);
+
+	_vector vMiddlePos = vCodyPos - (vCodyPos - vMayPos)*0.5f;
+
+	vMiddlePos = XMVectorSetY(vMiddlePos, 730.f);
+	vMiddlePos = XMVectorSetZ(vMiddlePos, 998.f);
+
+	vTargetPos = XMVectorSetX(vTargetPos, XMVectorGetX(vMiddlePos));
+	m_pTransformCom->Set_WorldMatrix(
+		MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(),MakeViewMatrixByUp(vTargetPos,vMiddlePos),dTimeDelta));
+	return NO_EVENT;
+}
+
 
 _int CMainCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook, _bool bIsCalculateCamLook)
 {
@@ -1395,6 +1436,11 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		switch (m_eCurCamMode)
 		{
 		case Client::CMainCamera::CamMode::Cam_Free:
+			if (false == UI_Generator->Get_EmptyCheck(Player::Cody, UI::BlackScreenFadeInOut))
+			{
+				UI_Generator->Set_FadeOut(Player::Cody, UI::BlackScreenFadeInOut);
+				UI_Generator->Set_FadeOutSpeed(Player::Cody, UI::BlackScreenFadeInOut, 6.f);
+			}
 			break;
 		case Client::CMainCamera::CamMode::Cam_AutoToFree:
 			switch (m_ePreCamMode)
@@ -1459,6 +1505,10 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	case Client::CMainCamera::CamMode::Cam_WallJump:
 		iResult = Tick_Cam_WallJump(dTimeDelta);
 		break;
+	case Client::CMainCamera::CamMode::Cam_LaserTennis:
+		iResult = Tick_Cam_LaserTennis(dTimeDelta);
+		break;
+
 	}
 	return iResult;
 }

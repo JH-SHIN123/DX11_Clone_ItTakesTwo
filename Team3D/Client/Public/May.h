@@ -195,6 +195,7 @@ public: /* Getter */
 	_bool		Get_IsWallJump() { return m_IsCamTriggerCollide; }
 	_bool		Get_IsInRocket() { return m_IsBossMissile_Control; }
 	_bool		Get_OnRail() { return m_bOnRail; }
+	_bool		Get_IsLaserTennis() { return m_bLaserTennis; }
 
 public:
 

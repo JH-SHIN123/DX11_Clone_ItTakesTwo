@@ -10,7 +10,7 @@ class CCameraActor;
 class CSubCamera final : public CCamera
 {
 	enum CamRev { Rev_Holizontal, Rev_Prependicul, Rev_End };
-	enum class CamMode { Cam_Free, Cam_AutoToFree, Cam_Warp_WormHole, Cam_WallJump, Cam_PinBall_May, Cam_End };
+	enum class CamMode { Cam_Free, Cam_AutoToFree, Cam_Warp_WormHole, Cam_WallJump, Cam_PinBall_May, Cam_LaserTennis, Cam_End };
 	//O CamFreeMove P FollowPlayer
 	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_OpenThirdFloor, Cam_Free_RidingSpaceShip_May,Cam_Free_End };
 private:
@@ -45,6 +45,7 @@ private:
 	_int	Tick_Cam_Warp_WormHole(_double dTimeDelta);				//웜홀
 	_int	Tick_Cam_PinBall_May(_double dTimeDelta);				//핀볼 메이
 	_int	Tick_Cam_WallJump(_double dTimeDelta);
+	_int	Tick_Cam_LaserTennis(_double dTimeDelta);
 
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);			//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);				//카메라가 자유롭게 이동함
@@ -78,6 +79,8 @@ private:
 	_float m_fCurMouseRev[Rev_End] = { 0.f,0.f };
 
 	CamMode m_eCurCamMode = CamMode::Cam_End;
+	CamMode m_ePreCamMode = CamMode::Cam_End;
+
 
 	_float4x4 m_matBeginWorld;
 	_float4x4 m_matCurWorld;
@@ -91,6 +94,7 @@ private:
 	_float m_fChangeCamModeLerpSpeed = 1.f;
 
 	CamFreeOption m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
+	CamFreeOption m_ePreCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 
 	//For.SoftMove
 	_float4		m_vPlayerPos = { 0.f,0.f,0.f,1.f };
