@@ -3427,7 +3427,7 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 	{
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
-			m_pGameInstance->Stop_Sound(CHANNEL_RAIL);
+			m_pGameInstance->Stop_Sound(CHANNEL_CODY_RAIL);
 
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 			Loop_RadiarBlur(false);
@@ -3574,8 +3574,8 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 		m_bMoveToRail = false;
 		EFFECT->Add_Effect(Effect_Value::Cody_Rail, m_pTransformCom->Get_WorldMatrix());
 
-		m_pGameInstance->Set_SoundVolume(CHANNEL_RAIL, m_fRailSoundVolume);
-		m_pGameInstance->Play_Sound(TEXT("Rail_Ride.wav"), CHANNEL_RAIL, m_fRailSoundVolume, true);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_CODY_RAIL, m_fRailSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Rail_Ride.wav"), CHANNEL_CODY_RAIL, m_fRailSoundVolume, true);
 	}
 }
 void CCody::TakeRail(_double dTimeDelta)
@@ -3597,9 +3597,9 @@ void CCody::TakeRail(_double dTimeDelta)
 	}
 	else
 	{
-		m_pGameInstance->Stop_Sound(CHANNEL_RAIL);
-		m_pGameInstance->Set_SoundVolume(CHANNEL_RAIL, m_fRailSoundVolume);
-		m_pGameInstance->Play_Sound(TEXT("Rail_End.wav"), CHANNEL_RAIL, m_fRailSoundVolume);
+		m_pGameInstance->Stop_Sound(CHANNEL_CODY_RAIL);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_CODY_RAIL, m_fRailSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Rail_End.wav"), CHANNEL_CODY_RAIL, m_fRailSoundVolume);
 
 		m_pTargetRail = nullptr;
 		m_pTargetRailNode = nullptr;
