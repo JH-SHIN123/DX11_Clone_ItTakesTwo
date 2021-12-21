@@ -28,6 +28,9 @@ HRESULT CEndingCredit_Manager::Create_3DText(_bool bBoost)
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_3DText"), &tArg), E_FAIL);
 
+	if (0 == m_iTextIndex || 10 == m_iTextIndex || 16 == m_iTextIndex || 23 == m_iTextIndex)
+		FAILED_CHECK_RETURN(Create_HugeRock(), E_FAIL);
+
 	++m_iTextIndex;
 
 	return S_OK;
@@ -61,6 +64,13 @@ HRESULT CEndingCredit_Manager::Create_Rocks(_uint iNumRock)
 {
 	for (_uint i = 0; i < iNumRock; ++i)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_Rock")), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CEndingCredit_Manager::Create_HugeRock()
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_HugeRock")), E_FAIL);
 
 	return S_OK;
 }

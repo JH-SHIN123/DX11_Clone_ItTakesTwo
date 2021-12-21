@@ -98,7 +98,7 @@ void C2DMesh::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		/* 충돌시 랜덤하게 Force값 조정 */
-		_int iRandom = rand() % 4 - 3;
+		_int iRandom = rand() % 5 - 2;
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3((_float)iRandom, 0.f, (_float)iRandom));
 
 		m_iColorIndex = 1;

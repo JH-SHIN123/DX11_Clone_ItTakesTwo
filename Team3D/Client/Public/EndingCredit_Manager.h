@@ -31,6 +31,7 @@ private:
 private:
 	void Add_Argument_Info(_uint iIndex, C3DText::ARG_DESC &tArg);
 	HRESULT Create_Rocks(_uint iNumRock);
+	HRESULT Create_HugeRock();
 	HRESULT Create_2DMesh(_uint iNum2DMesh);
 
 public:

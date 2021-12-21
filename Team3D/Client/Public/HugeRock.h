@@ -1,0 +1,42 @@
+#pragma once
+#include "GameObject.h"
+
+BEGIN(Client)
+class CHugeRock final : public CGameObject
+{
+private:
+	explicit CHugeRock(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CHugeRock(const CHugeRock& rhs);
+	virtual ~CHugeRock() = default;
+
+public:
+	virtual HRESULT	NativeConstruct_Prototype() override;
+	virtual HRESULT	NativeConstruct(void* pArg) override;
+	virtual _int	Tick(_double dTimeDelta) override;
+	virtual _int	Late_Tick(_double dTimeDelta) override;
+	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
+
+	virtual HRESULT Render_ShadowDepth() override;
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+
+private:
+	CRenderer*		m_pRendererCom = nullptr;
+	CTransform*		m_pTransformCom = nullptr;
+	CModel*			m_pModelCom = nullptr;
+	CDynamicActor*	m_pDynamicActorCom = nullptr;
+	CTriggerActor*	m_pTriggerActorCom = nullptr;
+
+	_float				m_fScale = 0.5f;
+	_float				m_fMaxScale = 3.f;
+	_bool				m_bCollision = false;
+
+private:
+	HRESULT Ready_Component(void* pArg);
+	HRESULT Create_Rocks();
+
+public:
+	static CHugeRock* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CGameObject* Clone_GameObject(void* pArg) override;
+	virtual void Free() override;
+};
+END
