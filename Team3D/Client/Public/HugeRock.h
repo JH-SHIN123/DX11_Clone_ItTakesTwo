@@ -26,8 +26,8 @@ private:
 	CDynamicActor*	m_pDynamicActorCom = nullptr;
 	CTriggerActor*	m_pTriggerActorCom = nullptr;
 
-	_float				m_fScale = 0.5f;
-	_float				m_fMaxScale = 3.f;
+	_float				m_fScale = 1.f;
+	_float				m_fMaxScale = 10.f;
 	_bool				m_bCollision = false;
 
 private:

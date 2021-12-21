@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\C2DMesh.h"
 #include "Cody.h"
+#include "EndingCredit_Manager.h"
 
 C2DMesh::C2DMesh(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -33,7 +34,15 @@ HRESULT C2DMesh::NativeConstruct(void * pArg)
 
 _int C2DMesh::Tick(_double dTimeDelta)
 {
+	if (true == m_isDead)
+		return EVENT_DEAD;
+
 	CGameObject::Tick(dTimeDelta);
+
+	if (true == ENDINGCREDIT->Get_Dead_Environment())
+		Set_Dead();
+
+	m_iRandomModel = ENDINGCREDIT->Get_RandomModel();
 
 	Movement(dTimeDelta);
 
@@ -50,8 +59,29 @@ _int C2DMesh::Late_Tick(_double dTimeDelta)
 
 	m_pTriggerActorCom->Update_TriggerActor();
 
-	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+	switch (m_iRandomModel)
+	{
+	case 0:
+		if (0 < m_pModelCom_Ailen->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+		break;
+	case 1:
+		if (0 < m_pModelCom_Robot->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+		break;
+	case 2:
+		if (0 < m_pModelCom_Star->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+		break;
+	case 3:
+		if (0 < m_pModelCom_UFO->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+		break;
+	case 4:
+		if (0 < m_pModelCom_Umbrella->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+		break;
+	}
 
 	return NO_EVENT;
 }
@@ -60,22 +90,53 @@ HRESULT C2DMesh::Render(RENDER_GROUP::Enum eGroup)
 {
 	CGameObject::Render(eGroup);
 
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Sepd_Bind_Buffer();
-
 	_float4 vColor;
 	switch (m_iColorIndex)
 	{
-	case 0: vColor = _float4(0.960784376f, 0.960784376f, 0.960784376f, 1.000000000f);
+	case 0: vColor = _float4(1.f, 1.f, 1.f, 1.f);
 		break;
 	case 1: vColor = _float4(0.125490203f, 0.698039234f, 0.666666687f, 1.000000000f);
 		break;
 	}
 
-	m_pModelCom->Set_Variable("g_vColor", &vColor, sizeof(_float4));
-	m_pModelCom->Sepd_Render_Model(0, 29, false);
-
+	switch (m_iRandomModel)
+	{
+	case 0:
+		m_pModelCom_Ailen->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+		m_pModelCom_Ailen->Set_DefaultVariables_Shadow();
+		m_pModelCom_Ailen->Sepd_Bind_Buffer();
+		m_pModelCom_Ailen->Set_Variable("g_vColor", &vColor, sizeof(_float4));
+		m_pModelCom_Ailen->Sepd_Render_Model(0, 29, false);
+		break;
+	case 1:
+		m_pModelCom_Robot->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+		m_pModelCom_Robot->Set_DefaultVariables_Shadow();
+		m_pModelCom_Robot->Sepd_Bind_Buffer();
+		m_pModelCom_Robot->Set_Variable("g_vColor", &vColor, sizeof(_float4));
+		m_pModelCom_Robot->Sepd_Render_Model(0, 29, false);
+		break;
+	case 2:
+		m_pModelCom_Star->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+		m_pModelCom_Star->Set_DefaultVariables_Shadow();
+		m_pModelCom_Star->Sepd_Bind_Buffer();
+		m_pModelCom_Star->Set_Variable("g_vColor", &vColor, sizeof(_float4));
+		m_pModelCom_Star->Sepd_Render_Model(0, 29, false);
+		break;
+	case 3:
+		m_pModelCom_UFO->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+		m_pModelCom_UFO->Set_DefaultVariables_Shadow();
+		m_pModelCom_UFO->Sepd_Bind_Buffer();
+		m_pModelCom_UFO->Set_Variable("g_vColor", &vColor, sizeof(_float4));
+		m_pModelCom_UFO->Sepd_Render_Model(0, 29, false);
+		break;
+	case 4:
+		m_pModelCom_Umbrella->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+		m_pModelCom_Umbrella->Set_DefaultVariables_Shadow();
+		m_pModelCom_Umbrella->Sepd_Bind_Buffer();
+		m_pModelCom_Umbrella->Set_Variable("g_vColor", &vColor, sizeof(_float4));
+		m_pModelCom_Umbrella->Sepd_Render_Model(0, 29, false);
+		break;
+	}
 	return S_OK;
 }
 
@@ -83,11 +144,29 @@ HRESULT C2DMesh::Render_ShadowDepth()
 {
 	CGameObject::Render_ShadowDepth();
 
-	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	/* Skinned: 2 / Normal: 3 */
-	m_pModelCom->Render_Model(3, 0, true);
-
+	switch (m_iRandomModel)
+	{
+	case 0:
+		m_pModelCom_Ailen->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
+		m_pModelCom_Ailen->Render_Model(3, 0, true);
+		break;
+	case 1:
+		m_pModelCom_Robot->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
+		m_pModelCom_Robot->Render_Model(3, 0, true);
+		break;
+	case 2:
+		m_pModelCom_Star->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
+		m_pModelCom_Star->Render_Model(3, 0, true);
+		break;
+	case 3:
+		m_pModelCom_UFO->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
+		m_pModelCom_UFO->Render_Model(3, 0, true);
+		break;
+	case 4:
+		m_pModelCom_Umbrella->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
+		m_pModelCom_Umbrella->Render_Model(3, 0, true);
+		break;
+	}
 	return S_OK;
 }
 
@@ -118,7 +197,7 @@ void C2DMesh::Movement(_double dTimeDelta)
 		m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(m_fRandomAngle * 5000.f, m_fRandomAngle * 5000.f, m_fRandomAngle * 5000.f));
 
 	/* 스케일 조정 */
-	m_fScale += (_float)dTimeDelta / 4.f;
+	m_fScale += (_float)dTimeDelta / 3.f;
 
 	if (m_fMaxScale <= m_fScale)
 		m_fScale = m_fMaxScale;
@@ -165,35 +244,20 @@ HRESULT C2DMesh::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 
-	/* 랜덤 모델 생성 */
-	_uint iRandom = rand() % 5;
-	switch (iRandom)
-	{
-	case 0: 
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Ailen"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-		break;
-	case 1: 
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Robot"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-		break;
-	case 2: 
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Umbrella"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-		break;
-	case 3: 
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Star"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-		break;
-	case 4: 
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_UFO"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
-		break;
-	}
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Ailen"), TEXT("Com_Model0"), (CComponent**)&m_pModelCom_Ailen), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Robot"), TEXT("Com_Model1"), (CComponent**)&m_pModelCom_Robot), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Umbrella"), TEXT("Com_Model2"), (CComponent**)&m_pModelCom_Umbrella), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Star"), TEXT("Com_Model3"), (CComponent**)&m_pModelCom_Star), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_UFO"), TEXT("Com_Model4"), (CComponent**)&m_pModelCom_UFO), E_FAIL);
 
 	m_pCodyTransformCom = ((CCody*)(DATABASE->GetCody()))->Get_Transform();
 	Safe_AddRef(m_pCodyTransformCom);
 
 	/* 랜덤 생성 범위 */
-	_float3 vMyPos = { 0.f, -500.f, 0.f };
+	_float3 vMyPos = { 0.f, XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION)), 0.f };
 
 	vMyPos.x += (_float)(rand() % 61 - 30);
-	vMyPos.y -= (_float)(rand() % 50 + 30);
+	vMyPos.y -= (_float)(rand() % 50 + 50);
 	vMyPos.z += (_float)(rand() % 61 - 30);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vMyPos.x, vMyPos.y, vMyPos.z, 1.f));
@@ -255,11 +319,16 @@ CGameObject * C2DMesh::Clone_GameObject(void * pArg)
 
 void C2DMesh::Free()
 {
+	Safe_Release(m_pModelCom_UFO);
+	Safe_Release(m_pModelCom_Ailen);
+	Safe_Release(m_pModelCom_Robot);
+	Safe_Release(m_pModelCom_Star);
+	Safe_Release(m_pModelCom_Umbrella);
+
 	Safe_Release(m_pTriggerActorCom);
 	Safe_Release(m_pCodyTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pModelCom);
 	Safe_Release(m_pDynamicActorCom);
 
 	CGameObject::Free();

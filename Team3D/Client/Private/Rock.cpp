@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Rock.h"
 #include "Cody.h"
+#include "EndingCredit_Manager.h"
 
 
 CRock::CRock(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -34,45 +35,15 @@ HRESULT CRock::NativeConstruct(void * pArg)
 
 _int CRock::Tick(_double dTimeDelta)
 {
+	if (true == m_isDead)
+		return EVENT_DEAD;
+
 	CGameObject::Tick(dTimeDelta);
 
-	m_fScale += (_float)dTimeDelta / 4.f;
+	if (true == ENDINGCREDIT->Get_Dead_Environment())
+		Set_Dead();
 
-	if (m_fMaxScale <= m_fScale)
-		m_fScale = m_fMaxScale;
-
-	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-
-	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight));
-	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
-	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
-
-	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
-
-	_float fCodyY = XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
-	_float fMyY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
-	if (fCodyY + 10.f < fMyY && fCodyY < -500.f)
-	{
-		_vector vCodyPos = m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION);
-		_float3 vMyPos = {};
-		XMStoreFloat3(&vMyPos, vCodyPos);
-		vMyPos.x = 0.f;
-		vMyPos.z = 0.f;
-
-		vMyPos.x += (_float)(rand() % 61 - 30);
-		vMyPos.y -= 50.f;
-		vMyPos.z += (_float)(rand() % 61 - 30);
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vMyPos.x, vMyPos.y, vMyPos.z, 1.f));
-
-		m_fScale = 0.1f;
-		m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
-
-		m_pDynamicActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION))));
-	}
+	Movement(dTimeDelta);
 
 	return NO_EVENT;
 }
@@ -127,6 +98,47 @@ void CRock::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject *
 	}
 }
 
+void CRock::Movement(_double dTimeDelta)
+{
+	m_fScale += (_float)dTimeDelta / 3.f;
+
+	if (m_fMaxScale <= m_fScale)
+		m_fScale = m_fMaxScale;
+
+	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight));
+	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
+
+	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
+
+	_float fCodyY = XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
+	_float fMyY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	if (fCodyY + 10.f < fMyY)
+	{
+		_vector vCodyPos = m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION);
+		_float3 vMyPos = {};
+		XMStoreFloat3(&vMyPos, vCodyPos);
+		vMyPos.x = 0.f;
+		vMyPos.z = 0.f;
+
+		vMyPos.x += (_float)(rand() % 61 - 30);
+		vMyPos.y -= 50.f;
+		vMyPos.z += (_float)(rand() % 61 - 30);
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vMyPos.x, vMyPos.y, vMyPos.z, 1.f));
+
+		m_fScale = 0.1f;
+		m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
+
+		m_pDynamicActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION))));
+	}
+}
+
 HRESULT CRock::Ready_Component(void * pArg)
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
@@ -136,11 +148,9 @@ HRESULT CRock::Ready_Component(void * pArg)
 	m_pCodyTransformCom = ((CCody*)(DATABASE->GetCody()))->Get_Transform();
 	Safe_AddRef(m_pCodyTransformCom);
 
-	//m_fMaxScale = (rand() % 51 + 50) * 0.1f;
-
-	_float3 vMyPos = { 0.f, -500.f, 0.f };
+	_float3 vMyPos = { 0.f, XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION)), 0.f };
 	vMyPos.x += (_float)(rand() % 61 - 30);
-	vMyPos.y -= (_float)(rand() % 50 + 30);
+	vMyPos.y -= (_float)(rand() % 50 + 50);
 	vMyPos.z += (_float)(rand() % 61 - 30);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vMyPos.x, vMyPos.y, vMyPos.z, 1.f));

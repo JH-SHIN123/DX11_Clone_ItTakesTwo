@@ -1107,6 +1107,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\HugeRock">
       <UniqueIdentifier>{2cbbd421-ae32-4bf8-a171-d3a122a04a69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle">
+      <UniqueIdentifier>{82b1a154-6103-4995-92e1-201875b61a16}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -2054,7 +2057,9 @@
     <ClInclude Include="..\Public\HugeRock.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\HugeRock</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\RockParticle.h" />
+    <ClInclude Include="..\Public\RockParticle.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2975,7 +2980,9 @@
     <ClCompile Include="..\Private\HugeRock.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\HugeRock</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\RockParticle.cpp" />
+    <ClCompile Include="..\Private\RockParticle.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle</Filter>
+    </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--etc-->

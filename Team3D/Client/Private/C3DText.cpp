@@ -115,6 +115,8 @@ void C3DText::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
+		if (0 == m_iIndex || 10 == m_iIndex || 16 == m_iIndex || 23 == m_iIndex)
+			ENDINGCREDIT->Set_Dead_Environment();
 		/* 충돌시 로켓에 부스트 세팅해줌 */
 		((CEndingRocket*)(DATABASE->Get_EndingRocket()))->Set_Boost();
 		ENDINGCREDIT->Create_3DText(true);
@@ -175,7 +177,7 @@ HRESULT C3DText::Ready_Component(void * pArg)
 	m_iIndex = tArg.iIndex;
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxBoxGeometry(tArg.vTriggerSize.x, tArg.vTriggerSize.y, tArg.vTriggerSize.z);
+	PxGeometry* TriggerGeom = new PxBoxGeometry(tArg.vTriggerSize.x * 5.f, tArg.vTriggerSize.y, tArg.vTriggerSize.z * 5.f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;

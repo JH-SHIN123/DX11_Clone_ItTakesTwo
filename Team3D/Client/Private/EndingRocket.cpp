@@ -48,6 +48,7 @@ _int CEndingRocket::Tick(_double dTimeDelta)
 		Movement(dTimeDelta);
 		Ready_Players(dTimeDelta);
 	}
+
 	return _int();
 }
 

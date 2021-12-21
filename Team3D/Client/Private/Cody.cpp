@@ -554,7 +554,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_END))
 	{
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f), 3.f);
-		ENDINGCREDIT->Create_Environment();
+		//ENDINGCREDIT->Create_Environment();
 		m_IsEnding = true;
 	}
 #pragma endregion

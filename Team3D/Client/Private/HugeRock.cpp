@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\HugeRock.h"
 #include "Cody.h"
+#include "EndingCredit_Manager.h"
 
 CHugeRock::CHugeRock(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -33,9 +34,12 @@ HRESULT CHugeRock::NativeConstruct(void * pArg)
 
 _int CHugeRock::Tick(_double dTimeDelta)
 {
+	if (true == m_isDead)
+		return EVENT_DEAD;
+
 	CGameObject::Tick(dTimeDelta);
 
-	m_fScale += (_float)dTimeDelta * 2.f;
+	m_fScale += (_float)dTimeDelta * 5.f;
 
 	if (m_fMaxScale <= m_fScale)
 		m_fScale = m_fMaxScale;
@@ -95,7 +99,9 @@ void CHugeRock::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObje
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-
+		ENDINGCREDIT->Create_Environment();
+		Create_Rocks();
+		Set_Dead();
 	}
 }
 
@@ -106,7 +112,7 @@ HRESULT CHugeRock::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Rock"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
 	_vector vCodyPosition = ((CCody*)(DATABASE->GetCody()))->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-	_vector vPosition = XMVectorSet(0.f, XMVectorGetY(vCodyPosition) - 25.f, 0.f, 0.f);
+	_vector vPosition = XMVectorSet(0.f, XMVectorGetY(vCodyPosition) - 85.f, 0.f, 0.f);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
@@ -125,7 +131,7 @@ HRESULT CHugeRock::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(2.f);
+	PxGeometry* TriggerGeom = new PxSphereGeometry(12.f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;
@@ -139,6 +145,12 @@ HRESULT CHugeRock::Ready_Component(void * pArg)
 
 HRESULT CHugeRock::Create_Rocks()
 {
+	for (_uint i = 0; i < 100; ++i)
+	{
+		_vector vPositoin = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_RockParticle"), &vPositoin), E_FAIL);
+	}
+	return S_OK;
 }
 
 CHugeRock * CHugeRock::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
