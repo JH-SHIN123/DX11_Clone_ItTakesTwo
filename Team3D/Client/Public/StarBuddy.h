@@ -33,7 +33,6 @@ public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
-	void Set_Launch(_bool bLaunch) { m_bLaunch = bLaunch; }
 	void Launch_StarBuddy(_double dTimeDelta);
 
 private:

@@ -71,7 +71,7 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 		m_pGameInstance->Pad_Key_Down(DIP_Y) && m_IsMayCollide)
 	{
 		m_bLaunch = true;
-		UI_Delete(May, InputButton_InterActive);
+		UI_Delete(May, InputButton_PS_InterActive);
 		UI_Delete(Cody, InputButton_InterActive);
 	}
 

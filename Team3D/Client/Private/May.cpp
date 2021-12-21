@@ -1021,6 +1021,26 @@ void CMay::Enforce_IdleState()
 	m_iJumpCount = 0;
 	m_iAirDashCount = 0;
 
+	//m_IsOnGrind = false;
+	//m_IsHitStarBuddy = false;
+	//m_IsHitRocket = false;
+	//m_IsActivateRobotLever = false;
+	//m_IsPullVerticalDoor = false;
+	//m_IsEnterValve = false;
+	//m_IsInGravityPipe = false;
+	//m_IsPinBall = false;
+	//m_IsDeadLine = false;
+	//m_IsWarpNextStage = false;
+	//m_IsWarpDone = false;
+	//m_IsTouchFireDoor = false;
+	//m_IsHookUFO = false;
+	//m_IsBossMissile_Control = false;
+	//m_IsWallLaserTrap_Touch = false;
+	//m_bWallAttach = false;
+	//m_IsRippedOffAnimPlaying = false;
+	//m_bLaserTennis = false;
+	//m_IsEnding = false;
+
 	m_pActorCom->Set_IsFalling(false);
 	m_pActorCom->Set_ZeroGravity(false, false, false);
 	m_pActorCom->Set_Jump(false);
@@ -1679,7 +1699,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 	{
 		if (m_eTargetGameID == GameID::eSTARBUDDY && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)))
 		{
-			m_pModelCom->Set_Animation(ANI_M_BruteCombat_Attack_Var1);
+			m_pModelCom->Set_Animation(ANI_M_Lever_Left);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsHitStarBuddy = true;
 		}
@@ -2038,7 +2058,7 @@ void CMay::Hit_StarBuddy(const _double dTimeDelta)
 	{
 		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 
-		if (m_pModelCom->Is_AnimFinished(ANI_M_BruteCombat_Attack_Var1))
+		if (m_pModelCom->Is_AnimFinished(ANI_M_Lever_Left))
 		{
 			m_pModelCom->Set_Animation(ANI_M_MH);
 			m_IsHitStarBuddy = false;

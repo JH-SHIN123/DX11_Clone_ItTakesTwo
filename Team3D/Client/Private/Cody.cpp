@@ -691,7 +691,6 @@ void CCody::KeyInput(_double dTimeDelta)
 		if (m_IsJumping == false)
 		{
 			EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
-
 			m_fAcceleration = 5.f;
 			m_pModelCom->Set_Animation(ANI_C_Roll_Start);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Roll_Stop);
@@ -2031,6 +2030,34 @@ void CCody::Enforce_IdleState()
 	m_iAirDashCount = 0;
 	m_bCanMove = true;
 
+
+	m_bOnRailEnd = false;
+	m_IsHitStarBuddy = false;
+	m_IsHitRocket = false;
+	m_IsActivateRobotLever = false;
+	m_IsPushingBattery = false;
+	m_IsEnterValve = false;
+	m_IsInGravityPipe = false;
+	m_IsHitPlanet = false;
+	m_IsHookUFO = false;
+	m_IsWarpNextStage = false;
+	m_IsWarpDone = false;
+	m_IsTouchFireDoor = false;
+	m_IsBossMissile_Control = false;
+	m_IsDeadLine = false;
+	m_bWallAttach = false;
+	m_bPipeWallAttach = false;
+	m_IsControlJoystick = false;
+	m_IsPinBall = false;
+	m_IsWallLaserTrap_Touch = false;
+	m_bRespawn = false;
+	m_bElectricWallAttach = false;
+	m_IsHolding_UFO = false;
+	m_IsInJoyStick = false;
+	m_bLaserTennis = false;
+	m_IsEnding = false;
+
+
 	m_pActorCom->Set_IsFalling(false);
 	m_pActorCom->Set_ZeroGravity(false, false, false);
 	m_pActorCom->Set_Jump(false);
@@ -2685,6 +2712,9 @@ void CCody::Rotate_Valve(const _double dTimeDelta)
 			m_IsCollide = false;
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			DATABASE->Add_ValveCount_Cody(true);
+
+			UI_Create(Cody, Arrowkeys_Side);
+			UI_Create(May, StickIcon);
 		}
 
 		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
