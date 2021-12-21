@@ -277,19 +277,15 @@ _int CCody::Tick(_double dTimeDelta)
 
 #ifdef __TEST_JUNG
 	if (m_pGameInstance->Key_Down(DIK_V))
-		EFFECT->Add_Effect(Effect_Value::BossBomb, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::BossCore_Hit, m_pTransformCom->Get_WorldMatrix());
 	if (m_pGameInstance->Key_Down(DIK_B))
-		EFFECT->Add_Effect(Effect_Value::BossBomb_Explosion, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::BossCore_Explosion, m_pTransformCom->Get_WorldMatrix());
 	if (m_pGameInstance->Key_Down(DIK_N))
-		EFFECT->Add_Effect(Effect_Value::BossBomb_Particle, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::BossCore_Lightning, m_pTransformCom->Get_WorldMatrix());
 	if (m_pGameInstance->Key_Down(DIK_M))
-		EFFECT->Add_Effect(Effect_Value::BossBomb_Pillar, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::BossCore_Smoke, m_pTransformCom->Get_WorldMatrix());
 	if (m_pGameInstance->Key_Down(DIK_COMMA))
-		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Booster, m_pTransformCom->Get_WorldMatrix());
-	if (m_pGameInstance->Key_Down(DIK_PERIOD))
-		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Shield, m_pTransformCom->Get_WorldMatrix());
-	if (m_pGameInstance->Key_Down(DIK_SLASH))
-		EFFECT->Add_Effect(Effect_Value::BossMissile_Smoke, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::BossCore_Lightning_Big, m_pTransformCom->Get_WorldMatrix());
 #endif // __TEST_JUNG
 
 	/* UI */

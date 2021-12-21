@@ -15,7 +15,7 @@ HRESULT CEffect_Boss_Core_Explosion::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 60;
+	m_EffectDesc_Prototype.iInstanceCount = 100;
 
 	return S_OK;
 }

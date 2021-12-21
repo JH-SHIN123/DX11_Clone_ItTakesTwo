@@ -43,7 +43,7 @@ private:
 	const _float	m_fAlphaTime_Power			= 2.f;
 	const _float	m_fInstance_SpeedPerSec		= 0.2f;
 	const _double	m_dInstance_Pos_Update_Time = 3.0;
-	const _float2	m_vDefaultSize				= { 2.5f, 2.5f };
+	const _float2	m_vDefaultSize				= { 3.f, 3.f };
 
 public:
 	static CEffect_Boss_Core_Smoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
