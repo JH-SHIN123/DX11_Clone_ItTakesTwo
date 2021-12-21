@@ -58,6 +58,7 @@ HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDevic
 
 	m_pRadiarBlur_Mask = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/PostFX/radiarblur.png"));
 	m_pVignatte_Mask = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/PostFX/vignatte%d.png"),2);
+	m_pVolume_Mask = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/PostFX/T_Smoke_01.png"));
 
 	return S_OK;
 }
@@ -70,6 +71,9 @@ HRESULT CPostFX::PostProcessing(_double TimeDelta)
 
 	FAILED_CHECK_RETURN(Tick_Adaptation(TimeDelta), E_FAIL);
 	FAILED_CHECK_RETURN(Tick_RadiarBlur(TimeDelta), E_FAIL);
+
+	if (m_fVolumeTimeDelta >= 1.f) m_fVolumeTimeDelta = 0.f;
+	else m_fVolumeTimeDelta += TimeDelta * 0.15f;
 
 	FAILED_CHECK_RETURN(DownScale(TimeDelta), E_FAIL);
 	FAILED_CHECK_RETURN(Bloom(), E_FAIL);
@@ -225,6 +229,8 @@ HRESULT CPostFX::FinalPass()
 	/* Volume */
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Front", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Front")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Back", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Back")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeMaskTex", m_pVolume_Mask->Get_ShaderResourceView(0));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_fTime", &m_fVolumeTimeDelta, sizeof(_float));
 
 	_float	fCamFar;
 	_vector vCamPosition;
@@ -579,6 +585,7 @@ void CPostFX::Clear_Buffer()
 	Safe_Release(m_pVIBuffer_ToneMapping);
 	Safe_Release(m_pRadiarBlur_Mask);
 	Safe_Release(m_pVignatte_Mask);
+	Safe_Release(m_pVolume_Mask);
 }
 
 void CPostFX::Free()

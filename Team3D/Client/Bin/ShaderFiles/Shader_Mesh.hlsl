@@ -62,6 +62,7 @@ struct VS_OUT_VOLUME
 {
 	float4 vPosition	: SV_POSITION;
 	float3 vVolumeColor : TEXCOORD0;
+	float2 vTexUV		: TEXCOORD1;
 };
 
 struct VS_OUT_FRESNEL
@@ -217,6 +218,7 @@ VS_OUT_VOLUME VS_MAIN_VOLUME(VS_IN In)
 
 	Out.vPosition = mul(vector(In.vPosition, 1.f), WorldMatrix);
 	Out.vVolumeColor = vVolumeColor;
+	Out.vTexUV = In.vTexUV;
 
 	return Out;
 }
@@ -278,6 +280,7 @@ struct GS_IN_VOLUME
 {
 	float4 vPosition	: SV_POSITION;
 	float3 vVolumeColor : TEXCOORD0;
+	float2 vTexUV		: TEXCOORD1;
 };
 
 struct GS_OUT_VOLUME
@@ -285,6 +288,7 @@ struct GS_OUT_VOLUME
 	float4 vPosition		: SV_POSITION;
 	float3 vVolumeColor		: TEXCOORD0;
 	float4 vProjPosition	: TEXCOORD1;
+	float2 vTexUV			: TEXCOORD2;
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 };
 
@@ -608,6 +612,7 @@ void GS_MAIN_VOLUME(triangle GS_IN_VOLUME In[3], inout TriangleStream<GS_OUT_VOL
 			Out.vPosition = mul(In[i].vPosition, matVP);
 			Out.vVolumeColor = In[i].vVolumeColor;
 			Out.vProjPosition = Out.vPosition;
+			Out.vTexUV = In[i].vTexUV;
 			Out.iViewportIndex = 1;
 
 			TriStream.Append(Out);
@@ -625,6 +630,7 @@ void GS_MAIN_VOLUME(triangle GS_IN_VOLUME In[3], inout TriangleStream<GS_OUT_VOL
 			Out.vPosition = mul(In[j].vPosition, matVP);
 			Out.vVolumeColor = In[j].vVolumeColor;
 			Out.vProjPosition = Out.vPosition;
+			Out.vTexUV = In[j].vTexUV;
 			Out.iViewportIndex = 2;
 
 			TriStream.Append(Out);
@@ -1237,6 +1243,7 @@ struct PS_IN_VOLUME
 	float4 vPosition		: SV_POSITION;
 	float3 vVolumeColor		: TEXCOORD0;
 	float4 vProjPosition	: TEXCOORD1;
+	float2 vTexUV			: TEXCOORD2;
 };
 struct PS_OUT_VOLUME
 {
@@ -1246,6 +1253,11 @@ struct PS_OUT_VOLUME
 PS_OUT_VOLUME PS_MAIN_VOLUME(PS_IN_VOLUME In)
 {
 	PS_OUT_VOLUME Out = (PS_OUT_VOLUME)0;
+
+	float2 vTexUV = In.vTexUV;
+	vTexUV.y -= g_fTime;
+	float3 vPatternDesc = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, vTexUV);
+	In.vVolumeColor = vPatternDesc * In.vVolumeColor;
 
 	Out.vVolume = vector(In.vVolumeColor, In.vProjPosition.z / In.vProjPosition.w);
 

@@ -72,6 +72,8 @@ private:
 	_float		m_fRadialBlur_SubRatio = 0.f;
 
 	_bool		m_bMainFog = false;
+
+	_float		m_fVolumeTimeDelta = 0.f;
 #pragma endregion
 
 #pragma region Resources
@@ -120,6 +122,7 @@ private: /* For. PS - ToneMapping */
 	class CVIBuffer_RectRHW*	m_pVIBuffer_ToneMapping = nullptr;
 	class CTextures*			m_pRadiarBlur_Mask = nullptr;
 	class CTextures*			m_pVignatte_Mask = nullptr;
+	class CTextures*			m_pVolume_Mask = nullptr;
 #pragma endregion
 
 #ifdef _DEBUG

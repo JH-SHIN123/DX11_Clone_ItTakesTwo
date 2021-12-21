@@ -13,6 +13,7 @@ Texture2D				g_EffectBlurTex;
 Texture2D				g_RadiarBlurMaskTex;
 Texture2D				g_VolumeTex_Front;
 Texture2D				g_VolumeTex_Back;
+Texture2D				g_VolumeMaskTex;
 Texture2D				g_VignatteTex;
 
 StructuredBuffer<float> g_AverageLum;
@@ -25,6 +26,7 @@ cbuffer FinalPassDesc
 	float	g_LumWhiteSqr = 0.f;
 	float	g_BloomScale = 0.15f; // 빛을 흘릴 스케일
 	float2	g_DOFFarValues = { 100.f, 1.0f / max(250.f, 0.001f) }; // 초점이 맞지 않기 시작하는 거리와, 완전히 초점이 나가버리는 범위 값
+	float	g_fTime = 0.f;
 };
 
 cbuffer RadialBlurDesc
@@ -130,6 +132,7 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToE
 	float fVolumeBack = g_VolumeTex_Back.Sample(Point_Sampler, vTexUV).w;
 	float fVolumeFactor = 0.f;
 
+
 	float3 vFogColor = 0.f;
 	float3 fInnerColor = g_VolumeTex_Front.Sample(Point_Sampler, vTexUV).xyz;
 	float3 fOuterColor = g_VolumeTex_Back.Sample(Point_Sampler, vTexUV).xyz;
@@ -137,6 +140,10 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToE
 	if (fVolumeBack - fVolumeFront < 0) /* 카메라가 안에 들어왔을때 */
 	{
 		fVolumeFactor = saturate(sqrt((distToEye - 1.f/*FogStart*/) / 10.f /*range*/));
+
+		float2 vVolumePatternUV = vTexUV;
+		vVolumePatternUV.x += g_fTime;
+		fVolumeFactor *= g_VolumeMaskTex.Sample(Wrap_MinMagMipLinear_Sampler, vVolumePatternUV) * 2.5f;
 	}
 	else
 		fVolumeFactor = (fProjDepth - fVolumeFront) / (fVolumeBack - fVolumeFront);
