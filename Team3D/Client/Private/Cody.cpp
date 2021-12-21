@@ -274,8 +274,23 @@ _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_HOME))
-		UI_CreateOnlyOnce(Default, TESTUI);
+
+	if (m_pGameInstance->Key_Down(DIK_F8))
+	{
+		UI_CreateOnlyOnce(Default, Minigame_Win_Cody);
+	}
+	else if (m_pGameInstance->Key_Down(DIK_F5))
+	{
+		UI_CreateOnlyOnce(Default, Minigame_Win_May);
+	}
+	else if (m_pGameInstance->Key_Down(DIK_F6))
+	{
+		UI_CreateOnlyOnce(Default, Minigame_Score);
+	}
+	else if (m_pGameInstance->Key_Down(DIK_F7))
+	{
+		UI_CreateOnlyOnce(Default, Minigame_Title);
+	}
 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
@@ -3354,14 +3369,6 @@ void CCody::Set_ActiveHpBar(_bool IsCheck)
 	m_pHpBar->Set_Active(IsCheck);
 }
 
-void CCody::Set_ActiveSubHpBar(_bool IsCheck)
-{
-	if (nullptr == m_pSubHpBar)
-		return;
-
-	m_pSubHpBar->Set_Active(IsCheck);
-}
-
 void CCody::Set_HpBarReduction(_float fDamage)
 {
 	if (nullptr == m_pHpBar || nullptr == m_pSubHpBar)
@@ -3370,6 +3377,12 @@ void CCody::Set_HpBarReduction(_float fDamage)
 	m_pHpBar->Set_Hp(fDamage);
 	m_pSubHpBar->Set_Active(true);
 	m_pSubHpBar->Set_Hp(fDamage);
+}
+
+void CCody::Set_HpBarAccordingStage(_uint iStage)
+{
+	m_pHpBar->Set_Stage((CHpBar::STAGE)iStage);
+	m_pSubHpBar->Set_Stage((CHpBar::STAGE)iStage);
 }
 
 void CCody::WallLaserTrap(const _double dTimeDelta)

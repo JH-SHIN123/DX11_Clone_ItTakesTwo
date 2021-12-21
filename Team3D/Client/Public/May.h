@@ -208,8 +208,8 @@ public:
 	void	Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
 	void	Set_LaserRippedOff(); /* BossUFO */
 	void	Set_ActiveHpBar(_bool IsCheck);
-	void	Set_ActiveSubHpBar(_bool IsCheck);
 	void	Set_HpBarReduction(_float fDamage);
+	void	Set_HpBarAccordingStage(_uint iStage);
 
 	/* For. Ending */
 	void	Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }

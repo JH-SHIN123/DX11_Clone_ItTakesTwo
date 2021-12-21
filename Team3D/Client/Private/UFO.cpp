@@ -12,6 +12,7 @@
 #include "MoonBaboon.h"
 #include "Effect_Generator.h"
 #include "BossHpBar.h"
+#include "HpBar.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -35,7 +36,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	CGameObject::NativeConstruct(pArg);
 
 	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
 	Add_LerpInfo_To_Model();
 
@@ -84,6 +85,8 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_pMoonBaboon->Set_Animation(Moon_Ufo_Programming, Moon_Ufo_MH);
 		((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
 		((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
+		((CCody*)DATABASE->GetCody())->Set_HpBarAccordingStage(CHpBar::Stage_Boss);
+		((CMay*)DATABASE->GetMay())->Set_HpBarAccordingStage(CHpBar::Stage_Boss);
 	}
 	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 	{
@@ -331,7 +334,7 @@ void CUFO::Core_Destroyed()
 	{
 		m_ePattern = UFO_PATTERN::INTERACTION;
 
-		//m_pBossHpBar->Set_Ratio(0.11f);
+		m_pBossHpBar->Set_Ratio(0.11f);
 
 		/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
 		if (3 != m_iPhaseChangeCount)
@@ -639,7 +642,6 @@ void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
 
 		/* 도착했으면 메인레이저 올라와라 ㅇㅇ */
 		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(true);
-
 	}
 }
 

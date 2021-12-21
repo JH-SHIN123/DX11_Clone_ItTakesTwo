@@ -2388,14 +2388,6 @@ void CMay::Set_ActiveHpBar(_bool IsCheck)
 	m_pHpBar->Set_Active(IsCheck);
 }
 
-void CMay::Set_ActiveSubHpBar(_bool IsCheck)
-{
-	if (nullptr == m_pSubHpBar)
-		return;
-
-	m_pSubHpBar->Set_Active(IsCheck);
-}
-
 void CMay::Set_HpBarReduction(_float fDamage)
 {
 	if (nullptr == m_pHpBar || nullptr == m_pSubHpBar)
@@ -2404,6 +2396,12 @@ void CMay::Set_HpBarReduction(_float fDamage)
 	m_pHpBar->Set_Hp(fDamage);
 	m_pSubHpBar->Set_Active(true);
 	m_pSubHpBar->Set_Hp(fDamage);
+}
+
+void CMay::Set_HpBarAccordingStage(_uint iStage)
+{
+	m_pHpBar->Set_Stage((CHpBar::STAGE)iStage);
+	m_pSubHpBar->Set_Stage((CHpBar::STAGE)iStage);
 }
 
 void CMay::LaserTennis(const _double dTimeDelta)

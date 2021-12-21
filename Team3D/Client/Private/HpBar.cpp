@@ -41,7 +41,6 @@ HRESULT CHpBar::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
-
 	//if (0 == m_iOption)
 	//{
 	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
@@ -87,10 +86,7 @@ _int CHpBar::Tick(_double TimeDelta)
 	case Player::May:
 		MayHpBar_Boss(TimeDelta);
 		break;
-	default:
-		break;
 	}
-
 
 	//Scale_Effect(TimeDelta);
 
@@ -170,6 +166,11 @@ void CHpBar::Set_Hp(_float fHp)
 void CHpBar::Set_ShaderOption(_int iOption)
 {
 	m_iShaderOption = iOption;
+}
+
+void CHpBar::Set_Stage(CHpBar::STAGE eStage)
+{
+	m_eStage = eStage;
 }
 
 HRESULT CHpBar::Ready_Component()
@@ -369,6 +370,46 @@ void CHpBar::MayHpBar_Boss(_double TimeDelta)
 				m_fRatio = 0.5f - (m_fHp / 120.f) / 2.f;
 				m_fDecreaseRateRatio = m_fRatio;
 				m_fRecoveryTime = 0.f;
+			}
+		}
+	}
+}
+
+void CHpBar::CodyHpBar_Minigame(_double TimeDelta)
+{
+	if (true == m_IsHit)
+	{
+		if (m_fDecreaseRateRatio >= m_fRatio)
+		{
+			Shake_Effect(TimeDelta);
+
+			m_fWatingTime += (_float)TimeDelta;
+
+			if (1.f <= m_fWatingTime)
+			{
+				m_fDecreaseRateRatio = m_fRatio;
+				m_fWatingTime = 0.f;
+				m_IsHit = false;
+			}
+		}
+	}
+}
+
+void CHpBar::MayHpBar_Minigame(_double TimeDelta)
+{
+	if (true == m_IsHit)
+	{
+		if (m_fDecreaseRateRatio >= m_fRatio)
+		{
+			Shake_Effect(TimeDelta);
+
+			m_fWatingTime += (_float)TimeDelta;
+
+			if (1.f <= m_fWatingTime)
+			{
+				m_fDecreaseRateRatio = m_fRatio;
+				m_fWatingTime = 0.f;
+				m_IsHit = false;
 			}
 		}
 	}

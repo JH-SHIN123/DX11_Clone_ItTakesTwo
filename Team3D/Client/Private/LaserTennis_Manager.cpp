@@ -10,6 +10,9 @@
 #include "LaserButtonLarge.h"
 #include "Laser_LaserTennis.h"
 #include "UI_Generator.h"
+#include "Cody.h"
+#include "May.h"
+#include "HpBar.h"
 
 IMPLEMENT_SINGLETON(CLaserTennis_Manager)
 
@@ -162,6 +165,11 @@ void CLaserTennis_Manager::KeyCheck(TARGET eTarget)
 		UI_Delete(May, Minigame_Ready_May);
 
 		UI_CreateOnlyOnce(Default, Minigame_Countdown);
+
+		((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
+		((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
+		((CCody*)DATABASE->GetCody())->Set_HpBarAccordingStage(CHpBar::Stage_Minigame);
+		((CMay*)DATABASE->GetMay())->Set_HpBarAccordingStage(CHpBar::Stage_Minigame);
 
 		m_bStartGame = true;
 	}
