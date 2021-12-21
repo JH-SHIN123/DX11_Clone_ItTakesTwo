@@ -229,10 +229,23 @@ _float3 CEffect_Player_Rail_Particle::Get_Particle_Rand_Dir(_fvector vDefaultPos
 
 void CEffect_Player_Rail_Particle::Check_Target_Matrix()
 {
+	_matrix WorldMatrix = XMMatrixIdentity();
+	_matrix BoneMatrix = XMMatrixIdentity();
+
 	if (EFFECT_DESC_CLONE::PV_MAY == m_EffectDesc_Clone.iPlayerValue)
-		m_pTransformCom->Set_WorldMatrix(Normalize_Matrix(static_cast<CMay*>(m_pTargetObject)->Get_WorldMatrix()));
+	{
+		WorldMatrix = static_cast<CMay*>(m_pTargetObject)->Get_WorldMatrix();
+		BoneMatrix = static_cast<CMay*>(m_pTargetObject)->Get_Model()->Get_BoneMatrix("LeftToeBase");
+	}
 	else
-		m_pTransformCom->Set_WorldMatrix(Normalize_Matrix(static_cast<CCody*>(m_pTargetObject)->Get_WorldMatrix()));
+	{
+		WorldMatrix = static_cast<CCody*>(m_pTargetObject)->Get_WorldMatrix();
+		BoneMatrix = static_cast<CCody*>(m_pTargetObject)->Get_Model()->Get_BoneMatrix("LeftToeBase");
+	}
+
+	BoneMatrix = BoneMatrix* WorldMatrix;
+	WorldMatrix.r[3] = BoneMatrix.r[3];
+	m_pTransformCom->Set_WorldMatrix(Normalize_Matrix(WorldMatrix));
 }
 
 void CEffect_Player_Rail_Particle::Check_On_Rail()
