@@ -7,7 +7,7 @@
 #include "Effect_FireDoor.h"
 #include "Effect_Walking_Smoke.h"
 #include "Effect_Landing_Smoke.h"
-#include "Effect_Dash.h"								/*수정*/
+#include "Effect_Dash.h"
 #include "Effect_Player_Dead.h"
 #include "Effect_Player_Dead_Particle.h"
 #include "Effect_Player_Dead_Explosion.h"				/*미구현*/
@@ -15,7 +15,7 @@
 #include "Effect_Cody_Size.h"
 #include "Effect_RespawnTunnel_Portal.h"
 #include "Effect_May_Boots.h"
-#include "Effect_May_Boots_Walking_Particle.h" /*발걸음에 달기*/
+#include "Effect_May_Boots_Walking_Particle.h"
 #include "Effect_GravityPipe.h"
 #include "Effect_Wormhole.h"
 #include "Effect_Env_Particle.h"
@@ -48,6 +48,8 @@
 #include "Effect_Boss_GroundPound_Ring.h"
 #include "Effect_Boss_GroundPound_Smoke.h"
 #include "Effect_Boss_Missile_Smoke.h"
+#include "Effect_Boss_Missile_Smoke_Black.h"	/*테스트 중*/
+#include "Effect_Boss_Missile_Smoke_Color.h"	/*테스트 중*/
 #include "Effect_Boss_Missile_Explosion.h"
 #include "Effect_Boss_Missile_Particle.h"
 #include "Effect_Boss_UFO_Flying.h"
@@ -81,6 +83,8 @@
 #include "Effect_StarBuddy_Explosion_Pillar.h"
 #include "Effect_StarBuddy_Explosion_BigBang.h"
 #include "Effect_StarBuddy_Explosion_Particle.h"
+#include "Effect_StarBuddy_Move_Particle.h"
+
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -228,8 +232,15 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_GroundPound_Smoke");
 		break;
 	case Effect_Value::BossMissile_Smoke:
-		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Smoke");
+		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_CODY;
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Missile_Smoke_Black"), &Clone_Data);
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Smoke_Color");
 		break;
+		//case Effect_Value::BossMissile_Smoke_Test:
+		//	Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
+		//	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Missile_Smoke_Black"), &Clone_Data);
+		//	lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Smoke_Color");
+		//	break;
 	case Effect_Value::BossMissile_Explosion:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Explosion");
 		break;
@@ -519,7 +530,11 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_GroundPound_Smoke", CEffect_Boss_GroundPound_Smoke::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Missile_Smoke"))
+	{
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Smoke", CEffect_Boss_Missile_Smoke::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Smoke_Black", CEffect_Boss_Missile_Smoke_Black::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Smoke_Color", CEffect_Boss_Missile_Smoke_Color::Create(pDevice, pDeviceContext, pData));
+	}
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Missile_Explosion"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Explosion", CEffect_Boss_Missile_Explosion::Create(pDevice, pDeviceContext, pData));
@@ -608,6 +623,11 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_StarBuddy_Explosion_Paticle"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_StarBuddy_Explosion_Particle", CEffect_StarBuddy_Explosion_Particle::Create(pDevice, pDeviceContext, pData));
 
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_StarBuddy_Move_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_StarBuddy_Move_Particle", CEffect_StarBuddy_Move_Particle::Create(pDevice, pDeviceContext, pData));
+	
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_WarpGate_Clear"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_WarpGate_Clear", CEffect_WarpGate_Clear::Create(pDevice, pDeviceContext, pData));
 
 #pragma  endregion
 

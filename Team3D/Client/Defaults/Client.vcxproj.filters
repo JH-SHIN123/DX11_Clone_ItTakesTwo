@@ -147,6 +147,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\02.Se\04.Effect_PipeLocker">
       <UniqueIdentifier>{cbb52761-0b5b-433c-800e-73f10284fc57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\05.Effect_GateSmoke">
+      <UniqueIdentifier>{c76a672b-f512-47fc-95de-2c7c1c5e5bcd}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung">
       <UniqueIdentifier>{fec661ad-31f9-4dec-b790-1b4cb09030ce}</UniqueIdentifier>
     </Filter>
@@ -591,6 +594,12 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke">
       <UniqueIdentifier>{fe5deece-04a5-4318-afb5-acdc2d731f8c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\00.Color">
+      <UniqueIdentifier>{c40802cb-3077-4ddf-955e-fbde27e5268f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\01.Black">
+      <UniqueIdentifier>{dc9f6c9a-1c8c-44eb-8222-c63be1b02776}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion">
       <UniqueIdentifier>{acd6cfb6-5704-4c57-89c5-0b6a29379e73}</UniqueIdentifier>
     </Filter>
@@ -752,6 +761,12 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Idle">
       <UniqueIdentifier>{d05c42ba-48cd-44e4-867e-5a950dc6855d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move">
+      <UniqueIdentifier>{92f1e13a-d195-448f-b4ee-245413d362ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle">
+      <UniqueIdentifier>{5bfb0833-cc63-4158-a256-924e223c5331}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside">
       <UniqueIdentifier>{1e244afa-1f22-4105-8bc1-f281d82c5211}</UniqueIdentifier>
@@ -1193,6 +1208,9 @@
     <ClInclude Include="..\Public\Effect_PipeLocker_Connected.h">
       <Filter>02.GameObject\04.Stage_Space\02.Se\04.Effect_PipeLocker</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_GateSmoke.h">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\05.Effect_GateSmoke</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\WarpGate.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
     </ClInclude>
@@ -1598,6 +1616,12 @@
     <ClInclude Include="..\public\Effect_Boss_Missile_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_Boss_Missile_Smoke_Color.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\00.Color</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Boss_Missile_Smoke_Black.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\01.Black</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Effect_Boss_Missile_Explosion.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion</Filter>
     </ClInclude>
@@ -1723,6 +1747,12 @@
     </ClInclude>
     <ClInclude Include="..\public\Effect_StarBuddy_Explosion_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Explosion\02.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_StarBuddy_Move.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_StarBuddy_Move_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Spark.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark</Filter>
@@ -2103,6 +2133,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_PipeLocker_Connected.cpp">
       <Filter>02.GameObject\04.Stage_Space\02.Se\04.Effect_PipeLocker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_GateSmoke.cpp">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\05.Effect_GateSmoke</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\WarpGate.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
@@ -2509,6 +2542,12 @@
     <ClCompile Include="..\private\Effect_Boss_Missile_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Effect_Boss_Missile_Smoke_Color.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\00.Color</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Boss_Missile_Smoke_Black.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\01.Black</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\Effect_Boss_Missile_Explosion.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion</Filter>
     </ClCompile>
@@ -2634,6 +2673,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_StarBuddy_Explosion_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Explosion\02.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_StarBuddy_Move.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_StarBuddy_Move_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Spark.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark</Filter>

@@ -257,6 +257,8 @@
     <ClInclude Include="..\public\Effect_Boss_Missile_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Missile_Particle.h" />
     <ClInclude Include="..\public\Effect_Boss_Missile_Smoke.h" />
+    <ClInclude Include="..\Public\Effect_Boss_Missile_Smoke_Black.h" />
+    <ClInclude Include="..\Public\Effect_Boss_Missile_Smoke_Color.h" />
     <ClInclude Include="..\public\Effect_Boss_UFO_Flying.h" />
     <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle.h" />
     <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle_Flow.h" />
@@ -271,6 +273,7 @@
     <ClInclude Include="..\public\Effect_Env_Particle_Field_Star.h" />
     <ClInclude Include="..\public\Effect_Env_Particle_Follow.h" />
     <ClInclude Include="..\Public\Effect_FireDoor.h" />
+    <ClInclude Include="..\Public\Effect_GateSmoke.h" />
     <ClInclude Include="..\Public\Effect_Generator.h" />
     <ClInclude Include="..\Public\Effect_GravityPipe.h" />
     <ClInclude Include="..\public\Effect_Hit_BossLaser.h" />
@@ -303,6 +306,8 @@
     <ClInclude Include="..\public\Effect_StarBuddy_Explosion_BigBang.h" />
     <ClInclude Include="..\public\Effect_StarBuddy_Explosion_Particle.h" />
     <ClInclude Include="..\public\Effect_StarBuddy_Explosion_Pillar.h" />
+    <ClInclude Include="..\public\Effect_StarBuddy_Move.h" />
+    <ClInclude Include="..\public\Effect_StarBuddy_Move_Particle.h" />
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Explosion.h" />
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Particle.h" />
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Spark.h" />
@@ -551,6 +556,8 @@
     <ClCompile Include="..\private\Effect_Boss_Missile_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Missile_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Missile_Smoke.cpp" />
+    <ClCompile Include="..\Private\Effect_Boss_Missile_Smoke_Black.cpp" />
+    <ClCompile Include="..\Private\Effect_Boss_Missile_Smoke_Color.cpp" />
     <ClCompile Include="..\private\Effect_Boss_UFO_Flying.cpp" />
     <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle_Flow.cpp" />
@@ -565,6 +572,7 @@
     <ClCompile Include="..\private\Effect_Env_Particle_Field_Star.cpp" />
     <ClCompile Include="..\private\Effect_Env_Particle_Follow.cpp" />
     <ClCompile Include="..\Private\Effect_FireDoor.cpp" />
+    <ClCompile Include="..\Private\Effect_GateSmoke.cpp" />
     <ClCompile Include="..\Private\Effect_Generator.cpp" />
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp" />
     <ClCompile Include="..\private\Effect_Hit_BossLaser.cpp" />
@@ -597,6 +605,8 @@
     <ClCompile Include="..\private\Effect_StarBuddy_Explosion_BigBang.cpp" />
     <ClCompile Include="..\private\Effect_StarBuddy_Explosion_Particle.cpp" />
     <ClCompile Include="..\private\Effect_StarBuddy_Explosion_Pillar.cpp" />
+    <ClCompile Include="..\private\Effect_StarBuddy_Move.cpp" />
+    <ClCompile Include="..\private\Effect_StarBuddy_Move_Particle.cpp" />
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Particle.cpp" />
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Spark.cpp" />

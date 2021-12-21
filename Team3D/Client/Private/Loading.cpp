@@ -17,6 +17,7 @@
 #include "Laser_TypeB.h"
 #include "Earth.h"
 #include "Effect_PipeLocker_Connected.h"
+#include "Effect_GateSmoke.h"
 
 /* Jung */
 #include "Effect_Generator.h"
@@ -27,6 +28,7 @@
 #include "WallLaserTrap_Button.h"
 #include "Space_Valve_Star.h"
 #include "Space_Valve_Door.h"
+#include "Effect_StarBuddy_Move.h"
 #ifdef __TEST_JUNG
 #include "ElectricBox.h"
 #include "ElectricWall.h"
@@ -397,6 +399,8 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Se()
 #endif
 
 #ifdef __TEST_SE
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_SimplePointInstance"), CVIBuffer_SimplePointInstance::Create(m_pDevice, m_pDeviceContext, 50, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), "DefaultTechnique")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Effect_GateSmoke"), CEffect_GateSmoke::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 #endif
 
 	return S_OK;
@@ -414,6 +418,7 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jung()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WallLaserTrap"), CWallLaserTrap::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Star"), CSpace_Valve_Star::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Space_Valve_Door"), CSpace_Valve_Door::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy_Move"), CEffect_StarBuddy_Move::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	PivotMatrix = XMMatrixScaling(0.0035f, 0.0035f, 0.0035f) * XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(90.f));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SpaceValve_Base"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("SpaceValveBase"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
@@ -424,7 +429,9 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jung()
 	PivotMatrix = XMMatrixScaling(0.00275f, 0.00275f, 0.00275f) * XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(90.f));
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Generator_Star_Valve"), CModel_Instance::Create(m_pDevice, m_pDeviceContext, 12, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Generator_Star"), TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 	_float fScale = 0.00275f;
+
 #endif // __MAPLOADING_OFF
+
 
 #ifdef __TEST_JUNG	
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
@@ -471,6 +478,11 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jung()
 
 	/* RunningMoonBaboon */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_RunningMoonBaboon"), CRunningMoonBaboon::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_StarBuddy"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("StarBuddy"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), CStarBuddy::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy_Move"), CEffect_StarBuddy_Move::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 #endif // __TEST_JUNG
 	return S_OK;
