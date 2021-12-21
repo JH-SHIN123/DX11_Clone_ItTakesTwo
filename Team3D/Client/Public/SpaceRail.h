@@ -36,6 +36,7 @@ public:
 
 private:
 	CPath*			m_pPathCom = nullptr;
+	CPath* m_pPathCom = nullptr;
 
 private:
 	vector<CSpaceRail_Node*>	m_vecSpaceRailNodes;

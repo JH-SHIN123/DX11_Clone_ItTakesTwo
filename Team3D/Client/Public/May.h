@@ -507,6 +507,7 @@ private:
 	void	TakeRailEnd(_double dTimeDelta);
 	void	ShowRailTargetTriggerUI();
 
+	HRESULT Ready_Layer_Gauge_Circle(const _tchar* pLayerTag);
 
 private:
 	_bool						m_bMoveToRail = false;
@@ -515,16 +516,13 @@ private:
 
 private:
 	_double						m_dRailEnd_ForceDeltaT = 0.0;
+	_float						m_fRailSoundVolume = 1.f;
 
 private:
 	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;
-	CSpaceRail* m_pTargetRail = nullptr;
-	CSpaceRail_Node* m_pSearchTargetRailNode = nullptr;
-	CSpaceRail_Node* m_pTargetRailNode = nullptr;
-
-private:
-	HRESULT Ready_Layer_Gauge_Circle(const _tchar * pLayerTag);
-
+	CSpaceRail*					m_pTargetRail = nullptr;
+	CSpaceRail_Node*			m_pSearchTargetRailNode = nullptr;
+	CSpaceRail_Node*			m_pTargetRailNode = nullptr;
 #pragma endregion
 
 private: /* For. Ending */

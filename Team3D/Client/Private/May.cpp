@@ -257,6 +257,9 @@ _int CMay::Tick(_double dTimeDelta)
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_GravityBoots->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 
+	// Control RadiarBlur - 제일 마지막에 호출
+	//Trigger_RadiarBlur(dTimeDelta);
+
 	return NO_EVENT;
 }
 
@@ -269,6 +272,7 @@ _int CMay::Late_Tick(_double dTimeDelta)
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 		return NO_EVENT;
 	}
+
 	/* LateTick : 레일의 타겟 찾기*/
 	Find_TargetSpaceRail();
 	ShowRailTargetTriggerUI();
@@ -2802,9 +2806,12 @@ void CMay::KeyInput_Rail(_double dTimeDelta)
 	{
 		if (m_pGameInstance->Pad_Key_Down(DIP_B) || m_pGameInstance->Key_Down(DIK_K))
 		{
-			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+			//m_pGameInstance->Stop_Sound(CHANNEL_RAIL);
 
-			m_iJumpCount = 1;
+			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+			//Loop_RadiarBlur(false);
+
+			m_iJumpCount = 0;
 			m_bShortJump = true;
 
 			m_pTargetRail = nullptr;
@@ -2891,6 +2898,8 @@ void CMay::Start_SpaceRail()
 	if (m_pSearchTargetRailNode) {
 		// 타겟 지정시, 연기이펙트
 		EFFECT->Add_Effect(Effect_Value::Landing_Smoke, m_pSearchTargetRailNode->Get_WorldMatrix());
+		// R-Blur
+		//Loop_RadiarBlur(true);
 
 		// 타겟을 찾았다면, 레일 탈 준비
 		m_pTargetRailNode = m_pSearchTargetRailNode;
@@ -2943,6 +2952,9 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 		m_bOnRail = true;
 		m_bMoveToRail = false;
 		EFFECT->Add_Effect(Effect_Value::May_Rail, m_pTransformCom->Get_WorldMatrix());
+
+		//m_pGameInstance->Set_SoundVolume(CHANNEL_RAIL, m_fRailSoundVolume);
+		//m_pGameInstance->Play_Sound(TEXT("Rail_Ride.wav"), CHANNEL_RAIL, m_fRailSoundVolume, true);
 	}
 }
 
@@ -2964,8 +2976,14 @@ void CMay::TakeRail(_double dTimeDelta)
 		m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 	else
 	{
+		//m_pGameInstance->Stop_Sound(CHANNEL_RAIL);
+		//m_pGameInstance->Set_SoundVolume(CHANNEL_RAIL, m_fRailSoundVolume);
+		//m_pGameInstance->Play_Sound(TEXT("Rail_End.wav"), CHANNEL_RAIL, m_fRailSoundVolume);
+
 		m_pTargetRail = nullptr;
-		m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Falling); // 자유낙하 애니메이션으로 변경해야함.
+		m_pTargetRailNode = nullptr;
+		m_pSearchTargetRailNode = nullptr;
+		m_pModelCom->Set_Animation(ANI_M_Jump_Falling);
 		m_bOnRailEnd = true;
 	}
 }
@@ -2978,6 +2996,7 @@ void CMay::TakeRailEnd(_double dTimeDelta)
 		if (m_dRailEnd_ForceDeltaT >= dRailEndForceTime)
 		{
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+			//Loop_RadiarBlur(false);
 
 			m_dRailEnd_ForceDeltaT = 0.0;
 			m_bOnRailEnd = false;
@@ -2985,7 +3004,7 @@ void CMay::TakeRailEnd(_double dTimeDelta)
 		else
 		{
 			m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta);
-			m_pTransformCom->Go_Straight((dRailEndForceTime - m_dRailEnd_ForceDeltaT) * 2.5f);
+			m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_LOOK), (dRailEndForceTime - m_dRailEnd_ForceDeltaT) * 2.5f);
 			m_dRailEnd_ForceDeltaT += dTimeDelta;
 		}
 	}
