@@ -228,9 +228,6 @@ void CRotatedRobotLever::Activate_Lever(_double dTimeDelta)
 			m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_ACTIVE, m_fRobotActiveVolume);
 			m_pGameInstance->Play_Sound(TEXT("Robot_Active.wav"), CHANNEL_ROBOT_ACTIVE, m_fRobotActiveVolume);
 
-			// 메이 중력 초기화
-			((CMay*)DATABASE->GetMay())->Get_Actor()->Set_PlayerUp(XMVectorSet(0.f, 1.f, 0.f, 0.f));
-
 			m_bNoBatteryHit = false;
 			m_fStopDelay = 0.f;
 			m_bRotate = false;

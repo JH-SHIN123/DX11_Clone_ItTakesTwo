@@ -2963,7 +2963,7 @@ void CCody::Pipe_WallJump(const _double dTimeDelta)
 
 		PxVec3 vNormal = m_pActorCom->Get_CollideNormal();
 		_vector vWallUp = { vNormal.x, vNormal.y, vNormal.z, 0.f };
-		m_pActorCom->Move(XMVector3Normalize(vWallUp) / m_fPipeWallToWallSpeed * 1.1f, dTimeDelta);
+		m_pActorCom->Move(XMVector3Normalize(vWallUp) / m_fPipeWallToWallSpeed * 0.8f, dTimeDelta);
 		m_pTransformCom->RotateYawDirectionOnLand(-vWallUp, dTimeDelta);
 
 		if (m_pModelCom->Is_AnimFinished(ANI_C_WallSlide_Jump))

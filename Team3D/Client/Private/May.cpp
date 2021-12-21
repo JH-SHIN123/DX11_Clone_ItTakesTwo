@@ -1690,7 +1690,6 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			}
 			else if (DATABASE->Get_May_Stage() == ST_PINBALL)
 			{
-				m_pActorCom->Set_PlayerUp(XMVectorSet(0.f, 1.f, 0.f, 0.f));
 				m_pTransformCom->Set_RotateAxis(XMVectorSet(-1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f));
 				m_pActorCom->Set_Position(XMVectorSet(-817.311035f, 789.223682f, 228.280615f, 1.f));
 			}
