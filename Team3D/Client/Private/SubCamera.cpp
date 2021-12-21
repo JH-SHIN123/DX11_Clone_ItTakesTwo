@@ -140,6 +140,10 @@ _int CSubCamera::Check_Player(_double dTimeDelta)
 		m_eCurCamMode = CamMode::Cam_WallJump;
 	if (CLaserTennis_Manager::GetInstance()->Get_StartGame() && m_eCurCamMode != CamMode::Cam_LaserTennis)
 		m_eCurCamMode = CamMode::Cam_LaserTennis;
+#ifdef __TEST_JUN
+	if (m_pGameInstance->Key_Down(DIK_B))
+		m_bOpenThirdFloor = !m_bOpenThirdFloor;
+#endif 
 	if (m_bOpenThirdFloor && m_fOpenThirdFloorTime == 0.f)
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OpenThirdFloor;
 	if (m_eCurCamMode == CamMode::Cam_Free)
@@ -458,16 +462,29 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 
 _int CSubCamera::Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta)
 {
-	_vector vMayRight = m_pMay->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
+	m_fOpenThirdFloorTime += dTimeDelta;
+
+	_float fDelay = 2.f;
+	if (m_fOpenThirdFloorTime > fDelay * 9.f)
+	{
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
+		ReSet_Cam_FreeToAuto(true);
+	}
+
 	_vector vMayPos = m_pMay->Get_Position();
-	_vector vUpPos = XMVectorSet(64.f,218.f,179.f,1.f);
+	_vector vUpPos = XMVectorSet(65.f,218.f,179.f,1.f);
 	_vector vMiddleDir = (vMayPos - vUpPos);
+	_vector vLook = XMVector3Normalize(vMiddleDir);
 	_vector vMiddlePos = vMayPos - vMiddleDir * 0.5f;
 	_vector vTargetPos = vMiddlePos;
-	_vector vNormal = XMVector3Normalize(XMVector3Cross(XMVector3Normalize(vMiddleDir), XMVectorSet(1.0f,0.f,0.f,0.f)));
-	_vector vEye = vMayPos + vNormal * 10.f;
 
+	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
+	_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+
+	_vector vEye = vMayPos + XMVectorSet(XMVectorGetX(vUp)* 100.f , 0.f , XMVectorGetZ(vUp) * 100.f,0.f);
+	vEye = XMVectorSetY(vEye, XMVectorGetY(vMiddlePos));
 	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vMiddlePos),dTimeDelta));
+
 	return NO_EVENT;
 }
 

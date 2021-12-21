@@ -10,6 +10,7 @@
 #include"Cody.h"
 #include"May.h"
 #include"PlayerActor.h"
+#include"UFO.h"
 CCutScene::CCutScene()
 {
 }
@@ -54,6 +55,9 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		break;
 	case CutSceneOption::CutScene_Clear_Rail:
 		bIsNoError = Tick_CutScene_Clear_Rail(dTimeDelta);
+		break;
+	case CutSceneOption::CutScene_Boss_Intro:
+		bIsNoError = Tick_CutScene_Boss_Intro(dTimeDelta);
 		break;
 	}
 	if (bIsNoError == false)
@@ -181,18 +185,6 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 		}
 
 	CodyLerp();
-	//		case Client::CCody::SIZE_SMALL:
-	//			vPreCodySize=	XMVectorSet(0.1f, 0.1f, 0.1f, 0.f);
-	//			vPreCodyPos =	XMVectorSet(65.f, 0.2f, 0.3f, 1.f);
-	//			break;
-	//		case Client::CCody::SIZE_MEDIUM:
-	//			vPreCodySize = XMVectorSet(1.f, 1.f, 1.f, 0.f);
-	//			vPreCodyPos = XMVectorSet(62.8f, 0.15f, 0.3f, 1.f);
-	//			break;
-	//		case Client::CCody::SIZE_LARGE:
-	//			vPreCodySize = XMVectorSet(5.f, 5.f, 5.f, 0.f);
-	//			vPreCodyPos = XMVectorSet(57.8f, -8.1f, 3.5f, 1.f);
-	//			break;
 
 	return true;
 }
@@ -223,8 +215,6 @@ _bool CCutScene::Tick_CutScene_Clear_Umbrella(_double dTimeDelta)
 	{
 		if (m_dTime >= 6.0)
 		{
-
-
 			_matrix matRot = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
 			static_cast<CCody*>(DATABASE->GetCody())->Get_Transform()->Set_WorldMatrix(matRot);
 			static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(-635.f, 756.f, 195.f, 1.f));
@@ -262,6 +252,86 @@ _bool CCutScene::Tick_CutScene_Clear_Rail(_double dTimeDelta)
 	return true;
 }
 
+_bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
+{
+	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
+	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
+	if (m_iCutSceneTake == 0)
+	{
+		if (m_dTime < 25.02)
+		{
+			pCody->Get_Actor()->Set_Position(XMVectorSet(73.5f, 244.5f, 168.5f, 1.f));
+			pMay->Get_Actor()->Set_Position(XMVectorSet(72.f, 243.8f, 170.4f, 1.f));
+			m_iCutSceneTake++;
+		}
+	}
+	else if (m_iCutSceneTake == 1)
+	{
+		if (25.02 < m_dTime && m_dTime <= 36.65)
+		{
+			pCody->Get_Actor()->Set_Position(XMVectorSet(74.7f, 244.5f, 167.5f, 1.f));
+			pMay->Get_Actor()->Set_Position(XMVectorSet(73.3f, 243.8f, 168.7f, 1.f));
+			m_iCutSceneTake++;
+		}
+	}
+	else if (m_iCutSceneTake == 2)
+	{
+		if (36.65 < m_dTime && m_dTime <= 46.98)
+		{
+			pMay->Get_Actor()->Set_Position(XMVectorSet(73.5f,	243.8f,	168.7f, 1.f));
+			m_iCutSceneTake++;
+		}
+	}
+	else if (m_iCutSceneTake == 3)
+	{
+		if (36.65 < m_dTime && m_dTime <= 57.3)
+		{
+			pCody->Get_Actor()->Set_Position(XMVectorSet(74.7f,244.6f,167.5f,1.f));
+			m_iCutSceneTake++;
+		}
+	}
+	else if (m_iCutSceneTake == 4)
+	{
+		if (46.98 < m_dTime && m_dTime <= 64.5)
+		{
+			pMay->Get_Actor()->Set_Position(XMVectorSet(73.5f, 243.8f, 168.7f, 1.f));
+			m_iCutSceneTake++;
+		}
+	}
+	else if (m_iCutSceneTake == 5)
+	{
+		if (57.3 < m_dTime && m_dTime <= 64.5)
+		{
+			pCody->Get_Actor()->Set_Position(XMVectorSet(74.7f, 244.6f, 167.5f, 1.f));
+			m_iCutSceneTake++;
+		}
+	}
+	else if (m_iCutSceneTake == 6)
+	{
+		if (64.5 < m_dTime && m_dTime <= 71.5)
+		{
+			pCody->Get_Actor()->Set_Position(XMVectorSet(74.2f,244.4f,169.f,1.f));
+			pMay->Get_Actor()->Set_Position(XMVectorSet(73.5f,243.8f,169.4f, 1.f));
+			m_iCutSceneTake++;
+		}
+	}
+	else if (m_iCutSceneTake == 7)
+	{
+		if (m_dTime >= 78.5)
+		{
+			pCody->Get_Transform()->RotateYaw_Angle(XMConvertToRadians(180.f));
+			pMay->Get_Transform()->RotateYaw_Angle(XMConvertToRadians(180.f));
+			
+			pCody->Get_Actor()->Set_Position(XMVectorSet(64.f,	244.4f,220.6f, 1.f));
+
+			pMay->Get_Actor()->Set_Position(XMVectorSet(65.5f,	244.4f,	220.4f, 1.f));
+			m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true);
+			m_iCutSceneTake++;
+		}
+	}
+	return true;
+}
+
 HRESULT CCutScene::Start_CutScene()
 {
 	m_dTime = 0.0;
@@ -282,6 +352,10 @@ HRESULT CCutScene::Start_CutScene()
 		break;
 	case CutSceneOption::CutScene_Clear_Rail:
 		if (FAILED(Start_CutScene_Clear_Rail()))
+			return E_FAIL;
+		break;
+	case CutSceneOption::CutScene_Boss_Intro:
+		if (FAILED(Start_CutScene_Boss_Intro()))
 			return E_FAIL;
 		break;
 	}
@@ -361,9 +435,6 @@ HRESULT CCutScene::Start_CutScene_Intro()
 	static_cast<CPerformer*>(pPerformer)->Set_PerformerDesc(tDesc);
 	static_cast<CPerformer*>(pPerformer)->Start_Perform(0, dTime);
 
-
-
-	
 	return S_OK;
 }
 
@@ -402,6 +473,34 @@ HRESULT CCutScene::Start_CutScene_Clear_Rail()
 	CFilm::CamNode* pFirstNode = pCamHelper->Get_Film(TEXT("Film_Clear_Rail"))->Get_CamNodes()->front();
 	pCamHelper->SeeCamNode(pFirstNode, CFilm::RScreen);
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), true, 1.f);
+	return S_OK;
+}
+
+HRESULT CCutScene::Start_CutScene_Boss_Intro()
+{
+	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_Boss_Intro");
+	m_bIsStartFilm = false;
+	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
+
+	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
+	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
+
+	//_matrix matRot = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+	pCody->Get_Transform()->Set_WorldMatrix(XMMatrixIdentity()/*matRot*/);
+	pCody->Get_Actor()->Set_Position(XMVectorSet(73.5f, 244.5f, 168.5f, 1.f));
+	pCody->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_Intro);
+
+	pMay->Get_Transform()->Set_WorldMatrix(XMMatrixIdentity()/*matRot*/);
+	pMay->Get_Actor()->Set_Position(XMVectorSet(72.f,243.8f,170.4f, 1.f));
+	pMay->Get_Model()->Set_Animation(ANI_M_SpaceStation_BossFight_Intro);
+
+	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
+	pUfo->Get_Model()->Set_Animation(CutScene_UFO_Boss_Intro);
+	
+	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
+	pMoonBaboon->Set_Animation(CutScene_BossIntro_MoonBaboon, Moon_Ufo_MH);
+
+
 	return S_OK;
 }
 
@@ -458,6 +557,19 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 	return S_OK;
 }
 
+HRESULT CCutScene::End_CutScene_Boss_Intro()
+{
+
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
+	pMainCam->ReSet_Cam_FreeToAuto(true);
+	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
+	pSubCam->ReSet_Cam_FreeToAuto(true);
+
+	return S_OK;
+}
+
 HRESULT CCutScene::Ready_CutScene_Intro()
 {
 	m_dDuration = 138.0;
@@ -484,6 +596,12 @@ HRESULT CCutScene::Ready_CutScene_Clear_Rail()
 	return S_OK;
 }
 
+HRESULT CCutScene::Ready_CutScene_Boss_Intro()
+{
+	m_dDuration = 80.6;
+	return S_OK;
+}
+
 HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 {
 	switch (m_eCutSceneOption = eOption)
@@ -502,6 +620,10 @@ HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 		break;
 	case Client::CCutScene::CutSceneOption::CutScene_Clear_Rail:
 		if (FAILED(Ready_CutScene_Clear_Rail()))
+			return E_FAIL;
+		break;
+	case Client::CCutScene::CutSceneOption::CutScene_Boss_Intro:
+		if (FAILED(Ready_CutScene_Boss_Intro()))
 			return E_FAIL;
 		break;
 	}
