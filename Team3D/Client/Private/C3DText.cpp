@@ -184,6 +184,13 @@ HRESULT C3DText::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerGeom);
 
+	/* Sound */
+	if (tArg.iIndex == 0)
+	{
+		m_pGameInstance->Play_Sound(TEXT("Bgm_Ending.wav"), CHANNEL_TYPE::CHANNEL_BGM, 0.f, true);
+		m_pGameInstance->FadeInOut_Sound(true, true, 0.2f, 1.f);
+	}
+
 	return S_OK;
 }
 

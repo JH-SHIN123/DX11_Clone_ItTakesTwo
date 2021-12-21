@@ -75,7 +75,7 @@ public:
 	void Stop_SoundAll();
 	void Set_SoundVolume(CHANNEL_TYPE eChannel, _float fVolume);
 	void Lerp_Sound(CHANNEL_TYPE eFirstChannel, CHANNEL_TYPE eSecondChannel, _float fLerpSpped = 1.f, _float fFirstVolume = 1.f, _float fSecondVolume = 1.f);
-	void FadeInOut_Sound(CHANNEL_TYPE eChannel, _bool bType, _float fLerpSpped = 1.f, _float fVolume = 1.f);
+	void FadeInOut_Sound(_bool isFirstBGM, _bool bType, _float fLerpSpped = 1.f, _float fVolume = 1.f);
 #pragma endregion
 
 #pragma region Level_Manager
