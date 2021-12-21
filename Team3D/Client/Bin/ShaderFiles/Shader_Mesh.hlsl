@@ -62,6 +62,7 @@ struct VS_OUT_VOLUME
 {
 	float4 vPosition	: SV_POSITION;
 	float3 vVolumeColor : TEXCOORD0;
+	float2 vTexUV		: TEXCOORD1;
 };
 
 struct VS_OUT_FRESNEL
@@ -217,6 +218,7 @@ VS_OUT_VOLUME VS_MAIN_VOLUME(VS_IN In)
 
 	Out.vPosition = mul(vector(In.vPosition, 1.f), WorldMatrix);
 	Out.vVolumeColor = vVolumeColor;
+	Out.vTexUV = In.vTexUV;
 
 	return Out;
 }
@@ -278,6 +280,7 @@ struct GS_IN_VOLUME
 {
 	float4 vPosition	: SV_POSITION;
 	float3 vVolumeColor : TEXCOORD0;
+	float2 vTexUV		: TEXCOORD1;
 };
 
 struct GS_OUT_VOLUME
@@ -285,6 +288,7 @@ struct GS_OUT_VOLUME
 	float4 vPosition		: SV_POSITION;
 	float3 vVolumeColor		: TEXCOORD0;
 	float4 vProjPosition	: TEXCOORD1;
+	float2 vTexUV			: TEXCOORD2;
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 };
 
@@ -608,6 +612,7 @@ void GS_MAIN_VOLUME(triangle GS_IN_VOLUME In[3], inout TriangleStream<GS_OUT_VOL
 			Out.vPosition = mul(In[i].vPosition, matVP);
 			Out.vVolumeColor = In[i].vVolumeColor;
 			Out.vProjPosition = Out.vPosition;
+			Out.vTexUV = In[i].vTexUV;
 			Out.iViewportIndex = 1;
 
 			TriStream.Append(Out);
@@ -625,6 +630,7 @@ void GS_MAIN_VOLUME(triangle GS_IN_VOLUME In[3], inout TriangleStream<GS_OUT_VOL
 			Out.vPosition = mul(In[j].vPosition, matVP);
 			Out.vVolumeColor = In[j].vVolumeColor;
 			Out.vProjPosition = Out.vPosition;
+			Out.vTexUV = In[j].vTexUV;
 			Out.iViewportIndex = 2;
 
 			TriStream.Append(Out);
@@ -633,7 +639,6 @@ void GS_MAIN_VOLUME(triangle GS_IN_VOLUME In[3], inout TriangleStream<GS_OUT_VOL
 	}
 }
 /* ________________________________________________________________________________*/
-
 ////////////////////////////////////////////////////////////
 
 struct PS_IN
@@ -1238,6 +1243,7 @@ struct PS_IN_VOLUME
 	float4 vPosition		: SV_POSITION;
 	float3 vVolumeColor		: TEXCOORD0;
 	float4 vProjPosition	: TEXCOORD1;
+	float2 vTexUV			: TEXCOORD2;
 };
 struct PS_OUT_VOLUME
 {
@@ -1248,12 +1254,27 @@ PS_OUT_VOLUME PS_MAIN_VOLUME(PS_IN_VOLUME In)
 {
 	PS_OUT_VOLUME Out = (PS_OUT_VOLUME)0;
 
+	float2 vTexUV = In.vTexUV;
+	vTexUV.y -= g_fTime;
+	float3 vPatternDesc = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, vTexUV);
+	In.vVolumeColor = vPatternDesc * In.vVolumeColor;
+
 	Out.vVolume = vector(In.vVolumeColor, In.vProjPosition.z / In.vProjPosition.w);
 
 	return Out;
 }
 /* ________________________________________________________________________________*/
+PS_OUT_ALPHA PS_PHANTOM(PS_IN In, uniform bool bBlue)
+{
+	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
 
+	if(bBlue)
+		Out.vDiffuse = vector(0.f,0.5f,1.f,0.7f);
+	else
+		Out.vDiffuse = vector(0.f, 1.f, 0.5f, 0.7f);
+
+	return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -1321,7 +1342,7 @@ technique11 DefaultTechnique
 	pass Default_Alpha_MoonBaboon_Core_Glass
 	{
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_Default, 0);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
@@ -1331,7 +1352,7 @@ technique11 DefaultTechnique
 	pass Default_Alpha_MoonBaboon_Core_Pillar_Glass
 	{
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_Default, 0);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
@@ -1558,5 +1579,35 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_MESHPARTICLE();
+	}
+	// 30
+	pass Character_PhantomFirst
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_PhantomFirst, 0xff);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = NULL;
+	}
+	// 31
+	pass Character_PhantomSecond_Blue
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_PhantomSecond, 0xff);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PHANTOM(true);
+	}
+	// 32
+	pass Character_PhantomSecond_Green
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_PhantomSecond, 0xff);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PHANTOM(false);
 	}
 };

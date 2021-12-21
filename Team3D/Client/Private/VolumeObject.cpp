@@ -27,7 +27,8 @@ HRESULT CVolumeObject::NativeConstruct(void* pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_VolumePattern"), TEXT("Com_Texture"), (CComponent**)&m_pPatternTexCom), E_FAIL);
+
 	const _tchar* pModelTag = nullptr;
 	switch (m_tVolumeDesc.eVolumeType)
 	{
@@ -55,6 +56,11 @@ _int CVolumeObject::Tick(_double TimeDelta)
 {
 	CGameObject::Tick(TimeDelta);
 
+	if (m_fPatternDeltaT >= 1.f)
+		m_fPatternDeltaT = 0.f;
+	else
+		m_fPatternDeltaT += (_float)TimeDelta * 0.2f;
+
 	return NO_EVENT;
 }
 
@@ -74,6 +80,9 @@ HRESULT CVolumeObject::Render(RENDER_GROUP::Enum eGroup)
 	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+
+	m_pModelCom->Set_Variable("g_fTime", &m_fPatternDeltaT, sizeof(_float));
+	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", m_pPatternTexCom->Get_ShaderResourceView(0));
 
 	if (RENDER_GROUP::RENDER_VOLUME_FRONT == eGroup) 
 	{
@@ -126,6 +135,7 @@ void CVolumeObject::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pPatternTexCom);
 
 	CGameObject::Free();
 }
