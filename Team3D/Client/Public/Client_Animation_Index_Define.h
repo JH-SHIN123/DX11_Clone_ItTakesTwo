@@ -549,6 +549,10 @@
 #define ANI_C_Rocket_Up 545
 #define ANI_C_SpacePortal_Exit 546
 #define ANI_C_SpacePortal_Travel 547
+#define ANI_C_Holding_Low_UFO 548
+#define ANI_C_Holding_Enter_UFO 549
+#define ANI_C_Holding_UFO 550
+#define ANI_C_CodyCutSceneIntro 551
 
 #pragma endregion
 

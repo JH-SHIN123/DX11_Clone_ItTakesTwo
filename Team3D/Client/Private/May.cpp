@@ -1,3 +1,4 @@
+
 #include "stdafx.h"
 #include "..\Public\May.h"
 #include "SubCamera.h"
@@ -9,7 +10,7 @@
 #include "SpaceRail_Node.h"
 #include "HookUFO.h"
 #include "Gauge_Circle.h"
-
+#include"CutScenePlayer.h"
 #include "Effect_Generator.h"
 #include "Effect_May_Boots.h"
 /* For.PinBall */
@@ -21,6 +22,9 @@
 /* For.MoonUFO */
 #include "MoonUFO.h"
 #include "Moon.h"
+/* For.BossUFO */
+#include "UFO.h"
+
 /*For.WarpGate*/
 #include "WarpGate.h"
 #include "LaserTennis_Manager.h"
@@ -63,16 +67,29 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	CCharacter::NativeConstruct(pArg);
 	Ready_Component();
 
-
 	m_pModelCom->Set_Animation(ANI_M_Bounce4);
 	CDataStorage::GetInstance()->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
 
 	UI_Create(May, PlayerMarker);
 
+
+	m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+	m_pGameInstance->Play_Sound(TEXT("May_Walk.wav"), CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+
+	m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RUN, m_fMay_Run_Volume);
+	m_pGameInstance->Play_Sound(TEXT("May_Run.wav"), CHANNEL_MAY_RUN, m_fMay_Run_Volume);
+
+	m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fMay_Wall_Slide_Volume);
+	m_pGameInstance->Play_Sound(TEXT("Character_WallJump_Slide.wav"), CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fMay_Wall_Slide_Volume);
+
+
+	m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
+	m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
+	m_pGameInstance->Stop_Sound(CHANNEL_CHARACTER_WALLJUMP_SLIDE);
+
 	return S_OK;
 }
-
 
 HRESULT CMay::Ready_Component()
 {
@@ -117,7 +134,7 @@ HRESULT CMay::Ready_Component()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_May_Boots"), nullptr, (CGameObject**)&m_pEffect_GravityBoots), E_FAIL);
 	m_pEffect_GravityBoots->Set_Model(m_pModelCom);
 
-	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_CodyCircle_Gauge")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_MayCircle_Gauge")), E_FAIL);
 
 	return S_OK;
 }
@@ -163,7 +180,13 @@ void CMay::Add_LerpInfo_To_Model()
 _int CMay::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
-
+	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
+	{
+		m_pActorCom->Set_ZeroGravity(true, true, true);
+		m_pActorCom->Update(dTimeDelta); 
+		m_pModelCom->Update_Animation(dTimeDelta);
+		return NO_EVENT;
+	}
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
@@ -193,6 +216,7 @@ _int CMay::Tick(_double dTimeDelta)
 			Hook_UFO(dTimeDelta);
 			Falling_Dead(dTimeDelta);
 			BossMissile_Control(dTimeDelta);
+			Ride_Ending_Rocket(dTimeDelta);
 		}
 		else
 		{
@@ -239,7 +263,12 @@ _int CMay::Tick(_double dTimeDelta)
 _int CMay::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
-
+	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
+	{
+		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		return NO_EVENT;
+	}
 	/* LateTick : 레일의 타겟 찾기*/
 	Find_TargetSpaceRail();
 	ShowRailTargetTriggerUI();
@@ -305,13 +334,14 @@ void CMay::Free()
 
 	Safe_Release(m_pGauge_Circle);
 
-	//Safe_Release(m_pCamera);
+	//Safe_Release(m_pCamera); 
 	Safe_Release(m_pTargetPtr);
 	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pEffect_GravityBoots);
+
 	CCharacter::Free();
 }
 
@@ -344,6 +374,9 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_0))/* 레이저 테니스 */
 		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_NUMPADENTER))
+		m_IsEnding = true;
+
 #pragma endregion
 
 #pragma region Local variable
@@ -407,6 +440,7 @@ void CMay::KeyInput(_double dTimeDelta)
 			{
 				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 					m_fSprintAcceleration = 15.f;
 					bMove[1] = !bMove[1];
 					m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
@@ -418,6 +452,7 @@ void CMay::KeyInput(_double dTimeDelta)
 			{
 				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 					m_fSprintAcceleration = 15.f;
 					bMove[1] = !bMove[1];
 					m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
@@ -429,6 +464,7 @@ void CMay::KeyInput(_double dTimeDelta)
 			{
 				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 					m_fSprintAcceleration = 15.f;
 					bMove[0] = !bMove[0];
 					m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
@@ -440,6 +476,7 @@ void CMay::KeyInput(_double dTimeDelta)
 			{
 				if (((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) /*|| (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted)*/) && m_IsTurnAround == false)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 					m_fSprintAcceleration = 15.f;
 					bMove[0] = !bMove[0];
 					m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
@@ -501,6 +538,10 @@ void CMay::KeyInput(_double dTimeDelta)
 
 		if (m_IsJumping == false)
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
+			m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
+			m_pGameInstance->Play_Sound(TEXT("May_Dash.wav"), CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
 			EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
 
 			m_fAcceleration = 5.f;
@@ -514,6 +555,9 @@ void CMay::KeyInput(_double dTimeDelta)
 		{
 			if (m_pModelCom->Get_CurAnimIndex() != ANI_M_AirDash_Start && m_iAirDashCount == 0)
 			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
+				m_pGameInstance->Play_Sound(TEXT("May_Dash.wav"), CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
+
 				m_iAirDashCount += 1;
 				m_fAcceleration = 5.f;
 				m_pActorCom->Jump_Start(1.2f);
@@ -570,6 +614,13 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_fJogAcceleration = 25.f;
 		m_fSprintAcceleration = 35.f;
 		m_bGroundPound = true;
+		m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_GROUNDPOUND_ROLL, m_fMay_GroundPound_Roll_Volume);
+		m_pGameInstance->Play_Sound(TEXT("May_GroundPound_Roll.wav"), CHANNEL_MAY_GROUNDPOUND_ROLL, m_fMay_GroundPound_Roll_Volume);
+
+		m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_GROUNDPOUND_ROLL_VOICE, m_fMay_GroundPound_Roll_Voice_Volume);
+		m_pGameInstance->Play_Sound(TEXT("May_GroundPound_Roll_Voice.wav"), CHANNEL_MAY_GROUNDPOUND_ROLL_VOICE, m_fMay_GroundPound_Roll_Voice_Volume);
+
+
 	}
 #pragma endregion 
 
@@ -716,6 +767,7 @@ void CMay::KeyInput(_double dTimeDelta)
 			{
 				if ((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) && m_IsTurnAround == false)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 					m_fSprintAcceleration = 15.f;
 					bMove[1] = !bMove[1];
 					m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
@@ -727,6 +779,7 @@ void CMay::KeyInput(_double dTimeDelta)
 			{
 				if ((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) && m_IsTurnAround == false)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 					m_fSprintAcceleration = 15.f;
 					bMove[1] = !bMove[1];
 					m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
@@ -738,6 +791,7 @@ void CMay::KeyInput(_double dTimeDelta)
 			{
 				if ((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) && m_IsTurnAround == false)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 					m_fSprintAcceleration = 15.f;
 					bMove[0] = !bMove[0];
 					m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
@@ -749,6 +803,7 @@ void CMay::KeyInput(_double dTimeDelta)
 			{
 				if ((m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) && m_IsTurnAround == false)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 					m_fSprintAcceleration = 15.f;
 					bMove[0] = !bMove[0];
 					m_pModelCom->Set_Animation(ANI_M_SprintTurnAround);
@@ -808,6 +863,11 @@ void CMay::KeyInput(_double dTimeDelta)
 
 		if (m_IsJumping == false)
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
+			m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
+			m_pGameInstance->Play_Sound(TEXT("May_Dash.wav"), CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
+
 			m_fAcceleration = 5.f;
 			m_pModelCom->Set_Animation(ANI_M_Roll_Start);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Roll_Stop);
@@ -819,6 +879,9 @@ void CMay::KeyInput(_double dTimeDelta)
 		{
 			if (m_pModelCom->Get_CurAnimIndex() != ANI_M_AirDash_Start && m_iAirDashCount == 0)
 			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
+				m_pGameInstance->Play_Sound(TEXT("May_Dash.wav"), CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
+
 				m_iAirDashCount += 1;
 				m_fAcceleration = 5.f;
 				m_pActorCom->Jump_Start(1.2f);
@@ -870,6 +933,13 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_fJogAcceleration = 25.f;
 		m_fSprintAcceleration = 35.f;
 		m_bGroundPound = true;
+
+		m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_GROUNDPOUND_ROLL, m_fMay_GroundPound_Roll_Volume);
+		m_pGameInstance->Play_Sound(TEXT("May_GroundPound_Roll.wav"), CHANNEL_MAY_GROUNDPOUND_ROLL, m_fMay_GroundPound_Roll_Volume);
+
+		m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_GROUNDPOUND_ROLL_VOICE, m_fMay_GroundPound_Roll_Voice_Volume);
+		m_pGameInstance->Play_Sound(TEXT("May_GroundPound_Roll_Voice.wav"), CHANNEL_MAY_GROUNDPOUND_ROLL_VOICE, m_fMay_GroundPound_Roll_Voice_Volume);
+
 	}
 
 #pragma endregion 
@@ -1008,18 +1078,37 @@ void CMay::Move(const _double dTimeDelta)
 
 		if (m_bRoll == false && m_IsJumping == false && m_IsFalling == false && ANI_M_Jump_Land_Jog != m_pModelCom->Get_CurAnimIndex())
 		{
+
 			if (m_pModelCom->Is_AnimFinished(ANI_M_Jog_Start) == true) // JogStart -> Jog
 			{
+				if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_WALK) == false)
+				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+					m_pGameInstance->Play_Sound(TEXT("May_Walk.wav"), CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+				}
+
 				m_pModelCom->Set_Animation(ANI_M_Jog);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
 			}
 			else if (m_pModelCom->Is_AnimFinished(ANI_M_Jog) == true) // Jog -> Jog // 보간속도 Up
 			{
+				if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_WALK) == false)
+				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+					m_pGameInstance->Play_Sound(TEXT("May_Walk.wav"), CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+				}
+
 				m_pModelCom->Set_Animation(ANI_M_Jog);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
 			}
 			else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop || m_pModelCom->Get_CurAnimIndex() == ANI_M_MH || m_pModelCom->Get_CurAnimIndex() == ANI_M_MH_Gesture_Small_Stretch || m_pModelCom->Get_CurAnimIndex() == ANI_M_ActionMH)	// Idle To Jog Start. -> Jog 예약
 			{
+				if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_WALK) == false)
+				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+					m_pGameInstance->Play_Sound(TEXT("May_Walk.wav"), CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+				}
+
 				m_pModelCom->Set_Animation(ANI_M_Jog_Start);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
 			}
@@ -1027,11 +1116,23 @@ void CMay::Move(const _double dTimeDelta)
 				m_pModelCom->Get_CurAnimIndex() == ANI_M_ExhaustedMH_To_Idle ||
 				m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Stop_Exhausted))
 			{
+				if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_WALK) == false)
+				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+					m_pGameInstance->Play_Sound(TEXT("May_Walk.wav"), CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+				}
+
 				m_pModelCom->Set_Animation(ANI_M_Jog_Exhausted_Start);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
 			}
 			else if (m_pModelCom->Is_AnimFinished(ANI_M_Roll_Start)) // 구르고 나서 바로 움직이면 Roll to Jog
 			{
+				if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_WALK) == false)
+				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+					m_pGameInstance->Play_Sound(TEXT("May_Walk.wav"), CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+				}
+
 				m_bRoll = false;
 				m_pModelCom->Set_Animation(ANI_M_Roll_Jog);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
@@ -1047,39 +1148,45 @@ void CMay::Move(const _double dTimeDelta)
 			m_fJogAcceleration = 25.f;
 			if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog) // jog 였다면
 			{
+				m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
 				m_pModelCom->Set_Animation(ANI_M_Jog_Stop); // jog to stop 으로 바꿔
 				m_pModelCom->Set_NextAnimIndex(ANI_M_MH); // jog to stop 끝나면 idle 예약.
 			}
 			else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jog_Start) // JogStart 였다면
 			{
+				m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
 				m_pModelCom->Set_Animation(ANI_M_Jog_Stop); // jog to stop 으로 바꿔
 				m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			}
 			else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_MH) // IDLE 상태라면
 			{
-
+				m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
 				m_fIdleTime += (_float)dTimeDelta;
 				if (m_bAction == false)
 				{
 					if (m_fIdleTime > 5.f && m_pModelCom->Is_AnimFinished(ANI_M_MH)) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
 					{
+						m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
 						m_pModelCom->Set_Animation(ANI_M_MH_Gesture_Small_Stretch); // 배 두들기는 애니메이션 재생
 						m_fIdleTime = 0.f;
 					}
 				}
 				else if (m_bAction == true)
 				{
+					m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
 					m_pModelCom->Set_Animation(ANI_M_MH_To_Action);
 					m_pModelCom->Set_NextAnimIndex(ANI_M_ActionMH);
 				}
 			}
 			else if (m_pModelCom->Is_AnimFinished(ANI_M_MH_To_Action) == true && m_bAction == true)
 			{
+				m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
 				m_pModelCom->Set_Animation(ANI_M_ActionMH);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_ActionMH_To_Idle);
 			}
 			else if (m_pModelCom->Is_AnimFinished(ANI_M_ActionMH) == true && m_bAction == true)
 			{
+				m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
 				m_pModelCom->Set_Animation(ANI_M_ActionMH_To_Idle);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 				m_bAction = false;
@@ -1093,6 +1200,9 @@ void CMay::Roll(const _double dTimeDelta)
 	{
 		if (m_pModelCom->Is_AnimFinished(ANI_M_Roll_Start))
 		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH_LANDING, m_fMay_Dash_Landing_Volume);
+			m_pGameInstance->Play_Sound(TEXT("May_Dash_Landing.wav"), CHANNEL_MAY_DASH_LANDING, m_fMay_Dash_Landing_Volume);
+
 			m_fAcceleration = 5.0;
 			m_pModelCom->Set_Animation(ANI_M_Roll_Stop);
 			if (m_bMove == false)
@@ -1244,9 +1354,23 @@ void CMay::Sprint(const _double dTimeDelta)
 		if (m_bRoll == false && m_IsJumping == false && m_IsTurnAround == false)
 		{
 			if (m_pModelCom->Is_AnimFinished(ANI_M_Sprint_Start_FromDash) == true) // JogStart -> Jog
+			{
 				m_pModelCom->Set_Animation(ANI_M_Sprint);
+				if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_RUN) == false)
+				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RUN, m_fMay_Run_Volume);
+					m_pGameInstance->Play_Sound(TEXT("May_Run.wav"), CHANNEL_MAY_RUN, m_fMay_Run_Volume);
+				}
+			}
 			else if (m_pModelCom->Is_AnimFinished(ANI_M_Sprint) == true) // Jog -> Jog // 보간속도 Up
+			{
 				m_pModelCom->Set_Animation(ANI_M_Sprint);
+				if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_RUN) == false)
+				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RUN, m_fMay_Run_Volume);
+					m_pGameInstance->Play_Sound(TEXT("May_Run.wav"), CHANNEL_MAY_RUN, m_fMay_Run_Volume);
+				}
+			}
 			else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_MH ||
 				m_pModelCom->Get_CurAnimIndex() == ANI_M_MH_Gesture_Small_Stretch ||
 				m_pModelCom->Get_CurAnimIndex() == ANI_M_ActionMH ||
@@ -1254,6 +1378,11 @@ void CMay::Sprint(const _double dTimeDelta)
 			{
 				m_pModelCom->Set_Animation(ANI_M_Sprint_Start_FromDash);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_Sprint);
+				if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_RUN) == false)
+				{
+					m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RUN, m_fMay_Run_Volume);
+					m_pGameInstance->Play_Sound(TEXT("May_Run.wav"), CHANNEL_MAY_RUN, m_fMay_Run_Volume);
+				}
 			}
 			else if (m_pModelCom->Is_AnimFinished(ANI_M_Roll_Start)) // 구르고 나서 바로 움직이면 Roll to Jog
 			{
@@ -1262,11 +1391,21 @@ void CMay::Sprint(const _double dTimeDelta)
 				{
 					m_pModelCom->Set_Animation(ANI_M_Roll_Jog);
 					m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_WALK) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+						m_pGameInstance->Play_Sound(TEXT("May_Walk.wav"), CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+					}
 				}
 				else
 				{
 					m_pModelCom->Set_Animation(ANI_M_Sprint_Start_FromDash);
 					m_pModelCom->Set_NextAnimIndex(ANI_M_Sprint);
+					if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_RUN) == false)
+					{
+						m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RUN, m_fMay_Run_Volume);
+						m_pGameInstance->Play_Sound(TEXT("May_Run.wav"), CHANNEL_MAY_RUN, m_fMay_Run_Volume);
+					}
 				}
 			}
 		}
@@ -1280,6 +1419,7 @@ void CMay::Sprint(const _double dTimeDelta)
 			m_fSprintAcceleration = 35.f;
 			if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint) // jog 였다면
 			{
+				m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 				m_bSprint = false;
 				m_pModelCom->Set_Animation(ANI_M_Jog_Stop_Exhausted); // jog to stop 으로 바꿔
 				m_pModelCom->Set_NextAnimIndex(ANI_M_ExhaustedMH); // jog to stop 끝나면 idle 예약.
@@ -1288,13 +1428,14 @@ void CMay::Sprint(const _double dTimeDelta)
 	}
 	else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Sprint_Start_FromDash) // JogStart 였다면
 	{
+		m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 		m_bSprint = false;
 		m_pModelCom->Set_Animation(ANI_M_Jog_Stop_Exhausted); // jog to stop 으로 바꿔
 		m_pModelCom->Set_NextAnimIndex(ANI_M_ExhaustedMH);
 	}
 	else if (m_pModelCom->Get_CurAnimIndex() == ANI_M_ExhaustedMH) // IDLE 상태라면
 	{
-
+		m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 		m_fIdleTime += (_float)dTimeDelta;
 
 		if (m_fIdleTime > 3.f && m_pModelCom->Get_CurAnimIndex() == ANI_M_ExhaustedMH) // IDLE 상태이고 IDLE 상태가 된지 시간이 5초정도 지났다면
@@ -1307,7 +1448,6 @@ void CMay::Sprint(const _double dTimeDelta)
 
 	}
 }
-
 void CMay::Jump(const _double dTimeDelta)
 {
 	if (m_bShortJump == true)
@@ -1317,21 +1457,39 @@ void CMay::Jump(const _double dTimeDelta)
 			m_IsJumping = true;
 			m_pActorCom->Jump_Start(2.6f);
 			m_bShortJump = false;
+			m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
+			m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_JUMP, m_fMay_Jump_Volume);
+			m_pGameInstance->Play_Sound(TEXT("May_Jump.wav"), CHANNEL_MAY_JUMP, m_fMay_Jump_Volume);
 		}
 		if (m_iJumpCount == 2)
 		{
 			m_IsJumping = true;
 			m_pActorCom->Jump_Start(2.6f);
 			m_bShortJump = false;
+			m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
+			m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_JUMP_DOUBLE, m_fMay_Jump_Double_Volume);
+			m_pGameInstance->Play_Sound(TEXT("May_Jump_Double.wav"), CHANNEL_MAY_JUMP_DOUBLE, m_fMay_Jump_Double_Volume);
 		}
 	}
 	if (m_IsJumping == true && m_pActorCom->Get_IsJump() == false)
 	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_JUMP_LANDING, m_fMay_Jump_Landing_Volume);
+		m_pGameInstance->Play_Sound(TEXT("May_Jump_Landing.wav"), CHANNEL_MAY_JUMP_LANDING, m_fMay_Jump_Landing_Volume);
+
+
 		m_bSprint = false;
 		m_iAirDashCount = 0;
 
 		if (m_pGameInstance->Get_Pad_LStickX() > 44000 || m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Get_Pad_LStickY() > 44000)
 		{
+			if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_WALK) == false)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+				m_pGameInstance->Play_Sound(TEXT("May_Walk.wav"), CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+			}
+
 			m_pModelCom->Set_Animation(ANI_M_Jump_Land_Jog);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
 		}
@@ -1366,6 +1524,12 @@ void CMay::Jump(const _double dTimeDelta)
 	{
 		if (m_pGameInstance->Get_Pad_LStickX() > 44000 || m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Get_Pad_LStickY() > 44000)
 		{
+			if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_WALK) == false)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+				m_pGameInstance->Play_Sound(TEXT("May_Walk.wav"), CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+			}
+
 			m_pModelCom->Set_Animation(ANI_M_Jump_Land_Jog);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
 		}
@@ -1382,6 +1546,9 @@ void CMay::Jump(const _double dTimeDelta)
 	}
 	if ((m_pGameInstance->Pad_Key_Down(DIP_B) && m_IsFalling == true) || (m_pGameInstance->Key_Down(DIK_K) && m_IsFalling == true))
 	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_JUMP_DOUBLE, m_fMay_Jump_Double_Volume);
+		m_pGameInstance->Play_Sound(TEXT("May_Jump_Double.wav"), CHANNEL_MAY_JUMP_DOUBLE, m_fMay_Jump_Double_Volume);
+
 		m_bShortJump = true;
 		m_IsJumping = true;
 		m_iJumpCount = 1;
@@ -1415,6 +1582,9 @@ void CMay::Ground_Pound(const _double dTimeDelta)
 
 	if (m_pModelCom->Is_AnimFinished(ANI_M_GroundPound_Falling) && m_bPlayGroundPoundOnce == false)
 	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_GROUNDPOUND_LANDING, m_fMay_GroundPound_Landing_Volume);
+		m_pGameInstance->Play_Sound(TEXT("May_GroundPound_Landing.wav"), CHANNEL_MAY_GROUNDPOUND_LANDING, m_fMay_GroundPound_Landing_Volume);
+
 		m_bPlayGroundPoundOnce = true;
 		m_pModelCom->Set_Animation(ANI_M_GroundPound_Land_Exit);
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
@@ -1484,6 +1654,11 @@ void CMay::SetCameraTriggerID_Matrix(GameID::Enum eID, _bool IsCollide, _fmatrix
 	XMStoreFloat4x4(&m_TriggerCameraWorld, vTriggerCameraWorld);
 }
 
+void CMay::SetCameraTriggerID_Pos(_fvector vCamTriggerPos)
+{
+	XMStoreFloat4(&m_vCamTriggerPos, vCamTriggerPos);
+}
+
 _bool CMay::Trigger_Check(const _double dTimeDelta)
 {
 	if (m_IsCollide == true)
@@ -1493,7 +1668,6 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_M_BruteCombat_Attack_Var1);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsHitStarBuddy = true;
-
 		}
 		else if (m_eTargetGameID == GameID::eMOONBABOON && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)))
 		{
@@ -1607,9 +1781,13 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_IsWarpNextStage = true;
 			m_IsWarpDone = true;
 			XMStoreFloat4x4(&m_TriggerTargetWorld, static_cast<CWarpGate*>(m_pTargetPtr)->Get_NextPortal_Matrix());
+			m_pCamera->Set_StartPortalMatrix(static_cast<CWarpGate*>(m_pTargetPtr)->Get_Transform()->Get_WorldMatrix());
 		}
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DEAD_BURN, m_fMay_Dead_Burn_Volume);
+			m_pGameInstance->Play_Sound(TEXT("May_Dead_Burn.wav"), CHANNEL_MAY_DEAD_BURN, m_fMay_Dead_Burn_Volume);
+
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			Enforce_IdleState();
@@ -1625,6 +1803,9 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)
 		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DEAD_BURN, m_fMay_Dead_Burn_Volume);
+			m_pGameInstance->Play_Sound(TEXT("May_Dead_Burn.wav"), CHANNEL_MAY_DEAD_BURN, m_fMay_Dead_Burn_Volume);
+
 			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
@@ -1684,6 +1865,9 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eDEADLINE && false == m_IsDeadLine)
 		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DEAD_FALL, m_fMay_Dead_Fall_Volume);
+			m_pGameInstance->Play_Sound(TEXT("May_Dead_Fall.wav"), CHANNEL_MAY_DEAD_FALL, m_fMay_Dead_Fall_Volume);
+
 			/* 데드라인 */
 			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Death_Fall_MH);
@@ -1733,6 +1917,26 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			}
 			m_IsCollide = false;
 		}
+		else if (m_eTargetGameID == GameID::eBOSSUFO && true == m_IsLaserRippedOff)
+		{
+			if (true == m_pModelCom->Is_AnimFinished(ANI_M_SpaceStation_BossFight_LaserRippedOff))
+			{
+				m_IsRippedOffAnimPlaying = false;
+				m_IsLaserRippedOff = false;
+			}
+
+			if (m_pGameInstance->Key_Down(DIK_E))
+			{
+				m_IsRippedOffAnimPlaying = true;
+				m_pModelCom->Set_Animation(ANI_M_SpaceStation_BossFight_LaserRippedOff);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+				m_pActorCom->Set_Position(XMVectorSet(60.9975f, 342.838f, 199.3799f, 1.f));
+				((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_LaserRippedOff, UFO_Left);
+				((CCody*)DATABASE->GetCody())->Set_AnimationRotate(190.f);
+				((CCody*)DATABASE->GetCody())->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_LaserRippedOff);
+				((CCody*)DATABASE->GetCody())->Get_Model()->Set_NextAnimIndex(ANI_C_MH);
+			}
+		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_O) && false == m_bLaserTennis)
 		{
 			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
@@ -1763,15 +1967,23 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			m_IsCollide = false;
 		}
+		else if (m_IsEnding == true && m_bSetEndingOffSetOnce == false)
+		{
+			m_bSetEndingOffSetOnce = true;
+			m_pModelCom->Set_Animation(ANI_M_Rocket_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_Rocket_MH);
+		}
 	}
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsPinBall || m_IsDeadLine
-		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_IsBossMissile_Control || m_IsWallLaserTrap_Touch || m_bWallAttach || m_bLaserTennis)
+		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_IsBossMissile_Control || m_IsWallLaserTrap_Touch || m_bWallAttach || 
+		m_IsRippedOffAnimPlaying || m_bLaserTennis || m_IsEnding)
 		return true;
 
 	return false;
 }
+
 _bool CMay::Trigger_End(const _double dTimeDelta)
 {
 	//if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jump_Land ||
@@ -2049,7 +2261,7 @@ void CMay::PinBall(const _double dTimeDelta)
 			{
 				if (false == m_IsPinBallSoundCheck)
 				{
-					m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Move.wav"), CHANNEL_PINBALL_HANDLEMOVE, 1.f, true);
+					m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Move.wav"), CHANNEL_PINBALL_HANDLEMOVE, 1.f);
 					m_IsPinBallSoundCheck = true;
 				}
 
@@ -2066,7 +2278,7 @@ void CMay::PinBall(const _double dTimeDelta)
 				/* Sound */
 				if (false == m_IsPinBallSoundCheck)
 				{
-					m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Move.wav"), CHANNEL_PINBALL_HANDLEMOVE, 1.f, true);
+					m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Move.wav"), CHANNEL_PINBALL_HANDLEMOVE, 1.f);
 					m_IsPinBallSoundCheck = true;
 				}
 
@@ -2271,6 +2483,9 @@ void CMay::Touch_FireDoor(const _double dTimeDelta)
 	}
 	else if (m_fDeadTime >= 2.75f)
 	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
+		m_pGameInstance->Play_Sound(TEXT("May_Resurrection.wav"), CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
+
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 		m_pModelCom->Set_Animation(ANI_M_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
@@ -2338,6 +2553,22 @@ void CMay::BossMissile_Control(const _double dTimeDelta)
 	}
 }
 
+void CMay::Ride_Ending_Rocket(const _double dTimeDelta)
+{
+	if (m_IsEnding)
+	{
+		m_pModelCom->Set_Animation(ANI_M_Rocket_MH);
+		m_pModelCom->Set_NextAnimIndex(ANI_M_Rocket_MH);
+
+		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Rocket_MH)
+		{
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_pActorCom->Set_Position(m_vEndingRocketOffSetPos);
+			m_pTransformCom->Set_WorldMatrix(m_matEndingRocketMatrix);
+		}
+	}
+}
+
 void CMay::WallLaserTrap(const _double dTimeDelta)
 {
 	if (false == m_IsWallLaserTrap_Touch)
@@ -2347,6 +2578,9 @@ void CMay::WallLaserTrap(const _double dTimeDelta)
 	m_fDeadTime += (_float)dTimeDelta;
 	if (m_fDeadTime >= 2.f)
 	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
+		m_pGameInstance->Play_Sound(TEXT("May_Resurrection.wav"), CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
+
 		_vector vSavePosition = XMVectorSet(-803.32f, 789.125f, 189.37f, 1.f);
 
 		m_pActorCom->Set_Position(vSavePosition);
@@ -2359,6 +2593,11 @@ void CMay::WallLaserTrap(const _double dTimeDelta)
 		m_IsWallLaserTrap_Effect = false;
 		m_pActorCom->Set_ZeroGravity(false, false, false);
 	}
+}
+
+void CMay::Set_LaserRippedOff()
+{
+	m_IsLaserRippedOff = true;
 }
 
 void CMay::Set_ActorPosition(_vector vPosition)
@@ -2379,6 +2618,10 @@ void CMay::Falling_Dead(const _double dTimeDelta)
 		m_fDeadTime += (_float)dTimeDelta;
 		if (m_fDeadTime >= 1.f)
 		{
+
+			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
+			m_pGameInstance->Play_Sound(TEXT("May_Resurrection.wav"), CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
+
 			_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
 			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
 
@@ -2452,9 +2695,19 @@ void CMay::Wall_Jump(const _double dTimeDelta)
 {
 	if (true == m_bWallAttach && false == m_IsWallJumping)
 	{
+
+		if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CHARACTER_WALLJUMP_SLIDE) == false)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fMay_Wall_Slide_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Character_WallJump_Slide.wav"), CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fMay_Wall_Slide_Volume);
+		}
 		m_pActorCom->Move((-m_pTransformCom->Get_State(CTransform::STATE_UP) / 50.f), dTimeDelta);
 		if (m_pGameInstance->Pad_Key_Down(DIP_B) || m_pGameInstance->Key_Down(DIK_K))
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_CHARACTER_WALLJUMP_SLIDE);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALLJUMP, m_fMay_WallJump_Volume);
+			m_pGameInstance->Play_Sound(TEXT("May_WallJump.wav"), CHANNEL_MAY_WALLJUMP, m_fMay_WallJump_Volume );
+
 			m_pTransformCom->RotateYaw(XMConvertToRadians(-180.f));
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsWallJumping = true;
@@ -2618,6 +2871,7 @@ void CMay::Find_TargetSpaceRail()
 	if (false == isSearch)
 		m_pSearchTargetRailNode = nullptr;
 }
+
 void CMay::Start_SpaceRail()
 {
 	if (nullptr == m_pSearchTargetRailNode) return;
@@ -2679,6 +2933,7 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 		EFFECT->Add_Effect(Effect_Value::May_Rail, m_pTransformCom->Get_WorldMatrix());
 	}
 }
+
 void CMay::TakeRail(_double dTimeDelta)
 {
 	if (nullptr == m_pTargetRail || false == m_bOnRail) return;
@@ -2702,6 +2957,7 @@ void CMay::TakeRail(_double dTimeDelta)
 		m_bOnRailEnd = true;
 	}
 }
+
 void CMay::TakeRailEnd(_double dTimeDelta)
 {
 	if (m_bOnRailEnd)
@@ -2722,6 +2978,7 @@ void CMay::TakeRailEnd(_double dTimeDelta)
 		}
 	}
 }
+
 void CMay::ShowRailTargetTriggerUI()
 {
 	// Show UI

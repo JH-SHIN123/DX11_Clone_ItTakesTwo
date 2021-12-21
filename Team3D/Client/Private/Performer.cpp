@@ -31,14 +31,18 @@ HRESULT CPerformer::NativeConstruct(void * pArg)
 	CGameObject::NativeConstruct(pArg);
 
 
-	memcpy(&m_tDesc, pArg, sizeof(PERFORMERDESC));
+	m_tDesc = *(PERFORMERDESC*)(pArg);
+	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_tDesc.strModelTag.c_str(), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	
+	m_pModelTag = new wstring(m_tDesc.strModelTag.c_str());
+	CCutScenePlayer::GetInstance()->Add_Performer(m_pModelTag->c_str(), this);
 
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&m_tDesc.vScale));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_tDesc.vPosition), 1.f));
+
 
 	m_pModelCom->Set_Animation(0);
 	return S_OK;
@@ -48,6 +52,7 @@ _int CPerformer::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+
 	_matrix matWorld = XMMatrixIdentity();
 
 	matWorld = XMMatrixScaling(m_tDesc.vScale.x, m_tDesc.vScale.y, m_tDesc.vScale.z) *
@@ -55,10 +60,12 @@ _int CPerformer::Tick(_double dTimeDelta)
 		XMMatrixTranslation(m_tDesc.vPosition.x, m_tDesc.vPosition.y, m_tDesc.vPosition.z);
 	m_pTransformCom->Set_WorldMatrix(matWorld);
 
-
+#ifdef __TEST_JUN
+	if (m_pGameInstance->Key_Down(DIK_NUMPADENTER))
+		m_bStartAnim = !m_bStartAnim;
+#endif
 	
-
-	m_pModelCom->Update_Animation(dTimeDelta/*CCutScenePlayer::GetInstance()->Get_TimeDelta()*/);
+	m_pModelCom->Update_Animation(m_bStartAnim ? dTimeDelta : 0.0/*CCutScenePlayer::GetInstance()->Get_TimeDelta()*/);
 
 	return NO_EVENT;
 }
@@ -88,12 +95,13 @@ HRESULT CPerformer::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-void CPerformer::Start_Perform()
-{
-	m_pModelCom->Set_Animation(1);
-	m_pModelCom->Set_Animation(0);
 
+
+void CPerformer::Start_Perform(_uint iAnimIdx, _double dAnimTime)
+{
+	m_pModelCom->Set_Animation(iAnimIdx,dAnimTime);
 	m_bStartAnim = true;
+
 }
 
 void CPerformer::Finish_Perform()
@@ -130,6 +138,7 @@ CGameObject * CPerformer::Clone_GameObject(void * pArg)
 
 void CPerformer::Free()
 {
+	Safe_Delete(m_pModelTag);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);

@@ -4,7 +4,7 @@
 #include "GameInstance.h"
 #include "UI_Generator.h"
 
-CAlphaScreen::CAlphaScreen(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
+CAlphaScreen::CAlphaScreen(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CUIObject(pDevice, pDeviceContext)
 {
 }
@@ -60,43 +60,34 @@ _int CAlphaScreen::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 
-	if (3 == m_iOption)
+	if (3 == m_iOption || 4 == m_iOption)
 	{
 		if (false == m_IsFadeOut)
 		{
-			m_fAlpha += (_float)TimeDelta * 5.f;
+			m_fAlpha += (_float)TimeDelta * m_fFadeInSpeed;
 
 			if (1.f <= m_fAlpha)
-			{
 				m_fAlpha = 1.f;
-
-				m_fWatingTime += (_float)TimeDelta;
-
-				if (2.f <= m_fWatingTime)
-					m_IsFadeOut = true;
-			}
 		}
 		else if (true == m_IsFadeOut)
 		{
-			m_fAlpha -= (_float)TimeDelta * 5.f;
+			m_fAlpha -= (_float)TimeDelta * m_fFadeOutSpeed;
 
 			if (0.f >= m_fAlpha)
+			{
 				m_IsDead = true;
-		}
-	}
-	else if (4 == m_iOption)
-	{
-		m_fWatingTime += (_float)TimeDelta;
 
-		if (1.f <= m_fWatingTime)
-			m_IsFadeOut = true;
-
-		if (true == m_IsFadeOut)
-		{
-			m_fAlpha -= (_float)TimeDelta * 5.f;
-
-			if (0.f >= m_fAlpha)
-				m_IsDead = true;
+				if (m_ePlayerID == Player::Cody)
+				{
+					UI_Delete(Cody, WhiteScreenFadeInOut);
+					UI_Delete(Cody, BlackScreenFadeInOut);
+				}
+				else if (m_ePlayerID == Player::May)
+				{
+					UI_Delete(May, WhiteScreenFadeInOut);
+					UI_Delete(May, BlackScreenFadeInOut);
+				}
+			}
 		}
 	}
 
@@ -135,6 +126,13 @@ HRESULT CAlphaScreen::Render(RENDER_GROUP::Enum eGroup)
 
 		m_pVIBuffer_RectCom->Render(m_iShaderPassNum);
 	}
+	else if (7 == m_iOption)
+	{
+		if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
+			return E_FAIL;
+
+		m_pVIBuffer_RectCom->Render(m_iShaderPassNum);
+	}
 	else
 	{
 		if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
@@ -151,7 +149,15 @@ HRESULT CAlphaScreen::Render(RENDER_GROUP::Enum eGroup)
 
 void CAlphaScreen::Option_Setting()
 {
-	if (6 == m_iOption)
+	if (7 == m_iOption)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 720.f, 0.f, 0.f));
+		m_fSortOrder = 0.f;
+		m_iShaderPassNum = 0;
+		m_fAlpha = 1.f;
+	}
+	else if (6 == m_iOption)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 320.f, 0.f, 1.f));
 		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 150.f, 0.f, 0.f));
@@ -173,7 +179,7 @@ void CAlphaScreen::Option_Setting()
 		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 720.f, 0.f, 0.f));
 		m_fSortOrder = 0.f;
 		m_iShaderPassNum = 17;
-		m_fAlpha = 1.f;
+		m_fAlpha = 0.f;
 	}
 	else if (3 == m_iOption) /* 하얀색 FadeInOut 스크린 */
 	{

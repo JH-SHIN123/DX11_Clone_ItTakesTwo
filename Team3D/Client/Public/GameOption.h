@@ -22,7 +22,7 @@
 
 
 #ifdef _DEBUG
-#define __THREAD_NUM 12
+#define __THREAD_NUM 8
 #else
 #define __THREAD_NUM 4
 #endif
@@ -32,7 +32,7 @@
 /**
 * 맵 로딩 하려면 주석 처리.
 */
-#define __MAPLOADING_OFF
+//#define __MAPLOADING_OFF
 
 /**
 * 우주선 내부 맵만 제거
@@ -48,12 +48,19 @@
 #define __CONTROL_MAY_KEYBOARD
  
 /************************************************************************/
+/**
+* 컷씬플레이하려면 주석해제
+*/
+//#define __PLAY_CUTSCENE
+
+/************************************************************************/
+
 
 /**
 * 각자 테스트용 디파인
 */
 //#define __TEST_SE
-#define __TEST_JUNG
+//#define __TEST_JUNG
 //#define __TEST_HYE
 //#define __TEST_TAEK
 //#define __TEST_YOON

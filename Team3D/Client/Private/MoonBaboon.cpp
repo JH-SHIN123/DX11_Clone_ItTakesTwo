@@ -29,16 +29,17 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
+
+	Add_LerpInfo_To_Model();
 
 	ROBOTDESC MoonBaboonDesc;
 	if (nullptr != pArg)
 		memcpy(&MoonBaboonDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
+
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, MoonBaboonDesc.vPosition);
 
-	CCutScenePlayer::GetInstance()->Add_Performer(TEXT("Component_Model_MoonBaboon"), this);
+	DATABASE->Set_MoonBaboon(this);
 
 	m_pUFOModel = ((CUFO*)DATABASE->Get_BossUFO())->Get_Model();
 	NULL_CHECK_RETURN(m_pUFOModel, E_FAIL);
@@ -47,9 +48,12 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 	m_pUFOTransform = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform();
 	NULL_CHECK_RETURN(m_pUFOTransform, E_FAIL);
 	Safe_AddRef(m_pUFOTransform);
+
 	
-	m_pModelCom->Set_Animation(15);
-	m_pModelCom->Set_NextAnimIndex(15);	
+	m_pModelCom->Set_Animation(Moon_Ufo_MH);
+	m_pModelCom->Set_NextAnimIndex(Moon_Ufo_MH);
+
+	((CUFO*)DATABASE->Get_BossUFO())->Set_MoonBaboonPtr(this);
 
 	return S_OK;
 }
@@ -61,6 +65,7 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 	if (true == CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
 		m_pModelCom->Update_Animation(dTimeDelta);
+
 		return S_OK;
 	}
 
@@ -122,6 +127,32 @@ HRESULT CMoonBaboon::Render_ShadowDepth()
 
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(2, 0, true);
+	return S_OK;
+}
+
+void CMoonBaboon::Set_Animation(_uint iCurAnimIndex, _uint iNextAnimIndex)
+{
+	m_pModelCom->Set_Animation(iCurAnimIndex);
+	m_pModelCom->Set_NextAnimIndex(iNextAnimIndex);
+}
+
+
+void CMoonBaboon::Add_LerpInfo_To_Model()
+{
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_MH, Moon_Ufo_Programming, true);
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_MH, Moon_Ufo_Laser_HitPod, true);
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_MH, Moon_Ufo_KnockDownMH, true);
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_MH, Moon_Ufo_GroundPound, true);
+
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_Programming, Moon_Ufo_MH, true);
+}
+
+HRESULT CMoonBaboon::Ready_Component()
+{
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+
 	return S_OK;
 }
 

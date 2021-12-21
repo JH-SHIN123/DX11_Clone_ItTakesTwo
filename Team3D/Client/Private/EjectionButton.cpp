@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\EjectionButton.h"
 #include "Cody.h"
+#include "UFO.h"
 
 CEjectionButton::CEjectionButton(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -52,6 +53,7 @@ _int CEjectionButton::Tick(_double dTimeDelta)
 			m_fDistance = 0.f;
 			m_bPressed = true;
 			m_bCollision = false;
+			((CUFO*)DATABASE->Get_BossUFO())->Set_CutScene();
 		}
 	}
 

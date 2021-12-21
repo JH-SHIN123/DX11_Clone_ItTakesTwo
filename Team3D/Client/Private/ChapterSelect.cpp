@@ -109,7 +109,6 @@ CGameObject * CChapterSelect::Clone_GameObject(void * pArg)
 void CChapterSelect::Free()
 {
 	Safe_Release(m_pVIBuffer_RectCom);
-	Safe_Release(m_pSubTextureCom);
 
-	CUIObject::Free();
+	CUIObject::Free(); 
 }

@@ -246,9 +246,6 @@ void CWarpGate::Check_StageClear()
 
 	else if (MAIN_PLANET == m_WarpGate_Desc.eStageValue || STAGE_PLANET == m_WarpGate_Desc.eStageValue)
 		m_bClearEffect = DATABASE->Get_RailStageClear();
-
-	if (m_pGameInstance->Key_Down(DIK_V))
-		m_bClearEffect = true;
 }
 
 _fmatrix CWarpGate::Get_NextPortal_Matrix()

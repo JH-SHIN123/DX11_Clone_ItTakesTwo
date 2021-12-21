@@ -3,14 +3,6 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 
-BEGIN(Engine)
-class CRenderer;
-class CTextures;
-class CTransform;
-class CVIBuffer_Terrain;
-class CVIBuffer;
-END
-
 BEGIN(Client)
 
 class CUIObject abstract : public CGameObject
@@ -54,6 +46,10 @@ public:
 	void Set_PlayerID(Player::ID ePlayerID);
 	void Set_PosX(_float fPosX);
 	void Set_Disable(_bool IsCheck);
+	void Set_FadeInSpeed(_float fSpeed);
+	void Set_FadeOutSpeed(_float fSpeed);
+	void Set_FadeOut();
+	void Set_Ready();
 
 public:
 	virtual void Set_TargetPos(_vector vPos);
@@ -69,6 +65,9 @@ protected:
 	Player::ID					m_ePlayerID = Player::PLAYER_END;
 	_uint						m_iOption = 0;
 	_float4						m_vTargetPos;
+	_float						m_fFadeInSpeed = 5.f;
+	_float						m_fFadeOutSpeed = 5.f;
+	_bool						m_IsFadeOut = false;
 
 protected:
 	/* For.Component */

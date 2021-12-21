@@ -172,6 +172,8 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 	Adjust_OutsideAlpha(dTimeDelta);
 	Set_LaserMatices();
 
+	GoUp(dTimeDelta);
+
 	return NO_EVENT;
 }
 
@@ -221,7 +223,7 @@ void CLaser_TypeB::Set_LaserDir(_float4 vLaserDir)
 	m_vLaserDir = vLaserDir;
 }
 
-void CLaser_TypeB::SetUp_Direction(_uint iOption)
+void CLaser_TypeB::SetUp_MainLaserDirection(_uint iOption)
 {
 	if (0 == iOption)
 		m_vLaserDir = { 0.f, 0.f, 1.f, 0.f };
@@ -241,11 +243,51 @@ void CLaser_TypeB::SetUp_Direction(_uint iOption)
 		m_vLaserDir = { -0.5f, 0.f, 0.5f, 0.f };
 }
 
+void CLaser_TypeB::SetUp_SubLaserDirection(_uint iOption)
+{
+	if (0 == iOption)
+		m_vLaserDir = { 0.5f, 0.f, 0.5f, 0.f };
+	else if (1 == iOption)
+		m_vLaserDir = { 0.5f, 0.f, -0.5f, 0.f };
+	else if (2 == iOption)
+		m_vLaserDir = { -0.5f, 0.f, -0.5f, 0.f };
+	else if (3 == iOption)
+		m_vLaserDir = { -0.5f, 0.f, 0.5f, 0.f };
+}
+
 void CLaser_TypeB::Set_RotateSpeed(_float fSpeed)
 {
 	m_fRotateSpeed = fSpeed;
 }
 
+void CLaser_TypeB::Set_LaserTypeBUp(_float fMaxDistance, _float fSpeed)
+{
+	XMStoreFloat3(&m_vMaxPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_vMaxPos.y += fMaxDistance;
+
+	m_fMaxY = fMaxDistance;
+	m_IsGoUp = true;
+	m_fUpSpeed = fSpeed;
+}
+
+void CLaser_TypeB::GoUp(_double dTimeDelta)
+{
+	if (false == m_IsGoUp)
+		return;
+
+	_float fDist = (_float)dTimeDelta * m_fUpSpeed;
+	m_fDistance += fDist;
+
+	if (m_fMaxY <= m_fDistance)
+	{
+		m_fMaxY = 0.f;
+		m_IsGoUp = false;
+		m_fDistance = 0.f;
+		return;
+	}
+
+	m_vStartPoint.y += m_fUpSpeed * (_float)dTimeDelta;
+}
 
 CLaser_TypeB * CLaser_TypeB::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

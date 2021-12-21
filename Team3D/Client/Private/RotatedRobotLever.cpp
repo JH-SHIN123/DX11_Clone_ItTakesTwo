@@ -5,7 +5,7 @@
 #include "UI_Generator.h"
 #include "RotatedRobotHead.h"
 #include "RotatedNoBatterySign.h"
-
+#include"CutScenePlayer.h"
 CRotatedRobotLever::CRotatedRobotLever(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CRotatedRobotParts(pDevice, pDeviceContext)
 {
@@ -183,6 +183,13 @@ void CRotatedRobotLever::Activate_Lever(_double dTimeDelta)
 	}
 	else if (m_bBatteryCharged == true)
 	{
+#ifdef __PLAY_CUTSCENE
+		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Clear_Umbrella) == false)
+		{
+			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Clear_Umbrella"));
+			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Clear_Umbrella, true);
+		}
+#endif
 		DATABASE->Set_PinBallStageClear(true);
 
 		m_fStopDelay += (_float)dTimeDelta;
@@ -190,7 +197,7 @@ void CRotatedRobotLever::Activate_Lever(_double dTimeDelta)
 		{
 			_vector vDir = XMVector3Normalize((XMVectorSet(0.f, 0.f, -1.f, 0.f) + XMVectorSet(0.f, -1.f, 0.f, 0.f)) /*/ 2.f*/);
 			//m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
-			m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta* 1.2f);
+			m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta* 1.2f); 
 			((CRotatedRobotParts*)DATABASE->Get_STPinBallRobot())->Get_RobotHead()->Set_Lever_Active(true);
 			((CRotatedRobotParts*)DATABASE->Get_STPinBallRobot())->Get_NoBatterySign()->Set_BatteryCharged(true);
 		}

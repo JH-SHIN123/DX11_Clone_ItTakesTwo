@@ -34,6 +34,7 @@ public:
 
 public: /* Getter */
 	CUFORadarLever* Get_RadarLever() { return m_pUFORadarLever; }
+	CUFORadarScreen* Get_RaderScreen() { return m_pUFORadarScreen; }
 
 public: /* Setter */
 

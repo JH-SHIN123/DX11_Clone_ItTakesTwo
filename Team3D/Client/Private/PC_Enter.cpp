@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\PC_Enter.h"
 
-#include "GameInstance.h"
 #include "UI_Generator.h"
 
 CPC_Enter::CPC_Enter(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	

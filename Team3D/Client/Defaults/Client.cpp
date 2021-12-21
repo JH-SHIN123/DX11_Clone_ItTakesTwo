@@ -27,10 +27,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-// 	_crtBreakAlloc(915204);
-// 	_crtBreakAlloc(884254); // 883268
-// 	_crtBreakAlloc(883268); // 883268
-
+	/* 누수 발생 시, 가장 상단의 누수번호를 인자로 넘기면 쉽게 찾을 수 있음. */
+	//_crtBreakAlloc();
 #endif
 
 	srand(unsigned int(time(NULL)));
