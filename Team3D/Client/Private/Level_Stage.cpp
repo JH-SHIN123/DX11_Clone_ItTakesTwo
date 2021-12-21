@@ -384,7 +384,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	/* For.Directional : Ambient / Specular Zero */
+	/* For.Directional : Ambient / Specular Zero - 0.45 */ 
 	Ready_DirectionalLight(TEXT("Sun"), _float3(1.f, -1.f, 1.f), _float4(0.45f, 0.45f, 0.45f, 1.f), _float4(0.35f,0.35f,0.35f,1.f), _float4(0.45f, 0.45f, 0.45f,1.f));
 
 #ifndef __MAPLOADING_OFF

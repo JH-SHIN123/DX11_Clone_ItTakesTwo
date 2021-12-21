@@ -57,18 +57,19 @@ HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDevic
 	FAILED_CHECK_RETURN(Build_ComputeShaders(TEXT("../Bin/ShaderFiles/ComputeShader_PostFX.hlsl"), "DefaultTechnique"), E_FAIL);
 
 	m_pRadiarBlur_Mask = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/PostFX/radiarblur.png"));
+	m_pVignatte_Mask = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/PostFX/vignatte%d.png"),2);
 
 	return S_OK;
 }
 
 HRESULT CPostFX::PostProcessing(_double TimeDelta)
 {
+#ifdef _DEBUG
+	//FAILED_CHECK_RETURN(KeyInput_Test(TimeDelta), E_FAIL);
+#endif // _DEBUG
+
 	FAILED_CHECK_RETURN(Tick_Adaptation(TimeDelta), E_FAIL);
 	FAILED_CHECK_RETURN(Tick_RadiarBlur(TimeDelta), E_FAIL);
-
-#ifdef _DEBUG
-	FAILED_CHECK_RETURN(KeyInput_Test(TimeDelta), E_FAIL);
-#endif // _DEBUG
 
 	FAILED_CHECK_RETURN(DownScale(TimeDelta), E_FAIL);
 	FAILED_CHECK_RETURN(Bloom(), E_FAIL);
@@ -205,6 +206,9 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &fMiddleGrey, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqr, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_BloomScale", &m_fBloomScale, sizeof(_float));
+
+	/* Vignatte */
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VignatteTex", m_pVignatte_Mask->Get_ShaderResourceView(0));
 
 	/* Fog */
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bFog", &m_bMainFog, sizeof(m_bMainFog));
@@ -574,6 +578,7 @@ void CPostFX::Clear_Buffer()
 {
 	Safe_Release(m_pVIBuffer_ToneMapping);
 	Safe_Release(m_pRadiarBlur_Mask);
+	Safe_Release(m_pVignatte_Mask);
 }
 
 void CPostFX::Free()

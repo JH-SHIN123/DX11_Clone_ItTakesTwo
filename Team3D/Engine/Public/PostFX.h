@@ -119,6 +119,7 @@ private: /* For.CS - Shader */
 private: /* For. PS - ToneMapping */
 	class CVIBuffer_RectRHW*	m_pVIBuffer_ToneMapping = nullptr;
 	class CTextures*			m_pRadiarBlur_Mask = nullptr;
+	class CTextures*			m_pVignatte_Mask = nullptr;
 #pragma endregion
 
 #ifdef _DEBUG

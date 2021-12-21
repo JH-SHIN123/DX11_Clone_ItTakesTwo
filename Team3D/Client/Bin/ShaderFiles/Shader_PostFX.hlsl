@@ -13,6 +13,7 @@ Texture2D				g_EffectBlurTex;
 Texture2D				g_RadiarBlurMaskTex;
 Texture2D				g_VolumeTex_Front;
 Texture2D				g_VolumeTex_Back;
+Texture2D				g_VignatteTex;
 
 StructuredBuffer<float> g_AverageLum;
 
@@ -225,6 +226,9 @@ PS_OUT PS_MAIN(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	float3 vColor = g_HDRTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz;
+
+	// Vignatte
+	vColor *= pow((1.f - g_VignatteTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).a) + 0.14f,3);
 
 	// 먼 평면에 없는 픽셀에 대해서만 거리 DOF 계산
 	vector	vDepthDesc = g_DepthTex.Sample(Point_Sampler, In.vTexUV);
