@@ -585,6 +585,18 @@ private: /* For. Ending */
 	// MiniGame
 	_float m_fCody_MiniGame_Damaged_Volume = 1.f;
 
+	// GravityPipe
+	_float m_fMay_GravityPipe_Voice_Volume = 1.f;
+	_bool  m_bGravityPipe_FirstIn = false;
+
+	// Second Floor Script Trigger
+	void Script_Trigger(_double dTimeDelta);
+	_float m_fSecondFloor_Voice_Volume = 1.f;
+	_bool  m_bSecondFloor_FirstIn = false;
+	_bool  m_IsSecondFloor_Voice_Playing = false;
+	_float m_fSecondFloor_Script_DelayTime = 0.f;
+
+	_bool  m_fSecondFloor_Script_Once[6] = { false };
 
 
 };

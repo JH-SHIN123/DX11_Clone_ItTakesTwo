@@ -24,6 +24,7 @@
 /*For.WarpGate*/
 #include "WarpGate.h"
 #include "LaserTennis_Manager.h"
+#include "Script.h"
 
 // m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
 // m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
@@ -187,6 +188,8 @@ _int CMay::Tick(_double dTimeDelta)
 	}
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	/* Script */
+	Script_Trigger(dTimeDelta);
 
 	m_pCamera = (CSubCamera*)CDataStorage::GetInstance()->Get_SubCam();
 	if (nullptr == m_pCamera)
@@ -1715,6 +1718,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eGRAVITYPIPE)
 		{
+
 			if (m_IsInGravityPipe == false)
 			{
 				m_bShortJump = false;
@@ -2132,6 +2136,14 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			if (m_pGameInstance->Pad_Key_Pressing(DIP_B) || m_pGameInstance->Key_Pressing(DIK_K))
 			{
 				m_pActorCom->Set_ZeroGravity(true, true, false);
+
+				if (m_bGravityPipe_FirstIn == false)
+				{
+					SCRIPT->Render_Script(1, CScript::HALF, 2.f);
+					m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_MAY_1, m_fMay_GravityPipe_Voice_Volume);
+					m_pGameInstance->Play_Sound(TEXT("02.wav"), CHANNEL_VOICE_MAY_1, m_fMay_GravityPipe_Voice_Volume);
+					m_bGravityPipe_FirstIn = true;
+				}
 			}
 
 			if (m_pGameInstance->Pad_Key_Pressing(DIP_A) || m_pGameInstance->Key_Pressing(DIK_SEMICOLON))
@@ -2986,5 +2998,59 @@ HRESULT CMay::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 	m_pGauge_Circle->Set_Range(20.f);
 
 	return S_OK;
+}
+
+void CMay::Script_Trigger(_double dTimeDelta)
+{
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	if (vPosition.m128_f32[1] > 125.f && m_bSecondFloor_FirstIn == false)
+	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_MAY_2, m_fSecondFloor_Voice_Volume);
+		m_pGameInstance->Play_Sound(TEXT("03.wav"), CHANNEL_VOICE_MAY_2, m_fSecondFloor_Voice_Volume);
+		m_bSecondFloor_FirstIn = true;
+		m_IsSecondFloor_Voice_Playing = true;
+	}
+
+	if (m_IsSecondFloor_Voice_Playing == true)
+	{
+		m_fSecondFloor_Script_DelayTime += (_float)dTimeDelta;
+
+		// 02 우주개코원숭이 - "감옥에서 탈출했군. 이 배신자들!"
+		if (m_fSecondFloor_Script_DelayTime > 0.f && m_fSecondFloor_Script_Once[0] == false)
+		{
+			SCRIPT->Render_Script(2, CScript::HALF, 2.f, false);
+			m_fSecondFloor_Script_Once[0] = true;
+		}
+		// 03 우주개코원숭이 - "하지만 기억해라."
+		else if (m_fSecondFloor_Script_DelayTime > 2.1f && m_fSecondFloor_Script_Once[1] == false)
+		{
+			SCRIPT->Render_Script(3, CScript::HALF, 1.4f, false);
+			m_fSecondFloor_Script_Once[1] = true;
+		}
+		// 04 우주개코원숭이 - "절대 살아서 나가진 못한다!"
+		else if (m_fSecondFloor_Script_DelayTime > 3.6f && m_fSecondFloor_Script_Once[2] == false)
+		{
+			SCRIPT->Render_Script(4, CScript::HALF, 1.7f, false);
+			m_fSecondFloor_Script_Once[2] = true;
+		}
+		// 05 코디 	  - "저 친구는 좀 진정해야겠는데."
+		else if (m_fSecondFloor_Script_DelayTime > 5.4f && m_fSecondFloor_Script_Once[3] == false)
+		{
+			SCRIPT->Render_Script(5, CScript::HALF, 1.5f, false);
+			m_fSecondFloor_Script_Once[3] = true;
+		}
+		// 06 메이 	  - "녀석은 무시해! 포털이 있어!"
+		else if (m_fSecondFloor_Script_DelayTime > 7.f && m_fSecondFloor_Script_Once[4] == false)
+		{
+			SCRIPT->Render_Script(6, CScript::HALF, 2.f, false); 
+			m_fSecondFloor_Script_Once[4] = true;
+		}
+		// 07 메이 	  - "저걸 이용할 수 있을 거야."
+		else if (m_fSecondFloor_Script_DelayTime > 9.1f && m_fSecondFloor_Script_Once[5] == false)
+		{
+			SCRIPT->Render_Script(7, CScript::HALF, 2.f, false);
+			m_fSecondFloor_Script_Once[5] = true;
+		}
+	}
 }
 

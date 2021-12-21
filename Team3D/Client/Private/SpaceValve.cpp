@@ -241,7 +241,6 @@ void CSpaceValve::Rotate_SpaceValve(_double dTimeDelta)
 	}
 }
 
-
 CSpaceValve * CSpaceValve::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CSpaceValve* pInstance = new CSpaceValve(pDevice, pDeviceContext);

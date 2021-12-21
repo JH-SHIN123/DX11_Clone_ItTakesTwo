@@ -673,7 +673,9 @@ private: /* For. Ending */
 	// MiniGame
 	_float m_fCody_MiniGame_Damaged_Volume = 1.f;
 
-
+	// GravityPipe
+	_float m_fCody_GravityPipe_Voice_Volume = 1.f;
+	_bool  m_bGravityPipe_FirstIn = false;
 
 #pragma endregion
 

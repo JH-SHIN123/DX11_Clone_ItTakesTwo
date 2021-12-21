@@ -14,7 +14,8 @@
 #include "ControlRoom_Battery.h"
 #include "HookUFO.h"
 #include "Gauge_Circle.h"
-#include"CutScenePlayer.h"
+#include "CutScenePlayer.h"
+
 /* For. PinBall */
 #include "PinBall.h"
 #include "PinBall_Door.h"
@@ -2680,6 +2681,14 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 			if (m_pGameInstance->Key_Pressing(DIK_SPACE))
 			{
 				m_pActorCom->Set_ZeroGravity(true, true, false);
+
+				if (m_bGravityPipe_FirstIn == false)
+				{
+					SCRIPT->Render_Script(0, CScript::HALF, 2.f);
+					m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_CODY_1, m_fCody_GravityPipe_Voice_Volume);
+					m_pGameInstance->Play_Sound(TEXT("01.wav"), CHANNEL_VOICE_CODY_1, m_fCody_GravityPipe_Voice_Volume);
+					m_bGravityPipe_FirstIn = true;
+				}
 			}
 
 			if (m_pGameInstance->Key_Pressing(DIK_LCONTROL))
