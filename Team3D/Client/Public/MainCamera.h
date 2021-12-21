@@ -11,8 +11,10 @@ class CMainCamera final : public CCamera
 {
 	enum CamRev {Rev_Holizontal,Rev_Prependicul,Rev_End};
 
-	enum class CamMode{Cam_Free,Cam_AutoToFree, Cam_WallJump, Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_InJoyStick,Cam_PinBall_Cody,
+
+	enum class CamMode{Cam_Free,Cam_AutoToFree, Cam_WallJump, Cam_Ending, Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_InJoyStick,Cam_PinBall_Cody,
 		Cam_LaserTennis,Cam_End};
+
 	//O CamFreeMove P FollowPlayer																 
 	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_OpenThirdFloor, Cam_Free_OnBossMiniRoom_Cody,
 		Cam_Free_Umbrella_Laser,Cam_Free_End };
@@ -33,6 +35,7 @@ public:
 	CCam_Helper* Get_CamHelper() { return m_pCamHelper; }
 	/*Setter*/
 	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal,matWorld); }
+	void		Set_OpenThridFloor(_bool bSet) { m_bOpenThirdFloor = bSet; }
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
 	_int	ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook = false, _bool bIsCalculateCamLook = false);		//카메라가 초기상태로 돌아옴
@@ -44,6 +47,7 @@ private:
 	//For Free.
 	_int	Tick_Cam_Free(_double dTimeDelta);					//자유이동
 	_int	Tick_Cam_AutoToFree(_double dTimeDelta);			//연출 카메라 -> 자유이동시 보간
+	_int	Tick_Cam_Ending(_double dTimeDelta);
 	_int	Tick_Cam_Warp_WormHole(_double dTimeDelta);			//웜홀
 	_int	Tick_Cam_PressButton_Bridge(_double dTimeDelta);	//다리앞의 버튼
 	_int	Tick_Cam_InJoystick(_double dTimeDelta);			//달나라 우주선 레이져
@@ -137,7 +141,7 @@ private:
 	_bool	m_bCodyDash = false;
 	//For.OpenThirdFloor
 	_bool m_bOpenThirdFloor = false;
-
+	_float m_fOpenThirdFloorTime = 0.f;
 private:
 	CCody*			m_pCody = nullptr;
 	CCam_Helper*	m_pCamHelper = nullptr;

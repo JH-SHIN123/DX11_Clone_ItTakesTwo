@@ -140,6 +140,8 @@ _int CSubCamera::Check_Player(_double dTimeDelta)
 		m_eCurCamMode = CamMode::Cam_WallJump;
 	if (CLaserTennis_Manager::GetInstance()->Get_StartGame() && m_eCurCamMode != CamMode::Cam_LaserTennis)
 		m_eCurCamMode = CamMode::Cam_LaserTennis;
+	if (m_bOpenThirdFloor && m_fOpenThirdFloorTime == 0.f)
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OpenThirdFloor;
 	if (m_eCurCamMode == CamMode::Cam_Free)
 	{
 		switch (m_eCurCamFreeOption)
@@ -188,20 +190,23 @@ _int CSubCamera::Tick_Cam_Free(_double dTimeDelta)
 {
 	if (nullptr == m_pMay)
 		return EVENT_ERROR;
-	
+	_int iResult = NO_EVENT;
 	switch (m_eCurCamFreeOption)
 	{
 	case CSubCamera::CamFreeOption::Cam_Free_FollowPlayer:
-		Tick_Cam_Free_FollowPlayer(dTimeDelta);
+		iResult = Tick_Cam_Free_FollowPlayer(dTimeDelta);
 		break;
 	case CSubCamera::CamFreeOption::Cam_Free_FreeMove:
-		Tick_Cam_Free_FreeMode(dTimeDelta);
+		iResult = Tick_Cam_Free_FreeMode(dTimeDelta);
 		break;
 	case CSubCamera::CamFreeOption::Cam_Free_RidingSpaceShip_May:
-		Tick_Cam_Free_RideSpaceShip_May(dTimeDelta);
+		iResult = Tick_Cam_Free_RideSpaceShip_May(dTimeDelta);
+		break;
+	case CSubCamera::CamFreeOption::Cam_Free_OpenThirdFloor:
+		iResult = Tick_Cam_Free_OpenThirdFloor(dTimeDelta);
 		break;
 	}
-	return NO_EVENT;
+	return iResult;
 }
 
 
@@ -448,6 +453,12 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 	
 
 
+	return NO_EVENT;
+}
+
+_int CSubCamera::Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta)
+{
+	_vector vPlayerPos = m_pMay->Get_Position();
 	return NO_EVENT;
 }
 

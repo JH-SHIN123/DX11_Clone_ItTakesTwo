@@ -22,9 +22,9 @@
 
 
 #ifdef _DEBUG
-#define __THREAD_NUM 12
-#else
 #define __THREAD_NUM 8
+#else
+#define __THREAD_NUM 4
 #endif
   
 /************************************************************************/
@@ -51,7 +51,7 @@
 /**
 * 컷씬플레이하려면 주석해제
 */
-//#define __PLAY_CUTSCENE
+#define __PLAY_CUTSCENE
 
 /************************************************************************/
 

@@ -27,7 +27,6 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Particle::NativeConstruct(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
 
-
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 
@@ -36,8 +35,6 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Particle::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
 
-	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
-	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 
 	Ready_InstanceBuffer();
 
@@ -48,9 +45,6 @@ _int CEffect_Boss_Gravitational_Bomb_Particle::Tick(_double TimeDelta)
 {
 	///* GARA */Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
 
-	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
-		m_IsActivate = false;
-
 	if (false == m_IsActivate && 0.0 >= m_dControlTime)
 		return EVENT_DEAD;
 
@@ -58,7 +52,6 @@ _int CEffect_Boss_Gravitational_Bomb_Particle::Tick(_double TimeDelta)
 		m_dControlTime += TimeDelta;
 	else
 		m_dControlTime -= TimeDelta;
-
 
 	Check_Instance(TimeDelta);
 

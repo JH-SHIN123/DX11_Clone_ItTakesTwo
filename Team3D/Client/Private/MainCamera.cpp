@@ -157,11 +157,7 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 	
 	LerpToCurSize(m_eCurPlayerSize, dTimeDelta);
 
-#ifdef __TEST_JUN
-	if (m_pGameInstance->Key_Down(DIK_B))
-		m_bOpenThirdFloor = !m_bOpenThirdFloor;
-#endif
-	if (m_bOpenThirdFloor)
+	if (m_bOpenThirdFloor&&m_fOpenThirdFloorTime ==0.f)
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OpenThirdFloor;
 
 	if (m_pCody->Get_IsWarpNextStage() == true)
@@ -194,12 +190,15 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 	{
 		m_eCurCamMode = CamMode::Cam_WallJump;
 	}
+
 	if (CLaserTennis_Manager::GetInstance()->Get_StartGame() && m_eCurCamMode != CamMode::Cam_LaserTennis)
 	{
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f),1.5f);
 		m_eCurCamMode = CamMode::Cam_LaserTennis;
 	}
 
+	if (m_pCody->Get_IsEnding())
+		m_eCurCamMode = CamMode::Cam_Ending;
 	
 	return NO_EVENT;
 }
@@ -243,6 +242,7 @@ _int CMainCamera::Tick_Cam_Free(_double dTimeDelta)
 	if (nullptr == m_pCody)
 		return EVENT_ERROR;
 	_int iResult = NO_EVENT;
+
 	switch (m_eCurCamFreeOption)
 	{
 	case CMainCamera::CamFreeOption::Cam_Free_FollowPlayer:
@@ -288,6 +288,22 @@ _int CMainCamera::Tick_Cam_AutoToFree(_double dTimeDelta)
 
 	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(XMLoadFloat4x4(&m_matCurWorld), MakeViewMatrix_FollowPlayer(dTimeDelta), m_fChangeCamModeTime));
 
+	return NO_EVENT;
+}
+
+_int CMainCamera::Tick_Cam_Ending(_double dTimeDelta)
+{
+	CTransform* pPlayerTransform = m_pCody->Get_Transform();
+
+	_vector vLook = pPlayerTransform->Get_State(CTransform::STATE_LOOK);
+	_vector vUp = pPlayerTransform->Get_State(CTransform::STATE_UP);
+	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+
+	//0.f ,-500.f ,0.f
+	_vector vCamPos = XMVectorSet(0.f, XMVectorGetY(vPlayerPos) + 9.f, 0.f, 1.f); 
+	_vector vAt = XMVectorSet(0.f, XMVectorGetY(vPlayerPos), 0.f,1.f);
+
+	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vCamPos, vAt,XMVectorSet(0.f,0.f,1.f,0.f)));
 	return NO_EVENT;
 }
 
@@ -1168,7 +1184,7 @@ _int CMainCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
 
 	vTargetPos = XMVectorSetX(vTargetPos, XMVectorGetX(vMiddlePos));
 	m_pTransformCom->Set_WorldMatrix(
-		MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(),MakeViewMatrixByUp(vTargetPos,vMiddlePos),dTimeDelta));
+		MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(),MakeViewMatrixByUp(vTargetPos,vMiddlePos),(_float)dTimeDelta));
 	return NO_EVENT;
 }
 
@@ -1278,6 +1294,7 @@ _fmatrix CMainCamera::MakeViewMatrixByUp(_fvector vEye, _fvector vAt, _fvector v
 	Result.r[3] = vPos;
 
 	return Result;
+
 }
 
 _fmatrix CMainCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
@@ -1489,6 +1506,9 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		break;
 	case Client::CMainCamera::CamMode::Cam_AutoToFree:
 		iResult = Tick_Cam_AutoToFree(dTimeDelta);
+		break;
+	case Client::CMainCamera::CamMode::Cam_Ending:
+		iResult = Tick_Cam_Ending(dTimeDelta);
 		break;
 	case Client::CMainCamera::CamMode::Cam_Warp_WormHole:
 		iResult = Tick_Cam_Warp_WormHole(dTimeDelta);

@@ -48,9 +48,11 @@ public: /* Getter */
 	VTXMESH*	Get_Vertices() { return m_pVertices; }
 	const _uint	Get_VertexCount() { return m_iVertexCount; }
 	_fmatrix	Get_BoneMatrix(const char* pBoneName) const;
+	_uint		Get_BoneIndex(const char* pBoneName) const;
 	const _uint	Get_CurAnimIndex() const { return m_iCurAnimIndex; }
 	const _uint	Get_MeshCount() const { return m_iMeshCount; }
 	_fmatrix	Get_AnimTransformation(_uint iIndex) const { return XMLoadFloat4x4(&m_AnimTransformations[iIndex]); }
+	_double		Get_CurrentTime(_uint iAnimIndex) const;
 
 	/**
 	* Get_ProgressAnim
@@ -76,6 +78,11 @@ public: /* Setter */
 	* dAnimTime, dAnimTime이 지난 시점부터 재생
 	*/
 	HRESULT	Set_Animation(_uint iAnimIndex, _double dAnimTime = 0.0);
+	/**
+	* Set_CutSceneAnimation
+	* 컷씬용
+	*/
+	HRESULT	Set_CutSceneAnimation(_uint iAnimIndex, _double dAnimTime = 0.0);
 	/**
 	* Set_NextAnimIndex
 	* 다음 애니메이션 예약

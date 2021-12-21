@@ -127,8 +127,8 @@ void CEffect_Boss_Missile_Particle::Check_Parabola(_double TimeDelta)
 	_vector vDir = XMLoadFloat3(&m_vDir);
 
 	m_fJumpTime += 0.02f ;
-	m_fJumpStartPos_Y = _float((m_fJumpPower) * m_fJumpTime * 1.f - 0.5f * (GRAVITY * m_fJumpTime * m_fJumpTime));
-	vPos.m128_f32[1] = m_fJumpStartPos_Y;
+	_float fUp = _float((m_fJumpPower)* m_fJumpTime * 1.f - 0.5f * (GRAVITY * m_fJumpTime * m_fJumpTime));
+	vPos.m128_f32[1] = m_fJumpStartPos_Y + fUp;
 
 	vPos += vDir * (_float)TimeDelta * m_fMovePower;
 

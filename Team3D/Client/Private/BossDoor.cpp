@@ -1,5 +1,9 @@
 #include "stdafx.h"
 #include "..\Public\BossDoor.h"
+#include "PlayerActor.h"
+#include "Cody.h"
+#include "May.h"
+
 
 CBossDoor::CBossDoor(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -27,6 +31,8 @@ void CBossDoor::Set_DoorUp(_float fMaxDistance, _float fSpeed)
 	m_bGoUp = true;
 	m_fSpeed = fSpeed;
 	m_pTransformCom->Set_Speed(m_fSpeed, 0.f);
+	((CCody*)DATABASE->GetCody())->Get_Actor()->Set_Gravity(-6.0f);
+	((CMay*)DATABASE->GetMay())->Get_Actor()->Set_Gravity(-6.0f);
 }
 
 HRESULT CBossDoor::NativeConstruct_Prototype()
@@ -66,6 +72,8 @@ _int CBossDoor::Tick(_double dTimeDelta)
 _int CBossDoor::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
+
+	m_pStaticActorCom->Update_StaticActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 500.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -138,6 +146,8 @@ void CBossDoor::GoUp(_double dTimeDelta)
 		m_fMaxY = 0.f;
 		m_bGoUp = false;
 		m_fDistance = 0.f;
+		((CCody*)DATABASE->GetCody())->Get_Actor()->Set_Gravity(-9.8f);
+		((CMay*)DATABASE->GetMay())->Get_Actor()->Set_Gravity(-9.8f);
 		return;
 	}
 

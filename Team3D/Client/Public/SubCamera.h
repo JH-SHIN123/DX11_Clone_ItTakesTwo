@@ -29,6 +29,7 @@ public:
 	CCam_Helper* Get_CamHelper() { return m_pCamHelper; }
 	/*Setter*/
 	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal, matWorld); }
+	void		Set_OpenThridFloor(_bool bSet) { m_bOpenThirdFloor = bSet; }
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
 	_int	ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook = false, _bool bIsCalculateCamLook = false);		//변수 초기화용
@@ -50,7 +51,7 @@ private:
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);			//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);				//카메라가 자유롭게 이동함
 	_int	Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta);	//우주선 탓을때
-	
+	_int	Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta);		//밸브 다돌렸을때
 																	
 																	
 																	//CamHelper State(현재 )
@@ -111,6 +112,11 @@ private:
 	WORLDMATRIX	m_PreWorld;
 	//For.RidingUFO
 	_float	m_fDistFromUFO = 10.f;
+	//For.OpenThirdFloor
+	//For.OpenThirdFloor
+	_bool m_bOpenThirdFloor = false;
+	_float m_fOpenThirdFloorTime = 0.f;
+
 public:
 	static CSubCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg = nullptr) override;
