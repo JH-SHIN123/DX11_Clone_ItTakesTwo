@@ -44,7 +44,8 @@ enum class Effect_Value
 	BossGroundPound_Ring,				
 	BossGroundPound_Smoke,	
 
-	BossMissile_Smoke,					
+	BossMissile_Smoke_Test,
+	BossMissile_Smoke,
 	BossMissile_Explosion,				
 	BossMissile_Particle,	
 
@@ -83,6 +84,8 @@ enum class Effect_Value
 	StarBuddy_Explosion_Particle,
 
 	PipeLocker_Connected,
+
+	Gate_Smoke,
 
 	Effect_Value_End
 };

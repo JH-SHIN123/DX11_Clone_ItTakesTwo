@@ -15,13 +15,11 @@ private:
 
 public:
 	/* 프로토타입 생성 */
-	HRESULT Load_Prototype_Model_Instancing_TXT();
-	HRESULT Load_Prototype_GameObject_TXT();
-
-	/* 인덱스 로드 */
 	HRESULT Load_Prototype_Model_Others_Space(_uint iIndex);
+	HRESULT Load_Prototype_GameObject_TXT();
 	/* 클론 생성 */
 	HRESULT Load_Stage_Space();
+	HRESULT Load_EndingCredit();
 
 public:
 	HRESULT NativeConstruct_Environment_Generator(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -41,7 +39,11 @@ private:
 	void		 Adjustment_Model_Position(_tchar* pModelTag, _float4x4& rWorld);
 
 private:
+	/* 프로토타입 로드*/
 	HRESULT Load_Default_Prototype_GameObject();
+	HRESULT Load_Prototype_Model_ByIndex_Space(_uint iIndex);
+
+	/* 클론 로드 */
 	HRESULT Load_Environment_Space();
 	HRESULT Load_Environment_Space_Boss();
 	HRESULT Load_Environment_Space_SpaceShip();
@@ -50,8 +52,6 @@ private:
 	HRESULT Load_Environment_Trigger();
 	HRESULT Load_Environment_Trigger_SpaceShip();
 	HRESULT Load_Others();
-	/* 인덱스 로드 */
-	HRESULT Load_Prototype_Model_ByIndex_Space(_uint iIndex);
 
 public:
 	virtual void Free() override;

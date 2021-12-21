@@ -24,6 +24,21 @@ HRESULT CUISprite::NativeConstruct_Prototype(void* pArg)
 	if (nullptr != pArg)
 		memcpy(&m_UIDesc, pArg, sizeof(UI_DESC));
 
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("Loading_Book")))
+	{
+		m_iTextureWidth = 1024;
+		m_iTextureHeight = 1024;
+		m_iWidthMaxCount = 8;
+		m_iHeightMaxCount = 8;
+		m_iShaderPassNum = 1;
+		m_FrameControl = 0.01;
+		m_UIDesc.vPos.x = 583.f;
+		m_UIDesc.vPos.y = -307.f;
+		m_UIDesc.vScale.x = 100.f;
+		m_UIDesc.vScale.y = 100.f;
+		m_fSortOrder = 1.f;
+	}
+
 	return S_OK;
 }
 
@@ -34,8 +49,19 @@ HRESULT CUISprite::NativeConstruct(void * pArg)
 	if (FAILED(Ready_Component()))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+		memcpy(&m_iOption, pArg, sizeof(_uint));
+
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+
+	if (1 == m_iOption)
+	{
+		m_vSavePos = m_UIDesc.vPos;
+		m_UIDesc.vPos.y = 320.f;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
+	}
+
 	
 	SetUp_SpriteInfo();
 
@@ -48,6 +74,16 @@ _int CUISprite::Tick(_double TimeDelta)
 		return EVENT_DEAD;
 
 	CUIObject::Tick(TimeDelta);
+
+	if (1 == m_iOption)
+	{
+		if (m_vSavePos.y <= m_UIDesc.vPos.y)
+		{
+			m_fAlpha += (_float)TimeDelta * 1.5f;
+			m_UIDesc.vPos.y -= (_float)TimeDelta * 400.f;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
+		}
+	}
 
 	return _int();
 }
@@ -67,6 +103,9 @@ HRESULT CUISprite::Render(RENDER_GROUP::Enum eGroup)
 
 	if (FAILED(Set_UIVariables_Perspective()))
 		return E_FAIL;
+
+	if(1 == m_iOption)
+		m_pVIBuffer_SpriteCom->Set_Variable("g_fAlpha", &m_fAlpha, sizeof(_float));
 
 	m_pVIBuffer_SpriteCom->Render(m_iShaderPassNum);
 
@@ -193,6 +232,15 @@ void CUISprite::SetUp_SpriteInfo()
 		m_iWidthMaxCount = 8;
 		m_iHeightMaxCount = 8;
 		m_iShaderPassNum = 1;
+		m_FrameControl = 0.01;
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("MinigameSpiner")))
+	{
+		m_iTextureWidth = 1024;
+		m_iTextureHeight = 1024;
+		m_iWidthMaxCount = 8;
+		m_iHeightMaxCount = 8;
+		m_iShaderPassNum = 2;
 		m_FrameControl = 0.01;
 	}
 }

@@ -82,6 +82,7 @@ public:
 	void Set_FadeInSpeed(Player::ID ePlayer, UI::TRIGGER eTrigger, _float fSpeed);
 	void Set_FadeOutSpeed(Player::ID ePlayer, UI::TRIGGER eTrigger, _float fSpeed);
 	void Set_FadeOut(Player::ID ePlayer, UI::TRIGGER eTrigger);
+	void Set_MinigameReady(Player::ID ePlayer, UI::TRIGGER eTrigger);
 
 public:
 	HRESULT Add_Prototype_LogoTexture();
@@ -133,9 +134,12 @@ private:
 	HRESULT Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc);
 	HRESULT Add_Prototype_Menu(CUIObject::UI_DESC* UIDesc);
 	HRESULT Add_Prototype_Chapter(CUIObject::UI_DESC* UIDesc);
+	HRESULT Add_Prototype_Minigame(CUIObject::UI_DESC * UIDesc);
+	HRESULT Add_Prototype_Texture();
 
 private:
-	HRESULT Add_Prototype_Texture();
+	HRESULT Ready_Component();
+	HRESULT Ready_Default_UI();
 
 private:
 	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag, Level::ID eLevel, void* pArg = nullptr);

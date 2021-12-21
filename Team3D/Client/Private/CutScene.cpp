@@ -223,6 +223,8 @@ _bool CCutScene::Tick_CutScene_Clear_Umbrella(_double dTimeDelta)
 	{
 		if (m_dTime >= 6.0)
 		{
+
+
 			_matrix matRot = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
 			static_cast<CCody*>(DATABASE->GetCody())->Get_Transform()->Set_WorldMatrix(matRot);
 			static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(-635.f, 756.f, 195.f, 1.f));

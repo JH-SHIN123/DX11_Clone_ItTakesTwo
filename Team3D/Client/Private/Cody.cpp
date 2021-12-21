@@ -29,11 +29,19 @@
 #include "LaserTennis_Manager.h"
 /*For.WarpGate*/
 #include "WarpGate.h"
+
+/* For.BossUFO */
+#include "UFO.h"
+
 #include "Script.h"
 
 /* For. UFORadarSet */
 #include "UFORadarSet.h"
 #include "UFORadarLever.h"
+#include "EndingCredit_Manager.h"
+
+/* For. UI */
+#include "HpBar.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -63,9 +71,7 @@ HRESULT CCody::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_CodyPtr(this);
 	Add_LerpInfo_To_Model();
 
- 	UI_Create(Cody, PC_Mouse_Reduction);
- 	UI_Create(Cody, PC_Mouse_Enlargement);
- 	UI_Create(Cody, PlayerMarker);
+	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
 	m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
 	m_pGameInstance->Play_Sound(TEXT("CodyM_Walk.wav"), CHANNEL_CODYM_WALK, m_fCodyM_Jog_Volume);
@@ -140,6 +146,20 @@ HRESULT CCody::Ready_Component()
 
 	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_CodyCircle_Gauge")), E_FAIL);
 
+
+	return S_OK;
+}
+
+HRESULT CCody::Ready_UI()
+{
+	UI_Create(Cody, PC_Mouse_Reduction);
+	UI_Create(Cody, PC_Mouse_Enlargement);
+	UI_Create(Cody, PlayerMarker);
+
+	CGameObject* pGameObject = nullptr;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodyHpBar"), nullptr, &pGameObject), E_FAIL);
+	m_pHpBar = static_cast<CHpBar*>(pGameObject);
+	m_pHpBar->Set_PlayerID(Player::Cody);
 
 	return S_OK;
 }
@@ -226,6 +246,14 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_Enter, ANI_C_Grind_Grapple_ToGrind, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Grind_Grapple_ToGrind, ANI_C_Grind_Slow_MH, false);
 
+	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_Holding_Low_UFO, true, 300.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_Holding_Enter_UFO, true, 1000.f);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Holding_Enter_UFO, ANI_C_Holding_Low_UFO, true);
+	m_pModelCom->Add_LerpInfo(ANI_C_Holding_Low_UFO, ANI_C_Holding_UFO, true);
+
+	m_pModelCom->Add_LerpInfo(ANI_C_Holding_UFO, ANI_C_CutScene_BossFight_LaserRippedOff, true);
+
 	m_pModelCom->Add_LerpInfo(ANI_C_Jump_Start, ANI_C_Rocket_MH, true, 10.f);
 	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_Enter, ANI_C_Rocket_MH, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_MH, ANI_C_Rocket_MH, false);
@@ -240,6 +268,7 @@ void CCody::Add_LerpInfo_To_Model()
 _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
+
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
 		m_pActorCom->Set_ZeroGravity(true, true, true);
@@ -247,6 +276,7 @@ _int CCody::Tick(_double dTimeDelta)
 		m_pModelCom->Update_Animation(dTimeDelta);
 		return NO_EVENT;
 	}
+
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
@@ -261,7 +291,7 @@ _int CCody::Tick(_double dTimeDelta)
 	/////////////////////////////////////////////
 	KeyInput_Rail(dTimeDelta);
 
-	if (false == m_bMoveToRail && false == m_bOnRail)
+	if (false == m_bMoveToRail && false == m_bOnRail && false == m_bEndingCredit)
 	{
 		LaserTennis(dTimeDelta);
 		ElectricWallJump(dTimeDelta);
@@ -284,6 +314,7 @@ _int CCody::Tick(_double dTimeDelta)
 			WallLaserTrap(dTimeDelta);
 			PinBall(dTimeDelta);
 			SpaceShip_Respawn(dTimeDelta);
+			Holding_BossUFO(dTimeDelta);
 			In_JoyStick(dTimeDelta);
 			BossMissile_Control(dTimeDelta);
 			Ride_Ending_Rocket(dTimeDelta);
@@ -313,7 +344,6 @@ _int CCody::Tick(_double dTimeDelta)
 	/////////////////////////////////////////////
 
 #pragma endregion
-
 
 	/* 레일 타겟을 향해 날라가기 */
 	// Forward 조정
@@ -416,8 +446,8 @@ void CCody::Free()
 	m_vecTargetRailNodes.clear();
 
 	Safe_Release(m_pGauge_Circle);
+	Safe_Release(m_pHpBar);
 
-	//Safe_Release(m_pCamera);
 	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
@@ -426,6 +456,7 @@ void CCody::Free()
 
 	if (nullptr != m_pTargetPtr)
 		Safe_Release(m_pTargetPtr);
+
 	CCharacter::Free();
 }
 
@@ -521,9 +552,10 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_NUMPADENTER))
+	if (m_pGameInstance->Key_Down(DIK_END))
 	{
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f), 3.f);
+		ENDINGCREDIT->Create_Environment();
 		m_IsEnding = true;
 	}
 #pragma endregion
@@ -828,12 +860,6 @@ void CCody::KeyInput(_double dTimeDelta)
 	}
 
 #pragma endregion
-
-	if (m_pGameInstance->Key_Down(DIK_M))
-	{
-		SCRIPT->Render_Script(m_iIndex, CScript::HALF, 1.f);
-		++m_iIndex;
-	}
 }
 
 _uint CCody::Get_CurState() const
@@ -2433,6 +2459,14 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 				m_bElectricWallAttach = true;
 			}
 		}
+		else if (m_eTargetGameID == GameID::eBOSSUFO && m_pGameInstance->Key_Down(DIK_E))
+		{
+			m_IsHolding_UFO = true;
+		}
+		else if (m_eTargetGameID == GameID::eBOSSENTERUFO)
+		{
+			//m_IsCodyEnter = true;
+		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_E) && false == m_bLaserTennis)
 		{
 			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
@@ -2487,8 +2521,8 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	// Trigger 여따가 싹다모아~
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Control || m_IsDeadLine
-		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach || m_bLaserTennis ||
-		m_IsInJoyStick || m_IsEnding)
+		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach || m_IsHolding_UFO
+		|| m_bLaserTennis || m_IsInJoyStick || m_IsEnding)
 		return true;
 
 	return false;
@@ -3165,6 +3199,14 @@ void CCody::Ride_Ending_Rocket(const _double dTimeDelta)
 {
 	if (m_IsEnding == true)
 	{
+		/* 3초후 시작 */
+		m_dStartTime += dTimeDelta;
+		if (3.f <= m_dStartTime && false == m_bEndingCheck)
+		{
+			ENDINGCREDIT->Start_EndingCredit();
+			m_bEndingCheck = true;
+		}
+
 		m_pModelCom->Set_Animation(ANI_C_Rocket_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Rocket_MH);
 
@@ -3300,6 +3342,19 @@ void CCody::Set_OnParentRotate(_matrix ParentMatrix)
 void CCody::Set_ControlJoystick(_bool IsCheck)
 {
 	m_IsControlJoystick = IsCheck;
+}
+
+void CCody::Set_AnimationRotate(_float fAngle)
+{
+	m_pTransformCom->RotateYaw_Angle(fAngle);
+}
+
+void CCody::Set_ActiveHpBar(_bool IsCheck)
+{
+	if (nullptr == m_pHpBar)
+		return;
+
+	m_pHpBar->Set_Active(IsCheck);
 }
 
 void CCody::WallLaserTrap(const _double dTimeDelta)
@@ -3759,6 +3814,46 @@ void CCody::PinBall(const _double dTimeDelta)
 		m_pActorCom->Set_Position(((CDynamic_Env*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Position());
 }
 
+void CCody::Holding_BossUFO(const _double dTimeDelta)
+{
+	if (false == m_IsHolding_UFO)
+		return;
+
+	if (true == m_pModelCom->Is_AnimFinished(ANI_C_CutScene_BossFight_LaserRippedOff))
+		m_IsHolding_UFO = false;
+
+	if (CUFO::PHASE_1 == ((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() && m_pGameInstance->Key_Down(DIK_E) &&
+		m_eCurPlayerSize == CCody::SIZE_LARGE && false == m_IsHolding_Low_UFO)
+	{
+		m_pActorCom->Set_Position(XMVectorSet(57.8480f, 342.83f, 199.5068f, 1.f));
+		m_pModelCom->Set_Animation(ANI_C_Holding_Enter_UFO);
+		m_pModelCom->Set_NextAnimIndex(ANI_C_Holding_Low_UFO);
+		m_pTransformCom->RotateYaw_Angle(190.f);
+		((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding_Enter, UFO_CodyHolding_low);
+		m_IsHolding_Low_UFO = true;
+	}
+	else if (CUFO::PHASE_1 == ((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() && m_pGameInstance->Key_Down(DIK_E) &&
+		m_eCurPlayerSize == CCody::SIZE_MEDIUM && false == m_IsHolding_Low_UFO)
+	{
+		/* 점프해서 손 흔드는 애니메이션 재생시켜주자 ㅇㅇ;; */
+	}
+
+	if (true == m_IsHolding_Low_UFO && false == m_IsHolding_High_UFO)
+	{
+		if (m_pGameInstance->Key_Down(DIK_E))
+			++m_iKeyDownCount;
+
+		if (10 <= m_iKeyDownCount)
+		{
+			m_pModelCom->Set_Animation(ANI_C_Holding_UFO);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Holding_UFO);
+			((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding, UFO_CodyHolding);
+			((CMay*)DATABASE->GetMay())->Set_LaserRippedOff();
+			m_IsHolding_High_UFO = true;
+		}
+	}
+}
+
 void CCody::LaserTennis(const _double dTimeDelta)
 {
 	if (false == m_bLaserTennis)
@@ -3841,4 +3936,5 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 		m_dRespawnTime = 0.0;
 	}
 }
+
 

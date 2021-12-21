@@ -56,6 +56,9 @@ private:
 	CTriggerActor*		m_pTriggerCom = nullptr;
 	CStaticActor*		m_pStaticActorCom = nullptr;
 
+private:
+	class CEffect_StarBuddy_Move* m_pMoveEffect = nullptr;
+
 public:
 	static CStarBuddy* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

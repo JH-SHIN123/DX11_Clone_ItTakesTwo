@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\ControllerIcon.h"
 
-#include "GameInstance.h"
 #include "Pipeline.h"
 
 CControllerIcon::CControllerIcon(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	

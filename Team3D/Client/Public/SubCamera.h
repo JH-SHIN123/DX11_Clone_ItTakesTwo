@@ -10,7 +10,7 @@ class CCameraActor;
 class CSubCamera final : public CCamera
 {
 	enum CamRev { Rev_Holizontal, Rev_Prependicul, Rev_End };
-	enum class CamMode { Cam_Free, Cam_AutoToFree, Cam_Warp_WormHole, Cam_WallJump, Cam_PinBall_May, Cam_End };
+	enum class CamMode { Cam_Free, Cam_AutoToFree, Cam_Warp_WormHole, Cam_WallJump, Cam_PinBall_May, Cam_LaserTennis, Cam_End };
 	//O CamFreeMove P FollowPlayer
 	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_OpenThirdFloor, Cam_Free_RidingSpaceShip_May,Cam_Free_End };
 private:
@@ -29,6 +29,7 @@ public:
 	CCam_Helper* Get_CamHelper() { return m_pCamHelper; }
 	/*Setter*/
 	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal, matWorld); }
+	void		Set_OpenThridFloor(_bool bSet) { m_bOpenThirdFloor = bSet; }
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
 	_int	ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook = false, _bool bIsCalculateCamLook = false);		//변수 초기화용
@@ -45,11 +46,12 @@ private:
 	_int	Tick_Cam_Warp_WormHole(_double dTimeDelta);				//웜홀
 	_int	Tick_Cam_PinBall_May(_double dTimeDelta);				//핀볼 메이
 	_int	Tick_Cam_WallJump(_double dTimeDelta);
+	_int	Tick_Cam_LaserTennis(_double dTimeDelta);
 
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);			//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);				//카메라가 자유롭게 이동함
 	_int	Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta);	//우주선 탓을때
-	
+	_int	Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta);		//밸브 다돌렸을때
 																	
 																	
 																	//CamHelper State(현재 )
@@ -78,6 +80,8 @@ private:
 	_float m_fCurMouseRev[Rev_End] = { 0.f,0.f };
 
 	CamMode m_eCurCamMode = CamMode::Cam_End;
+	CamMode m_ePreCamMode = CamMode::Cam_End;
+
 
 	_float4x4 m_matBeginWorld;
 	_float4x4 m_matCurWorld;
@@ -91,6 +95,7 @@ private:
 	_float m_fChangeCamModeLerpSpeed = 1.f;
 
 	CamFreeOption m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
+	CamFreeOption m_ePreCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 
 	//For.SoftMove
 	_float4		m_vPlayerPos = { 0.f,0.f,0.f,1.f };
@@ -107,6 +112,11 @@ private:
 	WORLDMATRIX	m_PreWorld;
 	//For.RidingUFO
 	_float	m_fDistFromUFO = 10.f;
+	//For.OpenThirdFloor
+	//For.OpenThirdFloor
+	_bool m_bOpenThirdFloor = false;
+	_float m_fOpenThirdFloorTime = 0.f;
+
 public:
 	static CSubCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg = nullptr) override;

@@ -9,6 +9,10 @@
 #include"UI_Generator.h"
 #include"PinBall.h"
 #include"PinBall_Handle.h"
+#include"Cody.h"
+#include"LaserTennis_Manager.h"
+#include"AlphaScreen.h"
+#include"MoonUFO.h"
 CSubCamera::CSubCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -135,7 +139,10 @@ _int CSubCamera::Check_Player(_double dTimeDelta)
 		m_eCurCamMode = CamMode::Cam_PinBall_May;
 	if (m_pMay->Get_IsWallJump())
 		m_eCurCamMode = CamMode::Cam_WallJump;
-
+	if (CLaserTennis_Manager::GetInstance()->Get_StartGame() && m_eCurCamMode != CamMode::Cam_LaserTennis)
+		m_eCurCamMode = CamMode::Cam_LaserTennis;
+	if (m_bOpenThirdFloor && m_fOpenThirdFloorTime == 0.f)
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OpenThirdFloor;
 	if (m_eCurCamMode == CamMode::Cam_Free)
 	{
 		switch (m_eCurCamFreeOption)
@@ -184,20 +191,23 @@ _int CSubCamera::Tick_Cam_Free(_double dTimeDelta)
 {
 	if (nullptr == m_pMay)
 		return EVENT_ERROR;
-
+	_int iResult = NO_EVENT;
 	switch (m_eCurCamFreeOption)
 	{
 	case CSubCamera::CamFreeOption::Cam_Free_FollowPlayer:
-		Tick_Cam_Free_FollowPlayer(dTimeDelta);
+		iResult = Tick_Cam_Free_FollowPlayer(dTimeDelta);
 		break;
 	case CSubCamera::CamFreeOption::Cam_Free_FreeMove:
-		Tick_Cam_Free_FreeMode(dTimeDelta);
+		iResult = Tick_Cam_Free_FreeMode(dTimeDelta);
 		break;
 	case CSubCamera::CamFreeOption::Cam_Free_RidingSpaceShip_May:
-		Tick_Cam_Free_RideSpaceShip_May(dTimeDelta);
+		iResult = Tick_Cam_Free_RideSpaceShip_May(dTimeDelta);
+		break;
+	case CSubCamera::CamFreeOption::Cam_Free_OpenThirdFloor:
+		iResult = Tick_Cam_Free_OpenThirdFloor(dTimeDelta);
 		break;
 	}
-	return NO_EVENT;
+	return iResult;
 }
 
 
@@ -356,6 +366,37 @@ _int CSubCamera::Tick_Cam_WallJump(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+_int CSubCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
+{
+	if (CLaserTennis_Manager::GetInstance()->Get_StartGame() == false)
+	{
+		if (CLaserTennis_Manager::GetInstance()->Get_Winner() == CLaserTennis_Manager::TARGET_CODY)
+		{
+			if (UI_Generator->Get_EmptyCheck(Player::May, UI::BlackScreenFadeInOut))
+			{
+				UI_CreateOnlyOnce(May, BlackScreenFadeInOut);
+				UI_Generator->Set_FadeInSpeed(Player::May, UI::BlackScreenFadeInOut, 5.f);
+			}
+			if (static_cast<CAlphaScreen*>(UI_Generator->Get_UIObject(Player::May, UI::BlackScreenFadeInOut))->Get_Alpha() >= 1.f)
+				ReSet_Cam_FreeToAuto(true);
+		}
+		return NO_EVENT;
+	}
+	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
+	_vector vCodyPos = XMVectorSetY(m_pMay->Get_Position(), 730.f);
+	_vector vMayPos = XMVectorSetY(pCody->Get_Position(), 730.f);
+	_vector vTargetPos = XMVectorSet(60.479f, 753.281f, 984.f, 1.f);
+
+	_vector vMiddlePos = vCodyPos - (vCodyPos - vMayPos)*0.5f;
+
+	vMiddlePos = XMVectorSetY(vMiddlePos, 730.f);
+	vMiddlePos = XMVectorSetZ(vMiddlePos, 998.f);
+
+	vTargetPos = XMVectorSetX(vTargetPos, XMVectorGetX(vMiddlePos));
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vTargetPos, vMiddlePos), (_float)dTimeDelta));
+	return NO_EVENT;
+}
+
 
 _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 {
@@ -376,7 +417,7 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 		return NO_EVENT;
 	}
-	CTransform* pPlayerTransform = m_pMay->Get_Transform();
+	CTransform* pPlayerTransform = static_cast<CMoonUFO*>(DATABASE->Get_MoonUFO())->Get_Transform();
 
 	CMoon* pMoon = static_cast<CMoon*>(DATABASE->Get_Mooon());
 	if (nullptr == pMoon)
@@ -384,7 +425,6 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 	
 	_vector vMoonPos = pMoon->Get_Position();
 	_vector vAt = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-	
 
 	_vector vDirMoonWithAt = XMVector3Normalize(vAt - vMoonPos);
 
@@ -415,11 +455,66 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+_int CSubCamera::Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta)
+{
+	_vector vMayRight = m_pMay->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
+	_vector vMayPos = m_pMay->Get_Position();
+	_vector vUpPos = XMVectorSet(64.f,218.f,179.f,1.f);
+	_vector vMiddleDir = (vMayPos - vUpPos);
+	_vector vMiddlePos = vMayPos - vMiddleDir * 0.5f;
+	_vector vTargetPos = vMiddlePos;
+	_vector vNormal = XMVector3Normalize(XMVector3Cross(XMVector3Normalize(vMiddleDir), XMVectorSet(1.0f,0.f,0.f,0.f)));
+	_vector vEye = vMayPos + vNormal * 10.f;
+
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vMiddlePos), (_float)dTimeDelta));
+	return NO_EVENT;
+}
+
 
 
 _int CSubCamera::Tick_CamHelperNone(_double dTimeDelta)
 {
-	
+	if (m_eCurCamMode != m_ePreCamMode)
+	{
+		switch (m_eCurCamMode)
+		{
+		case Client::CSubCamera::CamMode::Cam_Free:
+			if (false == UI_Generator->Get_EmptyCheck(Player::May, UI::BlackScreenFadeInOut))
+			{
+				UI_Generator->Set_FadeOut(Player::May, UI::BlackScreenFadeInOut);
+				UI_Generator->Set_FadeOutSpeed(Player::May, UI::BlackScreenFadeInOut, 6.f);
+			}
+			break;
+		case Client::CSubCamera::CamMode::Cam_AutoToFree:
+			break;
+		case Client::CSubCamera::CamMode::Cam_Warp_WormHole:
+			break;
+		case Client::CSubCamera::CamMode::Cam_PinBall_May:
+			break;
+		case Client::CSubCamera::CamMode::Cam_LaserTennis:
+			break;
+		case Client::CSubCamera::CamMode::Cam_WallJump:
+			break;
+		}
+		m_ePreCamMode = m_eCurCamMode;
+	}
+	if (m_eCurCamFreeOption != m_ePreCamFreeOption)
+	{
+		switch (m_eCurCamFreeOption)
+		{
+		case Client::CSubCamera::CamFreeOption::Cam_Free_FollowPlayer:
+			ReSet_Cam_FreeToAuto();
+			break;
+		case Client::CSubCamera::CamFreeOption::Cam_Free_FreeMove:
+			break;
+		case Client::CSubCamera::CamFreeOption::Cam_Free_RidingSpaceShip_May:
+			break;
+		}
+		m_ePreCamFreeOption = m_eCurCamFreeOption;
+	}
+
+
+
 	_int iResult = NO_EVENT;
 	switch (m_eCurCamMode)
 	{
@@ -437,6 +532,9 @@ _int CSubCamera::Tick_CamHelperNone(_double dTimeDelta)
 		break;
 	case Client::CSubCamera::CamMode::Cam_WallJump:
 		iResult = Tick_Cam_WallJump(dTimeDelta);
+		break;
+	case Client::CSubCamera::CamMode::Cam_LaserTennis:
+		iResult = Tick_Cam_LaserTennis(dTimeDelta);
 		break;
 	}
 	return iResult;

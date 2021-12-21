@@ -22,13 +22,13 @@ private:
 
 public:
 	enum TARGET { TARGET_CODY, TARGET_MAY, TARGET_END };
-
 private:
 	void Get_RandomArr(_uint iIndex);
 	_uint* m_pRandomArr = nullptr;
 
 public:/* Getter */
-	_bool Get_StartGame() { return m_bStartGame; }
+	_bool	Get_StartGame() { return m_bStartGame; }
+	TARGET	Get_Winner() { return m_eWinner; }
 
 public:/* Setter */
 	void Increase_PowerCoord();

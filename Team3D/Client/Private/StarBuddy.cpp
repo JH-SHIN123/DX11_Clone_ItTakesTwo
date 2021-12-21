@@ -4,6 +4,8 @@
 #include "Cody.h"
 #include "May.h"
 #include "RobotParts.h"
+#include "Effect_Generator.h"
+#include "Effect_StarBuddy_Move.h"
 
 CStarBuddy::CStarBuddy(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -52,6 +54,8 @@ HRESULT CStarBuddy::NativeConstruct(void * pArg)
 	StaticActorDesc.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &StaticActorDesc), E_FAIL);
 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_StarBuddyEffect"), Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy_Move"), nullptr, (CGameObject**)&m_pMoveEffect), E_FAIL);
+
 	return S_OK;
 }
 
@@ -80,16 +84,20 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 			Launch_StarBuddy(dTimeDelta);
 			m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
 			m_pTransformCom->RotatePitch(dTimeDelta * 1.2f);
-
 			if (m_bSoundOnce == false)
 			{
 				m_pGameInstance->Set_SoundVolume(CHANNEL_INTERACTIVE_STAR_EXPLODE, m_fStarBuddy_Volume);
 				m_pGameInstance->Play_Sound(TEXT("Interactive_Start_Explode.wav"), CHANNEL_INTERACTIVE_STAR_EXPLODE, m_fStarBuddy_Volume);
 				m_bSoundOnce = true;
 			}	
+			m_pMoveEffect->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 		}
 		if (m_fLifeTime > 3.5f)
-			return EVENT_DEAD; // 
+		{
+			EFFECT->Add_Effect(Effect_Value::StarBuddy_Explosion_Pillar, m_pTransformCom->Get_WorldMatrix());
+			m_pMoveEffect->Set_Dead();
+			return EVENT_DEAD;
+		}
 	}
 
 	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::StarBuddy, 
@@ -98,9 +106,9 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::StarBuddy,
 		m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsMayCollide, m_bLaunch);
 
+
 	return NO_EVENT;
 }
-
 
 _int CStarBuddy::Late_Tick(_double dTimeDelta)
 {
@@ -217,6 +225,7 @@ void CStarBuddy::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pMoveEffect);
 
 	CGameObject::Free();
 }

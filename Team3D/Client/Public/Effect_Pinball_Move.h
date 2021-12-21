@@ -38,7 +38,6 @@ private:
 	HRESULT Ready_InstanceBuffer();
 	_float3 Get_Particle_Rand_Dir(_fvector vDefaultPos);
 	void Check_Target_Matrix();
-	void Check_Activate();
 	_float2 Get_RandSize();
 
 private:
