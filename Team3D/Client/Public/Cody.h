@@ -235,11 +235,19 @@ public:
 	_bool			 Get_IsPinBall() { return m_IsPinBall; }
 	_bool			 Get_IsWallJump() { return m_IsCamTriggerCollide; }
 	_bool			 Get_OnRail() { return m_bOnRail; }
+
+	_bool			 Get_IsRespawn() { return m_bRespawn; }
+	_bool			 Get_IsDeadLine() { return m_IsDeadLine; }
+	_bool			 Get_IsLaserTennis() { return m_bLaserTennis; }
+
 	_bool			 Get_IsEnding() { return m_IsEnding; }
+
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
 	void			 Set_ControlJoystick(_bool IsCheck);
+	void			 Set_AnimationRotate(_float fAngle);
+	void			 Set_ActiveHpBar(_bool IsCheck);
 	void 			 Set_RocketOffSetPos(_fvector vRocketOffSetPos) { m_vRocketOffSetPos = vRocketOffSetPos; }
 	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
@@ -258,10 +266,14 @@ private: // 여기에 넣어놓아야 알거 같아서 여기에..
 
 private:
 	HRESULT Ready_Component();
+	HRESULT Ready_UI();
 	void Add_LerpInfo_To_Model();
 
 private: // Effects
 	class CEffect_Cody_Size* m_pEffect_Size = nullptr;
+
+private: /* UI */
+	class CHpBar*	m_pHpBar = nullptr;
 
 	// Components
 private:
@@ -344,9 +356,7 @@ private:
 	_bool m_IsSizeChanging = false;
 	_float m_fSizeDelayTime = 0.f;
 	_bool m_bChangeSizeEffectOnce = false;
-
 	
-
 	// 컷씬이라면
 	_bool m_IsCutScene = false;
 
@@ -491,6 +501,13 @@ private:
 	// touch WallLaserTrap
 	_bool m_IsWallLaserTrap_Touch = false;
 	_bool m_IsWallLaserTrap_Effect = false;
+ 
+	/* For. BossUFO */
+	_bool m_IsHolding_UFO = false;
+	_bool m_IsHolding_Low_UFO = false;
+	_bool m_IsHolding_High_UFO = false;
+	_uint m_iKeyDownCount = 0;
+	_bool m_IsCodyEnter = false;
 
 	/* For.Boss Missile */
 	_bool	m_IsBossMissile_Control = false;
@@ -525,6 +542,10 @@ private:
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
 	void LaserTennis(const _double dTimeDelta);
+
+	/* 진혁 */
+	void Holding_BossUFO(const _double dTimeDelta);
+
 public:
 	void PinBall_Respawn(const _double dTimeDelta);
 	void SpaceShip_Respawn(const _double dTimeDelta);

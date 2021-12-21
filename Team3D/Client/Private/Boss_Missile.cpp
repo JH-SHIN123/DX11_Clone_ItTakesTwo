@@ -44,7 +44,7 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 
 	if (m_bPlayerExplosion == true)
 	{
-		
+
 		return EVENT_DEAD;
 	}
 	else if (m_bBossExplosion == true)
@@ -53,7 +53,7 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 		{
 			((CCody*)DATABASE->GetCody())->Set_Escape_From_Rocket(true);
 		}
-		else if(m_bMayControl == true && m_bCodyControl == false)
+		else if (m_bMayControl == true && m_bCodyControl == false)
 		{
 			((CMay*)DATABASE->GetMay())->Set_Escape_From_Rocket(true);
 		}
@@ -62,7 +62,7 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	}
 
 
-	if(m_IsCrashed == false)
+	if (m_IsCrashed == false)
 		m_fAttackTime += (_float)dTimeDelta;
 
 	if (m_fAttackTime > 10.f)
@@ -175,7 +175,7 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		_vector vRocketToTarget = vTargetPos - vRocketPos;
 		_vector vNRocketToTarget = XMVector3Normalize(vRocketToTarget);
 		vNRocketToTarget = XMVectorSetY(vNRocketToTarget, 0.f);
-		
+
 		_float fDist = XMVectorGetX(XMVector3Length(vRocketToTarget));
 		if (fDist < 3.f)
 		{
@@ -341,7 +341,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 		}
 		if (fDegree <= 165.f)
 		{
-			if (m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Get_Pad_LStickY() < 20000 )
+			if (m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Get_Pad_LStickY() < 20000)
 			{
 				if (m_fRotateAcceleration < 1.f)
 					m_fRotateAcceleration += dTimeDelta* 2.f;
@@ -395,18 +395,18 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 	matRocket = m_pTransformCom->Get_WorldMatrix();
 	((CCody*)DATABASE->GetCody())->Set_RocketMatrix(matRocket);
 
-	
+
 	if (m_bCodyControl && ((CCody*)DATABASE->GetCody())->Get_CurState() == ANI_C_Rocket_MH)
 	{
 
-		if(m_fMoveAcceleration < 10.f)
+		if (m_fMoveAcceleration < 10.f)
 			m_fMoveAcceleration += (_float)dTimeDelta * 4.f;
 
 		_vector vUp = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
 		_vector vRocketLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 		_float fDegree = XMConvertToDegrees(XMVectorGetX(XMVector3AngleBetweenNormals(vUp, vRocketLook)));
-	
+
 
 		if (fDegree >= 15.f)
 		{

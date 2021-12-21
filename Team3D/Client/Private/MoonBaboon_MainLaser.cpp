@@ -33,11 +33,11 @@ HRESULT CMoonBaboon_MainLaser::NativeConstruct(void* pArg)
 	m_UserData.eID = GameID::eENVIRONMENT;
 	m_UserData.pGameObject = this;
 
-	CStaticActor::ARG_DESC tArg;
-	tArg.pModel = m_pModelCom;
-	tArg.pTransform = m_pTransformCom;
-	tArg.pUserData = &m_UserData;
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
+	//CStaticActor::ARG_DESC tArg;
+	//tArg.pModel = m_pModelCom;
+	//tArg.pTransform = m_pTransformCom;
+	//tArg.pUserData = &m_UserData;
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
 
 	DATABASE->Set_MoonBaboon_MainLaser(this);
 
@@ -54,6 +54,8 @@ _int CMoonBaboon_MainLaser::Tick(_double TimeDelta)
 		Laser_AttackPattern(TimeDelta);
 	else if(false == m_IsLaserOperation && true == DATABASE->Get_LaserTypeB_Recovery())
 		Laser_Down(TimeDelta);
+
+	GoUp(TimeDelta);
 
 	return NO_EVENT;
 }
@@ -119,7 +121,7 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 		{
 			m_pTransformCom->Go_Up(TimeDelta);
 			m_dPatternDeltaT += TimeDelta;
-			m_pStaticActorCom->Update_StaticActor();
+			//m_pStaticActorCom->Update_StaticActor();
 		}
 	}
 	else if (1 == m_iPatternState)
@@ -171,7 +173,7 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 			m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeB"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB"), nullptr, &pGameObject);
 			m_vecLaser_TypeB.emplace_back(static_cast<CLaser_TypeB*>(pGameObject));
 			m_vecLaser_TypeB[i]->Set_StartPoint(vConvertPos);
-			m_vecLaser_TypeB[i]->SetUp_Direction(i);
+			m_vecLaser_TypeB[i]->SetUp_MainLaserDirection(i);
 			m_vecLaser_TypeB[i]->Set_RotateSpeed(40.f);
 		}
 
@@ -185,7 +187,7 @@ void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
 	{
 		m_pTransformCom->Go_Down(TimeDelta);
 		m_dDownTime += TimeDelta;
-		m_pStaticActorCom->Update_StaticActor();
+		/*m_pStaticActorCom->Update_StaticActor();*/
 	}
 	else
 	{
@@ -198,6 +200,52 @@ void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
 		m_dPatternDeltaT = 0.0;
 		m_iPatternState = 0;
 	}
+}
+
+void CMoonBaboon_MainLaser::Set_MainLaserUp(_float fMaxDistance, _float fSpeed)
+{
+	XMStoreFloat3(&m_vMaxPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_vMaxPos.y += fMaxDistance;
+
+	m_fMaxY = fMaxDistance;
+	m_IsGoUp = true;
+	m_fUpSpeed = fSpeed;
+
+	for (_uint i = 0; i < 8; ++i)
+		m_vecLaser_TypeB[i]->Set_LaserTypeBUp(fMaxDistance, fSpeed);
+
+	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
+}
+
+void CMoonBaboon_MainLaser::GoUp(_double dTimeDelta)
+{
+	if (false == m_IsGoUp)
+	{
+		m_pTransformCom->Set_Speed(3.5f, XMConvertToRadians(40.f));
+		return;
+	}
+
+	m_pTransformCom->Set_Speed(m_fUpSpeed, XMConvertToRadians(40.f));
+
+	_float fDist = (_float)dTimeDelta * m_fUpSpeed;
+	m_fDistance += fDist;
+
+	if (m_fMaxY <= m_fDistance)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vMaxPos), 1.f));
+		m_fMaxY = 0.f;
+		m_IsGoUp = false;
+		m_fDistance = 0.f;
+
+		if (2 == DATABASE->Get_FloorIndex())
+			m_IsArrivalLastFloor = true;
+		else
+			m_IsArrivalLastFloor = false;
+
+		return;
+	}
+
+	m_pTransformCom->Go_Up(dTimeDelta);
 }
 
 CMoonBaboon_MainLaser* CMoonBaboon_MainLaser::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -236,7 +284,7 @@ void CMoonBaboon_MainLaser::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
-	Safe_Release(m_pStaticActorCom);
+	//Safe_Release(m_pStaticActorCom);
 
 	CGameObject::Free();
 }

@@ -147,6 +147,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\02.Se\04.Effect_PipeLocker">
       <UniqueIdentifier>{cbb52761-0b5b-433c-800e-73f10284fc57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\02.Se\05.Effect_GateSmoke">
+      <UniqueIdentifier>{c76a672b-f512-47fc-95de-2c7c1c5e5bcd}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\03.Jung">
       <UniqueIdentifier>{fec661ad-31f9-4dec-b790-1b4cb09030ce}</UniqueIdentifier>
     </Filter>
@@ -540,6 +543,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\13.UmbrellaBeam_Joystick">
       <UniqueIdentifier>{1222b103-dbd3-4206-a322-d20e64de8bb8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\07.Jin\02.MoonBaboon_SubLaser">
+      <UniqueIdentifier>{074882ae-b709-4b99-8225-4c0e7a5d59f7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\08.Jun">
       <UniqueIdentifier>{0a4d8ed2-ea40-4cd4-bfdf-16db4b954909}</UniqueIdentifier>
     </Filter>
@@ -605,6 +611,12 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke">
       <UniqueIdentifier>{fe5deece-04a5-4318-afb5-acdc2d731f8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\00.Color">
+      <UniqueIdentifier>{c40802cb-3077-4ddf-955e-fbde27e5268f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\01.Black">
+      <UniqueIdentifier>{dc9f6c9a-1c8c-44eb-8222-c63be1b02776}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion">
       <UniqueIdentifier>{acd6cfb6-5704-4c57-89c5-0b6a29379e73}</UniqueIdentifier>
@@ -767,6 +779,12 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Idle">
       <UniqueIdentifier>{d05c42ba-48cd-44e4-867e-5a950dc6855d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move">
+      <UniqueIdentifier>{92f1e13a-d195-448f-b4ee-245413d362ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle">
+      <UniqueIdentifier>{5bfb0833-cc63-4158-a256-924e223c5331}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside">
       <UniqueIdentifier>{1e244afa-1f22-4105-8bc1-f281d82c5211}</UniqueIdentifier>
@@ -956,6 +974,33 @@
     </Filter>
     <Filter Include="02.GameObject\06.UI\14.Script\ScriptBackGround">
       <UniqueIdentifier>{854ef9b9-c8f6-45f8-bda9-1c67f74bf580}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\15.InfoBar">
+      <UniqueIdentifier>{ac656f16-0a8f-4801-b966-95e3dc892e9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\15.InfoBar\00.Player">
+      <UniqueIdentifier>{39e7963c-18f0-49cb-9976-80da837fce26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\15.InfoBar\01.Boss">
+      <UniqueIdentifier>{8001ece9-747e-4946-887b-101332178afc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame">
+      <UniqueIdentifier>{68e45867-3e1e-4948-a95a-c534167b378a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\00.Minigame_Ready">
+      <UniqueIdentifier>{c61cc7b9-02e0-4efb-b9c8-7fd12af05dd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown">
+      <UniqueIdentifier>{5e838b2e-ac0d-4966-b7a1-7a520c120139}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle">
+      <UniqueIdentifier>{b61c06ff-3eea-4cc8-9eaa-a08aac20aaee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\03.Minigame_Win">
+      <UniqueIdentifier>{988e384c-a3bb-4412-896a-d391f8dd4326}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe">
+      <UniqueIdentifier>{ab6ae50c-6e4a-4821-9f28-cb5dd08d4825}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\99.Terrain%28Test%29">
       <UniqueIdentifier>{f999b3e3-a399-493a-893b-bcebcfb781a4}</UniqueIdentifier>
@@ -1180,6 +1225,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_PipeLocker_Connected.h">
       <Filter>02.GameObject\04.Stage_Space\02.Se\04.Effect_PipeLocker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_GateSmoke.h">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\05.Effect_GateSmoke</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\WarpGate.h">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
@@ -1547,6 +1595,9 @@
     <ClInclude Include="..\Public\UmbrellaBeam_Joystick.h">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\13.UmbrellaBeam_Joystick</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MoonBaboon_SubLaser.h">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\02.MoonBaboon_SubLaser</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\InGameEffect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point</Filter>
     </ClInclude>
@@ -1597,6 +1648,12 @@
     </ClInclude>
     <ClInclude Include="..\public\Effect_Boss_Missile_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Boss_Missile_Smoke_Color.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\00.Color</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Boss_Missile_Smoke_Black.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\01.Black</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_Boss_Missile_Explosion.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion</Filter>
@@ -1723,6 +1780,12 @@
     </ClInclude>
     <ClInclude Include="..\public\Effect_StarBuddy_Explosion_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Explosion\02.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_StarBuddy_Move.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_StarBuddy_Move_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Spark.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark</Filter>
@@ -1870,6 +1933,33 @@
     </ClInclude>
     <ClInclude Include="..\Public\ScriptBackGround.h">
       <Filter>02.GameObject\06.UI\14.Script\ScriptBackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HpBarFrame.h">
+      <Filter>02.GameObject\06.UI\15.InfoBar\00.Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HpBar.h">
+      <Filter>02.GameObject\06.UI\15.InfoBar\00.Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossHpBar.h">
+      <Filter>02.GameObject\06.UI\15.InfoBar\01.Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossHpBarFrame.h">
+      <Filter>02.GameObject\06.UI\15.InfoBar\01.Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Ready.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\00.Minigame_Ready</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Countdown.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_GaugeCircle.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Win.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\03.Minigame_Win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Minigame_Score.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
@@ -2076,6 +2166,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_PipeLocker_Connected.cpp">
       <Filter>02.GameObject\04.Stage_Space\02.Se\04.Effect_PipeLocker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_GateSmoke.cpp">
+      <Filter>02.GameObject\04.Stage_Space\02.Se\05.Effect_GateSmoke</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\WarpGate.cpp">
       <Filter>02.GameObject\04.Stage_Space\03.Jung\00.WarpGate</Filter>
@@ -2443,6 +2536,9 @@
     <ClCompile Include="..\Private\UmbrellaBeam_Joystick.cpp">
       <Filter>02.GameObject\04.Stage_Space\07.Jin\01.Umbrella\13.UmbrellaBeam_Joystick</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\MoonBaboon_SubLaser.cpp">
+      <Filter>02.GameObject\04.Stage_Space\07.Jin\02.MoonBaboon_SubLaser</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\InGameEffect.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point</Filter>
     </ClCompile>
@@ -2493,6 +2589,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Boss_Missile_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Boss_Missile_Smoke_Color.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\00.Color</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Boss_Missile_Smoke_Black.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\00.Smoke\01.Black</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Boss_Missile_Explosion.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\01.Explosion</Filter>
@@ -2619,6 +2721,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_StarBuddy_Explosion_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Explosion\02.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_StarBuddy_Move.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_StarBuddy_Move_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Spark.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark</Filter>
@@ -2766,6 +2874,33 @@
     </ClCompile>
     <ClCompile Include="..\Private\ScriptBackGround.cpp">
       <Filter>02.GameObject\06.UI\14.Script\ScriptBackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HpBarFrame.cpp">
+      <Filter>02.GameObject\06.UI\15.InfoBar\00.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HpBar.cpp">
+      <Filter>02.GameObject\06.UI\15.InfoBar\00.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossHpBar.cpp">
+      <Filter>02.GameObject\06.UI\15.InfoBar\01.Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossHpBarFrame.cpp">
+      <Filter>02.GameObject\06.UI\15.InfoBar\01.Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Ready.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\00.Minigame_Ready</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Countdown.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\01.Minigame_Countdown</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_GaugeCircle.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\02.Minigame_GaugeCircle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Win.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\03.Minigame_Win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Minigame_Score.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>

@@ -71,8 +71,6 @@ _int CEffect_Pinball_Move::Tick(_double TimeDelta)
 		if (0.0 > m_dControlTime) m_dControlTime = 0.0;
 	}
 
-
-	Check_Activate();
 	Check_Target_Matrix();
 	Check_Instance(TimeDelta);
 
@@ -202,11 +200,6 @@ void CEffect_Pinball_Move::Check_Target_Matrix()
 	_matrix WorldMatrix = Normalize_Matrix(static_cast<CPinBall*>(m_pTargetObject)->Get_WorldMatrix());
 	WorldMatrix.r[3] += WorldMatrix.r[2] * 0.5f;
 	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
-}
-
-void CEffect_Pinball_Move::Check_Activate()
-{
-	m_IsActivate = !static_cast<CPinBall*>(DATABASE->Get_Pinball())->Get_Failed();
 }
 
 _float2 CEffect_Pinball_Move::Get_RandSize()

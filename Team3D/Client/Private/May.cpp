@@ -1,3 +1,4 @@
+
 #include "stdafx.h"
 #include "..\Public\May.h"
 #include "SubCamera.h"
@@ -21,6 +22,9 @@
 /* For.MoonUFO */
 #include "MoonUFO.h"
 #include "Moon.h"
+/* For.BossUFO */
+#include "UFO.h"
+
 /*For.WarpGate*/
 #include "WarpGate.h"
 #include "LaserTennis_Manager.h"
@@ -63,7 +67,6 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	CCharacter::NativeConstruct(pArg);
 	Ready_Component();
 
-
 	m_pModelCom->Set_Animation(ANI_M_Bounce4);
 	CDataStorage::GetInstance()->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
@@ -87,7 +90,6 @@ HRESULT CMay::NativeConstruct(void* pArg)
 
 	return S_OK;
 }
-
 
 HRESULT CMay::Ready_Component()
 {
@@ -132,7 +134,7 @@ HRESULT CMay::Ready_Component()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_May_Boots"), nullptr, (CGameObject**)&m_pEffect_GravityBoots), E_FAIL);
 	m_pEffect_GravityBoots->Set_Model(m_pModelCom);
 
-	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_CodyCircle_Gauge")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_MayCircle_Gauge")), E_FAIL);
 
 	return S_OK;
 }
@@ -339,6 +341,7 @@ void CMay::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pEffect_GravityBoots);
+
 	CCharacter::Free();
 }
 
@@ -1914,6 +1917,26 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			}
 			m_IsCollide = false;
 		}
+		else if (m_eTargetGameID == GameID::eBOSSUFO && true == m_IsLaserRippedOff)
+		{
+			if (true == m_pModelCom->Is_AnimFinished(ANI_M_SpaceStation_BossFight_LaserRippedOff))
+			{
+				m_IsRippedOffAnimPlaying = false;
+				m_IsLaserRippedOff = false;
+			}
+
+			if (m_pGameInstance->Key_Down(DIK_E))
+			{
+				m_IsRippedOffAnimPlaying = true;
+				m_pModelCom->Set_Animation(ANI_M_SpaceStation_BossFight_LaserRippedOff);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+				m_pActorCom->Set_Position(XMVectorSet(60.9975f, 342.838f, 199.3799f, 1.f));
+				((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_LaserRippedOff, UFO_Left);
+				((CCody*)DATABASE->GetCody())->Set_AnimationRotate(190.f);
+				((CCody*)DATABASE->GetCody())->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_LaserRippedOff);
+				((CCody*)DATABASE->GetCody())->Get_Model()->Set_NextAnimIndex(ANI_C_MH);
+			}
+		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_O) && false == m_bLaserTennis)
 		{
 			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
@@ -1954,11 +1977,13 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 	// Trigger 여따가 싹다모아~
 	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsPinBall || m_IsDeadLine
-		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_IsBossMissile_Control || m_IsWallLaserTrap_Touch || m_bWallAttach || m_bLaserTennis || m_IsEnding)
+		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_IsBossMissile_Control || m_IsWallLaserTrap_Touch || m_bWallAttach || 
+		m_IsRippedOffAnimPlaying || m_bLaserTennis || m_IsEnding)
 		return true;
 
 	return false;
 }
+
 _bool CMay::Trigger_End(const _double dTimeDelta)
 {
 	//if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Jump_Land ||
@@ -2081,7 +2106,7 @@ void CMay::Rotate_Valve(const _double dTimeDelta)
 		}
 
 		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pGameInstance->Pad_Key_Down(DIP_RB) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Valve_Rotate_R && m_bStruggle == false)
+		if ((m_pGameInstance->Pad_Key_Down(DIP_RB) || m_pGameInstance->Key_Down(DIK_RIGHT)) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Valve_Rotate_R && m_bStruggle == false)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Valve_Rotate_R);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Valve_Rotate_MH);
@@ -2236,7 +2261,7 @@ void CMay::PinBall(const _double dTimeDelta)
 			{
 				if (false == m_IsPinBallSoundCheck)
 				{
-					m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Move.wav"), CHANNEL_PINBALL_HANDLEMOVE, 1.f, true);
+					m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Move.wav"), CHANNEL_PINBALL_HANDLEMOVE, 1.f);
 					m_IsPinBallSoundCheck = true;
 				}
 
@@ -2253,7 +2278,7 @@ void CMay::PinBall(const _double dTimeDelta)
 				/* Sound */
 				if (false == m_IsPinBallSoundCheck)
 				{
-					m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Move.wav"), CHANNEL_PINBALL_HANDLEMOVE, 1.f, true);
+					m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Move.wav"), CHANNEL_PINBALL_HANDLEMOVE, 1.f);
 					m_IsPinBallSoundCheck = true;
 				}
 
@@ -2570,6 +2595,11 @@ void CMay::WallLaserTrap(const _double dTimeDelta)
 	}
 }
 
+void CMay::Set_LaserRippedOff()
+{
+	m_IsLaserRippedOff = true;
+}
+
 void CMay::Set_ActorPosition(_vector vPosition)
 {
 	m_pActorCom->Set_Position(vPosition);
@@ -2841,6 +2871,7 @@ void CMay::Find_TargetSpaceRail()
 	if (false == isSearch)
 		m_pSearchTargetRailNode = nullptr;
 }
+
 void CMay::Start_SpaceRail()
 {
 	if (nullptr == m_pSearchTargetRailNode) return;
@@ -2902,6 +2933,7 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 		EFFECT->Add_Effect(Effect_Value::May_Rail, m_pTransformCom->Get_WorldMatrix());
 	}
 }
+
 void CMay::TakeRail(_double dTimeDelta)
 {
 	if (nullptr == m_pTargetRail || false == m_bOnRail) return;
@@ -2925,6 +2957,7 @@ void CMay::TakeRail(_double dTimeDelta)
 		m_bOnRailEnd = true;
 	}
 }
+
 void CMay::TakeRailEnd(_double dTimeDelta)
 {
 	if (m_bOnRailEnd)
@@ -2945,6 +2978,7 @@ void CMay::TakeRailEnd(_double dTimeDelta)
 		}
 	}
 }
+
 void CMay::ShowRailTargetTriggerUI()
 {
 	// Show UI

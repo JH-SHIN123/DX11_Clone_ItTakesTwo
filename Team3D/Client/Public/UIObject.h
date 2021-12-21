@@ -3,14 +3,6 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 
-BEGIN(Engine)
-class CRenderer;
-class CTextures;
-class CTransform;
-class CVIBuffer_Terrain;
-class CVIBuffer;
-END
-
 BEGIN(Client)
 
 class CUIObject abstract : public CGameObject
@@ -57,6 +49,7 @@ public:
 	void Set_FadeInSpeed(_float fSpeed);
 	void Set_FadeOutSpeed(_float fSpeed);
 	void Set_FadeOut();
+	void Set_Ready();
 
 public:
 	virtual void Set_TargetPos(_vector vPos);

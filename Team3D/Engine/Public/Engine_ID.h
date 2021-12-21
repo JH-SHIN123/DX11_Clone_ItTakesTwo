@@ -89,6 +89,8 @@ namespace Engine
 			eALIENSCREEN,
 			eRUNNINGMOONBABOONCOLLIDER,
 			e3DTEXT,
+			eBOSSUFO,
+			eBOSSENTERUFO,
 			eEND
 		};
 	};

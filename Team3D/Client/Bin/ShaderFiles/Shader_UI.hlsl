@@ -26,9 +26,14 @@ float	g_Angle;
 float	g_fHeartTime;
 float	g_fScreenAlpha;
 float	g_fDistance;
+float	g_fRatio;
+float	g_fDecreaseRateRatio;
 float2  g_UV;
 float2  g_vScreenMaskUV;
- 
+float   g_fCircleRatio;
+
+bool	g_IsHealthBarDecrease;
+
 sampler	DiffuseSampler = sampler_state
 {
 	Filter = MIN_MAG_MIP_LINEAR;
@@ -77,10 +82,10 @@ VS_OUT	VS_RespawnCirle(VS_IN In)
 	fCos = cos(g_Angle);
 	fSin = sin(g_Angle);
 
-	float2x2 dd;
+	float2x2 Rotate;
 
-	dd = float2x2(fCos, -fSin, fSin, fCos);
-	SubUV = mul(SubUV, dd);
+	Rotate = float2x2(fCos, -fSin, fSin, fCos);
+	SubUV = mul(SubUV, Rotate);
 	SubUV.x += 0.5f;
 	SubUV.y += 0.5f;
 
@@ -287,23 +292,6 @@ PS_OUT PS_RespawnCircle(PS_IN In)
 	}
 	else
 		Out.vColor.a = 0.8f;
-
-	//if (Out.vColor.r <= 0.05f && Out.vColor.g <= 0.05f && Out.vColor.b <= 0.05f)
-	//	discard;
-
-	//if (Out.vColor.r == 0.f && Out.vColor.g == 0.f && Out.vColor.b == 0.f && Out.vColor.a == 0.f)
-	//	discard;
-
-	//Out.vColor.g = 0.f;
-
-	//if (Out.vColor.r >= 0.7f)
-	//	Out.vColor.a = 0.f;
-
-	//Out.vColor.rgb = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.f;
-	//Out.vColor *= vector(10.0f, 1.9f, 5.0f, 1.f);
-
-	//if (Out.vColor.b != 0.f)
-	//	Out.vColor.a = 0.f;
 
 	return Out;
 }
@@ -531,6 +519,148 @@ PS_OUT PS_ContextIcon(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_BossHPBarFrame(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (0.f == Out.vColor.r && 0.f == Out.vColor.g && 0.f == Out.vColor.b)
+		discard;
+
+	if (Out.vColor.g >= 0.2f)
+	{
+		Out.vColor.rgb = 0.f;
+		Out.vColor.a = 0.5f;
+	}
+	else
+	{
+		Out.vColor.rgb = 0.f;
+	}
+
+	return Out;
+}
+
+PS_OUT PS_BossHPBar(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (0.f == Out.vColor.r && 0.f == Out.vColor.g && 0.f == Out.vColor.b)
+		discard;
+
+	if (Out.vColor.g >= 0.2f)
+	{
+		Out.vColor.r = 0.96f;
+		Out.vColor.gb = 0.f;
+	}
+	else /* 나중에 수정 */
+		discard; 
+
+	if (g_fRatio <= In.vTexUV.x)
+		Out.vColor.rgb = 1.f;
+
+	if (0.664f <= In.vTexUV.x && 0.668f >= In.vTexUV.x)
+		Out.vColor.rgb = 0.f;
+
+	if (0.331f <= In.vTexUV.x && 0.335f >= In.vTexUV.x)
+		Out.vColor.rgb = 0.f;
+
+	if (g_fDecreaseRateRatio <= In.vTexUV.x && Out.vColor.a != 0.f)
+		Out.vColor.a = 0.f;
+
+	return Out;
+}
+
+PS_OUT PS_PlayerHpBarFrame(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.a == 0.f)
+		discard;
+
+	if (Out.vColor.r >= 0.5f)
+		Out.vColor.a = 0.3f;
+
+	return Out;
+}
+
+
+PS_OUT PS_PlayerHpBar(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (g_fDecreaseRateRatio <= Out.vColor.b && g_fCircleRatio >= Out.vColor.b)
+		Out.vColor.rgb = 1.f;
+	else if (g_fDecreaseRateRatio > Out.vColor.b)
+		Out.vColor.a = 0.f;
+
+
+	return Out;
+}
+
+PS_OUT PS_MinigameReady(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	return Out;
+}
+
+
+PS_OUT PS_MinigameCountdown(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	if (Out.vColor.a == 0.f)
+		discard;
+
+	Out.vColor.a = g_fAlpha;
+	
+	return Out;
+}
+
+PS_OUT PS_MinigameGaugeCircle(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	return Out;
+}
+
+PS_OUT PS_MinigameScore(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	Out.vColor.a = 0.2f;
+
+	return Out;
+}
+
+PS_OUT PS_MinigameTitle(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+
+	Out.vColor.r = 0.454f;
+	Out.vColor.g = 0.035f;
+	Out.vColor.b = 0.015f;
+
+	return Out;
+}
+
 ////////////////////////////////////////////////////////////
 
 technique11 DefaultTechnique
@@ -743,4 +873,116 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_ContextIcon();
 	}
+
+	// 19
+	pass BossHpBarFrame
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_BossHPBarFrame();
+	}
+
+	// 20
+	pass BossHpBar
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_BossHPBar();
+	}
+
+	// 21
+	pass PlayerHpBarFrame
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PlayerHpBarFrame();
+	}
+
+	// 22
+	pass PlayerHpBar
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PlayerHpBar();
+	}
+
+	// 23
+	pass MinigameReady
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MinigameReady();
+	}
+
+	// 24
+	pass MinigameCountdown
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MinigameCountdown();
+	}
+
+	// 25
+	pass MinigameGaugeCircle
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MinigameGaugeCircle();
+	}
+
+	// 26
+	pass MinigameWin
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MinigameCountdown();
+	}
+
+	// 27
+	pass MinigameScore
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MinigameScore();
+	}
+
+	// 27
+	pass MinigameTitle
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MinigameTitle();
+	}
+
+
 };

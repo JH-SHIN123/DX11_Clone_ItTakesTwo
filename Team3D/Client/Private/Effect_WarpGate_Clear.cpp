@@ -21,7 +21,7 @@ HRESULT CEffect_WarpGate_Clear::NativeConstruct_Prototype(void * pArg)
 }
 
 HRESULT CEffect_WarpGate_Clear::NativeConstruct(void * pArg)
-{
+{ 
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
 

@@ -198,6 +198,8 @@
     <ClInclude Include="..\Public\BigButtonFrame.h" />
     <ClInclude Include="..\Public\BossDoor.h" />
     <ClInclude Include="..\Public\BossFloor.h" />
+    <ClInclude Include="..\Public\BossHpBar.h" />
+    <ClInclude Include="..\Public\BossHpBarFrame.h" />
     <ClInclude Include="..\Public\BossSlideDoor.h" />
     <ClInclude Include="..\Public\Boss_Missile.h" />
     <ClInclude Include="..\Public\Bridge.h" />
@@ -257,6 +259,8 @@
     <ClInclude Include="..\public\Effect_Boss_Missile_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Missile_Particle.h" />
     <ClInclude Include="..\public\Effect_Boss_Missile_Smoke.h" />
+    <ClInclude Include="..\Public\Effect_Boss_Missile_Smoke_Black.h" />
+    <ClInclude Include="..\Public\Effect_Boss_Missile_Smoke_Color.h" />
     <ClInclude Include="..\public\Effect_Boss_UFO_Flying.h" />
     <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle.h" />
     <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle_Flow.h" />
@@ -271,6 +275,7 @@
     <ClInclude Include="..\public\Effect_Env_Particle_Field_Star.h" />
     <ClInclude Include="..\public\Effect_Env_Particle_Follow.h" />
     <ClInclude Include="..\Public\Effect_FireDoor.h" />
+    <ClInclude Include="..\Public\Effect_GateSmoke.h" />
     <ClInclude Include="..\Public\Effect_Generator.h" />
     <ClInclude Include="..\Public\Effect_GravityPipe.h" />
     <ClInclude Include="..\public\Effect_Hit_BossLaser.h" />
@@ -303,6 +308,8 @@
     <ClInclude Include="..\public\Effect_StarBuddy_Explosion_BigBang.h" />
     <ClInclude Include="..\public\Effect_StarBuddy_Explosion_Particle.h" />
     <ClInclude Include="..\public\Effect_StarBuddy_Explosion_Pillar.h" />
+    <ClInclude Include="..\public\Effect_StarBuddy_Move.h" />
+    <ClInclude Include="..\public\Effect_StarBuddy_Move_Particle.h" />
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Explosion.h" />
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Particle.h" />
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Spark.h" />
@@ -331,6 +338,8 @@
     <ClInclude Include="..\Public\HeaderBox.h" />
     <ClInclude Include="..\Public\HookahTube.h" />
     <ClInclude Include="..\Public\HookUFO.h" />
+    <ClInclude Include="..\Public\HpBar.h" />
+    <ClInclude Include="..\Public\HpBarFrame.h" />
     <ClInclude Include="..\Public\InGameEffect.h" />
     <ClInclude Include="..\Public\InGameEffect_Model.h" />
     <ClInclude Include="..\Public\InGameEffect_Rect.h" />
@@ -362,6 +371,11 @@
     <ClInclude Include="..\Public\MayWallCameraTrigger.h" />
     <ClInclude Include="..\Public\MenuScreen.h" />
     <ClInclude Include="..\Public\MeshParticle.h" />
+    <ClInclude Include="..\Public\Minigame_Countdown.h" />
+    <ClInclude Include="..\Public\Minigame_GaugeCircle.h" />
+    <ClInclude Include="..\Public\Minigame_Ready.h" />
+    <ClInclude Include="..\Public\Minigame_Score.h" />
+    <ClInclude Include="..\Public\Minigame_Win.h" />
     <ClInclude Include="..\Public\Moon.h" />
     <ClInclude Include="..\Public\MoonBaboon.h" />
     <ClInclude Include="..\Public\MoonBaboonCore.h" />
@@ -371,6 +385,7 @@
     <ClInclude Include="..\Public\MoonBaboonCore_Shield.h" />
     <ClInclude Include="..\Public\MoonBaboon_MainLaser.h" />
     <ClInclude Include="..\Public\MoonBaboon_SpaceShip.h" />
+    <ClInclude Include="..\Public\MoonBaboon_SubLaser.h" />
     <ClInclude Include="..\Public\MoonUFO.h" />
     <ClInclude Include="..\Public\NoBatterySign.h" />
     <ClInclude Include="..\Public\Participation_Button.h" />
@@ -492,6 +507,8 @@
     <ClCompile Include="..\Private\BigButtonFrame.cpp" />
     <ClCompile Include="..\Private\BossDoor.cpp" />
     <ClCompile Include="..\Private\BossFloor.cpp" />
+    <ClCompile Include="..\Private\BossHpBar.cpp" />
+    <ClCompile Include="..\Private\BossHpBarFrame.cpp" />
     <ClCompile Include="..\Private\BossSlideDoor.cpp" />
     <ClCompile Include="..\Private\Boss_Missile.cpp" />
     <ClCompile Include="..\Private\Bridge.cpp" />
@@ -546,6 +563,8 @@
     <ClCompile Include="..\private\Effect_Boss_Missile_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Missile_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Missile_Smoke.cpp" />
+    <ClCompile Include="..\Private\Effect_Boss_Missile_Smoke_Black.cpp" />
+    <ClCompile Include="..\Private\Effect_Boss_Missile_Smoke_Color.cpp" />
     <ClCompile Include="..\private\Effect_Boss_UFO_Flying.cpp" />
     <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle_Flow.cpp" />
@@ -560,6 +579,7 @@
     <ClCompile Include="..\private\Effect_Env_Particle_Field_Star.cpp" />
     <ClCompile Include="..\private\Effect_Env_Particle_Follow.cpp" />
     <ClCompile Include="..\Private\Effect_FireDoor.cpp" />
+    <ClCompile Include="..\Private\Effect_GateSmoke.cpp" />
     <ClCompile Include="..\Private\Effect_Generator.cpp" />
     <ClCompile Include="..\Private\Effect_GravityPipe.cpp" />
     <ClCompile Include="..\private\Effect_Hit_BossLaser.cpp" />
@@ -592,6 +612,8 @@
     <ClCompile Include="..\private\Effect_StarBuddy_Explosion_BigBang.cpp" />
     <ClCompile Include="..\private\Effect_StarBuddy_Explosion_Particle.cpp" />
     <ClCompile Include="..\private\Effect_StarBuddy_Explosion_Pillar.cpp" />
+    <ClCompile Include="..\private\Effect_StarBuddy_Move.cpp" />
+    <ClCompile Include="..\private\Effect_StarBuddy_Move_Particle.cpp" />
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Particle.cpp" />
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Spark.cpp" />
@@ -619,6 +641,8 @@
     <ClCompile Include="..\Private\HeaderBox.cpp" />
     <ClCompile Include="..\Private\HookahTube.cpp" />
     <ClCompile Include="..\Private\HookUFO.cpp" />
+    <ClCompile Include="..\Private\HpBar.cpp" />
+    <ClCompile Include="..\Private\HpBarFrame.cpp" />
     <ClCompile Include="..\Private\InGameEffect.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Model.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Rect.cpp" />
@@ -650,6 +674,11 @@
     <ClCompile Include="..\Private\MayWallCameraTrigger.cpp" />
     <ClCompile Include="..\Private\MenuScreen.cpp" />
     <ClCompile Include="..\Private\MeshParticle.cpp" />
+    <ClCompile Include="..\Private\Minigame_Countdown.cpp" />
+    <ClCompile Include="..\Private\Minigame_GaugeCircle.cpp" />
+    <ClCompile Include="..\Private\Minigame_Ready.cpp" />
+    <ClCompile Include="..\Private\Minigame_Score.cpp" />
+    <ClCompile Include="..\Private\Minigame_Win.cpp" />
     <ClCompile Include="..\Private\Moon.cpp" />
     <ClCompile Include="..\Private\MoonBaboon.cpp" />
     <ClCompile Include="..\Private\MoonBaboonCore.cpp" />
@@ -659,6 +688,7 @@
     <ClCompile Include="..\Private\MoonBaboonCore_Shield.cpp" />
     <ClCompile Include="..\Private\MoonBaboon_MainLaser.cpp" />
     <ClCompile Include="..\Private\MoonBaboon_SpaceShip.cpp" />
+    <ClCompile Include="..\Private\MoonBaboon_SubLaser.cpp" />
     <ClCompile Include="..\Private\MoonUFO.cpp" />
     <ClCompile Include="..\Private\NoBatterySign.cpp" />
     <ClCompile Include="..\Private\Participation_Button.cpp" />

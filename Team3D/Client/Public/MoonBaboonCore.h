@@ -21,6 +21,8 @@ private:
 public:
 	void Set_Broken() { m_bBroken = true; }
 	void Set_ActiveCore(_int iActive) { m_iActiveCore = iActive; }
+	void Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed);
+
 
 public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
@@ -36,6 +38,7 @@ public:
 private:
 	void Active_Pillar(_double TimeDelta);
 
+
 private:
 	MOONBABOONCORE_DESC m_tDesc;
 
@@ -46,6 +49,11 @@ private:
 	_bool	m_bBroken = false;
 	_bool	m_bArrived = false;
 	_int	m_iActiveCore = 0;
+	_float3 m_vMaxPos;
+	_float m_fMaxY = 0.f;
+	_bool m_IsGoUp = false;
+	_float m_fUpSpeed = 0.f;
+	_float m_fDistance = 0.f;
 
 private:
 	_float	m_fMoveDelta = 0.f;
@@ -53,6 +61,10 @@ private:
 private:
 	_bool	m_bBrokenStart = false;
 	_double	m_dBrokenWaitingDeltaT = 0.f;
+
+private:
+	void GoUp(_double dTimeDelta);
+
 
 private:
 	class CMoonBaboonCore_Pillar*	m_pCorePillar = nullptr;	// Àå½Ä
