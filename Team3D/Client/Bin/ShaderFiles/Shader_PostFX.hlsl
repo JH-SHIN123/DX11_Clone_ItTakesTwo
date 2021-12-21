@@ -13,6 +13,8 @@ Texture2D				g_EffectBlurTex;
 Texture2D				g_RadiarBlurMaskTex;
 Texture2D				g_VolumeTex_Front;
 Texture2D				g_VolumeTex_Back;
+Texture2D				g_VolumeMaskTex;
+Texture2D				g_VignatteTex;
 
 StructuredBuffer<float> g_AverageLum;
 
@@ -24,6 +26,7 @@ cbuffer FinalPassDesc
 	float	g_LumWhiteSqr = 0.f;
 	float	g_BloomScale = 0.15f; // 빛을 흘릴 스케일
 	float2	g_DOFFarValues = { 100.f, 1.0f / max(250.f, 0.001f) }; // 초점이 맞지 않기 시작하는 거리와, 완전히 초점이 나가버리는 범위 값
+	float	g_fTime = 0.f;
 };
 
 cbuffer RadialBlurDesc
@@ -47,6 +50,15 @@ cbuffer RadialBlurDesc
 
 	float	g_fRadiarBlurRatio_Main = 1.f;
 	float	g_fRadiarBlurRatio_Sub = 1.f;
+};
+
+cbuffer FogDesc
+{
+	bool	g_bFog = false;
+	float3	g_vFogColor = { 0.84f,0.83f,0.96f };			// 안개의 기본색상 ( 앰비언트 색상과 동일해야함)
+	float	g_fFogStartDist = 0.1f;							// 안개 지점에서 카메라까지의 거리
+	float	g_fFogGlobalDensity = 9.f;						// 안개 밀도 계수(값이 클수록 안개가 짙어진다)
+	float	g_fFogHeightFalloff = 0.007f;					// 높이 소멸값
 };
 
 ////////////////////////////////////////////////////////////
@@ -120,6 +132,7 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToE
 	float fVolumeBack = g_VolumeTex_Back.Sample(Point_Sampler, vTexUV).w;
 	float fVolumeFactor = 0.f;
 
+
 	float3 vFogColor = 0.f;
 	float3 fInnerColor = g_VolumeTex_Front.Sample(Point_Sampler, vTexUV).xyz;
 	float3 fOuterColor = g_VolumeTex_Back.Sample(Point_Sampler, vTexUV).xyz;
@@ -127,6 +140,10 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToE
 	if (fVolumeBack - fVolumeFront < 0) /* 카메라가 안에 들어왔을때 */
 	{
 		fVolumeFactor = saturate(sqrt((distToEye - 1.f/*FogStart*/) / 10.f /*range*/));
+
+		float2 vVolumePatternUV = vTexUV;
+		vVolumePatternUV.x += g_fTime;
+		fVolumeFactor *= g_VolumeMaskTex.Sample(Wrap_MinMagMipLinear_Sampler, vVolumePatternUV) * 2.5f;
 	}
 	else
 		fVolumeFactor = (fProjDepth - fVolumeFront) / (fVolumeBack - fVolumeFront);
@@ -145,6 +162,32 @@ float3 VolumeBlend(float3 vColor, float2 vTexUV, float fProjDepth, float distToE
 	return lerp(vColor, vFogColor, fLerpFactor);
 }
 
+float3 HeightFog(float3 finalColor, float eyePosY, float3 eyeToPixel)
+{
+	//////////////////////////////////////////////////////////////////////////////////
+	float pixelDist = length(eyeToPixel); // Cam과 픽셀간의 거리
+	float3 eyeToPixelNorm = normalize(eyeToPixel);
+
+	// 픽셀 거리에 대해 안개 시작 지점 계산
+	float fogDist = max(pixelDist - g_fFogStartDist, 0.0);
+
+	// 안개 세기에 대해 거리 계산
+	float fogHeightDensityAtViewer = exp(-g_fFogHeightFalloff * eyePosY); // exp : 지수 반환(왼쪽 음에 가까운 지수그래프사용)
+	float fogDistInt = fogDist * fogHeightDensityAtViewer;
+
+	// 안개 세기에 대해 높이 계산
+	float eyeToPixelY = eyeToPixel.y * (fogDist * 100 / pixelDist);
+	float t = g_fFogHeightFalloff * eyeToPixelY;
+	const float thresholdT = 0.0001;
+	float fogHeightInt = abs(t) > thresholdT ?
+		(1.0 - exp(-t)) / t : 1.0;
+
+	// 위 계산 값을 합해 최종 인수 계산
+	float fogFinalFactor = exp(-g_fFogGlobalDensity * fogDistInt * fogHeightInt);
+
+	return lerp(g_vFogColor, finalColor, fogFinalFactor);
+}
+ 
 ////////////////////////////////////////////////////////////
 
 struct VS_IN
@@ -191,6 +234,9 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	float3 vColor = g_HDRTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz;
 
+	// Vignatte
+	vColor *= pow((1.f - g_VignatteTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).a) + 0.14f,3);
+
 	// 먼 평면에 없는 픽셀에 대해서만 거리 DOF 계산
 	vector	vDepthDesc = g_DepthTex.Sample(Point_Sampler, In.vTexUV);
 	vector	vViewPos = vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
@@ -198,9 +244,14 @@ PS_OUT PS_MAIN(PS_IN In)
 	
 	vector	vWorldPos = 0.f;
 	vector	vCamPos = 0.f;
+	float3 eyeToPixel = 0.f;
+	float distToEye = 0.f;
 
-	if (In.vTexUV.x >= g_vMainViewportUVInfo.x && In.vTexUV.x <= g_vMainViewportUVInfo.z &&
-		In.vTexUV.y >= g_vMainViewportUVInfo.y && In.vTexUV.y <= g_vMainViewportUVInfo.w)
+	bool bFogActive = false;
+
+	float fBarOffset = 0.00115f;
+	if (In.vTexUV.x >= g_vMainViewportUVInfo.x + fBarOffset && In.vTexUV.x <= g_vMainViewportUVInfo.z - fBarOffset &&
+		In.vTexUV.y >= g_vMainViewportUVInfo.y + fBarOffset && In.vTexUV.y <= g_vMainViewportUVInfo.w - fBarOffset)
 	{
 		// View space Z
 		vViewZ = vDepthDesc.x * g_fMainCamFar;
@@ -212,9 +263,12 @@ PS_OUT PS_MAIN(PS_IN In)
 
 		// Radiar Blur 
 		if(true == g_bRadiarBlur_Main) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Main, g_fRadiarBlurRatio_Main);
+
+		// Fog Active
+		bFogActive = g_bFog;
 	}
-	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
-		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
+	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x + fBarOffset && In.vTexUV.x <= g_vSubViewportUVInfo.z - fBarOffset &&
+		In.vTexUV.y >= g_vSubViewportUVInfo.y + fBarOffset && In.vTexUV.y <= g_vSubViewportUVInfo.w - fBarOffset)
 	{
 		// View space Z
 		vViewZ = vDepthDesc.x * g_fSubCamFar;
@@ -229,23 +283,25 @@ PS_OUT PS_MAIN(PS_IN In)
 	}
 	else discard;
 
+	// 카메라와의 거리구하기
+	eyeToPixel = vWorldPos - vCamPos;
+	distToEye = length(eyeToPixel);
+
+	// Fog - MainView만 적용
+	if (bFogActive) vColor = HeightFog(vColor, vCamPos.y, eyeToPixel);
+
 	// DOF
 	float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
+
+	// Volume
+	vColor = VolumeBlend(vColor, In.vTexUV, vDepthDesc.y, distToEye);
 
 	// Bloom
 	vColor += g_BloomScale * g_BloomTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV.xy).xyz;
 
 	// Add Effect
 	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
-
-	// Volume
-	float3 eyeToPixel = vWorldPos - vCamPos;
-	float distToEye = length(eyeToPixel);
-	vColor = VolumeBlend(vColor, In.vTexUV, vDepthDesc.y, distToEye);
-
-	// Tone Mapping
-	vColor = ToneMapping_EA(vColor);
 
 	// Final
 	Out.vColor = vector(vColor, 1.f);

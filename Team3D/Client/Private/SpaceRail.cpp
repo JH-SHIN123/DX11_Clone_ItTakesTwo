@@ -31,14 +31,12 @@ _bool CSpaceRail::Take_Path(_double dTimeDelta, _matrix& WorldMatrix)
 	// 5번 : 1.0
 	// 6번 : 1.0
 
-	// 속도는 프레임개수로 조절하자.
 #ifdef __TEST_TAEK
 	return m_pPathCom->Update_Animation(dTimeDelta * 0.2f, WorldMatrix);
 #else
 	return m_pPathCom->Update_Animation(dTimeDelta * m_fRailSpeed, WorldMatrix);
 #endif // __TAEK
 }
-
 
 HRESULT CSpaceRail::NativeConstruct_Prototype()
 {
