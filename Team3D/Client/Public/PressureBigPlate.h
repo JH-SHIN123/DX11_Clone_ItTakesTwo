@@ -27,6 +27,9 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
+	void Set_Effect(_bool IsEffect) { m_IsEffect_Done = IsEffect; }
+
+public:
 	_bool Get_PowerSupplyActive() { return m_IsPowerSupplyActive; }
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
@@ -41,6 +44,7 @@ private:
 	_bool										m_IsBatteryCheck = false;
 	_bool										m_IsButtonDown = false;
 	_bool										m_IsDoorOpen = false;
+	_bool										m_IsEffect_Done = false; // Effect
 	_float										m_fMove = 0.f;
 	_float										m_fActiveMove = 0.f;
 	_float										m_fWaitingTime = 0.f;
@@ -62,7 +66,7 @@ protected:
 	CModel*										m_pModelCom = nullptr;
 	CStaticActor*								m_pStaticActorCom = nullptr;
 	CTriggerActor*								m_pTriggerCom = nullptr;
-
+	
 private:
 	void SetUp_DefaultPositionSetting();
 	void RotationButton_Active(_double TimeDelta);

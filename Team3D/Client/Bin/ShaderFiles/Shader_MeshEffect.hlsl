@@ -364,6 +364,14 @@ PS_OUT	PS_DASH(PS_IN In)
 	return Out;
 }
 
+PS_OUT	PS_PIPELOCKER_BALL(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vDiffuse = g_vColor * 2.f;
+	return Out;
+}
+
 PS_OUT	PS_MASK(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -794,5 +802,15 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_DASH();
+	}
+
+	pass PipeLocker_Ball// 16
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PIPELOCKER_BALL();
 	}
 };

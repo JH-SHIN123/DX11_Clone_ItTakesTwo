@@ -1083,6 +1083,15 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\05.PipeLocker">
+      <UniqueIdentifier>{aceb414c-387b-417d-8d2f-b52e9b18a39e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\05.PipeLocker\00.Ball">
+      <UniqueIdentifier>{253f2c0c-d6e0-4b9a-a14f-d308deb8872c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\05.PipeLocker\01.Particle">
+      <UniqueIdentifier>{dba9bcc2-d2e9-40f5-8c25-9f655518a95b}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -2009,6 +2018,12 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_PipeLocker_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\05.PipeLocker\01.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_PipeLocker_Ball.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\05.PipeLocker\00.Ball</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2907,6 +2922,12 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_PipeLocker_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\05.PipeLocker\01.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_PipeLocker_Ball.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\05.PipeLocker\00.Ball</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

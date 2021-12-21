@@ -84,6 +84,8 @@ enum class Effect_Value
 	StarBuddy_Explosion_Particle,
 
 	PipeLocker_Connected,
+	PipeLocker_Ball,
+	PipeLocker_Particle,
 
 	Effect_Value_End
 };
@@ -105,7 +107,6 @@ enum class EPoint_Color	// Color_Ramp_%d
 class CEffect_Generator final : public CBase
 {
 	DECLARE_SINGLETON(CEffect_Generator)
-
 
 	typedef struct tagEffectPointLight_Desc
 	{

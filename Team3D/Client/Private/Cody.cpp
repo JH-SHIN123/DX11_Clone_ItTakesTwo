@@ -275,6 +275,9 @@ _int CCody::Tick(_double dTimeDelta)
 		return NO_EVENT;
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_B))
+		EFFECT->Add_Effect(Effect_Value::PipeLocker_Ball, m_pTransformCom->Get_WorldMatrix());
+
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
