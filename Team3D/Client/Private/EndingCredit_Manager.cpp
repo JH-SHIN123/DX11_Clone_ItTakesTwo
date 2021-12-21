@@ -35,16 +35,19 @@ HRESULT CEndingCredit_Manager::Create_3DText(_bool bBoost)
 
 HRESULT CEndingCredit_Manager::Start_EndingCredit()
 {
-	m_bStart = true;
-
 	/* 3D폰트 생성 스타트 */
 	FAILED_CHECK_RETURN(Create_3DText(false), E_FAIL);
 
+	return S_OK;
+}
+
+HRESULT CEndingCredit_Manager::Create_Environment()
+{
 	/* 돌 생성 */
-	FAILED_CHECK_RETURN(Create_Rocks(), E_FAIL);
+	FAILED_CHECK_RETURN(Create_Rocks(50), E_FAIL);
 
 	/* 2DMesh 생성 */
-	FAILED_CHECK_RETURN(Create_2DMesh(), E_FAIL);
+	FAILED_CHECK_RETURN(Create_2DMesh(20), E_FAIL);
 
 	return S_OK;
 }
@@ -54,17 +57,17 @@ HRESULT CEndingCredit_Manager::NativeConstruct_EndingCredit()
 	return S_OK;
 }
 
-HRESULT CEndingCredit_Manager::Create_Rocks()
+HRESULT CEndingCredit_Manager::Create_Rocks(_uint iNumRock)
 {
-	for (_uint i = 0; i < 50; ++i)
+	for (_uint i = 0; i < iNumRock; ++i)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_Rock")), E_FAIL);
 
 	return S_OK;
 }
 
-HRESULT CEndingCredit_Manager::Create_2DMesh()
+HRESULT CEndingCredit_Manager::Create_2DMesh(_uint iNum2DMesh)
 {
-	for (_uint i = 0; i < 20; ++i)
+	for (_uint i = 0; i < iNum2DMesh; ++i)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_2DMesh")), E_FAIL);
 
 	return S_OK;
@@ -86,6 +89,7 @@ void CEndingCredit_Manager::Add_Argument_Info(_uint iIndex, C3DText::ARG_DESC & 
 	else
 		tArg.fTime = 5.f;
 
+	/* 글자 트리거 사이즈, 최대 사이즈 */
 	switch (iIndex)
 	{
 	case 0:

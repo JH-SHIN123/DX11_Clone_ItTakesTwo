@@ -35,12 +35,6 @@ _int C2DMesh::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	if (1.f <= m_dCoolTime)
-	{
-		m_iColorIndex = rand() % 3;
-		m_dCoolTime = 0.f;
-	}
-
 	Movement(dTimeDelta);
 
 	m_dCoolTime += dTimeDelta;
@@ -57,7 +51,7 @@ _int C2DMesh::Late_Tick(_double dTimeDelta)
 	m_pTriggerActorCom->Update_TriggerActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 
 	return NO_EVENT;
 }
@@ -73,11 +67,9 @@ HRESULT C2DMesh::Render(RENDER_GROUP::Enum eGroup)
 	_float4 vColor;
 	switch (m_iColorIndex)
 	{
-	case 0: vColor = _float4(1.f, 0.f, 0.f, 1.f);
+	case 0: vColor = _float4(0.960784376f, 0.960784376f, 0.960784376f, 1.000000000f);
 		break;
-	case 1: vColor = _float4(0.f, 1.f, 0.f, 1.f);
-		break;
-	case 2: vColor = _float4(0.f, 0.f, 1.f, 1.f);
+	case 1: vColor = _float4(0.125490203f, 0.698039234f, 0.666666687f, 1.000000000f);
 		break;
 	}
 
@@ -105,20 +97,27 @@ void C2DMesh::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
+		/* 충돌시 랜덤하게 Force값 조정 */
 		_int iRandom = rand() % 4 - 3;
-
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3((_float)iRandom, 0.f, (_float)iRandom));
+
+		m_iColorIndex = 1;
 		m_bCollision = true;
 	}
 }
 
 void C2DMesh::Movement(_double dTimeDelta)
 {
+	/* 천천히 올라오게 Force조절 */
+	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(0.f, -0.01f, 0.f));
+
+	/* 충돌시 회전값 상승 */
 	if (false == m_bCollision)
 		m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(m_fRandomAngle, m_fRandomAngle, m_fRandomAngle));
 	else
-		m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(m_fRandomAngle * 3000.f, m_fRandomAngle * 3000.f, m_fRandomAngle * 3000.f));
+		m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(m_fRandomAngle * 5000.f, m_fRandomAngle * 5000.f, m_fRandomAngle * 5000.f));
 
+	/* 스케일 조정 */
 	m_fScale += (_float)dTimeDelta / 4.f;
 
 	if (m_fMaxScale <= m_fScale)
@@ -134,6 +133,7 @@ void C2DMesh::Movement(_double dTimeDelta)
 
 	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
 
+	/* 코디보다 위에 있을 경우 다시 아래에서 리스폰 */
 	_float fCodyY = XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
 	_float fMyY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
@@ -142,6 +142,8 @@ void C2DMesh::Movement(_double dTimeDelta)
 		_vector vCodyPos = m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION);
 		_float3 vMyPos = {};
 		XMStoreFloat3(&vMyPos, vCodyPos);
+		vMyPos.x = 0.f;
+		vMyPos.z = 0.f;
 
 		vMyPos.x += (_float)(rand() % 61 - 30);
 		vMyPos.y -= 50.f;
@@ -151,8 +153,9 @@ void C2DMesh::Movement(_double dTimeDelta)
 
 		m_fScale = 0.1f;
 		m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
-
 		m_pDynamicActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION))));
+
+		m_iColorIndex = 0;
 		m_bCollision = false;
 	}
 }
@@ -162,8 +165,8 @@ HRESULT C2DMesh::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 
+	/* 랜덤 모델 생성 */
 	_uint iRandom = rand() % 5;
-
 	switch (iRandom)
 	{
 	case 0: 
@@ -186,13 +189,17 @@ HRESULT C2DMesh::Ready_Component(void * pArg)
 	m_pCodyTransformCom = ((CCody*)(DATABASE->GetCody()))->Get_Transform();
 	Safe_AddRef(m_pCodyTransformCom);
 
+	/* 랜덤 생성 범위 */
 	_float3 vMyPos = { 0.f, -500.f, 0.f };
 
 	vMyPos.x += (_float)(rand() % 61 - 30);
-	vMyPos.y -= (_float)(rand() % 50 + 20);
+	vMyPos.y -= (_float)(rand() % 50 + 30);
 	vMyPos.z += (_float)(rand() % 61 - 30);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vMyPos.x, vMyPos.y, vMyPos.z, 1.f));
+
+	/* 랜덤 회전값 */
+	m_fRandomAngle = (rand() % 41 - 20.f) * 0.1f;
 
 	/* Dynamic */
 	PxGeometry* DynamicGeom = new PxSphereGeometry(0.1f);
@@ -210,7 +217,7 @@ HRESULT C2DMesh::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->setAngularDamping(0.1f);
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(1.f);
+	PxGeometry* TriggerGeom = new PxSphereGeometry(2.5f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;
@@ -218,8 +225,6 @@ HRESULT C2DMesh::Ready_Component(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerGeom);
-
-	m_fRandomAngle = (rand() % 41 - 20.f) * 0.1f;
 
 	return S_OK;
 }
@@ -250,11 +255,12 @@ CGameObject * C2DMesh::Clone_GameObject(void * pArg)
 
 void C2DMesh::Free()
 {
+	Safe_Release(m_pTriggerActorCom);
+	Safe_Release(m_pCodyTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pDynamicActorCom);
-	Safe_Release(m_pCodyTransformCom);
 
 	CGameObject::Free();
 }

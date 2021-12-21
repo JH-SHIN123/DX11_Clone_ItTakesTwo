@@ -47,7 +47,7 @@ _int C3DText::Tick(_double dTimeDelta)
 	_float fCodyY = XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	/* 플레이어가 충돌을 하지않고 지나갔을 때*/
-	if (fMyPosY > fCodyY + 10.f)
+	if (fMyPosY > fCodyY + 20.f)
 	{
 		ENDINGCREDIT->Create_3DText(false);
 		Create_Particle();
@@ -115,6 +115,7 @@ void C3DText::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
+		/* 충돌시 로켓에 부스트 세팅해줌 */
 		((CEndingRocket*)(DATABASE->Get_EndingRocket()))->Set_Boost();
 		ENDINGCREDIT->Create_3DText(true);
 		Create_Particle();
@@ -132,22 +133,27 @@ HRESULT C3DText::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, tArg.szModelTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
-
 	m_pCodyTransformCom = ((CCody*)(DATABASE->GetCody()))->Get_Transform();
 	Safe_AddRef(m_pCodyTransformCom);
 
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+
 	_float3 vPos = {};
 	XMStoreFloat3(&vPos, m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
+	vPos.x = 0.f;
+	vPos.z = 0.f;
 
+	/* 타이틀 제외 랜덤 위치 생성 */
 	if (0 != tArg.iIndex && 10 != tArg.iIndex && 16 != tArg.iIndex && 23 != tArg.iIndex)
 	{
+		/* 폰트 랜덤 생성 위치, 0,0 기준 */
 		_int iX = rand() % 11 - 5;
-		_int iZ = rand() % 7 - 3;
+		_int iZ = rand() % 3 - 1;
 		vPos.x += iX;
 		vPos.z += iZ;
 	}
 	
+	/* 생성 시간이 짧은 경우 초기스케일 조절해줘야함 */
 	if (1.f >= tArg.fTime)
 		m_fScale = 1.5f;
 	else if (3.f >= tArg.fTime)
@@ -155,6 +161,7 @@ HRESULT C3DText::Ready_Component(void * pArg)
 	else if (5.f >= tArg.fTime)
 		m_fScale = 0.5f;
 
+	/* 폰트 생성 시간에 따른 거리 계산 */
 	if (true == tArg.IsBoost)
 		vPos.y -= ((10.f * (tArg.fTime - 1.f)) + 20.f);
 	else
@@ -189,10 +196,10 @@ HRESULT C3DText::Create_Particle()
 	else
 		tArg.iColorType = 1;
 
-	for (_uint i = 0; i < 70; ++i)
+	for (_uint i = 0; i < 100; ++i)
 	{
 		_vector vPositoin = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		_vector vRandomPos = XMVectorSet((rand() % 7 - 3.f), 1.5f, (rand() % 3 - 1.f), 0.f);
+		_vector vRandomPos = XMVectorSet((rand() % 7 - 3.f), -10.f, (rand() % 3 - 1.f), 0.f);
 		XMStoreFloat3(&tArg.vPosition, vPositoin + vRandomPos);
 
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_MeshParticle"), &tArg), E_FAIL);

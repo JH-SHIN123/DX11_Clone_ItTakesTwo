@@ -30,7 +30,6 @@ private:
 
 	_float				m_fScale = 0.1f;
 	_float				m_fMaxScale = 1.f;
-
 	_bool				m_bCollision = false;
 
 private:

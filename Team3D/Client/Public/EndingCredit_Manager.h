@@ -18,8 +18,7 @@ public:
 	/* 충돌여부(부스트여부) */
 	HRESULT Create_3DText(_bool bBoost);
 	HRESULT Start_EndingCredit();
-	HRESULT Create_Rocks();
-	HRESULT Create_2DMesh();
+	HRESULT Create_Environment();
 
 public:
 	HRESULT NativeConstruct_EndingCredit();
@@ -28,10 +27,11 @@ private:
 	CGameInstance*	m_pGameInstance = nullptr;
 
 	_uint		m_iTextIndex = 0;
-	_bool		m_bStart = false;
 
 private:
 	void Add_Argument_Info(_uint iIndex, C3DText::ARG_DESC &tArg);
+	HRESULT Create_Rocks(_uint iNumRock);
+	HRESULT Create_2DMesh(_uint iNum2DMesh);
 
 public:
 	virtual void Free() override;

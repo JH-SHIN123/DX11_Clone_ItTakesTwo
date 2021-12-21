@@ -109,7 +109,6 @@ HRESULT CMeshParticle::Ready_Component(void * pArg)
 
 	_float iScale = rand() % 2 + 1.f;
 	m_pTransformCom->Set_Scale(XMVectorSet(iScale, iScale, iScale, 0.f));
-
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&tArg.vPosition), 1.f));
 
 	/* Dynamic */
@@ -124,6 +123,7 @@ HRESULT CMeshParticle::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
 	Safe_Delete(DynamicGeom);
 
+	/* ·£´ý Force°ª */
 	_int iForce = rand() % 210 - 100;
 	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(iForce * 0.00001f, 0.00001f, iForce * 0.00001f));
 

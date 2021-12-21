@@ -28,8 +28,10 @@ private:
 
 	CTransform*			m_pCodyTransformCom = nullptr;
 
-	_float				m_fScale = 0.1f;
-	_float				m_fMaxScale = 1.f;
+	/* 초기 생성스케일, 최대 스케일 */
+	_float				m_fScale = 0.2f;
+	_float				m_fMaxScale = 1.3f;
+
 	_float				m_fRandomAngle = 0.f;
 	_double				m_dCoolTime = 0.0;
 	_uint				m_iColorIndex = 0;

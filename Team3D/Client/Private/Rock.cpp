@@ -54,11 +54,13 @@ _int CRock::Tick(_double dTimeDelta)
 	_float fCodyY = XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
 	_float fMyY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	if (fCodyY + 10.f < fMyY)
+	if (fCodyY + 10.f < fMyY && fCodyY < -500.f)
 	{
 		_vector vCodyPos = m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION);
 		_float3 vMyPos = {};
 		XMStoreFloat3(&vMyPos, vCodyPos);
+		vMyPos.x = 0.f;
+		vMyPos.z = 0.f;
 
 		vMyPos.x += (_float)(rand() % 61 - 30);
 		vMyPos.y -= 50.f;
@@ -135,10 +137,11 @@ HRESULT CRock::Ready_Component(void * pArg)
 	m_pCodyTransformCom = ((CCody*)(DATABASE->GetCody()))->Get_Transform();
 	Safe_AddRef(m_pCodyTransformCom);
 
-	_float3 vMyPos = { 0.f, -500.f, 0.f };
+	//m_fMaxScale = (rand() % 51 + 50) * 0.1f;
 
+	_float3 vMyPos = { 0.f, -500.f, 0.f };
 	vMyPos.x += (_float)(rand() % 61 - 30);
-	vMyPos.y -= (_float)(rand() % 50 + 20);
+	vMyPos.y -= (_float)(rand() % 50 + 30);
 	vMyPos.z += (_float)(rand() % 61 - 30);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vMyPos.x, vMyPos.y, vMyPos.z, 1.f));
@@ -158,7 +161,7 @@ HRESULT CRock::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(1.f);
+	PxGeometry* TriggerGeom = new PxSphereGeometry(1.7f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;

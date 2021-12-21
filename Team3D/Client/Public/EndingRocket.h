@@ -42,6 +42,8 @@ private:
 	_bool	m_bBoost = false;
 	_double m_dBoostTime = 0.0;
 
+	_bool m_bStartMove = false;
+
 private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom			= nullptr;

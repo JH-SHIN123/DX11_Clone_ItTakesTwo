@@ -40,8 +40,14 @@ HRESULT CEndingRocket::NativeConstruct(void * pArg)
 
 _int CEndingRocket::Tick(_double dTimeDelta)
 {
-	Movement(dTimeDelta);
-	Ready_Players(dTimeDelta);
+	if (m_pGameInstance->Key_Down(DIK_END))
+		m_bStartMove = true;
+
+	if (m_bStartMove)
+	{
+		Movement(dTimeDelta);
+		Ready_Players(dTimeDelta);
+	}
 	return _int();
 }
 
@@ -90,10 +96,10 @@ void CEndingRocket::Movement(_double dTimeDelta)
 			m_bBoost = false;
 			m_dBoostTime = 0.0;
 		}
-		m_pTransformCom->Go_Straight(dTimeDelta * 10.f);
+		m_pTransformCom->Go_Straight(dTimeDelta * 20.f);
 	}
 	else
-		m_pTransformCom->Go_Straight(dTimeDelta * 20.f);
+		m_pTransformCom->Go_Straight(dTimeDelta * 10.f);
 
 	if (m_pGameInstance->Key_Pressing(DIK_W))
 	{
