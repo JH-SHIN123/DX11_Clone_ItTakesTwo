@@ -2,6 +2,7 @@
 #include "..\Public\Effect_Boss_Missile_Smoke.h"
 #include "DataStorage.h"
 #include "Cody.h"
+#include "EndingRocket.h"
 
 CEffect_Boss_Missile_Smoke::CEffect_Boss_Missile_Smoke(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -43,7 +44,7 @@ HRESULT CEffect_Boss_Missile_Smoke::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_Missile_Smoke::Tick(_double TimeDelta)
 {
- 	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
+// 	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CEndingRocket*>(DATABASE->Get_EndingRocket())->Get_Transform()->Get_WorldMatrix());
 
 	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
 		return EVENT_DEAD;
