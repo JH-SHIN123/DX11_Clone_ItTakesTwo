@@ -85,6 +85,8 @@ enum class Effect_Value
 
 	PipeLocker_Connected,
 
+	Gate_Smoke,
+
 	Effect_Value_End
 };
 
