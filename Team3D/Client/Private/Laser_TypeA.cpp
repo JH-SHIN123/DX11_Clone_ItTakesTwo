@@ -118,6 +118,7 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 						// 데미지 주기 초기화
 						m_dDamagingDelay_Cody = 0.5;
 						m_isHitCody = true;
+	
 					}
 				}
 				else
@@ -129,6 +130,8 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 				/* 메이 타격 */
 				if (pUserData->eID == GameID::eMAY)
 				{
+					m_dDamagingDelay_May -= dTimeDelta;
+
 					/* 지속 타격 데미지*/
 					if (m_isHitMay)
 					{
@@ -137,7 +140,7 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 							// 데미지를 주는 함수
 
 							// 데미지 주기 초기화
-							m_dDamagingDelay_May = 0.3;
+							m_dDamagingDelay_May = 0.5;
 						}
 					}
 					/* 첫 타격 데미지 */
@@ -146,7 +149,8 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 						// 데미지를 주는 함수
 
 						// 데미지 주기 초기화
-						m_dDamagingDelay_May = 0.3;
+						m_dDamagingDelay_May = 0.5;
+						m_isHitMay = true;
 					}
 				}
 				else

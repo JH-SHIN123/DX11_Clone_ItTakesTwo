@@ -273,7 +273,7 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 	/* 우주선을 타겟쪽으로 천천히 회전 */
 	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f);
 
-	/* 10발만 쏘자 */
+	/* 몇 발 쏠지 정해줄려면 iGravitationalBombMaxCount 바꾸면 됨*/
 	if (iGravitationalBombMaxCount >= m_iGravitationalBombCount)
 	{
 		m_fGravitationalBombLanchTime += (_float)dTimeDelta;
@@ -329,7 +329,7 @@ void CUFO::Core_Destroyed()
 	{
 		m_ePattern = UFO_PATTERN::INTERACTION;
 
-		m_pBossHpBar->Set_Ratio(0.11f);
+		//m_pBossHpBar->Set_Ratio(0.11f);
 
 		/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
 		if (3 != m_iPhaseChangeCount)

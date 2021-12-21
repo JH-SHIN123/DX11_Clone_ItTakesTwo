@@ -31,6 +31,7 @@ HRESULT CHpBar::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
 
+	/* Option 0 : 메인 Hp바 / Option 1 : 서브 Hp바 */
 	if (nullptr != pArg)
 		memcpy(&m_iOption, pArg, sizeof(_uint));
 
@@ -39,6 +40,24 @@ HRESULT CHpBar::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+
+	//if (0 == m_iOption)
+	//{
+	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
+	//	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	//}
+	//else if (1 == m_iOption)
+	//{
+	//	m_vMaxScale = m_UIDesc.vScale;
+
+	//	m_UIDesc.vScale.x = 106.f;
+	//	m_UIDesc.vScale.y = 102.f;
+	//	m_vMinScale = m_UIDesc.vScale;
+
+	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
+	//	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	//}
+
 
 	return S_OK;
 }
@@ -50,19 +69,15 @@ _int CHpBar::Tick(_double TimeDelta)
 
 	CUIObject::Tick(TimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_HOME))
-	{
-		m_fHp += 10.f;
-		m_fRatio = (m_fHp / 120.f) / 2.f;
-		m_IsHit = true;
-		m_fWatingTime = 0.f;
-		m_fRecoveryTime = 0.f;
-	}
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
+		UI_CreateOnlyOnce(Cody, RespawnCircle);
 
 	if (true == m_IsHit)
 	{
 		if (m_fDecreaseRateRatio <= m_fRatio)
 		{
+			Shake_Effect(TimeDelta);
+
 			m_fWatingTime += (_float)TimeDelta;
 
 			if (1.f <= m_fWatingTime)
@@ -73,10 +88,13 @@ _int CHpBar::Tick(_double TimeDelta)
 			}
 		}
 	}
-	else
+	else if(false == m_IsHit)
 	{
 		if (1 == m_iOption)
+		{
 			m_IsActive = false;
+			m_pHpBarFrame->Set_Active(false);
+		}
 
 		m_fWatingTime += (_float)TimeDelta;
 
@@ -86,10 +104,14 @@ _int CHpBar::Tick(_double TimeDelta)
 
 			if (0.02f <= m_fRecoveryTime)
 			{
+				m_IsRecovery = true;
 				m_fHp -= 10.f;
 
 				if (0 >= m_fHp)
+				{
 					m_fHp = 0.f;
+					m_IsRecovery = false;
+				}
 
 				m_fRatio = (m_fHp / 120.f) / 2.f;
 				m_fDecreaseRateRatio = m_fRatio;
@@ -97,6 +119,8 @@ _int CHpBar::Tick(_double TimeDelta)
 			}
 		}
 	}
+
+	//Scale_Effect(TimeDelta);
 
 	return _int();
 }
@@ -120,7 +144,9 @@ HRESULT CHpBar::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pVIBuffer_RectCom->Set_Variable("g_fCircleRatio", &m_fRatio, sizeof(_float));
 	m_pVIBuffer_RectCom->Set_Variable("g_fDecreaseRateRatio", &m_fDecreaseRateRatio, sizeof(_float));
-	
+	m_pVIBuffer_RectCom->Set_Variable("g_IsRecovery", &m_IsRecovery, sizeof(_bool));
+
+
 	m_pVIBuffer_RectCom->Render(22);
 
 	return S_OK;
@@ -198,6 +224,60 @@ HRESULT CHpBar::Ready_Layer_UI()
 	}
 
 	return S_OK;
+}
+
+void CHpBar::Scale_Effect(_double TimeDelta)
+{
+	if (0 == m_iOption)
+		return;
+
+	if (true == m_IsActive)
+	{
+		if (m_vMaxScale.x >= m_UIDesc.vScale.x)
+		{
+			m_UIDesc.vScale.x += (_float)TimeDelta;
+			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+		}
+
+		if (m_vMaxScale.y >= m_UIDesc.vScale.y)
+		{
+			m_UIDesc.vScale.y += (_float)TimeDelta;
+			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+		}
+	}
+	else
+	{
+		if (m_vMinScale.x <= m_UIDesc.vScale.x)
+		{
+			m_UIDesc.vScale.x -= (_float)TimeDelta;
+			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+		}
+
+		if (m_vMinScale.y <= m_UIDesc.vScale.y)
+		{
+			m_UIDesc.vScale.y -= (_float)TimeDelta;
+			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+		}
+	}
+}
+
+void CHpBar::Shake_Effect(_double TimeDelta)
+{
+	if (2.5f >= m_fAngle && false == m_IsChangeRotate)
+	{
+		m_fAngle += (_float)TimeDelta * 150.f;
+		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(m_fAngle));
+	}
+	else
+		m_IsChangeRotate = true;
+	
+	if (0.f <= m_fAngle && true == m_IsChangeRotate)
+	{
+		m_fAngle -= (_float)TimeDelta * 150.f;
+		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(m_fAngle));
+	}
+	else
+		m_IsChangeRotate = false;
 }
 
 CHpBar * CHpBar::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

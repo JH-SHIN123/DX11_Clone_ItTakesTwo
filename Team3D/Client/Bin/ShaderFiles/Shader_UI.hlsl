@@ -32,7 +32,7 @@ float2  g_UV;
 float2  g_vScreenMaskUV;
 float   g_fCircleRatio;
 
-bool	g_IsHealthBarDecrease;
+bool	g_IsRecovery;
 
 sampler	DiffuseSampler = sampler_state
 {
@@ -600,6 +600,11 @@ PS_OUT PS_PlayerHpBar(PS_IN In)
 	else if (g_fDecreaseRateRatio > Out.vColor.b)
 		Out.vColor.a = 0.f;
 
+	if (true == g_IsRecovery && 0.f != Out.vColor.a)
+	{
+		Out.vColor.rb = 0.f;
+		Out.vColor.g = 1.f;
+	}
 
 	return Out;
 }
