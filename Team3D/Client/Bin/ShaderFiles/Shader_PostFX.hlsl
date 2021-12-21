@@ -242,8 +242,9 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	bool bFogActive = false;
 
-	if (In.vTexUV.x >= g_vMainViewportUVInfo.x && In.vTexUV.x <= g_vMainViewportUVInfo.z &&
-		In.vTexUV.y >= g_vMainViewportUVInfo.y && In.vTexUV.y <= g_vMainViewportUVInfo.w)
+	float fBarOffset = 0.00115f;
+	if (In.vTexUV.x >= g_vMainViewportUVInfo.x + fBarOffset && In.vTexUV.x <= g_vMainViewportUVInfo.z - fBarOffset &&
+		In.vTexUV.y >= g_vMainViewportUVInfo.y + fBarOffset && In.vTexUV.y <= g_vMainViewportUVInfo.w - fBarOffset)
 	{
 		// View space Z
 		vViewZ = vDepthDesc.x * g_fMainCamFar;
@@ -259,8 +260,8 @@ PS_OUT PS_MAIN(PS_IN In)
 		// Fog Active
 		bFogActive = g_bFog;
 	}
-	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x && In.vTexUV.x <= g_vSubViewportUVInfo.z &&
-		In.vTexUV.y >= g_vSubViewportUVInfo.y && In.vTexUV.y <= g_vSubViewportUVInfo.w)
+	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x + fBarOffset && In.vTexUV.x <= g_vSubViewportUVInfo.z - fBarOffset &&
+		In.vTexUV.y >= g_vSubViewportUVInfo.y + fBarOffset && In.vTexUV.y <= g_vSubViewportUVInfo.w - fBarOffset)
 	{
 		// View space Z
 		vViewZ = vDepthDesc.x * g_fSubCamFar;
