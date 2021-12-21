@@ -12,6 +12,9 @@
 #include"PinBall.h"
 #include"PinBall_Handle.h"
 #include"UmbrellaBeam.h"
+#include"May.h"
+#include"LaserTennis_Manager.h"
+#include"AlphaScreen.h"
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -154,11 +157,7 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 	
 	LerpToCurSize(m_eCurPlayerSize, dTimeDelta);
 
-#ifdef __TEST_JUN
-	if (m_pGameInstance->Key_Down(DIK_B))
-		m_bOpenThirdFloor = !m_bOpenThirdFloor;
-#endif
-	if (m_bOpenThirdFloor)
+	if (m_bOpenThirdFloor&&m_fOpenThirdFloorTime ==0.f)
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OpenThirdFloor;
 
 	if (m_pCody->Get_IsWarpNextStage() == true)
@@ -177,7 +176,7 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 	{
 		m_eCurCamMode = CamMode::Cam_InJoyStick;
 	}
-	if (m_pCody->Get_IsPlayerInUFO())
+	if (m_pCody->Get_IsPlayerInUFO() && m_eCurCamFreeOption != CamFreeOption::Cam_Free_OnBossMiniRoom_Cody)
 	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OnBossMiniRoom_Cody;
 		m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f,0.f,0.6f,1.f), XMVectorSet(0.6f,0.f,0.4f,1.f));
@@ -191,9 +190,15 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 	{
 		m_eCurCamMode = CamMode::Cam_WallJump;
 	}
+
+	if (CLaserTennis_Manager::GetInstance()->Get_StartGame() && m_eCurCamMode != CamMode::Cam_LaserTennis)
+	{
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f),1.5f);
+		m_eCurCamMode = CamMode::Cam_LaserTennis;
+	}
+
 	if (m_pCody->Get_IsEnding())
 		m_eCurCamMode = CamMode::Cam_Ending;
-
 	
 	return NO_EVENT;
 }
@@ -441,8 +446,8 @@ _float CMainCamera::DotProgress_Bezier(_float fOffSetDist)
 	_vector vDirThirdNodeWithSecondNode = vThirdNodePos - vSecondNodePos;
 
 
-	_vector vDirSecondNodeWithPlayerPos = vSecondNodePos - (vPlayerPos - vDirSecondNodeWithCurNode* fOffSetDist) ;
-	_vector vDirThirdNodeWithPlayerPos = vThirdNodePos - (vPlayerPos - vDirThirdNodeWithSecondNode* fOffSetDist);
+	_vector vDirSecondNodeWithPlayerPos = vSecondNodePos - (vPlayerPos - XMVector3Normalize(vDirSecondNodeWithCurNode)* fOffSetDist) ;
+	_vector vDirThirdNodeWithPlayerPos = vThirdNodePos - (vPlayerPos - XMVector3Normalize(vDirThirdNodeWithSecondNode)* fOffSetDist);
 	
 	_float fFirstNodeProgress = XMVectorGetX(XMVector3Dot(vDirSecondNodeWithPlayerPos, vDirSecondNodeWithCurNode))
 		/ pow(XMVectorGetX(XMVector3Length(vDirSecondNodeWithCurNode)), 2);
@@ -450,7 +455,7 @@ _float CMainCamera::DotProgress_Bezier(_float fOffSetDist)
 		/ pow(XMVectorGetX(XMVector3Length(vDirThirdNodeWithSecondNode)), 2);
 	
 	_float fLength = (_float)(m_CamNodes[m_iNodeIdx[2]]->dTime - m_CamNodes[m_iNodeIdx[0]]->dTime);
-	return (_float)m_CamNodes[m_iNodeIdx[0]]->dTime +  fLength* (fFirstNodeProgress + fSecondNodeProgress) / 2.f;
+	return (_float)m_CamNodes[m_iNodeIdx[0]]->dTime +  fLength* (1.f -(fFirstNodeProgress + fSecondNodeProgress) * 0.5f);
 }
 #pragma endregion
 _int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
@@ -462,6 +467,12 @@ _int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
 			XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 	}
+	if (m_pCody->Get_IsRespawn() || m_pCody->Get_IsDeadLine())
+	{
+		ReSet_Cam_Free_OnRail();
+		m_pCody->Get_Actor()->Set_Position(XMVectorSet(67.9958f, 599.431f, 1002.82f, 1.f));
+		return NO_EVENT;
+	}
 	if (false == m_bStartOnRail)
 	{
 		XMStoreFloat3(&m_vCurRailAt, m_pCody->Get_Position());
@@ -470,8 +481,38 @@ _int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
 
 	if (m_iNodeIdx[0] < 3)
 	{
-		m_fRailProgressTime = DotProgress(0.6f);
+		_float fProgress = DotProgress(0.6f);
+		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * (_float)dTimeDelta * 3.f;
 	}
+	else if (m_iNodeIdx[0] < 6)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_fRailProgressTime += (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+		else if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+	}
+	else if (m_iNodeIdx[0] < 8)
+	{
+		_float fProgress = DotProgress(0.6f);
+		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * (_float)dTimeDelta * 3.f;
+	}
+	else if (m_iNodeIdx[0] < 11)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_fRailProgressTime += (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+		else if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
+	}
+	else if (m_iNodeIdx[0] < 12)
+	{
+		_float fProgress = DotProgress(0.6f);
+		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * (_float)dTimeDelta * 3.f;
+	}
+	/*else if (m_iNodeIdx[0] < 17)
+	{
+		_float fProgress = DotProgress(0.6f);
+		m_fRailProgressTime += (fProgress - m_fRailProgressTime) * (_float)dTimeDelta * 3.f;
+	}*/
 	else if (m_iNodeIdx[0] < 17)
 	{
 		if (m_pGameInstance->Key_Pressing(DIK_W))
@@ -1114,6 +1155,39 @@ _int CMainCamera::Tick_Cam_WallJump(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+_int CMainCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
+{
+
+	if (CLaserTennis_Manager::GetInstance()->Get_StartGame() == false)
+	{
+		if (CLaserTennis_Manager::GetInstance()->Get_Winner() == CLaserTennis_Manager::TARGET_MAY)
+		{
+			if (UI_Generator->Get_EmptyCheck(Player::Cody, UI::BlackScreenFadeInOut))
+			{
+				UI_CreateOnlyOnce(Cody, BlackScreenFadeInOut);
+				UI_Generator->Set_FadeInSpeed(Player::Cody, UI::BlackScreenFadeInOut, 5.f);
+			}
+			if(static_cast<CAlphaScreen*>(UI_Generator->Get_UIObject(Player::Cody, UI::BlackScreenFadeInOut))->Get_Alpha() >= 1.f)
+				ReSet_Cam_FreeToAuto(true);
+		}
+		return NO_EVENT;
+	}
+	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
+	_vector vCodyPos = XMVectorSetY(m_pCody->Get_Position(), 730.f);
+	_vector vMayPos = XMVectorSetY(pMay->Get_Position(), 730.f);
+	_vector vTargetPos = XMVectorSet(60.479f,753.281f,984.f,1.f);
+
+	_vector vMiddlePos = vCodyPos - (vCodyPos - vMayPos)*0.5f;
+
+	vMiddlePos = XMVectorSetY(vMiddlePos, 730.f);
+	vMiddlePos = XMVectorSetZ(vMiddlePos, 998.f);
+
+	vTargetPos = XMVectorSetX(vTargetPos, XMVectorGetX(vMiddlePos));
+	m_pTransformCom->Set_WorldMatrix(
+		MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(),MakeViewMatrixByUp(vTargetPos,vMiddlePos),(_float)dTimeDelta));
+	return NO_EVENT;
+}
+
 
 _int CMainCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook, _bool bIsCalculateCamLook)
 {
@@ -1379,6 +1453,11 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		switch (m_eCurCamMode)
 		{
 		case Client::CMainCamera::CamMode::Cam_Free:
+			if (false == UI_Generator->Get_EmptyCheck(Player::Cody, UI::BlackScreenFadeInOut))
+			{
+				UI_Generator->Set_FadeOut(Player::Cody, UI::BlackScreenFadeInOut);
+				UI_Generator->Set_FadeOutSpeed(Player::Cody, UI::BlackScreenFadeInOut, 6.f);
+			}
 			break;
 		case Client::CMainCamera::CamMode::Cam_AutoToFree:
 			switch (m_ePreCamMode)
@@ -1446,6 +1525,10 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	case Client::CMainCamera::CamMode::Cam_WallJump:
 		iResult = Tick_Cam_WallJump(dTimeDelta);
 		break;
+	case Client::CMainCamera::CamMode::Cam_LaserTennis:
+		iResult = Tick_Cam_LaserTennis(dTimeDelta);
+		break;
+
 	}
 	return iResult;
 }

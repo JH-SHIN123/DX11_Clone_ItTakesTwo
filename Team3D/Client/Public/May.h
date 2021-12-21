@@ -195,9 +195,9 @@ public: /* Getter */
 	_bool		Get_IsWallJump() { return m_IsCamTriggerCollide; }
 	_bool		Get_IsInRocket() { return m_IsBossMissile_Control; }
 	_bool		Get_OnRail() { return m_bOnRail; }
+	_bool		Get_IsLaserTennis() { return m_bLaserTennis; }
 
 public:
-
 	void		Update_Tirgger_Pos(_vector vPos);
 
 public:
@@ -207,6 +207,9 @@ public:
 	void	Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void	Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
 	void	Set_LaserRippedOff(); /* BossUFO */
+	void	Set_ActiveHpBar(_bool IsCheck);
+	void	Set_ActiveSubHpBar(_bool IsCheck);
+	void	Set_HpBarReduction(_float fDamage);
 
 	/* For. Ending */
 	void	Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }
@@ -222,6 +225,7 @@ private: // 여기에 넣어놓아야 알거 같아서 여기에..
 private:
 	// 단발성 함수들.
 	HRESULT Ready_Component();
+	HRESULT Ready_UI();
 	void Add_LerpInfo_To_Model();
 
 private: // Effects
@@ -229,6 +233,8 @@ private: // Effects
 
 private: // UI
 	class CGauge_Circle*	m_pGauge_Circle = nullptr;
+	class CHpBar*			m_pHpBar = nullptr;
+	class CHpBar*			m_pSubHpBar = nullptr;
 
 	// 카메라
 private:

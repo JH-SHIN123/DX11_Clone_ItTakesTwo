@@ -19,6 +19,7 @@ int		g_iGSOption;
 int		g_iRespawnOption;
 int		g_iHeaderBoxOption;
 int		g_iAlphaOption;
+int		g_iShaderOption;
 
 float	g_fAlpha;
 float	g_Time;
@@ -595,10 +596,20 @@ PS_OUT PS_PlayerHpBar(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	if (g_fDecreaseRateRatio <= Out.vColor.b && g_fCircleRatio >= Out.vColor.b)
-		Out.vColor.rgb = 1.f;
-	else if (g_fDecreaseRateRatio > Out.vColor.b)
-		Out.vColor.a = 0.f;
+	if (0 == g_iShaderOption)
+	{
+		if (g_fDecreaseRateRatio <= Out.vColor.b && g_fCircleRatio >= Out.vColor.b)
+			Out.vColor.rgb = 1.f;
+		else if (g_fDecreaseRateRatio > Out.vColor.b)
+			Out.vColor.a = 0.f;
+	}
+	else if(1 == g_iShaderOption)
+	{
+		if (g_fDecreaseRateRatio >= Out.vColor.b && g_fCircleRatio <= Out.vColor.b)
+			Out.vColor.rgb = 1.f;
+		else if (g_fDecreaseRateRatio < Out.vColor.b)
+			Out.vColor.a = 0.f;
+	}
 
 	if (true == g_IsRecovery && 0.f != Out.vColor.a)
 	{

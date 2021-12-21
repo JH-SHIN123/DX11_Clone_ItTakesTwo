@@ -25,6 +25,9 @@
 /* For.BossUFO */
 #include "UFO.h"
 
+/* For.UI */
+#include "HpBar.h"
+
 /*For.WarpGate*/
 #include "WarpGate.h"
 #include "LaserTennis_Manager.h"
@@ -71,8 +74,7 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
 
-	UI_Create(May, PlayerMarker);
-
+	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
 	m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
 	m_pGameInstance->Play_Sound(TEXT("May_Walk.wav"), CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
@@ -135,6 +137,26 @@ HRESULT CMay::Ready_Component()
 	m_pEffect_GravityBoots->Set_Model(m_pModelCom);
 
 	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_MayCircle_Gauge")), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CMay::Ready_UI()
+{
+	UI_Create(May, PlayerMarker);
+
+	CGameObject* pGameObject = nullptr;
+	_uint iOption = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MayHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pHpBar = static_cast<CHpBar*>(pGameObject);
+	m_pHpBar->Set_PlayerID(Player::May);
+	m_pHpBar->Set_ShaderOption(1);
+
+	iOption = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MaySubHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pSubHpBar = static_cast<CHpBar*>(pGameObject);
+	m_pSubHpBar->Set_PlayerID(Player::May);
+	m_pSubHpBar->Set_ShaderOption(1);
 
 	return S_OK;
 }
@@ -333,6 +355,8 @@ void CMay::Free()
 	m_vecTargetRailNodes.clear();
 
 	Safe_Release(m_pGauge_Circle);
+	Safe_Release(m_pHpBar);
+	Safe_Release(m_pSubHpBar);
 
 	//Safe_Release(m_pCamera); 
 	Safe_Release(m_pTargetPtr);
@@ -374,7 +398,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_0))/* 레이저 테니스 */
 		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_NUMPADENTER))
+	if (m_pGameInstance->Key_Down(DIK_END))
 		m_IsEnding = true;
 
 #pragma endregion
@@ -2106,7 +2130,7 @@ void CMay::Rotate_Valve(const _double dTimeDelta)
 		}
 
 		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pGameInstance->Pad_Key_Down(DIP_RB) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Valve_Rotate_R && m_bStruggle == false)
+		if ((m_pGameInstance->Pad_Key_Down(DIP_RB) || m_pGameInstance->Key_Down(DIK_RIGHT)) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Valve_Rotate_R && m_bStruggle == false)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Valve_Rotate_R);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Valve_Rotate_MH);
@@ -2342,6 +2366,32 @@ void CMay::InUFO(const _double dTimeDelta)
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+}
+
+void CMay::Set_ActiveHpBar(_bool IsCheck)
+{
+	if (nullptr == m_pHpBar)
+		return;
+
+	m_pHpBar->Set_Active(IsCheck);
+}
+
+void CMay::Set_ActiveSubHpBar(_bool IsCheck)
+{
+	if (nullptr == m_pSubHpBar)
+		return;
+
+	m_pSubHpBar->Set_Active(IsCheck);
+}
+
+void CMay::Set_HpBarReduction(_float fDamage)
+{
+	if (nullptr == m_pHpBar || nullptr == m_pSubHpBar)
+		return;
+
+	m_pHpBar->Set_Hp(fDamage);
+	m_pSubHpBar->Set_Active(true);
+	m_pSubHpBar->Set_Hp(fDamage);
 }
 
 void CMay::LaserTennis(const _double dTimeDelta)

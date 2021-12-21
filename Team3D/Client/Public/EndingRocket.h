@@ -13,6 +13,10 @@ private:
 	virtual ~CEndingRocket() = default;
 
 public:
+	/* 부스트 세팅 */
+	void Set_Boost() { m_bBoost = true; }
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double dTimeDelta) override;
@@ -34,6 +38,11 @@ private:
 	_float m_fDown = 0.f;
 
 	_float m_fAcceleration = 0.f;
+
+	_bool	m_bBoost = false;
+	_double m_dBoostTime = 0.0;
+
+	_bool m_bStartMove = false;
 
 private:
 	/* For.Component */

@@ -44,12 +44,12 @@ HRESULT CEffect_Boss_Missile_Particle::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_Missile_Particle::Tick(_double TimeDelta)
 {
-	///*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
-
-	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
+	if (2.5 < m_dActivateTime)
 		return EVENT_DEAD;
 
+	m_dActivateTime += TimeDelta;
 	m_dControlTime += TimeDelta;
+
 	if (true == m_IsActivate)
 	{
 		if (1.0 <= m_dControlTime)

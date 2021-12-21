@@ -361,7 +361,7 @@ CUIObject* CUI_Generator::Get_UIObject(Player::ID ePlayer, UI::TRIGGER eTrigger)
 	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
 		return nullptr;
 
-	return m_vecInterActiveUI[ePlayer][eTrigger].front();
+	return m_vecUIOBjects[ePlayer][eTrigger].front();
 }
 
 HRESULT CUI_Generator::Render_Font(_tchar * pText, FONTDESC tFontDesc, Player::ID ePlayer)
