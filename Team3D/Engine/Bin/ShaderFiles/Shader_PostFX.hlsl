@@ -303,7 +303,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	vColor += g_BloomScale * g_BloomTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV.xy).xyz;
 
 	// Add Effect
-	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
+	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 1.5f;
 
 	// Add AfterPostBlur
 	vColor += g_AfterPostBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_AfterPostBlurTex_Blur.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
