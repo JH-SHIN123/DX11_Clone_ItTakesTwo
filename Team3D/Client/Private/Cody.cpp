@@ -37,6 +37,7 @@
 /* For. UFORadarSet */
 #include "UFORadarSet.h"
 #include "UFORadarLever.h"
+#include "EndingCredit_Manager.h"
 
 /* For. UI */
 #include "HpBar.h"
@@ -289,7 +290,7 @@ _int CCody::Tick(_double dTimeDelta)
 	/////////////////////////////////////////////
 	KeyInput_Rail(dTimeDelta);
 
-	if (false == m_bMoveToRail && false == m_bOnRail)
+	if (false == m_bMoveToRail && false == m_bOnRail && false == m_bEndingCredit)
 	{
 		LaserTennis(dTimeDelta);
 		ElectricWallJump(dTimeDelta);
@@ -342,7 +343,6 @@ _int CCody::Tick(_double dTimeDelta)
 	/////////////////////////////////////////////
 
 #pragma endregion
-
 
 	/* 레일 타겟을 향해 날라가기 */
 	// Forward 조정
@@ -551,9 +551,10 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_NUMPADENTER))
+	if (m_pGameInstance->Key_Down(DIK_END))
 	{
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f), 3.f);
+		ENDINGCREDIT->Create_Environment();
 		m_IsEnding = true;
 	}
 #pragma endregion
@@ -858,12 +859,6 @@ void CCody::KeyInput(_double dTimeDelta)
 	}
 
 #pragma endregion
-
-	if (m_pGameInstance->Key_Down(DIK_M))
-	{
-		SCRIPT->Render_Script(m_iIndex, CScript::HALF, 1.f);
-		++m_iIndex;
-	}
 }
 
 _uint CCody::Get_CurState() const
@@ -3179,6 +3174,14 @@ void CCody::Ride_Ending_Rocket(const _double dTimeDelta)
 {
 	if (m_IsEnding == true)
 	{
+		/* 3초후 시작 */
+		m_dStartTime += dTimeDelta;
+		if (3.f <= m_dStartTime && false == m_bEndingCheck)
+		{
+			ENDINGCREDIT->Start_EndingCredit();
+			m_bEndingCheck = true;
+		}
+
 		m_pModelCom->Set_Animation(ANI_C_Rocket_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Rocket_MH);
 
@@ -3908,4 +3911,5 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 		m_dRespawnTime = 0.0;
 	}
 }
+
 

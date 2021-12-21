@@ -423,6 +423,10 @@ private:
 	_bool	 m_bLaser = false;
 	_bool	 m_bCheckAnim = false;
 	_uint	 m_iHP = 12;
+	/* Hye::For.EndingCredit */
+	_bool	m_bEndingCredit = false;
+	_double m_dStartTime = 0.0;
+	_bool	m_bEndingCheck = false;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;

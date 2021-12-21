@@ -59,7 +59,6 @@ HRESULT CLaserButton::Render(RENDER_GROUP::Enum eGroup)
 {
 	CDynamic_Env::Render(eGroup);
 
-	/* Active, Option에 따라 렌더 다르게 해야함 */
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
 

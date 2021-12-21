@@ -32,13 +32,22 @@ HRESULT CEndingRocket::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, -500.f, 0.f, 1.f));
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 0.f, 15.f, 1.f));
 	m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(90.f));
+
+	DATABASE->Set_EndingRocket(this);
+
 	return S_OK;
 }
 
 _int CEndingRocket::Tick(_double dTimeDelta)
 {
-	Movement(dTimeDelta);
-	Ready_Players(dTimeDelta);
+	if (m_pGameInstance->Key_Down(DIK_END))
+		m_bStartMove = true;
+
+	if (m_bStartMove)
+	{
+		Movement(dTimeDelta);
+		Ready_Players(dTimeDelta);
+	}
 	return _int();
 }
 
@@ -77,7 +86,20 @@ void CEndingRocket::Ready_Players(_double dTimeDelta)
 
 void CEndingRocket::Movement(_double dTimeDelta)
 {
-	m_pTransformCom->Go_Straight(dTimeDelta);
+	/* ºÎ½ºÆ® */
+	if (true == m_bBoost)
+	{
+		m_dBoostTime += dTimeDelta;
+
+		if (1.f <= m_dBoostTime)
+		{
+			m_bBoost = false;
+			m_dBoostTime = 0.0;
+		}
+		m_pTransformCom->Go_Straight(dTimeDelta * 20.f);
+	}
+	else
+		m_pTransformCom->Go_Straight(dTimeDelta * 10.f);
 
 	if (m_pGameInstance->Key_Pressing(DIK_W))
 	{
