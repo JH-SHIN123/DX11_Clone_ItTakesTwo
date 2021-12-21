@@ -27,6 +27,7 @@ HRESULT CEffect_Boss_Gravitational_Bomb::NativeConstruct(void * pArg)
 	__super::NativeConstruct(pArg);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, m_EffectDesc_Prototype.ModelName, TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Cloud"), TEXT("Com_Texture_Dist"), (CComponent**)&m_pTexture_Distortion), E_FAIL);
 
 	m_vDefulat_Scale = { 0.75f, 0.75f, 0.75f, 0.f };
 	m_pTransformCom->Set_Scale(XMLoadFloat4(&m_vDefulat_Scale));
@@ -119,10 +120,10 @@ HRESULT CEffect_Boss_Gravitational_Bomb::Render(RENDER_GROUP::Enum eGroup)
 
 	_float fAlpha = m_fAlphaTime;
 	if (1.f < fAlpha) fAlpha = 1.f;
-
 	m_pModelCom->Set_Variable("g_vColor", &m_vColor, sizeof(_float4));
 	m_pModelCom->Set_Variable("g_fTime", &m_fTime, sizeof(_float));
 	m_pModelCom->Set_Variable("g_fAlpha", &fAlpha, sizeof(_float));
+	m_pModelCom->Set_ShaderResourceView("g_DistortionTexture", m_pTexture_Distortion->Get_ShaderResourceView(2));
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Render_Model(iShaderPass);

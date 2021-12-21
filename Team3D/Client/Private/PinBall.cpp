@@ -199,6 +199,9 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		m_pDynamicActorCom->Update_DynamicActor();
 		m_bFailed = true;
 		m_bStartGame = false;
+
+		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion_Particle, m_pTransformCom->Get_WorldMatrix());
 	}
 
 	/* Blocked */

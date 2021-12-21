@@ -81,7 +81,7 @@ _int CEffect_RespawnTunnel_Portal::Tick(_double TimeDelta)
 _int CEffect_RespawnTunnel_Portal::Late_Tick(_double TimeDelta)
 {
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 20.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
 
 	return NO_EVENT;
 }

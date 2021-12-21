@@ -275,8 +275,22 @@ _int CCody::Tick(_double dTimeDelta)
 		return NO_EVENT;
 	}
 
+#ifdef __TEST_JUNG
+	if (m_pGameInstance->Key_Down(DIK_V))
+		EFFECT->Add_Effect(Effect_Value::BossBomb, m_pTransformCom->Get_WorldMatrix());
 	if (m_pGameInstance->Key_Down(DIK_B))
-		EFFECT->Add_Effect(Effect_Value::PipeLocker_Ball, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::BossBomb_Explosion, m_pTransformCom->Get_WorldMatrix());
+	if (m_pGameInstance->Key_Down(DIK_N))
+		EFFECT->Add_Effect(Effect_Value::BossBomb_Particle, m_pTransformCom->Get_WorldMatrix());
+	if (m_pGameInstance->Key_Down(DIK_M))
+		EFFECT->Add_Effect(Effect_Value::BossBomb_Pillar, m_pTransformCom->Get_WorldMatrix());
+	if (m_pGameInstance->Key_Down(DIK_COMMA))
+		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Booster, m_pTransformCom->Get_WorldMatrix());
+	if (m_pGameInstance->Key_Down(DIK_PERIOD))
+		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Shield, m_pTransformCom->Get_WorldMatrix());
+	if (m_pGameInstance->Key_Down(DIK_SLASH))
+		EFFECT->Add_Effect(Effect_Value::BossMissile_Smoke, m_pTransformCom->Get_WorldMatrix());
+#endif // __TEST_JUNG
 
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));

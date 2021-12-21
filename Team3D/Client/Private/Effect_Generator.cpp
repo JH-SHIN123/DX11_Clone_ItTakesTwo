@@ -48,8 +48,8 @@
 #include "Effect_Boss_GroundPound_Ring.h"
 #include "Effect_Boss_GroundPound_Smoke.h"
 #include "Effect_Boss_Missile_Smoke.h"
-#include "Effect_Boss_Missile_Smoke_Black.h"	/*테스트 중*/
-#include "Effect_Boss_Missile_Smoke_Color.h"	/*테스트 중*/
+#include "Effect_Boss_Missile_Smoke_Black.h"	
+#include "Effect_Boss_Missile_Smoke_Color.h"	
 #include "Effect_Boss_Missile_Explosion.h"
 #include "Effect_Boss_Missile_Particle.h"
 #include "Effect_Boss_UFO_Flying.h"

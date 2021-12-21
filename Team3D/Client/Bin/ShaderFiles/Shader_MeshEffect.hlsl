@@ -391,7 +391,7 @@ PS_OUT	PS_MAIN_RESPAWN_PORTAL(PS_IN_DOUBLE_UV In)
 	float4 vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV + fWeight);
 	float4 vColor = g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV.xy);
 
-	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * vColor.rgb * 10.f;
+	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * vColor.rgb * 2.f; // 10.f
 	Out.vDiffuse.a = Out.vDiffuse.b * 0.75f * g_fAlpha;
 
 	return Out;
@@ -449,7 +449,7 @@ PS_OUT	PS_MAIN_RESPAWNTENNEL(PS_IN_DOUBLE_UV In)
 
 
 	vector vColor = g_ColorRampTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
-	Out.vDiffuse.rgb = fWeight * vColor.rgb * 2.5f;
+	Out.vDiffuse.rgb = fWeight * vColor.rgb * 1.f; //2.5
 	Out.vDiffuse.a = 1;// Out.vDiffuse.r + Out.vDiffuse.g + Out.vDiffuse.b;
 
 	return Out;

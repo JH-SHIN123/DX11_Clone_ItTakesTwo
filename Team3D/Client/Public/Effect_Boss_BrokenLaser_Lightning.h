@@ -33,7 +33,7 @@ private:
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT = nullptr;
 	_float3*							m_pInstanceBiffer_Dir = nullptr;
 	XMINT2*								m_pInstanceBuffer_UVCount = nullptr;
-	_double* m_pInstance_UVTime = nullptr;
+	_double*							m_pInstance_UVTime = nullptr;
 
 	_bool m_IsActivate = true;
 	_double m_dActivateTime = 0.0;

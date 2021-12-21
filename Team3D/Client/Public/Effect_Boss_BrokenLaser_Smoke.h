@@ -29,7 +29,6 @@ private:
 private:
 	_float2 m_vTexUV_Smoke = { 0.f, 0.f };
 	_float	m_fAlphaTime = 0.75f;
-	class CPinBall* m_pTargetObject = nullptr;
 
 public:
 	static CEffect_Boss_BrokenLaser_Smoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
