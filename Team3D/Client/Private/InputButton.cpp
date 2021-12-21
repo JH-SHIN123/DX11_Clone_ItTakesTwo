@@ -43,7 +43,7 @@ HRESULT CInputButton::NativeConstruct(void * pArg)
 
 	if (1 == m_iOption)
 	{
-		m_UIDesc.vScale = { 0.f, 0.f };
+		m_UIDesc.vScale = { 1.f, 1.f };
 		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x , m_UIDesc.vScale.y, 0.f, 0.f));
 	}
 	else
@@ -113,7 +113,6 @@ void CInputButton::SetUp_Option()
 			m_UIDesc.vScale.x -= 15.f;
 			m_UIDesc.vScale.y -= 15.f;
 		}
-
 	}
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Right_TriAngle")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Left_TriAngle")))
 	{
@@ -129,8 +128,8 @@ void CInputButton::SetUp_Option()
 
 void CInputButton::ScaleEffect(_double TimeDelta)
 {
-	//if (1 != m_iOption)
-	//	return;
+	if (1 != m_iOption)
+		return;
 
 	if (m_vStartScale.x >= m_UIDesc.vScale.x)
 	{
