@@ -132,10 +132,10 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 #endif
 
 #ifdef __TEST_SE
-	if (m_pGameInstance->Key_Down(DIK_V))
-	{
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Effect", Level::LEVEL_STAGE, TEXT("GameObject_Effect_GateSmoke")), E_FAIL);
-	}
+	if (m_pGameInstance->Key_Down(DIK_INSERT))
+		EFFECT->Add_Effect(Effect_Value::PipeLocker_Connected, XMMatrixTranslation(64.f, 1.f, 15.f));
+	if (m_pGameInstance->Key_Down(DIK_HOME))
+		EFFECT->Add_Effect(Effect_Value::Gate_Smoke, XMMatrixRotationY(XMConvertToRadians(90.f)) * XMMatrixTranslation(58.f, 1.f, 30.f));
 #endif
 
 	return NO_EVENT;
@@ -281,8 +281,7 @@ HRESULT CLevel_Stage::Ready_Test()
 
 	/* Teak */
 #ifdef __TEST_TAEK
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Terrain", Level::LEVEL_STAGE, TEXT("GameObject_Terrain")), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_SpaceRail", Level::LEVEL_STAGE, TEXT("GameObject_SpaceRail")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ToyBoxButton", Level::LEVEL_STAGE, TEXT("GameObject_ToyBoxButton")), E_FAIL);
 #endif
 
 	/* Yoon */
@@ -400,21 +399,25 @@ HRESULT CLevel_Stage::Ready_Lights()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	/* For.Directional : Ambient / Specular Zero */
-	Ready_DirectionalLight(TEXT("Sun"), _float3(1.f, -1.f, 1.f), _float4(0.65f,0.65f,0.65f, 1.f), _float4(0.35f,0.35f,0.35f,1.f), _float4(1.f,1.f,1.f,1.f));
+	/* For.Directional : Ambient / Specular Zero - 0.45 */ 
+	Ready_DirectionalLight(TEXT("Sun"), _float3(1.f, -1.f, 1.f), _float4(0.45f, 0.45f, 0.45f, 1.f), _float4(0.35f,0.35f,0.35f,1.f), _float4(0.45f, 0.45f, 0.45f,1.f));
 
+#ifndef __MAPLOADING_OFF
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Planet_Robot.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ToyBoxButton_Back.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ComputeRoom.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_InShip.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Umbrella.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_SpaceControl.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Start.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Floor2.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Rail.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Pinball.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_ComputeRoom.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_BossRoom.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Minigame.dat"));
+	//CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Minigame.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_EFFECTLIGHT, TEXT("../Bin/Resources/Data/LightData/EffectLight_Bg.dat"));
+#endif
 
 	return S_OK;
 }

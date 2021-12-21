@@ -41,6 +41,7 @@ private:
 
 private:
 	_float m_fPressedPercentage = 1.f;
+	_float m_fPushButtonSoundVolume = 1.f;
 
 private:
 	/* For.Component */

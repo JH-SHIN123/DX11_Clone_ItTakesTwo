@@ -28,11 +28,19 @@ void CPostFX::Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos)
 
 void CPostFX::Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos)
 {
-	m_bRadialBlur_Sub = bActive;
 	m_vRadiarBlur_FocusPos_Sub = vFocusPos;
 
-	if (false == m_bRadialBlur_Sub)
-		m_fRadialBlur_SubRatio = 1.0;
+	if (true == bActive)
+	{
+		m_bRadialBlur_Sub = true;
+		m_bRadialBlur_Sub_Finish = false;
+		m_fRadialBlur_SubRatio = 1.f;
+	}
+	else
+	{
+		m_bRadialBlur_Sub_Finish = true;
+		m_fRadialBlur_SubRatio = 1.f;
+	}
 }
 
 HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight)
@@ -57,24 +65,29 @@ HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDevic
 	FAILED_CHECK_RETURN(Build_ComputeShaders(TEXT("../Bin/ShaderFiles/ComputeShader_PostFX.hlsl"), "DefaultTechnique"), E_FAIL);
 
 	m_pRadiarBlur_Mask = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/PostFX/radiarblur.png"));
+	m_pVignatte_Mask = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/PostFX/vignatte%d.png"),2);
+	m_pVolume_Mask = CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/PostFX/T_Smoke_01.png"));
 
 	return S_OK;
 }
 
 HRESULT CPostFX::PostProcessing(_double TimeDelta)
 {
+#ifdef _DEBUG
+	//FAILED_CHECK_RETURN(KeyInput_Test(TimeDelta), E_FAIL);
+#endif // _DEBUG
+
 	FAILED_CHECK_RETURN(Tick_Adaptation(TimeDelta), E_FAIL);
 	FAILED_CHECK_RETURN(Tick_RadiarBlur(TimeDelta), E_FAIL);
 
-#ifdef _DEBUG
-	FAILED_CHECK_RETURN(KeyInput_Test(TimeDelta), E_FAIL);
-#endif // _DEBUG
+	if (m_fVolumeTimeDelta >= 1.f) m_fVolumeTimeDelta = 0.f;
+	else m_fVolumeTimeDelta += (_float)TimeDelta * 0.15f;
 
 	FAILED_CHECK_RETURN(DownScale(TimeDelta), E_FAIL);
 	FAILED_CHECK_RETURN(Bloom(), E_FAIL);
 	FAILED_CHECK_RETURN(Blur(m_pShaderResourceView_Bloom_Temp, m_pUnorderedAccessView_Bloom), E_FAIL);
 	FAILED_CHECK_RETURN(Blur(m_pShaderResourceView_DownScaledHDR, m_pUnorderedAccessView_DORBlur), E_FAIL);
-	FAILED_CHECK_RETURN(Blur_Effects(), E_FAIL);
+	FAILED_CHECK_RETURN(Blur_Customs(), E_FAIL);
 	FAILED_CHECK_RETURN(FinalPass(),E_FAIL);
 
 	// Swap Cur LumAvg - Prev LumAvg
@@ -182,9 +195,12 @@ HRESULT CPostFX::Blur(ID3D11ShaderResourceView* pInput, ID3D11UnorderedAccessVie
 	return S_OK;
 }
 
-HRESULT CPostFX::Blur_Effects()
+HRESULT CPostFX::Blur_Customs()
 {
-	return CBlur::GetInstance()->Blur_Effect();
+	FAILED_CHECK_RETURN(CBlur::GetInstance()->Blur_Effect(), E_FAIL);
+	FAILED_CHECK_RETURN(CBlur::GetInstance()->Blur_AfterPostBlur(), E_FAIL);
+
+	return S_OK;
 }
 
 HRESULT CPostFX::FinalPass()
@@ -197,29 +213,35 @@ HRESULT CPostFX::FinalPass()
 	CPipeline* pPipeline = CPipeline::GetInstance();
 	CBlur* pBlur = CBlur::GetInstance();
 
+	/* HDR */
 	_float fMiddleGrey = m_fMiddleGrey;
 	_float fLumWhiteSqr = m_fLumWhiteSqr;
 	fLumWhiteSqr *= fMiddleGrey;
 	fLumWhiteSqr *= fLumWhiteSqr;
-
 	m_pVIBuffer_ToneMapping->Set_Variable("g_MiddleGrey", &fMiddleGrey, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_LumWhiteSqr", &fLumWhiteSqr, sizeof(_float));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_BloomScale", &m_fBloomScale, sizeof(_float));
+
+	/* Vignatte */
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VignatteTex", m_pVignatte_Mask->Get_ShaderResourceView(0));
+
+	/* Fog */
+	m_pVIBuffer_ToneMapping->Set_Variable("g_bFog", &m_bMainFog, sizeof(m_bMainFog));
 
 	/* Radiar Blur */
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Main", &m_bRadialBlur_Main, sizeof(m_bRadialBlur_Main)); 
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Sub", &m_bRadialBlur_Sub, sizeof(m_bRadialBlur_Sub));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Main", &m_vRadiarBlur_FocusPos_Main, sizeof(m_vRadiarBlur_FocusPos_Main));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_RadiarBlur_FocusPos_Sub", &m_vRadiarBlur_FocusPos_Sub, sizeof(m_vRadiarBlur_FocusPos_Sub));
-
 	m_pVIBuffer_ToneMapping->Set_Variable("g_fRadiarBlurRatio_Main", &m_fRadialBlur_MainRatio, sizeof(m_fRadialBlur_MainRatio));
 	m_pVIBuffer_ToneMapping->Set_Variable("g_fRadiarBlurRatio_Sub", &m_fRadialBlur_SubRatio, sizeof(m_fRadialBlur_SubRatio));
-
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_RadiarBlurMaskTex", m_pRadiarBlur_Mask->Get_ShaderResourceView(0));
 
 	/* Volume */
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Front", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Front")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeTex_Back", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Volume_Back")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_VolumeMaskTex", m_pVolume_Mask->Get_ShaderResourceView(0));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_fTime", &m_fVolumeTimeDelta, sizeof(_float));
 
 	_float	fCamFar;
 	_vector vCamPosition;
@@ -257,6 +279,8 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DepthTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Depth")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EffectTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Effect")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EffectBlurTex", pBlur->Get_ShaderResourceView_BlurEffect());
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AfterPostBlurTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_AfterPost_Blur")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AfterPostBlurTex_Blur", pBlur->Get_ShaderResourceView_BlurAfterPostBlur());
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
 	m_pVIBuffer_ToneMapping->Render(0);
@@ -573,6 +597,8 @@ void CPostFX::Clear_Buffer()
 {
 	Safe_Release(m_pVIBuffer_ToneMapping);
 	Safe_Release(m_pRadiarBlur_Mask);
+	Safe_Release(m_pVignatte_Mask);
+	Safe_Release(m_pVolume_Mask);
 }
 
 void CPostFX::Free()

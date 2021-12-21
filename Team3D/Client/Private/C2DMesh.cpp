@@ -82,7 +82,6 @@ _int C2DMesh::Late_Tick(_double dTimeDelta)
 			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 		break;
 	}
-
 	return NO_EVENT;
 }
 

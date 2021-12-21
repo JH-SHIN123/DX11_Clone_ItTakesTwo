@@ -14,6 +14,7 @@ public:
 public:
 	void Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos);
 	void Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos);
+	void Set_MainViewFog(_bool bActive) { m_bMainFog = bActive; }
 
 public:
 	HRESULT Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight);
@@ -23,7 +24,7 @@ private:
 	HRESULT DownScale(_double TimeDelta);
 	HRESULT Bloom();
 	HRESULT Blur(ID3D11ShaderResourceView* pInput, ID3D11UnorderedAccessView* pOutput);
-	HRESULT Blur_Effects();
+	HRESULT Blur_Customs();
 	HRESULT FinalPass();
 
 	HRESULT Tick_Adaptation(_double TimeDelta);
@@ -50,8 +51,8 @@ private:
 	_uint		m_iWinSize[2] = { 0,0 };
 	_uint		m_iDownScaleGroups = 0;
 
-	_float		m_fMiddleGrey = 0.00122135f;
-	_float		m_fLumWhiteSqr = 1980.f;
+	_float		m_fMiddleGrey = 0.00192135f;
+	_float		m_fLumWhiteSqr = 1080.f;
 
 	_float		m_fAdaptTime = 1.f;
 	_float		m_fAdaptationDeltaT = 0.f;
@@ -69,6 +70,10 @@ private:
 	_float2		m_vRadiarBlur_FocusPos_Sub = { 0.f,0.f };
 	_float		m_fRadialBlur_MainRatio = 0.f;
 	_float		m_fRadialBlur_SubRatio = 0.f;
+
+	_bool		m_bMainFog = false;
+
+	_float		m_fVolumeTimeDelta = 0.f;
 #pragma endregion
 
 #pragma region Resources
@@ -116,6 +121,8 @@ private: /* For.CS - Shader */
 private: /* For. PS - ToneMapping */
 	class CVIBuffer_RectRHW*	m_pVIBuffer_ToneMapping = nullptr;
 	class CTextures*			m_pRadiarBlur_Mask = nullptr;
+	class CTextures*			m_pVignatte_Mask = nullptr;
+	class CTextures*			m_pVolume_Mask = nullptr;
 #pragma endregion
 
 #ifdef _DEBUG

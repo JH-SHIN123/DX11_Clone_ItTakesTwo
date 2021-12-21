@@ -337,6 +337,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::PipeLocker_Connected:
 		lstrcpy(szPrototype, L"GameObject_Effect_PipeLocker_Connected");
 		break;
+	case Effect_Value::Gate_Smoke:
+		lstrcpy(szPrototype, L"GameObject_Effect_GateSmoke");
+		break;
 	default:
 		break;
 	}

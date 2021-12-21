@@ -20,7 +20,6 @@
 * 사용할 스레드 개수 지정
 */
 
-
 #ifdef _DEBUG
 #define __THREAD_NUM 8
 #else
@@ -63,7 +62,7 @@
 //#define __TEST_JUNG
 //#define __TEST_HYE
 //#define __TEST_TAEK
-#define __TEST_YOON
+//#define __TEST_YOON
 //#define __TEST_JIN
 //#define __TEST_JUN
 

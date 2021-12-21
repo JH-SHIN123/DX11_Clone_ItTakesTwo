@@ -16,12 +16,14 @@ public:
 	ID3D11ShaderResourceView* Get_ShaderResourceView_BlurEmissive() const { return m_pShaderResourceView_DownScaledEmissive; };
 	ID3D11ShaderResourceView* Get_ShaderResourceView_BlurEffect() const { return m_pShaderResourceView_DownScaledEffect; };
 	ID3D11ShaderResourceView* Get_ShaderResourceView_BlurSpecular() const { return m_pShaderResourceView_DownScaledSpecular; };
+	ID3D11ShaderResourceView* Get_ShaderResourceView_BlurAfterPostBlur() const { return m_pShaderResourceView_DownScaledAfterPostBlur; };
 
 public:
 	HRESULT Ready_Blur(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight);
 	HRESULT Blur_Emissive();
 	HRESULT Blur_Effect();
 	HRESULT Blur_Specular();
+	HRESULT Blur_AfterPostBlur();
 
 private:
 	HRESULT DownScale(ID3D11ShaderResourceView* inputSRV, ID3D11UnorderedAccessView* inputUAV);
@@ -55,19 +57,24 @@ private: /* For. Blur */
 	ID3D11ShaderResourceView* m_pShaderResourceView_Blur_Temp = nullptr;
 
 private: /* For. Emissive */
-	ID3D11Texture2D*			m_pDownScaledEmissiveTex = nullptr; // g_HDRDownScale
+	ID3D11Texture2D*			m_pDownScaledEmissiveTex = nullptr;
 	ID3D11UnorderedAccessView*	m_pUnorderedAccessView_DownScaledEmissive = nullptr;
 	ID3D11ShaderResourceView*	m_pShaderResourceView_DownScaledEmissive = nullptr;
 
 private: /* For. Effect */
-	ID3D11Texture2D* m_pDownScaledEffectTex = nullptr; // g_HDRDownScale
+	ID3D11Texture2D* m_pDownScaledEffectTex = nullptr; 
 	ID3D11UnorderedAccessView* m_pUnorderedAccessView_DownScaledEffect = nullptr;
 	ID3D11ShaderResourceView* m_pShaderResourceView_DownScaledEffect = nullptr;
 
 private: /* For. Specular */
-	ID3D11Texture2D* m_pDownScaledSpecularTex = nullptr; // g_HDRDownScale
+	ID3D11Texture2D* m_pDownScaledSpecularTex = nullptr;
 	ID3D11UnorderedAccessView* m_pUnorderedAccessView_DownScaledSpecular = nullptr;
 	ID3D11ShaderResourceView* m_pShaderResourceView_DownScaledSpecular = nullptr;
+
+private: /* For. AfterPost - Blur */
+	ID3D11Texture2D* m_pDownScaledAfterPostBlurTex = nullptr;
+	ID3D11UnorderedAccessView* m_pUnorderedAccessView_DownScaledAfterPostBlur = nullptr;
+	ID3D11ShaderResourceView* m_pShaderResourceView_DownScaledAfterPostBlur = nullptr;
 
 public:
 	virtual void	Free() override;

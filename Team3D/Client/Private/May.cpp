@@ -203,6 +203,7 @@ _int CMay::Tick(_double dTimeDelta)
 		Wall_Jump(dTimeDelta);
 		if (Trigger_Check(dTimeDelta))
 		{
+			TakeRailEnd(dTimeDelta);
 			Hit_StarBuddy(dTimeDelta);
 			Hit_Rocket(dTimeDelta);
 			Activate_RobotLever(dTimeDelta);
@@ -257,6 +258,9 @@ _int CMay::Tick(_double dTimeDelta)
 	m_pModelCom->Update_Animation(dTimeDelta);
 	m_pEffect_GravityBoots->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 
+	// Control RadiarBlur - 제일 마지막에 호출
+	Trigger_RadiarBlur(dTimeDelta);
+
 	return NO_EVENT;
 }
 
@@ -269,6 +273,7 @@ _int CMay::Late_Tick(_double dTimeDelta)
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 		return NO_EVENT;
 	}
+
 	/* LateTick : 레일의 타겟 찾기*/
 	Find_TargetSpaceRail();
 	ShowRailTargetTriggerUI();
@@ -280,8 +285,11 @@ _int CMay::Late_Tick(_double dTimeDelta)
 	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine)
 		return NO_EVENT;
 
-	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f)) 
+	{
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	}
 
 	return NO_EVENT;
 }
@@ -291,8 +299,17 @@ HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(0);
+
+	if (eGroup == RENDER_GROUP::RENDER_NONALPHA)
+	{
+		m_pModelCom->Set_DefaultVariables_Shadow();
+		m_pModelCom->Render_Model(0);
+	}
+	else if (eGroup == RENDER_GROUP::RENDER_ALPHA)
+	{
+		m_pModelCom->Render_Model(30);
+		m_pModelCom->Render_Model(31);
+	}
 
 	return S_OK;
 }
@@ -550,6 +567,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 			m_bAction = false;
 			m_bRoll = true;
+
+			Start_RadiarBlur(0.3f);
 		}
 		else
 		{
@@ -563,8 +582,11 @@ void CMay::KeyInput(_double dTimeDelta)
 				m_pActorCom->Jump_Start(1.2f);
 				m_pModelCom->Set_Animation(ANI_M_AirDash_Start);
 				m_IsAirDash = true;
+
+				Start_RadiarBlur(0.3f);
 			}
 		}
+
 	}
 #pragma endregion
 
@@ -1976,7 +1998,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsPinBall || m_IsDeadLine
+	if (m_bOnRailEnd || m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsPinBall || m_IsDeadLine
 		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_IsBossMissile_Control || m_IsWallLaserTrap_Touch || m_bWallAttach || 
 		m_IsRippedOffAnimPlaying || m_bLaserTennis || m_IsEnding)
 		return true;
@@ -2790,9 +2812,12 @@ void CMay::KeyInput_Rail(_double dTimeDelta)
 	{
 		if (m_pGameInstance->Pad_Key_Down(DIP_B) || m_pGameInstance->Key_Down(DIK_K))
 		{
-			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+			m_pGameInstance->Stop_Sound(CHANNEL_MAY_RAIL);
 
-			m_iJumpCount = 1;
+			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+			Loop_RadiarBlur(false);
+
+			m_iJumpCount = 0;
 			m_bShortJump = true;
 
 			m_pTargetRail = nullptr;
@@ -2879,6 +2904,8 @@ void CMay::Start_SpaceRail()
 	if (m_pSearchTargetRailNode) {
 		// 타겟 지정시, 연기이펙트
 		EFFECT->Add_Effect(Effect_Value::Landing_Smoke, m_pSearchTargetRailNode->Get_WorldMatrix());
+		// R-Blur
+		Loop_RadiarBlur(true);
 
 		// 타겟을 찾았다면, 레일 탈 준비
 		m_pTargetRailNode = m_pSearchTargetRailNode;
@@ -2921,7 +2948,7 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 		else if (CSpaceRail::EDGE_LAST == eEdgeState || CSpaceRail::EDGE_LAST_END == eEdgeState)
 			ePathState = CPath::STATE_BACKWARD;
 
-		m_pTargetRail->Start_Path(ePathState, m_pTargetRailNode->Get_FrameIndex(), true);
+		m_pTargetRail->Start_Path(CSpaceRail::SUBJ_MAY, ePathState, m_pTargetRailNode->Get_FrameIndex(), true);
 
 		/* 카메라가 레일타는 방향으로 세팅 */
 		//m_pCamera->Get_Transform()->Set_State();
@@ -2931,6 +2958,9 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 		m_bOnRail = true;
 		m_bMoveToRail = false;
 		EFFECT->Add_Effect(Effect_Value::May_Rail, m_pTransformCom->Get_WorldMatrix());
+
+		m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RAIL, m_fRailSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Rail_Ride.wav"), CHANNEL_MAY_RAIL, m_fRailSoundVolume, true);
 	}
 }
 
@@ -2947,13 +2977,19 @@ void CMay::TakeRail(_double dTimeDelta)
 		m_pModelCom->Set_NextAnimIndex(ANI_M_Grind_Slow_MH);
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	m_bOnRail = m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);
+	m_bOnRail = m_pTargetRail->Take_Path(CSpaceRail::SUBJ_MAY, dTimeDelta, WorldMatrix);
 	if (m_bOnRail)
 		m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 	else
 	{
+		m_pGameInstance->Stop_Sound(CHANNEL_MAY_RAIL);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RAIL, m_fRailSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Rail_End.wav"), CHANNEL_MAY_RAIL, m_fRailSoundVolume);
+
 		m_pTargetRail = nullptr;
-		m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Falling); // 자유낙하 애니메이션으로 변경해야함.
+		m_pTargetRailNode = nullptr;
+		m_pSearchTargetRailNode = nullptr;
+		m_pModelCom->Set_Animation(ANI_M_Jump_Falling);
 		m_bOnRailEnd = true;
 	}
 }
@@ -2966,6 +3002,7 @@ void CMay::TakeRailEnd(_double dTimeDelta)
 		if (m_dRailEnd_ForceDeltaT >= dRailEndForceTime)
 		{
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
+			Loop_RadiarBlur(false);
 
 			m_dRailEnd_ForceDeltaT = 0.0;
 			m_bOnRailEnd = false;
@@ -2973,7 +3010,7 @@ void CMay::TakeRailEnd(_double dTimeDelta)
 		else
 		{
 			m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta);
-			m_pTransformCom->Go_Straight((dRailEndForceTime - m_dRailEnd_ForceDeltaT) * 2.5f);
+			m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_LOOK), (dRailEndForceTime - m_dRailEnd_ForceDeltaT) * 2.5f);
 			m_dRailEnd_ForceDeltaT += dTimeDelta;
 		}
 	}
@@ -3007,4 +3044,80 @@ HRESULT CMay::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 
 	return S_OK;
 }
+
+#pragma region RadiarBlur
+void CMay::Start_RadiarBlur(_double dBlurTime)
+{
+	//if (m_bRadiarBlur) return;
+
+	m_bRadiarBlur_Trigger = true;
+	m_dRadiarBlurTime = dBlurTime;
+	m_dRadiarBlurDeltaT = 0.0;
+
+	Set_RadiarBlur(true);
+}
+
+void CMay::Loop_RadiarBlur(_bool bLoop)
+{
+	m_bRadiarBlur_Loop = bLoop;
+
+	if (m_bRadiarBlur_Loop)
+		Set_RadiarBlur(true);
+	else
+		Set_RadiarBlur(false);
+}
+
+void CMay::Trigger_RadiarBlur(_double dTimeDelta)
+{
+	if (m_bRadiarBlur_Loop)
+	{
+		Set_RadiarBlur(true);
+	}
+	else if (m_bRadiarBlur_Trigger)
+	{
+		if (m_dRadiarBlurDeltaT >= m_dRadiarBlurTime)
+		{
+			Set_RadiarBlur(false);
+			m_dRadiarBlurDeltaT = 0.0;
+			m_bRadiarBlur_Trigger = false;
+		}
+		else
+		{
+			m_dRadiarBlurDeltaT += dTimeDelta;
+			Set_RadiarBlur(true);
+		}
+	}
+}
+
+void CMay::Set_RadiarBlur(_bool bActive)
+{
+	_matrix CombineViewMatrix, CombineProjMatrix;
+
+	CombineViewMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_SUBVIEW);
+	CombineProjMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_SUBPROJ);
+
+	_matrix matCombineMatrix = CombineViewMatrix * CombineProjMatrix;
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPos = XMVector3TransformCoord(vPos, matCombineMatrix);
+
+	_float3 vConvertPos;
+	XMStoreFloat3(&vConvertPos, vPos);
+	vConvertPos.x += 1.f;
+	vConvertPos.y += 1.f;
+
+	if (1.f <= vConvertPos.z)
+	{
+		vConvertPos.x *= -1.f;
+		vConvertPos.y *= -1.f;
+	}
+
+	D3D11_VIEWPORT Viewport = m_pGameInstance->Get_ViewportInfo(2);
+	vConvertPos.x = ((Viewport.Width * (vConvertPos.x)) / 2.f);
+	vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f);
+
+	_float2 vFocusPos = { vConvertPos.x / g_iWinCX + 0.5f, vConvertPos.y / g_iWinCY };
+	vFocusPos.y -= 0.08f; // Offset 0.04f
+	m_pGameInstance->Set_RadiarBlur_Sub(bActive, vFocusPos);
+}
+#pragma endregion
 

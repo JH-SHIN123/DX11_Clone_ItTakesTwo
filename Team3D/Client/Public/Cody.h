@@ -579,6 +579,7 @@ private:
 
 private:
 	_double						m_dRailEnd_ForceDeltaT = 0.0;
+	_float						m_fRailSoundVolume = 1.f;
 
 private:
 	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;

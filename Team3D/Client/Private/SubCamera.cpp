@@ -392,8 +392,7 @@ _int CSubCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
 	vMiddlePos = XMVectorSetZ(vMiddlePos, 998.f);
 
 	vTargetPos = XMVectorSetX(vTargetPos, XMVectorGetX(vMiddlePos));
-	m_pTransformCom->Set_WorldMatrix(
-		MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vTargetPos, vMiddlePos), dTimeDelta));
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vTargetPos, vMiddlePos), (_float)dTimeDelta));
 	return NO_EVENT;
 }
 
@@ -467,7 +466,7 @@ _int CSubCamera::Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta)
 	_vector vNormal = XMVector3Normalize(XMVector3Cross(XMVector3Normalize(vMiddleDir), XMVectorSet(1.0f,0.f,0.f,0.f)));
 	_vector vEye = vMayPos + vNormal * 10.f;
 
-	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vMiddlePos),dTimeDelta));
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vMiddlePos), (_float)dTimeDelta));
 	return NO_EVENT;
 }
 
