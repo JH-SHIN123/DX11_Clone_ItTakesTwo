@@ -81,7 +81,7 @@ _int C3DText::Late_Tick(_double dTimeDelta)
 	m_pTriggerActorCom->Update_TriggerActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_AFTERPOST_BLUR, this);
 
 	return NO_EVENT;
 }

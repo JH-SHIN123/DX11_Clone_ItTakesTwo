@@ -8,6 +8,8 @@ Texture2D<float4>		g_DOFBlurTex; // 다운스케일링 -> 업스케일링(Linear)
 Texture2D				g_DepthTex;
 Texture2D				g_EffectTex;
 Texture2D				g_EffectBlurTex;
+Texture2D				g_AfterPostBlurTex;
+Texture2D				g_AfterPostBlurTex_Blur;
 
 /* Etc Resources */
 Texture2D				g_RadiarBlurMaskTex;
@@ -301,7 +303,10 @@ PS_OUT PS_MAIN(PS_IN In)
 	vColor += g_BloomScale * g_BloomTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV.xy).xyz;
 
 	// Add Effect
-	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 2.f;
+	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 1.5f;
+
+	// Add AfterPostBlur
+	vColor += g_AfterPostBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_AfterPostBlurTex_Blur.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
 	// Final
 	Out.vColor = vector(vColor, 1.f);

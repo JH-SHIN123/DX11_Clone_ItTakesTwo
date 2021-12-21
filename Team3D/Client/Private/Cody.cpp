@@ -711,6 +711,8 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_pGameInstance->Play_Sound(TEXT("CodyM_Dash.wav"), CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
 			m_bAction = false;
 			m_bRoll = true;
+
+			Start_RadiarBlur(0.3f);
 		}
 		else
 		{
@@ -741,10 +743,11 @@ void CCody::KeyInput(_double dTimeDelta)
 				}
 				m_pModelCom->Set_Animation(ANI_C_AirDash_Start);
 				m_IsAirDash = true;
+
+				Start_RadiarBlur(0.3f);
 			}
 		}
 
-		Start_RadiarBlur(0.3f);
 	}
 #pragma endregion
 
@@ -3427,7 +3430,7 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 	{
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
-			m_pGameInstance->Stop_Sound(CHANNEL_RAIL);
+			m_pGameInstance->Stop_Sound(CHANNEL_CODY_RAIL);
 
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 			Loop_RadiarBlur(false);
@@ -3563,7 +3566,7 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 		else if (CSpaceRail::EDGE_LAST == eEdgeState || CSpaceRail::EDGE_LAST_END == eEdgeState)
 			ePathState = CPath::STATE_BACKWARD;
 
-		m_pTargetRail->Start_Path(ePathState, m_pTargetRailNode->Get_FrameIndex(), true);
+		m_pTargetRail->Start_Path(CSpaceRail::SUBJ_CODY, ePathState, m_pTargetRailNode->Get_FrameIndex(), true);
 
 		/* 카메라가 레일타는 방향으로 세팅 */
 		//m_pCamera->Get_Transform()->Set_State();
@@ -3574,8 +3577,8 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 		m_bMoveToRail = false;
 		EFFECT->Add_Effect(Effect_Value::Cody_Rail, m_pTransformCom->Get_WorldMatrix());
 
-		m_pGameInstance->Set_SoundVolume(CHANNEL_RAIL, m_fRailSoundVolume);
-		m_pGameInstance->Play_Sound(TEXT("Rail_Ride.wav"), CHANNEL_RAIL, m_fRailSoundVolume, true);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_CODY_RAIL, m_fRailSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Rail_Ride.wav"), CHANNEL_CODY_RAIL, m_fRailSoundVolume, true);
 	}
 }
 void CCody::TakeRail(_double dTimeDelta)
@@ -3591,15 +3594,15 @@ void CCody::TakeRail(_double dTimeDelta)
 		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH); // 메이 blend 수치값 잡아야함.
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	m_bOnRail = m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);
+	m_bOnRail = m_pTargetRail->Take_Path(CSpaceRail::SUBJ_CODY, dTimeDelta, WorldMatrix);
 	if (m_bOnRail) {
 		m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 	}
 	else
 	{
-		m_pGameInstance->Stop_Sound(CHANNEL_RAIL);
-		m_pGameInstance->Set_SoundVolume(CHANNEL_RAIL, m_fRailSoundVolume);
-		m_pGameInstance->Play_Sound(TEXT("Rail_End.wav"), CHANNEL_RAIL, m_fRailSoundVolume);
+		m_pGameInstance->Stop_Sound(CHANNEL_CODY_RAIL);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_CODY_RAIL, m_fRailSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Rail_End.wav"), CHANNEL_CODY_RAIL, m_fRailSoundVolume);
 
 		m_pTargetRail = nullptr;
 		m_pTargetRailNode = nullptr;
