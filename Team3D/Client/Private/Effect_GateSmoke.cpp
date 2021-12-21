@@ -35,7 +35,7 @@ HRESULT CEffect_GateSmoke::NativeConstruct(void * pArg)
 	//m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&ArgDesc.WorldMatrix));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 1.f, 30.f, 1.f));
 
-	m_iInstanceCount	= 20;
+	m_iInstanceCount	= 40;
 	m_pVertexLocals		= new _float4x4[m_iInstanceCount];
 	m_pSize				= new _float[m_iInstanceCount];
 	m_pAlphaWeight		= new _float[m_iInstanceCount];
@@ -45,7 +45,7 @@ HRESULT CEffect_GateSmoke::NativeConstruct(void * pArg)
 		m_pAlphaWeight[iIndex] = (rand() % 100) * 0.01f;
 		m_pSize[iIndex] = m_pAlphaWeight[iIndex] * 4.f + 2.f;
 
-		_matrix WorldMatrix = XMMatrixScaling(m_pSize[iIndex], m_pSize[iIndex], m_pSize[iIndex]) * XMMatrixTranslation((rand() % 100) * 0.03f, 0.f, m_pAlphaWeight[iIndex] * 6.f);
+		_matrix WorldMatrix = XMMatrixScaling(m_pSize[iIndex], m_pSize[iIndex], m_pSize[iIndex]) * XMMatrixTranslation((rand() % 100) * 0.05f, 0.f, m_pAlphaWeight[iIndex] * 10.f);
 
 		XMStoreFloat4x4(&m_pVertexLocals[iIndex], WorldMatrix);
 	}
@@ -79,7 +79,7 @@ _int CEffect_GateSmoke::Tick(_double dTimeDelta)
 		LocalMatrix.r[0] = vRight * m_pSize[iIndex];
 		LocalMatrix.r[1] = vUp * m_pSize[iIndex];
 		LocalMatrix.r[2] = vLook * m_pSize[iIndex];
-		LocalMatrix.r[3] = XMVectorSet(m_pVertexLocals[iIndex]._41, 0.f, m_pAlphaWeight[iIndex] * 6.f, 1.f);
+		LocalMatrix.r[3] = XMVectorSet(m_pVertexLocals[iIndex]._41, 0.f, m_pAlphaWeight[iIndex] * 10.f, 1.f - m_pAlphaWeight[iIndex]);
 
 		XMStoreFloat4x4(&m_pVertexLocals[iIndex], LocalMatrix);
 	}
