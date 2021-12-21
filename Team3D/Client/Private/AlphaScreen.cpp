@@ -98,14 +98,6 @@ HRESULT CAlphaScreen::Render(RENDER_GROUP::Enum eGroup)
 {
 	CUIObject::Render(eGroup);
 
-	if (8 == m_iOption)
-	{
-		if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
-			return E_FAIL;
-
-		m_pVIBuffer_RectCom->Render(11);
-	}
-
 	if (5 == m_iOption || 6 == m_iOption)
 	{
 		if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
@@ -217,14 +209,6 @@ void CAlphaScreen::Option_Setting()
 		m_pTransformCom->Set_Scale(XMVectorSet(640.f, 720.f, 0.f, 0.f));
 		m_fSortOrder = 0.f;
 		m_iShaderPassNum = 7;
-	}
-
-	if (8 == m_iOption)
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 720.f, 0.f, 0.f));
-		m_fSortOrder = 0.f;
-		m_iShaderPassNum = 0;
 	}
 }
 

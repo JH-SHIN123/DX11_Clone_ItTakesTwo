@@ -6,6 +6,8 @@
 #include "DataStorage.h"
 #include "Effect_Generator.h"
 #include "Effect_Boss_Laser_Smoke.h"
+#include "Cody.h"
+#include "May.h"
 
 CLaser_TypeA::CLaser_TypeA(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLaser(pDevice, pDeviceContext)
@@ -95,24 +97,27 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 				/* 코디 타격 */
 				if (pUserData->eID == GameID::eCODY)
 				{
+					m_dDamagingDelay_Cody -= dTimeDelta;
+
 					/* 지속 타격 데미지*/
 					if (m_isHitCody)
 					{
 						if (m_dDamagingDelay_Cody <= 0.0)
 						{
 							// 데미지를 주는 함수
-
+							((CCody*)DATABASE->GetCody())->Set_HpBarReduction(10);
 							// 데미지 주기 초기화
-							m_dDamagingDelay_Cody = 0.3;
+							m_dDamagingDelay_Cody = 0.5;
 						}
 					}
 					/* 첫 타격 데미지 */
 					else
 					{
 						// 데미지를 주는 함수
-
+						((CCody*)DATABASE->GetCody())->Set_HpBarReduction(10);
 						// 데미지 주기 초기화
-						m_dDamagingDelay_Cody = 0.3;
+						m_dDamagingDelay_Cody = 0.5;
+						m_isHitCody = true;
 					}
 				}
 				else

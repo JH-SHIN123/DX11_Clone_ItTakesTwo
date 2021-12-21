@@ -32,6 +32,7 @@ private:
 	_float							m_fWatingTime = 0.f;
 	_float							m_fRecoveryTime = 0.f;
 	_bool							m_IsHit = false;
+	_uint							m_iOption = 0;
 
 private:
 	class CHpBarFrame*				m_pHpBarFrame = nullptr;

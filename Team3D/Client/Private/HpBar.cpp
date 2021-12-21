@@ -31,12 +31,14 @@ HRESULT CHpBar::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
 
+	if (nullptr != pArg)
+		memcpy(&m_iOption, pArg, sizeof(_uint));
+
 	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_UI(), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
-
 
 	return S_OK;
 }
@@ -47,13 +49,6 @@ _int CHpBar::Tick(_double TimeDelta)
 		return EVENT_DEAD;
 
 	CUIObject::Tick(TimeDelta);
-
-	if (m_pGameInstance->Key_Down(DIK_INSERT))
-	{
-		UI_Create(Cody, Minigame_Ready_Cody);
-		UI_Create(May, Minigame_Ready_May);
-		//UI_Create(Default, Minigame_Countdown);
-	}
 
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{
@@ -80,6 +75,9 @@ _int CHpBar::Tick(_double TimeDelta)
 	}
 	else
 	{
+		if (1 == m_iOption)
+			m_IsActive = false;
+
 		m_fWatingTime += (_float)TimeDelta;
 
 		if (1.f <= m_fWatingTime)
@@ -140,7 +138,7 @@ void CHpBar::Set_Active(_bool IsCheck)
 		m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
 	}
 
-	if (false == m_IsActive)
+	if (false == m_IsActive && 0 == m_iOption)
 	{
 		UI_Delete(Cody, Portrait_Cody);
 		UI_Delete(May, Portrait_May);
@@ -166,9 +164,38 @@ HRESULT CHpBar::Ready_Component()
 HRESULT CHpBar::Ready_Layer_UI()
 {
 	CGameObject* pGameObject = nullptr;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodyHpBarFrame"), nullptr, &pGameObject), E_FAIL);
-	m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
-	m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+
+	if (0 == m_iOption)
+	{
+		if (!lstrcmp(m_UIDesc.szUITag, L"CodyHpBar"))
+		{
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodyHpBarFrame"), nullptr, &pGameObject), E_FAIL);
+			m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
+			m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+		}
+		else
+		{
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MayHpBarFrame"), nullptr, &pGameObject), E_FAIL);
+			m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
+			m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+		}
+	}
+	else
+	{
+		if (!lstrcmp(m_UIDesc.szUITag, L"CodySubHpBar"))
+		{
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodySubHpBarFrame"), nullptr, &pGameObject), E_FAIL);
+			m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
+			m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+		}
+		else
+		{
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MaySubHpBarFrame"), nullptr, &pGameObject), E_FAIL);
+			m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
+			m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+		}
+
+	}
 
 	return S_OK;
 }

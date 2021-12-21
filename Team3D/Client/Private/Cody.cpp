@@ -155,9 +155,15 @@ HRESULT CCody::Ready_UI()
 	UI_Create(Cody, PlayerMarker);
 
 	CGameObject* pGameObject = nullptr;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodyHpBar"), nullptr, &pGameObject), E_FAIL);
+	_uint iOption = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodyHpBar"), &iOption, &pGameObject), E_FAIL);
 	m_pHpBar = static_cast<CHpBar*>(pGameObject);
 	m_pHpBar->Set_PlayerID(Player::Cody);
+
+	iOption = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodySubHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pSubHpBar = static_cast<CHpBar*>(pGameObject);
+	m_pSubHpBar->Set_PlayerID(Player::Cody);
 
 	return S_OK;
 }
@@ -449,6 +455,7 @@ void CCody::Free()
 
 	Safe_Release(m_pGauge_Circle);
 	Safe_Release(m_pHpBar);
+	Safe_Release(m_pSubHpBar);
 
 	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
@@ -3330,6 +3337,24 @@ void CCody::Set_ActiveHpBar(_bool IsCheck)
 		return;
 
 	m_pHpBar->Set_Active(IsCheck);
+}
+
+void CCody::Set_ActiveSubHpBar(_bool IsCheck)
+{
+	if (nullptr == m_pSubHpBar)
+		return;
+
+	m_pSubHpBar->Set_Active(IsCheck);
+}
+
+void CCody::Set_HpBarReduction(_float fDamage)
+{
+	if (nullptr == m_pHpBar || nullptr == m_pSubHpBar)
+		return;
+
+	m_pHpBar->Set_Hp(fDamage);
+	m_pSubHpBar->Set_Active(true);
+	m_pSubHpBar->Set_Hp(fDamage);
 }
 
 void CCody::WallLaserTrap(const _double dTimeDelta)

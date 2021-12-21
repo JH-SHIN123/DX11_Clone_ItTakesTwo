@@ -236,12 +236,15 @@ public:
 	_bool			 Get_IsWallJump() { return m_IsCamTriggerCollide; }
 	_bool			 Get_OnRail() { return m_bOnRail; }
 	_bool			 Get_IsEnding() { return m_IsEnding; }
+
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
 	void			 Set_ControlJoystick(_bool IsCheck);
 	void			 Set_AnimationRotate(_float fAngle);
 	void			 Set_ActiveHpBar(_bool IsCheck);
+	void			 Set_ActiveSubHpBar(_bool IsCheck);
+	void			 Set_HpBarReduction(_float fDamage);
 	void 			 Set_RocketOffSetPos(_fvector vRocketOffSetPos) { m_vRocketOffSetPos = vRocketOffSetPos; }
 	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
@@ -268,6 +271,7 @@ private: // Effects
 
 private: /* UI */
 	class CHpBar*	m_pHpBar = nullptr;
+	class CHpBar*	m_pSubHpBar = nullptr;
 
 	// Components
 private:
