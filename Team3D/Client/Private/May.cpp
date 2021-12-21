@@ -2151,6 +2151,36 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			{
 				m_pActorCom->Set_ZeroGravity(true, false, false);
 			}
+#ifdef __CONTROL_MAY_KEYBOARD
+			if (m_pGameInstance->Key_Pressing(DIK_UP))
+			{
+				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK), 0.f));
+				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
+				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
+			}
+			if ( m_pGameInstance->Key_Pressing(DIK_LEFT))
+			{
+				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT) * -1.f, 0.f));
+				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
+				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
+			}
+			if (m_pGameInstance->Key_Pressing(DIK_DOWN))
+			{
+				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK) * -1.f, 0.f));
+				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
+				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
+			}
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
+			{
+				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT), 0.f));
+				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
+				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
+			}
+#elif
 			if (m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Key_Pressing(DIK_UP))
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK), 0.f));
@@ -2179,6 +2209,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
+#endif
 		}
 		else if (m_IsInGravityPipe == true && m_IsCollide == false)
 		{
