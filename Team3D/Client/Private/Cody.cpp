@@ -708,7 +708,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma region Keyboard_Space_Button
 	if (m_eCurPlayerSize != SIZE_LARGE)
 	{
-		if (m_pGameInstance->Key_Down(DIK_SPACE) && m_iJumpCount < 2 && m_pModelCom->Get_CurAnimIndex() != ANI_C_Jump_Falling && m_bCanMove == true)
+		if (m_pGameInstance->Key_Down(DIK_SPACE) && m_iJumpCount < 2 /*&& m_pModelCom->Get_CurAnimIndex() != ANI_C_Jump_Falling*/ && m_bCanMove == true)
 		{
 			m_bShortJump = true;
 			m_iJumpCount += 1;
@@ -719,7 +719,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	}
 	else
 	{
-		if (m_pGameInstance->Key_Down(DIK_SPACE) && m_iJumpCount < 1 && m_pModelCom->Get_CurAnimIndex() != ANI_C_Jump_Falling && m_bCanMove == true)
+		if (m_pGameInstance->Key_Down(DIK_SPACE) && m_iJumpCount < 1 /*&& m_pModelCom->Get_CurAnimIndex() != ANI_C_Jump_Falling*/ && m_bCanMove == true)
 		{
 			m_bShortJump = true;
 			m_iJumpCount += 1;
@@ -1541,7 +1541,7 @@ void CCody::Jump(const _double dTimeDelta)
 			else
 			{
 				m_pModelCom->Set_Animation(ANI_C_Jump_Start);
-
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Falling);
 			}
 			m_bShortJump = false;
 		}
@@ -1563,6 +1563,7 @@ void CCody::Jump(const _double dTimeDelta)
 				m_pGameInstance->Play_Sound(TEXT("CodyS_Jump_Double_Voice.wav"), CHANNEL_CODYS_JUMP_DOUBLE_VOICE, m_fCodySJumpDoubleVolume);
 			}
 			m_pModelCom->Set_Animation(ANI_C_DoubleJump);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Falling);
 			m_bShortJump = false;
 		}
 	}
@@ -1647,6 +1648,8 @@ void CCody::Jump(const _double dTimeDelta)
 			else
 			{
 				m_pModelCom->Set_Animation(ANI_C_Jump_Falling);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Falling);
+				m_iJumpCount = 1;
 			}
 			m_bFallAniOnce = true;
 		}
@@ -1701,6 +1704,18 @@ void CCody::Jump(const _double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_SPACE) && m_IsFalling == true)
 	{
+		if (m_eCurPlayerSize == SIZE_MEDIUM)
+		{
+			m_pActorCom->Jump_Start(2.6f);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_JUMP_DOUBLE_VOICE, m_fCodyMJumpDoubleVolume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Jump_Double_Voice.wav"), CHANNEL_CODYM_JUMP_DOUBLE_VOICE, m_fCodyMJumpDoubleVolume);
+		}
+		else if (m_eCurPlayerSize == SIZE_SMALL)
+		{
+			m_pActorCom->Jump_Start(0.8f);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYS_JUMP_DOUBLE_VOICE, m_fCodySJumpDoubleVolume);
+			m_pGameInstance->Play_Sound(TEXT("CodyS_Jump_Double_Voice.wav"), CHANNEL_CODYS_JUMP_DOUBLE_VOICE, m_fCodySJumpDoubleVolume);
+		}
 		m_bShortJump = true;
 		m_IsJumping = true;
 		m_iJumpCount = 1;

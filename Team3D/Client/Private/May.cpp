@@ -576,6 +576,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_iJumpCount += 1;
 		m_IsJumping = true;
 		m_pModelCom->Set_Animation(ANI_M_Jump_Start);
+		m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Falling);
 	}
 
 	else if (m_pGameInstance->Key_Down(DIK_K) && m_iJumpCount == 1)
@@ -584,6 +585,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_iJumpCount += 1;
 		m_IsJumping = true;
 		m_pModelCom->Set_Animation(ANI_M_DoubleJump);
+		m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Falling);
 	}
 #pragma endregion
 
@@ -893,20 +895,22 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region PAD X
-	if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount == 0 && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jump_Falling && m_bCanMove == true)
+	if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount == 0 /*&& m_pModelCom->Get_CurAnimIndex() != ANI_M_Jump_Falling */&& m_bCanMove == true)
 	{
 		m_bShortJump = true;
 		m_iJumpCount += 1;
 		m_IsJumping = true;
 		m_pModelCom->Set_Animation(ANI_M_Jump_Start);
+		m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Falling);
 	}
 
-	else if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount == 1 && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jump_Falling && m_bCanMove == true)
+	else if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount == 1/* && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jump_Falling */&& m_bCanMove == true)
 	{
 		m_bShortJump = true;
 		m_iJumpCount += 1;
 		m_IsJumping = true;
 		m_pModelCom->Set_Animation(ANI_M_DoubleJump);
+		m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Falling);
 	}
 #pragma endregion
 
@@ -1516,6 +1520,8 @@ void CMay::Jump(const _double dTimeDelta)
 			else
 			{
 				m_pModelCom->Set_Animation(ANI_M_Jump_Falling);
+				m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Falling);
+				m_iJumpCount = 1;
 			}
 			m_bFallAniOnce = true;
 		}
