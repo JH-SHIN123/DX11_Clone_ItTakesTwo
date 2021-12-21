@@ -20,7 +20,6 @@
 * 사용할 스레드 개수 지정
 */
 
-
 #ifdef _DEBUG
 #define __THREAD_NUM 8
 #else
