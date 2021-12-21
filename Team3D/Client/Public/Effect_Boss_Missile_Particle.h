@@ -40,6 +40,7 @@ private:
 private:
 	_double m_dControlTime = 0.0; //
 	_bool m_IsActivate = true;
+	_double m_dActivateTime = 0.0;
 	_float3 m_vDir;
 	_float m_fJumpPower = 5.f;
 	_float m_fJumpTime = 0.f;

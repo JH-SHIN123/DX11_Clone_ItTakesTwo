@@ -1,25 +1,26 @@
 #include "stdafx.h"
-#include "..\Public\Effect_Boss_Missile_Particle.h"
+#include "..\Public\Effect_Boss_Missile_Smoke_Black.h"
 #include "DataStorage.h"
 #include "Cody.h"
+#include "May.h"
 
-CEffect_Boss_Missile_Particle::CEffect_Boss_Missile_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_Boss_Missile_Smoke_Black::CEffect_Boss_Missile_Smoke_Black(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
-CEffect_Boss_Missile_Particle::CEffect_Boss_Missile_Particle(const CEffect_Boss_Missile_Particle & rhs)
+CEffect_Boss_Missile_Smoke_Black::CEffect_Boss_Missile_Smoke_Black(const CEffect_Boss_Missile_Smoke_Black & rhs)
 	: CInGameEffect(rhs)
 {
 }
 
-HRESULT CEffect_Boss_Missile_Particle::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_Boss_Missile_Smoke_Black::NativeConstruct_Prototype(void * pArg)
 {
-	m_EffectDesc_Prototype.iInstanceCount = 80;
+	m_EffectDesc_Prototype.iInstanceCount = 40;
 	return S_OK;
 }
 
-HRESULT CEffect_Boss_Missile_Particle::NativeConstruct(void * pArg)
+HRESULT CEffect_Boss_Missile_Smoke_Black::NativeConstruct(void * pArg)
 {
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
@@ -37,19 +38,21 @@ HRESULT CEffect_Boss_Missile_Particle::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 
 	Ready_InstanceBuffer();
-	Set_Parabola();
 
 	return S_OK;
 }
 
-_int CEffect_Boss_Missile_Particle::Tick(_double TimeDelta)
+_int CEffect_Boss_Missile_Smoke_Black::Tick(_double TimeDelta)
 {
-	if (2.5 < m_dActivateTime)
+//	if (EFFECT_DESC_CLONE::PV_CODY == m_EffectDesc_Clone.iPlayerValue)
+		/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
+//	else
+//		/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CMay*>(DATABASE->GetMay())->Get_WorldMatrix());
+
+	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
 		return EVENT_DEAD;
 
-	m_dActivateTime += TimeDelta;
 	m_dControlTime += TimeDelta;
-
 	if (true == m_IsActivate)
 	{
 		if (1.0 <= m_dControlTime)
@@ -57,17 +60,20 @@ _int CEffect_Boss_Missile_Particle::Tick(_double TimeDelta)
 	}
 
 	Check_Instance(TimeDelta);
-	Check_Parabola(TimeDelta);
 
 	return NO_EVENT;
 }
 
-_int CEffect_Boss_Missile_Particle::Late_Tick(_double TimeDelta)
+_int CEffect_Boss_Missile_Smoke_Black::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	//if(EFFECT_DESC_CLONE::PV_CODY == m_EffectDesc_Clone.iPlayerValue)
+		return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	//else
+	//	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+
 }
 
-HRESULT CEffect_Boss_Missile_Particle::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CEffect_Boss_Missile_Smoke_Black::Render(RENDER_GROUP::Enum eGroup)
 {
 	_float fTime = (_float)m_dControlTime;
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
@@ -75,36 +81,26 @@ HRESULT CEffect_Boss_Missile_Particle::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom_STT->Set_Variable("g_fAlpha", &fTime, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(3));
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(2));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Distortion->Get_ShaderResourceView(1));
-	m_pPointInstanceCom_STT->Render(9, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
+	m_pPointInstanceCom_STT->Render(18, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
 }
 
-void CEffect_Boss_Missile_Particle::Set_Pos(_fvector vPos)
+void CEffect_Boss_Missile_Smoke_Black::Set_Pos(_fvector vPos)
 {
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 }
 
-void CEffect_Boss_Missile_Particle::Set_Parabola()
-{
-	m_vDir = __super::Get_Dir_Rand(_int3(200, 10, 200));
-	m_vDir.y = 0.f;
-
-	m_fJumpPower += ((_float)(rand() % 5 + 1)) * 0.5f;
-	m_fMovePower = (_float)(rand() % 5 + 3) * 1.5f;
-	m_fJumpStartPos_Y = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
-}
-
-void CEffect_Boss_Missile_Particle::Check_Instance(_double TimeDelta)
+void CEffect_Boss_Missile_Smoke_Black::Check_Instance(_double TimeDelta)
 {
 	_float4 vMyPos;
 	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
-		m_pInstanceBuffer_STT[iIndex].fTime -= (_float)TimeDelta * 0.8f;
+		m_pInstanceBuffer_STT[iIndex].fTime -= (_float)TimeDelta * 0.56f;
 		if (0.f >= m_pInstanceBuffer_STT[iIndex].fTime)
 			m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
 
@@ -121,35 +117,17 @@ void CEffect_Boss_Missile_Particle::Check_Instance(_double TimeDelta)
 	}
 }
 
-void CEffect_Boss_Missile_Particle::Check_Parabola(_double TimeDelta)
+void CEffect_Boss_Missile_Smoke_Black::Instance_Size(_float TimeDelta, _int iIndex)
 {
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vDir = XMLoadFloat3(&m_vDir);
-
-	m_fJumpTime += 0.02f ;
-	_float fUp = _float((m_fJumpPower)* m_fJumpTime * 1.f - 0.5f * (GRAVITY * m_fJumpTime * m_fJumpTime));
-	vPos.m128_f32[1] = m_fJumpStartPos_Y + fUp;
-
-	vPos += vDir * (_float)TimeDelta * m_fMovePower;
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+	m_pInstanceBuffer_STT[iIndex].vSize.x += TimeDelta * 2.5f;
+	m_pInstanceBuffer_STT[iIndex].vSize.y += TimeDelta * 2.5f;
 }
 
-void CEffect_Boss_Missile_Particle::Instance_Size(_float TimeDelta, _int iIndex)
+void CEffect_Boss_Missile_Smoke_Black::Instance_Pos(_float TimeDelta, _int iIndex)
 {
-	m_pInstanceBuffer_STT[iIndex].vSize.x -= TimeDelta * m_fSize_Power * (m_pInstanceBuffer_STT[iIndex].vSize.x * 10.f);
-	if (0.f >= m_pInstanceBuffer_STT[iIndex].vSize.x)
-		m_pInstanceBuffer_STT[iIndex].vSize.x = 0.f;
-
-	m_pInstanceBuffer_STT[iIndex].vSize.y = m_pInstanceBuffer_STT[iIndex].vSize.x;
 }
 
-void CEffect_Boss_Missile_Particle::Instance_Pos(_float TimeDelta, _int iIndex)
-{
-	m_pInstanceBuffer_STT[iIndex].vPosition.y += TimeDelta * 0.1f;
-}
-
-void CEffect_Boss_Missile_Particle::Instance_UV(_float TimeDelta, _int iIndex)
+void CEffect_Boss_Missile_Smoke_Black::Instance_UV(_float TimeDelta, _int iIndex)
 {
 	m_pInstance_Update_TextureUV_Time[iIndex] -= TimeDelta;
 
@@ -158,9 +136,7 @@ void CEffect_Boss_Missile_Particle::Instance_UV(_float TimeDelta, _int iIndex)
 		m_pInstance_Update_TextureUV_Time[iIndex] = 0.05;
 
 		m_pInstanceBuffer_STT[iIndex].vTextureUV.x += m_fNextUV;
-		m_pInstanceBuffer_STT[iIndex].vTextureUV.y += m_fNextUV;
 		m_pInstanceBuffer_STT[iIndex].vTextureUV.z += m_fNextUV;
-		m_pInstanceBuffer_STT[iIndex].vTextureUV.w += m_fNextUV;
 
 		if (1.f <= m_pInstanceBuffer_STT[iIndex].vTextureUV.y)
 		{
@@ -179,11 +155,13 @@ void CEffect_Boss_Missile_Particle::Instance_UV(_float TimeDelta, _int iIndex)
 		{
 			m_pInstanceBuffer_STT[iIndex].vTextureUV.x = 0.f;
 			m_pInstanceBuffer_STT[iIndex].vTextureUV.z = m_fNextUV;
+			m_pInstanceBuffer_STT[iIndex].vTextureUV.y += m_fNextUV;
+			m_pInstanceBuffer_STT[iIndex].vTextureUV.w += m_fNextUV;
 		}
 	}
 }
 
-void CEffect_Boss_Missile_Particle::Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex)
+void CEffect_Boss_Missile_Smoke_Black::Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex)
 {
 	m_pInstanceBuffer_STT[iIndex].vPosition = vPos;
 
@@ -195,7 +173,7 @@ void CEffect_Boss_Missile_Particle::Reset_Instance(_double TimeDelta, _float4 vP
 	m_pInstance_Update_TextureUV_Time[iIndex] = 0.05;
 }
 
-HRESULT CEffect_Boss_Missile_Particle::Ready_InstanceBuffer()
+HRESULT CEffect_Boss_Missile_Smoke_Black::Ready_InstanceBuffer()
 {
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
@@ -216,38 +194,38 @@ HRESULT CEffect_Boss_Missile_Particle::Ready_InstanceBuffer()
 		m_pInstanceBuffer_STT[iIndex].vPosition = vMyPos;
 
 		m_pInstanceBuffer_STT[iIndex].vTextureUV = __super::Get_TexUV_Rand(m_vTexUV.x, m_vTexUV.y);
-		m_pInstanceBuffer_STT[iIndex].fTime = 1.f;
-		m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
+		m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
+		m_pInstanceBuffer_STT[iIndex].vSize = {0.f, 0.f};
 
-		m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time  * (_double(iIndex) / iInstanceCount);
+		m_pInstance_Pos_UpdateTime[iIndex] = 0.05f  * _double(iIndex);
 		m_pInstance_Update_TextureUV_Time[iIndex] = 0.05;
 	}
 	return S_OK;
 }
 
-CEffect_Boss_Missile_Particle * CEffect_Boss_Missile_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CEffect_Boss_Missile_Smoke_Black * CEffect_Boss_Missile_Smoke_Black::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CEffect_Boss_Missile_Particle*	pInstance = new CEffect_Boss_Missile_Particle(pDevice, pDeviceContext);
+	CEffect_Boss_Missile_Smoke_Black*	pInstance = new CEffect_Boss_Missile_Smoke_Black(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CEffect_Boss_Missile_Particle");
+		MSG_BOX("Failed to Create Instance - CEffect_Boss_Missile_Smoke_Black");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CEffect_Boss_Missile_Particle::Clone_GameObject(void * pArg)
+CGameObject * CEffect_Boss_Missile_Smoke_Black::Clone_GameObject(void * pArg)
 {
-	CEffect_Boss_Missile_Particle* pInstance = new CEffect_Boss_Missile_Particle(*this);
+	CEffect_Boss_Missile_Smoke_Black* pInstance = new CEffect_Boss_Missile_Smoke_Black(*this);
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CEffect_Boss_Missile_Particle");
+		MSG_BOX("Failed to Clone Instance - CEffect_Boss_Missile_Smoke_Black");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CEffect_Boss_Missile_Particle::Free()
+void CEffect_Boss_Missile_Smoke_Black::Free()
 {
 	Safe_Delete_Array(m_pInstance_Update_TextureUV_Time);
 	Safe_Delete_Array(m_pInstanceBuffer_STT);
