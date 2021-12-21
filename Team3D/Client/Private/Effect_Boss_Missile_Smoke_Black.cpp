@@ -3,6 +3,7 @@
 #include "DataStorage.h"
 #include "Cody.h"
 #include "May.h"
+#include "EndingRocket.h"
 
 CEffect_Boss_Missile_Smoke_Black::CEffect_Boss_Missile_Smoke_Black(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -45,9 +46,10 @@ HRESULT CEffect_Boss_Missile_Smoke_Black::NativeConstruct(void * pArg)
 _int CEffect_Boss_Missile_Smoke_Black::Tick(_double TimeDelta)
 {
 //	if (EFFECT_DESC_CLONE::PV_CODY == m_EffectDesc_Clone.iPlayerValue)
-		/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
+//		/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
 //	else
 //		/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CMay*>(DATABASE->GetMay())->Get_WorldMatrix());
+	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CEndingRocket*>(DATABASE->Get_EndingRocket())->Get_Transform()->Get_WorldMatrix());
 
 	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
 		return EVENT_DEAD;
@@ -67,7 +69,7 @@ _int CEffect_Boss_Missile_Smoke_Black::Tick(_double TimeDelta)
 _int CEffect_Boss_Missile_Smoke_Black::Late_Tick(_double TimeDelta)
 {
 	//if(EFFECT_DESC_CLONE::PV_CODY == m_EffectDesc_Clone.iPlayerValue)
-		return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+		return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 	//else
 	//	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
 

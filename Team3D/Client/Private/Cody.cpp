@@ -389,21 +389,33 @@ _int CCody::Late_Tick(_double dTimeDelta)
 		return NO_EVENT;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+	{
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+	}
 
 	return NO_EVENT;
 }
 
 HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 {
-	if (true == m_IsDeadLine || m_IsPinBall || m_bRespawn)
+	if (true == m_IsDeadLine || m_IsPinBall || m_bRespawn) 
 		return S_OK;
 
 	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(0);
+
+	if (eGroup == RENDER_GROUP::RENDER_NONALPHA)
+	{
+		m_pModelCom->Set_DefaultVariables_Shadow();
+		m_pModelCom->Render_Model(0);
+	}
+	else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding)
+	{
+		m_pModelCom->Render_Model(30);
+		m_pModelCom->Render_Model(32);
+	}
 
 	return S_OK;
 }
@@ -555,7 +567,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_END))
 	{
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f), 3.f);
-		ENDINGCREDIT->Create_Environment();
+		//ENDINGCREDIT->Create_Environment();
 		m_IsEnding = true;
 	}
 #pragma endregion
@@ -699,6 +711,8 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_pGameInstance->Play_Sound(TEXT("CodyM_Dash.wav"), CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
 			m_bAction = false;
 			m_bRoll = true;
+
+			Start_RadiarBlur(0.3f);
 		}
 		else
 		{
@@ -729,10 +743,11 @@ void CCody::KeyInput(_double dTimeDelta)
 				}
 				m_pModelCom->Set_Animation(ANI_C_AirDash_Start);
 				m_IsAirDash = true;
+
+				Start_RadiarBlur(0.3f);
 			}
 		}
 
-		Start_RadiarBlur(0.3f);
 	}
 #pragma endregion
 
@@ -3477,9 +3492,12 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 	{
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_CODY_RAIL);
+
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 			Loop_RadiarBlur(false);
 
+			//m_iAirDashCount = 0;
 			m_iJumpCount = 0;
 			m_bShortJump = true;
 
@@ -3610,7 +3628,7 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 		else if (CSpaceRail::EDGE_LAST == eEdgeState || CSpaceRail::EDGE_LAST_END == eEdgeState)
 			ePathState = CPath::STATE_BACKWARD;
 
-		m_pTargetRail->Start_Path(ePathState, m_pTargetRailNode->Get_FrameIndex(), true);
+		m_pTargetRail->Start_Path(CSpaceRail::SUBJ_CODY, ePathState, m_pTargetRailNode->Get_FrameIndex(), true);
 
 		/* 카메라가 레일타는 방향으로 세팅 */
 		//m_pCamera->Get_Transform()->Set_State();
@@ -3620,6 +3638,9 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 		m_bOnRail = true;
 		m_bMoveToRail = false;
 		EFFECT->Add_Effect(Effect_Value::Cody_Rail, m_pTransformCom->Get_WorldMatrix());
+
+		m_pGameInstance->Set_SoundVolume(CHANNEL_CODY_RAIL, m_fRailSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Rail_Ride.wav"), CHANNEL_CODY_RAIL, m_fRailSoundVolume, true);
 	}
 }
 void CCody::TakeRail(_double dTimeDelta)
@@ -3635,11 +3656,16 @@ void CCody::TakeRail(_double dTimeDelta)
 		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH); // 메이 blend 수치값 잡아야함.
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	m_bOnRail = m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);
-	if (m_bOnRail)
+	m_bOnRail = m_pTargetRail->Take_Path(CSpaceRail::SUBJ_CODY, dTimeDelta, WorldMatrix);
+	if (m_bOnRail) {
 		m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+	}
 	else
 	{
+		m_pGameInstance->Stop_Sound(CHANNEL_CODY_RAIL);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_CODY_RAIL, m_fRailSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Rail_End.wav"), CHANNEL_CODY_RAIL, m_fRailSoundVolume);
+
 		m_pTargetRail = nullptr;
 		m_pTargetRailNode = nullptr;
 		m_pSearchTargetRailNode = nullptr;

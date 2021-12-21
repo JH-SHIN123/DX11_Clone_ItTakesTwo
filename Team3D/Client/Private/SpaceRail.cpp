@@ -13,17 +13,30 @@ CSpaceRail::CSpaceRail(const CSpaceRail& rhs)
 {
 }
 
-HRESULT CSpaceRail::Start_Path(CPath::STATE eState, _uint iAnimFrame, _bool bStop)
+HRESULT CSpaceRail::Start_Path(SUBJ eSubj, CPath::STATE eState, _uint iAnimFrame, _bool bStop)
 {
-	if (nullptr == m_pPathCom) return E_FAIL;
+	HRESULT hr = 0;
+	switch (eSubj)
+	{
+	case Client::CSpaceRail::SUBJ_CODY:
+	{
+		if (nullptr == m_pPathCom_Cody) return E_FAIL;
+		hr = m_pPathCom_Cody->Start_Path(eState, iAnimFrame, bStop);
+		break;
+	}
+	case Client::CSpaceRail::SUBJ_MAY:
+	{
+		if (nullptr == m_pPathCom_May) return E_FAIL;
+		hr = m_pPathCom_May->Start_Path(eState, iAnimFrame, bStop);
+		break;
+	}
+	}
 
-	return m_pPathCom->Start_Path(eState, iAnimFrame, bStop);
+	return hr;
 }
 
-_bool CSpaceRail::Take_Path(_double dTimeDelta, _matrix& WorldMatrix)
+_bool CSpaceRail::Take_Path(SUBJ eSubj, _double dTimeDelta, _matrix& WorldMatrix)
 {
-	if (nullptr == m_pPathCom) return false;
-
 	// 1번 : 0.2
 	// 2번 : 0.2
 	// 3번 : 0.2
@@ -31,14 +44,27 @@ _bool CSpaceRail::Take_Path(_double dTimeDelta, _matrix& WorldMatrix)
 	// 5번 : 1.0
 	// 6번 : 1.0
 
-	// 속도는 프레임개수로 조절하자.
-#ifdef __TEST_TAEK
-	return m_pPathCom->Update_Animation(dTimeDelta * 0.2f, WorldMatrix);
-#else
-	return m_pPathCom->Update_Animation(dTimeDelta * m_fRailSpeed, WorldMatrix);
-#endif // __TAEK
-}
+	_bool isTake = 0;
+	switch (eSubj)
+	{
+	case Client::CSpaceRail::SUBJ_CODY:
+	{
+		if (nullptr == m_pPathCom_Cody) return false;
+		isTake = m_pPathCom_Cody->Update_Animation(dTimeDelta * m_fRailSpeed, WorldMatrix);
+		
+		break;
+	}
+	case Client::CSpaceRail::SUBJ_MAY:
+	{
+		if (nullptr == m_pPathCom_May) return false;
+		isTake = m_pPathCom_May->Update_Animation(dTimeDelta * m_fRailSpeed, WorldMatrix);
 
+		break;
+	}
+	}
+
+	return isTake;
+}
 
 HRESULT CSpaceRail::NativeConstruct_Prototype()
 {
@@ -70,34 +96,40 @@ HRESULT CSpaceRail::NativeConstruct(void* pArg)
 
 	// 모델태그에 따라, 패스 지정해주기
 	if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail01"))) {
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail01"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail01"), TEXT("Com_Path_Cody"), (CComponent**)&m_pPathCom_Cody, (void*)&pathDesc), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail01"), TEXT("Com_Path_May"), (CComponent**)&m_pPathCom_May, (void*)&pathDesc), E_FAIL);
 		m_fRailSpeed = 0.2f;
 	}
 	else if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail02"))){
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail02"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail02"), TEXT("Com_Path_Cody"), (CComponent**)&m_pPathCom_Cody, (void*)&pathDesc), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail02"), TEXT("Com_Path_May"), (CComponent**)&m_pPathCom_May, (void*)&pathDesc), E_FAIL);
 		m_fRailSpeed = 0.2f;
 	}
 	else if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail03"))) {
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail03"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail03"), TEXT("Com_Path_Cody"), (CComponent**)&m_pPathCom_Cody, (void*)&pathDesc), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail03"), TEXT("Com_Path_May"), (CComponent**)&m_pPathCom_May, (void*)&pathDesc), E_FAIL);
 		m_fRailSpeed = 0.2f;
 	}
 	else if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail04"))) {
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail04"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail04"), TEXT("Com_Path_Cody"), (CComponent**)&m_pPathCom_Cody, (void*)&pathDesc), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail04"), TEXT("Com_Path_May"), (CComponent**)&m_pPathCom_May, (void*)&pathDesc), E_FAIL);
 		m_fRailSpeed = 0.8f;
 	}
 	else if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail05"))) {
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail05"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail05"), TEXT("Com_Path_Cody"), (CComponent**)&m_pPathCom_Cody, (void*)&pathDesc), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail05"), TEXT("Com_Path_May"), (CComponent**)&m_pPathCom_May, (void*)&pathDesc), E_FAIL);
 		m_fRailSpeed = 1.f;
 	}
 	else if (false == lstrcmp(m_szRailTag, TEXT("Component_Model_GrindRail06"))) {
-		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail06"), TEXT("Com_Path"), (CComponent**)&m_pPathCom, (void*)&pathDesc), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail06"), TEXT("Com_Path_Cody"), (CComponent**)&m_pPathCom_Cody, (void*)&pathDesc), E_FAIL);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Path_GrindRail06"), TEXT("Com_Path_May"), (CComponent**)&m_pPathCom_May, (void*)&pathDesc), E_FAIL);
 		m_fRailSpeed = 1.f;
 	}
 
 	/* Space Rail Node 구성 */
 	vector<_uint> FrameIndices;
 	vector<_float4x4> FrameMatrices;
-	m_pPathCom->Get_FramesWorldMatrices(FrameIndices, FrameMatrices, m_iPerNodesInteract);
+	m_pPathCom_Cody->Get_FramesWorldMatrices(FrameIndices, FrameMatrices, m_iPerNodesInteract); /* 노드는 한개만 만든다. */
 
 	CSpaceRail_Node::SPACERAILNODE_DESC nodeDesc;
 
@@ -209,7 +241,8 @@ void CSpaceRail::Free()
 		Safe_Release(pNode);
 	m_vecSpaceRailNodes.clear();
 
-	Safe_Release(m_pPathCom);
-
+	Safe_Release(m_pPathCom_Cody);
+	Safe_Release(m_pPathCom_May);
+	
 	CDynamic_Env::Free();
 }

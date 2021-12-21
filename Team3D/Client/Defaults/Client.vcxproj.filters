@@ -300,6 +300,12 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\2DMesh">
       <UniqueIdentifier>{0775dd07-700e-4894-8bce-be62f6531623}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\HugeRock">
+      <UniqueIdentifier>{2cbbd421-ae32-4bf8-a171-d3a122a04a69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle">
+      <UniqueIdentifier>{82b1a154-6103-4995-92e1-201875b61a16}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen">
       <UniqueIdentifier>{cb99fc26-4d07-4ee9-bdf8-b9a43ea37b0e}</UniqueIdentifier>
     </Filter>
@@ -1355,6 +1361,12 @@
     <ClInclude Include="..\Public\C2DMesh.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\2DMesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\HugeRock.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\HugeRock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RockParticle.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\AlienScreen.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>
     </ClInclude>
@@ -2295,6 +2307,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\C2DMesh.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\2DMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HugeRock.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\HugeRock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RockParticle.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AlienScreen.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>

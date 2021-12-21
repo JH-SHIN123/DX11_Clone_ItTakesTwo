@@ -1,27 +1,26 @@
 #include "stdafx.h"
-#include "..\Public\Rock.h"
+#include "..\Public\HugeRock.h"
 #include "Cody.h"
 #include "EndingCredit_Manager.h"
 
-
-CRock::CRock(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CHugeRock::CHugeRock(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
 }
 
-CRock::CRock(const CRock & rhs)
+CHugeRock::CHugeRock(const CHugeRock & rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CRock::NativeConstruct_Prototype()
+HRESULT CHugeRock::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
 
 	return S_OK;
 }
 
-HRESULT CRock::NativeConstruct(void * pArg)
+HRESULT CHugeRock::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
@@ -33,74 +32,14 @@ HRESULT CRock::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CRock::Tick(_double dTimeDelta)
+_int CHugeRock::Tick(_double dTimeDelta)
 {
 	if (true == m_isDead)
 		return EVENT_DEAD;
 
 	CGameObject::Tick(dTimeDelta);
 
-	if (true == ENDINGCREDIT->Get_Dead_Environment())
-		Set_Dead();
-
-	Movement(dTimeDelta);
-
-	return NO_EVENT;
-}
-
-_int CRock::Late_Tick(_double dTimeDelta)
-{
-	CGameObject::Late_Tick(dTimeDelta);
-
-	m_pDynamicActorCom->Update_DynamicActor();
-	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
-
-	m_pTriggerActorCom->Update_TriggerActor();
-
-	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
-
-	return NO_EVENT;
-}
-
-HRESULT CRock::Render(RENDER_GROUP::Enum eGroup)
-{
-	CGameObject::Render(eGroup);
-
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1, 0);
-
-	return S_OK;
-}
-
-HRESULT CRock::Render_ShadowDepth()
-{
-	CGameObject::Render_ShadowDepth();
-
-	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	/* Skinned: 2 / Normal: 3 */
-	m_pModelCom->Render_Model(3, 0, true);
-
-	return S_OK;
-}
-
-void CRock::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
-{
-	CGameObject::Trigger(eStatus, eID, pGameObject);
-
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-	{
-		_int iRandom = rand() % 5 - 2;
-
-		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3((_float)iRandom, -3.f, (_float)iRandom));
-	}
-}
-
-void CRock::Movement(_double dTimeDelta)
-{
-	m_fScale += (_float)dTimeDelta / 3.f;
+	m_fScale += (_float)dTimeDelta * 5.f;
 
 	if (m_fMaxScale <= m_fScale)
 		m_fScale = m_fMaxScale;
@@ -115,48 +54,70 @@ void CRock::Movement(_double dTimeDelta)
 
 	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
 
-	_float fCodyY = XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
-	_float fMyY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	return NO_EVENT;
+}
 
-	if (fCodyY + 10.f < fMyY)
+_int CHugeRock::Late_Tick(_double dTimeDelta)
+{
+	CGameObject::Late_Tick(dTimeDelta);
+
+	m_pDynamicActorCom->Update_DynamicActor();
+	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
+
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+
+	return NO_EVENT;
+}
+
+HRESULT CHugeRock::Render(RENDER_GROUP::Enum eGroup)
+{
+	CGameObject::Render(eGroup);
+
+	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+	m_pModelCom->Set_DefaultVariables_Shadow();
+	m_pModelCom->Render_Model(1, 0);
+
+	return S_OK;
+}
+
+HRESULT CHugeRock::Render_ShadowDepth()
+{
+	CGameObject::Render_ShadowDepth();
+
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
+	/* Skinned: 2 / Normal: 3 */
+	m_pModelCom->Render_Model(3, 0, true);
+
+	return S_OK;
+}
+
+void CHugeRock::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+{
+	CGameObject::Trigger(eStatus, eID, pGameObject);
+
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		_vector vCodyPos = m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION);
-		_float3 vMyPos = {};
-		XMStoreFloat3(&vMyPos, vCodyPos);
-		vMyPos.x = 0.f;
-		vMyPos.z = 0.f;
-
-		vMyPos.x += (_float)(rand() % 61 - 30);
-		vMyPos.y -= 50.f;
-		vMyPos.z += (_float)(rand() % 61 - 30);
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vMyPos.x, vMyPos.y, vMyPos.z, 1.f));
-
-		m_fScale = 0.1f;
-		m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
-
-		m_pDynamicActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION))));
+		ENDINGCREDIT->Set_Dead_Environment();
+		Create_Rocks();
+		Set_Dead();
 	}
 }
 
-HRESULT CRock::Ready_Component(void * pArg)
+HRESULT CHugeRock::Ready_Component(void * pArg)
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Rock"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pCodyTransformCom = ((CCody*)(DATABASE->GetCody()))->Get_Transform();
-	Safe_AddRef(m_pCodyTransformCom);
+	_vector vCodyPosition = ((CCody*)(DATABASE->GetCody()))->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	_vector vPosition = XMVectorSet(0.f, XMVectorGetY(vCodyPosition) - 85.f, 0.f, 0.f);
 
-	_float3 vMyPos = { 0.f, XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION)), 0.f };
-	vMyPos.x += (_float)(rand() % 61 - 30);
-	vMyPos.y -= (_float)(rand() % 50 + 50);
-	vMyPos.z += (_float)(rand() % 61 - 30);
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vMyPos.x, vMyPos.y, vMyPos.z, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
 	/* Dynamic */
-	PxGeometry* DynamicGeom = new PxSphereGeometry(0.1f);
+	PxGeometry* DynamicGeom = new PxSphereGeometry(0.5f);
 	CDynamicActor::ARG_DESC tDynamicActorArg;
 	tDynamicActorArg.pTransform = m_pTransformCom;
 	tDynamicActorArg.fDensity = 1.f;
@@ -170,7 +131,7 @@ HRESULT CRock::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(1.7f);
+	PxGeometry* TriggerGeom = new PxSphereGeometry(12.f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;
@@ -182,38 +143,47 @@ HRESULT CRock::Ready_Component(void * pArg)
 	return S_OK;
 }
 
-CRock * CRock::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+HRESULT CHugeRock::Create_Rocks()
 {
-	CRock* pInstance = new CRock(pDevice, pDeviceContext);
+	for (_uint i = 0; i < 100; ++i)
+	{
+		_vector vPositoin = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_RockParticle"), &vPositoin), E_FAIL);
+	}
+	return S_OK;
+}
+
+CHugeRock * CHugeRock::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+{
+	CHugeRock* pInstance = new CHugeRock(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSG_BOX("Failed to Create Instance - CRock");
+		MSG_BOX("Failed to Create Instance - CHugeRock");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CRock::Clone_GameObject(void * pArg)
+CGameObject * CHugeRock::Clone_GameObject(void * pArg)
 {
-	CRock* pInstance = new CRock(*this);
+	CHugeRock* pInstance = new CHugeRock(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CRock");
+		MSG_BOX("Failed to Clone Instance - CHugeRock");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CRock::Free()
+void CHugeRock::Free()
 {
-	Safe_Release(m_pTriggerActorCom);
-	Safe_Release(m_pCodyTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pDynamicActorCom);
+	Safe_Release(m_pTriggerActorCom);
 
 	CGameObject::Free();
 }

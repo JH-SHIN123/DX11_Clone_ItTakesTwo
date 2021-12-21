@@ -28,9 +28,12 @@ private:
 
 	CTransform*			m_pCodyTransformCom = nullptr;
 
-	_float				m_fScale = 0.1f;
-	_float				m_fMaxScale = 1.f;
+	_float				m_fScale = 0.3f;
+	_float				m_fMaxScale = 1.2f;
 	_bool				m_bCollision = false;
+
+private:
+	void Movement(_double dTimeDelta);
 
 private:
 	HRESULT Ready_Component(void* pArg);

@@ -43,6 +43,8 @@ _int C3DText::Tick(_double dTimeDelta)
 
 	CGameObject::Tick(dTimeDelta);
 
+	m_pTransformCom->Go_Down(dTimeDelta);
+
 	_float fMyPosY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	_float fCodyY = XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
 
@@ -81,7 +83,7 @@ _int C3DText::Late_Tick(_double dTimeDelta)
 	m_pTriggerActorCom->Update_TriggerActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_AFTERPOST_BLUR, this);
 
 	return NO_EVENT;
 }
@@ -137,6 +139,7 @@ HRESULT C3DText::Ready_Component(void * pArg)
 	Safe_AddRef(m_pCodyTransformCom);
 
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+	m_pTransformCom->Set_Speed(0.2f, 0.f);
 
 	_float3 vPos = {};
 	XMStoreFloat3(&vPos, m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -175,7 +178,7 @@ HRESULT C3DText::Ready_Component(void * pArg)
 	m_iIndex = tArg.iIndex;
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxBoxGeometry(tArg.vTriggerSize.x, tArg.vTriggerSize.y, tArg.vTriggerSize.z);
+	PxGeometry* TriggerGeom = new PxBoxGeometry(tArg.vTriggerSize.x * 5.f, tArg.vTriggerSize.y, tArg.vTriggerSize.z * 5.f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;
@@ -183,6 +186,13 @@ HRESULT C3DText::Ready_Component(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerGeom);
+
+	/* Sound */
+	if (tArg.iIndex == 0)
+	{
+		m_pGameInstance->Play_Sound(TEXT("Bgm_Ending.wav"), CHANNEL_TYPE::CHANNEL_BGM, 0.f, true);
+		m_pGameInstance->FadeInOut_Sound(true, true, 0.2f, 1.f);
+	}
 
 	return S_OK;
 }

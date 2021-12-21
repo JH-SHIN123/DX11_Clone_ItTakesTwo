@@ -53,6 +53,7 @@ private:
 
 	_uint	m_bCheckTrigger = 0;
 	_float	m_fTriggerRatio = 0.f;
+	_float	m_fToyBoxButtonRecoverVolume = 1.f;
 
 private:
 	/* For.Component */

@@ -508,6 +508,7 @@ private:
 	void	TakeRailEnd(_double dTimeDelta);
 	void	ShowRailTargetTriggerUI();
 
+	HRESULT Ready_Layer_Gauge_Circle(const _tchar* pLayerTag);
 
 private:
 	_bool						m_bMoveToRail = false;
@@ -516,16 +517,27 @@ private:
 
 private:
 	_double						m_dRailEnd_ForceDeltaT = 0.0;
+	_float						m_fRailSoundVolume = 1.f;
 
 private:
 	vector<CSpaceRail_Node*>	m_vecTargetRailNodes;
-	CSpaceRail* m_pTargetRail = nullptr;
-	CSpaceRail_Node* m_pSearchTargetRailNode = nullptr;
-	CSpaceRail_Node* m_pTargetRailNode = nullptr;
+	CSpaceRail*					m_pTargetRail = nullptr;
+	CSpaceRail_Node*			m_pSearchTargetRailNode = nullptr;
+	CSpaceRail_Node*			m_pTargetRailNode = nullptr;
+#pragma endregion
+
+#pragma region RadiarBlur
+private:
+	void Start_RadiarBlur(_double dBlurTime);
+	void Loop_RadiarBlur(_bool bLoop);
+	void Trigger_RadiarBlur(_double dTimeDelta);
+	void Set_RadiarBlur(_bool bActive);
 
 private:
-	HRESULT Ready_Layer_Gauge_Circle(const _tchar * pLayerTag);
-
+	_bool	m_bRadiarBlur_Trigger = false;
+	_bool	m_bRadiarBlur_Loop = false;
+	_double m_dRadiarBlurTime = 0.0;
+	_double m_dRadiarBlurDeltaT = 0.0;
 #pragma endregion
 
 private: /* For. Ending */
