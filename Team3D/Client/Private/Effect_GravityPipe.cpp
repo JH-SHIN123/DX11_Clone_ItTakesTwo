@@ -4,7 +4,8 @@
 #include "Cody.h"
 #include "May.h"
 #include "Effect_Env_Particle.h"
-
+#include"MainCamera.h"
+#include"SubCamera.h"
 CEffect_GravityPipe::CEffect_GravityPipe(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
 {
@@ -89,9 +90,13 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 
 	if (m_EffectDesc_Clone.iPlayerValue == 0 && DATABASE->Get_GravityStageClear() == true)
 		m_IsActivate = true;
-
 	if (m_EffectDesc_Clone.iPlayerValue == 1 && DATABASE->Get_IsValve_Activated() == true)
+	{
+		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Set_OpenThridFloor(true);
+		static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Set_OpenThridFloor(true);
+
 		m_IsActivate = true;
+	}
 
 
 	m_pParticle->Set_ControlTime(m_dActivateTime);

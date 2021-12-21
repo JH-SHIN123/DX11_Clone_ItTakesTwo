@@ -2106,7 +2106,7 @@ void CMay::Rotate_Valve(const _double dTimeDelta)
 		}
 
 		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pGameInstance->Pad_Key_Down(DIP_RB) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Valve_Rotate_R && m_bStruggle == false)
+		if ((m_pGameInstance->Pad_Key_Down(DIP_RB) || m_pGameInstance->Key_Down(DIK_RIGHT)) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Valve_Rotate_R && m_bStruggle == false)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Valve_Rotate_R);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Valve_Rotate_MH);
