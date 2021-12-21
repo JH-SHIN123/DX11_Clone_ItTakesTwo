@@ -218,7 +218,7 @@ void CSpaceValve::Rotate_SpaceValve(_double dTimeDelta)
 
 	else if (m_iTargetPlayer == GameID::eMAY)
 	{
-		if (m_pGameInstance->Pad_Key_Down(DIP_RB) && m_bRotate == false && m_iRotateCount < 3)
+		if ((m_pGameInstance->Pad_Key_Down(DIP_RB) || m_pGameInstance->Key_Down(DIK_RIGHT)) && m_bRotate == false && m_iRotateCount < 3)
 		{
 			m_iRotateCount += 1;
 			m_bRotate = true;
@@ -229,7 +229,7 @@ void CSpaceValve::Rotate_SpaceValve(_double dTimeDelta)
 			m_fRotateDelay += (_float)dTimeDelta;
 			if (m_fRotateDelay < 2.1f)
 			{
-				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta);
+				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta);
 			}
 			else if (m_fRotateDelay >= 2.1f)
 			{

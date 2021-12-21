@@ -1824,20 +1824,21 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			if (m_IsHookUFO == false)
 			{
 				m_vTriggerTargetPos.y = m_vTriggerTargetPos.y - 5.f;
+				m_vHookUFOOffsetPos = XMLoadFloat3(&m_vTriggerTargetPos);
 				_vector vPlayerPos = XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f);
-				_vector vTriggerPos = XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f);
+				_vector vTriggerPos = XMVectorSetY(m_vHookUFOOffsetPos, 0.f);
 				_vector vPlayerToTrigger = XMVector3Normalize(vTriggerPos - vPlayerPos);
 				_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 				_vector vRight = XMVector3Cross(vPlayerToTrigger, vUp);
 
 				_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-				_vector vTargetPos = XMLoadFloat3(&m_vTriggerTargetPos);
+				_vector vTargetPos = m_vHookUFOOffsetPos;
 
 				_vector vDir = vTargetPos - vTestPos;
 				_float  fDist = XMVectorGetX(XMVector3Length(vDir));
 
 				_vector vFixUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-				_vector vTriggerToPlayer = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat3(&m_vTriggerTargetPos));
+				_vector vTriggerToPlayer = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_vHookUFOOffsetPos);
 				m_fRopeAngle = XMVectorGetX(XMVector3AngleBetweenNormals(vFixUp, vTriggerToPlayer));
 				m_faArmLength = fDist;
 
@@ -2088,7 +2089,7 @@ void CMay::Rotate_Valve(const _double dTimeDelta)
 		}
 
 		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pGameInstance->Pad_Key_Down(DIP_RB) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Valve_Rotate_R && m_bStruggle == false)
+		if ((m_pGameInstance->Pad_Key_Down(DIP_RB) || m_pGameInstance->Key_Down(DIK_RIGHT)) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Valve_Rotate_R && m_bStruggle == false)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Valve_Rotate_R);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Valve_Rotate_MH);
@@ -2654,10 +2655,10 @@ void CMay::Hook_UFO(const _double dTimeDelta)
 		m_fRopeAngle += m_faVelocity / 50.f;
 
 
-		_vector vPosition = XMVectorSet((m_vTriggerTargetPos.x - m_vStartPosition.x) * sin(-m_fRopeAngle), (m_vTriggerTargetPos.y - m_vStartPosition.y) * cos(m_fRopeAngle), ((m_vTriggerTargetPos.z - m_vStartPosition.z) * sin(-m_fRopeAngle)), 1.f);
-		m_pActorCom->Set_Position(XMLoadFloat3(&m_vTriggerTargetPos) + vPosition);
+		_vector vPosition = XMVectorSet((m_vHookUFOOffsetPos.m128_f32[0] - m_vStartPosition.x) * sin(-m_fRopeAngle), (m_vHookUFOOffsetPos.m128_f32[1] - m_vStartPosition.y) * cos(m_fRopeAngle), ((m_vHookUFOOffsetPos.m128_f32[2] - m_vStartPosition.z) * sin(-m_fRopeAngle)), 1.f);
+		m_pActorCom->Set_Position(m_vHookUFOOffsetPos + vPosition);
 
-		_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f) - XMVectorSetY(XMLoadFloat3(&m_vTriggerTargetPos), 0.f));
+		_vector vTriggerToPlayer = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f) - XMVectorSetY(m_vHookUFOOffsetPos, 0.f));
 		vTriggerToPlayer = XMVectorSetW(vTriggerToPlayer, 1.f);
 		m_pTransformCom->RotateYawDirectionOnLand(-vTriggerToPlayer, (_float)dTimeDelta / 2.f);
 
