@@ -1104,6 +1104,9 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\05.Minigame_HpBar">
+      <UniqueIdentifier>{2beff27f-1e96-4d7f-a780-ca7b11125de9}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->

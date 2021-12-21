@@ -171,6 +171,7 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
 	{
+
 	case Client::CUFO::TARGET_CODY:
 		vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
 		break;
