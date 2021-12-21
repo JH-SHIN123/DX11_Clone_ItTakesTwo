@@ -2014,23 +2014,28 @@ void CCody::Enforce_IdleState()
 	m_bShortJump = false;
 	m_bGroundPound = false;
 	m_IsTurnAround = false;
-
+	m_bWallAttach = false;
+	m_IsWallJumping = false;
 	m_bAction = false;
 
 	m_IsJumping = false;
 	m_IsAirDash = false;
 	m_IsFalling = false;
 	m_bFallAniOnce = false;
-
+		
 	m_bPlayGroundPoundOnce = false;
 
 	m_fIdleTime = 0.f;
 
 	m_iJumpCount = 0;
 	m_iAirDashCount = 0;
+	m_bCanMove = true;
 
+	m_pActorCom->Set_IsFalling(false);
+	m_pActorCom->Set_ZeroGravity(false, false, false);
 	m_pActorCom->Set_Jump(false);
 	m_pModelCom->Set_Animation(ANI_C_MH);
+	m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 }
 
 #pragma region Shader_Variables
@@ -2286,7 +2291,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Death_Fall_MH);
 
-			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_pActorCom->Set_ZeroGravity(true, true, true);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_IsDeadLine = true;
 
@@ -3296,12 +3301,12 @@ void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
 		_float fTriggerPosZ = m_vTriggerTargetPos.z;
 
 		_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
-		if (fTriggerPosZ < fMyPosZ)
-		{
-			vSavePosition.m128_f32[1] += 0.7f;
-			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
-		}
-		else
+		//if (fTriggerPosZ < fMyPosZ)
+		//{
+		//	vSavePosition.m128_f32[1] += 0.7f;
+		//	vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+		//}
+		//else
 			vSavePosition = XMVectorSet(64.f, 0.9f, 25.f, 1.f);
 	
 		m_pActorCom->Set_Position(vSavePosition);
@@ -3406,10 +3411,12 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_dDeadTime = 0.f;
 			m_IsCollide = false;
 			m_IsDeadLine = false;
 			m_pActorCom->Set_ZeroGravity(false, false, false);
+			Enforce_IdleState();
 		}
 		else
 		{

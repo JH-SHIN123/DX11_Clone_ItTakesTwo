@@ -1004,23 +1004,28 @@ void CMay::Enforce_IdleState()
 	m_bShortJump = false;
 	m_bGroundPound = false;
 	m_IsTurnAround = false;
-
+	m_bWallAttach = false;
+	m_IsWallJumping = false;
 	m_bAction = false;
 
 	m_IsJumping = false;
 	m_IsAirDash = false;
 	m_IsFalling = false;
 	m_bFallAniOnce = false;
-
+		
 	m_bPlayGroundPoundOnce = false;
 
 	m_fIdleTime = 0.f;
+	m_bCanMove = true;
 
 	m_iJumpCount = 0;
 	m_iAirDashCount = 0;
 
+	m_pActorCom->Set_IsFalling(false);
+	m_pActorCom->Set_ZeroGravity(false, false, false);
 	m_pActorCom->Set_Jump(false);
 	m_pModelCom->Set_Animation(ANI_M_MH);
+	m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 }
 
 void CMay::Update_Tirgger_Pos(_vector vPos)
@@ -2686,6 +2691,7 @@ void CMay::Falling_Dead(const _double dTimeDelta)
 			m_IsCollide = false;
 			m_IsDeadLine = false;
 			m_pActorCom->Set_ZeroGravity(false, false, false);
+			Enforce_IdleState();
 		}
 		else
 		{
