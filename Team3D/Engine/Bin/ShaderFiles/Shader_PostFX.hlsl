@@ -57,9 +57,9 @@ cbuffer RadialBlurDesc
 cbuffer FogDesc
 {
 	bool	g_bFog = false;
-	float3	g_vFogColor = { 0.84f,0.83f,0.96f };			// 안개의 기본색상 ( 앰비언트 색상과 동일해야함)
-	float	g_fFogStartDist = 0.1f;							// 안개 지점에서 카메라까지의 거리
-	float	g_fFogGlobalDensity = 9.f;						// 안개 밀도 계수(값이 클수록 안개가 짙어진다)
+	float3	g_vFogColor = { 0.f ,0.f, 0.f };			// 안개의 기본색상 ( 앰비언트 색상과 동일해야함)
+	float	g_fFogStartDist = 0.01f;							// 안개 지점에서 카메라까지의 거리
+	float	g_fFogGlobalDensity = 20.f;						// 안개 밀도 계수(값이 클수록 안개가 짙어진다)
 	float	g_fFogHeightFalloff = 0.007f;					// 높이 소멸값
 };
 
