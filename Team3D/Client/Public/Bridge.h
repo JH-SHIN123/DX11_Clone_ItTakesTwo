@@ -37,6 +37,12 @@ private:
 
 	_bool						m_bUpdate = true;
 	_bool						m_bIsUppended = false;
+
+	/* Sound */
+	_float m_fBridgeVolume = 1.f;
+	_bool m_bSoundOnce = false;
+
+
 public:
 	static CBridge* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject * Clone_GameObject(void * pArg) override;

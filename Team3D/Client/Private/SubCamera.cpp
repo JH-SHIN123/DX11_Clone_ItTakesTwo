@@ -12,6 +12,7 @@
 #include"Cody.h"
 #include"LaserTennis_Manager.h"
 #include"AlphaScreen.h"
+#include"MoonUFO.h"
 CSubCamera::CSubCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -416,7 +417,7 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 		return NO_EVENT;
 	}
-	CTransform* pPlayerTransform = m_pMay->Get_Transform();
+	CTransform* pPlayerTransform = static_cast<CMoonUFO*>(DATABASE->Get_MoonUFO())->Get_Transform();
 
 	CMoon* pMoon = static_cast<CMoon*>(DATABASE->Get_Mooon());
 	if (nullptr == pMoon)
@@ -424,7 +425,6 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 	
 	_vector vMoonPos = pMoon->Get_Position();
 	_vector vAt = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-	
 
 	_vector vDirMoonWithAt = XMVector3Normalize(vAt - vMoonPos);
 
@@ -752,7 +752,10 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 #else
 	if (MouseMove = m_pGameInstance->Get_Pad_RStickX() - 32767)
 	{
-
+		if (abs(MouseMove) < 2000)
+			MouseMove = 0;
+		else
+			MouseMove = MouseMove / 2000;
 		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
 
 	}

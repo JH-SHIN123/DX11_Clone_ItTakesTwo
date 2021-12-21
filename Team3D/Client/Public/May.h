@@ -186,6 +186,7 @@ public: /* Getter */
 	_bool		Get_IsGroundPoundVarious() { return m_bPlayGroundPoundOnce; }
 	_bool		Get_IsInUFO() { return m_IsInUFO; }
 	_bool		Get_IsHooking() { return m_IsHookUFO; }
+	_vector		Get_UFOTargetPos() { return m_vHookUFOOffsetPos; }
 	_vector	    Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
 	_vector		Get_CamTriggerPos() { return XMLoadFloat4(&m_vCamTriggerPos); }
 	_float4x4	Get_TriggerTargetWorld() { return m_TriggerTargetWorld; }
@@ -217,7 +218,7 @@ public:
 private:
 	virtual void KeyInput(_double dTimeDelta);
 
-private: // 여기에 넣어놓아야 알거 같아서 여기에..		
+public: // 여기에 넣어놓아야 알거 같아서 여기에..		
 	void Enforce_IdleState(); /* 강제로 Idle 상태로 바꿈 */
 
 private:
@@ -406,7 +407,7 @@ private:
 	_bool m_IsHookUFO = false;
 	_vector m_vHookUFOAxis = {};
 	_bool m_bGoToHooker = false;
-
+	_vector m_vHookUFOOffsetPos = {};
 	_float m_faArmLength = 0.f;
 	_float m_faVelocity = 0.f;
 	_float m_faAcceleration = 0.f;
@@ -591,10 +592,29 @@ private: /* For. Ending */
 	_float m_fMay_WallJump_Volume = 1.f;
 	_float m_fMay_Wall_Slide_Volume = 1.f;
 
+	// Rope
+	_float m_fMay_Rope_Rail_Volume = 1.f;
+	_float m_fMay_Rope_UFO_Catch_Volume = 1.f;
+	_bool  m_bUFOCatchSoundOnce = false;
+	_float m_fMay_Rope_UFO_Move_Volume = 1.f;
+	_float m_fMay_Rope_UFO_Release_Volume = 1.f;
+	_float m_fMay_Rope_UFO_Throw_Volume = 1.f;
 
+	// MiniGame
+	_float m_fCody_MiniGame_Damaged_Volume = 1.f;
 
+	// GravityPipe
+	_float m_fMay_GravityPipe_Voice_Volume = 1.f;
+	_bool  m_bGravityPipe_FirstIn = false;
 
+	// Second Floor Script Trigger
+	void Script_Trigger(_double dTimeDelta);
+	_float m_fSecondFloor_Voice_Volume = 1.f;
+	_bool  m_bSecondFloor_FirstIn = false;
+	_bool  m_IsSecondFloor_Voice_Playing = false;
+	_float m_fSecondFloor_Script_DelayTime = 0.f;
 
+	_bool  m_fSecondFloor_Script_Once[6] = { false };
 
 
 };

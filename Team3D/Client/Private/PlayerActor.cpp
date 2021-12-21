@@ -144,7 +144,12 @@ void CPlayerActor::Update(_double dTimeDelta)
 				m_fFallingTime += (_float)dTimeDelta / 10.f;
 
 			// ÀÚÀ¯³«ÇÏ
-			vDist = MH_PxVec3(m_vPlayerUp, (0.4f * m_fGravity * 0.8f * m_fFallingTime * m_fFallingTime));
+			_float fYSpeed = (0.4f * m_fGravity * 0.8f * m_fFallingTime * m_fFallingTime);
+
+			if (fYSpeed <= -2.f)
+				fYSpeed = -2.f;
+
+			vDist = MH_PxVec3(m_vPlayerUp, fYSpeed);
 			m_pController->move(vDist, 0.f, (_float)dTimeDelta, *m_pFilters);
 		}
 
@@ -274,7 +279,12 @@ _float CPlayerActor::Get_Height(_double dTimeDelta)
 	else
 		m_fJumpTime += (_float)dTimeDelta / 2.f; 
 
-	return (m_fGravity / 2.f * m_fJumpTime * m_fJumpTime + m_fJumpForce * m_fJumpTime)/* * (_float)dTimeDelta*/;
+	_float fY = (m_fGravity / 2.f * m_fJumpTime * m_fJumpTime + m_fJumpForce * m_fJumpTime);
+
+	if (fY <= -2.f)
+		fY = -2.f;
+
+	return fY;
 }
 
 CPlayerActor * CPlayerActor::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
