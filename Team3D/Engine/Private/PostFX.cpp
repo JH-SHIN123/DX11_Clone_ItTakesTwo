@@ -73,7 +73,7 @@ HRESULT CPostFX::PostProcessing(_double TimeDelta)
 	FAILED_CHECK_RETURN(Tick_RadiarBlur(TimeDelta), E_FAIL);
 
 	if (m_fVolumeTimeDelta >= 1.f) m_fVolumeTimeDelta = 0.f;
-	else m_fVolumeTimeDelta += TimeDelta * 0.15f;
+	else m_fVolumeTimeDelta += (_float)TimeDelta * 0.15f;
 
 	FAILED_CHECK_RETURN(DownScale(TimeDelta), E_FAIL);
 	FAILED_CHECK_RETURN(Bloom(), E_FAIL);

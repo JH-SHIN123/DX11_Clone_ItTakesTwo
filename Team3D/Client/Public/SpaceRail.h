@@ -13,6 +13,7 @@ class CSpaceRail_Node;
 class CSpaceRail : public CDynamic_Env
 {
 public:
+	enum SUBJ { SUBJ_CODY, SUBJ_MAY };
 	enum EDGE {EDGE_FIRST, EDGE_LAST, EDGE_FIRST_END, EDGE_LAST_END };
 
 private:
@@ -21,8 +22,8 @@ private:
 	virtual ~CSpaceRail() = default;
 
 public:
-	HRESULT Start_Path(CPath::STATE eState, _uint iAnimFrame, _bool bStop);
-	_bool	Take_Path(_double dTimeDelta, _matrix& WorldMatrix);
+	HRESULT Start_Path(SUBJ eSubj, CPath::STATE eState, _uint iAnimFrame, _bool bStop);
+	_bool	Take_Path(SUBJ eSubj, _double dTimeDelta, _matrix& WorldMatrix);
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -35,8 +36,8 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 private:
-	CPath*			m_pPathCom = nullptr;
-	CPath* m_pPathCom = nullptr;
+	CPath*			m_pPathCom_Cody = nullptr;
+	CPath*			m_pPathCom_May = nullptr;
 
 private:
 	vector<CSpaceRail_Node*>	m_vecSpaceRailNodes;

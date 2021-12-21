@@ -3563,7 +3563,7 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 		else if (CSpaceRail::EDGE_LAST == eEdgeState || CSpaceRail::EDGE_LAST_END == eEdgeState)
 			ePathState = CPath::STATE_BACKWARD;
 
-		m_pTargetRail->Start_Path(ePathState, m_pTargetRailNode->Get_FrameIndex(), true);
+		m_pTargetRail->Start_Path(CSpaceRail::SUBJ_CODY, ePathState, m_pTargetRailNode->Get_FrameIndex(), true);
 
 		/* 카메라가 레일타는 방향으로 세팅 */
 		//m_pCamera->Get_Transform()->Set_State();
@@ -3591,7 +3591,7 @@ void CCody::TakeRail(_double dTimeDelta)
 		m_pModelCom->Set_Animation(ANI_C_Grind_Slow_MH); // 메이 blend 수치값 잡아야함.
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	m_bOnRail = m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);
+	m_bOnRail = m_pTargetRail->Take_Path(CSpaceRail::SUBJ_CODY, dTimeDelta, WorldMatrix);
 	if (m_bOnRail) {
 		m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 	}

@@ -203,6 +203,7 @@ _int CMay::Tick(_double dTimeDelta)
 		Wall_Jump(dTimeDelta);
 		if (Trigger_Check(dTimeDelta))
 		{
+			TakeRailEnd(dTimeDelta);
 			Hit_StarBuddy(dTimeDelta);
 			Hit_Rocket(dTimeDelta);
 			Activate_RobotLever(dTimeDelta);
@@ -1992,7 +1993,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 	}
 
 	// Trigger 여따가 싹다모아~
-	if (m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsPinBall || m_IsDeadLine
+	if (m_bOnRailEnd || m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsPinBall || m_IsDeadLine
 		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_IsBossMissile_Control || m_IsWallLaserTrap_Touch || m_bWallAttach || 
 		m_IsRippedOffAnimPlaying || m_bLaserTennis || m_IsEnding)
 		return true;
@@ -2942,7 +2943,7 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 		else if (CSpaceRail::EDGE_LAST == eEdgeState || CSpaceRail::EDGE_LAST_END == eEdgeState)
 			ePathState = CPath::STATE_BACKWARD;
 
-		m_pTargetRail->Start_Path(ePathState, m_pTargetRailNode->Get_FrameIndex(), true);
+		m_pTargetRail->Start_Path(CSpaceRail::SUBJ_MAY, ePathState, m_pTargetRailNode->Get_FrameIndex(), true);
 
 		/* 카메라가 레일타는 방향으로 세팅 */
 		//m_pCamera->Get_Transform()->Set_State();
@@ -2971,7 +2972,7 @@ void CMay::TakeRail(_double dTimeDelta)
 		m_pModelCom->Set_NextAnimIndex(ANI_M_Grind_Slow_MH);
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	m_bOnRail = m_pTargetRail->Take_Path(dTimeDelta, WorldMatrix);
+	m_bOnRail = m_pTargetRail->Take_Path(CSpaceRail::SUBJ_MAY, dTimeDelta, WorldMatrix);
 	if (m_bOnRail)
 		m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 	else
