@@ -232,10 +232,15 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_GroundPound_Smoke");
 		break;
 	case Effect_Value::BossMissile_Smoke:
-		//lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Smoke");
+		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_CODY;
 		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Missile_Smoke_Black"), &Clone_Data);
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Smoke_Color");
 		break;
+		//case Effect_Value::BossMissile_Smoke_Test:
+		//	Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
+		//	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Missile_Smoke_Black"), &Clone_Data);
+		//	lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Smoke_Color");
+		//	break;
 	case Effect_Value::BossMissile_Explosion:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Explosion");
 		break;

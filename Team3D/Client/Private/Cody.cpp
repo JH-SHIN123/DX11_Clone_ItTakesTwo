@@ -227,18 +227,6 @@ _int CCody::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
- 	if (m_pGameInstance->Key_Down(DIK_B))
- 		EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
- 	if (m_pGameInstance->Key_Down(DIK_N))
- 		EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
- 	if (m_pGameInstance->Key_Down(DIK_V))
- 		EFFECT->Add_Effect(Effect_Value::BossMissile_Smoke, m_pTransformCom->Get_WorldMatrix());
-// 	if (m_pGameInstance->Key_Down(DIK_SLASH))
-// 		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Shield, m_pTransformCom->Get_WorldMatrix());
-// 	if (m_pGameInstance->Key_Down(DIK_RSHIFT))
-// 		EFFECT->Add_Effect(Effect_Value::MoonBaboon_Booster, m_pTransformCom->Get_WorldMatrix());
-
-
 	//tEST
 	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 

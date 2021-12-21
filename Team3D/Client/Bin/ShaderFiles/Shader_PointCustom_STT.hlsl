@@ -975,7 +975,8 @@ void  GS_TRIPLE_UV(/*입력*/ point  VS_OUT_TRIPLE_UV In[1], /*출력*/ inout Triang
 	Out[3].vTexUV_Diss	= float2(In[0].vTexUV_Right.x,		In[0].vTexUV_Right.w);
 	Out[3].vTexUV_Dist	= float2(In[0].vTexUV_Up.x,			In[0].vTexUV_Up.w);
 
-	for (int i = 0; i < 3; ++i)
+	[unroll]
+	for (int i = 0; i < 4; ++i)
 	{
 		Out[i].vPosition = mul(Out[i].vPosition, matVP);
 		Out[i].vProjPosition = Out[i].vPosition;
@@ -1008,16 +1009,17 @@ void  GS_TRIPLE_UV(/*입력*/ point  VS_OUT_TRIPLE_UV In[1], /*출력*/ inout Triang
 	Out[6].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
 	Out[7].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
 
-	for (int i = 4; i < 7; ++i)
+	[unroll]
+	for (int j = 4; j < 8; ++j)
 	{
-		Out[i].vTexUV_Diff = Out[i - 4].vTexUV_Diff;
-		Out[i].vTexUV_Diss = Out[i - 4].vTexUV_Diss;
-		Out[i].vTexUV_Dist = Out[i - 4].vTexUV_Dist;
-
-		Out[i].vPosition = mul(Out[i].vPosition, matVP);
-		Out[i].vProjPosition = Out[i].vPosition;
-		Out[i].iViewportIndex = 2;
-		Out[i].fTime = In[0].fTime;
+		Out[j].vTexUV_Diff = Out[j - 4].vTexUV_Diff;
+		Out[j].vTexUV_Diss = Out[j - 4].vTexUV_Diss;
+		Out[j].vTexUV_Dist = Out[j - 4].vTexUV_Dist;
+			
+		Out[j].vPosition = mul(Out[j].vPosition, matVP);
+		Out[j].vProjPosition = Out[j].vPosition;
+		Out[j].iViewportIndex = 2;
+		Out[j].fTime = In[0].fTime;
 	}
 
 	TriStream.Append(Out[4]);
@@ -1422,15 +1424,29 @@ PS_OUT  PS_MAIN_MISSILE_SMOKE_COLOR(PS_IN_TRIPLEUV In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	// 왜곡을 먹은 디졸브를 디퓨즈(스모크)틀 에다가 곱하고 그 색상의 r값을 UV로 해서 색상을 입히자 
+	// 왜곡을 먹은 디졸브를 디퓨즈(스모크)틀 에다가 곱하고 그 색상의 r값을 UV로 해서 색상을 입히자
+
+	In.vTexUV_Dist.y += g_fAlpha;
+	float4 vDist = g_SecondTexture.Sample(DiffuseSampler, In.vTexUV_Dist);
+	float fWeight = vDist.r * 0.5f;
+	
+	In.vTexUV_Diss.y += fWeight;
+	float4 vDiss = g_DissolveTexture.Sample(DiffuseSampler, In.vTexUV_Diss);
 
 	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV_Diff);
-	vDiff.a = vDiff.r * In.fTime;
-	vDiff.gb = vDiff.r;
 
-	float2 vUV = (float2)0;
-	vUV.x = (vDiff.r + vDiff.g) * 0.5f;
-	vDiff.rgb *= g_ColorTexture.Sample(DiffuseSampler, vUV).rgb;
+	vDiff.a = vDiff.r * In.fTime * g_fAlpha;
+	vDiff.rgb = vDiss.rgb;
+
+	if (vDiff.r + 0.05f < In.fTime)
+	{
+		float2 vUV = (float2)0;
+		vUV.x = In.fTime;
+		vDiff.rgb *= g_ColorTexture.Sample(DiffuseSampler, vUV).rgb;
+		vDiff.rgb *= 1.5f;
+	}
+	else
+		vDiff.rgb *= 0.2f;
 
 	Out.vColor = vDiff;
 

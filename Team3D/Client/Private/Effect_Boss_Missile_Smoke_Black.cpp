@@ -2,6 +2,7 @@
 #include "..\Public\Effect_Boss_Missile_Smoke_Black.h"
 #include "DataStorage.h"
 #include "Cody.h"
+#include "May.h"
 
 CEffect_Boss_Missile_Smoke_Black::CEffect_Boss_Missile_Smoke_Black(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -15,7 +16,7 @@ CEffect_Boss_Missile_Smoke_Black::CEffect_Boss_Missile_Smoke_Black(const CEffect
 
 HRESULT CEffect_Boss_Missile_Smoke_Black::NativeConstruct_Prototype(void * pArg)
 {
-	m_EffectDesc_Prototype.iInstanceCount = 60;
+	m_EffectDesc_Prototype.iInstanceCount = 40;
 	return S_OK;
 }
 
@@ -43,7 +44,10 @@ HRESULT CEffect_Boss_Missile_Smoke_Black::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_Missile_Smoke_Black::Tick(_double TimeDelta)
 {
-	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
+//	if (EFFECT_DESC_CLONE::PV_CODY == m_EffectDesc_Clone.iPlayerValue)
+		/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
+//	else
+//		/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CMay*>(DATABASE->GetMay())->Get_WorldMatrix());
 
 	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
 		return EVENT_DEAD;
@@ -62,7 +66,11 @@ _int CEffect_Boss_Missile_Smoke_Black::Tick(_double TimeDelta)
 
 _int CEffect_Boss_Missile_Smoke_Black::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	//if(EFFECT_DESC_CLONE::PV_CODY == m_EffectDesc_Clone.iPlayerValue)
+		return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	//else
+	//	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+
 }
 
 HRESULT CEffect_Boss_Missile_Smoke_Black::Render(RENDER_GROUP::Enum eGroup)
@@ -92,7 +100,7 @@ void CEffect_Boss_Missile_Smoke_Black::Check_Instance(_double TimeDelta)
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
-		m_pInstanceBuffer_STT[iIndex].fTime -= (_float)TimeDelta * 0.76f;
+		m_pInstanceBuffer_STT[iIndex].fTime -= (_float)TimeDelta * 0.56f;
 		if (0.f >= m_pInstanceBuffer_STT[iIndex].fTime)
 			m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
 
@@ -111,8 +119,8 @@ void CEffect_Boss_Missile_Smoke_Black::Check_Instance(_double TimeDelta)
 
 void CEffect_Boss_Missile_Smoke_Black::Instance_Size(_float TimeDelta, _int iIndex)
 {
-	m_pInstanceBuffer_STT[iIndex].vSize.x += TimeDelta * 1.6f;
-	m_pInstanceBuffer_STT[iIndex].vSize.y += TimeDelta * 1.6f;
+	m_pInstanceBuffer_STT[iIndex].vSize.x += TimeDelta * 2.5f;
+	m_pInstanceBuffer_STT[iIndex].vSize.y += TimeDelta * 2.5f;
 }
 
 void CEffect_Boss_Missile_Smoke_Black::Instance_Pos(_float TimeDelta, _int iIndex)
