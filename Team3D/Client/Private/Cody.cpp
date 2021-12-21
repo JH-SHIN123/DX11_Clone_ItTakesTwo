@@ -398,7 +398,7 @@ _int CCody::Late_Tick(_double dTimeDelta)
 
 HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 {
-	if (true == m_IsDeadLine || m_IsPinBall || m_bRespawn)
+	if (true == m_IsDeadLine || m_IsPinBall || m_bRespawn) 
 		return S_OK;
 
 	CCharacter::Render(eGroup);
@@ -410,7 +410,7 @@ HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 		m_pModelCom->Set_DefaultVariables_Shadow();
 		m_pModelCom->Render_Model(0);
 	}
-	else if (eGroup == RENDER_GROUP::RENDER_ALPHA)
+	else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding)
 	{
 		m_pModelCom->Render_Model(30);
 		m_pModelCom->Render_Model(32);
@@ -566,7 +566,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_END))
 	{
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f), 3.f);
-		ENDINGCREDIT->Create_Environment();
+		//ENDINGCREDIT->Create_Environment();
 		m_IsEnding = true;
 	}
 #pragma endregion

@@ -22,7 +22,13 @@ public:
 private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
-	CModel*				m_pModelCom = nullptr;
+
+	CModel*				m_pModelCom_UFO = nullptr;
+	CModel*				m_pModelCom_Ailen = nullptr;
+	CModel*				m_pModelCom_Robot = nullptr;
+	CModel*				m_pModelCom_Star = nullptr;
+	CModel*				m_pModelCom_Umbrella = nullptr;
+
 	CDynamicActor*		m_pDynamicActorCom = nullptr;
 	CTriggerActor*		m_pTriggerActorCom = nullptr;
 
@@ -36,6 +42,8 @@ private:
 	_double				m_dCoolTime = 0.0;
 	_uint				m_iColorIndex = 0;
 	_bool				m_bCollision = false;
+
+	_uint				m_iRandomModel = 0;
 
 private:
 	void Movement(_double dTimeDelta);

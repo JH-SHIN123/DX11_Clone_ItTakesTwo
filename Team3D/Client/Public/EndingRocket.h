@@ -35,19 +35,16 @@ private:
 	void Movement(_double dTimeDelta);
 
 private:
-	_float m_fLeft = 0.f;
-	_float m_fRight = 0.f;
-	_float m_fUp = 0.f;
-	_float m_fDown = 0.f;
-
-	_float m_fAcceleration = 0.f;
+	_float	m_fLeft = 0.f;
+	_float	m_fRight = 0.f;
+	_float	m_fUp = 0.f;
+	_float	m_fDown = 0.f;
+	_float	m_fAcceleration = 0.f;
 
 	_bool	m_bBoost = false;
 	_double m_dBoostTime = 0.0;
 	_float	m_fCurSpeed = 0.f;
-
-	_bool m_bStartMove = false;
-
+	_bool	m_bStartMove = false;
 
 private:
 	/* For.Component */

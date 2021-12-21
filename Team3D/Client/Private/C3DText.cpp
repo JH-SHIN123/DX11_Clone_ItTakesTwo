@@ -43,6 +43,8 @@ _int C3DText::Tick(_double dTimeDelta)
 
 	CGameObject::Tick(dTimeDelta);
 
+	m_pTransformCom->Go_Down(dTimeDelta);
+
 	_float fMyPosY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	_float fCodyY = XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
 
@@ -137,6 +139,7 @@ HRESULT C3DText::Ready_Component(void * pArg)
 	Safe_AddRef(m_pCodyTransformCom);
 
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+	m_pTransformCom->Set_Speed(0.2f, 0.f);
 
 	_float3 vPos = {};
 	XMStoreFloat3(&vPos, m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -175,7 +178,7 @@ HRESULT C3DText::Ready_Component(void * pArg)
 	m_iIndex = tArg.iIndex;
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxBoxGeometry(tArg.vTriggerSize.x, tArg.vTriggerSize.y, tArg.vTriggerSize.z);
+	PxGeometry* TriggerGeom = new PxBoxGeometry(tArg.vTriggerSize.x * 5.f, tArg.vTriggerSize.y, tArg.vTriggerSize.z * 5.f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;
