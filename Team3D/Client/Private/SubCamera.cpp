@@ -458,7 +458,16 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 
 _int CSubCamera::Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta)
 {
-	_vector vPlayerPos = m_pMay->Get_Position();
+	_vector vMayRight = m_pMay->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
+	_vector vMayPos = m_pMay->Get_Position();
+	_vector vUpPos = XMVectorSet(64.f,218.f,179.f,1.f);
+	_vector vMiddleDir = (vMayPos - vUpPos);
+	_vector vMiddlePos = vMayPos - vMiddleDir * 0.5f;
+	_vector vTargetPos = vMiddlePos;
+	_vector vNormal = XMVector3Normalize(XMVector3Cross(XMVector3Normalize(vMiddleDir), XMVectorSet(1.0f,0.f,0.f,0.f)));
+	_vector vEye = vMayPos + vNormal * 10.f;
+
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vMiddlePos),dTimeDelta));
 	return NO_EVENT;
 }
 
