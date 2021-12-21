@@ -302,8 +302,8 @@ HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 	}
 	else if (eGroup == RENDER_GROUP::RENDER_ALPHA)
 	{
-		m_pModelCom->Render_Model(28);
-		m_pModelCom->Render_Model(29);
+		m_pModelCom->Render_Model(30);
+		m_pModelCom->Render_Model(31);
 	}
 
 	return S_OK;
@@ -386,7 +386,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_0))/* 레이저 테니스 */
 		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_NUMPADENTER))
+	if (m_pGameInstance->Key_Down(DIK_END))
 		m_IsEnding = true;
 
 #pragma endregion
@@ -2118,7 +2118,7 @@ void CMay::Rotate_Valve(const _double dTimeDelta)
 		}
 
 		m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pGameInstance->Pad_Key_Down(DIP_RB) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Valve_Rotate_R && m_bStruggle == false)
+		if ((m_pGameInstance->Pad_Key_Down(DIP_RB) || m_pGameInstance->Key_Down(DIK_RIGHT)) && m_pModelCom->Get_CurAnimIndex() != ANI_M_Valve_Rotate_R && m_bStruggle == false)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Valve_Rotate_R);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Valve_Rotate_MH);

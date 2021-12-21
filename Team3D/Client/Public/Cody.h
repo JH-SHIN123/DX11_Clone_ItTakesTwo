@@ -235,7 +235,13 @@ public:
 	_bool			 Get_IsPinBall() { return m_IsPinBall; }
 	_bool			 Get_IsWallJump() { return m_IsCamTriggerCollide; }
 	_bool			 Get_OnRail() { return m_bOnRail; }
+
+	_bool			 Get_IsRespawn() { return m_bRespawn; }
+	_bool			 Get_IsDeadLine() { return m_IsDeadLine; }
+	_bool			 Get_IsLaserTennis() { return m_bLaserTennis; }
+
 	_bool			 Get_IsEnding() { return m_IsEnding; }
+
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
@@ -417,6 +423,10 @@ private:
 	_bool	 m_bLaser = false;
 	_bool	 m_bCheckAnim = false;
 	_uint	 m_iHP = 12;
+	/* Hye::For.EndingCredit */
+	_bool	m_bEndingCredit = false;
+	_double m_dStartTime = 0.0;
+	_bool	m_bEndingCheck = false;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;

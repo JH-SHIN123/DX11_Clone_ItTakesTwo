@@ -48,12 +48,12 @@ _int CHpBar::Tick(_double TimeDelta)
 
 	CUIObject::Tick(TimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_INSERT))
-	{
-		UI_Create(Cody, Minigame_Ready_Cody);
-		UI_Create(May, Minigame_Ready_May);
-		//UI_Create(Default, Minigame_Countdown);
-	}
+	//if (m_pGameInstance->Key_Down(DIK_INSERT))
+	//{
+	//	UI_Create(Cody, Minigame_Ready_Cody);
+	//	UI_Create(May, Minigame_Ready_May);
+	//	//UI_Create(Default, Minigame_Countdown);
+	//}
 
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{

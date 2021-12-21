@@ -1084,6 +1084,76 @@ PS_OUT	PS_LASERBUTTONLARGE(PS_IN In, uniform bool isGreen)
 	return Out;
 }
 
+PS_OUT	PS_3DTEXT(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector	vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+	if(1 == vMtrlDiffuse.r)
+		Out.vDiffuse = vector(1.f, 0.f, 0.f, 1.f);
+	else if(1 == vMtrlDiffuse.g)
+		Out.vDiffuse = vector(0.f, 1.f, 0.2f, 1.f);
+	else if(1 == vMtrlDiffuse.b)
+		Out.vDiffuse = vector(1.f, 1.f, 0.f, 1.f);
+	Out.vDiffuse.w = 1.f;
+
+	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+
+	// Calculate Normal
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+	// Calculate Specular
+	Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
+
+	// Calculate Emissive
+	Out.vEmissive = 0.5f;
+
+	// Calculate Shadow
+	int iIndex = -1;
+	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
+
+	// Get_ShadowFactor
+	float fShadowFactor = 0.f;
+	fShadowFactor = Get_ShadowFactor(In.iViewportIndex, iIndex, In.vWorldPosition);
+
+	Out.vShadow = 1.f - fShadowFactor;
+	Out.vShadow.a = 1.f;
+
+	return Out;
+}
+
+PS_OUT	PS_MESHPARTICLE(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vDiffuse = g_vColor;
+
+	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+
+	// Calculate Normal
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+	// Calculate Specular
+	Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
+
+	// Calculate Emissive
+	Out.vEmissive = 0.5f;
+
+	// Calculate Shadow
+	int iIndex = -1;
+	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
+
+	// Get_ShadowFactor
+	float fShadowFactor = 0.f;
+	fShadowFactor = Get_ShadowFactor(In.iViewportIndex, iIndex, In.vWorldPosition);
+
+	Out.vShadow = 1.f - fShadowFactor;
+	Out.vShadow.a = 1.f;
+
+	return Out;
+}
+
 /* _____________________________________Effect_____________________________________*/
 struct PS_IN_DOUBLE_UV
 {
@@ -1468,7 +1538,7 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_LASERBUTTONLARGE(false);
 	}
-	//27
+	// 27
 	pass Default_WarpGate_Star_Activate
 	{
 		SetRasterizerState(Rasterizer_Solid);
@@ -1478,7 +1548,27 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0	PS_MAIN_WARPGATE_STAR();
 	}
-	// 28
+	// 28 
+	pass Default_3DText
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_3DTEXT();
+	}
+	// 29
+	pass Default_MeshParticle
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MESHPARTICLE();
+	}
+	// 30
 	pass Character_PhantomFirst
 	{
 		SetRasterizerState(Rasterizer_Solid);
@@ -1488,7 +1578,7 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = NULL;
 	}
-	// 29
+	// 31
 	pass Character_PhantomSecond_Blue
 	{
 		SetRasterizerState(Rasterizer_Solid);
@@ -1498,7 +1588,7 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_PHANTOM(true);
 	}
-	// 30
+	// 32
 	pass Character_PhantomSecond_Green
 	{
 		SetRasterizerState(Rasterizer_Solid);

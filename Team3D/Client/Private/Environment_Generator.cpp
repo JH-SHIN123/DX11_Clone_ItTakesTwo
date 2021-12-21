@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <fstream>
+#include <string>
 #include "..\Public\Environment_Generator.h"
 /* Load */
 #include "SavePoint.h"
@@ -45,53 +46,17 @@
 #include "LaserTennis_Manager.h"
 #include "LaserTrigger.h"
 #include "Laser_LaserTennis.h"
+#include "C3DText.h"
+#include "Rock.h"
+#include "MeshParticle.h"
+#include "C2DMesh.h"
+#include "EndingCredit_Manager.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
 {
 	m_pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(m_pGameInstance);
-}
-
-HRESULT CEnvironment_Generator::Load_Prototype_Model_Instancing_TXT()
-{
-#ifndef __MAPLOADING_OFF
-
-	/* 인스턴싱 모델 프로토타입 생성 */
-	_tchar		szLevelIndex[MAX_PATH] = L"";
-	_tchar		szPrototypeTag[MAX_PATH] = L"";
-	_tchar		szFolderName[MAX_PATH] = L"";
-	_tchar		szNumMaterial[MAX_PATH] = L"";
-	_uint		iNumMaterial = 1;
-	_uint		iLevelIndex = 0;;
-
-	wifstream fin;
-	fin.open("../Bin/Resources/Data/MapData/PrototypeData/TXT/Model_Instancing.txt");
-
-	if (!fin.fail())
-	{
-		while (true)
-		{
-			fin.getline(szLevelIndex, MAX_PATH, L'|');
-			fin.getline(szPrototypeTag, MAX_PATH, L'|');
-			fin.getline(szFolderName, MAX_PATH, L'|');
-			fin.getline(szNumMaterial, MAX_PATH);
-
-			iLevelIndex = _ttoi(szLevelIndex);
-			iNumMaterial = _ttoi(szNumMaterial);
-
-			_matrix PivotMatrix = Set_Model_PivotMatrix(szPrototypeTag);
-			//_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));
-			FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, szPrototypeTag, CModel_Instance::Create(m_pDevice, m_pDeviceContext, 1000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), szFolderName, TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", iNumMaterial, PivotMatrix)), E_FAIL);
-
-			if (fin.eof())
-				break;
-		}
-	}
-	fin.close();
-
-#endif //__MAPLOADING_OFF
-	return S_OK;
 }
 
 HRESULT CEnvironment_Generator::Load_Prototype_GameObject_TXT()
@@ -139,7 +104,6 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_Others_Space(_uint iIndex)
 #endif
 
 	FAILED_CHECK_RETURN(Load_Prototype_Model_ByIndex_Space(iIndex), E_FAIL);
-
 	return S_OK;
 }
 
@@ -160,6 +124,11 @@ HRESULT CEnvironment_Generator::Load_Stage_Space()
 #endif // __SPACESHIP_OFF
 
 #endif //__MAPLOADING_OFF
+	return S_OK;
+}
+
+HRESULT CEnvironment_Generator::Load_EndingCredit()
+{
 	return S_OK;
 }
 
@@ -579,6 +548,14 @@ HRESULT CEnvironment_Generator::Load_Default_Prototype_GameObject()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_LaserTrigger"), CLaserTrigger::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	/* For.Laser_LaserTennis */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Laser_LaserTennis"), CLaser_LaserTennis::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	/* For.3DText */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_3DText"), C3DText::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	/* For.Rock */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Rock"), CRock::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	/* For.MeshParticle */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MeshParticle"), CMeshParticle::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	/* For.2DMesh */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_2DMesh"), C2DMesh::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
 }
@@ -1264,7 +1241,7 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_ByIndex_Space(_uint iIndex)
 		else if (iIndex == 251) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_SofaCushion"), CModel_Instance::Create(m_pDevice, m_pDeviceContext, 1000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), TEXT("SofaCushion"), TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", 7, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 252) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Space_Beam_01_Base"), CModel_Instance::Create(m_pDevice, m_pDeviceContext, 1000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), TEXT("Space_Beam_01_Base"), TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 253) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Space_Beam_01_Medium"), CModel_Instance::Create(m_pDevice, m_pDeviceContext, 1000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), TEXT("Space_Beam_01_Medium"), TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
-		else if (iIndex == 254) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_InteriorPlatform_Small_01"), CModel_Instance::Create(m_pDevice, m_pDeviceContext, 1000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), TEXT("Saucer_InteriorPlatform_Small_01"), TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 254) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_InteriorPlatform_Small_01"), CModel_Instance::Create(m_pDevice, m_pDeviceContext, 1000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), TEXT("Saucer_InteriorPlatform_Small_01"), TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
 		else if (iIndex == 255) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_ToyBox08_WallJump"), CModel_Instance::Create(m_pDevice, m_pDeviceContext, 1000, TEXT("../Bin/Resources/Model/Environment/Instancing/"), TEXT("ToyBox08_WallJump"), TEXT("../Bin/ShaderFiles/Shader_MeshInstance.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 256) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_Lamp_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_Lamp_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 257) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_Lamp_02"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_Lamp_02"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
@@ -1272,6 +1249,36 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_ByIndex_Space(_uint iIndex)
 		else if (iIndex == 259) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_FanBase_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_FanBase_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
 		else if (iIndex == 260) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_RoofDecoration_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_RoofDecoration_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
 		else if (iIndex == 261) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Saucer_InteriorPlatform_Support_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Saucer_InteriorPlatform_Support_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix_SpaceShip))), E_FAIL); }
+		else if (iIndex == 262) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText0"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText0"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 263) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText1"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText1"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 264) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText2"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText2"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 265) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText3"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText3"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 266) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText4"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText4"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 267) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText5"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText5"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 268) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText6"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText6"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 269) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText7"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText7"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 270) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText8"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText8"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 271) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText9"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText9"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 272) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText10"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText10"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 273) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText11"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText11"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 274) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText12"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText12"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 275) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText13"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText13"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 276) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText14"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText14"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 277) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText15"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText15"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 278) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText16"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText16"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 279) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText17"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText17"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 280) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText18"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText18"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 281) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText19"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText19"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 282) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText20"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText20"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 283) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText21"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText21"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 284) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText22"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText22"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 285) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_3DText23"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/3DText/"), TEXT("3DText23"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 286) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_Rock"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("Rock"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 287) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Ailen"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("2DMesh_Ailen"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 288) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Robot"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("2DMesh_Robot"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 289) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Star"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("2DMesh_Star"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 290) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_UFO"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("2DMesh_UFO"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 291) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Umbrella"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("2DMesh_Umbrella"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 	}
 
 	return S_OK;
@@ -1284,4 +1291,5 @@ void CEnvironment_Generator::Free()
 	Safe_Release(m_pDeviceContext);
 
 	CLaserTennis_Manager::DestroyInstance();
+	CEndingCredit_Manager::DestroyInstance();
 }

@@ -279,9 +279,7 @@ void CLaserTennis_Manager::Start_Game()
 	/* 충돌 벽 생성 */
 	Active_CollisionWall();
 
-	/* 뷰포트 합치기 */
-	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f), 3.f);
-
+	
 	/* 타이머 세팅 */
 	m_pTimer_LaserTennis->OnOff_Timer(true);
 }
