@@ -1877,9 +1877,6 @@
     <ClInclude Include="..\Public\Effect_Generator.h">
       <Filter>04.Generator\01.Effect_Generator</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_Generator.h">
-      <Filter>04.Generator\02.UI_Generator</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\DataStorage.h">
       <Filter>05.DataStorage</Filter>
     </ClInclude>
@@ -1924,6 +1921,9 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Generator.h">
+      <Filter>04.Generator\02.UI_Generator</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

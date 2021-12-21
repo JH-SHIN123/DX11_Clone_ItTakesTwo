@@ -228,6 +228,8 @@ _bool CCutScene::Tick_CutScene_Clear_Umbrella(_double dTimeDelta)
 			static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(-635.f, 756.f, 195.f, 1.f));
 			static_cast<CMay*>(DATABASE->GetMay())->Get_Transform()->Set_WorldMatrix(matRot);
 			static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(-635.f, 756.f, 197.f, 1.f));
+			// 메이 중력 초기화
+			static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_PlayerUp(XMVectorSet(0.f, 1.f, 0.f, 0.f));
 
 			m_iCutSceneTake++;
 		}
