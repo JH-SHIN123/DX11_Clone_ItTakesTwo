@@ -259,7 +259,7 @@ _int CMay::Tick(_double dTimeDelta)
 	m_pEffect_GravityBoots->Update_Matrix(m_pTransformCom->Get_WorldMatrix());
 
 	// Control RadiarBlur - 제일 마지막에 호출
-	//Trigger_RadiarBlur(dTimeDelta);
+	Trigger_RadiarBlur(dTimeDelta);
 
 	return NO_EVENT;
 }
@@ -567,6 +567,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 			m_bAction = false;
 			m_bRoll = true;
+
+			Start_RadiarBlur(0.3f);
 		}
 		else
 		{
@@ -580,8 +582,11 @@ void CMay::KeyInput(_double dTimeDelta)
 				m_pActorCom->Jump_Start(1.2f);
 				m_pModelCom->Set_Animation(ANI_M_AirDash_Start);
 				m_IsAirDash = true;
+
+				Start_RadiarBlur(0.3f);
 			}
 		}
+
 	}
 #pragma endregion
 
@@ -2810,7 +2815,7 @@ void CMay::KeyInput_Rail(_double dTimeDelta)
 			m_pGameInstance->Stop_Sound(CHANNEL_MAY_RAIL);
 
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
-			//Loop_RadiarBlur(false);
+			Loop_RadiarBlur(false);
 
 			m_iJumpCount = 0;
 			m_bShortJump = true;
@@ -2900,7 +2905,7 @@ void CMay::Start_SpaceRail()
 		// 타겟 지정시, 연기이펙트
 		EFFECT->Add_Effect(Effect_Value::Landing_Smoke, m_pSearchTargetRailNode->Get_WorldMatrix());
 		// R-Blur
-		//Loop_RadiarBlur(true);
+		Loop_RadiarBlur(true);
 
 		// 타겟을 찾았다면, 레일 탈 준비
 		m_pTargetRailNode = m_pSearchTargetRailNode;
@@ -2997,7 +3002,7 @@ void CMay::TakeRailEnd(_double dTimeDelta)
 		if (m_dRailEnd_ForceDeltaT >= dRailEndForceTime)
 		{
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
-			//Loop_RadiarBlur(false);
+			Loop_RadiarBlur(false);
 
 			m_dRailEnd_ForceDeltaT = 0.0;
 			m_bOnRailEnd = false;
@@ -3039,4 +3044,80 @@ HRESULT CMay::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 
 	return S_OK;
 }
+
+#pragma region RadiarBlur
+void CMay::Start_RadiarBlur(_double dBlurTime)
+{
+	//if (m_bRadiarBlur) return;
+
+	m_bRadiarBlur_Trigger = true;
+	m_dRadiarBlurTime = dBlurTime;
+	m_dRadiarBlurDeltaT = 0.0;
+
+	Set_RadiarBlur(true);
+}
+
+void CMay::Loop_RadiarBlur(_bool bLoop)
+{
+	m_bRadiarBlur_Loop = bLoop;
+
+	if (m_bRadiarBlur_Loop)
+		Set_RadiarBlur(true);
+	else
+		Set_RadiarBlur(false);
+}
+
+void CMay::Trigger_RadiarBlur(_double dTimeDelta)
+{
+	if (m_bRadiarBlur_Loop)
+	{
+		Set_RadiarBlur(true);
+	}
+	else if (m_bRadiarBlur_Trigger)
+	{
+		if (m_dRadiarBlurDeltaT >= m_dRadiarBlurTime)
+		{
+			Set_RadiarBlur(false);
+			m_dRadiarBlurDeltaT = 0.0;
+			m_bRadiarBlur_Trigger = false;
+		}
+		else
+		{
+			m_dRadiarBlurDeltaT += dTimeDelta;
+			Set_RadiarBlur(true);
+		}
+	}
+}
+
+void CMay::Set_RadiarBlur(_bool bActive)
+{
+	_matrix CombineViewMatrix, CombineProjMatrix;
+
+	CombineViewMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_SUBVIEW);
+	CombineProjMatrix = CPipeline::GetInstance()->Get_Transform(CPipeline::TS_SUBPROJ);
+
+	_matrix matCombineMatrix = CombineViewMatrix * CombineProjMatrix;
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPos = XMVector3TransformCoord(vPos, matCombineMatrix);
+
+	_float3 vConvertPos;
+	XMStoreFloat3(&vConvertPos, vPos);
+	vConvertPos.x += 1.f;
+	vConvertPos.y += 1.f;
+
+	if (1.f <= vConvertPos.z)
+	{
+		vConvertPos.x *= -1.f;
+		vConvertPos.y *= -1.f;
+	}
+
+	D3D11_VIEWPORT Viewport = m_pGameInstance->Get_ViewportInfo(2);
+	vConvertPos.x = ((Viewport.Width * (vConvertPos.x)) / 2.f);
+	vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f);
+
+	_float2 vFocusPos = { vConvertPos.x / g_iWinCX + 0.5f, vConvertPos.y / g_iWinCY };
+	vFocusPos.y -= 0.08f; // Offset 0.04f
+	m_pGameInstance->Set_RadiarBlur_Sub(bActive, vFocusPos);
+}
+#pragma endregion
 

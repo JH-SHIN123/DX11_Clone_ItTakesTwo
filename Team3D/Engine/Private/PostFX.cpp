@@ -28,11 +28,19 @@ void CPostFX::Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos)
 
 void CPostFX::Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos)
 {
-	m_bRadialBlur_Sub = bActive;
 	m_vRadiarBlur_FocusPos_Sub = vFocusPos;
 
-	if (false == m_bRadialBlur_Sub)
-		m_fRadialBlur_SubRatio = 1.0;
+	if (true == bActive)
+	{
+		m_bRadialBlur_Sub = true;
+		m_bRadialBlur_Sub_Finish = false;
+		m_fRadialBlur_SubRatio = 1.f;
+	}
+	else
+	{
+		m_bRadialBlur_Sub_Finish = true;
+		m_fRadialBlur_SubRatio = 1.f;
+	}
 }
 
 HRESULT CPostFX::Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight)

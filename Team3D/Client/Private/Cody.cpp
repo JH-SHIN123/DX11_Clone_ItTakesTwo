@@ -711,6 +711,8 @@ void CCody::KeyInput(_double dTimeDelta)
 			m_pGameInstance->Play_Sound(TEXT("CodyM_Dash.wav"), CHANNEL_CODYM_DASH, m_fCodyMDash_Volume);
 			m_bAction = false;
 			m_bRoll = true;
+
+			Start_RadiarBlur(0.3f);
 		}
 		else
 		{
@@ -741,10 +743,11 @@ void CCody::KeyInput(_double dTimeDelta)
 				}
 				m_pModelCom->Set_Animation(ANI_C_AirDash_Start);
 				m_IsAirDash = true;
+
+				Start_RadiarBlur(0.3f);
 			}
 		}
 
-		Start_RadiarBlur(0.3f);
 	}
 #pragma endregion
 
