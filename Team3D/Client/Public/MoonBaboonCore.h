@@ -34,9 +34,6 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 
-public:
-	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject);
-
 private:
 	void Active_Pillar(_double TimeDelta);
 
@@ -45,7 +42,6 @@ private:
 
 private:
 	CTransform* m_pTransformCom = nullptr;
-	CTransform* m_pTransformCom_Trigger = nullptr;
 
 private:
 	_bool	m_bMove = false;
@@ -79,7 +75,7 @@ private:
 	class CEffect_Boss_Core*		m_pEffectBossCore = nullptr;
 
 private:
-	CTriggerActor*					m_pTriggerActorCom = nullptr;
+	PxRaycastBuffer					m_RaycastBuffer;
 
 public:
 	static CMoonBaboonCore* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -272,9 +272,6 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	float3 vColor = g_HDRTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz;
 
-	// Vignatte
-	vColor *= pow((1.f - g_VignatteTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).a) + 0.14f,3);
-
 	// 먼 평면에 없는 픽셀에 대해서만 거리 DOF 계산
 	vector	vDepthDesc = g_DepthTex.Sample(Point_Sampler, In.vTexUV);
 	vector	vViewPos = vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
@@ -324,6 +321,9 @@ PS_OUT PS_MAIN(PS_IN In)
 		bBlur = g_SubBlur;
 	}
 	else discard;
+
+	// Vignatte
+	vColor *= pow((1.f - g_VignatteTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).a) + 0.14f, 3);
 
 	// DOF
 	float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
