@@ -8,9 +8,12 @@ Texture2D<float4>		g_DOFBlurTex; // 다운스케일링 -> 업스케일링(Linear)
 Texture2D				g_DepthTex;
 Texture2D				g_EffectTex;
 Texture2D				g_EffectBlurTex;
-Texture2D				g_CustomBlurTex;
-Texture2D				g_CustomBlurTex_Value;
-Texture2D				g_CustomBlurTex_Blur;
+Texture2D				g_EffectPreCustomBlurTex;
+Texture2D				g_EffectPreCustomBlurTex_Value;
+Texture2D				g_EffectPreCustomBlurTex_Blur;
+Texture2D				g_EffectPostCustomBlurTex;
+Texture2D				g_EffectPostCustomBlurTex_Value;
+Texture2D				g_EffectPostCustomBlurTex_Blur;
 
 /* Etc Resources */
 Texture2D				g_RadiarBlurMaskTex;
@@ -318,9 +321,13 @@ PS_OUT PS_MAIN(PS_IN In)
 	// Add Effect
 	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 1.5f;
 
-	// Add CustomBlur
-	float fBlurValue = g_CustomBlurTex_Value.Sample(Point_Sampler, In.vTexUV).r;
-	vColor += g_CustomBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_CustomBlurTex_Blur.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * (fBlurValue * 10.f);
+	// Add EffectPreCustomBlur
+	float fBlurValue = g_EffectPreCustomBlurTex_Value.Sample(Point_Sampler, In.vTexUV).r;
+	vColor += g_EffectPreCustomBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectPreCustomBlurTex_Blur.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * (fBlurValue * 10.f);
+	
+	// Add EffectPostCustomBlur
+	fBlurValue = g_EffectPostCustomBlurTex_Value.Sample(Point_Sampler, In.vTexUV).r;
+	vColor += g_EffectPostCustomBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectPostCustomBlurTex_Blur.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * (fBlurValue * 10.f);
 
 	// Final
 	Out.vColor = vector(vColor, 1.f);
