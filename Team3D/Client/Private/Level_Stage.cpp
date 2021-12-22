@@ -137,6 +137,7 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	{
 		m_iLevelStep = 2; 
 		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.8f);
+		ENDINGCREDIT->Create_Environment();
 	}
 	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
 
@@ -899,29 +900,29 @@ _int CLevel_Stage::Tick_EndingCredit(_double dTimedelta)
 	{
 		++m_iEndingCreditStep;
 
-		//for (_uint i = 0; i < 24; ++i)
+		//for (_uint i = 0; i < 23; ++i)
 		//{
-		//	ENDINGCREDIT->Create_3DText(i, -500.f - i * 100.f);
+		//	ENDINGCREDIT->Create_3DText(i, -600.f - i * 250.f);
 		//}
 
-		ENDINGCREDIT->Create_3DText(0, -1003.f);
-		ENDINGCREDIT->Create_3DText(1, -2000.f);
-		//ENDINGCREDIT->Create_3DText(2, -1300.f);
-		//ENDINGCREDIT->Create_3DText(3, -1600.f);
-		//ENDINGCREDIT->Create_3DText(4, -1800.f);
-		//ENDINGCREDIT->Create_3DText(5, -2000.f);
-		//ENDINGCREDIT->Create_3DText(6, -2500.f);
-		//ENDINGCREDIT->Create_3DText(7, -3000.f);
-		//ENDINGCREDIT->Create_3DText(8, -3300.f);
-		//ENDINGCREDIT->Create_3DText(9, -3600.f);
-		//ENDINGCREDIT->Create_3DText(10, -3900.f);
-		//ENDINGCREDIT->Create_3DText(11, -4200.f);
-		//ENDINGCREDIT->Create_3DText(12, -4500.f);
-		//ENDINGCREDIT->Create_3DText(13, -4800.f);
-		//ENDINGCREDIT->Create_3DText(14, -5100.f);
-		//ENDINGCREDIT->Create_3DText(15, -5400.f);
-		//ENDINGCREDIT->Create_3DText(16, -5700.f);
-		//ENDINGCREDIT->Create_3DText(17, -6000.f);
+		ENDINGCREDIT->Create_3DText(0, -792.5f);
+		ENDINGCREDIT->Create_3DText(1, -1080.f);
+		ENDINGCREDIT->Create_3DText(2, -1363.f);
+		ENDINGCREDIT->Create_3DText(3, -1646.f);
+		ENDINGCREDIT->Create_3DText(4, -1930.f);
+		ENDINGCREDIT->Create_3DText(5, -2214.f);
+		ENDINGCREDIT->Create_3DText(6, -2496.f);
+		ENDINGCREDIT->Create_3DText(7, -2780.f);
+		ENDINGCREDIT->Create_3DText(8, -3064.f);
+		ENDINGCREDIT->Create_3DText(9, -3348.f);
+		ENDINGCREDIT->Create_3DText(10, -3632.f);
+		ENDINGCREDIT->Create_3DText(12, -3916.f);
+		ENDINGCREDIT->Create_3DText(11, -4100.f); 
+		ENDINGCREDIT->Create_3DText(13, -4278.f);
+		ENDINGCREDIT->Create_3DText(14, -4380.f);
+		ENDINGCREDIT->Create_3DText(15, -4550.f);
+		ENDINGCREDIT->Create_3DText(16, -4704.f);
+		ENDINGCREDIT->Create_3DText(17, -4985.f);
 		//ENDINGCREDIT->Create_3DText(18, -6300.f);
 		//ENDINGCREDIT->Create_3DText(19, -6600.f);
 		//ENDINGCREDIT->Create_3DText(20, -6900.f);

@@ -33,6 +33,8 @@ public:
 	PxSphericalJoint*		Create_Joint(PxRigidActor* Actor1, PxTransform Transform1, PxRigidActor* Actor2, PxTransform Transform2, PxJointLimitCone Limitcone, _bool bLimitEnabled = true);
 	PxDistanceJoint*		Create_Joint(PxRigidActor* Actor1, PxTransform Transform1, PxRigidActor* Actor2, PxTransform Transform2, _float fDistance);
 	void					Create_Ground();
+	void					Resize_Actor(PxRigidActor* pActor, _float fScale);
+
 
 private:
 	PxDefaultAllocator			m_Allocator;
