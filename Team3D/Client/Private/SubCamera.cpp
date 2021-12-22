@@ -755,8 +755,8 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 		if (abs(MouseMove) < 2000)
 			MouseMove = 0;
 		else
-			MouseMove = MouseMove / 2000;
-		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
+			MouseMove = MouseMove / 1000;
+		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta * m_fMouseRevSpeed[Rev_Holizontal];
 
 	}
 	if (MouseMove = (/*65535 - */m_pGameInstance->Get_Pad_RStickY()) - 32767)
@@ -764,7 +764,7 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 		if (abs(MouseMove) < 2000)
 			MouseMove = 0;
 		else
-			MouseMove = MouseMove / 2000;
+			MouseMove = MouseMove / 1000;
 
 
 		_float fVal = (_float)(MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta);
