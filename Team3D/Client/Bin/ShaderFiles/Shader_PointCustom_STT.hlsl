@@ -1282,7 +1282,7 @@ PS_OUT  PS_MAIN_MISSILE_SMOKE(PS_IN_DOUBLEUV In)
 	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vTexUV_3);
 
 	Out.vColor.rgb *= vColor.rgb;
-	Out.vColor.a *= In.fTime * g_fAlpha * Out.vColor.r;
+	Out.vColor.a *= In.fTime * g_fAlpha * Out.vColor.r  * 0.5;
 
 	return Out;
 }
@@ -1295,7 +1295,7 @@ PS_OUT  PS_MAIN_MISSILE_SMOKE_BLACK(PS_IN_DOUBLEUV In)
 	vDiff.rgb *= In.fTime;
 
 	//vDiff.rgb *= In.fTime;
-	vDiff.a = (vDiff.r + vDiff.g)* In.fTime;
+	vDiff.a = (vDiff.r + vDiff.g)* In.fTime * 0.5f;
 
 	Out.vColor = vDiff;
 

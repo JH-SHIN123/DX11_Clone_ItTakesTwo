@@ -223,6 +223,7 @@ HRESULT CRunningMoonBaboon::Ready_Component(void * pArg)
 	m_pModelCom->Change_PivotMatrix(PivotMatrix);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(800.f, 1000.f, 2000.f, 1.f));
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -135.f);
 
 	/* Dynamic */
 	PxGeometry* Geom = new PxSphereGeometry(0.5f);

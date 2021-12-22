@@ -81,21 +81,16 @@ void CSound_Manager::Lerp_Sound(CHANNEL_TYPE eFirstChannel, CHANNEL_TYPE eSecond
 	m_bLerp = true;
 }
 
-void CSound_Manager::FadeInOut(CHANNEL_TYPE eFirstChannel, _bool bType, _float fLerpSpeed, _float fVolume)
+void CSound_Manager::FadeInOut(_bool isFirstBGM, _bool bType, _float fLerpSpeed, _float fVolume)
 {
-	if (true == m_bFadeInOut)
-		return;
-
-	m_eFirstChannel = eFirstChannel;
-	m_fFirstVolume = fVolume;
-	m_fLerpSpeed = fLerpSpeed;
+	m_bPlayingFirstBGM = isFirstBGM;
+	m_fBGM_FadingSpeed = fLerpSpeed;
+	m_bType = bType;
 
 	/* FadeIn */
 	if (true == m_bType)
-		m_fFirstVolume = 0.f;
+		m_fBGM_MaxVolume = fVolume;
 	/* FadeOut */
-	else
-		m_fMaxVolume = fVolume;
 
 	m_bFadeInOut = true;
 	m_bType = bType;
@@ -184,30 +179,42 @@ void CSound_Manager::FadeInOut_Sound_Update(_double dTimeDelta)
 	if (false == m_bFadeInOut)
 		return;
 
-	/* FadeOut */
-	if (false == m_bType)
-	{
-		m_fFirstVolume -= (_float)dTimeDelta * m_fLerpSpeed;
+	CHANNEL_TYPE eType;
 
-		if (0 >= m_fFirstVolume)
-		{
-			m_fFirstVolume = 0.f;
-			m_bFadeInOut = false;
-		}
-	}
-	/* FadeIn */
+	if (m_bPlayingFirstBGM == true)
+		eType = CHANNEL_TYPE::CHANNEL_BGM;
 	else
-	{
-		m_fFirstVolume += (_float)dTimeDelta * m_fLerpSpeed;
+		eType = CHANNEL_TYPE::CHANNEL_BGM2;
 
-		if (m_fMaxVolume <= m_fFirstVolume)
+	_float fVol;
+	FMOD_Channel_GetVolume(m_pChannel[eType], &fVol);
+
+	/* FadeIn */
+	if (true == m_bType)
+	{
+		if (m_fBGM_MaxVolume <= fVol)
 		{
-			m_fFirstVolume = m_fMaxVolume;
+			Set_SoundVolume(eType, m_fBGM_MaxVolume);
 			m_bFadeInOut = false;
 		}
+		else
+		{
+			Set_SoundVolume(eType, fVol + (_float)dTimeDelta * m_fBGM_FadingSpeed);
+		}
 	}
-
-	Set_SoundVolume(m_eFirstChannel, m_fFirstVolume);
+	/* FadeOut */
+	else	
+	{
+		if (0.f >= fVol)
+		{
+			Set_SoundVolume(eType, 0.f);
+			m_bFadeInOut = false;
+		}
+		else
+		{
+			Set_SoundVolume(eType, fVol - (_float)dTimeDelta * m_fBGM_FadingSpeed);
+		}
+	}
 }
 
 void CSound_Manager::Free()

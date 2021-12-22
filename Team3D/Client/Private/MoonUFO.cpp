@@ -276,7 +276,13 @@ HRESULT CMoonUFO::Ready_Component(void * pArg)
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_UFO"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	m_pModelCom = (CModel*)m_pGameInstance->Add_Component_Clone(Level::LEVEL_STAGE, TEXT("Component_Model_UFO"));
+	_matrix PivotMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+	m_pModelCom->Change_PivotMatrix(PivotMatrix);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(800.f, 1000.f, 2000.f, 1.f));
+	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -135.f);
+
 
 	/* Dynamic */
 	PxGeometry* Geom = new PxSphereGeometry(5.f);

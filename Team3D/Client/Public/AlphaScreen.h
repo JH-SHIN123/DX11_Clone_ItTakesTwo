@@ -24,6 +24,9 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+
+public:
+	_float							Get_Alpha() { return m_fAlpha; };
 private:
 	_float							m_fAlpha = 0.f;
 	_float							m_fWatingTime = 0.f;

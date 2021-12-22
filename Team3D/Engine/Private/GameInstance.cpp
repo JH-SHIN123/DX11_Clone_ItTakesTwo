@@ -283,10 +283,10 @@ void CGameInstance::Lerp_Sound(CHANNEL_TYPE eFirstChannel, CHANNEL_TYPE eSecondC
 	NULL_CHECK(m_pSound_Manager);
 	m_pSound_Manager->Lerp_Sound(eFirstChannel, eSecondChannel, fLerpSpped, fFirstVolume, fSecondVolume);
 }
-void CGameInstance::FadeInOut_Sound(CHANNEL_TYPE eChannel, _bool bType, _float fLerpSpped, _float fVolume)
+void CGameInstance::FadeInOut_Sound(_bool isFirstBGM, _bool bType, _float fLerpSpped, _float fVolume)
 {
 	NULL_CHECK(m_pSound_Manager);
-	m_pSound_Manager->FadeInOut(eChannel, bType, fLerpSpped, fVolume);
+	m_pSound_Manager->FadeInOut(isFirstBGM, bType, fLerpSpped, fVolume);
 }
 #pragma endregion 
 
@@ -438,12 +438,17 @@ ID3DBlob * CGameInstance::Get_Get_ShaderCompiledCode(const _tchar * pShaderFileP
 void CGameInstance::Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos)
 {
 	NULL_CHECK(m_pPostFX);
-	return m_pPostFX->Set_RadiarBlur_Main(bActive, vFocusPos);
+	m_pPostFX->Set_RadiarBlur_Main(bActive, vFocusPos);
 }
 void CGameInstance::Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos)
 {
 	NULL_CHECK(m_pPostFX);
-	return m_pPostFX->Set_RadiarBlur_Sub(bActive, vFocusPos);
+	m_pPostFX->Set_RadiarBlur_Sub(bActive, vFocusPos);
+}
+void CGameInstance::Set_MainViewFog(_bool bActive)
+{
+	NULL_CHECK(m_pPostFX);
+	m_pPostFX->Set_MainViewFog(bActive);
 }
 #pragma endregion
 

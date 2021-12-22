@@ -341,6 +341,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::PipeLocker_Ball:
 		lstrcpy(szPrototype, L"GameObject_2D_PipeLocker_Button_Ball");
 		break;
+	case Effect_Value::Gate_Smoke:
+		lstrcpy(szPrototype, L"GameObject_Effect_GateSmoke");
+		break;
 	default:
 		break;
 	}

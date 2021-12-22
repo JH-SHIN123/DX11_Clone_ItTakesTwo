@@ -23,7 +23,7 @@ void CToyBoxButton_Button::Set_ButtonOrigin()
 	_matrix WorldMat, ScaleMat,RotMat, TransMat, ParentMat;
 	ScaleMat = XMMatrixScaling(0.43f, 0.43f, 0.43f);
 	RotMat = XMMatrixRotationX(XMConvertToRadians(-90.f));
-	TransMat = XMMatrixTranslation(0.f, 1.95f, -6.f);
+	TransMat = XMMatrixTranslation(0.f, 1.95f, -5.85f);
 	ParentMat = pParentTransform->Get_WorldMatrix();
 	WorldMat = ScaleMat * RotMat * TransMat * ParentMat;
 	m_pTransformCom->Set_WorldMatrix(WorldMat);
@@ -50,7 +50,7 @@ HRESULT CToyBoxButton_Button::NativeConstruct(void* pArg)
 	_matrix WorldMat, ScaleMat, RotMat, TransMat, ParentMat;
 	ScaleMat = XMMatrixScaling(0.43f, 0.43f, 0.43f);
 	RotMat = XMMatrixRotationX(XMConvertToRadians(-90.f));
-	TransMat = XMMatrixTranslation(0.f, 1.95f, -6.f);
+	TransMat = XMMatrixTranslation(0.f, 1.95f, -5.85f);
 	ParentMat = pParentTransform->Get_WorldMatrix();
 	WorldMat = ScaleMat * RotMat * TransMat * ParentMat;
 	m_pTransformCom->Set_WorldMatrix(WorldMat);
@@ -65,7 +65,7 @@ HRESULT CToyBoxButton_Button::NativeConstruct(void* pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
 
 	CTriggerActor::ARG_DESC tTriggerArg;
-	tTriggerArg.pGeometry = new PxBoxGeometry(1.5f,1.5f,1.5f);
+	tTriggerArg.pGeometry = new PxBoxGeometry(1.5f,1.2f,1.5f);
 	tTriggerArg.pTransform = m_pTransformCom;
 	tTriggerArg.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArg), E_FAIL);
@@ -159,10 +159,15 @@ void CToyBoxButton_Button::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID
 				pMay->Get_IsGroundPound() == true ||
 				pMay->Get_IsGroundPoundVarious() == true
 				)
+			{
 				m_pParent->Set_Trigger();
+				m_pGameInstance->Set_SoundVolume(CHANNEL_TOYBOXBUTTON, m_fPushButtonSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("ToyBoxButton_Push.wav"), CHANNEL_TOYBOXBUTTON, m_fPushButtonSoundVolume);
+			}
 
 			m_iCheckTrigger = 1;
 		}
+		break;
 	}
 	case Engine::TriggerStatus::eLOST:
 	{
@@ -179,10 +184,9 @@ void CToyBoxButton_Button::OnPressed_Button(_double TimeDelta)
 
 	if (1 == m_iCheckTrigger) // 위에 올라가있다.
 	{
-		if (m_fTriggerDeltaMove > 0.2)
+		if (m_fTriggerDeltaMove > 0.2f)
 		{
-			m_iCheckTrigger = 0;
-			m_fTriggerDeltaMove = 0.2f;
+			//m_fTriggerDeltaMove = 0.2f;
 		}
 		else
 		{
@@ -190,13 +194,11 @@ void CToyBoxButton_Button::OnPressed_Button(_double TimeDelta)
 			m_pTransformCom->Go_Down(TimeDelta * fTriggerSpeed);
 		}
 	}
-
-	if (-1 == m_iCheckTrigger) // 내려가있다.
+	else
 	{
 		if (m_fTriggerDeltaMove < 0)
 		{
-			m_iCheckTrigger = 0;
-			m_fTriggerDeltaMove = 0;
+			//m_fTriggerDeltaMove = 0;
 		}
 		else
 		{
@@ -205,8 +207,7 @@ void CToyBoxButton_Button::OnPressed_Button(_double TimeDelta)
 		}
 	}
 
-	if(1 == m_iCheckTrigger || -1 == m_iCheckTrigger)
-		m_pStaticActorCom->Update_StaticActor();
+	m_pStaticActorCom->Update_StaticActor();
 }
 
 CToyBoxButton_Button* CToyBoxButton_Button::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)

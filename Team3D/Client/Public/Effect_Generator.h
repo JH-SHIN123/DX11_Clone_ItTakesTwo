@@ -87,6 +87,8 @@ enum class Effect_Value
 	PipeLocker_Ball,
 	PipeLocker_Particle,
 
+	Gate_Smoke,
+
 	Effect_Value_End
 };
 

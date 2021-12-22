@@ -56,6 +56,16 @@ HRESULT CBlur::Blur_Specular()
 	return S_OK;
 }
 
+HRESULT CBlur::Blur_AfterPostBlur()
+{
+	CRenderTarget_Manager* pRenderTargetManager = CRenderTarget_Manager::GetInstance();
+
+	FAILED_CHECK_RETURN(DownScale(pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_AfterPost_Blur")), m_pUnorderedAccessView_DownScaledAfterPostBlur), E_FAIL);
+	FAILED_CHECK_RETURN(BlurInPlace(m_pShaderResourceView_DownScaledAfterPostBlur, m_pUnorderedAccessView_DownScaledAfterPostBlur), E_FAIL);
+
+	return S_OK;
+}
+
 HRESULT CBlur::DownScale(ID3D11ShaderResourceView* inputSRV, ID3D11UnorderedAccessView* inputUAV)
 {
 	NULL_CHECK_RETURN(m_pDeviceContext, E_FAIL);
@@ -124,6 +134,7 @@ HRESULT CBlur::Build_BlurResources(_float iWidth, _float iHeight)
 	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pDownScaledEmissiveTex), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pDownScaledEffectTex), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pDownScaledSpecularTex), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pDownScaledAfterPostBlurTex), E_FAIL);
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC	 ShaderResourceViewDesc;
 	ZeroMemory(&ShaderResourceViewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
@@ -135,6 +146,7 @@ HRESULT CBlur::Build_BlurResources(_float iWidth, _float iHeight)
 	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pDownScaledEmissiveTex, &ShaderResourceViewDesc, &m_pShaderResourceView_DownScaledEmissive), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pDownScaledEffectTex, &ShaderResourceViewDesc, &m_pShaderResourceView_DownScaledEffect), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pDownScaledSpecularTex, &ShaderResourceViewDesc, &m_pShaderResourceView_DownScaledSpecular), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pDownScaledAfterPostBlurTex, &ShaderResourceViewDesc, &m_pShaderResourceView_DownScaledAfterPostBlur), E_FAIL);
 
 	D3D11_UNORDERED_ACCESS_VIEW_DESC UnorderedAccessViewDesc;
 	ZeroMemory(&UnorderedAccessViewDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
@@ -147,6 +159,7 @@ HRESULT CBlur::Build_BlurResources(_float iWidth, _float iHeight)
 	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pDownScaledEmissiveTex, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_DownScaledEmissive), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pDownScaledEffectTex, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_DownScaledEffect), E_FAIL);
 	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pDownScaledSpecularTex, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_DownScaledSpecular), E_FAIL);
+	FAILED_CHECK_RETURN(m_pDevice->CreateUnorderedAccessView(m_pDownScaledAfterPostBlurTex, &UnorderedAccessViewDesc, &m_pUnorderedAccessView_DownScaledAfterPostBlur), E_FAIL);
 
 	return S_OK;
 }
@@ -221,6 +234,10 @@ HRESULT CBlur::Unbind_ShaderResources()
 
 void CBlur::Free()
 {
+	Safe_Release(m_pUnorderedAccessView_DownScaledAfterPostBlur);
+	Safe_Release(m_pShaderResourceView_DownScaledAfterPostBlur);
+	Safe_Release(m_pDownScaledAfterPostBlurTex);
+
 	Safe_Release(m_pUnorderedAccessView_Blur_Temp);
 	Safe_Release(m_pShaderResourceView_Blur_Temp);
 	Safe_Release(m_pBlurTex_Temp);

@@ -5,6 +5,7 @@
 #include "May.h"
 #include "Cody.h"
 #include "UFO.h"
+#include "Effect_Generator.h"
 
 CEndingRocket::CEndingRocket(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -32,13 +33,27 @@ HRESULT CEndingRocket::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, -500.f, 0.f, 1.f));
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 0.f, 15.f, 1.f));
 	m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(90.f));
+
+	m_fCurSpeed = 10.f;
+
+	DATABASE->Set_EndingRocket(this);
+
+	EFFECT->Add_Effect(Effect_Value::BossMissile_Smoke, m_pTransformCom->Get_WorldMatrix());
+
 	return S_OK;
 }
 
 _int CEndingRocket::Tick(_double dTimeDelta)
 {
-	Movement(dTimeDelta);
-	Ready_Players(dTimeDelta);
+	if (m_pGameInstance->Key_Down(DIK_END))
+		m_bStartMove = true;
+
+	if (m_bStartMove)
+	{
+		Movement(dTimeDelta);
+		Ready_Players(dTimeDelta);
+	}
+
 	return _int();
 }
 
@@ -77,42 +92,63 @@ void CEndingRocket::Ready_Players(_double dTimeDelta)
 
 void CEndingRocket::Movement(_double dTimeDelta)
 {
-	m_pTransformCom->Go_Straight(dTimeDelta);
+	_float fTimeDelta = (_float)dTimeDelta;
+
+	/* ºÎ½ºÆ® */
+	if (true == m_bBoost)
+	{
+		m_dBoostTime += dTimeDelta;
+
+		if (2.0 <= m_dBoostTime)
+		{
+			m_bBoost = false;
+			m_dBoostTime = 0.0;
+		}
+
+		m_pTransformCom->Go_Straight(fTimeDelta * m_fCurSpeed);
+	}
+	else
+	{
+		if (m_fCurSpeed > ENDING_ROCKET_SPEED)
+			m_fCurSpeed -= fTimeDelta * 10.f;
+
+		m_pTransformCom->Go_Straight(fTimeDelta * m_fCurSpeed);
+	}
 
 	if (m_pGameInstance->Key_Pressing(DIK_W))
 	{
 		if (m_fUp < 0.7f)
 		{
-			m_fDown -= (_float)dTimeDelta;
-			m_fUp += (_float)dTimeDelta;
-			m_pTransformCom->Go_Up(dTimeDelta * 4.f);
+			m_fDown -= fTimeDelta;
+			m_fUp += fTimeDelta;
+			m_pTransformCom->Go_Up(fTimeDelta * 4.f);
 		}
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_A))
 	{
 		if (m_fLeft < 1.3f)
 		{
-			m_fRight -= (_float)dTimeDelta;
-			m_fLeft += (_float)dTimeDelta;
-			m_pTransformCom->Go_Left(dTimeDelta * 4.f);
+			m_fRight -= fTimeDelta;
+			m_fLeft += fTimeDelta;
+			m_pTransformCom->Go_Left(fTimeDelta * 4.f);
 		}
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_S))
 	{
 		if (m_fDown < 0.7f)
 		{
-			m_fUp -= (_float)dTimeDelta;
-			m_fDown += (_float)dTimeDelta;
-			m_pTransformCom->Go_Down(dTimeDelta * 4.f);
+			m_fUp -= fTimeDelta;
+			m_fDown += fTimeDelta;
+			m_pTransformCom->Go_Down(fTimeDelta * 4.f);
 		}
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_D))
 	{
 		if (m_fRight < 1.3f)
 		{
-			m_fLeft -= (_float)dTimeDelta;
-			m_fRight += (_float)dTimeDelta;
-			m_pTransformCom->Go_Right(dTimeDelta * 4.f);
+			m_fLeft -= fTimeDelta;
+			m_fRight += fTimeDelta;
+			m_pTransformCom->Go_Right(fTimeDelta * 4.f);
 		}
 	}
 }

@@ -105,14 +105,14 @@ VS_OUT_FRESNEL VS_FRESNEL(VS_IN In)
 	// MainCam
 	float3 vPosW = Out.vPosition.xyz;
 	float3 vNormalW = Out.vNormal.xyz;
-	float3 l = normalize(vPosW - g_vMainCamPosition);
+	float3 l = normalize(vPosW - g_vMainCamPosition).xyz;
 	float Scale = 2.5f;
 	float Power = 2.f; // 점점 진해지는 강도세기
 
 	Out.vMainCamRefl = Scale * pow(1.0 + dot(l, vNormalW), Power);
 
 	// SubCam
-	l = normalize(vPosW - g_vSubCamPosition);
+	l = normalize(vPosW - g_vSubCamPosition).xyz;
 	Out.vSubCamRefl = Scale * pow(1.0 + dot(l, vNormalW), Power);
 
 	return Out;
