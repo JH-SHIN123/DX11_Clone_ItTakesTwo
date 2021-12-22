@@ -198,7 +198,7 @@ HRESULT CPostFX::Blur(ID3D11ShaderResourceView* pInput, ID3D11UnorderedAccessVie
 HRESULT CPostFX::Blur_Customs()
 {
 	FAILED_CHECK_RETURN(CBlur::GetInstance()->Blur_Effect(), E_FAIL);
-	FAILED_CHECK_RETURN(CBlur::GetInstance()->Blur_AfterPostBlur(), E_FAIL);
+	FAILED_CHECK_RETURN(CBlur::GetInstance()->Blur_CustomBlur(), E_FAIL);
 
 	return S_OK;
 }
@@ -283,8 +283,8 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_DepthTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Depth")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EffectTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Effect")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EffectBlurTex", pBlur->Get_ShaderResourceView_BlurEffect());
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AfterPostBlurTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_AfterPost_Blur")));
-	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AfterPostBlurTex_Blur", pBlur->Get_ShaderResourceView_BlurAfterPostBlur());
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_CustomBlurTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Custom_Blur")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_CustomBlurTex_Blur", pBlur->Get_ShaderResourceView_BlurCustomBlur());
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 
 	m_pVIBuffer_ToneMapping->Render(0);

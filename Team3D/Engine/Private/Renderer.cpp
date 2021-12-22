@@ -70,8 +70,8 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Effect"), TEXT("MRT_Effect")), E_FAIL);
 
 	/* MRT_AfterPost - Blur */
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_AfterPost_Blur"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_AfterPost_Blur"), TEXT("MRT_AfterPost_Blur")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_RenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Custom_Blur"), iWidth, iHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTarget_Manager->Add_MRT(TEXT("Target_Custom_Blur"), TEXT("MRT_Custom_Blur")), E_FAIL);
 
 	m_pVIBuffer = CVIBuffer_RectRHW::Create(m_pDevice, m_pDeviceContext, 0.f, 0.f, ViewportDesc.Width, ViewportDesc.Height, TEXT("../Bin/ShaderFiles/Shader_Blend.hlsl"), "DefaultTechnique");
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
@@ -139,7 +139,7 @@ HRESULT CRenderer::Draw_Renderer(_double TimeDelta)
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Alpha(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_AfterPostBlur(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_CustomBlur(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
 	FAILED_CHECK_RETURN(PostProcessing(TimeDelta), E_FAIL);
 
@@ -240,16 +240,16 @@ HRESULT CRenderer::Render_Effect_No_Blur()
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_AfterPostBlur()
+HRESULT CRenderer::Render_CustomBlur()
 {
-	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_AfterPost_Blur"));
-	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_AFTERPOST_BLUR])
+	m_pRenderTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Custom_Blur"));
+	for (auto& pGameObject : m_RenderObjects[RENDER_GROUP::RENDER_CUSTOM_BLUR])
 	{
-		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_AFTERPOST_BLUR), E_FAIL);
+		FAILED_CHECK_RETURN(pGameObject->Render(RENDER_GROUP::RENDER_CUSTOM_BLUR), E_FAIL);
 		Safe_Release(pGameObject);
 	}
-	m_RenderObjects[RENDER_GROUP::RENDER_AFTERPOST_BLUR].clear();
-	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_AfterPost_Blur"));
+	m_RenderObjects[RENDER_GROUP::RENDER_CUSTOM_BLUR].clear();
+	m_pRenderTarget_Manager->End_MRT(m_pDeviceContext, TEXT("MRT_Custom_Blur"));
 
 	return S_OK;
 }
