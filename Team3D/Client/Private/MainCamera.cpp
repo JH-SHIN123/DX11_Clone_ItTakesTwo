@@ -15,6 +15,7 @@
 #include"May.h"
 #include"LaserTennis_Manager.h"
 #include"AlphaScreen.h"
+#include"Script.h"
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -190,7 +191,12 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 	{
 		m_eCurCamMode = CamMode::Cam_WallJump;
 	}
-
+#ifdef __TEST_JUN
+	if (m_pGameInstance->Key_Down(DIK_B))
+		m_bOpenThirdFloor = !m_bOpenThirdFloor;
+#endif 
+	if (m_bOpenThirdFloor && m_fOpenThirdFloorTime == 0.f)
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OpenThirdFloor;
 	if (CLaserTennis_Manager::GetInstance()->Get_StartGame() && m_eCurCamMode != CamMode::Cam_LaserTennis)
 	{
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f),1.5f);
@@ -326,6 +332,47 @@ _int CMainCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 }
 _int CMainCamera::Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta)
 {
+	m_fOpenThirdFloorTime += (_float)dTimeDelta;
+	_float fDelay = 2.f;
+	if (m_fOpenThirdFloorTime > fDelay *9.f)
+	{
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
+		ReSet_Cam_FreeToAuto(true ,false,1.f);
+	}
+	else if (m_fOpenThirdFloorTime > fDelay *8.f)
+		SCRIPT->Render_Script(53, CScript::SCREEN::HALF, fDelay);
+	else if (m_fOpenThirdFloorTime > fDelay *7.f)
+		SCRIPT->Render_Script(52, CScript::SCREEN::HALF, fDelay);
+	else if (m_fOpenThirdFloorTime > fDelay *6.f)
+		SCRIPT->Render_Script(51, CScript::SCREEN::HALF, fDelay);
+	else if (m_fOpenThirdFloorTime > fDelay *5.f)
+		SCRIPT->Render_Script(50, CScript::SCREEN::HALF, fDelay);
+	else if (m_fOpenThirdFloorTime >fDelay * 4.f)
+		SCRIPT->Render_Script(49, CScript::SCREEN::HALF, fDelay);
+	else if (m_fOpenThirdFloorTime > fDelay *3.f)
+		SCRIPT->Render_Script(48, CScript::SCREEN::HALF, fDelay);
+	else if (m_fOpenThirdFloorTime > fDelay * 2.f)
+		SCRIPT->Render_Script(47, CScript::SCREEN::HALF, fDelay);
+	else if (m_fOpenThirdFloorTime > fDelay)
+		SCRIPT->Render_Script(46, CScript::SCREEN::HALF, fDelay);
+	else if (m_fOpenThirdFloorTime > 0.f)
+		SCRIPT->Render_Script(45, CScript::SCREEN::HALF, fDelay);
+
+	_vector vCodyPos = m_pCody->Get_Position();
+	_vector vUpPos = XMVectorSet(65.f, 218.f, 179.f, 1.f);
+	_vector vMiddleDir = (vCodyPos - vUpPos);
+	_vector vLook = XMVector3Normalize(vMiddleDir);
+	_vector vMiddlePos = vCodyPos - vMiddleDir * 0.5f;
+	_vector vTargetPos = vMiddlePos;
+
+	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
+	_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+
+	_vector vEye = vCodyPos + XMVectorSet(XMVectorGetX(vUp)* 100.f, 0.f, XMVectorGetZ(vUp) * 100.f, 0.f);
+	vEye = XMVectorSetY(vEye, XMVectorGetY(vMiddlePos));
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vMiddlePos), (_float)dTimeDelta));
+
+	
 	return NO_EVENT;
 }
 void CMainCamera::KeyCheck(_double dTimeDelta)
@@ -1189,10 +1236,10 @@ _int CMainCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
 }
 
 
-_int CMainCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook, _bool bIsCalculateCamLook)
+_int CMainCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook, _bool bIsCalculateCamLook, _float fLerpSpeed)
 {
 
-	m_fChangeCamModeLerpSpeed = 6.f;
+	m_fChangeCamModeLerpSpeed = fLerpSpeed;
 	m_fChangeCamModeTime = 0.f;
 	m_eCurCamMode = CamMode::Cam_AutoToFree;
 	m_eCurPlayerSize = m_pCody->Get_Player_Size();
@@ -1438,7 +1485,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	}
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
-	CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Clear_Umbrella");
+	CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Boss_Intro");
 	return NO_EVENT;
 	}
 

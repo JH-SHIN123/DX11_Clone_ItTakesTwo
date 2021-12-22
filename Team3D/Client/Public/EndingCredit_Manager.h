@@ -22,9 +22,7 @@ public: /* Setter */
 
 public:
 	HRESULT NativeConstruct_EndingCredit();
-	/* 충돌여부(부스트여부) */
-	HRESULT Create_3DText(_bool bBoost);
-	HRESULT Start_EndingCredit();
+	HRESULT Create_3DText(_uint iIndex, _float fPosY);
 	HRESULT Create_Environment();
 
 private:
@@ -33,7 +31,6 @@ private:
 	_bool			m_bDeadEnvironment = false;
 	_uint			m_iRandomModel = 0;
 private:
-	void	Add_Argument_Info(_uint iIndex, C3DText::ARG_DESC &tArg);
 	HRESULT Create_Rocks(_uint iNumRock);
 	HRESULT Create_HugeRock();
 	HRESULT Create_2DMesh(_uint iNum2DMesh);

@@ -9,6 +9,7 @@
 #include "SupportFrame.h"
 #include "ControlRoom_Door.h"
 #include "BatteryBox.h"
+#include "Effect_Generator.h"
 
 CPressureBigPlate::CPressureBigPlate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -268,13 +269,16 @@ void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 		}
 		else
 		{
+			_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+			WorldMatrix.r[3] = XMVectorSet(81.1f, 213.f, 217.15f, 1.f);
+			EFFECT->Add_Effect(Effect_Value::PipeLocker_Ball, WorldMatrix);
 			m_IsBatteryCheck = true;
 			m_IsButtonActive = false;
 			m_fActiveMove = 0.17f;
 		}
 	}
 
-	if (true == m_IsBatteryCheck && true == m_pBatteryBox->Get_BatteryHolding())
+	if (true == m_IsBatteryCheck && true == m_pBatteryBox->Get_BatteryHolding() && true == m_IsEffect_Done)
 	{
 		m_IsPowerSupplyActive = true;
 		m_IsPowerSupplyAvailable = false;
@@ -485,6 +489,7 @@ void CPressureBigPlate::Free()
 {
 	Safe_Release(m_pPlateLock);
 	Safe_Release(m_pPlateFrame);
+	//Safe_Release(m_pEffect);
 
 	if(1 == m_iOption)
 		Safe_Release(m_pBatteryBox);

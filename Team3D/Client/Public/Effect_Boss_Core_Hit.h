@@ -40,6 +40,8 @@ private:
 private:
 	_double m_dControlTime = 0.5; //
 	_bool m_IsActivate = true;
+	_double m_dEffectTimer = 0.0;
+	_bool	m_IsActivateEffect = false;
 
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
@@ -50,7 +52,7 @@ private:
 	const _float  m_fAlphaTime_Power = 1.f;
 	const _float  m_fInstance_SpeedPerSec = 2.5f;
 	const _double m_dInstance_Pos_Update_Time = 1.5;
-	const _float2 m_vDefaultSize = { 0.1f, 0.3f };
+	const _float2 m_vDefaultSize = { 0.2f, 0.5f };
 
 public:
 	static CEffect_Boss_Core_Hit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

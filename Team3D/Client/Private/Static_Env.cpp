@@ -223,8 +223,58 @@ HRESULT CStatic_Env::Render(RENDER_GROUP::Enum eGroup)
 		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
 		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 18, false, eGroup);
 	}
-	else if(!lstrcmp(TEXT("Component_Model_Planet"), m_Static_Env_Desc.szModelTag) ||
-			!lstrcmp(TEXT("Component_Model_LavaLamp"), m_Static_Env_Desc.szModelTag))
+	else if (!lstrcmp(TEXT("Component_Model_ControlRoom_Monitor_02"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Sepd_Bind_Buffer();
+
+		iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false);
+
+		iMaterialIndex = 1;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom_Monitor->Get_ShaderResourceView(0));
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 33, false);
+	}
+	else if (!lstrcmp(TEXT("Component_Model_ControlRoom_Computer_01"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Sepd_Bind_Buffer();
+
+		iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false);
+
+		iMaterialIndex = 1;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom_Computer->Get_ShaderResourceView(0));
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 33, false);
+	}
+	else if (!lstrcmp(TEXT("Component_Model_ControlRoom_GraphMonitor_01"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Sepd_Bind_Buffer();
+
+		iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false);
+
+		iMaterialIndex = 1;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_SPECULAR, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false);
+
+		iMaterialIndex = 2;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom_GraphMonitor->Get_ShaderResourceView(0));
+		m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, m_Static_Env_Desc.iMaterialIndex);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false);
+	}
+	else if(!lstrcmp(TEXT("Component_Model_Planet"), m_Static_Env_Desc.szModelTag) || !lstrcmp(TEXT("Component_Model_LavaLamp"), m_Static_Env_Desc.szModelTag))
 		m_pModelCom->Render_Model(8, m_Static_Env_Desc.iMaterialIndex);
 	else if (!lstrcmp(TEXT("Component_Model_LaserButtonLargeFrame"), m_Static_Env_Desc.szModelTag))
 		m_pModelCom->Render_Model(23, m_Static_Env_Desc.iMaterialIndex);
@@ -263,6 +313,11 @@ HRESULT CStatic_Env::Ready_Component(void * pArg)
 	tArg.pUserData = &m_UserData;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Actor"), (CComponent**)&m_pStaticActorCom, &tArg), E_FAIL);
+
+	/* Texture */
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_ControlRoom07"), TEXT("Com_Texture0"), (CComponent**)&m_pTextureCom_Monitor), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_ControlRoom09"), TEXT("Com_Texture1"), (CComponent**)&m_pTextureCom_Computer), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_ControlRoom11"), TEXT("Com_Texture2"), (CComponent**)&m_pTextureCom_GraphMonitor), E_FAIL);
 
 	return S_OK;
 }
@@ -392,6 +447,10 @@ void CStatic_Env::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pStaticActorCom);
+
+	Safe_Release(m_pTextureCom_Computer);
+	Safe_Release(m_pTextureCom_GraphMonitor);
+	Safe_Release(m_pTextureCom_Monitor);
 
 	CGameObject::Free();
 }

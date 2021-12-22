@@ -226,6 +226,7 @@
     <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
     <ClInclude Include="..\Public\ControlRoom_Glass.h" />
+    <ClInclude Include="..\Public\ControlRoom_Monitor.h" />
     <ClInclude Include="..\Public\CutScene.h" />
     <ClInclude Include="..\Public\CutScenePlayer.h" />
     <ClInclude Include="..\Public\DataStorage.h" />
@@ -292,7 +293,9 @@
     <ClInclude Include="..\Public\Effect_Pinball_Explosion_Dust.h" />
     <ClInclude Include="..\public\Effect_Pinball_Explosion_Particle.h" />
     <ClInclude Include="..\Public\Effect_Pinball_Move.h" />
+    <ClInclude Include="..\public\Effect_PipeLocker_Ball.h" />
     <ClInclude Include="..\Public\Effect_PipeLocker_Connected.h" />
+    <ClInclude Include="..\public\Effect_PipeLocker_Particle.h" />
     <ClInclude Include="..\Public\Effect_Player_Dead.h" />
     <ClInclude Include="..\public\Effect_Player_Dead_Explosion.h" />
     <ClInclude Include="..\public\Effect_Player_Dead_Explosion_Particle.h" />
@@ -532,6 +535,7 @@
     <ClCompile Include="..\Private\ControlRoom_Battery.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Door.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Glass.cpp" />
+    <ClCompile Include="..\Private\ControlRoom_Monitor.cpp" />
     <ClCompile Include="..\Private\CutScene.cpp" />
     <ClCompile Include="..\Private\CutScenePlayer.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp" />
@@ -598,7 +602,9 @@
     <ClCompile Include="..\Private\Effect_Pinball_Explosion_Dust.cpp" />
     <ClCompile Include="..\private\Effect_Pinball_Explosion_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Pinball_Move.cpp" />
+    <ClCompile Include="..\private\Effect_PipeLocker_Ball.cpp" />
     <ClCompile Include="..\Private\Effect_PipeLocker_Connected.cpp" />
+    <ClCompile Include="..\private\Effect_PipeLocker_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Player_Dead.cpp" />
     <ClCompile Include="..\private\Effect_Player_Dead_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Player_Dead_Explosion_Particle.cpp" />

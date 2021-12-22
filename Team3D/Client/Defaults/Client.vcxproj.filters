@@ -249,6 +249,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon">
       <UniqueIdentifier>{5b697a68-0358-4102-b02d-6330df092a73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\ControlRoom_Monitor">
+      <UniqueIdentifier>{96bcbbc4-65c4-4c61-a69a-16b9f60331e8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis">
       <UniqueIdentifier>{2f8d2754-6701-41e2-9489-11780094fcd4}</UniqueIdentifier>
     </Filter>
@@ -879,6 +882,15 @@
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe">
       <UniqueIdentifier>{0e9afc0b-547c-49be-9832-18d17154215d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\05.PipeLocker">
+      <UniqueIdentifier>{aceb414c-387b-417d-8d2f-b52e9b18a39e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\05.PipeLocker\00.Ball">
+      <UniqueIdentifier>{253f2c0c-d6e0-4b9a-a14f-d308deb8872c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\3D\Object\05.PipeLocker\01.Particle">
+      <UniqueIdentifier>{dba9bcc2-d2e9-40f5-8c25-9f655518a95b}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Player">
       <UniqueIdentifier>{8a1de5e2-3ffe-4128-a7ef-8232f5123633}</UniqueIdentifier>
     </Filter>
@@ -1315,6 +1327,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Moon.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ControlRoom_Monitor.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\ControlRoom_Monitor</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LaserTennis_Manager.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
@@ -1868,6 +1883,12 @@
     <ClInclude Include="..\Public\Effect_Umbrella_Pipe.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_PipeLocker_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\05.PipeLocker\01.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_PipeLocker_Ball.h">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\05.PipeLocker\00.Ball</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Effect_DashMesh.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Player\00.Dash</Filter>
     </ClInclude>
@@ -2262,6 +2283,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Moon.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ControlRoom_Monitor.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\ControlRoom_Monitor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LaserTennis_Manager.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
@@ -2814,6 +2838,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Umbrella_Pipe.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Object\04.Umbrella_Pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_PipeLocker_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\05.PipeLocker\01.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_PipeLocker_Ball.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\3D\Object\05.PipeLocker\00.Ball</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_DashMesh.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Player\00.Dash</Filter>

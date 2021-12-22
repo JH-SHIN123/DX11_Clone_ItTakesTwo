@@ -84,7 +84,8 @@
 #include "Effect_StarBuddy_Explosion_BigBang.h"
 #include "Effect_StarBuddy_Explosion_Particle.h"
 #include "Effect_StarBuddy_Move_Particle.h"
-
+#include "Effect_PipeLocker_Ball.h"
+#include "Effect_PipeLocker_Particle.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -146,7 +147,7 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 	case Effect_Value::Cody_Rail:
 		Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_CODY;
 		lstrcpy(szPrototype, L"GameObject_2D_Player_Rail_Particle");
-		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Player_Rail_Smoke"), &Clone_Data);
+		//m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Player_Rail_Smoke"), &Clone_Data);
 		break;
 	case Effect_Value::Cody_PinBall_Move:
 		lstrcpy(szPrototype, L"GameObject_2D_Pinball_Move");
@@ -336,6 +337,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::PipeLocker_Connected:
 		lstrcpy(szPrototype, L"GameObject_Effect_PipeLocker_Connected");
+		break;
+	case Effect_Value::PipeLocker_Ball:
+		lstrcpy(szPrototype, L"GameObject_2D_PipeLocker_Button_Ball");
 		break;
 	case Effect_Value::Gate_Smoke:
 		lstrcpy(szPrototype, L"GameObject_Effect_GateSmoke");
@@ -631,6 +635,12 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 	
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_WarpGate_Clear"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_WarpGate_Clear", CEffect_WarpGate_Clear::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_PipeLocker_Button_Ball"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_PipeLocker_Button_Ball", CEffect_PipeLocker_Ball::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_PipeLocker_Button_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_PipeLocker_Button_Particle", CEffect_PipeLocker_Particle::Create(pDevice, pDeviceContext, pData));
 
 #pragma  endregion
 

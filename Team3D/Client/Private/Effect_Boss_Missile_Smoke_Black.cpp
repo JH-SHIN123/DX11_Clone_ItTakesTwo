@@ -3,7 +3,6 @@
 #include "DataStorage.h"
 #include "Cody.h"
 #include "May.h"
-#include "EndingRocket.h"
 
 CEffect_Boss_Missile_Smoke_Black::CEffect_Boss_Missile_Smoke_Black(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -45,11 +44,13 @@ HRESULT CEffect_Boss_Missile_Smoke_Black::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_Missile_Smoke_Black::Tick(_double TimeDelta)
 {
+#ifdef __TEST_JUNG
 //	if (EFFECT_DESC_CLONE::PV_CODY == m_EffectDesc_Clone.iPlayerValue)
-//		/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
+		/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
 //	else
 //		/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CMay*>(DATABASE->GetMay())->Get_WorldMatrix());
-	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CEndingRocket*>(DATABASE->Get_EndingRocket())->Get_Transform()->Get_WorldMatrix());
+//	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CEndingRocket*>(DATABASE->Get_EndingRocket())->Get_Transform()->Get_WorldMatrix());
+#endif // __TEST_JUNG
 
 	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
 		return EVENT_DEAD;

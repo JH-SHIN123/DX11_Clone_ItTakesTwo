@@ -105,14 +105,14 @@ VS_OUT_FRESNEL VS_FRESNEL(VS_IN In)
 	// MainCam
 	float3 vPosW = Out.vPosition.xyz;
 	float3 vNormalW = Out.vNormal.xyz;
-	float3 l = normalize(vPosW - g_vMainCamPosition);
+	float3 l = normalize(vPosW - g_vMainCamPosition).xyz;
 	float Scale = 2.5f;
 	float Power = 2.f; // 점점 진해지는 강도세기
 
 	Out.vMainCamRefl = Scale * pow(1.0 + dot(l, vNormalW), Power);
 
 	// SubCam
-	l = normalize(vPosW - g_vSubCamPosition);
+	l = normalize(vPosW - g_vSubCamPosition).xyz;
 	Out.vSubCamRefl = Scale * pow(1.0 + dot(l, vNormalW), Power);
 
 	return Out;
@@ -370,6 +370,14 @@ PS_OUT	PS_DASH(PS_IN In)
 	return Out;
 }
 
+PS_OUT	PS_PIPELOCKER_BALL(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vDiffuse = g_vColor * 2.f;
+	return Out;
+}
+
 PS_OUT	PS_MASK(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -389,7 +397,7 @@ PS_OUT_CUSTOMBLUR	PS_MAIN_RESPAWN_PORTAL(PS_IN_DOUBLE_UV In)
 	float4 vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV + fWeight);
 	float4 vColor = g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV.xy);
 
-	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * vColor.rgb * 10.f;
+	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * vColor.rgb * 5.f;
 	Out.vDiffuse.a = Out.vDiffuse.b * 0.75f * g_fAlpha;
 	Out.vBlurValue = 0.f;
 
@@ -447,7 +455,7 @@ PS_OUT_CUSTOMBLUR	PS_MAIN_RESPAWNTENNEL(PS_IN_DOUBLE_UV In)
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDiffTexUV);
 
 	vector vColor = g_ColorRampTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
-	Out.vDiffuse.rgb = fWeight * vColor.rgb * 2.5f;
+	Out.vDiffuse.rgb = fWeight * vColor.rgb * 1.f; //2.5
 	Out.vDiffuse.a = 1;// Out.vDiffuse.r + Out.vDiffuse.g + Out.vDiffuse.b;
 
 	Out.vBlurValue = 0.f;
@@ -552,7 +560,7 @@ PS_OUT	PS_MAIN_MOONBABOON_SHILED(PS_IN_DOUBLE_UV In)
 
 	vector vColor = g_ColorRampTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistUV);
 
-	Out.vDiffuse.rgb = vColor.rgb * vDiffuse.b * 2.5f;
+	Out.vDiffuse.rgb = vColor.rgb * vDiffuse.b * 5.f;
 	Out.vDiffuse.a = vDistUV.y * 0.25f * g_fAlpha;
 
 	return Out;
@@ -802,5 +810,15 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_DASH();
+	}
+
+	pass PipeLocker_Ball// 16
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PIPELOCKER_BALL();
 	}
 };

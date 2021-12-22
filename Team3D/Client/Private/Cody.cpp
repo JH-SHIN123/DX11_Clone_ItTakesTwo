@@ -379,7 +379,7 @@ _int CCody::Late_Tick(_double dTimeDelta)
 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
+		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1000.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 		return NO_EVENT;
 	}
@@ -3276,11 +3276,11 @@ void CCody::Ride_Ending_Rocket(const _double dTimeDelta)
 	{
 		/* 3초후 시작 */
 		m_dStartTime += dTimeDelta;
-		if (3.f <= m_dStartTime && false == m_bEndingCheck)
-		{
-			ENDINGCREDIT->Start_EndingCredit();
-			m_bEndingCheck = true;
-		}
+		//////////if (3.f <= m_dStartTime && false == m_bEndingCheck)
+		//////////{
+		//////////	ENDINGCREDIT->Start_EndingCredit();
+		//////////	m_bEndingCheck = true;
+		//////////}
 
 		m_pModelCom->Set_Animation(ANI_C_Rocket_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Rocket_MH);
@@ -3547,6 +3547,7 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 
 			m_bMoveToRail = false;
 			m_bOnRail = false;
+			m_bOnRail_Effect = false;
 		}
 	}
 }
@@ -3609,6 +3610,7 @@ void CCody::Find_TargetSpaceRail()
 			m_pSearchTargetRailNode = pNode;
 			fMinDist = fDist;
 			isSearch = true;
+			EFFECT->Add_Effect(Effect_Value::Cody_Rail, m_pTransformCom->Get_WorldMatrix());
 		}
 	}
 
@@ -3654,6 +3656,7 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 			m_pTargetRailNode = nullptr;
 			m_bOnRail = false;
 			m_bMoveToRail = false;
+			m_bOnRail_Effect = false;
 			return;
 		}
 
@@ -3675,7 +3678,9 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 		m_pTargetRailNode = nullptr;
 		m_bOnRail = true;
 		m_bMoveToRail = false;
-		EFFECT->Add_Effect(Effect_Value::Cody_Rail, m_pTransformCom->Get_WorldMatrix());
+		if (false == m_bOnRail_Effect)
+			EFFECT->Add_Effect(Effect_Value::Cody_Rail, m_pTransformCom->Get_WorldMatrix());
+		m_bOnRail_Effect = true;
 
 		m_pGameInstance->Set_SoundVolume(CHANNEL_CODY_RAIL, m_fRailSoundVolume);
 		m_pGameInstance->Play_Sound(TEXT("Rail_Ride.wav"), CHANNEL_CODY_RAIL, m_fRailSoundVolume, true);

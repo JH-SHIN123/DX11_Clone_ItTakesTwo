@@ -25,6 +25,8 @@ public:
 	HRESULT		Add_Performer(const _tchar* pPerformerTag, CGameObject* pPerformer);
 	CGameObject* Find_Performer(const _tchar* pPerformerTag);
 	CCutScene* Find_CutScene(const _tchar* pCutSceneTag);
+	_uint		Get_ButtonNum() { return m_iButtonNum; }
+	void		Add_ButtonNum() { m_iButtonNum++; }
 private:
 	typedef unordered_map<const _tchar*,CCutScene*> CUTSCENES;
 	CUTSCENES m_CutScenes;
@@ -34,6 +36,7 @@ private:
 	PERFORMERS m_Performers;
 
 	_bool m_bIsPlayingCutScene = false;
+	_uint m_iButtonNum = 1;
 
 	class CGameInstance* m_pGameInstance = nullptr;
 	_bool	m_bIsPlayedCutScene[(_uint)CCutScene::CutSceneOption::CutScene_End];

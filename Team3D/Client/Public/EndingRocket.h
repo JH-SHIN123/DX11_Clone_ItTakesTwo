@@ -3,8 +3,8 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 
-#define ENDING_ROCKET_SPEED			10.f 
-#define ENDING_ROCKET_BOOSTSPEED	25.f
+#define ENDING_ROCKET_SPEED			25.f 
+#define ENDING_ROCKET_BOOSTSPEED	70.f
 
 BEGIN(Client)
 class CEndingRocket final : public CGameObject
