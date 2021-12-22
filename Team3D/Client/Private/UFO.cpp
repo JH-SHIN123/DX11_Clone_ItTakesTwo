@@ -55,6 +55,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	m_ePattern = UFO_PATTERN::LASER;
 	m_IsCutScene = true;
 
+
 	/* 컷 신 끝나고 기본 위치로 이동해야되는 포지션 세팅 */
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vPos.m128_f32[1] += 6.f;
@@ -84,18 +85,41 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_pMoonBaboon->Set_Animation(Moon_Ufo_Programming, Moon_Ufo_MH);
 		((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
 	}
-	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
+	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
 	{
+		// 마지막에 누가 박았는지에 따라 뷰포트 전환이 다름
+		if (m_WhoCollide == GameID::eCODY)
+		{
+			// 지우지마세용
+		}
+		else if (m_WhoCollide == GameID::eMAY)
+		{
+			// 지우지마세용
+		}
 		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
 		m_IsCutScene = true;
 	}
-	else if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
+	else if (m_pGameInstance->Key_Down(DIK_NUMPAD5) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
 	{
-		m_pBossHpBar->Set_Active(true);
+		_float fMaxDistance = 201.f;
+		DATABASE->Close_BossDoor();
+		DATABASE->GoUp_BossFloor(fMaxDistance, 10.f);
+		m_IsCutScene = false;
+		m_ePhase = UFO_PHASE::PHASE_3;
 	}
-	else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
-		m_pBossHpBar->Set_Active(false);
+	else if (m_pGameInstance->Key_Down(DIK_F1) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
+	{
+		m_ePhase = UFO_PHASE::PHASE_3;
+		m_IsCutScene = true;
+	}
+
+	//else if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
+	//{
+	//	m_pBossHpBar->Set_Active(true);
+	//}
+	//else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
+	//	m_pBossHpBar->Set_Active(false);
 
 	if (m_pGameInstance->Key_Down(DIK_F11))
 	{
@@ -150,7 +174,7 @@ _int CUFO::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3000.f))
 		return Add_GameObject_ToRenderGroup();
 
 	return NO_EVENT;
@@ -909,7 +933,8 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 {
 	if (false == m_IsEjection)
 	{
-		m_vStartUFOPos.y += 201.f;
+		_vector vPosition = { 64.f, 357.5f, 195.f, 1.f };
+		XMStoreFloat4(&m_vStartUFOPos, vPosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vStartUFOPos));
 		m_pModelCom->Set_Animation(CutScene_Eject_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);

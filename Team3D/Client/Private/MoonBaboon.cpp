@@ -81,7 +81,7 @@ _int CMoonBaboon::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3000.f))
 		return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
 	return NO_EVENT;
@@ -101,10 +101,53 @@ CMoonBaboon::MOON_STATE CMoonBaboon::Check_State(_double dTimeDelta)
 
 void CMoonBaboon::Fix_MoonBaboon_Chair(_double dTimeDelta)
 {
-	_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
-	_float4x4 matWorld, matScale; // 우주선 안에있을때 유리밖으로 꼬리 튀어나와서 100->95정도로 줄임.
-	XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f)  * BoneChair * m_pUFOTransform->Get_WorldMatrix());
-	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
+	if (((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() == CUFO::UFO_PHASE::PHASE_3 && ((CUFO*)DATABASE->Get_BossUFO())->Get_IsCutScene() == true)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_LEFT) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
+		{
+			m_pTransformCom->Go_Left(dTimeDelta * 5.f);
+		}
+		if (m_pGameInstance->Key_Pressing(DIK_RIGHT) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
+		{
+			m_pTransformCom->Go_Right(dTimeDelta * 5.f);
+		}
+		if (m_pGameInstance->Key_Pressing(DIK_UP) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
+		{
+			m_pTransformCom->Go_Up(dTimeDelta * 5.f);
+		}
+		if (m_pGameInstance->Key_Pressing(DIK_DOWN) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
+		{
+			m_pTransformCom->Go_Down(dTimeDelta * 5.f);
+		}
+		if (m_bEjectOnce == false)
+		{
+			_matrix matAlign = m_pModelCom->Get_BoneMatrix("Align");
+			_matrix matSpine = m_pModelCom->Get_BoneMatrix("Spine");
+
+			_matrix matAlignWorld = matAlign * XMMatrixScaling(100.f, 100.f, 100.f) * m_pTransformCom->Get_WorldMatrix();
+			_matrix matSpineWorld = matSpine * XMMatrixScaling(100.f, 100.f, 100.f) * m_pTransformCom->Get_WorldMatrix();
+
+			_vector AlignPos = matAlignWorld.r[3];
+			_vector SpinePos = matSpineWorld.r[3];
+
+			_vector vDir = SpinePos - AlignPos;
+
+			_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vDir;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+			m_pTransformCom->Set_Scale(XMVectorSet(10.f, 10.f, 10.f, 0.f));
+
+
+			m_pModelCom->Set_Animation(Moon_Eject);
+			m_pModelCom->Set_NextAnimIndex(Moon_Run);
+		}
+	}
+	else
+	{
+		_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
+		_float4x4 matWorld, matScale; // 우주선 안에있을때 유리밖으로 꼬리 튀어나와서 100->95정도로 줄임.
+		XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f)  * BoneChair * m_pUFOTransform->Get_WorldMatrix());
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
+	}
 }
 
 HRESULT CMoonBaboon::Render(RENDER_GROUP::Enum eGroup)

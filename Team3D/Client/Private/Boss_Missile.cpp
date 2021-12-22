@@ -223,6 +223,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 	_float  fDist = XMVectorGetX(XMVector3Length(vDir));
 	if (fDist < 4.f)
 	{
+		((CUFO*)DATABASE->Get_BossUFO())->Set_Who_Collide_Last(GameID::eMAY);
 		m_bBossExplosion = true;
 		return;
 	}
@@ -301,6 +302,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 	_float  fDist = XMVectorGetX(XMVector3Length(vDir));
 	if (fDist < 4.f)
 	{
+		((CUFO*)DATABASE->Get_BossUFO())->Set_Who_Collide_Last(GameID::eMAY);
 		m_bBossExplosion = true;
 		return;
 	}
@@ -384,6 +386,7 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 	_float  fDist = XMVectorGetX(XMVector3Length(vDir));
 	if (fDist < 4.f)
 	{
+		((CUFO*)DATABASE->Get_BossUFO())->Set_Who_Collide_Last(GameID::eCODY);
 		m_bBossExplosion = true;
 		return;
 	}

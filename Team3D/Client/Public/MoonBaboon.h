@@ -54,6 +54,7 @@ private:
 	MOON_STATE m_eCurState = MOON_STATE_END;
 	MOON_STATE m_eNextState = MOON_STATE_END;
 	MOON_TARGET m_eTarget = TARGET_END;
+	_bool		m_bEjectOnce = false;
 
 private:
 	/* For.NativeConstruct */

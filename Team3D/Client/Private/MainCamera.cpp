@@ -390,11 +390,23 @@ void CMainCamera::KeyCheck(_double dTimeDelta)
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD4))
 	{
-		m_pTransformCom->Go_Left(dTimeDelta);
+		m_pTransformCom->Go_Left(dTimeDelta * 2.f);
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD6))
 	{
-		m_pTransformCom->Go_Right(dTimeDelta);
+		m_pTransformCom->Go_Right(dTimeDelta* 2.f);
+	}
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD8))
+	{
+		m_pTransformCom->Go_Up(dTimeDelta* 2.f);
+	}
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD2))
+	{
+		m_pTransformCom->Go_Down(dTimeDelta* 2.f);
+	}
+	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD5))
+	{
+		m_pTransformCom->Go_Straight(dTimeDelta* 2.f);
 	}
 
 }
@@ -1495,6 +1507,12 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		return NO_EVENT;
 	}*/
 #endif
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
+	{
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
+		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
+	}
+
 	if (m_eCurCamMode != m_ePreCamMode)
 	{
 		switch (m_eCurCamMode)
