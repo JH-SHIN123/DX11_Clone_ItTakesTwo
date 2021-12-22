@@ -5,6 +5,9 @@
 #include "May.h"
 #include "Cody.h"
 #include "UFO.h"
+#include "Effect_Generator.h"
+#include "Effect_Boss_Missile_Smoke_Black.h"
+#include "Effect_Boss_Missile_Smoke_Color.h"
 
 CBoss_Missile::CBoss_Missile(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -32,6 +35,9 @@ HRESULT CBoss_Missile::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Boss_Missile"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
+	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_MissileEffect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Missile_Smoke_Black"), nullptr, (CGameObject**)&m_pEffect_Smoke_1);
+	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_MissileEffect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Missile_Smoke_Color"), nullptr, (CGameObject**)&m_pEffect_Smoke_2);
+
 	_vector vPos = XMLoadFloat4(&Data.vPosition);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 	m_IsTargetCody = Data.IsTarget_Cody;
@@ -44,6 +50,7 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 
 	if (m_bPlayerExplosion == true)
 	{
+		Explosion_Effect();
 
 		return EVENT_DEAD;
 	}
@@ -57,6 +64,8 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 		{
 			((CMay*)DATABASE->GetMay())->Set_Escape_From_Rocket(true);
 		}
+
+		Explosion_Effect();
 
 		return EVENT_DEAD;
 	}
@@ -213,8 +222,9 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 
 void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 {
-	// 각도 제한 걸어야 함
+	Set_SmokeEffect(true);
 
+	// 각도 제한 걸어야 함
 #ifdef __CONTROL_MAY_KEYBOARD
 	_vector vUFOPos = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 	_vector vMissilePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -376,6 +386,8 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 
 void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 {
+	Set_SmokeEffect(true);
+
 	// 각도 제한 걸어야 함
 	_vector vUFOPos = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 	_vector vMissilePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -462,6 +474,8 @@ void CBoss_Missile::Falling(_double dTimeDelta)
 
 		if (m_RaycastBuffer.getNbAnyHits() > 0)
 		{
+			Set_SmokeEffect(false);
+
 			_float fDistance = m_RaycastBuffer.getAnyHit(0).distance;
 			if (fDistance > 0.5f)
 			{
@@ -509,6 +523,25 @@ void CBoss_Missile::Adjust_Angle(_double dTimeDelta)
 	}
 }
 
+void CBoss_Missile::Explosion_Effect()
+{
+	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
+	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
+
+	_int iRand = rand() % 3 + 3;
+	for(_int i = 0; i < iRand; ++i)
+		EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
+
+	m_pEffect_Smoke_1->Set_Dead();
+	m_pEffect_Smoke_2->Set_Dead();
+}
+
+void CBoss_Missile::Set_SmokeEffect(_bool IsActivate)
+{
+	m_pEffect_Smoke_1->Set_IsActivate(IsActivate);
+	m_pEffect_Smoke_2->Set_IsActivate(IsActivate);
+}
+
 CBoss_Missile * CBoss_Missile::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CBoss_Missile* pInstance = new CBoss_Missile(pDevice, pDeviceContext);
@@ -541,6 +574,8 @@ void CBoss_Missile::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pEffect_Smoke_1);
+	Safe_Release(m_pEffect_Smoke_2);
 
 	__super::Free();
 }

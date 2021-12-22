@@ -104,6 +104,7 @@ struct VS_OUT_NOBILL_DIR
 	float	fTime			: TEXCOORD1;
 	float3	vNoBill_Dir		: TEXCOORD2;
 };
+
 VS_OUT_NOBILL_DIR VS_MAIN_NOBILL_Y(VS_IN In)
 {
 	VS_OUT_NOBILL_DIR			Out = (VS_OUT_NOBILL_DIR)0;
@@ -137,6 +138,30 @@ VS_OUT_TRIPLE_UV VS_TRIPLE_UV(VS_IN In)
 	Out.fTime			= In.fTime;
 	Out.vTexUV_Right	= In.WorldMatrix._11_12_13_14;
 	Out.vTexUV_Up		= In.WorldMatrix._21_22_23_24;
+
+	return Out;
+}
+
+struct VS_OUT_NO_BILL
+{
+	float4	vPosition		: POSITION;
+	float2	vSize			: PSIZE;
+	float4	vTextureUV_LTRB	: TEXCOORD0;
+	float	fTime			: TEXCOORD1;
+	float3	vRight			: TEXCOORD2;
+	float3	vUp				: TEXCOORD3;
+};
+
+VS_OUT_NO_BILL VS_MAIN_NO_BILL(VS_IN In)
+{
+	VS_OUT_NO_BILL			Out = (VS_OUT_NO_BILL)0;
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), In.WorldMatrix);
+	Out.vTextureUV_LTRB = In.vTextureUV_LTRB;
+	Out.vSize	= In.vSize;
+	Out.fTime	= In.fTime;
+	Out.vRight	= In.WorldMatrix._11_12_13;
+	Out.vUp		= In.WorldMatrix._21_22_23;
 
 	return Out;
 }
@@ -259,6 +284,79 @@ void  GS_MAIN(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT
 }
 
 [maxvertexcount(12)]
+void  GS_MAIN_NO_BILL(/*입력*/ point  VS_OUT_NO_BILL In[1], /*출력*/ inout TriangleStream<GS_OUT> TriStream)
+{
+	GS_OUT		Out[8];
+
+	float3		vRight	= In[0].vRight;
+	float3		vUp		= In[0].vUp;
+	matrix		matVP	= mul(g_MainViewMatrix, g_MainProjMatrix);
+
+	float2		vHalfSize = float2(In[0].vSize.x * 0.5f, In[0].vSize.y * 0.5f);
+
+	float4		vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
+	float4		vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
+
+	Out[0].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[0].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.y);
+
+	Out[1].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[1].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.y);
+
+	Out[2].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[2].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.w);
+
+	Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[3].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.w);
+
+
+	Out[4].vPosition = Out[0].vPosition;
+	Out[5].vPosition = Out[1].vPosition;
+	Out[6].vPosition = Out[2].vPosition;
+	Out[7].vPosition = Out[3].vPosition;
+
+	[unroll]
+	for (int i = 0; j < 4; ++j)
+	{
+		Out[i].vPosition = mul(Out[i].vPosition, matVP);
+		Out[i].vProjPosition = Out[i].vPosition;
+		Out[i].iViewportIndex = 1;
+		Out[i].fTime = In[0].fTime;
+	}
+
+	matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+	[unroll]
+	for (int j = 4; j < 7; ++j)
+	{
+		Out[j].vTexUV = Out[j - 4].vTexUV;
+
+		Out[j].vPosition = mul(Out[j].vPosition, matVP);
+		Out[j].vProjPosition = Out[j].vPosition;
+		Out[j].iViewportIndex = 2;
+		Out[j].fTime = In[0].fTime;
+	}
+
+	TriStream.Append(Out[0]);
+	TriStream.Append(Out[1]);
+	TriStream.Append(Out[2]);
+	TriStream.RestartStrip();
+
+	TriStream.Append(Out[0]);
+	TriStream.Append(Out[2]);
+	TriStream.Append(Out[3]);
+	TriStream.RestartStrip();
+
+	TriStream.Append(Out[4]);
+	TriStream.Append(Out[5]);
+	TriStream.Append(Out[6]);
+	TriStream.RestartStrip();
+
+	TriStream.Append(Out[4]);
+	TriStream.Append(Out[6]);
+	TriStream.Append(Out[7]);
+}
+
+[maxvertexcount(12)]
 void  GS_MAIN_FLIP_U(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT> TriStream)
 {
 	GS_OUT		Out[8];
@@ -342,7 +440,6 @@ void  GS_MAIN_FLIP_U(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream
 	TriStream.Append(Out[6]);
 	TriStream.Append(Out[7]);
 }
-
 
 [maxvertexcount(12)]
 void  GS_MAIN_ROTATE_ANGLE_X(/*입력*/ point  VS_OUT_ROTATE In[1], /*출력*/ inout TriangleStream<GS_OUT> TriStream)

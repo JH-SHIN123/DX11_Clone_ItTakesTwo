@@ -49,18 +49,20 @@ _int CEffect_Boss_Missile_Smoke_Color::Tick(_double TimeDelta)
 //	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CEndingRocket*>(DATABASE->Get_EndingRocket())->Get_Transform()->Get_WorldMatrix());
 #endif // __TEST_JUNG
 
-	// 왜곡을 먹은 디졸브를 디퓨즈(스모크)틀 에다가 곱하고 그 색상의 r값을 UV로 해서 색상을 입히자 
-	// 왜곡 0011
-	// 디졸브 랜덤
-
-	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
+	if (true == m_isDead && 0.0 >= m_dControlTime)
 		return EVENT_DEAD;
 
-	m_dControlTime += TimeDelta;
-	if (true == m_IsActivate)
+	if (true == m_IsActivate && false == m_isDead)
 	{
+		m_dControlTime += TimeDelta * 0.5f;
 		if (1.0 <= m_dControlTime)
 			m_dControlTime = 1.0;
+	}
+	else
+	{
+		m_dControlTime -= TimeDelta * 0.75f;
+		if (0.0 >= m_dControlTime)
+			m_dControlTime = 0.0;
 	}
 
 	Check_Instance(TimeDelta);

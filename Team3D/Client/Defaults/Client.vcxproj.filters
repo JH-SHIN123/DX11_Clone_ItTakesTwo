@@ -2114,7 +2114,9 @@
     <ClInclude Include="..\public\Effect_MoonUFO_Laser_ColorSmoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\MoonUFO\00.Laser\02.ColorSmoke</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect_EndingRocket_Smoke.h" />
+    <ClInclude Include="..\public\Effect_EndingRocket_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\EndingRocket</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -3059,7 +3061,9 @@
     <ClCompile Include="..\private\Effect_MoonUFO_Laser_ColorSmoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\MoonUFO\00.Laser\02.ColorSmoke</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Effect_EndingRocket_Smoke.cpp" />
+    <ClCompile Include="..\private\Effect_EndingRocket_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\EndingRocket</Filter>
+    </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--etc-->

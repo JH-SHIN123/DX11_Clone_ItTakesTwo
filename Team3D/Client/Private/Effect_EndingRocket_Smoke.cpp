@@ -213,11 +213,9 @@ void CEffect_EndingRocket_Smoke::Check_TargetMatrix()
 
 	MyMatrix = MyMatrix * WorldMatrix;
 
-
 	m_pTransformCom->Set_WorldMatrix(MyMatrix);
 	XMStoreFloat4(&m_pInstanceBuffer_STT[0].vPosition, MyMatrix.r[3]);
 	XMStoreFloat4(&m_pInstanceBuffer_STT[0].vUp, MyMatrix.r[2]);
-
 }
 
 CEffect_EndingRocket_Smoke * CEffect_EndingRocket_Smoke::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

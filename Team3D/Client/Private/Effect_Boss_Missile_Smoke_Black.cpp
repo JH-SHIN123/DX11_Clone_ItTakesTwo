@@ -52,14 +52,20 @@ _int CEffect_Boss_Missile_Smoke_Black::Tick(_double TimeDelta)
 //	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CEndingRocket*>(DATABASE->Get_EndingRocket())->Get_Transform()->Get_WorldMatrix());
 #endif // __TEST_JUNG
 
-	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
+	if (true == m_isDead && 0.0 >= m_dControlTime)
 		return EVENT_DEAD;
 
-	m_dControlTime += TimeDelta;
-	if (true == m_IsActivate)
+	if (true == m_IsActivate && false == m_isDead)
 	{
+		m_dControlTime += TimeDelta * 0.5f;
 		if (1.0 <= m_dControlTime)
 			m_dControlTime = 1.0;
+	}
+	else
+	{
+		m_dControlTime -= TimeDelta * 0.75f;
+		if (0.0 >= m_dControlTime)
+			m_dControlTime = 0.0;
 	}
 
 	Check_Instance(TimeDelta);
@@ -69,11 +75,7 @@ _int CEffect_Boss_Missile_Smoke_Black::Tick(_double TimeDelta)
 
 _int CEffect_Boss_Missile_Smoke_Black::Late_Tick(_double TimeDelta)
 {
-	//if(EFFECT_DESC_CLONE::PV_CODY == m_EffectDesc_Clone.iPlayerValue)
-		return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
-	//else
-	//	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
-
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Boss_Missile_Smoke_Black::Render(RENDER_GROUP::Enum eGroup)
