@@ -116,8 +116,8 @@ HRESULT CEnvironment_Generator::Load_Stage_Space()
 	FAILED_CHECK_RETURN(Load_Environment_Space(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Space_Boss(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_Bridge(), E_FAIL);
-	FAILED_CHECK_RETURN(Load_Environment_Trigger(), E_FAIL);
-	FAILED_CHECK_RETURN(Load_Environment_Trigger_SpaceShip(), E_FAIL);
+	//FAILED_CHECK_RETURN(Load_Environment_Trigger(), E_FAIL);
+	//FAILED_CHECK_RETURN(Load_Environment_Trigger_SpaceShip(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Environment_SpaceRail(), E_FAIL);
 	FAILED_CHECK_RETURN(Load_Others(), E_FAIL);
 

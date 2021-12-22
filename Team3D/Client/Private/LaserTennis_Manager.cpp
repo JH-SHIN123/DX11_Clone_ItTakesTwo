@@ -279,7 +279,6 @@ void CLaserTennis_Manager::Start_Game()
 	/* 충돌 벽 생성 */
 	Active_CollisionWall();
 
-	
 	/* 타이머 세팅 */
 	m_pTimer_LaserTennis->OnOff_Timer(true);
 }
