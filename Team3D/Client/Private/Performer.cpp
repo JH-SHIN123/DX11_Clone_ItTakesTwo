@@ -137,7 +137,7 @@ void CPerformer::Start_ButtonPress(_double dTimeDelta)
 		return;
 	if (m_bStartPressing == false && m_tDesc.vPosition.y > 218.5f)
 	{
-		m_tDesc.vPosition.y -= dTimeDelta *2.f;
+		m_tDesc.vPosition.y -= (_float)dTimeDelta *2.f;
 	}
 	else
 		m_bStartPressing = true;
@@ -145,14 +145,14 @@ void CPerformer::Start_ButtonPress(_double dTimeDelta)
 	{
 		if (m_bStartPressing == true && m_tDesc.vPosition.y < 218.652f)
 		{
-			m_tDesc.vPosition.y += dTimeDelta * 2.f;
+			m_tDesc.vPosition.y += (_float)dTimeDelta * 2.f;
 		}
 	}
 	else
 	{
 		if (m_bStartPressing == true && m_tDesc.vPosition.y < 219.131f)
 		{
-			m_tDesc.vPosition.y += dTimeDelta * 2.f;
+			m_tDesc.vPosition.y += (_float)dTimeDelta * 2.f;
 		}
 	}
 }
