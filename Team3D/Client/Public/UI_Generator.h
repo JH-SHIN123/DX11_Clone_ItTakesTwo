@@ -37,7 +37,6 @@ class CUI_Generator final : public CBase
 {
 	DECLARE_SINGLETON(CUI_Generator)
 
-public:
 	typedef struct tagFontDesc
 	{
 		_float2 vPosition = { 0.f, 0.f };
@@ -45,8 +44,6 @@ public:
 		_uint	iShaderPassNum = 0;
 		_float	fAlpha = 1.f;
 		_float3 vColor = { 1.f, 1.f, 1.f };
-
-
 
 	}FONTDESC;
 
@@ -69,9 +66,10 @@ public:
 
 public:
 	_bool Get_EmptyCheck(Player::ID ePlayer, UI::TRIGGER eTrigger) { return m_vecUIOBjects[ePlayer][eTrigger].empty(); };
-	_bool Get_InterActive_UI_EmptyCheck(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger) { return m_vecInterActiveUI[ePlayer][eTrigger].empty(); };
+	_bool Get_InterActive_UI_EmptyCheck(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger);
 	class CHeaderBox* Get_HeaderBox(_int iIndex) { if (true == m_vecHeaderBox.empty()) return nullptr; return m_vecHeaderBox[iIndex]; }
 	CUIObject* Get_UIObject(Player::ID ePlayer, UI::TRIGGER eTrigger);
+	_bool Get_MinigameAllReady();
 
 public:
 	void Set_TriggerOn();
@@ -83,6 +81,8 @@ public:
 	void Set_FadeOutSpeed(Player::ID ePlayer, UI::TRIGGER eTrigger, _float fSpeed);
 	void Set_FadeOut(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	void Set_MinigameReady(Player::ID ePlayer, UI::TRIGGER eTrigger);
+	void Set_MinigameReadyCheck(Player::ID ePlayer, _bool IsCheck);
+
 
 public:
 	HRESULT Add_Prototype_LogoTexture();
@@ -112,6 +112,11 @@ private:
 	_float							m_fChange = 1;
 	VTXFONT*						m_VTXFONT;
 	FONTDESC						m_FontDesc;
+	_bool							m_IsCodyReady = false;
+	_bool							m_IsMayReady = false;
+	_bool							m_IsCountEnd = false;
+	_uint							m_iCodyCount = 0;
+	_uint							m_iMayCount = 0;
 
 private:
 	vector<CUIObject::UI_DESC*>		m_vecPSData;

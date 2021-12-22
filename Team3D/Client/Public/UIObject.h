@@ -41,6 +41,9 @@ public:
 	virtual _float Get_DistanceFromCamera() override;
 
 public:
+	_uint Get_TextureRenderIndex();
+
+public:
 	void Set_Active(_bool bActive) { m_bActive = bActive; }
 	void Set_Dead();
 	void Set_PlayerID(Player::ID ePlayerID);

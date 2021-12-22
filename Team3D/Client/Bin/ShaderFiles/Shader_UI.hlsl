@@ -19,6 +19,7 @@ int		g_iGSOption;
 int		g_iRespawnOption;
 int		g_iHeaderBoxOption;
 int		g_iAlphaOption;
+int		g_iShaderOption;
 
 float	g_fAlpha;
 float	g_Time;
@@ -32,7 +33,7 @@ float2  g_UV;
 float2  g_vScreenMaskUV;
 float   g_fCircleRatio;
 
-bool	g_IsHealthBarDecrease;
+bool	g_IsRecovery;
 
 sampler	DiffuseSampler = sampler_state
 {
@@ -595,11 +596,26 @@ PS_OUT PS_PlayerHpBar(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	if (g_fDecreaseRateRatio <= Out.vColor.b && g_fCircleRatio >= Out.vColor.b)
-		Out.vColor.rgb = 1.f;
-	else if (g_fDecreaseRateRatio > Out.vColor.b)
-		Out.vColor.a = 0.f;
+	if (0 == g_iShaderOption)
+	{
+		if (g_fDecreaseRateRatio <= Out.vColor.b && g_fCircleRatio >= Out.vColor.b)
+			Out.vColor.rgb = 1.f;
+		else if (g_fDecreaseRateRatio > Out.vColor.b)
+			Out.vColor.a = 0.f;
+	}
+	else if(1 == g_iShaderOption)
+	{
+		if (g_fDecreaseRateRatio >= Out.vColor.b && g_fCircleRatio <= Out.vColor.b)
+			Out.vColor.rgb = 1.f;
+		else if (g_fDecreaseRateRatio < Out.vColor.b)
+			Out.vColor.a = 0.f;
+	}
 
+	if (true == g_IsRecovery && 0.f != Out.vColor.a)
+	{
+		Out.vColor.rb = 0.f;
+		Out.vColor.g = 1.f;
+	}
 
 	return Out;
 }
@@ -973,7 +989,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MinigameScore();
 	}
 
-	// 27
+	// 28
 	pass MinigameTitle
 	{
 		SetRasterizerState(Rasterizer_Solid);
@@ -984,5 +1000,26 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MinigameTitle();
 	}
 
+	// 29
+	pass MinigameHpBar
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_PlayerHpBar();
+	}
+
+	// 30
+	pass MinigameHpBarFrame
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_PlayerHpBarFrame();
+	}
 
 };

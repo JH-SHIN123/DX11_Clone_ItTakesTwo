@@ -31,11 +31,32 @@ HRESULT CHpBar::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
 
+	/* Option 0 : 메인 Hp바 / Option 1 : 서브 Hp바 */
+	if (nullptr != pArg)
+		memcpy(&m_iOption, pArg, sizeof(_uint));
+
 	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_UI(), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+
+	//if (0 == m_iOption)
+	//{
+	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
+	//	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	//}
+	//else if (1 == m_iOption)
+	//{
+	//	m_vMaxScale = m_UIDesc.vScale;
+
+	//	m_UIDesc.vScale.x = 106.f;
+	//	m_UIDesc.vScale.y = 102.f;
+	//	m_vMinScale = m_UIDesc.vScale;
+
+	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
+	//	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	//}
 
 
 	return S_OK;
@@ -48,57 +69,17 @@ _int CHpBar::Tick(_double TimeDelta)
 
 	CUIObject::Tick(TimeDelta);
 
-	//if (m_pGameInstance->Key_Down(DIK_INSERT))
-	//{
-	//	UI_Create(Cody, Minigame_Ready_Cody);
-	//	UI_Create(May, Minigame_Ready_May);
-	//	//UI_Create(Default, Minigame_Countdown);
-	//}
-
-	if (m_pGameInstance->Key_Down(DIK_HOME))
+	switch (m_ePlayerID)
 	{
-		m_fHp += 10.f;
-		m_fRatio = (m_fHp / 120.f) / 2.f;
-		m_IsHit = true;
-		m_fWatingTime = 0.f;
-		m_fRecoveryTime = 0.f;
+	case Player::Cody:
+		CodyHpBar_Boss(TimeDelta);
+		break;
+	case Player::May:
+		MayHpBar_Boss(TimeDelta);
+		break;
 	}
 
-	if (true == m_IsHit)
-	{
-		if (m_fDecreaseRateRatio <= m_fRatio)
-		{
-			m_fWatingTime += (_float)TimeDelta;
-
-			if (1.f <= m_fWatingTime)
-			{
-				m_fDecreaseRateRatio = m_fRatio;
-				m_fWatingTime = 0.f;
-				m_IsHit = false;
-			}
-		}
-	}
-	else
-	{
-		m_fWatingTime += (_float)TimeDelta;
-
-		if (1.f <= m_fWatingTime)
-		{
-			m_fRecoveryTime += (_float)TimeDelta;
-
-			if (0.02f <= m_fRecoveryTime)
-			{
-				m_fHp -= 10.f;
-
-				if (0 >= m_fHp)
-					m_fHp = 0.f;
-
-				m_fRatio = (m_fHp / 120.f) / 2.f;
-				m_fDecreaseRateRatio = m_fRatio;
-				m_fRecoveryTime = 0.f;
-			}
-		}
-	}
+	//Scale_Effect(TimeDelta);
 
 	return _int();
 }
@@ -122,7 +103,9 @@ HRESULT CHpBar::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pVIBuffer_RectCom->Set_Variable("g_fCircleRatio", &m_fRatio, sizeof(_float));
 	m_pVIBuffer_RectCom->Set_Variable("g_fDecreaseRateRatio", &m_fDecreaseRateRatio, sizeof(_float));
-	
+	m_pVIBuffer_RectCom->Set_Variable("g_IsRecovery", &m_IsRecovery, sizeof(_bool));
+	m_pVIBuffer_RectCom->Set_Variable("g_iShaderOption", &m_iShaderOption, sizeof(_int));
+
 	m_pVIBuffer_RectCom->Render(22);
 
 	return S_OK;
@@ -140,7 +123,7 @@ void CHpBar::Set_Active(_bool IsCheck)
 		m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
 	}
 
-	if (false == m_IsActive)
+	if (false == m_IsActive && 0 == m_iOption)
 	{
 		UI_Delete(Cody, Portrait_Cody);
 		UI_Delete(May, Portrait_May);
@@ -150,10 +133,35 @@ void CHpBar::Set_Active(_bool IsCheck)
 void CHpBar::Set_Hp(_float fHp)
 {
 	m_fHp += fHp;
-	m_fRatio = (m_fHp / 120.f) / 2.f;
 	m_IsHit = true;
 	m_fWatingTime = 0.f;
 	m_fRecoveryTime = 0.f;
+
+	if (m_ePlayerID == Player::Cody)
+	{
+		m_fRatio = (m_fHp / 120.f) / 2.f;
+
+		if (0.5f <= m_fRatio)
+			m_fRatio = 0.5f;
+	}
+	else if (m_ePlayerID == Player::May)
+	{
+		m_fRatio = 0.5f - (m_fHp / 120.f) / 2.f;
+		m_fDecreaseRateRatio = 0.5f;
+
+		if (0.f >= m_fRatio)
+			m_fRatio = 0.f;
+	}
+}
+
+void CHpBar::Set_ShaderOption(_int iOption)
+{
+	m_iShaderOption = iOption;
+}
+
+void CHpBar::Set_Stage(CHpBar::STAGE eStage)
+{
+	m_eStage = eStage;
 }
 
 HRESULT CHpBar::Ready_Component()
@@ -166,11 +174,236 @@ HRESULT CHpBar::Ready_Component()
 HRESULT CHpBar::Ready_Layer_UI()
 {
 	CGameObject* pGameObject = nullptr;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodyHpBarFrame"), nullptr, &pGameObject), E_FAIL);
-	m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
-	m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+
+	if (0 == m_iOption)
+	{
+		if (!lstrcmp(m_UIDesc.szUITag, L"CodyHpBar"))
+		{
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodyHpBarFrame"), nullptr, &pGameObject), E_FAIL);
+			m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
+			m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+		}
+		else
+		{
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MayHpBarFrame"), nullptr, &pGameObject), E_FAIL);
+			m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
+			m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+		}
+	}
+	else
+	{
+		if (!lstrcmp(m_UIDesc.szUITag, L"CodySubHpBar"))
+		{
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodySubHpBarFrame"), nullptr, &pGameObject), E_FAIL);
+			m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
+			m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+		}
+		else
+		{
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MaySubHpBarFrame"), nullptr, &pGameObject), E_FAIL);
+			m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
+			m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+		}
+
+	}
 
 	return S_OK;
+}
+
+void CHpBar::Scale_Effect(_double TimeDelta)
+{
+	if (0 == m_iOption)
+		return;
+
+	if (true == m_IsActive)
+	{
+		if (m_vMaxScale.x >= m_UIDesc.vScale.x)
+		{
+			m_UIDesc.vScale.x += (_float)TimeDelta;
+			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+		}
+
+		if (m_vMaxScale.y >= m_UIDesc.vScale.y)
+		{
+			m_UIDesc.vScale.y += (_float)TimeDelta;
+			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+		}
+	}
+	else
+	{
+		if (m_vMinScale.x <= m_UIDesc.vScale.x)
+		{
+			m_UIDesc.vScale.x -= (_float)TimeDelta;
+			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+		}
+
+		if (m_vMinScale.y <= m_UIDesc.vScale.y)
+		{
+			m_UIDesc.vScale.y -= (_float)TimeDelta;
+			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+		}
+	}
+}
+
+void CHpBar::Shake_Effect(_double TimeDelta)
+{
+	if (2.5f >= m_fAngle && false == m_IsChangeRotate)
+	{
+		m_fAngle += (_float)TimeDelta * 150.f;
+		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(m_fAngle));
+	}
+	else
+		m_IsChangeRotate = true;
+	
+	if (0.f <= m_fAngle && true == m_IsChangeRotate)
+	{
+		m_fAngle -= (_float)TimeDelta * 150.f;
+		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(m_fAngle));
+	}
+	else
+		m_IsChangeRotate = false;
+}
+
+void CHpBar::CodyHpBar_Boss(_double TimeDelta)
+{
+	if (true == m_IsHit)
+	{
+		if (m_fDecreaseRateRatio <= m_fRatio)
+		{
+			Shake_Effect(TimeDelta);
+
+			m_fWatingTime += (_float)TimeDelta;
+
+			if (1.f <= m_fWatingTime)
+			{
+				m_fDecreaseRateRatio = m_fRatio;
+				m_fWatingTime = 0.f;
+				m_IsHit = false;
+			}
+		}
+	}
+	else if (false == m_IsHit)
+	{
+		if (1 == m_iOption)
+		{
+			m_IsActive = false;
+			m_pHpBarFrame->Set_Active(false);
+		}
+
+		m_fWatingTime += (_float)TimeDelta;
+
+		if (1.f <= m_fWatingTime)
+		{
+			m_fRecoveryTime += (_float)TimeDelta;
+
+			if (0.02f <= m_fRecoveryTime)
+			{
+				m_IsRecovery = true;
+				m_fHp -= 10.f;
+
+				if (0 >= m_fHp)
+				{
+					m_fHp = 0.f;
+					m_IsRecovery = false;
+				}
+
+				m_fRatio = (m_fHp / 120.f) / 2.f;
+				m_fDecreaseRateRatio = m_fRatio;
+				m_fRecoveryTime = 0.f;
+			}
+		}
+	}
+}
+
+void CHpBar::MayHpBar_Boss(_double TimeDelta)
+{
+	if (true == m_IsHit)
+	{
+		if (m_fDecreaseRateRatio >= m_fRatio)
+		{
+			Shake_Effect(TimeDelta);
+
+			m_fWatingTime += (_float)TimeDelta;
+
+			if (1.f <= m_fWatingTime)
+			{
+				m_fDecreaseRateRatio = m_fRatio;
+				m_fWatingTime = 0.f;
+				m_IsHit = false;
+			}
+		}
+	}
+	else if (false == m_IsHit)
+	{
+		if (1 == m_iOption)
+		{
+			m_IsActive = false;
+			m_pHpBarFrame->Set_Active(false);
+		}
+
+		m_fWatingTime += (_float)TimeDelta;
+
+		if (1.f <= m_fWatingTime)
+		{
+			m_fRecoveryTime += (_float)TimeDelta;
+
+			if (0.02f <= m_fRecoveryTime)
+			{
+				m_IsRecovery = true;
+				m_fHp -= 10.f;
+
+				if (0 >= m_fHp)
+				{
+					m_fHp = 0.f;
+					m_IsRecovery = false;
+				}
+
+				m_fRatio = 0.5f - (m_fHp / 120.f) / 2.f;
+				m_fDecreaseRateRatio = m_fRatio;
+				m_fRecoveryTime = 0.f;
+			}
+		}
+	}
+}
+
+void CHpBar::CodyHpBar_Minigame(_double TimeDelta)
+{
+	if (true == m_IsHit)
+	{
+		if (m_fDecreaseRateRatio >= m_fRatio)
+		{
+			Shake_Effect(TimeDelta);
+
+			m_fWatingTime += (_float)TimeDelta;
+
+			if (1.f <= m_fWatingTime)
+			{
+				m_fDecreaseRateRatio = m_fRatio;
+				m_fWatingTime = 0.f;
+				m_IsHit = false;
+			}
+		}
+	}
+}
+
+void CHpBar::MayHpBar_Minigame(_double TimeDelta)
+{
+	if (true == m_IsHit)
+	{
+		if (m_fDecreaseRateRatio >= m_fRatio)
+		{
+			Shake_Effect(TimeDelta);
+
+			m_fWatingTime += (_float)TimeDelta;
+
+			if (1.f <= m_fWatingTime)
+			{
+				m_fDecreaseRateRatio = m_fRatio;
+				m_fWatingTime = 0.f;
+				m_IsHit = false;
+			}
+		}
+	}
 }
 
 CHpBar * CHpBar::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
