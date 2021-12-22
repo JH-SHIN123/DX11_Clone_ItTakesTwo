@@ -118,6 +118,7 @@ void C3DText::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		/* 충돌시 로켓에 부스트 세팅해줌 */
+		((CCody*)(DATABASE->GetCody()))->Start_RadiarBlur(1.f);
 		((CEndingRocket*)(DATABASE->Get_EndingRocket()))->Set_Boost();
 		ENDINGCREDIT->Create_3DText(true);
 		Create_Particle();

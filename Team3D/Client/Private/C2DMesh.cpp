@@ -63,23 +63,23 @@ _int C2DMesh::Late_Tick(_double dTimeDelta)
 	{
 	case 0:
 		if (0 < m_pModelCom_Ailen->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_AFTERPOST_BLUR, this);
 		break;
 	case 1:
 		if (0 < m_pModelCom_Robot->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_AFTERPOST_BLUR, this);
 		break;
 	case 2:
 		if (0 < m_pModelCom_Star->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_AFTERPOST_BLUR, this);
 		break;
 	case 3:
 		if (0 < m_pModelCom_UFO->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_AFTERPOST_BLUR, this);
 		break;
 	case 4:
 		if (0 < m_pModelCom_Umbrella->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_AFTERPOST_BLUR, this);
 		break;
 	}
 	return NO_EVENT;
