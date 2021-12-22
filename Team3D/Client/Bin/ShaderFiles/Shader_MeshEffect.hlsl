@@ -331,6 +331,12 @@ struct PS_OUT
 	vector	vDiffuse			: SV_TARGET0;
 };
 
+struct PS_OUT_CUSTOMBLUR
+{
+	vector	vDiffuse			: SV_TARGET0;
+	vector	vBlurValue			: SV_TARGET1;
+};
+
 PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -381,9 +387,9 @@ PS_OUT	PS_MASK(PS_IN In)
 	return Out;
 }
 
-PS_OUT	PS_MAIN_RESPAWN_PORTAL(PS_IN_DOUBLE_UV In)
+PS_OUT_CUSTOMBLUR	PS_MAIN_RESPAWN_PORTAL(PS_IN_DOUBLE_UV In)
 {
-	PS_OUT Out = (PS_OUT)0;
+	PS_OUT_CUSTOMBLUR Out = (PS_OUT_CUSTOMBLUR)0;
 
 	float4 vFX_tex = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV_2);
 	float fWeight = (vFX_tex.b * 0.8f);
@@ -391,8 +397,9 @@ PS_OUT	PS_MAIN_RESPAWN_PORTAL(PS_IN_DOUBLE_UV In)
 	float4 vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV + fWeight);
 	float4 vColor = g_ColorRampTexture.Sample(Mirror_MinMagMipLinear_Sampler, g_vColorRamp_UV.xy);
 
-	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * vColor.rgb * 2.f; // 10.f
+	Out.vDiffuse.rgb = (vMtrlDiffuse.r - (vMtrlDiffuse.g * 0.5f)) * vColor.rgb * 5.f;
 	Out.vDiffuse.a = Out.vDiffuse.b * 0.75f * g_fAlpha;
+	Out.vBlurValue = 0.f;
 
 	return Out;
 }
@@ -435,9 +442,9 @@ PS_OUT	PS_MAIN_WORMHOLE(PS_IN_DOUBLE_UV In)
 	return Out;
 }
 
-PS_OUT	PS_MAIN_RESPAWNTENNEL(PS_IN_DOUBLE_UV In)
+PS_OUT_CUSTOMBLUR	PS_MAIN_RESPAWNTENNEL(PS_IN_DOUBLE_UV In)
 {
-	PS_OUT Out = (PS_OUT)0;
+	PS_OUT_CUSTOMBLUR Out = (PS_OUT_CUSTOMBLUR)0;
 	float2 vDistortionUV = In.vTexUV;
 	vDistortionUV.y -= g_fTime;
 	float4 vFX_tex = g_DistortionTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistortionUV);
@@ -447,10 +454,11 @@ PS_OUT	PS_MAIN_RESPAWNTENNEL(PS_IN_DOUBLE_UV In)
 	vDiffTexUV.y += fWeight;
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDiffTexUV);
 
-
 	vector vColor = g_ColorRampTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vDiffuse.rgb = fWeight * vColor.rgb * 1.f; //2.5
 	Out.vDiffuse.a = 1;// Out.vDiffuse.r + Out.vDiffuse.g + Out.vDiffuse.b;
+
+	Out.vBlurValue = 0.f;
 
 	return Out;
 }

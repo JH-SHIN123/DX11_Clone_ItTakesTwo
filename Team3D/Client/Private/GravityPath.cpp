@@ -54,6 +54,8 @@ HRESULT CGravityPath::NativeConstruct(void * pArg)
 			m_arrUserData[iMeshIndex].eID = GameID::eGRAVITYPATH_CENTER;
 		else if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath06")) && (iMeshIndex == 2 || iMeshIndex == 5))
 			m_arrUserData[iMeshIndex].eID = GameID::eGRAVITYPATH_CENTER;
+		else if (!lstrcmp(m_Static_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath07")) && (iMeshIndex == 2 || iMeshIndex == 4))
+			m_arrUserData[iMeshIndex].eID = GameID::eGRAVITYPATH_CENTER;
 	}
 
 	CSepdStaticActor::ARG_DESC ArgDesc;

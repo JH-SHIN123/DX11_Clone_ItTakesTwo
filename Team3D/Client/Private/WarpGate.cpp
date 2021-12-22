@@ -31,7 +31,9 @@ HRESULT CWarpGate::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
 	FAILED_CHECK_RETURN(Check_WarpGate_Star(), E_FAIL);
-	m_pRespawnTunnel->Set_Stage_Viewer(m_WarpGate_Desc.eStageValue);
+
+	if(nullptr != m_pRespawnTunnel)
+		m_pRespawnTunnel->Set_Stage_Viewer(m_WarpGate_Desc.eStageValue);
 
 	return S_OK;
 }
@@ -116,7 +118,8 @@ HRESULT CWarpGate::Ready_Component()
 
 	EFFECT_DESC_CLONE Effect_Desc;
 	XMStoreFloat4x4(&Effect_Desc.WorldMatrix, m_pTransformCom->Get_WorldMatrix());
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_RespawnPortal"), Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel"), &Effect_Desc, (CGameObject**)&m_pRespawnTunnel), E_FAIL);
+	if(MAIN_TENNIS != m_WarpGate_Desc.eStageValue)
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_RespawnPortal"), Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel"), &Effect_Desc, (CGameObject**)&m_pRespawnTunnel), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_RespawnPortal"), Level::LEVEL_STAGE, TEXT("GameObject_3D_RespawnTunnel_Portal"), &Effect_Desc, (CGameObject**)&m_pRespawnTunnel_Portal), E_FAIL);
 
 	return S_OK;
@@ -129,25 +132,31 @@ void CWarpGate::Check_Stage_Value()
 
 	switch (m_WarpGate_Desc.eStageValue)
 	{
-	case Client::CWarpGate::MAIN_UMBRELLA:
+	case CWarpGate::MAIN_UMBRELLA:
 		m_vWarpPos = {};
 		vPos = XMVectorSet(31.f, 125.25f, 195.8f, 1.f);
 		fDegree = 90.f;
 		break;
-	case Client::CWarpGate::STAGE_UMBRELLA:
+	case CWarpGate::STAGE_UMBRELLA:
 		m_vWarpPos = {};
 		vPos = XMVectorSet(-617.f, 755.f, 196.f, 1.f);
 		fDegree = -90.f;
 		break;
-	case Client::CWarpGate::MAIN_PLANET:
+	case CWarpGate::MAIN_PLANET:
 		m_vWarpPos = {};
 		vPos = XMVectorSet(97.8f, 125.25f, 195.8f, 1.f);
 		fDegree = -90.f;
 		break;
-	case Client::CWarpGate::STAGE_PLANET:
+	case CWarpGate::STAGE_PLANET:
 		m_vWarpPos = {};
 		vPos = XMVectorSet(617.f, 755.f, 196.2f, 1.f);
 		fDegree = 90.f;
+		break;
+	case CWarpGate::MAIN_TENNIS:
+		vPos = XMVectorSet(63.8f, 104.5f, 162.f, 1.f);
+		break;
+	case CWarpGate::STAGE_TENNIS:
+		vPos = XMVectorSet(64.f, 730.2f, 956.3f, 1.f);
 		break;
 	default:
 		break;
@@ -258,29 +267,35 @@ _fmatrix CWarpGate::Get_NextPortal_Matrix()
 	// 현재 스테이지 > 다음 스테이지
 	switch (m_WarpGate_Desc.eStageValue)
 	{
-	case Client::CWarpGate::MAIN_UMBRELLA:
-		vPos = XMVectorSet(-617.f, 754.f, 196.f, 1.f);
+	case CWarpGate::MAIN_UMBRELLA:
+		vPos = XMVectorSet(-617.f, 755.f, 196.f, 1.f);
 		fDegree = -90.f;
 		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
 		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
 		break;
-	case Client::CWarpGate::STAGE_UMBRELLA:
+	case CWarpGate::STAGE_UMBRELLA:
 		vPos = XMVectorSet(31.f, 125.25f, 195.8f, 1.f);
 		fDegree = 90.f;
 		DATABASE->Set_May_Stage(ST_PINBALL);
 		DATABASE->Set_Cody_Stage(ST_PINBALL);
 		break;
-	case Client::CWarpGate::MAIN_PLANET:
+	case CWarpGate::MAIN_PLANET:
 		vPos = XMVectorSet(617.f, 755.f, 196.2f, 1.f);
 		fDegree = 90.f;
 		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
 		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
 		break;
-	case Client::CWarpGate::STAGE_PLANET:
+	case CWarpGate::STAGE_PLANET:
 		vPos = XMVectorSet(97.8f, 125.25f, 195.8f, 1.f);
 		fDegree = -90.f;
 		DATABASE->Set_May_Stage(ST_RAIL);
 		DATABASE->Set_Cody_Stage(ST_RAIL);
+		break;
+	case CWarpGate::MAIN_TENNIS:
+		vPos = XMVectorSet(64.f, 730.2f, 956.3f, 1.f);
+		break;
+	case CWarpGate::STAGE_TENNIS:
+		vPos = XMVectorSet(63.8f, 104.5f, 162.f, 1.f);
 		break;
 	default:
 		break;

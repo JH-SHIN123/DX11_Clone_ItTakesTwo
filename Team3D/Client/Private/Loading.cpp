@@ -227,7 +227,7 @@ HRESULT CLoading::NativeConstruct(Level::ID ePreLevelID, Level::ID eNextLevelID)
 	m_iCurWorkIndex = 0;
 
 	if (eNextLevelID == Level::LEVEL_STAGE)
-		m_iWorkCount = 293;
+		m_iWorkCount = 294;
 	else if (eNextLevelID == Level::LEVEL_LOGO)
 		m_iWorkCount = 2;
 

@@ -130,6 +130,8 @@ public:
 	void Set_RadiarBlur_Main(_bool bActive, _float2 & vFocusPos);
 	void Set_RadiarBlur_Sub(_bool bActive, _float2 & vFocusPos);
 	void Set_MainViewFog(_bool bActive);
+	void Set_MainViewBlur(_bool bActive);
+	void Set_SubViewBlur(_bool bActive);
 #pragma endregion
 
 private:

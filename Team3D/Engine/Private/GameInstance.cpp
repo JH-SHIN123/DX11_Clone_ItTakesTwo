@@ -450,6 +450,16 @@ void CGameInstance::Set_MainViewFog(_bool bActive)
 	NULL_CHECK(m_pPostFX);
 	m_pPostFX->Set_MainViewFog(bActive);
 }
+void CGameInstance::Set_MainViewBlur(_bool bActive)
+{
+	NULL_CHECK(m_pPostFX);
+	m_pPostFX->Set_MainViewBlur(bActive);
+}
+void CGameInstance::Set_SubViewBlur(_bool bActive)
+{
+	NULL_CHECK(m_pPostFX);
+	m_pPostFX->Set_SubViewBlur(bActive);
+}
 #pragma endregion
 
 void CGameInstance::Release_Engine()

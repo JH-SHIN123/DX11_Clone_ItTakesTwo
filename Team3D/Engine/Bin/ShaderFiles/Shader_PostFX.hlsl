@@ -8,8 +8,12 @@ Texture2D<float4>		g_DOFBlurTex; // 다운스케일링 -> 업스케일링(Linear)
 Texture2D				g_DepthTex;
 Texture2D				g_EffectTex;
 Texture2D				g_EffectBlurTex;
-Texture2D				g_AfterPostBlurTex;
-Texture2D				g_AfterPostBlurTex_Blur;
+Texture2D				g_EffectPreCustomBlurTex;
+Texture2D				g_EffectPreCustomBlurTex_Value;
+Texture2D				g_EffectPreCustomBlurTex_Blur;
+Texture2D				g_EffectPostCustomBlurTex;
+Texture2D				g_EffectPostCustomBlurTex_Value;
+Texture2D				g_EffectPostCustomBlurTex_Blur;
 
 /* Etc Resources */
 Texture2D				g_RadiarBlurMaskTex;
@@ -57,10 +61,16 @@ cbuffer RadialBlurDesc
 cbuffer FogDesc
 {
 	bool	g_bFog = false;
-	float3	g_vFogColor = { 0.84f,0.83f,0.96f };			// 안개의 기본색상 ( 앰비언트 색상과 동일해야함)
-	float	g_fFogStartDist = 0.1f;							// 안개 지점에서 카메라까지의 거리
-	float	g_fFogGlobalDensity = 9.f;						// 안개 밀도 계수(값이 클수록 안개가 짙어진다)
+	float3	g_vFogColor = { 0.f ,0.f, 0.f };			// 안개의 기본색상 ( 앰비언트 색상과 동일해야함)
+	float	g_fFogStartDist = 0.01f;							// 안개 지점에서 카메라까지의 거리
+	float	g_fFogGlobalDensity = 20.f;						// 안개 밀도 계수(값이 클수록 안개가 짙어진다)
 	float	g_fFogHeightFalloff = 0.007f;					// 높이 소멸값
+};
+
+cbuffer BlurDesc
+{
+	bool g_MainBlur = false;
+	bool g_SubBlur = false;
 };
 
 ////////////////////////////////////////////////////////////
@@ -250,6 +260,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	float distToEye = 0.f;
 
 	bool bFogActive = false;
+	bool bBlur = false;
 
 	float fBarOffset = 0.00115f;
 	if (In.vTexUV.x >= g_vMainViewportUVInfo.x + fBarOffset && In.vTexUV.x <= g_vMainViewportUVInfo.z - fBarOffset &&
@@ -266,8 +277,9 @@ PS_OUT PS_MAIN(PS_IN In)
 		// Radiar Blur 
 		if(true == g_bRadiarBlur_Main) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Main, g_fRadiarBlurRatio_Main);
 
-		// Fog Active
+		// Trigger Active
 		bFogActive = g_bFog;
+		bBlur = g_MainBlur;
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x + fBarOffset && In.vTexUV.x <= g_vSubViewportUVInfo.z - fBarOffset &&
 		In.vTexUV.y >= g_vSubViewportUVInfo.y + fBarOffset && In.vTexUV.y <= g_vSubViewportUVInfo.w - fBarOffset)
@@ -282,6 +294,8 @@ PS_OUT PS_MAIN(PS_IN In)
 
 		// Radiar Blur 
 		if (true == g_bRadiarBlur_Sub) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Sub, g_fRadiarBlurRatio_Sub);
+
+		bBlur = g_SubBlur;
 	}
 	else discard;
 
@@ -294,7 +308,9 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	// DOF
 	float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-	vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
+
+	if (bBlur) vColor = colorBlurred;
+	else vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
 
 	// Volume
 	vColor = VolumeBlend(vColor, In.vTexUV, vDepthDesc.y, distToEye);
@@ -305,8 +321,13 @@ PS_OUT PS_MAIN(PS_IN In)
 	// Add Effect
 	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 1.5f;
 
-	// Add AfterPostBlur
-	vColor += g_AfterPostBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_AfterPostBlurTex_Blur.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	// Add EffectPreCustomBlur
+	float fBlurValue = g_EffectPreCustomBlurTex_Value.Sample(Point_Sampler, In.vTexUV).r;
+	vColor += g_EffectPreCustomBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectPreCustomBlurTex_Blur.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * (fBlurValue * 10.f);
+	
+	// Add EffectPostCustomBlur
+	fBlurValue = g_EffectPostCustomBlurTex_Value.Sample(Point_Sampler, In.vTexUV).r;
+	vColor += g_EffectPostCustomBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectPostCustomBlurTex_Blur.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * (fBlurValue * 10.f);
 
 	// Final
 	Out.vColor = vector(vColor, 1.f);
