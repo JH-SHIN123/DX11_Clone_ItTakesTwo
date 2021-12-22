@@ -6,6 +6,7 @@
 #include "DataStorage.h"
 #include "Effect_Generator.h"
 #include "Effect_Boss_Laser_Smoke.h"
+#include "MoonBaboonCore_Glass.h"
 
 CLaser_TypeA::CLaser_TypeA(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLaser(pDevice, pDeviceContext)
@@ -149,13 +150,23 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 					m_isHitMay = false;
 					m_dDamagingDelay_May = 0.0;
 				}
+
+				/* 보스방 코어 타격 */
+				if (pUserData->eID == GameID::eBOSSCORE)
+				{
+					CMoonBaboonCore_Glass* pBossCoreGlass = (CMoonBaboonCore_Glass*)pUserData->pGameObject;
+					if (pBossCoreGlass)
+					{
+						pBossCoreGlass->Set_Broken();
+					}
+				}
 			}
 
 			m_fLaserSizeY = m_RaycastBuffer.getAnyHit(0).distance;
 			m_vEndPoint = MH_XMFloat4(m_RaycastBuffer.getAnyHit(0).position, 1.f);
 			m_isCollided = true;
 
-/*------충돌 이펙트 -------*/
+			/*------충돌 이펙트 -------*/
 			/* 충돌 시 이펙트 생성 */
 			if (m_dCreateEffectDelay <= 0.0)
 			{

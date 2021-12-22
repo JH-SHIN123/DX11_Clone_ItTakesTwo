@@ -105,12 +105,6 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 	// 2 Phase시 위로 올라가는거
 	GoUp(TimeDelta);
 
-	if (m_bMove)
-	{
-	}
-
-	//	m_pEffectBossCore->HitOn();
-
     return _int();
 }
 
@@ -122,6 +116,34 @@ _int CMoonBaboonCore::Late_Tick(_double TimeDelta)
 	m_pCoreGlass->Late_Tick(TimeDelta);
 
     return _int();
+}
+
+void CMoonBaboonCore::GoUp(_double dTimeDelta)
+{
+	if (false == m_IsGoUp)
+	{
+		m_pTransformCom->Set_Speed(4.f, 0.f);
+		return;
+	}
+
+	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
+
+	_float fDist = (_float)dTimeDelta * m_fUpSpeed;
+	m_fDistance += fDist;
+
+	if (m_fMaxY <= m_fDistance)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vMaxPos), 1.f));
+		m_fMaxY = 0.f;
+		m_IsGoUp = false;
+		m_fDistance = 0.f;
+		m_iActiveCore = 0;
+		m_bMove = false;
+		return;
+	}
+
+	m_pTransformCom->Go_Up(dTimeDelta);
+	m_bMove = true;
 }
 
 void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
@@ -158,6 +180,14 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 	}
 }
 
+void CMoonBaboonCore::Set_Broken()
+{
+	if (m_bBroken) return;
+
+	m_bBroken = true;
+	m_pEffectBossCore->HitOn();
+}
+
 void CMoonBaboonCore::Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed)
 {
 	XMStoreFloat3(&m_vMaxPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -169,34 +199,6 @@ void CMoonBaboonCore::Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed)
 
 	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
 	m_iActiveCore = 1;
-}
-
-void CMoonBaboonCore::GoUp(_double dTimeDelta)
-{
-	if (false == m_IsGoUp)
-	{
-		m_pTransformCom->Set_Speed(4.f, 0.f);
-		return;
-	}
-
-	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
-
-	_float fDist = (_float)dTimeDelta * m_fUpSpeed;
-	m_fDistance += fDist;
-
-	if (m_fMaxY <= m_fDistance)
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vMaxPos), 1.f));
-		m_fMaxY = 0.f;
-		m_IsGoUp = false;
-		m_fDistance = 0.f;
-		m_iActiveCore = 0;
-		m_bMove = false;
-		return;
-	}
-
-	m_pTransformCom->Go_Up(dTimeDelta);
-	m_bMove = true;
 }
 
 CMoonBaboonCore* CMoonBaboonCore::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
