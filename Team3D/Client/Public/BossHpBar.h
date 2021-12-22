@@ -30,16 +30,22 @@ public:
 	_float							m_fWaitingTime = 0.f;
 	_bool							m_IsActive = false;
 	_float							m_fScaleX = 0.f;
+	_bool							m_IsFontRender = false;
+
+ private:
+	 class CBossHpBarFrame*			m_pBossHpBarFrame = nullptr;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
-
-private:
-	class CBossHpBarFrame*			m_pBossHpBarFrame = nullptr;
+	CFontDraw*						m_pFont = nullptr;
 
 private:
 	HRESULT Ready_Component();
 	HRESULT Ready_Layer_UI();
+
+private:
+	HRESULT Render_Font();
+	void Scale_Effect(_double TimeDelta);
 
 public:
 	static CBossHpBar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

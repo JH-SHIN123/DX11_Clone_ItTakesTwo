@@ -31,11 +31,19 @@ HRESULT CPortrait::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
 
+	if (nullptr != pArg)
+		memcpy(&m_iOption, pArg, sizeof(_uint));
+
 	if (FAILED(Ready_Component()))
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+
+	if (0 == m_iOption)
+		m_iShaderPassNum = 0;
+	else
+		m_iShaderPassNum = 11;
 
 	return S_OK;
 }
@@ -54,6 +62,9 @@ _int CPortrait::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 
+	if (false == m_IsActive)
+		return NO_EVENT;
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
@@ -61,15 +72,26 @@ HRESULT CPortrait::Render(RENDER_GROUP::Enum eGroup)
 {
 	CUIObject::Render(eGroup);
 
+	if (0 == m_iOption)
+	{
+		if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
+			return E_FAIL;
+	}
 
-	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
-		return E_FAIL;
-
-	m_pVIBuffer_RectCom->Render(0);
+	m_pVIBuffer_RectCom->Render(m_iShaderPassNum);
 
 	return S_OK;
 }
 
+void CPortrait::Set_Active(_bool IsActive)
+{
+	m_IsActive = IsActive;
+}
 
 HRESULT CPortrait::Ready_Component()
 {

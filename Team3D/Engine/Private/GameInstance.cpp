@@ -383,6 +383,11 @@ void CGameInstance::Create_Ground()
 	NULL_CHECK(m_pPhysX);
 	m_pPhysX->Create_Ground();
 }
+void CGameInstance::Resize_Actor(PxRigidActor * pActor, _float fScale)
+{
+	NULL_CHECK(m_pPhysX);
+	m_pPhysX->Resize_Actor(pActor, fScale);
+}
 #pragma endregion 
 
 #pragma region Pipeline_Manager

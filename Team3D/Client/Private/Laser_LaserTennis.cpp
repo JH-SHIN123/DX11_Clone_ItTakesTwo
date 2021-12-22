@@ -158,8 +158,6 @@ HRESULT CLaser_LaserTennis::Ready_Component(void * pArg)
 	m_vDirection = tArg.vDirection;
 	m_eTarget = tArg.eTarget;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-
 	/* Trigger */
 	PxGeometry* TriggerGeom = new PxBoxGeometry(12.f, 0.5f, 0.5f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;

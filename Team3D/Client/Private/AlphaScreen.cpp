@@ -149,7 +149,8 @@ HRESULT CAlphaScreen::Render(RENDER_GROUP::Enum eGroup)
 
 void CAlphaScreen::Option_Setting()
 {
-	if (7 == m_iOption)
+
+ 	if (7 == m_iOption)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 720.f, 0.f, 0.f));
@@ -209,7 +210,6 @@ void CAlphaScreen::Option_Setting()
 		m_fSortOrder = 0.f;
 		m_iShaderPassNum = 7;
 	}
-
 }
 
 HRESULT CAlphaScreen::Ready_Component()

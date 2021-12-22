@@ -18,6 +18,7 @@
 #include "SplashScreen.h"
 #include "PlayerMarker.h"
 #include "RespawnCircle.h"
+#include "MinigameHpBar.h" 
 #include "ChapterSelect.h"
 #include "ControllerIcon.h"
 #include "BossHpBarFrame.h"
@@ -29,6 +30,7 @@
 #include "InputButton_Frame.h"
 #include "Arrowkeys_Outline.h"
 #include "Minigame_Countdown.h"
+#include "MinigameHpBarFrame.h"
 #include "Minigame_GaugeCircle.h"
 
 #include "Cody.h"
@@ -286,6 +288,10 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger, vo
 	case UI::Minigame_Title:
 		iOption = 1;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Minigame_Title"), Level::LEVEL_STATIC, &iOption);
+		break;
+	case UI::TESTUI:
+		iOption = 8;
+		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
 		break;
 	default:
 		MSG_BOX("UI Trigger does not exist, Error to CUI_Generator::Generator_UI");
@@ -897,6 +903,22 @@ HRESULT CUI_Generator::Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc)
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHpBar::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
+	else if (!lstrcmp(UIDesc->szUITag, L"CodySubHpBar"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHpBar::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"MaySubHpBar"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHpBar::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"CodySubHpBarFrame"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHpBarFrame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"MaySubHpBarFrame"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHpBarFrame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
 
 
 	return S_OK;
@@ -1062,6 +1084,46 @@ HRESULT CUI_Generator::Add_Prototype_Minigame(CUIObject::UI_DESC * UIDesc)
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigame_Score::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
+	else if (!lstrcmp(UIDesc->szUITag, L"MinigamePortrait_Cody"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CPortrait::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"MinigamePortrait_May"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CPortrait::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"MinigameCodyHpBar"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigameHpBar::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"MinigameCodyHpBarFrame"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigameHpBarFrame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"MinigameMayHpBar"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigameHpBar::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"MinigameMayHpBarFrame"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigameHpBarFrame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"MinigameCodySubHpBar"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigameHpBar::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"MinigameCodySubHpBarFrame"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigameHpBarFrame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"MinigameMaySubHpBar"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigameHpBar::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"MinigameMaySubHpBarFrame"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CMinigameHpBarFrame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
 
 	return S_OK;
 }
@@ -1119,7 +1181,7 @@ HRESULT CUI_Generator::Add_Prototype_Texture()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Portrait_May"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/Portrait_May2021.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("ButtonIndicator"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/ButtonIndicator.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("CoolDown"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/CoolDown.png"))), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("AlphaScreen"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/SplashScreen/AlphaScreen.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("AlphaScreen"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/SplashScreen/AlphaScreen.png"))), E_FAIL); /* UIÅ×½ºÆ® */
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Noise"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/PlayerHealth/RespawnCircle_Noise.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Arrows"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/StickIcon_Arrows.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Component_Prototype(Level::LEVEL_STATIC, TEXT("Gauge_Circle"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/InputIcon/Gauge_Circle.png"))), E_FAIL);
@@ -1392,7 +1454,7 @@ HRESULT CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI
 
 		UI_Generator->Set_InterActive_TargetPos(ePlayer, eTrigger, vTargetPosition);
 	}
-	else
+	else 
 		Delete_InterActive_UI(ePlayer, eTrigger);
 
 	return S_OK;
@@ -1405,6 +1467,22 @@ void CUI_Generator::Set_MinigameReady(Player::ID ePlayer, UI::TRIGGER eTrigger)
 
 	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
 		UIObject->Set_Ready();
+}
+
+void CUI_Generator::Set_MinigameReadyCheck(Player::ID ePlayer, _bool IsCheck)
+{
+	if (ePlayer == Player::Cody)
+		m_IsCodyReady = IsCheck;
+	else
+		m_IsMayReady = IsCheck;
+}
+
+_bool CUI_Generator::Get_MinigameAllReady()
+{
+	if (true == m_IsCodyReady && true == m_IsMayReady)
+		return true;
+
+	return false;
 }
 
 HRESULT CUI_Generator::Ready_Component()
@@ -1484,4 +1562,12 @@ void CUI_Generator::Free()
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);
+}
+
+_bool CUI_Generator::Get_InterActive_UI_EmptyCheck(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger)
+{
+	if (ePlayer >= Player::PLAYER_END || eTrigger >= UI::INTERACTIVE_ID_END)
+		return false;
+
+	return  m_vecInterActiveUI[ePlayer][eTrigger].empty();
 }
