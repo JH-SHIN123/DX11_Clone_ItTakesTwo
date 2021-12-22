@@ -48,12 +48,15 @@ cbuffer RadialBlurDesc
 	float	g_SampleDist = 0.2; // 0.15f
 	float	g_SampleStrength = 20.f;
 
+	bool	g_bRadiarBlur_FullScreen = false;
 	bool	g_bRadiarBlur_Main = false;
 	bool	g_bRadiarBlur_Sub = false;
 	 
+	float2	g_RadiarBlur_FocusPos_FullScreen = { 0.5f,0.5f };
 	float2	g_RadiarBlur_FocusPos_Main = { 0.25f,0.5f };
 	float2	g_RadiarBlur_FocusPos_Sub = { 0.75f,0.5f };
 
+	float	g_fRadiarBlurRatio_FullScreen = 1.f;
 	float	g_fRadiarBlurRatio_Main = 1.f;
 	float	g_fRadiarBlurRatio_Sub = 1.f;
 };
@@ -129,6 +132,29 @@ float3 RadiarBlur(float2 vTexUV, float2 vFocusPos, float fRatio)
 		sum += g_HDRTex.Sample(Wrap_MinMagMipLinear_Sampler, vTexUV + dir * g_Samples[i] * g_SampleDist).xyz;
 	}
 	sum /= 21.0; 
+
+	float2 fMaskUV = vTexUV;
+	fMaskUV.x *= 2.f;
+	float fBlurMask = g_RadiarBlurMaskTex.Sample(Wrap_MinMagMipLinear_Sampler, fMaskUV).x;
+
+	float ratio = saturate(dist * g_SampleStrength * fBlurMask * fRatio);
+	return lerp(vColor, sum, ratio);
+}
+
+float3 RadiarBlur_EffectPreCustomBlur(float2 vTexUV, float2 vFocusPos, float fRatio)
+{
+	float2	dir = vFocusPos - vTexUV;
+	float	dist = length(dir);
+	dir /= dist;
+
+	float3 vColor = g_EffectPreCustomBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, vTexUV).xyz;
+	float3 sum = vColor;
+	[unroll]
+	for (int i = 0; i < 20; ++i)
+	{
+		sum += g_EffectPreCustomBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, vTexUV + dir * g_Samples[i] * g_SampleDist).xyz;
+	}
+	sum /= 21.0;
 
 	float2 fMaskUV = vTexUV;
 	fMaskUV.x *= 2.f;
@@ -322,8 +348,15 @@ PS_OUT PS_MAIN(PS_IN In)
 	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 1.5f;
 
 	// Add EffectPreCustomBlur
+	float3 vEffectPreCustomBlur = 0.f;
+	
+	if (g_bRadiarBlur_FullScreen)
+		vEffectPreCustomBlur = RadiarBlur_EffectPreCustomBlur(In.vTexUV, g_RadiarBlur_FocusPos_FullScreen, g_fRadiarBlurRatio_FullScreen);
+	else
+		vEffectPreCustomBlur = g_EffectPreCustomBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
 	float fBlurValue = g_EffectPreCustomBlurTex_Value.Sample(Point_Sampler, In.vTexUV).r;
-	vColor += g_EffectPreCustomBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectPreCustomBlurTex_Blur.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * (fBlurValue * 10.f);
+	vColor += vEffectPreCustomBlur + g_EffectPreCustomBlurTex_Blur.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * (fBlurValue * 10.f);
 	
 	// Add EffectPostCustomBlur
 	fBlurValue = g_EffectPostCustomBlurTex_Value.Sample(Point_Sampler, In.vTexUV).r;

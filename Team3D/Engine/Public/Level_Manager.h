@@ -11,6 +11,9 @@ private:
 	explicit CLevel_Manager() = default;
 	virtual ~CLevel_Manager() = default;
 
+public: /* Getter */
+	const _uint Get_CurrentLevelStep();
+
 public:
 	HRESULT	Change_CurrentLevel(class CLevel* pCurrentLevel);
 	_int	Tick(_double dTimedelta);

@@ -50,9 +50,9 @@
 #include "Rock.h"
 #include "MeshParticle.h"
 #include "C2DMesh.h"
-#include "EndingCredit_Manager.h"
 #include "HugeRock.h"
 #include "RockParticle.h"
+#include "ControlRoom_Monitor.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -366,6 +366,12 @@ CGameObject * CEnvironment_Generator::Create_Class(_tchar * pPrototypeTag, ID3D1
 		pInstance = CWall_LaserTennis::Create(pDevice, pDeviceContext);
 		if (nullptr == pInstance)
 			MSG_BOX("Failed to Create Instance - Wall_LaserTennis");
+	}
+	else if (0 == lstrcmp(pPrototypeTag, TEXT("GameObject_ControlRoom_Monitor")))
+	{
+		pInstance = CControlRoom_Monitor::Create(pDevice, pDeviceContext);
+		if (nullptr == pInstance)
+			MSG_BOX("Failed to Create Instance - ControlRoom_Monitor");
 	}
 	return pInstance;
 }
@@ -1306,5 +1312,4 @@ void CEnvironment_Generator::Free()
 	Safe_Release(m_pDeviceContext);
 
 	CLaserTennis_Manager::DestroyInstance();
-	CEndingCredit_Manager::DestroyInstance();
 }

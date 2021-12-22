@@ -34,7 +34,7 @@ HRESULT CEndingRocket::NativeConstruct(void * pArg)
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 0.f, 15.f, 1.f));
 	m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(90.f));
 
-	m_fCurSpeed = 10.f;
+	m_fCurSpeed = ENDING_ROCKET_SPEED;
 
 	DATABASE->Set_EndingRocket(this);
 
@@ -45,7 +45,7 @@ HRESULT CEndingRocket::NativeConstruct(void * pArg)
 
 _int CEndingRocket::Tick(_double dTimeDelta)
 {
-	if (m_pGameInstance->Key_Down(DIK_END))
+	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
 		m_bStartMove = true;
 
 	if (m_bStartMove)
@@ -110,11 +110,12 @@ void CEndingRocket::Movement(_double dTimeDelta)
 	else
 	{
 		if (m_fCurSpeed > ENDING_ROCKET_SPEED)
-			m_fCurSpeed -= fTimeDelta * 10.f;
+			m_fCurSpeed -= fTimeDelta * 20.f;
 
 		m_pTransformCom->Go_Straight(fTimeDelta * m_fCurSpeed);
 	}
 
+	/* Å°Á¶ÀÛ */
 	if (m_pGameInstance->Key_Pressing(DIK_W))
 	{
 		if (m_fUp < 0.7f)

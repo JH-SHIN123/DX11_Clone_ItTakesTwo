@@ -259,6 +259,8 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_MH, ANI_C_Rocket_MH, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_Exit, ANI_C_Jump_Land_High, false);
 
+	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_CodyCutSceneIntro, false);
+
 	return;
 }
 
@@ -375,7 +377,7 @@ _int CCody::Late_Tick(_double dTimeDelta)
 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
+		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1000.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 		return NO_EVENT;
 	}
@@ -564,7 +566,7 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_END))
+	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
 	{
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f), 3.f);
 		//ENDINGCREDIT->Create_Environment();
@@ -3251,11 +3253,11 @@ void CCody::Ride_Ending_Rocket(const _double dTimeDelta)
 	{
 		/* 3초후 시작 */
 		m_dStartTime += dTimeDelta;
-		if (3.f <= m_dStartTime && false == m_bEndingCheck)
-		{
-			ENDINGCREDIT->Start_EndingCredit();
-			m_bEndingCheck = true;
-		}
+		//////////if (3.f <= m_dStartTime && false == m_bEndingCheck)
+		//////////{
+		//////////	ENDINGCREDIT->Start_EndingCredit();
+		//////////	m_bEndingCheck = true;
+		//////////}
 
 		m_pModelCom->Set_Animation(ANI_C_Rocket_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Rocket_MH);
@@ -3801,9 +3803,22 @@ void CCody::In_JoyStick(_double dTimeDelta)
 }
 
 #pragma region RadiarBlur
+void CCody::Start_RadiarBlur_FullScreen(_double dBlurTime)
+{	
+	//if (m_bRadiarBlur) return;
+
+	m_bRadiarBlur_FullScreen = true;
+
+	m_bRadiarBlur_Trigger = true;
+	m_dRadiarBlurTime = dBlurTime;
+	m_dRadiarBlurDeltaT = 0.0;
+
+	Set_RadiarBlur(true);
+}
 void CCody::Start_RadiarBlur(_double dBlurTime)
 {
 	//if (m_bRadiarBlur) return;
+	m_bRadiarBlur_FullScreen = false;
 
 	m_bRadiarBlur_Trigger = true;
 	m_dRadiarBlurTime = dBlurTime;
@@ -3814,6 +3829,8 @@ void CCody::Start_RadiarBlur(_double dBlurTime)
 
 void CCody::Loop_RadiarBlur(_bool bLoop)
 {
+	m_bRadiarBlur_FullScreen = false;
+
 	m_bRadiarBlur_Loop = bLoop;
 
 	if(m_bRadiarBlur_Loop)
@@ -3866,13 +3883,26 @@ void CCody::Set_RadiarBlur(_bool bActive)
 		vConvertPos.y *= -1.f;
 	}
 
-	D3D11_VIEWPORT Viewport = m_pGameInstance->Get_ViewportInfo(1);
+	D3D11_VIEWPORT Viewport;
+	
+	if (m_bRadiarBlur_FullScreen)
+		Viewport = m_pGameInstance->Get_ViewportInfo(0);
+	else
+		Viewport = m_pGameInstance->Get_ViewportInfo(1);
+
 	vConvertPos.x = ((Viewport.Width * (vConvertPos.x)) / 2.f);
 	vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f);
 
 	_float2 vFocusPos = { vConvertPos.x / g_iWinCX , vConvertPos.y / g_iWinCY };
 	vFocusPos.y -= 0.08f; // Offset 0.04f
-	m_pGameInstance->Set_RadiarBlur_Main(bActive, vFocusPos);
+
+	if (m_bRadiarBlur_FullScreen) 
+	{
+		m_pGameInstance->Set_RadiarBlur_FullScreen(bActive, vFocusPos);
+		if (false == bActive) m_bRadiarBlur_FullScreen = false;
+	}
+	else
+		m_pGameInstance->Set_RadiarBlur_Main(bActive, vFocusPos);
 }
 #pragma endregion
 

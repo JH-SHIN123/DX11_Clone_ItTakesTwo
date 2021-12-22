@@ -494,9 +494,14 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Hye()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Alien"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TEXTURE_TYPE::TYPE_TGA, TEXT("../Bin/Resources/Model/Environment/Others/Alien_Screen_01/Material/Alien_Screen_01%d.tga"), 4)), E_FAIL);
 	/* For.ScriptBackGround */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ScriptBackGround"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TEXTURE_TYPE::TYPE_WIC, TEXT("../Bin/Resources/Texture/UI/ScriptBackGround.png"))), E_FAIL);
-	/* For. Script */
+	/* For.Script */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_Script"), CScript::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_ScriptBackGround"), CScriptBackGound::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	/* For.ControlRoom Texture */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ControlRoom01"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TEXTURE_TYPE::TYPE_TGA, TEXT("../Bin/Resources/Texture/ControlRoom/Control_Room_LargeScreen%d.tga"), 3)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ControlRoom07"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TEXTURE_TYPE::TYPE_TGA, TEXT("../Bin/Resources/Texture/ControlRoom/Control_Room_SmallScreen_1.tga"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ControlRoom09"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TEXTURE_TYPE::TYPE_TGA, TEXT("../Bin/Resources/Texture/ControlRoom/Control_Room_SmallScreen_3.tga"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_ControlRoom11"), CTextures::Create(m_pDevice, m_pDeviceContext, CTextures::TEXTURE_TYPE::TYPE_TGA, TEXT("../Bin/Resources/Texture/ControlRoom/Control_Room_CCTV.tga"))), E_FAIL);
 
 #ifdef __TEST_HYE
 	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * (XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)));

@@ -226,6 +226,7 @@
     <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
     <ClInclude Include="..\Public\ControlRoom_Glass.h" />
+    <ClInclude Include="..\Public\ControlRoom_Monitor.h" />
     <ClInclude Include="..\Public\CutScene.h" />
     <ClInclude Include="..\Public\CutScenePlayer.h" />
     <ClInclude Include="..\Public\DataStorage.h" />
@@ -534,6 +535,7 @@
     <ClCompile Include="..\Private\ControlRoom_Battery.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Door.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Glass.cpp" />
+    <ClCompile Include="..\Private\ControlRoom_Monitor.cpp" />
     <ClCompile Include="..\Private\CutScene.cpp" />
     <ClCompile Include="..\Private\CutScenePlayer.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp" />

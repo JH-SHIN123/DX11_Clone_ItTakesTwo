@@ -272,7 +272,7 @@ _int CMay::Late_Tick(_double dTimeDelta)
 	CCharacter::Late_Tick(dTimeDelta);
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
+		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1000.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 		return NO_EVENT;
 	}
@@ -394,7 +394,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_0))/* 레이저 테니스 */
 		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_END))
+	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
 		m_IsEnding = true;
 
 #pragma endregion
