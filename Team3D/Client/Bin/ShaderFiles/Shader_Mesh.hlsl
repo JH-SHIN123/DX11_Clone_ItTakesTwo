@@ -12,6 +12,7 @@ texture2D	g_EmissiveTexture;
 //texture2D	g_OpacityTexture;
 //texture2D	g_LightTexture;
 
+
 cbuffer BoneMatrixDesc
 {
 	BONEMATRICES	g_BoneMatrices;
@@ -22,6 +23,7 @@ texture2D	g_MaskingTexture;
 cbuffer Mesh_EffectDesc
 {
 	float			g_fTime;
+	float			g_fAlpha;
 	float2			g_vParticleSize;
 	float3			g_vDir;
 	float4			g_vPos;
@@ -1160,6 +1162,82 @@ PS_OUT	PS_MESHPARTICLE(PS_IN In)
 	return Out;
 }
 
+PS_OUT	PS_MONITOR(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+	Out.vDiffuse = vMtrlDiffuse;
+	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+
+	// Calculate Normal
+	if (g_IsMaterials.Is_Normals & 1) Out.vNormal = TextureSampleToWorldSpace(g_NormalTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
+	else Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+	// Calculate Specular
+	if (g_IsMaterials.Is_Specular & 1) {
+		Out.vSpecular = TextureSampleToWorldSpace(g_SpecularTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
+		Out.vSpecular.w = 0.f;
+	}
+	else Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
+
+	// Calculate Emissive
+	Out.vEmissive = 0.15f;
+
+	// Calculate Shadow
+	int iIndex = -1;
+	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
+
+	// Get_ShadowFactor
+	float fShadowFactor = 0.f;
+	fShadowFactor = Get_ShadowFactor(In.iViewportIndex, iIndex, In.vWorldPosition);
+
+	Out.vShadow = 1.f - fShadowFactor;
+	Out.vShadow.a = 1.f;
+
+	return Out;
+}
+
+PS_OUT	PS_CONTROLROOM_MONITOR(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+	Out.vDiffuse = vMtrlDiffuse;
+	Out.vDiffuse.a = 1.f;
+
+	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+
+	// Calculate Normal
+	if (g_IsMaterials.Is_Normals & 1) Out.vNormal = TextureSampleToWorldSpace(g_NormalTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
+	else Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+	// Calculate Specular
+	if (g_IsMaterials.Is_Specular & 1) {
+		Out.vSpecular = TextureSampleToWorldSpace(g_SpecularTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
+		Out.vSpecular.w = 0.f;
+	}
+	else Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
+
+	// Calculate Emissive
+	Out.vEmissive = 0.15f;
+
+	// Calculate Shadow
+	int iIndex = -1;
+	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
+
+	// Get_ShadowFactor
+	float fShadowFactor = 0.f;
+	fShadowFactor = Get_ShadowFactor(In.iViewportIndex, iIndex, In.vWorldPosition);
+
+	Out.vShadow = 1.f - fShadowFactor;
+	Out.vShadow.a = 1.f;
+
+	return Out;
+}
+
 /* _____________________________________Effect_____________________________________*/
 struct PS_IN_DOUBLE_UV
 {
@@ -1609,5 +1687,25 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_PHANTOM(false);
+	}
+	// 33
+	pass Default_Monitor
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MONITOR();
+	}
+	// 34
+	pass Default_ControlRoom_Monitor
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_CONTROLROOM_MONITOR();
 	}
 };
