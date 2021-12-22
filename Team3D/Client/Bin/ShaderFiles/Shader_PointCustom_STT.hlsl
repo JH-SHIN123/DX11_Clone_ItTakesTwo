@@ -1263,6 +1263,31 @@ PS_OUT  PS_MAIN_LASER_SMOKE(PS_IN_DOUBLEUV In)
 	return Out;
 }
 
+PS_OUT  PS_BOSS_LASER_SMOKE(PS_IN_DOUBLEUV In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	if (0.01f >= vDiff.r)
+		discard;
+
+	In.vTexUV2.y += In.fTime * 2.f;
+	float4 vDistortion = g_SecondTexture.Sample(DiffuseSampler, In.vTexUV2);
+
+	Out.vColor = vDiff;
+	Out.vColor.rgb = vDistortion.rgb;
+
+	float2 vTexUV_3 = { In.fTime , 0.f };
+	if (0.f > In.fTime)
+		vTexUV_3.x = 0.f;
+	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vTexUV_3);
+
+	Out.vColor.rgb *= vColor.rgb *  In.fTime;
+	Out.vColor.a = Out.vColor.r * g_fTime *  In.fTime;
+
+	return Out;
+}
+
 PS_OUT  PS_MAIN_MISSILE_SMOKE(PS_IN_DOUBLEUV In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -1294,7 +1319,6 @@ PS_OUT  PS_MAIN_MISSILE_SMOKE_BLACK(PS_IN_DOUBLEUV In)
 	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 	vDiff.rgb *= In.fTime;
 
-	//vDiff.rgb *= In.fTime;
 	vDiff.a = (vDiff.r + vDiff.g)* In.fTime * 0.5f;
 
 	Out.vColor = vDiff;
@@ -1655,4 +1679,13 @@ technique11		DefaultTechnique
 		PixelShader = compile ps_5_0  PS_MAIN_MISSILE_SMOKE_COLOR();
 	}
 
+	pass BOSSLASER_SMOKE // 20
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
+		PixelShader = compile ps_5_0  PS_BOSS_LASER_SMOKE();
+	}
 }

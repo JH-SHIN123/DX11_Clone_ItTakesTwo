@@ -38,6 +38,7 @@ public:
 
 	void Start_Perform(_uint iAnimIdx = 0 , _double dAnimTime = 0.f);
 	void Finish_Perform();
+	void ButtonDown();
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CModel* Get_Model() { return m_pModelCom; }
@@ -45,6 +46,8 @@ public:
 	_float3&		Get_Scale() { return m_tDesc.vScale; }
 	_float3&		Get_Pos() { return m_tDesc.vPosition; }
 
+private:
+	void Start_ButtonPress(_double dTimeDelta);
 private:
 	PERFORMERDESC		m_tDesc;
 	_bool				m_bStartAnim = false;
@@ -54,7 +57,9 @@ protected:
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 	wstring*			m_pModelTag = nullptr;
-
+	_bool				m_bButtonDown = false;
+	_bool				m_bStartPressing = false;
+	_bool				m_bIsButton = false;
 public:
 	static CPerformer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

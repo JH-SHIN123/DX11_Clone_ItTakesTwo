@@ -40,7 +40,7 @@ private:
 	const XMINT2	m_vUVCount_Max				= { 4, 4 };
 	const _float	m_fAlphaTime_Power			= 1.333f;
 	const _double	m_dInstance_Pos_Update_Time = 3.0;
-	const _float2	m_vDefaultSize				= { 1.f, 1.f };
+	const _float2	m_vDefaultSize				= { 1.2f, 1.2f };
 
 public:
 	static CEffect_Boss_Core_Explosion* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

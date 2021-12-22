@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Boss_Core_Hit.h"
+#include "Effect_Generator.h"
 
 CEffect_Boss_Core_Hit::CEffect_Boss_Core_Hit(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -15,7 +16,7 @@ HRESULT CEffect_Boss_Core_Hit::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 200;
+	m_EffectDesc_Prototype.iInstanceCount = 250;
 
 	return S_OK;
 }
@@ -55,6 +56,12 @@ _int CEffect_Boss_Core_Hit::Tick(_double TimeDelta)
 	else
 		m_dControlTime -= TimeDelta;
 
+	m_dEffectTimer += TimeDelta;
+	if (false == m_IsActivateEffect && 0.35 < m_dEffectTimer)
+	{
+		EFFECT->Add_Effect(Effect_Value::BossCore_Lightning, m_pTransformCom->Get_WorldMatrix());
+		m_IsActivateEffect = true;
+	}
 
 	Check_Instance(TimeDelta);
 
@@ -161,8 +168,6 @@ HRESULT CEffect_Boss_Core_Hit::Ready_InstanceBuffer()
 	_float4 vMyPos;
 	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	_vector vLookDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * -1.5f;
-
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
 		m_pInstanceBuffer_STT[iIndex].vRight = { 1.f, 0.f, 0.f, 0.f };
@@ -177,7 +182,6 @@ HRESULT CEffect_Boss_Core_Hit::Ready_InstanceBuffer()
 		m_pInstance_Parabola_Time[iIndex] = 0.0;
 
 		_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
-		vRandDir = XMVector3Normalize(vRandDir + vLookDir);
 		_float3 v3RandDir;
 		XMStoreFloat3(&v3RandDir, vRandDir);
 		_float4 v4Dir = { v3RandDir.x, v3RandDir.y, v3RandDir.z, 0.f };

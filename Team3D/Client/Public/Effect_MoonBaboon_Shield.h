@@ -28,8 +28,8 @@ private:
 
 private:
 	_float	m_fTime = 0.f;
-	_float	m_fAlphaTime = 1.f;
-	_double m_dLifeTime = 20.0;
+	_float	m_fAlphaTime = 01.f;
+	_double m_dLifeTime = 7.0;
 	_float4 m_vColor = { 0.980392218f, 0.201960814f, 0.147058856f, 1.000000000f };
 
 	_float m_fScale_Pow = 7.f;

@@ -1454,6 +1454,23 @@ PS_OUT  PS_UFO_ELECTRICBOX(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_PIPELOCKER_BALL(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_vColor * 2.f;
+
+	float4 vDiffuse = (float4)0;
+	float2 vCenter = In.vTexUV - 0.5f;
+	vCenter = abs(vCenter);
+
+	float fLenght = length(vCenter);
+	if (0.5f < fLenght)
+		discard;
+
+	return Out;
+}
+
 PS_OUT  PS_MAIN_COLOR_NOALPHATEX_TIME(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -2040,6 +2057,16 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN_AXIS_Y_NO_GLOBAL_UV();
 		GeometryShader = compile gs_5_0  GS_MAIN_NO_BILL_Y_ROTATE_UV();
 		PixelShader = compile ps_5_0  PS_MAIN_PILLAR_ONLY_COLOR();
+	}
+
+	pass PipeLocker_Ball // 24
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_PIPELOCKER_BALL();
 	}
 };
 

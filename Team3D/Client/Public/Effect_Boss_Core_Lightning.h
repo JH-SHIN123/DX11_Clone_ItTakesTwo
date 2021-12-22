@@ -26,6 +26,7 @@ private:
 	HRESULT Ready_InstanceBuffer();
 	_float2 Get_Rand_Size();
 	void Check_InstanceBuffer(_double TimeDelta);
+	void Check_EffectTimer(_double TimeDelta);
 
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
@@ -34,7 +35,11 @@ private:
 	XMINT2*								m_pInstanceBuffer_UVCount = nullptr;
 	_double* m_pInstance_UVTime = nullptr;
 
-	_bool m_IsActivate = true;
+private:
+	_bool	m_IsActivate = true;
+	_bool	m_IsActivateEffect = false;
+	_bool m_IsActivateEffect_2 = false;
+	_double m_dEffectTimer = 0.0;
 	_double m_dActivateTime = 0.0;
 	_double m_dControlTime = 0.0;
 

@@ -6,6 +6,7 @@
 #include "Moon.h"
 #include "PixelCrossHair.h"
 #include "PixelUFO.h"
+#include "Effect_Generator.h"
 
 CRunningMoonBaboon::CRunningMoonBaboon(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -80,6 +81,8 @@ _int CRunningMoonBaboon::Tick(_double dTimeDelta)
 	{
 		if (m_bHitOnceAnim == false)
 		{
+			EFFECT->Add_Effect(Effect_Value::MoonBaboon_Shield);
+			EFFECT->Add_Effect(Effect_Value::MoonBaboon_Booster);
 			m_pModelCom->Set_Animation(Moon_JetPack_MH);
 			m_pModelCom->Set_NextAnimIndex(Moon_JetPack_Flying_Start);
 			m_bHitOnceAnim = true;
