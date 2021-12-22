@@ -259,9 +259,9 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_MH, ANI_C_Rocket_MH, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_Exit, ANI_C_Jump_Land_High, false);
 
-	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_CodyCutSceneIntro, false);
-	m_pModelCom->Add_LerpInfo(ANI_C_ActionMH, ANI_C_CodyCutSceneIntro, false);
-	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_MH_Gesture_Small_Drumming, ANI_C_CodyCutSceneIntro, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_CodyCutSceneIntro, true, 5000.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_ActionMH, ANI_C_CodyCutSceneIntro, true, 5000.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_MH_Gesture_Small_Drumming, ANI_C_CodyCutSceneIntro, true, 5000.f);
 
 	return;
 }
@@ -272,10 +272,10 @@ void CCody::Add_LerpInfo_To_Model()
 _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
-
+	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		m_pActorCom->Set_ZeroGravity(false, false, false);
+		m_pActorCom->Set_ZeroGravity(true, true, true);
 		m_pActorCom->Update(dTimeDelta); 
 		m_pModelCom->Update_Animation(dTimeDelta);
 		return NO_EVENT;
@@ -290,6 +290,7 @@ _int CCody::Tick(_double dTimeDelta)
 
 	//tEST
 	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//TEST
 
 #pragma region BasicActions
 	/////////////////////////////////////////////
