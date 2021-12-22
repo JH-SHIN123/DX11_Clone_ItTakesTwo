@@ -435,6 +435,11 @@ ID3DBlob * CGameInstance::Get_Get_ShaderCompiledCode(const _tchar * pShaderFileP
 #pragma endregion
 
 #pragma region PostFX
+void CGameInstance::Set_RadiarBlur_FullScreen(_bool bActive, _float2& vFocusPos)
+{
+	NULL_CHECK(m_pPostFX);
+	m_pPostFX->Set_RadiarBlur_FullScreen(bActive, vFocusPos);
+}
 void CGameInstance::Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos)
 {
 	NULL_CHECK(m_pPostFX);

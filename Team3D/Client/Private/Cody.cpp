@@ -3796,9 +3796,22 @@ void CCody::In_JoyStick(_double dTimeDelta)
 }
 
 #pragma region RadiarBlur
+void CCody::Start_RadiarBlur_FullScreen(_double dBlurTime)
+{	
+	//if (m_bRadiarBlur) return;
+
+	m_bRadiarBlur_FullScreen = true;
+
+	m_bRadiarBlur_Trigger = true;
+	m_dRadiarBlurTime = dBlurTime;
+	m_dRadiarBlurDeltaT = 0.0;
+
+	Set_RadiarBlur(true);
+}
 void CCody::Start_RadiarBlur(_double dBlurTime)
 {
 	//if (m_bRadiarBlur) return;
+	m_bRadiarBlur_FullScreen = false;
 
 	m_bRadiarBlur_Trigger = true;
 	m_dRadiarBlurTime = dBlurTime;
@@ -3809,6 +3822,8 @@ void CCody::Start_RadiarBlur(_double dBlurTime)
 
 void CCody::Loop_RadiarBlur(_bool bLoop)
 {
+	m_bRadiarBlur_FullScreen = false;
+
 	m_bRadiarBlur_Loop = bLoop;
 
 	if(m_bRadiarBlur_Loop)
@@ -3861,13 +3876,26 @@ void CCody::Set_RadiarBlur(_bool bActive)
 		vConvertPos.y *= -1.f;
 	}
 
-	D3D11_VIEWPORT Viewport = m_pGameInstance->Get_ViewportInfo(1);
+	D3D11_VIEWPORT Viewport;
+	
+	if (m_bRadiarBlur_FullScreen)
+		Viewport = m_pGameInstance->Get_ViewportInfo(0);
+	else
+		Viewport = m_pGameInstance->Get_ViewportInfo(1);
+
 	vConvertPos.x = ((Viewport.Width * (vConvertPos.x)) / 2.f);
 	vConvertPos.y = (Viewport.Height * (2.f - vConvertPos.y) / 2.f);
 
 	_float2 vFocusPos = { vConvertPos.x / g_iWinCX , vConvertPos.y / g_iWinCY };
 	vFocusPos.y -= 0.08f; // Offset 0.04f
-	m_pGameInstance->Set_RadiarBlur_Main(bActive, vFocusPos);
+
+	if (m_bRadiarBlur_FullScreen) 
+	{
+		m_pGameInstance->Set_RadiarBlur_FullScreen(bActive, vFocusPos);
+		if (false == bActive) m_bRadiarBlur_FullScreen = false;
+	}
+	else
+		m_pGameInstance->Set_RadiarBlur_Main(bActive, vFocusPos);
 }
 #pragma endregion
 

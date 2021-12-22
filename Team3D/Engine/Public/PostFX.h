@@ -12,6 +12,7 @@ public:
 	virtual ~CPostFX() = default;
 
 public:
+	void Set_RadiarBlur_FullScreen(_bool bActive, _float2& vFocusPos);
 	void Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos);
 	void Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos);
 	void Set_MainViewFog(_bool bActive) { m_bMainFog = bActive; }
@@ -63,13 +64,17 @@ private:
 	_float		m_fBloomThreshold = 20.f;
 	_float		m_fBloomScale = 1.05f;
 
+	_bool		m_bRadialBlur_FullScreen = false;
 	_bool		m_bRadialBlur_Main = false;
 	_bool		m_bRadialBlur_Sub = false;
+	_bool		m_bRadialBlur_FullScreen_Finish = false;
 	_bool		m_bRadialBlur_Main_Finish = false;
 	_bool		m_bRadialBlur_Sub_Finish = false;
 
+	_float2		m_vRadiarBlur_FocusPos_FullScreen = { 0.f,0.f };
 	_float2		m_vRadiarBlur_FocusPos_Main = { 0.f,0.f };
 	_float2		m_vRadiarBlur_FocusPos_Sub = { 0.f,0.f };
+	_float		m_fRadialBlur_FullScreenRatio = 0.f;
 	_float		m_fRadialBlur_MainRatio = 0.f;
 	_float		m_fRadialBlur_SubRatio = 0.f;
 
