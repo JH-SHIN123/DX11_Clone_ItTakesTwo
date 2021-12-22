@@ -41,6 +41,7 @@
 
 /* For. UI */
 #include "HpBar.h"
+#include "MinigameHpBar.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -166,6 +167,18 @@ HRESULT CCody::Ready_UI()
 	m_pSubHpBar->Set_PlayerID(Player::Cody);
 	m_pSubHpBar->Set_ShaderOption(0);
 
+	iOption = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MinigameCodyHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pMinigameHpBar = static_cast<CMinigameHpBar*>(pGameObject);
+	m_pMinigameHpBar->Set_PlayerID(Player::Cody);
+	m_pMinigameHpBar->Set_ShaderOption(0);
+
+	iOption = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MinigameCodySubHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pMinigameSubHpBar = static_cast<CMinigameHpBar*>(pGameObject);
+	m_pMinigameSubHpBar->Set_PlayerID(Player::Cody);
+	m_pMinigameSubHpBar->Set_ShaderOption(0);
+
 	return S_OK;
 }
 
@@ -287,10 +300,7 @@ _int CCody::Tick(_double dTimeDelta)
 	{
 		UI_CreateOnlyOnce(Default, Minigame_Score);
 	}
-	else if (m_pGameInstance->Key_Down(DIK_F7))
-	{
-		UI_CreateOnlyOnce(Default, Minigame_Title);
-	}
+
 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
@@ -483,6 +493,8 @@ void CCody::Free()
 	Safe_Release(m_pGauge_Circle);
 	Safe_Release(m_pHpBar);
 	Safe_Release(m_pSubHpBar);
+	Safe_Release(m_pMinigameHpBar);
+	Safe_Release(m_pMinigameSubHpBar);
 
 	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
@@ -3379,10 +3391,22 @@ void CCody::Set_HpBarReduction(_float fDamage)
 	m_pSubHpBar->Set_Hp(fDamage);
 }
 
-void CCody::Set_HpBarAccordingStage(_uint iStage)
+void CCody::Set_ActiveMinigameHpBar(_bool IsCheck)
 {
-	m_pHpBar->Set_Stage((CHpBar::STAGE)iStage);
-	m_pSubHpBar->Set_Stage((CHpBar::STAGE)iStage);
+	if (nullptr == m_pMinigameHpBar)
+		return;
+
+	m_pMinigameHpBar->Set_Active(IsCheck);
+}
+
+void CCody::Set_MinigameHpBarReduction(_float fDamage)
+{
+	if (nullptr == m_pMinigameHpBar || nullptr == m_pMinigameSubHpBar)
+		return;
+
+	m_pMinigameHpBar->Set_Hp(fDamage);
+	m_pMinigameSubHpBar->Set_Active(true);
+	m_pMinigameSubHpBar->Set_Hp(fDamage);
 }
 
 void CCody::WallLaserTrap(const _double dTimeDelta)

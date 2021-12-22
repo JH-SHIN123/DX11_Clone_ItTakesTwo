@@ -69,15 +69,6 @@ _int CHpBar::Tick(_double TimeDelta)
 
 	CUIObject::Tick(TimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_HOME))
-	{
-		m_fHp += 10.f;
-		m_fRatio = (m_fHp / 120.f) / 2.f;
-		m_IsHit = true;
-		m_fWatingTime = 0.f;
-		m_fRecoveryTime = 0.f;
-	}
-
 	switch (m_ePlayerID)
 	{
 	case Player::Cody:

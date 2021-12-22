@@ -209,7 +209,8 @@ public:
 	void	Set_LaserRippedOff(); /* BossUFO */
 	void	Set_ActiveHpBar(_bool IsCheck);
 	void	Set_HpBarReduction(_float fDamage);
-	void	Set_HpBarAccordingStage(_uint iStage);
+	void	Set_ActiveMinigameHpBar(_bool IsCheck);
+	void	Set_MinigameHpBarReduction(_float fDamage);
 
 	/* For. Ending */
 	void	Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }
@@ -235,6 +236,8 @@ private: // UI
 	class CGauge_Circle*	m_pGauge_Circle = nullptr;
 	class CHpBar*			m_pHpBar = nullptr;
 	class CHpBar*			m_pSubHpBar = nullptr;
+	class CMinigameHpBar*	m_pMinigameHpBar = nullptr;
+	class CMinigameHpBar*	m_pMinigameSubHpBar = nullptr;
 
 	// Ä«¸Þ¶ó
 private:

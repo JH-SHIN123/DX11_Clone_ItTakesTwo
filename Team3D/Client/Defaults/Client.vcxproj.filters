@@ -2051,6 +2051,12 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MinigameHpBar.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\05.Minigame_HpBar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MinigameHpBarFrame.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\05.Minigame_HpBar</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2967,6 +2973,12 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MinigameHpBarFrame.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\05.Minigame_HpBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MinigameHpBar.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\05.Minigame_HpBar</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

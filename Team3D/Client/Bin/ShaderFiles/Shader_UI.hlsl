@@ -989,7 +989,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MinigameScore();
 	}
 
-	// 27
+	// 28
 	pass MinigameTitle
 	{
 		SetRasterizerState(Rasterizer_Solid);
@@ -1000,7 +1000,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MinigameTitle();
 	}
 
-	// 28
+	// 29
 	pass MinigameHpBar
 	{
 		SetRasterizerState(Rasterizer_Solid);
@@ -1011,5 +1011,15 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_PlayerHpBar();
 	}
 
+	// 30
+	pass MinigameHpBarFrame
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_LOGO();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_PlayerHpBarFrame();
+	}
 
 };

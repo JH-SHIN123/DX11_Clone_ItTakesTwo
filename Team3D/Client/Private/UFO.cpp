@@ -77,6 +77,13 @@ _int CUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_HOME))
+	{
+		((CCody*)DATABASE->GetCody())->Set_MinigameHpBarReduction(10);
+		((CMay*)DATABASE->GetMay())->Set_MinigameHpBarReduction(10);
+	}
+
+
 	/* 테스트 용 */
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 	{
@@ -85,8 +92,6 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_pMoonBaboon->Set_Animation(Moon_Ufo_Programming, Moon_Ufo_MH);
 		((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
 		((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
-		((CCody*)DATABASE->GetCody())->Set_HpBarAccordingStage(CHpBar::Stage_Boss);
-		((CMay*)DATABASE->GetMay())->Set_HpBarAccordingStage(CHpBar::Stage_Boss);
 	}
 	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 	{

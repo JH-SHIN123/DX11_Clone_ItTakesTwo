@@ -166,10 +166,8 @@ void CLaserTennis_Manager::KeyCheck(TARGET eTarget)
 
 		UI_CreateOnlyOnce(Default, Minigame_Countdown);
 
-		((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
-		((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
-		((CCody*)DATABASE->GetCody())->Set_HpBarAccordingStage(CHpBar::Stage_Minigame);
-		((CMay*)DATABASE->GetMay())->Set_HpBarAccordingStage(CHpBar::Stage_Minigame);
+		((CCody*)DATABASE->GetCody())->Set_ActiveMinigameHpBar(true);
+		((CMay*)DATABASE->GetMay())->Set_ActiveMinigameHpBar(true);
 
 		m_bStartGame = true;
 	}

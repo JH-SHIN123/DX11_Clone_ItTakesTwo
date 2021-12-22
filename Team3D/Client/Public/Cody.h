@@ -249,7 +249,8 @@ public:
 	void			 Set_AnimationRotate(_float fAngle);
 	void			 Set_ActiveHpBar(_bool IsCheck);
 	void			 Set_HpBarReduction(_float fDamage);
-	void			 Set_HpBarAccordingStage(_uint iStage);
+	void			 Set_ActiveMinigameHpBar(_bool IsCheck);
+	void			 Set_MinigameHpBarReduction(_float fDamage);
 	void 			 Set_RocketOffSetPos(_fvector vRocketOffSetPos) { m_vRocketOffSetPos = vRocketOffSetPos; }
 	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
@@ -277,6 +278,8 @@ private: // Effects
 private: /* UI */
 	class CHpBar*	m_pHpBar = nullptr;
 	class CHpBar*	m_pSubHpBar = nullptr;
+	class CMinigameHpBar* m_pMinigameHpBar = nullptr;
+	class CMinigameHpBar* m_pMinigameSubHpBar = nullptr;
 
 	// Components
 private:
