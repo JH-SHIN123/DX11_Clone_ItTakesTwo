@@ -600,7 +600,7 @@ private:
 #pragma endregion
 
 #pragma region RadiarBlur
-private:
+public:
 	void Start_RadiarBlur(_double dBlurTime);
 	void Loop_RadiarBlur(_bool bLoop);
 	void Trigger_RadiarBlur(_double dTimeDelta);
