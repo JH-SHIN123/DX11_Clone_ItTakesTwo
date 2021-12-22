@@ -20,6 +20,7 @@ public:
 public:
 	void Set_IsActivate(_bool IsActivate) { m_IsActivate = IsActivate; }
 	void Set_WorldMatrix(_fmatrix WorldMatrix) { m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
+	void Set_Dir(_fvector vPos, _fvector MovePos);
 
 private:
 	void Check_Instance(_double TimeDelta);
@@ -30,7 +31,7 @@ private:
 	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0)		override;
 
 private:
-	void Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex = 0);
+	void Reset_Instance(_double TimeDelta, _fvector vPos, _int iIndex = 0);
 
 private:
 	HRESULT Ready_InstanceBuffer();
@@ -46,6 +47,8 @@ private:
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT = nullptr;
 	_double*							m_pInstance_Parabola_Time = nullptr;
 	_float3*							m_pInstanceBiffer_Dir = nullptr;
+
+	_float3 m_vDir;
 
 	const _float  m_fAlphaTime_Power = 1.f;
 	const _float  m_fInstance_SpeedPerSec = 1.5f;

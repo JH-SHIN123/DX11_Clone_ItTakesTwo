@@ -53,8 +53,8 @@ private:
 	const _float  m_fAlphaTime_Power			= 0.5f;
 	const _float  m_fSize_Power					= 0.75f;
 	const _float  m_fInstance_SpeedPerSec		= 0.5f;
-	const _double m_dInstance_Pos_Update_Time	= 1.25;
-	const _float2 m_vDefaultSize				= { 0.25f, 0.25f };
+	const _double m_dInstance_Pos_Update_Time	= 1.5;
+	const _float2 m_vDefaultSize				= { 0.3f, 0.3f };
 
 private: //Particle
 	class CEffect_Boss_Laser_Particle* m_pLaserParticle = nullptr;

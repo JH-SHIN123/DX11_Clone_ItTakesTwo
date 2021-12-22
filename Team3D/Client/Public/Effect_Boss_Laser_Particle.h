@@ -46,12 +46,11 @@ private:
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT		= nullptr;
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT		= nullptr;
-	_float3*							m_pInstanceBiffer_Dir		= nullptr;
 
 	const _float  m_fAlphaTime_Power			= 1.f;
 	const _float  m_fInstance_SpeedPerSec		= 2.5f;
 	const _double m_dInstance_Pos_Update_Time	= 1.5;
-	const _float2 m_vDefaultSize				= { 0.1f, 0.4f };
+	const _float2 m_vDefaultSize				= { 0.2f, 0.45f };
 
 public:
 	static CEffect_Boss_Laser_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

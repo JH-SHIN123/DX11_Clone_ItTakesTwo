@@ -96,8 +96,8 @@ _int CEffect_Boss_Gravitational_Bomb::Tick(_double TimeDelta)
 		vPos.m128_f32[1] += fJumpPower * m_fJumpTime * 1.f - 0.5f * (GRAVITY * m_fJumpTime * m_fJumpTime);
 		m_fJumpTime += 0.02f;
 
+		m_pParticle->Set_Dir(m_pTransformCom->Get_State(CTransform::STATE_POSITION), vPos);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-
 		m_pParticle->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 	}
 
