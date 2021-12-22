@@ -11,6 +11,9 @@
 #include"May.h"
 #include"PlayerActor.h"
 #include"UFO.h"
+#include"Sound_Manager.h"
+#include"UI_Generator.h"
+#include"Script.h"
 CCutScene::CCutScene()
 {
 }
@@ -22,6 +25,8 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 
 	if (m_dTime > m_dDuration)
 	{
+		UI_Delete(Cody, CutSceneBar);
+		UI_Delete(May, CutSceneBar);
 		switch (m_eCutSceneOption)
 		{
 		case Client::CCutScene::CutSceneOption::CutScene_Intro:
@@ -70,6 +75,7 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 
 _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 {
+	Script_Intro(dTimeDelta);
 	if (m_iCutSceneTake == 0)
 	{
 		if (m_dTime >= 88.5f)
@@ -254,8 +260,12 @@ _bool CCutScene::Tick_CutScene_Clear_Rail(_double dTimeDelta)
 
 _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 {
+	Script_Boss_Intro(dTimeDelta);
+	
 	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
 	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
+	if(m_dTime > 1.5f && m_dTime < 1.5f + dTimeDelta)
+		CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene02.wav"), CHANNEL_CUTSCENE, 50, false);
 	if (m_iCutSceneTake == 0)
 	{
 		if (m_dTime < 25.02)
@@ -329,13 +339,47 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 			m_iCutSceneTake++;
 		}
 	}
+	//ButtonPress 
+	//31.32	Fourth
+	//46.84 Third
+	//64.77	Big
+	if (m_bButtonPress[4] == false)
+	{
+		if (m_dTime >= 31.32f)
+		{
+			CPerformer* pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Keyboard_01_Button3")));
+			pButton->ButtonDown();
+			m_bButtonPress[3] = true;
+		}
+	}
+	if (m_bButtonPress[3] == false)
+	{
+		if (m_dTime >= 46.84f)
+		{
+			CPerformer* pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Keyboard_01_Button4")));
+			pButton->ButtonDown();
+			m_bButtonPress[3] = true;
+		}
+	}
+	if (m_bButtonPress[0] == false)	
+	{
+		if (m_dTime >= 64.77f)
+		{
+			CPerformer* pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Button_Large_01_Button")));
+			pButton->ButtonDown();
+			m_bButtonPress[0] = true;
+		}
+	}
 	return true;
 }
 
 HRESULT CCutScene::Start_CutScene()
 {
+
 	m_dTime = 0.0;
 	m_iCutSceneTake = 0;
+	UI_CreateOnlyOnce(Cody, CutSceneBar);
+	UI_CreateOnlyOnce(May, CutSceneBar);
 	switch (m_eCutSceneOption)
 	{
 	case Client::CCutScene::CutSceneOption::CutScene_Intro:
@@ -364,8 +408,10 @@ HRESULT CCutScene::Start_CutScene()
 
 HRESULT CCutScene::Start_CutScene_Intro()
 {
+	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene01.wav"), CHANNEL_CUTSCENE, 100, false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f));
+
 
 	
 	_double dTime = 0.0;
@@ -478,6 +524,7 @@ HRESULT CCutScene::Start_CutScene_Clear_Rail()
 
 HRESULT CCutScene::Start_CutScene_Boss_Intro()
 {
+
 	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_Boss_Intro");
 	m_bIsStartFilm = false;
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
@@ -500,7 +547,20 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
 	pMoonBaboon->Set_Animation(CutScene_BossIntro_MoonBaboon, Moon_Ufo_MH);
 
+	CPerformer* pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Keyboard_01_Button1")));
+	pButton->Set_Position(_float3(62.457f, 219.084f, 238.85f));
 
+	pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Keyboard_01_Button2")));
+	pButton->Set_Position(_float3(63.33f, 219.131f, 239.23f));
+
+	pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Keyboard_01_Button3")));
+	pButton->Set_Position(_float3(64.33f, 219.131f, 239.23f));
+
+	pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Keyboard_01_Button4")));
+	pButton->Set_Position(_float3(65.2f, 219.084f, 238.85f));
+
+	pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Button_Large_01_Button")));
+	pButton->Set_Position(_float3(60.4f, 218.652f, 238.221f));
 	return S_OK;
 }
 
@@ -675,6 +735,204 @@ void CCutScene::CodyLerp()
 
 		m_bStartLerpCody = false;
 	}
+}
+
+void CCutScene::Script_Intro(_double dTimeDelta)
+{
+	_double dSoundTime = m_dTime;
+	if (dSoundTime >= 1.5 && dSoundTime < 1.5 + dTimeDelta)
+		SCRIPT->Render_Script(123, CScript::SCREEN::FULL, 0.8f);
+	else if (dSoundTime >= 2.5 && dSoundTime < 2.5 + dTimeDelta)
+		SCRIPT->Render_Script_DoubleLine(124, 125, 1.4f);
+	else if (dSoundTime >= 8.0 && dSoundTime < 8.0 + dTimeDelta)
+		SCRIPT->Render_Script(126, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 9.0 && dSoundTime < 9.0 + dTimeDelta)
+		SCRIPT->Render_Script(127, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 11.0 && dSoundTime < 11.0 + dTimeDelta)
+		SCRIPT->Render_Script(128, CScript::SCREEN::FULL, 1.9f);
+
+	else if (dSoundTime >= 14.0 && dSoundTime < 14.0 + dTimeDelta)
+		SCRIPT->Render_Script(129, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 15.0 && dSoundTime < 15.0 + dTimeDelta)
+		SCRIPT->Render_Script(130, CScript::SCREEN::FULL, 1.9f);
+
+	else if (dSoundTime >= 17.0 && dSoundTime < 17.0 + dTimeDelta)
+		SCRIPT->Render_Script(131, CScript::SCREEN::FULL, 1.9f);
+
+	else if (dSoundTime >= 19.0 && dSoundTime < 19.0 + dTimeDelta)
+		SCRIPT->Render_Script(132, CScript::SCREEN::FULL, 1.9f);
+
+
+	else if (dSoundTime >= 22.5 && dSoundTime < 22.5 + dTimeDelta)
+		SCRIPT->Render_Script(133, CScript::SCREEN::FULL, 2.4f);
+
+	else if (dSoundTime >= 26.0 && dSoundTime < 26.0 + dTimeDelta)
+		SCRIPT->Render_Script(134, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 28.0 && dSoundTime < 28.0 + dTimeDelta)
+		SCRIPT->Render_Script(135, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 30.0 && dSoundTime < 30.0 + dTimeDelta)
+		SCRIPT->Render_Script(136, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 32.0 && dSoundTime < 32.0 + dTimeDelta)
+		SCRIPT->Render_Script(137, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 36.0 && dSoundTime < 36.0 + dTimeDelta)
+		SCRIPT->Render_Script(138, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 38.0 && dSoundTime < 38.0 + dTimeDelta)
+		SCRIPT->Render_Script(139, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 40.5 && dSoundTime < 40.5 + dTimeDelta)
+		SCRIPT->Render_Script(140, CScript::SCREEN::FULL, 1.4f);
+	else if (dSoundTime >= 43.0 && dSoundTime < 43.0 + dTimeDelta)
+		SCRIPT->Render_Script(141, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 44.0 && dSoundTime < 44.0 + dTimeDelta)
+		SCRIPT->Render_Script(142, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 46.0 && dSoundTime < 46.0 + dTimeDelta)
+		SCRIPT->Render_Script(143, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 48.0 && dSoundTime < 48.0 + dTimeDelta)
+		SCRIPT->Render_Script(144, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 50.0 && dSoundTime < 50.0 + dTimeDelta)
+		SCRIPT->Render_Script(145, CScript::SCREEN::FULL, 2.9f);
+	else if (dSoundTime >= 53.0 && dSoundTime < 53.0 + dTimeDelta)
+		SCRIPT->Render_Script(146, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 61.0 && dSoundTime < 61.0 + dTimeDelta)
+		SCRIPT->Render_Script(147, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 63.0 && dSoundTime < 63.0 + dTimeDelta)
+		SCRIPT->Render_Script(148, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 66.0 && dSoundTime < 66.0 + dTimeDelta)
+		SCRIPT->Render_Script(149, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 68.0 && dSoundTime < 68.0 + dTimeDelta)
+		SCRIPT->Render_Script(150, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 71.0 && dSoundTime < 71.0 + dTimeDelta)
+		SCRIPT->Render_Script(151, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 74.0 && dSoundTime < 74.0 + dTimeDelta)
+		SCRIPT->Render_Script(152, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 76.0 && dSoundTime < 76.0 + dTimeDelta)
+		SCRIPT->Render_Script(153, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 78.0 && dSoundTime < 78.0 + dTimeDelta)
+		SCRIPT->Render_Script(154, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 79.0 && dSoundTime < 79.0 + dTimeDelta)
+		SCRIPT->Render_Script(155, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 80.0 && dSoundTime < 80.0 + dTimeDelta)
+		SCRIPT->Render_Script(156, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 81.0 && dSoundTime < 81.0 + dTimeDelta)
+		SCRIPT->Render_Script(157, CScript::SCREEN::FULL, 2.9f);
+	else if (dSoundTime >= 84.0 && dSoundTime < 84.0 + dTimeDelta)
+		SCRIPT->Render_Script(158, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 85.0 && dSoundTime < 85.0 + dTimeDelta)
+		SCRIPT->Render_Script(159, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 92.0 && dSoundTime < 92.0 + dTimeDelta)
+		SCRIPT->Render_Script(160, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 94.0 && dSoundTime < 94.0 + dTimeDelta)
+		SCRIPT->Render_Script(161, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 95.0 && dSoundTime < 95.0 + dTimeDelta)
+		SCRIPT->Render_Script(162, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 97.0 && dSoundTime < 97.0 + dTimeDelta)
+		SCRIPT->Render_Script(163, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 98.0 && dSoundTime < 98.0 + dTimeDelta)
+		SCRIPT->Render_Script(164, CScript::SCREEN::FULL, 1.4f);
+	else if (dSoundTime >= 100.0 && dSoundTime < 100.0 + dTimeDelta)
+		SCRIPT->Render_Script(165, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 102.0 && dSoundTime < 102.0 + dTimeDelta)
+		SCRIPT->Render_Script(166, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 104.0 && dSoundTime < 104.0 + dTimeDelta)
+		SCRIPT->Render_Script(167, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 106.0 && dSoundTime < 106.0 + dTimeDelta)
+		SCRIPT->Render_Script(168, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 108.0 && dSoundTime < 108.0 + dTimeDelta)
+		SCRIPT->Render_Script(169, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 110.5 && dSoundTime < 110.5 + dTimeDelta)
+		SCRIPT->Render_Script(170, CScript::SCREEN::FULL, 1.4f);
+	else if (dSoundTime >= 112.0 && dSoundTime < 112.0 + dTimeDelta)
+		SCRIPT->Render_Script(171, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 113.0 && dSoundTime < 113.0 + dTimeDelta)
+		SCRIPT->Render_Script(172, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 114.0 && dSoundTime < 114.0 + dTimeDelta)
+		SCRIPT->Render_Script(173, CScript::SCREEN::FULL, 1.9f);
+
+	else if (dSoundTime >= 116.0 && dSoundTime < 116.0 + dTimeDelta)
+		SCRIPT->Render_Script(174, CScript::SCREEN::FULL, 0.9f);
+
+	else if (dSoundTime >= 122.5 && dSoundTime < 122.5 + dTimeDelta)
+		SCRIPT->Render_Script(175, CScript::SCREEN::FULL, 0.9f);
+
+	else if (dSoundTime >= 125.0 && dSoundTime < 125.0 + dTimeDelta)
+		SCRIPT->Render_Script(176, CScript::SCREEN::FULL, 1.9f);
+
+	else if (dSoundTime >= 132.0 && dSoundTime < 132.0 + dTimeDelta)
+		SCRIPT->Render_Script(177, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 134.0 && dSoundTime < 134.0 + dTimeDelta)
+		SCRIPT->Render_Script(178, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 136.0 && dSoundTime < 136.0 + dTimeDelta)
+		SCRIPT->Render_Script(179, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 138.0 && dSoundTime < 138.0 + dTimeDelta)
+		SCRIPT->Render_Script(180, CScript::SCREEN::FULL, 1.9f);
+
+
+}
+
+void CCutScene::Script_Boss_Intro(_double dTimeDelta)
+{
+	_double dSoundTime = m_dTime - 1.5;
+	if (dSoundTime >= 11.3 && dSoundTime < 11.3 + dTimeDelta)
+		SCRIPT->Render_Script_DoubleLine(181, 182, 2.5f);
+	else if (dSoundTime >= 14.5 && dSoundTime < 14.5 + dTimeDelta)
+		SCRIPT->Render_Script(183, CScript::SCREEN::FULL, 3.f);
+	else if (dSoundTime >= 18.0 && dSoundTime < 18.0 + dTimeDelta)
+		SCRIPT->Render_Script(184, CScript::SCREEN::FULL, 1.5f);
+	else if(dSoundTime >= 21.0 && dSoundTime < 21.0 + dTimeDelta)
+		SCRIPT->Render_Script(185, CScript::SCREEN::FULL, 2.f);
+	else if(dSoundTime >= 24.0 && dSoundTime < 24.0 + dTimeDelta)
+		SCRIPT->Render_Script(186, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 26.0 && dSoundTime < 26.0 + dTimeDelta)
+		SCRIPT->Render_Script(187, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 30.5 && dSoundTime < 30.5 + dTimeDelta)
+		SCRIPT->Render_Script(188, CScript::SCREEN::FULL, 1.4f);
+	else if (dSoundTime >= 32.0 && dSoundTime < 32.0 + dTimeDelta)
+		SCRIPT->Render_Script(189, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 33.0 && dSoundTime < 33.0 + dTimeDelta)
+		SCRIPT->Render_Script(190, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 34.0 && dSoundTime < 34.0 + dTimeDelta)
+		SCRIPT->Render_Script(191, CScript::SCREEN::FULL, 2.f);
+	else if (dSoundTime >= 37.0 && dSoundTime < 37.0 + dTimeDelta)
+		SCRIPT->Render_Script(192, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 39.0 && dSoundTime < 39.0 + dTimeDelta)
+		SCRIPT->Render_Script(193, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 41.0 && dSoundTime < 41.0 + dTimeDelta)
+		SCRIPT->Render_Script(194, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 46.0 && dSoundTime < 46.0 + dTimeDelta)
+		SCRIPT->Render_Script(195, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 48.0 && dSoundTime < 48.0 + dTimeDelta)
+		SCRIPT->Render_Script(196, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 50.0 && dSoundTime < 50.0 + dTimeDelta)
+		SCRIPT->Render_Script(197, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 52.0 && dSoundTime < 52.0 + dTimeDelta)
+		SCRIPT->Render_Script(198, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 53.0 && dSoundTime < 53.0 + dTimeDelta)
+		SCRIPT->Render_Script(199, CScript::SCREEN::FULL, 0.4f);
+	else if (dSoundTime >= 53.5 && dSoundTime < 53.5 + dTimeDelta)
+		SCRIPT->Render_Script(200, CScript::SCREEN::FULL, 1.4f);
+	else if (dSoundTime >= 56.0 && dSoundTime < 56.0 + dTimeDelta)
+		SCRIPT->Render_Script(201, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 57.0 && dSoundTime < 57.0 + dTimeDelta)
+		SCRIPT->Render_Script(202, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 58.0 && dSoundTime < 58.0 + dTimeDelta)
+		SCRIPT->Render_Script(203, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 60.0 && dSoundTime < 60.0 + dTimeDelta)
+		SCRIPT->Render_Script(204, CScript::SCREEN::FULL, 2.f);
+	else if (dSoundTime >= 64.0 && dSoundTime < 64.0 + dTimeDelta)
+		SCRIPT->Render_Script(205, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 65.0 && dSoundTime < 65.0 + dTimeDelta)
+		SCRIPT->Render_Script(206, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 66.0 && dSoundTime < 66.0 + dTimeDelta)
+		SCRIPT->Render_Script(207, CScript::SCREEN::FULL, 0.9f);
+	else if (dSoundTime >= 67.0 && dSoundTime < 67.0 + dTimeDelta)
+		SCRIPT->Render_Script(208, CScript::SCREEN::FULL, 2.f);
+	else if (dSoundTime >= 72.0 && dSoundTime < 72.0 + dTimeDelta)
+		SCRIPT->Render_Script(209, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 74.0 && dSoundTime < 74.0 + dTimeDelta)
+		SCRIPT->Render_Script(210, CScript::SCREEN::FULL, 1.9f);
+	else if (dSoundTime >= 77.0 && dSoundTime < 77.0 + dTimeDelta)
+		SCRIPT->Render_Script(211, CScript::SCREEN::FULL, 1.f);
+
+		
 }
 
 
