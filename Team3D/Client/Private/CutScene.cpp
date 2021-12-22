@@ -14,6 +14,7 @@
 #include"Sound_Manager.h"
 #include"UI_Generator.h"
 #include"Script.h"
+#include"ControlRoom_Monitor.h"
 CCutScene::CCutScene()
 {
 }
@@ -85,12 +86,13 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 
 			_float3 vMayPos = _float3(62.8f, 0.15f, 0.3f);
 			_float3 vCodyPos = _float3(63.9f, 0.2f, 0.9f);
+
 			pCody->Set_Position(vCodyPos);
 			pMay->Set_Position(vMayPos);
+			
 			m_iCutSceneTake++;
 		}
 	}
-
 	else if (m_iCutSceneTake == 1) //토이박스쪽으로 가서
 	{
 		if (m_dTime >= 97.1f)
@@ -107,7 +109,6 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 				pBelt->Set_Position(_float3(0, 0, 0));
 				m_bIsChangeToCody = true;
 			}
-
 		}
 		if (m_dTime >= 99.92)//~코디 사이즈키우기 M~L 5
 		{
@@ -154,7 +155,6 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 	}
 	else if (m_iCutSceneTake == 6)
 	{
-		//118.8 
 		//벨트 리모컨달기 ~코디로 진행
 		if (m_dTime >= 118.8f)
 		{
@@ -162,12 +162,10 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 			pSizeBeltRemoteCutScene->Set_Position(_float3(0, 0, 0));
 			m_iCutSceneTake++;
 		}
-	
 	}
 	else if (m_iCutSceneTake == 7)
 	{
 		//124.7 메이 부츠달기 ~메이로진행
-		
 		if (m_dTime >= 124.7)
 		{
 			CPerformer* pMayCutScene = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_May_CutScene1"));
@@ -352,6 +350,7 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 			CPerformer* pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Keyboard_01_Button3")));
 			pButton->ButtonDown();
 			m_bButtonPress[3] = true;
+			static_cast<CControlRoom_Monitor*>(DATABASE->Get_ControlRoomMonitor())->Change_Screen();
 		}
 	}
 	if (m_bButtonPress[3] == false)
@@ -361,6 +360,7 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 			CPerformer* pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Keyboard_01_Button4")));
 			pButton->ButtonDown();
 			m_bButtonPress[3] = true;
+			static_cast<CControlRoom_Monitor*>(DATABASE->Get_ControlRoomMonitor())->Change_Screen();
 		}
 	}
 	if (m_bButtonPress[0] == false)	
