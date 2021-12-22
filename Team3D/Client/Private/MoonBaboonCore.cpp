@@ -40,27 +40,14 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 
 	DATABASE->Set_MoonBaboonCore(this);
 
+	if (m_tDesc.iIndex == 0) // 중력 발판 앞 코어
+		m_fMoveTime *= 2.f;
+
     return S_OK;
 }
 
 _int CMoonBaboonCore::Tick(_double TimeDelta)
 {
-//#ifdef _DEBUG
-//	_vector vPos = XMVectorZero();
-//	TCHAR szBuff[256] = L"";
-//	GetPrivateProfileString(L"Section_1", L"Key_1", L"0", szBuff, 256, L"../test.ini");
-//	_float x = _ttof(szBuff);
-//
-//	GetPrivateProfileString(L"Section_1", L"Key_2", L"0", szBuff, 256, L"../test.ini");
-//	_float y = _ttof(szBuff);
-//
-//	GetPrivateProfileString(L"Section_1", L"Key_3", L"0", szBuff, 256, L"../test.ini");
-//	_float z = _ttof(szBuff);
-//
-//	vPos = XMVectorSet(x, y, z, 1.f);
-//#endif // _DEBUG
-//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-
 	if (m_bBroken)
 	{
 		if (false == m_bBrokenStart)
@@ -123,7 +110,7 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 
 	if (m_iActiveCore == 1)
 	{
-		if (m_fMoveDelta < 1.4f)
+		if (m_fMoveDelta < m_fMoveTime)
 		{
 			m_pTransformCom->Go_Up(TimeDelta);
 			m_fMoveDelta += (_float)TimeDelta;

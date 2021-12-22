@@ -48,14 +48,17 @@ private:
 private:
 	_bool	m_bBroken = false;
 	_bool	m_bArrived = false;
+	_bool	m_IsGoUp = false;
 	_int	m_iActiveCore = 0;
-	_float3 m_vMaxPos;
-	_float m_fMaxY = 0.f;
-	_bool m_IsGoUp = false;
-	_float m_fUpSpeed = 0.f;
-	_float m_fDistance = 0.f;
 
 private:
+	_float3 m_vMaxPos;
+	_float	m_fMaxY = 0.f;
+	_float	m_fUpSpeed = 0.f;
+	_float	m_fDistance = 0.f;
+
+private:
+	_float	m_fMoveTime = 1.4f;
 	_float	m_fMoveDelta = 0.f;
 
 private:
