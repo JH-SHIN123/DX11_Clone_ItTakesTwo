@@ -2374,6 +2374,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 			m_pActorCom->Set_ZeroGravity(true, true, true);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			m_bRespawnCheck = false;
 			m_IsDeadLine = true;
 
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DEAD_FALL, m_fCodyM_Dead_Fall_Volume);
@@ -2502,6 +2503,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pActorCom->Update(dTimeDelta);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bRespawnCheck = false;
 			m_bRespawn = true;
 		}
 		else if ((m_eTargetGameID == GameID::eROTATIONFAN) && false == m_bRespawn)
@@ -2509,6 +2511,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pActorCom->Update(dTimeDelta);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bRespawnCheck = false;
 			m_bRespawn = true;
 		}
 		else if (m_eTargetGameID == GameID::eELECTRICBOX && false == m_bRespawn)
@@ -2521,6 +2524,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 				m_pActorCom->Update(dTimeDelta);
 				m_pActorCom->Set_ZeroGravity(true, false, true);
+				m_bRespawnCheck = false;
 				m_bRespawn = true;
 			}
 		}
@@ -2535,6 +2539,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
  				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 				m_pActorCom->Update(dTimeDelta);
 				m_pActorCom->Set_ZeroGravity(true, false, true);
+				m_bRespawnCheck = false;
 				m_bRespawn = true;
 			}
 			else
@@ -3536,8 +3541,6 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTriggerTargetPos);
 		}
 	}
-	else
-		m_bRespawnCheck = false;
 }
 
 #pragma region Path
@@ -4080,10 +4083,7 @@ void CCody::PinBall_Respawn(const _double dTimeDelta)
 void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 {
 	if (false == m_bRespawn)
-	{
-		m_bRespawnCheck = false;
 		return;
-	}
 
 	m_dRespawnTime += dTimeDelta;
 	if (2.f <= m_dRespawnTime)

@@ -435,7 +435,8 @@ private:
 	_double m_dStartTime = 0.0;
 	_bool	m_bEndingCheck = false;
 
-	/* Hye::For.DeadCheck */
+	/* Hye::For.RespawnCheck */
+	/* 죽었을 때 False로 바뀌고 리스폰시에 True로 바뀜 */
 	_bool	m_bRespawnCheck = false;
 
 	/* For.GravityTunnel */
