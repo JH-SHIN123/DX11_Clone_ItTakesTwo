@@ -45,7 +45,7 @@ HRESULT CEndingRocket::NativeConstruct(void * pArg)
 
 _int CEndingRocket::Tick(_double dTimeDelta)
 {
-	if (m_pGameInstance->Key_Down(DIK_END))
+	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
 		m_bStartMove = true;
 
 	if (m_bStartMove)

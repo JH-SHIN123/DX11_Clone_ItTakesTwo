@@ -3,6 +3,11 @@
 
 IMPLEMENT_SINGLETON(CLevel_Manager)
 
+const _uint CLevel_Manager::Get_CurrentLevelStep()
+{
+	return m_pCurrentLevel->Get_LevelStep();
+}
+
 HRESULT CLevel_Manager::Change_CurrentLevel(CLevel * pCurrentLevel)
 {
 	NULL_CHECK_RETURN(pCurrentLevel, E_FAIL);

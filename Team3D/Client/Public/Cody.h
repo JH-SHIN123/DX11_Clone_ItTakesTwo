@@ -604,13 +604,15 @@ private:
 #pragma endregion
 
 #pragma region RadiarBlur
-private:
+public:
+	void Start_RadiarBlur_FullScreen(_double dBlurTime);
 	void Start_RadiarBlur(_double dBlurTime);
 	void Loop_RadiarBlur(_bool bLoop);
 	void Trigger_RadiarBlur(_double dTimeDelta);
 	void Set_RadiarBlur(_bool bActive);
 
 private:
+	_bool	m_bRadiarBlur_FullScreen = false;
 	_bool	m_bRadiarBlur_Trigger = false;
 	_bool	m_bRadiarBlur_Loop = false;
 	_double m_dRadiarBlurTime = 0.0;
