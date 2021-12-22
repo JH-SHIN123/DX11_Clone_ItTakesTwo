@@ -71,12 +71,6 @@ HRESULT CPhysX::Ready_PhysX(PxSimulationEventCallback* pEventCallback)
 	m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.f);
 	m_pControllerManager = PxCreateControllerManager(*m_pScene);
 
-	// юс╫ц ╧ы╢з
-	//PxMaterial* pMaerial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
-	//PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *pMaerial);
-	//groundPlane->setName("Ground");
-	//m_pScene->addActor(*groundPlane);
-
 	return S_OK;
 }
 
@@ -214,6 +208,15 @@ PxDistanceJoint * CPhysX::Create_Joint(PxRigidActor * Actor1, PxTransform Transf
 	pJoint->setDistanceJointFlag(PxDistanceJointFlag::eMAX_DISTANCE_ENABLED, true);
 	pJoint->setDistanceJointFlag(PxDistanceJointFlag::eMIN_DISTANCE_ENABLED, true);
 	return pJoint;
+}
+
+void CPhysX::Create_Ground()
+{
+	// юс╫ц ╧ы╢з
+	PxMaterial* pMaerial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+	PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *pMaerial);
+	groundPlane->setName("Ground");
+	m_pScene->addActor(*groundPlane);
 }
 
 void CPhysX::Set_TriggerOption(PxRigidActor * pActor)

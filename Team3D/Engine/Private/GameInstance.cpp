@@ -301,6 +301,11 @@ HRESULT CGameInstance::Render_Level()
 	NULL_CHECK_RETURN(m_pLevel_Manager, E_FAIL);
 	return m_pLevel_Manager->Render();
 }
+const _uint CGameInstance::Get_CurrentLevelStep()
+{
+	NULL_CHECK_RETURN(m_pLevel_Manager, E_FAIL);
+	return m_pLevel_Manager->Get_CurrentLevelStep();
+}
 #pragma endregion 
 
 #pragma region GameObjcet_Manager
@@ -372,6 +377,11 @@ _bool CGameInstance::Raycast(const PxVec3 & origin, const PxVec3 & unitDir, cons
 {
 	NULL_CHECK_RETURN(m_pPhysX, false);
 	return m_pPhysX->Raycast(origin, unitDir, distance, hitCall, hitFlags, filterData, filterCall, cache);
+}
+void CGameInstance::Create_Ground()
+{
+	NULL_CHECK(m_pPhysX);
+	m_pPhysX->Create_Ground();
 }
 #pragma endregion 
 
