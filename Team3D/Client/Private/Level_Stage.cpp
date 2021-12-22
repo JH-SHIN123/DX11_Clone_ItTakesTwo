@@ -870,12 +870,39 @@ _int CLevel_Stage::Tick_EndingCredit(_double dTimedelta)
 {
 	m_dEndingCreditAccTime += dTimedelta;
 
-	if (m_iEndingCreditStep == 0 && m_dEndingCreditAccTime > 3.0)
+	if (m_iEndingCreditStep == 0)
 	{
 		++m_iEndingCreditStep;
 
-		ENDINGCREDIT;
+		//for (_uint i = 0; i < 24; ++i)
+		//{
+		//	ENDINGCREDIT->Create_3DText(i, -500.f - i * 100.f);
+		//}
 
+		ENDINGCREDIT->Create_3DText(0, -550.f);
+		//ENDINGCREDIT->Create_3DText(1, -1000.f);
+		//ENDINGCREDIT->Create_3DText(2, -1300.f);
+		//ENDINGCREDIT->Create_3DText(3, -1600.f);
+		//ENDINGCREDIT->Create_3DText(4, -1800.f);
+		//ENDINGCREDIT->Create_3DText(5, -2000.f);
+		//ENDINGCREDIT->Create_3DText(6, -2500.f);
+		//ENDINGCREDIT->Create_3DText(7, -3000.f);
+		//ENDINGCREDIT->Create_3DText(8, -3300.f);
+		//ENDINGCREDIT->Create_3DText(9, -3600.f);
+		//ENDINGCREDIT->Create_3DText(10, -3900.f);
+		//ENDINGCREDIT->Create_3DText(11, -4200.f);
+		//ENDINGCREDIT->Create_3DText(12, -4500.f);
+		//ENDINGCREDIT->Create_3DText(13, -4800.f);
+		//ENDINGCREDIT->Create_3DText(14, -5100.f);
+		//ENDINGCREDIT->Create_3DText(15, -5400.f);
+		//ENDINGCREDIT->Create_3DText(16, -5700.f);
+		//ENDINGCREDIT->Create_3DText(17, -6000.f);
+		//ENDINGCREDIT->Create_3DText(18, -6300.f);
+		//ENDINGCREDIT->Create_3DText(19, -6600.f);
+		//ENDINGCREDIT->Create_3DText(20, -6900.f);
+		//ENDINGCREDIT->Create_3DText(21, -7200.f);
+		//ENDINGCREDIT->Create_3DText(22, -7500.f);
+		//ENDINGCREDIT->Create_3DText(23, -7900.f);
 	}
 
 	return NO_EVENT;
