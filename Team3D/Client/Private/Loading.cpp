@@ -480,6 +480,10 @@ HRESULT CLoading::Create_GameObjects_SpaceStage_Jung()
 	
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy_Move"), CEffect_StarBuddy_Move::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"), CLaser_TypeA::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeB"), CLaser_TypeB::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_MoonBaboon_MainLaser_01"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("MoonBaboon_MainLaser_01"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, PivotMatrix)), E_FAIL);
 #endif // __TEST_JUNG
 	return S_OK;
 }

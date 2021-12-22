@@ -272,7 +272,7 @@ _int CMay::Late_Tick(_double dTimeDelta)
 	CCharacter::Late_Tick(dTimeDelta);
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
+		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1000.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 		return NO_EVENT;
 	}
@@ -2918,6 +2918,8 @@ void CMay::KeyInput_Rail(_double dTimeDelta)
 
 			m_bMoveToRail = false;
 			m_bOnRail = false;
+			m_bOnRail_Effect = false;
+
 		}
 	}
 }
@@ -2980,6 +2982,7 @@ void CMay::Find_TargetSpaceRail()
 			m_pSearchTargetRailNode = pNode;
 			fMinDist = fDist;
 			isSearch = true;
+			EFFECT->Add_Effect(Effect_Value::May_Rail, m_pTransformCom->Get_WorldMatrix());
 		}
 	}
 
@@ -3026,6 +3029,8 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 			m_pTargetRailNode = nullptr;
 			m_bOnRail = false;
 			m_bMoveToRail = false;
+			m_bOnRail_Effect = false;
+
 			return;
 		}
 
@@ -3047,7 +3052,9 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 		m_pTargetRailNode = nullptr;
 		m_bOnRail = true;
 		m_bMoveToRail = false;
-		EFFECT->Add_Effect(Effect_Value::May_Rail, m_pTransformCom->Get_WorldMatrix());
+		if (false == m_bOnRail_Effect)
+			EFFECT->Add_Effect(Effect_Value::May_Rail, m_pTransformCom->Get_WorldMatrix());
+		m_bOnRail_Effect = true;
 
 		m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RAIL, m_fRailSoundVolume);
 		m_pGameInstance->Play_Sound(TEXT("Rail_Ride.wav"), CHANNEL_MAY_RAIL, m_fRailSoundVolume, true);

@@ -199,6 +199,9 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		m_pDynamicActorCom->Update_DynamicActor();
 		m_bFailed = true;
 		m_bStartGame = false;
+
+		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion_Particle, m_pTransformCom->Get_WorldMatrix());
 	}
 
 	/* Blocked */
@@ -253,7 +256,7 @@ void CPinBall::MoveMent(_double dTimeDelta)
 HRESULT CPinBall::Ready_Component(void * pArg)
 {
 	/* Dynamic */
-	PxGeometry* DynamicGeom = new PxSphereGeometry(0.4f);
+	PxGeometry* DynamicGeom = new PxSphereGeometry(0.75f);
 	CDynamicActor::ARG_DESC tDynamicActorArg;
 	tDynamicActorArg.pTransform = m_pTransformCom;
 	tDynamicActorArg.fDensity = 1.f;
@@ -271,7 +274,7 @@ HRESULT CPinBall::Ready_Component(void * pArg)
 
 	/* Trigger */
 
-	PxGeometry* TriggerGeom = new PxSphereGeometry(0.5f);
+	PxGeometry* TriggerGeom = new PxSphereGeometry(0.77f);
 
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;

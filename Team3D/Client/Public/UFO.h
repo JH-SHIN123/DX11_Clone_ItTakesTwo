@@ -41,7 +41,6 @@ public:
 	void Set_CodyEnterUFO();
 	void Set_CutScene();
 	void Set_MoonBaboonPtr(class CMoonBaboon* pMoonBaboon);
-
 	/* For. BossFloorUp */
 	void Set_BossUFOUp(_float fMaxDistance, _float fSpeed);
 	HRESULT Set_MeshRenderGroup();

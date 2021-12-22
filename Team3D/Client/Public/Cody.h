@@ -577,6 +577,7 @@ private:
 	_bool						m_bMoveToRail = false;
 	_bool						m_bOnRail = false;
 	_bool						m_bOnRailEnd = false;
+	_bool						m_bOnRail_Effect = false;
 
 private:
 	_double						m_dRailEnd_ForceDeltaT = 0.0;

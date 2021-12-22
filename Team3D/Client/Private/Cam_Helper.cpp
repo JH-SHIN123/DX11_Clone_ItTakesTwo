@@ -250,7 +250,8 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 		return E_FAIL;
 	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Clear_Rail.dat"))))
 		return E_FAIL;
-
+	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Boss_Intro.dat"))))
+		return E_FAIL;
 
 	return S_OK;
 }
