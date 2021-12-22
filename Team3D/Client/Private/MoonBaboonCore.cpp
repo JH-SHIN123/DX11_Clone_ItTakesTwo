@@ -44,8 +44,8 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 
 	DATABASE->Set_MoonBaboonCore(this);
 
-	if (m_tDesc.iIndex == 0) // 중력 발판 앞 코어
-		m_fMoveTime *= 2.f;
+	if (m_tDesc.iIndex == 1) // 중력 발판 앞 코어
+		m_fMoveTime *= 2.5f;
 
     return S_OK;
 }
