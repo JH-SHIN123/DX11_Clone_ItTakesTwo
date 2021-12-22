@@ -249,6 +249,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon">
       <UniqueIdentifier>{5b697a68-0358-4102-b02d-6330df092a73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\ControlRoom_Monitor">
+      <UniqueIdentifier>{96bcbbc4-65c4-4c61-a69a-16b9f60331e8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis">
       <UniqueIdentifier>{2f8d2754-6701-41e2-9489-11780094fcd4}</UniqueIdentifier>
     </Filter>
@@ -1110,9 +1113,6 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\ControlRoom_Monitor">
-      <UniqueIdentifier>{96bcbbc4-65c4-4c61-a69a-16b9f60331e8}</UniqueIdentifier>
-    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1318,6 +1318,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Moon.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ControlRoom_Monitor.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\ControlRoom_Monitor</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LaserTennis_Manager.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
@@ -2063,9 +2066,6 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ControlRoom_Monitor.h">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\ControlRoom_Monitor</Filter>
-    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -2268,6 +2268,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Moon.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ControlRoom_Monitor.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\ControlRoom_Monitor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LaserTennis_Manager.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
@@ -2988,9 +2991,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ControlRoom_Monitor.cpp">
-      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\ControlRoom_Monitor</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

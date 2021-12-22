@@ -50,7 +50,6 @@
 #include "Rock.h"
 #include "MeshParticle.h"
 #include "C2DMesh.h"
-#include "EndingCredit_Manager.h"
 #include "HugeRock.h"
 #include "RockParticle.h"
 #include "ControlRoom_Monitor.h"
@@ -1313,5 +1312,4 @@ void CEnvironment_Generator::Free()
 	Safe_Release(m_pDeviceContext);
 
 	CLaserTennis_Manager::DestroyInstance();
-	CEndingCredit_Manager::DestroyInstance();
 }

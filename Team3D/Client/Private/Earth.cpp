@@ -49,7 +49,7 @@ _int CEarth::Late_Tick(_double TimeDelta)
 	CGameObject::Late_Tick(TimeDelta);
 
 	if (m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 50000.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_AFTERPOST_BLUR, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 
 	return NO_EVENT;
 }
