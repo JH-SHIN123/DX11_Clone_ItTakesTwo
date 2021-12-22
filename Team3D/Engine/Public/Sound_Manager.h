@@ -8,10 +8,13 @@ BEGIN(Engine)
 enum ENGINE_DLL CHANNEL_TYPE
 {
 	/* Se */
-	CHANNEL_BGM
+	CHANNEL_BGM,
+	CHANNEL_BGM2,
+	CHANNEL_ENDINGCREDIT,
+
 	/* Yoon */
 #pragma region Cody
-	, CHANNEL_CODYB_GROUNDPOUND_LANDING_VOICE, CHANNEL_CODYB_JUMP, CHANNEL_CODYB_JUMP_LANDING, CHANNEL_CODYB_JUMP_VOICE, CHANNEL_CODYB_WALK,
+	CHANNEL_CODYB_GROUNDPOUND_LANDING_VOICE, CHANNEL_CODYB_JUMP, CHANNEL_CODYB_JUMP_LANDING, CHANNEL_CODYB_JUMP_VOICE, CHANNEL_CODYB_WALK,
 	CHANNEL_CODYM_DASH, CHANNEL_CODYM_DASH_LANDING, CHANNEL_CODYM_DASH_ROLL, CHANNEL_CODYM_DEAD_BURN, CHANNEL_CODYM_DEAD_FALL,
 	CHANNEL_CODYM_GROUNDPOUND, CHANNEL_CODYM_GROUNDPOUND_LANDING_VOICE, CHANNEL_CODYM_GROUNDPOUND_ROLL, CHANNEL_CODYM_JUMP,
 	CHANNEL_CODYM_JUMP_DOUBLE_VOICE, CHANNEL_CODYM_JUMP_LANDING_VOICE, CHANNEL_CODYM_RESURRECTION, CHANNEL_CODYM_RUN, CHANNEL_CODYM_WALK, CHANNEL_CODYM_WALLJUMP,
@@ -59,7 +62,8 @@ enum ENGINE_DLL CHANNEL_TYPE
 	/* Jung */
 	/* Taek */
 	, CHANNEL_TOYBOXBUTTON
-	, CHANNEL_RAIL
+	, CHANNEL_CODY_RAIL
+	, CHANNEL_MAY_RAIL
 	/* Jun */
 	, CHANNEL_CUTSCENE
 	, CHANNEL_END
@@ -91,7 +95,7 @@ public: /* Setter */
 	void Lerp_Sound(CHANNEL_TYPE eFirstChannel, CHANNEL_TYPE eSecondChannel, _float fLerpSpeed, _float fFirstVolume, _float fSecondVolume);
 	/* 사운드 페이드인아웃*/
 	/* 채널, Type(true == FadeIn, False == FadeOut) , 보간 스피드, 볼륨*/
-	void FadeInOut(CHANNEL_TYPE eFirstChannel, _bool bType, _float fLerpSpeed, _float fVolume);
+	void FadeInOut(_bool isFirstBGM, _bool bType, _float fLerpSpeed, _float fVolume);
 
 public:
 	HRESULT Ready_SoundManager();
@@ -113,8 +117,11 @@ private:
 	_float			m_fLerpSpeed = 0.f;
 	_bool			m_bLerp = false;
 
-	_bool			m_bFadeInOut = false;
 	_bool			m_bType = false;
+	_bool			m_bFadeInOut = false;
+	_bool			m_bPlayingFirstBGM = false;
+	_float			m_fBGM_MaxVolume = 0.f;
+	_float			m_fBGM_FadingSpeed = 0.f;
 
 private:
 	HRESULT Add_Sound(char* pFilePath);

@@ -5,6 +5,7 @@
 
 /* Framework */
 #include "Loading.h"
+#include "EndingCredit_Manager.h"
 /* Se */
 /* Jung */
 #include "Effect_Generator.h"
@@ -131,12 +132,13 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	}*/
 #endif
 
-#ifdef __TEST_SE
-	if (m_pGameInstance->Key_Down(DIK_INSERT))
-		EFFECT->Add_Effect(Effect_Value::PipeLocker_Connected, XMMatrixTranslation(64.f, 1.f, 15.f));
-	if (m_pGameInstance->Key_Down(DIK_HOME))
-		EFFECT->Add_Effect(Effect_Value::Gate_Smoke, XMMatrixRotationY(XMConvertToRadians(90.f)) * XMMatrixTranslation(58.f, 1.f, 30.f));
-#endif
+	/* For.EndingCredit */
+	if (m_pGameInstance->Key_Down(DIK_END))
+	{
+		m_iLevelStep = 2; 
+		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.8f);
+	}
+	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
 
 	return NO_EVENT;
 }
@@ -299,6 +301,7 @@ HRESULT CLevel_Stage::Ready_Test()
 HRESULT CLevel_Stage::Ready_Layer_GravityPath(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(Clone_StaticGameObjects_ByFile(TEXT("../Bin/Resources/Data/MapData/GravityPath_SelectStatic.dat"), pLayerTag, TEXT("GameObject_GravityPath"), GameID::eGRAVITYPATH_SIDE, 30.f), E_FAIL);
+
 	return S_OK;
 }
 HRESULT CLevel_Stage::Ready_Layer_Earth(const _tchar * pLayerTag)
@@ -409,13 +412,12 @@ HRESULT CLevel_Stage::Ready_Lights()
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_InShip.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Umbrella.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_SpaceControl.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_BossRoom.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Start.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Floor2.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Rail.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Pinball.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_ComputeRoom.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_BossRoom.dat"));
-	//CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Minigame.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_EFFECTLIGHT, TEXT("../Bin/Resources/Data/LightData/EffectLight_Bg.dat"));
 #endif
 
@@ -567,9 +569,11 @@ HRESULT CLevel_Stage::Ready_Layer_StarBuddy(const _tchar * pLayerTag)
 {
 	ROBOTDESC StarDesc;
 	StarDesc.vPosition = { 63.504f, 126.751f, 226.338f, 1.f };
+	StarDesc.iStageNum = 0;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), &StarDesc), E_FAIL);
 
 	StarDesc.vPosition = { 63.15f, 126.751f, 162.764f, 1.f };
+	StarDesc.iStageNum = 1;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), &StarDesc), E_FAIL);
 	return S_OK;
 }
@@ -863,6 +867,21 @@ HRESULT CLevel_Stage::Ready_Layer_Performer(const _tchar * pLayerTag)
 	return S_OK;
 }
 #pragma endregion
+
+_int CLevel_Stage::Tick_EndingCredit(_double dTimedelta)
+{
+	m_dEndingCreditAccTime += dTimedelta;
+
+	if (m_iEndingCreditStep == 0 && m_dEndingCreditAccTime > 3.0)
+	{
+		++m_iEndingCreditStep;
+
+		ENDINGCREDIT;
+
+	}
+
+	return NO_EVENT;
+}
 
 CLevel_Stage * CLevel_Stage::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

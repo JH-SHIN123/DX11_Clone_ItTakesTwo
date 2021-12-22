@@ -37,7 +37,6 @@ class CUI_Generator final : public CBase
 {
 	DECLARE_SINGLETON(CUI_Generator)
 
-public:
 	typedef struct tagFontDesc
 	{
 		_float2 vPosition = { 0.f, 0.f };
@@ -67,7 +66,7 @@ public:
 
 public:
 	_bool Get_EmptyCheck(Player::ID ePlayer, UI::TRIGGER eTrigger) { return m_vecUIOBjects[ePlayer][eTrigger].empty(); };
-	_bool Get_InterActive_UI_EmptyCheck(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger) { return m_vecInterActiveUI[ePlayer][eTrigger].empty(); };
+	_bool Get_InterActive_UI_EmptyCheck(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger);
 	class CHeaderBox* Get_HeaderBox(_int iIndex) { if (true == m_vecHeaderBox.empty()) return nullptr; return m_vecHeaderBox[iIndex]; }
 	CUIObject* Get_UIObject(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	_bool Get_MinigameAllReady();
@@ -99,6 +98,7 @@ public:
 	/* 4. IsDisable은 그 객체와 플레이어가 상호작용 시작할 때 bool 값 하나 던져주면 됨 */
 	/* 5. 상호작용 시작할 때 IsDisable true로 던지고 조건에 맞았다하면 걍 납두고 조건에 안맞아서 다시 상호작용해야 될 때는 IsDisable false로 던져주면 알아서 다시 상호작용 UI 생성해줌 */
 	/* 6. 상호작용 키를 눌렀을 때 UI_Delete 한 번 호출 해줘야함!!!!!!! */
+	/* 7. 상호작용 조건을 모두 만족했을 때 그 변수 무조건 true로 납둬야함!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 	HRESULT CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, _vector vTargetPosition, _float fRange = 0.f, _bool IsCollision = false, _bool IsDisable = false);
 
 public:
@@ -115,6 +115,8 @@ private:
 	_bool							m_IsCodyReady = false;
 	_bool							m_IsMayReady = false;
 	_bool							m_IsCountEnd = false;
+	_uint							m_iCodyCount = 0;
+	_uint							m_iMayCount = 0;
 
 private:
 	vector<CUIObject::UI_DESC*>		m_vecPSData;
@@ -147,7 +149,7 @@ private:
 private:
 	HRESULT SetUp_Clone(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar* PrototypeTag, Level::ID eLevel, void* pArg = nullptr);
 	HRESULT SetUp_Clone_Ptr(Player::ID ePlayer, UI::TRIGGER eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void * pArg, CGameObject** pGameObject);
-	HRESULT SetUp_Clone_InterActive(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void * pArg);
+	HRESULT SetUp_Clone_InterActive(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger, const _tchar * PrototypeTag, Level::ID eLevel, void* pArg);
 
 public:
 	virtual void Free() override;

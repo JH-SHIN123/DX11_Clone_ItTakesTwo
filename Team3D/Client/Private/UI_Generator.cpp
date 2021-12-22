@@ -1454,7 +1454,7 @@ HRESULT CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI
 
 		UI_Generator->Set_InterActive_TargetPos(ePlayer, eTrigger, vTargetPosition);
 	}
-	else
+	else 
 		Delete_InterActive_UI(ePlayer, eTrigger);
 
 	return S_OK;
@@ -1567,4 +1567,12 @@ void CUI_Generator::Free()
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);
+}
+
+_bool CUI_Generator::Get_InterActive_UI_EmptyCheck(Player::ID ePlayer, UI::INTERACTIVE_ID eTrigger)
+{
+	if (ePlayer >= Player::PLAYER_END || eTrigger >= UI::INTERACTIVE_ID_END)
+		return false;
+
+	return  m_vecInterActiveUI[ePlayer][eTrigger].empty();
 }

@@ -7,6 +7,7 @@
 #include "PxEventCallback.h"
 #include "GameDebugger.h"
 #include "CutScenePlayer.h"
+#include "EndingCredit_Manager.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -30,6 +31,10 @@ HRESULT CMainApp::NativeConstruct()
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->NativeConstruct_Environment_Generator(m_pDevice, m_pDeviceContext), E_FAIL);
 
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
+
+#ifdef __MAPLOADING_OFF
+	m_pGameInstance->Create_Ground();
+#endif
 
 #ifdef __GAME_DEBUGGER
 	m_pGameObject_Manager = CGameObject_Manager::GetInstance();
@@ -210,6 +215,7 @@ void CMainApp::Free()
 	CUI_Generator::DestroyInstance();
 	CDataStorage::DestroyInstance();
 	CEnvironment_Generator::DestroyInstance();
+	CEndingCredit_Manager::DestroyInstance();
 	CCutScenePlayer::DestroyInstance();
 
 	CGameInstance::Release_Engine();

@@ -42,6 +42,11 @@ private:
 	_bool		m_IsCollide = false;
 	GameID::Enum		m_PlayerID = GameID::eROCKET;
 
+	/* SOUND */
+	_float m_fRocket_Volume = 1.f;
+	_bool  m_bSoundOnce = false;
+
+
 private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;

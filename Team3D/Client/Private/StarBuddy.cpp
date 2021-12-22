@@ -36,6 +36,11 @@ HRESULT CStarBuddy::NativeConstruct(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&StarDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
 
+	if (0 == StarDesc.iStageNum)
+		m_eInterActiveID = UI::StarBuddy0;
+	else
+		m_eInterActiveID = UI::StarBuddy1;
+
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, StarDesc.vPosition);
 
 	CTriggerActor::ARG_DESC ArgDesc;
@@ -71,7 +76,7 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 		m_pGameInstance->Pad_Key_Down(DIP_Y) && m_IsMayCollide)
 	{
 		m_bLaunch = true;
-		UI_Delete(May, InputButton_InterActive);
+		UI_Delete(May, InputButton_PS_InterActive);
 		UI_Delete(Cody, InputButton_InterActive);
 	}
 
@@ -84,6 +89,12 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 			Launch_StarBuddy(dTimeDelta);
 			m_pTransformCom->RotateYaw(dTimeDelta * 0.5f);
 			m_pTransformCom->RotatePitch(dTimeDelta * 1.2f);
+			if (m_bSoundOnce == false)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_INTERACTIVE_STAR_EXPLODE, m_fStarBuddy_Volume);
+				m_pGameInstance->Play_Sound(TEXT("Interactive_Start_Explode.wav"), CHANNEL_INTERACTIVE_STAR_EXPLODE, m_fStarBuddy_Volume);
+				m_bSoundOnce = true;
+			}	
 			m_pMoveEffect->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 		}
 		if (m_fLifeTime > 3.5f)
@@ -94,10 +105,10 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 		}
 	}
 
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::StarBuddy, 
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
 		m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCodyCollide, m_bLaunch);
 
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::StarBuddy,
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, m_eInterActiveID,
 		m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsMayCollide, m_bLaunch);
 
 

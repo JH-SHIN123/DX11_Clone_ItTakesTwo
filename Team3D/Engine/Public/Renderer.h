@@ -29,8 +29,12 @@ private:
 	HRESULT	Render_Priority();
 	HRESULT	Render_NonAlpha();
 	HRESULT	Render_Alpha();
+	HRESULT Render_Effect_Pre_CustomBlur();
 	HRESULT	Render_Effect();
+	HRESULT Render_Effect_Post_CustomBlur();
+	/**/
 	HRESULT	Render_Effect_No_Blur();
+	/**/
 	HRESULT	Render_UI();
 
 private:

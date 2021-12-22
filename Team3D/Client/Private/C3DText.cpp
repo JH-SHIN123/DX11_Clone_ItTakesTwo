@@ -43,33 +43,35 @@ _int C3DText::Tick(_double dTimeDelta)
 
 	CGameObject::Tick(dTimeDelta);
 
-	_float fMyPosY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	_float fCodyY = XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_pTransformCom->Go_Down(dTimeDelta * 2.0);
 
-	/* 플레이어가 충돌을 하지않고 지나갔을 때*/
-	if (fMyPosY > fCodyY + 20.f)
-	{
-		ENDINGCREDIT->Create_3DText(false);
-		Create_Particle();
-		Set_Dead();
-		return NO_EVENT;
-	}
+	//_float fMyPosY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//_float fCodyY = XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	///* 플레이어가 충돌을 하지않고 지나갔을 때*/
+	//if (fMyPosY > fCodyY + 20.f)
+	//{
+	//	ENDINGCREDIT->Create_3DText(false);
+	//	Create_Particle();
+	//	Set_Dead();
+	//	return NO_EVENT;
+	//}
 
 	/* 스케일 세팅 */
-	m_fScale += (_float)dTimeDelta / 4.f;
+	//m_fScale += (_float)dTimeDelta / 4.f;
 
-	if (m_fMaxScale <= m_fScale)
-		m_fScale = m_fMaxScale;
+	//if (m_fMaxScale <= m_fScale)
+	//	m_fScale = m_fMaxScale;
 
-	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	//_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	//_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	//_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight));
-	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
-	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
+	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight));
+	//m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
+	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
 
-	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
+	//m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
 
 	return NO_EVENT;
 }
@@ -81,7 +83,7 @@ _int C3DText::Late_Tick(_double dTimeDelta)
 	m_pTriggerActorCom->Update_TriggerActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 
 	return NO_EVENT;
 }
@@ -91,20 +93,7 @@ HRESULT C3DText::Render(RENDER_GROUP::Enum eGroup)
 	CGameObject::Render(eGroup);
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(28, 0);
-
-	return S_OK;
-}
-
-HRESULT C3DText::Render_ShadowDepth()
-{
-	CGameObject::Render_ShadowDepth();
-
-	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	/* Skinned: 2 / Normal: 3 */
-	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
 }
@@ -116,8 +105,9 @@ void C3DText::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		/* 충돌시 로켓에 부스트 세팅해줌 */
+		((CCody*)(DATABASE->GetCody()))->Start_RadiarBlur_FullScreen(2.f);
 		((CEndingRocket*)(DATABASE->Get_EndingRocket()))->Set_Boost();
-		ENDINGCREDIT->Create_3DText(true);
+		//ENDINGCREDIT->Create_3DText(true);
 		Create_Particle();
 		Set_Dead();
 	}
@@ -137,6 +127,7 @@ HRESULT C3DText::Ready_Component(void * pArg)
 	Safe_AddRef(m_pCodyTransformCom);
 
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+	//m_pTransformCom->Set_Speed(0.2f, 0.f);
 
 	_float3 vPos = {};
 	XMStoreFloat3(&vPos, m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -153,13 +144,13 @@ HRESULT C3DText::Ready_Component(void * pArg)
 		vPos.z += iZ;
 	}
 	
-	/* 생성 시간이 짧은 경우 초기스케일 조절해줘야함 */
-	if (1.f >= tArg.fTime)
-		m_fScale = 1.5f;
-	else if (3.f >= tArg.fTime)
-		m_fScale = 1.f;
-	else if (5.f >= tArg.fTime)
-		m_fScale = 0.5f;
+	///* 생성 시간이 짧은 경우 초기스케일 조절해줘야함 */
+	//if (1.f >= tArg.fTime)
+	//	m_fScale = 1.5f;
+	//else if (3.f >= tArg.fTime)
+	//	m_fScale = 1.f;
+	//else if (5.f >= tArg.fTime)
+	//	m_fScale = 0.5f;
 
 	/* 폰트 생성 시간에 따른 거리 계산 */
 	if (true == tArg.IsBoost)
@@ -168,14 +159,14 @@ HRESULT C3DText::Ready_Component(void * pArg)
 		vPos.y -= (10.f * tArg.fTime);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&vPos), 1.f));
-	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
+	//m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
 	m_IsBoost = tArg.IsBoost;
 	m_fTime	= tArg.fTime;
 	m_fMaxScale = tArg.fMaxScale;
 	m_iIndex = tArg.iIndex;
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxBoxGeometry(tArg.vTriggerSize.x, tArg.vTriggerSize.y, tArg.vTriggerSize.z);
+	PxGeometry* TriggerGeom = new PxBoxGeometry(tArg.vTriggerSize.x * 5.f, tArg.vTriggerSize.y, tArg.vTriggerSize.z * 5.f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;

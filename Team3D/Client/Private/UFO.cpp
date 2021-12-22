@@ -340,7 +340,7 @@ void CUFO::Core_Destroyed()
 	{
 		m_ePattern = UFO_PATTERN::INTERACTION;
 
-		m_pBossHpBar->Set_Ratio(0.11f);
+		//m_pBossHpBar->Set_Ratio(0.11f);
 
 		/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
 		if (3 != m_iPhaseChangeCount)
@@ -880,6 +880,8 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 		((CCody*)DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
 		((CCody*)DATABASE->GetCody())->Get_Actor()->Set_IsPlayerInUFO(true);
 		m_IsCodySetPos = true;
+		// 우주선 들어가는거
+		m_pGameInstance->Set_MainViewFog(true);
 	}
 
 	if (m_pModelCom->Is_AnimFinished(CutScene_EnterUFO_FlyingSaucer))
@@ -921,6 +923,8 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 		m_pModelCom->Set_Animation(CutScene_Eject_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
 		m_IsEjection = true;
+
+		m_pGameInstance->Set_MainViewFog(false);
 	}
 
 	if(true == m_IsEjection && false == m_IsLaserDown)

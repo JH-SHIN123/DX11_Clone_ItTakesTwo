@@ -50,7 +50,8 @@
 #include "Rock.h"
 #include "MeshParticle.h"
 #include "C2DMesh.h"
-#include "EndingCredit_Manager.h"
+#include "HugeRock.h"
+#include "RockParticle.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -556,7 +557,10 @@ HRESULT CEnvironment_Generator::Load_Default_Prototype_GameObject()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_MeshParticle"), CMeshParticle::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	/* For.2DMesh */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_2DMesh"), C2DMesh::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
-
+	/* For.HugeRock */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_HugeRock"), CHugeRock::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	/* For.RockParticle */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_RockParticle"), CRockParticle::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	return S_OK;
 }
 
@@ -701,7 +705,15 @@ HRESULT CEnvironment_Generator::Load_Environment_Space_Boss()
 
 		tStatic_Env_Desc.eGameID = GameID::Enum::eENVIRONMENT;
 		Set_Info_Model(tStatic_Env_Desc);
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Boss"), Level::LEVEL_STAGE, TEXT("GameObject_Static_Env"), &tStatic_Env_Desc), E_FAIL);
+
+		if (0 == lstrcmp(tStatic_Env_Desc.szModelTag, TEXT("Component_Model_GravityPath07")))
+		{
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GravityPath"), Level::LEVEL_STAGE, TEXT("GameObject_GravityPath"), &tStatic_Env_Desc), E_FAIL);
+		}
+		else
+		{
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Boss"), Level::LEVEL_STAGE, TEXT("GameObject_Static_Env"), &tStatic_Env_Desc), E_FAIL);
+		}
 	}
 	CloseHandle(hFile);
 
@@ -1279,6 +1291,8 @@ HRESULT CEnvironment_Generator::Load_Prototype_Model_ByIndex_Space(_uint iIndex)
 		else if (iIndex == 289) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Star"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("2DMesh_Star"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 290) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_UFO"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("2DMesh_UFO"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 		else if (iIndex == 291) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Umbrella"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("2DMesh_Umbrella"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 292) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_HugeRock"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("HugeRock"), TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
+		else if (iIndex == 293) { FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Model_GravityPath07"), CModel::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Model/Environment/Others/"), TEXT("GravityPath07"), TEXT("../Bin/ShaderFiles/Shader_Mesh_Se.hlsl"), "DefaultTechnique", 1, XMLoadFloat4x4(&m_PivotMatrix))), E_FAIL); }
 	}
 
 	return S_OK;
@@ -1291,5 +1305,4 @@ void CEnvironment_Generator::Free()
 	Safe_Release(m_pDeviceContext);
 
 	CLaserTennis_Manager::DestroyInstance();
-	CEndingCredit_Manager::DestroyInstance();
 }

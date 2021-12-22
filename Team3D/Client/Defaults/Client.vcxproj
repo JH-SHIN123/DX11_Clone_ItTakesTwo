@@ -340,6 +340,7 @@
     <ClInclude Include="..\Public\HookUFO.h" />
     <ClInclude Include="..\Public\HpBar.h" />
     <ClInclude Include="..\Public\HpBarFrame.h" />
+    <ClInclude Include="..\Public\HugeRock.h" />
     <ClInclude Include="..\Public\InGameEffect.h" />
     <ClInclude Include="..\Public\InGameEffect_Model.h" />
     <ClInclude Include="..\Public\InGameEffect_Rect.h" />
@@ -438,6 +439,7 @@
     <ClInclude Include="..\Public\RobotParts.h" />
     <ClInclude Include="..\Public\Rock.h" />
     <ClInclude Include="..\Public\Rocket.h" />
+    <ClInclude Include="..\Public\RockParticle.h" />
     <ClInclude Include="..\Public\Rope.h" />
     <ClInclude Include="..\Public\RotatedNoBatterySign.h" />
     <ClInclude Include="..\Public\RotatedRobotBattery.h" />
@@ -645,6 +647,7 @@
     <ClCompile Include="..\Private\HookUFO.cpp" />
     <ClCompile Include="..\Private\HpBar.cpp" />
     <ClCompile Include="..\Private\HpBarFrame.cpp" />
+    <ClCompile Include="..\Private\HugeRock.cpp" />
     <ClCompile Include="..\Private\InGameEffect.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Model.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Rect.cpp" />
@@ -743,6 +746,7 @@
     <ClCompile Include="..\Private\RobotParts.cpp" />
     <ClCompile Include="..\Private\Rock.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
+    <ClCompile Include="..\Private\RockParticle.cpp" />
     <ClCompile Include="..\Private\Rope.cpp" />
     <ClCompile Include="..\Private\RotatedNoBatterySign.cpp" />
     <ClCompile Include="..\Private\RotatedRobotBattery.cpp" />

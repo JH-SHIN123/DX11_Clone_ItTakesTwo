@@ -12,10 +12,28 @@ CEndingCredit_Manager::CEndingCredit_Manager()
 	Safe_AddRef(m_pGameInstance);
 }
 
+HRESULT CEndingCredit_Manager::NativeConstruct_EndingCredit()
+{
+	return S_OK;
+}
+
 HRESULT CEndingCredit_Manager::Create_3DText(_bool bBoost)
 {
 	if (23 < m_iTextIndex)
 		return S_OK;
+
+	if (0 == m_iTextIndex || 10 == m_iTextIndex || 16 == m_iTextIndex || 23 == m_iTextIndex)
+		FAILED_CHECK_RETURN(Create_HugeRock(), E_FAIL);
+
+	if (true == m_bDeadEnvironment)
+	{
+		Create_Environment();
+		m_bDeadEnvironment = false;
+	}
+
+	++m_iRandomModel;
+	if (4 < m_iRandomModel)
+		m_iRandomModel = 0;
 
 	C3DText::ARG_DESC tArg;
 	tArg.IsBoost = bBoost;
@@ -52,27 +70,6 @@ HRESULT CEndingCredit_Manager::Create_Environment()
 	return S_OK;
 }
 
-HRESULT CEndingCredit_Manager::NativeConstruct_EndingCredit()
-{
-	return S_OK;
-}
-
-HRESULT CEndingCredit_Manager::Create_Rocks(_uint iNumRock)
-{
-	for (_uint i = 0; i < iNumRock; ++i)
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_Rock")), E_FAIL);
-
-	return S_OK;
-}
-
-HRESULT CEndingCredit_Manager::Create_2DMesh(_uint iNum2DMesh)
-{
-	for (_uint i = 0; i < iNum2DMesh; ++i)
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_2DMesh")), E_FAIL);
-
-	return S_OK;
-}
-
 void CEndingCredit_Manager::Add_Argument_Info(_uint iIndex, C3DText::ARG_DESC & tArg)
 {
 	/* 글자 생성 시간 */
@@ -81,11 +78,11 @@ void CEndingCredit_Manager::Add_Argument_Info(_uint iIndex, C3DText::ARG_DESC & 
 	else if (9 >= iIndex)
 		tArg.fTime = 5.f;
 	else if (15 >= iIndex)
-		tArg.fTime = 3.f;
+		tArg.fTime = 5.f;
 	else if (16 >= iIndex)
 		tArg.fTime = 5.f;
 	else if (22 >= iIndex)
-		tArg.fTime = 4.f;
+		tArg.fTime = 5.f;
 	else
 		tArg.fTime = 5.f;
 
@@ -170,6 +167,29 @@ void CEndingCredit_Manager::Add_Argument_Info(_uint iIndex, C3DText::ARG_DESC & 
 		break;
 	}
 	tArg.fMaxScale = 8.f;
+}
+
+HRESULT CEndingCredit_Manager::Create_Rocks(_uint iNumRock)
+{
+	for (_uint i = 0; i < iNumRock; ++i)
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_Rock")), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CEndingCredit_Manager::Create_HugeRock()
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_HugeRock")), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CEndingCredit_Manager::Create_2DMesh(_uint iNum2DMesh)
+{
+	for (_uint i = 0; i < iNum2DMesh; ++i)
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_2DMesh")), E_FAIL);
+
+	return S_OK;
 }
 
 void CEndingCredit_Manager::Free()

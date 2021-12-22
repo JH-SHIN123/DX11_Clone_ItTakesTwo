@@ -44,6 +44,10 @@ private:
 
 	_float				m_fTestAngle = 0.f;
 
+	/* Sound */
+	_float		m_fNoBatterySignVolume = 1.f;
+	_bool		m_bSoundOnce = false;
+
 private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;

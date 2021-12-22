@@ -43,6 +43,10 @@ private:
 	_bool		m_bPressed = false;
 	_bool		m_IsCollide = false;
 	_bool		m_bUpdate = true;
+	
+	/* Sound */
+	_float m_fBigButtonPress_Volume = 1.f;
+
 
 private:
 	CRenderer*			m_pRendererCom = nullptr;

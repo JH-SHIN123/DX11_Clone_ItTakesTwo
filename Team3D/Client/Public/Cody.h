@@ -227,6 +227,7 @@ public:
 	_bool			 Get_IsAirDash() { return m_IsAirDash; }
 
 	_vector			 Get_TriggerTargetPos() { return XMLoadFloat3(&m_vTriggerTargetPos); }
+	_vector			 Get_UFOTargetPos() { return m_vHookUFOOffsetPos; }
 	_vector			 Get_CamTriggerPos() { return XMLoadFloat4(&m_vCamTriggerPos); }
 	_bool			 Get_IsHooking() { return m_IsHookUFO; }
 	_bool			 Get_IsInArcadeJoyStick() { return m_IsInJoyStick; }
@@ -264,7 +265,7 @@ public:
 private:
 	virtual void KeyInput(_double dTimeDelta);
 
-private: // 여기에 넣어놓아야 알거 같아서 여기에..		
+public: // 여기에 넣어놓아야 알거 같아서 여기에..		
 	void Enforce_IdleState(); /* 강제로 Idle 상태로 바꿈 */
 
 private:
@@ -457,7 +458,7 @@ private:
 	_bool m_IsHookUFO = false;
 	_vector m_vHookUFOAxis = {};
 	_bool m_bGoToHooker = false;
-
+	_vector m_vHookUFOOffsetPos = {};
 	_float m_faArmLength = 0.f;
 	_float m_faVelocity = 0.f;
 	_float m_faAcceleration = 0.f;
@@ -605,13 +606,15 @@ private:
 #pragma endregion
 
 #pragma region RadiarBlur
-private:
+public:
+	void Start_RadiarBlur_FullScreen(_double dBlurTime);
 	void Start_RadiarBlur(_double dBlurTime);
 	void Loop_RadiarBlur(_bool bLoop);
 	void Trigger_RadiarBlur(_double dTimeDelta);
 	void Set_RadiarBlur(_bool bActive);
 
 private:
+	_bool	m_bRadiarBlur_FullScreen = false;
 	_bool	m_bRadiarBlur_Trigger = false;
 	_bool	m_bRadiarBlur_Loop = false;
 	_double m_dRadiarBlurTime = 0.0;
@@ -705,7 +708,9 @@ private: /* For. Ending */
 	// MiniGame
 	_float m_fCody_MiniGame_Damaged_Volume = 1.f;
 
-
+	// GravityPipe
+	_float m_fCody_GravityPipe_Voice_Volume = 1.f;
+	_bool  m_bGravityPipe_FirstIn = false;
 
 #pragma endregion
 
