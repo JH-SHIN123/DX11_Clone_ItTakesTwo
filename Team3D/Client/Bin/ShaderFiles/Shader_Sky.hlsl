@@ -170,7 +170,7 @@ PS_OUT	PS_BLACK(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	Out.vColor = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV * 2.f);
+	Out.vColor = 0.f;
 
 	return Out;
 }
