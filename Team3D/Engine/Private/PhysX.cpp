@@ -219,6 +219,11 @@ void CPhysX::Create_Ground()
 	m_pScene->addActor(*groundPlane);
 }
 
+void CPhysX::Resize_Actor(PxRigidActor * pActor, _float fScale)
+{
+	PxScaleRigidActor(*pActor, fScale);
+}
+
 void CPhysX::Set_TriggerOption(PxRigidActor * pActor)
 {
 	const PxU32 iShapeCount = pActor->getNbShapes();

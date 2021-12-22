@@ -141,12 +141,12 @@ CGameObject * CMinigame_Score::Clone_GameObject(void * pArg)
 
 void CMinigame_Score::Free()
 {
-	Safe_Release(m_pVIBuffer_RectCom);
 	Safe_Release(m_pFontMayWinCount);
 	Safe_Release(m_pFontCodyWinCount);
 	Safe_Release(m_pFontMay);
 	Safe_Release(m_pFontCody);
 	Safe_Release(m_pFontCenter);
+	Safe_Release(m_pVIBuffer_RectCom);
 
 	CUIObject::Free();
 }

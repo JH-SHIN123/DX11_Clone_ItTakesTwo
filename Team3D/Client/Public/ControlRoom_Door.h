@@ -34,6 +34,7 @@ public:
 
 private:
 	_bool										m_IsOpenDoor = false;
+	_bool										m_IsOpenDoorEnd = false;
 	_uint										m_iOption = 0;
 
 	_float										m_fTestAngle = 0.f;

@@ -31,6 +31,7 @@ public:
 	HRESULT	Bring_ChannelContainer(vector<class CAnimChannel*>& Channels);
 	HRESULT	Update_Transformations(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations);
 	HRESULT Update_Transformations_Blend(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations, vector<KEY_FRAME>& PreAnimKeyFrames, _float fLerpRatio);
+	HRESULT Set_Transformations(_double dParticularTime, vector<_float4x4>& Transformations);
 
 public:
 	_bool	Update_PathTransformation(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations, _uint iFrameInteract = 1);

@@ -3,6 +3,7 @@
 
 #include "UI_Generator.h"
 #include "Minigame_GaugeCircle.h"
+#include "LaserTennis_Manager.h"
 
 CMinigame_Countdown::CMinigame_Countdown(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -86,6 +87,9 @@ _int CMinigame_Countdown::Late_Tick(_double TimeDelta)
 		m_UIDesc.vScale = m_vSaveScale;
 
 		m_IsStart = false;
+
+		if (4 < m_UIDesc.iTextureRenderIndex)
+			LASERTENNIS->Start_Game();
 	}
 
 	if (true == m_pMinigame_GaugeCircle->Get_NextCount() && 3 >= m_UIDesc.iTextureRenderIndex)
@@ -168,6 +172,7 @@ CGameObject * CMinigame_Countdown::Clone_GameObject(void * pArg)
 
 void CMinigame_Countdown::Free()
 {
+	Safe_Release(m_pMinigame_GaugeCircle);
 	Safe_Release(m_pVIBuffer_RectCom);
 
 	CUIObject::Free();
