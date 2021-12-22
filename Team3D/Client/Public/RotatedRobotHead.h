@@ -44,6 +44,9 @@ private:
 	_bool		m_bHitLeverInActive = false;
 	RTROBOTDESC	m_tRtRobotPartsDesc;
 
+	/* Sound */
+	_float m_fHeadBanging_Volume = 1.f;
+
 private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;

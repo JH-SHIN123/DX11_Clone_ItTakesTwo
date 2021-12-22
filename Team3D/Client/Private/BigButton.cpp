@@ -64,12 +64,16 @@ _int CBigButton::Tick(_double dTimeDelta)
 		{
 			if (m_fMoveDist < 0.4f)
 			{
+				
 				m_pStaticActorCom->Update_StaticActor();
 				m_fMoveDist += (_float)dTimeDelta;
 				m_pTransformCom->Go_Down(dTimeDelta * 0.5f);
 			}
 			if (m_fMoveDist >= 0.4f)
 			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BIGBUTTON_PRESS, m_fBigButtonPress_Volume);
+				m_pGameInstance->Play_Sound(TEXT("BigButton_Press.wav"), CHANNEL_BIGBUTTON_PRESS, m_fBigButtonPress_Volume);
+
 				m_bUpdate = false;
 				DATABASE->Set_BigButtonPressed(true);
 			}

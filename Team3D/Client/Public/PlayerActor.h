@@ -50,6 +50,7 @@ public: /* Setter */
 	void	Set_IsPlayerInUFO(_bool _IsPlayerInUFO) { m_IsPlayerInUFO = _IsPlayerInUFO; }
 	void	Set_PlayerType(CPlayerActor::PLAYER_TYPE _ePlayerType) { m_ePlayerType = _ePlayerType; }
 	void	Set_ShapeFlag(_bool bValue);
+	void	Set_PlayerUp(_fvector vPlayerUp) { XMStoreFloat3(&m_vPlayerUp, vPlayerUp); }
 
 	/* Wall */
 	void	Set_ContactPos(PxExtendedVec3 vPosition) { m_vContactPosition = vPosition; }

@@ -61,7 +61,15 @@ _int CRotatedNoBatterySign::Tick(_double dTimeDelta)
 		m_fRotateTime += (_float)dTimeDelta;
 
 		if (m_fRotateTime < 0.2f)
+		{
 			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 0.f, 1.f, 0.f), dTimeDelta * 7.f);
+			if (m_bSoundOnce == false)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_NOBATTERY, m_fNoBatterySignVolume);
+				m_pGameInstance->Play_Sound(TEXT("Robot_NoBattery.wav"), CHANNEL_ROBOT_NOBATTERY, m_fNoBatterySignVolume);
+				m_bSoundOnce = true;
+			}
+		}
 		else if (m_fRotateTime > 0.4f && m_fRotateTime < 0.6f)
 			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 0.f, 1.f, 0.f), -dTimeDelta * 7.f);
 		else if (m_fRotateTime >= 0.6f)
@@ -69,6 +77,7 @@ _int CRotatedNoBatterySign::Tick(_double dTimeDelta)
 			m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(0.f));
 			m_fRotateTime = 0.f;
 			m_bHitLever = false;
+			m_bSoundOnce = false;
 		}
 	}
 

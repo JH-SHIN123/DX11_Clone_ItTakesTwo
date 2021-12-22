@@ -35,7 +35,7 @@ _int CSpace_Valve_Door::Tick(_double TimeDelta)
 _int CSpace_Valve_Door::Late_Tick(_double TimeDelta)
 {
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
 
 	return S_OK;
 }
@@ -45,7 +45,7 @@ HRESULT CSpace_Valve_Door::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(4, 0);
+	m_pModelCom->Render_Model(18, 0);
 
 	return S_OK;
 }

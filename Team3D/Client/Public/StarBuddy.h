@@ -33,7 +33,6 @@ public: /* Getter */
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
-	void Set_Launch(_bool bLaunch) { m_bLaunch = bLaunch; }
 	void Launch_StarBuddy(_double dTimeDelta);
 
 private:
@@ -43,6 +42,10 @@ private:
 	_bool		m_IsCodyCollide = false;
 	_bool		m_IsMayCollide = false;
 	GameID::Enum		m_PlayerID = GameID::eSTARBUDDY;
+
+	/* Sound */
+	_float m_fStarBuddy_Volume = 1.f;
+	_bool  m_bSoundOnce = false;
 
 private:
 	/* For.Component */

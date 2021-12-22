@@ -42,6 +42,10 @@ private:
 	_float				m_fRotateTime = 0.f;
 	RTROBOTDESC			m_tRtRotatedRobotPartsDesc;
 
+	/* Sound */
+	_float				m_fNoBatterySignVolume = 1.f;
+	_bool				m_bSoundOnce = false;
+
 private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;

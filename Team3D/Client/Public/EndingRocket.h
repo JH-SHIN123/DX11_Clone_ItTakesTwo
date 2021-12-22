@@ -3,6 +3,9 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 
+#define ENDING_ROCKET_SPEED			10.f 
+#define ENDING_ROCKET_BOOSTSPEED	25.f
+
 BEGIN(Client)
 class CEndingRocket final : public CGameObject
 {
@@ -14,7 +17,7 @@ private:
 
 public:
 	/* 부스트 세팅 */
-	void Set_Boost() { m_bBoost = true; }
+	void Set_Boost() { m_bBoost = true; m_fCurSpeed = ENDING_ROCKET_BOOSTSPEED; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -39,9 +42,9 @@ private:
 	_float	m_fAcceleration = 0.f;
 
 	_bool	m_bBoost = false;
-	_bool	m_bStartMove = false;
-
 	_double m_dBoostTime = 0.0;
+	_float	m_fCurSpeed = 0.f;
+	_bool	m_bStartMove = false;
 
 private:
 	/* For.Component */

@@ -40,7 +40,8 @@ HRESULT CInputButton_Frame::NativeConstruct(void * pArg)
 	m_vStartScale = m_UIDesc.vScale;
 
 	if(1 == m_iOption)
-		m_UIDesc.vScale = { 0.f, 0.f };
+		//m_UIDesc.vScale = { 0.f, 0.f };
+		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 	else
 		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x - 15.f, m_UIDesc.vScale.y - 15.f, 0.f, 0.f));
 	

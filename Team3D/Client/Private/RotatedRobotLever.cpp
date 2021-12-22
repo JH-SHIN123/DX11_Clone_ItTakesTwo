@@ -6,6 +6,7 @@
 #include "RotatedRobotHead.h"
 #include "RotatedNoBatterySign.h"
 #include"CutScenePlayer.h"
+#include "PlayerActor.h"
 CRotatedRobotLever::CRotatedRobotLever(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CRotatedRobotParts(pDevice, pDeviceContext)
 {
@@ -157,6 +158,12 @@ void CRotatedRobotLever::Activate_Lever(_double dTimeDelta)
 		m_fStopDelay += (_float)dTimeDelta;
 		if (m_fStopDelay > 0.2f && m_fStopDelay <= 0.6f)
 		{
+			if (m_bSoundOnce == false)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_LEVER, m_fLeverVolume);
+				m_pGameInstance->Play_Sound(TEXT("Robot_Lever.wav"), CHANNEL_ROBOT_LEVER, m_fLeverVolume);
+				m_bSoundOnce = true;
+			}
 			_vector vDir = XMVector3Normalize((XMVectorSet(0.f, 0.f, -1.f, 0.f) + XMVectorSet(0.f, -1.f, 0.f, 0.f))/* / 2.f*/);
 			//m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
 			m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta * 1.2f);
@@ -170,12 +177,20 @@ void CRotatedRobotLever::Activate_Lever(_double dTimeDelta)
 		}
 		else if (m_fStopDelay > 1.f && m_fStopDelay <= 1.4f)
 		{
+			if (m_bSoundBackOnce == false)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_LEVER_BACK, m_fLeverBackVolume);
+				m_pGameInstance->Play_Sound(TEXT("Robot_Lever_Back.wav"), CHANNEL_ROBOT_LEVER_BACK, m_fLeverBackVolume);
+				m_bSoundBackOnce = true;
+			}
 			_vector vDir = XMVector3Normalize((XMVectorSet(0.f, 0.f, 1.f, 0.f) + XMVectorSet(0.f, -1.f, 0.f, 0.f)) /*/ 2.f*/);
 			//m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
 			m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * 1.15f);
 		}
 		else if (m_fStopDelay > 1.4f)
 		{
+			m_bSoundOnce = false;
+			m_bSoundBackOnce = false;
 			m_bNoBatteryHit = false;
 			m_fStopDelay = 0.f;
 			m_bRotate = false;
@@ -195,6 +210,13 @@ void CRotatedRobotLever::Activate_Lever(_double dTimeDelta)
 		m_fStopDelay += (_float)dTimeDelta;
 		if (m_fStopDelay > 0.2f && m_fStopDelay <= 0.6f)
 		{
+			if (m_bSoundOnce == false)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_LEVER, m_fLeverVolume);
+				m_pGameInstance->Play_Sound(TEXT("Robot_Lever.wav"), CHANNEL_ROBOT_LEVER, m_fLeverVolume);
+
+				m_bSoundOnce = true;
+			}
 			_vector vDir = XMVector3Normalize((XMVectorSet(0.f, 0.f, -1.f, 0.f) + XMVectorSet(0.f, -1.f, 0.f, 0.f)) /*/ 2.f*/);
 			//m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
 			m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta* 1.2f); 
@@ -203,6 +225,9 @@ void CRotatedRobotLever::Activate_Lever(_double dTimeDelta)
 		}
 		else if (m_fStopDelay > 0.6f)
 		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_ACTIVE, m_fRobotActiveVolume);
+			m_pGameInstance->Play_Sound(TEXT("Robot_Active.wav"), CHANNEL_ROBOT_ACTIVE, m_fRobotActiveVolume);
+
 			m_bNoBatteryHit = false;
 			m_fStopDelay = 0.f;
 			m_bRotate = false;
