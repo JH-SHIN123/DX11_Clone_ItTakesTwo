@@ -222,6 +222,10 @@ public:
 	void Set_MayMinigameWinCount(_uint iScore) { m_iMayMinigameWinCount += iScore; }
 	_uint Get_MayMinigameWinCount() { return m_iMayMinigameWinCount; }
 
+	/* For.ControlRoom_Screen */
+	void Set_ControlRoomMonitor(CGameObject* pControlRoomScreen) { m_pControlRoomMonitor = pControlRoomScreen; }
+	CGameObject* Get_ControlRoomMonitor() { return m_pControlRoomMonitor; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -314,6 +318,9 @@ private:
 
 	/* For.Ending */
 	CGameObject* m_pEndingRocket = nullptr;
+
+	/* For.ControlRoom Screen */
+	CGameObject* m_pControlRoomMonitor = nullptr;
 
 private:
 	/* For.Valve */
