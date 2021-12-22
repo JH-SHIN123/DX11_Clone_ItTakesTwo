@@ -48,8 +48,8 @@
 #include "Effect_Boss_GroundPound_Ring.h"
 #include "Effect_Boss_GroundPound_Smoke.h"
 #include "Effect_Boss_Missile_Smoke.h"
-#include "Effect_Boss_Missile_Smoke_Black.h"	/*테스트 중*/
-#include "Effect_Boss_Missile_Smoke_Color.h"	/*테스트 중*/
+#include "Effect_Boss_Missile_Smoke_Black.h"	
+#include "Effect_Boss_Missile_Smoke_Color.h"	
 #include "Effect_Boss_Missile_Explosion.h"
 #include "Effect_Boss_Missile_Particle.h"
 #include "Effect_Boss_UFO_Flying.h"
@@ -336,6 +336,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::PipeLocker_Connected:
 		lstrcpy(szPrototype, L"GameObject_Effect_PipeLocker_Connected");
+		break;
+	case Effect_Value::Gate_Smoke:
+		lstrcpy(szPrototype, L"GameObject_Effect_GateSmoke");
 		break;
 	default:
 		break;

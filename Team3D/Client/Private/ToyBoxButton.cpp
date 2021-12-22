@@ -123,6 +123,8 @@ void CToyBoxButton::OnTrigger(_double TimeDelta)
 			// 2.5 ÃÊ ´ë±â
 			if (m_fTriggerRatio >= 3.5)
 			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_TOYBOXBUTTON, m_fToyBoxButtonRecoverVolume);
+				m_pGameInstance->Play_Sound(TEXT("ToyBoxButton_Recover.wav"), CHANNEL_TOYBOXBUTTON, m_fToyBoxButtonRecoverVolume);
 				m_bCheckTrigger = 2;
 				m_fTriggerRatio = 0;
 			}
@@ -142,6 +144,8 @@ void CToyBoxButton::OnTrigger(_double TimeDelta)
 				m_bCheckTrigger = 0;
 				m_fTriggerRatio = 0;
 				m_bTrigger = false;
+
+				m_pGameInstance->Stop_Sound(CHANNEL_TOYBOXBUTTON);
 			}
 			else
 			{

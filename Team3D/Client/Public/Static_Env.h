@@ -38,6 +38,10 @@ private:
 	CModel*				m_pModelCom = nullptr;
 	CStaticActor*		m_pStaticActorCom = nullptr;
 
+	CTextures*			m_pTextureCom_Monitor = nullptr;
+	CTextures*			m_pTextureCom_Computer = nullptr;
+	CTextures*			m_pTextureCom_GraphMonitor = nullptr;
+
 	ARG_DESC			m_Static_Env_Desc;
 
 private:

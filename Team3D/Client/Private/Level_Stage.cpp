@@ -5,6 +5,7 @@
 
 /* Framework */
 #include "Loading.h"
+#include "EndingCredit_Manager.h"
 /* Se */
 /* Jung */
 #include "Effect_Generator.h"
@@ -87,6 +88,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Rope(TEXT("Layer_Rope")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_UFORadarSet(TEXT("Layer_UFORadarSet")), E_FAIL);
 	//FAILED_CHECK_RETURN(Ready_Layer_TestRocket(TEXT("Layer_BossMissile")), E_FAIL);
+
 	FAILED_CHECK_RETURN(Ready_Layer_EndingRocket(TEXT("Layer_EndingRocket")), E_FAIL);
 
 	/* Jin */
@@ -100,12 +102,14 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Performer(TEXT("Layer_Performer")), E_FAIL);
 	
 	/* For. Environment */
-
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_Stage_Space(), E_FAIL);
+
+	/* For.Environment_EndingCredit */
+	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->Load_EndingCredit(), E_FAIL);
+
 #else
 	FAILED_CHECK_RETURN(Ready_Test(), E_FAIL);
 #endif
-
 	/* Script */
 	FAILED_CHECK_RETURN(Ready_Layer_Script(TEXT("Layer_Script")), E_FAIL);
 
@@ -128,12 +132,13 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	}
 #endif
 
-#ifdef __TEST_SE
-	if (m_pGameInstance->Key_Down(DIK_V))
+	/* For.EndingCredit */
+	if (m_pGameInstance->Key_Down(DIK_END))
 	{
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Effect", Level::LEVEL_STAGE, TEXT("GameObject_Effect_GateSmoke")), E_FAIL);
+		m_iLevelStep = 2; 
+		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.8f);
 	}
-#endif
+	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
 
 	return NO_EVENT;
 }
@@ -273,13 +278,12 @@ HRESULT CLevel_Stage::Ready_Test()
 
 	/* Hye */
 #ifdef __TEST_HYE
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Environment", Level::LEVEL_STAGE, TEXT("GameObject_Laser_LaserTennis")), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Environment", Level::LEVEL_STAGE, TEXT("GameObject_Laser_LaserTennis")), E_FAIL);
 #endif // __TEST_HYE
 
 	/* Teak */
 #ifdef __TEST_TAEK
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Terrain", Level::LEVEL_STAGE, TEXT("GameObject_Terrain")), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_SpaceRail", Level::LEVEL_STAGE, TEXT("GameObject_SpaceRail")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ToyBoxButton", Level::LEVEL_STAGE, TEXT("GameObject_ToyBoxButton")), E_FAIL);
 #endif
 
 	/* Yoon */
@@ -297,6 +301,7 @@ HRESULT CLevel_Stage::Ready_Test()
 HRESULT CLevel_Stage::Ready_Layer_GravityPath(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(Clone_StaticGameObjects_ByFile(TEXT("../Bin/Resources/Data/MapData/GravityPath_SelectStatic.dat"), pLayerTag, TEXT("GameObject_GravityPath"), GameID::eGRAVITYPATH_SIDE, 30.f), E_FAIL);
+
 	return S_OK;
 }
 HRESULT CLevel_Stage::Ready_Layer_Earth(const _tchar * pLayerTag)
@@ -397,21 +402,24 @@ HRESULT CLevel_Stage::Ready_Lights()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	/* For.Directional : Ambient / Specular Zero */
-	Ready_DirectionalLight(TEXT("Sun"), _float3(1.f, -1.f, 1.f), _float4(0.65f,0.65f,0.65f, 1.f), _float4(0.35f,0.35f,0.35f,1.f), _float4(1.f,1.f,1.f,1.f));
+	/* For.Directional : Ambient / Specular Zero - 0.45 */ 
+	Ready_DirectionalLight(TEXT("Sun"), _float3(1.f, -1.f, 1.f), _float4(0.45f, 0.45f, 0.45f, 1.f), _float4(0.35f,0.35f,0.35f,1.f), _float4(0.45f, 0.45f, 0.45f,1.f));
 
+#ifndef __MAPLOADING_OFF
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Planet_Robot.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ToyBoxButton_Back.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ComputeRoom.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_InShip.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Umbrella.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_SpaceControl.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_BossRoom.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Start.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Floor2.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Rail.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Pinball.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_ComputeRoom.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_BossRoom.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Minigame.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_EFFECTLIGHT, TEXT("../Bin/Resources/Data/LightData/EffectLight_Bg.dat"));
+#endif
 
 	return S_OK;
 }
@@ -873,6 +881,21 @@ HRESULT CLevel_Stage::Ready_Layer_Performer(const _tchar * pLayerTag)
 	return S_OK;
 }
 #pragma endregion
+
+_int CLevel_Stage::Tick_EndingCredit(_double dTimedelta)
+{
+	m_dEndingCreditAccTime += dTimedelta;
+
+	if (m_iEndingCreditStep == 0 && m_dEndingCreditAccTime > 3.0)
+	{
+		++m_iEndingCreditStep;
+
+		ENDINGCREDIT;
+
+	}
+
+	return NO_EVENT;
+}
 
 CLevel_Stage * CLevel_Stage::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

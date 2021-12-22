@@ -249,6 +249,9 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon">
       <UniqueIdentifier>{5b697a68-0358-4102-b02d-6330df092a73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\ControlRoom_Monitor">
+      <UniqueIdentifier>{96bcbbc4-65c4-4c61-a69a-16b9f60331e8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis">
       <UniqueIdentifier>{2f8d2754-6701-41e2-9489-11780094fcd4}</UniqueIdentifier>
     </Filter>
@@ -281,6 +284,30 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Wall_LaserTennis">
       <UniqueIdentifier>{cd00407a-7a81-4e3c-955f-526dbdf17776}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit">
+      <UniqueIdentifier>{9f44f101-5b83-4697-99a5-73b2ae340056}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\00.Manager">
+      <UniqueIdentifier>{b8583778-75d0-4062-ac24-44c8e2716abd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\3DText">
+      <UniqueIdentifier>{3beb1e00-8189-4688-bc2f-75d5101fdba2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\Rock">
+      <UniqueIdentifier>{a0b69245-8c4c-41f4-aec1-511acd4c0358}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\MeshParticle">
+      <UniqueIdentifier>{8aaaa757-28eb-4382-8875-13b404f24e22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\2DMesh">
+      <UniqueIdentifier>{0775dd07-700e-4894-8bce-be62f6531623}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\HugeRock">
+      <UniqueIdentifier>{2cbbd421-ae32-4bf8-a171-d3a122a04a69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle">
+      <UniqueIdentifier>{82b1a154-6103-4995-92e1-201875b61a16}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen">
       <UniqueIdentifier>{cb99fc26-4d07-4ee9-bdf8-b9a43ea37b0e}</UniqueIdentifier>
@@ -1292,6 +1319,9 @@
     <ClInclude Include="..\Public\Moon.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ControlRoom_Monitor.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\ControlRoom_Monitor</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\LaserTennis_Manager.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
     </ClInclude>
@@ -1321,6 +1351,27 @@
     </ClInclude>
     <ClInclude Include="..\Public\Wall_LaserTennis.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Wall_LaserTennis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EndingCredit_Manager.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\00.Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\C3DText.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\3DText</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\Rock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MeshParticle.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\MeshParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\C2DMesh.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\2DMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HugeRock.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\HugeRock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RockParticle.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AlienScreen.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>
@@ -2218,6 +2269,9 @@
     <ClCompile Include="..\Private\Moon.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\Moon</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\ControlRoom_Monitor.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\02.Boss\ControlRoom_Monitor</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\LaserTennis_Manager.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\00.Manager</Filter>
     </ClCompile>
@@ -2247,6 +2301,27 @@
     </ClCompile>
     <ClCompile Include="..\Private\Wall_LaserTennis.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\03.LaserTennis\Wall_LaserTennis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EndingCredit_Manager.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\00.Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\C3DText.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\3DText</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\Rock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MeshParticle.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\MeshParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\C2DMesh.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\2DMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HugeRock.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\HugeRock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RockParticle.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AlienScreen.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>

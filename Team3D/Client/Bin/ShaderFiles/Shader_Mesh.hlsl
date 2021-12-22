@@ -12,6 +12,7 @@ texture2D	g_EmissiveTexture;
 //texture2D	g_OpacityTexture;
 //texture2D	g_LightTexture;
 
+
 cbuffer BoneMatrixDesc
 {
 	BONEMATRICES	g_BoneMatrices;
@@ -22,6 +23,7 @@ texture2D	g_MaskingTexture;
 cbuffer Mesh_EffectDesc
 {
 	float			g_fTime;
+	float			g_fAlpha;
 	float2			g_vParticleSize;
 	float3			g_vDir;
 	float4			g_vPos;
@@ -62,6 +64,7 @@ struct VS_OUT_VOLUME
 {
 	float4 vPosition	: SV_POSITION;
 	float3 vVolumeColor : TEXCOORD0;
+	float2 vTexUV		: TEXCOORD1;
 };
 
 struct VS_OUT_FRESNEL
@@ -217,6 +220,7 @@ VS_OUT_VOLUME VS_MAIN_VOLUME(VS_IN In)
 
 	Out.vPosition = mul(vector(In.vPosition, 1.f), WorldMatrix);
 	Out.vVolumeColor = vVolumeColor;
+	Out.vTexUV = In.vTexUV;
 
 	return Out;
 }
@@ -278,6 +282,7 @@ struct GS_IN_VOLUME
 {
 	float4 vPosition	: SV_POSITION;
 	float3 vVolumeColor : TEXCOORD0;
+	float2 vTexUV		: TEXCOORD1;
 };
 
 struct GS_OUT_VOLUME
@@ -285,6 +290,7 @@ struct GS_OUT_VOLUME
 	float4 vPosition		: SV_POSITION;
 	float3 vVolumeColor		: TEXCOORD0;
 	float4 vProjPosition	: TEXCOORD1;
+	float2 vTexUV			: TEXCOORD2;
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 };
 
@@ -608,6 +614,7 @@ void GS_MAIN_VOLUME(triangle GS_IN_VOLUME In[3], inout TriangleStream<GS_OUT_VOL
 			Out.vPosition = mul(In[i].vPosition, matVP);
 			Out.vVolumeColor = In[i].vVolumeColor;
 			Out.vProjPosition = Out.vPosition;
+			Out.vTexUV = In[i].vTexUV;
 			Out.iViewportIndex = 1;
 
 			TriStream.Append(Out);
@@ -625,6 +632,7 @@ void GS_MAIN_VOLUME(triangle GS_IN_VOLUME In[3], inout TriangleStream<GS_OUT_VOL
 			Out.vPosition = mul(In[j].vPosition, matVP);
 			Out.vVolumeColor = In[j].vVolumeColor;
 			Out.vProjPosition = Out.vPosition;
+			Out.vTexUV = In[j].vTexUV;
 			Out.iViewportIndex = 2;
 
 			TriStream.Append(Out);
@@ -633,7 +641,6 @@ void GS_MAIN_VOLUME(triangle GS_IN_VOLUME In[3], inout TriangleStream<GS_OUT_VOL
 	}
 }
 /* ________________________________________________________________________________*/
-
 ////////////////////////////////////////////////////////////
 
 struct PS_IN
@@ -669,6 +676,12 @@ struct PS_OUT
 struct PS_OUT_ALPHA
 {
 	vector	vDiffuse			: SV_TARGET0;
+};
+
+struct PS_OUT_CUSTOMBLUR
+{
+	vector	vDiffuse			: SV_TARGET0;
+	vector	vBlurValue			: SV_TARGET1;
 };
 
 PS_OUT	PS_MAIN(PS_IN In)
@@ -1085,6 +1098,112 @@ PS_OUT	PS_LASERBUTTONLARGE(PS_IN In, uniform bool isGreen)
 	return Out;
 }
 
+PS_OUT_CUSTOMBLUR	PS_3DTEXT(PS_IN In)
+{
+	PS_OUT_CUSTOMBLUR Out = (PS_OUT_CUSTOMBLUR)0;
+
+	vector	vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+	if(1 == vMtrlDiffuse.r)
+		Out.vDiffuse = vector(1.f, 0.f, 0.f, 1.f);
+	else if(1 == vMtrlDiffuse.g)
+		Out.vDiffuse = vector(0.f, 1.f, 0.2f, 1.f);
+	else if(1 == vMtrlDiffuse.b)
+		Out.vDiffuse = vector(1.f, 1.f, 0.f, 1.f);
+	Out.vDiffuse.w = 1.f;
+
+	Out.vBlurValue = 0.5f;
+
+	return Out;
+}
+
+PS_OUT_CUSTOMBLUR	PS_MESHPARTICLE(PS_IN In)
+{
+	PS_OUT_CUSTOMBLUR Out = (PS_OUT_CUSTOMBLUR)0;
+
+	Out.vDiffuse = g_vColor;
+
+	Out.vBlurValue = 0.5f;
+
+	return Out;
+}
+
+PS_OUT	PS_MONITOR(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+	Out.vDiffuse = vMtrlDiffuse;
+	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+
+	// Calculate Normal
+	if (g_IsMaterials.Is_Normals & 1) Out.vNormal = TextureSampleToWorldSpace(g_NormalTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
+	else Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+	// Calculate Specular
+	if (g_IsMaterials.Is_Specular & 1) {
+		Out.vSpecular = TextureSampleToWorldSpace(g_SpecularTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
+		Out.vSpecular.w = 0.f;
+	}
+	else Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
+
+	// Calculate Emissive
+	Out.vEmissive = 0.15f;
+
+	// Calculate Shadow
+	int iIndex = -1;
+	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
+
+	// Get_ShadowFactor
+	float fShadowFactor = 0.f;
+	fShadowFactor = Get_ShadowFactor(In.iViewportIndex, iIndex, In.vWorldPosition);
+
+	Out.vShadow = 1.f - fShadowFactor;
+	Out.vShadow.a = 1.f;
+
+	return Out;
+}
+
+PS_OUT	PS_CONTROLROOM_MONITOR(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+	Out.vDiffuse = vMtrlDiffuse;
+	Out.vDiffuse.a = 1.f;
+
+	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
+
+	// Calculate Normal
+	if (g_IsMaterials.Is_Normals & 1) Out.vNormal = TextureSampleToWorldSpace(g_NormalTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
+	else Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+	// Calculate Specular
+	if (g_IsMaterials.Is_Specular & 1) {
+		Out.vSpecular = TextureSampleToWorldSpace(g_SpecularTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz, In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
+		Out.vSpecular.w = 0.f;
+	}
+	else Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
+
+	// Calculate Emissive
+	Out.vEmissive = 0.15f;
+
+	// Calculate Shadow
+	int iIndex = -1;
+	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
+
+	// Get_ShadowFactor
+	float fShadowFactor = 0.f;
+	fShadowFactor = Get_ShadowFactor(In.iViewportIndex, iIndex, In.vWorldPosition);
+
+	Out.vShadow = 1.f - fShadowFactor;
+	Out.vShadow.a = 1.f;
+
+	return Out;
+}
+
 /* _____________________________________Effect_____________________________________*/
 struct PS_IN_DOUBLE_UV
 {
@@ -1168,6 +1287,7 @@ struct PS_IN_VOLUME
 	float4 vPosition		: SV_POSITION;
 	float3 vVolumeColor		: TEXCOORD0;
 	float4 vProjPosition	: TEXCOORD1;
+	float2 vTexUV			: TEXCOORD2;
 };
 struct PS_OUT_VOLUME
 {
@@ -1178,12 +1298,27 @@ PS_OUT_VOLUME PS_MAIN_VOLUME(PS_IN_VOLUME In)
 {
 	PS_OUT_VOLUME Out = (PS_OUT_VOLUME)0;
 
+	float2 vTexUV = In.vTexUV;
+	vTexUV.y -= g_fTime;
+	float3 vPatternDesc = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, vTexUV);
+	In.vVolumeColor = vPatternDesc * In.vVolumeColor;
+
 	Out.vVolume = vector(In.vVolumeColor, In.vProjPosition.z / In.vProjPosition.w);
 
 	return Out;
 }
 /* ________________________________________________________________________________*/
+PS_OUT_ALPHA PS_PHANTOM(PS_IN In, uniform bool bBlue)
+{
+	PS_OUT_ALPHA Out = (PS_OUT_ALPHA)0;
 
+	if(bBlue)
+		Out.vDiffuse = vector(0.f,0.5f,1.f,0.7f);
+	else
+		Out.vDiffuse = vector(0.f, 1.f, 0.5f, 0.7f);
+
+	return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -1251,7 +1386,7 @@ technique11 DefaultTechnique
 	pass Default_Alpha_MoonBaboon_Core_Glass
 	{
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_Default, 0);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
@@ -1261,7 +1396,7 @@ technique11 DefaultTechnique
 	pass Default_Alpha_MoonBaboon_Core_Pillar_Glass
 	{
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_Default, 0);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
@@ -1459,8 +1594,7 @@ technique11 DefaultTechnique
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_LASERBUTTONLARGE(false);
 	}
-
-	//27
+	// 27
 	pass Default_WarpGate_Star_Activate
 	{
 		SetRasterizerState(Rasterizer_Solid);
@@ -1469,5 +1603,75 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0	VS_MAIN_NO_BONE();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0	PS_MAIN_WARPGATE_STAR();
+	}
+	// 28 
+	pass Default_3DText
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_3DTEXT();
+	}
+	// 29
+	pass Default_MeshParticle
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MESHPARTICLE();
+	}
+	// 30
+	pass Character_PhantomFirst
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_PhantomFirst, 0xff);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = NULL;
+	}
+	// 31
+	pass Character_PhantomSecond_Blue
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_PhantomSecond, 0xff);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PHANTOM(true);
+	}
+	// 32
+	pass Character_PhantomSecond_Green
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_PhantomSecond, 0xff);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_PHANTOM(false);
+	}
+	// 33
+	pass Default_Monitor
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_MONITOR();
+	}
+	// 34
+	pass Default_ControlRoom_Monitor
+	{
+		SetRasterizerState(Rasterizer_Solid);
+		SetDepthStencilState(DepthStecil_Default, 0);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NO_BONE();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_CONTROLROOM_MONITOR();
 	}
 };

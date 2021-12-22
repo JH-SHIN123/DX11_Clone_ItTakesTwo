@@ -113,7 +113,11 @@ void  GS_GATESMOKE(point  VS_OUT In[1], inout TriangleStream<GS_OUT> TriStream)
 	GS_OUT Out[8];
 	for (int i = 0; i < 8; i++) { Out[i] = (GS_OUT)0; }
 
-	matrix WorldMatrix	= mul(In[0].ChildWorld, g_WorldMatrix);
+	matrix ChildWorld	= In[0].ChildWorld;
+	for (int j = 0; j < 8; j++) { Out[j].vMaskUV.x = ChildWorld[3].w; }
+	ChildWorld[3].w		= 1.f;
+
+	matrix WorldMatrix	= mul(ChildWorld, g_WorldMatrix);
 
 	float3 vLook	= normalize(g_vMainCamPosition - WorldMatrix[3]).xyz;
 	float3 vAxisY	= vector(0.f, 1.f, 0.f, 0.f).xyz;
@@ -218,7 +222,7 @@ PS_OUT  PS_GATESMOKE(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 	Out.vColor.rgb = 1.f;
-	Out.vColor.a *= Out.vColor.a * 0.1f;
+	Out.vColor.a *= Out.vColor.a * 0.1f * In.vMaskUV.x;
 
 	return Out;
 }

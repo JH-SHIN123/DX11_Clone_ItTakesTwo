@@ -75,12 +75,13 @@ public:
 	void Stop_SoundAll();
 	void Set_SoundVolume(CHANNEL_TYPE eChannel, _float fVolume);
 	void Lerp_Sound(CHANNEL_TYPE eFirstChannel, CHANNEL_TYPE eSecondChannel, _float fLerpSpped = 1.f, _float fFirstVolume = 1.f, _float fSecondVolume = 1.f);
-	void FadeInOut_Sound(CHANNEL_TYPE eChannel, _bool bType, _float fLerpSpped = 1.f, _float fVolume = 1.f);
+	void FadeInOut_Sound(_bool isFirstBGM, _bool bType, _float fLerpSpped = 1.f, _float fVolume = 1.f);
 #pragma endregion
 
 #pragma region Level_Manager
-	HRESULT	Change_CurrentLevel(class CLevel* pCurrentLevel);
-	HRESULT	Render_Level();
+	HRESULT		Change_CurrentLevel(class CLevel* pCurrentLevel);
+	HRESULT		Render_Level();
+	const _uint Get_CurrentLevelStep();
 #pragma endregion
 
 #pragma region GameObject_Manager
@@ -105,6 +106,7 @@ public:
 	PxMaterial*		Get_BasePxMaterial();
 	PxTriangleMesh*	Create_PxMesh(MESHACTOR_DESC pMeshActorDesc);
 	_bool			Raycast(const PxVec3& origin, const PxVec3& unitDir, const PxReal distance, PxRaycastCallback& hitCall, PxHitFlags hitFlags = PxHitFlags(PxHitFlag::eDEFAULT), const PxQueryFilterData& filterData = PxQueryFilterData(), PxQueryFilterCallback* filterCall = NULL, const PxQueryCache* cache = NULL);
+	void			Create_Ground();
 #pragma endregion
 
 #pragma region Pipeline_Manager
@@ -127,8 +129,12 @@ public:
 #pragma endregion
 
 #pragma region PostFX
+	void Set_RadiarBlur_FullScreen(_bool bActive, _float2& vFocusPos);
 	void Set_RadiarBlur_Main(_bool bActive, _float2 & vFocusPos);
 	void Set_RadiarBlur_Sub(_bool bActive, _float2 & vFocusPos);
+	void Set_MainViewFog(_bool bActive);
+	void Set_MainViewBlur(_bool bActive);
+	void Set_SubViewBlur(_bool bActive);
 #pragma endregion
 
 private:

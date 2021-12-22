@@ -204,6 +204,8 @@
     <ClInclude Include="..\Public\Boss_Missile.h" />
     <ClInclude Include="..\Public\Bridge.h" />
     <ClInclude Include="..\Public\ButtonIndicator.h" />
+    <ClInclude Include="..\Public\C2DMesh.h" />
+    <ClInclude Include="..\Public\C3DText.h" />
     <ClInclude Include="..\Public\CamEffect.h" />
     <ClInclude Include="..\Public\CameraActor.h" />
     <ClInclude Include="..\Public\CameraBehaviorCallback.h" />
@@ -224,6 +226,7 @@
     <ClInclude Include="..\Public\ControlRoom_Battery.h" />
     <ClInclude Include="..\Public\ControlRoom_Door.h" />
     <ClInclude Include="..\Public\ControlRoom_Glass.h" />
+    <ClInclude Include="..\Public\ControlRoom_Monitor.h" />
     <ClInclude Include="..\Public\CutScene.h" />
     <ClInclude Include="..\Public\CutScenePlayer.h" />
     <ClInclude Include="..\Public\DataStorage.h" />
@@ -323,6 +326,7 @@
     <ClInclude Include="..\Public\EjectionButton.h" />
     <ClInclude Include="..\Public\ElectricBox.h" />
     <ClInclude Include="..\Public\ElectricWall.h" />
+    <ClInclude Include="..\Public\EndingCredit_Manager.h" />
     <ClInclude Include="..\Public\EndingRocket.h" />
     <ClInclude Include="..\Public\Environment_Generator.h" />
     <ClInclude Include="..\Public\Film.h" />
@@ -337,6 +341,7 @@
     <ClInclude Include="..\Public\HookUFO.h" />
     <ClInclude Include="..\Public\HpBar.h" />
     <ClInclude Include="..\Public\HpBarFrame.h" />
+    <ClInclude Include="..\Public\HugeRock.h" />
     <ClInclude Include="..\Public\InGameEffect.h" />
     <ClInclude Include="..\Public\InGameEffect_Model.h" />
     <ClInclude Include="..\Public\InGameEffect_Rect.h" />
@@ -367,6 +372,7 @@
     <ClInclude Include="..\Public\MayJumpWall.h" />
     <ClInclude Include="..\Public\MayWallCameraTrigger.h" />
     <ClInclude Include="..\Public\MenuScreen.h" />
+    <ClInclude Include="..\Public\MeshParticle.h" />
     <ClInclude Include="..\Public\Minigame_Countdown.h" />
     <ClInclude Include="..\Public\Minigame_GaugeCircle.h" />
     <ClInclude Include="..\Public\Minigame_Ready.h" />
@@ -430,7 +436,9 @@
     <ClInclude Include="..\Public\RobotHead.h" />
     <ClInclude Include="..\Public\RobotLever.h" />
     <ClInclude Include="..\Public\RobotParts.h" />
+    <ClInclude Include="..\Public\Rock.h" />
     <ClInclude Include="..\Public\Rocket.h" />
+    <ClInclude Include="..\Public\RockParticle.h" />
     <ClInclude Include="..\Public\Rope.h" />
     <ClInclude Include="..\Public\RotatedNoBatterySign.h" />
     <ClInclude Include="..\Public\RotatedRobotBattery.h" />
@@ -508,6 +516,8 @@
     <ClCompile Include="..\Private\Boss_Missile.cpp" />
     <ClCompile Include="..\Private\Bridge.cpp" />
     <ClCompile Include="..\Private\ButtonIndicator.cpp" />
+    <ClCompile Include="..\Private\C2DMesh.cpp" />
+    <ClCompile Include="..\Private\C3DText.cpp" />
     <ClCompile Include="..\Private\CamEffect.cpp" />
     <ClCompile Include="..\Private\CameraActor.cpp" />
     <ClCompile Include="..\Private\CameraBehaviorCallback.cpp" />
@@ -523,6 +533,7 @@
     <ClCompile Include="..\Private\ControlRoom_Battery.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Door.cpp" />
     <ClCompile Include="..\Private\ControlRoom_Glass.cpp" />
+    <ClCompile Include="..\Private\ControlRoom_Monitor.cpp" />
     <ClCompile Include="..\Private\CutScene.cpp" />
     <ClCompile Include="..\Private\CutScenePlayer.cpp" />
     <ClCompile Include="..\Private\DataStorage.cpp" />
@@ -622,6 +633,7 @@
     <ClCompile Include="..\Private\EjectionButton.cpp" />
     <ClCompile Include="..\Private\ElectricBox.cpp" />
     <ClCompile Include="..\Private\ElectricWall.cpp" />
+    <ClCompile Include="..\Private\EndingCredit_Manager.cpp" />
     <ClCompile Include="..\Private\EndingRocket.cpp" />
     <ClCompile Include="..\Private\Environment_Generator.cpp" />
     <ClCompile Include="..\Private\Film.cpp" />
@@ -635,6 +647,7 @@
     <ClCompile Include="..\Private\HookUFO.cpp" />
     <ClCompile Include="..\Private\HpBar.cpp" />
     <ClCompile Include="..\Private\HpBarFrame.cpp" />
+    <ClCompile Include="..\Private\HugeRock.cpp" />
     <ClCompile Include="..\Private\InGameEffect.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Model.cpp" />
     <ClCompile Include="..\Private\InGameEffect_Rect.cpp" />
@@ -665,6 +678,7 @@
     <ClCompile Include="..\Private\MayJumpWall.cpp" />
     <ClCompile Include="..\Private\MayWallCameraTrigger.cpp" />
     <ClCompile Include="..\Private\MenuScreen.cpp" />
+    <ClCompile Include="..\Private\MeshParticle.cpp" />
     <ClCompile Include="..\Private\Minigame_Countdown.cpp" />
     <ClCompile Include="..\Private\Minigame_GaugeCircle.cpp" />
     <ClCompile Include="..\Private\Minigame_Ready.cpp" />
@@ -728,7 +742,9 @@
     <ClCompile Include="..\Private\RobotHead.cpp" />
     <ClCompile Include="..\Private\RobotLever.cpp" />
     <ClCompile Include="..\Private\RobotParts.cpp" />
+    <ClCompile Include="..\Private\Rock.cpp" />
     <ClCompile Include="..\Private\Rocket.cpp" />
+    <ClCompile Include="..\Private\RockParticle.cpp" />
     <ClCompile Include="..\Private\Rope.cpp" />
     <ClCompile Include="..\Private\RotatedNoBatterySign.cpp" />
     <ClCompile Include="..\Private\RotatedRobotBattery.cpp" />

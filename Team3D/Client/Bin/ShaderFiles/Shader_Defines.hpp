@@ -210,6 +210,30 @@ DepthStencilState DepthStecil_No_ZTest
 	DepthEnable		= false;
 };
 
+DepthStencilState DepthStecil_PhantomFirst
+{
+	DepthEnable = true;
+	DepthWriteMask = Zero;
+	DepthFunc = Less_Equal;
+
+	StencilEnable = true;
+	FrontFaceStencilFunc = ALWAYS;
+	FrontFaceStencilPass = REPLACE;
+};
+DepthStencilState DepthStecil_PhantomSecond
+{
+	DepthEnable = true;
+	DepthWriteMask = Zero;
+	DepthFunc = Greater;
+
+	// if (StencilRef & StencilReadMask != Value & StencilReadMask
+	// StencilReadMask / WriteMask Default : 255
+
+	StencilEnable = true;
+	FrontFaceStencilFunc = NOT_EQUAL;
+	FrontFaceStencilPass = KEEP;
+};
+
 /* BlendState */
 BlendState BlendState_Alpha
 {

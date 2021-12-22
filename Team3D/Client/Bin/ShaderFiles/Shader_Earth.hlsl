@@ -137,7 +137,8 @@ struct PS_IN
 
 struct PS_OUT
 {
-	vector	vColor	: SV_TARGET;
+	vector	vColor		: SV_TARGET0;
+	vector	vBlurValue	: SV_TARGET1;
 };
 
 PS_OUT	PS_GROUND(PS_IN In)
@@ -164,6 +165,9 @@ PS_OUT	PS_GROUND(PS_IN In)
 		Out.vColor = Out.vColor + (vector(1.f, 1.f, 1.f, 1.f) - vRoughness) * In.vSpecular;
 	}
 
+	// Set Blur Value (0.1 = Blur : 1)
+	Out.vBlurValue = 0.1f;
+
 	return Out;
 }
 
@@ -187,6 +191,9 @@ PS_OUT	PS_ATMOSPHERE(PS_IN In)
 	else
 		Out.vColor = Out.vColor + vector(1.f, 1.f, 1.f, 1.f) * In.vSpecular;
 
+	// Set Blur Value (0.1 = Blur : 1)
+	Out.vBlurValue = 0.1f;
+
 	return Out;
 }
 
@@ -197,7 +204,7 @@ technique11 DefaultTechnique
 	pass Ground
 	{
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_Default, 0);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
@@ -207,7 +214,7 @@ technique11 DefaultTechnique
 	pass Atmosphere
 	{
 		SetRasterizerState(Rasterizer_Solid);
-		SetDepthStencilState(DepthStecil_Default, 0);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();

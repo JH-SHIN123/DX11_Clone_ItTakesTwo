@@ -12,8 +12,12 @@ public:
 	virtual ~CPostFX() = default;
 
 public:
+	void Set_RadiarBlur_FullScreen(_bool bActive, _float2& vFocusPos);
 	void Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos);
 	void Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos);
+	void Set_MainViewFog(_bool bActive) { m_bMainFog = bActive; }
+	void Set_MainViewBlur(_bool bActive) { m_bMainBlur = bActive; }
+	void Set_SubViewBlur(_bool bActive) { m_bSubBlur = bActive; }
 
 public:
 	HRESULT Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight);
@@ -50,8 +54,8 @@ private:
 	_uint		m_iWinSize[2] = { 0,0 };
 	_uint		m_iDownScaleGroups = 0;
 
-	_float		m_fMiddleGrey = 0.00122135f;
-	_float		m_fLumWhiteSqr = 1980.f;
+	_float		m_fMiddleGrey = 0.00192135f;
+	_float		m_fLumWhiteSqr = 1080.f;
 
 	_float		m_fAdaptTime = 1.f;
 	_float		m_fAdaptationDeltaT = 0.f;
@@ -60,15 +64,24 @@ private:
 	_float		m_fBloomThreshold = 20.f;
 	_float		m_fBloomScale = 1.05f;
 
+	_bool		m_bRadialBlur_FullScreen = false;
 	_bool		m_bRadialBlur_Main = false;
 	_bool		m_bRadialBlur_Sub = false;
+	_bool		m_bRadialBlur_FullScreen_Finish = false;
 	_bool		m_bRadialBlur_Main_Finish = false;
 	_bool		m_bRadialBlur_Sub_Finish = false;
 
+	_float2		m_vRadiarBlur_FocusPos_FullScreen = { 0.f,0.f };
 	_float2		m_vRadiarBlur_FocusPos_Main = { 0.f,0.f };
 	_float2		m_vRadiarBlur_FocusPos_Sub = { 0.f,0.f };
+	_float		m_fRadialBlur_FullScreenRatio = 0.f;
 	_float		m_fRadialBlur_MainRatio = 0.f;
 	_float		m_fRadialBlur_SubRatio = 0.f;
+
+	_bool		m_bMainFog = false;
+	_bool		m_bMainBlur = false;
+	_bool		m_bSubBlur = false;
+	_float		m_fVolumeTimeDelta = 0.f;
 #pragma endregion
 
 #pragma region Resources
@@ -116,6 +129,8 @@ private: /* For.CS - Shader */
 private: /* For. PS - ToneMapping */
 	class CVIBuffer_RectRHW*	m_pVIBuffer_ToneMapping = nullptr;
 	class CTextures*			m_pRadiarBlur_Mask = nullptr;
+	class CTextures*			m_pVignatte_Mask = nullptr;
+	class CTextures*			m_pVolume_Mask = nullptr;
 #pragma endregion
 
 #ifdef _DEBUG

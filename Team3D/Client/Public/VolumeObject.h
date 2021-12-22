@@ -38,12 +38,14 @@ public:
 
 private:
 	VOLUME_DESC m_tVolumeDesc;
+	_float m_fPatternDeltaT = 0.f;
 
 private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
+	CTextures*			m_pPatternTexCom = nullptr;
 
 public:
 	static CVolumeObject* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext);

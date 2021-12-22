@@ -27,7 +27,9 @@ private:
 	_float4x4*								m_pVertexLocals = nullptr;
 	_float*									m_pSize = nullptr;
 	_float*									m_pAlphaWeight = nullptr;
+	_float*									m_pPosX = nullptr;
 	_uint									m_iInstanceCount = 0;
+	_float4x4								m_Quat;
 
 public:
 	static CEffect_GateSmoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

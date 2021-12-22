@@ -78,7 +78,7 @@ _int CRope::Tick(_double dTimeDelta)
 		if (((CCody*)DATABASE->GetCody())->Get_IsHooking() == true)
 		{
 			_matrix HandsBone = m_pTargetModel->Get_BoneMatrix("RightAttach");
-			_vector UFOTriggerPos = ((CCody*)DATABASE->GetCody())->Get_TriggerTargetPos();
+			_vector UFOTriggerPos = ((CCody*)DATABASE->GetCody())->Get_UFOTargetPos();
 			UFOTriggerPos = XMVectorSetY(UFOTriggerPos, UFOTriggerPos.m128_f32[1] + 1.f);
 			UFOTriggerPos = XMVectorSetW(UFOTriggerPos, 1.f);
 
@@ -100,7 +100,7 @@ _int CRope::Tick(_double dTimeDelta)
 		if (((CMay*)DATABASE->GetMay())->Get_IsHooking() == true)
 		{
 			_matrix HandsBone = m_pTargetModel->Get_BoneMatrix("RightAttach");
-			_vector UFOTriggerPos = ((CMay*)DATABASE->GetMay())->Get_TriggerTargetPos();
+			_vector UFOTriggerPos = ((CMay*)DATABASE->GetMay())->Get_UFOTargetPos();
 			UFOTriggerPos = XMVectorSetY(UFOTriggerPos, UFOTriggerPos.m128_f32[1] + 1.f);
 			UFOTriggerPos = XMVectorSetW(UFOTriggerPos, 1.f);
 
