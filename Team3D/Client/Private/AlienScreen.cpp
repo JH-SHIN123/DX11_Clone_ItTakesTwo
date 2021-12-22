@@ -92,7 +92,6 @@ HRESULT CAlienScreen::Render_ShadowDepth()
 	/* Skinned: 2 / Normal: 3 */
 	m_pModelCom->Render_Model(3, 0, true);
 
-
 	return S_OK;
 }
 
