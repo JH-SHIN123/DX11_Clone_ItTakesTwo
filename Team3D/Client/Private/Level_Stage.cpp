@@ -879,8 +879,8 @@ _int CLevel_Stage::Tick_EndingCredit(_double dTimedelta)
 		//	ENDINGCREDIT->Create_3DText(i, -500.f - i * 100.f);
 		//}
 
-		ENDINGCREDIT->Create_3DText(0, -550.f);
-		//ENDINGCREDIT->Create_3DText(1, -1000.f);
+		ENDINGCREDIT->Create_3DText(0, -1003.f);
+		ENDINGCREDIT->Create_3DText(1, -2000.f);
 		//ENDINGCREDIT->Create_3DText(2, -1300.f);
 		//ENDINGCREDIT->Create_3DText(3, -1600.f);
 		//ENDINGCREDIT->Create_3DText(4, -1800.f);
