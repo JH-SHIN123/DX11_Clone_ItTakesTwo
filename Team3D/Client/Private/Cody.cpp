@@ -259,6 +259,10 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_MH, ANI_C_Rocket_MH, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_Exit, ANI_C_Jump_Land_High, false);
 
+	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_CodyCutSceneIntro, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_ActionMH, ANI_C_CodyCutSceneIntro, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_MH_Gesture_Small_Drumming, ANI_C_CodyCutSceneIntro, false);
+
 	return;
 }
 
