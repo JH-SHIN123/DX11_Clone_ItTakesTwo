@@ -325,18 +325,18 @@ PS_OUT PS_MAIN(PS_IN In)
 	}
 	else discard;
 
+	// DOF
+	float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+	if (bBlur) vColor = colorBlurred;
+	else vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
+
 	// 카메라와의 거리구하기
 	eyeToPixel = vWorldPos - vCamPos;
 	distToEye = length(eyeToPixel);
 
 	// Fog - MainView만 적용
 	if (bFogActive) vColor = HeightFog(vColor, vCamPos.y, eyeToPixel);
-
-	// DOF
-	float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-
-	if (bBlur) vColor = colorBlurred;
-	else vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
 
 	// Volume
 	vColor = VolumeBlend(vColor, In.vTexUV, vDepthDesc.y, distToEye);
