@@ -10,6 +10,7 @@ enum ENGINE_DLL CHANNEL_TYPE
 	/* Se */
 	CHANNEL_BGM,
 	CHANNEL_BGM2,
+	CHANNEL_ENDINGCREDIT,
 
 	/* Yoon */
 #pragma region Cody

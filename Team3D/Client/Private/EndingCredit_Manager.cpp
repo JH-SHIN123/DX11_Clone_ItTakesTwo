@@ -12,6 +12,11 @@ CEndingCredit_Manager::CEndingCredit_Manager()
 	Safe_AddRef(m_pGameInstance);
 }
 
+HRESULT CEndingCredit_Manager::NativeConstruct_EndingCredit()
+{
+	return S_OK;
+}
+
 HRESULT CEndingCredit_Manager::Create_3DText(_bool bBoost)
 {
 	if (23 < m_iTextIndex)
@@ -61,34 +66,6 @@ HRESULT CEndingCredit_Manager::Create_Environment()
 
 	/* 2DMesh »ý¼º */
 	FAILED_CHECK_RETURN(Create_2DMesh(20), E_FAIL);
-
-	return S_OK;
-}
-
-HRESULT CEndingCredit_Manager::NativeConstruct_EndingCredit()
-{
-	return S_OK;
-}
-
-HRESULT CEndingCredit_Manager::Create_Rocks(_uint iNumRock)
-{
-	for (_uint i = 0; i < iNumRock; ++i)
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_Rock")), E_FAIL);
-
-	return S_OK;
-}
-
-HRESULT CEndingCredit_Manager::Create_HugeRock()
-{
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_HugeRock")), E_FAIL);
-
-	return S_OK;
-}
-
-HRESULT CEndingCredit_Manager::Create_2DMesh(_uint iNum2DMesh)
-{
-	for (_uint i = 0; i < iNum2DMesh; ++i)
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_2DMesh")), E_FAIL);
 
 	return S_OK;
 }
@@ -190,6 +167,29 @@ void CEndingCredit_Manager::Add_Argument_Info(_uint iIndex, C3DText::ARG_DESC & 
 		break;
 	}
 	tArg.fMaxScale = 8.f;
+}
+
+HRESULT CEndingCredit_Manager::Create_Rocks(_uint iNumRock)
+{
+	for (_uint i = 0; i < iNumRock; ++i)
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_Rock")), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CEndingCredit_Manager::Create_HugeRock()
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_HugeRock")), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CEndingCredit_Manager::Create_2DMesh(_uint iNum2DMesh)
+{
+	for (_uint i = 0; i < iNum2DMesh; ++i)
+		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_2DMesh")), E_FAIL);
+
+	return S_OK;
 }
 
 void CEndingCredit_Manager::Free()

@@ -5,6 +5,7 @@
 
 /* Framework */
 #include "Loading.h"
+#include "EndingCredit_Manager.h"
 /* Se */
 /* Jung */
 #include "Effect_Generator.h"
@@ -130,6 +131,14 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Intro, true);
 	}*/
 #endif
+
+	/* For.EndingCredit */
+	if (m_pGameInstance->Key_Down(DIK_END))
+	{
+		m_iLevelStep = 2; 
+		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.8f);
+	}
+	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
 
 	return NO_EVENT;
 }
@@ -857,6 +866,21 @@ HRESULT CLevel_Stage::Ready_Layer_Performer(const _tchar * pLayerTag)
 	return S_OK;
 }
 #pragma endregion
+
+_int CLevel_Stage::Tick_EndingCredit(_double dTimedelta)
+{
+	m_dEndingCreditAccTime += dTimedelta;
+
+	if (m_iEndingCreditStep == 0 && m_dEndingCreditAccTime > 3.0)
+	{
+		++m_iEndingCreditStep;
+
+		ENDINGCREDIT;
+
+	}
+
+	return NO_EVENT;
+}
 
 CLevel_Stage * CLevel_Stage::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

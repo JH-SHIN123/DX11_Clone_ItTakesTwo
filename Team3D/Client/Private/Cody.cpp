@@ -564,7 +564,7 @@ void CCody::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_END))
+	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
 	{
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f), 3.f);
 		//ENDINGCREDIT->Create_Environment();
