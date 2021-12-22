@@ -125,11 +125,11 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 #endif // __TEST_TAEK
 	
 #ifdef __PLAY_CUTSCENE
-	/*if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Intro))
+	if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Intro))
 	{
 		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
 		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Intro, true);
-	}*/
+	}
 #endif
 
 	/* For.EndingCredit */
@@ -861,6 +861,22 @@ HRESULT CLevel_Stage::Ready_Layer_Performer(const _tchar * pLayerTag)
 	
 	tDesc.strModelTag = TEXT("Component_Model_SizeBeltRemoteControllerCutScene1");
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc), E_FAIL);
+
+	tDesc.strModelTag = TEXT("Component_Model_ControlRoom_Keyboard_01_Button");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc), E_FAIL);
+
+	tDesc.strModelTag = TEXT("Component_Model_ControlRoom_Keyboard_01_Button");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc), E_FAIL);
+
+	tDesc.strModelTag = TEXT("Component_Model_ControlRoom_Keyboard_01_Button");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc), E_FAIL);
+
+	tDesc.strModelTag = TEXT("Component_Model_ControlRoom_Keyboard_01_Button");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc), E_FAIL);
+
+	tDesc.strModelTag = TEXT("Component_Model_ControlRoom_Button_Large_01_Button");
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_Performer"), &tDesc), E_FAIL);
+
 
 	return S_OK;
 }

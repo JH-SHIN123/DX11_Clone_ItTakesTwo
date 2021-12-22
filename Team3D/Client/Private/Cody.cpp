@@ -259,6 +259,8 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_MH, ANI_C_Rocket_MH, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_Exit, ANI_C_Jump_Land_High, false);
 
+	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_CodyCutSceneIntro, false);
+
 	return;
 }
 
@@ -375,7 +377,7 @@ _int CCody::Late_Tick(_double dTimeDelta)
 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 30.f))
+		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1000.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 		return NO_EVENT;
 	}
