@@ -131,13 +131,6 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	}*/
 #endif
 
-#ifdef __TEST_SE
-	if (m_pGameInstance->Key_Down(DIK_INSERT))
-		EFFECT->Add_Effect(Effect_Value::PipeLocker_Connected, XMMatrixTranslation(64.f, 1.f, 15.f));
-	if (m_pGameInstance->Key_Down(DIK_HOME))
-		EFFECT->Add_Effect(Effect_Value::Gate_Smoke, XMMatrixRotationY(XMConvertToRadians(90.f)) * XMMatrixTranslation(58.f, 1.f, 30.f));
-#endif
-
 	return NO_EVENT;
 }
 
@@ -299,6 +292,7 @@ HRESULT CLevel_Stage::Ready_Test()
 HRESULT CLevel_Stage::Ready_Layer_GravityPath(const _tchar * pLayerTag)
 {
 	FAILED_CHECK_RETURN(Clone_StaticGameObjects_ByFile(TEXT("../Bin/Resources/Data/MapData/GravityPath_SelectStatic.dat"), pLayerTag, TEXT("GameObject_GravityPath"), GameID::eGRAVITYPATH_SIDE, 30.f), E_FAIL);
+
 	return S_OK;
 }
 HRESULT CLevel_Stage::Ready_Layer_Earth(const _tchar * pLayerTag)

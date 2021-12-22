@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\public\RobotHead.h"
+#include "Cody.h"
+#include "May.h"
 
 CRobotHead::CRobotHead(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CRobotParts(pDevice, pDeviceContext)
@@ -37,6 +39,10 @@ HRESULT CRobotHead::NativeConstruct(void * pArg)
 	m_pModelCom->Set_Animation(3);
 	m_pModelCom->Set_NextAnimIndex(3);
 
+	m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_MOVE, m_fHeadBanging_Volume);
+	m_pGameInstance->Play_Sound(TEXT("Robot_Move.wav"), CHANNEL_ROBOT_MOVE, m_fHeadBanging_Volume);
+	m_pGameInstance->Stop_Sound(CHANNEL_ROBOT_MOVE);
+
 	return S_OK;
 }
 
@@ -71,6 +77,31 @@ _int CRobotHead::Tick(_double dTimeDelta)
 	}
 	else if (m_bBatteryCharged == true && m_bLeverActive == true)
 	{
+		_vector vRobotPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_vector vCodyPos = ((CCody*)DATABASE->GetCody())->Get_Position();
+		_vector vMayPos = ((CMay*)DATABASE->GetMay())->Get_Position();
+
+		_float fCodyDistance = XMVectorGetX(XMVector3Length(vCodyPos - vRobotPos));
+		_float fMayDistance = XMVectorGetX(XMVector3Length(vMayPos - vRobotPos));
+
+
+		// Sound Volume 기준을 0.f ~ 1.f로 잡았다면.. 나누기 10..
+		_float fFinalDist = min(fCodyDistance, fMayDistance);
+
+		if (fFinalDist > 30.f)
+		{
+			m_fHeadBanging_Volume = 0.f;
+			m_pGameInstance->Stop_Sound(CHANNEL_ROBOT_MOVE);
+		}
+		else
+			m_fHeadBanging_Volume = 2.f - fFinalDist / 30.f;
+
+		if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_ROBOT_MOVE) == false && fFinalDist < 30.f)
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_MOVE, m_fHeadBanging_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Robot_Move.wav"), CHANNEL_ROBOT_MOVE, m_fHeadBanging_Volume);
+		}
+
 		if (m_pModelCom->Is_AnimFinished(R_InActive_Battery_Idle))
 		{
 			m_pModelCom->Set_Animation(R_Active_Start);

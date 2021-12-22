@@ -72,6 +72,8 @@ _int CRobotBattery::Tick(_double dTimeDelta)
 	{
 		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_E))
 		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_CODY_PUSH_BATTERY, m_fPush_Battery_Volume);
+			m_pGameInstance->Play_Sound(TEXT("Cody_Push_Battery.wav"), CHANNEL_ROBOT_CODY_PUSH_BATTERY, m_fPush_Battery_Volume);
 			m_bRotate = true;
 			UI_Delete(Cody, InputButton_InterActive);
 		}
@@ -163,6 +165,9 @@ void CRobotBattery::Push_Battery(_double dTimeDelta)
 	}
 	else if (m_fRotateDelay >= 2.1f)
 	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_BATTERY_IN, m_fBattery_Volume);
+		m_pGameInstance->Play_Sound(TEXT("Battery_In.wav"), CHANNEL_ROBOT_BATTERY_IN, m_fBattery_Volume);
+
 		switch (m_tRobotPartsDesc.iStageNum)
 		{
 		case ST_GRAVITYPATH:

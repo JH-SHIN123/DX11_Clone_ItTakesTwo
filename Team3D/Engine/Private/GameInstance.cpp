@@ -283,10 +283,10 @@ void CGameInstance::Lerp_Sound(CHANNEL_TYPE eFirstChannel, CHANNEL_TYPE eSecondC
 	NULL_CHECK(m_pSound_Manager);
 	m_pSound_Manager->Lerp_Sound(eFirstChannel, eSecondChannel, fLerpSpped, fFirstVolume, fSecondVolume);
 }
-void CGameInstance::FadeInOut_Sound(CHANNEL_TYPE eChannel, _bool bType, _float fLerpSpped, _float fVolume)
+void CGameInstance::FadeInOut_Sound(_bool isFirstBGM, _bool bType, _float fLerpSpped, _float fVolume)
 {
 	NULL_CHECK(m_pSound_Manager);
-	m_pSound_Manager->FadeInOut(eChannel, bType, fLerpSpped, fVolume);
+	m_pSound_Manager->FadeInOut(isFirstBGM, bType, fLerpSpped, fVolume);
 }
 #pragma endregion 
 

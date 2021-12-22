@@ -72,6 +72,12 @@ _int CBridge::Tick(_double dTimeDelta)
 
 		if (DATABASE->Get_BigButtonPressed() == true)
 		{
+			if (m_bSoundOnce == false)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BRIDGE_ACTIVE, m_fBridgeVolume);
+				m_pGameInstance->Play_Sound(TEXT("Bridge.wav"), CHANNEL_BRIDGE_ACTIVE, m_fBridgeVolume);
+				m_bSoundOnce = true;
+			}
 			Call_Trigger();
 		}
 	}
