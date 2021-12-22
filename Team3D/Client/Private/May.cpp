@@ -2918,6 +2918,7 @@ void CMay::KeyInput_Rail(_double dTimeDelta)
 
 			m_bMoveToRail = false;
 			m_bOnRail = false;
+			m_bOnRailEnd = false;
 		}
 	}
 }
