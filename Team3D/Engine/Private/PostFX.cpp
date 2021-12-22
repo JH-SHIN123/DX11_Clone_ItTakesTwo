@@ -284,6 +284,7 @@ HRESULT CPostFX::FinalPass()
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EffectTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Effect")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_EffectBlurTex", pBlur->Get_ShaderResourceView_BlurEffect());
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_CustomBlurTex", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Custom_Blur")));
+	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_CustomBlurTex_Value", pRenderTargetManager->Get_ShaderResourceView(TEXT("Target_Custom_BlurValue")));
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_CustomBlurTex_Blur", pBlur->Get_ShaderResourceView_BlurCustomBlur());
 	m_pVIBuffer_ToneMapping->Set_ShaderResourceView("g_AverageLum", m_pShaderResourceView_LumAve);
 

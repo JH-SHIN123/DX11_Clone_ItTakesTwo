@@ -9,6 +9,7 @@ Texture2D				g_DepthTex;
 Texture2D				g_EffectTex;
 Texture2D				g_EffectBlurTex;
 Texture2D				g_CustomBlurTex;
+Texture2D				g_CustomBlurTex_Value;
 Texture2D				g_CustomBlurTex_Blur;
 
 /* Etc Resources */
@@ -317,8 +318,9 @@ PS_OUT PS_MAIN(PS_IN In)
 	// Add Effect
 	vColor += g_EffectTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * 1.5f;
 
-	// Add AfterPostBlur
-	vColor += g_CustomBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_CustomBlurTex_Blur.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+	// Add CustomBlur
+	float fBlurValue = g_CustomBlurTex_Value.Sample(Point_Sampler, In.vTexUV).r;
+	vColor += g_CustomBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_CustomBlurTex_Blur.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * (fBlurValue * 10.f);
 
 	// Final
 	Out.vColor = vector(vColor, 1.f);

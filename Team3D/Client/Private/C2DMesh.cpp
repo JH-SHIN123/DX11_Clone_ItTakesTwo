@@ -61,7 +61,6 @@ HRESULT C2DMesh::Render(RENDER_GROUP::Enum eGroup)
 	CGameObject::Render(eGroup);
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Sepd_Bind_Buffer();
 
 	_float4 vColor;
@@ -75,18 +74,6 @@ HRESULT C2DMesh::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pModelCom->Set_Variable("g_vColor", &vColor, sizeof(_float4));
 	m_pModelCom->Sepd_Render_Model(0, 29, false);
-
-	return S_OK;
-}
-
-HRESULT C2DMesh::Render_ShadowDepth()
-{
-	CGameObject::Render_ShadowDepth();
-
-	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	/* Skinned: 2 / Normal: 3 */
-	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
 }

@@ -91,20 +91,7 @@ HRESULT C3DText::Render(RENDER_GROUP::Enum eGroup)
 	CGameObject::Render(eGroup);
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(28, 0);
-
-	return S_OK;
-}
-
-HRESULT C3DText::Render_ShadowDepth()
-{
-	CGameObject::Render_ShadowDepth();
-
-	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	/* Skinned: 2 / Normal: 3 */
-	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
 }
