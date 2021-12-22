@@ -91,6 +91,7 @@ namespace Engine
 			e3DTEXT,
 			eBOSSUFO,
 			eBOSSENTERUFO,
+			eBOSSCORE,
 			eEND
 		};
 	};

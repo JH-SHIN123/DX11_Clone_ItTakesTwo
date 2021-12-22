@@ -23,7 +23,6 @@ public:
 	void Set_ActiveCore(_int iActive) { m_iActiveCore = iActive; }
 	void Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed);
 
-
 public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
 	_int		Get_ActiveCore() const { return m_iActiveCore; }
@@ -35,17 +34,21 @@ public:
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
 
+public:
+	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject);
+
 private:
 	void Active_Pillar(_double TimeDelta);
-
 
 private:
 	MOONBABOONCORE_DESC m_tDesc;
 
 private:
 	CTransform* m_pTransformCom = nullptr;
+	CTransform* m_pTransformCom_Trigger = nullptr;
 
 private:
+	_bool	m_bMove = false;
 	_bool	m_bBroken = false;
 	_bool	m_bArrived = false;
 	_bool	m_IsGoUp = false;
@@ -68,13 +71,15 @@ private:
 private:
 	void GoUp(_double dTimeDelta);
 
-
 private:
 	class CMoonBaboonCore_Pillar*	m_pCorePillar = nullptr;	// 장식
 	class CMoonBaboonCore_Button*	m_pCoreButton = nullptr;	// 밟으면 올라감
 	class CMoonBaboonCore_Shield*	m_pCoreShield = nullptr;	// shield / pillar shield : 코어필러가 다올라오면 실드가 내려감
 	class CMoonBaboonCore_Glass*	m_pCoreGlass = nullptr;		// 데미지 달면, 부서지고, 코어 비활성화 (다내려가고, 버튼쪽 문닫힘)
-	// Core
+	class CEffect_Boss_Core*		m_pEffectBossCore = nullptr;
+
+private:
+	CTriggerActor*					m_pTriggerActorCom = nullptr;
 
 public:
 	static CMoonBaboonCore* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
