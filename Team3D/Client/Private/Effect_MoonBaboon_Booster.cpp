@@ -37,8 +37,6 @@ HRESULT CEffect_MoonBaboon_Booster::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
 
-	//
-
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 
@@ -50,9 +48,7 @@ HRESULT CEffect_MoonBaboon_Booster::NativeConstruct(void * pArg)
 
 _int CEffect_MoonBaboon_Booster::Tick(_double TimeDelta)
 {
-	// 	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
-
-	if (2.0 < m_dActivateTime && 0.0 > m_dControlTime)
+	if (7.0 < m_dActivateTime && 0.0 > m_dControlTime)
 		return EVENT_DEAD;
 
 	m_dActivateTime += TimeDelta;
@@ -78,7 +74,7 @@ _int CEffect_MoonBaboon_Booster::Tick(_double TimeDelta)
 
 _int CEffect_MoonBaboon_Booster::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_MoonBaboon_Booster::Render(RENDER_GROUP::Enum eGroup)
@@ -172,7 +168,7 @@ void CEffect_MoonBaboon_Booster::Reset_Instance(_double TimeDelta, _float4 vPos,
 	m_pInstanceBuffer_STT[iIndex].vPosition = vPos;
 
 	m_pInstanceBuffer_STT[iIndex].vTextureUV = __super::Get_TexUV(7, 7, true);
-	m_pInstanceBuffer_STT[iIndex].fTime = 1.02f;
+	m_pInstanceBuffer_STT[iIndex].fTime = 1.00f;
 	m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
 
 	m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time;
@@ -217,16 +213,20 @@ void CEffect_MoonBaboon_Booster::Check_TargetMatrix()
 	_matrix BoneMatrix_2 = static_cast<CRunningMoonBaboon*>(DATABASE->Get_RunningMoonBaboon())->Get_Model()->Get_BoneMatrix("Spine2");
 	_matrix BoneMatrix_New = XMMatrixIdentity();
 
-	MyMatrix.r[3] = XMVectorSet(-1.f, 0.75f, 0.f, 1.f);
+	MyMatrix.r[3] = XMVectorSet(-0.9f, 0.f, 1.f, 1.f);
 
 	for (_int i = 0; i < 4; ++i)
 		BoneMatrix_New.r[i] = XMVectorLerp(BoneMatrix_2.r[i], BoneMatrix_1.r[i], 0.9f);
 
 	BoneMatrix_New = BoneMatrix_1;
-
-	BoneMatrix_New = BoneMatrix_New * WorldMatrix * MyMatrix;
 	for (_int i = 0; i < 3; ++i)
+	{
 		BoneMatrix_New.r[i] = XMVector3Normalize(BoneMatrix_New.r[i]);
+		WorldMatrix.r[i] = XMVector3Normalize(WorldMatrix.r[i]);
+	}
+
+	BoneMatrix_New = MyMatrix * BoneMatrix_New * WorldMatrix;
+
 
 	//BoneMatrix.r[3] -= WorldMatrix.r[1] * 0.9f;
 

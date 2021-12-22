@@ -182,10 +182,10 @@ HRESULT CLevel_Stage::Ready_Test()
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_BossEffect", Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core")), E_FAIL);
 
 
-	ROBOTDESC UFODesc;
-	UFODesc.vPosition = { 70.f, 10.f, 30.f, 1.f };
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Test", Level::LEVEL_STAGE, TEXT("GameObject_UFO"), &UFODesc), E_FAIL);
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Test", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon"), &UFODesc), E_FAIL);
+	//ROBOTDESC UFODesc;
+	//UFODesc.vPosition = { 70.f, 10.f, 30.f, 1.f };
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Test", Level::LEVEL_STAGE, TEXT("GameObject_UFO"), &UFODesc), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Test", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon"), &UFODesc), E_FAIL);
 	//
 	//CMoonBaboonCore::MOONBABOONCORE_DESC tDesc;
 	//tDesc.iIndex = 0;
@@ -257,10 +257,10 @@ HRESULT CLevel_Stage::Ready_Test()
 
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layersadasda", Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::MAIN_UMBRELLA, 1.0)), E_FAIL);
 
-	//ROBOTDESC MoonBaboonDesc;
-	//MoonBaboonDesc.vPosition = { 64.f, 0.f, 30.f, 1.f };
-	////MoonBaboonDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"asdl", Level::LEVEL_STAGE, TEXT("GameObject_RunningMoonBaboon"), &MoonBaboonDesc), E_FAIL);
+	ROBOTDESC MoonBaboonDesc;
+	MoonBaboonDesc.vPosition = { 64.f, 0.f, 30.f, 1.f };
+	//MoonBaboonDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"asdl", Level::LEVEL_STAGE, TEXT("GameObject_RunningMoonBaboon"), &MoonBaboonDesc), E_FAIL);
 
 	ROBOTDESC StarDesc;
 	StarDesc.vPosition = { 63.0f, 0.5f, 55.f, 1.f };

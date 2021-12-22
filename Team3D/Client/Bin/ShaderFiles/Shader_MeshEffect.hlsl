@@ -560,7 +560,7 @@ PS_OUT	PS_MAIN_MOONBABOON_SHILED(PS_IN_DOUBLE_UV In)
 
 	vector vColor = g_ColorRampTexture.Sample(Wrap_MinMagMipLinear_Sampler, vDistUV);
 
-	Out.vDiffuse.rgb = vColor.rgb * vDiffuse.b * 2.5f;
+	Out.vDiffuse.rgb = vColor.rgb * vDiffuse.b * 5.f;
 	Out.vDiffuse.a = vDistUV.y * 0.25f * g_fAlpha;
 
 	return Out;
