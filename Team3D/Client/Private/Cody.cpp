@@ -3646,7 +3646,7 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 }
 void CCody::TakeRail(_double dTimeDelta)
 {
-	if (nullptr == m_pTargetRail || false == m_bOnRail) return;
+	if (nullptr == m_pTargetRail || false == m_bOnRail || true == m_bOnRailEnd) return;
 
 	/* 타는 애니메이션으로 변경 */
 	if(m_pGameInstance->Key_Pressing(DIK_A))
