@@ -60,14 +60,14 @@ void CPinBall::Goal(_fvector vGatePosition)
 
 void CPinBall::Respawn()
 {
-	_vector vPos = XMLoadFloat3(&m_RespawnPos);
-	vPos = XMVectorSetW(vPos, 1.f);
+	_vector vScale, vRotQuat, vPosition;
+	XMMatrixDecompose(&vScale, &vRotQuat, &vPosition, XMLoadFloat4x4(&m_ResetWorld));
 
-	m_pDynamicActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(vPos)));
+	m_pDynamicActorCom->Get_Actor()->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
 	m_pDynamicActorCom->Get_Actor()->putToSleep();
-	m_bFailed = false;
-
 	m_pDynamicActorCom->Update_DynamicActor();
+
+	m_bFailed = false;
 }
 
 HRESULT CPinBall::NativeConstruct_Prototype()
@@ -87,7 +87,7 @@ HRESULT CPinBall::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
 	DATABASE->Set_Pinball(this);
-	XMStoreFloat3(&m_RespawnPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	XMStoreFloat4x4(&m_ResetWorld, m_pTransformCom->Get_WorldMatrix());
 
 	return S_OK;
 }
@@ -154,7 +154,6 @@ HRESULT CPinBall::Render_ShadowDepth()
 		/* Skinned: 2 / Normal: 3 */
 		m_pAttachBall->Render_Model(3, 0, true);
 	}
-
 	else
 	{
 		m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
@@ -170,10 +169,11 @@ void CPinBall::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObjec
 	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
 
 	/* Cody */
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && false == m_bReady)
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && true == m_bTriggerCheck)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALL, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 		((CPinBall_BallDoor*)(DATABASE->Get_Pinball_BallDoor()))->Set_DoorState(true);
+		m_bTriggerCheck = false;
 		m_bReady = true;
 	}
 }
@@ -200,6 +200,7 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		m_bFailed = true;
 		m_bStartGame = false;
 
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 755.7f));
 		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion, m_pTransformCom->Get_WorldMatrix());
 		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion_Particle, m_pTransformCom->Get_WorldMatrix());
 	}
@@ -222,6 +223,7 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		m_bFailed = true;
 		m_bStartGame = false;
 
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 755.7f));
 		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion, m_pTransformCom->Get_WorldMatrix());
 		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion_Particle, m_pTransformCom->Get_WorldMatrix());
 	}

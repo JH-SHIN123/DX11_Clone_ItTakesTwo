@@ -3815,6 +3815,7 @@ void CCody::Start_RadiarBlur_FullScreen(_double dBlurTime)
 
 	Set_RadiarBlur(true);
 }
+
 void CCody::Start_RadiarBlur(_double dBlurTime)
 {
 	//if (m_bRadiarBlur) return;
