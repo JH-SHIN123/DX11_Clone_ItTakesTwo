@@ -19,7 +19,7 @@ HRESULT CEffect_Pinball_Move::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 20;
+	m_EffectDesc_Prototype.iInstanceCount = 100;
 
 	return S_OK;
 }
@@ -198,7 +198,6 @@ _float3 CEffect_Pinball_Move::Get_Particle_Rand_Dir(_fvector vDefaultPos)
 void CEffect_Pinball_Move::Check_Target_Matrix()
 {
 	_matrix WorldMatrix = Normalize_Matrix(static_cast<CPinBall*>(m_pTargetObject)->Get_WorldMatrix());
-	WorldMatrix.r[3] += WorldMatrix.r[2] * 0.5f;
 	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 }
 

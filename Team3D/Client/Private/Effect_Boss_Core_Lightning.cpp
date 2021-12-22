@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Boss_Core_Lightning.h"
+#include "Effect_Generator.h"
 
 CEffect_Boss_Core_Lightning::CEffect_Boss_Core_Lightning(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -15,7 +16,7 @@ HRESULT CEffect_Boss_Core_Lightning::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 30;
+	m_EffectDesc_Prototype.iInstanceCount = 60;
 
 	return S_OK;
 }
@@ -62,6 +63,8 @@ _int CEffect_Boss_Core_Lightning::Tick(_double TimeDelta)
 	if (6.f <= m_dActivateTime)
 		m_IsActivate = false;
 
+
+	Check_EffectTimer(TimeDelta);
 
 	Check_InstanceBuffer(TimeDelta);
 
@@ -190,6 +193,26 @@ void CEffect_Boss_Core_Lightning::Check_InstanceBuffer(_double TimeDelta)
 
 		if (0.0 <= m_pInstance_Pos_UpdateTime[iIndex])
 			Instance_UV((_float)TimeDelta, iIndex);
+	}
+}
+
+void CEffect_Boss_Core_Lightning::Check_EffectTimer(_double TimeDelta)
+{
+	m_dEffectTimer += TimeDelta;
+
+	if (false == m_IsActivateEffect && 0.5 < m_dEffectTimer)
+	{
+		EFFECT->Add_Effect(Effect_Value::BossCore_Lightning_Big, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::BossCore_Smoke, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::BossCore_Explosion, m_pTransformCom->Get_WorldMatrix());
+		m_IsActivateEffect = true;
+	}
+
+	if (true == m_IsActivateEffect_2 && 0.8 < m_dEffectTimer)
+	{
+		EFFECT->Add_Effect(Effect_Value::BossCore_Lightning_Big, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::BossCore_Lightning_Big, m_pTransformCom->Get_WorldMatrix());
+		m_IsActivateEffect_2 = false;
 	}
 }
 

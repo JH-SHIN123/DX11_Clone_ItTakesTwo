@@ -49,7 +49,7 @@ _int CEffect_Boss_Gravitational_Bomb_Particle::Tick(_double TimeDelta)
 		return EVENT_DEAD;
 
 	if (true == m_IsActivate)
-		m_dControlTime += TimeDelta;
+		m_dControlTime += TimeDelta * 0.1f;
 	else
 		m_dControlTime -= TimeDelta;
 
@@ -66,6 +66,7 @@ _int CEffect_Boss_Gravitational_Bomb_Particle::Late_Tick(_double TimeDelta)
 HRESULT CEffect_Boss_Gravitational_Bomb_Particle::Render(RENDER_GROUP::Enum eGroup)
 {
 	_float fTime = (_float)m_dControlTime;
+	if (1.f < fTime) fTime = 0.f;
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fTime, sizeof(_float));
@@ -78,10 +79,16 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Particle::Render(RENDER_GROUP::Enum eGro
 	return S_OK;
 }
 
+void CEffect_Boss_Gravitational_Bomb_Particle::Set_Dir(_fvector vPos, _fvector MovePos)
+{
+	_vector vDir = XMVector3Normalize(MovePos - vPos);
+
+	XMStoreFloat3(&m_vDir, vDir);
+}
+
 void CEffect_Boss_Gravitational_Bomb_Particle::Check_Instance(_double TimeDelta)
 {
-	_float4 vMyPos;
-	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	_vector vMyPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
@@ -110,7 +117,10 @@ void CEffect_Boss_Gravitational_Bomb_Particle::Instance_Pos(_float TimeDelta, _i
 	m_pInstance_Parabola_Time[iIndex] = (_double)TimeDelta;
 
 	_vector vDir = XMLoadFloat3(&m_pInstanceBiffer_Dir[iIndex]);
-	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 3.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
+	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition);
+
+	vPos += vDir * (_float)TimeDelta * 5.f * m_pInstanceBuffer_STT[iIndex].fTime;
+	vPos.m128_f32[1] -= (_float)TimeDelta * 5.f * m_pInstanceBuffer_STT[iIndex].fTime ;
 
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }
@@ -119,16 +129,15 @@ void CEffect_Boss_Gravitational_Bomb_Particle::Instance_UV(_float TimeDelta, _in
 {
 }
 
-void CEffect_Boss_Gravitational_Bomb_Particle::Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex)
+void CEffect_Boss_Gravitational_Bomb_Particle::Reset_Instance(_double TimeDelta, _fvector vPos, _int iIndex)
 {
-	m_pInstanceBuffer_STT[iIndex].vPosition = vPos;
-
+	m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
 	m_pInstanceBuffer_STT[iIndex].fTime = 1.02f;
 
 	m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time;
 	m_pInstance_Parabola_Time[iIndex] = 0.0;
 
-	_vector vLookDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * -2.5f;
+	_vector vLookDir = XMLoadFloat3(&m_vDir) * -3.f;
 	_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
 	vRandDir = XMVector3Normalize(vRandDir + vLookDir);
 
@@ -137,11 +146,9 @@ void CEffect_Boss_Gravitational_Bomb_Particle::Reset_Instance(_double TimeDelta,
 	_float4 v4Dir = { v3RandDir.x, v3RandDir.y, v3RandDir.z, 0.f };
 	m_pInstanceBuffer_STT[iIndex].vUp = v4Dir;
 	m_pInstanceBiffer_Dir[iIndex] = v3RandDir;
-	if (0.f >= m_pInstanceBiffer_Dir[iIndex].y)
-	{
-		m_pInstanceBiffer_Dir[iIndex].y *= -1.2f;
-		m_pInstanceBuffer_STT[iIndex].vUp.y *= -1.f;
-	}
+	m_pInstanceBiffer_Dir[iIndex].y = 0.f;
+
+	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos + vRandDir * 0.5f);
 }
 
 HRESULT CEffect_Boss_Gravitational_Bomb_Particle::Ready_InstanceBuffer()
@@ -168,21 +175,21 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Particle::Ready_InstanceBuffer()
 		m_pInstanceBuffer_STT[iIndex].fTime = 1.f;
 		m_pInstanceBuffer_STT[iIndex].vSize = {0.f, 0.f};
 
-		m_pInstance_Pos_UpdateTime[iIndex] = 0.01  * _double(iIndex);
+		m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time * ( _double(iIndex) / _double(iInstanceCount));
 		m_pInstance_Parabola_Time[iIndex] = 0.0;
 
-		_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
-		vRandDir = XMVector3Normalize(vRandDir + vLookDir);
-		_float3 v3RandDir;
-		XMStoreFloat3(&v3RandDir, vRandDir);
-		_float4 v4Dir = { v3RandDir.x, v3RandDir.y, v3RandDir.z, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vUp = v4Dir;
-		m_pInstanceBiffer_Dir[iIndex] = v3RandDir;
-		if (0.f >= m_pInstanceBiffer_Dir[iIndex].y)
-		{
-			m_pInstanceBiffer_Dir[iIndex].y *= -1.2f;
-			m_pInstanceBuffer_STT[iIndex].vUp.y *= -1.f;
-		}
+		//_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
+		//vRandDir = XMVector3Normalize(vRandDir + vLookDir);
+		//_float3 v3RandDir;
+		//XMStoreFloat3(&v3RandDir, vRandDir);
+		//_float4 v4Dir = { v3RandDir.x, v3RandDir.y, v3RandDir.z, 0.f };
+		//m_pInstanceBuffer_STT[iIndex].vUp = v4Dir;
+		//m_pInstanceBiffer_Dir[iIndex] = v3RandDir;
+		//if (0.f >= m_pInstanceBiffer_Dir[iIndex].y)
+		//{
+		//	m_pInstanceBiffer_Dir[iIndex].y *= -1.2f;
+		//	m_pInstanceBuffer_STT[iIndex].vUp.y *= -1.f;
+		//}
 	}
 
 	return S_OK;

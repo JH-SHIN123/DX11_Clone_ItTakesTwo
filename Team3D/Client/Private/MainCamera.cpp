@@ -332,7 +332,7 @@ _int CMainCamera::Tick_Cam_Free_FreeMode(_double dTimeDelta)
 }
 _int CMainCamera::Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta)
 {
-	m_fOpenThirdFloorTime += dTimeDelta;
+	m_fOpenThirdFloorTime += (_float)dTimeDelta;
 	_float fDelay = 2.f;
 	if (m_fOpenThirdFloorTime > fDelay *9.f)
 	{
@@ -370,7 +370,7 @@ _int CMainCamera::Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta)
 
 	_vector vEye = vCodyPos + XMVectorSet(XMVectorGetX(vUp)* 100.f, 0.f, XMVectorGetZ(vUp) * 100.f, 0.f);
 	vEye = XMVectorSetY(vEye, XMVectorGetY(vMiddlePos));
-	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vMiddlePos), dTimeDelta));
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vMiddlePos), (_float)dTimeDelta));
 
 	
 	return NO_EVENT;

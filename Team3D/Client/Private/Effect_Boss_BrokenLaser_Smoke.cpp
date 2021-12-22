@@ -2,7 +2,7 @@
 #include "Effect_Boss_BrokenLaser_Smoke.h"
 #include "UFO.h"
 #include "DataStorage.h"
-#include	"May.h"
+#include "May.h"
 
 CEffect_Boss_BrokenLaser_Smoke::CEffect_Boss_BrokenLaser_Smoke(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
