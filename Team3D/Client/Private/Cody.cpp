@@ -3253,11 +3253,11 @@ void CCody::Ride_Ending_Rocket(const _double dTimeDelta)
 	{
 		/* 3초후 시작 */
 		m_dStartTime += dTimeDelta;
-		if (3.f <= m_dStartTime && false == m_bEndingCheck)
-		{
-			ENDINGCREDIT->Start_EndingCredit();
-			m_bEndingCheck = true;
-		}
+		//////////if (3.f <= m_dStartTime && false == m_bEndingCheck)
+		//////////{
+		//////////	ENDINGCREDIT->Start_EndingCredit();
+		//////////	m_bEndingCheck = true;
+		//////////}
 
 		m_pModelCom->Set_Animation(ANI_C_Rocket_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Rocket_MH);
