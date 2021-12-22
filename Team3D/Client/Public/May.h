@@ -380,6 +380,7 @@ private:
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
+	_float m_fLeverCutSceneTime = 0.f;
 
 	/* Hye::For.DeadLine, SavePoint */
 	_bool	 m_IsDeadLine = false;

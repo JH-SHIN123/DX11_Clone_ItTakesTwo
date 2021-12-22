@@ -162,6 +162,7 @@ void CRobotBattery::Push_Battery(_double dTimeDelta)
 	{
 		_vector vDir = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
 		m_pTransformCom->RotateYawDirectionOnLand(vDir, -dTimeDelta * 0.005f);
+		m_pStaticActorCom->Update_StaticActor();
 	}
 	else if (m_fRotateDelay >= 2.1f)
 	{

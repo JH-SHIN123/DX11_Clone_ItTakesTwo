@@ -229,10 +229,11 @@ _bool CCutScene::Tick_CutScene_Clear_Umbrella(_double dTimeDelta)
 			static_cast<CCody*>(DATABASE->GetCody())->Get_Transform()->Set_WorldMatrix(matRot);
 			static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(-635.f, 756.f, 195.f, 1.f));
 			static_cast<CCody*>(DATABASE->GetCody())->Enforce_IdleState();
+			static_cast<CCody*>(DATABASE->GetCody())->Set_Change_Size_After_UmbrellaCutScene();
 			static_cast<CMay*>(DATABASE->GetMay())->Get_Transform()->Set_WorldMatrix(matRot);
 			static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(-635.f, 756.f, 197.f, 1.f));
 			// 메이 중력 초기화
-			static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_PlayerUp(XMVectorSet(0.f, 1.f, 0.f, 0.f));
+			static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Gravity_Normally();
 			m_iCutSceneTake++;
 		}
 	}
@@ -253,6 +254,8 @@ _bool CCutScene::Tick_CutScene_Clear_Rail(_double dTimeDelta)
 		if (m_dTime >= 6.0)
 		{
 			_matrix matRot = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(270.f));
+			static_cast<CCody*>(DATABASE->GetCody())->Enforce_IdleState();
+			static_cast<CCody*>(DATABASE->GetCody())->Set_Change_Size_After_UmbrellaCutScene();
 			static_cast<CCody*>(DATABASE->GetCody())->Get_Transform()->Set_WorldMatrix(matRot);
 			static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(633.f,756.f,196.f,1.f));
 			static_cast<CMay*>(DATABASE->GetMay())->Get_Transform()->Set_WorldMatrix(matRot);
