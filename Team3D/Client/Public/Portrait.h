@@ -24,9 +24,13 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+public:
+	void Set_Active(_bool IsActive);
+
 private:
 	_uint							m_iOption = 0;
 	_uint							m_iShaderPassNum = 0;
+	_bool							m_IsActive = false;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;

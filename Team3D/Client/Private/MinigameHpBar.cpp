@@ -55,7 +55,6 @@ _int CMinigameHpBar::Tick(_double TimeDelta)
 
 	CUIObject::Tick(TimeDelta);
 
-
 	switch (m_ePlayerID)
 	{
 	case Player::Cody:
@@ -101,6 +100,9 @@ HRESULT CMinigameHpBar::Render(RENDER_GROUP::Enum eGroup)
 void CMinigameHpBar::Set_Active(_bool IsCheck)
 {
 	m_IsActive = IsCheck;
+
+	if(nullptr != m_pMinigamePortrait)
+		m_pMinigamePortrait->Set_Active(IsCheck);
 
 	if (nullptr != m_pMinigameHpBarFrame)
 	{

@@ -23,7 +23,6 @@ public:
 	void Set_ActiveCore(_int iActive) { m_iActiveCore = iActive; }
 	void Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed);
 
-
 public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
 	_int		Get_ActiveCore() const { return m_iActiveCore; }
@@ -37,7 +36,6 @@ public:
 
 private:
 	void Active_Pillar(_double TimeDelta);
-
 
 private:
 	MOONBABOONCORE_DESC m_tDesc;

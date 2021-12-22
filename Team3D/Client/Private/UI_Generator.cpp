@@ -1485,11 +1485,6 @@ _bool CUI_Generator::Get_MinigameAllReady()
 	return false;
 }
 
-void CUI_Generator::Set_CountEnd(_bool IsCheck)
-{
-
-}
-
 HRESULT CUI_Generator::Ready_Component()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();

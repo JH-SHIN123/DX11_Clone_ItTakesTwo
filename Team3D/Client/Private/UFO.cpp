@@ -79,10 +79,9 @@ _int CUFO::Tick(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{
-		((CCody*)DATABASE->GetCody())->Set_MinigameHpBarReduction(10);
-		((CMay*)DATABASE->GetMay())->Set_MinigameHpBarReduction(10);
+		_vector dd = { 61.7f, 348.8f, 197.2f, 1.f };
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, dd);
 	}
-
 
 	/* 테스트 용 */
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
@@ -92,16 +91,13 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_pMoonBaboon->Set_Animation(Moon_Ufo_Programming, Moon_Ufo_MH);
 		((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
 		((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
+		m_pBossHpBar->Set_Active(true);
 	}
 	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 	{
 		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
 		m_IsCutScene = true;
-	}
-	else if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
-	{
-		m_pBossHpBar->Set_Active(true);
 	}
 	else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
 		m_pBossHpBar->Set_Active(false);
@@ -186,7 +182,11 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	}
 
 	vDir = vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+
+
 	_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
+	_float vAngle = XMConvertToDegrees(XMVectorGetX(vDirForRotate));
 
 	/* 우주선을 타겟쪽으로 천천히 회전 */
 	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 3.f);

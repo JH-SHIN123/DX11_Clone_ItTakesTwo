@@ -2059,11 +2059,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			/* Hit Effect 생성 */
 
 			/* HP 감소 */
-			m_iHP -= 3;
 			LASERTENNIS->Set_CodyCount();
-
-			if (0 >= m_iHP)
-				m_iHP = 12;
+			Set_MinigameHpBarReduction(30);
 
 			m_IsCollide = false;
 		}

@@ -62,6 +62,9 @@ _int CPortrait::Late_Tick(_double TimeDelta)
 {
 	CUIObject::Late_Tick(TimeDelta);
 
+	if (false == m_IsActive)
+		return NO_EVENT;
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
 
@@ -79,11 +82,16 @@ HRESULT CPortrait::Render(RENDER_GROUP::Enum eGroup)
 		if (FAILED(CUIObject::Set_UIDefaultVariables_Perspective(m_pVIBuffer_RectCom)))
 			return E_FAIL;
 	}
+
 	m_pVIBuffer_RectCom->Render(m_iShaderPassNum);
 
 	return S_OK;
 }
 
+void CPortrait::Set_Active(_bool IsActive)
+{
+	m_IsActive = IsActive;
+}
 
 HRESULT CPortrait::Ready_Component()
 {

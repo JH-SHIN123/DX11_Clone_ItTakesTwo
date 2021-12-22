@@ -451,19 +451,26 @@ HRESULT CLaserTennis_Manager::Create_StartUI()
 	UI_CreateOnlyOnce(Cody, Minigame_Ready_Cody);
 	UI_CreateOnlyOnce(May, Minigame_Ready_May);
 
+	UI_CreateOnlyOnce(Default, Minigame_Title);
+
 	m_bReady = true;
 	return S_OK;
 }
 
 HRESULT CLaserTennis_Manager::Create_ResultUI()
 {
+	((CCody*)DATABASE->GetCody())->Set_ActiveMinigameHpBar(false);
+	((CMay*)DATABASE->GetMay())->Set_ActiveMinigameHpBar(false);
+
 	if (m_eWinner == CLaserTennis_Manager::TARGET_CODY)
 	{
 		UI_CreateOnlyOnce(Default, Minigame_Win_Cody);
+		DATABASE->Set_CodyMinigameWinCount(1);
 	}
 	else
 	{
 		UI_CreateOnlyOnce(Default, Minigame_Win_May);
+		DATABASE->Set_MayMinigameWinCount(1);
 	}
 
 	return S_OK;
