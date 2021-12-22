@@ -56,6 +56,7 @@ private:
 	HRESULT	Check_WarpGate_Star();
 	void	Check_ClearEffect(_double TimeDelta);
 	void	Check_StageClear();
+	void	Check_Tennis_Found();
 
 private:
 	WARPGATE_DESC m_WarpGate_Desc;
@@ -77,6 +78,7 @@ private:
 	CTriggerActor*		m_pTriggerCom			= nullptr;
 	CStaticActor*		m_pStaticActorCom		= nullptr;
 	CTransform*			m_pTransformCom_Trigger = nullptr;
+	CTriggerActor*		m_pTriggerCom_Tennis	= nullptr;
 
 private:
 	class CEffect_RespawnTunnel*		m_pRespawnTunnel		= nullptr;

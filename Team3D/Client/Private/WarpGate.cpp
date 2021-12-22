@@ -8,6 +8,9 @@
 #include "Effect_RespawnTunnel_Portal.h"
 #include "DataStorage.h"
 #include "Effect_Env_Particle.h"
+#include "DataStorage.h"
+#include "Cody.h"
+#include "May.h"
 
 CWarpGate::CWarpGate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -105,7 +108,7 @@ HRESULT CWarpGate::Ready_Component()
 	CTriggerActor::ARG_DESC ArgDesc;
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = new PxBoxGeometry(5.f, 5.f, 0.1f);
+	ArgDesc.pGeometry = new PxBoxGeometry(5.f, 10.f, 0.1f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
@@ -255,6 +258,46 @@ void CWarpGate::Check_StageClear()
 
 	else if (MAIN_PLANET == m_WarpGate_Desc.eStageValue || STAGE_PLANET == m_WarpGate_Desc.eStageValue)
 		m_bClearEffect = DATABASE->Get_RailStageClear();
+
+	Check_Tennis_Found();
+}
+
+void CWarpGate::Check_Tennis_Found()
+{
+	if (MAIN_TENNIS == m_WarpGate_Desc.eStageValue)
+	{
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		if (ST_GRAVITYPATH == DATABASE->Get_May_Stage())
+		{
+			_vector vMayPos = DATABASE->GetMay()->Get_Position();
+			_vector vDir = vMayPos - vPos;
+
+			for(_int i = 0; i < 3 ; ++i)
+				vDir.m128_f32[i] = fabs(vDir.m128_f32[i]);
+
+			if (0.45f > vDir.m128_f32[0] &&
+				0.25f > vDir.m128_f32[1] &&
+				15.8f > vDir.m128_f32[2])
+				m_bClearEffect = true;
+		}
+
+		if (ST_GRAVITYPATH == DATABASE->Get_Cody_Stage())
+		{
+			_vector vMayPos = DATABASE->GetCody()->Get_Position();
+			_vector vDir = vMayPos - vPos;
+
+			for (_int i = 0; i < 3; ++i)
+				vDir.m128_f32[i] = fabs(vDir.m128_f32[i]);
+
+			if (0.45f > vDir.m128_f32[0] &&
+				0.25f > vDir.m128_f32[1] &&
+				15.8f > vDir.m128_f32[2])
+				m_bClearEffect = true;
+		}
+	}
+
+	return;
 }
 
 _fmatrix CWarpGate::Get_NextPortal_Matrix()
@@ -343,6 +386,7 @@ void CWarpGate::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pTriggerCom);
+	Safe_Release(m_pTriggerCom_Tennis);
 	Safe_Release(m_pStaticActorCom);
 	Safe_Release(m_pTransformCom_Trigger);
 	Safe_Release(m_pRespawnTunnel);
