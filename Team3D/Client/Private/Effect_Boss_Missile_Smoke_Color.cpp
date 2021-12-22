@@ -3,7 +3,6 @@
 #include "DataStorage.h"
 #include "Cody.h"
 #include "May.h"
-#include "EndingRocket.h"
 
 CEffect_Boss_Missile_Smoke_Color::CEffect_Boss_Missile_Smoke_Color(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -45,11 +44,10 @@ HRESULT CEffect_Boss_Missile_Smoke_Color::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_Missile_Smoke_Color::Tick(_double TimeDelta)
 {
-//	if (EFFECT_DESC_CLONE::PV_CODY == m_EffectDesc_Clone.iPlayerValue)
+#ifdef __TEST_JUNG
 //		/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
-//	else
-//		/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CMay*>(DATABASE->GetMay())->Get_WorldMatrix());
-	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CEndingRocket*>(DATABASE->Get_EndingRocket())->Get_Transform()->Get_WorldMatrix());
+//	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CEndingRocket*>(DATABASE->Get_EndingRocket())->Get_Transform()->Get_WorldMatrix());
+#endif // __TEST_JUNG
 
 	// 왜곡을 먹은 디졸브를 디퓨즈(스모크)틀 에다가 곱하고 그 색상의 r값을 UV로 해서 색상을 입히자 
 	// 왜곡 0011

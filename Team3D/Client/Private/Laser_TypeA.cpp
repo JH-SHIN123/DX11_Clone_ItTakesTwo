@@ -164,26 +164,30 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 			m_vEndPoint = MH_XMFloat4(m_RaycastBuffer.getAnyHit(0).position, 1.f);
 			m_isCollided = true;
 
-			///* 충돌 시 이펙트 생성 */
-			//if (m_dCreateEffectDelay <= 0.0)
-			//{
-			//	//충돌 시 생성할 이펙트
-			//	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeA"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"));
+/*------충돌 이펙트 -------*/
+			/* 충돌 시 이펙트 생성 */
+			if (m_dCreateEffectDelay <= 0.0)
+			{
+				//충돌 시 생성할 이펙트
+				//_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+				//WorldMatrix.r[3] = XMLoadFloat4(&m_vEndPoint);
+				//EFFECT->Add_Effect(Effect_Value::Hit_BossLaser_Particle_Star, WorldMatrix);
 
-			//	//이펙트 생성 주기
-			//	m_dCreateEffectCycle = m_dCreateEffectCycle;
-			//}
-			//else
-			//	m_dCreateEffectCycle = 0.0;
+				//이펙트 생성 주기
+				m_dCreateEffectCycle = 1.0;
+			}
+			else
+				m_dCreateEffectCycle = 0.0;
 
-			//if (true == m_IsPaticleCreate && true == m_isCollided)
-			//{
-			//	CGameObject* pGameObject = nullptr;
-			//	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Smoke"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke"), nullptr , &pGameObject);
-			//	m_pLaserSmoke = static_cast<CEffect_Boss_Laser_Smoke*>(pGameObject);
+			if (true == m_IsPaticleCreate && true == m_isCollided)
+			{
+				CGameObject* pGameObject = nullptr;
+				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Smoke"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke"), nullptr , &pGameObject);
+				m_pLaserSmoke = static_cast<CEffect_Boss_Laser_Smoke*>(pGameObject);
 
-			//	m_IsPaticleCreate = false;
-			//}
+				m_IsPaticleCreate = false;
+			}
+/*------충돌 이펙트 -------*/
 		}
 		else
 		{
@@ -290,7 +294,7 @@ CGameObject * CLaser_TypeA::Clone_GameObject(void * pArg)
 
 void CLaser_TypeA::Free()
 {
-	//Safe_Release(m_pLaserSmoke);
+	Safe_Release(m_pLaserSmoke);
 	Safe_Release(m_pBossUFO);
 
 	CLaser::Free();
