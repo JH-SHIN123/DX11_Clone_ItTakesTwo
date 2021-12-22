@@ -293,7 +293,9 @@
     <ClInclude Include="..\Public\Effect_Pinball_Explosion_Dust.h" />
     <ClInclude Include="..\public\Effect_Pinball_Explosion_Particle.h" />
     <ClInclude Include="..\Public\Effect_Pinball_Move.h" />
+    <ClInclude Include="..\public\Effect_PipeLocker_Ball.h" />
     <ClInclude Include="..\Public\Effect_PipeLocker_Connected.h" />
+    <ClInclude Include="..\public\Effect_PipeLocker_Particle.h" />
     <ClInclude Include="..\Public\Effect_Player_Dead.h" />
     <ClInclude Include="..\public\Effect_Player_Dead_Explosion.h" />
     <ClInclude Include="..\public\Effect_Player_Dead_Explosion_Particle.h" />
@@ -600,7 +602,9 @@
     <ClCompile Include="..\Private\Effect_Pinball_Explosion_Dust.cpp" />
     <ClCompile Include="..\private\Effect_Pinball_Explosion_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Pinball_Move.cpp" />
+    <ClCompile Include="..\private\Effect_PipeLocker_Ball.cpp" />
     <ClCompile Include="..\Private\Effect_PipeLocker_Connected.cpp" />
+    <ClCompile Include="..\private\Effect_PipeLocker_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Player_Dead.cpp" />
     <ClCompile Include="..\private\Effect_Player_Dead_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Player_Dead_Explosion_Particle.cpp" />

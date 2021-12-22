@@ -112,8 +112,10 @@ void CEffect_MoonBaboon_Shield::Check_TargetMatrix()
 	_matrix WorldMatrix = static_cast<CRunningMoonBaboon*>(DATABASE->Get_RunningMoonBaboon())->Get_Transform()->Get_WorldMatrix();
 	_matrix BoneMatrix = static_cast<CRunningMoonBaboon*>(DATABASE->Get_RunningMoonBaboon())->Get_Model()->Get_BoneMatrix("Spine1");
 
-	WorldMatrix = BoneMatrix * WorldMatrix;
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, WorldMatrix.r[3]);
+	BoneMatrix = BoneMatrix * WorldMatrix;
+	WorldMatrix.r[3] = BoneMatrix.r[3];
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+	m_pTransformCom->Set_Scale(XMVectorSet(1.5f, 1.5f, 1.5f, 0.f));
 }
 
 CEffect_MoonBaboon_Shield * CEffect_MoonBaboon_Shield::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

@@ -117,9 +117,9 @@ void CEffect_Boss_UFO_Flying_Particle_Flow::Check_Instance(_double TimeDelta)
 			continue;
 		}
 
-		m_pInstanceBuffer_STT[iIndex].vSize.x -= (_float)TimeDelta * 0.05f;
-		if (0.f > m_pInstanceBuffer_STT[iIndex].vSize.x)
-			m_pInstanceBuffer_STT[iIndex].vSize.y = m_pInstanceBuffer_STT[iIndex].vSize.x;
+		m_pInstanceBuffer_STT[iIndex].vSize.x -= (_float)TimeDelta * 0.2f;
+		if (0.f > m_pInstanceBuffer_STT[iIndex].vSize.x) m_pInstanceBuffer_STT[iIndex].vSize.x = 0.f;
+		m_pInstanceBuffer_STT[iIndex].vSize.y = m_pInstanceBuffer_STT[iIndex].vSize.x;
 
 		Instance_Pos((_float)TimeDelta, iIndex);
 

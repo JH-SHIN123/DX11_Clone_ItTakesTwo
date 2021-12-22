@@ -66,7 +66,7 @@ _int CEffect_Player_Rail_Particle::Tick(_double TimeDelta)
 	if (true == m_IsDuplication)
 		return EVENT_DEAD;
 
-	if (false == m_IsActivate && 0.0 > m_dControlTime)
+	if (false == m_IsActivate && 0.0 >= m_dControlTime)
 	{
 		EFFECT->Set_PlayerRail_Effect((CEffect_Generator::EPlayer_Type)m_EffectDesc_Clone.iPlayerValue, false);
 		return EVENT_DEAD;
@@ -79,7 +79,7 @@ _int CEffect_Player_Rail_Particle::Tick(_double TimeDelta)
 	}
 	else
 	{
-		m_dControlTime -= TimeDelta;
+		m_dControlTime -= TimeDelta * 2.f;
 		if (0.0 > m_dControlTime) m_dControlTime = 0.0;
 	}
 
@@ -92,6 +92,9 @@ _int CEffect_Player_Rail_Particle::Tick(_double TimeDelta)
 
 _int CEffect_Player_Rail_Particle::Late_Tick(_double TimeDelta)
 {
+	if (true == m_IsDuplication)
+		return NO_EVENT;
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
@@ -103,7 +106,7 @@ HRESULT CEffect_Player_Rail_Particle::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fTime, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(m_iColorIndex));
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(3));//m_iColorIndex
 
 	m_pPointInstanceCom_STT->Render(6, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 
@@ -140,7 +143,7 @@ void CEffect_Player_Rail_Particle::Instance_Size(_float TimeDelta, _int iIndex)
 void CEffect_Player_Rail_Particle::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 	_vector vDir = XMLoadFloat3(&m_pInstanceBiffer_Dir[iIndex]);
-	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 5.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
+	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 3.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
 
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }
@@ -226,23 +229,36 @@ _float3 CEffect_Player_Rail_Particle::Get_Particle_Rand_Dir(_fvector vDefaultPos
 
 void CEffect_Player_Rail_Particle::Check_Target_Matrix()
 {
+	_matrix WorldMatrix = XMMatrixIdentity();
+	_matrix BoneMatrix = XMMatrixIdentity();
+
 	if (EFFECT_DESC_CLONE::PV_MAY == m_EffectDesc_Clone.iPlayerValue)
-		m_pTransformCom->Set_WorldMatrix(Normalize_Matrix(static_cast<CMay*>(m_pTargetObject)->Get_WorldMatrix()));
+	{
+		WorldMatrix = static_cast<CMay*>(m_pTargetObject)->Get_WorldMatrix();
+		BoneMatrix = static_cast<CMay*>(m_pTargetObject)->Get_Model()->Get_BoneMatrix("LeftToeBase");
+	}
 	else
-		m_pTransformCom->Set_WorldMatrix(Normalize_Matrix(static_cast<CCody*>(m_pTargetObject)->Get_WorldMatrix()));
+	{
+		WorldMatrix = static_cast<CCody*>(m_pTargetObject)->Get_WorldMatrix();
+		BoneMatrix = static_cast<CCody*>(m_pTargetObject)->Get_Model()->Get_BoneMatrix("LeftToeBase");
+	}
+
+	BoneMatrix = BoneMatrix* WorldMatrix;
+	WorldMatrix.r[3] = BoneMatrix.r[3];
+	m_pTransformCom->Set_WorldMatrix(Normalize_Matrix(WorldMatrix));
 }
 
 void CEffect_Player_Rail_Particle::Check_On_Rail()
 {
 	if (EFFECT_DESC_CLONE::PV_MAY == m_EffectDesc_Clone.iPlayerValue)
 	{
-		m_IsActivate = static_cast<CMay*>(m_pTargetObject)->Get_OnRail();
-
+		if (false == static_cast<CMay*>(m_pTargetObject)->Get_OnRail())
+			m_IsActivate = false;
 	}
 	else
 	{
-		m_IsActivate = static_cast<CCody*>(m_pTargetObject)->Get_OnRail();
-
+		if (false == static_cast<CCody*>(m_pTargetObject)->Get_OnRail())
+			m_IsActivate = false;
 	}
 }
 

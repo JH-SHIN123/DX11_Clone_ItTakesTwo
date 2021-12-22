@@ -15,7 +15,7 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Explosion::NativeConstruct_Prototype(voi
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 100;
+	m_EffectDesc_Prototype.iInstanceCount = 300;
 
 	return S_OK;
 }
@@ -95,10 +95,7 @@ void CEffect_Boss_Gravitational_Bomb_Explosion::Check_Instance(_double TimeDelta
 		m_pInstance_Pos_UpdateTime[iIndex] -= TimeDelta;
 
 		if (0.0 >= m_pInstance_Pos_UpdateTime[iIndex] && true == m_IsActivate)
-		{
-			//Reset_Instance(TimeDelta, vMyPos, iIndex);
 			continue;
-		}
 
 		Instance_Pos((_float)TimeDelta, iIndex);
 	}
@@ -113,7 +110,7 @@ void CEffect_Boss_Gravitational_Bomb_Explosion::Instance_Pos(_float TimeDelta, _
 	m_pInstance_Parabola_Time[iIndex] = (_double)TimeDelta;
 
 	_vector vDir = XMLoadFloat3(&m_pInstanceBiffer_Dir[iIndex]);
-	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 15.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
+	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 20.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
 
 	//vPos.m128_f32[1] -= TimeDelta * (1.f - m_pInstanceBuffer_STT[iIndex].fTime) * 1.5f;
 

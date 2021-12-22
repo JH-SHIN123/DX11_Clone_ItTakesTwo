@@ -16,7 +16,7 @@ CEffect_Boss_Laser_Smoke::CEffect_Boss_Laser_Smoke(const CEffect_Boss_Laser_Smok
 
 HRESULT CEffect_Boss_Laser_Smoke::NativeConstruct_Prototype(void * pArg)
 {
-	m_EffectDesc_Prototype.iInstanceCount = 50;
+	m_EffectDesc_Prototype.iInstanceCount = 15;
 	return S_OK;
 }
 
@@ -76,12 +76,12 @@ HRESULT CEffect_Boss_Laser_Smoke::Render(RENDER_GROUP::Enum eGroup)
 	_float fTime = (_float)m_dControlTime;
 	_float4 vUV  = { 0.f, 0.f, 1.f, 1.f };
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
-	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fTime, sizeof(_float));
+	m_pPointInstanceCom_STT->Set_Variable("g_fAlpha", &fTime, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(3));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Distortion->Get_ShaderResourceView(0));
-	m_pPointInstanceCom_STT->Render(3, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
+	m_pPointInstanceCom_STT->Render(20, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
 }
@@ -98,7 +98,7 @@ void CEffect_Boss_Laser_Smoke::Check_Instance(_double TimeDelta)
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
-		m_pInstanceBuffer_STT[iIndex].fTime -= (_float)TimeDelta * 0.8f;
+		m_pInstanceBuffer_STT[iIndex].fTime -= (_float)TimeDelta * 0.56f;
 		if (0.f >= m_pInstanceBuffer_STT[iIndex].fTime)
 			m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
 
@@ -118,8 +118,8 @@ void CEffect_Boss_Laser_Smoke::Check_Instance(_double TimeDelta)
 
 void CEffect_Boss_Laser_Smoke::Instance_Size(_float TimeDelta, _int iIndex)
 {
-	m_pInstanceBuffer_STT[iIndex].vSize.x += TimeDelta * m_fSize_Power * (m_pInstanceBuffer_STT[iIndex].vSize.x * 3.25f);
-	m_pInstanceBuffer_STT[iIndex].vSize.y += TimeDelta * m_fSize_Power * (m_pInstanceBuffer_STT[iIndex].vSize.y * 3.25f);
+	m_pInstanceBuffer_STT[iIndex].vSize.x += TimeDelta * 3.5f;
+	m_pInstanceBuffer_STT[iIndex].vSize.y += TimeDelta * 3.5f;
 }
 
 void CEffect_Boss_Laser_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
@@ -136,9 +136,7 @@ void CEffect_Boss_Laser_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
 		m_pInstance_Update_TextureUV_Time[iIndex] = 0.05;
 
 		m_pInstanceBuffer_STT[iIndex].vTextureUV.x += m_fNextUV;
-		m_pInstanceBuffer_STT[iIndex].vTextureUV.y += m_fNextUV;
 		m_pInstanceBuffer_STT[iIndex].vTextureUV.z += m_fNextUV;
-		m_pInstanceBuffer_STT[iIndex].vTextureUV.w += m_fNextUV;
 
 		if (1.f <= m_pInstanceBuffer_STT[iIndex].vTextureUV.y)
 		{
@@ -157,6 +155,8 @@ void CEffect_Boss_Laser_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
 		{
 			m_pInstanceBuffer_STT[iIndex].vTextureUV.x = 0.f;
 			m_pInstanceBuffer_STT[iIndex].vTextureUV.z = m_fNextUV;
+			m_pInstanceBuffer_STT[iIndex].vTextureUV.w += m_fNextUV;
+			m_pInstanceBuffer_STT[iIndex].vTextureUV.y += m_fNextUV;
 		}
 	}
 }
@@ -166,7 +166,7 @@ void CEffect_Boss_Laser_Smoke::Reset_Instance(_double TimeDelta, _float4 vPos, _
 	m_pInstanceBuffer_STT[iIndex].vPosition		= vPos;
 
 	m_pInstanceBuffer_STT[iIndex].vTextureUV	= __super::Get_TexUV(7, 7, true);
-	m_pInstanceBuffer_STT[iIndex].fTime			= 1.02f;
+	m_pInstanceBuffer_STT[iIndex].fTime			= 1.0f;
 	m_pInstanceBuffer_STT[iIndex].vSize			= m_vDefaultSize;
 
 	m_pInstance_Pos_UpdateTime[iIndex]			= m_dInstance_Pos_Update_Time;
@@ -197,7 +197,7 @@ HRESULT CEffect_Boss_Laser_Smoke::Ready_InstanceBuffer()
 		m_pInstanceBuffer_STT[iIndex].fTime			= 1.f;
 		m_pInstanceBuffer_STT[iIndex].vSize			= m_vDefaultSize;
 
-		m_pInstance_Pos_UpdateTime[iIndex]			= m_dInstance_Pos_Update_Time  * (_double(iIndex) / iInstanceCount);
+		m_pInstance_Pos_UpdateTime[iIndex]			= 0.1  * _double(iIndex);
 		m_pInstance_Update_TextureUV_Time[iIndex]	= 0.05;
 	}
 	return S_OK;
