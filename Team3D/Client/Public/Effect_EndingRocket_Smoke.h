@@ -2,12 +2,12 @@
 #include "InGameEffect.h"
 
 BEGIN(Client)
-class CEffect_Boss_Missile_Smoke_Color final : public CInGameEffect
+class CEffect_EndingRocket_Smoke final : public CInGameEffect
 {
 private:
-	explicit CEffect_Boss_Missile_Smoke_Color(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CEffect_Boss_Missile_Smoke_Color(const CEffect_Boss_Missile_Smoke_Color& rhs);
-	virtual ~CEffect_Boss_Missile_Smoke_Color() = default; public:
+	explicit CEffect_EndingRocket_Smoke(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_EndingRocket_Smoke(const CEffect_EndingRocket_Smoke& rhs);
+	virtual ~CEffect_EndingRocket_Smoke() = default; public:
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -34,31 +34,30 @@ private:
 
 private:
 	HRESULT Ready_InstanceBuffer();
-	_float4 Get_RandTexUV();
+	void	Check_TargetMatrix();
 
 private:
 	_double m_dControlTime = 0.0; //
+	_double m_dActivateTime = 0.0;
 	_bool m_IsActivate = true;
 
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT = nullptr;
 	CTextures*							m_pTexturesCom_Distortion = nullptr;
-	CTextures*							m_pTexturesCom_Dissolve = nullptr;
-
 	_double*							m_pInstance_Update_TextureUV_Time = nullptr;
 
 	_float m_fNextUV = 0.f;
 
-	const XMINT2  m_vTexUV = { 8,8 };
 	const _float  m_fAlphaTime_Power = 0.5f;
 	const _float  m_fSize_Power = 0.75f;
 	const _float  m_fInstance_SpeedPerSec = 0.5f;
-	const _double m_dInstance_Pos_Update_Time = 2.f;
-	const _float2 m_vDefaultSize = { 0.4f, 0.4f };
+	const _double m_dInstance_Pos_Update_Time = 0.75;
+	const _float2 m_vDefaultSize = { 1.12f, 0.f };
+	const _float  m_fMaxSize_Y = 4.f;
 
 public:
-	static CEffect_Boss_Missile_Smoke_Color* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_EndingRocket_Smoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

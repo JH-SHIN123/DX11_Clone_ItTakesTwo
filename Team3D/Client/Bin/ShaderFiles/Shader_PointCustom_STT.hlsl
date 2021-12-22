@@ -1326,6 +1326,20 @@ PS_OUT  PS_MAIN_MISSILE_SMOKE_BLACK(PS_IN_DOUBLEUV In)
 	return Out;
 }
 
+PS_OUT  PS_MAIN_MISSILE_SMOKE_BLACK_2(PS_IN_DOUBLEUV In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	vDiff.rgb *= (0.2f, 0.2f, 0.2f);
+
+	vDiff.a = (vDiff.r + vDiff.g)* In.fTime * 0.9f;
+
+	Out.vColor = vDiff;
+
+	return Out;
+}
+
 PS_OUT  PS_MAIN_MISSILE_EXPLOSION(PS_IN_DOUBLEUV In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -1470,7 +1484,40 @@ PS_OUT  PS_MAIN_MISSILE_SMOKE_COLOR(PS_IN_TRIPLEUV In)
 		vDiff.rgb *= 1.5f;
 	}
 	else
-		vDiff.rgb *= 0.2f;
+		vDiff.rgb *= 2.f;
+
+	Out.vColor = vDiff;
+
+	return Out;
+}
+
+PS_OUT  PS_MAIN_MISSILE_SMOKE_COLOR_2(PS_IN_TRIPLEUV In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	// 왜곡을 먹은 디졸브를 디퓨즈(스모크)틀 에다가 곱하고 그 색상의 r값을 UV로 해서 색상을 입히자
+
+	In.vTexUV_Dist.y += g_fAlpha;
+	float4 vDist = g_SecondTexture.Sample(DiffuseSampler, In.vTexUV_Dist);
+	float fWeight = vDist.r * 0.5f;
+
+	In.vTexUV_Diss.y += fWeight;
+	float4 vDiss = g_DissolveTexture.Sample(DiffuseSampler, In.vTexUV_Diss);
+
+	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV_Diff);
+
+	vDiff.a = vDiff.r * In.fTime * g_fAlpha;
+	vDiff.rgb = vDiss.rgb;
+
+	if (vDiff.r + 0.05f < In.fTime)
+	{
+		float2 vUV = (float2)0;
+		vUV.x = In.fTime;
+		vDiff.rgb *= g_ColorTexture.Sample(DiffuseSampler, vUV).rgb;
+		vDiff.r *= 3.f;
+	}
+	else
+		vDiff.rgb *= 0.78f;
 
 	Out.vColor = vDiff;
 
@@ -1687,5 +1734,25 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN();
 		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
 		PixelShader = compile ps_5_0  PS_BOSS_LASER_SMOKE();
+	}
+
+	pass Missile_Smoke_Black_2 // 21
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
+		PixelShader = compile ps_5_0  PS_MAIN_MISSILE_SMOKE_BLACK_2();
+	}
+
+	pass Missile_Smoke_Color_2 // 22
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_TRIPLE_UV();
+		GeometryShader = compile gs_5_0  GS_TRIPLE_UV();
+		PixelShader = compile ps_5_0  PS_MAIN_MISSILE_SMOKE_COLOR_2();
 	}
 }

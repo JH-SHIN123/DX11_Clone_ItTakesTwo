@@ -279,6 +279,9 @@ _int CCody::Tick(_double dTimeDelta)
 		return NO_EVENT;
 	}
 
+	if(m_pGameInstance->Key_Down(DIK_RSHIFT))
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Smoke"), Level::LEVEL_STAGE, TEXT("GameObject_2D_MoonUFO_Laser_Smoke"));
+
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 

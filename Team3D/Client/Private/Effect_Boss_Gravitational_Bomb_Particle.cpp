@@ -35,7 +35,6 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Particle::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
 
-
 	Ready_InstanceBuffer();
 
 	return S_OK;

@@ -270,6 +270,7 @@
     <ClInclude Include="..\Public\Effect_Dash.h" />
     <ClInclude Include="..\public\Effect_DashMesh.h" />
     <ClInclude Include="..\Public\Effect_Dead_Particle_Fire.h" />
+    <ClInclude Include="..\public\Effect_EndingRocket_Smoke.h" />
     <ClInclude Include="..\Public\Effect_Env_Particle.h" />
     <ClInclude Include="..\public\Effect_Env_Particle_Field_Dust.h" />
     <ClInclude Include="..\public\Effect_Env_Particle_Field.h" />
@@ -289,6 +290,10 @@
     <ClInclude Include="..\Public\Effect_May_Boots_Walking_Particle.h" />
     <ClInclude Include="..\Public\Effect_MoonBaboon_Booster.h" />
     <ClInclude Include="..\public\Effect_MoonBaboon_Shield.h" />
+    <ClInclude Include="..\public\Effect_MoonUFO_Laser_Burn.h" />
+    <ClInclude Include="..\public\Effect_MoonUFO_Laser_ColorSmoke.h" />
+    <ClInclude Include="..\public\Effect_MoonUFO_Laser_Particle.h" />
+    <ClInclude Include="..\public\Effect_MoonUFO_Laser_Smoke.h" />
     <ClInclude Include="..\public\Effect_Pinball_Explosion.h" />
     <ClInclude Include="..\Public\Effect_Pinball_Explosion_Dust.h" />
     <ClInclude Include="..\public\Effect_Pinball_Explosion_Particle.h" />
@@ -579,6 +584,7 @@
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
     <ClCompile Include="..\private\Effect_DashMesh.cpp" />
     <ClCompile Include="..\Private\Effect_Dead_Particle_Fire.cpp" />
+    <ClCompile Include="..\private\Effect_EndingRocket_Smoke.cpp" />
     <ClCompile Include="..\Private\Effect_Env_Particle.cpp" />
     <ClCompile Include="..\private\Effect_Env_Particle_Field_Dust.cpp" />
     <ClCompile Include="..\private\Effect_Env_Particle_Field.cpp" />
@@ -598,6 +604,10 @@
     <ClCompile Include="..\Private\Effect_May_Boots_Walking_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_MoonBaboon_Booster.cpp" />
     <ClCompile Include="..\private\Effect_MoonBaboon_Shield.cpp" />
+    <ClCompile Include="..\private\Effect_MoonUFO_Laser_Burn.cpp" />
+    <ClCompile Include="..\private\Effect_MoonUFO_Laser_ColorSmoke.cpp" />
+    <ClCompile Include="..\private\Effect_MoonUFO_Laser_Particle.cpp" />
+    <ClCompile Include="..\private\Effect_MoonUFO_Laser_Smoke.cpp" />
     <ClCompile Include="..\private\Effect_Pinball_Explosion.cpp" />
     <ClCompile Include="..\Private\Effect_Pinball_Explosion_Dust.cpp" />
     <ClCompile Include="..\private\Effect_Pinball_Explosion_Particle.cpp" />

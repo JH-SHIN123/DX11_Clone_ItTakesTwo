@@ -86,6 +86,10 @@
 #include "Effect_StarBuddy_Move_Particle.h"
 #include "Effect_PipeLocker_Ball.h"
 #include "Effect_PipeLocker_Particle.h"
+#include "Effect_MoonUFO_Laser_Smoke.h"
+#include "Effect_MoonUFO_Laser_ColorSmoke.h"
+#include "Effect_MoonUFO_Laser_Burn.h"
+#include "Effect_MoonUFO_Laser_Particle.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -638,9 +642,21 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_PipeLocker_Button_Ball"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_PipeLocker_Button_Ball", CEffect_PipeLocker_Ball::Create(pDevice, pDeviceContext, pData));
-
+		//
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_PipeLocker_Button_Particle"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_PipeLocker_Button_Particle", CEffect_PipeLocker_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_MoonUFO_Laser_Smoke"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_MoonUFO_Laser_Smoke", CEffect_MoonUFO_Laser_Smoke::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_MoonUFO_Laser_Particle"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_MoonUFO_Laser_Particle", CEffect_MoonUFO_Laser_Particle::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_MoonUFO_Laser_Burn"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_MoonUFO_Laser_Burn", CEffect_MoonUFO_Laser_Burn::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_MoonUFO_Laser_ColorSmoke"))
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_MoonUFO_Laser_ColorSmoke", CEffect_MoonUFO_Laser_ColorSmoke::Create(pDevice, pDeviceContext, pData));
 
 #pragma  endregion
 
