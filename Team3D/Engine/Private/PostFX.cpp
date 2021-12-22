@@ -228,6 +228,10 @@ HRESULT CPostFX::FinalPass()
 	/* Fog */
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bFog", &m_bMainFog, sizeof(m_bMainFog));
 
+	/* Blur */
+	m_pVIBuffer_ToneMapping->Set_Variable("g_MainBlur", &m_bMainBlur, sizeof(m_bMainBlur));
+	m_pVIBuffer_ToneMapping->Set_Variable("g_SubBlur", &m_bSubBlur, sizeof(m_bSubBlur));
+
 	/* Radiar Blur */
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Main", &m_bRadialBlur_Main, sizeof(m_bRadialBlur_Main)); 
 	m_pVIBuffer_ToneMapping->Set_Variable("g_bRadiarBlur_Sub", &m_bRadialBlur_Sub, sizeof(m_bRadialBlur_Sub));

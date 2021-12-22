@@ -63,6 +63,12 @@ cbuffer FogDesc
 	float	g_fFogHeightFalloff = 0.007f;					// 높이 소멸값
 };
 
+cbuffer BlurDesc
+{
+	bool g_MainBlur = false;
+	bool g_SubBlur = false;
+};
+
 ////////////////////////////////////////////////////////////
 /* Function */
 float3 ToneMapping_DXSample(float3 HDRColor)
@@ -250,6 +256,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	float distToEye = 0.f;
 
 	bool bFogActive = false;
+	bool bBlur = false;
 
 	float fBarOffset = 0.00115f;
 	if (In.vTexUV.x >= g_vMainViewportUVInfo.x + fBarOffset && In.vTexUV.x <= g_vMainViewportUVInfo.z - fBarOffset &&
@@ -266,8 +273,9 @@ PS_OUT PS_MAIN(PS_IN In)
 		// Radiar Blur 
 		if(true == g_bRadiarBlur_Main) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Main, g_fRadiarBlurRatio_Main);
 
-		// Fog Active
+		// Trigger Active
 		bFogActive = g_bFog;
+		bBlur = g_MainBlur;
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x + fBarOffset && In.vTexUV.x <= g_vSubViewportUVInfo.z - fBarOffset &&
 		In.vTexUV.y >= g_vSubViewportUVInfo.y + fBarOffset && In.vTexUV.y <= g_vSubViewportUVInfo.w - fBarOffset)
@@ -282,6 +290,8 @@ PS_OUT PS_MAIN(PS_IN In)
 
 		// Radiar Blur 
 		if (true == g_bRadiarBlur_Sub) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Sub, g_fRadiarBlurRatio_Sub);
+
+		bBlur = g_SubBlur;
 	}
 	else discard;
 
@@ -294,7 +304,9 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	// DOF
 	float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-	vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
+
+	if (bBlur) vColor = colorBlurred;
+	else vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
 
 	// Volume
 	vColor = VolumeBlend(vColor, In.vTexUV, vDepthDesc.y, distToEye);

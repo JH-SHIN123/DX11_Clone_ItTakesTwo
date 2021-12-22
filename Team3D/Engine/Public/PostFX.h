@@ -15,6 +15,8 @@ public:
 	void Set_RadiarBlur_Main(_bool bActive, _float2& vFocusPos);
 	void Set_RadiarBlur_Sub(_bool bActive, _float2& vFocusPos);
 	void Set_MainViewFog(_bool bActive) { m_bMainFog = bActive; }
+	void Set_MainViewBlur(_bool bActive) { m_bMainBlur = bActive; }
+	void Set_SubViewBlur(_bool bActive) { m_bSubBlur = bActive; }
 
 public:
 	HRESULT Ready_PostFX(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float fBufferWidth, _float fBufferHeight);
@@ -72,7 +74,8 @@ private:
 	_float		m_fRadialBlur_SubRatio = 0.f;
 
 	_bool		m_bMainFog = false;
-
+	_bool		m_bMainBlur = false;
+	_bool		m_bSubBlur = false;
 	_float		m_fVolumeTimeDelta = 0.f;
 #pragma endregion
 
