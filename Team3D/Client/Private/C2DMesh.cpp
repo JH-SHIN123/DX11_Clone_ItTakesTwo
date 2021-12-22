@@ -63,25 +63,26 @@ _int C2DMesh::Late_Tick(_double dTimeDelta)
 	{
 	case 0:
 		if (0 < m_pModelCom_Ailen->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_AFTERPOST_BLUR, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 		break;
 	case 1:
 		if (0 < m_pModelCom_Robot->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_AFTERPOST_BLUR, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 		break;
 	case 2:
 		if (0 < m_pModelCom_Star->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_AFTERPOST_BLUR, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 		break;
 	case 3:
 		if (0 < m_pModelCom_UFO->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_AFTERPOST_BLUR, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 		break;
 	case 4:
 		if (0 < m_pModelCom_Umbrella->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_AFTERPOST_BLUR, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 		break;
 	}
+
 	return NO_EVENT;
 }
 
@@ -102,68 +103,33 @@ HRESULT C2DMesh::Render(RENDER_GROUP::Enum eGroup)
 	{
 	case 0:
 		m_pModelCom_Ailen->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-		m_pModelCom_Ailen->Set_DefaultVariables_Shadow();
 		m_pModelCom_Ailen->Sepd_Bind_Buffer();
 		m_pModelCom_Ailen->Set_Variable("g_vColor", &vColor, sizeof(_float4));
 		m_pModelCom_Ailen->Sepd_Render_Model(0, 29, false);
 		break;
 	case 1:
 		m_pModelCom_Robot->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-		m_pModelCom_Robot->Set_DefaultVariables_Shadow();
 		m_pModelCom_Robot->Sepd_Bind_Buffer();
 		m_pModelCom_Robot->Set_Variable("g_vColor", &vColor, sizeof(_float4));
 		m_pModelCom_Robot->Sepd_Render_Model(0, 29, false);
 		break;
 	case 2:
 		m_pModelCom_Star->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-		m_pModelCom_Star->Set_DefaultVariables_Shadow();
 		m_pModelCom_Star->Sepd_Bind_Buffer();
 		m_pModelCom_Star->Set_Variable("g_vColor", &vColor, sizeof(_float4));
 		m_pModelCom_Star->Sepd_Render_Model(0, 29, false);
 		break;
 	case 3:
 		m_pModelCom_UFO->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-		m_pModelCom_UFO->Set_DefaultVariables_Shadow();
 		m_pModelCom_UFO->Sepd_Bind_Buffer();
 		m_pModelCom_UFO->Set_Variable("g_vColor", &vColor, sizeof(_float4));
 		m_pModelCom_UFO->Sepd_Render_Model(0, 29, false);
 		break;
 	case 4:
 		m_pModelCom_Umbrella->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-		m_pModelCom_Umbrella->Set_DefaultVariables_Shadow();
 		m_pModelCom_Umbrella->Sepd_Bind_Buffer();
 		m_pModelCom_Umbrella->Set_Variable("g_vColor", &vColor, sizeof(_float4));
 		m_pModelCom_Umbrella->Sepd_Render_Model(0, 29, false);
-		break;
-	}
-	return S_OK;
-}
-
-HRESULT C2DMesh::Render_ShadowDepth()
-{
-	CGameObject::Render_ShadowDepth();
-
-	switch (m_iRandomModel)
-	{
-	case 0:
-		m_pModelCom_Ailen->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-		m_pModelCom_Ailen->Render_Model(3, 0, true);
-		break;
-	case 1:
-		m_pModelCom_Robot->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-		m_pModelCom_Robot->Render_Model(3, 0, true);
-		break;
-	case 2:
-		m_pModelCom_Star->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-		m_pModelCom_Star->Render_Model(3, 0, true);
-		break;
-	case 3:
-		m_pModelCom_UFO->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-		m_pModelCom_UFO->Render_Model(3, 0, true);
-		break;
-	case 4:
-		m_pModelCom_Umbrella->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-		m_pModelCom_Umbrella->Render_Model(3, 0, true);
 		break;
 	}
 	return S_OK;

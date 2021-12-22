@@ -83,7 +83,7 @@ _int C3DText::Late_Tick(_double dTimeDelta)
 	m_pTriggerActorCom->Update_TriggerActor();
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_AFTERPOST_BLUR, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 
 	return NO_EVENT;
 }
@@ -93,20 +93,7 @@ HRESULT C3DText::Render(RENDER_GROUP::Enum eGroup)
 	CGameObject::Render(eGroup);
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(28, 0);
-
-	return S_OK;
-}
-
-HRESULT C3DText::Render_ShadowDepth()
-{
-	CGameObject::Render_ShadowDepth();
-
-	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	/* Skinned: 2 / Normal: 3 */
-	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
 }
@@ -118,7 +105,7 @@ void C3DText::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		/* 충돌시 로켓에 부스트 세팅해줌 */
-		//((CCody*)(DATABASE->GetCody()))->Start_RadiarBlur(2.f);
+		((CCody*)(DATABASE->GetCody()))->Start_RadiarBlur_FullScreen(2.f);
 		((CEndingRocket*)(DATABASE->Get_EndingRocket()))->Set_Boost();
 		//ENDINGCREDIT->Create_3DText(true);
 		Create_Particle();

@@ -676,6 +676,12 @@ struct PS_OUT_ALPHA
 	vector	vDiffuse			: SV_TARGET0;
 };
 
+struct PS_OUT_CUSTOMBLUR
+{
+	vector	vDiffuse			: SV_TARGET0;
+	vector	vBlurValue			: SV_TARGET1;
+};
+
 PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -1090,9 +1096,9 @@ PS_OUT	PS_LASERBUTTONLARGE(PS_IN In, uniform bool isGreen)
 	return Out;
 }
 
-PS_OUT	PS_3DTEXT(PS_IN In)
+PS_OUT_CUSTOMBLUR	PS_3DTEXT(PS_IN In)
 {
-	PS_OUT Out = (PS_OUT)0;
+	PS_OUT_CUSTOMBLUR Out = (PS_OUT_CUSTOMBLUR)0;
 
 	vector	vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
@@ -1104,58 +1110,18 @@ PS_OUT	PS_3DTEXT(PS_IN In)
 		Out.vDiffuse = vector(1.f, 1.f, 0.f, 1.f);
 	Out.vDiffuse.w = 1.f;
 
-	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
-
-	// Calculate Normal
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-
-	// Calculate Specular
-	Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
-
-	// Calculate Emissive
-	Out.vEmissive = 0.5f;
-
-	// Calculate Shadow
-	int iIndex = -1;
-	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
-
-	// Get_ShadowFactor
-	float fShadowFactor = 0.f;
-	fShadowFactor = Get_ShadowFactor(In.iViewportIndex, iIndex, In.vWorldPosition);
-
-	Out.vShadow = 1.f - fShadowFactor;
-	Out.vShadow.a = 1.f;
+	Out.vBlurValue = 0.5f;
 
 	return Out;
 }
 
-PS_OUT	PS_MESHPARTICLE(PS_IN In)
+PS_OUT_CUSTOMBLUR	PS_MESHPARTICLE(PS_IN In)
 {
-	PS_OUT Out = (PS_OUT)0;
+	PS_OUT_CUSTOMBLUR Out = (PS_OUT_CUSTOMBLUR)0;
 
 	Out.vDiffuse = g_vColor;
 
-	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, 0.f, 0.f);
-
-	// Calculate Normal
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-
-	// Calculate Specular
-	Out.vSpecular = vector(0.f, 0.f, 0.f, 1.f);
-
-	// Calculate Emissive
-	Out.vEmissive = 0.5f;
-
-	// Calculate Shadow
-	int iIndex = -1;
-	iIndex = Get_CascadedShadowSliceIndex(In.iViewportIndex, In.vWorldPosition);
-
-	// Get_ShadowFactor
-	float fShadowFactor = 0.f;
-	fShadowFactor = Get_ShadowFactor(In.iViewportIndex, iIndex, In.vWorldPosition);
-
-	Out.vShadow = 1.f - fShadowFactor;
-	Out.vShadow.a = 1.f;
+	Out.vBlurValue = 0.5f;
 
 	return Out;
 }
