@@ -4,6 +4,7 @@
 #include "PinBall_BallDoor.h"
 #include "PinBall_Handle.h"
 #include "Effect_Generator.h"
+#include "PhysX.h"
 
 CPinBall::CPinBall(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)

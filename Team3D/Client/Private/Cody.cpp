@@ -3462,6 +3462,7 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 			m_dDeadTime = 0.f;
 			m_IsCollide = false;
 			m_IsDeadLine = false;
+			m_bRespawnCheck = true;
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			Enforce_IdleState();
 		}
@@ -3473,6 +3474,8 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTriggerTargetPos);
 		}
 	}
+	else
+		m_bRespawnCheck = false;
 }
 
 #pragma region Path
@@ -3680,6 +3683,7 @@ void CCody::TakeRail(_double dTimeDelta)
 		m_bOnRailEnd = true;
 	}
 }
+
 void CCody::TakeRailEnd(_double dTimeDelta)
 {
 	if (m_bOnRailEnd)
@@ -3701,6 +3705,7 @@ void CCody::TakeRailEnd(_double dTimeDelta)
 		}
 	}
 }
+
 void CCody::ShowRailTargetTriggerUI()
 {
 	// Show UI
@@ -4013,7 +4018,10 @@ void CCody::PinBall_Respawn(const _double dTimeDelta)
 void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 {
 	if (false == m_bRespawn)
+	{
+		m_bRespawnCheck = false;
 		return;
+	}
 
 	m_dRespawnTime += dTimeDelta;
 	if (2.f <= m_dRespawnTime)
@@ -4029,6 +4037,7 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 		m_pModelCom->Set_Animation(ANI_C_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
+		m_bRespawnCheck = true;
 		m_bFirstCheck = false;
 		m_bRespawn = false;
 		m_IsCollide = false;

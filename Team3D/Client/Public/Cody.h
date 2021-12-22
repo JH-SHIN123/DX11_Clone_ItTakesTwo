@@ -429,6 +429,9 @@ private:
 	_double m_dStartTime = 0.0;
 	_bool	m_bEndingCheck = false;
 
+	/* Hye::For.DeadCheck */
+	_bool	m_bRespawnCheck = false;
+
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
 	_bool m_IsInGravityPipe = false;
