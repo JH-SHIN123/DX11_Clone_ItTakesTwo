@@ -1848,6 +1848,14 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		/* For.PinBall */
 		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_IsPinBall)
 		{
+			if (false == m_bPinBallScript_Once[0])
+			{
+				m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
+				m_pGameInstance->Play_Sound(TEXT("19.wav"), CHANNEL_PINBALLVOICE);
+				SCRIPT->Render_Script(37, CScript::HALF, 1.f);
+				m_bPinBallScript_Once[0] = true;
+			}
+
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Enter);
 			m_pModelCom->Set_Animation(ANI_M_PinBall_MH);
 
@@ -1897,6 +1905,13 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_IsWarpDone = true;
 			XMStoreFloat4x4(&m_TriggerTargetWorld, static_cast<CWarpGate*>(m_pTargetPtr)->Get_NextPortal_Matrix());
 			m_pCamera->Set_StartPortalMatrix(static_cast<CWarpGate*>(m_pTargetPtr)->Get_Transform()->Get_WorldMatrix());
+
+			if (5 == static_cast<CWarpGate*>(m_pTargetPtr)->Get_StageValue())
+			{
+				/* 레이저테니스 UI 지우셈 */
+				UI_Delete(Default, Minigame_Score);
+				UI_Delete(Default, Minigame_Title);
+			}
 		}
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{
@@ -2056,7 +2071,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_NextAnimIndex(ANI_C_MH);
 			}
 		}
-		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_O) && false == m_bLaserTennis)
+		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)
 		{
 			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
 			m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
@@ -2404,6 +2419,14 @@ void CMay::PinBall(const _double dTimeDelta)
 			/* 공 발사 */
 			if (m_pGameInstance->Key_Down(DIK_LBRACKET) || m_pGameInstance->Pad_Key_Down(DIP_LB))
 			{
+				if (false == m_bPinBallScript_Once[1])
+				{
+					m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
+					m_pGameInstance->Play_Sound(TEXT("20.wav"), CHANNEL_PINBALLVOICE);
+					SCRIPT->Render_Script(38, CScript::HALF, 1.f);
+					m_bPinBallScript_Once[1] = true;
+				}
+
 				/* Sound */
 				m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
 				m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Shot.wav"), CHANNEL_PINBALL_HANDLE);

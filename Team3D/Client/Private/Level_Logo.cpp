@@ -42,6 +42,7 @@ _int CLevel_Logo::Tick(_double dTimedelta)
 			}
 
 			pGameInstance->Clear_LevelResources(Level::LEVEL_LOGO);
+			m_pGameInstance->FadeInOut_Sound(false, false, 0.1f);
 			UI_Delete(Default, AlphaScreen);
 		}
 	}

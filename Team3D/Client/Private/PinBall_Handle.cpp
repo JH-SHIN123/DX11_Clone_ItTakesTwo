@@ -8,6 +8,7 @@
 #include "Cody.h"
 #include "PinBall_Door.h"
 #include "SlideDoor.h"
+#include "Script.h"
 
 CPinBall_Handle::CPinBall_Handle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)

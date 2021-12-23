@@ -34,6 +34,9 @@ private:
 	virtual ~CWarpGate() = default;
 
 public:
+	_uint Get_StageValue() { return (_uint)m_WarpGate_Desc.eStageValue; }
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double TimeDelta) override;

@@ -5,6 +5,7 @@
 #include "PinBall_Handle.h"
 #include "Effect_Generator.h"
 #include "PhysX.h"
+#include "Script.h"
 
 CPinBall::CPinBall(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -29,7 +30,7 @@ void CPinBall::StartGame()
 	vPosition = XMVectorSet(XMVectorGetX(vPosition), 756.9f, 189.f, 1.f);
 	m_pDynamicActorCom->Get_Actor()->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
 
-	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 1.7f);
+	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 1.5f);
 }
 
 void CPinBall::PlayerMove()
@@ -71,7 +72,7 @@ void CPinBall::Respawn()
 	m_pDynamicActorCom->Get_Actor()->putToSleep();
 	m_pDynamicActorCom->Update_DynamicActor();
 
-	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 0.6f);
+	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 0.7f);
 	((CPinBall_BallDoor*)CDataStorage::GetInstance()->Get_Pinball_BallDoor())->Set_Render(true);
 
 	m_bFailed = false;
@@ -199,6 +200,7 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		m_pDynamicActorCom->Update_DynamicActor();
 		m_bFailed = true;
 		m_bStartGame = false;
+		m_bDeadType = false;
 
 		/* Sound */
 		m_pGameInstance->Stop_Sound(CHANNEL_PINBALL);
@@ -222,6 +224,7 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		m_pDynamicActorCom->Update_DynamicActor();
 		m_bFailed = true;
 		m_bStartGame = false;
+		m_bDeadType = true;
 
 		/* Sound */
 		m_pGameInstance->Stop_Sound(CHANNEL_PINBALL);

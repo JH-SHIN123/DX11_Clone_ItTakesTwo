@@ -12,7 +12,8 @@ private:
 
 public:/* Setter */
 	void OnOff_Timer(_bool bOnOff);
-	void Set_Ready() { m_bReady = true; }
+	void Set_Ready()	{ m_bReady = true; }
+	void Set_Script()	{ m_bScript = true; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -20,14 +21,20 @@ public:
 	virtual _int	Tick(_double dTimeDelta) override;
 
 private:
+	_bool			m_bScript = false;
 	_bool			m_bReady = false;
 	_bool			m_bOnOff = false;
+	_bool			m_bSoundCheck = false;
 
+	_double			m_dScriptTime = 0.0;
+	_double			m_dSoundTime = 0.0;
 	_double			m_dStartTime = 0.0;
 	_double			m_dButton_Time = 0.0;
 	_double			m_dLargeButton_Time = 0.0;
 	_double			m_dLaserActivation_Time = 0.0;
 
+	_uint			m_iScript_Count = 0;
+	_uint			m_iSound_Count = 0;
 	_uint			m_iLaserActivation_Count = 0;
 
 public:

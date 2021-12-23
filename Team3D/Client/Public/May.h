@@ -632,6 +632,8 @@ private: /* For. Ending */
 	_bool  m_fSecondFloor_Script_Once[6] = { false };
 
 
+	// Pinball Script Control
+	_bool  m_bPinBallScript_Once[2] = { false };
 };
 
 END
