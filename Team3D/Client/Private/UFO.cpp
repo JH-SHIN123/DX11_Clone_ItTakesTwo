@@ -802,6 +802,7 @@ HRESULT CUFO::Ready_StaticActor_Component()
 	_matrix matRotY = XMMatrixRotationZ(XMConvertToRadians(180.f));
 	BaseBone = matRotY * BaseBone;
 
+	BaseBone.r[3].m128_f32[1] += 0.05f;
 	m_pStaticTransformCom->Set_WorldMatrix(BaseBone);
 
 	CStaticActor::ARG_DESC ArgDesc;

@@ -45,6 +45,9 @@ HRESULT CMinigameHpBar::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
+	m_fMaxHp = 120.f;
+	m_fHp = m_fMaxHp;
+
 	return S_OK;
 }
 
@@ -113,26 +116,30 @@ void CMinigameHpBar::Set_Active(_bool IsCheck)
 
 void CMinigameHpBar::Set_Hp(_float fHp)
 {
-	m_fHp += fHp;
+	// 120
+	m_fHp -= fHp;
 	m_IsHit = true;
 	m_fWatingTime = 0.f;
 	m_fRecoveryTime = 0.f;
 
 	if (m_ePlayerID == Player::Cody)
 	{
-		m_fRatio = (m_fHp / 120.f) / 2.f;
+		m_fRatio = 0.5f - (m_fHp / m_fMaxHp) / 2.f;
 
-		if (0.5f <= m_fRatio)
-			m_fRatio = 0.5f;
+		//if (0.5f <= m_fRatio)
+		//	m_fRatio = 0.5f;
 	}
 	else if (m_ePlayerID == Player::May)
 	{
-		m_fRatio = 0.5f - (m_fHp / 120.f) / 2.f;
+		m_fRatio = (m_fHp / m_fMaxHp) / 2.f;
 		//m_fDecreaseRateRatio = 0.5f;
 
-		if (0.f >= m_fRatio)
-			m_fRatio = 0.f;
+		//if (0.f >= m_fRatio)
+		//	m_fRatio = 0.f;
 	}
+
+	if (0.f >= m_fHp)
+		m_fHp = 0.f;
 }
 
 void CMinigameHpBar::Set_ShaderOption(_int iOption)

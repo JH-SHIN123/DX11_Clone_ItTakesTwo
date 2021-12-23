@@ -31,6 +31,7 @@ public:
 private:
 	_bool							m_IsActive = false;
 	_float							m_fHp = 0.f;
+	_float							m_fMaxHp = 0.f;
 	_float							m_fRatio = 0.f;
 	_float							m_fDecreaseRateRatio = 0.f;
 	_float							m_fWatingTime = 0.f;
