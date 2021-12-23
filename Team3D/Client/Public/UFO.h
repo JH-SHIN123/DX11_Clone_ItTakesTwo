@@ -76,8 +76,7 @@ private:
 	_float3					m_vMaxPos;
 	_float					m_fMaxY = 0.f;
 	_float					m_fDistance = 0.f;
-	_uint					m_iHp = 1000;
-	_uint					m_iMaxHp = 1000;
+	_bool					m_IsHit = false;
 
 	/* For.PHASE_1 Pattern */
 	_bool					m_IsCoreExplosion = false;

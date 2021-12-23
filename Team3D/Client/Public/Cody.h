@@ -252,6 +252,7 @@ public:
 	void			 Set_HpBarReduction(_float fDamage);
 	void			 Set_ActiveMinigameHpBar(_bool IsCheck);
 	void			 Set_MinigameHpBarReduction(_float fDamage);
+	void			 Set_MinigameHpBarReset();
 	void 			 Set_RocketOffSetPos(_fvector vRocketOffSetPos) { m_vRocketOffSetPos = vRocketOffSetPos; }
 	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }

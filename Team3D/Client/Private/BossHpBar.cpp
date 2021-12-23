@@ -36,6 +36,9 @@ HRESULT CBossHpBar::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(1.f, m_UIDesc.vScale.y, 0.f, 0.f));
 
+	m_fMaxHp = 1000.f;
+	m_fHp = m_fMaxHp;
+
 	return S_OK;
 }
 
@@ -53,12 +56,13 @@ _int CBossHpBar::Tick(_double TimeDelta)
 			m_fScaleX += (_float)TimeDelta * 1200.f;
 
 			if (m_fScaleX >= m_UIDesc.vScale.x)
+			{
 				m_fScaleX = m_UIDesc.vScale.x;
+				m_IsFontRender = true;
+			}
 
 			m_pTransformCom->Set_Scale(XMVectorSet(m_fScaleX, m_UIDesc.vScale.y, 0.f, 0.f));
 		}
-		else
-			m_IsFontRender = true;
 	}
 
 	return _int();
@@ -123,6 +127,13 @@ void CBossHpBar::Set_Active(_bool IsCheck)
 	}
 }
 
+void CBossHpBar::Set_HpBarReduction(_float fDamage)
+{
+	m_fHp -= fDamage;
+	m_fDecreaseRateRatio = m_fRatio;
+	m_fRatio = m_fHp / m_fMaxHp;
+}
+
 HRESULT CBossHpBar::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
@@ -142,7 +153,7 @@ HRESULT CBossHpBar::Ready_Layer_UI()
 
 HRESULT CBossHpBar::Render_Font()
 {
-	m_pFont->Render_Font(TEXT("快林 俺内盔件捞"), _float2(100.f, 100.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.28f);
+	m_pFont->Render_Font(TEXT("快林 俺内盔件捞"), _float2(200.f, 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.27f);
 
 	return S_OK;
 }

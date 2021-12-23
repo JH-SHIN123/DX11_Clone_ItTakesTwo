@@ -212,6 +212,7 @@ public:
 	void	Set_ActiveHpBar(_bool IsCheck);
 	void	Set_HpBarReduction(_float fDamage);
 	void	Set_ActiveMinigameHpBar(_bool IsCheck);
+	void	Set_MinigameHpBarReset();
 	void	Set_MinigameHpBarReduction(_float fDamage);
 
 	/* For. Ending */
