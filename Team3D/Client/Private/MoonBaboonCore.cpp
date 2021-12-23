@@ -4,6 +4,8 @@
 #include "MoonBaboonCore_Button.h"
 #include "MoonBaboonCore_Shield.h"
 #include "MoonBaboonCore_Glass.h"
+#include "Effect_Boss_Core.h"
+#include "Effect_Generator.h"
 
 CMoonBaboonCore::CMoonBaboonCore(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -30,7 +32,6 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 	CGameObject::NativeConstruct(nullptr);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(4.f, 0.f)), E_FAIL);
-
 	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_tDesc.WorldMatrix));
 
 	m_pCorePillar = CMoonBaboonCore_Pillar::Create(m_pDevice, m_pDeviceContext, this);
@@ -38,34 +39,30 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 	m_pCoreShield = CMoonBaboonCore_Shield::Create(m_pDevice, m_pDeviceContext, this);
 	m_pCoreGlass = CMoonBaboonCore_Glass::Create(m_pDevice, m_pDeviceContext, this);
 
+	// Effect
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_BossCore"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core"),nullptr, (CGameObject**)&m_pEffectBossCore), E_FAIL);
+
 	DATABASE->Set_MoonBaboonCore(this);
+
+	if (m_tDesc.iIndex == 1) // 중력 발판 앞 코어
+		m_fMoveTime *= 2.5f;
 
     return S_OK;
 }
 
 _int CMoonBaboonCore::Tick(_double TimeDelta)
 {
-//#ifdef _DEBUG
-//	_vector vPos = XMVectorZero();
-//	TCHAR szBuff[256] = L"";
-//	GetPrivateProfileString(L"Section_1", L"Key_1", L"0", szBuff, 256, L"../test.ini");
-//	_float x = _ttof(szBuff);
-//
-//	GetPrivateProfileString(L"Section_1", L"Key_2", L"0", szBuff, 256, L"../test.ini");
-//	_float y = _ttof(szBuff);
-//
-//	GetPrivateProfileString(L"Section_1", L"Key_3", L"0", szBuff, 256, L"../test.ini");
-//	_float z = _ttof(szBuff);
-//
-//	vPos = XMVectorSet(x, y, z, 1.f);
-//#endif // _DEBUG
-//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+	NULL_CHECK_RETURN(m_pCorePillar, E_FAIL);
+	NULL_CHECK_RETURN(m_pCoreButton, E_FAIL);
+	NULL_CHECK_RETURN(m_pCoreShield, E_FAIL);
+	NULL_CHECK_RETURN(m_pCoreGlass, E_FAIL);
+	NULL_CHECK_RETURN(m_pEffectBossCore, E_FAIL);
 
 	if (m_bBroken)
 	{
 		if (false == m_bBrokenStart)
 		{
-			if (m_dBrokenWaitingDeltaT >= 2.0)
+			if (m_dBrokenWaitingDeltaT >= 1.0)
 			{
 				m_bBrokenStart = true;
 				m_dBrokenWaitingDeltaT = 0.0;
@@ -73,6 +70,7 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 			else
 			{
 				m_dBrokenWaitingDeltaT += TimeDelta;
+				m_bMove = false;
 			}
 		}
 		else if (true == m_bBrokenStart)
@@ -84,10 +82,12 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 				// 내려가는중에, 실드 올라가기 트리거 실행
 				m_pTransformCom->Go_Down(TimeDelta);
 				m_fMoveDelta -= (_float)TimeDelta;
+				m_bMove = true;
 			}
 			else
 			{
 				m_iActiveCore = 0;
+				m_bMove = false;
 			}
 		}
 	}
@@ -100,7 +100,9 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 	m_pCoreButton->Tick(TimeDelta);
 	m_pCoreShield->Tick(TimeDelta);
 	m_pCoreGlass->Tick(TimeDelta);
+	m_pEffectBossCore->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
+	// 2 Phase시 위로 올라가는거
 	GoUp(TimeDelta);
 
     return _int();
@@ -114,47 +116,6 @@ _int CMoonBaboonCore::Late_Tick(_double TimeDelta)
 	m_pCoreGlass->Late_Tick(TimeDelta);
 
     return _int();
-}
-
-void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
-{
-	if (true == m_IsGoUp)
-		return;
-
-	if (m_iActiveCore == 1)
-	{
-		if (m_fMoveDelta < 1.4f)
-		{
-			m_pTransformCom->Go_Up(TimeDelta);
-			m_fMoveDelta += (_float)TimeDelta;
-		}
-		else
-			m_bArrived = true;
-	}
-	else if (m_iActiveCore == -1)
-	{
-		if (m_fMoveDelta > 0.f)
-		{
-			m_bArrived = false;
-			// 내려가는중에, 실드 올라가기 트리거 실행
-			m_pTransformCom->Go_Down(TimeDelta);
-			m_fMoveDelta -= (_float)TimeDelta;
-		}
-	}
-	else m_iActiveCore = 0;
-}
-
-void CMoonBaboonCore::Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed)
-{
-	XMStoreFloat3(&m_vMaxPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_vMaxPos.y += fMaxDistance;
-
-	m_fMaxY = fMaxDistance;
-	m_IsGoUp = true;
-	m_fUpSpeed = fSpeed;
-
-	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
-	m_iActiveCore = 1;
 }
 
 void CMoonBaboonCore::GoUp(_double dTimeDelta)
@@ -177,10 +138,67 @@ void CMoonBaboonCore::GoUp(_double dTimeDelta)
 		m_IsGoUp = false;
 		m_fDistance = 0.f;
 		m_iActiveCore = 0;
+		m_bMove = false;
 		return;
 	}
 
 	m_pTransformCom->Go_Up(dTimeDelta);
+	m_bMove = true;
+}
+
+void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
+{
+	if (true == m_IsGoUp)
+		return;
+
+	if (m_iActiveCore == 1)
+	{
+		if (m_fMoveDelta < m_fMoveTime)
+		{
+			m_pTransformCom->Go_Up(TimeDelta);
+			m_fMoveDelta += (_float)TimeDelta;
+			m_bMove = true;
+		}
+		else
+			m_bArrived = true;
+	}
+	else if (m_iActiveCore == -1)
+	{
+		if (m_fMoveDelta > 0.f)
+		{
+			m_bArrived = false;
+			// 내려가는중에, 실드 올라가기 트리거 실행
+			m_pTransformCom->Go_Down(TimeDelta);
+			m_fMoveDelta -= (_float)TimeDelta;
+			m_bMove = true;
+		}
+	}
+	else
+	{
+		m_iActiveCore = 0;
+		m_bMove = false;
+	}
+}
+
+void CMoonBaboonCore::Set_Broken()
+{
+	if (m_bBroken) return;
+
+	m_bBroken = true;
+	m_pEffectBossCore->HitOn();
+}
+
+void CMoonBaboonCore::Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed)
+{
+	XMStoreFloat3(&m_vMaxPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_vMaxPos.y += fMaxDistance;
+
+	m_fMaxY = fMaxDistance;
+	m_IsGoUp = true;
+	m_fUpSpeed = fSpeed;
+
+	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
+	m_iActiveCore = 1;
 }
 
 CMoonBaboonCore* CMoonBaboonCore::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -211,6 +229,11 @@ CGameObject* CMoonBaboonCore::Clone_GameObject(void* pArg)
 
 void CMoonBaboonCore::Free()
 {
+	if (m_pEffectBossCore)
+	{
+		m_pEffectBossCore->HitOn();
+		Safe_Release(m_pEffectBossCore);
+	}
 	Safe_Release(m_pCorePillar);
 	Safe_Release(m_pCoreButton);
 	Safe_Release(m_pCoreShield);

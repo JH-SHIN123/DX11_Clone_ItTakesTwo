@@ -347,7 +347,7 @@ HRESULT CPostFX::Tick_Adaptation(_double TimeDelta)
 
 HRESULT CPostFX::Tick_RadiarBlur(_double TimeDelta)
 {
-	_float fSpeed = 5.f;
+	_float fSpeed = 2.5f;
 
 	if (m_bRadialBlur_Main_Finish)
 	{
@@ -377,6 +377,7 @@ HRESULT CPostFX::Tick_RadiarBlur(_double TimeDelta)
 		}
 	}
 
+	fSpeed = 1.5f;
 	if (m_bRadialBlur_FullScreen_Finish)
 	{
 		if (m_fRadialBlur_FullScreenRatio < 0)
