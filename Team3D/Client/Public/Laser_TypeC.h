@@ -27,7 +27,7 @@ private:
 
 private:
 	class CMoonUFO*									m_pMoonUFO = nullptr;
-	class CEffect_Boss_Laser_Smoke*				m_pLaserSmoke = nullptr;
+	class CEffect_MoonUFO_Laser_ColorSmoke*				m_pLaserSmoke = nullptr;
 
 public:
 	static CLaser_TypeC* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -2,12 +2,12 @@
 #include "InGameEffect.h"
 
 BEGIN(Client)
-class CEffect_Boss_Missile_Smoke_Color final : public CInGameEffect
+class CEffect_MoonUFO_Laser_Burn final : public CInGameEffect
 {
 private:
-	explicit CEffect_Boss_Missile_Smoke_Color(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CEffect_Boss_Missile_Smoke_Color(const CEffect_Boss_Missile_Smoke_Color& rhs);
-	virtual ~CEffect_Boss_Missile_Smoke_Color() = default; public:
+	explicit CEffect_MoonUFO_Laser_Burn(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_MoonUFO_Laser_Burn(const CEffect_MoonUFO_Laser_Burn& rhs);
+	virtual ~CEffect_MoonUFO_Laser_Burn() = default; public:
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -17,7 +17,7 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 public:
-	void Set_Pos(_fvector vPos);
+	void Set_Pos(_fvector vPos, _fvector vNormal);
 	void Set_IsActivate(_bool IsActivate) { m_IsActivate = IsActivate; }
 	void Set_WorldMatrix(_fmatrix WorldMatrix) { m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
 
@@ -48,17 +48,19 @@ private:
 
 	_double*							m_pInstance_Update_TextureUV_Time = nullptr;
 
-	_float m_fNextUV = 0.f;
+	_float4	m_vMoonPosition;
+	_float3	m_vNormal = { 0.f, 1.f, 0.f };
+	_float	m_fNextUV = 0.f;
 
 	const XMINT2  m_vTexUV = { 8,8 };
 	const _float  m_fAlphaTime_Power = 0.5f;
 	const _float  m_fSize_Power = 0.75f;
 	const _float  m_fInstance_SpeedPerSec = 0.5f;
 	const _double m_dInstance_Pos_Update_Time = 2.f;
-	const _float2 m_vDefaultSize = { 0.4f, 0.4f };
+	const _float2 m_vDefaultSize = { 4.f, 4.f };
 
 public:
-	static CEffect_Boss_Missile_Smoke_Color* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_MoonUFO_Laser_Burn* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

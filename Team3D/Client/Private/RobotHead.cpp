@@ -99,7 +99,7 @@ _int CRobotHead::Tick(_double dTimeDelta)
 		if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_ROBOT_MOVE) == false && fFinalDist < 30.f)
 		{
 			m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_MOVE, m_fHeadBanging_Volume);
-			m_pGameInstance->Play_Sound(TEXT("Robot_Move.wav"), CHANNEL_ROBOT_MOVE, m_fHeadBanging_Volume);
+			//m_pGameInstance->Play_Sound(TEXT("Robot_Move.wav"), CHANNEL_ROBOT_MOVE, m_fHeadBanging_Volume);
 		}
 
 		if (m_pModelCom->Is_AnimFinished(R_InActive_Battery_Idle))

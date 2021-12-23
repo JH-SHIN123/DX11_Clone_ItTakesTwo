@@ -2,7 +2,7 @@
 #include "..\Public\Laser_TypeC.h"
 #include "MoonUFO.h"
 #include "DataStorage.h"
-#include "Effect_Boss_Laser_Smoke.h"
+#include "Effect_MoonUFO_Laser_ColorSmoke.h"
 #include "RunningMoonBaboon.h"
 
 CLaser_TypeC::CLaser_TypeC(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -99,25 +99,25 @@ _int CLaser_TypeC::Tick(_double dTimeDelta)
 			m_isCollided = true;
 
 			///* 충돌 시 이펙트 생성 */
-			//if (m_dCreateEffectDelay <= 0.0)
-			//{
-			//	//충돌 시 생성할 이펙트
-			//	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeA"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"));
+			if (m_dCreateEffectDelay <= 0.0)
+			{
+				//충돌 시 생성할 이펙트
+				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeA"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"));
 
-			//	//이펙트 생성 주기
-			//	m_dCreateEffectCycle = m_dCreateEffectCycle;
-			//}
-			//else
-			//	m_dCreateEffectCycle = 0.0;
+				//이펙트 생성 주기
+				m_dCreateEffectCycle = m_dCreateEffectCycle;
+			}
+			else
+				m_dCreateEffectCycle = 0.0;
 
-			//if (true == m_IsPaticleCreate && true == m_isCollided)
-			//{
-			//	CGameObject* pGameObject = nullptr;
-			//	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Smoke"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke"), nullptr , &pGameObject);
-			//	m_pLaserSmoke = static_cast<CEffect_Boss_Laser_Smoke*>(pGameObject);
+			if (true == m_IsPaticleCreate && true == m_isCollided)
+			{
+				CGameObject* pGameObject = nullptr;
+				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Smoke"), Level::LEVEL_STAGE, TEXT("GameObject_2D_MoonUFO_Laser_ColorSmoke"), nullptr , &pGameObject);
+				m_pLaserSmoke = static_cast<CEffect_MoonUFO_Laser_ColorSmoke*>(pGameObject);
 
-			//	m_IsPaticleCreate = false;
-			//}
+				m_IsPaticleCreate = false;
+			}
 		}
 		else
 		{
@@ -148,9 +148,14 @@ _int CLaser_TypeC::Tick(_double dTimeDelta)
 	else
 	{
 		m_fLaserSizeX -= 300.f * (_float)dTimeDelta;
-
+		
 		if (m_fLaserSizeX < 0.f)
+		{
+			if (nullptr != m_pLaserSmoke)
+				m_pLaserSmoke->Set_Dead();
+
 			return EVENT_DEAD;
+		}
 	}
 
 	if (nullptr != m_pLaserSmoke)
@@ -231,7 +236,7 @@ CGameObject * CLaser_TypeC::Clone_GameObject(void * pArg)
 
 void CLaser_TypeC::Free()
 {
-	//Safe_Release(m_pLaserSmoke);
+	Safe_Release(m_pLaserSmoke);
 	Safe_Release(m_pMoonUFO);
 
 	CLaser::Free();
