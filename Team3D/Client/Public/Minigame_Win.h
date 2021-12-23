@@ -23,6 +23,7 @@ public:
 private:
 	 _float2						m_vSaveScale;
 	 _float							m_fAlpha = 0.f;
+	 _float							m_fDeadTime = 0.f;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;

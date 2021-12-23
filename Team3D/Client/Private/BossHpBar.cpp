@@ -57,6 +57,8 @@ _int CBossHpBar::Tick(_double TimeDelta)
 
 			m_pTransformCom->Set_Scale(XMVectorSet(m_fScaleX, m_UIDesc.vScale.y, 0.f, 0.f));
 		}
+		else
+			m_IsFontRender = true;
 	}
 
 	return _int();
@@ -97,6 +99,9 @@ HRESULT CBossHpBar::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pVIBuffer_RectCom->Render(20);
 
+	if(true == m_IsFontRender)
+		Render_Font();
+
 	return S_OK;
 }
 
@@ -121,6 +126,7 @@ void CBossHpBar::Set_Active(_bool IsCheck)
 HRESULT CBossHpBar::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_FontDraw"), TEXT("Com_Font"), (CComponent**)&m_pFont), E_FAIL);
 
 	return S_OK;
 }
@@ -132,6 +138,31 @@ HRESULT CBossHpBar::Ready_Layer_UI()
 	m_pBossHpBarFrame = static_cast<CBossHpBarFrame*>(pGameObject);
 
 	return S_OK;
+}
+
+HRESULT CBossHpBar::Render_Font()
+{
+	m_pFont->Render_Font(TEXT("快林 俺内盔件捞"), _float2(100.f, 100.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.28f);
+
+	return S_OK;
+}
+
+void CBossHpBar::Scale_Effect(_double TimeDelta)
+{
+	if (true == m_IsActive)
+	{
+		if (m_fScaleX <= m_UIDesc.vScale.x)
+		{
+			m_fScaleX += (_float)TimeDelta * 1200.f;
+
+			if (m_fScaleX >= m_UIDesc.vScale.x)
+				m_fScaleX = m_UIDesc.vScale.x;
+
+			m_pTransformCom->Set_Scale(XMVectorSet(m_fScaleX, m_UIDesc.vScale.y, 0.f, 0.f));
+		}
+		else
+			m_IsFontRender = true;
+	}
 }
 
 CBossHpBar * CBossHpBar::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
@@ -165,7 +196,9 @@ void CBossHpBar::Free()
 	if(nullptr != m_pBossHpBarFrame)
 		Safe_Release(m_pBossHpBarFrame);
 
+	Safe_Release(m_pFont);
 	Safe_Release(m_pVIBuffer_RectCom);
+
 
 	CUIObject::Free();
 }

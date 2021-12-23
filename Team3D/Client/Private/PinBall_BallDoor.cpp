@@ -63,7 +63,7 @@ HRESULT CPinBall_BallDoor::Render(RENDER_GROUP::Enum eGroup)
 {
 	CDynamic_Env::Render(eGroup);
 
-	if (false == m_bReady && true == m_bDoorState)
+	if (false == m_bReady && true == m_bDoorState && false == m_bRender)
 		return S_OK;
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
@@ -97,7 +97,10 @@ void CPinBall_BallDoor::MoveMent(_double dTimeDelta)
 		m_fAngle += fAngle;
 
 		if (m_fAngle >= 100.f)
+		{
+			((CPinBall*)(DATABASE->Get_Pinball()))->Set_TriggerCheck();
 			m_bReady = false;
+		}
 
 		m_pTransformCom->RotatePitch_Angle(dTimeDelta, 100.f);
 	}

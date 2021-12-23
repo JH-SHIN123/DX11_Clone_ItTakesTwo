@@ -63,10 +63,10 @@ private:
 
 	VTXMATRIX_CUSTOM_ST*				m_pPointInstanceBuffer	= nullptr;
 	CVIBuffer_PointInstance_Custom_ST*	m_pPointInstanceCom		= nullptr;
-	CTextures*							m_pTexturesCom_Mask = nullptr;
+	CTextures*							m_pTexturesCom_Mask		= nullptr;
 	const _int							m_iPointInstance_Count = 4;
 
-	const _float2 m_vHalfSize = { 1.8f, 5.f };
+	const _float2		m_vHalfSize = { 1.8f, 5.f };
 	_float4				m_vPosition_Lamp[4];
 
 public:

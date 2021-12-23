@@ -25,6 +25,10 @@
 /* For.BossUFO */
 #include "UFO.h"
 
+/* For.UI */
+#include "HpBar.h"
+#include "MinigameHpBar.h"
+
 /*For.WarpGate*/
 #include "WarpGate.h"
 #include "LaserTennis_Manager.h"
@@ -72,8 +76,7 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
 
-	UI_Create(May, PlayerMarker);
-
+	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
 	m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
 	m_pGameInstance->Play_Sound(TEXT("May_Walk.wav"), CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
@@ -136,6 +139,38 @@ HRESULT CMay::Ready_Component()
 	m_pEffect_GravityBoots->Set_Model(m_pModelCom);
 
 	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_MayCircle_Gauge")), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CMay::Ready_UI()
+{
+	UI_Create(May, PlayerMarker);
+
+	CGameObject* pGameObject = nullptr;
+	_uint iOption = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MayHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pHpBar = static_cast<CHpBar*>(pGameObject);
+	m_pHpBar->Set_PlayerID(Player::May);
+	m_pHpBar->Set_ShaderOption(1);
+
+	iOption = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MaySubHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pSubHpBar = static_cast<CHpBar*>(pGameObject);
+	m_pSubHpBar->Set_PlayerID(Player::May);
+	m_pSubHpBar->Set_ShaderOption(1);
+
+	iOption = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MinigameMayHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pMinigameHpBar = static_cast<CMinigameHpBar*>(pGameObject);
+	m_pMinigameHpBar->Set_PlayerID(Player::May);
+	m_pMinigameHpBar->Set_ShaderOption(1);
+
+	iOption = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MinigameMaySubHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pMinigameSubHpBar = static_cast<CMinigameHpBar*>(pGameObject);
+	m_pMinigameSubHpBar->Set_PlayerID(Player::May);
+	m_pMinigameSubHpBar->Set_ShaderOption(1);
 
 	return S_OK;
 }
@@ -220,7 +255,6 @@ _int CMay::Tick(_double dTimeDelta)
 			Hook_UFO(dTimeDelta);
 			Falling_Dead(dTimeDelta);
 			BossMissile_Control(dTimeDelta);
-			Ride_Ending_Rocket(dTimeDelta);
 		}
 		else
 		{
@@ -264,12 +298,25 @@ _int CMay::Tick(_double dTimeDelta)
 	// Control RadiarBlur - 제일 마지막에 호출
 	Trigger_RadiarBlur(dTimeDelta);
 
+	/* 히트타임 */
+	if (true == m_bHit)
+	{
+		m_dHitTime += dTimeDelta;
+
+		if (0.5f <= m_dHitTime)
+		{
+			m_bHit = false;
+			m_dHitTime = 0.0;
+		}
+	}
 	return NO_EVENT;
 }
 
 _int CMay::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
+
+	Ride_Ending_Rocket(dTimeDelta);
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
 		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1000.f))
@@ -303,15 +350,23 @@ HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 
-	if (eGroup == RENDER_GROUP::RENDER_NONALPHA)
+	if (true == m_bHit)
 	{
 		m_pModelCom->Set_DefaultVariables_Shadow();
-		m_pModelCom->Render_Model(0);
+		m_pModelCom->Render_Model(35);
 	}
-	else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding)
+	else
 	{
-		m_pModelCom->Render_Model(30);
-		m_pModelCom->Render_Model(31);
+		if (eGroup == RENDER_GROUP::RENDER_NONALPHA)
+		{
+			m_pModelCom->Set_DefaultVariables_Shadow();
+			m_pModelCom->Render_Model(0);
+		}
+		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding)
+		{
+			m_pModelCom->Render_Model(30);
+			m_pModelCom->Render_Model(31);
+		}
 	}
 
 	return S_OK;
@@ -353,6 +408,10 @@ void CMay::Free()
 	m_vecTargetRailNodes.clear();
 
 	Safe_Release(m_pGauge_Circle);
+	Safe_Release(m_pHpBar);
+	Safe_Release(m_pSubHpBar);
+	Safe_Release(m_pMinigameHpBar);
+	Safe_Release(m_pMinigameSubHpBar);
 
 	//Safe_Release(m_pCamera); 
 	Safe_Release(m_pTargetPtr);
@@ -564,6 +623,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 		if (m_IsJumping == false)
 		{
+			EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 			m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
 			m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
@@ -583,6 +644,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		{
 			if (m_pModelCom->Get_CurAnimIndex() != ANI_M_AirDash_Start && m_iAirDashCount == 0)
 			{
+				EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 				m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
 				m_pGameInstance->Play_Sound(TEXT("May_Dash.wav"), CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
 
@@ -765,6 +828,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_U))/* 메이 우주선 태우기 */
 		Set_UFO(true);
+	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
+		m_IsEnding = true;
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -898,6 +963,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 		if (m_IsJumping == false)
 		{
+			EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 			m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
 			m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
@@ -914,6 +981,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		{
 			if (m_pModelCom->Get_CurAnimIndex() != ANI_M_AirDash_Start && m_iAirDashCount == 0)
 			{
+				EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 				m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
 				m_pGameInstance->Play_Sound(TEXT("May_Dash.wav"), CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
 
@@ -2004,6 +2073,12 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				((CCody*)DATABASE->GetCody())->Set_AnimationRotate(190.f);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_LaserRippedOff);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_NextAnimIndex(ANI_C_MH);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Lightning);
+
 			}
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_O) && false == m_bLaserTennis)
@@ -2026,13 +2101,13 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::eLASER_LASERTENNIS)
 		{
 			/* Hit Effect 생성 */
+			EFFECT->Add_Effect(Effect_Value::Hit_BossLaser_Particle_Star, m_pTransformCom->Get_WorldMatrix());
+
+			m_bHit = true;
 
 			/* HP 감소 */
-			m_iHP -= 3;
 			LASERTENNIS->Set_CodyCount();
-
-			if (0 >= m_iHP)
-				m_iHP = 12;
+			Set_MinigameHpBarReduction(30);
 
 			m_IsCollide = false;
 		}
@@ -2454,12 +2529,49 @@ void CMay::InUFO(const _double dTimeDelta)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
 }
 
+void CMay::Set_ActiveHpBar(_bool IsCheck)
+{
+	if (nullptr == m_pHpBar)
+		return;
+
+	m_pHpBar->Set_Active(IsCheck);
+}
+
+void CMay::Set_HpBarReduction(_float fDamage)
+{
+	if (nullptr == m_pHpBar || nullptr == m_pSubHpBar)
+		return;
+
+	m_pHpBar->Set_Hp(fDamage);
+	m_pSubHpBar->Set_Active(true);
+	m_pSubHpBar->Set_Hp(fDamage);
+}
+
+void CMay::Set_ActiveMinigameHpBar(_bool IsCheck)
+{
+	if (nullptr == m_pMinigameHpBar)
+		return;
+
+	m_pMinigameHpBar->Set_Active(IsCheck);
+}
+
+void CMay::Set_MinigameHpBarReduction(_float fDamage)
+{
+	if (nullptr == m_pMinigameHpBar || nullptr == m_pMinigameSubHpBar)
+		return;
+
+	m_pMinigameHpBar->Set_Hp(fDamage);
+	m_pMinigameSubHpBar->Set_Active(true);
+	m_pMinigameSubHpBar->Set_Hp(fDamage);
+}
+
+
 void CMay::LaserTennis(const _double dTimeDelta)
 {
 	if (false == m_bLaserTennis)
 		return;
 
-	if (true == LASERTENNIS->Get_StartGame())
+	if (true == LASERTENNIS->Get_PushCoord())
 	{
 		m_pActorCom->Jump_Start(2.f);
 		m_pModelCom->Set_Animation(ANI_M_RocketFirework);
@@ -2673,8 +2785,9 @@ void CMay::Ride_Ending_Rocket(const _double dTimeDelta)
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Rocket_MH)
 		{
 			m_pActorCom->Set_ZeroGravity(true, false, true);
-			m_pActorCom->Set_Position(m_vEndingRocketOffSetPos);
 			m_pTransformCom->Set_WorldMatrix(m_matEndingRocketMatrix);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vEndingRocketOffSetPos);
+			m_pActorCom->Set_Position(m_vEndingRocketOffSetPos);
 		}
 	}
 }
@@ -2928,8 +3041,8 @@ void CMay::KeyInput_Rail(_double dTimeDelta)
 
 			m_bMoveToRail = false;
 			m_bOnRail = false;
+			m_bOnRailEnd = false;
 			m_bOnRail_Effect = false;
-
 		}
 	}
 }
@@ -3073,7 +3186,7 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 
 void CMay::TakeRail(_double dTimeDelta)
 {
-	if (nullptr == m_pTargetRail || false == m_bOnRail) return;
+	if (nullptr == m_pTargetRail || false == m_bOnRail || true == m_bOnRailEnd) return;
 
 	/* 타는 애니메이션으로 변경 */
 	if (m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Key_Pressing(DIK_LEFT))

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Timer_LaserTennis.h"
 #include "LaserTennis_Manager.h"
+#include "UI_Generator.h"
 
 CTimer_LaserTennis::CTimer_LaserTennis(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -44,6 +45,21 @@ HRESULT CTimer_LaserTennis::NativeConstruct(void * pArg)
 _int CTimer_LaserTennis::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	if (true == m_bReady)
+	{
+		m_dStartTime += dTimeDelta;
+
+		if (2.0 <= m_dStartTime)
+			UI_CreateOnlyOnce(Default, Minigame_Countdown);
+
+		if (7.0 <= m_dStartTime)
+		{
+			LASERTENNIS->Start_Game();
+			m_dStartTime = 0.0;
+			m_bReady = false;
+		}
+	}
 
 	if (true == m_bOnOff)
 	{

@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\LaserTrigger.h"
+#include "Effect_Generator.h"
+#include "Effect_StarBuddy_Move.h"
 
 CLaserTrigger::CLaserTrigger(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -43,7 +45,10 @@ _int CLaserTrigger::Tick(_double dTimeDelta)
 	CGameObject::Tick(dTimeDelta);
 
 	if (false == LASERTENNIS->Get_StartGame())
+	{
+		m_pMoveEffect->Set_Dead();
 		Set_Dead();
+	}
 
 	Movement(dTimeDelta);
 
@@ -56,6 +61,7 @@ _int CLaserTrigger::Tick(_double dTimeDelta)
 	if (0.2f > XMVectorGetX(XMVector3Length(XMVector3Length(vTargetPos - vMyPos))))
 	{
 		LASERTENNIS->Create_Laser(m_iActivationIndex, m_eTarget);
+		m_pMoveEffect->Set_Dead();
 		Set_Dead();
 	}
 
@@ -101,6 +107,8 @@ HRESULT CLaserTrigger::Render_ShadowDepth()
 
 void CLaserTrigger::Movement(_double dTimeDelta)
 {
+	m_pMoveEffect->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
+
 	if (true == m_bBounce)
 	{
 		_float fY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -159,6 +167,9 @@ HRESULT CLaserTrigger::Ready_Component(void * pArg)
 	m_eTarget = tArg.eTarget;
 	m_iActivationIndex = tArg.iActivationIndex;
 
+	/* Effect */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_StarBuddyEffect"), Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy_Move"), nullptr, (CGameObject**)&m_pMoveEffect), E_FAIL);
+
 	return S_OK;
 }
 
@@ -188,6 +199,7 @@ CGameObject * CLaserTrigger::Clone_GameObject(void * pArg)
 
 void CLaserTrigger::Free()
 {
+	Safe_Release(m_pMoveEffect);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);

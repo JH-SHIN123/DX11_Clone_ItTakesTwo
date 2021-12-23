@@ -89,6 +89,11 @@ enum class Effect_Value
 
 	Gate_Smoke,
 
+	EndingRocket_Smoke,
+	EndingRocket_Boost,
+	EndingRocket_Circle,
+
+
 	Effect_Value_End
 };
 

@@ -169,6 +169,14 @@ HRESULT CModel::Set_Animation(_uint iAnimIndex, _double dAnimTime)
 
 	m_iCurAnimIndex = iAnimIndex;
 	m_iCurAnimFrame = 0;
+
+	if (dAnimTime > 0.0)
+	{
+		m_iCurAnimFrame = (_uint)dAnimTime;
+		m_Anims[m_iCurAnimIndex]->Set_Transformations(m_dCurrentTime, m_AnimTransformations);
+		m_fLerpRatio = 0.f;
+	}
+
 	m_AnimTransformations.assign(m_BaseTransformations.begin(), m_BaseTransformations.end());
 
 	m_fProgressAnim = 0.f;
@@ -214,6 +222,14 @@ HRESULT CModel::Set_CutSceneAnimation(_uint iAnimIndex, _double dAnimTime)
 
 	m_iCurAnimIndex = iAnimIndex;
 	m_iCurAnimFrame = 0;
+
+	if (dAnimTime > 0.0)
+	{
+		m_iCurAnimFrame = (_uint)dAnimTime;
+		m_Anims[m_iCurAnimIndex]->Set_Transformations(m_dCurrentTime, m_AnimTransformations);
+		m_fLerpRatio = 0.f;
+	}
+
 	m_AnimTransformations.assign(m_BaseTransformations.begin(), m_BaseTransformations.end());
 
 	m_fProgressAnim = 0.f;

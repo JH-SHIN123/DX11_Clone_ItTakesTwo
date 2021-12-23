@@ -163,6 +163,50 @@ HRESULT CAnim::Update_Transformations_Blend(_double & dCurrentTime, _uint & iCur
 	return S_OK;
 }
 
+HRESULT CAnim::Set_Transformations(_double dParticularTime, vector<_float4x4>& Transformations)
+{
+	_uint iCurAnimFrame = (_uint)dParticularTime;
+
+	for (auto& pChannel : m_Channels)
+	{
+		_uint iNodeIndex = pChannel->Get_ConnectedNodeIndex();
+
+		const vector<KEY_FRAME>& KeyFrames = pChannel->Get_KeyFrames();
+
+		KEY_FRAME	pFirst = KeyFrames.front();
+		KEY_FRAME	pLast = KeyFrames.back();
+
+		_vector vScale, vRotation, vPosition;
+
+		if (dParticularTime < pFirst.dTime)
+		{
+			vScale = XMLoadFloat3(&pFirst.vScale);
+			vRotation = XMLoadFloat4(&pFirst.vRotation);
+			vPosition = XMLoadFloat3(&pFirst.vPosition);
+			vPosition = XMVectorSetW(vPosition, 1.f);
+		}
+		else if (dParticularTime >= pLast.dTime)
+		{
+			vScale = XMLoadFloat3(&pLast.vScale);
+			vRotation = XMLoadFloat4(&pLast.vRotation);
+			vPosition = XMLoadFloat3(&pLast.vPosition);
+			vPosition = XMVectorSetW(vPosition, 1.f);
+		}
+		else
+		{
+			vScale = XMLoadFloat3(&KeyFrames[iCurAnimFrame].vScale);
+			vRotation = XMLoadFloat4(&KeyFrames[iCurAnimFrame].vRotation);
+			vPosition = XMLoadFloat3(&KeyFrames[iCurAnimFrame].vPosition);
+			vPosition = XMVectorSetW(vPosition, 1.f);
+		}
+
+		XMStoreFloat4x4(&Transformations[iNodeIndex], XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition));
+	}
+
+	return S_OK;
+}
+
+
 _bool CAnim::Update_PathTransformation(_double& dCurrentTime, _uint& iCurAnimFrame, vector<_float4x4>& Transformations, _uint iFrameInteract)
 {
 	_bool isFrameChange = false;

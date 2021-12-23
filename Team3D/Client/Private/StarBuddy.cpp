@@ -36,6 +36,11 @@ HRESULT CStarBuddy::NativeConstruct(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&StarDesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
 
+	if (0 == StarDesc.iStageNum)
+		m_eInterActiveID = UI::StarBuddy0;
+	else
+		m_eInterActiveID = UI::StarBuddy1;
+
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, StarDesc.vPosition);
 
 	CTriggerActor::ARG_DESC ArgDesc;
@@ -100,10 +105,10 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 		}
 	}
 
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::StarBuddy, 
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
 		m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCodyCollide, m_bLaunch);
 
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::StarBuddy,
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, m_eInterActiveID,
 		m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsMayCollide, m_bLaunch);
 
 

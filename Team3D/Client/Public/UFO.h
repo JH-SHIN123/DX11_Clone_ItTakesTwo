@@ -202,6 +202,10 @@ private:
 	/* For.SubLaser */
 	void Ready_Layer_MoonBaboon_SubLaser(const _tchar * pLayerTag);
 
+#pragma region Light
+private:
+	CLight* m_pBossLight = nullptr;
+#pragma endregion
 
 public:
 	static CUFO* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

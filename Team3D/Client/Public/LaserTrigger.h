@@ -34,26 +34,28 @@ public:
 	virtual HRESULT Render_ShadowDepth();
 
 private:
-	CTransform*		m_pTransformCom = nullptr;
-	CRenderer*		m_pRendererCom = nullptr;
-	CModel*			m_pModelCom = nullptr;
+	CTransform*		 m_pTransformCom = nullptr;
+	CRenderer*		 m_pRendererCom = nullptr;
+	CModel*			 m_pModelCom = nullptr;
 
-	_float	 m_fEndY = 0.f;
-	_float	 m_fJumpY = 0.f;
-	_float	 m_fJumpTime = 0.f;
+	_float			 m_fEndY = 0.f;
+	_float			 m_fJumpY = 0.f;
+	_float			 m_fJumpTime = 0.f;
+	_float			 m_fJumpPower = 12.f;
+	_float			 m_fJumpSpeed = 3.f;
+	_float			 m_fMaxY = 0.f;
 
-	_float	 m_fJumpPower = 12.f;
-	_float	 m_fJumpSpeed = 3.f;
-	_float	 m_fMaxY = 0.f;
+	_bool			 m_bJump = false;
+	_bool			 m_bJumpEnd = false;
+	_bool			 m_bBounce = false;
 
-	_bool	 m_bJump = false;
-	_bool	 m_bJumpEnd = false;
-	_bool	 m_bBounce = false;
+	_uint			 m_iActivationIndex = 0;
 
-	_uint	 m_iActivationIndex = 0;
+	_float3			 m_vTargetPos = {};
 
-	_float3	 m_vTargetPos = {};
 	CLaserTennis_Manager::TARGET m_eTarget = CLaserTennis_Manager::TARGET::TARGET_END;
+
+	class CEffect_StarBuddy_Move* m_pMoveEffect = nullptr;
 
 private:
 	void Movement(_double dTimeDelta);

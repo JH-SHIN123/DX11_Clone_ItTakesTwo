@@ -61,7 +61,6 @@ public:
 	static CEffect_Boss_Missile_Smoke_Color* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
-
 };
 
 END

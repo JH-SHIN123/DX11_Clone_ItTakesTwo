@@ -36,6 +36,11 @@ _int CSky::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	_uint iCurLevelStep = m_pGameInstance->Get_CurrentLevelStep();
+
+	if (2 == iCurLevelStep) m_bEnding = true;
+	else m_bEnding = false;
+
 	return NO_EVENT;
 }
 
@@ -63,18 +68,28 @@ HRESULT CSky::Render(RENDER_GROUP::Enum eGroup)
 	// 2: 2개짜리 클라우드 껍데기 -> R 채널
 	m_pModelCom->Sepd_Bind_Buffer();
 
-	_uint iMaterialIndex = 0;
-	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
-	m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0); // 잘못연결한거아님, 모델을 잘못뽑음.
-	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0);
+	if (m_bEnding)
+	{
+		_uint iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
+		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0); // 잘못연결한거아님, 모델을 잘못뽑음.
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 3);
+	}
+	else
+	{
+		_uint iMaterialIndex = 0;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_SPECULAR, 0);
+		m_pModelCom->Set_ShaderResourceView("g_SpecularTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0); // 잘못연결한거아님, 모델을 잘못뽑음.
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 0);
 
-	iMaterialIndex = 1;
-	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
-	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false);
+		iMaterialIndex = 1;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 1, false);
 
-	iMaterialIndex = 2;
-	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
-	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 2, false);
+		iMaterialIndex = 2;
+		m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
+		m_pModelCom->Sepd_Render_Model(iMaterialIndex, 2, false);
+	}
 
 	return S_OK;
 }

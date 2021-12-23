@@ -10,15 +10,16 @@ private:
 	virtual ~CPinBall() = default;
 
 public:/* Getter */
-	_bool Get_Failed()	  { return m_bFailed; };
-	_bool Get_StartGame() { return m_bStartGame; }
-	_bool Get_Ready()	  { return m_bReady; }
-	CTransform*	Get_Transform() { return m_pTransformCom; }
-	_fmatrix Get_WorldMatrix() { return m_pTransformCom->Get_WorldMatrix(); }
+	_bool Get_Failed()			 { return m_bFailed; };
+	_bool Get_StartGame()		 { return m_bStartGame; }
+	_bool Get_Ready()			 { return m_bReady; }
+	CTransform*	Get_Transform()	 { return m_pTransformCom; }
+	_fmatrix Get_WorldMatrix()	 { return m_pTransformCom->Get_WorldMatrix(); }
 
 public:/* Setter */
 	void Set_Ready(_bool bReady) { m_bReady = bReady; }
 	void Set_Failed()			 { m_bFailed = true; }
+	void Set_TriggerCheck()		 { m_bTriggerCheck = true; }
 
 public:
 	void StartGame();
@@ -44,12 +45,13 @@ private:
 	/* 공에 문 달려있는 모델 */
 	CModel*				m_pAttachBall = nullptr;
 
-	_bool				m_bEffect = false;
+	_bool				m_bTriggerCheck = false;
 	_bool				m_bFailed = false;
 	_bool				m_bStartGame = false;
 	_bool				m_bReady = false;
+	_bool				m_bEffect = false;
 	_bool				m_bSoundCheck = false;
-	_float3				m_RespawnPos;
+	_float4x4			m_ResetWorld;
 
 private:
 	void MoveMent(_double dTimaDelta);

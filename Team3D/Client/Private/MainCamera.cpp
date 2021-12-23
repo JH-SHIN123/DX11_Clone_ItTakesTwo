@@ -16,6 +16,7 @@
 #include"LaserTennis_Manager.h"
 #include"AlphaScreen.h"
 #include"Script.h"
+#include "SubCamera.h"
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -1226,8 +1227,11 @@ _int CMainCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
 				UI_CreateOnlyOnce(Cody, BlackScreenFadeInOut);
 				UI_Generator->Set_FadeInSpeed(Player::Cody, UI::BlackScreenFadeInOut, 5.f);
 			}
-			if(static_cast<CAlphaScreen*>(UI_Generator->Get_UIObject(Player::Cody, UI::BlackScreenFadeInOut))->Get_Alpha() >= 1.f)
+			if (static_cast<CAlphaScreen*>(UI_Generator->Get_UIObject(Player::Cody, UI::BlackScreenFadeInOut))->Get_Alpha() >= 1.f)
+			{
 				ReSet_Cam_FreeToAuto(true);
+				((CSubCamera*)(DATABASE->Get_SubCam()))->ReSet_Cam_FreeToAuto(true);
+			}
 		}
 		return NO_EVENT;
 	}

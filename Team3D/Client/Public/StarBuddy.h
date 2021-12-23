@@ -42,6 +42,7 @@ private:
 	_bool		m_IsCodyCollide = false;
 	_bool		m_IsMayCollide = false;
 	GameID::Enum		m_PlayerID = GameID::eSTARBUDDY;
+	UI::INTERACTIVE_ID  m_eInterActiveID = UI::INTERACTIVE_ID_END;
 
 	/* Sound */
 	_float m_fStarBuddy_Volume = 1.f;

@@ -283,10 +283,20 @@ void CGameInstance::Lerp_Sound(CHANNEL_TYPE eFirstChannel, CHANNEL_TYPE eSecondC
 	NULL_CHECK(m_pSound_Manager);
 	m_pSound_Manager->Lerp_Sound(eFirstChannel, eSecondChannel, fLerpSpped, fFirstVolume, fSecondVolume);
 }
-void CGameInstance::FadeInOut_Sound(_bool isFirstBGM, _bool bType, _float fLerpSpped, _float fVolume)
+void CGameInstance::Sound_FadeIn(CHANNEL_TYPE eChannel, _float fTargetVolume, _float fFadingTime)
 {
 	NULL_CHECK(m_pSound_Manager);
-	m_pSound_Manager->FadeInOut(isFirstBGM, bType, fLerpSpped, fVolume);
+	m_pSound_Manager->Sound_FadeIn(eChannel, fTargetVolume, fFadingTime);
+}
+void CGameInstance::Sound_FadeOut(CHANNEL_TYPE eChannel, _float fTargetVolume, _float fFadingTime)
+{
+	NULL_CHECK(m_pSound_Manager);
+	m_pSound_Manager->Sound_FadeOut(eChannel, fTargetVolume, fFadingTime);
+}
+void CGameInstance::Sound_Lerp(CHANNEL_TYPE eFadeIn, CHANNEL_TYPE eFadeOut, _float fTargetVolume_In, _float fTargetVolume_Out, _float fLerpTime)
+{
+	NULL_CHECK(m_pSound_Manager);
+	m_pSound_Manager->Sound_Lerp(eFadeIn, eFadeOut, fTargetVolume_In, fTargetVolume_Out, fLerpTime);
 }
 #pragma endregion 
 
@@ -382,6 +392,11 @@ void CGameInstance::Create_Ground()
 {
 	NULL_CHECK(m_pPhysX);
 	m_pPhysX->Create_Ground();
+}
+void CGameInstance::Resize_Actor(PxRigidActor * pActor, _float fScale)
+{
+	NULL_CHECK(m_pPhysX);
+	m_pPhysX->Resize_Actor(pActor, fScale);
 }
 #pragma endregion 
 

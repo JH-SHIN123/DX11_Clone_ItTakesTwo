@@ -44,14 +44,20 @@ HRESULT CEffect_Boss_Laser_Particle::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_Laser_Particle::Tick(_double TimeDelta)
 {
-	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
+   	if (false == m_IsActivate && 0.0 >= m_dControlTime)
 		return EVENT_DEAD;
 
-	m_dControlTime += TimeDelta;
-	if (true == m_IsActivate)
+	if (true == m_IsActivate && false == m_isDead)
 	{
+		m_dControlTime += TimeDelta;
 		if (1.0 <= m_dControlTime)
 			m_dControlTime = 1.0;
+	}
+	else
+	{
+		m_dControlTime -= TimeDelta * 0.75f;
+		if (0.0 >= m_dControlTime)
+			m_dControlTime = 0.0;
 	}
 
 	Check_Instance(TimeDelta);
@@ -66,7 +72,7 @@ _int CEffect_Boss_Laser_Particle::Late_Tick(_double TimeDelta)
 
 HRESULT CEffect_Boss_Laser_Particle::Render(RENDER_GROUP::Enum eGroup)
 {
-	_float fTime = 1.f;// (_float)m_dControlTime;
+	_float fTime = (_float)m_dControlTime;
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fTime, sizeof(_float));

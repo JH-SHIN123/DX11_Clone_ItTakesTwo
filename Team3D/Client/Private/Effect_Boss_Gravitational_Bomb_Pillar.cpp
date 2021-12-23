@@ -20,10 +20,16 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Pillar::NativeConstruct_Prototype(void *
 
 HRESULT CEffect_Boss_Gravitational_Bomb_Pillar::NativeConstruct(void * pArg)
 {
-	__super::Ready_Component(pArg);
+	if (nullptr != pArg)
+		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
 
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Color_Ramp"), TEXT("Com_Tex"), (CComponent**)&m_pTexturesCom), E_FAIL);
 
+	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
+	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 	Ready_Instance();
 
 	m_EffectDesc_Prototype.fLifeTime = 3.f;

@@ -135,8 +135,10 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	/* For.EndingCredit */
 	if (m_pGameInstance->Key_Down(DIK_END))
 	{
+		m_pGameInstance->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
 		m_iLevelStep = 2; 
 		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.8f);
+		ENDINGCREDIT->Create_Environment();
 	}
 	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
 
@@ -266,16 +268,16 @@ HRESULT CLevel_Stage::Ready_Test()
 
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layersadasda", Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::MAIN_UMBRELLA, 1.0)), E_FAIL);
 
-	ROBOTDESC MoonBaboonDesc;
-	MoonBaboonDesc.vPosition = { 64.f, 0.f, 30.f, 1.f };
-	//MoonBaboonDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"asdl", Level::LEVEL_STAGE, TEXT("GameObject_RunningMoonBaboon"), &MoonBaboonDesc), E_FAIL);
+	//ROBOTDESC MoonBaboonDesc;
+	//MoonBaboonDesc.vPosition = { 64.f, 0.f, 30.f, 1.f };
+	////MoonBaboonDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"asdl", Level::LEVEL_STAGE, TEXT("GameObject_RunningMoonBaboon"), &MoonBaboonDesc), E_FAIL);
 
 	ROBOTDESC StarDesc;
 	StarDesc.vPosition = { 63.0f, 0.5f, 55.f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"º°", Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), &StarDesc), E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"·¹", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_MainLaser")), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"·¹", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_MainLaser")), E_FAIL);
 
 #endif
 
@@ -412,6 +414,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 	Ready_DirectionalLight(TEXT("Sun"), _float3(1.f, -1.f, 1.f), _float4(0.45f, 0.45f, 0.45f, 1.f), _float4(0.35f,0.35f,0.35f,1.f), _float4(0.45f, 0.45f, 0.45f,1.f));
 
 #ifndef __MAPLOADING_OFF
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Start.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Planet_Robot.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ToyBoxButton_Back.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ComputeRoom.dat"));
@@ -425,6 +428,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Pinball.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_ComputeRoom.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_EFFECTLIGHT, TEXT("../Bin/Resources/Data/LightData/EffectLight_Bg.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_EFFECTLIGHT, TEXT("../Bin/Resources/Data/LightData/EffectLight_Rail_Bg.dat"));
 #endif
 
 	return S_OK;
@@ -575,9 +579,11 @@ HRESULT CLevel_Stage::Ready_Layer_StarBuddy(const _tchar * pLayerTag)
 {
 	ROBOTDESC StarDesc;
 	StarDesc.vPosition = { 63.504f, 126.751f, 226.338f, 1.f };
+	StarDesc.iStageNum = 0;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), &StarDesc), E_FAIL);
 
 	StarDesc.vPosition = { 63.15f, 126.751f, 162.764f, 1.f };
+	StarDesc.iStageNum = 1;
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), &StarDesc), E_FAIL);
 	return S_OK;
 }
@@ -896,35 +902,35 @@ _int CLevel_Stage::Tick_EndingCredit(_double dTimedelta)
 	{
 		++m_iEndingCreditStep;
 
-		//for (_uint i = 0; i < 24; ++i)
+		//for (_uint i = 0; i < 23; ++i)
 		//{
-		//	ENDINGCREDIT->Create_3DText(i, -500.f - i * 100.f);
+		//	ENDINGCREDIT->Create_3DText(i, -600.f - i * 250.f);
 		//}
 
-		ENDINGCREDIT->Create_3DText(0, -1003.f);
-		ENDINGCREDIT->Create_3DText(1, -2000.f);
-		//ENDINGCREDIT->Create_3DText(2, -1300.f);
-		//ENDINGCREDIT->Create_3DText(3, -1600.f);
-		//ENDINGCREDIT->Create_3DText(4, -1800.f);
-		//ENDINGCREDIT->Create_3DText(5, -2000.f);
-		//ENDINGCREDIT->Create_3DText(6, -2500.f);
-		//ENDINGCREDIT->Create_3DText(7, -3000.f);
-		//ENDINGCREDIT->Create_3DText(8, -3300.f);
-		//ENDINGCREDIT->Create_3DText(9, -3600.f);
-		//ENDINGCREDIT->Create_3DText(10, -3900.f);
-		//ENDINGCREDIT->Create_3DText(11, -4200.f);
-		//ENDINGCREDIT->Create_3DText(12, -4500.f);
-		//ENDINGCREDIT->Create_3DText(13, -4800.f);
-		//ENDINGCREDIT->Create_3DText(14, -5100.f);
-		//ENDINGCREDIT->Create_3DText(15, -5400.f);
-		//ENDINGCREDIT->Create_3DText(16, -5700.f);
-		//ENDINGCREDIT->Create_3DText(17, -6000.f);
-		//ENDINGCREDIT->Create_3DText(18, -6300.f);
-		//ENDINGCREDIT->Create_3DText(19, -6600.f);
-		//ENDINGCREDIT->Create_3DText(20, -6900.f);
-		//ENDINGCREDIT->Create_3DText(21, -7200.f);
-		//ENDINGCREDIT->Create_3DText(22, -7500.f);
-		//ENDINGCREDIT->Create_3DText(23, -7900.f);
+		ENDINGCREDIT->Create_3DText(0, -792.5f);
+		ENDINGCREDIT->Create_3DText(1, -1080.f);
+		ENDINGCREDIT->Create_3DText(2, -1363.f);
+		ENDINGCREDIT->Create_3DText(3, -1646.f);
+		ENDINGCREDIT->Create_3DText(4, -1930.f);
+		ENDINGCREDIT->Create_3DText(5, -2214.f);
+		ENDINGCREDIT->Create_3DText(6, -2496.f);
+		ENDINGCREDIT->Create_3DText(7, -2781.f);
+		ENDINGCREDIT->Create_3DText(8, -3064.f);
+		ENDINGCREDIT->Create_3DText(9, -3349.f);
+		ENDINGCREDIT->Create_3DText(10, -3632.f);
+		ENDINGCREDIT->Create_3DText(12, -3916.f);
+		ENDINGCREDIT->Create_3DText(11, -4100.f);
+		ENDINGCREDIT->Create_3DText(13, -4270.f);
+		ENDINGCREDIT->Create_3DText(14, -4380.f);
+		ENDINGCREDIT->Create_3DText(15, -4545.f);
+		ENDINGCREDIT->Create_3DText(16, -4707.f);
+		ENDINGCREDIT->Create_3DText(17, -4992.f);
+		ENDINGCREDIT->Create_3DText(18, -5276.f);
+		ENDINGCREDIT->Create_3DText(19, -5558.f);
+		ENDINGCREDIT->Create_3DText(20, -5846.f);
+		ENDINGCREDIT->Create_3DText(21, -6131.f);
+		ENDINGCREDIT->Create_3DText(22, -6415.f);
+		ENDINGCREDIT->Create_3DText(23, -6696.f);
 	}
 
 	return NO_EVENT;

@@ -12,6 +12,7 @@ private:
 public:
 	/* false:Open true:Close */
 	void Set_DoorState(_bool bDoorState);
+	void Set_Render(_bool bRender) { m_bRender = bRender; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -28,6 +29,7 @@ private:
 
 	_bool			m_bReady = false;
 	_bool			m_bDoorState = false;
+	_bool			m_bRender = true;
 	_float			m_fAngle = 0.f;
 
 private:

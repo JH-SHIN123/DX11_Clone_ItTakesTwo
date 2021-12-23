@@ -38,7 +38,8 @@ HRESULT CEndingRocket::NativeConstruct(void * pArg)
 
 	DATABASE->Set_EndingRocket(this);
 
-	EFFECT->Add_Effect(Effect_Value::BossMissile_Smoke, m_pTransformCom->Get_WorldMatrix());
+	EFFECT->Add_Effect(Effect_Value::EndingRocket_Smoke, m_pTransformCom->Get_WorldMatrix());
+	EFFECT->Add_Effect(Effect_Value::EndingRocket_Circle, m_pTransformCom->Get_WorldMatrix());
 
 	return S_OK;
 }
@@ -62,7 +63,6 @@ _int CEndingRocket::Late_Tick(_double dTimeDelta)
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
-	Ready_Players(dTimeDelta);
 	return NO_EVENT;
 }
 
@@ -97,6 +97,9 @@ void CEndingRocket::Movement(_double dTimeDelta)
 	/* ºÎ½ºÆ® */
 	if (true == m_bBoost)
 	{
+		//if (0.0 == m_dBoostTime)
+		//	EFFECT->Add_Effect(Effect_Value::EndingRocket_Boost);
+
 		m_dBoostTime += dTimeDelta;
 
 		if (2.0 <= m_dBoostTime)
@@ -104,13 +107,14 @@ void CEndingRocket::Movement(_double dTimeDelta)
 			m_bBoost = false;
 			m_dBoostTime = 0.0;
 		}
-
 		m_pTransformCom->Go_Straight(fTimeDelta * m_fCurSpeed);
 	}
 	else
 	{
 		if (m_fCurSpeed > ENDING_ROCKET_SPEED)
-			m_fCurSpeed -= fTimeDelta * 20.f;
+			m_fCurSpeed -= fTimeDelta * 22.5f;
+		else
+			m_fCurSpeed = ENDING_ROCKET_SPEED;
 
 		m_pTransformCom->Go_Straight(fTimeDelta * m_fCurSpeed);
 	}

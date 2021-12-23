@@ -13,6 +13,7 @@
 #include "Effect_Generator.h"
 #include "BossHpBar.h"
 #include "MoonUFO.h"
+#include "HpBar.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -36,7 +37,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	CGameObject::NativeConstruct(pArg);
 
 	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
 	Add_LerpInfo_To_Model();
 
@@ -71,12 +72,28 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying_Particle, m_pTransformCom->Get_WorldMatrix());
 	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying_Particle_Flow, m_pTransformCom->Get_WorldMatrix());
 
+	// Light
+	LIGHT_DESC lightDesc;
+	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	lightDesc.fRange = 15.f;
+	lightDesc.vDiffuse = { 0.f,0.f,1.f,1.f };
+	XMStoreFloat3(&lightDesc.vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_pBossLight = CLight::Create(TEXT("Boss_UFO_Light"),&lightDesc);
+	m_pGameInstance->Add_Light(LightStatus::eDYNAMIC, m_pBossLight);
+	Safe_AddRef(m_pBossLight);
+
 	return S_OK;
 }
 
 _int CUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	if (m_pGameInstance->Key_Down(DIK_HOME))
+	{
+		_vector dd = { 61.7f, 348.8f, 197.2f, 1.f };
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, dd);
+	}
 
 	/* 테스트 용 */
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
@@ -85,6 +102,8 @@ _int CUFO::Tick(_double dTimeDelta)
 		DATABASE->Close_BossDoor();
 		m_pMoonBaboon->Set_Animation(Moon_Ufo_Programming, Moon_Ufo_MH);
 		((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
+		((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
+		m_pBossHpBar->Set_Active(true);
 	}
 	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
 	{
@@ -121,6 +140,8 @@ _int CUFO::Tick(_double dTimeDelta)
 	//}
 	//else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
 	//	m_pBossHpBar->Set_Active(false);
+	else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
+		m_pBossHpBar->Set_Active(false);
 
 	if (m_pGameInstance->Key_Down(DIK_F11))
 	{
@@ -168,6 +189,16 @@ _int CUFO::Tick(_double dTimeDelta)
 
 	m_pModelCom->Update_Animation(dTimeDelta);
 
+	/* Light */
+	if (m_pBossLight)
+	{
+		LIGHT_DESC* pLightDesc = m_pBossLight->Get_LightDescPtr();
+		if (nullptr != pLightDesc)
+		{
+			XMStoreFloat3(&pLightDesc->vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		}
+	}
+
 	return NO_EVENT;
 }
 
@@ -192,6 +223,7 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
 	{
+
 	case Client::CUFO::TARGET_CODY:
 		vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
 		break;
@@ -201,7 +233,11 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	}
 
 	vDir = vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+
+
 	_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
+	_float vAngle = XMConvertToDegrees(XMVectorGetX(vDirForRotate));
 
 	/* 우주선을 타겟쪽으로 천천히 회전 */
 	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 3.f);
@@ -299,7 +335,7 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 	/* 우주선을 타겟쪽으로 천천히 회전 */
 	m_pTransformCom->RotateYawDirectionOnLand(vDirForRotate, dTimeDelta / 5.f);
 
-	/* 10발만 쏘자 */
+	/* 몇 발 쏠지 정해줄려면 iGravitationalBombMaxCount 바꾸면 됨*/
 	if (iGravitationalBombMaxCount >= m_iGravitationalBombCount)
 	{
 		m_fGravitationalBombLanchTime += (_float)dTimeDelta;
@@ -663,7 +699,6 @@ void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
 
 		/* 도착했으면 메인레이저 올라와라 ㅇㅇ */
 		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_LaserOperation(true);
-
 	}
 }
 
@@ -928,6 +963,10 @@ void CUFO::GetRidLaserGun()
 	m_pModelCom->Set_PivotTransformation(m_pModelCom->Get_BoneIndex("LaserBase"), LaserBaseBone);
 
 	m_IsLaserGunRid = true;
+
+	EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
+	EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
+	EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Smoke);
 }
 
 HRESULT CUFO::Phase3_End(_double dTimeDelta)
@@ -1266,6 +1305,12 @@ CGameObject * CUFO::Clone_GameObject(void * pArg)
 
 void CUFO::Free()
 {
+	if (m_pBossLight)
+	{
+		m_pBossLight->Set_Dead(true);
+		Safe_Release(m_pBossLight);
+	}
+
 	if (nullptr != m_pStaticActorCom)
 		Safe_Release(m_pStaticActorCom);
 	if (nullptr != m_pStaticTransformCom)

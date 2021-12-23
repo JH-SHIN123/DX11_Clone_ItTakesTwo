@@ -6,6 +6,9 @@
 #include "DataStorage.h"
 #include "Effect_Generator.h"
 #include "Effect_Boss_Laser_Smoke.h"
+#include "Cody.h"
+#include "May.h"
+#include "MoonBaboonCore_Glass.h"
 
 CLaser_TypeA::CLaser_TypeA(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLaser(pDevice, pDeviceContext)
@@ -95,24 +98,30 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 				/* 코디 타격 */
 				if (pUserData->eID == GameID::eCODY)
 				{
+					m_dDamagingDelay_Cody -= dTimeDelta;
+
 					/* 지속 타격 데미지*/
 					if (m_isHitCody)
 					{
 						if (m_dDamagingDelay_Cody <= 0.0)
 						{
 							// 데미지를 주는 함수
-
+							((CCody*)DATABASE->GetCody())->Set_HpBarReduction(10);
 							// 데미지 주기 초기화
-							m_dDamagingDelay_Cody = 0.3;
+							m_dDamagingDelay_Cody = 0.5;
+							__super::Player_Hit_Effect();
 						}
 					}
 					/* 첫 타격 데미지 */
 					else
 					{
 						// 데미지를 주는 함수
-
+						((CCody*)DATABASE->GetCody())->Set_HpBarReduction(10);
 						// 데미지 주기 초기화
-						m_dDamagingDelay_Cody = 0.3;
+						m_dDamagingDelay_Cody = 0.5;
+						m_isHitCody = true;
+						__super::Player_Hit_Effect();
+						__super::Player_Hit_Effect();
 					}
 				}
 				else
@@ -124,24 +133,30 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 				/* 메이 타격 */
 				if (pUserData->eID == GameID::eMAY)
 				{
+					m_dDamagingDelay_May -= dTimeDelta;
+
 					/* 지속 타격 데미지*/
 					if (m_isHitMay)
 					{
 						if (m_dDamagingDelay_May <= 0.0)
 						{
 							// 데미지를 주는 함수
-
+							((CMay*)DATABASE->GetMay())->Set_HpBarReduction(10);
 							// 데미지 주기 초기화
-							m_dDamagingDelay_May = 0.3;
+							m_dDamagingDelay_May = 0.5;
+							__super::Player_Hit_Effect();
 						}
 					}
 					/* 첫 타격 데미지 */
 					else
 					{
 						// 데미지를 주는 함수
-
+						((CMay*)DATABASE->GetMay())->Set_HpBarReduction(10);
 						// 데미지 주기 초기화
-						m_dDamagingDelay_May = 0.3;
+						m_dDamagingDelay_May = 0.5;
+						m_isHitMay = true;
+						__super::Player_Hit_Effect();
+						__super::Player_Hit_Effect();
 					}
 				}
 				else
@@ -149,13 +164,23 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 					m_isHitMay = false;
 					m_dDamagingDelay_May = 0.0;
 				}
+
+				/* 보스방 코어 타격 */
+				if (pUserData->eID == GameID::eBOSSCORE)
+				{
+					CMoonBaboonCore_Glass* pBossCoreGlass = (CMoonBaboonCore_Glass*)pUserData->pGameObject;
+					if (pBossCoreGlass)
+					{
+						pBossCoreGlass->Set_Broken();
+					}
+				}
 			}
 
 			m_fLaserSizeY = m_RaycastBuffer.getAnyHit(0).distance;
 			m_vEndPoint = MH_XMFloat4(m_RaycastBuffer.getAnyHit(0).position, 1.f);
 			m_isCollided = true;
 
-/*------충돌 이펙트 -------*/
+			/*------충돌 이펙트 -------*/
 			/* 충돌 시 이펙트 생성 */
 			if (m_dCreateEffectDelay <= 0.0)
 			{
@@ -204,11 +229,17 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 		m_fLaserSizeX -= 15.f * (_float)dTimeDelta;
 
 		if (m_fLaserSizeX < 0.f)
+		{
 			return EVENT_DEAD;
+		}
 	}
 
 	if (nullptr != m_pLaserSmoke)
+	{
 		m_pLaserSmoke->Set_Pos(XMLoadFloat4(&m_vEndPoint));
+		if (true == m_isDead)
+			m_pLaserSmoke->Set_Dead();
+	}
 
 #ifdef __TEST_SE
 	if (m_pGameInstance->Key_Down(DIK_N))

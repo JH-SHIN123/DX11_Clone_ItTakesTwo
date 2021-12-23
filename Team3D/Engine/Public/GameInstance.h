@@ -75,7 +75,9 @@ public:
 	void Stop_SoundAll();
 	void Set_SoundVolume(CHANNEL_TYPE eChannel, _float fVolume);
 	void Lerp_Sound(CHANNEL_TYPE eFirstChannel, CHANNEL_TYPE eSecondChannel, _float fLerpSpped = 1.f, _float fFirstVolume = 1.f, _float fSecondVolume = 1.f);
-	void FadeInOut_Sound(_bool isFirstBGM, _bool bType, _float fLerpSpped = 1.f, _float fVolume = 1.f);
+	void Sound_FadeIn(CHANNEL_TYPE eChannel, _float fTargetVolume, _float fFadingTime);
+	void Sound_FadeOut(CHANNEL_TYPE eChannel, _float fTargetVolume, _float fFadingTime);
+	void Sound_Lerp(CHANNEL_TYPE eFadeIn, CHANNEL_TYPE eFadeOut, _float fTargetVolume_In, _float fTargetVolume_Out, _float fLerpSpeed);
 #pragma endregion
 
 #pragma region Level_Manager
@@ -107,6 +109,7 @@ public:
 	PxTriangleMesh*	Create_PxMesh(MESHACTOR_DESC pMeshActorDesc);
 	_bool			Raycast(const PxVec3& origin, const PxVec3& unitDir, const PxReal distance, PxRaycastCallback& hitCall, PxHitFlags hitFlags = PxHitFlags(PxHitFlag::eDEFAULT), const PxQueryFilterData& filterData = PxQueryFilterData(), PxQueryFilterCallback* filterCall = NULL, const PxQueryCache* cache = NULL);
 	void			Create_Ground();
+	void			Resize_Actor(PxRigidActor* pActor, _float fScale);
 #pragma endregion
 
 #pragma region Pipeline_Manager
