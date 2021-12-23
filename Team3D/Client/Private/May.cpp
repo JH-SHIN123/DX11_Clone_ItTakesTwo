@@ -455,6 +455,12 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
 	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
 		m_IsEnding = true;
+	if (m_pGameInstance->Key_Down(DIK_BACKSPACE))/* 우산 */
+	{
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+		//m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
+		m_pActorCom->Set_IsPlayerInUFO(false);
+	}
 
 #pragma endregion
 
@@ -820,6 +826,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_X))/* 우산 */
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_U))/* 메이 우주선 태우기 */
+		Set_UFO(true);
 	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
 		m_IsEnding = true;
 #pragma endregion
@@ -2181,12 +2189,14 @@ void CMay::Activate_RobotLever(const _double dTimeDelta)
 {
 	if (m_IsActivateRobotLever == true)
 	{
-		//m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pModelCom->Is_AnimFinished(ANI_M_Lever_Left))
+		m_fLeverCutSceneTime += (_float)dTimeDelta;
+		if (m_fLeverCutSceneTime > 1.f)
 		{
 			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsActivateRobotLever = false;
 			m_IsCollide = false;
+			m_fLeverCutSceneTime = 0.f;
 		}
 	}
 }
@@ -2197,7 +2207,7 @@ void CMay::Pull_VerticalDoor(const _double dTimeDelta)
 		return;
 
 	_bool IsTriggerEnd = false;
-	if (m_pGameInstance->Pad_Key_Down(DIP_LB) || m_pGameInstance->Key_Down(DIK_I))
+	if (m_pGameInstance->Pad_Key_Down(DIP_A) || m_pGameInstance->Key_Down(DIK_I))
 		IsTriggerEnd = true;
 
 	if (m_IsPullVerticalDoor == true)

@@ -33,6 +33,14 @@ void CPlayerActor::Set_ShapeFlag(_bool bValue)
 
 }
 
+void CPlayerActor::Set_Gravity_Normally()
+{
+	XMStoreFloat3(&m_vPlayerUp, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	m_pController->setUpDirection(MH_PxVec3(m_vPlayerUp));
+	m_pTransform->RotateByUp(XMLoadFloat3(&m_vPlayerUp));
+	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
+}
+
 HRESULT CPlayerActor::NativeConstruct_Prototype()
 {
 	CActor::NativeConstruct_Prototype();

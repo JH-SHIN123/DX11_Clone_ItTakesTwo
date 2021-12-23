@@ -16,7 +16,7 @@ public:
 		UFO_END
 	};
 
-	enum UFO_TARGET { TARGET_CODY , TARGET_MAY, TARGET_END };
+	enum UFO_TARGET { TARGET_CODY, TARGET_MAY, TARGET_END };
 	enum UFO_PHASE { PHASE_1, PHASE_2, PHASE_3, PHASE_END };
 	enum UFO_PATTERN { INTERACTION, LASER, GRAVITATIONALBOMB, GUIDEDMISSILE, GROUNDPOUND, PATTERN_END };
 
@@ -41,6 +41,7 @@ public:
 	void Set_CodyEnterUFO();
 	void Set_CutScene();
 	void Set_MoonBaboonPtr(class CMoonBaboon* pMoonBaboon);
+	void Set_Who_Collide_Last(GameID::Enum WhoCollide) { m_WhoCollide = WhoCollide; }
 	/* For. BossFloorUp */
 	void Set_BossUFOUp(_float fMaxDistance, _float fSpeed);
 	HRESULT Set_MeshRenderGroup();
@@ -51,6 +52,7 @@ public:
 	_float4 Get_LaserStartPos() const { return m_vLaserGunPos; }
 	_float4 Get_LaserDir() const { return m_vLaserDir; }
 	UFO_PHASE Get_BossPhase() const { return m_ePhase; }
+	_bool	  Get_IsCutScene() { return m_IsCutScene; }
 
 private:
 	UFO_TARGET				m_eTarget = TARGET_END;
@@ -58,6 +60,8 @@ private:
 	UFO_PATTERN				m_ePattern = PATTERN_END;
 
 private:
+	GameID::Enum			m_WhoCollide = GameID::eEND;
+
 	/* For.CutScene */
 	_bool					m_IsCutScene = false;
 
@@ -119,6 +123,9 @@ private:
 
 	/* For. UI */
 	class CBossHpBar*		m_pBossHpBar = nullptr;
+
+	/* CutScene Offset */
+	_vector     m_vChairOffSetPos = {};
 
 
 private:
