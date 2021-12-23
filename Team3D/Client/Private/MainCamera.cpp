@@ -1611,14 +1611,21 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		CCutScenePlayer::GetInstance()->Stop_CutScene();
 		return NO_EVENT;
 	}*/
-	
-#endif
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
+	{
+		CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Eject_InUFO"));
+		Start_Film(L"Film_Eject_InUFO");
+		//CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Boss_Intro");
+		return NO_EVENT;
+	}
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
 	{
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
 	}
 
+#endif
+	
 	if (m_eCurCamMode != m_ePreCamMode)
 	{
 		switch (m_eCurCamMode)
