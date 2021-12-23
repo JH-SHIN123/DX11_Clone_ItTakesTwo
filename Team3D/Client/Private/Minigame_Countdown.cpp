@@ -95,9 +95,6 @@ _int CMinigame_Countdown::Late_Tick(_double TimeDelta)
 		m_UIDesc.vScale = m_vSaveScale;
 
 		m_IsStart = false;
-
-		if (4 < m_UIDesc.iTextureRenderIndex)
-			LASERTENNIS->Start_Game();
 	}
 
 	if (true == m_pMinigame_GaugeCircle->Get_NextCount() && 3 >= m_UIDesc.iTextureRenderIndex)

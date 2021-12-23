@@ -426,8 +426,7 @@ void CEffect_Player_Dead_Particle_Fire::Free()
 	Safe_Delete_Array(m_pPointBuffer_Smoke_Small);
 	Safe_Delete_Array(m_vPointBuffer_Small_Dir);
 
-// 	Safe_Release(m_pTexturesCom_Point_Smoke);
-// 	Safe_Delete_Array(m_pPointBuffer_Smoke);
+ 	Safe_Release(m_pTexturesCom_Particle_Mask);
 
 	__super::Free();
 }

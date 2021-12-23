@@ -256,6 +256,7 @@ public:
 	void 			 Set_RocketOffSetPos(_fvector vRocketOffSetPos) { m_vRocketOffSetPos = vRocketOffSetPos; }
 	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
+	void			 Set_Change_Size_After_UmbrellaCutScene();
 
 	/* For. Ending */
 	void			Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }
@@ -410,7 +411,10 @@ private:
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
+
+	/* For.PushBattery*/
 	_bool m_IsPushingBattery = false;
+	_float m_fPushDist = 0.f;
 
 	/* Hye::For.DeadLine, SavePoint */
 	_bool	 m_IsDeadLine = false;
@@ -419,6 +423,9 @@ private:
 	_float3	 m_DeadLinePos = {};
 	/* Hye::For.PinBall*/
 	_bool	 m_IsPinBall = false;
+	_bool	 m_bPinBallScript = false;
+	_double  m_dScriptTime = 0.0;
+	_uint	 m_iScriptCount = 0;
 	/* Hye::For.Tube*/
 	_bool	 m_IsTube = false;
 	/* Hye::For.SpaceShip */
@@ -558,6 +565,7 @@ private:
 	/* Hye */
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
+	void PinBall_Script(const _double dTimeDelta);
 	void LaserTennis(const _double dTimeDelta);
 
 	/* ÁøÇõ */

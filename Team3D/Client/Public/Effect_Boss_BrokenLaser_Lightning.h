@@ -44,7 +44,7 @@ private:
 	const _float	m_fAlphaTime_Power = 2.f;
 	const _float	m_fInstance_SpeedPerSec = 0.2f;
 	const _double	m_dInstance_Pos_Update_Time = 3.0;
-	const _float2	m_vDefaultSize = { 1.f, 1.f };
+	const _float2	m_vDefaultSize = { 2.f, 2.f };
 
 public:
 	static CEffect_Boss_BrokenLaser_Lightning* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

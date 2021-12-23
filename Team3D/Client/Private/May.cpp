@@ -455,6 +455,12 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
 	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
 		m_IsEnding = true;
+	if (m_pGameInstance->Key_Down(DIK_BACKSPACE))/* 우산 */
+	{
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+		//m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
+		m_pActorCom->Set_IsPlayerInUFO(false);
+	}
 
 #pragma endregion
 
@@ -617,6 +623,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 		if (m_IsJumping == false)
 		{
+			EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 			m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
 			m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
@@ -636,6 +644,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		{
 			if (m_pModelCom->Get_CurAnimIndex() != ANI_M_AirDash_Start && m_iAirDashCount == 0)
 			{
+				EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 				m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
 				m_pGameInstance->Play_Sound(TEXT("May_Dash.wav"), CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
 
@@ -816,6 +826,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_X))/* 우산 */
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_U))/* 메이 우주선 태우기 */
+		Set_UFO(true);
 	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
 		m_IsEnding = true;
 #pragma endregion
@@ -951,6 +963,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 		if (m_IsJumping == false)
 		{
+			EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 			m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
 			m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
@@ -967,6 +981,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		{
 			if (m_pModelCom->Get_CurAnimIndex() != ANI_M_AirDash_Start && m_iAirDashCount == 0)
 			{
+				EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 				m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
 				m_pGameInstance->Play_Sound(TEXT("May_Dash.wav"), CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
 
@@ -1851,6 +1867,14 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		/* For.PinBall */
 		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_IsPinBall)
 		{
+			if (false == m_bPinBallScript_Once[0])
+			{
+				m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
+				m_pGameInstance->Play_Sound(TEXT("19.wav"), CHANNEL_PINBALLVOICE);
+				SCRIPT->Render_Script(37, CScript::HALF, 1.f);
+				m_bPinBallScript_Once[0] = true;
+			}
+
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Enter);
 			m_pModelCom->Set_Animation(ANI_M_PinBall_MH);
 
@@ -1900,6 +1924,13 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_IsWarpDone = true;
 			XMStoreFloat4x4(&m_TriggerTargetWorld, static_cast<CWarpGate*>(m_pTargetPtr)->Get_NextPortal_Matrix());
 			m_pCamera->Set_StartPortalMatrix(static_cast<CWarpGate*>(m_pTargetPtr)->Get_Transform()->Get_WorldMatrix());
+
+			if (5 == static_cast<CWarpGate*>(m_pTargetPtr)->Get_StageValue())
+			{
+				/* 레이저테니스 UI 지우셈 */
+				UI_Delete(Default, Minigame_Score);
+				UI_Delete(Default, Minigame_Title);
+			}
 		}
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{
@@ -2057,9 +2088,15 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				((CCody*)DATABASE->GetCody())->Set_AnimationRotate(190.f);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_LaserRippedOff);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_NextAnimIndex(ANI_C_MH);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Lightning);
+
 			}
 		}
-		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_O) && false == m_bLaserTennis)
+		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)
 		{
 			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
 			m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
@@ -2168,12 +2205,14 @@ void CMay::Activate_RobotLever(const _double dTimeDelta)
 {
 	if (m_IsActivateRobotLever == true)
 	{
-		//m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pModelCom->Is_AnimFinished(ANI_M_Lever_Left))
+		m_fLeverCutSceneTime += (_float)dTimeDelta;
+		if (m_fLeverCutSceneTime > 1.f)
 		{
 			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsActivateRobotLever = false;
 			m_IsCollide = false;
+			m_fLeverCutSceneTime = 0.f;
 		}
 	}
 }
@@ -2184,7 +2223,7 @@ void CMay::Pull_VerticalDoor(const _double dTimeDelta)
 		return;
 
 	_bool IsTriggerEnd = false;
-	if (m_pGameInstance->Pad_Key_Down(DIP_LB) || m_pGameInstance->Key_Down(DIK_I))
+	if (m_pGameInstance->Pad_Key_Down(DIP_A) || m_pGameInstance->Key_Down(DIK_I))
 		IsTriggerEnd = true;
 
 	if (m_IsPullVerticalDoor == true)
@@ -2408,6 +2447,14 @@ void CMay::PinBall(const _double dTimeDelta)
 			/* 공 발사 */
 			if (m_pGameInstance->Key_Down(DIK_LBRACKET) || m_pGameInstance->Pad_Key_Down(DIP_LB))
 			{
+				if (false == m_bPinBallScript_Once[1])
+				{
+					m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
+					m_pGameInstance->Play_Sound(TEXT("20.wav"), CHANNEL_PINBALLVOICE);
+					SCRIPT->Render_Script(38, CScript::HALF, 1.f);
+					m_bPinBallScript_Once[1] = true;
+				}
+
 				/* Sound */
 				m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
 				m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Shot.wav"), CHANNEL_PINBALL_HANDLE);
@@ -2419,7 +2466,7 @@ void CMay::PinBall(const _double dTimeDelta)
 				((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
 			}
 			/* 오른쪽 */
-			if (m_pGameInstance->Key_Pressing(DIK_RIGHT)/* || m_pGameInstance->Get_Pad_LStickX() > 40000*/)
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 40000)
 			{
 				if (false == m_IsPinBallSoundCheck)
 				{
@@ -2435,7 +2482,7 @@ void CMay::PinBall(const _double dTimeDelta)
 					m_pActorCom->Move(vLeft * 0.05f, dTimeDelta);
 			}
 			/* 왼쪽 */
-			else if (m_pGameInstance->Key_Pressing(DIK_LEFT)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
+			else if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
 			{
 				/* Sound */
 				if (false == m_IsPinBallSoundCheck)

@@ -37,6 +37,7 @@ HRESULT CRotatedRobotBattery::NativeConstruct(void * pArg)
 	vPosition.m128_f32[1] -= 1.44f;
 	vPosition.m128_f32[2] -= 0.59f;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(9.f));
 
 	m_UserData = USERDATA(GameID::eROBOTBATTERY, this);
 	CStaticActor::ARG_DESC ArgDesc;
@@ -157,6 +158,7 @@ void CRotatedRobotBattery::Push_Battery(_double dTimeDelta)
 	{
 		_vector vDir = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
 		m_pTransformCom->RotateYawDirectionOnLand(vDir, -dTimeDelta * 0.005f);
+		m_pStaticActorCom->Update_StaticActor();
 	}
 	else if (m_fRotateDelay >= 2.1f)
 	{
@@ -169,6 +171,7 @@ void CRotatedRobotBattery::Push_Battery(_double dTimeDelta)
 		m_fRotateDelay = 0.f;
 		m_bRotate = false;
 		m_bUpdate = false;
+		m_pStaticActorCom->Update_StaticActor();
 	}
 }
 

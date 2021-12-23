@@ -127,8 +127,8 @@ void CEffect_Boss_Missile_Explosion::Check_Instance(_double TimeDelta)
 
 void CEffect_Boss_Missile_Explosion::Instance_Size(_float TimeDelta, _int iIndex)
 {
-	m_pInstanceBuffer_STT[iIndex].vSize.x += TimeDelta * m_fSize_Power * (m_pInstanceBuffer_STT[iIndex].vSize.x * 3.25f);
-	m_pInstanceBuffer_STT[iIndex].vSize.y += TimeDelta * m_fSize_Power * (m_pInstanceBuffer_STT[iIndex].vSize.y * 3.25f);
+	m_pInstanceBuffer_STT[iIndex].vSize.x += TimeDelta * m_fSize_Power;
+	m_pInstanceBuffer_STT[iIndex].vSize.y += TimeDelta * m_fSize_Power;
 }
 
 void CEffect_Boss_Missile_Explosion::Instance_Pos(_float TimeDelta, _int iIndex)

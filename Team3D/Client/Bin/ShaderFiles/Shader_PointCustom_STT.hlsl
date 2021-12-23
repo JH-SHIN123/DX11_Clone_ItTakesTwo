@@ -104,6 +104,7 @@ struct VS_OUT_NOBILL_DIR
 	float	fTime			: TEXCOORD1;
 	float3	vNoBill_Dir		: TEXCOORD2;
 };
+
 VS_OUT_NOBILL_DIR VS_MAIN_NOBILL_Y(VS_IN In)
 {
 	VS_OUT_NOBILL_DIR			Out = (VS_OUT_NOBILL_DIR)0;
@@ -137,6 +138,30 @@ VS_OUT_TRIPLE_UV VS_TRIPLE_UV(VS_IN In)
 	Out.fTime			= In.fTime;
 	Out.vTexUV_Right	= In.WorldMatrix._11_12_13_14;
 	Out.vTexUV_Up		= In.WorldMatrix._21_22_23_24;
+
+	return Out;
+}
+
+struct VS_OUT_NO_BILL
+{
+	float4	vPosition		: POSITION;
+	float2	vSize			: PSIZE;
+	float4	vTextureUV_LTRB	: TEXCOORD0;
+	float	fTime			: TEXCOORD1;
+	float3	vRight			: TEXCOORD2;
+	float3	vUp				: TEXCOORD3;
+};
+
+VS_OUT_NO_BILL VS_MAIN_NO_BILL(VS_IN In)
+{
+	VS_OUT_NO_BILL			Out = (VS_OUT_NO_BILL)0;
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), In.WorldMatrix);
+	Out.vTextureUV_LTRB = In.vTextureUV_LTRB;
+	Out.vSize	= In.vSize;
+	Out.fTime	= In.fTime;
+	Out.vRight	= In.WorldMatrix._11_12_13;
+	Out.vUp		= In.WorldMatrix._21_22_23;
 
 	return Out;
 }
@@ -259,6 +284,81 @@ void  GS_MAIN(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT
 }
 
 [maxvertexcount(12)]
+void  GS_MAIN_NO_BILL(/*입력*/ point  VS_OUT_NO_BILL In[1], /*출력*/ inout TriangleStream<GS_OUT> TriStream)
+{
+	GS_OUT		Out[8];
+	[unroll]
+	for (int k = 0; k < 8; ++k)
+		Out[k] = (GS_OUT)0;
+
+	float3		vRight	= In[0].vRight;
+	float3		vUp		= In[0].vUp;
+
+	float2		vHalfSize = float2(In[0].vSize.x * 0.5f, In[0].vSize.y * 0.5f);
+
+	float4		vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
+	float4		vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
+
+	Out[0].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[0].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.y);
+
+	Out[1].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[1].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.y);
+
+	Out[2].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[2].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.w);
+
+	Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[3].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.w);
+
+	Out[4].vPosition = Out[0].vPosition;
+	Out[5].vPosition = Out[1].vPosition;
+	Out[6].vPosition = Out[2].vPosition;
+	Out[7].vPosition = Out[3].vPosition;
+
+	matrix		matVP	= mul(g_MainViewMatrix, g_MainProjMatrix);
+	[unroll]
+	for (int i = 0; i < 4; ++i)
+	{
+		Out[i].vPosition = mul(Out[i].vPosition, matVP);
+		Out[i].vProjPosition = Out[i].vPosition;
+		Out[i].iViewportIndex = 1;
+		Out[i].fTime = In[0].fTime;
+	}
+
+	matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+	[unroll]
+	for (int j = 4; j < 7; ++j)
+	{
+		Out[j].vTexUV = Out[j - 4].vTexUV;
+
+		Out[j].vPosition = mul(Out[j].vPosition, matVP);
+		Out[j].vProjPosition = Out[j].vPosition;
+		Out[j].iViewportIndex = 2;
+		Out[j].fTime = In[0].fTime;
+	}
+
+	TriStream.Append(Out[0]);
+	TriStream.Append(Out[1]);
+	TriStream.Append(Out[2]);
+	TriStream.RestartStrip();
+
+	TriStream.Append(Out[0]);
+	TriStream.Append(Out[2]);
+	TriStream.Append(Out[3]);
+	TriStream.RestartStrip();
+
+	TriStream.Append(Out[4]);
+	TriStream.Append(Out[5]);
+	TriStream.Append(Out[6]);
+	TriStream.RestartStrip();
+
+	TriStream.Append(Out[4]);
+	TriStream.Append(Out[6]);
+	TriStream.Append(Out[7]);
+}
+
+[maxvertexcount(12)]
 void  GS_MAIN_FLIP_U(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT> TriStream)
 {
 	GS_OUT		Out[8];
@@ -342,7 +442,6 @@ void  GS_MAIN_FLIP_U(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream
 	TriStream.Append(Out[6]);
 	TriStream.Append(Out[7]);
 }
-
 
 [maxvertexcount(12)]
 void  GS_MAIN_ROTATE_ANGLE_X(/*입력*/ point  VS_OUT_ROTATE In[1], /*출력*/ inout TriangleStream<GS_OUT> TriStream)
@@ -1134,6 +1233,27 @@ PS_OUT  PS_CIRCLE(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_ROCKET_CIRCLE(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiffuse = (float4)0;
+	float2 vCenter = In.vTexUV - 0.5f;
+	vCenter = abs(vCenter);
+	float fLenght = length(vCenter);
+	vDiffuse.a = 1.f;
+
+	vDiffuse.rgb = g_vColor;
+
+	vDiffuse.a = In.fTime;
+	Out.vColor = vDiffuse;
+
+	if (0.5f < length(vCenter))
+		discard;
+
+	return Out;
+}
+
 PS_OUT  PS_PINBALL_DUST(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -1283,7 +1403,7 @@ PS_OUT  PS_BOSS_LASER_SMOKE(PS_IN_DOUBLEUV In)
 	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vTexUV_3);
 
 	Out.vColor.rgb *= vColor.rgb *  In.fTime;
-	Out.vColor.a = Out.vColor.r * g_fTime *  In.fTime;
+	Out.vColor.a = Out.vColor.r * g_fAlpha *  In.fTime;
 
 	return Out;
 }
@@ -1319,7 +1439,21 @@ PS_OUT  PS_MAIN_MISSILE_SMOKE_BLACK(PS_IN_DOUBLEUV In)
 	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 	vDiff.rgb *= In.fTime;
 
-	vDiff.a = (vDiff.r + vDiff.g)* In.fTime * 0.5f;
+	vDiff.a = (vDiff.r + vDiff.g)* In.fTime * 0.5f * g_fAlpha;
+
+	Out.vColor = vDiff;
+
+	return Out;
+}
+
+PS_OUT  PS_MAIN_MISSILE_SMOKE_BLACK_2(PS_IN_DOUBLEUV In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	vDiff.rgb *= (0.2f, 0.2f, 0.2f);
+
+	vDiff.a = (vDiff.r + vDiff.g)* In.fTime * 0.9f;
 
 	Out.vColor = vDiff;
 
@@ -1339,7 +1473,7 @@ PS_OUT  PS_MAIN_MISSILE_EXPLOSION(PS_IN_DOUBLEUV In)
 
 	Out.vColor = vDiff;
 	if (In.fTime > vDistortion.r)
-		Out.vColor.rgb *= vDistortion.rgb * In.fTime * 10.f;
+		Out.vColor.rgb *= vDistortion.rgb * In.fTime * 1.25f;
 
 	float2 vTexUV_3 = { vDiff.r , 0.f };
 	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vTexUV_3);
@@ -1364,7 +1498,7 @@ PS_OUT  PS_MAIN_LASER_PARTICLE(PS_IN_DOUBLEUV In)
 	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vTexUV_2);
 
 	Out.vColor.rgb *= vColor.rgb;
-	Out.vColor.a *= vColor.r;
+	Out.vColor.a *= vColor.r * g_fTime;
 
 	return Out;
 }
@@ -1471,6 +1605,39 @@ PS_OUT  PS_MAIN_MISSILE_SMOKE_COLOR(PS_IN_TRIPLEUV In)
 	}
 	else
 		vDiff.rgb *= 0.2f;
+
+	Out.vColor = vDiff;
+
+	return Out;
+}
+
+PS_OUT  PS_MAIN_MISSILE_SMOKE_COLOR_2(PS_IN_TRIPLEUV In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	// 왜곡을 먹은 디졸브를 디퓨즈(스모크)틀 에다가 곱하고 그 색상의 r값을 UV로 해서 색상을 입히자
+
+	In.vTexUV_Dist.y += g_fAlpha;
+	float4 vDist = g_SecondTexture.Sample(DiffuseSampler, In.vTexUV_Dist);
+	float fWeight = vDist.r * 0.5f;
+
+	In.vTexUV_Diss.y += fWeight;
+	float4 vDiss = g_DissolveTexture.Sample(DiffuseSampler, In.vTexUV_Diss);
+
+	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV_Diff);
+
+	vDiff.a = vDiff.r * In.fTime * g_fAlpha;
+	vDiff.rgb = vDiss.rgb;
+
+	if (vDiff.r + 0.05f < In.fTime)
+	{
+		float2 vUV = (float2)0;
+		vUV.x = In.fTime;
+		vDiff.rgb *= g_ColorTexture.Sample(DiffuseSampler, vUV).rgb;
+		vDiff.r *= 3.f;
+	}
+	else
+		vDiff.rgb *= 0.78f;
 
 	Out.vColor = vDiff;
 
@@ -1687,5 +1854,45 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN();
 		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
 		PixelShader = compile ps_5_0  PS_BOSS_LASER_SMOKE();
+	}
+
+	pass Missile_Smoke_Black_2 // 21
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
+		PixelShader = compile ps_5_0  PS_MAIN_MISSILE_SMOKE_BLACK_2();
+	}
+
+	pass Missile_Smoke_Color_2 // 22
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_TRIPLE_UV();
+		GeometryShader = compile gs_5_0  GS_TRIPLE_UV();
+		PixelShader = compile ps_5_0  PS_MAIN_MISSILE_SMOKE_COLOR_2();
+	}
+
+	pass EndingRocket_Boost // 23
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN_NO_BILL();
+		GeometryShader = compile gs_5_0  GS_MAIN_NO_BILL();
+		PixelShader = compile ps_5_0  PS_MOONBABOON_BOOSTER();
+	}
+
+	pass EndingRocket_Circle // 24
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_ROCKET_CIRCLE();
 	}
 }
