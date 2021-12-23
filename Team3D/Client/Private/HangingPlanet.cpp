@@ -19,7 +19,7 @@ void CHangingPlanet::Hit_Planet(_fvector vForce)
 	_vector vLookForce;
 	vLookForce = XMVector3Normalize(vForce);
 	vLookForce = XMVectorSetY(vLookForce, 0.f);
-	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLookForce) * 550000.f, 0.f, XMVectorGetZ(vLookForce) * 550000.f));
+	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLookForce) * 700000.f, 0.f, XMVectorGetZ(vLookForce) * 700000.f));
 }
 
 HRESULT CHangingPlanet::NativeConstruct_Prototype()
@@ -134,7 +134,7 @@ HRESULT CHangingPlanet::Ready_Component(void * pArg)
 	Safe_Delete(TriggerGeom);
 
 	/* Joint */
-	PxJointLimitCone LimitCone = PxJointLimitCone(PxPi / 4, PxPi / 4, 0.05f);
+	PxJointLimitCone LimitCone = PxJointLimitCone(PxPi / 6, PxPi / 6, 0.05f);
 	m_pJoint = CPhysX::GetInstance()->Create_Joint(m_pDynamicActorCom->Get_Actor(), PxTransform(PxVec3(tArg.vOffset.x, tArg.vOffset.y, tArg.vOffset.z)), nullptr, PxTransform(PxVec3(tArg.vJointPosition.x, tArg.vJointPosition.y, tArg.vJointPosition.z)), LimitCone);
 
 	return S_OK;

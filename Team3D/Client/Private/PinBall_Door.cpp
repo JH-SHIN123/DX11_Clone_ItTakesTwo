@@ -69,6 +69,9 @@ _int CPinBall_Door::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
 
+	m_pStaticActorCom->Update_StaticActor();
+	m_pTriggerActorCom->Update_TriggerActor();
+
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
@@ -105,9 +108,9 @@ void CPinBall_Door::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 	// Cody
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && false == m_bTrigger && false == m_bDoorState && false == m_bGoal)
 	{
-		m_IsCollision = true;
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALLDOOR, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 		((CPinBall*)(DATABASE->Get_Pinball()))->Set_Ready(false);
+		m_IsCollision = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
@@ -145,9 +148,6 @@ void CPinBall_Door::Movement(_double dTimeDelta)
 		m_bTrigger = false;
 		m_bDoorState = false;
 	}
-
-	m_pStaticActorCom->Update_StaticActor();
-	m_pTriggerActorCom->Update_TriggerActor();
 }
 
 HRESULT CPinBall_Door::Ready_Component(void * pArg)

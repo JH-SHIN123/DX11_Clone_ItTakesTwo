@@ -2374,6 +2374,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 			m_pActorCom->Set_ZeroGravity(true, true, true);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			m_bRespawnCheck = false;
 			m_IsDeadLine = true;
 
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DEAD_FALL, m_fCodyM_Dead_Fall_Volume);
@@ -2502,6 +2503,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pActorCom->Update(dTimeDelta);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bRespawnCheck = false;
 			m_bRespawn = true;
 		}
 		else if ((m_eTargetGameID == GameID::eROTATIONFAN) && false == m_bRespawn)
@@ -2509,6 +2511,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pActorCom->Update(dTimeDelta);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bRespawnCheck = false;
 			m_bRespawn = true;
 		}
 		else if (m_eTargetGameID == GameID::eELECTRICBOX && false == m_bRespawn)
@@ -2521,6 +2524,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 				m_pActorCom->Update(dTimeDelta);
 				m_pActorCom->Set_ZeroGravity(true, false, true);
+				m_bRespawnCheck = false;
 				m_bRespawn = true;
 			}
 		}
@@ -2535,6 +2539,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
  				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 				m_pActorCom->Update(dTimeDelta);
 				m_pActorCom->Set_ZeroGravity(true, false, true);
+				m_bRespawnCheck = false;
 				m_bRespawn = true;
 			}
 			else
@@ -3524,6 +3529,7 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 			m_dDeadTime = 0.f;
 			m_IsCollide = false;
 			m_IsDeadLine = false;
+			m_bRespawnCheck = true;
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			Enforce_IdleState();
 		}
@@ -3743,6 +3749,7 @@ void CCody::TakeRail(_double dTimeDelta)
 		m_bOnRailEnd = true;
 	}
 }
+
 void CCody::TakeRailEnd(_double dTimeDelta)
 {
 	if (m_bOnRailEnd)
@@ -3764,6 +3771,7 @@ void CCody::TakeRailEnd(_double dTimeDelta)
 		}
 	}
 }
+
 void CCody::ShowRailTargetTriggerUI()
 {
 	// Show UI
@@ -3878,6 +3886,7 @@ void CCody::Start_RadiarBlur_FullScreen(_double dBlurTime)
 
 	Set_RadiarBlur(true);
 }
+
 void CCody::Start_RadiarBlur(_double dBlurTime)
 {
 	//if (m_bRadiarBlur) return;
@@ -4091,6 +4100,7 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 		m_pModelCom->Set_Animation(ANI_C_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
+		m_bRespawnCheck = true;
 		m_bFirstCheck = false;
 		m_bRespawn = false;
 		m_IsCollide = false;
