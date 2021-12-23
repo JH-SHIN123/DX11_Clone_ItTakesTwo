@@ -272,9 +272,6 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	float3 vColor = g_HDRTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).xyz;
 
-	// Vignatte
-	vColor *= pow((1.f - g_VignatteTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV).a) + 0.14f,3);
-
 	// 먼 평면에 없는 픽셀에 대해서만 거리 DOF 계산
 	vector	vDepthDesc = g_DepthTex.Sample(Point_Sampler, In.vTexUV);
 	vector	vViewPos = vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
@@ -289,6 +286,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	bool bBlur = false;
 
 	float fBarOffset = 0.00115f;
+	float2 vVignatteUV = In.vTexUV;
 	if (In.vTexUV.x >= g_vMainViewportUVInfo.x + fBarOffset && In.vTexUV.x <= g_vMainViewportUVInfo.z - fBarOffset &&
 		In.vTexUV.y >= g_vMainViewportUVInfo.y + fBarOffset && In.vTexUV.y <= g_vMainViewportUVInfo.w - fBarOffset)
 	{
@@ -306,6 +304,10 @@ PS_OUT PS_MAIN(PS_IN In)
 		// Trigger Active
 		bFogActive = g_bFog;
 		bBlur = g_MainBlur;
+
+		// Vignatte
+		vVignatteUV.x *= 1.f / ((g_vMainViewportUVInfo.z - fBarOffset) - (g_vMainViewportUVInfo.x + fBarOffset));
+		vColor *= pow((1.f - g_VignatteTex.Sample(Wrap_MinMagMipLinear_Sampler, vVignatteUV).a) + 0.14f, 3);
 	}
 	else if (In.vTexUV.x >= g_vSubViewportUVInfo.x + fBarOffset && In.vTexUV.x <= g_vSubViewportUVInfo.z - fBarOffset &&
 		In.vTexUV.y >= g_vSubViewportUVInfo.y + fBarOffset && In.vTexUV.y <= g_vSubViewportUVInfo.w - fBarOffset)
@@ -322,8 +324,19 @@ PS_OUT PS_MAIN(PS_IN In)
 		if (true == g_bRadiarBlur_Sub) vColor = RadiarBlur(In.vTexUV, g_RadiarBlur_FocusPos_Sub, g_fRadiarBlurRatio_Sub);
 
 		bBlur = g_SubBlur;
+
+		// Vignatte
+		vVignatteUV.x -= g_vSubViewportUVInfo.x + fBarOffset;
+		vVignatteUV.x *= 1.f / ((g_vSubViewportUVInfo.z - fBarOffset) - (g_vSubViewportUVInfo.x + fBarOffset));
+		vColor *= pow((1.f - g_VignatteTex.Sample(Wrap_MinMagMipLinear_Sampler, vVignatteUV).a) + 0.14f, 3);
 	}
 	else discard;
+
+	// DOF
+	float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
+
+	if (bBlur) vColor = colorBlurred;
+	else vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
 
 	// 카메라와의 거리구하기
 	eyeToPixel = vWorldPos - vCamPos;
@@ -331,12 +344,6 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	// Fog - MainView만 적용
 	if (bFogActive) vColor = HeightFog(vColor, vCamPos.y, eyeToPixel);
-
-	// DOF
-	float3 colorBlurred = g_DOFBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-
-	if (bBlur) vColor = colorBlurred;
-	else vColor = DistanceDOF(vColor, colorBlurred, vViewPos.z); // 거리 DOF 색상 계산
 
 	// Volume
 	vColor = VolumeBlend(vColor, In.vTexUV, vDepthDesc.y, distToEye);

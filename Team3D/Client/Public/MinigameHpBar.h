@@ -5,15 +5,15 @@
 
 BEGIN(Client)
 
-class CHpBar final : public CUIObject
+class CMinigameHpBar final : public CUIObject
  {
 public:
 	 enum STAGE { Stage_Boss, Stage_Minigame, Stage_End };
 
 private:
-	explicit CHpBar(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CHpBar(const CUIObject& rhs);
-	virtual ~CHpBar() = default;
+	explicit CMinigameHpBar(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CMinigameHpBar(const CUIObject& rhs);
+	virtual ~CMinigameHpBar() = default;
 
 public:
 	virtual HRESULT NativeConstruct_Prototype() override;
@@ -27,10 +27,8 @@ public:
 	void Set_Active(_bool IsCheck);
 	void Set_Hp(_float fHp);
 	void Set_ShaderOption(_int iOption);
-	void Set_Stage(CHpBar::STAGE eStage);
 
 private:
-	STAGE							m_eStage = Stage_End;
 	_bool							m_IsActive = false;
 	_float							m_fHp = 0.f;
 	_float							m_fRatio = 0.f;
@@ -49,11 +47,12 @@ private:
 	_uint							m_iShaderPassNum = 0;
 
 private:
-	class CHpBarFrame*				m_pHpBarFrame = nullptr;
+	class CMinigameHpBarFrame*				m_pMinigameHpBarFrame = nullptr;
+	class CPortrait*						m_pMinigamePortrait = nullptr;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
-
+	
 private:
 	HRESULT Ready_Component();
 	HRESULT Ready_Layer_UI();
@@ -63,13 +62,11 @@ private:
 	void Shake_Effect(_double TimeDelta);
 
 private:
-	 void CodyHpBar_Boss(_double TimeDelta);
-	 void MayHpBar_Boss(_double TimeDelta);
-	 void CodyHpBar_Minigame(_double TimeDelta);
-	 void MayHpBar_Minigame(_double TimeDelta);
+	 void CodyMinigameHpBar(_double TimeDelta);
+	 void MayMinigameHpBar(_double TimeDelta);
 
 public:
-	static CHpBar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CMinigameHpBar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject * Clone_GameObject(void * pArg) override;
 	virtual void Free() override;
 

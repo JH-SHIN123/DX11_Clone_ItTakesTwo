@@ -25,6 +25,10 @@
 /* For.BossUFO */
 #include "UFO.h"
 
+/* For.UI */
+#include "HpBar.h"
+#include "MinigameHpBar.h"
+
 /*For.WarpGate*/
 #include "WarpGate.h"
 #include "LaserTennis_Manager.h"
@@ -72,8 +76,7 @@ HRESULT CMay::NativeConstruct(void* pArg)
 	CDataStorage::GetInstance()->Set_MayPtr(this);
 	Add_LerpInfo_To_Model();
 
-	UI_Create(May, PlayerMarker);
-
+	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
 	m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
 	m_pGameInstance->Play_Sound(TEXT("May_Walk.wav"), CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
@@ -136,6 +139,38 @@ HRESULT CMay::Ready_Component()
 	m_pEffect_GravityBoots->Set_Model(m_pModelCom);
 
 	FAILED_CHECK_RETURN(Ready_Layer_Gauge_Circle(TEXT("Layer_MayCircle_Gauge")), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CMay::Ready_UI()
+{
+	UI_Create(May, PlayerMarker);
+
+	CGameObject* pGameObject = nullptr;
+	_uint iOption = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MayHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pHpBar = static_cast<CHpBar*>(pGameObject);
+	m_pHpBar->Set_PlayerID(Player::May);
+	m_pHpBar->Set_ShaderOption(1);
+
+	iOption = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MaySubHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pSubHpBar = static_cast<CHpBar*>(pGameObject);
+	m_pSubHpBar->Set_PlayerID(Player::May);
+	m_pSubHpBar->Set_ShaderOption(1);
+
+	iOption = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MinigameMayHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pMinigameHpBar = static_cast<CMinigameHpBar*>(pGameObject);
+	m_pMinigameHpBar->Set_PlayerID(Player::May);
+	m_pMinigameHpBar->Set_ShaderOption(1);
+
+	iOption = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MinigameMaySubHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pMinigameSubHpBar = static_cast<CMinigameHpBar*>(pGameObject);
+	m_pMinigameSubHpBar->Set_PlayerID(Player::May);
+	m_pMinigameSubHpBar->Set_ShaderOption(1);
 
 	return S_OK;
 }
@@ -353,6 +388,10 @@ void CMay::Free()
 	m_vecTargetRailNodes.clear();
 
 	Safe_Release(m_pGauge_Circle);
+	Safe_Release(m_pHpBar);
+	Safe_Release(m_pSubHpBar);
+	Safe_Release(m_pMinigameHpBar);
+	Safe_Release(m_pMinigameSubHpBar);
 
 	//Safe_Release(m_pCamera); 
 	Safe_Release(m_pTargetPtr);
@@ -2020,11 +2059,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			/* Hit Effect 생성 */
 
 			/* HP 감소 */
-			m_iHP -= 3;
 			LASERTENNIS->Set_CodyCount();
-
-			if (0 >= m_iHP)
-				m_iHP = 12;
+			Set_MinigameHpBarReduction(30);
 
 			m_IsCollide = false;
 		}
@@ -2443,6 +2479,43 @@ void CMay::InUFO(const _double dTimeDelta)
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
 }
+
+void CMay::Set_ActiveHpBar(_bool IsCheck)
+{
+	if (nullptr == m_pHpBar)
+		return;
+
+	m_pHpBar->Set_Active(IsCheck);
+}
+
+void CMay::Set_HpBarReduction(_float fDamage)
+{
+	if (nullptr == m_pHpBar || nullptr == m_pSubHpBar)
+		return;
+
+	m_pHpBar->Set_Hp(fDamage);
+	m_pSubHpBar->Set_Active(true);
+	m_pSubHpBar->Set_Hp(fDamage);
+}
+
+void CMay::Set_ActiveMinigameHpBar(_bool IsCheck)
+{
+	if (nullptr == m_pMinigameHpBar)
+		return;
+
+	m_pMinigameHpBar->Set_Active(IsCheck);
+}
+
+void CMay::Set_MinigameHpBarReduction(_float fDamage)
+{
+	if (nullptr == m_pMinigameHpBar || nullptr == m_pMinigameSubHpBar)
+		return;
+
+	m_pMinigameHpBar->Set_Hp(fDamage);
+	m_pMinigameSubHpBar->Set_Active(true);
+	m_pMinigameSubHpBar->Set_Hp(fDamage);
+}
+
 
 void CMay::LaserTennis(const _double dTimeDelta)
 {
@@ -2918,8 +2991,8 @@ void CMay::KeyInput_Rail(_double dTimeDelta)
 
 			m_bMoveToRail = false;
 			m_bOnRail = false;
+			m_bOnRailEnd = false;
 			m_bOnRail_Effect = false;
-
 		}
 	}
 }
@@ -3063,7 +3136,7 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 
 void CMay::TakeRail(_double dTimeDelta)
 {
-	if (nullptr == m_pTargetRail || false == m_bOnRail) return;
+	if (nullptr == m_pTargetRail || false == m_bOnRail || true == m_bOnRailEnd) return;
 
 	/* 타는 애니메이션으로 변경 */
 	if (m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Key_Pressing(DIK_LEFT))

@@ -19,6 +19,7 @@ public:/* Getter */
 public:/* Setter */
 	void Set_Ready(_bool bReady) { m_bReady = bReady; }
 	void Set_Failed()			 { m_bFailed = true; }
+	void Set_TriggerCheck()		 { m_bTriggerCheck = true; }
 
 public:
 	void StartGame();
@@ -44,12 +45,13 @@ private:
 	/* 공에 문 달려있는 모델 */
 	CModel*				m_pAttachBall = nullptr;
 
-	_bool				m_bEffect = false;
+	_bool				m_bTriggerCheck = false;
 	_bool				m_bFailed = false;
 	_bool				m_bStartGame = false;
 	_bool				m_bReady = false;
+	_bool				m_bEffect = false;
 	_bool				m_bSoundCheck = false;
-	_float3				m_RespawnPos;
+	_float4x4			m_ResetWorld;
 
 private:
 	void MoveMent(_double dTimaDelta);

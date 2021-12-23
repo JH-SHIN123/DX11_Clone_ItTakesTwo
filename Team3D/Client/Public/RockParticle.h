@@ -16,13 +16,13 @@ public:
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
-	virtual HRESULT Render_ShadowDepth() override;
+	//virtual HRESULT Render_ShadowDepth() override;
 
 private:
 	CRenderer*		m_pRendererCom = nullptr;
 	CTransform*		m_pTransformCom = nullptr;
 	CModel*			m_pModelCom = nullptr;
-	CDynamicActor*	m_pDynamicActorCom = nullptr;
+	//CDynamicActor*	m_pDynamicActorCom = nullptr;
 
 	_float			m_fScale = 1.f;
 	_double			m_dCoolTime = 0.0;

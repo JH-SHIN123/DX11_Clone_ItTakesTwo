@@ -16,15 +16,16 @@ public:
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
-	virtual HRESULT Render_ShadowDepth() override;
-	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
+	//virtual HRESULT Render_ShadowDepth() override;
+	//virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 private:
 	CRenderer*		m_pRendererCom = nullptr;
 	CTransform*		m_pTransformCom = nullptr;
 	CModel*			m_pModelCom = nullptr;
-	CDynamicActor*	m_pDynamicActorCom = nullptr;
-	CTriggerActor*	m_pTriggerActorCom = nullptr;
+	CTransform*		m_pCodyTransformCom = nullptr;
+	//CDynamicActor*	m_pDynamicActorCom = nullptr;
+	//CTriggerActor*	m_pTriggerActorCom = nullptr;
 
 	_float				m_fScale = 1.f;
 	_float				m_fMaxScale = 10.f;

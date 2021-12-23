@@ -110,7 +110,9 @@ void CEndingRocket::Movement(_double dTimeDelta)
 	else
 	{
 		if (m_fCurSpeed > ENDING_ROCKET_SPEED)
-			m_fCurSpeed -= fTimeDelta * 20.f;
+			m_fCurSpeed -= fTimeDelta * 22.5f;
+		else
+			m_fCurSpeed = ENDING_ROCKET_SPEED;
 
 		m_pTransformCom->Go_Straight(fTimeDelta * m_fCurSpeed);
 	}

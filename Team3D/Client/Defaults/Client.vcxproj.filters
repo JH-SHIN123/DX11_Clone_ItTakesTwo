@@ -1020,6 +1020,9 @@
     <Filter Include="02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe">
       <UniqueIdentifier>{ab6ae50c-6e4a-4821-9f28-cb5dd08d4825}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06.UI\16.Minigame\05.Minigame_HpBar">
+      <UniqueIdentifier>{2beff27f-1e96-4d7f-a780-ca7b11125de9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\99.Terrain%28Test%29">
       <UniqueIdentifier>{f999b3e3-a399-493a-893b-bcebcfb781a4}</UniqueIdentifier>
     </Filter>
@@ -2015,6 +2018,12 @@
     <ClInclude Include="..\Public\Minigame_Score.h">
       <Filter>02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MinigameHpBar.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\05.Minigame_HpBar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MinigameHpBarFrame.h">
+      <Filter>02.GameObject\06.UI\16.Minigame\05.Minigame_HpBar</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>
     </ClInclude>
@@ -2985,6 +2994,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Minigame_Score.cpp">
       <Filter>02.GameObject\06.UI\16.Minigame\04.Minigame_Scroe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MinigameHpBar.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\05.Minigame_HpBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MinigameHpBarFrame.cpp">
+      <Filter>02.GameObject\06.UI\16.Minigame\05.Minigame_HpBar</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObject\99.Terrain%28Test%29</Filter>

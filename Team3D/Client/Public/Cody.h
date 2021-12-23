@@ -249,6 +249,9 @@ public:
 	void			 Set_ControlJoystick(_bool IsCheck);
 	void			 Set_AnimationRotate(_float fAngle);
 	void			 Set_ActiveHpBar(_bool IsCheck);
+	void			 Set_HpBarReduction(_float fDamage);
+	void			 Set_ActiveMinigameHpBar(_bool IsCheck);
+	void			 Set_MinigameHpBarReduction(_float fDamage);
 	void 			 Set_RocketOffSetPos(_fvector vRocketOffSetPos) { m_vRocketOffSetPos = vRocketOffSetPos; }
 	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
@@ -275,6 +278,9 @@ private: // Effects
 
 private: /* UI */
 	class CHpBar*	m_pHpBar = nullptr;
+	class CHpBar*	m_pSubHpBar = nullptr;
+	class CMinigameHpBar* m_pMinigameHpBar = nullptr;
+	class CMinigameHpBar* m_pMinigameSubHpBar = nullptr;
 
 	// Components
 private:
@@ -428,6 +434,10 @@ private:
 	_bool	m_bEndingCredit = false;
 	_double m_dStartTime = 0.0;
 	_bool	m_bEndingCheck = false;
+
+	/* Hye::For.RespawnCheck */
+	/* 죽었을 때 False로 바뀌고 리스폰시에 True로 바뀜 */
+	_bool	m_bRespawnCheck = false;
 
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;

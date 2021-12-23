@@ -63,6 +63,8 @@ _int CPInBall_Blocked::Late_Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Late_Tick(dTimeDelta);
 
+	m_pStaticActorCom->Update_StaticActor();
+
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
@@ -133,8 +135,6 @@ void CPInBall_Blocked::Movement(_double dTimeDelta)
 				m_pTransformCom->Go_Down(dTimeDelta);
 		}
 	}
-
-	m_pStaticActorCom->Update_StaticActor();
 }
 
 HRESULT CPInBall_Blocked::Ready_Component(void * pArg)
