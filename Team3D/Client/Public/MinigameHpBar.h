@@ -27,6 +27,7 @@ public:
 	void Set_Active(_bool IsCheck);
 	void Set_Hp(_float fHp);
 	void Set_ShaderOption(_int iOption);
+	void Set_ResetHp();
 
 private:
 	_bool							m_IsActive = false;
@@ -35,16 +36,11 @@ private:
 	_float							m_fRatio = 0.f;
 	_float							m_fDecreaseRateRatio = 0.f;
 	_float							m_fWatingTime = 0.f;
-	_float							m_fRecoveryTime = 0.f;
 	_float							m_fAngle = 0.f;
 	_bool							m_IsHit = false;
-	_bool							m_IsRecovery = false;
 	_bool							m_IsChangeRotate = false;
-	_bool							m_IsBossStage = false;
 	_uint							m_iOption = 0;
 	_int							m_iShaderOption = 0;
-	_float2							m_vMaxScale;
-	_float2							m_vMinScale;
 	_uint							m_iShaderPassNum = 0;
 
 private:

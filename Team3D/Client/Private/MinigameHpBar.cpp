@@ -68,8 +68,6 @@ _int CMinigameHpBar::Tick(_double TimeDelta)
 		break;
 	}
 
-	//Scale_Effect(TimeDelta);
-
 	return _int();
 }
 
@@ -92,7 +90,6 @@ HRESULT CMinigameHpBar::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pVIBuffer_RectCom->Set_Variable("g_fCircleRatio", &m_fRatio, sizeof(_float));
 	m_pVIBuffer_RectCom->Set_Variable("g_fDecreaseRateRatio", &m_fDecreaseRateRatio, sizeof(_float));
-	m_pVIBuffer_RectCom->Set_Variable("g_IsRecovery", &m_IsRecovery, sizeof(_bool));
 	m_pVIBuffer_RectCom->Set_Variable("g_iShaderOption", &m_iShaderOption, sizeof(_int));
 
 	m_pVIBuffer_RectCom->Render(29);
@@ -116,27 +113,14 @@ void CMinigameHpBar::Set_Active(_bool IsCheck)
 
 void CMinigameHpBar::Set_Hp(_float fHp)
 {
-	// 120
 	m_fHp -= fHp;
 	m_IsHit = true;
 	m_fWatingTime = 0.f;
-	m_fRecoveryTime = 0.f;
 
 	if (m_ePlayerID == Player::Cody)
-	{
 		m_fRatio = 0.5f - (m_fHp / m_fMaxHp) / 2.f;
-
-		//if (0.5f <= m_fRatio)
-		//	m_fRatio = 0.5f;
-	}
 	else if (m_ePlayerID == Player::May)
-	{
 		m_fRatio = (m_fHp / m_fMaxHp) / 2.f;
-		//m_fDecreaseRateRatio = 0.5f;
-
-		//if (0.f >= m_fRatio)
-		//	m_fRatio = 0.f;
-	}
 
 	if (0.f >= m_fHp)
 		m_fHp = 0.f;
@@ -145,6 +129,22 @@ void CMinigameHpBar::Set_Hp(_float fHp)
 void CMinigameHpBar::Set_ShaderOption(_int iOption)
 {
 	m_iShaderOption = iOption;
+}
+
+void CMinigameHpBar::Set_ResetHp()
+{
+	m_fHp = m_fMaxHp;
+
+	if (m_ePlayerID == Player::Cody)
+	{
+		m_fRatio = 0.f;
+		m_fDecreaseRateRatio = 0.f;
+	}
+	else
+	{
+		m_fRatio = 0.5f;
+		m_fDecreaseRateRatio = 0.5f;
+	}
 }
 
 HRESULT CMinigameHpBar::Ready_Component()
@@ -207,41 +207,6 @@ HRESULT CMinigameHpBar::Ready_Layer_UI()
 	}
 
 	return S_OK;
-}
-
-void CMinigameHpBar::Scale_Effect(_double TimeDelta)
-{
-	if (0 == m_iOption)
-		return;
-
-	if (true == m_IsActive)
-	{
-		if (m_vMaxScale.x >= m_UIDesc.vScale.x)
-		{
-			m_UIDesc.vScale.x += (_float)TimeDelta;
-			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
-		}
-
-		if (m_vMaxScale.y >= m_UIDesc.vScale.y)
-		{
-			m_UIDesc.vScale.y += (_float)TimeDelta;
-			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
-		}
-	}
-	else
-	{
-		if (m_vMinScale.x <= m_UIDesc.vScale.x)
-		{
-			m_UIDesc.vScale.x -= (_float)TimeDelta;
-			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
-		}
-
-		if (m_vMinScale.y <= m_UIDesc.vScale.y)
-		{
-			m_UIDesc.vScale.y -= (_float)TimeDelta;
-			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
-		}
-	}
 }
 
 void CMinigameHpBar::Shake_Effect(_double TimeDelta)

@@ -453,6 +453,9 @@ HRESULT CLaserTennis_Manager::Create_StartUI()
 
 	m_bReady = true;
 
+	((CCody*)DATABASE->GetCody())->Set_MinigameHpBarReset();
+	((CMay*)DATABASE->GetMay())->Set_MinigameHpBarReset();
+
 	return S_OK;
 }
 
@@ -471,6 +474,9 @@ HRESULT CLaserTennis_Manager::Create_ResultUI()
 		UI_CreateOnlyOnce(Default, Minigame_Win_May);
 		DATABASE->Set_MayMinigameWinCount(1);
 	}
+
+	((CCody*)DATABASE->GetCody())->Set_MinigameHpBarReset();
+	((CMay*)DATABASE->GetMay())->Set_MinigameHpBarReset();
 
 	return S_OK;
 }

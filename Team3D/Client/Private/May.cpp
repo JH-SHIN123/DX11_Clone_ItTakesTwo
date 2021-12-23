@@ -2084,8 +2084,9 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_bHit = true;
 
 			/* HP 감소 */
-			LASERTENNIS->Set_CodyCount();
+			/* 순서 바꾸면 안됨 ㅇㅇ */
 			Set_MinigameHpBarReduction(30);
+			LASERTENNIS->Set_CodyCount();
 
 			m_IsCollide = false;
 		}
@@ -2529,6 +2530,13 @@ void CMay::Set_ActiveMinigameHpBar(_bool IsCheck)
 		return;
 
 	m_pMinigameHpBar->Set_Active(IsCheck);
+}
+
+void CMay::Set_MinigameHpBarReset()
+{
+	m_pMinigameHpBar->Set_ResetHp();
+	m_pMinigameSubHpBar->Set_ResetHp();
+	m_pMinigameSubHpBar->Set_Active(false);
 }
 
 void CMay::Set_MinigameHpBarReduction(_float fDamage)

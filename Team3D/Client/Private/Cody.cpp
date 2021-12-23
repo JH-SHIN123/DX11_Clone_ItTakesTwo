@@ -2589,8 +2589,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_bHit = true;
 
 			/* HP 감소 */
-			LASERTENNIS->Set_MayCount();
+			/* 순서 바꾸면 안됨 ㅇㅇ */
 			Set_MinigameHpBarReduction(30);
+			LASERTENNIS->Set_MayCount();
 
 			m_IsCollide = false;
 		}
@@ -3484,6 +3485,13 @@ void CCody::Set_MinigameHpBarReduction(_float fDamage)
 	m_pMinigameHpBar->Set_Hp(fDamage);
 	m_pMinigameSubHpBar->Set_Active(true);
 	m_pMinigameSubHpBar->Set_Hp(fDamage);
+}
+
+void CCody::Set_MinigameHpBarReset()
+{
+	m_pMinigameHpBar->Set_ResetHp();
+	m_pMinigameSubHpBar->Set_ResetHp();
+	m_pMinigameSubHpBar->Set_Active(false);
 }
 
 void CCody::WallLaserTrap(const _double dTimeDelta)

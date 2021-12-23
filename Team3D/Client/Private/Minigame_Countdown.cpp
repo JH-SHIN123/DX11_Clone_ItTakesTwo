@@ -79,7 +79,15 @@ _int CMinigame_Countdown::Late_Tick(_double TimeDelta)
 		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
 		if (0.f >= m_fAlpha)
+		{
 			m_fAlpha = 0.f;
+
+			if (4 == m_UIDesc.iTextureRenderIndex)
+			{
+				m_pMinigame_GaugeCircle->Set_Dead();
+				UI_Delete(Default, Minigame_Countdown);
+			}
+		}
 	}
 	else if(true == m_IsStart)
 	{
@@ -96,13 +104,6 @@ _int CMinigame_Countdown::Late_Tick(_double TimeDelta)
 	{
 		++m_UIDesc.iTextureRenderIndex;
 		m_UIDesc.vScale = m_vSaveScale;
-	}
-
-	if (4 < m_UIDesc.iTextureRenderIndex)
-	{
-		m_pMinigame_GaugeCircle->Set_Dead();
-		UI_Delete(Default, Minigame_Countdown);
-		m_UIDesc.iTextureRenderIndex = 4;
 	}
 
 	if (1 <= m_UIDesc.iTextureRenderIndex && 3 >= m_UIDesc.iTextureRenderIndex)
