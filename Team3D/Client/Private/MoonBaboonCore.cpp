@@ -42,6 +42,7 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 
 	// Effect
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_BossCore"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core"),nullptr, (CGameObject**)&m_pEffectBossCore), E_FAIL);
+	Safe_Release(m_pEffectBossCore);
 
 	DATABASE->Set_MoonBaboonCore(this);
 
@@ -121,6 +122,9 @@ _int CMoonBaboonCore::Late_Tick(_double TimeDelta)
 
 void CMoonBaboonCore::Reset()
 {
+	if (m_bResetOnce) return;
+	if (nullptr != m_pEffectBossCore) return;
+
 	if (nullptr == m_pEffectBossCore)
 	{
 		FAILED_CHECK(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_BossCore"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core"), nullptr, (CGameObject**)&m_pEffectBossCore));
@@ -132,6 +136,8 @@ void CMoonBaboonCore::Reset()
 	m_iActiveCore = 0;
 
 	m_pCoreGlass->Reset();
+
+	m_bResetOnce = true;
 }
 
 void CMoonBaboonCore::GoUp(_double dTimeDelta)
@@ -149,13 +155,14 @@ void CMoonBaboonCore::GoUp(_double dTimeDelta)
 
 	if (m_fMaxY <= m_fDistance)
 	{
+		//Reset();
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vMaxPos), 1.f));
 		m_fMaxY = 0.f;
 		m_IsGoUp = false;
 		m_fDistance = 0.f;
 		m_iActiveCore = 0;
 		m_bMove = false;
-		Reset();
+		m_b2Floor = true;
 		return;
 	}
 
@@ -172,7 +179,10 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 	CUFO* pUFO = (CUFO*)DATABASE->Get_BossUFO();
 	if (nullptr != pUFO)
 	{
-		if (CUFO::PHASE_1 == pUFO->Get_BossPhase() && m_tDesc.iIndex == 1)
+		if (false == m_b2Floor && m_tDesc.iIndex == 1)
+			return;
+
+		if (CUFO::LASER != pUFO->Get_BossPatern())
 			return;
 	}
 
@@ -213,7 +223,6 @@ void CMoonBaboonCore::Set_Broken()
 	if (m_pEffectBossCore) 
 	{
 		m_pEffectBossCore->HitOn();
-		Safe_Release(m_pEffectBossCore);
 		m_pEffectBossCore = nullptr;
 	}
 }
@@ -262,7 +271,6 @@ void CMoonBaboonCore::Free()
 	if (m_pEffectBossCore)
 	{
 		m_pEffectBossCore->HitOn();
-		Safe_Release(m_pEffectBossCore);
 		m_pEffectBossCore = nullptr;
 	}
 	Safe_Release(m_pCorePillar);
