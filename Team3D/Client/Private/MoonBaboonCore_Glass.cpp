@@ -12,6 +12,12 @@ CMoonBaboonCore_Glass::CMoonBaboonCore_Glass(const CMoonBaboonCore_Glass& rhs)
 {
 }
 
+void CMoonBaboonCore_Glass::Reset()
+{
+	m_bBroken = false;
+	m_pModelCom = m_pModelCom_Glass;
+}
+
 void CMoonBaboonCore_Glass::Set_Broken()
 {
 	if (m_bBroken) return;

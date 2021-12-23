@@ -144,6 +144,7 @@ void CEffect_Boss_Core::Instance_UV(_float TimeDelta, _int iIndex)
 
 _int CEffect_Boss_Core::Explosion()
 {
+	m_isDead = true;
 	EFFECT->Add_Effect(Effect_Value::BossCore_Hit, m_pTransformCom->Get_WorldMatrix());
 	return EVENT_DEAD;
 }

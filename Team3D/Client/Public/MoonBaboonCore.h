@@ -35,6 +35,7 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 
 private:
+	void Reset();
 	void GoUp(_double dTimeDelta);
 	void Active_Pillar(_double TimeDelta);
 

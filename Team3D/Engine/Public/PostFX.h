@@ -78,7 +78,7 @@ private:
 	_float		m_fRadialBlur_MainRatio = 0.f;
 	_float		m_fRadialBlur_SubRatio = 0.f;
 
-	_bool		m_bMainFog = true;
+	_bool		m_bMainFog = false;
 	_bool		m_bMainBlur = false;
 	_bool		m_bSubBlur = false;
 	_float		m_fVolumeTimeDelta = 0.f;
