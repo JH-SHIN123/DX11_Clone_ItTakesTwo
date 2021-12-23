@@ -15,6 +15,7 @@
 #include"UI_Generator.h"
 #include"Script.h"
 #include"ControlRoom_Monitor.h"
+#include"GameInstance.h"
 CCutScene::CCutScene()
 {
 }
@@ -42,6 +43,9 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		case Client::CCutScene::CutSceneOption::CutScene_Clear_Rail:
 			End_CutScene_Clear_Rail();
 			break;
+		case Client::CCutScene::CutSceneOption::CutScene_Eject_InUFO:
+			End_CutScene_Eject_InUFO();
+			break;
 
 		}
 		return false;
@@ -64,6 +68,9 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		break;
 	case CutSceneOption::CutScene_Boss_Intro:
 		bIsNoError = Tick_CutScene_Boss_Intro(dTimeDelta);
+		break;
+	case CutSceneOption::CutScene_Eject_InUFO:
+		bIsNoError = Tick_CutScene_Eject_InUFO(dTimeDelta);
 		break;
 	}
 	if (bIsNoError == false)
@@ -375,6 +382,12 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 	return true;
 }
 
+_bool CCutScene::Tick_CutScene_Eject_InUFO(_double dTimeDelta)
+{
+	Script_Eject_InUFO(dTimeDelta);
+	return true;
+}
+
 HRESULT CCutScene::Start_CutScene()
 {
 
@@ -402,6 +415,10 @@ HRESULT CCutScene::Start_CutScene()
 		break;
 	case CutSceneOption::CutScene_Boss_Intro:
 		if (FAILED(Start_CutScene_Boss_Intro()))
+			return E_FAIL;
+		break;
+	case CutSceneOption::CutScene_Eject_InUFO:
+		if (FAILED(Start_CutScene_Eject_UFO()))
 			return E_FAIL;
 		break;
 	}
@@ -566,6 +583,18 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 	return S_OK;
 }
 
+HRESULT CCutScene::Start_CutScene_Eject_UFO()
+{
+	((CCody*)DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(67.3511f, 599.567f, 1002.51f, 1.f));
+	((CCody*)DATABASE->GetCody())->Get_Actor()->Set_IsPlayerInUFO(true);
+	// 우주선 들어가는거
+	CGameInstance::GetInstance()->Set_MainViewFog(true);
+	CGameInstance::GetInstance()->Set_GoalViewportInfo(XMVectorSet(0.0f, 0.f, 0.6f, 1.f), XMVectorSet(0.6f, 0.f, 0.4f, 1.f));
+	static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Start_Film(L"Film_Eject_InUFO");
+	
+	return S_OK;
+}
+
 HRESULT CCutScene::End_CutScene_Intro()
 {
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
@@ -632,6 +661,11 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	return S_OK;
 }
 
+HRESULT CCutScene::End_CutScene_Eject_InUFO()
+{
+	return S_OK;
+}
+
 HRESULT CCutScene::Ready_CutScene_Intro()
 {
 	m_dDuration = 138.0;
@@ -664,6 +698,12 @@ HRESULT CCutScene::Ready_CutScene_Boss_Intro()
 	return S_OK;
 }
 
+HRESULT CCutScene::Ready_CutScene_Eject_InUFO()
+{
+	m_dDuration = 7.0;
+	return S_OK;
+}
+
 HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 {
 	switch (m_eCutSceneOption = eOption)
@@ -686,6 +726,10 @@ HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 		break;
 	case Client::CCutScene::CutSceneOption::CutScene_Boss_Intro:
 		if (FAILED(Ready_CutScene_Boss_Intro()))
+			return E_FAIL;
+		break;
+	case Client::CCutScene::CutSceneOption::CutScene_Eject_InUFO:
+		if (FAILED(Ready_CutScene_Eject_InUFO()))
 			return E_FAIL;
 		break;
 	}
@@ -752,22 +796,16 @@ void CCutScene::Script_Intro(_double dTimeDelta)
 		SCRIPT->Render_Script(127, CScript::SCREEN::FULL, 1.9f);
 	else if (dSoundTime >= 11.0 && dSoundTime < 11.0 + dTimeDelta)
 		SCRIPT->Render_Script(128, CScript::SCREEN::FULL, 1.9f);
-
 	else if (dSoundTime >= 14.0 && dSoundTime < 14.0 + dTimeDelta)
 		SCRIPT->Render_Script(129, CScript::SCREEN::FULL, 0.9f);
 	else if (dSoundTime >= 15.0 && dSoundTime < 15.0 + dTimeDelta)
 		SCRIPT->Render_Script(130, CScript::SCREEN::FULL, 1.9f);
-
 	else if (dSoundTime >= 17.0 && dSoundTime < 17.0 + dTimeDelta)
 		SCRIPT->Render_Script(131, CScript::SCREEN::FULL, 1.9f);
-
 	else if (dSoundTime >= 19.0 && dSoundTime < 19.0 + dTimeDelta)
 		SCRIPT->Render_Script(132, CScript::SCREEN::FULL, 1.9f);
-
-
 	else if (dSoundTime >= 22.5 && dSoundTime < 22.5 + dTimeDelta)
 		SCRIPT->Render_Script(133, CScript::SCREEN::FULL, 2.4f);
-
 	else if (dSoundTime >= 26.0 && dSoundTime < 26.0 + dTimeDelta)
 		SCRIPT->Render_Script(134, CScript::SCREEN::FULL, 1.9f);
 	else if (dSoundTime >= 28.0 && dSoundTime < 28.0 + dTimeDelta)
@@ -848,16 +886,12 @@ void CCutScene::Script_Intro(_double dTimeDelta)
 		SCRIPT->Render_Script(172, CScript::SCREEN::FULL, 0.9f);
 	else if (dSoundTime >= 114.0 && dSoundTime < 114.0 + dTimeDelta)
 		SCRIPT->Render_Script(173, CScript::SCREEN::FULL, 1.9f);
-
 	else if (dSoundTime >= 116.0 && dSoundTime < 116.0 + dTimeDelta)
 		SCRIPT->Render_Script(174, CScript::SCREEN::FULL, 0.9f);
-
 	else if (dSoundTime >= 122.5 && dSoundTime < 122.5 + dTimeDelta)
 		SCRIPT->Render_Script(175, CScript::SCREEN::FULL, 0.9f);
-
 	else if (dSoundTime >= 125.0 && dSoundTime < 125.0 + dTimeDelta)
 		SCRIPT->Render_Script(176, CScript::SCREEN::FULL, 1.9f);
-
 	else if (dSoundTime >= 132.0 && dSoundTime < 132.0 + dTimeDelta)
 		SCRIPT->Render_Script(177, CScript::SCREEN::FULL, 1.9f);
 	else if (dSoundTime >= 134.0 && dSoundTime < 134.0 + dTimeDelta)
@@ -933,8 +967,18 @@ void CCutScene::Script_Boss_Intro(_double dTimeDelta)
 		SCRIPT->Render_Script(210, CScript::SCREEN::FULL, 1.9f);
 	else if (dSoundTime >= 77.0 && dSoundTime < 77.0 + dTimeDelta)
 		SCRIPT->Render_Script(211, CScript::SCREEN::FULL, 1.f);
+}
 
-		
+void CCutScene::Script_Eject_InUFO(_double dTimeDelta)
+{
+	_double dSoundTime = m_dTime;
+	if (dSoundTime >= 1.0 && dSoundTime < 1.0 + dTimeDelta)
+		SCRIPT->Render_Script(91, CScript::HALF, 1.0f);
+	else if (dSoundTime >= 2.0 && dSoundTime < 2.0 + dTimeDelta)
+		SCRIPT->Render_Script(92, CScript::HALF, 2.9f);
+	else if (dSoundTime >= 5.0 && dSoundTime < 5.0 + dTimeDelta)
+		SCRIPT->Render_Script(93, CScript::HALF, 2.0f);
+
 }
 
 
