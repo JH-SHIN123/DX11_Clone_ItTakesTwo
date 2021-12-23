@@ -27,6 +27,7 @@ public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
 	_int		Get_ActiveCore() const { return m_iActiveCore; }
 	_bool		Get_bArrived() const { return m_bArrived; }
+	_bool		Get_Broken() const { return m_bBroken; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;

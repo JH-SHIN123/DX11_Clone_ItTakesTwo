@@ -13,6 +13,7 @@
 #include "Effect_Generator.h"
 #include "BossHpBar.h"
 #include "HpBar.h"
+#include "MoonBaboonCore.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -354,23 +355,47 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 
 void CUFO::Core_Destroyed()
 {
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
+	for (_uint i = 0; i < 3; ++i)
 	{
-		m_ePattern = UFO_PATTERN::INTERACTION;
+		_bool IsBroken = ((CMoonBaboonCore*)DATABASE->Get_MoonBaboonCore(i))->Get_Broken();
+		_int iActive = ((CMoonBaboonCore*)DATABASE->Get_MoonBaboonCore(i))->Get_ActiveCore();
 
-		//m_pBossHpBar->Set_Ratio(0.11f);
-
-		/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
-		if (3 != m_iPhaseChangeCount)
+		if (true == IsBroken && 1 == iActive)
 		{
-			m_pModelCom->Set_Animation(UFO_Laser_HitPod);
-			m_pModelCom->Set_NextAnimIndex(UFO_MH);
-			m_pMoonBaboon->Set_Animation(Moon_Ufo_Laser_HitPod, UFO_MH);
-		}
+			m_ePattern = UFO_PATTERN::INTERACTION;
 
-		m_IsLaserCreate = true;
-		((CLaser_TypeA*)DATABASE->Get_LaserTypeA())->Set_Dead();
+			m_pBossHpBar->Set_Ratio(0.11f);
+
+			/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
+			if (3 != m_iPhaseChangeCount)
+			{
+				m_pModelCom->Set_Animation(UFO_Laser_HitPod);
+				m_pModelCom->Set_NextAnimIndex(UFO_MH);
+				m_pMoonBaboon->Set_Animation(Moon_Ufo_Laser_HitPod, UFO_MH);
+			}
+
+			m_IsLaserCreate = true;
+			((CLaser_TypeA*)DATABASE->Get_LaserTypeA())->Set_Dead();
+		}
 	}
+
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
+	//{
+	//	m_ePattern = UFO_PATTERN::INTERACTION;
+
+	//	m_pBossHpBar->Set_Ratio(0.11f);
+
+	//	/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
+	//	if (3 != m_iPhaseChangeCount)
+	//	{
+	//		m_pModelCom->Set_Animation(UFO_Laser_HitPod);
+	//		m_pModelCom->Set_NextAnimIndex(UFO_MH);
+	//		m_pMoonBaboon->Set_Animation(Moon_Ufo_Laser_HitPod, UFO_MH);
+	//	}
+
+	//	m_IsLaserCreate = true;
+	//	((CLaser_TypeA*)DATABASE->Get_LaserTypeA())->Set_Dead();
+	//}
 }
 
 void CUFO::Phase1_InterAction(_double dTimeDelta)
