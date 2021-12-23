@@ -3332,7 +3332,7 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 
 	if (true == m_IsWarpNextStage)
 	{
-		if (m_fWarpTimer_InWormhole/*2.f*/ <= m_fWarpTimer)
+		if (m_fWarpTimer_InWormhole <= m_fWarpTimer)
 		{
 			_float4 vWormhole = m_vWormholePos;
 			vWormhole.z -= 1.f;

@@ -80,15 +80,32 @@ HRESULT CWarpGate::Render(RENDER_GROUP::Enum eGroup)
 
 void CWarpGate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+	
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
-		((CMay*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, true, this);
+	{
+		if(false == static_cast<CMay*>(DATABASE->GetMay())->Get_IsWarpDone() && 
+			false == static_cast<CMay*>(DATABASE->GetMay())->Get_IsWarpNextStage())
+			((CMay*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, true, this);
+	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-		((CMay*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, false, this);
+	{
+		if (false == static_cast<CMay*>(DATABASE->GetMay())->Get_IsWarpDone() &&
+			false == static_cast<CMay*>(DATABASE->GetMay())->Get_IsWarpNextStage())
+			((CMay*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, false, this);
+	}
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, true, this);
+	{
+		if (false == static_cast<CCody*>(DATABASE->GetCody())->Get_IsWarpDone() &&
+			false == static_cast<CCody*>(DATABASE->GetCody())->Get_IsWarpNextStage())
+			((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, true, this);
+	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, false, this);
+	{
+		if (false == static_cast<CCody*>(DATABASE->GetCody())->Get_IsWarpDone() &&
+			false == static_cast<CCody*>(DATABASE->GetCody())->Get_IsWarpNextStage())
+			((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, false, this);
+	}
 }
 
 HRESULT CWarpGate::Render_ShadowDepth()
@@ -115,7 +132,7 @@ HRESULT CWarpGate::Ready_Component()
 	CTriggerActor::ARG_DESC ArgDesc;
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = new PxBoxGeometry(5.f, 10.f, 0.1f);
+	ArgDesc.pGeometry = new PxBoxGeometry(5.f, 5.f, 0.1f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
@@ -345,7 +362,7 @@ _fmatrix CWarpGate::Get_NextPortal_Matrix()
 		vPos = XMVectorSet(64.f, 730.2f, 956.3f, 1.f);
 		break;
 	case CWarpGate::STAGE_TENNIS:
-		vPos = XMVectorSet(63.8f, 104.5f, 162.f, 1.f);
+		vPos = XMVectorSet(63.8f, 104.5f, 163.f, 1.f);
 		break;
 	default:
 		break;

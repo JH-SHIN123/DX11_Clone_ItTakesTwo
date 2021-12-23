@@ -85,7 +85,7 @@ HRESULT CMainApp::Run_App()
 			m_bMouseLock = !m_bMouseLock;
 
 //#ifdef _DEBUG
-		Show_FPS(dTimeDelta);
+		//Show_FPS(dTimeDelta);
 //#endif
 
 	}

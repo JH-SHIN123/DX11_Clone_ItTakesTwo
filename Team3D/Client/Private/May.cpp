@@ -228,6 +228,10 @@ _int CMay::Tick(_double dTimeDelta)
 	/* Script */
 	Script_Trigger(dTimeDelta);
 
+	_tchar szFPS[MAX_PATH] = L"";
+	wsprintf(szFPS, TEXT("WarpDone : %d - %d"), (_int)m_IsWarpNextStage, (_int)m_IsWarpDone);
+	SetWindowText(g_hWnd, szFPS);
+
 	m_pCamera = (CSubCamera*)CDataStorage::GetInstance()->Get_SubCam();
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
@@ -1899,7 +1903,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			m_IsPinBall = true;
 		}
-		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
+		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage && false == m_IsWarpDone)
 		{
 			// ¸ÞÀÌ Àü¿ë Æ÷Å»·Î ÀÌµ¿(¿úÈ¦)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
@@ -2634,7 +2638,7 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
 			_vector vTriggerPos = PortalMatrix.r[3];
 			_vector vLook = PortalMatrix.r[2];
-			vTriggerPos += vLook * 20.f;
+			vTriggerPos += vLook * 10000.f;
 			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
 			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 
@@ -2642,12 +2646,17 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 	}
 	else
 	{
-		_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
-		_vector vTriggerPos = PortalMatrix.r[3];
-		_vector vLook = PortalMatrix.r[2];
-		vTriggerPos += vLook * 30.f;
-		m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
-		m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+		m_IsWarpNextStage = false;
+		if (false == m_IsWarpRotate)
+		{
+			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+			_vector vTriggerPos = PortalMatrix.r[3];
+			_vector vLook = PortalMatrix.r[2];
+			vTriggerPos += vLook * 30.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+			m_IsWarpRotate = true;
+		}
 
 		// ½´·ç·è
 		if (m_fWarpTimer_InWormhole + m_fWarpTimer_Max + 0.25f >= m_fWarpTimer)
@@ -2658,8 +2667,10 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 		}
 		else
 		{
+			m_IsWarpRotate = false;
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsWarpDone = false;
+			m_IsCollide = false;
 		}
 	}
 }
