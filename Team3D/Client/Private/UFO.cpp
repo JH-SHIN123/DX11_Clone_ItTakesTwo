@@ -183,8 +183,6 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 
 	vDir = vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-
-
 	_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
 	_float vAngle = XMConvertToDegrees(XMVectorGetX(vDirForRotate));
 
@@ -265,7 +263,7 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 		return;
 
 	_vector vDir, vTargetPos;
-	_uint iGravitationalBombMaxCount = 2;
+	_uint iGravitationalBombMaxCount = 8;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
@@ -387,7 +385,6 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 			{
 				_float fMaxDistance = 99.f;
 				DATABASE->GoUp_BossFloor(fMaxDistance, 10.f);
-
 			}
 		}
 	}
@@ -1168,6 +1165,7 @@ void CUFO::GoUp(_double dTimeDelta)
 		m_fMaxY = 0.f;
 		m_IsGoUp = false;
 		m_fDistance = 0.f;
+		DATABASE->Set_BossFloorUp(false);
 		return;
 	}
 

@@ -117,6 +117,8 @@ public:
 	void GoUp_BossFloor(_float fMaxdistance = 50.f, _float fSpeed = 15.f);	/* fMaxDistanc : 올릴 높이, fSpeed : 올라가는 속도 */
 	void Close_BossDoor(); 													/* 보스 등장시 바닥 문 닫을 때 호출 */
 	void Close_BossSlideDoor(); 											/* 보스방에 있는 중력발판 사용끝나면 호출 */
+	void Set_BossFloorUp(_bool IsCheck) { m_IsBossFloorUp = IsCheck; }
+	_bool Get_BossFloorUp() const { return m_IsBossFloorUp; }
 
 	/* For.SpaceShip */
 	void Set_MoonBaboon_SpaceShip(CGameObject* pMoonBaboonSpaceShip) { m_pMoonBaboonSpaceShip = pMoonBaboonSpaceShip; }
@@ -192,7 +194,7 @@ public:
 
 	void Set_MoonBaboon(CGameObject* pMoonBaboon) { m_pMoonBaboon = pMoonBaboon; }
 	CGameObject* Get_MoonBaboon() { return m_pMoonBaboon; }
-	
+
 	/* For. MainLaser */
 	_uint Get_FloorIndex() const { return m_iFloorIndex; }
 
@@ -336,6 +338,7 @@ private:
 	_bool m_bRailStageClear = false;
 	_bool m_IsValveActivated = false;
 	_bool m_IsLaserTypeB_Recovery = false;
+	_bool m_IsBossFloorUp = false;
 
 	_uint m_iMayStageNum = 0;
 	_uint m_iCodyStageNum = 0;
