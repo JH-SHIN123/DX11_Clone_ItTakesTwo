@@ -16,6 +16,7 @@ public:/* Getter */
 	_bool Get_Goal()		 { return m_bGoal; }	
 	_bool Get_PlayerMove()	 { return m_bPlayerMove; }
 	CTransform* Get_Transform() { return m_pTransformCom; }
+
 public:/* Setter */
 	void Set_PlayerMove(_bool _bPlayerMove)		{ m_bPlayerMove = _bPlayerMove; }
 	void Set_RespawnAngle(_bool _bRespawnAngle) { m_bRespawnAngle = _bRespawnAngle; }
@@ -47,6 +48,7 @@ private:
 	_bool			m_bFinish = false;
 	_bool			m_bGoal = false;
 	_bool			m_bGoalTimeCheck = false;
+	_bool			m_bCody_ScriptCheck = false;
 
 	_bool			m_IsCollision = false;
 	_float			m_fGoalTime = 0.f;

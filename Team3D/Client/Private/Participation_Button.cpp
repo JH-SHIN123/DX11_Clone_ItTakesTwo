@@ -63,7 +63,7 @@ _int CParticipation_Button::Tick(_double dTimeDelta)
 		m_iFrame = 1;
 	}
 
-	if (1 == m_iOption && m_pGameInstance->Key_Down(DIK_SPACE))
+	if (1 == m_iOption && (m_pGameInstance->Key_Down(DIK_SPACE) || m_pGameInstance->Pad_Key_Down(DIP_A)))
 	{
 		/* Sound */
 		m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
