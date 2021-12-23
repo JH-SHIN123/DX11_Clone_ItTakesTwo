@@ -317,7 +317,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 	{
 
 		if (m_fMoveAcceleration < 10.f)
-			m_fMoveAcceleration += dTimeDelta * 4.f;
+			m_fMoveAcceleration += (_float)dTimeDelta * 4.f;
 
 		_vector vUp = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
 		_vector vRocketLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
@@ -334,7 +334,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 			if (m_pGameInstance->Key_Pressing(DIK_DOWN) || m_pGameInstance->Get_Pad_LStickY() > 44000)
 			{
 				if (m_fRotateAcceleration < 1.f)
-					m_fRotateAcceleration += dTimeDelta * 2.f;
+					m_fRotateAcceleration += (_float)dTimeDelta * 2.f;
 
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta * m_fRotateAcceleration);
 			}
@@ -344,7 +344,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 			if (m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Get_Pad_LStickY() < 20000)
 			{
 				if (m_fRotateAcceleration < 1.f)
-					m_fRotateAcceleration += dTimeDelta* 2.f;
+					m_fRotateAcceleration += (_float)dTimeDelta* 2.f;
 
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * m_fRotateAcceleration);
 			}
@@ -352,14 +352,14 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 		if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
 		{
 			if (m_fRotateAcceleration < 1.f)
-				m_fRotateAcceleration += dTimeDelta* 2.f;
+				m_fRotateAcceleration += (_float)dTimeDelta* 2.f;
 
 			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -dTimeDelta * m_fRotateAcceleration);
 		}
 		if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 44000)
 		{
 			if (m_fRotateAcceleration < 1.f)
-				m_fRotateAcceleration += dTimeDelta * 2.f;
+				m_fRotateAcceleration += (_float)dTimeDelta * 2.f;
 
 			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * m_fRotateAcceleration);
 		}

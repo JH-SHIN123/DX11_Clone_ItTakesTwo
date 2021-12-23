@@ -22,9 +22,6 @@ HRESULT CRockParticle::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	m_UserData.eID = GameID::eENVIRONMENT;
-	m_UserData.pGameObject = this;
-
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
 	return S_OK;
@@ -32,15 +29,16 @@ HRESULT CRockParticle::NativeConstruct(void * pArg)
 
 _int CRockParticle::Tick(_double dTimeDelta)
 {
-	if (true == m_isDead)
-		return EVENT_DEAD;
-
 	CGameObject::Tick(dTimeDelta);
 
-	if (2.f <= m_dCoolTime)
-		Set_Dead();
+	m_pTransformCom->Go_Down(dTimeDelta * 20.0);
 
-	m_dCoolTime += dTimeDelta;
+	if (m_fScale > 0.f)
+		m_fScale -= (_float)dTimeDelta * 4.f;
+	else
+		return EVENT_DEAD;
+
+	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 0.f));
 
 	return NO_EVENT;
 }
@@ -48,9 +46,6 @@ _int CRockParticle::Tick(_double dTimeDelta)
 _int CRockParticle::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
-
-	m_pDynamicActorCom->Update_DynamicActor();
-	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 0.f));
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -61,7 +56,7 @@ _int CRockParticle::Late_Tick(_double dTimeDelta)
 HRESULT CRockParticle::Render(RENDER_GROUP::Enum eGroup)
 {
 	CGameObject::Render(eGroup);
-
+		
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(1, 0);
@@ -84,32 +79,21 @@ HRESULT CRockParticle::Render_ShadowDepth()
 HRESULT CRockParticle::Ready_Component(void * pArg)
 {
 	_vector vPosition = XMVectorZero();
-	if (nullptr != pArg)
-		memcpy(&vPosition, pArg, sizeof(_vector));
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
+	if (nullptr != pArg)
+	{
+		memcpy(&vPosition, pArg, sizeof(_vector));
+		vPosition += XMVectorSet(0.f, 10.f, 0.f, 0.f);
+	}
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Rock"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_fScale = (rand() % 5 + 1.f) * 0.1f;
+	m_fScale = (rand() % 99 + 1.f) * 0.05f;
 	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 0.f));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(vPosition, 1.f));
-
-	/* Dynamic */
-	PxGeometry* DynamicGeom = new PxSphereGeometry(0.05f);
-	CDynamicActor::ARG_DESC tDynamicActorArg;
-	tDynamicActorArg.pTransform = m_pTransformCom;
-	tDynamicActorArg.fDensity = 1.f;
-	tDynamicActorArg.pGeometry = DynamicGeom;
-	tDynamicActorArg.vVelocity = PxVec3(0.f, 0.f, 0.f);
-	tDynamicActorArg.pUserData = &m_UserData;
-
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
-	Safe_Delete(DynamicGeom);
-
-	/* ·£´ý Force°ª */
-	_float fForce = (rand() % 21 - 10) * 0.1f;
-	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(fForce, fForce, fForce));
+	m_pTransformCom->Set_Rotaion(XMVectorSet((rand() % 100) * 0.6f - 30.f, 0.f, (rand() % 100) * 0.6f - 30.f, 0.f));
 
 	return S_OK;
 }
@@ -143,7 +127,6 @@ void CRockParticle::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
-	Safe_Release(m_pDynamicActorCom);
 
 	CGameObject::Free();
 }

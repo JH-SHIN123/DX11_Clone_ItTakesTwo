@@ -24,6 +24,7 @@ public:
 	HRESULT NativeConstruct_EndingCredit();
 	HRESULT Create_3DText(_uint iIndex, _float fPosY);
 	HRESULT Create_Environment();
+	HRESULT Create_HugeRock(_float fPosY);
 
 private:
 	CGameInstance*	m_pGameInstance = nullptr;
@@ -32,7 +33,6 @@ private:
 	_uint			m_iRandomModel = 0;
 private:
 	HRESULT Create_Rocks(_uint iNumRock);
-	HRESULT Create_HugeRock();
 	HRESULT Create_2DMesh(_uint iNum2DMesh);
 
 public:
