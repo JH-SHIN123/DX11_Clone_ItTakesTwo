@@ -56,12 +56,13 @@ _int CBossHpBar::Tick(_double TimeDelta)
 			m_fScaleX += (_float)TimeDelta * 1200.f;
 
 			if (m_fScaleX >= m_UIDesc.vScale.x)
+			{
 				m_fScaleX = m_UIDesc.vScale.x;
+				m_IsFontRender = true;
+			}
 
 			m_pTransformCom->Set_Scale(XMVectorSet(m_fScaleX, m_UIDesc.vScale.y, 0.f, 0.f));
 		}
-		else
-			m_IsFontRender = true;
 	}
 
 	return _int();
@@ -152,7 +153,7 @@ HRESULT CBossHpBar::Ready_Layer_UI()
 
 HRESULT CBossHpBar::Render_Font()
 {
-	m_pFont->Render_Font(TEXT("快林 俺内盔件捞"), _float2(100.f, 100.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.28f);
+	m_pFont->Render_Font(TEXT("快林 俺内盔件捞"), _float2(200.f, 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.27f);
 
 	return S_OK;
 }
