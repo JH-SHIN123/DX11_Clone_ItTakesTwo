@@ -21,6 +21,7 @@ public:/* Setter */
 	void Set_MayInUFO(_bool bCheck) { m_IsMayInUFO = bCheck; }
 	void Set_ShootLaser(_bool _bShootLaser) { m_IsShootLaser = _bShootLaser; }
 	void Compensate_LaserDir(_bool bCompensate) { m_bCompensate = bCompensate; }
+	void Set_CutSceneEnd(_bool IsCutSceneEnd) { m_IsCutSceneEnd = IsCutSceneEnd; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -48,6 +49,9 @@ private:
 	_bool					m_bRotateRight = false;
 	_bool					m_bRotateLeft = false;
 	_bool					m_bCompensate = false;
+	
+	/* CutScene */
+	_bool m_IsCutSceneEnd = false;
 
 
 	// YYY

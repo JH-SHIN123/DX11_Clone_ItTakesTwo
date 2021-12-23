@@ -55,6 +55,8 @@ private:
 	MOON_STATE m_eNextState = MOON_STATE_END;
 	MOON_TARGET m_eTarget = TARGET_END;
 	_bool		m_bEjectOnce = false;
+	_vector     m_vChairOffSetPos = {};
+	_float		m_fEjectDelay = 0.f;
 
 private:
 	/* For.NativeConstruct */

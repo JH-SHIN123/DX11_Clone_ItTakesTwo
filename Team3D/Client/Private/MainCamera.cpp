@@ -390,23 +390,23 @@ void CMainCamera::KeyCheck(_double dTimeDelta)
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD4))
 	{
-		m_pTransformCom->Go_Left(dTimeDelta * 2.f);
+		m_pTransformCom->Go_Left(dTimeDelta * 8.f);
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD6))
 	{
-		m_pTransformCom->Go_Right(dTimeDelta* 2.f);
+		m_pTransformCom->Go_Right(dTimeDelta* 8.f);
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD8))
 	{
-		m_pTransformCom->Go_Up(dTimeDelta* 2.f);
+		m_pTransformCom->Go_Up(dTimeDelta* 8.f);
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD2))
 	{
-		m_pTransformCom->Go_Down(dTimeDelta* 2.f);
+		m_pTransformCom->Go_Down(dTimeDelta* 8.f);
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD5))
 	{
-		m_pTransformCom->Go_Straight(dTimeDelta* 2.f);
+		m_pTransformCom->Go_Straight(dTimeDelta* 8.f);
 	}
 
 }

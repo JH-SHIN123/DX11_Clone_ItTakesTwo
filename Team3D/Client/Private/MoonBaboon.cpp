@@ -5,6 +5,7 @@
 #include "UFO.h"
 #include "CutScenePlayer.h"
 #include "RobotParts.h"
+#include "Moon.h"
 
 CMoonBaboon::CMoonBaboon(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -101,44 +102,44 @@ CMoonBaboon::MOON_STATE CMoonBaboon::Check_State(_double dTimeDelta)
 
 void CMoonBaboon::Fix_MoonBaboon_Chair(_double dTimeDelta)
 {
-	if (((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() == CUFO::UFO_PHASE::PHASE_3 && ((CUFO*)DATABASE->Get_BossUFO())->Get_IsCutScene() == true)
+	if (((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() == CUFO::UFO_PHASE::PHASE_3 &&
+		((CUFO*)DATABASE->Get_BossUFO())->Get_IsCutScene() == true)
 	{
-		if (m_pGameInstance->Key_Pressing(DIK_LEFT) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
+		// 달 착지 하면서 구르는 타이밍! 848.f
+		if (m_pModelCom->Get_CurrentTime(Moon_Eject) >= 548.f)
 		{
-			m_pTransformCom->Go_Left(dTimeDelta * 5.f);
-		}
-		if (m_pGameInstance->Key_Pressing(DIK_RIGHT) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
-		{
-			m_pTransformCom->Go_Right(dTimeDelta * 5.f);
-		}
-		if (m_pGameInstance->Key_Pressing(DIK_UP) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
-		{
-			m_pTransformCom->Go_Up(dTimeDelta * 5.f);
-		}
-		if (m_pGameInstance->Key_Pressing(DIK_DOWN) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
-		{
-			m_pTransformCom->Go_Down(dTimeDelta * 5.f);
+			_vector vPosition = m_vChairOffSetPos;
+			vPosition.m128_f32[0] += 11.f;
+			vPosition.m128_f32[1] -= 229.f;
+			vPosition.m128_f32[2] += 10.f;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 		}
 		if (m_bEjectOnce == false)
 		{
-			_matrix matAlign = m_pModelCom->Get_BoneMatrix("Align");
-			_matrix matSpine = m_pModelCom->Get_BoneMatrix("Spine");
-
-			_matrix matAlignWorld = matAlign * XMMatrixScaling(100.f, 100.f, 100.f) * m_pTransformCom->Get_WorldMatrix();
-			_matrix matSpineWorld = matSpine * XMMatrixScaling(100.f, 100.f, 100.f) * m_pTransformCom->Get_WorldMatrix();
-
-			_vector AlignPos = matAlignWorld.r[3];
-			_vector SpinePos = matSpineWorld.r[3];
-
-			_vector vDir = SpinePos - AlignPos;
-
-			_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vDir;
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-			m_pTransformCom->Set_Scale(XMVectorSet(10.f, 10.f, 10.f, 0.f));
-
-
 			m_pModelCom->Set_Animation(Moon_Eject);
-			m_pModelCom->Set_NextAnimIndex(Moon_Run);
+			m_pModelCom->Set_NextAnimIndex(Moon_Eject);
+
+			m_fEjectDelay += dTimeDelta;
+			// 아직 사출되기전 대기시간
+			if (m_fEjectDelay <= 1.f)
+			{
+				_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
+				_float4x4 matWorld, matScale; // 우주선 안에있을때 유리밖으로 꼬리 튀어나와서 100->95정도로 줄임.
+				XMStoreFloat4x4(&matWorld, XMMatrixRotationX(-90.f) * XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f) * BoneChair * m_pUFOTransform->Get_WorldMatrix());
+				matWorld._42 += 2.f;
+				m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
+				m_vChairOffSetPos = { matWorld._41, matWorld._42, matWorld._43, 1.f };
+			}
+			// 원숭이 달로 발사
+			else if (m_fEjectDelay > 1.f)
+			{
+				_vector vPosition = m_vChairOffSetPos;
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+				m_pTransformCom->Set_Rotaion(XMVectorSet(0.f, 0.f, 0.f, 0.f));
+				m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(-90.f));
+				m_bEjectOnce = true;
+			}
+
 		}
 	}
 	else
@@ -147,6 +148,7 @@ void CMoonBaboon::Fix_MoonBaboon_Chair(_double dTimeDelta)
 		_float4x4 matWorld, matScale; // 우주선 안에있을때 유리밖으로 꼬리 튀어나와서 100->95정도로 줄임.
 		XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f)  * BoneChair * m_pUFOTransform->Get_WorldMatrix());
 		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
+		m_vChairOffSetPos = { matWorld._41, matWorld._42, matWorld._43, 1.f };
 	}
 }
 

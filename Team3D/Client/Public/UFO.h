@@ -124,6 +124,9 @@ private:
 	/* For. UI */
 	class CBossHpBar*		m_pBossHpBar = nullptr;
 
+	/* CutScene Offset */
+	_vector     m_vChairOffSetPos = {};
+
 
 private:
 	/* For.Component */

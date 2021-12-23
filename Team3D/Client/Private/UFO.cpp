@@ -12,6 +12,7 @@
 #include "MoonBaboon.h"
 #include "Effect_Generator.h"
 #include "BossHpBar.h"
+#include "MoonUFO.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -931,11 +932,24 @@ void CUFO::GetRidLaserGun()
 
 HRESULT CUFO::Phase3_End(_double dTimeDelta)
 {
+	if (m_pModelCom->Get_CurrentTime(CutScene_Eject_FlyingSaucer) >= 848.f) // MoonBaboon ´Þ¿¡ ±¼·¯¶³¾îÁö°í ³ª¼­..
+	{
+		_vector vPosition = { 64.f + 11.f, 357.5f - 255.f, 195.f, 1.f };
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
+	}
+
+	if (m_pModelCom->Is_AnimFinished(CutScene_Eject_FlyingSaucer) == true)
+	{
+		((CMoonUFO*)DATABASE->Get_MoonUFO())->Set_CutSceneEnd(true);
+	}
+
 	if (false == m_IsEjection)
 	{
 		_vector vPosition = { 64.f, 357.5f, 195.f, 1.f };
 		XMStoreFloat4(&m_vStartUFOPos, vPosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vStartUFOPos));
+		m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(90.f));
 		m_pModelCom->Set_Animation(CutScene_Eject_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
 		m_IsEjection = true;

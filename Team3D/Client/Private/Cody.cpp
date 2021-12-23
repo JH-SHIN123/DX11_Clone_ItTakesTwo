@@ -315,7 +315,7 @@ _int CCody::Tick(_double dTimeDelta)
 			Hook_UFO(dTimeDelta);
 			Warp_Wormhole(dTimeDelta);
 			Touch_FireDoor(dTimeDelta);
-			Falling_Dead(dTimeDelta);
+			Falling_Dead(dTimeDelta); 
 			WallLaserTrap(dTimeDelta);
 			PinBall(dTimeDelta);
 			SpaceShip_Respawn(dTimeDelta);
