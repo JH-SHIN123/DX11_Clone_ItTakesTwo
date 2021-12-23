@@ -46,7 +46,7 @@ _int CHugeRock::Tick(_double dTimeDelta)
 
 	if (fMyPosY > fCodyY - 24.f)
 	{
-		ENDINGCREDIT->Set_Dead_Environment();
+		//ENDINGCREDIT->Set_Dead_Environment();
 		Create_Rocks();
 		return EVENT_DEAD;
 	}
@@ -93,17 +93,17 @@ HRESULT CHugeRock::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-//HRESULT CHugeRock::Render_ShadowDepth()
-//{
-//	CGameObject::Render_ShadowDepth();
-//
-//	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-//	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-//	/* Skinned: 2 / Normal: 3 */
-//	m_pModelCom->Render_Model(3, 0, true);
-//
-//	return S_OK;
-//}
+HRESULT CHugeRock::Render_ShadowDepth()
+{
+	CGameObject::Render_ShadowDepth();
+
+	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
+	/* Skinned: 2 / Normal: 3 */
+	m_pModelCom->Render_Model(3, 0, true);
+
+	return S_OK;
+}
 
 //void CHugeRock::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 //{
@@ -165,7 +165,7 @@ HRESULT CHugeRock::Ready_Component(void * pArg)
 
 HRESULT CHugeRock::Create_Rocks()
 {
-	for (_uint i = 0; i < 100; ++i)
+	for (_uint i = 0; i < 150; ++i)
 	{
 		_vector vPositoin = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_RockParticle"), &vPositoin), E_FAIL);

@@ -369,6 +369,9 @@ PS_OUT PS_MAIN(PS_IN In)
 	fBlurValue = g_EffectPostCustomBlurTex_Value.Sample(Point_Sampler, In.vTexUV).r;
 	vColor += g_EffectPostCustomBlurTex.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) + g_EffectPostCustomBlurTex_Blur.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV) * (fBlurValue * 10.f);
 
+	// Tone Mapping
+	vColor = ToneMapping_EA(vColor);
+
 	// Final
 	Out.vColor = vector(vColor, 1.f);
 
@@ -391,45 +394,3 @@ technique11		DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 }
-
-/* Fog */
-//cbuffer FogDesc
-//{
-//	float3	g_vFogColor = { 1.f,0.9f,0.6f };			// 안개의 기본색상 ( 앰비언트 색상과 동일해야함)
-//	float	g_fFogStartDist = 20.f;		// 안개 지점에서 카메라까지의 거리
-//	float3	g_vFogHighlightColor = { 0.8f, 0.7f, 0.4f };	// 카메라와 태양을 잇는 벡터와 평행에 가까운 카메라 벡터의 하이라이팅 픽셀 색상
-//	float	g_fFogGlobalDensity = 1.5f;	// 안개 밀도 계수(값이 클수록 안개가 짙어진다)
-//	float	g_fFogHeightFalloff = 0.2f;	// 높이 소멸값
-//};
-//float3 ApplyFog(float3 finalColor, float eyePosY, float3 eyeToPixel)
-//{
-//	//////////////////////////////////////////////////////////////////////////////////
-//	//float pixelDist = length(eyeToPixel); // Cam과 픽셀간의 거리
-//	//float3 eyeToPixelNorm = normalize(eyeToPixel);
-//
-//	//// 픽셀 거리에 대해 안개 시작 지점 계산
-//	//float fogDist = max(pixelDist - g_fFogStartDist, 0.0);
-//
-//	//// 안개 세기에 대해 거리 계산
-//	//float fogHeightDensityAtViewer = exp(-g_fFogHeightFalloff * eyePosY); // exp : 지수 반환(왼쪽 음에 가까운 지수그래프사용)
-//	//float fogDistInt = fogDist * fogHeightDensityAtViewer;
-//
-//	//// 안개 세기에 대해 높이 계산
-//	//float eyeToPixelY = eyeToPixel.y * (fogDist / pixelDist);
-//	//float t = g_fFogHeightFalloff * eyeToPixelY;
-//	//const float thresholdT = 0.01;
-//	//float fogHeightInt = abs(t) > thresholdT ?
-//	//	(1.0 - exp(-t)) / t : 1.0;
-//
-//	//// 위 계산 값을 합해 최종 인수 계산
-//	//float fogFinalFactor = exp(-g_fFogGlobalDensity * fogDistInt);
-//
-//	//// 태양 하이라이트 계산 및 안개 색상 혼합
-//	////float sunHighlightFactor = saturate(dot(eyeToPixelNorm, -g_vLightDir));
-//	////sunHighlightFactor = pow(sunHighlightFactor, 8.0);
-//	////float3 fogFinalColor = lerp(g_vFogColor, g_vFogHighlightColor, sunHighlightFactor);
-//
-//	return lerp(g_vFogColor, finalColor, fogFinalFactor);
-//}
-// 
-

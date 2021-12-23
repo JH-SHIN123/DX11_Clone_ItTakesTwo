@@ -28,6 +28,10 @@ HRESULT CAlienScreen::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_Component(pArg), E_FAIL);
 
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	XMVectorSetY(vPosition, XMVectorGetY(vPosition) - 0.2f);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
 	return S_OK;
 }
 

@@ -255,7 +255,6 @@ _int CMay::Tick(_double dTimeDelta)
 			Hook_UFO(dTimeDelta);
 			Falling_Dead(dTimeDelta);
 			BossMissile_Control(dTimeDelta);
-			Ride_Ending_Rocket(dTimeDelta);
 		}
 		else
 		{
@@ -299,12 +298,25 @@ _int CMay::Tick(_double dTimeDelta)
 	// Control RadiarBlur - 제일 마지막에 호출
 	Trigger_RadiarBlur(dTimeDelta);
 
+	/* 히트타임 */
+	if (true == m_bHit)
+	{
+		m_dHitTime += dTimeDelta;
+
+		if (0.5f <= m_dHitTime)
+		{
+			m_bHit = false;
+			m_dHitTime = 0.0;
+		}
+	}
 	return NO_EVENT;
 }
 
 _int CMay::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
+
+	Ride_Ending_Rocket(dTimeDelta);
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
 		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1000.f))
@@ -338,15 +350,23 @@ HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 
-	if (eGroup == RENDER_GROUP::RENDER_NONALPHA)
+	if (true == m_bHit)
 	{
 		m_pModelCom->Set_DefaultVariables_Shadow();
-		m_pModelCom->Render_Model(0);
+		m_pModelCom->Render_Model(35);
 	}
-	else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding)
+	else
 	{
-		m_pModelCom->Render_Model(30);
-		m_pModelCom->Render_Model(31);
+		if (eGroup == RENDER_GROUP::RENDER_NONALPHA)
+		{
+			m_pModelCom->Set_DefaultVariables_Shadow();
+			m_pModelCom->Render_Model(0);
+		}
+		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding)
+		{
+			m_pModelCom->Render_Model(30);
+			m_pModelCom->Render_Model(31);
+		}
 	}
 
 	return S_OK;
@@ -796,6 +816,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_X))/* 우산 */
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
+		m_IsEnding = true;
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -2063,6 +2085,9 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::eLASER_LASERTENNIS)
 		{
 			/* Hit Effect 생성 */
+			EFFECT->Add_Effect(Effect_Value::Hit_BossLaser_Particle_Star, m_pTransformCom->Get_WorldMatrix());
+
+			m_bHit = true;
 
 			/* HP 감소 */
 			LASERTENNIS->Set_CodyCount();
@@ -2300,7 +2325,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
-#elif
+#else
 			if (m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Key_Pressing(DIK_UP))
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK), 0.f));
@@ -2528,7 +2553,7 @@ void CMay::LaserTennis(const _double dTimeDelta)
 	if (false == m_bLaserTennis)
 		return;
 
-	if (true == LASERTENNIS->Get_StartGame())
+	if (true == LASERTENNIS->Get_PushCoord())
 	{
 		m_pActorCom->Jump_Start(2.f);
 		m_pModelCom->Set_Animation(ANI_M_RocketFirework);
@@ -2742,8 +2767,9 @@ void CMay::Ride_Ending_Rocket(const _double dTimeDelta)
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Rocket_MH)
 		{
 			m_pActorCom->Set_ZeroGravity(true, false, true);
-			m_pActorCom->Set_Position(m_vEndingRocketOffSetPos);
 			m_pTransformCom->Set_WorldMatrix(m_matEndingRocketMatrix);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vEndingRocketOffSetPos);
+			m_pActorCom->Set_Position(m_vEndingRocketOffSetPos);
 		}
 	}
 }
