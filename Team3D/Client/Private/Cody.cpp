@@ -4028,7 +4028,7 @@ void CCody::LaserTennis(const _double dTimeDelta)
 	if (false == m_bLaserTennis)
 		return;
 
-	if (true == LASERTENNIS->Get_StartGame())
+	if (true == LASERTENNIS->Get_PushCoord())
 	{
 		if (false == m_bCheckAnim)
 		{
@@ -4040,7 +4040,7 @@ void CCody::LaserTennis(const _double dTimeDelta)
 		}
 		else if (0.7f <= m_pModelCom->Get_ProgressAnim())
 		{
-			LASERTENNIS->Start_Game();
+			LASERTENNIS->Push_Coord();
 			m_bLaserTennis = false;
 			m_bCheckAnim = false;
 			return;

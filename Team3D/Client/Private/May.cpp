@@ -2522,7 +2522,7 @@ void CMay::LaserTennis(const _double dTimeDelta)
 	if (false == m_bLaserTennis)
 		return;
 
-	if (true == LASERTENNIS->Get_StartGame())
+	if (true == LASERTENNIS->Get_PushCoord())
 	{
 		m_pActorCom->Jump_Start(2.f);
 		m_pModelCom->Set_Animation(ANI_M_RocketFirework);
