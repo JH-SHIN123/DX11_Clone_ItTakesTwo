@@ -385,6 +385,7 @@ void CLaserTennis_Manager::Reset_Game()
 		m_pLaserPowerCoord[i]->Change_State();
 
 	/* 타이머 종료 */
+	m_pTimer_LaserTennis->OnOff_Timer(false);
 	m_pTimer_LaserTennis->Set_Script();
 
 	/* 변수 초기화 */
