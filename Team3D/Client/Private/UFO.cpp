@@ -510,6 +510,11 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 	/* 공전 드가자 */
 	OrbitalMovementCenter(dTimeDelta);
 
+	if (nullptr != m_pCodyMissile && true == m_pCodyMissile->Get_BossExplosion())
+		m_pCodyMissile->Set_MissileDead();
+	else if (nullptr != m_pMayMissile && true == m_pMayMissile->Get_BossExplosion())
+		m_pMayMissile->Set_MissileDead();
+
 	switch (m_ePattern)
 	{
 	case Client::CUFO::INTERACTION:
