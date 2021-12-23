@@ -172,6 +172,7 @@ CGameObject * CMinigame_Countdown::Clone_GameObject(void * pArg)
 
 void CMinigame_Countdown::Free()
 {
+	Safe_Release(m_pMinigame_GaugeCircle);
 	Safe_Release(m_pVIBuffer_RectCom);
 
 	CUIObject::Free();
