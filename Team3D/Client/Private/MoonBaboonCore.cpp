@@ -6,7 +6,8 @@
 #include "MoonBaboonCore_Glass.h"
 #include "Effect_Boss_Core.h"
 #include "Effect_Generator.h"
-
+#include"MainCamera.h"
+#include"SubCamera.h"
 CMoonBaboonCore::CMoonBaboonCore(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -187,6 +188,12 @@ void CMoonBaboonCore::Set_Broken()
 
 	m_bBroken = true;
 	m_pEffectBossCore->HitOn();
+
+	if (m_tDesc.iIndex != 1) // 중력 발판 앞 코어
+	{
+		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_CamEffect(TEXT("Cam_Shake_Destroy_Boss_Cylinder"));
+		static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Start_CamEffect(TEXT("Cam_Shake_Destroy_Boss_Cylinder"));
+	}
 }
 
 void CMoonBaboonCore::Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed)

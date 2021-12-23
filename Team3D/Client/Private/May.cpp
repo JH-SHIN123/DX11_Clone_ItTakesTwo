@@ -218,7 +218,7 @@ _int CMay::Tick(_double dTimeDelta)
 	CCharacter::Tick(dTimeDelta);
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		m_pActorCom->Set_ZeroGravity(true, true, true);
+
 		m_pActorCom->Update(dTimeDelta); 
 		m_pModelCom->Update_Animation(dTimeDelta);
 		return NO_EVENT;
@@ -226,7 +226,7 @@ _int CMay::Tick(_double dTimeDelta)
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	/* Script */
-	Script_Trigger(dTimeDelta);
+	//Script_Trigger(dTimeDelta);
 
 	m_pCamera = (CSubCamera*)CDataStorage::GetInstance()->Get_SubCam();
 	if (nullptr == m_pCamera)
@@ -1915,7 +1915,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			m_IsPinBall = true;
 		}
-		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
+		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage && false == m_IsWarpDone)
 		{
 			// ¸ÞÀÌ Àü¿ë Æ÷Å»·Î ÀÌµ¿(¿úÈ¦)
 			m_pActorCom->Set_ZeroGravity(true, false, true);

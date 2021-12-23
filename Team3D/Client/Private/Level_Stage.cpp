@@ -122,15 +122,16 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 
 #ifdef __INSTALL_LIGHT
 	CLight_Generator::GetInstance()->KeyInput(dTimedelta);
+
 #endif // __TEST_TAEK
 	
-#ifdef __PLAY_CUTSCENE
-	if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Intro))
-	{
-		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
-		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Intro, true);
-	}
-#endif
+//#ifdef __PLAY_CUTSCENE
+//	if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Intro))
+//	{
+//		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
+//		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Intro, true);
+//	}
+//#endif
 
 	/* For.EndingCredit */
 	if (m_pGameInstance->Key_Down(DIK_END))
