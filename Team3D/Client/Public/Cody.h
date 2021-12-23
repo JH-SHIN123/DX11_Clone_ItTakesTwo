@@ -717,6 +717,8 @@ private: /* For. Ending */
 	_float m_fCody_GravityPipe_Voice_Volume = 1.f;
 	_bool  m_bGravityPipe_FirstIn = false;
 
+	// CamEffect
+	_float m_fFootStepDelay = 0.f;
 #pragma endregion
 
 };

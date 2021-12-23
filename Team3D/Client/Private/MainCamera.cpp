@@ -149,6 +149,10 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 
 	
 	m_eCurPlayerSize = m_pCody->Get_Player_Size();
+	if (m_eCurPlayerSize == CCody::PLAYER_SIZE::SIZE_LARGE)
+	{
+
+	}
 	if (m_eCurPlayerSize != m_ePrePlayerSize)
 	{
 		m_dLerpToCurSizeTime = 0.0;
@@ -1564,7 +1568,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
 	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Destroy_Boss_Cylinder", CFilm::LScreen);
+		m_pCamHelper->Start_CamEffect(L"Cam_Shake_MissileBoom", CFilm::LScreen);
 		return NO_EVENT;
 	}
 	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
@@ -1574,13 +1578,13 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		return NO_EVENT;
 	}*/
 	
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
-	{
-		CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Eject_InUFO"));
-		Start_Film(L"Film_Eject_InUFO");
-		//CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Boss_Intro");
-		return NO_EVENT;
-	}
+	//if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
+	//{
+	//	CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Eject_InUFO"));
+	//	Start_Film(L"Film_Eject_InUFO");
+	//	//CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Boss_Intro");
+	//	return NO_EVENT;
+	//}
 
 	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 	{
