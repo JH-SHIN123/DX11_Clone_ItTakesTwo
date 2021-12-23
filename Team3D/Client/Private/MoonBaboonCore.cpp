@@ -6,6 +6,7 @@
 #include "MoonBaboonCore_Glass.h"
 #include "Effect_Boss_Core.h"
 #include "Effect_Generator.h"
+#include "UFO.h"
 
 CMoonBaboonCore::CMoonBaboonCore(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -105,9 +106,6 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 	// 2 Phase시 위로 올라가는거
 	GoUp(TimeDelta);
 
-	if (m_tDesc.iIndex == 0 && m_pGameInstance->Key_Down(DIK_F6))
-		Reset();
-
     return _int();
 }
 
@@ -157,6 +155,7 @@ void CMoonBaboonCore::GoUp(_double dTimeDelta)
 		m_fDistance = 0.f;
 		m_iActiveCore = 0;
 		m_bMove = false;
+		Reset();
 		return;
 	}
 
@@ -169,6 +168,13 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 {
 	if (true == m_IsGoUp)
 		return;
+
+	CUFO* pUFO = (CUFO*)DATABASE->Get_BossUFO();
+	if (nullptr != pUFO)
+	{
+		if (CUFO::PHASE_1 == pUFO->Get_BossPhase() && m_tDesc.iIndex == 1)
+			return;
+	}
 
 	if (m_iActiveCore == 1)
 	{
