@@ -408,6 +408,11 @@ private:
 	_bool	m_bLaserTennis = false;
 	_uint	m_iHP = 12;
 
+	/* Hye::For.PlayerHit */
+	/* m_bHit를 True로 하면 일정시간동안 플레이어가 빨개집니다. */
+	_bool	m_bHit = false;
+	_double m_dHitTime = 0.0;
+
 	/* 진혁 */
 	_bool m_IsLaserRippedOff = false;
 	_bool m_IsRippedOffAnimPlaying = false;

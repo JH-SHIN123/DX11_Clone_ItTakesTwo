@@ -22,13 +22,22 @@ HRESULT CEndingCredit_Manager::Create_3DText(_uint iIndex, _float fPosY)
 		return S_OK;
 
 	if (0 == iIndex || 10 == iIndex || 16 == iIndex || 23 == iIndex)
-		FAILED_CHECK_RETURN(Create_HugeRock(), E_FAIL);
+		FAILED_CHECK_RETURN(Create_HugeRock(fPosY), E_FAIL);
 
 	C3DText::ARG_DESC tArg;
 	tArg.iIndex = iIndex;
 	tArg.fPosY = fPosY;
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_3DText"), &tArg), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CEndingCredit_Manager::Create_HugeRock(_float fPosY)
+{
+	_float fY = fPosY;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_HugeRock"), &fY), E_FAIL);
 
 	return S_OK;
 }
@@ -48,13 +57,6 @@ HRESULT CEndingCredit_Manager::Create_Rocks(_uint iNumRock)
 {
 	for (_uint i = 0; i < iNumRock; ++i)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_Rock")), E_FAIL);
-
-	return S_OK;
-}
-
-HRESULT CEndingCredit_Manager::Create_HugeRock()
-{
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_HugeRock")), E_FAIL);
 
 	return S_OK;
 }

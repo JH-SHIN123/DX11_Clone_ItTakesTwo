@@ -426,6 +426,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Pinball.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_ComputeRoom.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_EFFECTLIGHT, TEXT("../Bin/Resources/Data/LightData/EffectLight_Bg.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_EFFECTLIGHT, TEXT("../Bin/Resources/Data/LightData/EffectLight_Rail_Bg.dat"));
 #endif
 
 	return S_OK;
@@ -911,23 +912,23 @@ _int CLevel_Stage::Tick_EndingCredit(_double dTimedelta)
 		ENDINGCREDIT->Create_3DText(4, -1930.f);
 		ENDINGCREDIT->Create_3DText(5, -2214.f);
 		ENDINGCREDIT->Create_3DText(6, -2496.f);
-		ENDINGCREDIT->Create_3DText(7, -2780.f);
+		ENDINGCREDIT->Create_3DText(7, -2781.f);
 		ENDINGCREDIT->Create_3DText(8, -3064.f);
-		ENDINGCREDIT->Create_3DText(9, -3348.f);
+		ENDINGCREDIT->Create_3DText(9, -3349.f);
 		ENDINGCREDIT->Create_3DText(10, -3632.f);
 		ENDINGCREDIT->Create_3DText(12, -3916.f);
-		ENDINGCREDIT->Create_3DText(11, -4100.f); 
-		ENDINGCREDIT->Create_3DText(13, -4278.f);
+		ENDINGCREDIT->Create_3DText(11, -4100.f);
+		ENDINGCREDIT->Create_3DText(13, -4270.f);
 		ENDINGCREDIT->Create_3DText(14, -4380.f);
-		ENDINGCREDIT->Create_3DText(15, -4550.f);
-		ENDINGCREDIT->Create_3DText(16, -4704.f);
-		ENDINGCREDIT->Create_3DText(17, -4985.f);
-		//ENDINGCREDIT->Create_3DText(18, -6300.f);
-		//ENDINGCREDIT->Create_3DText(19, -6600.f);
-		//ENDINGCREDIT->Create_3DText(20, -6900.f);
-		//ENDINGCREDIT->Create_3DText(21, -7200.f);
-		//ENDINGCREDIT->Create_3DText(22, -7500.f);
-		//ENDINGCREDIT->Create_3DText(23, -7900.f);
+		ENDINGCREDIT->Create_3DText(15, -4545.f);
+		ENDINGCREDIT->Create_3DText(16, -4707.f);
+		ENDINGCREDIT->Create_3DText(17, -4992.f);
+		ENDINGCREDIT->Create_3DText(18, -5276.f);
+		ENDINGCREDIT->Create_3DText(19, -5558.f);
+		ENDINGCREDIT->Create_3DText(20, -5846.f);
+		ENDINGCREDIT->Create_3DText(21, -6131.f);
+		ENDINGCREDIT->Create_3DText(22, -6415.f);
+		ENDINGCREDIT->Create_3DText(23, -6696.f);
 	}
 
 	return NO_EVENT;

@@ -290,21 +290,6 @@ _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
 
-
-	if (m_pGameInstance->Key_Down(DIK_F8))
-	{
-		UI_CreateOnlyOnce(Default, Minigame_Win_Cody);
-	}
-	else if (m_pGameInstance->Key_Down(DIK_F5))
-	{
-		UI_CreateOnlyOnce(Default, Minigame_Win_May);
-	}
-	else if (m_pGameInstance->Key_Down(DIK_F6))
-	{
-		UI_CreateOnlyOnce(Default, Minigame_Score);
-	}
-
-
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
 		m_pActorCom->Set_ZeroGravity(true, true, true);
@@ -402,6 +387,18 @@ _int CCody::Tick(_double dTimeDelta)
 	// Control RadiarBlur - 제일 마지막에 호출
 	Trigger_RadiarBlur(dTimeDelta);
 
+	/* 히트타임 */
+	if (true == m_bHit)
+	{
+		m_dHitTime += dTimeDelta;
+
+		if (0.5f <= m_dHitTime)
+		{
+			m_bHit = false;
+			m_dHitTime = 0.0;
+		}
+	}
+
 	return NO_EVENT;
 }
 
@@ -442,15 +439,23 @@ HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 
-	if (eGroup == RENDER_GROUP::RENDER_NONALPHA)
+	if (true == m_bHit)
 	{
 		m_pModelCom->Set_DefaultVariables_Shadow();
-		m_pModelCom->Render_Model(0);
+		m_pModelCom->Render_Model(35);
 	}
-	else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding)
+	else
 	{
-		m_pModelCom->Render_Model(30);
-		m_pModelCom->Render_Model(32);
+		if (eGroup == RENDER_GROUP::RENDER_NONALPHA)
+		{
+			m_pModelCom->Set_DefaultVariables_Shadow();
+			m_pModelCom->Render_Model(0);
+		}
+		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding)
+		{
+			m_pModelCom->Render_Model(30);
+			m_pModelCom->Render_Model(32);
+		}
 	}
 
 	return S_OK;
@@ -2578,6 +2583,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::eLASER_LASERTENNIS)
 		{
 			/* Hit Effect 생성 */
+			EFFECT->Add_Effect(Effect_Value::Hit_BossLaser_Particle_Star, m_pTransformCom->Get_WorldMatrix());
+
+			m_bHit = true;
 
 			/* HP 감소 */
 			LASERTENNIS->Set_MayCount();
@@ -3579,6 +3587,7 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 
 			m_bMoveToRail = false;
 			m_bOnRail = false;
+			m_bOnRailEnd = false;
 			m_bOnRail_Effect = false;
 		}
 	}
@@ -3720,7 +3729,7 @@ void CCody::MoveToTargetRail(_double dTimeDelta)
 }
 void CCody::TakeRail(_double dTimeDelta)
 {
-	if (nullptr == m_pTargetRail || false == m_bOnRail) return;
+	if (nullptr == m_pTargetRail || false == m_bOnRail || true == m_bOnRailEnd) return;
 
 	/* 타는 애니메이션으로 변경 */
 	if(m_pGameInstance->Key_Pressing(DIK_A))
