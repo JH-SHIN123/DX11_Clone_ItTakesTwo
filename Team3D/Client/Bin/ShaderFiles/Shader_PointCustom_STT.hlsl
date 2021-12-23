@@ -316,7 +316,7 @@ void  GS_MAIN_NO_BILL(/*입력*/ point  VS_OUT_NO_BILL In[1], /*출력*/ inout Trian
 	Out[7].vPosition = Out[3].vPosition;
 
 	[unroll]
-	for (int i = 0; j < 4; ++j)
+	for (int i = 0; i < 4; ++i)
 	{
 		Out[i].vPosition = mul(Out[i].vPosition, matVP);
 		Out[i].vProjPosition = Out[i].vPosition;
@@ -1380,7 +1380,7 @@ PS_OUT  PS_BOSS_LASER_SMOKE(PS_IN_DOUBLEUV In)
 	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vTexUV_3);
 
 	Out.vColor.rgb *= vColor.rgb *  In.fTime;
-	Out.vColor.a = Out.vColor.r * g_fTime *  In.fTime;
+	Out.vColor.a = Out.vColor.r * g_fAlpha *  In.fTime;
 
 	return Out;
 }
@@ -1416,7 +1416,7 @@ PS_OUT  PS_MAIN_MISSILE_SMOKE_BLACK(PS_IN_DOUBLEUV In)
 	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 	vDiff.rgb *= In.fTime;
 
-	vDiff.a = (vDiff.r + vDiff.g)* In.fTime * 0.5f;
+	vDiff.a = (vDiff.r + vDiff.g)* In.fTime * 0.5f * g_fAlpha;
 
 	Out.vColor = vDiff;
 
@@ -1475,7 +1475,7 @@ PS_OUT  PS_MAIN_LASER_PARTICLE(PS_IN_DOUBLEUV In)
 	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vTexUV_2);
 
 	Out.vColor.rgb *= vColor.rgb;
-	Out.vColor.a *= vColor.r;
+	Out.vColor.a *= vColor.r * g_fTime;
 
 	return Out;
 }
@@ -1581,7 +1581,7 @@ PS_OUT  PS_MAIN_MISSILE_SMOKE_COLOR(PS_IN_TRIPLEUV In)
 		vDiff.rgb *= 1.5f;
 	}
 	else
-		vDiff.rgb *= 2.f;
+		vDiff.rgb *= 0.2f;
 
 	Out.vColor = vDiff;
 

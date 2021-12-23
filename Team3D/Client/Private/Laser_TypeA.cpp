@@ -204,11 +204,17 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 		m_fLaserSizeX -= 15.f * (_float)dTimeDelta;
 
 		if (m_fLaserSizeX < 0.f)
+		{
 			return EVENT_DEAD;
+		}
 	}
 
 	if (nullptr != m_pLaserSmoke)
+	{
 		m_pLaserSmoke->Set_Pos(XMLoadFloat4(&m_vEndPoint));
+		if (true == m_isDead)
+			m_pLaserSmoke->Set_Dead();
+	}
 
 #ifdef __TEST_SE
 	if (m_pGameInstance->Key_Down(DIK_N))

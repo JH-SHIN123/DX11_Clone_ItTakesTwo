@@ -48,16 +48,22 @@ HRESULT CEffect_Boss_Laser_Smoke::NativeConstruct(void * pArg)
 
 _int CEffect_Boss_Laser_Smoke::Tick(_double TimeDelta)
 {
-// 	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
-
-	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
+	if (true == m_isDead && 0.0 >= m_dControlTime)
 		return EVENT_DEAD;
 
-	m_dControlTime += TimeDelta;
-	if (true == m_IsActivate)
+	if (true == m_IsActivate && false == m_isDead)
 	{
+		m_dControlTime += TimeDelta;
 		if (1.0 <= m_dControlTime)
 			m_dControlTime = 1.0;
+	}
+	else
+	{
+		m_pLaserParticle->Set_Dead();
+		m_pLaserParticle->Set_IsActivate(false);
+		m_dControlTime -= TimeDelta * 0.75f;
+		if (0.0 >= m_dControlTime)
+			m_dControlTime = 0.0;
 	}
 
 	Check_Instance(TimeDelta);
@@ -104,7 +110,7 @@ void CEffect_Boss_Laser_Smoke::Check_Instance(_double TimeDelta)
 
 		m_pInstance_Pos_UpdateTime[iIndex]	-= TimeDelta;
 
-		if (0.0 >= m_pInstance_Pos_UpdateTime[iIndex] && true == m_IsActivate)
+		if (0.0 >= m_pInstance_Pos_UpdateTime[iIndex]/* && true == m_IsActivate*/)
 		{
 			Reset_Instance(TimeDelta, vMyPos, iIndex);
 			continue;

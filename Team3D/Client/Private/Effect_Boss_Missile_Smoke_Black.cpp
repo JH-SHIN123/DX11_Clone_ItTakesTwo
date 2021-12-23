@@ -75,7 +75,7 @@ _int CEffect_Boss_Missile_Smoke_Black::Tick(_double TimeDelta)
 
 _int CEffect_Boss_Missile_Smoke_Black::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
 }
 
 HRESULT CEffect_Boss_Missile_Smoke_Black::Render(RENDER_GROUP::Enum eGroup)
@@ -111,7 +111,7 @@ void CEffect_Boss_Missile_Smoke_Black::Check_Instance(_double TimeDelta)
 
 		m_pInstance_Pos_UpdateTime[iIndex] -= TimeDelta;
 
-		if (0.0 >= m_pInstance_Pos_UpdateTime[iIndex] && true == m_IsActivate)
+		if (0.0 >= m_pInstance_Pos_UpdateTime[iIndex])
 		{
 			Reset_Instance(TimeDelta, vMyPos, iIndex);
 			continue;

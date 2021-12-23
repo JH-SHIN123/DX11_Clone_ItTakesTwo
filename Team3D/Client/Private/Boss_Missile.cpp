@@ -105,6 +105,9 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	if (m_bStartAdjustAngle)
 		Adjust_Angle(dTimeDelta);
 
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	m_pEffect_Smoke_1->Set_Pos(vPos);
+	m_pEffect_Smoke_2->Set_Pos(vPos);
 
 	return _int();
 }
