@@ -932,6 +932,10 @@ void CUFO::GetRidLaserGun()
 	m_pModelCom->Set_PivotTransformation(m_pModelCom->Get_BoneIndex("LaserBase"), LaserBaseBone);
 
 	m_IsLaserGunRid = true;
+
+	EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
+	EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
+	EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Smoke);
 }
 
 HRESULT CUFO::Phase3_End(_double dTimeDelta)

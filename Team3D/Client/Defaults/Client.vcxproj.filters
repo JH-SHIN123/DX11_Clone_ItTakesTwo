@@ -720,6 +720,15 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail\01.Smoke">
       <UniqueIdentifier>{9c779d84-eb72-4eef-8564-76073392f649}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\EndingRocket">
+      <UniqueIdentifier>{b1a2cd5c-ed97-4fac-b853-2558cc886308}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\EndingRocket\00.Boost">
+      <UniqueIdentifier>{e27e7bb3-542f-4bc1-bd36-05893033ff09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\EndingRocket\01.Circle">
+      <UniqueIdentifier>{544d93d1-7555-4a67-a745-21f00989b2c4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29">
       <UniqueIdentifier>{3a519e7a-f348-4809-a94f-055799138e50}</UniqueIdentifier>
     </Filter>
@@ -737,6 +746,21 @@
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Light_Effect">
       <UniqueIdentifier>{42f75ceb-27c0-491b-95a9-a4316ca7f9f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\MoonUFO">
+      <UniqueIdentifier>{53c99c64-1247-4d92-9772-3ed56967d250}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\MoonUFO\00.Laser">
+      <UniqueIdentifier>{04b5c8cc-9bff-4700-8cd3-867c98dc3279}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\MoonUFO\00.Laser\00.Particle">
+      <UniqueIdentifier>{1d82eb27-2897-44f3-934e-6f8347482ff6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\MoonUFO\00.Laser\01.Burn">
+      <UniqueIdentifier>{fde6387e-d4c9-4a79-b404-ffd9bbe3cd83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\MoonUFO\00.Laser\02.ColorSmoke">
+      <UniqueIdentifier>{29138b78-841c-4a46-9d6a-5311d8c072dd}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object">
       <UniqueIdentifier>{2d113bd5-2e8a-454e-ae74-7e78d42a438b}</UniqueIdentifier>
@@ -1760,6 +1784,15 @@
     <ClInclude Include="..\public\Effect_Player_Rail_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail\01.Smoke</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_EndingRocket_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\EndingRocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_EndingRocket_Boost.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\EndingRocket\00.Boost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_EndingRocket_Circle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\EndingRocket\01.Circle</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Effect_Env_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
     </ClInclude>
@@ -1777,6 +1810,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_PointLight.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Light_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_MoonUFO_Laser_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\MoonUFO\00.Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_MoonUFO_Laser_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\MoonUFO\00.Laser\00.Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_MoonUFO_Laser_Burn.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\MoonUFO\00.Laser\01.Burn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_MoonUFO_Laser_ColorSmoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\MoonUFO\00.Laser\02.ColorSmoke</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Robot_Battery_Spark.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\00.Robot_Battery_Spark</Filter>
@@ -1840,7 +1885,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_UFO_Inside_ElectricWall_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle</Filter>
-    </ClInclude>
+    </ClInclude>    
     <ClInclude Include="..\Public\InGameEffect_Rect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Rect</Filter>
     </ClInclude>
@@ -2722,6 +2767,15 @@
     <ClCompile Include="..\private\Effect_Player_Rail_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Cody/May\09.Rail\01.Smoke</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_EndingRocket_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\EndingRocket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_EndingRocket_Boost.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\EndingRocket\00.Boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_EndingRocket_Circle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\EndingRocket\01.Circle</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Effect_Env_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Env_Particle%28Member%29</Filter>
     </ClCompile>
@@ -2739,6 +2793,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_PointLight.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Light_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_MoonUFO_Laser_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\MoonUFO\00.Laser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_MoonUFO_Laser_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\MoonUFO\00.Laser\00.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_MoonUFO_Laser_Burn.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\MoonUFO\00.Laser\01.Burn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_MoonUFO_Laser_ColorSmoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\MoonUFO\00.Laser\02.ColorSmoke</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Robot_Battery_Spark.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\00.Robot_Battery_Spark</Filter>

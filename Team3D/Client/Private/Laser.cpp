@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Laser.h"
+#include "Effect_Generator.h"
 
 CLaser::CLaser(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -112,6 +113,12 @@ void CLaser::Set_Dead()
 	m_isDead = true;
 }
 
+void CLaser::Player_Hit_Effect()
+{
+	_matrix WorldMatrix = XMMatrixIdentity();
+	WorldMatrix.r[3] = XMLoadFloat4(&m_vEndPoint);
+	EFFECT->Add_Effect(Effect_Value::Hit_BossLaser_Particle_Star, WorldMatrix);
+}
 
 void CLaser::Set_LaserMatices()
 {

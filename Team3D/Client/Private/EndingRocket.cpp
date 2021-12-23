@@ -38,7 +38,8 @@ HRESULT CEndingRocket::NativeConstruct(void * pArg)
 
 	DATABASE->Set_EndingRocket(this);
 
-	EFFECT->Add_Effect(Effect_Value::BossMissile_Smoke, m_pTransformCom->Get_WorldMatrix());
+	EFFECT->Add_Effect(Effect_Value::EndingRocket_Smoke, m_pTransformCom->Get_WorldMatrix());
+	EFFECT->Add_Effect(Effect_Value::EndingRocket_Circle, m_pTransformCom->Get_WorldMatrix());
 
 	return S_OK;
 }
@@ -96,6 +97,9 @@ void CEndingRocket::Movement(_double dTimeDelta)
 	/* ºÎ½ºÆ® */
 	if (true == m_bBoost)
 	{
+		//if (0.0 == m_dBoostTime)
+		//	EFFECT->Add_Effect(Effect_Value::EndingRocket_Boost);
+
 		m_dBoostTime += dTimeDelta;
 
 		if (2.0 <= m_dBoostTime)
@@ -103,7 +107,6 @@ void CEndingRocket::Movement(_double dTimeDelta)
 			m_bBoost = false;
 			m_dBoostTime = 0.0;
 		}
-
 		m_pTransformCom->Go_Straight(fTimeDelta * m_fCurSpeed);
 	}
 	else
