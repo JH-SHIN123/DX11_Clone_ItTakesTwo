@@ -1,7 +1,7 @@
 #pragma once
 
 /************************************************************************/
-
+//
 //#define __FULLSCREEN
 //#define __START_LEVEL_LOGO
 //#define __PLAY_CUTSCENE
