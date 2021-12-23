@@ -70,6 +70,16 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying_Particle, m_pTransformCom->Get_WorldMatrix());
 	EFFECT->Add_Effect(Effect_Value::Boss_UFO_Flying_Particle_Flow, m_pTransformCom->Get_WorldMatrix());
 
+	// Light
+	LIGHT_DESC lightDesc;
+	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	lightDesc.fRange = 15.f;
+	lightDesc.vDiffuse = { 0.f,0.f,1.f,1.f };
+	XMStoreFloat3(&lightDesc.vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_pBossLight = CLight::Create(TEXT("Boss_UFO_Light"),&lightDesc);
+	m_pGameInstance->Add_Light(LightStatus::eDYNAMIC, m_pBossLight);
+	Safe_AddRef(m_pBossLight);
+
 	return S_OK;
 }
 
@@ -147,6 +157,16 @@ _int CUFO::Tick(_double dTimeDelta)
 	GoUp(dTimeDelta);
 
 	m_pModelCom->Update_Animation(dTimeDelta);
+
+	/* Light */
+	if (m_pBossLight)
+	{
+		LIGHT_DESC* pLightDesc = m_pBossLight->Get_LightDescPtr();
+		if (nullptr != pLightDesc)
+		{
+			XMStoreFloat3(&pLightDesc->vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		}
+	}
 
 	return NO_EVENT;
 }
@@ -1236,6 +1256,12 @@ CGameObject * CUFO::Clone_GameObject(void * pArg)
 
 void CUFO::Free()
 {
+	if (m_pBossLight)
+	{
+		m_pBossLight->Set_Dead(true);
+		Safe_Release(m_pBossLight);
+	}
+
 	if (nullptr != m_pStaticActorCom)
 		Safe_Release(m_pStaticActorCom);
 	if (nullptr != m_pStaticTransformCom)
